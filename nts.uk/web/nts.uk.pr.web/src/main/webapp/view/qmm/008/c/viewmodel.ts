@@ -168,7 +168,12 @@ module nts.uk.pr.view.qmm008.c {
                 //if register new office
                 else {
                     self.registerOffice();
+                    //set add item into list view
+                    if ((self.officeModel().officeCode() != '') && (self.officeModel().officeName() != ''))
+                        self.officeItems.push(new ItemModel(self.officeModel().officeCode(), self.officeModel().officeName()));
                 }
+                //TODO reload list Office and focus add new office item
+
             }
 
             //update office
@@ -192,13 +197,25 @@ module nts.uk.pr.view.qmm008.c {
             }
 
             //remove office  by office Code
-            private remove(officeCode: string) {
+            private remove() {
                 var self = this;
-                service.remove(officeCode).done(function() {
-                    //TODO if remove success    
-                }).fail(function() {
-                    //TODO if remove fail    
+//                service.remove(officeCode).done(function() {
+//                    //TODO if remove success    
+//                }).fail(function() {
+//                    //TODO if remove fail    
+//                });
+                self.officeItems().forEach(function(item, index) {
+                    if (item.code == self.selectedOfficeCode()) {
+                        self.officeItems().splice(index, 1);
+                        var data = self.officeItems();
+                        self.officeItems(data);
+                    }
                 });
+                // if empty list -> add new mode
+                if(self.officeItems().length == 0)
+                {
+                    self.addNew();    
+                }
             }
 
             //collect all data

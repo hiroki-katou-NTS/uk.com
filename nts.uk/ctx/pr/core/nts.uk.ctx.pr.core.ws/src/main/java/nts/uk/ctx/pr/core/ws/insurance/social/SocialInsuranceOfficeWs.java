@@ -103,6 +103,12 @@ public class SocialInsuranceOfficeWs extends WebService {
 	}
 	
 	@POST
+	@Path("find/rounding")
+	public void findRounding(){
+		//TODO convert class RoundingMethod to values and return
+	}
+	
+	@POST
 	@Path("create")
 	public void createOffice(RegisterSocialOfficeCommand command) {
 		this.registerSocialOfficeCommandHandler.handle(command);

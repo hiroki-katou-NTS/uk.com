@@ -125,6 +125,8 @@ var nts;
                                         self.updateOffice();
                                     else {
                                         self.registerOffice();
+                                        if ((self.officeModel().officeCode() != '') && (self.officeModel().officeName() != ''))
+                                            self.officeItems.push(new ItemModel(self.officeModel().officeCode(), self.officeModel().officeName()));
                                     }
                                 };
                                 ScreenModel.prototype.updateOffice = function () {
@@ -139,11 +141,18 @@ var nts;
                                     }).fail(function () {
                                     });
                                 };
-                                ScreenModel.prototype.remove = function (officeCode) {
+                                ScreenModel.prototype.remove = function () {
                                     var self = this;
-                                    c.service.remove(officeCode).done(function () {
-                                    }).fail(function () {
+                                    self.officeItems().forEach(function (item, index) {
+                                        if (item.code == self.selectedOfficeCode()) {
+                                            self.officeItems().splice(index, 1);
+                                            var data = self.officeItems();
+                                            self.officeItems(data);
+                                        }
                                     });
+                                    if (self.officeItems().length == 0) {
+                                        self.addNew();
+                                    }
                                 };
                                 ScreenModel.prototype.collectData = function () {
                                     var self = this;

@@ -67,7 +67,6 @@ var nts;
                                                 self.currentParentCode(officeSelectedCode);
                                                 self.loadHistoryOfOffice(officeSelectedCode);
                                                 self.healthModel(new HealthInsuranceRateModel("code", 1, null, null, 15000));
-                                                self.pensionModel(new PensionRateModel("code", 1, 1, null, null, null, 35000, 1.5));
                                                 self.isClickHistory(false);
                                             }
                                             else {
@@ -94,6 +93,7 @@ var nts;
                                     self.loadAllInsuranceOffice().done(function (data) {
                                         self.InsuranceOfficeList(data);
                                         if ((self.InsuranceOfficeList() != null) && (self.InsuranceOfficeList().length > 0)) {
+                                            self.officeSelectedCode(self.InsuranceOfficeList()[0].code);
                                         }
                                         else {
                                             self.OpenModalOfficeRegister();
@@ -141,6 +141,7 @@ var nts;
                                                     officeData[index].childs.push(new InsuranceOfficeItem(index + item.code, item2.officeCode, index + item2.historyId + index2, [], ((item2.startMonth) / 100).toFixed(0) + "/" + item2.startMonth % 100 + "~" + ((item2.endMonth) / 100).toFixed(0) + "/" + item2.endMonth % 100));
                                                 });
                                                 self.InsuranceOfficeList(officeData);
+                                                self.officeSelectedCode(self.InsuranceOfficeList()[0].childs[0].code);
                                             });
                                         }
                                     });
@@ -223,6 +224,10 @@ var nts;
                                         self.pensionModel().fundRateItems().salaryCompanySonExemption(data.fundRateItems[0].burdenChargeCompanyRate);
                                         self.pensionModel().fundRateItems().bonusPersonalSonExemption(data.fundRateItems[0].burdenChargeCompanyRate);
                                         self.pensionModel().fundRateItems().bonusCompanySonExemption(data.fundRateItems[0].burdenChargeCompanyRate);
+                                        self.pensionModel().roundingMethods().pensionSalaryPersonalComboBox(self.roundingList());
+                                        self.pensionModel().roundingMethods().pensionSalaryCompanyComboBox(self.roundingList());
+                                        self.pensionModel().roundingMethods().pensionBonusPersonalComboBox(self.roundingList());
+                                        self.pensionModel().roundingMethods().pensionBonusCompanyComboBox(self.roundingList());
                                         self.pensionModel().maxAmount(data.maxAmount);
                                         self.pensionModel().childContributionRate(data.childContributionRate);
                                         dfd.resolve();
@@ -268,6 +273,8 @@ var nts;
                                     }
                                     self.InsuranceOfficeList([]);
                                     self.InsuranceOfficeList(currentInsuranceOfficeList);
+                                };
+                                ScreenModel.prototype.save = function () {
                                 };
                                 ScreenModel.prototype.OpenModalAddHistory = function () {
                                     var self = this;
