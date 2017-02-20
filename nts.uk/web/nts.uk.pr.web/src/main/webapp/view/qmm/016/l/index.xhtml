@@ -13,13 +13,6 @@
 			<com:scriptfile path="service.js" />
 			<com:scriptfile path="viewmodel.js" />
 			<com:ValidatorScript>
-			    nts.uk.ctx.pr.core.dom.insurance.OfficeName
-			    nts.uk.ctx.pr.core.dom.insurance.OfficeCode
-			    nts.uk.ctx.pr.core.dom.insurance.ShortName
-			    nts.uk.ctx.pr.core.dom.insurance.PicName
-			    nts.uk.ctx.pr.core.dom.insurance.PicPosition
-			    nts.uk.ctx.pr.core.dom.insurance.PotalCode
-			    nts.uk.ctx.pr.core.dom.insurance.Address
 			    nts.uk.ctx.pr.core.dom.insurance.KanaAddress
 			 </com:ValidatorScript>
 		</ui:define>
@@ -123,8 +116,9 @@
 										data-bind="ntsSwapList: {
 								showSearchBox: { showLeft : true, showRight: true},
 								height: 300,
-								dataSource: lstCertification,
+								options: lstCertification,
 								primaryKey: 'code',
+								optionsValue: 'code',
 								columns: columnsCertification,
 								value: certifies
 							}"></div>

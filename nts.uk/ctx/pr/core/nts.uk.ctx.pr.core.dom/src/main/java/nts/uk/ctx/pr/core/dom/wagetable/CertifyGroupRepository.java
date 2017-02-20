@@ -37,7 +37,6 @@ public interface CertifyGroupRepository {
 	/**
 	 * Find all.
 	 *
-	 * @param companyCode the company code
 	 * @return the list
 	 */
 	List<CertifyGroup> findAll(CompanyCode companyCode);

@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.infra.repository.wagetable;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -95,10 +96,13 @@ public class JpaCertifyGroupSetMemento implements CertifyGroupSetMemento {
 	 */
 	@Override
 	public void setCertifies(Set<Certification> certifies) {
-		List<QwtmtWagetableCertify> qwtmtWagetableCertifyList = certifies.stream()
-				.map(item -> new QwtmtWagetableCertify(this.typeValue.getQwtmtWagetableCertifyGPK().getCcd(),
-						this.typeValue.getQwtmtWagetableCertifyGPK().getCertifyGroupCd(), item.getCode()))
-				.collect(Collectors.toList());
+		List<QwtmtWagetableCertify> qwtmtWagetableCertifyList = new ArrayList<>();
+		for (Certification certification : certifies) {
+			QwtmtWagetableCertify qwtmtWagetableCertify = new QwtmtWagetableCertify();
+			certification.saveToMemento(new JpaCertificationSetMemento(qwtmtWagetableCertify,
+					typeValue.getQwtmtWagetableCertifyGPK().getCertifyGroupCd()));
+			qwtmtWagetableCertifyList.add(qwtmtWagetableCertify);
+		}
 		this.typeValue.setQwtmtWagetableCertifyList(qwtmtWagetableCertifyList);
 	}
 

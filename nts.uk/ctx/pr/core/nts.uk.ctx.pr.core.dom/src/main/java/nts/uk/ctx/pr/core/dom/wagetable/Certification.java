@@ -9,7 +9,7 @@ import lombok.Getter;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 
 /**
- * The Class UnitPrice.
+ * The Class Certification.
  */
 @Getter
 @EqualsAndHashCode(of = { "companyCode", "code" })

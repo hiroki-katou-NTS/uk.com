@@ -11,25 +11,19 @@ import java.util.Optional;
 import java.util.Set;
 
 import javax.ejb.Stateless;
-import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Root;
 
-import mockit.external.asm.Opcodes;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.core.dom.company.Company;
 import nts.uk.ctx.core.dom.company.CompanyCode;
-import nts.uk.ctx.core.infra.data.entity.SmpmtCompany;
 import nts.uk.ctx.pr.core.dom.wagetable.Certification;
 import nts.uk.ctx.pr.core.dom.wagetable.CertificationGetMemento;
 import nts.uk.ctx.pr.core.dom.wagetable.CertifyGroup;
 import nts.uk.ctx.pr.core.dom.wagetable.CertifyGroupGetMemento;
 import nts.uk.ctx.pr.core.dom.wagetable.CertifyGroupRepository;
 import nts.uk.ctx.pr.core.dom.wagetable.MultipleTargetSetting;
-import nts.uk.ctx.pr.core.dom.wagetable.WageTableCode;
-import nts.uk.ctx.pr.core.infra.entity.wagetable.QcemtCertification;
 import nts.uk.ctx.pr.core.infra.entity.wagetable.QwtmtWagetableCertify;
 import nts.uk.ctx.pr.core.infra.entity.wagetable.QwtmtWagetableCertifyG;
 import nts.uk.ctx.pr.core.infra.entity.wagetable.QwtmtWagetableCertifyGPK;

@@ -21,9 +21,9 @@ var nts;
                                 updateCertifyGroup: "pr/wagetable/certifygroup/update",
                                 deleteLaborInsuranceOffice: "ctx/pr/core/insurance/labor/delete",
                             };
-                            function findAllCertification(companyCode) {
+                            function findAllCertification() {
                                 var dfd = $.Deferred();
-                                nts.uk.request.ajax(paths.findAllCertification + "/" + companyCode)
+                                nts.uk.request.ajax(paths.findAllCertification)
                                     .done(function (res) {
                                     dfd.resolve(res);
                                 })
@@ -33,9 +33,9 @@ var nts;
                                 return dfd.promise();
                             }
                             service.findAllCertification = findAllCertification;
-                            function findAllCertifyGroup(companyCode) {
+                            function findAllCertifyGroup() {
                                 var dfd = $.Deferred();
-                                nts.uk.request.ajax(paths.findAllCertifyGroup + "/" + companyCode)
+                                nts.uk.request.ajax(paths.findAllCertifyGroup)
                                     .done(function (res) {
                                     dfd.resolve(res);
                                 })
@@ -47,13 +47,8 @@ var nts;
                             service.findAllCertifyGroup = findAllCertifyGroup;
                             function findCertifyGroup(code) {
                                 var dfd = $.Deferred();
-                                var certifyGroupFindInDto;
-                                certifyGroupFindInDto = new model.CertifyGroupFindInDto();
-                                certifyGroupFindInDto.code = code;
-                                certifyGroupFindInDto.companyCode = "CCD1";
-                                nts.uk.request.ajax(paths.findCertifyGroup, certifyGroupFindInDto)
+                                nts.uk.request.ajax(paths.findCertifyGroup + "/" + code)
                                     .done(function (res) {
-                                    console.log(res);
                                     dfd.resolve(res);
                                 })
                                     .fail(function (res) {
@@ -64,8 +59,7 @@ var nts;
                             service.findCertifyGroup = findCertifyGroup;
                             function addCertifyGroup(certifyGroupDto) {
                                 var dfd = $.Deferred();
-                                var data = { certifyGroupDto: certifyGroupDto, companyCode: 'CDD1' };
-                                console.log(data);
+                                var data = { certifyGroupDto: certifyGroupDto };
                                 nts.uk.request.ajax(paths.addCertifyGroup, data)
                                     .done(function (res) {
                                     dfd.resolve(res);
@@ -78,8 +72,7 @@ var nts;
                             service.addCertifyGroup = addCertifyGroup;
                             function updateCertifyGroup(certifyGroupDto) {
                                 var dfd = $.Deferred();
-                                var data = { certifyGroupDto: certifyGroupDto, companyCode: 'CDD1' };
-                                console.log(data);
+                                var data = { certifyGroupDto: certifyGroupDto };
                                 nts.uk.request.ajax(paths.updateCertifyGroup, data)
                                     .done(function (res) {
                                     dfd.resolve(res);
@@ -110,12 +103,6 @@ var nts;
                                     return CertifyGroupFindOutDto;
                                 }());
                                 model.CertifyGroupFindOutDto = CertifyGroupFindOutDto;
-                                var CertifyGroupFindInDto = (function () {
-                                    function CertifyGroupFindInDto() {
-                                    }
-                                    return CertifyGroupFindInDto;
-                                }());
-                                model.CertifyGroupFindInDto = CertifyGroupFindInDto;
                                 var CertifyGroupDto = (function () {
                                     function CertifyGroupDto() {
                                     }
