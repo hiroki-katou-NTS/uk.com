@@ -12,6 +12,8 @@ table th, table td{padding: 5px 5px;border:1px solid #ccc;}
 /*table th{background:#eee;}
 table a{color:#00B050;}*/
 pre{box-sizing:border-box;background:#f5f5f5;max-width:100%;padding:5px !important;margin:10px 0;border:none !important;overflow:auto;border-radius:5px;}
+pre {tab-size: 2;}
+pre * {font-family: Consolas;}
 note{position:relative;display:block;background:#ffc;box-shadow:1px 2px 3px 0px rgba(0,0,0,0.3);padding:20px;margin:20px 5px;}
 note:before{position:absolute;display:block;content:'';width:50px;height:15px;left:15px;top:-8px;background:rgba(255,255,255,0.35);box-shadow:0 0 2px 1px rgba(0,0,0,0.2), 0 0 1px 1px rgba(255,255,255,0.7) inset;transform: rotate(-8deg);}
 .color{color:#00B050 !important;}
@@ -19,17 +21,22 @@ note:before{position:absolute;display:block;content:'';width:50px;height:15px;le
 .pull-right{float:right;}
 
 #functions-area {background:#fff;}
-#contents-area {display:flex;background:#f5f5f5;width:95%;min-width:1000px;margin:25px auto; padding:0px; border:1px solid #B1B1B1; box-shadow: 1px 1px 2px 1px rgba(0,0,0,0.2);}
+#contents-area {display:flex;background:#f5f5f5;width:95%;min-width:1000px;margin:25px auto; padding:0px; border:1px solid #B1B1B1; box-shadow: 1px 2px 2px 1px rgba(0,0,0,0.2);}
 
 #search-menu {margin: 10px 15px 0; width:215px; box-sizing: border-box; padding: 5px 10px; border-radius: 20px; border:1px solid #bbb; outline:none;}
 #side-menu {width:250px;background:#f5f5f5;padding-bottom:15px;overflow:hidden;box-sizing:border-box;box-shadow:-1px 0 2px 0 rgba(0,0,0,0.15) inset;}
 #side-menu h1{background:#fff;color:#000;border:1px solid #e0e0e0;border-left:5px solid #97D155;padding:6px 8px 6px 16px;margin:10px 0 5px;font-size:14px;font-weight:bold;text-transform:uppercase;box-shadow: 0 1px 2px 0 rgba(0,0,0,0.1);}
 #side-menu ul{}
 #side-menu ul ul{margin-left: 17px;}
-#side-menu a{position:relative;display:block;color:#444;font-size:0.9rem;text-decoration:none;line-height:24px;padding-left:15px;}
+#side-menu a{position:relative;display:block;color:#444;font-size:0.9rem;text-decoration:none;padding:5px 0 5px 15px;}
 #side-menu a:before{content:'\203A';padding-right:10px;font-weight:bold;}
 #side-menu a:hover{background-color:#e0e0e0;}
 #side-menu a.active{font-weight:bold;background:#fff;color:#00B050;box-shadow: 0 0 5px 1px rgba(0,0,0,0.15);z-index:1;}
+#side-menu .label{position:relative;float:right;padding: 3px 5px;margin-right:7px;color:#fff;border-radius:3px;font-size:9px;height:16px;line-height:10px;font-weight:700;}
+#side-menu .label-new{background:#5cb85c;}
+#side-menu .label-new:after{display:inline;content:'New';}
+#side-menu .label-update{background:#f0ad4e;}
+#side-menu .label-update:after{display:inline;content:'Update';}
 
 #content{flex:1;width:calc(100% - 250px);background:#fff;padding:10px 10px;box-sizing:border-box;}
 #content .tabs{margin:25px 0;}
@@ -54,18 +61,24 @@ note:before{position:absolute;display:block;content:'';width:50px;height:15px;le
 	animation-iteration-count: 1;
 }
 
+.wave {
+	animation: wave 3s;
+	animation-iteration-count: infinite;
+    animation-direction: reverse;
+}
+
 @keyframes flash {
     0% { background-color: none;}
     50% { background-color: #ffb;}
     100% { background-color: none;}
 }
 
-pre {
-	tab-size: 2;
+@keyframes wave {
+    0% {transform: rotate(0deg);}
+    50% {transform: rotate(20deg);}
+    100% {transform: rotate(-20deg);}
 }
-pre * {
-	font-family: Consolas;
-}
+
 
 /*** Theme ***/
 /* Valentine */
