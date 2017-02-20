@@ -63,8 +63,8 @@
 					</div>
 
 				</div>
-				<div id="right-content">
-					<table data-bind="with: nodeParent">
+				<div id="right-content" data-bind="with: nodeParent">
+					<table >
 						<tr>
 							<td>
 								<div id="A_LBL_002" data-bind="ntsFormLabel: {}">銀行コード/名称</div>
@@ -74,13 +74,12 @@
 							    <span id="A_LBL_010" data-bind="text: name">001</span>
 							</td>
 							<td rowspan="2">
-							    <div data-bind="with: $parent.A_INP_002">
+							    <div >
 									<textarea id="A_INP_002" style="height: 65px;" data-bind="ntsMultilineEditor: {
-										value: value,
-										constraint: constraint,
-										option: option,
-										enable: enable,
-										readonly: readonly}" />
+										value: ko.observable(memo),
+										constraint: 'Memo',
+										enable: true,
+										readonly: true}" />
 								</div>
 							</td>								
 						</tr>
