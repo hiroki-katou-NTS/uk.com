@@ -4,9 +4,12 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.infra.repository.insurance.social.healthavgearn;
 
+import java.math.BigDecimal;
+
 import nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.HealthInsuranceAvgearnSetMemento;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.HealthInsuranceAvgearnValue;
 import nts.uk.ctx.pr.core.infra.entity.insurance.social.healthavgearn.QismtHealthInsuAvgearn;
+import nts.uk.ctx.pr.core.infra.entity.insurance.social.healthavgearn.QismtHealthInsuAvgearnPK;
 
 /**
  * The Class JpaHealthInsuranceAvgearnSetMemento.
@@ -34,7 +37,9 @@ public class JpaHealthInsuranceAvgearnSetMemento implements HealthInsuranceAvgea
 	 */
 	@Override
 	public void setHistoryId(String historyId) {
-		// TODO ko co historyID?
+		QismtHealthInsuAvgearnPK healthInsuAvgearnPK = new QismtHealthInsuAvgearnPK();
+		healthInsuAvgearnPK.setHistId(historyId);
+		this.typeValue.setQismtHealthInsuAvgearnPK(healthInsuAvgearnPK);
 	}
 
 	/*
@@ -45,7 +50,11 @@ public class JpaHealthInsuranceAvgearnSetMemento implements HealthInsuranceAvgea
 	 */
 	@Override
 	public void setLevelCode(Integer levelCode) {
-		// TODO ko co level code?
+		QismtHealthInsuAvgearnPK healthInsuAvgearnPK = this.typeValue.getQismtHealthInsuAvgearnPK();
+		healthInsuAvgearnPK.setHealthInsuGrade(BigDecimal.valueOf(levelCode));
+		healthInsuAvgearnPK.setSiOfficeCd("1");
+		healthInsuAvgearnPK.setCcd("0001");
+		this.typeValue.setQismtHealthInsuAvgearnPK(healthInsuAvgearnPK);
 	}
 
 	/*
@@ -57,11 +66,10 @@ public class JpaHealthInsuranceAvgearnSetMemento implements HealthInsuranceAvgea
 	 */
 	@Override
 	public void setCompanyAvg(HealthInsuranceAvgearnValue companyAvg) {
-		// TODO rot cuc la long hay bigDecimal?
-//		this.typeValue.setCHealthBasicMny(companyAvg.getHealthBasicMny().longValue());
-//		this.typeValue.setCHealthGeneralMny(companyAvg.getHealthBasicMny().longValue());
-//		this.typeValue.setCHealthNursingMny(companyAvg.getHealthBasicMny().longValue());
-//		this.typeValue.setCHealthSpecificMny(companyAvg.getHealthBasicMny().longValue());
+		this.typeValue.setCHealthBasicMny(BigDecimal.valueOf(companyAvg.getHealthBasicMny().longValue()));
+		this.typeValue.setCHealthGeneralMny(BigDecimal.valueOf(companyAvg.getHealthBasicMny().longValue()));
+		this.typeValue.setCHealthNursingMny(BigDecimal.valueOf(companyAvg.getHealthBasicMny().longValue()));
+		this.typeValue.setCHealthSpecificMny(BigDecimal.valueOf(companyAvg.getHealthBasicMny().longValue()));
 	}
 
 	/*
@@ -73,11 +81,9 @@ public class JpaHealthInsuranceAvgearnSetMemento implements HealthInsuranceAvgea
 	 */
 	@Override
 	public void setPersonalAvg(HealthInsuranceAvgearnValue personalAvg) {
-		// TODO rot cuc la long hay bigDecimal?
-//		this.typeValue.setPHealthBasicMny(personalAvg.getHealthBasicMny().longValue());
-//		this.typeValue.setPHealthGeneralMny(personalAvg.getHealthBasicMny().longValue());
-//		this.typeValue.setPHealthNursingMny(personalAvg.getHealthBasicMny().longValue());
-//		this.typeValue.setPHealthSpecificMny(personalAvg.getHealthBasicMny().longValue());
+		this.typeValue.setPHealthBasicMny(BigDecimal.valueOf(personalAvg.getHealthBasicMny().longValue()));
+		this.typeValue.setPHealthGeneralMny(BigDecimal.valueOf(personalAvg.getHealthBasicMny().longValue()));
+		this.typeValue.setPHealthNursingMny(BigDecimal.valueOf(personalAvg.getHealthBasicMny().longValue()));
+		this.typeValue.setPHealthSpecificMny(BigDecimal.valueOf(personalAvg.getHealthBasicMny().longValue()));
 	}
-
 }

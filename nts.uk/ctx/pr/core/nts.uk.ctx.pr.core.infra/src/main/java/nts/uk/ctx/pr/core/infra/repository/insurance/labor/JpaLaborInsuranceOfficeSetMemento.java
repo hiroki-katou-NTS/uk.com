@@ -15,6 +15,7 @@ import nts.uk.ctx.pr.core.dom.insurance.PotalCode;
 import nts.uk.ctx.pr.core.dom.insurance.ShortName;
 import nts.uk.ctx.pr.core.dom.insurance.labor.LaborInsuranceOfficeSetMemento;
 import nts.uk.ctx.pr.core.infra.entity.insurance.labor.QismtLaborInsuOffice;
+import nts.uk.ctx.pr.core.infra.entity.insurance.labor.QismtLaborInsuOfficePK;
 import nts.uk.shr.com.primitive.Memo;
 
 /**
@@ -44,8 +45,9 @@ public class JpaLaborInsuranceOfficeSetMemento implements LaborInsuranceOfficeSe
 	 */
 	@Override
 	public void setCompanyCode(CompanyCode companyCode) {
-		// TODO Auto-generated method stub
-
+		QismtLaborInsuOfficePK pk = new QismtLaborInsuOfficePK();
+		pk.setCcd(companyCode.v());
+		this.typeValue.setQismtLaborInsuOfficePK(pk);
 	}
 
 	/*
@@ -57,8 +59,9 @@ public class JpaLaborInsuranceOfficeSetMemento implements LaborInsuranceOfficeSe
 	 */
 	@Override
 	public void setCode(OfficeCode code) {
-		// TODO Auto-generated method stub
-
+		QismtLaborInsuOfficePK pk = this.typeValue.getQismtLaborInsuOfficePK();
+		pk.setLiOfficeCd(code.v());
+		this.typeValue.setQismtLaborInsuOfficePK(pk);
 	}
 
 	/*
@@ -70,8 +73,7 @@ public class JpaLaborInsuranceOfficeSetMemento implements LaborInsuranceOfficeSe
 	 */
 	@Override
 	public void setName(OfficeName name) {
-		// TODO Auto-generated method stub
-
+		this.typeValue.setLiOfficeName(name.v());
 	}
 
 	/*
@@ -83,8 +85,7 @@ public class JpaLaborInsuranceOfficeSetMemento implements LaborInsuranceOfficeSe
 	 */
 	@Override
 	public void setShortName(ShortName shortName) {
-		// TODO Auto-generated method stub
-
+		this.typeValue.setLiOfficeAbName(shortName.v());
 	}
 
 	/*
@@ -96,8 +97,7 @@ public class JpaLaborInsuranceOfficeSetMemento implements LaborInsuranceOfficeSe
 	 */
 	@Override
 	public void setPicName(PicName picName) {
-		// TODO Auto-generated method stub
-
+		this.typeValue.setPresidentName(picName.v());
 	}
 
 	/*
@@ -109,8 +109,7 @@ public class JpaLaborInsuranceOfficeSetMemento implements LaborInsuranceOfficeSe
 	 */
 	@Override
 	public void setPicPosition(PicPosition picPosition) {
-		// TODO Auto-generated method stub
-
+		this.typeValue.setPresidentTitle(picPosition.v());
 	}
 
 	/*
@@ -122,8 +121,7 @@ public class JpaLaborInsuranceOfficeSetMemento implements LaborInsuranceOfficeSe
 	 */
 	@Override
 	public void setPotalCode(PotalCode potalCode) {
-		// TODO Auto-generated method stub
-
+		this.typeValue.setPostal(potalCode.v());
 	}
 
 	/*
@@ -135,8 +133,7 @@ public class JpaLaborInsuranceOfficeSetMemento implements LaborInsuranceOfficeSe
 	 */
 	@Override
 	public void setPrefecture(String prefecture) {
-		// TODO Auto-generated method stub
-
+		this.typeValue.setPrefecture(prefecture);
 	}
 
 	/*
@@ -148,8 +145,7 @@ public class JpaLaborInsuranceOfficeSetMemento implements LaborInsuranceOfficeSe
 	 */
 	@Override
 	public void setAddress1st(Address address1st) {
-		// TODO Auto-generated method stub
-
+		this.typeValue.setAddress1(address1st.v());
 	}
 
 	/*
@@ -161,8 +157,7 @@ public class JpaLaborInsuranceOfficeSetMemento implements LaborInsuranceOfficeSe
 	 */
 	@Override
 	public void setAddress2nd(Address address2nd) {
-		// TODO Auto-generated method stub
-
+		this.typeValue.setAddress2(address2nd.v());
 	}
 
 	/*
@@ -174,8 +169,7 @@ public class JpaLaborInsuranceOfficeSetMemento implements LaborInsuranceOfficeSe
 	 */
 	@Override
 	public void setKanaAddress1st(KanaAddress kanaAddress1st) {
-		// TODO Auto-generated method stub
-
+		this.typeValue.setKnAddress1(kanaAddress1st.v());
 	}
 
 	/*
@@ -187,8 +181,7 @@ public class JpaLaborInsuranceOfficeSetMemento implements LaborInsuranceOfficeSe
 	 */
 	@Override
 	public void setKanaAddress2nd(KanaAddress kanaAddress2nd) {
-		// TODO Auto-generated method stub
-
+		this.typeValue.setKnAddress2(kanaAddress2nd.v());
 	}
 
 	/*
@@ -200,8 +193,7 @@ public class JpaLaborInsuranceOfficeSetMemento implements LaborInsuranceOfficeSe
 	 */
 	@Override
 	public void setPhoneNumber(String phoneNumber) {
-		// TODO Auto-generated method stub
-
+		this.typeValue.setTelNo(phoneNumber);
 	}
 
 	/*
@@ -213,8 +205,7 @@ public class JpaLaborInsuranceOfficeSetMemento implements LaborInsuranceOfficeSe
 	 */
 	@Override
 	public void setCitySign(String citySign) {
-		// TODO Auto-generated method stub
-
+		this.typeValue.setCitySign(citySign);
 	}
 
 	/*
@@ -226,8 +217,7 @@ public class JpaLaborInsuranceOfficeSetMemento implements LaborInsuranceOfficeSe
 	 */
 	@Override
 	public void setOfficeMark(String officeMark) {
-		// TODO Auto-generated method stub
-
+		this.typeValue.setOfficeMark(officeMark);
 	}
 
 	/*
@@ -239,8 +229,7 @@ public class JpaLaborInsuranceOfficeSetMemento implements LaborInsuranceOfficeSe
 	 */
 	@Override
 	public void setOfficeNoA(String officeNoA) {
-		// TODO Auto-generated method stub
-
+		this.typeValue.setOfficeNoA(officeNoA);
 	}
 
 	/*
@@ -252,8 +241,7 @@ public class JpaLaborInsuranceOfficeSetMemento implements LaborInsuranceOfficeSe
 	 */
 	@Override
 	public void setOfficeNoB(String officeNoB) {
-		// TODO Auto-generated method stub
-
+		this.typeValue.setOfficeNoB(officeNoB);
 	}
 
 	/*
@@ -265,7 +253,7 @@ public class JpaLaborInsuranceOfficeSetMemento implements LaborInsuranceOfficeSe
 	 */
 	@Override
 	public void setOfficeNoC(String officeNoC) {
-		// TODO Auto-generated method stub
+		this.typeValue.setOfficeNoC(officeNoC);
 
 	}
 
@@ -278,8 +266,7 @@ public class JpaLaborInsuranceOfficeSetMemento implements LaborInsuranceOfficeSe
 	 */
 	@Override
 	public void setMemo(Memo memo) {
-		// TODO Auto-generated method stub
-
+		this.typeValue.setMemo(memo.v());
 	}
 
 }

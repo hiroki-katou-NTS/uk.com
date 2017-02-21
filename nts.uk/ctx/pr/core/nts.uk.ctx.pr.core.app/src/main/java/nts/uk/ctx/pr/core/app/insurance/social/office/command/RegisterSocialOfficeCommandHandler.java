@@ -30,8 +30,12 @@ public class RegisterSocialOfficeCommandHandler extends CommandHandler<RegisterS
 	@Inject
 	SocialInsuranceOfficeRepository socialInsuranceOfficeRepository;
 
-	/* (non-Javadoc)
-	 * @see nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command.CommandHandlerContext)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command
+	 * .CommandHandlerContext)
 	 */
 	@Override
 	@Transactional
@@ -39,14 +43,14 @@ public class RegisterSocialOfficeCommandHandler extends CommandHandler<RegisterS
 		RegisterSocialOfficeCommand command = context.getCommand();
 		// Get the current company code.
 		CompanyCode companyCode = new CompanyCode(AppContexts.user().companyCode());
-		
-		//convert to domain
+
+		// convert to domain
 		SocialInsuranceOffice socialInsuranceOffice = command.toDomain(companyCode);
-		
+
 		// Validate
 		insuranceSocialService.validateRequiredItem(socialInsuranceOffice);
 		insuranceSocialService.checkDuplicateCode(socialInsuranceOffice);
-		
+
 		socialInsuranceOfficeRepository.add(socialInsuranceOffice);
 		return;
 	}

@@ -6,6 +6,8 @@ package nts.uk.ctx.pr.core.app.insurance.labor.command;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.pr.core.app.insurance.labor.command.dto.LaborInsuranceOfficeDeleteDto;
+import nts.uk.ctx.pr.core.app.insurance.labor.command.dto.LaborInsuranceOfficeDto;
 
 /**
  * The Class LaborInsuranceOfficeDeleteCommand.
@@ -14,10 +16,10 @@ import lombok.Setter;
 @Setter
 public class LaborInsuranceOfficeDeleteCommand {
 
-	/** The company code. */
-	private String companyCode;
+	/** The Constant serialVersionUID. */
+	private static final long serialVersionUID = 1L;
 
-	/** The code. */
-	private String code;
+	/** The labor insurance office delete dto. */
+	private LaborInsuranceOfficeDeleteDto laborInsuranceOfficeDeleteDto;
 
 }

@@ -97,56 +97,9 @@ public class JpaCertifyGroupRepository extends JpaRepository implements CertifyG
 	 * @return the certify group
 	 */
 	private static CertifyGroup toDomain(QwtmtWagetableCertifyG entity) {
-		CertifyGroup domain = new CertifyGroup(new CertifyGroupGetMemento() {
-
-			@Override
-			public String getName() {
-				return entity.getCertifyGroupName();
-			}
-
-			@Override
-			public MultipleTargetSetting getMultiApplySet() {
-				return MultipleTargetSetting.valueOf(entity.getMultiApplySet());
-			}
-
-			@Override
-			public CompanyCode getCompanyCode() {
-				return new CompanyCode(entity.getQwtmtWagetableCertifyGPK().getCcd());
-			}
-
-			@Override
-			public String getCode() {
-				return entity.getQwtmtWagetableCertifyGPK().getCertifyGroupCd();
-			}
-
-			@Override
-			public Set<Certification> getCertifies() {
-				Set<Certification> setCertification = new HashSet<>();
-				for (QwtmtWagetableCertify wagetableCertify : entity.getQwtmtWagetableCertifyList()) {
-					setCertification.add(new Certification(new CertificationGetMemento() {
-
-						@Override
-						public String getName() {
-							return wagetableCertify.getQcemtCertification().getName();
-						}
-
-						@Override
-						public CompanyCode getCompanyCode() {
-							return new CompanyCode(
-									wagetableCertify.getQcemtCertification().getQcemtCertificationPK().getCcd());
-						}
-
-						@Override
-						public String getCode() {
-							return wagetableCertify.getQcemtCertification().getQcemtCertificationPK().getCertCd();
-						}
-					}));
-				}
-				return setCertification;
-			}
-		});
-
+		CertifyGroup domain = new CertifyGroup(new JpaCertifyGroupGetMemento(entity));
 		return domain;
+
 	}
 
 	private QwtmtWagetableCertifyG toEntity(CertifyGroup certifyGroup) {

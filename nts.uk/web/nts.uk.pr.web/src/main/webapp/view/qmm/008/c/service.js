@@ -36,7 +36,8 @@ var nts;
                             }
                             service.update = update;
                             function remove(officeCode) {
-                                return nts.uk.request.ajax(servicePath.removeOffice, officeCode);
+                                var data = { insuranceOfficeCode: officeCode };
+                                return nts.uk.request.ajax(servicePath.removeOffice, data);
                             }
                             service.remove = remove;
                             var model;

@@ -9,9 +9,9 @@ module nts.uk.pr.view.qmm010.a {
         };
 
         //Function connection service FindAll Labor Insurance Office
-        export function findAllLaborInsuranceOffice(companyCode: string): JQueryPromise<Array<model.LaborInsuranceOfficeFindOutDto>> {
+        export function findAllLaborInsuranceOffice(): JQueryPromise<Array<model.LaborInsuranceOfficeFindOutDto>> {
             var dfd = $.Deferred<Array<model.LaborInsuranceOfficeInDto>>();
-            nts.uk.request.ajax(paths.findAllLaborInsuranceOffice + "/" + companyCode)
+            nts.uk.request.ajax(paths.findAllLaborInsuranceOffice)
                 .done(function(res: Array<model.LaborInsuranceOfficeFindOutDto>) {
                     dfd.resolve(res);
                     //xyz
@@ -22,9 +22,9 @@ module nts.uk.pr.view.qmm010.a {
             return dfd.promise();
         }
         //Function connection service findLaborInsuranceOffice By Code
-        export function findLaborInsuranceOffice(laborInsuranceOfficeFindInDto: model.LaborInsuranceOfficeFindInDto): JQueryPromise<model.LaborInsuranceOfficeDto> {
+        export function findLaborInsuranceOffice(officeCode: string): JQueryPromise<model.LaborInsuranceOfficeDto> {
             var dfd = $.Deferred<model.LaborInsuranceOfficeDto>();
-            nts.uk.request.ajax(paths.findLaborInsuranceOffice, laborInsuranceOfficeFindInDto)
+            nts.uk.request.ajax(paths.findLaborInsuranceOffice + "/" + officeCode)
                 .done(function(res: model.LaborInsuranceOfficeDto) {
                     dfd.resolve(res);
                     //xyz
@@ -35,9 +35,9 @@ module nts.uk.pr.view.qmm010.a {
             return dfd.promise();
         }
         //Function connection service add LaborInsuranceOffice
-        export function addLaborInsuranceOffice(laborInsuranceOffice: model.LaborInsuranceOfficeDto, companyCode: string) {
+        export function addLaborInsuranceOffice(laborInsuranceOfficeDto: model.LaborInsuranceOfficeDto): JQueryPromise<any> {
             var dfd = $.Deferred<any>();
-            var data = { laborInsuranceOffice: laborInsuranceOffice, companyCode: companyCode };
+            var data = { laborInsuranceOfficeDto: laborInsuranceOfficeDto };
             nts.uk.request.ajax(paths.addLaborInsuranceOffice, data)
                 .done(function(res: any) {
                     dfd.resolve(res);
@@ -46,11 +46,12 @@ module nts.uk.pr.view.qmm010.a {
                 .fail(function(res) {
                     dfd.reject(res);
                 })
+            return dfd.promise();
         }
         //Function connection service update LaborInsuranceOffice
-        export function updateLaborInsuranceOffice(laborInsuranceOffice: model.LaborInsuranceOfficeDto, companyCode: string) {
+        export function updateLaborInsuranceOffice(laborInsuranceOfficeDto: model.LaborInsuranceOfficeDto): JQueryPromise<any> {
             var dfd = $.Deferred<any>();
-            var data = { laborInsuranceOffice: laborInsuranceOffice, companyCode: companyCode };
+            var data = { laborInsuranceOfficeDto: laborInsuranceOfficeDto };
             nts.uk.request.ajax(paths.updateLaborInsuranceOffice, data)
                 .done(function(res: any) {
                     dfd.resolve(res);
@@ -59,11 +60,12 @@ module nts.uk.pr.view.qmm010.a {
                 .fail(function(res) {
                     dfd.reject(res);
                 })
+            return dfd.promise();
         }
         //Function connection service delete LaborInsuranceOffice  
-        export function deleteLaborInsuranceOffice(code: string, companyCode: string) {
+        export function deleteLaborInsuranceOffice(laborInsuranceOfficeDeleteDto: model.LaborInsuranceOfficeDeleteDto): JQueryPromise<any> {
             var dfd = $.Deferred<any>();
-            var data = { companyCode: companyCode, code: code };
+            var data = { laborInsuranceOfficeDeleteDto: laborInsuranceOfficeDeleteDto };
             nts.uk.request.ajax(paths.deleteLaborInsuranceOffice, data)
                 .done(function(res: any) {
                     dfd.resolve(res);
@@ -72,6 +74,7 @@ module nts.uk.pr.view.qmm010.a {
                 .fail(function(res) {
                     dfd.reject(res);
                 })
+            return dfd.promise();
         }
 
         /**
@@ -124,16 +127,13 @@ module nts.uk.pr.view.qmm010.a {
                 /** The name. officeName*/
                 name: string;
             }
-
-            export class LaborInsuranceOfficeFindInDto {
-                /** The code. officeCode */
-                code: string;
-                /** The company code. */
-                companyCode: string;
-            }
             export enum TypeActionLaborInsuranceOffice {
                 add = 1,
                 update = 2
+            }
+            export class LaborInsuranceOfficeDeleteDto {
+                code: string;
+                version: number;
             }
 
         }

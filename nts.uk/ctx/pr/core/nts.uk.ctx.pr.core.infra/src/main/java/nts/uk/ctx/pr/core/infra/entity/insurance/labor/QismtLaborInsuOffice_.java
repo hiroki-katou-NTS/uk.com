@@ -16,7 +16,7 @@ import javax.persistence.metamodel.StaticMetamodel;
 public class QismtLaborInsuOffice_ {
 
 	/** The qismt social insu office PK. */
-	public static volatile SingularAttribute<QismtLaborInsuOffice, QismtLaborInsuOfficePK> qismtSocialInsuOfficePK;
+	public static volatile SingularAttribute<QismtLaborInsuOffice, QismtLaborInsuOfficePK> qismtLaborInsuOfficePK;
 
 	/** The ins date. */
 	public static volatile SingularAttribute<QismtLaborInsuOffice, Date> insDate;

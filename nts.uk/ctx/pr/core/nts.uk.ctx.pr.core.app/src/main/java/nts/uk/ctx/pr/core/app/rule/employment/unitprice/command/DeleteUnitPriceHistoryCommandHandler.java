@@ -10,7 +10,10 @@ import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.uk.ctx.core.dom.company.CompanyCode;
+import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceCode;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceHistoryRepository;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class DeleteUnitPriceHistoryCommandHandler.
@@ -22,13 +25,21 @@ public class DeleteUnitPriceHistoryCommandHandler extends CommandHandler<DeleteU
 	@Inject
 	private UnitPriceHistoryRepository unitPriceHistoryRepository;
 
-	/* (non-Javadoc)
-	 * @see nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command.CommandHandlerContext)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command
+	 * .CommandHandlerContext)
 	 */
 	@Override
 	@Transactional
 	protected void handle(CommandHandlerContext<DeleteUnitPriceHistoryCommand> context) {
-		unitPriceHistoryRepository.remove(context.getCommand().getId());
+		// Get the current company code.
+		CompanyCode companyCode = new CompanyCode(AppContexts.user().companyCode());
+
+		unitPriceHistoryRepository.remove(companyCode, new UnitPriceCode(context.getCommand().getUnitPriceCode()),
+				context.getCommand().getId());
 	}
 
 }

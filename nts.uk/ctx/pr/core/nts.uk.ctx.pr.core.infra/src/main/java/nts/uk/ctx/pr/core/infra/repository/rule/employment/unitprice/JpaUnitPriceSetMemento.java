@@ -8,41 +8,65 @@ import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceCode;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceName;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceSetMemento;
+import nts.uk.ctx.pr.core.infra.entity.rule.employment.unitprice.QupmtCUnitpriceHead;
+import nts.uk.ctx.pr.core.infra.entity.rule.employment.unitprice.QupmtCUnitpriceHeadPK;
 
 /**
- * The Class JpaAggrSchemaMemento.
+ * The Class JpaUnitPriceSetMemento.
  */
 public class JpaUnitPriceSetMemento implements UnitPriceSetMemento {
 
-	// TODO: Object -> entity class.
-	protected Object typeValue;
+	/** The type value. */
+	protected QupmtCUnitpriceHead typeValue;
 
 	/**
-	 * Instantiates a new jpa aggr schema memento.
+	 * Instantiates a new jpa unit price set memento.
 	 *
 	 * @param typeValue
 	 *            the type value
 	 */
-	public JpaUnitPriceSetMemento(Object typeValue) {
+	public JpaUnitPriceSetMemento(QupmtCUnitpriceHead typeValue) {
 		this.typeValue = typeValue;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceSetMemento#
+	 * setCompanyCode(nts.uk.ctx.core.dom.company.CompanyCode)
+	 */
 	@Override
 	public void setCompanyCode(CompanyCode companyCode) {
-		// TODO Auto-generated method stub
-
+		QupmtCUnitpriceHeadPK qupmtCUnitpriceHeadPK = new QupmtCUnitpriceHeadPK();
+		qupmtCUnitpriceHeadPK.setCcd(companyCode.v());
+		this.typeValue.setQupmtCUnitpriceHeadPK(qupmtCUnitpriceHeadPK);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceSetMemento#
+	 * setCode(nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceCode)
+	 */
 	@Override
 	public void setCode(UnitPriceCode code) {
-		// TODO Auto-generated method stub
-
+		QupmtCUnitpriceHeadPK qupmtCUnitpriceHeadPK = this.typeValue.getQupmtCUnitpriceHeadPK();
+		qupmtCUnitpriceHeadPK.setCUnitpriceCd(code.v());
+		this.typeValue.setQupmtCUnitpriceHeadPK(qupmtCUnitpriceHeadPK);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceSetMemento#
+	 * setName(nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceName)
+	 */
 	@Override
 	public void setName(UnitPriceName name) {
-		// TODO Auto-generated method stub
-
+		this.typeValue.setCUnitpriceName(name.v());
 	}
 
 }

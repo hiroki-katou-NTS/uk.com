@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.infra.repository.rule.employment.unitprice;
 
+import nts.arc.time.YearMonth;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.ApplySetting;
@@ -11,103 +12,157 @@ import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.Money;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.SettingType;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceCode;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceHistoryGetMemento;
-import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceName;
+import nts.uk.ctx.pr.core.infra.entity.rule.employment.unitprice.QupmtCUnitpriceHist;
 import nts.uk.shr.com.primitive.Memo;
 
 /**
- * The Class JpaAggrSchemaMemento.
+ * The Class JpaUnitPriceHistoryGetMemento.
  */
 public class JpaUnitPriceHistoryGetMemento implements UnitPriceHistoryGetMemento {
 
-	// TODO: Object -> entity class.
-	protected Object typeValue;
+	/** The type value. */
+	protected QupmtCUnitpriceHist typeValue;
 
 	/**
-	 * Instantiates a new jpa aggr schema memento.
+	 * Instantiates a new jpa unit price history get memento.
 	 *
 	 * @param typeValue
 	 *            the type value
 	 */
-	public JpaUnitPriceHistoryGetMemento(Object typeValue) {
+	public JpaUnitPriceHistoryGetMemento(QupmtCUnitpriceHist typeValue) {
 		this.typeValue = typeValue;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.rule.employment.unitprice.
+	 * UnitPriceHistoryGetMemento#getId()
+	 */
 	@Override
 	public String getId() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.typeValue.getQupmtCUnitpriceHistPK().getHistId();
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.rule.employment.unitprice.
+	 * UnitPriceHistoryGetMemento#getCompanyCode()
+	 */
 	@Override
 	public CompanyCode getCompanyCode() {
-		// TODO Auto-generated method stub
-		return null;
+		return new CompanyCode(this.typeValue.getQupmtCUnitpriceHistPK().getCcd());
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.rule.employment.unitprice.
+	 * UnitPriceHistoryGetMemento#getUnitPriceCode()
+	 */
 	@Override
 	public UnitPriceCode getUnitPriceCode() {
-		// TODO Auto-generated method stub
-		return null;
+		return new UnitPriceCode(this.typeValue.getQupmtCUnitpriceHistPK().getCUnitpriceCd());
 	}
 
-	@Override
-	public UnitPriceName getUnitPriceName() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.rule.employment.unitprice.
+	 * UnitPriceHistoryGetMemento#getApplyRange()
+	 */
 	@Override
 	public MonthRange getApplyRange() {
-		// TODO Auto-generated method stub
-		return null;
+		return MonthRange.range(new YearMonth(this.typeValue.getStrYm()), new YearMonth(this.typeValue.getEndYm()));
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.rule.employment.unitprice.
+	 * UnitPriceHistoryGetMemento#getBudget()
+	 */
 	@Override
 	public Money getBudget() {
-		// TODO Auto-generated method stub
-		return null;
+		return new Money(this.typeValue.getBudget());
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.rule.employment.unitprice.
+	 * UnitPriceHistoryGetMemento#getFixPaySettingType()
+	 */
 	@Override
 	public SettingType getFixPaySettingType() {
-		// TODO Auto-generated method stub
-		return null;
+		return SettingType.valueOf(this.typeValue.getFixPaySet());
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.rule.employment.unitprice.
+	 * UnitPriceHistoryGetMemento#getFixPayAtr()
+	 */
 	@Override
 	public ApplySetting getFixPayAtr() {
-		// TODO Auto-generated method stub
-		return null;
+		return ApplySetting.valueOf(this.typeValue.getFixPayAtr());
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.rule.employment.unitprice.
+	 * UnitPriceHistoryGetMemento#getFixPayAtrMonthly()
+	 */
 	@Override
 	public ApplySetting getFixPayAtrMonthly() {
-		// TODO Auto-generated method stub
-		return null;
+		return ApplySetting.valueOf(this.typeValue.getFixPayAtrMonthly());
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.rule.employment.unitprice.
+	 * UnitPriceHistoryGetMemento#getFixPayAtrDayMonth()
+	 */
 	@Override
 	public ApplySetting getFixPayAtrDayMonth() {
-		// TODO Auto-generated method stub
-		return null;
+		return ApplySetting.valueOf(this.typeValue.getFixPayAtrDaymonth());
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.rule.employment.unitprice.
+	 * UnitPriceHistoryGetMemento#getFixPayAtrDaily()
+	 */
 	@Override
 	public ApplySetting getFixPayAtrDaily() {
-		// TODO Auto-generated method stub
-		return null;
+		return ApplySetting.valueOf(this.typeValue.getFixPayAtrDaily());
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.rule.employment.unitprice.
+	 * UnitPriceHistoryGetMemento#getFixPayAtrHourly()
+	 */
 	@Override
 	public ApplySetting getFixPayAtrHourly() {
-		// TODO Auto-generated method stub
-		return null;
+		return ApplySetting.valueOf(this.typeValue.getFixPayAtrHourly());
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.rule.employment.unitprice.
+	 * UnitPriceHistoryGetMemento#getMemo()
+	 */
 	@Override
 	public Memo getMemo() {
-		// TODO Auto-generated method stub
-		return null;
+		return new Memo(this.typeValue.getMemo());
 	}
 
 }
