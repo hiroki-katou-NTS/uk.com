@@ -22,15 +22,9 @@
 				<div id="contents-area">
 					<div id="side-menu" class="cf"></div>
 					<div id="content" class="cf">
-						<h1>Data source - Binding</h1>
+						<h1>Column - checkbox</h1>
 						
 						<div>
-						
-						<div data-bind="with: first">
-							Name of first row: <span data-bind="text: name"></span>
-						</div>
-						
-						<hr />
 						
 						<table id="grid" data-bind="igGrid: {
                                	dataSource: items,
@@ -39,6 +33,7 @@
                                	width: '400px',
                                	height: '300px',
                                	autoGenerateColumns: false,
+                               	renderCheckboxes: true,
                                	features: [
                                		{
                                			name: 'Updating',
@@ -51,6 +46,7 @@
                                	columns: [
                                	    {headerText: 'Code', key: 'code', dataType: 'string', width: 100},
                                     {headerText: 'Name', key: 'name', dataType: 'string', width: 200},
+                                    {headerText: 'Flag', key: 'flag', dataType: 'bool', width: 50},
                                	]
                         }"></table>
 						</div>
