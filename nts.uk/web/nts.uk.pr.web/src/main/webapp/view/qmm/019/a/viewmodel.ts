@@ -19,13 +19,13 @@ module qmm019.a {
         notHasKiji: KnockoutObservable<boolean> = ko.observable(false);
         startYm: KnockoutObservable<string> = ko.observable("");
         endYm: KnockoutObservable<string> = ko.observable("");
-        totalNormalLine: KnockoutObservable<string> = ko.observable("0行");
+        totalNormalLine: KnockoutObservable<string> = ko.observable("0陦�");
         totalNormalLineNumber: KnockoutObservable<number> = ko.observable(0);
-        totalGrayLine: KnockoutObservable<string> = ko.observable("（+非表示0行）");
+        totalGrayLine: KnockoutObservable<string> = ko.observable("�ｼ�+髱櫁｡ｨ遉ｺ0陦鯉ｼ�");
         totalGrayLineNumber: KnockoutObservable<number> = ko.observable(0);
         allowClick: KnockoutObservable<boolean> = ko.observable(true);
-        firstLayoutCode: string = ""; //Dùng cho select item đầu tiên.
-
+        firstLayoutCode: string = ""; //Dﾃｹng cho select item ﾄ黛ｺｧu tiﾃｪn.
+        
         constructor() {
             var self = this;
             screenQmm019 = ko.observable(self);
@@ -40,8 +40,8 @@ module qmm019.a {
                 var layoutFind = _.find(self.layouts(), function(layout) {
                     return layout.stmtCode === codeChanged.split(';')[0] && layout.startYm === parseInt(codeChanged.split(';')[1]);
                 });
-                if (layoutFind !== undefined) {
-                    self.layoutMaster(layoutFind);
+                if (layoutFind !== undefined){
+                    self.layoutMaster(layoutFind);  
                     self.startYm(nts.uk.time.formatYearMonth(self.layoutMaster().startYm));
                     self.endYm(nts.uk.time.formatYearMonth(self.layoutMaster().endYm));
                     service.getCategoryFull(layoutFind.stmtCode, layoutFind.startYm)
@@ -50,18 +50,18 @@ module qmm019.a {
                             self.calculateLine();
                             self.checkKintaiKiji();
                             self.bindSortable();
-                        });
+                    });
                 }
             });
             
         }
-
+        
         searchLayout() {
             var self = this;
             var textSearch: string = $("#A_INP_001").val().trim();
-
-            if (textSearch.length === 0) {
-                nts.uk.ui.dialog.alert("コード/名称が入力されていません。");
+            
+            if (textSearch.length === 0){
+                nts.uk.ui.dialog.alert("繧ｳ繝ｼ繝�/蜷咲ｧｰ縺悟�･蜉帙＆繧後※縺�縺ｾ縺帙ｓ縲�");
             } else {
                 if (self.textSearch !== textSearch) {
                     self.itemListSearch = _.filter(self.itemListFull, function(item) {
@@ -70,13 +70,13 @@ module qmm019.a {
                     self.queueSearchResult = [];
                     for (let item of self.itemListSearch) {
                         for (let child of item.childs) {
-                            self.queueSearchResult.push(child);
+                            self.queueSearchResult.push(child);    
                         }
                     }
                     self.textSearch = textSearch;
                 }
-                if (self.itemListSearch.length === 0) {
-                    nts.uk.ui.dialog.alert("対象データがありません。");
+                if (self.itemListSearch.length === 0){
+                    nts.uk.ui.dialog.alert("蟇ｾ雎｡繝�繝ｼ繧ｿ縺後≠繧翫∪縺帙ｓ縲�");
                 } else {
                     let firstResult: NodeTest = _.first(self.queueSearchResult);
                     self.singleSelectedCode(firstResult.code);
@@ -90,28 +90,28 @@ module qmm019.a {
             self.totalNormalLineNumber(0);
             self.totalGrayLineNumber(0);
             for (let category of self.categories()) {
-                for (let line of category.lines()) {
+                for (let line of category.lines()){
                     if (line.isRemoved || category.isRemoved) continue;
                     if (!line.isDisplayOnPrint)
                         self.totalGrayLineNumber(self.totalGrayLineNumber() + 1);
-                    else
-                        self.totalNormalLineNumber(self.totalNormalLineNumber() + 1);
+                    else 
+                        self.totalNormalLineNumber(self.totalNormalLineNumber() + 1);    
                 }
             }
-            self.totalNormalLine(self.totalNormalLineNumber() + "行");
-            self.totalGrayLine("（+非表示" + self.totalGrayLineNumber() + "行）");
-        }
-        checkKintaiKiji() {
+            self.totalNormalLine(self.totalNormalLineNumber() + "陦�");
+            self.totalGrayLine("�ｼ�+髱櫁｡ｨ遉ｺ" + self.totalGrayLineNumber() + "陦鯉ｼ�");    
+        }        
+        checkKintaiKiji(){
             var self = this;
-            var findKintai = _.find(self.categories(), function(category) {
-                return category.categoryAtr === 2;
+            var findKintai = _.find(self.categories(), function(category){
+               return category.categoryAtr === 2; 
             });
             self.notHasKintai(findKintai === undefined);
-
-            var findKiji = _.find(self.categories(), function(category) {
-                return category.categoryAtr === 3;
+            
+            var findKiji = _.find(self.categories(), function(category){
+               return category.categoryAtr === 3; 
             });
-            self.notHasKiji(findKiji === undefined);
+            self.notHasKiji(findKiji === undefined);    
         }
         bindSortable() {
             var self = this;
@@ -122,12 +122,12 @@ module qmm019.a {
                 items: ".row"
             });
         }
-
+        
         destroySortable() {
             $(".row").sortable("destroy");
-            $(".all-line").sortable("destroy");
+            $(".all-line").sortable("destroy");    
         }
-
+        
         // start function
         start(currentLayoutSelectedCode: string): JQueryPromise<any> {
             var self = this;
@@ -135,7 +135,7 @@ module qmm019.a {
 
             service.getAllLayout().done(function(layouts: Array<service.model.LayoutMasterDto>) {
                 if (layouts.length > 0) {
-
+                
                     self.layouts(layouts);
                     service.getLayoutsWithMaxStartYm().done(function(layoutsMax: Array<service.model.LayoutMasterDto>) {
                         self.layoutsMax(layoutsMax);
@@ -148,10 +148,10 @@ module qmm019.a {
                         }
                         dfd.resolve();
                     });
-
+                    
                 } else {
                     self.allowClick(false);
-                    dfd.resolve();
+                    dfd.resolve();    
                 }
             }).fail(function(res) {
                 // Alert message
@@ -172,16 +172,16 @@ module qmm019.a {
                 });
                 _.forEach(childLayouts, function(child) {
                     if (self.firstLayoutCode === "") self.firstLayoutCode = child.stmtCode + ";" + child.startYm;
-
-                    children.push(new NodeTest(child.stmtCode + ";" + child.startYm, child.stmtName, [],
-                        nts.uk.time.formatYearMonth(child.startYm) + " ~ " + nts.uk.time.formatYearMonth(child.endYm)));
+                    
+                    children.push(new NodeTest(child.stmtCode + ";" + child.startYm, child.stmtName, [], 
+                            nts.uk.time.formatYearMonth(child.startYm) + " ~ " + nts.uk.time.formatYearMonth(child.endYm)));
                 });
                 items.push(new NodeTest(layoutMax.stmtCode, layoutMax.stmtName, children, layoutMax.stmtCode + " " + layoutMax.stmtName));
             });
             self.itemList(items);
             self.itemListFull = items;
         }
-
+        
         registerLayout() {
             var self = this;
             service.registerLayout(self.layoutMaster(), self.categories()).done(function (res) {
@@ -190,12 +190,12 @@ module qmm019.a {
                         self.categories(listResult);
                         self.checkKintaiKiji();
                         self.bindSortable();
-                    });
-            }).fail(function(err) {
-                alert(err);
+                });
+            }).fail(function(err){
+                alert(err);    
             });
         }
-
+        
         addKintaiCategory() {
             var self = this;
             let category: service.model.Category = new service.model.Category([], 2);
@@ -203,7 +203,7 @@ module qmm019.a {
             self.notHasKintai(false);
             self.bindSortable();
         }
-
+        
         addKijiCategory() {
             var self = this;
             let category: service.model.Category = new service.model.Category([], 3);
@@ -211,32 +211,33 @@ module qmm019.a {
             self.notHasKiji(false);
             self.bindSortable();
         }
-
+        
         openADialog() {
             var self = this;
-            if (self.singleSelectedCode() == null)
+            if(self.singleSelectedCode() == null)
                 return false;
             var singleSelectedCode = self.singleSelectedCode().split(';');
             nts.uk.ui.windows.setShared('stmtCode', singleSelectedCode[0]);
-            nts.uk.ui.windows.sub.modal('/view/qmm/019/d/index.xhtml', { title: '明細レイアウトの作成＞履歴追加' }).onClosed(function(): any {
+            nts.uk.ui.windows.sub.modal('/view/qmm/019/d/index.xhtml', {title: '譏守ｴｰ繝ｬ繧､繧｢繧ｦ繝医�ｮ菴懈�撰ｼ槫ｱ･豁ｴ霑ｽ蜉�'}).onClosed(function(): any {
                 self.start(self.singleSelectedCode());
             });
         }
-        openEDialog() {
+        openEDialog(){
             var self = this;
-            if (self.singleSelectedCode() == null)
+            if(self.singleSelectedCode() == null)
                 return false;
             var singleSelectedCode = self.singleSelectedCode().split(';');
             nts.uk.ui.windows.setShared('stmtCode', singleSelectedCode[0]);
             nts.uk.ui.windows.setShared('startYm', singleSelectedCode[1]);
             nts.uk.ui.windows.setShared('historyId', self.layoutMaster().historyId);
-            nts.uk.ui.windows.sub.modal('/view/qmm/019/e/index.xhtml', { title: '明細レイアウトの作成＞履歴の編集' }).onClosed(function(): any {
+            nts.uk.ui.windows.sub.modal('/view/qmm/019/e/index.xhtml', {title: '譏守ｴｰ繝ｬ繧､繧｢繧ｦ繝医�ｮ菴懈�撰ｼ槫ｱ･豁ｴ縺ｮ邱ｨ髮�' }).onClosed(function(): any  {
                 self.start(self.singleSelectedCode());
             });
         }
-        openGDialog() {
+        openGDialog(){
             var self = this;
-            nts.uk.ui.windows.sub.modal('/view/qmm/019/g/index.xhtml', { title: '明細レイアウトの作成＞新規登録' }).onClosed(function(): any {
+             nts.uk.ui.windows.sub.modal('/view/qmm/019/g/index.xhtml', option);
+            nts.uk.ui.windows.sub.modal('/view/qmm/019/g/index.xhtml', {title: '譏守ｴｰ繝ｬ繧､繧｢繧ｦ繝医�ｮ菴懈�撰ｼ樊眠隕冗匳骭ｲ'}).onClosed(function(): any  {
                 self.start(undefined);
             });
         }
@@ -253,4 +254,5 @@ module qmm019.a {
             this.nodeText = nodeText;
         }
     }
+
 };
