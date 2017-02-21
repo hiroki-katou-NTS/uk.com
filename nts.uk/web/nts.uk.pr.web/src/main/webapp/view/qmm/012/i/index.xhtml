@@ -1,0 +1,216 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+<body>
+
+	<ui:composition template="../a/master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<com:scriptfile path="start.js" />
+			<com:stylefile path="style.css" />
+			<com:scriptfile set="IGNITE" />
+		</ui:define>
+		<ui:define name="content">
+			<div id="content-header">
+				<button id="I_BTN_001" onclick="closeDialog()"
+					class="inputNomalSize">新規</button>
+				<button id="I_BTN_002" onclick="submitInfo()"
+					class="proceed inputNomalSize">登録</button>
+				<button id="I_BTN_003" class=" danger inputNomalSize">コピー</button>
+				<button id="I_BTN_004" class=" inputNomalSize">削除</button>
+				<button id="I_BTN_005" class="inputNomalSize">Excel出力</button>
+			</div>
+			<div id="contents-area">
+				<div class="nts-left-content caret-right caret-background ">
+					<i class="icon icon-searchbox"></i>
+					<div class="divLine">
+						<div id="I_LBL_001" data-bind="ntsFormLabel: {  required: false }">項目区分</div>
+						<label id="H_LBL_002">項目 </label>
+					</div>
+					<div class="divLine">
+						<div id="I_LBL_003" data-bind="ntsFormLabel: {  required: false }">コード/名称
+						</div>
+						<div id="I_SCH_001"
+							data-bind="ntsSearchBox: {
+								comId: 'I_LST_001',
+								items: gridListItems, 
+								selected: currentCodeList ,
+								selectedKey: 'code', 
+								filteredItems: filteredData, 
+								fields: ['name', 'code']}" />
+					</div>
+					<div class="divLine">
+						<table id="I_LST_001"
+							data-bind="ntsGridList: {
+								width: 320,
+								height: 320,
+								options: gridListItems,
+								optionsValue: 'code',
+								columns: columns,
+								multiple: true,
+								value: currentCodeList
+							}"></table>
+					</div>
+				</div>
+				<div class="nts-right-content">
+					<div id="right-content-top">
+						<div class="divLine">
+							<div class="divLineCol1">
+								<div id="I_LBL_004" class="haveSmallSpan"
+									data-bind="ntsFormLabel: {  required: true }">
+									コード/名称<br /> <span>会社選択</span>
+								</div>
+							</div>
+							<div class="divLineCol2">
+								<input id="I_INP_002" type="text" disabled="disabled"></input> <input
+									id="I_INP_003" type="text"></input>
+							</div>
+						</div>
+						<div class="divLine">
+							<div class="divLineCol1">
+								<div id="I_LBL_005"
+									data-bind="ntsFormLabel: {  required: true }">略名</div>
+							</div>
+							<div class="divLineCol2">
+								<input id="I_INP_004" type="text"></input>
+							</div>
+						</div>
+						<div class="divLine">
+							<div class="divLineCol1">
+
+								<div id="I_LBL_006"
+									data-bind="ntsFormLabel: {  required: true }">項目区分</div>
+							</div>
+							<div class="divLineCol2">
+								<label id="I_LBL_007"> 項目区分 </label>
+							</div>
+						</div>
+						<div class="divLine">
+							<div class="divLineCol1">
+
+								<div id="I_LBL_008"
+									data-bind="ntsFormLabel: {  required: false }">統合コード</div>
+							</div>
+							<div class="divLineCol2">
+								<button id="I_BTN_006" class="small">参照</button>
+								<label id="I_LBL_009">統合コード </label>
+							</div>
+						</div>
+					</div>
+					<div id="right-content-bottom">
+						<div class="divLine">
+							<div class="divLineCol1">
+								<div id="I_LBL_003"
+									data-bind="ntsFormLabel: {  required: false }">限度金額</div>
+							</div>
+							<div class="divLineCol2">
+								<div id="I_SEL_003" class="cf switchLongSize"
+									data-bind="ntsSwitchButton: {
+										options: roundingRules_002_003_005To010,
+										optionsValue: 'code',
+										optionsText: 'name',
+										value: selectedRuleCode_002,
+										enable: enable }"></div>
+								<div id="I_SEL_004"
+									data-bind="ntsCheckBox: { checked: checked_012, enable: enable, text: '項目名も表示しない' }"></div>
+
+							</div>
+						</div>
+						<div class="divLine">
+							<div class="divLineCol1">
+								<div id="I_LBL_004"
+									data-bind="ntsFormLabel: {  required: false }">社会保険区分</div>
+							</div>
+							<div class="divLineCol2">
+								<div id="I_SEL_005"
+									data-bind="ntsCheckBox: { checked: checked_012, enable: enable, text: '項目名も表示しない' }"></div>
+								<div id="I_INP_005" data-bind="with: currencyeditor">
+									<input
+										data-bind="ntsNumberEditor: {
+										value: value,
+										constraint: constraint,
+										option: option,
+										required: required,
+										enable: enable,
+										readonly: readonly}" />
+								</div>
+								<label id="I_LBL_005">月給者 </label>
+							</div>
+						</div>
+						<div class="divLine">
+							<div class="divLineCol1"></div>
+							<div class="divLineCol2">
+								<div id="I_SEL_006"
+									data-bind="ntsCheckBox: { checked: checked_012, enable: enable, text: '項目名も表示しない' }"></div>
+								<div id="I_INP_006" data-bind="with: currencyeditor">
+									<input
+										data-bind="ntsNumberEditor: {
+										value: value,
+										constraint: constraint,
+										option: option,
+										required: required,
+										enable: enable,
+										readonly: readonly}" />
+								</div>
+								<label id="I_LBL_006">月給者 </label>
+							</div>
+						</div>
+						<div class="divLine">
+							<div class="divLineCol1">
+								<div id="I_LBL_007"
+									data-bind="ntsFormLabel: {  required: false }">固定的賃金</div>
+							</div>
+							<div class="divLineCol2 verticalAlignBottom">
+								<div id="I_SEL_007"
+									data-bind="ntsCheckBox: { checked: checked_012, enable: enable, text: '項目名も表示しない' }"></div>
+								<div id="I_INP_007" data-bind="with: currencyeditor">
+									<input
+										data-bind="ntsNumberEditor: {
+										value: value,
+										constraint: constraint,
+										option: option,
+										required: required,
+										enable: enable,
+										readonly: readonly}" />
+								</div>
+								<label id="I_LBL_008">月給者 </label>
+							</div>
+						</div>
+						<div class="divLine">
+							<div class="divLineCol1"></div>
+							<div class="divLineCol2">
+								<div id="I_SEL_008"
+									data-bind="ntsCheckBox: { checked: checked_012, enable: enable, text: '項目名も表示しない' }"></div>
+								<div id="I_INP_008" data-bind="with: currencyeditor">
+									<input
+										data-bind="ntsNumberEditor: {
+										value: value,
+										constraint: constraint,
+										option: option,
+										required: required,
+										enable: enable,
+										readonly: readonly}" />
+								</div>
+								<label id="I_LBL_009">月給者 </label>
+							</div>
+						</div>
+						<div class="divLine">
+							<div class="divLineCol1"></div>
+							<div class="divLineCol2">
+								<label id="I_LBL_010"> ナビゲーションメッセージ1 <br />ナビゲーションメッセージ1
+								</label>
+
+							</div>
+
+						</div>
+
+					</div>
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

@@ -1,0 +1,336 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html>
+<head>
+</head>
+<body>
+	<div class="divLine">
+		<div class="divLineCol1">
+			<div id="C_LBL_001" data-bind="ntsFormLabel: {  required: true }">課税</div>
+		</div>
+		<div class="divLineCol2">
+			<div id="C_SEL_001"
+				data-bind="ntsComboBox: {
+										options: ComboBoxItemList_C_001, 
+										optionsValue: 'code', 
+ 										value: selectedCode_C_001, 
+ 										optionsText: 'name', 
+									editable: isEditable, 
+ 										enable: isEnable, 
+ 										columns: [ 
+ 											{ prop: 'name', length: 10 }, 
+										]}"> 
+			</div>
+		</div>
+	</div>
+	<div id="C_Div_001" style="display: none;">
+		<div id="C_Div_004">
+			<div class="divLine">
+				<div class="divLineCol1 verticalAlignTop">
+					<div id="C_LBL_027" data-bind="ntsFormLabel: {  required: false }">統合コード</div>
+				</div>
+				<div class="divLineCol2">
+					<div id="C_SEL_017" class="cf switchNomalSize"
+						data-bind="ntsSwitchButton: {
+										options: roundingRules_C_017,
+										optionsValue: 'code',
+										optionsText: 'name',
+										value: selectedRuleCode_C_017,
+										enable: enable }"></div>
+				</div>
+			</div>
+		</div>
+		<div class="divLine">
+			<div class="divLineCol1">
+				<div id="C_LBL_002" data-bind="ntsFormLabel: {  required: false }">限度金額</div>
+			</div>
+			<div class="divLineCol2">
+				<div id="C_Div_002">
+					<div id="C_INP_001" data-bind="with: currencyeditor_C_001">
+						<input
+							data-bind="ntsNumberEditor: {
+										value: value,
+										constraint: constraint,
+										option: option,
+										required: required,
+										enable: enable,
+										readonly: readonly}" />
+					</div>
+				</div>
+				<div id="C_Div_003" style="display: none;">
+					<button id="C_BTN_003" class="small">参照</button>
+					<label id="C_LBL_028"> 項目区分 </label>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="divLine">
+		<div class="divLineCol1">
+			<div id="C_LBL_003" data-bind="ntsFormLabel: {  required: false }">社会保険区分</div>
+		</div>
+		<div class="divLineCol2">
+
+			<div id="C_SEL_002" class="cf switchNomalSize"
+				data-bind="ntsSwitchButton: {
+										options: roundingRules_C_002_003_005To010,
+										optionsValue: 'code',
+										optionsText: 'name',
+										value: selectedRuleCode_C_002,
+										enable: enable }"></div>
+
+
+		</div>
+	</div>
+	<div class="divLine">
+		<div class="divLineCol1">
+			<div id="C_LBL_004" data-bind="ntsFormLabel: {  required: false }">労働保険区分</div>
+		</div>
+		<div class="divLineCol2">
+			<div id="C_SEL_003" class="cf switchNomalSize"
+				data-bind="ntsSwitchButton: {
+										options: roundingRules_C_002_003_005To010,
+										optionsValue: 'code',
+										optionsText: 'name',
+										value: selectedRuleCode_C_003,
+										enable: enable }"></div>
+		</div>
+	</div>
+	<div class="divLine">
+		<div class="divLineCol1">
+			<div id="C_LBL_005" data-bind="ntsFormLabel: {  required: false }">固定的賃金</div>
+		</div>
+		<div class="divLineCol2 verticalAlignBottom">
+			<div id="C_SEL_004"
+				data-bind="ntsRadioBoxGroup: {
+										options: RadioItemList_C_004,
+										optionsValue: 'id',
+										optionsText: 'name',
+										value: selectedId_C_004,
+										enable: enable}">
+			</div>
+		</div>
+	</div>
+	<div class="divLine">
+		<div class="divLineCol1"></div>
+		<div class="divLineCol2">
+			<div id="C_SEL_005" class="cf switchNomalSize"
+				data-bind="ntsSwitchButton: {
+										options: roundingRules_C_002_003_005To010,
+										optionsValue: 'code',
+										optionsText: 'name',
+										value: selectedRuleCode_C_005,
+										enable: false }">
+			</div>
+			<label id="C_LBL_006">月給者 </label>
+			<div id="C_SEL_006" class="cf switchNomalSize"
+				data-bind="ntsSwitchButton: {
+										options: roundingRules_C_002_003_005To010,
+										optionsValue: 'code',
+										optionsText: 'name',
+										value: selectedRuleCode_C_006,
+										enable: enable }">
+			</div>
+		</div>
+	</div>
+
+	<div class="divLine">
+		<div class="divLineCol1"></div>
+		<div class="divLineCol2">
+			<label id="C_LBL_007">日給月給者 </label>
+			<div id="C_SEL_007" class="cf switchNomalSize"
+				data-bind="ntsSwitchButton: {
+										options: roundingRules_C_002_003_005To010,
+										optionsValue: 'code',
+										optionsText: 'name',
+										value: selectedRuleCode_C_007,
+										enable: enable }">
+			</div>
+		</div>
+	</div>
+	<div class="divLine">
+		<div class="divLineCol1"></div>
+		<div class="divLineCol2">
+			<label id="C_LBL_008">日給者 </label>
+			<div id="C_SEL_008" class="cf switchNomalSize"
+				data-bind="ntsSwitchButton: {
+										options: roundingRules_C_002_003_005To010,
+										optionsValue: 'code',
+										optionsText: 'name',
+										value: selectedRuleCode_C_008,
+										enable: enable }">
+			</div>
+		</div>
+	</div>
+	<div class="divLine">
+		<div class="divLineCol1"></div>
+		<div class="divLineCol2">
+			<label id="C_LBL_009">時給者 </label>
+			<div id="C_SEL_009" class="cf switchNomalSize"
+				data-bind="ntsSwitchButton: {
+										options: roundingRules_C_002_003_005To010,
+										optionsValue: 'code',
+										optionsText: 'name',
+										value: selectedRuleCode_C_009,
+										enable: enable }">
+			</div>
+		</div>
+	</div>
+	<div class="divLine">
+		<div class="divLineCol1">
+			<div id="C_LBL_010" data-bind="ntsFormLabel: {  required: false }">平均賃金</div>
+		</div>
+		<div class="divLineCol2">
+			<div id="C_SEL_010" class="cf switchNomalSize"
+				data-bind="ntsSwitchButton: {
+										options: roundingRules_C_002_003_005To010,
+										optionsValue: 'code',
+										optionsText: 'name',
+										value: selectedRuleCode_C_010,
+										enable: enable }"></div>
+		</div>
+	</div>
+	<div class="divLine">
+		<div class="divLineCol1">
+			<div id="C_LBL_011" data-bind="ntsFormLabel: {  required: false }">ゼロ表示区分</div>
+		</div>
+		<div class="divLineCol2">
+			<div id="C_SEL_011" class="cf"
+				data-bind="ntsSwitchButton: {
+										options: roundingRules_C_011,
+										optionsValue: 'code',
+										optionsText: 'name',
+										value: selectedRuleCode_C_011,
+										enable: enable }">
+			</div>
+			<div id="C_SEL_012"
+				data-bind="ntsCheckBox: { checked: checked_C_012, enable: enable, text: '項目名も表示しない' }"></div>
+
+		</div>
+	</div>
+	<div class="divLine">
+		<div class="divLineCol1">
+			<div id="C_LBL_012" data-bind="ntsFormLabel: {  required: false }">上限チェック</div>
+		</div>
+		<div class="divLineCol2">
+			<div id="C_SEL_013"
+				data-bind="ntsCheckBox: { checked: checked_C_013, enable: enable, text: 'エラー上限チェック' }"></div>
+			<div id="C_INP_002" data-bind="with: currencyeditor_C_001">
+				<input
+					data-bind="ntsNumberEditor: {
+										value: value,
+										constraint: constraint,
+										option: option,
+										required: required,
+										enable: enable,
+										readonly: readonly}" />
+			</div>
+			<label id="C_LBL_013">を超える場合 </label>
+
+
+		</div>
+	</div>
+	<div class="divLine">
+		<div class="divLineCol1"></div>
+		<div class="divLineCol2">
+			<div id="C_SEL_014"
+				data-bind="ntsCheckBox: { checked: checked_C_014, enable: enable, text: 'アラーム上限チェック' }"></div>
+			<div id="C_INP_003" data-bind="with: currencyeditor_C_001">
+				<input
+					data-bind="ntsNumberEditor: {
+										value: value,
+										constraint: constraint,
+										option: option,
+										required: required,
+										enable: enable,
+										readonly: readonly}" />
+			</div>
+			<label id="C_LBL_014">を超える場合 </label>
+		</div>
+
+	</div>
+
+	<div class="divLine">
+		<div class="divLineCol1">
+			<div id="C_LBL_015" data-bind="ntsFormLabel: {  required: false }">下限チェック</div>
+		</div>
+		<div class="divLineCol2">
+
+			<div id="C_SEL_015"
+				data-bind="ntsCheckBox: { checked: checked_C_015, enable: enable, text: 'エラー下限チェック' }"></div>
+			<div id="C_INP_004" data-bind="with: currencyeditor_C_001">
+				<input
+					data-bind="ntsNumberEditor: {
+										value: value,
+										constraint: constraint,
+										option: option,
+										required: required,
+										enable: enable,
+										readonly: readonly}" />
+			</div>
+			<label id="C_LBL_016">未満の場合 </label>
+		</div>
+	</div>
+	<div class="divLine">
+		<div class="divLineCol1"></div>
+		<div class="divLineCol2">
+			<div id="C_SEL_016"
+				data-bind="ntsCheckBox: { checked: checked_C_016, enable: enable, text: 'アラーム下限チェック' }"></div>
+			<div id="C_INP_005" data-bind="with: currencyeditor_C_001">
+				<input
+					data-bind="ntsNumberEditor: {
+										value: value,
+										constraint: constraint,
+										option: option,
+										required: required,
+										enable: enable,
+										readonly: readonly}" />
+			</div>
+			<label id="C_LBL_017">未満の場合 </label>
+		</div>
+
+	</div>
+	<div class="divLine">
+		<div class="divLineCol1"></div>
+		<div class="divLineCol2">
+			<label id="C_LBL_018"> ナビゲーションメッセージ1 <br />ナビゲーションメッセージ1
+
+			</label>
+
+		</div>
+
+	</div>
+	<div class="divLine">
+		<div class="divLineCol1">
+			<div id="C_LBL_019" data-bind="ntsFormLabel: {  required: false }">項目の有効期間とサイクルの設定
+			</div>
+		</div>
+		<div class="divLineCol2">
+			<button id="C_BTN_001" class="small">有効期間設定</button>
+			<label id="C_LBL_020">設定区分 </label>
+
+		</div>
+
+	</div>
+	<div class="divLine">
+		<div class="divLineCol1">
+			<div id="C_LBL_025" data-bind="ntsFormLabel: {  required: false }">内訳</div>
+		</div>
+		<div class="divLineCol2">
+			<button id="C_BTN_002" class="small" data-bind="click: openIDialog">有効期間設定</button>
+			<label id="C_LBL_022">サイクル設定区分</label>
+		</div>
+
+	</div>
+	<div class="divLine">
+		<div class="divLineCol1 verticalAlignTop">
+			<div id="C_LBL_026" data-bind="ntsFormLabel: {  required: false }">備考</div>
+		</div>
+		<div class="divLineCol2">
+
+			<TEXTAREA id="C_INP_006" rows="5" cols="40"
+				data-bind="value: textArea"></TEXTAREA>
+		</div>
+
+	</div>
+</body>
+</html>

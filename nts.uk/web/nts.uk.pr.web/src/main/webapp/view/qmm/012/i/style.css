@@ -1,0 +1,96 @@
+@import url("../a/base.css");
+
+#content-header {
+	position: relative;
+	padding: 10px;
+	border-bottom: solid 1px #B1B1B1;
+}
+
+.divLineCol1 {
+	width: 150px;
+	min-height: 1px;
+}
+
+#content-header-top {
+	border-bottom: solid 1px #B1B1B1;
+	display: inline-block;
+	padding-bottom: 15px;
+}
+
+#content-header-bottom {
+	padding: 15px 0px;
+}
+
+.checkboxLightGreen, .checkboxBrightGreen {
+	width: 70px;
+	height: 30px;
+	text-align: center;
+	line-height: 25px;
+	margin-right: 5px;
+}
+
+.checkboxLightGreen {
+	background-color: #edfac2;
+}
+
+.checkboxBrightGreen {
+	background-color: #c7f391;
+}
+
+.switchLongSize button {
+	height: 30px;
+	width: 120px;
+	font-size: 0.8rem;
+}
+
+.divLine>*, .divLineCol2>*, .divLineCol1>* {
+	display: inline-block;
+	vertical-align: middle;
+}
+
+.nts-left-content {
+	float: left;
+	border-radius: 5px;
+	padding: 20px;
+	width: 335px;
+	margin-left: 20px;
+	background-color: #E2F79F;
+	margin-top: 10px;
+}
+
+#I_SCH_001 input {
+	width: 160px;
+	height: 30px;
+}
+
+#I_SEL_001 {
+	width: 160px;
+	margin: 3px 0px 0px 10px;
+}
+
+.nts-right-content {
+	float: left;
+	margin: 10px 0px 0px 40px;
+}
+
+#right-content-top {
+	border-bottom: solid thin #B1B1B1;
+	padding-bottom: 10px;
+	height: 185px;
+}
+
+#I_INP_005 input, #I_INP_006 input, #I_INP_007 input, #I_INP_008 input {
+	width: 100px;
+}
+
+#I_INP_004 {
+	width: 230px;
+}
+
+#I_INP_002 {
+	width: 50px;
+}
+
+#I_INP_003 {
+	width: 300px;
+}

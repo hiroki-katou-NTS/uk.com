@@ -1,0 +1,60 @@
+@import url("base.css");
+
+#contents-area {
+	text-align: center;
+}
+
+#content-header {
+	position: relative;
+	padding: 10px;
+	border-bottom: solid 1px #B1B1B1;
+	height: 350px;
+}
+
+#A_LBL_001 {
+	margin: 20px 0px 0px 20px;
+}
+
+#A_LBL_002 {
+	font-weight: bold;
+	margin-left: 30px;
+}
+
+#A_BTN_001 {
+	margin-top: 20px;
+}
+
+#A_BTN_001, #A_BTN_002, #A_BTN_003 {
+	margin-left: 50px;
+	width: 150px;
+}
+
+#A_BTN_002, #A_BTN_003 {
+	margin-top: 10px;
+}
+
+#A_LBL_003 {
+	padding: 10px 0px 0px 30px;
+	display: inline-block;
+}
+
+#A_BTN_005 {
+	margin-left: 20px;
+}
+
+#A_SEL_001 button {
+	display: flex;
+	margin-bottom: 10px;
+	width: 170px;
+	height: 35px;
+	box-shadow: 0 3px rgba(0, 0, 0, 0.4);
+}
+
+#A_SEL_001 button:ACTIVE {
+	top: 3px;
+	box-shadow: 0 0 #999;
+}
+
+#A_SEL_001 {
+	margin: 10px 0px 0px 50px;
+}

@@ -19,6 +19,7 @@ public class JpaItemMasterRepository extends JpaRepository implements ItemMaster
 	private final String SELECT_ALL_BY_COMPANY = SELECT_NO_WHERE + " WHERE c.qcamtItemPK.ccd = :companyCode";
 	private final String SELECT_ALL_BY_CATEGORY = SELECT_ALL_BY_COMPANY + " AND c.qcamtItemPK.ctgAtr = :categoryType";
 	private final String SELECT_DETAIL = SELECT_ALL_BY_CATEGORY + " AND c.qcamtItemPK.itemCd = :itemCode";
+	private final String SEL_3 = SELECT_NO_WHERE + " WHERE c.qcamtItemPK.ccd = :companyCode AND c.avePayAtr = :avePayAtr";
 
 	@Override
 	public List<ItemMaster> findAll(String companyCode) {
@@ -59,4 +60,11 @@ public class JpaItemMasterRepository extends JpaRepository implements ItemMaster
 				map(entity -> toDomain(entity));
 	}
 
+	@Override
+	public List<ItemMaster> findAll(String companyCode, int avePayAtr) {
+		return this.queryProxy().query(SEL_3, QcamtItem.class)
+				.setParameter("companyCode", companyCode)
+				.setParameter("avePayAtr", avePayAtr)
+				.getList(c -> toDomain(c));
+	}
 }
