@@ -44,8 +44,7 @@ public class JpaLaborInsuranceOfficeGetMemento implements LaborInsuranceOfficeGe
 	 */
 	@Override
 	public CompanyCode getCompanyCode() {
-		// TODO Auto-generated method stub
-		return null;
+		return new CompanyCode(typeValue.getQismtLaborInsuOfficePK().getCcd());
 	}
 
 	/*
@@ -57,8 +56,7 @@ public class JpaLaborInsuranceOfficeGetMemento implements LaborInsuranceOfficeGe
 	 */
 	@Override
 	public OfficeCode getCode() {
-		// TODO Auto-generated method stub
-		return null;
+		return new OfficeCode(typeValue.getQismtLaborInsuOfficePK().getLiOfficeCd());
 	}
 
 	/*
@@ -70,8 +68,7 @@ public class JpaLaborInsuranceOfficeGetMemento implements LaborInsuranceOfficeGe
 	 */
 	@Override
 	public OfficeName getName() {
-		// TODO Auto-generated method stub
-		return null;
+		return new OfficeName(typeValue.getLiOfficeName());
 	}
 
 	/*
@@ -83,8 +80,7 @@ public class JpaLaborInsuranceOfficeGetMemento implements LaborInsuranceOfficeGe
 	 */
 	@Override
 	public ShortName getShortName() {
-		// TODO Auto-generated method stub
-		return null;
+		return new ShortName(typeValue.getLiOfficeAbName());
 	}
 
 	/*
@@ -96,8 +92,7 @@ public class JpaLaborInsuranceOfficeGetMemento implements LaborInsuranceOfficeGe
 	 */
 	@Override
 	public PicName getPicName() {
-		// TODO Auto-generated method stub
-		return null;
+		return new PicName(typeValue.getPresidentName());
 	}
 
 	/*
@@ -109,8 +104,7 @@ public class JpaLaborInsuranceOfficeGetMemento implements LaborInsuranceOfficeGe
 	 */
 	@Override
 	public PicPosition getPicPosition() {
-		// TODO Auto-generated method stub
-		return null;
+		return new PicPosition(typeValue.getPresidentTitle());
 	}
 
 	/*
@@ -122,8 +116,7 @@ public class JpaLaborInsuranceOfficeGetMemento implements LaborInsuranceOfficeGe
 	 */
 	@Override
 	public PotalCode getPotalCode() {
-		// TODO Auto-generated method stub
-		return null;
+		return new PotalCode(typeValue.getPostal());
 	}
 
 	/*
@@ -135,8 +128,7 @@ public class JpaLaborInsuranceOfficeGetMemento implements LaborInsuranceOfficeGe
 	 */
 	@Override
 	public String getPrefecture() {
-		// TODO Auto-generated method stub
-		return null;
+		return typeValue.getPrefecture();
 	}
 
 	/*
@@ -148,8 +140,7 @@ public class JpaLaborInsuranceOfficeGetMemento implements LaborInsuranceOfficeGe
 	 */
 	@Override
 	public Address getAddress1st() {
-		// TODO Auto-generated method stub
-		return null;
+		return new Address(typeValue.getAddress1());
 	}
 
 	/*
@@ -161,8 +152,7 @@ public class JpaLaborInsuranceOfficeGetMemento implements LaborInsuranceOfficeGe
 	 */
 	@Override
 	public Address getAddress2nd() {
-		// TODO Auto-generated method stub
-		return null;
+		return new Address(typeValue.getAddress2());
 	}
 
 	/*
@@ -174,8 +164,7 @@ public class JpaLaborInsuranceOfficeGetMemento implements LaborInsuranceOfficeGe
 	 */
 	@Override
 	public KanaAddress getKanaAddress1st() {
-		// TODO Auto-generated method stub
-		return null;
+		return new KanaAddress(typeValue.getKnAddress1());
 	}
 
 	/*
@@ -187,8 +176,7 @@ public class JpaLaborInsuranceOfficeGetMemento implements LaborInsuranceOfficeGe
 	 */
 	@Override
 	public KanaAddress getKanaAddress2nd() {
-		// TODO Auto-generated method stub
-		return null;
+		return new KanaAddress(typeValue.getKnAddress2());
 	}
 
 	/*
@@ -200,8 +188,7 @@ public class JpaLaborInsuranceOfficeGetMemento implements LaborInsuranceOfficeGe
 	 */
 	@Override
 	public String getPhoneNumber() {
-		// TODO Auto-generated method stub
-		return null;
+		return typeValue.getTelNo();
 	}
 
 	/*
@@ -213,8 +200,7 @@ public class JpaLaborInsuranceOfficeGetMemento implements LaborInsuranceOfficeGe
 	 */
 	@Override
 	public String getCitySign() {
-		// TODO Auto-generated method stub
-		return null;
+		return typeValue.getCitySign();
 	}
 
 	/*
@@ -226,8 +212,7 @@ public class JpaLaborInsuranceOfficeGetMemento implements LaborInsuranceOfficeGe
 	 */
 	@Override
 	public String getOfficeMark() {
-		// TODO Auto-generated method stub
-		return null;
+		return typeValue.getOfficeMark();
 	}
 
 	/*
@@ -239,8 +224,7 @@ public class JpaLaborInsuranceOfficeGetMemento implements LaborInsuranceOfficeGe
 	 */
 	@Override
 	public String getOfficeNoA() {
-		// TODO Auto-generated method stub
-		return null;
+		return typeValue.getOfficeNoA();
 	}
 
 	/*
@@ -252,8 +236,7 @@ public class JpaLaborInsuranceOfficeGetMemento implements LaborInsuranceOfficeGe
 	 */
 	@Override
 	public String getOfficeNoB() {
-		// TODO Auto-generated method stub
-		return null;
+		return typeValue.getOfficeNoB();
 	}
 
 	/*
@@ -265,8 +248,7 @@ public class JpaLaborInsuranceOfficeGetMemento implements LaborInsuranceOfficeGe
 	 */
 	@Override
 	public String getOfficeNoC() {
-		// TODO Auto-generated method stub
-		return null;
+		return typeValue.getOfficeNoC();
 	}
 
 	/*
@@ -278,8 +260,7 @@ public class JpaLaborInsuranceOfficeGetMemento implements LaborInsuranceOfficeGe
 	 */
 	@Override
 	public Memo getMemo() {
-		// TODO Auto-generated method stub
-		return null;
+		return new Memo(typeValue.getMemo());
 	}
 
 }

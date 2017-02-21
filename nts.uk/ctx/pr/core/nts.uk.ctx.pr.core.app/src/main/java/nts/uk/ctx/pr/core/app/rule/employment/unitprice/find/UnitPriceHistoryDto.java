@@ -14,7 +14,6 @@ import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.Money;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.SettingType;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceCode;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceHistorySetMemento;
-import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceName;
 import nts.uk.shr.com.primitive.Memo;
 
 /**
@@ -101,18 +100,6 @@ public class UnitPriceHistoryDto implements UnitPriceHistorySetMemento {
 	@Override
 	public void setUnitPriceCode(UnitPriceCode unitPriceCode) {
 		this.unitPriceCode = unitPriceCode.v();
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.pr.core.dom.rule.employment.unitprice.
-	 * UnitPriceHistorySetMemento#setUnitPriceName(nts.uk.ctx.pr.core.dom.rule.
-	 * employment.unitprice.UnitPriceName)
-	 */
-	@Override
-	public void setUnitPriceName(UnitPriceName unitPriceName) {
-		this.unitPriceName = unitPriceName.v();
 	}
 
 	/*

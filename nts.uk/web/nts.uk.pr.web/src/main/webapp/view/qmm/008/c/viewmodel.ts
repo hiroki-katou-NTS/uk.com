@@ -199,22 +199,23 @@ module nts.uk.pr.view.qmm008.c {
             //remove office  by office Code
             private remove() {
                 var self = this;
-//                service.remove(officeCode).done(function() {
-//                    //TODO if remove success    
-//                }).fail(function() {
-//                    //TODO if remove fail    
-//                });
-                self.officeItems().forEach(function(item, index) {
-                    if (item.code == self.selectedOfficeCode()) {
-                        self.officeItems().splice(index, 1);
-                        var data = self.officeItems();
-                        self.officeItems(data);
+                if (self.selectedOfficeCode() != '') {
+                    service.remove(self.selectedOfficeCode()).done(function() {
+                        //TODO if remove success    
+                    }).fail(function() {
+                        //TODO if remove fail    
+                    });
+                    self.officeItems().forEach(function(item, index) {
+                        if (item.code == self.selectedOfficeCode()) {
+                            self.officeItems().splice(index, 1);
+                            var data = self.officeItems();
+                            self.officeItems(data);
+                        }
+                    });
+                    // if empty list -> add new mode
+                    if (self.officeItems().length == 0) {
+                        self.addNew();
                     }
-                });
-                // if empty list -> add new mode
-                if(self.officeItems().length == 0)
-                {
-                    self.addNew();    
                 }
             }
 

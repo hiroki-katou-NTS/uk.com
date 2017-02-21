@@ -35,13 +35,6 @@ public interface UnitPriceHistorySetMemento {
 	void setUnitPriceCode(UnitPriceCode unitPriceCode);
 
 	/**
-	 * Sets the unit price name.
-	 *
-	 * @param unitPriceName the new unit price name
-	 */
-	void setUnitPriceName(UnitPriceName unitPriceName);
-
-	/**
 	 * Sets the apply range.
 	 *
 	 * @param applyRange the new apply range

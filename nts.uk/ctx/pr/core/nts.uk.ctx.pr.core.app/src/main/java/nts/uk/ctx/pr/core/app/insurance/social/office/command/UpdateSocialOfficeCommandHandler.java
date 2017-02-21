@@ -52,7 +52,6 @@ public class UpdateSocialOfficeCommandHandler extends CommandHandler<UpdateSocia
 
 		// TODO validate
 		socialInsuranceOfficeService.validateRequiredItem(socialInsuranceOffice);
-		socialInsuranceOfficeService.checkDuplicateCode(socialInsuranceOffice);
 
 		Optional<SocialInsuranceOffice> findOffice = socialInsuranceOfficeRepository
 				.findById(command.getCode().toString());

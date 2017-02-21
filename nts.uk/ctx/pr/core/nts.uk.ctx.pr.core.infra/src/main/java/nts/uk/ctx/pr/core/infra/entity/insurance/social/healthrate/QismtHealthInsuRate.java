@@ -129,7 +129,7 @@ public class QismtHealthInsuRate implements Serializable {
 
 	/** The c pay specific rate. */
 	@Basic(optional = false)
-	@Column(name = "C_PAY_SPECIFIC RATE")
+	@Column(name = "C_PAY_SPECIFIC_RATE")
 	private BigDecimal cPaySpecificRate;
 
 	/** The c pay basic rate. */
@@ -179,7 +179,7 @@ public class QismtHealthInsuRate implements Serializable {
 
 	/** The c bns specific rate. */
 	@Basic(optional = false)
-	@Column(name = "C_BNS_SPECIFIC RATE")
+	@Column(name = "C_BNS_SPECIFIC_RATE")
 	private BigDecimal cBnsSpecificRate;
 
 	/** The c bns basic rate. */

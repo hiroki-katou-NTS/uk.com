@@ -4,10 +4,13 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.infra.repository.insurance.social.pensionavgearn;
 
+import java.math.BigDecimal;
+
 import nts.uk.ctx.pr.core.dom.insurance.InsuranceAmount;
 import nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.PensionAvgearnSetMemento;
 import nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.PensionAvgearnValue;
 import nts.uk.ctx.pr.core.infra.entity.insurance.social.pensionavgearn.QismtPensionAvgearn;
+import nts.uk.ctx.pr.core.infra.entity.insurance.social.pensionavgearn.QismtPensionAvgearnPK;
 
 /**
  * The Class JpaAggrSchemaMemento.
@@ -29,12 +32,16 @@ public class JpaPensionAvgearnSetMemento implements PensionAvgearnSetMemento {
 
 	@Override
 	public void setHistoryId(String historyId) {
-		// TODO ko co historyID?
+		QismtPensionAvgearnPK pensionAvgearnPK = new QismtPensionAvgearnPK();
+		pensionAvgearnPK.setHistId(historyId);
+		this.typeValue.setQismtPensionAvgearnPK(pensionAvgearnPK);
 	}
 
 	@Override
 	public void setLevelCode(Integer levelCode) {
-		// TODO ko co level code?
+		QismtPensionAvgearnPK pensionAvgearnPK = this.typeValue.getQismtPensionAvgearnPK();
+		pensionAvgearnPK.setPensionGrade(BigDecimal.valueOf(levelCode));
+		this.typeValue.setQismtPensionAvgearnPK((pensionAvgearnPK));
 	}
 
 	@Override

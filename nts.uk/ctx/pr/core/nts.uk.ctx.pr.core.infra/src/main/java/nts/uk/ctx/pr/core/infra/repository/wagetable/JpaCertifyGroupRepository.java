@@ -9,16 +9,20 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
 import javax.persistence.TypedQuery;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.core.infra.data.entity.SmpmtCompany;
+import nts.uk.ctx.pr.core.dom.insurance.social.SocialInsuranceOffice;
 import nts.uk.ctx.pr.core.dom.wagetable.Certification;
 import nts.uk.ctx.pr.core.dom.wagetable.CertificationGetMemento;
 import nts.uk.ctx.pr.core.dom.wagetable.CertifyGroup;
@@ -28,6 +32,9 @@ import nts.uk.ctx.pr.core.dom.wagetable.MultipleTargetSetting;
 import nts.uk.ctx.pr.core.infra.entity.wagetable.QwtmtWagetableCertify;
 import nts.uk.ctx.pr.core.infra.entity.wagetable.QwtmtWagetableCertifyG;
 import nts.uk.ctx.pr.core.infra.entity.wagetable.QwtmtWagetableCertifyGPK;
+import nts.uk.ctx.pr.core.infra.entity.wagetable.QwtmtWagetableCertifyGPK_;
+import nts.uk.ctx.pr.core.infra.entity.wagetable.QwtmtWagetableCertifyG_;
+import nts.uk.ctx.pr.core.infra.repository.insurance.social.JpaSocialInsuranceOfficeGetMemento;
 
 @Stateless
 public class JpaCertifyGroupRepository extends JpaRepository implements CertifyGroupRepository {
@@ -90,56 +97,9 @@ public class JpaCertifyGroupRepository extends JpaRepository implements CertifyG
 	 * @return the certify group
 	 */
 	private static CertifyGroup toDomain(QwtmtWagetableCertifyG entity) {
-		CertifyGroup domain = new CertifyGroup(new CertifyGroupGetMemento() {
-
-			@Override
-			public String getName() {
-				return entity.getCertifyGroupName();
-			}
-
-			@Override
-			public MultipleTargetSetting getMultiApplySet() {
-				return MultipleTargetSetting.valueOf(entity.getMultiApplySet());
-			}
-
-			@Override
-			public CompanyCode getCompanyCode() {
-				return new CompanyCode(entity.getQwtmtWagetableCertifyGPK().getCcd());
-			}
-
-			@Override
-			public String getCode() {
-				return entity.getQwtmtWagetableCertifyGPK().getCertifyGroupCd();
-			}
-
-			@Override
-			public Set<Certification> getCertifies() {
-				Set<Certification> setCertification = new HashSet<>();
-				for (QwtmtWagetableCertify wagetableCertify : entity.getQwtmtWagetableCertifyList()) {
-					setCertification.add(new Certification(new CertificationGetMemento() {
-
-						@Override
-						public String getName() {
-							return wagetableCertify.getQcemtCertification().getName();
-						}
-
-						@Override
-						public CompanyCode getCompanyCode() {
-							return new CompanyCode(
-									wagetableCertify.getQcemtCertification().getQcemtCertificationPK().getCcd());
-						}
-
-						@Override
-						public String getCode() {
-							return wagetableCertify.getQcemtCertification().getQcemtCertificationPK().getCertCd();
-						}
-					}));
-				}
-				return setCertification;
-			}
-		});
-
+		CertifyGroup domain = new CertifyGroup(new JpaCertifyGroupGetMemento(entity));
 		return domain;
+
 	}
 
 	private QwtmtWagetableCertifyG toEntity(CertifyGroup certifyGroup) {
@@ -157,16 +117,19 @@ public class JpaCertifyGroupRepository extends JpaRepository implements CertifyG
 	 */
 	@Override
 	public List<CertifyGroup> findAll(CompanyCode companyCode) {
-		CriteriaBuilder cb = getEntityManager().getCriteriaBuilder();
-		CriteriaQuery<QwtmtWagetableCertifyG> q = cb.createQuery(QwtmtWagetableCertifyG.class);
-		Root<QwtmtWagetableCertifyG> c = q.from(QwtmtWagetableCertifyG.class);
-		q.select(c);
-		TypedQuery<QwtmtWagetableCertifyG> query = getEntityManager().createQuery(q);
-		List<QwtmtWagetableCertifyG> results = query.getResultList();
-		List<CertifyGroup> lstCertifyGroup = new ArrayList<>();
-		for (QwtmtWagetableCertifyG qwtmtWagetableCertifyG : results) {
-			lstCertifyGroup.add(toDomain(qwtmtWagetableCertifyG));
-		}
+		EntityManager em = getEntityManager();
+		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+		CriteriaQuery<QwtmtWagetableCertifyG> cq = criteriaBuilder.createQuery(QwtmtWagetableCertifyG.class);
+		Root<QwtmtWagetableCertifyG> root = cq.from(QwtmtWagetableCertifyG.class);
+		cq.select(root);
+		List<Predicate> lstpredicate = new ArrayList<>();
+		lstpredicate.add(criteriaBuilder.equal(
+				root.get(QwtmtWagetableCertifyG_.qwtmtWagetableCertifyGPK).get(QwtmtWagetableCertifyGPK_.ccd),
+				companyCode.v()));
+		cq.where(lstpredicate.toArray(new Predicate[] {}));
+		TypedQuery<QwtmtWagetableCertifyG> query = em.createQuery(cq);
+		List<CertifyGroup> lstCertifyGroup = query.getResultList().stream().map(item -> toDomain(item))
+				.collect(Collectors.toList());
 		return lstCertifyGroup;
 	}
 
