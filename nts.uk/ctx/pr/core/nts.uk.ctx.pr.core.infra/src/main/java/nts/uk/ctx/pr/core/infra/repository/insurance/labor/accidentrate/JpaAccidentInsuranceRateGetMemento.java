@@ -10,43 +10,68 @@ import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.AccidentInsuranceRateGetMemento;
 import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.InsuBizRateItem;
+import nts.uk.ctx.pr.core.infra.entity.insurance.labor.accidentrate.QismtWorkAccidentInsu;
 
 /**
- * The Class JpaAggrSchemaMemento.
+ * The Class JpaAccidentInsuranceRateGetMemento.
  */
 public class JpaAccidentInsuranceRateGetMemento implements AccidentInsuranceRateGetMemento {
 
-	// TODO: Object -> entity class.
-	protected Object typeValue;
+	/** The type value. */
+	protected QismtWorkAccidentInsu typeValue;
 
 	/**
-	 * Instantiates a new jpa aggr schema memento.
+	 * Instantiates a new jpa accident insurance rate get memento.
 	 *
 	 * @param typeValue
 	 *            the type value
 	 */
-	public JpaAccidentInsuranceRateGetMemento(Object typeValue) {
+	public JpaAccidentInsuranceRateGetMemento(QismtWorkAccidentInsu typeValue) {
 		this.typeValue = typeValue;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.
+	 * AccidentInsuranceRateGetMemento#getHistoryId()
+	 */
 	@Override
 	public String getHistoryId() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.
+	 * AccidentInsuranceRateGetMemento#getCompanyCode()
+	 */
 	@Override
 	public CompanyCode getCompanyCode() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.
+	 * AccidentInsuranceRateGetMemento#getApplyRange()
+	 */
 	@Override
 	public MonthRange getApplyRange() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.
+	 * AccidentInsuranceRateGetMemento#getRateItems()
+	 */
 	@Override
 	public Set<InsuBizRateItem> getRateItems() {
 		// TODO Auto-generated method stub

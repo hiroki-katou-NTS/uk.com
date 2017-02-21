@@ -13,8 +13,11 @@ module nts.uk.pr.view.qmm008.i {
          *  Save list pensionAvgearn
          */
         export function updatePensionAvgearn(listPensionAvgearn): JQueryPromise<any> {
+            var dfd = $.Deferred<any>();
             var data = { listPensionAvgearn: listPensionAvgearn };
-            return nts.uk.request.ajax(paths.updatePensionAvgearn, data);
+            nts.uk.request.ajax(paths.updatePensionAvgearn, data).done(() =>
+                dfd.resolve());
+            return dfd.promise();
         }
 
         /**

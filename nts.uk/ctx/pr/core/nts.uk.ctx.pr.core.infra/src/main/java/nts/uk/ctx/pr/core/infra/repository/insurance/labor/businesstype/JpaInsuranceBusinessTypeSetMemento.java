@@ -8,37 +8,59 @@ import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.BusinessName;
 import nts.uk.ctx.pr.core.dom.insurance.labor.businesstype.BusinessTypeEnum;
 import nts.uk.ctx.pr.core.dom.insurance.labor.businesstype.InsuranceBusinessTypeSetMemento;
+import nts.uk.ctx.pr.core.infra.entity.insurance.labor.businesstype.QismtBusinessType;
 
 /**
- * The Class JpaAggrSchemaMemento.
+ * The Class JpaInsuranceBusinessTypeSetMemento.
  */
 public class JpaInsuranceBusinessTypeSetMemento implements InsuranceBusinessTypeSetMemento {
 
-	// TODO: Object -> entity class.
-	protected Object typeValue;
+	/** The type value. */
+	protected QismtBusinessType typeValue;
 
 	/**
-	 * Instantiates a new jpa aggr schema memento.
+	 * Instantiates a new jpa insurance business type set memento.
 	 *
 	 * @param typeValue
 	 *            the type value
 	 */
-	public JpaInsuranceBusinessTypeSetMemento(Object typeValue) {
+	public JpaInsuranceBusinessTypeSetMemento(QismtBusinessType typeValue) {
 		this.typeValue = typeValue;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.insurance.labor.businesstype.
+	 * InsuranceBusinessTypeSetMemento#setCompanyCode(nts.uk.ctx.core.dom.
+	 * company.CompanyCode)
+	 */
 	@Override
 	public void setCompanyCode(CompanyCode companyCode) {
 		// TODO Auto-generated method stub
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.insurance.labor.businesstype.
+	 * InsuranceBusinessTypeSetMemento#setBizOrder(nts.uk.ctx.pr.core.dom.
+	 * insurance.labor.businesstype.BusinessTypeEnum)
+	 */
 	@Override
 	public void setBizOrder(BusinessTypeEnum businessTypeEnum) {
 		// TODO Auto-generated method stub
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.insurance.labor.businesstype.
+	 * InsuranceBusinessTypeSetMemento#setBizName(nts.uk.ctx.pr.core.dom.
+	 * insurance.BusinessName)
+	 */
 	@Override
 	public void setBizName(BusinessName name) {
 		// TODO Auto-generated method stub

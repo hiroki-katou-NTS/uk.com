@@ -5,13 +5,17 @@
 package nts.uk.ctx.pr.core.infra.entity.insurance.social;
 
 import java.io.Serializable;
+
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
+import lombok.Data;
+
 /**
  * The Class QismtSocialInsuOfficePK.
  */
+@Data
 @Embeddable
 public class QismtSocialInsuOfficePK implements Serializable {
 

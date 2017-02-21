@@ -15,6 +15,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.app.insurance.social.office.command.DeleteSocialOfficeCommand;
 import nts.uk.ctx.pr.core.app.insurance.social.office.command.DeleteSocialOfficeCommandHandler;
 import nts.uk.ctx.pr.core.app.insurance.social.office.command.RegisterSocialOfficeCommand;
@@ -26,6 +27,7 @@ import nts.uk.ctx.pr.core.app.insurance.social.office.find.SocialInsuranceOffice
 import nts.uk.ctx.pr.core.app.insurance.social.office.find.SocialInsuranceOfficeFinder;
 import nts.uk.ctx.pr.core.app.insurance.social.office.find.SocialInsuranceOfficeItemDto;
 import nts.uk.ctx.pr.core.app.insurance.social.pensionrate.command.RegisterPensionCommandHandler;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class SocialInsuranceOfficeService.
@@ -49,7 +51,9 @@ public class SocialInsuranceOfficeWs extends WebService {
 	
 	@POST
 	@Path("findall")
-	public List<SocialInsuranceOfficeItemDto> findAll(String companyCode) {
+	public List<SocialInsuranceOfficeItemDto> findAll() {
+		
+		String companyCode = AppContexts.user().companyCode();
 		return socialInsuranceOfficeFinder.findAll(companyCode);
 	}
 
@@ -100,6 +104,12 @@ public class SocialInsuranceOfficeWs extends WebService {
  			}
 		}
 		return returnHistory;
+	}
+	
+	@POST
+	@Path("find/rounding")
+	public void findRounding(){
+		//TODO convert class RoundingMethod to values and return
 	}
 	
 	@POST

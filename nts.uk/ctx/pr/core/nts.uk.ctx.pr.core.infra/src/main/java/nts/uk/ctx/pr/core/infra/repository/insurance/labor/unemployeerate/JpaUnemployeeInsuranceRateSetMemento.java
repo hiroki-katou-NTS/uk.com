@@ -10,43 +10,70 @@ import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsuranceRateItem;
 import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsuranceRateSetMemento;
+import nts.uk.ctx.pr.core.infra.entity.insurance.labor.unemployeerate.QismtEmpInsuRate;
 
 /**
- * The Class JpaAggrSchemaMemento.
+ * The Class JpaUnemployeeInsuranceRateSetMemento.
  */
 public class JpaUnemployeeInsuranceRateSetMemento implements UnemployeeInsuranceRateSetMemento {
 
-	// TODO: Object -> entity class.
-	protected Object typeValue;
+	/** The type value. */
+	protected QismtEmpInsuRate typeValue;
 
 	/**
-	 * Instantiates a new jpa aggr schema memento.
+	 * Instantiates a new jpa unemployee insurance rate set memento.
 	 *
 	 * @param typeValue
 	 *            the type value
 	 */
-	public JpaUnemployeeInsuranceRateSetMemento(Object typeValue) {
+	public JpaUnemployeeInsuranceRateSetMemento(QismtEmpInsuRate typeValue) {
 		this.typeValue = typeValue;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.
+	 * UnemployeeInsuranceRateSetMemento#setHistoryId(java.lang.String)
+	 */
 	@Override
 	public void setHistoryId(String historyId) {
 		// TODO Auto-generated method stub
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.
+	 * UnemployeeInsuranceRateSetMemento#setCompanyCode(nts.uk.ctx.core.dom.
+	 * company.CompanyCode)
+	 */
 	@Override
 	public void setCompanyCode(CompanyCode companyCode) {
 		// TODO Auto-generated method stub
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.
+	 * UnemployeeInsuranceRateSetMemento#setApplyRange(nts.uk.ctx.pr.core.dom.
+	 * insurance.MonthRange)
+	 */
 	@Override
 	public void setApplyRange(MonthRange applyRange) {
 		// TODO Auto-generated method stub
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.
+	 * UnemployeeInsuranceRateSetMemento#setRateItems(java.util.Set)
+	 */
 	@Override
 	public void setRateItems(Set<UnemployeeInsuranceRateItem> rateItems) {
 		// TODO Auto-generated method stub

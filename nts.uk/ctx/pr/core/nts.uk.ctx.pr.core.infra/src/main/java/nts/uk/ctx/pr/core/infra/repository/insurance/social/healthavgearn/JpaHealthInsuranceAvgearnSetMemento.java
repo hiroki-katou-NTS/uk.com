@@ -34,8 +34,7 @@ public class JpaHealthInsuranceAvgearnSetMemento implements HealthInsuranceAvgea
 	 */
 	@Override
 	public void setHistoryId(String historyId) {
-		// TODO Auto-generated method stub
-
+		// TODO ko co historyID?
 	}
 
 	/*
@@ -46,8 +45,7 @@ public class JpaHealthInsuranceAvgearnSetMemento implements HealthInsuranceAvgea
 	 */
 	@Override
 	public void setLevelCode(Integer levelCode) {
-		// TODO Auto-generated method stub
-
+		// TODO ko co level code?
 	}
 
 	/*
@@ -59,8 +57,11 @@ public class JpaHealthInsuranceAvgearnSetMemento implements HealthInsuranceAvgea
 	 */
 	@Override
 	public void setCompanyAvg(HealthInsuranceAvgearnValue companyAvg) {
-		// TODO Auto-generated method stub
-
+		// TODO rot cuc la long hay bigDecimal?
+//		this.typeValue.setCHealthBasicMny(companyAvg.getHealthBasicMny().longValue());
+//		this.typeValue.setCHealthGeneralMny(companyAvg.getHealthBasicMny().longValue());
+//		this.typeValue.setCHealthNursingMny(companyAvg.getHealthBasicMny().longValue());
+//		this.typeValue.setCHealthSpecificMny(companyAvg.getHealthBasicMny().longValue());
 	}
 
 	/*
@@ -72,8 +73,11 @@ public class JpaHealthInsuranceAvgearnSetMemento implements HealthInsuranceAvgea
 	 */
 	@Override
 	public void setPersonalAvg(HealthInsuranceAvgearnValue personalAvg) {
-		// TODO Auto-generated method stub
-
+		// TODO rot cuc la long hay bigDecimal?
+//		this.typeValue.setPHealthBasicMny(personalAvg.getHealthBasicMny().longValue());
+//		this.typeValue.setPHealthGeneralMny(personalAvg.getHealthBasicMny().longValue());
+//		this.typeValue.setPHealthNursingMny(personalAvg.getHealthBasicMny().longValue());
+//		this.typeValue.setPHealthSpecificMny(personalAvg.getHealthBasicMny().longValue());
 	}
 
 }

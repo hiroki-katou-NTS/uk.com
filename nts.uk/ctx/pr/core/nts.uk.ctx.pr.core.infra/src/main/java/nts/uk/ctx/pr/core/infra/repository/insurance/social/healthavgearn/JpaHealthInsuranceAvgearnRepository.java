@@ -11,26 +11,24 @@ import nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.HealthInsuranceAvge
 import nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.HealthInsuranceAvgearnGetMemento;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.HealthInsuranceAvgearnRepository;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.HealthInsuranceAvgearnValue;
+import nts.uk.ctx.pr.core.infra.entity.insurance.social.healthavgearn.QismtHealthInsuAvgearn;
 
 @Stateless
-public class JpaHealthInsuranceAvgearn extends JpaRepository implements HealthInsuranceAvgearnRepository {
+public class JpaHealthInsuranceAvgearnRepository extends JpaRepository implements HealthInsuranceAvgearnRepository {
 
 	@Override
 	public void add(HealthInsuranceAvgearn healthInsuranceAvgearn) {
-		// TODO Auto-generated method stub
-
+		this.commandProxy().insert(toEntity(healthInsuranceAvgearn));
 	}
 
 	@Override
 	public void update(HealthInsuranceAvgearn healthInsuranceAvgearn) {
-		// TODO Auto-generated method stub
-
+		this.commandProxy().update(toEntity(healthInsuranceAvgearn));
 	}
 
 	@Override
 	public void remove(String id, Long version) {
-		// TODO Auto-generated method stub
-
+		// TODO lam the nao de xoa?
 	}
 
 	@Override
@@ -181,6 +179,12 @@ public class JpaHealthInsuranceAvgearn extends JpaRepository implements HealthIn
 	public Optional<HealthInsuranceAvgearn> find(String historyId, Integer levelCode) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	private QismtHealthInsuAvgearn toEntity(HealthInsuranceAvgearn healthInsuranceAvgearn) {
+		QismtHealthInsuAvgearn entity = new QismtHealthInsuAvgearn();
+		healthInsuranceAvgearn.saveToMemento(new JpaHealthInsuranceAvgearnSetMemento(entity));
+		return entity;
 	}
 
 }

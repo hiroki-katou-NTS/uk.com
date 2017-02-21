@@ -111,7 +111,8 @@ module nts.uk.pr.view.qmm008.i {
              */
             private save(): void {
                 var self = this;
-                service.updatePensionAvgearn(this.collectData());
+                service.updatePensionAvgearn(self.collectData()).done(() =>
+                    self.closeDialog());
             }
 
             /**

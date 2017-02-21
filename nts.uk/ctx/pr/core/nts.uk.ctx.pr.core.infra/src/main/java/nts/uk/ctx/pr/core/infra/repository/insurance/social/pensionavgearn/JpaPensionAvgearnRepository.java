@@ -7,32 +7,32 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 
+import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.pr.core.dom.insurance.CommonAmount;
 import nts.uk.ctx.pr.core.dom.insurance.InsuranceAmount;
 import nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.PensionAvgearn;
 import nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.PensionAvgearnGetMemento;
 import nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.PensionAvgearnRepository;
 import nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.PensionAvgearnValue;
+import nts.uk.ctx.pr.core.infra.entity.insurance.social.pensionavgearn.QismtPensionAvgearn;
 
 @Stateless
-public class JpaPensionAvgearnRepository implements PensionAvgearnRepository {
+public class JpaPensionAvgearnRepository extends JpaRepository implements PensionAvgearnRepository {
 
 	@Override
 	public void add(PensionAvgearn pensionAvgearn) {
-		// TODO Auto-generated method stub
+		this.commandProxy().insert(toEntity(pensionAvgearn));
 
 	}
 
 	@Override
 	public void update(PensionAvgearn pensionAvgearn) {
-		// TODO Auto-generated method stub
-
+		this.commandProxy().update(toEntity(pensionAvgearn));
 	}
 
 	@Override
 	public void remove(String id) {
-		// TODO Auto-generated method stub
-
+		// TODO lam the nao de xoa?
 	}
 
 	@Override
@@ -365,8 +365,14 @@ public class JpaPensionAvgearnRepository implements PensionAvgearnRepository {
 
 	@Override
 	public Optional<PensionAvgearn> find(String historyId, Integer levelCode) {
-		// TODO: find and return pensionAvgearn 
+		// TODO: find and return pensionAvgearn
 		return null;
+	}
+
+	private QismtPensionAvgearn toEntity(PensionAvgearn pensionAvgearn) {
+		QismtPensionAvgearn entity = new QismtPensionAvgearn();
+		pensionAvgearn.saveToMemento(new JpaPensionAvgearnSetMemento(entity));
+		return entity;
 	}
 
 }
