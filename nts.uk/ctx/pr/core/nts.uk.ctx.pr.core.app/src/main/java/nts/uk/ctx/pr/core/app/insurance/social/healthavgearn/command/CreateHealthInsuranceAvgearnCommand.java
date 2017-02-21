@@ -7,6 +7,6 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class UpdateHealthInsuranceAvgearnCommand {
+public class CreateHealthInsuranceAvgearnCommand {
 	List<HealthInsuranceAvgearnCommandDto> listHealthInsuranceAvgearn;
 }
