@@ -40,4 +40,12 @@ public interface ItemMasterRepository {
 	 * @return item master
 	 */
 	Optional<ItemMaster> find(String companyCode, int categoryAtr, String itemCode);
+	
+	/**
+	 * Find all item master with avePayAtr
+	 * @param companyCode company code
+	 * @param avePayAtr ave payment attribute
+	 * @return
+	 */
+	List<ItemMaster> findAll(String companyCode, int avePayAtr);
 }
