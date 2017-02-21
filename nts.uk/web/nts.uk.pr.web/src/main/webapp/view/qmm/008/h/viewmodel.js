@@ -91,10 +91,10 @@ var nts;
                             viewmodel.HealthInsuranceAvgEarnModel = HealthInsuranceAvgEarnModel;
                             var HealthInsuranceAvgEarnValueModel = (function () {
                                 function HealthInsuranceAvgEarnValueModel(general, nursing, basic, specific) {
-                                    this.general = ko.observable(general);
-                                    this.nursing = ko.observable(nursing);
-                                    this.basic = ko.observable(basic);
-                                    this.specific = ko.observable(specific);
+                                    this.healthGeneralMny = ko.observable(general);
+                                    this.healthNursingMny = ko.observable(nursing);
+                                    this.healthBasicMny = ko.observable(basic);
+                                    this.healthSpecificMny = ko.observable(specific);
                                 }
                                 return HealthInsuranceAvgEarnValueModel;
                             }());
