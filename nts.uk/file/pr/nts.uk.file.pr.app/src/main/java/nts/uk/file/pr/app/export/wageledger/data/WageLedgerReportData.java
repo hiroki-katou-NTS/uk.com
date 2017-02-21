@@ -2,7 +2,7 @@
  * Copyright (c) 2015 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.file.pr.app.export.wageledger.datasource;
+package nts.uk.file.pr.app.export.wageledger.data;
 
 import java.util.List;
 
