@@ -11,6 +11,7 @@ import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsuranceRateItem;
 import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsuranceRateSetMemento;
 import nts.uk.ctx.pr.core.infra.entity.insurance.labor.unemployeerate.QismtEmpInsuRate;
+import nts.uk.ctx.pr.core.infra.entity.insurance.labor.unemployeerate.QismtEmpInsuRatePK;
 
 /**
  * The Class JpaUnemployeeInsuranceRateSetMemento.
@@ -38,7 +39,9 @@ public class JpaUnemployeeInsuranceRateSetMemento implements UnemployeeInsurance
 	 */
 	@Override
 	public void setHistoryId(String historyId) {
-		// TODO Auto-generated method stub
+		QismtEmpInsuRatePK pk = new QismtEmpInsuRatePK();
+		pk.setHistId(historyId);
+		this.typeValue.setQismtEmpInsuRatePK(pk);
 
 	}
 
@@ -51,8 +54,9 @@ public class JpaUnemployeeInsuranceRateSetMemento implements UnemployeeInsurance
 	 */
 	@Override
 	public void setCompanyCode(CompanyCode companyCode) {
-		// TODO Auto-generated method stub
-
+		QismtEmpInsuRatePK pk = this.typeValue.getQismtEmpInsuRatePK();
+		pk.setCcd(companyCode.v());
+		this.typeValue.setQismtEmpInsuRatePK(pk);
 	}
 
 	/*
@@ -64,8 +68,8 @@ public class JpaUnemployeeInsuranceRateSetMemento implements UnemployeeInsurance
 	 */
 	@Override
 	public void setApplyRange(MonthRange applyRange) {
-		// TODO Auto-generated method stub
-
+		this.typeValue.setStrYm(applyRange.getEndMonth().v());
+		this.typeValue.setEndYm(applyRange.getStartMonth().v());
 	}
 
 	/*
