@@ -11,13 +11,7 @@ import nts.uk.ctx.core.dom.company.CompanyCode;
  */
 public interface RetirementPayItemRepository {
 	
-	void add(RetirementPayItem payItem);
-	
-	List<RetirementPayItem> findAll();
-	
 	List<RetirementPayItem> findByCompanyCode(CompanyCode companyCode);
 	
 	void update(RetirementPayItem payItem);
-	
-	void remove(RetirementPayItem payItem);
 }

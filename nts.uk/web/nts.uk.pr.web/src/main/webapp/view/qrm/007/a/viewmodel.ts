@@ -66,7 +66,6 @@ module qrm007.a.viewmodel {
             var dfd = $.Deferred();
             if(self.currentItem().onchange()){
                 var command = ko.mapping.toJS(self.currentItem());
-                console.log(self.currentItem());
                 qrm007.a.service.updateRetirementPayItem(command).done(function(data) {
                     qrm007.a.service.getRetirementPayItemList().done(function(data) {
                         self.retirementPayItemList.removeAll();
@@ -90,7 +89,7 @@ module qrm007.a.viewmodel {
                     dfd.resolve();
                 });
             } else {
-                nts.uk.ui.dialog.alert("＊が入力されていません。");    
+                $('.data-required').ntsError('set', 'ER001');  
             }
             return dfd.promise();
         }
@@ -116,11 +115,7 @@ module qrm007.a.viewmodel {
             self.itemName = ko.observable(name);
             self.printName = ko.observable(printName);
             self.memo = ko.observable(memo);
-            self.printName.subscribe(function(value){
-                console.log(value+"              "+printName);
-                (value==printName)?self.onchange(false):self.onchange(true); 
-                console.log(self.onchange());
-            });
+            self.printName.subscribe(function(value){ (value==printName)?self.onchange(false):self.onchange(true); });
         }
         static converToObject(object: RPItem): RetirementPayItemModel {
             return new RetirementPayItemModel(object.itemCode,object.itemName,object.printName,object.memo);

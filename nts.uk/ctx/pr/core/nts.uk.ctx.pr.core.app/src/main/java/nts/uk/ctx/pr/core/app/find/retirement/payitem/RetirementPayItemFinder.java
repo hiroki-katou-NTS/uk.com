@@ -20,21 +20,6 @@ public class RetirementPayItemFinder {
 	@Inject
 	private RetirementPayItemRepository retirementPayItemRepository;
 	
-	public List<RetirementPayItemDto> findAll(){
-		return this.retirementPayItemRepository.findAll()
-				.stream()
-				.map(x -> new RetirementPayItemDto(
-						x.getCompanyCode().v(),
-						x.getCategory().value,
-						x.getItemCode().v(),
-						x.getItemName().v(),
-						x.getPrintName().v(),
-						x.getEnglishName().v(),
-						x.getFullName().v(),
-						x.getMemo().v()))
-				.collect(Collectors.toList());
-	}
-	
 	public List<RetirementPayItemDto> find_By_companyCode(){
 		CompanyCode companyCode = new CompanyCode(AppContexts.user().companyCode()) ;
 		return this.retirementPayItemRepository.findByCompanyCode(companyCode)
