@@ -8,17 +8,27 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.ejb.Stateless;
+import javax.inject.Inject;
 
+import lombok.val;
 import nts.uk.ctx.pr.report.app.wageledger.find.dto.AggregateItemDto;
 import nts.uk.ctx.pr.report.app.wageledger.find.dto.SubItemDto;
+import nts.uk.ctx.pr.report.dom.company.CompanyCode;
 import nts.uk.ctx.pr.report.dom.wageledger.PaymentType;
 import nts.uk.ctx.pr.report.dom.wageledger.WLCategory;
+import nts.uk.ctx.pr.report.dom.wageledger.aggregate.WLAggregateItemCode;
+import nts.uk.ctx.pr.report.dom.wageledger.aggregate.WLAggregateItemRepository;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class AggregateItemFinder.
  */
 @Stateless
 public class AggregateItemFinder {
+	
+	/** The repository. */
+	@Inject
+	private WLAggregateItemRepository repository;
 	
 	/**
 	 * Find all.
@@ -64,7 +74,13 @@ public class AggregateItemFinder {
 	 * @return the aggregate item dto
 	 */
 	public AggregateItemDto findDetail(String code) {
+		
+		// Query data.
+		val aggregateItem = this.repository.find(new WLAggregateItemCode(code), 
+				new CompanyCode(AppContexts.user().companyCode()));
+		
 		// Fake data.
+		if (aggregateItem == null) {
 		List<SubItemDto> subItemDtos = new ArrayList<>();
 		for (int i = 0 ; i < 10 ; i++) {
 			subItemDtos.add(SubItemDto.builder()
@@ -81,5 +97,12 @@ public class AggregateItemFinder {
 				.showValueZeroValue(false)
 				.subItems(subItemDtos)
 				.build();
+		}
+		
+		// Return dto.
+		val dto = AggregateItemDto.builder().build();
+		aggregateItem.saveToMemento(dto);
+		// TODO: Get master item name.
+		return dto;
 	}
 }

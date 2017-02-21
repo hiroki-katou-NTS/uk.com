@@ -14,16 +14,16 @@ import nts.uk.ctx.pr.report.dom.company.CompanyCode;
  */
 @Getter
 public class SalaryOutputSetting {
-	
-	/** The code. */
-	private SalaryOutputSettingCode code;
-	
-	/** The name. */
-	private SalaryOutputSettingName name;
-	
+
 	/** The company code. */
 	private CompanyCode companyCode;
-	
+
+	/** The code. */
+	private SalaryOutputSettingCode code;
+
+	/** The name. */
+	private SalaryOutputSettingName name;
+
 	/** The category settings. */
 	private List<SalaryCategorySetting> categorySettings;
 }

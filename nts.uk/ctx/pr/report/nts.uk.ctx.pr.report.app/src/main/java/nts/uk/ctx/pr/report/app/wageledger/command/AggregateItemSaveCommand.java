@@ -10,7 +10,6 @@ import java.util.Set;
 
 import lombok.Getter;
 import lombok.Setter;
-import lombok.val;
 import nts.uk.ctx.pr.report.dom.company.CompanyCode;
 import nts.uk.ctx.pr.report.dom.wageledger.PaymentType;
 import nts.uk.ctx.pr.report.dom.wageledger.WLCategory;
@@ -22,7 +21,19 @@ import nts.uk.ctx.pr.report.dom.wageledger.aggregate.WLAggregateItemName;
 /**
  * The Class AggregateItemSaveCommand.
  */
+
+/**
+ * Checks if is creates the mode.
+ *
+ * @return true, if is creates the mode
+ */
 @Getter
+
+/**
+ * Sets the creates the mode.
+ *
+ * @param isCreateMode the new creates the mode
+ */
 @Setter
 public class AggregateItemSaveCommand {
 	
@@ -57,48 +68,102 @@ public class AggregateItemSaveCommand {
 	 * @return the WL aggregate item
 	 */
 	public WLAggregateItem toDomain(String companyCode) {
-		val self = this;
-		return new WLAggregateItem(new WLAggregateItemGetMemento() {
-			
-			@Override
-			public Set<String> getSubItems() {
-				return new HashSet<String>(self.subItems);
-			}
-			
-			@Override
-			public Boolean getShowValueZeroValue() {
-				return self.showValueZeroValue;
-			}
-			
-			@Override
-			public Boolean getShowNameZeroValue() {
-				return self.showNameZeroValue;
-			}
-			
-			@Override
-			public PaymentType getPaymentType() {
-				return self.paymentType;
-			}
-			
-			@Override
-			public WLAggregateItemName getName() {
-				return new WLAggregateItemName(self.name);
-			}
-			
-			@Override
-			public CompanyCode getCompanyCode() {
-				return new CompanyCode(self.code);
-			}
-			
-			@Override
-			public WLAggregateItemCode getCode() {
-				return new WLAggregateItemCode(self.code);
-			}
-			
-			@Override
-			public WLCategory getCategory() {
-				return self.category;
-			}
-		});
+		return new WLAggregateItem(new AggregateItemGetMementoImpl(this, companyCode));
+	}
+	
+	/**
+	 * The Class AggregateItemGetMementoImpl.
+	 */
+	public class AggregateItemGetMementoImpl implements WLAggregateItemGetMemento {
+		
+		/** The command. */
+		private AggregateItemSaveCommand command;
+		
+		/** The company code. */
+		private String companyCode;
+		
+		/**
+		 * Instantiates a new aggregate item get memento impl.
+		 *
+		 * @param command the command
+		 * @param companyCode the company code
+		 */
+		public AggregateItemGetMementoImpl(AggregateItemSaveCommand command, String companyCode) {
+			super();
+			this.command = command;
+			this.companyCode = companyCode;
+		}
+
+		/* (non-Javadoc)
+		 * @see nts.uk.ctx.pr.report.dom.wageledger.aggregate.WLAggregateItemGetMemento
+		 * #getSubItems()
+		 */
+		@Override
+		public Set<String> getSubItems() {
+			return new HashSet<String>(this.command.getSubItems());
+		}
+		
+		/* (non-Javadoc)
+		 * @see nts.uk.ctx.pr.report.dom.wageledger.aggregate.WLAggregateItemGetMemento
+		 * #getShowValueZeroValue()
+		 */
+		@Override
+		public Boolean getShowValueZeroValue() {
+			return this.command.getShowValueZeroValue();
+		}
+		
+		/* (non-Javadoc)
+		 * @see nts.uk.ctx.pr.report.dom.wageledger.aggregate.WLAggregateItemGetMemento
+		 * #getShowNameZeroValue()
+		 */
+		@Override
+		public Boolean getShowNameZeroValue() {
+			return this.command.getShowNameZeroValue();
+		}
+		
+		/* (non-Javadoc)
+		 * @see nts.uk.ctx.pr.report.dom.wageledger.aggregate.WLAggregateItemGetMemento
+		 * #getPaymentType()
+		 */
+		@Override
+		public PaymentType getPaymentType() {
+			return this.command.getPaymentType();
+		}
+		
+		/* (non-Javadoc)
+		 * @see nts.uk.ctx.pr.report.dom.wageledger.aggregate.WLAggregateItemGetMemento
+		 * #getName()
+		 */
+		@Override
+		public WLAggregateItemName getName() {
+			return new WLAggregateItemName(this.command.getName());
+		}
+		
+		/* (non-Javadoc)
+		 * @see nts.uk.ctx.pr.report.dom.wageledger.aggregate.WLAggregateItemGetMemento
+		 * #getCompanyCode()
+		 */
+		@Override
+		public CompanyCode getCompanyCode() {
+			return new CompanyCode(this.companyCode);
+		}
+		
+		/* (non-Javadoc)
+		 * @see nts.uk.ctx.pr.report.dom.wageledger.aggregate.WLAggregateItemGetMemento
+		 * #getCode()
+		 */
+		@Override
+		public WLAggregateItemCode getCode() {
+			return new WLAggregateItemCode(this.command.getCode());
+		}
+		
+		/* (non-Javadoc)
+		 * @see nts.uk.ctx.pr.report.dom.wageledger.aggregate.WLAggregateItemGetMemento
+		 * #getCategory()
+		 */
+		@Override
+		public WLCategory getCategory() {
+			return this.command.getCategory();
+		}
 	}
 }

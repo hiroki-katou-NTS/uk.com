@@ -29,56 +29,60 @@ public class JpaPensionAvgearnSetMemento implements PensionAvgearnSetMemento {
 
 	@Override
 	public void setHistoryId(String historyId) {
-		// TODO Auto-generated method stub
-
+		// TODO ko co historyID?
 	}
 
 	@Override
 	public void setLevelCode(Integer levelCode) {
-		// TODO Auto-generated method stub
-
+		// TODO ko co level code?
 	}
 
 	@Override
 	public void setChildContributionAmount(InsuranceAmount childContributionAmount) {
-		// TODO Auto-generated method stub
-
+		this.typeValue.setChildContributionMny(childContributionAmount.v());
 	}
 
 	@Override
 	public void setCompanyFund(PensionAvgearnValue companyFund) {
-		// TODO Auto-generated method stub
+		this.typeValue.setCFundFemMny(companyFund.getFemaleAmount().v());
+		this.typeValue.setCFundMaleMny(companyFund.getMaleAmount().v());
+		this.typeValue.setCFundMinerMny(companyFund.getUnknownAmount().v());
 
 	}
 
 	@Override
 	public void setCompanyFundExemption(PensionAvgearnValue companyFundExemption) {
-		// TODO Auto-generated method stub
-
+		this.typeValue.setCFundExemptFemMny(companyFundExemption.getFemaleAmount().v());
+		this.typeValue.setCFundExemptMaleMny(companyFundExemption.getMaleAmount().v());
+		this.typeValue.setCFundExemptMinerMny(companyFundExemption.getUnknownAmount().v());
 	}
 
 	@Override
 	public void setCompanyPension(PensionAvgearnValue companyPension) {
-		// TODO Auto-generated method stub
-
+		this.typeValue.setCPensionFemMny(companyPension.getFemaleAmount().v());
+		this.typeValue.setCPensionMaleMny(companyPension.getMaleAmount().v());
+		this.typeValue.setCPensionMinerMny(companyPension.getUnknownAmount().v());
 	}
 
 	@Override
 	public void setPersonalFund(PensionAvgearnValue personalFund) {
-		// TODO Auto-generated method stub
-
+		this.typeValue.setPFundFemMny(personalFund.getFemaleAmount().v());
+		this.typeValue.setPFundMaleMny(personalFund.getMaleAmount().v());
+		this.typeValue.setPFundMinerMny(personalFund.getUnknownAmount().v());
 	}
 
 	@Override
 	public void setPersonalFundExemption(PensionAvgearnValue personalFundExemption) {
-		// TODO Auto-generated method stub
-
+		this.typeValue.setPFundExemptFemMny(personalFundExemption.getFemaleAmount().v());
+		this.typeValue.setPFundMaleMny(personalFundExemption.getMaleAmount().v());
+		this.typeValue.setPFundExemptMinerMny(personalFundExemption.getUnknownAmount().v());
 	}
 
 	@Override
 	public void setPersonalPension(PensionAvgearnValue personalPension) {
-		// TODO Auto-generated method stub
-
+		this.typeValue.setPPensionFemMny(personalPension.getFemaleAmount().v());
+		this.typeValue.setPPensionMaleMny(personalPension.getMaleAmount().v());
+		this.typeValue.setPPensionMinerMny(personalPension.getUnknownAmount().v());
 	}
 
 }

@@ -18,7 +18,7 @@ var nts;
                                 getAllHealthInsuranceItemByOfficeCode: "ctx/pr/core/insurance/social/healthrate/findByOfficeCode",
                                 getHealthInsuranceItemDetail: "ctx/pr/core/insurance/social/healthrate/find",
                                 getPensionItemDetail: "ctx/pr/core/insurance/social/pensionrate/find",
-                                getAllRoundingItem: "list/rounding"
+                                getAllRoundingItem: "pr/insurance/social/find/rounding"
                             };
                             function findInsuranceOffice(key) {
                                 var dfd = $.Deferred();

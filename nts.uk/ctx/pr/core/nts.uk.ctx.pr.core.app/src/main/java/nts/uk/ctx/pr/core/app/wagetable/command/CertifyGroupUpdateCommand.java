@@ -11,8 +11,8 @@ import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.core.dom.company.CompanyCode;
-import nts.uk.ctx.pr.core.app.wagetable.CertificationDto;
-import nts.uk.ctx.pr.core.app.wagetable.CertifyGroupDto;
+import nts.uk.ctx.pr.core.app.wagetable.command.dto.CertificationDto;
+import nts.uk.ctx.pr.core.app.wagetable.command.dto.CertifyGroupDto;
 import nts.uk.ctx.pr.core.dom.wagetable.Certification;
 import nts.uk.ctx.pr.core.dom.wagetable.CertificationGetMemento;
 import nts.uk.ctx.pr.core.dom.wagetable.CertifyGroup;
@@ -32,64 +32,13 @@ public class CertifyGroupUpdateCommand implements Serializable {
 	/** The certify group dto. */
 	private CertifyGroupDto certifyGroupDto;
 
-	/** The comany code. */
-	private String companyCode;
-
 	/**
 	 * To domain.
 	 *
 	 * @return the certify group
 	 */
-	public CertifyGroup toDomain() {
-		CertifyGroupUpdateCommand command = this;
-		return new CertifyGroup(new CertifyGroupGetMemento() {
-
-			@Override
-			public String getName() {
-				return command.certifyGroupDto.getName();
-			}
-
-			@Override
-			public MultipleTargetSetting getMultiApplySet() {
-				return MultipleTargetSetting.valueOf(command.certifyGroupDto.getMultiApplySet());
-			}
-
-			@Override
-			public CompanyCode getCompanyCode() {
-				return new CompanyCode(command.companyCode);
-			}
-
-			@Override
-			public String getCode() {
-				return command.certifyGroupDto.getCode();
-			}
-
-			@Override
-			public Set<Certification> getCertifies() {
-				Set<Certification> setCertification = new HashSet<>();
-				for (CertificationDto certificationDto : command.certifyGroupDto.getCertifies()) {
-					Certification certification = new Certification(new CertificationGetMemento() {
-
-						@Override
-						public String getName() {
-							return certificationDto.getName();
-						}
-
-						@Override
-						public CompanyCode getCompanyCode() {
-							return new CompanyCode(command.companyCode);
-						}
-
-						@Override
-						public String getCode() {
-							return certificationDto.getCode();
-						}
-					});
-					setCertification.add(certification);
-				}
-				return setCertification;
-			}
-		});
+	public CertifyGroup toDomain(String companyCode) {
+		return certifyGroupDto.toDomain(companyCode);
 	}
 
 }

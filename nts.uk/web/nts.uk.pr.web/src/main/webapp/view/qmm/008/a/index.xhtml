@@ -25,8 +25,8 @@
 
 		<ui:define name="sidebar">
 			<ul class="navigator">
-				<li><a href="#tabpanel-1" >健康保険</a></li>
-				<li><a href="#tabpanel-2" class="active">厚生年金</a></li>
+				<li><a href="#tabpanel-1" class="active">健康保険</a></li>
+				<li><a href="#tabpanel-2" >厚生年金</a></li>
 			</ul>
 		</ui:define>
 
@@ -118,10 +118,10 @@
 									<th class="text_center" colspan="2">賞与</th>
 								</tr>
 								<tr class="bg-green">
-									<th class="text_center">個人負担率</th>
-									<th class="text_center">事業主負担率</th>
-									<th class="text_center">個人負担率</th>
-									<th class="text_center">事業主負担率</th>
+									<th class="text_center tbl_head">個人負担率</th>
+									<th class="text_center tbl_head">事業主負担率</th>
+									<th class="text_center tbl_head">個人負担率</th>
+									<th class="text_center tbl_head">事業主負担率</th>
 								</tr>
 								<tr>
 									<td class="bg-green tbl_health_insurance_rate text_center"
@@ -164,13 +164,13 @@
 										</div>/1000</td>
 								</tr>
 								<tr>
-									<td class="empty-col bg-green no_right_border no_bottom_border"></td>
-									<td class="bg-green text_center no_left_border no_right_border">健康保険の内訳</td>
+									<td colspan="2" class="empty-col bg-green no_right_border no_bottom_border">健康保険の内訳</td>
+									<!-- <td class="bg-green text_center no_left_border no_right_border"></td> -->
 									<td colspan="4" class="bg-green no_left_border"></td>
 								</tr>
 								<tr>
-									<td class="empty-col bg-green no_top_border no_bottom_border "></td>
-									<td class="bg-green text_center">特定保険率</td>
+									<td class="health_empty_col bg-green no_top_border no_bottom_border "></td>
+									<td class="bg-green text_center tbl_health_child">特定保険率</td>
 									<td><div class="float_left">
 											<input
 												data-bind="ntsNumberEditor: {value: rateItems().healthSalaryPersonalBasic,enable: $parent.isClickHistory(), option: $parent.numberInputOptions}" />
@@ -189,8 +189,8 @@
 										</div>/1000</td>
 								</tr>
 								<tr>
-									<td class="empty-col bg-green no_top_border no_bottom_border"></td>
-									<td class="bg-green text_center">基本保険率</td>
+									<td class="health_empty_col bg-green no_top_border no_bottom_border"></td>
+									<td class="bg-green text_center tbl_health_child">基本保険率</td>
 									<td><div class="float_left">
 											<input
 												data-bind="ntsNumberEditor: {value: rateItems().healthSalaryPersonalSpecific,enable: $parent.isClickHistory(), option: $parent.numberInputOptions}" />
@@ -222,10 +222,10 @@
 									<th class="text_center" colspan="2">賞与</th>
 								</tr>
 								<tr class="bg-green">
-									<th class="text_center">個人負担率</th>
-									<th class="text_center">事業主負担率</th>
-									<th class="text_center">個人負担率</th>
-									<th class="text_center">事業主負担率</th>
+									<th class="text_center tbl_head">個人負担率</th>
+									<th class="text_center tbl_head">事業主負担率</th>
+									<th class="text_center tbl_head">個人負担率</th>
+									<th class="text_center tbl_head">事業主負担率</th>
 								</tr>
 								<tr>
 									<td><div class="rounding_width" id="combo-box-1"
@@ -390,13 +390,13 @@
 									<th class="text_center" colspan="2">賞与</th>
 								</tr>
 								<tr class="bg-green">
-									<th class="text_center">個人負担率</th>
-									<th class="text_center">事業主負担率</th>
-									<th class="text_center">個人負担率</th>
-									<th class="text_center">事業主負担率</th>
+									<th class="text_center tbl_head">個人負担率</th>
+									<th class="text_center tbl_head">事業主負担率</th>
+									<th class="text_center tbl_head">個人負担率</th>
+									<th class="text_center tbl_head">事業主負担率</th>
 								</tr>
 								<tr>
-									<td class="bg-green tbl_health_insurance_rate text_center"
+									<td class="bg-green tbl_pension_rate text_center"
 										colspan="2">男子負担率（第1種）</td>
 									<td><div class="float_left">
 											<input
@@ -416,7 +416,7 @@
 										</div>/1000</td>
 								</tr>
 								<tr>
-									<td class="bg-green tbl_health_insurance_rate text_center"
+									<td class="bg-green tbl_pension_rate text_center"
 										colspan="2">女子負担率（第2種）</td>
 									<td><div class="float_left">
 											<input
@@ -436,7 +436,7 @@
 										</div>/1000</td>
 								</tr>
 								<tr>
-									<td class="bg-green tbl_health_insurance_rate text_center"
+									<td class="bg-green tbl_pension_rate text_center"
 										colspan="2">坑内員負担率（第3種）</td>
 									<td><div class="float_left">
 											<input
@@ -458,7 +458,7 @@
 							</tbody>
 						</table>
 
-						<div data-bind="css: { hidden: $parent.fundInputEnable() }">基金用</div>
+						<div class="pad_top_10" data-bind="css: { hidden: $parent.fundInputEnable() }">基金用</div>
 						<div data-bind="css: { hidden: $parent.fundInputEnable() }" class="hr_width">
 							<hr />
 						</div>
@@ -470,10 +470,10 @@
 									<th class="text_center" colspan="2">賞与</th>
 								</tr>
 								<tr class="bg-green">
-									<th class="text_center">個人負担率</th>
-									<th class="text_center">事業主負担率</th>
-									<th class="text_center">個人負担率</th>
-									<th class="text_center">事業主負担率</th>
+									<th class="text_center tbl_head">個人負担率</th>
+									<th class="text_center tbl_head">事業主負担率</th>
+									<th class="text_center tbl_head">個人負担率</th>
+									<th class="text_center tbl_head">事業主負担率</th>
 								</tr>
 								<tr>
 									<td rowspan="2"

@@ -1,19 +1,28 @@
-package nts.uk.ctx.pr.core.app.wagetable.find;
+package nts.uk.ctx.pr.core.app.wagetable.find.dto;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import lombok.Data;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.wagetable.Certification;
-import nts.uk.ctx.pr.core.dom.wagetable.CertificationSetMemento;
 import nts.uk.ctx.pr.core.dom.wagetable.CertifyGroupSetMemento;
 import nts.uk.ctx.pr.core.dom.wagetable.MultipleTargetSetting;
-import nts.uk.ctx.pr.core.dom.wagetable.WageTableCode;
 
 @Data
-public class CertifyGroupFindOutDto implements CertifyGroupSetMemento {
+public class CertifyGroupFindDto implements CertifyGroupSetMemento {
+	/** The code. */
 	private String code;
+
+	/** The name. */
 	private String name;
+
+	/** The multi apply set. */
+	private Integer multiApplySet;
+
+	/** The certifies. */
+	private List<CertificationFindDto> certifies;
 
 	@Override
 	public void setCompanyCode(CompanyCode companyCode) {
@@ -23,28 +32,31 @@ public class CertifyGroupFindOutDto implements CertifyGroupSetMemento {
 
 	@Override
 	public void setCode(String code) {
-		// TODO Auto-generated method stub
 		this.code = code;
 
 	}
 
 	@Override
 	public void setName(String name) {
-		// TODO Auto-generated method stub
 		this.name = name;
 
 	}
 
 	@Override
 	public void setMultiApplySet(MultipleTargetSetting multiApplySet) {
-		// TODO Auto-generated method stub
+		this.multiApplySet = multiApplySet.value;
 
 	}
 
 	@Override
 	public void setCertifies(Set<Certification> certifies) {
-		// TODO Auto-generated method stub
+		List<CertificationFindDto> lstCertificationDto = new ArrayList<>();
+		for (Certification certification : certifies) {
+			CertificationFindDto certificationDto = new CertificationFindDto();
+			certification.saveToMemento(certificationDto);
+			lstCertificationDto.add(certificationDto);
+		}
+		this.certifies = lstCertificationDto;
 
 	}
-
 }

@@ -132,7 +132,6 @@ module nts.uk.pr.view.qmm008.a {
                             self.loadHistoryOfOffice(officeSelectedCode);
                             //reset data on view
                             self.healthModel(new HealthInsuranceRateModel("code", 1, null, null, 15000));
-                            self.pensionModel(new PensionRateModel("code", 1, 1, null, null, null, 35000, 1.5));
                             //TODO enabled button add new history
                             self.isClickHistory(false);
                         }
@@ -171,7 +170,7 @@ module nts.uk.pr.view.qmm008.a {
                     // Load first item.
                     if ((self.InsuranceOfficeList() != null) && (self.InsuranceOfficeList().length > 0)) {
                         //Load select first item of list
-                        //                        self.selectedInsuranceOfficeId(self.InsuranceOfficeList()[0].id);
+                        self.officeSelectedCode(self.InsuranceOfficeList()[0].code);
                     } else {
                         //Open register new office screen
                         self.OpenModalOfficeRegister();
@@ -237,6 +236,8 @@ module nts.uk.pr.view.qmm008.a {
                                     new InsuranceOfficeItem(index + item.code, item2.officeCode, index + item2.historyId + index2, [], ((item2.startMonth) / 100).toFixed(0) + "/" + item2.startMonth % 100 + "~" + ((item2.endMonth) / 100).toFixed(0) + "/" + item2.endMonth % 100));
                             });
                             self.InsuranceOfficeList(officeData);
+                            //focus first history of office
+                            self.officeSelectedCode(self.InsuranceOfficeList()[0].childs[0].code);
                         });
                     }
                 });
@@ -282,7 +283,7 @@ module nts.uk.pr.view.qmm008.a {
                     self.healthModel().rateItems().healthSalaryCompanySpecific(data.rateItems[0].companyRate);
                     self.healthModel().rateItems().healthBonusPersonalSpecific(data.rateItems[0].companyRate);
                     self.healthModel().rateItems().healthBonusCompanySpecific(data.rateItems[0].companyRate);
-
+                    //set rounding list
                     self.healthModel().roundingMethods().healthSalaryPersonalComboBox(self.roundingList());
                     self.healthModel().roundingMethods().healthSalaryCompanyComboBox(self.roundingList());
                     self.healthModel().roundingMethods().healthBonusPersonalComboBox(self.roundingList());
@@ -339,11 +340,12 @@ module nts.uk.pr.view.qmm008.a {
                     self.pensionModel().fundRateItems().salaryCompanySonExemption(data.fundRateItems[0].burdenChargeCompanyRate);
                     self.pensionModel().fundRateItems().bonusPersonalSonExemption(data.fundRateItems[0].burdenChargeCompanyRate);
                     self.pensionModel().fundRateItems().bonusCompanySonExemption(data.fundRateItems[0].burdenChargeCompanyRate);
-
-                    //                    self.pensionModel().roundingMethods().pensionSalaryPersonalComboBox(data.roundingMethods[0].roundAtrs.companyRoundAtr);
-                    //                    self.pensionModel().roundingMethods().pensionSalaryCompanyComboBox(data.roundingMethods[1].roundAtrs.personalRoundAtr);
-                    //                    self.pensionModel().roundingMethods().pensionBonusPersonalComboBox(data.roundingMethods[1].roundAtrs.companyRoundAtr);
-                    //                    self.pensionModel().roundingMethods().peboBox(data.roundingMethods[0].roundAtrs.personalRoundAtr);
+                    
+                    //set rounding list
+                    self.pensionModel().roundingMethods().pensionSalaryPersonalComboBox(self.roundingList());
+                    self.pensionModel().roundingMethods().pensionSalaryCompanyComboBox(self.roundingList());
+                    self.pensionModel().roundingMethods().pensionBonusPersonalComboBox(self.roundingList());
+                    self.pensionModel().roundingMethods().pensionBonusCompanyComboBox(self.roundingList());
 
                     self.pensionModel().maxAmount(data.maxAmount);
                     self.pensionModel().childContributionRate(data.childContributionRate);
@@ -398,6 +400,13 @@ module nts.uk.pr.view.qmm008.a {
                 }
                 self.InsuranceOfficeList([]);
                 self.InsuranceOfficeList(currentInsuranceOfficeList);
+            }
+            public save(){
+                //check update or create new 
+                    //save office
+                    //save history
+                    //save health
+                    //save pension
             }
             // open dialog add history 
             public OpenModalAddHistory() {

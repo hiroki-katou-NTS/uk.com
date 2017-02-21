@@ -83,7 +83,7 @@ public class QwtmtWagetableCertifyG implements Serializable {
 	private Integer multiApplySet;
 
 	/** The qwtmt wagetable certify list. */
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "qwtmtWagetableCertifyG")
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "qwtmtWagetableCertifyG", orphanRemoval = true)
 	private List<QwtmtWagetableCertify> qwtmtWagetableCertifyList;
 
 	/**
@@ -92,11 +92,12 @@ public class QwtmtWagetableCertifyG implements Serializable {
 	public QwtmtWagetableCertifyG() {
 		super();
 	}
-	
+
 	/**
 	 * Instantiates a new qwtmt wagetable certify G.
 	 *
-	 * @param qwtmtWagetableCertifyGPK the qwtmt wagetable certify GPK
+	 * @param qwtmtWagetableCertifyGPK
+	 *            the qwtmt wagetable certify GPK
 	 */
 	public QwtmtWagetableCertifyG(QwtmtWagetableCertifyGPK qwtmtWagetableCertifyGPK) {
 		this.qwtmtWagetableCertifyGPK = qwtmtWagetableCertifyGPK;
@@ -105,8 +106,10 @@ public class QwtmtWagetableCertifyG implements Serializable {
 	/**
 	 * Instantiates a new qwtmt wagetable certify G.
 	 *
-	 * @param qwtmtWagetableCertifyGPK the qwtmt wagetable certify GPK
-	 * @param exclusVer the exclus ver
+	 * @param qwtmtWagetableCertifyGPK
+	 *            the qwtmt wagetable certify GPK
+	 * @param exclusVer
+	 *            the exclus ver
 	 */
 	public QwtmtWagetableCertifyG(QwtmtWagetableCertifyGPK qwtmtWagetableCertifyGPK, long exclusVer) {
 		this.qwtmtWagetableCertifyGPK = qwtmtWagetableCertifyGPK;
@@ -116,8 +119,10 @@ public class QwtmtWagetableCertifyG implements Serializable {
 	/**
 	 * Instantiates a new qwtmt wagetable certify G.
 	 *
-	 * @param ccd the ccd
-	 * @param certifyGroupCd the certify group cd
+	 * @param ccd
+	 *            the ccd
+	 * @param certifyGroupCd
+	 *            the certify group cd
 	 */
 	public QwtmtWagetableCertifyG(String ccd, String certifyGroupCd) {
 		this.qwtmtWagetableCertifyGPK = new QwtmtWagetableCertifyGPK(ccd, certifyGroupCd);

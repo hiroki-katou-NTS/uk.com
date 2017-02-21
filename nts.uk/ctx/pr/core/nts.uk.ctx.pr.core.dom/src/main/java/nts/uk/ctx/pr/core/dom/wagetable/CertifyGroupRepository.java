@@ -29,15 +29,15 @@ public interface CertifyGroupRepository {
 	/**
 	 * Removes the.
 	 *
-	 * @param id the id
+	 * @param companyCode the company code
+	 * @param groupCode the group code
 	 * @param version the version
 	 */
-    void remove(String id, Long version);
+    void remove(CompanyCode companyCode, String groupCode, Long version);
 
 	/**
 	 * Find all.
 	 *
-	 * @param companyCode the company code
 	 * @return the list
 	 */
 	List<CertifyGroup> findAll(CompanyCode companyCode);

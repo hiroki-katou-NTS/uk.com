@@ -11,7 +11,7 @@ module nts.uk.pr.view.qmm008.a {
             //get health and pension data 
             getHealthInsuranceItemDetail: "ctx/pr/core/insurance/social/healthrate/find",
             getPensionItemDetail: "ctx/pr/core/insurance/social/pensionrate/find",
-            getAllRoundingItem: "list/rounding"
+            getAllRoundingItem: "pr/insurance/social/find/rounding"
         };
         /**
          * Function is used to load all InsuranceOfficeItem by key.
@@ -52,7 +52,7 @@ module nts.uk.pr.view.qmm008.a {
             var OfficeItemList: Array<model.finder.InsuranceOfficeItemDto> = [];
             // 
             data.forEach((item, index) => {
-                OfficeItemList.push(new model.finder.InsuranceOfficeItemDto('id' + index, item.name, item.code, [],item.code+ "\u00A0" + "\u00A0" + "\u00A0" +item.name));
+                OfficeItemList.push(new model.finder.InsuranceOfficeItemDto('id' + index, item.name, item.code, [], item.code + "\u00A0" + "\u00A0" + "\u00A0" + item.name));
             });
             return OfficeItemList;
         }
@@ -81,20 +81,19 @@ module nts.uk.pr.view.qmm008.a {
             var dfd = $.Deferred<Array<model.finder.Enum>>();
             var findPath = servicePath.getAllRoundingItem;
             // Call ajax.
-            //            nts.request.ajax(findPath).done(function(data) {
-            var data = null;
-            // Convert json to model here.
-            var roundingList: Array<model.finder.Enum> = [
-                new model.finder.Enum('1', '切り上げ'),
-                new model.finder.Enum('2', '切捨て'),
-                new model.finder.Enum('3', '四捨五入'),
-                new model.finder.Enum('4', '五捨五超入'),
-                new model.finder.Enum('5', '五捨六入')
-            ];
-
-            // Resolve.
-            dfd.resolve(roundingList);
-            //            });
+//            nts.uk.request.ajax(findPath).done(function(data) {
+                var data = null;
+                // Convert json to model here.
+                var roundingList: Array<model.finder.Enum> = [
+                    new model.finder.Enum('1', '切り上げ'),
+                    new model.finder.Enum('2', '切捨て'),
+                    new model.finder.Enum('3', '四捨五入'),
+                    new model.finder.Enum('4', '五捨五超入'),
+                    new model.finder.Enum('5', '五捨六入')
+                ];
+                // Resolve.
+                dfd.resolve(roundingList);
+//            });
 
             // Ret promise.
             return dfd.promise();
@@ -178,20 +177,20 @@ module nts.uk.pr.view.qmm008.a {
                     code: string;
                     childs: any;
                     codeName: string;
-                    constructor(id: string, name: string, code: string, childs: Array<InsuranceOfficeItemDto>,codeName:string) {
+                    constructor(id: string, name: string, code: string, childs: Array<InsuranceOfficeItemDto>, codeName: string) {
                         this.id = id;
                         this.name = name;
                         this.code = code;
                         this.childs = childs;
                         this.codeName = codeName;
                         //if is history
-//                        if (childs.length == 0) {
-//                            this.codeName = name;
-//                        }
+                        //                        if (childs.length == 0) {
+                        //                            this.codeName = name;
+                        //                        }
                         //if is office
-//                        else {
-//                            this.codeName = code + "\u00A0" + "\u00A0" + "\u00A0" + name;
-//                        }
+                        //                        else {
+                        //                            this.codeName = code + "\u00A0" + "\u00A0" + "\u00A0" + name;
+                        //                        }
                     }
                 }
 
@@ -210,7 +209,7 @@ module nts.uk.pr.view.qmm008.a {
                     maxAmount: number;
                     childContributionRate: number;
                     //TODO this contructor for mock data,delete after use
-                    constructor(historyId: number, companyCode: string, officeCode: string, startMonth: number,endMonth: number, autoCalculate: boolean, fundInputApply: boolean, premiumRateItems: Array<PensionRateItemDto>, fundRateItems: Array<FundRateItemDto>, roundingMethods: Array<RoundingDto>, maxAmount: number, childContributionRate: number) {
+                    constructor(historyId: number, companyCode: string, officeCode: string, startMonth: number, endMonth: number, autoCalculate: boolean, fundInputApply: boolean, premiumRateItems: Array<PensionRateItemDto>, fundRateItems: Array<FundRateItemDto>, roundingMethods: Array<RoundingDto>, maxAmount: number, childContributionRate: number) {
                         this.historyId = historyId;
                         this.companyCode = companyCode;
                         this.officeCode = officeCode;

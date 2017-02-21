@@ -40,7 +40,7 @@
 				<button data-bind="click: addNew">新規</button>
 				<button data-bind="click: save" class="proceed">登録</button>
 				<button>印刷</button>
-				<button data-bind="enable: deleteButtonControll()" class="danger">削除</button>
+				<button data-bind="click: remove, enable: deleteButtonControll()" class="danger">削除</button>
 				<button data-bind="click: closeDialog">閉じる</button>
 			</div>
 			<div id="contents-area">

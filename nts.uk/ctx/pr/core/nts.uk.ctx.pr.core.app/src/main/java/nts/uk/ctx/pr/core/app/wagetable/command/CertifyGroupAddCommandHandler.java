@@ -13,6 +13,7 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.pr.core.dom.wagetable.CertifyGroup;
 import nts.uk.ctx.pr.core.dom.wagetable.CertifyGroupRepository;
 import nts.uk.ctx.pr.core.dom.wagetable.service.CertifyGroupService;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class CertifyGroupAddCommandHandler.
@@ -25,7 +26,6 @@ public class CertifyGroupAddCommandHandler extends CommandHandler<CertifyGroupAd
 	@Inject
 	private CertifyGroupRepository certifyGroupRepository;
 
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -35,7 +35,8 @@ public class CertifyGroupAddCommandHandler extends CommandHandler<CertifyGroupAd
 	 */
 	@Override
 	protected void handle(CommandHandlerContext<CertifyGroupAddCommand> context) {
-		CertifyGroup certifyGroup = context.getCommand().toDomain();
+		String companyCode = AppContexts.user().companyCode();
+		CertifyGroup certifyGroup = context.getCommand().toDomain(companyCode);
 		this.certifyGroupRepository.add(certifyGroup);
 	}
 

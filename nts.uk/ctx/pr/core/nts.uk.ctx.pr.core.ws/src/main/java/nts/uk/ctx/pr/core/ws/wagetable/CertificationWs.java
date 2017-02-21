@@ -9,12 +9,11 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.pr.core.app.wagetable.find.CertificationFindInDto;
 import nts.uk.ctx.pr.core.app.wagetable.find.CertificationFinder;
+import nts.uk.ctx.pr.core.app.wagetable.find.dto.CertificationFindInDto;
 
 @Path("pr/wagetable/certification")
 @Produces("application/json")
@@ -32,8 +31,8 @@ public class CertificationWs extends WebService {
 	 * @return the list
 	 */
 	@POST
-	@Path("findall/{companyCode}")
-	public List<CertificationFindInDto> findAll(@PathParam("companyCode") String companyCode) {
-		return find.findAll(companyCode);
+	@Path("findall")
+	public List<CertificationFindInDto> findAll() {
+		return find.findAll();
 	}
 }

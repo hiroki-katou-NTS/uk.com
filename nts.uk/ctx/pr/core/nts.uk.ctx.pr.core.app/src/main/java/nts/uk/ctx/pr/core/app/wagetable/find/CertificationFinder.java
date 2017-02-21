@@ -12,8 +12,10 @@ import javax.inject.Inject;
 import javax.transaction.Transactional;
 
 import nts.uk.ctx.core.dom.company.CompanyCode;
+import nts.uk.ctx.pr.core.app.wagetable.find.dto.CertificationFindInDto;
 import nts.uk.ctx.pr.core.dom.wagetable.Certification;
 import nts.uk.ctx.pr.core.dom.wagetable.CertificationReponsitory;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class CertificationFinder.
@@ -29,12 +31,13 @@ public class CertificationFinder {
 	/**
 	 * Find all.
 	 *
-	 * @param companyCode the company code
+	 * @param companyCode
+	 *            the company code
 	 * @return the list
 	 */
-	public List<CertificationFindInDto> findAll(String companyCode) {
+	public List<CertificationFindInDto> findAll() {
 		List<CertificationFindInDto> lstCertificationFindIn = new ArrayList<>();
-		for (Certification certification : find.findAll(new CompanyCode(companyCode))) {
+		for (Certification certification : find.findAll(new CompanyCode(AppContexts.user().companyCode()))) {
 			CertificationFindInDto certificationFindInDto = new CertificationFindInDto();
 			certification.saveToMemento(certificationFindInDto);
 			lstCertificationFindIn.add(certificationFindInDto);

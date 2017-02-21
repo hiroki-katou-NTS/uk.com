@@ -9,93 +9,103 @@
 		<ui:define name="htmlHead">
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="main.css" />
-			<com:scriptfile path="start.js" />
+			<com:scriptfile path="service.js" />
 			<com:scriptfile path="viewmodel.js" />
+			<com:scriptfile path="start.js" />
 		</ui:define>
 
 		<ui:define name="content">
 			<div id="this-header-area">
 				<label id="lbl_001">明細・合計出力設定</label> <label id="lbl_002">※2016/04/01
-					の部門構成で集計します。</label> <br /> <br />
+					の部門構成で集計します。</label>
 				<hr />
 			</div>
 			<!-- BEGIN CONTENT AREA-->
 			<div id="this-contents-area" class="margin-top-bot-20">
-				<table>
+			<com:ko tag="with" bind="salaryPrintSettingModel">
+				<table class="margin-left-20">
 					<tr>
-						<td class="padding-bot-20"><div data-bind="ntsCheckBox: { checked: true }">明細（支給した給与）
+						<td class="padding-bot-20"><div data-bind="ntsCheckBox: { checked: showDetail }">明細（支給した給与）
 								を出力する</div></td>
 					</tr>
 					<tr>
 						<td></td>
 					</tr>
 					<tr>
-						<td><div data-bind="ntsCheckBox: { checked: true }">個人計（個人ごとの対象期間合計）を出力する</div></td>
+						<td><div data-bind="ntsCheckBox: { checked: showPersonalTotal }">個人計（個人ごとの対象期間合計）を出力する</div></td>
 					</tr>
 					<tr>
 						<td class="padding-bot-20"><div
-								data-bind="ntsCheckBox: { checked: true }">ひと月に2回以上給与の支払いが発生した個人に対して、
+								data-bind="ntsCheckBox: { checked: showPersonalMonthlyAmount }">ひと月に2回以上給与の支払いが発生した個人に対して、
 								個人のつき合計を出力する</div></td>
 					</tr>
 					<tr>
 						<td></td>
 					</tr>
 					<tr>
-						<td><div data-bind="ntsCheckBox: { checked: true }">部門計（部門ごとの対象期間合計）を出力する</div></td>
+						<td><div data-bind="ntsCheckBox: { checked: showDivisionTotal }">部門計（部門ごとの対象期間合計）を出力する</div></td>
 					</tr>
 					<tr>
 						<td class="padding-bot-20"><div
-								data-bind="ntsCheckBox: { checked: true }">対象期間を複数月指定した場合、月ごとの部門計を出力する</div></td>
+								data-bind="ntsCheckBox: { checked: showDivisionMonthlyTotal }">対象期間を複数月指定した場合、月ごとの部門計を出力する。</div></td>
 					</tr>
 					<tr>
 						<td></td>
 					</tr>
 					<tr>
-						<td><div data-bind="ntsCheckBox: { checked: true }">部門階層累計を出力する</div>
+						<td><div data-bind="ntsCheckBox: { checked: showHierarchyAccumulation }">部門階層累計を出力する。</div>
 							<button class="btn-help"
-								data-bind="ntsHelpButton: {image: 'test-image.png', position: 'right top', enable: true }">?</button></td>
+								data-bind="ntsHelpButton: {image: 'test-image.png', position: 'right top', enable: showHierarchyAccumulation }">?</button></td>
 					</tr>
 					<tr>
 						<td class="padding-bot-20"><div
-								data-bind="ntsCheckBox: { checked: true }">対象期間を複数月指定した場合、月ごとの部門階層累計を出力する</div></td>
+								data-bind="ntsCheckBox: { checked: showHierarchyMonthlyAccumulation }">対象期間を複数月指定した場合、月ごとの部門階層累計を出力する。</div></td>
 					</tr>
 					<tr>
-						<td rowspan="4" style="display: block"><div class="o-vuong">
-								<label id="lbl_003">累計したい部門の階層を指定</label>
-								<div data-bind="ntsCheckBox: { checked: true }">1階層</div>
-								<div data-bind="ntsCheckBox: { checked: true }">2階層</div>
-								<div data-bind="ntsCheckBox: { checked: true }">3階層</div>
-								<div data-bind="ntsCheckBox: { checked: true }">4階層</div>
-								<div data-bind="ntsCheckBox: { checked: true }">5階層</div>
-								<label id="lbl_005">※10階層計は部門計で確認できます</label>
+						<td><div class="rectangle-wrapper">
+								<label id="lbl_003">累計したい部門の階層を指定(最大５つ)</label>
+								<div class="margin-left-20">
+								<div data-bind="ntsCheckBox: { checked: showHierarchy1 }">1階層</div>
+								<div data-bind="ntsCheckBox: { checked: showHierarchy2 }">2階層</div>
+								<div data-bind="ntsCheckBox: { checked: showHierarchy3 }">3階層</div>
+								<div data-bind="ntsCheckBox: { checked: showHierarchy4 }">4階層</div>
+								<div data-bind="ntsCheckBox: { checked: showHierarchy5 }">5階層</div>
+								<br />
+								<div data-bind="ntsCheckBox: { checked: showHierarchy6 }">6階層</div>
+								<div data-bind="ntsCheckBox: { checked: showHierarchy7 }">7階層</div>
+								<div data-bind="ntsCheckBox: { checked: showHierarchy8 }">8階層</div>
+								<div data-bind="ntsCheckBox: { checked: showHierarchy9 }">9階層</div>
+								<label id="lbl_005">※10階層計は部門計で確認できます。</label>
+								</div>
 							</div></td>
 					</tr>
 					<tr>
 						<td><br /></td>
 					</tr>
 					<tr>
-						<td><div data-bind="ntsCheckBox: { checked: true }">総合計（選択した個人の対象期間合計）を出力する</div></td>
+						<td><div data-bind="ntsCheckBox: { checked: showTotal }">総合計（選択した個人の対象期間合計）を出力する。</div></td>
 					</tr>
 					<tr>
-						<td><div data-bind="ntsCheckBox: { checked: true }">対象期間を複数月指定した場合、月ごとの総合計を出力する</div></td>
+						<td><div data-bind="ntsCheckBox: { checked: showMonthlyAmount }">対象期間を複数月指定した場合、月ごとの総合計を出力する。</div></td>
 					</tr>
 				</table>
+				<div class="margin-left-20" id="lbl_004">時分出力区分</div>
 				<hr />
-				<label id="lbl_004">時分出力区分</label>
-				<div id="sel_019"
+				<div class="margin-left-20" id="sel_019"
 					data-bind="ntsSwitchButton: {
-						options: switchButtonDataSource,
+						options: $parent.switchButtonDataSource,
 						optionsValue: 'code',
 						optionsText: 'name',
 						enable: true,
-						value: switchValue}"></div>
-				<hr />
+						value: outputDistinction}"></div>
+				</com:ko>
 			</div>
+			<hr />
 			<!-- END CONTENT AREA-->
 			<!-- BEGIN FUNCTION AREA-->
 			<div id="this-functions-area" class="halign-center">
-				<button class="proceed x-large" id="btn_001" data-bind="">設定</button>
-				<button id="btn_002" data-bind="">キャンセル</button>
+				<button class="proceed x-large" id="btn_001" data-bind="click: saveSetting">設定</button>
+				<button id="btn_002" data-bind="click: cancel">キャンセル</button>
 			</div>
 			<!-- END FUNCTION AREA-->
 		</ui:define>

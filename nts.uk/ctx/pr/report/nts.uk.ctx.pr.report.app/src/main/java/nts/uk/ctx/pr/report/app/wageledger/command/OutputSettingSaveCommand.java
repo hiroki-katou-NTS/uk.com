@@ -18,11 +18,24 @@ import nts.uk.ctx.pr.report.dom.wageledger.outputsetting.WLOutputSettingGetMemen
 import nts.uk.ctx.pr.report.dom.wageledger.outputsetting.WLOutputSettingName;
 
 /**
- * The Class OutputSettingCommand.
+ * The Class OutputSettingSaveCommand.
+ */
+
+/**
+ * Sets the creates the mode.
+ *
+ * @param isCreateMode the new creates the mode
  */
 @Setter
+
+/**
+ * Checks if is creates the mode.
+ *
+ * @return true, if is creates the mode
+ */
 @Getter
 public class OutputSettingSaveCommand {
+	
 	/** The code. */
 	private String code;
 	
@@ -45,40 +58,87 @@ public class OutputSettingSaveCommand {
 	 * @return the WL output setting
 	 */
 	public WLOutputSetting toDomain(String companyCode) {
-		OutputSettingSaveCommand command = this;
-		return new WLOutputSetting(new WLOutputSettingGetMemento() {
-			
-			@Override
-			public long getVersion() {
-				return 0;
-			}
-			
-			@Override
-			public Boolean getOnceSheetPerPerson() {
-				return command.onceSheetPerPerson;
-			}
-			
-			@Override
-			public WLOutputSettingName getName() {
-				return new WLOutputSettingName(command.name);
-			}
-			
-			@Override
-			public CompanyCode getCompanyCode() {
-				return new CompanyCode(companyCode);
-			}
-			
-			@Override
-			public WLOutputSettingCode getCode() {
-				return new WLOutputSettingCode(command.code);
-			}
-			
-			@Override
-			public List<WLCategorySetting> getCategorySettings() {
-				return command.categorySettings.stream()
-						.map(setting -> setting.toDomain()).collect(Collectors.toList());
-			}
-		});
+		return new WLOutputSetting(new OutputSettingGetMementoImpl(companyCode, this));
+	}
+	
+	/**
+	 * The Class OutputSettingGetMementoImpl.
+	 */
+	public class OutputSettingGetMementoImpl implements WLOutputSettingGetMemento {
+
+		/** The company code. */
+		private String companyCode;
+		
+		/** The command. */
+		private OutputSettingSaveCommand command;
+		
+		/**
+		 * Instantiates a new output setting get memento impl.
+		 *
+		 * @param companyCode the company code
+		 * @param command the command
+		 */
+		public OutputSettingGetMementoImpl(String companyCode, OutputSettingSaveCommand command) {
+			super();
+			this.companyCode = companyCode;
+			this.command = command;
+		}
+		
+		/* (non-Javadoc)
+		 * @see nts.uk.ctx.pr.report.dom.wageledger.outputsetting.WLOutputSettingGetMemento
+		 * #getVersion()
+		 */
+		@Override
+		public long getVersion() {
+			return 0;
+		}
+		
+		/* (non-Javadoc)
+		 * @see nts.uk.ctx.pr.report.dom.wageledger.outputsetting.WLOutputSettingGetMemento
+		 * #getOnceSheetPerPerson()
+		 */
+		@Override
+		public Boolean getOnceSheetPerPerson() {
+			return this.command.isOnceSheetPerPerson();
+		}
+		
+		/* (non-Javadoc)
+		 * @see nts.uk.ctx.pr.report.dom.wageledger.outputsetting.WLOutputSettingGetMemento
+		 * #getName()
+		 */
+		@Override
+		public WLOutputSettingName getName() {
+			return new WLOutputSettingName(this.command.getName());
+		}
+		
+		/* (non-Javadoc)
+		 * @see nts.uk.ctx.pr.report.dom.wageledger.outputsetting.WLOutputSettingGetMemento
+		 * #getCompanyCode()
+		 */
+		@Override
+		public CompanyCode getCompanyCode() {
+			return new CompanyCode(this.companyCode);
+		}
+		
+		/* (non-Javadoc)
+		 * @see nts.uk.ctx.pr.report.dom.wageledger.outputsetting.WLOutputSettingGetMemento
+		 * #getCode()
+		 */
+		@Override
+		public WLOutputSettingCode getCode() {
+			return new WLOutputSettingCode(this.command.getCode());
+		}
+		
+		/* (non-Javadoc)
+		 * @see nts.uk.ctx.pr.report.dom.wageledger.outputsetting.WLOutputSettingGetMemento
+		 * #getCategorySettings()
+		 */
+		@Override
+		public List<WLCategorySetting> getCategorySettings() {
+			return this.command.getCategorySettings().stream()
+					.map(setting -> setting.toDomain()).collect(Collectors.toList());
+		}
+		
 	}
 
 }

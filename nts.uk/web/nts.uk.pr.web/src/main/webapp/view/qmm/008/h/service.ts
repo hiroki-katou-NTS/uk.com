@@ -13,8 +13,11 @@ module nts.uk.pr.view.qmm008.h {
          *  Save List Health Insurance Average Earn
          */
         export function updateHealthInsuranceAvgearn(list: Array<HealthInsuranceAvgEarnDto>): JQueryPromise<any> {
+            var dfd = $.Deferred<any>();
             var data = { listHealthInsuranceAvgearn: list };
-            return nts.uk.request.ajax(paths.updateHealthInsuranceAvgearn, data);
+            nts.uk.request.ajax(paths.updateHealthInsuranceAvgearn, data).done(() =>
+                dfd.resolve());
+            return dfd.promise();
         }
 
         /**
