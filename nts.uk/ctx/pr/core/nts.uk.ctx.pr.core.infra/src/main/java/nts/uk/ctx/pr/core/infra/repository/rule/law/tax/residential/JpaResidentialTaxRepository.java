@@ -2,13 +2,15 @@ package nts.uk.ctx.pr.core.infra.repository.rule.law.tax.residential;
 
 import java.util.List;
 
+import javax.ejb.Stateless;
+
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.pr.core.dom.rule.law.tax.residential.ResidentalTax;
 import nts.uk.ctx.pr.core.dom.rule.law.tax.residential.ResidentalTaxRepository;
 import nts.uk.ctx.pr.core.infra.entity.rule.law.tax.residential.QtxmtResidentialTax;
 import nts.uk.ctx.pr.core.infra.entity.rule.law.tax.residential.QtxmtResidentialTaxPk;
-
+@Stateless
 public class JpaResidentialTaxRepository extends JpaRepository implements ResidentalTaxRepository {
     private final String SEL_1 = "SELECT c FROM QtxmtResidentialTax c WHERE c.qtxmtResidentialTaxPk.companyCd =: companyCd";
 	private static ResidentalTax toDomain(QtxmtResidentialTax entity){
