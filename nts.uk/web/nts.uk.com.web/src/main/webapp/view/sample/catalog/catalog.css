@@ -37,6 +37,8 @@ note:before{position:absolute;display:block;content:'';width:50px;height:15px;le
 #side-menu .label-new:after{display:inline;content:'New';}
 #side-menu .label-update{background:#f0ad4e;}
 #side-menu .label-update:after{display:inline;content:'Update';}
+#side-menu .label-test{background:#5bc0de;}
+#side-menu .label-test:after{display:inline;content:'Test';}
 
 #content{flex:1;width:calc(100% - 250px);background:#fff;padding:10px 10px;box-sizing:border-box;}
 #content .tabs{margin:25px 0;}
@@ -62,9 +64,8 @@ note:before{position:absolute;display:block;content:'';width:50px;height:15px;le
 }
 
 .wave {
-	animation: wave 3s;
+	animation: wave 2s ease-out;
 	animation-iteration-count: infinite;
-    animation-direction: reverse;
 }
 
 @keyframes flash {
@@ -75,8 +76,9 @@ note:before{position:absolute;display:block;content:'';width:50px;height:15px;le
 
 @keyframes wave {
     0% {transform: rotate(0deg);}
-    50% {transform: rotate(20deg);}
-    100% {transform: rotate(-20deg);}
+    25% {transform: rotate(7deg);}
+    75% {transform: rotate(-7deg);}
+    100% {transform: rotate(0deg);}
 }
 
 
