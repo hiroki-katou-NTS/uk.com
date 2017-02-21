@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.YearMonth;
+import nts.uk.ctx.core.dom.company.CompanyCode;
 
 /**
  * The Interface UnitPriceHistoryRepository.
@@ -34,7 +35,7 @@ public interface UnitPriceHistoryRepository {
 	 * @param id the id
 	 * @param version the version
 	 */
-    void remove(String id);
+    void remove(CompanyCode companyCode, UnitPriceCode cUnitpriceCd, String histId);
 
 	/**
 	 * Find all.
@@ -42,7 +43,7 @@ public interface UnitPriceHistoryRepository {
 	 * @param companyCode the company code
 	 * @return the list
 	 */
-	List<UnitPriceHistory> findAll(String companyCode);
+	List<UnitPriceHistory> findAll(CompanyCode companyCode);
 
 	/**
 	 * Find by id.
@@ -50,13 +51,13 @@ public interface UnitPriceHistoryRepository {
 	 * @param id the id
 	 * @return the unit price history
 	 */
-	Optional<UnitPriceHistory> findById(String id);
-	
+	Optional<UnitPriceHistory> findById(CompanyCode companyCode, UnitPriceCode cUnitpriceCd, String histId);
+
 	/**
 	 * Validate date range.
 	 *
 	 * @param startMonth the start month
 	 * @return true, if successful
 	 */
-	boolean isInvalidDateRange(YearMonth startMonth);
+	boolean isInvalidDateRange(CompanyCode companyCode, UnitPriceCode cUnitpriceCd, YearMonth startMonth);
 }

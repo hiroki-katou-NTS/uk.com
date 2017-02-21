@@ -2,7 +2,6 @@ module qet002.a {
     export module service {
         var servicePath = {
             printService: "/screen/pr/qet002/generate",
-            //printService: "/sample/report/generate",
         };
 
         export function printService(query: any): JQueryPromise<qet002.a.viewmodel.AccumulatedPaymentResultViewModel> {

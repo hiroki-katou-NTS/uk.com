@@ -5,6 +5,9 @@
 package nts.uk.ctx.pr.core.dom.rule.employment.unitprice;
 
 import java.util.List;
+import java.util.Optional;
+
+import nts.uk.ctx.core.dom.company.CompanyCode;
 
 /**
  * The Interface UnitPriceRepository.
@@ -31,7 +34,7 @@ public interface UnitPriceRepository {
 	 * @param id the id
 	 * @param version the version
 	 */
-    void remove(String id, Long version);
+    void remove(CompanyCode companyCode, UnitPriceCode cUnitpriceCd);
 
 	/**
 	 * Find all.
@@ -40,7 +43,7 @@ public interface UnitPriceRepository {
 	 * @param contractCode the contract code
 	 * @return the list
 	 */
-	List<UnitPrice> findAll(String companyCode);
+	List<UnitPrice> findAll(CompanyCode companyCode);
 
 	/**
 	 * Find by id.
@@ -48,13 +51,13 @@ public interface UnitPriceRepository {
 	 * @param id the id
 	 * @return the unit price
 	 */
-	UnitPrice findById(String id);
-	
+	Optional<UnitPrice> findByCode(CompanyCode companyCode, UnitPriceCode cUnitpriceCd);
+
 	/**
 	 * Check duplicate code.
 	 *
 	 * @param code the code
 	 * @return true, if successful
 	 */
-	boolean isDuplicateCode(UnitPriceCode code);
+	boolean isDuplicateCode(CompanyCode companyCode, UnitPriceCode code);
 }
