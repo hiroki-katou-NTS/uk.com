@@ -11,103 +11,175 @@ import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.Money;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.SettingType;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceCode;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceHistorySetMemento;
-import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceName;
+import nts.uk.ctx.pr.core.infra.entity.rule.employment.unitprice.QupmtCUnitpriceHist;
+import nts.uk.ctx.pr.core.infra.entity.rule.employment.unitprice.QupmtCUnitpriceHistPK;
 import nts.uk.shr.com.primitive.Memo;
 
 /**
- * The Class JpaAggrSchemaMemento.
+ * The Class JpaUnitPriceHistorySetMemento.
  */
 public class JpaUnitPriceHistorySetMemento implements UnitPriceHistorySetMemento {
 
-	// TODO: Object -> entity class.
-	protected Object typeValue;
+	/** The type value. */
+	protected QupmtCUnitpriceHist typeValue;
 
 	/**
-	 * Instantiates a new jpa aggr schema memento.
+	 * Instantiates a new jpa unit price history set memento.
 	 *
 	 * @param typeValue
 	 *            the type value
 	 */
-	public JpaUnitPriceHistorySetMemento(Object typeValue) {
+	public JpaUnitPriceHistorySetMemento(QupmtCUnitpriceHist typeValue) {
 		this.typeValue = typeValue;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.rule.employment.unitprice.
+	 * UnitPriceHistorySetMemento#setId(java.lang.String)
+	 */
 	@Override
 	public void setId(String id) {
-		// TODO Auto-generated method stub
-
+		QupmtCUnitpriceHistPK qupmtCUnitpriceHistPK = new QupmtCUnitpriceHistPK();
+		qupmtCUnitpriceHistPK.setHistId(id);
+		this.typeValue.setQupmtCUnitpriceHistPK(qupmtCUnitpriceHistPK);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.rule.employment.unitprice.
+	 * UnitPriceHistorySetMemento#setCompanyCode(nts.uk.ctx.core.dom.company.
+	 * CompanyCode)
+	 */
 	@Override
 	public void setCompanyCode(CompanyCode companyCode) {
-		// TODO Auto-generated method stub
-
+		QupmtCUnitpriceHistPK qupmtCUnitpriceHistPK = this.typeValue.getQupmtCUnitpriceHistPK();
+		qupmtCUnitpriceHistPK.setCcd(companyCode.v());
+		this.typeValue.setQupmtCUnitpriceHistPK(qupmtCUnitpriceHistPK);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.rule.employment.unitprice.
+	 * UnitPriceHistorySetMemento#setUnitPriceCode(nts.uk.ctx.pr.core.dom.rule.
+	 * employment.unitprice.UnitPriceCode)
+	 */
 	@Override
 	public void setUnitPriceCode(UnitPriceCode unitPriceCode) {
-		// TODO Auto-generated method stub
-
+		QupmtCUnitpriceHistPK qupmtCUnitpriceHistPK = this.typeValue.getQupmtCUnitpriceHistPK();
+		qupmtCUnitpriceHistPK.setCUnitpriceCd(unitPriceCode.v());
+		this.typeValue.setQupmtCUnitpriceHistPK(qupmtCUnitpriceHistPK);
 	}
 
-	@Override
-	public void setUnitPriceName(UnitPriceName unitPriceName) {
-		// TODO Auto-generated method stub
-
-	}
-
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.rule.employment.unitprice.
+	 * UnitPriceHistorySetMemento#setApplyRange(nts.uk.ctx.pr.core.dom.insurance
+	 * .MonthRange)
+	 */
 	@Override
 	public void setApplyRange(MonthRange applyRange) {
-		// TODO Auto-generated method stub
-
+		this.typeValue.setStrYm(applyRange.getStartMonth().v());
+		this.typeValue.setEndYm(applyRange.getEndMonth().v());
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.rule.employment.unitprice.
+	 * UnitPriceHistorySetMemento#setBudget(nts.uk.ctx.pr.core.dom.rule.
+	 * employment.unitprice.Money)
+	 */
 	@Override
 	public void setBudget(Money budget) {
-		// TODO Auto-generated method stub
-
+		this.typeValue.setBudget(budget.v());
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.rule.employment.unitprice.
+	 * UnitPriceHistorySetMemento#setFixPaySettingType(nts.uk.ctx.pr.core.dom.
+	 * rule.employment.unitprice.SettingType)
+	 */
 	@Override
 	public void setFixPaySettingType(SettingType fixPaySettingType) {
-		// TODO Auto-generated method stub
-
+		this.typeValue.setFixPaySet(fixPaySettingType.value);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.rule.employment.unitprice.
+	 * UnitPriceHistorySetMemento#setFixPayAtr(nts.uk.ctx.pr.core.dom.rule.
+	 * employment.unitprice.ApplySetting)
+	 */
 	@Override
 	public void setFixPayAtr(ApplySetting fixPayAtr) {
-		// TODO Auto-generated method stub
-
+		this.typeValue.setFixPayAtr(fixPayAtr.value);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.rule.employment.unitprice.
+	 * UnitPriceHistorySetMemento#setFixPayAtrMonthly(nts.uk.ctx.pr.core.dom.
+	 * rule.employment.unitprice.ApplySetting)
+	 */
 	@Override
 	public void setFixPayAtrMonthly(ApplySetting fixPayAtrMonthly) {
-		// TODO Auto-generated method stub
-
+		this.typeValue.setFixPayAtrMonthly(fixPayAtrMonthly.value);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.rule.employment.unitprice.
+	 * UnitPriceHistorySetMemento#setFixPayAtrDayMonth(nts.uk.ctx.pr.core.dom.
+	 * rule.employment.unitprice.ApplySetting)
+	 */
 	@Override
 	public void setFixPayAtrDayMonth(ApplySetting fixPayAtrDayMonth) {
-		// TODO Auto-generated method stub
-
+		this.typeValue.setFixPayAtrDaymonth(fixPayAtrDayMonth.value);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.rule.employment.unitprice.
+	 * UnitPriceHistorySetMemento#setFixPayAtrDaily(nts.uk.ctx.pr.core.dom.rule.
+	 * employment.unitprice.ApplySetting)
+	 */
 	@Override
 	public void setFixPayAtrDaily(ApplySetting fixPayAtrDaily) {
-		// TODO Auto-generated method stub
-
+		this.typeValue.setFixPayAtrDaily(fixPayAtrDaily.value);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.rule.employment.unitprice.
+	 * UnitPriceHistorySetMemento#setFixPayAtrHourly(nts.uk.ctx.pr.core.dom.rule
+	 * .employment.unitprice.ApplySetting)
+	 */
 	@Override
 	public void setFixPayAtrHourly(ApplySetting fixPayAtrHourly) {
-		// TODO Auto-generated method stub
-
+		this.typeValue.setFixPayAtrHourly(fixPayAtrHourly.value);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.rule.employment.unitprice.
+	 * UnitPriceHistorySetMemento#setMemo(nts.uk.shr.com.primitive.Memo)
+	 */
 	@Override
 	public void setMemo(Memo memo) {
-		// TODO Auto-generated method stub
-
+		this.typeValue.setMemo(memo.v());
 	}
 
 }

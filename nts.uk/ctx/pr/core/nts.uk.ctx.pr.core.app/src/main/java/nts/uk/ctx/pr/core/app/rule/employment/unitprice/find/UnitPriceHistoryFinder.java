@@ -11,6 +11,8 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.core.dom.company.CompanyCode;
+import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceCode;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceHistory;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceHistoryRepository;
 
@@ -31,8 +33,8 @@ public class UnitPriceHistoryFinder {
 	 *            the id
 	 * @return the optional
 	 */
-	public Optional<UnitPriceHistoryDto> find(String id) {
-		Optional<UnitPriceHistory> unitPriceHistory = unitPriceHistoryRepo.findById(id);
+	public Optional<UnitPriceHistoryDto> find(CompanyCode companyCode, UnitPriceCode cUnitpriceCd, String id) {
+		Optional<UnitPriceHistory> unitPriceHistory = unitPriceHistoryRepo.findById(companyCode, cUnitpriceCd, id);
 		UnitPriceHistoryDto dto = UnitPriceHistoryDto.builder().build();
 		if (unitPriceHistory.isPresent()) {
 			unitPriceHistory.get().saveToMemento(dto);
@@ -47,7 +49,7 @@ public class UnitPriceHistoryFinder {
 	 *            the company code
 	 * @return the list
 	 */
-	public List<UnitPriceHistoryDto> findAll(String companyCode) {
+	public List<UnitPriceHistoryDto> findAll(CompanyCode companyCode) {
 		return unitPriceHistoryRepo.findAll(companyCode).stream().map(domain -> {
 			UnitPriceHistoryDto dto = UnitPriceHistoryDto.builder().build();
 			domain.saveToMemento(dto);

@@ -14,6 +14,9 @@ import lombok.Setter;
 @Setter
 public class DeleteUnitPriceHistoryCommand {
 
+	/** The unit price code. */
+	private String unitPriceCode;
+
 	/** The id. */
 	private String id;
 }

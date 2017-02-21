@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.app.rule.employment.unitprice.command;
 
+import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
@@ -11,6 +13,7 @@ import javax.transaction.Transactional;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.core.dom.company.CompanyCode;
+import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceCode;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceHistory;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceHistoryRepository;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.service.UnitPriceHistoryService;
@@ -47,7 +50,12 @@ public class UpdateUnitPriceHistoryCommandHandler extends CommandHandler<UpdateU
 		CompanyCode companyCode = new CompanyCode(AppContexts.user().companyCode());
 
 		// Get the history.
-		UnitPriceHistory unitPriceHistory = unitPriceHistoryRepo.findById(command.getId()).get();
+		Optional<UnitPriceHistory> optUnitPriceHistory = unitPriceHistoryRepo.findById(companyCode,
+				new UnitPriceCode(command.getUnitPriceCode()), command.getId());
+		if (!optUnitPriceHistory.isPresent()) {
+			return;
+		}
+		UnitPriceHistory unitPriceHistory = optUnitPriceHistory.get();
 
 		// Transfer data
 		UnitPriceHistory updatedHistory = command.toDomain(companyCode, unitPriceHistory.getId(),

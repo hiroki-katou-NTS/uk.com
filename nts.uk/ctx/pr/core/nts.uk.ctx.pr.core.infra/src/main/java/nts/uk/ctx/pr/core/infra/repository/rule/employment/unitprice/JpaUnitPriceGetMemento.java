@@ -8,41 +8,59 @@ import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceCode;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceGetMemento;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceName;
+import nts.uk.ctx.pr.core.infra.entity.rule.employment.unitprice.QupmtCUnitpriceHead;
 
 /**
- * The Class JpaAggrSchemaMemento.
+ * The Class JpaUnitPriceGetMemento.
  */
 public class JpaUnitPriceGetMemento implements UnitPriceGetMemento {
 
-	// TODO: Object -> entity class.
-	protected Object typeValue;
+	/** The type value. */
+	protected QupmtCUnitpriceHead typeValue;
 
 	/**
-	 * Instantiates a new jpa aggr schema memento.
+	 * Instantiates a new jpa unit price get memento.
 	 *
 	 * @param typeValue
 	 *            the type value
 	 */
-	public JpaUnitPriceGetMemento(Object typeValue) {
+	public JpaUnitPriceGetMemento(QupmtCUnitpriceHead typeValue) {
 		this.typeValue = typeValue;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceGetMemento#
+	 * getCompanyCode()
+	 */
 	@Override
 	public CompanyCode getCompanyCode() {
-		// TODO Auto-generated method stub
-		return null;
+		return new CompanyCode(this.typeValue.getQupmtCUnitpriceHeadPK().getCcd());
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceGetMemento#
+	 * getCode()
+	 */
 	@Override
 	public UnitPriceCode getCode() {
-		// TODO Auto-generated method stub
-		return null;
+		return new UnitPriceCode(this.typeValue.getQupmtCUnitpriceHeadPK().getCUnitpriceCd());
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceGetMemento#
+	 * getName()
+	 */
 	@Override
 	public UnitPriceName getName() {
-		// TODO Auto-generated method stub
-		return null;
+		return new UnitPriceName(this.typeValue.getCUnitpriceName());
 	}
-
 }

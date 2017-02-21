@@ -33,7 +33,6 @@ public class UnitPriceHistoryServiceImpl implements UnitPriceHistoryService {
 	@Override
 	public void validateRequiredItem(UnitPriceHistory history) {
 		if (history.getUnitPriceCode() == null || StringUtil.isNullOrEmpty(history.getUnitPriceCode().v(), true)
-				|| history.getUnitPriceName() == null || StringUtil.isNullOrEmpty(history.getUnitPriceName().v(), true)
 				|| history.getApplyRange() == null || history.getBudget() == null) {
 			throw new BusinessException("ER001");
 		}
@@ -48,7 +47,8 @@ public class UnitPriceHistoryServiceImpl implements UnitPriceHistoryService {
 	 */
 	@Override
 	public void validateDateRange(UnitPriceHistory unitPriceHistory) {
-		if (unitPriceHistoryRepo.isInvalidDateRange(unitPriceHistory.getApplyRange().getStartMonth())) {
+		if (unitPriceHistoryRepo.isInvalidDateRange(unitPriceHistory.getCompanyCode(),
+				unitPriceHistory.getUnitPriceCode(), unitPriceHistory.getApplyRange().getStartMonth())) {
 			// History after start date and time exists
 			throw new BusinessException("ER010");
 		}

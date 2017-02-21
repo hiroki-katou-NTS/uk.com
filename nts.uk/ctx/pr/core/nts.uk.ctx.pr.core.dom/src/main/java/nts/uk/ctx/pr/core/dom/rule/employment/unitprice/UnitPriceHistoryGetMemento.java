@@ -35,13 +35,6 @@ public interface UnitPriceHistoryGetMemento {
 	UnitPriceCode getUnitPriceCode();
 
 	/**
-	 * Gets the unit price name.
-	 *
-	 * @return the unit price name
-	 */
-	UnitPriceName getUnitPriceName();
-
-	/**
 	 * Gets the apply range.
 	 *
 	 * @return the apply range
