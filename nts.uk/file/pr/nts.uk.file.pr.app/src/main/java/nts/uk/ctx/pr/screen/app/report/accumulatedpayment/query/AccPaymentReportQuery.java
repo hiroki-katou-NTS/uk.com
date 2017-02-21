@@ -2,7 +2,7 @@
  * Copyright (c) 2015 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.pr.screen.app.report.qet002.query;
+package nts.uk.ctx.pr.screen.app.report.accumulatedpayment.query;
 
 import java.util.List;
 

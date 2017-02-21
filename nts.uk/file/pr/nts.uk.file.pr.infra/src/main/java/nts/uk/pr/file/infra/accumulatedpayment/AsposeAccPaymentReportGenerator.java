@@ -20,9 +20,9 @@ import com.aspose.cells.WorksheetCollection;
 
 import lombok.val;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
-import nts.uk.ctx.pr.screen.app.report.qet002.AccPaymentReportGenerator;
-import nts.uk.ctx.pr.screen.app.report.qet002.data.AccPaymentDataSource;
-import nts.uk.ctx.pr.screen.app.report.qet002.data.AccPaymentItemData;
+import nts.uk.ctx.pr.screen.app.report.accumulatedpayment.AccPaymentReportGenerator;
+import nts.uk.ctx.pr.screen.app.report.accumulatedpayment.data.AccPaymentDataSource;
+import nts.uk.ctx.pr.screen.app.report.accumulatedpayment.data.AccPaymentItemData;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 
 /**

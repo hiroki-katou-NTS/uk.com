@@ -2,7 +2,7 @@
  * Copyright (c) 2015 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.pr.screen.app.report.qet002.data;
+package nts.uk.ctx.pr.screen.app.report.accumulatedpayment.data;
 
 import lombok.Data;
 

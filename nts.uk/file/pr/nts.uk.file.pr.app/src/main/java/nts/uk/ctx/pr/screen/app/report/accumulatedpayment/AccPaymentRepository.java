@@ -2,13 +2,12 @@
  * Copyright (c) 2015 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.pr.screen.app.report.qet002;
+package nts.uk.ctx.pr.screen.app.report.accumulatedpayment;
 
 import java.util.List;
 
-import nts.uk.ctx.pr.screen.app.report.qet002.data.AccPaymentHeaderData;
-import nts.uk.ctx.pr.screen.app.report.qet002.data.AccPaymentItemData;
-import nts.uk.ctx.pr.screen.app.report.qet002.query.AccPaymentReportQuery;
+import nts.uk.ctx.pr.screen.app.report.accumulatedpayment.data.AccPaymentItemData;
+import nts.uk.ctx.pr.screen.app.report.accumulatedpayment.query.AccPaymentReportQuery;
 
 /**
  * The Interface AccPaymentRepository.
