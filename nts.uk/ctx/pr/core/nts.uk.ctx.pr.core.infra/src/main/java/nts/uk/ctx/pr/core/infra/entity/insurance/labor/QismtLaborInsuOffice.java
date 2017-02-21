@@ -134,7 +134,7 @@ public class QismtLaborInsuOffice implements Serializable {
 
 	/** The office no C. */
 	@Column(name = "OFFICE_NO_C")
-	private Character officeNoC;
+	private String officeNoC;
 
 	/** The memo. */
 	@Column(name = "MEMO")
@@ -146,11 +146,12 @@ public class QismtLaborInsuOffice implements Serializable {
 	public QismtLaborInsuOffice() {
 		super();
 	}
-	
+
 	/**
 	 * Instantiates a new qismt labor insu office.
 	 *
-	 * @param qismtLaborInsuOfficePK the qismt labor insu office PK
+	 * @param qismtLaborInsuOfficePK
+	 *            the qismt labor insu office PK
 	 */
 	public QismtLaborInsuOffice(QismtLaborInsuOfficePK qismtLaborInsuOfficePK) {
 		this.qismtLaborInsuOfficePK = qismtLaborInsuOfficePK;
@@ -159,9 +160,12 @@ public class QismtLaborInsuOffice implements Serializable {
 	/**
 	 * Instantiates a new qismt labor insu office.
 	 *
-	 * @param qismtLaborInsuOfficePK the qismt labor insu office PK
-	 * @param exclusVer the exclus ver
-	 * @param liOfficeName the li office name
+	 * @param qismtLaborInsuOfficePK
+	 *            the qismt labor insu office PK
+	 * @param exclusVer
+	 *            the exclus ver
+	 * @param liOfficeName
+	 *            the li office name
 	 */
 	public QismtLaborInsuOffice(QismtLaborInsuOfficePK qismtLaborInsuOfficePK, long exclusVer, String liOfficeName) {
 		this.qismtLaborInsuOfficePK = qismtLaborInsuOfficePK;
@@ -172,8 +176,10 @@ public class QismtLaborInsuOffice implements Serializable {
 	/**
 	 * Instantiates a new qismt labor insu office.
 	 *
-	 * @param ccd the ccd
-	 * @param liOfficeCd the li office cd
+	 * @param ccd
+	 *            the ccd
+	 * @param liOfficeCd
+	 *            the li office cd
 	 */
 	public QismtLaborInsuOffice(String ccd, String liOfficeCd) {
 		this.qismtLaborInsuOfficePK = new QismtLaborInsuOfficePK(ccd, liOfficeCd);

@@ -6,15 +6,19 @@ package nts.uk.ctx.pr.core.app.insurance.labor.find;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
 import nts.uk.ctx.core.dom.company.CompanyCode;
+import nts.uk.ctx.pr.core.app.insurance.labor.find.dto.LaborInsuranceOfficeFindDto;
+import nts.uk.ctx.pr.core.app.insurance.labor.find.dto.LaborInsuranceOfficeFindOutDto;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
 import nts.uk.ctx.pr.core.dom.insurance.labor.LaborInsuranceOffice;
 import nts.uk.ctx.pr.core.dom.insurance.labor.LaborInsuranceOfficeRepository;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class LaborInsuranceOfficeFinder.
@@ -36,11 +40,15 @@ public class LaborInsuranceOfficeFinder {
 	 *            the company code
 	 * @return the labor insurance office dto
 	 */
-	public LaborInsuranceOfficeDto findById(String officeCode, String companyCode) {
-		LaborInsuranceOfficeDto laborInsuranceOfficeDto = new LaborInsuranceOfficeDto();
-		this.laborInsuranceOfficeRepository.findById(new CompanyCode(companyCode), new OfficeCode(officeCode))
-				.saveToMemento(laborInsuranceOfficeDto);
-		return laborInsuranceOfficeDto;
+	public LaborInsuranceOfficeFindDto findById(String officeCode) {
+		LaborInsuranceOfficeFindDto laborInsuranceOfficeDto = new LaborInsuranceOfficeFindDto();
+		Optional<LaborInsuranceOffice> optionalLaborInsuranceOffice = laborInsuranceOfficeRepository
+				.findById(new CompanyCode(AppContexts.user().companyCode()), new OfficeCode(officeCode));
+		if (optionalLaborInsuranceOffice.isPresent()) {
+			optionalLaborInsuranceOffice.get().saveToMemento(laborInsuranceOfficeDto);
+			return laborInsuranceOfficeDto;
+		}
+		return null;
 	}
 
 	/**
@@ -50,10 +58,10 @@ public class LaborInsuranceOfficeFinder {
 	 *            the company code
 	 * @return the list
 	 */
-	public List<LaborInsuranceOfficeFindOutDto> findAll(String companyCode) {
+	public List<LaborInsuranceOfficeFindOutDto> findAll() {
 		List<LaborInsuranceOfficeFindOutDto> lstLaborInsuranceOfficeFindOutDto = new ArrayList<>();
 		for (LaborInsuranceOffice laborInsuranceOffice : this.laborInsuranceOfficeRepository
-				.findAll(new CompanyCode(companyCode))) {
+				.findAll(new CompanyCode(AppContexts.user().companyCode()))) {
 			lstLaborInsuranceOfficeFindOutDto.add(LaborInsuranceOfficeFindOutDto.fromDomain(laborInsuranceOffice));
 		}
 		return lstLaborInsuranceOfficeFindOutDto;

@@ -2,7 +2,7 @@
  * Copyright (c) 2016 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.pr.core.app.insurance.labor.find;
+package nts.uk.ctx.pr.core.app.insurance.labor.find.dto;
 
 import lombok.Data;
 import nts.uk.ctx.core.dom.company.CompanyCode;
@@ -21,7 +21,7 @@ import nts.uk.shr.com.primitive.Memo;
  * The Class LaborInsuranceOfficeDto.
  */
 @Data
-public class LaborInsuranceOfficeDto implements LaborInsuranceOfficeSetMemento {
+public class LaborInsuranceOfficeFindDto implements LaborInsuranceOfficeSetMemento {
 
 	/** The code. officeCode */
 	private String code;

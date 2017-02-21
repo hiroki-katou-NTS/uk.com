@@ -6,23 +6,28 @@ package nts.uk.ctx.pr.core.infra.repository.insurance.labor;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.core.dom.company.CompanyCode;
-import nts.uk.ctx.pr.core.dom.insurance.Address;
-import nts.uk.ctx.pr.core.dom.insurance.KanaAddress;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
-import nts.uk.ctx.pr.core.dom.insurance.OfficeName;
-import nts.uk.ctx.pr.core.dom.insurance.PicName;
-import nts.uk.ctx.pr.core.dom.insurance.PicPosition;
-import nts.uk.ctx.pr.core.dom.insurance.PotalCode;
-import nts.uk.ctx.pr.core.dom.insurance.ShortName;
 import nts.uk.ctx.pr.core.dom.insurance.labor.LaborInsuranceOffice;
-import nts.uk.ctx.pr.core.dom.insurance.labor.LaborInsuranceOfficeGetMemento;
 import nts.uk.ctx.pr.core.dom.insurance.labor.LaborInsuranceOfficeRepository;
-import nts.uk.shr.com.primitive.Memo;
+import nts.uk.ctx.pr.core.infra.entity.insurance.labor.QismtLaborInsuOffice;
+import nts.uk.ctx.pr.core.infra.entity.insurance.labor.QismtLaborInsuOfficePK;
+import nts.uk.ctx.pr.core.infra.entity.insurance.labor.QismtLaborInsuOfficePK_;
+import nts.uk.ctx.pr.core.infra.entity.insurance.labor.QismtLaborInsuOffice_;
+import nts.uk.ctx.pr.core.infra.entity.wagetable.QwtmtWagetableCertifyG;
+import nts.uk.ctx.pr.core.infra.entity.wagetable.QwtmtWagetableCertifyGPK;
 
 /**
  * The Class JpaLaborInsuranceOfficeRepository.
@@ -39,9 +44,7 @@ public class JpaLaborInsuranceOfficeRepository extends JpaRepository implements 
 	 */
 	@Override
 	public void add(LaborInsuranceOffice office) {
-		// TODO Auto-generated method stub
-		
-
+		this.commandProxy().insert(toEntity(office));
 	}
 
 	/*
@@ -53,21 +56,7 @@ public class JpaLaborInsuranceOfficeRepository extends JpaRepository implements 
 	 */
 	@Override
 	public void update(LaborInsuranceOffice office) {
-		// TODO Auto-generated method stub
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * nts.uk.ctx.pr.core.dom.insurance.labor.LaborInsuranceOfficeRepository#
-	 * remove(java.lang.String, java.lang.Long)
-	 */
-	@Override
-	public void remove(String id, Long version) {
-		// TODO Auto-generated method stub
-
+		this.commandProxy().update(toEntity(office));
 	}
 
 	/*
@@ -79,7 +68,20 @@ public class JpaLaborInsuranceOfficeRepository extends JpaRepository implements 
 	 */
 	@Override
 	public List<LaborInsuranceOffice> findAll(CompanyCode companyCode) {
-		return findAllDataDemo(companyCode);
+		EntityManager em = getEntityManager();
+		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+		CriteriaQuery<QismtLaborInsuOffice> cq = criteriaBuilder.createQuery(QismtLaborInsuOffice.class);
+		Root<QismtLaborInsuOffice> root = cq.from(QismtLaborInsuOffice.class);
+		cq.select(root);
+		List<Predicate> lstpredicate = new ArrayList<>();
+		lstpredicate.add(criteriaBuilder.equal(
+				root.get(QismtLaborInsuOffice_.qismtLaborInsuOfficePK).get(QismtLaborInsuOfficePK_.ccd),
+				companyCode.v()));
+		cq.where(lstpredicate.toArray(new Predicate[] {}));
+		TypedQuery<QismtLaborInsuOffice> query = em.createQuery(cq);
+		List<LaborInsuranceOffice> lstLaborInsuranceOffice = query.getResultList().stream().map(item -> toDomain(item))
+				.collect(Collectors.toList());
+		return lstLaborInsuranceOffice;
 	}
 
 	/*
@@ -90,146 +92,10 @@ public class JpaLaborInsuranceOfficeRepository extends JpaRepository implements 
 	 * findById(java.lang.String, java.lang.String)
 	 */
 	@Override
-	public LaborInsuranceOffice findById(CompanyCode companyCode, OfficeCode officeCode) {
-		// TODO Auto-generated method stub
-		List<LaborInsuranceOffice> lstLaborInsuranceOffice = findAllDataDemo(companyCode);
-		for (LaborInsuranceOffice laborInsuranceOffice : lstLaborInsuranceOffice) {
-			if (officeCode.equals(laborInsuranceOffice.getCode())) {
-				return laborInsuranceOffice;
-			}
-		}
-		return null;
-	}
-
-	/*
-	 * DEMO SEARCH DATA
-	 */
-	public List<LaborInsuranceOffice> findAllDataDemo(CompanyCode companyCode) {
-		List<LaborInsuranceOffice> lstLaborInsuranceOffice = new ArrayList<>();
-		lstLaborInsuranceOffice.add(fromDomain(companyCode, "XA事業所", "000000000001"));
-		lstLaborInsuranceOffice.add(fromDomain(companyCode, "B事業所", "000000000002"));
-		lstLaborInsuranceOffice.add(fromDomain(companyCode, "C事業所", "000000000003"));
-		return lstLaborInsuranceOffice;
-
-	}
-
-	public LaborInsuranceOffice fromDomain(CompanyCode companyCode, String officeName, String officeCode) {
-		return new LaborInsuranceOffice(new LaborInsuranceOfficeGetMemento() {
-
-			@Override
-			public ShortName getShortName() {
-				// TODO Auto-generated method stub
-				return new ShortName("ShortName");
-			}
-
-			@Override
-			public String getPrefecture() {
-				// TODO Auto-generated method stub
-				return "Prefecture";
-			}
-
-			@Override
-			public PotalCode getPotalCode() {
-				// TODO Auto-generated method stub
-				return new PotalCode("PotalCode");
-			}
-
-			@Override
-			public PicPosition getPicPosition() {
-				// TODO Auto-generated method stub
-				return new PicPosition("PicPosition");
-			}
-
-			@Override
-			public PicName getPicName() {
-				// TODO Auto-generated method stub
-				return new PicName("PicName");
-			}
-
-			@Override
-			public String getPhoneNumber() {
-				// TODO Auto-generated method stub
-				return "PhoneNumber";
-			}
-
-			@Override
-			public String getOfficeNoC() {
-				// TODO Auto-generated method stub
-				return "1";
-			}
-
-			@Override
-			public String getOfficeNoB() {
-				// TODO Auto-generated method stub
-				return "567890";
-			}
-
-			@Override
-			public String getOfficeNoA() {
-				// TODO Auto-generated method stub
-				return "01234";
-			}
-
-			@Override
-			public String getOfficeMark() {
-				// TODO Auto-generated method stub
-				return "OfficeMark";
-			}
-
-			@Override
-			public OfficeName getName() {
-				// TODO Auto-generated method stub
-				return new OfficeName(officeName);
-			}
-
-			@Override
-			public Memo getMemo() {
-				// TODO Auto-generated method stub
-				return new Memo("Memo");
-			}
-
-			@Override
-			public KanaAddress getKanaAddress2nd() {
-				// TODO Auto-generated method stub
-				return new KanaAddress("KanaAddress2nd");
-			}
-
-			@Override
-			public KanaAddress getKanaAddress1st() {
-				// TODO Auto-generated method stub
-				return new KanaAddress("KanaAddress1st");
-			}
-
-			@Override
-			public CompanyCode getCompanyCode() {
-				// TODO Auto-generated method stub
-				return companyCode;
-			}
-
-			@Override
-			public OfficeCode getCode() {
-				// TODO Auto-generated method stub
-				return new OfficeCode(officeCode);
-			}
-
-			@Override
-			public String getCitySign() {
-				// TODO Auto-generated method stub
-				return "01";
-			}
-
-			@Override
-			public Address getAddress2nd() {
-				// TODO Auto-generated method stub
-				return new Address("Address2nd");
-			}
-
-			@Override
-			public Address getAddress1st() {
-				// TODO Auto-generated method stub
-				return new Address("Address1st");
-			}
-		});
+	public Optional<LaborInsuranceOffice> findById(CompanyCode companyCode, OfficeCode officeCode) {
+		return this.queryProxy()
+				.find(new QismtLaborInsuOfficePK(companyCode.v(), officeCode.v()), QismtLaborInsuOffice.class)
+				.map(c -> toDomain(c));
 	}
 
 	@Override
@@ -238,4 +104,20 @@ public class JpaLaborInsuranceOfficeRepository extends JpaRepository implements 
 		return false;
 	}
 
+	private QismtLaborInsuOffice toEntity(LaborInsuranceOffice laborInsuranceOffice) {
+		QismtLaborInsuOffice entity = new QismtLaborInsuOffice();
+		laborInsuranceOffice.saveToMemento(new JpaLaborInsuranceOfficeSetMemento(entity));
+		return entity;
+	}
+
+	private static LaborInsuranceOffice toDomain(QismtLaborInsuOffice entity) {
+		LaborInsuranceOffice domain = new LaborInsuranceOffice(new JpaLaborInsuranceOfficeGetMemento(entity));
+		return domain;
+
+	}
+
+	@Override
+	public void remove(CompanyCode companyCode, String officeCode, Long version) {
+		this.commandProxy().remove(QismtLaborInsuOffice.class, new QismtLaborInsuOfficePK(companyCode.v(), officeCode));
+	}
 }
