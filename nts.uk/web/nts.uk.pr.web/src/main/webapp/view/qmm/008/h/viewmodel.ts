@@ -127,15 +127,15 @@ module nts.uk.pr.view.qmm008.h {
             }
         }
         export class HealthInsuranceAvgEarnValueModel {
-            general: KnockoutObservable<number>;
-            nursing: KnockoutObservable<number>;
-            basic: KnockoutObservable<number>;
-            specific: KnockoutObservable<number>;
+            healthGeneralMny: KnockoutObservable<number>;
+            healthNursingMny: KnockoutObservable<number>;
+            healthBasicMny: KnockoutObservable<number>;
+            healthSpecificMny: KnockoutObservable<number>;
             constructor(general: number, nursing: number, basic: number, specific: number) {
-                this.general = ko.observable(general);
-                this.nursing = ko.observable(nursing);
-                this.basic = ko.observable(basic);
-                this.specific = ko.observable(specific);
+                this.healthGeneralMny = ko.observable(general);
+                this.healthNursingMny = ko.observable(nursing);
+                this.healthBasicMny = ko.observable(basic);
+                this.healthSpecificMny = ko.observable(specific);
             }
         }
 

@@ -6,6 +6,7 @@ package nts.uk.ctx.pr.core.app.insurance.social.healthavgearn.command;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.HealthInsuranceAvgearn;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.HealthInsuranceAvgearnGetMemento;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.HealthInsuranceAvgearnValue;
@@ -15,7 +16,7 @@ import nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.HealthInsuranceAvge
  */
 @Getter
 @Setter
-public class HealthInsuranceAvgearnBaseCommand {
+public class HealthInsuranceAvgearnCommandDto {
 
 	/** The history id. */
 	private String historyId;
@@ -39,7 +40,7 @@ public class HealthInsuranceAvgearnBaseCommand {
 	 * @return the health insurance avgearn
 	 */
 	public HealthInsuranceAvgearn toDomain(String historyId, Integer levelCode) {
-		HealthInsuranceAvgearnBaseCommand command = this;
+		HealthInsuranceAvgearnCommandDto dto = this;
 
 		// Transfer data
 		HealthInsuranceAvgearn updatedHealthInsuranceAvgearn = new HealthInsuranceAvgearn(
@@ -47,25 +48,61 @@ public class HealthInsuranceAvgearnBaseCommand {
 
 					@Override
 					public HealthInsuranceAvgearnValue getPersonalAvg() {
-						return command.getPersonalAvg();
+						return dto.getPersonalAvg();
 					}
 
 					@Override
 					public Integer getLevelCode() {
-						return command.getLevelCode();
+						return levelCode;
 					}
 
 					@Override
 					public String getHistoryId() {
-						return command.getHistoryId();
+						return historyId;
 					}
 
 					@Override
 					public HealthInsuranceAvgearnValue getCompanyAvg() {
-						return command.getCompanyAvg();
+						return dto.getCompanyAvg();
 					}
 				});
 
 		return updatedHealthInsuranceAvgearn;
+	}
+
+	/**
+	 * To domain.
+	 *
+	 * @return the health insurance avgearn
+	 */
+	public HealthInsuranceAvgearn toDomain() {
+		HealthInsuranceAvgearnCommandDto dto = this;
+
+		// Transfer data
+		HealthInsuranceAvgearn healthInsuranceAvgearn = new HealthInsuranceAvgearn(
+				new HealthInsuranceAvgearnGetMemento() {
+
+					@Override
+					public HealthInsuranceAvgearnValue getPersonalAvg() {
+						return dto.getPersonalAvg();
+					}
+
+					@Override
+					public Integer getLevelCode() {
+						return dto.getLevelCode();
+					}
+
+					@Override
+					public String getHistoryId() {
+						return dto.getHistoryId();
+					}
+
+					@Override
+					public HealthInsuranceAvgearnValue getCompanyAvg() {
+						return dto.getCompanyAvg();
+					}
+				});
+
+		return healthInsuranceAvgearn;
 	}
 }
