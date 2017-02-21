@@ -5,7 +5,6 @@
 package nts.uk.ctx.pr.core.app.insurance.social.office.command;
 
 import lombok.Data;
-import nts.uk.ctx.pr.core.app.insurance.social.office.find.SocialInsuranceOfficeDto;
 
 /**
  * Instantiates a new delete social office command.
@@ -13,6 +12,6 @@ import nts.uk.ctx.pr.core.app.insurance.social.office.find.SocialInsuranceOffice
 @Data
 public class DeleteSocialOfficeCommand {
 	
-	/** The social insurance office dto. */
-	SocialInsuranceOfficeDto socialInsuranceOfficeDto;
+	/** The insurance office code. */
+	String insuranceOfficeCode;
 }

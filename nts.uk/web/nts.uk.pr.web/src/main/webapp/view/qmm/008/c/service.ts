@@ -45,8 +45,8 @@ module nts.uk.pr.view.qmm008.c {
          * Function is used to remove office by office code
          */
         export function remove(officeCode:string): JQueryPromise<model.finder.OfficeItemDto> {
-
-            return nts.uk.request.ajax(servicePath.removeOffice, officeCode);
+            var data = {insuranceOfficeCode:officeCode}
+            return nts.uk.request.ajax(servicePath.removeOffice,data);
         }
         /**
         * Model namespace.

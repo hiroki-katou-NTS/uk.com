@@ -73,9 +73,31 @@ public class JpaSocialInsuranceOfficeRepository extends JpaRepository implements
 	 * remove(java.lang.String, java.lang.Long)
 	 */
 	@Override
-	public void remove(String id, Long version) {
-		// TODO Auto-generated method stub
+	public void remove(String companyCode, String officeCode) {
+		// Get entity manager
+		EntityManager em = this.getEntityManager();
 
+		// Query for indicated stress check.
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<QismtSocialInsuOffice> cq = cb.createQuery(QismtSocialInsuOffice.class);
+		Root<QismtSocialInsuOffice> root = cq.from(QismtSocialInsuOffice.class);
+		// Constructing list of parameters
+		List<Predicate> predicateList = new ArrayList<Predicate>();
+
+		// Construct condition.
+		predicateList.add(cb.equal(
+				root.get(QismtSocialInsuOffice_.qismtSocialInsuOfficePK).get(QismtSocialInsuOfficePK_.siOfficeCd),
+				officeCode));
+		cq.where(predicateList.toArray(new Predicate[] {}));
+		List<QismtSocialInsuOffice> result = em.createQuery(cq).getResultList();
+		// If have no record.
+		if (!ListUtil.isEmpty(result)) {
+			QismtSocialInsuOffice entity = new QismtSocialInsuOffice();
+			entity = result.get(0);
+			em.remove(entity);
+		} else {
+			// TODO not found delete element
+		}
 	}
 
 	/*

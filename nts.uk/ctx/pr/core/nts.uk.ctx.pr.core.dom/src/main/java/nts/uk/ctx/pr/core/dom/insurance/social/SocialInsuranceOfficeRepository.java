@@ -31,10 +31,10 @@ public interface SocialInsuranceOfficeRepository {
 	/**
 	 * Removes the.
 	 *
-	 * @param id the id
-	 * @param version the version
+	 * @param companyCode the company code
+	 * @param officeCode the office code
 	 */
-    void remove(String id, Long version);
+    void remove(String companyCode, String officeCode);
 
 	/**
 	 * Find all.
