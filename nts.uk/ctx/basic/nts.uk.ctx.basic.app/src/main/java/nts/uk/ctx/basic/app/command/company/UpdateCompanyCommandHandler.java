@@ -3,6 +3,8 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
+import nts.arc.error.BusinessException;
+import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.basic.dom.company.Company;
@@ -21,9 +23,9 @@ public class UpdateCompanyCommandHandler extends CommandHandler<UpdateCompanyCom
 	protected void handle(CommandHandlerContext<UpdateCompanyCommand> context) {
 		UpdateCompanyCommand update= context.getCommand();
 		//error 26
-//		Company company= companyReposity.getCompanyDetail(update.getCompanyCode())
-//		.orElseThrow(() -> new BusinessException(new RawErrorMessage("更新対象のデータが存在しません。")));
-		Company  company =Company.createFromJavaType(update.getCompanyCode(), update.getCompanyName(), update.getCompanyNameGlobal(),
+ 		Company company= companyReposity.getCompanyDetail(update.getCompanyCode())
+             	.orElseThrow(()-> new BusinessException(new RawErrorMessage("更新対象のデータが存在しません。")));
+		company =Company.createFromJavaType(update.getCompanyCode(), update.getCompanyName(), update.getCompanyNameGlobal(),
 				update.getCompanyNameAbb(), update.getCompanyNameKana(), update.getCorporateMyNumber(), 
 				update.getFaxNo(), update.getPostal(), update.getPresidentName(),
 				update.getPresidentJobTitle(), update.getTelephoneNo(), update.getDepWorkPlaceSet(),

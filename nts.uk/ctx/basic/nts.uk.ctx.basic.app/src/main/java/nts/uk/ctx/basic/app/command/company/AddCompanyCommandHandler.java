@@ -28,12 +28,17 @@ public class AddCompanyCommandHandler extends CommandHandler<AddCompanyCommand>{
 	@Override
 	protected void handle(CommandHandlerContext<AddCompanyCommand> context) {
 		AddCompanyCommand addCompany = context.getCommand();
-		Company company= addCompany.toDomain(); 
+		
+		Company company= addCompany.toDomain();
+		//error1 if companyCode = null
+		if(company.getCompanyCode() == null){
+			throw new BusinessException(new RawErrorMessage("会社コード が入力されていません。 "));
+		}
 		Optional<Company> lst;	
 		lst = this.companyRepository.getCompanyDetail(addCompany.getCompanyCode());
 		//notification error 005 check in account -> add account (sign up)
 		if(lst.isPresent()){
-			throw new BusinessException(new RawErrorMessage("入力した company code は既に存在しています。\r\n。 "
+			throw new BusinessException(new RawErrorMessage("入力した 会社コード は既に存在しています。\r\n。 "
 					+ "を確認してください again。"));
 		}else{
 			this.companyRepository.add(company);
