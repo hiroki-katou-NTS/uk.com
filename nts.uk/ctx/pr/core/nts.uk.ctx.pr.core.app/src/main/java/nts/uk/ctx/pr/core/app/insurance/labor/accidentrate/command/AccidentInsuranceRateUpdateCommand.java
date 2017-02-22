@@ -9,7 +9,6 @@ import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.core.dom.company.CompanyCode;
-import nts.uk.ctx.pr.core.app.insurance.command.InsuranceBaseCommand;
 import nts.uk.ctx.pr.core.app.insurance.labor.accidentrate.AccidentInsuranceRateDto;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.AccidentInsuranceRate;
@@ -21,7 +20,7 @@ import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.InsuBizRateItem;
  */
 @Getter
 @Setter
-public class AccidentInsuranceRateUpdateCommand extends InsuranceBaseCommand {
+public class AccidentInsuranceRateUpdateCommand {
 
 	/** The accident insurance rate. */
 	private AccidentInsuranceRateDto accidentInsuranceRate;
@@ -42,7 +41,8 @@ public class AccidentInsuranceRateUpdateCommand extends InsuranceBaseCommand {
 
 			@Override
 			public Set<InsuBizRateItem> getRateItems() {
-				return defaultSetInsuBizRateItem();
+				// return defaultSetInsuBizRateItem();
+				return null;
 			}
 
 			@Override
@@ -57,8 +57,13 @@ public class AccidentInsuranceRateUpdateCommand extends InsuranceBaseCommand {
 
 			@Override
 			public MonthRange getApplyRange() {
-				return convertMonthRange(command.accidentInsuranceRate.getHistoryInsurance().getStartMonthRage(),
-						command.accidentInsuranceRate.getHistoryInsurance().getEndMonthRage());
+				return null;
+				/*
+				 * return convertMonthRange(command.accidentInsuranceRate.
+				 * getHistoryInsurance().getStartMonthRage(),
+				 * command.accidentInsuranceRate.getHistoryInsurance().
+				 * getEndMonthRage());
+				 */
 			}
 		});
 		return accidentInsuranceRate;

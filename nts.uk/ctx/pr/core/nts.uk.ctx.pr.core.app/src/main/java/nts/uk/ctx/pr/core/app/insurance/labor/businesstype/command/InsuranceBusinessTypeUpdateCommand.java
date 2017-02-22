@@ -10,7 +10,6 @@ import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.core.dom.company.CompanyCode;
-import nts.uk.ctx.pr.core.app.insurance.command.InsuranceBaseCommand;
 import nts.uk.ctx.pr.core.app.insurance.labor.businesstype.InsuranceBusinessTypeUpdateDto;
 import nts.uk.ctx.pr.core.dom.insurance.BusinessName;
 import nts.uk.ctx.pr.core.dom.insurance.labor.businesstype.BusinessTypeEnum;
@@ -19,7 +18,7 @@ import nts.uk.ctx.pr.core.dom.insurance.labor.businesstype.InsuranceBusinessType
 
 @Getter
 @Setter
-public class InsuranceBusinessTypeUpdateCommand extends InsuranceBaseCommand {
+public class InsuranceBusinessTypeUpdateCommand {
 
 	/** The insurance business type. */
 	private InsuranceBusinessTypeUpdateDto insuranceBusinessType;

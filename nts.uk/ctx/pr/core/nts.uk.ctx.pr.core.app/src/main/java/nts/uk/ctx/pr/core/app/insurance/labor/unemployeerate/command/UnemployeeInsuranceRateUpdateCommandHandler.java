@@ -8,9 +8,10 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsuranceRate;
 import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsuranceRateRepository;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
-@Transactional		
+@Transactional
 public class UnemployeeInsuranceRateUpdateCommandHandler extends CommandHandler<UnemployeeInsuranceRateUpdateCommand> {
 
 	/** CompanyRepository */
@@ -25,7 +26,8 @@ public class UnemployeeInsuranceRateUpdateCommandHandler extends CommandHandler<
 	 */
 	@Override
 	protected void handle(CommandHandlerContext<UnemployeeInsuranceRateUpdateCommand> context) {
-		UnemployeeInsuranceRate unemployeeInsuranceRate = context.getCommand().toDomain();
+		String companyCode = AppContexts.user().companyCode();
+		UnemployeeInsuranceRate unemployeeInsuranceRate = context.getCommand().toDomain(companyCode);
 		unemployeeInsuranceRate.validate();
 		this.unemployeeInsuranceRateRepository.update(unemployeeInsuranceRate);
 	}

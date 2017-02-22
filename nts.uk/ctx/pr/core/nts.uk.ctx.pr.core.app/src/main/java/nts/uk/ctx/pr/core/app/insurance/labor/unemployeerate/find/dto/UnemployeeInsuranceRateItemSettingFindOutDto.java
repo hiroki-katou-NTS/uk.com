@@ -2,20 +2,18 @@
  * Copyright (c) 2016 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.pr.core.app.insurance.labor.unemployeerate.find;
+package nts.uk.ctx.pr.core.app.insurance.labor.unemployeerate.find.dto;
 
 import lombok.Data;
 
 /**
- * Instantiates a new history unemployee insurance find in dto.
+ * The Class UnemployeeInsuranceRateItemSettingFindOutDto.
  */
 @Data
-public class HistoryUnemployeeInsuranceFindInDto {
+public class UnemployeeInsuranceRateItemSettingFindOutDto {
+	/** The round atr. */
+	private Integer roundAtr;
 
-	/** The history id. */
-	private String historyId;
-
-	/** The company code. */
-	private String companyCode;
-
+	/** The code. */
+	private Double rate;
 }
