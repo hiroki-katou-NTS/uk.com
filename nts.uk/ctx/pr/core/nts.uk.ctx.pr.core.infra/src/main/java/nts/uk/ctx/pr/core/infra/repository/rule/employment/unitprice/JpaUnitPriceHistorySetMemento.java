@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2015 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.core.infra.repository.rule.employment.unitprice;
@@ -11,6 +11,7 @@ import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.Money;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.SettingType;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceCode;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceHistorySetMemento;
+import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceName;
 import nts.uk.ctx.pr.core.infra.entity.rule.employment.unitprice.QupmtCUnitpriceHist;
 import nts.uk.ctx.pr.core.infra.entity.rule.employment.unitprice.QupmtCUnitpriceHistPK;
 import nts.uk.shr.com.primitive.Memo;
@@ -180,6 +181,18 @@ public class JpaUnitPriceHistorySetMemento implements UnitPriceHistorySetMemento
 	@Override
 	public void setMemo(Memo memo) {
 		this.typeValue.setMemo(memo.v());
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.rule.employment.unitprice.
+	 * UnitPriceHistorySetMemento#setUnitPriceName(nts.uk.ctx.pr.core.dom.rule.
+	 * employment.unitprice.UnitPriceName)
+	 */
+	@Override
+	public void setUnitPriceName(UnitPriceName unitPriceName) {
+		// Do nothing.
 	}
 
 }

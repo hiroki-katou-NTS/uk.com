@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2016 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.core.app.rule.employment.unitprice.command;
@@ -11,8 +11,12 @@ import javax.transaction.Transactional;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.core.dom.company.CompanyCode;
+import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPrice;
+import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceCode;
+import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceGetMemento;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceHistory;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceHistoryRepository;
+import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceName;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.service.UnitPriceHistoryService;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -48,13 +52,30 @@ public class CreateUnitPriceHistoryCommandHandler extends CommandHandler<CreateU
 
 		// Transfer data
 		UnitPriceHistory unitPriceHistory = command.toDomain(companyCode);
+		UnitPrice unitPrice = new UnitPrice(new UnitPriceGetMemento() {
+
+			@Override
+			public UnitPriceName getName() {
+				return new UnitPriceName(command.getUnitPriceName());
+			}
+
+			@Override
+			public CompanyCode getCompanyCode() {
+				return companyCode;
+			}
+
+			@Override
+			public UnitPriceCode getCode() {
+				return new UnitPriceCode(command.getUnitPriceCode());
+			}
+		});
 
 		// Validate
 		unitPriceHistoryService.validateRequiredItem(unitPriceHistory);
 		unitPriceHistoryService.validateDateRange(unitPriceHistory);
 
 		// Insert into db.
-		unitPriceHistoryRepository.add(unitPriceHistory);
+		unitPriceHistoryRepository.add(unitPrice, unitPriceHistory);
 	}
 
 }

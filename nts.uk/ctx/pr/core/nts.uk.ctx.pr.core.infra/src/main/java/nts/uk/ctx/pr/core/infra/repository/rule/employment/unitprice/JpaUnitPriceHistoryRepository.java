@@ -18,10 +18,13 @@ import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.YearMonth;
+import nts.gul.collection.ListUtil;
 import nts.uk.ctx.core.dom.company.CompanyCode;
+import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPrice;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceCode;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceHistory;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceHistoryRepository;
+import nts.uk.ctx.pr.core.infra.entity.rule.employment.unitprice.QupmtCUnitpriceHead;
 import nts.uk.ctx.pr.core.infra.entity.rule.employment.unitprice.QupmtCUnitpriceHist;
 import nts.uk.ctx.pr.core.infra.entity.rule.employment.unitprice.QupmtCUnitpriceHistPK;
 import nts.uk.ctx.pr.core.infra.entity.rule.employment.unitprice.QupmtCUnitpriceHistPK_;
@@ -41,9 +44,18 @@ public class JpaUnitPriceHistoryRepository extends JpaRepository implements Unit
 	 * unitprice.UnitPriceHistory)
 	 */
 	@Override
-	public void add(UnitPriceHistory unitPriceHistory) {
+	public void add(UnitPrice unitPrice, UnitPriceHistory unitPriceHistory) {
 		QupmtCUnitpriceHist entity = new QupmtCUnitpriceHist();
 		unitPriceHistory.saveToMemento(new JpaUnitPriceHistorySetMemento(entity));
+
+		QupmtCUnitpriceHead qupmtCUnitpriceHead = new QupmtCUnitpriceHead();
+		unitPrice.saveToMemento(new JpaUnitPriceSetMemento(qupmtCUnitpriceHead));
+		if (this.queryProxy().find(qupmtCUnitpriceHead.getQupmtCUnitpriceHeadPK(), QupmtCUnitpriceHead.class) == null) {
+			this.commandProxy().insert(qupmtCUnitpriceHead);
+		} else {
+			this.commandProxy().update(qupmtCUnitpriceHead);
+		}
+
 		this.commandProxy().insert(entity);
 	}
 
@@ -55,9 +67,18 @@ public class JpaUnitPriceHistoryRepository extends JpaRepository implements Unit
 	 * unitprice.UnitPriceHistory)
 	 */
 	@Override
-	public void update(UnitPriceHistory unitPriceHistory) {
+	public void update(UnitPrice unitPrice, UnitPriceHistory unitPriceHistory) {
 		QupmtCUnitpriceHist entity = new QupmtCUnitpriceHist();
 		unitPriceHistory.saveToMemento(new JpaUnitPriceHistorySetMemento(entity));
+
+		QupmtCUnitpriceHead qupmtCUnitpriceHead = new QupmtCUnitpriceHead();
+		unitPrice.saveToMemento(new JpaUnitPriceSetMemento(qupmtCUnitpriceHead));
+		if (this.queryProxy().find(qupmtCUnitpriceHead.getQupmtCUnitpriceHeadPK(), QupmtCUnitpriceHead.class) == null) {
+			this.commandProxy().insert(qupmtCUnitpriceHead);
+		} else {
+			this.commandProxy().update(qupmtCUnitpriceHead);
+		}
+
 		this.commandProxy().update(entity);
 	}
 
@@ -110,15 +131,33 @@ public class JpaUnitPriceHistoryRepository extends JpaRepository implements Unit
 	 * UnitPriceHistoryRepository#findById(java.lang.String)
 	 */
 	@Override
-	public Optional<UnitPriceHistory> findById(CompanyCode companyCode, UnitPriceCode cUnitpriceCd, String histId) {
+	public Optional<UnitPriceHistory> findById(CompanyCode companyCode, String histId) {
 		// Get entity manager
 		EntityManager em = this.getEntityManager();
 
-		QupmtCUnitpriceHist entity = em.find(QupmtCUnitpriceHist.class,
-				new QupmtCUnitpriceHistPK(companyCode.v(), cUnitpriceCd.v(), histId));
+		// Query for indicated stress check.
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<QupmtCUnitpriceHist> cq = cb.createQuery(QupmtCUnitpriceHist.class);
+		Root<QupmtCUnitpriceHist> root = cq.from(QupmtCUnitpriceHist.class);
+		// Constructing list of parameters
+		List<Predicate> predicateList = new ArrayList<Predicate>();
+
+		// Construct condition.
+		predicateList.add(cb.equal(root.get(QupmtCUnitpriceHist_.qupmtCUnitpriceHistPK).get(QupmtCUnitpriceHistPK_.ccd),
+				companyCode.v()));
+		predicateList.add(cb.equal(
+				root.get(QupmtCUnitpriceHist_.qupmtCUnitpriceHistPK).get(QupmtCUnitpriceHistPK_.histId), histId));
+		cq.where(predicateList.toArray(new Predicate[] {}));
+
+		List<QupmtCUnitpriceHist> result = em.createQuery(cq).getResultList();
+
+		// Check empty.
+		if (ListUtil.isEmpty(result)) {
+			return Optional.empty();
+		}
 
 		// Return
-		return Optional.ofNullable(new UnitPriceHistory(new JpaUnitPriceHistoryGetMemento(entity)));
+		return Optional.of(new UnitPriceHistory(new JpaUnitPriceHistoryGetMemento(result.get(0))));
 	}
 
 	/*

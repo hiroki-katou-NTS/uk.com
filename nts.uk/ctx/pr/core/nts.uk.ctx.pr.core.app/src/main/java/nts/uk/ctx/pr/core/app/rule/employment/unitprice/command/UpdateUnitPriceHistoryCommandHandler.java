@@ -13,9 +13,12 @@ import javax.transaction.Transactional;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.core.dom.company.CompanyCode;
+import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPrice;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceCode;
+import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceGetMemento;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceHistory;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceHistoryRepository;
+import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceName;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.service.UnitPriceHistoryService;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -50,8 +53,7 @@ public class UpdateUnitPriceHistoryCommandHandler extends CommandHandler<UpdateU
 		CompanyCode companyCode = new CompanyCode(AppContexts.user().companyCode());
 
 		// Get the history.
-		Optional<UnitPriceHistory> optUnitPriceHistory = unitPriceHistoryRepo.findById(companyCode,
-				new UnitPriceCode(command.getUnitPriceCode()), command.getId());
+		Optional<UnitPriceHistory> optUnitPriceHistory = unitPriceHistoryRepo.findById(companyCode, command.getId());
 		if (!optUnitPriceHistory.isPresent()) {
 			return;
 		}
@@ -60,12 +62,29 @@ public class UpdateUnitPriceHistoryCommandHandler extends CommandHandler<UpdateU
 		// Transfer data
 		UnitPriceHistory updatedHistory = command.toDomain(companyCode, unitPriceHistory.getId(),
 				unitPriceHistory.getUnitPriceCode());
+		UnitPrice unitPrice = new UnitPrice(new UnitPriceGetMemento() {
+
+			@Override
+			public UnitPriceName getName() {
+				return new UnitPriceName(command.getUnitPriceName());
+			}
+
+			@Override
+			public CompanyCode getCompanyCode() {
+				return companyCode;
+			}
+
+			@Override
+			public UnitPriceCode getCode() {
+				return new UnitPriceCode(command.getUnitPriceCode());
+			}
+		});
 
 		// Validate
 		unitPriceHistoryService.validateRequiredItem(updatedHistory);
 		unitPriceHistoryService.validateDateRange(updatedHistory);
 
 		// Update to db.
-		unitPriceHistoryRepo.update(updatedHistory);
+		unitPriceHistoryRepo.update(unitPrice, updatedHistory);
 	}
 }
