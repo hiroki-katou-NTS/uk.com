@@ -79,7 +79,7 @@ module cmm001.a.service {
                     telephoneNo: string;
                     termBeginMon: number;   
                     use_Gr_Set: number;
-                    use_kt_Set: number;
+                    use_Kt_Set: number;
                     use_Qy_Set: number;
                     use_Jj_Set: number;
                     use_Ac_Set: number;

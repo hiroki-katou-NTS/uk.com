@@ -83,7 +83,7 @@
 }
 
 .form-label {
-	margin-bottom: 10px;
+	margin-bottom: 5px;
 }
 
 .ntsCheckBox-right {
@@ -141,9 +141,10 @@ button.search-btn {
 #A_LBL_002 {
 	width: 200px;
 }
-/* #A_INP_003{
-	width: 500px !important;
-} */
+#A_INP_002{
+	margin-left: 28px !important;
+	margin-bottom: 0px !important;
+} 
 #A_INP_004 {
 	width: 360px !important;
 	margin-bottom: 10px;
@@ -240,4 +241,10 @@ body > div:nth-child(4){
 	top: 0px;
 	left: 0px;
 	width: 0px;
+}
+#combo-box {
+	width:80px;
+}
+#contents-area > div.nts-right-content > div.table.fixed-height{
+	margin-top: 0px !important;
 }

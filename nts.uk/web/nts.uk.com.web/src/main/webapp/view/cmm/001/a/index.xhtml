@@ -40,7 +40,7 @@
 				<button id="A_BTN_001" data-bind="click: resetData"
 					class="group-button-1">新規</button>
 				<button id="A_BTN_002" class="proceed group-button-1"
-					data-bind="click: ClickRegister">登録</button>
+					data-bind="click: ClickRegister, enable: $root.errors.isEmpty">登録</button>
 				<button id="A_BTN_003" class="group-button-1"
 					data-bind="click: ClickSetting">会社初期パラメータの設定</button>
 				<button id="A_BTN_004" class="group-button-1"
@@ -87,8 +87,8 @@
 							data-bind="ntsFormLabel: { required: true }">
 							<label id="A_LBL_003">会社コード</label>
 						</div>
-						<div data-bind="with: testCompany">
-							<input id="A_INP_002" class="save-error" data-name="CompanyCode"
+						<div data-bind="with: currentCompanyDto">
+							<input id="A_INP_002" class="save-error" data-name="会社コード"
 								data-bind="ntsTextEditor: {value: companyCode, constraint: 'CompanyCode'}" />
 						</div>
 						<div class="bg-yellow">
@@ -103,7 +103,7 @@
 					<div class="table fixed-height">
 						<table id="expand-example1">
 							<tbody>
-								<tr style="margin-top: 10px;">
+								<tr >
 									<th colspan="1" class="th-col1">
 										<div class="form-label"
 											data-bind="ntsFormLabel:{required: true}"
@@ -113,9 +113,9 @@
 									</th>
 
 									<th colspan="2" class="th-col2">
-										<div data-bind="with: testCompany">
+										<div data-bind="with: currentCompanyDto">
 											<input id="A_INP_003" class="save-error"
-												data-name="CompanyName"
+												data-name="会社名"
 												data-bind="ntsTextEditor: {value: companyName, constraint: 'CompanyName'}" />
 										</div>
 									</th>
@@ -128,16 +128,11 @@
 									</th>
 
 									<th colspan="2" class="th-col2">
-										<div data-bind="with: testCompany">
+										<div data-bind="with: currentCompanyDto">
 											<input id="A_INP_004" class="save-error"
-												data-name="CompanyNameKana"
+												data-name="会社名カナ"
 												data-bind="ntsTextEditor: {value: companyNameKana, constraint: 'CompanyNameKana'}" />
 										</div>
-<!-- 										<div data-bind="with: testCompany">
-											<input id="A_INP_004" class="save-error"
-												data-name="CompanyNameAbb"
-												data-bind="ntsTextEditor: {value: companyNameAbb, constraint: 'CompanyNameAbb'}" />
-										</div> -->
 									</th>
 								</tr>
 								<tr style="margin-top: 20px;">
@@ -148,14 +143,9 @@
 									</th>
 
 									<th colspan="2" class="th-col2">
-		<!-- 								<div data-bind="with: testCompany">
+										<div data-bind="with: currentCompanyDto">
 											<input id="A_INP_005" class="save-error"
-												data-name="CompanyNameKana"
-												data-bind="ntsTextEditor: {value: companyNameKana, constraint: 'CompanyNameKana'}" />
-										</div> -->
-										<div data-bind="with: testCompany">
-											<input id="A_INP_005" class="save-error"
-												data-name="CompanyNameAbb"
+												data-name="会社略名"
 												data-bind="ntsTextEditor: {value: companyNameAbb, constraint: 'CompanyNameAbb'}" />
 										</div>
 
@@ -168,7 +158,7 @@
 
 					<!-- <Tabpanel> -->
 					<div class="cf flex">
-						<div style="width: 100%; height: 100%;">
+						<div style="width: 100%; height: 100%; margin-top:20px">
 							<div id="tab-panel" class="cf"
 								data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab, direction: 'vertical' }">
 								<div class="tab-content-1">
@@ -178,7 +168,7 @@
 										<tbody>
 											<!-- 1 -->
 											<tr style="margin-top: 10px;">
-												<th colspan="1" class="th-col1" styles="width: 150px">
+												<th colspan="1" class="th-col1" style="width: 150px">
 													<div class="form-label"
 														data-bind="ntsFormLabel:{required: true}"
 														style="margin-top: 5px;">
@@ -187,13 +177,9 @@
 												</th>
 
 												<th colspan="2" class="th-col2">
-													<!-- 												<input id="B_INP_001"
-													type="text"
-													data-bind="value: currentCompanyDto().corporateMyNumber"
-													class="input-table" /> -->
-													<div data-bind="with: testCompany">
+													<div data-bind="with: currentCompanyDto">
 														<input id="B_INP_001" class="save-error"
-															data-name="CorporateMyNumber"
+															data-name="法人マイナンバー"
 															data-bind="ntsTextEditor: {value: corporateMyNumber, constraint: 'CorporateMyNumber'}" />
 													</div>
 												</th>
@@ -208,13 +194,9 @@
 												</th>
 
 												<th colspan="2" class="th-col2">
-													<!-- 												<input id="B_INP_002"
-													type="text"
-													data-bind="value: currentCompanyDto().presidentName"
-													class="input-table" /> -->
-													<div data-bind="with: testCompany">
+													<div data-bind="with: currentCompanyDto">
 														<input id="B_INP_002" class="save-error"
-															data-name="PresidentName"
+															data-name="代表者名"
 															data-bind="ntsTextEditor: {value: presidentName, constraint: 'PresidentName'}" />
 													</div>
 												</th>
@@ -230,13 +212,9 @@
 												</th>
 
 												<th colspan="2" class="th-col2">
-													<!-- 												<input id="B_INP_003"
-													type="text"
-													data-bind="value: currentCompanyDto().presidentJobTitle"
-													class="input-table" /> -->
-													<div data-bind="with: testCompany">
+													<div data-bind="with: currentCompanyDto">
 														<input id="B_INP_003" class="save-error"
-															data-name="PresidentJobTitle"
+															data-name="代表者職位"
 															data-bind="ntsTextEditor: {value: presidentJobTitle, constraint: 'PresidentJobTitle'}" />
 													</div>
 												</th>
@@ -257,12 +235,9 @@
 												</th>
 
 												<th colspan="1" class="th-col-sub">
-													<!-- <input
-													id="C_INP_001" class="input-table" type="text"
-													data-bind="value: currentCompanyDto().postal" /> -->
-													<div data-bind="with: testCompany">
+													<div data-bind="with: currentCompanyDto">
 														<input id="C_INP_001" class="save-error"
-															data-name="Postal"
+															data-name="郵便番号"
 															data-bind="ntsTextEditor: {value: postal, constraint: 'Postal'}" />
 													</div>
 												</th>
@@ -312,18 +287,14 @@
 												</th>
 
 												<th colspan="2" class="th-col2">
-													<div data-bind="with: testCompany">
-														<input id="C_INP_002"
-															class="save-error nts-editor nts-input"
-															data-name="Address1"
+													<div data-bind="with: currentCompanyDto">
+														<input id="C_INP_002" class="save-error"
+															data-name="住所１"
 															data-bind="ntsTextEditor: {value: address1, constraint: 'Address1'}"
 															type="text" placeholder=""
 															style="width: 200px; text-align: left; margin-bottom: 10px;">
 														</input>
 
-														<!-- <input id="C_INP_002" class="save-error"
-															data-name="Address1"
-															data-bind="ntsTextEditor: {value: value, constraint: constraint, option: option, enable: enable, readonly: readonly}" /> -->
 													</div>
 												</th>
 											</tr>
@@ -333,12 +304,9 @@
 												</th>
 
 												<th colspan="2" class="th-col2">
-													<!-- 	<input id="C_INP_003"
-													type="text" data-bind="value: currentCompanyDto().address2"
-													class="input-table" /> -->
-													<div data-bind="with: testCompany">
+													<div data-bind="with: currentCompanyDto">
 														<input id="C_INP_003" class="save-error"
-															data-name="Address2"
+															data-name="住所２"
 															data-bind="ntsTextEditor: {value: address2, constraint: 'Address2'}" />
 													</div>
 
@@ -359,18 +327,12 @@
 												</th>
 
 												<th colspan="2" class="th-col2">
-													<!-- <input id="C_INP_004"
-													type="text"
-													data-bind="value: currentCompanyDto().addressKana1"
-													class="input-table" style="margin-bottom: 10px;" /> -->
-													<div data-bind="with: testCompany" style="width: 200px">
+													<div data-bind="with: currentCompanyDto" style="width: 200px">
 														<input id="C_INP_004" class="save-error"
-															data-name="AddressKana1"
+															data-name="住所カナ１"
 															data-bind="ntsTextEditor: {value: addressKana1 , constraint: 'AddressKana1'}" />
 
-														<!-- <input id="C_INP_004" class="save-error"
-															data-name="AddressKana1"
-															data-bind="ntsTextEditor: {value: value, constraint: constraint, option: option, enable: enable, readonly: readonly}" /> -->
+													
 													</div>
 
 												</th>
@@ -381,13 +343,9 @@
 												</th>
 
 												<th colspan="2" class="th-col2">
-													<!-- <input id="C_INP_005"
-													type="text"
-													data-bind="value: currentCompanyDto().addressKana2"
-													class="input-table" /> -->
-													<div data-bind="with: testCompany">
+													<div data-bind="with: currentCompanyDto">
 														<input id="C_INP_005" class="save-error"
-															data-name="AddressKana2"
+															data-name="住所カナ２"
 															data-bind="ntsTextEditor: {value: addressKana2, constraint: 'AddressKana2'}" />
 													</div>
 												</th>
@@ -402,13 +360,9 @@
 												</th>
 
 												<th colspan="2" class="th-col2">
-													<!-- <input id="C_INP_006"
-													type="text"
-													data-bind="value: currentCompanyDto().telephoneNo"
-													class="input-table" /> -->
-													<div data-bind="with: testCompany">
+													<div data-bind="with: currentCompanyDto">
 														<input id="C_INP_006" class="save-error"
-															data-name="TelephoneNo"
+															data-name="電話番号"
 															data-bind="ntsTextEditor: {value: telephoneNo, constraint: 'TelephoneNo'}" />
 													</div>
 												</th>
@@ -419,11 +373,8 @@
 												</th>
 
 												<th colspan="2" class="th-col2">
-													<!-- <input id="C_INP_007"
-													type="text" data-bind="value: currentCompanyDto().faxNo"
-													class="input-table" /> -->
-													<div data-bind="with: testCompany">
-														<input id="C_INP_007" class="save-error" data-name="FaxNo"
+													<div data-bind="with: currentCompanyDto">
+														<input id="C_INP_007" class="save-error" data-name="FAX番号"
 															data-bind="ntsTextEditor: {value: faxNo, constraint: 'FaxNo'}" />
 													</div>
 												</th>
@@ -541,7 +492,7 @@
 											 editable: isEditable,
 											 enable: isEnable,
 											 columns: [
-													{ prop: 'name', length: 5 },
+													{ prop: 'name' },
 											   ]}">
 															</div>
 														</div>
