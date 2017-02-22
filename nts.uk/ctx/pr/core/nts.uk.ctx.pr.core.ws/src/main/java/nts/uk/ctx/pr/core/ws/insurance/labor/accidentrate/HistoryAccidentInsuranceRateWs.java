@@ -17,8 +17,9 @@ import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.pr.core.app.insurance.labor.accidentrate.AccidentInsuranceRateDto;
 import nts.uk.ctx.pr.core.app.insurance.labor.accidentrate.HistoryAccidentInsuranceRateDto;
 import nts.uk.ctx.pr.core.app.insurance.labor.accidentrate.InsuBizRateItemDto;
-import nts.uk.ctx.pr.core.app.insurance.labor.accidentrate.find.HistoryAccidentInsuranceRateFindInDto;
 import nts.uk.ctx.pr.core.app.insurance.labor.accidentrate.find.HistoryAccidentInsuranceRateF‌inder;
+import nts.uk.ctx.pr.core.app.insurance.labor.accidentrate.find.dto.HistoryAccidentInsuranceRateFindInDto;
+import nts.uk.ctx.pr.core.app.insurance.labor.accidentrate.find.dto.HistoryAccidentInsuranceRateFindOutDto;
 
 @Path("pr/insurance/labor/accidentrate/history")
 @Produces("application/json")
@@ -34,9 +35,9 @@ public class HistoryAccidentInsuranceRateWs extends WebService {
 	 * @return the list
 	 */
 	@POST
-	@Path("findall/{companyCode}")
-	public List<HistoryAccidentInsuranceRateDto> findAllHistory(@PathParam("companyCode") String companyCode) {
-		return find.findAll(companyCode);
+	@Path("findall")
+	public List<HistoryAccidentInsuranceRateFindOutDto> findAllHistory() {
+		return find.findAll();
 	}
 
 	/**

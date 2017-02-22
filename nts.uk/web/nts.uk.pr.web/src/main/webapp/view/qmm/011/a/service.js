@@ -128,9 +128,9 @@ var nts;
                                 return dfd.promise();
                             }
                             service.updateAccidentInsuranceRate = updateAccidentInsuranceRate;
-                            function findAllHistoryAccidentInsuranceRate(companyCode) {
+                            function findAllHistoryAccidentInsuranceRate() {
                                 var dfd = $.Deferred();
-                                nts.uk.request.ajax(paths.findAllHistoryAccidentInsuranceRate + "/" + companyCode)
+                                nts.uk.request.ajax(paths.findAllHistoryAccidentInsuranceRate)
                                     .done(function (res) {
                                     dfd.resolve(res);
                                 })
@@ -213,9 +213,9 @@ var nts;
                                 return accidentInsuranceRateDto;
                             }
                             service.convertAccidentInsuranceRateModelDTO = convertAccidentInsuranceRateModelDTO;
-                            function findAllInsuranceBusinessType(companyCode) {
+                            function findAllInsuranceBusinessType() {
                                 var dfd = $.Deferred();
-                                nts.uk.request.ajax(paths.findAllInsuranceBusinessType + "/" + companyCode)
+                                nts.uk.request.ajax(paths.findAllInsuranceBusinessType)
                                     .done(function (res) {
                                     dfd.resolve(res);
                                 })

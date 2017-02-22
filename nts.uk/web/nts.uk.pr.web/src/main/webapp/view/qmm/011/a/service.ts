@@ -134,9 +134,9 @@ module nts.uk.pr.view.qmm011.a {
             return dfd.promise();
         }
         //Function connection service find All HistoryAccidentInsurance 
-        export function findAllHistoryAccidentInsuranceRate(companyCode: string): JQueryPromise<Array<model.HistoryAccidentInsuranceDto>> {
+        export function findAllHistoryAccidentInsuranceRate(): JQueryPromise<Array<model.HistoryAccidentInsuranceDto>> {
             var dfd = $.Deferred<Array<model.HistoryAccidentInsuranceDto>>();
-            nts.uk.request.ajax(paths.findAllHistoryAccidentInsuranceRate + "/" + companyCode)
+            nts.uk.request.ajax(paths.findAllHistoryAccidentInsuranceRate)
                 .done(function(res: Array<model.HistoryAccidentInsuranceDto>) {
                     dfd.resolve(res);
                     //xyz
@@ -235,9 +235,9 @@ module nts.uk.pr.view.qmm011.a {
             return accidentInsuranceRateDto;
         }
         //Function find all Insurance Business Type
-        export function findAllInsuranceBusinessType(companyCode: string): JQueryPromise<model.InsuranceBusinessTypeUpdateDto> {
+        export function findAllInsuranceBusinessType(): JQueryPromise<model.InsuranceBusinessTypeUpdateDto> {
             var dfd = $.Deferred<model.InsuranceBusinessTypeUpdateDto>();
-            nts.uk.request.ajax(paths.findAllInsuranceBusinessType + "/" + companyCode)
+            nts.uk.request.ajax(paths.findAllInsuranceBusinessType)
                 .done(function(res: model.InsuranceBusinessTypeUpdateDto) {
                     dfd.resolve(res);
                     //xyz

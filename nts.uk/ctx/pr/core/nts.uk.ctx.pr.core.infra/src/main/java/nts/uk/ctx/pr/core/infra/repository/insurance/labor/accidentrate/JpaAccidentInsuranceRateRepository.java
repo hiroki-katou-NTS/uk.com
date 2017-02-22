@@ -7,8 +7,15 @@ package nts.uk.ctx.pr.core.infra.repository.insurance.labor.accidentrate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.YearMonth;
@@ -18,6 +25,10 @@ import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.AccidentInsuranceRate
 import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.AccidentInsuranceRateGetMemento;
 import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.AccidentInsuranceRateRepository;
 import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.InsuBizRateItem;
+import nts.uk.ctx.pr.core.dom.insurance.labor.businesstype.BusinessTypeEnum;
+import nts.uk.ctx.pr.core.infra.entity.insurance.labor.accidentrate.QismtWorkAccidentInsu;
+import nts.uk.ctx.pr.core.infra.entity.insurance.labor.accidentrate.QismtWorkAccidentInsuPK_;
+import nts.uk.ctx.pr.core.infra.entity.insurance.labor.accidentrate.QismtWorkAccidentInsu_;
 
 /**
  * The Class JpaAccidentInsuranceRateRepository.
@@ -34,8 +45,7 @@ public class JpaAccidentInsuranceRateRepository extends JpaRepository implements
 	 */
 	@Override
 	public void add(AccidentInsuranceRate rate) {
-		// TODO Auto-generated method stub
-
+		this.commandProxy().insertAll(toEntity(rate));
 	}
 
 	/*
@@ -47,8 +57,7 @@ public class JpaAccidentInsuranceRateRepository extends JpaRepository implements
 	 */
 	@Override
 	public void update(AccidentInsuranceRate rate) {
-		// TODO Auto-generated method stub
-
+		this.commandProxy().updateAll(toEntity(rate));
 	}
 
 	/*
@@ -71,19 +80,22 @@ public class JpaAccidentInsuranceRateRepository extends JpaRepository implements
 	 */
 	@Override
 	public List<AccidentInsuranceRate> findAll(CompanyCode companyCode) {
-		List<AccidentInsuranceRate> lstAccidentInsuranceRate = new ArrayList<>();
-		MonthRange monthRange006 = MonthRange.range(new YearMonth(2016 * 100 + 4), new YearMonth(9999 * 100 + 12));
-		lstAccidentInsuranceRate.add(fromDomain("historyId006", companyCode, monthRange006));
-		MonthRange monthRange005 = MonthRange.range(new YearMonth(2015 * 100 + 10), new YearMonth(2016 * 100 + 3));
-		lstAccidentInsuranceRate.add(fromDomain("historyId005", companyCode, monthRange005));
-		MonthRange monthRange004 = MonthRange.range(new YearMonth(2015 * 100 + 4), new YearMonth(2015 * 100 + 9));
-		lstAccidentInsuranceRate.add(fromDomain("historyId004", companyCode, monthRange004));
-		MonthRange monthRange003 = MonthRange.range(new YearMonth(2014 * 100 + 9), new YearMonth(2015 * 100 + 3));
-		lstAccidentInsuranceRate.add(fromDomain("historyId003", companyCode, monthRange003));
-		MonthRange monthRange002 = MonthRange.range(new YearMonth(2014 * 100 + 4), new YearMonth(2014 * 100 + 8));
-		lstAccidentInsuranceRate.add(fromDomain("historyId002", companyCode, monthRange002));
-		MonthRange monthRange001 = MonthRange.range(new YearMonth(2013 * 100 + 4), new YearMonth(2014 * 100 + 3));
-		lstAccidentInsuranceRate.add(fromDomain("historyId001", companyCode, monthRange001));
+		EntityManager em = getEntityManager();
+		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+		CriteriaQuery<QismtWorkAccidentInsu> cq = criteriaBuilder.createQuery(QismtWorkAccidentInsu.class);
+		Root<QismtWorkAccidentInsu> root = cq.from(QismtWorkAccidentInsu.class);
+		cq.select(root);
+		List<Predicate> lstpredicate = new ArrayList<>();
+		lstpredicate.add(criteriaBuilder.equal(
+				root.get(QismtWorkAccidentInsu_.qismtWorkAccidentInsuPK).get(QismtWorkAccidentInsuPK_.ccd),
+				companyCode.v()));
+		lstpredicate.add(criteriaBuilder.equal(
+				root.get(QismtWorkAccidentInsu_.qismtWorkAccidentInsuPK).get(QismtWorkAccidentInsuPK_.waInsuCd),
+				BusinessTypeEnum.Biz1St.value));
+		cq.where(lstpredicate.toArray(new Predicate[] {}));
+		TypedQuery<QismtWorkAccidentInsu> query = em.createQuery(cq);
+		List<AccidentInsuranceRate> lstAccidentInsuranceRate = query.getResultList().stream()
+				.map(item -> toDomainHistory(item)).collect(Collectors.toList());
 		return lstAccidentInsuranceRate;
 	}
 
@@ -149,6 +161,30 @@ public class JpaAccidentInsuranceRateRepository extends JpaRepository implements
 	public boolean isInvalidDateRange(CompanyCode companyCode, YearMonth startMonth) {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	/**
+	 * To entity.
+	 *
+	 * @param rate
+	 *            the rate
+	 * @return the list
+	 */
+	public List<QismtWorkAccidentInsu> toEntity(AccidentInsuranceRate rate) {
+		List<QismtWorkAccidentInsu> lstQismtWorkAccidentInsu = new ArrayList<>();
+		for (int i = 0; i < 10; i++) {
+			lstQismtWorkAccidentInsu.add(new QismtWorkAccidentInsu());
+		}
+		rate.saveToMemento(new JpaAccidentInsuranceRateSetMemento(lstQismtWorkAccidentInsu));
+		return lstQismtWorkAccidentInsu;
+	}
+
+	public AccidentInsuranceRate toDomain(List<QismtWorkAccidentInsu> entity) {
+		return new AccidentInsuranceRate(new JpaAccidentInsuranceRateGetMemento(entity));
+	}
+
+	public AccidentInsuranceRate toDomainHistory(QismtWorkAccidentInsu entity) {
+		return new AccidentInsuranceRate(new JpaHistoryAccidentInsuranceRateGetMemento(entity));
 	}
 
 }

@@ -16,6 +16,7 @@ module nts.uk.pr.view.qmm011.a {
     import HistoryAccidentInsuranceRateFindInDto = service.model.HistoryAccidentInsuranceRateFindInDto;
     import InsuBizRateItemDto = service.model.InsuBizRateItemDto;
     import TypeActionInsuranceRate = service.model.TypeActionInsuranceRate;
+    import InsuranceBusinessTypeUpdateDto = service.model.InsuranceBusinessTypeUpdateDto;
     import InsuranceBusinessTypeUpdateModel = nts.uk.pr.view.qmm011.e.viewmodel.InsuranceBusinessTypeUpdateModel;
     export module viewmodel {
         export class ScreenModel {
@@ -92,25 +93,29 @@ module nts.uk.pr.view.qmm011.a {
                 var self = this;
                 nts.uk.ui.windows.setShared("type", TypeHistory.HistoryUnemployee);
                 self.typeActionUnemployeeInsurance(TypeActionInsuranceRate.add);
-                nts.uk.ui.windows.sub.modal("/view/qmm/011/d/index.xhtml", { height: 400, width: 560, title: "労働保険料率の登録>履歴の追加" }).onClosed(() => {
+                nts.uk.ui.windows.sub.modal("/view/qmm/011/d/index.xhtml", { height: 600, width: 560, title: "労働保険料率の登録>履歴の追加" }).onClosed(() => {
                     //OnClose => call
                     var addHistoryUnemployeeInsuranceDto = nts.uk.ui.windows.getShared("addHistoryUnemployeeInsuranceDto");
                     if (addHistoryUnemployeeInsuranceDto != null && addHistoryUnemployeeInsuranceDto != undefined) {
+                        self.resetValueUnemployeeInsuranceRate();
                         self.historyUnemployeeInsuranceRateStart(addHistoryUnemployeeInsuranceDto.startMonthRage);
                         self.historyUnemployeeInsuranceRateEnd(addHistoryUnemployeeInsuranceDto.endMonthRage);
+                        self.selectionHistoryUnemployeeInsuranceRate('');
                     }
                 });
             }
             //open dialog edit InsuranceBusinessType => show view model xhtml (action event edit)
             private openEditInsuranceBusinessType() {
                 var self = this;
-                service.findAllInsuranceBusinessType("companyCode001").done(data => {
+                service.findAllInsuranceBusinessType().done(data => {
                     nts.uk.ui.windows.setShared("insuranceBusinessTypeUpdateDto", data);
-                    nts.uk.ui.windows.sub.modal("/view/qmm/011/e/index.xhtml", { height: 590, width: 425, title: "事業種類の登録" }).onClosed(() => {
+                    nts.uk.ui.windows.sub.modal("/view/qmm/011/e/index.xhtml", { height: 700, width: 425, title: "事業種類の登録" }).onClosed(() => {
                         //OnClose => call
                         var insuranceBusinessTypeUpdateModel = nts.uk.ui.windows.getShared("insuranceBusinessTypeUpdateModel");
                         if (insuranceBusinessTypeUpdateModel != null && insuranceBusinessTypeUpdateModel != undefined) {
-                            self.updateInsuranceBusinessTypeAccidentInsurance(insuranceBusinessTypeUpdateModel);
+                            service.findAllInsuranceBusinessType().done(data => {
+                                self.updateInsuranceBusinessTypeAccidentInsuranceDto(data);
+                            });
                         }
                     });
                 });
@@ -329,7 +334,8 @@ module nts.uk.pr.view.qmm011.a {
             private findAllHistoryAccidentInsuranceRate(): JQueryPromise<any> {
                 var self = this;
                 var dfd = $.Deferred<any>();
-                service.findAllHistoryAccidentInsuranceRate("companyCode001").done(data => {
+                service.findAllHistoryAccidentInsuranceRate().done(data => {
+                    console.log(data);
                     self.lstHistoryAccidentInsuranceRate = ko.observableArray<HistoryAccidentInsuranceDto>(data);
                     self.selectionHistoryAccidentInsuranceRate = ko.observable(data[0].historyId);
                     self.historyAccidentInsuranceRateStart = ko.observable(data[0].startMonthRage);
@@ -338,7 +344,10 @@ module nts.uk.pr.view.qmm011.a {
                         self.showchangeHistoryAccidentInsurance(selectionHistoryAccidentInsuranceRate);
                     });
                     self.detailHistoryAccidentInsuranceRate(data[0].historyId).done(data => {
-                        dfd.resolve(self);
+                        service.findAllInsuranceBusinessType().done(data => {
+                            self.updateInsuranceBusinessTypeAccidentInsuranceDto(data);
+                            dfd.resolve(self);
+                        });
                     });
                 });
                 return dfd.promise();
@@ -366,6 +375,19 @@ module nts.uk.pr.view.qmm011.a {
                 self.accidentInsuranceRateModel().accidentInsuranceRateBiz8ThModel.updateInsuranceBusinessType(insuranceBusinessTypeUpdateModel.bizNameBiz8Th());
                 self.accidentInsuranceRateModel().accidentInsuranceRateBiz9ThModel.updateInsuranceBusinessType(insuranceBusinessTypeUpdateModel.bizNameBiz9Th());
                 self.accidentInsuranceRateModel().accidentInsuranceRateBiz10ThModel.updateInsuranceBusinessType(insuranceBusinessTypeUpdateModel.bizNameBiz10Th());
+            }
+            private updateInsuranceBusinessTypeAccidentInsuranceDto(insuranceBusinessTypeUpdateDto: InsuranceBusinessTypeUpdateDto) {
+                var self = this;
+                self.accidentInsuranceRateModel().accidentInsuranceRateBiz1StModel.updateInsuranceBusinessType(insuranceBusinessTypeUpdateDto.bizNameBiz1St);
+                self.accidentInsuranceRateModel().accidentInsuranceRateBiz2NdModel.updateInsuranceBusinessType(insuranceBusinessTypeUpdateDto.bizNameBiz2Nd);
+                self.accidentInsuranceRateModel().accidentInsuranceRateBiz3RdModel.updateInsuranceBusinessType(insuranceBusinessTypeUpdateDto.bizNameBiz3Rd);
+                self.accidentInsuranceRateModel().accidentInsuranceRateBiz4ThModel.updateInsuranceBusinessType(insuranceBusinessTypeUpdateDto.bizNameBiz4Th);
+                self.accidentInsuranceRateModel().accidentInsuranceRateBiz5ThModel.updateInsuranceBusinessType(insuranceBusinessTypeUpdateDto.bizNameBiz5Th);
+                self.accidentInsuranceRateModel().accidentInsuranceRateBiz6ThModel.updateInsuranceBusinessType(insuranceBusinessTypeUpdateDto.bizNameBiz6Th);
+                self.accidentInsuranceRateModel().accidentInsuranceRateBiz7ThModel.updateInsuranceBusinessType(insuranceBusinessTypeUpdateDto.bizNameBiz7Th);
+                self.accidentInsuranceRateModel().accidentInsuranceRateBiz8ThModel.updateInsuranceBusinessType(insuranceBusinessTypeUpdateDto.bizNameBiz8Th);
+                self.accidentInsuranceRateModel().accidentInsuranceRateBiz9ThModel.updateInsuranceBusinessType(insuranceBusinessTypeUpdateDto.bizNameBiz9Th);
+                self.accidentInsuranceRateModel().accidentInsuranceRateBiz10ThModel.updateInsuranceBusinessType(insuranceBusinessTypeUpdateDto.bizNameBiz10Th);
             }
         }
 

@@ -69,22 +69,26 @@ var nts;
                                     var self = this;
                                     nts.uk.ui.windows.setShared("type", TypeHistory.HistoryUnemployee);
                                     self.typeActionUnemployeeInsurance(TypeActionInsuranceRate.add);
-                                    nts.uk.ui.windows.sub.modal("/view/qmm/011/d/index.xhtml", { height: 400, width: 560, title: "労働保険料率の登録>履歴の追加" }).onClosed(function () {
+                                    nts.uk.ui.windows.sub.modal("/view/qmm/011/d/index.xhtml", { height: 600, width: 560, title: "労働保険料率の登録>履歴の追加" }).onClosed(function () {
                                         var addHistoryUnemployeeInsuranceDto = nts.uk.ui.windows.getShared("addHistoryUnemployeeInsuranceDto");
                                         if (addHistoryUnemployeeInsuranceDto != null && addHistoryUnemployeeInsuranceDto != undefined) {
+                                            self.resetValueUnemployeeInsuranceRate();
                                             self.historyUnemployeeInsuranceRateStart(addHistoryUnemployeeInsuranceDto.startMonthRage);
                                             self.historyUnemployeeInsuranceRateEnd(addHistoryUnemployeeInsuranceDto.endMonthRage);
+                                            self.selectionHistoryUnemployeeInsuranceRate('');
                                         }
                                     });
                                 };
                                 ScreenModel.prototype.openEditInsuranceBusinessType = function () {
                                     var self = this;
-                                    a.service.findAllInsuranceBusinessType("companyCode001").done(function (data) {
+                                    a.service.findAllInsuranceBusinessType().done(function (data) {
                                         nts.uk.ui.windows.setShared("insuranceBusinessTypeUpdateDto", data);
-                                        nts.uk.ui.windows.sub.modal("/view/qmm/011/e/index.xhtml", { height: 590, width: 425, title: "事業種類の登録" }).onClosed(function () {
+                                        nts.uk.ui.windows.sub.modal("/view/qmm/011/e/index.xhtml", { height: 700, width: 425, title: "事業種類の登録" }).onClosed(function () {
                                             var insuranceBusinessTypeUpdateModel = nts.uk.ui.windows.getShared("insuranceBusinessTypeUpdateModel");
                                             if (insuranceBusinessTypeUpdateModel != null && insuranceBusinessTypeUpdateModel != undefined) {
-                                                self.updateInsuranceBusinessTypeAccidentInsurance(insuranceBusinessTypeUpdateModel);
+                                                a.service.findAllInsuranceBusinessType().done(function (data) {
+                                                    self.updateInsuranceBusinessTypeAccidentInsuranceDto(data);
+                                                });
                                             }
                                         });
                                     });
@@ -276,7 +280,8 @@ var nts;
                                 ScreenModel.prototype.findAllHistoryAccidentInsuranceRate = function () {
                                     var self = this;
                                     var dfd = $.Deferred();
-                                    a.service.findAllHistoryAccidentInsuranceRate("companyCode001").done(function (data) {
+                                    a.service.findAllHistoryAccidentInsuranceRate().done(function (data) {
+                                        console.log(data);
                                         self.lstHistoryAccidentInsuranceRate = ko.observableArray(data);
                                         self.selectionHistoryAccidentInsuranceRate = ko.observable(data[0].historyId);
                                         self.historyAccidentInsuranceRateStart = ko.observable(data[0].startMonthRage);
@@ -285,7 +290,10 @@ var nts;
                                             self.showchangeHistoryAccidentInsurance(selectionHistoryAccidentInsuranceRate);
                                         });
                                         self.detailHistoryAccidentInsuranceRate(data[0].historyId).done(function (data) {
-                                            dfd.resolve(self);
+                                            a.service.findAllInsuranceBusinessType().done(function (data) {
+                                                self.updateInsuranceBusinessTypeAccidentInsuranceDto(data);
+                                                dfd.resolve(self);
+                                            });
                                         });
                                     });
                                     return dfd.promise();
@@ -311,6 +319,19 @@ var nts;
                                     self.accidentInsuranceRateModel().accidentInsuranceRateBiz8ThModel.updateInsuranceBusinessType(insuranceBusinessTypeUpdateModel.bizNameBiz8Th());
                                     self.accidentInsuranceRateModel().accidentInsuranceRateBiz9ThModel.updateInsuranceBusinessType(insuranceBusinessTypeUpdateModel.bizNameBiz9Th());
                                     self.accidentInsuranceRateModel().accidentInsuranceRateBiz10ThModel.updateInsuranceBusinessType(insuranceBusinessTypeUpdateModel.bizNameBiz10Th());
+                                };
+                                ScreenModel.prototype.updateInsuranceBusinessTypeAccidentInsuranceDto = function (insuranceBusinessTypeUpdateDto) {
+                                    var self = this;
+                                    self.accidentInsuranceRateModel().accidentInsuranceRateBiz1StModel.updateInsuranceBusinessType(insuranceBusinessTypeUpdateDto.bizNameBiz1St);
+                                    self.accidentInsuranceRateModel().accidentInsuranceRateBiz2NdModel.updateInsuranceBusinessType(insuranceBusinessTypeUpdateDto.bizNameBiz2Nd);
+                                    self.accidentInsuranceRateModel().accidentInsuranceRateBiz3RdModel.updateInsuranceBusinessType(insuranceBusinessTypeUpdateDto.bizNameBiz3Rd);
+                                    self.accidentInsuranceRateModel().accidentInsuranceRateBiz4ThModel.updateInsuranceBusinessType(insuranceBusinessTypeUpdateDto.bizNameBiz4Th);
+                                    self.accidentInsuranceRateModel().accidentInsuranceRateBiz5ThModel.updateInsuranceBusinessType(insuranceBusinessTypeUpdateDto.bizNameBiz5Th);
+                                    self.accidentInsuranceRateModel().accidentInsuranceRateBiz6ThModel.updateInsuranceBusinessType(insuranceBusinessTypeUpdateDto.bizNameBiz6Th);
+                                    self.accidentInsuranceRateModel().accidentInsuranceRateBiz7ThModel.updateInsuranceBusinessType(insuranceBusinessTypeUpdateDto.bizNameBiz7Th);
+                                    self.accidentInsuranceRateModel().accidentInsuranceRateBiz8ThModel.updateInsuranceBusinessType(insuranceBusinessTypeUpdateDto.bizNameBiz8Th);
+                                    self.accidentInsuranceRateModel().accidentInsuranceRateBiz9ThModel.updateInsuranceBusinessType(insuranceBusinessTypeUpdateDto.bizNameBiz9Th);
+                                    self.accidentInsuranceRateModel().accidentInsuranceRateBiz10ThModel.updateInsuranceBusinessType(insuranceBusinessTypeUpdateDto.bizNameBiz10Th);
                                 };
                                 return ScreenModel;
                             }());
