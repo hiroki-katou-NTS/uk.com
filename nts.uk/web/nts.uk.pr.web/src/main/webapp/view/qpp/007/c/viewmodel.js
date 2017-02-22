@@ -35,7 +35,7 @@ var nts;
                                         { id: 'tab-3', title: '勤怠', content: '.tab-content-3', enable: ko.observable(true), visible: ko.observable(true) },
                                         { id: 'tab-4', title: '記事・その他', content: '.tab-content-4', enable: ko.observable(true), visible: ko.observable(true) }
                                     ]);
-                                    self.selectedTab = ko.observable('tab-2');
+                                    self.selectedTab = ko.observable('tab-1');
                                 }
                                 ScreenModel.prototype.startPage = function () {
                                     var self = this;
