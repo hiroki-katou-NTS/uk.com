@@ -2,7 +2,7 @@
  * Copyright (c) 2016 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.pr.core.app.insurance.labor.unemployeerate;
+package nts.uk.ctx.pr.core.app.insurance.labor.unemployeerate.find.dto;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -18,20 +18,20 @@ import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsurance
  * The Class UnemployeeInsuranceRateDto.
  */
 @Data
-public class UnemployeeInsuranceRateDto implements UnemployeeInsuranceRateSetMemento {
+public class UnemployeeInsuranceRateFindOutDto implements UnemployeeInsuranceRateSetMemento {
 
 	/** The history insurance. */
-	private HistoryUnemployeeInsuranceDto historyInsurance;
+	private HistoryUnemployeeInsuranceFindOutDto historyInsurance;
 
 	// private MonthRange applyRange;
 
 	/** The rate items. */
-	private List<UnemployeeInsuranceRateItemDto> rateItems;
+	private List<UnemployeeInsuranceRateItemFindOutDto> rateItems;
 
 	@Override
 	public void setHistoryId(String historyId) {
 		if (this.historyInsurance == null)
-			this.historyInsurance = new HistoryUnemployeeInsuranceDto();
+			this.historyInsurance = new HistoryUnemployeeInsuranceFindOutDto();
 		this.historyInsurance.setHistoryId(historyId);
 
 	}
@@ -53,7 +53,7 @@ public class UnemployeeInsuranceRateDto implements UnemployeeInsuranceRateSetMem
 		// TODO Auto-generated method stub
 		this.rateItems = new ArrayList<>();
 		for (UnemployeeInsuranceRateItem unemployeeInsuranceRateItem : rateItems) {
-			UnemployeeInsuranceRateItemDto dto = new UnemployeeInsuranceRateItemDto();
+			UnemployeeInsuranceRateItemFindOutDto dto = new UnemployeeInsuranceRateItemFindOutDto();
 			unemployeeInsuranceRateItem.saveToMemento(dto);
 			this.rateItems.add(dto);
 		}

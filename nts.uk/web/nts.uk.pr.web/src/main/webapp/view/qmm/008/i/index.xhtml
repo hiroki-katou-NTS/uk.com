@@ -30,8 +30,10 @@
 			</div>
 			<div class="contents-area">
 				<div data-bind="ntsFormLabel: {required: true}">事業所 :</div>
-				<span id="lblCode" data-bind="text: 'office code'"></span>
-				<span id="lblName" data-bind="text: 'office name'"></span>
+				<com:ko tag="with" bind="pensionRateModel">
+					<span id="lblCode" data-bind="text: officeCode"></span>
+					<span id="lblName" data-bind="text: officeName"></span>
+				</com:ko>
 				<div style="margin-left: 200px"
 					data-bind="ntsFormLabel: {required: true}">期間 :</div>
 				<span>(平成28年04月) ~ 9999/12</span>
@@ -75,61 +77,45 @@
 								<th class="halign-center" rowspan="2">末満</th>
 
 								<th data-bind="css: { hidden: leftShow() }" class="border_none"></th>
-								<th data-bind="css: { hidden: !leftShow() }"
-									class="halign-center">男子</th>
-								<th data-bind="css: { hidden: !leftShow() }"
-									class="halign-center">女子</th>
-								<th data-bind="css: { hidden: !leftShow() }"
-									class="halign-center">坑内員</th>
-								<th data-bind="css: { hidden: !leftShow() }"
-									class="halign-center">男子</th>
-								<th data-bind="css: { hidden: !leftShow() }"
-									class="halign-center">女子</th>
-								<th data-bind="css: { hidden: !leftShow() }"
-									class="halign-center">坑内員</th>
+								<com:ko tag="if" bind="leftShow">
+									<th class="halign-center">男子</th>
+									<th class="halign-center">女子</th>
+									<th class="halign-center">坑内員</th>
+									<th class="halign-center">男子</th>
+									<th class="halign-center">女子</th>
+									<th class="halign-center">坑内員</th>
+								</com:ko>
 
 								<th data-bind="css: { hidden: rightShow() }" class="border_none"></th>
-								<th data-bind="css: { hidden: !rightShow() }"
-									class="halign-center">男子</th>
-								<th data-bind="css: { hidden: !rightShow() }"
-									class="halign-center">女子</th>
-								<th data-bind="css: { hidden: !rightShow() }"
-									class="halign-center">坑内員</th>
-								<th data-bind="css: { hidden: !rightShow() }"
-									class="halign-center">男子</th>
-								<th data-bind="css: { hidden: !rightShow() }"
-									class="halign-center">女子</th>
-								<th data-bind="css: { hidden: !rightShow() }"
-									class="halign-center">坑内員</th>
+								<com:ko tag="if" bind="rightShow">
+									<th class="halign-center">男子</th>
+									<th class="halign-center">女子</th>
+									<th class="halign-center">坑内員</th>
+									<th class="halign-center">男子</th>
+									<th class="halign-center">女子</th>
+									<th class="halign-center">坑内員</th>
+								</com:ko>
 							</tr>
 							<tr class="bg-green">
 								<th data-bind="css: { hidden: leftShow() }" class="border_none"></th>
-								<th data-bind="css: { hidden: !leftShow() }"
-									class="halign-center">40.900/1000</th>
-								<th data-bind="css: { hidden: !leftShow() }"
-									class="halign-center">40.900/1000</th>
-								<th data-bind="css: { hidden: !leftShow() }"
-									class="halign-center">40.900/1000</th>
-								<th data-bind="css: { hidden: !leftShow() }"
-									class="halign-center">40.900/1000</th>
-								<th data-bind="css: { hidden: !leftShow() }"
-									class="halign-center">40.900/1000</th>
-								<th data-bind="css: { hidden: !leftShow() }"
-									class="halign-center">40.900/1000</th>
+								<com:ko tag="if" bind="leftShow">
+									<th class="halign-center">40.900/1000</th>
+									<th class="halign-center">40.900/1000</th>
+									<th class="halign-center">40.900/1000</th>
+									<th class="halign-center">40.900/1000</th>
+									<th class="halign-center">40.900/1000</th>
+									<th class="halign-center">40.900/1000</th>
+								</com:ko>
 
 								<th data-bind="css: { hidden: rightShow() }" class="border_none"></th>
-								<th data-bind="css: { hidden: !rightShow() }"
-									class="halign-center">40.900/1000</th>
-								<th data-bind="css: { hidden: !rightShow() }"
-									class="halign-center">40.900/1000</th>
-								<th data-bind="css: { hidden: !rightShow() }"
-									class="halign-center">40.900/1000</th>
-								<th data-bind="css: { hidden: !rightShow() }"
-									class="halign-center">40.900/1000</th>
-								<th data-bind="css: { hidden: !rightShow() }"
-									class="halign-center">40.900/1000</th>
-								<th data-bind="css: { hidden: !rightShow() }"
-									class="halign-center">40.900/1000</th>
+								<com:ko tag="if" bind="rightShow">
+									<th class="halign-center">40.900/1000</th>
+									<th class="halign-center">40.900/1000</th>
+									<th class="halign-center">40.900/1000</th>
+									<th class="halign-center">40.900/1000</th>
+									<th class="halign-center">40.900/1000</th>
+									<th class="halign-center">40.900/1000</th>
+								</com:ko>
 							</tr>
 							<com:ko-foreach bind="listAvgEarnLevelMasterSetting">
 								<tr class="inp-money">

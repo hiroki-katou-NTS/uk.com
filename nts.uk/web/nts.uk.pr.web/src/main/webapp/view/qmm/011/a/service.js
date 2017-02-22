@@ -20,7 +20,7 @@ var nts;
                             var paths = {
                                 findAllHisotryUnemployeeInsuranceRate: "pr/insurance/labor/unemployeerate/history/findall",
                                 findHisotryUnemployeeInsuranceRate: "pr/insurance/labor/unemployeerate/history/find",
-                                detailHistoryUnemployeeInsuranceRate: "pr/insurance/labor/unemployeerate/detailHistory",
+                                detailHistoryUnemployeeInsuranceRate: "pr/insurance/labor/unemployeerate/detail",
                                 addUnemployeeInsuranceRate: "pr/insurance/labor/unemployeerate/add",
                                 updateUnemployeeInsuranceRate: "pr/insurance/labor/unemployeerate/update",
                                 findAllHistoryAccidentInsuranceRate: "pr/insurance/labor/accidentrate/history/findall",
@@ -30,11 +30,10 @@ var nts;
                                 updateAccidentInsuranceRate: "pr/insurance/labor/accidentrate/update",
                                 findAllInsuranceBusinessType: "pr/insurance/labor/businesstype/findall"
                             };
-                            function addUnemployeeInsuranceRate(unemployeeInsuranceRateModel, historyUnemployeeInsuranceRateDto, companyCode) {
+                            function addUnemployeeInsuranceRate(unemployeeInsuranceRateModel, historyUnemployeeInsuranceRateDto) {
                                 var dfd = $.Deferred();
                                 var data = {
-                                    unemployeeInsuranceRate: service.convertUnemployeeInsuranceRateModelDTO(unemployeeInsuranceRateModel, historyUnemployeeInsuranceRateDto),
-                                    companyCode: companyCode
+                                    unemployeeInsuranceRate: service.convertUnemployeeInsuranceRateModelDTO(unemployeeInsuranceRateModel, historyUnemployeeInsuranceRateDto)
                                 };
                                 nts.uk.request.ajax(paths.addUnemployeeInsuranceRate, data)
                                     .done(function (res) {
@@ -46,11 +45,10 @@ var nts;
                                 return dfd.promise();
                             }
                             service.addUnemployeeInsuranceRate = addUnemployeeInsuranceRate;
-                            function updateUnemployeeInsuranceRate(unemployeeInsuranceRateModel, historyUnemployeeInsuranceRateDto, companyCode) {
+                            function updateUnemployeeInsuranceRate(unemployeeInsuranceRateModel, historyUnemployeeInsuranceRateDto) {
                                 var dfd = $.Deferred();
                                 var data = {
-                                    unemployeeInsuranceRate: service.convertUnemployeeInsuranceRateModelDTO(unemployeeInsuranceRateModel, historyUnemployeeInsuranceRateDto),
-                                    companyCode: companyCode
+                                    unemployeeInsuranceRate: service.convertUnemployeeInsuranceRateModelDTO(unemployeeInsuranceRateModel, historyUnemployeeInsuranceRateDto)
                                 };
                                 nts.uk.request.ajax(paths.updateUnemployeeInsuranceRate, data)
                                     .done(function (res) {
@@ -62,9 +60,9 @@ var nts;
                                 return dfd.promise();
                             }
                             service.updateUnemployeeInsuranceRate = updateUnemployeeInsuranceRate;
-                            function findAllHisotryUnemployeeInsuranceRate(companyCode) {
+                            function findAllHisotryUnemployeeInsuranceRate() {
                                 var dfd = $.Deferred();
-                                nts.uk.request.ajax(paths.findAllHisotryUnemployeeInsuranceRate + "/" + companyCode)
+                                nts.uk.request.ajax(paths.findAllHisotryUnemployeeInsuranceRate)
                                     .done(function (res) {
                                     dfd.resolve(res);
                                 })
@@ -74,9 +72,9 @@ var nts;
                                 return dfd.promise();
                             }
                             service.findAllHisotryUnemployeeInsuranceRate = findAllHisotryUnemployeeInsuranceRate;
-                            function findHisotryUnemployeeInsuranceRate(historyUnemployeeInsuranceFindInDto) {
+                            function findHisotryUnemployeeInsuranceRate(historyId) {
                                 var dfd = $.Deferred();
-                                nts.uk.request.ajax(paths.findHisotryUnemployeeInsuranceRate, historyUnemployeeInsuranceFindInDto)
+                                nts.uk.request.ajax(paths.findHisotryUnemployeeInsuranceRate + "/" + historyId)
                                     .done(function (res) {
                                     dfd.resolve(res);
                                 })
@@ -86,9 +84,9 @@ var nts;
                                 return dfd.promise();
                             }
                             service.findHisotryUnemployeeInsuranceRate = findHisotryUnemployeeInsuranceRate;
-                            function detailHistoryUnemployeeInsuranceRate(unemployeeInsuranceFindInDto) {
+                            function detailHistoryUnemployeeInsuranceRate(historyId) {
                                 var dfd = $.Deferred();
-                                nts.uk.request.ajax(paths.detailHistoryUnemployeeInsuranceRate, unemployeeInsuranceFindInDto)
+                                nts.uk.request.ajax(paths.detailHistoryUnemployeeInsuranceRate + "/" + historyId)
                                     .done(function (res) {
                                     dfd.resolve(res);
                                 })

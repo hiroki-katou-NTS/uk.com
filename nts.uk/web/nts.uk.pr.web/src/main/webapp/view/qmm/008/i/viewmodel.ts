@@ -3,7 +3,7 @@ module nts.uk.pr.view.qmm008.i {
         import commonService = nts.uk.pr.view.qmm008._0.common.service;
         import AvgEarnLevelMasterSettingDto = nts.uk.pr.view.qmm008._0.common.service.model.AvgEarnLevelMasterSettingDto;
         import PensionRateItemModel = nts.uk.pr.view.qmm008.a.viewmodel.PensionRateItemModel;
-        import PensionRateModel = nts.uk.pr.view.qmm008.a.viewmodel.PensionRateModel;
+        import PensionRateModelFromScreenA = nts.uk.pr.view.qmm008.a.viewmodel.PensionRateModel;
         import InsuranceOfficeItemDto = nts.uk.pr.view.qmm008.a.service.model.finder.InsuranceOfficeItemDto;
 
         export class ScreenModel {
@@ -14,13 +14,19 @@ module nts.uk.pr.view.qmm008.i {
             rightBtnText: KnockoutComputed<string>;
             listAvgEarnLevelMasterSetting: Array<AvgEarnLevelMasterSettingDto>;
             listPensionAvgearnModel: KnockoutObservableArray<PensionAvgearnModel>;
-            listPensionRateItemModel: Array<PensionRateItemModel>;
+            pensionRateModel: PensionRateModel;
 
-            constructor(dataOfSelectedOffice: InsuranceOfficeItemDto, pensionModel: PensionRateModel) {
+            constructor(dataOfSelectedOffice: InsuranceOfficeItemDto, pensionModel: PensionRateModelFromScreenA) {
                 var self = this;
                 self.listAvgEarnLevelMasterSetting = [];
                 self.listPensionAvgearnModel = ko.observableArray<PensionAvgearnModel>([]);
-                self.listPensionRateItemModel = pensionModel.rateItems;
+                self.pensionRateModel = new PensionRateModel(
+                    pensionModel.historyId,
+                    dataOfSelectedOffice.code,
+                    dataOfSelectedOffice.name,
+                    pensionModel.startMonth(),
+                    pensionModel.endMonth(),
+                    pensionModel.rateItems());
                 self.leftShow = ko.observable(true);
                 self.rightShow = ko.observable(true);
                 self.leftBtnText = ko.computed(function() { if (self.leftShow()) return "—"; return "+"; });
@@ -130,6 +136,16 @@ module nts.uk.pr.view.qmm008.i {
             }
 
             /**
+             * ReCalculate the listPensionAvgearnModel
+             */
+            private reCalculate(): void {
+                var self = this;
+                // clear current listPensionAvgearnModel
+                self.listPensionAvgearnModel.removeAll();
+                // TODO: recalculate listPensionAvgearnModel
+            }
+
+            /**
              * Close dialog.
              */
             private closeDialog(): void {
@@ -137,6 +153,35 @@ module nts.uk.pr.view.qmm008.i {
             }
         }
 
+        /**
+         * PensionRate Model
+         */
+        export class PensionRateModel {
+            historyId: string;
+            officeCode: string;
+            officeName: string;
+            startMonth: string;
+            endMonth: string;
+            rateItems: PensionRateItemModel;
+            constructor(
+                historyId: string,
+                officeCode: string,
+                officeName: string,
+                startMonth: string,
+                endMonth: string,
+                rateItems: PensionRateItemModel) {
+                this.historyId = historyId;
+                this.officeCode = officeCode;
+                this.officeName = officeName;
+                this.startMonth = startMonth;
+                this.endMonth = endMonth;
+                this.rateItems = rateItems;
+            }
+        }
+
+        /**
+         * PensionAvgearn Model
+         */
         export class PensionAvgearnModel {
             historyId: string;
             levelCode: number;
@@ -169,6 +214,9 @@ module nts.uk.pr.view.qmm008.i {
             }
         }
 
+        /**
+         * PensionAvgearnValue Model
+         */
         export class PensionAvgearnValueModel {
             maleAmount: KnockoutObservable<number>;
             femaleAmount: KnockoutObservable<number>;

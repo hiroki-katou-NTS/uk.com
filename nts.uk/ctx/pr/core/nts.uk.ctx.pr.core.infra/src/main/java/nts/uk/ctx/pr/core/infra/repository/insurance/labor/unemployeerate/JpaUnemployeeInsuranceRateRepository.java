@@ -6,24 +6,28 @@
 package nts.uk.ctx.pr.core.infra.repository.insurance.labor.unemployeerate;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.TypedQuery;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.arc.time.YearMonth;
+import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
-import nts.uk.ctx.pr.core.dom.insurance.RoundingMethod;
-import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.CareerGroup;
 import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsuranceRate;
-import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsuranceRateGetMemento;
-import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsuranceRateItem;
-import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsuranceRateItemGetMemento;
-import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsuranceRateItemSetting;
 import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsuranceRateRepository;
+import nts.uk.ctx.pr.core.infra.entity.insurance.labor.unemployeerate.QismtEmpInsuRate;
+import nts.uk.ctx.pr.core.infra.entity.insurance.labor.unemployeerate.QismtEmpInsuRatePK;
+import nts.uk.ctx.pr.core.infra.entity.insurance.labor.unemployeerate.QismtEmpInsuRatePK_;
+import nts.uk.ctx.pr.core.infra.entity.insurance.labor.unemployeerate.QismtEmpInsuRate_;
 
 /**
  * The Class JpaUnemployeeInsuranceRateRepository.
@@ -40,8 +44,12 @@ public class JpaUnemployeeInsuranceRateRepository extends JpaRepository implemen
 	 */
 	@Override
 	public void add(UnemployeeInsuranceRate rate) {
-		// TODO Auto-generated method stub
-
+		String historyId = IdentifierUtil.randomUniqueId();
+		QismtEmpInsuRate entity = toEntity(rate);
+		QismtEmpInsuRatePK pk = entity.getQismtEmpInsuRatePK();
+		pk.setHistId(historyId);
+		entity.setQismtEmpInsuRatePK(pk);
+		this.commandProxy().insert(entity);
 	}
 
 	/*
@@ -53,8 +61,7 @@ public class JpaUnemployeeInsuranceRateRepository extends JpaRepository implemen
 	 */
 	@Override
 	public void update(UnemployeeInsuranceRate rate) {
-		// TODO Auto-generated method stub
-
+		this.commandProxy().update(toEntity(rate));
 	}
 
 	/*
@@ -78,15 +85,9 @@ public class JpaUnemployeeInsuranceRateRepository extends JpaRepository implemen
 	 * java.lang.String)
 	 */
 	@Override
-	public UnemployeeInsuranceRate findById(String companyCode, String historyId) {
-		List<UnemployeeInsuranceRate> lstUnemployeeInsuranceRate = findAll(companyCode);
-		for (UnemployeeInsuranceRate unemployeeInsuranceRate : lstUnemployeeInsuranceRate) {
-			if (unemployeeInsuranceRate.getHistoryId().equals(historyId)) {
-				return unemployeeInsuranceRate;
-			}
-		}
-		// TODO Auto-generated method stub
-		return null;
+	public Optional<UnemployeeInsuranceRate> findById(CompanyCode companyCode, String historyId) {
+		return this.queryProxy().find(new QismtEmpInsuRatePK(companyCode.v(), historyId), QismtEmpInsuRate.class)
+				.map(c -> toDomain(c));
 	}
 
 	/*
@@ -106,148 +107,49 @@ public class JpaUnemployeeInsuranceRateRepository extends JpaRepository implemen
 	 * (non-Javadoc)
 	 * 
 	 * @see nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.
-	 * UnemployeeInsuranceRateRepository#findAll(java.lang.String)
+	 * UnemployeeInsuranceRateRepository#findAll(nts.uk.ctx.core.dom.company.
+	 * CompanyCode)
 	 */
 	@Override
-	public List<UnemployeeInsuranceRate> findAll(String companyCode) {
-		List<UnemployeeInsuranceRate> lstUnemployeeInsuranceRate = new ArrayList<>();
-		MonthRange monthRange006 = MonthRange.range(new YearMonth(2016 * 100 + 4), new YearMonth(9999 * 100 + 12));
-		lstUnemployeeInsuranceRate.add(fromDomain("historyId006", companyCode, monthRange006));
-		MonthRange monthRange005 = MonthRange.range(new YearMonth(2015 * 100 + 10), new YearMonth(2016 * 100 + 3));
-		lstUnemployeeInsuranceRate.add(fromDomain("historyId005", companyCode, monthRange005));
-		MonthRange monthRange004 = MonthRange.range(new YearMonth(2015 * 100 + 4), new YearMonth(2015 * 100 + 9));
-		lstUnemployeeInsuranceRate.add(fromDomain("historyId004", companyCode, monthRange004));
-		MonthRange monthRange003 = MonthRange.range(new YearMonth(2014 * 100 + 9), new YearMonth(2015 * 100 + 3));
-		lstUnemployeeInsuranceRate.add(fromDomain("historyId003", companyCode, monthRange003));
-		MonthRange monthRange002 = MonthRange.range(new YearMonth(2014 * 100 + 4), new YearMonth(2014 * 100 + 8));
-		lstUnemployeeInsuranceRate.add(fromDomain("historyId002", companyCode, monthRange002));
-		MonthRange monthRange001 = MonthRange.range(new YearMonth(2013 * 100 + 4), new YearMonth(2014 * 100 + 3));
-		lstUnemployeeInsuranceRate.add(fromDomain("historyId001", companyCode, monthRange001));
+	public List<UnemployeeInsuranceRate> findAll(CompanyCode companyCode) {
+		EntityManager em = getEntityManager();
+		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+		CriteriaQuery<QismtEmpInsuRate> cq = criteriaBuilder.createQuery(QismtEmpInsuRate.class);
+		Root<QismtEmpInsuRate> root = cq.from(QismtEmpInsuRate.class);
+		cq.select(root);
+		List<Predicate> lstpredicate = new ArrayList<>();
+		lstpredicate.add(criteriaBuilder
+				.equal(root.get(QismtEmpInsuRate_.qismtEmpInsuRatePK).get(QismtEmpInsuRatePK_.ccd), companyCode.v()));
+		cq.where(lstpredicate.toArray(new Predicate[] {}));
+		TypedQuery<QismtEmpInsuRate> query = em.createQuery(cq);
+		List<UnemployeeInsuranceRate> lstUnemployeeInsuranceRate = query.getResultList().stream()
+				.map(item -> toDomain(item)).collect(Collectors.toList());
 		return lstUnemployeeInsuranceRate;
 	}
 
 	/**
-	 * From domain.
+	 * To domain.
 	 *
-	 * @param historyId
-	 *            the history id
-	 * @param companyCode
-	 *            the company code
-	 * @param monthRange
-	 *            the month range
+	 * @param entity
+	 *            the entity
 	 * @return the unemployee insurance rate
 	 */
-	public UnemployeeInsuranceRate fromDomain(String historyId, String companyCode, MonthRange monthRange) {
-		return new UnemployeeInsuranceRate(new UnemployeeInsuranceRateGetMemento() {
+	private UnemployeeInsuranceRate toDomain(QismtEmpInsuRate entity) {
+		UnemployeeInsuranceRate domain = new UnemployeeInsuranceRate(new JpaUnemployeeInsuranceRateGetMemento(entity));
+		return domain;
 
-			@Override
-			public Set<UnemployeeInsuranceRateItem> getRateItems() {
-				// TODO Auto-generated method stub
-				Set<UnemployeeInsuranceRateItem> rateItems = new HashSet<>();
-				UnemployeeInsuranceRateItem itemAgroforestry = new UnemployeeInsuranceRateItem(
-						new UnemployeeInsuranceRateItemGetMemento() {
+	}
 
-							@Override
-							public UnemployeeInsuranceRateItemSetting getPersonalSetting() {
-								// TODO Auto-generated method stub
-								UnemployeeInsuranceRateItemSetting unemployeeInsuranceRateItemSetting = new UnemployeeInsuranceRateItemSetting();
-								unemployeeInsuranceRateItemSetting.setRate(55.5);
-								unemployeeInsuranceRateItemSetting.setRoundAtr(RoundingMethod.RoundDown);
-								return unemployeeInsuranceRateItemSetting;
-							}
-
-							@Override
-							public UnemployeeInsuranceRateItemSetting getCompanySetting() {
-								// TODO Auto-generated method stub
-								UnemployeeInsuranceRateItemSetting unemployeeInsuranceRateItemSetting = new UnemployeeInsuranceRateItemSetting();
-								unemployeeInsuranceRateItemSetting.setRate(55.5);
-								unemployeeInsuranceRateItemSetting.setRoundAtr(RoundingMethod.RoundDown);
-								return unemployeeInsuranceRateItemSetting;
-							}
-
-							@Override
-							public CareerGroup getCareerGroup() {
-								// TODO Auto-generated method stub
-								return CareerGroup.Agroforestry;
-							}
-						});
-				rateItems.add(itemAgroforestry);
-				UnemployeeInsuranceRateItem itemContruction = new UnemployeeInsuranceRateItem(
-						new UnemployeeInsuranceRateItemGetMemento() {
-
-							@Override
-							public UnemployeeInsuranceRateItemSetting getPersonalSetting() {
-								// TODO Auto-generated method stub
-								UnemployeeInsuranceRateItemSetting unemployeeInsuranceRateItemSetting = new UnemployeeInsuranceRateItemSetting();
-								unemployeeInsuranceRateItemSetting.setRate(55.5);
-								unemployeeInsuranceRateItemSetting.setRoundAtr(RoundingMethod.RoundDown);
-								return unemployeeInsuranceRateItemSetting;
-							}
-
-							@Override
-							public UnemployeeInsuranceRateItemSetting getCompanySetting() {
-								// TODO Auto-generated method stub
-								UnemployeeInsuranceRateItemSetting unemployeeInsuranceRateItemSetting = new UnemployeeInsuranceRateItemSetting();
-								unemployeeInsuranceRateItemSetting.setRate(55.5);
-								unemployeeInsuranceRateItemSetting.setRoundAtr(RoundingMethod.RoundDown);
-								return unemployeeInsuranceRateItemSetting;
-							}
-
-							@Override
-							public CareerGroup getCareerGroup() {
-								// TODO Auto-generated method stub
-								return CareerGroup.Contruction;
-							}
-						});
-				rateItems.add(itemContruction);
-				UnemployeeInsuranceRateItem itemOther = new UnemployeeInsuranceRateItem(
-						new UnemployeeInsuranceRateItemGetMemento() {
-
-							@Override
-							public UnemployeeInsuranceRateItemSetting getPersonalSetting() {
-								// TODO Auto-generated method stub
-								UnemployeeInsuranceRateItemSetting unemployeeInsuranceRateItemSetting = new UnemployeeInsuranceRateItemSetting();
-								unemployeeInsuranceRateItemSetting.setRate(55.5);
-								unemployeeInsuranceRateItemSetting.setRoundAtr(RoundingMethod.RoundDown);
-								return unemployeeInsuranceRateItemSetting;
-							}
-
-							@Override
-							public UnemployeeInsuranceRateItemSetting getCompanySetting() {
-								// TODO Auto-generated method stub
-								UnemployeeInsuranceRateItemSetting unemployeeInsuranceRateItemSetting = new UnemployeeInsuranceRateItemSetting();
-								unemployeeInsuranceRateItemSetting.setRate(55.5);
-								unemployeeInsuranceRateItemSetting.setRoundAtr(RoundingMethod.RoundDown);
-								return unemployeeInsuranceRateItemSetting;
-							}
-
-							@Override
-							public CareerGroup getCareerGroup() {
-								// TODO Auto-generated method stub
-								return CareerGroup.Other;
-							}
-						});
-				rateItems.add(itemOther);
-				return rateItems;
-			}
-
-			@Override
-			public String getHistoryId() {
-				// TODO Auto-generated method stub
-				return historyId;
-			}
-
-			@Override
-			public CompanyCode getCompanyCode() {
-				// TODO Auto-generated method stub
-				return new CompanyCode(companyCode);
-			}
-
-			@Override
-			public MonthRange getApplyRange() {
-				// TODO Auto-generated method stub
-				return monthRange;
-			}
-		});
+	/**
+	 * To entity.
+	 *
+	 * @param UnemployeeInsuranceRate
+	 *            the unemployee insurance rate
+	 * @return the qismt emp insu rate
+	 */
+	private QismtEmpInsuRate toEntity(UnemployeeInsuranceRate UnemployeeInsuranceRate) {
+		QismtEmpInsuRate entity = new QismtEmpInsuRate();
+		UnemployeeInsuranceRate.saveToMemento(new JpaUnemployeeInsuranceRateSetMemento(entity));
+		return entity;
 	}
 }

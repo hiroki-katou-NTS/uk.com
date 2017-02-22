@@ -43,11 +43,16 @@ var qet002;
                             $('#lower-limit-input').ntsError('set', '未入力エラー');
                         }
                     }
+                    if (this.isLowerLimit() == false) {
+                        $('#lower-limit-input').ntsError('clear');
+                    }
+                    if (this.isUpperLimit() == false) {
+                        $('#upper-limit-input').ntsError('clear');
+                    }
                     if (hasError) {
                         return;
                     }
                     a.service.printService(query).done(function () { }).done(function (data) {
-                        console.log("1111111111111111111");
                     }).fail(function (res) {
                         nts.uk.ui.dialog.alert(res.message);
                     });

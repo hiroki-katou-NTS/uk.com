@@ -5,7 +5,9 @@
 package nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate;
 
 import java.util.List;
+import java.util.Optional;
 
+import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 
 /**
@@ -41,7 +43,7 @@ public interface UnemployeeInsuranceRateRepository {
 	 * @param companyCode the company code
 	 * @return the list
 	 */
-	List<UnemployeeInsuranceRate> findAll(String companyCode);
+	List<UnemployeeInsuranceRate> findAll(CompanyCode companyCode);
 
 	/**
 	 * Find by id.
@@ -49,7 +51,7 @@ public interface UnemployeeInsuranceRateRepository {
 	 * @param id the id
 	 * @return the unemployee insurance rate
 	 */
-	UnemployeeInsuranceRate findById(String companyCode,String historyId);
+	Optional<UnemployeeInsuranceRate> findById(CompanyCode companyCode,String historyId);
 
 	/**
 	 * Checks if is invalid date range.

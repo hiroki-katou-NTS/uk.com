@@ -8,6 +8,7 @@ import java.util.Set;
 
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
+import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.CareerGroup;
 import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsuranceRateItem;
 import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsuranceRateSetMemento;
 import nts.uk.ctx.pr.core.infra.entity.insurance.labor.unemployeerate.QismtEmpInsuRate;
@@ -68,8 +69,8 @@ public class JpaUnemployeeInsuranceRateSetMemento implements UnemployeeInsurance
 	 */
 	@Override
 	public void setApplyRange(MonthRange applyRange) {
-		this.typeValue.setStrYm(applyRange.getEndMonth().v());
-		this.typeValue.setEndYm(applyRange.getStartMonth().v());
+		this.typeValue.setStrYm(applyRange.getStartMonth().v());
+		this.typeValue.setEndYm(applyRange.getEndMonth().v());
 	}
 
 	/*
@@ -80,7 +81,20 @@ public class JpaUnemployeeInsuranceRateSetMemento implements UnemployeeInsurance
 	 */
 	@Override
 	public void setRateItems(Set<UnemployeeInsuranceRateItem> rateItems) {
-		// TODO Auto-generated method stub
+		for (UnemployeeInsuranceRateItem itemUnemployeeInsuranceRateItem : rateItems) {
+			if (itemUnemployeeInsuranceRateItem.getCareerGroup().equals(CareerGroup.Agroforestry)) {
+				itemUnemployeeInsuranceRateItem
+						.saveToMemento(new JpaUnemployeeInsuranceRateItemGeneralSetMemento(this.typeValue));
+			}
+			if (itemUnemployeeInsuranceRateItem.getCareerGroup().equals(CareerGroup.Other)) {
+				itemUnemployeeInsuranceRateItem
+						.saveToMemento(new JpaUnemployeeInsuranceRateItemOtherSetMemento(this.typeValue));
+			}
+			if (itemUnemployeeInsuranceRateItem.getCareerGroup().equals(CareerGroup.Contruction)) {
+				itemUnemployeeInsuranceRateItem
+						.saveToMemento(new JpaUnemployeeInsuranceRateItemConstSetMemento(this.typeValue));
+			}
+		}
 
 	}
 

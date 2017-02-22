@@ -41,8 +41,8 @@ public class UnemployeeInsuranceRate extends DomainObject {
 	 *            the memento
 	 */
 	public UnemployeeInsuranceRate(UnemployeeInsuranceRateGetMemento memento) {
-		this.companyCode = memento.getCompanyCode();
 		this.historyId = memento.getHistoryId();
+		this.companyCode = memento.getCompanyCode();
 		this.applyRange = memento.getApplyRange();
 		this.rateItems = memento.getRateItems();
 	}
@@ -54,8 +54,8 @@ public class UnemployeeInsuranceRate extends DomainObject {
 	 *            the memento
 	 */
 	public void saveToMemento(UnemployeeInsuranceRateSetMemento memento) {
-		memento.setCompanyCode(this.companyCode);
 		memento.setHistoryId(this.historyId);
+		memento.setCompanyCode(this.companyCode);
 		memento.setApplyRange(this.applyRange);
 		memento.setRateItems(this.rateItems);
 	}

@@ -13,9 +13,8 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.pr.core.app.insurance.labor.unemployeerate.HistoryUnemployeeInsuranceDto;
-import nts.uk.ctx.pr.core.app.insurance.labor.unemployeerate.find.HistoryUnemployeeInsuranceFindInDto;
 import nts.uk.ctx.pr.core.app.insurance.labor.unemployeerate.find.HistoryUnemployeeInsuranceFinder;
+import nts.uk.ctx.pr.core.app.insurance.labor.unemployeerate.find.dto.HistoryUnemployeeInsuranceFindOutDto;
 
 /**
  * The Class HistoryUnemployeeInsuranceWs.
@@ -29,15 +28,15 @@ public class HistoryUnemployeeInsuranceWs extends WebService {
 	private HistoryUnemployeeInsuranceFinder find;
 
 	/**
-	 * Find all history.
+	 * Find all.
 	 *
 	 * @return the list
 	 */
 	// get History UnemployeeInsuranceRate
 	@POST
-	@Path("findall/{companyCode}")
-	public List<HistoryUnemployeeInsuranceDto> findAll(@PathParam("companyCode") String companyCode) {
-		return find.findAll(companyCode);
+	@Path("findall")
+	public List<HistoryUnemployeeInsuranceFindOutDto> findAll() {
+		return find.findAll();
 	}
 
 	/**
@@ -45,13 +44,11 @@ public class HistoryUnemployeeInsuranceWs extends WebService {
 	 *
 	 * @param historyId
 	 *            the history id
-	 * @return the history unemployee insurance dto
+	 * @return the history unemployee insurance find out dto
 	 */
 	@POST
-	@Path("find")
-	public HistoryUnemployeeInsuranceDto findHistory(
-			HistoryUnemployeeInsuranceFindInDto historyUnemployeeInsuranceFindInDto) {
-		return find.find(historyUnemployeeInsuranceFindInDto.getCompanyCode(),
-				historyUnemployeeInsuranceFindInDto.getHistoryId());
+	@Path("find/{historyId}")
+	public HistoryUnemployeeInsuranceFindOutDto findHistory(@PathParam("historyId") String historyId) {
+		return find.find(historyId);
 	}
 }

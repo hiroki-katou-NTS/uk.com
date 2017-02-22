@@ -25,9 +25,9 @@ var nts;
                                 return dfd.promise();
                             }
                             service.updateHealthInsuranceAvgearn = updateHealthInsuranceAvgearn;
-                            function findHealthInsuranceAvgEarn(id) {
+                            function findHealthInsuranceAvgEarn(historyId) {
                                 var dfd = $.Deferred();
-                                nts.uk.request.ajax(paths.findHealthInsuranceAvgEarn + '/' + id)
+                                nts.uk.request.ajax(paths.findHealthInsuranceAvgEarn + '/' + historyId)
                                     .done(function (res) {
                                     dfd.resolve(res);
                                 })

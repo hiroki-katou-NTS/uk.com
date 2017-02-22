@@ -10,11 +10,8 @@ import java.util.Set;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
-import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.CareerGroup;
 import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsuranceRateGetMemento;
 import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsuranceRateItem;
-import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsuranceRateItemGetMemento;
-import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsuranceRateItemSetting;
 import nts.uk.ctx.pr.core.infra.entity.insurance.labor.unemployeerate.QismtEmpInsuRate;
 
 /**
@@ -77,27 +74,13 @@ public class JpaUnemployeeInsuranceRateGetMemento implements UnemployeeInsurance
 	@Override
 	public Set<UnemployeeInsuranceRateItem> getRateItems() {
 		Set<UnemployeeInsuranceRateItem> setUnemployeeInsuranceRateItem = new HashSet<>();
-		setUnemployeeInsuranceRateItem.add(new UnemployeeInsuranceRateItem(new UnemployeeInsuranceRateItemGetMemento() {
-			
-			@Override
-			public UnemployeeInsuranceRateItemSetting getPersonalSetting() {
-				// TODO Auto-generated method stub
-				return null;
-			}
-			
-			@Override
-			public UnemployeeInsuranceRateItemSetting getCompanySetting() {
-				// TODO Auto-generated method stub
-				return null;
-			}
-			
-			@Override
-			public CareerGroup getCareerGroup() {
-				// TODO Auto-generated method stub
-				return null;
-			}
-		}));
-		return null;
+		setUnemployeeInsuranceRateItem.add(
+				new UnemployeeInsuranceRateItem(new JpaUnemployeeInsuranceRateItemGeneralGetMemento(this.typeValue)));
+		setUnemployeeInsuranceRateItem.add(
+				new UnemployeeInsuranceRateItem(new JpaUnemployeeInsuranceRateItemOtherGetMemento(this.typeValue)));
+		setUnemployeeInsuranceRateItem.add(
+				new UnemployeeInsuranceRateItem(new JpaUnemployeeInsuranceRateItemConstGetMemento(this.typeValue)));
+		return setUnemployeeInsuranceRateItem;
 	}
 
 }
