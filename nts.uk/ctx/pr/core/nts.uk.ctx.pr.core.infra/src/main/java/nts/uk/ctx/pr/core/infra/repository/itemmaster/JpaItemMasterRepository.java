@@ -17,6 +17,7 @@ public class JpaItemMasterRepository extends JpaRepository implements ItemMaster
 	private final String SEL = "SELECT c FROM QcamtItem c";
 	private final String SEL_3 = SEL + " WHERE c.qcamtItemPK.ccd = :companyCode AND c.avePayAtr = :avePayAtr";
 	private final String SEL_3_1 = SEL + " WHERE c.qcamtItemPK.ccd = :companyCode AND c.qcamtItemPK.ctgAtr = :ctgAtr";
+	private final String SEL_10 = "";
 	
 	@Override
 	public Optional<ItemMaster> find(String companyCode, int categoryAtr, String itemCode) {
@@ -43,8 +44,11 @@ public class JpaItemMasterRepository extends JpaRepository implements ItemMaster
 
 	@Override
 	public List<ItemMaster> findAll(String companyCode, int categoryAtr, String itemCode, int fixAtr) {
-		// TODO Auto-generated method stub
-		return null;
+		return this.queryProxy().query(SEL_10, QcamtItem.class)
+				.setParameter("companyCode", companyCode)
+				.setParameter("itemCode", itemCode)
+				.setParameter("fixAtr", fixAtr)
+				.getList(c -> toDomain(c));
 	}
 
 	/**

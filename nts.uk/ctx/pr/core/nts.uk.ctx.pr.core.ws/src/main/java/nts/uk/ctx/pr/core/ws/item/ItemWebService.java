@@ -33,9 +33,4 @@ public class ItemWebService extends WebService {
 		return itemFinder.getItem(categoryAtr, itemCode).get();
 	}
 	
-	@POST
-	@Path("findall/avepay/time")
-	public List<ItemDto> getItemsByAvePayAtrTime(){
-		return itemFinder.findAllByItemAtr(ItemAtr.TIMES);
-	}
 }
