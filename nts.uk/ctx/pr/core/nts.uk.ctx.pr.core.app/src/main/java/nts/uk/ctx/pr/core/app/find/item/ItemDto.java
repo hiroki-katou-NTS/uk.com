@@ -1,7 +1,7 @@
 package nts.uk.ctx.pr.core.app.find.item;
 
 import lombok.Value;
-import nts.uk.ctx.pr.core.dom.itemmaster.ItemMaster;
+import nts.uk.ctx.pr.core.dom.itemmaster.ItemMasterV1;
 /** Finder DTO of item */
 @Value
 public class ItemDto {	
@@ -24,7 +24,7 @@ public class ItemDto {
     int alamRangeLow;
 	int taxAtr;
 	
-	public static ItemDto fromDomain(ItemMaster domain){
+	public static ItemDto fromDomain(ItemMasterV1 domain){
 		return new ItemDto(
 				domain.getCompanyCode().v(), 
 				domain.getItemCode().v(), 

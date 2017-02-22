@@ -17,7 +17,7 @@ import nts.uk.ctx.pr.core.dom.layout.detail.RangeChecker;
  * 項目マスタ
  *
  */
-public class ItemMaster extends AggregateRoot{
+public class ItemMasterV1 extends AggregateRoot{
 	/** 会社コード */
 	@Getter
 	private CompanyCode companyCode;	
@@ -80,7 +80,7 @@ public class ItemMaster extends AggregateRoot{
 	private DisplayAtr zeroDisplayAtr;
 	
 	
-	public ItemMaster(CompanyCode companyCode, 
+	public ItemMasterV1(CompanyCode companyCode, 
 			ItemCode itemCode, 
 			CategoryAtr categoryAtr, 
 			ItemName itemName, 
@@ -104,7 +104,7 @@ public class ItemMaster extends AggregateRoot{
 		super.validate();
 	}	
 	
-	public static ItemMaster createSimpleFromJavaType(
+	public static ItemMasterV1 createSimpleFromJavaType(
 			String companyCode, 
 			String itemCode, 
 			int categoryAtr, 
@@ -114,7 +114,7 @@ public class ItemMaster extends AggregateRoot{
 			int itemAtr
 			)
 	{
-		return new ItemMaster(new CompanyCode(companyCode),
+		return new ItemMasterV1(new CompanyCode(companyCode),
 				new ItemCode(itemCode),
 				EnumAdaptor.valueOf(categoryAtr, CategoryAtr.class),
 				new ItemName(itemName), new ItemName(itemAbName), EnumAdaptor.valueOf(taxAtr, TaxAtr.class),
@@ -131,7 +131,7 @@ public class ItemMaster extends AggregateRoot{
 	 * @param socialInsuranceAtr
 	 * @return
 	 */
-	public ItemMaster additionalInfo(int limitMoney, int fixedPaidAtr, int laborInsuranceAtr, int socialInsuranceAtr, int avgPaidAtr, int deductAttribute) {
+	public ItemMasterV1 additionalInfo(int limitMoney, int fixedPaidAtr, int laborInsuranceAtr, int socialInsuranceAtr, int avgPaidAtr, int deductAttribute) {
 		this.limitMoney = new LimitMoney(limitMoney);
 		this.fixedPaidAtr = EnumAdaptor.valueOf(fixedPaidAtr, WageClassificationAtr.class);
 		this.laborInsuranceAtr = EnumAdaptor.valueOf(laborInsuranceAtr, WageClassificationAtr.class);
@@ -141,7 +141,7 @@ public class ItemMaster extends AggregateRoot{
 		return this;
 	}
 	
-	public ItemMaster additionalErrorAlarm(int isUseHighError, int errRangeHigh, int isUseLowError, int errRangeLow, int isUseHighAlam, int alamRangeHigh, int isUseLowAlam, int alamRangeLow){
+	public ItemMasterV1 additionalErrorAlarm(int isUseHighError, int errRangeHigh, int isUseLowError, int errRangeLow, int isUseHighAlam, int alamRangeHigh, int isUseLowAlam, int alamRangeLow){
 		this.error = new ArrayList<>();
 		this.alarm = new ArrayList<>();
 		this.error.add(new RangeChecker(EnumAdaptor.valueOf(isUseHighError, UseOrNot.class),  EnumAdaptor.valueOf(isUseLowError, UseOrNot.class), Range.between(errRangeLow, errRangeHigh)));
