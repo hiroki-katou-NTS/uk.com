@@ -1,0 +1,40 @@
+#contents-area {
+	width: 1101px;
+}
+#functions-area {
+	padding-top: 10px;
+    padding-bottom: 10px;
+    padding-left: 50px;
+    padding-right: 20px;
+}
+#delete-button{
+	margin-left: 50px;
+	margin-right: 20px;
+}
+#contents-left{
+	margin-left: 30px;
+	padding: 20px;
+	float: left;
+	min-height: 400px;
+	width: 260px;
+}
+#contents-center{
+	margin-left: 30px;
+	margin-right: 30px;
+	padding: 20px;
+	float: left;
+	min-height: 400px;
+}
+#contents-right{
+	float: left;
+}
+#inpCode{
+	width: 40px;
+	margin-right: 3px;
+}
+#inpSearch input{
+	width: 200px;
+}
+#right-grid-list{
+	margin-top: 20px;
+}
