@@ -48,4 +48,16 @@ public interface ItemMasterRepository {
 	 * @return
 	 */
 	List<ItemMaster> findAll(String companyCode, int avePayAtr);
+	
+	/**
+	 * Add new item master
+	 * @param domain
+	 */
+	void add(ItemMaster domain);
+	
+	/**
+	 * Update item master
+	 * @param domain
+	 */
+	void update(ItemMaster domain);
 }

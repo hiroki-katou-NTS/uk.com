@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.core.infra.repository.layout;
+package nts.uk.ctx.pr.core.infra.repository.itemmaster;
 
 import java.util.List;
 import java.util.Optional;
@@ -9,8 +9,8 @@ import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.pr.core.dom.itemmaster.ItemMaster;
 import nts.uk.ctx.pr.core.dom.itemmaster.ItemMasterRepository;
-import nts.uk.ctx.pr.core.infra.entity.paymentdata.QcamtItem;
-import nts.uk.ctx.pr.core.infra.entity.paymentdata.QcamtItemPK;
+import nts.uk.ctx.pr.core.infra.entity.paymentdata.QcamtItem_v1;
+import nts.uk.ctx.pr.core.infra.entity.paymentdata.QcamtItemPK_v1;
 
 @Stateless
 public class JpaItemMasterRepository extends JpaRepository implements ItemMasterRepository {
@@ -23,7 +23,7 @@ public class JpaItemMasterRepository extends JpaRepository implements ItemMaster
 
 	@Override
 	public List<ItemMaster> findAll(String companyCode) {
-		return this.queryProxy().query(SELECT_ALL_BY_COMPANY, QcamtItem.class).setParameter("companyCode", companyCode)
+		return this.queryProxy().query(SELECT_ALL_BY_COMPANY, QcamtItem_v1.class).setParameter("companyCode", companyCode)
 				.getList(c -> toDomain(c));
 	}
 
@@ -32,11 +32,11 @@ public class JpaItemMasterRepository extends JpaRepository implements ItemMaster
 	 */
 	@Override
 	public List<ItemMaster> findAllByCategory(String companyCode, int categoryType) {
-		return this.queryProxy().query(SELECT_ALL_BY_CATEGORY, QcamtItem.class).setParameter("companyCode", companyCode)
+		return this.queryProxy().query(SELECT_ALL_BY_CATEGORY, QcamtItem_v1.class).setParameter("companyCode", companyCode)
 				.setParameter("categoryType", categoryType).getList(c -> toDomain(c));
 	}
 
-	private static ItemMaster toDomain(QcamtItem entity) {
+	private static ItemMaster toDomain(QcamtItem_v1 entity) {
 		val domain = ItemMaster.createSimpleFromJavaType(entity.qcamtItemPK.ccd, entity.qcamtItemPK.itemCd,
 				entity.qcamtItemPK.ctgAtr, entity.itemName, entity.itemAbName, entity.taxAtr, entity.itemAtr);
 		domain.additionalInfo(entity.limitMny.intValue(), entity.fixPayAtr, entity.laborInsAtr, entity.socialInsAtr, entity.avePayAtr, entity.deductAtr);
@@ -49,22 +49,34 @@ public class JpaItemMasterRepository extends JpaRepository implements ItemMaster
 	 * find item by company code, category type, item code
 	 */
 	public Optional<ItemMaster> getItemMaster(String companyCode, int categoryType, String itemCode) {
-		return this.queryProxy().query(SELECT_DETAIL, QcamtItem.class).setParameter("companyCode", companyCode)
+		return this.queryProxy().query(SELECT_DETAIL, QcamtItem_v1.class).setParameter("companyCode", companyCode)
 				.setParameter("categoryType", categoryType).setParameter("itemCode", itemCode)
 				.getSingle(c -> toDomain(c));
 	}
 
 	@Override
 	public Optional<ItemMaster> find(String companyCode, int categoryAtr, String itemCode) {
-		return this.queryProxy().find(new QcamtItemPK(companyCode, itemCode, categoryAtr), QcamtItem.class).
+		return this.queryProxy().find(new QcamtItemPK_v1(companyCode, itemCode, categoryAtr), QcamtItem_v1.class).
 				map(entity -> toDomain(entity));
 	}
 
 	@Override
 	public List<ItemMaster> findAll(String companyCode, int avePayAtr) {
-		return this.queryProxy().query(SEL_3, QcamtItem.class)
+		return this.queryProxy().query(SEL_3, QcamtItem_v1.class)
 				.setParameter("companyCode", companyCode)
 				.setParameter("avePayAtr", avePayAtr)
 				.getList(c -> toDomain(c));
+	}
+
+	@Override
+	public void add(ItemMaster domain) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void update(ItemMaster domain) {
+		// TODO Auto-generated method stub
+		
 	}
 }

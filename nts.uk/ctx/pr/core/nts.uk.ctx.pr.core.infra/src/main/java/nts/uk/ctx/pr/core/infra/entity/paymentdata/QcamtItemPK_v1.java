@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Embeddable
 @AllArgsConstructor
 @NoArgsConstructor
-public class QcamtItemPK implements Serializable {
+public class QcamtItemPK_v1 implements Serializable {
 
 	/**
 	 * 
