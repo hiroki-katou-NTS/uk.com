@@ -58,17 +58,6 @@ public interface ItemMasterV1Repository {
 	 * @return
 	 */
 	List<ItemMasterV1> findAll(String companyCode, int categoryAtr, String itemCode, int fixAtr);
-	
-	/**
-	 * Find all item by
-	 * @param companyCode company code
-	 * @param categoryAtr category attribute
-	 * @param itemCode item code
-	 * @param fixAtr fix attribute
-	 * @return
-	 */
-	List<ItemMaster> findAll(String companyCode, int categoryAtr, String itemCode, int fixAtr);
-	
 	/**
 	 * Add new item master
 	 * @param domain
