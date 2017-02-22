@@ -22,7 +22,7 @@ import nts.uk.ctx.pr.core.dom.allot.PersonalAllotSettingRepository;
 import nts.uk.ctx.pr.core.dom.enums.CategoryAtr;
 import nts.uk.ctx.pr.core.dom.itemmaster.ItemCode;
 import nts.uk.ctx.pr.core.dom.itemmaster.ItemMaster;
-import nts.uk.ctx.pr.core.dom.itemmaster.ItemMasterRepository;
+import nts.uk.ctx.pr.core.dom.itemmaster.ItemMasterV1Repository;
 import nts.uk.ctx.pr.core.dom.itemmaster.TaxAtr;
 import nts.uk.ctx.pr.core.dom.layout.LayoutMaster;
 import nts.uk.ctx.pr.core.dom.layout.LayoutMasterRepository;
@@ -114,7 +114,7 @@ public class CreatePaymentDataCommandHandler extends CommandHandler<CreatePaymen
 	@Inject
 	private LayoutMasterCategoryRepository layoutMasterCtgRepo;
 	@Inject
-	private ItemMasterRepository itemMasterRepo;
+	private ItemMasterV1Repository itemMasterRepo;
 	@Inject
 	private PersonalWageRepository personalWageRepo;
 

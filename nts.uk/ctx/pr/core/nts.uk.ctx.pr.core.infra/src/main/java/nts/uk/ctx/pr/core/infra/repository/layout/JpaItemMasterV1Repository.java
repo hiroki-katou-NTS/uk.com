@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.core.infra.repository.itemmaster;
+package nts.uk.ctx.pr.core.infra.repository.layout;
 
 import java.util.List;
 import java.util.Optional;
@@ -8,12 +8,12 @@ import javax.ejb.Stateless;
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.pr.core.dom.itemmaster.ItemMaster;
-import nts.uk.ctx.pr.core.dom.itemmaster.ItemMasterRepository;
+import nts.uk.ctx.pr.core.dom.itemmaster.ItemMasterV1Repository;
 import nts.uk.ctx.pr.core.infra.entity.paymentdata.QcamtItem_v1;
 import nts.uk.ctx.pr.core.infra.entity.paymentdata.QcamtItemPK_v1;
 
 @Stateless
-public class JpaItemMasterRepository extends JpaRepository implements ItemMasterRepository {
+public class JpaItemMasterV1Repository extends JpaRepository implements ItemMasterV1Repository {
 
 	private final String SELECT_NO_WHERE = "SELECT c FROM QcamtItem c";
 	private final String SELECT_ALL_BY_COMPANY = SELECT_NO_WHERE + " WHERE c.qcamtItemPK.ccd = :companyCode";
@@ -78,5 +78,11 @@ public class JpaItemMasterRepository extends JpaRepository implements ItemMaster
 	public void update(ItemMaster domain) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public List<ItemMaster> findAll(String companyCode, int categoryAtr, String itemCode, int fixAtr) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

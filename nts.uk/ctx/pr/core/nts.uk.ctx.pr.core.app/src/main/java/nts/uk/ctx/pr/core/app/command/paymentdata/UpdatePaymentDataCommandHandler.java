@@ -16,7 +16,7 @@ import nts.uk.ctx.pr.core.app.command.paymentdata.base.CategoryCommandBase;
 import nts.uk.ctx.pr.core.app.command.paymentdata.base.DetailItemCommandBase;
 import nts.uk.ctx.pr.core.app.command.paymentdata.base.LineCommandBase;
 import nts.uk.ctx.pr.core.dom.itemmaster.ItemMaster;
-import nts.uk.ctx.pr.core.dom.itemmaster.ItemMasterRepository;
+import nts.uk.ctx.pr.core.dom.itemmaster.ItemMasterV1Repository;
 import nts.uk.ctx.pr.core.dom.paymentdata.PayBonusAtr;
 import nts.uk.ctx.pr.core.dom.paymentdata.Payment;
 import nts.uk.ctx.pr.core.dom.paymentdata.SparePayAtr;
@@ -43,7 +43,7 @@ public class UpdatePaymentDataCommandHandler extends CommandHandler<UpdatePaymen
 	private PaymentDateMasterRepository payDateMasterRepository;
 
 	@Inject
-	private ItemMasterRepository itemMasterRepository;
+	private ItemMasterV1Repository itemMasterRepository;
 
 	/** PAY BONUS ATTRIBUTE FIXED */
 	private static final int PAY_BONUS_ATR = 0;

@@ -3,7 +3,7 @@ package nts.uk.ctx.pr.core.dom.itemmaster;
 import java.util.List;
 import java.util.Optional;
 
-public interface ItemMasterRepository {
+public interface ItemMasterV1Repository {
 
 	/**
 	 * Get all of company
@@ -48,6 +48,16 @@ public interface ItemMasterRepository {
 	 * @return
 	 */
 	List<ItemMaster> findAll(String companyCode, int avePayAtr);
+	
+	/**
+	 * Find all item by
+	 * @param companyCode company code
+	 * @param categoryAtr category attribute
+	 * @param itemCode item code
+	 * @param fixAtr fix attribute
+	 * @return
+	 */
+	List<ItemMaster> findAll(String companyCode, int categoryAtr, String itemCode, int fixAtr);
 	
 	/**
 	 * Add new item master

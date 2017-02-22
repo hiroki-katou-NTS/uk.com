@@ -15,7 +15,7 @@ import nts.arc.error.BusinessException;
 import nts.uk.ctx.pr.core.dom.enums.CategoryAtr;
 import nts.uk.ctx.pr.core.dom.itemmaster.ItemCode;
 import nts.uk.ctx.pr.core.dom.itemmaster.ItemMaster;
-import nts.uk.ctx.pr.core.dom.itemmaster.ItemMasterRepository;
+import nts.uk.ctx.pr.core.dom.itemmaster.ItemMasterV1Repository;
 import nts.uk.ctx.pr.core.dom.layout.detail.LayoutMasterDetail;
 import nts.uk.ctx.pr.core.dom.layout.line.LayoutMasterLine;
 import nts.uk.ctx.pr.core.dom.layout.line.LineDispAtr;
@@ -34,7 +34,7 @@ import nts.uk.ctx.pr.core.dom.personalinfo.wage.PersonalWage;
 public class PaymentDetailServiceImpl implements PaymentDetailService {
 
 	@Inject
-	private ItemMasterRepository itemMasterRepo;
+	private ItemMasterV1Repository itemMasterRepo;
 	@Inject
 	private PersonalCommuteFeeRepository personalCommuteRepo;
 

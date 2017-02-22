@@ -8,7 +8,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.pr.core.dom.itemmaster.ItemAtr;
-import nts.uk.ctx.pr.core.dom.itemmaster.ItemMasterRepository;
+import nts.uk.ctx.pr.core.dom.itemmaster.ItemMasterV1Repository;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -18,7 +18,7 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class ItemFinder {
 	@Inject
-	private ItemMasterRepository repostirory;
+	private ItemMasterV1Repository repostirory;
 
 	/**
 	 * finder all items by company code and category type

@@ -12,7 +12,7 @@ import nts.arc.error.BusinessException;
 import nts.uk.ctx.pr.core.dom.allot.CompanyAllotSettingRepository;
 import nts.uk.ctx.pr.core.dom.allot.PersonalAllotSettingRepository;
 import nts.uk.ctx.pr.core.dom.itemmaster.ItemMaster;
-import nts.uk.ctx.pr.core.dom.itemmaster.ItemMasterRepository;
+import nts.uk.ctx.pr.core.dom.itemmaster.ItemMasterV1Repository;
 import nts.uk.ctx.pr.core.dom.layout.LayoutMaster;
 import nts.uk.ctx.pr.core.dom.layout.LayoutMasterRepository;
 import nts.uk.ctx.pr.core.dom.layout.category.LayoutMasterCategory;
@@ -78,7 +78,7 @@ public class GetPaymentDataQueryProcessor {
 	private PaymentDataQueryRepository queryRepository;
 
 	@Inject
-	private ItemMasterRepository itemMasterRepository;
+	private ItemMasterV1Repository itemMasterRepository;
 
 	/**
 	 * get data detail
