@@ -4,6 +4,7 @@ __viewContext.ready(function() {
         itemsSwap: KnockoutObservableArray<ItemModel>;
         columns: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
         currentCodeListSwap: KnockoutObservableArray<any>;
+        test: KnockoutObservableArray<any>;
 
         constructor() {
 
@@ -11,29 +12,35 @@ __viewContext.ready(function() {
             
             var array = [];
             for (var i = 0; i < 10000; i++) {
-                array.push(new ItemModel("test" + i, '基本給', "description"));
+                array.push(new ItemModel(i, '基本給', "description"));
             }
             this.itemsSwap(array);
 
             this.columns = ko.observableArray([
-                { headerText: 'コード', prop: 'code', width: 100 },
-                { headerText: '名称', prop: 'name', width: 200 },
-                { headerText: '説明', prop: 'description', width: 200 }
+                { headerText: 'コード', key: 'code', width: 100 },
+                { headerText: '名称', key: 'name', width: 150 }
             ]);
 
             this.currentCodeListSwap = ko.observableArray([]);
+            this.test = ko.observableArray([]);
+        }
+        
+        remove(){
+            this.itemsSwap.shift();            
         }
         
     }
     
     class ItemModel {
-        code: string;
+        code: number;
         name: string;
         description: string;
-        constructor(code: string, name: string, description: string) {
+        deletable: boolean;
+        constructor(code: number, name: string, description: string) {
             this.code = code;
             this.name = name;
             this.description = description;
+            this.deletable = code % 3 === 0;
         }
     }
 

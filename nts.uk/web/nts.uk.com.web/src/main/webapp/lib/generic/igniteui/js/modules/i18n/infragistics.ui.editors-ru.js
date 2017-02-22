@@ -1,5 +1,5 @@
 ﻿/*!@license
-* Infragistics.Web.ClientUI Editors localization resources 16.1.20161.2145
+* Infragistics.Web.ClientUI Editors localization resources 16.2.20162.2040
 *
 * Copyright (c) 2011-2016 Infragistics Inc.
 *
@@ -7,7 +7,6 @@
 *
 */
 
-/*global jQuery */
 (function ($) {
     $.ig = $.ig || {};
 
@@ -45,8 +44,8 @@
 			    minValErrMsg: "Введенные данные достигли минимального значения {0} для этого поля",
 			    maxValExceedRevertErrMsg: "Введенные данные превысили максимальное значение {0}, было восстановлено предыдущее значение",
 			    minValExceedRevertErrMsg: "Введенное значение было меньше минимального значения {0}, поэтому было возвращено предыдущее значение",
-			    maxValExceedSetErrMsg: "Entry exceeded the maximum value of {0} and was set to the maximum value",
-			    minValExceedSetErrMsg: "Entry exceeded the minimum value of {0} and was set to the minimum value",
+			    maxValExceedSetErrMsg: "Введенные данные превысили максимальное значение {0}, было установлено максимальное значение",
+			    minValExceedSetErrMsg: "Введенные данные превысили минимальное значение {0}, было установлено минимальное значение",
 			    maxValExceededWrappedAroundErrMsg: "Введенные данные превысили максимальное значение {0}, было установлено минимально допустимое значение",
 			    minValExceededWrappedAroundErrMsg: "Введенное значение было меньше минимального значения {0}, поэтому было установлено максимальное допустимое значение",
 			    btnValueNotSupported: 'Требуется задать другое значение кнопки. Выберите значение из "dropdown", "clear" и "spin".',
@@ -72,7 +71,8 @@
 			    cannotSetRuntime: "Этот параметр не может быть задан во время выполнения программы",
 			    invalidDate: "Неверная дата",
 			    maskMessage: 'Следует заполнить все обязательные поля',
-			    dateMessage: 'Следует ввести правильную дату',
+			    maskRevertMessage: 'Все обязательные поля должны быть заполнены, поэтому было восстановлено последнее правильное значение.',
+				dateMessage: 'Следует ввести правильную дату',
 			    centuryThresholdValidValues: "Свойство centuryThreshold должно находиться в диапазоне от 0 до 99. Возвращено значение по умолчанию.",
 			    noListItemsNoButton: "Счетчик или кнопка раскрытия списка не отображаются вследствие отсутствия элементов списка."
 		    }

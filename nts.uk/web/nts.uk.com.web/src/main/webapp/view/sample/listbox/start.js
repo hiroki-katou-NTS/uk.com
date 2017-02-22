@@ -2,36 +2,25 @@ __viewContext.ready(function () {
     var ScreenModel = (function () {
         function ScreenModel() {
             var self = this;
-            self.itemList = ko.observableArray([
-                new ItemModel('基本給2', '基本給', "description 1"),
-                new ItemModel('基本給1', '役職手当', "description 2"),
-                new ItemModel('基本給3', '基本給', "description 3")
-            ]);
+            var temp = [];
+            for (var i = 0; i < 100; i++) {
+                temp.push(new ItemModel((i + 1), '基本給', "description " + (i + 1)));
+            }
+            self.itemList = ko.observableArray(temp);
             self.itemName = ko.observable('');
             self.currentCode = ko.observable(3);
-            self.selectedCode = ko.observable(null);
-            self.isEnable = ko.observable(true);
+            self.selectedCode = ko.observable(2);
             self.selectedCodes = ko.observableArray([]);
-            $('#list-box').on('selectionChanging', function (event) {
-                console.log('Selecting value:' + event.originalEvent.detail);
-                //Cancel event.
-                //event.preventDefault();
-                //return false;
-            });
-            $('#list-box').on('selectionChanged', function (event) {
-                console.log('Selected value:' + event.originalEvent.detail);
-            });
+            self.isEnable = ko.observable(true);
+            self.isMulti = ko.observable(true);
+            self.isMulti2 = ko.observable(true);
+            self.isValidate = ko.observable(true);
         }
         ScreenModel.prototype.addOptions = function () {
             var self = this;
             var newCode = self.currentCode() + 1;
-            var itemCode = newCode.toString();
-            var codeLength = itemCode.length;
-            while (codeLength < 4) {
-                itemCode = '0' + itemCode;
-                codeLength++;
-            }
-            self.itemList.push(new ItemModel(itemCode, self.itemName(), "New Item"));
+            var itemCode = newCode;
+            self.itemList.push(new ItemModel(itemCode, self.itemName(), ""));
             self.currentCode(newCode);
         };
         ScreenModel.prototype.deselectAll = function () {
@@ -52,7 +41,7 @@ __viewContext.ready(function () {
         ScreenModel.prototype.remove = function () {
             var self = this;
             // Remove by code.
-            var selected = self.itemList().filter(function (item) { return item.code == self.selectedCode(); })[0];
+            var selected = self.itemList().filter(function (item) { return item.code === self.selectedCode(); })[0];
             self.itemList.remove(selected);
             // Remove by codes
             var selecteds = self.itemList().filter(function (item) { return self.selectedCodes().indexOf(item.code) != -1; });

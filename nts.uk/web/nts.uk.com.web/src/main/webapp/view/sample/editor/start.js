@@ -11,6 +11,9 @@ __viewContext.ready(function () {
                 enable: ko.observable(true),
                 readonly: ko.observable(false)
             };
+            self.option = {
+                value: ko.observable("2")
+            };
             // TextEditor
             self.texteditor = {
                 value: ko.observable(''),
@@ -56,8 +59,20 @@ __viewContext.ready(function () {
                 value: ko.observable(12),
                 constraint: '',
                 option: ko.mapping.fromJS(new nts.uk.ui.option.NumberEditorOption({
+                    grouplength: 3 })),
+                required: ko.observable(false),
+                enable: ko.observable(true),
+                readonly: ko.observable(false)
+            };
+            // NumberEditor
+            self.numbereditor2 = {
+                value: ko.observable(12),
+                constraint: '',
+                option: ko.mapping.fromJS(new nts.uk.ui.option.NumberEditorOption({
                     grouplength: 3,
-                    decimallength: 2 })),
+                    decimallength: 2,
+                    symbolChar: '%',
+                    symbolPosition: 'right' })),
                 required: ko.observable(false),
                 enable: ko.observable(true),
                 readonly: ko.observable(false)
@@ -69,8 +84,7 @@ __viewContext.ready(function () {
                 option: ko.mapping.fromJS(new nts.uk.ui.option.CurrencyEditorOption({
                     grouplength: 3,
                     decimallength: 2,
-                    currencyformat: "JPY",
-                    currencyposition: 'right'
+                    currencyformat: "JPY"
                 })),
                 required: ko.observable(false),
                 enable: ko.observable(true),
@@ -81,10 +95,9 @@ __viewContext.ready(function () {
                 value: ko.observable(200000),
                 constraint: '',
                 option: ko.mapping.fromJS(new nts.uk.ui.option.CurrencyEditorOption({
-                    grouplength: 4,
+                    grouplength: 3,
                     decimallength: 2,
-                    currencyformat: "USD",
-                    currencyposition: 'left'
+                    currencyformat: "USD"
                 })),
                 required: ko.observable(false),
                 enable: ko.observable(true),

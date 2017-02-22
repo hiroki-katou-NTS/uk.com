@@ -78,6 +78,12 @@ var nts;
                                     self.taxCommuteEditor.value = ko.observable(detailItemFromParentScreen.commuteAllowTaxImpose);
                                     // Set value for  1か月分通勤費 textbox 
                                     self.oneMonthCommuteEditor.value = ko.observable(detailItemFromParentScreen.commuteAllowMonth);
+                                    if (self.oneMonthCommuteEditor.value()) {
+                                        self.oneMonthCheck.isChecked(true);
+                                        self.oneMonthCommuteEditor.isEnable(true);
+                                        self.oneMonthRemainderEditor.isEnable(true);
+                                        self.commuteDividedByMonth.isEnable(true);
+                                    }
                                     // Set value for 余り textbox 
                                     self.oneMonthRemainderEditor.value = ko.observable(detailItemFromParentScreen.commuteAllowFraction);
                                     qpp005.f.service.getCommuteNotaxLimit(employee.personId, baseYearmonth).done(function (res) {
@@ -126,10 +132,12 @@ var nts;
                             var NumberEditor = (function () {
                                 function NumberEditor() {
                                     var self = this;
-                                    self.option = ko.mapping.fromJS(new ui.option.CurrencyEditorOption({ grouplength: 3,
+                                    self.option = ko.mapping.fromJS(new uk.ui.option.CurrencyEditorOption({
+                                        grouplength: 3,
                                         decimallength: 0,
                                         currencyformat: 'JPY',
-                                        width: "80" }));
+                                        width: "80"
+                                    }));
                                 }
                                 return NumberEditor;
                             }());

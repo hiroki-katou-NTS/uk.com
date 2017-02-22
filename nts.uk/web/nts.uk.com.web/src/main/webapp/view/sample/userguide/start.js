@@ -2,18 +2,27 @@ __viewContext.ready(function () {
     var ScreenModel = (function () {
         function ScreenModel() {
             var self = this;
-            self.dataList = ko.observableArray([]);
-            for (var i = 0; i <= 10; i++) {
-                self.dataList.push({ id: i, name: "Item " + i });
-            }
-            $(".userguide").ntsUserGuide();
-            $(".userguide2").ntsUserGuide();
+            // Input Text
+            self.inputText = ko.observable("a");
+            self.inputText.subscribe(function (value) {
+                if (value.length > 0)
+                    $(".userguide-right").ntsUserGuide("hide");
+                else
+                    $(".userguide-right").ntsUserGuide("show");
+            });
+            // CheckBox
+            self.checked = ko.observable(true);
+            self.checked.subscribe(function (value) {
+                (value) ? $(".userguide-left").ntsUserGuide("hide") : $(".userguide-left").ntsUserGuide("show");
+            });
+            // Init UserGuide
+            $("[data-toggle='userguide']").ntsUserGuide();
         }
-        ScreenModel.prototype.showOverlay = function () {
-            $(".userguide").ntsUserGuide("show");
+        ScreenModel.prototype.showOverlayTop = function () {
+            $(".userguide-top").ntsUserGuide("toggle");
         };
-        ScreenModel.prototype.showOverlay2 = function () {
-            $(".userguide2").ntsUserGuide("show");
+        ScreenModel.prototype.showOverlayBottom = function () {
+            $(".userguide-bottom").ntsUserGuide("toggle");
         };
         return ScreenModel;
     }());

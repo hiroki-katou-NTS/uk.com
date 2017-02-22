@@ -4,16 +4,19 @@ __viewContext.ready(function () {
             this.itemsSwap = ko.observableArray([]);
             var array = [];
             for (var i = 0; i < 10000; i++) {
-                array.push(new ItemModel("test" + i, '基本給', "description"));
+                array.push(new ItemModel(i, '基本給', "description"));
             }
             this.itemsSwap(array);
             this.columns = ko.observableArray([
-                { headerText: 'コード', prop: 'code', width: 100 },
-                { headerText: '名称', prop: 'name', width: 200 },
-                { headerText: '説明', prop: 'description', width: 200 }
+                { headerText: 'コード', key: 'code', width: 100 },
+                { headerText: '名称', key: 'name', width: 150 }
             ]);
             this.currentCodeListSwap = ko.observableArray([]);
+            this.test = ko.observableArray([]);
         }
+        ScreenModel.prototype.remove = function () {
+            this.itemsSwap.shift();
+        };
         return ScreenModel;
     }());
     var ItemModel = (function () {
@@ -21,6 +24,7 @@ __viewContext.ready(function () {
             this.code = code;
             this.name = name;
             this.description = description;
+            this.deletable = code % 3 === 0;
         }
         return ItemModel;
     }());

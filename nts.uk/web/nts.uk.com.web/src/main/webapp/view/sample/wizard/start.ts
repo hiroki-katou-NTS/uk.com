@@ -1,4 +1,4 @@
 __viewContext.ready(function() {
-    var screenModel = new sample.wizard.viewmodel.ScreenModel();
+    var screenModel = new nts.uk.ui.wizard.viewmodel.ScreenModel();
     __viewContext.bind(screenModel);   
 });

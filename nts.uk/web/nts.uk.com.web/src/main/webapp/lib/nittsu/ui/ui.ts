@@ -435,15 +435,23 @@
              * Create ContextMenu and bind event in DOM
              */
             init() {
-                // Initial
                 var self = this;
+                // Remove ContextMenu with same 'selector' (In case Ajax call will re-create DOM elements)
+                $('body .ntsContextMenu').each(function(){
+                    if ($(this).data("selector") === self.selector) {
+                        $("body").off("contextmenu", self.selector);
+                        $(this).remove();
+                    }
+                });
+                
+                // Initial
                 self.guid = nts.uk.util.randomId();
-                var $contextMenu = $("<ul id='" + self.guid + "' class='ntsContextMenu'></ul>").hide();
-                this.createMenuItems($contextMenu);
+                var $contextMenu = $("<ul id='" + self.guid + "' class='ntsContextMenu'></ul>").data("selector", self.selector).hide();
+                self.createMenuItems($contextMenu);
                 $('body').append($contextMenu);
                 
                 // Binding contextmenu event
-                $("body").on("contextmenu", self.selector, function(event) {
+                $("html").on("contextmenu", self.selector, function(event) {
                     if (self.enable === true) {
                         event.preventDefault();
                         self.target = event.target;
@@ -456,7 +464,7 @@
                 });
                 
                 // Hiding when click outside
-                $("body").on("mousedown", function(event) {
+                $("html").on("mousedown", function(event) {
                     if (!$contextMenu.is(event.target) && $contextMenu.has(event.target).length === 0) {
                         $contextMenu.hide();
                     }
@@ -468,7 +476,7 @@
              */
             destroy() {
                 // Unbind contextmenu event
-                $("body").off("contextmenu", this.selector);
+                $("html").off("contextmenu", this.selector);
                 $("#" + this.guid).remove();
             }
 
@@ -673,4 +681,21 @@
 			return this.initialState !== this.getCurrentState();
 		}
 	}
+    
+    /**
+     * Utilities for IgniteUI
+     */
+    export module ig {
+        
+        export module grid {
+            
+            export function getRowIdFrom($anyElementInRow: JQuery): any {
+                return $anyElementInRow.closest('tr').attr('data-id');
+            }
+            
+            export function getRowIndexFrom($anyElementInRow: JQuery): number {
+                return parseInt($anyElementInRow.closest('tr').attr('data-row-idx'), 10);
+            }
+        }
+    }
 }

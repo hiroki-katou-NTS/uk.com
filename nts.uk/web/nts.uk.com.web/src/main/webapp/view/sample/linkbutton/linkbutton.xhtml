@@ -22,15 +22,18 @@
 					<div id="content" class="cf">
 						<h1>LinkButton</h1>
 						<h2>Overview</h2>
-	            		<a data-bind="ntsLinkButton: { jump: 'linkbutton.xhtml' }">リンク</a>
+	            		<a data-bind="ntsLinkButton: { jump: 'linkbutton.xhtml' }">Navigate</a>
+	            		<a class="test" data-bind="ntsLinkButton: { action: doSomething.bind($data, ' ') }, text: linkText">Do something</a>
 						<article class="cf">
 							<div class="tabs">
 								<ol>
 									<li><a href="#tabs-html">HTML Binding</a></li>
+									<li><a href="#tabs-viewmodel">ViewModel</a></li>
 								</ol>
 								<div id="tabs-html" class="cf">
 									<h2>HTML</h2>
-									<pre><![CDATA[<a data-bind="ntsLinkButton: { jump: 'linkbutton.xhtml' }">リンク</a>]]></pre>
+<pre><![CDATA[<a data-bind="ntsLinkButton: { jump: 'linkbutton.xhtml' }">Navigate</a>
+<a class="test" data-bind="ntsLinkButton: { action: doSomething.bind($data, ' ') }, text: linkText">Do something</a>]]></pre>
 									<h2>API</h2>
 									<table>
 										<colgroup>
@@ -50,8 +53,32 @@
 													URL link button navigate to
 												</td>
 											</tr>
+											<tr>
+												<td>action</td>
+												<td>
+													<b>Type:</b> function<br/>
+													Action to do something. If <b>action</b> is defined then <b>jump</b> will be ignored
+												</td>
+											</tr>
 										</tbody>
 									</table>
+								</div>
+								<div id="tabs-viewmodel" class="cf">
+									<h2>Viewmodel</h2>
+<pre><![CDATA[class ScreenModel {
+    linkText: KnockoutObservable<string>;
+    
+    constructor() {
+        var self = this;
+        self.linkText = ko.observable("Do something");
+    }
+    
+    doSomething(s) {
+        var self = this;
+        self.linkText(self.linkText() + "❤" + s);
+    }
+}
+]]></pre>
 								</div>
 							</div>
 						</article>

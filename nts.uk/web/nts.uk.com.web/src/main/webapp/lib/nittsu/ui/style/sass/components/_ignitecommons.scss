@@ -1,36 +1,61 @@
 @mixin iggridstyle {
 	table {
-		
 		tr {
 			&, &.ui-state-focus, &.ui-ig-altrecord.ui-state-focus {
 				th.ui-widget-header {
 					color: $font_color;
 					background-color: #CFF1A5;
 				}
+			}
 			
-				td, th {
-				    font: {
-				        size: $normal_font_size;
-				        family: $font_family_monospace;
-				    }
-				    
-				    &, &.ui-state-hover, &.ui-state-active, &.ui-state-focus, &.ui-state-active.ui-state-focus {
-				    	padding: 0 2px;
-				    	border: 1px solid #cccccc;
-				    }
-				}
+			td, th {
+			    font: {
+			        size: $normal_font_size;
+			        family: $font_family_monospace;
+			    }
+			    
+			    &, &.ui-iggrid-header, &.ui-state-hover, &.ui-state-active, &.ui-state-focus, &.ui-state-active.ui-state-focus {
+			    	padding: 0 2px;
+			    	border: 1px solid #CCC;
+			    }
 			}
 		}
-	}
-	
-	.ui-state-highlight, .ui-widget-content .ui-state-highlight, .ui-widget-header .ui-state-highlight {
-		color: inherit;
-		background-color: inherit;
+		.ui-ig-altrecord {
+			background-color: #EBEBEB;
+		}
+		
+		.ui-igcheckbox-normal{
+			position: relative !important;
+		}
+		.ui-igcheckbox-normal-on{
+			position: absolute !important;
+		}
+		
+		.ui-iggrid-indicatorcontainer {
+		    margin-top: calc(1em - 8px);
+		}
+		
+		.ui-iggrid-hiding-indicator, .ui-iggrid-hiding-hiddencolumnindicator {
+			display: none;
+		}
 	}
 }
 
 @mixin iggridrowselector {
 	table tr {
+		
+		.ui-state-highlight {
+			border-color: #CCC;
+			color: inherit;
+			background-color: inherit;
+			
+		}
+		
+		.ui-state-active {
+		    background: #007fff;
+			color: #ffffff;
+		}
+		
 		&, &.ui-state-focus, &.ui-ig-altrecord.ui-state-focus {
 			td, th {
 				&.ui-state-hover {
@@ -42,6 +67,6 @@
 			.ui-state-active .ui-icon {
 				background-image: url(../images/ui-icons_444444_256x240.png);
 			}
-		}
+		}	
 	}
 }

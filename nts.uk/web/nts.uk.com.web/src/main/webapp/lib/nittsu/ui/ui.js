@@ -393,14 +393,21 @@ var nts;
                      * Create ContextMenu and bind event in DOM
                      */
                     ContextMenu.prototype.init = function () {
-                        // Initial
                         var self = this;
+                        // Remove ContextMenu with same 'selector' (In case Ajax call will re-create DOM elements)
+                        $('body .ntsContextMenu').each(function () {
+                            if ($(this).data("selector") === self.selector) {
+                                $("body").off("contextmenu", self.selector);
+                                $(this).remove();
+                            }
+                        });
+                        // Initial
                         self.guid = nts.uk.util.randomId();
-                        var $contextMenu = $("<ul id='" + self.guid + "' class='ntsContextMenu'></ul>").hide();
-                        this.createMenuItems($contextMenu);
+                        var $contextMenu = $("<ul id='" + self.guid + "' class='ntsContextMenu'></ul>").data("selector", self.selector).hide();
+                        self.createMenuItems($contextMenu);
                         $('body').append($contextMenu);
                         // Binding contextmenu event
-                        $("body").on("contextmenu", self.selector, function (event) {
+                        $("html").on("contextmenu", self.selector, function (event) {
                             if (self.enable === true) {
                                 event.preventDefault();
                                 self.target = event.target;
@@ -412,7 +419,7 @@ var nts;
                             }
                         });
                         // Hiding when click outside
-                        $("body").on("mousedown", function (event) {
+                        $("html").on("mousedown", function (event) {
                             if (!$contextMenu.is(event.target) && $contextMenu.has(event.target).length === 0) {
                                 $contextMenu.hide();
                             }
@@ -423,7 +430,7 @@ var nts;
                      */
                     ContextMenu.prototype.destroy = function () {
                         // Unbind contextmenu event
-                        $("body").off("contextmenu", this.selector);
+                        $("html").off("contextmenu", this.selector);
                         $("#" + this.guid).remove();
                     };
                     /**
@@ -607,6 +614,23 @@ var nts;
                 return DirtyChecker;
             }());
             ui_1.DirtyChecker = DirtyChecker;
+            /**
+             * Utilities for IgniteUI
+             */
+            var ig;
+            (function (ig) {
+                var grid;
+                (function (grid) {
+                    function getRowIdFrom($anyElementInRow) {
+                        return $anyElementInRow.closest('tr').attr('data-id');
+                    }
+                    grid.getRowIdFrom = getRowIdFrom;
+                    function getRowIndexFrom($anyElementInRow) {
+                        return parseInt($anyElementInRow.closest('tr').attr('data-row-idx'), 10);
+                    }
+                    grid.getRowIndexFrom = getRowIndexFrom;
+                })(grid = ig.grid || (ig.grid = {}));
+            })(ig = ui_1.ig || (ui_1.ig = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
