@@ -22,10 +22,10 @@ public class CmnmtJobTitle implements Serializable{
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	public CmnmtJobTitlePK cmnmtJobTittlePK;
+	public CmnmtJobTitlePK cmnmtJobTitlePK;
 	
-	public CmnmtJobTitlePK getCmnmtJobTittlePK() {
-		return cmnmtJobTittlePK;
+	public CmnmtJobTitlePK getCmnmtJobTitlePK() {
+		return cmnmtJobTitlePK;
 	}
 
 	@Convert(converter = LocalDateToDBConverter.class)
@@ -58,8 +58,8 @@ public class CmnmtJobTitle implements Serializable{
 	@Column(name ="HIERARCHY_ORDER_CD")
 	public String hiterarchyOrderCode;
 	
-	public void setCmnmtJobTittlePK(CmnmtJobTitlePK cmnmtJobTittlePK) {
-		this.cmnmtJobTittlePK = cmnmtJobTittlePK;
+	public void setCmnmtJobTittlePK(CmnmtJobTitlePK cmnmtJobTitlePK) {
+		this.cmnmtJobTitlePK = cmnmtJobTitlePK;
 	}
 	
 	

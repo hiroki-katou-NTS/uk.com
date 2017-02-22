@@ -118,6 +118,7 @@ public class JpaDepartmentRepository extends JpaRepository implements Department
 					return Optional.of(convertToDomain(e));
 				}).orElse(Optional.empty());
 	}
+	
 
 	@Override
 	public List<Department> findAllByHistory(String companyCode, String historyId) {
@@ -129,6 +130,8 @@ public class JpaDepartmentRepository extends JpaRepository implements Department
 		}).collect(Collectors.toList()) : new ArrayList<>();
 	}
 
+	
+	
 	@Override
 	public boolean checkExist(String companyCode) {
 		return this.queryProxy().query(CHECK_EXIST, long.class).setParameter("companyCode", "'" + companyCode + "'")

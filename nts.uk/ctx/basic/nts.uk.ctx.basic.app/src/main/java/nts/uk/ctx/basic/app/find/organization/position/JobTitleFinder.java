@@ -29,13 +29,10 @@ import nts.uk.shr.com.context.AppContexts;
 			positionDto.setHistoryID(position.getHistoryID());
 			positionDto.setMemo(position.getMemo().v());
 			positionDto.setJobOutCode(position.getJobOutCode().v());
-			positionDto.setEndDate(position.getEndDate().localDate());
-			positionDto.setStartDate(position.getStartDate().localDate());
+			positionDto.setHiterarchyOrderCode(position.getHiterarchyOrderCode().v());
+			positionDto.setPresenceCheckScopeSet(position.getPresenceCheckScopeSet().value);
 			return positionDto;
 		}
 
-		public List<JobTitleDto> getAllPosition(String companyCode) {
-			return this.positionRepository.getPositions(companyCode).stream().map(position -> JobTitleDto.fromDomain(position))
-					.collect(Collectors.toList());
-		}
+	
 }

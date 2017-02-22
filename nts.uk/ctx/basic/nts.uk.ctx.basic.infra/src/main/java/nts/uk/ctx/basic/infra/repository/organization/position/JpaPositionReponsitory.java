@@ -29,6 +29,9 @@ public class JpaPositionReponsitory extends JpaRepository implements PositionRep
 
 	private static final String FIND_SINGLE;
 	
+	private static final String CHECK_EXIST;
+
+	
 	
 	static {
 		StringBuilder builderString = new StringBuilder();
@@ -41,9 +44,16 @@ public class JpaPositionReponsitory extends JpaRepository implements PositionRep
 		builderString.append("SELECT e");
 		builderString.append(" FROM CmnmtJobTittle e");
 		builderString.append(" WHERE e.cmnmtJobTittlePK.companyCode =: companyCode");
-		builderString.append(" AND e.cmnmtJobTittlePK.jobCode =: jobCode");
-		builderString.append(" AND e.cmnmtJobTittlePK.historyID =: historyID");
 		FIND_SINGLE = builderString.toString();
+		
+		builderString = new StringBuilder();
+		builderString.append("SELECT e");
+		builderString.append(" FROM CmnmtJobTittle e");
+		builderString.append(" WHERE e.cmnmtJobTittlePK.companyCode =: companyCode");
+		CHECK_EXIST = builderString.toString();
+		
+	
+		
 	}
 	
 	
@@ -62,12 +72,10 @@ public class JpaPositionReponsitory extends JpaRepository implements PositionRep
 	private Position convertToDomain(CmnmtJobTitle cmnmtJobTittle) {
 		return new Position(
 				new JobName(cmnmtJobTittle.getJobName()),
-				GeneralDate.localDate(cmnmtJobTittle.getEndDate()),
-				new JobCode(cmnmtJobTittle.getCmnmtJobTittlePK().getJobCode()),
+				new JobCode(cmnmtJobTittle.getCmnmtJobTitlePK().getJobCode()),
 				new JobCode(cmnmtJobTittle.getJobOutCode()),
-				GeneralDate.localDate(cmnmtJobTittle.getStartDate()),
-				cmnmtJobTittle.getCmnmtJobTittlePK().getHistoryID(),
-				cmnmtJobTittle.getCmnmtJobTittlePK().getCompanyCode(),
+				cmnmtJobTittle.getCmnmtJobTitlePK().getHistoryID(),
+				cmnmtJobTittle.getCmnmtJobTitlePK().getCompanyCode(),
 				new Memo(cmnmtJobTittle.getMemo()),
 				new HiterarchyOrderCode(cmnmtJobTittle.getHiterarchyOrderCode()),
 				PresenceCheckScopeSet.valueOf(Integer.toString(cmnmtJobTittle.getPresenceCheckScopeSet())));
@@ -82,8 +90,6 @@ public class JpaPositionReponsitory extends JpaRepository implements PositionRep
 				position.getHistoryID(),
 				position.getCompanyCode());
 		cmnmtJobTittle.setMemo(position.getMemo().toString());
-		cmnmtJobTittle.setEndDate(position.getEndDate().localDate());
-		cmnmtJobTittle.setStartDate(position.getStartDate().localDate());
 		cmnmtJobTittle.setJobName(position.getJobName().v());
 		cmnmtJobTittle.setJobOutCode(position.getJobOutCode().v());
 		cmnmtJobTittle.setHiterarchyOrderCode(position.getHiterarchyOrderCode().v());
@@ -95,7 +101,7 @@ public class JpaPositionReponsitory extends JpaRepository implements PositionRep
 	
 
 	private final Position toDomain(CmnmtJobTitle entity) {
-		val domain = Position.createFromJavaType(entity.jobName,GeneralDate.localDate(entity.endDate),  entity.cmnmtJobTittlePK.jobCode,entity.jobOutCode ,GeneralDate.localDate(entity.startDate), entity.cmnmtJobTittlePK.historyID, entity.cmnmtJobTittlePK.companyCode, entity.memo,entity.hiterarchyOrderCode,entity.presenceCheckScopeSet);
+		val domain = Position.createFromJavaType(entity.jobName,GeneralDate.localDate(entity.endDate),  entity.cmnmtJobTitlePK.jobCode,entity.jobOutCode ,GeneralDate.localDate(entity.startDate), entity.cmnmtJobTitlePK.historyID, entity.cmnmtJobTitlePK.companyCode, entity.memo,entity.hiterarchyOrderCode,entity.presenceCheckScopeSet);
 
 		return domain;
 	}
@@ -105,10 +111,10 @@ public class JpaPositionReponsitory extends JpaRepository implements PositionRep
 	private CmnmtJobTitle toEntityPK(Position domain) {
 		val entity = new CmnmtJobTitle();
 
-		entity.cmnmtJobTittlePK = new CmnmtJobTitlePK();
-		entity.cmnmtJobTittlePK.companyCode = domain.getCompanyCode();
-		entity.cmnmtJobTittlePK.jobCode = domain.getJobCode().v();
-		entity.cmnmtJobTittlePK.historyID = domain.getHistoryID();
+		entity.cmnmtJobTitlePK = new CmnmtJobTitlePK();
+		entity.cmnmtJobTitlePK.companyCode = domain.getCompanyCode();
+		entity.cmnmtJobTitlePK.jobCode = domain.getJobCode().v();
+		entity.cmnmtJobTitlePK.historyID = domain.getHistoryID();
 		
 		return entity;
 	}
@@ -177,8 +183,8 @@ public class JpaPositionReponsitory extends JpaRepository implements PositionRep
 
 	@Override
 	public boolean isExist(String companyCode, LocalDate startDate) {
-		// TODO Auto-generated method stub
-		return false;
+		return this.queryProxy().query(CHECK_EXIST, long.class).setParameter("companyCode", "'" + companyCode + "'")
+				.getSingle().get() > 0;
 	}
 
 	@Override
@@ -198,5 +204,8 @@ public class JpaPositionReponsitory extends JpaRepository implements PositionRep
 		// TODO Auto-generated method stub
 		
 	}
+
+
+	
 
 }

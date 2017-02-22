@@ -5,14 +5,13 @@ import java.time.LocalDate;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
-import javax.persistence.Convert;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.arc.layer.infra.data.entity.type.LocalDateToDBConverter;
+import nts.arc.time.GeneralDate;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -36,19 +35,19 @@ public class CmnmtJobTitleHistory {
 		this.cmnmtJobTitleHistoryPK = cmnmtJobTitleHistoryPK;
 	}
 
-	public LocalDate getStartDate() {
+	public GeneralDate getStartDate() {
 		return startDate;
 	}
 
-	public void setStartDate(LocalDate startDate) {
+	public void setStartDate(GeneralDate startDate) {
 		this.startDate = startDate;
 	}
 
-	public LocalDate getEndDate() {
+	public GeneralDate getEndDate() {
 		return endDate;
 	}
 
-	public void setEndDate(LocalDate endDate) {
+	public void setEndDate(GeneralDate endDate) {
 		this.endDate = endDate;
 	}
 
@@ -56,13 +55,11 @@ public class CmnmtJobTitleHistory {
 		return serialVersionUID;
 	}
 
-	@Convert(converter = LocalDateToDBConverter.class)
 	@Basic(optional = false)
 	@Column(name ="STR_D")
-	public LocalDate startDate;
+	public GeneralDate startDate;
 
-	@Convert(converter = LocalDateToDBConverter.class)
 	@Basic(optional = false)
 	@Column(name = "END_D")
-	public LocalDate endDate;
+	public GeneralDate endDate;
 }

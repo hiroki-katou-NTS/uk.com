@@ -63,9 +63,5 @@ public class PositionWebService extends WebService {
 		this.removePositionCommandHandler.handle(command);
 	}
 	
-	@POST
-	@Path("findAllPosition")
-	public List<JobTitleDto> getAllPosition(){
-		return this.positionFinder.getAllPosition(AppContexts.user().companyCode());		
-	}
+
 }
