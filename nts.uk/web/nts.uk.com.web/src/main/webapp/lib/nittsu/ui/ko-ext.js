@@ -195,6 +195,7 @@ var nts;
                     NumberEditorProcessor.prototype.init = function ($input, data) {
                         var option = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
                         $input.focus(function () {
+                            // remove separator (comma)
                             $input.val(data.value());
                         });
                         _super.prototype.init.call(this, $input, data);

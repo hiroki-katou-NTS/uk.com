@@ -181,6 +181,7 @@ module nts.uk.ui.koExtentions {
             var option: any = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
             
             $input.focus(() => {
+                // remove separator (comma)
                 $input.val(data.value());
             });
             
