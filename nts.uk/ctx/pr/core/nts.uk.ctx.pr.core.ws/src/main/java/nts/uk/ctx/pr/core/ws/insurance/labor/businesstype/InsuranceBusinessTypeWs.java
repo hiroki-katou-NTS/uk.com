@@ -7,15 +7,12 @@ package nts.uk.ctx.pr.core.ws.insurance.labor.businesstype;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
-import org.junit.runners.Parameterized.Parameter;
-
-import nts.uk.ctx.pr.core.app.insurance.labor.businesstype.InsuranceBusinessTypeUpdateDto;
 import nts.uk.ctx.pr.core.app.insurance.labor.businesstype.command.InsuranceBusinessTypeUpdateCommand;
 import nts.uk.ctx.pr.core.app.insurance.labor.businesstype.command.InsuranceBusinessTypeUpdateCommandHandler;
 import nts.uk.ctx.pr.core.app.insurance.labor.businesstype.find.InsuranceBusinessTypeFinder;
+import nts.uk.ctx.pr.core.app.insurance.labor.businesstype.find.dto.InsuranceBusinessTypeFindOutDto;
 
 @Path("pr/insurance/labor/businesstype")
 @Produces("application/json")
@@ -42,8 +39,8 @@ public class InsuranceBusinessTypeWs {
 	}
 
 	@POST
-	@Path("findall/{companyCode}")
-	public InsuranceBusinessTypeUpdateDto findAll(@PathParam("companyCode") String companyCode) {
-		return this.find.findAll(companyCode);
+	@Path("findall")
+	public InsuranceBusinessTypeFindOutDto findAll() {
+		return this.find.findAll();
 	}
 }

@@ -18,7 +18,7 @@ var nts;
                                     var self = this;
                                     self.listAvgEarnLevelMasterSetting = [];
                                     self.listPensionAvgearnModel = ko.observableArray([]);
-                                    self.listPensionRateItemModel = pensionModel.rateItems;
+                                    self.pensionRateModel = new PensionRateModel(pensionModel.historyId, dataOfSelectedOffice.code, dataOfSelectedOffice.name, pensionModel.startMonth(), pensionModel.endMonth(), pensionModel.rateItems());
                                     self.leftShow = ko.observable(true);
                                     self.rightShow = ko.observable(true);
                                     self.leftBtnText = ko.computed(function () { if (self.leftShow())
@@ -76,12 +76,28 @@ var nts;
                                 ScreenModel.prototype.rightToggle = function () {
                                     this.rightShow(!this.rightShow());
                                 };
+                                ScreenModel.prototype.reCalculate = function () {
+                                    var self = this;
+                                    self.listPensionAvgearnModel.removeAll();
+                                };
                                 ScreenModel.prototype.closeDialog = function () {
                                     nts.uk.ui.windows.close();
                                 };
                                 return ScreenModel;
                             }());
                             viewmodel.ScreenModel = ScreenModel;
+                            var PensionRateModel = (function () {
+                                function PensionRateModel(historyId, officeCode, officeName, startMonth, endMonth, rateItems) {
+                                    this.historyId = historyId;
+                                    this.officeCode = officeCode;
+                                    this.officeName = officeName;
+                                    this.startMonth = startMonth;
+                                    this.endMonth = endMonth;
+                                    this.rateItems = rateItems;
+                                }
+                                return PensionRateModel;
+                            }());
+                            viewmodel.PensionRateModel = PensionRateModel;
                             var PensionAvgearnModel = (function () {
                                 function PensionAvgearnModel(historyId, levelCode, companyFund, companyFundExemption, companyPension, personalFund, personalFundExemption, personalPension, childContributionAmount) {
                                     this.historyId = historyId;

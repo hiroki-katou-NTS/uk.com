@@ -5,6 +5,7 @@
 package nts.uk.ctx.pr.core.dom.insurance.labor;
 
 import java.util.List;
+import java.util.Optional;
 
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
@@ -34,7 +35,7 @@ public interface LaborInsuranceOfficeRepository {
 	 * @param id the id
 	 * @param version the version
 	 */
-    void remove(String id, Long version);
+    void remove(CompanyCode companyCode, String officeCode, Long version);
 
 	/**
 	 * Find all.
@@ -50,7 +51,7 @@ public interface LaborInsuranceOfficeRepository {
 	 * @param id the id
 	 * @return the labor insurance office
 	 */
-	LaborInsuranceOffice findById(CompanyCode companyCode, OfficeCode code);
+	Optional<LaborInsuranceOffice> findById(CompanyCode companyCode, OfficeCode code);
 
 	/**
 	 * Check duplicate code.

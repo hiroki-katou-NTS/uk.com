@@ -22,7 +22,6 @@ public abstract class UnitPriceHistoryBaseCommand {
 	/** The unit price code. */
 	private String unitPriceCode;
 
-	/** The unit price name. */
 	private String unitPriceName;
 
 	/** The start month. */

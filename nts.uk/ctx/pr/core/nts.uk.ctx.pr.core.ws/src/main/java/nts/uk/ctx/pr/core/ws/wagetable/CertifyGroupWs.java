@@ -21,7 +21,6 @@ import nts.uk.ctx.pr.core.app.wagetable.command.CertifyGroupUpdateCommand;
 import nts.uk.ctx.pr.core.app.wagetable.command.CertifyGroupUpdateCommandHandler;
 import nts.uk.ctx.pr.core.app.wagetable.find.CertifyGroupFinder;
 import nts.uk.ctx.pr.core.app.wagetable.find.dto.CertifyGroupFindDto;
-import nts.uk.ctx.pr.core.app.wagetable.find.dto.CertifyGroupFindInDto;
 import nts.uk.ctx.pr.core.app.wagetable.find.dto.CertifyGroupFindOutDto;
 
 @Path("pr/wagetable/certifygroup")

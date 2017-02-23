@@ -27,10 +27,6 @@ public class UnitPriceHistory extends AggregateRoot {
 	/** The unit price code. */
 	private UnitPriceCode unitPriceCode;
 
-	/** The unit price name. */
-	@Setter
-	private UnitPriceName unitPriceName;
-
 	/** The apply range. */
 	@Setter
 	private MonthRange applyRange;
@@ -78,7 +74,6 @@ public class UnitPriceHistory extends AggregateRoot {
 		this.id = memento.getId();
 		this.companyCode = memento.getCompanyCode();
 		this.unitPriceCode = memento.getUnitPriceCode();
-		this.unitPriceName = memento.getUnitPriceName();
 		this.applyRange = memento.getApplyRange();
 		this.budget = memento.getBudget();
 		this.fixPaySettingType = memento.getFixPaySettingType();
@@ -100,7 +95,6 @@ public class UnitPriceHistory extends AggregateRoot {
 		memento.setId(this.id);
 		memento.setCompanyCode(this.companyCode);
 		memento.setUnitPriceCode(this.unitPriceCode);
-		memento.setUnitPriceName(this.unitPriceName);
 		memento.setApplyRange(this.applyRange);
 		memento.setBudget(this.budget);
 		memento.setFixPaySettingType(this.fixPaySettingType);

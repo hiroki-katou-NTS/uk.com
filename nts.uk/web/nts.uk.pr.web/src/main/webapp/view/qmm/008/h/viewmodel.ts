@@ -12,16 +12,17 @@ module nts.uk.pr.view.qmm008.h {
             listAvgEarnLevelMasterSetting: Array<AvgEarnLevelMasterSettingDto>;
             listHealthInsuranceAvgearn: KnockoutObservableArray<HealthInsuranceAvgEarnModel>;
             healthInsuranceRateModel: HealthInsuranceRateModel;
-            rateItems: Array<HealthInsuranceRateItemModel>;
 
             constructor(dataOfSelectedOffice: InsuranceOfficeItemDto, healthModel: HealthInsuranceRateModelofScreenA) {
                 var self = this;
-                self.healthInsuranceRateModel = new HealthInsuranceRateModel();
-                self.healthInsuranceRateModel.officeCode = dataOfSelectedOffice.code;
-                self.healthInsuranceRateModel.officeName = dataOfSelectedOffice.name;
+                self.healthInsuranceRateModel = new HealthInsuranceRateModel(
+                    dataOfSelectedOffice.code,
+                    dataOfSelectedOffice.name,
+                    healthModel.historyId, "fake-data", "fake-data",
+                    healthModel.rateItems());
+
                 self.listAvgEarnLevelMasterSetting = [];
                 self.listHealthInsuranceAvgearn = ko.observableArray<HealthInsuranceAvgEarnModel>([]);
-                self.rateItems = healthModel.rateItems();
             }
 
             /**
@@ -55,7 +56,7 @@ module nts.uk.pr.view.qmm008.h {
             private loadHealthInsuranceAvgearn(): JQueryPromise<void> {
                 var self = this;
                 var dfd = $.Deferred<any>();
-                service.findHealthInsuranceAvgEarn('id').done(res => {
+                service.findHealthInsuranceAvgEarn(self.healthInsuranceRateModel.historyId).done(res => {
                     res.forEach(item => {
                         self.listHealthInsuranceAvgearn.push(
                             new HealthInsuranceAvgEarnModel(
@@ -101,6 +102,34 @@ module nts.uk.pr.view.qmm008.h {
             }
 
             /**
+             * ReCalculate the healthInsuranceAvgearn
+             */
+            private reCalculate(): void {
+                var self = this;
+                // clear current listHealthInsuranceAvgearn
+                self.listHealthInsuranceAvgearn.removeAll();
+                // recalculate listHealthInsuranceAvgearn
+                self.listAvgEarnLevelMasterSetting.forEach(item => {
+                    self.listHealthInsuranceAvgearn.push(new HealthInsuranceAvgEarnModel(
+                        self.healthInsuranceRateModel.historyId,
+                        item.code,
+                        new HealthInsuranceAvgEarnValueModel(
+                            self.healthInsuranceRateModel.rateItems.healthSalaryCompanyGeneral() * item.avgEarn,
+                            self.healthInsuranceRateModel.rateItems.healthSalaryCompanyNursing() * item.avgEarn,
+                            self.healthInsuranceRateModel.rateItems.healthSalaryCompanyBasic() * item.avgEarn,
+                            self.healthInsuranceRateModel.rateItems.healthSalaryCompanySpecific() * item.avgEarn
+                        ),
+                        new HealthInsuranceAvgEarnValueModel(
+                            self.healthInsuranceRateModel.rateItems.healthSalaryPersonalGeneral() * item.avgEarn,
+                            self.healthInsuranceRateModel.rateItems.healthSalaryPersonalNursing() * item.avgEarn,
+                            self.healthInsuranceRateModel.rateItems.healthSalaryPersonalBasic() * item.avgEarn,
+                            self.healthInsuranceRateModel.rateItems.healthSalaryPersonalSpecific() * item.avgEarn
+                        )
+                    ));
+                });
+            }
+
+            /**
              * Close dialog.
              */
             private closeDialog(): void {
@@ -111,8 +140,18 @@ module nts.uk.pr.view.qmm008.h {
         export class HealthInsuranceRateModel {
             officeCode: string;
             officeName: string;
+            historyId: string;
             startMonth: string;
             endMonth: string;
+            rateItems: HealthInsuranceRateItemModel;
+            constructor(officeCode: string, officeName: string, historyId: string, startMonth: string, endMonth: string, rateItems: HealthInsuranceRateItemModel) {
+                this.officeCode = officeCode;
+                this.officeName = officeName;
+                this.historyId = historyId;
+                this.startMonth = startMonth;
+                this.endMonth = endMonth;
+                this.rateItems = rateItems;
+            }
         }
         export class HealthInsuranceAvgEarnModel {
             historyId: string;

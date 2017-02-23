@@ -16,12 +16,9 @@ var nts;
                             var ScreenModel = (function () {
                                 function ScreenModel(dataOfSelectedOffice, healthModel) {
                                     var self = this;
-                                    self.healthInsuranceRateModel = new HealthInsuranceRateModel();
-                                    self.healthInsuranceRateModel.officeCode = dataOfSelectedOffice.code;
-                                    self.healthInsuranceRateModel.officeName = dataOfSelectedOffice.name;
+                                    self.healthInsuranceRateModel = new HealthInsuranceRateModel(dataOfSelectedOffice.code, dataOfSelectedOffice.name, healthModel.historyId, "fake-data", "fake-data", healthModel.rateItems());
                                     self.listAvgEarnLevelMasterSetting = [];
                                     self.listHealthInsuranceAvgearn = ko.observableArray([]);
-                                    self.rateItems = healthModel.rateItems();
                                 }
                                 ScreenModel.prototype.startPage = function () {
                                     var self = this;
@@ -45,7 +42,7 @@ var nts;
                                 ScreenModel.prototype.loadHealthInsuranceAvgearn = function () {
                                     var self = this;
                                     var dfd = $.Deferred();
-                                    h.service.findHealthInsuranceAvgEarn('id').done(function (res) {
+                                    h.service.findHealthInsuranceAvgEarn(self.healthInsuranceRateModel.historyId).done(function (res) {
                                         res.forEach(function (item) {
                                             self.listHealthInsuranceAvgearn.push(new HealthInsuranceAvgEarnModel(item.historyId, item.levelCode, new HealthInsuranceAvgEarnValueModel(item.personalAvg.healthGeneralMny, item.personalAvg.healthNursingMny, item.personalAvg.healthBasicMny, item.personalAvg.healthSpecificMny), new HealthInsuranceAvgEarnValueModel(item.companyAvg.healthGeneralMny, item.companyAvg.healthNursingMny, item.companyAvg.healthBasicMny, item.companyAvg.healthSpecificMny)));
                                         });
@@ -67,6 +64,13 @@ var nts;
                                         return self.closeDialog();
                                     });
                                 };
+                                ScreenModel.prototype.reCalculate = function () {
+                                    var self = this;
+                                    self.listHealthInsuranceAvgearn.removeAll();
+                                    self.listAvgEarnLevelMasterSetting.forEach(function (item) {
+                                        self.listHealthInsuranceAvgearn.push(new HealthInsuranceAvgEarnModel(self.healthInsuranceRateModel.historyId, item.code, new HealthInsuranceAvgEarnValueModel(self.healthInsuranceRateModel.rateItems.healthSalaryCompanyGeneral() * item.avgEarn, self.healthInsuranceRateModel.rateItems.healthSalaryCompanyNursing() * item.avgEarn, self.healthInsuranceRateModel.rateItems.healthSalaryCompanyBasic() * item.avgEarn, self.healthInsuranceRateModel.rateItems.healthSalaryCompanySpecific() * item.avgEarn), new HealthInsuranceAvgEarnValueModel(self.healthInsuranceRateModel.rateItems.healthSalaryPersonalGeneral() * item.avgEarn, self.healthInsuranceRateModel.rateItems.healthSalaryPersonalNursing() * item.avgEarn, self.healthInsuranceRateModel.rateItems.healthSalaryPersonalBasic() * item.avgEarn, self.healthInsuranceRateModel.rateItems.healthSalaryPersonalSpecific() * item.avgEarn)));
+                                    });
+                                };
                                 ScreenModel.prototype.closeDialog = function () {
                                     nts.uk.ui.windows.close();
                                 };
@@ -74,7 +78,13 @@ var nts;
                             }());
                             viewmodel.ScreenModel = ScreenModel;
                             var HealthInsuranceRateModel = (function () {
-                                function HealthInsuranceRateModel() {
+                                function HealthInsuranceRateModel(officeCode, officeName, historyId, startMonth, endMonth, rateItems) {
+                                    this.officeCode = officeCode;
+                                    this.officeName = officeName;
+                                    this.historyId = historyId;
+                                    this.startMonth = startMonth;
+                                    this.endMonth = endMonth;
+                                    this.rateItems = rateItems;
                                 }
                                 return HealthInsuranceRateModel;
                             }());

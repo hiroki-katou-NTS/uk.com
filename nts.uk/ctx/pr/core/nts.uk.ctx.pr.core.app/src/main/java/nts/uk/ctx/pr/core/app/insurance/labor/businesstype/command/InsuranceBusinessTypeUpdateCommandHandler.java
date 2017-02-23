@@ -14,6 +14,7 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.pr.core.dom.insurance.labor.businesstype.InsuranceBusinessType;
 import nts.uk.ctx.pr.core.dom.insurance.labor.businesstype.InsuranceBusinessTypeRepository;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class InsuranceBusinessTypeUpdateCommandHandler.
@@ -35,10 +36,9 @@ public class InsuranceBusinessTypeUpdateCommandHandler extends CommandHandler<In
 	 */
 	@Override
 	protected void handle(CommandHandlerContext<InsuranceBusinessTypeUpdateCommand> context) {
-		List<InsuranceBusinessType> lsInsuranceBusinessType = context.getCommand().toDomain();
-		for (InsuranceBusinessType insuranceBusinessType : lsInsuranceBusinessType) {
-			this.insBizTypeRepo.update(insuranceBusinessType);
-		}
+		List<InsuranceBusinessType> lsInsuranceBusinessType = context.getCommand()
+				.toDomain((AppContexts.user().companyCode()));
+		this.insBizTypeRepo.update(lsInsuranceBusinessType);
 	}
 
 }

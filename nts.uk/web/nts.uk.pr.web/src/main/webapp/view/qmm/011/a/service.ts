@@ -4,7 +4,7 @@ module nts.uk.pr.view.qmm011.a {
         var paths: any = {
             findAllHisotryUnemployeeInsuranceRate: "pr/insurance/labor/unemployeerate/history/findall",
             findHisotryUnemployeeInsuranceRate: "pr/insurance/labor/unemployeerate/history/find",
-            detailHistoryUnemployeeInsuranceRate: "pr/insurance/labor/unemployeerate/detailHistory",
+            detailHistoryUnemployeeInsuranceRate: "pr/insurance/labor/unemployeerate/detail",
             addUnemployeeInsuranceRate: "pr/insurance/labor/unemployeerate/add",
             updateUnemployeeInsuranceRate: "pr/insurance/labor/unemployeerate/update",
             findAllHistoryAccidentInsuranceRate: "pr/insurance/labor/accidentrate/history/findall",
@@ -17,12 +17,11 @@ module nts.uk.pr.view.qmm011.a {
 
         //Function connection service add Unemployee Insurance Rate
         export function addUnemployeeInsuranceRate(unemployeeInsuranceRateModel: viewmodel.UnemployeeInsuranceRateModel,
-            historyUnemployeeInsuranceRateDto: model.HistoryUnemployeeInsuranceDto, companyCode: string): JQueryPromise<any> {
+            historyUnemployeeInsuranceRateDto: model.HistoryUnemployeeInsuranceDto): JQueryPromise<any> {
             var dfd = $.Deferred<any>();
             var data = {
                 unemployeeInsuranceRate: service.convertUnemployeeInsuranceRateModelDTO(unemployeeInsuranceRateModel,
-                    historyUnemployeeInsuranceRateDto),
-                companyCode: companyCode
+                    historyUnemployeeInsuranceRateDto)
             };
             nts.uk.request.ajax(paths.addUnemployeeInsuranceRate, data)
                 .done(function(res: any) {
@@ -36,12 +35,11 @@ module nts.uk.pr.view.qmm011.a {
         }
         //Function connection service update Unemployee Insurance Rate
         export function updateUnemployeeInsuranceRate(unemployeeInsuranceRateModel: viewmodel.UnemployeeInsuranceRateModel,
-            historyUnemployeeInsuranceRateDto: model.HistoryUnemployeeInsuranceDto, companyCode: string): JQueryPromise<any> {
+            historyUnemployeeInsuranceRateDto: model.HistoryUnemployeeInsuranceDto): JQueryPromise<any> {
             var dfd = $.Deferred<any>();
             var data = {
                 unemployeeInsuranceRate: service.convertUnemployeeInsuranceRateModelDTO(unemployeeInsuranceRateModel,
-                    historyUnemployeeInsuranceRateDto),
-                companyCode: companyCode
+                    historyUnemployeeInsuranceRateDto)
             };
             nts.uk.request.ajax(paths.updateUnemployeeInsuranceRate, data)
                 .done(function(res: any) {
@@ -54,9 +52,9 @@ module nts.uk.pr.view.qmm011.a {
             return dfd.promise();
         }
         //Function connection service FindAll Labor Insurance Office
-        export function findAllHisotryUnemployeeInsuranceRate(companyCode: string): JQueryPromise<Array<model.HistoryUnemployeeInsuranceDto>> {
+        export function findAllHisotryUnemployeeInsuranceRate(): JQueryPromise<Array<model.HistoryUnemployeeInsuranceDto>> {
             var dfd = $.Deferred<Array<model.HistoryUnemployeeInsuranceDto>>();
-            nts.uk.request.ajax(paths.findAllHisotryUnemployeeInsuranceRate + "/" + companyCode)
+            nts.uk.request.ajax(paths.findAllHisotryUnemployeeInsuranceRate)
                 .done(function(res: Array<model.HistoryUnemployeeInsuranceDto>) {
                     dfd.resolve(res);
                     //xyz
@@ -67,10 +65,10 @@ module nts.uk.pr.view.qmm011.a {
             return dfd.promise();
         }
         //Function connection service Find History By historyId
-        export function findHisotryUnemployeeInsuranceRate(historyUnemployeeInsuranceFindInDto: model.HistoryUnemployeeInsuranceFindInDto)
+        export function findHisotryUnemployeeInsuranceRate(historyId: string)
             : JQueryPromise<model.HistoryUnemployeeInsuranceDto> {
             var dfd = $.Deferred<model.HistoryUnemployeeInsuranceDto>();
-            nts.uk.request.ajax(paths.findHisotryUnemployeeInsuranceRate, historyUnemployeeInsuranceFindInDto)
+            nts.uk.request.ajax(paths.findHisotryUnemployeeInsuranceRate + "/" + historyId)
                 .done(function(res: model.HistoryUnemployeeInsuranceDto) {
                     dfd.resolve(res);
                     //xyz
@@ -81,10 +79,10 @@ module nts.uk.pr.view.qmm011.a {
             return dfd.promise();
         }
         //Funtion connection service detail by historyId 
-        export function detailHistoryUnemployeeInsuranceRate(unemployeeInsuranceFindInDto: model.UnemployeeInsuranceFindInDto)
+        export function detailHistoryUnemployeeInsuranceRate(historyId: string)
             : JQueryPromise<model.UnemployeeInsuranceRateDto> {
             var dfd = $.Deferred<model.UnemployeeInsuranceRateDto>();
-            nts.uk.request.ajax(paths.detailHistoryUnemployeeInsuranceRate, unemployeeInsuranceFindInDto)
+            nts.uk.request.ajax(paths.detailHistoryUnemployeeInsuranceRate + "/" + historyId)
                 .done(function(res: model.UnemployeeInsuranceRateDto) {
                     dfd.resolve(res);
                     //xyz
@@ -136,9 +134,9 @@ module nts.uk.pr.view.qmm011.a {
             return dfd.promise();
         }
         //Function connection service find All HistoryAccidentInsurance 
-        export function findAllHistoryAccidentInsuranceRate(companyCode: string): JQueryPromise<Array<model.HistoryAccidentInsuranceDto>> {
+        export function findAllHistoryAccidentInsuranceRate(): JQueryPromise<Array<model.HistoryAccidentInsuranceDto>> {
             var dfd = $.Deferred<Array<model.HistoryAccidentInsuranceDto>>();
-            nts.uk.request.ajax(paths.findAllHistoryAccidentInsuranceRate + "/" + companyCode)
+            nts.uk.request.ajax(paths.findAllHistoryAccidentInsuranceRate)
                 .done(function(res: Array<model.HistoryAccidentInsuranceDto>) {
                     dfd.resolve(res);
                     //xyz
@@ -237,9 +235,9 @@ module nts.uk.pr.view.qmm011.a {
             return accidentInsuranceRateDto;
         }
         //Function find all Insurance Business Type
-        export function findAllInsuranceBusinessType(companyCode: string): JQueryPromise<model.InsuranceBusinessTypeUpdateDto> {
+        export function findAllInsuranceBusinessType(): JQueryPromise<model.InsuranceBusinessTypeUpdateDto> {
             var dfd = $.Deferred<model.InsuranceBusinessTypeUpdateDto>();
-            nts.uk.request.ajax(paths.findAllInsuranceBusinessType + "/" + companyCode)
+            nts.uk.request.ajax(paths.findAllInsuranceBusinessType)
                 .done(function(res: model.InsuranceBusinessTypeUpdateDto) {
                     dfd.resolve(res);
                     //xyz

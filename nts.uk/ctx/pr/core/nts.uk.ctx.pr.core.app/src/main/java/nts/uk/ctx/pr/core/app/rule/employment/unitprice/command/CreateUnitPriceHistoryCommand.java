@@ -16,7 +16,6 @@ import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.SettingType;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceCode;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceHistory;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceHistoryGetMemento;
-import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceName;
 import nts.uk.shr.com.primitive.Memo;
 
 /**
@@ -29,7 +28,8 @@ public class CreateUnitPriceHistoryCommand extends UnitPriceHistoryBaseCommand {
 	/**
 	 * To domain.
 	 *
-	 * @param companyCode the company code
+	 * @param companyCode
+	 *            the company code
 	 * @return the unit price history
 	 */
 	public UnitPriceHistory toDomain(CompanyCode companyCode) {
@@ -37,11 +37,6 @@ public class CreateUnitPriceHistoryCommand extends UnitPriceHistoryBaseCommand {
 
 		// Transfer data
 		UnitPriceHistory unitPriceHistory = new UnitPriceHistory(new UnitPriceHistoryGetMemento() {
-
-			@Override
-			public UnitPriceName getUnitPriceName() {
-				return new UnitPriceName(command.getUnitPriceName());
-			}
 
 			@Override
 			public UnitPriceCode getUnitPriceCode() {
@@ -100,8 +95,8 @@ public class CreateUnitPriceHistoryCommand extends UnitPriceHistoryBaseCommand {
 
 			@Override
 			public MonthRange getApplyRange() {
-				return MonthRange.range(command.getStartMonth(), command.getEndMonth(),
-						PrimitiveUtil.DEFAULT_YM_SEPARATOR_CHAR);
+				return MonthRange.toMaxDate(
+						PrimitiveUtil.toYearMonth(command.getStartMonth(), PrimitiveUtil.DEFAULT_YM_SEPARATOR_CHAR));
 			}
 		});
 

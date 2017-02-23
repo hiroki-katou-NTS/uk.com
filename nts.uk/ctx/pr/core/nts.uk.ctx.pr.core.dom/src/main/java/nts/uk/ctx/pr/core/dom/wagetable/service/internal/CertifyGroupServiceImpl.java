@@ -8,8 +8,8 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
-import nts.uk.ctx.pr.core.dom.wagetable.CertifyGroup;
-import nts.uk.ctx.pr.core.dom.wagetable.CertifyGroupRepository;
+import nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroup;
+import nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroupRepository;
 import nts.uk.ctx.pr.core.dom.wagetable.service.CertifyGroupService;
 
 /**

@@ -19,9 +19,9 @@ var nts;
                                 updateLaborInsuranceOffice: "ctx/pr/core/insurance/labor/update",
                                 deleteLaborInsuranceOffice: "ctx/pr/core/insurance/labor/delete",
                             };
-                            function findAllLaborInsuranceOffice(companyCode) {
+                            function findAllLaborInsuranceOffice() {
                                 var dfd = $.Deferred();
-                                nts.uk.request.ajax(paths.findAllLaborInsuranceOffice + "/" + companyCode)
+                                nts.uk.request.ajax(paths.findAllLaborInsuranceOffice)
                                     .done(function (res) {
                                     dfd.resolve(res);
                                 })
@@ -31,9 +31,9 @@ var nts;
                                 return dfd.promise();
                             }
                             service.findAllLaborInsuranceOffice = findAllLaborInsuranceOffice;
-                            function findLaborInsuranceOffice(laborInsuranceOfficeFindInDto) {
+                            function findLaborInsuranceOffice(officeCode) {
                                 var dfd = $.Deferred();
-                                nts.uk.request.ajax(paths.findLaborInsuranceOffice, laborInsuranceOfficeFindInDto)
+                                nts.uk.request.ajax(paths.findLaborInsuranceOffice + "/" + officeCode)
                                     .done(function (res) {
                                     dfd.resolve(res);
                                 })
@@ -43,9 +43,9 @@ var nts;
                                 return dfd.promise();
                             }
                             service.findLaborInsuranceOffice = findLaborInsuranceOffice;
-                            function addLaborInsuranceOffice(laborInsuranceOffice, companyCode) {
+                            function addLaborInsuranceOffice(laborInsuranceOfficeDto) {
                                 var dfd = $.Deferred();
-                                var data = { laborInsuranceOffice: laborInsuranceOffice, companyCode: companyCode };
+                                var data = { laborInsuranceOfficeDto: laborInsuranceOfficeDto };
                                 nts.uk.request.ajax(paths.addLaborInsuranceOffice, data)
                                     .done(function (res) {
                                     dfd.resolve(res);
@@ -53,11 +53,12 @@ var nts;
                                     .fail(function (res) {
                                     dfd.reject(res);
                                 });
+                                return dfd.promise();
                             }
                             service.addLaborInsuranceOffice = addLaborInsuranceOffice;
-                            function updateLaborInsuranceOffice(laborInsuranceOffice, companyCode) {
+                            function updateLaborInsuranceOffice(laborInsuranceOfficeDto) {
                                 var dfd = $.Deferred();
-                                var data = { laborInsuranceOffice: laborInsuranceOffice, companyCode: companyCode };
+                                var data = { laborInsuranceOfficeDto: laborInsuranceOfficeDto };
                                 nts.uk.request.ajax(paths.updateLaborInsuranceOffice, data)
                                     .done(function (res) {
                                     dfd.resolve(res);
@@ -65,11 +66,12 @@ var nts;
                                     .fail(function (res) {
                                     dfd.reject(res);
                                 });
+                                return dfd.promise();
                             }
                             service.updateLaborInsuranceOffice = updateLaborInsuranceOffice;
-                            function deleteLaborInsuranceOffice(code, companyCode) {
+                            function deleteLaborInsuranceOffice(laborInsuranceOfficeDeleteDto) {
                                 var dfd = $.Deferred();
-                                var data = { companyCode: companyCode, code: code };
+                                var data = { laborInsuranceOfficeDeleteDto: laborInsuranceOfficeDeleteDto };
                                 nts.uk.request.ajax(paths.deleteLaborInsuranceOffice, data)
                                     .done(function (res) {
                                     dfd.resolve(res);
@@ -77,6 +79,7 @@ var nts;
                                     .fail(function (res) {
                                     dfd.reject(res);
                                 });
+                                return dfd.promise();
                             }
                             service.deleteLaborInsuranceOffice = deleteLaborInsuranceOffice;
                             var model;
@@ -93,17 +96,17 @@ var nts;
                                     return LaborInsuranceOfficeFindOutDto;
                                 }());
                                 model.LaborInsuranceOfficeFindOutDto = LaborInsuranceOfficeFindOutDto;
-                                var LaborInsuranceOfficeFindInDto = (function () {
-                                    function LaborInsuranceOfficeFindInDto() {
-                                    }
-                                    return LaborInsuranceOfficeFindInDto;
-                                }());
-                                model.LaborInsuranceOfficeFindInDto = LaborInsuranceOfficeFindInDto;
                                 (function (TypeActionLaborInsuranceOffice) {
                                     TypeActionLaborInsuranceOffice[TypeActionLaborInsuranceOffice["add"] = 1] = "add";
                                     TypeActionLaborInsuranceOffice[TypeActionLaborInsuranceOffice["update"] = 2] = "update";
                                 })(model.TypeActionLaborInsuranceOffice || (model.TypeActionLaborInsuranceOffice = {}));
                                 var TypeActionLaborInsuranceOffice = model.TypeActionLaborInsuranceOffice;
+                                var LaborInsuranceOfficeDeleteDto = (function () {
+                                    function LaborInsuranceOfficeDeleteDto() {
+                                    }
+                                    return LaborInsuranceOfficeDeleteDto;
+                                }());
+                                model.LaborInsuranceOfficeDeleteDto = LaborInsuranceOfficeDeleteDto;
                             })(model = service.model || (service.model = {}));
                         })(service = a.service || (a.service = {}));
                     })(a = qmm010.a || (qmm010.a = {}));

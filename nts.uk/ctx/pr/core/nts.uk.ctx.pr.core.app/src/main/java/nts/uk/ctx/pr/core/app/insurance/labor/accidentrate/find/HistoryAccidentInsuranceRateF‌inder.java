@@ -13,8 +13,11 @@ import javax.transaction.Transactional;
 
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.app.insurance.labor.accidentrate.HistoryAccidentInsuranceRateDto;
+import nts.uk.ctx.pr.core.app.insurance.labor.accidentrate.find.dto.HistoryAccidentInsuranceRateFindInDto;
+import nts.uk.ctx.pr.core.app.insurance.labor.accidentrate.find.dto.HistoryAccidentInsuranceRateFindOutDto;
 import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.AccidentInsuranceRate;
 import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.AccidentInsuranceRateRepository;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class HistoryAccidentInsuranceRateF‌inder.
@@ -30,22 +33,26 @@ public class HistoryAccidentInsuranceRateF‌inder {
 	/**
 	 * Find all.
 	 *
-	 * @param companyCode the company code
+	 * @param companyCode
+	 *            the company code
 	 * @return the list
 	 */
-	public List<HistoryAccidentInsuranceRateDto> findAll(String companyCode) {
-		List<HistoryAccidentInsuranceRateDto> lstHistoryAccidentInsuranceRateDto = new ArrayList<>();
+	public List<HistoryAccidentInsuranceRateFindOutDto> findAll() {
+		List<HistoryAccidentInsuranceRateFindOutDto> lstHistoryAccidentInsuranceRateFindOutDto = new ArrayList<>();
 		for (AccidentInsuranceRate accidentInsuranceRate : accidentInsuranceRateRepository
-				.findAll(new CompanyCode(companyCode))) {
-			lstHistoryAccidentInsuranceRateDto.add(HistoryAccidentInsuranceRateDto.fromDomain(accidentInsuranceRate));
+				.findAll(new CompanyCode(AppContexts.user().companyCode()))) {
+			HistoryAccidentInsuranceRateFindOutDto historyAccidentInsuranceRateFindOutDto = new HistoryAccidentInsuranceRateFindOutDto();
+			accidentInsuranceRate.saveToMemento(historyAccidentInsuranceRateFindOutDto);
+			lstHistoryAccidentInsuranceRateFindOutDto.add(historyAccidentInsuranceRateFindOutDto);
 		}
-		return lstHistoryAccidentInsuranceRateDto;
+		return lstHistoryAccidentInsuranceRateFindOutDto;
 	}
 
 	/**
 	 * Find.
 	 *
-	 * @param historyAccidentInsuranceRateFindInDto the history accident insurance rate find in dto
+	 * @param historyAccidentInsuranceRateFindInDto
+	 *            the history accident insurance rate find in dto
 	 * @return the history accident insurance rate dto
 	 */
 	public HistoryAccidentInsuranceRateDto find(

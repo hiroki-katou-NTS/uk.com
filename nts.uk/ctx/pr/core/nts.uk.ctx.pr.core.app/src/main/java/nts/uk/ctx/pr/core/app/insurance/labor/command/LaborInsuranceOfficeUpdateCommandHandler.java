@@ -13,6 +13,7 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.pr.core.dom.insurance.labor.LaborInsuranceOffice;
 import nts.uk.ctx.pr.core.dom.insurance.labor.LaborInsuranceOfficeRepository;
 import nts.uk.ctx.pr.core.dom.insurance.labor.service.LaborInsuranceOfficeService;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class LaborInsuranceOfficeUpdateCommandHandler.
@@ -38,7 +39,8 @@ public class LaborInsuranceOfficeUpdateCommandHandler extends CommandHandler<Lab
 	 */
 	@Override
 	protected void handle(CommandHandlerContext<LaborInsuranceOfficeUpdateCommand> context) {
-		LaborInsuranceOffice laborInsuranceOffice = context.getCommand().toDomain();
+		String companyCode = AppContexts.user().companyCode();
+		LaborInsuranceOffice laborInsuranceOffice = context.getCommand().toDomain(companyCode);
 		laborInsuranceOffice.validate();
 		LaborInsuranceOfficeService.validateRequiredItem(laborInsuranceOffice);
 		this.laborInsuranceOfficeRepository.update(laborInsuranceOffice);

@@ -6,6 +6,8 @@ package nts.uk.ctx.pr.core.dom.insurance.labor.businesstype;
 
 import java.util.List;
 
+import nts.uk.ctx.core.dom.company.CompanyCode;
+
 /**
  * The Interface InsuranceBusinessTypeRepository.
  */
@@ -39,7 +41,7 @@ public interface InsuranceBusinessTypeRepository {
 	 * @param companyCode the company code
 	 * @return the list
 	 */
-	List<InsuranceBusinessType> findAll(String companyCode);
+	List<InsuranceBusinessType> findAll(CompanyCode companyCode);
 
 	/**
 	 * Find by id.
@@ -48,4 +50,11 @@ public interface InsuranceBusinessTypeRepository {
 	 * @return the insurance business type
 	 */
 	InsuranceBusinessType findById(String id);
+
+	/**
+	 * Update.
+	 *
+	 * @param lstInsuranceBusinessType the lst insurance business type
+	 */
+	void update(List<InsuranceBusinessType> lstInsuranceBusinessType);
 }

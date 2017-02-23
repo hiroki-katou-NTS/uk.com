@@ -56,25 +56,6 @@ var nts;
                                 return nts.uk.request.ajax(paths.removeUnitPriceHistory, request);
                             }
                             service.remove = remove;
-                            function collectData(unitPriceHistoryModel) {
-                                var dto = new service.model.UnitPriceHistoryDto();
-                                dto.id = unitPriceHistoryModel.id;
-                                dto.version = unitPriceHistoryModel.version;
-                                dto.unitPriceCode = unitPriceHistoryModel.unitPriceCode();
-                                dto.unitPriceName = unitPriceHistoryModel.unitPriceName();
-                                dto.startMonth = unitPriceHistoryModel.startMonth();
-                                dto.endMonth = unitPriceHistoryModel.endMonth();
-                                dto.budget = unitPriceHistoryModel.budget();
-                                dto.fixPaySettingType = unitPriceHistoryModel.fixPaySettingType();
-                                dto.fixPayAtr = unitPriceHistoryModel.fixPayAtr();
-                                dto.fixPayAtrMonthly = unitPriceHistoryModel.fixPayAtrMonthly();
-                                dto.fixPayAtrDayMonth = unitPriceHistoryModel.fixPayAtrDayMonth();
-                                dto.fixPayAtrDaily = unitPriceHistoryModel.fixPayAtrDaily();
-                                dto.fixPayAtrHourly = unitPriceHistoryModel.fixPayAtrHourly();
-                                dto.memo = unitPriceHistoryModel.memo();
-                                return dto;
-                            }
-                            service.collectData = collectData;
                             var model;
                             (function (model) {
                                 var UnitPriceHistoryDto = (function () {
@@ -83,6 +64,24 @@ var nts;
                                     return UnitPriceHistoryDto;
                                 }());
                                 model.UnitPriceHistoryDto = UnitPriceHistoryDto;
+                                var UnitPriceHistoryItemDto = (function () {
+                                    function UnitPriceHistoryItemDto(id, startMonth, endMonth) {
+                                        this.id = id;
+                                        this.startMonth = startMonth;
+                                        this.endMonth = endMonth;
+                                    }
+                                    return UnitPriceHistoryItemDto;
+                                }());
+                                model.UnitPriceHistoryItemDto = UnitPriceHistoryItemDto;
+                                var UnitPriceItemDto = (function () {
+                                    function UnitPriceItemDto(unitPriceCode, unitPriceName, histories) {
+                                        this.unitPriceCode = unitPriceCode;
+                                        this.unitPriceName = unitPriceName;
+                                        this.histories = histories;
+                                    }
+                                    return UnitPriceItemDto;
+                                }());
+                                model.UnitPriceItemDto = UnitPriceItemDto;
                             })(model = service.model || (service.model = {}));
                         })(service = a.service || (a.service = {}));
                     })(a = qmm007.a || (qmm007.a = {}));

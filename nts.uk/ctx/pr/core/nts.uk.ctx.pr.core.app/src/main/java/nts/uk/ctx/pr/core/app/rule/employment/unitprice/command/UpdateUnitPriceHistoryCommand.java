@@ -13,7 +13,6 @@ import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.SettingType;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceCode;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceHistory;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceHistoryGetMemento;
-import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceName;
 import nts.uk.shr.com.primitive.Memo;
 
 public class UpdateUnitPriceHistoryCommand extends UnitPriceHistoryBaseCommand {
@@ -34,11 +33,6 @@ public class UpdateUnitPriceHistoryCommand extends UnitPriceHistoryBaseCommand {
 
 		// Transfer data
 		UnitPriceHistory updatedHistory = new UnitPriceHistory(new UnitPriceHistoryGetMemento() {
-
-			@Override
-			public UnitPriceName getUnitPriceName() {
-				return new UnitPriceName(command.getUnitPriceName());
-			}
 
 			@Override
 			public UnitPriceCode getUnitPriceCode() {

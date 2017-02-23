@@ -13,11 +13,11 @@ var nts;
                         var option = nts.uk.ui.option;
                         var RoundingMethodDto = a.service.model.RoundingMethodDto;
                         var HistoryUnemployeeInsuranceDto = a.service.model.HistoryUnemployeeInsuranceDto;
-                        var HistoryUnemployeeInsuranceFindInDto = a.service.model.HistoryUnemployeeInsuranceFindInDto;
-                        var UnemployeeInsuranceFindInDto = a.service.model.UnemployeeInsuranceFindInDto;
+                        var UnemployeeInsuranceRateItemSettingDto = a.service.model.UnemployeeInsuranceRateItemSettingDto;
                         var CareerGroupDto = a.service.model.CareerGroupDto;
                         var BusinessTypeEnumDto = a.service.model.BusinessTypeEnumDto;
                         var TypeHistory = a.service.model.TypeHistory;
+                        var UnemployeeInsuranceRateDto = a.service.model.UnemployeeInsuranceRateDto;
                         var HistoryAccidentInsuranceDto = a.service.model.HistoryAccidentInsuranceDto;
                         var HistoryAccidentInsuranceRateFindInDto = a.service.model.HistoryAccidentInsuranceRateFindInDto;
                         var TypeActionInsuranceRate = a.service.model.TypeActionInsuranceRate;
@@ -45,15 +45,12 @@ var nts;
                                     self.textEditorOption = ko.mapping.fromJS(new option.TextEditorOption());
                                     self.typeActionUnemployeeInsurance = ko.observable(TypeActionInsuranceRate.update);
                                     self.typeActionAccidentInsurance = ko.observable(TypeActionInsuranceRate.update);
+                                    self.isEmpty = ko.observable(true);
                                 }
                                 ScreenModel.prototype.openEditHistoryUnemployeeInsuranceRate = function () {
                                     var self = this;
                                     var historyId = self.selectionHistoryUnemployeeInsuranceRate();
-                                    var historyUnemployeeInsuranceFindInDto;
-                                    historyUnemployeeInsuranceFindInDto = new HistoryUnemployeeInsuranceFindInDto();
-                                    historyUnemployeeInsuranceFindInDto.historyId = historyId;
-                                    historyUnemployeeInsuranceFindInDto.companyCode = "companyCode001";
-                                    a.service.findHisotryUnemployeeInsuranceRate(historyUnemployeeInsuranceFindInDto).done(function (data) {
+                                    a.service.findHisotryUnemployeeInsuranceRate(historyId).done(function (data) {
                                         nts.uk.ui.windows.setShared("historyId", data.historyId);
                                         nts.uk.ui.windows.setShared("historyStart", data.startMonthRage);
                                         nts.uk.ui.windows.setShared("historyEnd", data.endMonthRage);
@@ -72,22 +69,26 @@ var nts;
                                     var self = this;
                                     nts.uk.ui.windows.setShared("type", TypeHistory.HistoryUnemployee);
                                     self.typeActionUnemployeeInsurance(TypeActionInsuranceRate.add);
-                                    nts.uk.ui.windows.sub.modal("/view/qmm/011/d/index.xhtml", { height: 400, width: 560, title: "労働保険料率の登録>履歴の追加" }).onClosed(function () {
+                                    nts.uk.ui.windows.sub.modal("/view/qmm/011/d/index.xhtml", { height: 600, width: 560, title: "労働保険料率の登録>履歴の追加" }).onClosed(function () {
                                         var addHistoryUnemployeeInsuranceDto = nts.uk.ui.windows.getShared("addHistoryUnemployeeInsuranceDto");
                                         if (addHistoryUnemployeeInsuranceDto != null && addHistoryUnemployeeInsuranceDto != undefined) {
+                                            self.resetValueUnemployeeInsuranceRate();
                                             self.historyUnemployeeInsuranceRateStart(addHistoryUnemployeeInsuranceDto.startMonthRage);
                                             self.historyUnemployeeInsuranceRateEnd(addHistoryUnemployeeInsuranceDto.endMonthRage);
+                                            self.selectionHistoryUnemployeeInsuranceRate('');
                                         }
                                     });
                                 };
                                 ScreenModel.prototype.openEditInsuranceBusinessType = function () {
                                     var self = this;
-                                    a.service.findAllInsuranceBusinessType("companyCode001").done(function (data) {
+                                    a.service.findAllInsuranceBusinessType().done(function (data) {
                                         nts.uk.ui.windows.setShared("insuranceBusinessTypeUpdateDto", data);
-                                        nts.uk.ui.windows.sub.modal("/view/qmm/011/e/index.xhtml", { height: 590, width: 425, title: "事業種類の登録" }).onClosed(function () {
+                                        nts.uk.ui.windows.sub.modal("/view/qmm/011/e/index.xhtml", { height: 700, width: 425, title: "事業種類の登録" }).onClosed(function () {
                                             var insuranceBusinessTypeUpdateModel = nts.uk.ui.windows.getShared("insuranceBusinessTypeUpdateModel");
                                             if (insuranceBusinessTypeUpdateModel != null && insuranceBusinessTypeUpdateModel != undefined) {
-                                                self.updateInsuranceBusinessTypeAccidentInsurance(insuranceBusinessTypeUpdateModel);
+                                                a.service.findAllInsuranceBusinessType().done(function (data) {
+                                                    self.updateInsuranceBusinessTypeAccidentInsuranceDto(data);
+                                                });
                                             }
                                         });
                                     });
@@ -129,11 +130,15 @@ var nts;
                                     var self = this;
                                     if (self.typeActionUnemployeeInsurance() == TypeActionInsuranceRate.add) {
                                         var historyUnemployeeInsuranceDto = new HistoryUnemployeeInsuranceDto(self.selectionHistoryUnemployeeInsuranceRate(), self.historyUnemployeeInsuranceRateStart(), self.historyUnemployeeInsuranceRateEnd());
-                                        a.service.addUnemployeeInsuranceRate(self.unemployeeInsuranceRateModel(), historyUnemployeeInsuranceDto, "companyCode001");
+                                        a.service.addUnemployeeInsuranceRate(self.unemployeeInsuranceRateModel(), historyUnemployeeInsuranceDto).done(function (data) {
+                                            self.reloadDataUnemployeeInsuranceRateByAction(self.selectionHistoryUnemployeeInsuranceRate());
+                                        });
                                     }
                                     else {
                                         var historyUnemployeeInsuranceDto = new HistoryUnemployeeInsuranceDto(self.selectionHistoryUnemployeeInsuranceRate(), self.historyUnemployeeInsuranceRateStart(), self.historyUnemployeeInsuranceRateEnd());
-                                        a.service.updateUnemployeeInsuranceRate(self.unemployeeInsuranceRateModel(), historyUnemployeeInsuranceDto, "companyCode001");
+                                        a.service.updateUnemployeeInsuranceRate(self.unemployeeInsuranceRateModel(), historyUnemployeeInsuranceDto).done(function (data) {
+                                            self.reloadDataUnemployeeInsuranceRateByAction(self.selectionHistoryUnemployeeInsuranceRate());
+                                        });
                                     }
                                     return true;
                                 };
@@ -167,28 +172,82 @@ var nts;
                                 ScreenModel.prototype.findAllHisotryUnemployeeInsuranceRate = function () {
                                     var self = this;
                                     var dfd = $.Deferred();
-                                    a.service.findAllHisotryUnemployeeInsuranceRate("companyCode001").done(function (data) {
-                                        self.lstHistoryUnemployeeInsuranceRate = ko.observableArray(data);
-                                        self.selectionHistoryUnemployeeInsuranceRate = ko.observable(data[0].historyId);
-                                        self.historyUnemployeeInsuranceRateStart = ko.observable(data[0].startMonthRage);
-                                        self.historyUnemployeeInsuranceRateEnd = ko.observable(data[0].endMonthRage);
-                                        self.selectionHistoryUnemployeeInsuranceRate.subscribe(function (selectionHistoryUnemployeeInsuranceRate) {
-                                            self.showchangeHistoryUnemployeeInsurance(selectionHistoryUnemployeeInsuranceRate);
-                                        });
-                                        self.detailHistoryUnemployeeInsuranceRate(data[0].historyId).done(function (data) {
+                                    a.service.findAllHisotryUnemployeeInsuranceRate().done(function (data) {
+                                        if (data != null && data.length > 0) {
+                                            self.lstHistoryUnemployeeInsuranceRate = ko.observableArray(data);
+                                            self.selectionHistoryUnemployeeInsuranceRate = ko.observable(data[0].historyId);
+                                            self.historyUnemployeeInsuranceRateStart = ko.observable(data[0].startMonthRage);
+                                            self.historyUnemployeeInsuranceRateEnd = ko.observable(data[0].endMonthRage);
+                                            self.selectionHistoryUnemployeeInsuranceRate.subscribe(function (selectionHistoryUnemployeeInsuranceRate) {
+                                                self.showchangeHistoryUnemployeeInsurance(selectionHistoryUnemployeeInsuranceRate);
+                                            });
+                                            self.detailHistoryUnemployeeInsuranceRate(data[0].historyId).done(function (data) {
+                                                dfd.resolve(self);
+                                            });
+                                        }
+                                        else {
+                                            self.newmodelEmptyDataUnemployeeInsuranceRate();
                                             dfd.resolve(self);
-                                        });
+                                        }
                                     });
                                     return dfd.promise();
+                                };
+                                ScreenModel.prototype.reloadDataUnemployeeInsuranceRateByAction = function (code) {
+                                    var self = this;
+                                    a.service.findAllHisotryUnemployeeInsuranceRate().done(function (data) {
+                                        if (data != null && data.length > 0) {
+                                            if (self.lstHistoryUnemployeeInsuranceRate == null || self.lstHistoryUnemployeeInsuranceRate == undefined) {
+                                                self.lstHistoryUnemployeeInsuranceRate = ko.observableArray(data);
+                                            }
+                                            else {
+                                                self.lstHistoryUnemployeeInsuranceRate(data);
+                                            }
+                                            var dataCode = code;
+                                            if (code == null || code == undefined && code == '') {
+                                                dataCode = data[0].historyId;
+                                            }
+                                            if (self.selectionHistoryUnemployeeInsuranceRate == null || self.selectionHistoryUnemployeeInsuranceRate == undefined) {
+                                                self.selectionHistoryUnemployeeInsuranceRate = ko.observable(dataCode);
+                                                self.selectionHistoryUnemployeeInsuranceRate.subscribe(function (selectionHistoryUnemployeeInsuranceRate) {
+                                                    self.showchangeHistoryUnemployeeInsurance(selectionHistoryUnemployeeInsuranceRate);
+                                                });
+                                            }
+                                            else {
+                                                self.selectionHistoryUnemployeeInsuranceRate(dataCode);
+                                            }
+                                            self.detailHistoryUnemployeeInsuranceRate(dataCode).done(function (data) {
+                                            });
+                                        }
+                                        else {
+                                            self.newmodelEmptyDataUnemployeeInsuranceRate();
+                                        }
+                                    });
+                                };
+                                ScreenModel.prototype.newmodelEmptyDataUnemployeeInsuranceRate = function () {
+                                    var self = this;
+                                    if (self.lstHistoryUnemployeeInsuranceRate == null || self.lstHistoryUnemployeeInsuranceRate == undefined) {
+                                        self.lstHistoryUnemployeeInsuranceRate = ko.observableArray([]);
+                                    }
+                                    else {
+                                        self.lstHistoryUnemployeeInsuranceRate([]);
+                                    }
+                                    self.unemployeeInsuranceRateModel = ko.observable(new UnemployeeInsuranceRateModel(new UnemployeeInsuranceRateDto(), self.rateInputOptions, self.selectionRoundingMethod));
+                                    self.selectionHistoryUnemployeeInsuranceRate = ko.observable('');
+                                    self.resetValueUnemployeeInsuranceRate();
+                                    self.historyUnemployeeInsuranceRateStart('');
+                                    self.historyUnemployeeInsuranceRateEnd('9999/12');
+                                    self.isEmpty(true);
+                                };
+                                ScreenModel.prototype.resetValueUnemployeeInsuranceRate = function () {
+                                    var self = this;
+                                    self.unemployeeInsuranceRateModel().resetValue(self.rateInputOptions, self.selectionRoundingMethod);
+                                    self.typeActionUnemployeeInsurance(TypeActionInsuranceRate.add);
+                                    self.selectionHistoryUnemployeeInsuranceRate('');
                                 };
                                 ScreenModel.prototype.findHisotryUnemployeeInsuranceRate = function (historyId) {
                                     var self = this;
                                     var dfd = $.Deferred();
-                                    var historyUnemployeeInsuranceFindInDto;
-                                    historyUnemployeeInsuranceFindInDto = new HistoryUnemployeeInsuranceFindInDto();
-                                    historyUnemployeeInsuranceFindInDto.historyId = historyId;
-                                    historyUnemployeeInsuranceFindInDto.companyCode = "companyCode001";
-                                    a.service.findHisotryUnemployeeInsuranceRate(historyUnemployeeInsuranceFindInDto).done(function (data) {
+                                    a.service.findHisotryUnemployeeInsuranceRate(historyId).done(function (data) {
                                         self.historyUnemployeeInsuranceRateStart(data.startMonthRage);
                                         self.historyUnemployeeInsuranceRateEnd(data.endMonthRage);
                                         dfd.resolve(null);
@@ -212,11 +271,7 @@ var nts;
                                 ScreenModel.prototype.detailHistoryUnemployeeInsuranceRate = function (historyId) {
                                     var self = this;
                                     var dfd = $.Deferred();
-                                    var unemployeeInsuranceFindInDto;
-                                    unemployeeInsuranceFindInDto = new UnemployeeInsuranceFindInDto();
-                                    unemployeeInsuranceFindInDto.historyId = historyId;
-                                    unemployeeInsuranceFindInDto.companyCode = "companyCode001";
-                                    a.service.detailHistoryUnemployeeInsuranceRate(unemployeeInsuranceFindInDto).done(function (data) {
+                                    a.service.detailHistoryUnemployeeInsuranceRate(historyId).done(function (data) {
                                         self.unemployeeInsuranceRateModel = ko.observable(new UnemployeeInsuranceRateModel(data, self.rateInputOptions, self.selectionRoundingMethod));
                                         dfd.resolve(null);
                                     });
@@ -225,7 +280,8 @@ var nts;
                                 ScreenModel.prototype.findAllHistoryAccidentInsuranceRate = function () {
                                     var self = this;
                                     var dfd = $.Deferred();
-                                    a.service.findAllHistoryAccidentInsuranceRate("companyCode001").done(function (data) {
+                                    a.service.findAllHistoryAccidentInsuranceRate().done(function (data) {
+                                        console.log(data);
                                         self.lstHistoryAccidentInsuranceRate = ko.observableArray(data);
                                         self.selectionHistoryAccidentInsuranceRate = ko.observable(data[0].historyId);
                                         self.historyAccidentInsuranceRateStart = ko.observable(data[0].startMonthRage);
@@ -234,7 +290,10 @@ var nts;
                                             self.showchangeHistoryAccidentInsurance(selectionHistoryAccidentInsuranceRate);
                                         });
                                         self.detailHistoryAccidentInsuranceRate(data[0].historyId).done(function (data) {
-                                            dfd.resolve(self);
+                                            a.service.findAllInsuranceBusinessType().done(function (data) {
+                                                self.updateInsuranceBusinessTypeAccidentInsuranceDto(data);
+                                                dfd.resolve(self);
+                                            });
                                         });
                                     });
                                     return dfd.promise();
@@ -261,6 +320,19 @@ var nts;
                                     self.accidentInsuranceRateModel().accidentInsuranceRateBiz9ThModel.updateInsuranceBusinessType(insuranceBusinessTypeUpdateModel.bizNameBiz9Th());
                                     self.accidentInsuranceRateModel().accidentInsuranceRateBiz10ThModel.updateInsuranceBusinessType(insuranceBusinessTypeUpdateModel.bizNameBiz10Th());
                                 };
+                                ScreenModel.prototype.updateInsuranceBusinessTypeAccidentInsuranceDto = function (insuranceBusinessTypeUpdateDto) {
+                                    var self = this;
+                                    self.accidentInsuranceRateModel().accidentInsuranceRateBiz1StModel.updateInsuranceBusinessType(insuranceBusinessTypeUpdateDto.bizNameBiz1St);
+                                    self.accidentInsuranceRateModel().accidentInsuranceRateBiz2NdModel.updateInsuranceBusinessType(insuranceBusinessTypeUpdateDto.bizNameBiz2Nd);
+                                    self.accidentInsuranceRateModel().accidentInsuranceRateBiz3RdModel.updateInsuranceBusinessType(insuranceBusinessTypeUpdateDto.bizNameBiz3Rd);
+                                    self.accidentInsuranceRateModel().accidentInsuranceRateBiz4ThModel.updateInsuranceBusinessType(insuranceBusinessTypeUpdateDto.bizNameBiz4Th);
+                                    self.accidentInsuranceRateModel().accidentInsuranceRateBiz5ThModel.updateInsuranceBusinessType(insuranceBusinessTypeUpdateDto.bizNameBiz5Th);
+                                    self.accidentInsuranceRateModel().accidentInsuranceRateBiz6ThModel.updateInsuranceBusinessType(insuranceBusinessTypeUpdateDto.bizNameBiz6Th);
+                                    self.accidentInsuranceRateModel().accidentInsuranceRateBiz7ThModel.updateInsuranceBusinessType(insuranceBusinessTypeUpdateDto.bizNameBiz7Th);
+                                    self.accidentInsuranceRateModel().accidentInsuranceRateBiz8ThModel.updateInsuranceBusinessType(insuranceBusinessTypeUpdateDto.bizNameBiz8Th);
+                                    self.accidentInsuranceRateModel().accidentInsuranceRateBiz9ThModel.updateInsuranceBusinessType(insuranceBusinessTypeUpdateDto.bizNameBiz9Th);
+                                    self.accidentInsuranceRateModel().accidentInsuranceRateBiz10ThModel.updateInsuranceBusinessType(insuranceBusinessTypeUpdateDto.bizNameBiz10Th);
+                                };
                                 return ScreenModel;
                             }());
                             viewmodel.ScreenModel = ScreenModel;
@@ -269,38 +341,115 @@ var nts;
                                     this.roundAtr = ko.observable(unemployeeInsuranceRateItemSetting.roundAtr);
                                     this.rate = ko.observable(unemployeeInsuranceRateItemSetting.rate);
                                 }
+                                UnemployeeInsuranceRateItemSettingModel.prototype.resetValue = function () {
+                                    if (this.roundAtr == null || this.roundAtr == undefined) {
+                                        this.roundAtr = ko.observable(0);
+                                    }
+                                    else {
+                                        this.roundAtr(0);
+                                    }
+                                    if (this.rate == null || this.rate == undefined) {
+                                        this.rate = ko.observable(0);
+                                    }
+                                    else {
+                                        this.rate(0);
+                                    }
+                                };
                                 return UnemployeeInsuranceRateItemSettingModel;
                             }());
                             viewmodel.UnemployeeInsuranceRateItemSettingModel = UnemployeeInsuranceRateItemSettingModel;
                             var UnemployeeInsuranceRateItemModel = (function () {
-                                function UnemployeeInsuranceRateItemModel(companySetting, personalSetting, rateInputOptions, selectionRoundingMethod) {
-                                    this.companySetting = new UnemployeeInsuranceRateItemSettingModel(companySetting);
-                                    this.personalSetting = new UnemployeeInsuranceRateItemSettingModel(personalSetting);
+                                function UnemployeeInsuranceRateItemModel(rateInputOptions, selectionRoundingMethod) {
                                     this.rateInputOptions = rateInputOptions;
                                     this.selectionRoundingMethod = selectionRoundingMethod;
                                 }
+                                UnemployeeInsuranceRateItemModel.prototype.resetValue = function () {
+                                    if (this.companySetting == null || this.companySetting == undefined) {
+                                        this.companySetting = new UnemployeeInsuranceRateItemSettingModel(new UnemployeeInsuranceRateItemSettingDto(0, 0));
+                                    }
+                                    else {
+                                        this.companySetting.resetValue();
+                                    }
+                                    if (this.personalSetting == null || this.personalSetting == undefined) {
+                                        this.personalSetting = new UnemployeeInsuranceRateItemSettingModel(new UnemployeeInsuranceRateItemSettingDto(0, 0));
+                                    }
+                                    else {
+                                        this.personalSetting.resetValue();
+                                    }
+                                };
+                                UnemployeeInsuranceRateItemModel.prototype.setCompanySetting = function (companySetting) {
+                                    this.companySetting = new UnemployeeInsuranceRateItemSettingModel(companySetting);
+                                };
+                                UnemployeeInsuranceRateItemModel.prototype.setPersonalSetting = function (personalSetting) {
+                                    this.personalSetting = new UnemployeeInsuranceRateItemSettingModel(personalSetting);
+                                };
                                 return UnemployeeInsuranceRateItemModel;
                             }());
                             viewmodel.UnemployeeInsuranceRateItemModel = UnemployeeInsuranceRateItemModel;
                             var UnemployeeInsuranceRateModel = (function () {
                                 function UnemployeeInsuranceRateModel(unemployeeInsuranceRate, rateInputOptions, selectionRoundingMethod) {
-                                    for (var _i = 0, _a = unemployeeInsuranceRate.rateItems; _i < _a.length; _i++) {
-                                        var rateItem = _a[_i];
-                                        if (rateItem.careerGroup == CareerGroupDto.Agroforestry) {
-                                            this.unemployeeInsuranceRateItemAgroforestryModel =
-                                                new UnemployeeInsuranceRateItemModel(rateItem.companySetting, rateItem.personalSetting, rateInputOptions, selectionRoundingMethod);
+                                    if (unemployeeInsuranceRate.rateItems != null && unemployeeInsuranceRate.rateItems.length > 0) {
+                                        for (var _i = 0, _a = unemployeeInsuranceRate.rateItems; _i < _a.length; _i++) {
+                                            var rateItem = _a[_i];
+                                            if (rateItem.careerGroup == CareerGroupDto.Agroforestry) {
+                                                this.unemployeeInsuranceRateItemAgroforestryModel =
+                                                    new UnemployeeInsuranceRateItemModel(rateInputOptions, selectionRoundingMethod);
+                                                this.unemployeeInsuranceRateItemAgroforestryModel.resetValue();
+                                                this.unemployeeInsuranceRateItemAgroforestryModel.setCompanySetting(rateItem.companySetting);
+                                                this.unemployeeInsuranceRateItemAgroforestryModel.setPersonalSetting(rateItem.personalSetting);
+                                            }
+                                            else if (rateItem.careerGroup == CareerGroupDto.Contruction) {
+                                                this.unemployeeInsuranceRateItemContructionModel =
+                                                    new UnemployeeInsuranceRateItemModel(rateInputOptions, selectionRoundingMethod);
+                                                this.unemployeeInsuranceRateItemContructionModel.resetValue();
+                                                this.unemployeeInsuranceRateItemContructionModel.setCompanySetting(rateItem.companySetting);
+                                                this.unemployeeInsuranceRateItemContructionModel.setPersonalSetting(rateItem.personalSetting);
+                                            }
+                                            else if (rateItem.careerGroup == CareerGroupDto.Other) {
+                                                this.unemployeeInsuranceRateItemOtherModel =
+                                                    new UnemployeeInsuranceRateItemModel(rateInputOptions, selectionRoundingMethod);
+                                                this.unemployeeInsuranceRateItemOtherModel.resetValue();
+                                                this.unemployeeInsuranceRateItemOtherModel.setCompanySetting(rateItem.companySetting);
+                                                this.unemployeeInsuranceRateItemOtherModel.setPersonalSetting(rateItem.personalSetting);
+                                            }
                                         }
-                                        else if (rateItem.careerGroup == CareerGroupDto.Contruction) {
-                                            this.unemployeeInsuranceRateItemContructionModel =
-                                                new UnemployeeInsuranceRateItemModel(rateItem.companySetting, rateItem.personalSetting, rateInputOptions, selectionRoundingMethod);
-                                        }
-                                        else if (rateItem.careerGroup == CareerGroupDto.Other) {
-                                            this.unemployeeInsuranceRateItemOtherModel =
-                                                new UnemployeeInsuranceRateItemModel(rateItem.companySetting, rateItem.personalSetting, rateInputOptions, selectionRoundingMethod);
-                                        }
-                                        this.version = ko.observable(unemployeeInsuranceRate.version);
                                     }
+                                    else {
+                                        this.unemployeeInsuranceRateItemAgroforestryModel =
+                                            new UnemployeeInsuranceRateItemModel(rateInputOptions, selectionRoundingMethod);
+                                        this.unemployeeInsuranceRateItemAgroforestryModel.resetValue();
+                                        this.unemployeeInsuranceRateItemContructionModel =
+                                            new UnemployeeInsuranceRateItemModel(rateInputOptions, selectionRoundingMethod);
+                                        this.unemployeeInsuranceRateItemContructionModel.resetValue();
+                                        this.unemployeeInsuranceRateItemOtherModel =
+                                            new UnemployeeInsuranceRateItemModel(rateInputOptions, selectionRoundingMethod);
+                                        this.unemployeeInsuranceRateItemContructionModel.resetValue();
+                                    }
+                                    this.version = ko.observable(unemployeeInsuranceRate.version);
                                 }
+                                UnemployeeInsuranceRateModel.prototype.resetValue = function (rateInputOptions, selectionRoundingMethod) {
+                                    if (this.unemployeeInsuranceRateItemAgroforestryModel == null || this.unemployeeInsuranceRateItemAgroforestryModel == undefined) {
+                                        this.unemployeeInsuranceRateItemAgroforestryModel = new UnemployeeInsuranceRateItemModel(rateInputOptions, selectionRoundingMethod);
+                                        this.unemployeeInsuranceRateItemAgroforestryModel.resetValue();
+                                    }
+                                    else {
+                                        this.unemployeeInsuranceRateItemAgroforestryModel.resetValue();
+                                    }
+                                    if (this.unemployeeInsuranceRateItemContructionModel == null || this.unemployeeInsuranceRateItemContructionModel == undefined) {
+                                        this.unemployeeInsuranceRateItemContructionModel = new UnemployeeInsuranceRateItemModel(rateInputOptions, selectionRoundingMethod);
+                                        this.unemployeeInsuranceRateItemContructionModel.resetValue();
+                                    }
+                                    else {
+                                        this.unemployeeInsuranceRateItemContructionModel.resetValue();
+                                    }
+                                    if (this.unemployeeInsuranceRateItemOtherModel == null || this.unemployeeInsuranceRateItemOtherModel == undefined) {
+                                        this.unemployeeInsuranceRateItemOtherModel = new UnemployeeInsuranceRateItemModel(rateInputOptions, selectionRoundingMethod);
+                                        this.unemployeeInsuranceRateItemOtherModel.resetValue();
+                                    }
+                                    else {
+                                        this.unemployeeInsuranceRateItemOtherModel.resetValue();
+                                    }
+                                };
                                 return UnemployeeInsuranceRateModel;
                             }());
                             viewmodel.UnemployeeInsuranceRateModel = UnemployeeInsuranceRateModel;

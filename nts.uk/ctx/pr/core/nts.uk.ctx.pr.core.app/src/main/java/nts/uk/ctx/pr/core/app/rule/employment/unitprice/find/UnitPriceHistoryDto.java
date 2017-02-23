@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2016 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.core.app.rule.employment.unitprice.find;
@@ -26,12 +26,6 @@ public class UnitPriceHistoryDto implements UnitPriceHistorySetMemento {
 	/** The id. */
 	public String id;
 
-	/** The version. */
-	public long version;
-
-	/** The company code. */
-	public String companyCode;
-
 	/** The unit price code. */
 	public String unitPriceCode;
 
@@ -39,10 +33,10 @@ public class UnitPriceHistoryDto implements UnitPriceHistorySetMemento {
 	public String unitPriceName;
 
 	/** The start month. */
-	public String startMonth;
+	public Integer startMonth;
 
 	/** The end month. */
-	public String endMonth;
+	public Integer endMonth;
 
 	/** The budget. */
 	public BigDecimal budget;
@@ -88,7 +82,7 @@ public class UnitPriceHistoryDto implements UnitPriceHistorySetMemento {
 	 */
 	@Override
 	public void setCompanyCode(CompanyCode companyCode) {
-		this.companyCode = companyCode.v();
+		// Do nothing.
 	}
 
 	/*
@@ -107,25 +101,13 @@ public class UnitPriceHistoryDto implements UnitPriceHistorySetMemento {
 	 * (non-Javadoc)
 	 * 
 	 * @see nts.uk.ctx.pr.core.dom.rule.employment.unitprice.
-	 * UnitPriceHistorySetMemento#setUnitPriceName(nts.uk.ctx.pr.core.dom.rule.
-	 * employment.unitprice.UnitPriceName)
-	 */
-	@Override
-	public void setUnitPriceName(UnitPriceName unitPriceName) {
-		this.unitPriceName = unitPriceName.v();
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.pr.core.dom.rule.employment.unitprice.
 	 * UnitPriceHistorySetMemento#setApplyRange(nts.uk.ctx.pr.core.dom.insurance
 	 * .MonthRange)
 	 */
 	@Override
 	public void setApplyRange(MonthRange applyRange) {
-		this.startMonth = applyRange.getStartMonth().toString();
-		this.endMonth = applyRange.getEndMonth().toString();
+		this.startMonth = applyRange.getStartMonth().v();
+		this.endMonth = applyRange.getEndMonth().v();
 	}
 
 	/*
@@ -221,6 +203,18 @@ public class UnitPriceHistoryDto implements UnitPriceHistorySetMemento {
 	@Override
 	public void setMemo(Memo memo) {
 		this.memo = memo.v();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.rule.employment.unitprice.
+	 * UnitPriceHistorySetMemento#setUnitPriceName(nts.uk.ctx.pr.core.dom.rule.
+	 * employment.unitprice.UnitPriceName)
+	 */
+	@Override
+	public void setUnitPriceName(UnitPriceName unitPriceName) {
+		this.unitPriceName = unitPriceName.v();
 	}
 
 }

@@ -49,7 +49,7 @@ public class UnitPriceServiceImpl implements UnitPriceService {
 	 */
 	@Override
 	public void checkDuplicateCode(UnitPrice unitPrice) {
-		if (unitPriceRepo.isDuplicateCode(unitPrice.getCode())) {
+		if (unitPriceRepo.isDuplicateCode(unitPrice.getCompanyCode(), unitPrice.getCode())) {
 			throw new BusinessException("ER005");
 		}
 	}

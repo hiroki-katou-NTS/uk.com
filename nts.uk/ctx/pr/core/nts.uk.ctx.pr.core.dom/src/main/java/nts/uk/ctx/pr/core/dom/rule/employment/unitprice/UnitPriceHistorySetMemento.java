@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2015 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.core.dom.rule.employment.unitprice;
@@ -33,7 +33,7 @@ public interface UnitPriceHistorySetMemento {
 	 * @param unitPriceCode the new unit price code
 	 */
 	void setUnitPriceCode(UnitPriceCode unitPriceCode);
-
+	
 	/**
 	 * Sets the unit price name.
 	 *

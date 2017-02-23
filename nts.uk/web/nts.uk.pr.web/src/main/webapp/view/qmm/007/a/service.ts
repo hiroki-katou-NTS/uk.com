@@ -65,38 +65,16 @@ module nts.uk.pr.view.qmm007.a {
         }
 
         /**
-         * Collect data from model and convert to dto.
-         */
-        export function collectData(unitPriceHistoryModel): model.UnitPriceHistoryDto {
-            var dto = new service.model.UnitPriceHistoryDto();
-            dto.id = unitPriceHistoryModel.id;
-            dto.version = unitPriceHistoryModel.version;
-            dto.unitPriceCode = unitPriceHistoryModel.unitPriceCode();
-            dto.unitPriceName = unitPriceHistoryModel.unitPriceName();
-            dto.startMonth = unitPriceHistoryModel.startMonth();
-            dto.endMonth = unitPriceHistoryModel.endMonth();
-            dto.budget = unitPriceHistoryModel.budget();
-            dto.fixPaySettingType = unitPriceHistoryModel.fixPaySettingType();
-            dto.fixPayAtr = unitPriceHistoryModel.fixPayAtr();
-            dto.fixPayAtrMonthly = unitPriceHistoryModel.fixPayAtrMonthly();
-            dto.fixPayAtrDayMonth = unitPriceHistoryModel.fixPayAtrDayMonth();
-            dto.fixPayAtrDaily = unitPriceHistoryModel.fixPayAtrDaily();
-            dto.fixPayAtrHourly = unitPriceHistoryModel.fixPayAtrHourly();
-            dto.memo = unitPriceHistoryModel.memo();
-            return dto;
-        }
-
-        /**
         * Model namespace.
         */
         export module model {
+
             export class UnitPriceHistoryDto {
                 id: string;
-                version: number;
                 unitPriceCode: string;
                 unitPriceName: string;
-                startMonth: string;
-                endMonth: string;
+                startMonth: number;
+                endMonth: number;
                 budget: number;
                 fixPaySettingType: string;
                 fixPayAtr: string;
@@ -105,6 +83,28 @@ module nts.uk.pr.view.qmm007.a {
                 fixPayAtrDaily: string;
                 fixPayAtrHourly: string;
                 memo: string;
+            }
+
+            export class UnitPriceHistoryItemDto {
+                id: string;
+                startMonth: number;
+                endMonth: number;
+                constructor(id: string, startMonth: number, endMonth: number) {
+                    this.id = id;
+                    this.startMonth = startMonth;
+                    this.endMonth = endMonth;
+                }
+            }
+
+            export class UnitPriceItemDto {
+                unitPriceCode: string;
+                unitPriceName: string;
+                histories: Array<UnitPriceHistoryItemDto>;
+                constructor(unitPriceCode: string, unitPriceName: string, histories: Array<UnitPriceHistoryItemDto>) {
+                    this.unitPriceCode = unitPriceCode;
+                    this.unitPriceName = unitPriceName;
+                    this.histories = histories;
+                }
             }
         }
     }

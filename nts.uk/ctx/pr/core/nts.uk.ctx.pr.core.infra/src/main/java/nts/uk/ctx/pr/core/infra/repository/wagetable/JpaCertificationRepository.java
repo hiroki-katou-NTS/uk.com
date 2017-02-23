@@ -14,11 +14,11 @@ import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.core.dom.company.CompanyCode;
-import nts.uk.ctx.pr.core.dom.wagetable.Certification;
-import nts.uk.ctx.pr.core.dom.wagetable.CertificationGetMemento;
-import nts.uk.ctx.pr.core.dom.wagetable.CertificationReponsitory;
-import nts.uk.ctx.pr.core.dom.wagetable.CertifyGroup;
 import nts.uk.ctx.pr.core.dom.wagetable.WageTableCode;
+import nts.uk.ctx.pr.core.dom.wagetable.certification.Certification;
+import nts.uk.ctx.pr.core.dom.wagetable.certification.CertificationGetMemento;
+import nts.uk.ctx.pr.core.dom.wagetable.certification.CertificationReponsitory;
+import nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroup;
 import nts.uk.ctx.pr.core.infra.entity.wagetable.QcemtCertification;
 import nts.uk.ctx.pr.core.infra.entity.wagetable.QcemtCertification;
 import nts.uk.ctx.pr.core.infra.entity.wagetable.QcemtCertificationPK_;

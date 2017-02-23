@@ -8,8 +8,8 @@
 	<body>
 		
 		<ui:composition template="../../../../master/sidebar.xhtml">
-			<ui:define name="htmlHead">
-				<script>var dialogSize = { width: 1200, height: 750 };</script>
+			<ui:define name="sidebar-head">
+				<script>var dialogSize = { width: 1200, height: 950 };</script>
 				<com:stylefile path="main.css" />
 				<com:scriptfile set="IGNITE" />
 				<com:scriptfile path="service.js" />
@@ -32,7 +32,7 @@
 				</ul>
 			</ui:define>
 						
-			<ui:define name="content">
+			<ui:define name="sidebar-content">
 		   		<div id="salary-payment" role="tabpanel">
 					<div class="sidebar-content-header">
 						<span class="title">給与支給項目</span>

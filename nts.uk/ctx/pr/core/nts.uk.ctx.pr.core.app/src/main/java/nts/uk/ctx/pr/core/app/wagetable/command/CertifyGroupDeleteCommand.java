@@ -10,7 +10,7 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.pr.core.app.wagetable.command.dto.CertifyGroupDeleteDto;
 import nts.uk.ctx.pr.core.app.wagetable.command.dto.CertifyGroupDto;
-import nts.uk.ctx.pr.core.dom.wagetable.CertifyGroup;
+import nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroup;
 
 /**
  * The Class CertifyGroupDeleteCommand.
