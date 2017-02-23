@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Set;
 
 import nts.uk.ctx.core.dom.company.CompanyCode;
+import nts.uk.ctx.pr.core.dom.insurance.CalculateMethod;
 import nts.uk.ctx.pr.core.dom.insurance.CommonAmount;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
@@ -99,7 +100,7 @@ public class JpaHealthInsuranceRateSetMemento implements HealthInsuranceRateSetM
 	 * HealthInsuranceRateSetMemento#setAutoCalculate(java.lang.Boolean)
 	 */
 	@Override
-	public void setAutoCalculate(Boolean autoCalculate) {
+	public void setAutoCalculate(CalculateMethod autoCalculate) {
 		// TODO Auto-generated method stub
 
 	}

@@ -7,6 +7,7 @@ package nts.uk.ctx.pr.core.dom.insurance.social.healthrate;
 import java.util.Set;
 
 import nts.uk.ctx.core.dom.company.CompanyCode;
+import nts.uk.ctx.pr.core.dom.insurance.CalculateMethod;
 import nts.uk.ctx.pr.core.dom.insurance.CommonAmount;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
@@ -49,7 +50,7 @@ public interface HealthInsuranceRateSetMemento {
 	 *
 	 * @param autoCalculate the new auto calculate
 	 */
-	void setAutoCalculate(Boolean autoCalculate);
+	void setAutoCalculate(CalculateMethod autoCalculate);
 
 	/**
 	 * Sets the max amount.

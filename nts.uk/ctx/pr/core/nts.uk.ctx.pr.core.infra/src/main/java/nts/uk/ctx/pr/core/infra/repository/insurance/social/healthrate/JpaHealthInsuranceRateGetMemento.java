@@ -11,6 +11,7 @@ import java.util.Set;
 
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.core.dom.company.CompanyCode;
+import nts.uk.ctx.pr.core.dom.insurance.CalculateMethod;
 import nts.uk.ctx.pr.core.dom.insurance.CommonAmount;
 import nts.uk.ctx.pr.core.dom.insurance.Ins3Rate;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
@@ -94,8 +95,9 @@ public class JpaHealthInsuranceRateGetMemento implements HealthInsuranceRateGetM
 	 * HealthInsuranceRateGetMemento#getAutoCalculate()
 	 */
 	@Override
-	public Boolean getAutoCalculate() {
-		return null;
+	public CalculateMethod getAutoCalculate() {
+		// TODO:
+		return CalculateMethod.Auto;
 	}
 
 	/*

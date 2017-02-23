@@ -9,6 +9,7 @@ import java.util.Set;
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.core.dom.company.CompanyCode;
+import nts.uk.ctx.pr.core.dom.insurance.CalculateMethod;
 import nts.uk.ctx.pr.core.dom.insurance.CommonAmount;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
@@ -33,7 +34,7 @@ public class HealthInsuranceRate extends DomainObject {
 	private MonthRange applyRange;
 
 	/** The auto calculate. */
-	private Boolean autoCalculate;
+	private CalculateMethod autoCalculate;
 
 	/** The max amount. */
 	private CommonAmount maxAmount;
