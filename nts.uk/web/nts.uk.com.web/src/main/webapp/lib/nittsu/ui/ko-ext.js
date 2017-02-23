@@ -27,9 +27,6 @@ var nts;
                         }
                         $input.addClass('nts-editor').addClass("nts-input");
                         $input.wrap("<span class= 'nts-editor-wrapped ntsControl'/>");
-                        $input.focus(function () {
-                            $input.select();
-                        });
                         $input.change(function () {
                             var validator = _this.getValidator(data);
                             var newText = $input.val();

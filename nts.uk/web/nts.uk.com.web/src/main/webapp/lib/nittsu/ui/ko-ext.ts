@@ -16,10 +16,6 @@ module nts.uk.ui.koExtentions {
             $input.addClass('nts-editor').addClass("nts-input");
             $input.wrap("<span class= 'nts-editor-wrapped ntsControl'/>");
             
-            $input.focus(() => {
-                $input.select();
-            });
-            
             $input.change(() => {
                 var validator = this.getValidator(data);
                 var newText = $input.val();
