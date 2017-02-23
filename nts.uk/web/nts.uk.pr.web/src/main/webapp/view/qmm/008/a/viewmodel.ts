@@ -92,8 +92,8 @@ module nts.uk.pr.view.qmm008.a {
                 }));
                 //health calculate switch
                 self.healthAutoCalculateOptions = ko.observableArray([
-                    { code: '1', name: 'する' },
-                    { code: '2', name: 'しない' }
+                    { code: '0', name: 'する' },
+                    { code: '1', name: 'しない' }
                 ]);
                 self.selectedRuleCode = ko.observable(1);//
                 //pension fund switch 
@@ -234,7 +234,7 @@ module nts.uk.pr.view.qmm008.a {
                         service.getAllHealthInsuranceItem(item.code).done(function(data: Array<HealthInsuranceRateDto>) {
                             data.forEach(function(item2, index2) {
                                 //push history into office
-                                officeData[index].childs.push(new InsuranceOfficeItem(index + item.code, item2.officeCode, index + item2.historyId + index2, [], item2.startMonth + "~" + item2.endMonth));
+                                officeData[index].childs.push(new InsuranceOfficeItem(index + item.code, item2.officeCode, index + item2.historyId + index2, [], item2.startMonth.substring(0,4)+"/"+item2.startMonth.substring(4,item2.startMonth.length) + "~" + item2.endMonth.substring(0,4)+"/"+item2.endMonth.substring(4,item2.endMonth.length)));
                             });
                             self.InsuranceOfficeList(officeData);
                             //focus first history of office
@@ -256,15 +256,12 @@ module nts.uk.pr.view.qmm008.a {
                     }
                     // TODO Set detail health.
                     self.healthModel().historyId = data.historyId;
-                    self.healthModel().startMonth(data.startMonth);
-                    self.healthModel().endMonth(data.endMonth);
+                    self.healthModel().startMonth(data.startMonth.substring(0,4)+"/"+data.startMonth.substring(4,data.startMonth.length));
+                    self.healthModel().endMonth(data.endMonth.substring(0,4)+"/"+data.endMonth.substring(4,data.endMonth.length));
 
                     self.healthModel().companyCode = data.companyCode;
                     self.healthModel().officeCode(data.officeCode);
-                    if (data.autoCalculate)
-                        self.healthModel().autoCalculate(1);
-                    else
-                        self.healthModel().autoCalculate(2);
+                    self.healthModel().autoCalculate(data.autoCalculate);
 
                     self.healthModel().rateItems().healthSalaryPersonalGeneral(data.rateItems[0].chargeRate.companyRate);
                     self.healthModel().rateItems().healthSalaryCompanyGeneral(data.rateItems[0].chargeRate.companyRate);
@@ -379,7 +376,7 @@ module nts.uk.pr.view.qmm008.a {
                 var rounding = self.healthModel().roundingMethods();
                 roundingMethods.push(new RoundingDto(PaymentType.SALARY, new RoundingItemDto(Rounding.ROUNDUP, Rounding.ROUNDUP)));
                 roundingMethods.push(new RoundingDto(PaymentType.BONUS, new RoundingItemDto(Rounding.ROUNDUP, Rounding.ROUNDUP)));
-                return new service.model.finder.HealthInsuranceRateDto("", "", self.currentParentCode(), self.healthModel().startMonth(), self.healthModel().endMonth(), false, rateItems, roundingMethods, self.healthModel().maxAmount());
+                return new service.model.finder.HealthInsuranceRateDto("", "", self.currentParentCode(), self.healthModel().startMonth(), self.healthModel().endMonth(),1, rateItems, roundingMethods, self.healthModel().maxAmount());
             }
             
             //TODO delete

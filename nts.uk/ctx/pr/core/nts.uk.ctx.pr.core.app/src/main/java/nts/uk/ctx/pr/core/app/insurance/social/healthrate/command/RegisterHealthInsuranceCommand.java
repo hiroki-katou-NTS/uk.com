@@ -13,6 +13,8 @@ import lombok.Setter;
 import nts.arc.time.YearMonth;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.core.dom.company.CompanyCode;
+import nts.uk.ctx.core.dom.util.PrimitiveUtil;
+import nts.uk.ctx.pr.core.dom.insurance.CalculateMethod;
 import nts.uk.ctx.pr.core.dom.insurance.CommonAmount;
 import nts.uk.ctx.pr.core.dom.insurance.Ins3Rate;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
@@ -85,17 +87,13 @@ public class RegisterHealthInsuranceCommand extends HealthInsuranceBaseCommand {
 			}
 
 			@Override
-			public Boolean getAutoCalculate() {
-				return command.getAutoCalculate();
+			public CalculateMethod getAutoCalculate() {
+				return CalculateMethod.valueOf(command.getAutoCalculate());
 			}
 
 			@Override
 			public MonthRange getApplyRange() {
-				Integer startYear = Integer.parseInt(command.getStartMonth().split("/")[0]);
-				Integer startMonth = Integer.parseInt(command.getStartMonth().split("/")[1]);
-				Integer endYear = Integer.parseInt(command.getEndMonth().split("/")[0]);
-				Integer endMonth = Integer.parseInt(command.getEndMonth().split("/")[1]);
-				return MonthRange.range(YearMonth.of(startYear,startMonth),YearMonth.of(endYear,endMonth));
+				return MonthRange.range(PrimitiveUtil.toYearMonth(command.getStartMonth(), "/"),PrimitiveUtil.toYearMonth(command.getEndMonth(), "/"));
 			}
 		});
 

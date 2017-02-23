@@ -35,7 +35,7 @@ public abstract class HealthInsuranceBaseCommand {
 	private String endMonth;
 	
 	/** The auto calculate. */
-	private Boolean autoCalculate;
+	private Integer autoCalculate;
 
 	/** The max amount. */
 	private BigDecimal maxAmount;

@@ -10,6 +10,8 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.core.dom.company.CompanyCode;
+import nts.uk.ctx.core.dom.util.PrimitiveUtil;
+import nts.uk.ctx.pr.core.dom.insurance.CalculateMethod;
 import nts.uk.ctx.pr.core.dom.insurance.CommonAmount;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
@@ -74,13 +76,13 @@ public class UpdateHealthInsuranceCommand extends HealthInsuranceBaseCommand {
 			}
 
 			@Override
-			public Boolean getAutoCalculate() {
-				return command.getAutoCalculate();
+			public CalculateMethod getAutoCalculate() {
+				return CalculateMethod.valueOf(command.getAutoCalculate());
 			}
 
 			@Override
 			public MonthRange getApplyRange() {
-				return MonthRange.range(new YearMonth(command.getStartMonth()), new YearMonth(command.getStartMonth()));
+				return MonthRange.range(PrimitiveUtil.toYearMonth(command.getStartMonth(), "/"),PrimitiveUtil.toYearMonth(command.getEndMonth(), "/"));
 			}
 		});
 

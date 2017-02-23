@@ -101,8 +101,7 @@ public class JpaHealthInsuranceRateSetMemento implements HealthInsuranceRateSetM
 	 */
 	@Override
 	public void setAutoCalculate(CalculateMethod autoCalculate) {
-		// TODO Auto-generated method stub
-
+		this.typeValue.setKeepEntryFlg(autoCalculate.value);
 	}
 
 	/*

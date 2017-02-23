@@ -44,8 +44,8 @@ var nts;
                                         decimallength: 2
                                     }));
                                     self.healthAutoCalculateOptions = ko.observableArray([
-                                        { code: '1', name: 'する' },
-                                        { code: '2', name: 'しない' }
+                                        { code: '0', name: 'する' },
+                                        { code: '1', name: 'しない' }
                                     ]);
                                     self.selectedRuleCode = ko.observable(1);
                                     self.pensionFundInputOptions = ko.observableArray([
@@ -142,7 +142,7 @@ var nts;
                                         if ((item.code == officeCode) && (item.childs.length == 0)) {
                                             a.service.getAllHealthInsuranceItem(item.code).done(function (data) {
                                                 data.forEach(function (item2, index2) {
-                                                    officeData[index].childs.push(new InsuranceOfficeItem(index + item.code, item2.officeCode, index + item2.historyId + index2, [], item2.startMonth + "~" + item2.endMonth));
+                                                    officeData[index].childs.push(new InsuranceOfficeItem(index + item.code, item2.officeCode, index + item2.historyId + index2, [], item2.startMonth.substring(0, 4) + "/" + item2.startMonth.substring(4, item2.startMonth.length) + "~" + item2.endMonth.substring(0, 4) + "/" + item2.endMonth.substring(4, item2.endMonth.length)));
                                                 });
                                                 self.InsuranceOfficeList(officeData);
                                                 if (self.InsuranceOfficeList()[0].childs.length > 0)
@@ -159,14 +159,11 @@ var nts;
                                             return;
                                         }
                                         self.healthModel().historyId = data.historyId;
-                                        self.healthModel().startMonth(data.startMonth);
-                                        self.healthModel().endMonth(data.endMonth);
+                                        self.healthModel().startMonth(data.startMonth.substring(0, 4) + "/" + data.startMonth.substring(4, data.startMonth.length));
+                                        self.healthModel().endMonth(data.endMonth.substring(0, 4) + "/" + data.endMonth.substring(4, data.endMonth.length));
                                         self.healthModel().companyCode = data.companyCode;
                                         self.healthModel().officeCode(data.officeCode);
-                                        if (data.autoCalculate)
-                                            self.healthModel().autoCalculate(1);
-                                        else
-                                            self.healthModel().autoCalculate(2);
+                                        self.healthModel().autoCalculate(data.autoCalculate);
                                         self.healthModel().rateItems().healthSalaryPersonalGeneral(data.rateItems[0].chargeRate.companyRate);
                                         self.healthModel().rateItems().healthSalaryCompanyGeneral(data.rateItems[0].chargeRate.companyRate);
                                         self.healthModel().rateItems().healthBonusPersonalGeneral(data.rateItems[0].chargeRate.companyRate);
@@ -257,7 +254,7 @@ var nts;
                                     var rounding = self.healthModel().roundingMethods();
                                     roundingMethods.push(new RoundingDto(PaymentType.SALARY, new RoundingItemDto(Rounding.ROUNDUP, Rounding.ROUNDUP)));
                                     roundingMethods.push(new RoundingDto(PaymentType.BONUS, new RoundingItemDto(Rounding.ROUNDUP, Rounding.ROUNDUP)));
-                                    return new a.service.model.finder.HealthInsuranceRateDto("", "", self.currentParentCode(), self.healthModel().startMonth(), self.healthModel().endMonth(), false, rateItems, roundingMethods, self.healthModel().maxAmount());
+                                    return new a.service.model.finder.HealthInsuranceRateDto("", "", self.currentParentCode(), self.healthModel().startMonth(), self.healthModel().endMonth(), 1, rateItems, roundingMethods, self.healthModel().maxAmount());
                                 };
                                 ScreenModel.prototype.resize = function () {
                                     if ($("#tabs-complex").width() > 700)
