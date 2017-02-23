@@ -15,6 +15,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.uk.ctx.pr.core.dom.insurance.CommonAmount;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.HealthInsuranceAvgearn;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.HealthInsuranceAvgearnGetMemento;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.HealthInsuranceAvgearnRepository;
@@ -103,7 +104,9 @@ public class JpaHealthInsuranceAvgearnRepository extends JpaRepository implement
 
 			@Override
 			public HealthInsuranceAvgearnValue getPersonalAvg() {
-				return new HealthInsuranceAvgearnValue(2372l, 2717l, 928l, 14420l);
+				return new HealthInsuranceAvgearnValue(new CommonAmount(BigDecimal.valueOf(1223)),
+						new CommonAmount(BigDecimal.valueOf(4321)), new CommonAmount(BigDecimal.valueOf(54632)),
+						new CommonAmount(BigDecimal.valueOf(9876)));
 			}
 
 			@Override
@@ -118,14 +121,18 @@ public class JpaHealthInsuranceAvgearnRepository extends JpaRepository implement
 
 			@Override
 			public HealthInsuranceAvgearnValue getCompanyAvg() {
-				return new HealthInsuranceAvgearnValue(1234l, 5678l, 456l, 456l);
+				return new HealthInsuranceAvgearnValue(new CommonAmount(BigDecimal.valueOf(1223)),
+						new CommonAmount(BigDecimal.valueOf(4321)), new CommonAmount(BigDecimal.valueOf(54632)),
+						new CommonAmount(BigDecimal.valueOf(9876)));
 			}
 		}));
 		list.add(new HealthInsuranceAvgearn(new HealthInsuranceAvgearnGetMemento() {
 
 			@Override
 			public HealthInsuranceAvgearnValue getPersonalAvg() {
-				return new HealthInsuranceAvgearnValue(2372l, 2717l, 928l, 14420l);
+				return new HealthInsuranceAvgearnValue(new CommonAmount(BigDecimal.valueOf(1223)),
+						new CommonAmount(BigDecimal.valueOf(4321)), new CommonAmount(BigDecimal.valueOf(54632)),
+						new CommonAmount(BigDecimal.valueOf(9876)));
 			}
 
 			@Override
@@ -140,14 +147,18 @@ public class JpaHealthInsuranceAvgearnRepository extends JpaRepository implement
 
 			@Override
 			public HealthInsuranceAvgearnValue getCompanyAvg() {
-				return new HealthInsuranceAvgearnValue(1234l, 5678l, 456l, 456l);
+				return new HealthInsuranceAvgearnValue(new CommonAmount(BigDecimal.valueOf(1223)),
+						new CommonAmount(BigDecimal.valueOf(4321)), new CommonAmount(BigDecimal.valueOf(54632)),
+						new CommonAmount(BigDecimal.valueOf(9876)));
 			}
 		}));
 		list.add(new HealthInsuranceAvgearn(new HealthInsuranceAvgearnGetMemento() {
 
 			@Override
 			public HealthInsuranceAvgearnValue getPersonalAvg() {
-				return new HealthInsuranceAvgearnValue(2372l, 2717l, 928l, 14420l);
+				return new HealthInsuranceAvgearnValue(new CommonAmount(BigDecimal.valueOf(1223)),
+						new CommonAmount(BigDecimal.valueOf(4321)), new CommonAmount(BigDecimal.valueOf(54632)),
+						new CommonAmount(BigDecimal.valueOf(9876)));
 			}
 
 			@Override
@@ -162,14 +173,18 @@ public class JpaHealthInsuranceAvgearnRepository extends JpaRepository implement
 
 			@Override
 			public HealthInsuranceAvgearnValue getCompanyAvg() {
-				return new HealthInsuranceAvgearnValue(1234l, 5678l, 456l, 456l);
+				return new HealthInsuranceAvgearnValue(new CommonAmount(BigDecimal.valueOf(1223)),
+						new CommonAmount(BigDecimal.valueOf(4321)), new CommonAmount(BigDecimal.valueOf(54632)),
+						new CommonAmount(BigDecimal.valueOf(9876)));
 			}
 		}));
 		list.add(new HealthInsuranceAvgearn(new HealthInsuranceAvgearnGetMemento() {
 
 			@Override
 			public HealthInsuranceAvgearnValue getPersonalAvg() {
-				return new HealthInsuranceAvgearnValue(2372l, 2717l, 928l, 14420l);
+				return new HealthInsuranceAvgearnValue(new CommonAmount(BigDecimal.valueOf(1223)),
+						new CommonAmount(BigDecimal.valueOf(4321)), new CommonAmount(BigDecimal.valueOf(54632)),
+						new CommonAmount(BigDecimal.valueOf(9876)));
 			}
 
 			@Override
@@ -184,7 +199,9 @@ public class JpaHealthInsuranceAvgearnRepository extends JpaRepository implement
 
 			@Override
 			public HealthInsuranceAvgearnValue getCompanyAvg() {
-				return new HealthInsuranceAvgearnValue(1234l, 5678l, 456l, 456l);
+				return new HealthInsuranceAvgearnValue(new CommonAmount(BigDecimal.valueOf(1223)),
+						new CommonAmount(BigDecimal.valueOf(4321)), new CommonAmount(BigDecimal.valueOf(54632)),
+						new CommonAmount(BigDecimal.valueOf(9876)));
 			}
 		}));
 
@@ -192,7 +209,9 @@ public class JpaHealthInsuranceAvgearnRepository extends JpaRepository implement
 
 			@Override
 			public HealthInsuranceAvgearnValue getPersonalAvg() {
-				return new HealthInsuranceAvgearnValue(2372l, 2717l, 928l, 14420l);
+				return new HealthInsuranceAvgearnValue(new CommonAmount(BigDecimal.valueOf(1223)),
+						new CommonAmount(BigDecimal.valueOf(4321)), new CommonAmount(BigDecimal.valueOf(54632)),
+						new CommonAmount(BigDecimal.valueOf(9876)));
 			}
 
 			@Override
@@ -207,14 +226,18 @@ public class JpaHealthInsuranceAvgearnRepository extends JpaRepository implement
 
 			@Override
 			public HealthInsuranceAvgearnValue getCompanyAvg() {
-				return new HealthInsuranceAvgearnValue(1234l, 5678l, 456l, 456l);
+				return new HealthInsuranceAvgearnValue(new CommonAmount(BigDecimal.valueOf(1223)),
+						new CommonAmount(BigDecimal.valueOf(4321)), new CommonAmount(BigDecimal.valueOf(54632)),
+						new CommonAmount(BigDecimal.valueOf(9876)));
 			}
 		}));
 		list.add(new HealthInsuranceAvgearn(new HealthInsuranceAvgearnGetMemento() {
 
 			@Override
 			public HealthInsuranceAvgearnValue getPersonalAvg() {
-				return new HealthInsuranceAvgearnValue(2372l, 2717l, 928l, 14420l);
+				return new HealthInsuranceAvgearnValue(new CommonAmount(BigDecimal.valueOf(1223)),
+						new CommonAmount(BigDecimal.valueOf(4321)), new CommonAmount(BigDecimal.valueOf(54632)),
+						new CommonAmount(BigDecimal.valueOf(9876)));
 			}
 
 			@Override
@@ -229,7 +252,9 @@ public class JpaHealthInsuranceAvgearnRepository extends JpaRepository implement
 
 			@Override
 			public HealthInsuranceAvgearnValue getCompanyAvg() {
-				return new HealthInsuranceAvgearnValue(1234l, 5678l, 456l, 456l);
+				return new HealthInsuranceAvgearnValue(new CommonAmount(BigDecimal.valueOf(1223)),
+						new CommonAmount(BigDecimal.valueOf(4321)), new CommonAmount(BigDecimal.valueOf(54632)),
+						new CommonAmount(BigDecimal.valueOf(9876)));
 			}
 		}));
 
@@ -264,9 +289,10 @@ public class JpaHealthInsuranceAvgearnRepository extends JpaRepository implement
 
 			@Override
 			public HealthInsuranceAvgearnValue getPersonalAvg() {
-				return new HealthInsuranceAvgearnValue(entity.getPHealthBasicMny().longValue(),
-						entity.getPHealthGeneralMny().longValue(), entity.getPHealthNursingMny().longValue(),
-						entity.getPHealthSpecificMny().longValue());
+				return new HealthInsuranceAvgearnValue(new CommonAmount(entity.getPHealthBasicMny()),
+						new CommonAmount(entity.getPHealthGeneralMny()),
+						new CommonAmount(entity.getPHealthNursingMny()),
+						new CommonAmount(entity.getPHealthSpecificMny()));
 			}
 
 			@Override
@@ -281,9 +307,10 @@ public class JpaHealthInsuranceAvgearnRepository extends JpaRepository implement
 
 			@Override
 			public HealthInsuranceAvgearnValue getCompanyAvg() {
-				return new HealthInsuranceAvgearnValue(entity.getPHealthBasicMny().longValue(),
-						entity.getCHealthGeneralMny().longValue(), entity.getCHealthNursingMny().longValue(),
-						entity.getCHealthSpecificMny().longValue());
+				return new HealthInsuranceAvgearnValue(new CommonAmount(entity.getCHealthBasicMny()),
+						new CommonAmount(entity.getCHealthGeneralMny()),
+						new CommonAmount(entity.getCHealthNursingMny()),
+						new CommonAmount(entity.getCHealthSpecificMny()));
 			}
 		});
 
