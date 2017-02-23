@@ -25,7 +25,7 @@
 			<div id="functions-area">
 				<button class="large proceed" data-bind="click: save, enable: $root.errors.isEmpty">登録</button>
 				<button class="large">印刷</button>
-				<button class="large">再計算</button>
+				<button class="large" data-bind="click: reCalculate">再計算</button>
 				<button class="large btn-close" data-bind="click: closeDialog">閉じる</button>
 			</div>
 			<div class="contents-area">
@@ -56,7 +56,7 @@
 									</button></th>
 								<th data-bind="css: { hidden: !rightShow() }"
 									class="border-left-none halign-center" colspan="5">免除保険料</th>
-								<th class="halign-center" rowspan="4">子ども子育 て拠出金</th>
+								<th class="halign-center" rowspan="3">子ども子育 て拠出金</th>
 							</tr>
 							<tr class="bg-green">
 								<th data-bind="css: { hidden: leftShow() }" class="border_none"></th>
@@ -116,6 +116,28 @@
 									<th class="halign-center">40.900/1000</th>
 									<th class="halign-center">40.900/1000</th>
 								</com:ko>
+								<!-- wait for data from qmm008 a.
+									<com:ko tag="with" bind="pensionRateModel.fundRateItems">
+									<com:ko tag="if" bind="$parent.leftShow">
+										<th class="halign-center" data-bind="text: $parent.companyFundExemption.maleAmount"></th>
+										<th class="halign-center" data-bind="text: $parent.companyFundExemption.femaleAmount"></th>
+										<th class="halign-center" data-bind="text: $parent.companyFundExemption.unknownAmount"></th>
+										<th class="halign-center" data-bind="text: $parent.companyPension.maleAmount"></th>
+										<th class="halign-center" data-bind="text: $parent.companyPension.femaleAmount"></th>
+										<th class="halign-center" data-bind="text: $parent.companyPension.unknownAmount"></th>
+									</com:ko>
+									<th data-bind="css: { hidden: $parent.rightShow() }"
+										class="border_none"></th>
+									<com:ko tag="if" bind="$parent.rightShow">
+										<th class="halign-center" data-bind="text: $parent.personalFundExemption.maleAmount"></th>
+										<th class="halign-center" data-bind="text: $parent.personalFundExemption.femaleAmount"></th>
+										<th class="halign-center" data-bind="text: $parent.personalFundExemption.unknownAmount"></th>
+										<th class="halign-center" data-bind="text: $parent.personalPension.maleAmount"></th>
+										<th class="halign-center" data-bind="text: $parent.personalPension.femaleAmount"></th>
+										<th class="halign-center" data-bind="text: $parent.personalPension.unknownAmount"></th>
+									</com:ko>
+								</com:ko>-->
+								<th class="halign-center" data-bind="text: pensionRateModel.childContributionRate"></th> 
 							</tr>
 							<com:ko-foreach bind="listAvgEarnLevelMasterSetting">
 								<tr class="inp-money">

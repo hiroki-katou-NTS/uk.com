@@ -102,31 +102,43 @@ module nts.uk.pr.view.qmm008.h {
             }
 
             /**
-             * ReCalculate the healthInsuranceAvgearn
+             * ReCalculate the healthInsuranceAvgearn list
              */
             private reCalculate(): void {
                 var self = this;
-                // clear current listHealthInsuranceAvgearn
+                // Clear current listHealthInsuranceAvgearn
                 self.listHealthInsuranceAvgearn.removeAll();
-                // recalculate listHealthInsuranceAvgearn
+                // Recalculate listHealthInsuranceAvgearn
                 self.listAvgEarnLevelMasterSetting.forEach(item => {
-                    self.listHealthInsuranceAvgearn.push(new HealthInsuranceAvgEarnModel(
-                        self.healthInsuranceRateModel.historyId,
-                        item.code,
-                        new HealthInsuranceAvgEarnValueModel(
-                            self.healthInsuranceRateModel.rateItems.healthSalaryCompanyGeneral() * item.avgEarn,
-                            self.healthInsuranceRateModel.rateItems.healthSalaryCompanyNursing() * item.avgEarn,
-                            self.healthInsuranceRateModel.rateItems.healthSalaryCompanyBasic() * item.avgEarn,
-                            self.healthInsuranceRateModel.rateItems.healthSalaryCompanySpecific() * item.avgEarn
-                        ),
-                        new HealthInsuranceAvgEarnValueModel(
-                            self.healthInsuranceRateModel.rateItems.healthSalaryPersonalGeneral() * item.avgEarn,
-                            self.healthInsuranceRateModel.rateItems.healthSalaryPersonalNursing() * item.avgEarn,
-                            self.healthInsuranceRateModel.rateItems.healthSalaryPersonalBasic() * item.avgEarn,
-                            self.healthInsuranceRateModel.rateItems.healthSalaryPersonalSpecific() * item.avgEarn
-                        )
-                    ));
+                    self.listHealthInsuranceAvgearn.push(self.calculateHealthInsuranceAvgEarnModel(item));
                 });
+            }
+
+            /**
+             * Calculate the healthInsuranceAvgearn
+             */
+            private calculateHealthInsuranceAvgEarnModel(levelMasterSetting: AvgEarnLevelMasterSettingDto): HealthInsuranceAvgEarnModel {
+                var self = this;
+                var historyId = self.healthInsuranceRateModel.historyId;
+                var rateItems: HealthInsuranceRateItemModel = self.healthInsuranceRateModel.rateItems;
+                var rate = levelMasterSetting.avgEarn / 1000;
+
+                return new HealthInsuranceAvgEarnModel(
+                    historyId,
+                    levelMasterSetting.code,
+                    new HealthInsuranceAvgEarnValueModel(
+                        rateItems.healthSalaryCompanyGeneral() * rate,
+                        rateItems.healthSalaryCompanyNursing() * rate,
+                        rateItems.healthSalaryCompanyBasic() * rate,
+                        rateItems.healthSalaryCompanySpecific() * rate
+                    ),
+                    new HealthInsuranceAvgEarnValueModel(
+                        rateItems.healthSalaryPersonalGeneral() * rate,
+                        rateItems.healthSalaryPersonalNursing() * rate,
+                        rateItems.healthSalaryPersonalBasic() * rate,
+                        rateItems.healthSalaryPersonalSpecific() * rate
+                    )
+                );
             }
 
             /**

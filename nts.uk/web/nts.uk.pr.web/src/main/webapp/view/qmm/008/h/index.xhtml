@@ -68,14 +68,14 @@
 							</tr>
 							<tr class="bg-green">
 							<com:ko tag="with" bind="healthInsuranceRateModel.rateItems">
-								<th class="halign-center"><span data-bind="text: healthSalaryPersonalGeneral()"></span></th>
-								<th class="halign-center"><span data-bind="text: healthSalaryPersonalNursing()"></span></th>
-								<th class="halign-center"><span data-bind="text: healthSalaryPersonalSpecific()"></span></th>
-								<th class="halign-center"><span data-bind="text: healthSalaryPersonalBasic()"></span></th>
-								<th class="halign-center"><span data-bind="text: healthSalaryCompanyGeneral()"></span></th>
-								<th class="halign-center"><span data-bind="text: healthSalaryCompanyNursing()"></span></th>
-								<th class="halign-center"><span data-bind="text: healthSalaryCompanySpecific()"></span></th>
-								<th class="halign-center"><span data-bind="text: healthSalaryCompanyBasic()"></span></th>
+								<th class="halign-center"><span data-bind="text: healthSalaryPersonalGeneral()+'/1000'"></span></th>
+								<th class="halign-center"><span data-bind="text: healthSalaryPersonalNursing()+'/1000'"></span></th>
+								<th class="halign-center"><span data-bind="text: healthSalaryPersonalSpecific()+'/1000'"></span></th>
+								<th class="halign-center"><span data-bind="text: healthSalaryPersonalBasic()+'/1000'"></span></th>
+								<th class="halign-center"><span data-bind="text: healthSalaryCompanyGeneral()+'/1000'"></span></th>
+								<th class="halign-center"><span data-bind="text: healthSalaryCompanyNursing()+'/1000'"></span></th>
+								<th class="halign-center"><span data-bind="text: healthSalaryCompanySpecific()+'/1000'"></span></th>
+								<th class="halign-center"><span data-bind="text: healthSalaryCompanyBasic()+'/1000'"></span></th>
 							</com:ko>
 							</tr>
 							<com:ko-foreach bind="listAvgEarnLevelMasterSetting">
