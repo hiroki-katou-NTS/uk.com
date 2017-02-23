@@ -2,7 +2,7 @@ package nts.uk.ctx.pr.core.app.wagetable.find.dto;
 
 import lombok.Data;
 import nts.uk.ctx.core.dom.company.CompanyCode;
-import nts.uk.ctx.pr.core.dom.wagetable.CertificationSetMemento;
+import nts.uk.ctx.pr.core.dom.wagetable.certification.CertificationSetMemento;
 
 @Data
 public class CertificationFindDto implements CertificationSetMemento {

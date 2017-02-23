@@ -2,18 +2,19 @@
  * Copyright (c) 2016 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.pr.core.dom.wagetable;
+package nts.uk.ctx.pr.core.dom.wagetable.certification;
 
-import lombok.EqualsAndHashCode;
+import java.util.Set;
+
 import lombok.Getter;
+import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 
 /**
- * The Class Certification.
+ * The Class CertifyGroup.
  */
 @Getter
-@EqualsAndHashCode(of = { "companyCode", "code" })
-public class Certification {
+public class CertifyGroup extends DomainObject {
 
 	/** The company code. */
 	private CompanyCode companyCode;
@@ -24,17 +25,25 @@ public class Certification {
 	/** The name. */
 	private String name;
 
+	/** The multi apply set. */
+	private MultipleTargetSetting multiApplySet;
+
+	/** The certifies. */
+	private Set<Certification> certifies;
+
 	// =================== Memento State Support Method ===================
 	/**
-	 * Instantiates a new labor insurance office.
+	 * Instantiates a new certify group.
 	 *
 	 * @param memento
 	 *            the memento
 	 */
-	public Certification(CertificationGetMemento memento) {
+	public CertifyGroup(CertifyGroupGetMemento memento) {
 		this.companyCode = memento.getCompanyCode();
 		this.code = memento.getCode();
 		this.name = memento.getName();
+		this.multiApplySet = memento.getMultiApplySet();
+		this.certifies = memento.getCertifies();
 	}
 
 	/**
@@ -43,10 +52,12 @@ public class Certification {
 	 * @param memento
 	 *            the memento
 	 */
-	public void saveToMemento(CertificationSetMemento memento) {
+	public void saveToMemento(CertifyGroupSetMemento memento) {
 		memento.setCompanyCode(this.companyCode);
 		memento.setCode(this.code);
 		memento.setName(this.name);
+		memento.setMultiApplySet(this.multiApplySet);
+		memento.setCertifies(this.certifies);
 	}
 
 }

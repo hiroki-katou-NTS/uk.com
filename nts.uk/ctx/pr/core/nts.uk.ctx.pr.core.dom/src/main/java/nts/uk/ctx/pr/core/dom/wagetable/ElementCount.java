@@ -8,22 +8,28 @@ package nts.uk.ctx.pr.core.dom.wagetable;
 /**
  * The Enum MultipleTargetSetting.
  */
-public enum MultipleTargetSetting {
+public enum ElementCount {
 
 	/** The Bigest method. */
-	BigestMethod(0, "BigestAmount"),
+	One(0),
 
 	/** The Total method. */
-	TotalMethod(1, "TotalAmount");
+	Two(1),
+
+	/** The Three. */
+	Three(2),
+
+	/** The Eligibility. */
+	Eligibility(3),
+
+	/** The Finework. */
+	Finework(4);
 
 	/** The value. */
 	public int value;
 
-	/** The description. */
-	public String description;
-
 	/** The Constant values. */
-	private final static MultipleTargetSetting[] values = MultipleTargetSetting.values();
+	private final static ElementCount[] values = ElementCount.values();
 
 	/**
 	 * Instantiates a new multiple target setting.
@@ -33,9 +39,8 @@ public enum MultipleTargetSetting {
 	 * @param description
 	 *            the description
 	 */
-	private MultipleTargetSetting(int value, String description) {
+	private ElementCount(int value) {
 		this.value = value;
-		this.description = description;
 	}
 
 	/**
@@ -45,14 +50,14 @@ public enum MultipleTargetSetting {
 	 *            the value
 	 * @return the multiple target setting
 	 */
-	public static MultipleTargetSetting valueOf(Integer value) {
+	public static ElementCount valueOf(Integer value) {
 		// Invalid object.
 		if (value == null) {
 			return null;
 		}
 
 		// Find value.
-		for (MultipleTargetSetting val : MultipleTargetSetting.values) {
+		for (ElementCount val : ElementCount.values) {
 			if (val.value == value) {
 				return val;
 			}

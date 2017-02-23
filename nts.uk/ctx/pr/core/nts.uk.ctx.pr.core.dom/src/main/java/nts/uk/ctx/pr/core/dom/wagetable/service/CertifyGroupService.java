@@ -4,7 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.dom.wagetable.service;
 
-import nts.uk.ctx.pr.core.dom.wagetable.CertifyGroup;
+import nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroup;
 
 /**
  * The Interface CertifyGroupService.

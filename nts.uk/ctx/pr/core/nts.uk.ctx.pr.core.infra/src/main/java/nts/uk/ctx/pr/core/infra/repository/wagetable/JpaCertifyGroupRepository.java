@@ -19,8 +19,8 @@ import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.core.dom.company.CompanyCode;
-import nts.uk.ctx.pr.core.dom.wagetable.CertifyGroup;
-import nts.uk.ctx.pr.core.dom.wagetable.CertifyGroupRepository;
+import nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroup;
+import nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroupRepository;
 import nts.uk.ctx.pr.core.infra.entity.wagetable.QwtmtWagetableCertifyG;
 import nts.uk.ctx.pr.core.infra.entity.wagetable.QwtmtWagetableCertifyGPK;
 import nts.uk.ctx.pr.core.infra.entity.wagetable.QwtmtWagetableCertifyGPK_;

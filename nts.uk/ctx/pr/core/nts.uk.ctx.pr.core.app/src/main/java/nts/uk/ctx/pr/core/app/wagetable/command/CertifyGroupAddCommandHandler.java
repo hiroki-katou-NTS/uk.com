@@ -10,8 +10,8 @@ import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.pr.core.dom.wagetable.CertifyGroup;
-import nts.uk.ctx.pr.core.dom.wagetable.CertifyGroupRepository;
+import nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroup;
+import nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroupRepository;
 import nts.uk.ctx.pr.core.dom.wagetable.service.CertifyGroupService;
 import nts.uk.shr.com.context.AppContexts;
 

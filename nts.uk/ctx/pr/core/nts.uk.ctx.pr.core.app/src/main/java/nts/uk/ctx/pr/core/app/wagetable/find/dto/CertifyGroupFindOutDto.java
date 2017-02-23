@@ -8,9 +8,9 @@ import java.util.Set;
 
 import lombok.Data;
 import nts.uk.ctx.core.dom.company.CompanyCode;
-import nts.uk.ctx.pr.core.dom.wagetable.Certification;
-import nts.uk.ctx.pr.core.dom.wagetable.CertifyGroupSetMemento;
-import nts.uk.ctx.pr.core.dom.wagetable.MultipleTargetSetting;
+import nts.uk.ctx.pr.core.dom.wagetable.certification.Certification;
+import nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroupSetMemento;
+import nts.uk.ctx.pr.core.dom.wagetable.certification.MultipleTargetSetting;
 
 @Data
 public class CertifyGroupFindOutDto implements CertifyGroupSetMemento {

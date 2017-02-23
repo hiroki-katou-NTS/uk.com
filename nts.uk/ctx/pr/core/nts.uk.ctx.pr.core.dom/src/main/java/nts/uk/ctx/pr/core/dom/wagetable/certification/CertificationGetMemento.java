@@ -2,7 +2,7 @@
  * Copyright (c) 2015 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.pr.core.dom.wagetable;
+package nts.uk.ctx.pr.core.dom.wagetable.certification;
 
 import nts.uk.ctx.core.dom.company.CompanyCode;
 

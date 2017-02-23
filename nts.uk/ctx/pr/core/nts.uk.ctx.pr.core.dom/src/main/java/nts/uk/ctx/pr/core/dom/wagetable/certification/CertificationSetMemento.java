@@ -2,16 +2,14 @@
  * Copyright (c) 2015 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.pr.core.dom.wagetable;
-
-import java.util.Set;
+package nts.uk.ctx.pr.core.dom.wagetable.certification;
 
 import nts.uk.ctx.core.dom.company.CompanyCode;
 
 /**
- * The Interface CertifyGroupSetMemento.
+ * The Interface UnitPriceMemento.
  */
-public interface CertifyGroupSetMemento {
+public interface CertificationSetMemento {
 
 	/**
 	 * Sets the company code.
@@ -33,19 +31,5 @@ public interface CertifyGroupSetMemento {
 	 * @param name the new name
 	 */
 	void setName(String name);
-
-	/**
-	 * Sets the multi apply set.
-	 *
-	 * @param multiApplySet the new multi apply set
-	 */
-	void setMultiApplySet(MultipleTargetSetting multiApplySet);
-
-	/**
-	 * Sets the certifies.
-	 *
-	 * @param certifies the new certifies
-	 */
-	void setCertifies(Set<Certification> certifies);
 
 }

@@ -2,28 +2,21 @@
  * Copyright (c) 2016 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.pr.core.dom.wagetable;
+package nts.uk.ctx.pr.core.dom.wagetable.certification;
 
-import java.util.Set;
-
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 
 /**
- * The Class CertifyGroup.
+ * The Class Certification.
  */
 @Getter
-public class CertifyGroup extends DomainObject {
+@EqualsAndHashCode(of = { "companyCode", "code" })
+public class Certification {
 
 	/** The company code. */
 	private CompanyCode companyCode;
-
-	/** The wage table code. */
-	// private WageTableCode wageTableCode;
-
-	/** The history id. */
-	// private String historyId;
 
 	/** The code. */
 	private String code;
@@ -31,25 +24,17 @@ public class CertifyGroup extends DomainObject {
 	/** The name. */
 	private String name;
 
-	/** The multi apply set. */
-	private MultipleTargetSetting multiApplySet;
-
-	/** The certifies. */
-	private Set<Certification> certifies;
-
 	// =================== Memento State Support Method ===================
 	/**
-	 * Instantiates a new certify group.
+	 * Instantiates a new labor insurance office.
 	 *
 	 * @param memento
 	 *            the memento
 	 */
-	public CertifyGroup(CertifyGroupGetMemento memento) {
+	public Certification(CertificationGetMemento memento) {
 		this.companyCode = memento.getCompanyCode();
 		this.code = memento.getCode();
 		this.name = memento.getName();
-		this.multiApplySet = memento.getMultiApplySet();
-		this.certifies = memento.getCertifies();
 	}
 
 	/**
@@ -58,12 +43,10 @@ public class CertifyGroup extends DomainObject {
 	 * @param memento
 	 *            the memento
 	 */
-	public void saveToMemento(CertifyGroupSetMemento memento) {
+	public void saveToMemento(CertificationSetMemento memento) {
 		memento.setCompanyCode(this.companyCode);
 		memento.setCode(this.code);
 		memento.setName(this.name);
-		memento.setMultiApplySet(this.multiApplySet);
-		memento.setCertifies(this.certifies);
 	}
 
 }

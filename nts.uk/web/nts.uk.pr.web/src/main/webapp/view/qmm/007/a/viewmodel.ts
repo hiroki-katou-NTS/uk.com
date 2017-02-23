@@ -211,8 +211,8 @@ module nts.uk.pr.view.qmm007.a {
                 this.id = historyDto.id;
                 this.unitPriceCode = ko.observable(historyDto.unitPriceCode);
                 this.unitPriceName = ko.observable(historyDto.unitPriceName);
-                this.startMonth = ko.observable(historyDto.startMonth + '');
-                this.endMonth = ko.observable(historyDto.endMonth + '');
+                this.startMonth = ko.observable(nts.uk.time.formatYearMonth(historyDto.startMonth));
+                this.endMonth = ko.observable(nts.uk.time.formatYearMonth(historyDto.endMonth));
                 this.budget = ko.observable(historyDto.budget);
                 this.fixPaySettingType = ko.observable(historyDto.fixPaySettingType);
                 this.fixPayAtr = ko.observable(historyDto.fixPayAtr);
@@ -233,15 +233,13 @@ module nts.uk.pr.view.qmm007.a {
                 self.id = "";
 
                 if ((<UnitPriceItemDto>item).histories !== undefined) {
-                    let unitPriceItemDto: UnitPriceItemDto = item;
-                    self.nodeText = unitPriceItemDto.unitPriceCode + '~' + unitPriceItemDto.unitPriceName;
-                    self.childs = unitPriceItemDto.histories.map((item, index) => { return new UnitPriceHistoryNode(item) });
+                    self.nodeText = (<UnitPriceItemDto>item).unitPriceCode + '~' + (<UnitPriceItemDto>item).unitPriceName;
+                    self.childs = (<UnitPriceItemDto>item).histories.map((item, index) => { return new UnitPriceHistoryNode(item) });
                 }
 
                 if ((<UnitPriceItemDto>item).histories === undefined) {
-                    let <UnitPriceHistoryItemDto>unitPriceHistoryItemDto = item;
-                    self.id = item.id;
-                    self.nodeText = unitPriceHistoryItemDto.startMonth + '~' + unitPriceHistoryItemDto.endMonth;
+                    self.id = (<UnitPriceHistoryItemDto>item).id;
+                    self.nodeText = (<UnitPriceHistoryItemDto>item).startMonth + '~' + (<UnitPriceHistoryItemDto>item).endMonth;
                 }
             }
         }

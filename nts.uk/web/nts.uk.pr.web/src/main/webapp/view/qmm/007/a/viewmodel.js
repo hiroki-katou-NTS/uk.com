@@ -13,7 +13,6 @@ var nts;
                         var viewmodel;
                         (function (viewmodel) {
                             var UnitPriceHistoryDto = a.service.model.UnitPriceHistoryDto;
-                            var UnitPriceHistoryItemDto = a.service.model.UnitPriceHistoryItemDto;
                             var ScreenModel = (function () {
                                 function ScreenModel() {
                                     var self = this;
@@ -142,8 +141,8 @@ var nts;
                                     this.id = historyDto.id;
                                     this.unitPriceCode = ko.observable(historyDto.unitPriceCode);
                                     this.unitPriceName = ko.observable(historyDto.unitPriceName);
-                                    this.startMonth = ko.observable(historyDto.startMonth + '');
-                                    this.endMonth = ko.observable(historyDto.endMonth + '');
+                                    this.startMonth = ko.observable(nts.uk.time.formatYearMonth(historyDto.startMonth));
+                                    this.endMonth = ko.observable(nts.uk.time.formatYearMonth(historyDto.endMonth));
                                     this.budget = ko.observable(historyDto.budget);
                                     this.fixPaySettingType = ko.observable(historyDto.fixPaySettingType);
                                     this.fixPayAtr = ko.observable(historyDto.fixPayAtr);
@@ -161,15 +160,12 @@ var nts;
                                     var self = this;
                                     self.id = "";
                                     if (item.histories !== undefined) {
-                                        var unitPriceItemDto = item;
-                                        self.nodeText = unitPriceItemDto.unitPriceCode + '~' + unitPriceItemDto.unitPriceName;
-                                        self.childs = unitPriceItemDto.histories.map(function (item, index) { return new UnitPriceHistoryNode(item); });
+                                        self.nodeText = item.unitPriceCode + '~' + item.unitPriceName;
+                                        self.childs = item.histories.map(function (item, index) { return new UnitPriceHistoryNode(item); });
                                     }
                                     if (item.histories === undefined) {
-                                        let < UnitPriceHistoryItemDto > unitPriceHistoryItemDto;
-                                        item;
                                         self.id = item.id;
-                                        self.nodeText = unitPriceHistoryItemDto.startMonth + '~' + unitPriceHistoryItemDto.endMonth;
+                                        self.nodeText = item.startMonth + '~' + item.endMonth;
                                     }
                                 }
                                 return UnitPriceHistoryNode;

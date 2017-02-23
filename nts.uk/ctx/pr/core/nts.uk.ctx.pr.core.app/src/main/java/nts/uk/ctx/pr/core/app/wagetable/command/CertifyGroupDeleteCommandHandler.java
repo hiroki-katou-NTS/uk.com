@@ -11,7 +11,7 @@ import javax.transaction.Transactional;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.core.dom.company.CompanyCode;
-import nts.uk.ctx.pr.core.dom.wagetable.CertifyGroupRepository;
+import nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroupRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
