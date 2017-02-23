@@ -142,7 +142,7 @@ var nts;
                                         if ((item.code == officeCode) && (item.childs.length == 0)) {
                                             a.service.getAllHealthInsuranceItem(item.code).done(function (data) {
                                                 data.forEach(function (item2, index2) {
-                                                    officeData[index].childs.push(new InsuranceOfficeItem(index + item.code, item2.officeCode, index + item2.historyId + index2, [], ((item2.startMonth) / 100).toFixed(0) + "/" + item2.startMonth % 100 + "~" + ((item2.endMonth) / 100).toFixed(0) + "/" + item2.endMonth % 100));
+                                                    officeData[index].childs.push(new InsuranceOfficeItem(index + item.code, item2.officeCode, index + item2.historyId + index2, [], item2.startMonth + "~" + item2.endMonth));
                                                 });
                                                 self.InsuranceOfficeList(officeData);
                                                 if (self.InsuranceOfficeList()[0].childs.length > 0)
@@ -159,8 +159,8 @@ var nts;
                                             return;
                                         }
                                         self.healthModel().historyId = data.historyId;
-                                        self.healthModel().startMonth(((data.startMonth) / 100).toFixed(0) + "/" + data.startMonth % 100);
-                                        self.healthModel().endMonth(((data.endMonth) / 100).toFixed(0) + "/" + data.endMonth % 100);
+                                        self.healthModel().startMonth(data.startMonth);
+                                        self.healthModel().endMonth(data.endMonth);
                                         self.healthModel().companyCode = data.companyCode;
                                         self.healthModel().officeCode(data.officeCode);
                                         if (data.autoCalculate)
@@ -257,7 +257,7 @@ var nts;
                                     var rounding = self.healthModel().roundingMethods();
                                     roundingMethods.push(new RoundingDto(PaymentType.SALARY, new RoundingItemDto(Rounding.ROUNDUP, Rounding.ROUNDUP)));
                                     roundingMethods.push(new RoundingDto(PaymentType.BONUS, new RoundingItemDto(Rounding.ROUNDUP, Rounding.ROUNDUP)));
-                                    return new a.service.model.finder.HealthInsuranceRateDto("", "", "23", 3, 4, false, rateItems, roundingMethods, self.healthModel().maxAmount());
+                                    return new a.service.model.finder.HealthInsuranceRateDto("", "", self.currentParentCode(), self.healthModel().startMonth(), self.healthModel().endMonth(), false, rateItems, roundingMethods, self.healthModel().maxAmount());
                                 };
                                 ScreenModel.prototype.resize = function () {
                                     if ($("#tabs-complex").width() > 700)

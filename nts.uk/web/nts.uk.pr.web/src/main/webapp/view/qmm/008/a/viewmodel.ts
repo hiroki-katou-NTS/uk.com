@@ -234,8 +234,7 @@ module nts.uk.pr.view.qmm008.a {
                         service.getAllHealthInsuranceItem(item.code).done(function(data: Array<HealthInsuranceRateDto>) {
                             data.forEach(function(item2, index2) {
                                 //push history into office
-                                officeData[index].childs.push(
-                                    new InsuranceOfficeItem(index + item.code, item2.officeCode, index + item2.historyId + index2, [], ((item2.startMonth) / 100).toFixed(0) + "/" + item2.startMonth % 100 + "~" + ((item2.endMonth) / 100).toFixed(0) + "/" + item2.endMonth % 100));
+                                officeData[index].childs.push(new InsuranceOfficeItem(index + item.code, item2.officeCode, index + item2.historyId + index2, [], item2.startMonth + "~" + item2.endMonth));
                             });
                             self.InsuranceOfficeList(officeData);
                             //focus first history of office
@@ -257,8 +256,8 @@ module nts.uk.pr.view.qmm008.a {
                     }
                     // TODO Set detail health.
                     self.healthModel().historyId = data.historyId;
-                    self.healthModel().startMonth(((data.startMonth) / 100).toFixed(0) + "/" + data.startMonth % 100);
-                    self.healthModel().endMonth(((data.endMonth) / 100).toFixed(0) + "/" + data.endMonth % 100);
+                    self.healthModel().startMonth(data.startMonth);
+                    self.healthModel().endMonth(data.endMonth);
 
                     self.healthModel().companyCode = data.companyCode;
                     self.healthModel().officeCode(data.officeCode);
@@ -380,17 +379,9 @@ module nts.uk.pr.view.qmm008.a {
                 var rounding = self.healthModel().roundingMethods();
                 roundingMethods.push(new RoundingDto(PaymentType.SALARY, new RoundingItemDto(Rounding.ROUNDUP, Rounding.ROUNDUP)));
                 roundingMethods.push(new RoundingDto(PaymentType.BONUS, new RoundingItemDto(Rounding.ROUNDUP, Rounding.ROUNDUP)));
-
-                return new service.model.finder.HealthInsuranceRateDto("", "", "23",
-                    3, //startMonth: number,
-                    4, //endMonth: number, 
-                    false, //autocalculate
-                    rateItems,
-                    roundingMethods,
-                    self.healthModel().maxAmount()
-                );
+                return new service.model.finder.HealthInsuranceRateDto("", "", self.currentParentCode(), self.healthModel().startMonth(), self.healthModel().endMonth(), false, rateItems, roundingMethods, self.healthModel().maxAmount());
             }
-
+            
             //TODO delete
             public resize() {
                 if ($("#tabs-complex").width() > 700)
