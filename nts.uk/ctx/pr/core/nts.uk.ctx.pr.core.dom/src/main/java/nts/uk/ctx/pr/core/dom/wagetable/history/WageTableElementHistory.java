@@ -2,55 +2,49 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.pr.core.dom.wagetable;
+package nts.uk.ctx.pr.core.dom.wagetable.history;
 
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
-import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroupGetMemento;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroupSetMemento;
-import nts.uk.shr.com.primitive.Memo;
 
 /**
- * The Class WageTableHead.
+ * The Class WageTableHist.
  */
 @Getter
-public class WageTableHead extends DomainObject {
+public class WageTableElementHistory extends DomainObject {
 
 	/** The company code. */
-	private CompanyCode companyCode;
+	private Integer upperLimit;
 
-	/** The code. */
-	private WageTableCode code;
+	private Integer lowerLimit;
 
-	/** The name. */
-	private WageTableName name;
+	private Integer demensionNo;
 
-	/** The demension set. */
-	private ElementCount demensionSet;
+	private Integer interval;
 
-	/** The memo. */
-	private Memo memo;
-
-	// List<WageTableElement> elementSetting;
+	// private List<WageTableCodeT> wageTableCodes;
 
 	// =================== Memento State Support Method ===================
 	/**
-	 * Instantiates a new wage table head.
+	 * Instantiates a new wage table hist.
 	 *
-	 * @param memento the memento
+	 * @param memento
+	 *            the memento
 	 */
-	public WageTableHead(CertifyGroupGetMemento memento) {
-		this.companyCode = memento.getCompanyCode();
+	public WageTableElementHistory(CertifyGroupGetMemento memento) {
+		// this.companyCode = memento.getCompanyCode();
 	}
 
 	/**
 	 * Save to memento.
 	 *
-	 * @param memento the memento
+	 * @param memento
+	 *            the memento
 	 */
 	public void saveToMemento(CertifyGroupSetMemento memento) {
-		memento.setCompanyCode(this.companyCode);
+		// memento.setCompanyCode(this.companyCode);
 	}
 
 }

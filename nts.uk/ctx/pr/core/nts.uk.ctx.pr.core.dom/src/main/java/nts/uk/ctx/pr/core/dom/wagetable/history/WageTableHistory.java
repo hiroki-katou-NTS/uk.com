@@ -2,20 +2,23 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.pr.core.dom.wagetable;
+package nts.uk.ctx.pr.core.dom.wagetable.history;
+
+import java.util.List;
 
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.core.dom.company.CompanyCode;
+import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
+import nts.uk.ctx.pr.core.dom.wagetable.WageTableCode;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroupGetMemento;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroupSetMemento;
-import nts.uk.shr.com.primitive.Memo;
 
 /**
- * The Class WageTableHead.
+ * The Class WageTableHist.
  */
 @Getter
-public class WageTableHead extends DomainObject {
+public class WageTableHistory extends DomainObject {
 
 	/** The company code. */
 	private CompanyCode companyCode;
@@ -23,31 +26,31 @@ public class WageTableHead extends DomainObject {
 	/** The code. */
 	private WageTableCode code;
 
-	/** The name. */
-	private WageTableName name;
+	/** The history id. */
+	private String historyId;
 
-	/** The demension set. */
-	private ElementCount demensionSet;
+	/** The apply range. */
+	private MonthRange applyRange;
 
-	/** The memo. */
-	private Memo memo;
-
-	// List<WageTableElement> elementSetting;
+	/** The elements. */
+	private List<WageTableElementHistory> elements;
 
 	// =================== Memento State Support Method ===================
 	/**
-	 * Instantiates a new wage table head.
+	 * Instantiates a new wage table hist.
 	 *
-	 * @param memento the memento
+	 * @param memento
+	 *            the memento
 	 */
-	public WageTableHead(CertifyGroupGetMemento memento) {
+	public WageTableHistory(CertifyGroupGetMemento memento) {
 		this.companyCode = memento.getCompanyCode();
 	}
 
 	/**
 	 * Save to memento.
 	 *
-	 * @param memento the memento
+	 * @param memento
+	 *            the memento
 	 */
 	public void saveToMemento(CertifyGroupSetMemento memento) {
 		memento.setCompanyCode(this.companyCode);

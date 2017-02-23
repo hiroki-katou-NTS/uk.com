@@ -8,17 +8,17 @@ import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.StringMaxLength;
 
 /**
- * The Class WageTableName.
+ * The Class WageTableRefNo.
  */
-@StringMaxLength(30)
-public class WageTableName extends StringPrimitiveValue<WageTableName> {
+@StringMaxLength(4)
+public class WageTableRefNo extends StringPrimitiveValue<WageTableRefNo> {
 
 	/**
-	 * Instantiates a new wage table name.
+	 * Instantiates a new wage table ref no.
 	 *
 	 * @param rawValue the raw value
 	 */
-	public WageTableName(String rawValue) {
+	public WageTableRefNo(String rawValue) {
 		super(rawValue);
 	}
 
