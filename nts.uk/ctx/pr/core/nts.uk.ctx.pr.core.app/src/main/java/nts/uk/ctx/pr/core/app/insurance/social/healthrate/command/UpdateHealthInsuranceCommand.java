@@ -8,6 +8,7 @@ import java.util.Set;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.arc.time.YearMonth;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.CommonAmount;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
@@ -23,13 +24,16 @@ import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.InsuranceRateItem;
 @Getter
 @Setter
 public class UpdateHealthInsuranceCommand extends HealthInsuranceBaseCommand {
-	
+
 	/**
 	 * To domain.
 	 *
-	 * @param companyCode the company code
-	 * @param historyId the history id
-	 * @param officeCode the office code
+	 * @param companyCode
+	 *            the company code
+	 * @param historyId
+	 *            the history id
+	 * @param officeCode
+	 *            the office code
 	 * @return the health insurance rate
 	 */
 	public HealthInsuranceRate toDomain(CompanyCode companyCode, String historyId, OfficeCode officeCode) {
@@ -51,12 +55,12 @@ public class UpdateHealthInsuranceCommand extends HealthInsuranceBaseCommand {
 
 			@Override
 			public OfficeCode getOfficeCode() {
-				return command.getOfficeCode();
+				return new OfficeCode(command.getOfficeCode());
 			}
 
 			@Override
 			public CommonAmount getMaxAmount() {
-				return command.getMaxAmount();
+				return new CommonAmount(command.getMaxAmount());
 			}
 
 			@Override
@@ -66,7 +70,7 @@ public class UpdateHealthInsuranceCommand extends HealthInsuranceBaseCommand {
 
 			@Override
 			public CompanyCode getCompanyCode() {
-				return command.getCompanyCode();
+				return new CompanyCode(command.getCompanyCode());
 			}
 
 			@Override
@@ -76,10 +80,10 @@ public class UpdateHealthInsuranceCommand extends HealthInsuranceBaseCommand {
 
 			@Override
 			public MonthRange getApplyRange() {
-				return command.getApplyRange();
+				return MonthRange.range(new YearMonth(command.getStartMonth()), new YearMonth(command.getStartMonth()));
 			}
 		});
-		
+
 		return updatedHealthInsuranceRate;
 	}
 }

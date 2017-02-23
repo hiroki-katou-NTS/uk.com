@@ -4,14 +4,20 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.app.insurance.social.healthrate.command;
 
+import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.arc.time.YearMonth;
+import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.CommonAmount;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
+import nts.uk.ctx.pr.core.dom.insurance.Ins3Rate;
+import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.HealthChargeRateItem;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.HealthInsuranceRate;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.HealthInsuranceRateGetMemento;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.HealthInsuranceRounding;
@@ -23,11 +29,12 @@ import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.InsuranceRateItem;
 @Getter
 @Setter
 public class RegisterHealthInsuranceCommand extends HealthInsuranceBaseCommand {
-	
+
 	/**
 	 * To domain.
 	 *
-	 * @param companyCode the company code
+	 * @param companyCode
+	 *            the company code
 	 * @return the health insurance rate
 	 */
 	public HealthInsuranceRate toDomain(CompanyCode companyCode) {
@@ -39,33 +46,42 @@ public class RegisterHealthInsuranceCommand extends HealthInsuranceBaseCommand {
 			@Override
 			public Set<HealthInsuranceRounding> getRoundingMethods() {
 				// TODO convert command -> domain
-				return null;
+				if (command.getRoundingMethods().isEmpty())
+					return null;
+				return new HashSet<HealthInsuranceRounding>(command.getRoundingMethods());
 			}
 
 			@Override
 			public Set<InsuranceRateItem> getRateItems() {
 				// TODO convert command -> domain
-				return null;
+				return new HashSet<InsuranceRateItem>(command.getRateItems().stream()
+						.map(dto -> new InsuranceRateItem(dto.getPayType(), dto.getInsuranceType(),
+								new HealthChargeRateItem(new Ins3Rate(dto.getChargeRate().getCompanyRate()),
+										new Ins3Rate(dto.getChargeRate().getPersonalRate()))))
+						.collect(Collectors.toList()));
 			}
 
 			@Override
 			public OfficeCode getOfficeCode() {
-				return command.getOfficeCode();
+				return new OfficeCode(command.getOfficeCode());
 			}
 
 			@Override
 			public CommonAmount getMaxAmount() {
-				return command.getMaxAmount();
+				return new CommonAmount(command.getMaxAmount());
 			}
 
 			@Override
 			public String getHistoryId() {
+				if (command.getHistoryId().equals("")) {
+					return IdentifierUtil.randomUniqueId();
+				}
 				return command.getHistoryId();
 			}
 
 			@Override
 			public CompanyCode getCompanyCode() {
-				return command.getCompanyCode();
+				return companyCode;
 			}
 
 			@Override
@@ -75,10 +91,10 @@ public class RegisterHealthInsuranceCommand extends HealthInsuranceBaseCommand {
 
 			@Override
 			public MonthRange getApplyRange() {
-				return command.getApplyRange();
+				return MonthRange.range(new YearMonth(command.getStartMonth()), new YearMonth(command.getStartMonth()));
 			}
 		});
-		
+
 		return healthInsuranceRate;
 	}
 }

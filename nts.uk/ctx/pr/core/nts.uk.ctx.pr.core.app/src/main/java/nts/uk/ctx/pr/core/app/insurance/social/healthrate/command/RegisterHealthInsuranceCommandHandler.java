@@ -47,7 +47,7 @@ public class RegisterHealthInsuranceCommandHandler extends CommandHandler<Regist
 
 		// Validate
 		healthInsuranceRateService.validateDateRange(healthInsuranceRate);
-		healthInsuranceRateService.validateRequiredItem(healthInsuranceRate);
+//		healthInsuranceRateService.validateRequiredItem(healthInsuranceRate);
 
 		// Insert into db.
 		healthInsuranceRateRepository.add(healthInsuranceRate);

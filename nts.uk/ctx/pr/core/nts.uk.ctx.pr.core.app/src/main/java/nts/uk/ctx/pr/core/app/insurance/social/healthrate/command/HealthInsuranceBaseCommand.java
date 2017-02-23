@@ -4,16 +4,13 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.app.insurance.social.healthrate.command;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.core.dom.company.CompanyCode;
-import nts.uk.ctx.pr.core.dom.insurance.CommonAmount;
-import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
-import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
+import nts.uk.ctx.pr.core.app.insurance.social.healthrate.find.InsuranceRateItemDto;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.HealthInsuranceRounding;
-import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.InsuranceRateItem;
 
 /**
  * The Class HealthInsuranceBaseCommand.
@@ -26,22 +23,25 @@ public abstract class HealthInsuranceBaseCommand {
 	private String historyId;
 
 	/** The company code. */
-	private CompanyCode companyCode;
+	private String companyCode;
 
 	/** The office code. */
-	private OfficeCode officeCode;
+	private String officeCode;
 
-	/** The apply range. */
-	private MonthRange applyRange;
-
+	/** The start month. */
+	private Integer startMonth;
+	
+	/** The end month. */
+	private Integer endMonth;
+	
 	/** The auto calculate. */
 	private Boolean autoCalculate;
 
 	/** The max amount. */
-	private CommonAmount maxAmount;
+	private BigDecimal maxAmount;
 
 	/** The rate items. */
-	private List<InsuranceRateItem> rateItems;
+	private List<InsuranceRateItemDto> rateItems;
 
 	/** The rounding methods. */
 	private List<HealthInsuranceRounding> roundingMethods;

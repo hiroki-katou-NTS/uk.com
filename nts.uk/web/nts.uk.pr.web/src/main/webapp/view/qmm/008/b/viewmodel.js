@@ -22,12 +22,20 @@ var nts;
                                     self.selectedValue = ko.observable(new optionsModel(1, ""));
                                     self.isTransistReturnData = ko.observable(nts.uk.ui.windows.getShared("isTransistReturnData"));
                                     self.officeCodeName = ko.observable(receiveOfficeItem.codeName);
-                                    self.selectedDate = ko.observable(self.getLastHistory(receiveOfficeItem));
+                                    if (receiveOfficeItem.childs.length > 0)
+                                        self.selectedDate = ko.observable(self.getLastHistory(receiveOfficeItem));
+                                    else {
+                                        self.selectedDate = ko.observable(new Date().getFullYear() + "/" + new Date().getMonth());
+                                    }
                                 }
                                 ScreenModel.prototype.getLastHistory = function (OfficeItem) {
-                                    var index = OfficeItem.childs[0].codeName.indexOf("~");
-                                    var lastHistory = OfficeItem.childs[0].codeName.substring(0, index);
-                                    return lastHistory;
+                                    if (OfficeItem.childs.length > 0) {
+                                        var index = OfficeItem.childs[0].codeName.indexOf("~");
+                                        var lastHistory = OfficeItem.childs[0].codeName.substring(0, index);
+                                        return lastHistory;
+                                    }
+                                    else
+                                        return "";
                                 };
                                 ScreenModel.prototype.minusOneMonth = function (stringDate) {
                                     var index = stringDate.indexOf("/");
@@ -44,29 +52,36 @@ var nts;
                                         alert("ER011");
                                     }
                                     else {
-                                        self.getInsuranceOfficeItemDto().childs[0].codeName = self.getLastHistory(self.getInsuranceOfficeItemDto()) + "~" + self.minusOneMonth(self.selectedDate());
+                                        if (self.getInsuranceOfficeItemDto().childs.length > 0) {
+                                            self.getInsuranceOfficeItemDto().childs[0].codeName = self.getLastHistory(self.getInsuranceOfficeItemDto()) + "~" + self.minusOneMonth(self.selectedDate());
+                                        }
                                         self.getInsuranceOfficeItemDto().childs.unshift(new InsuranceOfficeItemDto("", "code", (self.getInsuranceOfficeItemDto().childs.length + 1).toString(), [], self.selectedDate() + "~ 9999/12"));
                                         nts.uk.ui.windows.setShared("addHistoryChildValue", self.getInsuranceOfficeItemDto(), true);
                                         nts.uk.ui.windows.close();
                                     }
                                 };
                                 ScreenModel.prototype.compareStringDate = function (date1, date2) {
-                                    var index1 = date1.indexOf("/");
-                                    var year1 = Number(date1.substring(0, index1));
-                                    var month1 = Number(date1.substring(index1 + 1, date1.length));
-                                    var index2 = date2.indexOf("/");
-                                    var year2 = Number(date2.substring(0, index2));
-                                    var month2 = Number(date2.substring(index2 + 1, date2.length));
-                                    if (year1 < year2) {
-                                        return true;
-                                    }
-                                    else {
-                                        if (month1 + 1 < month2) {
+                                    if (date1 != "") {
+                                        var index1 = date1.indexOf("/");
+                                        var year1 = Number(date1.substring(0, index1));
+                                        var month1 = Number(date1.substring(index1 + 1, date1.length));
+                                        var index2 = date2.indexOf("/");
+                                        var year2 = Number(date2.substring(0, index2));
+                                        var month2 = Number(date2.substring(index2 + 1, date2.length));
+                                        if (year1 < year2) {
                                             return true;
                                         }
                                         else {
-                                            return false;
+                                            if (month1 + 1 < month2) {
+                                                return true;
+                                            }
+                                            else {
+                                                return false;
+                                            }
                                         }
+                                    }
+                                    else {
+                                        return true;
                                     }
                                 };
                                 ScreenModel.prototype.closeDialog = function () {

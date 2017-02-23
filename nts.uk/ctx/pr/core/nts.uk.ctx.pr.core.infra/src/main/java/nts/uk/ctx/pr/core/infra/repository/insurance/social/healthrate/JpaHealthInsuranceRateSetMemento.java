@@ -4,16 +4,21 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.infra.repository.insurance.social.healthrate;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.CommonAmount;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
+import nts.uk.ctx.pr.core.dom.insurance.PaymentType;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.HealthInsuranceRateSetMemento;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.HealthInsuranceRounding;
+import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.HealthInsuranceType;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.InsuranceRateItem;
 import nts.uk.ctx.pr.core.infra.entity.insurance.social.healthrate.QismtHealthInsuRate;
+import nts.uk.ctx.pr.core.infra.entity.insurance.social.healthrate.QismtHealthInsuRatePK;
 
 /**
  * The Class JpaHealthInsuranceRateSetMemento.
@@ -41,8 +46,9 @@ public class JpaHealthInsuranceRateSetMemento implements HealthInsuranceRateSetM
 	 */
 	@Override
 	public void setHistoryId(String historyId) {
-		// TODO Auto-generated method stub
-
+		QismtHealthInsuRatePK qismtHealthInsuRatePK = new QismtHealthInsuRatePK();
+		qismtHealthInsuRatePK.setHistId(historyId);
+		this.typeValue.setQismtHealthInsuRatePK(qismtHealthInsuRatePK);
 	}
 
 	/*
@@ -54,8 +60,9 @@ public class JpaHealthInsuranceRateSetMemento implements HealthInsuranceRateSetM
 	 */
 	@Override
 	public void setCompanyCode(CompanyCode companyCode) {
-		// TODO Auto-generated method stub
-
+		QismtHealthInsuRatePK qismtHealthInsuRatePK = this.typeValue.getQismtHealthInsuRatePK();
+		qismtHealthInsuRatePK.setCcd(companyCode.v());
+		this.typeValue.setQismtHealthInsuRatePK(qismtHealthInsuRatePK);
 	}
 
 	/*
@@ -67,8 +74,9 @@ public class JpaHealthInsuranceRateSetMemento implements HealthInsuranceRateSetM
 	 */
 	@Override
 	public void setOfficeCode(OfficeCode officeCode) {
-		// TODO Auto-generated method stub
-
+		QismtHealthInsuRatePK qismtHealthInsuRatePK = this.typeValue.getQismtHealthInsuRatePK();
+		qismtHealthInsuRatePK.setSiOfficeCd(officeCode.v());
+		this.typeValue.setQismtHealthInsuRatePK(qismtHealthInsuRatePK);
 	}
 
 	/*
@@ -80,8 +88,8 @@ public class JpaHealthInsuranceRateSetMemento implements HealthInsuranceRateSetM
 	 */
 	@Override
 	public void setApplyRange(MonthRange applyRange) {
-		// TODO Auto-generated method stub
-
+		this.typeValue.setStrYm(applyRange.getStartMonth().v());
+		this.typeValue.setEndYm(applyRange.getEndMonth().v());
 	}
 
 	/*
@@ -105,8 +113,7 @@ public class JpaHealthInsuranceRateSetMemento implements HealthInsuranceRateSetM
 	 */
 	@Override
 	public void setMaxAmount(CommonAmount maxAmount) {
-		// TODO Auto-generated method stub
-
+		this.typeValue.setBonusHealthMaxMny(maxAmount.v());
 	}
 
 	/*
@@ -117,8 +124,50 @@ public class JpaHealthInsuranceRateSetMemento implements HealthInsuranceRateSetM
 	 */
 	@Override
 	public void setRateItems(Set<InsuranceRateItem> rateItems) {
-		// TODO Auto-generated method stub
-
+		List<InsuranceRateItem> list = new ArrayList<InsuranceRateItem>();
+		list.addAll(rateItems);
+		for (InsuranceRateItem e : list) {
+			// general Salary
+			if (e.getPayType().equals(PaymentType.Salary) && e.getInsuranceType().equals(HealthInsuranceType.General)) {
+				this.typeValue.setCPayGeneralRate(e.getChargeRate().getCompanyRate().v());
+				this.typeValue.setPPayGeneralRate(e.getChargeRate().getPersonalRate().v());
+			}
+			// general Bonus
+			if (e.getPayType().equals(PaymentType.Bonus) && e.getInsuranceType().equals(HealthInsuranceType.General)) {
+				this.typeValue.setCBnsGeneralRate(e.getChargeRate().getCompanyRate().v());
+				this.typeValue.setPBnsGeneralRate(e.getChargeRate().getPersonalRate().v());
+			}
+			// nursing Salary
+			if (e.getPayType().equals(PaymentType.Salary) && e.getInsuranceType().equals(HealthInsuranceType.Nursing)) {
+				this.typeValue.setCPayNursingRate(e.getChargeRate().getCompanyRate().v());
+				this.typeValue.setPPayNursingRate(e.getChargeRate().getPersonalRate().v());
+			}
+			// nursing Bonus
+			if (e.getPayType().equals(PaymentType.Bonus) && e.getInsuranceType().equals(HealthInsuranceType.Nursing)) {
+				this.typeValue.setCBnsNursingRate(e.getChargeRate().getCompanyRate().v());
+				this.typeValue.setPBnsNursingRate(e.getChargeRate().getPersonalRate().v());
+			}
+			// special Salary
+			if (e.getPayType().equals(PaymentType.Salary) && e.getInsuranceType().equals(HealthInsuranceType.Special)) {
+				this.typeValue.setCPaySpecificRate(e.getChargeRate().getCompanyRate().v());
+				this.typeValue.setPPaySpecificRate(e.getChargeRate().getPersonalRate().v());
+			}
+			// special Bonus
+			if (e.getPayType().equals(PaymentType.Bonus) && e.getInsuranceType().equals(HealthInsuranceType.Special)) {
+				this.typeValue.setCBnsSpecificRate(e.getChargeRate().getCompanyRate().v());
+				this.typeValue.setPBnsSpecificRate(e.getChargeRate().getPersonalRate().v());
+			}
+			// basic Salary
+			if (e.getPayType().equals(PaymentType.Salary) && e.getInsuranceType().equals(HealthInsuranceType.Basic)) {
+				this.typeValue.setCPayBasicRate(e.getChargeRate().getCompanyRate().v());
+				this.typeValue.setPPayBasicRate(e.getChargeRate().getPersonalRate().v());
+			}
+			// basic Bonus
+			if (e.getPayType().equals(PaymentType.Bonus) && e.getInsuranceType().equals(HealthInsuranceType.Basic)) {
+				this.typeValue.setCBnsBasicRate(e.getChargeRate().getCompanyRate().v());
+				this.typeValue.setPBnsBasicRate(e.getChargeRate().getPersonalRate().v());
+			}
+		}
 	}
 
 	/*
@@ -129,8 +178,19 @@ public class JpaHealthInsuranceRateSetMemento implements HealthInsuranceRateSetM
 	 */
 	@Override
 	public void setRoundingMethods(Set<HealthInsuranceRounding> roundingMethods) {
-		// TODO Auto-generated method stub
-
+		List<HealthInsuranceRounding> list = new ArrayList<HealthInsuranceRounding>();
+		list.addAll(roundingMethods);
+		for (HealthInsuranceRounding e : list) {
+			// salary
+			if (e.getPayType().equals(PaymentType.Salary)) {
+				this.typeValue.setCPayHealthRoundAtr(e.getRoundAtrs().getCompanyRoundAtr().value);
+				this.typeValue.setPPayHealthRoundAtr(e.getRoundAtrs().getPersonalRoundAtr().value);
+			}
+			// bonus
+			if (e.getPayType().equals(PaymentType.Bonus)) {
+				this.typeValue.setCBnsHealthRoundAtr(e.getRoundAtrs().getCompanyRoundAtr().value);
+				this.typeValue.setPBnsHealthRoundAtr(e.getRoundAtrs().getPersonalRoundAtr().value);
+			}
+		}
 	}
-
 }

@@ -10,8 +10,14 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.YearMonth;
@@ -30,6 +36,10 @@ import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.HealthInsuranceRateRep
 import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.HealthInsuranceRounding;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.HealthInsuranceType;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.InsuranceRateItem;
+import nts.uk.ctx.pr.core.infra.entity.insurance.social.QismtSocialInsuOffice;
+import nts.uk.ctx.pr.core.infra.entity.insurance.social.healthrate.QismtHealthInsuRate;
+import nts.uk.ctx.pr.core.infra.entity.insurance.social.healthrate.QismtHealthInsuRatePK_;
+import nts.uk.ctx.pr.core.infra.entity.insurance.social.healthrate.QismtHealthInsuRate_;
 
 /**
  * The Class JpaHealthInsuranceRateRepository.
@@ -46,8 +56,12 @@ public class JpaHealthInsuranceRateRepository extends JpaRepository implements H
 	 */
 	@Override
 	public void add(HealthInsuranceRate rate) {
-		// TODO Auto-generated method stub
+		EntityManager em = this.getEntityManager();
 
+		QismtHealthInsuRate entity = new QismtHealthInsuRate();
+		rate.saveToMemento(new JpaHealthInsuranceRateSetMemento(entity));
+
+		em.persist(entity);
 	}
 
 	/*
@@ -59,8 +73,12 @@ public class JpaHealthInsuranceRateRepository extends JpaRepository implements H
 	 */
 	@Override
 	public void update(HealthInsuranceRate rate) {
-		// TODO Auto-generated method stub
+		EntityManager em = this.getEntityManager();
 
+		QismtHealthInsuRate entity = new QismtHealthInsuRate();
+		rate.saveToMemento(new JpaHealthInsuranceRateSetMemento(entity));
+
+		em.merge(entity);
 	}
 
 	/*
@@ -75,84 +93,106 @@ public class JpaHealthInsuranceRateRepository extends JpaRepository implements H
 
 	}
 
-
 	/* (non-Javadoc)
-	 * @see nts.uk.ctx.pr.core.dom.insurance.social.healthrate.HealthInsuranceRateRepository#findAll(java.lang.String)
+	 * @see nts.uk.ctx.pr.core.dom.insurance.social.healthrate.HealthInsuranceRateRepository#findAll(java.lang.String, java.lang.String)
 	 */
 	@Override
-	public List<HealthInsuranceRate> findAll(String officeCode) {
-		Set<InsuranceRateItem> list1 = new HashSet<InsuranceRateItem>();
-		HealthChargeRateItem rateItem = new HealthChargeRateItem();
-		rateItem.setCompanyRate(new Ins3Rate(new BigDecimal(40.900)));
-		rateItem.setPersonalRate(new Ins3Rate(new BigDecimal(40.900)));
-		list1.add(new InsuranceRateItem(PaymentType.Bonus, HealthInsuranceType.Basic, rateItem));
-		list1.add(new InsuranceRateItem(PaymentType.Salary, HealthInsuranceType.General, rateItem));
-		list1.add(new InsuranceRateItem(PaymentType.Bonus, HealthInsuranceType.Basic, rateItem));
-		list1.add(new InsuranceRateItem(PaymentType.Salary, HealthInsuranceType.General, rateItem));
-		list1.add(new InsuranceRateItem(PaymentType.Bonus, HealthInsuranceType.Basic, rateItem));
-		list1.add(new InsuranceRateItem(PaymentType.Salary, HealthInsuranceType.General, rateItem));
-		list1.add(new InsuranceRateItem(PaymentType.Bonus, HealthInsuranceType.Basic, rateItem));
-		list1.add(new InsuranceRateItem(PaymentType.Salary, HealthInsuranceType.General, rateItem));
+	public List<HealthInsuranceRate> findAll(String companyCode,String officeCode) {
 
-		Set<HealthInsuranceRounding> list2 = new HashSet<HealthInsuranceRounding>();
-		RoundingItem ri = new RoundingItem();
-		ri.setCompanyRoundAtr(RoundingMethod.Down4_Up5);
-		ri.setPersonalRoundAtr(RoundingMethod.RoundDown);
-		list2.add(new HealthInsuranceRounding(PaymentType.Bonus, ri));
-		list2.add(new HealthInsuranceRounding(PaymentType.Bonus, ri));
-		list2.add(new HealthInsuranceRounding(PaymentType.Bonus, ri));
-		list2.add(new HealthInsuranceRounding(PaymentType.Bonus, ri));
-		MonthRange mr = MonthRange.range(new YearMonth(201601), new YearMonth(201605));
-
-		HealthInsuranceRate mock = new HealthInsuranceRate(new HealthInsuranceRateGetMemento() {
-
-			@Override
-			public Set<HealthInsuranceRounding> getRoundingMethods() {
-				// TODO Auto-generated method stub
-				return list2;
-			}
-
-			@Override
-			public Set<InsuranceRateItem> getRateItems() {
-				// TODO Auto-generated method stub
-				return list1;
-			}
-
-			@Override
-			public OfficeCode getOfficeCode() {
-				return new OfficeCode("000000");
-			}
-
-			@Override
-			public CommonAmount getMaxAmount() {
-				return new CommonAmount(new BigDecimal(5));
-			}
-
-			@Override
-			public String getHistoryId() {
-				return "a";
-			}
-
-			@Override
-			public CompanyCode getCompanyCode() {
-				return new CompanyCode("Ｃ 事業所");
-			}
-
-			@Override
-			public Boolean getAutoCalculate() {
-				return true;
-			}
-
-			@Override
-			public MonthRange getApplyRange() {
-				return mr;
-			}
-		});
-		List<HealthInsuranceRate> mockList = new ArrayList<HealthInsuranceRate>();
-		mockList.add(mock);
-		mockList.add(mock);
-		mockList.add(mock);
-		return mockList;
+		// Get entity manager
+		EntityManager em = this.getEntityManager();
+		// Query for indicated stress check.
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<QismtHealthInsuRate> cq = cb.createQuery(QismtHealthInsuRate.class);
+		Root<QismtHealthInsuRate> root = cq.from(QismtHealthInsuRate.class);
+		// Constructing list of parameters
+		List<Predicate> predicateList = new ArrayList<Predicate>();
+		
+		// Construct condition.
+		predicateList.add(
+				cb.equal(root.get(QismtHealthInsuRate_.qismtHealthInsuRatePK).get(QismtHealthInsuRatePK_.ccd),
+						companyCode));
+		predicateList.add(
+				cb.equal(root.get(QismtHealthInsuRate_.qismtHealthInsuRatePK).get(QismtHealthInsuRatePK_.siOfficeCd),
+						officeCode));
+		
+		cq.where(predicateList.toArray(new Predicate[] {}));
+		return em.createQuery(cq).getResultList().stream()
+				.map(item -> new HealthInsuranceRate(new JpaHealthInsuranceRateGetMemento(item)))
+				.collect(Collectors.toList());
+		
+//		Set<InsuranceRateItem> list1 = new HashSet<InsuranceRateItem>();
+//		HealthChargeRateItem rateItem = new HealthChargeRateItem();
+//		rateItem.setCompanyRate(new Ins3Rate(new BigDecimal(40.900)));
+//		rateItem.setPersonalRate(new Ins3Rate(new BigDecimal(40.900)));
+//		list1.add(new InsuranceRateItem(PaymentType.Bonus, HealthInsuranceType.Basic, rateItem));
+//		list1.add(new InsuranceRateItem(PaymentType.Salary, HealthInsuranceType.General, rateItem));
+//		list1.add(new InsuranceRateItem(PaymentType.Bonus, HealthInsuranceType.Basic, rateItem));
+//		list1.add(new InsuranceRateItem(PaymentType.Salary, HealthInsuranceType.General, rateItem));
+//		list1.add(new InsuranceRateItem(PaymentType.Bonus, HealthInsuranceType.Basic, rateItem));
+//		list1.add(new InsuranceRateItem(PaymentType.Salary, HealthInsuranceType.General, rateItem));
+//		list1.add(new InsuranceRateItem(PaymentType.Bonus, HealthInsuranceType.Basic, rateItem));
+//		list1.add(new InsuranceRateItem(PaymentType.Salary, HealthInsuranceType.General, rateItem));
+//
+//		Set<HealthInsuranceRounding> list2 = new HashSet<HealthInsuranceRounding>();
+//		RoundingItem ri = new RoundingItem();
+//		ri.setCompanyRoundAtr(RoundingMethod.Down4_Up5);
+//		ri.setPersonalRoundAtr(RoundingMethod.RoundDown);
+//		list2.add(new HealthInsuranceRounding(PaymentType.Bonus, ri));
+//		list2.add(new HealthInsuranceRounding(PaymentType.Bonus, ri));
+//		list2.add(new HealthInsuranceRounding(PaymentType.Bonus, ri));
+//		list2.add(new HealthInsuranceRounding(PaymentType.Bonus, ri));
+//		MonthRange mr = MonthRange.range(new YearMonth(201601), new YearMonth(201605));
+//
+//		HealthInsuranceRate mock = new HealthInsuranceRate(new HealthInsuranceRateGetMemento() {
+//
+//			@Override
+//			public Set<HealthInsuranceRounding> getRoundingMethods() {
+//				// TODO Auto-generated method stub
+//				return list2;
+//			}
+//
+//			@Override
+//			public Set<InsuranceRateItem> getRateItems() {
+//				// TODO Auto-generated method stub
+//				return list1;
+//			}
+//
+//			@Override
+//			public OfficeCode getOfficeCode() {
+//				return new OfficeCode("000000");
+//			}
+//
+//			@Override
+//			public CommonAmount getMaxAmount() {
+//				return new CommonAmount(new BigDecimal(5));
+//			}
+//
+//			@Override
+//			public String getHistoryId() {
+//				return "a";
+//			}
+//
+//			@Override
+//			public CompanyCode getCompanyCode() {
+//				return new CompanyCode("Ｃ 事業所");
+//			}
+//
+//			@Override
+//			public Boolean getAutoCalculate() {
+//				return true;
+//			}
+//
+//			@Override
+//			public MonthRange getApplyRange() {
+//				return mr;
+//			}
+//		});
+//		List<HealthInsuranceRate> mockList = new ArrayList<HealthInsuranceRate>();
+//		mockList.add(mock);
+//		mockList.add(mock);
+//		mockList.add(mock);
+//		return mockList;
 	}
 
 	/*

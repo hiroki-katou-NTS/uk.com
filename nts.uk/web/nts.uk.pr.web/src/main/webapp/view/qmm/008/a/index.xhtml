@@ -34,7 +34,7 @@
 			<div id="tabpanel-1" role="tabpanel">
 				<div class="sidebar-content-header">
 					<span class="title">健康保険</span>
-					<button class="proceed">登録</button>
+					<button data-bind="click: save" class="proceed">登録</button>
 					<button >印刷(PDF)</button>
 					<button data-bind="click: OpenModalStandardMonthlyPriceHealth">標準報酬月額保険料額表</button>
 					<button data-bind="click: OpenModalOfficeRegister">事業所登録</button>
@@ -293,7 +293,7 @@
 			<div id="tabpanel-2" role="tabpanel">
 				<div class="sidebar-content-header">
 					<span class="title">厚生年金</span>
-					<button class="proceed">登録</button>
+					<button data-bind="click: save" class="proceed">登録</button>
 					<button>印刷(PDF)</button>
 					<button data-bind="click: OpenModalStandardMonthlyPricePension">標準報酬月額保険料額表</button>
 					<button data-bind="click: OpenModalOfficeRegister">事業所登録</button>
