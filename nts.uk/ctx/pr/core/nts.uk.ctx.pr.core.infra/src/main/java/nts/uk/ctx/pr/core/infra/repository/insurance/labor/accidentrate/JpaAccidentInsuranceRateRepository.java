@@ -6,6 +6,7 @@ package nts.uk.ctx.pr.core.infra.repository.insurance.labor.accidentrate;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -19,6 +20,7 @@ import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.YearMonth;
+import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.AccidentInsuranceRate;
@@ -27,8 +29,13 @@ import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.AccidentInsuranceRate
 import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.InsuBizRateItem;
 import nts.uk.ctx.pr.core.dom.insurance.labor.businesstype.BusinessTypeEnum;
 import nts.uk.ctx.pr.core.infra.entity.insurance.labor.accidentrate.QismtWorkAccidentInsu;
+import nts.uk.ctx.pr.core.infra.entity.insurance.labor.accidentrate.QismtWorkAccidentInsuPK;
 import nts.uk.ctx.pr.core.infra.entity.insurance.labor.accidentrate.QismtWorkAccidentInsuPK_;
 import nts.uk.ctx.pr.core.infra.entity.insurance.labor.accidentrate.QismtWorkAccidentInsu_;
+import nts.uk.ctx.pr.core.infra.entity.insurance.labor.unemployeerate.QismtEmpInsuRate;
+import nts.uk.ctx.pr.core.infra.entity.insurance.labor.unemployeerate.QismtEmpInsuRatePK;
+import nts.uk.ctx.pr.core.infra.entity.wagetable.QwtmtWagetableCertifyG;
+import nts.uk.ctx.pr.core.infra.entity.wagetable.QwtmtWagetableCertifyGPK;
 
 /**
  * The Class JpaAccidentInsuranceRateRepository.
@@ -45,7 +52,7 @@ public class JpaAccidentInsuranceRateRepository extends JpaRepository implements
 	 */
 	@Override
 	public void add(AccidentInsuranceRate rate) {
-		this.commandProxy().insertAll(toEntity(rate));
+		this.commandProxy().insertAll(ramdomHistory(rate));
 	}
 
 	/*
@@ -147,14 +154,22 @@ public class JpaAccidentInsuranceRateRepository extends JpaRepository implements
 	 */
 	@Override
 	public AccidentInsuranceRate findById(CompanyCode companyCode, String historyId) {
-		// TODO Auto-generated method stub
-		List<AccidentInsuranceRate> lstAccidentInsuranceRate = findAll(companyCode);
-		for (AccidentInsuranceRate accidentInsuranceRate : lstAccidentInsuranceRate) {
-			if (accidentInsuranceRate.getHistoryId().equals(historyId)) {
-				return accidentInsuranceRate;
-			}
-		}
-		return null;
+		EntityManager em = getEntityManager();
+		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+		CriteriaQuery<QismtWorkAccidentInsu> cq = criteriaBuilder.createQuery(QismtWorkAccidentInsu.class);
+		Root<QismtWorkAccidentInsu> root = cq.from(QismtWorkAccidentInsu.class);
+		cq.select(root);
+		List<Predicate> lstpredicate = new ArrayList<>();
+		lstpredicate.add(criteriaBuilder.equal(
+				root.get(QismtWorkAccidentInsu_.qismtWorkAccidentInsuPK).get(QismtWorkAccidentInsuPK_.ccd),
+				companyCode.v()));
+		lstpredicate.add(criteriaBuilder.equal(
+				root.get(QismtWorkAccidentInsu_.qismtWorkAccidentInsuPK).get(QismtWorkAccidentInsuPK_.histId),
+				historyId));
+		cq.where(lstpredicate.toArray(new Predicate[] {}));
+		TypedQuery<QismtWorkAccidentInsu> query = em.createQuery(cq);
+		List<QismtWorkAccidentInsu> lstQismtWorkAccidentInsu = query.getResultList();
+		return toDomain(lstQismtWorkAccidentInsu);
 	}
 
 	@Override
@@ -187,4 +202,14 @@ public class JpaAccidentInsuranceRateRepository extends JpaRepository implements
 		return new AccidentInsuranceRate(new JpaHistoryAccidentInsuranceRateGetMemento(entity));
 	}
 
+	public List<QismtWorkAccidentInsu> ramdomHistory(AccidentInsuranceRate rate) {
+		List<QismtWorkAccidentInsu> lstQismtWorkAccidentInsu = toEntity(rate);
+		String historyId = IdentifierUtil.randomUniqueId();
+		for (QismtWorkAccidentInsu qismtWorkAccidentInsu : lstQismtWorkAccidentInsu) {
+			QismtWorkAccidentInsuPK pk = qismtWorkAccidentInsu.getQismtWorkAccidentInsuPK();
+			pk.setHistId(historyId);
+			qismtWorkAccidentInsu.setQismtWorkAccidentInsuPK(pk);
+		}
+		return lstQismtWorkAccidentInsu;
+	}
 }

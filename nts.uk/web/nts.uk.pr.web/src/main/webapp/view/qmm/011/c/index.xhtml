@@ -9,18 +9,17 @@
 						<button id="C_BTN_002" class="floatRight"
 							data-bind="click: openEditHistoryAccidentInsuranceRate">履歴編集</button>
 					</div>
-					<div class="list-box" id="lstHistoryAccidentInsuranceRate"
+					<div class="list-box"
 						data-bind="ntsListBox: {
 						options: lstHistoryAccidentInsuranceRate,
-						optionsValue: 'historyId',
-						optionsText: 'inforMonthRage',
+						primaryKey: 'historyId',
+						primaryText: 'inforMonthRage',
 						multiple: false,
 						value: selectionHistoryAccidentInsuranceRate,
 						enable: true,
 						rows: 10,
-						required: true,
 						columns: [
-							{ prop: 'inforMonthRage', length: 10 }
+							{ key: 'inforMonthRage', length: 10 }
 						]}"></div>
 				</td>
 				<td id="contents-right">

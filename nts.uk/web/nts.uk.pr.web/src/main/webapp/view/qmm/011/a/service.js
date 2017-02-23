@@ -25,7 +25,7 @@ var nts;
                                 updateUnemployeeInsuranceRate: "pr/insurance/labor/unemployeerate/update",
                                 findAllHistoryAccidentInsuranceRate: "pr/insurance/labor/accidentrate/history/findall",
                                 findHistoryAccidentInsuranceRate: "pr/insurance/labor/accidentrate/history/find",
-                                detailHistoryAccidentInsuranceRate: "pr/insurance/labor/accidentrate/history/detail",
+                                findAccidentInsuranceRate: "pr/insurance/labor/accidentrate/find",
                                 addAccidentInsuranceRate: "pr/insurance/labor/accidentrate/add",
                                 updateAccidentInsuranceRate: "pr/insurance/labor/accidentrate/update",
                                 findAllInsuranceBusinessType: "pr/insurance/labor/businesstype/findall"
@@ -96,11 +96,10 @@ var nts;
                                 return dfd.promise();
                             }
                             service.detailHistoryUnemployeeInsuranceRate = detailHistoryUnemployeeInsuranceRate;
-                            function addAccidentInsuranceRate(accidentInsuranceRateModel, historyAccidentInsuranceDto, companyCode) {
+                            function addAccidentInsuranceRate(accidentInsuranceRateModel, historyAccidentInsuranceDto) {
                                 var dfd = $.Deferred();
                                 var data = {
-                                    accidentInsuranceRate: service.convertAccidentInsuranceRateModelDTO(accidentInsuranceRateModel, historyAccidentInsuranceDto),
-                                    companyCode: companyCode
+                                    accidentInsuranceRate: service.convertAccidentInsuranceRateModelDTO(accidentInsuranceRateModel, historyAccidentInsuranceDto)
                                 };
                                 nts.uk.request.ajax(paths.addAccidentInsuranceRate, data)
                                     .done(function (res) {
@@ -112,11 +111,10 @@ var nts;
                                 return dfd.promise();
                             }
                             service.addAccidentInsuranceRate = addAccidentInsuranceRate;
-                            function updateAccidentInsuranceRate(accidentInsuranceRateModel, historyAccidentInsuranceDto, companyCode) {
+                            function updateAccidentInsuranceRate(accidentInsuranceRateModel, historyAccidentInsuranceDto) {
                                 var dfd = $.Deferred();
                                 var data = {
-                                    accidentInsuranceRate: service.convertAccidentInsuranceRateModelDTO(accidentInsuranceRateModel, historyAccidentInsuranceDto),
-                                    companyCode: companyCode
+                                    accidentInsuranceRate: service.convertAccidentInsuranceRateModelDTO(accidentInsuranceRateModel, historyAccidentInsuranceDto)
                                 };
                                 nts.uk.request.ajax(paths.updateAccidentInsuranceRate, data)
                                     .done(function (res) {
@@ -152,9 +150,9 @@ var nts;
                                 return dfd.promise();
                             }
                             service.findHistoryAccidentInsuranceRate = findHistoryAccidentInsuranceRate;
-                            function detailHistoryAccidentInsuranceRate(historyId) {
+                            function findAccidentInsuranceRate(historyId) {
                                 var dfd = $.Deferred();
-                                nts.uk.request.ajax(paths.detailHistoryAccidentInsuranceRate + "/" + historyId)
+                                nts.uk.request.ajax(paths.findAccidentInsuranceRate + "/" + historyId)
                                     .done(function (res) {
                                     dfd.resolve(res);
                                 })
@@ -163,7 +161,7 @@ var nts;
                                 });
                                 return dfd.promise();
                             }
-                            service.detailHistoryAccidentInsuranceRate = detailHistoryAccidentInsuranceRate;
+                            service.findAccidentInsuranceRate = findAccidentInsuranceRate;
                             function convertUnemployeeInsuranceRateItemSettingModelDTO(unemployeeInsuranceRateItemSettingModel) {
                                 var unemployeeInsuranceRateItemSettingDto;
                                 unemployeeInsuranceRateItemSettingDto = new model.UnemployeeInsuranceRateItemSettingDto(unemployeeInsuranceRateItemSettingModel.roundAtr(), unemployeeInsuranceRateItemSettingModel.rate());
@@ -370,8 +368,8 @@ var nts;
                                     TypeActionInsuranceRate[TypeActionInsuranceRate["update"] = 2] = "update";
                                 })(model.TypeActionInsuranceRate || (model.TypeActionInsuranceRate = {}));
                                 var TypeActionInsuranceRate = model.TypeActionInsuranceRate;
-                                var InsuranceBusinessTypeUpdateDto = (function () {
-                                    function InsuranceBusinessTypeUpdateDto(bizNameBiz1St, bizNameBiz2Nd, bizNameBiz3Rd, bizNameBiz4Th, bizNameBiz5Th, bizNameBiz6Th, bizNameBiz7Th, bizNameBiz8Th, bizNameBiz9Th, bizNameBiz10Th, version) {
+                                var InsuranceBusinessTypeDto = (function () {
+                                    function InsuranceBusinessTypeDto(bizNameBiz1St, bizNameBiz2Nd, bizNameBiz3Rd, bizNameBiz4Th, bizNameBiz5Th, bizNameBiz6Th, bizNameBiz7Th, bizNameBiz8Th, bizNameBiz9Th, bizNameBiz10Th, version) {
                                         this.bizNameBiz1St = bizNameBiz1St;
                                         this.bizNameBiz2Nd = bizNameBiz2Nd;
                                         this.bizNameBiz3Rd = bizNameBiz3Rd;
@@ -384,9 +382,9 @@ var nts;
                                         this.bizNameBiz10Th = bizNameBiz10Th;
                                         this.version = version;
                                     }
-                                    return InsuranceBusinessTypeUpdateDto;
+                                    return InsuranceBusinessTypeDto;
                                 }());
-                                model.InsuranceBusinessTypeUpdateDto = InsuranceBusinessTypeUpdateDto;
+                                model.InsuranceBusinessTypeDto = InsuranceBusinessTypeDto;
                             })(model = service.model || (service.model = {}));
                         })(service = a.service || (a.service = {}));
                     })(a = qmm011.a || (qmm011.a = {}));
