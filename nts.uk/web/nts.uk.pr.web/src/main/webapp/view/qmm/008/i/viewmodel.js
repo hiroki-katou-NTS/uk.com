@@ -18,7 +18,7 @@ var nts;
                                     var self = this;
                                     self.listAvgEarnLevelMasterSetting = [];
                                     self.listPensionAvgearnModel = ko.observableArray([]);
-                                    self.pensionRateModel = new PensionRateModel(pensionModel.historyId, dataOfSelectedOffice.code, dataOfSelectedOffice.name, pensionModel.startMonth(), pensionModel.endMonth(), pensionModel.rateItems());
+                                    self.pensionRateModel = new PensionRateModel(pensionModel.historyId, dataOfSelectedOffice.code, dataOfSelectedOffice.name, pensionModel.startMonth(), pensionModel.endMonth(), pensionModel.rateItems(), pensionModel.childContributionRate());
                                     self.leftShow = ko.observable(true);
                                     self.rightShow = ko.observable(true);
                                     self.leftBtnText = ko.computed(function () { if (self.leftShow())
@@ -50,7 +50,7 @@ var nts;
                                     var dfd = $.Deferred();
                                     i.service.findPensionAvgearn('id').done(function (res) {
                                         res.forEach(function (item) {
-                                            self.listPensionAvgearnModel.push(new PensionAvgearnModel(item.historyId, item.levelCode, new PensionAvgearnValueModel(item.companyFund.maleAmount, item.companyFund.femaleAmount, item.companyFund.unknownAmount), new PensionAvgearnValueModel(item.companyFundExemption.maleAmount, item.companyFundExemption.femaleAmount, item.companyFundExemption.unknownAmount), new PensionAvgearnValueModel(item.companyPension.maleAmount, item.companyPension.femaleAmount, item.companyPension.unknownAmount), new PensionAvgearnValueModel(item.personalFund.maleAmount, item.personalFund.femaleAmount, item.personalFund.unknownAmount), new PensionAvgearnValueModel(item.personalFundExemption.maleAmount, item.personalFundExemption.femaleAmount, item.personalFundExemption.unknownAmount), new PensionAvgearnValueModel(item.personalPension.maleAmount, item.personalPension.femaleAmount, item.personalPension.unknownAmount), item.childContributionAmount));
+                                            self.listPensionAvgearnModel.push(new PensionAvgearnModel(item.historyId, item.levelCode, new PensionAvgearnValueModel(item.companyFundExemption.maleAmount, item.companyFundExemption.femaleAmount, item.companyFundExemption.unknownAmount), new PensionAvgearnValueModel(item.companyPension.maleAmount, item.companyPension.femaleAmount, item.companyPension.unknownAmount), new PensionAvgearnValueModel(item.personalFundExemption.maleAmount, item.personalFundExemption.femaleAmount, item.personalFundExemption.unknownAmount), new PensionAvgearnValueModel(item.personalPension.maleAmount, item.personalPension.femaleAmount, item.personalPension.unknownAmount), item.childContributionAmount));
                                         });
                                         dfd.resolve();
                                     });
@@ -79,6 +79,16 @@ var nts;
                                 ScreenModel.prototype.reCalculate = function () {
                                     var self = this;
                                     self.listPensionAvgearnModel.removeAll();
+                                    self.listAvgEarnLevelMasterSetting.forEach(function (item) {
+                                        self.listPensionAvgearnModel.push(self.calculatePensionAvgearn(item));
+                                    });
+                                };
+                                ScreenModel.prototype.calculatePensionAvgearn = function (levelMasterSetting) {
+                                    var self = this;
+                                    var model = self.pensionRateModel;
+                                    var rateItems = self.pensionRateModel.fundRateItems;
+                                    var rate = levelMasterSetting.avgEarn / 1000;
+                                    return new PensionAvgearnModel(model.historyId, levelMasterSetting.code, new PensionAvgearnValueModel(rateItems.salaryCompanySonExemption() * rate, rateItems.salaryCompanyDaughterExemption() * rate, rateItems.salaryCompanyUnknownExemption() * rate), new PensionAvgearnValueModel(rateItems.salaryCompanySonBurden() * rate, rateItems.salaryCompanyDaughterBurden() * rate, rateItems.salaryCompanyUnknownBurden() * rate), new PensionAvgearnValueModel(rateItems.salaryPersonalSonExemption() * rate, rateItems.salaryPersonalDaughterExemption() * rate, rateItems.salaryPersonalUnknownExemption() * rate), new PensionAvgearnValueModel(rateItems.salaryPersonalSonBurden() * rate, rateItems.salaryPersonalDaughterBurden() * rate, rateItems.salaryPersonalUnknownBurden() * rate), model.childContributionRate() * rate);
                                 };
                                 ScreenModel.prototype.closeDialog = function () {
                                     nts.uk.ui.windows.close();
@@ -87,25 +97,24 @@ var nts;
                             }());
                             viewmodel.ScreenModel = ScreenModel;
                             var PensionRateModel = (function () {
-                                function PensionRateModel(historyId, officeCode, officeName, startMonth, endMonth, rateItems) {
+                                function PensionRateModel(historyId, officeCode, officeName, startMonth, endMonth, rateItems, childContributionRate) {
                                     this.historyId = historyId;
                                     this.officeCode = officeCode;
                                     this.officeName = officeName;
                                     this.startMonth = startMonth;
                                     this.endMonth = endMonth;
-                                    this.rateItems = rateItems;
+                                    this.fundRateItems = rateItems;
+                                    this.childContributionRate = ko.observable(childContributionRate);
                                 }
                                 return PensionRateModel;
                             }());
                             viewmodel.PensionRateModel = PensionRateModel;
                             var PensionAvgearnModel = (function () {
-                                function PensionAvgearnModel(historyId, levelCode, companyFund, companyFundExemption, companyPension, personalFund, personalFundExemption, personalPension, childContributionAmount) {
+                                function PensionAvgearnModel(historyId, levelCode, companyFundExemption, companyPension, personalFundExemption, personalPension, childContributionAmount) {
                                     this.historyId = historyId;
                                     this.levelCode = levelCode;
-                                    this.companyFund = companyFund;
                                     this.companyFundExemption = companyFundExemption;
                                     this.companyPension = companyPension;
-                                    this.personalFund = personalFund;
                                     this.personalFundExemption = personalFundExemption;
                                     this.personalPension = personalPension;
                                     this.childContributionAmount = ko.observable(childContributionAmount);
