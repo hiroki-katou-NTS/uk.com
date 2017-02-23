@@ -14,9 +14,9 @@ import nts.arc.time.YearMonth;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.CommonAmount;
+import nts.uk.ctx.pr.core.dom.insurance.Ins3Rate;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
-import nts.uk.ctx.pr.core.dom.insurance.Ins3Rate;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.HealthChargeRateItem;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.HealthInsuranceRate;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.HealthInsuranceRateGetMemento;
@@ -91,7 +91,11 @@ public class RegisterHealthInsuranceCommand extends HealthInsuranceBaseCommand {
 
 			@Override
 			public MonthRange getApplyRange() {
-				return MonthRange.range(new YearMonth(command.getStartMonth()), new YearMonth(command.getStartMonth()));
+				Integer startYear = Integer.parseInt(command.getStartMonth().split("/")[0]);
+				Integer startMonth = Integer.parseInt(command.getStartMonth().split("/")[1]);
+				Integer endYear = Integer.parseInt(command.getEndMonth().split("/")[0]);
+				Integer endMonth = Integer.parseInt(command.getEndMonth().split("/")[1]);
+				return MonthRange.range(YearMonth.of(startYear,startMonth),YearMonth.of(endYear,endMonth));
 			}
 		});
 

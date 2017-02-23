@@ -29,10 +29,10 @@ public abstract class HealthInsuranceBaseCommand {
 	private String officeCode;
 
 	/** The start month. */
-	private Integer startMonth;
+	private String startMonth;
 	
 	/** The end month. */
-	private Integer endMonth;
+	private String endMonth;
 	
 	/** The auto calculate. */
 	private Boolean autoCalculate;
