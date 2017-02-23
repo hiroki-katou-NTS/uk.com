@@ -11,14 +11,15 @@ import nts.arc.primitive.constraint.StringMaxLength;
  * The Class WageTableRefNo.
  */
 @StringMaxLength(4)
-public class WageTableRefNo extends StringPrimitiveValue<WageTableRefNo> {
+public class WtElementRefNo extends StringPrimitiveValue<WtElementRefNo> {
 
 	/**
 	 * Instantiates a new wage table ref no.
 	 *
-	 * @param rawValue the raw value
+	 * @param rawValue
+	 *            the raw value
 	 */
-	public WageTableRefNo(String rawValue) {
+	public WtElementRefNo(String rawValue) {
 		super(rawValue);
 	}
 

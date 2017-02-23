@@ -6,7 +6,7 @@ package nts.uk.ctx.pr.core.dom.wagetable.element;
 
 import lombok.Getter;
 import nts.uk.ctx.core.dom.company.CompanyCode;
-import nts.uk.ctx.pr.core.dom.wagetable.WageTableRefNo;
+import nts.uk.ctx.pr.core.dom.wagetable.WtElementRefNo;
 
 /**
  * The Class TableRefBase.
@@ -18,7 +18,7 @@ public abstract class TableRefBase {
 	private CompanyCode companyCode;
 
 	/** The ref no. */
-	private WageTableRefNo refNo;
+	private WtElementRefNo refNo;
 
 	/** The ref name. */
 	private String refName;

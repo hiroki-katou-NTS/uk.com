@@ -9,7 +9,7 @@ import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.wagetable.ElementType;
 import nts.uk.ctx.pr.core.dom.wagetable.WageTableCode;
-import nts.uk.ctx.pr.core.dom.wagetable.WageTableRefNo;
+import nts.uk.ctx.pr.core.dom.wagetable.WtElementRefNo;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroupGetMemento;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroupSetMemento;
 
@@ -32,7 +32,7 @@ public class WageTableElement extends DomainObject {
 	private ElementType demensionType;
 
 	/** The elements. */
-	private WageTableRefNo demensionRefNo;
+	private WtElementRefNo demensionRefNo;
 
 	// =================== Memento State Support Method ===================
 	/**
