@@ -13,6 +13,10 @@
 					height : 600
 				};
 			</script>
+			<com:ValidatorScript>
+				nts.uk.ctx.pr.core.dom.insurance.CommonAmount
+				<!-- nts.uk.ctx.pr.core.dom.insurance.InsuranceAmount -->
+  			</com:ValidatorScript>
 			<com:stylefile path="main.css" />
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="../0/common/service.js" />
@@ -22,13 +26,17 @@
 		</ui:define>
 
 		<ui:define name="content">
+			<!-- BEGIN FUNCTION AREA-->
 			<div id="functions-area">
 				<button class="large proceed" data-bind="click: save, enable: $root.errors.isEmpty">登録</button>
 				<button class="large">印刷</button>
 				<button class="large" data-bind="click: reCalculate">再計算</button>
 				<button class="large btn-close" data-bind="click: closeDialog">閉じる</button>
 			</div>
-			<div class="contents-area">
+			<!-- END FUNCTION AREA-->
+
+			<!-- BEGIN CONTENT AREA-->
+			<div id="contents-area">
 				<div data-bind="ntsFormLabel: {required: true}">事業所 :</div>
 				<com:ko tag="with" bind="pensionRateModel">
 					<span id="lblCode" data-bind="text: officeCode"></span>
@@ -41,7 +49,7 @@
 					<table id="health_insurance_per_month">
 						<tbody>
 							<tr class="bg-green">
-								<th colspan="2" rowspan="2">等級</th>
+								<th class="halign-center" colspan="2" rowspan="2">等級</th>
 								<th class="halign-center" rowspan="4">標準月額</th>
 								<th class="halign-center" colspan="2" rowspan="2">報酬月額</th>
 								<th class="border_none"><button class="small"
@@ -98,45 +106,26 @@
 							</tr>
 							<tr class="bg-green">
 								<th data-bind="css: { hidden: leftShow() }" class="border_none"></th>
-								<com:ko tag="if" bind="leftShow">
-									<th class="halign-center">40.900/1000</th>
-									<th class="halign-center">40.900/1000</th>
-									<th class="halign-center">40.900/1000</th>
-									<th class="halign-center">40.900/1000</th>
-									<th class="halign-center">40.900/1000</th>
-									<th class="halign-center">40.900/1000</th>
-								</com:ko>
-
-								<th data-bind="css: { hidden: rightShow() }" class="border_none"></th>
-								<com:ko tag="if" bind="rightShow">
-									<th class="halign-center">40.900/1000</th>
-									<th class="halign-center">40.900/1000</th>
-									<th class="halign-center">40.900/1000</th>
-									<th class="halign-center">40.900/1000</th>
-									<th class="halign-center">40.900/1000</th>
-									<th class="halign-center">40.900/1000</th>
-								</com:ko>
-								<!-- wait for data from qmm008 a.
 									<com:ko tag="with" bind="pensionRateModel.fundRateItems">
-									<com:ko tag="if" bind="$parent.leftShow">
-										<th class="halign-center" data-bind="text: $parent.companyFundExemption.maleAmount"></th>
-										<th class="halign-center" data-bind="text: $parent.companyFundExemption.femaleAmount"></th>
-										<th class="halign-center" data-bind="text: $parent.companyFundExemption.unknownAmount"></th>
-										<th class="halign-center" data-bind="text: $parent.companyPension.maleAmount"></th>
-										<th class="halign-center" data-bind="text: $parent.companyPension.femaleAmount"></th>
-										<th class="halign-center" data-bind="text: $parent.companyPension.unknownAmount"></th>
+										<com:ko tag="if" bind="$parent.leftShow()">
+											<th class="halign-center" data-bind="text: salaryCompanySonExemption()+'/1000'"></th>
+											<th class="halign-center" data-bind="text: salaryCompanyDaughterExemption()+'/1000'"></th>
+											<th class="halign-center" data-bind="text: salaryCompanyUnknownExemption()+'/1000'"></th>
+											<th class="halign-center" data-bind="text: salaryCompanySonBurden()+'/1000'"></th>
+											<th class="halign-center" data-bind="text: salaryPersonalDaughterBurden()+'/1000'"></th>
+											<th class="halign-center" data-bind="text: salaryCompanyUnknownBurden()+'/1000'"></th>
+										</com:ko>
+										<th data-bind="css: { hidden: $parent.rightShow() }"
+											class="border_none"></th>
+										<com:ko tag="if" bind="$parent.rightShow()">
+											<th class="halign-center" data-bind="text: salaryPersonalSonExemption()+'/1000'"></th>
+											<th class="halign-center" data-bind="text: salaryPersonalDaughterExemption()+'/1000'"></th>
+											<th class="halign-center" data-bind="text: salaryPersonalUnknownExemption()+'/1000'"></th>
+											<th class="halign-center" data-bind="text: salaryPersonalSonBurden()+'/1000'"></th>
+											<th class="halign-center" data-bind="text: salaryPersonalDaughterBurden()+'/1000'"></th>
+											<th class="halign-center" data-bind="text: salaryPersonalUnknownBurden()+'/1000'"></th>
+										</com:ko>
 									</com:ko>
-									<th data-bind="css: { hidden: $parent.rightShow() }"
-										class="border_none"></th>
-									<com:ko tag="if" bind="$parent.rightShow">
-										<th class="halign-center" data-bind="text: $parent.personalFundExemption.maleAmount"></th>
-										<th class="halign-center" data-bind="text: $parent.personalFundExemption.femaleAmount"></th>
-										<th class="halign-center" data-bind="text: $parent.personalFundExemption.unknownAmount"></th>
-										<th class="halign-center" data-bind="text: $parent.personalPension.maleAmount"></th>
-										<th class="halign-center" data-bind="text: $parent.personalPension.femaleAmount"></th>
-										<th class="halign-center" data-bind="text: $parent.personalPension.unknownAmount"></th>
-									</com:ko>
-								</com:ko>-->
 								<th class="halign-center" data-bind="text: pensionRateModel.childContributionRate"></th> 
 							</tr>
 							<com:ko-foreach bind="listAvgEarnLevelMasterSetting">
@@ -152,35 +141,35 @@
 												class="bg-green border_none"></td>
 											<com:ko tag="with" bind="personalPension">
 												<com:ko-if bind="$parents[2].leftShow()">
-													<td><input data-bind="ntsNumberEditor: {value: maleAmount}"></input></td>
-													<td><input data-bind="ntsNumberEditor: {value: femaleAmount}"></input></td>
-													<td><input data-bind="ntsNumberEditor: {value: unknownAmount}"></input></td>
+													<td><input data-bind="ntsNumberEditor: {value: maleAmount, constraint:'CommonAmount', option: $parents[2].numberEditorCommonOption}"></input></td>
+													<td><input data-bind="ntsNumberEditor: {value: femaleAmount, constraint:'CommonAmount', option: $parents[2].numberEditorCommonOption}"></input></td>
+													<td><input data-bind="ntsNumberEditor: {value: unknownAmount, constraint:'CommonAmount', option: $parents[2].numberEditorCommonOption}"></input></td>
 												</com:ko-if>
 											</com:ko>
 											<com:ko tag="with" bind="companyPension">
 												<com:ko-if bind="$parents[2].leftShow()">
-													<td><input data-bind="ntsNumberEditor: {value: maleAmount}"></input></td>
-													<td><input data-bind="ntsNumberEditor: {value: femaleAmount}"></input></td>
-													<td><input data-bind="ntsNumberEditor: {value: unknownAmount}"></input></td>
+													<td><input data-bind="ntsNumberEditor: {value: maleAmount, constraint:'CommonAmount', option: $parents[2].numberEditorCommonOption}"></input></td>
+													<td><input data-bind="ntsNumberEditor: {value: femaleAmount, constraint:'CommonAmount', option: $parents[2].numberEditorCommonOption}"></input></td>
+													<td><input data-bind="ntsNumberEditor: {value: unknownAmount, constraint:'CommonAmount', option: $parents[2].numberEditorCommonOption}"></input></td>
 												</com:ko-if>
 											</com:ko>
 											<td data-bind="css: { hidden: $parents[1].rightShow() }"
 												class="bg-green border_none"></td>
 											<com:ko tag="with" bind="personalFundExemption">
 												<com:ko-if bind="$parents[2].rightShow()">
-													<td><input data-bind="ntsNumberEditor: {value: maleAmount}"></input></td>
-													<td><input data-bind="ntsNumberEditor: {value: femaleAmount}"></input></td>
-													<td><input data-bind="ntsNumberEditor: {value: unknownAmount}"></input></td>
+													<td><input data-bind="ntsNumberEditor: {value: maleAmount, constraint:'CommonAmount', option: $parents[2].numberEditorCommonOption}"></input></td>
+													<td><input data-bind="ntsNumberEditor: {value: femaleAmount, constraint:'CommonAmount', option: $parents[2].numberEditorCommonOption}"></input></td>
+													<td><input data-bind="ntsNumberEditor: {value: unknownAmount, constraint:'CommonAmount', option: $parents[2].numberEditorCommonOption}"></input></td>
 												</com:ko-if>
 											</com:ko>
 											<com:ko tag="with" bind="companyFundExemption">
 												<com:ko-if bind="$parents[2].rightShow()">
-													<td><input data-bind="ntsNumberEditor: {value: maleAmount}"></input></td>
-													<td><input data-bind="ntsNumberEditor: {value: femaleAmount}"></input></td>
-													<td><input data-bind="ntsNumberEditor: {value: unknownAmount}"></input></td>
+													<td><input data-bind="ntsNumberEditor: {value: maleAmount, constraint:'CommonAmount', option: $parents[2].numberEditorCommonOption}"></input></td>
+													<td><input data-bind="ntsNumberEditor: {value: femaleAmount, constraint:'CommonAmount', option: $parents[2].numberEditorCommonOption}"></input></td>
+													<td><input data-bind="ntsNumberEditor: {value: unknownAmount, constraint:'CommonAmount', option: $parents[2].numberEditorCommonOption}"></input></td>
 												</com:ko-if>
 											</com:ko>
-											<td><input data-bind="ntsNumberEditor: {value: childContributionAmount}"></input></td>
+											<td><input data-bind="ntsNumberEditor: {value: childContributionAmount, constraint:'', option: {grouplength: 3, decimallength: 2}}"></input></td>
 										</com:ko-if>
 									</com:ko-foreach>
 								</tr>
@@ -189,6 +178,7 @@
 					</table>
 				</div>
 			</div>
+			<!-- END CONTENT AREA-->
 		</ui:define>
 	</ui:composition>
 </body>

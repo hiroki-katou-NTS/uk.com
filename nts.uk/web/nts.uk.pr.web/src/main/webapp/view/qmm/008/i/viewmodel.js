@@ -18,13 +18,16 @@ var nts;
                                     var self = this;
                                     self.listAvgEarnLevelMasterSetting = [];
                                     self.listPensionAvgearnModel = ko.observableArray([]);
-                                    self.pensionRateModel = new PensionRateModel(pensionModel.historyId, dataOfSelectedOffice.code, dataOfSelectedOffice.name, pensionModel.startMonth(), pensionModel.endMonth(), pensionModel.rateItems(), pensionModel.childContributionRate());
+                                    self.pensionRateModel = new PensionRateModel(pensionModel.historyId, dataOfSelectedOffice.code, dataOfSelectedOffice.name, pensionModel.startMonth(), pensionModel.endMonth(), pensionModel.fundRateItems(), pensionModel.childContributionRate());
                                     self.leftShow = ko.observable(true);
                                     self.rightShow = ko.observable(true);
                                     self.leftBtnText = ko.computed(function () { if (self.leftShow())
                                         return "—"; return "+"; });
                                     self.rightBtnText = ko.computed(function () { if (self.rightShow())
                                         return "—"; return "+"; });
+                                    self.numberEditorCommonOption = ko.mapping.fromJS(new nts.uk.ui.option.NumberEditorOption({
+                                        grouplength: 3
+                                    }));
                                 }
                                 ScreenModel.prototype.startPage = function () {
                                     var self = this;

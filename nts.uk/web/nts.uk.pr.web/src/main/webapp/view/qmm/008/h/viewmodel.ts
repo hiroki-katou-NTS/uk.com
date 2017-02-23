@@ -12,17 +12,25 @@ module nts.uk.pr.view.qmm008.h {
             listAvgEarnLevelMasterSetting: Array<AvgEarnLevelMasterSettingDto>;
             listHealthInsuranceAvgearn: KnockoutObservableArray<HealthInsuranceAvgEarnModel>;
             healthInsuranceRateModel: HealthInsuranceRateModel;
+            numberEditorCommonOption: KnockoutObservable<nts.uk.ui.option.NumberEditorOption>;
 
             constructor(dataOfSelectedOffice: InsuranceOfficeItemDto, healthModel: HealthInsuranceRateModelofScreenA) {
                 var self = this;
                 self.healthInsuranceRateModel = new HealthInsuranceRateModel(
                     dataOfSelectedOffice.code,
                     dataOfSelectedOffice.name,
-                    healthModel.historyId, "fake-data", "fake-data",
+                    healthModel.historyId,
+                    healthModel.startMonth(),
+                    healthModel.endMonth(),
                     healthModel.rateItems());
 
                 self.listAvgEarnLevelMasterSetting = [];
                 self.listHealthInsuranceAvgearn = ko.observableArray<HealthInsuranceAvgEarnModel>([]);
+
+                // Common NtsNumberEditor Option
+                self.numberEditorCommonOption = ko.mapping.fromJS(new nts.uk.ui.option.NumberEditorOption({
+                    grouplength: 3
+                }));
             }
 
             /**

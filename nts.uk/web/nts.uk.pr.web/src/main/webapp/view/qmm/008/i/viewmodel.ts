@@ -14,6 +14,7 @@ module nts.uk.pr.view.qmm008.i {
             rightBtnText: KnockoutComputed<string>;
             listAvgEarnLevelMasterSetting: Array<AvgEarnLevelMasterSettingDto>;
             listPensionAvgearnModel: KnockoutObservableArray<PensionAvgearnModel>;
+            numberEditorCommonOption: KnockoutObservable<nts.uk.ui.option.NumberEditorOption>;
             pensionRateModel: PensionRateModel;
 
             constructor(dataOfSelectedOffice: InsuranceOfficeItemDto, pensionModel: PensionRateModelFromScreenA) {
@@ -26,12 +27,17 @@ module nts.uk.pr.view.qmm008.i {
                     dataOfSelectedOffice.name,
                     pensionModel.startMonth(),
                     pensionModel.endMonth(),
-                    pensionModel.rateItems(),
+                    pensionModel.fundRateItems(),
                     pensionModel.childContributionRate());
                 self.leftShow = ko.observable(true);
                 self.rightShow = ko.observable(true);
                 self.leftBtnText = ko.computed(function() { if (self.leftShow()) return "—"; return "+"; });
                 self.rightBtnText = ko.computed(function() { if (self.rightShow()) return "—"; return "+"; });
+
+                // Common NtsNumberEditor Option
+                self.numberEditorCommonOption = ko.mapping.fromJS(new nts.uk.ui.option.NumberEditorOption({
+                    grouplength: 3
+                }));
             }
 
             /**
@@ -160,10 +166,22 @@ module nts.uk.pr.view.qmm008.i {
                 return new PensionAvgearnModel(
                     model.historyId,
                     levelMasterSetting.code,
-                    new PensionAvgearnValueModel(rateItems.salaryCompanySonExemption() * rate, rateItems.salaryCompanyDaughterExemption() * rate, rateItems.salaryCompanyUnknownExemption() * rate),
-                    new PensionAvgearnValueModel(rateItems.salaryCompanySonBurden() * rate, rateItems.salaryCompanyDaughterBurden() * rate, rateItems.salaryCompanyUnknownBurden() * rate),
-                    new PensionAvgearnValueModel(rateItems.salaryPersonalSonExemption() * rate, rateItems.salaryPersonalDaughterExemption() * rate, rateItems.salaryPersonalUnknownExemption() * rate),
-                    new PensionAvgearnValueModel(rateItems.salaryPersonalSonBurden() * rate, rateItems.salaryPersonalDaughterBurden() * rate, rateItems.salaryPersonalUnknownBurden() * rate),
+                    new PensionAvgearnValueModel(
+                        rateItems.salaryCompanySonExemption() * rate,
+                        rateItems.salaryCompanyDaughterExemption() * rate,
+                        rateItems.salaryCompanyUnknownExemption() * rate),
+                    new PensionAvgearnValueModel(
+                        rateItems.salaryCompanySonBurden() * rate,
+                        rateItems.salaryCompanyDaughterBurden() * rate,
+                        rateItems.salaryCompanyUnknownBurden() * rate),
+                    new PensionAvgearnValueModel(
+                        rateItems.salaryPersonalSonExemption() * rate,
+                        rateItems.salaryPersonalDaughterExemption() * rate,
+                        rateItems.salaryPersonalUnknownExemption() * rate),
+                    new PensionAvgearnValueModel(
+                        rateItems.salaryPersonalSonBurden() * rate,
+                        rateItems.salaryPersonalDaughterBurden() * rate,
+                        rateItems.salaryPersonalUnknownBurden() * rate),
                     model.childContributionRate() * rate
                 );
             }

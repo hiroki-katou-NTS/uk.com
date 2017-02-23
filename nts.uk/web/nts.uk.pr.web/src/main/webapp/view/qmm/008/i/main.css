@@ -1,9 +1,12 @@
 #functions-area {
 	padding-top: 10px;
     padding-bottom: 10px;
-    padding-left: 10px;
+    padding-left: 20px;
     padding-right: 10px;
     margin-bottom: 20px;
+}
+#contents-area {
+    padding-left: 20px;
 }
 #lblCode {
 	padding-right: 20px;
@@ -13,6 +16,9 @@
 }
 table, td, th {
 	border: 1px solid black;
+}
+table, td {
+	text-align: right;
 }
 .inp-money input {
 	max-width: 100px;

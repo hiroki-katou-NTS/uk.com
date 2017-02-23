@@ -16,9 +16,12 @@ var nts;
                             var ScreenModel = (function () {
                                 function ScreenModel(dataOfSelectedOffice, healthModel) {
                                     var self = this;
-                                    self.healthInsuranceRateModel = new HealthInsuranceRateModel(dataOfSelectedOffice.code, dataOfSelectedOffice.name, healthModel.historyId, "fake-data", "fake-data", healthModel.rateItems());
+                                    self.healthInsuranceRateModel = new HealthInsuranceRateModel(dataOfSelectedOffice.code, dataOfSelectedOffice.name, healthModel.historyId, healthModel.startMonth(), healthModel.endMonth(), healthModel.rateItems());
                                     self.listAvgEarnLevelMasterSetting = [];
                                     self.listHealthInsuranceAvgearn = ko.observableArray([]);
+                                    self.numberEditorCommonOption = ko.mapping.fromJS(new nts.uk.ui.option.NumberEditorOption({
+                                        grouplength: 3
+                                    }));
                                 }
                                 ScreenModel.prototype.startPage = function () {
                                     var self = this;
