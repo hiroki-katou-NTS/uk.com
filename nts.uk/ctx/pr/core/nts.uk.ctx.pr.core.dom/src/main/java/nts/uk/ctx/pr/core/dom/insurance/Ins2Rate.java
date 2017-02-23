@@ -12,7 +12,7 @@ import nts.arc.primitive.constraint.DecimalRange;
 /**
  * The Class InsuranceAmount.
  */
-@DecimalRange(min = "000.00", max = "999.99")
+@DecimalRange(min = "0", max = "999.99")
 public class Ins2Rate extends DecimalPrimitiveValue<Ins2Rate> {
 
 	/** serialVersionUID */
