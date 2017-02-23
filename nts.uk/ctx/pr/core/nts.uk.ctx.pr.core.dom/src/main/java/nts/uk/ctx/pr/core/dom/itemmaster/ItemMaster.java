@@ -1,7 +1,9 @@
 package nts.uk.ctx.pr.core.dom.itemmaster;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
@@ -141,7 +143,10 @@ public class ItemMaster extends AggregateRoot{
 		return this;
 	}
 	
-	public ItemMaster additionalErrorAlarm(int isUseHighError, int errRangeHigh, int isUseLowError, int errRangeLow, int isUseHighAlam, int alamRangeHigh, int isUseLowAlam, int alamRangeLow){
+	public ItemMaster additionalErrorAlarm(int isUseHighError, BigDecimal errRangeHigh, 
+			int isUseLowError, BigDecimal errRangeLow, 
+			int isUseHighAlam, BigDecimal alamRangeHigh, 
+			int isUseLowAlam, BigDecimal alamRangeLow){
 		this.error = new ArrayList<>();
 		this.alarm = new ArrayList<>();
 		this.error.add(new RangeChecker(EnumAdaptor.valueOf(isUseHighError, UseOrNot.class),  EnumAdaptor.valueOf(isUseLowError, UseOrNot.class), Range.between(errRangeLow, errRangeHigh)));

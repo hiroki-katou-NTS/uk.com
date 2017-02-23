@@ -19,6 +19,7 @@ var qmm019;
                 this.totalGrayLineNumber = ko.observable(0);
                 this.allowClick = ko.observable(true);
                 this.firstLayoutCode = ""; //Dùng cho select item đầu tiên.
+                this.previousItemPosition = 0; //Vị trí của item trước khi bị move giữa các row.
                 var self = this;
                 screenQmm019 = ko.observable(self);
                 self.itemList = ko.observableArray([]);
@@ -32,15 +33,18 @@ var qmm019;
                         return layout.stmtCode === codeChanged.split(';')[0] && layout.startYm === parseInt(codeChanged.split(';')[1]);
                     });
                     if (layoutFind !== undefined) {
-                        self.layoutMaster(layoutFind);
-                        self.startYm(nts.uk.time.formatYearMonth(self.layoutMaster().startYm));
-                        self.endYm(nts.uk.time.formatYearMonth(self.layoutMaster().endYm));
-                        a.service.getCategoryFull(layoutFind.stmtCode, layoutFind.startYm)
-                            .done(function (listResult) {
-                            self.categories(listResult);
-                            self.calculateLine();
-                            self.checkKintaiKiji();
-                            self.bindSortable();
+                        a.service.getLayout(layoutFind.stmtCode, layoutFind.historyId).done(function (layout) {
+                            layoutFind.stmtName = layout.stmtName;
+                            self.layoutMaster(layoutFind);
+                            self.startYm(nts.uk.time.formatYearMonth(self.layoutMaster().startYm));
+                            self.endYm(nts.uk.time.formatYearMonth(self.layoutMaster().endYm));
+                            a.service.getCategoryFull(layoutFind.stmtCode, layoutFind.startYm)
+                                .done(function (listResult) {
+                                self.categories(listResult);
+                                self.calculateLine();
+                                self.checkKintaiKiji();
+                                self.bindSortable();
+                            });
                         });
                     }
                 });
@@ -83,14 +87,18 @@ var qmm019;
                 self.totalGrayLineNumber(0);
                 for (var _i = 0, _a = self.categories(); _i < _a.length; _i++) {
                     var category = _a[_i];
+                    category.totalGrayLine = 0;
                     for (var _b = 0, _c = category.lines(); _b < _c.length; _b++) {
                         var line = _c[_b];
                         if (line.isRemoved || category.isRemoved)
                             continue;
-                        if (!line.isDisplayOnPrint)
+                        if (!line.isDisplayOnPrint) {
                             self.totalGrayLineNumber(self.totalGrayLineNumber() + 1);
-                        else
+                            category.totalGrayLine += 1;
+                        }
+                        else {
                             self.totalNormalLineNumber(self.totalNormalLineNumber() + 1);
+                        }
                     }
                 }
                 self.totalNormalLine(self.totalNormalLineNumber() + "行");
@@ -109,9 +117,107 @@ var qmm019;
             };
             ScreenModel.prototype.bindSortable = function () {
                 var self = this;
-                $(".row").sortable({
-                    items: "span:not(.ui-state-disabled)"
+                _.forEach(self.categories(), function (category) {
+                    _.forEach(category.lines(), function (line) {
+                        $("#" + line.rowId).sortable({
+                            items: "span:not(.ui-state-disabled)",
+                            connectWith: ".categoryAtr" + line.categoryAtr,
+                            receive: function (event, ui) {
+                                if (ui.sender !== null) {
+                                    //Trả ra vị trí index của item vừa được move đến trong array span
+                                    var getItemIndex = $(this).find(".one-line").find("span").index(ui.item);
+                                    //get item ở sau item vừa được move đến (get by index) -> di chuyển nó đến vị trí cũ của item vừa bị move
+                                    var itemWillBeMoved_1 = $(this).find(".one-line").find("span")[getItemIndex + 1];
+                                    if ($(itemWillBeMoved_1).hasClass("fixed-button") || itemWillBeMoved_1 === undefined) {
+                                        //nếu item sẽ dùng đề move bù lại thằng vừa kéo đi -> mà là dạng fixed-button
+                                        //hoặc là undefined thì nhảy lên lấy thằng index trước đó
+                                        itemWillBeMoved_1 = $(this).find(".one-line").find("span")[getItemIndex - 1];
+                                    }
+                                    //thực hiện move item mới vào chỗ của thằng vừa kéo đi
+                                    if (screenQmm019().previousItemPosition === 8) {
+                                        //Nếu vị trí để insert vào là số 8 thì dùng cái này ↓
+                                        $(itemWillBeMoved_1).insertAfter($(ui.sender[0]).find(".one-line").find("span")[7]);
+                                    }
+                                    else {
+                                        $(itemWillBeMoved_1).insertBefore($(ui.sender[0]).find(".one-line").find("span")[screenQmm019().previousItemPosition]);
+                                    }
+                                    var currentCategoryId_1 = $(this).parent().parent().attr("id");
+                                    var thisLineId_1 = $(this).attr("id");
+                                    var senderLineId_1 = $(ui.sender).attr("id");
+                                    var comeInItem = void 0, returnItem = void 0;
+                                    var categoryFind = _.find(screenQmm019().categories(), function (categoryItem) {
+                                        return categoryItem.categoryAtr === Number(currentCategoryId_1);
+                                    });
+                                    if (categoryFind !== undefined) {
+                                        var lineFind = _.find(categoryFind.lines(), function (lineItem) {
+                                            return lineItem.rowId === thisLineId_1;
+                                        });
+                                        var senderLineFind = _.find(categoryFind.lines(), function (lineItem) {
+                                            return lineItem.rowId === senderLineId_1;
+                                        });
+                                        if (lineFind !== undefined) {
+                                            returnItem = _.find(lineFind.details, function (item) {
+                                                return item.itemCode() === $(itemWillBeMoved_1).attr("id");
+                                            });
+                                            //update autolineId mới
+                                            returnItem.autoLineId(senderLineFind.autoLineId);
+                                            _.remove(lineFind.details, function (item) {
+                                                return item.itemCode() === $(itemWillBeMoved_1).attr("id");
+                                            });
+                                        }
+                                        if (senderLineFind !== undefined) {
+                                            comeInItem = _.find(senderLineFind.details, function (item) {
+                                                return item.itemCode() === $(ui.item).attr("id");
+                                            });
+                                            //update autolineId mới 
+                                            comeInItem.autoLineId(lineFind.autoLineId);
+                                            _.remove(senderLineFind.details, function (item) {
+                                                return item.itemCode() === $(ui.item).attr("id");
+                                            });
+                                        }
+                                        var comeInItemFound = true, returnItemFound = true;
+                                        //Tạo id mới cho comeInItem và returnItem
+                                        var _loop_1 = function(i) {
+                                            //Tìm xem nếu id mới chưa có thì set
+                                            if (_.includes(comeInItem.itemCode(), "itemTemp-") && comeInItemFound) {
+                                                var comeInItemFind = _.find(lineFind.details, function (item) {
+                                                    return item.itemCode() === "itemTemp-" + i;
+                                                });
+                                                if (comeInItemFind === undefined) {
+                                                    comeInItemFound = false;
+                                                    comeInItem.itemCode("itemTemp-" + i);
+                                                }
+                                            }
+                                            if (_.includes(returnItem.itemCode(), "itemTemp-") && returnItemFound) {
+                                                var returnItemFind = _.find(senderLineFind.details, function (item) {
+                                                    return item.itemCode() === "itemTemp-" + i;
+                                                });
+                                                if (returnItemFind === undefined) {
+                                                    returnItemFound = false;
+                                                    returnItem.itemCode("itemTemp-" + i);
+                                                }
+                                            }
+                                            if (!comeInItemFound && !returnItemFound) {
+                                                return "break";
+                                            }
+                                        };
+                                        for (var i = 1; i <= 9; i++) {
+                                            var state_1 = _loop_1(i);
+                                            if (state_1 === "break") break;
+                                        }
+                                        //update datasource
+                                        lineFind.details.push(comeInItem);
+                                        senderLineFind.details.push(returnItem);
+                                    }
+                                }
+                            },
+                            start: function (event, ui) {
+                                self.previousItemPosition = $(this).find(".one-line").find("span").index(ui.item);
+                            }
+                        });
+                    });
                 });
+                //Setting sortable giữa các dòng với nhau
                 $(".all-line").sortable({
                     items: ".row"
                 });
@@ -171,16 +277,26 @@ var qmm019;
             };
             ScreenModel.prototype.registerLayout = function () {
                 var self = this;
-                a.service.registerLayout(self.layoutMaster(), self.categories()).done(function (res) {
-                    a.service.getCategoryFull(self.layoutMaster().stmtCode, self.layoutMaster().startYm)
-                        .done(function (listResult) {
-                        self.categories(listResult);
-                        self.checkKintaiKiji();
-                        self.bindSortable();
+                if (self.validateOnRegister()) {
+                    a.service.registerLayout(self.layoutMaster(), self.categories()).done(function (res) {
+                        a.service.getCategoryFull(self.layoutMaster().stmtCode, self.layoutMaster().startYm)
+                            .done(function (listResult) {
+                            self.categories(listResult);
+                            self.checkKintaiKiji();
+                            self.bindSortable();
+                        });
+                    }).fail(function (err) {
+                        alert(err);
                     });
-                }).fail(function (err) {
-                    alert(err);
-                });
+                }
+            };
+            ScreenModel.prototype.validateOnRegister = function () {
+                var self = this;
+                if (self.layoutMaster().stmtName.length === 0) {
+                    nts.uk.ui.dialog.alert("明細書名が入力されていません。");
+                    return false;
+                }
+                return true;
             };
             ScreenModel.prototype.addKintaiCategory = function () {
                 var self = this;
@@ -211,6 +327,10 @@ var qmm019;
                 if (self.singleSelectedCode() == null)
                     return false;
                 var singleSelectedCode = self.singleSelectedCode().split(';');
+                if (singleSelectedCode[0] === undefined
+                    || singleSelectedCode[1] === undefined
+                    || self.layoutMaster().historyId === undefined)
+                    return false;
                 nts.uk.ui.windows.setShared('stmtCode', singleSelectedCode[0]);
                 nts.uk.ui.windows.setShared('startYm', singleSelectedCode[1]);
                 nts.uk.ui.windows.setShared('historyId', self.layoutMaster().historyId);
