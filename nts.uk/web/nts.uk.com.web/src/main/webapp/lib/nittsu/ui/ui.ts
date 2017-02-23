@@ -451,7 +451,7 @@
                 $('body').append($contextMenu);
                 
                 // Binding contextmenu event
-                $("body").on("contextmenu", self.selector, function(event) {
+                $("html").on("contextmenu", self.selector, function(event) {
                     if (self.enable === true) {
                         event.preventDefault();
                         self.target = event.target;
@@ -464,7 +464,7 @@
                 });
                 
                 // Hiding when click outside
-                $("body").on("mousedown", function(event) {
+                $("html").on("mousedown", function(event) {
                     if (!$contextMenu.is(event.target) && $contextMenu.has(event.target).length === 0) {
                         $contextMenu.hide();
                     }
@@ -476,7 +476,7 @@
              */
             destroy() {
                 // Unbind contextmenu event
-                $("body").off("contextmenu", this.selector);
+                $("html").off("contextmenu", this.selector);
                 $("#" + this.guid).remove();
             }
 
@@ -695,6 +695,18 @@
             
             export function getRowIndexFrom($anyElementInRow: JQuery): number {
                 return parseInt($anyElementInRow.closest('tr').attr('data-row-idx'), 10);
+            }
+            
+            export module header {
+                
+                export function getCell(gridId: String, columnKey: String) {
+                    let $headers: JQuery = <any>$('#' + gridId).igGrid("headersTable");
+                    return $headers.find('#' + gridId + '_' + columnKey);
+                }
+                
+                export function getLabel(gridId: String, columnKey: String) {
+                    return getCell(gridId, columnKey).find('span');
+                }
             }
         }
     }

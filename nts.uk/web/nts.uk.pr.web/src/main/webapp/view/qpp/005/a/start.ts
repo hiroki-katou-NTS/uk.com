@@ -82,24 +82,24 @@ module nts.uk.pr.view.qpp005.a {
                     }
                 });
 
-//                $tbl.on('change', 'input', function(e) {
-//                    var nId = this.id;
-//                    var nVal = $(this).val();
-//
-//                    setBackgroundColorForItem(nId, nVal);
-//                });
+                //                $tbl.on('change', 'input', function(e) {
+                //                    var nId = this.id;
+                //                    var nVal = $(this).val();
+                //
+                //                    setBackgroundColorForItem(nId, nVal);
+                //                });
             });
         }
 
-        export function setBackgroundColorForItem(nId, nVal) {
+        export function setBackgroundColorForItem(nId, nVal, sumScopeAtr) {
             var include = ko.utils.arrayFirst(window.bakData, function(item) {
                 return item.id === nId && item.value === nVal;
             });
-            
+
             var isCorrectFlag = false;
             if (include) {
                 $("#" + nId).css('background', include.color);
-                $("#" + nId).find('input').css('background', include.color);                
+                $("#" + nId).find('input').css('background', include.color);
             } else {
                 $("#" + nId).css('background', '#bdd7ee');
                 $("#" + nId).find('input').css('background', '#bdd7ee');
@@ -107,15 +107,17 @@ module nts.uk.pr.view.qpp005.a {
             }
 
             var ctId = nId.split('_')[0];
-            if (ctId === 'ct0') {
-                $("#" + window.lastItems[0].id).css('background', '#f4b084');
-                $("#" + window.lastItems[window.lastItems.length - 1].id).css('background', '#f4b084');
+            if (sumScopeAtr === 1) {
+                if (ctId === 'ct0') {
+                    $("#" + window.lastItems[0].id).css('background', '#f4b084');
+                    $("#" + window.lastItems[window.lastItems.length - 1].id).css('background', '#f4b084');
+                }
+                if (ctId === 'ct1') {
+                    $("#" + window.lastItems[1].id).css('background', '#f4b084');
+                    $("#" + window.lastItems[window.lastItems.length - 1].id).css('background', '#f4b084');
+                }
             }
-            if (ctId === 'ct1') {
-                $("#" + window.lastItems[1].id).css('background', '#f4b084');
-                $("#" + window.lastItems[window.lastItems.length - 1].id).css('background', '#f4b084');
-            }
-            
+
             return isCorrectFlag;
         }
 

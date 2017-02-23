@@ -71,7 +71,6 @@ var nts;
                         _.defer(function () {
                             if (!dismissible) {
                                 $(window).mousedown(function (e) {
-                                    //console.log(dismissible);
                                     if ($(e.target).closest(popup.$panel).length === 0) {
                                         popup.hide();
                                     }
@@ -157,6 +156,8 @@ var nts;
                                 return setSelected($grid, param);
                             case 'deselectAll':
                                 return deselectAll($grid);
+                            case 'setupDeleteButton':
+                                return setupDeleteButton($grid, param);
                         }
                     };
                     function getSelected($grid) {
@@ -191,6 +192,44 @@ var nts;
                     function deselectAll($grid) {
                         $grid.igGridSelection('clearSelection');
                     }
+                    function setupDeleteButton($grid, param) {
+                        var itemDeletedEvent = new CustomEvent("itemDeleted", {
+                            detail: {},
+                        });
+                        var currentColumns = $grid.igGrid("option", "columns");
+                        currentColumns.push({
+                            dataType: "bool", columnCssClass: "delete-column", headerText: "test", key: param.deleteField,
+                            width: 30, formatter: function createButton(deleteField, row) {
+                                var primaryKey = $grid.igGrid("option", "primaryKey");
+                                var result = $('<input class="delete-button" value="delete" type="button"/>');
+                                result.attr("data-value", row[primaryKey]);
+                                if (deleteField === true && primaryKey !== null && !uk.util.isNullOrUndefined(row[primaryKey])) {
+                                    return result[0].outerHTML;
+                                }
+                                else {
+                                    return result.attr("disabled", "disabled")[0].outerHTML;
+                                }
+                            }
+                        });
+                        $grid.igGrid("option", "columns", currentColumns);
+                        $grid.on("click", ".delete-button", function () {
+                            var key = $(this).attr("data-value");
+                            var primaryKey = $grid.igGrid("option", "primaryKey");
+                            var source = _.cloneDeep($grid.igGrid("option", "dataSource"));
+                            _.remove(source, function (current) {
+                                return _.isEqual(current[primaryKey].toString(), key.toString());
+                            });
+                            if (!uk.util.isNullOrUndefined(param.sourceTarget) && typeof param.sourceTarget === "function") {
+                                param.sourceTarget(source);
+                            }
+                            else {
+                                $grid.igGrid("option", "dataSource", source);
+                                $grid.igGrid("dataBind");
+                            }
+                            itemDeletedEvent.detail["target"] = key;
+                            document.getElementById($grid.attr('id')).dispatchEvent(itemDeletedEvent);
+                        });
+                    }
                     function setupSelecting($grid) {
                         setupDragging($grid);
                         setupSelectingEvents($grid);
@@ -200,9 +239,9 @@ var nts;
                         var dragSelectRange = [];
                         // used to auto scrolling when dragged above/below grid)
                         var mousePos = null;
-                        var $container = $grid.closest('.ui-iggrid-scrolldiv');
                         $grid.bind('mousedown', function (e) {
                             // グリッド内がマウスダウンされていない場合は処理なしで終了
+                            var $container = $grid.closest('.ui-iggrid-scrolldiv');
                             if ($(e.target).closest('.ui-iggrid-table').length === 0) {
                                 return;
                             }
@@ -520,6 +559,156 @@ var nts;
                             return "top";
                     }
                 })(ntsUserGuide || (ntsUserGuide = {}));
+                var ntsSearchBox;
+                (function (ntsSearchBox) {
+                    $.fn.setupSearchScroll = function (controlType, virtualization) {
+                        var $control = this;
+                        if (controlType.toLowerCase() == 'iggrid')
+                            return setupIgGridScroll($control, virtualization);
+                        if (controlType.toLowerCase() == 'igtreegrid')
+                            return setupTreeGridScroll($control, virtualization);
+                        if (controlType.toLowerCase() == 'igtree')
+                            return setupIgTreeScroll($control);
+                        return this;
+                    };
+                    function setupIgGridScroll($control, virtualization) {
+                        var $grid = $control;
+                        if (virtualization) {
+                            $grid.on("selectChange", function () {
+                                var row = null;
+                                var selectedRows = $grid.igGrid("selectedRows");
+                                if (selectedRows) {
+                                    row = selectedRows[0];
+                                }
+                                else {
+                                    row = $grid.igGrid("selectedRow");
+                                }
+                                if (row)
+                                    $grid.igGrid("virtualScrollTo", row.index);
+                            });
+                        }
+                        else {
+                            $grid.on("selectChange", function () {
+                                var row = null;
+                                var selectedRows = $grid.igGrid("selectedRows");
+                                if (selectedRows) {
+                                    row = selectedRows[0];
+                                }
+                                else {
+                                    row = $grid.igGrid("selectedRow");
+                                }
+                                if (row) {
+                                    var index = row.index;
+                                    var height = row.element[0].scrollHeight;
+                                    var gridId = $grid.attr('id');
+                                    $("#" + gridId + "_scrollContainer").scrollTop(index * height);
+                                }
+                            });
+                        }
+                        return $grid;
+                    }
+                    function setupTreeGridScroll($control, virtualization) {
+                        var $treegrid = $control;
+                        var id = $treegrid.attr('id');
+                        $treegrid.on("selectChange", function () {
+                            var row = null;
+                            var selectedRows = $treegrid.igTreeGridSelection("selectedRows");
+                            if (selectedRows) {
+                                row = selectedRows[0];
+                            }
+                            else {
+                                row = $treegrid.igTreeGridSelection("selectedRow");
+                            }
+                            if (row) {
+                                var index = row.index;
+                                var height = row.element[0].scrollHeight;
+                                $("#" + id + "_scroll").scrollTop(index * height);
+                            }
+                        });
+                        return $treegrid;
+                    }
+                    function setupIgTreeScroll($control) {
+                        //implement later if needed
+                        return $control;
+                    }
+                })(ntsSearchBox || (ntsSearchBox = {}));
+                var ntsSideBar;
+                (function (ntsSideBar) {
+                    $.fn.ntsSideBar = function (action, index) {
+                        var $control = $(this);
+                        if (nts.uk.util.isNullOrUndefined(action) || action === "init") {
+                            return init($control);
+                        }
+                        else if (action === "active") {
+                            return active($control, index);
+                        }
+                        else if (action === "enable") {
+                            return enable($control, index);
+                        }
+                        else if (action === "disable") {
+                            return disable($control, index);
+                        }
+                        else if (action === "show") {
+                            return show($control, index);
+                        }
+                        else if (action === "hide") {
+                            return hide($control, index);
+                        }
+                        else if (action === "getCurrent") {
+                            return getCurrent($control);
+                        }
+                        else {
+                            return $control;
+                        }
+                        ;
+                    };
+                    function init(control) {
+                        $("html").addClass("sidebar-html");
+                        control.find("div[role=tabpanel]").hide();
+                        control.on("click", "#sidebar-area .navigator a", function (e) {
+                            e.preventDefault();
+                            if ($(this).attr("disabled") !== "true" &&
+                                $(this).attr("disabled") !== "disabled" &&
+                                $(this).attr("href") !== undefined) {
+                                active(control, $(this).closest("li").index());
+                            }
+                        });
+                        control.find("#sidebar-area .navigator a.active").trigger('click');
+                        return control;
+                    }
+                    function active(control, index) {
+                        control.find("#sidebar-area .navigator a").removeClass("active");
+                        control.find("#sidebar-area .navigator a").eq(index).addClass("active");
+                        control.find("div[role=tabpanel]").hide();
+                        $(control.find("#sidebar-area .navigator a").eq(index).attr("href")).show();
+                        return control;
+                    }
+                    function enable(control, index) {
+                        control.find("#sidebar-area .navigator a").eq(index).removeAttr("disabled");
+                        return control;
+                    }
+                    function disable(control, index) {
+                        control.find("#sidebar-area .navigator a").eq(index).attr("disabled", "disabled");
+                        return control;
+                    }
+                    function show(control, index) {
+                        control.find("#sidebar-area .navigator a").eq(index).show();
+                        return control;
+                    }
+                    function hide(control, index) {
+                        var current = getCurrent(control);
+                        if (current === index) {
+                            active(control, 0);
+                        }
+                        control.find("#sidebar-area .navigator a").eq(index).hide();
+                        return control;
+                    }
+                    function getCurrent(control) {
+                        var index = 0;
+                        index = control.find("#sidebar-area .navigator a.active").closest("li").index();
+                        return index;
+                    }
+                })(ntsSideBar || (ntsSideBar = {}));
             })(jqueryExtentions = ui.jqueryExtentions || (ui.jqueryExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
