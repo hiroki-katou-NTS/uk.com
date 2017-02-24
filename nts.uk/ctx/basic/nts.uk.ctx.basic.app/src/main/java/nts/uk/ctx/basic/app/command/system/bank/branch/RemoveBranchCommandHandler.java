@@ -32,7 +32,7 @@ public class RemoveBranchCommandHandler extends CommandHandler<RemoveBranchComma
 	    List<String> branchCodeList = new ArrayList<String>();
 	    branchCodeList.add(command.getBranchCode());
 	    if(personBankAccountRepository.checkExistsBranchAccount(companyCode, bankCodeList, branchCodeList)){
-	    	throw new BusinessException("選択された＊は使用されているため削除できません。"); // ER008
+	    	throw new BusinessException("ER008"); // ER008
 	    }
 		banhBranchRepo.remove(companyCode, command.getBankCode(), command.getBranchCode());	
 	}
