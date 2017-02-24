@@ -7,6 +7,7 @@ package nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate;
 import java.util.List;
 import java.util.Optional;
 
+import nts.arc.time.YearMonth;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 
@@ -59,6 +60,6 @@ public interface UnemployeeInsuranceRateRepository {
 	 * @param applyRange the apply range
 	 * @return true, if is invalid date range
 	 */
-	boolean isInvalidDateRange(MonthRange applyRange);
+	boolean isInvalidDateRange(CompanyCode companyCode,YearMonth yearMonth);
 
 }

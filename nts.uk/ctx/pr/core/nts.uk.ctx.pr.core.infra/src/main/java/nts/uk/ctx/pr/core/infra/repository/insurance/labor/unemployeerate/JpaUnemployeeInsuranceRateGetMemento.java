@@ -51,7 +51,7 @@ public class JpaUnemployeeInsuranceRateGetMemento implements UnemployeeInsurance
 	 */
 	@Override
 	public CompanyCode getCompanyCode() {
-		return new CompanyCode(this.typeValue.getQismtEmpInsuRatePK().getHistId());
+		return new CompanyCode(this.typeValue.getQismtEmpInsuRatePK().getCcd());
 	}
 
 	/*

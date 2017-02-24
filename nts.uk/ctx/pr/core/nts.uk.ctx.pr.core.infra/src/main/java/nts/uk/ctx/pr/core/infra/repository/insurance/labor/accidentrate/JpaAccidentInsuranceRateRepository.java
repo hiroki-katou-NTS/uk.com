@@ -401,6 +401,7 @@ public class JpaAccidentInsuranceRateRepository extends JpaRepository implements
 					return true;
 				}
 			}
+			return true;
 		}
 		return false;
 	}
