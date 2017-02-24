@@ -10,19 +10,19 @@ module qmm018.b.viewmodel {
         startPage(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
-            qmm018.b.service.getItemList(nts.uk.ui.windows.getShared('categoryAtr')).done(function(data) {
+            qmm018.b.service.qcamt_Item_SEL_3(nts.uk.ui.windows.getShared('categoryAtr')).done(function(data) {
                 if(!data.length) { $("#label-span").ntsError('set', 'ER010');}
                 else {
                     data.forEach(function(dataItem){
                         self.items().push(new ItemModel(dataItem.itemCode,dataItem.itemAbName));
                     });
-                    self.currentCodeListSwap(nts.uk.ui.windows.getShared('selectedItemList')());
                     self.currentCodeListSwap.subscribe(function(value){
                         if(!value.length) $("#label-span").ntsError('set', 'ER010');
                         else $("#label-span").ntsError('clear');    
                     });
                 }
                 dfd.resolve();
+                self.currentCodeListSwap(nts.uk.ui.windows.getShared('selectedItemList')());
             }).fail(function(res) {
             });
             return dfd.promise();

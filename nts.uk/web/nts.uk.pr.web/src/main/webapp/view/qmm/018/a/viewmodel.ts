@@ -31,9 +31,10 @@ module qmm018.a.viewmodel {
         startPage(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
-            qmm018.a.service.getAveragePay().done(function(data) {
+            qmm018.a.service.qapmt_Ave_Pay_SEL_1().done(function(data) {
                 if(data){
-                    qmm018.a.service.getItem(1).done(function(data) {
+                    qmm018.a.service.qcamt_Item_SEL_4().done(function(data2) {
+                        console.log(data2);
                         dfd.resolve();
                     }).fail(function(res) {
                     });
@@ -47,9 +48,11 @@ module qmm018.a.viewmodel {
                 } else {
                     self.averagePay(new AveragePay(0,0,0,0));
                     self.isUpdate = false;
-                    $("#inp-1").ntsError('set', 'ER007');
                 }
                 dfd.resolve();
+                if(!self.isUpdate) {
+                $("#inp-3").ntsError('set', 'ER001');
+                $("#inp-1").ntsError('set', 'ER007'); }
             }).fail(function(res) {
 
             });
@@ -60,12 +63,26 @@ module qmm018.a.viewmodel {
                 var dfd = $.Deferred();
                 var command = ko.mapping.toJS(self.averagePay());
                 if(isUpdate){
-                    qmm018.a.service.updateAveragePay(command).done(function(data) {
+                    qmm018.a.service.qapmt_Ave_Pay_UPD_1(command).done(function(data) {
                         dfd.resolve();
                     }).fail(function(res) {
                     });
                 } else {
-                    qmm018.a.service.registerAveragePay(command).done(function(data) {
+                    qmm018.a.service.qapmt_Ave_Pay_INS_1(command).done(function(data) {
+                        qmm018.a.service.qcamt_Item_UPD_2(0, 1).done(function(){
+                            if(self.averagePay().attendDayGettingSet()){
+                                if(self.isUpdate){
+                                    qmm018.a.service.qcamt_Item_SEL_8(2, 1).done(function(){
+                                       qmm018.a.service.qcamt_Item_UPD_2(2, 1).done(function(){
+                                           
+                                       });
+                                   });     
+                                }
+                                qmm018.a.service.qcamt_Item_UPD_2(2, 1).done(function(){
+                                           
+                                }); 
+                            }    
+                        });
                         dfd.resolve();
                     }).fail(function(res) {
                     });
@@ -88,6 +105,7 @@ module qmm018.a.viewmodel {
                     if(selectedList().length){
                         ko.utils.arrayForEach(selectedList(),function(item){self.selectedItemList1.push(item)});
                     }
+                    if(!self.selectedItemList2().length) $("#inp-3").ntsError('set', 'ER001'); else $("#inp-3").ntsError('clear');
                 } else {
                     self.selectedItemList2.removeAll();
                     if(selectedList().length){

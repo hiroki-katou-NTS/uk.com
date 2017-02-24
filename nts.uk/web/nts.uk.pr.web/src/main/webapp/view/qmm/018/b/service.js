@@ -5,11 +5,11 @@ var qmm018;
         var service;
         (function (service) {
             var paths = {
-                getItemList: "pr/proto/item/findall/bycategory/{0}"
+                qcamt_Item_SEL_3: "pr/proto/item/findall/bycategory/{0}"
             };
-            function getItemList(categoryAtr) {
+            function qcamt_Item_SEL_3(categoryAtr) {
                 var dfd = $.Deferred();
-                nts.uk.request.ajax(nts.uk.text.format(paths.getItemList, categoryAtr))
+                nts.uk.request.ajax(nts.uk.text.format(paths.qcamt_Item_SEL_3, categoryAtr))
                     .done(function (res) {
                     dfd.resolve(res);
                 })
@@ -18,7 +18,7 @@ var qmm018;
                 });
                 return dfd.promise();
             }
-            service.getItemList = getItemList;
+            service.qcamt_Item_SEL_3 = qcamt_Item_SEL_3;
         })(service = b.service || (b.service = {}));
     })(b = qmm018.b || (qmm018.b = {}));
 })(qmm018 || (qmm018 = {}));
