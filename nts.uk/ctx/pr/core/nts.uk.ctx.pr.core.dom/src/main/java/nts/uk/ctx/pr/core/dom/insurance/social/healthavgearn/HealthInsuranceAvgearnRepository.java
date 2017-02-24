@@ -22,9 +22,11 @@ public interface HealthInsuranceAvgearnRepository {
 	/**
 	 * Update.
 	 *
-	 * @param healthInsuranceAvgearn the health insurance avgearn
+	 * @param healthInsuranceAvgearns the health insurance avgearns
+	 * @param ccd the ccd
+	 * @param officeCd the office cd
 	 */
-	void update(HealthInsuranceAvgearn healthInsuranceAvgearn);
+	void update(List<HealthInsuranceAvgearn> healthInsuranceAvgearns, String ccd, String officeCd);
 
 	/**
 	 * Removes the.

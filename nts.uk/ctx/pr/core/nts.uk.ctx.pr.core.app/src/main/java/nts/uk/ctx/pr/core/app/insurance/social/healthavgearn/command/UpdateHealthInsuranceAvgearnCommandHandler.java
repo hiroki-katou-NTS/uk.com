@@ -1,20 +1,22 @@
 package nts.uk.ctx.pr.core.app.insurance.social.healthavgearn.command;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.HealthInsuranceAvgearn;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.HealthInsuranceAvgearnRepository;
-import nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.service.HealthInsuranceAvgearnService;
+import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 public class UpdateHealthInsuranceAvgearnCommandHandler extends CommandHandler<UpdateHealthInsuranceAvgearnCommand> {
 
-	@Inject
-	private HealthInsuranceAvgearnService healthInsuranceAvgearnService;
 	@Inject
 	private HealthInsuranceAvgearnRepository healthInsuranceAvgearnRepository;
 
@@ -24,21 +26,14 @@ public class UpdateHealthInsuranceAvgearnCommandHandler extends CommandHandler<U
 		// Get command.
 		UpdateHealthInsuranceAvgearnCommand command = context.getCommand();
 
-		command.getListHealthInsuranceAvgearn().forEach(dto -> {
-			// Get the healthInsuranceAvgearn.
-			HealthInsuranceAvgearn healthInsuranceAvgearn = healthInsuranceAvgearnRepository
-					.find(dto.getHistoryId(), dto.getLevelCode()).get();
+		// Get the current company code.
+		CompanyCode companyCode = new CompanyCode(AppContexts.user().companyCode());
 
-			// Transfer data
-			HealthInsuranceAvgearn updatedHealthInsuranceAvgearn = dto.toDomain(healthInsuranceAvgearn.getHistoryId(),
-					healthInsuranceAvgearn.getLevelCode());
-
-			// Validate
-			healthInsuranceAvgearnService.validateRequiredItem(updatedHealthInsuranceAvgearn);
-			// Update to db.
-			healthInsuranceAvgearnRepository.update(updatedHealthInsuranceAvgearn);
-
-		});
+		List<HealthInsuranceAvgearn> healthInsuranceAvgearns = command.getListHealthInsuranceAvgearn().stream()
+				.map(item -> {
+					return item.toDomain();
+				}).collect(Collectors.toList());
+		healthInsuranceAvgearnRepository.update(healthInsuranceAvgearns, companyCode.v(), "23");
 
 	}
 }

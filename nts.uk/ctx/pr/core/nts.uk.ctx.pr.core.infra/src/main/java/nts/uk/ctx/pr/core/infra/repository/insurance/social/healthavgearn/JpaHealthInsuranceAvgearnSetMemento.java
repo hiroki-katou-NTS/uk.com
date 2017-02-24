@@ -52,8 +52,6 @@ public class JpaHealthInsuranceAvgearnSetMemento implements HealthInsuranceAvgea
 	public void setLevelCode(Integer levelCode) {
 		QismtHealthInsuAvgearnPK healthInsuAvgearnPK = this.typeValue.getQismtHealthInsuAvgearnPK();
 		healthInsuAvgearnPK.setHealthInsuGrade(BigDecimal.valueOf(levelCode));
-		healthInsuAvgearnPK.setSiOfficeCd("1");
-		healthInsuAvgearnPK.setCcd("0001");
 		this.typeValue.setQismtHealthInsuAvgearnPK(healthInsuAvgearnPK);
 	}
 
