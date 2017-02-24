@@ -27,12 +27,13 @@ public class HealthInsuranceRateWs extends WebService {
 	@Inject
 	private UpdateHealthInsuranceCommandHandler updateHealthInsuranceCommandHandler;
 
+	//find by historyId
 	@POST
 	@Path("find/{id}")
 	public HealthInsuranceRateDto find(@PathParam("id") String id) {
 		return healthInsuranceRateFinder.find(id).get();
 	}
-
+	//find All by OfficeCode
 	@POST
 	@Path("findByOfficeCode/{officeCode}")
 	public List<HealthInsuranceRateDto> findbyCode(@PathParam("officeCode") String officeCode) {

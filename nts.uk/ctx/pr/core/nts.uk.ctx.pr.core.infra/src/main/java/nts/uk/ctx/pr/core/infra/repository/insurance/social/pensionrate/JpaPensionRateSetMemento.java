@@ -7,15 +7,19 @@ package nts.uk.ctx.pr.core.infra.repository.insurance.social.pensionrate;
 import java.util.List;
 
 import nts.uk.ctx.core.dom.company.CompanyCode;
+import nts.uk.ctx.pr.core.dom.insurance.CalculateMethod;
 import nts.uk.ctx.pr.core.dom.insurance.CommonAmount;
 import nts.uk.ctx.pr.core.dom.insurance.Ins2Rate;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
+import nts.uk.ctx.pr.core.dom.insurance.PaymentType;
+import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.InsuranceGender;
 import nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.FundRateItem;
 import nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionPremiumRateItem;
 import nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionRateRounding;
 import nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionRateSetMemento;
 import nts.uk.ctx.pr.core.infra.entity.insurance.social.pensionrate.QismtPensionRate;
+import nts.uk.ctx.pr.core.infra.entity.insurance.social.pensionrate.QismtPensionRatePK;
 
 /**
  * The Class JpaPensionRateSetMemento.
@@ -44,8 +48,9 @@ public class JpaPensionRateSetMemento implements PensionRateSetMemento {
 	 */
 	@Override
 	public void setHistoryId(String historyId) {
-		// TODO Auto-generated method stub
-
+		QismtPensionRatePK qismtPensionRatePK = new QismtPensionRatePK();
+		qismtPensionRatePK.setHistId(historyId);
+		this.typeValue.setQismtPensionRatePK(qismtPensionRatePK);
 	}
 
 	/*
@@ -57,8 +62,9 @@ public class JpaPensionRateSetMemento implements PensionRateSetMemento {
 	 */
 	@Override
 	public void setCompanyCode(CompanyCode companyCode) {
-		// TODO Auto-generated method stub
-
+		QismtPensionRatePK qismtPensionRatePK = this.typeValue.getQismtPensionRatePK();
+		qismtPensionRatePK.setCcd(companyCode.v());
+		this.typeValue.setQismtPensionRatePK(qismtPensionRatePK);
 	}
 
 	/*
@@ -70,8 +76,9 @@ public class JpaPensionRateSetMemento implements PensionRateSetMemento {
 	 */
 	@Override
 	public void setOfficeCode(OfficeCode officeCode) {
-		// TODO Auto-generated method stub
-
+		QismtPensionRatePK qismtPensionRatePK = this.typeValue.getQismtPensionRatePK();
+		qismtPensionRatePK.setSiOfficeCd(officeCode.v());
+		this.typeValue.setQismtPensionRatePK(qismtPensionRatePK);
 	}
 
 	/*
@@ -83,8 +90,8 @@ public class JpaPensionRateSetMemento implements PensionRateSetMemento {
 	 */
 	@Override
 	public void setApplyRange(MonthRange applyRange) {
-		// TODO Auto-generated method stub
-
+		this.typeValue.setStrYm(applyRange.getStartMonth().v());
+		this.typeValue.setEndYm(applyRange.getEndMonth().v());
 	}
 
 	/*
@@ -96,8 +103,7 @@ public class JpaPensionRateSetMemento implements PensionRateSetMemento {
 	 */
 	@Override
 	public void setMaxAmount(CommonAmount maxAmount) {
-		// TODO Auto-generated method stub
-
+		this.typeValue.setBonusPensionMaxMny(maxAmount.v());
 	}
 
 	/*
@@ -109,8 +115,44 @@ public class JpaPensionRateSetMemento implements PensionRateSetMemento {
 	 */
 	@Override
 	public void setFundRateItems(List<FundRateItem> fundRateItems) {
-		// TODO Auto-generated method stub
-
+		for( FundRateItem e : fundRateItems){
+			if (e.getPayType().equals(PaymentType.Salary) && e.getGenderType().equals(InsuranceGender.Male)) {
+				this.typeValue.setCPayFundMaleRate(e.getBurdenChargeRate().getCompanyRate().v());
+				this.typeValue.setPPayFundMaleRate(e.getBurdenChargeRate().getPersonalRate().v());
+				this.typeValue.setCPayFundExMaleRate(e.getExemptionChargeRate().getCompanyRate().v());
+				this.typeValue.setPPayFundExMaleRate(e.getExemptionChargeRate().getPersonalRate().v());
+			}
+			if (e.getPayType().equals(PaymentType.Salary) && e.getGenderType().equals(InsuranceGender.Female)) {
+				this.typeValue.setCPayFundFemRate(e.getBurdenChargeRate().getCompanyRate().v());
+				this.typeValue.setPPayFundFemRate(e.getBurdenChargeRate().getPersonalRate().v());
+				this.typeValue.setCPayFundExFemRate(e.getExemptionChargeRate().getCompanyRate().v());
+				this.typeValue.setPPayFundExFemRate(e.getExemptionChargeRate().getPersonalRate().v());
+			}
+			if (e.getPayType().equals(PaymentType.Salary) && e.getGenderType().equals(InsuranceGender.Unknow)) {
+				this.typeValue.setCPayFundMinerRate(e.getBurdenChargeRate().getCompanyRate().v());
+				this.typeValue.setPPayFundMinerRate(e.getBurdenChargeRate().getPersonalRate().v());
+				this.typeValue.setCPayFundExMinerRate(e.getExemptionChargeRate().getCompanyRate().v());
+				this.typeValue.setPPayFundExMinerRate(e.getExemptionChargeRate().getPersonalRate().v());
+			}
+			if (e.getPayType().equals(PaymentType.Bonus) && e.getGenderType().equals(InsuranceGender.Male)) {
+				this.typeValue.setCBnsFundManRate(e.getBurdenChargeRate().getCompanyRate().v());
+				this.typeValue.setPBnsFundManRate(e.getBurdenChargeRate().getPersonalRate().v());
+				this.typeValue.setCBnsFundExMaleRate(e.getExemptionChargeRate().getCompanyRate().v());
+				this.typeValue.setPBnsFundExMaleRate(e.getExemptionChargeRate().getPersonalRate().v());
+			}
+			if (e.getPayType().equals(PaymentType.Bonus) && e.getGenderType().equals(InsuranceGender.Female)) {
+				this.typeValue.setCBnsFundFemRate(e.getBurdenChargeRate().getCompanyRate().v());
+				this.typeValue.setPBnsFundFemRate(e.getBurdenChargeRate().getPersonalRate().v());
+				this.typeValue.setCBnsFundExFemRate(e.getExemptionChargeRate().getCompanyRate().v());
+				this.typeValue.setPBnsFundExFemRate(e.getExemptionChargeRate().getPersonalRate().v());
+			}
+			if (e.getPayType().equals(PaymentType.Bonus) && e.getGenderType().equals(InsuranceGender.Unknow)) {
+				this.typeValue.setCBnsFundMinerRate(e.getBurdenChargeRate().getCompanyRate().v());
+				this.typeValue.setPBnsFundMinerRate(e.getBurdenChargeRate().getPersonalRate().v());
+				this.typeValue.setCBnsFundExMinerRate(e.getExemptionChargeRate().getCompanyRate().v());
+				this.typeValue.setPBnsFundExMinerRate(e.getExemptionChargeRate().getPersonalRate().v());
+			}
+		}
 	}
 
 	/*
@@ -122,8 +164,32 @@ public class JpaPensionRateSetMemento implements PensionRateSetMemento {
 	 */
 	@Override
 	public void setPremiumRateItems(List<PensionPremiumRateItem> premiumRateItems) {
-		// TODO Auto-generated method stub
-
+		for(PensionPremiumRateItem e : premiumRateItems){
+			if(e.getPayType().equals(PaymentType.Salary)&&e.getGenderType().equals(InsuranceGender.Male)){
+				this.typeValue.setCPayPensionMaleRate(e.getChargeRate().getCompanyRate().v());
+				this.typeValue.setPPayPensionMaleRate(e.getChargeRate().getPersonalRate().v());
+			}
+			if(e.getPayType().equals(PaymentType.Salary)&&e.getGenderType().equals(InsuranceGender.Female)){
+				this.typeValue.setCPayPensionFemRate(e.getChargeRate().getCompanyRate().v());
+				this.typeValue.setPPayPensionFemRate(e.getChargeRate().getPersonalRate().v());
+			}
+			if(e.getPayType().equals(PaymentType.Salary)&&e.getGenderType().equals(InsuranceGender.Unknow)){
+				this.typeValue.setCPayPensionMinerRate(e.getChargeRate().getCompanyRate().v());
+				this.typeValue.setPPayPensionMinerRate(e.getChargeRate().getPersonalRate().v());
+			}
+			if(e.getPayType().equals(PaymentType.Bonus)&&e.getGenderType().equals(InsuranceGender.Male)){
+				this.typeValue.setCBnsPensionMaleRate(e.getChargeRate().getCompanyRate().v());
+				this.typeValue.setPBnsPensionMaleRate(e.getChargeRate().getPersonalRate().v());
+			}
+			if(e.getPayType().equals(PaymentType.Bonus)&&e.getGenderType().equals(InsuranceGender.Female)){
+				this.typeValue.setCBnsPensionFemRate(e.getChargeRate().getCompanyRate().v());
+				this.typeValue.setPBnsPensionFemRate(e.getChargeRate().getPersonalRate().v());
+			}
+			if(e.getPayType().equals(PaymentType.Bonus)&&e.getGenderType().equals(InsuranceGender.Unknow)){
+				this.typeValue.setCBnsPensionMinerRate(e.getChargeRate().getCompanyRate().v());
+				this.typeValue.setPBnsPensionMinerRate(e.getChargeRate().getPersonalRate().v());
+			}
+		}
 	}
 
 	/*
@@ -135,8 +201,7 @@ public class JpaPensionRateSetMemento implements PensionRateSetMemento {
 	 */
 	@Override
 	public void setChildContributionRate(Ins2Rate childContributionRate) {
-		// TODO Auto-generated method stub
-
+		this.typeValue.setChildContributionRate(childContributionRate.v());
 	}
 
 	/*
@@ -148,8 +213,18 @@ public class JpaPensionRateSetMemento implements PensionRateSetMemento {
 	 */
 	@Override
 	public void setRoundingMethods(List<PensionRateRounding> roundingMethods) {
-		// TODO Auto-generated method stub
-
+		for (PensionRateRounding e : roundingMethods) {
+			// salary
+			if (e.getPayType().equals(PaymentType.Salary)) {
+				this.typeValue.setCPayPensionRoundAtr(e.getRoundAtrs().getCompanyRoundAtr().value);
+				this.typeValue.setPPayPensionRoundAtr(e.getRoundAtrs().getPersonalRoundAtr().value);
+			}
+			// bonus
+			if (e.getPayType().equals(PaymentType.Bonus)) {
+				this.typeValue.setCBnsPensionRoundAtr(e.getRoundAtrs().getCompanyRoundAtr().value);
+				this.typeValue.setPBnsPensionRoundAtr(e.getRoundAtrs().getPersonalRoundAtr().value);
+			}
+		}
 	}
 
 	/*
@@ -173,9 +248,8 @@ public class JpaPensionRateSetMemento implements PensionRateSetMemento {
 	 * #setAutoCalculate(java.lang.Boolean)
 	 */
 	@Override
-	public void setAutoCalculate(Boolean autoCalculate) {
-		// TODO Auto-generated method stub
-
+	public void setAutoCalculate(CalculateMethod autoCalculate) {
+		this.typeValue.setKeepEntryFlg(autoCalculate.value);
 	}
 
 }

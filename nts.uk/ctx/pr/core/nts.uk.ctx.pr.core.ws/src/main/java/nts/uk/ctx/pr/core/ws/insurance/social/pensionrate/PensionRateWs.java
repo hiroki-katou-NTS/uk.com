@@ -1,5 +1,7 @@
 package nts.uk.ctx.pr.core.ws.insurance.social.pensionrate;
 
+import java.util.List;
+
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -30,7 +32,13 @@ public class PensionRateWs extends WebService {
 	public PensionRateDto find(@PathParam("id") String id) {
 		return pensionRateFinder.find(id).get();
 	}
-
+	
+	@POST
+	@Path("findByOfficeCode/{officeCode}")
+	public List<PensionRateDto> findbyCode(@PathParam("officeCode") String officeCode) {
+		return pensionRateFinder.findAll(officeCode);
+	}
+	
 	@POST
 	@Path("create")
 	public void create(RegisterPensionCommand command) {

@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 
 import lombok.Builder;
 import nts.uk.ctx.core.dom.company.CompanyCode;
+import nts.uk.ctx.pr.core.dom.insurance.CalculateMethod;
 import nts.uk.ctx.pr.core.dom.insurance.CommonAmount;
 import nts.uk.ctx.pr.core.dom.insurance.Ins2Rate;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
@@ -59,7 +60,7 @@ public class PensionRateDto implements PensionRateSetMemento {
 	public Boolean fundInputApply;
 
 	/** The auto calculate. */
-	public Boolean autoCalculate;
+	public Integer autoCalculate;
 
 	/*
 	 * (non-Javadoc)
@@ -193,8 +194,8 @@ public class PensionRateDto implements PensionRateSetMemento {
 	 * #setAutoCalculate(java.lang.Boolean)
 	 */
 	@Override
-	public void setAutoCalculate(Boolean autoCalculate) {
-		this.autoCalculate = autoCalculate;
+	public void setAutoCalculate(CalculateMethod autoCalculate) {
+		this.autoCalculate = autoCalculate.value;
 	}
 
 }

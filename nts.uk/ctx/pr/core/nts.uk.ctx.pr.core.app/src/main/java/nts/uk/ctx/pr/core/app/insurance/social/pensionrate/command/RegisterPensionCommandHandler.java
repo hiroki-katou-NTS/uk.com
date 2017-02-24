@@ -47,7 +47,7 @@ public class RegisterPensionCommandHandler extends CommandHandler<RegisterPensio
 
 		// Validate
 		pensionRateService.validateDateRange(pensionRate);
-		pensionRateService.validateRequiredItem(pensionRate);
+//		pensionRateService.validateRequiredItem(pensionRate);
 
 		// Insert into db.
 		pensionRateRepository.add(pensionRate);

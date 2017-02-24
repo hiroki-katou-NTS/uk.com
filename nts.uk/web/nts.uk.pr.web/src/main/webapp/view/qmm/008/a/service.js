@@ -16,10 +16,13 @@ var nts;
                                 getAllOfficeItem: "pr/insurance/social/findall",
                                 getAllHistoryOfOffice: "pr/insurance/social/history",
                                 getAllHealthInsuranceItemByOfficeCode: "ctx/pr/core/insurance/social/healthrate/findByOfficeCode",
+                                getAllPensionItemByOfficeCode: "ctx/pr/core/insurance/social/pensionrate/findByOfficeCode",
                                 getHealthInsuranceItemDetail: "ctx/pr/core/insurance/social/healthrate/find",
                                 getPensionItemDetail: "ctx/pr/core/insurance/social/pensionrate/find",
                                 registerHealthRate: "ctx/pr/core/insurance/social/healthrate/create",
                                 updateHealthRate: "ctx/pr/core/insurance/social/healthrate/update",
+                                registerPensionRate: "ctx/pr/core/insurance/social/pensionrate/create",
+                                updatePensionRate: "ctx/pr/core/insurance/social/pensionrate/update",
                                 getAllRoundingItem: "pr/insurance/social/find/rounding"
                             };
                             function findInsuranceOffice(key) {
@@ -93,6 +96,16 @@ var nts;
                                 return dfd.promise();
                             }
                             service.getPensionItemDetail = getPensionItemDetail;
+                            function getAllPensionInsuranceItem(code) {
+                                var dfd = $.Deferred();
+                                var findPath = servicePath.getAllPensionItemByOfficeCode + "/" + code;
+                                nts.uk.request.ajax(findPath).done(function (data) {
+                                    var returnData = data;
+                                    dfd.resolve(returnData);
+                                });
+                                return dfd.promise();
+                            }
+                            service.getAllPensionInsuranceItem = getAllPensionInsuranceItem;
                             function registerHealthRate(data) {
                                 return nts.uk.request.ajax(servicePath.registerHealthRate, data);
                             }
@@ -101,6 +114,14 @@ var nts;
                                 return nts.uk.request.ajax(servicePath.updateHealthRate, data);
                             }
                             service.updateHealthRate = updateHealthRate;
+                            function registerPensionRate(data) {
+                                return nts.uk.request.ajax(servicePath.registerPensionRate, data);
+                            }
+                            service.registerPensionRate = registerPensionRate;
+                            function updatePensionRate(data) {
+                                return nts.uk.request.ajax(servicePath.updatePensionRate, data);
+                            }
+                            service.updatePensionRate = updatePensionRate;
                             var model;
                             (function (model) {
                                 var finder;
@@ -147,17 +168,23 @@ var nts;
                                     }());
                                     finder.PensionRateDto = PensionRateDto;
                                     var PensionRateItemDto = (function () {
-                                        function PensionRateItemDto(payType, genderType) {
+                                        function PensionRateItemDto(payType, genderType, personalRate, companyRate) {
                                             this.payType = payType;
                                             this.genderType = genderType;
+                                            this.personalRate = personalRate;
+                                            this.companyRate = companyRate;
                                         }
                                         return PensionRateItemDto;
                                     }());
                                     finder.PensionRateItemDto = PensionRateItemDto;
                                     var FundRateItemDto = (function () {
-                                        function FundRateItemDto(chargeRate, groupType, chargeType, genderType, payType) {
-                                            this.genderType = genderType;
+                                        function FundRateItemDto(payType, genderType, burdenChargePersonalRate, burdenChargeCompanyRate, exemptionChargePersonalRate, exemptionChargeCompanyRate) {
                                             this.payType = payType;
+                                            this.genderType = genderType;
+                                            this.burdenChargePersonalRate = burdenChargePersonalRate;
+                                            this.burdenChargeCompanyRate = burdenChargeCompanyRate;
+                                            this.exemptionChargePersonalRate = exemptionChargePersonalRate;
+                                            this.exemptionChargeCompanyRate = exemptionChargeCompanyRate;
                                         }
                                         return FundRateItemDto;
                                     }());

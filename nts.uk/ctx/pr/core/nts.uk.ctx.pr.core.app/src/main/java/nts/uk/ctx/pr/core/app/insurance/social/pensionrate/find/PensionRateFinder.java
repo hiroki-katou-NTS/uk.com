@@ -13,6 +13,7 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionRate;
 import nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionRateRepository;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class PensionRateFinder.
@@ -47,8 +48,9 @@ public class PensionRateFinder {
 	 *            the company code
 	 * @return the list
 	 */
-	public List<PensionRateDto> findAll(String companyCode) {
-		return pensionRateRepo.findAll(companyCode).stream().map(domain -> {
+	public List<PensionRateDto> findAll(String officeCode) {
+		String companyCode = AppContexts.user().companyCode();
+		return pensionRateRepo.findAll(companyCode,officeCode).stream().map(domain -> {
 			PensionRateDto dto = PensionRateDto.builder().build();
 			domain.saveToMemento(dto);
 			return dto;

@@ -34,25 +34,25 @@ public abstract class PensionBaseCommand {
 
 	/** The end month. */
 	private String endMonth;
-
-	/** The max amount. */
-	private BigDecimal maxAmount;
-
-	/** The fund rate items. */
-	private List<FundRateItemDto> fundRateItems;
+	
+	/** The fund input apply. */
+	private Boolean fundInputApply;
+	
+	/** The auto calculate. */
+	private Integer autoCalculate;
 
 	/** The premium rate items. */
 	private List<PensionPremiumRateItemDto> premiumRateItems;
 
-	/** The child contribution rate. */
-	private BigDecimal childContributionRate;
+	/** The fund rate items. */
+	private List<FundRateItemDto> fundRateItems;
 
 	/** The rounding methods. */
 	private List<PensionRateRounding> roundingMethods;
 
-	/** The fund input apply. */
-	private Boolean fundInputApply;
-
-	/** The auto calculate. */
-	private Boolean autoCalculate;
+	/** The max amount. */
+	private BigDecimal maxAmount;
+	
+	/** The child contribution rate. */
+	private BigDecimal childContributionRate;
 }
