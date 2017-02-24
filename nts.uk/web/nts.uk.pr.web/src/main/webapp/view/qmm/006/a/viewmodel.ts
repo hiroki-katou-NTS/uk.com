@@ -105,6 +105,7 @@ module qmm006.a.viewmodel {
         OpenCDialog() {
             var self = this;
             if (self.dirty.isDirty()) {
+                //"変更された内容が登録されていません。"---AL001 
                 nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\n よろしいですか。").ifYes(function() {
                     nts.uk.ui.windows.sub.modal("/view/qmm/006/c/index.xhtml", { title: "振込元銀行の登録　＞　振込元銀行", dialogClass: "no-close" }).onClosed(function() {
                         self.findAll().done(function() {
@@ -121,19 +122,25 @@ module qmm006.a.viewmodel {
         BTN007() {
             var self = this;
             if (self.dirty.isDirty()) {
+                //"変更された内容が登録されていません。"---AL001 
                 nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\n よろしいですか。").ifYes(function() {
                 }).ifNo(function() {
                 })
             }
         }
 
-        BTN005() {
+        jumpToQmm002A() {
             var self = this;
             if (self.dirty.isDirty()) {
+                //"変更された内容が登録されていません。"---AL001 
                 nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\n よろしいですか。").ifYes(function() {
+                    nts.uk.request.jump("/view/qmm/002/a/index.xhtml");
                 }).ifNo(function() {
                 })
+            } else {
+                nts.uk.request.jump("/view/qmm/002/a/index.xhtml");
             }
+
         }
 
         findLineBank(codeNew): LineBank {
@@ -150,6 +157,7 @@ module qmm006.a.viewmodel {
         clearForm(): any {
             var self = this;
             if (self.dirty.isDirty()) {
+                //"変更された内容が登録されていません。"---AL001 
                 nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\n よろしいですか。").ifYes(function() {
                     self.currentLineBank(new LineBank(null, null, null, null, 0, null, null, null, []));
                     self.currentCode("");
@@ -342,6 +350,7 @@ module qmm006.a.viewmodel {
 
         remove() {
             var self = this;
+            //"データを削除します。\r\nよろしいですか？"---AL002
             nts.uk.ui.dialog.confirm("データを削除します。\r\nよろしいですか？").ifYes(function() {
                 var command = {
                     accountAtr: self.currentLineBank().accountAtr(),
@@ -377,7 +386,6 @@ module qmm006.a.viewmodel {
                     });
 
             }).ifNo(function() {
-                return;
             });
         }
 

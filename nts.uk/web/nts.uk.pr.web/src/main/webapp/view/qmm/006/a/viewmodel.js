@@ -77,6 +77,7 @@ var qmm006;
                 ScreenModel.prototype.OpenCDialog = function () {
                     var self = this;
                     if (self.dirty.isDirty()) {
+                        //"変更された内容が登録されていません。"---AL001 
                         nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\n よろしいですか。").ifYes(function () {
                             nts.uk.ui.windows.sub.modal("/view/qmm/006/c/index.xhtml", { title: "振込元銀行の登録　＞　振込元銀行", dialogClass: "no-close" }).onClosed(function () {
                                 self.findAll().done(function () {
@@ -92,17 +93,23 @@ var qmm006;
                 ScreenModel.prototype.BTN007 = function () {
                     var self = this;
                     if (self.dirty.isDirty()) {
+                        //"変更された内容が登録されていません。"---AL001 
                         nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\n よろしいですか。").ifYes(function () {
                         }).ifNo(function () {
                         });
                     }
                 };
-                ScreenModel.prototype.BTN005 = function () {
+                ScreenModel.prototype.jumpToQmm002A = function () {
                     var self = this;
                     if (self.dirty.isDirty()) {
+                        //"変更された内容が登録されていません。"---AL001 
                         nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\n よろしいですか。").ifYes(function () {
+                            nts.uk.request.jump("/view/qmm/002/a/index.xhtml");
                         }).ifNo(function () {
                         });
+                    }
+                    else {
+                        nts.uk.request.jump("/view/qmm/002/a/index.xhtml");
                     }
                 };
                 ScreenModel.prototype.findLineBank = function (codeNew) {
@@ -118,6 +125,7 @@ var qmm006;
                 ScreenModel.prototype.clearForm = function () {
                     var self = this;
                     if (self.dirty.isDirty()) {
+                        //"変更された内容が登録されていません。"---AL001 
                         nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\n よろしいですか。").ifYes(function () {
                             self.currentLineBank(new LineBank(null, null, null, null, 0, null, null, null, []));
                             self.currentCode("");
@@ -300,6 +308,7 @@ var qmm006;
                 };
                 ScreenModel.prototype.remove = function () {
                     var self = this;
+                    //"データを削除します。\r\nよろしいですか？"---AL002
                     nts.uk.ui.dialog.confirm("データを削除します。\r\nよろしいですか？").ifYes(function () {
                         var command = {
                             accountAtr: self.currentLineBank().accountAtr(),
@@ -335,7 +344,6 @@ var qmm006;
                             nts.uk.ui.dialog.alert(self.messageList()[3].message);
                         });
                     }).ifNo(function () {
-                        return;
                     });
                 };
                 ScreenModel.prototype.clearError = function () {

@@ -34,7 +34,7 @@
 				<button id="A_BTN_004"
 					data-bind="click: remove, enable : isDeleteEnable" class="danger">削除</button>
 				<a href="#" id="A_BTN_005"
-					data-bind="click: BTN005, ntsLinkButton: { }">振込元銀行の登録へ</a>
+					data-bind="click: jumpToQmm002A, ntsLinkButton: { }">振込元銀行の登録へ</a>
 			</div>
 
 			<div id="contents-area" class="cf">
@@ -138,7 +138,7 @@
 
 					<div class="right-content-right">
 						<div class="control-group">
-							<span id="A_INP_004"> <input
+							<span id="A_INP_004"> <input data-name="振込依頼者名 "
 								data-bind="ntsTextEditor: {
 									value: requesterName,
 									constraint:'RequesterName',
