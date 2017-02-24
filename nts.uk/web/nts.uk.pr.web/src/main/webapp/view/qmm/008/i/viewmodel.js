@@ -51,7 +51,7 @@ var nts;
                                 ScreenModel.prototype.loadPensionAvgearn = function () {
                                     var self = this;
                                     var dfd = $.Deferred();
-                                    i.service.findPensionAvgearn('id').done(function (res) {
+                                    i.service.findPensionAvgearn('11').done(function (res) {
                                         res.forEach(function (item) {
                                             self.listPensionAvgearnModel.push(new PensionAvgearnModel(item.historyId, item.levelCode, new PensionAvgearnValueModel(item.companyFundExemption.maleAmount, item.companyFundExemption.femaleAmount, item.companyFundExemption.unknownAmount), new PensionAvgearnValueModel(item.companyPension.maleAmount, item.companyPension.femaleAmount, item.companyPension.unknownAmount), new PensionAvgearnValueModel(item.personalFundExemption.maleAmount, item.personalFundExemption.femaleAmount, item.personalFundExemption.unknownAmount), new PensionAvgearnValueModel(item.personalPension.maleAmount, item.personalPension.femaleAmount, item.personalPension.unknownAmount), item.childContributionAmount));
                                         });

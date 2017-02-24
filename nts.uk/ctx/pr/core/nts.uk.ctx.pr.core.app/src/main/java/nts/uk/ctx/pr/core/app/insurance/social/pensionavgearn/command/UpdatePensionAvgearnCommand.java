@@ -17,5 +17,5 @@ import lombok.Setter;
 public class UpdatePensionAvgearnCommand {
 	
 	/** The list pension avgearn. */
-	List<PensionAvgearnBaseCommand> listPensionAvgearn;
+	List<PensionAvgearnCommandDto> listPensionAvgearn;
 }

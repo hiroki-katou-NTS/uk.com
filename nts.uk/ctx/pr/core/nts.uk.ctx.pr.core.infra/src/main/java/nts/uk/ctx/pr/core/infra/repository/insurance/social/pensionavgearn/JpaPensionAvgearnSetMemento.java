@@ -41,6 +41,9 @@ public class JpaPensionAvgearnSetMemento implements PensionAvgearnSetMemento {
 	public void setLevelCode(Integer levelCode) {
 		QismtPensionAvgearnPK pensionAvgearnPK = this.typeValue.getQismtPensionAvgearnPK();
 		pensionAvgearnPK.setPensionGrade(BigDecimal.valueOf(levelCode));
+		//fake code
+		pensionAvgearnPK.setCcd("0001");
+		pensionAvgearnPK.setSiOfficeCd("23");
 		this.typeValue.setQismtPensionAvgearnPK((pensionAvgearnPK));
 	}
 
@@ -51,9 +54,13 @@ public class JpaPensionAvgearnSetMemento implements PensionAvgearnSetMemento {
 
 	@Override
 	public void setCompanyFund(PensionAvgearnValue companyFund) {
-		this.typeValue.setCFundFemMny(companyFund.getFemaleAmount().v());
-		this.typeValue.setCFundMaleMny(companyFund.getMaleAmount().v());
-		this.typeValue.setCFundMinerMny(companyFund.getUnknownAmount().v());
+		//thua truong?
+//		this.typeValue.setCFundFemMny(companyFund.getFemaleAmount().v());
+//		this.typeValue.setCFundMaleMny(companyFund.getMaleAmount().v());
+//		this.typeValue.setCFundMinerMny(companyFund.getUnknownAmount().v());
+		this.typeValue.setCFundFemMny(BigDecimal.valueOf(5));
+		this.typeValue.setCFundMaleMny(BigDecimal.valueOf(5));
+		this.typeValue.setCFundMinerMny(BigDecimal.valueOf(5));
 
 	}
 
@@ -73,15 +80,19 @@ public class JpaPensionAvgearnSetMemento implements PensionAvgearnSetMemento {
 
 	@Override
 	public void setPersonalFund(PensionAvgearnValue personalFund) {
-		this.typeValue.setPFundFemMny(personalFund.getFemaleAmount().v());
-		this.typeValue.setPFundMaleMny(personalFund.getMaleAmount().v());
-		this.typeValue.setPFundMinerMny(personalFund.getUnknownAmount().v());
+		//thua truong?
+//		this.typeValue.setPFundFemMny(personalFund.getFemaleAmount().v());
+//		this.typeValue.setPFundMaleMny(personalFund.getMaleAmount().v());
+//		this.typeValue.setPFundMinerMny(personalFund.getUnknownAmount().v());
+		this.typeValue.setPFundFemMny(BigDecimal.valueOf(5));
+		this.typeValue.setPFundMaleMny(BigDecimal.valueOf(5));
+		this.typeValue.setPFundMinerMny(BigDecimal.valueOf(5));
 	}
 
 	@Override
 	public void setPersonalFundExemption(PensionAvgearnValue personalFundExemption) {
 		this.typeValue.setPFundExemptFemMny(personalFundExemption.getFemaleAmount().v());
-		this.typeValue.setPFundMaleMny(personalFundExemption.getMaleAmount().v());
+		this.typeValue.setPFundExemptMaleMny(personalFundExemption.getMaleAmount().v());
 		this.typeValue.setPFundExemptMinerMny(personalFundExemption.getUnknownAmount().v());
 	}
 

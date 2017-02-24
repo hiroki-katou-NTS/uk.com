@@ -108,11 +108,11 @@
 								<th data-bind="css: { hidden: leftShow() }" class="border_none"></th>
 									<com:ko tag="with" bind="pensionRateModel.fundRateItems">
 										<com:ko tag="if" bind="$parent.leftShow()">
-											<th class="halign-center" data-bind="text: salaryCompanySonExemption()+'/1000'"></th>
-											<th class="halign-center" data-bind="text: salaryCompanyDaughterExemption()+'/1000'"></th>
-											<th class="halign-center" data-bind="text: salaryCompanyUnknownExemption()+'/1000'"></th>
-											<th class="halign-center" data-bind="text: salaryCompanySonBurden()+'/1000'"></th>
+											<th class="halign-center" data-bind="text: salaryPersonalSonBurden()+'/1000'"></th>
 											<th class="halign-center" data-bind="text: salaryPersonalDaughterBurden()+'/1000'"></th>
+											<th class="halign-center" data-bind="text: salaryPersonalUnknownBurden()+'/1000'"></th>
+											<th class="halign-center" data-bind="text: salaryCompanySonBurden()+'/1000'"></th>
+											<th class="halign-center" data-bind="text: salaryCompanyDaughterBurden()+'/1000'"></th>
 											<th class="halign-center" data-bind="text: salaryCompanyUnknownBurden()+'/1000'"></th>
 										</com:ko>
 										<th data-bind="css: { hidden: $parent.rightShow() }"
@@ -121,9 +121,10 @@
 											<th class="halign-center" data-bind="text: salaryPersonalSonExemption()+'/1000'"></th>
 											<th class="halign-center" data-bind="text: salaryPersonalDaughterExemption()+'/1000'"></th>
 											<th class="halign-center" data-bind="text: salaryPersonalUnknownExemption()+'/1000'"></th>
-											<th class="halign-center" data-bind="text: salaryPersonalSonBurden()+'/1000'"></th>
-											<th class="halign-center" data-bind="text: salaryPersonalDaughterBurden()+'/1000'"></th>
-											<th class="halign-center" data-bind="text: salaryPersonalUnknownBurden()+'/1000'"></th>
+											<th class="halign-center" data-bind="text: salaryCompanySonExemption()+'/1000'"></th>
+											<th class="halign-center" data-bind="text: salaryCompanyDaughterExemption()+'/1000'"></th>
+											<th class="halign-center" data-bind="text: salaryCompanyUnknownExemption()+'/1000'"></th>
+											
 										</com:ko>
 									</com:ko>
 								<th class="halign-center" data-bind="text: pensionRateModel.childContributionRate"></th> 
@@ -137,8 +138,8 @@
 									<td class="bg-green"><span data-bind="text: salLimit"></span></td>
 									<com:ko-foreach bind="$parent.listPensionAvgearnModel">
 										<com:ko-if bind="$parent.code == levelCode">
-											<td data-bind="css: { hidden: $parents[1].leftShow() }"
-												class="bg-green border_none"></td>
+											<th data-bind="css: { hidden: $parents[1].leftShow() }"
+												class="bg-green border_none"></th>
 											<com:ko tag="with" bind="personalPension">
 												<com:ko-if bind="$parents[2].leftShow()">
 													<td><input data-bind="ntsNumberEditor: {value: maleAmount, constraint:'CommonAmount', option: $parents[2].numberEditorCommonOption}"></input></td>
@@ -153,8 +154,8 @@
 													<td><input data-bind="ntsNumberEditor: {value: unknownAmount, constraint:'CommonAmount', option: $parents[2].numberEditorCommonOption}"></input></td>
 												</com:ko-if>
 											</com:ko>
-											<td data-bind="css: { hidden: $parents[1].rightShow() }"
-												class="bg-green border_none"></td>
+											<th data-bind="css: { hidden: $parents[1].rightShow() }"
+												class="bg-green border_none"></th>
 											<com:ko tag="with" bind="personalFundExemption">
 												<com:ko-if bind="$parents[2].rightShow()">
 													<td><input data-bind="ntsNumberEditor: {value: maleAmount, constraint:'CommonAmount', option: $parents[2].numberEditorCommonOption}"></input></td>
