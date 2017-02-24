@@ -4,6 +4,7 @@ var testdata;
         function HogeItem(code, name) {
             this.code = ko.observable(code);
             this.name = ko.observable(name);
+            this.flag = ko.observable(true);
         }
         return HogeItem;
     }());
