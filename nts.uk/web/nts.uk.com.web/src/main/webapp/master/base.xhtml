@@ -21,11 +21,10 @@
 
     <h:body>
     
-    	<div data-bind="with: content">
+    	<div id="master-wrapper" data-bind="with: content">
     		<ui:insert name="base-content" >
 	    		<div id="header">ゆーけー！</div>
-	        
-		        <div>
+		        <div id="master-content">
 		        	<ui:insert name="content" />
 		        </div>
 	    	</ui:insert>
