@@ -19,9 +19,9 @@ module qmm006.a.service {
         return dfd.promise();
     }
 
-    export function saveData(isCreated, command): JQueryPromise<any> {
+    export function saveData(isEnable, command): JQueryPromise<any> {
         var dfd = $.Deferred<any>();
-        var path = isCreated ? paths.saveData : paths.update;
+        var path = isEnable ? paths.saveData : paths.update;
         nts.uk.request.ajax("com", path, command)
             .done(function(res: any) {
                 dfd.resolve(res);

@@ -29,8 +29,8 @@ var qmm006;
                     var self = this;
                     var dfd = $.Deferred();
                     self.findBankAll().done(function (data) {
-                        if (nts.uk.ui.windows.getShared("branchCode") != null) {
-                            self.singleSelectedCode(nts.uk.ui.windows.getShared("branchCode"));
+                        if (nts.uk.ui.windows.getShared("bankBranchCode") != null) {
+                            self.singleSelectedCode(nts.uk.ui.windows.getShared("bankBranchCode"));
                         }
                         dfd.resolve();
                     }).fail(function (res) {
@@ -60,8 +60,14 @@ var qmm006;
                     nts.uk.ui.windows.close();
                 };
                 ScreenModel.prototype.transferData = function () {
-                    nts.uk.ui.windows.setShared("selectedBank", this.selectedBank(), true);
-                    nts.uk.ui.windows.close();
+                    var self = this;
+                    if (self.singleSelectedCode()) {
+                        nts.uk.ui.windows.setShared("selectedBank", this.selectedBank(), true);
+                        nts.uk.ui.windows.close();
+                    }
+                    else {
+                        nts.uk.ui.dialog.alert("＊が選択されていません。"); //ER007
+                    }
                 };
                 return ScreenModel;
             }());

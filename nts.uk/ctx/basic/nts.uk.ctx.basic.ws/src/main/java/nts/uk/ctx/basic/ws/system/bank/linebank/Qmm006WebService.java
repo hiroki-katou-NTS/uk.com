@@ -12,6 +12,8 @@ import nts.uk.ctx.basic.app.command.system.bank.linebank.AddLineBankCommand;
 import nts.uk.ctx.basic.app.command.system.bank.linebank.AddLineBankCommandHandler;
 import nts.uk.ctx.basic.app.command.system.bank.linebank.RemoveLineBankCommand;
 import nts.uk.ctx.basic.app.command.system.bank.linebank.RemoveLineBankCommandHandler;
+import nts.uk.ctx.basic.app.command.system.bank.linebank.TransferLineBankCommand;
+import nts.uk.ctx.basic.app.command.system.bank.linebank.TransferLineBankCommandHandler;
 import nts.uk.ctx.basic.app.command.system.bank.linebank.UpdateLineBankCommand;
 import nts.uk.ctx.basic.app.command.system.bank.linebank.UpdateLineBankCommandHandler;
 import nts.uk.ctx.basic.app.find.system.bank.linebank.LineBankDto;
@@ -31,6 +33,9 @@ public class Qmm006WebService extends WebService {
 	
 	@Inject
 	private RemoveLineBankCommandHandler removeLineBankCommandHandler;
+	
+	@Inject
+	private TransferLineBankCommandHandler transferLineBankCommandHandler;
 	
 	@POST
 	@Path("add")
@@ -54,6 +59,12 @@ public class Qmm006WebService extends WebService {
 	@Path("remove")
 	public void remove(RemoveLineBankCommand command){
 		this.removeLineBankCommandHandler.handle(command);
+	}
+	
+	@POST
+	@Path("transfer")
+	public void transfer(TransferLineBankCommand command){
+		this.transferLineBankCommandHandler.handle(command);
 	}
 	
 } 

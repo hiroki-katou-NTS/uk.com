@@ -42,6 +42,15 @@ public class JpaPersonBankAccountRepository extends JpaRepository implements Per
     		+ " OR (a.toBankCd5 IN :bankCode AND a.toBranchCd2 IN :branchCode))";	
 	
 	private final String SEL_6 = 
+    		"SELECT a FROM PbamtPersonBankAccount a"
+    		+ " WHERE a.pbamtPersonBankAccountPK.companyCode = :companyCode"
+    		+ " AND (a.fromLineBankCd1 = :lineBankCode"
+    		+ " OR a.fromLineBankCd2 = :lineBankCode"
+    		+ " OR a.fromLineBankCd3 = :lineBankCode"
+    		+ " OR a.fromLineBankCd4 = :lineBankCode"
+    		+ " OR a.fromLineBankCd5 = :lineBankCode)";
+	
+	private final String SEL_6_1 = 
     		"SELECT COUNT(a) FROM PbamtPersonBankAccount a"
     		+ " WHERE a.pbamtPersonBankAccountPK.companyCode = :companyCode"
     		+ " AND (a.fromLineBankCd1 IN :lineBankCode"
@@ -129,7 +138,7 @@ public class JpaPersonBankAccountRepository extends JpaRepository implements Per
 
 	@Override
 	public boolean checkExistsLineBankAccount(String companyCode, List<String> lineBank) {
-		Optional<Long> numberOfPerson = this.queryProxy().query(SEL_6, Long.class)
+		Optional<Long> numberOfPerson = this.queryProxy().query(SEL_6_1, Long.class)
 										.setParameter("companyCode", companyCode)
 										.setParameter("lineBankCode", lineBank)
 										.getSingle();

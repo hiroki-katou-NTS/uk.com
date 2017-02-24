@@ -5,7 +5,8 @@ var qmm006;
         var service;
         (function (service) {
             var paths = {
-                findAll: "basic/system/bank/linebank/findAll"
+                findAll: "basic/system/bank/linebank/findAll",
+                transfer: "basic/system/bank/linebank/transfer"
             };
             function findAll() {
                 var dfd = $.Deferred();
@@ -19,6 +20,18 @@ var qmm006;
                 return dfd.promise();
             }
             service.findAll = findAll;
+            function transfer(data) {
+                var dfd = $.Deferred();
+                nts.uk.request.ajax('com', paths.transfer, data)
+                    .done(function (res) {
+                    dfd.resolve(res);
+                })
+                    .fail(function (res) {
+                    dfd.reject(res);
+                });
+                return dfd.promise();
+            }
+            service.transfer = transfer;
         })(service = c.service || (c.service = {}));
     })(c = qmm006.c || (qmm006.c = {}));
 })(qmm006 || (qmm006 = {}));

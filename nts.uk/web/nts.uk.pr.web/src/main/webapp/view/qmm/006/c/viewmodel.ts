@@ -16,10 +16,10 @@ module qmm006.c.viewmodel {
             self.items1 = ko.observableArray([]);
 
             self.columns = ko.observableArray([
-                { headerText: 'コード', key: 'lineBankCode', width: 50 },
-                { headerText: '名称', key: 'lineBankName', width: 160 },
-                { headerText: '口座区分', key: 'accountAtr', width: 120 },
-                { headerText: '口座番号', key: 'accountNo', width: 100 }
+                { headerText: 'コード', key: 'lineBankCode', width: 50, formatter: _.escape },
+                { headerText: '名称', key: 'lineBankName', width: 160, formatter: _.escape },
+                { headerText: '口座区分', key: 'accountAtr', width: 120, formatter: _.escape },
+                { headerText: '口座番号', key: 'accountNo', width: 100, formatter: _.escape }
             ]);
         }
 
@@ -43,6 +43,35 @@ module qmm006.c.viewmodel {
                 }).fail(function(res) { });
             return dfd.promise();
 
+        }
+
+        transfer() {
+            var self = this;
+            var oldLineBankCode = self.currentCode();
+            var newLineBankCode = self.currentCode1();
+            if (oldLineBankCode == null || newLineBankCode == null) {
+                nts.uk.ui.dialog.alert("＊が選択されていません。");//ER007
+            }
+            else if (oldLineBankCode == newLineBankCode) {
+                nts.uk.ui.dialog.alert("統合元と統合先で同じコードの＊が選択されています。\r\n  ＊を確認してください。");//ER009
+            } else {
+                var data = {
+                    oldLineBankCode: oldLineBankCode,
+                    newLineBankCode: newLineBankCode,
+                }
+                nts.uk.ui.dialog.confirm("置換元のマスタを削除しますか？[はい/いいえ]").ifYes(function() {
+                    service.transfer(data)
+                        .done(function() {
+                            nts.uk.ui.windows.setShared("currentCode", newLineBankCode, true);
+                            nts.uk.ui.windows.close();
+                        })
+                        .fail(function(error) {
+                            nts.uk.ui.dialog.alert(error.message);
+                        });
+                }).ifNo(function() {
+                    return;
+                }).then(function() { })
+            }
         }
 
         closeDialog(): any {

@@ -23,9 +23,9 @@ var qmm006;
                 return dfd.promise();
             }
             service.remove = remove;
-            function saveData(isCreated, command) {
+            function saveData(isEnable, command) {
                 var dfd = $.Deferred();
-                var path = isCreated ? paths.saveData : paths.update;
+                var path = isEnable ? paths.saveData : paths.update;
                 nts.uk.request.ajax("com", path, command)
                     .done(function (res) {
                     dfd.resolve(res);
