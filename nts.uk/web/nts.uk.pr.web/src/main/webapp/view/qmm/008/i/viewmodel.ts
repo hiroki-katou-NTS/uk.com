@@ -71,7 +71,7 @@ module nts.uk.pr.view.qmm008.i {
             private loadPensionAvgearn(): JQueryPromise<void> {
                 var self = this;
                 var dfd = $.Deferred<any>();
-                service.findPensionAvgearn('id').done(res => {
+                service.findPensionAvgearn('11').done(res => {
                     res.forEach(item => {
                         self.listPensionAvgearnModel.push(new PensionAvgearnModel(
                             item.historyId,
@@ -154,6 +154,7 @@ module nts.uk.pr.view.qmm008.i {
                     self.listPensionAvgearnModel.push(self.calculatePensionAvgearn(item));
                 });
             }
+
             /**
              * Calculate the PensionAvgearn
              */

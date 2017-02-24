@@ -19,7 +19,7 @@ import nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.PensionAvgearnValu
  */
 @Getter
 @Setter
-public class PensionAvgearnBaseCommand {
+public class PensionAvgearnCommandDto {
 
 	/** The history id. */
 	private String historyId;
@@ -58,7 +58,7 @@ public class PensionAvgearnBaseCommand {
 	 * @return the pension avgearn
 	 */
 	public PensionAvgearn toDomain(String historyId, Integer levelCode) {
-		PensionAvgearnBaseCommand command = this;
+		PensionAvgearnCommandDto command = this;
 
 		// Transfer data
 		PensionAvgearn updatedPensionAvgearn = new PensionAvgearn(new PensionAvgearnGetMemento() {
@@ -75,7 +75,9 @@ public class PensionAvgearnBaseCommand {
 
 			@Override
 			public PensionAvgearnValue getPersonalFund() {
-				return PensionAvgearnValueDto.toDomain(command.getPersonalFund());
+				//return PensionAvgearnValueDto.toDomain(command.getPersonalFund());
+				// thua truong nay?
+				return new PensionAvgearnValue();
 			}
 
 			@Override
@@ -100,7 +102,9 @@ public class PensionAvgearnBaseCommand {
 
 			@Override
 			public PensionAvgearnValue getCompanyFund() {
-				return PensionAvgearnValueDto.toDomain(command.getCompanyFund());
+				//return PensionAvgearnValueDto.toDomain(command.getCompanyFund());
+				// Thua truong nay?
+				return new PensionAvgearnValue();
 			}
 
 			@Override
