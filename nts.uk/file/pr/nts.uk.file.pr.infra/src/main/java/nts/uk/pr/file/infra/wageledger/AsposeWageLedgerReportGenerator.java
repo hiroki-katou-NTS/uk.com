@@ -19,7 +19,7 @@ import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 public class AsposeWageLedgerReportGenerator extends AsposeCellsReportGenerator implements WageLedgerReportGenerator {
 	
 	/** The Constant TEMPLATE_FILE. */
-	private static final String TEMPLATE_FILE = "‪report/schk_0301_1_57_W.xlsx";
+	private static final String TEMPLATE_FILE = "report/WageLegerReportTemplate.xlsx";
 	
 	/** The Constant REPORT_FILE_NAME. */
 	private static final String REPORT_FILE_NAME = "サンプル帳票.pdf";
@@ -33,8 +33,8 @@ public class AsposeWageLedgerReportGenerator extends AsposeCellsReportGenerator 
 	@Override
 	public void generate(FileGeneratorContext fileContext, WageLedgerReportData reportData) {
 		
-		try (val reportContext = this.createContext("‪report/AccumulatedPaymentReport.xlsx")) {
-
+		try {
+			val reportContext = this.createContext(TEMPLATE_FILE);
 			// process data binginds in template
 			reportContext.processDesigner();
 
