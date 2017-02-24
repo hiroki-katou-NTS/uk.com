@@ -3,41 +3,27 @@ module qrm007.a.viewmodel {
         retirementPayItemList: KnockoutObservableArray<RetirementPayItemModel>;
         currentItem: KnockoutObservable<RetirementPayItemModel>;
         currentCode: KnockoutObservable<any>;
+        dirty: nts.uk.ui.DirtyChecker;
         constructor() {
             var self = this;
             self.retirementPayItemList = ko.observableArray([new RetirementPayItemModel(null,null,null,null)]);
-            self.currentCode = ko.observable();
-            self.currentItem = ko.observable(new RetirementPayItemModel(null,null,null,null));
+            self.currentCode = ko.observable(0);
+            self.currentItem = ko.observable(new RetirementPayItemModel("","","",""));
+            self.dirty = new nts.uk.ui.DirtyChecker(self.currentItem().printName);
+            self.currentItem().printName.subscribe(function(value){console.log(value);});
         }
         startPage(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
-            qrm007.a.service.getRetirementPayItemList().done(function(data) {
-                self.retirementPayItemList.removeAll();
-                if(data.length){
-                    data.forEach(function(dataItem){
-                        self.retirementPayItemList.push(ko.mapping.toJS(
-                            new RetirementPayItemModel(
-                                dataItem.itemCode,
-                                dataItem.itemName,
-                                dataItem.printName,
-                                dataItem.memo)));
-                    });
-                    self.currentCode(_.first(self.retirementPayItemList()).itemCode);  
-                    self.currentItem(RetirementPayItemModel.converToObject(_.first(self.retirementPayItemList())));
-                }
-                dfd.resolve();
+            self.findRetirementPayItemList(false).done(function(){
                 self.currentCode.subscribe(function(newValue) {
-                    $('.data-required').ntsError('clear');
-                    self.currentItem(RetirementPayItemModel.converToObject(_.find(self.retirementPayItemList(), function(item) { return item.itemCode == newValue; })));
-                });
-            }).fail(function(res) {
-                self.retirementPayItemList.removeAll();
-                dfd.resolve();
-            });
+                    self.checkDirty();
+                });     
+            }).fail(function(){});
+            dfd.resolve();     
             return dfd.promise();
         }
-        findRetirementPayItemList(){
+        findRetirementPayItemList(firstTime) {
             var self = this;
             var dfd = $.Deferred();
             qrm007.a.service.getRetirementPayItemList().done(function(data) {
@@ -51,10 +37,13 @@ module qrm007.a.viewmodel {
                                 dataItem.printName,
                                 dataItem.memo)));
                     });
-                    self.currentCode(_.first(self.retirementPayItemList()).itemCode);  
-                    self.currentItem(RetirementPayItemModel.converToObject(_.first(self.retirementPayItemList())));
+                    if(!firstTime){self.currentCode(_.first(self.retirementPayItemList()).itemCode);}
+                    self.currentItem(RetirementPayItemModel.converToObject(_.find(self.retirementPayItemList(), function(o) { return o.itemCode == self.currentCode(); })));              
                 }
                 dfd.resolve();
+                self.currentCode.subscribe(function(newValue) {
+                    self.checkDirty();
+                });
             }).fail(function(res) {
                 self.retirementPayItemList.removeAll();
                 dfd.resolve();
@@ -67,32 +56,22 @@ module qrm007.a.viewmodel {
             if(self.currentItem().onchange()){
                 var command = ko.mapping.toJS(self.currentItem());
                 qrm007.a.service.updateRetirementPayItem(command).done(function(data) {
-                    qrm007.a.service.getRetirementPayItemList().done(function(data) {
-                        self.retirementPayItemList.removeAll();
-                        if(data.length){
-                            data.forEach(function(dataItem){
-                                self.retirementPayItemList.push(ko.mapping.toJS(
-                                    new RetirementPayItemModel(
-                                        dataItem.itemCode,
-                                        dataItem.itemName,
-                                        dataItem.printName,
-                                        dataItem.memo)));
-                            }); 
-                        }
-                        self.currentItem(RetirementPayItemModel.converToObject(_.find(self.retirementPayItemList(), function(item) { return item.itemCode == self.currentCode(); })));
-                        dfd.resolve();
-                    }).fail(function(res) {
-                        self.retirementPayItemList.removeAll();
-                        dfd.resolve();
-                    });
+                    self.findRetirementPayItemList(true);
                 }).fail(function(res) {
-                    dfd.resolve();
                 });
             } else {
-                $('.data-required').ntsError('set', 'ER001');  
             }
             return dfd.promise();
         }
+        checkDirty() {
+            var self = this;
+            if (self.dirty.isDirty()) {
+                alert("Data is changed.");
+            } else {
+                self.currentItem(RetirementPayItemModel.converToObject(_.find(self.retirementPayItemList(), function(o) { return o.itemCode == self.currentCode(); }))); 
+                
+            }
+        };
     }
     
     interface RPItem {
