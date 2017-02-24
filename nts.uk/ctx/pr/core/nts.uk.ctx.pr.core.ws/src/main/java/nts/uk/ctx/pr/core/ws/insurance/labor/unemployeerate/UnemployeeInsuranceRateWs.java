@@ -7,16 +7,16 @@ package nts.uk.ctx.pr.core.ws.insurance.labor.unemployeerate;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.pr.core.app.insurance.labor.unemployeerate.UnemployeeInsuranceRateDto;
 import nts.uk.ctx.pr.core.app.insurance.labor.unemployeerate.command.UnemployeeInsuranceRateAddCommand;
 import nts.uk.ctx.pr.core.app.insurance.labor.unemployeerate.command.UnemployeeInsuranceRateAddCommandHandler;
 import nts.uk.ctx.pr.core.app.insurance.labor.unemployeerate.command.UnemployeeInsuranceRateUpdateCommand;
 import nts.uk.ctx.pr.core.app.insurance.labor.unemployeerate.command.UnemployeeInsuranceRateUpdateCommandHandler;
-import nts.uk.ctx.pr.core.app.insurance.labor.unemployeerate.find.UnemployeeInsuranceFindInDto;
 import nts.uk.ctx.pr.core.app.insurance.labor.unemployeerate.find.UnemployeeInsuranceFinder;
+import nts.uk.ctx.pr.core.app.insurance.labor.unemployeerate.find.dto.UnemployeeInsuranceRateFindOutDto;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -39,17 +39,15 @@ public class UnemployeeInsuranceRateWs extends WebService {
 	UnemployeeInsuranceRateUpdateCommandHandler update;
 
 	/**
-	 * Detail history.
+	 * Detail.
 	 *
-	 * @param historyId
-	 *            the history id
-	 * @return the unemployee insurance rate dto
+	 * @param historyId the history id
+	 * @return the unemployee insurance rate find out dto
 	 */
 	@POST
-	@Path("detailHistory")
-	public UnemployeeInsuranceRateDto detailHistory(UnemployeeInsuranceFindInDto unemployeeInsuranceFindInDto) {
-		return find.findById(unemployeeInsuranceFindInDto.getCompanyCode(),
-				unemployeeInsuranceFindInDto.getHistoryId());
+	@Path("detail/{historyId}")
+	public UnemployeeInsuranceRateFindOutDto detail(@PathParam("historyId") String historyId) {
+		return find.findById(historyId);
 	}
 
 	/**

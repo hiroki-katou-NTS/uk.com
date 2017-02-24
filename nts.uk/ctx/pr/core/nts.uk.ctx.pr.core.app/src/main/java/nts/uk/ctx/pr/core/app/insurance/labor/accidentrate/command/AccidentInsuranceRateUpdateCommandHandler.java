@@ -12,6 +12,7 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.AccidentInsuranceRate;
 import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.AccidentInsuranceRateRepository;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class AccidentInsuranceRateUpdateCommandHandler.
@@ -33,7 +34,7 @@ public class AccidentInsuranceRateUpdateCommandHandler extends CommandHandler<Ac
 	 */
 	@Override
 	protected void handle(CommandHandlerContext<AccidentInsuranceRateUpdateCommand> context) {
-		AccidentInsuranceRate accidentInsuranceRate = context.getCommand().toDomain();
+		AccidentInsuranceRate accidentInsuranceRate = context.getCommand().toDomain(AppContexts.user().companyCode());
 		accidentInsuranceRate.validate();
 		this.accidentInsuranceRateRepo.update(accidentInsuranceRate);
 	}

@@ -1,6 +1,10 @@
 module nts.uk.pr.view.qmm007.a {
     export module viewmodel {
 
+        import UnitPriceHistoryDto = service.model.UnitPriceHistoryDto;
+        import UnitPriceItemDto = service.model.UnitPriceItemDto;
+        import UnitPriceHistoryItemDto = service.model.UnitPriceHistoryItemDto;
+
         export class ScreenModel {
             // UnitPriceHistory Model
             unitPriceHistoryModel: KnockoutObservable<UnitPriceHistoryModel>;
@@ -10,7 +14,7 @@ module nts.uk.pr.view.qmm007.a {
 
             // Tree grid
             filteredData: KnockoutObservableArray<any>;
-            historyList: KnockoutObservableArray<any>;
+            historyList: KnockoutObservableArray<UnitPriceHistoryNode>;
 
             // Setting type
             isContractSettingEnabled: KnockoutObservable<boolean>;
@@ -26,8 +30,23 @@ module nts.uk.pr.view.qmm007.a {
             constructor() {
                 var self = this;
                 self.isNewMode = ko.observable(true);
-                self.unitPriceHistoryModel = ko.observable(new UnitPriceHistoryModel());
-                self.historyList = ko.observableArray();
+                let defaultHist = new UnitPriceHistoryDto();
+                defaultHist.id = '';
+                defaultHist.unitPriceCode = '';
+                defaultHist.unitPriceName = '';
+                defaultHist.startMonth = 2017;
+                //model.endMonth('');
+                defaultHist.budget = 0;
+                defaultHist.fixPaySettingType = 'Company';
+                defaultHist.fixPayAtr = 'NotApply';
+                defaultHist.fixPayAtrMonthly = 'NotApply';
+                defaultHist.fixPayAtrDayMonth = 'NotApply';
+                defaultHist.fixPayAtrDaily = 'NotApply';
+                defaultHist.fixPayAtrHourly = 'NotApply';
+                defaultHist.memo = '';
+
+                self.unitPriceHistoryModel = ko.observable(new UnitPriceHistoryModel(defaultHist));
+                self.historyList = ko.observableArray<UnitPriceHistoryNode>([]);
                 self.switchButtonDataSource = ko.observableArray([
                     { code: 'Apply', name: '対象' },
                     { code: 'NotApply', name: '対象外' }
@@ -90,9 +109,9 @@ module nts.uk.pr.view.qmm007.a {
             private save() {
                 var self = this;
                 if (self.isNewMode()) {
-                    service.create(service.collectData(self.unitPriceHistoryModel()));
+                    service.create(self.collectData(self.unitPriceHistoryModel()));
                 } else {
-                    service.update(service.collectData(self.unitPriceHistoryModel()));
+                    service.update(self.collectData(self.unitPriceHistoryModel()));
                 }
             }
 
@@ -133,21 +152,7 @@ module nts.uk.pr.view.qmm007.a {
                 var self = this;
                 if (id) {
                     service.find(id).done(data => {
-                        var model = self.unitPriceHistoryModel()
-                        model.id = data.id;
-                        model.version = data.version;
-                        model.unitPriceCode(data.unitPriceCode);
-                        model.unitPriceName(data.unitPriceName);
-                        model.startMonth(data.startMonth);
-                        //model.endMonth(data.endMonth);
-                        model.budget(data.budget);
-                        model.fixPaySettingType(data.fixPaySettingType);
-                        model.fixPayAtr(data.fixPayAtr);
-                        model.fixPayAtrMonthly(data.fixPayAtrMonthly);
-                        model.fixPayAtrDayMonth(data.fixPayAtrDayMonth);
-                        model.fixPayAtrDaily(data.fixPayAtrDaily);
-                        model.fixPayAtrHourly(data.fixPayAtrHourly);
-                        model.memo(data.memo);
+                        self.unitPriceHistoryModel(new UnitPriceHistoryModel(data));
                     });
                 }
             }
@@ -159,41 +164,36 @@ module nts.uk.pr.view.qmm007.a {
                 var self = this;
                 var dfd = $.Deferred<any>();
                 service.getUnitPriceHistoryList().done(data => {
-                    self.historyList(self.convertToTreeList(data));
+                    self.historyList(data.map((item, index) => { return new UnitPriceHistoryNode(item) }));
                     dfd.resolve();
                 });
                 return dfd.promise();
             }
 
             /**
-             * Convert list from dto to treegrid
+             * Collect data from model and convert to dto.
              */
-            private convertToTreeList(unitPriceHistoryList: Array<UnitPriceHistoryDto>): Array<UnitPriceHistoryNode> {
-                var groupByCode = {};
-
-                // group by unit price code
-                unitPriceHistoryList.forEach(item => {
-                    var c = item.unitPriceCode;
-                    groupByCode[c] = item;
-                });
-                // convert groupByCode to array
-                var arr = Object.keys(groupByCode).map(key => groupByCode[key]);
-
-                // convert to tree node
-                var parentNodes = arr.map(item => new UnitPriceHistoryNode(item.id, item.unitPriceCode, item.unitPriceName, '', '', false, []));
-                var childNodes = unitPriceHistoryList.map(item => new UnitPriceHistoryNode(item.id, item.unitPriceCode, item.unitPriceName, item.startMonth, item.endMonth, true));
-
-                var treeList: Array<UnitPriceHistoryNode> = parentNodes.map(parent => {
-                    childNodes.forEach(child => parent.childs.push(parent.unitPriceCode == child.unitPriceCode ? child : ''));
-                    return parent;
-                });
-                return treeList;
+            private collectData(unitPriceHistoryModel): UnitPriceHistoryDto {
+                let dto = new UnitPriceHistoryDto();
+                dto.id = unitPriceHistoryModel.id;
+                dto.unitPriceCode = unitPriceHistoryModel.unitPriceCode();
+                dto.unitPriceName = unitPriceHistoryModel.unitPriceName();
+                dto.startMonth = unitPriceHistoryModel.startMonth();
+                dto.endMonth = unitPriceHistoryModel.endMonth();
+                dto.budget = unitPriceHistoryModel.budget();
+                dto.fixPaySettingType = unitPriceHistoryModel.fixPaySettingType();
+                dto.fixPayAtr = unitPriceHistoryModel.fixPayAtr();
+                dto.fixPayAtrMonthly = unitPriceHistoryModel.fixPayAtrMonthly();
+                dto.fixPayAtrDayMonth = unitPriceHistoryModel.fixPayAtrDayMonth();
+                dto.fixPayAtrDaily = unitPriceHistoryModel.fixPayAtrDaily();
+                dto.fixPayAtrHourly = unitPriceHistoryModel.fixPayAtrHourly();
+                dto.memo = unitPriceHistoryModel.memo();
+                return dto;
             }
         }
 
         export class UnitPriceHistoryModel {
             id: string;
-            version: number;
             unitPriceCode: KnockoutObservable<string>;
             unitPriceName: KnockoutObservable<string>;
             startMonth: KnockoutObservable<string>;
@@ -207,51 +207,42 @@ module nts.uk.pr.view.qmm007.a {
             fixPayAtrHourly: KnockoutObservable<string>;
             memo: KnockoutObservable<string>;
 
-            constructor() {
-                this.id = '';
-                this.version = 0;
-                this.unitPriceCode = ko.observable('');
-                this.unitPriceName = ko.observable('');
-                this.startMonth = ko.observable('');
-                this.endMonth = ko.observable('（平成29年01月） ~');
-                this.budget = ko.observable(null);
-                this.fixPaySettingType = ko.observable('Company');
-                this.fixPayAtr = ko.observable('NotApply');
-                this.fixPayAtrMonthly = ko.observable('NotApply');
-                this.fixPayAtrDayMonth = ko.observable('NotApply');
-                this.fixPayAtrDaily = ko.observable('NotApply');
-                this.fixPayAtrHourly = ko.observable('NotApply');
-                this.memo = ko.observable('');
+            constructor(historyDto: UnitPriceHistoryDto) {
+                this.id = historyDto.id;
+                this.unitPriceCode = ko.observable(historyDto.unitPriceCode);
+                this.unitPriceName = ko.observable(historyDto.unitPriceName);
+                this.startMonth = ko.observable(nts.uk.time.formatYearMonth(historyDto.startMonth));
+                this.endMonth = ko.observable(nts.uk.time.formatYearMonth(historyDto.endMonth));
+                this.budget = ko.observable(historyDto.budget);
+                this.fixPaySettingType = ko.observable(historyDto.fixPaySettingType);
+                this.fixPayAtr = ko.observable(historyDto.fixPayAtr);
+                this.fixPayAtrMonthly = ko.observable(historyDto.fixPayAtrMonthly);
+                this.fixPayAtrDayMonth = ko.observable(historyDto.fixPayAtrDayMonth);
+                this.fixPayAtrDaily = ko.observable(historyDto.fixPayAtrDaily);
+                this.fixPayAtrHourly = ko.observable(historyDto.fixPayAtrHourly);
+                this.memo = ko.observable(historyDto.memo);
             }
         }
 
         export class UnitPriceHistoryNode {
-                id: string
-                unitPriceCode: string;
-                unitPriceName: string;
-                startMonth: string;
-                endMonth: string;
-                nodeText: string;
-                isChild: boolean;
-                childs: Array<UnitPriceHistoryNode>;
-                constructor(id: string,
-                    unitPriceCode: string,
-                    unitPriceName: string,
-                    startMonth: string,
-                    endMonth: string,
-                    isChild: boolean,
-                    childs?: Array<UnitPriceHistoryNode>) {
-                    var self = this;
-                    self.isChild = isChild;
-                    self.unitPriceCode = unitPriceCode;
-                    self.unitPriceName = unitPriceName;
-                    self.startMonth = startMonth;
-                    self.endMonth = endMonth;
-                    self.id = self.isChild == true ? id : id + id;
-                    self.childs = childs;
-                    self.nodeText = self.isChild == true ? self.startMonth + ' ~ ' + self.endMonth : self.unitPriceCode + ' ' + self.unitPriceName;
+            id: string
+            nodeText: string;
+            childs: Array<UnitPriceHistoryNode>;
+            constructor(item: UnitPriceItemDto | UnitPriceHistoryItemDto) {
+                var self = this;
+                self.id = "";
+
+                if ((<UnitPriceItemDto>item).histories !== undefined) {
+                    self.nodeText = (<UnitPriceItemDto>item).unitPriceCode + '~' + (<UnitPriceItemDto>item).unitPriceName;
+                    self.childs = (<UnitPriceItemDto>item).histories.map((item, index) => { return new UnitPriceHistoryNode(item) });
+                }
+
+                if ((<UnitPriceItemDto>item).histories === undefined) {
+                    self.id = (<UnitPriceHistoryItemDto>item).id;
+                    self.nodeText = (<UnitPriceHistoryItemDto>item).startMonth + '~' + (<UnitPriceHistoryItemDto>item).endMonth;
                 }
             }
+        }
 
     }
 }

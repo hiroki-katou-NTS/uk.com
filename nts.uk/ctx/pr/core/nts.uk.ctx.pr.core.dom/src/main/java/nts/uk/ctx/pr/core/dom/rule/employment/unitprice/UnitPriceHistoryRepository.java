@@ -20,14 +20,14 @@ public interface UnitPriceHistoryRepository {
 	 *
 	 * @param unitPriceHistory the unit price history
 	 */
-    void add(UnitPriceHistory unitPriceHistory);
+    void add(UnitPrice unitPrice, UnitPriceHistory unitPriceHistory);
 
 	/**
 	 * Update.
 	 *
 	 * @param unitPriceHistory the unit price history
 	 */
-    void update(UnitPriceHistory unitPriceHistory);
+    void update(UnitPrice unitPrice, UnitPriceHistory unitPriceHistory);
 
 	/**
 	 * Removes the.
@@ -51,7 +51,7 @@ public interface UnitPriceHistoryRepository {
 	 * @param id the id
 	 * @return the unit price history
 	 */
-	Optional<UnitPriceHistory> findById(CompanyCode companyCode, UnitPriceCode cUnitpriceCd, String histId);
+	Optional<UnitPriceHistory> findById(CompanyCode companyCode, String histId);
 
 	/**
 	 * Validate date range.

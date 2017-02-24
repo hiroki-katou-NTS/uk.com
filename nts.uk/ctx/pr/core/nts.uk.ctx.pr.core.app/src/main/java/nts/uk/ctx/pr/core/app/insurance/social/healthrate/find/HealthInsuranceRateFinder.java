@@ -13,6 +13,7 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.HealthInsuranceRate;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.HealthInsuranceRateRepository;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class HealthInsuranceRateFinder.
@@ -46,7 +47,8 @@ public class HealthInsuranceRateFinder {
 	 * @return the list
 	 */
 	public List<HealthInsuranceRateDto> findByOfficeCode(String officeCode) {
-		return healthInsuranceRateRepository.findAll(officeCode).stream().map(domain -> {
+		String companyCode = AppContexts.user().companyCode();
+		return healthInsuranceRateRepository.findAll(companyCode,officeCode).stream().map(domain -> {
 			HealthInsuranceRateDto dto = HealthInsuranceRateDto.builder().build();
 			domain.saveToMemento(dto);
 			return dto;

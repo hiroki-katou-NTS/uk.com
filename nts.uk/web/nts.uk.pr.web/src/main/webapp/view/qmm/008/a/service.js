@@ -18,6 +18,8 @@ var nts;
                                 getAllHealthInsuranceItemByOfficeCode: "ctx/pr/core/insurance/social/healthrate/findByOfficeCode",
                                 getHealthInsuranceItemDetail: "ctx/pr/core/insurance/social/healthrate/find",
                                 getPensionItemDetail: "ctx/pr/core/insurance/social/pensionrate/find",
+                                registerHealthRate: "ctx/pr/core/insurance/social/healthrate/create",
+                                updateHealthRate: "ctx/pr/core/insurance/social/healthrate/update",
                                 getAllRoundingItem: "pr/insurance/social/find/rounding"
                             };
                             function findInsuranceOffice(key) {
@@ -91,6 +93,14 @@ var nts;
                                 return dfd.promise();
                             }
                             service.getPensionItemDetail = getPensionItemDetail;
+                            function registerHealthRate(data) {
+                                return nts.uk.request.ajax(servicePath.registerHealthRate, data);
+                            }
+                            service.registerHealthRate = registerHealthRate;
+                            function updateHealthRate(data) {
+                                return nts.uk.request.ajax(servicePath.updateHealthRate, data);
+                            }
+                            service.updateHealthRate = updateHealthRate;
                             var model;
                             (function (model) {
                                 var finder;
@@ -168,22 +178,22 @@ var nts;
                                     }());
                                     finder.HealthInsuranceRateDto = HealthInsuranceRateDto;
                                     var HealthInsuranceRateItemDto = (function () {
-                                        function HealthInsuranceRateItemDto(chargeRate, payType, healthInsuranceType) {
+                                        function HealthInsuranceRateItemDto(payType, insuranceType, chargeRate) {
                                             this.chargeRate = chargeRate;
                                             this.payType = payType;
-                                            this.healthInsuranceType = healthInsuranceType;
+                                            this.insuranceType = insuranceType;
                                         }
                                         return HealthInsuranceRateItemDto;
                                     }());
                                     finder.HealthInsuranceRateItemDto = HealthInsuranceRateItemDto;
-                                    var chargeRateItemDto = (function () {
-                                        function chargeRateItemDto(companyRate, personalRate) {
+                                    var ChargeRateItemDto = (function () {
+                                        function ChargeRateItemDto(companyRate, personalRate) {
                                             this.companyRate = companyRate;
                                             this.personalRate = personalRate;
                                         }
-                                        return chargeRateItemDto;
+                                        return ChargeRateItemDto;
                                     }());
-                                    finder.chargeRateItemDto = chargeRateItemDto;
+                                    finder.ChargeRateItemDto = ChargeRateItemDto;
                                     var RoundingDto = (function () {
                                         function RoundingDto(payType, roundAtrs) {
                                             this.payType = payType;
@@ -201,7 +211,9 @@ var nts;
                                     }());
                                     finder.Enum = Enum;
                                     var RoundingItemDto = (function () {
-                                        function RoundingItemDto() {
+                                        function RoundingItemDto(personalRoundAtr, companyRoundAtr) {
+                                            this.personalRoundAtr = personalRoundAtr;
+                                            this.companyRoundAtr = companyRoundAtr;
                                         }
                                         return RoundingItemDto;
                                     }());

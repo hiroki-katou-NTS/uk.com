@@ -66,7 +66,7 @@ module nts.uk.pr.view.qmm010.a {
                         self.lstlaborInsuranceOfficeModel = ko.observableArray<LaborInsuranceOfficeFindOutDto>(data);
                         self.selectCodeLstlaborInsuranceOffice = ko.observable(data[0].code);
                         self.selectCodeLstlaborInsuranceOffice.subscribe(function(selectCodeLstlaborInsuranceOffice: string) {
-                            self.detailLaborInsuranceOffice(selectCodeLstlaborInsuranceOffice);
+                            self.showchangeLaborInsuranceOfficep(selectCodeLstlaborInsuranceOffice);
                         });
                         service.findLaborInsuranceOffice(data[0].code).done(data => {
                             self.laborInsuranceOfficeModel = ko.observable(new LaborInsuranceOfficeModel(data));
@@ -92,16 +92,6 @@ module nts.uk.pr.view.qmm010.a {
                 }
                 return dfd.promise();
             }
-            //show InsuranceOffice
-            private showInsuranceOffice(code: string) {
-                if (code != null && code != undefined && code != '') {
-                    var self = this;
-                    service.findLaborInsuranceOffice(code).done(data => {
-                        self.laborInsuranceOfficeModel(new LaborInsuranceOfficeModel(data));
-                    });
-                }
-
-            }
             private saveLaborInsuranceOffice() {
                 var self = this;
                 if (self.typeAction() == TypeActionLaborInsuranceOffice.add) {
@@ -116,6 +106,7 @@ module nts.uk.pr.view.qmm010.a {
             }
             private showchangeLaborInsuranceOfficep(selectionCodeLstLstLaborInsuranceOffice: string) {
                 var self = this;
+                self.typeAction(TypeActionLaborInsuranceOffice.update);
                 self.detailLaborInsuranceOffice(selectionCodeLstLstLaborInsuranceOffice);
             }
             private detailLaborInsuranceOffice(code: string) {

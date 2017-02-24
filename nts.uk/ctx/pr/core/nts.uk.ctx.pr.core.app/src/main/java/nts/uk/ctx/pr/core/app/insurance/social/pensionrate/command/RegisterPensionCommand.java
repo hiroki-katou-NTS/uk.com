@@ -9,6 +9,7 @@ import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.core.dom.company.CompanyCode;
+import nts.uk.ctx.core.dom.util.PrimitiveUtil;
 import nts.uk.ctx.pr.core.dom.insurance.CommonAmount;
 import nts.uk.ctx.pr.core.dom.insurance.Ins2Rate;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
@@ -25,11 +26,12 @@ import nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionRateRounding;
 @Getter
 @Setter
 public class RegisterPensionCommand extends PensionBaseCommand {
-	
+
 	/**
 	 * To domain.
 	 *
-	 * @param companyCode the company code
+	 * @param companyCode
+	 *            the company code
 	 * @return the pension rate
 	 */
 	public PensionRate toDomain(CompanyCode companyCode) {
@@ -75,13 +77,13 @@ public class RegisterPensionCommand extends PensionBaseCommand {
 
 			@Override
 			public Ins2Rate getChildContributionRate() {
-				// TODO Auto-generated method stub
-				return null;
+				return new Ins2Rate(command.getChildContributionRate());
 			}
 
 			@Override
 			public MonthRange getApplyRange() {
-				return MonthRange.range(command.getStartMonth(), command.getEndMonth(), "/");
+				return MonthRange.toMaxDate(
+						PrimitiveUtil.toYearMonth(command.getStartMonth(), PrimitiveUtil.DEFAULT_YM_SEPARATOR_CHAR));
 			}
 
 			@Override

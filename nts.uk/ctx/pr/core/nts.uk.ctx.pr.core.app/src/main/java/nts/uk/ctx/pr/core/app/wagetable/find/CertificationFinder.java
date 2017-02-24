@@ -13,8 +13,8 @@ import javax.transaction.Transactional;
 
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.app.wagetable.find.dto.CertificationFindInDto;
-import nts.uk.ctx.pr.core.dom.wagetable.Certification;
-import nts.uk.ctx.pr.core.dom.wagetable.CertificationReponsitory;
+import nts.uk.ctx.pr.core.dom.wagetable.certification.Certification;
+import nts.uk.ctx.pr.core.dom.wagetable.certification.CertificationReponsitory;
 import nts.uk.shr.com.context.AppContexts;
 
 /**

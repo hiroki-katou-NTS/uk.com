@@ -4,17 +4,16 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.app.wagetable.command.dto;
 
-import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import lombok.Data;
 import nts.uk.ctx.core.dom.company.CompanyCode;
-import nts.uk.ctx.pr.core.dom.wagetable.Certification;
-import nts.uk.ctx.pr.core.dom.wagetable.CertifyGroup;
-import nts.uk.ctx.pr.core.dom.wagetable.CertifyGroupGetMemento;
-import nts.uk.ctx.pr.core.dom.wagetable.MultipleTargetSetting;
+import nts.uk.ctx.pr.core.dom.wagetable.certification.Certification;
+import nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroup;
+import nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroupGetMemento;
+import nts.uk.ctx.pr.core.dom.wagetable.certification.MultipleTargetSetting;
 
 /**
  * The Class CertifyGroupDto.

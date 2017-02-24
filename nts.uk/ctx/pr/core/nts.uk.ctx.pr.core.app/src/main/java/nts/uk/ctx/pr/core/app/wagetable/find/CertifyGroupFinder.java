@@ -14,10 +14,9 @@ import javax.transaction.Transactional;
 
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.app.wagetable.find.dto.CertifyGroupFindDto;
-import nts.uk.ctx.pr.core.app.wagetable.find.dto.CertifyGroupFindInDto;
 import nts.uk.ctx.pr.core.app.wagetable.find.dto.CertifyGroupFindOutDto;
-import nts.uk.ctx.pr.core.dom.wagetable.CertifyGroup;
-import nts.uk.ctx.pr.core.dom.wagetable.CertifyGroupRepository;
+import nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroup;
+import nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroupRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless

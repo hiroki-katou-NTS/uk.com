@@ -66,10 +66,10 @@ public class JpaHealthInsuranceAvgearnSetMemento implements HealthInsuranceAvgea
 	 */
 	@Override
 	public void setCompanyAvg(HealthInsuranceAvgearnValue companyAvg) {
-		this.typeValue.setCHealthBasicMny(BigDecimal.valueOf(companyAvg.getHealthBasicMny().longValue()));
-		this.typeValue.setCHealthGeneralMny(BigDecimal.valueOf(companyAvg.getHealthBasicMny().longValue()));
-		this.typeValue.setCHealthNursingMny(BigDecimal.valueOf(companyAvg.getHealthBasicMny().longValue()));
-		this.typeValue.setCHealthSpecificMny(BigDecimal.valueOf(companyAvg.getHealthBasicMny().longValue()));
+		this.typeValue.setCHealthBasicMny(companyAvg.getHealthBasicMny().v());
+		this.typeValue.setCHealthGeneralMny(companyAvg.getHealthGeneralMny().v());
+		this.typeValue.setCHealthNursingMny(companyAvg.getHealthNursingMny().v());
+		this.typeValue.setCHealthSpecificMny(companyAvg.getHealthSpecificMny().v());
 	}
 
 	/*
@@ -81,9 +81,9 @@ public class JpaHealthInsuranceAvgearnSetMemento implements HealthInsuranceAvgea
 	 */
 	@Override
 	public void setPersonalAvg(HealthInsuranceAvgearnValue personalAvg) {
-		this.typeValue.setPHealthBasicMny(BigDecimal.valueOf(personalAvg.getHealthBasicMny().longValue()));
-		this.typeValue.setPHealthGeneralMny(BigDecimal.valueOf(personalAvg.getHealthBasicMny().longValue()));
-		this.typeValue.setPHealthNursingMny(BigDecimal.valueOf(personalAvg.getHealthBasicMny().longValue()));
-		this.typeValue.setPHealthSpecificMny(BigDecimal.valueOf(personalAvg.getHealthBasicMny().longValue()));
+		this.typeValue.setPHealthBasicMny(personalAvg.getHealthBasicMny().v());
+		this.typeValue.setPHealthGeneralMny(personalAvg.getHealthGeneralMny().v());
+		this.typeValue.setPHealthNursingMny(personalAvg.getHealthNursingMny().v());
+		this.typeValue.setPHealthSpecificMny(personalAvg.getHealthSpecificMny().v());
 	}
 }

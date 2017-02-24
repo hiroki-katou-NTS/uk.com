@@ -1,6 +1,8 @@
 module nts.uk.pr.view.qmm008.b {
     export module viewmodel {
         import InsuranceOfficeItemDto = nts.uk.pr.view.qmm008.a.service.model.finder.InsuranceOfficeItemDto;
+        import aservice = nts.uk.pr.view.qmm008.a.service;
+        import HealthInsuranceRateDto = nts.uk.pr.view.qmm008.a.service.model.finder.HealthInsuranceRateDto;
         export class ScreenModel {
             getInsuranceOfficeItemDto: KnockoutObservable<InsuranceOfficeItemDto>;
             returnInsuranceOfficeItemDto: KnockoutObservable<InsuranceOfficeItemDto>;
@@ -27,13 +29,21 @@ module nts.uk.pr.view.qmm008.b {
                 //            nts.uk.ui.windows.setShared("childValue", null);
                 self.officeCodeName = ko.observable(receiveOfficeItem.codeName);
                 //TODO get current date time of system
+                if(receiveOfficeItem.childs.length>0)
                 self.selectedDate = ko.observable(self.getLastHistory(receiveOfficeItem));
+                else {
+                    self.selectedDate = ko.observable(new Date().getFullYear() + "/" + new Date().getMonth());
+                }
             }
 
             public getLastHistory(OfficeItem: InsuranceOfficeItemDto) {
-                var index = OfficeItem.childs[0].codeName.indexOf("~");
-                var lastHistory = OfficeItem.childs[0].codeName.substring(0, index);
-                return lastHistory;
+                if (OfficeItem.childs.length > 0) {
+                    var index = OfficeItem.childs[0].codeName.indexOf("~");
+                    var lastHistory = OfficeItem.childs[0].codeName.substring(0, index);
+                    return lastHistory;
+                }
+                else
+                    return "";
             }
             public minusOneMonth(stringDate: string) {
                 var index = stringDate.indexOf("/");
@@ -51,8 +61,9 @@ module nts.uk.pr.view.qmm008.b {
                     alert("ER011");
                 }
                 else {
-                    //update previous history
-                    self.getInsuranceOfficeItemDto().childs[0].codeName = self.getLastHistory(self.getInsuranceOfficeItemDto()) + "~" + self.minusOneMonth(self.selectedDate());
+                    if (self.getInsuranceOfficeItemDto().childs.length > 0) {//update previous history
+                        self.getInsuranceOfficeItemDto().childs[0].codeName = self.getLastHistory(self.getInsuranceOfficeItemDto()) + "~" + self.minusOneMonth(self.selectedDate());
+                    }
                     //push new history 
                     self.getInsuranceOfficeItemDto().childs.unshift(
                         new InsuranceOfficeItemDto("", "code", (self.getInsuranceOfficeItemDto().childs.length + 1).toString(), [], self.selectedDate() + "~ 9999/12"));
@@ -63,25 +74,30 @@ module nts.uk.pr.view.qmm008.b {
 
             //compare 2 string date time
             public compareStringDate(date1: string, date2: string) {
-                var index1 = date1.indexOf("/");
-                var year1 = Number(date1.substring(0, index1));
-                var month1 = Number(date1.substring(index1 + 1, date1.length));
+                if (date1 != "") {
+                    var index1 = date1.indexOf("/");
+                    var year1 = Number(date1.substring(0, index1));
+                    var month1 = Number(date1.substring(index1 + 1, date1.length));
 
-                var index2 = date2.indexOf("/");
-                var year2 = Number(date2.substring(0, index2));
-                var month2 = Number(date2.substring(index2 + 1, date2.length));
-                //compare year
-                if (year1 < year2) {
-                    return true;
-                }
-                else {
-                    //compare month
-                    if (month1 + 1 < month2) {
+                    var index2 = date2.indexOf("/");
+                    var year2 = Number(date2.substring(0, index2));
+                    var month2 = Number(date2.substring(index2 + 1, date2.length));
+                    //compare year
+                    if (year1 < year2) {
                         return true;
                     }
                     else {
-                        return false;
+                        //compare month
+                        if (month1 + 1 < month2) {
+                            return true;
+                        }
+                        else {
+                            return false;
+                        }
                     }
+                }
+                else {
+                    return true;
                 }
             }
 

@@ -2,10 +2,12 @@
 #this-header-area {
 	margin-top: 20px;
 	margin-left: 20px;
+	margin-right: 20px;
 	min-width: 560px;
 }
 #this-contents-area {
 	margin-left: 20px;
+	margin-right: 20px;
 	padding-bottom: 10px;
 	min-width: 560px;
 }
@@ -16,7 +18,7 @@
 	padding-left: 10px;
 }
 #lbl_002 {
-	padding-left: 80px;
+	padding-left: 100px;
 }
 #lbl_001, #lbl_004 {
 	font-size: 1.3rem;

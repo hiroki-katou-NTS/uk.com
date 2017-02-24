@@ -4,38 +4,63 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.app.insurance.social.healthrate.find;
 
-import java.math.BigDecimal;
-
-import lombok.Builder;
 import lombok.Getter;
+import lombok.Setter;
 import nts.uk.ctx.pr.core.dom.insurance.PaymentType;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.HealthInsuranceType;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.InsuranceRateItem;
 
-@Builder
+/**
+ * The Class InsuranceRateItemDto.
+ */
 @Getter
+@Setter
 public class InsuranceRateItemDto {
-	
+
 	/** The pay type. */
 	private PaymentType payType;
 
 	/** The insurance type. */
 	private HealthInsuranceType insuranceType;
 
-	/** The company rate. */
-	private BigDecimal companyRate;
+	/** The charge rate. */
+	private HealthChargeRateItemDto chargeRate;
 
-	/** The personal rate. */
-	private BigDecimal personalRate;
+	/**
+	 * Instantiates a new insurance rate item dto.
+	 */
+	public InsuranceRateItemDto() {
+		super();
+	}
+	
+	/**
+	 * Instantiates a new insurance rate item dto.
+	 *
+	 * @param payType
+	 *            the pay type
+	 * @param insuranceType
+	 *            the insurance type
+	 * @param chargeRate
+	 *            the charge rate
+	 */
+	public InsuranceRateItemDto(PaymentType payType, HealthInsuranceType insuranceType,
+			HealthChargeRateItemDto chargeRate) {
+		super();
+		this.payType = payType;
+		this.insuranceType = insuranceType;
+		this.chargeRate = chargeRate;
+	}
 
 	/**
 	 * From domain.
 	 *
-	 * @param domain the domain
+	 * @param domain
+	 *            the domain
 	 * @return the insurance rate item dto
 	 */
 	public static InsuranceRateItemDto fromDomain(InsuranceRateItem domain) {
 		return new InsuranceRateItemDto(domain.getPayType(), domain.getInsuranceType(),
-				domain.getChargeRate().getCompanyRate().v(), domain.getChargeRate().getPersonalRate().v());
+				HealthChargeRateItemDto.fromDomain(domain.getChargeRate()));
 	}
+
 }

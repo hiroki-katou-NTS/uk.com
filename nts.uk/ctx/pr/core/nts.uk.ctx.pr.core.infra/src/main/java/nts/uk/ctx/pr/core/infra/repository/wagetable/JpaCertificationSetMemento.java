@@ -5,7 +5,7 @@
 package nts.uk.ctx.pr.core.infra.repository.wagetable;
 
 import nts.uk.ctx.core.dom.company.CompanyCode;
-import nts.uk.ctx.pr.core.dom.wagetable.CertificationSetMemento;
+import nts.uk.ctx.pr.core.dom.wagetable.certification.CertificationSetMemento;
 import nts.uk.ctx.pr.core.infra.entity.wagetable.QcemtCertificationPK;
 import nts.uk.ctx.pr.core.infra.entity.wagetable.QwtmtWagetableCertify;
 import nts.uk.ctx.pr.core.infra.entity.wagetable.QwtmtWagetableCertifyPK;

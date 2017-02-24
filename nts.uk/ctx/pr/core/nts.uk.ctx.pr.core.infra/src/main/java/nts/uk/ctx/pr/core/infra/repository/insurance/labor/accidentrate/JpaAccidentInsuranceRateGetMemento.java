@@ -4,12 +4,17 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.infra.repository.insurance.labor.accidentrate;
 
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
+import nts.arc.time.YearMonth;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
+import nts.uk.ctx.pr.core.dom.insurance.RoundingMethod;
 import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.AccidentInsuranceRateGetMemento;
 import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.InsuBizRateItem;
+import nts.uk.ctx.pr.core.dom.insurance.labor.businesstype.BusinessTypeEnum;
 import nts.uk.ctx.pr.core.infra.entity.insurance.labor.accidentrate.QismtWorkAccidentInsu;
 
 /**
@@ -18,7 +23,7 @@ import nts.uk.ctx.pr.core.infra.entity.insurance.labor.accidentrate.QismtWorkAcc
 public class JpaAccidentInsuranceRateGetMemento implements AccidentInsuranceRateGetMemento {
 
 	/** The type value. */
-	protected QismtWorkAccidentInsu typeValue;
+	protected List<QismtWorkAccidentInsu> typeValue;
 
 	/**
 	 * Instantiates a new jpa accident insurance rate get memento.
@@ -26,7 +31,7 @@ public class JpaAccidentInsuranceRateGetMemento implements AccidentInsuranceRate
 	 * @param typeValue
 	 *            the type value
 	 */
-	public JpaAccidentInsuranceRateGetMemento(QismtWorkAccidentInsu typeValue) {
+	public JpaAccidentInsuranceRateGetMemento(List<QismtWorkAccidentInsu> typeValue) {
 		this.typeValue = typeValue;
 	}
 
@@ -38,7 +43,9 @@ public class JpaAccidentInsuranceRateGetMemento implements AccidentInsuranceRate
 	 */
 	@Override
 	public String getHistoryId() {
-		// TODO Auto-generated method stub
+		if (this.typeValue != null && this.typeValue.size() > 0) {
+			return this.typeValue.get(0).getQismtWorkAccidentInsuPK().getHistId();
+		}
 		return null;
 	}
 
@@ -50,7 +57,9 @@ public class JpaAccidentInsuranceRateGetMemento implements AccidentInsuranceRate
 	 */
 	@Override
 	public CompanyCode getCompanyCode() {
-		// TODO Auto-generated method stub
+		if (this.typeValue != null && this.typeValue.size() > 0) {
+			return new CompanyCode(this.typeValue.get(0).getQismtWorkAccidentInsuPK().getCcd());
+		}
 		return null;
 	}
 
@@ -62,7 +71,11 @@ public class JpaAccidentInsuranceRateGetMemento implements AccidentInsuranceRate
 	 */
 	@Override
 	public MonthRange getApplyRange() {
-		// TODO Auto-generated method stub
+		if (this.typeValue != null && this.typeValue.size() > 0) {
+			return MonthRange.range(YearMonth.of(this.typeValue.get(0).getStrYm()),
+					YearMonth.of(this.typeValue.get(0).getEndYm()));
+		}
+
 		return null;
 	}
 
@@ -74,8 +87,16 @@ public class JpaAccidentInsuranceRateGetMemento implements AccidentInsuranceRate
 	 */
 	@Override
 	public Set<InsuBizRateItem> getRateItems() {
-		// TODO Auto-generated method stub
-		return null;
+		Set<InsuBizRateItem> setInsuBizRateItem = new HashSet<>();
+		for (QismtWorkAccidentInsu item : this.typeValue) {
+			InsuBizRateItem itemInsuBizRateItem = new InsuBizRateItem();
+			itemInsuBizRateItem
+					.setInsuBizType(BusinessTypeEnum.valueOf(item.getQismtWorkAccidentInsuPK().getWaInsuCd()));
+			itemInsuBizRateItem.setInsuRate(Double.valueOf(String.valueOf(item.getWaInsuRate())));
+			itemInsuBizRateItem.setInsuRound(RoundingMethod.valueOf(item.getWaInsuRound()));
+			setInsuBizRateItem.add(itemInsuBizRateItem);
+		}
+		return setInsuBizRateItem;
 	}
 
 }

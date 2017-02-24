@@ -6,6 +6,7 @@ package nts.uk.ctx.pr.core.infra.repository.insurance.labor.businesstype;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 
@@ -16,6 +17,9 @@ import nts.uk.ctx.pr.core.dom.insurance.labor.businesstype.BusinessTypeEnum;
 import nts.uk.ctx.pr.core.dom.insurance.labor.businesstype.InsuranceBusinessType;
 import nts.uk.ctx.pr.core.dom.insurance.labor.businesstype.InsuranceBusinessTypeGetMemento;
 import nts.uk.ctx.pr.core.dom.insurance.labor.businesstype.InsuranceBusinessTypeRepository;
+import nts.uk.ctx.pr.core.infra.entity.insurance.labor.businesstype.QismtBusinessType;
+import nts.uk.ctx.pr.core.infra.entity.wagetable.QwtmtWagetableCertifyG;
+import nts.uk.ctx.pr.core.infra.entity.wagetable.QwtmtWagetableCertifyGPK;
 
 /**
  * The Class JpaAccidentInsuranceRateRepository.
@@ -42,9 +46,13 @@ public class JpaInsuranceBusinessTypeRepository extends JpaRepository implements
 	}
 
 	@Override
-	public List<InsuranceBusinessType> findAll(String companyCode) {
-		// TODO Auto-generated method stub
-		return findAllDataDemo(companyCode);
+	public List<InsuranceBusinessType> findAll(CompanyCode companyCode) {
+		Optional<QismtBusinessType> optionalQismtBusinessType = this.queryProxy().find(companyCode.v(),
+				QismtBusinessType.class);
+		if (optionalQismtBusinessType.isPresent()) {
+			return toDomain(optionalQismtBusinessType.get());
+		}
+		return null;
 	}
 
 	@Override
@@ -53,63 +61,81 @@ public class JpaInsuranceBusinessTypeRepository extends JpaRepository implements
 		return null;
 	}
 
-	/**
-	 * Find all data demo.
-	 *
-	 * @param companyCode
-	 *            the company code
-	 * @return the list
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.insurance.labor.businesstype.
+	 * InsuranceBusinessTypeRepository#update(java.util.List)
 	 */
-	// DEMO
-	public List<InsuranceBusinessType> findAllDataDemo(String companyCode) {
-		// TODO Auto-generated method stub
-		List<InsuranceBusinessType> lstInsuranceBusinessType = new ArrayList<InsuranceBusinessType>();
-		lstInsuranceBusinessType.add(fromDomain("事業種類名1", BusinessTypeEnum.Biz1St, companyCode));
-		lstInsuranceBusinessType.add(fromDomain("事業種類名2", BusinessTypeEnum.Biz2Nd, companyCode));
-		lstInsuranceBusinessType.add(fromDomain("事業種類名3", BusinessTypeEnum.Biz3Rd, companyCode));
-		lstInsuranceBusinessType.add(fromDomain("事業種類名4", BusinessTypeEnum.Biz4Th, companyCode));
-		lstInsuranceBusinessType.add(fromDomain("事業種類名5", BusinessTypeEnum.Biz5Th, companyCode));
-		lstInsuranceBusinessType.add(fromDomain("事業種類名6", BusinessTypeEnum.Biz6Th, companyCode));
-		lstInsuranceBusinessType.add(fromDomain("事業種類名7", BusinessTypeEnum.Biz7Th, companyCode));
-		lstInsuranceBusinessType.add(fromDomain("事業種類名8", BusinessTypeEnum.Biz8Th, companyCode));
-		lstInsuranceBusinessType.add(fromDomain("事業種類名9", BusinessTypeEnum.Biz9Th, companyCode));
-		lstInsuranceBusinessType.add(fromDomain("事業種類名10", BusinessTypeEnum.Biz10Th, companyCode));
-		return lstInsuranceBusinessType;
+	@Override
+	public void update(List<InsuranceBusinessType> lstInsuranceBusinessType) {
+		this.commandProxy().update(toEntity(lstInsuranceBusinessType));
 	}
 
 	/**
-	 * From domain.
+	 * To entity.
 	 *
-	 * @param bizName
-	 *            the biz name
-	 * @param bizOrder
-	 *            the biz order
-	 * @param companyCode
-	 *            the company code
-	 * @return the insurance business type
+	 * @param lstInsuranceBusinessType
+	 *            the lst insurance business type
+	 * @return the qismt business type
 	 */
-	public InsuranceBusinessType fromDomain(String bizName, BusinessTypeEnum bizOrder, String companyCode) {
-
-		return new InsuranceBusinessType(new InsuranceBusinessTypeGetMemento() {
-
-			@Override
-			public CompanyCode getCompanyCode() {
-				// TODO Auto-generated method stub
-				return new CompanyCode(companyCode);
+	public QismtBusinessType toEntity(List<InsuranceBusinessType> lstInsuranceBusinessType) {
+		QismtBusinessType entity = new QismtBusinessType();
+		for (InsuranceBusinessType itemInsuranceBusinessType : lstInsuranceBusinessType) {
+			if (itemInsuranceBusinessType.getBizOrder().equals(BusinessTypeEnum.Biz1St)) {
+				itemInsuranceBusinessType.saveToMemento(new JpaInsuranceBusinessTypeBiz1StSetMemento(entity));
 			}
-
-			@Override
-			public BusinessTypeEnum getBizOrder() {
-				// TODO Auto-generated method stub
-				return bizOrder;
+			if (itemInsuranceBusinessType.getBizOrder().equals(BusinessTypeEnum.Biz2Nd)) {
+				itemInsuranceBusinessType.saveToMemento(new JpaInsuranceBusinessTypeBiz2NdSetMemento(entity));
 			}
-
-			@Override
-			public BusinessName getBizName() {
-				// TODO Auto-generated method stub
-				return new BusinessName(bizName);
+			if (itemInsuranceBusinessType.getBizOrder().equals(BusinessTypeEnum.Biz3Rd)) {
+				itemInsuranceBusinessType.saveToMemento(new JpaInsuranceBusinessTypeBiz3RdSetMemento(entity));
 			}
-		});
+			if (itemInsuranceBusinessType.getBizOrder().equals(BusinessTypeEnum.Biz4Th)) {
+				itemInsuranceBusinessType.saveToMemento(new JpaInsuranceBusinessTypeBiz4ThSetMemento(entity));
+			}
+			if (itemInsuranceBusinessType.getBizOrder().equals(BusinessTypeEnum.Biz5Th)) {
+				itemInsuranceBusinessType.saveToMemento(new JpaInsuranceBusinessTypeBiz5ThSetMemento(entity));
+			}
+			if (itemInsuranceBusinessType.getBizOrder().equals(BusinessTypeEnum.Biz6Th)) {
+				itemInsuranceBusinessType.saveToMemento(new JpaInsuranceBusinessTypeBiz6ThSetMemento(entity));
+			}
+			if (itemInsuranceBusinessType.getBizOrder().equals(BusinessTypeEnum.Biz7Th)) {
+				itemInsuranceBusinessType.saveToMemento(new JpaInsuranceBusinessTypeBiz7ThSetMemento(entity));
+			}
+			if (itemInsuranceBusinessType.getBizOrder().equals(BusinessTypeEnum.Biz8Th)) {
+				itemInsuranceBusinessType.saveToMemento(new JpaInsuranceBusinessTypeBiz8ThSetMemento(entity));
+			}
+			if (itemInsuranceBusinessType.getBizOrder().equals(BusinessTypeEnum.Biz9Th)) {
+				itemInsuranceBusinessType.saveToMemento(new JpaInsuranceBusinessTypeBiz9ThSetMemento(entity));
+			}
+			if (itemInsuranceBusinessType.getBizOrder().equals(BusinessTypeEnum.Biz10Th)) {
+				itemInsuranceBusinessType.saveToMemento(new JpaInsuranceBusinessTypeBiz10ThSetMemento(entity));
+			}
+		}
+		return entity;
+	}
+
+	/**
+	 * To domain.
+	 *
+	 * @param entity
+	 *            the entity
+	 * @return the list
+	 */
+	public List<InsuranceBusinessType> toDomain(QismtBusinessType entity) {
+		List<InsuranceBusinessType> lstInsuranceBusinessType = new ArrayList<>();
+		lstInsuranceBusinessType.add(new InsuranceBusinessType(new JpaInsuranceBusinessTypeBiz1StGetMemento(entity)));
+		lstInsuranceBusinessType.add(new InsuranceBusinessType(new JpaInsuranceBusinessTypeBiz2NdGetMemento(entity)));
+		lstInsuranceBusinessType.add(new InsuranceBusinessType(new JpaInsuranceBusinessTypeBiz3RdGetMemento(entity)));
+		lstInsuranceBusinessType.add(new InsuranceBusinessType(new JpaInsuranceBusinessTypeBiz4ThGetMemento(entity)));
+		lstInsuranceBusinessType.add(new InsuranceBusinessType(new JpaInsuranceBusinessTypeBiz5ThGetMemento(entity)));
+		lstInsuranceBusinessType.add(new InsuranceBusinessType(new JpaInsuranceBusinessTypeBiz6ThGetMemento(entity)));
+		lstInsuranceBusinessType.add(new InsuranceBusinessType(new JpaInsuranceBusinessTypeBiz7ThGetMemento(entity)));
+		lstInsuranceBusinessType.add(new InsuranceBusinessType(new JpaInsuranceBusinessTypeBiz8ThGetMemento(entity)));
+		lstInsuranceBusinessType.add(new InsuranceBusinessType(new JpaInsuranceBusinessTypeBiz9ThGetMemento(entity)));
+		lstInsuranceBusinessType.add(new InsuranceBusinessType(new JpaInsuranceBusinessTypeBiz10ThGetMemento(entity)));
+		return lstInsuranceBusinessType;
 	}
 
 }

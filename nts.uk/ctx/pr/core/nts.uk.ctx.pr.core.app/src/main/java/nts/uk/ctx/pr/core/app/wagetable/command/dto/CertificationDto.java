@@ -2,9 +2,9 @@ package nts.uk.ctx.pr.core.app.wagetable.command.dto;
 
 import lombok.Data;
 import nts.uk.ctx.core.dom.company.CompanyCode;
-import nts.uk.ctx.pr.core.dom.wagetable.Certification;
-import nts.uk.ctx.pr.core.dom.wagetable.CertificationGetMemento;
-import nts.uk.ctx.pr.core.dom.wagetable.CertificationSetMemento;
+import nts.uk.ctx.pr.core.dom.wagetable.certification.Certification;
+import nts.uk.ctx.pr.core.dom.wagetable.certification.CertificationGetMemento;
+import nts.uk.ctx.pr.core.dom.wagetable.certification.CertificationSetMemento;
 
 @Data
 public class CertificationDto {

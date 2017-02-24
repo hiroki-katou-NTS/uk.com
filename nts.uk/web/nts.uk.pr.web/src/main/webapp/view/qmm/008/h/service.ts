@@ -21,11 +21,11 @@ module nts.uk.pr.view.qmm008.h {
         }
 
         /**
-         *  Find HealthInsuranceAvgEarn by historyId
+         *  Find list HealthInsuranceAvgEarn by historyId
          */
-        export function findHealthInsuranceAvgEarn(id: string): JQueryPromise<model.HealthInsuranceAvgEarnDto> {
+        export function findHealthInsuranceAvgEarn(historyId: string): JQueryPromise<Array<model.HealthInsuranceAvgEarnDto>> {
             var dfd = $.Deferred<any>();
-            nts.uk.request.ajax(paths.findHealthInsuranceAvgEarn + '/' + id)
+            nts.uk.request.ajax(paths.findHealthInsuranceAvgEarn + '/' + historyId)
                 .done(res => {
                     dfd.resolve(res);
                 })

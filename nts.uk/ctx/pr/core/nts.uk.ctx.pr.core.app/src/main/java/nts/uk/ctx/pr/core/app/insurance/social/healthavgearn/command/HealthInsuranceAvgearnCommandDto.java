@@ -6,7 +6,7 @@ package nts.uk.ctx.pr.core.app.insurance.social.healthavgearn.command;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.gul.text.IdentifierUtil;
+import nts.uk.ctx.pr.core.app.insurance.social.healthavgearn.find.HealthInsuranceAvgearnValueDto;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.HealthInsuranceAvgearn;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.HealthInsuranceAvgearnGetMemento;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.HealthInsuranceAvgearnValue;
@@ -25,10 +25,10 @@ public class HealthInsuranceAvgearnCommandDto {
 	private Integer levelCode;
 
 	/** The company avg. */
-	private HealthInsuranceAvgearnValue companyAvg;
+	private HealthInsuranceAvgearnValueDto companyAvg;
 
 	/** The personal avg. */
-	private HealthInsuranceAvgearnValue personalAvg;
+	private HealthInsuranceAvgearnValueDto personalAvg;
 
 	/**
 	 * To domain.
@@ -48,7 +48,7 @@ public class HealthInsuranceAvgearnCommandDto {
 
 					@Override
 					public HealthInsuranceAvgearnValue getPersonalAvg() {
-						return dto.getPersonalAvg();
+						return HealthInsuranceAvgearnValueDto.toDomain(dto.getPersonalAvg());
 					}
 
 					@Override
@@ -63,7 +63,7 @@ public class HealthInsuranceAvgearnCommandDto {
 
 					@Override
 					public HealthInsuranceAvgearnValue getCompanyAvg() {
-						return dto.getCompanyAvg();
+						return HealthInsuranceAvgearnValueDto.toDomain(dto.getCompanyAvg());
 					}
 				});
 
@@ -84,7 +84,7 @@ public class HealthInsuranceAvgearnCommandDto {
 
 					@Override
 					public HealthInsuranceAvgearnValue getPersonalAvg() {
-						return dto.getPersonalAvg();
+						return HealthInsuranceAvgearnValueDto.toDomain(dto.getPersonalAvg());
 					}
 
 					@Override
@@ -99,7 +99,7 @@ public class HealthInsuranceAvgearnCommandDto {
 
 					@Override
 					public HealthInsuranceAvgearnValue getCompanyAvg() {
-						return dto.getCompanyAvg();
+						return HealthInsuranceAvgearnValueDto.toDomain(dto.getCompanyAvg());
 					}
 				});
 

@@ -4,8 +4,10 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.infra.repository.insurance.labor.unemployeerate;
 
+import java.util.HashSet;
 import java.util.Set;
 
+import nts.arc.time.YearMonth;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsuranceRateGetMemento;
@@ -38,8 +40,7 @@ public class JpaUnemployeeInsuranceRateGetMemento implements UnemployeeInsurance
 	 */
 	@Override
 	public String getHistoryId() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.typeValue.getQismtEmpInsuRatePK().getHistId();
 	}
 
 	/*
@@ -50,8 +51,7 @@ public class JpaUnemployeeInsuranceRateGetMemento implements UnemployeeInsurance
 	 */
 	@Override
 	public CompanyCode getCompanyCode() {
-		// TODO Auto-generated method stub
-		return null;
+		return new CompanyCode(this.typeValue.getQismtEmpInsuRatePK().getHistId());
 	}
 
 	/*
@@ -62,8 +62,7 @@ public class JpaUnemployeeInsuranceRateGetMemento implements UnemployeeInsurance
 	 */
 	@Override
 	public MonthRange getApplyRange() {
-		// TODO Auto-generated method stub
-		return null;
+		return MonthRange.range(YearMonth.of(this.typeValue.getStrYm()), YearMonth.of(this.typeValue.getEndYm()));
 	}
 
 	/*
@@ -74,8 +73,14 @@ public class JpaUnemployeeInsuranceRateGetMemento implements UnemployeeInsurance
 	 */
 	@Override
 	public Set<UnemployeeInsuranceRateItem> getRateItems() {
-		// TODO Auto-generated method stub
-		return null;
+		Set<UnemployeeInsuranceRateItem> setUnemployeeInsuranceRateItem = new HashSet<>();
+		setUnemployeeInsuranceRateItem.add(
+				new UnemployeeInsuranceRateItem(new JpaUnemployeeInsuranceRateItemGeneralGetMemento(this.typeValue)));
+		setUnemployeeInsuranceRateItem.add(
+				new UnemployeeInsuranceRateItem(new JpaUnemployeeInsuranceRateItemOtherGetMemento(this.typeValue)));
+		setUnemployeeInsuranceRateItem.add(
+				new UnemployeeInsuranceRateItem(new JpaUnemployeeInsuranceRateItemConstGetMemento(this.typeValue)));
+		return setUnemployeeInsuranceRateItem;
 	}
 
 }

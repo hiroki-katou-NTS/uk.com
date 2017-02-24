@@ -1,0 +1,197 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:stylefile path="main.css" />
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="service.js" />
+			<com:scriptfile path="viewmodel.js" />
+			<com:scriptfile path="start.js" />
+			<script type="text/javascript">
+				var dialogSize = {
+					width : 1300,
+					height : 800
+				};
+			</script>
+		</ui:define>
+
+		<ui:define name="content">
+			<!-- BEGIN FUNCTION AREA-->
+			<div id="functions-area">
+				<button id="new-button" data-bind="">新規</button>
+				<button id="register-button" class="proceed"
+					data-bind="enable: $root.errors.isEmpty">登録</button>
+				<button id="setting-button">集計項目の設定</button>
+				<button id="delete-button" class="danger" data-bind="">削除</button>
+				<button id="close-button" data-bind="">閉じる</button>
+			</div>
+
+			<!-- END FUNCTION AREA-->
+
+			<!-- BEGIN CONTENT AREA-->
+			<div id="contents-area">
+				<!-- BEGIN CONTENT LEFT-->
+				<div id="contents-left"
+					class="bg-green caret-right caret-background">
+					<div id="inpSearch" class="ntsSearchBox"
+						data-bind="ntsSearchBox: {
+										comId: 'single-list',
+										items: 'items', 
+										selected: 'currentCode', 
+										selectedKey: 'code', 
+										fields: ['name', 'code']}"
+						placeholder="コード・名称"></div>
+					<div id="left-grid-list">
+						<table id="single-list"
+							data-bind="ntsGridList: {
+							height: 350,
+							width: 240,
+							dataSource: items,
+							primaryKey: 'code',
+							columns: columns,
+							deleteOptions : {visible : true, deleteField: 'deletable'},
+							multiple: false,
+							value: currentCode
+						}"
+							class="cf"></table>
+					</div>
+				</div>
+				<!-- END CONTENT LEFT-->
+
+				<!-- BEGIN CONTENT CENTER-->
+				<div id="contents-center" class="caret-right caret-background">
+					<div class="flex valign-center">
+						<div id="lblCodeName" data-bind="ntsFormLabel: {required: true}">コード/名称</div>
+						<input id="inpCode"
+							data-bind="ntsTextEditor: {value: code, required: true, enable: false}"></input>
+						<input id="inpName"
+							data-bind="ntsTextEditor: {value: name, required: true}"></input>
+					</div>
+					<div id="tab-panel"
+						data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}">
+						<div class="tab-content-1">
+							<table>
+								<tr>
+									<td><div id="a"
+											data-bind="ntsFormLabel: {required: false}">コード/名称コード/名称</div>
+										<hr />
+										<table id="single-list"
+											data-bind="ntsGridList: {
+											height: 200,
+											width: 240,
+											dataSource: items,
+											primaryKey: 'code',
+											columns: columns,
+											deleteOptions : {visible : true, deleteField: 'deletable'},
+											multiple: false,
+											value: currentCode
+										}"
+											class="cf"></table></td>
+									<td><button class="margin-left-10 btn-right">
+											<i class="icon icon-button-arrow-right"></i>
+										</button></td>
+									<td rowspan="2" style="vertical-align: top">
+										<div class="margin-left-10">
+											<div data-bind="ntsFormLabel: {required: false}">コード/名称コード/名称</div>
+											<hr />
+											<div class="panel-content-table-right">
+												<table id="single-list"
+													data-bind="ntsGridList: {
+											height: 450,
+											width: 240,
+											dataSource: items,
+											primaryKey: 'code',
+											columns: columns,
+											deleteOptions : {visible : true, deleteField: 'deletable'},
+											multiple: false,
+											value: currentCode
+										}"
+													class="cf"></table>
+												<div class="margin-left-10">
+													<button class="auto-height btn-up">
+														<i class="icon icon-button-arrow-top" />
+													</button>
+													<br />
+													<button class="auto-height">
+														<i class="icon icon-button-arrow-bottom" />
+													</button>
+												</div>
+											</div>
+										</div>
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<div id="a" data-bind="ntsFormLabel: {required: false}">コード/名称コード/名称</div>
+										<hr />
+										<table id="single-list"
+											data-bind="ntsGridList: {
+											height: 200,
+											width: 240,
+											dataSource: items,
+											primaryKey: 'code',
+											columns: columns,
+											deleteOptions : {visible : true, deleteField: 'deletable'},
+											multiple: false,
+											value: currentCode
+										}"
+											class="cf"></table>
+									</td>
+									<td>
+										<button class="margin-left-10 btn-right">
+											<i class="icon icon-button-arrow-right"></i>
+										</button>
+									</td>
+								</tr>
+							</table>
+						</div>
+						<div class="tab-content-2">
+							<span>Tab Content 2</span><br />
+						</div>
+						<div class="tab-content-3">
+							<span>Tab Content 3</span><br />
+						</div>
+						<div class="tab-content-4">
+							<span>Tab Content 4</span><br />
+						</div>
+					</div>
+				</div>
+				<!-- END CONTENT CENTER-->
+
+				<!-- BEGIN CONTENT RIGHT-->
+				<div id="contents-right">
+					<div id="lblCodeName" data-bind="ntsFormLabel: {required: true}">帳票出力項目の一覧</div>
+					<button class="btn-help"
+						data-bind="ntsHelpButton: {image: 'test-image.png', position: 'right top', enable: true }">?</button>
+					<div id="contents-right-grid-list">
+						<table id="single-list"
+							data-bind="ntsGridList: {
+							height: 500,
+							width: 300,
+							dataSource: items,
+							primaryKey: 'code',
+							columns: columns,
+							deleteOptions : {visible : true, deleteField: 'deletable'},
+							multiple: false,
+							value: currentCode
+						}"
+							class="cf"></table>
+					</div>
+				</div>
+				<!-- END CONTENT RIGHT-->
+			</div>
+			<!-- END CONTENT AREA-->
+
+			<!-- TAB TEMPLATE-->
+			<!-- TODO: de mai tinh-->
+			<script type="text/html" id="tab-template">
+			</script>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

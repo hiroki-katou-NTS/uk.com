@@ -21,10 +21,10 @@ public class HealthInsuranceAvgearnDto implements HealthInsuranceAvgearnSetMemen
 	public Integer levelCode;
 
 	/** The company avg. */
-	public HealthInsuranceAvgearnValue companyAvg;
+	public HealthInsuranceAvgearnValueDto companyAvg;
 
 	/** The personal avg. */
-	public HealthInsuranceAvgearnValue personalAvg;
+	public HealthInsuranceAvgearnValueDto personalAvg;
 
 	/*
 	 * (non-Javadoc)
@@ -57,7 +57,7 @@ public class HealthInsuranceAvgearnDto implements HealthInsuranceAvgearnSetMemen
 	 */
 	@Override
 	public void setCompanyAvg(HealthInsuranceAvgearnValue companyAvg) {
-		this.companyAvg = companyAvg;
+		this.companyAvg = HealthInsuranceAvgearnValueDto.fromDomain(companyAvg);
 	}
 
 	/*
@@ -69,7 +69,7 @@ public class HealthInsuranceAvgearnDto implements HealthInsuranceAvgearnSetMemen
 	 */
 	@Override
 	public void setPersonalAvg(HealthInsuranceAvgearnValue personalAvg) {
-		this.personalAvg = personalAvg;
+		this.personalAvg = HealthInsuranceAvgearnValueDto.fromDomain(personalAvg);
 	}
 
 }

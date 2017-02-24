@@ -8,9 +8,9 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import nts.uk.ctx.core.dom.company.CompanyCode;
-import nts.uk.ctx.pr.core.dom.wagetable.Certification;
-import nts.uk.ctx.pr.core.dom.wagetable.CertifyGroupGetMemento;
-import nts.uk.ctx.pr.core.dom.wagetable.MultipleTargetSetting;
+import nts.uk.ctx.pr.core.dom.wagetable.certification.Certification;
+import nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroupGetMemento;
+import nts.uk.ctx.pr.core.dom.wagetable.certification.MultipleTargetSetting;
 import nts.uk.ctx.pr.core.infra.entity.wagetable.QcemtCertification;
 import nts.uk.ctx.pr.core.infra.entity.wagetable.QwtmtWagetableCertifyG;
 

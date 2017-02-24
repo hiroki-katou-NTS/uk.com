@@ -13,6 +13,10 @@ var nts;
                         var viewmodel;
                         (function (viewmodel) {
                             var InsuranceOfficeItem = a.service.model.finder.InsuranceOfficeItemDto;
+                            var RoundingDto = a.service.model.finder.RoundingDto;
+                            var RoundingItemDto = a.service.model.finder.RoundingItemDto;
+                            var HealthInsuranceRateItemDto = a.service.model.finder.HealthInsuranceRateItemDto;
+                            var ChargeRateItemDto = a.service.model.finder.ChargeRateItemDto;
                             var ScreenModel = (function () {
                                 function ScreenModel() {
                                     var self = this;
@@ -40,8 +44,8 @@ var nts;
                                         decimallength: 2
                                     }));
                                     self.healthAutoCalculateOptions = ko.observableArray([
-                                        { code: '1', name: 'する' },
-                                        { code: '2', name: 'しない' }
+                                        { code: '0', name: 'する' },
+                                        { code: '1', name: 'しない' }
                                     ]);
                                     self.selectedRuleCode = ko.observable(1);
                                     self.pensionFundInputOptions = ko.observableArray([
@@ -138,10 +142,11 @@ var nts;
                                         if ((item.code == officeCode) && (item.childs.length == 0)) {
                                             a.service.getAllHealthInsuranceItem(item.code).done(function (data) {
                                                 data.forEach(function (item2, index2) {
-                                                    officeData[index].childs.push(new InsuranceOfficeItem(index + item.code, item2.officeCode, index + item2.historyId + index2, [], ((item2.startMonth) / 100).toFixed(0) + "/" + item2.startMonth % 100 + "~" + ((item2.endMonth) / 100).toFixed(0) + "/" + item2.endMonth % 100));
+                                                    officeData[index].childs.push(new InsuranceOfficeItem(index + item.code, item2.officeCode, index + item2.historyId + index2, [], item2.startMonth.substring(0, 4) + "/" + item2.startMonth.substring(4, item2.startMonth.length) + "~" + item2.endMonth.substring(0, 4) + "/" + item2.endMonth.substring(4, item2.endMonth.length)));
                                                 });
                                                 self.InsuranceOfficeList(officeData);
-                                                self.officeSelectedCode(self.InsuranceOfficeList()[0].childs[0].code);
+                                                if (self.InsuranceOfficeList()[0].childs.length > 0)
+                                                    self.officeSelectedCode(self.InsuranceOfficeList()[0].childs[0].code);
                                             });
                                         }
                                     });
@@ -154,38 +159,35 @@ var nts;
                                             return;
                                         }
                                         self.healthModel().historyId = data.historyId;
-                                        self.healthModel().startMonth(((data.startMonth) / 100).toFixed(0) + "/" + data.startMonth % 100);
-                                        self.healthModel().endMonth(((data.endMonth) / 100).toFixed(0) + "/" + data.endMonth % 100);
+                                        self.healthModel().startMonth(data.startMonth.substring(0, 4) + "/" + data.startMonth.substring(4, data.startMonth.length));
+                                        self.healthModel().endMonth(data.endMonth.substring(0, 4) + "/" + data.endMonth.substring(4, data.endMonth.length));
                                         self.healthModel().companyCode = data.companyCode;
                                         self.healthModel().officeCode(data.officeCode);
-                                        if (data.autoCalculate)
-                                            self.healthModel().autoCalculate(1);
-                                        else
-                                            self.healthModel().autoCalculate(2);
-                                        self.healthModel().rateItems().healthSalaryPersonalGeneral(data.rateItems[0].companyRate);
-                                        self.healthModel().rateItems().healthSalaryCompanyGeneral(data.rateItems[0].companyRate);
-                                        self.healthModel().rateItems().healthBonusPersonalGeneral(data.rateItems[0].companyRate);
-                                        self.healthModel().rateItems().healthBonusCompanyGeneral(data.rateItems[0].companyRate);
-                                        self.healthModel().rateItems().healthSalaryPersonalNursing(data.rateItems[0].companyRate);
-                                        self.healthModel().rateItems().healthSalaryCompanyNursing(data.rateItems[0].companyRate);
-                                        self.healthModel().rateItems().healthBonusPersonalNursing(data.rateItems[0].companyRate);
-                                        self.healthModel().rateItems().healthBonusCompanyNursing(data.rateItems[0].companyRate);
-                                        self.healthModel().rateItems().healthSalaryPersonalBasic(data.rateItems[0].companyRate);
-                                        self.healthModel().rateItems().healthSalaryCompanyBasic(data.rateItems[0].companyRate);
-                                        self.healthModel().rateItems().healthBonusPersonalBasic(data.rateItems[0].companyRate);
-                                        self.healthModel().rateItems().healthBonusCompanyBasic(data.rateItems[0].companyRate);
-                                        self.healthModel().rateItems().healthSalaryPersonalSpecific(data.rateItems[0].companyRate);
-                                        self.healthModel().rateItems().healthSalaryCompanySpecific(data.rateItems[0].companyRate);
-                                        self.healthModel().rateItems().healthBonusPersonalSpecific(data.rateItems[0].companyRate);
-                                        self.healthModel().rateItems().healthBonusCompanySpecific(data.rateItems[0].companyRate);
+                                        self.healthModel().autoCalculate(data.autoCalculate);
+                                        self.healthModel().rateItems().healthSalaryPersonalGeneral(data.rateItems[0].chargeRate.companyRate);
+                                        self.healthModel().rateItems().healthSalaryCompanyGeneral(data.rateItems[0].chargeRate.companyRate);
+                                        self.healthModel().rateItems().healthBonusPersonalGeneral(data.rateItems[0].chargeRate.companyRate);
+                                        self.healthModel().rateItems().healthBonusCompanyGeneral(data.rateItems[0].chargeRate.companyRate);
+                                        self.healthModel().rateItems().healthSalaryPersonalNursing(data.rateItems[0].chargeRate.companyRate);
+                                        self.healthModel().rateItems().healthSalaryCompanyNursing(data.rateItems[0].chargeRate.companyRate);
+                                        self.healthModel().rateItems().healthBonusPersonalNursing(data.rateItems[0].chargeRate.companyRate);
+                                        self.healthModel().rateItems().healthBonusCompanyNursing(data.rateItems[0].chargeRate.companyRate);
+                                        self.healthModel().rateItems().healthSalaryPersonalBasic(data.rateItems[0].chargeRate.companyRate);
+                                        self.healthModel().rateItems().healthSalaryCompanyBasic(data.rateItems[0].chargeRate.companyRate);
+                                        self.healthModel().rateItems().healthBonusPersonalBasic(data.rateItems[0].chargeRate.companyRate);
+                                        self.healthModel().rateItems().healthBonusCompanyBasic(data.rateItems[0].chargeRate.companyRate);
+                                        self.healthModel().rateItems().healthSalaryPersonalSpecific(data.rateItems[0].chargeRate.companyRate);
+                                        self.healthModel().rateItems().healthSalaryCompanySpecific(data.rateItems[0].chargeRate.companyRate);
+                                        self.healthModel().rateItems().healthBonusPersonalSpecific(data.rateItems[0].chargeRate.companyRate);
+                                        self.healthModel().rateItems().healthBonusCompanySpecific(data.rateItems[0].chargeRate.companyRate);
                                         self.healthModel().roundingMethods().healthSalaryPersonalComboBox(self.roundingList());
                                         self.healthModel().roundingMethods().healthSalaryCompanyComboBox(self.roundingList());
                                         self.healthModel().roundingMethods().healthBonusPersonalComboBox(self.roundingList());
                                         self.healthModel().roundingMethods().healthBonusCompanyComboBox(self.roundingList());
-                                        self.healthModel().roundingMethods().healthSalaryPersonalComboBoxSelectedCode(data.roundingMethods[0].code);
-                                        self.healthModel().roundingMethods().healthSalaryCompanyComboBoxSelectedCode(data.roundingMethods[0].code);
-                                        self.healthModel().roundingMethods().healthSalaryPersonalComboBoxSelectedCode(data.roundingMethods[0].code);
-                                        self.healthModel().roundingMethods().healthBonusCompanyComboBoxSelectedCode(data.roundingMethods[0].code);
+                                        self.healthModel().roundingMethods().healthSalaryPersonalComboBoxSelectedCode("1");
+                                        self.healthModel().roundingMethods().healthSalaryCompanyComboBoxSelectedCode("1");
+                                        self.healthModel().roundingMethods().healthSalaryPersonalComboBoxSelectedCode("1");
+                                        self.healthModel().roundingMethods().healthBonusCompanyComboBoxSelectedCode("1");
                                         self.healthModel().maxAmount(data.maxAmount);
                                         dfd.resolve();
                                     }).fail(function () {
@@ -236,6 +238,24 @@ var nts;
                                     });
                                     return dfd.promise();
                                 };
+                                ScreenModel.prototype.healthCollectData = function () {
+                                    var self = this;
+                                    var rates = self.healthModel().rateItems();
+                                    var rateItems = [];
+                                    rateItems.push(new HealthInsuranceRateItemDto(PaymentType.SALARY, HealthInsuranceType.GENERAL, new ChargeRateItemDto(rates.healthSalaryCompanyGeneral(), rates.healthSalaryPersonalGeneral())));
+                                    rateItems.push(new HealthInsuranceRateItemDto(PaymentType.SALARY, HealthInsuranceType.NURSING, new ChargeRateItemDto(rates.healthSalaryCompanyNursing(), rates.healthSalaryPersonalNursing())));
+                                    rateItems.push(new HealthInsuranceRateItemDto(PaymentType.SALARY, HealthInsuranceType.BASIC, new ChargeRateItemDto(rates.healthSalaryCompanyBasic(), rates.healthSalaryPersonalBasic())));
+                                    rateItems.push(new HealthInsuranceRateItemDto(PaymentType.SALARY, HealthInsuranceType.SPECIAL, new ChargeRateItemDto(rates.healthSalaryCompanySpecific(), rates.healthSalaryPersonalSpecific())));
+                                    rateItems.push(new HealthInsuranceRateItemDto(PaymentType.BONUS, HealthInsuranceType.GENERAL, new ChargeRateItemDto(rates.healthBonusCompanyGeneral(), rates.healthBonusPersonalGeneral())));
+                                    rateItems.push(new HealthInsuranceRateItemDto(PaymentType.BONUS, HealthInsuranceType.NURSING, new ChargeRateItemDto(rates.healthBonusCompanyNursing(), rates.healthBonusPersonalNursing())));
+                                    rateItems.push(new HealthInsuranceRateItemDto(PaymentType.BONUS, HealthInsuranceType.BASIC, new ChargeRateItemDto(rates.healthBonusCompanyBasic(), rates.healthBonusPersonalBasic())));
+                                    rateItems.push(new HealthInsuranceRateItemDto(PaymentType.BONUS, HealthInsuranceType.SPECIAL, new ChargeRateItemDto(rates.healthBonusCompanySpecific(), rates.healthBonusPersonalSpecific())));
+                                    var roundingMethods = [];
+                                    var rounding = self.healthModel().roundingMethods();
+                                    roundingMethods.push(new RoundingDto(PaymentType.SALARY, new RoundingItemDto(Rounding.ROUNDUP, Rounding.ROUNDUP)));
+                                    roundingMethods.push(new RoundingDto(PaymentType.BONUS, new RoundingItemDto(Rounding.ROUNDUP, Rounding.ROUNDUP)));
+                                    return new a.service.model.finder.HealthInsuranceRateDto("", "", self.currentParentCode(), self.healthModel().startMonth(), self.healthModel().endMonth(), 1, rateItems, roundingMethods, self.healthModel().maxAmount());
+                                };
                                 ScreenModel.prototype.resize = function () {
                                     if ($("#tabs-complex").width() > 700)
                                         $("#tabs-complex").width(700);
@@ -275,6 +295,9 @@ var nts;
                                     self.InsuranceOfficeList(currentInsuranceOfficeList);
                                 };
                                 ScreenModel.prototype.save = function () {
+                                    var self = this;
+                                    a.service.registerHealthRate(self.healthCollectData()).done(function () {
+                                    });
                                 };
                                 ScreenModel.prototype.OpenModalAddHistory = function () {
                                     var self = this;
@@ -482,6 +505,35 @@ var nts;
                             return ChargeRateItem;
                         }());
                         a.ChargeRateItem = ChargeRateItem;
+                        var PaymentType = (function () {
+                            function PaymentType() {
+                            }
+                            PaymentType.SALARY = 'Salary';
+                            PaymentType.BONUS = 'Bonus';
+                            return PaymentType;
+                        }());
+                        a.PaymentType = PaymentType;
+                        var HealthInsuranceType = (function () {
+                            function HealthInsuranceType() {
+                            }
+                            HealthInsuranceType.GENERAL = 'General';
+                            HealthInsuranceType.NURSING = 'Nursing';
+                            HealthInsuranceType.BASIC = 'Basic';
+                            HealthInsuranceType.SPECIAL = 'Special';
+                            return HealthInsuranceType;
+                        }());
+                        a.HealthInsuranceType = HealthInsuranceType;
+                        var Rounding = (function () {
+                            function Rounding() {
+                            }
+                            Rounding.ROUNDUP = 'RoundUp';
+                            Rounding.TRUNCATION = 'Truncation';
+                            Rounding.ROUNDDOWN = 'RoundDown';
+                            Rounding.DOWN5_UP6 = 'Down5_Up6';
+                            Rounding.DOWN4_UP5 = 'Down4_Up5';
+                            return Rounding;
+                        }());
+                        a.Rounding = Rounding;
                     })(a = qmm008.a || (qmm008.a = {}));
                 })(qmm008 = view.qmm008 || (view.qmm008 = {}));
             })(view = pr.view || (pr.view = {}));

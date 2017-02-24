@@ -65,7 +65,7 @@ var nts;
                                             self.lstlaborInsuranceOfficeModel = ko.observableArray(data);
                                             self.selectCodeLstlaborInsuranceOffice = ko.observable(data[0].code);
                                             self.selectCodeLstlaborInsuranceOffice.subscribe(function (selectCodeLstlaborInsuranceOffice) {
-                                                self.detailLaborInsuranceOffice(selectCodeLstlaborInsuranceOffice);
+                                                self.showchangeLaborInsuranceOfficep(selectCodeLstlaborInsuranceOffice);
                                             });
                                             a.service.findLaborInsuranceOffice(data[0].code).done(function (data) {
                                                 self.laborInsuranceOfficeModel = ko.observable(new LaborInsuranceOfficeModel(data));
@@ -90,14 +90,6 @@ var nts;
                                     }
                                     return dfd.promise();
                                 };
-                                ScreenModel.prototype.showInsuranceOffice = function (code) {
-                                    if (code != null && code != undefined && code != '') {
-                                        var self = this;
-                                        a.service.findLaborInsuranceOffice(code).done(function (data) {
-                                            self.laborInsuranceOfficeModel(new LaborInsuranceOfficeModel(data));
-                                        });
-                                    }
-                                };
                                 ScreenModel.prototype.saveLaborInsuranceOffice = function () {
                                     var self = this;
                                     if (self.typeAction() == TypeActionLaborInsuranceOffice.add) {
@@ -113,6 +105,7 @@ var nts;
                                 };
                                 ScreenModel.prototype.showchangeLaborInsuranceOfficep = function (selectionCodeLstLstLaborInsuranceOffice) {
                                     var self = this;
+                                    self.typeAction(TypeActionLaborInsuranceOffice.update);
                                     self.detailLaborInsuranceOffice(selectionCodeLstLstLaborInsuranceOffice);
                                 };
                                 ScreenModel.prototype.detailLaborInsuranceOffice = function (code) {

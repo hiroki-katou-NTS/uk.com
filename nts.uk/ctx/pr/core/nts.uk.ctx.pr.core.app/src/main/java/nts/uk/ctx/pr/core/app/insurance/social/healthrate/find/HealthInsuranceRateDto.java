@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 
 import lombok.Builder;
 import nts.uk.ctx.core.dom.company.CompanyCode;
+import nts.uk.ctx.pr.core.dom.insurance.CalculateMethod;
 import nts.uk.ctx.pr.core.dom.insurance.CommonAmount;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
@@ -42,7 +43,7 @@ public class HealthInsuranceRateDto implements HealthInsuranceRateSetMemento {
 	public String endMonth;
 
 	/** The auto calculate. */
-	public Boolean autoCalculate;
+	public CalculateMethod autoCalculate;
 
 	/** The max amount. */
 	public BigDecimal maxAmount;
@@ -108,7 +109,7 @@ public class HealthInsuranceRateDto implements HealthInsuranceRateSetMemento {
 	 * @see nts.uk.ctx.pr.core.dom.insurance.social.healthrate.HealthInsuranceRateSetMemento#setAutoCalculate(java.lang.Boolean)
 	 */
 	@Override
-	public void setAutoCalculate(Boolean autoCalculate) {
+	public void setAutoCalculate(CalculateMethod autoCalculate) {
 		this.autoCalculate = autoCalculate;
 	}
 

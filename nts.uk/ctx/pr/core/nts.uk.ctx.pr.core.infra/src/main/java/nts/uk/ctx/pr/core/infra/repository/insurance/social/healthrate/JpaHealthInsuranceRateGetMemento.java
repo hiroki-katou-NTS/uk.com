@@ -4,14 +4,25 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.infra.repository.insurance.social.healthrate;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
+import nts.arc.time.YearMonth;
 import nts.uk.ctx.core.dom.company.CompanyCode;
+import nts.uk.ctx.pr.core.dom.insurance.CalculateMethod;
 import nts.uk.ctx.pr.core.dom.insurance.CommonAmount;
+import nts.uk.ctx.pr.core.dom.insurance.Ins3Rate;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
+import nts.uk.ctx.pr.core.dom.insurance.PaymentType;
+import nts.uk.ctx.pr.core.dom.insurance.RoundingItem;
+import nts.uk.ctx.pr.core.dom.insurance.RoundingMethod;
+import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.HealthChargeRateItem;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.HealthInsuranceRateGetMemento;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.HealthInsuranceRounding;
+import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.HealthInsuranceType;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.InsuranceRateItem;
 import nts.uk.ctx.pr.core.infra.entity.insurance.social.healthrate.QismtHealthInsuRate;
 
@@ -41,8 +52,7 @@ public class JpaHealthInsuranceRateGetMemento implements HealthInsuranceRateGetM
 	 */
 	@Override
 	public String getHistoryId() {
-		// TODO Auto-generated method stub
-		return null;
+		return this.typeValue.getQismtHealthInsuRatePK().getHistId();
 	}
 
 	/*
@@ -53,8 +63,7 @@ public class JpaHealthInsuranceRateGetMemento implements HealthInsuranceRateGetM
 	 */
 	@Override
 	public CompanyCode getCompanyCode() {
-		// TODO Auto-generated method stub
-		return null;
+		return new CompanyCode(this.typeValue.getQismtHealthInsuRatePK().getCcd());
 	}
 
 	/*
@@ -65,8 +74,7 @@ public class JpaHealthInsuranceRateGetMemento implements HealthInsuranceRateGetM
 	 */
 	@Override
 	public OfficeCode getOfficeCode() {
-		// TODO Auto-generated method stub
-		return null;
+		return new OfficeCode(this.typeValue.getQismtHealthInsuRatePK().getSiOfficeCd());
 	}
 
 	/*
@@ -77,8 +85,7 @@ public class JpaHealthInsuranceRateGetMemento implements HealthInsuranceRateGetM
 	 */
 	@Override
 	public MonthRange getApplyRange() {
-		// TODO Auto-generated method stub
-		return null;
+		return MonthRange.range(new YearMonth(this.typeValue.getStrYm()), new YearMonth(this.typeValue.getEndYm()));
 	}
 
 	/*
@@ -88,9 +95,9 @@ public class JpaHealthInsuranceRateGetMemento implements HealthInsuranceRateGetM
 	 * HealthInsuranceRateGetMemento#getAutoCalculate()
 	 */
 	@Override
-	public Boolean getAutoCalculate() {
-		// TODO Auto-generated method stub
-		return null;
+	public CalculateMethod getAutoCalculate() {
+		// TODO:
+		return CalculateMethod.Auto;
 	}
 
 	/*
@@ -101,8 +108,7 @@ public class JpaHealthInsuranceRateGetMemento implements HealthInsuranceRateGetM
 	 */
 	@Override
 	public CommonAmount getMaxAmount() {
-		// TODO Auto-generated method stub
-		return null;
+		return new CommonAmount(this.typeValue.getBonusHealthMaxMny());
 	}
 
 	/*
@@ -113,8 +119,41 @@ public class JpaHealthInsuranceRateGetMemento implements HealthInsuranceRateGetM
 	 */
 	@Override
 	public Set<InsuranceRateItem> getRateItems() {
-		// TODO Auto-generated method stub
-		return null;
+		List<InsuranceRateItem> listRate = new ArrayList<InsuranceRateItem>();
+		InsuranceRateItem generalSalary = new InsuranceRateItem(PaymentType.Salary, HealthInsuranceType.General,
+				new HealthChargeRateItem(new Ins3Rate(this.typeValue.getCPayGeneralRate()),
+						new Ins3Rate(this.typeValue.getPPayGeneralRate())));
+		InsuranceRateItem generalBonus = new InsuranceRateItem(PaymentType.Bonus, HealthInsuranceType.General,
+				new HealthChargeRateItem(new Ins3Rate(this.typeValue.getCBnsGeneralRate()),
+						new Ins3Rate(this.typeValue.getCBnsGeneralRate())));
+		InsuranceRateItem nursingSalary = new InsuranceRateItem(PaymentType.Salary, HealthInsuranceType.Nursing,
+				new HealthChargeRateItem(new Ins3Rate(this.typeValue.getCPayNursingRate()),
+						new Ins3Rate(this.typeValue.getPPayNursingRate())));
+		InsuranceRateItem nursingBonus = new InsuranceRateItem(PaymentType.Bonus, HealthInsuranceType.Nursing,
+				new HealthChargeRateItem(new Ins3Rate(this.typeValue.getCBnsNursingRate()),
+						new Ins3Rate(this.typeValue.getPBnsNursingRate())));
+		InsuranceRateItem specialSalary = new InsuranceRateItem(PaymentType.Salary, HealthInsuranceType.Special,
+				new HealthChargeRateItem(new Ins3Rate(this.typeValue.getCPaySpecificRate()),
+						new Ins3Rate(this.typeValue.getPPaySpecificRate())));
+		InsuranceRateItem specialBonus = new InsuranceRateItem(PaymentType.Bonus, HealthInsuranceType.Special,
+				new HealthChargeRateItem(new Ins3Rate(this.typeValue.getCBnsSpecificRate()),
+						new Ins3Rate(this.typeValue.getPBnsSpecificRate())));
+		InsuranceRateItem basicSalary = new InsuranceRateItem(PaymentType.Salary, HealthInsuranceType.Basic,
+				new HealthChargeRateItem(new Ins3Rate(this.typeValue.getCPayBasicRate()),
+						new Ins3Rate(this.typeValue.getPPayBasicRate())));
+		InsuranceRateItem basicBonus = new InsuranceRateItem(PaymentType.Bonus, HealthInsuranceType.Basic,
+				new HealthChargeRateItem(new Ins3Rate(this.typeValue.getCBnsBasicRate()),
+						new Ins3Rate(this.typeValue.getPBnsBasicRate())));
+
+		listRate.add(generalSalary);
+		listRate.add(generalBonus);
+		listRate.add(nursingSalary);
+		listRate.add(nursingBonus);
+		listRate.add(specialSalary);
+		listRate.add(specialBonus);
+		listRate.add(basicSalary);
+		listRate.add(basicBonus);
+		return new HashSet<InsuranceRateItem>(listRate);
 	}
 
 	/*
@@ -125,8 +164,16 @@ public class JpaHealthInsuranceRateGetMemento implements HealthInsuranceRateGetM
 	 */
 	@Override
 	public Set<HealthInsuranceRounding> getRoundingMethods() {
-		// TODO Auto-generated method stub
-		return null;
+		List<HealthInsuranceRounding> listRounding = new ArrayList<HealthInsuranceRounding>();
+		RoundingItem salaryRoundingItem = new RoundingItem();
+		RoundingItem bonusRoundingItem = new RoundingItem();
+		salaryRoundingItem.setCompanyRoundAtr(RoundingMethod.valueOf(this.typeValue.getCPayHealthRoundAtr()));
+		salaryRoundingItem.setPersonalRoundAtr(RoundingMethod.valueOf(this.typeValue.getPPayHealthRoundAtr()));
+		HealthInsuranceRounding roundSalary = new HealthInsuranceRounding(PaymentType.Salary, salaryRoundingItem);
+		HealthInsuranceRounding roundBonus = new HealthInsuranceRounding(PaymentType.Bonus, bonusRoundingItem);
+		listRounding.add(roundSalary);
+		listRounding.add(roundBonus);
+		return new HashSet<HealthInsuranceRounding>(listRounding);
 	}
 
 }

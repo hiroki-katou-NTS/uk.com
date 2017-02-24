@@ -95,8 +95,8 @@ public class CreateUnitPriceHistoryCommand extends UnitPriceHistoryBaseCommand {
 
 			@Override
 			public MonthRange getApplyRange() {
-				return MonthRange.range(command.getStartMonth(), command.getEndMonth(),
-						PrimitiveUtil.DEFAULT_YM_SEPARATOR_CHAR);
+				return MonthRange.toMaxDate(
+						PrimitiveUtil.toYearMonth(command.getStartMonth(), PrimitiveUtil.DEFAULT_YM_SEPARATOR_CHAR));
 			}
 		});
 
