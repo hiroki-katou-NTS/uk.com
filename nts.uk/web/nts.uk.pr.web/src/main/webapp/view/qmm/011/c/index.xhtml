@@ -9,44 +9,44 @@
 						<button id="C_BTN_002" class="floatRight"
 							data-bind="click: openEditHistoryAccidentInsuranceRate">履歴編集</button>
 					</div>
-					<div class="list-box"
+					<div class="list-box" id="list-box"
 						data-bind="ntsListBox: {
-						options: lstHistoryAccidentInsuranceRate,
-						primaryKey: 'historyId',
-						primaryText: 'inforMonthRage',
-						multiple: false,
-						value: selectionHistoryAccidentInsuranceRate,
-						enable: true,
-						rows: 10,
-						columns: [
-							{ key: 'inforMonthRage', length: 10 }
-						]}"></div>
+											options: lstHistoryAccidentInsuranceRate,
+											primaryKey: 'historyId',
+											primaryText: 'inforMonthRage',
+											multiple: false,
+											value: selectionHistoryAccidentInsuranceRate,
+											enable: true,
+											rows: 10,
+											required: true,
+											columns: [
+												{ key: 'inforMonthRage', length: 10 }
+											]}"></div>
 				</td>
 				<td id="contents-right">
-					<table>
-						<tr>
+					<table data-bind="with: accidentInsuranceRateModel">
+						<tr data-bind="with: historyAccidentInsuranceRateModel">
 							<td class="trFull60B">
 								<div id="C_LBL_001" data-bind="ntsFormLabel: {required: true}">
 									<label>期間</label>
 								</div>
 							</td>
 							<td class="contentsRR"><div
-									data-bind="ntsDatePicker: {value: historyAccidentInsuranceRateStart, dateFormat: 'yyyy/MM'} " />
+									data-bind="ntsDatePicker: {value: startMonthRage, dateFormat: 'yyyy/MM'} " />
 							</td>
 							<td><label id="C_LBL_002"> ~ </label></td>
-							<td><label id="C_LBL_003"
-								data-bind="text: historyAccidentInsuranceRateEnd"> </label></td>
+							<td><label id="C_LBL_003" data-bind="text: endMonthRage">
+							</label></td>
 						</tr>
 					</table>
-					<table id="tableRight">
+					<table id="tableRight" data-bind="with: accidentInsuranceRateModel">
 						<tr>
 							<td colspan="2"><hr /></td>
 						</tr>
 						<tr>
 							<td colspan="2">
 								<table id="health_insurance_rate_table"
-									class="table_border_black"
-									data-bind="with: accidentInsuranceRateModel">
+									class="table_border_black">
 									<tbody>
 										<tr class="bg-green">
 											<th></th>

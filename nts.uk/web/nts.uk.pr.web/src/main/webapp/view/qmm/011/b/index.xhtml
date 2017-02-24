@@ -9,22 +9,24 @@
 						<button id="btn_editHistoryUnemployeeInsurance" class="floatRight"
 							data-bind="click: openEditHistoryUnemployeeInsuranceRate">履歴編集</button>
 					</div>
-					<div class="list-box" 
+
+					<div class="list-box" id="list-box1"
 						data-bind="ntsListBox: {
-						options: lstHistoryUnemployeeInsuranceRate,
-						optionsValue: 'historyId',
-						optionsText: 'inforMonthRage',
-						multiple: false,
-						value: selectionHistoryUnemployeeInsuranceRate,
-						enable: true,
-						rows: 10,
-						required: true,
-						columns: [
-							{ key: 'inforMonthRage', length: 10 }
-						]}"></div>
+											options: lstHistoryUnemployeeInsuranceRate,
+											primaryKey: 'historyId',
+											primaryText: 'inforMonthRage',
+											multiple: false,
+											value: selectionHistoryUnemployeeInsuranceRate,
+											enable: true,
+											rows: 10,
+											required: true,
+											columns: [
+												{ key: 'inforMonthRage', length: 10 }
+											]}"></div>
 				</td>
-				<td id="contents-right">
-					<table>
+				<td id="contents-right"
+					data-bind="with: unemployeeInsuranceRateModel">
+					<table data-bind="with: historyUnemployeeInsuranceModel">
 						<tr>
 							<td class="trFull60B">
 								<div id="B_LBL_001" data-bind="ntsFormLabel: {required: true}">
@@ -32,11 +34,11 @@
 								</div>
 							</td>
 							<td class="contentsRR"><div
-									data-bind="ntsDatePicker: {value: historyUnemployeeInsuranceRateStart, dateFormat: 'yyyy/MM'} " />
+									data-bind="ntsDatePicker: {value: startMonthRage, dateFormat: 'yyyy/MM'} " />
 							</td>
 							<td><label id="B_LBL_002"> ~ </label></td>
-							<td><label id="B_LBL_003"
-								data-bind="text: historyUnemployeeInsuranceRateEnd"> </label></td>
+							<td><label id="B_LBL_003" data-bind="text: endMonthRage">
+							</label></td>
 						</tr>
 					</table>
 					<table id="tableRight">
@@ -46,7 +48,6 @@
 						<tr>
 							<td colspan="2">
 								<table id="health_insurance_rate_table"
-									data-bind="with: unemployeeInsuranceRateModel"
 									class="table_border_black">
 									<tbody>
 										<tr class="bg-green">
@@ -83,7 +84,8 @@
 													]}"></div>
 											</td>
 											<td><div>
-													<input class="health-input" data-name="agroforestryModelCompanySettingcode"
+													<input class="health-input"
+														data-name="agroforestryModelCompanySettingcode"
 														data-bind="ntsNumberEditor: {value: companySetting.rate, 
 													option: rateInputOptions, 
 													constraint:'RateItem',

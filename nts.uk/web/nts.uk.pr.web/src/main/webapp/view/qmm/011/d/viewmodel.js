@@ -29,6 +29,9 @@ var nts;
                                     self.historyEnd = ko.observable('9999/12');
                                     self.selectedId = ko.observable(1);
                                     self.typeHistory = ko.observable(nts.uk.ui.windows.getShared("type"));
+                                    self.selectedId.subscribe(function (typeSelect) {
+                                        self.changeSelect(typeSelect);
+                                    });
                                 }
                                 ScreenModel.prototype.fwaddHistoryInfo = function () {
                                     var self = this;
@@ -49,8 +52,14 @@ var nts;
                                 ScreenModel.prototype.fwaddHistoryInfoAccidentInsurance = function () {
                                     var self = this;
                                     var historyInfo;
-                                    historyInfo = new HistoryAccidentInsuranceDto("historyId001", self.historyStart(), "9999/12");
+                                    historyInfo = new HistoryAccidentInsuranceDto("", self.historyStart(), self.historyEnd());
                                     nts.uk.ui.windows.setShared("addHistoryAccidentInsuranceDto", historyInfo);
+                                };
+                                ScreenModel.prototype.changeSelect = function (typeSelect) {
+                                    var self = this;
+                                    if (typeSelect == 1) {
+                                        self.historyEnd('9999/12');
+                                    }
                                 };
                                 return ScreenModel;
                             }());

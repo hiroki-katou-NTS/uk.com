@@ -44,13 +44,14 @@ public class UnemployeeInsuranceRateFindOutDto implements UnemployeeInsuranceRat
 
 	@Override
 	public void setApplyRange(MonthRange applyRange) {
-		// TODO Auto-generated method stub
-
+		this.historyInsurance.setEndMonthRage(this.historyInsurance.convertMonth(applyRange.getEndMonth()));
+		this.historyInsurance.setStartMonthRage(this.historyInsurance.convertMonth(applyRange.getStartMonth()));
+		this.historyInsurance.setInforMonthRage(
+				this.historyInsurance.getStartMonthRage() + " ~ " + this.historyInsurance.getEndMonthRage());
 	}
 
 	@Override
 	public void setRateItems(Set<UnemployeeInsuranceRateItem> rateItems) {
-		// TODO Auto-generated method stub
 		this.rateItems = new ArrayList<>();
 		for (UnemployeeInsuranceRateItem unemployeeInsuranceRateItem : rateItems) {
 			UnemployeeInsuranceRateItemFindOutDto dto = new UnemployeeInsuranceRateItemFindOutDto();
