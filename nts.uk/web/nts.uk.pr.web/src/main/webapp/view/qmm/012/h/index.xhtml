@@ -1,0 +1,156 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+<body>
+
+	<ui:composition template="../a/master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<com:scriptfile path="start.js" />
+			<com:stylefile path="style.css" />
+			<com:scriptfile set="IGNITE" />
+		</ui:define>
+		<ui:define name="content">
+			<div id="content-header">
+				<div id="content-header-top">
+					<div class="divLine">
+						<div id="H_Text_001">
+							<label id="H_LBL_001">項目区分項目区分項目区分項目区分項目区分項目区分<br />
+								項目区分項目区分項目区分項目区分項目区分項目区分項目区分項目区分項目区分項目区分項目区分項目区分
+							</label>
+						</div>
+					</div>
+					<div class="divLine">
+						<div class="divLineCol1">
+							<div id="H_LBL_002" data-bind="ntsFormLabel: {  required: true }">項目区分</div>
+						</div>
+						<div class="divLineCol2">
+							<label id="H_LBL_003">項目 </label>
+						</div>
+
+					</div>
+					<div class="divLine">
+						<div class="divLineCol1">
+							<div id="H_LBL_004" data-bind="ntsFormLabel: {  required: true }">項目区分</div>
+						</div>
+						<div class="divLineCol2">
+							<label id="H_LBL_005">項目 </label>
+						</div>
+
+					</div>
+				</div>
+				<div id="content-header-bottom">
+					<div class="divLine">
+						<div class="divLineCol1">
+							<div id="H_LBL_002" data-bind="ntsFormLabel: {  required: true }">項目区分</div>
+						</div>
+						<div class="divLineCol2">
+							<div id="H_SEL_001" class="cf switchMediumSize"
+								data-bind="ntsSwitchButton: {
+										options: roundingRules,
+										optionsValue: 'code',
+										optionsText: 'name',
+										value: selectedRuleCode_002,
+										enable: enable }"></div>
+						</div>
+					</div>
+					<div class="divLine">
+						<div class="divLineCol1"></div>
+						<div class="divLineCol2">
+							<div id="H_INP_001" data-bind="with: texteditor">
+								<input
+									data-bind="ntsTextEditor: {
+									value: value,
+									constraint: constraint,
+									option: option,
+									required: required,
+									enable: enable,
+									readonly: readonly}" />
+							</div>
+							<label id="H_LBL_007">項目 ~ </label>
+							<div id="H_INP_002" data-bind="with: texteditor">
+								<input
+									data-bind="ntsTextEditor: {
+									value: value,
+									constraint: constraint,
+									option: option,
+									required: required,
+									enable: enable,
+									readonly: readonly}" />
+							</div>
+							<label id="H_LBL_008">項目 </label>
+						</div>
+					</div>
+					<div class="divLine">
+						<div class="divLineCol1">
+							<div id="H_LBL_009"
+								data-bind="ntsFormLabel: {  required: false }">項目区分</div>
+						</div>
+						<div class="divLineCol2">
+							<div id="H_SEL_002" class="cf switchMediumSize"
+								data-bind="ntsSwitchButton: {
+										options: roundingRules,
+										optionsValue: 'code',
+										optionsText: 'name',
+										value: selectedRuleCode_002,
+										enable: enable }"></div>
+						</div>
+					</div>
+					<div class="divLine">
+						<div class="divLineCol1"></div>
+						<div class="divLineCol2">
+							<div id="H_Text_002">
+								<label id="H_LBL_010">項目区分項目区分項目区分項目区分項目区分項目区分<br />
+									項目区分項目区分項目区分項目区分項目区分項目区分項目区分項目区分項目区分項目区分項目区分項目区分
+								</label>
+							</div>
+						</div>
+					</div>
+					<div class="divLine">
+						<div class="divLineCol1"></div>
+						<div class="divLineCol2">
+							<div id="C_SEL_003" class="checkboxLightGreen"
+								data-bind="ntsCheckBox: { checked: checked_014, enable: enable, text: 'アラ' }"></div>
+							<div id="C_SEL_004" class="checkboxLightGreen"
+								data-bind="ntsCheckBox: { checked: checked_014, enable: enable, text: 'アラ' }"></div>
+							<div id="C_SEL_005" class="checkboxLightGreen"
+								data-bind="ntsCheckBox: { checked: checked_014, enable: enable, text: 'アラ' }"></div>
+							<div id="C_SEL_006" class="checkboxBrightGreen"
+								data-bind="ntsCheckBox: { checked: checked_014, enable: enable, text: 'アラ' }"></div>
+							<div id="C_SEL_007" class="checkboxBrightGreen"
+								data-bind="ntsCheckBox: { checked: checked_014, enable: enable, text: 'アラ' }"></div>
+							<div id="C_SEL_008" class="checkboxBrightGreen"
+								data-bind="ntsCheckBox: { checked: checked_014, enable: enable, text: 'アラ' }"></div>
+						</div>
+					</div>
+					<div class="divLine">
+						<div class="divLineCol1"></div>
+						<div class="divLineCol2">
+							<div id="C_SEL_009" class="checkboxLightGreen"
+								data-bind="ntsCheckBox: { checked: checked_014, enable: enable, text: 'アラ' }"></div>
+							<div id="C_SEL_010" class="checkboxLightGreen"
+								data-bind="ntsCheckBox: { checked: checked_014, enable: enable, text: 'アラ' }"></div>
+							<div id="C_SEL_011" class="checkboxLightGreen"
+								data-bind="ntsCheckBox: { checked: checked_014, enable: enable, text: 'アラ' }"></div>
+							<div id="C_SEL_012" class="checkboxBrightGreen"
+								data-bind="ntsCheckBox: { checked: checked_014, enable: enable, text: 'アラ' }"></div>
+							<div id="C_SEL_013" class="checkboxLightGreen"
+								data-bind="ntsCheckBox: { checked: checked_014, enable: enable, text: 'アラ' }"></div>
+							<div id="C_SEL_014" class="checkboxLightGreen"
+								data-bind="ntsCheckBox: { checked: checked_014, enable: enable, text: 'アラ' }"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div id="contents-area">
+				<button id="H_BTN_001" class="x-large proceed"
+					onclick="submitInfo()">選択ボタン</button>
+				<button id="H_BTN_002" class="large" onclick="closeDialog()">キャンセルボタン</button>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

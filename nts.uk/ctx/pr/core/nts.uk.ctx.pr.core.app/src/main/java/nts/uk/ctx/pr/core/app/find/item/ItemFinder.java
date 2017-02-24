@@ -6,6 +6,8 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+
+import nts.uk.ctx.pr.core.dom.itemmaster.ItemAtr;
 import nts.uk.ctx.pr.core.dom.itemmaster.ItemMasterRepository;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -41,5 +43,15 @@ public class ItemFinder {
 	public Optional<ItemDto> getItem(int categoryAtr, String itemCode) {
 		return this.repostirory.getItemMaster(AppContexts.user().companyCode(), categoryAtr, itemCode)
 				.map(item -> ItemDto.fromDomain(item));
+	}
+	
+	/**
+	 * Find all item master by ave Pay Attribute
+	 * @param avePayAtr
+	 * @return
+	 */
+	public List<ItemDto> findAllByItemAtr(ItemAtr itemAtr) {
+		return this.repostirory.findAllByCategory(AppContexts.user().companyCode(), itemAtr.value).stream()
+				.map(item -> ItemDto.fromDomain(item)).collect(Collectors.toList());
 	}
 }
