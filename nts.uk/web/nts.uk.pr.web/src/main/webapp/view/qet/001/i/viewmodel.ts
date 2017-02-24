@@ -14,8 +14,8 @@ module qet001.i.viewmodel {
             this.masterItems = ko.observableArray([]);
             this.selectedTab = ko.observable(0);
             var self = this;
-            $("#sidebar-area > ul > li").on('click', function() {
-                var index = $("#sidebar-area > ul > li").index(this);
+            $("#sidebar-area > div > ul > li").on('click', function() {
+                var index = $("#sidebar-area > div > ul > li").index(this);
                 $("#sidebar").ntsSideBar("active", index);
                 self.selectedTab(index);
             });
@@ -108,6 +108,7 @@ module qet001.i.viewmodel {
             var self = this;
             service.findAggregateItemsByCategory(self.category, self.paymentType).done(function(res: service.Item[]) {
                 self.itemList(res);
+                self.aggregateItemSelectedCode(res.length > 0 ? res[0].code : null);
                 dfd.resolve();
             }).fail(function(res) {
                 nts.uk.ui.dialog.alert(res.message);

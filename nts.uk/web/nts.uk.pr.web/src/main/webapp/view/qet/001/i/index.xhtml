@@ -109,7 +109,7 @@
 			<script type="text/html" id="header-template">
 				<button data-bind="click: switchToCreateMode">新規</button>
 				<button class="proceed" data-bind="click: save, enable: $root.errors.isEmpty">登録</button>
-				<button data-bind="click: remove">削除</button>
+				<button data-bind="click: remove, enable: !aggregateItemDetail().createMode()">削除</button>
 				<button data-bind="click: close">閉じる</button>
 			</script>
 			<script type="text/html" id="content-template">
@@ -137,7 +137,7 @@
 		</div>
 		<div class="right-content" data-bind="with: aggregateItemDetail">
 			<div class="flex valign-center">
-				<div id="code-name-label" data-bind="ntsFormLabel: {required: true}">コード/名称</div>
+				<div id="code-name-label" data-bind="ntsFormLabel: {constraint: ['WLAggregateItemCode','WLAggregateItemName'], required: true}">コード/名称</div>
 				<div class="code-input">
 					<input id="code-input" data-name="コード" data-bind="ntsTextEditor: {value: code, 
 										enable: true,
@@ -153,7 +153,7 @@
 			</div>
 			<div class="flex valign-center">
 				<div data-bind="ntsFormLabel: {}">値が0の時の項目名</div>
-				<div class="cf" data-bind="ntsSwitchButton: {
+				<div class="cf switch-button-class" data-bind="ntsSwitchButton: {
 					options: switchs,
 					optionsValue: 'code',
 					optionsText: 'name',
@@ -162,7 +162,7 @@
 			</div>
 			<div class="flex valign-center">
 				<div data-bind="ntsFormLabel: {}">値が0の時の項目値</div>
-				<div class="cf" data-bind="ntsSwitchButton: {
+				<div class="cf switch-button-class" data-bind="ntsSwitchButton: {
 					options: switchs,
 					optionsValue: 'code',
 					optionsText: 'name',

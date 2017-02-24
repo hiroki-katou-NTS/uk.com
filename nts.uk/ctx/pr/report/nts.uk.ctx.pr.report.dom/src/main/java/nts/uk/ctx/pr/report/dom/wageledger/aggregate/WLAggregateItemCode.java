@@ -13,7 +13,7 @@ import nts.uk.shr.com.primitive.CodePrimitiveValue;
  * The Class WageLedgerAggregateItemCode.
  */
 @StringCharType(CharType.NUMERIC)
-@StringMaxLength(3)
+@StringMaxLength(4)
 public class WLAggregateItemCode extends CodePrimitiveValue<WLAggregateItemCode> {
 
 	/** The Constant serialVersionUID. */
