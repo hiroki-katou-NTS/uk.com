@@ -31,10 +31,12 @@ public interface HealthInsuranceAvgearnRepository {
 	/**
 	 * Removes the.
 	 *
-	 * @param id the id
-	 * @param version the version
+	 * @param ccd the ccd
+	 * @param officeCd the office cd
+	 * @param histId the hist id
+	 * @param levelCode the level code
 	 */
-	void remove(String id, Long version);
+	void remove(String ccd, String officeCd, String histId, Integer levelCode);
 
 	/**
 	 * Find by id.
@@ -47,9 +49,11 @@ public interface HealthInsuranceAvgearnRepository {
 	/**
 	 * Find.
 	 *
+	 * @param ccd the ccd
+	 * @param officeCd the office cd
 	 * @param historyId the history id
 	 * @param levelCode the level code
-	 * @return the health insurance avgearn
+	 * @return the optional
 	 */
-	Optional<HealthInsuranceAvgearn> find(String historyId, Integer levelCode);
+	Optional<HealthInsuranceAvgearn> find(String ccd, String officeCd, String historyId, Integer levelCode);
 }

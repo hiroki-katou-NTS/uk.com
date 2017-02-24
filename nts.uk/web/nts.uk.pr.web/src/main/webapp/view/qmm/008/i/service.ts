@@ -12,16 +12,16 @@ module nts.uk.pr.view.qmm008.i {
         /**
          *  Save list pensionAvgearn
          */
-        export function updatePensionAvgearn(listPensionAvgearn): JQueryPromise<any> {
+        export function updatePensionAvgearn(listPensionAvgearn: model.PensionAvgearnDto, officeCode: string): JQueryPromise<any> {
             var dfd = $.Deferred<any>();
-            var data = { listPensionAvgearn: listPensionAvgearn };
+            var data = { listPensionAvgearn: listPensionAvgearn, officeCode: officeCode };
             nts.uk.request.ajax(paths.updatePensionAvgearn, data).done(() =>
                 dfd.resolve());
             return dfd.promise();
         }
 
         /**
-        *  Find PensionAvgearn by historyId
+        *  Find list PensionAvgearn by historyId
         */
         export function findPensionAvgearn(id: string): JQueryPromise<any> {
             var dfd = $.Deferred<any>();
@@ -39,7 +39,20 @@ module nts.uk.pr.view.qmm008.i {
         * Model namespace.
         */
         export module model {
-            export class PensionAvgearnValue {
+
+            export interface PensionAvgearnDto {
+                historyId: string;
+                levelCode: number;
+                companyFund: PensionAvgearnValue;
+                companyFundExemption: PensionAvgearnValue;
+                companyPension: PensionAvgearnValue;
+                personalFund: PensionAvgearnValue;
+                personalFundExemption: PensionAvgearnValue;
+                personalPension: PensionAvgearnValue;
+                childContributionAmount: number;
+            }
+
+            export interface PensionAvgearnValue {
                 maleAmount: number;
                 femaleAmount: number;
                 unknownAmount: number;

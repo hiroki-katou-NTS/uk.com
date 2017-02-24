@@ -63,7 +63,7 @@ var nts;
                                 };
                                 ScreenModel.prototype.save = function () {
                                     var self = this;
-                                    h.service.updateHealthInsuranceAvgearn(self.collectData()).done(function () {
+                                    h.service.updateHealthInsuranceAvgearn(self.collectData(), self.healthInsuranceRateModel.officeCode).done(function () {
                                         return self.closeDialog();
                                     });
                                 };

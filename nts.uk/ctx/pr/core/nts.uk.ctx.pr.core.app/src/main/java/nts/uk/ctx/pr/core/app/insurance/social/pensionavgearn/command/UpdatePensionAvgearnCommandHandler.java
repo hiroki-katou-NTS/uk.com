@@ -4,25 +4,25 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.app.insurance.social.pensionavgearn.command;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.PensionAvgearn;
 import nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.PensionAvgearnRepository;
-import nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.service.PensionAvgearnService;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class UpdatePensionAvgearnCommandHandler.
  */
 @Stateless
 public class UpdatePensionAvgearnCommandHandler extends CommandHandler<UpdatePensionAvgearnCommand> {
-
-	/** The pension avgearn service. */
-	@Inject
-	private PensionAvgearnService pensionAvgearnService;
 
 	/** The pension avgearn repository. */
 	@Inject
@@ -41,18 +41,15 @@ public class UpdatePensionAvgearnCommandHandler extends CommandHandler<UpdatePen
 		// Get command.
 		UpdatePensionAvgearnCommand command = context.getCommand();
 
-		command.getListPensionAvgearn().forEach(dto -> {
-			// Get the pensionAvgearn.
-			PensionAvgearn pensionAvgearn = pensionAvgearnRepository.find(dto.getHistoryId(), dto.getLevelCode()).get();
+		// Get the current company code.
+		CompanyCode companyCode = new CompanyCode(AppContexts.user().companyCode());
 
-			// Transfer data
-			PensionAvgearn updatedPensionAvgearn = dto.toDomain(pensionAvgearn.getHistoryId(),
-					pensionAvgearn.getLevelCode());
+		// Map to domain
+		List<PensionAvgearn> updatedPensionAvgearns = command.getListPensionAvgearn().stream().map(item -> {
+			return item.toDomain();
+		}).collect(Collectors.toList());
 
-			// Validate
-			pensionAvgearnService.validateRequiredItem(updatedPensionAvgearn);
-			// Update to db.
-			pensionAvgearnRepository.update(updatedPensionAvgearn);
-		});
+		// Update
+		pensionAvgearnRepository.update(updatedPensionAvgearns, companyCode.v(), command.getOfficeCode());
 	}
 }

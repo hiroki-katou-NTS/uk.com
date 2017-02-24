@@ -13,7 +13,7 @@ import nts.uk.ctx.pr.core.infra.entity.insurance.social.pensionavgearn.QismtPens
 import nts.uk.ctx.pr.core.infra.entity.insurance.social.pensionavgearn.QismtPensionAvgearnPK;
 
 /**
- * The Class JpaAggrSchemaMemento.
+ * The Class JpaPensionAvgearnSetMemento.
  */
 public class JpaPensionAvgearnSetMemento implements PensionAvgearnSetMemento {
 
@@ -21,7 +21,7 @@ public class JpaPensionAvgearnSetMemento implements PensionAvgearnSetMemento {
 	protected QismtPensionAvgearn typeValue;
 
 	/**
-	 * Instantiates a new jpa aggr schema memento.
+	 * Instantiates a new jpa pension avgearn set memento.
 	 *
 	 * @param typeValue
 	 *            the type value
@@ -30,6 +30,12 @@ public class JpaPensionAvgearnSetMemento implements PensionAvgearnSetMemento {
 		this.typeValue = typeValue;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.
+	 * PensionAvgearnSetMemento#setHistoryId(java.lang.String)
+	 */
 	@Override
 	public void setHistoryId(String historyId) {
 		QismtPensionAvgearnPK pensionAvgearnPK = new QismtPensionAvgearnPK();
@@ -37,33 +43,57 @@ public class JpaPensionAvgearnSetMemento implements PensionAvgearnSetMemento {
 		this.typeValue.setQismtPensionAvgearnPK(pensionAvgearnPK);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.
+	 * PensionAvgearnSetMemento#setLevelCode(java.lang.Integer)
+	 */
 	@Override
 	public void setLevelCode(Integer levelCode) {
 		QismtPensionAvgearnPK pensionAvgearnPK = this.typeValue.getQismtPensionAvgearnPK();
 		pensionAvgearnPK.setPensionGrade(BigDecimal.valueOf(levelCode));
-		//fake code
-		pensionAvgearnPK.setCcd("0001");
-		pensionAvgearnPK.setSiOfficeCd("23");
 		this.typeValue.setQismtPensionAvgearnPK((pensionAvgearnPK));
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.
+	 * PensionAvgearnSetMemento#setChildContributionAmount(nts.uk.ctx.pr.core.
+	 * dom.insurance.InsuranceAmount)
+	 */
 	@Override
 	public void setChildContributionAmount(InsuranceAmount childContributionAmount) {
 		this.typeValue.setChildContributionMny(childContributionAmount.v());
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.
+	 * PensionAvgearnSetMemento#setCompanyFund(nts.uk.ctx.pr.core.dom.insurance.
+	 * social.pensionavgearn.PensionAvgearnValue)
+	 */
 	@Override
 	public void setCompanyFund(PensionAvgearnValue companyFund) {
-		//thua truong?
-//		this.typeValue.setCFundFemMny(companyFund.getFemaleAmount().v());
-//		this.typeValue.setCFundMaleMny(companyFund.getMaleAmount().v());
-//		this.typeValue.setCFundMinerMny(companyFund.getUnknownAmount().v());
+		// thua truong?
+		// this.typeValue.setCFundFemMny(companyFund.getFemaleAmount().v());
+		// this.typeValue.setCFundMaleMny(companyFund.getMaleAmount().v());
+		// this.typeValue.setCFundMinerMny(companyFund.getUnknownAmount().v());
 		this.typeValue.setCFundFemMny(BigDecimal.valueOf(5));
 		this.typeValue.setCFundMaleMny(BigDecimal.valueOf(5));
 		this.typeValue.setCFundMinerMny(BigDecimal.valueOf(5));
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.
+	 * PensionAvgearnSetMemento#setCompanyFundExemption(nts.uk.ctx.pr.core.dom.
+	 * insurance.social.pensionavgearn.PensionAvgearnValue)
+	 */
 	@Override
 	public void setCompanyFundExemption(PensionAvgearnValue companyFundExemption) {
 		this.typeValue.setCFundExemptFemMny(companyFundExemption.getFemaleAmount().v());
@@ -71,6 +101,13 @@ public class JpaPensionAvgearnSetMemento implements PensionAvgearnSetMemento {
 		this.typeValue.setCFundExemptMinerMny(companyFundExemption.getUnknownAmount().v());
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.
+	 * PensionAvgearnSetMemento#setCompanyPension(nts.uk.ctx.pr.core.dom.
+	 * insurance.social.pensionavgearn.PensionAvgearnValue)
+	 */
 	@Override
 	public void setCompanyPension(PensionAvgearnValue companyPension) {
 		this.typeValue.setCPensionFemMny(companyPension.getFemaleAmount().v());
@@ -78,17 +115,31 @@ public class JpaPensionAvgearnSetMemento implements PensionAvgearnSetMemento {
 		this.typeValue.setCPensionMinerMny(companyPension.getUnknownAmount().v());
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.
+	 * PensionAvgearnSetMemento#setPersonalFund(nts.uk.ctx.pr.core.dom.insurance
+	 * .social.pensionavgearn.PensionAvgearnValue)
+	 */
 	@Override
 	public void setPersonalFund(PensionAvgearnValue personalFund) {
-		//thua truong?
-//		this.typeValue.setPFundFemMny(personalFund.getFemaleAmount().v());
-//		this.typeValue.setPFundMaleMny(personalFund.getMaleAmount().v());
-//		this.typeValue.setPFundMinerMny(personalFund.getUnknownAmount().v());
+		// thua truong?
+		// this.typeValue.setPFundFemMny(personalFund.getFemaleAmount().v());
+		// this.typeValue.setPFundMaleMny(personalFund.getMaleAmount().v());
+		// this.typeValue.setPFundMinerMny(personalFund.getUnknownAmount().v());
 		this.typeValue.setPFundFemMny(BigDecimal.valueOf(5));
 		this.typeValue.setPFundMaleMny(BigDecimal.valueOf(5));
 		this.typeValue.setPFundMinerMny(BigDecimal.valueOf(5));
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.
+	 * PensionAvgearnSetMemento#setPersonalFundExemption(nts.uk.ctx.pr.core.dom.
+	 * insurance.social.pensionavgearn.PensionAvgearnValue)
+	 */
 	@Override
 	public void setPersonalFundExemption(PensionAvgearnValue personalFundExemption) {
 		this.typeValue.setPFundExemptFemMny(personalFundExemption.getFemaleAmount().v());
@@ -96,6 +147,13 @@ public class JpaPensionAvgearnSetMemento implements PensionAvgearnSetMemento {
 		this.typeValue.setPFundExemptMinerMny(personalFundExemption.getUnknownAmount().v());
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.
+	 * PensionAvgearnSetMemento#setPersonalPension(nts.uk.ctx.pr.core.dom.
+	 * insurance.social.pensionavgearn.PensionAvgearnValue)
+	 */
 	@Override
 	public void setPersonalPension(PensionAvgearnValue personalPension) {
 		this.typeValue.setPPensionFemMny(personalPension.getFemaleAmount().v());

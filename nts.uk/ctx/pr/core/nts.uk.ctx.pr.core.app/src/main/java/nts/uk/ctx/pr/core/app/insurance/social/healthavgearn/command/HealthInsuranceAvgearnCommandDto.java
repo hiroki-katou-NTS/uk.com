@@ -12,8 +12,9 @@ import nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.HealthInsuranceAvge
 import nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.HealthInsuranceAvgearnValue;
 
 /**
- * The Class HealthInsuranceAvgearnBaseCommand.
+ * The Class HealthInsuranceAvgearnCommandDto.
  */
+
 @Getter
 @Setter
 public class HealthInsuranceAvgearnCommandDto {
@@ -29,46 +30,6 @@ public class HealthInsuranceAvgearnCommandDto {
 
 	/** The personal avg. */
 	private HealthInsuranceAvgearnValueDto personalAvg;
-
-	/**
-	 * To domain.
-	 *
-	 * @param historyId
-	 *            the history id
-	 * @param levelCode
-	 *            the level code
-	 * @return the health insurance avgearn
-	 */
-	public HealthInsuranceAvgearn toDomain(String historyId, Integer levelCode) {
-		HealthInsuranceAvgearnCommandDto dto = this;
-
-		// Transfer data
-		HealthInsuranceAvgearn updatedHealthInsuranceAvgearn = new HealthInsuranceAvgearn(
-				new HealthInsuranceAvgearnGetMemento() {
-
-					@Override
-					public HealthInsuranceAvgearnValue getPersonalAvg() {
-						return HealthInsuranceAvgearnValueDto.toDomain(dto.getPersonalAvg());
-					}
-
-					@Override
-					public Integer getLevelCode() {
-						return levelCode;
-					}
-
-					@Override
-					public String getHistoryId() {
-						return historyId;
-					}
-
-					@Override
-					public HealthInsuranceAvgearnValue getCompanyAvg() {
-						return HealthInsuranceAvgearnValueDto.toDomain(dto.getCompanyAvg());
-					}
-				});
-
-		return updatedHealthInsuranceAvgearn;
-	}
 
 	/**
 	 * To domain.

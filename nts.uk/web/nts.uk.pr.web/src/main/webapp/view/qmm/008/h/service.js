@@ -16,9 +16,9 @@ var nts;
                                 updateHealthInsuranceAvgearn: "ctx/pr/core/insurance/social/healthavgearn/update",
                                 findHealthInsuranceAvgEarn: "ctx/pr/core/insurance/social/healthavgearn/find",
                             };
-                            function updateHealthInsuranceAvgearn(list) {
+                            function updateHealthInsuranceAvgearn(list, officeCode) {
                                 var dfd = $.Deferred();
-                                var data = { listHealthInsuranceAvgearn: list };
+                                var data = { listHealthInsuranceAvgearn: list, officeCode: officeCode };
                                 nts.uk.request.ajax(paths.updateHealthInsuranceAvgearn, data).done(function () {
                                     return dfd.resolve();
                                 });
@@ -38,26 +38,6 @@ var nts;
                                 ;
                             }
                             service.findHealthInsuranceAvgEarn = findHealthInsuranceAvgEarn;
-                            var model;
-                            (function (model) {
-                                var HealthInsuranceAvgEarnValue = (function () {
-                                    function HealthInsuranceAvgEarnValue() {
-                                    }
-                                    return HealthInsuranceAvgEarnValue;
-                                }());
-                                model.HealthInsuranceAvgEarnValue = HealthInsuranceAvgEarnValue;
-                                var HealthInsuranceAvgEarnDto = (function () {
-                                    function HealthInsuranceAvgEarnDto(historyId, levelCode, companyAvg, personalAvg) {
-                                        this.historyId = historyId;
-                                        this.levelCode = levelCode;
-                                        this.companyAvg = companyAvg;
-                                        this.personalAvg = personalAvg;
-                                    }
-                                    ;
-                                    return HealthInsuranceAvgEarnDto;
-                                }());
-                                model.HealthInsuranceAvgEarnDto = HealthInsuranceAvgEarnDto;
-                            })(model = service.model || (service.model = {}));
                         })(service = h.service || (h.service = {}));
                     })(h = qmm008.h || (qmm008.h = {}));
                 })(qmm008 = view.qmm008 || (view.qmm008 = {}));

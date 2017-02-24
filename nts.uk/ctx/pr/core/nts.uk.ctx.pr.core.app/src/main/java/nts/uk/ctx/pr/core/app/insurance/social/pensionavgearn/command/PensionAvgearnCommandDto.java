@@ -15,8 +15,9 @@ import nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.PensionAvgearnGetM
 import nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.PensionAvgearnValue;
 
 /**
- * The Class PensionAvgearnBaseCommand.
+ * The Class PensionAvgearnCommandDto.
  */
+
 @Getter
 @Setter
 public class PensionAvgearnCommandDto {
@@ -51,26 +52,22 @@ public class PensionAvgearnCommandDto {
 	/**
 	 * To domain.
 	 *
-	 * @param historyId
-	 *            the history id
-	 * @param levelCode
-	 *            the level code
 	 * @return the pension avgearn
 	 */
-	public PensionAvgearn toDomain(String historyId, Integer levelCode) {
-		PensionAvgearnCommandDto command = this;
+	public PensionAvgearn toDomain() {
+		PensionAvgearnCommandDto dto = this;
 
 		// Transfer data
 		PensionAvgearn updatedPensionAvgearn = new PensionAvgearn(new PensionAvgearnGetMemento() {
 
 			@Override
 			public PensionAvgearnValue getPersonalPension() {
-				return PensionAvgearnValueDto.toDomain(command.getPersonalPension());
+				return PensionAvgearnValueDto.toDomain(dto.getPersonalPension());
 			}
 
 			@Override
 			public PensionAvgearnValue getPersonalFundExemption() {
-				return PensionAvgearnValueDto.toDomain(command.getPersonalFundExemption());
+				return PensionAvgearnValueDto.toDomain(dto.getPersonalFundExemption());
 			}
 
 			@Override
@@ -82,22 +79,22 @@ public class PensionAvgearnCommandDto {
 
 			@Override
 			public Integer getLevelCode() {
-				return levelCode;
+				return dto.getLevelCode();
 			}
 
 			@Override
 			public String getHistoryId() {
-				return historyId;
+				return dto.getHistoryId();
 			}
 
 			@Override
 			public PensionAvgearnValue getCompanyPension() {
-				return PensionAvgearnValueDto.toDomain(command.getCompanyPension());
+				return PensionAvgearnValueDto.toDomain(dto.getCompanyPension());
 			}
 
 			@Override
 			public PensionAvgearnValue getCompanyFundExemption() {
-				return PensionAvgearnValueDto.toDomain(command.getCompanyFundExemption());
+				return PensionAvgearnValueDto.toDomain(dto.getCompanyFundExemption());
 			}
 
 			@Override
@@ -109,7 +106,7 @@ public class PensionAvgearnCommandDto {
 
 			@Override
 			public InsuranceAmount getChildContributionAmount() {
-				return new InsuranceAmount(command.getChildContributionAmount());
+				return new InsuranceAmount(dto.getChildContributionAmount());
 			}
 		});
 

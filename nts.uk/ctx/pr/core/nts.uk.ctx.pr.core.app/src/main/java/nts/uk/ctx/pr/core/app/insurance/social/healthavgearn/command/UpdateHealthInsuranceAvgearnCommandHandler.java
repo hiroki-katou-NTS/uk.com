@@ -14,12 +14,23 @@ import nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.HealthInsuranceAvge
 import nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.HealthInsuranceAvgearnRepository;
 import nts.uk.shr.com.context.AppContexts;
 
+/**
+ * The Class UpdateHealthInsuranceAvgearnCommandHandler.
+ */
 @Stateless
 public class UpdateHealthInsuranceAvgearnCommandHandler extends CommandHandler<UpdateHealthInsuranceAvgearnCommand> {
 
+	/** The health insurance avgearn repository. */
 	@Inject
 	private HealthInsuranceAvgearnRepository healthInsuranceAvgearnRepository;
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command
+	 * .CommandHandlerContext)
+	 */
 	@Override
 	@Transactional
 	protected void handle(CommandHandlerContext<UpdateHealthInsuranceAvgearnCommand> context) {
@@ -29,11 +40,14 @@ public class UpdateHealthInsuranceAvgearnCommandHandler extends CommandHandler<U
 		// Get the current company code.
 		CompanyCode companyCode = new CompanyCode(AppContexts.user().companyCode());
 
+		// Map to domain
 		List<HealthInsuranceAvgearn> healthInsuranceAvgearns = command.getListHealthInsuranceAvgearn().stream()
 				.map(item -> {
 					return item.toDomain();
 				}).collect(Collectors.toList());
-		healthInsuranceAvgearnRepository.update(healthInsuranceAvgearns, companyCode.v(), "23");
+
+		// Update
+		healthInsuranceAvgearnRepository.update(healthInsuranceAvgearns, companyCode.v(), command.getOfficeCode());
 
 	}
 }

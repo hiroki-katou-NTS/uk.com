@@ -15,7 +15,10 @@ import lombok.Setter;
 @Getter
 @Setter
 public class UpdatePensionAvgearnCommand {
-	
+
 	/** The list pension avgearn. */
 	List<PensionAvgearnCommandDto> listPensionAvgearn;
+
+	/** The office code. */
+	String officeCode;
 }

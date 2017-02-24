@@ -25,27 +25,57 @@ import nts.uk.ctx.pr.core.infra.entity.insurance.social.pensionavgearn.QismtPens
 import nts.uk.ctx.pr.core.infra.entity.insurance.social.pensionavgearn.QismtPensionAvgearnPK;
 import nts.uk.ctx.pr.core.infra.entity.insurance.social.pensionavgearn.QismtPensionAvgearnPK_;
 import nts.uk.ctx.pr.core.infra.entity.insurance.social.pensionavgearn.QismtPensionAvgearn_;
+import nts.uk.ctx.pr.core.infra.entity.insurance.social.pensionrate.QismtPensionRate;
+import nts.uk.ctx.pr.core.infra.entity.insurance.social.pensionrate.QismtPensionRatePK;
 
+/**
+ * The Class JpaPensionAvgearnRepository.
+ */
 @Stateless
 public class JpaPensionAvgearnRepository extends JpaRepository implements PensionAvgearnRepository {
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.
+	 * PensionAvgearnRepository#update(nts.uk.ctx.pr.core.dom.insurance.social.
+	 * pensionavgearn.PensionAvgearn)
+	 */
 	@Override
-	public void add(PensionAvgearn pensionAvgearn) {
-		this.commandProxy().insert(toEntity(pensionAvgearn));
+	public void update(List<PensionAvgearn> pensionAvgearns, String ccd, String officeCd) {
+		// Find PensionRate
+		QismtPensionRate pensionRate = this.queryProxy()
+				.find(new QismtPensionRatePK(ccd, officeCd, pensionAvgearns.get(0).getHistoryId()),
+						QismtPensionRate.class)
+				.get();
 
+		// Set Updated pensionAvgearnList
+		pensionRate.setQismtPensionAvgearnList(
+				pensionAvgearns.stream().map(domain -> toEntity(domain, ccd, officeCd)).collect(Collectors.toList()));
+
+		// Update PensionRate
+		this.commandProxy().update(pensionRate);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.
+	 * PensionAvgearnRepository#remove(java.lang.String, java.lang.String,
+	 * java.lang.String, java.lang.Integer)
+	 */
 	@Override
-	public void update(PensionAvgearn pensionAvgearn) {
-		this.commandProxy().update(toEntity(pensionAvgearn));
+	public void remove(String histId, String ccd, String officeCd, Integer pensionGrade) {
+		this.commandProxy().remove(QismtPensionAvgearn.class,
+				new QismtPensionAvgearnPK(ccd, officeCd, histId, BigDecimal.valueOf(pensionGrade)));
 	}
 
-	@Override
-	public void remove(String id) {
-		// TODO: can truyen vao hisID, ccd, officeCd, levelCode
-		this.commandProxy().remove(QismtPensionAvgearn.class, new QismtPensionAvgearnPK());
-	}
-
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.
+	 * PensionAvgearnRepository#find(java.lang.String)
+	 */
 	@Override
 	public List<PensionAvgearn> find(String historyId) {
 		EntityManager em = getEntityManager();
@@ -63,13 +93,28 @@ public class JpaPensionAvgearnRepository extends JpaRepository implements Pensio
 		return listPensionAvgearn;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.
+	 * PensionAvgearnRepository#find(java.lang.String, java.lang.String,
+	 * java.lang.String, java.lang.Integer)
+	 */
 	@Override
-	public Optional<PensionAvgearn> find(String historyId, Integer levelCode) {
-		// fake ccd, officeCd, histId
-		return this.queryProxy().find(new QismtPensionAvgearnPK("0001", "23", "11", BigDecimal.valueOf(levelCode)),
-				QismtPensionAvgearn.class).map(entity -> toDomain(entity));
+	public Optional<PensionAvgearn> find(String histId, String ccd, String officeCd, Integer pensionGrade) {
+		return this.queryProxy()
+				.find(new QismtPensionAvgearnPK(ccd, officeCd, histId, BigDecimal.valueOf(pensionGrade)),
+						QismtPensionAvgearn.class)
+				.map(entity -> toDomain(entity));
 	}
 
+	/**
+	 * To domain.
+	 *
+	 * @param entity
+	 *            the entity
+	 * @return the pension avgearn
+	 */
 	private static PensionAvgearn toDomain(QismtPensionAvgearn entity) {
 		PensionAvgearn domain = new PensionAvgearn(new PensionAvgearnGetMemento() {
 
@@ -129,12 +174,24 @@ public class JpaPensionAvgearnRepository extends JpaRepository implements Pensio
 		return domain;
 	}
 
-	private QismtPensionAvgearn toEntity(PensionAvgearn pensionAvgearn) {
+	/**
+	 * To entity.
+	 *
+	 * @param pensionAvgearn
+	 *            the pension avgearn
+	 * @return the qismt pension avgearn
+	 */
+	private QismtPensionAvgearn toEntity(PensionAvgearn pensionAvgearn, String ccd, String officeCd) {
 		QismtPensionAvgearn entity = new QismtPensionAvgearn();
 		pensionAvgearn.saveToMemento(new JpaPensionAvgearnSetMemento(entity));
-		//thua truong nay? phai fake data.
+		// thua truong nay? phai fake data.
 		entity.setPensionAvgEarn(BigDecimal.valueOf(5));
 		entity.setPensionUpperLimit(BigDecimal.valueOf(5));
+		QismtPensionAvgearnPK pk = entity.getQismtPensionAvgearnPK();
+
+		// Set company code & office code
+		pk.setCcd(ccd);
+		pk.setSiOfficeCd(officeCd);
 		return entity;
 	}
 

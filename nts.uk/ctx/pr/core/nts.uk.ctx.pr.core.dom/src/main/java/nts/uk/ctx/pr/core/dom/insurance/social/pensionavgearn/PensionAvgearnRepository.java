@@ -9,25 +9,23 @@ import java.util.Optional;
 public interface PensionAvgearnRepository {
 
 	/**
-	 * Adds the.
-	 *
-	 * @param pensionAvgearn the pension avgearn
-	 */
-	void add(PensionAvgearn pensionAvgearn);
-
-	/**
 	 * Update.
 	 *
-	 * @param pensionAvgearn the pension avgearn
+	 * @param pensionAvgearns the pension avgearns
+	 * @param ccd the ccd
+	 * @param officeCd the office cd
 	 */
-	void update(PensionAvgearn pensionAvgearn);
+	void update(List<PensionAvgearn> pensionAvgearns, String ccd, String officeCd);
 
 	/**
 	 * Removes the.
 	 *
-	 * @param id the id
+	 * @param histId the hist id
+	 * @param ccd the ccd
+	 * @param officeCd the office cd
+	 * @param pensionGrade the pension grade
 	 */
-	void remove(String id);
+	void remove(String histId, String ccd, String officeCd, Integer pensionGrade);
 
 	/**
 	 * Find.
@@ -40,10 +38,12 @@ public interface PensionAvgearnRepository {
 	/**
 	 * Find.
 	 *
-	 * @param historyId the history id
-	 * @param levelCode the level code
-	 * @return the pension avgearn
+	 * @param histId the hist id
+	 * @param ccd the ccd
+	 * @param officeCd the office cd
+	 * @param pensionGrade the pension grade
+	 * @return the optional
 	 */
-	Optional<PensionAvgearn> find(String historyId, Integer levelCode);
+	Optional<PensionAvgearn> find(String histId, String ccd, String officeCd, Integer pensionGrade);
 
 }

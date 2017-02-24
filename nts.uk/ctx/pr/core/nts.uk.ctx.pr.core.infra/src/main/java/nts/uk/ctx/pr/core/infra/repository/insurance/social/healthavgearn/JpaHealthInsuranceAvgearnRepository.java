@@ -55,12 +55,17 @@ public class JpaHealthInsuranceAvgearnRepository extends JpaRepository implement
 	 */
 	@Override
 	public void update(List<HealthInsuranceAvgearn> healthInsuranceAvgearns, String ccd, String officeCd) {
+		// Find healthInsuRate
 		QismtHealthInsuRate healthInsuRate = this.queryProxy()
 				.find(new QismtHealthInsuRatePK(ccd, officeCd, healthInsuranceAvgearns.get(0).getHistoryId()),
 						QismtHealthInsuRate.class)
 				.get();
+
+		// Set Updated HealthInsuAvgearnList
 		healthInsuRate.setQismtHealthInsuAvgearnList(healthInsuranceAvgearns.stream()
 				.map(domain -> toEntity(domain, ccd, officeCd)).collect(Collectors.toList()));
+
+		// Update healthInsuRate
 		this.commandProxy().update(healthInsuRate);
 	}
 
@@ -71,9 +76,9 @@ public class JpaHealthInsuranceAvgearnRepository extends JpaRepository implement
 	 * HealthInsuranceAvgearnRepository#remove(java.lang.String, java.lang.Long)
 	 */
 	@Override
-	public void remove(String id, Long version) {
-		// TODO: can truyen vao hisID, ccd, officeCd, levelCode
-		this.commandProxy().remove(QismtHealthInsuAvgearnPK.class, new QismtHealthInsuAvgearnPK());
+	public void remove(String ccd, String officeCd, String histId, Integer levelCode) {
+		this.commandProxy().remove(QismtHealthInsuAvgearnPK.class,
+				new QismtHealthInsuAvgearnPK(ccd, officeCd, histId, BigDecimal.valueOf(levelCode)));
 	}
 
 	/*
@@ -108,10 +113,10 @@ public class JpaHealthInsuranceAvgearnRepository extends JpaRepository implement
 	 * java.lang.Integer)
 	 */
 	@Override
-	public Optional<HealthInsuranceAvgearn> find(String historyId, Integer levelCode) {
-		// TODO: mock ccd & officeCd. change later
+	public Optional<HealthInsuranceAvgearn> find(String companyCode, String officeCode, String historyId,
+			Integer levelCode) {
 		return this.queryProxy()
-				.find(new QismtHealthInsuAvgearnPK("0001", "23", historyId, BigDecimal.valueOf(levelCode)),
+				.find(new QismtHealthInsuAvgearnPK(companyCode, officeCode, historyId, BigDecimal.valueOf(levelCode)),
 						QismtHealthInsuAvgearn.class)
 				.map(c -> toDomain(c));
 	}
@@ -159,20 +164,25 @@ public class JpaHealthInsuranceAvgearnRepository extends JpaRepository implement
 	/**
 	 * To entity.
 	 *
-	 * @param healthInsuranceAvgearn
-	 *            the health insurance avgearn
+	 * @param healthInsuranceAvgearn the health insurance avgearn
+	 * @param ccd the ccd
+	 * @param officeCd the office cd
 	 * @return the qismt health insu avgearn
 	 */
 	private QismtHealthInsuAvgearn toEntity(HealthInsuranceAvgearn healthInsuranceAvgearn, String ccd,
 			String officeCd) {
 		QismtHealthInsuAvgearn entity = new QismtHealthInsuAvgearn();
 		healthInsuranceAvgearn.saveToMemento(new JpaHealthInsuranceAvgearnSetMemento(entity));
-		// mock data de tranh loi. 2 field nay bi thua?
+
+		// 2 field nay bi thua?
 		entity.setHealthInsuAvgEarn(BigDecimal.valueOf(5));
 		entity.setHealthInsuUpperLimit(BigDecimal.valueOf(3));
+
+		// Set company code & office code
 		QismtHealthInsuAvgearnPK pk = entity.getQismtHealthInsuAvgearnPK();
 		pk.setCcd(ccd);
 		pk.setSiOfficeCd(officeCd);
+
 		return entity;
 	}
 

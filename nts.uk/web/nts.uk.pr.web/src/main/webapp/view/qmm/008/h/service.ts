@@ -12,9 +12,9 @@ module nts.uk.pr.view.qmm008.h {
         /**
          *  Save List Health Insurance Average Earn
          */
-        export function updateHealthInsuranceAvgearn(list: Array<HealthInsuranceAvgEarnDto>): JQueryPromise<any> {
+        export function updateHealthInsuranceAvgearn(list: Array<model.HealthInsuranceAvgEarnDto>, officeCode: string): JQueryPromise<any> {
             var dfd = $.Deferred<any>();
-            var data = { listHealthInsuranceAvgearn: list };
+            var data = { listHealthInsuranceAvgearn: list, officeCode: officeCode };
             nts.uk.request.ajax(paths.updateHealthInsuranceAvgearn, data).done(() =>
                 dfd.resolve());
             return dfd.promise();
@@ -39,24 +39,19 @@ module nts.uk.pr.view.qmm008.h {
         * Model namespace.
         */
         export module model {
-            export class HealthInsuranceAvgEarnValue {
+
+            export interface HealthInsuranceAvgEarnValue {
                 general: number;
                 nursing: number;
                 basic: number;
                 specific: number;
             }
 
-            export class HealthInsuranceAvgEarnDto {
+            export interface HealthInsuranceAvgEarnDto {
                 historyId: string;
                 levelCode: number;
                 companyAvg: HealthInsuranceAvgEarnValue;
                 personalAvg: HealthInsuranceAvgEarnValue;
-                constructor(historyId: string, levelCode: number, companyAvg: HealthInsuranceAvgEarnValue, personalAvg: HealthInsuranceAvgEarnValue) {
-                    this.historyId = historyId;
-                    this.levelCode = levelCode;
-                    this.companyAvg = companyAvg;
-                    this.personalAvg = personalAvg;
-                };
             }
 
         }

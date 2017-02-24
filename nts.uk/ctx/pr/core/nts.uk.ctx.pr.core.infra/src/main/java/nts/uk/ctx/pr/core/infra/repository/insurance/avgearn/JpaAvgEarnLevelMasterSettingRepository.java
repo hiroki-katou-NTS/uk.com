@@ -16,19 +16,19 @@ public class JpaAvgEarnLevelMasterSettingRepository extends JpaRepository
 
 	@Override
 	public void add(AvgEarnLevelMasterSetting level) {
-		// TODO Auto-generated method stub
+		// TODO de mai tinh
 
 	}
 
 	@Override
 	public void update(AvgEarnLevelMasterSetting level) {
-		// TODO Auto-generated method stub
+		// TODO de mai tinh
 
 	}
 
 	@Override
 	public void remove(String id, Long version) {
-		// TODO Auto-generated method stub
+		// TODO de mai tinh
 
 	}
 
@@ -46,7 +46,7 @@ public class JpaAvgEarnLevelMasterSettingRepository extends JpaRepository
 
 	@Override
 	public Optional<AvgEarnLevelMasterSetting> findById(String id) {
-		// TODO Auto-generated method stub
+		// TODO de mai tinh
 		return null;
 	}
 

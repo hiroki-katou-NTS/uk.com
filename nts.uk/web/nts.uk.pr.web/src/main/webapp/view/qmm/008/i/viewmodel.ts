@@ -7,14 +7,16 @@ module nts.uk.pr.view.qmm008.i {
         import InsuranceOfficeItemDto = nts.uk.pr.view.qmm008.a.service.model.finder.InsuranceOfficeItemDto;
 
         export class ScreenModel {
+            listAvgEarnLevelMasterSetting: Array<AvgEarnLevelMasterSettingDto>;
+            listPensionAvgearnModel: KnockoutObservableArray<PensionAvgearnModel>;
+            numberEditorCommonOption: KnockoutObservable<nts.uk.ui.option.NumberEditorOption>;
 
+            // expand table var
             leftShow: KnockoutObservable<boolean>;
             rightShow: KnockoutObservable<boolean>;
             leftBtnText: KnockoutComputed<string>;
             rightBtnText: KnockoutComputed<string>;
-            listAvgEarnLevelMasterSetting: Array<AvgEarnLevelMasterSettingDto>;
-            listPensionAvgearnModel: KnockoutObservableArray<PensionAvgearnModel>;
-            numberEditorCommonOption: KnockoutObservable<nts.uk.ui.option.NumberEditorOption>;
+
             pensionRateModel: PensionRateModel;
 
             constructor(dataOfSelectedOffice: InsuranceOfficeItemDto, pensionModel: PensionRateModelFromScreenA) {
@@ -71,7 +73,7 @@ module nts.uk.pr.view.qmm008.i {
             private loadPensionAvgearn(): JQueryPromise<void> {
                 var self = this;
                 var dfd = $.Deferred<any>();
-                service.findPensionAvgearn('11').done(res => {
+                service.findPensionAvgearn('11').done(res => { //fixed id
                     res.forEach(item => {
                         self.listPensionAvgearnModel.push(new PensionAvgearnModel(
                             item.historyId,
@@ -124,7 +126,7 @@ module nts.uk.pr.view.qmm008.i {
              */
             private save(): void {
                 var self = this;
-                service.updatePensionAvgearn(self.collectData()).done(() =>
+                service.updatePensionAvgearn(self.collectData(), self.pensionRateModel.officeCode).done(() =>
                     self.closeDialog());
             }
 
@@ -149,6 +151,7 @@ module nts.uk.pr.view.qmm008.i {
                 var self = this;
                 // Clear current listPensionAvgearnModel
                 self.listPensionAvgearnModel.removeAll();
+
                 // Recalculate listPensionAvgearnModel
                 self.listAvgEarnLevelMasterSetting.forEach(item => {
                     self.listPensionAvgearnModel.push(self.calculatePensionAvgearn(item));
@@ -165,7 +168,7 @@ module nts.uk.pr.view.qmm008.i {
                 var rate = levelMasterSetting.avgEarn / 1000;
 
                 return new PensionAvgearnModel(
-                    model.historyId,
+                    '11', // fake id.
                     levelMasterSetting.code,
                     new PensionAvgearnValueModel(
                         rateItems.salaryCompanySonExemption() * rate,

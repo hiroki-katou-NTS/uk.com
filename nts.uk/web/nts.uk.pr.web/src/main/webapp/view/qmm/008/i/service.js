@@ -16,9 +16,9 @@ var nts;
                                 updatePensionAvgearn: "ctx/pr/core/insurance/social/pensionavgearn/update",
                                 findPensionAvgearn: "ctx/pr/core/insurance/social/pensionavgearn/find"
                             };
-                            function updatePensionAvgearn(listPensionAvgearn) {
+                            function updatePensionAvgearn(listPensionAvgearn, officeCode) {
                                 var dfd = $.Deferred();
-                                var data = { listPensionAvgearn: listPensionAvgearn };
+                                var data = { listPensionAvgearn: listPensionAvgearn, officeCode: officeCode };
                                 nts.uk.request.ajax(paths.updatePensionAvgearn, data).done(function () {
                                     return dfd.resolve();
                                 });
@@ -38,15 +38,6 @@ var nts;
                                 ;
                             }
                             service.findPensionAvgearn = findPensionAvgearn;
-                            var model;
-                            (function (model) {
-                                var PensionAvgearnValue = (function () {
-                                    function PensionAvgearnValue() {
-                                    }
-                                    return PensionAvgearnValue;
-                                }());
-                                model.PensionAvgearnValue = PensionAvgearnValue;
-                            })(model = service.model || (service.model = {}));
                         })(service = i.service || (i.service = {}));
                     })(i = qmm008.i || (qmm008.i = {}));
                 })(qmm008 = view.qmm008 || (view.qmm008 = {}));

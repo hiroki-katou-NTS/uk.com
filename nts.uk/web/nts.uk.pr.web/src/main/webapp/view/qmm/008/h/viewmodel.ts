@@ -105,7 +105,7 @@ module nts.uk.pr.view.qmm008.h {
              */
             private save(): void {
                 var self = this;
-                service.updateHealthInsuranceAvgearn(self.collectData()).done(() =>
+                service.updateHealthInsuranceAvgearn(self.collectData(), self.healthInsuranceRateModel.officeCode).done(() =>
                     self.closeDialog());
             }
 
@@ -132,7 +132,7 @@ module nts.uk.pr.view.qmm008.h {
                 var rate = levelMasterSetting.avgEarn / 1000;
 
                 return new HealthInsuranceAvgEarnModel(
-                    '11521ea4-6f09-4dd7-8d91-41c0f547fa4e',//fixed id
+                    '11521ea4-6f09-4dd7-8d91-41c0f547fa4e', //self.healthInsuranceRateModel.historyId;
                     levelMasterSetting.code,
                     new HealthInsuranceAvgEarnValueModel(
                         rateItems.healthSalaryCompanyGeneral() * rate,
