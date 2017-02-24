@@ -629,6 +629,36 @@ var nts;
                         return parseInt($anyElementInRow.closest('tr').attr('data-row-idx'), 10);
                     }
                     grid.getRowIndexFrom = getRowIndexFrom;
+                    var virtual;
+                    (function (virtual) {
+                        function getDisplayContainer(gridId) {
+                            return $('#' + gridId + '_displayContainer');
+                        }
+                        virtual.getDisplayContainer = getDisplayContainer;
+                        function getVisibleRows(gridId) {
+                            return $('#' + gridId + ' > tbody > tr:visible');
+                        }
+                        virtual.getVisibleRows = getVisibleRows;
+                        function getFirstVisibleRow(gridId) {
+                            var top = getDisplayContainer(gridId).scrollTop();
+                            var visibleRows = getVisibleRows(gridId);
+                            for (var i = 0; i < visibleRows.length; i++) {
+                                var $row = $(visibleRows[i]);
+                                if (visibleRows[i].offsetTop + $row.height() > top) {
+                                    return $row;
+                                }
+                            }
+                        }
+                        virtual.getFirstVisibleRow = getFirstVisibleRow;
+                        function getLastVisibleRow(gridId) {
+                            var $displayContainer = getDisplayContainer(gridId);
+                            var bottom = $displayContainer.scrollTop() + $displayContainer.height();
+                            return getVisibleRows(gridId).filter(function () {
+                                return this.offsetTop < bottom;
+                            }).last();
+                        }
+                        virtual.getLastVisibleRow = getLastVisibleRow;
+                    })(virtual = grid.virtual || (grid.virtual = {}));
                     var header;
                     (function (header) {
                         function getCell(gridId, columnKey) {
