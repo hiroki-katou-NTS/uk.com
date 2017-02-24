@@ -2,6 +2,7 @@ package nts.uk.ctx.pr.core.app.find.retirement.payment.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import nts.arc.time.GeneralDate;
 
 /**
  * 
@@ -11,23 +12,23 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class RetirementPaymentDto {
-	private int actualRecieveMoney;
+	private String companyCode;
+	private String personId;
+	private GeneralDate payDate;
+	private int trialPeriodSet;
+	private int exclusionYears;
 	private int additionalBoardYears;
 	private int boardYears;
-	private int cityTaxMoney;
-	private String companyCode;
+	private int totalPaymentMoney;
 	private int deduction1Money;
 	private int deduction2Money;
 	private int deduction3Money;
-	private int exclusionYears;
-	private int incomeTaxMoney;
-	private String memo;
-	private String personId;
-	private int prefectureTaxMoney;
 	private int retirementPayOption;
 	private int taxCalculationMethod;
+	private int incomeTaxMoney;
+	private int cityTaxMoney;
+	private int prefectureTaxMoney;
 	private int totalDeclarationMoney;
-	private int totalPaymentMoney;
-	private int trialPeriodSet;
-
+	private int actualRecieveMoney;
+	private String memo;
 }

@@ -1,13 +1,51 @@
 module qrm001.a.service {
     var paths: any = {
-        getPaymentDateProcessingList: "pr/proto/paymentdatemaster/processing/findall"
+        getRetirementPaymentInfo: "pr/core/retirement/payment/findByCompanyCode",
+        register: "pr/core/retirement/payment/register",
+        update: "pr/core/retirement/payment/update",
+        remove: "pr/core/retirement/payment/remove"
     }
     
-    export function getPaymentDateProcessingList(): JQueryPromise<Array<any>> {
-        var dfd = $.Deferred<Array<any>>();
-       
-        nts.uk.request.ajax(paths.getPaymentDateProcessingList)
-            .done(function(res: Array<any>) {
+    export function getRetirementPaymentInfo(command): JQueryPromise<any> {
+        var dfd = $.Deferred<any>();
+        nts.uk.request.ajax(paths.getRetirementPaymentInfo, command)
+            .done(function(res: any) {
+                dfd.resolve(res);
+            })
+            .fail(function(res) {
+                dfd.reject(res);
+            })
+        return dfd.promise();
+    }
+    
+    export function registerRetirementPaymentInfo(command): JQueryPromise<any> {
+        var dfd = $.Deferred<any>();
+        nts.uk.request.ajax(paths.register, command)
+            .done(function(res: any) {
+                dfd.resolve(res);
+            })
+            .fail(function(res) {
+                dfd.reject(res);
+            })
+        return dfd.promise();
+    }
+    
+    export function updateRetirementPaymentInfo(command): JQueryPromise<any> {
+        var dfd = $.Deferred<any>();
+        nts.uk.request.ajax(paths.update, command)
+            .done(function(res: any) {
+                dfd.resolve(res);
+            })
+            .fail(function(res) {
+                dfd.reject(res);
+            })
+        return dfd.promise();
+    }
+    
+    export function removeRetirementPaymentInfo(command): JQueryPromise<any> {
+        var dfd = $.Deferred<any>();
+        nts.uk.request.ajax(paths.remove, command)
+            .done(function(res: any) {
                 dfd.resolve(res);
             })
             .fail(function(res) {

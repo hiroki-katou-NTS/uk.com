@@ -5,6 +5,7 @@ import javax.persistence.Embeddable;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.arc.time.GeneralDate;
 
 /**
  * 
@@ -19,4 +20,6 @@ public class QredtRetirementPaymentPK {
 	public String companyCode;
 	@Column(name="PID")
 	public String personId;
+	@Column(name="PAY_DATE")
+	public GeneralDate payDate;
 }

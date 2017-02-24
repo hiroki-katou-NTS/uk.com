@@ -6,6 +6,7 @@ import javax.inject.Inject;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.retirement.payment.PaymentMoney;
 import nts.uk.ctx.pr.core.dom.retirement.payment.PaymentYear;
@@ -33,24 +34,25 @@ public class RemoveRetirementPaymentCommandHandler extends CommandHandler<Remove
 		RemoveRetirementPaymentCommand command = context.getCommand();
 		String companyCode = AppContexts.user().companyCode();
 		RetirementPayment retirementPayment = new RetirementPayment(
-				new PaymentMoney(command.getActualRecieveMoney()), 
+				new CompanyCode(companyCode), 
+				new PersonId(command.getPersonId()), 
+				command.getPayDate(),
+				EnumAdaptor.valueOf(command.getTrialPeriodSet(), TrialPeriodSet.class),
+				new PaymentYear(command.getExclusionYears()), 
 				new PaymentYear(command.getAdditionalBoardYears()), 
 				new PaymentYear(command.getBoardYears()), 
-				new PaymentMoney(command.getCityTaxMoney()), 
-				new CompanyCode(companyCode), 
+				new PaymentMoney(command.getTotalPaymentMoney()),
 				new PaymentMoney(command.getDeduction1Money()), 
 				new PaymentMoney(command.getDeduction2Money()), 
-				new PaymentMoney(command.getDeduction3Money()),  
-				new PaymentYear(command.getExclusionYears()), 
-				new PaymentMoney(command.getIncomeTaxMoney()), 
-				new Memo(command.getMemo()), 
-				new PersonId(command.getPersonId()), 
-				new PaymentMoney(command.getPrefectureTaxMoney()), 
+				new PaymentMoney(command.getDeduction3Money()), 
 				EnumAdaptor.valueOf(command.getRetirementPayOption(), RetirementPayOption.class), 
 				EnumAdaptor.valueOf(command.getTaxCalculationMethod(), TaxCalculationMethod.class), 
-				new PaymentMoney(command.getTotalDeclarationMoney()), 
-				new PaymentMoney(command.getTotalPaymentMoney()), 
-				EnumAdaptor.valueOf(command.getTrialPeriodSet(), TrialPeriodSet.class));
+				new PaymentMoney(command.getIncomeTaxMoney()), 
+				new PaymentMoney(command.getCityTaxMoney()), 
+				new PaymentMoney(command.getPrefectureTaxMoney()), 
+				new PaymentMoney(command.getTotalDeclarationMoney()),  
+				new PaymentMoney(command.getActualRecieveMoney()), 
+				new Memo(command.getMemo()));
 		
 		retirementPaymentRepository.remove(retirementPayment);
 	}
