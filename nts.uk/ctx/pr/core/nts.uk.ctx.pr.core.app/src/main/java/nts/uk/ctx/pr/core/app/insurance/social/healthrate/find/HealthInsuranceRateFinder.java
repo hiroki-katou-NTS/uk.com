@@ -33,7 +33,7 @@ public class HealthInsuranceRateFinder {
 	 */
 	public Optional<HealthInsuranceRateDto> find(String id) {
 		Optional<HealthInsuranceRate> healthInsuranceRate = healthInsuranceRateRepository.findById(id);
-		HealthInsuranceRateDto dto = HealthInsuranceRateDto.builder().officeName("Ｃ 事業所").build();
+		HealthInsuranceRateDto dto = HealthInsuranceRateDto.builder().build();
 		if (healthInsuranceRate.isPresent()) {
 			healthInsuranceRate.get().saveToMemento(dto);
 		}

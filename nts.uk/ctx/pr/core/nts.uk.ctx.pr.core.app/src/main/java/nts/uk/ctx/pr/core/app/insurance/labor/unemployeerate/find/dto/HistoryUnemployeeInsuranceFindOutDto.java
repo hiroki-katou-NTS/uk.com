@@ -36,7 +36,6 @@ public class HistoryUnemployeeInsuranceFindOutDto implements UnemployeeInsurance
 
 	@Override
 	public void setApplyRange(MonthRange applyRange) {
-		// TODO Auto-generated method stub
 		this.endMonthRage = convertMonth(applyRange.getEndMonth());
 		this.startMonthRage = convertMonth(applyRange.getStartMonth());
 		this.inforMonthRage = this.startMonthRage + " ~ " + this.endMonthRage;

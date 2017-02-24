@@ -7,6 +7,7 @@ package nts.uk.ctx.pr.core.dom.insurance.social.pensionrate;
 import java.util.List;
 
 import nts.uk.ctx.core.dom.company.CompanyCode;
+import nts.uk.ctx.pr.core.dom.insurance.CalculateMethod;
 import nts.uk.ctx.pr.core.dom.insurance.CommonAmount;
 import nts.uk.ctx.pr.core.dom.insurance.Ins2Rate;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
@@ -57,7 +58,7 @@ public interface PensionRateSetMemento {
 	 *
 	 * @param autoCalculate the new auto calculate
 	 */
-	void setAutoCalculate(Boolean autoCalculate);
+	void setAutoCalculate(CalculateMethod autoCalculate);
 
 	/**
 	 * Sets the max amount.

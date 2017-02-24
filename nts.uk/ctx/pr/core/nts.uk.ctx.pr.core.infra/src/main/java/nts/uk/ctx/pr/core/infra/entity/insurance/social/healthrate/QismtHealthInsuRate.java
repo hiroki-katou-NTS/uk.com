@@ -203,7 +203,7 @@ public class QismtHealthInsuRate implements Serializable {
 	private int keepEntryFlg;
 
 	/** The qismt health insu avgearn list. */
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "qismtHealthInsuRate")
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "qismtHealthInsuRate", orphanRemoval = true)
 	private List<QismtHealthInsuAvgearn> qismtHealthInsuAvgearnList;
 
 	/** The qismt social insu office. */

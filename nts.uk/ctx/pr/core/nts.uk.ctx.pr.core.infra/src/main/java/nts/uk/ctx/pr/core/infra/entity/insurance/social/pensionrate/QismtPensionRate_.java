@@ -180,7 +180,7 @@ public class QismtPensionRate_ {
 	public static volatile SingularAttribute<QismtPensionRate, BigDecimal> cBnsFundExMinerRate;
 
 	/** The bonus pension max mny. */
-	public static volatile SingularAttribute<QismtPensionRate, Long> bonusPensionMaxMny;
+	public static volatile SingularAttribute<QismtPensionRate, BigDecimal> bonusPensionMaxMny;
 
 	/** The child contribution rate. */
 	public static volatile SingularAttribute<QismtPensionRate, BigDecimal> childContributionRate;

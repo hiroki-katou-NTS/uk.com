@@ -24,6 +24,8 @@ import nts.uk.ctx.pr.core.infra.entity.insurance.social.healthavgearn.QismtHealt
 import nts.uk.ctx.pr.core.infra.entity.insurance.social.healthavgearn.QismtHealthInsuAvgearnPK;
 import nts.uk.ctx.pr.core.infra.entity.insurance.social.healthavgearn.QismtHealthInsuAvgearnPK_;
 import nts.uk.ctx.pr.core.infra.entity.insurance.social.healthavgearn.QismtHealthInsuAvgearn_;
+import nts.uk.ctx.pr.core.infra.entity.insurance.social.healthrate.QismtHealthInsuRate;
+import nts.uk.ctx.pr.core.infra.entity.insurance.social.healthrate.QismtHealthInsuRatePK;
 
 /**
  * The Class JpaHealthInsuranceAvgearnRepository.
@@ -40,7 +42,8 @@ public class JpaHealthInsuranceAvgearnRepository extends JpaRepository implement
 	 */
 	@Override
 	public void add(HealthInsuranceAvgearn healthInsuranceAvgearn) {
-		this.commandProxy().insert(toEntity(healthInsuranceAvgearn));
+		// TODO: de mai tinh
+		this.commandProxy().insert(toEntity(healthInsuranceAvgearn, "fake ccd", "fake officeCd"));
 	}
 
 	/*
@@ -51,8 +54,14 @@ public class JpaHealthInsuranceAvgearnRepository extends JpaRepository implement
 	 * social.healthavgearn.HealthInsuranceAvgearn)
 	 */
 	@Override
-	public void update(HealthInsuranceAvgearn healthInsuranceAvgearn) {
-		this.commandProxy().update(toEntity(healthInsuranceAvgearn));
+	public void update(List<HealthInsuranceAvgearn> healthInsuranceAvgearns, String ccd, String officeCd) {
+		QismtHealthInsuRate healthInsuRate = this.queryProxy()
+				.find(new QismtHealthInsuRatePK(ccd, officeCd, healthInsuranceAvgearns.get(0).getHistoryId()),
+						QismtHealthInsuRate.class)
+				.get();
+		healthInsuRate.setQismtHealthInsuAvgearnList(healthInsuranceAvgearns.stream()
+				.map(domain -> toEntity(domain, ccd, officeCd)).collect(Collectors.toList()));
+		this.commandProxy().update(healthInsuRate);
 	}
 
 	/*
@@ -88,177 +97,7 @@ public class JpaHealthInsuranceAvgearnRepository extends JpaRepository implement
 		TypedQuery<QismtHealthInsuAvgearn> query = em.createQuery(cq);
 		List<HealthInsuranceAvgearn> listHealthInsuranceAvgearn = query.getResultList().stream()
 				.map(entity -> toDomain(entity)).collect(Collectors.toList());
-		// return listHealthInsuranceAvgearn;
-		// still mock
-		return getMockData();
-	}
-
-	/**
-	 * Gets the mock data.
-	 *
-	 * @return the mock data
-	 */
-	public List<HealthInsuranceAvgearn> getMockData() {
-		List<HealthInsuranceAvgearn> list = new ArrayList<HealthInsuranceAvgearn>();
-		list.add(new HealthInsuranceAvgearn(new HealthInsuranceAvgearnGetMemento() {
-
-			@Override
-			public HealthInsuranceAvgearnValue getPersonalAvg() {
-				return new HealthInsuranceAvgearnValue(new CommonAmount(BigDecimal.valueOf(1223)),
-						new CommonAmount(BigDecimal.valueOf(4321)), new CommonAmount(BigDecimal.valueOf(54632)),
-						new CommonAmount(BigDecimal.valueOf(9876)));
-			}
-
-			@Override
-			public Integer getLevelCode() {
-				return 1;
-			}
-
-			@Override
-			public String getHistoryId() {
-				return "1";
-			}
-
-			@Override
-			public HealthInsuranceAvgearnValue getCompanyAvg() {
-				return new HealthInsuranceAvgearnValue(new CommonAmount(BigDecimal.valueOf(1223)),
-						new CommonAmount(BigDecimal.valueOf(4321)), new CommonAmount(BigDecimal.valueOf(54632)),
-						new CommonAmount(BigDecimal.valueOf(9876)));
-			}
-		}));
-		list.add(new HealthInsuranceAvgearn(new HealthInsuranceAvgearnGetMemento() {
-
-			@Override
-			public HealthInsuranceAvgearnValue getPersonalAvg() {
-				return new HealthInsuranceAvgearnValue(new CommonAmount(BigDecimal.valueOf(1223)),
-						new CommonAmount(BigDecimal.valueOf(4321)), new CommonAmount(BigDecimal.valueOf(54632)),
-						new CommonAmount(BigDecimal.valueOf(9876)));
-			}
-
-			@Override
-			public Integer getLevelCode() {
-				return 2;
-			}
-
-			@Override
-			public String getHistoryId() {
-				return "1";
-			}
-
-			@Override
-			public HealthInsuranceAvgearnValue getCompanyAvg() {
-				return new HealthInsuranceAvgearnValue(new CommonAmount(BigDecimal.valueOf(1223)),
-						new CommonAmount(BigDecimal.valueOf(4321)), new CommonAmount(BigDecimal.valueOf(54632)),
-						new CommonAmount(BigDecimal.valueOf(9876)));
-			}
-		}));
-		list.add(new HealthInsuranceAvgearn(new HealthInsuranceAvgearnGetMemento() {
-
-			@Override
-			public HealthInsuranceAvgearnValue getPersonalAvg() {
-				return new HealthInsuranceAvgearnValue(new CommonAmount(BigDecimal.valueOf(1223)),
-						new CommonAmount(BigDecimal.valueOf(4321)), new CommonAmount(BigDecimal.valueOf(54632)),
-						new CommonAmount(BigDecimal.valueOf(9876)));
-			}
-
-			@Override
-			public Integer getLevelCode() {
-				return 3;
-			}
-
-			@Override
-			public String getHistoryId() {
-				return "1";
-			}
-
-			@Override
-			public HealthInsuranceAvgearnValue getCompanyAvg() {
-				return new HealthInsuranceAvgearnValue(new CommonAmount(BigDecimal.valueOf(1223)),
-						new CommonAmount(BigDecimal.valueOf(4321)), new CommonAmount(BigDecimal.valueOf(54632)),
-						new CommonAmount(BigDecimal.valueOf(9876)));
-			}
-		}));
-		list.add(new HealthInsuranceAvgearn(new HealthInsuranceAvgearnGetMemento() {
-
-			@Override
-			public HealthInsuranceAvgearnValue getPersonalAvg() {
-				return new HealthInsuranceAvgearnValue(new CommonAmount(BigDecimal.valueOf(1223)),
-						new CommonAmount(BigDecimal.valueOf(4321)), new CommonAmount(BigDecimal.valueOf(54632)),
-						new CommonAmount(BigDecimal.valueOf(9876)));
-			}
-
-			@Override
-			public Integer getLevelCode() {
-				return 4;
-			}
-
-			@Override
-			public String getHistoryId() {
-				return "1";
-			}
-
-			@Override
-			public HealthInsuranceAvgearnValue getCompanyAvg() {
-				return new HealthInsuranceAvgearnValue(new CommonAmount(BigDecimal.valueOf(1223)),
-						new CommonAmount(BigDecimal.valueOf(4321)), new CommonAmount(BigDecimal.valueOf(54632)),
-						new CommonAmount(BigDecimal.valueOf(9876)));
-			}
-		}));
-
-		list.add(new HealthInsuranceAvgearn(new HealthInsuranceAvgearnGetMemento() {
-
-			@Override
-			public HealthInsuranceAvgearnValue getPersonalAvg() {
-				return new HealthInsuranceAvgearnValue(new CommonAmount(BigDecimal.valueOf(1223)),
-						new CommonAmount(BigDecimal.valueOf(4321)), new CommonAmount(BigDecimal.valueOf(54632)),
-						new CommonAmount(BigDecimal.valueOf(9876)));
-			}
-
-			@Override
-			public Integer getLevelCode() {
-				return 5;
-			}
-
-			@Override
-			public String getHistoryId() {
-				return "1";
-			}
-
-			@Override
-			public HealthInsuranceAvgearnValue getCompanyAvg() {
-				return new HealthInsuranceAvgearnValue(new CommonAmount(BigDecimal.valueOf(1223)),
-						new CommonAmount(BigDecimal.valueOf(4321)), new CommonAmount(BigDecimal.valueOf(54632)),
-						new CommonAmount(BigDecimal.valueOf(9876)));
-			}
-		}));
-		list.add(new HealthInsuranceAvgearn(new HealthInsuranceAvgearnGetMemento() {
-
-			@Override
-			public HealthInsuranceAvgearnValue getPersonalAvg() {
-				return new HealthInsuranceAvgearnValue(new CommonAmount(BigDecimal.valueOf(1223)),
-						new CommonAmount(BigDecimal.valueOf(4321)), new CommonAmount(BigDecimal.valueOf(54632)),
-						new CommonAmount(BigDecimal.valueOf(9876)));
-			}
-
-			@Override
-			public Integer getLevelCode() {
-				return 6;
-			}
-
-			@Override
-			public String getHistoryId() {
-				return "1";
-			}
-
-			@Override
-			public HealthInsuranceAvgearnValue getCompanyAvg() {
-				return new HealthInsuranceAvgearnValue(new CommonAmount(BigDecimal.valueOf(1223)),
-						new CommonAmount(BigDecimal.valueOf(4321)), new CommonAmount(BigDecimal.valueOf(54632)),
-						new CommonAmount(BigDecimal.valueOf(9876)));
-			}
-		}));
-
-		return list;
+		return listHealthInsuranceAvgearn;
 	}
 
 	/*
@@ -272,7 +111,7 @@ public class JpaHealthInsuranceAvgearnRepository extends JpaRepository implement
 	public Optional<HealthInsuranceAvgearn> find(String historyId, Integer levelCode) {
 		// TODO: mock ccd & officeCd. change later
 		return this.queryProxy()
-				.find(new QismtHealthInsuAvgearnPK("0001", "1", historyId, BigDecimal.valueOf(levelCode)),
+				.find(new QismtHealthInsuAvgearnPK("0001", "23", historyId, BigDecimal.valueOf(levelCode)),
 						QismtHealthInsuAvgearn.class)
 				.map(c -> toDomain(c));
 	}
@@ -324,12 +163,16 @@ public class JpaHealthInsuranceAvgearnRepository extends JpaRepository implement
 	 *            the health insurance avgearn
 	 * @return the qismt health insu avgearn
 	 */
-	private QismtHealthInsuAvgearn toEntity(HealthInsuranceAvgearn healthInsuranceAvgearn) {
+	private QismtHealthInsuAvgearn toEntity(HealthInsuranceAvgearn healthInsuranceAvgearn, String ccd,
+			String officeCd) {
 		QismtHealthInsuAvgearn entity = new QismtHealthInsuAvgearn();
 		healthInsuranceAvgearn.saveToMemento(new JpaHealthInsuranceAvgearnSetMemento(entity));
 		// mock data de tranh loi. 2 field nay bi thua?
 		entity.setHealthInsuAvgEarn(BigDecimal.valueOf(5));
 		entity.setHealthInsuUpperLimit(BigDecimal.valueOf(3));
+		QismtHealthInsuAvgearnPK pk = entity.getQismtHealthInsuAvgearnPK();
+		pk.setCcd(ccd);
+		pk.setSiOfficeCd(officeCd);
 		return entity;
 	}
 

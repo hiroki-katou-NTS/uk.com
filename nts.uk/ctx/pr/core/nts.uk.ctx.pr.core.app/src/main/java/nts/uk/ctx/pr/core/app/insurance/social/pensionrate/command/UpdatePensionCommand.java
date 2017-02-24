@@ -5,6 +5,8 @@ import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.core.dom.company.CompanyCode;
+import nts.uk.ctx.core.dom.util.PrimitiveUtil;
+import nts.uk.ctx.pr.core.dom.insurance.CalculateMethod;
 import nts.uk.ctx.pr.core.dom.insurance.CommonAmount;
 import nts.uk.ctx.pr.core.dom.insurance.Ins2Rate;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
@@ -56,7 +58,7 @@ public class UpdatePensionCommand extends PensionBaseCommand {
 
 			@Override
 			public CompanyCode getCompanyCode() {
-				return new CompanyCode(command.getCompanyCode());
+				return companyCode;
 			}
 
 			@Override
@@ -66,7 +68,7 @@ public class UpdatePensionCommand extends PensionBaseCommand {
 
 			@Override
 			public MonthRange getApplyRange() {
-				return MonthRange.range(command.getStartMonth(), command.getEndMonth(), "/");
+				return MonthRange.range(PrimitiveUtil.toYearMonth(command.getStartMonth(), "/"),PrimitiveUtil.toYearMonth(command.getEndMonth(), "/"));
 			}
 
 			@Override
@@ -75,8 +77,8 @@ public class UpdatePensionCommand extends PensionBaseCommand {
 			}
 
 			@Override
-			public Boolean getAutoCalculate() {
-				return command.getAutoCalculate();
+			public CalculateMethod getAutoCalculate() {
+				return CalculateMethod.valueOf(command.getAutoCalculate());
 			}
 
 		});

@@ -299,7 +299,7 @@ public class QismtPensionRate implements Serializable {
 	/** The bonus pension max mny. */
 	@Basic(optional = false)
 	@Column(name = "BONUS_PENSION_MAX_MNY")
-	private long bonusPensionMaxMny;
+	private BigDecimal bonusPensionMaxMny;
 
 	/** The child contribution rate. */
 	@Basic(optional = false)

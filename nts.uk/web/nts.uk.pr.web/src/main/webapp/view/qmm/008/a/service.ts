@@ -8,12 +8,16 @@ module nts.uk.pr.view.qmm008.a {
             getAllHistoryOfOffice: "pr/insurance/social/history",
             //get all heal insurance for get history
             getAllHealthInsuranceItemByOfficeCode: "ctx/pr/core/insurance/social/healthrate/findByOfficeCode",
+            getAllPensionItemByOfficeCode: "ctx/pr/core/insurance/social/pensionrate/findByOfficeCode",
             //get health and pension data 
             getHealthInsuranceItemDetail: "ctx/pr/core/insurance/social/healthrate/find",
             getPensionItemDetail: "ctx/pr/core/insurance/social/pensionrate/find",
             //register+ update health
             registerHealthRate: "ctx/pr/core/insurance/social/healthrate/create",
             updateHealthRate: "ctx/pr/core/insurance/social/healthrate/update",
+            //register+ update pension
+            registerPensionRate: "ctx/pr/core/insurance/social/pensionrate/create",
+            updatePensionRate: "ctx/pr/core/insurance/social/pensionrate/update",
             getAllRoundingItem: "pr/insurance/social/find/rounding"
         };
         /**
@@ -158,6 +162,25 @@ module nts.uk.pr.view.qmm008.a {
         }
 
         /**
+* Function is used to load health data of Office by office code.
+*/
+        export function getAllPensionInsuranceItem(code: string): JQueryPromise<Array<model.finder.PensionRateDto>> {
+            // Init new dfd.
+            var dfd = $.Deferred<Array<model.finder.PensionRateDto>>();
+            var findPath = servicePath.getAllPensionItemByOfficeCode + "/" + code;
+            // Call ajax.
+            nts.uk.request.ajax(findPath).done(function(data) {
+                // Convert json to model here.
+                var returnData: Array<model.finder.PensionRateDto> = data;
+                // Resolve.
+                dfd.resolve(returnData);
+            });
+            // Ret promise.
+            return dfd.promise();
+        }
+
+
+        /**
         * Function is used to save new Health insurance rate with office code and history id.
         */
         export function registerHealthRate(data: model.finder.HealthInsuranceRateDto): JQueryPromise<model.finder.HealthInsuranceRateDto> {
@@ -170,6 +193,20 @@ module nts.uk.pr.view.qmm008.a {
         export function updateHealthRate(data: model.finder.HealthInsuranceRateDto): JQueryPromise<model.finder.HealthInsuranceRateDto> {
             return nts.uk.request.ajax(servicePath.updateHealthRate, data);
         }
+        /**
+        * Function is used to save new Pension rate with office code and history id.
+        */
+        export function registerPensionRate(data: model.finder.PensionRateDto): JQueryPromise<model.finder.PensionRateDto> {
+            return nts.uk.request.ajax(servicePath.registerPensionRate, data);
+        }
+
+        /**
+        * Function is used to update new Pension rate with office code and history id.
+        */
+        export function updatePensionRate(data: model.finder.PensionRateDto): JQueryPromise<model.finder.PensionRateDto> {
+            return nts.uk.request.ajax(servicePath.updatePensionRate, data);
+        }
+
         /**
         * Model namespace.
         */
@@ -215,9 +252,9 @@ module nts.uk.pr.view.qmm008.a {
                     historyId: string;
                     companyCode: string;
                     officeCode: string;
-                    startMonth: number;
-                    endMonth: number;
-                    autoCalculate: boolean;
+                    startMonth: string;
+                    endMonth: string;
+                    autoCalculate: number;
                     fundInputApply: boolean;
                     premiumRateItems: Array<PensionRateItemDto>;
                     fundRateItems: Array<FundRateItemDto>;
@@ -225,7 +262,7 @@ module nts.uk.pr.view.qmm008.a {
                     maxAmount: number;
                     childContributionRate: number;
                     //TODO this contructor for mock data,delete after use
-                    constructor(historyId: string, companyCode: string, officeCode: string, startMonth: number, endMonth: number, autoCalculate: boolean, fundInputApply: boolean, premiumRateItems: Array<PensionRateItemDto>, fundRateItems: Array<FundRateItemDto>, roundingMethods: Array<RoundingDto>, maxAmount: number, childContributionRate: number) {
+                    constructor(historyId: string, companyCode: string, officeCode: string, startMonth: string, endMonth: string, autoCalculate: number, fundInputApply: boolean, premiumRateItems: Array<PensionRateItemDto>, fundRateItems: Array<FundRateItemDto>, roundingMethods: Array<RoundingDto>, maxAmount: number, childContributionRate: number) {
                         this.historyId = historyId;
                         this.companyCode = companyCode;
                         this.officeCode = officeCode;
@@ -241,25 +278,31 @@ module nts.uk.pr.view.qmm008.a {
                     }
                 }
                 export class PensionRateItemDto {
+                    payType: string;
+                    genderType: string;
                     personalRate: number;
                     companyRate: number;
-                    genderType: InsuranceGender;
-                    payType: PaymentType;
-                    constructor(payType: PaymentType, genderType: InsuranceGender) {
+                    constructor(payType: string, genderType: string,personalRate: number,companyRate: number) {
                         this.payType = payType;
                         this.genderType = genderType;
+                        this.personalRate = personalRate;
+                        this.companyRate = companyRate;
                     }
                 }
                 export class FundRateItemDto {
-                    burdenChargeCompanyRate: number;
+                    payType: string;
+                    genderType: string;
                     burdenChargePersonalRate: number;
-                    exemptionChargeCompanyRate: number;
+                    burdenChargeCompanyRate: number;
                     exemptionChargePersonalRate: number;
-                    genderType: InsuranceGender;
-                    payType: PaymentType;
-                    constructor(chargeRate: number, groupType: GroupType, chargeType: ChargeType, genderType: InsuranceGender, payType: PaymentType) {
-                        this.genderType = genderType;
+                    exemptionChargeCompanyRate: number;
+                    constructor(payType: string, genderType: string,burdenChargePersonalRate: number,burdenChargeCompanyRate: number,exemptionChargePersonalRate: number,exemptionChargeCompanyRate: number) {
                         this.payType = payType;
+                        this.genderType = genderType;
+                        this.burdenChargePersonalRate = burdenChargePersonalRate;
+                        this.burdenChargeCompanyRate = burdenChargeCompanyRate;
+                        this.exemptionChargePersonalRate = exemptionChargePersonalRate;
+                        this.exemptionChargeCompanyRate = exemptionChargeCompanyRate;
                     }
                 }
 

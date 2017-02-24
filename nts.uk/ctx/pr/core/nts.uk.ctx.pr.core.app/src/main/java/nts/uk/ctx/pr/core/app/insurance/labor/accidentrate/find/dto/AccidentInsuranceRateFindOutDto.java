@@ -31,10 +31,6 @@ public class AccidentInsuranceRateFindOutDto implements AccidentInsuranceRateSet
 	/** The rate items. */
 	private List<InsuBizRateItemFindOutDto> rateItems;
 
-	public void setDomainTo(AccidentInsuranceRate domain) {
-		domain.saveToMemento(this.historyInsurance);
-	}
-
 	public void setDtoTo(List<InsuranceBusinessType> lstDomain) {
 		for (InsuranceBusinessType itemDomain : lstDomain) {
 			for (InsuBizRateItemFindOutDto itemDto : this.rateItems) {
@@ -47,20 +43,21 @@ public class AccidentInsuranceRateFindOutDto implements AccidentInsuranceRateSet
 
 	@Override
 	public void setHistoryId(String historyId) {
-		// TODO Auto-generated method stub
-
+		this.historyInsurance = new HistoryAccidentInsuranceRateFindOutDto();
+		this.historyInsurance.setHistoryId(historyId);
 	}
 
 	@Override
 	public void setCompanyCode(CompanyCode companyCode) {
 		// TODO Auto-generated method stub
-
 	}
 
 	@Override
 	public void setApplyRange(MonthRange applyRange) {
-		// TODO Auto-generated method stub
-
+		this.historyInsurance.setEndMonthRage(this.historyInsurance.convertMonth(applyRange.getEndMonth()));
+		this.historyInsurance.setStartMonthRage(this.historyInsurance.convertMonth(applyRange.getStartMonth()));
+		this.historyInsurance.setInforMonthRage(
+				this.historyInsurance.getStartMonthRage() + " ~ " + this.historyInsurance.getEndMonthRage());
 	}
 
 	@Override

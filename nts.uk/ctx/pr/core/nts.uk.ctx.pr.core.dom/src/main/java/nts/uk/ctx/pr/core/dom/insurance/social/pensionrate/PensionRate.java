@@ -9,6 +9,7 @@ import java.util.List;
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.core.dom.company.CompanyCode;
+import nts.uk.ctx.pr.core.dom.insurance.CalculateMethod;
 import nts.uk.ctx.pr.core.dom.insurance.CommonAmount;
 import nts.uk.ctx.pr.core.dom.insurance.Ins2Rate;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
@@ -37,7 +38,7 @@ public class PensionRate extends DomainObject {
 	private Boolean fundInputApply;
 
 	/** The auto calculate. */
-	private Boolean autoCalculate;
+	private CalculateMethod autoCalculate;
 
 	/** The premium rate items. */
 	private List<PensionPremiumRateItem> premiumRateItems;

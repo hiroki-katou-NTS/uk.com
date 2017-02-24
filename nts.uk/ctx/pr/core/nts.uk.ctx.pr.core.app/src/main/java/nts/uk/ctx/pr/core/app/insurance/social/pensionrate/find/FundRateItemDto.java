@@ -36,6 +36,13 @@ public class FundRateItemDto {
 
 	/**
 	 * Instantiates a new fund rate item dto.
+	 */
+	public FundRateItemDto() {
+		super();
+	}
+	
+	/**
+	 * Instantiates a new fund rate item dto.
 	 *
 	 * @param payType
 	 *            the pay type

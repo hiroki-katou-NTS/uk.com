@@ -31,6 +31,13 @@ public class PensionPremiumRateItemDto {
 
 	/**
 	 * Instantiates a new pension premium rate item dto.
+	 */
+	public PensionPremiumRateItemDto() {
+		super();
+	}
+	
+	/**
+	 * Instantiates a new pension premium rate item dto.
 	 *
 	 * @param payType
 	 *            the pay type

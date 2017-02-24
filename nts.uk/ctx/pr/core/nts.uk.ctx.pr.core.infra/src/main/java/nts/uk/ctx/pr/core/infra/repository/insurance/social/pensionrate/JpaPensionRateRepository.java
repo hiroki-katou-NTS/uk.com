@@ -8,12 +8,19 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.core.dom.company.CompanyCode;
+import nts.uk.ctx.pr.core.dom.insurance.CalculateMethod;
 import nts.uk.ctx.pr.core.dom.insurance.CommonAmount;
 import nts.uk.ctx.pr.core.dom.insurance.Ins2Rate;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
@@ -29,6 +36,9 @@ import nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionRate;
 import nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionRateGetMemento;
 import nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionRateRepository;
 import nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionRateRounding;
+import nts.uk.ctx.pr.core.infra.entity.insurance.social.pensionrate.QismtPensionRate;
+import nts.uk.ctx.pr.core.infra.entity.insurance.social.pensionrate.QismtPensionRatePK_;
+import nts.uk.ctx.pr.core.infra.entity.insurance.social.pensionrate.QismtPensionRate_;
 
 /**
  * The Class JpaPensionRateRepository.
@@ -45,8 +55,12 @@ public class JpaPensionRateRepository extends JpaRepository implements PensionRa
 	 */
 	@Override
 	public void add(PensionRate rate) {
-		// TODO Auto-generated method stub
+		EntityManager em = this.getEntityManager();
 
+		QismtPensionRate entity = new QismtPensionRate();
+		rate.saveToMemento(new JpaPensionRateSetMemento(entity));
+
+		em.persist(entity);
 	}
 
 	/*
@@ -58,8 +72,13 @@ public class JpaPensionRateRepository extends JpaRepository implements PensionRa
 	 */
 	@Override
 	public void update(PensionRate rate) {
-		// TODO Auto-generated method stub
 
+		EntityManager em = this.getEntityManager();
+
+		QismtPensionRate entity = new QismtPensionRate();
+		rate.saveToMemento(new JpaPensionRateSetMemento(entity));
+
+		em.merge(entity);
 	}
 
 	/*
@@ -83,9 +102,25 @@ public class JpaPensionRateRepository extends JpaRepository implements PensionRa
 	 * #findAll(int)
 	 */
 	@Override
-	public List<PensionRate> findAll(String companyCode) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<PensionRate> findAll(String companyCode, String officeCode) {
+		// Get entity manager
+		EntityManager em = this.getEntityManager();
+		// Query for indicated stress check.
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<QismtPensionRate> cq = cb.createQuery(QismtPensionRate.class);
+		Root<QismtPensionRate> root = cq.from(QismtPensionRate.class);
+		// Constructing list of parameters
+		List<Predicate> predicateList = new ArrayList<Predicate>();
+
+		// Construct condition.
+		predicateList.add(
+				cb.equal(root.get(QismtPensionRate_.qismtPensionRatePK).get(QismtPensionRatePK_.ccd), companyCode));
+		predicateList.add(cb.equal(root.get(QismtPensionRate_.qismtPensionRatePK).get(QismtPensionRatePK_.siOfficeCd),
+				officeCode));
+
+		cq.where(predicateList.toArray(new Predicate[] {}));
+		return em.createQuery(cq).getResultList().stream()
+				.map(item -> new PensionRate(new JpaPensionRateGetMemento(item))).collect(Collectors.toList());
 	}
 
 	/*
@@ -97,104 +132,23 @@ public class JpaPensionRateRepository extends JpaRepository implements PensionRa
 	 */
 	@Override
 	public Optional<PensionRate> findById(String id) {
-
-		List<FundRateItem> fundRateItems = new ArrayList<FundRateItem>();
-		List<PensionPremiumRateItem> premiumRateItems = new ArrayList<PensionPremiumRateItem>();
-		List<PensionRateRounding> roundingMethods = new ArrayList<PensionRateRounding>();
-
-		PensionChargeRateItem pensionChargeRateItem = new PensionChargeRateItem();
-		pensionChargeRateItem.setPersonalRate(new Ins2Rate(new BigDecimal(40.900)));
-		pensionChargeRateItem.setCompanyRate(new Ins2Rate(new BigDecimal(40.900)));
-		fundRateItems.add(new FundRateItem(PaymentType.Bonus, InsuranceGender.Female, pensionChargeRateItem,
-				pensionChargeRateItem));
-		fundRateItems.add(new FundRateItem(PaymentType.Bonus, InsuranceGender.Female, pensionChargeRateItem,
-				pensionChargeRateItem));
-		fundRateItems.add(new FundRateItem(PaymentType.Bonus, InsuranceGender.Female, pensionChargeRateItem,
-				pensionChargeRateItem));
-		fundRateItems.add(new FundRateItem(PaymentType.Bonus, InsuranceGender.Female, pensionChargeRateItem,
-				pensionChargeRateItem));
-		fundRateItems.add(new FundRateItem(PaymentType.Bonus, InsuranceGender.Female, pensionChargeRateItem,
-				pensionChargeRateItem));
-		fundRateItems.add(new FundRateItem(PaymentType.Bonus, InsuranceGender.Female, pensionChargeRateItem,
-				pensionChargeRateItem));
 		
-		PensionChargeRateItem chargeRate = new PensionChargeRateItem();
-		chargeRate.setPersonalRate(new Ins2Rate(new BigDecimal(40.900)));
-		chargeRate.setCompanyRate(new Ins2Rate(new BigDecimal(40.900)));
-		PensionPremiumRateItem premiumRateItem = new PensionPremiumRateItem(PaymentType.Bonus,InsuranceGender.Female,chargeRate);
-		premiumRateItems.add(premiumRateItem);
+		// Get entity manager
+		EntityManager em = this.getEntityManager();
+		// Query for indicated stress check.
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<QismtPensionRate> cq = cb.createQuery(QismtPensionRate.class);
+		Root<QismtPensionRate> root = cq.from(QismtPensionRate.class);
+		// Constructing list of parameters
+		List<Predicate> predicateList = new ArrayList<Predicate>();
 
-		PensionRateRounding pensionRateRounding = new PensionRateRounding();
-		RoundingItem ri = new RoundingItem();
-		ri.setPersonalRoundAtr(RoundingMethod.Down4_Up5);
-		ri.setPersonalRoundAtr(RoundingMethod.RoundDown);
-		pensionRateRounding.setPayType(PaymentType.Bonus);
-		pensionRateRounding.setRoundAtrs(ri);
-		roundingMethods.add(pensionRateRounding);
-		roundingMethods.add(pensionRateRounding);
-		roundingMethods.add(pensionRateRounding);
-		roundingMethods.add(pensionRateRounding);
+		// Construct condition.
+		predicateList.add(
+				cb.equal(root.get(QismtPensionRate_.qismtPensionRatePK).get(QismtPensionRatePK_.histId), id));
 
-		MonthRange mr = MonthRange.range(new YearMonth(55), new YearMonth(33));
-
-		PensionRate mock = new PensionRate(new PensionRateGetMemento() {
-
-			@Override
-			public List<PensionRateRounding> getRoundingMethods() {
-				return roundingMethods;
-			}
-
-			@Override
-			public List<PensionPremiumRateItem> getPremiumRateItems() {
-				return premiumRateItems;
-			}
-
-			@Override
-			public OfficeCode getOfficeCode() {
-				return new OfficeCode("office code");
-			}
-
-			@Override
-			public CommonAmount getMaxAmount() {
-				return new CommonAmount(new BigDecimal(5));
-			}
-
-			@Override
-			public String getHistoryId() {
-				return "history id";
-			}
-
-			@Override
-			public List<FundRateItem> getFundRateItems() {
-				return fundRateItems;
-			}
-
-			@Override
-			public CompanyCode getCompanyCode() {
-				return new CompanyCode("company code");
-			}
-
-			@Override
-			public Ins2Rate getChildContributionRate() {
-				return new Ins2Rate(new BigDecimal(10));
-			}
-
-			@Override
-			public MonthRange getApplyRange() {
-				return mr;
-			}
-
-			@Override
-			public Boolean getFundInputApply() {
-				return false;
-			}
-
-			@Override
-			public Boolean getAutoCalculate() {
-				return false;
-			}
-		});
-		return Optional.of(mock);
+		cq.where(predicateList.toArray(new Predicate[] {}));
+		return Optional.of(em.createQuery(cq).getResultList().stream()
+				.map(item -> new PensionRate(new JpaPensionRateGetMemento(item))).collect(Collectors.toList()).get(0));
 	}
 
 	@Override
