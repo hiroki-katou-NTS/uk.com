@@ -165,7 +165,7 @@ var nts;
                                     }
                                     if (item.histories === undefined) {
                                         self.id = item.id;
-                                        self.nodeText = item.startMonth + '~' + item.endMonth;
+                                        self.nodeText = nts.uk.time.formatYearMonth(item.startMonth) + '~' + nts.uk.time.formatYearMonth(item.endMonth);
                                     }
                                 }
                                 return UnitPriceHistoryNode;

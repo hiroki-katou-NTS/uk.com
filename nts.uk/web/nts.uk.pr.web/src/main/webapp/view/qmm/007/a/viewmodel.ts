@@ -239,7 +239,7 @@ module nts.uk.pr.view.qmm007.a {
 
                 if ((<UnitPriceItemDto>item).histories === undefined) {
                     self.id = (<UnitPriceHistoryItemDto>item).id;
-                    self.nodeText = (<UnitPriceHistoryItemDto>item).startMonth + '~' + (<UnitPriceHistoryItemDto>item).endMonth;
+                    self.nodeText = nts.uk.time.formatYearMonth((<UnitPriceHistoryItemDto>item).startMonth) + '~' + nts.uk.time.formatYearMonth((<UnitPriceHistoryItemDto>item).endMonth);
                 }
             }
         }

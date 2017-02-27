@@ -33,7 +33,7 @@ public class WageTableHistory extends DomainObject {
 	private MonthRange applyRange;
 
 	/** The elements. */
-	private List<WageTableElementHistory> elements;
+	private List<WageTableAmount> elements;
 
 	// =================== Memento State Support Method ===================
 	/**
