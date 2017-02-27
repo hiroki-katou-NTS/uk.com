@@ -16,19 +16,16 @@ var nts;
                             var ScreenModel = (function () {
                                 function ScreenModel() {
                                     var self = this;
-                                    var unitPriceHistoryModel = nts.uk.ui.windows.getShared('unitPriceHistoryModel');
-                                    self.code = unitPriceHistoryModel.unitPriceCode();
-                                    self.name = unitPriceHistoryModel.unitPriceName();
-                                    self.startMonth = ko.observable(unitPriceHistoryModel.startMonth());
-                                    self.endMonth = ko.observable(unitPriceHistoryModel.endMonth());
-                                    self.historyTakeOver = ko.observable('1');
+                                    var unitPriceHistoryDto = nts.uk.ui.windows.getShared('unitPriceHistoryModel');
+                                    self.unitPriceHistoryModel = ko.mapping.fromJS(unitPriceHistoryDto);
+                                    self.historyTakeOver = ko.observable('lastest');
                                 }
                                 ScreenModel.prototype.btnApplyClicked = function () {
                                     var self = this;
-                                    var unitPriceHistoryModel = nts.uk.ui.windows.getShared('unitPriceHistoryModel');
-                                    unitPriceHistoryModel.startMonth(self.startMonth());
-                                    service.create(service.collectData(unitPriceHistoryModel));
-                                    nts.uk.ui.windows.close();
+                                    nts.uk.ui.windows.setShared("childValue", ko.toJS(self.unitPriceHistoryModel));
+                                    service.create(ko.toJS(self.unitPriceHistoryModel)).done(function () {
+                                        nts.uk.ui.windows.close();
+                                    });
                                 };
                                 ScreenModel.prototype.btnCancelClicked = function () {
                                     nts.uk.ui.windows.close();
@@ -36,6 +33,17 @@ var nts;
                                 return ScreenModel;
                             }());
                             viewmodel.ScreenModel = ScreenModel;
+                            var UnitPriceHistoryModel = (function () {
+                                function UnitPriceHistoryModel(unitPriceCode, unitPriceName, startMonth, endMonth) {
+                                    this.unitPriceCode = unitPriceCode;
+                                    this.unitPriceName = unitPriceName;
+                                    this.startMonth = ko.observable(startMonth);
+                                    this.endMonth = ko.observable(endMonth);
+                                }
+                                ;
+                                return UnitPriceHistoryModel;
+                            }());
+                            viewmodel.UnitPriceHistoryModel = UnitPriceHistoryModel;
                         })(viewmodel = b.viewmodel || (b.viewmodel = {}));
                     })(b = qmm007.b || (qmm007.b = {}));
                 })(qmm007 = view.qmm007 || (view.qmm007 = {}));

@@ -44,16 +44,40 @@ var nts;
                             }
                             service.find = find;
                             function create(unitPriceHistory) {
-                                return nts.uk.request.ajax(paths.createUnitPriceHistory, unitPriceHistory);
+                                var dfd = $.Deferred();
+                                nts.uk.request.ajax(paths.createUnitPriceHistory, unitPriceHistory)
+                                    .done(function (res) {
+                                    dfd.resolve(res);
+                                })
+                                    .fail(function (res) {
+                                    dfd.reject(res);
+                                });
+                                return dfd.promise();
                             }
                             service.create = create;
                             function update(unitPriceHistory) {
-                                return nts.uk.request.ajax(paths.updateUnitPriceHistory, unitPriceHistory);
+                                var dfd = $.Deferred();
+                                nts.uk.request.ajax(paths.updateUnitPriceHistory, unitPriceHistory)
+                                    .done(function (res) {
+                                    dfd.resolve(res);
+                                })
+                                    .fail(function (res) {
+                                    dfd.reject(res);
+                                });
+                                return dfd.promise();
                             }
                             service.update = update;
-                            function remove(id, version) {
-                                var request = { id: id, version: version };
-                                return nts.uk.request.ajax(paths.removeUnitPriceHistory, request);
+                            function remove(histId, unitPriceCode) {
+                                var command = { id: histId, unitPriceCode: unitPriceCode };
+                                var dfd = $.Deferred();
+                                nts.uk.request.ajax(paths.removeUnitPriceHistory, command)
+                                    .done(function (res) {
+                                    dfd.resolve(res);
+                                })
+                                    .fail(function (res) {
+                                    dfd.reject(res);
+                                });
+                                return dfd.promise();
                             }
                             service.remove = remove;
                             var model;

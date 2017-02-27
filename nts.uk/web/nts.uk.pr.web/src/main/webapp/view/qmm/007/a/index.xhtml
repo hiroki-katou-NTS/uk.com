@@ -48,11 +48,16 @@
 					<div>
 						<div id="lbl_002" data-bind="ntsFormLabel: {}">コード/名称</div>
 						<span id="sch_001"
-							data-bind="ntsSearchBox: {comId:'lst_001' ,items: historyList, selected: selectedId, selectedKey: 'id', childField: 'childs', filteredItems: filteredData, fields: ['unitPriceName', 'unitPriceCode', 'startMonth', 'endMonth']}"></span>
+							data-bind="ntsSearchBox: {comId:'lst_001' ,
+							items: historyList, 
+							selected: selectedId, 
+							selectedKey: 'id', 
+							childField: 'childs', 
+							fields: ['nodeText']}"></span>
 					</div>
 					<div class="margin-top-bot-20">
 						<button class="pull-left" id="btn_004"
-							data-bind="click: goToB, enable: !isNewMode()">履歴追加</button>
+							data-bind="click: goToB, enable: selectedId().length>1">履歴追加</button>
 						<button class="pull-right" id="btn_005"
 							data-bind="click: goToC, enable: !isNewMode()">履歴編集</button>
 					</div>
@@ -77,6 +82,7 @@
 
 				<!-- BEGIN RIGHT CONTENT-->
 				<div id="right-content">
+				<com:ko tag="with" bind="unitPriceHistoryModel">
 					<table class="form-default">
 						<tr>
 							<td><div id="lbl_003"
@@ -84,16 +90,16 @@
 							<td colspan="2"><input id="inpCode"
 								class="inp-default save-error"
 								data-bind="ntsTextEditor: {
-									value: unitPriceHistoryModel().unitPriceCode,
+									value: unitPriceCode,
 									constraint: 'UnitPriceCode',
-									option: textEditorOption,
+									option: $parent.textEditorOption,
 									required: true,
-									enable: isNewMode()}" />
+									enable: $parent.isNewMode()}" />
 								<input id="inpName" class="inp-default save-error"
 								data-bind="ntsTextEditor: {
-									value: unitPriceHistoryModel().unitPriceName,
+									value: unitPriceName,
 									constraint: 'UnitPriceName',
-									option: textEditorOption,
+									option: $parent.textEditorOption,
 									required: true}" />
 							</td>
 						</tr>
@@ -101,16 +107,16 @@
 							<td><div id="lbl_004"
 									data-bind="ntsFormLabel: { required: true }">開始年月</div></td>
 							<td><span id="ipnStartMonth"
-								data-bind="ntsDatePicker: {value: unitPriceHistoryModel().startMonth, dateFormat: 'yyyy/MM'}"></span>
+								data-bind="ntsDatePicker: {value: startMonth, dateFormat: 'yyyy/MM'}"></span>
 								<label id="lblEndMonth"
-								data-bind="text: unitPriceHistoryModel().endMonth()"></label></td>
+								data-bind="text: endMonth()"></label></td>
 						</tr>
 						<tr>
 							<td><div id="lbl_006"
 									data-bind="ntsFormLabel: { constraint: 'Money', required: true }">金額</div></td>
 							<td><input id="inpBudget" class="inp-default save-error"
 								data-bind="ntsNumberEditor: {
-									value: unitPriceHistoryModel().budget,
+									value: budget,
 									constraint: 'Money',
 									option: {placeholder: '0.00',
 						                    grouplength: 3,
@@ -124,13 +130,13 @@
 							<td><div id="lbl_007" data-bind="ntsFormLabel: {}">固定的賃金</div></td>
 							<td><label class="ntsRadioBox"> <input type="radio"
 									name="textRadio"
-									data-bind="checkedValue: 'Company', checked: unitPriceHistoryModel().fixPaySettingType" />
+									data-bind="checkedValue: 'Company', checked: fixPaySettingType" />
 									<span class="box"></span><span class="label"
 									data-bind="text: '全員一律で指定する'"></span>
 							</label></td>
 							<td colspan="2"><label class="ntsRadioBox"><input
 									type="radio" name="textRadio"
-									data-bind="checkedValue: 'Contract', checked: unitPriceHistoryModel().fixPaySettingType" />
+									data-bind="checkedValue: 'Contract', checked: fixPaySettingType" />
 									<span class="box"></span><span class="label"
 									data-bind="text: '給与契約形態ごとに指定する'"></span></label></td>
 						</tr>
@@ -139,20 +145,20 @@
 							<td style="vertical-align: top" class="valign-top" rowspan="4"><div
 									id="sel_002"
 									data-bind="ntsSwitchButton: {
-						options: switchButtonDataSource,
+						options: $parent.switchButtonDataSource,
 						optionsValue: 'code',
 						optionsText: 'name',
-						enable: !isContractSettingEnabled(),
-						value: unitPriceHistoryModel().fixPayAtr}"></div></td>
+						enable: !$parent.isContractSettingEnabled(),
+						value: fixPayAtr}"></div></td>
 							<td><label id="lbl_009">月給者</label></td>
 							<td class="">
 								<div id="sel_003"
 									data-bind="ntsSwitchButton: {
-						options: switchButtonDataSource,
+						options: $parent.switchButtonDataSource,
 						optionsValue: 'code',
 						optionsText: 'name',
-						enable: isContractSettingEnabled(),
-						value: unitPriceHistoryModel().fixPayAtrMonthly}"></div>
+						enable: $parent.isContractSettingEnabled(),
+						value: fixPayAtrMonthly}"></div>
 							</td>
 						</tr>
 						<tr>
@@ -161,11 +167,11 @@
 							<td class="">
 								<div id="sel_004"
 									data-bind="ntsSwitchButton: {
-						options: switchButtonDataSource,
+						options: $parent.switchButtonDataSource,
 						optionsValue: 'code',
 						optionsText: 'name',
-						enable: isContractSettingEnabled,
-						value: unitPriceHistoryModel().fixPayAtrDayMonth}"></div>
+						enable: $parent.isContractSettingEnabled(),
+						value: fixPayAtrDayMonth}"></div>
 							</td>
 						</tr>
 						<tr>
@@ -174,11 +180,11 @@
 							<td class="">
 								<div id="sel_005"
 									data-bind="ntsSwitchButton: {
-						options: switchButtonDataSource,
+						options: $parent.switchButtonDataSource,
 						optionsValue: 'code',
 						optionsText: 'name',
-						enable: isContractSettingEnabled,
-						value: unitPriceHistoryModel().fixPayAtrDaily}"></div>
+						enable: $parent.isContractSettingEnabled(),
+						value: fixPayAtrDaily}"></div>
 							</td>
 						</tr>
 						<tr>
@@ -187,11 +193,11 @@
 							<td class="">
 								<div id="sel_006"
 									data-bind="ntsSwitchButton: {
-						options: switchButtonDataSource,
+						options: $parent.switchButtonDataSource,
 						optionsValue: 'code',
 						optionsText: 'name',
-						enable: isContractSettingEnabled,
-						value: unitPriceHistoryModel().fixPayAtrHourly}"></div>
+						enable: $parent.isContractSettingEnabled(),
+						value: fixPayAtrHourly}"></div>
 							</td>
 						</tr>
 						<tr>
@@ -205,11 +211,12 @@
 									data-bind="ntsFormLabel: {constraint: 'Memo'}">メモ</div></td>
 							<td colspan="3"><div id="inpMemo">
 									<TEXTAREA placeholder=""
-										data-bind="value: unitPriceHistoryModel().memo"
+										data-bind="value: memo"
 										class="inp-default"></TEXTAREA>
 								</div></td>
 						</tr>
 					</table>
+					</com:ko>
 				</div>
 				<!-- END RIGHT CONTENT-->
 			</div>

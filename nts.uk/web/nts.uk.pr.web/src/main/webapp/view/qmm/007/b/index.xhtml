@@ -13,40 +13,47 @@
 			<com:scriptfile path="../a/service.js" />
 			<com:scriptfile path="start.js" />
 			<com:scriptfile path="viewmodel.js" />
+			<script type="text/javascript">
+				var dialogSize = {
+					width : 600,
+					height : 420
+				};
+			</script>
 		</ui:define>
 
 		<ui:define name="content">
 			<!-- BEGIN CONTENT AREA-->
 			<div id="this-contents-area" class="margin-top-bot-20">
 				<label id="lbl_001">新たに作成する履歴の、作成情報を入力してください。</label>
+				<com:ko tag="with" bind="unitPriceHistoryModel">
 				<table class="margin-top-bot-20 form-default">
 					<tr>
 						<td><div id="lbl_002" data-bind="ntsFormLabel: {}">コード/名称</div></td>
-						<td><label id="lbl_003" data-bind="text: code"></label> <label
-							id="lbl_004" data-bind="text: name"></label></td>
+						<td><label id="lbl_003" data-bind="text: unitPriceCode()"></label> <label
+							id="lbl_004" data-bind="text: unitPriceName()"></label></td>
 					</tr>
 					<tr>
 						<td><div id="lbl_005"
 								data-bind="ntsFormLabel: { required: true }">期間</div></td>
 						<td><span id="inpStartMonth"
 							data-bind="ntsDatePicker: {value: startMonth, dateFormat: 'yyyy/MM'}"></span><label
-							data-bind="text: endMonth()"></label></td>
+							data-bind="text: endMonth"></label></td>
 					</tr>
 					<tr>
 						<td><div id="lbl_008"
 								data-bind="ntsFormLabel: { required: true }">履歴の引継ぎ</div></td>
 						<td><label class="ntsRadioBox"> <input type="radio"
 								name="textRadio"
-								data-bind="checkedValue: '1', checked: historyTakeOver" /> <span
+								data-bind="checkedValue: 'lastest', checked: $parent.historyTakeOver" /> <span
 								class="box"></span><span class="label"
-								data-bind="text: '最新の履歴（2016/04）から引き継ぐ'"></span>
+								data-bind="text: '最新の履歴 ('+startMonth()+') から引き継ぐ'"></span>
 						</label></td>
 					</tr>
 					<tr>
 						<td> </td>
 						<td><label class="ntsRadioBox"> <input type="radio"
 								name="textRadio"
-								data-bind="checkedValue: '2', checked: historyTakeOver" /> <span
+								data-bind="checkedValue: 'beginning', checked: $parent.historyTakeOver" /> <span
 								class="box"></span><span class="label"
 								data-bind="text: '初めから作成する'"></span>
 						</label></td>
@@ -54,7 +61,7 @@
 					<tr>
 						<td></td>
 					</tr>
-				</table>
+				</table></com:ko>
 			</div>
 			<hr />
 			<!-- END CONTENT AREA-->
