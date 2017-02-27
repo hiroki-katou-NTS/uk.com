@@ -4,37 +4,42 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.dom.wagetable.history;
 
+import java.math.BigDecimal;
+
 import lombok.Getter;
-import nts.arc.layer.dom.DomainObject;
+import nts.uk.ctx.pr.core.dom.wagetable.ElementId;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroupGetMemento;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroupSetMemento;
 
 /**
- * The Class WageTableHist.
+ * The Class WageTableAmount.
  */
 @Getter
-public class WageTableElementHistory extends DomainObject {
+public class WageTableAmount {
 
-	/** The company code. */
-	private Integer upperLimit;
+	// Demension no 1.
+	/** The element 1 id. */
+	private ElementId element1Id;
 
-	private Integer lowerLimit;
+	// Demension no 2.
+	/** The element 2 id. */
+	private ElementId element2Id;
 
-	private Integer demensionNo;
+	// Demension no 3.
+	/** The element 3 id. */
+	private ElementId element3Id;
 
-	private Integer interval;
-
-	// private List<WageTableCodeT> wageTableCodes;
+	/** The amount. */
+	private BigDecimal amount;
 
 	// =================== Memento State Support Method ===================
 	/**
-	 * Instantiates a new wage table hist.
+	 * Instantiates a new wage table amount.
 	 *
 	 * @param memento
 	 *            the memento
 	 */
-	public WageTableElementHistory(CertifyGroupGetMemento memento) {
-		// this.companyCode = memento.getCompanyCode();
+	public WageTableAmount(CertifyGroupGetMemento memento) {
 	}
 
 	/**
@@ -44,7 +49,6 @@ public class WageTableElementHistory extends DomainObject {
 	 *            the memento
 	 */
 	public void saveToMemento(CertifyGroupSetMemento memento) {
-		// memento.setCompanyCode(this.companyCode);
 	}
 
 }

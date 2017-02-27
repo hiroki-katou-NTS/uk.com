@@ -7,7 +7,6 @@ package nts.uk.ctx.pr.core.dom.wagetable.certification;
 import java.util.List;
 import java.util.Optional;
 
-import nts.uk.ctx.core.dom.company.Company;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 
 public interface CertifyGroupRepository {
