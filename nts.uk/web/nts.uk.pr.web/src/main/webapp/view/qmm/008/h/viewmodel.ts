@@ -38,7 +38,7 @@ module nts.uk.pr.view.qmm008.h {
              */
             public startPage(): JQueryPromise<void> {
                 var self = this;
-                var dfd = $.Deferred<any>();
+                var dfd = $.Deferred<void>();
                 self.loadAvgEarnLevelMasterSetting().done(() =>
                     self.loadHealthInsuranceAvgearn().done(() =>
                         dfd.resolve()));
@@ -50,7 +50,7 @@ module nts.uk.pr.view.qmm008.h {
              */
             private loadAvgEarnLevelMasterSetting(): JQueryPromise<void> {
                 var self = this;
-                var dfd = $.Deferred<any>();
+                var dfd = $.Deferred<void>();
                 commonService.getAvgEarnLevelMasterSettingList().done(res => {
                     self.listAvgEarnLevelMasterSetting = res;
                     dfd.resolve();
@@ -63,7 +63,7 @@ module nts.uk.pr.view.qmm008.h {
              */
             private loadHealthInsuranceAvgearn(): JQueryPromise<void> {
                 var self = this;
-                var dfd = $.Deferred<any>();
+                var dfd = $.Deferred<void>();
                 service.findHealthInsuranceAvgEarn('11521ea4-6f09-4dd7-8d91-41c0f547fa4e').done(res => {
                     res.forEach(item => {
                         self.listHealthInsuranceAvgearn.push(
@@ -157,6 +157,9 @@ module nts.uk.pr.view.qmm008.h {
             }
         }
 
+        /**
+         * HealthInsuranceRate Model
+         */
         export class HealthInsuranceRateModel {
             officeCode: string;
             officeName: string;
@@ -173,6 +176,10 @@ module nts.uk.pr.view.qmm008.h {
                 this.rateItems = rateItems;
             }
         }
+
+        /**
+         * HealthInsuranceAvgEarn Model
+         */
         export class HealthInsuranceAvgEarnModel {
             historyId: string;
             levelCode: number;
@@ -185,6 +192,10 @@ module nts.uk.pr.view.qmm008.h {
                 this.personalAvg = personalAvg;
             }
         }
+
+        /**
+         * HealthInsuranceAvgEarnValue Model
+         */
         export class HealthInsuranceAvgEarnValueModel {
             healthGeneralMny: KnockoutObservable<number>;
             healthNursingMny: KnockoutObservable<number>;
