@@ -102,6 +102,7 @@ public class JpaPositionReponsitory extends JpaRepository implements PositionRep
 	
 	
 
+	
 	private final Position toDomain(CmnmtJobTitle entity) {
 		val domain = Position.createFromJavaType(entity.jobName,GeneralDate.localDate(entity.endDate),  entity.cmnmtJobTitlePK.jobCode,entity.jobOutCode ,GeneralDate.localDate(entity.startDate), entity.cmnmtJobTitlePK.historyID, entity.cmnmtJobTitlePK.companyCode, entity.memo,entity.hiterarchyOrderCode,entity.presenceCheckScopeSet);
 

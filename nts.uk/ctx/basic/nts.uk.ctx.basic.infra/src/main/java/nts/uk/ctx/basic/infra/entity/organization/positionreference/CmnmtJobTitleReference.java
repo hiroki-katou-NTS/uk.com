@@ -1,9 +1,12 @@
 package nts.uk.ctx.basic.infra.entity.organization.positionreference;
 
 
+import java.io.Serializable;
+
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Convert;
+import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
@@ -16,9 +19,12 @@ import nts.arc.layer.infra.data.entity.type.LocalDateToDBConverter;
 @NoArgsConstructor
 @Entity
 @Table(name = "CMNMT_JOB_TITLE_REF")
-public class CmnmtJobTitleReference {
+public class CmnmtJobTitleReference implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
+	
+	@EmbeddedId
+	public CmnmtJobTitleReferencePK cmnmtJobTitleReferencePK;
 	
 	@Convert(converter = LocalDateToDBConverter.class)
 	@Basic(optional = false)
