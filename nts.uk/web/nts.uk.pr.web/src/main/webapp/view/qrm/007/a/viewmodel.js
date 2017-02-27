@@ -11,6 +11,7 @@ var qrm007;
                     self.currentCode = ko.observable(0);
                     self.oldCode = self.currentCode();
                     self.currentItem = ko.observable(new RetirementPayItemModel("", "", "", ""));
+                    self.dirty = new nts.uk.ui.DirtyChecker(self.currentItem);
                 }
                 ScreenModel.prototype.startPage = function () {
                     var self = this;
@@ -22,6 +23,7 @@ var qrm007;
                             if (self.oldCode != newValue) {
                                 self.checkDirty(newValue);
                             }
+                            $('#inp-1').ntsError('clear');
                         });
                     }).
                         fail(function () { });
@@ -42,7 +44,6 @@ var qrm007;
                                 self.oldCode = self.currentCode();
                             }
                             self.currentItem(RetirementPayItemModel.converToObject(_.find(self.retirementPayItemList(), function (o) { return o.itemCode == self.currentCode(); })));
-                            self.dirty = new nts.uk.ui.DirtyChecker(self.currentItem);
                         }
                         dfd.resolve();
                     }).
@@ -78,7 +79,6 @@ var qrm007;
                         nts.uk.ui.dialog.confirm("Do you want to change Item ?").
                             ifYes(function () {
                             self.currentItem(RetirementPayItemModel.converToObject(_.find(self.retirementPayItemList(), function (o) { return o.itemCode == self.currentCode(); })));
-                            self.dirty = new nts.uk.ui.DirtyChecker(self.currentItem);
                             self.oldCode = newValue;
                         }).
                             ifNo(function () {
@@ -87,7 +87,6 @@ var qrm007;
                     }
                     else {
                         self.currentItem(RetirementPayItemModel.converToObject(_.find(self.retirementPayItemList(), function (o) { return o.itemCode == self.currentCode(); })));
-                        self.dirty = new nts.uk.ui.DirtyChecker(self.currentItem);
                         self.oldCode = newValue;
                     }
                 };

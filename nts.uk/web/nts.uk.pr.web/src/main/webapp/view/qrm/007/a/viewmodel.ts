@@ -11,6 +11,7 @@ module qrm007.a.viewmodel {
             self.currentCode = ko.observable(0);
             self.oldCode = self.currentCode();
             self.currentItem = ko.observable(new RetirementPayItemModel("","","",""));
+            self.dirty = new nts.uk.ui.DirtyChecker(self.currentItem);
         }
         startPage(): JQueryPromise<any> {
             var self = this;
@@ -20,6 +21,7 @@ module qrm007.a.viewmodel {
                 dfd.resolve();
                 self.currentCode.subscribe(function(newValue) {
                     if(self.oldCode != newValue) { self.checkDirty(newValue); }
+                    $('#inp-1').ntsError('clear');
                 }); }).
             fail(function(){});
             return dfd.promise();
@@ -41,7 +43,6 @@ module qrm007.a.viewmodel {
                     });
                     if(!notFirstTime){ self.currentCode(_.first(self.retirementPayItemList()).itemCode); self.oldCode = self.currentCode(); }
                     self.currentItem(RetirementPayItemModel.converToObject(_.find(self.retirementPayItemList(), function(o) { return o.itemCode == self.currentCode(); })));              
-                    self.dirty = new nts.uk.ui.DirtyChecker(self.currentItem);
                 }
                 dfd.resolve(); }).
             fail(function(res) { self.retirementPayItemList.removeAll(); dfd.resolve(); });
@@ -74,14 +75,12 @@ module qrm007.a.viewmodel {
                 nts.uk.ui.dialog.confirm("Do you want to change Item ?").
                 ifYes(function(){
                     self.currentItem(RetirementPayItemModel.converToObject(_.find(self.retirementPayItemList(), function(o) { return o.itemCode == self.currentCode(); }))); 
-                    self.dirty = new nts.uk.ui.DirtyChecker(self.currentItem);
                     self.oldCode = newValue; }).
                 ifNo(function(){
                     self.currentCode(self.oldCode);
                 });
             } else {
-                self.currentItem(RetirementPayItemModel.converToObject(_.find(self.retirementPayItemList(), function(o) { return o.itemCode == self.currentCode(); }))); 
-                self.dirty = new nts.uk.ui.DirtyChecker(self.currentItem);   
+                self.currentItem(RetirementPayItemModel.converToObject(_.find(self.retirementPayItemList(), function(o) { return o.itemCode == self.currentCode(); })));  
                 self.oldCode = newValue;
             }
         };
