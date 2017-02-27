@@ -27,5 +27,4 @@ public class JpaPaymentDateMasterRepository extends JpaRepository implements Pay
 		//entity.toDomain(domain);
 		return domain;
 	}
-
 }
