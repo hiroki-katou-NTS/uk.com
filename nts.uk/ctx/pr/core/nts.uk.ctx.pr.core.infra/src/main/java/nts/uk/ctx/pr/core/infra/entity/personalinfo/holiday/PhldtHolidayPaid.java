@@ -92,5 +92,4 @@ public class PhldtHolidayPaid {
 	
 	@Column(name = "DISAPPEAR_FLG")
 	public int disappearFlg;
-	
 }

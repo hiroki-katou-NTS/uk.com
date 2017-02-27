@@ -17,7 +17,6 @@ public class SmpmtCompany extends AggregateTableEntity {
 	
 	@Column(name = "NAME")
 	public String name;
-	
 }
 
 /*
