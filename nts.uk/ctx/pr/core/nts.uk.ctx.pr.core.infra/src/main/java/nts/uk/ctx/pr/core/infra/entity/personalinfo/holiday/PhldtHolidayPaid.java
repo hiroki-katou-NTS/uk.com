@@ -1,6 +1,7 @@
 package nts.uk.ctx.pr.core.infra.entity.personalinfo.holiday;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
 import javax.persistence.Column;
 import javax.persistence.Convert;
@@ -10,8 +11,7 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.arc.layer.infra.data.entity.type.GeneralDateToDBConverter;
-import nts.arc.time.GeneralDate;
+import nts.arc.layer.infra.data.entity.type.LocalDateToDBConverter;
 
 @Entity
 @AllArgsConstructor
@@ -23,12 +23,12 @@ public class PhldtHolidayPaid {
     public PhldtHolidayPaidPK phldtHolidayPaidPK;
 
 	@Column(name = "BOY_DATE")
-	@Convert(converter = GeneralDateToDBConverter.class)
-	public GeneralDate boyDate;
+	@Convert(converter = LocalDateToDBConverter.class)
+	public LocalDate boyDate;
 	
 	@Column(name = "EXPIRE_DATE")
-	@Convert(converter = GeneralDateToDBConverter.class)
-	public GeneralDate expireDate;
+	@Convert(converter = LocalDateToDBConverter.class)
+	public LocalDate expireDate;
 	
 	@Column(name = "GRANT_DAYS")
 	public BigDecimal grantDays;

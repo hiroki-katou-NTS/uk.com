@@ -1,6 +1,8 @@
 package nts.uk.shr.infra.arc.task.persist;
 
 import java.io.Serializable;
+import java.time.LocalDateTime;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Convert;
@@ -10,8 +12,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.PrimaryKeyJoinColumn;
 import javax.persistence.Table;
 
-import nts.arc.layer.infra.data.entity.type.GeneralDateTimeToDBConverter;
-import nts.arc.time.GeneralDateTime;
+import nts.arc.layer.infra.data.entity.type.LocalDateTimeToDBConverter;
 
 @Entity
 @Table(name="CISDT_ASYNC_TASK")
@@ -27,17 +28,17 @@ public class CisdtAsyncTask implements Serializable {
 	@Column(name = "TASK_STS")
 	public int taskSts;
 
-	@Convert(converter = GeneralDateTimeToDBConverter.class)
+	@Convert(converter = LocalDateTimeToDBConverter.class)
 	@Column(name = "CREATED_AT")
-    public GeneralDateTime createdAt;
+    public LocalDateTime createdAt;
 
-	@Convert(converter = GeneralDateTimeToDBConverter.class)
+	@Convert(converter = LocalDateTimeToDBConverter.class)
 	@Column(name = "STARTED_AT")
-    public GeneralDateTime startedAt;
+    public LocalDateTime startedAt;
 
-	@Convert(converter = GeneralDateTimeToDBConverter.class)
+	@Convert(converter = LocalDateTimeToDBConverter.class)
 	@Column(name = "FINISHED_AT")
-    public GeneralDateTime finishedAt;
+    public LocalDateTime finishedAt;
 	
 	@OneToOne(optional = true, cascade = CascadeType.ALL)
 	@PrimaryKeyJoinColumn
