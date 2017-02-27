@@ -52,7 +52,7 @@ public class JpaAccidentInsuranceRateRepository extends JpaRepository implements
 	 */
 	@Override
 	public void add(AccidentInsuranceRate rate) {
-		if (isInvalidDateRange(rate.getCompanyCode(), rate.getApplyRange().getStartMonth())) {
+		if (!isInvalidDateRange(rate.getCompanyCode(), rate.getApplyRange())) {
 			this.commandProxy().insertAll(ramdomHistory(rate));
 		}
 
@@ -67,8 +67,7 @@ public class JpaAccidentInsuranceRateRepository extends JpaRepository implements
 	 */
 	@Override
 	public void update(AccidentInsuranceRate rate) {
-		if (isInvalidDateRangeUpdate(rate.getCompanyCode(), rate.getApplyRange().getStartMonth(),
-				rate.getHistoryId())) {
+		if (isInvalidDateRangeUpdate(rate.getCompanyCode(), rate.getApplyRange(), rate.getHistoryId())) {
 			this.commandProxy().updateAll(toEntity(rate));
 		}
 	}
@@ -127,8 +126,10 @@ public class JpaAccidentInsuranceRateRepository extends JpaRepository implements
 	/**
 	 * Find data by id.
 	 *
-	 * @param companyCode the company code
-	 * @param historyId the history id
+	 * @param companyCode
+	 *            the company code
+	 * @param historyId
+	 *            the history id
 	 * @return the list
 	 */
 	public List<QismtWorkAccidentInsu> findDataById(CompanyCode companyCode, String historyId) {
@@ -153,8 +154,10 @@ public class JpaAccidentInsuranceRateRepository extends JpaRepository implements
 	/**
 	 * Find between.
 	 *
-	 * @param companyCode the company code
-	 * @param yearMonth the year month
+	 * @param companyCode
+	 *            the company code
+	 * @param yearMonth
+	 *            the year month
 	 * @return the list
 	 */
 	public List<QismtWorkAccidentInsu> findBetween(CompanyCode companyCode, YearMonth yearMonth) {
@@ -180,9 +183,12 @@ public class JpaAccidentInsuranceRateRepository extends JpaRepository implements
 	/**
 	 * Find between update.
 	 *
-	 * @param companyCode the company code
-	 * @param yearMonth the year month
-	 * @param historyId the history id
+	 * @param companyCode
+	 *            the company code
+	 * @param yearMonth
+	 *            the year month
+	 * @param historyId
+	 *            the history id
 	 * @return the list
 	 */
 	public List<QismtWorkAccidentInsu> findBetweenUpdate(CompanyCode companyCode, YearMonth yearMonth,
@@ -212,9 +218,12 @@ public class JpaAccidentInsuranceRateRepository extends JpaRepository implements
 	/**
 	 * Find between end update.
 	 *
-	 * @param companyCode the company code
-	 * @param yearMonth the year month
-	 * @param historyId the history id
+	 * @param companyCode
+	 *            the company code
+	 * @param yearMonth
+	 *            the year month
+	 * @param historyId
+	 *            the history id
 	 * @return the list
 	 */
 	public List<QismtWorkAccidentInsu> findBetweenEndUpdate(CompanyCode companyCode, YearMonth yearMonth,
@@ -249,28 +258,32 @@ public class JpaAccidentInsuranceRateRepository extends JpaRepository implements
 	 * company.CompanyCode, nts.arc.time.YearMonth)
 	 */
 	@Override
-	public boolean isInvalidDateRange(CompanyCode companyCode, YearMonth startMonth) {
-		List<AccidentInsuranceRate> lstFindAllAccidentInsuranceRate = findAll(companyCode);
-		if (lstFindAllAccidentInsuranceRate == null || lstFindAllAccidentInsuranceRate.isEmpty()) {
+	public boolean isInvalidDateRange(CompanyCode companyCode, MonthRange monthRange) {
+		if (monthRange.getStartMonth().v() >= monthRange.getEndMonth().v()) {
 			return true;
 		}
-		List<QismtWorkAccidentInsu> lstQismtWorkAccidentInsu = findBetween(companyCode, startMonth);
+		List<AccidentInsuranceRate> lstFindAllAccidentInsuranceRate = findAll(companyCode);
+		if (lstFindAllAccidentInsuranceRate == null || lstFindAllAccidentInsuranceRate.isEmpty()) {
+			return false;
+		}
+		List<QismtWorkAccidentInsu> lstQismtWorkAccidentInsu = findBetween(companyCode, monthRange.getStartMonth());
 		if (lstQismtWorkAccidentInsu != null && lstQismtWorkAccidentInsu.size() == 1) {
 			List<QismtWorkAccidentInsu> lstQismtWorkAccidentInsuUpdate = findDataById(companyCode,
 					lstQismtWorkAccidentInsu.get(0).getQismtWorkAccidentInsuPK().getHistId());
 			for (QismtWorkAccidentInsu qismtWorkAccidentInsu : lstQismtWorkAccidentInsuUpdate) {
-				qismtWorkAccidentInsu.setEndYm(startMonth.previousMonth().v());
+				qismtWorkAccidentInsu.setEndYm(monthRange.getStartMonth().previousMonth().v());
 			}
 			update(toDomain(lstQismtWorkAccidentInsuUpdate));
-			return true;
+			return false;
 		}
-		return false;
+		return true;
 	}
 
 	/**
 	 * To entity.
 	 *
-	 * @param rate the rate
+	 * @param rate
+	 *            the rate
 	 * @return the list
 	 */
 	public List<QismtWorkAccidentInsu> toEntity(AccidentInsuranceRate rate) {
@@ -293,7 +306,8 @@ public class JpaAccidentInsuranceRateRepository extends JpaRepository implements
 	/**
 	 * Ramdom history.
 	 *
-	 * @param rate the rate
+	 * @param rate
+	 *            the rate
 	 * @return the list
 	 */
 	public List<QismtWorkAccidentInsu> ramdomHistory(AccidentInsuranceRate rate) {
@@ -310,19 +324,25 @@ public class JpaAccidentInsuranceRateRepository extends JpaRepository implements
 	/**
 	 * Checks if is invalid date range update.
 	 *
-	 * @param companyCode the company code
-	 * @param startMonth the start month
-	 * @param historyId the history id
+	 * @param companyCode
+	 *            the company code
+	 * @param startMonth
+	 *            the start month
+	 * @param historyId
+	 *            the history id
 	 * @return true, if is invalid date range update
 	 */
-	public boolean isInvalidDateRangeUpdate(CompanyCode companyCode, YearMonth startMonth, String historyId) {
+	public boolean isInvalidDateRangeUpdate(CompanyCode companyCode, MonthRange monthRange, String historyId) {
+		if (monthRange.getStartMonth().v() >= monthRange.getEndMonth().v()) {
+			return false;
+		}
 		// data is begin update
 		List<QismtWorkAccidentInsu> lstQismtWorkAccidentInsuUpdate = findDataById(companyCode, historyId);
 		if (lstQismtWorkAccidentInsuUpdate != null && !lstQismtWorkAccidentInsuUpdate.isEmpty()) {
-			if (lstQismtWorkAccidentInsuUpdate.get(0).getStrYm() > startMonth.v()) {
+			if (lstQismtWorkAccidentInsuUpdate.get(0).getStrYm() > monthRange.getStartMonth().v()) {
 				// begin update
-				List<QismtWorkAccidentInsu> lstQismtWorkAccidentInsu = findBetweenUpdate(companyCode, startMonth,
-						historyId);
+				List<QismtWorkAccidentInsu> lstQismtWorkAccidentInsu = findBetweenUpdate(companyCode,
+						monthRange.getStartMonth(), historyId);
 				if (lstQismtWorkAccidentInsu == null || lstQismtWorkAccidentInsu.isEmpty()) {
 					return true;
 				}
@@ -330,23 +350,23 @@ public class JpaAccidentInsuranceRateRepository extends JpaRepository implements
 					List<QismtWorkAccidentInsu> lstQismtWorkAccidentInsuBeginUpdate = findDataById(companyCode,
 							lstQismtWorkAccidentInsu.get(0).getQismtWorkAccidentInsuPK().getHistId());
 					for (QismtWorkAccidentInsu qismtWorkAccidentInsu : lstQismtWorkAccidentInsuBeginUpdate) {
-						qismtWorkAccidentInsu.setEndYm(startMonth.previousMonth().v());
+						qismtWorkAccidentInsu.setEndYm(monthRange.getStartMonth().previousMonth().v());
 					}
 					update(toDomain(lstQismtWorkAccidentInsuBeginUpdate));
 					return true;
 				}
-			} else if (lstQismtWorkAccidentInsuUpdate.get(0).getStrYm() < startMonth.v()) {
+			} else if (lstQismtWorkAccidentInsuUpdate.get(0).getStrYm() < monthRange.getStartMonth().v()) {
 				// end update
-				List<QismtWorkAccidentInsu> lstQismtWorkAccidentInsu = findBetweenEndUpdate(companyCode, startMonth,
-						historyId);
+				List<QismtWorkAccidentInsu> lstQismtWorkAccidentInsu = findBetweenEndUpdate(companyCode,
+						monthRange.getStartMonth(), historyId);
 				if (lstQismtWorkAccidentInsu == null || lstQismtWorkAccidentInsu.isEmpty()) {
 					return true;
 				}
-				if (lstQismtWorkAccidentInsu != null && lstQismtWorkAccidentInsu.size() == 1) {
+				if (lstQismtWorkAccidentInsu != null && lstQismtWorkAccidentInsu.size() >= 1) {
 					List<QismtWorkAccidentInsu> lstQismtWorkAccidentInsuEndUpdate = findDataById(companyCode,
 							lstQismtWorkAccidentInsu.get(0).getQismtWorkAccidentInsuPK().getHistId());
 					for (QismtWorkAccidentInsu qismtWorkAccidentInsu : lstQismtWorkAccidentInsuEndUpdate) {
-						qismtWorkAccidentInsu.setEndYm(startMonth.previousMonth().v());
+						qismtWorkAccidentInsu.setEndYm(monthRange.getStartMonth().previousMonth().v());
 					}
 					update(toDomain(lstQismtWorkAccidentInsuEndUpdate));
 					return true;

@@ -36,6 +36,7 @@ var nts;
                                     self.typeAction = ko.observable(TypeActionLaborInsuranceOffice.update);
                                     self.isEmpty = ko.observable(true);
                                     self.laborInsuranceOfficeModel = ko.observable(new LaborInsuranceOfficeModel());
+                                    self.selectCodeLstlaborInsuranceOffice = ko.observable('');
                                 }
                                 ScreenModel.prototype.resetValueLaborInsurance = function () {
                                     var self = this;
@@ -43,7 +44,8 @@ var nts;
                                     self.typeAction(TypeActionLaborInsuranceOffice.add);
                                     self.selectCodeLstlaborInsuranceOffice('');
                                     self.laborInsuranceOfficeModel().setReadOnly(false);
-                                    self.clearErrorSave();
+                                    if (!self.isEmpty())
+                                        self.clearErrorSave();
                                 };
                                 ScreenModel.prototype.clearErrorSave = function () {
                                     var self = this;
@@ -55,6 +57,7 @@ var nts;
                                     self.enableButton(false);
                                     nts.uk.ui.windows.sub.modal("/view/qmm/010/b/index.xhtml", { height: 800, width: 500, title: "社会保険事業所から読み込み" }).onClosed(function () {
                                         self.enableButton(true);
+                                        self.reloadDataByAction('');
                                     });
                                 };
                                 ScreenModel.prototype.startPage = function () {
@@ -71,7 +74,7 @@ var nts;
                                     a.service.findAllLaborInsuranceOffice().done(function (data) {
                                         if (data != null && data.length > 0) {
                                             self.lstlaborInsuranceOfficeModel = ko.observableArray(data);
-                                            self.selectCodeLstlaborInsuranceOffice = ko.observable(data[0].code);
+                                            self.selectCodeLstlaborInsuranceOffice(data[0].code);
                                             self.selectCodeLstlaborInsuranceOffice.subscribe(function (selectCodeLstlaborInsuranceOffice) {
                                                 self.showchangeLaborInsuranceOfficep(selectCodeLstlaborInsuranceOffice);
                                             });
@@ -169,7 +172,7 @@ var nts;
                                     else {
                                         self.resetValueLaborInsurance();
                                     }
-                                    self.selectCodeLstlaborInsuranceOffice = ko.observable('');
+                                    self.selectCodeLstlaborInsuranceOffice('');
                                     self.isEmpty(true);
                                 };
                                 ScreenModel.prototype.deleteLaborInsuranceOffice = function () {
@@ -177,9 +180,19 @@ var nts;
                                     var laborInsuranceOfficeDeleteDto = new LaborInsuranceOfficeDeleteDto();
                                     laborInsuranceOfficeDeleteDto.code = self.laborInsuranceOfficeModel().code();
                                     laborInsuranceOfficeDeleteDto.version = 11;
-                                    a.service.deleteLaborInsuranceOffice(laborInsuranceOfficeDeleteDto).done(function (data) {
-                                        self.reloadDataByAction('');
-                                    });
+                                    if (self.selectCodeLstlaborInsuranceOffice != null && self.selectCodeLstlaborInsuranceOffice() != '') {
+                                        nts.uk.ui.dialog.confirm("Do you delete Item?").ifYes(function () {
+                                            a.service.deleteLaborInsuranceOffice(laborInsuranceOfficeDeleteDto).done(function (data) {
+                                                self.reloadDataByAction('');
+                                            });
+                                        }).ifNo(function () {
+                                            self.reloadDataByAction(self.selectCodeLstlaborInsuranceOffice());
+                                        }).ifCancel(function () {
+                                            self.reloadDataByAction(self.selectCodeLstlaborInsuranceOffice());
+                                        }).then(function () {
+                                            self.reloadDataByAction(self.selectCodeLstlaborInsuranceOffice());
+                                        });
+                                    }
                                 };
                                 ScreenModel.prototype.collectData = function () {
                                     var self = this;
@@ -271,34 +284,36 @@ var nts;
                                     });
                                 };
                                 LaborInsuranceOfficeModel.prototype.updateData = function (officeInfo) {
-                                    this.code(officeInfo.code);
-                                    this.name(officeInfo.name);
-                                    this.shortName(officeInfo.shortName);
-                                    this.picName(officeInfo.picName);
-                                    this.picPosition(officeInfo.picPosition);
-                                    this.postalCode(officeInfo.potalCode);
-                                    this.address1st(officeInfo.address1st);
-                                    this.kanaAddress1st(officeInfo.kanaAddress1st);
-                                    this.address2nd(officeInfo.address2nd);
-                                    this.kanaAddress2nd(officeInfo.kanaAddress2nd);
-                                    this.phoneNumber(officeInfo.phoneNumber);
-                                    this.citySign(officeInfo.citySign);
-                                    this.officeMark(officeInfo.officeMark);
-                                    this.officeNoA(officeInfo.officeNoA);
-                                    this.officeNoB(officeInfo.officeNoB);
-                                    this.officeNoC(officeInfo.officeNoC);
-                                    this.textEditorOption = ko.mapping.fromJS(new option.TextEditorOption());
-                                    this.multilineeditor({
-                                        memo: ko.observable(officeInfo.memo),
-                                        readonly: false,
-                                        constraint: 'ResidenceCode',
-                                        option: ko.mapping.fromJS(new nts.uk.ui.option.MultilineEditorOption({
-                                            resizeable: true,
-                                            placeholder: "Placeholder for text editor",
-                                            width: "",
-                                            textalign: "left"
-                                        })),
-                                    });
+                                    if (officeInfo != null) {
+                                        this.code(officeInfo.code);
+                                        this.name(officeInfo.name);
+                                        this.shortName(officeInfo.shortName);
+                                        this.picName(officeInfo.picName);
+                                        this.picPosition(officeInfo.picPosition);
+                                        this.postalCode(officeInfo.potalCode);
+                                        this.address1st(officeInfo.address1st);
+                                        this.kanaAddress1st(officeInfo.kanaAddress1st);
+                                        this.address2nd(officeInfo.address2nd);
+                                        this.kanaAddress2nd(officeInfo.kanaAddress2nd);
+                                        this.phoneNumber(officeInfo.phoneNumber);
+                                        this.citySign(officeInfo.citySign);
+                                        this.officeMark(officeInfo.officeMark);
+                                        this.officeNoA(officeInfo.officeNoA);
+                                        this.officeNoB(officeInfo.officeNoB);
+                                        this.officeNoC(officeInfo.officeNoC);
+                                        this.textEditorOption = ko.mapping.fromJS(new option.TextEditorOption());
+                                        this.multilineeditor({
+                                            memo: ko.observable(officeInfo.memo),
+                                            readonly: false,
+                                            constraint: 'ResidenceCode',
+                                            option: ko.mapping.fromJS(new nts.uk.ui.option.MultilineEditorOption({
+                                                resizeable: true,
+                                                placeholder: "Placeholder for text editor",
+                                                width: "",
+                                                textalign: "left"
+                                            })),
+                                        });
+                                    }
                                 };
                                 LaborInsuranceOfficeModel.prototype.setReadOnly = function (readonly) {
                                     this.isReadOnly(readonly);

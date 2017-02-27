@@ -26,8 +26,6 @@ import nts.uk.ctx.pr.core.infra.entity.insurance.labor.QismtLaborInsuOffice;
 import nts.uk.ctx.pr.core.infra.entity.insurance.labor.QismtLaborInsuOfficePK;
 import nts.uk.ctx.pr.core.infra.entity.insurance.labor.QismtLaborInsuOfficePK_;
 import nts.uk.ctx.pr.core.infra.entity.insurance.labor.QismtLaborInsuOffice_;
-import nts.uk.ctx.pr.core.infra.entity.wagetable.QwtmtWagetableCertifyG;
-import nts.uk.ctx.pr.core.infra.entity.wagetable.QwtmtWagetableCertifyGPK;
 
 /**
  * The Class JpaLaborInsuranceOfficeRepository.
@@ -162,4 +160,12 @@ public class JpaLaborInsuranceOfficeRepository extends JpaRepository implements 
 	public void remove(CompanyCode companyCode, String officeCode, Long version) {
 		this.commandProxy().remove(QismtLaborInsuOffice.class, new QismtLaborInsuOfficePK(companyCode.v(), officeCode));
 	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.dom.insurance.labor.LaborInsuranceOfficeRepository#
+	 * addList(java.util.List)
+	 */
 }
