@@ -52,8 +52,8 @@ public class JpaAsyncTaskInfoRepository extends JpaRepository implements AsyncTa
 
 	private static CisdtAsyncTask toEntity(AsyncTaskInfo taskInfo) {
 		val entity = new CisdtAsyncTask();
-		entity.taskId = taskInfo.getId();
 		entity.taskSts = taskInfo.getStatus().value;
+		entity.taskId = taskInfo.getId();
 		entity.createdAt = taskInfo.getCreatedAt();
 	    entity.startedAt = taskInfo.getStartedAt();
 		entity.finishedAt = taskInfo.getFinishedAt();
