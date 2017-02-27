@@ -69,6 +69,14 @@ module qmm006.a.viewmodel {
             var dfd = $.Deferred();
             $.when(self.findBankAll()).done(function() {
                 self.findAll().done(function() {
+                    //                    $(document).delegate("#single-list", "iggridselectionrowselectionchanging", function(evt, ui) {
+                    //                        if (self.dirty.isDirty()) {
+                    //                            //"変更された内容が登録されていません。"---AL001 
+                    //                            nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\n よろしいですか。").ifYes(function() {
+                    //                            }).ifNo(function() {
+                    //                            })
+                    //                        }
+                    //                    });
                     dfd.resolve();
                 }).fail(function(res) {
                     dfd.reject(res);
@@ -116,6 +124,14 @@ module qmm006.a.viewmodel {
                     });
                 }).ifNo(function() {
                 })
+            } else {
+                nts.uk.ui.windows.sub.modal("/view/qmm/006/c/index.xhtml", { title: "振込元銀行の登録　＞　振込元銀行", dialogClass: "no-close" }).onClosed(function() {
+                    self.findAll().done(function() {
+                        if (nts.uk.ui.windows.getShared("currentCode")) {
+                            self.currentCode(nts.uk.ui.windows.getShared("currentCode"));
+                        }
+                    });
+                });
             }
         }
 
@@ -268,7 +284,12 @@ module qmm006.a.viewmodel {
                                 self.isAppear(false);
                                 self.branchName('');
                             }
-                            //
+                            if (self.dirty.isDirty()) {
+                                //"変更された内容が登録されていません。"---AL001 
+                                nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\n よろしいですか。").ifYes(function() {
+                                }).ifNo(function() {
+                                })
+                            }
                             self.isEnable(false);
                             self.currentLineBank(lineBank);
                             self.dirty = new nts.uk.ui.DirtyChecker(self.currentLineBank);
