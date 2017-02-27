@@ -1,5 +1,6 @@
 package nts.uk.ctx.pr.core.app.command.paymentdata;
 
+import java.time.LocalDate;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -8,7 +9,6 @@ import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.arc.time.GeneralDate;
 import nts.uk.ctx.pr.core.dom.itemmaster.ItemMaster;
 import nts.uk.ctx.pr.core.dom.itemmaster.ItemMasterRepository;
 import nts.uk.ctx.pr.core.dom.paymentdata.Payment;
@@ -41,10 +41,10 @@ public class InsertPaymentDataCommandHandler extends CommandHandler<InsertPaymen
 	protected void handle(CommandHandlerContext<InsertPaymentDataCommand> context) {
 		String companyCode = AppContexts.user().companyCode();
 		Payment payment = context.getCommand().toDomain(companyCode);
-		GeneralDate mPayDate = this.payDateMasterRepository
+		LocalDate mPayDate = this.payDateMasterRepository
 				.find(companyCode, payment.getPayBonusAtr().value, payment.getProcessingYM().v(),
 						payment.getSparePayAtr().value, payment.getProcessingNo().v())
-				.map(d -> d.getStandardDate()).orElse(GeneralDate.today());
+				.map(d -> d.getStandardDate()).orElse(LocalDate.now());
 
 		payment.setStandardDate(mPayDate);
 		payment.validate();

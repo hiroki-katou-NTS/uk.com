@@ -37,9 +37,9 @@ public class JpaAsyncTaskInfoRepository extends JpaRepository implements AsyncTa
 		return new AsyncTaskInfo(
 				entity.taskId,
 				EnumAdaptor.valueOf(entity.taskSts, AsyncTaskStatus.class),
-				entity.createdAt,
-				entity.startedAt,
-				entity.finishedAt,
+				GeneralDateTime.localDateTime(entity.createdAt),
+				Nullable.get(entity.startedAt, d -> GeneralDateTime.localDateTime(d)),
+				Nullable.get(entity.finishedAt, d -> GeneralDateTime.localDateTime(d)),
 				Nullable.get(entity.abort, d -> toDomainAbort(d)));
 	}
 	
@@ -54,9 +54,9 @@ public class JpaAsyncTaskInfoRepository extends JpaRepository implements AsyncTa
 		val entity = new CisdtAsyncTask();
 		entity.taskId = taskInfo.getId();
 		entity.taskSts = taskInfo.getStatus().value;
-		entity.createdAt = taskInfo.getCreatedAt();
-	    entity.startedAt = taskInfo.getStartedAt();
-		entity.finishedAt = taskInfo.getFinishedAt();
+		entity.createdAt = taskInfo.getCreatedAt().localDateTime();
+	    entity.startedAt = Nullable.get(taskInfo.getStartedAt(), d -> d.localDateTime());
+		entity.finishedAt = Nullable.get(taskInfo.getFinishedAt(), d -> d.localDateTime());
 		entity.abort = Nullable.get(taskInfo.getError(), d -> toEntityAbort(taskInfo.getId(), d));
 		
 		return entity;

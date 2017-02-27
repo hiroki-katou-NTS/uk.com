@@ -1,5 +1,6 @@
 package nts.uk.ctx.pr.core.dom.paymentdata;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -8,7 +9,6 @@ import java.util.stream.Collectors;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.enums.CategoryAtr;
@@ -58,7 +58,7 @@ public class Payment extends AggregateRoot {
 	private SparePayAtr sparePayAtr;
 
 	@Getter
-	private GeneralDate standardDate;
+	private LocalDate standardDate;
 
 	@Getter
 	private SpecificationCode specificationCode;
@@ -158,7 +158,7 @@ public class Payment extends AggregateRoot {
 				PayBonusAtr  payBonusAtr,
 				YearMonth processingYM, 
 				SparePayAtr sparePayAtr, 
-				GeneralDate standardDate,
+				LocalDate standardDate,
 				SpecificationCode specificationCode, 
 				SpecificationName specificationName,
 				ResidenceCode residenceCode, 
@@ -217,7 +217,7 @@ public class Payment extends AggregateRoot {
 							int  payBonusAtr,
 							int processingYM, 
 							int sparePayAtr, 
-							GeneralDate standardDate,
+							LocalDate standardDate,
 							String specificationCode, 
 							String specificationName,
 							String residenceCode, 
@@ -294,7 +294,7 @@ public class Payment extends AggregateRoot {
 		this.printCategories.addAll(items);
 	}
 	
-	public void setStandardDate(GeneralDate standardDate) {
+	public void setStandardDate(LocalDate standardDate) {
 		this.standardDate = standardDate;
 	}
 	

@@ -1,12 +1,16 @@
 package nts.uk.ctx.pr.core.infra.entity.personalinfo.employmentcontract;
 
+import java.time.LocalDate;
+import java.util.Date;
+
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import nts.arc.layer.infra.data.entity.type.GeneralDateToDBConverter;
-import nts.arc.time.GeneralDate;
+
+import nts.uk.shr.infra.data.entity.AggregateTableEntity;
+import nts.arc.layer.infra.data.entity.type.LocalDateToDBConverter;
 
 @Entity
 @Table(name="PCLMT_PERSON_EMP_CONTRACT")
@@ -16,16 +20,16 @@ public class PclmtPersonEmpContract {
 	public PclmtPersonEmpContractPK pclmtPersonEmpContractPK;
 	
 	@Column(name ="END_D")
-	@Convert(converter = GeneralDateToDBConverter.class)
-	public GeneralDate endD;
+	@Convert(converter = LocalDateToDBConverter.class)
+	public LocalDate endD;
 	
 	@Column(name ="EXP_D")
-	@Convert(converter = GeneralDateToDBConverter.class)
-	public GeneralDate expD;
+	@Convert(converter = LocalDateToDBConverter.class)
+	public LocalDate expD;
 	
 	@Column(name ="ISSUE_DATE")
-	@Convert(converter = GeneralDateToDBConverter.class)
-	public GeneralDate issueDate;
+	@Convert(converter = LocalDateToDBConverter.class)
+	public LocalDate issueDate;
 	
 	@Column(name ="ISSUE_STS")
 	public int issueSts;
@@ -85,6 +89,6 @@ public class PclmtPersonEmpContract {
 	public int autoContractRenewal;
 	
 	@Column(name ="FIRING_PRE_PAYDATE")
-	@Convert(converter = GeneralDateToDBConverter.class)
-	public GeneralDate firingPrePaydate;
+	@Convert(converter = LocalDateToDBConverter.class)
+	public LocalDate firingPrePaydate;
 }

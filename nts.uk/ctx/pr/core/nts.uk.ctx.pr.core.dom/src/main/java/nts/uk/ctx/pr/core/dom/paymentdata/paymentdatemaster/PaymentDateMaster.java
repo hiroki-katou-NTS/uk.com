@@ -1,10 +1,11 @@
 package nts.uk.ctx.pr.core.dom.paymentdata.paymentdatemaster;
 
 import java.math.BigDecimal;
+import java.time.LocalDate;
+
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.pr.core.dom.paymentdata.PayBonusAtr;
 import nts.uk.ctx.pr.core.dom.paymentdata.SparePayAtr;
@@ -31,7 +32,7 @@ public class PaymentDateMaster extends AggregateRoot {
 	private PayBonusAtr payBonusAttribute;
 	
 	@Getter
-	private GeneralDate standardDate;
+	private LocalDate standardDate;
 
 	/**
 	 * 
@@ -42,7 +43,7 @@ public class PaymentDateMaster extends AggregateRoot {
 	 * @param payBonusAttribute
 	 */
 	public PaymentDateMaster(BigDecimal neededWorkDay, ProcessingNo processingNo, YearMonth processingYearMonth,
-			SparePayAtr sparePayAttribute, PayBonusAtr payBonusAttribute, GeneralDate standardDate) {
+			SparePayAtr sparePayAttribute, PayBonusAtr payBonusAttribute, LocalDate standardDate) {
 		super();
 		this.neededWorkDay = neededWorkDay;
 		this.processingNo = processingNo;
@@ -53,7 +54,7 @@ public class PaymentDateMaster extends AggregateRoot {
 	}
 	
 	public static PaymentDateMaster createFromJavaType(BigDecimal neededWorkDay, int processingNo, int processingYearMonth,
-			int sparePayAttribute, int payBonusAttribute, GeneralDate standardDate){
+			int sparePayAttribute, int payBonusAttribute, LocalDate standardDate){
 		return new PaymentDateMaster(neededWorkDay, new ProcessingNo(processingNo), YearMonth.of(processingYearMonth), EnumAdaptor.valueOf(sparePayAttribute, SparePayAtr.class), EnumAdaptor.valueOf(payBonusAttribute, PayBonusAtr.class), standardDate);
 	}
 }

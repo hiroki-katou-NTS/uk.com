@@ -1,5 +1,7 @@
 package nts.uk.shr.infra.data.entity;
 
+import java.time.LocalDateTime;
+
 import javax.persistence.Column;
 import javax.persistence.Convert;
 import javax.persistence.Inheritance;
@@ -7,10 +9,10 @@ import javax.persistence.InheritanceType;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
+
 import lombok.Getter;
 import lombok.Setter;
-import nts.arc.layer.infra.data.entity.type.GeneralDateTimeToDBConverter;
-import nts.arc.time.GeneralDateTime;
+import nts.arc.layer.infra.data.entity.type.LocalDateTimeToDBConverter;
 
 /**
  * Base class of table entity
@@ -21,9 +23,9 @@ import nts.arc.time.GeneralDateTime;
 @Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 public abstract class TableEntity {
     
-	@Convert(converter = GeneralDateTimeToDBConverter.class)
+	@Convert(converter = LocalDateTimeToDBConverter.class)
     @Column(name = "INS_DATE")
-    private GeneralDateTime insDate;
+    private LocalDateTime insDate;
     
     @Column(name = "INS_CCD")
     private String insCcd;
@@ -34,9 +36,9 @@ public abstract class TableEntity {
     @Column(name = "INS_PG")
     private String insPg;
 
-	@Convert(converter = GeneralDateTimeToDBConverter.class)
+	@Convert(converter = LocalDateTimeToDBConverter.class)
     @Column(name = "UPD_DATE")
-    private GeneralDateTime updDate;
+    private LocalDateTime updDate;
     
     @Column(name = "UPD_CCD")
     private String updCcd;
@@ -49,7 +51,7 @@ public abstract class TableEntity {
     
     @PrePersist
     private void setInsertingMetaInfo() {
-    	this.insDate = GeneralDateTime.now();
+    	this.insDate = LocalDateTime.now();
     	this.insCcd = "001";
     	this.insScd = "TEST_SCD";
     	this.insPg = "TEST_PG";
@@ -57,7 +59,7 @@ public abstract class TableEntity {
     
     @PreUpdate
     private void setUpdatingMetaInfo() {
-    	this.updDate = GeneralDateTime.now();
+    	this.updDate = LocalDateTime.now();
     	this.updCcd = "001";
     	this.updScd = "TEST_SCD";
     	this.updPg = "TEST_PG";
