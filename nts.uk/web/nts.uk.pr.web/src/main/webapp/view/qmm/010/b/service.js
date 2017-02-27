@@ -34,8 +34,6 @@ var nts;
                                 nts.uk.request.ajax(paths.checkDuplicateCodeByImportData, lstSocialInsuranceOfficeImportDto)
                                     .done(function (res) {
                                     dfd.resolve(res);
-                                    console.log("RES");
-                                    console.log(res);
                                 })
                                     .fail(function (res) {
                                     dfd.reject(res);
@@ -48,8 +46,6 @@ var nts;
                                 nts.uk.request.ajax(paths.importData, laborInsuranceOfficeImportDto)
                                     .done(function (res) {
                                     dfd.resolve(res);
-                                    console.log("Import");
-                                    console.log(res);
                                 })
                                     .fail(function (res) {
                                     dfd.reject(res);

@@ -168,8 +168,4 @@ public class JpaLaborInsuranceOfficeRepository extends JpaRepository implements 
 	 * nts.uk.ctx.pr.core.dom.insurance.labor.LaborInsuranceOfficeRepository#
 	 * addList(java.util.List)
 	 */
-	@Override
-	public void addList(List<LaborInsuranceOffice> lstOffice) {
-		this.commandProxy().insertAll(lstOffice.stream().map(c -> toEntity(c)).collect(Collectors.toList()));
-	}
 }

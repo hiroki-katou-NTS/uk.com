@@ -52,7 +52,7 @@ public class AccidentInsuranceRateServiceImpl implements AccidentInsuranceRateSe
 	public void validateDateRange(AccidentInsuranceRate rate) {
 		// Check consistency date range.
 		// History after start date and time exists
-		if (accidentInsuranceRateRepo.isInvalidDateRange(rate.getCompanyCode(), rate.getApplyRange().getStartMonth())) {
+		if (accidentInsuranceRateRepo.isInvalidDateRange(rate.getCompanyCode(), rate.getApplyRange())) {
 			throw new BusinessException("ER010");
 		}
 	}
