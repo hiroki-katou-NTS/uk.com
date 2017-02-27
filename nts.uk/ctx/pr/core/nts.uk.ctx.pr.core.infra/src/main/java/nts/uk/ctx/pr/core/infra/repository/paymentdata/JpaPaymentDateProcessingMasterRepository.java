@@ -9,8 +9,8 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.pr.core.dom.enums.DisplayAtr;
 import nts.uk.ctx.pr.core.dom.paymentdata.paymentdatemaster.PaymentDateProcessingMaster;
 import nts.uk.ctx.pr.core.dom.paymentdata.repository.PaymentDateProcessingMasterRepository;
-import nts.uk.ctx.pr.core.infra.entity.paymentdata.QpdmtPaydayProcessing;
-import nts.uk.ctx.pr.core.infra.entity.paymentdata.QpdmtPaydayProcessingPK;
+import nts.uk.ctx.pr.core.infra.entity.rule.employement.processing.yearmonth.QpdmtPaydayProcessing;
+import nts.uk.ctx.pr.core.infra.entity.rule.employement.processing.yearmonth.QpdmtPaydayProcessingPK;
 
 @Stateless
 public class JpaPaymentDateProcessingMasterRepository extends JpaRepository
@@ -20,11 +20,11 @@ public class JpaPaymentDateProcessingMasterRepository extends JpaRepository
 			+ "WHERE c.qpdmtPaydayProcessingPK.ccd = :CCD and c.qpdmtPaydayProcessingPK.payBonusAtr = :payBonusAtr and c.dispAtr = :dispAtr ";
 
 	@Override
-	public Optional<PaymentDateProcessingMaster> find(String companyCode, int paymentBonusAtribute,
+	public Optional<PaymentDateProcessingMaster> find(String companyCode,
 			int processingNo) {
 		try {
 			return this.queryProxy()
-					.find(new QpdmtPaydayProcessingPK(companyCode, paymentBonusAtribute, processingNo), QpdmtPaydayProcessing.class).map(c -> toDomain(c));
+					.find(new QpdmtPaydayProcessingPK(companyCode, processingNo), QpdmtPaydayProcessing.class).map(c -> toDomain(c));
 		} catch (Exception e) {
 			// TODO: handle exception
 			throw e;

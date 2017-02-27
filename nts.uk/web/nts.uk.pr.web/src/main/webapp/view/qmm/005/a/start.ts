@@ -1,4 +1,5 @@
-__viewContext.ready(function() {
-    let screenModel = new nts.uk.pr.view.qmm005.a.viewmodel.viewModel();
-    this.bind(screenModel);
-});
+module qmm005.a {
+    __viewContext.ready(() => {
+        __viewContext.bind(new ViewModel());
+    });
+}

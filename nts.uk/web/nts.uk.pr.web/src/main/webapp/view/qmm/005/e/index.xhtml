@@ -47,28 +47,28 @@
 					<div id="E_LBL_010" data-bind="ntsFormLabel: {}">反映する情報</div>
 					<div>
 						<div class="verticle-align">
-							<div id="E_SEL_002" data-help="(処理月の末日)"
-								data-bind="ntsCheckBox: { checked: false, enable: true, text: '支払日' }"></div>
-							<div id="E_SEL_003" data-help="(処理月の当月15日)"
-								data-bind="ntsCheckBox: { checked: false, enable: true, text: '対象者抽出基準日' }"></div>
-							<div id="E_SEL_004" data-help="(処理月当月)"
-								data-bind="ntsCheckBox: { checked: false, enable: true, text: '社会保険徴収月' }"></div>
-							<div id="E_SEL_005" data-help="(常に活性)"
-								data-bind="ntsCheckBox: { checked: false, enable: true, text: '明細書印字年月' }"></div>
+							<div id="E_SEL_002"
+								data-bind="ntsCheckBoxWithHelp: { checked: false, enable: true, text: '支払日', helper: '(処理月の末日)' }"></div>
+							<div id="E_SEL_003"
+								data-bind="ntsCheckBoxWithHelp: { checked: false, enable: true, text: '対象者抽出基準日', helper: '(処理月の当月15日)' }"></div>
+							<div id="E_SEL_004"
+								data-bind="ntsCheckBoxWithHelp: { checked: false, enable: true, text: '社会保険徴収月', helper: '(処理月当月)' }"></div>
+							<div id="E_SEL_005"
+								data-bind="ntsCheckBoxWithHelp: { checked: false, enable: true, text: '明細書印字年月', helper: '(常に活性)' }"></div>
 						</div>
 						<div>
 							<label id="E_LBL_011" class="label">label 011 not
 								responding</label>
 						</div>
 						<div class="verticle-align">
-							<div id="E_SEL_006" data-help="(処理月の前月末日)"
-								data-bind="ntsCheckBox: { checked: false, enable: true, text: '社会保険基準日' }"></div>
-							<div id="E_SEL_007" data-help="(処理月の直前の４月１日)"
-								data-bind="ntsCheckBox: { checked: false, enable: true, text: '雇用保険基準日' }"></div>
-							<div id="E_SEL_008" data-help="(処理月の習前の１月１日)"
-								data-bind="ntsCheckBox: { checked: false, enable: true, text: '所得税基準日' }"></div>
-							<div id="E_SEL_009" data-help="(処理月の前月)"
-								data-bind="ntsCheckBox: { checked: false, enable: true, text: '経理締め日' }"></div>
+							<div id="E_SEL_006"
+								data-bind="ntsCheckBoxWithHelp: { checked: false, enable: true, text: '社会保険基準日', helper:'(処理月の前月末日)' }"></div>
+							<div id="E_SEL_007"
+								data-bind="ntsCheckBoxWithHelp: { checked: false, enable: true, text: '雇用保険基準日', helper:'(処理月の直前の４月１日)' }"></div>
+							<div id="E_SEL_008"
+								data-bind="ntsCheckBoxWithHelp: { checked: false, enable: true, text: '所得税基準日', helper:'(処理月の習前の１月１日)' }"></div>
+							<div id="E_SEL_009"
+								data-bind="ntsCheckBoxWithHelp: { checked: false, enable: true, text: '経理締め日', helper:'(処理月の前月)' }"></div>
 						</div>
 					</div>
 					<div class="clear-fix"></div>

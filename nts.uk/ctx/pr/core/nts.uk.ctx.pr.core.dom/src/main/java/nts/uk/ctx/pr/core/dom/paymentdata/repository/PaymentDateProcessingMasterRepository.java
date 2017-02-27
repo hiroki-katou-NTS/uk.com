@@ -13,7 +13,7 @@ public interface PaymentDateProcessingMasterRepository {
 	 * @param processingNo
 	 * @return PaymentDateProcessingMaster
 	 */
-	Optional<PaymentDateProcessingMaster> find(String companyCode, int paymentBonusAtribute, int processingNo);
+	Optional<PaymentDateProcessingMaster> find(String companyCode, int processingNo);
 
 	/**
 	 * Get list payment date processing with condition display = 1
@@ -21,5 +21,5 @@ public interface PaymentDateProcessingMasterRepository {
 	 * @param paymentBonusAtribute
 	 * @return PaymentDateProcessingMaster
 	 */
-	List<PaymentDateProcessingMaster> findAll(String companyCode, int paymentBonusAtribute);
+	List<PaymentDateProcessingMaster> findAll(String companyCode, int processingNo);
 }

@@ -1,34 +1,29 @@
-package nts.uk.ctx.pr.core.infra.entity.paymentdata;
+package nts.uk.ctx.pr.core.infra.entity.rule.employement.processing.yearmonth;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
 
+import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
+import javax.persistence.Temporal;
 
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+
+@AllArgsConstructor
+@NoArgsConstructor
 @Embeddable
 public class QpdmtPaydayProcessingPK implements Serializable {
-
-	/**
-	 * 
-	 */
+	
 	private static final long serialVersionUID = 1L;
 
+	@Basic(optional = false)
 	@Column(name = "CCD")
 	public String ccd;
-	
-	@Column(name = "PAY_BONUS_ATR")
-	public int payBonusAtr;
-	
-	@Column(name = "PROCESSING_NO")
-	public int processingNo;
 
-	public QpdmtPaydayProcessingPK(String ccd, int payBonusAtr, int processingNo) {
-		super();
-		this.ccd = ccd;
-		this.payBonusAtr = payBonusAtr;
-		this.processingNo = processingNo;
-	}
+	@Basic(optional = false)
+	@Column(name = "PROCESSING_NO")
+	public Number processingNo;	
 	
-	public QpdmtPaydayProcessingPK() {}
 }

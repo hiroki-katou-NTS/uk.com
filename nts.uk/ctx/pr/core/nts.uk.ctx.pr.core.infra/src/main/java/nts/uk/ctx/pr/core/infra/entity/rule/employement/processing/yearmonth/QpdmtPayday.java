@@ -1,75 +1,61 @@
-package nts.uk.ctx.pr.core.infra.entity.paymentdata;
+package nts.uk.ctx.pr.core.infra.entity.rule.employement.processing.yearmonth;
 
-import java.math.BigDecimal;
-import java.time.LocalDate;
-import java.util.Date;
+import java.io.Serializable;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
-import javax.persistence.Convert;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
-import javax.persistence.Temporal;
-import javax.persistence.TemporalType;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
+import nts.arc.time.GeneralDate;
+import nts.uk.shr.infra.data.entity.TableEntity;
 
-import nts.uk.shr.infra.data.entity.AggregateTableEntity;
-import nts.arc.layer.infra.data.entity.type.LocalDateToDBConverter;
-
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "QPDMT_PAYDAY")
-public class QpdmtPayday {
+public class QpdmtPayday extends TableEntity implements Serializable {
+
+	private static final long serialVersionUID = 1L;
+
 	@EmbeddedId
 	public QpdmtPaydayPK qpdmtPaydayPK;
 
 	@Basic(optional = false)
-	@Column(name = "PAY_MON")
-	public int paymentMonth;
-
-	@Basic(optional = false)
-	@Column(name = "PAY_DAY")
-	public int paymentDay;
-
-	@Basic(optional = false)
-	@Column(name = "STD_MON")
-	public int standardMonth;
-
-	@Basic(optional = false)
-	@Column(name = "STD_DAY")
-	public int standardDay;
-
-	@Basic(optional = false)
 	@Column(name = "PAY_DATE")
-	@Temporal(TemporalType.DATE)
-	public Date payDate;
+	public GeneralDate payDate;
 
 	@Basic(optional = false)
 	@Column(name = "STD_DATE")
-	@Temporal(TemporalType.DATE)
-	@Convert(converter = LocalDateToDBConverter.class)
-	public LocalDate standardDate;
+	public GeneralDate stdDate;
+
+	@Basic(optional = false)
+	@Column(name = "SOCIAL_INS_LEVY_MON")
+	public Number socialInsLevyMon;
 
 	@Basic(optional = false)
 	@Column(name = "SOCIAL_INS_STD_DATE")
-	@Temporal(TemporalType.DATE)
-	public Date socialInsuranceStandardDate;
-
-	@Basic(optional = false)
-	@Column(name = "EMP_INS_STD_DATE")
-	@Temporal(TemporalType.DATE)
-	public Date employmentInsuranceStandardDate;
+	public GeneralDate socialInsStdDate;
 
 	@Basic(optional = false)
 	@Column(name = "INCOME_TAX_STD_DATE")
-	@Temporal(TemporalType.DATE)
-	public Date incomeTaxReferenceDate;
+	public GeneralDate incomeTaxStdDate;
+	
+	@Basic(optional = false)
+	@Column(name = "EMP_INS_STD_DATE")
+	public GeneralDate empInsStdDate;
 
 	@Basic(optional = false)
 	@Column(name = "STMT_OUTPUT_MON")
-	public BigDecimal stmtOutputMonth;
+	public Number stmtOutputMon;
 
 	@Basic(optional = false)
 	@Column(name = "NEEDED_WORK_DAY")
-	public BigDecimal neededWorkDay;
+	public Number neededWorkDay;
 
+	@Basic(optional = false)
+	@Column(name = "ACCOUNTING_CLOSING")
+	public Number accountingClosing;
 }

@@ -51,22 +51,16 @@
 					<button>エラー出力</button>
 				</div>
 				<div class="table-container">
-					<table class="table" id="B_LST_003">
+					<table class="table" id="B_LST_003" data-bind="ntsTable: {rows : [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12]}">
 						<thead class="fixed">
 							<tr>
-								<th></th>
-								<th>処理状態</th>
-								<th>区分</th>
-								<th>内容</th>							
+								<th data-width="25">No</th>
+								<th data-width="160">処理状態</th>
+								<th data-width="115">区分</th>
+								<th data-width="260">内容</th>							
 							</tr>
 						</thead>
-						<tbody data-bind="foreach: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]">
-							<tr>
-								<th data-bind="text: $index() +  1"></th>
-								<td></td>
-								<td></td>
-								<td></td>
-							</tr>
+						<tbody>
 						</tbody>
 					</table>
 				</div>

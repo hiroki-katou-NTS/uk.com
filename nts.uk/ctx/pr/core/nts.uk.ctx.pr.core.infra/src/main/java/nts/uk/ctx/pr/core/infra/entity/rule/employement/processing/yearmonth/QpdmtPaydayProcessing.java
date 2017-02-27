@@ -1,29 +1,46 @@
-package nts.uk.ctx.pr.core.infra.entity.paymentdata;
+package nts.uk.ctx.pr.core.infra.entity.rule.employement.processing.yearmonth;
 
+import java.io.Serializable;
+
+import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;
 import nts.uk.shr.infra.data.entity.AggregateTableEntity;
+import nts.uk.shr.infra.data.entity.TableEntity;
 
+@AllArgsConstructor
+@NoArgsConstructor
 @Entity
 @Table(name = "QPDMT_PAYDAY_PROCESSING")
-public class QpdmtPaydayProcessing {
+public class QpdmtPaydayProcessing extends TableEntity implements Serializable {
+
+	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
 	public QpdmtPaydayProcessingPK qpdmtPaydayProcessingPK;
 
-	@Column(name = "CURRENT_PROCESSING_YM")
-	public int currentProcessingYm;
-
-	@Column(name = "DISP_ATR")
-	public int dispAtr;
-
+	@Basic(optional = false)
 	@Column(name = "PROCESSING_NAME")
 	public String processingName;
 
-	public QpdmtPaydayProcessing() {
-	}
+	@Basic(optional = false)
+	@Column(name = "DISP_ATR")
+	public Number dispAtr;
 
+	@Basic(optional = false)
+	@Column(name = "CURRENT_PROCESSING_YM")
+	public Number currentProcessingYm;
+
+	@Basic(optional = false)
+	@Column(name = "BONUS_ATR")
+	public Number bonusAtr;
+
+	@Basic(optional = false)
+	@Column(name = "B_CURRENT_PROCESSING_YM")
+	public Number bCurrentProcessingYm;
 }

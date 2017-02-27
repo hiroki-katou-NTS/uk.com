@@ -59,6 +59,15 @@ hr {
     left: 2px;
 }
 
+table.table button{
+	min-width: 60px;
+	box-shadow: 0 2px rgba(0, 0, 0, 0.4);
+}
+
+table.table button:active{
+	box-shadow: 0 0 #999;
+}
+
 button:not(.ui-button ), .btn:not(.ui-button ) {
 	min-width: 73px;
 	position: relative;
@@ -213,11 +222,8 @@ a, input, select, .form-control, div.form-group>input.form-control {
 	border-collapse: collapse;
 }
 
-#contents-area table.table th {
-	text-align: center;
-}
-
-#contents-area table.table th, #contents-area table.table td {
+#contents-area table.table th, 
+#contents-area table.table td {
 	font-size: 12px;
 	color: rgb(64, 64, 64);
 	border: 1px solid #ccc;
@@ -229,7 +235,12 @@ a, input, select, .form-control, div.form-group>input.form-control {
 
 #contents-area table.table th {
 	width: 25px;
+	text-align: center;
 	background-color: rgb(174, 238, 196);
+}
+
+#contents-area table.table th.wrap{
+	white-space: pre-wrap;
 }
 
 #contents-area table.table th.hide, #contents-area table.table td.hide {
@@ -243,18 +254,34 @@ a, input, select, .form-control, div.form-group>input.form-control {
 	background-color: rgb(226, 247, 159);
 }
 
+#contents-area table.table td .ntsControl {
+	display: block;
+}
+
+#contents-area table.table td span + button{
+	margin-left: 5px;
+	min-width: initial;
+}
+
+#contents-area table.table td .ntsControl .ntsCheckBox span.label {
+	display:none;
+}
+
 #contents-area table.table .no-border {
 	border: none;
 }
 
 #contents-area table.table select, #contents-area table.table button {
 	font-size: 12px;
-	height: 27px;
+	height: 30px;
 	padding: 0 7px;
 }
 
 #contents-area table.table button {
-	height: 24px;
+	height: 30px;
+}
+
+#contents-area table.table button.full-width{	
 	width: 100%;
 }
 
@@ -264,14 +291,14 @@ a, input, select, .form-control, div.form-group>input.form-control {
 
 #contents-area table.table .caret:after {
 	margin-top: 2px;
-	border-top: 12px solid transparent;
-	border-bottom: 12px solid transparent;
-	border-left: 7px solid rgb(174, 238, 96);
-	width: 12px;
+    border-top: 14px solid transparent;
+    border-bottom: 14px solid transparent;
+    border-left: 9px solid rgb(174, 238, 96);
+    width: 10px;
 	position: absolute;
 }
 
-#contents-area table.table .caret+select {
+#contents-area table.table .caret+* {
 	margin-left: 10px;
 }
 

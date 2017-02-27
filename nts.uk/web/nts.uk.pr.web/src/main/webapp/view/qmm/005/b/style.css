@@ -9,6 +9,10 @@
 	background-color: rgb(254, 211, 198);
 }
 
+#contents-area {
+	padding-bottom: 0;
+}
+
 #contents-area .blst001-container {
 	padding: 10px;
 	border-radius: 3px;
@@ -73,10 +77,23 @@
 #contents-area table.table button.btn-collapse {
 	width: 25px;
 	min-width: 25px;
+	max-height: 18px;
 }
 
 #contents-area table.table .double-border {
 	border-right: 3px double #999;
+}
+
+#contents-area table.table .index-cols {
+	width: 57px;
+	min-width: 57px;
+	max-width: 57px;
+}
+
+#contents-area table.table .date-cols {
+	width: 100px;
+	min-width: 100px;
+	max-width: 100px;
 }
 
 #contents-area table.table .checkbox-cols {
@@ -85,7 +102,8 @@
 	min-width: 40px;
 	text-align: center;
 }
-#contents-area table.table th.checkbox-cols{
+
+#contents-area table.table th.checkbox-cols {
 	white-space: pre-wrap;
 }
 
@@ -103,9 +121,15 @@
 	display: inline-block;
 }
 
-.ntsControl>label{
-	width: initial;	
+.ntsControl>label {
+	width: initial;
 }
-td>.ntsControl span.label{
+
+td>.ntsControl span.label {
 	display: none;
+}
+
+#contents-area .right-panel .form-label, #contents-area .right-panel .table
+	{
+	margin-top: 0;
 }
