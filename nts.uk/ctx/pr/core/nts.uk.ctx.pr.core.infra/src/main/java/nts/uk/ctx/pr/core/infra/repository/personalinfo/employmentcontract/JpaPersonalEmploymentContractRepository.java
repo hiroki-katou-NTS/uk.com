@@ -73,5 +73,4 @@ public class JpaPersonalEmploymentContractRepository extends JpaRepository
 		
 		return Optional.of(empContractList.get(0));
 	}
-
 }
