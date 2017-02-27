@@ -23,9 +23,9 @@ module nts.uk.pr.view.qmm007.a {
             isNewMode: KnockoutObservable<boolean>;
 
             // Nts text editor options
-            textEditorOption: any;
+            textEditorOption: KnockoutObservable<nts.uk.ui.option.TextEditorOption>;
             // Switch button data source
-            switchButtonDataSource: KnockoutObservableArray<any>;
+            switchButtonDataSource: KnockoutObservableArray<SwitchButtonDataSource>;
 
             constructor() {
                 var self = this;
@@ -47,7 +47,7 @@ module nts.uk.pr.view.qmm007.a {
 
                 self.unitPriceHistoryModel = ko.observable(new UnitPriceHistoryModel(defaultHist));
                 self.historyList = ko.observableArray<UnitPriceHistoryNode>([]);
-                self.switchButtonDataSource = ko.observableArray([
+                self.switchButtonDataSource = ko.observableArray<SwitchButtonDataSource>([
                     { code: 'Apply', name: '対象' },
                     { code: 'NotApply', name: '対象外' }
                 ]);
@@ -80,9 +80,9 @@ module nts.uk.pr.view.qmm007.a {
             /**
              * Start page.
              */
-            public startPage(): JQueryPromise<any> {
+            public startPage(): JQueryPromise<void> {
                 var self = this;
-                var dfd = $.Deferred();
+                var dfd = $.Deferred<void>();
                 self.loadUnitPriceHistoryList().done(() => dfd.resolve());
                 return dfd.promise();
             }
@@ -90,7 +90,7 @@ module nts.uk.pr.view.qmm007.a {
             /**
              * Go to Add UnitPriceHistory dialog.
              */
-            private goToB() {
+            private goToB(): void {
                 nts.uk.ui.windows.setShared('unitPriceHistoryModel', this.unitPriceHistoryModel());
                 nts.uk.ui.windows.sub.modal('/view/qmm/007/b/index.xhtml', { title: '会社一律金額 の 登録 > 履歴の追加', dialogClass: 'no-close', height: 360, width: 580 });
             }
@@ -98,7 +98,7 @@ module nts.uk.pr.view.qmm007.a {
             /**
              * Go to Edit UnitPriceHistory dialog.
              */
-            private goToC() {
+            private goToC(): void {
                 nts.uk.ui.windows.setShared('unitPriceHistoryModel', this.unitPriceHistoryModel());
                 nts.uk.ui.windows.sub.modal('/view/qmm/007/c/index.xhtml', { title: '会社一律金額 の 登録 > 履歴の編集', dialogClass: 'no-close', height: 420, width: 580 });
             }
@@ -106,7 +106,7 @@ module nts.uk.pr.view.qmm007.a {
             /**
              * Create or Update UnitPriceHistory.
              */
-            private save() {
+            private save(): void {
                 var self = this;
                 if (self.isNewMode()) {
                     service.create(self.collectData(self.unitPriceHistoryModel()));
@@ -118,7 +118,7 @@ module nts.uk.pr.view.qmm007.a {
             /**
              * Clear all input and switch to new mode.
              */
-            private enableNewMode() {
+            private enableNewMode(): void {
                 var self = this;
                 $('.save-error').ntsError('clear');
                 self.clearUnitPriceDetail();
@@ -128,7 +128,7 @@ module nts.uk.pr.view.qmm007.a {
             /**
              * Clear all input.
              */
-            private clearUnitPriceDetail() {
+            private clearUnitPriceDetail(): void {
                 var model = this.unitPriceHistoryModel()
                 model.id = '';
                 model.unitPriceCode('');
@@ -148,7 +148,7 @@ module nts.uk.pr.view.qmm007.a {
             /**
              * Load UnitPriceHistory detail.
              */
-            private loadUnitPriceDetail(id: string) {
+            private loadUnitPriceDetail(id: string): void {
                 var self = this;
                 if (id) {
                     service.find(id).done(data => {
@@ -160,9 +160,9 @@ module nts.uk.pr.view.qmm007.a {
             /**
              * Load UnitPriceHistory tree list.
              */
-            private loadUnitPriceHistoryList(): JQueryPromise<any> {
+            private loadUnitPriceHistoryList(): JQueryPromise<void> {
                 var self = this;
-                var dfd = $.Deferred<any>();
+                var dfd = $.Deferred<void>();
                 service.getUnitPriceHistoryList().done(data => {
                     self.historyList(data.map((item, index) => { return new UnitPriceHistoryNode(item) }));
                     dfd.resolve();
@@ -242,6 +242,11 @@ module nts.uk.pr.view.qmm007.a {
                     self.nodeText = (<UnitPriceHistoryItemDto>item).startMonth + '~' + (<UnitPriceHistoryItemDto>item).endMonth;
                 }
             }
+        }
+
+        export interface SwitchButtonDataSource {
+            code: string;
+            name: string
         }
 
     }
