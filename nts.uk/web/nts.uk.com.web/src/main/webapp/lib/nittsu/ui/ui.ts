@@ -696,6 +696,18 @@
             export function getRowIndexFrom($anyElementInRow: JQuery): number {
                 return parseInt($anyElementInRow.closest('tr').attr('data-row-idx'), 10);
             }
+            
+            export module header {
+                
+                export function getCell(gridId: String, columnKey: String) {
+                    let $headers: JQuery = <any>$('#' + gridId).igGrid("headersTable");
+                    return $headers.find('#' + gridId + '_' + columnKey);
+                }
+                
+                export function getLabel(gridId: String, columnKey: String) {
+                    return getCell(gridId, columnKey).find('span');
+                }
+            }
         }
     }
 }
