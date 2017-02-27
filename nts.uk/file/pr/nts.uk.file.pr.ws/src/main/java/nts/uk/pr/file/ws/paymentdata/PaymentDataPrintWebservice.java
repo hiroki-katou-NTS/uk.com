@@ -34,7 +34,8 @@ public class PaymentDataPrintWebservice extends WebService {
 				results.add(result);
 			}
 		}
-		return this.paymentDataPrint.start(results);
+		//return this.paymentDataPrint.start(results);
+		return null;
 	}
 
 }

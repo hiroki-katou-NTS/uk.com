@@ -1,6 +1,5 @@
 package nts.uk.ctx.pr.core.dom.paymentdata;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -9,6 +8,7 @@ import java.util.stream.Collectors;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.enums.CategoryAtr;
@@ -24,9 +24,10 @@ import nts.uk.ctx.pr.core.dom.paymentdata.insure.InsuredAtr;
 import nts.uk.ctx.pr.core.dom.paymentdata.insure.PensionAverageEarn;
 import nts.uk.ctx.pr.core.dom.paymentdata.insure.PensionInsuranceGrade;
 import nts.uk.ctx.pr.core.dom.paymentdata.insure.WorkInsuranceCalculateAtr;
-import nts.uk.ctx.pr.core.dom.paymentdata.residence.ResidenceCode;
 import nts.uk.ctx.pr.core.dom.paymentdata.residence.ResidenceName;
 import nts.uk.shr.com.primitive.PersonId;
+import nts.uk.shr.com.primitive.sample.ProcessingNo;
+import nts.uk.shr.com.primitive.sample.ResidenceCode;
 
 /**
  * 明細データ
@@ -57,7 +58,7 @@ public class Payment extends AggregateRoot {
 	private SparePayAtr sparePayAtr;
 
 	@Getter
-	private LocalDate standardDate;
+	private GeneralDate standardDate;
 
 	@Getter
 	private SpecificationCode specificationCode;
@@ -157,7 +158,7 @@ public class Payment extends AggregateRoot {
 				PayBonusAtr  payBonusAtr,
 				YearMonth processingYM, 
 				SparePayAtr sparePayAtr, 
-				LocalDate standardDate,
+				GeneralDate standardDate,
 				SpecificationCode specificationCode, 
 				SpecificationName specificationName,
 				ResidenceCode residenceCode, 
@@ -216,7 +217,7 @@ public class Payment extends AggregateRoot {
 							int  payBonusAtr,
 							int processingYM, 
 							int sparePayAtr, 
-							LocalDate standardDate,
+							GeneralDate standardDate,
 							String specificationCode, 
 							String specificationName,
 							String residenceCode, 
@@ -293,7 +294,7 @@ public class Payment extends AggregateRoot {
 		this.printCategories.addAll(items);
 	}
 	
-	public void setStandardDate(LocalDate standardDate) {
+	public void setStandardDate(GeneralDate standardDate) {
 		this.standardDate = standardDate;
 	}
 	

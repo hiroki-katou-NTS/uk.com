@@ -11,7 +11,7 @@ module nts.uk.pr.view.qpp005.a {
             employeeList: KnockoutObservableArray<any>;
             switchButton: KnockoutObservable<SwitchButton>;
             visible: KnockoutObservable<any>;
-
+            isCreate: KnockoutObservable<boolean>;
 
             constructor() {
                 var self = this;
@@ -20,6 +20,8 @@ module nts.uk.pr.view.qpp005.a {
                 self.categories = ko.observable(new CategoriesList());
                 self.option = ko.mapping.fromJS(new option.TextEditorOption());
                 self.employee = ko.observable<Employee>();
+                self.isCreate = ko.observable(true);
+
                 var employeeMocks = [
                     { personId: 'A00000000000000000000000000000000001', code: 'A000000000001', name: '日通　社員1' },
                     { personId: 'A00000000000000000000000000000000002', code: 'A000000000002', name: '日通　社員2' },
@@ -51,6 +53,7 @@ module nts.uk.pr.view.qpp005.a {
                 var dfd = $.Deferred();
 
                 qpp005.a.service.getPaymentData(self.employee().personId, self.employee().code).done(function(res: any) {
+                    self.isCreate(res.paymentHeader.created);
 
                     ko.mapping.fromJS(res, PaymentDataResultViewModel, self.paymentDataResult());
                     self.paymentDataResult().__ko_mapping__ = undefined;
@@ -58,10 +61,10 @@ module nts.uk.pr.view.qpp005.a {
                     var categoryPayment: LayoutMasterCategoryViewModel = (<any>self).paymentDataResult().categories()[0];
                     var categoryDeduct: LayoutMasterCategoryViewModel = (<any>self).paymentDataResult().categories()[1];
                     var catePos = -1;
-                    if((<any>self).paymentDataResult().categories().length > 3) {
+                    if ((<any>self).paymentDataResult().categories().length > 3) {
                         catePos = 3;
-                    }else {
-                        catePos = 2;    
+                    } else {
+                        catePos = 2;
                     }
                     var categoryArticle: LayoutMasterCategoryViewModel = (<any>self).paymentDataResult().categories()[catePos];
                     self.calcTotal(categoryPayment, categoryDeduct, categoryArticle, true);
@@ -81,10 +84,10 @@ module nts.uk.pr.view.qpp005.a {
             register() {
                 var self = this;
                 // TODO: Check error input
-//                if (!self.validator()) {
-//                    nts.uk.ui.dialog.alert('入力にエラーがあります。');
-//                    return false;
-//                }
+                //                if (!self.validator()) {
+                //                    nts.uk.ui.dialog.alert('入力にエラーがあります。');
+                //                    return false;
+                //                }
 
                 qpp005.a.service.register(self.employee(), self.paymentDataResult()).done(function(res) {
                     self.startPage().done(function() {
@@ -92,6 +95,20 @@ module nts.uk.pr.view.qpp005.a {
                     });
                 }).fail(function(res) {
                     nts.uk.ui.dialog.alert(res.message);
+                });
+            }
+
+            /** Event click: 削除*/
+            remove() {
+                var self = this;
+                nts.uk.ui.dialog.confirm("データを削除します。\r\nよろしいですか？").ifYes(function() {
+                    qpp005.a.service.remove(self.employee().personId, self.paymentDataResult().paymentHeader.processingYM()).done(function(res) {
+                        self.startPage().done(function() {
+                            utils.gridSetup(self.switchButton().selectedRuleCode());
+                        });
+                    });
+                }).ifCancel(function() {
+                    // nothing
                 });
             }
 
@@ -122,11 +139,13 @@ module nts.uk.pr.view.qpp005.a {
             /** Event click: 対象者*/
             openEmployeeList() {
                 var self = this;
+                nts.uk.ui.windows.setShared("semployee", ko.toJS(self.employee()));
                 nts.uk.ui.windows.sub.modal('/view/qpp/005/c/index.xhtml', { title: '社員選択' }).onClosed(() => {
                     var employee = nts.uk.ui.windows.getShared('employee');
-                    self.employee(employee);
-
-                    self.startPage();
+                    if (employee) {
+                        self.employee(employee);
+                        self.startPage();
+                    }
                     return this;
                 });
             }
@@ -169,13 +188,7 @@ module nts.uk.pr.view.qpp005.a {
 
             openColorSettingGuide() {
                 var self = this;
-                nts.uk.ui.windows.sub.modal('/view/qpp/005/d/index.xhtml', { title: '入力欄の背景色について' }).onClosed(() => {
-                    var employee = nts.uk.ui.windows.getShared('employee');
-                    self.employee(employee);
-
-                    self.startPage();
-                    return this;
-                });
+                nts.uk.ui.windows.sub.modeless('/view/qpp/005/d/index.xhtml', { title: '入力欄の背景色について' });
             }
 
             openGridSetting() {
@@ -194,13 +207,15 @@ module nts.uk.pr.view.qpp005.a {
                     var oneMonthCommuteEditor = nts.uk.ui.windows.getShared('oneMonthCommuteEditor');
                     var oneMonthRemainderEditor = nts.uk.ui.windows.getShared('oneMonthRemainderEditor');
 
-                    var nId = 'ct' + value.categoryAtr() + '_' + (value.linePosition() - 1) + '_' + (value.columnPosition() - 1);
-                    qpp005.a.utils.setBackgroundColorForItem(nId, totalCommuteEditor);
+                    if (totalCommuteEditor && !isNaN(totalCommuteEditor)) {
+                        var nId = 'ct' + value.categoryAtr() + '_' + (value.linePosition() - 1) + '_' + (value.columnPosition() - 1);
+                        qpp005.a.utils.setBackgroundColorForItem(nId, totalCommuteEditor, value.sumScopeAtr());
 
-                    value.value(totalCommuteEditor == '' ? 0 : totalCommuteEditor);
-                    value.commuteAllowTaxImpose = taxCommuteEditor;
-                    value.commuteAllowMonth = oneMonthCommuteEditor;
-                    value.commuteAllowFraction = oneMonthRemainderEditor;
+                        value.value(totalCommuteEditor == '' ? 0 : totalCommuteEditor);
+                        value.commuteAllowTaxImpose = taxCommuteEditor;
+                        value.commuteAllowMonth = oneMonthCommuteEditor;
+                        value.commuteAllowFraction = oneMonthRemainderEditor;
+                    }
                     //                    self.startPage();
                     return self;
                 });
@@ -217,25 +232,26 @@ module nts.uk.pr.view.qpp005.a {
                 var detailsPayment = _.flatMap(source.lines(), l => l.details());
                 var totalPayment = _.last(detailsPayment);
                 var inputtingsDetailsPayment = _.reject(detailsPayment, totalPayment);
-                var updateTotalPayment = () => {
-                    var total = _(inputtingsDetailsPayment).map(d => Number(util.orDefault(d.value(), 0))).sum();
-                    totalPayment.value(total);
+                var updateTotalPayment = (sumScopeAtr) => {
+                    if (sumScopeAtr === 1) {
+                        var total = _(inputtingsDetailsPayment).filter(d => d.sumScopeAtr() === 1).map(d => Number(util.orDefault(d.value(), 0))).sum();
+                        if (isNaN(total)) return false;
+                        totalPayment.value(total);
 
-                    var detailsTranfer = _.flatMap(tranfer.lines(), l => l.details());
-                    var totalValueTranfer = _.last(detailsTranfer).value();
-                    if(destinate !== undefined) {
-                        var detailsDestinate = _.flatMap(destinate.lines(), l => l.details());
-                        if (isPayment) {
-                            _.last(detailsDestinate).value(total - totalValueTranfer);
-                        } else {
-                            _.last(detailsDestinate).value(totalValueTranfer - total);
+                        var detailsTranfer = _.flatMap(tranfer.lines(), l => l.details());
+                        var totalValueTranfer = _.last(detailsTranfer).value();
+                        if (destinate !== undefined) {
+                            var detailsDestinate = _.flatMap(destinate.lines(), l => l.details());
+                            if (isPayment) {
+                                _.last(detailsDestinate).value(total - totalValueTranfer);
+                            } else {
+                                _.last(detailsDestinate).value(totalValueTranfer - total);
+                            }
                         }
                     }
                 };
                 inputtingsDetailsPayment.forEach(detail => {
-                    if(detail.sumScopeAtr() === 1) {
-                        detail.value.subscribe(() => updateTotalPayment());
-                    }
+                    detail.value.subscribe(() => updateTotalPayment(detail.sumScopeAtr()));
                 });
 
             }
@@ -250,9 +266,11 @@ module nts.uk.pr.view.qpp005.a {
                     _.forEach(line.details(), (item) => {
                         item.value.subscribe(function(val) {
                             var nId = 'ct' + item.categoryAtr() + '_' + (item.linePosition() - 1) + '_' + (item.columnPosition() - 1);
-                            var isCorrectFlag = qpp005.a.utils.setBackgroundColorForItem(nId, item.value());
-                            var isInputItem = item.itemType() === 0 || item.itemType() === 1;
-                            if (isCorrectFlag && isInputItem) item.correctFlag(1);
+                            if (!isNaN(item.value())) {
+                                var isCorrectFlag = qpp005.a.utils.setBackgroundColorForItem(nId, item.value(), item.sumScopeAtr());
+                                var isInputItem = item.itemType() === 0 || item.itemType() === 1;
+                                if (isCorrectFlag && isInputItem) item.correctFlag(1);
+                            }
                         });
                     });
                 });

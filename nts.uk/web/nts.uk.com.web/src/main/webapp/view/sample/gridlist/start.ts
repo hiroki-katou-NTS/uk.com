@@ -14,7 +14,7 @@ module nts.uk.ui.gridlist {
                 this.items = ko.observableArray([]);
                 
                 for(let i = 1; i < 100; i++) {
-                    this.items.push(new ItemModel('00' + i, '基本給', "description " + i, "other" + i));
+                    this.items.push(new ItemModel('00' + i, '基本給', "description " + i, i%3 === 0, "other" + i));
                 }
                 
                 this.columns = ko.observableArray([
@@ -34,6 +34,14 @@ module nts.uk.ui.gridlist {
                 
                 this.currentCode = ko.observable();
                 this.currentCodeList = ko.observableArray([]);
+                // Fire event.
+                $("#multi-list").on('itemDeleted', (function(e: Event) {
+                    alert("Item is deleted in multi grid is " + e["detail"]["target"]);
+                }));
+                
+                $("#single-list").on('itemDeleted', (function(e: Event) {
+                    alert("Item is deleted in single grid is " + e["detail"]["target"]);
+                }));   
             }
             
             selectSomeItems() {
@@ -49,12 +57,16 @@ module nts.uk.ui.gridlist {
             }
             
             addItem() {
-                this.items.push(new ItemModel(this.count.toString(), '基本給', "description " + this.count, "other " + this.count));
+                this.items.push(new ItemModel(this.count.toString(), '基本給', "description " + this.count, true, "other " + this.count));
                 this.count++;
             }
             
             removeItem() {
                 this.items.shift();
+            }
+            
+            addDeleteButton() {
+                $("#multi-list").ntsGridList("setupDeleteButton", {deleteField: "deletable", sourceTarget: this.items});
             }
     
         }
@@ -65,12 +77,14 @@ module nts.uk.ui.gridlist {
             description: string;
             other1: string;
             other2: string;
-            constructor(code: string, name: string, description: string, other1?: string, other2?: string) {
+            deletable: boolean;
+            constructor(code: string, name: string, description: string, deletable: boolean, other1?: string, other2?: string) {
                 this.code = code;
                 this.name = name;
                 this.description = description;
                 this.other1 = other1;
-                this.other2 = other2 || other1;         
+                this.other2 = other2 || other1;    
+                this.deletable = deletable;     
             }
         }
         

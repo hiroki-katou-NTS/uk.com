@@ -1,4 +1,4 @@
-// TreeGrid Node
+var screenQmm019;
 var qmm019;
 (function (qmm019) {
     var a;
@@ -13,19 +13,20 @@ var qmm019;
                 this.notHasKiji = ko.observable(false);
                 this.startYm = ko.observable("");
                 this.endYm = ko.observable("");
-                this.totalNormalLine = ko.observable("0行");
+                this.totalNormalLine = ko.observable("0陦�");
                 this.totalNormalLineNumber = ko.observable(0);
-                this.totalGrayLine = ko.observable("（+非表示0行）");
+                this.totalGrayLine = ko.observable("�ｼ�+髱櫁｡ｨ遉ｺ0陦鯉ｼ�");
                 this.totalGrayLineNumber = ko.observable(0);
                 this.allowClick = ko.observable(true);
-                this.firstLayoutCode = ""; //Dùng cho select item đầu tiên.
+                this.firstLayoutCode = ""; //Dﾃｹng cho select item ﾄ黛ｺｧu tiﾃｪn.
                 var self = this;
+                screenQmm019 = ko.observable(self);
                 self.itemList = ko.observableArray([]);
                 self.singleSelectedCode = ko.observable(null);
                 self.layouts = ko.observableArray([]);
                 self.layoutsMax = ko.observableArray([]);
                 self.layoutMaster = ko.observable(new a.service.model.LayoutMasterDto());
-                self.categories = ko.observableArray([new a.service.model.Category([], 0, self)]);
+                self.categories = ko.observableArray([new a.service.model.Category([], 0)]);
                 self.singleSelectedCode.subscribe(function (codeChanged) {
                     var layoutFind = _.find(self.layouts(), function (layout) {
                         return layout.stmtCode === codeChanged.split(';')[0] && layout.startYm === parseInt(codeChanged.split(';')[1]);
@@ -34,7 +35,7 @@ var qmm019;
                         self.layoutMaster(layoutFind);
                         self.startYm(nts.uk.time.formatYearMonth(self.layoutMaster().startYm));
                         self.endYm(nts.uk.time.formatYearMonth(self.layoutMaster().endYm));
-                        a.service.getCategoryFull(layoutFind.stmtCode, layoutFind.startYm, self)
+                        a.service.getCategoryFull(layoutFind.stmtCode, layoutFind.startYm)
                             .done(function (listResult) {
                             self.categories(listResult);
                             self.calculateLine();
@@ -48,7 +49,7 @@ var qmm019;
                 var self = this;
                 var textSearch = $("#A_INP_001").val().trim();
                 if (textSearch.length === 0) {
-                    nts.uk.ui.dialog.alert("コード/名称が入力されていません。");
+                    nts.uk.ui.dialog.alert("繧ｳ繝ｼ繝�/蜷咲ｧｰ縺悟�･蜉帙＆繧後※縺�縺ｾ縺帙ｓ縲�");
                 }
                 else {
                     if (self.textSearch !== textSearch) {
@@ -66,7 +67,7 @@ var qmm019;
                         self.textSearch = textSearch;
                     }
                     if (self.itemListSearch.length === 0) {
-                        nts.uk.ui.dialog.alert("対象データがありません。");
+                        nts.uk.ui.dialog.alert("蟇ｾ雎｡繝�繝ｼ繧ｿ縺後≠繧翫∪縺帙ｓ縲�");
                     }
                     else {
                         var firstResult = _.first(self.queueSearchResult);
@@ -92,8 +93,8 @@ var qmm019;
                             self.totalNormalLineNumber(self.totalNormalLineNumber() + 1);
                     }
                 }
-                self.totalNormalLine(self.totalNormalLineNumber() + "行");
-                self.totalGrayLine("（+非表示" + self.totalGrayLineNumber() + "行）");
+                self.totalNormalLine(self.totalNormalLineNumber() + "陦�");
+                self.totalGrayLine("�ｼ�+髱櫁｡ｨ遉ｺ" + self.totalGrayLineNumber() + "陦鯉ｼ�");
             };
             ScreenModel.prototype.checkKintaiKiji = function () {
                 var self = this;
@@ -171,7 +172,7 @@ var qmm019;
             ScreenModel.prototype.registerLayout = function () {
                 var self = this;
                 a.service.registerLayout(self.layoutMaster(), self.categories()).done(function (res) {
-                    a.service.getCategoryFull(self.layoutMaster().stmtCode, self.layoutMaster().startYm, self)
+                    a.service.getCategoryFull(self.layoutMaster().stmtCode, self.layoutMaster().startYm)
                         .done(function (listResult) {
                         self.categories(listResult);
                         self.checkKintaiKiji();
@@ -183,14 +184,14 @@ var qmm019;
             };
             ScreenModel.prototype.addKintaiCategory = function () {
                 var self = this;
-                var category = new a.service.model.Category([], 2, self);
+                var category = new a.service.model.Category([], 2);
                 self.categories.push(category);
                 self.notHasKintai(false);
                 self.bindSortable();
             };
             ScreenModel.prototype.addKijiCategory = function () {
                 var self = this;
-                var category = new a.service.model.Category([], 3, self);
+                var category = new a.service.model.Category([], 3);
                 self.categories.push(category);
                 self.notHasKiji(false);
                 self.bindSortable();
@@ -201,7 +202,7 @@ var qmm019;
                     return false;
                 var singleSelectedCode = self.singleSelectedCode().split(';');
                 nts.uk.ui.windows.setShared('stmtCode', singleSelectedCode[0]);
-                nts.uk.ui.windows.sub.modal('/view/qmm/019/d/index.xhtml', { title: '明細レイアウトの作成＞履歴追加' }).onClosed(function () {
+                nts.uk.ui.windows.sub.modal('/view/qmm/019/d/index.xhtml', { title: '譏守ｴｰ繝ｬ繧､繧｢繧ｦ繝医�ｮ菴懈�撰ｼ槫ｱ･豁ｴ霑ｽ蜉�' }).onClosed(function () {
                     self.start(self.singleSelectedCode());
                 });
             };
@@ -213,13 +214,14 @@ var qmm019;
                 nts.uk.ui.windows.setShared('stmtCode', singleSelectedCode[0]);
                 nts.uk.ui.windows.setShared('startYm', singleSelectedCode[1]);
                 nts.uk.ui.windows.setShared('historyId', self.layoutMaster().historyId);
-                nts.uk.ui.windows.sub.modal('/view/qmm/019/e/index.xhtml', { title: '明細レイアウトの作成＞履歴の編集' }).onClosed(function () {
+                nts.uk.ui.windows.sub.modal('/view/qmm/019/e/index.xhtml', { title: '譏守ｴｰ繝ｬ繧､繧｢繧ｦ繝医�ｮ菴懈�撰ｼ槫ｱ･豁ｴ縺ｮ邱ｨ髮�' }).onClosed(function () {
                     self.start(self.singleSelectedCode());
                 });
             };
             ScreenModel.prototype.openGDialog = function () {
                 var self = this;
-                nts.uk.ui.windows.sub.modal('/view/qmm/019/g/index.xhtml', { title: '明細レイアウトの作成＞新規登録' }).onClosed(function () {
+                nts.uk.ui.windows.sub.modal('/view/qmm/019/g/index.xhtml', option);
+                nts.uk.ui.windows.sub.modal('/view/qmm/019/g/index.xhtml', { title: '譏守ｴｰ繝ｬ繧､繧｢繧ｦ繝医�ｮ菴懈�撰ｼ樊眠隕冗匳骭ｲ' }).onClosed(function () {
                     self.start(undefined);
                 });
             };
