@@ -84,7 +84,7 @@ var nts;
                                             else {
                                                 self.healthCurrentChildCode(officeSelectedCode);
                                                 self.isClickHealthHistory(true);
-                                                $.when(self.load(officeSelectedCode)).done(function () {
+                                                $.when(self.loadHealth(officeSelectedCode)).done(function () {
                                                 }).fail(function (res) {
                                                 });
                                             }
@@ -92,16 +92,16 @@ var nts;
                                     });
                                     self.pensionOfficeSelectedCode.subscribe(function (officeSelectedCode) {
                                         if (officeSelectedCode != null || officeSelectedCode != undefined) {
-                                            if (self.checkCode(officeSelectedCode)) {
+                                            if (self.pensionCheckCode(officeSelectedCode)) {
                                                 self.pensionCurrentParentCode(officeSelectedCode);
                                                 self.loadPensionHistoryOfOffice(officeSelectedCode);
-                                                self.healthModel(new HealthInsuranceRateModel("code", 1, null, null, 15000));
+                                                self.pensionModel(new PensionRateModel("code", 1, 1, null, null, null, 35000, 1.5));
                                                 self.isClickPensionHistory(false);
                                             }
                                             else {
-                                                self.healthCurrentChildCode(officeSelectedCode);
+                                                self.pensionCurrentChildCode(officeSelectedCode);
                                                 self.isClickPensionHistory(true);
-                                                $.when(self.load(officeSelectedCode)).done(function () {
+                                                $.when(self.loadPension(officeSelectedCode)).done(function () {
                                                 }).fail(function (res) {
                                                 });
                                             }
@@ -121,9 +121,17 @@ var nts;
                                     var dfd = $.Deferred();
                                     self.loadAllInsuranceOffice().done(function (data) {
                                         self.healthInsuranceOfficeList(data);
-                                        self.pensionInsuranceOfficeList(data);
                                         if ((self.healthInsuranceOfficeList() != null) && (self.healthInsuranceOfficeList().length > 0)) {
                                             self.healthOfficeSelectedCode(self.healthInsuranceOfficeList()[0].code);
+                                        }
+                                        else {
+                                            self.OpenModalOfficeRegister();
+                                        }
+                                        dfd.resolve(null);
+                                    });
+                                    self.loadAllInsuranceOffice().done(function (data) {
+                                        self.pensionInsuranceOfficeList(data);
+                                        if ((self.pensionInsuranceOfficeList() != null) && (self.pensionInsuranceOfficeList().length > 0)) {
                                             self.pensionOfficeSelectedCode(self.pensionInsuranceOfficeList()[0].code);
                                         }
                                         else {
@@ -162,12 +170,22 @@ var nts;
                                     });
                                     return flag;
                                 };
+                                ScreenModel.prototype.pensionCheckCode = function (code) {
+                                    var flag = false;
+                                    this.pensionInsuranceOfficeList().forEach(function (item, index) {
+                                        if (item.code == code) {
+                                            flag = true;
+                                        }
+                                    });
+                                    return flag;
+                                };
                                 ScreenModel.prototype.loadHealthHistoryOfOffice = function (officeCode) {
                                     var self = this;
                                     var officeData = self.healthInsuranceOfficeList();
                                     officeData.forEach(function (item, index) {
                                         if ((item.code == officeCode) && (item.childs.length == 0)) {
                                             a.service.getAllHealthInsuranceItem(item.code).done(function (data) {
+                                                officeData[index].childs = [];
                                                 data.forEach(function (item2, index2) {
                                                     officeData[index].childs.push(new InsuranceOfficeItem(index + item.code, item2.officeCode, item2.historyId, [], item2.startMonth.substring(0, 4) + "/" + item2.startMonth.substring(4, item2.startMonth.length) + "~" + item2.endMonth.substring(0, 4) + "/" + item2.endMonth.substring(4, item2.endMonth.length)));
                                                 });
@@ -184,6 +202,7 @@ var nts;
                                     officeData.forEach(function (item, index) {
                                         if ((item.code == officeCode) && (item.childs.length == 0)) {
                                             a.service.getAllPensionInsuranceItem(item.code).done(function (data) {
+                                                officeData[index].childs = [];
                                                 data.forEach(function (item2, index2) {
                                                     officeData[index].childs.push(new InsuranceOfficeItem(index + item.code, item2.officeCode, item2.historyId, [], item2.startMonth.substring(0, 4) + "/" + item2.startMonth.substring(4, item2.startMonth.length) + "~" + item2.endMonth.substring(0, 4) + "/" + item2.endMonth.substring(4, item2.endMonth.length)));
                                                 });
@@ -194,7 +213,7 @@ var nts;
                                         }
                                     });
                                 };
-                                ScreenModel.prototype.load = function (historyCode) {
+                                ScreenModel.prototype.loadHealth = function (historyCode) {
                                     var self = this;
                                     var dfd = $.Deferred();
                                     a.service.getHealthInsuranceItemDetail(historyCode).done(function (data) {
@@ -236,6 +255,11 @@ var nts;
                                     }).fail(function () {
                                     }).always(function (res) {
                                     });
+                                    return dfd.promise();
+                                };
+                                ScreenModel.prototype.loadPension = function (historyCode) {
+                                    var self = this;
+                                    var dfd = $.Deferred();
                                     a.service.getPensionItemDetail(historyCode).done(function (data) {
                                         if (data == null) {
                                             return;

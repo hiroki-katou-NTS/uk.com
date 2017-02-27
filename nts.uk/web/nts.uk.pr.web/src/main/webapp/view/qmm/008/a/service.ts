@@ -236,17 +236,9 @@ module nts.uk.pr.view.qmm008.a {
                         this.code = code;
                         this.childs = childs;
                         this.codeName = codeName;
-                        //if is history
-                        //                        if (childs.length == 0) {
-                        //                            this.codeName = name;
-                        //                        }
-                        //if is office
-                        //                        else {
-                        //                            this.codeName = code + "\u00A0" + "\u00A0" + "\u00A0" + name;
-                        //                        }
                     }
                 }
-
+               
                 //Pension DTO
                 export class PensionRateDto {
                     historyId: string;

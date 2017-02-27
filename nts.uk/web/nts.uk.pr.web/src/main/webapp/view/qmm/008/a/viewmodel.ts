@@ -165,7 +165,7 @@ module nts.uk.pr.view.qmm008.a {
                             //disabled button add new history
                             self.isClickHealthHistory(true);
                             //officeSelectedCode = historyCode
-                            $.when(self.load(officeSelectedCode)).done(function() {
+                            $.when(self.loadHealth(officeSelectedCode)).done(function() {
                                 //TODO load data success
                             }).fail(function(res) {
                                 //TODO when load data error
@@ -178,23 +178,23 @@ module nts.uk.pr.view.qmm008.a {
                 self.pensionOfficeSelectedCode.subscribe(function(officeSelectedCode: string) {
                     if (officeSelectedCode != null || officeSelectedCode != undefined) {
                         //if click office item
-                        if (self.checkCode(officeSelectedCode)) {
+                        if (self.pensionCheckCode(officeSelectedCode)) {
                             self.pensionCurrentParentCode(officeSelectedCode);
                             //TODO reset current child code
                             self.loadPensionHistoryOfOffice(officeSelectedCode);
                             //reset data on view
-                            self.healthModel(new HealthInsuranceRateModel("code", 1, null, null, 15000));
+                            self.pensionModel(new PensionRateModel("code", 1, 1, null, null, null, 35000, 1.5));
                             //TODO enabled button add new history
                             self.isClickPensionHistory(false);
                         }
                         //if click history item
                         else {
-                            self.healthCurrentChildCode(officeSelectedCode);
+                            self.pensionCurrentChildCode(officeSelectedCode);
                             //TODO reset current parent code
                             //disabled button add new history
                             self.isClickPensionHistory(true);
                             //officeSelectedCode = historyCode
-                            $.when(self.load(officeSelectedCode)).done(function() {
+                            $.when(self.loadPension(officeSelectedCode)).done(function() {
                                 //TODO load data success
                             }).fail(function(res) {
                                 //TODO when load data error
@@ -220,11 +220,23 @@ module nts.uk.pr.view.qmm008.a {
                 //first load
                 self.loadAllInsuranceOffice().done(function(data) {
                     self.healthInsuranceOfficeList(data);
-                    self.pensionInsuranceOfficeList(data);
                     // Load first item.
                     if ((self.healthInsuranceOfficeList() != null) && (self.healthInsuranceOfficeList().length > 0)) {
                         //Load select first item of list
                         self.healthOfficeSelectedCode(self.healthInsuranceOfficeList()[0].code);
+                    } else {
+                        //Open register new office screen
+                        self.OpenModalOfficeRegister();
+                    }
+                    // Resolve
+                    dfd.resolve(null);
+                });
+                //first load
+                self.loadAllInsuranceOffice().done(function(data) {
+                    self.pensionInsuranceOfficeList(data);
+                    // Load first item.
+                    if ((self.pensionInsuranceOfficeList() != null) && (self.pensionInsuranceOfficeList().length > 0)) {
+                        //Load select first item of list
                         self.pensionOfficeSelectedCode(self.pensionInsuranceOfficeList()[0].code);
                     } else {
                         //Open register new office screen
@@ -233,6 +245,7 @@ module nts.uk.pr.view.qmm008.a {
                     // Resolve
                     dfd.resolve(null);
                 });
+                
                 self.getAllRounding().done(function(data) {
                     // Resolve
                     dfd.resolve(null);
@@ -276,6 +289,17 @@ module nts.uk.pr.view.qmm008.a {
                 });
                 return flag;
             }
+            //check code of parent or child
+            public pensionCheckCode(code: string) {
+                var flag = false;
+                this.pensionInsuranceOfficeList().forEach(function(item, index) {
+                    if (item.code == code) {
+                        flag = true;
+                    }
+                });
+                return flag;
+            }
+            
             //load all history when click expand office
             public loadHealthHistoryOfOffice(officeCode: string) {
                 var self = this;
@@ -285,6 +309,7 @@ module nts.uk.pr.view.qmm008.a {
                     //search item have office code
                     if ((item.code == officeCode) && (item.childs.length == 0)) {
                         service.getAllHealthInsuranceItem(item.code).done(function(data: Array<HealthInsuranceRateDto>) {
+                            officeData[index].childs = [];
                             data.forEach(function(item2, index2) {
                                 //push history into office
                                 officeData[index].childs.push(new InsuranceOfficeItem(index + item.code, item2.officeCode, item2.historyId, [], item2.startMonth.substring(0,4)+"/"+item2.startMonth.substring(4,item2.startMonth.length) + "~" + item2.endMonth.substring(0,4)+"/"+item2.endMonth.substring(4,item2.endMonth.length)));
@@ -307,6 +332,7 @@ module nts.uk.pr.view.qmm008.a {
                     //search item have office code
                     if ((item.code == officeCode) && (item.childs.length == 0)) {
                         service.getAllPensionInsuranceItem(item.code).done(function(data: Array<PensionRateDto>) {
+                            officeData[index].childs = [];
                             data.forEach(function(item2, index2) {
                                 //push history into office
                                 officeData[index].childs.push(new InsuranceOfficeItem(index + item.code, item2.officeCode,item2.historyId, [], item2.startMonth.substring(0,4)+"/"+item2.startMonth.substring(4,item2.startMonth.length) + "~" + item2.endMonth.substring(0,4)+"/"+item2.endMonth.substring(4,item2.endMonth.length)));
@@ -321,7 +347,7 @@ module nts.uk.pr.view.qmm008.a {
             }
 
             //load data of item by history code
-            public load(historyCode: string): JQueryPromise<any> {
+            public loadHealth(historyCode: string): JQueryPromise<any> {
                 var self = this;
                 var dfd = $.Deferred<any>();
 
@@ -331,8 +357,8 @@ module nts.uk.pr.view.qmm008.a {
                     }
                     // TODO Set detail health.
                     self.healthModel().historyId = data.historyId;
-                    self.healthModel().startMonth(data.startMonth.substring(0,4)+"/"+data.startMonth.substring(4,data.startMonth.length));
-                    self.healthModel().endMonth(data.endMonth.substring(0,4)+"/"+data.endMonth.substring(4,data.endMonth.length));
+                    self.healthModel().startMonth(data.startMonth.substring(0, 4) + "/" + data.startMonth.substring(4, data.startMonth.length));
+                    self.healthModel().endMonth(data.endMonth.substring(0, 4) + "/" + data.endMonth.substring(4, data.endMonth.length));
 
                     self.healthModel().companyCode = data.companyCode;
                     self.healthModel().officeCode(data.officeCode);
@@ -375,6 +401,13 @@ module nts.uk.pr.view.qmm008.a {
                 }).fail(function() {
                 }).always(function(res) {
                 });
+                 // Ret promise.
+                return dfd.promise();
+            }
+            
+            public loadPension(historyCode: string): JQueryPromise<any> {
+                var self = this;
+                var dfd = $.Deferred<any>();
 
                 service.getPensionItemDetail(historyCode).done(function(data: PensionRateDto) {
                     if (data == null) {
