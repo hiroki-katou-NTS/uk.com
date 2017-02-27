@@ -248,7 +248,7 @@ module qmm006.a.viewmodel {
                                 self.isAppear(false);
                                 self.branchName('');
                             }
-                            //
+
                             self.dirty = new nts.uk.ui.DirtyChecker(self.currentLineBank);
                             self.findIndex(0);
                             self.isSelectdFirstRow(false);
@@ -284,15 +284,22 @@ module qmm006.a.viewmodel {
                                 self.isAppear(false);
                                 self.branchName('');
                             }
-                            if (self.dirty.isDirty()) {
+                            self.isEnable(false);
+                            if (self.dirty.isDirty() && !(self.currentCode() === self.currentLineBank().lineBankCode())) {
                                 //"変更された内容が登録されていません。"---AL001 
                                 nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\n よろしいですか。").ifYes(function() {
+                                    self.currentLineBank(lineBank);
+                                    self.dirty = new nts.uk.ui.DirtyChecker(self.currentLineBank);
                                 }).ifNo(function() {
+                                    self.currentCode(self.currentLineBank().lineBankCode());
                                 })
                             }
-                            self.isEnable(false);
-                            self.currentLineBank(lineBank);
-                            self.dirty = new nts.uk.ui.DirtyChecker(self.currentLineBank);
+                            else {
+                                self.currentLineBank(lineBank);
+                                self.dirty = new nts.uk.ui.DirtyChecker(self.currentLineBank);
+                            }
+
+
                         });
 
                     } else {
