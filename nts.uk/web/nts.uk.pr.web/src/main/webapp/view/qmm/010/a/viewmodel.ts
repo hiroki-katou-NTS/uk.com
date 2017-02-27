@@ -54,7 +54,7 @@ module nts.uk.pr.view.qmm010.a {
                 self.enableButton(false);
                 nts.uk.ui.windows.sub.modal("/view/qmm/010/b/index.xhtml", { height: 800, width: 500, title: "社会保険事業所から読み込み" }).onClosed(() => {
                     self.enableButton(true);
-                    //OnClose => call
+                    self.reloadDataByAction('');
                 });
             }
             public startPage(): JQueryPromise<any> {

@@ -1,14 +1,16 @@
 module nts.uk.pr.view.qmm010.b {
     export module service {
         var paths: any = {
-            findAllSocialInsuranceOffice: "pr/insurance/social/findall",
+            findAllSocialInsuranceOffice: "pr/insurance/social/findall/detail",
+            checkDuplicateCodeByImportData: "ctx/pr/core/insurance/labor/importser/checkDuplicateCode",
+            importData: "ctx/pr/core/insurance/labor/importser/importData"
         };
 
         //Function connection service FindAll Social Insurance Office Service
-        export function findAllSocialInsuranceOffice(): JQueryPromise<Array<SocialInsuranceOfficeInDto>> {
-            var dfd = $.Deferred<Array<SocialInsuranceOfficeInDto>>();
+        export function findAllSocialInsuranceOffice(): JQueryPromise<Array<model.SocialInsuranceOfficeImportDto>> {
+            var dfd = $.Deferred<Array<model.SocialInsuranceOfficeImportDto>>();
             nts.uk.request.ajax(paths.findAllSocialInsuranceOffice)
-                .done(function(res: Array<SocialInsuranceOfficeInDto>) {
+                .done(function(res: Array<model.SocialInsuranceOfficeImportDto>) {
                     dfd.resolve(res);
                     //xyz
                 })
@@ -18,12 +20,41 @@ module nts.uk.pr.view.qmm010.b {
             return dfd.promise();
         }
 
+        //Function connnection service check Duplicate Code By ImportData
+        export function checkDuplicateCodeByImportData(lstSocialInsuranceOfficeImportDto: model.SocialInsuranceOfficeImportDto[]): JQueryPromise<model.LaborInsuranceOfficeCheckImportDto> {
+            var dfd = $.Deferred<model.LaborInsuranceOfficeCheckImportDto>();
+            nts.uk.request.ajax(paths.checkDuplicateCodeByImportData, lstSocialInsuranceOfficeImportDto)
+                .done(function(res: model.LaborInsuranceOfficeCheckImportDto) {
+                    dfd.resolve(res);
+                    //xyz
+                    console.log("RES");
+                    console.log(res);
+                })
+                .fail(function(res) {
+                    dfd.reject(res);
+                })
+            return dfd.promise();
+        }
+        //Function 
+
+        export function importData(laborInsuranceOfficeImportDto: model.LaborInsuranceOfficeImportDto): JQueryPromise<model.LaborInsuranceOfficeImportOutDto> {
+            var dfd = $.Deferred<model.LaborInsuranceOfficeImportOutDto>();
+            nts.uk.request.ajax(paths.importData, laborInsuranceOfficeImportDto)
+                .done(function(res: model.LaborInsuranceOfficeImportOutDto) {
+                    dfd.resolve(res);
+                    //xyz
+                    console.log("Import");
+                    console.log(res);
+                })
+                .fail(function(res) {
+                    dfd.reject(res);
+                })
+            return dfd.promise();
+        }
+
         export module model {
             //Import SocialInsuranceOffice =>  SocialInsuranceOfficeInDto
-            export class SocialInsuranceOfficeDto {
-                /** The company code. */
-                companyCode: string;
-
+            export class SocialInsuranceOfficeImportDto {
                 /** The code. */
                 code: string;
 
@@ -98,6 +129,27 @@ module nts.uk.pr.view.qmm010.b {
 
                 /** The memo. */
                 memo: string;
+            }
+
+            export class LaborInsuranceOfficeImportOutDto {
+                code: string;
+                message: string;
+                totalImport: number;
+            }
+
+            export class LaborInsuranceOfficeImportDto {
+                lstSocialInsuranceOfficeImport: SocialInsuranceOfficeImportDto[];
+                checkUpdateDuplicateCode: number; //0 update //1 none update
+                constructor() {
+                    this.lstSocialInsuranceOfficeImport = [];
+                    this.checkUpdateDuplicateCode = 0;
+                }
+            }
+
+            export class LaborInsuranceOfficeCheckImportDto {
+                code: string; // "0" succ 1 "rows duplication"
+                /** The message. */
+                message: string;
             }
         }
     }

@@ -61,4 +61,11 @@ public interface LaborInsuranceOfficeRepository {
 	 * @return true, if successful
 	 */
 	boolean isDuplicateCode(CompanyCode companyCode, OfficeCode code);
+
+	/**
+	 * Adds the list.
+	 *
+	 * @param lstOffice the lst office
+	 */
+	void addList(List<LaborInsuranceOffice> lstOffice);
 }
