@@ -28,13 +28,27 @@ public class Era extends AggregateRoot {
 		this.endDate = endDate;
 		this.fixAttribute = fixAttribute;
 	}
-
+	
+	public Era(GeneralDate startDate) {
+		super();
+		this.startDate = startDate;
+	}
 	// convert data to era type
 	public static Era createFromDataType(String eraName, String eraMark, GeneralDate startDate, GeneralDate endDate,
 			int fixAttribute) {
 		return new Era(new EraName(eraName), new EraMark(eraMark), startDate, endDate,
 				EnumAdaptor.valueOf(fixAttribute, FixAttribute.class));
 
+	}
+
+	public static Era createFromDataType1(GeneralDate startDate) {
+		return new Era(startDate);
+
+	}
+
+	public static Era createFromDataType(Object object) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

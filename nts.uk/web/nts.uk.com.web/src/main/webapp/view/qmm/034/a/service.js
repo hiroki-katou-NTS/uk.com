@@ -93,6 +93,7 @@ var qmm034;
             service.addData = addData;
             function deleteData(command) {
                 var dfd = $.Deferred();
+                //var dateObject = ko.mapping.toJS(command);
                 nts.uk.request.ajax(paths.deleteEra, command)
                     .done(function (res) {
                     dfd.resolve(res);
@@ -116,6 +117,16 @@ var qmm034;
                     return EraDto;
                 }());
                 model.EraDto = EraDto;
+            })(model = service.model || (service.model = {}));
+            var model;
+            (function (model) {
+                var EraDtoDelete = (function () {
+                    function EraDtoDelete(startDate) {
+                        this.startDate = startDate;
+                    }
+                    return EraDtoDelete;
+                }());
+                model.EraDtoDelete = EraDtoDelete;
             })(model = service.model || (service.model = {}));
         })(service = a.service || (a.service = {}));
     })(a = qmm034.a || (qmm034.a = {}));

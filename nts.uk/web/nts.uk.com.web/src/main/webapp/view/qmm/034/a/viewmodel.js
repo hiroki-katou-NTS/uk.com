@@ -79,18 +79,8 @@ var qmm034;
                 };
                 ScreenModel.prototype.alertDelete = function () {
                     var self = this;
-                    var indexEra = _.findIndex(self.items(), function (item) {
-                        return item.code == self.currentEra().code;
-                    });
-                    var count = self.items().length;
                     if (confirm("do you wanna delete") === true) {
                         self.deleteData();
-                        if (indexEra == count - 1) {
-                            self.currentCode(self.items()[self.items().length - 2].code);
-                        }
-                        else {
-                            self.currentCode(self.items()[indexEra - 1].code);
-                        }
                     }
                     else {
                         alert("you didnt delete!");
@@ -112,6 +102,7 @@ var qmm034;
                                 self.currentEra(self.selectedItem(data[0]));
                                 self.isSelectdFirstRow(false);
                             }
+                            self.items(data);
                         }
                         dfd.resolve();
                     }).fail(function (res) {
@@ -131,16 +122,15 @@ var qmm034;
                     var fixAttribute;
                     var dfd = $.Deferred();
                     var node;
-                    node = new qmm034.a.service.model.EraDto(eraName, eraMark, startDate, endDate, fixAttribute);
+                    node = new qmm034.a.service.model.EraDtoDelete(startDate);
+                    //            qmm034.a.service.deleteData(node)
+                    //                .done(function() {
+                    //                    qmm034.a.service.getAllEras();
+                    //                }).fail(function(error) {
+                    //                    alert(error.message);
+                    //                });
                     qmm034.a.service.deleteData(node).done(function (result) {
                         self.reload().done(function () {
-                            //                    var data = self.items();
-                            //                    if(self.countItems == self.findIndex){
-                            //                        self.currentEra(data(self.findIndex()-1));    
-                            //                    }
-                            //                    let indexDele = ._findIndex(self.items, function(index){
-                            //                            return index.items == self.currentEra().code;
-                            //                    });
                             dfd.resolve();
                         });
                     }).fail(function (error) {

@@ -89,6 +89,7 @@ module qmm034.a.service {
     }
     export function deleteData(command): JQueryPromise<any> {
         var dfd = $.Deferred<any>();
+        //var dateObject = ko.mapping.toJS(command);
         nts.uk.request.ajax(paths.deleteEra, command)
             .done(function(res: Array<any>) {
                 dfd.resolve(res);
@@ -116,4 +117,16 @@ module qmm034.a.service {
             }
         }
     }
+    
+    export module model {
+        export class EraDtoDelete {
+            startDate: Date;
+
+            constructor(startDate: Date) {
+                this.startDate = startDate;
+
+            }
+        }
+    }
+    
 }
