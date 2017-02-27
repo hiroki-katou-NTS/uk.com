@@ -6,6 +6,8 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.gul.text.IdentifierUtil;
+import nts.uk.ctx.basic.dom.organization.positionreference.AuthorizationCode;
+import nts.uk.ctx.basic.dom.organization.positionreference.ReferenceSettings;
 import nts.uk.shr.com.primitive.Memo;
 
 @Getter

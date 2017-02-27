@@ -1,6 +1,7 @@
-package nts.uk.ctx.basic.infra.entity.organization.position;
+package nts.uk.ctx.basic.infra.entity.organization.positionhistory;
 
 
+import java.io.Serializable;
 import java.time.LocalDate;
 
 import javax.persistence.Basic;
@@ -17,7 +18,7 @@ import nts.arc.time.GeneralDate;
 @NoArgsConstructor
 @Entity
 @Table(name = "CMNMT_JOB_HIST")
-public class CmnmtJobTitleHistory {
+public class CmnmtJobTitleHistory implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId

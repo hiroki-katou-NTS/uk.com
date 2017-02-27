@@ -45,5 +45,7 @@ public interface PositionRepository {
 
 	void remove(String companyCode, JobCode jobCode);
 
+	Optional<Position> findSingle(String companyCode, String historyID);
+
 	
 }

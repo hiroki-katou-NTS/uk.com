@@ -37,19 +37,21 @@ public class JpaPositionReponsitory extends JpaRepository implements PositionRep
 		StringBuilder builderString = new StringBuilder();
 		builderString.append("SELECT e");
 		builderString.append(" FROM CmnmtJobTittle e");
-		builderString.append(" WHERE e.cmnmtJobTittlePK.companyCode =: companyCode");
+		builderString.append(" WHERE e.cmnmtJobTittlePK.companyCode = :companyCode");
 		FIND_ALL = builderString.toString();
 
 		builderString = new StringBuilder();
 		builderString.append("SELECT e");
 		builderString.append(" FROM CmnmtJobTittle e");
-		builderString.append(" WHERE e.cmnmtJobTittlePK.companyCode =: companyCode");
+		builderString.append(" WHERE e.cmnmtJobTittlePK.companyCode = :companyCode");
+		builderString.append(" AND e.cmnmtJobTittlePK.historyID = :historyID");
+		builderString.append(" AND e.cmnmtJobTittlePK.jobCode = :jobCode");
 		FIND_SINGLE = builderString.toString();
 		
 		builderString = new StringBuilder();
 		builderString.append("SELECT e");
 		builderString.append(" FROM CmnmtJobTittle e");
-		builderString.append(" WHERE e.cmnmtJobTittlePK.companyCode =: companyCode");
+		builderString.append(" WHERE e.cmnmtJobTittlePK.companyCode = :companyCode");
 		CHECK_EXIST = builderString.toString();
 		
 	
@@ -119,19 +121,18 @@ public class JpaPositionReponsitory extends JpaRepository implements PositionRep
 		return entity;
 	}
 
-//	private CmnmtJobTittle toEntity(Position domain) {
-//		val entity = new CmnmtJobTittle();
-//
-//		entity.cmnmtJobTittlePK = new CmnmtJobTittlePK();
-//		entity.cmnmtJobTittlePK.companyCode = domain.getCompanyCode();
-//		entity.cmnmtJobTittlePK.jobCode = domain.getJobCode().v();
-//		entity.cmnmtJobTittlePK.historyID = domain.getHistoryID();
-//		entity.endDate = domain.getEndDate().localDate();
-//		entity.startDate = domain.getStartDate().localDate();
-//
-//		
-//		return entity;
-//	}
+	private CmnmtJobTitle toEntity(Position domain) {
+		val entity = new CmnmtJobTitle();
+
+		entity.cmnmtJobTitlePK = new CmnmtJobTitlePK();
+		entity.cmnmtJobTitlePK.companyCode = domain.getCompanyCode();
+		entity.cmnmtJobTitlePK.jobCode = domain.getJobCode().v();
+		entity.cmnmtJobTitlePK.historyID = domain.getHistoryID();
+		
+
+		
+		return entity;
+	}
 
 
 	@Override
@@ -203,6 +204,13 @@ public class JpaPositionReponsitory extends JpaRepository implements PositionRep
 	public void remove(String companyCode, JobCode jobCode) {
 		// TODO Auto-generated method stub
 		
+	}
+
+
+	@Override
+	public Optional<Position> findSingle(String companyCode, String historyID) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 
