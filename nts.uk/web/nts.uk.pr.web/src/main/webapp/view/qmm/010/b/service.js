@@ -29,15 +29,12 @@ var nts;
                             service.findAllSocialInsuranceOffice = findAllSocialInsuranceOffice;
                             var model;
                             (function (model) {
-                                var SocialInsuranceOfficeInDto = (function () {
-                                    function SocialInsuranceOfficeInDto(companyCode, code, name) {
-                                        this.companyCode = companyCode;
-                                        this.code = code;
-                                        this.name = name;
+                                var SocialInsuranceOfficeDto = (function () {
+                                    function SocialInsuranceOfficeDto() {
                                     }
-                                    return SocialInsuranceOfficeInDto;
+                                    return SocialInsuranceOfficeDto;
                                 }());
-                                model.SocialInsuranceOfficeInDto = SocialInsuranceOfficeInDto;
+                                model.SocialInsuranceOfficeDto = SocialInsuranceOfficeDto;
                             })(model = service.model || (service.model = {}));
                         })(service = b.service || (b.service = {}));
                     })(b = qmm010.b || (qmm010.b = {}));

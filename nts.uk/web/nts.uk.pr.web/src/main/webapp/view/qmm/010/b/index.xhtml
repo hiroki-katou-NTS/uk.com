@@ -19,29 +19,19 @@
 				<div id="B_LBL_001">ナビゲーションメッセージ</div>
 				<hr />
 				<div id="contents-left">
-					<div data-bind="with: textSearch" class="leftTop">
-						<input id="B_INP_001" class="tr300"
-							data-bind="ntsTextEditor: {
-										value: valueSearch,
-										constraint: '',
-										option: option,
-										required: true,
-										enable: true}" />
-						<span class="label relative spanSearch">
-							<button id="B_SCH_001" class="caret-bottom caret-background">検索</button>
-						</span>
-					</div>
+					<div
+						data-bind="ntsSearchBox: {comId: 'single-list', items: lstSocialInsuranceOffice, selected: selectLstSocialInsuranceOffice, selectedKey: 'code', fields: ['code','name']}" />
 					<div id="search_001">
 						<table id="single-list"
 							data-bind="ntsGridList: {
-								width: 400,
-								height: 500,
-								options: lstSocialInsuranceOffice,
-								optionsValue: 'code',
-								columns: columnsLstSocialInsuranceOffice,
-								multiple: false,
-								value: selectLstSocialInsuranceOffice,
-								enable: true
+									width: 350,
+									height: 400,
+									options: lstSocialInsuranceOffice,
+									optionsValue: 'code',
+									columns: columnsLstSocialInsuranceOffice,
+									multiple: true,
+									value: selectLstSocialInsuranceOffice,
+									enable: true
 							}"></table>
 					</div>
 				</div>

@@ -18,7 +18,6 @@ module nts.uk.pr.view.qmm016.l {
                     //xyz
                 })
                 .fail(function(res) {
-                    dfd.reject(res);
                 })
             return dfd.promise();
         }

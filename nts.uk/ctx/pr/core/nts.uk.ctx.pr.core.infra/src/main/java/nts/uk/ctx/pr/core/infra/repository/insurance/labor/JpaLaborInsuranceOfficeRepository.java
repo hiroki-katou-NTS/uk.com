@@ -98,24 +98,66 @@ public class JpaLaborInsuranceOfficeRepository extends JpaRepository implements 
 				.map(c -> toDomain(c));
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.dom.insurance.labor.LaborInsuranceOfficeRepository#
+	 * isDuplicateCode(nts.uk.ctx.core.dom.company.CompanyCode,
+	 * nts.uk.ctx.pr.core.dom.insurance.OfficeCode)
+	 */
 	@Override
 	public boolean isDuplicateCode(CompanyCode companyCode, OfficeCode code) {
-		// TODO Auto-generated method stub
-		return false;
+		EntityManager em = getEntityManager();
+		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+		CriteriaQuery<Long> cq = criteriaBuilder.createQuery(Long.class);
+		cq.select(criteriaBuilder.count(cq.from(QismtLaborInsuOffice.class)));
+		Root<QismtLaborInsuOffice> root = cq.from(QismtLaborInsuOffice.class);
+		List<Predicate> lstpredicate = new ArrayList<>();
+		lstpredicate.add(criteriaBuilder.equal(
+				root.get(QismtLaborInsuOffice_.qismtLaborInsuOfficePK).get(QismtLaborInsuOfficePK_.ccd),
+				companyCode.v()));
+		lstpredicate.add(criteriaBuilder.equal(
+				root.get(QismtLaborInsuOffice_.qismtLaborInsuOfficePK).get(QismtLaborInsuOfficePK_.liOfficeCd),
+				code.v()));
+		cq.where(lstpredicate.toArray(new Predicate[] {}));
+		return (em.createQuery(cq).getSingleResult() > 0);
 	}
 
+	/**
+	 * To entity.
+	 *
+	 * @param laborInsuranceOffice
+	 *            the labor insurance office
+	 * @return the qismt labor insu office
+	 */
 	private QismtLaborInsuOffice toEntity(LaborInsuranceOffice laborInsuranceOffice) {
 		QismtLaborInsuOffice entity = new QismtLaborInsuOffice();
 		laborInsuranceOffice.saveToMemento(new JpaLaborInsuranceOfficeSetMemento(entity));
 		return entity;
 	}
 
+	/**
+	 * To domain.
+	 *
+	 * @param entity
+	 *            the entity
+	 * @return the labor insurance office
+	 */
 	private static LaborInsuranceOffice toDomain(QismtLaborInsuOffice entity) {
 		LaborInsuranceOffice domain = new LaborInsuranceOffice(new JpaLaborInsuranceOfficeGetMemento(entity));
 		return domain;
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.dom.insurance.labor.LaborInsuranceOfficeRepository#
+	 * remove(nts.uk.ctx.core.dom.company.CompanyCode, java.lang.String,
+	 * java.lang.Long)
+	 */
 	@Override
 	public void remove(CompanyCode companyCode, String officeCode, Long version) {
 		this.commandProxy().remove(QismtLaborInsuOffice.class, new QismtLaborInsuOfficePK(companyCode.v(), officeCode));

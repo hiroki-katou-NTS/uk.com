@@ -5,12 +5,10 @@ module nts.uk.pr.view.qmm010.b {
         export class ScreenModel {
             textSearch: any;
             lstSocialInsuranceOffice: KnockoutObservableArray<SocialInsuranceOfficeInDto>;
-            selectLstSocialInsuranceOffice: KnockoutObservable<string>;
+            selectLstSocialInsuranceOffice: KnockoutObservableArray<any>;
             columnsLstSocialInsuranceOffice: KnockoutObservableArray<any>;
             multilineeditor: any;
             employmentName: KnockoutObservable<string>;
-            currentCode: KnockoutObservable<any>;
-            currentCodeList: KnockoutObservableArray<any>;
             constructor() {
                 var self = this;
                 self.employmentName = ko.observable("");
@@ -23,13 +21,11 @@ module nts.uk.pr.view.qmm010.b {
                         textalign: "left"
                     }))
                 }
-                self.selectLstSocialInsuranceOffice = ko.observable("");
+                self.selectLstSocialInsuranceOffice = ko.observableArray([]);
                 self.columnsLstSocialInsuranceOffice = ko.observableArray([
                     { headerText: 'コード', prop: 'code', width: 120 },
                     { headerText: '名称', prop: 'name', width: 120 }
                 ]);
-                self.currentCode = ko.observable();
-                self.currentCodeList = ko.observableArray([]);
                 self.multilineeditor = {
                     value: ko.observable(''),
                     constraint: 'ResidenceCode',

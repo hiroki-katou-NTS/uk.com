@@ -28,7 +28,7 @@
 			<div id="functions-area" class="divHeader">
 				<button id="btn_new" data-bind="click: resetValueLaborInsurance"
 					class="btnStyle">新規</button>
-				<button class="proceed btnStyle" id="btn_register"
+				<button class="proceed btnStyle" id="btn_save"
 					data-bind="click: saveLaborInsuranceOffice">登録</button>
 				<button id="btn_printing">印刷 (PDF)</button>
 				<button id="btn_readFromSocialTnsuranceOffice"
@@ -69,14 +69,15 @@
 											<label>コード/名称<br /></label>
 										</div>
 									</td>
-									<td class="contentsRR"><input id="inp_code" class="tr110"
+									<td class="contentsRR"><input id="inp_code" class="tr110 save-error"
 										data-name="code"
 										data-bind="ntsTextEditor: {value: code,
 											constraint: 'OfficeCode', 
-											option: textEditorOption, 
-											enable: true,
+											option: textEditorOption,
+											readonly: isReadOnly, 
+											enable: isEnable,
 											required:true}" />
-										<input id="inp_name" data-name="name"
+										<input id="inp_name" data-name="name" class="save-error"
 										data-bind="ntsTextEditor: {value: name, 
 											constraint: 'OfficeName',
 											option: textEditorOption,
@@ -92,7 +93,7 @@
 										</div>
 									</td>
 									<td class="contentsRR"><input id="inp_shortName"
-										class="trFull35" data-name="shortName"
+										class="trFull35 save-error" data-name="shortName"
 										data-bind="ntsTextEditor: {value: shortName,
 										constraint: 'ShortName', 
 										option: textEditorOption, 

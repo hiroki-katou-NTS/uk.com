@@ -113,46 +113,6 @@ public class JpaAccidentInsuranceRateRepository extends JpaRepository implements
 		return lstAccidentInsuranceRate;
 	}
 
-	/**
-	 * From domain.
-	 *
-	 * @param historyId
-	 *            the history id
-	 * @param companyCode
-	 *            the company code
-	 * @param monthRange
-	 *            the month range
-	 * @return the unemployee insurance rate
-	 */
-	public AccidentInsuranceRate fromDomain(String historyId, CompanyCode companyCode, MonthRange monthRange) {
-		return new AccidentInsuranceRate(new AccidentInsuranceRateGetMemento() {
-
-			@Override
-			public Set<InsuBizRateItem> getRateItems() {
-				// TODO Auto-generated method stub
-				return null;
-			}
-
-			@Override
-			public String getHistoryId() {
-				// TODO Auto-generated method stub
-				return historyId;
-			}
-
-			@Override
-			public CompanyCode getCompanyCode() {
-				// TODO Auto-generated method stub
-				return companyCode;
-			}
-
-			@Override
-			public MonthRange getApplyRange() {
-				// TODO Auto-generated method stub
-				return monthRange;
-			}
-		});
-	}
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -167,10 +127,8 @@ public class JpaAccidentInsuranceRateRepository extends JpaRepository implements
 	/**
 	 * Find data by id.
 	 *
-	 * @param companyCode
-	 *            the company code
-	 * @param historyId
-	 *            the history id
+	 * @param companyCode the company code
+	 * @param historyId the history id
 	 * @return the list
 	 */
 	public List<QismtWorkAccidentInsu> findDataById(CompanyCode companyCode, String historyId) {
@@ -195,18 +153,9 @@ public class JpaAccidentInsuranceRateRepository extends JpaRepository implements
 	/**
 	 * Find between.
 	 *
-	 * @param companyCode
-	 *            the company code
-	 * @param yearMonth
-	 *            the year month
+	 * @param companyCode the company code
+	 * @param yearMonth the year month
 	 * @return the list
-	 */
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.
-	 * AccidentInsuranceRateRepository#findBetween(nts.uk.ctx.core.dom.company.
-	 * CompanyCode, java.lang.String)
 	 */
 	public List<QismtWorkAccidentInsu> findBetween(CompanyCode companyCode, YearMonth yearMonth) {
 		EntityManager em = getEntityManager();
@@ -231,10 +180,9 @@ public class JpaAccidentInsuranceRateRepository extends JpaRepository implements
 	/**
 	 * Find between update.
 	 *
-	 * @param companyCode
-	 *            the company code
-	 * @param yearMonth
-	 *            the year month
+	 * @param companyCode the company code
+	 * @param yearMonth the year month
+	 * @param historyId the history id
 	 * @return the list
 	 */
 	public List<QismtWorkAccidentInsu> findBetweenUpdate(CompanyCode companyCode, YearMonth yearMonth,
@@ -264,12 +212,9 @@ public class JpaAccidentInsuranceRateRepository extends JpaRepository implements
 	/**
 	 * Find between end update.
 	 *
-	 * @param companyCode
-	 *            the company code
-	 * @param yearMonth
-	 *            the year month
-	 * @param historyId
-	 *            the history id
+	 * @param companyCode the company code
+	 * @param yearMonth the year month
+	 * @param historyId the history id
 	 * @return the list
 	 */
 	public List<QismtWorkAccidentInsu> findBetweenEndUpdate(CompanyCode companyCode, YearMonth yearMonth,
@@ -325,8 +270,7 @@ public class JpaAccidentInsuranceRateRepository extends JpaRepository implements
 	/**
 	 * To entity.
 	 *
-	 * @param rate
-	 *            the rate
+	 * @param rate the rate
 	 * @return the list
 	 */
 	public List<QismtWorkAccidentInsu> toEntity(AccidentInsuranceRate rate) {
@@ -349,8 +293,7 @@ public class JpaAccidentInsuranceRateRepository extends JpaRepository implements
 	/**
 	 * Ramdom history.
 	 *
-	 * @param rate
-	 *            the rate
+	 * @param rate the rate
 	 * @return the list
 	 */
 	public List<QismtWorkAccidentInsu> ramdomHistory(AccidentInsuranceRate rate) {
@@ -364,6 +307,14 @@ public class JpaAccidentInsuranceRateRepository extends JpaRepository implements
 		return lstQismtWorkAccidentInsu;
 	}
 
+	/**
+	 * Checks if is invalid date range update.
+	 *
+	 * @param companyCode the company code
+	 * @param startMonth the start month
+	 * @param historyId the history id
+	 * @return true, if is invalid date range update
+	 */
 	public boolean isInvalidDateRangeUpdate(CompanyCode companyCode, YearMonth startMonth, String historyId) {
 		// data is begin update
 		List<QismtWorkAccidentInsu> lstQismtWorkAccidentInsuUpdate = findDataById(companyCode, historyId);
