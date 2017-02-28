@@ -5,12 +5,13 @@ var qmm003;
         var service;
         (function (service) {
             var paths = {
-                getResidentalTaxList: "pr/core/residential/findallresidential"
+                getResidentalTaxList: "pr/core/residential/findallresidential",
+                getRegionPrefecture: "pr/core/residential/getlistLocation"
             };
             /**
              * Get list payment date processing.
              */
-            function getResidentalTax() {
+            function getResidentialTax() {
                 var dfd = $.Deferred();
                 nts.uk.request.ajax(paths.getResidentalTaxList)
                     .done(function (res) {
@@ -21,7 +22,27 @@ var qmm003;
                 });
                 return dfd.promise();
             }
-            service.getResidentalTax = getResidentalTax;
+            service.getResidentialTax = getResidentialTax;
+            function getRegionPrefecture() {
+                var dfd = $.Deferred();
+                nts.uk.request.ajax(paths.getRegionPrefecture)
+                    .done(function (res) {
+                    //                var result = _.map(res, function(region: any) {
+                    //                    region.prefectures=_.map(region, function(obj:model.RegionObject ){
+                    //                         return new model.PrefectureObject(' ',' ');
+                    //                    });
+                    //                   
+                    //                    return new model.RegionObject(region.regionCode, region.regionName, region.prefectures);
+                    //
+                    //                });
+                    dfd.resolve(res);
+                })
+                    .fail(function (res) {
+                    dfd.reject(res);
+                });
+                return dfd.promise();
+            }
+            service.getRegionPrefecture = getRegionPrefecture;
             var model;
             (function (model) {
                 var ResidentialTax = (function () {
@@ -43,6 +64,27 @@ var qmm003;
                     return ResidentialTax;
                 }());
                 model.ResidentialTax = ResidentialTax;
+                var RegionObject = (function () {
+                    function RegionObject() {
+                    }
+                    RegionObject.prototype.contructor = function (regionCode, regionName, prefectures) {
+                        this.regionCode = regionCode;
+                        this.regionName = regionName;
+                        this.prefectures = prefectures;
+                    };
+                    return RegionObject;
+                }());
+                model.RegionObject = RegionObject;
+                var PrefectureObject = (function () {
+                    function PrefectureObject() {
+                    }
+                    PrefectureObject.prototype.contructor = function (prefectureCode, prefectureName) {
+                        this.prefectureCode = prefectureCode;
+                        this.prefectureName = prefectureName;
+                    };
+                    return PrefectureObject;
+                }());
+                model.PrefectureObject = PrefectureObject;
             })(model = service.model || (service.model = {}));
         })(service = a.service || (a.service = {}));
     })(a = qmm003.a || (qmm003.a = {}));
