@@ -1,4 +1,4 @@
-package nts.uk.ctx.basic.infra.repository.system.bank.branch.era;
+package nts.uk.ctx.basic.infra.repository.system.era;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -12,8 +12,8 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.basic.dom.system.era.Era;
 import nts.uk.ctx.basic.dom.system.era.EraRepository;
-import nts.uk.ctx.basic.infra.entity.system.bank.branch.entity.era.CmnmtEra;
-import nts.uk.ctx.basic.infra.entity.system.bank.branch.entity.era.CmnmtEraPk;
+import nts.uk.ctx.basic.infra.entity.system.era.CmnmtEra;
+import nts.uk.ctx.basic.infra.entity.system.era.CmnmtEraPk;
 
 @Stateless
 public class JpaEraRepository extends JpaRepository implements EraRepository {

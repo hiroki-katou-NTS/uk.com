@@ -1,4 +1,4 @@
-package nts.uk.ctx.basic.app.find.system.bank.branch.era;
+package nts.uk.ctx.basic.app.find.system.era;
 
 import java.time.LocalDate;
 import java.util.List;

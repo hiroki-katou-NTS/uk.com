@@ -1,4 +1,4 @@
-package nts.uk.ctx.basic.infra.entity.system.bank.branch.entity.era;
+package nts.uk.ctx.basic.infra.entity.system.era;
 
 import java.io.Serializable;
 

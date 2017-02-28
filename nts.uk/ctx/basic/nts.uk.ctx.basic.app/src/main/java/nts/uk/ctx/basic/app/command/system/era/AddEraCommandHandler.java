@@ -1,4 +1,4 @@
-package nts.uk.ctx.basic.app.command.system.bank.branch.era;
+package nts.uk.ctx.basic.app.command.system.era;
 
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;

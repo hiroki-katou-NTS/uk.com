@@ -1,4 +1,4 @@
-package nts.uk.ctx.basic.ws.system.bank.era;
+package nts.uk.ctx.basic.ws.system.era;
 
 import java.util.List;
 
@@ -8,14 +8,14 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.basic.app.command.system.bank.branch.era.AddEraCommand;
-import nts.uk.ctx.basic.app.command.system.bank.branch.era.AddEraCommandHandler;
-import nts.uk.ctx.basic.app.command.system.bank.branch.era.DeleteEraCommand;
-import nts.uk.ctx.basic.app.command.system.bank.branch.era.DeleteEraCommandHandler;
-import nts.uk.ctx.basic.app.command.system.bank.branch.era.UpdateEraCommand;
-import nts.uk.ctx.basic.app.command.system.bank.branch.era.UpdateEraCommandHandler;
-import nts.uk.ctx.basic.app.find.system.bank.branch.era.EraDto;
-import nts.uk.ctx.basic.app.find.system.bank.branch.era.EraFinder;
+import nts.uk.ctx.basic.app.command.system.era.AddEraCommand;
+import nts.uk.ctx.basic.app.command.system.era.AddEraCommandHandler;
+import nts.uk.ctx.basic.app.command.system.era.DeleteEraCommand;
+import nts.uk.ctx.basic.app.command.system.era.DeleteEraCommandHandler;
+import nts.uk.ctx.basic.app.command.system.era.UpdateEraCommand;
+import nts.uk.ctx.basic.app.command.system.era.UpdateEraCommandHandler;
+import nts.uk.ctx.basic.app.find.system.era.EraDto;
+import nts.uk.ctx.basic.app.find.system.era.EraFinder;
 
 @Path("ctx/basic/era")
 @Produces("application/json")
