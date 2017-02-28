@@ -663,6 +663,7 @@ var nts;
                         ;
                     };
                     function init(control) {
+                        $("html").addClass("sidebar-html");
                         control.find("div[role=tabpanel]").hide();
                         control.on("click", "#sidebar-area .navigator a", function (e) {
                             e.preventDefault();

@@ -2308,8 +2308,9 @@ var nts;
                         var currentSource = $grid1.igGrid('option', 'dataSource');
                         var currentSelected = $grid2.igGrid('option', 'dataSource');
                         var sources = (data.dataSource !== undefined ? data.dataSource() : data.options());
+                        var selectedSources = data.value();
                         _.remove(sources, function (item) {
-                            return _.find(currentSelected, function (selected) {
+                            return _.find(selectedSources, function (selected) {
                                 return selected[primaryKey] === item[primaryKey];
                             }) !== undefined;
                         });
@@ -2317,8 +2318,8 @@ var nts;
                             $grid1.igGrid('option', 'dataSource', sources.slice());
                             $grid1.igGrid("dataBind");
                         }
-                        if (!_.isEqual(currentSelected, data.value())) {
-                            $grid2.igGrid('option', 'dataSource', data.value().slice());
+                        if (!_.isEqual(currentSelected, selectedSources)) {
+                            $grid2.igGrid('option', 'dataSource', selectedSources.slice());
                             $grid2.igGrid("dataBind");
                         }
                     };
