@@ -6,11 +6,11 @@
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 
 <body>
-
-	<ui:composition template="/master/sidebar.xhtml">
-		<ui:define name="htmlHead">
+	<ui:composition template="master/sidebar.xhtml">
+		<ui:define name="sidebar-head">
 			<script>var dialogSize = { width: 900, height: 700 };</script>
 			<com:scriptfile path="viewmodel.js" />
+			<com:scriptfile path="service.js" />
 			<com:scriptfile path="start.js" />
 			<com:stylefile path="style.css" />
 			<com:scriptfile set="IGNITE" />
@@ -23,7 +23,7 @@
 			</ul>
 		</ui:define>
 
-		<ui:define name="content">
+		<ui:define name="sidebar-content">
 			<div id="tabpanel-1" role="tabpanel">
 				<div class="sidebar-content-header">
 					<span class="title">納付書の印刷</span>
@@ -58,7 +58,9 @@
 							<div style="clear: both;">
 								<div id="B_LBL_004"
 									data-bind="ntsFormLabel: {  required: true }">対象年月</div>
-								<input id="B_INP_001" type="text"></input> <span id="B_LBL_005"
+								<div id="B_INP_001"
+									data-bind="ntsDatePicker: {value: B_INP_001_yearMonth, dateFormat: 'yyyy/MM'}"></div>
+								<span data-bind="text:yearInJapanEmpire_LBL_005" id="B_LBL_005"
 									style="margin-bottom: 15px; float: left">対象年月和暦 </span> <span
 									id="B_LBL_006" style="float: left">納付書印刷の設定 </span>
 								<hr class="hrLabel"></hr>
@@ -66,14 +68,18 @@
 							<div style="clear: both;">
 								<div id="B_LBL_007"
 									data-bind="ntsFormLabel: {  required: true }">指定年月</div>
-								<input id="B_INP_002" type="text"></input> <span id="B_LBL_008"
+								<div id="B_INP_002"
+									data-bind="ntsDatePicker: {value: B_INP_002_yearMonth, dateFormat: 'yyyy/MM'}"></div>
+								<span id="B_LBL_008" data-bind="text:yearInJapanEmpire_LBL_008"
 									style="float: left">指定年月和暦 </span>
 							</div>
 							<div style="clear: both;">
 								<div class="floatLeft" id="B_LBL_009"
 									data-bind="ntsFormLabel: {  required: true }">納付期限</div>
-								<input id="B_INP_003" type="text"></input> <span id="B_LBL_010"
-									class="floatLeft">納付期限和暦 </span> <span id="B_LBL_011"
+								<div id="B_INP_003"
+									data-bind="ntsDatePicker: {value: B_INP_003_yearMonth, dateFormat: 'yyyy/MM/dd'}"></div>
+								<span id="B_LBL_010" data-bind="text:yearInJapanEmpire_LBL_010"
+									style="float: left">指定年月和暦 </span> <span id="B_LBL_011"
 									style="float: left">納付先ごとの設定 </span>
 								<hr class="hrLabel"></hr>
 							</div>
@@ -91,23 +97,13 @@
 								<div style="width: 700px" id="SCH_001"
 									data-bind="ntsSearchBox: {
 									comId: 'B_LST_001', 
-									items: files, 
+									items: B_LST_001_Data, 
 									selected: selectedValue_B_LST_001, 
-									selectedKey: 'id', 
-									fields: ['name', 'id'], 
+									selectedKey: 'resiTaxCode', 
+									fields: ['resiTaxCode'], 
 									childField: 'childs'}" />
 								<table id="B_LST_001">
 								</table>
-								<!-- 		<table id="B_LST_001"
-									data-bind="ntsGridList: {
-								width: 280,
-								height: 350,
-								options: gridListItems_B_LST_001,
-								optionsValue: 'code',
-								columns: columns_B_LST_001,
-								multiple: true,
-								value: currentCodeList_B_LST_001
-							}"></table> -->
 							</div>
 						</div>
 					</div>
@@ -223,52 +219,18 @@
 								<div style="width: 700px"
 									data-bind="ntsSearchBox: {
 									comId: 'C_LST_001',
-									 items: files, 
+									 items: B_LST_001_Data, 
 									 selected: selectedValue_C_LST_001, 
 									 selectedKey: 'id',
 									  fields: ['name', 'id'], 
 									  childField: 'childs'}" />
 								<table id="C_LST_001">
 								</table>
-								<!-- 		<table id="C_LST_001"
-									data-bind="ntsGridList: {
-								width: 280,
-								height: 350,
-								options: gridListItems_C_LST_001,
-								optionsValue: 'code',
-								columns: columns_C_LST_001,
-								multiple: true,
-								value: currentCodeList_C_LST_001
-							}"></table> -->
 							</div>
 						</div>
 					</div>
 				</div>
 			</div>
-			<!-- <div id="tabpanel-3" role="tabpanel">
-		   			<div class="sidebar-content-header">
-			   			<span class="title">切断</span>
-						<button class="proceed">操作</button>
-						<button>の間</button>
-						<button>操作がなかったため</button>
-						<button>接続を切断しました</button>
-					</div>
-					<div class="contents-area">
-						Content 3
-			   		</div>
-		   		</div>
-		   		<div id="tabpanel-4" role="tabpanel">
-		   			<div class="sidebar-content-header">
-			   			<span class="title">接続</span>
-						<button class="proceed">操作</button>
-						<button>の間</button>
-						<button>操作がなかったため</button>
-						<button>接続を切断しました</button>
-					</div>
-					<div class="contents-area">
-						Content 4
-			   		</div>
-		   		</div> -->
 		</ui:define>
 	</ui:composition>
 </body>

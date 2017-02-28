@@ -9,6 +9,7 @@ import javax.transaction.Transactional;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.pr.core.dom.rule.law.tax.residential.output.ResidentTaxPaymentData;
 import nts.uk.ctx.pr.core.dom.rule.law.tax.residential.output.ResidentTaxPaymentDataRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -38,7 +39,7 @@ public class AddResimentTaxPaymentDataCommandHandler extends CommandHandler<AddR
 				command.getTaxOverDueMoney(),
 				command.getTaxDemandChargeMoyney(), 
 				command.getAddress(), 
-				command.getDueDate(), 
+				command.getDueDate(),
 				command.getHeadcount(), 
 				command.getRetirementBonusAmout(), 
 				command.getCityTaxMoney(), 

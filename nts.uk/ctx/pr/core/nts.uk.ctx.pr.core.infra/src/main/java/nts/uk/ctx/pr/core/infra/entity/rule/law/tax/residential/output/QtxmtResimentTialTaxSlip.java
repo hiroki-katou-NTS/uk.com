@@ -1,7 +1,6 @@
 package nts.uk.ctx.pr.core.infra.entity.rule.law.tax.residential.output;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 
 import javax.persistence.Column;
 import javax.persistence.Convert;
@@ -13,7 +12,8 @@ import javax.persistence.TemporalType;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.arc.layer.infra.data.entity.type.LocalDateToDBConverter;
+import nts.arc.layer.infra.data.entity.type.GeneralDateToDBConverter;
+import nts.arc.time.GeneralDate;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -40,8 +40,8 @@ public class QtxmtResimentTialTaxSlip {
 	
 	@Column(name = "DUE_DATE")
 	@Temporal(TemporalType.DATE)
-	@Convert(converter = LocalDateToDBConverter.class)
-	public LocalDate dueDate;
+	@Convert(converter = GeneralDateToDBConverter.class)
+	public GeneralDate dueDate;
 	
 	@Column(name = "HEADCOUNT")
 	public int headcount;

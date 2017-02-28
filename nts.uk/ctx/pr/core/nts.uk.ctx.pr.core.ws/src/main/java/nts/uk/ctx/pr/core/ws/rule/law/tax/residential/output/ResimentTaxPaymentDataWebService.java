@@ -9,6 +9,8 @@ import javax.ws.rs.Produces;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.pr.core.app.command.rule.law.tax.residential.output.AddResimentTaxPaymentDataCommand;
 import nts.uk.ctx.pr.core.app.command.rule.law.tax.residential.output.AddResimentTaxPaymentDataCommandHandler;
+import nts.uk.ctx.pr.core.app.command.rule.law.tax.residential.output.UpdateResimentTaxPaymentDataCommand;
+import nts.uk.ctx.pr.core.app.command.rule.law.tax.residential.output.UpdateResimentTaxPaymentDataCommandHandler;
 import nts.uk.ctx.pr.core.app.find.rule.law.tax.residential.output.ResimentTaxPaymentDataFinder;
 import nts.uk.ctx.pr.core.app.find.rule.law.tax.residential.output.dto.ResimentTaxPaymentDataDto;
 
@@ -19,17 +21,25 @@ public class ResimentTaxPaymentDataWebService extends WebService {
 	private ResimentTaxPaymentDataFinder finder;
 	@Inject
 	private AddResimentTaxPaymentDataCommandHandler addHandler;
-	
-	
+	@Inject
+	private UpdateResimentTaxPaymentDataCommandHandler updateHandler;
+
 	@Path("find/{resimentTaxCode}/{yearMonth}")
 	@POST
-	public ResimentTaxPaymentDataDto find(@PathParam("resimentTaxCode") String resimentTaxCode,@PathParam("yearMonth") int yearMonth) {
+	public ResimentTaxPaymentDataDto find(@PathParam("resimentTaxCode") String resimentTaxCode,
+			@PathParam("yearMonth") int yearMonth) {
 		return this.finder.find(resimentTaxCode, yearMonth);
 	}
-	
+
 	@Path("add")
 	@POST
 	public void add(AddResimentTaxPaymentDataCommand command) {
 		this.addHandler.handle(command);
+	}
+
+	@Path("update")
+	@POST
+	public void update(UpdateResimentTaxPaymentDataCommand command) {
+		this.updateHandler.handle(command);
 	}
 }

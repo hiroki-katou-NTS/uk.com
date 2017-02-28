@@ -1,14 +1,15 @@
 package nts.uk.ctx.pr.core.app.command.rule.law.tax.residential.output;
 
 import java.math.BigDecimal;
-import java.time.LocalDate;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.arc.time.GeneralDate;
 
 @NoArgsConstructor
 @Data
 public class AddResimentTaxPaymentDataCommand {
+	
 	private String resimentTaxCode;
 	
 	private int yearMonth;
@@ -23,7 +24,7 @@ public class AddResimentTaxPaymentDataCommand {
 	
 	private String address;
 	
-	private LocalDate dueDate;
+	private GeneralDate dueDate;
 	
 	private int headcount;
 	

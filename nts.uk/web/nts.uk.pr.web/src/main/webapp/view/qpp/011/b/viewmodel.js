@@ -8,8 +8,8 @@ var qpp011;
                 var self = this;
                 //start radiogroup data
                 self.RadioItemList = ko.observableArray([
-                    new BoxModel(1, '譛ｬ遉ｾ'),
-                    new BoxModel(2, '豕募ｮ夊ｪｿ譖ｸ蜃ｺ蜉帷畑莨夂､ｾ')
+                    new BoxModel(1, '本社'),
+                    new BoxModel(2, '法定調書出力用会社')
                 ]);
                 self.selectedId = ko.observable(1);
                 self.enable = ko.observable(true);
@@ -43,114 +43,43 @@ var qpp011;
                     enable: ko.observable(true),
                     readonly: ko.observable(false)
                 };
+                self.B_LST_001_Data = ko.observable([]);
                 //end number editer
-                self.files = [
-                    {
-                        "id": 1, "name": "Documents", "dateModified": "9/12/2013", "type": "File Folder", "size": 4480, "files": [
-                            { "id": 2, "name": "To do list.txt", "dateModified": "11/5/2013", "type": "TXT File", "size": 4448 },
-                            { "id": 3, "name": "Work.txt", "dateModified": "9/12/2013", "type": "TXT File", "size": 32 }
-                        ]
-                    },
-                    {
-                        "id": 4, "name": "Music", "dateModified": "6/10/2014", "type": "File Folder", "size": 5594, "files": [
-                            {
-                                "id": 5, "name": "AC/DC", "dateModified": "6/10/2014", "type": "File Folder", "size": 2726, "files": [
-                                    { "id": 6, "name": "Stand Up.mp3", "dateModified": "6/10/2014", "type": "MP3 File", "size": 456 },
-                                    { "id": 7, "name": "T.N.T.mp3", "dateModified": "6/10/2014", "type": "MP3 File", "size": 1155 },
-                                    { "id": 8, "name": "The Jack.mp3", "dateModified": "6/10/2014", "type": "MP3 File", "size": 1115 }
-                                ]
-                            },
-                            {
-                                "id": 9, "name": "WhiteSnake", "dateModified": "6/11/2014", "type": "File Folder", "size": 2868, "files": [
-                                    { "id": 10, "name": "Trouble.mp3", "dateModified": "6/11/2014", "type": "MP3 File", "size": 1234 },
-                                    { "id": 11, "name": "Bad Boys.mp3", "dateModified": "6/11/2014", "type": "MP3 File", "size": 522 },
-                                    { "id": 12, "name": "Is This Love.mp3", "dateModified": "6/11/2014", "type": "MP3 File", "size": 1112 },
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "id": 13, "name": "Pictures", "dateModified": "1/9/2014", "type": "File Folder", "size": 1825, "files": [
-                            {
-                                "id": 14, "name": "Jacks Birthday", "dateModified": "6/9/2014", "type": "File Folder", "size": 631, "files": [
-                                    { "id": 15, "name": "Picture1.png", "dateModified": "6/9/2014", "type": "PNG image", "size": 493 },
-                                    { "id": 16, "name": "Picture2.png", "dateModified": "6/9/2014", "type": "PNG image", "size": 88 },
-                                    { "id": 17, "name": "Picture3.gif", "dateModified": "6/9/2014", "type": "GIF File", "size": 50 },
-                                ]
-                            },
-                            {
-                                "id": 18, "name": "Trip to London", "dateModified": "3/10/2014", "type": "File Folder", "size": 1194, "files": [
-                                    { "id": 19, "name": "Picture1.png", "dateModified": "3/10/2014", "type": "PNG image", "size": 974 },
-                                    { "id": 20, "name": "Picture2.png", "dateModified": "3/10/2014", "type": "PNG image", "size": 142 },
-                                    { "id": 21, "name": "Picture3.png", "dateModified": "3/10/2014", "type": "PNG image", "size": 41 },
-                                    { "id": 22, "name": "Picture4.png", "dateModified": "3/10/2014", "type": "PNG image", "size": 25 },
-                                    { "id": 23, "name": "Picture5.png", "dateModified": "3/10/2014", "type": "PNG image", "size": 12 },
-                                ]
-                            }
-                        ]
-                    },
-                    {
-                        "id": 24, "name": "Videos", "dateModified": "1/4/2014", "type": "File Folder", "size": 0
-                    },
-                    {
-                        "id": 25, "name": "Books", "dateModified": "1/4/2014", "type": "File Folder", "size": 99376, "files": [
-                            {
-                                "id": 26, "name": "James Rollins", "dateModified": "6/2/2014", "type": "File Folder", "size": 34228, "files": [
-                                    { "id": 27, "name": "Alter of Eden.pdf", "dateModified": "6/5/2014", "type": "Adobe Acrobat Document", "size": 8894 },
-                                    { "id": 28, "name": "Amazonia.pdf", "dateModified": "3/2/2014", "type": "Adobe Acrobat Document", "size": 6212 },
-                                    { "id": 29, "name": "Subterranean.pdf", "dateModified": "1/4/2014", "type": "Adobe Acrobat Document", "size": 4820 },
-                                    { "id": 30, "name": "Sandstorm.pdf", "dateModified": "2/2/2014", "type": "Adobe Acrobat Document", "size": 14302 }
-                                ]
-                            },
-                            {
-                                "id": 31, "name": "Stephen King", "dateModified": "3/10/2014", "type": "File Folder", "size": 65148, "files": [
-                                    { "id": 32, "name": "It.pdf", "dateModified": "3/10/2014", "type": "Adobe Acrobat Document", "size": 9987 },
-                                    { "id": 33, "name": "Misery.pdf", "dateModified": "3/10/2014", "type": "Adobe Acrobat Document", "size": 32313 },
-                                    { "id": 34, "name": "Pet Sematary.pdf", "dateModified": "3/10/2014", "type": "Adobe Acrobat Document", "size": 22848 }
-                                ]
-                            }
-                        ]
-                    },
-                    { "id": 35, "name": "Games", "dateModified": "8/8/2014", "type": "File Folder", "size": 0 },
-                    {
-                        "id": 36, "name": "Projects", "dateModified": "7/4/2014", "type": "File Folder", "size": 4, "files": [
-                            {
-                                "id": 37, "name": "Visual Studio 2012", "dateModified": "7/4/2014", "type": "File Folder", "size": 1, "files": [
-                                    { "id": 38, "name": "Project10.sln", "dateModified": "7/4/2014", "type": "Microsoft Visual Studio Solution", "size": 1 }
-                                ]
-                            },
-                            {
-                                "id": 39, "name": "Visual Studio 2013", "dateModified": "9/6/2014", "type": "File Folder", "size": 3, "files": [
-                                    { "id": 40, "name": "Project1.sln", "dateModified": "9/6/2014", "type": "Microsoft Visual Studio Solution", "size": 1 },
-                                    { "id": 41, "name": "Project2.sln", "dateModified": "9/6/2014", "type": "Microsoft Visual Studio Solution", "size": 1 },
-                                    { "id": 42, "name": "Project3.sln", "dateModified": "9/6/2014", "type": "Microsoft Visual Studio Solution", "size": 1 }
-                                ]
-                            }
-                        ]
-                    }
+                b.service.findAllResidential().done(function (data) {
+                    self.B_LST_001_Data(data);
+                    BindTreeGrid("#B_LST_001", self.B_LST_001_Data());
+                    BindTreeGrid("#C_LST_001", self.B_LST_001_Data());
+                }).fail(function (res) {
+                    // Alert message
+                    alert(res);
+                });
+                self.columns = [
+                    { headerText: "resiTaxCode", key: "resiTaxCode", width: "250px", dataType: "string", hidden: true },
+                    { headerText: "companyCode", key: "companyCode", width: "300px", dataType: "string", hidden: true },
+                    { headerText: "companySpecifiedNo", key: "companySpecifiedNo", width: "130px", dataType: "string" },
+                    { headerText: "registeredName", key: "registeredName", width: "230px", dataType: "string" },
+                    { headerText: "prefectureCode", key: "prefectureCode", width: "130px", dataType: "string" }
                 ];
-                BindGrid("#B_LST_001");
-                BindGrid("#C_LST_001");
-                function BindGrid(gridID) {
+                function BindTreeGrid(gridID, Data) {
                     $(gridID).igTreeGrid({
                         width: "480px",
                         height: "500px",
-                        dataSource: self.files,
+                        dataSource: Data,
                         autoGenerateColumns: false,
-                        primaryKey: "id",
-                        columns: [
-                            { headerText: "ID", key: "id", width: "250px", dataType: "number", hidden: true },
-                            { headerText: "Name", key: "name", width: "300px", dataType: "string" },
-                            { headerText: "Date Modified", key: "dateModified", width: "130px", dataType: "date", hidden: true },
-                            { headerText: "Type", key: "type", width: "230px", dataType: "string", hidden: true },
-                            { headerText: "Size in KB", key: "size", width: "130px", dataType: "number", hidden: true }
-                        ],
+                        primaryKey: "resiTaxCode",
+                        columns: self.columns,
                         childDataKey: "files",
                         initialExpandDepth: 2,
                         features: [
                             {
                                 name: "Selection",
-                                multipleSelection: true
+                                multipleSelection: true,
+                                rowSelectionChanged: function (evt, ui) {
+                                    var selectedRows = ui.selectedRows;
+                                    self.selectedValue_B_LST_001(_.map(selectedRows, function (row) {
+                                        return row.id;
+                                    }));
+                                }
                             },
                             {
                                 name: "RowSelectors",
@@ -160,12 +89,14 @@ var qpp011;
                                 enableRowNumbering: false
                             }]
                     });
+                    $(gridID).setupSearchScroll("igTreeGrid");
                 }
                 self.selectedValue_B_LST_001 = ko.observableArray([]);
                 var $B_LST_001 = $("#B_LST_001");
                 self.selectedValue_B_LST_001.subscribe(function (newValue) {
                     var selectedRows = _.map($B_LST_001.igTreeGridSelection("selectedRows"), function (row) {
-                        return row.id;
+                        if (row != undefined)
+                            return row.id;
                     });
                     if (!_.isEqual(selectedRows, newValue)) {
                         $B_LST_001.igTreeGridSelection("clearSelection");
@@ -187,43 +118,37 @@ var qpp011;
                         });
                     }
                 });
+                //001
+                self.B_INP_001_yearMonth = ko.observable('2016/12');
+                self.B_INP_001_yearMonth.subscribe(function (newValue) {
+                    self.yearInJapanEmpire_LBL_005("(" + nts.uk.time.yearmonthInJapanEmpire(self.B_INP_001_yearMonth()).toString() + ")");
+                });
+                self.yearInJapanEmpire_LBL_005 = ko.observable();
+                self.yearInJapanEmpire_LBL_005("(" + nts.uk.time.yearmonthInJapanEmpire(self.B_INP_001_yearMonth()).toString() + ")");
+                //002
+                self.B_INP_002_yearMonth = ko.observable('2016/12');
+                self.B_INP_002_yearMonth.subscribe(function (newValue) {
+                    self.yearInJapanEmpire_LBL_008("(" + nts.uk.time.yearmonthInJapanEmpire(self.B_INP_002_yearMonth()).toString() + ")");
+                });
+                self.yearInJapanEmpire_LBL_008 = ko.observable();
+                self.yearInJapanEmpire_LBL_008("(" + nts.uk.time.yearmonthInJapanEmpire(self.B_INP_002_yearMonth()).toString() + ")");
+                //003
+                self.B_INP_003_yearMonth = ko.observable(new Date('2016/12/01'));
+                self.B_INP_003_yearMonth.subscribe(function (newValue) {
+                    self.yearInJapanEmpire_LBL_010("(" + nts.uk.time.yearmonthInJapanEmpire(self.B_INP_003_yearMonth()).toString() + ")");
+                });
+                self.yearInJapanEmpire_LBL_010 = ko.observable();
+                self.yearInJapanEmpire_LBL_010("(" + nts.uk.time.yearmonthInJapanEmpire(self.B_INP_003_yearMonth()).toString() + ")");
             }
-            ScreenModel.prototype.add = function () {
-                var self = this;
-                var obj = {
-                    "resimentTaxCode": resimentTaxCode,
-                    "yearMonth": yearMonth,
-                    "taxBonusMoney": taxBonusMoney,
-                    "taxOverDueMoney": taxOverDueMoney,
-                    "taxDemandChargeMoyney": taxDemandChargeMoyney,
-                    "address": address,
-                    "dueDate": dueDate,
-                    "headcount": headcount,
-                    "retirementBonusAmout": retirementBonusAmout,
-                    "cityTaxMoney": cityTaxMoney,
-                    "prefectureTaxMoney": prefectureTaxMoney
-                };
-                b.service.add(obj).done(function () {
-                    //do something    
-                }).fail(function (response) {
-                    alert(response.message);
-                });
-            };
-            ScreenModel.prototype.update = function () {
-                var self = this;
-                var obj = new b.service.model.residentialTax();
-                b.service.update().done(function () {
-                    //do something    
-                }).fail(function (response) {
-                    alert(response.message);
-                });
-            };
             ScreenModel.prototype.openFDialog = function () {
                 nts.uk.ui.windows.sub.modal('/view/qpp/011/f/index.xhtml', { height: 550, width: 740, dialogClass: 'no-close' }).onClosed(function () {
                 });
             };
             ScreenModel.prototype.openDDialog = function () {
-                nts.uk.ui.windows.sub.modal('/view/qpp/011/d/index.xhtml', { height: 550, width: 1000, dialogClass: 'no-close' }).onClosed(function () {
+                var self = this;
+                nts.uk.ui.windows.setShared("selectedValue_B_LST_001", self.selectedValue_B_LST_001);
+                nts.uk.ui.windows.setShared("files", self.B_LST_001_Data());
+                nts.uk.ui.windows.sub.modal('/view/qpp/011/d/index.xhtml', { height: 550, width: 1020, dialogClass: 'no-close' }).onClosed(function () {
                 });
             };
             return ScreenModel;

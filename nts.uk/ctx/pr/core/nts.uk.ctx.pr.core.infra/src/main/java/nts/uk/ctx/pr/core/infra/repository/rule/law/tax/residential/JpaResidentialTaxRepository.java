@@ -12,7 +12,7 @@ import nts.uk.ctx.pr.core.infra.entity.rule.law.tax.residential.QtxmtResidential
 import nts.uk.ctx.pr.core.infra.entity.rule.law.tax.residential.QtxmtResidentialTaxPk;
 @Stateless
 public class JpaResidentialTaxRepository extends JpaRepository implements ResidentalTaxRepository {
-    private final String SEL_1 = "SELECT c FROM QtxmtResidentialTax c WHERE c.qtxmtResidentialTaxPk.companyCd =: companyCd";
+    private final String SEL_1 = "SELECT c FROM QtxmtResidentialTax c WHERE c.qtxmtResidentialTaxPk.companyCd = :companyCd";
 	private static ResidentalTax toDomain(QtxmtResidentialTax entity){
 		val domain = ResidentalTax.createFromJavaType(entity.qtxmtResidentialTaxPk.companyCd, entity.companyAccountNo, entity.companySpecifiedNo, 
 				entity.cordinatePostOffice, entity.cordinatePostalCode, entity.memo, entity.prefectureCode, entity.registeredName, entity.resiTaxAutonomy, entity.qtxmtResidentialTaxPk.resiTaxCode, entity.resiReportCode);

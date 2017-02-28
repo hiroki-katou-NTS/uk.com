@@ -35,12 +35,12 @@ module qmm012.b.viewmodel {
             //start combobox data
             //001
             self.ComboBoxItemList_B_001 = ko.observableArray([
-                new ComboboxItemModel('1', '全件'),
-                new ComboboxItemModel('2', '支給項目'),
-                new ComboboxItemModel('3', '控除項目'),
-                new ComboboxItemModel('4', '勤怠項目'),
-                new ComboboxItemModel('5', '記事項目'),
-                new ComboboxItemModel('6', 'その他項目')
+                new ComboboxItemModel('1', '蜈ｨ莉ｶ'),
+                new ComboboxItemModel('2', '謾ｯ邨ｦ鬆�逶ｮ'),
+                new ComboboxItemModel('3', '謗ｧ髯､鬆�逶ｮ'),
+                new ComboboxItemModel('4', '蜍､諤�鬆�逶ｮ'),
+                new ComboboxItemModel('5', '險倅ｺ矩��逶ｮ'),
+                new ComboboxItemModel('6', '縺昴�ｮ莉夜��逶ｮ')
             ]);
             self.selectedCode_B_001 = ko.observable('1')
             self.isEnable = ko.observable(true);
@@ -49,21 +49,21 @@ module qmm012.b.viewmodel {
             self.textArea = ko.observable("");
             // start gridlist
             self.GridlistItems_B_001 = ko.observableArray([
-                new ItemModel('001', 'group1', '支給項目1', "description 1"),
-                new ItemModel('002', 'group1', '支給項目2', "description 2"),
-                new ItemModel('003', 'group2', '支給項目3', "description 3"),
-                new ItemModel('004', 'group2', '支給項目4', "description 4"),
-                new ItemModel('005', 'group3', '支給項目5', "description 5"),
-                new ItemModel('006', 'group3', '支給項目6', "description 6"),
-                new ItemModel('007', 'group4', '支給項目7', "description 7"),
-                new ItemModel('008', 'group4', '支給項目8', "description 8"),
-                new ItemModel('009', 'group5', '支給項目9', "description 9"),
-                new ItemModel('010', 'group5', '支給項目10', "description 10")
+                new ItemModel('001', 'group1', '謾ｯ邨ｦ鬆�逶ｮ1', "description 1"),
+                new ItemModel('002', 'group1', '謾ｯ邨ｦ鬆�逶ｮ2', "description 2"),
+                new ItemModel('003', 'group2', '謾ｯ邨ｦ鬆�逶ｮ3', "description 3"),
+                new ItemModel('004', 'group2', '謾ｯ邨ｦ鬆�逶ｮ4', "description 4"),
+                new ItemModel('005', 'group3', '謾ｯ邨ｦ鬆�逶ｮ5', "description 5"),
+                new ItemModel('006', 'group3', '謾ｯ邨ｦ鬆�逶ｮ6', "description 6"),
+                new ItemModel('007', 'group4', '謾ｯ邨ｦ鬆�逶ｮ7', "description 7"),
+                new ItemModel('008', 'group4', '謾ｯ邨ｦ鬆�逶ｮ8', "description 8"),
+                new ItemModel('009', 'group5', '謾ｯ邨ｦ鬆�逶ｮ9', "description 9"),
+                new ItemModel('010', 'group5', '謾ｯ邨ｦ鬆�逶ｮ10', "description 10")
             ]);
             self.GridColumns_B_001 = ko.observableArray([
-                { headerText: '蜷咲ｧｰ', prop: 'group', width: 150 },
-                { headerText: '繧ｳ繝ｼ繝�', prop: 'code', width: 100 },
-                { headerText: '隱ｬ譏�', prop: 'name', width: 200 }
+                { headerText: '陷ｷ蜥ｲ�ｽｧ�ｽｰ', prop: 'group', width: 150 },
+                { headerText: '郢ｧ�ｽｳ郢晢ｽｼ郢晢ｿｽ', prop: 'code', width: 100 },
+                { headerText: '髫ｱ�ｽｬ隴擾ｿｽ', prop: 'name', width: 200 }
             ]);
             self.GridlistCurrentCode_B_001 = ko.observable();
             self.GridCurrentName_B_001 = ko.computed(function() {

@@ -1,7 +1,7 @@
 var qpp011;
 (function (qpp011) {
-    var b;
-    (function (b) {
+    var d;
+    (function (d) {
         var service;
         (function (service) {
             var paths = {
@@ -64,8 +64,9 @@ var qpp011;
             var model;
             (function (model) {
                 var residentialTax = (function () {
-                    function residentialTax(resimentTaxCode, yearMonth, taxBonusMoney, taxOverDueMoney, taxDemandChargeMoyney, address, dueDate, headcount, retirementBonusAmout, cityTaxMoney, prefectureTaxMoney) {
+                    function residentialTax(resimentTaxCode, taxPayRollMoney, yearMonth, taxBonusMoney, taxOverDueMoney, taxDemandChargeMoyney, address, dueDate, headcount, retirementBonusAmout, cityTaxMoney, prefectureTaxMoney) {
                         this.resimentTaxCode = resimentTaxCode;
+                        this.taxPayRollMoney = taxPayRollMoney;
                         this.yearMonth = yearMonth;
                         this.taxBonusMoney = taxBonusMoney;
                         this.taxOverDueMoney = taxOverDueMoney;
@@ -81,6 +82,6 @@ var qpp011;
                 }());
                 model.residentialTax = residentialTax;
             })(model = service.model || (service.model = {}));
-        })(service = b.service || (b.service = {}));
-    })(b = qpp011.b || (qpp011.b = {}));
+        })(service = d.service || (d.service = {}));
+    })(d = qpp011.d || (qpp011.d = {}));
 })(qpp011 || (qpp011 = {}));

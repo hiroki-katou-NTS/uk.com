@@ -11,6 +11,7 @@
 
 #B_BTN_004 {
 	margin: 20px 0px 0px 30px;
+	width: 170px;
 }
 
 #content, #content2 {
@@ -47,8 +48,12 @@
 	margin-top: 20px;
 }
 
-#B_INP_001, #B_INP_002, #C_INP_001, #C_INP_002 {
+#C_INP_001, #C_INP_002 {
 	width: 60px;
+}
+
+#B_INP_001 input, #B_INP_002 input, #B_INP_003 input {
+	height: 20px;
 }
 
 #C_INP_002, #C_INP_003 {
@@ -79,7 +84,7 @@ input {
 	font-size: 1.3rem;
 }
 
-#B_INP_003, #C_INP_003 {
+#C_INP_003 {
 	width: 90px;
 }
 
@@ -133,10 +138,21 @@ input {
 #B_BTN_002 {
 	margin-left: 100px;
 }
-#B_LST_001_container{
+
+#B_LST_001_container {
 	margin-top: 10px;
 }
+
 #SCH_001 .ntsSearchBox {
-	height: 32px ;
+	height: 27px;
 	width: 190px;
+}
+
+#SCH_001 .search-btn {
+	height: 25px;
+	width: 60px;
+}
+
+#sidebar-area {
+	width: 130px;
 }

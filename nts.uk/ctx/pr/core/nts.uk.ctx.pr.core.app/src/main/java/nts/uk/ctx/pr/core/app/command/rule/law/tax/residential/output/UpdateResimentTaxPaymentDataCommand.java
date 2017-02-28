@@ -1,14 +1,14 @@
-package nts.uk.ctx.pr.core.app.find.rule.law.tax.residential.output.dto;
+package nts.uk.ctx.pr.core.app.command.rule.law.tax.residential.output;
 
 import java.math.BigDecimal;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
 
-@AllArgsConstructor
+@NoArgsConstructor
 @Data
-public class ResimentTaxPaymentDataDto {
+public class UpdateResimentTaxPaymentDataCommand {
 	private String resimentTaxCode;
 	
 	private int yearMonth;

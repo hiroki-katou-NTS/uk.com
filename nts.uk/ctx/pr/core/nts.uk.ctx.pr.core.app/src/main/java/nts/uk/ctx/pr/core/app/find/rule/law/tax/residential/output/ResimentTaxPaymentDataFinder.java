@@ -46,5 +46,4 @@ public class ResimentTaxPaymentDataFinder {
 				domain.getPrefectureTaxMoney().v()
 				);
 	}
-	
 }
