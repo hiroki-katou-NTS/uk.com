@@ -1,11 +1,11 @@
 package nts.uk.ctx.pr.core.app.command.paymentdata.base;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.pr.core.dom.paymentdata.Payment;
 
 /**
@@ -29,7 +29,7 @@ public class PaymentHeaderCommandBase {
 
 	private int sparePayAtr = 0;
 
-	private LocalDate standardDate;
+	private GeneralDate standardDate;
 
 	private String specificationCode;
 
