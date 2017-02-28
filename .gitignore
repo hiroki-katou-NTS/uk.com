@@ -12,3 +12,7 @@ gradle_eclipse_all.bat
 gradle_eclipse_one.bat
 .metadata/
 .recommenders/
+*.xml
+*.class
+*.xlsx
+*.ini
