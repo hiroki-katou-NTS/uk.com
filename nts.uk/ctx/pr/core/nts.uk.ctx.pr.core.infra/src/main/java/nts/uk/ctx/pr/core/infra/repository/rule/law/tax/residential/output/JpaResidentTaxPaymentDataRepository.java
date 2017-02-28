@@ -57,7 +57,7 @@ public class JpaResidentTaxPaymentDataRepository extends JpaRepository implement
 				domain.getTaxDemandChargeMoney().v(), 
 				domain.getAddress().v(), 
 				domain.getDueDate(), 
-				domain.getStaffNo(),
+				domain.getStaffNo().v(),
 				domain.getRetirementAmount().v(), 
 				domain.getCityTaxMoney().v(), 
 				domain.getPrefectureTaxMoney().v());

@@ -14,6 +14,7 @@ import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.layer.infra.data.entity.type.GeneralDateToDBConverter;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.pr.core.dom.rule.law.tax.residential.output.StaffNo;
 
 @NoArgsConstructor
 @AllArgsConstructor
@@ -44,7 +45,7 @@ public class QtxmtResimentTialTaxSlip {
 	public GeneralDate dueDate;
 	
 	@Column(name = "HEADCOUNT")
-	public int headcount;
+	public BigDecimal headcount;
 	
 	@Column(name = "RETIREMENT_BONUS_AMOUNT")
 	public BigDecimal retirementBonusAmout;

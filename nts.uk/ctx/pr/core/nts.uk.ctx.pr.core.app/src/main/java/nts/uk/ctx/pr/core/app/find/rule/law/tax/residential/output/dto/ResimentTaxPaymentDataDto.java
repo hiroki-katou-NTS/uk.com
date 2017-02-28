@@ -5,6 +5,7 @@ import java.math.BigDecimal;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.pr.core.dom.rule.law.tax.residential.output.StaffNo;
 
 @AllArgsConstructor
 @Data
@@ -25,7 +26,7 @@ public class ResimentTaxPaymentDataDto {
 	
 	private GeneralDate dueDate;
 	
-	private int headcount;
+	private BigDecimal headcount;
 	
 	private BigDecimal retirementBonusAmout;
 	

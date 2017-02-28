@@ -59,7 +59,7 @@
 								<div id="B_LBL_004"
 									data-bind="ntsFormLabel: {  required: true }">対象年月</div>
 								<div id="B_INP_001"
-									data-bind="ntsDatePicker: {value: B_INP_001_yearMonth, dateFormat: 'yyyy/MM'}"></div>
+									data-bind="ntsDatePicker: {value: B_INP_001_yearMonth, dateFormat: 'yyyy/MM', startDate: '1900/01/01' , endDate:'9999/12/31'}"></div>
 								<span data-bind="text:yearInJapanEmpire_LBL_005" id="B_LBL_005"
 									style="margin-bottom: 15px; float: left">対象年月和暦 </span> <span
 									id="B_LBL_006" style="float: left">納付書印刷の設定 </span>
@@ -69,7 +69,7 @@
 								<div id="B_LBL_007"
 									data-bind="ntsFormLabel: {  required: true }">指定年月</div>
 								<div id="B_INP_002"
-									data-bind="ntsDatePicker: {value: B_INP_002_yearMonth, dateFormat: 'yyyy/MM'}"></div>
+									data-bind="ntsDatePicker: {value: B_INP_002_yearMonth, dateFormat: 'yyyy/MM', startDate: '1900/01/01' , endDate:'9999/12/31'}"></div>
 								<span id="B_LBL_008" data-bind="text:yearInJapanEmpire_LBL_008"
 									style="float: left">指定年月和暦 </span>
 							</div>
@@ -77,7 +77,7 @@
 								<div class="floatLeft" id="B_LBL_009"
 									data-bind="ntsFormLabel: {  required: true }">納付期限</div>
 								<div id="B_INP_003"
-									data-bind="ntsDatePicker: {value: B_INP_003_yearMonth, dateFormat: 'yyyy/MM/dd'}"></div>
+									data-bind="ntsDatePicker: {value: B_INP_003_yearMonth, dateFormat: 'yyyy/MM/dd', startDate: '1900/01/01' , endDate:'9999/12/31'}"></div>
 								<span id="B_LBL_010" data-bind="text:yearInJapanEmpire_LBL_010"
 									style="float: left">指定年月和暦 </span> <span id="B_LBL_011"
 									style="float: left">納付先ごとの設定 </span>

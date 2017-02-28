@@ -34,12 +34,12 @@ public class ResidentTaxPaymentData extends AggregateRoot {
 
 	public static ResidentTaxPaymentData createFromJavaType(String code, BigDecimal taxPayrollMoney,
 			BigDecimal taxBonusMoney, BigDecimal taxOverdueMoney, BigDecimal taxDemandChargeMoney, String address,
-			GeneralDate dueDate, StaffNo staffNo, BigDecimal retirementAmount, BigDecimal cityTaxMoney,
+			GeneralDate dueDate, BigDecimal staffNo, BigDecimal retirementAmount, BigDecimal cityTaxMoney,
 			BigDecimal prefectureTaxMoney, int yearMonth) {
 		return new ResidentTaxPaymentData(new ResiTaxCode(code), new ResidentTaxMoney(taxPayrollMoney),
 				new ResidentTaxMoney(taxBonusMoney), new ResidentTaxMoney(taxOverdueMoney),
-				new ResidentTaxMoney(taxDemandChargeMoney), new ResidentTaxAddress(address), dueDate, staffNo,
-				new ResidentTaxMoney(retirementAmount), new ResidentTaxMoney(cityTaxMoney),
+				new ResidentTaxMoney(taxDemandChargeMoney), new ResidentTaxAddress(address), dueDate,
+				new StaffNo(staffNo), new ResidentTaxMoney(retirementAmount), new ResidentTaxMoney(cityTaxMoney),
 				new ResidentTaxMoney(prefectureTaxMoney), new YearMonth(yearMonth));
 	}
 

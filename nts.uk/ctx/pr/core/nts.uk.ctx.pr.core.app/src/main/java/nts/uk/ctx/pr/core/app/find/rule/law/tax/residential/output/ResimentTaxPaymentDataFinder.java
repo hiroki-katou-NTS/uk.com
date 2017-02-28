@@ -40,7 +40,7 @@ public class ResimentTaxPaymentDataFinder {
 				domain.getTaxDemandChargeMoney().v(), 
 				domain.getAddress().v(), 
 				domain.getDueDate(),
-				domain.getStaffNo(),
+				domain.getStaffNo().v(),
 				domain.getRetirementAmount().v(),
 				domain.getCityTaxMoney().v(), 
 				domain.getPrefectureTaxMoney().v()
