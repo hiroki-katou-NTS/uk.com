@@ -14,15 +14,18 @@ var qmm034;
                     self.columns = ko.observableArray([
                         { headerText: '元号', prop: 'code', width: 50 },
                         { headerText: '記号', prop: 'name', width: 50 },
-                        { headerText: '開始年月日', prop: 'startDateText', width: 80 },
+                        { headerText: '開始年月日', prop: 'startDate', width: 80 },
                     ]);
+                    //            function makeFlagFormatter(val) {
+                    //                    return val.toString();
+                    //            }
                     self.currentCodeList = ko.observableArray([]);
                     //Tim object dau tien
                     self.currentEra = ko.observable(null);
                     self.currentCode = ko.observable();
                     self.currentCode.subscribe(function (codeChanged) {
                         self.currentEra(self.getEra(codeChanged));
-                        self.date(self.currentEra().startDate);
+                        self.date(new Date(self.currentEra().startDate));
                     });
                     /*datePicker*/
                     // var datePicker = self.currentEra();
@@ -63,7 +66,7 @@ var qmm034;
                     eraName = $('#A_INP_001').val();
                     var eraMark;
                     eraMark = $('#A_INP_002').val();
-                    var startDate = self.currentEra().startDate;
+                    var startDate = self.date();
                     var endDate;
                     var fixAttribute;
                     var dfd = $.Deferred();
@@ -222,7 +225,7 @@ var qmm034;
                     //                this.startDate = new Date(startDate);
                     //                this.startDateText = startDate;
                     //            } else {
-                    this.startDate = new Date();
+                    this.startDate = startDate;
                     this.startDateText = startDate.toString();
                     //            }
                 }

@@ -22,7 +22,7 @@ module qmm034.a.viewmodel {
         constructor() {
             let self = this;
 
-            
+
             /*gridList*/
             self.items = ko.observableArray([
                 //new EraModel('明明', 'M', "1999/01/25"),
@@ -34,19 +34,22 @@ module qmm034.a.viewmodel {
             self.columns = ko.observableArray([
                 { headerText: '元号', prop: 'code', width: 50 },
                 { headerText: '記号', prop: 'name', width: 50 },
-                { headerText: '開始年月日', prop: 'startDateText', width: 80 },
+                { headerText: '開始年月日', prop: 'startDate', width: 80 },
             ]);
+            //            function makeFlagFormatter(val) {
+            //                    return val.toString();
+            //            }
             self.currentCodeList = ko.observableArray([]);
             //Tim object dau tien
             self.currentEra = ko.observable(null);
             self.currentCode = ko.observable();
             self.currentCode.subscribe(function(codeChanged) {
                 self.currentEra(self.getEra(codeChanged));
-                self.date(self.currentEra().startDate);
+                self.date(new Date(self.currentEra().startDate));
             });
             /*datePicker*/
-           // var datePicker = self.currentEra();
-            self.date =  ko.observable(new Date());
+            // var datePicker = self.currentEra();
+            self.date = ko.observable(new Date());
             self.dateTime = ko.observable(nts.uk.time.yearInJapanEmpire(self.date()).toString());
 
             self.eras = ko.observableArray([]);
@@ -59,14 +62,14 @@ module qmm034.a.viewmodel {
 
         }
 
-//        register() {
-//            let self = this;
-//            if (self.isUpdate() === false) {
-//                self.insertData();
-//            } else {
-//                self.update();
-//            }
-//        }
+        //        register() {
+        //            let self = this;
+        //            if (self.isUpdate() === false) {
+        //                self.insertData();
+        //            } else {
+        //                self.update();
+        //            }
+        //        }
         refreshLayout(): void {
             let self = this;
             self.currentEra(new EraModel('', '', new Date()));
@@ -86,7 +89,7 @@ module qmm034.a.viewmodel {
             eraName = $('#A_INP_001').val();
             let eraMark: string;
             eraMark = $('#A_INP_002').val();
-            let startDate = self.currentEra().startDate;
+            let startDate = self.date();
             let endDate: string;
             let fixAttribute: number;
             let dfd = $.Deferred<any>();
@@ -95,14 +98,14 @@ module qmm034.a.viewmodel {
                 eraName, eraMark, startDate, endDate, fixAttribute
             );
             qmm034.a.service.addData(self.isUpdate(false), node).done(function(result) {
-                self.reload().done(function(){
+                self.reload().done(function() {
                     dfd.resolve();
                 });
             }).fail(function(res) {
 
             });
-           return dfd.promise();
-            
+            return dfd.promise();
+
         }
         alertDelete() {
             let self = this;
@@ -112,34 +115,34 @@ module qmm034.a.viewmodel {
                 alert("you didnt delete!");
             }
         }
-        selectedItem(item) : EraModel {
+        selectedItem(item): EraModel {
             var self = this;
             self.currentCode(item.code);
-            return new EraModel(item.code, item.name, item.startDate);    
+            return new EraModel(item.code, item.name, item.startDate);
         }
-        reload(){
+        reload() {
             var dfd = $.Deferred();
             var self = this;
             qmm034.a.service.getAllEras().done(function(data: Array<EraModel>) {
                 self.buildGridDataSource(data);
                 self.countItems(data.length);
-                if(data.length > 0){
-                    if(self.isSelectdFirstRow()){
+                if (data.length > 0) {
+                    if (self.isSelectdFirstRow()) {
                         self.currentEra(self.selectedItem(data[0]));
                         self.isSelectdFirstRow(false);
                     }
-                    self.items(data);    
+                    self.items(data);
                 }
                 dfd.resolve();
             }).fail(function(res) {
 
-            });    
-             return dfd.promise();
+            });
+            return dfd.promise();
         }
         deleteData() {
             let self = this;
-//            let newDel = self.currentEra();
-//            self.items.splice(self.items().indexOf(newDel), 1);
+            //            let newDel = self.currentEra();
+            //            self.items.splice(self.items().indexOf(newDel), 1);
             let eraName: string;
             eraName = $('#A_INP_001').val();
             let eraMark: string;
@@ -150,20 +153,20 @@ module qmm034.a.viewmodel {
             let dfd = $.Deferred<any>();
             let node: qmm034.a.service.model.EraDtoDelete;
             node = new qmm034.a.service.model.EraDtoDelete(startDate);
-//            qmm034.a.service.deleteData(node)
-//                .done(function() {
-//                    qmm034.a.service.getAllEras();
-//                }).fail(function(error) {
-//                    alert(error.message);
-//                });
-             qmm034.a.service.deleteData( node).done(function(result) {
-                self.reload().done(function(){
+            //            qmm034.a.service.deleteData(node)
+            //                .done(function() {
+            //                    qmm034.a.service.getAllEras();
+            //                }).fail(function(error) {
+            //                    alert(error.message);
+            //                });
+            qmm034.a.service.deleteData(node).done(function(result) {
+                self.reload().done(function() {
                     dfd.resolve();
                 });
             }).fail(function(error) {
-                    alert(error.message);
+                alert(error.message);
             });
-           return dfd.promise();
+            return dfd.promise();
         }
 
         getEra(codeNew): EraModel {
@@ -173,20 +176,21 @@ module qmm034.a.viewmodel {
             });
 
             return _.cloneDeep(era);
+
         }
         update() {
             let self = this;
-//            if (self.currentCode() !== undefined && self.currentCode() !== null) {
-//                var newCurrentEra = _.findIndex(self.items(), function(item) {
-//                    return item.code === self.currentCode();
-//                });
-//                self.items.splice(newCurrentEra, 1, _.cloneDeep(self.currentEra()));
-//                self.items.valueHasMutated();
-//            }
-//            qmm034.a.service.updateData().done(function() {
-//                        self.start();
-//                        //console.log(self.items());
-//                    });
+            //            if (self.currentCode() !== undefined && self.currentCode() !== null) {
+            //                var newCurrentEra = _.findIndex(self.items(), function(item) {
+            //                    return item.code === self.currentCode();
+            //                });
+            //                self.items.splice(newCurrentEra, 1, _.cloneDeep(self.currentEra()));
+            //                self.items.valueHasMutated();
+            //            }
+            //            qmm034.a.service.updateData().done(function() {
+            //                        self.start();
+            //                        //console.log(self.items());
+            //                    });
         }
 
 
@@ -268,25 +272,25 @@ module qmm034.a.viewmodel {
         constructor(code: string, name: string, startDate: Date) {
             this.code = code;
             this.name = name;
-//            if (startDate !== "") {
-//                this.startDate = new Date(startDate);
-//                this.startDateText = startDate;
-//            } else {
-                this.startDate = new Date();
-                this.startDateText = startDate.toString();
-//            }
+            //            if (startDate !== "") {
+            //                this.startDate = new Date(startDate);
+            //                this.startDateText = startDate;
+            //            } else {
+            this.startDate = startDate;
+            this.startDateText = startDate.toString();
+            //            }
         }
     }
-//    class Era{
-//        eraCodeName:KnockoutObservable<string>;
-//        eraNameMark: KnockoutObservable<string>;
-//        eraStartDate: KnockoutObservable<string>;
-//        constructor(eraCodeName: string, eraNameMark: string, eraStartDate: string){
-//            this.eraCodeName = ko.observable(eraCodeName);
-//            this.eraNameMark = ko.observable(eraNameMark);
-//            this.eraStartDate = ko.observable(eraStartDate);    
-//        }    
-//    }
+    //    class Era{
+    //        eraCodeName:KnockoutObservable<string>;
+    //        eraNameMark: KnockoutObservable<string>;
+    //        eraStartDate: KnockoutObservable<string>;
+    //        constructor(eraCodeName: string, eraNameMark: string, eraStartDate: string){
+    //            this.eraCodeName = ko.observable(eraCodeName);
+    //            this.eraNameMark = ko.observable(eraNameMark);
+    //            this.eraStartDate = ko.observable(eraStartDate);    
+    //        }    
+    //    }
     //    class SingleSelectedCode {
     //        layout: KnockoutObservable<any>;
     //        strName: string;
