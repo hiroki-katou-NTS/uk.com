@@ -15,7 +15,7 @@
 	padding: 20px;
 	float: left;
 	min-height: 400px;
-	width: 280px;
+	width: 300px;
 }
 
 #right-content {
@@ -29,7 +29,7 @@
 }
 
 #inpCode {
-	width: 50px !important;
+	width: 40px !important;
 }
 
 #inpName {
@@ -37,14 +37,14 @@
 }
 
 #inpStartMonth {
-	width: 70px !important;
+	width: 80px !important;
 }
 
 #inpBudget {
-	width: 100px !important;
+	width: 120px !important;
 }
 .symbol-right {
-	width: 100px !important;
+	width: 120px !important;
 }
 
 .nts-switch-button {
@@ -56,7 +56,7 @@
 }
 
 #sch_001 input{
-	width: 130px;
+	width: 150px;
 }
 
 .btn-default {

@@ -18,7 +18,9 @@ module nts.uk.pr.view.qmm007.a {
             // Setting type
             isContractSettingEnabled: KnockoutObservable<boolean>;
 
-            // New mode flag
+            // Flags
+            isInputEnabled: KnockoutObservable<boolean>;
+            isLoading: KnockoutObservable<boolean>;
             isNewMode: KnockoutObservable<boolean>;
 
             // Nts text editor options
@@ -28,7 +30,9 @@ module nts.uk.pr.view.qmm007.a {
 
             constructor() {
                 var self = this;
-                self.isNewMode = ko.observable(true);
+                self.isNewMode = ko.observable(false);
+                self.isLoading = ko.observable(true);
+                self.isInputEnabled = ko.observable(false);
 
                 self.unitPriceHistoryModel = ko.observable(new UnitPriceHistoryModel(self.getDefaultUnitPriceHistory()));
                 self.historyList = ko.observableArray<UnitPriceHistoryNode>([]);
@@ -39,12 +43,12 @@ module nts.uk.pr.view.qmm007.a {
 
                 self.selectedId = ko.observable('');
                 self.selectedId.subscribe(id => {
-                    console.log(id);
                     if (id) {
-                        if (id.includes('code')) {
-                            self.enableNewMode();
+                        if (id.length < 4) {
+                            self.setUnitPriceHistoryModel(self.getDefaultUnitPriceHistory());
+                            self.isInputEnabled(false);
                         } else {
-                            self.isNewMode(false);
+                            self.isLoading(true);
                             $('.save-error').ntsError('clear');
                             self.loadUnitPriceDetail(id);
                         }
@@ -71,7 +75,9 @@ module nts.uk.pr.view.qmm007.a {
             public startPage(): JQueryPromise<void> {
                 var self = this;
                 var dfd = $.Deferred<void>();
-                self.loadUnitPriceHistoryList().done(() => dfd.resolve());
+                self.loadUnitPriceHistoryList().done(() => {
+                    dfd.resolve();
+                });
                 return dfd.promise();
             }
 
@@ -119,7 +125,9 @@ module nts.uk.pr.view.qmm007.a {
             private enableNewMode(): void {
                 var self = this;
                 $('.save-error').ntsError('clear');
+                self.selectedId('');
                 self.setUnitPriceHistoryModel(self.getDefaultUnitPriceHistory());
+                self.isInputEnabled(true);
                 self.isNewMode(true);
             }
 
@@ -164,6 +172,14 @@ module nts.uk.pr.view.qmm007.a {
                 return defaultHist;
             }
 
+            private getLastest(id: string): void {
+                self.historyList().forEach(item => {
+                    if (id == item.id) {
+                        self.selectedId(item.childs[0].id);
+                    }
+                });
+            }
+
             /**
              * Load UnitPriceHistory detail.
              */
@@ -171,6 +187,9 @@ module nts.uk.pr.view.qmm007.a {
                 var self = this;
                 service.find(id).done(data => {
                     self.setUnitPriceHistoryModel(data);
+                    self.isInputEnabled(true);
+                    self.isNewMode(false);
+                    self.isLoading(false);
                 });
             }
 
@@ -182,6 +201,7 @@ module nts.uk.pr.view.qmm007.a {
                 var dfd = $.Deferred<void>();
                 service.getUnitPriceHistoryList().done(data => {
                     self.historyList(data.map((item, index) => { return new UnitPriceHistoryNode(item) }));
+                    self.isLoading(false);
                     dfd.resolve();
                 });
                 return dfd.promise();
@@ -221,14 +241,14 @@ module nts.uk.pr.view.qmm007.a {
         }
 
         export class UnitPriceHistoryNode {
-            id: string
+            id: string;
             nodeText: string;
             childs: Array<UnitPriceHistoryNode>;
             constructor(item: UnitPriceItemDto | UnitPriceHistoryItemDto) {
                 var self = this;
 
                 if ((<UnitPriceItemDto>item).histories !== undefined) {
-                    self.id = 'code' + (<UnitPriceItemDto>item).unitPriceCode;
+                    self.id = (<UnitPriceItemDto>item).unitPriceCode;
                     self.nodeText = (<UnitPriceItemDto>item).unitPriceCode + ' ' + (<UnitPriceItemDto>item).unitPriceName;
                     self.childs = (<UnitPriceItemDto>item).histories.map((item, index) => { return new UnitPriceHistoryNode(item) });
                 }
@@ -242,7 +262,7 @@ module nts.uk.pr.view.qmm007.a {
 
         export interface SwitchButtonDataSource {
             code: string;
-            name: string
+            name: string;
         }
 
     }
