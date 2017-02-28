@@ -5,11 +5,15 @@ var qmm023;
         var service;
         (function (service) {
             var paths = {
-                getPaymentDateProcessingList: "pr/proto/paymentdatemaster/processing/findall"
+                getListByCompanyCode: "core/commutelimit/find/bycompanycode",
+                insertData: "core/commutelimit/insert",
+                updateData: "core/commutelimit/update",
+                deleteData: "core/commutelimit/delete"
             };
-            function getPaymentDateProcessingList() {
+            function getCommutelimitsByCompanyCode() {
                 var dfd = $.Deferred();
-                nts.uk.request.ajax(paths.getPaymentDateProcessingList)
+                var _path = paths.getListByCompanyCode;
+                nts.uk.request.ajax(_path)
                     .done(function (res) {
                     dfd.resolve(res);
                 })
@@ -18,7 +22,47 @@ var qmm023;
                 });
                 return dfd.promise();
             }
-            service.getPaymentDateProcessingList = getPaymentDateProcessingList;
+            service.getCommutelimitsByCompanyCode = getCommutelimitsByCompanyCode;
+            function insertUpdateData(isUpdate, commuteNoTaxLimitCommand) {
+                var dfd = $.Deferred();
+                var _path = isUpdate ? paths.updateData : paths.insertData;
+                var command = ko.toJS(commuteNoTaxLimitCommand);
+                nts.uk.request.ajax(_path, command)
+                    .done(function (res) {
+                    dfd.resolve(res);
+                })
+                    .fail(function (res) {
+                    dfd.reject(res);
+                });
+                return dfd.promise();
+            }
+            service.insertUpdateData = insertUpdateData;
+            function deleteData(deleteCode) {
+                var dfd = $.Deferred();
+                nts.uk.request.ajax(paths.deleteData, deleteCode)
+                    .done(function (res) {
+                    dfd.resolve(res);
+                })
+                    .fail(function (res) {
+                    dfd.reject(res);
+                });
+                return dfd.promise();
+            }
+            service.deleteData = deleteData;
+            var model;
+            (function (model) {
+                // layout
+                var CommuteNoTaxLimitDto = (function () {
+                    function CommuteNoTaxLimitDto(companyCode, commuNoTaxLimitCode, commuNoTaxLimitName, commuNoTaxLimitValue) {
+                        this.companyCode = companyCode;
+                        this.commuNoTaxLimitCode = commuNoTaxLimitCode;
+                        this.commuNoTaxLimitName = commuNoTaxLimitName;
+                        this.commuNoTaxLimitValue = commuNoTaxLimitValue;
+                    }
+                    return CommuteNoTaxLimitDto;
+                }());
+                model.CommuteNoTaxLimitDto = CommuteNoTaxLimitDto;
+            })(model = service.model || (service.model = {}));
         })(service = a.service || (a.service = {}));
     })(a = qmm023.a || (qmm023.a = {}));
 })(qmm023 || (qmm023 = {}));

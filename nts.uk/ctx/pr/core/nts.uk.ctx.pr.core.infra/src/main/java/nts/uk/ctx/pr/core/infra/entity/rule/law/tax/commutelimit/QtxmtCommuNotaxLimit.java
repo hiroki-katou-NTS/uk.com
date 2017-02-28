@@ -1,4 +1,6 @@
-package nts.uk.ctx.pr.core.infra.entity.paymentdata;
+package nts.uk.ctx.pr.core.infra.entity.rule.law.tax.commutelimit;
+
+import java.math.BigDecimal;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
@@ -13,16 +15,16 @@ public class QtxmtCommuNotaxLimit {
 	@EmbeddedId
 	public QtxmtCommuNotaxLimitPK qtxmtCommuNotaxLimitPK;
 	
-	@Basic(optional = false)
-	@Column(name = "EXCLUS_VER")
-	public int exclusVer;
 	
 	@Basic(optional = false)
 	@Column(name = "COMMU_NOTAX_LIMIT_NAME")
 	public String commuNotaxLimitName;
-	
+
 	@Basic(optional = false)
 	@Column(name = "COMMU_NOTAX_LIMIT_VALUE")
-	public int commuNotaxLimitValue;
-
+	public BigDecimal commuNotaxLimitValue;
+	
+	@Basic(optional = false)
+	@Column(name = "EXCLUS_VER")
+	public int exclusVer;
 }

@@ -5,78 +5,34 @@ var qmm023;
         var viewmodel;
         (function (viewmodel) {
             var ScreenModel = (function () {
-                //isUpdate: KnockoutObservable<boolean> = ko.observable(true);
                 function ScreenModel() {
-                    this.constraint = 'LayoutCode';
+                    this.constraint = 'CommuNoTaxLimitCode';
                     this.isUpdate = ko.observable(true);
                     this.allowEditCode = ko.observable(false);
                     var self = this;
                     //constructor of gridList
-                    this.items = ko.observableArray([
-                        new TaxModel('01', '基本給', "description 1"),
-                        new TaxModel('02', '役職手当', "description 2"),
-                        new TaxModel('03', '基12本ghj給', "description 3"),
-                        new TaxModel('04', '基12s本ghj給', "description 4"),
-                        new TaxModel('05', '基12d本ghj給', "description 5"),
-                        new TaxModel('06', '基12fg本ghj給', "description 6"),
-                        new TaxModel('07', '基12h本ghj給', "description 7"),
-                        new TaxModel('08', '基12本fghj給', "description 8"),
-                        new TaxModel('09', '基12jk本ghj給', "description 9")
-                    ]);
-                    //self.items(ko.toJS(self.items()));
+                    this.items = ko.observableArray([]);
                     this.columns = ko.observableArray([
                         { headerText: 'コード', prop: 'code', width: 50 },
                         { headerText: '名称', prop: 'name', width: 120 },
                         { headerText: '説明', prop: 'taxLimit', width: 170 }
                     ]);
                     self.currentCode = ko.observable(null);
-                    self.currentCodeList = ko.observableArray([]);
                     //finding the first object
                     self.currentTax = ko.observable(ko.mapping.fromJS(_.first(self.items())));
-                    console.log(self.currentTax());
                     self.codeValue = ko.observable(self.currentTax().code);
                     self.nameValue = ko.observable(self.currentTax().name);
                     self.taxLimitValue = ko.observable(self.currentTax().taxLimit);
                     //get event when hover on table by subcribe
                     self.currentCode.subscribe(function (codeChanged) {
                         self.currentTax(ko.mapping.fromJS(self.getTax(codeChanged)));
-                        self.codeValue(self.currentTax().code);
-                        self.nameValue(self.currentTax().name);
+                        if (self.currentTax()) {
+                            self.codeValue(self.currentTax().code);
+                            self.nameValue(self.currentTax().name);
+                            self.allowEditCode(false);
+                            self.isUpdate(true);
+                        }
                     });
-                    //constructor of textEditor
-                    //            self.codeValue = ko.computed(function() {
-                    //                return ko.observabl      //            })
-                    self.texteditor1 = {
-                        //                value: self.codeValue(),
-                        constraint: 'ResidenceCode',
-                        option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                            textmode: "text",
-                            width: "100px",
-                        })),
-                        required: ko.observable(true),
-                    };
-                    self.texteditor2 = {
-                        //                value: self.codeValue(),
-                        constraint: 'ResidenceCode',
-                        option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                            textmode: "text",
-                            width: "100px",
-                        })),
-                        required: ko.observable(true),
-                        enable: ko.observable(true),
-                        readonly: ko.observable(true)
-                    };
-                    self.texteditor3 = {
-                        //                value: self.codeValue(),
-                        constraint: 'ResidenceCode',
-                        option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                            textmode: "text",
-                            width: "100px",
-                        })),
-                        required: ko.observable(true),
-                        enable: ko.observable(true),
-                        readonly: ko.observable(true)
-                    };
                 }
                 ScreenModel.prototype.getTax = function (codeNew) {
                     var self = this;
@@ -87,27 +43,51 @@ var qmm023;
                 };
                 ScreenModel.prototype.refreshLayout = function () {
                     var self = this;
-                    //            let current = self.currentTax();
-                    //            current.code = "";
-                    //            current.name = "";
-                    //            current.taxLimit = "";
                     self.allowEditCode(true);
-                    self.currentTax(ko.mapping.fromJS(new TaxModel('', '', '')));
+                    self.currentTax(ko.mapping.fromJS(new TaxModel('', '', null)));
                     self.isUpdate(false);
                 };
-                ScreenModel.prototype.insertData = function () {
+                ScreenModel.prototype.insertUpdateData = function () {
                     var self = this;
-                    var newData = ko.toJS(self.currentTax());
-                    if (self.isUpdate() === false) {
-                        self.items.push(newData);
-                        self.isUpdate = ko.observable(true);
-                        self.allowEditCode(false);
-                    }
+                    var insertUpdateModel = new InsertUpdateModel(self.currentTax().code(), self.currentTax().name(), self.currentTax().taxLimit());
+                    a.service.insertUpdateData(self.isUpdate(), insertUpdateModel).done(function () {
+                        if (self.isUpdate() === false) {
+                            self.items.push(_.cloneDeep(ko.mapping.toJS(self.currentTax())));
+                            self.isUpdate(true);
+                            self.allowEditCode(false);
+                            self.currentCode(self.currentTax().code());
+                        }
+                        else {
+                            var indexItemUpdate = _.findIndex(self.items(), function (item) { return item.code == self.currentTax().code(); });
+                            self.items().splice(indexItemUpdate, 1, _.cloneDeep(ko.mapping.toJS(self.currentTax())));
+                            self.items.valueHasMutated();
+                        }
+                    }).fail(function (error) {
+                        alert(error.message);
+                    });
                 };
                 ScreenModel.prototype.deleteData = function () {
                     var self = this;
-                    var newDel = self.getTax(self.currentTax().code);
-                    self.items.splice(self.items().indexOf(newDel), 1);
+                    var deleteCode = self.currentTax().code();
+                    a.service.deleteData(new DeleteModel(deleteCode)).done(function () {
+                        var indexItemDelete = _.findIndex(self.items(), function (item) { return item.code == self.currentTax().code(); });
+                        self.items.remove(function (item) {
+                            return item.code == deleteCode;
+                        });
+                        self.items.valueHasMutated();
+                        if (self.items().length === 0) {
+                            self.allowEditCode(true);
+                            self.isUpdate(false);
+                        }
+                        else if (self.items().length === indexItemDelete) {
+                            self.currentCode(self.items()[indexItemDelete - 1].code);
+                        }
+                        else {
+                            self.currentCode(self.items()[indexItemDelete].code);
+                        }
+                    }).fail(function (error) {
+                        alert(error.message);
+                    });
                 };
                 ScreenModel.prototype.alertDelete = function () {
                     var self = this;
@@ -115,43 +95,40 @@ var qmm023;
                         self.deleteData();
                     }
                     else {
-                        alert("you didnt delete!");
+                        alert("you didn't delete!");
                     }
-                };
-                ScreenModel.prototype.selectSomeItems = function () {
-                    this.currentCode('150');
-                    this.currentCodeList.removeAll();
-                    this.currentCodeList.push('001');
-                    this.currentCodeList.push('ABC');
                 };
                 ScreenModel.prototype.deselectAll = function () {
                     this.currentCode(null);
-                    this.currentCodeList.removeAll();
                 };
                 // startpage
                 ScreenModel.prototype.startPage = function () {
                     var self = this;
+                    return self.getCommuteNoTaxLimitList();
+                };
+                ScreenModel.prototype.getCommuteNoTaxLimitList = function () {
+                    var self = this;
                     var dfd = $.Deferred();
-                    a.service.getPaymentDateProcessingList().done(function (data) {
-                        dfd.resolve();
+                    a.service.getCommutelimitsByCompanyCode().done(function (data) {
+                        self.buildItemList(data);
+                        if (self.items().length > 0) {
+                            self.currentTax = ko.observable(ko.mapping.fromJS(_.first(self.items())));
+                            self.currentCode(self.currentTax().code());
+                        }
+                        dfd.resolve(data);
                     }).fail(function (res) {
                     });
                     return dfd.promise();
                 };
+                ScreenModel.prototype.buildItemList = function (data) {
+                    var self = this;
+                    _.forEach(data, function (item) {
+                        self.items.push(new TaxModel(item.commuNoTaxLimitCode, item.commuNoTaxLimitName, item.commuNoTaxLimitValue));
+                    });
+                };
                 return ScreenModel;
             }());
             viewmodel.ScreenModel = ScreenModel;
-            //    class ItemModel {
-            //        code: string;
-            //        name: string;
-            //        description: string;
-            //
-            //        constructor(code: string, name: string, description: string) {
-            //            this.code = code;
-            //            this.name = name;
-            //            this.description = ription;
-            //        }
-            //    }
             var TaxModel = (function () {
                 function TaxModel(code, name, taxLimit) {
                     this.code = code;
@@ -160,6 +137,22 @@ var qmm023;
                 }
                 return TaxModel;
             }());
+            var InsertUpdateModel = (function () {
+                function InsertUpdateModel(commuNoTaxLimitCode, commuNoTaxLimitName, commuNoTaxLimitValue) {
+                    this.commuNoTaxLimitCode = commuNoTaxLimitCode;
+                    this.commuNoTaxLimitName = commuNoTaxLimitName;
+                    this.commuNoTaxLimitValue = commuNoTaxLimitValue;
+                }
+                return InsertUpdateModel;
+            }());
+            viewmodel.InsertUpdateModel = InsertUpdateModel;
+            var DeleteModel = (function () {
+                function DeleteModel(commuNoTaxLimitCode) {
+                    this.commuNoTaxLimitCode = commuNoTaxLimitCode;
+                }
+                return DeleteModel;
+            }());
+            viewmodel.DeleteModel = DeleteModel;
         })(viewmodel = a.viewmodel || (a.viewmodel = {}));
     })(a = qmm023.a || (qmm023.a = {}));
 })(qmm023 || (qmm023 = {}));
