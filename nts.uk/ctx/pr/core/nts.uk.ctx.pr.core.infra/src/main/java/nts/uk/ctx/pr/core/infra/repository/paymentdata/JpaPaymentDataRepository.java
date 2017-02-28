@@ -267,4 +267,5 @@ public class JpaPaymentDataRepository extends JpaRepository implements PaymentDa
 		val pk = new QstdtPaymentHeaderPK(companyCode, personId, 1, 0, processingYM, 0);
 		this.commandProxy().remove(QstdtPaymentHeader.class, pk);
 	}
+	
 }
