@@ -69,7 +69,7 @@ module qmm034.a.viewmodel {
 //        }
         refreshLayout(): void {
             let self = this;
-            self.currentEra(new EraModel('', '', ''));
+            self.currentEra(new EraModel('', '', new Date()));
             self.isUpdate = ko.observable(false);
         }
         insertData(): any {
@@ -86,13 +86,13 @@ module qmm034.a.viewmodel {
             eraName = $('#A_INP_001').val();
             let eraMark: string;
             eraMark = $('#A_INP_002').val();
-            let startDate = self.date();
+            let startDate = self.currentEra().startDate;
             let endDate: string;
             let fixAttribute: number;
             let dfd = $.Deferred<any>();
             let node: qmm034.a.service.model.EraDto;
             node = new qmm034.a.service.model.EraDto(
-                eraName, eraMark, startDate.toDateString(), endDate, fixAttribute
+                eraName, eraMark, startDate, endDate, fixAttribute
             );
             qmm034.a.service.addData(self.isUpdate(false), node).done(function(result) {
                 self.reload().done(function(){
@@ -120,7 +120,7 @@ module qmm034.a.viewmodel {
         reload(){
             var dfd = $.Deferred();
             var self = this;
-            $.when(qmm034.a.service.getAllEras()).done(function(data) {
+            qmm034.a.service.getAllEras().done(function(data: Array<EraModel>) {
                 self.buildGridDataSource(data);
                 self.countItems(data.length);
                 if(data.length > 0){
@@ -265,16 +265,16 @@ module qmm034.a.viewmodel {
         startDateText: string;
 
 
-        constructor(code: string, name: string, startDate: string) {
+        constructor(code: string, name: string, startDate: Date) {
             this.code = code;
             this.name = name;
-            if (startDate !== "") {
-                this.startDate = new Date(startDate);
-                this.startDateText = startDate;
-            } else {
+//            if (startDate !== "") {
+//                this.startDate = new Date(startDate);
+//                this.startDateText = startDate;
+//            } else {
                 this.startDate = new Date();
-                this.startDateText = this.startDate.toDateString();
-            }
+                this.startDateText = startDate.toString();
+//            }
         }
     }
 //    class Era{

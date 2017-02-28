@@ -12,14 +12,18 @@ import nts.uk.ctx.basic.dom.system.era.Era;
 public class AddEraCommand {
 	private String eraName;
 	private String eraMark;
-	private Date startDate;
-	private Date endDate;
+	private GeneralDate startDate;
+	private GeneralDate endDate;
 	private int fixAttribute;
 
 	public Era toDomain() {
 		Era domain = Era.createFromDataType(this.eraName, this.eraMark,
-				this.startDate == null ? null : GeneralDate.legacyDate(this.startDate),
-				this.endDate == null ? null : GeneralDate.legacyDate(this.endDate), this.fixAttribute);
+//				this.startDate == null ? null : GeneralDate.legacyDate(this.startDate),
+//				this.endDate == null ? null : GeneralDate.legacyDate(this.endDate),
+//				GeneralDate.fromString(startDate, "D/mm/dd/yyyy"),
+//				GeneralDate.fromString(endDate, "D/mm/dd/yyyy"),
+				this.startDate, this.endDate,
+						this.fixAttribute);
 		return domain;
 	}
 }

@@ -10,8 +10,8 @@ module qmm034.a.service {
      * get list era
      */
     export function getAllEras(): JQueryPromise<Array<model.EraDto>> {
-        let dfd = $.Deferred<Array<any>>();
-        nts.uk.request.ajax(paths.getAllEras).done(function(res: Array<any>) {
+        let dfd = $.Deferred<Array<model.EraDto>>();
+        nts.uk.request.ajax(paths.getAllEras).done(function(res: Array<model.EraDto>) {
             dfd.resolve(res);
         })
             .fail(function(res) {
@@ -75,11 +75,11 @@ module qmm034.a.service {
 //        return dfd.promise();
 //    }
     
-    export function addData(isCreated, command): JQueryPromise<any> {
-        let dfd = $.Deferred<any>();
+    export function addData(isCreated, command): JQueryPromise<Array<EraModel>> {
+        let dfd = $.Deferred<Array<EraModel>>();
         let path = isCreated ? paths.addEra : paths.updateEra;
         nts.uk.request.ajax(path, command)
-            .done(function(res: any) {
+            .done(function(res: Array<EraModel>) {
                 dfd.resolve(res);
             })
             .fail(function(res) {
@@ -104,11 +104,11 @@ module qmm034.a.service {
         export class EraDto {
             eraName: string;
             eraMark: string;
-            startDate: string;
+            startDate: Date;
             endDate: string;
             fixAttribute: number;
 
-            constructor(eraName: string, eraMark: string, startDate: string, endDate: string, fixAttribute: number) {
+            constructor(eraName: string, eraMark: string, startDate: Date, endDate: string, fixAttribute: number) {
                 this.eraName = eraName;
                 this.eraMark = eraMark;
                 this.startDate = startDate;

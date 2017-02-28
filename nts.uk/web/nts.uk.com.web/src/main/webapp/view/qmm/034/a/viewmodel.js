@@ -46,7 +46,7 @@ var qmm034;
                 //        }
                 ScreenModel.prototype.refreshLayout = function () {
                     var self = this;
-                    self.currentEra(new EraModel('', '', ''));
+                    self.currentEra(new EraModel('', '', new Date()));
                     self.isUpdate = ko.observable(false);
                 };
                 ScreenModel.prototype.insertData = function () {
@@ -63,12 +63,12 @@ var qmm034;
                     eraName = $('#A_INP_001').val();
                     var eraMark;
                     eraMark = $('#A_INP_002').val();
-                    var startDate = self.date();
+                    var startDate = self.currentEra().startDate;
                     var endDate;
                     var fixAttribute;
                     var dfd = $.Deferred();
                     var node;
-                    node = new qmm034.a.service.model.EraDto(eraName, eraMark, startDate.toDateString(), endDate, fixAttribute);
+                    node = new qmm034.a.service.model.EraDto(eraName, eraMark, startDate, endDate, fixAttribute);
                     qmm034.a.service.addData(self.isUpdate(false), node).done(function (result) {
                         self.reload().done(function () {
                             dfd.resolve();
@@ -94,7 +94,7 @@ var qmm034;
                 ScreenModel.prototype.reload = function () {
                     var dfd = $.Deferred();
                     var self = this;
-                    $.when(qmm034.a.service.getAllEras()).done(function (data) {
+                    qmm034.a.service.getAllEras().done(function (data) {
                         self.buildGridDataSource(data);
                         self.countItems(data.length);
                         if (data.length > 0) {
@@ -218,14 +218,13 @@ var qmm034;
                 function EraModel(code, name, startDate) {
                     this.code = code;
                     this.name = name;
-                    if (startDate !== "") {
-                        this.startDate = new Date(startDate);
-                        this.startDateText = startDate;
-                    }
-                    else {
-                        this.startDate = new Date();
-                        this.startDateText = this.startDate.toDateString();
-                    }
+                    //            if (startDate !== "") {
+                    //                this.startDate = new Date(startDate);
+                    //                this.startDateText = startDate;
+                    //            } else {
+                    this.startDate = new Date();
+                    this.startDateText = startDate.toString();
+                    //            }
                 }
                 return EraModel;
             }());
