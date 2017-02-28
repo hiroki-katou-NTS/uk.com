@@ -4,10 +4,9 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.dom.wagetable.mode;
 
-import java.util.Map;
+import java.util.List;
 
 import lombok.Getter;
-import nts.uk.ctx.pr.core.dom.wagetable.DemensionOrder;
 import nts.uk.ctx.pr.core.dom.wagetable.ElementCount;
 import nts.uk.ctx.pr.core.dom.wagetable.WageTableElement;
 
@@ -20,11 +19,7 @@ public class FineworkDimensionalMode implements DimensionalMode {
 	/** The Constant mode. */
 	public static final ElementCount mode = ElementCount.Finework;
 
-	@Override
-	public Map<DemensionOrder, WageTableElement> getElements() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
+	/** The demensions. */
+	private List<WageTableElement> elements;
 
 }

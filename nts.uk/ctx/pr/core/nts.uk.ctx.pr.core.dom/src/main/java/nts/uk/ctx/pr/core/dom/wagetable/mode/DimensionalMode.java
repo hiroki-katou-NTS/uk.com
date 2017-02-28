@@ -4,13 +4,12 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.dom.wagetable.mode;
 
-import java.util.Map;
+import java.util.List;
 
-import nts.uk.ctx.pr.core.dom.wagetable.DemensionOrder;
 import nts.uk.ctx.pr.core.dom.wagetable.WageTableElement;
 
 /**
- * The Class WageTableHist.
+ * The Interface DimensionalMode.
  */
 public interface DimensionalMode {
 
@@ -19,7 +18,6 @@ public interface DimensionalMode {
 	 *
 	 * @return the elements
 	 */
-	Map<DemensionOrder, WageTableElement> getElements();
-	
-	
+	List<WageTableElement> getElements();
+
 }

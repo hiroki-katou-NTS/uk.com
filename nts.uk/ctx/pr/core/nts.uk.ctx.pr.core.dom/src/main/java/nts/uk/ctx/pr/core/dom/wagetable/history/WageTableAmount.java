@@ -8,8 +8,6 @@ import java.math.BigDecimal;
 
 import lombok.Getter;
 import nts.uk.ctx.pr.core.dom.wagetable.ElementId;
-import nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroupGetMemento;
-import nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroupSetMemento;
 
 /**
  * The Class WageTableAmount.
@@ -31,24 +29,5 @@ public class WageTableAmount {
 
 	/** The amount. */
 	private BigDecimal amount;
-
-	// =================== Memento State Support Method ===================
-	/**
-	 * Instantiates a new wage table amount.
-	 *
-	 * @param memento
-	 *            the memento
-	 */
-	public WageTableAmount(CertifyGroupGetMemento memento) {
-	}
-
-	/**
-	 * Save to memento.
-	 *
-	 * @param memento
-	 *            the memento
-	 */
-	public void saveToMemento(CertifyGroupSetMemento memento) {
-	}
 
 }

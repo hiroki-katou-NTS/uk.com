@@ -20,7 +20,7 @@ public enum ElementCount {
 	Three(2),
 
 	/** The Eligibility. */
-	Eligibility(3),
+	Qualification(3),
 
 	/** The Finework. */
 	Finework(4);

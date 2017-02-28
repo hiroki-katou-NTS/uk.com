@@ -11,8 +11,6 @@ import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 import nts.uk.ctx.pr.core.dom.wagetable.WageTableCode;
-import nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroupGetMemento;
-import nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroupSetMemento;
 
 /**
  * The Class WageTableHist.
@@ -34,26 +32,5 @@ public class WageTableHistory extends DomainObject {
 
 	/** The elements. */
 	private List<WageTableAmount> elements;
-
-	// =================== Memento State Support Method ===================
-	/**
-	 * Instantiates a new wage table hist.
-	 *
-	 * @param memento
-	 *            the memento
-	 */
-	public WageTableHistory(CertifyGroupGetMemento memento) {
-		this.companyCode = memento.getCompanyCode();
-	}
-
-	/**
-	 * Save to memento.
-	 *
-	 * @param memento
-	 *            the memento
-	 */
-	public void saveToMemento(CertifyGroupSetMemento memento) {
-		memento.setCompanyCode(this.companyCode);
-	}
 
 }
