@@ -114,13 +114,13 @@ module cmm013.f.viewmodel {
         }
 
         openBDialog() {
-            nts.uk.ui.windows.sub.modal('/view/cmmhoa/013/b/index.xhtml', { title: '11111', });
+            nts.uk.ui.windows.sub.modal('/view/013/b/index.xhtml', { title: '11111', });
         }
         openCDialog() {
-            nts.uk.ui.windows.sub.modal('/view/cmmhoa/013/c/index.xhtml', { title: '騾包ｽｻ鬮ｱ�ｽ｢ID繝ｻ蝟�', });
+            nts.uk.ui.windows.sub.modal('/view/013/c/index.xhtml', { title: '騾包ｽｻ鬮ｱ�ｽ｢ID繝ｻ蝟�', });
         }
         openDDialog() {
-            nts.uk.ui.windows.sub.modal('/view/cmmhoa/013/d/index.xhtml', { title: '騾包ｽｻ鬮ｱ�ｽ｢ID繝ｻ蜥ｼ', });
+            nts.uk.ui.windows.sub.modal('/view/013/d/index.xhtml', { title: '騾包ｽｻ鬮ｱ�ｽ｢ID繝ｻ蜥ｼ', });
         }
     }
 
