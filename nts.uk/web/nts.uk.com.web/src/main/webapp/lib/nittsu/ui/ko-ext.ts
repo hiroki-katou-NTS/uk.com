@@ -413,6 +413,7 @@ module nts.uk.ui.koExtentions {
             var data = valueAccessor();
             var fields = ko.unwrap(data.fields);
             var searchText = (data.searchText !== undefined) ? ko.unwrap(data.searchText) : "検索";
+            var placeHolder = (data.placeHolder !== undefined) ? ko.unwrap(data.placeHolder) : "コード・名称で検索・・・";
             var selected = data.selected;
             var selectedKey = null;
             if (data.selectedKey) {
@@ -429,6 +430,7 @@ module nts.uk.ui.koExtentions {
             $container.append("<input class='ntsSearchBox' type='text' />");
             $container.append("<button class='search-btn caret-bottom'>" + searchText + "</button>");
             var $input = $container.find("input.ntsSearchBox");
+            $input.attr("placeholder", placeHolder);
             var $button = $container.find("button.search-btn");
             var nextSearch = function() {
                 var filtArr = searchBox.data("searchResult");
@@ -1670,7 +1672,7 @@ module nts.uk.ui.koExtentions {
             $(element).igTreeGrid({
                 width: width,
                 height: height,
-                dataSource: options,
+                dataSource: _.cloneDeep(options),
                 primaryKey: optionsValue,
                 columns: displayColumns,
                 childDataKey: optionsChild,
