@@ -63,7 +63,10 @@ public class JpaUnemployeeInsuranceRateRepository extends JpaRepository implemen
 	 */
 	@Override
 	public void update(UnemployeeInsuranceRate rate) {
-		this.commandProxy().update(toEntity(rate));
+		if (isInvalidDateRangeUpdate(rate.getCompanyCode(), rate.getApplyRange().getStartMonth(),
+				rate.getHistoryId())) {
+			this.commandProxy().update(toEntity(rate));
+		}
 	}
 
 	/*
@@ -168,6 +171,13 @@ public class JpaUnemployeeInsuranceRateRepository extends JpaRepository implemen
 		return entity;
 	}
 
+	/**
+	 * Find between.
+	 *
+	 * @param companyCode the company code
+	 * @param yearMonth the year month
+	 * @return the list
+	 */
 	public List<QismtEmpInsuRate> findBetween(CompanyCode companyCode, YearMonth yearMonth) {
 		EntityManager em = getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
@@ -184,6 +194,13 @@ public class JpaUnemployeeInsuranceRateRepository extends JpaRepository implemen
 		return query.getResultList();
 	}
 
+	/**
+	 * Find data by id.
+	 *
+	 * @param companyCode the company code
+	 * @param historyId the history id
+	 * @return the qismt emp insu rate
+	 */
 	public QismtEmpInsuRate findDataById(CompanyCode companyCode, String historyId) {
 		EntityManager em = getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
@@ -198,5 +215,107 @@ public class JpaUnemployeeInsuranceRateRepository extends JpaRepository implemen
 		cq.where(lstpredicate.toArray(new Predicate[] {}));
 		TypedQuery<QismtEmpInsuRate> query = em.createQuery(cq);
 		return query.getSingleResult();
+	}
+
+	/**
+	 * Checks if is invalid date range update.
+	 *
+	 * @param companyCode the company code
+	 * @param startMonth the start month
+	 * @param historyId the history id
+	 * @return true, if is invalid date range update
+	 */
+	public boolean isInvalidDateRangeUpdate(CompanyCode companyCode, YearMonth startMonth, String historyId) {
+		// data is begin update
+		QismtEmpInsuRate qismtEmpInsuRate = findDataById(companyCode, historyId);
+		if (qismtEmpInsuRate != null) {
+			if (qismtEmpInsuRate.getStrYm() > startMonth.v()) {
+				// begin update
+				List<QismtEmpInsuRate> lstQismtEmpInsuRate = findBetweenUpdate(companyCode, startMonth, historyId);
+				if (lstQismtEmpInsuRate == null || lstQismtEmpInsuRate.isEmpty()) {
+					return true;
+				}
+				if (lstQismtEmpInsuRate != null && lstQismtEmpInsuRate.size() == 1) {
+					QismtEmpInsuRate qismtEmpInsuRateBeginUpdate = findDataById(companyCode,
+							lstQismtEmpInsuRate.get(0).getQismtEmpInsuRatePK().getHistId());
+					qismtEmpInsuRateBeginUpdate.setEndYm(startMonth.previousMonth().v());
+					update(toDomain(qismtEmpInsuRateBeginUpdate));
+					return true;
+				}
+			} else if (qismtEmpInsuRate.getStrYm() < startMonth.v()) {
+				// end update
+				List<QismtEmpInsuRate> lstQismtEmpInsuRate = findBetweenEndUpdate(companyCode, startMonth, historyId);
+				if (lstQismtEmpInsuRate == null || lstQismtEmpInsuRate.isEmpty()) {
+					return true;
+				}
+				if (lstQismtEmpInsuRate != null && lstQismtEmpInsuRate.size() >= 1) {
+					QismtEmpInsuRate qismtEmpInsuRateEndUpdate = findDataById(companyCode,
+							lstQismtEmpInsuRate.get(0).getQismtEmpInsuRatePK().getHistId());
+					qismtEmpInsuRateEndUpdate.setEndYm(startMonth.previousMonth().v());
+					update(toDomain(qismtEmpInsuRateEndUpdate));
+					return true;
+				}
+			}
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * Find between update.
+	 *
+	 * @param companyCode
+	 *            the company code
+	 * @param yearMonth
+	 *            the year month
+	 * @param historyId
+	 *            the history id
+	 * @return the list
+	 */
+	public List<QismtEmpInsuRate> findBetweenUpdate(CompanyCode companyCode, YearMonth yearMonth, String historyId) {
+		EntityManager em = getEntityManager();
+		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+		CriteriaQuery<QismtEmpInsuRate> cq = criteriaBuilder.createQuery(QismtEmpInsuRate.class);
+		Root<QismtEmpInsuRate> root = cq.from(QismtEmpInsuRate.class);
+		cq.select(root);
+		List<Predicate> lstpredicate = new ArrayList<>();
+		lstpredicate.add(criteriaBuilder
+				.equal(root.get(QismtEmpInsuRate_.qismtEmpInsuRatePK).get(QismtEmpInsuRatePK_.ccd), companyCode.v()));
+		lstpredicate.add(criteriaBuilder
+				.notEqual(root.get(QismtEmpInsuRate_.qismtEmpInsuRatePK).get(QismtEmpInsuRatePK_.histId), historyId));
+		lstpredicate.add(criteriaBuilder.le(root.get(QismtEmpInsuRate_.strYm), yearMonth.nextMonth().v()));
+		lstpredicate.add(criteriaBuilder.ge(root.get(QismtEmpInsuRate_.endYm), yearMonth.previousMonth().v()));
+		cq.where(lstpredicate.toArray(new Predicate[] {}));
+		TypedQuery<QismtEmpInsuRate> query = em.createQuery(cq);
+		return query.getResultList();
+	}
+
+	/**
+	 * Find between end update.
+	 *
+	 * @param companyCode
+	 *            the company code
+	 * @param yearMonth
+	 *            the year month
+	 * @param historyId
+	 *            the history id
+	 * @return the list
+	 */
+	public List<QismtEmpInsuRate> findBetweenEndUpdate(CompanyCode companyCode, YearMonth yearMonth, String historyId) {
+		EntityManager em = getEntityManager();
+		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+		CriteriaQuery<QismtEmpInsuRate> cq = criteriaBuilder.createQuery(QismtEmpInsuRate.class);
+		Root<QismtEmpInsuRate> root = cq.from(QismtEmpInsuRate.class);
+		cq.select(root);
+		List<Predicate> lstpredicate = new ArrayList<>();
+		lstpredicate.add(criteriaBuilder
+				.equal(root.get(QismtEmpInsuRate_.qismtEmpInsuRatePK).get(QismtEmpInsuRatePK_.ccd), companyCode.v()));
+		lstpredicate.add(criteriaBuilder
+				.notEqual(root.get(QismtEmpInsuRate_.qismtEmpInsuRatePK).get(QismtEmpInsuRatePK_.histId), historyId));
+		lstpredicate.add(criteriaBuilder.le(root.get(QismtEmpInsuRate_.endYm), yearMonth.previousMonth().v()));
+		cq.where(lstpredicate.toArray(new Predicate[] {}));
+		cq.orderBy(criteriaBuilder.desc(root.get(QismtEmpInsuRate_.strYm)));
+		TypedQuery<QismtEmpInsuRate> query = em.createQuery(cq);
+		return query.getResultList();
 	}
 }

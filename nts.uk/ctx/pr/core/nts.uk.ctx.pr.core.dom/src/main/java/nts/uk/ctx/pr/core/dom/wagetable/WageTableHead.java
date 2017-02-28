@@ -9,6 +9,7 @@ import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroupGetMemento;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroupSetMemento;
+import nts.uk.ctx.pr.core.dom.wagetable.mode.DimensionalMode;
 import nts.uk.shr.com.primitive.Memo;
 
 /**
@@ -26,8 +27,8 @@ public class WageTableHead extends DomainObject {
 	/** The name. */
 	private WageTableName name;
 
-	/** The demension set. */
-	private ElementCount demensionSet;
+	/** The dimensional mode. */
+	private DimensionalMode dimensionSetting;
 
 	/** The memo. */
 	private Memo memo;
@@ -38,7 +39,8 @@ public class WageTableHead extends DomainObject {
 	/**
 	 * Instantiates a new wage table head.
 	 *
-	 * @param memento the memento
+	 * @param memento
+	 *            the memento
 	 */
 	public WageTableHead(CertifyGroupGetMemento memento) {
 		this.companyCode = memento.getCompanyCode();
@@ -47,7 +49,8 @@ public class WageTableHead extends DomainObject {
 	/**
 	 * Save to memento.
 	 *
-	 * @param memento the memento
+	 * @param memento
+	 *            the memento
 	 */
 	public void saveToMemento(CertifyGroupSetMemento memento) {
 		memento.setCompanyCode(this.companyCode);

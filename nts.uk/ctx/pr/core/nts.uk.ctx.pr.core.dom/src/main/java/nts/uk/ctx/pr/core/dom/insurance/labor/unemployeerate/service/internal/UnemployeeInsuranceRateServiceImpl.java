@@ -36,12 +36,17 @@ public class UnemployeeInsuranceRateServiceImpl implements UnemployeeInsuranceRa
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.service.UnemployeeInsuranceRateService#validateDateRange(nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsuranceRate)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.service.
+	 * UnemployeeInsuranceRateService#validateDateRange(nts.uk.ctx.pr.core.dom.
+	 * insurance.labor.unemployeerate.UnemployeeInsuranceRate)
 	 */
 	@Override
 	public void validateDateRange(UnemployeeInsuranceRate rate) {
-		if (unemployeeInsuranceRateRepo.isInvalidDateRange(rate.getApplyRange())) {
+		if (unemployeeInsuranceRateRepo.isInvalidDateRange(rate.getCompanyCode(),
+				rate.getApplyRange().getStartMonth())) {
 			// History after start date and time exists
 			throw new BusinessException("ER010");
 

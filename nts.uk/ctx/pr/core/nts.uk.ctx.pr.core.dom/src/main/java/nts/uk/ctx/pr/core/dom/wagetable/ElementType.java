@@ -6,23 +6,23 @@
 package nts.uk.ctx.pr.core.dom.wagetable;
 
 /**
- * The Enum MultipleTargetSetting.
+ * The Enum ElementType.
  */
 public enum ElementType {
 
-	/** The Bigest method. */
+	/** The Master ref. */
 	MasterRef(0),
 
-	/** The Total method. */
+	/** The Code ref. */
 	CodeRef(1),
 
-	/** The Three. */
+	/** The Item data ref. */
 	ItemDataRef(2),
 
-	/** The Eligibility. */
+	/** The Experience fix. */
 	ExperienceFix(3),
 
-	/** The Finework. */
+	/** The Age fix. */
 	AgeFix(4),
 
 	/** The Family mem fix. */
@@ -35,12 +35,10 @@ public enum ElementType {
 	private final static ElementType[] values = ElementType.values();
 
 	/**
-	 * Instantiates a new multiple target setting.
+	 * Instantiates a new element type.
 	 *
 	 * @param value
 	 *            the value
-	 * @param description
-	 *            the description
 	 */
 	private ElementType(int value) {
 		this.value = value;
@@ -51,7 +49,7 @@ public enum ElementType {
 	 *
 	 * @param value
 	 *            the value
-	 * @return the multiple target setting
+	 * @return the element type
 	 */
 	public static ElementType valueOf(Integer value) {
 		// Invalid object.

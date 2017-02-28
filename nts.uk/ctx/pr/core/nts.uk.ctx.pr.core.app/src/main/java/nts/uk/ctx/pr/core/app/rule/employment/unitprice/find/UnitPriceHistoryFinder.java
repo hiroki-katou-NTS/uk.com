@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.app.rule.employment.unitprice.find;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -12,6 +13,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.gul.collection.ListUtil;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPrice;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceCode;
@@ -84,8 +86,10 @@ public class UnitPriceHistoryFinder {
 				}, Collectors.toList())));
 
 		// Return
-		return unitPrices.stream().map(
-				item -> new UnitPriceItemDto(item.getCode().v(), item.getName().v(), historyMap.get(item.getCode())))
-				.collect(Collectors.toList());
+		return unitPrices.stream().map(item -> {
+			List<UnitPriceHistoryItemDto> histories = historyMap.get(item.getCode());
+			return new UnitPriceItemDto(item.getCode().v(), item.getName().v(),
+					ListUtil.isEmpty(histories) ? Collections.emptyList() : histories);
+		}).collect(Collectors.toList());
 	}
 }

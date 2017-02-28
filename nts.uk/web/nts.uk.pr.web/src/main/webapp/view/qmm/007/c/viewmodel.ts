@@ -1,22 +1,18 @@
 module nts.uk.pr.view.qmm007.c {
     export module viewmodel {
         import service = nts.uk.pr.view.qmm007.a.service;
+        import UnitPriceHistoryDto = nts.uk.pr.view.qmm007.a.service.model.UnitPriceHistoryDto;
 
         export class ScreenModel {
-            code: KnockoutObservable<string>;
-            name: KnockoutObservable<string>;
-            startMonth: KnockoutObservable<string>;
-            endMonth: KnockoutObservable<string>;
+            unitPriceHistoryModel: KnockoutObservable<any>;
+
             edittingMethod: KnockoutObservable<string>;
             isEditMode: KnockoutObservable<boolean>;
 
             constructor() {
                 var self = this;
-                var unitPriceHistoryModel = nts.uk.ui.windows.getShared('unitPriceHistoryModel');
-                self.code = ko.observable(unitPriceHistoryModel.unitPriceCode());
-                self.name = ko.observable(unitPriceHistoryModel.unitPriceName());
-                self.startMonth = ko.observable(unitPriceHistoryModel.startMonth());
-                self.endMonth = ko.observable(unitPriceHistoryModel.endMonth());
+                var unitPriceHistoryDto: UnitPriceHistoryDto = nts.uk.ui.windows.getShared('unitPriceHistoryModel');
+                self.unitPriceHistoryModel = ko.mapping.fromJS(unitPriceHistoryDto);
                 self.edittingMethod = ko.observable('Edit');
                 self.isEditMode = ko.observable(true);
 
@@ -25,16 +21,18 @@ module nts.uk.pr.view.qmm007.c {
                 });
 
             }
+
             btnApplyClicked() {
                 var self = this;
-                var unitPriceHistoryModel = nts.uk.ui.windows.getShared('unitPriceHistoryModel');
                 if (self.isEditMode()) {
-                    unitPriceHistoryModel.startMonth(self.startMonth());
-                    service.update(service.collectData(unitPriceHistoryModel));
+                    service.update(ko.toJS(self.unitPriceHistoryModel)).done(() => {
+                        nts.uk.ui.windows.close();
+                    });
                 } else {
-                    service.remove(unitPriceHistoryModel.id, unitPriceHistoryModel.version);
+                    service.remove(self.unitPriceHistoryModel.id(), self.unitPriceHistoryModel.unitPriceCode()).done(() => {
+                        nts.uk.ui.windows.close();
+                    });
                 }
-                nts.uk.ui.windows.close()
             }
             btnCancelClicked() {
                 nts.uk.ui.windows.close()

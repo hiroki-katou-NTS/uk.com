@@ -2,47 +2,37 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.pr.core.dom.wagetable.element;
+package nts.uk.ctx.pr.core.dom.wagetable;
 
 import lombok.Getter;
-import nts.arc.layer.dom.DomainObject;
-import nts.uk.ctx.core.dom.company.CompanyCode;
-import nts.uk.ctx.pr.core.dom.wagetable.ElementType;
-import nts.uk.ctx.pr.core.dom.wagetable.WageTableCode;
-import nts.uk.ctx.pr.core.dom.wagetable.WtElementRefNo;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroupGetMemento;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroupSetMemento;
+import nts.uk.ctx.pr.core.dom.wagetable.element.ElementMode;
 
 /**
- * The Class WageTableHist.
+ * The Class WageTableElement.
  */
 @Getter
-public class WageTableElement extends DomainObject {
+public class WageTableElement {
 
-	/** The company code. */
-	private CompanyCode companyCode;
+	/** The demension no. */
+	private DemensionOrder demensionNo;
 
-	/** The code. */
-	private WageTableCode code;
+	// /** The demension type. */
+	// private ElementType demensionType;
 
-	/** The history id. */
-	private Integer demensionNo;
-
-	/** The apply range. */
-	private ElementType demensionType;
-
-	/** The elements. */
-	private WtElementRefNo demensionRefNo;
+	/** The demension ref no. */
+	private ElementMode elementModeSetting;
 
 	// =================== Memento State Support Method ===================
 	/**
-	 * Instantiates a new wage table hist.
+	 * Instantiates a new wage table element.
 	 *
 	 * @param memento
 	 *            the memento
 	 */
 	public WageTableElement(CertifyGroupGetMemento memento) {
-		this.companyCode = memento.getCompanyCode();
+		// this.companyCode = memento.getCompanyCode();
 	}
 
 	/**
@@ -52,7 +42,7 @@ public class WageTableElement extends DomainObject {
 	 *            the memento
 	 */
 	public void saveToMemento(CertifyGroupSetMemento memento) {
-		memento.setCompanyCode(this.companyCode);
+		// memento.setCompanyCode(this.companyCode);
 	}
 
 }

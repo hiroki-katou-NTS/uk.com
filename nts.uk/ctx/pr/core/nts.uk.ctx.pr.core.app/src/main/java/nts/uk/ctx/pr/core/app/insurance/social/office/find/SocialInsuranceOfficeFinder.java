@@ -31,8 +31,7 @@ public class SocialInsuranceOfficeFinder {
 	 * @return the optional
 	 */
 	public Optional<SocialInsuranceOfficeDto> find(String officeCode) {
-		Optional<SocialInsuranceOffice> socialInsuranceOffice = socialInsuranceOfficeRepo
-				.findByOfficeCode(officeCode);
+		Optional<SocialInsuranceOffice> socialInsuranceOffice = socialInsuranceOfficeRepo.findByOfficeCode(officeCode);
 		SocialInsuranceOfficeDto dto = SocialInsuranceOfficeDto.builder().build();
 		if (socialInsuranceOffice.isPresent()) {
 			socialInsuranceOffice.get().saveToMemento(dto);
@@ -49,6 +48,20 @@ public class SocialInsuranceOfficeFinder {
 	public List<SocialInsuranceOfficeItemDto> findAll(String companyCode) {
 		return socialInsuranceOfficeRepo.findAll(companyCode).stream().map(domain -> {
 			SocialInsuranceOfficeItemDto dto = SocialInsuranceOfficeItemDto.builder().build();
+			domain.saveToMemento(dto);
+			return dto;
+		}).collect(Collectors.toList());
+	}
+
+	/**
+	 * Find all detail.
+	 *
+	 * @param companyCode the company code
+	 * @return the list
+	 */
+	public List<SocialInsuranceOfficeDto> findAllDetail(String companyCode) {
+		return socialInsuranceOfficeRepo.findAll(companyCode).stream().map(domain -> {
+			SocialInsuranceOfficeDto dto = SocialInsuranceOfficeDto.builder().build();
 			domain.saveToMemento(dto);
 			return dto;
 		}).collect(Collectors.toList());

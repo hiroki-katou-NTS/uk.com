@@ -27,7 +27,6 @@ var nts;
                                     dfd.resolve(res);
                                 })
                                     .fail(function (res) {
-                                    dfd.reject(res);
                                 });
                                 return dfd.promise();
                             }

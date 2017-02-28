@@ -45,16 +45,23 @@ public class SocialInsuranceOfficeWs extends WebService {
 	private DeleteSocialOfficeCommandHandler deleteSocialOfficeCommandHandler;
 	@Inject
 	private RegisterPensionCommandHandler registerPensionCommandHandler;
-	
+
 	@Inject
 	private SocialInsuranceOfficeFinder socialInsuranceOfficeFinder;
-	
+
 	@POST
 	@Path("findall")
 	public List<SocialInsuranceOfficeItemDto> findAll() {
-		
+
 		String companyCode = AppContexts.user().companyCode();
 		return socialInsuranceOfficeFinder.findAll(companyCode);
+	}
+
+	@POST
+	@Path("findall/detail")
+	public List<SocialInsuranceOfficeDto> findAllDetail() {
+		String companyCode = AppContexts.user().companyCode();
+		return socialInsuranceOfficeFinder.findAllDetail(companyCode);
 	}
 
 	@POST
@@ -62,56 +69,56 @@ public class SocialInsuranceOfficeWs extends WebService {
 	public SocialInsuranceOfficeDto findOffice(@PathParam("officeCode") String officeCode) {
 		return socialInsuranceOfficeFinder.find(officeCode).get();
 	}
-	
+
 	@POST
 	@Path("history/{officeCode}")
 	public List<HistoryDto> findHistory(@PathParam("officeCode") String officeCode) {
-		
+
 		List<HistoryDto> lstHistory = new ArrayList<HistoryDto>();
 		List<HistoryDto> returnHistory = new ArrayList<HistoryDto>();
-		
+
 		HistoryDto history1 = new HistoryDto();
 		history1.setOfficeCode("officeCode1");
 		history1.setCode("historyCode1");
 		history1.setStart("2015");
 		history1.setEnd("2016");
 		lstHistory.add(history1);
-		
+
 		HistoryDto history2 = new HistoryDto();
 		history2.setOfficeCode("officeCode2");
 		history2.setCode("historyCode2");
 		history2.setStart("2015");
 		history2.setEnd("2016");
 		lstHistory.add(history2);
-		
+
 		HistoryDto history3 = new HistoryDto();
 		history3.setOfficeCode("officeCode3");
 		history3.setCode("historyCode3");
 		history3.setStart("2015");
 		history3.setEnd("2016");
 		lstHistory.add(history3);
-		
+
 		HistoryDto history4 = new HistoryDto();
 		history4.setOfficeCode("officeCode2");
 		history4.setCode("historyCode4");
 		history4.setStart("2015");
 		history4.setEnd("2016");
 		lstHistory.add(history4);
-		
+
 		for (HistoryDto HistoryDto : lstHistory) {
- 			if (HistoryDto.getOfficeCode().toString().equals(officeCode)) {
- 				returnHistory.add(HistoryDto);
- 			}
+			if (HistoryDto.getOfficeCode().toString().equals(officeCode)) {
+				returnHistory.add(HistoryDto);
+			}
 		}
 		return returnHistory;
 	}
-	
+
 	@POST
 	@Path("find/rounding")
-	public void findRounding(){
-		//TODO convert class RoundingMethod to values and return
+	public void findRounding() {
+		// TODO convert class RoundingMethod to values and return
 	}
-	
+
 	@POST
 	@Path("create")
 	public void createOffice(RegisterSocialOfficeCommand command) {

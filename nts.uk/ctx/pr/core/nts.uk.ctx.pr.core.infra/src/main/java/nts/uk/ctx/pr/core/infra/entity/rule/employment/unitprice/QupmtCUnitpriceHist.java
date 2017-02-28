@@ -129,7 +129,7 @@ public class QupmtCUnitpriceHist implements Serializable {
 	/** The qupmt C unitprice head. */
 	@JoinColumns({ @JoinColumn(name = "CCD", referencedColumnName = "CCD", insertable = false, updatable = false),
 			@JoinColumn(name = "C_UNITPRICE_CD", referencedColumnName = "C_UNITPRICE_CD", insertable = false, updatable = false) })
-	@ManyToOne(optional = false, cascade = CascadeType.ALL)
+	@ManyToOne(optional = false, cascade = CascadeType.DETACH)
 	private QupmtCUnitpriceHead qupmtCUnitpriceHead;
 
 	/**

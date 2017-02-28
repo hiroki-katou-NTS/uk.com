@@ -10,6 +10,7 @@ var nts;
                 (function (qmm010) {
                     var b;
                     (function (b) {
+                        var LaborInsuranceOfficeImportDto = b.service.model.LaborInsuranceOfficeImportDto;
                         var viewmodel;
                         (function (viewmodel) {
                             var ScreenModel = (function () {
@@ -25,13 +26,11 @@ var nts;
                                             textalign: "left"
                                         }))
                                     };
-                                    self.selectLstSocialInsuranceOffice = ko.observable("");
+                                    self.selectLstSocialInsuranceOffice = ko.observableArray([]);
                                     self.columnsLstSocialInsuranceOffice = ko.observableArray([
                                         { headerText: 'コード', prop: 'code', width: 120 },
                                         { headerText: '名称', prop: 'name', width: 120 }
                                     ]);
-                                    self.currentCode = ko.observable();
-                                    self.currentCodeList = ko.observableArray([]);
                                     self.multilineeditor = {
                                         value: ko.observable(''),
                                         constraint: 'ResidenceCode',
@@ -62,6 +61,58 @@ var nts;
                                         dfd.resolve(self);
                                     });
                                     return dfd.promise();
+                                };
+                                ScreenModel.prototype.showConfirm = function (laborInsuranceOfficeCheckImportDto, lstSocialInsuranceOfficeImport) {
+                                    var self = this;
+                                    if (laborInsuranceOfficeCheckImportDto.code === "1") {
+                                        nts.uk.ui.dialog.confirm("Duplicate Code ! Do you replace All?").ifYes(function () {
+                                            self.importData(0, lstSocialInsuranceOfficeImport);
+                                        }).ifNo(function () {
+                                            self.importData(1, lstSocialInsuranceOfficeImport);
+                                        }).ifCancel(function () {
+                                            self.importData(1, lstSocialInsuranceOfficeImport);
+                                        }).then(function () {
+                                            self.importData(1, lstSocialInsuranceOfficeImport);
+                                        });
+                                    }
+                                    else {
+                                        self.importData(0, lstSocialInsuranceOfficeImport);
+                                    }
+                                };
+                                ScreenModel.prototype.importData = function (checkUpdateDuplicateCode, lstSocialInsuranceOfficeImport) {
+                                    var laborInsuranceOfficeImportDto;
+                                    laborInsuranceOfficeImportDto = new LaborInsuranceOfficeImportDto();
+                                    laborInsuranceOfficeImportDto.lstSocialInsuranceOfficeImport = lstSocialInsuranceOfficeImport;
+                                    laborInsuranceOfficeImportDto.checkUpdateDuplicateCode = checkUpdateDuplicateCode;
+                                    b.service.importData(laborInsuranceOfficeImportDto).done(function (data) {
+                                        nts.uk.ui.windows.close();
+                                    });
+                                };
+                                ScreenModel.prototype.findCode = function (code) {
+                                    var self = this;
+                                    for (var _i = 0, _a = self.lstSocialInsuranceOffice(); _i < _a.length; _i++) {
+                                        var itemOfLst = _a[_i];
+                                        if (itemOfLst.code === code) {
+                                            return itemOfLst;
+                                        }
+                                    }
+                                    return null;
+                                };
+                                ScreenModel.prototype.checkDuplicateCodeByImportData = function () {
+                                    var self = this;
+                                    if (self.selectLstSocialInsuranceOffice() != null && self.selectLstSocialInsuranceOffice().length > 0) {
+                                        var lstSocialInsuranceOfficeImport;
+                                        lstSocialInsuranceOfficeImport = [];
+                                        for (var _i = 0, _a = self.selectLstSocialInsuranceOffice(); _i < _a.length; _i++) {
+                                            var item = _a[_i];
+                                            lstSocialInsuranceOfficeImport.push(self.findCode(item));
+                                        }
+                                        var laborInsuranceOfficeImportDto;
+                                        laborInsuranceOfficeImportDto = new LaborInsuranceOfficeImportDto();
+                                        b.service.checkDuplicateCodeByImportData(lstSocialInsuranceOfficeImport).done(function (data) {
+                                            self.showConfirm(data, lstSocialInsuranceOfficeImport);
+                                        });
+                                    }
                                 };
                                 return ScreenModel;
                             }());

@@ -16,11 +16,8 @@ var nts;
                             var ScreenModel = (function () {
                                 function ScreenModel() {
                                     var self = this;
-                                    var unitPriceHistoryModel = nts.uk.ui.windows.getShared('unitPriceHistoryModel');
-                                    self.code = ko.observable(unitPriceHistoryModel.unitPriceCode());
-                                    self.name = ko.observable(unitPriceHistoryModel.unitPriceName());
-                                    self.startMonth = ko.observable(unitPriceHistoryModel.startMonth());
-                                    self.endMonth = ko.observable(unitPriceHistoryModel.endMonth());
+                                    var unitPriceHistoryDto = nts.uk.ui.windows.getShared('unitPriceHistoryModel');
+                                    self.unitPriceHistoryModel = ko.mapping.fromJS(unitPriceHistoryDto);
                                     self.edittingMethod = ko.observable('Edit');
                                     self.isEditMode = ko.observable(true);
                                     self.edittingMethod.subscribe(function (val) {
@@ -29,15 +26,16 @@ var nts;
                                 }
                                 ScreenModel.prototype.btnApplyClicked = function () {
                                     var self = this;
-                                    var unitPriceHistoryModel = nts.uk.ui.windows.getShared('unitPriceHistoryModel');
                                     if (self.isEditMode()) {
-                                        unitPriceHistoryModel.startMonth(self.startMonth());
-                                        service.update(service.collectData(unitPriceHistoryModel));
+                                        service.update(ko.toJS(self.unitPriceHistoryModel)).done(function () {
+                                            nts.uk.ui.windows.close();
+                                        });
                                     }
                                     else {
-                                        service.remove(unitPriceHistoryModel.id, unitPriceHistoryModel.version);
+                                        service.remove(self.unitPriceHistoryModel.id(), self.unitPriceHistoryModel.unitPriceCode()).done(function () {
+                                            nts.uk.ui.windows.close();
+                                        });
                                     }
-                                    nts.uk.ui.windows.close();
                                 };
                                 ScreenModel.prototype.btnCancelClicked = function () {
                                     nts.uk.ui.windows.close();
