@@ -64,5 +64,4 @@ public class JpaHolidayPaidRepository extends JpaRepository implements HolidayPa
 		
 		return Optional.of(holidayList.get(0));
 	}
-
 }
