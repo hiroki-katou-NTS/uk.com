@@ -60,11 +60,10 @@
 							data-bind="click: goToB, enable: isInputEnabled() &amp;&amp; !isNewMode()">履歴追加</button>
 						<button class="pull-right" id="btn_005"
 							data-bind="click: goToC, enable: isInputEnabled() &amp;&amp; !isNewMode()">履歴編集</button>
-					</div>
-					<div class="padding-top-10 pull-left cf">
-						<table id="lst_001"
-							data-bind="ntsTreeGridView:{
-										width: 300,
+						<div class="padding-top-10 pull-left cf">
+							<table id="lst_001"
+								data-bind="ntsTreeGridView:{
+										width: 290,
 										height: 350,
 										options: historyList,
 										value: selectedId,
@@ -74,8 +73,9 @@
 										multiple: false,
 										enable: true,
 										showCheckBox: false}"
-							class="cf">
-						</table>
+								class="cf">
+							</table>
+						</div>
 					</div>
 				</div>
 				<!-- END LEFT CONTENT-->

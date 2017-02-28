@@ -12,20 +12,16 @@
 
 #left-content {
 	margin-left: 30px;
-	padding: 20px;
+	padding: 20px 10px 20px 20px;
 	float: left;
 	min-height: 400px;
-	width: 300px;
+	width: 310px;
 }
 
 #right-content {
 	margin-left: 40px;
 	float: left;
 	min-height: 600px;
-}
-
-#inpSearch {
-	width: 118px;
 }
 
 #inpCode {
@@ -56,9 +52,11 @@
 }
 
 #sch_001 input{
-	width: 150px;
+	width: 160px;
 }
-
+#btn_005 {
+	margin-right: 20px;
+}
 .btn-default {
 	margin-left: 10px;
 	min-width: 80px;
