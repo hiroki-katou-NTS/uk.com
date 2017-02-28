@@ -30,17 +30,17 @@ public class QpdmtPaydayProcessing extends TableEntity implements Serializable {
 
 	@Basic(optional = false)
 	@Column(name = "DISP_ATR")
-	public Number dispAtr;
+	public int dispAtr;
 
 	@Basic(optional = false)
 	@Column(name = "CURRENT_PROCESSING_YM")
-	public Number currentProcessingYm;
+	public int currentProcessingYm;
 
 	@Basic(optional = false)
 	@Column(name = "BONUS_ATR")
-	public Number bonusAtr;
+	public int bonusAtr;
 
 	@Basic(optional = false)
 	@Column(name = "B_CURRENT_PROCESSING_YM")
-	public Number bCurrentProcessingYm;
+	public int bCurrentProcessingYm;
 }

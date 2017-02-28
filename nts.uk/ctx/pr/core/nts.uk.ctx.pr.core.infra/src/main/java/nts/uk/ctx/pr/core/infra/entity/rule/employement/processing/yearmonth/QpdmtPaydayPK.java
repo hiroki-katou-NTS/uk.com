@@ -14,9 +14,6 @@ import lombok.NoArgsConstructor;
 @Embeddable
 public class QpdmtPaydayPK implements Serializable {
 
-	/**
-	 * serialVersionUID
-	 */
 	private static final long serialVersionUID = 1L;
 
 	@Basic(optional = false)

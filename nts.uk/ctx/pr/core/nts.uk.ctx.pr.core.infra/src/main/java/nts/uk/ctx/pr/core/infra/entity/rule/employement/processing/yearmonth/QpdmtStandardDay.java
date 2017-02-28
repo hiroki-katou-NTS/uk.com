@@ -24,34 +24,34 @@ public class QpdmtStandardDay extends TableEntity implements Serializable {
 
 	@Basic(optional = false)
 	@Column(name = "SOCIAL_INS_STD_YEAR_ATR")
-	public Number socialInsStdYearAtr;
+	public int socialInsStdYearAtr;
 	
 	@Basic(optional = false)
 	@Column(name = "SOCIAL_INS_STD_MON")
-	public Number socialInsStdMon;
+	public int socialInsStdMon;
 	
 	@Basic(optional = false)
 	@Column(name = "SOCIAL_INS_STD_DAY")
-	public Number socialInsStdDay;
+	public int socialInsStdDay;
 	
 	@Basic(optional = false)
 	@Column(name = "EMP_INS_STD_MON")
-	public Number empInsStdMon;
+	public int empInsStdMon;
 	
 	@Basic(optional = false)
 	@Column(name = "EMP_INS_STD_DAY")
-	public Number empInsStdDay;
+	public int empInsStdDay;
 	
 	@Basic(optional = false)
 	@Column(name = "INCOMETAX_STD_YEAR_ATR")
-	public Number incometaxStdYearAtr;
+	public int incometaxStdYearAtr;
 	
 	@Basic(optional = false)
 	@Column(name = "INCOMETAX_STD_MON")
-	public Number incometaxStdMon;
+	public int incometaxStdMon;
 	
 	@Basic(optional = false)
 	@Column(name = "INCOMETAX_STD_DAY")
-	public Number incometaxStdDay;
+	public int incometaxStdDay;
 	
 }

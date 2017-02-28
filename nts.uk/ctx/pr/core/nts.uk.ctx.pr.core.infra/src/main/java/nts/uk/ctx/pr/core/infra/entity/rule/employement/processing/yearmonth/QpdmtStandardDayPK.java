@@ -22,5 +22,5 @@ public class QpdmtStandardDayPK implements Serializable{
 	
 	@Basic(optional = false)
 	@Column(name = "PROCESSING_NO")
-	public Number processingNo;
+	public int processingNo;
 }

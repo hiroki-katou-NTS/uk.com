@@ -20,7 +20,7 @@ public class JpaPaymentDateProcessingMasterRepository extends JpaRepository
 			+ "WHERE c.qpdmtPaydayProcessingPK.ccd = :CCD and c.qpdmtPaydayProcessingPK.payBonusAtr = :payBonusAtr and c.dispAtr = :dispAtr ";
 
 	@Override
-	public Optional<PaymentDateProcessingMaster> find(String companyCode,
+	public Optional<PaymentDateProcessingMaster> find(String companyCode, int paymentBonusAtribute,
 			int processingNo) {
 		try {
 			return this.queryProxy()
@@ -43,10 +43,9 @@ public class JpaPaymentDateProcessingMasterRepository extends JpaRepository
 
 	private static PaymentDateProcessingMaster toDomain(QpdmtPaydayProcessing entity) {
 		PaymentDateProcessingMaster domain = PaymentDateProcessingMaster.createFromJavaType(
-				entity.qpdmtPaydayProcessingPK.payBonusAtr, entity.qpdmtPaydayProcessingPK.processingNo,
+				0, entity.qpdmtPaydayProcessingPK.processingNo,
 				entity.processingName, entity.currentProcessingYm, entity.dispAtr);
 		//entity.toDomain(domain);
 		return domain;
 	}
-
 }

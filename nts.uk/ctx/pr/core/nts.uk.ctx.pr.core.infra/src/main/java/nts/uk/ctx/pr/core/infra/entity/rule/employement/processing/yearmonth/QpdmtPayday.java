@@ -7,6 +7,7 @@ import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import nts.arc.time.GeneralDate;
@@ -33,7 +34,7 @@ public class QpdmtPayday extends TableEntity implements Serializable {
 
 	@Basic(optional = false)
 	@Column(name = "SOCIAL_INS_LEVY_MON")
-	public Number socialInsLevyMon;
+	public int socialInsLevyMon;
 
 	@Basic(optional = false)
 	@Column(name = "SOCIAL_INS_STD_DATE")
@@ -49,13 +50,13 @@ public class QpdmtPayday extends TableEntity implements Serializable {
 
 	@Basic(optional = false)
 	@Column(name = "STMT_OUTPUT_MON")
-	public Number stmtOutputMon;
+	public int stmtOutputMon;
 
 	@Basic(optional = false)
 	@Column(name = "NEEDED_WORK_DAY")
-	public Number neededWorkDay;
+	public int neededWorkDay;
 
 	@Basic(optional = false)
 	@Column(name = "ACCOUNTING_CLOSING")
-	public Number accountingClosing;
+	public int accountingClosing;
 }
