@@ -8,6 +8,7 @@ import java.util.List;
 
 import lombok.Getter;
 import nts.arc.error.BusinessException;
+import nts.gul.collection.ListUtil;
 import nts.uk.ctx.pr.core.dom.wagetable.ElementCount;
 import nts.uk.ctx.pr.core.dom.wagetable.WageTableElement;
 
@@ -15,7 +16,7 @@ import nts.uk.ctx.pr.core.dom.wagetable.WageTableElement;
  * The Class OneDimensionalMode.
  */
 @Getter
-public class OneDimensionalMode implements DimensionalMode {
+public class OneDimensionalMode implements DemensionalMode {
 
 	/** The Constant mode. */
 	public static final ElementCount mode = ElementCount.One;
@@ -34,12 +35,22 @@ public class OneDimensionalMode implements DimensionalMode {
 	 */
 	public OneDimensionalMode(List<WageTableElement> elements) {
 		super();
+		// Validate
+		if (ListUtil.isEmpty(elements)) {
+			throw new BusinessException("???");
+		}
+
 		if (elements.size() != ELEMENT_SIZE) {
 			// TODO
 			throw new BusinessException("");
 		}
 
 		this.elements = elements;
+	}
+
+	@Override
+	public ElementCount getMode() {
+		return mode;
 	}
 
 }

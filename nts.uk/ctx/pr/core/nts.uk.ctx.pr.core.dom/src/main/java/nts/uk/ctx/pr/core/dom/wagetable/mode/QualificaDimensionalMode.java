@@ -9,16 +9,17 @@ import java.util.stream.Collectors;
 
 import lombok.Getter;
 import nts.arc.error.BusinessException;
+import nts.gul.collection.ListUtil;
 import nts.uk.ctx.pr.core.dom.wagetable.ElementCount;
 import nts.uk.ctx.pr.core.dom.wagetable.WageTableElement;
-import nts.uk.ctx.pr.core.dom.wagetable.element.CodeRefMode;
+import nts.uk.ctx.pr.core.dom.wagetable.element.CertifyMode;
 import nts.uk.ctx.pr.core.dom.wagetable.element.ElementMode;
 
 /**
  * The Class EligibilityDimensionalMode.
  */
 @Getter
-public class QualificaDimensionalMode implements DimensionalMode {
+public class QualificaDimensionalMode implements DemensionalMode {
 
 	/** The Constant mode. */
 	public static final ElementCount mode = ElementCount.Qualification;
@@ -33,17 +34,25 @@ public class QualificaDimensionalMode implements DimensionalMode {
 	 *            the elements
 	 */
 	public QualificaDimensionalMode(List<WageTableElement> elements) {
-
 		super();
+		// Validate
+		if (ListUtil.isEmpty(elements)) {
+			throw new BusinessException("???");
+		}
 
 		List<ElementMode> elementModes = elements.stream().map(item -> item.getElementModeSetting())
 				.collect(Collectors.toList());
 
-		if (!elementModes.stream().anyMatch(item -> item instanceof CodeRefMode)) {
-			throw new BusinessException("");
+		if (!elementModes.stream().anyMatch(item -> item instanceof CertifyMode)) {
+			throw new BusinessException("???");
 		}
 
 		this.elements = elements;
+	}
+
+	@Override
+	public ElementCount getMode() {
+		return mode;
 	}
 
 }
