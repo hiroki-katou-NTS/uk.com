@@ -13,18 +13,18 @@
             	<com:scriptfile path="../../../../lib/generic/igniteui/js/extensions/infragistics.ui.combo.knockout-extensions.js"/>
 				<com:scriptfile path="../../../../lib/nittsu/ui/textbox-options.js"/>
 				<com:ValidatorScript>
-					nts.uk.ctx.pr.core.dom.layout.LayoutCode
-					nts.uk.ctx.pr.core.dom.layout.LayoutName
+					nts.uk.ctx.pr.proto.dom.layout.LayoutCode
+					nts.uk.ctx.pr.proto.dom.layout.LayoutName
    				</com:ValidatorScript>
 				<com:scriptfile path="start.js" />
 				<com:scriptfile path="viewmodel.js" />
 				<com:scriptfile path="service.js" />
-			    <script>var dialogSize = { width: 960, height: 650 };</script>
+			    <script>var dialogSize = { width: 960, height: 610 };</script>
 			    <style>.nts-list-box *{box-sizing: border-box} </style>
             </ui:define>
             
             <ui:define name="content">
-            <div id="functions-area"></div>
+<!--             <div id="functions-area"></div> -->
             	<div id="contents-area">
 					<div class="cf">
 						<div data-bind="ntsFormLabel: {required: true}"><label id="LBL_001">作成方法の選択</label></div><br />
@@ -73,7 +73,7 @@
 								<div data-bind="ntsFormLabel: {required: true}"><label id = "LBL_005">開始年月</label></div>
 								<div><input id = "INP_003" style="ime-mode: inactive" data-bind="ntsTimeEditor: {value: selectStartYm, option: timeEditorOption}"></input></div>
 								<!-- 入力した開始年月を和暦で表記 -->
-								<div><label id = "LBL_006"></label></div>
+								<div><label id = "LBL_006" data-bind="text: yearMonthEra"></label></div>
 							</div>
 							<div class="clsDiv" data-bind="ntsFormLabel: {required: true}">
 								<label id = "LBL_007">レイアウトパターンの選択</label>
