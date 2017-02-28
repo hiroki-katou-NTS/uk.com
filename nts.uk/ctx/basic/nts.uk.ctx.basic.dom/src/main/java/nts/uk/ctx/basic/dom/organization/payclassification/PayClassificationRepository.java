@@ -3,7 +3,6 @@ package nts.uk.ctx.basic.dom.organization.payclassification;
 import java.util.List;
 import java.util.Optional;
 
-import nts.arc.time.GeneralDate;
 
 public interface PayClassificationRepository {
 
@@ -13,34 +12,41 @@ public interface PayClassificationRepository {
 	 * @param companyCode
 	 * @return
 	 */
-	List<PayClassification> findAll(String companyCode);
+	List<PayClassification> getPayClassifications(String companyCode);
 
-	/**
-	 * get All Item Master   
-	 * 
-	 * @param companyCode
-	 * @param payClassificationCode
-	 * @param startDate
-	 * @return list PayClassification
-	 */
-	List<PayClassification> findAllByPayClassificationCode(String companyCode, PayClassificationCode payClassificationCode ,GeneralDate startDate);
+
 
 	/**
 	 * get Item Master
 	 * 
 	 * @param companyCode
 	 * @param payClassificationCode
-	 * @param startDate
 	 * @return list PayClassification
 	 */
-	Optional<PayClassification> getPosition(String companyCode, PayClassificationCode payClassificationCode ,GeneralDate startDate);
+	Optional<PayClassification> getPayClassification(String companyCode, String payClassificationCode);
 	
-	/**
-	 * Find item master
-	 * @param companyCode 
-	 * @param payClassificationCode 
-	 * @param startDate 
-	 * @return PayClassification
-	 */
-	Optional<PayClassification> find(String companyCode, PayClassificationCode payClassificationCode ,GeneralDate startDate);
+
+
+	void add(PayClassification payClassification);
+
+	void update(PayClassification payClassification);
+
+
+
+	void remove(String companyCode);
+
+
+
+	boolean isExisted(String companyCode, PayClassificationCode payClassificationCode);
+
+
+
+	List<PayClassification> findAll(String companyCode);
+
+
+
+	Optional<PayClassification> findSinglePayClassification(String companyCode,
+			PayClassificationCode payClassificationCode);
+
+	void remove(String companyCode, PayClassificationCode payClassificationCode);
 }

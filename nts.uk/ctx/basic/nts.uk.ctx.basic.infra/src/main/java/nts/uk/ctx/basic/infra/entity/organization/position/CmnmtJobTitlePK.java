@@ -1,4 +1,4 @@
-package nts.uk.ctx.basic.infra.entity.organization.payclassification;
+package nts.uk.ctx.basic.infra.entity.organization.position;
 
 import java.io.Serializable;
 
@@ -10,12 +10,13 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-@AllArgsConstructor
-@NoArgsConstructor
-@Embeddable
+
 @Getter
 @Setter
-public class QmnmtPayClassPK implements Serializable{
+@NoArgsConstructor
+@AllArgsConstructor
+@Embeddable
+public class CmnmtJobTitlePK implements Serializable{
 
 	/**
 	 * serialVersionUID
@@ -27,8 +28,11 @@ public class QmnmtPayClassPK implements Serializable{
 	public String companyCode;
 	
 	@Basic(optional = false)
-	@Column(name ="PAYCLASS_CD")
-	public String payClassCode;
+	@Column(name ="JOBCD")
+	public String jobCode;
 
-
+	@Basic(optional = false)
+	@Column(name ="HIST_ID")
+	public String historyID;
+	
 }
