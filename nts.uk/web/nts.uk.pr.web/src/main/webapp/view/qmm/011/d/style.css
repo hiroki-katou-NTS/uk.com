@@ -46,16 +46,8 @@
 	float: right;
 }
 
-table, td, th {
-	width: 450px;
-}
-
 .w80 {
 	width: 80px;
-}
-
-table {
-	height: 200px;
 }
 
 .ntsRadioBox {

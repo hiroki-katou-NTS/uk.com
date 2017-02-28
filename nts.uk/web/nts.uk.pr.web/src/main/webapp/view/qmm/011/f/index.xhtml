@@ -11,8 +11,13 @@
 			<com:stylefile path="style.css" />
 			<com:scriptfile path="start.js" />
 			<com:scriptfile path="../a/service.js" />
-			<com:scriptfile path="../a/viewmodel.js" />
 			<com:scriptfile path="viewmodel.js" />
+			<script type="text/javascript">
+				var dialogSize = {
+					width : 520,
+					height : 420
+				};
+			</script>
 
 		</ui:define>
 
@@ -20,7 +25,7 @@
 			<div id="contents-area">
 				<div id="F_LBL_001">ナビゲーションメッセージ</div>
 				<hr />
-				<TABLE>
+				<TABLE class="margin-top-bot-20 form-default">
 					<tr>
 						<td>
 							<div id="F_LBL_002" data-bind="ntsFormLabel: {}">名称</div>
@@ -44,15 +49,13 @@
 					</tr>
 					<tr>
 						<td></td>
-						<td>
+						<td> <br />
 							<div id="F_LBL_005" data-bind="ntsFormLabel: {}">期間</div>
 							<div
 								data-bind="ntsDatePicker: {value: historyStart, dateFormat: 'yyyy/MM'} "
 								class="w80" /> <labbel id="F_LBL_005">～</labbel> <label
 							id="D_LBL_006" data-bind="text: historyEnd"></label>
 						</td>
-
-
 					</tr>
 				</TABLE>
 				<hr />

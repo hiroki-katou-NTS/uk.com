@@ -59,4 +59,14 @@ public interface AccidentInsuranceRateRepository {
 	 * @return true, if is invalid date range
 	 */
 	boolean isInvalidDateRange(CompanyCode companyCode, MonthRange monthRange);
+
+	/**
+	 * Checks if is invalid date range update.
+	 *
+	 * @param companyCode the company code
+	 * @param monthRange the month range
+	 * @param historyId the history id
+	 * @return true, if is invalid date range update
+	 */
+	boolean isInvalidDateRangeUpdate(CompanyCode companyCode, MonthRange monthRange,String historyId);
 }

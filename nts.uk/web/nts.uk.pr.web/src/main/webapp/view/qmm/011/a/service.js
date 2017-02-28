@@ -138,9 +138,9 @@ var nts;
                                 return dfd.promise();
                             }
                             service.findAllHistoryAccidentInsuranceRate = findAllHistoryAccidentInsuranceRate;
-                            function findHistoryAccidentInsuranceRate(historyAccidentInsuranceRateFindInDto) {
+                            function findHistoryAccidentInsuranceRate(historyId) {
                                 var dfd = $.Deferred();
-                                nts.uk.request.ajax(paths.findHistoryAccidentInsuranceRate, historyAccidentInsuranceRateFindInDto)
+                                nts.uk.request.ajax(paths.findHistoryAccidentInsuranceRate + "/" + historyId)
                                     .done(function (res) {
                                     dfd.resolve(res);
                                 })

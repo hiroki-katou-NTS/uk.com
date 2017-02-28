@@ -26,23 +26,21 @@ var nts;
                                     self.selectedId = ko.observable(1);
                                     self.enable = ko.observable(true);
                                     self.textEditorOption = ko.mapping.fromJS(new option.TextEditorOption());
-                                    var historyId = nts.uk.ui.windows.getShared("historyId");
-                                    var historyStart = nts.uk.ui.windows.getShared("historyStart");
-                                    var historyEnd = nts.uk.ui.windows.getShared("historyEnd");
                                     self.typeHistory = ko.observable(nts.uk.ui.windows.getShared("type"));
-                                    self.historyStart = ko.observable(historyStart);
-                                    self.historyEnd = ko.observable(historyEnd);
+                                    self.historyStart = ko.observable(nts.uk.ui.windows.getShared("historyStart"));
+                                    self.historyId = ko.observable(nts.uk.ui.windows.getShared("historyId"));
+                                    self.historyEnd = ko.observable(nts.uk.ui.windows.getShared("historyEnd"));
                                 }
                                 ScreenModel.prototype.fwupdateHistoryInfoUnemployeeInsurance = function () {
                                     var self = this;
                                     var historyInfo;
-                                    historyInfo = new HistoryUnemployeeInsuranceDto("historyId001", self.historyStart(), self.historyEnd());
+                                    historyInfo = new HistoryUnemployeeInsuranceDto(self.historyId(), self.historyStart(), self.historyEnd());
                                     nts.uk.ui.windows.setShared("updateHistoryUnemployeeInsuranceDto", historyInfo);
                                 };
                                 ScreenModel.prototype.fwupdateHistoryInfoAccidentInsurance = function () {
                                     var self = this;
                                     var historyInfo;
-                                    historyInfo = new HistoryAccidentInsuranceDto("historyId001", self.historyStart(), self.historyEnd());
+                                    historyInfo = new HistoryAccidentInsuranceDto(self.historyId(), self.historyStart(), self.historyEnd());
                                     nts.uk.ui.windows.setShared("updateHistoryAccidentInsuranceDto", historyInfo);
                                 };
                                 ScreenModel.prototype.fwupdateHistoryInfo = function () {

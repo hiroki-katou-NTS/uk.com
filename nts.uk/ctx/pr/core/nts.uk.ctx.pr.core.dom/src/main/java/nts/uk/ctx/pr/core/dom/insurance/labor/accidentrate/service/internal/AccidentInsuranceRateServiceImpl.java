@@ -50,9 +50,22 @@ public class AccidentInsuranceRateServiceImpl implements AccidentInsuranceRateSe
 	 */
 	@Override
 	public void validateDateRange(AccidentInsuranceRate rate) {
-		// Check consistency date range.
-		// History after start date and time exists
 		if (accidentInsuranceRateRepo.isInvalidDateRange(rate.getCompanyCode(), rate.getApplyRange())) {
+			throw new BusinessException("ER010");
+		}
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.service.
+	 * AccidentInsuranceRateService#validateDateRangeUpdate(nts.uk.ctx.pr.core.
+	 * dom.insurance.labor.accidentrate.AccidentInsuranceRate)
+	 */
+	@Override
+	public void validateDateRangeUpdate(AccidentInsuranceRate rate) {
+		if (accidentInsuranceRateRepo.isInvalidDateRangeUpdate(rate.getCompanyCode(), rate.getApplyRange(),
+				rate.getHistoryId())) {
 			throw new BusinessException("ER010");
 		}
 	}

@@ -25,4 +25,11 @@ public interface AccidentInsuranceRateService {
 	 */
 	void validateDateRange(AccidentInsuranceRate rate);
 
+	/**
+	 * Validate date range update.
+	 *
+	 * @param rate the rate
+	 */
+	void validateDateRangeUpdate(AccidentInsuranceRate rate);
+
 }

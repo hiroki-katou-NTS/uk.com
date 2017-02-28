@@ -15,7 +15,6 @@ var nts;
                         var CareerGroupDto = a.service.model.CareerGroupDto;
                         var BusinessTypeEnumDto = a.service.model.BusinessTypeEnumDto;
                         var TypeHistory = a.service.model.TypeHistory;
-                        var HistoryAccidentInsuranceRateFindInDto = a.service.model.HistoryAccidentInsuranceRateFindInDto;
                         var TypeActionInsuranceRate = a.service.model.TypeActionInsuranceRate;
                         var viewmodel;
                         (function (viewmodel) {
@@ -48,14 +47,15 @@ var nts;
                                     var self = this;
                                     var historyId = self.selectionHistoryUnemployeeInsuranceRate();
                                     a.service.findHisotryUnemployeeInsuranceRate(historyId).done(function (data) {
-                                        nts.uk.ui.windows.setShared("historyId", data.historyId);
-                                        nts.uk.ui.windows.setShared("historyStart", data.startMonthRage);
                                         nts.uk.ui.windows.setShared("historyEnd", data.endMonthRage);
+                                        nts.uk.ui.windows.setShared("historyStart", data.startMonthRage);
+                                        nts.uk.ui.windows.setShared("historyId", data.historyId);
                                         nts.uk.ui.windows.setShared("type", TypeHistory.HistoryUnemployee);
                                         self.typeActionUnemployeeInsurance(TypeActionInsuranceRate.update);
-                                        nts.uk.ui.windows.sub.modal("/view/qmm/011/f/index.xhtml", { height: 420, width: 550, title: "労働保険料率の登録>マスタ修正ログ" }).onClosed(function () {
+                                        nts.uk.ui.windows.sub.modal('/view/qmm/011/f/index.xhtml', { title: '労働保険料率の登録>マスタ修正ログ', dialogClass: 'no-close' }).onClosed(function () {
                                             var updateHistoryUnemployeeInsuranceDto = nts.uk.ui.windows.getShared("updateHistoryUnemployeeInsuranceDto");
                                             if (updateHistoryUnemployeeInsuranceDto != null && updateHistoryUnemployeeInsuranceDto != undefined) {
+                                                self.unemployeeInsuranceRateModel().setHistoryData(updateHistoryUnemployeeInsuranceDto);
                                             }
                                         });
                                     });
@@ -64,9 +64,10 @@ var nts;
                                     var self = this;
                                     nts.uk.ui.windows.setShared("type", TypeHistory.HistoryUnemployee);
                                     self.typeActionUnemployeeInsurance(TypeActionInsuranceRate.add);
-                                    nts.uk.ui.windows.sub.modal("/view/qmm/011/d/index.xhtml", { height: 600, width: 560, title: "労働保険料率の登録>履歴の追加" }).onClosed(function () {
+                                    nts.uk.ui.windows.sub.modal('/view/qmm/011/d/index.xhtml', { title: '労働保険料率の登録>履歴の追加', dialogClass: 'no-close' }).onClosed(function () {
                                         var addHistoryUnemployeeInsuranceDto = nts.uk.ui.windows.getShared("addHistoryUnemployeeInsuranceDto");
                                         if (addHistoryUnemployeeInsuranceDto != null && addHistoryUnemployeeInsuranceDto != undefined) {
+                                            self.resetValueUnemployeeInsuranceRate();
                                             self.unemployeeInsuranceRateModel().setHistoryData(addHistoryUnemployeeInsuranceDto);
                                         }
                                     });
@@ -88,20 +89,25 @@ var nts;
                                 ScreenModel.prototype.openEditHistoryAccidentInsuranceRate = function () {
                                     var self = this;
                                     var historyId = self.selectionHistoryAccidentInsuranceRate();
-                                    nts.uk.ui.windows.setShared("historyId", historyId);
-                                    nts.uk.ui.windows.setShared("type", TypeHistory.HistoryAccident);
-                                    self.typeActionAccidentInsurance(TypeActionInsuranceRate.update);
-                                    nts.uk.ui.windows.sub.modal("/view/qmm/011/f/index.xhtml", { height: 420, width: 500, title: "労働保険料率の登録>マスタ修正ログ" }).onClosed(function () {
-                                        var updateHistoryAccidentInsuranceDto = nts.uk.ui.windows.getShared("updateHistoryAccidentInsuranceDto");
-                                        if (updateHistoryAccidentInsuranceDto != null && updateHistoryAccidentInsuranceDto != undefined) {
-                                        }
+                                    a.service.findHistoryAccidentInsuranceRate(historyId).done(function (data) {
+                                        nts.uk.ui.windows.setShared("historyEnd", data.endMonthRage);
+                                        nts.uk.ui.windows.setShared("historyStart", data.startMonthRage);
+                                        nts.uk.ui.windows.setShared("historyId", data.historyId);
+                                        nts.uk.ui.windows.setShared("type", TypeHistory.HistoryAccident);
+                                        self.typeActionAccidentInsurance(TypeActionInsuranceRate.update);
+                                        nts.uk.ui.windows.sub.modal('/view/qmm/011/f/index.xhtml', { title: '労働保険料率の登録>マスタ修正ログ', dialogClass: 'no-close' }).onClosed(function () {
+                                            var updateHistoryAccidentInsuranceDto = nts.uk.ui.windows.getShared("updateHistoryAccidentInsuranceDto");
+                                            if (updateHistoryAccidentInsuranceDto != null && updateHistoryAccidentInsuranceDto != undefined) {
+                                                self.accidentInsuranceRateModel().setHistoryData(updateHistoryAccidentInsuranceDto);
+                                            }
+                                        });
                                     });
                                 };
                                 ScreenModel.prototype.openAddHistoryAccidentInsuranceRate = function () {
                                     var self = this;
                                     nts.uk.ui.windows.setShared("type", TypeHistory.HistoryAccident);
                                     self.typeActionAccidentInsurance(TypeActionInsuranceRate.add);
-                                    nts.uk.ui.windows.sub.modal("/view/qmm/011/d/index.xhtml", { height: 500, width: 600, title: "労働保険料率の登録>履歴の追加" }).onClosed(function () {
+                                    nts.uk.ui.windows.sub.modal('/view/qmm/011/d/index.xhtml', { title: '労働保険料率の登録>履歴の追加', dialogClass: 'no-close' }).onClosed(function () {
                                         var addHistoryAccidentInsuranceDto = nts.uk.ui.windows.getShared("addHistoryAccidentInsuranceDto");
                                         if (addHistoryAccidentInsuranceDto != null && addHistoryAccidentInsuranceDto != undefined) {
                                             self.accidentInsuranceRateModel().resetValue(self.rateInputOptions, self.selectionRoundingMethod);
@@ -116,16 +122,38 @@ var nts;
                                         self.detailHistoryUnemployeeInsuranceRate(selectionHistoryUnemployeeInsuranceRate);
                                     }
                                 };
+                                ScreenModel.prototype.clearErrorSaveUnemployeeInsurance = function () {
+                                    var self = this;
+                                    $('.save-error').ntsError('clear');
+                                    $('#btn_saveHistoryUnemployeeInsurance').ntsError('clear');
+                                };
+                                ScreenModel.prototype.showMessageSaveUnemployeeInsurance = function (message) {
+                                    $('#btn_saveHistoryUnemployeeInsurance').ntsError('set', message);
+                                };
+                                ScreenModel.prototype.clearErrorSaveAccidentInsurance = function () {
+                                    var self = this;
+                                    $('.save-error').ntsError('clear');
+                                    $('#btn_saveHistoryAccidentInsurance').ntsError('clear');
+                                };
+                                ScreenModel.prototype.showMessageSaveAccidentInsurance = function (message) {
+                                    $('#btn_saveHistoryAccidentInsurance').ntsError('set', message);
+                                };
                                 ScreenModel.prototype.saveHistoryUnemployeeInsurance = function () {
                                     var self = this;
                                     if (self.typeActionUnemployeeInsurance() == TypeActionInsuranceRate.add) {
                                         a.service.addUnemployeeInsuranceRate(self.unemployeeInsuranceRateModel()).done(function (data) {
                                             self.reloadDataUnemployeeInsuranceRateByAction();
+                                            self.clearErrorSaveUnemployeeInsurance();
+                                        }).fail(function (res) {
+                                            self.showMessageSaveUnemployeeInsurance(res.message);
                                         });
                                     }
                                     else {
                                         a.service.updateUnemployeeInsuranceRate(self.unemployeeInsuranceRateModel()).done(function (data) {
                                             self.reloadDataUnemployeeInsuranceRateByAction();
+                                            self.clearErrorSaveUnemployeeInsurance();
+                                        }).fail(function (res) {
+                                            self.showMessageSaveUnemployeeInsurance(res.message);
                                         });
                                     }
                                     return true;
@@ -135,11 +163,17 @@ var nts;
                                     if (self.typeActionAccidentInsurance() == TypeActionInsuranceRate.add) {
                                         a.service.addAccidentInsuranceRate(self.accidentInsuranceRateModel()).done(function (data) {
                                             self.reloadDataAccidentInsuranceRateByAction();
+                                            self.clearErrorSaveAccidentInsurance();
+                                        }).fail(function (res) {
+                                            self.showMessageSaveAccidentInsurance(res.message);
                                         });
                                     }
                                     else {
                                         a.service.updateAccidentInsuranceRate(self.accidentInsuranceRateModel()).done(function (data) {
                                             self.reloadDataAccidentInsuranceRateByAction();
+                                            self.clearErrorSaveAccidentInsurance();
+                                        }).fail(function (res) {
+                                            self.showMessageSaveAccidentInsurance(res.message);
                                         });
                                     }
                                     return true;
@@ -225,26 +259,6 @@ var nts;
                                     self.unemployeeInsuranceRateModel().resetValue(self.rateInputOptions, self.selectionRoundingMethod);
                                     self.typeActionUnemployeeInsurance(TypeActionInsuranceRate.add);
                                     self.selectionHistoryUnemployeeInsuranceRate('');
-                                };
-                                ScreenModel.prototype.findHisotryUnemployeeInsuranceRate = function (historyId) {
-                                    var self = this;
-                                    var dfd = $.Deferred();
-                                    a.service.findHisotryUnemployeeInsuranceRate(historyId).done(function (data) {
-                                        dfd.resolve(null);
-                                    });
-                                    return dfd.promise();
-                                };
-                                ScreenModel.prototype.findHistoryAccidentInsuranceRate = function (historyId) {
-                                    var self = this;
-                                    var dfd = $.Deferred();
-                                    var historyAccidentInsuranceRateFindInDto;
-                                    historyAccidentInsuranceRateFindInDto = new HistoryAccidentInsuranceRateFindInDto();
-                                    historyAccidentInsuranceRateFindInDto.historyId = historyId;
-                                    historyAccidentInsuranceRateFindInDto.companyCode = "companyCode001";
-                                    a.service.findHistoryAccidentInsuranceRate(historyAccidentInsuranceRateFindInDto).done(function (data) {
-                                        dfd.resolve(null);
-                                    });
-                                    return dfd.promise();
                                 };
                                 ScreenModel.prototype.detailHistoryUnemployeeInsuranceRate = function (historyId) {
                                     var self = this;
