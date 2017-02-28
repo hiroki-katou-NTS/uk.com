@@ -8,6 +8,8 @@ var qmm034;
                 function ScreenModel() {
                     this.constraint = 'LayoutCode';
                     this.isUpdate = ko.observable(true);
+                    this.inputCode = ko.observable('');
+                    this.inputName = ko.observable('');
                     var self = this;
                     /*gridList*/
                     self.items = ko.observableArray([]);
@@ -16,16 +18,17 @@ var qmm034;
                         { headerText: '記号', prop: 'name', width: 50 },
                         { headerText: '開始年月日', prop: 'startDate', width: 80 },
                     ]);
-                    //            function makeFlagFormatter(val) {
-                    //                    return val.toString();
-                    //            }
                     self.currentCodeList = ko.observableArray([]);
                     //Tim object dau tien
-                    self.currentEra = ko.observable(null);
+                    self.currentEra = ko.observable((new EraModel('大明', 'S', new Date("1926/12/25"))));
                     self.currentCode = ko.observable();
                     self.currentCode.subscribe(function (codeChanged) {
                         self.currentEra(self.getEra(codeChanged));
                         self.date(new Date(self.currentEra().startDate));
+                        self.inputCode(self.currentEra().code);
+                        console.log(self.inputCode());
+                        self.inputName(self.currentCode().name);
+                        //self.date(self.currentEra().startDate);
                     });
                     /*datePicker*/
                     // var datePicker = self.currentEra();
@@ -84,6 +87,15 @@ var qmm034;
                     var self = this;
                     if (confirm("do you wanna delete") === true) {
                         self.deleteData();
+                        var rowIndex = _.findIndex(self.items(), function (item) {
+                            return item.code == self.currentEra().code;
+                        });
+                        if (rowIndex == self.items().length - 1) {
+                            self.currentCode(self.items()[self.items().length - 2].code);
+                        }
+                        else {
+                            self.currentCode(self.items()[rowIndex - 1].code);
+                        }
                     }
                     else {
                         alert("you didnt delete!");
@@ -97,16 +109,9 @@ var qmm034;
                 ScreenModel.prototype.reload = function () {
                     var dfd = $.Deferred();
                     var self = this;
-                    qmm034.a.service.getAllEras().done(function (data) {
+                    $.when(qmm034.a.service.getAllEras()).done(function (data) {
                         self.buildGridDataSource(data);
-                        self.countItems(data.length);
-                        if (data.length > 0) {
-                            if (self.isSelectdFirstRow()) {
-                                self.currentEra(self.selectedItem(data[0]));
-                                self.isSelectdFirstRow(false);
-                            }
-                            self.items(data);
-                        }
+                        self.currentEra = ko.observable(_.cloneDeep(_.first(self.items())));
                         dfd.resolve();
                     }).fail(function (res) {
                     });
@@ -218,16 +223,14 @@ var qmm034;
             //        }
             //    }
             var EraModel = (function () {
+                // startDateText: string;
                 function EraModel(code, name, startDate) {
                     this.code = code;
                     this.name = name;
-                    //            if (startDate !== "") {
-                    //                this.startDate = new Date(startDate);
-                    //                this.startDateText = startDate;
-                    //            } else {
                     this.startDate = startDate;
-                    this.startDateText = startDate.toString();
-                    //            }
+                    //this.startDateText = startDate;
+                    //console.log(startDate.year);
+                    //this.startDateText = startDate.toDateString();
                 }
                 return EraModel;
             }());

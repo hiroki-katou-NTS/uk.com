@@ -54,15 +54,17 @@
 							<td>
 								<div id="A_LBL_002" data-bind="ntsFormLabel: {required: true}">元号</div>
 							</td>
-							<td><input id="A_INP_001" type="text"
-								data-bind="value : currentEra().code" /></td>
+							<td>
+							 <div data-bind="with: inputCode">
+							<input id="A_INP_001"  data-bind="ntsTextEditor: { value: inputCode" /> 
+							</div>
+							</td>
 						</tr>
 						<tr>
 							<td>
 								<div id="A_LBL_003" data-bind="ntsFormLabel: { required: true }">記号</div>
 							</td>
-							<td><input id="A_INP_002" type="text"
-								data-bind="value: currentEra().name" /></td>
+							<td><input id="A_INP_002"  data-bind="ntsTextEditor: { value: inputName"/></td>
 						</tr>
 						<tr>
 							<td>
