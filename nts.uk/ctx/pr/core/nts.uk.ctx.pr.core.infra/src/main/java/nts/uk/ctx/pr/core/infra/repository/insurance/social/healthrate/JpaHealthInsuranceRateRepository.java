@@ -83,7 +83,7 @@ public class JpaHealthInsuranceRateRepository extends JpaRepository implements H
 	 * HealthInsuranceRateRepository#findAll(java.lang.String, java.lang.String)
 	 */
 	@Override
-	public List<HealthInsuranceRate> findAll(String companyCode, String officeCode) {
+	public List<HealthInsuranceRate> findAll(String companyCode) {
 
 		// Get entity manager
 		EntityManager em = this.getEntityManager();
@@ -97,9 +97,6 @@ public class JpaHealthInsuranceRateRepository extends JpaRepository implements H
 		// Construct condition.
 		predicateList.add(cb.equal(root.get(QismtHealthInsuRate_.qismtHealthInsuRatePK).get(QismtHealthInsuRatePK_.ccd),
 				companyCode));
-		predicateList.add(
-				cb.equal(root.get(QismtHealthInsuRate_.qismtHealthInsuRatePK).get(QismtHealthInsuRatePK_.siOfficeCd),
-						officeCode));
 
 		cq.where(predicateList.toArray(new Predicate[] {}));
 		

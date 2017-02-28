@@ -43,7 +43,7 @@ public class HealthInsuranceRateDto implements HealthInsuranceRateSetMemento {
 	public String endMonth;
 
 	/** The auto calculate. */
-	public CalculateMethod autoCalculate;
+	public Integer autoCalculate;
 
 	/** The max amount. */
 	public BigDecimal maxAmount;
@@ -110,7 +110,7 @@ public class HealthInsuranceRateDto implements HealthInsuranceRateSetMemento {
 	 */
 	@Override
 	public void setAutoCalculate(CalculateMethod autoCalculate) {
-		this.autoCalculate = autoCalculate;
+		this.autoCalculate = autoCalculate.value;
 	}
 
 	/* (non-Javadoc)

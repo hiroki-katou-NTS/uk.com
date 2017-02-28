@@ -7,8 +7,8 @@ module nts.uk.pr.view.qmm008.a {
             getAllOfficeItem: "pr/insurance/social/findall",
             getAllHistoryOfOffice: "pr/insurance/social/history",
             //get all heal insurance for get history
-            getAllHealthInsuranceItemByOfficeCode: "ctx/pr/core/insurance/social/healthrate/findByOfficeCode",
-            getAllPensionItemByOfficeCode: "ctx/pr/core/insurance/social/pensionrate/findByOfficeCode",
+            getAllHealthOfficeAndHistory: "ctx/pr/core/insurance/social/healthrate/findAllHistory",
+            getAllPensionOfficeAndHistory: "ctx/pr/core/insurance/social/pensionrate/findAllHistory",
             //get health and pension data 
             getHealthInsuranceItemDetail: "ctx/pr/core/insurance/social/healthrate/find",
             getPensionItemDetail: "ctx/pr/core/insurance/social/pensionrate/find",
@@ -24,55 +24,12 @@ module nts.uk.pr.view.qmm008.a {
          * Function is used to load all InsuranceOfficeItem by key.
          */
         export function findInsuranceOffice(key: string): JQueryPromise<Array<model.finder.InsuranceOfficeItemDto>> {
-
             // Init new dfd.
             var dfd = $.Deferred<Array<model.finder.InsuranceOfficeItemDto>>();
-
             var findPath = servicePath.getAllOfficeItem + ((key != null && key != '') ? ('?key=' + key) : '');
-
             // Call ajax.
             nts.uk.request.ajax(findPath).done(function(data) {
-
                 // Convert json to model here.
-                var OfficeItemList: Array<model.finder.InsuranceOfficeItemDto> = convertToTreeList(data);
-
-                //TODO convert to child-parent array
-                //                var OfficeItemList: Array<model.finder.InsuranceOfficeItemDto> =  [
-                //                    new model.finder.InsuranceOfficeItemDto('id01', 'A 事業所', 'code1',[
-                //                        new model.finder.InsuranceOfficeItemDto('child01', '2017/04 ~ 9999/12', 'chilcode1',[]),
-                //                        new model.finder.InsuranceOfficeItemDto('child02', '2016/04 ~ 2017/03', 'chilcode2',[])
-                //                    ]),
-                //                    new model.finder.InsuranceOfficeItemDto('id02', 'B 事業所', 'code2',[])];
-
-                // Resolve.
-                dfd.resolve(OfficeItemList);
-            });
-
-            // Ret promise.
-            return dfd.promise();
-        }
-
-        /**
-        * Convert list from dto to treegrid
-        */
-        function convertToTreeList(data: Array<model.finder.InsuranceOfficeItemDto>): Array<model.finder.InsuranceOfficeItemDto> {
-            var OfficeItemList: Array<model.finder.InsuranceOfficeItemDto> = [];
-            // 
-            data.forEach((item, index) => {
-                OfficeItemList.push(new model.finder.InsuranceOfficeItemDto('id' + index, item.name, item.code, [], item.code + "\u00A0" + "\u00A0" + "\u00A0" + item.name));
-            });
-            return OfficeItemList;
-        }
-
-        /**
-         * Function is used to load history of Office by office code.
-         */
-        export function findHistoryByOfficeCode(code: string): JQueryPromise<Array<model.finder.HistoryItemDto>> {
-            // Init new dfd.
-            var dfd = $.Deferred<Array<model.finder.HistoryItemDto>>();
-            var findPath = servicePath.getAllHistoryOfOffice + "/" + code;
-            // Call ajax.
-            nts.uk.request.ajax(findPath).done(function(data) {
                 // Resolve.
                 dfd.resolve(data);
             });
@@ -92,11 +49,11 @@ module nts.uk.pr.view.qmm008.a {
             var data = null;
             // Convert json to model here.
             var roundingList: Array<model.finder.Enum> = [
-                new model.finder.Enum('1', '切り上げ'),
-                new model.finder.Enum('2', '切捨て'),
-                new model.finder.Enum('3', '四捨五入'),
-                new model.finder.Enum('4', '五捨五超入'),
-                new model.finder.Enum('5', '五捨六入')
+                new model.finder.Enum('0', '切り上げ'),
+                new model.finder.Enum('1', '切捨て'),
+                new model.finder.Enum('2', '四捨五入'),
+                new model.finder.Enum('3', '五捨五超入'),
+                new model.finder.Enum('4', '五捨六入')
             ];
             // Resolve.
             dfd.resolve(roundingList);
@@ -124,16 +81,16 @@ module nts.uk.pr.view.qmm008.a {
             return dfd.promise();
         }
         /**
- * Function is used to load health data of Office by office code.
- */
-        export function getAllHealthInsuranceItem(code: string): JQueryPromise<Array<model.finder.HealthInsuranceRateDto>> {
+        * Function is used to load health data of Office by office code.
+        */
+        export function getAllHealthOfficeItem(): JQueryPromise<Array<model.finder.OfficeItemDto>> {
             // Init new dfd.
-            var dfd = $.Deferred<Array<model.finder.HealthInsuranceRateDto>>();
-            var findPath = servicePath.getAllHealthInsuranceItemByOfficeCode + "/" + code;
+            var dfd = $.Deferred<Array<model.finder.OfficeItemDto>>();
+            var findPath = servicePath.getAllHealthOfficeAndHistory;
             // Call ajax.
             nts.uk.request.ajax(findPath).done(function(data) {
                 // Convert json to model here.
-                var returnData: Array<model.finder.HealthInsuranceRateDto> = data;
+                var returnData: Array<model.finder.OfficeItemDto> = data;
                 // Resolve.
                 dfd.resolve(returnData);
             });
@@ -162,16 +119,16 @@ module nts.uk.pr.view.qmm008.a {
         }
 
         /**
-* Function is used to load health data of Office by office code.
-*/
-        export function getAllPensionInsuranceItem(code: string): JQueryPromise<Array<model.finder.PensionRateDto>> {
+        * Function is used to load health data of Office by office code.
+        */
+        export function getAllPensionOfficeItem(): JQueryPromise<Array<model.finder.OfficeItemDto>> {
             // Init new dfd.
-            var dfd = $.Deferred<Array<model.finder.PensionRateDto>>();
-            var findPath = servicePath.getAllPensionItemByOfficeCode + "/" + code;
+            var dfd = $.Deferred<Array<model.finder.OfficeItemDto>>();
+            var findPath = servicePath.getAllPensionOfficeAndHistory;
             // Call ajax.
             nts.uk.request.ajax(findPath).done(function(data) {
                 // Convert json to model here.
-                var returnData: Array<model.finder.PensionRateDto> = data;
+                var returnData: Array<model.finder.OfficeItemDto> = data;
                 // Resolve.
                 dfd.resolve(returnData);
             });
@@ -212,17 +169,7 @@ module nts.uk.pr.view.qmm008.a {
         */
         export module model {
             export module finder {
-                export class ChooseOption {
-                    code: string;
-                    name: string;
-                }
-                export class HistoryItemDto {
-                    id: string;
-                    name: string;
-                    code: string;
-                    start: string;
-                    end: string
-                }
+
                 //office DTO
                 export class InsuranceOfficeItemDto {
                     id: string;
@@ -238,7 +185,7 @@ module nts.uk.pr.view.qmm008.a {
                         this.codeName = codeName;
                     }
                 }
-               
+
                 //Pension DTO
                 export class PensionRateDto {
                     historyId: string;
@@ -253,7 +200,6 @@ module nts.uk.pr.view.qmm008.a {
                     roundingMethods: Array<RoundingDto>;
                     maxAmount: number;
                     childContributionRate: number;
-                    //TODO this contructor for mock data,delete after use
                     constructor(historyId: string, companyCode: string, officeCode: string, startMonth: string, endMonth: string, autoCalculate: number, fundInputApply: boolean, premiumRateItems: Array<PensionRateItemDto>, fundRateItems: Array<FundRateItemDto>, roundingMethods: Array<RoundingDto>, maxAmount: number, childContributionRate: number) {
                         this.historyId = historyId;
                         this.companyCode = companyCode;
@@ -274,7 +220,7 @@ module nts.uk.pr.view.qmm008.a {
                     genderType: string;
                     personalRate: number;
                     companyRate: number;
-                    constructor(payType: string, genderType: string,personalRate: number,companyRate: number) {
+                    constructor(payType: string, genderType: string, personalRate: number, companyRate: number) {
                         this.payType = payType;
                         this.genderType = genderType;
                         this.personalRate = personalRate;
@@ -288,7 +234,7 @@ module nts.uk.pr.view.qmm008.a {
                     burdenChargeCompanyRate: number;
                     exemptionChargePersonalRate: number;
                     exemptionChargeCompanyRate: number;
-                    constructor(payType: string, genderType: string,burdenChargePersonalRate: number,burdenChargeCompanyRate: number,exemptionChargePersonalRate: number,exemptionChargeCompanyRate: number) {
+                    constructor(payType: string, genderType: string, burdenChargePersonalRate: number, burdenChargeCompanyRate: number, exemptionChargePersonalRate: number, exemptionChargeCompanyRate: number) {
                         this.payType = payType;
                         this.genderType = genderType;
                         this.burdenChargePersonalRate = burdenChargePersonalRate;
@@ -310,7 +256,6 @@ module nts.uk.pr.view.qmm008.a {
                     roundingMethods: Array<RoundingDto>;
                     maxAmount: number;
 
-                    //TODO this contructor for mock data,delete after use
                     constructor(historyId: string, companyCode: string, officeCode: string, startMonth: string, endMonth: string, autoCalculate: number, rateItems: Array<HealthInsuranceRateItemDto>, roundingMethods: Array<RoundingDto>, maxAmount: number) {
                         this.historyId = historyId;
                         this.companyCode = companyCode;
@@ -341,6 +286,17 @@ module nts.uk.pr.view.qmm008.a {
                         this.personalRate = personalRate;
                     }
                 }
+                export class OfficeItemDto {
+                    officeCode: string;
+                    officeName: string;
+                    listHistory: Array<HistoryDto>;
+                }
+                export class HistoryDto {
+                    historyId: string;
+                    startMonth: string;
+                    endMonth: string;
+                }
+
                 //common class for health and pension
                 export class RoundingDto {
                     payType: string;
@@ -348,21 +304,6 @@ module nts.uk.pr.view.qmm008.a {
                     constructor(payType: string, roundAtrs: RoundingItemDto) {
                         this.payType = payType;
                         this.roundAtrs = roundAtrs;
-                    }
-                }
-
-                //                export class RoundingItemDto {
-                //                    companyRoundAtr: number;
-                //                    personalRoundAtr: number;
-                //                }
-                export class Enum {
-                    code: string;
-                    name: string;
-                    label: string;
-
-                    constructor(code: string, name: string) {
-                        this.code = code;
-                        this.name = name;
                     }
                 }
                 export class RoundingItemDto {
@@ -373,39 +314,16 @@ module nts.uk.pr.view.qmm008.a {
                         this.companyRoundAtr = companyRoundAtr;
                     }
                 }
-            }
+                export class Enum {
+                    code: string;
+                    name: string;
+                    label: string;
 
-
-            export enum PaymentType {
-                Salary = 0,
-                Bonus = 1
-            }
-
-            export enum HealthInsuranceType {
-                General = 0,
-                Nursing = 1,
-                Basic = 2,
-                Special = 3
-            }
-            export enum InsuranceGender {
-                Male = 0,
-                Female = 1,
-                Unknow = 2
-            }
-            export enum ChargeType {
-                Burden = 0,
-                Exemption = 1
-            }
-            export enum GroupType {
-                Personal = 0,
-                Company = 1
-            }
-            export enum Rounding {
-                RoundUp = 0,
-                Truncation = 1,
-                RoundDown = 2,
-                Down5_Up6 = 3,
-                Down4_Up5 = 4
+                    constructor(code: string, name: string) {
+                        this.code = code;
+                        this.name = name;
+                    }
+                }
             }
         }
 

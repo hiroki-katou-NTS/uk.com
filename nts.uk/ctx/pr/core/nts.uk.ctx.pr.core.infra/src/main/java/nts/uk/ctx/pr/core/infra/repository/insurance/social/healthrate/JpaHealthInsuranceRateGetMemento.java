@@ -96,8 +96,10 @@ public class JpaHealthInsuranceRateGetMemento implements HealthInsuranceRateGetM
 	 */
 	@Override
 	public CalculateMethod getAutoCalculate() {
-		// TODO:
-		return CalculateMethod.Auto;
+		if (this.typeValue.getKeepEntryFlg() == CalculateMethod.Auto.value)
+			return CalculateMethod.Auto;
+		else
+			return CalculateMethod.Manual;
 	}
 
 	/*
@@ -169,6 +171,8 @@ public class JpaHealthInsuranceRateGetMemento implements HealthInsuranceRateGetM
 		RoundingItem bonusRoundingItem = new RoundingItem();
 		salaryRoundingItem.setCompanyRoundAtr(RoundingMethod.valueOf(this.typeValue.getCPayHealthRoundAtr()));
 		salaryRoundingItem.setPersonalRoundAtr(RoundingMethod.valueOf(this.typeValue.getPPayHealthRoundAtr()));
+		bonusRoundingItem.setCompanyRoundAtr(RoundingMethod.valueOf(this.typeValue.getCBnsHealthRoundAtr()));
+		bonusRoundingItem.setPersonalRoundAtr(RoundingMethod.valueOf(this.typeValue.getPBnsHealthRoundAtr()));
 		HealthInsuranceRounding roundSalary = new HealthInsuranceRounding(PaymentType.Salary, salaryRoundingItem);
 		HealthInsuranceRounding roundBonus = new HealthInsuranceRounding(PaymentType.Bonus, bonusRoundingItem);
 		listRounding.add(roundSalary);

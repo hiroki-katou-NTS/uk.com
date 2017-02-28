@@ -5,12 +5,16 @@
 package nts.uk.ctx.pr.core.app.insurance.social.pensionrate.find;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
+import nts.uk.ctx.pr.core.dom.insurance.social.SocialInsuranceOffice;
+import nts.uk.ctx.pr.core.dom.insurance.social.SocialInsuranceOfficeRepository;
 import nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionRate;
 import nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionRateRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -24,6 +28,10 @@ public class PensionRateFinder {
 	/** The pension rate repository. */
 	@Inject
 	private PensionRateRepository pensionRateRepo;
+
+	/** The social insurance office repository. */
+	@Inject
+	private SocialInsuranceOfficeRepository socialInsuranceOfficeRepository;
 
 	/**
 	 * Find.
@@ -42,18 +50,26 @@ public class PensionRateFinder {
 	}
 
 	/**
-	 * Find all.
+	 * Find all history.
 	 *
-	 * @param companyCode
-	 *            the company code
 	 * @return the list
 	 */
-	public List<PensionRateDto> findAll(String officeCode) {
+	public List<PensionOfficeItemDto> findAllHistory() {
 		String companyCode = AppContexts.user().companyCode();
-		return pensionRateRepo.findAll(companyCode,officeCode).stream().map(domain -> {
-			PensionRateDto dto = PensionRateDto.builder().build();
-			domain.saveToMemento(dto);
-			return dto;
-		}).collect(Collectors.toList());
+
+		List<SocialInsuranceOffice> listOffice = socialInsuranceOfficeRepository.findAll(companyCode);
+
+		List<PensionRate> listHealth = pensionRateRepo.findAll(companyCode);
+
+		// group health same office code
+		Map<OfficeCode, List<PensionHistoryItemDto>> historyMap = listHealth.stream()
+				.collect(Collectors.groupingBy(PensionRate::getOfficeCode, Collectors.mapping((res) -> {
+					return new PensionHistoryItemDto(res.getHistoryId(),
+							res.getApplyRange().getStartMonth().v().toString(),
+							res.getApplyRange().getEndMonth().v().toString());
+				}, Collectors.toList())));
+		return listOffice.stream().map(item -> new PensionOfficeItemDto(item.getCode().v(), item.getName().v(),
+				historyMap.get(item.getCode()))).collect(Collectors.toList());
+
 	}
 }

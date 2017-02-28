@@ -5,12 +5,16 @@
 package nts.uk.ctx.pr.core.app.insurance.social.healthrate.find;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
+import nts.uk.ctx.pr.core.dom.insurance.social.SocialInsuranceOffice;
+import nts.uk.ctx.pr.core.dom.insurance.social.SocialInsuranceOfficeRepository;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.HealthInsuranceRate;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.HealthInsuranceRateRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -24,7 +28,10 @@ public class HealthInsuranceRateFinder {
 	/** The health insurance rate repository. */
 	@Inject
 	private HealthInsuranceRateRepository healthInsuranceRateRepository;
-
+	
+	/** The social insurance office repository. */
+	@Inject
+	private SocialInsuranceOfficeRepository socialInsuranceOfficeRepository;
 	/**
 	 * Find.
 	 *
@@ -43,15 +50,22 @@ public class HealthInsuranceRateFinder {
 	/**
 	 * Find by office code.
 	 *
-	 * @param officeCode the office code
 	 * @return the list
 	 */
-	public List<HealthInsuranceRateDto> findByOfficeCode(String officeCode) {
+	public List<HealthInsuranceOfficeItemDto> findAllHistory() {
 		String companyCode = AppContexts.user().companyCode();
-		return healthInsuranceRateRepository.findAll(companyCode,officeCode).stream().map(domain -> {
-			HealthInsuranceRateDto dto = HealthInsuranceRateDto.builder().build();
-			domain.saveToMemento(dto);
-			return dto;
-		}).collect(Collectors.toList());
+		
+		List<SocialInsuranceOffice> listOffice = socialInsuranceOfficeRepository.findAll(companyCode);
+		
+		List<HealthInsuranceRate> listHealth = healthInsuranceRateRepository.findAll(companyCode);
+		
+		//group health same office code
+		Map<OfficeCode, List<HealthInsuranceHistoryItemDto>> historyMap = listHealth.stream()
+				.collect(Collectors.groupingBy(HealthInsuranceRate::getOfficeCode, Collectors.mapping((res) -> {
+					return new HealthInsuranceHistoryItemDto(res.getHistoryId(),res.getApplyRange().getStartMonth().v().toString(),
+							res.getApplyRange().getEndMonth().v().toString());
+				}, Collectors.toList())));
+		return listOffice.stream().map(item -> new HealthInsuranceOfficeItemDto(item.getCode().v(), item.getName().v(),
+				historyMap.get(item.getCode()))).collect(Collectors.toList());
 	}
 }

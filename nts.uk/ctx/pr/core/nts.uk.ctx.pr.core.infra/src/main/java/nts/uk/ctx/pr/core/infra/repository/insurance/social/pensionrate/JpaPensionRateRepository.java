@@ -4,7 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.infra.repository.insurance.social.pensionrate;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -18,24 +17,9 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.arc.time.YearMonth;
-import nts.uk.ctx.core.dom.company.CompanyCode;
-import nts.uk.ctx.pr.core.dom.insurance.CalculateMethod;
-import nts.uk.ctx.pr.core.dom.insurance.CommonAmount;
-import nts.uk.ctx.pr.core.dom.insurance.Ins2Rate;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
-import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
-import nts.uk.ctx.pr.core.dom.insurance.PaymentType;
-import nts.uk.ctx.pr.core.dom.insurance.RoundingItem;
-import nts.uk.ctx.pr.core.dom.insurance.RoundingMethod;
-import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.InsuranceGender;
-import nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.FundRateItem;
-import nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionChargeRateItem;
-import nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionPremiumRateItem;
 import nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionRate;
-import nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionRateGetMemento;
 import nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionRateRepository;
-import nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionRateRounding;
 import nts.uk.ctx.pr.core.infra.entity.insurance.social.pensionrate.QismtPensionRate;
 import nts.uk.ctx.pr.core.infra.entity.insurance.social.pensionrate.QismtPensionRatePK_;
 import nts.uk.ctx.pr.core.infra.entity.insurance.social.pensionrate.QismtPensionRate_;
@@ -102,7 +86,7 @@ public class JpaPensionRateRepository extends JpaRepository implements PensionRa
 	 * #findAll(int)
 	 */
 	@Override
-	public List<PensionRate> findAll(String companyCode, String officeCode) {
+	public List<PensionRate> findAll(String companyCode) {
 		// Get entity manager
 		EntityManager em = this.getEntityManager();
 		// Query for indicated stress check.
@@ -115,9 +99,6 @@ public class JpaPensionRateRepository extends JpaRepository implements PensionRa
 		// Construct condition.
 		predicateList.add(
 				cb.equal(root.get(QismtPensionRate_.qismtPensionRatePK).get(QismtPensionRatePK_.ccd), companyCode));
-		predicateList.add(cb.equal(root.get(QismtPensionRate_.qismtPensionRatePK).get(QismtPensionRatePK_.siOfficeCd),
-				officeCode));
-
 		cq.where(predicateList.toArray(new Predicate[] {}));
 		return em.createQuery(cq).getResultList().stream()
 				.map(item -> new PensionRate(new JpaPensionRateGetMemento(item))).collect(Collectors.toList());

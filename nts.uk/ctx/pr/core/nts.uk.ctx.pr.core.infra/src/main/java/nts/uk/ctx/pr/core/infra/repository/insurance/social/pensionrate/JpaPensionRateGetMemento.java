@@ -281,8 +281,10 @@ public class JpaPensionRateGetMemento implements PensionRateGetMemento {
 	 */
 	@Override
 	public CalculateMethod getAutoCalculate() {
-		// TODO Auto-generated method stub
-		return CalculateMethod.Auto;
+		if (this.typeValue.getKeepEntryFlg() == CalculateMethod.Auto.value)
+			return CalculateMethod.Auto;
+		else
+			return CalculateMethod.Manual;
 	}
 
 }

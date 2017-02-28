@@ -13,6 +13,7 @@ import nts.uk.ctx.pr.core.app.insurance.social.healthrate.command.RegisterHealth
 import nts.uk.ctx.pr.core.app.insurance.social.healthrate.command.RegisterHealthInsuranceCommandHandler;
 import nts.uk.ctx.pr.core.app.insurance.social.healthrate.command.UpdateHealthInsuranceCommand;
 import nts.uk.ctx.pr.core.app.insurance.social.healthrate.command.UpdateHealthInsuranceCommandHandler;
+import nts.uk.ctx.pr.core.app.insurance.social.healthrate.find.HealthInsuranceOfficeItemDto;
 import nts.uk.ctx.pr.core.app.insurance.social.healthrate.find.HealthInsuranceRateDto;
 import nts.uk.ctx.pr.core.app.insurance.social.healthrate.find.HealthInsuranceRateFinder;
 
@@ -35,9 +36,9 @@ public class HealthInsuranceRateWs extends WebService {
 	}
 	//find All by OfficeCode
 	@POST
-	@Path("findByOfficeCode/{officeCode}")
-	public List<HealthInsuranceRateDto> findbyCode(@PathParam("officeCode") String officeCode) {
-		return healthInsuranceRateFinder.findByOfficeCode(officeCode);
+	@Path("findAllHistory")
+	public List<HealthInsuranceOfficeItemDto> findbyCode() {
+		return healthInsuranceRateFinder.findAllHistory();
 	}
 	
 	@POST

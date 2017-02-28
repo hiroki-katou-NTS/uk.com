@@ -15,8 +15,8 @@ var nts;
                             var servicePath = {
                                 getAllOfficeItem: "pr/insurance/social/findall",
                                 getAllHistoryOfOffice: "pr/insurance/social/history",
-                                getAllHealthInsuranceItemByOfficeCode: "ctx/pr/core/insurance/social/healthrate/findByOfficeCode",
-                                getAllPensionItemByOfficeCode: "ctx/pr/core/insurance/social/pensionrate/findByOfficeCode",
+                                getAllHealthOfficeAndHistory: "ctx/pr/core/insurance/social/healthrate/findAllHistory",
+                                getAllPensionOfficeAndHistory: "ctx/pr/core/insurance/social/pensionrate/findAllHistory",
                                 getHealthInsuranceItemDetail: "ctx/pr/core/insurance/social/healthrate/find",
                                 getPensionItemDetail: "ctx/pr/core/insurance/social/pensionrate/find",
                                 registerHealthRate: "ctx/pr/core/insurance/social/healthrate/create",
@@ -29,38 +29,21 @@ var nts;
                                 var dfd = $.Deferred();
                                 var findPath = servicePath.getAllOfficeItem + ((key != null && key != '') ? ('?key=' + key) : '');
                                 nts.uk.request.ajax(findPath).done(function (data) {
-                                    var OfficeItemList = convertToTreeList(data);
-                                    dfd.resolve(OfficeItemList);
-                                });
-                                return dfd.promise();
-                            }
-                            service.findInsuranceOffice = findInsuranceOffice;
-                            function convertToTreeList(data) {
-                                var OfficeItemList = [];
-                                data.forEach(function (item, index) {
-                                    OfficeItemList.push(new model.finder.InsuranceOfficeItemDto('id' + index, item.name, item.code, [], item.code + "\u00A0" + "\u00A0" + "\u00A0" + item.name));
-                                });
-                                return OfficeItemList;
-                            }
-                            function findHistoryByOfficeCode(code) {
-                                var dfd = $.Deferred();
-                                var findPath = servicePath.getAllHistoryOfOffice + "/" + code;
-                                nts.uk.request.ajax(findPath).done(function (data) {
                                     dfd.resolve(data);
                                 });
                                 return dfd.promise();
                             }
-                            service.findHistoryByOfficeCode = findHistoryByOfficeCode;
+                            service.findInsuranceOffice = findInsuranceOffice;
                             function findAllRounding() {
                                 var dfd = $.Deferred();
                                 var findPath = servicePath.getAllRoundingItem;
                                 var data = null;
                                 var roundingList = [
-                                    new model.finder.Enum('1', '切り上げ'),
-                                    new model.finder.Enum('2', '切捨て'),
-                                    new model.finder.Enum('3', '四捨五入'),
-                                    new model.finder.Enum('4', '五捨五超入'),
-                                    new model.finder.Enum('5', '五捨六入')
+                                    new model.finder.Enum('0', '切り上げ'),
+                                    new model.finder.Enum('1', '切捨て'),
+                                    new model.finder.Enum('2', '四捨五入'),
+                                    new model.finder.Enum('3', '五捨五超入'),
+                                    new model.finder.Enum('4', '五捨六入')
                                 ];
                                 dfd.resolve(roundingList);
                                 return dfd.promise();
@@ -76,16 +59,16 @@ var nts;
                                 return dfd.promise();
                             }
                             service.getHealthInsuranceItemDetail = getHealthInsuranceItemDetail;
-                            function getAllHealthInsuranceItem(code) {
+                            function getAllHealthOfficeItem() {
                                 var dfd = $.Deferred();
-                                var findPath = servicePath.getAllHealthInsuranceItemByOfficeCode + "/" + code;
+                                var findPath = servicePath.getAllHealthOfficeAndHistory;
                                 nts.uk.request.ajax(findPath).done(function (data) {
                                     var returnData = data;
                                     dfd.resolve(returnData);
                                 });
                                 return dfd.promise();
                             }
-                            service.getAllHealthInsuranceItem = getAllHealthInsuranceItem;
+                            service.getAllHealthOfficeItem = getAllHealthOfficeItem;
                             function getPensionItemDetail(code) {
                                 var dfd = $.Deferred();
                                 var findPath = servicePath.getPensionItemDetail + "/" + code;
@@ -96,16 +79,16 @@ var nts;
                                 return dfd.promise();
                             }
                             service.getPensionItemDetail = getPensionItemDetail;
-                            function getAllPensionInsuranceItem(code) {
+                            function getAllPensionOfficeItem() {
                                 var dfd = $.Deferred();
-                                var findPath = servicePath.getAllPensionItemByOfficeCode + "/" + code;
+                                var findPath = servicePath.getAllPensionOfficeAndHistory;
                                 nts.uk.request.ajax(findPath).done(function (data) {
                                     var returnData = data;
                                     dfd.resolve(returnData);
                                 });
                                 return dfd.promise();
                             }
-                            service.getAllPensionInsuranceItem = getAllPensionInsuranceItem;
+                            service.getAllPensionOfficeItem = getAllPensionOfficeItem;
                             function registerHealthRate(data) {
                                 return nts.uk.request.ajax(servicePath.registerHealthRate, data);
                             }
@@ -126,18 +109,6 @@ var nts;
                             (function (model) {
                                 var finder;
                                 (function (finder) {
-                                    var ChooseOption = (function () {
-                                        function ChooseOption() {
-                                        }
-                                        return ChooseOption;
-                                    }());
-                                    finder.ChooseOption = ChooseOption;
-                                    var HistoryItemDto = (function () {
-                                        function HistoryItemDto() {
-                                        }
-                                        return HistoryItemDto;
-                                    }());
-                                    finder.HistoryItemDto = HistoryItemDto;
                                     var InsuranceOfficeItemDto = (function () {
                                         function InsuranceOfficeItemDto(id, name, code, childs, codeName) {
                                             this.id = id;
@@ -221,6 +192,18 @@ var nts;
                                         return ChargeRateItemDto;
                                     }());
                                     finder.ChargeRateItemDto = ChargeRateItemDto;
+                                    var OfficeItemDto = (function () {
+                                        function OfficeItemDto() {
+                                        }
+                                        return OfficeItemDto;
+                                    }());
+                                    finder.OfficeItemDto = OfficeItemDto;
+                                    var HistoryDto = (function () {
+                                        function HistoryDto() {
+                                        }
+                                        return HistoryDto;
+                                    }());
+                                    finder.HistoryDto = HistoryDto;
                                     var RoundingDto = (function () {
                                         function RoundingDto(payType, roundAtrs) {
                                             this.payType = payType;
@@ -229,14 +212,6 @@ var nts;
                                         return RoundingDto;
                                     }());
                                     finder.RoundingDto = RoundingDto;
-                                    var Enum = (function () {
-                                        function Enum(code, name) {
-                                            this.code = code;
-                                            this.name = name;
-                                        }
-                                        return Enum;
-                                    }());
-                                    finder.Enum = Enum;
                                     var RoundingItemDto = (function () {
                                         function RoundingItemDto(personalRoundAtr, companyRoundAtr) {
                                             this.personalRoundAtr = personalRoundAtr;
@@ -245,43 +220,15 @@ var nts;
                                         return RoundingItemDto;
                                     }());
                                     finder.RoundingItemDto = RoundingItemDto;
+                                    var Enum = (function () {
+                                        function Enum(code, name) {
+                                            this.code = code;
+                                            this.name = name;
+                                        }
+                                        return Enum;
+                                    }());
+                                    finder.Enum = Enum;
                                 })(finder = model.finder || (model.finder = {}));
-                                (function (PaymentType) {
-                                    PaymentType[PaymentType["Salary"] = 0] = "Salary";
-                                    PaymentType[PaymentType["Bonus"] = 1] = "Bonus";
-                                })(model.PaymentType || (model.PaymentType = {}));
-                                var PaymentType = model.PaymentType;
-                                (function (HealthInsuranceType) {
-                                    HealthInsuranceType[HealthInsuranceType["General"] = 0] = "General";
-                                    HealthInsuranceType[HealthInsuranceType["Nursing"] = 1] = "Nursing";
-                                    HealthInsuranceType[HealthInsuranceType["Basic"] = 2] = "Basic";
-                                    HealthInsuranceType[HealthInsuranceType["Special"] = 3] = "Special";
-                                })(model.HealthInsuranceType || (model.HealthInsuranceType = {}));
-                                var HealthInsuranceType = model.HealthInsuranceType;
-                                (function (InsuranceGender) {
-                                    InsuranceGender[InsuranceGender["Male"] = 0] = "Male";
-                                    InsuranceGender[InsuranceGender["Female"] = 1] = "Female";
-                                    InsuranceGender[InsuranceGender["Unknow"] = 2] = "Unknow";
-                                })(model.InsuranceGender || (model.InsuranceGender = {}));
-                                var InsuranceGender = model.InsuranceGender;
-                                (function (ChargeType) {
-                                    ChargeType[ChargeType["Burden"] = 0] = "Burden";
-                                    ChargeType[ChargeType["Exemption"] = 1] = "Exemption";
-                                })(model.ChargeType || (model.ChargeType = {}));
-                                var ChargeType = model.ChargeType;
-                                (function (GroupType) {
-                                    GroupType[GroupType["Personal"] = 0] = "Personal";
-                                    GroupType[GroupType["Company"] = 1] = "Company";
-                                })(model.GroupType || (model.GroupType = {}));
-                                var GroupType = model.GroupType;
-                                (function (Rounding) {
-                                    Rounding[Rounding["RoundUp"] = 0] = "RoundUp";
-                                    Rounding[Rounding["Truncation"] = 1] = "Truncation";
-                                    Rounding[Rounding["RoundDown"] = 2] = "RoundDown";
-                                    Rounding[Rounding["Down5_Up6"] = 3] = "Down5_Up6";
-                                    Rounding[Rounding["Down4_Up5"] = 4] = "Down4_Up5";
-                                })(model.Rounding || (model.Rounding = {}));
-                                var Rounding = model.Rounding;
                             })(model = service.model || (service.model = {}));
                         })(service = a.service || (a.service = {}));
                     })(a = qmm008.a || (qmm008.a = {}));

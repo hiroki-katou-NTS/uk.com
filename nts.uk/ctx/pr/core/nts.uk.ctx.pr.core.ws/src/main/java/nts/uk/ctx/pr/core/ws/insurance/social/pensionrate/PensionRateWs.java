@@ -13,6 +13,7 @@ import nts.uk.ctx.pr.core.app.insurance.social.pensionrate.command.RegisterPensi
 import nts.uk.ctx.pr.core.app.insurance.social.pensionrate.command.RegisterPensionCommandHandler;
 import nts.uk.ctx.pr.core.app.insurance.social.pensionrate.command.UpdatePensionCommand;
 import nts.uk.ctx.pr.core.app.insurance.social.pensionrate.command.UpdatePensionCommandHandler;
+import nts.uk.ctx.pr.core.app.insurance.social.pensionrate.find.PensionOfficeItemDto;
 import nts.uk.ctx.pr.core.app.insurance.social.pensionrate.find.PensionRateDto;
 import nts.uk.ctx.pr.core.app.insurance.social.pensionrate.find.PensionRateFinder;
 
@@ -34,9 +35,9 @@ public class PensionRateWs extends WebService {
 	}
 	
 	@POST
-	@Path("findByOfficeCode/{officeCode}")
-	public List<PensionRateDto> findbyCode(@PathParam("officeCode") String officeCode) {
-		return pensionRateFinder.findAll(officeCode);
+	@Path("findAllHistory")
+	public List<PensionOfficeItemDto> findbyCode() {
+		return pensionRateFinder.findAllHistory();
 	}
 	
 	@POST

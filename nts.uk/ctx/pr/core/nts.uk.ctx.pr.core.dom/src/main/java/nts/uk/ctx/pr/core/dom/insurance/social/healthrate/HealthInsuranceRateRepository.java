@@ -43,7 +43,7 @@ public interface HealthInsuranceRateRepository {
 	 * @param officeCode the office code
 	 * @return the list
 	 */
-	List<HealthInsuranceRate> findAll(String companyCode,String officeCode);
+	List<HealthInsuranceRate> findAll(String companyCode);
 
 	/**
 	 * Find by id.

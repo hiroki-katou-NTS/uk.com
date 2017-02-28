@@ -43,7 +43,7 @@ public interface PensionRateRepository {
 	 * @param officeCode the office code
 	 * @return the list
 	 */
-	List<PensionRate> findAll(String companyCode, String officeCode);
+	List<PensionRate> findAll(String companyCode);
 
 	/**
 	 * Find by id.
