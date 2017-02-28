@@ -412,7 +412,7 @@ module nts.uk.ui.koExtentions {
             var searchBox = $(element);
             var data = valueAccessor();
             var fields = ko.unwrap(data.fields);
-            var searchText = (data.searchText !== undefined) ? ko.unwrap(data.searchText) : "検索";
+            var searchText = (data.searchText !== undefined) ? ko.unwrap(data.searchText) : "讀懃ｴ｢";
             var selected = data.selected;
             var selectedKey = null;
             if (data.selectedKey) {
@@ -1660,8 +1660,8 @@ module nts.uk.ui.koExtentions {
                 var displayColumns = extColumns;
             } else {
                 var displayColumns: Array<any> = [
-                    { headerText: "コード", key: optionsValue, dataType: "string", hidden: true },
-                    { headerText: "コード／名称", key: optionsText, dataType: "string" }
+                    { headerText: "繧ｳ繝ｼ繝・, key: optionsValue, dataType: "string", hidden: true },
+                    { headerText: "繧ｳ繝ｼ繝会ｼ丞錐遘ｰ", key: optionsText, dataType: "string" }
                 ];
             }
 
@@ -2255,12 +2255,12 @@ module nts.uk.ui.koExtentions {
                         .append("<input id = " + searchAreaId + "-input" + " class = 'ntsSearchInput ntsSearchBox'/>");
                     $SearchArea.find(".ntsSearchButtonContainer")
                         .append("<button id = " + searchAreaId + "-btn" + " class='ntsSearchButton search-btn caret-bottom'/>");
-                    $SearchArea.find(".ntsSearchInput").attr("placeholder", "コード・名称で検索・・・").keyup(function(event, ui) {
+                    $SearchArea.find(".ntsSearchInput").attr("placeholder", "繧ｳ繝ｼ繝峨・蜷咲ｧｰ縺ｧ讀懃ｴ｢繝ｻ繝ｻ繝ｻ").keyup(function(event, ui) {
                         if (event.which === 13) {
                             search($SearchArea, targetId, primaryKey);
                         }
                     });
-                    $SearchArea.find(".ntsSearchButton").text("検索").click(function(event, ui) {
+                    $SearchArea.find(".ntsSearchButton").text("讀懃ｴ｢").click(function(event, ui) {
                         search($SearchArea, targetId, primaryKey);
                     });  
                 }
