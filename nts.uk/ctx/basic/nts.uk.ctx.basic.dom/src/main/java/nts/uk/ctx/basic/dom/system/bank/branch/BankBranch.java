@@ -1,7 +1,9 @@
 package nts.uk.ctx.basic.dom.system.bank.branch;
 
 import lombok.Getter;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.basic.dom.company.CompanyCode;
 import nts.uk.shr.com.primitive.Memo;
 
@@ -37,6 +39,18 @@ public class BankBranch extends AggregateRoot{
 	@Getter
     private Memo memo;
 	
+	@Override
+	public void validate() {
+		super.validate();
+		if (this.bankBranchCode == null || StringUtil.isNullOrEmpty(this.bankBranchCode.v(), true)) {
+			throw new BusinessException("ER001");
+		}
+		
+		if (this.bankBranchName == null || StringUtil.isNullOrEmpty(this.bankBranchName.v(), true)) {
+			throw new BusinessException("ER001");
+		}
+	}
+	
 	public BankBranch(CompanyCode companyCode, String bankCode, BankBranchCode bankBranchCode,
 			BankBranchName bankBranchName, BankBranchNameKana bankBranchNameKana, Memo memo) {
 		super();
@@ -50,6 +64,14 @@ public class BankBranch extends AggregateRoot{
 
 	public static BankBranch createFromJavaType (String companyCode,String bankCode,String bankBranchCode, String bankBranchName,
 			String bankBranchNameKana, String memo){
+		if (StringUtil.isNullOrEmpty(bankBranchCode, true)) {
+			throw new BusinessException("ER001");
+		}
+		
+		if (StringUtil.isNullOrEmpty(bankBranchName, true)) {
+			throw new BusinessException("ER001");
+		}
+		
 		return new BankBranch(new CompanyCode(companyCode),bankCode,new BankBranchCode(bankBranchCode), new BankBranchName(bankBranchName), new BankBranchNameKana(bankBranchNameKana), new Memo(memo));
 	}
 	

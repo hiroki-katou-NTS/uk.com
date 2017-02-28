@@ -7,57 +7,88 @@ var qmm002;
             var ScreenModel = (function () {
                 function ScreenModel() {
                     var self = this;
-                    self.dataSource = ko.observableArray([new Node('0001', 'Hanoi Vietnam', []),
-                        new Node('0003', 'Bangkok Thailand', []),
-                        new Node('0004', 'Tokyo Japan', []),
-                        new Node('0005', 'Jakarta Indonesia', []),
-                        new Node('0002', 'Seoul Korea', []),
-                        new Node('0006', 'Paris France', []),
-                        new Node('0007', 'United States', [new Node('0008', 'Washington US', []), new Node('0009', 'Newyork US', [])]),
-                        new Node('0010', 'Beijing China', []),
-                        new Node('0011', 'London United Kingdom', []),
-                        new Node('0012', '', [])]);
+                    self.lst_001 = ko.observableArray([]);
+                    self.lst_002 = ko.observableArray([]);
                     self.singleSelectedCode = ko.observable();
                     self.selectedCodes = ko.observableArray([]);
-                    self.dataSource2 = ko.observableArray([new Node('0001', 'Hanoi Vietnam', []),
-                        new Node('0003', 'Bangkok Thailand', []),
-                        new Node('0004', 'Tokyo Japan', []),
-                        new Node('0005', 'Jakarta Indonesia', []),
-                        new Node('0002', 'Seoul Korea', []),
-                        new Node('0006', 'Paris France', []),
-                        new Node('0007', 'United States', [new Node('0008', 'Washington US', []), new Node('0009', 'Newyork US', [])]),
-                        new Node('0010', 'Beijing China', []),
-                        new Node('0011', 'London United Kingdom', []),
-                        new Node('0012', '', [])]);
-                    self.singleSelectedCode2 = ko.observable(null);
                     self.selectedCodes2 = ko.observableArray([]);
-                    self.headers = ko.observableArray(["Item Value Header", "コード", "名称", "口座区分", "口座番号"]);
+                    self.selectedCodes.subscribe(function (items) {
+                        console.log(items);
+                    });
+                    self.singleSelectedCode.subscribe(function (val) {
+                        console.log(val);
+                    });
                 }
+                ;
                 ScreenModel.prototype.startPage = function () {
                     var self = this;
-                    var dfd = $.Deferred();
-                    qmm002.c.service.getPaymentDateProcessingList().done(function (data) {
-                        dfd.resolve();
-                    }).fail(function (res) {
-                    });
-                    return dfd.promise();
+                    var list = nts.uk.ui.windows.getShared('listItem');
+                    self.lst_001(list);
+                    console.log(self.lst_001());
+                    self.lst_002(list);
                 };
                 ScreenModel.prototype.closeDialog = function () {
                     nts.uk.ui.windows.close();
                 };
+                ScreenModel.prototype.tranferBranch = function () {
+                    var self = this;
+                    var branchCodesMap = [];
+                    _.forEach(self.selectedCodes(), function (item) {
+                        var code = item.split('-');
+                        var bankCode = code[0];
+                        var branchCode = code[1];
+                        branchCodesMap.push({
+                            bankCode: bankCode,
+                            branchCode: branchCode
+                        });
+                    });
+                    var code = self.singleSelectedCode().split('-');
+                    var bankNewCode = code[0];
+                    var branchNewCode = code[1];
+                    var data = {
+                        branchCodes: branchCodesMap,
+                        bankNewCode: bankNewCode,
+                        branchNewCode: branchNewCode
+                    };
+                    c.service.tranferBranch(data).done(function () {
+                        self.getBankList();
+                    });
+                };
+                ScreenModel.prototype.getBankList = function () {
+                    var self = this;
+                    var dfd = $.Deferred();
+                    c.service.getBankList().done(function (data) {
+                        var list001 = [];
+                        _.forEach(data, function (itemBank) {
+                            var childs = _.map(itemBank.bankBranch, function (item) {
+                                return new BankInfo(itemBank.bankCode + "-" + item["bankBranchCode"], item["bankBranchCode"], item["bankBranchName"], item["bankBranchNameKana"], item["memo"], null, itemBank.bankCode);
+                            });
+                            list001.push(new BankInfo(itemBank.bankCode, itemBank.bankCode, itemBank.bankName, itemBank.bankNameKana, itemBank.memo, childs, null));
+                        });
+                        self.lst_001(list001);
+                        dfd.resolve(list001);
+                    }).fail(function (res) {
+                        // error
+                    });
+                    return dfd.promise();
+                };
                 return ScreenModel;
             }());
             viewmodel.ScreenModel = ScreenModel;
-            var Node = (function () {
-                function Node(code, name, childs) {
+            var BankInfo = (function () {
+                function BankInfo(treeCode, code, name, nameKata, memo, childs, parentCode) {
                     var self = this;
+                    self.treeCode = treeCode;
                     self.code = code;
                     self.name = name;
-                    self.nodeText = self.code + ' ' + self.name;
+                    self.nameKata = nameKata;
+                    self.memo = memo;
                     self.childs = childs;
+                    self.parentCode = parentCode;
                 }
-                return Node;
+                return BankInfo;
             }());
+            viewmodel.BankInfo = BankInfo;
         })(viewmodel = c.viewmodel || (c.viewmodel = {}));
     })(c = qmm002.c || (qmm002.c = {}));
 })(qmm002 || (qmm002 = {}));
