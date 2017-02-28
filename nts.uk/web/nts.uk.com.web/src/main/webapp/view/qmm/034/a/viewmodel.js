@@ -46,7 +46,7 @@ var qmm034;
                 //        }
                 ScreenModel.prototype.refreshLayout = function () {
                     var self = this;
-                    self.currentEra(new EraModel('', '', new Date()));
+                    self.currentEra(new EraModel('', '', ''));
                     self.isUpdate = ko.observable(false);
                 };
                 ScreenModel.prototype.insertData = function () {
@@ -68,7 +68,7 @@ var qmm034;
                     var fixAttribute;
                     var dfd = $.Deferred();
                     var node;
-                    node = new qmm034.a.service.model.EraDto(eraName, eraMark, startDate, endDate, fixAttribute);
+                    node = new qmm034.a.service.model.EraDto(eraName, eraMark, startDate.toDateString(), endDate, fixAttribute);
                     qmm034.a.service.addData(self.isUpdate(false), node).done(function (result) {
                         self.reload().done(function () {
                             dfd.resolve();
@@ -218,20 +218,16 @@ var qmm034;
                 function EraModel(code, name, startDate) {
                     this.code = code;
                     this.name = name;
-                    this.startDate = new Date(startDate);
-                    this.startDateText = startDate;
-                    //console.log(startDate.year);
-                    //this.startDateText = startDate.toDateString();
+                    if (startDate !== "") {
+                        this.startDate = new Date(startDate);
+                        this.startDateText = startDate;
+                    }
+                    else {
+                        this.startDate = new Date();
+                        this.startDateText = this.startDate.toDateString();
+                    }
                 }
                 return EraModel;
-            }());
-            var Era = (function () {
-                function Era(eraCodeName, eraNameMark, eraStartDate) {
-                    this.eraCodeName = ko.observable(eraCodeName);
-                    this.eraNameMark = ko.observable(eraNameMark);
-                    this.eraStartDate = ko.observable(eraStartDate);
-                }
-                return Era;
             }());
         })(viewmodel = a.viewmodel || (a.viewmodel = {}));
     })(a = qmm034.a || (qmm034.a = {}));

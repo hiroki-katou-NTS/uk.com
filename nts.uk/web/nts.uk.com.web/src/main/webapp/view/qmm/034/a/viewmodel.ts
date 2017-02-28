@@ -69,7 +69,7 @@ module qmm034.a.viewmodel {
 //        }
         refreshLayout(): void {
             let self = this;
-            self.currentEra(new EraModel('', '', new Date()));
+            self.currentEra(new EraModel('', '', ''));
             self.isUpdate = ko.observable(false);
         }
         insertData(): any {
@@ -92,7 +92,7 @@ module qmm034.a.viewmodel {
             let dfd = $.Deferred<any>();
             let node: qmm034.a.service.model.EraDto;
             node = new qmm034.a.service.model.EraDto(
-                eraName, eraMark, startDate, endDate, fixAttribute
+                eraName, eraMark, startDate.toDateString(), endDate, fixAttribute
             );
             qmm034.a.service.addData(self.isUpdate(false), node).done(function(result) {
                 self.reload().done(function(){
@@ -268,22 +268,25 @@ module qmm034.a.viewmodel {
         constructor(code: string, name: string, startDate: string) {
             this.code = code;
             this.name = name;
-            this.startDate = new Date(startDate);
-            this.startDateText = startDate;
-            //console.log(startDate.year);
-            //this.startDateText = startDate.toDateString();
+            if (startDate !== "") {
+                this.startDate = new Date(startDate);
+                this.startDateText = startDate;
+            } else {
+                this.startDate = new Date();
+                this.startDateText = this.startDate.toDateString();
+            }
         }
     }
-    class Era{
-        eraCodeName:KnockoutObservable<string>;
-        eraNameMark: KnockoutObservable<string>;
-        eraStartDate: KnockoutObservable<string>;
-        constructor(eraCodeName: string, eraNameMark: string, eraStartDate: string){
-            this.eraCodeName = ko.observable(eraCodeName);
-            this.eraNameMark = ko.observable(eraNameMark);
-            this.eraStartDate = ko.observable(eraStartDate);    
-        }    
-    }
+//    class Era{
+//        eraCodeName:KnockoutObservable<string>;
+//        eraNameMark: KnockoutObservable<string>;
+//        eraStartDate: KnockoutObservable<string>;
+//        constructor(eraCodeName: string, eraNameMark: string, eraStartDate: string){
+//            this.eraCodeName = ko.observable(eraCodeName);
+//            this.eraNameMark = ko.observable(eraNameMark);
+//            this.eraStartDate = ko.observable(eraStartDate);    
+//        }    
+//    }
     //    class SingleSelectedCode {
     //        layout: KnockoutObservable<any>;
     //        strName: string;
