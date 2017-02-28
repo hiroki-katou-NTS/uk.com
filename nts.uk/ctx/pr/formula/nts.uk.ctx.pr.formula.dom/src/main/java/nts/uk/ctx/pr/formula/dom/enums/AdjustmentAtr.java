@@ -13,7 +13,9 @@ public enum AdjustmentAtr {
 //	1:プラス調整
 	PLUS_ADJUSTMENT(1),
 //	2:マイナス調整　
-	MINUS_ADJUSTMENT(2);
+	MINUS_ADJUSTMENT(2),
+//	3:プラスマイナス
+	PLUS_OR_MINUS_REVERSAL(3);
 
 	public final int value;
 
@@ -28,6 +30,9 @@ public enum AdjustmentAtr {
 			break;
 		case 2:
 			name = "マイナス調整";
+			break;
+		case 3:
+			name = "プラスマイナス";
 			break;
 		default:
 			name = "調整しない";

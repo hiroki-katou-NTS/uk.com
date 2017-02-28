@@ -24,19 +24,19 @@ public enum RoundDigit {
 		String name;
 		switch (value) {
 		case 0:
-			name = "小数点第1位";
+			name = "小数点第1位(円単位で丸め)";
 			break;
 		case 1:
-			name = "1桁";
+			name = "1桁(10円単位で丸め)";
 			break;
 		case 2:
-			name = "2桁";
+			name = "2桁(100円単位で丸め）";
 			break;
 		case 3:
-			name = "3桁";
+			name = "3桁(1000円単位で丸め)";
 			break;
 		default:
-			name = "小数点第1位";
+			name = "小数点第1位(円単位で丸め)";
 			break;
 		}
 

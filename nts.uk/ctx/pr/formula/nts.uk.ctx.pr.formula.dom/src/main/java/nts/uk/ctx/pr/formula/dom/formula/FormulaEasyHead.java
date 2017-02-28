@@ -8,39 +8,48 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.pr.formula.dom.enums.ConditionAtr;
 import nts.uk.ctx.pr.formula.dom.enums.ReferenceMasterNo;
+import nts.uk.ctx.pr.formula.dom.primitive.CompanyCode;
+import nts.uk.ctx.pr.formula.dom.primitive.FormulaCode;
+import nts.uk.ctx.pr.formula.dom.primitive.HistoryId;
 
 /**
  * @author hungnm
  *
  */
+@Getter
 public class FormulaEasyHead extends DomainObject {
-	@Getter
+	
+	private CompanyCode companyCode;
+	
+	private FormulaCode formulaCode;
+	
+	private HistoryId historyId;
+
 	private ConditionAtr conditionAtr;
 
-	@Getter
 	private ReferenceMasterNo referenceMasterNo;
 
-	@Getter
-	private List<FormulaEasyCondition> formulaEasyCondition = new ArrayList<>();
-
 	/**
+	 * @param companyCode
+	 * @param formulaCode
+	 * @param historyId
 	 * @param conditionAtr
 	 * @param referenceMasterNo
-	 * @param formulaEasyCondition
 	 */
-	public FormulaEasyHead(ConditionAtr conditionAtr, ReferenceMasterNo referenceMasterNo) {
+	public FormulaEasyHead(CompanyCode companyCode, FormulaCode formulaCode, HistoryId historyId,
+			ConditionAtr conditionAtr, ReferenceMasterNo referenceMasterNo) {
 		super();
+		this.companyCode = companyCode;
+		this.formulaCode = formulaCode;
+		this.historyId = historyId;
 		this.conditionAtr = conditionAtr;
 		this.referenceMasterNo = referenceMasterNo;
 	}
 
-	public FormulaEasyHead createFromJavaType(int conditionAtr, int referenceMasterNo) {
-		return new FormulaEasyHead(EnumAdaptor.valueOf(conditionAtr, ConditionAtr.class),
+	public FormulaEasyHead createFromJavaType(String companyCode, String formulaCode, String historyId, int conditionAtr, int referenceMasterNo) {
+		return new FormulaEasyHead(new CompanyCode(companyCode), new FormulaCode(formulaCode),new HistoryId(historyId),
+				EnumAdaptor.valueOf(conditionAtr, ConditionAtr.class),
 				EnumAdaptor.valueOf(referenceMasterNo, ReferenceMasterNo.class));
 	}
-	
-	public void setFormulaEasyCondition(List<FormulaEasyCondition> formulaEasyCondition){
-		this.formulaEasyCondition.clear();
-		this.formulaEasyCondition.addAll(formulaEasyCondition);
-	}
+
 }

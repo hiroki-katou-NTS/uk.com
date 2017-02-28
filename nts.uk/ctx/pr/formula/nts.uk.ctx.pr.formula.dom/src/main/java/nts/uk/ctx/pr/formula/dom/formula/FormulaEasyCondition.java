@@ -6,9 +6,13 @@ import java.util.List;
 
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.pr.formula.dom.enums.FixFormulaAtr;
+import nts.uk.ctx.pr.formula.dom.primitive.CompanyCode;
 import nts.uk.ctx.pr.formula.dom.primitive.EasyFormulaCode;
+import nts.uk.ctx.pr.formula.dom.primitive.FormulaCode;
+import nts.uk.ctx.pr.formula.dom.primitive.HistoryId;
 import nts.uk.ctx.pr.formula.dom.primitive.Money;
 import nts.uk.ctx.pr.formula.dom.primitive.ReferenceMasterCode;
 
@@ -16,47 +20,51 @@ import nts.uk.ctx.pr.formula.dom.primitive.ReferenceMasterCode;
  * @author hungnm
  *
  */
-public class FormulaEasyCondition extends DomainObject {
-	@Getter
+@Getter
+public class FormulaEasyCondition extends AggregateRoot {
+	
+	private CompanyCode companyCode;
+	
+	private FormulaCode formulaCode;
+	
+	private HistoryId historyId;
+	
 	private EasyFormulaCode easyFormulaCode;
 
-	@Getter
 	private FixFormulaAtr fixFormulaAtr;
 
-	@Getter
 	private Money fixMoney;
 
-	@Getter
 	private ReferenceMasterCode referenceMasterCode;
 
-	@Getter
-	private List<FormulaEasyDetail> formulaEasyDetail = new ArrayList<>();
 
 	/**
+	 * @param companyCode
+	 * @param formulaCode
+	 * @param historyId
 	 * @param easyFormulaCode
 	 * @param fixFormulaAtr
 	 * @param fixMoney
 	 * @param referenceMasterCode
 	 * @param formulaEasyDetail
 	 */
-	public FormulaEasyCondition(EasyFormulaCode easyFormulaCode, FixFormulaAtr fixFormulaAtr, Money fixMoney,
+	public FormulaEasyCondition(CompanyCode companyCode, FormulaCode formulaCode, HistoryId historyId, EasyFormulaCode easyFormulaCode, FixFormulaAtr fixFormulaAtr, Money fixMoney,
 			ReferenceMasterCode referenceMasterCode) {
 		super();
+		this.companyCode = companyCode;
+		this.formulaCode = formulaCode;
+		this.historyId = historyId;
 		this.easyFormulaCode = easyFormulaCode;
 		this.fixFormulaAtr = fixFormulaAtr;
 		this.fixMoney = fixMoney;
 		this.referenceMasterCode = referenceMasterCode;
 	}
 
-	public FormulaEasyCondition createFromJavaType(String easyFormulaCode, int fixFormulaAtr, BigDecimal fixMoney,
+	public static FormulaEasyCondition createFromJavaType(String companyCode, String formulaCode, String historyId, String easyFormulaCode, int fixFormulaAtr, BigDecimal fixMoney,
 			String referenceMasterCode) {
-		return new FormulaEasyCondition(new EasyFormulaCode(easyFormulaCode),
-				EnumAdaptor.valueOf(fixFormulaAtr, FixFormulaAtr.class), new Money(fixMoney),
-				new ReferenceMasterCode(referenceMasterCode));
+		return new FormulaEasyCondition(new CompanyCode(companyCode), new FormulaCode(formulaCode), new HistoryId(historyId),
+				new EasyFormulaCode(easyFormulaCode), EnumAdaptor.valueOf(fixFormulaAtr, FixFormulaAtr.class),
+				new Money(fixMoney), new ReferenceMasterCode(referenceMasterCode));
 	}
-	
-	public void setFormulaEasyDetail (List<FormulaEasyDetail> formulaEasyDetail) {
-		this.formulaEasyDetail.clear();
-		this.formulaEasyDetail.addAll(formulaEasyDetail);
-	}
+
 }
