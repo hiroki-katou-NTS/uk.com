@@ -24,6 +24,10 @@ public class UpdateBranchCommandHandler extends CommandHandler<UpdateBranchComma
 		String companyCode = AppContexts.user().companyCode();
 		
 		BankBranch domain = BankBranch.createFromJavaType(companyCode, command.getBankCode(), command.getBranchCode(), command.getBranchName(), command.getBranchKnName(), command.getMemo());
+		
+		// validate
+		domain.validate();
+				
 		bankBranchRepository.update(domain);	
 	} 
 	
