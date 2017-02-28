@@ -8,9 +8,9 @@
 <body>
 	<ui:composition>
 		<div class="wrap-sel-006">
-			<div class="ib d-col-1">
-				<div id="d_lst_001" class="ib va-middle caret-right caret-background" data-bind="with: dList001">
-				<div id="list-box-d" data-bind="ntsListBox: {
+			<div class="ib g-col-1">
+				<div id="g_lst_001" class="ib va-middle caret-right caret-background" data-bind="with: gList001">
+				<div id="list-box-g" data-bind="ntsListBox: {
 					options: itemList,
 					optionsValue: 'code',
 					optionsText: 'name',
@@ -20,9 +20,9 @@
 					rows: 5}"></div>
 				</div>
 			</div>
-			<div id="d_lst_002" class="ib va-middle" data-bind="with: dList002">
+			<div id="g_lst_002" class="ib va-middle" data-bind="with: gList002">
 				<div data-bind="ntsSearchBox: {comId: 'multi-list', items: itemList, selected: selectedCode, selectedKey: 'code', fields: ['name', 'code']}" />
-				<div id="list-box-d" data-bind="ntsListBox: {
+				<div id="list-box-g" data-bind="ntsListBox: {
 					options: itemList,
 					optionsValue: 'code',
 					optionsText: 'name',
@@ -34,7 +34,7 @@
 						{ prop: 'name', length: 10 }
 					],
 					rows: 5}"></div>
-				<button id="d_btn_001" class="caret-bottom">計算式挿入ボタン</button>
+				<button id="g_btn_001" class="caret-bottom">計算式挿入ボタン</button>
 			</div>
 		</div>
 	</ui:composition>

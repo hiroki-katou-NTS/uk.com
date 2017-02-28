@@ -7,56 +7,60 @@
 
 <body>
 	<ui:composition>
+	
+		<com:ValidatorScript>
+<!-- 			nts.uk.ctx.pr.formula.dom.primitive.FormulaCode -->
+<!-- 			nts.uk.shr.com.primitive.sample.FormulaName -->
+<!-- 			nts.uk.shr.com.primitive.sample.PersonalWageCode -->
+<!-- 			nts.uk.shr.com.primitive.sample.CommonAmount -->
+			nts.arc.time.YearMonth
+		</com:ValidatorScript>
 		<div class="wrap-tab">
 			<!-- only display when new mode (not yet checked)  -->
 			<div id="b_lbl_001" class="label warning separate-vertical">計算式を新規で作成する場合、基本情報を入力後、一度登録ボタンを押してください。</div>
 			<br />
 			<div id="b_lbl_002" class="separate-vertical" data-bind="ntsFormLabel: {required: true }">コード/名称</div>
-			<input disabled="disabled" size="3" id="b_inp_001"  data-bind="value: '003'"/>
-			<input disabled="disabled" size="25" id="b_inp_002" data-bind="value: '003'"/>
+			<input size="3" id="b_inp_001"  data-bind="value: '003'"/>
+			<input size="25" id="b_inp_002" data-bind="value: '003'"/>
 			<br/>
-			<div id="b_lbl_003" class="separate-vertical" data-bind="ntsFormLabel: {required: true }">コード/名称</div>
-			<input size="5" id="b_inp_003" data-bind="value: '2016/12'"/>
+			<div id="b_lbl_003" class="separate-vertical" data-bind="ntsFormLabel: {required: true }">開始年月</div>
+			<div id="b_inp_003" data-bind="ntsDatePicker: {value: yearMonth, dateFormat: 'yyyy/MM'}"></div>
 			<span>(xxxxxxx) ~</span>
 			<br/>
 			<div id="b_lbl_004" class="separate-vertical" data-bind="ntsFormLabel: {required: true }">計算式の設定方法</div>
-			<div id="b_sel_001" data-bind="with: b_sel_001">
-				<div class="cf" data-bind="ntsSwitchButton: {
-							options: roundingRules,
-							optionsValue: 'code',
-							optionsText: 'name',
-							value: selectedRuleCode,
-							enable: true }"></div>
-			</div>
+			<div id="b_sel_001" class="cf" data-bind="ntsSwitchButton: {
+						options: roundingRules,
+						optionsValue: 'code',
+						optionsText: 'name',
+						value: selectedRuleCode,
+						enable: true }"></div>
 			<br/>
 			<div id="b_lbl_005">
 				<span >説明</span>
 				<hr/>
 			</div>
 			<br/>
-			<com:ko-if bind="b_sel_001().selectedRuleCode() === 1">
+			<com:ko-if bind="selectedRuleCode() == 0">
 				<div style="margin-left: 155px" id="b_lbl_006">
 					<span>雇用、部門、職場、分類、職位、給与携帯など、マスタの値を条件に使用して、</span><br/>
 					<span style="margin-bottom:20px; display: inline-block;">計算式を簡単に設定することができます。</span><br/>
 					<span>マスタを使用しない、一律の設定をすることも可能です。</span>
 				</div>
 			</com:ko-if>
-			<com:ko-if bind="b_sel_001().selectedRuleCode() === 2">
+			<com:ko-if bind="selectedRuleCode() == 1">
 				<div style="margin-left: 155px;" id="b_lbl_007">
 					<span>詳細な計算条件、計算式を設定することができます。</span>
 				</div>
 			</com:ko-if>
 			<br/>
-			<com:ko-if bind="b_sel_001().selectedRuleCode() === 1">
+			<com:ko-if bind="selectedRuleCode() == 0">
 				<div id="b_lbl_009" class="separate-vertical" data-bind="ntsFormLabel: {required: true }">かんたん計算式でマスタによる条件分岐を利用する</div>
-				<div id="b_sel_002" data-bind="with: b_sel_002">
-					<div class="cf" data-bind="ntsSwitchButton: {
-								options: roundingRules,
+					<div id="b_sel_002"  class="cf" data-bind="ntsSwitchButton: {
+								options: roundingRules2,
 								optionsValue: 'code',
 								optionsText: 'name',
-								value: selectedRuleCode,
+								value: selectedRuleCode2,
 								enable: true }"></div>
-				</div>
 			</com:ko-if>
 		</div>
 	</ui:composition>

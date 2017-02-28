@@ -8,21 +8,21 @@
 <body>
 	<ui:composition>
 		<div class="wrap-sel-006">
-			<div class="ib d-col-1">
-				<div id="d_lst_001" class="ib va-middle caret-right caret-background" data-bind="with: dList001">
-				<div id="list-box-d" data-bind="ntsListBox: {
-					options: itemList,
-					optionsValue: 'code',
-					optionsText: 'name',
-					multiple: false,
-					value: selectedCodes,
-					enable: isEnable(),
-					rows: 5}"></div>
+			<div class="ib e-col-1">
+				<div id="e_lst_001" class="ib va-middle caret-right caret-background" data-bind="with: eList001">
+				<div id="list-box-e" data-bind="ntsListBox: {
+				options: itemList,
+				optionsValue: 'code',
+				optionsText: 'name',
+				multiple: false,
+				value: selectedCodes,
+				enable: isEnable(),
+				rows: 5}"></div>
 				</div>
 			</div>
-			<div id="d_lst_002" class="ib va-middle" data-bind="with: dList002">
+			<div id="e_lst_002" class="ib va-middle" data-bind="with: eList002">
 				<div data-bind="ntsSearchBox: {comId: 'multi-list', items: itemList, selected: selectedCode, selectedKey: 'code', fields: ['name', 'code']}" />
-				<div id="list-box-d" data-bind="ntsListBox: {
+				<div id="list-box-e" data-bind="ntsListBox: {
 					options: itemList,
 					optionsValue: 'code',
 					optionsText: 'name',
@@ -34,7 +34,7 @@
 						{ prop: 'name', length: 10 }
 					],
 					rows: 5}"></div>
-				<button id="d_btn_001" class="caret-bottom">計算式挿入ボタン</button>
+				<button id="e_btn_001" class="caret-bottom">計算式挿入ボタン</button>
 			</div>
 		</div>
 	</ui:composition>

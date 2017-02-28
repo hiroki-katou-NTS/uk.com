@@ -12,6 +12,38 @@
 			<com:scriptfile path="start.js" />
 			<com:scriptfile path="viewmodel.js" />
 			<com:scriptfile path="service.js" />
+			
+			<com:stylefile path="../../../../view/qmm/017/b/style.css" />
+			<com:scriptfile path="../../../../view/qmm/017/b/viewmodel.js" />
+			<com:scriptfile path="../../../../view/qmm/017/b/service.js" />
+			
+			<com:stylefile path="../../../../view/qmm/017/c/style.css" />
+			<com:scriptfile path="../../../../view/qmm/017/c/viewmodel.js" />
+			<com:scriptfile path="../../../../view/qmm/017/c/service.js" />
+			
+			<com:stylefile path="../../../../view/qmm/017/d/style.css" />
+			<com:scriptfile path="../../../../view/qmm/017/d/viewmodel.js" />
+			<com:scriptfile path="../../../../view/qmm/017/d/service.js" />
+			
+			<com:stylefile path="../../../../view/qmm/017/e/style.css" />
+			<com:scriptfile path="../../../../view/qmm/017/e/viewmodel.js" />
+			<com:scriptfile path="../../../../view/qmm/017/e/service.js" />
+			
+			<com:stylefile path="../../../../view/qmm/017/f/style.css" />
+			<com:scriptfile path="../../../../view/qmm/017/f/viewmodel.js" />
+			<com:scriptfile path="../../../../view/qmm/017/f/service.js" />
+			
+			<com:stylefile path="../../../../view/qmm/017/g/style.css" />
+			<com:scriptfile path="../../../../view/qmm/017/g/viewmodel.js" />
+			<com:scriptfile path="../../../../view/qmm/017/g/service.js" />
+			
+			<com:stylefile path="../../../../view/qmm/017/h/style.css" />
+			<com:scriptfile path="../../../../view/qmm/017/h/viewmodel.js" />
+			<com:scriptfile path="../../../../view/qmm/017/h/service.js" />
+			
+			<com:stylefile path="../../../../view/qmm/017/i/style.css" />
+			<com:scriptfile path="../../../../view/qmm/017/i/viewmodel.js" />
+			<com:scriptfile path="../../../../view/qmm/017/i/service.js" />
 		</ui:define>
 
 		<ui:define name="content">
@@ -30,8 +62,8 @@
 						<input id="a_inp_001" class="fix-input" />
 						<button id="a_sch_001">検索</button>
 						<br />
-						<button id="a_btn_005">履歴追加</button>
-						<button id="a_btn_006">履歴編集</button>
+						<button id="a_btn_005" onclick="OpenModalSubWindowJ({height: 450, width: 500})">履歴追加</button>
+						<button id="a_btn_006" onclick="OpenModalSubWindowK({height: 550, width: 600})">履歴編集</button>
 						<br />
 						<div id="a_lst_001" data-bind="with: a_lst_001">
 							<table id="treeGrid"
@@ -53,10 +85,10 @@
 					<div id="right-content">
 						<div id="a_sel_001"
 							data-bind="ntsTabPanel: { dataSource: a_sel_001, active: selectedTabASel001}">
-							<div class="tab-content-1">
+							<div class="tab-content-1" data-bind="with: viewModel017b">
 								<ui:include src="../b/index.xhtml" />
 							</div>
-							<div class="tab-content-2">
+							<div class="tab-content-2" data-bind="with: viewModel017c">
 								<ui:include src="../c/index.xhtml" />
 							</div>
 						</div>

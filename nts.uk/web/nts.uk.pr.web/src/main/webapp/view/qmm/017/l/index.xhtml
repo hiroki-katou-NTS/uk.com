@@ -6,6 +6,12 @@
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 <body>
 	<ui:composition template="../../../../master/base.xhtml">
+<!-- 			<com:ValidatorScript> -->
+<!-- 			nts.uk.ctx.pr.formula.dom.primitive.Money -->
+<!-- 			nts.uk.ctx.pr.formula.dom.primitive.FormulaName -->
+<!-- 			nts.uk.ctx.pr.formula.dom.primitive.PremiumRate -->
+<!-- 			nts.arc.time.YearMonth -->
+<!-- 		</com:ValidatorScript> -->
 		<ui:define name="htmlHead">
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="style.css" />
@@ -22,7 +28,6 @@
 				<button id="l_btn_003" class="button separate-button fix-button">コピー</button>
 				<button id="l_btn_006" class="button separate-button fix-button">閉じる</button>
 				<button id="l_btn_005" class="button separate-button fix-button">削除</button>
-				<span id="l_lbl_001">計算式の登録</span>
 			</div>
 			<div id="contents-area">
 				<div id="left-content" class="bg-green caret-right caret-background">
@@ -58,20 +63,20 @@
 							<tbody>
 								<tr>
 									<td></td>
-									<td><div class="cf" data-bind="ntsSwitchButton: {
-											options: roundingRules,
+									<td><div id="l_sel_001" class="cf" data-bind="ntsSwitchButton: {
+											options: roundingRulesSel001,
 											optionsValue: 'code',
 											optionsText: 'name',
-											value: selectedRuleCode
+											value: selectedRuleCodeSel001
 											}"></div></td>
 								</tr>
 								<tr>
 									<td><div id="l_lbl_002" class="separate-vertical"
 											data-bind="ntsFormLabel: {required: true }">A：基準金額</div></td>
 									<td><div id="l_sel_002"
-											data-bind="ntsComboBox: {options: itemListCombo,
+											data-bind="ntsComboBox: {options: itemListComboSel002,
 												optionsValue: 'code',
-												value: selectedCode,
+												value: selectedCodeSel002,
 												enable : true,
 												optionsText: 'name'}"></div></td>
 								</tr>
@@ -87,9 +92,9 @@
 									<td><div id="l_lbl_003" class="separate-vertical"
 											data-bind="ntsFormLabel: {required: true }">B：基底値</div></td>
 									<td><div id="l_sel_003"
-											data-bind="ntsComboBox: {options: itemListCombo,
+											data-bind="ntsComboBox: {options: itemListComboSel003,
 												optionsValue: 'code',
-												value: selectedCode,
+												value: selectedCodeSel003,
 												enable : true,
 												optionsText: 'name'}"></div></td>
 								</tr>
@@ -110,19 +115,19 @@
 									<td><div id="l_lbl_005" class="separate-vertical"
 											data-bind="ntsFormLabel: {required: true }">D：端数処理</div></td>
 									<td><div id="l_sel_004" class="cf" data-bind="ntsSwitchButton: {
-											options: roundingRules2,
-											optionsValue: 'code2',
-											optionsText: 'name2',
-											value: selectedRuleCode2
+											options: roundingRulesSel004,
+											optionsValue: 'code',
+											optionsText: 'name',
+											value: selectedRuleCodeSel004
 											}"></div></td>
 								</tr>
 								<tr>
 									<td><div id="l_lbl_006" class="separate-vertical"
 											data-bind="ntsFormLabel: {required: true }">E：係数</div></td>
 									<td><div id="l_sel_005"
-											data-bind="ntsComboBox: {options: itemListCombo,
+											data-bind="ntsComboBox: {options: itemListComboSel005,
 												optionsValue: 'code',
-												value: selectedCode,
+												value: selectedCodeSel005,
 												enable : true,
 												optionsText: 'name'}"></div></td>
 								</tr>
@@ -136,9 +141,9 @@
 									<td><div id="l_lbl_007" class="separate-vertical"
 											data-bind="ntsFormLabel: {required: true }">F：調整</div></td>
 									<td><div id="l_sel_006"
-											data-bind="ntsComboBox: {options: itemListCombo,
+											data-bind="ntsComboBox: {options: itemListComboSel006,
 												optionsValue: 'code',
-												value: selectedCode,
+												value: selectedCodeSel006,
 												enable : true,
 												optionsText: 'name'}"></div></td>
 								</tr>
@@ -156,9 +161,9 @@
 									<td><div id="l_lbl_008" class="separate-vertical"
 											data-bind="ntsFormLabel: {required: true }">G：端数処理</div></td>
 									<td><div id="l_sel_007"
-											data-bind="ntsComboBox: {options: itemListCombo,
+											data-bind="ntsComboBox: {options: itemListComboSel007,
 												optionsValue: 'code',
-												value: selectedCode,
+												value: selectedCodeSel007,
 												enable : true,
 												optionsText: 'name'}"></div></td>
 								</tr>

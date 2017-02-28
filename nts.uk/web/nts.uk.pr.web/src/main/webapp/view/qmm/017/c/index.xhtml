@@ -7,28 +7,83 @@
 	<body>
 		<ui:composition>
 			<div class="wrap-tab">
-				<com:ko-if bind="b_sel_001().selectedRuleCode() === 1">
-					<com:ko-if bind="b_sel_002().selectedRuleCode() === 2">
-						<div id="c_lbl_001" class="separate-vertical" data-bind="ntsFormLabel: {}">コード/名称</div>
+				<com:ko-if bind="selectedRuleCode() == 0">
+					<com:ko-if bind="selectedRuleCode2() == 1">
+						<div id="c_lbl_001" class="separate-vertical" data-bind="ntsFormLabel: {}">コード/11111名称</div>
 						<span id="c_lbl_002" class="separate-span separate-vertical" data-bind="text: '003'"></span>
 						<span id="c_lbl_003" class="separate-span separate-vertical" data-bind="text: '003'"></span>
 						<br/>
 						<div style="width: 69%" class="control-group valign-center">
 							<div id="c_lbl_004" class="separate-vertical" data-bind="ntsFormLabel: {required: true }">使用するマスタ</div>
-							<div id="c_sel_001" class="ib" data-bind="with: c_sel_001">
-							<div id="combo-box" data-bind="ntsComboBox: {
-										options: itemList,
-										optionsValue: 'code',
-										value: selectedCode,
-										optionsText: 'name',
-										editable: isEditable,
-										enable: isEnable
-										}"></div>
-							</div>
+							<span id="c_lbl_016" class="separate-span separate-vertical" data-bind="text: '003'"></span>
+<!-- 							<div id="c_sel_001" class="ib" data-bind="with: c_sel_001"> -->
+<!-- 								<div id="combo-box" data-bind="ntsComboBox: { -->
+<!-- 											options: itemList, -->
+<!-- 											optionsValue: 'code', -->
+<!-- 											value: selectedCode, -->
+<!-- 											optionsText: 'name', -->
+<!-- 											editable: isEditable, -->
+<!-- 											enable: isEnable -->
+<!-- 											}"></div> -->
+<!-- 							</div> -->
 							<hr/>
 						</div>
+						<div class="control-group">
+							<div class="list001">
+								<div class="col col-1 bg-green">固定値で金額入力後、<br/>(登録せずに計算式に切替る。)</div>
+								<div class="col col-2">
+									<div data-bind="ntsSwitchButton: {
+											options: roundingRulesEasySettings,
+											optionsValue: 'code',
+											optionsText: 'name',
+											value: selectedRuleCodeEasySettings}"></div>
+								</div>
+								<div class="col col-3"><input style="width: 80px" data-bind="ntsNumberEditor: { value: ko.observable(1000)}" /></div>
+							</div>
+							<div class="list002">
+								<div class="header">
+									<div class="row cf">
+										<div class="col col-1"></div>
+										<div class="col col-2"></div>
+										<div class="col col-3"></div>
+									</div>
+								</div>
+								<div class="body">
+									<div class="row cf">
+										<div class="col col-1"></div>
+										<div class="col col-2"></div>
+										<div class="col col-3"></div>
+										<div class="col col-4"></div>
+									</div>
+									<div class="row cf">
+										<div class="col col-1"></div>
+										<div class="col col-2"></div>
+										<div class="col col-3"></div>
+										<div class="col col-4"></div>
+									</div>
+									<div class="row cf">
+										<div class="col col-1"></div>
+										<div class="col col-2"></div>
+										<div class="col col-3"></div>
+										<div class="col col-4"></div>
+									</div>
+									<div class="row cf">
+										<div class="col col-1"></div>
+										<div class="col col-2"></div>
+										<div class="col col-3"></div>
+										<div class="col col-4"></div>
+									</div>
+									<div class="row cf">
+										<div class="col col-1"></div>
+										<div class="col col-2"></div>
+										<div class="col col-3"></div>
+										<div class="col col-4"></div>
+									</div>
+								</div>
+							</div>
+						</div>
 					</com:ko-if>
-					<com:ko-if bind="b_sel_002().selectedRuleCode() === 1">
+					<com:ko-if bind="selectedRuleCode2() == 0">
 						<div id="c_lbl_001" class="separate-vertical" data-bind="ntsFormLabel: {}">コード/名称</div>
 						<span id="c_lbl_002" class="separate-span separate-vertical" data-bind="text: '003'"></span>
 						<span id="c_lbl_003" class="separate-span separate-vertical" data-bind="text: '003'"></span>
@@ -36,7 +91,7 @@
 						<span id="c_lbl_011">aaaaaa</span>
 					</com:ko-if>
 				</com:ko-if>
-				<com:ko-if bind="b_sel_001().selectedRuleCode() === 2">
+				<com:ko-if bind="selectedRuleCode() == 1">
 					<div id="c_lbl_001" class="separate-vertical" data-bind="ntsFormLabel: {}">コード/名称</div>
 					<span id="c_lbl_002" class="separate-span separate-vertical" data-bind="text: '003'"></span>
 					<span id="c_lbl_003" class="separate-span separate-vertical" data-bind="text: '003'"></span>
@@ -46,19 +101,19 @@
 							<ui:include src="../d/index.xhtml" />
 						</div>
 						<div class="tab-content-2">
-							<ui:include src="../d/index.xhtml" />
+							<ui:include src="../e/index.xhtml" />
 						</div>
 						<div class="tab-content-3">
-							<ui:include src="../d/index.xhtml" />
+							<ui:include src="../f/index.xhtml" />
 						</div>
 						<div class="tab-content-4">
-							<ui:include src="../d/index.xhtml" />
+							<ui:include src="../g/index.xhtml" />
 						</div>
 						<div class="tab-content-5">
-							<ui:include src="../d/index.xhtml" />
+							<ui:include src="../h/index.xhtml" />
 						</div>
 						<div class="tab-content-6">
-							<ui:include src="../d/index.xhtml" />
+							<ui:include src="../i/index.xhtml" />
 						</div>
 					</div>
 					<table class="c-table">

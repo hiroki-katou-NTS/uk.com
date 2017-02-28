@@ -1,5 +1,9 @@
 @CHARSET "UTF-8";
 
+#l_inp_001{
+	width: 150px;	
+}
+
 .separate-button {
 	margin-left: 10px;
 }
