@@ -5,14 +5,12 @@ import java.io.Serializable;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
-import javax.persistence.Convert;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.arc.layer.infra.data.entity.type.LocalDateToDBConverter;
 
 
 @AllArgsConstructor
@@ -26,7 +24,6 @@ public class CmnmtJobTitleReference implements Serializable {
 	@EmbeddedId
 	public CmnmtJobTitleReferencePK cmnmtJobTitleReferencePK;
 	
-	@Convert(converter = LocalDateToDBConverter.class)
 	@Basic(optional = false)
 	@Column(name ="REF_SET")
 	public String referenceSettings;

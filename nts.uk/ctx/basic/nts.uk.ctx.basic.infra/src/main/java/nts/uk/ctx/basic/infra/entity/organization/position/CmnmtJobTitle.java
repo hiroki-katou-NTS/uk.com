@@ -4,14 +4,12 @@ import java.io.Serializable;
 import java.time.LocalDate;
 import javax.persistence.Basic;
 import javax.persistence.Column;
-import javax.persistence.Convert;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.arc.layer.infra.data.entity.type.LocalDateToDBConverter;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -28,12 +26,10 @@ public class CmnmtJobTitle implements Serializable{
 		return cmnmtJobTitlePK;
 	}
 
-	@Convert(converter = LocalDateToDBConverter.class)
 	@Basic(optional = false)
 	@Column(name ="STR_D")
 	public LocalDate startDate;
 
-	@Convert(converter = LocalDateToDBConverter.class)
 	@Basic(optional = false)
 	@Column(name = "END_D")
 	public LocalDate endDate;
