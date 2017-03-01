@@ -1,7 +1,7 @@
 var cmm013;
 (function (cmm013) {
-    var a;
-    (function (a_1) {
+    var f;
+    (function (f) {
         var viewmodel;
         (function (viewmodel) {
             var a;
@@ -10,10 +10,12 @@ var cmm013;
                 (function (start) {
                     __viewContext.ready(function () {
                         var screenModel = new viewmodel.ScreenModel();
-                        this.bind(screenModel);
+                        screenModel.startPage().done(function () {
+                            __viewContext.bind(screenModel);
+                        });
                     });
                 })(start = a.start || (a.start = {}));
             })(a = viewmodel.a || (viewmodel.a = {}));
-        })(viewmodel = a_1.viewmodel || (a_1.viewmodel = {}));
-    })(a = cmm013.a || (cmm013.a = {}));
+        })(viewmodel = f.viewmodel || (f.viewmodel = {}));
+    })(f = cmm013.f || (cmm013.f = {}));
 })(cmm013 || (cmm013 = {}));

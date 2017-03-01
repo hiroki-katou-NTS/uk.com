@@ -1,4 +1,3 @@
-
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml"
@@ -8,105 +7,101 @@
 <body>
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
-		<com:ValidatorScript>
+			<com:ValidatorScript>
 				nts.uk.ctx.pr.core.dom.layout.LayoutName
 			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
-			<com:stylefile path="style.css" />
+			<com:stylefile path="main.css" />
 			<com:scriptfile path="start.js" />
 			<com:scriptfile path="viewmodel.js" />
 			<com:scriptfile path="service.js" />
-						<script type="text/javascript">
-					__viewContext.primitiveValueConstraints.JobCode = {
-							valueType: 'String',
-							charType: 'Numeric',
-							maxLength: 10,
-						};
-					
-					__viewContext.primitiveValueConstraints.JobName = {
-							valueType: 'String',
-							charType: 'AnyHalfWidth',
-							maxLength: 20,
-						};
-					__viewContext.primitiveValueConstraints.Memo = {
-							valueType: 'String',
-							charType: 'AnyHalfWidth',
-							maxLength: 500,
-						};
-					
-				</script>
-		</ui:define>
-		<ui:define name="content">
-			<div id="function_area">
-				<button id="btn_001" class="button separate-button fix-button">新規</button>
-				<button id="btn_002" class="button proceed separate-button fix-button">登録</button>
-				<button id="btn_003" class="button separate-button fix-button">序列 をまとめて設定</button>
-				<button id="btn_004" class="button separate-button fix-button"
-						data-bind="click: openBDialog">マスタ修正ログ</button>
-				<button id="btn_005" class="button danger separate-button fix-button">削除</button>
+			<script type="text/javascript">
+				__viewContext.primitiveValueConstraints.JobCode = {
+						valueType: 'String',
+						charType: 'Numeric',
+						maxLength: 10,
+					};
 				
-			</div>
+				__viewContext.primitiveValueConstraints.JobName = {
+						valueType: 'String',
+						charType: 'AnyHalfWidth',
+						maxLength: 20,
+					};
+				__viewContext.primitiveValueConstraints.Memo = {
+						valueType: 'String',
+						charType: 'AnyHalfWidth',
+						maxLength: 500,
+					};
+				
+		</script>
+	</ui:define>
+	<ui:define name="content">
+		<div id="function_area">
+			<button id="btn_001" class="button separate-button fix-button">新規</button>
+			<button id="btn_002" class="button proceed separate-button fix-button">登録</button>
+			<button id="btn_003" class="button separate-button fix-button">序列 をまとめて設定</button>
+			<button id="btn_004" class="button separate-button fix-button"
+					data-bind="click: openBDialog">マスタ修正ログ</button>
+			<button id="btn_005" class="button danger separate-button fix-button">削除</button>				
+		</div>
 			
-			<div id="content-area">
-				<div id="left-content" class="bg-green caret-right caret-background">
+		<div id="content-area">
+			<div id="left-content" class="bg-green caret-right caret-background">
+				<button id="btn_006" class="button separate-button fix-button" data-bind="click: openCDialog">履歴追加</button>
+				<button id="btn_007" class="button danger separate-button fix-button" data-bind="click: openDDialog">履歴編集</button>
+			<div>
+			<br/>
+			</div>
 					
-					<button id="btn_006" class="button separate-button fix-button"
-						data-bind="click: openCDialog">履歴追加</button>
-					<button id="btn_007" class="button danger separate-button fix-button"
-						data-bind="click: openDDialog">履歴編集</button>
-					<div>
-					<br/>
-					</div>
-					
-					<!--LST_001-->
-					<div data-bind="with: listbox">
-					<div id="list-box" data-bind="ntsListBox: {
-						options: itemList,
-						primaryKey: 'code',
-						primaryText: 'name',
-						multiple: true,
-						value: selectedCodes,
+			<!--LST_001-->
+			<div>
+				<div id="list-box" data-bind="ntsListBox: {
+						options: listbox,
+						primaryKey: 'startDate',
+						primaryText: 'endDate',
+						multiple: false,
+						value: selectedCode,
 						enable: isEnable(),
 						rows: 3,
 						required: false,
 						columns: [
-							{ prop: 'code', length: 12 }
+							{ key: 'startDate', length: 8 },
+							{ key: 'endDate', length: 8}
 						]}">
-						</div>
-					</div>
-					<div>
-						<span style="margin-left: 100px" class="caret caret-bottom caret-inline"></span>
-					</div>
+				</div>
+			</div>
+			<div>
+				<span style="margin-left: 100px" class="caret caret-bottom caret-inline"></span>
+			</div>
 					
-					<!--INP_001-->
-					<div class="cf" >
-						<div style="float:left">																					
-							<div style="width: 320px" data-bind="ntsSearchBox: {
+			<!--INP_001-->
+			<div class="cf" >
+				<div style="float:left">																					
+					<div style="width: 320px" data-bind="ntsSearchBox: {
 								comId: 'single-list',
 								items: dataSource, 		
 								selected: currentCode, 
 								selectedKey: 'jobCode', 
-								childField: 'childs', 
 								fields: ['jobName', 'jobCode']}">
-							</div>																																														
-							<br></br>
-							<!--LST_002-->
-							<table id="single-list" 
-								data-bind="ntsGridList:{
-									width: 300,
-									height: 450,
-									options: dataSource,								
-									optionsValue: 'jobCode',
-									columns: columns,
-									multiple: false,
-									value: currentCode,
-									enable: true}"
-						
-								class="cf">
-							</table>
-						</div>
-					</div>
+					</div>																																														
+					<br></br>
+							
+					<!--LST_002-->
+					<table id="single-list" 
+						data-bind="ntsGridList:{
+							width: 300,
+							height: 450,
+							options: dataSource,								
+							optionsValue: 'jobCode',
+							columns: columns,
+							multiple: false,
+							value: currentCode,
+							enable: true}"
+						class="cf">
+					</table>
 				</div>
+			</div>
+			</div>
 				
 				<div id="right-content">
 				<table>
@@ -114,70 +109,26 @@
 						<col width="200px" />
 						<col width="*" />
 					</colgroup>
-<!-- 					<tr> -->
-<!-- 						<td class = " row_01" data-bind="with: label_002"> -->
-						
-<!-- 						LBL_002 -->
-<!-- 						<div data-bind="ntsFormLabel: {constraint: 'LayoutName', required: true}">コード/名称</div> -->
-<!-- 						</td> -->
-<!-- 						<td> -->
-						
-<!-- 						INP_002 -->
-<!-- 						<div id="inp_002" data-bind="with: inp_002"> -->
-<!--  							<div data-bind="with: texteditor"> -->
-<!-- 								<input data-bind="ntsTextEditor: { -->
-<!-- 									value: value, -->
-<!-- 									constraint: constraint, -->
-<!-- 									option: option, -->
-<!-- 									required: required, -->
-<!-- 									enable: enable, -->
-<!-- 									readonly: readonly}" /> -->
-<!-- 							</div> --> 
-							
-<!-- 							<input data-bind="ntsTextEditor: { -->
-<!-- 									value: inp_002, -->
-<!-- 									constraint: 'JobCode' -->
-<!-- 									enable: inp_002_enable -->
-<!-- 									}" /> -->
-<!-- 						</div> -->
-						
-<!-- 						INP_003 -->
-<!-- 						<div id="inp_003" data-bind="with: inp_003"> -->
-<!-- 							<div data-bind="with: texteditor"> -->
-<!-- 								<input data-bind="ntsTextEditor: { -->
-<!-- 									value: inp_003, -->
-<!-- 									constraint: 'JobName' -->
-<!-- 									}" /> -->
-<!-- 							</div> -->
-<!-- 						</div> -->
-<!-- 						</td> -->
-<!-- 					</tr> -->
-					
 					
 					<tr>
 							<td class="row_1">
 								<div
 									data-bind="ntsFormLabel: { constraint: ['JobCode', 'JobName'], required: true }">
 									コード/名称</div>
-
-
 							</td>
 							<td>
 								<div >
 									<div id="inp_002" style="width: 20px">
-										<input
-											data-bind="ntsTextEditor: {
+										<input data-bind="ntsTextEditor: {
                                             value: inp_002,
                                             constraint: 'JobCode',
                                             enable: inp_002_enable}" />
 									</div>
 
 									<div id="inp_003" style="width: 50px">
-										<input
-											data-bind="ntsTextEditor: {
+										<input data-bind="ntsTextEditor: {
                                             value: inp_003,
                                             constraint: 'JobName'
-                                            
                                             }" />
 									</div>
 
@@ -294,37 +245,22 @@
 						</div>						
 						</td>
 					</tr>
-					<!-- LBL_006 --><!-- INP_005 -->
-<!-- 					<tr>
-						<td class = " row_06" data-bind="label_006">
-						
-						
-						<div data-bind="ntsFormLabel: {}">メモ</div>
-						</td>
-						
+
+					<tr>
 						<td>
-						
-							<div id="input-area">
-								<TEXTAREA id="input-text" rows="6" cols="40"></TEXTAREA>
+							<div data-bind="ntsFormLabel: {constraint: 'Memo'}">
+								<label id="A_LBL_003">メモ</label>
 							</div>
 						</td>
-						
-					</tr> -->
-											<tr>
-							<td>
-								<div data-bind="ntsFormLabel: {constraint: 'Memo'}">
-									<label id="A_LBL_003">メモ</label>
-								</div>
-							</td>
-							<td class="valign-center">
-								<div>
-									<textarea
-										data-bind="ntsMultilineEditor: {
-											value: inp_005,
-											constraint: 'Memo'
-											}" />
-								</div>
-							</td>
+						<td class="valign-center">
+							<div>
+								<textarea
+									data-bind="ntsMultilineEditor: {
+										value: inp_005,
+										constraint: 'Memo'
+										}" />
+							</div>
+						</td>
 						</tr>
 				</table>
 				</div>

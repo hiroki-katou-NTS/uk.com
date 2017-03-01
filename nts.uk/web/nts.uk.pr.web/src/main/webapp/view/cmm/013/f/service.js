@@ -1,14 +1,14 @@
 var cmm013;
 (function (cmm013) {
-    var test;
-    (function (test) {
+    var f;
+    (function (f) {
         var service;
         (function (service) {
             var paths = {
-                findAllPosition: "basic/position/findallposition/",
-                addPosition: "basic/position/addPosition",
-                deletePosition: "basic/position/deletePosition",
-                updatePosition: "basic/position/updatePosition",
+                findAllPosition: "basic/position/getPositions/",
+                addPosition: "basic/position/add",
+                deletePosition: "basic/position/remove",
+                updatePosition: "basic/position/update",
                 getAllHistory: "basic/position/getallhist"
             };
             function findAllPosition(historyId) {
@@ -81,6 +81,6 @@ var cmm013;
                 return dfd.promise();
             }
             service.getAllHistory = getAllHistory;
-        })(service = test.service || (test.service = {}));
-    })(test = cmm013.test || (cmm013.test = {}));
+        })(service = f.service || (f.service = {}));
+    })(f = cmm013.f || (cmm013.f = {}));
 })(cmm013 || (cmm013 = {}));

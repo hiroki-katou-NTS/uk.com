@@ -69,9 +69,9 @@ public class JpaPositionReferenceReponsitory extends JpaRepository implements Po
 	}
 
 	@Override
-	public List<PositionHistory> findAllByHistory(String companyCode, String historyId) {
+	public List<PositionHistory> findAllHistory(String companyCode) {
 		List<CmnmtJobTitleHistory> resultList = this.queryProxy().query(FIND_ALL_BY_HISTORY, CmnmtJobTitleHistory.class)
-				.setParameter("companyCode", "'" + companyCode + "'").setParameter("historyId", "'" + historyId + "'")
+				.setParameter("companyCode", "'" + companyCode + "'")
 				.getList();
 		return !resultList.isEmpty() ? resultList.stream().map(item -> {
 			return convertToDomain(item);

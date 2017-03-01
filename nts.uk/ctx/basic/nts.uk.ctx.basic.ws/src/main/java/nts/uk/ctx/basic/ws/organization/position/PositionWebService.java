@@ -5,8 +5,8 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
 
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.basic.app.command.organization.position.CreateJobTitleCommand;
@@ -17,18 +17,22 @@ import nts.uk.ctx.basic.app.command.organization.position.UpdateJobTitleCommand;
 import nts.uk.ctx.basic.app.command.organization.position.UpdateJobTitleCommandHandler;
 import nts.uk.ctx.basic.app.find.organization.position.JobTitleDto;
 import nts.uk.ctx.basic.app.find.organization.position.JobTitleFinder;
-import nts.uk.shr.com.context.AppContexts;
+import nts.uk.ctx.basic.app.find.organization.positionhistory.JobTitleHisDto;
+import nts.uk.ctx.basic.app.find.organization.positionhistory.JobTitleHistoryFinder;
 
 
 
 
 
-@Path("")
-@Produces(MediaType.APPLICATION_JSON)
+@Path("basic/position")
+@Produces("application/json")
 public class PositionWebService extends WebService {
 
 	@Inject
 	private JobTitleFinder positionFinder;
+	
+	@Inject
+	private JobTitleHistoryFinder historyFinder;
 
 	@Inject
 	private CreateJobTitleCommandHandler createPositionCommandHandler;
@@ -38,26 +42,42 @@ public class PositionWebService extends WebService {
 
 	@Inject
 	private RemoveJobTitleCommandHandler removePositionCommandHandler;
-
-	@Path("")
+	
+	
 	@POST
-	public List<JobTitleDto> init() {
-		return positionFinder.init();
+	@Path("findallposition/{historyId}")
+	public List<JobTitleDto> findAllPositionByHis(@PathParam("historyId") String historyId){
+
+		return this.positionFinder.findAllPositionByHis(historyId);
 	}
 
-	@Path("")
+	@POST
+	@Path("getallhist")
+	public List<JobTitleHisDto> getAllHistory(){
+
+		return this.historyFinder.getAllHistory();
+	}
+
+	@Path("findallposition")
+	@POST
+	public List<JobTitleDto> findAllPosition() {
+		return positionFinder.findAllPosition();
+	}
+
+
+	@Path("add")
 	@POST
 	public void add(CreateJobTitleCommand command) {
 		this.createPositionCommandHandler.handle(command);
 	}
 
-	@Path("")
+	@Path("update")
 	@POST
 	public void update(UpdateJobTitleCommand command) {
 		this.updatePositionCommandHandler.handle(command);
 	}
 
-	@Path("")
+	@Path("remove")
 	@POST
 	public void remove(RemoveJobTitleCommand command) {
 		this.removePositionCommandHandler.handle(command);

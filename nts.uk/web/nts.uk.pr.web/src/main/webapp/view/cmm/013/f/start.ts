@@ -1,5 +1,11 @@
-module cmm013.a.viewmodel.a.start{
+module cmm013.f.viewmodel.a.start{
 __viewContext.ready(function() {
         var screenModel = new viewmodel.ScreenModel();
-        this.bind(screenModel);
+    
+    screenModel.startPage().done(function() {
+            __viewContext.bind(screenModel);
+        
+       
+        });
+        
 });}

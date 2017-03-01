@@ -32,7 +32,7 @@ public class JpaPositionReponsitory extends JpaRepository implements PositionRep
 	private static final String CHECK_EXIST;
 
 	
-	
+	 
 	static {
 		StringBuilder builderString = new StringBuilder();
 		builderString.append("SELECT e");
@@ -137,9 +137,10 @@ public class JpaPositionReponsitory extends JpaRepository implements PositionRep
 
 
 	@Override
-	public void remove(String companyCode) {
+	public void remove(String companyCode,String historyID) {
 		val objectKey = new CmnmtJobTitlePK();
 		objectKey.companyCode = companyCode;
+		objectKey.historyID = historyID;
 
 		this.commandProxy().remove(CmnmtJobTitle.class, objectKey);
 	}
@@ -158,17 +159,19 @@ public class JpaPositionReponsitory extends JpaRepository implements PositionRep
 
 
 	@Override
-	public void remove(List<Position> details) {
+	public void removes(List<Position> details) {
 		List<CmnmtJobTitle> cmnmtJobTittlePKs = details.stream().map(
 					detail -> {return this.toEntityPK(detail);}
 				).collect(Collectors.toList());
 		this.commandProxy().removeAll(CmnmtJobTitlePK.class, cmnmtJobTittlePKs);
 	}
 
+	
 	@Override
-	public List<Position> getPositions(String companyCode) {
+	public List<Position> getPositions(String companyCode, String historyID) {
 		return this.queryProxy().query(FIND_ALL, CmnmtJobTitle.class)
 				.setParameter("companyCd", companyCode)
+				.setParameter("historyID", historyID)
 
 				.getList(c -> toDomain(c));
 	}
@@ -189,11 +192,7 @@ public class JpaPositionReponsitory extends JpaRepository implements PositionRep
 				.getSingle().get() > 0;
 	}
 
-	@Override
-	public List<Position> findAll(String companyCode) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+
 
 	@Override
 	public boolean isExisted(String companyCode, JobCode jobCode) {
@@ -210,6 +209,20 @@ public class JpaPositionReponsitory extends JpaRepository implements PositionRep
 
 	@Override
 	public Optional<Position> findSingle(String companyCode, String historyID) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	@Override
+	public List<Position> getPositions(String companyCode) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+
+	@Override
+	public List<Position> findAllPosition(String companyCode) {
 		// TODO Auto-generated method stub
 		return null;
 	}

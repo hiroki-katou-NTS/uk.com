@@ -1,9 +1,9 @@
-module cmm013.test.service {
+module cmm013.f.service {
     var paths = {
-        findAllPosition: "basic/position/findallposition/",
-        addPosition: "basic/position/addPosition",
-        deletePosition: "basic/position/deletePosition",
-        updatePosition: "basic/position/updatePosition",
+        findAllPosition: "basic/position/getPositions/",
+        addPosition: "basic/position/add",
+        deletePosition: "basic/position/remove",
+        updatePosition: "basic/position/update",
         getAllHistory: "basic/position/getallhist"
         
     /**

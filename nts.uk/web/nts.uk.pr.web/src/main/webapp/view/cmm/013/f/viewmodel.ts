@@ -1,41 +1,47 @@
 module cmm013.f.viewmodel {
 
     export class ScreenModel {
-        listbox: KnockoutObservable<ListBox>;
-        dataSource: KnockoutObservableArray<viewmodel.model.ListPositionDto>;
+        
         label_002: KnockoutObservable<Labels>;
         label_003: KnockoutObservable<Labels>;
         label_004: KnockoutObservable<Labels>;
         label_005: KnockoutObservable<Labels>;
         label_006: KnockoutObservable<Labels>;
+        test: KnockoutObservable<string>;
+        
         radiobox: KnockoutObservable<RadioBox>;
         radiobox_2: KnockoutObservable<RadioBox2>;
+        
         inp_002: KnockoutObservable<string>;
         inp_002_enable: KnockoutObservable<boolean>;
         inp_003: KnockoutObservable<string>;
         inp_004: KnockoutObservable<TextEditor_3>;
         inp_005: KnockoutObservable<string>;
+        
         sel_0021: KnockoutObservable<SwitchButton>;
         sel_0022: KnockoutObservable<SwitchButton>;
         sel_0023: KnockoutObservable<SwitchButton>;
         sel_0024: KnockoutObservable<SwitchButton>;
-        allowClick: KnockoutObservable<boolean> = ko.observable(true);
-
-        itemList: KnockoutObservableArray<any>;
-        isEnable: KnockoutObservable<any>;
-        itemName: KnockoutObservable<any>;
-        currentCode: KnockoutObservable<String>;
-        multilineeditor: KnockoutObservable<any>;
-        currentCodeList: KnockoutObservableArray<any>;
-        currentItem: KnockoutObservable<viewmodel.model.ListPositionDto>;
+        
+        listbox: KnockoutObservableArray<viewmodel.model.ListHistoryDto>;
+        itemName: KnockoutObservable<string>;
+        selectedCode: KnockoutObservable<any>
+        isEnable: KnockoutObservable<boolean>;
+        itemHist: KnockoutObservable<viewmodel.model.ListHistoryDto>;        
+        index_selected: KnockoutObservable<any>;
+        
+        currentCode: KnockoutObservable<any>;        
+        dataSource: KnockoutObservableArray<viewmodel.model.ListPositionDto>;
         columns: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
         
-        companys: KnockoutObservableArray<cmm013.a.service.model.PositionDto>;
+        
+        
+        currentCodeList: KnockoutObservableArray<any>;
+        currentItem: KnockoutObservable<viewmodel.model.ListPositionDto>;
+        index_of_itemDelete: any;
         constructor() {
             var self = this;
 
-            self.listbox = ko.observable(new ListBox());
-            self.dataSource = ko.observableArray([]);
             self.label_002 = ko.observable(new Labels());
             self.label_003 = ko.observable(new Labels());
             self.label_004 = ko.observable(new Labels());
@@ -53,56 +59,78 @@ module cmm013.f.viewmodel {
             self.sel_0022 = ko.observable(new SwitchButton);
             self.sel_0023 = ko.observable(new SwitchButton);
             self.sel_0024 = ko.observable(new SwitchButton);
-            self.isEnable = ko.observable(true);
+            self.test = ko.observable('2');
+            
+            //lst_001
+            self.listbox = ko.observableArray([]);
+            self.selectedCode = ko.observable(null); 
+            self.isEnable = ko.observable(true);    
+            self.itemHist = ko.observable(null);
+            self.itemName = ko.observable('');
+            self.index_selected = ko.observable('');
+            
+            
             //lst_002
+            self.dataSource = ko.observableArray([]);
             self.currentItem = ko.observable(null);
             self.itemName = ko.observable('');
-            self.currentCode = ko.observable(null);            
-            self.multilineeditor = ko.observable(null);           
+            self.currentCode = ko.observable();           
+            //self.multilineeditor = ko.observable(null);           
             self.currentCodeList = ko.observableArray([]);
             self.columns = ko.observableArray([
-                { headerText: '郢ｧ�ｽｳ郢晢ｽｼ郢昴�ｻ, key: 'jobCode', width: 80 },
-                { headerText: '陷ｷ蜥ｲ�ｽｧ�ｽｰ', key: 'jobName', width: 100 }
+                { headerText: 'コード', key: 'jobCode', width: 80 },
+                { headerText: '名称', key: 'jobName', width: 100 }
 
             ]);
-           
-            //inp_x
+            
+            self.selectedCode.subscribe((function(codeChanged){
+                self.itemHist(self.findHist(codeChanged));
+                if (self.itemHist() != null) {
+                self.index_selected(self.itemHist().historyId);
+                    console.log(self.index_selected());
+                    //get position
+                var dfd = $.Deferred();
+                service.findAllPosition(self.index_selected())
+                    .done(function(position_arr: Array<model.ListPositionDto>) {
+                        self.dataSource(position_arr);
+                        self.currentCode(self.dataSource()[0].jobCode);
+                        self.inp_002(self.dataSource()[0].jobCode);
+                        self.inp_003(self.dataSource()[0].jobName);
+                        self.inp_005(self.dataSource()[0].memo);
+                    }).fail(function(error){
+                        alert(error.message);
+
+                })
+                dfd.resolve();
+                return dfd.promise();
+                }           
+            }));
+               //inp_x
             self.currentCode.subscribe((function(codeChanged) {
-                self.currentItem(self.findObj(codeChanged));
+                self.currentItem(self.findPosition(codeChanged));
                 if (self.currentItem() != null) {
                     self.inp_002(self.currentItem().jobCode);
                     self.inp_003(self.currentItem().jobName);
                     self.inp_005(self.currentItem().memo);
                 }           
             }));
-        }
-        startPage(): JQueryPromise<any> {
-            var self = this;
 
-            // Page load dfd.
-            var dfd = $.Deferred();
-
-            // Resolve start page dfd after load all data.
-
-            
-            service.findAllPosition().done(function(position_arr: Array<model.ListPositionDto>) {
-                self.dataSource(position_arr);
-                self.currentCode(self.dataSource()[0].jobCode)
-                self.inp_002(self.dataSource()[0].jobCode);
-                self.inp_003(self.dataSource()[0].jobName);
-                self.inp_005(self.dataSource()[0].memo);
-                dfd.resolve();
-
-            }).fail(function(error) {
-                alert(error.message);
-
-            })
-            
-                dfd.resolve();
-                return dfd.promise();
         }
         
-        findObj(value: string): any {
+//        find history need to show position
+        findHist(value: string): any {
+            let self = this;
+            var itemModel = null;
+            _.find(self.listbox(), function(obj: viewmodel.model.ListHistoryDto) {
+                if (obj.startDate == value) {
+                    itemModel = obj;
+                }
+            })
+            return itemModel;
+        }
+        
+//        find position need to show detail
+        findPosition(value: string): any {
             let self = this;
             var itemModel = null;
             _.find(self.dataSource(), function(obj: viewmodel.model.ListPositionDto) {
@@ -112,133 +140,67 @@ module cmm013.f.viewmodel {
             })
             return itemModel;
         }
+        
+        getPositionList(): any {
+            var self = this;
+            var dfd = $.Deferred<any>();
+            service.findAllPosition(self.index_selected()).done(function(position_arr: Array<model.ListPositionDto>) {
+                self.dataSource(position_arr);
+                self.inp_002(self.dataSource()[0].jobCode);
+                self.inp_003(self.dataSource()[0].jobName);
+                self.inp_005(self.dataSource()[0].memo);
+                if (self.dataSource().length > 1) {
+                    self.currentCode(self.dataSource()[0].jobCode)
+                }
+
+                dfd.resolve();
+            }).fail(function(error) {
+                alert(error.message);
+            })
+            dfd.resolve();
+            return dfd.promise();
+
+        }
+        startPage(): JQueryPromise<any> {
+            var self = this;
+
+            // Page load dfd.
+            var dfd = $.Deferred();
+
+            // get all history.     
+            service.getAllHistory().done(function(history_arr: Array<model.ListHistoryDto>){
+                self.listbox(history_arr);    
+                self.selectedCode=ko.observable(self.listbox()[0].historyId);            
+            }).fail(function(error) {
+               alert(error.message);
+
+            })            
+                dfd.resolve();
+                return dfd.promise();
+           
+
+
+        }
+
+        
+
 
         openBDialog() {
-            nts.uk.ui.windows.sub.modal('/view/013/b/index.xhtml', { title: '11111', });
+            nts.uk.ui.windows.sub.modal('/view/cmm/013/b/index.xhtml', { title: '画面ID：B', });
         }
         openCDialog() {
-            nts.uk.ui.windows.sub.modal('/view/013/c/index.xhtml', { title: '騾包ｽｻ鬮ｱ�ｽ｢ID繝ｻ蝟�', });
+            nts.uk.ui.windows.sub.modal('/view/cmm/013/c/index.xhtml', { title: '画面ID：c', });
         }
         openDDialog() {
-            nts.uk.ui.windows.sub.modal('/view/013/d/index.xhtml', { title: '騾包ｽｻ鬮ｱ�ｽ｢ID繝ｻ蜥ｼ', });
+            nts.uk.ui.windows.sub.modal('/view/cmm/013/d/index.xhtml', { title: '画面ID：D', });
         }
     }
 
-    class ListBox {
-        itemList: KnockoutObservableArray<ItemModel>;
-        itemName: KnockoutObservable<string>;
-        currentCode: KnockoutObservable<number>
-        selectedCode: KnockoutObservable<string>;
-        selectedCodes: KnockoutObservableArray<string>;
-        isEnable: KnockoutObservable<boolean>;
-        constructor() {
-            var self = this;
-            self.itemList = ko.observableArray([
-                new ItemModel('2015/10/01 ~ 9999/12/31'),
-                new ItemModel('2015/01/01 ~ 2014/12/31'),
-                new ItemModel('2000/10/01 ~ 1999/10/31'),
-                new ItemModel('2015/10/01 ~ 9999/12/31'),
-                new ItemModel('2015/10/01 ~ 9999/12/31'),
-                new ItemModel('2015/10/01 ~ 9999/12/31'),
-                new ItemModel('2015/10/01 ~ 9999/12/31'),
-                new ItemModel('2015/10/01 ~ 9999/12/31'),
-            ]);
-            self.itemName = ko.observable('');
-            self.currentCode = ko.observable(3);
-            self.selectedCode = ko.observable(null)
-            self.isEnable = ko.observable(true);
-            self.selectedCodes = ko.observableArray([]);
 
 
-            $('#list-box').on('selectionChanging', function(event) {
-                console.log('Selecting value:' + (<any>event.originalEvent).detail);
-            })
-            $('#list-box').on('selectionChanged', function(event: any) {
-                console.log('Selected value:' + (<any>event.originalEvent).detail)
-            })
-        }
 
-    }
-    export class ItemModel {
-        code: string;
-        constructor(code: string) {
-            this.code = code;
-        }
-    }
 
-    //    export class GirdBox{
-    //        dataSource: KnockoutObservableArray<any>;
-    //        singleSelectedCode: KnockoutObservable<any>;
-    //        selectedCodes: KnockoutObservableArray<any>;
-    //        columns: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
-    //        constructor() {
-    //            var self = this;
-    //           // service.getallPosition().done
-    //            self.dataSource = ko.observableArray([
-    //                new Node('0001', 'Hanoi Vietnam', 1),
-    //                new Node('0003', 'Bangkok Thailand', 4),
-    //                new Node('0004', 'Tokyo Japan', 3),
-    //                new Node('0005', 'Jakarta Indonesia', 2),
-    //                new Node('0002', 'Seoul Korea', 5),
-    //                new Node('0006', 'Paris France', 6),
-    //                new Node('0007', 'United States', 9),
-    //                new Node('0010', 'Beijing China', 8),
-    //                new Node('0011', 'London United Kingdom', 10),
-    //                new Node('0012', 'hohoh', 7)
-    //            ]);
-    //            
-    //
-    //            self.singleSelectedCode = ko.observable();
-    //            self.selectedCodes = ko.observableArray([]);
-    //            self.columns = ko.observableArray([
-    //                { headerText: '郢ｧ�ｽｳ郢晢ｽｼ郢昴�ｻ, key: 'code', width: 40 },
-    //                { headerText: '陷ｷ蜥ｲ�ｽｧ�ｽｰ', key: 'name', width: 150 },
-    //               // { headerText: '陟惹ｸ槭�ｻ', prop: 'nodeText', width: 20 }
-    //            ])
-    //        }
-    //        
-    //    }
-//    export class ItemDto {
-//        companyCode: KnockoutObservable<String>;
-//        insDate: KnockoutObservable<any>;
-//        insCcd: KnockoutObservable<String>;
-//        insScd: KnockoutObservable<String>;
-//        insPg: KnockoutObservable<String>;
-//        updDate: KnockoutObservable<any>;
-//        updCcd: KnockoutObservable<String>;
-//        updScd: KnockoutObservable<String>;
-//        updPg: KnockoutObservable<String>;
-//        jobCode: KnockoutObservable<String>;
-//        jobName: KnockoutObservable<String>;
-//        memo: KnockoutObservable<String>;
-//        strDate: KnockoutObservable<any>;
-//        endDate: KnockoutObservable<any>;
-//        exclusVersion: KnockoutObservable<String>;
-//        jobOutCode: KnockoutObservable<String>;
-//        memo: KnockoutObservable<String>;
-//        historyId: KnockoutObservable<String>;
-//    }
-//    class ListBox2 {
-//        itemList: KnockoutObservableArray<any>;
-//        isEnable: KnockoutObservable<any>;
-//        itemName: KnockoutObservable<any>;
-//        currentCode: KnockoutObservable<any>;
-//        selectedCode: KnockoutObservable<any>;
-//        selectedCodes: KnockoutObservableArray<any>;
-//        listItemDto: Array<ItemDto>;
-//        constructor(listItemDto) {
-//            var self = this;
-//            // set list item dto
-//            self.listItemDto = listItemDto;
-//            self.itemName = ko.observable('');
-//            self.currentCode = ko.observable(5);
-//            self.selectedCode = ko.observable(null)
-//            self.isEnable = ko.observable(true);
-//            self.selectedCodes = ko.observableArray([]);
-//        }
-//    }
-
-    class Labels {
+    export class Labels {
         constraint: string = 'LayoutCode';
         inline: KnockoutObservable<boolean>;
         required: KnockoutObservable<boolean>;
@@ -257,9 +219,9 @@ module cmm013.f.viewmodel {
         constructor() {
             var self = this;
             self.itemList = ko.observableArray([
-                new BoxModel(1, '陷茨ｽｨ陷ｩ�ｽ｡陷ｿ繧峨�ｻ陷ｿ�ｽｯ髢ｭ�ｽｽ'),
-                new BoxModel(2, '陷茨ｽｨ陷ｩ�ｽ｡陷ｿ繧峨�ｻ闕ｳ讎雁ｺ�'),
-                new BoxModel(3, '郢晢ｽｭ郢晢ｽｼ郢晢ｽｫ雎亥ｼｱ竊馴坎�ｽｭ陞ｳ繝ｻ)
+                new BoxModel(1, '全員参照可能'),
+                new BoxModel(2, '全員参照不可'),
+                new BoxModel(3, 'ロール毎に設定')
             ]);
             self.selectedId = ko.observable(1);
             self.enable = ko.observable(true);
@@ -272,16 +234,16 @@ module cmm013.f.viewmodel {
         constructor() {
             var self = this;
             self.itemList = ko.observableArray([
-                new BoxModel(1, '陝�ｽｾ髮趣ｽ｡陞溘�ｻ),
-                new BoxModel(2, '騾ｵ邇厄ｽｭ�ｽｷ陝ｶ�ｽｫ'),
-                new BoxModel(3, '雋�荵滓★髫ｴ�ｽｷ陝ｶ�ｽｫ'),
-                new BoxModel(4, '騾ｵ邇厄ｽｭ�ｽｷ髯ｬ諛ｷ蜍ｧ陝ｶ�ｽｫ')
+                new BoxModel(1, '対象外'),
+                new BoxModel(2, '看護師'),
+                new BoxModel(3, '準看護師'),
+                new BoxModel(4, '看護補助師')
             ]);
             self.selectedId = ko.observable(1);
             self.enable = ko.observable(true);
         }
     }
-    class BoxModel {
+   export class BoxModel {
         id: number;
         name: string;
         constructor(id, name) {
@@ -291,47 +253,8 @@ module cmm013.f.viewmodel {
         }
     }
 
-    class TextEditor {
-        texteditor: any;
-        constructor() {
-            var self = this;
-            self.texteditor = {
-                value: ko.observable(''),
-                constraint: 'ResidenceCode',
-                option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                    textmode: "text",
-                    placeholder: "B0005",
-                    width: "40px",
-                    textalign: "center"
-                })),
-                required: ko.observable(true),
-                enable: ko.observable(false),
-                readonly: ko.observable(false)
-            };
-        }
-    }
 
-    class TextEditor_2 {
-        texteditor: any;
-        constructor() {
-            var self = this;
-            self.texteditor = {
-                value: ko.observable(''),
-                constraint: 'ResidenceCode',
-                option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                    textmode: "text",
-                    placeholder: "郢昶�墅慕ｹ晢ｽｳ邵ｲﾂ�郢昴�ｻ縺�邵ｲﾂ�郢晏ｸ吶＞",
-                    width: "150px",
-                    textalign: "left"
-                })),
-                required: ko.observable(true),
-                enable: ko.observable(true),
-                readonly: ko.observable(false)
-            };
-        }
-    }
-
-    class TextEditor_3 {
+   export class TextEditor_3 {
         texteditor: any;
         constructor() {
             var self = this;
@@ -351,31 +274,52 @@ module cmm013.f.viewmodel {
         }
     }
 
-    class SwitchButton {
+    export class SwitchButton {
         roundingRules: KnockoutObservableArray<any>;
         selectedRuleCode: any;
 
         constructor() {
             var self = this;
             self.roundingRules = ko.observableArray([
-                { code: '1', name: '陷ｿ�ｽｯ髢ｭ�ｽｽ' },
-                { code: '2', name: '闕ｳ讎雁ｺ�' },
+                { code: '1', name: '可能' },
+                { code: '2', name: '不可' },
             ]);
             self.selectedRuleCode = ko.observable(1);
         }
     }
 
     export module model {
+        
+       export class ListHistoryDto{
+           startDate: string;
+           endDate: string;
+           historyId: string;
+           constructor(startDate: string, endDate: string, historyId: string){
+               var self = this;
+               self.startDate = startDate;
+               self.endDate = endDate;
+               self.historyId = historyId;
+           }    
+       }
+        
        export class ListPositionDto {
-        jobCode: string;
-        jobName: string;
-           memo: string;
-        constructor(code: string, name: string, memo: string) {
-            var self = this;
-            self.jobCode = code;
-            self.jobName = name;
-            self.memo = memo;
+            jobCode: string;
+            jobName: string;
+            memo: string;
+            constructor(code: string, name: string, memo: string) {
+                var self = this;
+                self.jobCode = code;
+                self.jobName = name;
+                self.memo = memo;
+            }
         }
-    }
+        
+        export class DeletePositionCommand {
+            jobCode: string;
+            constructor(jobCode: string) {
+                this.jobCode = jobCode;
+            }
+
+        }
     }
 }

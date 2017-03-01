@@ -7,212 +7,247 @@ var cmm013;
             var ScreenModel = (function () {
                 function ScreenModel() {
                     var self = this;
-                    self.lst_001 = ko.observableArray([]);
-                    self.filteredData = ko.observableArray([]);
-                    self.singleSelectedCode = ko.observable(null);
-                    self.selectedCodes = ko.observableArray([]);
-                    self.currentEra = ko.observable();
-                    self.nodeParent = ko.observable(null);
-                    self.lst_002 = ko.observableArray([]);
-                    self.isCreated = ko.observable(false);
-                    self.A_INP_005 = {
-                        value: ko.observable(''),
-                        constraint: 'BankBranchNameKana',
-                        option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                            textmode: "text",
-                            placeholder: "",
-                            width: "180px",
-                            textalign: "left"
-                        })),
-                        required: ko.observable(true),
-                        enable: ko.observable(),
-                        readonly: ko.observable(false)
-                    };
-                    self.A_INP_002 = {
-                        value: ko.observable(''),
-                        constraint: 'ResidenceCode',
-                        option: ko.mapping.fromJS(new nts.uk.ui.option.MultilineEditorOption({
-                            resizeable: true,
-                            placeholder: "",
-                            width: "250px",
-                            textalign: "left"
-                        })),
-                        required: ko.observable(true),
-                        enable: ko.observable(false),
-                        readonly: ko.observable(false)
-                    };
-                    self.A_INP_006 = {
-                        value: ko.observable(''),
-                        constraint: 'Memo',
-                        option: ko.mapping.fromJS(new nts.uk.ui.option.MultilineEditorOption({
-                            resizeable: true,
-                            placeholder: "",
-                            width: "400px",
-                            textalign: "left"
-                        })),
-                        required: ko.observable(true),
-                        enable: ko.observable(true),
-                        readonly: ko.observable(false)
-                    };
-                    self.currentEra = ko.observable(''),
-                        self.singleSelectedCode.subscribe(function (codeChanged) {
-                            var x = self.getEra(codeChanged, undefined);
-                            if (x.parentCode !== null) {
-                                self.currentEra(x);
-                                self.nodeParent(self.getEra(codeChanged, x.parentCode));
-                            }
-                            else {
-                                self.nodeParent(x);
-                                self.currentEra(new BankInfo());
-                            }
-                            self.A_INP_003.value(self.currentEra().code);
-                            self.A_INP_004.value(self.currentEra().name);
-                            self.A_INP_005.value(self.currentEra().nameKata);
-                            self.A_INP_006.value(self.currentEra().memo);
-                            self.A_INP_003.enable(false);
-                            self.isCreated(false);
-                        });
-                    self.A_INP_003 = {
-                        value: ko.observable(''),
-                        constraint: 'BankBranchCode',
-                        option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                            textmode: "text",
-                            placeholder: "",
-                            width: "45px",
-                            textalign: "left"
-                        })),
-                        required: ko.observable(false),
-                        enable: ko.observable(false),
-                        readonly: ko.observable(false)
-                    };
-                    self.A_INP_004 = {
-                        value: ko.observable(''),
-                        constraint: 'BankBranchName',
-                        option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                            textmode: "text",
-                            placeholder: "",
-                            width: "180px",
-                            textalign: "left"
-                        })),
-                        required: ko.observable(true),
-                        enable: ko.observable(true),
-                        readonly: ko.observable(false)
-                    };
+                    self.label_002 = ko.observable(new Labels());
+                    self.label_003 = ko.observable(new Labels());
+                    self.label_004 = ko.observable(new Labels());
+                    self.label_005 = ko.observable(new Labels());
+                    self.label_006 = ko.observable(new Labels());
+                    self.radiobox = ko.observable(new RadioBox());
+                    self.radiobox_2 = ko.observable(new RadioBox2());
+                    self.inp_002 = ko.observable(null);
+                    self.inp_002_enable = ko.observable(false);
+                    self.inp_003 = ko.observable(null);
+                    self.inp_004 = ko.observable(new TextEditor_3());
+                    self.inp_005 = ko.observable(null);
+                    self.sel_0021 = ko.observable(new SwitchButton);
+                    self.sel_0022 = ko.observable(new SwitchButton);
+                    self.sel_0023 = ko.observable(new SwitchButton);
+                    self.sel_0024 = ko.observable(new SwitchButton);
+                    self.test = ko.observable('2');
+                    //lst_001
+                    self.listbox = ko.observableArray([]);
+                    self.selectedCode = ko.observable(null);
+                    self.isEnable = ko.observable(true);
+                    self.itemHist = ko.observable(null);
+                    self.itemName = ko.observable('');
+                    self.index_selected = ko.observable('');
+                    //lst_002
+                    self.dataSource = ko.observableArray([]);
+                    self.currentItem = ko.observable(null);
+                    self.itemName = ko.observable('');
+                    self.currentCode = ko.observable();
+                    //self.multilineeditor = ko.observable(null);           
+                    self.currentCodeList = ko.observableArray([]);
+                    self.columns = ko.observableArray([
+                        { headerText: 'コード', key: 'jobCode', width: 80 },
+                        { headerText: '名称', key: 'jobName', width: 100 }
+                    ]);
+                    self.selectedCode.subscribe((function (codeChanged) {
+                        self.itemHist(self.findHist(codeChanged));
+                        if (self.itemHist() != null) {
+                            self.index_selected(self.itemHist().historyId);
+                            console.log(self.index_selected());
+                            //get position
+                            var dfd = $.Deferred();
+                            test.service.findAllPosition(self.index_selected())
+                                .done(function (position_arr) {
+                                self.dataSource(position_arr);
+                                self.currentCode(self.dataSource()[0].jobCode);
+                                self.inp_002(self.dataSource()[0].jobCode);
+                                self.inp_003(self.dataSource()[0].jobName);
+                                self.inp_005(self.dataSource()[0].memo);
+                            }).fail(function (error) {
+                                alert(error.message);
+                            });
+                            dfd.resolve();
+                            return dfd.promise();
+                        }
+                    }));
+                    //inp_x
+                    self.currentCode.subscribe((function (codeChanged) {
+                        self.currentItem(self.findPosition(codeChanged));
+                        if (self.currentItem() != null) {
+                            self.inp_002(self.currentItem().jobCode);
+                            self.inp_003(self.currentItem().jobName);
+                            self.inp_005(self.currentItem().memo);
+                        }
+                    }));
                 }
-                ScreenModel.prototype.startPage = function () {
+                //        find history need to show position
+                ScreenModel.prototype.findHist = function (value) {
                     var self = this;
-                    $.when(self.getBankList()).done(function () {
-                        self.singleSelectedCode(self.lst_001()[0].code);
+                    var itemModel = null;
+                    _.find(self.listbox(), function (obj) {
+                        if (obj.startDate == value) {
+                            itemModel = obj;
+                        }
                     });
+                    return itemModel;
                 };
-                ScreenModel.prototype.OpenBdialog = function () {
+                //        find position need to show detail
+                ScreenModel.prototype.findPosition = function (value) {
                     var self = this;
-                    nts.uk.ui.windows.sub.modal("/view/qmm/002/b/index.xhtml", { title: "銀行の登録　＞　一括削除" });
-                    nts.uk.ui.windows.setShared('listItem', self.lst_001);
+                    var itemModel = null;
+                    _.find(self.dataSource(), function (obj) {
+                        if (obj.jobCode == value) {
+                            itemModel = obj;
+                        }
+                    });
+                    return itemModel;
                 };
-                ScreenModel.prototype.OpenCdialog = function () {
-                    nts.uk.ui.windows.sub.modal("/view/qmm/002/c/index.xhtml", { title: "銀行の登録　＞　銀行の統合" });
-                };
-                ScreenModel.prototype.OpenDdialog = function () {
-                    nts.uk.ui.windows.sub.modal("/view/qmm/002/d/index.xhtml", { title: "銀行の登録　＞　銀行の追加" });
-                };
-                ScreenModel.prototype.addBranch = function () {
+                ScreenModel.prototype.getPositionList = function () {
                     var self = this;
-                    var branchInfo = {
-                        bankCode: self.nodeParent().code,
-                        branchCode: self.A_INP_003.value(),
-                        branchName: self.A_INP_004.value(),
-                        branchKnName: self.A_INP_005.value(),
-                        memo: self.A_INP_006.value()
-                    };
                     var dfd = $.Deferred();
-                    viewmodel.service.addBank(self.isCreated(), branchInfo).done(function () {
-                        // reload tree
-                        self.getBankList();
+                    test.service.findAllPosition(self.index_selected()).done(function (position_arr) {
+                        self.dataSource(position_arr);
+                        self.inp_002(self.dataSource()[0].jobCode);
+                        self.inp_003(self.dataSource()[0].jobName);
+                        self.inp_005(self.dataSource()[0].memo);
+                        if (self.dataSource().length > 1) {
+                            self.currentCode(self.dataSource()[0].jobCode);
+                        }
+                        dfd.resolve();
                     }).fail(function (error) {
                         alert(error.message);
                     });
-                };
-                ScreenModel.prototype.getEra = function (codeNew, parentId) {
-                    var self = this;
-                    self.lst_002(nts.uk.util.flatArray(self.lst_001(), "childs"));
-                    var node = _.find(self.lst_002(), function (item) {
-                        return item.code == codeNew;
-                    });
-                    if (parentId !== undefined) {
-                        node = _.find(self.lst_002(), function (item) {
-                            return item.code == node.parentCode;
-                        });
-                    }
-                    return node;
-                };
-                //            deleteItem() {
-                //                var self = this;
-                //                debugger
-                //                self.lst_001.remove(self.currentEra());
-                //                var i = self.nodeParent().childs.indexOf(self.currentEra());
-                //                if (i != -1) {
-                //                    self.nodeParent().childs.splice(i, 1);
-                //                    var tempNodeParent = self.nodeParent();
-                //                    var tempLst001 = self.lst_001();
-                //                    self.nodeParent(tempNodeParent);
-                //        self.lst_001(tempLst001)
-                //                }
-                //                console.log(self.lst_001());
-                //            }
-                ScreenModel.prototype.getBankList = function () {
-                    var self = this;
-                    var dfd = $.Deferred();
-                    viewmodel.service.getBankList().done(function (data) {
-                        var list001 = [];
-                        _.forEach(data, function (itemBank) {
-                            var childs = _.map(itemBank.bankBranch, function (item) {
-                                return new BankInfo(item["bankBrandCode"], item["bankBrandName"], item["bankBrandNameKana"], item["memo"], null, itemBank.bankCode);
-                            });
-                            list001.push(new BankInfo(itemBank.bankCode, itemBank.bankName, itemBank.bankNameKana, itemBank.memo, childs, null));
-                        });
-                        self.lst_001(list001);
-                        dfd.resolve(list001);
-                    }).fail(function (res) {
-                        // error
-                    });
+                    dfd.resolve();
                     return dfd.promise();
                 };
-                ScreenModel.prototype.cleanBranch = function () {
+                ScreenModel.prototype.startPage = function () {
                     var self = this;
-                    self.A_INP_003.value('');
-                    self.A_INP_004.value('');
-                    self.A_INP_005.value('');
-                    self.A_INP_003.enable(true);
-                    self.isCreated(true);
+                    // Page load dfd.
+                    var dfd = $.Deferred();
+                    // get all history.     
+                    test.service.getAllHistory().done(function (history_arr) {
+                        self.listbox(history_arr);
+                        self.selectedCode = ko.observable(self.listbox()[0].historyId);
+                    }).fail(function (error) {
+                        alert(error.message);
+                    });
+                    dfd.resolve();
+                    return dfd.promise();
+                };
+                ScreenModel.prototype.openBDialog = function () {
+                    nts.uk.ui.windows.sub.modal('/view/cmm/013/b/index.xhtml', { title: '画面ID：B', });
+                };
+                ScreenModel.prototype.openCDialog = function () {
+                    nts.uk.ui.windows.sub.modal('/view/cmm/013/c/index.xhtml', { title: '画面ID：c', });
+                };
+                ScreenModel.prototype.openDDialog = function () {
+                    nts.uk.ui.windows.sub.modal('/view/cmm/013/d/index.xhtml', { title: '画面ID：D', });
                 };
                 return ScreenModel;
             }());
             viewmodel.ScreenModel = ScreenModel;
-            var BankInfo = (function () {
-                function BankInfo(code, name, nameKata, memo, childs, parentCode) {
+            var Labels = (function () {
+                function Labels() {
+                    this.constraint = 'LayoutCode';
                     var self = this;
-                    self.code = code;
-                    self.name = name;
-                    self.nameKata = nameKata;
-                    self.memo = memo;
-                    self.childs = childs;
-                    self.parentCode = parentCode;
+                    self.inline = ko.observable(true);
+                    self.required = ko.observable(true);
+                    self.enable = ko.observable(true);
                 }
-                return BankInfo;
+                return Labels;
             }());
-            viewmodel.BankInfo = BankInfo;
-            var Node = (function () {
-                function Node(code, name, childs) {
+            viewmodel.Labels = Labels;
+            var RadioBox = (function () {
+                function RadioBox() {
                     var self = this;
-                    self.code = code;
-                    self.name = name;
-                    self.nodeText = self.code + ' ' + self.name;
-                    self.childs = childs;
+                    self.itemList = ko.observableArray([
+                        new BoxModel(1, '全員参照可能'),
+                        new BoxModel(2, '全員参照不可'),
+                        new BoxModel(3, 'ロール毎に設定')
+                    ]);
+                    self.selectedId = ko.observable(1);
+                    self.enable = ko.observable(true);
                 }
-                return Node;
+                return RadioBox;
             }());
-            viewmodel.Node = Node;
+            var RadioBox2 = (function () {
+                function RadioBox2() {
+                    var self = this;
+                    self.itemList = ko.observableArray([
+                        new BoxModel(1, '対象外'),
+                        new BoxModel(2, '看護師'),
+                        new BoxModel(3, '準看護師'),
+                        new BoxModel(4, '看護補助師')
+                    ]);
+                    self.selectedId = ko.observable(1);
+                    self.enable = ko.observable(true);
+                }
+                return RadioBox2;
+            }());
+            var BoxModel = (function () {
+                function BoxModel(id, name) {
+                    var self = this;
+                    self.id = id;
+                    self.name = name;
+                }
+                return BoxModel;
+            }());
+            viewmodel.BoxModel = BoxModel;
+            var TextEditor_3 = (function () {
+                function TextEditor_3() {
+                    var self = this;
+                    self.texteditor = {
+                        value: ko.observable(''),
+                        constraint: 'ResidenceCode',
+                        option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
+                            textmode: "text",
+                            placeholder: "1",
+                            width: "10px",
+                            textalign: "center"
+                        })),
+                        required: ko.observable(true),
+                        enable: ko.observable(false),
+                        readonly: ko.observable(false)
+                    };
+                }
+                return TextEditor_3;
+            }());
+            viewmodel.TextEditor_3 = TextEditor_3;
+            var SwitchButton = (function () {
+                function SwitchButton() {
+                    var self = this;
+                    self.roundingRules = ko.observableArray([
+                        { code: '1', name: '可能' },
+                        { code: '2', name: '不可' },
+                    ]);
+                    self.selectedRuleCode = ko.observable(1);
+                }
+                return SwitchButton;
+            }());
+            viewmodel.SwitchButton = SwitchButton;
+            var model;
+            (function (model) {
+                var ListHistoryDto = (function () {
+                    function ListHistoryDto(startDate, endDate, historyId) {
+                        var self = this;
+                        self.startDate = startDate;
+                        self.endDate = endDate;
+                        self.historyId = historyId;
+                    }
+                    return ListHistoryDto;
+                }());
+                model.ListHistoryDto = ListHistoryDto;
+                var ListPositionDto = (function () {
+                    function ListPositionDto(code, name, memo) {
+                        var self = this;
+                        self.jobCode = code;
+                        self.jobName = name;
+                        self.memo = memo;
+                    }
+                    return ListPositionDto;
+                }());
+                model.ListPositionDto = ListPositionDto;
+                var DeletePositionCommand = (function () {
+                    function DeletePositionCommand(jobCode) {
+                        this.jobCode = jobCode;
+                    }
+                    return DeletePositionCommand;
+                }());
+                model.DeletePositionCommand = DeletePositionCommand;
+            })(model = viewmodel.model || (viewmodel.model = {}));
         })(viewmodel = test.viewmodel || (test.viewmodel = {}));
     })(test = cmm013.test || (cmm013.test = {}));
 })(cmm013 || (cmm013 = {}));
