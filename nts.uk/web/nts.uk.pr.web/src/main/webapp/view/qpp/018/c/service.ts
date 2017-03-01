@@ -33,6 +33,8 @@ module nts.uk.pr.view.qpp018.c {
             return dfd.promise();
         }
         export module model {
+            
+            
             export class CheckListPrintSettingDto {
                 showCategoryInsuranceItem: boolean;
                 showDeliveryNoticeAmount: boolean;

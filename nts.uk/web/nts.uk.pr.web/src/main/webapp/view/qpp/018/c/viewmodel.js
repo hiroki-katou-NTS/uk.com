@@ -10,7 +10,6 @@ var nts;
                 (function (qpp018) {
                     var c;
                     (function (c) {
-                        var CheckListPrintSettingDto = c.service.model.CheckListPrintSettingDto;
                         var viewmodel;
                         (function (viewmodel) {
                             var ScreenModel = (function () {
@@ -51,8 +50,7 @@ var nts;
                                 ScreenModel.prototype.start = function () {
                                     var dfd = $.Deferred();
                                     var self = this;
-                                    console.log("YES");
-                                    $.when(self.loadAllCheckListPrintSetting()).done(function () {
+                                    self.loadAllCheckListPrintSetting().done(function (data) {
                                         dfd.resolve(self);
                                     });
                                     return dfd.promise();
@@ -62,6 +60,7 @@ var nts;
                                     var self = this;
                                     c.service.findCheckListPrintSetting().done(function (data) {
                                         self.checkListPrintSettingModel().setData(data);
+                                        dfd.resolve();
                                     }).fail(function (res) {
                                         nts.uk.ui.dialog.alert(res.message);
                                         dfd.reject();
@@ -103,7 +102,7 @@ var nts;
                                 };
                                 CheckListPrintSettingModel.prototype.toDto = function () {
                                     var checkListPrintSettingDto;
-                                    checkListPrintSettingDto = new CheckListPrintSettingDto();
+                                    checkListPrintSettingDto = new c.service.model.CheckListPrintSettingDto();
                                     checkListPrintSettingDto.showCategoryInsuranceItem = this.showCategoryInsuranceItem();
                                     checkListPrintSettingDto.showDeliveryNoticeAmount = this.showDeliveryNoticeAmount();
                                     checkListPrintSettingDto.showDetail = this.showDetail();

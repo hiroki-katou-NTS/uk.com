@@ -11,7 +11,7 @@ var nts;
                     var c;
                     (function (c) {
                         __viewContext.ready(function () {
-                            var screenModel = new nts.uk.pr.view.qpp018.c.viewmodel.ScreenModel();
+                            var screenModel = new c.viewmodel.ScreenModel();
                             screenModel.start().done(function (data) {
                                 __viewContext.bind(data);
                             });

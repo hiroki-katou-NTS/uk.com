@@ -33,7 +33,6 @@ var cmm008;
                         })),
                         required: ko.observable(true),
                     };
-                    //list data click
                 }
                 ScreenModel.prototype.start = function () {
                     var self = this;
@@ -100,7 +99,6 @@ var cmm008;
                     this.currentCode = ko.observable();
                     self.singleSelectedCode = ko.observable(null);
                 };
-                //登録ボタンを押す
                 ScreenModel.prototype.createEmployment = function () {
                     var self = this;
                     if (self.isEnable) {
