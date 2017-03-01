@@ -369,12 +369,18 @@ var nts;
                 self.c_sel_007 = ko.observable(new ComboBox(c_sel_007, true, false));
                 self.c_sel_008 = ko.observable(new ComboBox(c_sel_008, true, false));
                 self.selectedTabCSel006 = ko.observable('tab-1');
+                self.easyFormulaName = ko.observable('');
             }
             CScreen.prototype.undo = function () {
                 document.execCommand("undo", false, null);
             };
             CScreen.prototype.redo = function () {
                 document.execCommand("redo", false, null);
+            };
+            CScreen.prototype.openDialogQ = function () {
+                var param = {};
+                nts.uk.ui.windows.setShared('paramFromScreenC', param);
+                nts.uk.ui.windows.sub.modal('/view/qmm/017/l/index.xhtml', { title: 'かんたん計算式の登録', width: 650, height: 700 }).onClosed(function () { });
             };
             return CScreen;
         }());

@@ -53,3 +53,5 @@
 .contain-abc .row{margin-bottom: 10px;}
 .contain-abc .left-col{float:left; width:120px; min-height:1px;}
 .contain-abc .right-col{float:left; width: calc(100% - 120px); min-height:1px;}
+
+.ui-igcombo-wrapper {vertical-align: middle;}

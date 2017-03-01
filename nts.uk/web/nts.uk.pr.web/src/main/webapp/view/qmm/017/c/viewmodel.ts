@@ -335,12 +335,13 @@ module nts.qmm017 {
         selectedRuleCodeEasySettings: KnockoutObservable<any>;
         selectedRuleCode: KnockoutObservable<any>;
         selectedRuleCode2: KnockoutObservable<any>;
-        
+
         c_inp_003: KnockoutObservable<TextEditor>;
         c_sel_006: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel>;
         c_sel_007: KnockoutObservable<ComboBox>;
         c_sel_008: KnockoutObservable<ComboBox>;
         selectedTabCSel006: KnockoutObservable<string>;
+        easyFormulaName: KnockoutObservable<string>;
 
         constructor(data) {
             var self = this;
@@ -392,7 +393,7 @@ module nts.qmm017 {
                 { code: 9, name: '七捨八入' },
                 { code: 10, name: '八捨九入' },
             ];
-            
+
             self.c_inp_003 = ko.observable(new TextEditor());
             self.c_sel_001 = ko.observable(new ComboBox(c_sel_001, true, false));
             self.c_sel_006 = ko.observableArray([
@@ -401,11 +402,12 @@ module nts.qmm017 {
                 { id: 'tab-3', title: 'システム変数', content: '.tab-content-3', enable: ko.observable(true), visible: ko.observable(true) },
                 { id: 'tab-4', title: '個人情報', content: '.tab-content-4', enable: ko.observable(true), visible: ko.observable(true) },
                 { id: 'tab-5', title: '計算式', content: '.tab-content-5', enable: ko.observable(true), visible: ko.observable(true) },
-                { id: 'tab-6', title: '賃金テーブル', content: '.tab-content-6', style:'margin-left: 50px;', enable: ko.observable(true), visible: ko.observable(true) }
+                { id: 'tab-6', title: '賃金テーブル', content: '.tab-content-6', style: 'margin-left: 50px;', enable: ko.observable(true), visible: ko.observable(true) }
             ]);
             self.c_sel_007 = ko.observable(new ComboBox(c_sel_007, true, false));
             self.c_sel_008 = ko.observable(new ComboBox(c_sel_008, true, false));
             self.selectedTabCSel006 = ko.observable('tab-1');
+            self.easyFormulaName = ko.observable('');
         }
 
         undo() {
@@ -414,6 +416,12 @@ module nts.qmm017 {
 
         redo() {
             document.execCommand("redo", false, null);
+        }
+
+        openDialogQ() {
+            let param = {}
+            nts.uk.ui.windows.setShared('paramFromScreenC', param);
+            nts.uk.ui.windows.sub.modal('/view/qmm/017/l/index.xhtml', { title: 'かんたん計算式の登録', width: 650, height: 700 }).onClosed(() => { });
         }
     }
 }
