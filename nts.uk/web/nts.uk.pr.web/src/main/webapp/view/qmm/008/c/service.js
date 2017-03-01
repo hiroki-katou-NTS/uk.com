@@ -40,6 +40,11 @@ var nts;
                                 return nts.uk.request.ajax(servicePath.removeOffice, data);
                             }
                             service.remove = remove;
+                            function saveHistory(officeCode) {
+                                var data = { insuranceOfficeCode: officeCode };
+                                return nts.uk.request.ajax(servicePath.removeOffice, data);
+                            }
+                            service.saveHistory = saveHistory;
                             var model;
                             (function (model) {
                                 var finder;
@@ -58,7 +63,7 @@ var nts;
                                             this.shortName = shortName;
                                             this.picName = picName;
                                             this.picPosition = picPosition;
-                                            this, potalCode = potalCode;
+                                            this.potalCode = potalCode;
                                             this.prefecture = prefecture;
                                             this.address1st = address1st;
                                             this.address2nd = address2nd;
@@ -77,6 +82,7 @@ var nts;
                                             this.pensionOfficeSign = pensionOfficeSign;
                                             this.healthInsuOfficeCode = healthInsuOfficeCode;
                                             this.healthInsuAssoCode = healthInsuAssoCode;
+                                            this.memo = memo;
                                         }
                                         return OfficeItemDto;
                                     }());

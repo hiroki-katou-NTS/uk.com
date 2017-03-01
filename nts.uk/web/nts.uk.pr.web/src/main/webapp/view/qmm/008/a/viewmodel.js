@@ -46,9 +46,13 @@ var nts;
                                         currencyformat: "JPY",
                                         currencyposition: 'right'
                                     }));
-                                    self.numberInputOptions = ko.mapping.fromJS(new nts.uk.ui.option.NumberEditorOption({
+                                    self.Rate2 = ko.mapping.fromJS(new nts.uk.ui.option.NumberEditorOption({
                                         grouplength: 3,
                                         decimallength: 2
+                                    }));
+                                    self.Rate3 = ko.mapping.fromJS(new nts.uk.ui.option.NumberEditorOption({
+                                        grouplength: 3,
+                                        decimallength: 3
                                     }));
                                     self.healthAutoCalculateOptions = ko.observableArray([
                                         { code: '0', name: 'する' },
@@ -111,11 +115,11 @@ var nts;
                                         }
                                     });
                                     self.pensionModel().fundInputApply.subscribe(function (pensionFundInputOptions) {
-                                        if (self.fundInputEnable()) {
-                                            self.fundInputEnable(false);
+                                        if (self.pensionModel().fundInputApply() != 1) {
+                                            self.fundInputEnable(true);
                                         }
                                         else {
-                                            self.fundInputEnable(true);
+                                            self.fundInputEnable(false);
                                         }
                                     });
                                 }
@@ -296,36 +300,87 @@ var nts;
                                         self.pensionModel().historyId = data.historyId;
                                         self.pensionModel().companyCode = data.companyCode;
                                         self.pensionModel().officeCode(data.officeCode);
-                                        self.pensionModel().startMonth(data.startMonth.toString());
-                                        self.pensionModel().endMonth(data.endMonth.toString());
-                                        if (data.autoCalculate)
-                                            self.pensionModel().autoCalculate(1);
-                                        else
-                                            self.pensionModel().autoCalculate(2);
-                                        if (data.fundInputApply)
-                                            self.pensionModel().fundInputApply(1);
-                                        else
-                                            self.pensionModel().fundInputApply(2);
-                                        self.pensionModel().rateItems().pensionSalaryPersonalSon(data.premiumRateItems[0].companyRate);
-                                        self.pensionModel().rateItems().pensionSalaryCompanySon(data.premiumRateItems[0].companyRate);
-                                        self.pensionModel().rateItems().pensionBonusPersonalSon(data.premiumRateItems[0].companyRate);
-                                        self.pensionModel().rateItems().pensionBonusCompanySon(data.premiumRateItems[0].companyRate);
-                                        self.pensionModel().rateItems().pensionSalaryPersonalDaughter(data.premiumRateItems[0].companyRate);
-                                        self.pensionModel().rateItems().pensionSalaryCompanyDaughter(data.premiumRateItems[0].companyRate);
-                                        self.pensionModel().rateItems().pensionBonusPersonalDaughter(data.premiumRateItems[0].companyRate);
-                                        self.pensionModel().rateItems().pensionBonusCompanyDaughter(data.premiumRateItems[0].companyRate);
-                                        self.pensionModel().rateItems().pensionSalaryPersonalUnknown(data.premiumRateItems[0].companyRate);
-                                        self.pensionModel().rateItems().pensionSalaryCompanyUnknown(data.premiumRateItems[0].companyRate);
-                                        self.pensionModel().rateItems().pensionBonusPersonalUnknown(data.premiumRateItems[0].companyRate);
-                                        self.pensionModel().rateItems().pensionBonusCompanyUnknown(data.premiumRateItems[0].companyRate);
-                                        self.pensionModel().fundRateItems().salaryPersonalSonExemption(data.fundRateItems[0].burdenChargeCompanyRate);
-                                        self.pensionModel().fundRateItems().salaryCompanySonExemption(data.fundRateItems[0].burdenChargeCompanyRate);
-                                        self.pensionModel().fundRateItems().bonusPersonalSonExemption(data.fundRateItems[0].burdenChargeCompanyRate);
-                                        self.pensionModel().fundRateItems().bonusCompanySonExemption(data.fundRateItems[0].burdenChargeCompanyRate);
+                                        self.pensionModel().startMonth(data.startMonth.substring(0, 4) + "/" + data.startMonth.substring(4, data.startMonth.length));
+                                        self.pensionModel().endMonth(data.endMonth.substring(0, 4) + "/" + data.endMonth.substring(4, data.endMonth.length));
+                                        self.pensionModel().autoCalculate(data.autoCalculate);
+                                        data.premiumRateItems.forEach(function (item, index) {
+                                            if (item.payType == PaymentType.SALARY && item.genderType == InsuranceGender.MALE) {
+                                                self.pensionModel().rateItems().pensionSalaryPersonalSon(item.personalRate);
+                                                self.pensionModel().rateItems().pensionSalaryCompanySon(item.companyRate);
+                                            }
+                                            if (item.payType == PaymentType.BONUS && item.genderType == InsuranceGender.MALE) {
+                                                self.pensionModel().rateItems().pensionBonusPersonalSon(item.personalRate);
+                                                self.pensionModel().rateItems().pensionBonusCompanySon(item.companyRate);
+                                            }
+                                            if (item.payType == PaymentType.SALARY && item.genderType == InsuranceGender.FEMALE) {
+                                                self.pensionModel().rateItems().pensionSalaryPersonalDaughter(item.personalRate);
+                                                self.pensionModel().rateItems().pensionSalaryCompanyDaughter(item.companyRate);
+                                            }
+                                            if (item.payType == PaymentType.BONUS && item.genderType == InsuranceGender.FEMALE) {
+                                                self.pensionModel().rateItems().pensionBonusPersonalDaughter(item.personalRate);
+                                                self.pensionModel().rateItems().pensionBonusCompanyDaughter(item.companyRate);
+                                            }
+                                            if (item.payType == PaymentType.SALARY && item.genderType == InsuranceGender.UNKNOW) {
+                                                self.pensionModel().rateItems().pensionSalaryPersonalUnknown(item.personalRate);
+                                                self.pensionModel().rateItems().pensionSalaryCompanyUnknown(item.companyRate);
+                                            }
+                                            if (item.payType == PaymentType.BONUS && item.genderType == InsuranceGender.UNKNOW) {
+                                                self.pensionModel().rateItems().pensionBonusPersonalUnknown(item.personalRate);
+                                                self.pensionModel().rateItems().pensionBonusCompanyUnknown(item.companyRate);
+                                            }
+                                        });
+                                        data.fundRateItems.forEach(function (item, index) {
+                                            if (item.payType == PaymentType.SALARY && item.genderType == InsuranceGender.MALE) {
+                                                self.pensionModel().fundRateItems().salaryPersonalSonBurden(item.burdenChargePersonalRate);
+                                                self.pensionModel().fundRateItems().salaryCompanySonBurden(item.burdenChargeCompanyRate);
+                                                self.pensionModel().fundRateItems().salaryPersonalSonExemption(item.exemptionChargePersonalRate);
+                                                self.pensionModel().fundRateItems().salaryCompanySonExemption(item.exemptionChargeCompanyRate);
+                                            }
+                                            if (item.payType == PaymentType.BONUS && item.genderType == InsuranceGender.MALE) {
+                                                self.pensionModel().fundRateItems().bonusPersonalSonBurden(item.burdenChargePersonalRate);
+                                                self.pensionModel().fundRateItems().bonusCompanySonBurden(item.burdenChargeCompanyRate);
+                                                self.pensionModel().fundRateItems().bonusPersonalSonExemption(item.exemptionChargePersonalRate);
+                                                self.pensionModel().fundRateItems().bonusCompanySonExemption(item.exemptionChargeCompanyRate);
+                                            }
+                                            if (item.payType == PaymentType.SALARY && item.genderType == InsuranceGender.FEMALE) {
+                                                self.pensionModel().fundRateItems().salaryPersonalDaughterBurden(item.burdenChargePersonalRate);
+                                                self.pensionModel().fundRateItems().salaryCompanyDaughterBurden(item.burdenChargeCompanyRate);
+                                                self.pensionModel().fundRateItems().salaryPersonalDaughterExemption(item.exemptionChargePersonalRate);
+                                                self.pensionModel().fundRateItems().salaryCompanyDaughterExemption(item.exemptionChargeCompanyRate);
+                                            }
+                                            if (item.payType == PaymentType.BONUS && item.genderType == InsuranceGender.FEMALE) {
+                                                self.pensionModel().fundRateItems().bonusPersonalDaughterBurden(item.burdenChargePersonalRate);
+                                                self.pensionModel().fundRateItems().bonusCompanyDaughterBurden(item.burdenChargeCompanyRate);
+                                                self.pensionModel().fundRateItems().bonusPersonalDaughterExemption(item.exemptionChargePersonalRate);
+                                                self.pensionModel().fundRateItems().bonusCompanyDaughterExemption(item.exemptionChargeCompanyRate);
+                                            }
+                                            if (item.payType == PaymentType.SALARY && item.genderType == InsuranceGender.UNKNOW) {
+                                                self.pensionModel().fundRateItems().salaryPersonalUnknownBurden(item.burdenChargePersonalRate);
+                                                self.pensionModel().fundRateItems().salaryCompanyUnknownBurden(item.burdenChargeCompanyRate);
+                                                self.pensionModel().fundRateItems().salaryPersonalUnknownExemption(item.exemptionChargePersonalRate);
+                                                self.pensionModel().fundRateItems().salaryCompanyUnknownExemption(item.exemptionChargeCompanyRate);
+                                            }
+                                            if (item.payType == PaymentType.BONUS && item.genderType == InsuranceGender.UNKNOW) {
+                                                self.pensionModel().fundRateItems().bonusPersonalUnknownBurden(item.burdenChargePersonalRate);
+                                                self.pensionModel().fundRateItems().bonusCompanyUnknownBurden(item.burdenChargeCompanyRate);
+                                                self.pensionModel().fundRateItems().bonusPersonalUnknownExemption(item.exemptionChargePersonalRate);
+                                                self.pensionModel().fundRateItems().bonusCompanyUnknownExemption(item.exemptionChargeCompanyRate);
+                                            }
+                                        });
                                         self.pensionModel().roundingMethods().pensionSalaryPersonalComboBox(self.roundingList());
                                         self.pensionModel().roundingMethods().pensionSalaryCompanyComboBox(self.roundingList());
                                         self.pensionModel().roundingMethods().pensionBonusPersonalComboBox(self.roundingList());
                                         self.pensionModel().roundingMethods().pensionBonusCompanyComboBox(self.roundingList());
+                                        data.roundingMethods.forEach(function (item, index) {
+                                            if (item.payType == PaymentType.SALARY) {
+                                                self.pensionModel().roundingMethods().pensionSalaryPersonalComboBoxSelectedCode(self.convertRounding(item.roundAtrs.personalRoundAtr));
+                                                self.pensionModel().roundingMethods().pensionSalaryCompanyComboBoxSelectedCode(self.convertRounding(item.roundAtrs.companyRoundAtr));
+                                            }
+                                            else {
+                                                self.pensionModel().roundingMethods().pensionSalaryPersonalComboBoxSelectedCode(self.convertRounding(item.roundAtrs.personalRoundAtr));
+                                                self.pensionModel().roundingMethods().pensionBonusCompanyComboBoxSelectedCode(self.convertRounding(item.roundAtrs.companyRoundAtr));
+                                            }
+                                        });
                                         self.pensionModel().maxAmount(data.maxAmount);
                                         self.pensionModel().childContributionRate(data.childContributionRate);
                                         dfd.resolve();
@@ -410,6 +465,8 @@ var nts;
                                         self.healthInsuranceOfficeList([]);
                                         self.healthInsuranceOfficeList(currentHealthInsuranceOfficeList);
                                         self.healthOfficeSelectedCode(returnValue.childs[0].code);
+                                        self.healthModel().startMonth(returnValue.childs[0].codeName.substr(0, 7));
+                                        self.healthModel().endMonth(returnValue.childs[0].codeName.substr(9, returnValue.childs[0].codeName.length));
                                     }
                                     else {
                                         var currentPensionInsuranceOfficeList = self.pensionInsuranceOfficeList();
@@ -423,14 +480,20 @@ var nts;
                                         self.pensionInsuranceOfficeList([]);
                                         self.pensionInsuranceOfficeList(currentPensionInsuranceOfficeList);
                                         self.pensionOfficeSelectedCode(returnValue.childs[0].code);
+                                        self.pensionModel().startMonth(returnValue.childs[0].codeName.substr(0, 7));
+                                        self.pensionModel().endMonth(returnValue.childs[0].codeName.substr(9, returnValue.childs[0].codeName.length));
                                     }
                                 };
                                 ScreenModel.prototype.save = function () {
                                     var self = this;
-                                    a.service.registerHealthRate(self.healthCollectData()).done(function () {
-                                    });
-                                    a.service.registerPensionRate(self.pensionCollectData()).done(function () {
-                                    });
+                                    if ($('#healthInsuranceTabPanel').hasClass("active")) {
+                                        a.service.registerHealthRate(self.healthCollectData()).done(function () {
+                                        });
+                                    }
+                                    else {
+                                        a.service.registerPensionRate(self.pensionCollectData()).done(function () {
+                                        });
+                                    }
                                 };
                                 ScreenModel.prototype.OpenModalAddHistory = function () {
                                     var self = this;
@@ -440,15 +503,12 @@ var nts;
                                     else {
                                         var sendOfficeItem = self.getDataOfPensionSelectedOffice();
                                     }
-                                    var previousStartDate = "2016/04";
                                     nts.uk.ui.windows.setShared("sendOfficeParentValue", sendOfficeItem);
                                     nts.uk.ui.windows.setShared("isTransistReturnData", this.isTransistReturnData());
                                     nts.uk.ui.windows.sub.modal("/view/qmm/008/b/index.xhtml", { title: "会社保険事業所の登録＞履歴の追加" }).onClosed(function () {
                                         var returnValue = nts.uk.ui.windows.getShared("addHistoryChildValue");
                                         if (returnValue != null) {
                                             self.refreshOfficeList(returnValue);
-                                            self.healthModel().startMonth(returnValue.childs[0].codeName.substr(0, 7));
-                                            self.healthModel().endMonth(returnValue.childs[0].codeName.substr(9, returnValue.childs[0].codeName.length));
                                         }
                                     });
                                 };
