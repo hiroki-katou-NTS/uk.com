@@ -30,5 +30,9 @@ public interface FormulaMasterRepository {
 	 * @param companyCode
 	 * @return list of formulas in a company
 	 */
-	List<FormulaMaster> findByCompanyCode(String companyCode);
+	List<FormulaMaster> findAll(String companyCode);
+	
+	void add(FormulaMaster formulaMaster);
+	
+	void remove(FormulaMaster formulaMaster);
 }

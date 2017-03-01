@@ -14,18 +14,18 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name="QCFMT_FORMULA")
-public class QcfmtFormula implements Serializable{
+@Table(name="QCFMT_FORMULA_HIST")
+public class QcfmtFormulaHist implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
 	
 	@EmbeddedId
-    public QcfmtFormulaPK qcfmtFormulaPK;
+	public QcfmtFormulaHistPK qcfmtFormulaHistPK;
 	
-	@Column(name ="FORMULA_NAME")
-	public String formulaName;
+	@Column(name ="STR_YM")
+	public BigDecimal startDate;
 	
-	@Column(name ="DIFFICULTY_ATR")
-	public BigDecimal difficultyAtr;
-
+	@Column(name ="END_YM")
+	public BigDecimal endDate;
+	
 }

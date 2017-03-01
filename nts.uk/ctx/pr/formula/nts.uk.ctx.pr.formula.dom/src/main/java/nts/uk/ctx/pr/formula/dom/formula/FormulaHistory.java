@@ -4,16 +4,16 @@ import java.math.BigDecimal;
 import java.text.DecimalFormat;
 
 import lombok.Getter;
-import nts.arc.time.GeneralDate;
+import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.pr.formula.dom.primitive.CompanyCode;
 import nts.uk.ctx.pr.formula.dom.primitive.FormulaCode;
 import nts.uk.ctx.pr.formula.dom.primitive.HistoryId;
 
 @Getter
-public class FormulaHistory {
+public class FormulaHistory extends AggregateRoot{
 
-	private CompanyCode companyCode;
+	private String companyCode;
 
 	private FormulaCode formulaCode;
 
@@ -30,7 +30,7 @@ public class FormulaHistory {
 	 * @param startDate
 	 * @param endDate
 	 */
-	public FormulaHistory(CompanyCode companyCode, FormulaCode formulaCode, HistoryId historyId, YearMonth startDate,
+	public FormulaHistory(String companyCode, FormulaCode formulaCode, HistoryId historyId, YearMonth startDate,
 			YearMonth endDate) {
 		super();
 		this.companyCode = companyCode;
@@ -40,8 +40,8 @@ public class FormulaHistory {
 		this.endDate = endDate;
 	}
 	
-	public FormulaHistory createFromJavaType(String companyCode, String formulaCode, String historyId, int startDate, int endDate){
-		return new FormulaHistory(new CompanyCode(companyCode), new FormulaCode(formulaCode),
+	public static FormulaHistory createFromJavaType(String companyCode, String formulaCode, String historyId, int startDate, int endDate){
+		return new FormulaHistory(companyCode, new FormulaCode(formulaCode),
 				new HistoryId(historyId), new YearMonth(startDate), new YearMonth(endDate));
 	}
 	

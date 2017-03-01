@@ -36,7 +36,7 @@ import nts.uk.ctx.pr.formula.dom.primitive.WorkValue;
 @Getter
 public class FormulaEasyDetail extends DomainObject {
 
-	private CompanyCode companyCode;
+	private String companyCode;
 
 	private FormulaCode formulaCode;
 
@@ -89,7 +89,7 @@ public class FormulaEasyDetail extends DomainObject {
 	 * @param totalRounding
 	 * @param limitValue
 	 */
-	public FormulaEasyDetail(CompanyCode companyCode, FormulaCode formulaCode, HistoryId historyId,
+	public FormulaEasyDetail(String companyCode, FormulaCode formulaCode, HistoryId historyId,
 			EasyFormulaCode easyFormulaCode, EasyFormulaName easyFormulaName, EasyFormulaTypeAtr easyFormulaTypeAtr,
 			Money baseFixedAmount, BaseMoneyAtr baseAmountDevision, DivideValue baseFixedValue,
 			DivideValueSet baseValueDevision, PremiumRate premiumRate, RoundAtr roundProcessingDevision,
@@ -120,7 +120,7 @@ public class FormulaEasyDetail extends DomainObject {
 			int baseAmountDevision, BigDecimal baseFixedValue, int baseValueDevision, BigDecimal premiumRate,
 			int roundProcessingDevision, String coefficientDivision, BigDecimal coefficientFixedValue, int adjustmentDevision,
 			int totalRounding, int minValue, int maxValue){
-		return new FormulaEasyDetail(new CompanyCode(companyCode), new FormulaCode(formulaCode), new HistoryId(historyId),
+		return new FormulaEasyDetail(companyCode, new FormulaCode(formulaCode), new HistoryId(historyId),
 				new EasyFormulaCode(easyFormulaCode), new EasyFormulaName(easyFormulaName), EnumAdaptor.valueOf(easyFormulaTypeAtr, EasyFormulaTypeAtr.class)
 				, new Money(baseFixedAmount), EnumAdaptor.valueOf(baseAmountDevision, BaseMoneyAtr.class), new DivideValue(baseFixedValue)
 				, EnumAdaptor.valueOf(baseValueDevision, DivideValueSet.class), new PremiumRate(premiumRate), EnumAdaptor.valueOf(roundProcessingDevision, RoundAtr.class)

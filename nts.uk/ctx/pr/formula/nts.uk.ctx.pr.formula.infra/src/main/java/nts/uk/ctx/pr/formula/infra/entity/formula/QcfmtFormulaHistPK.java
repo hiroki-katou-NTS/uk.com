@@ -1,21 +1,24 @@
 package nts.uk.ctx.pr.formula.infra.entity.formula;
 
+import java.io.Serializable;
+
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
-import java.io.Serializable;
 
 import lombok.NoArgsConstructor;
 
 @Embeddable
 @NoArgsConstructor
-public class QcfmtFormulaPK implements Serializable {
+public class QcfmtFormulaHistPK implements Serializable {
 	
 	private static final long serialVersionUID = 1L;
 	
 	@Column(name = "CCD")
-	public String ccd;
+	public String companyCode;
 	
 	@Column(name = "FORMULA_CD")
-	public String formulaCd;
+	public String formulaCode;
 	
+	@Column(name = "HIST_ID")
+	public String historyId;
 }

@@ -18,7 +18,7 @@ import nts.uk.ctx.pr.formula.dom.primitive.HistoryId;
 @Getter
 public class FormulaMaster extends AggregateRoot {
 
-	private CompanyCode companyCode;
+	private String companyCode;
 
 	private FormulaCode formulaCode;
 
@@ -32,7 +32,7 @@ public class FormulaMaster extends AggregateRoot {
 	 * @param difficultyAtr
 	 * @param formulaName
 	 */
-	public FormulaMaster(CompanyCode companyCode, FormulaCode formulaCode, DifficultyAtr difficultyAtr,
+	public FormulaMaster(String companyCode, FormulaCode formulaCode, DifficultyAtr difficultyAtr,
 			FormulaName formulaName) {
 		super();
 		this.companyCode = companyCode;
@@ -46,9 +46,9 @@ public class FormulaMaster extends AggregateRoot {
 	 * 
 	 * @return LayoutMaster
 	 */
-	public FormulaMaster createFromJavaType(String companyCode, String formulaCode, int difficultyAtr,
+	public static FormulaMaster createFromJavaType(String companyCode, String formulaCode, int difficultyAtr,
 			String formulaName) {
-		return new FormulaMaster(new CompanyCode(companyCode), new FormulaCode(formulaCode), 
+		return new FormulaMaster(companyCode, new FormulaCode(formulaCode), 
 				EnumAdaptor.valueOf(difficultyAtr, DifficultyAtr.class),
 				new FormulaName(formulaName));
 	}

@@ -23,7 +23,7 @@ import nts.uk.ctx.pr.formula.dom.primitive.ReferenceMasterCode;
 @Getter
 public class FormulaEasyCondition extends AggregateRoot {
 	
-	private CompanyCode companyCode;
+	private String companyCode;
 	
 	private FormulaCode formulaCode;
 	
@@ -48,7 +48,7 @@ public class FormulaEasyCondition extends AggregateRoot {
 	 * @param referenceMasterCode
 	 * @param formulaEasyDetail
 	 */
-	public FormulaEasyCondition(CompanyCode companyCode, FormulaCode formulaCode, HistoryId historyId, EasyFormulaCode easyFormulaCode, FixFormulaAtr fixFormulaAtr, Money fixMoney,
+	public FormulaEasyCondition(String companyCode, FormulaCode formulaCode, HistoryId historyId, EasyFormulaCode easyFormulaCode, FixFormulaAtr fixFormulaAtr, Money fixMoney,
 			ReferenceMasterCode referenceMasterCode) {
 		super();
 		this.companyCode = companyCode;
@@ -62,7 +62,7 @@ public class FormulaEasyCondition extends AggregateRoot {
 
 	public static FormulaEasyCondition createFromJavaType(String companyCode, String formulaCode, String historyId, String easyFormulaCode, int fixFormulaAtr, BigDecimal fixMoney,
 			String referenceMasterCode) {
-		return new FormulaEasyCondition(new CompanyCode(companyCode), new FormulaCode(formulaCode), new HistoryId(historyId),
+		return new FormulaEasyCondition(companyCode, new FormulaCode(formulaCode), new HistoryId(historyId),
 				new EasyFormulaCode(easyFormulaCode), EnumAdaptor.valueOf(fixFormulaAtr, FixFormulaAtr.class),
 				new Money(fixMoney), new ReferenceMasterCode(referenceMasterCode));
 	}

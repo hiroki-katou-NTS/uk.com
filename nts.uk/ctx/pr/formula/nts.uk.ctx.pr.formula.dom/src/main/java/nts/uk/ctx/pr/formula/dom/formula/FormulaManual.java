@@ -19,7 +19,7 @@ import nts.uk.ctx.pr.formula.dom.primitive.HistoryId;
 @Getter
 public class FormulaManual extends DomainObject {
 	
-	private CompanyCode companyCode;
+	private String companyCode;
 	
 	private FormulaCode formulaCode;
 	
@@ -42,7 +42,7 @@ public class FormulaManual extends DomainObject {
 	 * @param roundAtr
 	 * @param roundDigit
 	 */
-	public FormulaManual(CompanyCode companyCode, FormulaCode formulaCode, HistoryId historyId,
+	public FormulaManual(String companyCode, FormulaCode formulaCode, HistoryId historyId,
 			FormulaContent formulaContent, ReferenceMonthAtr referenceMonthAtr, RoundMethod roundAtr,
 			RoundDigit roundDigit) {
 		super();
@@ -57,7 +57,7 @@ public class FormulaManual extends DomainObject {
 
 	public FormulaManual createFromJavaType(String companyCode, String formulaCode, String historyId, String formulaContent, int referenceMonthAtr, int roundAtr,
 			int roundDigit) {
-		return new FormulaManual(new CompanyCode(companyCode), new FormulaCode(formulaCode),new HistoryId(historyId), new FormulaContent(formulaContent),
+		return new FormulaManual(companyCode, new FormulaCode(formulaCode),new HistoryId(historyId), new FormulaContent(formulaContent),
 				EnumAdaptor.valueOf(referenceMonthAtr, ReferenceMonthAtr.class),
 				EnumAdaptor.valueOf(roundAtr, RoundMethod.class), EnumAdaptor.valueOf(roundDigit, RoundDigit.class));
 	}

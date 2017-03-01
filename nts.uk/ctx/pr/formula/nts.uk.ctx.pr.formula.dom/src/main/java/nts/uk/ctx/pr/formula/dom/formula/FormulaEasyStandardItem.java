@@ -10,7 +10,7 @@ import nts.uk.ctx.pr.formula.dom.primitive.ReferenceItemCode;
 @Getter
 public class FormulaEasyStandardItem {
 
-	private CompanyCode companyCode;
+	private String companyCode;
 
 	private FormulaCode formulaCode;
 
@@ -27,7 +27,7 @@ public class FormulaEasyStandardItem {
 	 * @param easyFormulaCode
 	 * @param referenceItemCode
 	 */
-	public FormulaEasyStandardItem(CompanyCode companyCode, FormulaCode formulaCode, HistoryId historyId,
+	public FormulaEasyStandardItem(String companyCode, FormulaCode formulaCode, HistoryId historyId,
 			EasyFormulaCode easyFormulaCode, ReferenceItemCode referenceItemCode) {
 		super();
 		this.companyCode = companyCode;
@@ -39,7 +39,7 @@ public class FormulaEasyStandardItem {
 
 	public FormulaEasyStandardItem createFromJavaType(String companyCode, String formulaCode, String historyId,
 			String easyFormulaCode, String referenceItemCode) {
-		return new FormulaEasyStandardItem(new CompanyCode(companyCode), new FormulaCode(formulaCode),
+		return new FormulaEasyStandardItem(companyCode, new FormulaCode(formulaCode),
 				new HistoryId(historyId), new EasyFormulaCode(easyFormulaCode),
 				new ReferenceItemCode(referenceItemCode));
 	}
