@@ -16,14 +16,20 @@ var nts;
                             var ScreenModel = (function () {
                                 function ScreenModel() {
                                     var self = this;
-                                    var unitPriceHistoryDto = nts.uk.ui.windows.getShared('unitPriceHistoryModel');
-                                    self.unitPriceHistoryModel = ko.mapping.fromJS(unitPriceHistoryDto);
+                                    self.unitPriceHistoryModel = ko.mapping.fromJS(nts.uk.ui.windows.getShared('unitPriceHistoryModel'));
+                                    self.isLatestHistory = ko.observable(nts.uk.ui.windows.getShared('isLatestHistory'));
                                     self.edittingMethod = ko.observable('Edit');
                                     self.isEditMode = ko.observable(true);
                                     self.edittingMethod.subscribe(function (val) {
                                         val == 'Edit' ? self.isEditMode(true) : self.isEditMode(false);
                                     });
                                 }
+                                ScreenModel.prototype.startPage = function () {
+                                    var self = this;
+                                    var dfd = $.Deferred();
+                                    dfd.resolve();
+                                    return dfd.promise();
+                                };
                                 ScreenModel.prototype.btnApplyClicked = function () {
                                     var self = this;
                                     if (self.isEditMode()) {

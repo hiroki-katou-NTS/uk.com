@@ -82,7 +82,6 @@ public class UpdateUnitPriceHistoryCommandHandler extends CommandHandler<UpdateU
 
 		// Validate
 		unitPriceHistoryService.validateRequiredItem(updatedHistory);
-		unitPriceHistoryService.validateDateRange(updatedHistory);
 
 		// Update to db.
 		unitPriceHistoryRepo.update(unitPrice, updatedHistory);
