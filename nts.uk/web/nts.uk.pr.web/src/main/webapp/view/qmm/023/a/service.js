@@ -39,7 +39,7 @@ var qmm023;
             service.insertUpdateData = insertUpdateData;
             function deleteData(deleteCode) {
                 var dfd = $.Deferred();
-                nts.uk.request.ajax(paths.deleteData, deleteCode)
+                nts.uk.request.ajax(paths.deleteData, ko.toJS(deleteCode))
                     .done(function (res) {
                     dfd.resolve(res);
                 })

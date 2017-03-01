@@ -71,3 +71,9 @@ input {
 	width: 35px !important;
 	text-align: center !important;
 }
+#INP_003 {
+	max-width: 180px !important;
+}
+#INP_004 {
+	max-width: 140px !important;
+}

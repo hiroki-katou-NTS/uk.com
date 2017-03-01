@@ -6,34 +6,29 @@ var qmm023;
         (function (viewmodel) {
             var ScreenModel = (function () {
                 function ScreenModel() {
-                    this.constraint = 'CommuNoTaxLimitCode';
-                    this.isUpdate = ko.observable(true);
-                    this.allowEditCode = ko.observable(false);
                     var self = this;
-                    //constructor of gridList
-                    this.items = ko.observableArray([]);
+                    self.unit(self);
+                    //get event when hover on table by subcribe
+                    self.currentCode.subscribe(function (codeChanged) {
+                        self.currentTax(ko.mapping.fromJS(self.getTax(codeChanged)));
+                        if (self.currentTax()) {
+                            self.allowEditCode(false);
+                            self.isUpdate(true);
+                        }
+                    });
+                }
+                ScreenModel.prototype.unit = function (self) {
+                    self.items = ko.observableArray([]);
                     this.columns = ko.observableArray([
                         { headerText: 'コード', prop: 'code', width: 50 },
                         { headerText: '名称', prop: 'name', width: 120 },
                         { headerText: '説明', prop: 'taxLimit', width: 170 }
                     ]);
                     self.currentCode = ko.observable(null);
-                    //finding the first object
-                    self.currentTax = ko.observable(ko.mapping.fromJS(_.first(self.items())));
-                    self.codeValue = ko.observable(self.currentTax().code);
-                    self.nameValue = ko.observable(self.currentTax().name);
-                    self.taxLimitValue = ko.observable(self.currentTax().taxLimit);
-                    //get event when hover on table by subcribe
-                    self.currentCode.subscribe(function (codeChanged) {
-                        self.currentTax(ko.mapping.fromJS(self.getTax(codeChanged)));
-                        if (self.currentTax()) {
-                            self.codeValue(self.currentTax().code);
-                            self.nameValue(self.currentTax().name);
-                            self.allowEditCode(false);
-                            self.isUpdate(true);
-                        }
-                    });
-                }
+                    self.currentTax = ko.observable(null);
+                    self.isUpdate = ko.observable(true);
+                    self.allowEditCode = ko.observable(false);
+                };
                 ScreenModel.prototype.getTax = function (codeNew) {
                     var self = this;
                     var tax = _.find(self.items(), function (item) {
@@ -49,7 +44,7 @@ var qmm023;
                 };
                 ScreenModel.prototype.insertUpdateData = function () {
                     var self = this;
-                    var insertUpdateModel = new InsertUpdateModel(self.currentTax().code(), self.currentTax().name(), self.currentTax().taxLimit());
+                    var insertUpdateModel = new InsertUpdateModel(self.currentTax().code, self.currentTax().name, self.currentTax().taxLimit);
                     a.service.insertUpdateData(self.isUpdate(), insertUpdateModel).done(function () {
                         if (self.isUpdate() === false) {
                             self.items.push(_.cloneDeep(ko.mapping.toJS(self.currentTax())));
@@ -72,7 +67,8 @@ var qmm023;
                     a.service.deleteData(new DeleteModel(deleteCode)).done(function () {
                         var indexItemDelete = _.findIndex(self.items(), function (item) { return item.code == self.currentTax().code(); });
                         self.items.remove(function (item) {
-                            return item.code == deleteCode;
+                            console.log(item.code + "===" + deleteCode);
+                            return item.code === deleteCode;
                         });
                         self.items.valueHasMutated();
                         if (self.items().length === 0) {
@@ -98,9 +94,6 @@ var qmm023;
                         alert("you didn't delete!");
                     }
                 };
-                ScreenModel.prototype.deselectAll = function () {
-                    this.currentCode(null);
-                };
                 // startpage
                 ScreenModel.prototype.startPage = function () {
                     var self = this;
@@ -112,7 +105,7 @@ var qmm023;
                     a.service.getCommutelimitsByCompanyCode().done(function (data) {
                         self.buildItemList(data);
                         if (self.items().length > 0) {
-                            self.currentTax = ko.observable(ko.mapping.fromJS(_.first(self.items())));
+                            self.currentTax(ko.mapping.fromJS(_.first(self.items())));
                             self.currentCode(self.currentTax().code());
                         }
                         dfd.resolve(data);

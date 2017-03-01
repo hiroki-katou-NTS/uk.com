@@ -1,43 +1,38 @@
 module qmm023.a.viewmodel {
     export class ScreenModel {
-        constraint: string = 'CommuNoTaxLimitCode';
-        codeValue: KnockoutObservable<any>;
+
         items: KnockoutObservableArray<TaxModel>;
         columns: KnockoutObservableArray<any>;
         currentCode: KnockoutObservable<any>;
         currentTax: KnockoutObservable<TaxModel>;
-        nameValue: KnockoutObservable<string>;
-        taxLimitValue: KnockoutObservable<number>;
-        isUpdate: KnockoutObservable<boolean> = ko.observable(true);
-        allowEditCode: KnockoutObservable<boolean> = ko.observable(false);
+        isUpdate: KnockoutObservable<boolean>;
+        allowEditCode: KnockoutObservable<boolean>;
+
         constructor() {
             var self = this;
-            //constructor of gridList
-            this.items = ko.observableArray([]);
+            self.unit(self);
+            //get event when hover on table by subcribe
+            self.currentCode.subscribe(function(codeChanged) {
+                self.currentTax(ko.mapping.fromJS(self.getTax(codeChanged)));
+                if (self.currentTax()) {
+                    self.allowEditCode(false);
+                    self.isUpdate(true);
+                }
+            });
+        }
 
+        unit(self: any): void {
+            self.items = ko.observableArray([]);
             this.columns = ko.observableArray([
                 { headerText: 'コード', prop: 'code', width: 50 },
                 { headerText: '名称', prop: 'name', width: 120 },
                 { headerText: '説明', prop: 'taxLimit', width: 170 }
             ]);
             self.currentCode = ko.observable(null);
-            //finding the first object
-            self.currentTax = ko.observable(ko.mapping.fromJS(_.first(self.items())));
-            self.codeValue = ko.observable(self.currentTax().code);
-            self.nameValue = ko.observable(self.currentTax().name);
-            self.taxLimitValue = ko.observable(self.currentTax().taxLimit);
+            self.currentTax = ko.observable(null);
+            self.isUpdate = ko.observable(true);
+            self.allowEditCode = ko.observable(false);
 
-            //get event when hover on table by subcribe
-            self.currentCode.subscribe(function(codeChanged) {
-                self.currentTax(ko.mapping.fromJS(self.getTax(codeChanged)));
-                if (self.currentTax()) {
-                    self.codeValue(self.currentTax().code);
-                    self.nameValue(self.currentTax().name);
-                    self.allowEditCode(false);
-                    self.isUpdate(true);
-                }
-
-            });
         }
 
         getTax(codeNew: string): TaxModel {
@@ -57,7 +52,7 @@ module qmm023.a.viewmodel {
 
         insertUpdateData(): void {
             let self = this;
-            let insertUpdateModel = new InsertUpdateModel(self.currentTax().code(), self.currentTax().name(), self.currentTax().taxLimit());
+            let insertUpdateModel = new InsertUpdateModel(self.currentTax().code, self.currentTax().name, self.currentTax().taxLimit);
             service.insertUpdateData(self.isUpdate(), insertUpdateModel).done(function() {
                 if (self.isUpdate() === false) {
                     self.items.push(_.cloneDeep(ko.mapping.toJS(self.currentTax())));
@@ -81,7 +76,8 @@ module qmm023.a.viewmodel {
             service.deleteData(new DeleteModel(deleteCode)).done(function() {
                 let indexItemDelete = _.findIndex(self.items(), function(item) { return item.code == self.currentTax().code(); });
                 self.items.remove(function(item) {
-                    return item.code == deleteCode;
+                    console.log(item.code + "===" + deleteCode);
+                    return item.code === deleteCode;
                 });
                 self.items.valueHasMutated();
                 if (self.items().length === 0) {
@@ -106,12 +102,8 @@ module qmm023.a.viewmodel {
             }
         }
 
-        deselectAll() {
-            this.currentCode(null);
-        }
-
         // startpage
-        startPage(): JQueryPromise<any> {
+        startPage(): JQueryPromise<Array<any>> {
             var self = this;
             return self.getCommuteNoTaxLimitList();
         }
@@ -122,7 +114,7 @@ module qmm023.a.viewmodel {
             service.getCommutelimitsByCompanyCode().done(function(data) {
                 self.buildItemList(data);
                 if (self.items().length > 0) {
-                     self.currentTax = ko.observable(ko.mapping.fromJS(_.first(self.items())));
+                    self.currentTax(ko.mapping.fromJS(_.first(self.items())));
                     self.currentCode(self.currentTax().code())
                 }
                 dfd.resolve(data);

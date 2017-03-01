@@ -12,6 +12,11 @@
 			<com:scriptfile path="start.js" />
 			<com:scriptfile path="viewmodel.js" />
 			<com:scriptfile path="service.js" />
+			<com:ValidatorScript>
+				nts.uk.ctx.pr.core.dom.rule.law.tax.commutelimit.CommuNoTaxLimitCode
+				nts.uk.ctx.pr.core.dom.rule.law.tax.commutelimit.CommuNoTaxLimitName
+				nts.uk.ctx.pr.core.dom.rule.law.tax.commutelimit.CommuNoTaxLimitValue
+			</com:ValidatorScript>
 		</ui:define>
 
 		<ui:define name="content">
@@ -43,13 +48,14 @@
 								data-bind="ntsGridList: {
 										width: 400,
 										height: 410,
-										dataSource: items,
-										primaryKey: 'code',
+										options: items,
+										optionsValue: 'code',
 										columns: columns,
 										multiple: false,
-										value: currentCode}">
-							</table>
+										value: currentCode
+					}"></table>
 						</div>
+
 					</div>
 				</div>
 				<div class="nts-right-content" data-bind="with: currentTax">
@@ -65,13 +71,16 @@
 									<span><input id="INP_002"
 										data-bind="ntsTextEditor: {
 													value: code,
-													constraint: 'ResidenceCode', 
-													enable: $parent.allowEditCode
-													}" /></span>
-									<span><input id="INP_003"
+													constraint: 'CommuNoTaxLimitCode', 
+													enable: $parent.allowEditCode,
+													required: 'true'
+													}" />
+									</span> <span><input id="INP_003"
 										data-bind="ntsTextEditor: {
 													value: name,
-													constraint: 'ResidenceCode'}" /></span>
+													constraint: 'CommuNoTaxLimitName',
+													required: 'true' }" />
+									</span>
 								</div>
 							</td>
 						</tr>
@@ -82,9 +91,16 @@
 							<td>
 								<div>
 									<input id="INP_004"
-										data-bind="ntsTextEditor: {
+										data-bind="ntsNumberEditor: {
 													value: taxLimit,
-													constraint: 'ResidenceCode'}" />
+													constraint: 'CommuNoTaxLimitValue',
+													option: {
+														grouplength: 3,
+														decimallength: 0,
+														currencyformat: 'JPY',
+														currencyposition: 'right'
+													},
+													required: true }" />
 								</div>
 							</td>
 						</tr>
