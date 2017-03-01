@@ -7,17 +7,19 @@ var qmm023;
             var ScreenModel = (function () {
                 function ScreenModel() {
                     var self = this;
-                    self.unit(self);
+                    self.init();
                     //get event when hover on table by subcribe
                     self.currentCode.subscribe(function (codeChanged) {
-                        self.currentTax(ko.mapping.fromJS(self.getTax(codeChanged)));
-                        if (self.currentTax()) {
+                        if (codeChanged !== null) {
+                            self.currentTax(ko.mapping.fromJS(self.getTax(codeChanged)));
                             self.allowEditCode(false);
                             self.isUpdate(true);
+                            self.isEnableDeleteBtn(true);
                         }
                     });
                 }
-                ScreenModel.prototype.unit = function (self) {
+                ScreenModel.prototype.init = function () {
+                    var self = this;
                     self.items = ko.observableArray([]);
                     this.columns = ko.observableArray([
                         { headerText: 'コード', prop: 'code', width: 50 },
@@ -25,9 +27,15 @@ var qmm023;
                         { headerText: '説明', prop: 'taxLimit', width: 170 }
                     ]);
                     self.currentCode = ko.observable(null);
-                    self.currentTax = ko.observable(null);
+                    self.currentTax = ko.observable(new TaxModel('', '', null));
                     self.isUpdate = ko.observable(true);
                     self.allowEditCode = ko.observable(false);
+                    self.isEnableDeleteBtn = ko.observable(true);
+                    if (self.items.length <= 0) {
+                        self.allowEditCode = ko.observable(true);
+                        self.isUpdate = ko.observable(false);
+                        self.isEnableDeleteBtn = ko.observable(false);
+                    }
                 };
                 ScreenModel.prototype.getTax = function (codeNew) {
                     var self = this;
@@ -40,7 +48,9 @@ var qmm023;
                     var self = this;
                     self.allowEditCode(true);
                     self.currentTax(ko.mapping.fromJS(new TaxModel('', '', null)));
+                    self.currentCode(null);
                     self.isUpdate(false);
+                    self.isEnableDeleteBtn(false);
                 };
                 ScreenModel.prototype.insertUpdateData = function () {
                     var self = this;
@@ -53,7 +63,7 @@ var qmm023;
                             self.currentCode(self.currentTax().code());
                         }
                         else {
-                            var indexItemUpdate = _.findIndex(self.items(), function (item) { return item.code == self.currentTax().code(); });
+                            var indexItemUpdate = _.findIndex(self.items(), function (item) { return item.code == self.currentTax().code; });
                             self.items().splice(indexItemUpdate, 1, _.cloneDeep(ko.mapping.toJS(self.currentTax())));
                             self.items.valueHasMutated();
                         }
@@ -67,13 +77,13 @@ var qmm023;
                     a.service.deleteData(new DeleteModel(deleteCode)).done(function () {
                         var indexItemDelete = _.findIndex(self.items(), function (item) { return item.code == self.currentTax().code(); });
                         self.items.remove(function (item) {
-                            console.log(item.code + "===" + deleteCode);
-                            return item.code === deleteCode;
+                            return item.code == deleteCode;
                         });
                         self.items.valueHasMutated();
                         if (self.items().length === 0) {
                             self.allowEditCode(true);
                             self.isUpdate(false);
+                            self.refreshLayout();
                         }
                         else if (self.items().length === indexItemDelete) {
                             self.currentCode(self.items()[indexItemDelete - 1].code);
@@ -104,9 +114,10 @@ var qmm023;
                     var dfd = $.Deferred();
                     a.service.getCommutelimitsByCompanyCode().done(function (data) {
                         self.buildItemList(data);
+                        self.currentTax(ko.mapping.fromJS(new TaxModel('', '', null)));
                         if (self.items().length > 0) {
-                            self.currentTax(ko.mapping.fromJS(_.first(self.items())));
-                            self.currentCode(self.currentTax().code());
+                            self.currentTax(_.first(self.items()));
+                            self.currentCode(self.currentTax().code);
                         }
                         dfd.resolve(data);
                     }).fail(function (res) {

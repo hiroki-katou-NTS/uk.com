@@ -12,8 +12,7 @@ module qmm023.a.service {
         nts.uk.request.ajax(_path)
             .done(function(res: Array<any>) {
                 dfd.resolve(res);
-            })
-            .fail(function(res) {
+            }).fail(function(res) {
                 dfd.reject(res);
             })
         return dfd.promise();

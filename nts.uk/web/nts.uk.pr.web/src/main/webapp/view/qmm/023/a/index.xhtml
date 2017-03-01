@@ -28,7 +28,7 @@
 					<button id="A_BTN_003">印刷（PDF）</button>
 					<button id="A_BTN_005">マスタ修正ログ</button>
 					<button id="A_BTN_004" class="danger"
-						data-bind="click: alertDelete">削除</button>
+						data-bind="click: alertDelete, enable: isEnableDeleteBtn">削除</button>
 				</div>
 			</div>
 			<div id="contents-area">
@@ -62,8 +62,12 @@
 					<table class="tableRange">
 						<tr>
 							<td>
-								<div id="A_LBL_002" data-bind="ntsFormLabel: {required: true}">コード/名称
-								</div>
+								<div id="A_LBL_002"
+									data-bind="ntsFormLabel: {
+											constraint: ['CommuNoTaxLimitCode','CommuNoTaxLimitName'],
+											required: true
+										}">
+									コード/名称</div>
 							</td>
 							<td>
 								<div>
@@ -86,7 +90,12 @@
 						</tr>
 						<tr>
 							<td>
-								<div data-bind="ntsFormLabel: {}">限度額</div>
+								<div
+									data-bind="ntsFormLabel: {
+											constraint: 'CommuNoTaxLimitValue',
+											required: true
+											}">
+									限度額</div>
 							</td>
 							<td>
 								<div>

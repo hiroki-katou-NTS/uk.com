@@ -16,8 +16,7 @@ var qmm023;
                 nts.uk.request.ajax(_path)
                     .done(function (res) {
                     dfd.resolve(res);
-                })
-                    .fail(function (res) {
+                }).fail(function (res) {
                     dfd.reject(res);
                 });
                 return dfd.promise();
