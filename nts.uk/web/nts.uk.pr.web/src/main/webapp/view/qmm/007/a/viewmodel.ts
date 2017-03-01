@@ -31,7 +31,7 @@ module nts.uk.pr.view.qmm007.a {
 
             constructor() {
                 var self = this;
-                self.isNewMode = ko.observable(true);
+                self.isNewMode = ko.observable(false);
                 self.isLoading = ko.observable(true);
                 self.isInputEnabled = ko.observable(false);
                 self.isLatestHistory = ko.observable(false);
@@ -56,7 +56,7 @@ module nts.uk.pr.view.qmm007.a {
                         // when selected a parent node
                         if (id.length < 4) {
                             // jump to latest history
-                            self.selectedId(self.getLastestHistoryId(id));
+                            self.selectedId(self.getLatestHistoryId(id));
                         }
                         // when selected a child node
                         else {
@@ -100,15 +100,19 @@ module nts.uk.pr.view.qmm007.a {
                 var self = this;
                 nts.uk.ui.windows.setShared('unitPriceHistoryModel', ko.toJS(self.unitPriceHistoryModel()));
                 nts.uk.ui.windows.sub.modal('/view/qmm/007/b/index.xhtml', { title: '会社一律金額 の 登録 > 履歴の追加', dialogClass: 'no-close' }).onClosed(() => {
-                    self.unitPriceHistoryModel().endMonth(nts.uk.ui.windows.getShared('endMonth'));
-                    // Update endDate of previous history
-                    service.update(ko.toJS(self.unitPriceHistoryModel())).done(() => {
-                        // Reload UnitPriceHistoryList
-                        self.loadUnitPriceHistoryList().done(() => {
-                            // Select latest history
-                            self.selectedId(self.getLastestHistoryId(self.unitPriceHistoryModel().unitPriceCode()));
+                    let startMonth = nts.uk.ui.windows.getShared('startMonth');
+                    if (startMonth) {
+                        // Get the startMonth of the newly added history and set to the endMonth of the latest history.
+                        self.unitPriceHistoryModel().endMonth(startMonth);
+                        // Update endMonth of previous history
+                        service.update(ko.toJS(self.unitPriceHistoryModel())).done(() => {
+                            // Reload UnitPriceHistoryList
+                            self.loadUnitPriceHistoryList().done(() => {
+                                // Select latest history
+                                self.selectedId(self.getLatestHistoryId(self.unitPriceHistoryModel().unitPriceCode()));
+                            });
                         });
-                    });
+                    }
                 });
             }
 
@@ -120,9 +124,21 @@ module nts.uk.pr.view.qmm007.a {
                 nts.uk.ui.windows.setShared('unitPriceHistoryModel', ko.toJS(this.unitPriceHistoryModel()));
                 nts.uk.ui.windows.setShared('isLatestHistory', self.isLatestHistory());
                 nts.uk.ui.windows.sub.modal('/view/qmm/007/c/index.xhtml', { title: '会社一律金額 の 登録 > 履歴の編集', dialogClass: 'no-close' }).onClosed(() => {
-                    // Reload.
-                    self.loadUnitPriceHistoryList();
-                    self.loadUnitPriceDetail(self.selectedId());
+                    if (nts.uk.ui.windows.getShared('isRemoved')) {
+                        // Get the latest history
+                        service.find(self.getSecondLatestHistoryId(self.unitPriceHistoryModel().unitPriceCode())).done(dto => {
+                            self.setUnitPriceHistoryModel(dto);
+                            // Update endMonth
+                            self.unitPriceHistoryModel().endMonth('9999/12');
+                            service.update(ko.toJS(self.unitPriceHistoryModel())).done(() => {
+                                // Reload UnitPriceHistoryList
+                                self.loadUnitPriceHistoryList().done(() => {
+                                    // Select latest history
+                                    self.selectedId(self.getLatestHistoryId(self.unitPriceHistoryModel().unitPriceCode()));
+                                });
+                            });
+                        });
+                    }
                 });
             }
 
@@ -200,14 +216,14 @@ module nts.uk.pr.view.qmm007.a {
              */
             private isLatest(history: UnitPriceHistoryDto): boolean {
                 var self = this;
-                var latestHistoryId = self.getLastestHistoryId(history.unitPriceCode);
+                var latestHistoryId = self.getLatestHistoryId(history.unitPriceCode);
                 return history.id == latestHistoryId ? true : false;
             }
 
             /**
-             * Get the latest history id by unit price code
+             * Get the latest historyId by unit price code
              */
-            private getLastestHistoryId(code: string): string {
+            private getLatestHistoryId(code: string): string {
                 var self = this;
                 var lastestHistoryId: string = '';
                 //find the group of the history by unit price code
@@ -215,6 +231,24 @@ module nts.uk.pr.view.qmm007.a {
                     if (code == node.id) {
                         // get the historyId of the first element (latest history)
                         lastestHistoryId = node.childs[0].id;
+                        // break the execution
+                        return true;
+                    }
+                });
+                return lastestHistoryId;
+            }
+
+            /**
+             * Get the latest historyId by unit price code after remove the latest history
+             */
+            private getSecondLatestHistoryId(code: string): string {
+                var self = this;
+                var lastestHistoryId: string = '';
+                //find the group of the history by unit price code
+                self.historyList().some(node => {
+                    if (code == node.id) {
+                        // get the historyId of the first element (latest history)
+                        lastestHistoryId = node.childs[1].id;
                         // break the execution
                         return true;
                     }

@@ -31,7 +31,7 @@ module nts.uk.pr.view.qmm007.b {
             private btnApplyClicked(): void {
                 var self = this;
                 service.create(ko.toJS(self.unitPriceHistoryModel)).done(() => {
-                    nts.uk.ui.windows.setShared('endMonth', self.unitPriceHistoryModel.startMonth());
+                    nts.uk.ui.windows.setShared('startMonth', self.unitPriceHistoryModel.startMonth());
                     nts.uk.ui.windows.close();
                 });
             }

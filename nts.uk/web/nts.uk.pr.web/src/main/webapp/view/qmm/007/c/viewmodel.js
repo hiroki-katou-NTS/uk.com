@@ -39,6 +39,7 @@ var nts;
                                     }
                                     else {
                                         service.remove(self.unitPriceHistoryModel.id(), self.unitPriceHistoryModel.unitPriceCode()).done(function () {
+                                            nts.uk.ui.windows.setShared('isRemoved', true);
                                             nts.uk.ui.windows.close();
                                         });
                                     }

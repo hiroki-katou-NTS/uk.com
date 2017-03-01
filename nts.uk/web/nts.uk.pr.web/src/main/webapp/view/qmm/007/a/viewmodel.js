@@ -16,7 +16,7 @@ var nts;
                             var ScreenModel = (function () {
                                 function ScreenModel() {
                                     var self = this;
-                                    self.isNewMode = ko.observable(true);
+                                    self.isNewMode = ko.observable(false);
                                     self.isLoading = ko.observable(true);
                                     self.isInputEnabled = ko.observable(false);
                                     self.isLatestHistory = ko.observable(false);
@@ -38,7 +38,7 @@ var nts;
                                     self.selectedId.subscribe(function (id) {
                                         if (id) {
                                             if (id.length < 4) {
-                                                self.selectedId(self.getLastestHistoryId(id));
+                                                self.selectedId(self.getLatestHistoryId(id));
                                             }
                                             else {
                                                 self.isLoading(true);
@@ -69,12 +69,15 @@ var nts;
                                     var self = this;
                                     nts.uk.ui.windows.setShared('unitPriceHistoryModel', ko.toJS(self.unitPriceHistoryModel()));
                                     nts.uk.ui.windows.sub.modal('/view/qmm/007/b/index.xhtml', { title: '会社一律金額 の 登録 > 履歴の追加', dialogClass: 'no-close' }).onClosed(function () {
-                                        self.unitPriceHistoryModel().endMonth(nts.uk.ui.windows.getShared('endMonth'));
-                                        a.service.update(ko.toJS(self.unitPriceHistoryModel())).done(function () {
-                                            self.loadUnitPriceHistoryList().done(function () {
-                                                self.selectedId(self.getLastestHistoryId(self.unitPriceHistoryModel().unitPriceCode()));
+                                        var startMonth = nts.uk.ui.windows.getShared('startMonth');
+                                        if (startMonth) {
+                                            self.unitPriceHistoryModel().endMonth(startMonth);
+                                            a.service.update(ko.toJS(self.unitPriceHistoryModel())).done(function () {
+                                                self.loadUnitPriceHistoryList().done(function () {
+                                                    self.selectedId(self.getLatestHistoryId(self.unitPriceHistoryModel().unitPriceCode()));
+                                                });
                                             });
-                                        });
+                                        }
                                     });
                                 };
                                 ScreenModel.prototype.openEditDialog = function () {
@@ -82,8 +85,17 @@ var nts;
                                     nts.uk.ui.windows.setShared('unitPriceHistoryModel', ko.toJS(this.unitPriceHistoryModel()));
                                     nts.uk.ui.windows.setShared('isLatestHistory', self.isLatestHistory());
                                     nts.uk.ui.windows.sub.modal('/view/qmm/007/c/index.xhtml', { title: '会社一律金額 の 登録 > 履歴の編集', dialogClass: 'no-close' }).onClosed(function () {
-                                        self.loadUnitPriceHistoryList();
-                                        self.loadUnitPriceDetail(self.selectedId());
+                                        if (nts.uk.ui.windows.getShared('isRemoved')) {
+                                            a.service.find(self.getSecondLatestHistoryId(self.unitPriceHistoryModel().unitPriceCode())).done(function (dto) {
+                                                self.setUnitPriceHistoryModel(dto);
+                                                self.unitPriceHistoryModel().endMonth('9999/12');
+                                                a.service.update(ko.toJS(self.unitPriceHistoryModel())).done(function () {
+                                                    self.loadUnitPriceHistoryList().done(function () {
+                                                        self.selectedId(self.getLatestHistoryId(self.unitPriceHistoryModel().unitPriceCode()));
+                                                    });
+                                                });
+                                            });
+                                        }
                                     });
                                 };
                                 ScreenModel.prototype.save = function () {
@@ -142,15 +154,26 @@ var nts;
                                 };
                                 ScreenModel.prototype.isLatest = function (history) {
                                     var self = this;
-                                    var latestHistoryId = self.getLastestHistoryId(history.unitPriceCode);
+                                    var latestHistoryId = self.getLatestHistoryId(history.unitPriceCode);
                                     return history.id == latestHistoryId ? true : false;
                                 };
-                                ScreenModel.prototype.getLastestHistoryId = function (code) {
+                                ScreenModel.prototype.getLatestHistoryId = function (code) {
                                     var self = this;
                                     var lastestHistoryId = '';
                                     self.historyList().some(function (node) {
                                         if (code == node.id) {
                                             lastestHistoryId = node.childs[0].id;
+                                            return true;
+                                        }
+                                    });
+                                    return lastestHistoryId;
+                                };
+                                ScreenModel.prototype.getSecondLatestHistoryId = function (code) {
+                                    var self = this;
+                                    var lastestHistoryId = '';
+                                    self.historyList().some(function (node) {
+                                        if (code == node.id) {
+                                            lastestHistoryId = node.childs[1].id;
                                             return true;
                                         }
                                     });

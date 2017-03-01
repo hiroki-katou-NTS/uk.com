@@ -43,6 +43,7 @@ module nts.uk.pr.view.qmm007.c {
                     });
                 } else {
                     service.remove(self.unitPriceHistoryModel.id(), self.unitPriceHistoryModel.unitPriceCode()).done(() => {
+                        nts.uk.ui.windows.setShared('isRemoved', true);
                         nts.uk.ui.windows.close();
                     });
                 }
