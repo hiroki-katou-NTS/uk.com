@@ -8,6 +8,11 @@ import java.util.List;
  */
 public class JapanLocationService {
 
+	/**
+	 * Return list regions and prefectures of Japan follow the 
+	 * define sheet of DBLayout file of QMM003 function
+	 * @return
+	 */
 	public static List<RegionObject> getJapanLocation(){
 		List<RegionObject> result = new ArrayList<>();
 		List<PrefectureObject> region;
