@@ -77,6 +77,30 @@ var nts;
                                 self.filteredData = ko.observableArray(nts.uk.util.flatArray(self.items(), "childs"));
                                 self.curentNode = ko.observable(new Node("", "", []));
                             };
+                            ScreenModel.prototype.register = function () {
+                                // if()
+                                //                         $("#A_INP_002").attr('disabled', 'true');
+                                var inputSearch = $("#B_SCH_001").find("input.ntsSearchBox").val();
+                                if (inputSearch == "") {
+                                    $('#B_SCH_001').ntsError('set', 'inputSearch が入力されていません。');
+                                }
+                                else {
+                                    $('#B_SCH_001').ntsError('clear');
+                                }
+                                // errror search
+                                var error;
+                                _.find(this.filteredData(), function (obj) {
+                                    if (obj.code !== inputSearch) {
+                                        error = true;
+                                    }
+                                });
+                                if (error = true) {
+                                    $('#B_SCH_001').ntsError('set', '対象データがありません。');
+                                }
+                                else {
+                                    $('#B_SCH_001').ntsError('clear');
+                                }
+                            };
                             return ScreenModel;
                         }());
                         b.ScreenModel = ScreenModel;
