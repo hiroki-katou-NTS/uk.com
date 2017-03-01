@@ -1,5 +1,5 @@
 module nts.uk.pr.view.qpp018.c {
-    import CheckListPrintSettingDto = service.model.CheckListPrintSettingDto;
+    //import CheckListPrintSettingDto = nts.uk.pr.view.qpp018.c.service.model.CheckListPrintSettingDto;
     export module viewmodel {
         export class ScreenModel {
             required: KnockoutObservable<boolean>;
@@ -48,10 +48,9 @@ module nts.uk.pr.view.qpp018.c {
             public start(): JQueryPromise<any> {
                 var dfd = $.Deferred<any>();
                 var self = this;
-                console.log("YES");
-                $.when(self.loadAllCheckListPrintSetting()).done(function() {
+                self.loadAllCheckListPrintSetting().done(data => {
                     dfd.resolve(self);
-                })
+                });
                 return dfd.promise();
             }
 
@@ -60,6 +59,7 @@ module nts.uk.pr.view.qpp018.c {
                 var self = this;
                 service.findCheckListPrintSetting().done(data => {
                     self.checkListPrintSettingModel().setData(data);
+                    dfd.resolve();
                 }).fail(function(res) {
                     nts.uk.ui.dialog.alert(res.message);
                     dfd.reject();
@@ -99,7 +99,7 @@ module nts.uk.pr.view.qpp018.c {
                 this.showDetail = ko.observable(false);
                 this.showOffice = ko.observable(false);
             }
-            setData(checkListPrintSettingDto: CheckListPrintSettingDto) {
+            setData(checkListPrintSettingDto: service.model.CheckListPrintSettingDto) {
                 this.showCategoryInsuranceItem(checkListPrintSettingDto.showCategoryInsuranceItem);
                 this.showDeliveryNoticeAmount(checkListPrintSettingDto.showDeliveryNoticeAmount);
                 this.showDetail(checkListPrintSettingDto.showDetail);
@@ -111,9 +111,9 @@ module nts.uk.pr.view.qpp018.c {
                 this.showDetail(false);
                 this.showOffice(false);
             }
-            toDto(): CheckListPrintSettingDto {
-                var checkListPrintSettingDto: CheckListPrintSettingDto;
-                checkListPrintSettingDto = new CheckListPrintSettingDto();
+            toDto(): service.model.CheckListPrintSettingDto {
+                var checkListPrintSettingDto: service.model.CheckListPrintSettingDto;
+                checkListPrintSettingDto = new service.model.CheckListPrintSettingDto();
                 checkListPrintSettingDto.showCategoryInsuranceItem = this.showCategoryInsuranceItem();
                 checkListPrintSettingDto.showDeliveryNoticeAmount = this.showDeliveryNoticeAmount();
                 checkListPrintSettingDto.showDetail = this.showDetail();

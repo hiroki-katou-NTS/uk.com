@@ -171,7 +171,6 @@ var nts;
                                         memo: self.A_INP_006.value()
                                     };
                                     a.service.addBank(self.isCreated(), branchInfo).done(function () {
-                                        // reload tree
                                         self.getBankList();
                                     }).fail(function (error) {
                                         var messageList = self.messages();
@@ -214,7 +213,6 @@ var nts;
                                         self.lst_002(nts.uk.util.flatArray(self.lst_001(), "childs"));
                                         dfd.resolve(list001);
                                     }).fail(function (res) {
-                                        // error
                                     });
                                     return dfd.promise();
                                 };
@@ -233,7 +231,6 @@ var nts;
                                             parentCode = self.singleSelectedCode();
                                         }
                                         a.service.removeBank(!check, parentCode, childCode).done(function () {
-                                            // reload tree
                                             self.cleanBranch();
                                             self.getBankList().done(function () {
                                                 var code = "";
@@ -241,7 +238,6 @@ var nts;
                                                 if (index < 0) {
                                                     index = 0;
                                                 }
-                                                // parent
                                                 if (!check) {
                                                     code = self.lst_001()[index].treeCode;
                                                 }

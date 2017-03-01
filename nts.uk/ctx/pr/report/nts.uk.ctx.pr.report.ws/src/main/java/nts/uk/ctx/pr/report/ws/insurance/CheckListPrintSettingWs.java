@@ -11,6 +11,7 @@ import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.pr.report.app.insurance.command.CheckListPrintSettingSaveCommand;
+import nts.uk.ctx.pr.report.app.insurance.command.CheckListPrintSettingSaveCommandHandler;
 import nts.uk.ctx.pr.report.app.insurance.find.ChecklistPrintSettingFinder;
 import nts.uk.ctx.pr.report.app.insurance.find.dto.CheckListPrintSettingFindOutDto;
 
@@ -23,9 +24,10 @@ public class CheckListPrintSettingWs extends WebService {
 	private ChecklistPrintSettingFinder find;
 
 	/** The save. */
-	/*
-	 * @Inject private CheckListPrintSettingSaveCommandHandler save;
-	 */
+
+	@Inject
+	private CheckListPrintSettingSaveCommandHandler save;
+
 	/**
 	 * Find all.
 	 *
@@ -39,13 +41,13 @@ public class CheckListPrintSettingWs extends WebService {
 		dto.setShowDeliveryNoticeAmount(true);
 		dto.setShowDetail(true);
 		dto.setShowOffice(false);
-		find.find();
+		// find.find();
 		return dto;
 	}
 
 	@POST
 	@Path("save")
 	public void save(CheckListPrintSettingSaveCommand command) {
-		// this.save.handle(command);
+		this.save.handle(command);
 	}
 }
