@@ -59,7 +59,7 @@
 						<button class="pull-left" id="btn_004"
 							data-bind="click: goToB, enable: isInputEnabled() &amp;&amp; !isNewMode()">履歴追加</button>
 						<button class="pull-right" id="btn_005"
-							data-bind="click: goToC, enable: isInputEnabled() &amp;&amp; !isNewMode()">履歴編集</button>
+							data-bind="click: goToC, enable: !isNewMode()">履歴編集</button>
 						<div class="padding-top-10 pull-left cf">
 							<table id="lst_001"
 								data-bind="ntsTreeGridView:{

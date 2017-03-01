@@ -185,7 +185,6 @@ public class JpaUnitPriceHistoryRepository extends JpaRepository implements Unit
 				cb.equal(root.get(QupmtCUnitpriceHist_.qupmtCUnitpriceHistPK).get(QupmtCUnitpriceHistPK_.cUnitpriceCd),
 						cUnitpriceCd.v()));
 		predicateList.add(cb.ge(root.get(QupmtCUnitpriceHist_.strYm), startMonth.v()));
-		predicateList.add(cb.le(root.get(QupmtCUnitpriceHist_.endYm), startMonth.v()));
 
 		cq.select(cb.count(root));
 		cq.where(predicateList.toArray(new Predicate[] {}));
