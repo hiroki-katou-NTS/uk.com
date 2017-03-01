@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2015 Nittsu System to present.                   *
+ * Copyright (c) 2016 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.report.dom.insurance;
@@ -7,25 +7,63 @@ package nts.uk.ctx.pr.report.dom.insurance;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.pr.report.dom.company.CompanyCode;
+import nts.uk.ctx.pr.report.dom.salarydetail.aggregate.SalaryAggregateItemGetMemento;
+import nts.uk.ctx.pr.report.dom.salarydetail.aggregate.SalaryAggregateItemSetMemento;
 
 /**
  * The Class ChecklistPrintSetting.
  */
+
+/**
+ * Gets the show office.
+ *
+ * @return the show office
+ */
 @Getter
-public class ChecklistPrintSetting extends AggregateRoot{
-	
+public class ChecklistPrintSetting extends AggregateRoot {
+
 	/** The company code. */
 	private CompanyCode companyCode;
-	
+
 	/** The show category insurance item. */
 	private Boolean showCategoryInsuranceItem;
-	
+
 	/** The show delivery notice amount. */
 	private Boolean showDeliveryNoticeAmount;
-	
+
 	/** The show detail. */
 	private Boolean showDetail;
-	
+
 	/** The show office. */
 	private Boolean showOffice;
+
+	/**
+	 * Instantiates a new checklist print setting.
+	 *
+	 * @param memento
+	 *            the memento
+	 */
+	public ChecklistPrintSetting(ChecklistPrintSettingGetMemento memento) {
+		super();
+		this.companyCode = memento.getCompanyCode();
+		this.showCategoryInsuranceItem = memento.getShowCategoryInsuranceItem();
+		this.showDeliveryNoticeAmount = memento.getShowDeliveryNoticeAmount();
+		this.showDetail = memento.getShowDetail();
+		this.showOffice = memento.getShowOffice();
+	}
+
+	/**
+	 * Save to memento.
+	 *
+	 * @param memento
+	 *            the memento
+	 */
+	public void saveToMemento(ChecklistPrintSettingSetMemento memento) {
+		memento.setCompanyCode(this.companyCode);
+		memento.setShowCategoryInsuranceItem(this.showCategoryInsuranceItem);
+		memento.setShowDeliveryNoticeAmount(this.showDeliveryNoticeAmount);
+		memento.setShowDetail(this.showDetail);
+		memento.setShowOffice(this.showOffice);
+	}
+
 }
