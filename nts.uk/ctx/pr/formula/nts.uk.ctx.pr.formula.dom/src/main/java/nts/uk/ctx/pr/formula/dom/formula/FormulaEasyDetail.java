@@ -68,7 +68,7 @@ public class FormulaEasyDetail extends DomainObject {
 
 	private RoundAtr totalRounding;
 
-	private Range<Integer> limitValue;
+	private Range<BigDecimal> limitValue;
 
 	/**
 	 * @param companyCode
@@ -94,7 +94,7 @@ public class FormulaEasyDetail extends DomainObject {
 			Money baseFixedAmount, BaseMoneyAtr baseAmountDevision, DivideValue baseFixedValue,
 			DivideValueSet baseValueDevision, PremiumRate premiumRate, RoundAtr roundProcessingDevision,
 			WorkItemCode coefficientDivision, WorkValue coefficientFixedValue, AdjustmentAtr adjustmentDevision,
-			RoundAtr totalRounding, Range<Integer> limitValue) {
+			RoundAtr totalRounding, Range<BigDecimal> limitValue) {
 		super();
 		this.companyCode = companyCode;
 		this.formulaCode = formulaCode;
@@ -119,7 +119,7 @@ public class FormulaEasyDetail extends DomainObject {
 			String easyFormulaCode,String easyFormulaName, int easyFormulaTypeAtr,BigDecimal baseFixedAmount,
 			int baseAmountDevision, BigDecimal baseFixedValue, int baseValueDevision, BigDecimal premiumRate,
 			int roundProcessingDevision, String coefficientDivision, BigDecimal coefficientFixedValue, int adjustmentDevision,
-			int totalRounding, int minValue, int maxValue){
+			int totalRounding, BigDecimal minValue, BigDecimal maxValue){
 		return new FormulaEasyDetail(companyCode, new FormulaCode(formulaCode), new HistoryId(historyId),
 				new EasyFormulaCode(easyFormulaCode), new EasyFormulaName(easyFormulaName), EnumAdaptor.valueOf(easyFormulaTypeAtr, EasyFormulaTypeAtr.class)
 				, new Money(baseFixedAmount), EnumAdaptor.valueOf(baseAmountDevision, BaseMoneyAtr.class), new DivideValue(baseFixedValue)

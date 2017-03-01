@@ -5,7 +5,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class FormulaMasterCommand {
+public class UpdateFormulaMasterCommand {
 	
 	private String ccd;
 
@@ -14,5 +14,4 @@ public class FormulaMasterCommand {
 	private String formulaName;
 
 	private int difficultyAtr;
-	
 }

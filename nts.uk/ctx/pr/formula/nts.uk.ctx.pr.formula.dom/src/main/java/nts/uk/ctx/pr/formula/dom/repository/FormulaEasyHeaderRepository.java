@@ -20,4 +20,6 @@ public interface FormulaEasyHeaderRepository {
 	 * @return a formulaEasyHead
 	 */
 	Optional<FormulaEasyHead> find(String companyCode, String formulaCode, String historyId, String referenceMasterNo);
+	
+	void add(FormulaEasyHead formulaEasyHead);
 }

@@ -5,7 +5,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class FormulaEasyHeadCommand {
+public class AddFormulaEasyHeadCommand {
 	
 	private String companyCode;
 	

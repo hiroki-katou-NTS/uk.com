@@ -59,9 +59,9 @@ public class QcfmtFormulaEasyDetail implements Serializable{
 	public String gRoundAtr;
 	
 	@Column(name = "MIN_LIMIT_VALUE")
-	public String minLimitValue;
+	public BigDecimal minLimitValue;
 	
 	@Column(name = "MAX_LIMIT_VALUE	")
-	public String maxLimitValue;
+	public BigDecimal maxLimitValue;
 
 }

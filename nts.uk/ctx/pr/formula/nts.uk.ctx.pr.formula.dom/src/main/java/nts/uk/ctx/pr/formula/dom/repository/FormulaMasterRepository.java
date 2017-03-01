@@ -34,5 +34,7 @@ public interface FormulaMasterRepository {
 	
 	void add(FormulaMaster formulaMaster);
 	
+	void update(FormulaMaster formulaMaster);
+	
 	void remove(FormulaMaster formulaMaster);
 }

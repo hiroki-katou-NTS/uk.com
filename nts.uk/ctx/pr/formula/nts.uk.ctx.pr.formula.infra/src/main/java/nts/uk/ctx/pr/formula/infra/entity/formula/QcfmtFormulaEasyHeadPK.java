@@ -15,13 +15,13 @@ public class QcfmtFormulaEasyHeadPK implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@Column(name = "CCD")
-	public String ccd;
+	public String companyCode;
 	
 	@Column(name = "FORMULA_CD")
-	public String formulaCd;
+	public String formulaCode;
 	
 	@Column(name = "HIST_ID")
-	public String histId;
+	public String historyId;
 	
 	@Column(name ="REF_MASTER_NO")
 	public BigDecimal refMasterNo;

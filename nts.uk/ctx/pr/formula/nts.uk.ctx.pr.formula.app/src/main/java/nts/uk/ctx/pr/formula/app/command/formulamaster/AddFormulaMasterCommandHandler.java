@@ -1,5 +1,6 @@
 package nts.uk.ctx.pr.formula.app.command.formulamaster;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
@@ -12,15 +13,16 @@ import nts.uk.ctx.pr.formula.dom.primitive.FormulaName;
 import nts.uk.ctx.pr.formula.dom.repository.FormulaMasterRepository;
 import nts.uk.shr.com.context.AppContexts;
 
-public class FormulaMasterCommandHandler extends CommandHandler<FormulaMasterCommand>{
+@Stateless
+public class AddFormulaMasterCommandHandler extends CommandHandler<AddFormulaMasterCommand>{
 
 	@Inject
 	private FormulaMasterRepository formulaMasterRepository;
 	
 	@Override
-	protected void handle(CommandHandlerContext<FormulaMasterCommand> context) {
+	protected void handle(CommandHandlerContext<AddFormulaMasterCommand> context) {
 	
-		FormulaMasterCommand command = context.getCommand();
+		AddFormulaMasterCommand command = context.getCommand();
 		String companyCode = AppContexts.user().companyCode();
 		
 		FormulaMaster formulaMaster = new FormulaMaster(companyCode, 
