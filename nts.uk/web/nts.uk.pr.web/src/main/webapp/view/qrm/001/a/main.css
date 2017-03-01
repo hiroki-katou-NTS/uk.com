@@ -74,10 +74,10 @@
 }
 #profile-div div:NTH-CHILD(6) {
 	vertical-align: middle;
-    padding-left: 15px;
+	padding-left: 5px;
 }
 #combo-box7 {
-	width: 110px;
+	width: 120px;
 	height: 20px;
 }
 .column1 { width: 100px; }
@@ -114,7 +114,7 @@ table { margin-top: -4px; }
 
 #hr-14 { width: 100px; }
 #table-14 { width: 100px; }
-#table-14 input { width: 100px; padding-left: 10px; padding-right: 10px; }
+#table-14 input { width: 90px; padding-left: 5px; padding-right: 5px; }
 
 #hr-1 { width: 438px; }
 #table-1 { width: 440px; }
@@ -137,14 +137,10 @@ table { margin-top: -4px; }
 
 #hr-4, #hr-5, #hr-6 { width: 163px; }
 #table-4, #table-5, #table-6 { width: 165px; }
-#table-4 tbody td, #table-5 tbody td, #table-6 tbody td { height: 40px; } 
+#table-4 tbody td, #table-5 tbody td, #table-6 tbody td { height: 40px; text-align: right; padding-left: 10px; padding-right: 10px; } 
 #inp-5 { 
-	width: 155px; 
+	width: 135px; 
 	height: 40px;
-}
-#table-4 input {
-	padding-left: 10px;
-	padding-right: 10px;
 }
 
 #hr-7, #hr-8 { width: 383px }

@@ -5,14 +5,14 @@ var qrm001;
         var service;
         (function (service) {
             var paths = {
-                getRetirementPaymentInfo: "pr/core/retirement/payment/findByCompanyCode",
+                getRetirementPaymentList: "pr/core/retirement/payment/findByCompanyCodeandPersonId/{0}",
                 register: "pr/core/retirement/payment/register",
                 update: "pr/core/retirement/payment/update",
                 remove: "pr/core/retirement/payment/remove"
             };
-            function getRetirementPaymentInfo(command) {
+            function getRetirementPaymentList(personId) {
                 var dfd = $.Deferred();
-                nts.uk.request.ajax(paths.getRetirementPaymentInfo, command)
+                nts.uk.request.ajax(nts.uk.text.format(paths.getRetirementPaymentList, personId))
                     .done(function (res) {
                     dfd.resolve(res);
                 })
@@ -21,7 +21,7 @@ var qrm001;
                 });
                 return dfd.promise();
             }
-            service.getRetirementPaymentInfo = getRetirementPaymentInfo;
+            service.getRetirementPaymentList = getRetirementPaymentList;
             function registerRetirementPaymentInfo(command) {
                 var dfd = $.Deferred();
                 nts.uk.request.ajax(paths.register, command)

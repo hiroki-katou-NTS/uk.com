@@ -17,7 +17,7 @@
 		<ui:define name="content">
 			<div id="functions-area">
 				<button class="proceed" data-bind="click: function(){saveData(isUpdate);},enable: $root.errors.isEmpty">計算/登録</button>
-				<button class="danger" data-bind="click: deleteData, enable: isUpdate&#38;(!$root.errors.isEmpty)">削除</button>
+				<button class="danger" data-bind="click: deleteData, enable: (isUpdate)&#38;(!$root.errors.isEmpty)">削除</button>
 			</div>
 			<div id="contents-area" class="table">
 				<div class="cell column1">
@@ -52,13 +52,10 @@
 						<div class="cell">
 							<div>
 							<div id="combo-box7" data-bind="ntsComboBox: {
-												options: ko.observableArray([
-										         	{ code: 0, name: '0' },
-										            { code: 1, name: '1' }
-										       	]),
-												optionsValue: 'code',
-												value: retirementPaymentInfo().trialPeriodSet,
-												optionsText: 'name',
+												options: payDateList,
+												optionsValue: 'payDate',
+												value: date,
+												optionsText: 'payDate',
 												enable: isUpdate } "></div>	
 							</div>
 						</div>
@@ -80,8 +77,8 @@
 								<tbody>
 									<tr>
 										<td>
-											<input id="inp-14" data-bind="ntsNumberEditor: {
-														value: retirementPaymentInfo().payDate,
+											<input id="inp-14" data-bind="ntsTextEditor: {
+														value: date,
 														constraint: 'ResidenceCode',
 														option: { textmode: 'text' },
 														required: true, 
@@ -412,7 +409,7 @@
 							<div>
 								<textarea
 									data-bind="ntsMultilineEditor: {
-									value: retirementPaymentInfo().memo,
+									value: retirementPaymentInfo().withholdingMeno,
 									constraint: 'ResidenceCode',
 									option: { resizeable: true, textalign: 'left' },
 									required: true }" />
@@ -422,7 +419,7 @@
 							<div>
 								<textarea
 									data-bind="ntsMultilineEditor: {
-									value: retirementPaymentInfo().memo,
+									value: retirementPaymentInfo().statementMemo,
 									constraint: 'ResidenceCode',
 									option: { resizeable: true, textalign: 'left' },
 									required: true }" />

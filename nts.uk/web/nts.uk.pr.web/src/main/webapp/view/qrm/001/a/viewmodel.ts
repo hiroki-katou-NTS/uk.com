@@ -8,23 +8,29 @@ module qrm001.a.viewmodel {
         previous: KnockoutObservable<any>;
         next: KnockoutObservable<any>;
         date: KnockoutObservable<any>;
+        payDateList: KnockoutObservableArray<RetirementPaymentInfo>;
         retirementPaymentInfo: KnockoutObservable<RetirementPaymentInfo>;
         selectList10: KnockoutObservableArray<any>;
         fullPaytransfer: KnockoutObservableArray<BankDataSet>;
         currentPaytransfer: KnockoutObservableArray<BankDataSet>;
-        fullSetSelect: KnockoutObservableArray<Selector>;
-        currentSetSelect: KnockoutObservableArray<Selector>;
+        fullSetSelect: KnockoutObservableArray<any>;
+        currentSetSelect: KnockoutObservableArray<any>;
         isUpdate: any;
+        value: KnockoutObservable<any>;
         constructor() {
             var self = this;
-            console.log(self);
              self.employeeList = ko.observableArray([
                 new EmployeeInfo('0001','A'),
                 new EmployeeInfo('0002','B'),
                 new EmployeeInfo('0003','C')
             ]);
+            self.value = ko.observable(1);
+            self.value.subscribe(function(value){
+                console.log(value);
+            });
+            self.payDateList = ko.observableArray([]);
             self.isUpdate = false;
-            self.date = ko.observable(new Date("October 13, 2014 11:13:00"));
+            self.date = ko.observable("2016/12/01");
             self.currentEmployeeCode = ko.observable(0);
             self.currentEmployeeName = ko.observable('0001');
             self.currentEmployee = ko.observable(self.employeeList()[self.currentEmployeeCode()]);
@@ -37,7 +43,7 @@ module qrm001.a.viewmodel {
                 self.currentEmployeeName(self.currentEmployee().personId());}
             );
             self.retirementPaymentInfo = ko.observable(
-                new RetirementPaymentInfo('0001','2','3','4',5,'6','7','8','9','0','1',2 ,0,'4','5','6',7,8,'9')
+                new RetirementPaymentInfo('0001','2','3','4',5,'6','7','8','9','0','1',2 ,0,'4','5','6',7,8,'9','1')
             );
             self.fullSetSelect = ko.observableArray([
                 { name: '使用しない' },
@@ -84,33 +90,55 @@ module qrm001.a.viewmodel {
                     self.fullPaytransfer()[parseInt(item.dataSetName().substring(2, 3))-1].transferMoney(value);}
                 });
             });
-            self.retirementPaymentInfo().taxCalculationMethod.subscribe(function(value){
-                if(!value) {
+            self.retirementPaymentInfo.subscribe(function(){
+                if(!self.retirementPaymentInfo().taxCalculationMethod()){
                     self.autoCaculator();
-                    $(".caculator").css('background-color', '#ffc000') 
+                    $(".caculator").css('background-color', '#ffc000');
                 } else $(".caculator").css('background-color', '#cee6ff');
             });
-            self.retirementPaymentInfo().totalPaymentMoney.subscribe(function(value){console.log(value);});
+            self.retirementPaymentInfo().totalPaymentMoney.subscribe(function(value){
+                console.log(value);    
+            });
         }
         startPage(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
-            let command = { personId: "1", dateTime: new Date(self.date()) };
-            qrm001.a.service.getRetirementPaymentInfo(command).done(function(data) {
-                self.retirementPaymentInfo().exclusionYears(function(value){
-                    if(value) $('#inp-2').ntsError('set', 'ER001'); else $('#inp-2').ntsError('clear');   
-                });
-                self.retirementPaymentInfo().additionalBoardYears(function(value){
-                    if(value) $('#inp-3').ntsError('set', 'ER001'); else $('#inp-3').ntsError('clear');   
-                });
-                self.retirementPaymentInfo().boardYears(function(value){
-                    if(value) $('#inp-4').ntsError('set', 'ER001'); else $('#inp-4').ntsError('clear');   
-                });
-                self.retirementPaymentInfo().totalPaymentMoney(function(value){
-                    if(value) $('#inp-5').ntsError('set', 'ER001'); else $('#inp-5').ntsError('clear');   
-                });
+            let command = { personId: "1", dateTime: self.date() };
+            qrm001.a.service.getRetirementPaymentList('A0001').done(function(data) {
                 if(!data){ self.isUpdate = false; }
-                else self.isUpdate = true;
+                else { 
+                    self.payDateList.removeAll();
+                    data.forEach(function(item) {
+                        self.payDateList.push(new RetirementPaymentInfo(
+                            item.companyCode,
+                            item.personId,
+                            item.payDate,
+                            item.trialPeriodSet,
+                            item.exclusionYears,
+                            item.additionalBoardYears,
+                            item.boardYears,
+                            item.totalPaymentMoney,
+                            item.deduction1Money,
+                            item.deduction2Money,
+                            item.deduction3Money,
+                            item.retirementPayOption,
+                            item.taxCalculationMethod,
+                            item.incomeTaxMoney,
+                            item.cityTaxMoney,
+                            item.prefectureTaxMoney,
+                            item.totalDeclarationMoney,
+                            item.actualRecieveMoney,
+                            item.withholdingMeno,
+                            item.statementMemo));
+                    });
+                    self.date(_.first(self.payDateList()).payDate);
+                    self.retirementPaymentInfo(_.first(self.payDateList()));
+                    self.date.subscribe(function(value){ 
+                        let index: any = $("#combo-box7").igCombo("activeIndex");
+                        self.retirementPaymentInfo(self.payDateList()[index]); 
+                    });
+                    self.isUpdate = true; 
+                }
                 dfd.resolve();
             }).fail(function(res) {
                 
@@ -130,7 +158,7 @@ module qrm001.a.viewmodel {
                 dst.push(item);
             });
         } 
-        filter(dataset: KnockoutObservableArray<Selector>,currentSet: KnockoutObservableArray<BankDataSet>,index: number): any{
+        filter(dataset: KnockoutObservableArray<any>,currentSet: KnockoutObservableArray<BankDataSet>,index: number): any{
             var self = this;
             return _.filter(dataset(), function(o) { 
                     return  o.name == '使用しない' ||
@@ -142,7 +170,7 @@ module qrm001.a.viewmodel {
                             o.name !== currentSet()[4].dataSetName();
             });
         }
-        refreshSelect(source1: KnockoutObservableArray<Selector>, source2: KnockoutObservableArray<BankDataSet>, length: number): any{
+        refreshSelect(source1: KnockoutObservableArray<any>, source2: KnockoutObservableArray<BankDataSet>, length: number): any{
             var self = this;
             let array = [];
             for(let i=0;i<length;i++){
@@ -275,10 +303,6 @@ module qrm001.a.viewmodel {
             self.retirementPaymentInfo    
         }
     }
-    
-    interface Selector{
-        name: any;
-    }
 
     class BankDataSet{
         dataSetName:  KnockoutObservable<any>;
@@ -298,7 +322,7 @@ module qrm001.a.viewmodel {
     class RetirementPaymentInfo {
         companyCode: KnockoutObservable<any>;
         personId: KnockoutObservable<any>;
-        payDate: KnockoutObservable<any>;
+        payDate: any;
         trialPeriodSet: KnockoutObservable<any>;
         exclusionYears: KnockoutObservable<any>;
         additionalBoardYears: KnockoutObservable<any>;
@@ -314,7 +338,8 @@ module qrm001.a.viewmodel {
         prefectureTaxMoney: KnockoutObservable<any>;
         totalDeclarationMoney: KnockoutObservable<any>;
         actualRecieveMoney: KnockoutObservable<any>;
-        memo: KnockoutObservable<any>;
+        withholdingMeno: KnockoutObservable<any>;
+        statementMemo: KnockoutObservable<any>;
         constructor(
             companyCode: any,
             personId: any,
@@ -334,26 +359,32 @@ module qrm001.a.viewmodel {
             prefectureTaxMoney: any,
             totalDeclarationMoney: any,
             actualRecieveMoney: any,
-            memo: any ){
-                this.companyCode = ko.observable(companyCode);
-                this.personId = ko.observable(personId);
-                this.payDate = ko.observable(payDate);
-                this.trialPeriodSet = ko.observable(trialPeriodSet);
-                this.exclusionYears = ko.observable(exclusionYears);
-                this.additionalBoardYears = ko.observable(additionalBoardYears);
-                this.boardYears = ko.observable(boardYears);
-                this.totalPaymentMoney = ko.observable(totalPaymentMoney);
-                this.deduction1Money = ko.observable(deduction1Money);
-                this.deduction2Money = ko.observable(deduction2Money);
-                this.deduction3Money = ko.observable(deduction3Money);
-                this.retirementPayOption = ko.observable(retirementPayOption);
-                this.taxCalculationMethod = ko.observable(taxCalculationMethod);
-                this.incomeTaxMoney = ko.observable(incomeTaxMoney);
-                this.cityTaxMoney = ko.observable(cityTaxMoney);
-                this.prefectureTaxMoney = ko.observable(prefectureTaxMoney);
-                this.totalDeclarationMoney = ko.observable(totalDeclarationMoney);
-                this.actualRecieveMoney = ko.observable(actualRecieveMoney);
-                this.memo = ko.observable(memo);
+            withholdingMeno: any,
+            statementMemo: any ){
+                var self = this;
+                self.companyCode = ko.observable(companyCode);
+                self.personId = ko.observable(personId);
+                self.payDate = payDate;
+                self.trialPeriodSet = ko.observable(trialPeriodSet);
+                self.exclusionYears = ko.observable(exclusionYears);
+                self.additionalBoardYears = ko.observable(additionalBoardYears);
+                self.boardYears = ko.observable(boardYears);
+                self.totalPaymentMoney = ko.observable(totalPaymentMoney);
+                self.deduction1Money = ko.observable(deduction1Money);
+                self.deduction2Money = ko.observable(deduction2Money);
+                self.deduction3Money = ko.observable(deduction3Money);
+                self.retirementPayOption = ko.observable(retirementPayOption);
+                self.taxCalculationMethod = ko.observable(taxCalculationMethod);
+                self.incomeTaxMoney = ko.observable(incomeTaxMoney);
+                self.cityTaxMoney = ko.observable(cityTaxMoney);
+                self.prefectureTaxMoney = ko.observable(prefectureTaxMoney);
+                self.totalDeclarationMoney = ko.observable(totalDeclarationMoney);
+                self.actualRecieveMoney = ko.observable(actualRecieveMoney);
+                self.withholdingMeno = ko.observable(withholdingMeno);
+                self.statementMemo = ko.observable(statementMemo);
+                self.totalPaymentMoney.subscribe(function(value){
+                    console.log(value);
+                });
         }
     }
     class EmployeeInfo {

@@ -6,7 +6,11 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.pr.core.dom.retirement.payment.BankTransferOption;
+import nts.uk.ctx.pr.core.dom.retirement.payment.PaymentMoney;
+import nts.uk.shr.com.primitive.Memo;
 import nts.uk.shr.infra.data.entity.TableEntity;
 /**
  * 
@@ -66,6 +70,39 @@ public class QredtRetirementPayment extends TableEntity {
 	@Column(name="ACTUAL_RECIEVE_MNY")
 	public int actualRecieveMoney;
 	
-	@Column(name="MEMO")
-	public String memo;
+	@Column(name="BANK_TRANSFER_OP1")
+	public int bankTransferOption1;
+	
+	@Column(name="OP1_MNY")
+	public int option1Money;
+	
+	@Column(name="BANK_TRANSFER_OP2")
+	public int bankTransferOption2;
+	
+	@Column(name="OP2_MNY")
+	public int option2Money;
+	
+	@Column(name="BANK_TRANSFER_OP3")
+	public int bankTransferOption3;
+	
+	@Column(name="OP3_MNY")
+	public int option3Money;
+	
+	@Column(name="BANK_TRANSFER_OP4")
+	public int bankTransferOption4;
+	
+	@Column(name="OP4_MNY")
+	public int option4Money;
+	
+	@Column(name="BANK_TRANSFER_OP5")
+	public int bankTransferOption5;
+	
+	@Column(name="OP5_MNY")
+	public int option5Money;
+	
+	@Column(name="WITHHOLDING_MENO")
+	public String withholdingMeno;
+	
+	@Column(name="STATEMENT_MEMO")
+	public String statementMemo;
 }

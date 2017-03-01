@@ -31,5 +31,16 @@ public class RegisterRetirementPaymentCommand {
 	private int prefectureTaxMoney;
 	private int totalDeclarationMoney;
 	private int actualRecieveMoney;
-	private String memo;
+	private int bankTransferOption1;
+	private int Option1Money;
+	private int bankTransferOption2;
+	private int Option2Money;
+	private int bankTransferOption3;
+	private int Option3Money;
+	private int bankTransferOption4;
+	private int Option4Money;
+	private int bankTransferOption5;
+	private int Option5Money;
+	private String withholdingMeno;
+	private String statementMemo;
 }

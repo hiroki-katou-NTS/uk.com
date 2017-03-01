@@ -1,5 +1,7 @@
 package nts.uk.ctx.pr.core.ws.retirement.payment;
 
+import java.util.List;
+
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -43,10 +45,16 @@ public class RetirementPaymentWebService extends WebService{
 		this.registerRetirementPaymentCommandHandler.handle(command);
 	}
 	
-	@Path("findByCompanyCode")
+	@Path("findByCompanyCodeandPersonId/{personId}")
 	@POST
-	public RetirementPaymentDto findByCompanyCode(CommandData command){
-		return this.retirementPaymentFinder.findByCompanyCode(command.getPersonId(), command.getDateTime());
+	public List<RetirementPaymentDto> findByCompanyCodeandPersonId(@PathParam("personId") String personId){
+		return this.retirementPaymentFinder.findByCompanyCodeandPersonId(personId);
+	}
+	
+	@Path("findRetirementPaymentInfo")
+	@POST
+	public RetirementPaymentDto findRetirementPaymentInfo(CommandData command){
+		return this.retirementPaymentFinder.findRetirementPaymentInfo(command.getPersonId(), command.getDateTime());
 	}
 	
 	@Path("update")

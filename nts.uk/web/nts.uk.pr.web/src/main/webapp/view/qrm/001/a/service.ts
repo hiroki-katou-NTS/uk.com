@@ -1,14 +1,14 @@
 module qrm001.a.service {
     var paths: any = {
-        getRetirementPaymentInfo: "pr/core/retirement/payment/findByCompanyCode",
+        getRetirementPaymentList: "pr/core/retirement/payment/findByCompanyCodeandPersonId/{0}",
         register: "pr/core/retirement/payment/register",
         update: "pr/core/retirement/payment/update",
         remove: "pr/core/retirement/payment/remove"
     }
     
-    export function getRetirementPaymentInfo(command): JQueryPromise<any> {
+    export function getRetirementPaymentList(personId): JQueryPromise<any> {
         var dfd = $.Deferred<any>();
-        nts.uk.request.ajax(paths.getRetirementPaymentInfo, command)
+        nts.uk.request.ajax(nts.uk.text.format(paths.getRetirementPaymentList, personId))
             .done(function(res: any) {
                 dfd.resolve(res);
             })

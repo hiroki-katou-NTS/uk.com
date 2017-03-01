@@ -8,6 +8,7 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.core.dom.company.CompanyCode;
+import nts.uk.ctx.pr.core.dom.retirement.payment.BankTransferOption;
 import nts.uk.ctx.pr.core.dom.retirement.payment.PaymentMoney;
 import nts.uk.ctx.pr.core.dom.retirement.payment.PaymentYear;
 import nts.uk.ctx.pr.core.dom.retirement.payment.RetirementPayOption;
@@ -52,7 +53,18 @@ public class UpdateRetirementPaymentCommandHandler extends CommandHandler<Update
 				new PaymentMoney(command.getPrefectureTaxMoney()), 
 				new PaymentMoney(command.getTotalDeclarationMoney()),  
 				new PaymentMoney(command.getActualRecieveMoney()), 
-				new Memo(command.getMemo()));
+				EnumAdaptor.valueOf(command.getBankTransferOption1(), BankTransferOption.class),
+				new PaymentMoney(command.getOption1Money()),
+				EnumAdaptor.valueOf(command.getBankTransferOption2(), BankTransferOption.class),
+				new PaymentMoney(command.getOption2Money()),
+				EnumAdaptor.valueOf(command.getBankTransferOption3(), BankTransferOption.class),
+				new PaymentMoney(command.getOption3Money()),
+				EnumAdaptor.valueOf(command.getBankTransferOption4(), BankTransferOption.class),
+				new PaymentMoney(command.getOption4Money()),
+				EnumAdaptor.valueOf(command.getBankTransferOption5(), BankTransferOption.class),
+				new PaymentMoney(command.getOption5Money()),
+				new Memo(command.getWithholdingMeno()),
+				new Memo(command.getStatementMemo()));
 		
 		retirementPaymentRepository.update(retirementPayment);
 	}
