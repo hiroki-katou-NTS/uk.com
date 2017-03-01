@@ -7,8 +7,10 @@ taskArtifacts/
 .settings/
 ctionInitializer.mark
 nts.uk/.metadata/
+.sonar/
 nts.uk/pr/nts.uk.pr.web/WebContent/META-INF/MANIFEST.MF
 gradle_eclipse_all.bat
 gradle_eclipse_one.bat
 .metadata/
 .recommenders/
+.DS_Store
