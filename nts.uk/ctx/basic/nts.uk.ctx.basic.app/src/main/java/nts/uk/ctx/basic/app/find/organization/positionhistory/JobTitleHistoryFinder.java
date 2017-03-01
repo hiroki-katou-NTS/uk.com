@@ -3,15 +3,16 @@ package nts.uk.ctx.basic.app.find.organization.positionhistory;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import nts.uk.ctx.basic.app.find.organization.position.JobTitleDto;
-import nts.uk.ctx.basic.dom.organization.position.Position;
-import nts.uk.ctx.basic.dom.organization.position.PositionRepository;
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+
 import nts.uk.ctx.basic.dom.organization.positionhistory.PositionHistory;
 import nts.uk.ctx.basic.dom.organization.positionhistory.PositionHistoryRepository;
 import nts.uk.shr.com.context.AppContexts;
-
+@Stateless
 public class JobTitleHistoryFinder {
 
+	@Inject
 	private PositionHistoryRepository positionHistoryRepository;
 	
 

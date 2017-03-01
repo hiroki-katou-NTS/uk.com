@@ -3,10 +3,9 @@ package nts.uk.ctx.basic.dom.organization.positionhistory;
 import java.util.List;
 import java.util.Optional;
 
-
 public interface PositionHistoryRepository {
 
-	Optional<PositionHistory> findSingle(String companyCode, String historyID);
+	Optional<PositionHistory> findSingleHistory(String companyCode, String historyID);
 
 	void add(PositionHistory positionHistory);
 

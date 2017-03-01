@@ -60,7 +60,7 @@ public class JpaPositionHistoryReponsitory extends JpaRepository implements Posi
 	}
 	
 	@Override
-	public Optional<PositionHistory> findSingle(String companyCode,
+	public Optional<PositionHistory> findSingleHistory(String companyCode,
 			String historyID ) {
 		return this.queryProxy().query(FIND_SINGLE_HISTORY, CmnmtJobTitleHistory.class)
 				.setParameter("companyCode", "'" + companyCode + "'")

@@ -181,6 +181,8 @@ module cmm013.f.viewmodel {
 
 
         }
+        
+        
 
         
 
@@ -194,6 +196,9 @@ module cmm013.f.viewmodel {
         openDDialog() {
             nts.uk.ui.windows.sub.modal('/view/cmm/013/d/index.xhtml', { title: '画面ID：D', });
         }
+         
+        
+        
     }
 
 
