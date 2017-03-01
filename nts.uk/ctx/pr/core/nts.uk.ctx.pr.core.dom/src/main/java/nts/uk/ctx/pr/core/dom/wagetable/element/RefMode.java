@@ -9,14 +9,14 @@ import java.util.List;
 import lombok.Getter;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.core.dom.company.CompanyCode;
+import nts.uk.ctx.pr.core.dom.wagetable.ElementType;
 import nts.uk.ctx.pr.core.dom.wagetable.WtElementRefNo;
 
 /**
  * The Class WageTableRefTable.
  */
 @Getter
-public class MasterRefMode implements ElementMode {
-
+public class RefMode extends BaseMode {
 	/** The company code. */
 	private CompanyCode companyCode;
 
@@ -34,8 +34,8 @@ public class MasterRefMode implements ElementMode {
 	 * @param refNo
 	 *            the ref no
 	 */
-	public MasterRefMode(CompanyCode companyCode, WtElementRefNo refNo) {
-		super();
+	public RefMode(ElementType type, CompanyCode companyCode, WtElementRefNo refNo) {
+		super(type);
 		this.companyCode = companyCode;
 		this.refNo = refNo;
 

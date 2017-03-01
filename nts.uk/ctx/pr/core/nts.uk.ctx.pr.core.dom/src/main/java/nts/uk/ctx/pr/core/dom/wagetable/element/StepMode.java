@@ -12,21 +12,17 @@ import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.pr.core.dom.wagetable.ElementType;
 
 /**
- * The Class FamilyMemFixMode.
+ * The Class AgeFixMode.
  */
 @Getter
-public class FamilyMemFixMode implements ElementMode {
-
-	/** The Constant mode. */
-	public static final ElementType mode = ElementType.FamilyMemFix;
-
+public class StepMode extends BaseMode {
 	/** The upper limit. */
 	// Demension
 	private Integer upperLimit;
-	
+
 	/** The lower limit. */
 	private Integer lowerLimit;
-	
+
 	/** The interval. */
 	private Integer interval;
 	
@@ -34,14 +30,14 @@ public class FamilyMemFixMode implements ElementMode {
 	private List<RangeItem> items;
 	
 	/**
-	 * Instantiates a new family mem fix mode.
+	 * Instantiates a new age fix mode.
 	 *
 	 * @param lowerLimit the lower limit
 	 * @param upperLimit the upper limit
 	 * @param interval the interval
 	 */
-	public FamilyMemFixMode(Integer lowerLimit, Integer upperLimit, Integer interval) {
-		super();
+	public StepMode(ElementType type, Integer lowerLimit, Integer upperLimit, Integer interval) {
+		super(type);
 		this.lowerLimit = lowerLimit;
 		this.upperLimit = upperLimit;
 		this.interval = interval;
@@ -62,5 +58,4 @@ public class FamilyMemFixMode implements ElementMode {
 
 		this.items = items;
 	}
-
 }

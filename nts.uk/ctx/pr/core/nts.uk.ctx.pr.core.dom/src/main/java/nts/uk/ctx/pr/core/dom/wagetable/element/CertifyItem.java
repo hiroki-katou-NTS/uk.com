@@ -2,20 +2,18 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.pr.core.dom.wagetable.mode;
+package nts.uk.ctx.pr.core.dom.wagetable.element;
 
-import nts.uk.ctx.pr.core.dom.wagetable.ElementCount;
+import lombok.Getter;
 
 /**
- * The Interface DemensionalMode.
+ * The Class CodeItem.
  */
-public interface DemensionalMode {
+@Getter
+public class CertifyItem extends CodeItem {
 
-	/**
-	 * Gets the mode.
-	 *
-	 * @return the mode
-	 */
-	ElementCount getMode();
+	public CertifyItem(String certifyCode, String uuid) {
+		super(certifyCode, uuid);
+	}
 
 }

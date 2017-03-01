@@ -4,11 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.dom.wagetable.mode;
 
-import java.util.List;
-
 import lombok.Getter;
-import nts.arc.error.BusinessException;
-import nts.gul.collection.ListUtil;
 import nts.uk.ctx.pr.core.dom.wagetable.ElementCount;
 import nts.uk.ctx.pr.core.dom.wagetable.WageTableElement;
 
@@ -21,32 +17,14 @@ public class ThreeDimensionalMode implements DemensionalMode {
 	/** The Constant mode. */
 	public static final ElementCount mode = ElementCount.Three;
 
-	/** The Constant ELEMENT_SIZE. */
-	public static final int ELEMENT_SIZE = 3;
+	/** The element 1 st. */
+	private WageTableElement element1st;
 
-	/** The elements. */
-	private List<WageTableElement> elements;
+	/** The element 2 nd. */
+	private WageTableElement element2nd;
 
-	/**
-	 * Instantiates a new three dimensional mode.
-	 *
-	 * @param elements
-	 *            the elements
-	 */
-	public ThreeDimensionalMode(List<WageTableElement> elements) {
-		super();
-		// Validate
-		if (ListUtil.isEmpty(elements)) {
-			throw new BusinessException("???");
-		}
-
-		if (elements.size() != ELEMENT_SIZE) {
-			// TODO
-			throw new BusinessException("");
-		}
-
-		this.elements = elements;
-	}
+	/** The element 3 rd. */
+	private WageTableElement element3rd;
 
 	/*
 	 * (non-Javadoc)
@@ -56,5 +34,22 @@ public class ThreeDimensionalMode implements DemensionalMode {
 	@Override
 	public ElementCount getMode() {
 		return mode;
+	}
+
+	/**
+	 * Instantiates a new three dimensional mode.
+	 *
+	 * @param element1st
+	 *            the element 1 st
+	 * @param element2nd
+	 *            the element 2 nd
+	 * @param element3rd
+	 *            the element 3 rd
+	 */
+	public ThreeDimensionalMode(WageTableElement element1st, WageTableElement element2nd, WageTableElement element3rd) {
+		super();
+		this.element1st = element1st;
+		this.element2nd = element2nd;
+		this.element3rd = element3rd;
 	}
 }

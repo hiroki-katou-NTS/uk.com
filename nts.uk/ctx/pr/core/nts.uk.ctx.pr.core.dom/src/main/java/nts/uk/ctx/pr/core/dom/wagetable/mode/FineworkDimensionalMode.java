@@ -4,11 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.dom.wagetable.mode;
 
-import java.util.List;
-
 import lombok.Getter;
-import nts.arc.error.BusinessException;
-import nts.gul.collection.ListUtil;
 import nts.uk.ctx.pr.core.dom.wagetable.ElementCount;
 import nts.uk.ctx.pr.core.dom.wagetable.WageTableElement;
 
@@ -16,10 +12,10 @@ import nts.uk.ctx.pr.core.dom.wagetable.WageTableElement;
  * The Class FineworkDimensionalMode.
  */
 
-/*
- * (non-Javadoc)
- * 
- * @see nts.uk.ctx.pr.core.dom.wagetable.mode.DemensionalMode#getElements()
+/**
+ * Gets the element 3 rd.
+ *
+ * @return the element 3 rd
  */
 @Getter
 public class FineworkDimensionalMode implements DemensionalMode {
@@ -27,8 +23,14 @@ public class FineworkDimensionalMode implements DemensionalMode {
 	/** The Constant mode. */
 	public static final ElementCount mode = ElementCount.Finework;
 
-	/** The elements. */
-	private List<WageTableElement> elements;
+	/** The element 1 st. */
+	private WageTableElement element1st;
+
+	/** The element 2 nd. */
+	private WageTableElement element2nd;
+
+	/** The element 3 rd. */
+	private WageTableElement element3rd;
 
 	/*
 	 * (non-Javadoc)
@@ -40,14 +42,22 @@ public class FineworkDimensionalMode implements DemensionalMode {
 		return mode;
 	}
 
-	public FineworkDimensionalMode(List<WageTableElement> elements) {
+	/**
+	 * Instantiates a new finework dimensional mode.
+	 *
+	 * @param element1st
+	 *            the element 1 st
+	 * @param element2nd
+	 *            the element 2 nd
+	 * @param element3nd
+	 *            the element 3 nd
+	 */
+	public FineworkDimensionalMode(WageTableElement element1st, WageTableElement element2nd,
+			WageTableElement element3rd) {
 		super();
-
-		// Validate
-		if (ListUtil.isEmpty(elements)) {
-			throw new BusinessException("???");
-		}
-
-		this.elements = elements;
+		this.element1st = element1st;
+		this.element2nd = element2nd;
+		this.element3rd = element3rd;
 	}
+
 }
