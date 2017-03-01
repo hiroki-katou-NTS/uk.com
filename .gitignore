@@ -65,3 +65,11 @@ nts.uk/.metadata/version.ini
 nts.uk/pr/nts.uk.pr.web/WebContent/META-INF/MANIFEST.MF
 gradle_eclipse_all.bat
 gradle_eclipse_one.bat
+*.class
+nts.uk/file/pr/nts.uk.file.pr.app/.gitignore
+nts.uk/pr/file/nts.uk.pr.file.infra/bin/META-INF/beans.xml
+nts.uk/pr/file/nts.uk.pr.file.infra/bin/report/company.xlsx
+nts.uk/pr/file/nts.uk.pr.file.infra/bin/report/desktop.ini
+nts.uk/pr/file/nts.uk.pr.file.infra/bin/report/qpp021.xlsx
+nts.uk/pr/proto/nts.uk.pr.proto.ws/bin/nts/uk/ctx/pr/proto/ws/gitkeep
+nts.uk/pr/shr/nts.uk.shr.com/bin/META-INF/persistence.xml
