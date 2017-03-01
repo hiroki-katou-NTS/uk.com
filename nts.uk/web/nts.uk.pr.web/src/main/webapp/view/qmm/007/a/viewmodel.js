@@ -36,6 +36,7 @@ var nts;
                                     ]);
                                     self.selectedId = ko.observable('');
                                     self.selectedId.subscribe(function (id) {
+                                        console.log(id);
                                         if (id) {
                                             if (id.length < 4) {
                                                 self.selectedId(self.getLatestHistoryId(id));
@@ -86,15 +87,25 @@ var nts;
                                     nts.uk.ui.windows.setShared('isLatestHistory', self.isLatestHistory());
                                     nts.uk.ui.windows.sub.modal('/view/qmm/007/c/index.xhtml', { title: '会社一律金額 の 登録 > 履歴の編集', dialogClass: 'no-close' }).onClosed(function () {
                                         if (nts.uk.ui.windows.getShared('isRemoved')) {
-                                            a.service.find(self.getSecondLatestHistoryId(self.unitPriceHistoryModel().unitPriceCode())).done(function (dto) {
-                                                self.setUnitPriceHistoryModel(dto);
-                                                self.unitPriceHistoryModel().endMonth('9999/12');
-                                                a.service.update(ko.toJS(self.unitPriceHistoryModel())).done(function () {
-                                                    self.loadUnitPriceHistoryList().done(function () {
-                                                        self.selectedId(self.getLatestHistoryId(self.unitPriceHistoryModel().unitPriceCode()));
+                                            var secondLatestHistory = self.getSecondLatestHistoryId(self.unitPriceHistoryModel().unitPriceCode());
+                                            if (secondLatestHistory) {
+                                                a.service.find(secondLatestHistory).done(function (dto) {
+                                                    self.setUnitPriceHistoryModel(dto);
+                                                    self.unitPriceHistoryModel().endMonth('9999/12');
+                                                    a.service.update(ko.toJS(self.unitPriceHistoryModel())).done(function () {
+                                                        self.loadUnitPriceHistoryList().done(function () {
+                                                            self.selectedId(self.getLatestHistoryId(self.unitPriceHistoryModel().unitPriceCode()));
+                                                        });
                                                     });
                                                 });
-                                            });
+                                            }
+                                            else {
+                                                self.loadUnitPriceHistoryList().done(function () {
+                                                    self.setUnitPriceHistoryModel(self.getDefaultUnitPriceHistory());
+                                                    self.isInputEnabled(false);
+                                                    self.selectedId(undefined);
+                                                });
+                                            }
                                         }
                                     });
                                 };
@@ -170,14 +181,14 @@ var nts;
                                 };
                                 ScreenModel.prototype.getSecondLatestHistoryId = function (code) {
                                     var self = this;
-                                    var lastestHistoryId = '';
+                                    var latestHistoryId = '';
                                     self.historyList().some(function (node) {
                                         if (code == node.id) {
-                                            lastestHistoryId = node.childs[1].id;
+                                            latestHistoryId = node.childs[1] ? node.childs[1].id : undefined;
                                             return true;
                                         }
                                     });
-                                    return lastestHistoryId;
+                                    return latestHistoryId;
                                 };
                                 ScreenModel.prototype.loadUnitPriceDetail = function (id) {
                                     var self = this;

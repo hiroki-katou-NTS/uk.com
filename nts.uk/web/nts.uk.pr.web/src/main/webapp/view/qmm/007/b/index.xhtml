@@ -16,8 +16,8 @@
 			<com:scriptfile path="viewmodel.js" />
 			<script type="text/javascript">
 				var dialogSize = {
-					width : 600,
-					height : 420
+					width : 580,
+					height : 360
 				};
 			</script>
 		</ui:define>
@@ -38,7 +38,7 @@
 								data-bind="ntsFormLabel: { required: true }">期間</div></td>
 						<td><span id="inpStartMonth"
 							data-bind="ntsDatePicker: {value: startMonth, dateFormat: 'yyyy/MM', enable: $parent.historyTakeOver=='beginning'}"></span><label
-							data-bind="text: endMonth"></label></td>
+							data-bind="text: ' ~ '+endMonth()"></label></td>
 					</tr>
 					<tr>
 						<td><div id="lbl_008"

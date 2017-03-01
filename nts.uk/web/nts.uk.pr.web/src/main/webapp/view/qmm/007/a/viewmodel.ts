@@ -51,7 +51,7 @@ module nts.uk.pr.view.qmm007.a {
                 ]);
 
                 self.selectedId = ko.observable('');
-                self.selectedId.subscribe(id => {
+                self.selectedId.subscribe(id => {console.log(id);
                     if (id) {
                         // when selected a parent node
                         if (id.length < 4) {
@@ -125,19 +125,28 @@ module nts.uk.pr.view.qmm007.a {
                 nts.uk.ui.windows.setShared('isLatestHistory', self.isLatestHistory());
                 nts.uk.ui.windows.sub.modal('/view/qmm/007/c/index.xhtml', { title: '会社一律金額 の 登録 > 履歴の編集', dialogClass: 'no-close' }).onClosed(() => {
                     if (nts.uk.ui.windows.getShared('isRemoved')) {
-                        // Get the latest history
-                        service.find(self.getSecondLatestHistoryId(self.unitPriceHistoryModel().unitPriceCode())).done(dto => {
-                            self.setUnitPriceHistoryModel(dto);
-                            // Update endMonth
-                            self.unitPriceHistoryModel().endMonth('9999/12');
-                            service.update(ko.toJS(self.unitPriceHistoryModel())).done(() => {
-                                // Reload UnitPriceHistoryList
-                                self.loadUnitPriceHistoryList().done(() => {
-                                    // Select latest history
-                                    self.selectedId(self.getLatestHistoryId(self.unitPriceHistoryModel().unitPriceCode()));
+                        let secondLatestHistory = self.getSecondLatestHistoryId(self.unitPriceHistoryModel().unitPriceCode());
+                        if (secondLatestHistory) {
+                            // Get the latest history
+                            service.find(secondLatestHistory).done(dto => {
+                                self.setUnitPriceHistoryModel(dto);
+                                // Update endMonth
+                                self.unitPriceHistoryModel().endMonth('9999/12');
+                                service.update(ko.toJS(self.unitPriceHistoryModel())).done(() => {
+                                    // Reload UnitPriceHistoryList
+                                    self.loadUnitPriceHistoryList().done(() => {
+                                        // Select latest history
+                                        self.selectedId(self.getLatestHistoryId(self.unitPriceHistoryModel().unitPriceCode()));
+                                    });
                                 });
                             });
-                        });
+                        } else {
+                            self.loadUnitPriceHistoryList().done(() => {
+                                self.setUnitPriceHistoryModel(self.getDefaultUnitPriceHistory());
+                                self.isInputEnabled(false);
+                                self.selectedId(undefined);
+                            });
+                        }
                     }
                 });
             }
@@ -243,17 +252,17 @@ module nts.uk.pr.view.qmm007.a {
              */
             private getSecondLatestHistoryId(code: string): string {
                 var self = this;
-                var lastestHistoryId: string = '';
+                var latestHistoryId: string = '';
                 //find the group of the history by unit price code
                 self.historyList().some(node => {
                     if (code == node.id) {
                         // get the historyId of the first element (latest history)
-                        lastestHistoryId = node.childs[1].id;
+                        latestHistoryId = node.childs[1] ? node.childs[1].id : undefined;
                         // break the execution
                         return true;
                     }
                 });
-                return lastestHistoryId;
+                return latestHistoryId;
             }
 
             /**
