@@ -70,7 +70,7 @@ module qmm003.a.viewmodel {
 
                     self.labelSubsub(self.filteredData2()[co1]);
                     if (self.labelSubsub() == null) {
-                        self.labelSubsub(new Node("11", "22", [], null, null, null));
+                        self.labelSubsub(new Node("11", "22", []));
                     }
                 } else {
                     self.editMode = true;
@@ -145,7 +145,7 @@ module qmm003.a.viewmodel {
         resetData(): void {
             let self = this;
             self.editMode = false;
-            self.curentNode(new Node("", "", [], null, null, null));
+            self.curentNode(new Node("", "", []));
             self.singleSelectedCode("");
             self.selectedCode("");
             self.labelSubsub("");
@@ -180,30 +180,30 @@ module qmm003.a.viewmodel {
             let self = this;
             // 11.初期データ取得処理 11. Initial data acquisition processing [住民税納付先マスタ.SEL-1] 
             self.itemList = ko.observableArray([
-                new Node('1', '青森市', [], null, null, null),
-                new Node('2', '秋田市', [], null, null, null),
-                new Node('3', '山形市', [], null, null, null),
-                new Node('4', '福島市', [], null, null, null),
-                new Node('5', '水戸市', [], null, null, null),
-                new Node('6', '宇都宮市', [], null, null, null),
-                new Node('7', '川越市', [], null, null, null),
-                new Node('8', '熊谷市', [], null, null, null),
-                new Node('9', '浦和市', [], null, null, null)
+                new Node('1', '青森市', []),
+                new Node('2', '秋田市', []),
+                new Node('3', '山形市', []),
+                new Node('4', '福島市', []),
+                new Node('5', '水戸市', []),
+                new Node('6', '宇都宮市', []),
+                new Node('7', '川越市', []),
+                new Node('8', '熊谷市', []),
+                new Node('9', '浦和市', [])
             ]);
 
             // data of treegrid
             self.items = ko.observableArray([]);
             self.mode = ko.observable(null);
             self.currentCode = ko.observable(null);
-            self.item1s = ko.observable(new Node('', '', [], null, null, null));
+            self.item1s = ko.observable(new Node('', '', []));
             self.isEnable = ko.observable(true);
             self.isEditable = ko.observable(true);
             self.nameBySelectedCode = ko.observable(null);
             self.Value = ko.observable(null);
 
             self.singleSelectedCode = ko.observable("022012");
-            self.curentNode = ko.observable(new Node('022012', '青森市', [], null, null, null));
-            self.labelSubsub = ko.observable(new Node('052019', '秋田市', [], null, null, null));
+            self.curentNode = ko.observable(new Node('022012', '青森市', []));
+            self.labelSubsub = ko.observable(new Node('052019', '秋田市', []));
             self.selectedCode = ko.observable("1");
             //self.testNode = ko.observable([]);
 
@@ -261,7 +261,6 @@ module qmm003.a.viewmodel {
                     (qmm003.a.service.getRegionPrefecture()).done(function(locationData: Array<service.model.RegionObject>) {
                         self.japanLocation = locationData;
                         self.buildResidentalTaxTree();
-                        console.log(self.test());
                         self.items(self.test());
                     });
 
@@ -281,35 +280,31 @@ module qmm003.a.viewmodel {
 
         buildResidentalTaxTree() {
             let self = this;
-             var child= [];
-            //console.log(self.residentalTaxList());
-            console.log(self.japanLocation);
-
-            _.forEach(self.residentalTaxList(), function(objResi: qmm003.a.service.model.ResidentialTax) {
-                console.log(objResi.prefectureCode);
-                _.forEach(self.japanLocation, function(objRegion: service.model.RegionObject) {
+            var child = [];
+            let i = 0;
+            _.each(self.residentalTaxList(), function(objResi: qmm003.a.service.model.ResidentialTax) {
+                _.each(self.japanLocation, function(objRegion: service.model.RegionObject) {
                     let cout: boolean = false;
-                    //console.log(objRegi);
-                    _.forEach(objRegion.prefectures, function(objPrefecture: service.model.PrefectureObject) {
+                    let coutPre: boolean = false;
+                    _.each(objRegion.prefectures, function(objPrefecture: service.model.PrefectureObject) {
                         if (objPrefecture.prefectureCode === objResi.prefectureCode) {
-                            console.log(objPrefecture.prefectureCode);
-                            _.forEach(self.test(), function(obj: Node) {
+                            _.each(self.test(), function(obj: Node) {
                                 if (obj.code === objRegion.regionCode) {
-                                    _.forEach(obj.childs, function(objChild: Node){
-                                        if(objChild.code === objPrefecture.prefectureCode){
-                                        objChild.childs.push(new Node(objResi.resiTaxCode, objResi.resiTaxAutonomy, [], '', '', ''));
-                                            }
-                                        else{
-                                          obj.childs.push(new Node(objPrefecture.prefectureCode,objPrefecture.prefectureName,[new Node(objResi.resiTaxCode, objResi.resiTaxAutonomy, [], '', '', '')],'','',''));
-                                           console.log(obj.childs); 
+                                    _.each(obj.childs, function(objChild: Node) {
+                                        if (objChild.code === objPrefecture.prefectureCode) {
+                                            objChild.childs.push(new Node(objResi.resiTaxCode, objResi.resiTaxAutonomy, []));
+                                            coutPre = true;
                                         }
                                     });
-                                    cout= true;
+                                    if (coutPre === false) {
+                                        obj.childs.push(new Node(objPrefecture.prefectureCode, objPrefecture.prefectureName, [new Node(objResi.resiTaxCode, objResi.resiTaxAutonomy, [])]));
+                                    }
+                                    cout = true;
                                 }
                             });
                             if (cout === false) {
-                                var chi =[];
-                                self.test.push(new Node(objRegion.regionCode, objRegion.regionName, [new Node(objPrefecture.prefectureCode,objPrefecture.prefectureName,[new Node(objResi.resiTaxCode, objResi.resiTaxAutonomy,[],'','','')],'','','')], '', '', ''));
+                                var chi = [];
+                                self.test.push(new Node(objRegion.regionCode, objRegion.regionName, [new Node(objPrefecture.prefectureCode, objPrefecture.prefectureName, [new Node(objResi.resiTaxCode, objResi.resiTaxAutonomy, [])])]));
                             }
                         }
                     });
@@ -319,33 +314,18 @@ module qmm003.a.viewmodel {
         }
 
 
-        removeNotUseObj(items: Array<Node>, prefecture: string): void {
-            _.remove(items, function(obj: Node) {
-                return obj.code === prefecture;
-
-            });
-
-        }
-
-
 
     }
     export class Node {
         code: string;
         name: string;
         nodeText: string;
-        parentCode: string;
-        parentName: string;
-        treeCode: string;
         childs: any;
-        constructor(code: string, name: string, childs: Array<Node>, parentCode: string, parentName: string, treeCode: string) {
+        constructor(code: string, name: string, childs: Array<Node>) {
             let self = this;
             self.code = code;
             self.name = name;
             self.nodeText = self.code + ' ' + self.name;
-            self.parentCode = parentCode;
-            self.parentName = parentName;
-            self.treeCode = treeCode;
             self.childs = childs;
 
         }
