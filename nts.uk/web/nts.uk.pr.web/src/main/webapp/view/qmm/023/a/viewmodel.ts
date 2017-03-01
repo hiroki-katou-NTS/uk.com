@@ -13,11 +13,13 @@ module qmm023.a.viewmodel {
             self.init();
             //get event when hover on table by subcribe
             self.currentCode.subscribe(function(codeChanged) {
-                if (codeChanged !== null) {
+                if (!nts.uk.text.isNullOrEmpty(codeChanged)) {
                     self.currentTax(ko.mapping.fromJS(self.getTax(codeChanged)));
                     self.allowEditCode(false);
                     self.isUpdate(true);
                     self.isEnableDeleteBtn(true);
+                } else {
+                    self.refreshLayout();
                 }
             });
         }
@@ -62,13 +64,14 @@ module qmm023.a.viewmodel {
 
         insertUpdateData(): void {
             let self = this;
-            let insertUpdateModel = new InsertUpdateModel(self.currentTax().code, self.currentTax().name, self.currentTax().taxLimit);
+            let insertUpdateModel = new InsertUpdateModel(nts.uk.text.padLeft(self.currentTax().code(), '0', 2), self.currentTax().name, self.currentTax().taxLimit);
             service.insertUpdateData(self.isUpdate(), insertUpdateModel).done(function() {
                 if (self.isUpdate() === false) {
-                    self.items.push(_.cloneDeep(ko.mapping.toJS(self.currentTax())));
+                    let itemInsert = new TaxModel(nts.uk.text.padLeft(self.currentTax().code(), '0', 2), self.currentTax().name, self.currentTax().taxLimit);
+                    self.items.push(_.cloneDeep(ko.mapping.toJS(itemInsert)));
                     self.isUpdate(true);
                     self.allowEditCode(false);
-                    self.currentCode(self.currentTax().code());
+                    self.currentCode(itemInsert.code);
                 } else {
                     let indexItemUpdate = _.findIndex(self.items(), function(item) { return item.code == self.currentTax().code; });
                     self.items().splice(indexItemUpdate, 1, _.cloneDeep(ko.mapping.toJS(self.currentTax())));

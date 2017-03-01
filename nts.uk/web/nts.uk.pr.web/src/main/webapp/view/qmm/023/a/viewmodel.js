@@ -10,11 +10,14 @@ var qmm023;
                     self.init();
                     //get event when hover on table by subcribe
                     self.currentCode.subscribe(function (codeChanged) {
-                        if (codeChanged !== null) {
+                        if (!nts.uk.text.isNullOrEmpty(codeChanged)) {
                             self.currentTax(ko.mapping.fromJS(self.getTax(codeChanged)));
                             self.allowEditCode(false);
                             self.isUpdate(true);
                             self.isEnableDeleteBtn(true);
+                        }
+                        else {
+                            self.refreshLayout();
                         }
                     });
                 }
@@ -54,13 +57,14 @@ var qmm023;
                 };
                 ScreenModel.prototype.insertUpdateData = function () {
                     var self = this;
-                    var insertUpdateModel = new InsertUpdateModel(self.currentTax().code, self.currentTax().name, self.currentTax().taxLimit);
+                    var insertUpdateModel = new InsertUpdateModel(nts.uk.text.padLeft(self.currentTax().code(), '0', 2), self.currentTax().name, self.currentTax().taxLimit);
                     a.service.insertUpdateData(self.isUpdate(), insertUpdateModel).done(function () {
                         if (self.isUpdate() === false) {
-                            self.items.push(_.cloneDeep(ko.mapping.toJS(self.currentTax())));
+                            var itemInsert = new TaxModel(nts.uk.text.padLeft(self.currentTax().code(), '0', 2), self.currentTax().name, self.currentTax().taxLimit);
+                            self.items.push(_.cloneDeep(ko.mapping.toJS(itemInsert)));
                             self.isUpdate(true);
                             self.allowEditCode(false);
-                            self.currentCode(self.currentTax().code());
+                            self.currentCode(itemInsert.code);
                         }
                         else {
                             var indexItemUpdate = _.findIndex(self.items(), function (item) { return item.code == self.currentTax().code; });
