@@ -13,7 +13,8 @@
 			<com:scriptfile path="service.js" />
 			<com:scriptfile path="viewmodel.js" />
 			<com:ValidatorScript>
-			    nts.uk.ctx.pr.core.dom.insurance.KanaAddress
+			    nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroupCode
+			    nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroupName
 			 </com:ValidatorScript>
 		</ui:define>
 
@@ -21,7 +22,7 @@
 			<div id="functions-area" class="divHeader">
 				<button id="btn_new" class="btnStyle"
 					data-bind="click: resetValueCertifyGroup">新規</button>
-				<button class="proceed btnStyle" id="btn_register"
+				<button class="proceed btnStyle" id="btn_saveCertifyGroup"
 					data-bind="click: saveCertifyGroup">登録</button>
 				<button class="danger btnStyle" id="btn_delete"
 					data-bind="click: deleteCertifyGroup">削除</button>
@@ -33,9 +34,9 @@
 						<td id="contents-left"
 							class="bg-green caret-right caret-background">
 							<div
-								data-bind="ntsSearchBox: {comId: 'sdufisdfui', items: lstCertifyGroup, selected: selectCodeLstLstCertifyGroup, selectedKey: 'code', fields: ['code','name']}" />
+								data-bind="ntsSearchBox: {comId: 'certifyGroupList', items: lstCertifyGroup, selected: selectCodeLstLstCertifyGroup, selectedKey: 'code', fields: ['code','name']}" />
 							<div id="search_001">
-								<table id="single-list"
+								<table id="certifyGroupList"
 									data-bind="ntsGridList: {
 									width: 300,
 									height: 500,
@@ -56,13 +57,14 @@
 								</div>
 								<input id="inp_code" class="tr50" data-name="code"
 									data-bind="ntsTextEditor: {value: code,
-											constraint: 'OfficeCode', 
+											constraint: 'CertifyGroupCode', 
 											option: $root.textEditorOption, 
-											enable: true,
+											readonly: isReadOnly, 
+											enable: isEnable,
 											required:true}" />
 								<input class="tr180" id="inp_name" data-name="name"
 									data-bind="ntsTextEditor: {value: name,
-											constraint: 'OfficeName', 
+											constraint: 'CertifyGroupName', 
 											option: $root.textEditorOption, 
 											enable: true,
 											required:true}" />

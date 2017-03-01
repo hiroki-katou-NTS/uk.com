@@ -20,6 +20,7 @@ import javax.persistence.criteria.Root;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroup;
+import nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroupCode;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroupRepository;
 import nts.uk.ctx.pr.core.infra.entity.wagetable.QwtmtWagetableCertifyG;
 import nts.uk.ctx.pr.core.infra.entity.wagetable.QwtmtWagetableCertifyGPK;
@@ -131,6 +132,14 @@ public class JpaCertifyGroupRepository extends JpaRepository implements CertifyG
 		List<CertifyGroup> lstCertifyGroup = query.getResultList().stream().map(item -> toDomain(item))
 				.collect(Collectors.toList());
 		return lstCertifyGroup;
+	}
+
+	@Override
+	public boolean isDuplicateCode(CompanyCode companyCode, CertifyGroupCode code) {
+		if (findById(companyCode, code.v()).isPresent()) {
+			return true;
+		}
+		return false;
 	}
 
 }

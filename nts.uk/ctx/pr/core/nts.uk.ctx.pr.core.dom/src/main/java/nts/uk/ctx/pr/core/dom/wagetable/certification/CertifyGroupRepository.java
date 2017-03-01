@@ -50,4 +50,13 @@ public interface CertifyGroupRepository {
 	 */
 	Optional<CertifyGroup> findById(CompanyCode companyCode, String code);
 
+	/**
+	 * Checks if is duplicate code.
+	 *
+	 * @param companyCode the company code
+	 * @param code the code
+	 * @return true, if is duplicate code
+	 */
+	boolean isDuplicateCode(CompanyCode companyCode, CertifyGroupCode code);
+
 }
