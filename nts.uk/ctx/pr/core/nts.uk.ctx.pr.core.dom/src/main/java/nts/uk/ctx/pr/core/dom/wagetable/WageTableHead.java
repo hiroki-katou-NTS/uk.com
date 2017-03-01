@@ -30,25 +30,16 @@ public class WageTableHead extends DomainObject {
 	/** The demension set. */
 	private ElementCount demensionSet;
 
-	/** The dimensional mode. */
-	private DemensionalMode dimensionSetting;
-
 	/** The memo. */
 	private Memo memo;
 
 	public WageTableHead(CompanyCode companyCode, WageTableCode code, WageTableName name, ElementCount demensionSet,
-			DemensionalMode dimensionSetting, Memo memo) {
+			Memo memo) {
 		super();
-
-		if (!dimensionSetting.getMode().equals(demensionSet)) {
-			
-		}
-
 		this.companyCode = companyCode;
 		this.code = code;
 		this.name = name;
 		this.demensionSet = demensionSet;
-		this.dimensionSetting = dimensionSetting;
 		this.memo = memo;
 	}
 

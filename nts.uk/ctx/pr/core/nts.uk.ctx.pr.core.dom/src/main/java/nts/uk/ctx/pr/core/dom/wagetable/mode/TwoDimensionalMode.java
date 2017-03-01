@@ -4,11 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.dom.wagetable.mode;
 
-import java.util.List;
-
 import lombok.Getter;
-import nts.arc.error.BusinessException;
-import nts.gul.collection.ListUtil;
 import nts.uk.ctx.pr.core.dom.wagetable.ElementCount;
 import nts.uk.ctx.pr.core.dom.wagetable.WageTableElement;
 
@@ -21,33 +17,11 @@ public class TwoDimensionalMode implements DemensionalMode {
 	/** The Constant mode. */
 	public static final ElementCount mode = ElementCount.Two;
 
-	/** The Constant ELEMENT_SIZE. */
-	public static final int ELEMENT_SIZE = 2;
+	/** The element 1 st. */
+	private WageTableElement element1st;
 
-	/** The elements. */
-	private List<WageTableElement> elements;
-
-	/**
-	 * Instantiates a new two dimensional mode.
-	 *
-	 * @param elements
-	 *            the elements
-	 */
-	public TwoDimensionalMode(List<WageTableElement> elements) {
-		super();
-
-		// Validate
-		if (ListUtil.isEmpty(elements)) {
-			throw new BusinessException("???");
-		}
-
-		if (elements.size() != ELEMENT_SIZE) {
-			// TODO
-			throw new BusinessException("");
-		}
-
-		this.elements = elements;
-	}
+	/** The element 2 nd. */
+	private WageTableElement element2nd;
 
 	/*
 	 * (non-Javadoc)
@@ -59,4 +33,17 @@ public class TwoDimensionalMode implements DemensionalMode {
 		return mode;
 	}
 
+	/**
+	 * Instantiates a new two dimensional mode.
+	 *
+	 * @param element1st
+	 *            the element 1 st
+	 * @param element2nd
+	 *            the element 2 nd
+	 */
+	public TwoDimensionalMode(WageTableElement element1st, WageTableElement element2nd) {
+		super();
+		this.element1st = element1st;
+		this.element2nd = element2nd;
+	}
 }

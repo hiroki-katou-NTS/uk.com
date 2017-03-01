@@ -11,6 +11,7 @@ import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 import nts.uk.ctx.pr.core.dom.wagetable.WageTableCode;
+import nts.uk.ctx.pr.core.dom.wagetable.mode.DemensionalMode;
 
 /**
  * The Class WageTableHist.
@@ -31,6 +32,9 @@ public class WageTableHistory extends DomainObject {
 	private MonthRange applyRange;
 
 	/** The elements. */
-	private List<WageTableAmount> elements;
+	private List<WageTableItem> elements;
+
+	/** The dimensional mode. */
+	private DemensionalMode dimensionSetting;
 
 }

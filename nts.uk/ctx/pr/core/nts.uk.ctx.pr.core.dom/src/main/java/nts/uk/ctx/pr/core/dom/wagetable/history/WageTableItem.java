@@ -13,7 +13,7 @@ import nts.uk.ctx.pr.core.dom.wagetable.ElementId;
  * The Class WageTableAmount.
  */
 @Getter
-public class WageTableAmount {
+public class WageTableItem {
 
 	// Demension no 1.
 	/** The element 1 id. */
