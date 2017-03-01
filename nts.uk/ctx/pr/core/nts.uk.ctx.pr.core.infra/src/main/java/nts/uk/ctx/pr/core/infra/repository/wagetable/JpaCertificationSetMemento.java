@@ -1,12 +1,11 @@
 /******************************************************************
- * Copyright (c) 2016 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.core.infra.repository.wagetable;
 
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.CertificationSetMemento;
-import nts.uk.ctx.pr.core.infra.entity.wagetable.QcemtCertificationPK;
 import nts.uk.ctx.pr.core.infra.entity.wagetable.QwtmtWagetableCertify;
 import nts.uk.ctx.pr.core.infra.entity.wagetable.QwtmtWagetableCertifyPK;
 
@@ -23,6 +22,8 @@ public class JpaCertificationSetMemento implements CertificationSetMemento {
 	 *
 	 * @param typeValue
 	 *            the type value
+	 * @param groupCode
+	 *            the group code
 	 */
 	public JpaCertificationSetMemento(QwtmtWagetableCertify typeValue, String groupCode) {
 		this.typeValue = typeValue;
@@ -60,11 +61,12 @@ public class JpaCertificationSetMemento implements CertificationSetMemento {
 		this.typeValue.setQwtmtWagetableCertifyPK(qcemtCertificationPK);
 	}
 
-	/**
-	 * Sets the name.
-	 *
-	 * @param name
-	 *            the new name
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.dom.wagetable.certification.CertificationSetMemento#
+	 * setName(java.lang.String)
 	 */
 	@Override
 	public void setName(String name) {

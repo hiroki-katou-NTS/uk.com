@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2015 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.core.infra.repository.wagetable;
@@ -7,10 +7,11 @@ package nts.uk.ctx.pr.core.infra.repository.wagetable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.Certification;
+import nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroupCode;
+import nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroupName;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroupSetMemento;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.MultipleTargetSetting;
 import nts.uk.ctx.pr.core.infra.entity.wagetable.QwtmtWagetableCertify;
@@ -57,9 +58,9 @@ public class JpaCertifyGroupSetMemento implements CertifyGroupSetMemento {
 	 * .String)
 	 */
 	@Override
-	public void setCode(String code) {
+	public void setCode(CertifyGroupCode code) {
 		QwtmtWagetableCertifyGPK wagetableCertifyGPK = this.typeValue.getQwtmtWagetableCertifyGPK();
-		wagetableCertifyGPK.setCertifyGroupCd(code);
+		wagetableCertifyGPK.setCertifyGroupCd(code.v());
 		this.typeValue.setQwtmtWagetableCertifyGPK(wagetableCertifyGPK);
 	}
 
@@ -71,8 +72,8 @@ public class JpaCertifyGroupSetMemento implements CertifyGroupSetMemento {
 	 * .String)
 	 */
 	@Override
-	public void setName(String name) {
-		this.typeValue.setCertifyGroupName(name);
+	public void setName(CertifyGroupName name) {
+		this.typeValue.setCertifyGroupName(name.v());
 	}
 
 	/*

@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2016 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.core.infra.repository.wagetable;
@@ -26,6 +26,9 @@ import nts.uk.ctx.pr.core.infra.entity.wagetable.QwtmtWagetableCertifyGPK;
 import nts.uk.ctx.pr.core.infra.entity.wagetable.QwtmtWagetableCertifyGPK_;
 import nts.uk.ctx.pr.core.infra.entity.wagetable.QwtmtWagetableCertifyG_;
 
+/**
+ * The Class JpaCertifyGroupRepository.
+ */
 @Stateless
 public class JpaCertifyGroupRepository extends JpaRepository implements CertifyGroupRepository {
 
@@ -92,6 +95,13 @@ public class JpaCertifyGroupRepository extends JpaRepository implements CertifyG
 
 	}
 
+	/**
+	 * To entity.
+	 *
+	 * @param certifyGroup
+	 *            the certify group
+	 * @return the qwtmt wagetable certify G
+	 */
 	private QwtmtWagetableCertifyG toEntity(CertifyGroup certifyGroup) {
 		QwtmtWagetableCertifyG entity = new QwtmtWagetableCertifyG();
 		certifyGroup.saveToMemento(new JpaCertifyGroupSetMemento(entity));
