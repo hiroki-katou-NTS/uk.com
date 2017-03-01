@@ -31,7 +31,7 @@ var nts;
                                         { id: 'tab-2', title: '保険料マスタの情報', content: '.tab-content-2', enable: ko.observable(true), visible: ko.observable(true) },
                                     ]);
                                     self.selectedTab = ko.observable('tab-1');
-                                    self.officeModel = ko.observable(new SocialInsuranceOfficeModel('', '', '', '', '', 1, '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''));
+                                    self.officeModel = ko.observable(new SocialInsuranceOfficeModel('', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''));
                                     self.textArea = ko.observable("");
                                     self.textInputOption = ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
                                         textmode: "text",
@@ -88,7 +88,7 @@ var nts;
                                             self.officeModel().shortName(data.shortName);
                                             self.officeModel().PicName(data.picName);
                                             self.officeModel().PicPosition(data.picPosition);
-                                            self.officeModel().portCode(parseInt(data.potalCode));
+                                            self.officeModel().potalCode(data.potalCode);
                                             self.officeModel().prefecture(data.prefecture);
                                             self.officeModel().address1st(data.address1st);
                                             self.officeModel().kanaAddress1st(data.kanaAddress1st);
@@ -161,7 +161,7 @@ var nts;
                                 };
                                 ScreenModel.prototype.collectData = function () {
                                     var self = this;
-                                    var a = new c.service.model.finder.OfficeItemDto("company code", self.officeModel().officeCode(), self.officeModel().officeName(), self.officeModel().shortName(), self.officeModel().PicName(), self.officeModel().PicPosition(), self.officeModel().portCode().toString(), self.officeModel().prefecture(), self.officeModel().address1st(), self.officeModel().address2nd(), self.officeModel().kanaAddress1st(), self.officeModel().kanaAddress2nd(), self.officeModel().phoneNumber(), self.officeModel().healthInsuOfficeRefCode1st(), self.officeModel().healthInsuOfficeRefCode2nd(), self.officeModel().pensionOfficeRefCode1st(), self.officeModel().pensionOfficeRefCode2nd(), self.officeModel().welfarePensionFundCode(), self.officeModel().officePensionFundCode(), self.officeModel().healthInsuCityCode(), self.officeModel().healthInsuOfficeSign(), self.officeModel().pensionCityCode(), self.officeModel().pensionOfficeSign(), self.officeModel().healthInsuOfficeCode(), self.officeModel().healthInsuAssoCode(), self.officeModel().memo());
+                                    var a = new c.service.model.finder.OfficeItemDto("company code", self.officeModel().officeCode(), self.officeModel().officeName(), self.officeModel().shortName(), self.officeModel().PicName(), self.officeModel().PicPosition(), self.officeModel().potalCode(), self.officeModel().prefecture(), self.officeModel().address1st(), self.officeModel().address2nd(), self.officeModel().kanaAddress1st(), self.officeModel().kanaAddress2nd(), self.officeModel().phoneNumber(), self.officeModel().healthInsuOfficeRefCode1st(), self.officeModel().healthInsuOfficeRefCode2nd(), self.officeModel().pensionOfficeRefCode1st(), self.officeModel().pensionOfficeRefCode2nd(), self.officeModel().welfarePensionFundCode(), self.officeModel().officePensionFundCode(), self.officeModel().healthInsuCityCode(), self.officeModel().healthInsuOfficeSign(), self.officeModel().pensionCityCode(), self.officeModel().pensionOfficeSign(), self.officeModel().healthInsuOfficeCode(), self.officeModel().healthInsuAssoCode(), self.officeModel().memo());
                                     return a;
                                 };
                                 ScreenModel.prototype.addNew = function () {
@@ -171,7 +171,7 @@ var nts;
                                     self.officeModel().shortName('');
                                     self.officeModel().PicName('');
                                     self.officeModel().PicPosition('');
-                                    self.officeModel().portCode(0);
+                                    self.officeModel().potalCode('');
                                     self.officeModel().prefecture('');
                                     self.officeModel().address1st('');
                                     self.officeModel().kanaAddress1st('');
@@ -203,13 +203,13 @@ var nts;
                             }());
                             viewmodel.ScreenModel = ScreenModel;
                             var SocialInsuranceOfficeModel = (function () {
-                                function SocialInsuranceOfficeModel(officeCode, officeName, shortName, PicName, PicPosition, portCode, prefecture, address1st, kanaAddress1st, address2nd, kanaAddress2nd, phoneNumber, healthInsuOfficeRefCode1st, healthInsuOfficeRefCode2nd, pensionOfficeRefCode1st, pensionOfficeRefCode2nd, welfarePensionFundCode, officePensionFundCode, healthInsuCityCode, healthInsuOfficeSign, pensionCityCode, pensionOfficeSign, healthInsuOfficeCode, healthInsuAssoCode, memo) {
+                                function SocialInsuranceOfficeModel(officeCode, officeName, shortName, PicName, PicPosition, potalCode, prefecture, address1st, kanaAddress1st, address2nd, kanaAddress2nd, phoneNumber, healthInsuOfficeRefCode1st, healthInsuOfficeRefCode2nd, pensionOfficeRefCode1st, pensionOfficeRefCode2nd, welfarePensionFundCode, officePensionFundCode, healthInsuCityCode, healthInsuOfficeSign, pensionCityCode, pensionOfficeSign, healthInsuOfficeCode, healthInsuAssoCode, memo) {
                                     this.officeCode = ko.observable(officeCode);
                                     this.officeName = ko.observable(officeName);
                                     this.shortName = ko.observable(shortName);
                                     this.PicName = ko.observable(PicName);
                                     this.PicPosition = ko.observable(PicPosition);
-                                    this.portCode = ko.observable(portCode);
+                                    this.potalCode = ko.observable(potalCode);
                                     this.prefecture = ko.observable(prefecture);
                                     this.address1st = ko.observable(address1st);
                                     this.kanaAddress1st = ko.observable(kanaAddress1st);

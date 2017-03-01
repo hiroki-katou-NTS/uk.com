@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.pr.core.infra.repository.wagetable;
 
 import java.util.ArrayList;
@@ -14,37 +18,65 @@ import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.core.dom.company.CompanyCode;
-import nts.uk.ctx.pr.core.dom.wagetable.WageTableCode;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.Certification;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.CertificationGetMemento;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.CertificationReponsitory;
-import nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroup;
-import nts.uk.ctx.pr.core.infra.entity.wagetable.QcemtCertification;
 import nts.uk.ctx.pr.core.infra.entity.wagetable.QcemtCertification;
 import nts.uk.ctx.pr.core.infra.entity.wagetable.QcemtCertificationPK_;
 import nts.uk.ctx.pr.core.infra.entity.wagetable.QcemtCertification_;
 
+/**
+ * The Class JpaCertificationRepository.
+ */
 @Stateless
 public class JpaCertificationRepository extends JpaRepository implements CertificationReponsitory {
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.dom.wagetable.certification.CertificationReponsitory#
+	 * add(nts.uk.ctx.pr.core.dom.wagetable.certification.Certification)
+	 */
 	@Override
 	public void add(Certification certification) {
 		// TODO Auto-generated method stub
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.dom.wagetable.certification.CertificationReponsitory#
+	 * update(nts.uk.ctx.pr.core.dom.wagetable.certification.Certification)
+	 */
 	@Override
 	public void update(Certification certification) {
 		// TODO Auto-generated method stub
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.dom.wagetable.certification.CertificationReponsitory#
+	 * remove(java.lang.String, java.lang.Long)
+	 */
 	@Override
 	public void remove(String id, Long version) {
 		// TODO Auto-generated method stub
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.dom.wagetable.certification.CertificationReponsitory#
+	 * findAll(nts.uk.ctx.core.dom.company.CompanyCode)
+	 */
 	@Override
 	public List<Certification> findAll(CompanyCode companyCode) {
 		EntityManager em = getEntityManager();
@@ -62,18 +94,40 @@ public class JpaCertificationRepository extends JpaRepository implements Certifi
 		return lstCertifyGroup;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.dom.wagetable.certification.CertificationReponsitory#
+	 * findById(nts.uk.ctx.core.dom.company.CompanyCode, java.lang.String)
+	 */
 	@Override
 	public Certification findById(CompanyCode companyCode, String code) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.dom.wagetable.certification.CertificationReponsitory#
+	 * isDuplicateCode(nts.uk.ctx.core.dom.company.CompanyCode,
+	 * java.lang.String)
+	 */
 	@Override
 	public boolean isDuplicateCode(CompanyCode companyCode, String code) {
 		// TODO Auto-generated method stub
 		return false;
 	}
 
+	/**
+	 * To domain.
+	 *
+	 * @param qcemtCertification
+	 *            the qcemt certification
+	 * @return the certification
+	 */
 	private Certification toDomain(QcemtCertification qcemtCertification) {
 		Certification certification = new Certification(new CertificationGetMemento() {
 

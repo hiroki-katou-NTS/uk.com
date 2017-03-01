@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2016 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.core.app.wagetable.command.dto;
@@ -12,7 +12,9 @@ import lombok.Data;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.Certification;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroup;
+import nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroupCode;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroupGetMemento;
+import nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroupName;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.MultipleTargetSetting;
 
 /**
@@ -45,8 +47,8 @@ public class CertifyGroupDto {
 		CertifyGroup certifyGroup = new CertifyGroup(new CertifyGroupGetMemento() {
 
 			@Override
-			public String getName() {
-				return dto.name;
+			public CertifyGroupName getName() {
+				return new CertifyGroupName(dto.name);
 			}
 
 			@Override
@@ -60,8 +62,8 @@ public class CertifyGroupDto {
 			}
 
 			@Override
-			public String getCode() {
-				return dto.code;
+			public CertifyGroupCode getCode() {
+				return new CertifyGroupCode(dto.code);
 			}
 
 			@Override

@@ -51,7 +51,7 @@ module nts.uk.pr.view.qmm008.c {
                     { id: 'tab-2', title: '保険料マスタの情報', content: '.tab-content-2', enable: ko.observable(true), visible: ko.observable(true) },
                 ]);
                 self.selectedTab = ko.observable('tab-1');
-                self.officeModel = ko.observable(new SocialInsuranceOfficeModel('', '', '', '', '', 1, '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''));
+                self.officeModel = ko.observable(new SocialInsuranceOfficeModel('', '', '', '', '','', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''));
                 //text area
                 self.textArea = ko.observable("");
                 //text input options
@@ -126,7 +126,7 @@ module nts.uk.pr.view.qmm008.c {
                         self.officeModel().shortName(data.shortName);
                         self.officeModel().PicName(data.picName);
                         self.officeModel().PicPosition(data.picPosition);
-                        self.officeModel().portCode(parseInt(data.potalCode));
+                        self.officeModel().potalCode(data.potalCode);
                         self.officeModel().prefecture(data.prefecture);
                         self.officeModel().address1st(data.address1st);
                         self.officeModel().kanaAddress1st(data.kanaAddress1st);
@@ -229,7 +229,7 @@ module nts.uk.pr.view.qmm008.c {
                     self.officeModel().shortName(),
                     self.officeModel().PicName(),
                     self.officeModel().PicPosition(),
-                    self.officeModel().portCode().toString(),
+                    self.officeModel().potalCode(),
                     self.officeModel().prefecture(),
                     self.officeModel().address1st(),
                     self.officeModel().address2nd(),
@@ -262,7 +262,7 @@ module nts.uk.pr.view.qmm008.c {
                 self.officeModel().shortName('');
                 self.officeModel().PicName('');
                 self.officeModel().PicPosition('');
-                self.officeModel().portCode(0);
+                self.officeModel().potalCode('');
                 self.officeModel().prefecture('');
                 self.officeModel().address1st('');
                 self.officeModel().kanaAddress1st('');
@@ -305,8 +305,8 @@ module nts.uk.pr.view.qmm008.c {
             PicName: KnockoutObservable<string>;
             PicPosition: KnockoutObservable<string>;
 
-            portCode: KnockoutObservable<number>;
             prefecture: KnockoutObservable<string>;
+            potalCode: KnockoutObservable<string>;
             address1st: KnockoutObservable<string>;
             kanaAddress1st: KnockoutObservable<string>;
             address2nd: KnockoutObservable<string>;
@@ -330,7 +330,7 @@ module nts.uk.pr.view.qmm008.c {
             memo: KnockoutObservable<string>;
 
             constructor(officeCode: string, officeName: string, shortName: string, PicName: string, PicPosition: string,
-                portCode: number, prefecture: string, address1st: string, kanaAddress1st: string, address2nd: string, kanaAddress2nd: string, phoneNumber: string,
+                potalCode: string, prefecture: string, address1st: string, kanaAddress1st: string, address2nd: string, kanaAddress2nd: string, phoneNumber: string,
                 //insurance info input 
                 healthInsuOfficeRefCode1st: string, healthInsuOfficeRefCode2nd: string, pensionOfficeRefCode1st: string, pensionOfficeRefCode2nd: string, welfarePensionFundCode: string, officePensionFundCode: string,
                 healthInsuCityCode: string, healthInsuOfficeSign: string, pensionCityCode: string, pensionOfficeSign: string, healthInsuOfficeCode: string, healthInsuAssoCode: string,
@@ -343,7 +343,7 @@ module nts.uk.pr.view.qmm008.c {
                 this.PicName = ko.observable(PicName);
                 this.PicPosition = ko.observable(PicPosition);
 
-                this.portCode = ko.observable(portCode);
+                this.potalCode = ko.observable(potalCode);
                 this.prefecture = ko.observable(prefecture);
                 this.address1st = ko.observable(address1st);
                 this.kanaAddress1st = ko.observable(kanaAddress1st);

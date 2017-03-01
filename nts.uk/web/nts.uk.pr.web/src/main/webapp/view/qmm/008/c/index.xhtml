@@ -15,18 +15,20 @@
 					height : 600
 				};
 			</script>
-			
+
 			<com:ValidatorScript>
 				nts.uk.ctx.pr.core.dom.insurance.OfficeCode
 				nts.uk.ctx.pr.core.dom.insurance.OfficeName
 				nts.uk.ctx.pr.core.dom.insurance.ShortName
 				nts.uk.ctx.pr.core.dom.insurance.PicName
 				nts.uk.ctx.pr.core.dom.insurance.PicPosition
+				nts.uk.ctx.pr.core.dom.insurance.PotalCode
+				<!-- province address -->
+				
 				nts.uk.ctx.pr.core.dom.insurance.Address
 				nts.uk.ctx.pr.core.dom.insurance.KanaAddress
-				nts.uk.ctx.pr.core.dom.insurance.PotalCode
   			</com:ValidatorScript>
-  			
+
 			<com:stylefile path="main.css" />
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="service.js" />
@@ -40,7 +42,8 @@
 				<button data-bind="click: addNew">新規</button>
 				<button data-bind="click: save" class="proceed">登録</button>
 				<button>印刷</button>
-				<button data-bind="click: remove, enable: deleteButtonControll()" class="danger">削除</button>
+				<button data-bind="click: remove, enable: deleteButtonControll()"
+					class="danger">削除</button>
 				<button data-bind="click: closeDialog">閉じる</button>
 			</div>
 			<div id="contents-area">
@@ -48,7 +51,7 @@
 				<div style="width: 40%; float: left;">
 					<div class="bg-green caret-right caret-background"
 						style="float: left; width: 350px; height: 500px; margin: 20px 50px;">
-						<div style="padding-left:20px; width: 400px;"
+						<div style="padding-left: 20px; width: 400px;"
 							data-bind="ntsSearchBox: {comId: 'multi-list', items: officeItems, selected: selectedOfficeCode, selectedKey: 'code', fields: ['name', 'code']}" />
 						<div style="padding-left: 14px; padding-top: 5px;">
 							<table id="single-list"
@@ -141,7 +144,7 @@
 										<td class="border_none padding_top"><div>
 												<input
 													data-bind="ntsTextEditor: {
-														value: portCode ,
+														value: potalCode ,
 														constraint: 'PotalCode', 
 														option: $parent.textInputOption}" />
 											</div></td>

@@ -25,14 +25,14 @@ public interface CertifyGroupGetMemento {
 	 *
 	 * @return the code
 	 */
-	String getCode();
+	CertifyGroupCode getCode();
 
 	/**
 	 * Gets the name.
 	 *
 	 * @return the name
 	 */
-	String getName();
+	CertifyGroupName getName();
 
 	/**
 	 * Gets the multi apply set.

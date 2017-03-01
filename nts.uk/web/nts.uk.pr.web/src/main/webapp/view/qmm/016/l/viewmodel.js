@@ -71,7 +71,7 @@ var nts;
                                     l.service.findAllCertifyGroup().done(function (data) {
                                         if (data != null && data.length > 0) {
                                             self.lstCertifyGroup = ko.observableArray(data);
-                                            self.selectCodeLstLstCertifyGroup = ko.observable(data[0].code);
+                                            self.selectCodeLstLstCertifyGroup(data[0].code);
                                             self.selectCodeLstLstCertifyGroup.subscribe(function (selectionCodeLstLstCertifyGroup) {
                                                 self.showchangeCertifyGroup(selectionCodeLstLstCertifyGroup);
                                             });
@@ -106,7 +106,7 @@ var nts;
                                         var self = this;
                                         l.service.findCertifyGroup(code).done(function (data) {
                                             if (self.isEmpty()) {
-                                                self.selectCodeLstLstCertifyGroup = ko.observable(code);
+                                                self.selectCodeLstLstCertifyGroup(code);
                                                 self.selectCodeLstLstCertifyGroup.subscribe(function (selectionCodeLstLstCertifyGroup) {
                                                     self.showchangeCertifyGroup(selectionCodeLstLstCertifyGroup);
                                                 });
@@ -118,6 +118,7 @@ var nts;
                                             self.certifyGroupModel().certifies(data.certifies);
                                             self.certifyGroupModel().lstCertification(self.clearCertifyGroupFind(self.lstCertification, data.certifies));
                                             self.typeAction(TypeActionCertifyGroup.update);
+                                            self.certifyGroupModel().setReadOnly(true);
                                         });
                                     }
                                 };
@@ -155,6 +156,7 @@ var nts;
                                     self.certifyGroupModel().multiApplySet(MultipleTargetSetting.BigestMethod);
                                     self.typeAction(TypeActionCertifyGroup.add);
                                     self.selectCodeLstLstCertifyGroup('');
+                                    self.certifyGroupModel().setReadOnly(false);
                                     self.certifyGroupModel().certifies([]);
                                     l.service.findAllCertification().done(function (data) {
                                         self.certifyGroupModel().lstCertification(data);
@@ -165,11 +167,17 @@ var nts;
                                     if (self.typeAction() == TypeActionCertifyGroup.add) {
                                         l.service.addCertifyGroup(self.convertDataModel()).done(function (data) {
                                             self.reloadDataByAction(self.certifyGroupModel().code());
+                                            self.clearErrorSave();
+                                        }).fail(function (error) {
+                                            self.showMessageSave(error.message);
                                         });
                                     }
                                     else {
                                         l.service.updateCertifyGroup(self.convertDataModel()).done(function (data) {
                                             self.reloadDataByAction(self.certifyGroupModel().code());
+                                            self.clearErrorSave();
+                                        }).fail(function (error) {
+                                            self.showMessageSave(error.message);
                                         });
                                     }
                                 };
@@ -199,15 +207,24 @@ var nts;
                                         self.lstCertification = data;
                                         self.resetValueCertifyGroup();
                                         self.isEmpty(true);
+                                        self.certifyGroupModel().setReadOnly(false);
                                     });
                                 };
                                 ScreenModel.prototype.deleteCertifyGroup = function () {
                                     var self = this;
-                                    var certifyGroupDeleteDto = new CertifyGroupDeleteDto();
-                                    certifyGroupDeleteDto.groupCode = self.certifyGroupModel().code();
-                                    certifyGroupDeleteDto.version = 12;
-                                    l.service.deleteCertifyGroup(certifyGroupDeleteDto).done(function (data) {
-                                        self.reloadDataByAction('');
+                                    nts.uk.ui.dialog.confirm("Do you delete Item?").ifYes(function () {
+                                        var certifyGroupDeleteDto = new CertifyGroupDeleteDto();
+                                        certifyGroupDeleteDto.groupCode = self.certifyGroupModel().code();
+                                        certifyGroupDeleteDto.version = 12;
+                                        l.service.deleteCertifyGroup(certifyGroupDeleteDto).done(function (data) {
+                                            self.reloadDataByAction('');
+                                        });
+                                    }).ifNo(function () {
+                                        self.reloadDataByAction(self.selectCodeLstLstCertifyGroup());
+                                    }).ifCancel(function () {
+                                        self.reloadDataByAction(self.selectCodeLstLstCertifyGroup());
+                                    }).then(function () {
+                                        self.reloadDataByAction(self.selectCodeLstLstCertifyGroup());
                                     });
                                 };
                                 ScreenModel.prototype.closeCertifyGroup = function () {
@@ -221,6 +238,14 @@ var nts;
                                     certifyGroupDto.multiApplySet = self.certifyGroupModel().multiApplySet();
                                     certifyGroupDto.certifies = self.certifyGroupModel().certifies();
                                     return certifyGroupDto;
+                                };
+                                ScreenModel.prototype.showMessageSave = function (message) {
+                                    $('#btn_saveCertifyGroup').ntsError('set', message);
+                                };
+                                ScreenModel.prototype.clearErrorSave = function () {
+                                    var self = this;
+                                    $('.save-error').ntsError('clear');
+                                    $('#btn_saveCertifyGroup').ntsError('clear');
                                 };
                                 return ScreenModel;
                             }());
@@ -239,9 +264,15 @@ var nts;
                                     ]);
                                     this.certifies = ko.observableArray(certifyGroupDto.certifies);
                                     this.lstCertification = ko.observableArray([]);
+                                    this.isReadOnly = ko.observable(true);
+                                    this.isEnable = ko.observable(false);
                                 }
                                 CertifyGroupModel.prototype.setLstCertification = function (lstCertification) {
                                     this.lstCertification = ko.observableArray(lstCertification);
+                                };
+                                CertifyGroupModel.prototype.setReadOnly = function (readonly) {
+                                    this.isReadOnly(readonly);
+                                    this.isEnable(!readonly);
                                 };
                                 return CertifyGroupModel;
                             }());

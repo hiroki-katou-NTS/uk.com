@@ -16,9 +16,18 @@ var nts;
                             var ScreenModel = (function () {
                                 function ScreenModel() {
                                     var self = this;
-                                    self.isNewMode = ko.observable(false);
+                                    self.isNewMode = ko.observable(true);
                                     self.isLoading = ko.observable(true);
                                     self.isInputEnabled = ko.observable(false);
+                                    self.isLatestHistory = ko.observable(false);
+                                    self.isLatestHistory.subscribe(function (val) {
+                                        if (val == true) {
+                                            self.isInputEnabled(true);
+                                        }
+                                        else {
+                                            self.isInputEnabled(false);
+                                        }
+                                    });
                                     self.unitPriceHistoryModel = ko.observable(new UnitPriceHistoryModel(self.getDefaultUnitPriceHistory()));
                                     self.historyList = ko.observableArray([]);
                                     self.switchButtonDataSource = ko.observableArray([
@@ -29,8 +38,7 @@ var nts;
                                     self.selectedId.subscribe(function (id) {
                                         if (id) {
                                             if (id.length < 4) {
-                                                self.setUnitPriceHistoryModel(self.getDefaultUnitPriceHistory());
-                                                self.isInputEnabled(false);
+                                                self.selectedId(self.getLastestHistoryId(id));
                                             }
                                             else {
                                                 self.isLoading(true);
@@ -57,18 +65,25 @@ var nts;
                                     });
                                     return dfd.promise();
                                 };
-                                ScreenModel.prototype.goToB = function () {
+                                ScreenModel.prototype.openAddDialog = function () {
                                     var self = this;
-                                    nts.uk.ui.windows.setShared('unitPriceHistoryModel', ko.toJS(this.unitPriceHistoryModel()));
+                                    nts.uk.ui.windows.setShared('unitPriceHistoryModel', ko.toJS(self.unitPriceHistoryModel()));
                                     nts.uk.ui.windows.sub.modal('/view/qmm/007/b/index.xhtml', { title: '会社一律金額 の 登録 > 履歴の追加', dialogClass: 'no-close' }).onClosed(function () {
-                                        self.loadUnitPriceHistoryList();
+                                        self.unitPriceHistoryModel().endMonth(nts.uk.ui.windows.getShared('endMonth'));
+                                        a.service.update(ko.toJS(self.unitPriceHistoryModel())).done(function () {
+                                            self.loadUnitPriceHistoryList().done(function () {
+                                                self.selectedId(self.getLastestHistoryId(self.unitPriceHistoryModel().unitPriceCode()));
+                                            });
+                                        });
                                     });
                                 };
-                                ScreenModel.prototype.goToC = function () {
+                                ScreenModel.prototype.openEditDialog = function () {
                                     var self = this;
                                     nts.uk.ui.windows.setShared('unitPriceHistoryModel', ko.toJS(this.unitPriceHistoryModel()));
+                                    nts.uk.ui.windows.setShared('isLatestHistory', self.isLatestHistory());
                                     nts.uk.ui.windows.sub.modal('/view/qmm/007/c/index.xhtml', { title: '会社一律金額 の 登録 > 履歴の編集', dialogClass: 'no-close' }).onClosed(function () {
                                         self.loadUnitPriceHistoryList();
+                                        self.loadUnitPriceDetail(self.selectedId());
                                     });
                                 };
                                 ScreenModel.prototype.save = function () {
@@ -125,18 +140,27 @@ var nts;
                                     defaultHist.memo = '';
                                     return defaultHist;
                                 };
-                                ScreenModel.prototype.getLastest = function (id) {
-                                    self.historyList().forEach(function (item) {
-                                        if (id == item.id) {
-                                            self.selectedId(item.childs[0].id);
+                                ScreenModel.prototype.isLatest = function (history) {
+                                    var self = this;
+                                    var latestHistoryId = self.getLastestHistoryId(history.unitPriceCode);
+                                    return history.id == latestHistoryId ? true : false;
+                                };
+                                ScreenModel.prototype.getLastestHistoryId = function (code) {
+                                    var self = this;
+                                    var lastestHistoryId = '';
+                                    self.historyList().some(function (node) {
+                                        if (code == node.id) {
+                                            lastestHistoryId = node.childs[0].id;
+                                            return true;
                                         }
                                     });
+                                    return lastestHistoryId;
                                 };
                                 ScreenModel.prototype.loadUnitPriceDetail = function (id) {
                                     var self = this;
-                                    a.service.find(id).done(function (data) {
-                                        self.setUnitPriceHistoryModel(data);
-                                        self.isInputEnabled(true);
+                                    a.service.find(id).done(function (dto) {
+                                        self.setUnitPriceHistoryModel(dto);
+                                        self.isLatestHistory(self.isLatest(dto));
                                         self.isNewMode(false);
                                         self.isLoading(false);
                                     });

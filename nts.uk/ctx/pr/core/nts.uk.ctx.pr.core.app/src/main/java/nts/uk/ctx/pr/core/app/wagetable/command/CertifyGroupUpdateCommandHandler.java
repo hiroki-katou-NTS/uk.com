@@ -12,6 +12,7 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroup;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroupRepository;
+import nts.uk.ctx.pr.core.dom.wagetable.service.CertifyGroupService;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -25,6 +26,10 @@ public class CertifyGroupUpdateCommandHandler extends CommandHandler<CertifyGrou
 	@Inject
 	private CertifyGroupRepository certifyGroupRepository;
 
+	/** The certify group service. */
+	@Inject
+	private CertifyGroupService certifyGroupService;
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -36,6 +41,7 @@ public class CertifyGroupUpdateCommandHandler extends CommandHandler<CertifyGrou
 	protected void handle(CommandHandlerContext<CertifyGroupUpdateCommand> context) {
 		String companyCode = AppContexts.user().companyCode();
 		CertifyGroup certifyGroup = context.getCommand().toDomain(companyCode);
+		certifyGroupService.validateRequiredItem(certifyGroup);
 		this.certifyGroupRepository.update(certifyGroup);
 	}
 
