@@ -38,7 +38,7 @@ public class OutputSettingSaveCommandHandler extends CommandHandler<OutputSettin
 		
 		if (command.isCreateMode()) {
 			// Check exist.
-			if (this.repository.isExist(new WLOutputSettingCode(command.getCode()))) {
+			if (this.repository.isExist(new WLOutputSettingCode(command.getCode()), new CompanyCode(companyCode))) {
 				throw new BusinessException("ER026");
 			}
 			

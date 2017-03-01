@@ -4,13 +4,16 @@
  *****************************************************************/
 package nts.uk.ctx.pr.report.infra.repository.wageledger;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import nts.uk.ctx.pr.report.dom.company.CompanyCode;
 import nts.uk.ctx.pr.report.dom.wageledger.outputsetting.WLCategorySetting;
 import nts.uk.ctx.pr.report.dom.wageledger.outputsetting.WLOutputSettingCode;
 import nts.uk.ctx.pr.report.dom.wageledger.outputsetting.WLOutputSettingName;
 import nts.uk.ctx.pr.report.dom.wageledger.outputsetting.WLOutputSettingSetMemento;
+import nts.uk.ctx.pr.report.infra.entity.wageledger.QlsptLedgerFormDetail;
 import nts.uk.ctx.pr.report.infra.entity.wageledger.QlsptLedgerFormHead;
 import nts.uk.ctx.pr.report.infra.entity.wageledger.QlsptLedgerFormHeadPK;
 
@@ -61,7 +64,11 @@ public class JpaWLOutputSettingSetMemento implements WLOutputSettingSetMemento{
 	 */
 	@Override
 	public void setCategorySettings(List<WLCategorySetting> categorySettings) {
-		// TODO Auto-generated method stub
+		this.entity.setQlsptLedgerFormDetailList(categorySettings.stream().map(cate -> {
+			List<QlsptLedgerFormDetail> cateSetting = new ArrayList<>();
+			cate.saveToMemento(new JpaWLCategorySettingSetMemento(cateSetting));
+			return cateSetting;
+		}).flatMap(cate -> cate.stream()).collect(Collectors.toList()));
 	}
 
 	/* (non-Javadoc)
@@ -70,8 +77,9 @@ public class JpaWLOutputSettingSetMemento implements WLOutputSettingSetMemento{
 	 */
 	@Override
 	public void setOnceSheetPerPerson(Boolean onceSheetPerPerson) {
-		// TODO: wait change domain.
-		//this.entity.setPrint1pageByPersonSet(print1pageByPersonSet);
+		// 1 => true.
+		// 0 => false.
+		this.entity.setPrint1pageByPersonSet(onceSheetPerPerson ? 1 : 0);
 	}
 
 	/* (non-Javadoc)

@@ -14,10 +14,11 @@ import nts.uk.ctx.pr.report.dom.wageledger.outputsetting.WLSettingItemGetMemento
  */
 @Setter
 public class SettingItemDto {
-	/** The linkage code. */
+	
+	/** The code. */
 	private String code;
 	
-	/** The type. */
+	/** The is aggregate. */
 	private boolean isAggregate;
 	
 	/** The order number. */
@@ -29,23 +30,53 @@ public class SettingItemDto {
 	 * @return the WL setting item
 	 */
 	public WLSettingItem toDomain() {
-		SettingItemDto dto = this;
-		return new WLSettingItem(new WLSettingItemGetMemento() {
-			
-			@Override
-			public WLItemType getType() {
-				return dto.isAggregate ? WLItemType.Aggregate : WLItemType.Master;
-			}
-			
-			@Override
-			public int getOrderNumber() {
-				return dto.orderNumber;
-			}
-			
-			@Override
-			public String getLinkageCode() {
-				return dto.code;
-			}
-		});
+		return new WLSettingItem(new WLSettingItemGetMementoImpl(this));
+	}
+	
+	/**
+	 * The Class WLSettingItemGetMementoImpl.
+	 */
+	public class WLSettingItemGetMementoImpl implements WLSettingItemGetMemento {
+		
+		/** The dto. */
+		private SettingItemDto dto;
+		
+		/**
+		 * Instantiates a new WL setting item get memento impl.
+		 *
+		 * @param dto the dto
+		 */
+		public WLSettingItemGetMementoImpl(SettingItemDto dto) {
+			super();
+			this.dto = dto;
+		}
+
+		/* (non-Javadoc)
+		 * @see nts.uk.ctx.pr.report.dom.wageledger.outputsetting.WLSettingItemGetMemento
+		 * #getLinkageCode()
+		 */
+		@Override
+		public String getLinkageCode() {
+			return this.dto.code;
+		}
+
+		/* (non-Javadoc)
+		 * @see nts.uk.ctx.pr.report.dom.wageledger.outputsetting.WLSettingItemGetMemento
+		 * #getType()
+		 */
+		@Override
+		public WLItemType getType() {
+			return dto.isAggregate ? WLItemType.Aggregate : WLItemType.Master;
+		}
+
+		/* (non-Javadoc)
+		 * @see nts.uk.ctx.pr.report.dom.wageledger.outputsetting.WLSettingItemGetMemento
+		 * #getOrderNumber()
+		 */
+		@Override
+		public int getOrderNumber() {
+			return this.dto.orderNumber;
+		}
+		
 	}
 }

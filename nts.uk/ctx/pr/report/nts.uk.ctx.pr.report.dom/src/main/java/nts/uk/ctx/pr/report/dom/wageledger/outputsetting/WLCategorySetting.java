@@ -35,9 +35,9 @@ public class WLCategorySetting {
 	 */
 	public WLCategorySetting(WLCategorySettingGetMemento memento) {
 		super();
+		this.outputItems = memento.getOutputItems();
 		this.category = memento.getCategory();
 		this.paymentType = memento.getPaymentType();
-		this.outputItems = memento.getOutputItems();
 	}
 	
 	/**
@@ -46,8 +46,8 @@ public class WLCategorySetting {
 	 * @param memento the memento
 	 */
 	public void saveToMemento(WLCategorySettingSetMemento memento) {
-		memento.setCategory(this.category);
 		memento.setOutputItems(this.outputItems);
+		memento.setCategory(this.category);
 		memento.setPaymentType(this.paymentType);
 	}
 }

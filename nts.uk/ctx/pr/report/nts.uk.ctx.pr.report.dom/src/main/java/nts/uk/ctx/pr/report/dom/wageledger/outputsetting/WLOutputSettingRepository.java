@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.pr.report.dom.wageledger.outputsetting;
 
+import java.util.List;
+
 import nts.uk.ctx.pr.report.dom.company.CompanyCode;
 
 /**
@@ -31,7 +33,7 @@ public interface WLOutputSettingRepository {
 	 *
 	 * @param outputSetting the output setting
 	 */
-	void remove(WLOutputSettingCode code);
+	void remove(WLOutputSettingCode code, CompanyCode companyCode);
 	
 	/**
 	 * Find.
@@ -48,5 +50,14 @@ public interface WLOutputSettingRepository {
 	 * @param code the code
 	 * @return true, if is exist
 	 */
-	boolean isExist(WLOutputSettingCode code);
+	boolean isExist(WLOutputSettingCode code, CompanyCode companyCode);
+	
+	/**
+	 * Find all.
+	 *
+	 * @param companyCode the company code
+	 * @param isLoadHeaderDataOnly the is load header data only
+	 * @return the list
+	 */
+	List<WLOutputSetting> findAll(CompanyCode companyCode, boolean isLoadHeaderDataOnly);
 }
