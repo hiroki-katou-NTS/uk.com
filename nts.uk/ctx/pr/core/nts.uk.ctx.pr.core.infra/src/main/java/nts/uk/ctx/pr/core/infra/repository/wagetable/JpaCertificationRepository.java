@@ -21,9 +21,9 @@ import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.Certification;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.CertificationGetMemento;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.CertificationReponsitory;
-import nts.uk.ctx.pr.core.infra.entity.wagetable.QcemtCertification;
-import nts.uk.ctx.pr.core.infra.entity.wagetable.QcemtCertificationPK_;
-import nts.uk.ctx.pr.core.infra.entity.wagetable.QcemtCertification_;
+import nts.uk.ctx.pr.core.infra.entity.wagetable.certification.QcemtCertification;
+import nts.uk.ctx.pr.core.infra.entity.wagetable.certification.QcemtCertificationPK_;
+import nts.uk.ctx.pr.core.infra.entity.wagetable.certification.QcemtCertification_;
 
 /**
  * The Class JpaCertificationRepository.

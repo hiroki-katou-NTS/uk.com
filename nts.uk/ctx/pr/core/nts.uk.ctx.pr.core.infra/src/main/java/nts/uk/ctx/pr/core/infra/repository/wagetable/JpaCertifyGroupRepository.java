@@ -22,10 +22,10 @@ import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroup;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroupCode;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroupRepository;
-import nts.uk.ctx.pr.core.infra.entity.wagetable.QwtmtWagetableCertifyG;
-import nts.uk.ctx.pr.core.infra.entity.wagetable.QwtmtWagetableCertifyGPK;
-import nts.uk.ctx.pr.core.infra.entity.wagetable.QwtmtWagetableCertifyGPK_;
-import nts.uk.ctx.pr.core.infra.entity.wagetable.QwtmtWagetableCertifyG_;
+import nts.uk.ctx.pr.core.infra.entity.wagetable.certification.QwtmtWagetableCertifyG;
+import nts.uk.ctx.pr.core.infra.entity.wagetable.certification.QwtmtWagetableCertifyGPK;
+import nts.uk.ctx.pr.core.infra.entity.wagetable.certification.QwtmtWagetableCertifyGPK_;
+import nts.uk.ctx.pr.core.infra.entity.wagetable.certification.QwtmtWagetableCertifyG_;
 
 /**
  * The Class JpaCertifyGroupRepository.

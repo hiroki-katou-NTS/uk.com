@@ -14,9 +14,9 @@ import nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroupCode;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroupName;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroupSetMemento;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.MultipleTargetSetting;
-import nts.uk.ctx.pr.core.infra.entity.wagetable.QwtmtWagetableCertify;
-import nts.uk.ctx.pr.core.infra.entity.wagetable.QwtmtWagetableCertifyG;
-import nts.uk.ctx.pr.core.infra.entity.wagetable.QwtmtWagetableCertifyGPK;
+import nts.uk.ctx.pr.core.infra.entity.wagetable.certification.QwtmtWagetableCertify;
+import nts.uk.ctx.pr.core.infra.entity.wagetable.certification.QwtmtWagetableCertifyG;
+import nts.uk.ctx.pr.core.infra.entity.wagetable.certification.QwtmtWagetableCertifyGPK;
 
 /**
  * The Class JpaCertifyGroupSetMemento.

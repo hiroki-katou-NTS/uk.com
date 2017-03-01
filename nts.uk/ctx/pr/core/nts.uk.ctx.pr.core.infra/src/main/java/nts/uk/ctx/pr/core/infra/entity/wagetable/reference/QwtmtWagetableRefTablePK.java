@@ -1,8 +1,8 @@
 /******************************************************************
- * Copyright (c) 2016 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.pr.core.infra.entity.wagetable;
+package nts.uk.ctx.pr.core.infra.entity.wagetable.reference;
 
 import java.io.Serializable;
 
@@ -10,14 +10,16 @@ import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
- * The Class QcemtCertificationPK.
+ * The Class QwtmtWagetableRefTablePK.
  */
-@Data
+@Getter
+@Setter
 @Embeddable
-public class QcemtCertificationPK implements Serializable {
+public class QwtmtWagetableRefTablePK implements Serializable {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
@@ -27,29 +29,29 @@ public class QcemtCertificationPK implements Serializable {
 	@Column(name = "CCD")
 	private String ccd;
 
-	/** The cert cd. */
+	/** The ref table no. */
 	@Basic(optional = false)
-	@Column(name = "CERT_CD")
-	private String certCd;
+	@Column(name = "REF_TABLE_NO")
+	private String refTableNo;
 
 	/**
-	 * Instantiates a new qcemt certification PK.
+	 * Instantiates a new qwtmt wagetable ref table PK.
 	 */
-	public QcemtCertificationPK() {
+	public QwtmtWagetableRefTablePK() {
 		super();
 	}
 
 	/**
-	 * Instantiates a new qcemt certification PK.
+	 * Instantiates a new qwtmt wagetable ref table PK.
 	 *
 	 * @param ccd
 	 *            the ccd
-	 * @param certCd
-	 *            the cert cd
+	 * @param refTableNo
+	 *            the ref table no
 	 */
-	public QcemtCertificationPK(String ccd, String certCd) {
+	public QwtmtWagetableRefTablePK(String ccd, String refTableNo) {
 		this.ccd = ccd;
-		this.certCd = certCd;
+		this.refTableNo = refTableNo;
 	}
 
 	/*
@@ -61,7 +63,7 @@ public class QcemtCertificationPK implements Serializable {
 	public int hashCode() {
 		int hash = 0;
 		hash += (ccd != null ? ccd.hashCode() : 0);
-		hash += (certCd != null ? certCd.hashCode() : 0);
+		hash += (refTableNo != null ? refTableNo.hashCode() : 0);
 		return hash;
 	}
 
@@ -72,15 +74,15 @@ public class QcemtCertificationPK implements Serializable {
 	 */
 	@Override
 	public boolean equals(Object object) {
-		if (!(object instanceof QcemtCertificationPK)) {
+		if (!(object instanceof QwtmtWagetableRefTablePK)) {
 			return false;
 		}
-		QcemtCertificationPK other = (QcemtCertificationPK) object;
+		QwtmtWagetableRefTablePK other = (QwtmtWagetableRefTablePK) object;
 		if ((this.ccd == null && other.ccd != null) || (this.ccd != null && !this.ccd.equals(other.ccd))) {
 			return false;
 		}
-		if ((this.certCd == null && other.certCd != null)
-				|| (this.certCd != null && !this.certCd.equals(other.certCd))) {
+		if ((this.refTableNo == null && other.refTableNo != null)
+				|| (this.refTableNo != null && !this.refTableNo.equals(other.refTableNo))) {
 			return false;
 		}
 		return true;

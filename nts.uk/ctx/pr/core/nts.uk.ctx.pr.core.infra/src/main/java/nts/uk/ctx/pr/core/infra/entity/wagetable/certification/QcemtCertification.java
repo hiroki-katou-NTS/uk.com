@@ -2,7 +2,7 @@
  * Copyright (c) 2016 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.pr.core.infra.entity.wagetable;
+package nts.uk.ctx.pr.core.infra.entity.wagetable.certification;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -21,19 +21,19 @@ import javax.persistence.TemporalType;
 import lombok.Data;
 
 /**
- * The Class QwtmtWagetableCertifyG.
+ * The Class QcemtCertification.
  */
 @Data
 @Entity
-@Table(name = "QWTMT_WAGETABLE_CERTIFY_G")
-public class QwtmtWagetableCertifyG implements Serializable {
+@Table(name = "QCEMT_CERTIFICATION")
+public class QcemtCertification implements Serializable {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
-	/** The qwtmt wagetable certify GPK. */
+	/** The qcemt certification PK. */
 	@EmbeddedId
-	protected QwtmtWagetableCertifyGPK qwtmtWagetableCertifyGPK;
+	protected QcemtCertificationPK qcemtCertificationPK;
 
 	/** The ins date. */
 	@Column(name = "INS_DATE")
@@ -74,58 +74,58 @@ public class QwtmtWagetableCertifyG implements Serializable {
 	@Column(name = "EXCLUS_VER")
 	private long exclusVer;
 
-	/** The certify group name. */
-	@Column(name = "CERTIFY_GROUP_NAME")
-	private String certifyGroupName;
-
-	/** The multi apply set. */
-	@Column(name = "MULTI_APPLY_SET")
-	private Integer multiApplySet;
+	/** The name. */
+	@Basic(optional = false)
+	@Column(name = "NAME")
+	private String name;
 
 	/** The qwtmt wagetable certify list. */
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "qwtmtWagetableCertifyG", orphanRemoval = true)
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "qcemtCertification")
 	private List<QwtmtWagetableCertify> qwtmtWagetableCertifyList;
 
 	/**
-	 * Instantiates a new qwtmt wagetable certify G.
+	 * Instantiates a new qcemt certification.
 	 */
-	public QwtmtWagetableCertifyG() {
+	public QcemtCertification() {
 		super();
 	}
 
 	/**
-	 * Instantiates a new qwtmt wagetable certify G.
+	 * Instantiates a new qcemt certification.
 	 *
-	 * @param qwtmtWagetableCertifyGPK
-	 *            the qwtmt wagetable certify GPK
+	 * @param qcemtCertificationPK
+	 *            the qcemt certification PK
 	 */
-	public QwtmtWagetableCertifyG(QwtmtWagetableCertifyGPK qwtmtWagetableCertifyGPK) {
-		this.qwtmtWagetableCertifyGPK = qwtmtWagetableCertifyGPK;
+	public QcemtCertification(QcemtCertificationPK qcemtCertificationPK) {
+		this.qcemtCertificationPK = qcemtCertificationPK;
 	}
 
 	/**
-	 * Instantiates a new qwtmt wagetable certify G.
+	 * Instantiates a new qcemt certification.
 	 *
-	 * @param qwtmtWagetableCertifyGPK
-	 *            the qwtmt wagetable certify GPK
+	 * @param qcemtCertificationPK
+	 *            the qcemt certification PK
 	 * @param exclusVer
 	 *            the exclus ver
+	 * @param name
+	 *            the name
 	 */
-	public QwtmtWagetableCertifyG(QwtmtWagetableCertifyGPK qwtmtWagetableCertifyGPK, long exclusVer) {
-		this.qwtmtWagetableCertifyGPK = qwtmtWagetableCertifyGPK;
+	public QcemtCertification(QcemtCertificationPK qcemtCertificationPK, long exclusVer, String name) {
+		this.qcemtCertificationPK = qcemtCertificationPK;
 		this.exclusVer = exclusVer;
+		this.name = name;
 	}
 
 	/**
-	 * Instantiates a new qwtmt wagetable certify G.
+	 * Instantiates a new qcemt certification.
 	 *
 	 * @param ccd
 	 *            the ccd
-	 * @param certifyGroupCd
-	 *            the certify group cd
+	 * @param certCd
+	 *            the cert cd
 	 */
-	public QwtmtWagetableCertifyG(String ccd, String certifyGroupCd) {
-		this.qwtmtWagetableCertifyGPK = new QwtmtWagetableCertifyGPK(ccd, certifyGroupCd);
+	public QcemtCertification(String ccd, String certCd) {
+		this.qcemtCertificationPK = new QcemtCertificationPK(ccd, certCd);
 	}
 
 	/*
@@ -136,7 +136,7 @@ public class QwtmtWagetableCertifyG implements Serializable {
 	@Override
 	public int hashCode() {
 		int hash = 0;
-		hash += (qwtmtWagetableCertifyGPK != null ? qwtmtWagetableCertifyGPK.hashCode() : 0);
+		hash += (qcemtCertificationPK != null ? qcemtCertificationPK.hashCode() : 0);
 		return hash;
 	}
 
@@ -147,13 +147,13 @@ public class QwtmtWagetableCertifyG implements Serializable {
 	 */
 	@Override
 	public boolean equals(Object object) {
-		if (!(object instanceof QwtmtWagetableCertifyG)) {
+		if (!(object instanceof QcemtCertification)) {
 			return false;
 		}
-		QwtmtWagetableCertifyG other = (QwtmtWagetableCertifyG) object;
-		if ((this.qwtmtWagetableCertifyGPK == null && other.qwtmtWagetableCertifyGPK != null)
-				|| (this.qwtmtWagetableCertifyGPK != null
-						&& !this.qwtmtWagetableCertifyGPK.equals(other.qwtmtWagetableCertifyGPK))) {
+		QcemtCertification other = (QcemtCertification) object;
+		if ((this.qcemtCertificationPK == null && other.qcemtCertificationPK != null)
+				|| (this.qcemtCertificationPK != null
+						&& !this.qcemtCertificationPK.equals(other.qcemtCertificationPK))) {
 			return false;
 		}
 		return true;

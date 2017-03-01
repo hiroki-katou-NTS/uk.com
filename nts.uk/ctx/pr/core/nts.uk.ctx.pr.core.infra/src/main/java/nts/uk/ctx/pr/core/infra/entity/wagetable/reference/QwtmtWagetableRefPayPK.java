@@ -1,8 +1,8 @@
 /******************************************************************
- * Copyright (c) 2016 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.pr.core.infra.entity.wagetable;
+package nts.uk.ctx.pr.core.infra.entity.wagetable.reference;
 
 import java.io.Serializable;
 
@@ -10,14 +10,16 @@ import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
- * The Class QwtmtWagetableCertifyGPK.
+ * The Class QwtmtWagetableRefPayPK.
  */
-@Data
+@Getter
+@Setter
 @Embeddable
-public class QwtmtWagetableCertifyGPK implements Serializable {
+public class QwtmtWagetableRefPayPK implements Serializable {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
@@ -27,29 +29,28 @@ public class QwtmtWagetableCertifyGPK implements Serializable {
 	@Column(name = "CCD")
 	private String ccd;
 
-	/** The certify group cd. */
+	/** The ref pay no. */
 	@Basic(optional = false)
-	@Column(name = "CERTIFY_GROUP_CD")
-	private String certifyGroupCd;
+	@Column(name = "REF_PAY_NO")
+	private String refPayNo;
 
 	/**
-	 * Instantiates a new qwtmt wagetable certify GPK.
+	 * Instantiates a new qwtmt wagetable ref pay PK.
 	 */
-	public QwtmtWagetableCertifyGPK() {
-		super();
+	public QwtmtWagetableRefPayPK() {
 	}
 
 	/**
-	 * Instantiates a new qwtmt wagetable certify GPK.
+	 * Instantiates a new qwtmt wagetable ref pay PK.
 	 *
 	 * @param ccd
 	 *            the ccd
-	 * @param certifyGroupCd
-	 *            the certify group cd
+	 * @param refPayNo
+	 *            the ref pay no
 	 */
-	public QwtmtWagetableCertifyGPK(String ccd, String certifyGroupCd) {
+	public QwtmtWagetableRefPayPK(String ccd, String refPayNo) {
 		this.ccd = ccd;
-		this.certifyGroupCd = certifyGroupCd;
+		this.refPayNo = refPayNo;
 	}
 
 	/*
@@ -61,7 +62,7 @@ public class QwtmtWagetableCertifyGPK implements Serializable {
 	public int hashCode() {
 		int hash = 0;
 		hash += (ccd != null ? ccd.hashCode() : 0);
-		hash += (certifyGroupCd != null ? certifyGroupCd.hashCode() : 0);
+		hash += (refPayNo != null ? refPayNo.hashCode() : 0);
 		return hash;
 	}
 
@@ -72,15 +73,15 @@ public class QwtmtWagetableCertifyGPK implements Serializable {
 	 */
 	@Override
 	public boolean equals(Object object) {
-		if (!(object instanceof QwtmtWagetableCertifyGPK)) {
+		if (!(object instanceof QwtmtWagetableRefPayPK)) {
 			return false;
 		}
-		QwtmtWagetableCertifyGPK other = (QwtmtWagetableCertifyGPK) object;
+		QwtmtWagetableRefPayPK other = (QwtmtWagetableRefPayPK) object;
 		if ((this.ccd == null && other.ccd != null) || (this.ccd != null && !this.ccd.equals(other.ccd))) {
 			return false;
 		}
-		if ((this.certifyGroupCd == null && other.certifyGroupCd != null)
-				|| (this.certifyGroupCd != null && !this.certifyGroupCd.equals(other.certifyGroupCd))) {
+		if ((this.refPayNo == null && other.refPayNo != null)
+				|| (this.refPayNo != null && !this.refPayNo.equals(other.refPayNo))) {
 			return false;
 		}
 		return true;

@@ -13,8 +13,8 @@ import nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroupCode;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroupGetMemento;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroupName;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.MultipleTargetSetting;
-import nts.uk.ctx.pr.core.infra.entity.wagetable.QcemtCertification;
-import nts.uk.ctx.pr.core.infra.entity.wagetable.QwtmtWagetableCertifyG;
+import nts.uk.ctx.pr.core.infra.entity.wagetable.certification.QcemtCertification;
+import nts.uk.ctx.pr.core.infra.entity.wagetable.certification.QwtmtWagetableCertifyG;
 
 /**
  * The Class JpaCertifyGroupGetMemento.

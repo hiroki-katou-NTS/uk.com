@@ -34,8 +34,8 @@ import nts.uk.ctx.pr.core.infra.entity.insurance.labor.accidentrate.QismtWorkAcc
 import nts.uk.ctx.pr.core.infra.entity.insurance.labor.accidentrate.QismtWorkAccidentInsu_;
 import nts.uk.ctx.pr.core.infra.entity.insurance.labor.unemployeerate.QismtEmpInsuRate;
 import nts.uk.ctx.pr.core.infra.entity.insurance.labor.unemployeerate.QismtEmpInsuRatePK;
-import nts.uk.ctx.pr.core.infra.entity.wagetable.QwtmtWagetableCertifyG;
-import nts.uk.ctx.pr.core.infra.entity.wagetable.QwtmtWagetableCertifyGPK;
+import nts.uk.ctx.pr.core.infra.entity.wagetable.certification.QwtmtWagetableCertifyG;
+import nts.uk.ctx.pr.core.infra.entity.wagetable.certification.QwtmtWagetableCertifyGPK;
 
 /**
  * The Class JpaAccidentInsuranceRateRepository.

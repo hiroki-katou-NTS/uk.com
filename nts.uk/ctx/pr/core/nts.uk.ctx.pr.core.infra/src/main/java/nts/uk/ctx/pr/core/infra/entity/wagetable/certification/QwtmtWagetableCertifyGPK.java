@@ -2,7 +2,7 @@
  * Copyright (c) 2016 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.pr.core.infra.entity.wagetable;
+package nts.uk.ctx.pr.core.infra.entity.wagetable.certification;
 
 import java.io.Serializable;
 
@@ -13,11 +13,11 @@ import javax.persistence.Embeddable;
 import lombok.Data;
 
 /**
- * The Class QwtmtWagetableCertifyPK.
+ * The Class QwtmtWagetableCertifyGPK.
  */
 @Data
 @Embeddable
-public class QwtmtWagetableCertifyPK implements Serializable {
+public class QwtmtWagetableCertifyGPK implements Serializable {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
@@ -32,32 +32,24 @@ public class QwtmtWagetableCertifyPK implements Serializable {
 	@Column(name = "CERTIFY_GROUP_CD")
 	private String certifyGroupCd;
 
-	/** The certify cd. */
-	@Basic(optional = false)
-	@Column(name = "CERTIFY_CD")
-	private String certifyCd;
-
 	/**
-	 * Instantiates a new qwtmt wagetable certify PK.
+	 * Instantiates a new qwtmt wagetable certify GPK.
 	 */
-	public QwtmtWagetableCertifyPK() {
+	public QwtmtWagetableCertifyGPK() {
 		super();
 	}
 
 	/**
-	 * Instantiates a new qwtmt wagetable certify PK.
+	 * Instantiates a new qwtmt wagetable certify GPK.
 	 *
 	 * @param ccd
 	 *            the ccd
 	 * @param certifyGroupCd
 	 *            the certify group cd
-	 * @param certifyCd
-	 *            the certify cd
 	 */
-	public QwtmtWagetableCertifyPK(String ccd, String certifyGroupCd, String certifyCd) {
+	public QwtmtWagetableCertifyGPK(String ccd, String certifyGroupCd) {
 		this.ccd = ccd;
 		this.certifyGroupCd = certifyGroupCd;
-		this.certifyCd = certifyCd;
 	}
 
 	/*
@@ -70,7 +62,6 @@ public class QwtmtWagetableCertifyPK implements Serializable {
 		int hash = 0;
 		hash += (ccd != null ? ccd.hashCode() : 0);
 		hash += (certifyGroupCd != null ? certifyGroupCd.hashCode() : 0);
-		hash += (certifyCd != null ? certifyCd.hashCode() : 0);
 		return hash;
 	}
 
@@ -81,19 +72,15 @@ public class QwtmtWagetableCertifyPK implements Serializable {
 	 */
 	@Override
 	public boolean equals(Object object) {
-		if (!(object instanceof QwtmtWagetableCertifyPK)) {
+		if (!(object instanceof QwtmtWagetableCertifyGPK)) {
 			return false;
 		}
-		QwtmtWagetableCertifyPK other = (QwtmtWagetableCertifyPK) object;
+		QwtmtWagetableCertifyGPK other = (QwtmtWagetableCertifyGPK) object;
 		if ((this.ccd == null && other.ccd != null) || (this.ccd != null && !this.ccd.equals(other.ccd))) {
 			return false;
 		}
 		if ((this.certifyGroupCd == null && other.certifyGroupCd != null)
 				|| (this.certifyGroupCd != null && !this.certifyGroupCd.equals(other.certifyGroupCd))) {
-			return false;
-		}
-		if ((this.certifyCd == null && other.certifyCd != null)
-				|| (this.certifyCd != null && !this.certifyCd.equals(other.certifyCd))) {
 			return false;
 		}
 		return true;

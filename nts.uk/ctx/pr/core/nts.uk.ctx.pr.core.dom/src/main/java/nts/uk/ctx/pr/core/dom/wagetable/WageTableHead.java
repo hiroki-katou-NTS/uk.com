@@ -9,7 +9,6 @@ import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroupGetMemento;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroupSetMemento;
-import nts.uk.ctx.pr.core.dom.wagetable.mode.DemensionalMode;
 import nts.uk.shr.com.primitive.Memo;
 
 /**
