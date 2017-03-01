@@ -8,52 +8,48 @@ var qmm034;
                 function ScreenModel() {
                     this.constraint = 'LayoutCode';
                     this.isUpdate = ko.observable(true);
-                    this.inputCode = ko.observable('');
-                    this.inputName = ko.observable('');
                     var self = this;
-                    /*gridList*/
+                    self.init();
+                    self.currentCode.subscribe(function (codeChanged) {
+                        if (codeChanged !== null) {
+                            self.currentEra(self.getEra(codeChanged));
+                            self.date(new Date(self.currentEra().startDate.toString()));
+                            self.inputCode(self.currentEra().code);
+                            self.inputName(self.currentEra().name);
+                            self.currentCode(self.currentEra().code);
+                        }
+                    });
+                    self.dateTime = ko.observable(nts.uk.time.yearInJapanEmpire(self.date()).toString());
+                }
+                ScreenModel.prototype.init = function () {
+                    var self = this;
                     self.items = ko.observableArray([]);
+                    self.currentCodeList = ko.observableArray([]);
                     self.columns = ko.observableArray([
                         { headerText: '元号', prop: 'code', width: 50 },
                         { headerText: '記号', prop: 'name', width: 50 },
                         { headerText: '開始年月日', prop: 'startDate', width: 80 },
                     ]);
-                    self.currentCodeList = ko.observableArray([]);
-                    //Tim object dau tien
                     self.currentEra = ko.observable((new EraModel('大明', 'S', new Date("1926/12/25"))));
-                    self.currentCode = ko.observable();
-                    self.currentCode.subscribe(function (codeChanged) {
-                        self.currentEra(self.getEra(codeChanged));
-                        self.date(new Date(self.currentEra().startDate));
-                        self.inputCode(self.currentEra().code);
-                        console.log(self.inputCode());
-                        self.inputName(self.currentCode().name);
-                        //self.date(self.currentEra().startDate);
-                    });
-                    /*datePicker*/
-                    // var datePicker = self.currentEra();
+                    self.currentCode = ko.observable(null);
                     self.date = ko.observable(new Date());
-                    self.dateTime = ko.observable(nts.uk.time.yearInJapanEmpire(self.date()).toString());
+                    self.dateTime = ko.observable('');
                     self.eras = ko.observableArray([]);
-                    console.log(self.items());
-                    /*selected row*/
+                    self.inputCode = ko.observable('');
+                    self.inputName = ko.observable('');
                     self.findIndex = ko.observable(0);
                     self.countItems = ko.observable(0);
                     self.isSelectdFirstRow = ko.observable(true);
                     self.isDeleteEnable = ko.observable(true);
-                }
-                //        register() {
-                //            let self = this;
-                //            if (self.isUpdate() === false) {
-                //                self.insertData();
-                //            } else {
-                //                self.update();
-                //            }
-                //        }
+                };
                 ScreenModel.prototype.refreshLayout = function () {
                     var self = this;
                     self.currentEra(new EraModel('', '', new Date()));
-                    self.isUpdate = ko.observable(false);
+                    self.currentCode(null);
+                    self.isUpdate(false);
+                    self.inputCode(null);
+                    self.inputName(null);
+                    self.date(new Date());
                 };
                 ScreenModel.prototype.insertData = function () {
                     var self = this;
@@ -77,6 +73,7 @@ var qmm034;
                     node = new qmm034.a.service.model.EraDto(eraName, eraMark, startDate, endDate, fixAttribute);
                     qmm034.a.service.addData(self.isUpdate(false), node).done(function (result) {
                         self.reload().done(function () {
+                            self.currentCode(eraName);
                             dfd.resolve();
                         });
                     }).fail(function (res) {
@@ -87,15 +84,6 @@ var qmm034;
                     var self = this;
                     if (confirm("do you wanna delete") === true) {
                         self.deleteData();
-                        var rowIndex = _.findIndex(self.items(), function (item) {
-                            return item.code == self.currentEra().code;
-                        });
-                        if (rowIndex == self.items().length - 1) {
-                            self.currentCode(self.items()[self.items().length - 2].code);
-                        }
-                        else {
-                            self.currentCode(self.items()[rowIndex - 1].code);
-                        }
                     }
                     else {
                         alert("you didnt delete!");
@@ -126,21 +114,29 @@ var qmm034;
                     var eraMark;
                     eraMark = $('#A_INP_002').val();
                     var startDate = self.date();
-                    var endDate;
-                    var fixAttribute;
                     var dfd = $.Deferred();
                     var node;
                     node = new qmm034.a.service.model.EraDtoDelete(startDate);
-                    //            qmm034.a.service.deleteData(node)
-                    //                .done(function() {
-                    //                    qmm034.a.service.getAllEras();
-                    //                }).fail(function(error) {
-                    //                    alert(error.message);
-                    //                });
                     qmm034.a.service.deleteData(node).done(function (result) {
-                        self.reload().done(function () {
-                            dfd.resolve();
+                        var rowIndex = _.findIndex(self.items(), function (item) {
+                            return item.code == self.currentEra().code;
                         });
+                        self.items.remove(function (item) {
+                            return item.code == self.currentEra().code;
+                        });
+                        self.items.valueHasMutated();
+                        if (self.items().length === 0) {
+                            self.isUpdate(false);
+                            self.refreshLayout();
+                        }
+                        else if (self.items().length === rowIndex) {
+                            self.currentEra(self.items()[rowIndex - 1]);
+                            self.currentCode(self.items()[rowIndex - 1].code);
+                        }
+                        else {
+                            self.currentEra(self.items()[rowIndex]);
+                            self.currentCode(self.items()[rowIndex].code);
+                        }
                     }).fail(function (error) {
                         alert(error.message);
                     });
@@ -195,7 +191,11 @@ var qmm034;
                     // Resolve start page dfd after load all data.
                     $.when(qmm034.a.service.getAllEras()).done(function (data) {
                         self.buildGridDataSource(data);
-                        self.currentEra = ko.observable(_.cloneDeep(_.first(self.items())));
+                        self.currentEra = ko.observable((new EraModel('大明', 'S', new Date("1926/12/25"))));
+                        if (self.items().length > 0) {
+                            self.currentEra = ko.observable(_.cloneDeep(_.first(self.items())));
+                            self.currentCode(self.currentEra().code);
+                        }
                         dfd.resolve();
                     }).fail(function (res) {
                     });
@@ -234,6 +234,7 @@ var qmm034;
                 }
                 return EraModel;
             }());
+            viewmodel.EraModel = EraModel;
         })(viewmodel = a.viewmodel || (a.viewmodel = {}));
     })(a = qmm034.a || (qmm034.a = {}));
 })(qmm034 || (qmm034 = {}));

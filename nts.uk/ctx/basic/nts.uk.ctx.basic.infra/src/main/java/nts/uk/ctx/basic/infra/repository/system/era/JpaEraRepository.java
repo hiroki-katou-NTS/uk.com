@@ -1,8 +1,6 @@
 package nts.uk.ctx.basic.infra.repository.system.era;
 
-import java.time.LocalDate;
 import java.util.List;
-import java.util.Map;
 import java.util.Optional;
 
 import javax.ejb.Stateless;

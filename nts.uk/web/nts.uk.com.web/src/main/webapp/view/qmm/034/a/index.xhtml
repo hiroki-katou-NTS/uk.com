@@ -19,13 +19,17 @@
 			<com:scriptfile path="start.js" />
 			<com:scriptfile path="viewmodel.js" />
 			<com:scriptfile path="service.js" />
+			<com:ValidatorScript>
+				nts.uk.ctx.basic.dom.system.era.EraName
+				nts.uk.ctx.basic.dom.system.era.EraMark
+			</com:ValidatorScript>
 		</ui:define>
 
 		<ui:define name="content">
 			<div id="functions-area" class="cf">
 				<div class="aligntLeft">
 					<button id="A_BTN_001" data-bind="click: refreshLayout">新規</button>
-					<button id="A_BTN_002" class="proceed" data-bind="click: insertData">登録</button>
+					<button id="A_BTN_002" class="proceed" data-bind="click: insertData, enable: $root.errors.isEmpty" >登録</button>
 					<button id="A_BTN_004">マスタ修正ログ</button>
 					<button id="A_BTN_003" class="danger"
 						data-bind="click: alertDelete">削除</button>
@@ -55,16 +59,16 @@
 								<div id="A_LBL_002" data-bind="ntsFormLabel: {required: true}">元号</div>
 							</td>
 							<td>
-							 <div data-bind="with: inputCode">
-							<input id="A_INP_001"  data-bind="ntsTextEditor: { value: inputCode" /> 
-							</div>
+							<input id="A_INP_001"  data-bind="ntsTextEditor: { value: inputCode, constraint: 'EraName'}" /> 
 							</td>
 						</tr>
 						<tr>
 							<td>
 								<div id="A_LBL_003" data-bind="ntsFormLabel: { required: true }">記号</div>
 							</td>
-							<td><input id="A_INP_002"  data-bind="ntsTextEditor: { value: inputName"/></td>
+							<td>
+								<input id="A_INP_002"  data-bind="ntsTextEditor: { value: inputName, constraint: 'EraMark'}"/>
+							</td>
 						</tr>
 						<tr>
 							<td>

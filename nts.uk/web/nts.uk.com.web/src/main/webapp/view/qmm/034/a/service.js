@@ -93,7 +93,7 @@ var qmm034;
             service.addData = addData;
             function deleteData(command) {
                 var dfd = $.Deferred();
-                //var dateObject = ko.mapping.toJS(command);
+                var dateObject = ko.mapping.toJS(command);
                 nts.uk.request.ajax(paths.deleteEra, command)
                     .done(function (res) {
                     dfd.resolve(res);

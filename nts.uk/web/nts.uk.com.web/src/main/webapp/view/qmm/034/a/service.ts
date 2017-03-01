@@ -87,9 +87,9 @@ module qmm034.a.service {
             })
         return dfd.promise();
     }
-    export function deleteData(command): JQueryPromise<any> {
+    export function deleteData(command: model.EraDtoDelete): JQueryPromise<any> {
         var dfd = $.Deferred<any>();
-        //var dateObject = ko.mapping.toJS(command);
+        var dateObject = ko.mapping.toJS(command);
         nts.uk.request.ajax(paths.deleteEra, command)
             .done(function(res: Array<any>) {
                 dfd.resolve(res);
