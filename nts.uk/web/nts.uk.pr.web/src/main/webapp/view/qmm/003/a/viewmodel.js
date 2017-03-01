@@ -16,9 +16,13 @@ var qmm003;
                     self.currentNode = ko.observable(null);
                     self.init();
                     self.filteredData = ko.observableArray(nts.uk.util.flatArray(self.items(), "childs"));
+                    console.log(self.filteredData());
                     self.filteredData1 = ko.observableArray(nts.uk.util.flatArray(self.items(), "childs"));
+                    console.log(self.filteredData1());
                     self.filteredData2 = ko.observableArray(nts.uk.util.flatArray(self.items(), "childs"));
+                    console.log(self.filteredData2());
                     self.removeData(self.filteredData2());
+                    console.log(self.filteredData2());
                     self.selectedCodes = ko.observableArray([]);
                     self.singleSelectedCode.subscribe(function (newValue) {
                         console.log(newValue);
@@ -28,21 +32,22 @@ var qmm003;
                             self.curentNode(self.findByCode(self.filteredData2(), newValue, count));
                             self.nameBySelectedCode(self.findByName(self.filteredData2()));
                             self.selectedCode(self.nameBySelectedCode().code);
-                            var co_1 = 0, co1_1 = 0;
-                            _.each(self.filteredData2(), function (obj) {
-                                if (obj.code != self.curentNode().code) {
-                                    co_1++;
-                                }
-                                else {
-                                    if (co_1 < ((_.size(self.filteredData2())) - 1)) {
-                                        co1_1 = co_1 + 1;
-                                    }
-                                    else {
-                                        co1_1 = co_1;
-                                    }
-                                }
-                            });
-                            self.labelSubsub(self.filteredData2()[co1_1]);
+                            //                    let co = 0, co1 = 0;
+                            //                    _.each(self.filteredData2(), function(obj: Node) {
+                            //
+                            //                        if (obj.code != self.curentNode().code) {
+                            //                            co++;
+                            //                        } else {
+                            //                            if (co < ((_.size(self.filteredData2())) - 1)) {
+                            //                                co1 = co + 1;
+                            //
+                            //                            } else {
+                            //                                co1 = co;
+                            //                            }
+                            //                        }
+                            //                    });
+                            //
+                            //                    self.labelSubsub(self.filteredData2()[co1]);
                             if (self.labelSubsub() == null) {
                                 self.labelSubsub(new Node("11", "22", []));
                             }
@@ -225,6 +230,7 @@ var qmm003;
                                 self.japanLocation = locationData;
                                 self.buildResidentalTaxTree();
                                 self.items(self.test());
+                                console.log(self.items());
                             });
                             self.mode(true); // true, update mode 
                         }

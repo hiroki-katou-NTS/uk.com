@@ -41,9 +41,13 @@ module qmm003.a.viewmodel {
 
 
             self.filteredData = ko.observableArray(nts.uk.util.flatArray(self.items(), "childs"));
+            console.log(self.filteredData());
             self.filteredData1 = ko.observableArray(nts.uk.util.flatArray(self.items(), "childs"));
+            console.log(self.filteredData1());
             self.filteredData2 = ko.observableArray(nts.uk.util.flatArray(self.items(), "childs"));
+            console.log(self.filteredData2());
             self.removeData(self.filteredData2());
+            console.log(self.filteredData2());
             self.selectedCodes = ko.observableArray([]);
             self.singleSelectedCode.subscribe(function(newValue) {
                 console.log(newValue);
@@ -53,22 +57,22 @@ module qmm003.a.viewmodel {
                     self.curentNode(self.findByCode(self.filteredData2(), newValue, count));
                     self.nameBySelectedCode(self.findByName(self.filteredData2()));
                     self.selectedCode(self.nameBySelectedCode().code);
-                    let co = 0, co1 = 0;
-                    _.each(self.filteredData2(), function(obj: Node) {
-
-                        if (obj.code != self.curentNode().code) {
-                            co++;
-                        } else {
-                            if (co < ((_.size(self.filteredData2())) - 1)) {
-                                co1 = co + 1;
-
-                            } else {
-                                co1 = co;
-                            }
-                        }
-                    });
-
-                    self.labelSubsub(self.filteredData2()[co1]);
+                    //                    let co = 0, co1 = 0;
+                    //                    _.each(self.filteredData2(), function(obj: Node) {
+                    //
+                    //                        if (obj.code != self.curentNode().code) {
+                    //                            co++;
+                    //                        } else {
+                    //                            if (co < ((_.size(self.filteredData2())) - 1)) {
+                    //                                co1 = co + 1;
+                    //
+                    //                            } else {
+                    //                                co1 = co;
+                    //                            }
+                    //                        }
+                    //                    });
+                    //
+                    //                    self.labelSubsub(self.filteredData2()[co1]);
                     if (self.labelSubsub() == null) {
                         self.labelSubsub(new Node("11", "22", []));
                     }
@@ -262,6 +266,7 @@ module qmm003.a.viewmodel {
                         self.japanLocation = locationData;
                         self.buildResidentalTaxTree();
                         self.items(self.test());
+                        console.log(self.items());
                     });
 
                     self.mode(true);// true, update mode 
