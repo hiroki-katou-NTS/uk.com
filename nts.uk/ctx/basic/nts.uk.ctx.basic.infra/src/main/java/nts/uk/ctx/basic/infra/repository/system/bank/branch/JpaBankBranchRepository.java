@@ -49,6 +49,14 @@ public class JpaBankBranchRepository extends JpaRepository implements BankBranch
 		this.commandProxy().update(toEntity(bank));
 		
 	}
+	
+	@Override
+	public void update(String bankNewCode, String companyCode, String bankCode, String branchCode) {
+		CbkmtBranchPK key = new CbkmtBranchPK(companyCode, bankCode, branchCode);
+		CbkmtBranch entity = this.getEntityManager().find(CbkmtBranch.class, key);
+		entity.ckbmtBranchPK.bankCode = bankNewCode;
+		this.commandProxy().update(entity);
+	}
 
 	@Override
 	public void remove(String companyCode, String bankCode, String branchCode) {
