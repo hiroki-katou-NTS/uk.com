@@ -10,6 +10,8 @@ import nts.uk.ctx.basic.app.command.system.bank.branch.AddBranchCommand;
 import nts.uk.ctx.basic.app.command.system.bank.branch.AddBranchCommandHandler;
 import nts.uk.ctx.basic.app.command.system.bank.branch.RemoveBranchCommand;
 import nts.uk.ctx.basic.app.command.system.bank.branch.RemoveBranchCommandHandler;
+import nts.uk.ctx.basic.app.command.system.bank.branch.TranferBranchCommand;
+import nts.uk.ctx.basic.app.command.system.bank.branch.TranferBranchCommandHandler;
 import nts.uk.ctx.basic.app.command.system.bank.branch.UpdateBranchCommand;
 import nts.uk.ctx.basic.app.command.system.bank.branch.UpdateBranchCommandHandler;
 
@@ -24,6 +26,9 @@ public class BranchWebService extends WebService {
 	
 	@Inject
 	private RemoveBranchCommandHandler removeBranchCommandHandler;
+	
+	@Inject
+	private TranferBranchCommandHandler tranferBranchCommandHandler; 
     
 	@POST
 	@Path("add")
@@ -41,5 +46,11 @@ public class BranchWebService extends WebService {
 	@Path("remove")
 	public void remove(RemoveBranchCommand command){
 		this.removeBranchCommandHandler.handle(command);		
+	}
+	
+	@POST
+	@Path("tranfer")
+	public void update(TranferBranchCommand command){
+	   this.tranferBranchCommandHandler.handle(command);
 	}
 }

@@ -24,6 +24,9 @@ public class UpdateBankCommandHandler extends CommandHandler<UpdateBankCommand>{
 		
 		Bank domain = Bank.createFromJavaType(companyCode, command.getBankCode(), command.getBankName(), command.getBankNameKana(), command.getMemo());
 		
+		// validate
+		domain.validate();
+		
 		bankRepository.update(domain);
 	}
     
