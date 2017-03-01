@@ -31,7 +31,7 @@ module nts.uk.pr.view.qmm007.a {
 
             constructor() {
                 var self = this;
-                self.isNewMode = ko.observable(false);
+                self.isNewMode = ko.observable(true);
                 self.isLoading = ko.observable(true);
                 self.isInputEnabled = ko.observable(false);
                 self.isLatestHistory = ko.observable(false);
@@ -96,23 +96,33 @@ module nts.uk.pr.view.qmm007.a {
             /**
              * Go to Add UnitPriceHistory dialog.
              */
-            private goToB(): void {
+            private openAddDialog(): void {
                 var self = this;
                 nts.uk.ui.windows.setShared('unitPriceHistoryModel', ko.toJS(self.unitPriceHistoryModel()));
                 nts.uk.ui.windows.sub.modal('/view/qmm/007/b/index.xhtml', { title: '会社一律金額 の 登録 > 履歴の追加', dialogClass: 'no-close' }).onClosed(() => {
-                    self.loadUnitPriceHistoryList();
+                    self.unitPriceHistoryModel().endMonth(nts.uk.ui.windows.getShared('endMonth'));
+                    // Update endDate of previous history
+                    service.update(ko.toJS(self.unitPriceHistoryModel())).done(() => {
+                        // Reload UnitPriceHistoryList
+                        self.loadUnitPriceHistoryList().done(() => {
+                            // Select latest history
+                            self.selectedId(self.getLastestHistoryId(self.unitPriceHistoryModel().unitPriceCode()));
+                        });
+                    });
                 });
             }
 
             /**
              * Go to Edit UnitPriceHistory dialog.
              */
-            private goToC(): void {
+            private openEditDialog(): void {
                 var self = this;
                 nts.uk.ui.windows.setShared('unitPriceHistoryModel', ko.toJS(this.unitPriceHistoryModel()));
                 nts.uk.ui.windows.setShared('isLatestHistory', self.isLatestHistory());
                 nts.uk.ui.windows.sub.modal('/view/qmm/007/c/index.xhtml', { title: '会社一律金額 の 登録 > 履歴の編集', dialogClass: 'no-close' }).onClosed(() => {
+                    // Reload.
                     self.loadUnitPriceHistoryList();
+                    self.loadUnitPriceDetail(self.selectedId());
                 });
             }
 

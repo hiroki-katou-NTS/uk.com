@@ -13,6 +13,7 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
@@ -82,7 +83,7 @@ public class QlsptLedgerFormHead implements Serializable {
 	private int print1pageByPersonSet;
 
 	/** The qlspt ledger form detail list. */
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "qlsptLedgerFormHead")
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "qlsptLedgerFormHead", fetch = FetchType.LAZY)
 	private List<QlsptLedgerFormDetail> qlsptLedgerFormDetailList;
 
 	/**

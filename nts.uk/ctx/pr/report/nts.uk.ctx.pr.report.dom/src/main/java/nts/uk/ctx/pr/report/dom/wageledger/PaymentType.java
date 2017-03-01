@@ -10,10 +10,10 @@ package nts.uk.ctx.pr.report.dom.wageledger;
 public enum PaymentType {
 	
 	/** The Salary. */
-	Salary(1),
+	Salary(0),
 	
 	/** The Bonus. */
-	Bonus(2);
+	Bonus(1);
 	
 	/** The value. */
 	public final Integer value;
@@ -25,5 +25,29 @@ public enum PaymentType {
 	 */
 	private PaymentType(Integer value) {
 		this.value = value;
+	}
+	
+	/**
+	 * Value of.
+	 *
+	 * @param value
+	 *            the value
+	 * @return the element type
+	 */
+	public static PaymentType valueOf(Integer value) {
+		// Invalid object.
+		if (value == null) {
+			return null;
+		}
+
+		// Find value.
+		for (PaymentType val : PaymentType.values()) {
+			if (val.value == value) {
+				return val;
+			}
+		}
+
+		// Not found.
+		return null;
 	}
 }

@@ -16,7 +16,7 @@ var nts;
                             var ScreenModel = (function () {
                                 function ScreenModel() {
                                     var self = this;
-                                    self.isNewMode = ko.observable(false);
+                                    self.isNewMode = ko.observable(true);
                                     self.isLoading = ko.observable(true);
                                     self.isInputEnabled = ko.observable(false);
                                     self.isLatestHistory = ko.observable(false);
@@ -65,19 +65,25 @@ var nts;
                                     });
                                     return dfd.promise();
                                 };
-                                ScreenModel.prototype.goToB = function () {
+                                ScreenModel.prototype.openAddDialog = function () {
                                     var self = this;
                                     nts.uk.ui.windows.setShared('unitPriceHistoryModel', ko.toJS(self.unitPriceHistoryModel()));
                                     nts.uk.ui.windows.sub.modal('/view/qmm/007/b/index.xhtml', { title: '会社一律金額 の 登録 > 履歴の追加', dialogClass: 'no-close' }).onClosed(function () {
-                                        self.loadUnitPriceHistoryList();
+                                        self.unitPriceHistoryModel().endMonth(nts.uk.ui.windows.getShared('endMonth'));
+                                        a.service.update(ko.toJS(self.unitPriceHistoryModel())).done(function () {
+                                            self.loadUnitPriceHistoryList().done(function () {
+                                                self.selectedId(self.getLastestHistoryId(self.unitPriceHistoryModel().unitPriceCode()));
+                                            });
+                                        });
                                     });
                                 };
-                                ScreenModel.prototype.goToC = function () {
+                                ScreenModel.prototype.openEditDialog = function () {
                                     var self = this;
                                     nts.uk.ui.windows.setShared('unitPriceHistoryModel', ko.toJS(this.unitPriceHistoryModel()));
                                     nts.uk.ui.windows.setShared('isLatestHistory', self.isLatestHistory());
                                     nts.uk.ui.windows.sub.modal('/view/qmm/007/c/index.xhtml', { title: '会社一律金額 の 登録 > 履歴の編集', dialogClass: 'no-close' }).onClosed(function () {
                                         self.loadUnitPriceHistoryList();
+                                        self.loadUnitPriceDetail(self.selectedId());
                                     });
                                 };
                                 ScreenModel.prototype.save = function () {
