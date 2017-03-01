@@ -8,7 +8,8 @@ var cmm008;
                 getAllEmployment: "basic/employment/findallemployments",
                 createEmployment: "basic/employment/createemployment",
                 updateEmployment: "basic/employment/updateemployment",
-                deleteEmployment: "basic/employment/deleteemployment"
+                deleteEmployment: "basic/employment/deleteemployment",
+                getEmploymentByCode: "basic/employment/findemploymentbycode/"
             };
             //find all employment data
             function getAllEmployments() {
@@ -23,10 +24,22 @@ var cmm008;
                 return dfd.promise();
             }
             service.getAllEmployments = getAllEmployments;
+            function getEmploymentByCode(employmentCode) {
+                var dfd = $.Deferred();
+                nts.uk.request.ajax("com", path.getEmploymentByCode + employmentCode)
+                    .done(function (res) {
+                    dfd.resolve(res);
+                })
+                    .fail(function (res) {
+                    dfd.reject(res);
+                });
+                return dfd.promise();
+            }
+            service.getEmploymentByCode = getEmploymentByCode;
             //create new employment data
             function createEmployment(employment) {
                 var dfd = $.Deferred();
-                nts.uk.request.ajax("com", path.createEmployment).done(function (res) {
+                nts.uk.request.ajax("com", path.createEmployment, employment).done(function (res) {
                     dfd.resolve(res);
                 }).fail(function (res) {
                     dfd.resolve(res);
@@ -37,7 +50,7 @@ var cmm008;
             //update employment data
             function updateEmployment(employment) {
                 var dfd = $.Deferred();
-                nts.uk.request.ajax("com", path.updateEmployment).done(function (res) {
+                nts.uk.request.ajax("com", path.updateEmployment, employment).done(function (res) {
                     dfd.resolve(res);
                 }).fail(function (res) {
                     dfd.resolve(res);
@@ -48,7 +61,7 @@ var cmm008;
             //delete employment data
             function deleteEmployment(employment) {
                 var dfd = $.Deferred();
-                nts.uk.request.ajax("com", path.deleteEmployment).done(function (res) {
+                nts.uk.request.ajax("com", path.deleteEmployment, employment).done(function (res) {
                     dfd.resolve(res);
                 }).fail(function (res) {
                     dfd.resolve(res);

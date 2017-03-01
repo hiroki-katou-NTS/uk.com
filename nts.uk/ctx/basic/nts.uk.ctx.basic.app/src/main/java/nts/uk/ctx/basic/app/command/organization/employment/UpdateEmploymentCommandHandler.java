@@ -37,7 +37,8 @@ public class UpdateEmploymentCommandHandler extends CommandHandler<UpdateEmploym
 					new ProcessingNo(command.getProcessingNo()),
 					EnumAdaptor.valueOf( command.getStatutoryHolidayAtr(), ManageOrNot.class),
 					new EmploymentCode(command.getEmployementOutCd()),
-					EnumAdaptor.valueOf( command.getDisplayFlg(), ManageOrNot.class));
+					EnumAdaptor.valueOf( command.getDisplayFlg(), ManageOrNot.class)
+			);
 			
 			this.repository.update(employment);
 			//A_SEL_001にチェックが付いている場合

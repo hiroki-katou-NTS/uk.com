@@ -21,6 +21,7 @@ var cmm008;
                     self.memoValue = ko.observable("");
                     self.textEditorOption = ko.mapping.fromJS(new option.TextEditorOption());
                     self.dataSource = ko.observableArray([]);
+                    self.listResult = ko.observableArray([]);
                     self.isEnable = ko.observable(false);
                     self.multilineeditor = {
                         memoValue: ko.observable(''),
@@ -33,7 +34,6 @@ var cmm008;
                         })),
                         required: ko.observable(true),
                     };
-                    //list data click
                 }
                 // start function
                 ScreenModel.prototype.start = function () {
@@ -49,6 +49,26 @@ var cmm008;
                     self.managementHolidaylist();
                     self.processingDateItem();
                     self.dataSourceItem();
+                    if (self.listResult() !== undefined && self.listResult().length > 0
+                        || self.currentCode() === null
+                        || self.currentCode() === undefined) {
+                        var obEmployment = _.first(self.listResult());
+                    }
+                    //list data click
+                    self.currentCode.subscribe(function (newValue) {
+                        var newEmployment = _.find(self.listResult(), function (employ) {
+                            if (employ.employmentCode === newValue) {
+                                self.currentCode(employ.employmentCode);
+                                self.employmentCode(employ.employmentCode);
+                                self.employmentName(employ.employmentName);
+                                self.selectedCloseCode(employ.closeDateNo);
+                                self.selectedProcessCode(employ.processingNo);
+                                self.memoValue(employ.memo);
+                                self.employmentOutCode(employ.employementOutCd);
+                                return;
+                            }
+                        });
+                    });
                     dfd.resolve();
                     // Return.
                     return dfd.promise();
@@ -78,6 +98,7 @@ var cmm008;
                     var self = this;
                     self.dataSource = ko.observableArray([]);
                     a.service.getAllEmployments().done(function (listResult) {
+                        self.listResult(listResult);
                         if (listResult.length === 0 || listResult === undefined) {
                             self.isEnable(true);
                         }
@@ -105,21 +126,57 @@ var cmm008;
                 //登録ボタンを押す
                 ScreenModel.prototype.createEmployment = function () {
                     var self = this;
-                    if (self.isEnable) {
-                        var employment = new a.service.model.employmentDto();
-                        employment.employmentCode = self.employmentCode();
-                        employment.employmentName = self.employmentName();
-                        employment.closeDateNo = self.selectedCloseCode();
-                        employment.processingNo = self.selectedProcessCode();
-                        employment.statutoryHolidayAtr = self.holidayCode();
-                        employment.employementOutCd = self.employmentOutCode();
-                        if (self.isCheckbox)
-                            employment.displayFlg = 1;
-                        else
-                            employment.displayFlg = 0;
+                    self.employmentCode(nts.uk.text.padLeft(self.employmentCode(), '0', 10));
+                    //必須項目の未入力チェック
+                    if (self.employmentCode() === ""
+                        || self.employmentName() === "") {
+                        alert("コード/名称が入力されていません。");
+                        return;
+                    }
+                    var employment = new a.service.model.employmentDto();
+                    employment.employmentCode = self.employmentCode();
+                    employment.employmentName = self.employmentName();
+                    employment.closeDateNo = self.selectedCloseCode();
+                    employment.processingNo = self.selectedProcessCode();
+                    employment.statutoryHolidayAtr = self.holidayCode();
+                    employment.employementOutCd = self.employmentOutCode();
+                    employment.memo = self.memoValue();
+                    if (self.isCheckbox)
+                        employment.displayFlg = 1;
+                    else
+                        employment.displayFlg = 0;
+                    if (self.isEnable()) {
+                        var isCheck = false;
+                        //コード重複チェック
+                        a.service.getEmploymentByCode(self.employmentCode()).done(function (employmentChk) {
+                            if (employmentChk !== null || employmentChk !== undefined) {
+                                alert("入力したコードは既に存在しています。\r\nコードを確認してください。");
+                                isCheck = true;
+                                return;
+                            }
+                        });
+                        if (isCheck) {
+                            $("#INP_002").focus();
+                            return;
+                        }
                         a.service.createEmployment(employment).done(function () {
                         });
                     }
+                    else {
+                        a.service.updateEmployment(employment).done(function () {
+                        });
+                    }
+                    self.start();
+                };
+                //新規ボタンを押す
+                ScreenModel.prototype.newCreateEmployment = function () {
+                    var self = this;
+                    self.employmentCode("");
+                    self.employmentName("");
+                    self.isEnable(true);
+                    self.memoValue("");
+                    self.employmentOutCode("");
+                    self.currentCode("");
                 };
                 return ScreenModel;
             }());

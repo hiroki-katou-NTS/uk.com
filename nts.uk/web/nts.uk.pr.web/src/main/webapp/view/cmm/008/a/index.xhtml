@@ -12,24 +12,15 @@
 			<com:scriptfile path="start.js" />
 			<com:scriptfile path="viewmodel.js" />
 			<com:scriptfile path="service.js" />
-			<script type="text/javascript">
-					__viewContext.primitiveValueConstraints.EmployementCode = {
-							valueType: 'String',
-							charType: 'Numeric',
-							maxLength: 2,
-						};
-					
-					__viewContext.primitiveValueConstraints.EmployementName = {
-							valueType: 'String',
-							charType: 'String',
-							maxLength: 20,
-						};
-				</script>
+			<com:ValidatorScript>
+					nts.uk.ctx.basic.dom.organization.employment.EmploymentCode
+					nts.uk.ctx.basic.dom.organization.employment.EmploymentName
+			</com:ValidatorScript>
 		</ui:define>
 
 		<ui:define name="content">
 			<div id="functions-area" class="divHeader">
-				<button id="BTN_001" class="btnStyle">新規</button>
+				<button id="BTN_001" class="btnStyle" data-bind = "click: newCreateEmployment">新規</button>
 				<button class="proceed btnStyle" id="BTN_002" data-bind="click: createEmployment, enable: $root.errors.isEmpty">登録</button>
 				<button id="BTN_003">マスタ修正ログ</button>
 				<button class="danger btnStyle" id="BTN_004">削除</button>
@@ -64,13 +55,13 @@
 											<label>コード/名称<br /></label>
 										</div>
 									</td>
-									<td class="contentsRR"><input id="INP_002"
+									<td class="contentsRR"><input id="INP_002" maxlength="10"
 										data-name="code"
 										data-bind="ntsTextEditor: {value: employmentCode, 
 																					constraint: 'EmploymentCode', 
 																					option: textEditorOption, 
 																					enable: isEnable}" />
-										<input id="INP_003" data-name="name"
+										<input id="INP_003" data-name="name" maxlength="20"
 										data-bind="ntsTextEditor: {value: employmentName, 
 																					constraint: 'EmploymentName',
 																					option: textEditorOption,

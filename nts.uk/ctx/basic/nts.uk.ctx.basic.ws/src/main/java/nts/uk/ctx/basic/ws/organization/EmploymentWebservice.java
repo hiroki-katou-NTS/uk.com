@@ -5,6 +5,7 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
@@ -30,11 +31,10 @@ public class EmploymentWebservice extends WebService {
 	@Inject
 	private EmploymentFinder finder;
 	
-	private String companyCode = AppContexts.user().companyCode();
 	@POST
 	@Path("findallemployments")
 	public List<EmploymentDto> getAllEmployments(){
-		return this.finder.getAllEmployment(companyCode);
+		return this.finder.getAllEmployment();
 	}
 	@POST
 	@Path("createemployment")
@@ -50,5 +50,10 @@ public class EmploymentWebservice extends WebService {
 	@Path("deleteemployment")
 	public void deleteEmployment(DeleteEmploymentCommand command){
 		this.deleteEmployment.handle(command);
+	}
+	@POST
+	@Path("findemploymentbycode/{employmentCode}")
+	public void getEmploymentByCode(@PathParam("employmentCode") String employmentCode){
+		this.finder.getEmployment(employmentCode);
 	}
 }
