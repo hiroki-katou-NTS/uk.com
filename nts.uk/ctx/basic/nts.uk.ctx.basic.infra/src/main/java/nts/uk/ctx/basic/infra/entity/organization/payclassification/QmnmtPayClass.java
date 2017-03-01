@@ -22,19 +22,51 @@ public class QmnmtPayClass implements Serializable{
 	@EmbeddedId
 	public QmnmtPayClassPK qmnmtPayClassPK;
 	
-	@Basic(optional = false)
-	@Column(name ="STR_YM")
-	public int strYm;
 
 	@Basic(optional = false)
 	@Column(name = "MEMO")
-	public int memo;
+	public String memo;
 
-	@Basic(optional = false)
-	@Column(name = "EXCLUS_VER")
-	public int exclusiveVersion;
 	
 	@Basic(optional = false)
 	@Column(name = "PAYCLASS_NAME")
-	public int payClassName;
+	public String payClassName;
+
+
+	public QmnmtPayClassPK getQmnmtPayClassPK() {
+		return qmnmtPayClassPK;
+	}
+
+
+	public void setQmnmtPayClassPK(QmnmtPayClassPK qmnmtPayClassPK) {
+		this.qmnmtPayClassPK = qmnmtPayClassPK;
+	}
+
+
+	public String getMemo() {
+		return memo;
+	}
+
+
+	public void setMemo(String memo) {
+		this.memo = memo;
+	}
+
+
+	public String getPayClassName() {
+		return payClassName;
+	}
+
+
+	public void setPayClassName(String payClassName) {
+		this.payClassName = payClassName;
+	}
+
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
+	
+
+	
 }
