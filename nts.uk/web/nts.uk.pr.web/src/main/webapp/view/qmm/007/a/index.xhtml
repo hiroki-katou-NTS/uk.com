@@ -34,7 +34,7 @@
 				<button id="btn_001" data-bind="click: enableNewMode"
 					class="large btn-default">新規</button>
 				<button id="btn_002" class="large proceed btn-default"
-					data-bind="click: save, enable: $root.errors.isEmpty">登録</button>
+					data-bind="click: save, enable: $root.errors.isEmpty &amp;&amp; isInputEnabled()">登録</button>
 				<button id="btn_003" class="large btn-default" data-bind="">印刷
 					(PDF)</button>
 				<button id="btn_006" class="large btn-default" data-bind="">マスタ修正ログ</button>
@@ -57,14 +57,13 @@
 					</div>
 					<div class="margin-top-bot-20">
 						<button class="pull-left" id="btn_004"
-							data-bind="click: goToB, enable: selectedId().length>1">履歴追加</button>
+							data-bind="click: goToB, enable: isInputEnabled() &amp;&amp; !isNewMode()">履歴追加</button>
 						<button class="pull-right" id="btn_005"
-							data-bind="click: goToC, enable: !isNewMode()">履歴編集</button>
-					</div>
-					<div class="padding-top-10 pull-left cf">
-						<table id="lst_001"
-							data-bind="ntsTreeGridView:{
-										width: 280,
+							data-bind="click: goToC, enable: isInputEnabled() &amp;&amp; !isNewMode()">履歴編集</button>
+						<div class="padding-top-10 pull-left cf">
+							<table id="lst_001"
+								data-bind="ntsTreeGridView:{
+										width: 290,
 										height: 350,
 										options: historyList,
 										value: selectedId,
@@ -74,15 +73,15 @@
 										multiple: false,
 										enable: true,
 										showCheckBox: false}"
-							class="cf">
-						</table>
+								class="cf">
+							</table>
+						</div>
 					</div>
 				</div>
 				<!-- END LEFT CONTENT-->
 
 				<!-- BEGIN RIGHT CONTENT-->
 				<div id="right-content">
-				<com:ko tag="with" bind="unitPriceHistoryModel">
 					<table class="form-default">
 						<tr>
 							<td><div id="lbl_003"
@@ -90,53 +89,55 @@
 							<td colspan="2"><input id="inpCode"
 								class="inp-default save-error"
 								data-bind="ntsTextEditor: {
-									value: unitPriceCode,
+									value: unitPriceHistoryModel().unitPriceCode,
 									constraint: 'UnitPriceCode',
-									option: $parent.textEditorOption,
+									option: textEditorOption,
 									required: true,
-									enable: $parent.isNewMode()}" />
+									enable: isNewMode()}" />
 								<input id="inpName" class="inp-default save-error"
 								data-bind="ntsTextEditor: {
-									value: unitPriceName,
+									value: unitPriceHistoryModel().unitPriceName,
 									constraint: 'UnitPriceName',
-									option: $parent.textEditorOption,
-									required: true}" />
+									option: textEditorOption,
+									required: true,
+									enable: isInputEnabled()}" />
 							</td>
 						</tr>
 						<tr>
 							<td><div id="lbl_004"
 									data-bind="ntsFormLabel: { required: true }">開始年月</div></td>
 							<td><span id="ipnStartMonth"
-								data-bind="ntsDatePicker: {value: startMonth, dateFormat: 'yyyy/MM'}"></span>
+								data-bind="ntsDatePicker: {value: unitPriceHistoryModel().startMonth, dateFormat: 'yyyy/MM', enable: isInputEnabled()}"></span>
 								<label id="lblEndMonth"
-								data-bind="text: endMonth()"></label></td>
+								data-bind="text: unitPriceHistoryModel().endMonth()"></label></td>
 						</tr>
 						<tr>
 							<td><div id="lbl_006"
 									data-bind="ntsFormLabel: { constraint: 'Money', required: true }">金額</div></td>
 							<td><input id="inpBudget" class="inp-default save-error"
 								data-bind="ntsNumberEditor: {
-									value: budget,
+									value: unitPriceHistoryModel().budget,
 									constraint: 'Money',
 									option: {placeholder: '0.00',
 						                    grouplength: 3,
 						                    decimallength: 2,
 						                    currencyformat: 'JPY',
 						                    currencyposition: 'right'},
-									required: true}" />
+									required: true,
+									enable: isInputEnabled()}" />
 							</td>
 						</tr>
 						<tr>
 							<td><div id="lbl_007" data-bind="ntsFormLabel: {}">固定的賃金</div></td>
 							<td><label class="ntsRadioBox"> <input type="radio"
 									name="textRadio"
-									data-bind="checkedValue: 'Company', checked: fixPaySettingType" />
+									data-bind="checkedValue: 'Company', checked: unitPriceHistoryModel().fixPaySettingType, enable: isInputEnabled()" />
 									<span class="box"></span><span class="label"
 									data-bind="text: '全員一律で指定する'"></span>
 							</label></td>
 							<td colspan="2"><label class="ntsRadioBox"><input
 									type="radio" name="textRadio"
-									data-bind="checkedValue: 'Contract', checked: fixPaySettingType" />
+									data-bind="checkedValue: 'Contract', checked: unitPriceHistoryModel().fixPaySettingType, enable: isInputEnabled()" />
 									<span class="box"></span><span class="label"
 									data-bind="text: '給与契約形態ごとに指定する'"></span></label></td>
 						</tr>
@@ -145,20 +146,20 @@
 							<td style="vertical-align: top" class="valign-top" rowspan="4"><div
 									id="sel_002"
 									data-bind="ntsSwitchButton: {
-						options: $parent.switchButtonDataSource,
+						options: switchButtonDataSource,
 						optionsValue: 'code',
 						optionsText: 'name',
-						enable: !$parent.isContractSettingEnabled(),
-						value: fixPayAtr}"></div></td>
+						enable: !isContractSettingEnabled() &amp;&amp; isInputEnabled(),
+						value: unitPriceHistoryModel().fixPayAtr}"></div></td>
 							<td><label id="lbl_009">月給者</label></td>
 							<td class="">
 								<div id="sel_003"
 									data-bind="ntsSwitchButton: {
-						options: $parent.switchButtonDataSource,
+						options: switchButtonDataSource,
 						optionsValue: 'code',
 						optionsText: 'name',
-						enable: $parent.isContractSettingEnabled(),
-						value: fixPayAtrMonthly}"></div>
+						enable: isContractSettingEnabled() &amp;&amp; isInputEnabled(),
+						value: unitPriceHistoryModel().fixPayAtrMonthly}"></div>
 							</td>
 						</tr>
 						<tr>
@@ -167,11 +168,11 @@
 							<td class="">
 								<div id="sel_004"
 									data-bind="ntsSwitchButton: {
-						options: $parent.switchButtonDataSource,
+						options: switchButtonDataSource,
 						optionsValue: 'code',
 						optionsText: 'name',
-						enable: $parent.isContractSettingEnabled(),
-						value: fixPayAtrDayMonth}"></div>
+						enable: isContractSettingEnabled() &amp;&amp; isInputEnabled(),
+						value: unitPriceHistoryModel().fixPayAtrDayMonth}"></div>
 							</td>
 						</tr>
 						<tr>
@@ -180,11 +181,11 @@
 							<td class="">
 								<div id="sel_005"
 									data-bind="ntsSwitchButton: {
-						options: $parent.switchButtonDataSource,
+						options: switchButtonDataSource,
 						optionsValue: 'code',
 						optionsText: 'name',
-						enable: $parent.isContractSettingEnabled(),
-						value: fixPayAtrDaily}"></div>
+						enable: isContractSettingEnabled() &amp;&amp; isInputEnabled(),
+						value: unitPriceHistoryModel().fixPayAtrDaily}"></div>
 							</td>
 						</tr>
 						<tr>
@@ -193,11 +194,11 @@
 							<td class="">
 								<div id="sel_006"
 									data-bind="ntsSwitchButton: {
-						options: $parent.switchButtonDataSource,
+						options: switchButtonDataSource,
 						optionsValue: 'code',
 						optionsText: 'name',
-						enable: $parent.isContractSettingEnabled(),
-						value: fixPayAtrHourly}"></div>
+						enable: isContractSettingEnabled() &amp;&amp; isInputEnabled(),
+						value: unitPriceHistoryModel().fixPayAtrHourly}"></div>
 							</td>
 						</tr>
 						<tr>
@@ -211,12 +212,11 @@
 									data-bind="ntsFormLabel: {constraint: 'Memo'}">メモ</div></td>
 							<td colspan="3"><div id="inpMemo">
 									<TEXTAREA placeholder=""
-										data-bind="value: memo"
+										data-bind="value: unitPriceHistoryModel().memo, enable: isInputEnabled()"
 										class="inp-default"></TEXTAREA>
 								</div></td>
 						</tr>
 					</table>
-					</com:ko>
 				</div>
 				<!-- END RIGHT CONTENT-->
 			</div>

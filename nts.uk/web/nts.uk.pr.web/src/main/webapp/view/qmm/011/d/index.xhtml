@@ -13,14 +13,19 @@
 			<com:scriptfile path="../a/service.js" />
 			<com:scriptfile path="../a/viewmodel.js" />
 			<com:scriptfile path="viewmodel.js" />
-
+			<script type="text/javascript">
+				var dialogSize = {
+					width : 420,
+					height : 420
+				};
+			</script>
 		</ui:define>
 
 		<ui:define name="content">
 			<div id="contents-area">
 				<div id="D_LBL_001">ナビゲーションメッセージ</div>
 				<hr />
-				<TABLE>
+				<TABLE class="margin-top-bot-20 form-default">
 					<tr>
 						<td>
 							<div id="D_LBL_002" data-bind="ntsFormLabel: {}">名称</div>
@@ -29,11 +34,12 @@
 					</tr>
 					<tr>
 						<td>
+							<br />
 							<div id="D_LBL_004" data-bind="ntsFormLabel: {required: true}">期間</div>
 						</td>
 						<td><div id="D_INP_001" class="w80" data-name="code"
-							data-bind="ntsDatePicker: {value: historyStart, dateFormat: 'yyyy/MM'} " />
-						<labbel id="D_LBL_005">～</labbel> <label id="D_LBL_006"
+								data-bind="ntsDatePicker: {value: historyStart, dateFormat: 'yyyy/MM'} " />
+							<labbel id="D_LBL_005">～</labbel> <label id="D_LBL_006"
 							data-bind="text: historyEnd"></label></td>
 					</tr>
 					<tr>
@@ -53,7 +59,8 @@
 				</TABLE>
 				<hr />
 				<div id="this-functions-area" class="control-group halign-center">
-					<button class="btn-default proceed x-large" id="btn_addHistoryInfo" data-bind="click: fwaddHistoryInfo">決定</button>
+					<button class="btn-default proceed x-large" id="btn_addHistoryInfo"
+						data-bind="click: fwaddHistoryInfo">決定</button>
 					<button class="" id="btn_002" onclick="nts.uk.ui.windows.close()">キャンセル</button>
 				</div>
 			</div>

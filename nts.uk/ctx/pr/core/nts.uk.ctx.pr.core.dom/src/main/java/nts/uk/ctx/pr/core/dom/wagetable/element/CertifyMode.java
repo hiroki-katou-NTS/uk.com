@@ -8,37 +8,30 @@ import java.util.List;
 
 import lombok.Getter;
 import nts.gul.text.IdentifierUtil;
-import nts.uk.ctx.core.dom.company.CompanyCode;
-import nts.uk.ctx.pr.core.dom.wagetable.WtElementRefNo;
+import nts.uk.ctx.pr.core.dom.wagetable.ElementType;
 
 /**
- * The Class WageTableRefTable.
+ * The Class CodeRefMode.
  */
 @Getter
-public class MasterRefMode implements ElementMode {
+public class CertifyMode implements ElementMode {
 
-	/** The company code. */
-	private CompanyCode companyCode;
-
-	/** The ref no. */
-	private WtElementRefNo refNo;
+	/** The Constant mode. */
+	public static final ElementType mode = ElementType.Certification;
 
 	/** The items. */
 	private List<CodeItem> items;
 
 	/**
-	 * Instantiates a new master ref mode.
+	 * Instantiates a new code ref mode.
 	 *
 	 * @param companyCode
 	 *            the company code
 	 * @param refNo
 	 *            the ref no
 	 */
-	public MasterRefMode(CompanyCode companyCode, WtElementRefNo refNo) {
+	public CertifyMode() {
 		super();
-		this.companyCode = companyCode;
-		this.refNo = refNo;
-
 		// Create items
 		this.items = null;
 		new CodeItem("referenceCode", IdentifierUtil.randomUniqueId());

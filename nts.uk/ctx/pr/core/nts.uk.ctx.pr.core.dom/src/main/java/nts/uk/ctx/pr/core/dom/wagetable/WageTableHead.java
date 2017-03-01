@@ -9,7 +9,7 @@ import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroupGetMemento;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroupSetMemento;
-import nts.uk.ctx.pr.core.dom.wagetable.mode.DimensionalMode;
+import nts.uk.ctx.pr.core.dom.wagetable.mode.DemensionalMode;
 import nts.uk.shr.com.primitive.Memo;
 
 /**
@@ -27,13 +27,30 @@ public class WageTableHead extends DomainObject {
 	/** The name. */
 	private WageTableName name;
 
+	/** The demension set. */
+	private ElementCount demensionSet;
+
 	/** The dimensional mode. */
-	private DimensionalMode dimensionSetting;
+	private DemensionalMode dimensionSetting;
 
 	/** The memo. */
 	private Memo memo;
 
-	// List<WageTableElement> elementSetting;
+	public WageTableHead(CompanyCode companyCode, WageTableCode code, WageTableName name, ElementCount demensionSet,
+			DemensionalMode dimensionSetting, Memo memo) {
+		super();
+
+		if (!dimensionSetting.getMode().equals(demensionSet)) {
+			
+		}
+
+		this.companyCode = companyCode;
+		this.code = code;
+		this.name = name;
+		this.demensionSet = demensionSet;
+		this.dimensionSetting = dimensionSetting;
+		this.memo = memo;
+	}
 
 	// =================== Memento State Support Method ===================
 	/**

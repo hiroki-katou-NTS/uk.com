@@ -26,7 +26,10 @@ public enum ElementType {
 	AgeFix(4),
 
 	/** The Family mem fix. */
-	FamilyMemFix(5);
+	FamilyMemFix(5),
+
+	/** The Certification. */
+	Certification(6);
 
 	/** The value. */
 	public int value;

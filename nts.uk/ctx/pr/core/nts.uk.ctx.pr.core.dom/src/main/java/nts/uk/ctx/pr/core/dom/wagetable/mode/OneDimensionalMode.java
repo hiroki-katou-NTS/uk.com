@@ -4,11 +4,11 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.dom.wagetable.mode;
 
-import java.util.Map;
+import java.util.List;
 
 import lombok.Getter;
 import nts.arc.error.BusinessException;
-import nts.uk.ctx.pr.core.dom.wagetable.DemensionOrder;
+import nts.gul.collection.ListUtil;
 import nts.uk.ctx.pr.core.dom.wagetable.ElementCount;
 import nts.uk.ctx.pr.core.dom.wagetable.WageTableElement;
 
@@ -16,7 +16,7 @@ import nts.uk.ctx.pr.core.dom.wagetable.WageTableElement;
  * The Class OneDimensionalMode.
  */
 @Getter
-public class OneDimensionalMode implements DimensionalMode {
+public class OneDimensionalMode implements DemensionalMode {
 
 	/** The Constant mode. */
 	public static final ElementCount mode = ElementCount.One;
@@ -25,7 +25,7 @@ public class OneDimensionalMode implements DimensionalMode {
 	public static final int ELEMENT_SIZE = 1;
 
 	/** The elements. */
-	private Map<DemensionOrder, WageTableElement> elements;
+	private List<WageTableElement> elements;
 
 	/**
 	 * Instantiates a new one dimensional mode.
@@ -33,14 +33,24 @@ public class OneDimensionalMode implements DimensionalMode {
 	 * @param elements
 	 *            the elements
 	 */
-	public OneDimensionalMode(Map<DemensionOrder, WageTableElement> elements) {
+	public OneDimensionalMode(List<WageTableElement> elements) {
 		super();
+		// Validate
+		if (ListUtil.isEmpty(elements)) {
+			throw new BusinessException("???");
+		}
+
 		if (elements.size() != ELEMENT_SIZE) {
 			// TODO
 			throw new BusinessException("");
 		}
 
 		this.elements = elements;
+	}
+
+	@Override
+	public ElementCount getMode() {
+		return mode;
 	}
 
 }

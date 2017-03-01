@@ -1,7 +1,6 @@
 module nts.uk.pr.view.qmm011.f {
     import option = nts.uk.ui.option;
     import TypeHistory = nts.uk.pr.view.qmm011.a.service.model.TypeHistory;
-    import AccidentInsuranceRateModel = nts.uk.pr.view.qmm011.a.viewmodel.AccidentInsuranceRateModel;
     import HistoryUnemployeeInsuranceDto = nts.uk.pr.view.qmm011.a.service.model.HistoryUnemployeeInsuranceDto;
     import HistoryAccidentInsuranceDto = nts.uk.pr.view.qmm011.a.service.model.HistoryAccidentInsuranceDto;
     export module viewmodel {
@@ -24,23 +23,21 @@ module nts.uk.pr.view.qmm011.f {
                 self.selectedId = ko.observable(1);
                 self.enable = ko.observable(true);
                 self.textEditorOption = ko.mapping.fromJS(new option.TextEditorOption());
-                var historyId = nts.uk.ui.windows.getShared("historyId");
-                var historyStart = nts.uk.ui.windows.getShared("historyStart");
-                var historyEnd = nts.uk.ui.windows.getShared("historyEnd");
                 self.typeHistory = ko.observable(nts.uk.ui.windows.getShared("type"));
-                self.historyStart = ko.observable(historyStart);
-                self.historyEnd = ko.observable(historyEnd);
+                self.historyStart = ko.observable(nts.uk.ui.windows.getShared("historyStart"));
+                self.historyId = ko.observable(nts.uk.ui.windows.getShared("historyId"));
+                self.historyEnd = ko.observable(nts.uk.ui.windows.getShared("historyEnd"));
             }
             fwupdateHistoryInfoUnemployeeInsurance() {
                 var self = this;
                 var historyInfo: HistoryUnemployeeInsuranceDto;
-                historyInfo = new HistoryUnemployeeInsuranceDto("historyId001", self.historyStart(), self.historyEnd());
+                historyInfo = new HistoryUnemployeeInsuranceDto(self.historyId(), self.historyStart(), self.historyEnd());
                 nts.uk.ui.windows.setShared("updateHistoryUnemployeeInsuranceDto", historyInfo);
             }
             fwupdateHistoryInfoAccidentInsurance() {
                 var self = this;
                 var historyInfo: HistoryAccidentInsuranceDto;
-                historyInfo = new HistoryAccidentInsuranceDto("historyId001", self.historyStart(), self.historyEnd());
+                historyInfo = new HistoryAccidentInsuranceDto(self.historyId(), self.historyStart(), self.historyEnd());
                 nts.uk.ui.windows.setShared("updateHistoryAccidentInsuranceDto", historyInfo);
             }
             fwupdateHistoryInfo() {

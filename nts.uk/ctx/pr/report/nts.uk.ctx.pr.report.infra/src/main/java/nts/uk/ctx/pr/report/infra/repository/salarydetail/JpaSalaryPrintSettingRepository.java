@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.report.infra.salarydetail;
+package nts.uk.ctx.pr.report.infra.repository.salarydetail;
 
 import javax.ejb.Stateless;
 

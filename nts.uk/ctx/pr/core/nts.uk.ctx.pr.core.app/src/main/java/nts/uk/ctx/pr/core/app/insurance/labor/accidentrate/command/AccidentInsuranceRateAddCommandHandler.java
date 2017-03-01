@@ -12,6 +12,7 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.AccidentInsuranceRate;
 import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.AccidentInsuranceRateRepository;
+import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.service.AccidentInsuranceRateService;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -25,6 +26,10 @@ public class AccidentInsuranceRateAddCommandHandler extends CommandHandler<Accid
 	@Inject
 	private AccidentInsuranceRateRepository accidentInsuranceRateRepo;
 
+	/** The accident insurance rate service. */
+	@Inject
+	private AccidentInsuranceRateService accidentInsuranceRateService;
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -37,6 +42,7 @@ public class AccidentInsuranceRateAddCommandHandler extends CommandHandler<Accid
 		String companyCode = AppContexts.user().companyCode();
 		AccidentInsuranceRate accidentInsuranceRate = context.getCommand().toDomain(companyCode);
 		accidentInsuranceRate.validate();
+		accidentInsuranceRateService.validateDateRange(accidentInsuranceRate);
 		this.accidentInsuranceRateRepo.add(accidentInsuranceRate);
 	}
 

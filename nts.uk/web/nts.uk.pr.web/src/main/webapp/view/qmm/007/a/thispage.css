@@ -12,10 +12,10 @@
 
 #left-content {
 	margin-left: 30px;
-	padding: 20px;
+	padding: 20px 10px 20px 20px;
 	float: left;
 	min-height: 400px;
-	width: 280px;
+	width: 310px;
 }
 
 #right-content {
@@ -24,12 +24,8 @@
 	min-height: 600px;
 }
 
-#inpSearch {
-	width: 118px;
-}
-
 #inpCode {
-	width: 50px !important;
+	width: 40px !important;
 }
 
 #inpName {
@@ -37,14 +33,14 @@
 }
 
 #inpStartMonth {
-	width: 70px !important;
+	width: 80px !important;
 }
 
 #inpBudget {
-	width: 100px !important;
+	width: 120px !important;
 }
 .symbol-right {
-	width: 100px !important;
+	width: 120px !important;
 }
 
 .nts-switch-button {
@@ -56,9 +52,11 @@
 }
 
 #sch_001 input{
-	width: 130px;
+	width: 160px;
 }
-
+#btn_005 {
+	margin-right: 20px;
+}
 .btn-default {
 	margin-left: 10px;
 	min-width: 80px;

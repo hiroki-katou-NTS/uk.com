@@ -67,7 +67,7 @@ public class JpaAccidentInsuranceRateRepository extends JpaRepository implements
 	 */
 	@Override
 	public void update(AccidentInsuranceRate rate) {
-		if (isInvalidDateRangeUpdate(rate.getCompanyCode(), rate.getApplyRange(), rate.getHistoryId())) {
+		if (!isInvalidDateRangeUpdate(rate.getCompanyCode(), rate.getApplyRange(), rate.getHistoryId())) {
 			this.commandProxy().updateAll(toEntity(rate));
 		}
 	}
@@ -191,6 +191,7 @@ public class JpaAccidentInsuranceRateRepository extends JpaRepository implements
 	 *            the history id
 	 * @return the list
 	 */
+	// Find data by end<=x order by
 	public List<QismtWorkAccidentInsu> findBetweenUpdate(CompanyCode companyCode, YearMonth yearMonth,
 			String historyId) {
 		EntityManager em = getEntityManager();
@@ -208,44 +209,9 @@ public class JpaAccidentInsuranceRateRepository extends JpaRepository implements
 		lstpredicate.add(criteriaBuilder.equal(
 				root.get(QismtWorkAccidentInsu_.qismtWorkAccidentInsuPK).get(QismtWorkAccidentInsuPK_.waInsuCd),
 				BusinessTypeEnum.Biz1St.value));
-		lstpredicate.add(criteriaBuilder.le(root.get(QismtWorkAccidentInsu_.strYm), yearMonth.nextMonth().v()));
-		lstpredicate.add(criteriaBuilder.ge(root.get(QismtWorkAccidentInsu_.endYm), yearMonth.previousMonth().v()));
-		cq.where(lstpredicate.toArray(new Predicate[] {}));
-		TypedQuery<QismtWorkAccidentInsu> query = em.createQuery(cq);
-		return query.getResultList();
-	}
-
-	/**
-	 * Find between end update.
-	 *
-	 * @param companyCode
-	 *            the company code
-	 * @param yearMonth
-	 *            the year month
-	 * @param historyId
-	 *            the history id
-	 * @return the list
-	 */
-	public List<QismtWorkAccidentInsu> findBetweenEndUpdate(CompanyCode companyCode, YearMonth yearMonth,
-			String historyId) {
-		EntityManager em = getEntityManager();
-		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
-		CriteriaQuery<QismtWorkAccidentInsu> cq = criteriaBuilder.createQuery(QismtWorkAccidentInsu.class);
-		Root<QismtWorkAccidentInsu> root = cq.from(QismtWorkAccidentInsu.class);
-		cq.select(root);
-		List<Predicate> lstpredicate = new ArrayList<>();
-		lstpredicate.add(criteriaBuilder.equal(
-				root.get(QismtWorkAccidentInsu_.qismtWorkAccidentInsuPK).get(QismtWorkAccidentInsuPK_.ccd),
-				companyCode.v()));
-		lstpredicate.add(criteriaBuilder.notEqual(
-				root.get(QismtWorkAccidentInsu_.qismtWorkAccidentInsuPK).get(QismtWorkAccidentInsuPK_.histId),
-				historyId));
-		lstpredicate.add(criteriaBuilder.equal(
-				root.get(QismtWorkAccidentInsu_.qismtWorkAccidentInsuPK).get(QismtWorkAccidentInsuPK_.waInsuCd),
-				BusinessTypeEnum.Biz1St.value));
 		lstpredicate.add(criteriaBuilder.le(root.get(QismtWorkAccidentInsu_.endYm), yearMonth.previousMonth().v()));
-		cq.where(lstpredicate.toArray(new Predicate[] {}));
 		cq.orderBy(criteriaBuilder.desc(root.get(QismtWorkAccidentInsu_.strYm)));
+		cq.where(lstpredicate.toArray(new Predicate[] {}));
 		TypedQuery<QismtWorkAccidentInsu> query = em.createQuery(cq);
 		return query.getResultList();
 	}
@@ -332,49 +298,34 @@ public class JpaAccidentInsuranceRateRepository extends JpaRepository implements
 	 *            the history id
 	 * @return true, if is invalid date range update
 	 */
+	@Override
 	public boolean isInvalidDateRangeUpdate(CompanyCode companyCode, MonthRange monthRange, String historyId) {
 		if (monthRange.getStartMonth().v() >= monthRange.getEndMonth().v()) {
-			return false;
+			return true;
 		}
 		// data is begin update
 		List<QismtWorkAccidentInsu> lstQismtWorkAccidentInsuUpdate = findDataById(companyCode, historyId);
 		if (lstQismtWorkAccidentInsuUpdate != null && !lstQismtWorkAccidentInsuUpdate.isEmpty()) {
-			if (lstQismtWorkAccidentInsuUpdate.get(0).getStrYm() > monthRange.getStartMonth().v()) {
-				// begin update
-				List<QismtWorkAccidentInsu> lstQismtWorkAccidentInsu = findBetweenUpdate(companyCode,
-						monthRange.getStartMonth(), historyId);
-				if (lstQismtWorkAccidentInsu == null || lstQismtWorkAccidentInsu.isEmpty()) {
-					return true;
-				}
-				if (lstQismtWorkAccidentInsu != null && lstQismtWorkAccidentInsu.size() == 1) {
-					List<QismtWorkAccidentInsu> lstQismtWorkAccidentInsuBeginUpdate = findDataById(companyCode,
-							lstQismtWorkAccidentInsu.get(0).getQismtWorkAccidentInsuPK().getHistId());
-					for (QismtWorkAccidentInsu qismtWorkAccidentInsu : lstQismtWorkAccidentInsuBeginUpdate) {
-						qismtWorkAccidentInsu.setEndYm(monthRange.getStartMonth().previousMonth().v());
-					}
-					update(toDomain(lstQismtWorkAccidentInsuBeginUpdate));
-					return true;
-				}
-			} else if (lstQismtWorkAccidentInsuUpdate.get(0).getStrYm() < monthRange.getStartMonth().v()) {
-				// end update
-				List<QismtWorkAccidentInsu> lstQismtWorkAccidentInsu = findBetweenEndUpdate(companyCode,
-						monthRange.getStartMonth(), historyId);
-				if (lstQismtWorkAccidentInsu == null || lstQismtWorkAccidentInsu.isEmpty()) {
-					return true;
-				}
-				if (lstQismtWorkAccidentInsu != null && lstQismtWorkAccidentInsu.size() >= 1) {
-					List<QismtWorkAccidentInsu> lstQismtWorkAccidentInsuEndUpdate = findDataById(companyCode,
-							lstQismtWorkAccidentInsu.get(0).getQismtWorkAccidentInsuPK().getHistId());
-					for (QismtWorkAccidentInsu qismtWorkAccidentInsu : lstQismtWorkAccidentInsuEndUpdate) {
-						qismtWorkAccidentInsu.setEndYm(monthRange.getStartMonth().previousMonth().v());
-					}
-					update(toDomain(lstQismtWorkAccidentInsuEndUpdate));
-					return true;
-				}
+			// begin update
+			List<QismtWorkAccidentInsu> lstQismtWorkAccidentInsu = findBetweenUpdate(companyCode,
+					YearMonth.of(lstQismtWorkAccidentInsuUpdate.get(0).getStrYm()), historyId);
+			if (lstQismtWorkAccidentInsu == null || lstQismtWorkAccidentInsu.isEmpty()) {
+				return false;
 			}
-			return true;
+			if (lstQismtWorkAccidentInsu != null && lstQismtWorkAccidentInsu.size() >= 1) {
+				if (lstQismtWorkAccidentInsu.get(0).getStrYm() >= monthRange.getStartMonth().v()) {
+					return true;
+				}
+				List<QismtWorkAccidentInsu> lstQismtWorkAccidentInsuBeginUpdate = findDataById(companyCode,
+						lstQismtWorkAccidentInsu.get(0).getQismtWorkAccidentInsuPK().getHistId());
+				for (QismtWorkAccidentInsu qismtWorkAccidentInsu : lstQismtWorkAccidentInsuBeginUpdate) {
+					qismtWorkAccidentInsu.setEndYm(monthRange.getStartMonth().previousMonth().v());
+				}
+				update(toDomain(lstQismtWorkAccidentInsuBeginUpdate));
+				return false;
+			}
+			return false;
 		}
-		return false;
+		return true;
 	}
-
 }

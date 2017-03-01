@@ -16,7 +16,9 @@ var nts;
                             var ScreenModel = (function () {
                                 function ScreenModel() {
                                     var self = this;
-                                    self.isNewMode = ko.observable(true);
+                                    self.isNewMode = ko.observable(false);
+                                    self.isLoading = ko.observable(true);
+                                    self.isInputEnabled = ko.observable(false);
                                     self.unitPriceHistoryModel = ko.observable(new UnitPriceHistoryModel(self.getDefaultUnitPriceHistory()));
                                     self.historyList = ko.observableArray([]);
                                     self.switchButtonDataSource = ko.observableArray([
@@ -25,13 +27,13 @@ var nts;
                                     ]);
                                     self.selectedId = ko.observable('');
                                     self.selectedId.subscribe(function (id) {
-                                        console.log(id);
                                         if (id) {
-                                            if (id.includes('code')) {
-                                                self.enableNewMode();
+                                            if (id.length < 4) {
+                                                self.setUnitPriceHistoryModel(self.getDefaultUnitPriceHistory());
+                                                self.isInputEnabled(false);
                                             }
                                             else {
-                                                self.isNewMode(false);
+                                                self.isLoading(true);
                                                 $('.save-error').ntsError('clear');
                                                 self.loadUnitPriceDetail(id);
                                             }
@@ -50,7 +52,9 @@ var nts;
                                 ScreenModel.prototype.startPage = function () {
                                     var self = this;
                                     var dfd = $.Deferred();
-                                    self.loadUnitPriceHistoryList().done(function () { return dfd.resolve(); });
+                                    self.loadUnitPriceHistoryList().done(function () {
+                                        dfd.resolve();
+                                    });
                                     return dfd.promise();
                                 };
                                 ScreenModel.prototype.goToB = function () {
@@ -83,7 +87,9 @@ var nts;
                                 ScreenModel.prototype.enableNewMode = function () {
                                     var self = this;
                                     $('.save-error').ntsError('clear');
+                                    self.selectedId('');
                                     self.setUnitPriceHistoryModel(self.getDefaultUnitPriceHistory());
+                                    self.isInputEnabled(true);
                                     self.isNewMode(true);
                                 };
                                 ScreenModel.prototype.setUnitPriceHistoryModel = function (dto) {
@@ -119,10 +125,20 @@ var nts;
                                     defaultHist.memo = '';
                                     return defaultHist;
                                 };
+                                ScreenModel.prototype.getLastest = function (id) {
+                                    self.historyList().forEach(function (item) {
+                                        if (id == item.id) {
+                                            self.selectedId(item.childs[0].id);
+                                        }
+                                    });
+                                };
                                 ScreenModel.prototype.loadUnitPriceDetail = function (id) {
                                     var self = this;
                                     a.service.find(id).done(function (data) {
                                         self.setUnitPriceHistoryModel(data);
+                                        self.isInputEnabled(true);
+                                        self.isNewMode(false);
+                                        self.isLoading(false);
                                     });
                                 };
                                 ScreenModel.prototype.loadUnitPriceHistoryList = function () {
@@ -130,6 +146,7 @@ var nts;
                                     var dfd = $.Deferred();
                                     a.service.getUnitPriceHistoryList().done(function (data) {
                                         self.historyList(data.map(function (item, index) { return new UnitPriceHistoryNode(item); }));
+                                        self.isLoading(false);
                                         dfd.resolve();
                                     });
                                     return dfd.promise();
@@ -160,7 +177,7 @@ var nts;
                                 function UnitPriceHistoryNode(item) {
                                     var self = this;
                                     if (item.histories !== undefined) {
-                                        self.id = 'code' + item.unitPriceCode;
+                                        self.id = item.unitPriceCode;
                                         self.nodeText = item.unitPriceCode + ' ' + item.unitPriceName;
                                         self.childs = item.histories.map(function (item, index) { return new UnitPriceHistoryNode(item); });
                                     }

@@ -136,9 +136,9 @@ module nts.uk.pr.view.qmm011.a {
             return dfd.promise();
         }
         //Function connection service find HistoryAccidentInsurance
-        export function findHistoryAccidentInsuranceRate(historyAccidentInsuranceRateFindInDto: model.HistoryAccidentInsuranceRateFindInDto): JQueryPromise<model.HistoryAccidentInsuranceDto> {
+        export function findHistoryAccidentInsuranceRate(historyId: string): JQueryPromise<model.HistoryAccidentInsuranceDto> {
             var dfd = $.Deferred<model.HistoryAccidentInsuranceDto>();
-            nts.uk.request.ajax(paths.findHistoryAccidentInsuranceRate, historyAccidentInsuranceRateFindInDto)
+            nts.uk.request.ajax(paths.findHistoryAccidentInsuranceRate + "/" + historyId)
                 .done(function(res: model.HistoryAccidentInsuranceDto) {
                     dfd.resolve(res);
                     //xyz
