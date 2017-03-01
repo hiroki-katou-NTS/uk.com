@@ -12,6 +12,19 @@ var nts;
             }
             util.alwaysTrue = alwaysTrue;
             /**
+             * function find an item index in array
+             * if key presented will perform find index of item in array which contain key equal to the 'item' parameter
+             */
+            function findIndex(arr, value, key) {
+                for (var i = 0; i < arr.length; i++) {
+                    var item = arr[i];
+                    if (item[key] === value)
+                        return i;
+                }
+                return -1;
+            }
+            util.findIndex = findIndex;
+            /**
              * function add item to array, this function is used in combine with visitDfs function
              * visitDfs(node, addToArray, childField, arr) will return flatArray by DFS order, start by node and following by each child belong to it.
              */
@@ -285,6 +298,68 @@ var nts;
             return WebStorageWrapper;
         }());
         uk.WebStorageWrapper = WebStorageWrapper;
+        /**
+         * Utilities about jquery deferred
+         */
+        var deferred;
+        (function (deferred) {
+            /**
+             * Repeats a task with jQuery Deferred
+             */
+            function repeat(configurator) {
+                var conf = repeater.createConfiguration();
+                configurator(conf);
+                return repeater.begin(conf);
+            }
+            deferred.repeat = repeat;
+            var repeater;
+            (function (repeater) {
+                function begin(conf) {
+                    return conf.run();
+                }
+                repeater.begin = begin;
+                function createConfiguration() {
+                    return new Configuration();
+                }
+                repeater.createConfiguration = createConfiguration;
+                var Configuration = (function () {
+                    function Configuration() {
+                        this.pauseMilliseconds = 0;
+                    }
+                    Configuration.prototype.task = function (taskFunction) {
+                        this.taskFunction = taskFunction;
+                        return this;
+                    };
+                    Configuration.prototype.while = function (whileCondition) {
+                        this.whileCondition = whileCondition;
+                        return this;
+                    };
+                    Configuration.prototype.pause = function (pauseMilliseconds) {
+                        this.pauseMilliseconds = pauseMilliseconds;
+                        return this;
+                    };
+                    Configuration.prototype.run = function () {
+                        var dfd = $.Deferred();
+                        this.repeat(dfd);
+                        return dfd.promise();
+                    };
+                    Configuration.prototype.repeat = function (dfd) {
+                        var _this = this;
+                        this.taskFunction().done(function (res) {
+                            if (_this.whileCondition(res)) {
+                                setTimeout(function () { return _this.repeat(dfd); }, _this.pauseMilliseconds);
+                            }
+                            else {
+                                dfd.resolve(res);
+                            }
+                        }).fail(function (res) {
+                            dfd.reject(res);
+                        });
+                    };
+                    return Configuration;
+                }());
+            })(repeater || (repeater = {}));
+        })(deferred = uk.deferred || (uk.deferred = {}));
         uk.sessionStorage = new WebStorageWrapper(window.sessionStorage);
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));

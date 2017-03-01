@@ -2,8 +2,9 @@ package nts.uk.ctx.pr.core.app.command.paymentdata.base;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.arc.error.BusinessException;
+import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.pr.core.dom.enums.DisplayAtr;
+import nts.uk.ctx.pr.core.dom.itemmaster.TaxAtr;
 import nts.uk.ctx.pr.core.dom.paymentdata.dataitem.DetailItem;
 
 @Getter
@@ -63,6 +64,11 @@ public class DetailItemCommandBase {
 	
 	boolean created;
 
+	/**
+	 * 課税区分
+	 */
+	Integer taxAtr;
+	
 	public DetailItem toDomain(Integer linePosition) {
 		if (displayAtr == DisplayAtr.NO_DISPLAY.value) {
 			this.linePosition = -1;
@@ -87,6 +93,7 @@ public class DetailItemCommandBase {
 				);
 		
 		item.addCommuteData(this.commuteAllowTaxImpose, this.commuteAllowMonth, this.commuteAllowFraction);
+		item.additionalInfo(EnumAdaptor.valueOf(this.taxAtr, TaxAtr.class));
 		return item;
 	}
 }

@@ -38,14 +38,21 @@ module nts.uk.ui.errors {
         }
         
         addError(error: ErrorListItem) {
-            var duplicate = _.filter(this.errors(), e => e.$control.is(error.$control) && e.message == error.message);
-            if (duplicate.length == 0)
-                this.errors.push(error);
+            // defer無しでerrorsを呼び出すと、なぜか全てのKnockoutBindingHandlerのupdateが呼ばれてしまうので、
+            // 原因がわかるまでひとまずdeferを使っておく
+            _.defer(() => {
+                var duplicate = _.filter(this.errors(), e => e.$control.is(error.$control) && e.message == error.message);
+                if (duplicate.length == 0)
+                    this.errors.push(error);
+            });
         }
         
         removeErrorByElement($element: JQuery) {
-            var removeds = _.filter(this.errors(), e => e.$control.is($element));
-            this.errors.removeAll(removeds);
+            // addErrorと同じ対応
+            _.defer(() => {
+                var removeds = _.filter(this.errors(), e => e.$control.is($element));
+                this.errors.removeAll(removeds);
+            });
         }
     }
     
