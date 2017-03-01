@@ -10,6 +10,7 @@ import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.time.GeneralDateTime;
 import nts.uk.ctx.core.dom.company.Company;
 import nts.uk.ctx.core.dom.company.CompanyRepository;
 
@@ -31,6 +32,8 @@ public class AddCompanyCommandHandler extends CommandHandler<AddCompanyCommand> 
 	 */
 	@Override
 	protected void handle(CommandHandlerContext<AddCompanyCommand> context) {
+
+		GeneralDateTime time = GeneralDateTime.fromString("2017/02/02 00:00", "yyyy/MM/dd HH:mm");
 		Company company = context.getCommand().toDomain();
 		company.validate();
 		this.companyRepository.add(company);
