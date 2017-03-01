@@ -1,0 +1,58 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<script>var dialogSize = { width: 540, height: 600 };</script>
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="main.css" />
+			<com:scriptfile path="start.js" />
+			<com:scriptfile path="viewmodel.js" />
+			<com:scriptfile path="service.js" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="contents-area">
+				<div>
+					<label id="lbl_001">「削除したい項目を選択してください。」を表示する。</label>
+				</div>
+				<div id="lst_001">
+					<div style="width: 500px;"
+						data-bind="ntsSearchBox: {
+							comId: 'treegrid1',
+							items: lst_001,  
+							selected: selectedCodes, 
+							selectedKey: 'treeCode', 
+							childField: 'childs', 
+							fields: ['name', 'code']}" />
+
+					<table id="treegrid1"
+						data-bind="ntsTreeGridView:{
+									width: 500,
+									height: 400,
+									options: lst_001,
+									selectedValues: selectedCodes,								
+									optionsValue: 'treeCode',
+									optionsChild: 'childs',
+									optionsText: 'name',
+									multiple: true,
+									enable: true,										
+									showCheckBox: true}"
+						class="cf">
+					</table>
+				</div>
+				
+				<div id="ft">
+					<hr style="width: 104%;"/>
+					<button id="btn_001" data-bind="click: btn_001" class="x-large danger">削除</button>
+					<button id="btn_002" style="margin-left: 50px;" data-bind="click: close">キャンセル</button>
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

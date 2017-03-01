@@ -8,6 +8,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
+import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.arc.layer.ws.WebService;
 import nts.uk.pr.file.infra.paymentdata.PrintPaymentDataQueryProcessor;
 import nts.uk.pr.file.infra.paymentdata.PaymentDataPrintFileGenerator;
@@ -25,7 +26,7 @@ public class PaymentDataPrintWebservice extends WebService {
 
 	@POST
 	@Path("print")
-	public String print(List<PaymentDataQuery> query) {
+	public FileGeneratorContext print(List<PaymentDataQuery> query) {
 		List<PaymentDataResult> results = new ArrayList<>();
 		for (int i = 0; i < query.size(); i++) {
 			PaymentDataResult result = this.getPaymentDataQueryProcessor.find(query.get(i));
@@ -33,7 +34,8 @@ public class PaymentDataPrintWebservice extends WebService {
 				results.add(result);
 			}
 		}
-		return this.paymentDataPrint.start(results).getTask();
+		//return this.paymentDataPrint.start(results);
+		return null;
 	}
 
 }
