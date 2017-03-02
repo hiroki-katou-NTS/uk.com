@@ -5,7 +5,7 @@ var cmm013;
         var service;
         (function (service) {
             var paths = {
-                findAllPosition: "basic/position/getPositions/",
+                findAllPosition: "basic/position/findallposition/",
                 addPosition: "basic/position/add",
                 deletePosition: "basic/position/remove",
                 updatePosition: "basic/position/update",

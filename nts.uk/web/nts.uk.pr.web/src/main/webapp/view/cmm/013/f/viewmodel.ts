@@ -268,7 +268,7 @@ module cmm013.f.viewmodel {
                 constraint: 'ResidenceCode',
                 option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
                     textmode: "text",
-                    placeholder: "1",
+                    placeholder: "",
                     width: "10px",
                     textalign: "center"
                 })),

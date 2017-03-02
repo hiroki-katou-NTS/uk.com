@@ -1,6 +1,6 @@
 module cmm013.f.service {
     var paths = {
-        findAllPosition: "basic/position/getPositions/",
+        findAllPosition: "basic/position/findallposition/",
         addPosition: "basic/position/add",
         deletePosition: "basic/position/remove",
         updatePosition: "basic/position/update",
