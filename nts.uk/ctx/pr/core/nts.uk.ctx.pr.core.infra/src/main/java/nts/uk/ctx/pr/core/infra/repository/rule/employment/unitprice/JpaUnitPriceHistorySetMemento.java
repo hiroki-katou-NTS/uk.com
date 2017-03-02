@@ -12,8 +12,8 @@ import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.SettingType;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceCode;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceHistorySetMemento;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceName;
-import nts.uk.ctx.pr.core.infra.entity.rule.employment.unitprice.QupmtCUnitpriceHist;
-import nts.uk.ctx.pr.core.infra.entity.rule.employment.unitprice.QupmtCUnitpriceHistPK;
+import nts.uk.ctx.pr.core.infra.entity.rule.employment.unitprice.QupmtCUnitpriceDetail;
+import nts.uk.ctx.pr.core.infra.entity.rule.employment.unitprice.QupmtCUnitpriceDetailPK;
 import nts.uk.shr.com.primitive.Memo;
 
 /**
@@ -22,7 +22,7 @@ import nts.uk.shr.com.primitive.Memo;
 public class JpaUnitPriceHistorySetMemento implements UnitPriceHistorySetMemento {
 
 	/** The type value. */
-	protected QupmtCUnitpriceHist typeValue;
+	protected QupmtCUnitpriceDetail typeValue;
 
 	/**
 	 * Instantiates a new jpa unit price history set memento.
@@ -30,7 +30,7 @@ public class JpaUnitPriceHistorySetMemento implements UnitPriceHistorySetMemento
 	 * @param typeValue
 	 *            the type value
 	 */
-	public JpaUnitPriceHistorySetMemento(QupmtCUnitpriceHist typeValue) {
+	public JpaUnitPriceHistorySetMemento(QupmtCUnitpriceDetail typeValue) {
 		this.typeValue = typeValue;
 	}
 
@@ -42,9 +42,9 @@ public class JpaUnitPriceHistorySetMemento implements UnitPriceHistorySetMemento
 	 */
 	@Override
 	public void setId(String id) {
-		QupmtCUnitpriceHistPK qupmtCUnitpriceHistPK = new QupmtCUnitpriceHistPK();
+		QupmtCUnitpriceDetailPK qupmtCUnitpriceHistPK = new QupmtCUnitpriceDetailPK();
 		qupmtCUnitpriceHistPK.setHistId(id);
-		this.typeValue.setQupmtCUnitpriceHistPK(qupmtCUnitpriceHistPK);
+		this.typeValue.setQupmtCUnitpriceDetailPK(qupmtCUnitpriceHistPK);
 	}
 
 	/*
@@ -56,9 +56,9 @@ public class JpaUnitPriceHistorySetMemento implements UnitPriceHistorySetMemento
 	 */
 	@Override
 	public void setCompanyCode(CompanyCode companyCode) {
-		QupmtCUnitpriceHistPK qupmtCUnitpriceHistPK = this.typeValue.getQupmtCUnitpriceHistPK();
+		QupmtCUnitpriceDetailPK qupmtCUnitpriceHistPK = this.typeValue.getQupmtCUnitpriceDetailPK();
 		qupmtCUnitpriceHistPK.setCcd(companyCode.v());
-		this.typeValue.setQupmtCUnitpriceHistPK(qupmtCUnitpriceHistPK);
+		this.typeValue.setQupmtCUnitpriceDetailPK(qupmtCUnitpriceHistPK);
 	}
 
 	/*
@@ -70,9 +70,9 @@ public class JpaUnitPriceHistorySetMemento implements UnitPriceHistorySetMemento
 	 */
 	@Override
 	public void setUnitPriceCode(UnitPriceCode unitPriceCode) {
-		QupmtCUnitpriceHistPK qupmtCUnitpriceHistPK = this.typeValue.getQupmtCUnitpriceHistPK();
+		QupmtCUnitpriceDetailPK qupmtCUnitpriceHistPK = this.typeValue.getQupmtCUnitpriceDetailPK();
 		qupmtCUnitpriceHistPK.setCUnitpriceCd(unitPriceCode.v());
-		this.typeValue.setQupmtCUnitpriceHistPK(qupmtCUnitpriceHistPK);
+		this.typeValue.setQupmtCUnitpriceDetailPK(qupmtCUnitpriceHistPK);
 	}
 
 	/*
@@ -97,7 +97,7 @@ public class JpaUnitPriceHistorySetMemento implements UnitPriceHistorySetMemento
 	 */
 	@Override
 	public void setBudget(Money budget) {
-		this.typeValue.setBudget(budget.v());
+		this.typeValue.setCUnitprice(budget.v());
 	}
 
 	/*

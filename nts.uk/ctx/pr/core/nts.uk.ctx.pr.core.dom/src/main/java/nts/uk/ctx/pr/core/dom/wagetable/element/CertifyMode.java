@@ -7,20 +7,16 @@ package nts.uk.ctx.pr.core.dom.wagetable.element;
 import java.util.List;
 
 import lombok.Getter;
-import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.pr.core.dom.wagetable.ElementType;
 
 /**
  * The Class CodeRefMode.
  */
 @Getter
-public class CertifyMode implements ElementMode {
-
-	/** The Constant mode. */
-	public static final ElementType mode = ElementType.Certification;
+public class CertifyMode extends BaseMode {
 
 	/** The items. */
-	private List<CodeItem> items;
+	private List<CertifyItem> items;
 
 	/**
 	 * Instantiates a new code ref mode.
@@ -31,10 +27,11 @@ public class CertifyMode implements ElementMode {
 	 *            the ref no
 	 */
 	public CertifyMode() {
-		super();
+		super(ElementType.Certification);
+
 		// Create items
 		this.items = null;
-		new CodeItem("referenceCode", IdentifierUtil.randomUniqueId());
+		// new CertifyItem(code, );
 	}
 
 }

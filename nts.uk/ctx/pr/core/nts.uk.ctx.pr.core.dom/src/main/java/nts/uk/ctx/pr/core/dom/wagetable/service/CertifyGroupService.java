@@ -11,4 +11,18 @@ import nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroup;
  */
 public interface CertifyGroupService {
 
+	/**
+	 * Validate required item.
+	 *
+	 * @param office the office
+	 */
+	void validateRequiredItem(CertifyGroup certifyGroup);
+
+	/**
+	 * Check duplicate code.
+	 *
+	 * @param office the office
+	 */
+	void checkDuplicateCode(CertifyGroup certifyGroup);
+
 }

@@ -10,13 +10,13 @@ package nts.uk.ctx.pr.report.dom.wageledger;
 public enum WLCategory {
 	
 	/** The Salary payment. */
-	Payment(1),
+	Payment(0),
 	
 	/** The Salary deduction. */
-	Deduction(2),
+	Deduction(1),
 	
 	/** The Salary attendance. */
-	Attendance(3);
+	Attendance(2);
 	
 	/** The value. */
 	public final Integer value;
@@ -29,5 +29,29 @@ public enum WLCategory {
 	 */
 	private WLCategory(Integer value) {
 		this.value = value;
+	}
+	
+	/**
+	 * Value of.
+	 *
+	 * @param value
+	 *            the value
+	 * @return the element type
+	 */
+	public static WLCategory valueOf(Integer value) {
+		// Invalid object.
+		if (value == null) {
+			return null;
+		}
+
+		// Find value.
+		for (WLCategory val : WLCategory.values()) {
+			if (val.value == value) {
+				return val;
+			}
+		}
+
+		// Not found.
+		return null;
 	}
 }

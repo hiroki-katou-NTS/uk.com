@@ -11,12 +11,13 @@
 			<com:stylefile path="../common.css" />
 			<com:stylefile path="thispage.css" />
 			<com:scriptfile path="../a/service.js" />
+			<com:scriptfile path="../a/viewmodel.js" />
 			<com:scriptfile path="start.js" />
 			<com:scriptfile path="viewmodel.js" />
 			<script type="text/javascript">
 				var dialogSize = {
-					width : 600,
-					height : 420
+					width : 580,
+					height : 360
 				};
 			</script>
 		</ui:define>
@@ -36,15 +37,15 @@
 						<td><div id="lbl_005"
 								data-bind="ntsFormLabel: { required: true }">期間</div></td>
 						<td><span id="inpStartMonth"
-							data-bind="ntsDatePicker: {value: startMonth, dateFormat: 'yyyy/MM'}"></span><label
-							data-bind="text: endMonth"></label></td>
+							data-bind="ntsDatePicker: {value: startMonth, dateFormat: 'yyyy/MM', enable: $parent.historyTakeOver=='beginning'}"></span><label
+							data-bind="text: ' ~ '+endMonth()"></label></td>
 					</tr>
 					<tr>
 						<td><div id="lbl_008"
 								data-bind="ntsFormLabel: { required: true }">履歴の引継ぎ</div></td>
 						<td><label class="ntsRadioBox"> <input type="radio"
 								name="textRadio"
-								data-bind="checkedValue: 'lastest', checked: $parent.historyTakeOver" /> <span
+								data-bind="checkedValue: 'latest', checked: $parent.historyTakeOver" /> <span
 								class="box"></span><span class="label"
 								data-bind="text: '最新の履歴 ('+startMonth()+') から引き継ぐ'"></span>
 						</label></td>

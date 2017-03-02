@@ -43,6 +43,8 @@ public interface BankBranchRepository {
      */
 	void update(BankBranch bank);
 	
+	void update(String bankNewCode,  String companyCode, String bankCode, String branchCode);
+	
 	/**
 	 * Remove a bank branch
 	 * @param bank branch

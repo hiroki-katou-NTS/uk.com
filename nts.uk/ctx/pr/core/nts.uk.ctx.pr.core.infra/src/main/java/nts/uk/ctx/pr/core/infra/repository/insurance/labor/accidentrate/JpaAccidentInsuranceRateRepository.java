@@ -34,8 +34,8 @@ import nts.uk.ctx.pr.core.infra.entity.insurance.labor.accidentrate.QismtWorkAcc
 import nts.uk.ctx.pr.core.infra.entity.insurance.labor.accidentrate.QismtWorkAccidentInsu_;
 import nts.uk.ctx.pr.core.infra.entity.insurance.labor.unemployeerate.QismtEmpInsuRate;
 import nts.uk.ctx.pr.core.infra.entity.insurance.labor.unemployeerate.QismtEmpInsuRatePK;
-import nts.uk.ctx.pr.core.infra.entity.wagetable.QwtmtWagetableCertifyG;
-import nts.uk.ctx.pr.core.infra.entity.wagetable.QwtmtWagetableCertifyGPK;
+import nts.uk.ctx.pr.core.infra.entity.wagetable.certification.QwtmtWagetableCertifyG;
+import nts.uk.ctx.pr.core.infra.entity.wagetable.certification.QwtmtWagetableCertifyGPK;
 
 /**
  * The Class JpaAccidentInsuranceRateRepository.
@@ -160,7 +160,7 @@ public class JpaAccidentInsuranceRateRepository extends JpaRepository implements
 	 *            the year month
 	 * @return the list
 	 */
-	public List<QismtWorkAccidentInsu> findBetween(CompanyCode companyCode, YearMonth yearMonth) {
+	public List<QismtWorkAccidentInsu> findBetween(CompanyCode companyCode) {
 		EntityManager em = getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 		CriteriaQuery<QismtWorkAccidentInsu> cq = criteriaBuilder.createQuery(QismtWorkAccidentInsu.class);
@@ -173,8 +173,7 @@ public class JpaAccidentInsuranceRateRepository extends JpaRepository implements
 		lstpredicate.add(criteriaBuilder.equal(
 				root.get(QismtWorkAccidentInsu_.qismtWorkAccidentInsuPK).get(QismtWorkAccidentInsuPK_.waInsuCd),
 				BusinessTypeEnum.Biz1St.value));
-		lstpredicate.add(criteriaBuilder.le(root.get(QismtWorkAccidentInsu_.strYm), yearMonth.nextMonth().v()));
-		lstpredicate.add(criteriaBuilder.ge(root.get(QismtWorkAccidentInsu_.endYm), yearMonth.previousMonth().v()));
+		cq.orderBy(criteriaBuilder.desc(root.get(QismtWorkAccidentInsu_.strYm)));
 		cq.where(lstpredicate.toArray(new Predicate[] {}));
 		TypedQuery<QismtWorkAccidentInsu> query = em.createQuery(cq);
 		return query.getResultList();
@@ -232,8 +231,11 @@ public class JpaAccidentInsuranceRateRepository extends JpaRepository implements
 		if (lstFindAllAccidentInsuranceRate == null || lstFindAllAccidentInsuranceRate.isEmpty()) {
 			return false;
 		}
-		List<QismtWorkAccidentInsu> lstQismtWorkAccidentInsu = findBetween(companyCode, monthRange.getStartMonth());
-		if (lstQismtWorkAccidentInsu != null && lstQismtWorkAccidentInsu.size() == 1) {
+		List<QismtWorkAccidentInsu> lstQismtWorkAccidentInsu = findBetween(companyCode);
+		if (lstQismtWorkAccidentInsu != null && lstQismtWorkAccidentInsu.size() >= 1) {
+			if (lstQismtWorkAccidentInsu.get(0).getStrYm() > monthRange.getStartMonth().previousMonth().v()) {
+				return true;
+			}
 			List<QismtWorkAccidentInsu> lstQismtWorkAccidentInsuUpdate = findDataById(companyCode,
 					lstQismtWorkAccidentInsu.get(0).getQismtWorkAccidentInsuPK().getHistId());
 			for (QismtWorkAccidentInsu qismtWorkAccidentInsu : lstQismtWorkAccidentInsuUpdate) {

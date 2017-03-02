@@ -63,12 +63,11 @@ var nts;
                                 ScreenModel.prototype.openAddHistoryUnemployeeInsuranceRate = function () {
                                     var self = this;
                                     nts.uk.ui.windows.setShared("type", TypeHistory.HistoryUnemployee);
-                                    self.typeActionUnemployeeInsurance(TypeActionInsuranceRate.add);
                                     nts.uk.ui.windows.sub.modal('/view/qmm/011/d/index.xhtml', { title: '労働保険料率の登録>履歴の追加', dialogClass: 'no-close' }).onClosed(function () {
                                         var addHistoryUnemployeeInsuranceDto = nts.uk.ui.windows.getShared("addHistoryUnemployeeInsuranceDto");
                                         if (addHistoryUnemployeeInsuranceDto != null && addHistoryUnemployeeInsuranceDto != undefined) {
-                                            self.resetValueUnemployeeInsuranceRate();
                                             self.unemployeeInsuranceRateModel().setHistoryData(addHistoryUnemployeeInsuranceDto);
+                                            self.typeActionUnemployeeInsurance(TypeActionInsuranceRate.add);
                                         }
                                     });
                                 };
@@ -106,11 +105,9 @@ var nts;
                                 ScreenModel.prototype.openAddHistoryAccidentInsuranceRate = function () {
                                     var self = this;
                                     nts.uk.ui.windows.setShared("type", TypeHistory.HistoryAccident);
-                                    self.typeActionAccidentInsurance(TypeActionInsuranceRate.add);
                                     nts.uk.ui.windows.sub.modal('/view/qmm/011/d/index.xhtml', { title: '労働保険料率の登録>履歴の追加', dialogClass: 'no-close' }).onClosed(function () {
                                         var addHistoryAccidentInsuranceDto = nts.uk.ui.windows.getShared("addHistoryAccidentInsuranceDto");
                                         if (addHistoryAccidentInsuranceDto != null && addHistoryAccidentInsuranceDto != undefined) {
-                                            self.accidentInsuranceRateModel().resetValue(self.rateInputOptions, self.selectionRoundingMethod);
                                             self.accidentInsuranceRateModel().setHistoryData(addHistoryAccidentInsuranceDto);
                                             self.typeActionAccidentInsurance(TypeActionInsuranceRate.add);
                                         }

@@ -19,4 +19,17 @@ public class WageTableElement {
 	/** The element mode setting. */
 	private ElementMode elementModeSetting;
 
+	/**
+	 * Instantiates a new wage table element.
+	 *
+	 * @param demensionNo
+	 *            the demension no
+	 * @param elementModeSetting
+	 *            the element mode setting
+	 */
+	public WageTableElement(DemensionOrder demensionNo, ElementMode elementModeSetting) {
+		super();
+		this.demensionNo = demensionNo;
+		this.elementModeSetting = elementModeSetting;
+	}
 }

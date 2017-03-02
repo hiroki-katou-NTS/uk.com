@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2015 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.core.infra.repository.wagetable;
@@ -9,10 +9,12 @@ import java.util.stream.Collectors;
 
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.Certification;
+import nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroupCode;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroupGetMemento;
+import nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroupName;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.MultipleTargetSetting;
-import nts.uk.ctx.pr.core.infra.entity.wagetable.QcemtCertification;
-import nts.uk.ctx.pr.core.infra.entity.wagetable.QwtmtWagetableCertifyG;
+import nts.uk.ctx.pr.core.infra.entity.wagetable.certification.QcemtCertification;
+import nts.uk.ctx.pr.core.infra.entity.wagetable.certification.QwtmtWagetableCertifyG;
 
 /**
  * The Class JpaCertifyGroupGetMemento.
@@ -49,8 +51,8 @@ public class JpaCertifyGroupGetMemento implements CertifyGroupGetMemento {
 	 * @see nts.uk.ctx.pr.core.dom.wagetable.CertifyGroupGetMemento#getCode()
 	 */
 	@Override
-	public String getCode() {
-		return this.typeValue.getQwtmtWagetableCertifyGPK().getCertifyGroupCd();
+	public CertifyGroupCode getCode() {
+		return new CertifyGroupCode(this.typeValue.getQwtmtWagetableCertifyGPK().getCertifyGroupCd());
 	}
 
 	/*
@@ -59,8 +61,8 @@ public class JpaCertifyGroupGetMemento implements CertifyGroupGetMemento {
 	 * @see nts.uk.ctx.pr.core.dom.wagetable.CertifyGroupGetMemento#getName()
 	 */
 	@Override
-	public String getName() {
-		return this.typeValue.getCertifyGroupName();
+	public CertifyGroupName getName() {
+		return new CertifyGroupName(this.typeValue.getCertifyGroupName());
 	}
 
 	/*

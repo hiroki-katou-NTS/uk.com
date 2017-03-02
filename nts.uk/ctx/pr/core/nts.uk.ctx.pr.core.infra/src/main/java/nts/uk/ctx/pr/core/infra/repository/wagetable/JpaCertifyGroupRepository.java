@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2016 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.core.infra.repository.wagetable;
@@ -20,12 +20,16 @@ import javax.persistence.criteria.Root;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroup;
+import nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroupCode;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroupRepository;
-import nts.uk.ctx.pr.core.infra.entity.wagetable.QwtmtWagetableCertifyG;
-import nts.uk.ctx.pr.core.infra.entity.wagetable.QwtmtWagetableCertifyGPK;
-import nts.uk.ctx.pr.core.infra.entity.wagetable.QwtmtWagetableCertifyGPK_;
-import nts.uk.ctx.pr.core.infra.entity.wagetable.QwtmtWagetableCertifyG_;
+import nts.uk.ctx.pr.core.infra.entity.wagetable.certification.QwtmtWagetableCertifyG;
+import nts.uk.ctx.pr.core.infra.entity.wagetable.certification.QwtmtWagetableCertifyGPK;
+import nts.uk.ctx.pr.core.infra.entity.wagetable.certification.QwtmtWagetableCertifyGPK_;
+import nts.uk.ctx.pr.core.infra.entity.wagetable.certification.QwtmtWagetableCertifyG_;
 
+/**
+ * The Class JpaCertifyGroupRepository.
+ */
 @Stateless
 public class JpaCertifyGroupRepository extends JpaRepository implements CertifyGroupRepository {
 
@@ -92,6 +96,13 @@ public class JpaCertifyGroupRepository extends JpaRepository implements CertifyG
 
 	}
 
+	/**
+	 * To entity.
+	 *
+	 * @param certifyGroup
+	 *            the certify group
+	 * @return the qwtmt wagetable certify G
+	 */
 	private QwtmtWagetableCertifyG toEntity(CertifyGroup certifyGroup) {
 		QwtmtWagetableCertifyG entity = new QwtmtWagetableCertifyG();
 		certifyGroup.saveToMemento(new JpaCertifyGroupSetMemento(entity));
@@ -121,6 +132,14 @@ public class JpaCertifyGroupRepository extends JpaRepository implements CertifyG
 		List<CertifyGroup> lstCertifyGroup = query.getResultList().stream().map(item -> toDomain(item))
 				.collect(Collectors.toList());
 		return lstCertifyGroup;
+	}
+
+	@Override
+	public boolean isDuplicateCode(CompanyCode companyCode, CertifyGroupCode code) {
+		if (findById(companyCode, code.v()).isPresent()) {
+			return true;
+		}
+		return false;
 	}
 
 }

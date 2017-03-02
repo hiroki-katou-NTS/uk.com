@@ -25,14 +25,14 @@ public interface CertifyGroupSetMemento {
 	 *
 	 * @param code the new code
 	 */
-	void setCode(String code);
+	void setCode(CertifyGroupCode code);
 
 	/**
 	 * Sets the name.
 	 *
 	 * @param name the new name
 	 */
-	void setName(String name);
+	void setName(CertifyGroupName name);
 
 	/**
 	 * Sets the multi apply set.

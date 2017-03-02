@@ -1,4 +1,3 @@
-// TreeGrid Node
 var qmm019;
 (function (qmm019) {
     var a;
@@ -18,7 +17,7 @@ var qmm019;
                 this.totalGrayLine = ko.observable("（+非表示0行）");
                 this.totalGrayLineNumber = ko.observable(0);
                 this.allowClick = ko.observable(true);
-                this.firstLayoutCode = ""; //Dùng cho select item đầu tiên.
+                this.firstLayoutCode = "";
                 var self = this;
                 self.itemList = ko.observableArray([]);
                 self.singleSelectedCode = ko.observable(null);
@@ -119,7 +118,6 @@ var qmm019;
                 $(".row").sortable("destroy");
                 $(".all-line").sortable("destroy");
             };
-            // start function
             ScreenModel.prototype.start = function (currentLayoutSelectedCode) {
                 var self = this;
                 var dfd = $.Deferred();
@@ -129,7 +127,6 @@ var qmm019;
                         a.service.getLayoutsWithMaxStartYm().done(function (layoutsMax) {
                             self.layoutsMax(layoutsMax);
                             self.buildTreeDataSource();
-                            //let firstLayout: service.model.LayoutMasterDto = _.first(self.layouts());
                             if (currentLayoutSelectedCode === undefined) {
                                 self.singleSelectedCode(self.firstLayoutCode);
                             }
@@ -144,10 +141,8 @@ var qmm019;
                         dfd.resolve();
                     }
                 }).fail(function (res) {
-                    // Alert message
                     alert(res);
                 });
-                // Return.
                 return dfd.promise();
             };
             ScreenModel.prototype.buildTreeDataSource = function () {
@@ -207,9 +202,13 @@ var qmm019;
             };
             ScreenModel.prototype.openEDialog = function () {
                 var self = this;
-                if (self.singleSelectedCode() == null)
+                if (self.singleSelectedCode() === null)
                     return false;
                 var singleSelectedCode = self.singleSelectedCode().split(';');
+                if (singleSelectedCode[0] === undefined
+                    || singleSelectedCode[1] === undefined
+                    || self.layoutMaster().historyId === undefined)
+                    return false;
                 nts.uk.ui.windows.setShared('stmtCode', singleSelectedCode[0]);
                 nts.uk.ui.windows.setShared('startYm', singleSelectedCode[1]);
                 nts.uk.ui.windows.setShared('historyId', self.layoutMaster().historyId);

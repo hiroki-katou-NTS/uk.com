@@ -57,9 +57,9 @@
 					</div>
 					<div class="margin-top-bot-20">
 						<button class="pull-left" id="btn_004"
-							data-bind="click: goToB, enable: isInputEnabled() &amp;&amp; !isNewMode()">履歴追加</button>
+							data-bind="click: openAddDialog, enable: isInputEnabled() &amp;&amp; !isNewMode()">履歴追加</button>
 						<button class="pull-right" id="btn_005"
-							data-bind="click: goToC, enable: isInputEnabled() &amp;&amp; !isNewMode()">履歴編集</button>
+							data-bind="click: openEditDialog, enable: isInputEnabled() &amp;&amp; !isNewMode()">履歴編集</button>
 						<div class="padding-top-10 pull-left cf">
 							<table id="lst_001"
 								data-bind="ntsTreeGridView:{
@@ -109,7 +109,7 @@
 							<td><span id="ipnStartMonth"
 								data-bind="ntsDatePicker: {value: unitPriceHistoryModel().startMonth, dateFormat: 'yyyy/MM', enable: isInputEnabled()}"></span>
 								<label id="lblEndMonth"
-								data-bind="text: unitPriceHistoryModel().endMonth()"></label></td>
+								data-bind="text: ' ~ ' + unitPriceHistoryModel().endMonth()"></label></td>
 						</tr>
 						<tr>
 							<td><div id="lbl_006"

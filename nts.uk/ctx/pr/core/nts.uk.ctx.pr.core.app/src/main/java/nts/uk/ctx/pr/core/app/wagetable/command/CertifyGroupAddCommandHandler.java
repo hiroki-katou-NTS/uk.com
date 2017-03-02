@@ -26,6 +26,9 @@ public class CertifyGroupAddCommandHandler extends CommandHandler<CertifyGroupAd
 	@Inject
 	private CertifyGroupRepository certifyGroupRepository;
 
+	@Inject
+	private CertifyGroupService certifyGroupService;
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -37,6 +40,8 @@ public class CertifyGroupAddCommandHandler extends CommandHandler<CertifyGroupAd
 	protected void handle(CommandHandlerContext<CertifyGroupAddCommand> context) {
 		String companyCode = AppContexts.user().companyCode();
 		CertifyGroup certifyGroup = context.getCommand().toDomain(companyCode);
+		certifyGroupService.validateRequiredItem(certifyGroup);
+		certifyGroupService.checkDuplicateCode(certifyGroup);
 		this.certifyGroupRepository.add(certifyGroup);
 	}
 

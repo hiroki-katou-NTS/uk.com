@@ -87,10 +87,10 @@ public class UnitPriceHistoryFinder {
 
 		// Return
 		return unitPrices.stream().map(item -> {
-			List<UnitPriceHistoryItemDto> histories = historyMap.get(item.getCode());
+			List<UnitPriceHistoryItemDto> histories = ListUtil.isEmpty(historyMap.get(item.getCode()))
+					? Collections.emptyList() : historyMap.get(item.getCode());
 			Collections.reverse(histories);
-			return new UnitPriceItemDto(item.getCode().v(), item.getName().v(),
-					ListUtil.isEmpty(histories) ? Collections.emptyList() : histories);
+			return new UnitPriceItemDto(item.getCode().v(), item.getName().v(), histories);
 		}).collect(Collectors.toList());
 	}
 }

@@ -24,6 +24,14 @@ public class RangeItem {
 	/** The uuid. */
 	private String uuid;
 
+	/**
+	 * Instantiates a new range item.
+	 *
+	 * @param orderNumber the order number
+	 * @param startVal the start val
+	 * @param endVal the end val
+	 * @param uuid the uuid
+	 */
 	public RangeItem(Integer orderNumber, Integer startVal, Integer endVal, String uuid) {
 		super();
 		this.orderNumber = orderNumber;

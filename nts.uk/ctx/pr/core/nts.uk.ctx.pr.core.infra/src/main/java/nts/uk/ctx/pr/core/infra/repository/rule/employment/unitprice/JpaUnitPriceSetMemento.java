@@ -8,8 +8,8 @@ import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceCode;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceName;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceSetMemento;
-import nts.uk.ctx.pr.core.infra.entity.rule.employment.unitprice.QupmtCUnitpriceHead;
-import nts.uk.ctx.pr.core.infra.entity.rule.employment.unitprice.QupmtCUnitpriceHeadPK;
+import nts.uk.ctx.pr.core.infra.entity.rule.employment.unitprice.QupmtCUnitpriceHeader;
+import nts.uk.ctx.pr.core.infra.entity.rule.employment.unitprice.QupmtCUnitpriceHeaderPK;
 
 /**
  * The Class JpaUnitPriceSetMemento.
@@ -17,7 +17,7 @@ import nts.uk.ctx.pr.core.infra.entity.rule.employment.unitprice.QupmtCUnitprice
 public class JpaUnitPriceSetMemento implements UnitPriceSetMemento {
 
 	/** The type value. */
-	protected QupmtCUnitpriceHead typeValue;
+	protected QupmtCUnitpriceHeader typeValue;
 
 	/**
 	 * Instantiates a new jpa unit price set memento.
@@ -25,7 +25,7 @@ public class JpaUnitPriceSetMemento implements UnitPriceSetMemento {
 	 * @param typeValue
 	 *            the type value
 	 */
-	public JpaUnitPriceSetMemento(QupmtCUnitpriceHead typeValue) {
+	public JpaUnitPriceSetMemento(QupmtCUnitpriceHeader typeValue) {
 		this.typeValue = typeValue;
 	}
 
@@ -38,9 +38,9 @@ public class JpaUnitPriceSetMemento implements UnitPriceSetMemento {
 	 */
 	@Override
 	public void setCompanyCode(CompanyCode companyCode) {
-		QupmtCUnitpriceHeadPK qupmtCUnitpriceHeadPK = new QupmtCUnitpriceHeadPK();
+		QupmtCUnitpriceHeaderPK qupmtCUnitpriceHeadPK = new QupmtCUnitpriceHeaderPK();
 		qupmtCUnitpriceHeadPK.setCcd(companyCode.v());
-		this.typeValue.setQupmtCUnitpriceHeadPK(qupmtCUnitpriceHeadPK);
+		this.typeValue.setQupmtCUnitpriceHeaderPK(qupmtCUnitpriceHeadPK);
 	}
 
 	/*
@@ -52,9 +52,9 @@ public class JpaUnitPriceSetMemento implements UnitPriceSetMemento {
 	 */
 	@Override
 	public void setCode(UnitPriceCode code) {
-		QupmtCUnitpriceHeadPK qupmtCUnitpriceHeadPK = this.typeValue.getQupmtCUnitpriceHeadPK();
+		QupmtCUnitpriceHeaderPK qupmtCUnitpriceHeadPK = this.typeValue.getQupmtCUnitpriceHeaderPK();
 		qupmtCUnitpriceHeadPK.setCUnitpriceCd(code.v());
-		this.typeValue.setQupmtCUnitpriceHeadPK(qupmtCUnitpriceHeadPK);
+		this.typeValue.setQupmtCUnitpriceHeaderPK(qupmtCUnitpriceHeadPK);
 	}
 
 	/*

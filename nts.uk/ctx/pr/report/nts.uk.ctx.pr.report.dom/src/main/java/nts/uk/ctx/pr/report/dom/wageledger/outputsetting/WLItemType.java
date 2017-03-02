@@ -10,10 +10,10 @@ package nts.uk.ctx.pr.report.dom.wageledger.outputsetting;
 public enum WLItemType {
 	
 	/** The Master. */
-	Master(1),
+	Master(0),
 	
 	/** The Aggregate. */
-	Aggregate(2);
+	Aggregate(1);
 	
 	/** The value. */
 	public final Integer value;
@@ -25,5 +25,29 @@ public enum WLItemType {
 	 */
 	private WLItemType(Integer value) {
 		this.value = value;
+	}
+	
+	/**
+	 * Value of.
+	 *
+	 * @param value
+	 *            the value
+	 * @return the element type
+	 */
+	public static WLItemType valueOf(Integer value) {
+		// Invalid object.
+		if (value == null) {
+			return null;
+		}
+
+		// Find value.
+		for (WLItemType val : WLItemType.values()) {
+			if (val.value == value) {
+				return val;
+			}
+		}
+
+		// Not found.
+		return null;
 	}
 }

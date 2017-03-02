@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2016 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.core.dom.wagetable.certification;
@@ -20,10 +20,10 @@ public class CertifyGroup extends DomainObject {
 	private CompanyCode companyCode;
 
 	/** The code. */
-	private String code;
+	private CertifyGroupCode code;
 
 	/** The name. */
-	private String name;
+	private CertifyGroupName name;
 
 	/** The multi apply set. */
 	private MultipleTargetSetting multiApplySet;

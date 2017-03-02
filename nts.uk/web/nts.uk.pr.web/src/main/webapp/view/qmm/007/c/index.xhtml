@@ -15,8 +15,8 @@
 			<com:scriptfile path="viewmodel.js" />
 			<script type="text/javascript">
 				var dialogSize = {
-					width : 620,
-					height : 480
+					width : 600,
+					height : 420
 				};
 			</script>
 		</ui:define>
@@ -49,7 +49,7 @@
 						<td><div class="invisible" data-bind="ntsFormLabel: {}"> </div></td>
 						<td><label class="ntsRadioBox"> <input type="radio"
 								name="textRadio"
-								data-bind="checkedValue: 'Edit', checked: edittingMethod" /> <span
+								data-bind="checkedValue: 'Edit', checked: edittingMethod, enable: isLatestHistory()" /> <span
 								class="box"></span><span class="label"
 								data-bind="text: '履歴を修正する'"></span>
 						</label></td>
@@ -59,7 +59,7 @@
 						<td><div id="lbl_007" data-bind="ntsFormLabel: {}">期間</div> <span
 							id="inpStartMonth" class="inp-default"
 							data-bind="ntsDatePicker: {value: unitPriceHistoryModel.startMonth, dateFormat: 'yyyy/MM', enable: isEditMode()}"></span><label
-							data-bind="text: unitPriceHistoryModel.endMonth()"></label></td>
+							data-bind="text: ' ~ '+unitPriceHistoryModel.endMonth()"></label></td>
 					</tr>
 					<tr>
 						<td></td>

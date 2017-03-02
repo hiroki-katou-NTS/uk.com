@@ -1,12 +1,12 @@
 /******************************************************************
- * Copyright (c) 2015 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.core.infra.repository.wagetable;
 
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.CertificationGetMemento;
-import nts.uk.ctx.pr.core.infra.entity.wagetable.QcemtCertification;
+import nts.uk.ctx.pr.core.infra.entity.wagetable.certification.QcemtCertification;
 
 /**
  * The Class JpaCertificationGetMemento.

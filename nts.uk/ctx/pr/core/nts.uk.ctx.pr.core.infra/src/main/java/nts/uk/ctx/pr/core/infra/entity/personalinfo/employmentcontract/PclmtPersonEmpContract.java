@@ -87,4 +87,5 @@ public class PclmtPersonEmpContract {
 	@Column(name ="FIRING_PRE_PAYDATE")
 	@Convert(converter = GeneralDateToDBConverter.class)
 	public GeneralDate firingPrePaydate;
+	
 }

@@ -14,40 +14,77 @@ import nts.uk.ctx.pr.report.dom.wageledger.outputsetting.WLCategorySetting;
 import nts.uk.ctx.pr.report.dom.wageledger.outputsetting.WLCategorySettingGetMemento;
 import nts.uk.ctx.pr.report.dom.wageledger.outputsetting.WLSettingItem;
 
+/**
+ * The Class CategorySettingDto.
+ */
 @Setter
 public class CategorySettingDto {
+
 	/** The category. */
 	private WLCategory category;
-	
+
 	/** The payment type. */
 	private PaymentType paymentType;
-	
+
 	/** The output items. */
 	private List<SettingItemDto> outputItems;
-	
+
 	/**
 	 * To domain.
 	 *
 	 * @return the WL category setting
 	 */
 	public WLCategorySetting toDomain() {
-		CategorySettingDto dto = this;
-		return new WLCategorySetting(new WLCategorySettingGetMemento() {
-			
-			@Override
-			public PaymentType getPaymentType() {
-				return dto.paymentType;
-			}
-			
-			@Override
-			public List<WLSettingItem> getOutputItems() {
-				return dto.outputItems.stream().map(SettingItemDto::toDomain).collect(Collectors.toList());
-			}
-			
-			@Override
-			public WLCategory getCategory() {
-				return dto.category;
-			}
-		});
+		return new WLCategorySetting(new WLCategorySettingGetMementoImpl(this));
+	}
+
+	/**
+	 * The Class WLCategorySettingGetMementoImpl.
+	 */
+	public class WLCategorySettingGetMementoImpl implements WLCategorySettingGetMemento {
+
+		/** The dto. */
+		private CategorySettingDto dto;
+
+		/**
+		 * Instantiates a new WL category setting get memento impl.
+		 *
+		 * @param dto the dto
+		 */
+		public WLCategorySettingGetMementoImpl(CategorySettingDto dto) {
+			super();
+			this.dto = dto;
+		}
+
+		/*
+		 * (non-Javadoc)
+		 * @see nts.uk.ctx.pr.report.dom.wageledger.outputsetting.
+		 * WLCategorySettingGetMemento#getPaymentType()
+		 */
+		@Override
+		public PaymentType getPaymentType() {
+			return dto.paymentType;
+		}
+
+		/*
+		 * (non-Javadoc)
+		 * @see nts.uk.ctx.pr.report.dom.wageledger.outputsetting.
+		 * WLCategorySettingGetMemento#getOutputItems()
+		 */
+		@Override
+		public List<WLSettingItem> getOutputItems() {
+			return dto.outputItems.stream().map(SettingItemDto::toDomain).collect(Collectors.toList());
+		}
+
+		/*
+		 * (non-Javadoc)
+		 * @see nts.uk.ctx.pr.report.dom.wageledger.outputsetting.
+		 * WLCategorySettingGetMemento#getCategory()
+		 */
+		@Override
+		public WLCategory getCategory() {
+			return dto.category;
+		}
+
 	}
 }
