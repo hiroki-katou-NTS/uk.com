@@ -1,4 +1,4 @@
-package nts.uk.ctx.basic.infra.entity.organization.positionhistory;
+package nts.uk.ctx.basic.infra.entity.organization.position;
 
 import java.io.Serializable;
 
@@ -13,23 +13,22 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 @Embeddable
-public class CmnmtJobTitleHistoryPK implements Serializable {
 
+public class CmnmtJobHistPK implements Serializable{
 
 	/**
-	 * serialVersionUID
+	 * 
 	 */
-	public static final long serialVersionUID = 1L;
-	
-	@Basic(optional = false)
-	@Column(name ="CCD")
+	private static final long serialVersionUID = 1L;
+
+	@Basic(optional = false)	
+	@Column(name = "CCD")
 	public String companyCode;
-	
+		
 	@Basic(optional = false)
-	@Column(name ="HIST_ID")
-	public String historyID;
-	
+	@Column(name = "HIST_ID")
+	public String historyId;
 }

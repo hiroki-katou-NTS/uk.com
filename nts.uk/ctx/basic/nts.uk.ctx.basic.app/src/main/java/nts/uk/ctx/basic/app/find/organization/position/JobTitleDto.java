@@ -1,27 +1,32 @@
 package nts.uk.ctx.basic.app.find.organization.position;
 
-
-import lombok.Data;
-import nts.arc.time.GeneralDate;
-
+import lombok.Value;
+import nts.uk.ctx.basic.dom.organization.position.JobTitle;
 
 
-@Data
-
+@Value
 public class JobTitleDto {
 	
-	private String historyID;
-	private String jobCode;
-	private String jobName;
-	private String jobOutCode;
-	private String memo;
-	private String hiterarchyOrderCode;
-	private int presenceCheckScopeSet;
+	String companyCode;
 	
+	String historyId;
 	
+	String jobCode;
+		
+	String jobName;
+	
+	int presenceCheckScopeSet;
 
+	String jobOutCode;
 
-				
-				
+	String memo;
+
+	public static JobTitleDto fromDomain(JobTitle domain) {
+		return new JobTitleDto(domain.getCompanyCode().v(),
+				domain.getHistoryId().toString(), 
+				domain.getJobCode().v(),domain.getJobName().v(),
+				domain.getPresenceCheckScopeSet().value,
+				domain.getJobOutCode().v(), domain.getMemo().v()
+				);
+	}
 }
-

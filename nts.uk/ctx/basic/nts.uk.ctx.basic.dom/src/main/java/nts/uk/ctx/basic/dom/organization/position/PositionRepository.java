@@ -1,29 +1,18 @@
 package nts.uk.ctx.basic.dom.organization.position;
-
-
 import java.util.List;
-import java.util.Optional;
-
-import nts.arc.time.GeneralDate;
-import nts.uk.ctx.basic.dom.organization.positionhistory.PositionHistory;
-import nts.uk.ctx.basic.dom.organization.positionreference.PositionReference;
-
-
-
-
 
 public interface PositionRepository {
-
+	
 //	Optional<Position> find(String companyCode, String jobCode, String historyID);
 	
-	List<Position> findAllPosition(String companyCode, String historyID);
+	List<JobTitle> findAllPosition(String companyCode, String historyId);
 	
 	/*
 	 * add,update,delete position
 	 */
-	void add(Position position);
+	void add(JobTitle position);
 	
-	void update (Position position);
+	void update (JobTitle position);
 	
 	void delete (String companyCode,JobCode jobCode,String historyId);
 	
@@ -31,24 +20,15 @@ public interface PositionRepository {
 	 * add, update, delete history
 	 */
 	
-	void addHistory(PositionHistory history);
+	void addHistory(JobHistory history);
 	
-	void updateHistory(PositionHistory history);
+	void updateHistory(JobHistory history);
 	
-	void deleteHist(String companyCode, String historyID);
+	void deleteHist(String companyCode, HistoryId historyId);
 
-	List<PositionHistory> getAllHistory(String companyCode);
+	List<JobHistory> getAllHistory(String companyCode);
 	
-	List<PositionReference> findAllJobTitleRef(String companyCode, String historyID);
-
-	Optional<Position> findSingle(String companyCode, String historyID, JobCode jobCode);
-
-	Optional<PositionHistory> findSingleHistory(String companyCode, String historyID);
-
-	boolean isExisted(String companyCode, JobCode jobCode,String historyID);
-
-	boolean isExist(String companyCode, GeneralDate startDate);
+	List<JobTitleRef> findAllJobTitleRef(String companyCode, String historyId);
 
 
-
-}
+	}

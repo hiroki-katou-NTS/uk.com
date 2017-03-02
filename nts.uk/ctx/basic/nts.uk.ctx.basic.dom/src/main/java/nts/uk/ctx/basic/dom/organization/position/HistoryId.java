@@ -1,22 +1,21 @@
 package nts.uk.ctx.basic.dom.organization.position;
+
 import nts.arc.primitive.constraint.CharType;
 import nts.arc.primitive.constraint.StringCharType;
 import nts.arc.primitive.constraint.StringMaxLength;
-import nts.arc.primitive.PrimitiveValue;
-import nts.arc.primitive.StringPrimitiveValue;
+import nts.uk.shr.com.primitive.CodePrimitiveValue;
+
 
 
 @StringCharType(CharType.ALPHABET)
-@StringMaxLength(10)
-public class JobName extends StringPrimitiveValue<PrimitiveValue<String>>{
-	/**
-	 * 
-	 */
+@StringMaxLength(36)
+public class HistoryId extends CodePrimitiveValue<HistoryId>{
+	
+	/** serialVersionUID */
 	private static final long serialVersionUID = 1L;
 
-	public JobName(String rawValue) {
+	public HistoryId(String rawValue) {
 		super(rawValue);
-		// TODO Auto-generated constructor stub
 	}
 
 }

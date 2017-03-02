@@ -8,259 +8,261 @@
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
 			<com:ValidatorScript>
-					nts.uk.shr.com.primitive.PersonId
+				nts.uk.ctx.pr.core.dom.layout.LayoutName
 			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
-			<com:stylefile path="main.css" />
+			<com:stylefile path="style.css" />
 			<com:scriptfile path="start.js" />
 			<com:scriptfile path="viewmodel.js" />
 			<com:scriptfile path="service.js" />
-		</ui:define>
-
-		<ui:define name="content">
-			<div id="functions-area">
-				<button id="btn_001" class="button separate-button fix-button">BTN_001</button>
-				<button id="btn_002"
-					class="button proceed separate-button fix-button">BTN_002</button>
-				<button id="btn_003" class="button separate-button fix-button">BTN_003</button>
-				<button id="btn_004" class="button separate-button fix-button">BTN_004</button>
-				<button id="btn_005"
-					class="button danger separate-button fix-button">BTN_005</button>
+			<script type="text/javascript">
+				__viewContext.primitiveValueConstraints.JobCode = {
+						valueType: 'String',
+						charType: 'Numeric',
+						maxLength: 10,
+					};
+				
+				__viewContext.primitiveValueConstraints.JobName = {
+						valueType: 'String',
+						charType: 'AnyHalfWidth',
+						maxLength: 20,
+					};
+				__viewContext.primitiveValueConstraints.Memo = {
+						valueType: 'String',
+						charType: 'AnyHalfWidth',
+						maxLength: 500,
+					};
+				
+		</script>
+	</ui:define>
+	<ui:define name="content">
+		<div id="function_area">
+			<button id="btn_001" class="button separate-button fix-button">新規</button>
+			<button id="btn_002" class="button proceed separate-button fix-button">登録</button>
+			<button id="btn_003" class="button separate-button fix-button">序列 をまとめて設定</button>
+			<button id="btn_004" class="button separate-button fix-button"
+					data-bind="click: openBDialog">マスタ修正ログ</button>
+			<button id="btn_005" class="button danger separate-button fix-button"
+					data-bind="click: deletePosition">削除</button>				
+		</div>
+			
+		<div id="content-area">
+			<div id="left-content" class="bg-green caret-right caret-background">
+				<button id="btn_006" class="button separate-button fix-button" data-bind="click: openCDialog">履歴追加</button>
+				<button id="btn_007" class="button danger separate-button fix-button" data-bind="click: openDDialog">履歴編集</button>
+			<div>
+			<br/>
 			</div>
+					
+			<!--LST_001-->
 			
-			
-			<div id="contents-area">
-				<div id="left-content" class="bg-green caret-right caret-background">
-
-					<button id="btn_005">BTN_006</button>
-					<button id="btn_006" class="button danger">BTN_007</button>
-					<br /> <br />
-					<div data-bind="with: listbox">
-						<div id="list-box"
-							data-bind="ntsListBox: { 
-												options: itemList,
-												primaryKey: 'code',
-												primaryText: 'name',
-												multiple: true,
-												value: selectedCodes,
-												enable: isEnable(),
-												rows: 3,
-												required: false,
-												columns: [
-													{ prop: 'code', length: 12 }
-													
-												]}"></div>
-					</div>
-					<br /> <br />
-
-					<div class="cf" data-bind="with: searchbox">
-						<div style="float: left">
-							<div
-								data-bind="ntsSearchBox: {
-						comId: 'single-list',
-						items: dataSource, 		
-						selected: currentCode, 
-						selectedKey: 'code', 
-						childField: 'childs', 
-						fields: ['name', 'code']}" />
-							<BR />
-							<table id="single-list"
-								data-bind="ntsGridList: {
-											width: 300,
-											height: 300,
-											options: dataSource,
-											optionsValue: 'code',
-											columns: columns,
-											multiple: false,
-											value: currentCode}"
-								class="cf">
-							</table>
-						</div>
-					</div>
+			<div id="list-box" data-bind="ntsListBox: {
+					options: listbox,
+					primaryKey: 'startDate',
+					primaryText: 'endDate',
+					multiple: false,
+					value: selectedCode,
+					enable: isEnable(),
+					rows: 3,
+					required: false,
+					columns: [
+						{ key: 'startDate', length: 8 },
+						{ key: 'endDate', length: 8}
+					]}">
+			</div>
+			<div>
+				<span style="margin-left: 100px" class="caret caret-bottom caret-inline"></span>
+			</div>
+					
+			<!--INP_001-->
+			<div class="cf" >
+				<div style="float:left">																					
+					<div style="width: 320px" data-bind="ntsSearchBox: {
+								comId: 'single-list',
+								items: dataSource, 		
+								selected: currentCode, 
+								selectedKey: 'jobCode', 
+								fields: ['jobName', 'jobCode']}">
+					</div>																																														
+					<br></br>
+							
+					<!--LST_002-->
+					<table id="single-list" 
+						data-bind="ntsGridList:{
+							width: 300,
+							height: 450,
+							options: dataSource,								
+							optionsValue: 'jobCode',
+							columns: columns,
+							multiple: false,
+							value: currentCode,
+							enable: true}"
+						class="cf">
+					</table>
 				</div>
-
-
+			</div>
+			</div>
+				
 				<div id="right-content">
-					<table class="table_content">
-						<colgroup>
-							<col width="150px" />
-							<col width="*" />
-						</colgroup>
-						<tr>
-							<td class="row_1" data-bind="with: label_002">
+				<table>
+					<colgroup>
+						<col width="200px" />
+						<col width="*" />
+					</colgroup>
+					
+					<tr>
+							<td class="row_1">
 								<div
-									data-bind="ntsFormLabel: { constraint: 'LayoutName', required: true }">レイアウトコード</div>
+									data-bind="ntsFormLabel: { constraint: ['JobCode', 'JobName'], required: true }">
+									コード/名称</div>
 							</td>
-							<td class="valign-center">
-								<div>
-									<div data-bind="with: inp_002" class="input_002">
-										<div data-bind="with: texteditor">
-											<input
-												data-bind="ntsTextEditor: {
-												value: value,
-												constraint: constraint,
-												option: option,
-												required: required,
-												enable: enable,
-												readonly: readonly}" />
-										</div>
-									</div>
-									<div data-bind="with: inp_003" class="input_002">
-										<div data-bind="with: texteditor">
-											<input
-												data-bind="ntsTextEditor: {
-												value: value,
-												constraint: constraint,
-												option: option,
-												required: required,
-												enable: enable,
-												readonly: readonly}" />
-										</div>
+							<td>
+								<div >
+									<div id="inp_002" style="width: 20px">
+										<input data-bind="ntsTextEditor: {
+                                            value: inp_002,
+                                            constraint: 'JobCode',
+                                            enable: inp_002_enable}" />
 									</div>
 
+									<div id="inp_003" style="width: 50px">
+										<input data-bind="ntsTextEditor: {
+                                            value: inp_003,
+                                            constraint: 'JobName'
+                                            }" />
+									</div>
 
 								</div>
 							</td>
 						</tr>
-						<tr>
-							<td class="row_2" data-bind="with: label_003">
-								<div
-									data-bind="ntsFormLabel: { constraint: 'LayoutName', required: true }">レイアウトコード</div>
-							</td>
-							<td data-bind="with: selectbox">
-								<div
-									data-bind="ntsRadioBoxGroup: {
-												options: itemList,
-												optionsValue: 'id',
-												optionsText: 'name',
-												value: selectedId,
-												enable: enable}">
-								</div>
-							</td>
-						</tr>
-						<tr>
+					
+					<tr>
+						<td class = " row_02" data-bind="with: label_003" >
+						
+						<!--LBL_003 -->
+						<div data-bind="ntsFormLabel: {constraint: 'LayoutName', required: true}">在籍照会で参照可能な範囲</div>
+						</td>
+						<td>	
+											
+							<!-- SEL_001 -->														
+							<div  data-bind="ntsRadioBoxGroup: {
+								options: itemList,
+								optionsValue: 'id',
+								optionsText: 'name',
+								value: selectedId,
+								enable: enable}">
+							</div>	
+						</td>
+					</tr>	
+							
+							<!-- LST_003 & SEL_002-->			
+							
+						<tr >
 							<td></td>
 							<td>
 								<div class="lst_003">
-									<div class="row row_3_line_1" data-bind="with: switchbt_1">
-										<div class="line left-line" style="padding-right: 25px;">
-											Text line 1</div>
-										<div class="line line_1"
-											data-bind="ntsSwitchButton: {
-												options: roundingRules,
-												optionsValue: 'code',
-												optionsText: 'name',
-												value: selectedRuleCode
-												}">
+									<div class="row row_3" data-bind="with: sel_0021">
+										<div  class="line left-line" style="padding-right: 10px" >運用管理者 </div>
+										<div  class="line line_1" data-bind="ntsSwitchButton: {
+											options: roundingRules,
+											optionsValue: 'code',
+											optionsText: 'name',
+											value: selectedRuleCode,}">
 										</div>
 									</div>
-									<div class="row row_3_line_2" data-bind="with: switchbt_2">
-										<div class="line left-line" style="padding-right: 25px;">
-											Text line 2</div>
-										<div class="line line_2"
-											data-bind="ntsSwitchButton: {
-												options: roundingRules,
-												optionsValue: 'code',
-												optionsText: 'name',
-												value: selectedRuleCode
-												}">
+										
+									<div class="row row_3" data-bind="with: sel_0022">
+									<div class="line left-line" style="padding-right: 10px">オペレート</div>
+										<div class="line line_2" data-bind="ntsSwitchButton: {
+											options: roundingRules,
+											optionsValue: 'code',
+											optionsText: 'name',
+											value: selectedRuleCode,}">
 										</div>
 									</div>
-									<div class="row row_3_line_3" data-bind="with: switchbt_3">
-										<div class="line left-line" style="padding-right: 25px;">
-											Text line 3</div>
-										<div class="line line_3"
-											data-bind="ntsSwitchButton: {
-												options: roundingRules,
-												optionsValue: 'code',
-												optionsText: 'name',
-												value: selectedRuleCode
-												}">
+								
+									<div class="row row_3" data-bind="with: sel_0023">
+									<div style="padding-right: 10px" class="line left-line">部門長 	</div>
+										<div class="line line_3" data-bind="ntsSwitchButton: {
+											options: roundingRules,
+											optionsValue: 'code',
+											optionsText: 'name',
+											value: selectedRuleCode,}">
 										</div>
 									</div>
-									<div class="row row_3_line_4" data-bind="with: switchbt_4">
-										<div class="line left-line" style="padding-right: 25px;">
-											Text line 4</div>
-										<div class="line line_4"
-											data-bind="ntsSwitchButton: {
-												options: roundingRules,
-												optionsValue: 'code',
-												optionsText: 'name',
-												value: selectedRuleCode
-												}">
+								
+									<div class="row row_3" data-bind="with: sel_0024">
+									<div class="line left-line" style="padding-right: 10px">一般社員 </div>
+										<div class="line line_4" data-bind="ntsSwitchButton: {
+											options: roundingRules,
+											optionsValue: 'code',
+											optionsText: 'name',
+											value: selectedRuleCode,}">
 										</div>
 									</div>
-								</div>
-							</td>
+							</div>
+						</td>
+					</tr>
 
-						</tr>
-
-						<tr>
-							<td class="row_4" data-bind="with: label_004">
-								<div
-									data-bind="ntsFormLabel: { constraint: 'LayoutName', required: true }">レイアウトコード</div>
-							</td>
-							<td data-bind="with: selectbox_2">
-								<div
-									data-bind="ntsRadioBoxGroup: {
-												options: itemList,
-												optionsValue: 'id',
-												optionsText: 'name',
-												value: selectedId,
-												enable: enable}">
-								</div>
-							</td>
-						</tr>
-
-						<tr>
-							<td class="row_5" data-bind="with: label_005">
-								<div
-									data-bind="ntsFormLabel: {}">レイ</div>
-							</td>
-							<td class="valign-center">
-								<div>
-									<div data-bind="with: inp_004" class="input_004">
-										<div data-bind="with: texteditor">
-											<input
-												data-bind="ntsTextEditor: {
-												value: value,
-												constraint: constraint,
-												option: option,
-												required: required,
-												enable: enable,
-												readonly: readonly}" />
-										</div>
-									</div>
-
-
-								</div>
-							</td>
-						</tr>
+					<tr>
+						<td class = " row_04" data-bind="with: label_004">
+						<!-- LBL_004 -->
+						<div data-bind="ntsFormLabel: {constraint: 'LayoutName', required: true}">種別の設定</div>
+						</td>
+						<td data-bind="with: radiobox_2">	
+											
+							<!-- SEL_003 -->							
+							<div  data-bind="ntsRadioBoxGroup: {
+								options: itemList,
+								optionsValue: 'id',
+								optionsText: 'name',
+								value: selectedId,
+								enable: enable}">
+							</div>
 						
-						<tr>
-							<td class="row_6" data-bind="with: label_006">
-								<div
-									data-bind="ntsFormLabel: { constraint: 'LayoutName'}">レイアウトコード</div>
-							</td>
-							<td class="valign-center">
-								<div>
-									<div data-bind="with: inp_005" class="input_005">
-										<div data-bind="with: multilineeditor">
-											<textarea data-bind="ntsMultilineEditor: {
-												value: value,
-												constraint: constraint,
-												option: option,
-												enable: enable,
-												readonly: readonly}" />
-										</div>
-									</div>
+						</td>
+					</tr>
+					<tr>
+						<td class = " row_05" data-bind="label_005">
+						
+						<!-- LBL_005 -->
+						<div data-bind="ntsFormLabel: {}">序列</div>
+						</td>
+						<td class="inp_004">
+						<!-- INP_004 -->
+						<div id="inp_004" data-bind="with: inp_004">
+							<div data-bind="with: texteditor">
+								<input data-bind="ntsTextEditor: {
+									value: value,
+									constraint: constraint,
+									option: option,
+									required: required,
+									enable: enable,
+									readonly: readonly}" />
+							</div>
+						</div>						
+						</td>
+					</tr>
 
-
-								</div>
-							</td>
+					<tr>
+						<td>
+							<div data-bind="ntsFormLabel: {constraint: 'Memo'}">
+								<label id="A_LBL_003">メモ</label>
+							</div>
+						</td>
+						<td class="valign-center">
+							<div>
+								<textarea
+									data-bind="ntsMultilineEditor: {
+										value: inp_005,
+										constraint: 'Memo'
+										}" />
+							</div>
+						</td>
 						</tr>
-					</table>
+				</table>
 				</div>
+				
 			</div>
 		</ui:define>
 	</ui:composition>

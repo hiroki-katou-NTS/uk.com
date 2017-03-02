@@ -7,20 +7,12 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 import lombok.AllArgsConstructor;
-import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
-
-@Setter
-@Getter
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
-public class CmnmtJobTitlePK implements Serializable{
+public class CmnmtJobTitleRefPK implements Serializable{
 
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = 1L;
 
 	@Basic(optional = false)	
@@ -35,5 +27,7 @@ public class CmnmtJobTitlePK implements Serializable{
 	@Column(name = "HIST_ID")
 	public String historyId;
 	
-
+	@Basic(optional = false)
+	@Column(name = "AUTHCD")
+	public String authCode;
 }
