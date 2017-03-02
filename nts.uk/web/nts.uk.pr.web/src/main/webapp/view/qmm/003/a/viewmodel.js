@@ -14,14 +14,14 @@ var qmm003;
                     this.japanLocation = [];
                     this.residentalTaxList = ko.observableArray([]);
                     var self = this;
-                    self.currentNode = ko.observable('');
                     self.init();
+                    console.log(self.test());
+                    console.log(self.items());
                     console.log(self.filteredData());
                     self.selectedCodes = ko.observableArray([]);
                     self.singleSelectedCode.subscribe(function (newChange) {
-                        self.filteredData = nts.uk.util.flatArray(self.items(), "childs");
-                        console.log(self.filteredData);
-                        self.curentNode = self.findByCode(self.filteredData(), newChange);
+                        self.findByCode(self.filteredData(), newChange);
+                        console.log(self.currentNode());
                     });
                 }
                 ScreenModel.prototype.findByCode = function (items, newValue) {
@@ -30,7 +30,11 @@ var qmm003;
                     _.find(items, function (obj) {
                         if (!node) {
                             if (obj.code == newValue) {
-                                node = obj;
+                                node.code = obj.code;
+                                node.name = obj.name;
+                                node.childs = obj.childs;
+                                self.currentNode = ko.mapping.fromJS(node);
+                                console.log(self.currentNode());
                             }
                         }
                     });
@@ -40,7 +44,7 @@ var qmm003;
                 ScreenModel.prototype.resetData = function () {
                     var self = this;
                     self.editMode = false;
-                    self.curentNode(new Node("", "", []));
+                    self.currentNode(new Node("", "", []));
                     self.singleSelectedCode("");
                     self.selectedCode("");
                     self.labelSubsub("");
@@ -84,28 +88,22 @@ var qmm003;
                     // data of treegrid
                     self.items = ko.observableArray([]);
                     self.mode = ko.observable(null);
-                    self.currentCode = ko.observable(null);
-                    self.item1s = ko.observable(new Node('', '', []));
+                    var node = new Node("022012", "青森市", []);
+                    self.currentNode = ko.observable(ko.mapping.fromJS(node));
                     self.isEnable = ko.observable(true);
                     self.isEditable = ko.observable(true);
-                    self.nameBySelectedCode = ko.observable(null);
-                    self.Value = ko.observable(null);
-                    self.singleSelectedCode = ko.observable("022012");
-                    self.curentNode = ko.observable(new Node('022012', '青森市', []));
-                    self.labelSubsub = ko.observable(new Node('052019', '秋田市', []));
                     self.selectedCode = ko.observable("1");
-                    //self.filteredData = ko.observableArray([]);
                 };
                 ScreenModel.prototype.openBDialog = function () {
                     var self = this;
                     var singleSelectedCode;
-                    var curentNode;
+                    var currentNode;
                     nts.uk.ui.windows.sub.modeless('/view/qmm/003/b/index.xhtml', { title: '住民税納付先の登録＞住民税納付先一覧', dialogClass: "no-close" }).onClosed(function () {
                         singleSelectedCode = nts.uk.ui.windows.getShared("singleSelectedCode");
-                        curentNode = nts.uk.ui.windows.getShared("curentNode");
+                        currentNode = nts.uk.ui.windows.getShared("currentNode");
                         self.editMode = false;
                         self.singleSelectedCode(singleSelectedCode);
-                        self.curentNode(curentNode);
+                        self.currentNode(currentNode);
                     });
                 };
                 ScreenModel.prototype.openCDialog = function () {
@@ -148,11 +146,8 @@ var qmm003;
                             (qmm003.a.service.getRegionPrefecture()).done(function (locationData) {
                                 self.japanLocation = locationData;
                                 self.buildResidentalTaxTree();
-                                self.filteredData = ko.observableArray([]);
                                 self.filteredData = ko.observableArray(nts.uk.util.flatArray(self.test(), "childs"));
-                                console.log(self.filteredData());
                                 self.items(self.test());
-                                console.log(self.items());
                             });
                             self.mode(true); // true, update mode 
                         }

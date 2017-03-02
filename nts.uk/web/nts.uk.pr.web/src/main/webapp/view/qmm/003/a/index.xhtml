@@ -40,10 +40,8 @@
 					<div class="relative bg-green caret-right caret-background"
 						style="float: left; width: 400px; height: 610px; margin-top: 2px">
 						<i class="icon icon-searchbox"></i>
-			<!-- 			<div id="search" style="width: 400px"
-							data-bind="ntsSearchBox: {items: items, selected: singleSelectedCode, selectedKey: 'code', childField: 'childs', filteredItems: filteredData1, fields: ['name', 'code']}" /> -->
-									<div id="search" style="width: 400px"
-							data-bind="ntsSearchBox: {}" />
+						<div id="search" style="width: 400px"
+							data-bind="ntsSearchBox: {items: items, selected: singleSelectedCode, selectedKey: 'code', childField: 'childs', filteredItems: filteredData, fields: ['name', 'code']}" />
 						<div>
 							<table id="treegrid2"
 								data-bind="ntsTreeGridView:{
@@ -80,12 +78,14 @@
 									</th>
 									<th colspan="1" >
 									
+		                           <div data-bind="with: currentNode">
 										<input id="A_INP_002" class="input-table" data-bind="ntsTextEditor: {
-												value: singleSelectedCode,
+												value: code,
 												constraint: 'ResiTaxCode',
 												required: true,
 												enable: true,
 												readonly: false }" />
+								  </div>
 									
 									<!-- 	<input id="A_INP_002" data-bind="value: singleSelectedCode()" class="input-table"/>  -->
 									</th>
