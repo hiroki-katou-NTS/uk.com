@@ -12,6 +12,9 @@ import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -125,6 +128,12 @@ public class QupmtCUnitpriceDetail implements Serializable {
 	@Column(name = "MEMO")
 	private String memo;
 
+	/** The qupmt C unitprice head. */
+	@JoinColumns({ @JoinColumn(name = "CCD", referencedColumnName = "CCD", insertable = false, updatable = false),
+			@JoinColumn(name = "C_UNITPRICE_CD", referencedColumnName = "C_UNITPRICE_CD", insertable = false, updatable = false) })
+	@ManyToOne(optional = false)
+	private QupmtCUnitpriceHeader qupmtCUnitpriceHeader;
+	
 	/**
 	 * Instantiates a new qupmt C unitprice detail.
 	 */
