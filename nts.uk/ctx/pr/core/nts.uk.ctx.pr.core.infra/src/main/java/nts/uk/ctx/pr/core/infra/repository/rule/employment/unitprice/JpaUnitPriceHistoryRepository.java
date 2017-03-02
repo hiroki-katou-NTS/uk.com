@@ -113,7 +113,7 @@ public class JpaUnitPriceHistoryRepository extends JpaRepository implements Unit
 		List<Predicate> predicateList = new ArrayList<Predicate>();
 
 		// Construct condition.
-		predicateList.add(cb.equal(root.get(QupmtCUnitpriceDetail_.qupmtCUnitpriceHistPK).get(QupmtCUnitpriceDetailPK_.ccd),
+		predicateList.add(cb.equal(root.get(QupmtCUnitpriceDetail_.qupmtCUnitpriceDetailPK).get(QupmtCUnitpriceDetailPK_.ccd),
 				companyCode.v()));
 
 		cq.orderBy(cb.asc(root.get(QupmtCUnitpriceDetail_.strYm)));
@@ -143,10 +143,10 @@ public class JpaUnitPriceHistoryRepository extends JpaRepository implements Unit
 		List<Predicate> predicateList = new ArrayList<Predicate>();
 
 		// Construct condition.
-		predicateList.add(cb.equal(root.get(QupmtCUnitpriceDetail_.qupmtCUnitpriceHistPK).get(QupmtCUnitpriceDetailPK_.ccd),
+		predicateList.add(cb.equal(root.get(QupmtCUnitpriceDetail_.qupmtCUnitpriceDetailPK).get(QupmtCUnitpriceDetailPK_.ccd),
 				companyCode.v()));
 		predicateList.add(cb.equal(
-				root.get(QupmtCUnitpriceDetail_.qupmtCUnitpriceHistPK).get(QupmtCUnitpriceDetailPK_.histId), histId));
+				root.get(QupmtCUnitpriceDetail_.qupmtCUnitpriceDetailPK).get(QupmtCUnitpriceDetailPK_.histId), histId));
 		cq.where(predicateList.toArray(new Predicate[] {}));
 
 		List<QupmtCUnitpriceDetail> result = em.createQuery(cq).getResultList();
@@ -179,10 +179,10 @@ public class JpaUnitPriceHistoryRepository extends JpaRepository implements Unit
 		List<Predicate> predicateList = new ArrayList<Predicate>();
 
 		// Construct condition.
-		predicateList.add(cb.equal(root.get(QupmtCUnitpriceDetail_.qupmtCUnitpriceHistPK).get(QupmtCUnitpriceDetailPK_.ccd),
+		predicateList.add(cb.equal(root.get(QupmtCUnitpriceDetail_.qupmtCUnitpriceDetailPK).get(QupmtCUnitpriceDetailPK_.ccd),
 				companyCode.v()));
 		predicateList.add(
-				cb.equal(root.get(QupmtCUnitpriceDetail_.qupmtCUnitpriceHistPK).get(QupmtCUnitpriceDetailPK_.cUnitpriceCd),
+				cb.equal(root.get(QupmtCUnitpriceDetail_.qupmtCUnitpriceDetailPK).get(QupmtCUnitpriceDetailPK_.cUnitpriceCd),
 						cUnitpriceCd.v()));
 		predicateList.add(cb.ge(root.get(QupmtCUnitpriceDetail_.strYm), startMonth.v()));
 

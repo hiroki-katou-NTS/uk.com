@@ -92,11 +92,11 @@ public class JpaUnitPriceRepository extends JpaRepository implements UnitPriceRe
 		List<Predicate> predicateList = new ArrayList<Predicate>();
 
 		// Construct condition.
-		predicateList.add(cb.equal(root.get(QupmtCUnitpriceHeader_.qupmtCUnitpriceHeadPK).get(QupmtCUnitpriceHeaderPK_.ccd),
+		predicateList.add(cb.equal(root.get(QupmtCUnitpriceHeader_.qupmtCUnitpriceHeaderPK).get(QupmtCUnitpriceHeaderPK_.ccd),
 				companyCode.v()));
 
 		cq.orderBy(
-				cb.asc(root.get(QupmtCUnitpriceHeader_.qupmtCUnitpriceHeadPK).get(QupmtCUnitpriceHeaderPK_.cUnitpriceCd)));
+				cb.asc(root.get(QupmtCUnitpriceHeader_.qupmtCUnitpriceHeaderPK).get(QupmtCUnitpriceHeaderPK_.cUnitpriceCd)));
 		cq.where(predicateList.toArray(new Predicate[] {}));
 
 		return em.createQuery(cq).getResultList().stream().map(item -> new UnitPrice(new JpaUnitPriceGetMemento(item)))
@@ -143,10 +143,10 @@ public class JpaUnitPriceRepository extends JpaRepository implements UnitPriceRe
 		List<Predicate> predicateList = new ArrayList<Predicate>();
 
 		// Construct condition.
-		predicateList.add(cb.equal(root.get(QupmtCUnitpriceHeader_.qupmtCUnitpriceHeadPK).get(QupmtCUnitpriceHeaderPK_.ccd),
+		predicateList.add(cb.equal(root.get(QupmtCUnitpriceHeader_.qupmtCUnitpriceHeaderPK).get(QupmtCUnitpriceHeaderPK_.ccd),
 				companyCode.v()));
 		predicateList.add(
-				cb.equal(root.get(QupmtCUnitpriceHeader_.qupmtCUnitpriceHeadPK).get(QupmtCUnitpriceHeaderPK_.cUnitpriceCd),
+				cb.equal(root.get(QupmtCUnitpriceHeader_.qupmtCUnitpriceHeaderPK).get(QupmtCUnitpriceHeaderPK_.cUnitpriceCd),
 						code.v()));
 
 		cq.select(cb.count(root));

@@ -16,8 +16,8 @@ import javax.persistence.metamodel.StaticMetamodel;
 @StaticMetamodel(QupmtCUnitpriceDetail.class)
 public class QupmtCUnitpriceDetail_ {
 
-	/** The qupmt C unitprice hist PK. */
-	public static volatile SingularAttribute<QupmtCUnitpriceDetail, QupmtCUnitpriceDetailPK> qupmtCUnitpriceHistPK;
+	/** The qupmt C unitprice detail PK. */
+	public static volatile SingularAttribute<QupmtCUnitpriceDetail, QupmtCUnitpriceDetailPK> qupmtCUnitpriceDetailPK;
 
 	/** The ins date. */
 	public static volatile SingularAttribute<QupmtCUnitpriceDetail, Date> insDate;
@@ -76,6 +76,6 @@ public class QupmtCUnitpriceDetail_ {
 	/** The memo. */
 	public static volatile SingularAttribute<QupmtCUnitpriceDetail, String> memo;
 
-	/** The qupmt C unitprice head. */
-	public static volatile SingularAttribute<QupmtCUnitpriceDetail, QupmtCUnitpriceHeader> qupmtCUnitpriceHead;
+	/** The qupmt C unitprice header. */
+	public static volatile SingularAttribute<QupmtCUnitpriceDetail, QupmtCUnitpriceHeader> qupmtCUnitpriceHeader;
 }

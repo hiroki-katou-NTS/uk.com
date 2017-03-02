@@ -17,7 +17,7 @@ import javax.persistence.metamodel.StaticMetamodel;
 public class QupmtCUnitpriceHeader_ {
 
 	/** The qupmt C unitprice head PK. */
-	public static volatile SingularAttribute<QupmtCUnitpriceHeader, QupmtCUnitpriceHeaderPK> qupmtCUnitpriceHeadPK;
+	public static volatile SingularAttribute<QupmtCUnitpriceHeader, QupmtCUnitpriceHeaderPK> qupmtCUnitpriceHeaderPK;
 
 	/** The ins date. */
 	public static volatile SingularAttribute<QupmtCUnitpriceHeader, Date> insDate;
