@@ -28,6 +28,8 @@ import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.AccidentInsuranceRate
 import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.AccidentInsuranceRateRepository;
 import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.InsuBizRateItem;
 import nts.uk.ctx.pr.core.dom.insurance.labor.businesstype.BusinessTypeEnum;
+import nts.uk.ctx.pr.core.infra.entity.insurance.labor.QismtLaborInsuOffice;
+import nts.uk.ctx.pr.core.infra.entity.insurance.labor.QismtLaborInsuOfficePK;
 import nts.uk.ctx.pr.core.infra.entity.insurance.labor.accidentrate.QismtWorkAccidentInsu;
 import nts.uk.ctx.pr.core.infra.entity.insurance.labor.accidentrate.QismtWorkAccidentInsuPK;
 import nts.uk.ctx.pr.core.infra.entity.insurance.labor.accidentrate.QismtWorkAccidentInsuPK_;
@@ -79,9 +81,21 @@ public class JpaAccidentInsuranceRateRepository extends JpaRepository implements
 	 * AccidentInsuranceRateRepository#remove(java.lang.String, java.lang.Long)
 	 */
 	@Override
-	public void remove(String id, Long version) {
-		// TODO Auto-generated method stub
-
+	public void remove(CompanyCode companyCode, String historyId, Long version) {
+		List<AccidentInsuranceRate> lstAccidentInsuranceRate= findAll(companyCode);
+		if(lstAccidentInsuranceRate!=null && !lstAccidentInsuranceRate.isEmpty()){
+			if(lstAccidentInsuranceRate.get(0).getHistoryId().equals(historyId)){
+				AccidentInsuranceRate rateRemove=this.findById(companyCode, historyId);
+				this.commandProxy().removeAll(toEntity(rateRemove));
+				if(lstAccidentInsuranceRate.size()>=2){
+					List<QismtWorkAccidentInsu> lstRateUpdate=this.findDataById(companyCode, lstAccidentInsuranceRate.get(1).getHistoryId());
+					for(QismtWorkAccidentInsu qismtWorkAccidentInsu: lstRateUpdate){
+						qismtWorkAccidentInsu.setEndYm(YearMonth.of(9999, 12).v());
+					}
+					this.commandProxy().updateAll(lstRateUpdate);
+				}
+			}
+		}
 	}
 
 	/*
