@@ -1,7 +1,7 @@
 var cmm013;
 (function (cmm013) {
-    var f;
-    (function (f) {
+    var test;
+    (function (test) {
         var viewmodel;
         (function (viewmodel) {
             var a;
@@ -16,6 +16,6 @@ var cmm013;
                     });
                 })(start = a.start || (a.start = {}));
             })(a = viewmodel.a || (viewmodel.a = {}));
-        })(viewmodel = f.viewmodel || (f.viewmodel = {}));
-    })(f = cmm013.f || (cmm013.f = {}));
+        })(viewmodel = test.viewmodel || (test.viewmodel = {}));
+    })(test = cmm013.test || (cmm013.test = {}));
 })(cmm013 || (cmm013 = {}));

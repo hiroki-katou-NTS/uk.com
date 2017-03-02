@@ -15,16 +15,16 @@ import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 @Transactional
-public class CreateJobTitleCommandHandler extends CommandHandler<CreateJobTitleCommand>{
+public class CreatePositionCommandHandler extends CommandHandler<CreatePositionCommand>{
 	
 	@Inject
 	private PositionRepository positionRepo;
 	
 	
 	@Override
-	protected void handle(CommandHandlerContext<CreateJobTitleCommand> context){
+	protected void handle(CommandHandlerContext<CreatePositionCommand> context){
 		
-		CreateJobTitleCommand command = context.getCommand();
+		CreatePositionCommand command = context.getCommand();
 		String companyCode = AppContexts.user().companyCode();
 		
 		if (positionRepo.isExist(companyCode, command.getStartDate())) {

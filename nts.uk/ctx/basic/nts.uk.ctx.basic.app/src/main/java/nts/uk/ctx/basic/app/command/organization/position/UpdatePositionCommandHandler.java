@@ -17,13 +17,13 @@ import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.primitive.Memo;
 
 @Stateless
-public class UpdateJobTitleCommandHandler extends CommandHandler<UpdateJobTitleCommand> {
+public class UpdatePositionCommandHandler extends CommandHandler<UpdatePositionCommand> {
 
 	@Inject
 	private PositionRepository positionRepository;
 
 	@Override
-	protected void handle(CommandHandlerContext<UpdateJobTitleCommand> context) {
+	protected void handle(CommandHandlerContext<UpdatePositionCommand> context) {
 		String companyCode = AppContexts.user().companyCode();
 		
 		

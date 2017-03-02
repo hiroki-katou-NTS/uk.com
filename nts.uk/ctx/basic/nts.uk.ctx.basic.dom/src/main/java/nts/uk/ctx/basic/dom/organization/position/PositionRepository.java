@@ -1,9 +1,12 @@
 package nts.uk.ctx.basic.dom.organization.position;
 
-import java.time.LocalDate;
-import java.util.Collection;
+
 import java.util.List;
 import java.util.Optional;
+
+import nts.arc.time.GeneralDate;
+import nts.uk.ctx.basic.dom.organization.positionhistory.PositionHistory;
+import nts.uk.ctx.basic.dom.organization.positionreference.PositionReference;
 
 
 
@@ -11,46 +14,41 @@ import java.util.Optional;
 
 public interface PositionRepository {
 
-	/**
-	 * 
-	 * 
-	 * @param companyCode
-	 * @return
-	 */
-	List<Position> getPositions(String companyCode);
-
-	/**
-	 * get All Item Master   
-	 * 
-	 * @param companyCode
-	 * @param jobCode
-	 * @param historyID
-	 * @return list Position
-	 */
-
-	Optional<Position> getPosition(String companyCode, String jobCode ,String historyID );
+//	Optional<Position> find(String companyCode, String jobCode, String historyID);
 	
-
+	List<Position> findAllPosition(String companyCode, String historyID);
+	
+	/*
+	 * add,update,delete position
+	 */
 	void add(Position position);
+	
+	void update (Position position);
+	
+	void delete (String companyCode,JobCode jobCode,String historyId);
+	
+	/*
+	 * add, update, delete history
+	 */
+	
+	void addHistory(PositionHistory history);
+	
+	void updateHistory(PositionHistory history);
+	
+	void deleteHist(String companyCode, String historyID);
 
-	void update(Position position);
-
-	void remove(String companyCode,String historyID);
-
-	void removes(List<Position> details);
-	boolean isExist(String companyCode, LocalDate startDate);
-	List<Position> findAllPosition(String companyCode);
+	List<PositionHistory> getAllHistory(String companyCode);
+	
+	List<PositionReference> findAllJobTitleRef(String companyCode, String historyID);
 
 	Optional<Position> findSingle(String companyCode, String historyID, JobCode jobCode);
 
-	boolean isExisted(String companyCode, JobCode jobCode);
+	Optional<PositionHistory> findSingleHistory(String companyCode, String historyID);
 
-	void remove(String companyCode, JobCode jobCode);
+	boolean isExisted(String companyCode, JobCode jobCode,String historyID);
 
-	Optional<Position> findSingle(String companyCode, String historyID);
-
-	List<Position> getPositions(String companyCode, String historyID);
+	boolean isExist(String companyCode, GeneralDate startDate);
 
 
-	
+
 }

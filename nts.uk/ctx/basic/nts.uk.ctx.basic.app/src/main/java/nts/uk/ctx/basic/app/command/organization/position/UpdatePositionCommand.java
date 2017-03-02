@@ -5,7 +5,7 @@ import java.time.LocalDate;
 import lombok.Data;
 
 @Data
-public class UpdateJobTitleCommand {
+public class UpdatePositionCommand {
 	
 	private String companyCode;
 	private String historyID;

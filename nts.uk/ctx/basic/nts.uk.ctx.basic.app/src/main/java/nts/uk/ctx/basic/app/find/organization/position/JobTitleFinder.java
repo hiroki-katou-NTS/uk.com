@@ -17,9 +17,9 @@ import nts.uk.shr.com.context.AppContexts;
 		@Inject
 		private PositionRepository positionRepository;
 		
-		public List<JobTitleDto> findAllPosition() {
+		public List<JobTitleDto> findAllPosition(String historyID) {
 			String companyCode = AppContexts.user().companyCode();
-			return positionRepository.findAllPosition(companyCode)
+			return positionRepository.findAllPosition(companyCode,historyID)
 					.stream().map(e->{return convertToDto(e);}).collect(Collectors.toList());
 		}
 
@@ -34,12 +34,9 @@ import nts.uk.shr.com.context.AppContexts;
 			return positionDto;
 		}
 
-		public List<JobTitleDto> findAllPositionByHis(String historyId) {
-			String companyCode = AppContexts.user().companyCode();
-			return positionRepository.findAllPosition(companyCode)
-					.stream().map(e->{return convertToDto(e);}).collect(Collectors.toList());
-		}
+	
 
+		
 	
 	
 

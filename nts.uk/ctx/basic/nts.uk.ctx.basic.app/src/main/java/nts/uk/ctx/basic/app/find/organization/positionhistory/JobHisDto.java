@@ -3,7 +3,7 @@ package nts.uk.ctx.basic.app.find.organization.positionhistory;
 import lombok.Data;
 import nts.arc.time.GeneralDate;
 @Data
-public class JobTitleHisDto {
+public class JobHisDto {
 
 	private String historyID;
 	private String companyCode;

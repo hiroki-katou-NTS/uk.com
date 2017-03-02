@@ -6,9 +6,9 @@ var cmm013;
         (function (service) {
             var paths = {
                 findAllPosition: "basic/position/findallposition/",
-                addPosition: "basic/position/add",
-                deletePosition: "basic/position/remove",
-                updatePosition: "basic/position/update",
+                addPosition: "basic/position/addPosition",
+                deletePosition: "basic/position/deletePosition",
+                updatePosition: "basic/position/updatePosition",
                 getAllHistory: "basic/position/getallhist"
             };
             function findAllPosition(historyId) {
@@ -23,9 +23,6 @@ var cmm013;
                 return dfd.promise();
             }
             service.findAllPosition = findAllPosition;
-            /**
-             * add Position
-             */
             function addPosition(position) {
                 var dfd = $.Deferred();
                 nts.uk.request.ajax("com", paths.addPosition, position)
@@ -38,9 +35,6 @@ var cmm013;
                 return dfd.promise();
             }
             service.addPosition = addPosition;
-            /**
-             * update Position
-             */
             function updatePosition(position) {
                 var dfd = $.Deferred();
                 nts.uk.request.ajax("com", paths.updatePosition, position).done(function (res) {
@@ -52,9 +46,6 @@ var cmm013;
                 return dfd.promise();
             }
             service.updatePosition = updatePosition;
-            /**
-            * delete Position
-            */
             function deletePosition(position) {
                 var dfd = $.Deferred();
                 nts.uk.request.ajax("com", paths.deletePosition, position).done(function (res) {
@@ -66,9 +57,6 @@ var cmm013;
                 return dfd.promise();
             }
             service.deletePosition = deletePosition;
-            /**
-            * get all history
-            */
             function getAllHistory() {
                 var dfd = $.Deferred();
                 nts.uk.request.ajax("com", paths.getAllHistory)

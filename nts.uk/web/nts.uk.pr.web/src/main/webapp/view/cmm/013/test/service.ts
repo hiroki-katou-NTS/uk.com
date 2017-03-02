@@ -26,7 +26,7 @@ module cmm013.test.service {
      * add Position
      */
     
-    export function addPosition(position: viewmodel.model.DeletePositionCommand){
+    export function addPosition(position: model.DeletePositionCommand){
         var dfd = $.Deferred<Array<any>>();
         nts.uk.request.ajax("com",paths.addPosition, position)
             .done(function(res: any){
@@ -42,7 +42,7 @@ module cmm013.test.service {
      * update Position
      */
 
-    export function updatePosition(position: viewmodel.model.ListPositionDto) {
+    export function updatePosition(position: model.ListPositionDto) {
         var dfd = $.Deferred<Array<any>>();
         nts.uk.request.ajax("com", paths.updatePosition, position).done(
             function(res: any) {
@@ -60,7 +60,7 @@ module cmm013.test.service {
     * delete Position
     */
 
-    export function deletePosition(position: viewmodel.model.DeletePositionCommand) {
+    export function deletePosition(position: model.DeletePositionCommand) {
         var dfd = $.Deferred<Array<any>>();
         nts.uk.request.ajax("com", paths.deletePosition, position).done(
             function(res: any) {
@@ -88,4 +88,43 @@ module cmm013.test.service {
         return dfd.promise();
     }
 
+    //model
+    export module model {
+        
+       export class ListHistoryDto{
+           startDate: string;
+           endDate: string;
+           historyId: string;
+           constructor(startDate: string, endDate: string, historyId: string){
+               var self = this;
+               self.startDate = startDate;
+               self.endDate = endDate;
+               self.historyId = historyId;
+           }    
+       }
+        
+       export class ListPositionDto {
+            jobCode: string;
+            jobName: string;
+            presenceCheckScopeSet: number;
+            memo: string;
+            constructor(code: string, name: string, presenceCheckScopeSet: number,memo: string) {
+                var self = this;
+                self.jobCode = code;
+                self.jobName = name;
+                self.presenceCheckScopeSet = presenceCheckScopeSet;
+                self.memo = memo;
+            }
+        }
+        
+        export class DeletePositionCommand {
+            jobCode: string;
+            historyId: string
+            constructor(jobCode: string,historyId: string) {
+                this.jobCode = jobCode;
+                this.historyId = historyId;
+            }
+
+        }
+    }
 }

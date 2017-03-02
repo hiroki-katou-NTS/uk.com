@@ -1,18 +1,17 @@
 package nts.uk.ctx.basic.app.command.organization.position;
 
 
-import java.time.LocalDate;
 
 import lombok.Getter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.basic.dom.organization.position.Position;
 
 @Getter
-public class CreateJobTitleCommand {
+public class CreatePositionCommand {
 private String companyCode;
 private String historyID;
-private LocalDate startDate;
-private LocalDate endDate;
+private GeneralDate startDate;
+private GeneralDate endDate;
 private String jobCode;
 private String jobName;
 private String jobOutCode;
@@ -23,6 +22,6 @@ private boolean checkCopy;
 
 
 public Position toDomain(String newPos){
-		return Position.createFromJavaType(this.jobName,GeneralDate.localDate(this.endDate),  this.jobCode,this.jobOutCode,GeneralDate.localDate(this.startDate),this.historyID,this.companyCode, this.memo,this.hiterarchyOrderCode,this.presenceCheckScopeSet);
+		return Position.createFromJavaType(this.jobName,this.endDate,  this.jobCode,this.jobOutCode,this.startDate,this.historyID,this.companyCode, this.memo,this.hiterarchyOrderCode,this.presenceCheckScopeSet);
 }
 }
