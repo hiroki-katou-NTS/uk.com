@@ -10,6 +10,7 @@
 		<ui:define name="htmlHead">
 			<com:ValidatorScript>
 					nts.uk.ctx.pr.core.dom.layout.LayoutName
+					nts.uk.ctx.pr.core.dom.rule.law.tax.residential.ResiTaxCode
 				</com:ValidatorScript>
            	<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="viewmodel.js" />
@@ -21,13 +22,14 @@
 
 		<ui:define name="content">
 		<div id="functions-area">
-		
-				<button id="A_BTN_001" class="group-button-1 " data-bind="click: resetData">新規</button>
+<!-- 		data-bind="click: resetData" -->
+				<button id="A_BTN_001" class="group-button-1 " >新規</button>
 				<button id="A_BTN_002" class="proceed group-button-1">登録</button>
 				<button id="A_BTN_003" class="group-button-1">印刷（PDF）</button>
 				<button id="A_BTN_004" class="group-button-1" data-bind="click: openEDialog">納付先の統合</button>
 				<button id="A_BTN_008" class="group-button-1">マスタ修正ログ</button>
-				<button id="A_BTN_005" class="group-button-2 " data-bind="click: Confirm">削除</button>
+			<!-- 	 data-bind="click: Confirm" -->
+				<button id="A_BTN_005" class="group-button-2 ">削除</button>
 				<button id="A_BTN_006" class="group-button-2" data-bind="click: openDDialog">一括削除</button>
 		
 		</div>
@@ -37,8 +39,11 @@
 				<div class="nts-left-content">
 					<div class="relative bg-green caret-right caret-background"
 						style="float: left; width: 400px; height: 610px; margin-top: 2px">
-						<div id="search" style="width: 400px"
-							data-bind="ntsSearchBox: {items: items, selected: singleSelectedCode, selectedKey: 'code', childField: 'childs', filteredItems: filteredData1, fields: ['name', 'code']}" />
+						<i class="icon icon-searchbox"></i>
+			<!-- 			<div id="search" style="width: 400px"
+							data-bind="ntsSearchBox: {items: items, selected: singleSelectedCode, selectedKey: 'code', childField: 'childs', filteredItems: filteredData1, fields: ['name', 'code']}" /> -->
+									<div id="search" style="width: 400px"
+							data-bind="ntsSearchBox: {}" />
 						<div>
 							<table id="treegrid2"
 								data-bind="ntsTreeGridView:{
@@ -54,9 +59,9 @@
 									showCheckBox: false}"
 								class="cf"></table>
 						</div>
-				<div style="margin-top: 10px;">
+				
 					 <label id="A_LBL_011"> 【登録件数】 202件</label>
-				</div>
+				
 							
 						
 					</div>
@@ -69,15 +74,24 @@
 							<tbody>
 								<tr style="margin-top: 5px;">
 									<th colspan="1" class="th">
-										<div data-bind="ntsFormLabel: {constraint: 'LayoutName', required: true }" class="form-label ">
+										<div data-bind="ntsFormLabel: {constraint: 'ResiTaxCode', required: true }" class="form-label ">
 											<label id="A_LBL_002">コード/名称</label>
 										</div>
 									</th>
 									<th colspan="1" >
-										<input id="A_INP_002" data-bind="value: singleSelectedCode()" class="input-table"/> 
+									
+										<input id="A_INP_002" class="input-table" data-bind="ntsTextEditor: {
+												value: singleSelectedCode,
+												constraint: 'ResiTaxCode',
+												required: true,
+												enable: true,
+												readonly: false }" />
+									
+									<!-- 	<input id="A_INP_002" data-bind="value: singleSelectedCode()" class="input-table"/>  -->
 									</th>
 									<th colspan="2" >
-										<input id="A_INP_003" type="text" data-bind="value: curentNode().name" class="input-table"/> 
+		<!-- 							data-bind="value: curentNode().name" -->
+										<input id="A_INP_003" type="text"  class="input-table"/> 
 									</th>								
 									<th colspan="3" >
 										<button id="A_BTN_007" data-bind="click: openBDialog" class="small" style="margin-left: 5px;">参照</button>													 		
@@ -122,7 +136,8 @@
 										<button id="A_BTN_009" data-bind="click: openCDialog" class="small">参照</button>													 		
 									</th>										
 									<th colspan="2">
-										<label id="A_LBL_012" data-bind="text: labelSubsub().nodeText"></label>										
+			<!-- 						data-bind="text: labelSubsub().nodeText" -->
+										<label id="A_LBL_012" ></label>										
 									</th>							
 								</tr>							
 								<!--  2  -->
