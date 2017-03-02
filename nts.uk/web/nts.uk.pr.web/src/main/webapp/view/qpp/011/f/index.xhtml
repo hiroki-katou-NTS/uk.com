@@ -10,6 +10,7 @@
 	<ui:composition template="/master/dialog.xhtml">
 		<ui:define name="htmlHead">
 			<com:scriptfile path="viewmodel.js" />
+			<com:scriptfile path="service.js" />
 			<com:scriptfile path="start.js" />
 			<com:stylefile path="style.css" />
 			<com:scriptfile set="IGNITE" />
@@ -23,10 +24,11 @@
 				<button id="F_BTN_002" data-bind="click: closeDialog">閉じる</button>
 			</div>
 			<div id="contents-area">
-				<div class="floatLeft" style="width: 300px;">
+				<div class="floatLeft" style="width: 310px;">
 					<div class="clearBoth" style="margin: 10px 0px 0px 25px;">
-						<div id="F_LBL_001" data-bind="ntsFormLabel: {   }">対象年月</div>
-						<label id="F_LBL_002">LBL_002</label> <label id="F_LBL_003">LBL_003</label>
+						<div id="F_LBL_001" data-bind="ntsFormLabel: {  }">対象年月</div>
+						<label id="F_LBL_002" data-bind="text:F_LBL_002_Year_Month" >LBL_002</label>
+						<label id="F_LBL_003" data-bind="text:F_LBL_003_yearInJapanEmpire" >LBL_003</label>
 					</div>
 					<div class="clearBoth" style="margin: 10px 0px 0px 25px;">
 						<div id="F_LBL_004" data-bind="ntsFormLabel: {   }">出力形式</div>
@@ -42,18 +44,20 @@
 				</div>
 				<div class="floatLeft"
 					style="width: 300px; margin: 10px 0px 0px 100px;">
-					<div id="F_LBL_005" data-bind="ntsFormLabel: {   }">住民税納付先</div>
+					<div id="F_LBL_005"
+						data-bind="ntsFormLabel: {  required: true    }">住民税納付先</div>
 					<div class="F_LST_001">
-						<table id="F_LST_001"
-							data-bind="ntsGridList: {
-								width: 280,
-								height: 350,
-								options: gridListItems_F_LST_001,
-								optionsValue: 'code',
-								columns: columns_F_LST_001,
-								multiple: false,
-								value: currentCodeList_F_LST_001
-							}"></table>
+						<div class="clearBoth">
+							<div id="F_INP_001"
+								data-bind="ntsSearchBox: {
+								comId: 'F_LST_001',
+								items: F_LST_001_Data, 
+								selected: F_LST_001_selectedValue, 
+								selectedKey: 'resiTaxCode', 
+								fields: ['resiTaxCode'], 
+								childField: 'childs'}" />
+						</div>
+						<table id="F_LST_001"></table>
 					</div>
 				</div>
 			</div>

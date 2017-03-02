@@ -23,8 +23,6 @@ module qpp011.d {
         retirementBonusAmout: any;
         cityTaxMoney: any;
         prefectureTaxMoney: any;
-        yearMonth: any;
-        yearMonthToString: any;
         //Switch
         roundingRules: KnockoutObservableArray<any>;
         selectedRuleCode: any;
@@ -36,8 +34,10 @@ module qpp011.d {
         D_LST_001_selectedRegisteredName: KnockoutObservable<any>;
         currentObject: any;
         INP_007_Date: KnockoutObservable<Date>;
-        yearInJapanEmpire_LBL_019: any;
         yearInJapanEmpire_LBL_012: any;
+
+        D_LBL_018_Year_Month: any;
+        D_LBL_019_yearInJapanEmpire: any;
         //datepicker
         date_D_INP_007: KnockoutObservable<Date>;
 
@@ -47,20 +47,22 @@ module qpp011.d {
             //gridlist data                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
             self.columns_D_LST_001 = [
                 { headerText: "resiTaxCode", key: "resiTaxCode", width: "250px", dataType: "string", hidden: true },
-                { headerText: "registeredName", key: "registeredName", width: "230px", dataType: "string", formatter: registeredNameText },
+                { headerText: "コード/名称", key: "registeredName", width: "230px", dataType: "string", formatter: registeredNameText },
             ];
             function registeredNameText(val, row) {
                 return row.resiTaxCode + " " + row.registeredName;
             }
+            self.D_LST_001_selectedValue = ko.observableArray([]);
             self.D_LST_001_Data = ko.observable([]);
             service.findAllResidential().done(function(data: Array<any>) {
                 self.D_LST_001_Data(data);
                 BindTreeGrid("#D_LST_001", self.D_LST_001_Data());
+                if (self.D_LST_001_Data().length > 0)
+                    self.D_LST_001_selectedValue([self.D_LST_001_Data()[0].resiTaxCode]);
             }).fail(function(res) {
                 // Alert message
                 alert(res);
             });
-            self.D_LST_001_selectedValue = ko.observableArray([]);
             let D_LST_001 = $("#D_LST_001");
             self.D_LST_001_selectedResiTaxCode = ko.observable();
             self.D_LST_001_selectedRegisteredName = ko.observable();
@@ -94,11 +96,8 @@ module qpp011.d {
             self.retirementBonusAmout = ko.observable();
             self.cityTaxMoney = ko.observable();
             self.prefectureTaxMoney = ko.observable();
-            self.yearMonth = ko.observable();
             self.date_D_INP_007 = ko.observable(new Date());
-            self.yearMonthToString = ko.observable();
-            self.yearInJapanEmpire_LBL_019 = ko.observable();
-            self.yearInJapanEmpire_LBL_012 = ko.observable("(" + nts.uk.time.yearmonthInJapanEmpire(self.date_D_INP_007()).toString() + ")");
+            self.yearInJapanEmpire_LBL_012 = ko.observable("(" + nts.uk.time.yearmonthInJapanEmpire(self.date_D_INP_007().toString()).toString() + ")");
             self.currentObject.subscribe(function(newValue) {
                 self.taxPayRollMoney(newValue ? newValue.taxPayRollMoney : null);
                 self.taxBonusMoney(newValue ? newValue.taxBonusMoney : null)
@@ -108,16 +107,16 @@ module qpp011.d {
                 self.retirementBonusAmout(newValue ? newValue.retirementBonusAmout : null);
                 self.cityTaxMoney(newValue ? newValue.cityTaxMoney : null);
                 self.prefectureTaxMoney(newValue ? newValue.prefectureTaxMoney : null);
-                self.yearMonth(newValue ? newValue.yearMonth : null);
                 self.date_D_INP_007(newValue ? new Date(newValue.dueDate) : new Date());
-                self.yearMonthToString(newValue ? nts.uk.time.formatYearMonth(self.yearMonth()) : null);
-                self.yearInJapanEmpire_LBL_019(newValue ? "(" + nts.uk.time.yearmonthInJapanEmpire(self.yearMonthToString()).toString() + ")" : null);
-                self.yearInJapanEmpire_LBL_012("(" + nts.uk.time.yearmonthInJapanEmpire(self.date_D_INP_007()).toString() + ")");
+                self.yearInJapanEmpire_LBL_012("(" + nts.uk.time.yearmonthInJapanEmpire(self.date_D_INP_007().toString()).toString() + ")");
             });
             //currencyeditor
 
             //Switch
 
+            self.D_LBL_018_Year_Month = nts.uk.sessionStorage.getItemAndRemove("TargetDate").value;
+            self.D_LBL_019_yearInJapanEmpire = ko.observable();
+            self.D_LBL_019_yearInJapanEmpire("(" + nts.uk.time.yearmonthInJapanEmpire(self.D_LBL_018_Year_Month).toString() + ")");
 
             self.enable = ko.observable(true);
             self.roundingRules = ko.observableArray([
@@ -148,7 +147,8 @@ module qpp011.d {
                 $(gridID).setupSearchScroll("igTreeGrid");
             }
             function GetDataFormSelectedRows(selectedResiTaxCode) {
-                service.findresidentialTax(selectedResiTaxCode, "201702").done(function(data: any) {
+                let TargetDate = self.D_LBL_018_Year_Month = self.D_LBL_018_Year_Month.replace("/", "");
+                service.findresidentialTax(selectedResiTaxCode, TargetDate).done(function(data: any) {
                     self.currentObject(data)
                 }).fail(function(res) {
                     // Alert message
@@ -159,55 +159,62 @@ module qpp011.d {
         }
         UpdateResidentialTax(selectedResiTaxCode) {
             let self = this;
-              let residentialTax = new service.model.residentialTax(
+            let TargetDate = self.D_LBL_018_Year_Month = self.D_LBL_018_Year_Month.replace("/", "");
+            let residentialTax = new service.model.residentialTax(
                 selectedResiTaxCode,
                 self.taxPayRollMoney(),
-                201702,
+                TargetDate,
                 self.taxBonusMoney(),
                 self.taxOverDueMoney(),
                 self.taxDemandChargeMoyney(),
                 self.taxDemandChargeMoyney(),
-                new Date(self.date_D_INP_007()),
+                new Date(self.date_D_INP_007().toDateString()),
                 self.headcount(),
                 self.retirementBonusAmout(),
                 self.cityTaxMoney(),
                 self.prefectureTaxMoney());
-            service.update(residentialTax).done(function(res: any) {
+            service.update(residentialTax).done(function(data: any) {
+                self.currentObject(residentialTax);
             }).fail(function(res) {
                 alert(res.message);
             })
         }
         CreateResidentialTax(selectedResiTaxCode) {
             let self = this;
+            let TargetDate = self.D_LBL_018_Year_Month = self.D_LBL_018_Year_Month.replace("/", "");
             let residentialTax = new service.model.residentialTax(
                 selectedResiTaxCode,
                 self.taxPayRollMoney(),
-                201702,
+                TargetDate,
                 self.taxBonusMoney(),
                 self.taxOverDueMoney(),
                 self.taxDemandChargeMoyney(),
                 self.taxDemandChargeMoyney(),
-                new Date(self.date_D_INP_007()),
+                new Date(self.date_D_INP_007().toDateString()),
                 self.headcount(),
                 self.retirementBonusAmout(),
                 self.cityTaxMoney(),
                 self.prefectureTaxMoney());
-            service.add(residentialTax).done(function(res: any) {
+            service.add(residentialTax).done(function(data: any) {
+                self.currentObject(residentialTax);
             }).fail(function(res) {
-                alert(res.message);
-            })
+                    alert(res.message);
+                })
         }
         submitDialog() {
             let self = this;
-            service.findresidentialTax(self.D_LST_001_selectedResiTaxCode(), "201702").done(function(data: any) {
-                if (data) {
-                    self.UpdateResidentialTax(self.D_LST_001_selectedResiTaxCode());
-                } else {
-                    self.CreateResidentialTax(self.D_LST_001_selectedResiTaxCode());
-                }
-            }).fail(function(res) {
-                alert(res.message);
-            })
+            let TargetDate = self.D_LBL_018_Year_Month = self.D_LBL_018_Year_Month.replace("/", "");
+            if (self.D_LST_001_selectedResiTaxCode()) {
+                service.findresidentialTax(self.D_LST_001_selectedResiTaxCode(), TargetDate).done(function(data: any) {
+                    if (data) {
+                        self.UpdateResidentialTax(self.D_LST_001_selectedResiTaxCode());
+                    } else {
+                        self.CreateResidentialTax(self.D_LST_001_selectedResiTaxCode());
+                    }
+                }).fail(function(res) {
+                    alert(res.message);
+                })
+            }
         }
         closeDialog() {
             nts.uk.ui.windows.close();

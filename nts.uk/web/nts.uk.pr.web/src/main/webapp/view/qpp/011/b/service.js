@@ -8,7 +8,9 @@ var qpp011;
                 find: "pr/core/rule/law/tax/residential/output/find",
                 add: "pr/core/rule/law/tax/residential/output/add",
                 update: "pr/core/rule/law/tax/residential/output/update",
-                findallresidential: "pr/core/residential/findallresidential"
+                findAllResidential: "pr/core/residential/findallresidential",
+                findAllLinebank: "basic/system/bank/linebank/findAll",
+                findLinebank: "basic/system/bank/linebank/find",
             };
             /**
              * Get list payment date processing.
@@ -25,9 +27,21 @@ var qpp011;
                 return dfd.promise();
             }
             service.findresidentialTax = findresidentialTax;
+            function findLinebank(lineBankCode) {
+                var dfd = $.Deferred();
+                nts.uk.request.ajax("com", paths.findLinebank + "/" + lineBankCode)
+                    .done(function (res) {
+                    dfd.resolve(res);
+                })
+                    .fail(function (res) {
+                    dfd.reject(res);
+                });
+                return dfd.promise();
+            }
+            service.findLinebank = findLinebank;
             function findAllResidential() {
                 var dfd = $.Deferred();
-                nts.uk.request.ajax(paths.findallresidential)
+                nts.uk.request.ajax(paths.findAllResidential)
                     .done(function (res) {
                     dfd.resolve(res);
                 })
@@ -37,6 +51,18 @@ var qpp011;
                 return dfd.promise();
             }
             service.findAllResidential = findAllResidential;
+            function findAllLinebank() {
+                var dfd = $.Deferred();
+                nts.uk.request.ajax("com", paths.findAllLinebank)
+                    .done(function (res) {
+                    dfd.resolve(res);
+                })
+                    .fail(function (res) {
+                    dfd.reject(res);
+                });
+                return dfd.promise();
+            }
+            service.findAllLinebank = findAllLinebank;
             function add(residentialTax) {
                 var dfd = $.Deferred();
                 nts.uk.request.ajax(paths.add, residentialTax)

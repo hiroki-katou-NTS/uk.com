@@ -48,11 +48,8 @@
 	margin-top: 20px;
 }
 
-#C_INP_001, #C_INP_002 {
-	width: 60px;
-}
-
-#B_INP_001 input, #B_INP_002 input, #B_INP_003 input {
+#C_INP_003 input, #C_INP_002 input, #C_INP_001 input, #B_INP_001 input,
+	#B_INP_002 input, #B_INP_003 input {
 	height: 20px;
 }
 
@@ -82,10 +79,6 @@ input {
 	margin-top: 30px;
 	margin-left: 5px;
 	font-size: 1.3rem;
-}
-
-#C_INP_003 {
-	width: 90px;
 }
 
 #C_INP_004 input {
@@ -139,16 +132,16 @@ input {
 	margin-left: 100px;
 }
 
-#B_LST_001_container {
+#B_LST_001_container, #C_LST_001_container {
 	margin-top: 10px;
 }
 
-#SCH_001 .ntsSearchBox {
+#B_SCH_001 .ntsSearchBox, #C_SCH_001 .ntsSearchBox {
 	height: 27px;
 	width: 190px;
 }
 
-#SCH_001 .search-btn {
+#B_SCH_001 .search-btn, #C_SCH_001 .search-btn {
 	height: 25px;
 	width: 60px;
 }

@@ -59,7 +59,7 @@
 								<div id="B_LBL_004"
 									data-bind="ntsFormLabel: {  required: true }">対象年月</div>
 								<div id="B_INP_001"
-									data-bind="ntsDatePicker: {value: B_INP_001_yearMonth, dateFormat: 'yyyy/MM', startDate: '1900/01/01' , endDate:'9999/12/31'}"></div>
+									data-bind="ntsDatePicker: {value: B_INP_001_yearMonth, dateFormat: 'yyyy/MM', startDate: '1900/01' , endDate:'9999/12'}"></div>
 								<span data-bind="text:yearInJapanEmpire_LBL_005" id="B_LBL_005"
 									style="margin-bottom: 15px; float: left">対象年月和暦 </span> <span
 									id="B_LBL_006" style="float: left">納付書印刷の設定 </span>
@@ -69,7 +69,7 @@
 								<div id="B_LBL_007"
 									data-bind="ntsFormLabel: {  required: true }">指定年月</div>
 								<div id="B_INP_002"
-									data-bind="ntsDatePicker: {value: B_INP_002_yearMonth, dateFormat: 'yyyy/MM', startDate: '1900/01/01' , endDate:'9999/12/31'}"></div>
+									data-bind="ntsDatePicker: {value: B_INP_002_yearMonth, dateFormat: 'yyyy/MM', startDate: '1900/01' , endDate:'9999/12'}"></div>
 								<span id="B_LBL_008" data-bind="text:yearInJapanEmpire_LBL_008"
 									style="float: left">指定年月和暦 </span>
 							</div>
@@ -94,7 +94,7 @@
 
 
 							<div class="LST_001">
-								<div style="width: 700px" id="SCH_001"
+								<div style="width: 700px" id="B_SCH_001"
 									data-bind="ntsSearchBox: {
 									comId: 'B_LST_001', 
 									items: B_LST_001_Data, 
@@ -113,11 +113,9 @@
 				<div class="sidebar-content-header">
 					<span class="title">納付データの出力</span>
 					<button class="proceed" id="C_BTN_001">テキスト出力</button>
-					<button id="C_BTN_002"
-						onclick="OpenModeSubWindow('/view/qpp/011/e/index.xhtml',{height: 180, width: 300,dialogClass: 'no-close'})">出力の設定
+					<button id="C_BTN_002" data-bind="click: openEDialog">出力の設定
 					</button>
-					<button id="C_BTN_003"
-						onclick="OpenModeSubWindow('/view/qpp/011/f/index.xhtml',{height: 550, width: 740,dialogClass: 'no-close'})">住民税チェックリスト
+					<button id="C_BTN_003" data-bind="click: openFDialog">住民税チェックリスト
 					</button>
 					<button id="C_BTN_004">出力実行ログ</button>
 				</div>
@@ -148,7 +146,9 @@
 							<div style="clear: both;">
 								<div id="C_LBL_004"
 									data-bind="ntsFormLabel: {  required: true }">対象年月</div>
-								<input id="C_INP_001" type="text"></input> <span id="C_LBL_005"
+								<div id="C_INP_001"
+									data-bind="ntsDatePicker: {value: B_INP_001_yearMonth, dateFormat: 'yyyy/MM', startDate: '1900/01/01' , endDate:'9999/12/31'}"></div>
+								<span data-bind="text:yearInJapanEmpire_LBL_005" id="C_LBL_005"
 									style="margin-bottom: 15px; float: left">対象年月和暦 </span> <span
 									id="C_LBL_006" style="float: left">振込の指定 </span>
 								<hr class="hrLabel"></hr>
@@ -156,29 +156,37 @@
 							<div style="clear: both;">
 								<div id="C_LBL_007"
 									data-bind="ntsFormLabel: {  required: true }">指定年月</div>
-								<input id="C_INP_002" type="text"></input> <span id="C_LBL_008"
+								<div id="C_INP_002"
+									data-bind="ntsDatePicker: {value: B_INP_002_yearMonth, dateFormat: 'yyyy/MM', startDate: '1900/01/01' , endDate:'9999/12/31'}"></div>
+								<span id="C_LBL_008" data-bind="text:yearInJapanEmpire_LBL_008"
 									style="float: left">指定年月和暦 </span>
+
 							</div>
 							<div style="clear: both;">
 								<div class="floatLeft" id="C_LBL_009"
 									data-bind="ntsFormLabel: {  required: true }">納付期限</div>
-								<input id="C_INP_003" type="text"></input> <span id="C_LBL_010"
-									class="floatLeft">納付期限和暦 </span>
+								<div id="C_INP_003"
+									data-bind="ntsDatePicker: {value: B_INP_003_yearMonth, dateFormat: 'yyyy/MM/dd', startDate: '1900/01/01' , endDate:'9999/12/31'}"></div>
+								<span id="C_LBL_010" data-bind="text:yearInJapanEmpire_LBL_010"
+									style="float: left">指定年月和暦 </span>
+
 							</div>
 							<div style="clear: both;">
 								<div class="floatLeft" id="C_LBL_011"
 									data-bind="ntsFormLabel: {  required: true }">振込元銀行名</div>
 								<div id="C_SEL_003"
 									data-bind="ntsComboBox: {
-														options: ComboBoxItemList,
-														optionsValue: 'code',
-														value: selectedCode,
-														optionsText: 'name',
-														editable: isEditable,
-														enable: isEnable, 
+														options: C_SEL_003_ComboBoxItemList,
+														optionsValue: 'lineBankCode',
+														value: C_SEL_003_selectedCode,
+														optionsText: 'lineBankName',
+														editable: false,
+														enable: true, 
 														columns: [
-															{ prop: 'name', length: 10 },
-														]}">
+																{ prop: 'bankCode', length: 4 },
+																{ prop: 'branchCode', length: 4 },
+																{ prop: 'lineBankName', length: 4 },
+															]}">
 								</div>
 							</div>
 							<div style="clear: both;">
@@ -186,14 +194,14 @@
 									data-bind="ntsFormLabel: {  required: true }">委託者コード</div>
 								<div id="C_SEL_004"
 									data-bind="ntsComboBox: {
-														options: ComboBoxItemList,
+														options: C_SEL_004_ComboBoxItemList,
 														optionsValue: 'code',
-														value: selectedCode,
-														optionsText: 'name',
-														editable: isEditable,
-														enable: isEnable,
+														value: C_SEL_004_selectedCode,
+														optionsText: 'memo',
+														editable: false,
+														enable: true,
 														columns: [
-															{ prop: 'name', length: 10 },
+															{ prop: 'memo', length: 10 },
 														]}">
 								</div>
 							</div>
@@ -216,14 +224,14 @@
 							<div id="C_LBL_014"
 								data-bind="ntsFormLabel: { required: true   }">住民税納付先</div>
 							<div class="LST_001">
-								<div style="width: 700px"
+								<div style="width: 700px" id="C_SCH_001"
 									data-bind="ntsSearchBox: {
-									comId: 'C_LST_001',
-									 items: B_LST_001_Data, 
-									 selected: selectedValue_C_LST_001, 
-									 selectedKey: 'id',
-									  fields: ['name', 'id'], 
-									  childField: 'childs'}" />
+									comId: 'C_LST_001', 
+									items: C_LST_001_Data, 
+									selected: selectedValue_C_LST_001, 
+									selectedKey: 'resiTaxCode', 
+									fields: ['resiTaxCode'], 
+									childField: 'childs'}" />
 								<table id="C_LST_001">
 								</table>
 							</div>

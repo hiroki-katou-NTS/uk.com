@@ -30,9 +30,11 @@
 .clearBoth {
 	clear: both;
 }
+
 .inlineBlock {
 	display: inline-block;
 }
+
 input {
 	border-radius: 3px;
 	border: solid thin gray;
@@ -68,6 +70,25 @@ input {
 #F_SEL_001 button {
 	height: 30px !important;
 }
-.F_LST_001{
-	margin-top:20px;
+
+.F_LST_001 {
+	margin-top: 20px;
+}
+
+#F_INP_001 input {
+	width: 180px;
+	height: 28px;
+}
+
+#F_INP_001 {
+	width: 250px;
+}
+
+#F_LST_001_container {
+	margin-top: 10px;
+}
+
+#F_INP_001 .search-btn {
+	width: 60px;
+	height: 25px;
 }

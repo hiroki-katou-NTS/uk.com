@@ -44,14 +44,45 @@ var qpp011;
                     readonly: ko.observable(false)
                 };
                 self.B_LST_001_Data = ko.observable([]);
+                self.C_LST_001_Data = ko.observable([]);
                 //end number editer
                 b.service.findAllResidential().done(function (data) {
                     self.B_LST_001_Data(data);
-                    BindTreeGrid("#B_LST_001", self.B_LST_001_Data());
-                    BindTreeGrid("#C_LST_001", self.B_LST_001_Data());
+                    self.C_LST_001_Data(data);
+                    BindTreeGrid("#B_LST_001", self.B_LST_001_Data(), self.selectedValue_B_LST_001);
+                    BindTreeGrid("#C_LST_001", self.C_LST_001_Data(), self.selectedValue_C_LST_001);
                 }).fail(function (res) {
                     // Alert message
-                    alert(res);
+                    alert(res.message);
+                });
+                self.C_SEL_003_ComboBoxItemList = ko.observableArray([]);
+                self.C_SEL_004_ComboBoxItemList = ko.observableArray([]);
+                self.C_SEL_003_selectedCode = ko.observable("");
+                self.C_SEL_004_selectedCode = ko.observable("");
+                b.service.findAllLinebank().done(function (data) {
+                    for (var _i = 0, data_1 = data; _i < data_1.length; _i++) {
+                        var object = data_1[_i];
+                        self.C_SEL_003_ComboBoxItemList.push(new C_SEL_003_ComboboxItemModel(object.bankCode, object.branchCode, object.lineBankCode, object.lineBankName));
+                    }
+                    if (self.C_SEL_003_ComboBoxItemList.length > 0)
+                        self.C_SEL_003_selectedCode(self.C_SEL_003_ComboBoxItemList[0].lineBankCode);
+                }).fail(function (res) {
+                    // Alert message
+                    alert(res.message);
+                });
+                self.C_SEL_003_selectedCode.subscribe(function (newValue) {
+                    self.C_SEL_004_ComboBoxItemList([]);
+                    b.service.findLinebank(newValue).done(function (data) {
+                        for (var _i = 0, _a = data.consignors; _i < _a.length; _i++) {
+                            var object = _a[_i];
+                            self.C_SEL_004_ComboBoxItemList.push(new C_SEL_004_ComboboxItemModel(object.code, object.memo));
+                        }
+                        if (self.C_SEL_004_ComboBoxItemList.length > 0)
+                            self.C_SEL_004_selectedCode(self.C_SEL_004_ComboBoxItemList[0].code);
+                    }).fail(function (res) {
+                        // Alert message
+                        alert(res);
+                    });
                 });
                 self.columns = [
                     { headerText: "resiTaxCode", key: "resiTaxCode", width: "250px", dataType: "string", hidden: true },
@@ -60,7 +91,7 @@ var qpp011;
                     { headerText: "registeredName", key: "registeredName", width: "230px", dataType: "string" },
                     { headerText: "prefectureCode", key: "prefectureCode", width: "130px", dataType: "string" }
                 ];
-                function BindTreeGrid(gridID, Data) {
+                function BindTreeGrid(gridID, Data, selectedValue) {
                     $(gridID).igTreeGrid({
                         width: "480px",
                         height: "500px",
@@ -76,7 +107,7 @@ var qpp011;
                                 multipleSelection: true,
                                 rowSelectionChanged: function (evt, ui) {
                                     var selectedRows = ui.selectedRows;
-                                    self.selectedValue_B_LST_001(_.map(selectedRows, function (row) {
+                                    selectedValue(_.map(selectedRows, function (row) {
                                         return row.id;
                                     }));
                                 }
@@ -106,10 +137,11 @@ var qpp011;
                     }
                 });
                 self.selectedValue_C_LST_001 = ko.observableArray([]);
-                var $C_LST_001 = $("#B_LST_001");
+                var $C_LST_001 = $("#C_LST_001");
                 self.selectedValue_C_LST_001.subscribe(function (newValue) {
                     var selectedRows = _.map($C_LST_001.igTreeGridSelection("selectedRows"), function (row) {
-                        return row.id;
+                        if (row != undefined)
+                            return row.id;
                     });
                     if (!_.isEqual(selectedRows, newValue)) {
                         $C_LST_001.igTreeGridSelection("clearSelection");
@@ -141,13 +173,18 @@ var qpp011;
                 self.yearInJapanEmpire_LBL_010("(" + nts.uk.time.yearmonthInJapanEmpire(self.B_INP_003_yearMonth()).toString() + ")");
             }
             ScreenModel.prototype.openFDialog = function () {
-                nts.uk.ui.windows.sub.modal('/view/qpp/011/f/index.xhtml', { height: 550, width: 740, dialogClass: 'no-close' }).onClosed(function () {
+                var self = this;
+                nts.uk.sessionStorage.setItem("TargetDate", self.B_INP_001_yearMonth());
+                nts.uk.ui.windows.sub.modal('/view/qpp/011/f/index.xhtml', { height: 560, width: 900, dialogClass: 'no-close' }).onClosed(function () {
+                });
+            };
+            ScreenModel.prototype.openEDialog = function () {
+                nts.uk.ui.windows.sub.modal('/view/qpp/011/e/index.xhtml', { height: 180, width: 300, dialogClass: 'no-close' }).onClosed(function () {
                 });
             };
             ScreenModel.prototype.openDDialog = function () {
                 var self = this;
-                nts.uk.ui.windows.setShared("selectedValue_B_LST_001", self.selectedValue_B_LST_001);
-                nts.uk.ui.windows.setShared("files", self.B_LST_001_Data());
+                nts.uk.sessionStorage.setItem("TargetDate", self.B_INP_001_yearMonth());
                 nts.uk.ui.windows.sub.modal('/view/qpp/011/d/index.xhtml', { height: 550, width: 1020, dialogClass: 'no-close' }).onClosed(function () {
                 });
             };
@@ -171,6 +208,24 @@ var qpp011;
             return ComboboxItemModel;
         }());
         b.ComboboxItemModel = ComboboxItemModel;
+        var C_SEL_003_ComboboxItemModel = (function () {
+            function C_SEL_003_ComboboxItemModel(bankCode, branchCode, lineBankCode, lineBankName) {
+                this.bankCode = bankCode;
+                this.branchCode = branchCode;
+                this.lineBankCode = lineBankCode;
+                this.lineBankName = lineBankName;
+            }
+            return C_SEL_003_ComboboxItemModel;
+        }());
+        b.C_SEL_003_ComboboxItemModel = C_SEL_003_ComboboxItemModel;
+        var C_SEL_004_ComboboxItemModel = (function () {
+            function C_SEL_004_ComboboxItemModel(code, memo) {
+                this.code = code;
+                this.memo = memo;
+            }
+            return C_SEL_004_ComboboxItemModel;
+        }());
+        b.C_SEL_004_ComboboxItemModel = C_SEL_004_ComboboxItemModel;
         var GridItemModel_C_LST_001 = (function () {
             function GridItemModel_C_LST_001(code, name) {
                 this.code = code;

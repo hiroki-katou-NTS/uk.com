@@ -3,7 +3,9 @@ module qpp011.b.service {
         find: "pr/core/rule/law/tax/residential/output/find",
         add: "pr/core/rule/law/tax/residential/output/add",
         update: "pr/core/rule/law/tax/residential/output/update",
-        findallresidential: "pr/core/residential/findallresidential"
+        findAllResidential: "pr/core/residential/findallresidential",
+        findAllLinebank: "basic/system/bank/linebank/findAll",
+        findLinebank: "basic/system/bank/linebank/find",
     }
 
     /**
@@ -20,9 +22,31 @@ module qpp011.b.service {
             })
         return dfd.promise();
     }
+    export function findLinebank(lineBankCode: string): JQueryPromise<any> {
+        var dfd = $.Deferred<any>();
+        nts.uk.request.ajax("com", paths.findLinebank + "/" + lineBankCode)
+            .done(function(res: any) {
+                dfd.resolve(res);
+            })
+            .fail(function(res) {
+                dfd.reject(res);
+            })
+        return dfd.promise();
+    }
     export function findAllResidential(): JQueryPromise<Array<any>> {
         var dfd = $.Deferred<any>();
-        nts.uk.request.ajax(paths.findallresidential)
+        nts.uk.request.ajax(paths.findAllResidential)
+            .done(function(res: Array<any>) {
+                dfd.resolve(res);
+            })
+            .fail(function(res) {
+                dfd.reject(res);
+            })
+        return dfd.promise();
+    }
+    export function findAllLinebank(): JQueryPromise<Array<any>> {
+        var dfd = $.Deferred<any>();
+        nts.uk.request.ajax("com", paths.findAllLinebank)
             .done(function(res: Array<any>) {
                 dfd.resolve(res);
             })
