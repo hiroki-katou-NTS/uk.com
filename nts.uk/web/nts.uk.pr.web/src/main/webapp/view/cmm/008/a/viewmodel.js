@@ -8,7 +8,7 @@ var cmm008;
             var ScreenModel = (function () {
                 function ScreenModel() {
                     var self = this;
-                    self.employmentCode = ko.observable("");
+                    //self.employmentCode = ko.observable("");
                     self.employmentName = ko.observable("");
                     self.isCheckbox = ko.observable(true);
                     self.closeDateList = ko.observableArray([]);
@@ -49,17 +49,12 @@ var cmm008;
                     self.managementHolidaylist();
                     self.processingDateItem();
                     self.dataSourceItem();
-                    if (self.listResult() !== undefined && self.listResult().length > 0
-                        || self.currentCode() === null
-                        || self.currentCode() === undefined) {
-                        var obEmployment = _.first(self.listResult());
-                    }
                     //list data click
                     self.currentCode.subscribe(function (newValue) {
                         var newEmployment = _.find(self.listResult(), function (employ) {
                             if (employ.employmentCode === newValue) {
                                 self.currentCode(employ.employmentCode);
-                                self.employmentCode(employ.employmentCode);
+                                //self.employmentCode(employ.employmentCode);
                                 self.employmentName(employ.employmentName);
                                 self.selectedCloseCode(employ.closeDateNo);
                                 self.selectedProcessCode(employ.processingNo);
@@ -111,6 +106,11 @@ var cmm008;
                                 var displayText = employ.displayFlg.toString();
                                 self.dataSource.push(new ItemModel(employ.employmentCode, employ.employmentName, closeDate, processingNo, displayText));
                             }
+                            if (self.currentCode() === null
+                                || self.currentCode() === undefined) {
+                                var obEmployment = _.first(self.listResult());
+                                self.currentCode(obEmployment.employmentCode);
+                            }
                         }
                     });
                     this.columns = ko.observableArray([
@@ -120,21 +120,22 @@ var cmm008;
                         { headerText: '処理日区分', prop: 'processingNo', width: 150 },
                         { headerText: '初期表示', prop: 'displayFlg', width: 150 }
                     ]);
-                    this.currentCode = ko.observable();
+                    this.currentCode = ko.observable("");
                     self.singleSelectedCode = ko.observable(null);
                 };
                 //登録ボタンを押す
                 ScreenModel.prototype.createEmployment = function () {
                     var self = this;
-                    self.employmentCode(nts.uk.text.padLeft(self.employmentCode(), '0', 10));
+                    //self.employmentCode(nts.uk.text.padLeft(self.employmentCode(),'0',10));
+                    self.currentCode(nts.uk.text.padLeft(self.currentCode(), '0', 10));
                     //必須項目の未入力チェック
-                    if (self.employmentCode() === ""
+                    if (self.currentCode() === ""
                         || self.employmentName() === "") {
                         alert("コード/名称が入力されていません。");
                         return;
                     }
                     var employment = new a.service.model.employmentDto();
-                    employment.employmentCode = self.employmentCode();
+                    employment.employmentCode = self.currentCode();
                     employment.employmentName = self.employmentName();
                     employment.closeDateNo = self.selectedCloseCode();
                     employment.processingNo = self.selectedProcessCode();
@@ -148,7 +149,7 @@ var cmm008;
                     if (self.isEnable()) {
                         var isCheck = false;
                         //コード重複チェック
-                        a.service.getEmploymentByCode(self.employmentCode()).done(function (employmentChk) {
+                        a.service.getEmploymentByCode(self.currentCode()).done(function (employmentChk) {
                             if (employmentChk !== null || employmentChk !== undefined) {
                                 alert("入力したコードは既に存在しています。\r\nコードを確認してください。");
                                 isCheck = true;
@@ -171,7 +172,7 @@ var cmm008;
                 //新規ボタンを押す
                 ScreenModel.prototype.newCreateEmployment = function () {
                     var self = this;
-                    self.employmentCode("");
+                    self.currentCode("");
                     self.employmentName("");
                     self.isEnable(true);
                     self.memoValue("");

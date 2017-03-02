@@ -2,7 +2,7 @@ module cmm008.a.viewmodel{
     import option = nts.uk.ui.option;
     
     export class ScreenModel {
-        employmentCode: KnockoutObservable<string>;
+        //employmentCode: KnockoutObservable<string>;
         employmentName: KnockoutObservable<string>;
         textEditorOption: KnockoutObservable<any>;
         isCheckbox: KnockoutObservable<Boolean>;
@@ -10,7 +10,7 @@ module cmm008.a.viewmodel{
         //search box
         dataSource: any;
         columns: KnockoutObservableArray<any>;
-        currentCode: KnockoutObservable<any>;
+        currentCode: KnockoutObservable<string>;
         singleSelectedCode: any;
 //        headers: any;
         //締め日 DATA COMBOBOX
@@ -33,7 +33,7 @@ module cmm008.a.viewmodel{
         
         constructor(){
             var self = this;
-            self.employmentCode = ko.observable("");
+            //self.employmentCode = ko.observable("");
             self.employmentName = ko.observable("");
             self.isCheckbox = ko.observable(true);
             self.closeDateList = ko.observableArray([]);
@@ -76,18 +76,13 @@ module cmm008.a.viewmodel{
             self.managementHolidaylist();
             self.processingDateItem();
             self.dataSourceItem();
-            if(self.listResult() !== undefined && self.listResult().length >0
-                || self.currentCode() === null 
-                || self.currentCode() === undefined){
-                var obEmployment =_.first(self.listResult()); 
-                //self.currentCode(obEmployment.employmentCode);    
-            }
+            
             //list data click
             self.currentCode.subscribe(function(newValue){
                 let newEmployment = _.find(self.listResult(), function(employ){
                     if(employ.employmentCode === newValue){
                         self.currentCode(employ.employmentCode);
-                        self.employmentCode(employ.employmentCode);
+                        //self.employmentCode(employ.employmentCode);
                         self.employmentName(employ.employmentName);
                         self.selectedCloseCode(employ.closeDateNo);
                         self.selectedProcessCode(employ.processingNo);
@@ -97,8 +92,6 @@ module cmm008.a.viewmodel{
                     }
                 })
             });
-            
-            
             
             dfd.resolve();
             // Return.
@@ -143,6 +136,12 @@ module cmm008.a.viewmodel{
                         var displayText = employ.displayFlg.toString();
                         self.dataSource.push(new ItemModel(employ.employmentCode, employ.employmentName, closeDate, processingNo, displayText));                        
                     }
+                    
+                    if(self.currentCode() === null 
+                        || self.currentCode() === undefined){
+                        var obEmployment =_.first(self.listResult()); 
+                        self.currentCode(obEmployment.employmentCode);    
+                    }
                 }
             })            
             this.columns = ko.observableArray([
@@ -152,22 +151,23 @@ module cmm008.a.viewmodel{
                 { headerText: '処理日区分', prop: 'processingNo', width: 150 },
                 { headerText: '初期表示', prop: 'displayFlg', width: 150 }
             ]);
-            this.currentCode = ko.observable();
+            this.currentCode = ko.observable("");
             self.singleSelectedCode = ko.observable(null);
         }
         
          //登録ボタンを押す
         createEmployment() : any{
             var self = this;
-            self.employmentCode(nts.uk.text.padLeft(self.employmentCode(),'0',10));
+            //self.employmentCode(nts.uk.text.padLeft(self.employmentCode(),'0',10));
+            self.currentCode(nts.uk.text.padLeft(self.currentCode(),'0',10));
             //必須項目の未入力チェック
-            if(self.employmentCode() === ""
+            if(self.currentCode() === ""
                 || self.employmentName() === ""){
                 alert("コード/名称が入力されていません。");    
                 return;
             }
             var employment = new service.model.employmentDto();
-            employment.employmentCode = self.employmentCode();
+            employment.employmentCode = self.currentCode();
             employment.employmentName = self.employmentName();
             employment.closeDateNo = self.selectedCloseCode();
             employment.processingNo = self.selectedProcessCode();
@@ -181,7 +181,7 @@ module cmm008.a.viewmodel{
             if(self.isEnable()){
                 var isCheck = false;
                 //コード重複チェック
-                service.getEmploymentByCode(self.employmentCode()).done(function(employmentChk: service.model.employmentDto){
+                service.getEmploymentByCode(self.currentCode()).done(function(employmentChk: service.model.employmentDto){
                      if(employmentChk !== null || employmentChk !== undefined){
                          alert("入力したコードは既に存在しています。\r\nコードを確認してください。");
                          isCheck = true;
@@ -207,7 +207,7 @@ module cmm008.a.viewmodel{
         //新規ボタンを押す
         newCreateEmployment(): any{
             var self = this;
-            self.employmentCode("");
+            self.currentCode("");
             self.employmentName("");
             self.isEnable(true);
             self.memoValue("");
