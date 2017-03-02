@@ -34,6 +34,7 @@ var nts;
                                     var self = this;
                                     if (self.isEditMode()) {
                                         service.update(ko.toJS(self.unitPriceHistoryModel)).done(function () {
+                                            nts.uk.ui.windows.setShared('startMonth', self.unitPriceHistoryModel.startMonth());
                                             nts.uk.ui.windows.close();
                                         });
                                     }

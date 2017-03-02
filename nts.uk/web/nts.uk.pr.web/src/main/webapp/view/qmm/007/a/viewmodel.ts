@@ -22,7 +22,7 @@ module nts.uk.pr.view.qmm007.a {
             isInputEnabled: KnockoutObservable<boolean>;
             isLoading: KnockoutObservable<boolean>;
             isNewMode: KnockoutObservable<boolean>;
-            isLatestHistory: KnockoutObservable<boolean>;
+            isLatestHistorySelected: KnockoutObservable<boolean>;
 
             // Nts text editor options
             textEditorOption: KnockoutObservable<nts.uk.ui.option.TextEditorOption>;
@@ -34,8 +34,8 @@ module nts.uk.pr.view.qmm007.a {
                 self.isNewMode = ko.observable(false);
                 self.isLoading = ko.observable(true);
                 self.isInputEnabled = ko.observable(false);
-                self.isLatestHistory = ko.observable(false);
-                self.isLatestHistory.subscribe(val => {
+                self.isLatestHistorySelected = ko.observable(false);
+                self.isLatestHistorySelected.subscribe(val => {
                     if (val == true) {
                         self.isInputEnabled(true);
                     } else {
@@ -51,7 +51,7 @@ module nts.uk.pr.view.qmm007.a {
                 ]);
 
                 self.selectedId = ko.observable('');
-                self.selectedId.subscribe(id => {console.log(id);
+                self.selectedId.subscribe(id => {
                     if (id) {
                         // when selected a parent node
                         if (id.length < 4) {
@@ -122,10 +122,15 @@ module nts.uk.pr.view.qmm007.a {
             private openEditDialog(): void {
                 var self = this;
                 nts.uk.ui.windows.setShared('unitPriceHistoryModel', ko.toJS(this.unitPriceHistoryModel()));
-                nts.uk.ui.windows.setShared('isLatestHistory', self.isLatestHistory());
+                nts.uk.ui.windows.setShared('isLatestHistory', self.isLatestHistorySelected());
                 nts.uk.ui.windows.sub.modal('/view/qmm/007/c/index.xhtml', { title: '会社一律金額 の 登録 > 履歴の編集', dialogClass: 'no-close' }).onClosed(() => {
-                    if (nts.uk.ui.windows.getShared('isRemoved')) {
+                    let startMonth = nts.uk.ui.windows.getShared('startMonth');
+                    let isRemoved = nts.uk.ui.windows.getShared('isRemoved');
+
+                    // if removed history
+                    if (isRemoved) {
                         let secondLatestHistory = self.getSecondLatestHistoryId(self.unitPriceHistoryModel().unitPriceCode());
+                        // select second latest history if there are >= 2 histories
                         if (secondLatestHistory) {
                             // Get the latest history
                             service.find(secondLatestHistory).done(dto => {
@@ -140,11 +145,38 @@ module nts.uk.pr.view.qmm007.a {
                                     });
                                 });
                             });
-                        } else {
+                        }
+                        // select null if there is only 1 history
+                        else {
                             self.loadUnitPriceHistoryList().done(() => {
                                 self.setUnitPriceHistoryModel(self.getDefaultUnitPriceHistory());
-                                self.isInputEnabled(false);
+                                self.isLatestHistorySelected(false);
                                 self.selectedId(undefined);
+                            });
+                        }
+                    }
+                    // if updated history
+                    else if (startMonth) {
+                        let secondLatestHistory = self.getSecondLatestHistoryId(self.unitPriceHistoryModel().unitPriceCode());
+                        // update the previous history if exist
+                        if (secondLatestHistory) {
+                            // Get the previous history
+                            service.find(secondLatestHistory).done(dto => {
+                                self.setUnitPriceHistoryModel(dto);
+                                // Update endMonth
+                                self.unitPriceHistoryModel().endMonth(startMonth);
+                                // Update the previous history
+                                service.update(ko.toJS(self.unitPriceHistoryModel())).done(() => {
+                                    // Reload UnitPriceHistoryList
+                                    self.loadUnitPriceHistoryList().done(() => {
+                                        self.loadUnitPriceDetail(self.selectedId());
+                                    });
+                                });
+                            });
+                        } else {
+                            // Reload UnitPriceHistoryList
+                            self.loadUnitPriceHistoryList().done(() => {
+                                self.loadUnitPriceDetail(self.selectedId());
                             });
                         }
                     }
@@ -158,11 +190,15 @@ module nts.uk.pr.view.qmm007.a {
                 var self = this;
                 if (self.isNewMode()) {
                     service.create(ko.toJS(self.unitPriceHistoryModel())).done(() => {
-                        self.loadUnitPriceHistoryList();
+                        self.loadUnitPriceHistoryList().done(() => {
+                            self.selectedId(self.getLatestHistoryId(self.unitPriceHistoryModel().unitPriceCode()));
+                        });
                     });
                 } else {
                     service.update(ko.toJS(self.unitPriceHistoryModel())).done(() => {
-                        self.loadUnitPriceHistoryList();
+                        self.loadUnitPriceHistoryList().done(() => {
+                            self.loadUnitPriceDetail(self.selectedId());
+                        });
                     });
                 }
             }
@@ -272,7 +308,7 @@ module nts.uk.pr.view.qmm007.a {
                 var self = this;
                 service.find(id).done(dto => {
                     self.setUnitPriceHistoryModel(dto);
-                    self.isLatestHistory(self.isLatest(dto));
+                    self.isLatestHistorySelected(self.isLatest(dto));
                     self.isNewMode(false);
                     self.isLoading(false);
                 });
