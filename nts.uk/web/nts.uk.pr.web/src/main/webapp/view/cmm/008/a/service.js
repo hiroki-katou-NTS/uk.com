@@ -8,7 +8,7 @@ var cmm008;
                 getAllEmployment: "basic/employment/findallemployments",
                 createEmployment: "basic/employment/createemployment",
                 updateEmployment: "basic/employment/updateemployment",
-                deleteEmployment: "basic/employment/deleteemployment",
+                deleteEmployment: "basic/employment/deleteemployment/",
                 getEmploymentByCode: "basic/employment/findemploymentbycode/"
             };
             //find all employment data

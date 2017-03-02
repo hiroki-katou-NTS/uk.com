@@ -3,7 +3,7 @@ module cmm008.a.service{
         getAllEmployment: "basic/employment/findallemployments",
         createEmployment: "basic/employment/createemployment",
         updateEmployment: "basic/employment/updateemployment",
-        deleteEmployment: "basic/employment/deleteemployment" ,
+        deleteEmployment: "basic/employment/deleteemployment/" ,
         getEmploymentByCode: "basic/employment/findemploymentbycode/"
     }
     //find all employment data
@@ -53,7 +53,7 @@ module cmm008.a.service{
     //delete employment data
     export function deleteEmployment(employment: model.employmentDto){
         var dfd = $.Deferred<Array<any>>();
-        nts.uk.request.ajax("com",path.deleteEmployment,employment).done(function(res: Array<any>){
+        nts.uk.request.ajax("com",path.deleteEmployment, employment).done(function(res: Array<any>){
             dfd.resolve(res);
         }).fail(function(res){
             dfd.resolve(res);
@@ -71,7 +71,8 @@ module cmm008.a.service{
             processingNo: number;
             statutoryHolidayAtr: number;
             employementOutCd: string;
-            displayFlg: number;    
+            displayFlg: number;   
+            displayStr: string; 
         }    
     }
 }

@@ -8,7 +8,7 @@ module cmm008.a.viewmodel{
         isCheckbox: KnockoutObservable<Boolean>;
         
         //search box
-        dataSource: any;
+        dataSource: KnockoutObservableArray<service.model.employmentDto>;;
         columns: KnockoutObservableArray<any>;
         currentCode: KnockoutObservable<string>;
         singleSelectedCode: any;
@@ -26,10 +26,9 @@ module cmm008.a.viewmodel{
         employmentOutCode: KnockoutObservable<string>;
         isEnable: KnockoutObservable<boolean>;
         //memo
-        multilineeditor: any;
-        memoValue: KnockoutObservable<string>;
+        multilineeditor: any;        
         //list values
-        listResult : KnockoutObservableArray<service.model.employmentDto>;
+        //listResult : KnockoutObservableArray<service.model.employmentDto>;
         
         constructor(){
             var self = this;
@@ -43,13 +42,12 @@ module cmm008.a.viewmodel{
             self.processingDateList = ko.observableArray([]);
             self.selectedProcessCode = ko.observable(0);
             self.employmentOutCode = ko.observable("");
-            self.memoValue = ko.observable("");
             self.textEditorOption = ko.mapping.fromJS(new option.TextEditorOption());
             self.dataSource = ko.observableArray([]);
-            self.listResult = ko.observableArray([]);
+            //self.listResult = ko.observableArray([]);
             self.isEnable = ko.observable(false);
             self.multilineeditor = {
-                memoValue: ko.observable(''),
+                memoValue: ko.observable(""),
                 constraint: '',
                 option: ko.mapping.fromJS(new nts.uk.ui.option.MultilineEditorOption({
                     resizeable: true,
@@ -79,20 +77,24 @@ module cmm008.a.viewmodel{
             
             //list data click
             self.currentCode.subscribe(function(newValue){
-                let newEmployment = _.find(self.listResult(), function(employ){
+                let newEmployment = _.find(self.dataSource(), function(employ){
                     if(employ.employmentCode === newValue){
-                        self.currentCode(employ.employmentCode);
-                        //self.employmentCode(employ.employmentCode);
+                        self.isEnable(false);
+                        self.currentCode(employ.employmentCode);                        
                         self.employmentName(employ.employmentName);
                         self.selectedCloseCode(employ.closeDateNo);
                         self.selectedProcessCode(employ.processingNo);
-                        self.memoValue(employ.memo);
+                        self.multilineeditor.memoValue(employ.memo);
                         self.employmentOutCode(employ.employementOutCd); 
+                        if(employ.displayFlg == 1){
+                            self.isCheckbox(true);    
+                        }else{
+                            self.isCheckbox(false);    
+                        }
                         return;
                     }
                 })
             });
-            
             dfd.resolve();
             // Return.
             return dfd.promise();
@@ -125,31 +127,32 @@ module cmm008.a.viewmodel{
             var self = this;
             self.dataSource = ko.observableArray([]);
             service.getAllEmployments().done(function(listResult : Array<service.model.employmentDto>){
-                self.listResult(listResult);
+                //self.listResult(listResult);
                 if(listResult.length === 0 || listResult === undefined){
                     self.isEnable(true);    
                 }else{
                     self.isEnable(false);
                     for(let employ of listResult){
-                        var closeDate = employ.closeDateNo.toString();
-                        var processingNo = employ.processingNo.toString();
-                        var displayText = employ.displayFlg.toString();
-                        self.dataSource.push(new ItemModel(employ.employmentCode, employ.employmentName, closeDate, processingNo, displayText));                        
+                        if(employ.displayFlg == 1){
+                            employ.displayStr = "●";    
+                        }else{
+                            employ.displayStr = "";    
+                        }
+                            
+                        self.dataSource.push(employ);                        
                     }
-                    
-                    if(self.currentCode() === null 
-                        || self.currentCode() === undefined){
-                        var obEmployment =_.first(self.listResult()); 
+                    if(self.currentCode() === ""){
+                        var obEmployment =_.first(self.dataSource()); 
                         self.currentCode(obEmployment.employmentCode);    
                     }
                 }
             })            
             this.columns = ko.observableArray([
-                { headerText: 'コード', prop: 'code', width: 100 },
-                { headerText: '名称', prop: 'name', width: 150 },
-                { headerText: '締め日', prop: 'closeDate', width: 150 },
+                { headerText: 'コード', prop: 'employmentCode', width: 100 },
+                { headerText: '名称', prop: 'employmentName', width: 150 },
+                { headerText: '締め日', prop: 'closeDateNo', width: 150 },
                 { headerText: '処理日区分', prop: 'processingNo', width: 150 },
-                { headerText: '初期表示', prop: 'displayFlg', width: 150 }
+                { headerText: '初期表示', prop: 'displayStr', width: 100 }
             ]);
             this.currentCode = ko.observable("");
             self.singleSelectedCode = ko.observable(null);
@@ -173,16 +176,17 @@ module cmm008.a.viewmodel{
             employment.processingNo = self.selectedProcessCode();
             employment.statutoryHolidayAtr = self.holidayCode();
             employment.employementOutCd = self.employmentOutCode();
-            employment.memo = self.memoValue();
-            if(self.isCheckbox)
+            employment.memo = self.multilineeditor.memoValue();
+            if(self.isCheckbox())
                 employment.displayFlg = 1;
             else
                 employment.displayFlg = 0;
+            //新規の時
             if(self.isEnable()){
                 var isCheck = false;
                 //コード重複チェック
                 service.getEmploymentByCode(self.currentCode()).done(function(employmentChk: service.model.employmentDto){
-                     if(employmentChk !== null || employmentChk !== undefined){
+                     if(employmentChk !== undefined && employmentChk !== null){
                          alert("入力したコードは既に存在しています。\r\nコードを確認してください。");
                          isCheck = true;
                          return;   
@@ -194,15 +198,29 @@ module cmm008.a.viewmodel{
                 }
                 
                 service.createEmployment(employment).done(function(){
-                    
-                })    
+                    self.dataSource.push(employment);
+                    self.currentCode(employment.employmentCode);
+                })   
+            //更新の時 
             }else{
-                service.updateEmployment(employment).done(function(){
-                        
+                service.updateEmployment(employment).done(function(){      
+                    
+                    let indexItemUpdate = _.findIndex(self.dataSource(), function(item) { return item.employmentCode == employment.employmentCode; });
+//                    if(employment.displayFlg == 1){
+//                        employment.displayStr = "●";    
+//                    }else{
+//                        employment.displayStr = "";    
+//                    }
+//                    self.dataSource().splice(indexItemUpdate, 1, _.cloneDeep(employment));
+//                    self.dataSource.valueHasMutated();           
+                    self.dataSourceItem();
+                    //var curentEmployment =  self.dataSource()[indexItemUpdate];
+                    self.currentCode(employment.employmentCode);
+                    self.dataSource().splice(indexItemUpdate, 1, _.cloneDeep(employment));
+                    self.dataSource.valueHasMutated(); 
                 })                
             }
             
-            self.start();
         }
         //新規ボタンを押す
         newCreateEmployment(): any{
@@ -210,10 +228,40 @@ module cmm008.a.viewmodel{
             self.currentCode("");
             self.employmentName("");
             self.isEnable(true);
-            self.memoValue("");
+            self.multilineeditor.memoValue("");
             self.employmentOutCode("");
             self.currentCode("");
-                
+            self.isCheckbox(false);
+            $("#INP_002").focus();
+        }
+        //削除
+        deleteEmployment(): any{
+            var self = this;
+            var employment = new service.model.employmentDto();
+            employment.employmentCode = self.currentCode();
+            if(self.isCheckbox())
+                employment.displayFlg = 1;
+            else
+                employment.displayFlg = 0;
+            let indexItemDelete = _.findIndex(self.dataSource(), function(item) { return item.employmentCode == self.currentCode(); });
+            service.deleteEmployment(employment).done(function(){
+                self.dataSource.remove(function(item) {
+                    return item.employmentCode == self.currentCode();
+                });
+                self.dataSource.valueHasMutated();
+                self.dataSource.remove(function(item) {
+                    return item.employmentCode == self.currentCode();
+                });
+                self.dataSource.valueHasMutated();
+                if (self.dataSource().length === 0) {
+                    self.isEnable(true);
+                    self.newCreateEmployment();
+                } else if (self.dataSource().length === indexItemDelete) {
+                    self.currentCode(self.dataSource()[indexItemDelete - 1].employmentCode);
+                } else {
+                    self.currentCode(self.dataSource()[indexItemDelete].employmentCode);
+                }
+            })
         }
     }   
     
@@ -233,22 +281,6 @@ module cmm008.a.viewmodel{
             this.processingDateCode = processingDateCode;
             this.processingDatename = processingDatename;    
         }   
-    }
-   class ItemModel {
-        code: string;
-        name: string;
-        description: string;
-        other1: string;
-        other2: string;
-        //childs: any;
-        constructor(code: string, name: string, description: string, other1?: string, other2?: string) {
-            this.code = code;
-            this.name = name;
-            this.description = description;
-            this.other1 = other1;
-            this.other2 = other2 || other1;    
-            //this.childs = childs;     
-        }
     }
    
 }

@@ -23,7 +23,7 @@
 				<button id="BTN_001" class="btnStyle" data-bind = "click: newCreateEmployment">新規</button>
 				<button class="proceed btnStyle" id="BTN_002" data-bind="click: createEmployment, enable: $root.errors.isEmpty">登録</button>
 				<button id="BTN_003">マスタ修正ログ</button>
-				<button class="danger btnStyle" id="BTN_004">削除</button>
+				<button class="danger btnStyle" id="BTN_004" data-bind = "click: deleteEmployment">削除</button>
 				<label id="LBL_001">雇用区分の登録</label>
 			</div>
 			<div id="contents-area">
@@ -34,13 +34,13 @@
 								comId: 'LST_001',
 								items: dataSource, 		
 								selected: singleSelectedCode, 
-								selectedKey: 'code', 
+								selectedKey: 'employmentCode', 
 								childField: 'childs', 
-								fields: ['name', 'code']}" />																																														
+								fields: ['employmentName', 'employmentCode']}" />																																														
 							<table id="LST_001" data-bind="ntsGridList: {								
 								height: 350,
 								options: dataSource,
-								optionsValue: 'code',
+								optionsValue: 'employmentCode',
 								columns: columns,
 								multiple: false,
 								value: currentCode
@@ -56,9 +56,9 @@
 										</div>
 									</td>
 									<td class="contentsRR"><input id="INP_002" maxlength="10"
-										data-name="code"
-										data-bind="ntsTextEditor: {value: employmentCode, 
-																					constraint: 'currentCode', 
+										data-name="employmentCode"
+										data-bind="ntsTextEditor: {value: currentCode, 
+																					constraint: 'EmploymentCode', 
 																					option: textEditorOption, 
 																					enable: isEnable}" />
 										<input id="INP_003" data-name="name" maxlength="20"
