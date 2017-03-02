@@ -103,7 +103,7 @@ module nts.uk.pr.view.qmm011.a {
                 var self = this;
                 service.findAllInsuranceBusinessType().done(data => {
                     nts.uk.ui.windows.setShared("InsuranceBusinessTypeDto", data);
-                    nts.uk.ui.windows.sub.modal("/view/qmm/011/e/index.xhtml", { height: 700, width: 425, title: "事業種類の登録" }).onClosed(() => {
+                    nts.uk.ui.windows.sub.modal("/view/qmm/011/e/index.xhtml", { height: 600, width: 425, title: "事業種類の登録" }).onClosed(() => {
                         //OnClose => call
                         var insuranceBusinessTypeUpdateModel = nts.uk.ui.windows.getShared("insuranceBusinessTypeUpdateModel");
                         if (insuranceBusinessTypeUpdateModel != null && insuranceBusinessTypeUpdateModel != undefined) {

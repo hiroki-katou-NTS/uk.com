@@ -82,7 +82,7 @@ public class LaborInsuranceOfficeFindDto implements LaborInsuranceOfficeSetMemen
 
 	@Override
 	public void setCompanyCode(CompanyCode companyCode) {
-		// TODO Auto-generated method stub
+		// Do nothing.
 	}
 
 	@Override

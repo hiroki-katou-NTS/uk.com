@@ -6,13 +6,11 @@ package nts.uk.ctx.pr.core.app.insurance.labor.accidentrate.find;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
-import nts.arc.time.YearMonth;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.app.insurance.labor.accidentrate.find.dto.HistoryAccidentInsuranceRateFindOutDto;
 import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.AccidentInsuranceRate;

@@ -167,7 +167,6 @@ var nts;
                                     if (self.typeAction() == TypeActionCertifyGroup.add) {
                                         l.service.addCertifyGroup(self.convertDataModel()).done(function (data) {
                                             self.reloadDataByAction(self.certifyGroupModel().code());
-                                            self.clearErrorSave();
                                         }).fail(function (error) {
                                             self.showMessageSave(error.message);
                                         });

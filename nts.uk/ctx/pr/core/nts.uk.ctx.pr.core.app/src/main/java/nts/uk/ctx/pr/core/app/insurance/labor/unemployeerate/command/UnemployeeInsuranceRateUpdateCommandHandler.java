@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2016 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.pr.core.app.insurance.labor.unemployeerate.command;
 
 import javax.ejb.Stateless;
@@ -11,6 +15,9 @@ import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsurance
 import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.service.UnemployeeInsuranceRateService;
 import nts.uk.shr.com.context.AppContexts;
 
+/**
+ * The Class UnemployeeInsuranceRateUpdateCommandHandler.
+ */
 @Stateless
 @Transactional
 public class UnemployeeInsuranceRateUpdateCommandHandler extends CommandHandler<UnemployeeInsuranceRateUpdateCommand> {
@@ -19,6 +26,7 @@ public class UnemployeeInsuranceRateUpdateCommandHandler extends CommandHandler<
 	@Inject
 	private UnemployeeInsuranceRateRepository unemployeeInsuranceRateRepository;
 
+	/** The unemployee insurance rate service. */
 	@Inject
 	private UnemployeeInsuranceRateService unemployeeInsuranceRateService;
 

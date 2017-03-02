@@ -23,11 +23,15 @@ public class UnemployeeInsuranceRateFindOutDto implements UnemployeeInsuranceRat
 	/** The history insurance. */
 	private HistoryUnemployeeInsuranceFindOutDto historyInsurance;
 
-	// private MonthRange applyRange;
-
 	/** The rate items. */
 	private List<UnemployeeInsuranceRateItemFindOutDto> rateItems;
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.
+	 * UnemployeeInsuranceRateSetMemento#setHistoryId(java.lang.String)
+	 */
 	@Override
 	public void setHistoryId(String historyId) {
 		if (this.historyInsurance == null)
@@ -36,12 +40,26 @@ public class UnemployeeInsuranceRateFindOutDto implements UnemployeeInsuranceRat
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.
+	 * UnemployeeInsuranceRateSetMemento#setCompanyCode(nts.uk.ctx.core.dom.
+	 * company.CompanyCode)
+	 */
 	@Override
 	public void setCompanyCode(CompanyCode companyCode) {
-		// TODO Auto-generated method stub
+		// Do nothing.
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.
+	 * UnemployeeInsuranceRateSetMemento#setApplyRange(nts.uk.ctx.pr.core.dom.
+	 * insurance.MonthRange)
+	 */
 	@Override
 	public void setApplyRange(MonthRange applyRange) {
 		this.historyInsurance.setEndMonthRage(this.historyInsurance.convertMonth(applyRange.getEndMonth()));
@@ -50,6 +68,12 @@ public class UnemployeeInsuranceRateFindOutDto implements UnemployeeInsuranceRat
 				this.historyInsurance.getStartMonthRage() + " ~ " + this.historyInsurance.getEndMonthRage());
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.
+	 * UnemployeeInsuranceRateSetMemento#setRateItems(java.util.Set)
+	 */
 	@Override
 	public void setRateItems(Set<UnemployeeInsuranceRateItem> rateItems) {
 		this.rateItems = new ArrayList<>();

@@ -22,7 +22,7 @@ public class SocialInsuranceOfficeFinder {
 
 	/** The social insurance office repository. */
 	@Inject
-	SocialInsuranceOfficeRepository socialInsuranceOfficeRepo;
+	private SocialInsuranceOfficeRepository socialInsuranceOfficeRepo;
 
 	/**
 	 * Find.

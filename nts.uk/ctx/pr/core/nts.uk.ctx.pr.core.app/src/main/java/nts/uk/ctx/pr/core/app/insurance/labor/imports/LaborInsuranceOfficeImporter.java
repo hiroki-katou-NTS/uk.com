@@ -11,8 +11,6 @@ import java.util.List;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import lombok.Getter;
-import lombok.Setter;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.app.insurance.labor.imports.dto.LaborInsuranceOfficeCheckImportDto;
 import nts.uk.ctx.pr.core.app.insurance.labor.imports.dto.LaborInsuranceOfficeImportDto;
@@ -28,6 +26,8 @@ import nts.uk.shr.com.context.AppContexts;
  */
 @Stateless
 public class LaborInsuranceOfficeImporter implements Serializable {
+	/** The Constant serialVersionUID. */
+	private static final long serialVersionUID = 1L;
 
 	/** The labor insurance office repository. */
 	@Inject
@@ -72,7 +72,7 @@ public class LaborInsuranceOfficeImporter implements Serializable {
 				laborInsuranceOfficeRepository.add(socialInsuranceOfficeImportDto.toDomain(companyCode));
 				totalImport++;
 			}
-			
+
 		}
 		laborInsuranceOfficeImportOutDto.setTotalImport(totalImport);
 		return laborInsuranceOfficeImportOutDto;

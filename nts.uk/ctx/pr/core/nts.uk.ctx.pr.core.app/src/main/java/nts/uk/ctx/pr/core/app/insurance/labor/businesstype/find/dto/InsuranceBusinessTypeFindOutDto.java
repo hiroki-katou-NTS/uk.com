@@ -46,6 +46,12 @@ public class InsuranceBusinessTypeFindOutDto {
 	/** The biz name biz 10 th. */
 	private String bizNameBiz10Th;
 
+	/**
+	 * From domain.
+	 *
+	 * @param domain the domain
+	 * @return the insurance business type find out dto
+	 */
 	public static InsuranceBusinessTypeFindOutDto fromDomain(List<InsuranceBusinessType> domain) {
 		InsuranceBusinessTypeFindOutDto insuranceBusinessTypeFindOutDto = new InsuranceBusinessTypeFindOutDto();
 		for (InsuranceBusinessType insuranceBusinessType : domain) {

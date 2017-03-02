@@ -18,7 +18,6 @@ import nts.uk.ctx.pr.core.app.insurance.labor.unemployeerate.command.UnemployeeI
 import nts.uk.ctx.pr.core.app.insurance.labor.unemployeerate.find.UnemployeeInsuranceFinder;
 import nts.uk.ctx.pr.core.app.insurance.labor.unemployeerate.find.dto.UnemployeeInsuranceRateFindOutDto;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class UnemployeeInsuranceRateWs.
  */

@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2016 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.pr.core.app.insurance.labor.unemployeerate.command.dto;
 
 import java.util.HashSet;
@@ -6,22 +10,29 @@ import java.util.Set;
 
 import lombok.Data;
 import nts.uk.ctx.core.dom.company.CompanyCode;
-import nts.uk.ctx.pr.core.app.insurance.labor.unemployeerate.find.dto.HistoryUnemployeeInsuranceFindOutDto;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsuranceRate;
 import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsuranceRateGetMemento;
 import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsuranceRateItem;
 
+/**
+ * The Class UnemployeeInsuranceRateDto.
+ */
 @Data
 public class UnemployeeInsuranceRateDto {
+	
 	/** The history insurance. */
 	private HistoryUnemployeeInsuranceDto historyInsurance;
-
-	// private MonthRange applyRange;
 
 	/** The rate items. */
 	private List<UnemployeeInsuranceRateItemDto> rateItems;
 
+	/**
+	 * To domain.
+	 *
+	 * @param companyCode the company code
+	 * @return the unemployee insurance rate
+	 */
 	public UnemployeeInsuranceRate toDomain(String companyCode) {
 		UnemployeeInsuranceRateDto dto = this;
 		return new UnemployeeInsuranceRate(new UnemployeeInsuranceRateGetMemento() {

@@ -16,6 +16,9 @@ import nts.uk.ctx.pr.core.dom.insurance.labor.businesstype.BusinessTypeEnum;
 import nts.uk.ctx.pr.core.dom.insurance.labor.businesstype.InsuranceBusinessType;
 import nts.uk.ctx.pr.core.dom.insurance.labor.businesstype.InsuranceBusinessTypeGetMemento;
 
+/**
+ * The Class InsuranceBusinessTypeUpdateCommand.
+ */
 @Getter
 @Setter
 public class InsuranceBusinessTypeUpdateCommand {
@@ -53,6 +56,17 @@ public class InsuranceBusinessTypeUpdateCommand {
 		return lsInsuranceBusinessType;
 	}
 
+	/**
+	 * Convert insurance business type.
+	 *
+	 * @param businessTypeEnum
+	 *            the business type enum
+	 * @param bizName
+	 *            the biz name
+	 * @param companyCode
+	 *            the company code
+	 * @return the insurance business type
+	 */
 	public InsuranceBusinessType convertInsuranceBusinessType(BusinessTypeEnum businessTypeEnum, String bizName,
 			String companyCode) {
 		InsuranceBusinessTypeUpdateCommand command = this;

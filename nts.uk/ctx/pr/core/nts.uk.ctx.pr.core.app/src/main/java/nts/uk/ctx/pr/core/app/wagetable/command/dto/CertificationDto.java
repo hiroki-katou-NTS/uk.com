@@ -34,19 +34,16 @@ public class CertificationDto {
 
 			@Override
 			public String getName() {
-				// TODO Auto-generated method stub
 				return dto.name;
 			}
 
 			@Override
 			public CompanyCode getCompanyCode() {
-				// TODO Auto-generated method stub
 				return new CompanyCode(companyCode);
 			}
 
 			@Override
 			public String getCode() {
-				// TODO Auto-generated method stub
 				return dto.code;
 			}
 		});

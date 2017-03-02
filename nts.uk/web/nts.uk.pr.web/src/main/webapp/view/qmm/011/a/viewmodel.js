@@ -75,7 +75,7 @@ var nts;
                                     var self = this;
                                     a.service.findAllInsuranceBusinessType().done(function (data) {
                                         nts.uk.ui.windows.setShared("InsuranceBusinessTypeDto", data);
-                                        nts.uk.ui.windows.sub.modal("/view/qmm/011/e/index.xhtml", { height: 700, width: 425, title: "事業種類の登録" }).onClosed(function () {
+                                        nts.uk.ui.windows.sub.modal("/view/qmm/011/e/index.xhtml", { height: 600, width: 425, title: "事業種類の登録" }).onClosed(function () {
                                             var insuranceBusinessTypeUpdateModel = nts.uk.ui.windows.getShared("insuranceBusinessTypeUpdateModel");
                                             if (insuranceBusinessTypeUpdateModel != null && insuranceBusinessTypeUpdateModel != undefined) {
                                                 a.service.findAllInsuranceBusinessType().done(function (data) {

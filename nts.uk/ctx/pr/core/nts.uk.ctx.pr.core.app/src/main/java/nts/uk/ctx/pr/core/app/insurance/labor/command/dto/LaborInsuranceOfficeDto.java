@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2016 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.pr.core.app.insurance.labor.command.dto;
 
 import lombok.Data;
@@ -14,6 +18,9 @@ import nts.uk.ctx.pr.core.dom.insurance.labor.LaborInsuranceOffice;
 import nts.uk.ctx.pr.core.dom.insurance.labor.LaborInsuranceOfficeGetMemento;
 import nts.uk.shr.com.primitive.Memo;
 
+/**
+ * The Class LaborInsuranceOfficeDto.
+ */
 @Data
 public class LaborInsuranceOfficeDto {
 	/** The code. officeCode */
@@ -73,6 +80,12 @@ public class LaborInsuranceOfficeDto {
 	/** The version. */
 	private long version;
 
+	/**
+	 * To domain.
+	 *
+	 * @param companyCode the company code
+	 * @return the labor insurance office
+	 */
 	public LaborInsuranceOffice toDomain(String companyCode) {
 		LaborInsuranceOfficeDto dto = this;
 		return new LaborInsuranceOffice(new LaborInsuranceOfficeGetMemento() {
