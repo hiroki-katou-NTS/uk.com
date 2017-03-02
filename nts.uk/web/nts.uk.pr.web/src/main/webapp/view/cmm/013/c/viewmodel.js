@@ -42,7 +42,7 @@ var cmm013;
                         console.log('Selected value:' + event.originalEvent.detail);
                     });
                     //fill data to dialog
-                    service.getLayoutWithMaxStartYm().done(function (layout) {
+                    c.service.getLayoutWithMaxStartYm().done(function (layout) {
                         self.layouts(layout);
                         self.startDialog();
                     });
@@ -87,7 +87,7 @@ var cmm013;
                         else {
                             self.createlayout().checkContinue = false;
                         }
-                        service.createLayoutHistory(self.createlayout()).done(function () {
+                        c.service.createLayoutHistory(self.createlayout()).done(function () {
                             //alert("追加しました。"); 
                             nts.uk.ui.windows.close();
                         }).fail(function (res) {
