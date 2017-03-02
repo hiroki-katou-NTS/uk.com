@@ -5,7 +5,7 @@ import java.util.Optional;
 
 public interface PositionHistoryRepository {
 
-	Optional<PositionHistory> findSingle(String companyCode, String historyID);
+	Optional<PositionHistory> findSingleHistory(String companyCode, String historyID);
 
 	void add(PositionHistory positionHistory);
 
@@ -13,7 +13,7 @@ public interface PositionHistoryRepository {
 
 	void remove(String companyCode, String historyId);
 
-	List<PositionHistory> findAllByHistory(String companyCode, String historyId);
+	List<PositionHistory> findAllHistory(String companyCode);
 
 	boolean isExist(String companyCode, String historyID);
 

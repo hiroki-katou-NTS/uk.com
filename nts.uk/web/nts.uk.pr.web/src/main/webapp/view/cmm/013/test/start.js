@@ -1,19 +1,21 @@
 var cmm013;
 (function (cmm013) {
-    var test;
-    (function (test_1) {
+    var f;
+    (function (f) {
         var viewmodel;
         (function (viewmodel) {
-            var test;
-            (function (test) {
+            var a;
+            (function (a) {
                 var start;
                 (function (start) {
                     __viewContext.ready(function () {
                         var screenModel = new viewmodel.ScreenModel();
-                        this.bind(screenModel);
+                        screenModel.startPage().done(function () {
+                            __viewContext.bind(screenModel);
+                        });
                     });
-                })(start = test.start || (test.start = {}));
-            })(test = viewmodel.test || (viewmodel.test = {}));
-        })(viewmodel = test_1.viewmodel || (test_1.viewmodel = {}));
-    })(test = cmm013.test || (cmm013.test = {}));
+                })(start = a.start || (a.start = {}));
+            })(a = viewmodel.a || (viewmodel.a = {}));
+        })(viewmodel = f.viewmodel || (f.viewmodel = {}));
+    })(f = cmm013.f || (cmm013.f = {}));
 })(cmm013 || (cmm013 = {}));

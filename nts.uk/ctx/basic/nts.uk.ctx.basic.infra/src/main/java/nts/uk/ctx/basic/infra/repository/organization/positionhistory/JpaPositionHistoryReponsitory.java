@@ -29,7 +29,7 @@ import nts.uk.ctx.basic.infra.entity.organization.positionhistory.CmnmtJobTitleH
 public class JpaPositionHistoryReponsitory extends JpaRepository implements PositionHistoryRepository {
 
 	
-	private static final String FIND_ALL_BY_HISTORY;
+	private static final String FIND_ALL_HISTORY;
 
 	private static final String FIND_SINGLE_HISTORY;
 	
@@ -40,7 +40,7 @@ public class JpaPositionHistoryReponsitory extends JpaRepository implements Posi
 		builderString.append("SELECT e");
 		builderString.append(" FROM CmnmtJobTitleHistory e");
 		builderString.append(" WHERE e.cmnmtJobTitleHistoryPK.companyCode = :companyCode");
-		FIND_ALL_BY_HISTORY = builderString.toString();
+		FIND_ALL_HISTORY = builderString.toString();
 
 		builderString = new StringBuilder();
 		builderString.append("SELECT e");
@@ -60,7 +60,7 @@ public class JpaPositionHistoryReponsitory extends JpaRepository implements Posi
 	}
 	
 	@Override
-	public Optional<PositionHistory> findSingle(String companyCode,
+	public Optional<PositionHistory> findSingleHistory(String companyCode,
 			String historyID ) {
 		return this.queryProxy().query(FIND_SINGLE_HISTORY, CmnmtJobTitleHistory.class)
 				.setParameter("companyCode", "'" + companyCode + "'")
@@ -70,9 +70,9 @@ public class JpaPositionHistoryReponsitory extends JpaRepository implements Posi
 	}
 
 	@Override
-	public List<PositionHistory> findAllByHistory(String companyCode, String historyId) {
-		List<CmnmtJobTitleHistory> resultList = this.queryProxy().query(FIND_ALL_BY_HISTORY, CmnmtJobTitleHistory.class)
-				.setParameter("companyCode", "'" + companyCode + "'").setParameter("historyId", "'" + historyId + "'")
+	public List<PositionHistory> findAllHistory(String companyCode) {
+		List<CmnmtJobTitleHistory> resultList = this.queryProxy().query(FIND_ALL_HISTORY, CmnmtJobTitleHistory.class)
+				.setParameter("companyCode", "'" + companyCode + "'")
 				.getList();
 		return !resultList.isEmpty() ? resultList.stream().map(item -> {
 			return convertToDomain(item);
@@ -124,6 +124,8 @@ public class JpaPositionHistoryReponsitory extends JpaRepository implements Posi
 		return this.queryProxy().query(CHECK_EXIST, long.class).setParameter("companyCode", "'" + companyCode + "'")
 				.getSingle().get() > 0;
 	}
+
+
 
 
 

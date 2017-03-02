@@ -17,9 +17,9 @@ import nts.uk.shr.com.context.AppContexts;
 		@Inject
 		private PositionRepository positionRepository;
 		
-		public List<JobTitleDto> init() {
+		public List<JobTitleDto> findAllPosition() {
 			String companyCode = AppContexts.user().companyCode();
-			return positionRepository.findAll(companyCode)
+			return positionRepository.findAllPosition(companyCode)
 					.stream().map(e->{return convertToDto(e);}).collect(Collectors.toList());
 		}
 
@@ -33,6 +33,17 @@ import nts.uk.shr.com.context.AppContexts;
 			positionDto.setPresenceCheckScopeSet(position.getPresenceCheckScopeSet().value);
 			return positionDto;
 		}
+
+		public List<JobTitleDto> findAllPositionByHis(String historyId) {
+			String companyCode = AppContexts.user().companyCode();
+			return positionRepository.findAllPosition(companyCode)
+					.stream().map(e->{return convertToDto(e);}).collect(Collectors.toList());
+		}
+
+	
+	
+
+	
 
 	
 }
