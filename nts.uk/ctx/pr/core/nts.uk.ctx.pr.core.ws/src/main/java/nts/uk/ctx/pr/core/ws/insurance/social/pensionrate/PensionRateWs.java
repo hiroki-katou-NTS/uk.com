@@ -9,6 +9,8 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.pr.core.app.insurance.social.pensionrate.command.DeletePensionCommand;
+import nts.uk.ctx.pr.core.app.insurance.social.pensionrate.command.DeletePensionCommandHandler;
 import nts.uk.ctx.pr.core.app.insurance.social.pensionrate.command.RegisterPensionCommand;
 import nts.uk.ctx.pr.core.app.insurance.social.pensionrate.command.RegisterPensionCommandHandler;
 import nts.uk.ctx.pr.core.app.insurance.social.pensionrate.command.UpdatePensionCommand;
@@ -27,7 +29,9 @@ public class PensionRateWs extends WebService {
 	private RegisterPensionCommandHandler registerPensionCommandHandler;
 	@Inject
 	private UpdatePensionCommandHandler updatePensionCommandHandler;
-
+	@Inject
+	private DeletePensionCommandHandler deletePensionCommandHandler;
+	
 	@POST
 	@Path("find/{id}")
 	public PensionRateDto find(@PathParam("id") String id) {
@@ -50,5 +54,11 @@ public class PensionRateWs extends WebService {
 	@Path("update")
 	public void update(UpdatePensionCommand command) {
 		updatePensionCommandHandler.handle(command);
+	}
+	
+	@POST
+	@Path("remove")
+	public void remove(DeletePensionCommand command) {
+		deletePensionCommandHandler.handle(command);
 	}
 }

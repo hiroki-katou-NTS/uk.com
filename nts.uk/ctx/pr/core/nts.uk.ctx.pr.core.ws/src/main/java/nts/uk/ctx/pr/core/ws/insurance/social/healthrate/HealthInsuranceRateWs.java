@@ -9,6 +9,8 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.pr.core.app.insurance.social.healthrate.command.DeleteHealthInsuranceCommand;
+import nts.uk.ctx.pr.core.app.insurance.social.healthrate.command.DeleteHealthInsuranceCommandHandler;
 import nts.uk.ctx.pr.core.app.insurance.social.healthrate.command.RegisterHealthInsuranceCommand;
 import nts.uk.ctx.pr.core.app.insurance.social.healthrate.command.RegisterHealthInsuranceCommandHandler;
 import nts.uk.ctx.pr.core.app.insurance.social.healthrate.command.UpdateHealthInsuranceCommand;
@@ -27,7 +29,8 @@ public class HealthInsuranceRateWs extends WebService {
 	private RegisterHealthInsuranceCommandHandler registerHealthInsuranceCommandHandler;
 	@Inject
 	private UpdateHealthInsuranceCommandHandler updateHealthInsuranceCommandHandler;
-
+	@Inject
+	private DeleteHealthInsuranceCommandHandler deleteHealthInsuranceCommandHandler;
 	//find by historyId
 	@POST
 	@Path("find/{id}")
@@ -53,4 +56,10 @@ public class HealthInsuranceRateWs extends WebService {
 		updateHealthInsuranceCommandHandler.handle(command);
 	}
 
+	//remove by historyId
+	@POST
+	@Path("remove")
+	public void remove(DeleteHealthInsuranceCommand command) {
+		deleteHealthInsuranceCommandHandler.handle(command);
+	}
 }

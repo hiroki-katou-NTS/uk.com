@@ -21,8 +21,10 @@ var nts;
                                 getPensionItemDetail: "ctx/pr/core/insurance/social/pensionrate/find",
                                 registerHealthRate: "ctx/pr/core/insurance/social/healthrate/create",
                                 updateHealthRate: "ctx/pr/core/insurance/social/healthrate/update",
+                                removeHealthRate: "ctx/pr/core/insurance/social/healthrate/remove",
                                 registerPensionRate: "ctx/pr/core/insurance/social/pensionrate/create",
                                 updatePensionRate: "ctx/pr/core/insurance/social/pensionrate/update",
+                                removePensionRate: "ctx/pr/core/insurance/social/pensionrate/remove",
                                 getAllRoundingItem: "pr/insurance/social/find/rounding"
                             };
                             function findInsuranceOffice(key) {
@@ -97,6 +99,11 @@ var nts;
                                 return nts.uk.request.ajax(servicePath.updateHealthRate, data);
                             }
                             service.updateHealthRate = updateHealthRate;
+                            function removeHealthRate(historyId) {
+                                var data = { historyId: historyId };
+                                return nts.uk.request.ajax(servicePath.removeHealthRate, data);
+                            }
+                            service.removeHealthRate = removeHealthRate;
                             function registerPensionRate(data) {
                                 return nts.uk.request.ajax(servicePath.registerPensionRate, data);
                             }
@@ -105,6 +112,11 @@ var nts;
                                 return nts.uk.request.ajax(servicePath.updatePensionRate, data);
                             }
                             service.updatePensionRate = updatePensionRate;
+                            function removePensionRate(historyId) {
+                                var data = { historyId: historyId };
+                                return nts.uk.request.ajax(servicePath.removePensionRate, data);
+                            }
+                            service.removePensionRate = removePensionRate;
                             var model;
                             (function (model) {
                                 var finder;

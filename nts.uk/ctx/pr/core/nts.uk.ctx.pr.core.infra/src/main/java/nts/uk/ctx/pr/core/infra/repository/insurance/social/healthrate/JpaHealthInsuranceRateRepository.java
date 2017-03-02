@@ -17,6 +17,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.ListUtil;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.HealthInsuranceRate;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.HealthInsuranceRateRepository;
@@ -71,9 +72,30 @@ public class JpaHealthInsuranceRateRepository extends JpaRepository implements H
 	 * HealthInsuranceRateRepository#remove(java.lang.String, java.lang.Long)
 	 */
 	@Override
-	public void remove(String id, Long version) {
-		// TODO Auto-generated method stub
+	public void remove(String historyId) {
+		// Get entity manager
+		EntityManager em = this.getEntityManager();
 
+		// Query for indicated stress check.
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<QismtHealthInsuRate> cq = cb.createQuery(QismtHealthInsuRate.class);
+		Root<QismtHealthInsuRate> root = cq.from(QismtHealthInsuRate.class);
+		// Constructing list of parameters
+		List<Predicate> predicateList = new ArrayList<Predicate>();
+
+		// Construct condition.
+		predicateList.add(cb.equal(
+				root.get(QismtHealthInsuRate_.qismtHealthInsuRatePK).get(QismtHealthInsuRatePK_.histId), historyId));
+		cq.where(predicateList.toArray(new Predicate[] {}));
+		List<QismtHealthInsuRate> result = em.createQuery(cq).getResultList();
+		// If have no record.
+		if (!ListUtil.isEmpty(result)) {
+			QismtHealthInsuRate entity = new QismtHealthInsuRate();
+			entity = result.get(0);
+			em.remove(entity);
+		} else {
+			// TODO not found delete element
+		}
 	}
 
 	/*
@@ -99,7 +121,7 @@ public class JpaHealthInsuranceRateRepository extends JpaRepository implements H
 				companyCode));
 
 		cq.where(predicateList.toArray(new Predicate[] {}));
-		
+		cq.orderBy(cb.desc(root.get(QismtHealthInsuRate_.strYm)));
 		return em.createQuery(cq).getResultList().stream()
 				.map(item -> new HealthInsuranceRate(new JpaHealthInsuranceRateGetMemento(item)))
 				.collect(Collectors.toList());

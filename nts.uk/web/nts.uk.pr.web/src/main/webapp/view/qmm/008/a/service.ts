@@ -15,9 +15,11 @@ module nts.uk.pr.view.qmm008.a {
             //register+ update health
             registerHealthRate: "ctx/pr/core/insurance/social/healthrate/create",
             updateHealthRate: "ctx/pr/core/insurance/social/healthrate/update",
+            removeHealthRate: "ctx/pr/core/insurance/social/healthrate/remove",
             //register+ update pension
             registerPensionRate: "ctx/pr/core/insurance/social/pensionrate/create",
             updatePensionRate: "ctx/pr/core/insurance/social/pensionrate/update",
+            removePensionRate: "ctx/pr/core/insurance/social/pensionrate/remove",
             getAllRoundingItem: "pr/insurance/social/find/rounding"
         };
         /**
@@ -151,6 +153,13 @@ module nts.uk.pr.view.qmm008.a {
             return nts.uk.request.ajax(servicePath.updateHealthRate, data);
         }
         /**
+        * Function is used to update new Health insurance rate with office code and history id.
+        */
+        export function removeHealthRate(historyId: string): JQueryPromise<model.finder.HealthInsuranceRateDto> {
+            var data = {historyId: historyId};
+            return nts.uk.request.ajax(servicePath.removeHealthRate,data);
+        }
+        /**
         * Function is used to save new Pension rate with office code and history id.
         */
         export function registerPensionRate(data: model.finder.PensionRateDto): JQueryPromise<model.finder.PensionRateDto> {
@@ -163,7 +172,13 @@ module nts.uk.pr.view.qmm008.a {
         export function updatePensionRate(data: model.finder.PensionRateDto): JQueryPromise<model.finder.PensionRateDto> {
             return nts.uk.request.ajax(servicePath.updatePensionRate, data);
         }
-
+        /**
+        * Function is used to update new Health insurance rate with office code and history id.
+        */
+        export function removePensionRate(historyId: string): JQueryPromise<model.finder.HealthInsuranceRateDto> {
+            var data = {historyId: historyId};
+            return nts.uk.request.ajax(servicePath.removePensionRate, data);
+        }
         /**
         * Model namespace.
         */

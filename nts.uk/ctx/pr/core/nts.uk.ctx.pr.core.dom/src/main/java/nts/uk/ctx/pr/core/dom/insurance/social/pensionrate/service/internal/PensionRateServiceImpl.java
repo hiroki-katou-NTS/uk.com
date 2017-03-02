@@ -24,7 +24,7 @@ public class PensionRateServiceImpl implements PensionRateService {
 	private final int FUND_RATE_ITEM_COUNT = 6;
 
 	/** The rounding method count. */
-	private final int ROUNDING_METHOD_COUNT = 4;
+	private final int ROUNDING_METHOD_COUNT = 2;
 
 	/** The pension rate repo. */
 	@Inject

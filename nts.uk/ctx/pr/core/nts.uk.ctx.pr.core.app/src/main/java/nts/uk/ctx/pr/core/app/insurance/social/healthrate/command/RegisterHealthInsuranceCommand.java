@@ -10,7 +10,6 @@ import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.arc.time.YearMonth;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.core.dom.util.PrimitiveUtil;
@@ -93,7 +92,8 @@ public class RegisterHealthInsuranceCommand extends HealthInsuranceBaseCommand {
 
 			@Override
 			public MonthRange getApplyRange() {
-				return MonthRange.range(PrimitiveUtil.toYearMonth(command.getStartMonth(), "/"),PrimitiveUtil.toYearMonth(command.getEndMonth(), "/"));
+				return MonthRange.range(PrimitiveUtil.toYearMonth(command.getStartMonth(), "/"),
+						PrimitiveUtil.toYearMonth(command.getEndMonth(), "/"));
 			}
 		});
 

@@ -114,7 +114,7 @@ module nts.uk.pr.view.qmm008.a {
                     grouplength: 3,
                     decimallength: 2
                 }));
-                
+
                 self.Rate3 = ko.mapping.fromJS(new nts.uk.ui.option.NumberEditorOption({
                     grouplength: 3,
                     decimallength: 3
@@ -163,7 +163,12 @@ module nts.uk.pr.view.qmm008.a {
                         if (self.healthCheckCode(officeSelectedCode)) {
                             self.healthCurrentParentCode(officeSelectedCode);
                             //reset data on view
-                            self.healthModel(new HealthInsuranceRateModel("code", 1, null, null, 15000));
+                            var roudingList = new HealthInsuranceRoundingModel();
+                            roudingList.healthSalaryPersonalComboBox(self.roundingList());
+                            roudingList.healthSalaryCompanyComboBox(self.roundingList());
+                            roudingList.healthBonusPersonalComboBox(self.roundingList());
+                            roudingList.healthBonusCompanyComboBox(self.roundingList());
+                            self.healthModel(new HealthInsuranceRateModel("code", 1, null, roudingList, 15000));
                             //TODO enabled button add new history
                             self.isClickHealthHistory(false);
                         }
@@ -216,7 +221,7 @@ module nts.uk.pr.view.qmm008.a {
 
                 self.pensionModel().fundInputApply.subscribe(function(pensionFundInputOptions: any) {
                     //TODO change select -> disable fun input
-                    if (self.pensionModel().fundInputApply() != 1 ) {
+                    if (self.pensionModel().fundInputApply() != 1) {
                         self.fundInputEnable(true);
                     } else {
                         self.fundInputEnable(false);
@@ -230,27 +235,11 @@ module nts.uk.pr.view.qmm008.a {
                 var dfd = $.Deferred<any>();
                 //first load
                 self.loadHealthHistoryOfOffice().done(function(data) {
-                    // Load first item.
-                    if ((self.healthInsuranceOfficeList() != null) && (self.healthInsuranceOfficeList().length > 0)) {
-                        //Load select first item of list
-                        self.healthOfficeSelectedCode(self.healthInsuranceOfficeList()[0].code);
-                    } else {
-                        //Open register new office screen
-                        self.OpenModalOfficeRegister();
-                    }
                     // Resolve
                     dfd.resolve(null);
                 });
                 //first load
                 self.loadPensionHistoryOfOffice().done(function(data) {
-                    // Load first item.
-                    if ((self.pensionInsuranceOfficeList() != null) && (self.pensionInsuranceOfficeList().length > 0)) {
-                        //Load select first item of list
-                        self.pensionOfficeSelectedCode(self.pensionInsuranceOfficeList()[0].code);
-                    } else {
-                        //Open register new office screen
-                        self.OpenModalOfficeRegister();
-                    }
                     // Resolve
                     dfd.resolve(null);
                 });
@@ -325,21 +314,34 @@ module nts.uk.pr.view.qmm008.a {
                 var dfd = $.Deferred<any>();
                 service.getAllHealthOfficeItem().done(function(data: Array<OfficeItemDto>) {
                     self.healthInsuranceOfficeList(self.covert2Tree(data));
-                    if (self.healthInsuranceOfficeList()[0].childs.length > 0)
-                        self.healthOfficeSelectedCode(self.healthInsuranceOfficeList()[0].childs[0].code);
+                    if (self.healthInsuranceOfficeList().length > 0) {
+                        if (self.healthInsuranceOfficeList()[0].childs.length > 0)
+                            self.healthOfficeSelectedCode(self.healthInsuranceOfficeList()[0].childs[0].code);
+                        self.healthCurrentParentCode(self.healthInsuranceOfficeList()[0].code);
+                    }
+                    else {
+                        //Open register new office screen
+                        self.OpenModalOfficeRegister();
+                    }
                 });
                 // Return.
-                return dfd.promise();
+                return dfd.promise(null);
             }
-
+        
             //get all pension history
             public loadPensionHistoryOfOffice(): JQueryPromise<any> {
                 var self = this;
                 var dfd = $.Deferred<any>();
                 service.getAllPensionOfficeItem().done(function(data: Array<OfficeItemDto>) {
                     self.pensionInsuranceOfficeList(self.covert2Tree(data));
-                    if (self.pensionInsuranceOfficeList()[0].childs.length > 0)
-                        self.pensionOfficeSelectedCode(self.pensionInsuranceOfficeList()[0].childs[0].code);
+                    if (self.pensionInsuranceOfficeList().length > 0) {
+                        if (self.pensionInsuranceOfficeList()[0].childs.length > 0)
+                            self.pensionOfficeSelectedCode(self.pensionInsuranceOfficeList()[0].childs[0].code);
+                        self.pensionCurrentParentCode(self.pensionInsuranceOfficeList()[0].code);
+                    } else {
+                        //Open register new office screen
+                        self.OpenModalOfficeRegister();
+                    }
                 });
                 // Return.
                 return dfd.promise();
@@ -449,11 +451,11 @@ module nts.uk.pr.view.qmm008.a {
                     self.pensionModel().endMonth(data.endMonth.substring(0, 4) + "/" + data.endMonth.substring(4, data.endMonth.length));
                     self.pensionModel().autoCalculate(data.autoCalculate);
                     //TODO fundInputApply
-//                    if (data.fundInputApply)
-//                        self.pensionModel().fundInputApply(1);
-//                    else
-//                        self.pensionModel().fundInputApply(2);
-                    
+                    //                    if (data.fundInputApply)
+                    //                        self.pensionModel().fundInputApply(1);
+                    //                    else
+                    self.pensionModel().fundInputApply(2);
+
                     data.premiumRateItems.forEach(function(item, index) {
                         if (item.payType == PaymentType.SALARY && item.genderType == InsuranceGender.MALE) {
                             self.pensionModel().rateItems().pensionSalaryPersonalSon(item.personalRate);
@@ -519,13 +521,13 @@ module nts.uk.pr.view.qmm008.a {
                             self.pensionModel().fundRateItems().bonusCompanyUnknownExemption(item.exemptionChargeCompanyRate);
                         }
                     });
-                    
+
                     //set rounding list
                     self.pensionModel().roundingMethods().pensionSalaryPersonalComboBox(self.roundingList());
                     self.pensionModel().roundingMethods().pensionSalaryCompanyComboBox(self.roundingList());
                     self.pensionModel().roundingMethods().pensionBonusPersonalComboBox(self.roundingList());
                     self.pensionModel().roundingMethods().pensionBonusCompanyComboBox(self.roundingList());
-                    
+
                     //TODO set selected rounding method
                     data.roundingMethods.forEach(function(item, index) {
                         if (item.payType == PaymentType.SALARY) {
@@ -537,7 +539,7 @@ module nts.uk.pr.view.qmm008.a {
                             self.pensionModel().roundingMethods().pensionBonusCompanyComboBoxSelectedCode(self.convertRounding(item.roundAtrs.companyRoundAtr));
                         }
                     });
-                    
+
                     self.pensionModel().maxAmount(data.maxAmount);
                     self.pensionModel().childContributionRate(data.childContributionRate);
                     // Resolve
@@ -568,7 +570,7 @@ module nts.uk.pr.view.qmm008.a {
                 var rounding = self.healthModel().roundingMethods();
                 roundingMethods.push(new RoundingDto(PaymentType.SALARY, new RoundingItemDto(Rounding.ROUNDUP, Rounding.ROUNDUP)));
                 roundingMethods.push(new RoundingDto(PaymentType.BONUS, new RoundingItemDto(Rounding.ROUNDUP, Rounding.ROUNDUP)));
-                return new service.model.finder.HealthInsuranceRateDto("", "", self.healthCurrentParentCode(), self.healthModel().startMonth(), self.healthModel().endMonth(), 1, rateItems, roundingMethods, self.healthModel().maxAmount());
+                return new service.model.finder.HealthInsuranceRateDto(self.healthModel().historyId, self.healthModel().companyCode, self.healthCurrentParentCode(), self.healthModel().startMonth(), self.healthModel().endMonth(), 1, rateItems, roundingMethods, self.healthModel().maxAmount());
             }
 
             private pensionCollectData() {
@@ -597,7 +599,7 @@ module nts.uk.pr.view.qmm008.a {
                 roundingMethods.push(new RoundingDto(PaymentType.SALARY, new RoundingItemDto(Rounding.ROUNDUP, Rounding.ROUNDUP)));
                 roundingMethods.push(new RoundingDto(PaymentType.BONUS, new RoundingItemDto(Rounding.ROUNDUP, Rounding.ROUNDUP)));
                 //TODO recheck start and end time // the value insert wrong
-                return new service.model.finder.PensionRateDto("", "", self.pensionCurrentParentCode(), self.pensionModel().startMonth(), self.pensionModel().endMonth(), 1, true, rateItems, fundRateItems, roundingMethods, self.pensionModel().maxAmount(), self.pensionModel().childContributionRate());
+                return new service.model.finder.PensionRateDto(self.pensionModel().historyId, self.pensionModel().companyCode, self.pensionCurrentParentCode(), self.pensionModel().startMonth(), self.pensionModel().endMonth(), 1, true, rateItems, fundRateItems, roundingMethods, self.pensionModel().maxAmount(), self.pensionModel().childContributionRate());
             }
 
             //get current item office 
@@ -629,72 +631,89 @@ module nts.uk.pr.view.qmm008.a {
             public refreshOfficeList(returnValue: InsuranceOfficeItem) {
                 var self = this;
                 if ($('#healthInsuranceTabPanel').hasClass("active")) {
-                    var currentHealthInsuranceOfficeList = self.healthInsuranceOfficeList();
-                    if (returnValue != undefined && returnValue != null) {
-                        currentHealthInsuranceOfficeList.forEach(function(item, index) {
-                            if (item.code == returnValue.code) {
-                                currentHealthInsuranceOfficeList[index] = returnValue;
-                            }
-                        });
-                    }
-                    self.healthInsuranceOfficeList([]);
-                    self.healthInsuranceOfficeList(currentHealthInsuranceOfficeList);
-                    self.healthOfficeSelectedCode(returnValue.childs[0].code);
-                    self.healthModel().startMonth(returnValue.childs[0].codeName.substr(0, 7));
-                    self.healthModel().endMonth(returnValue.childs[0].codeName.substr(9, returnValue.childs[0].codeName.length));
+                    setTimeout(function() {
+                        self.loadHealthHistoryOfOffice();
+                        if(returnValue.childs.length>0)
+                        {
+                            self.healthOfficeSelectedCode(returnValue.childs[0].code);
+                            self.healthModel().startMonth(returnValue.childs[0].codeName.substr(0, 7));
+                            self.healthModel().endMonth(returnValue.childs[0].codeName.substr(9, returnValue.childs[0].codeName.length));
+                        }
+                    }, 1000);
                 }
                 else {
-                    var currentPensionInsuranceOfficeList = self.pensionInsuranceOfficeList();
-                    if (returnValue != undefined && returnValue != null) {
-                        currentPensionInsuranceOfficeList.forEach(function(item, index) {
-                            if (item.code == returnValue.code) {
-                                currentPensionInsuranceOfficeList[index] = returnValue;
-                            }
-                        });
-                    }
-                    self.pensionInsuranceOfficeList([]);
-                    self.pensionInsuranceOfficeList(currentPensionInsuranceOfficeList);
-                    self.pensionOfficeSelectedCode(returnValue.childs[0].code);
-                    self.pensionModel().startMonth(returnValue.childs[0].codeName.substr(0, 7));
-                    self.pensionModel().endMonth(returnValue.childs[0].codeName.substr(9, returnValue.childs[0].codeName.length));
+                    setTimeout(function() {
+                        self.loadPensionHistoryOfOffice();
+                        if (returnValue.childs.length > 0) {
+                            self.pensionOfficeSelectedCode(returnValue.childs[0].code);
+                            self.pensionModel().startMonth(returnValue.childs[0].codeName.substr(0, 7));
+                            self.pensionModel().endMonth(returnValue.childs[0].codeName.substr(9, returnValue.childs[0].codeName.length));
+                        }
+                    }, 1000);
                 }
             }
 
             public save() {
                 var self = this;
-                //TODO check update or create new 
-                //save office
-                //save history
-                //save health
+                //update health
                 if ($('#healthInsuranceTabPanel').hasClass("active")) {
-                    service.registerHealthRate(self.healthCollectData()).done(function() {
+                    service.updateHealthRate(self.healthCollectData()).done(function() {
                     });
+                    //reload list office
+                    self.loadHealthHistoryOfOffice();
                 }
                 else {
-                    //save pension
-                    service.registerPensionRate(self.pensionCollectData()).done(function() {
+                    //update pension
+                    service.updatePensionRate(self.pensionCollectData()).done(function() {
                     });
+                    self.loadPensionHistoryOfOffice();
                 }
             }
 
             // open dialog add history 
             public OpenModalAddHistory() {
                 var self = this;
+                var data;
+                var isHealth = true;
                 if ($('#healthInsuranceTabPanel').hasClass("active")) {
                     var sendOfficeItem = self.getDataOfHealthSelectedOffice();
+                    data = self.healthCollectData();
+                    //get history of first child office
+                    self.healthInsuranceOfficeList().forEach(function(item, index) {
+                        if (item.code == self.healthCurrentParentCode()) {
+                            if (item.childs.length > 0) {
+                                data.historyId = item.childs[0].code;
+                                data.startMonth = item.childs[0].codeName.substr(0, 7);
+                                data.endMonth = item.childs[0].codeName.substr(8, item.childs[0].codeName.length)
+                            }
+                        }
+                    });
+                    isHealth = true;
                 } else {
                     var sendOfficeItem = self.getDataOfPensionSelectedOffice();
+                    data = self.pensionCollectData();
+                    //get history of first child office
+                    self.pensionInsuranceOfficeList().forEach(function(item, index) {
+                        if (item.code == self.pensionCurrentParentCode()) {
+                            if (item.childs.length > 0) {
+                                data.historyId = item.childs[0].code;
+                                data.startMonth = item.childs[0].codeName.substr(0, 7);
+                                data.endMonth = item.childs[0].codeName.substr(8, item.childs[0].codeName.length)
+                            }
+                        }
+                    });
+                    isHealth = false;
                 }
 
                 nts.uk.ui.windows.setShared("sendOfficeParentValue", sendOfficeItem);
-
+                nts.uk.ui.windows.setShared("dataParentValue", data);
+                nts.uk.ui.windows.setShared("isHealthParentValue", isHealth);
                 nts.uk.ui.windows.setShared("isTransistReturnData", this.isTransistReturnData());
                 nts.uk.ui.windows.sub.modal("/view/qmm/008/b/index.xhtml", { title: "会社保険事業所の登録＞履歴の追加" }).onClosed(() => {
                     // Get child value return office Item
                     var returnValue = nts.uk.ui.windows.getShared("addHistoryChildValue");
                     if (returnValue != null) {
                         self.refreshOfficeList(returnValue);
-                        
                     }
                 });
             }
@@ -742,9 +761,17 @@ module nts.uk.pr.view.qmm008.a {
             //open modal config history 
             public OpenModalConfigHistory() {
                 var self = this;
-                var sendOfficeParentValue = this.getDataOfHealthSelectedOffice();
+                var isHealth = true;
+                if ($('#healthInsuranceTabPanel').hasClass("active")) {
+                    var sendOfficeItem = self.getDataOfHealthSelectedOffice();
+                    isHealth = true;
+                } else {
+                    var sendOfficeItem = self.getDataOfPensionSelectedOffice();
+                    isHealth = false;
+                }
                 // Set parent value
-                nts.uk.ui.windows.setShared("sendOfficeParentValue", sendOfficeParentValue);
+                nts.uk.ui.windows.setShared("sendOfficeParentValue", sendOfficeItem);
+                nts.uk.ui.windows.setShared("isHealthParentValue", isHealth);
                 nts.uk.ui.windows.setShared("currentChildCode", self.healthCurrentChildCode());
                 nts.uk.ui.windows.setShared("isTransistReturnData", this.isTransistReturnData());
                 nts.uk.ui.windows.sub.modal("/view/qmm/008/f/index.xhtml", { title: "会社保険事業所の登録＞履歴の編集" }).onClosed(() => {

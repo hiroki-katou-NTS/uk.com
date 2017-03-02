@@ -43,11 +43,16 @@ public class UpdateHealthInsuranceCommandHandler extends CommandHandler<UpdateHe
 		CompanyCode companyCode = new CompanyCode(AppContexts.user().companyCode());
 
 		// Get the history.
-		HealthInsuranceRate healthInsuranceRate = healthInsuranceRateRepository.findById(command.getHistoryId()).get();
+		HealthInsuranceRate findhealthInsuranceRate = healthInsuranceRateRepository.findById(command.getHistoryId()).get();
 
+		//if not exsits
+		if(findhealthInsuranceRate==null)
+		{
+			//TODO throw exception;
+		}
 		// Transfer data
 		HealthInsuranceRate updatedHealthInsuranceRate = command.toDomain(companyCode,
-				healthInsuranceRate.getHistoryId(), healthInsuranceRate.getOfficeCode());
+				findhealthInsuranceRate.getHistoryId(), findhealthInsuranceRate.getOfficeCode());
 
 		// Validate
 		healthInsuranceRateService.validateRequiredItem(updatedHealthInsuranceRate);

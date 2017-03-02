@@ -31,10 +31,9 @@ public interface HealthInsuranceRateRepository {
 	/**
 	 * Removes the.
 	 *
-	 * @param id the id
-	 * @param version the version
+	 * @param rate the rate
 	 */
-    void remove(String id, Long version);
+    void remove(String historyId);
 
 	/**
 	 * Find all.

@@ -12,11 +12,13 @@ var nts;
                     (function (b) {
                         var viewmodel;
                         (function (viewmodel) {
-                            var InsuranceOfficeItemDto = nts.uk.pr.view.qmm008.a.service.model.finder.InsuranceOfficeItemDto;
+                            var aservice = nts.uk.pr.view.qmm008.a.service;
                             var ScreenModel = (function () {
-                                function ScreenModel(receiveOfficeItem) {
+                                function ScreenModel(receiveOfficeItem, data, isHealth) {
                                     var self = this;
                                     self.getInsuranceOfficeItemDto = ko.observable(receiveOfficeItem);
+                                    self.getInsuranceRateDto = ko.observable(data);
+                                    self.getPreviousInsuranceRateDto = ko.observable(data);
                                     self.returnInsuranceOfficeItemDto = ko.observable(null);
                                     self.listOptions = ko.observableArray([new optionsModel(1, "最新の履歴(2016/04)から引き継ぐ"), new optionsModel(2, "初めから作成する")]);
                                     self.selectedValue = ko.observable(new optionsModel(1, ""));
@@ -25,8 +27,14 @@ var nts;
                                     if (receiveOfficeItem.childs.length > 0)
                                         self.selectedDate = ko.observable(self.getLastHistory(receiveOfficeItem));
                                     else {
-                                        self.selectedDate = ko.observable(new Date().getFullYear() + "/" + new Date().getMonth());
+                                        if (new Date().getMonth().toString().length == 1) {
+                                            self.selectedDate = ko.observable(new Date().getFullYear() + "/0" + new Date().getMonth());
+                                        }
+                                        else {
+                                            self.selectedDate = ko.observable(new Date().getFullYear() + "/" + new Date().getMonth());
+                                        }
                                     }
+                                    self.isHealth = ko.observable(isHealth);
                                 }
                                 ScreenModel.prototype.getLastHistory = function (OfficeItem) {
                                     if (OfficeItem.childs.length > 0) {
@@ -48,14 +56,59 @@ var nts;
                                 };
                                 ScreenModel.prototype.clickSettingButton = function () {
                                     var self = this;
+                                    var updateFlag = false;
+                                    if (self.isHealth()) {
+                                        if (!self.compareStringDate(self.getLastHistory(self.getInsuranceOfficeItemDto()), self.selectedDate())) {
+                                            alert("ER011");
+                                        }
+                                        else {
+                                            var healthData = self.getInsuranceRateDto();
+                                            var backupHistoryId = healthData.historyId;
+                                            var backupStartMonth = healthData.startMonth;
+                                            var backupEndMonth = healthData.endMonth;
+                                            healthData.historyId = "";
+                                            healthData.startMonth = self.selectedDate();
+                                            healthData.endMonth = "9999/12";
+                                            aservice.registerHealthRate(healthData).done(function () {
+                                                if (self.getInsuranceOfficeItemDto().childs.length > 0) {
+                                                    var previousHealthData = self.getPreviousInsuranceRateDto();
+                                                    previousHealthData.historyId = backupHistoryId;
+                                                    previousHealthData.startMonth = backupStartMonth;
+                                                    previousHealthData.endMonth = self.minusOneMonth(self.selectedDate());
+                                                    aservice.updateHealthRate(previousHealthData).done(function () {
+                                                    });
+                                                }
+                                            });
+                                        }
+                                    }
+                                    else {
+                                        if (!self.compareStringDate(self.getLastHistory(self.getInsuranceOfficeItemDto()), self.selectedDate())) {
+                                            alert("ER011");
+                                        }
+                                        else {
+                                            var pensionData = self.getInsuranceRateDto();
+                                            var backupHistoryId = pensionData.historyId;
+                                            var backupStartMonth = pensionData.startMonth;
+                                            var backupEndMonth = pensionData.endMonth;
+                                            pensionData.historyId = "";
+                                            pensionData.startMonth = self.selectedDate();
+                                            pensionData.endMonth = "9999/12";
+                                            aservice.registerPensionRate(pensionData).done(function () {
+                                                if (self.getInsuranceOfficeItemDto().childs.length > 0) {
+                                                    var previousPensionData = self.getPreviousInsuranceRateDto();
+                                                    previousPensionData.historyId = backupHistoryId;
+                                                    previousPensionData.startMonth = backupStartMonth;
+                                                    previousPensionData.endMonth = self.minusOneMonth(self.selectedDate());
+                                                    aservice.updatePensionRate(previousPensionData).done(function () {
+                                                    });
+                                                }
+                                            });
+                                        }
+                                    }
                                     if (!self.compareStringDate(self.getLastHistory(self.getInsuranceOfficeItemDto()), self.selectedDate())) {
                                         alert("ER011");
                                     }
                                     else {
-                                        if (self.getInsuranceOfficeItemDto().childs.length > 0) {
-                                            self.getInsuranceOfficeItemDto().childs[0].codeName = self.getLastHistory(self.getInsuranceOfficeItemDto()) + "~" + self.minusOneMonth(self.selectedDate());
-                                        }
-                                        self.getInsuranceOfficeItemDto().childs.unshift(new InsuranceOfficeItemDto("", "code", (self.getInsuranceOfficeItemDto().childs.length + 1).toString(), [], self.selectedDate() + "~ 9999/12"));
                                         nts.uk.ui.windows.setShared("addHistoryChildValue", self.getInsuranceOfficeItemDto(), true);
                                         nts.uk.ui.windows.close();
                                     }

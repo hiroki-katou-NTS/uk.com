@@ -32,9 +32,8 @@ public interface PensionRateRepository {
 	 * Removes the.
 	 *
 	 * @param id the id
-	 * @param version the version
 	 */
-    void remove(String id, Long version);
+    void remove(String id);
 
 	/**
 	 * Find all.

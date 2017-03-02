@@ -1,6 +1,9 @@
 module nts.uk.pr.view.qmm008.f {
     export module viewmodel {
         import InsuranceOfficeItemDto = nts.uk.pr.view.qmm008.a.service.model.finder.InsuranceOfficeItemDto;
+        import aservice = nts.uk.pr.view.qmm008.a.service;
+        import HealthInsuranceRateDto = nts.uk.pr.view.qmm008.a.service.model.finder.HealthInsuranceRateDto;
+        import PensionRateDto = nts.uk.pr.view.qmm008.a.service.model.finder.PensionRateDto;
         export class ScreenModel {
             OfficeItemModel: KnockoutObservable<InsuranceOfficeItemDto>;
             selectedHistoryCode: KnockoutObservable<string>;
@@ -15,13 +18,15 @@ module nts.uk.pr.view.qmm008.f {
             listOptions: KnockoutObservableArray<any>;
             selectedValue: KnockoutObservable<any>;
             officeCodeName: KnockoutObservable<string>;
-            constructor(receiveOfficeItem: InsuranceOfficeItemDto, selectedHistoryCode: string) {
+            isHealth: KnockoutObservable<boolean>;
+            isRemove: KnockoutObservable<boolean>;
+            constructor(receiveOfficeItem: InsuranceOfficeItemDto, selectedHistoryCode: string, isHealthParentValue: boolean) {
                 var self = this;
                 self.OfficeItemModel = ko.observable(receiveOfficeItem);
                 self.selectedHistoryCode = ko.observable(selectedHistoryCode);
 
                 self.listOptions = ko.observableArray([new optionsModel(1, "履歴を削除する"), new optionsModel(2, "履歴を修正する")]);
-                self.selectedValue = ko.observable(new optionsModel(1, ""));
+                self.selectedValue = ko.observable(self.listOptions()[1]);
 
                 self.modalValue = ko.observable("Goodbye world!");
                 self.isTransistReturnData = ko.observable(nts.uk.ui.windows.getShared("isTransistReturnData"));
@@ -33,6 +38,18 @@ module nts.uk.pr.view.qmm008.f {
                 self.endMonth = ko.observable('');
                 self.previousStartMonth = ko.observable('');
                 self.getDate();
+                self.selectedValue.subscribe(function(selectedValue: optionsModel) {
+                    if (selectedValue.id == self.listOptions()[0].id) {
+                        //TODO disable date picker  
+                        self.isRemove(true);
+                    }
+                    else {
+                        //
+                        self.isRemove(false);
+                    }
+                });
+                self.isHealth = ko.observable(isHealthParentValue);
+                self.isRemove = ko.observable(false);
             }
 
             //get start and end  date
@@ -41,11 +58,9 @@ module nts.uk.pr.view.qmm008.f {
                 self.OfficeItemModel().childs.forEach(function(item, index) {
                     if (item.code == self.selectedHistoryCode()) {
                         //get previous startMonth
-                        if (index > 0) {
-                            var previousViewRangeString = self.OfficeItemModel().childs[index + 1].codeName;
-                            var previousRangeCharIndex = previousViewRangeString.indexOf("~");
-                            self.previousStartMonth(previousViewRangeString.substr(0, previousRangeCharIndex));
-                        }
+                        var previousViewRangeString = self.OfficeItemModel().childs[index + 1].codeName;
+                        var previousRangeCharIndex = previousViewRangeString.indexOf("~");
+                        self.previousStartMonth(previousViewRangeString.substr(0, previousRangeCharIndex));
                         //get start and end month
                         var viewRangeString = self.OfficeItemModel().childs[index].codeName;
                         var rangeCharIndex = viewRangeString.indexOf("~");
@@ -78,7 +93,7 @@ module nts.uk.pr.view.qmm008.f {
                     }
                 }
             }
-            
+
             public minusOneMonth(stringDate: string) {
                 var index = stringDate.indexOf("/");
                 var year = stringDate.substr(0, index);
@@ -88,13 +103,92 @@ module nts.uk.pr.view.qmm008.f {
                 }
                 return month.length == 1 ? year + "/0" + month : year + "/" + month;
             }
-            
+
+            public convertMonth(stringDate: string) {
+                var year = stringDate.substr(0, 4);
+                var month = stringDate.substring(4, stringDate.length);
+                return year + "/" + month;
+            }
+
             // click button setting
             clickSettingButton() {
                 var self = this;
-                //check choice(delete or update history)
-                //                if()
-                //                {}
+                //TODO check health or pension
+                if (self.isHealth()) {
+                    if (self.isRemove()) {
+                        //remove current history  
+                        aservice.removeHealthRate(self.OfficeItemModel().childs[0].code);
+                        //update previous history
+                        aservice.getHealthInsuranceItemDetail(self.OfficeItemModel().childs[1].code).done(function(data: HealthInsuranceRateDto) {
+                            //update previous end month to 9999/12
+                            data.endMonth = "9999/12";
+                            data.startMonth = self.convertMonth(data.startMonth);
+                            aservice.updateHealthRate(data);
+                        });
+                    }
+                    else {
+                        //compare previous startMonth and startMonth -1
+                        if (self.compareStringDate(self.previousStartMonth(), self.minusOneMonth(self.startMonth()))) {
+                            //update current history
+                            aservice.getHealthInsuranceItemDetail(self.OfficeItemModel().childs[0].code).done(function(data: HealthInsuranceRateDto) {
+                                //
+                                data.startMonth = self.startMonth();
+                                data.endMonth = self.convertMonth(data.endMonth);
+                                aservice.updateHealthRate(data);
+                            });
+                            //TODO update previous history
+                            aservice.getHealthInsuranceItemDetail(self.OfficeItemModel().childs[1].code).done(function(data: HealthInsuranceRateDto) {
+                                //update previous end month to 9999/12
+                                data.startMonth = self.convertMonth(data.startMonth);
+                                data.endMonth = self.minusOneMonth(self.startMonth());
+                                aservice.updateHealthRate(data);
+                            });
+                        }
+                        else {
+                            //invalid date
+                            alert("ER011");
+                        }
+                    }
+                }
+                //for pension
+                else {
+
+                    if (self.isRemove()) {
+                        //remove current history  
+                        aservice.removePensionRate(self.OfficeItemModel().childs[0].code);
+                        //update previous history
+                        aservice.getPensionItemDetail(self.OfficeItemModel().childs[1].code).done(function(data: PensionRateDto) {
+                            //update previous end month to 9999/12
+                            data.endMonth = "9999/12";
+                            data.startMonth = self.convertMonth(data.startMonth);
+                            aservice.updatePensionRate(data);
+                        });
+                    }
+                    else {
+                        //compare previous startMonth and startMonth -1
+                        if (self.compareStringDate(self.previousStartMonth(), self.minusOneMonth(self.startMonth()))) {
+                            //update current history
+                            aservice.getPensionItemDetail(self.OfficeItemModel().childs[0].code).done(function(data: PensionRateDto) {
+                                //
+                                data.startMonth = self.startMonth();
+                                data.endMonth = self.convertMonth(data.endMonth);
+                                aservice.updatePensionRate(data);
+                            });
+                            //TODO update previous history
+                            aservice.getPensionItemDetail(self.OfficeItemModel().childs[1].code).done(function(data: PensionRateDto) {
+                                //update previous end month to 9999/12
+                                data.startMonth = self.convertMonth(data.startMonth);
+                                data.endMonth = self.minusOneMonth(self.startMonth());
+                                aservice.updatePensionRate(data);
+                            });
+                        }
+                        else {
+                            //invalid date
+                            alert("ER011");
+                        }
+                    }
+
+                }
                 //update
                 self.OfficeItemModel().childs.forEach(function(item, index) {
                     //update history 
@@ -102,8 +196,8 @@ module nts.uk.pr.view.qmm008.f {
                         //check start month < end month and previous startMonth < startMonth
                         if (self.compareStringDate(self.startMonth(), self.endMonth()) && self.compareStringDate(self.previousStartMonth(), self.minusOneMonth(self.startMonth()))) {
                             self.OfficeItemModel().childs[index].codeName = self.startMonth() + "~" + self.endMonth();
-                        //update endMonth of previous history
-                            self.OfficeItemModel().childs[index + 1].codeName = self.previousStartMonth()+"~"+ self.minusOneMonth(self.startMonth());
+                            //update endMonth of previous history
+                            self.OfficeItemModel().childs[index + 1].codeName = self.previousStartMonth() + "~" + self.minusOneMonth(self.startMonth());
                         }
                         else {
                             alert("ER011");

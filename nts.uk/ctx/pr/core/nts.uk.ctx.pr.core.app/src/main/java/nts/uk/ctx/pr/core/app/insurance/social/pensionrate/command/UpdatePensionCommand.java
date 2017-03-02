@@ -1,6 +1,7 @@
 package nts.uk.ctx.pr.core.app.insurance.social.pensionrate.command;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -12,6 +13,7 @@ import nts.uk.ctx.pr.core.dom.insurance.Ins2Rate;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
 import nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.FundRateItem;
+import nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionChargeRateItem;
 import nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionPremiumRateItem;
 import nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionRate;
 import nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionRateGetMemento;
@@ -31,8 +33,12 @@ public class UpdatePensionCommand extends PensionBaseCommand {
 
 			@Override
 			public List<PensionPremiumRateItem> getPremiumRateItems() {
-				// TODO convert command -> domain
-				return null;
+				return command.getPremiumRateItems().stream().map(dto -> {
+					PensionChargeRateItem pensionChargeRateItem = new PensionChargeRateItem();
+					pensionChargeRateItem.setCompanyRate(new Ins2Rate(dto.getCompanyRate()));
+					pensionChargeRateItem.setPersonalRate(new Ins2Rate(dto.getPersonalRate()));
+					return new PensionPremiumRateItem(dto.getPayType(), dto.getGenderType(), pensionChargeRateItem);
+				}).collect(Collectors.toList());
 			}
 
 			@Override
@@ -52,8 +58,18 @@ public class UpdatePensionCommand extends PensionBaseCommand {
 
 			@Override
 			public List<FundRateItem> getFundRateItems() {
-				// TODO convert command -> domain
-				return null;
+				return command.getFundRateItems().stream().map(dto -> {
+					PensionChargeRateItem burdenPensionChargeRateItem = new PensionChargeRateItem();
+					burdenPensionChargeRateItem.setCompanyRate(new Ins2Rate(dto.getBurdenChargeCompanyRate()));
+					burdenPensionChargeRateItem.setPersonalRate(new Ins2Rate(dto.getBurdenChargePersonalRate()));
+
+					PensionChargeRateItem exemptionPensionChargeRateItem = new PensionChargeRateItem();
+					exemptionPensionChargeRateItem.setCompanyRate(new Ins2Rate(dto.getExemptionChargeCompanyRate()));
+					exemptionPensionChargeRateItem.setPersonalRate(new Ins2Rate(dto.getExemptionChargePersonalRate()));
+
+					return new FundRateItem(dto.getPayType(), dto.getGenderType(), burdenPensionChargeRateItem,
+							exemptionPensionChargeRateItem);
+				}).collect(Collectors.toList());
 			}
 
 			@Override
@@ -68,7 +84,8 @@ public class UpdatePensionCommand extends PensionBaseCommand {
 
 			@Override
 			public MonthRange getApplyRange() {
-				return MonthRange.range(PrimitiveUtil.toYearMonth(command.getStartMonth(), "/"),PrimitiveUtil.toYearMonth(command.getEndMonth(), "/"));
+				return MonthRange.range(PrimitiveUtil.toYearMonth(command.getStartMonth(), "/"),
+						PrimitiveUtil.toYearMonth(command.getEndMonth(), "/"));
 			}
 
 			@Override
