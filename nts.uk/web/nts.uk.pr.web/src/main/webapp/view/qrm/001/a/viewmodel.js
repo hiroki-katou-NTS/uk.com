@@ -7,18 +7,12 @@ var qrm001;
             var ScreenModel = (function () {
                 function ScreenModel() {
                     var self = this;
+                    //Employee Process 
                     self.employeeList = ko.observableArray([
                         new EmployeeInfo('0001', 'A'),
                         new EmployeeInfo('0002', 'B'),
                         new EmployeeInfo('0003', 'C')
                     ]);
-                    self.value = ko.observable(1);
-                    self.value.subscribe(function (value) {
-                        console.log(value);
-                    });
-                    self.payDateList = ko.observableArray([]);
-                    self.isUpdate = false;
-                    self.date = ko.observable("2016/12/01");
                     self.currentEmployeeCode = ko.observable(0);
                     self.currentEmployeeName = ko.observable('0001');
                     self.currentEmployee = ko.observable(self.employeeList()[self.currentEmployeeCode()]);
@@ -30,86 +24,127 @@ var qrm001;
                         self.currentEmployee(self.employeeList()[value]);
                         self.currentEmployeeName(self.currentEmployee().personId());
                     });
-                    self.retirementPaymentInfo = ko.observable(new RetirementPaymentInfo('0001', '2', '3', '4', 5, '6', '7', '8', '9', '0', '1', 2, 0, '4', '5', '6', 7, 8, '9', '1'));
-                    self.fullSetSelect = ko.observableArray([
-                        { name: '使用しない' },
-                        { name: '支給1' },
-                        { name: '支給2' },
-                        { name: '支給3' },
-                        { name: '支給4' },
-                        { name: '支給5' }]);
-                    self.fullPaytransfer = ko.observableArray([
-                        new BankDataSet('支給1', 'bank1', 'branch1', '0001', '1'),
-                        new BankDataSet('使用しない', 'bank2', 'branch2', '0002', '2'),
-                        new BankDataSet('使用しない', 'bank3', 'branch3', '0003', '3'),
-                        new BankDataSet('使用しない', 'bank4', 'branch4', '0004', '4'),
-                        new BankDataSet('使用しない', 'bank5', 'branch5', '0005', '5')
-                    ]);
-                    self.currentPaytransfer = ko.observableArray([
-                        new BankDataSet('支給1', 'bank1', 'branch1', '0001', '1'),
-                        new BankDataSet('使用しない', 'bank2', 'branch2', '0002', '2'),
-                        new BankDataSet('使用しない', 'bank3', 'branch3', '0003', '3'),
-                        new BankDataSet('使用しない', 'bank4', 'branch4', '0004', '4'),
-                        new BankDataSet('使用しない', 'bank5', 'branch5', '0005', '5')
-                    ]);
-                    self.currentPaytransfer.subscribe(function (value) { console.log(value); });
-                    self.selectList10 = ko.observableArray(self.refreshSelect(self.fullSetSelect, self.currentPaytransfer, 5));
-                    self.currentSetSelect = ko.observableArray(_.filter(self.fullSetSelect(), function (o) {
-                        return o.name !== self.currentPaytransfer()[0].dataSetName() &&
-                            o.name !== self.currentPaytransfer()[1].dataSetName() &&
-                            o.name !== self.currentPaytransfer()[2].dataSetName() &&
-                            o.name !== self.currentPaytransfer()[3].dataSetName();
-                    }));
-                    self.currentPaytransfer().forEach(function (item) {
-                        item.dataSetName.subscribe(function (value) {
-                            if ((item.dataSetName() == '使用しない')) {
-                                self.setDataRow(item, self.fullPaytransfer, -1);
-                                self.selectList10(self.refreshSelect(self.fullSetSelect, self.currentPaytransfer, 5));
-                            }
-                            else {
-                                var index = parseInt(item.dataSetName().substring(2, 3)) - 1;
-                                self.setDataRow(item, self.fullPaytransfer, index);
-                                self.selectList10(self.refreshSelect(self.fullSetSelect, self.currentPaytransfer, 5));
-                            }
-                        });
-                        item.transferMoney.subscribe(function (value) {
-                            if (!(item.dataSetName() == '使用しない')) {
-                                self.fullPaytransfer()[parseInt(item.dataSetName().substring(2, 3)) - 1].transferMoney(value);
-                            }
-                        });
-                    });
-                    self.retirementPaymentInfo.subscribe(function () {
-                        if (!self.retirementPaymentInfo().taxCalculationMethod()) {
+                    //Retirement Payment Process
+                    self.isUpdate = false;
+                    self.SEL_007_INP_014 = ko.observable();
+                    self.SEL_001 = ko.observable();
+                    self.INP_002 = ko.observable();
+                    self.INP_003 = ko.observable();
+                    self.INP_004 = ko.observable();
+                    self.INP_005 = ko.observable();
+                    self.INP_006 = ko.observable();
+                    self.INP_007 = ko.observable();
+                    self.INP_008 = ko.observable();
+                    self.SEL_004 = ko.observable(2);
+                    self.SEL_005 = ko.observable();
+                    self.INP_009 = ko.observable();
+                    self.INP_010 = ko.observable();
+                    self.INP_011 = ko.observable();
+                    self.SEL_005.subscribe(function (value) {
+                        if (!value) {
                             self.autoCaculator();
                             $(".caculator").css('background-color', '#ffc000');
                         }
                         else
                             $(".caculator").css('background-color', '#cee6ff');
                     });
-                    self.retirementPaymentInfo().totalPaymentMoney.subscribe(function (value) {
-                        console.log(value);
+                    self.INP_005.subscribe(function (valueinp5) { if (!self.SEL_005()) {
+                        self.autoCaculator();
+                    } });
+                    self.INP_006.subscribe(function (valueinp6) { if (!self.SEL_005()) {
+                        self.autoCaculator();
+                    } });
+                    self.INP_007.subscribe(function (valueinp7) { if (!self.SEL_005()) {
+                        self.autoCaculator();
+                    } });
+                    self.INP_008.subscribe(function (valueinp8) { if (!self.SEL_005()) {
+                        self.autoCaculator();
+                    } });
+                    self.SEL_004.subscribe(function (valuesel4) { if (!self.SEL_005()) {
+                        self.autoCaculator();
+                    } });
+                    self.retirementPaymentKeyList = ko.observableArray([]);
+                    self.retirementPaymentKeyCurrent = ko.observable(new RetirementPaymentKey(null, null, null));
+                    self.retirementPaymentInfoList = ko.observableArray([]);
+                    self.retirementPaymentInfoCurrent = ko.observable(new RetirementPaymentInfo(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0));
+                    self.transferBankMoneyList = ko.observableArray([[]]);
+                    self.transferBankMoneyCurrent = ko.observableArray([
+                        new TransferBankMoney(1, 1), new TransferBankMoney(2, 2), new TransferBankMoney(3, 3), new TransferBankMoney(4, 4), new TransferBankMoney(5, 5)
+                    ]);
+                    self.fullSetSelect = ko.observableArray([
+                        { code: 0, name: '使用しない' },
+                        { code: 1, name: '支給1' },
+                        { code: 2, name: '支給2' },
+                        { code: 3, name: '支給3' },
+                        { code: 4, name: '支給4' },
+                        { code: 5, name: '支給5' }]);
+                    self.bankTransferList = ko.observableArray([
+                        new BankTransferInfo('bank1', 'branch1', '0001'),
+                        new BankTransferInfo('bank2', 'branch2', '0002'),
+                        new BankTransferInfo('bank3', 'branch3', '0003'),
+                        new BankTransferInfo('bank4', 'branch4', '0004'),
+                        new BankTransferInfo('bank5', 'branch5', '0005')
+                    ]);
+                    self.selectList10 = ko.observableArray(self.refreshSelect(self.fullSetSelect, self.transferBankMoneyCurrent, 5));
+                    self.transferBankMoneyCurrent().forEach(function (item) {
+                        item.optionSet.subscribe(function (value) {
+                            if (value) {
+                                item.money(null);
+                                self.selectList10(self.refreshSelect(self.fullSetSelect, self.transferBankMoneyCurrent, 5));
+                            }
+                            else {
+                                item.money(null);
+                                self.selectList10(self.refreshSelect(self.fullSetSelect, self.transferBankMoneyCurrent, 5));
+                            }
+                        });
                     });
                 }
                 ScreenModel.prototype.startPage = function () {
                     var self = this;
                     var dfd = $.Deferred();
-                    var command = { personId: "1", dateTime: self.date() };
+                    var command = { personId: "1", dateTime: self.SEL_007_INP_014() };
                     qrm001.a.service.getRetirementPaymentList('A0001').done(function (data) {
                         if (!data) {
                             self.isUpdate = false;
                         }
                         else {
-                            self.payDateList.removeAll();
+                            self.retirementPaymentKeyList.removeAll();
+                            self.retirementPaymentInfoList.removeAll();
+                            self.transferBankMoneyList.removeAll();
                             data.forEach(function (item) {
-                                self.payDateList.push(new RetirementPaymentInfo(item.companyCode, item.personId, item.payDate, item.trialPeriodSet, item.exclusionYears, item.additionalBoardYears, item.boardYears, item.totalPaymentMoney, item.deduction1Money, item.deduction2Money, item.deduction3Money, item.retirementPayOption, item.taxCalculationMethod, item.incomeTaxMoney, item.cityTaxMoney, item.prefectureTaxMoney, item.totalDeclarationMoney, item.actualRecieveMoney, item.withholdingMeno, item.statementMemo));
+                                self.retirementPaymentKeyList.push(new RetirementPaymentKey(item.companyCode, item.personId, item.payDate));
+                                self.retirementPaymentInfoList.push(new RetirementPaymentInfo(item.trialPeriodSet, item.exclusionYears, item.additionalBoardYears, item.boardYears, item.totalPaymentMoney, item.deduction1Money, item.deduction2Money, item.deduction3Money, item.retirementPayOption, item.taxCalculationMethod, item.incomeTaxMoney, item.cityTaxMoney, item.prefectureTaxMoney, item.totalDeclarationMoney, item.actualRecieveMoney, item.withholdingMeno, item.statementMemo));
+                                self.transferBankMoneyList.push([
+                                    new TransferBankMoney(item.bankTransferOption1, item.Option1Money),
+                                    new TransferBankMoney(item.bankTransferOption2, item.Option2Money),
+                                    new TransferBankMoney(item.bankTransferOption3, item.Option3Money),
+                                    new TransferBankMoney(item.bankTransferOption4, item.Option4Money),
+                                    new TransferBankMoney(item.bankTransferOption5, item.Option5Money)]);
                             });
-                            self.date(_.first(self.payDateList()).payDate);
-                            self.retirementPaymentInfo(_.first(self.payDateList()));
-                            self.date.subscribe(function (value) {
+                            self.SEL_007_INP_014(_.first(self.retirementPaymentKeyList()).payDate);
+                            self.retirementPaymentKeyCurrent(_.first(self.retirementPaymentKeyList()));
+                            self.retirementPaymentInfoCurrent(_.first(self.retirementPaymentInfoList()));
+                            self.transferBankMoneyCurrent(_.first(self.transferBankMoneyList()));
+                            self.SEL_007_INP_014.subscribe(function (value) {
                                 var index = $("#combo-box7").igCombo("activeIndex");
-                                self.retirementPaymentInfo(self.payDateList()[index]);
+                                self.retirementPaymentKeyCurrent(self.retirementPaymentKeyList()[index]);
+                                self.retirementPaymentInfoCurrent(self.retirementPaymentInfoList()[index]);
+                                self.transferBankMoneyCurrent(self.transferBankMoneyList()[index]);
                             });
+                            self.SEL_001(self.retirementPaymentInfoCurrent().trialPeriodSet());
+                            self.INP_002(self.retirementPaymentInfoCurrent().exclusionYears());
+                            self.INP_003(self.retirementPaymentInfoCurrent().additionalBoardYears());
+                            self.INP_004(self.retirementPaymentInfoCurrent().boardYears());
+                            self.INP_005(self.retirementPaymentInfoCurrent().totalPaymentMoney());
+                            self.INP_006(self.retirementPaymentInfoCurrent().deduction1Money());
+                            self.INP_007(self.retirementPaymentInfoCurrent().deduction2Money());
+                            self.INP_008(self.retirementPaymentInfoCurrent().deduction3Money());
+                            self.SEL_004(self.retirementPaymentInfoCurrent().retirementPayOption());
+                            self.INP_009(self.retirementPaymentInfoCurrent().incomeTaxMoney());
+                            self.INP_010(self.retirementPaymentInfoCurrent().cityTaxMoney());
+                            self.INP_011(self.retirementPaymentInfoCurrent().prefectureTaxMoney());
                             self.isUpdate = true;
+                            self.SEL_005(self.retirementPaymentInfoCurrent().taxCalculationMethod());
                         }
                         dfd.resolve();
                     }).fail(function (res) {
@@ -124,21 +159,16 @@ var qrm001;
                     var self = this;
                     self.currentEmployeeCode(self.currentEmployeeCode() - 1);
                 };
-                ScreenModel.prototype.loadData = function (src, dst) {
-                    ko.utils.arrayForEach(src(), function (item) {
-                        dst.push(item);
-                    });
-                };
                 ScreenModel.prototype.filter = function (dataset, currentSet, index) {
                     var self = this;
                     return _.filter(dataset(), function (o) {
-                        return o.name == '使用しない' ||
-                            o.name == currentSet()[index].dataSetName() ||
-                            o.name !== currentSet()[0].dataSetName() &&
-                                o.name !== currentSet()[1].dataSetName() &&
-                                o.name !== currentSet()[2].dataSetName() &&
-                                o.name !== currentSet()[3].dataSetName() &&
-                                o.name !== currentSet()[4].dataSetName();
+                        return o.code == 0 ||
+                            o.code == currentSet()[index].optionSet() ||
+                            o.code !== currentSet()[0].optionSet() &&
+                                o.code !== currentSet()[1].optionSet() &&
+                                o.code !== currentSet()[2].optionSet() &&
+                                o.code !== currentSet()[3].optionSet() &&
+                                o.code !== currentSet()[4].optionSet();
                     });
                 };
                 ScreenModel.prototype.refreshSelect = function (source1, source2, length) {
@@ -149,77 +179,81 @@ var qrm001;
                     }
                     return array;
                 };
-                ScreenModel.prototype.setDataRow = function (item, dataSet, index) {
-                    if (0 <= index) {
-                        item.bankName(dataSet()[index].bankName());
-                        item.branchName(dataSet()[index].branchName());
-                        item.accountNumber(dataSet()[index].accountNumber());
-                        item.transferMoney(dataSet()[index].transferMoney());
-                    }
-                    else {
-                        item.bankName(null);
-                        item.branchName(null);
-                        item.accountNumber(null);
-                        item.transferMoney(null);
-                    }
-                };
-                ScreenModel.prototype.setPaytransfer = function (variable, dataSet) {
-                    for (var i = 0; i < 5; i++) {
-                        variable.push(new BankDataSet(dataSet["dataSetName" + 1], dataSet["bankName" + 1], dataSet["branchName" + 1], dataSet["accountNumber" + 1], dataSet["transferMoney" + 1]));
-                    }
-                };
                 ScreenModel.prototype.manualCaculator = function () {
                     var self = this;
-                    var totalPaymentMoney = parseInt(self.retirementPaymentInfo().totalPaymentMoney());
-                    var deduction1 = parseInt(self.retirementPaymentInfo().deduction1Money());
-                    var deduction2 = parseInt(self.retirementPaymentInfo().deduction2Money());
-                    var deduction3 = parseInt(self.retirementPaymentInfo().deduction3Money());
-                    var incomeTax = parseInt(self.retirementPaymentInfo().incomeTaxMoney());
-                    var cityTax = parseInt(self.retirementPaymentInfo().cityTaxMoney());
-                    var prefectureTax = parseInt(self.retirementPaymentInfo().prefectureTaxMoney());
+                    var totalPaymentMoney = parseInt(self.INP_005());
+                    var deduction1 = parseInt(self.INP_006());
+                    var deduction2 = parseInt(self.INP_007());
+                    var deduction3 = parseInt(self.INP_008());
+                    var incomeTax = parseInt(self.INP_009());
+                    var cityTax = parseInt(self.INP_010());
+                    var prefectureTax = parseInt(self.INP_011());
                     var totalDeclarationMoney = (deduction1 ? deduction1 : 0) +
                         (deduction2 ? deduction2 : 0) +
                         (deduction3 ? deduction3 : 0) +
                         (incomeTax ? incomeTax : 0) +
                         (cityTax ? cityTax : 0) +
                         (prefectureTax ? prefectureTax : 0);
-                    self.retirementPaymentInfo().totalDeclarationMoney(totalDeclarationMoney);
-                    self.retirementPaymentInfo().actualRecieveMoney(totalPaymentMoney - totalDeclarationMoney);
+                    self.retirementPaymentInfoCurrent().totalDeclarationMoney(totalDeclarationMoney);
+                    self.retirementPaymentInfoCurrent().actualRecieveMoney(totalPaymentMoney - totalDeclarationMoney);
                 };
                 ScreenModel.prototype.autoCaculator = function () {
                     var self = this;
                     var year; // LBL003
                     var reduction; // Khau tru
-                    console.log(self.retirementPaymentInfo);
-                    var totalPaymentMoney = parseInt(self.retirementPaymentInfo().totalPaymentMoney());
+                    var totalPaymentMoney = parseInt(self.INP_005());
                     var rs = (totalPaymentMoney - reduction) / 2;
                     var tax = (rs < 0) ? rs : 0; // Thue nghi viec
-                    var payOption = self.retirementPaymentInfo().retirementPayOption();
-                    var deduction1 = parseInt(self.retirementPaymentInfo().deduction1Money());
-                    var deduction2 = parseInt(self.retirementPaymentInfo().deduction2Money());
-                    var deduction3 = parseInt(self.retirementPaymentInfo().deduction3Money());
-                    var incomeTax = parseInt(self.retirementPaymentInfo().incomeTaxMoney());
+                    var payOption = self.SEL_004();
+                    var deduction1 = parseInt(self.INP_006());
+                    var deduction2 = parseInt(self.INP_007());
+                    var deduction3 = parseInt(self.INP_008());
+                    var incomeTax;
                     if (payOption == 2) {
                         incomeTax = totalPaymentMoney * 20.42 / 100;
                     }
-                    else if (payOption) {
-                    }
                     else {
+                        switch (true) {
+                            case (1000 <= totalPaymentMoney) && (totalPaymentMoney < 1950000):
+                                incomeTax = totalPaymentMoney * 5 / 100 - 0;
+                                break;
+                            case (1950000 <= totalPaymentMoney) && (totalPaymentMoney < 3300000):
+                                incomeTax = totalPaymentMoney * 10 / 100 - 97500;
+                                break;
+                            case (3300000 <= totalPaymentMoney) && (totalPaymentMoney < 6950000):
+                                incomeTax = totalPaymentMoney * 20 / 100 - 427500;
+                                break;
+                            case (6950000 <= totalPaymentMoney) && (totalPaymentMoney < 9000000):
+                                incomeTax = totalPaymentMoney * 23 / 100 - 636000;
+                                break;
+                            case (9000000 <= totalPaymentMoney) && (totalPaymentMoney < 18000000):
+                                incomeTax = totalPaymentMoney * 33 / 100 - 1536000;
+                                break;
+                            case (18000000 <= totalPaymentMoney) && (totalPaymentMoney < 40000000):
+                                incomeTax = totalPaymentMoney * 40 / 100 - 2796000;
+                                break;
+                            case (40000000 <= totalPaymentMoney):
+                                incomeTax = totalPaymentMoney * 45 / 100 - 4796000;
+                                break;
+                            default:
+                                incomeTax = totalPaymentMoney * 0 - 0;
+                                break;
+                        }
                     }
                     ;
                     var cityTax = (tax * 6 / 100) * 90 / 100;
                     var prefectureTax = (tax * 4 / 100) * 90 / 100;
-                    var totalDeclarationMoney = (deduction1 ? deduction1 : 0) +
+                    var totalDeclarationMoney = parseInt((deduction1 ? deduction1 : 0) +
                         (deduction2 ? deduction2 : 0) +
                         (deduction3 ? deduction3 : 0) +
                         (incomeTax ? incomeTax : 0) +
                         (cityTax ? cityTax : 0) +
-                        (prefectureTax ? prefectureTax : 0);
-                    self.retirementPaymentInfo().incomeTaxMoney(incomeTax);
-                    self.retirementPaymentInfo().cityTaxMoney(cityTax);
-                    self.retirementPaymentInfo().prefectureTaxMoney(prefectureTax);
-                    self.retirementPaymentInfo().totalDeclarationMoney(totalDeclarationMoney);
-                    self.retirementPaymentInfo().actualRecieveMoney(totalPaymentMoney - totalDeclarationMoney);
+                        (prefectureTax ? prefectureTax : 0));
+                    self.INP_009(incomeTax);
+                    self.INP_010(cityTax);
+                    self.INP_011(prefectureTax);
+                    self.retirementPaymentInfoCurrent().totalDeclarationMoney(totalDeclarationMoney);
+                    self.retirementPaymentInfoCurrent().actualRecieveMoney(totalPaymentMoney - totalDeclarationMoney);
                 };
                 ScreenModel.prototype.openDialog = function () {
                     nts.uk.ui.windows.sub.modal('/view/qrm/001/b/index.xhtml', { title: '入力欄の背景色について', dialogClass: "no-close" });
@@ -227,7 +261,7 @@ var qrm001;
                 ScreenModel.prototype.saveData = function (isUpdate) {
                     var self = this;
                     var dfd = $.Deferred();
-                    var command = ko.mapping.toJS(self.retirementPaymentInfo());
+                    var command;
                     if (isUpdate) {
                         nts.uk.ui.dialog.confirm("Do you want to Update ?").ifYes(function () {
                             qrm001.a.service.updateRetirementPaymentInfo(command).done(function (data) {
@@ -254,7 +288,7 @@ var qrm001;
                 ScreenModel.prototype.deleteData = function () {
                     var self = this;
                     var dfd = $.Deferred();
-                    var command = ko.mapping.toJS(self.retirementPaymentInfo());
+                    var command;
                     nts.uk.ui.dialog.confirm("Do you want to Remove ?").ifYes(function () {
                         qrm001.a.service.removeRetirementPaymentInfo(command).done(function (data) {
                             nts.uk.ui.dialog.alert("Remove Success");
@@ -265,29 +299,35 @@ var qrm001;
                         });
                     }).ifCancel(function () { });
                 };
-                ScreenModel.prototype.checkEmpty = function () {
-                    var self = this;
-                    self.retirementPaymentInfo;
-                };
                 return ScreenModel;
             }());
             viewmodel.ScreenModel = ScreenModel;
-            var BankDataSet = (function () {
-                function BankDataSet(dataSetName, bankName, branchName, accountNumber, transferMoney) {
-                    this.dataSetName = ko.observable(dataSetName);
+            var EmployeeInfo = (function () {
+                function EmployeeInfo(personId, name) {
+                    this.personId = ko.observable(personId);
+                    this.name = ko.observable(name);
+                }
+                return EmployeeInfo;
+            }());
+            var BankTransferInfo = (function () {
+                function BankTransferInfo(bankName, branchName, accountNumber) {
                     this.bankName = ko.observable(bankName);
                     this.branchName = ko.observable(branchName);
                     this.accountNumber = ko.observable(accountNumber);
-                    this.transferMoney = ko.observable(transferMoney);
                 }
-                return BankDataSet;
+                return BankTransferInfo;
+            }());
+            var RetirementPaymentKey = (function () {
+                function RetirementPaymentKey(companyCode, personId, payDate) {
+                    this.companyCode = ko.observable(companyCode);
+                    this.personId = ko.observable(personId);
+                    this.payDate = ko.observable(payDate);
+                }
+                return RetirementPaymentKey;
             }());
             var RetirementPaymentInfo = (function () {
-                function RetirementPaymentInfo(companyCode, personId, payDate, trialPeriodSet, exclusionYears, additionalBoardYears, boardYears, totalPaymentMoney, deduction1Money, deduction2Money, deduction3Money, retirementPayOption, taxCalculationMethod, incomeTaxMoney, cityTaxMoney, prefectureTaxMoney, totalDeclarationMoney, actualRecieveMoney, withholdingMeno, statementMemo) {
+                function RetirementPaymentInfo(trialPeriodSet, exclusionYears, additionalBoardYears, boardYears, totalPaymentMoney, deduction1Money, deduction2Money, deduction3Money, retirementPayOption, taxCalculationMethod, incomeTaxMoney, cityTaxMoney, prefectureTaxMoney, totalDeclarationMoney, actualRecieveMoney, withholdingMeno, statementMemo) {
                     var self = this;
-                    self.companyCode = ko.observable(companyCode);
-                    self.personId = ko.observable(personId);
-                    self.payDate = payDate;
                     self.trialPeriodSet = ko.observable(trialPeriodSet);
                     self.exclusionYears = ko.observable(exclusionYears);
                     self.additionalBoardYears = ko.observable(additionalBoardYears);
@@ -305,18 +345,15 @@ var qrm001;
                     self.actualRecieveMoney = ko.observable(actualRecieveMoney);
                     self.withholdingMeno = ko.observable(withholdingMeno);
                     self.statementMemo = ko.observable(statementMemo);
-                    self.totalPaymentMoney.subscribe(function (value) {
-                        console.log(value);
-                    });
                 }
                 return RetirementPaymentInfo;
             }());
-            var EmployeeInfo = (function () {
-                function EmployeeInfo(personId, name) {
-                    this.personId = ko.observable(personId);
-                    this.name = ko.observable(name);
+            var TransferBankMoney = (function () {
+                function TransferBankMoney(optionSet, money) {
+                    this.optionSet = ko.observable(optionSet);
+                    this.money = ko.observable(money);
                 }
-                return EmployeeInfo;
+                return TransferBankMoney;
             }());
         })(viewmodel = a.viewmodel || (a.viewmodel = {}));
     })(a = qrm001.a || (qrm001.a = {}));

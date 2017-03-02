@@ -160,8 +160,7 @@ table { margin-top: -4px; }
 #table-10  { width: 735px; }
 #table-10 tbody tr { height: 20px; }
 #table-10 tbody td:NTH-CHILD(1) { width: 105px; }
-#table-10 tbody td:NTH-CHILD(2), #table-10 tbody td:NTH-CHILD(3), #table-10 tbody td:NTH-CHILD(4) { background-color: #EBEBE4; }
-#table-10 tbody td:NTH-CHILD(4) { width: 110px; }
+#table-10 tbody td:NTH-CHILD(2), #table-10 tbody td:NTH-CHILD(3), #table-10 tbody td:NTH-CHILD(4) { width: 145px; background-color: #EBEBE4; }
 #table-10 tbody td:NTH-CHILD(5) { 
 	width: 120px;
 	padding-left: 0px;
@@ -170,7 +169,7 @@ table { margin-top: -4px; }
 	padding-left: 10px;
 	padding-right: 10px;
 }
-
+#combo-box10 { width: 120px; height: 18px; }
 #hr-11 { width: 718px; }
 
 textarea {
@@ -182,9 +181,9 @@ textarea {
 
 #arrow-img {
 	position: absolute;
-	margin-left: 165px;
+	margin-left: 170px;
 	margin-top: 5px;
-	height: 180px;
+	height: 160px;
 }
 
 .title-label {
