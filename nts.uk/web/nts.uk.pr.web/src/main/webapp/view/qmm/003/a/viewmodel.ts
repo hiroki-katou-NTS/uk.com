@@ -3,7 +3,7 @@ module qmm003.a.viewmodel {
         // data of items list - tree grid
         items: any;
         item1s: any;
-        singleSelectedCode: KnockoutObservable<any>;
+        singleSelectedCode: KnockoutObservable<string>;
         headers: any;
         curentNode: any;
         currentNode: any;
@@ -19,10 +19,10 @@ module qmm003.a.viewmodel {
         isEnable: KnockoutObservable<boolean>;
         isEditable: KnockoutObservable<boolean>;
         editMode: boolean = true; // true là mode thêm mới, false là mode sửa 
-        filteredData: any;
-        filteredData1: any;
-        filteredData2: any;
-        selectedCodes: any;
+        filteredData: KnockoutObservableArray<any> = ko.observableArray([]);
+        filteredData1: KnockoutObservableArray<Node>;
+        filteredData2: KnockoutObservableArray<Node>;
+        selectedCodes: KnockoutObservableArray<any>;
         Value: KnockoutObservable<string>;
         mode: KnockoutObservable<boolean>;
         region: KnockoutObservableArray<Node>;
@@ -36,112 +36,36 @@ module qmm003.a.viewmodel {
 
         constructor() {
             let self = this;
-            self.currentNode = ko.observable(null);
+            self.currentNode = ko.observable('');
             self.init();
-
-
-            self.filteredData = ko.observableArray(nts.uk.util.flatArray(self.items(), "childs"));
-            self.filteredData1 = ko.observableArray(nts.uk.util.flatArray(self.items(), "childs"));
-            self.filteredData2 = ko.observableArray(nts.uk.util.flatArray(self.items(), "childs"));
-            self.removeData(self.filteredData2());
+            console.log(self.filteredData());
             self.selectedCodes = ko.observableArray([]);
-            self.singleSelectedCode.subscribe(function(newValue) {
-                console.log(newValue);
-                self.Value(newValue);
-                if (self.editMode) {
-                    let count = 0;
-                    self.curentNode(self.findByCode(self.filteredData2(), newValue, count));
-                    self.nameBySelectedCode(self.findByName(self.filteredData2()));
-                    self.selectedCode(self.nameBySelectedCode().code);
-                    let co = 0, co1 = 0;
-                    _.each(self.filteredData2(), function(obj: Node) {
-
-                        if (obj.code != self.curentNode().code) {
-                            co++;
-                        } else {
-                            if (co < ((_.size(self.filteredData2())) - 1)) {
-                                co1 = co + 1;
-
-                            } else {
-                                co1 = co;
-                            }
-                        }
-                    });
-
-                    self.labelSubsub(self.filteredData2()[co1]);
-                    if (self.labelSubsub() == null) {
-                        self.labelSubsub(new Node("11", "22", []));
-                    }
-                } else {
-                    self.editMode = true;
-                }
+            self.singleSelectedCode.subscribe(function(newChange) {
+                self.filteredData = nts.uk.util.flatArray(self.items(), "childs");
+                console.log(self.filteredData);
+                self.curentNode = self.findByCode(self.filteredData(), newChange);
 
 
             });
 
 
 
+
         }
 
-        findByCode(items: Array<Node>, newValue: string, count: number): Node {
+        findByCode(items: Array<Node>, newValue: string): Node {
             let self = this;
             let node: Node;
             _.find(items, function(obj: Node) {
                 if (!node) {
                     if (obj.code == newValue) {
                         node = obj;
-                        count = count + 1;
-                        //console.log(count);
                     }
                 }
             });
             return node;
         };
 
-        findByName(items: Array<Node>): Node {
-            let self = this;
-            let node: Node;
-            _.find(items, function(obj: Node) {
-                if (!node) {
-                    if (obj.name == self.curentNode().name) {
-                        node = obj;
-                    }
-                }
-            });
-            return node;
-        };
-        removeNodeByCode(items: Array<Node>): any {
-            let self = this;
-            _.remove(items, function(obj: Node) {
-                if (obj.code == self.Value()) {
-                    return obj.code == self.Value();
-                } else {
-                    return self.removeNodeByCode(obj.childs);
-
-                }
-            })
-
-        };
-        // remove data: return array of subsub tree
-        removeData(items: Array<Node>): any {
-            _.remove(items, function(obj: Node) {
-                return _.size(obj.code) < 3;
-            });
-        }
-        deleteData(): any {
-            let self = this;
-            self.removeNodeByCode(self.items());
-            self.item1s(self.items());
-            self.items([]);
-            self.items(self.item1s());
-        }
-        Confirm() {
-            let self = this;
-            nts.uk.ui.dialog.confirm("Do you want to delete node \"?")
-                .ifYes(function() {
-                    self.deleteData();
-                });
-        }
         resetData(): void {
             let self = this;
             self.editMode = false;
@@ -149,8 +73,6 @@ module qmm003.a.viewmodel {
             self.singleSelectedCode("");
             self.selectedCode("");
             self.labelSubsub("");
-            //            self.items([]);
-            //            self.items(self.item1s());
         }
         search(): void {
 
@@ -205,7 +127,7 @@ module qmm003.a.viewmodel {
             self.curentNode = ko.observable(new Node('022012', '青森市', []));
             self.labelSubsub = ko.observable(new Node('052019', '秋田市', []));
             self.selectedCode = ko.observable("1");
-            //self.testNode = ko.observable([]);
+            //self.filteredData = ko.observableArray([]);
 
         }
         openBDialog() {
@@ -261,7 +183,11 @@ module qmm003.a.viewmodel {
                     (qmm003.a.service.getRegionPrefecture()).done(function(locationData: Array<service.model.RegionObject>) {
                         self.japanLocation = locationData;
                         self.buildResidentalTaxTree();
+                        self.filteredData = ko.observableArray([]);
+                        self.filteredData = ko.observableArray(nts.uk.util.flatArray(self.test(), "childs"));
+                        console.log(self.filteredData());
                         self.items(self.test());
+                        console.log(self.items());
                     });
 
                     self.mode(true);// true, update mode 
@@ -303,7 +229,7 @@ module qmm003.a.viewmodel {
                                 }
                             });
                             if (cout === false) {
-                                var chi = [];
+                                let chi = [];
                                 self.test.push(new Node(objRegion.regionCode, objRegion.regionName, [new Node(objPrefecture.prefectureCode, objPrefecture.prefectureName, [new Node(objResi.resiTaxCode, objResi.resiTaxAutonomy, [])])]));
                             }
                         }

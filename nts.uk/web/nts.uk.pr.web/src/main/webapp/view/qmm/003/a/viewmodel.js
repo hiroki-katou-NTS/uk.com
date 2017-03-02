@@ -7,110 +7,36 @@ var qmm003;
             var ScreenModel = (function () {
                 function ScreenModel() {
                     this.editMode = true; // true là mode thêm mới, false là mode sửa 
+                    this.filteredData = ko.observableArray([]);
                     this.testNode = [];
                     this.test = ko.observableArray([]);
                     this.count = 0;
                     this.japanLocation = [];
                     this.residentalTaxList = ko.observableArray([]);
                     var self = this;
-                    self.currentNode = ko.observable(null);
+                    self.currentNode = ko.observable('');
                     self.init();
-                    self.filteredData = ko.observableArray(nts.uk.util.flatArray(self.items(), "childs"));
-                    self.filteredData1 = ko.observableArray(nts.uk.util.flatArray(self.items(), "childs"));
-                    self.filteredData2 = ko.observableArray(nts.uk.util.flatArray(self.items(), "childs"));
-                    self.removeData(self.filteredData2());
+                    console.log(self.filteredData());
                     self.selectedCodes = ko.observableArray([]);
-                    self.singleSelectedCode.subscribe(function (newValue) {
-                        console.log(newValue);
-                        self.Value(newValue);
-                        if (self.editMode) {
-                            var count = 0;
-                            self.curentNode(self.findByCode(self.filteredData2(), newValue, count));
-                            self.nameBySelectedCode(self.findByName(self.filteredData2()));
-                            self.selectedCode(self.nameBySelectedCode().code);
-                            var co_1 = 0, co1_1 = 0;
-                            _.each(self.filteredData2(), function (obj) {
-                                if (obj.code != self.curentNode().code) {
-                                    co_1++;
-                                }
-                                else {
-                                    if (co_1 < ((_.size(self.filteredData2())) - 1)) {
-                                        co1_1 = co_1 + 1;
-                                    }
-                                    else {
-                                        co1_1 = co_1;
-                                    }
-                                }
-                            });
-                            self.labelSubsub(self.filteredData2()[co1_1]);
-                            if (self.labelSubsub() == null) {
-                                self.labelSubsub(new Node("11", "22", []));
-                            }
-                        }
-                        else {
-                            self.editMode = true;
-                        }
+                    self.singleSelectedCode.subscribe(function (newChange) {
+                        self.filteredData = nts.uk.util.flatArray(self.items(), "childs");
+                        console.log(self.filteredData);
+                        self.curentNode = self.findByCode(self.filteredData(), newChange);
                     });
                 }
-                ScreenModel.prototype.findByCode = function (items, newValue, count) {
+                ScreenModel.prototype.findByCode = function (items, newValue) {
                     var self = this;
                     var node;
                     _.find(items, function (obj) {
                         if (!node) {
                             if (obj.code == newValue) {
                                 node = obj;
-                                count = count + 1;
                             }
                         }
                     });
                     return node;
                 };
                 ;
-                ScreenModel.prototype.findByName = function (items) {
-                    var self = this;
-                    var node;
-                    _.find(items, function (obj) {
-                        if (!node) {
-                            if (obj.name == self.curentNode().name) {
-                                node = obj;
-                            }
-                        }
-                    });
-                    return node;
-                };
-                ;
-                ScreenModel.prototype.removeNodeByCode = function (items) {
-                    var self = this;
-                    _.remove(items, function (obj) {
-                        if (obj.code == self.Value()) {
-                            return obj.code == self.Value();
-                        }
-                        else {
-                            return self.removeNodeByCode(obj.childs);
-                        }
-                    });
-                };
-                ;
-                // remove data: return array of subsub tree
-                ScreenModel.prototype.removeData = function (items) {
-                    _.remove(items, function (obj) {
-                        return _.size(obj.code) < 3;
-                    });
-                };
-                ScreenModel.prototype.deleteData = function () {
-                    var self = this;
-                    self.removeNodeByCode(self.items());
-                    self.item1s(self.items());
-                    self.items([]);
-                    self.items(self.item1s());
-                };
-                ScreenModel.prototype.Confirm = function () {
-                    var self = this;
-                    nts.uk.ui.dialog.confirm("Do you want to delete node \"?")
-                        .ifYes(function () {
-                        self.deleteData();
-                    });
-                };
                 ScreenModel.prototype.resetData = function () {
                     var self = this;
                     self.editMode = false;
@@ -118,8 +44,6 @@ var qmm003;
                     self.singleSelectedCode("");
                     self.selectedCode("");
                     self.labelSubsub("");
-                    //            self.items([]);
-                    //            self.items(self.item1s());
                 };
                 ScreenModel.prototype.search = function () {
                     var inputSearch = $("#search").find("input.ntsSearchBox").val();
@@ -170,7 +94,7 @@ var qmm003;
                     self.curentNode = ko.observable(new Node('022012', '青森市', []));
                     self.labelSubsub = ko.observable(new Node('052019', '秋田市', []));
                     self.selectedCode = ko.observable("1");
-                    //self.testNode = ko.observable([]);
+                    //self.filteredData = ko.observableArray([]);
                 };
                 ScreenModel.prototype.openBDialog = function () {
                     var self = this;
@@ -224,7 +148,11 @@ var qmm003;
                             (qmm003.a.service.getRegionPrefecture()).done(function (locationData) {
                                 self.japanLocation = locationData;
                                 self.buildResidentalTaxTree();
+                                self.filteredData = ko.observableArray([]);
+                                self.filteredData = ko.observableArray(nts.uk.util.flatArray(self.test(), "childs"));
+                                console.log(self.filteredData());
                                 self.items(self.test());
+                                console.log(self.items());
                             });
                             self.mode(true); // true, update mode 
                         }
