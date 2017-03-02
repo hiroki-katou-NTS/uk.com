@@ -27,6 +27,16 @@ var nts;
                                 };
                                 ScreenModel.prototype.btnApplyClicked = function () {
                                     var self = this;
+                                    if (self.historyTakeOver() == 'beginning') {
+                                        self.unitPriceHistoryModel.budget(0);
+                                        self.unitPriceHistoryModel.fixPaySettingType('Company');
+                                        self.unitPriceHistoryModel.fixPayAtr('NotApply');
+                                        self.unitPriceHistoryModel.fixPayAtrMonthly('NotApply');
+                                        self.unitPriceHistoryModel.fixPayAtrDayMonth('NotApply');
+                                        self.unitPriceHistoryModel.fixPayAtrDaily('NotApply');
+                                        self.unitPriceHistoryModel.fixPayAtrHourly('NotApply');
+                                        self.unitPriceHistoryModel.memo('');
+                                    }
                                     service.create(ko.toJS(self.unitPriceHistoryModel)).done(function () {
                                         nts.uk.ui.windows.setShared('startMonth', self.unitPriceHistoryModel.startMonth());
                                         nts.uk.ui.windows.close();
