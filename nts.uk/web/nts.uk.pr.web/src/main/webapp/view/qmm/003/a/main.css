@@ -29,7 +29,6 @@
 	border:1px solid #cdd0c9;
 	margin-top: 5px;
 }
-
 #A_BTN_005 {
 	margin-left: 150px;
 	background-color: #fed3c6;
@@ -58,11 +57,8 @@
 	width: 200px;
 }
 #A_INP_002 {
-	background: #ccc;
-	border-radius: 5px;
 	width:70px;
-	height: 22.3px;
-	
+	height: 15px;
 }
 #A_INP_003 {
 	height: 22.3px;
@@ -90,16 +86,17 @@
 	margin-top: 5px;
 	width: 400px;
 	height: 150px;
-}
+}/* 
 #treegrid2_container{
 	margin-top: auto;
     margin-left: auto;
     margin-right: auto;
-}
-#contents-area > div.nts-left-content > div > div:nth-child(3){
-   margin-left: 180px;
-   margin-top: 50px;
-}
+} */
+ #contents-area > div.nts-left-content > div > div:nth-child(3){
+   margin-left: 25px;
+   margin-top: 10px;
+   margin-bottom: 10px !important;
+} 
 /* ************************************************************************ */
 
 #group-title {

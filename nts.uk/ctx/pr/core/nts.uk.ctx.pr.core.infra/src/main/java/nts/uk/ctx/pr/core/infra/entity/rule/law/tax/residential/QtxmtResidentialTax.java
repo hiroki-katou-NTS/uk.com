@@ -14,7 +14,7 @@ import nts.uk.shr.infra.data.entity.TableEntity;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
-@Table(name = "QTXMT_RESIDENTIAL_TAX1")
+@Table(name = "QTXMT_RESIDENTIAL_TAX")
 public class QtxmtResidentialTax extends TableEntity implements Serializable{
 	/**
 	 * serialVersionUID
