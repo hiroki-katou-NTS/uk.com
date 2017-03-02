@@ -8,7 +8,7 @@ import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceCode;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceGetMemento;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceName;
-import nts.uk.ctx.pr.core.infra.entity.rule.employment.unitprice.QupmtCUnitpriceHead;
+import nts.uk.ctx.pr.core.infra.entity.rule.employment.unitprice.QupmtCUnitpriceHeader;
 
 /**
  * The Class JpaUnitPriceGetMemento.
@@ -16,7 +16,7 @@ import nts.uk.ctx.pr.core.infra.entity.rule.employment.unitprice.QupmtCUnitprice
 public class JpaUnitPriceGetMemento implements UnitPriceGetMemento {
 
 	/** The type value. */
-	protected QupmtCUnitpriceHead typeValue;
+	protected QupmtCUnitpriceHeader typeValue;
 
 	/**
 	 * Instantiates a new jpa unit price get memento.
@@ -24,7 +24,7 @@ public class JpaUnitPriceGetMemento implements UnitPriceGetMemento {
 	 * @param typeValue
 	 *            the type value
 	 */
-	public JpaUnitPriceGetMemento(QupmtCUnitpriceHead typeValue) {
+	public JpaUnitPriceGetMemento(QupmtCUnitpriceHeader typeValue) {
 		this.typeValue = typeValue;
 	}
 
@@ -37,7 +37,7 @@ public class JpaUnitPriceGetMemento implements UnitPriceGetMemento {
 	 */
 	@Override
 	public CompanyCode getCompanyCode() {
-		return new CompanyCode(this.typeValue.getQupmtCUnitpriceHeadPK().getCcd());
+		return new CompanyCode(this.typeValue.getQupmtCUnitpriceHeaderPK().getCcd());
 	}
 
 	/*
@@ -49,7 +49,7 @@ public class JpaUnitPriceGetMemento implements UnitPriceGetMemento {
 	 */
 	@Override
 	public UnitPriceCode getCode() {
-		return new UnitPriceCode(this.typeValue.getQupmtCUnitpriceHeadPK().getCUnitpriceCd());
+		return new UnitPriceCode(this.typeValue.getQupmtCUnitpriceHeaderPK().getCUnitpriceCd());
 	}
 
 	/*

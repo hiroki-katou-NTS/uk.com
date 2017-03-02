@@ -21,10 +21,10 @@ import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPrice;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceCode;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceRepository;
-import nts.uk.ctx.pr.core.infra.entity.rule.employment.unitprice.QupmtCUnitpriceHead;
-import nts.uk.ctx.pr.core.infra.entity.rule.employment.unitprice.QupmtCUnitpriceHeadPK;
-import nts.uk.ctx.pr.core.infra.entity.rule.employment.unitprice.QupmtCUnitpriceHeadPK_;
-import nts.uk.ctx.pr.core.infra.entity.rule.employment.unitprice.QupmtCUnitpriceHead_;
+import nts.uk.ctx.pr.core.infra.entity.rule.employment.unitprice.QupmtCUnitpriceHeader;
+import nts.uk.ctx.pr.core.infra.entity.rule.employment.unitprice.QupmtCUnitpriceHeaderPK;
+import nts.uk.ctx.pr.core.infra.entity.rule.employment.unitprice.QupmtCUnitpriceHeaderPK_;
+import nts.uk.ctx.pr.core.infra.entity.rule.employment.unitprice.QupmtCUnitpriceHeader_;
 
 /**
  * The Class JpaUnitPriceRepository.
@@ -41,7 +41,7 @@ public class JpaUnitPriceRepository extends JpaRepository implements UnitPriceRe
 	 */
 	@Override
 	public void add(UnitPrice unitPrice) {
-		QupmtCUnitpriceHead entity = new QupmtCUnitpriceHead();
+		QupmtCUnitpriceHeader entity = new QupmtCUnitpriceHeader();
 		unitPrice.saveToMemento(new JpaUnitPriceSetMemento(entity));
 		this.commandProxy().insert(entity);
 	}
@@ -55,7 +55,7 @@ public class JpaUnitPriceRepository extends JpaRepository implements UnitPriceRe
 	 */
 	@Override
 	public void update(UnitPrice unitPrice) {
-		QupmtCUnitpriceHead entity = new QupmtCUnitpriceHead();
+		QupmtCUnitpriceHeader entity = new QupmtCUnitpriceHeader();
 		unitPrice.saveToMemento(new JpaUnitPriceSetMemento(entity));
 		this.commandProxy().update(entity);
 	}
@@ -69,7 +69,7 @@ public class JpaUnitPriceRepository extends JpaRepository implements UnitPriceRe
 	 */
 	@Override
 	public void remove(CompanyCode companyCode, UnitPriceCode code) {
-		this.commandProxy().remove(QupmtCUnitpriceHead.class, new QupmtCUnitpriceHeadPK(companyCode.v(), code.v()));
+		this.commandProxy().remove(QupmtCUnitpriceHeader.class, new QupmtCUnitpriceHeaderPK(companyCode.v(), code.v()));
 	}
 
 	/*
@@ -86,17 +86,17 @@ public class JpaUnitPriceRepository extends JpaRepository implements UnitPriceRe
 
 		// Query for indicated stress check.
 		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<QupmtCUnitpriceHead> cq = cb.createQuery(QupmtCUnitpriceHead.class);
-		Root<QupmtCUnitpriceHead> root = cq.from(QupmtCUnitpriceHead.class);
+		CriteriaQuery<QupmtCUnitpriceHeader> cq = cb.createQuery(QupmtCUnitpriceHeader.class);
+		Root<QupmtCUnitpriceHeader> root = cq.from(QupmtCUnitpriceHeader.class);
 		// Constructing list of parameters
 		List<Predicate> predicateList = new ArrayList<Predicate>();
 
 		// Construct condition.
-		predicateList.add(cb.equal(root.get(QupmtCUnitpriceHead_.qupmtCUnitpriceHeadPK).get(QupmtCUnitpriceHeadPK_.ccd),
+		predicateList.add(cb.equal(root.get(QupmtCUnitpriceHeader_.qupmtCUnitpriceHeadPK).get(QupmtCUnitpriceHeaderPK_.ccd),
 				companyCode.v()));
 
 		cq.orderBy(
-				cb.asc(root.get(QupmtCUnitpriceHead_.qupmtCUnitpriceHeadPK).get(QupmtCUnitpriceHeadPK_.cUnitpriceCd)));
+				cb.asc(root.get(QupmtCUnitpriceHeader_.qupmtCUnitpriceHeadPK).get(QupmtCUnitpriceHeaderPK_.cUnitpriceCd)));
 		cq.where(predicateList.toArray(new Predicate[] {}));
 
 		return em.createQuery(cq).getResultList().stream().map(item -> new UnitPrice(new JpaUnitPriceGetMemento(item)))
@@ -115,8 +115,8 @@ public class JpaUnitPriceRepository extends JpaRepository implements UnitPriceRe
 		// Get entity manager
 		EntityManager em = this.getEntityManager();
 
-		QupmtCUnitpriceHead entity = em.find(QupmtCUnitpriceHead.class,
-				new QupmtCUnitpriceHeadPK(companyCode.v(), code.v()));
+		QupmtCUnitpriceHeader entity = em.find(QupmtCUnitpriceHeader.class,
+				new QupmtCUnitpriceHeaderPK(companyCode.v(), code.v()));
 
 		// Return
 		return Optional.ofNullable(new UnitPrice(new JpaUnitPriceGetMemento(entity)));
@@ -138,15 +138,15 @@ public class JpaUnitPriceRepository extends JpaRepository implements UnitPriceRe
 		// Create query condition.
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Long> cq = cb.createQuery(Long.class);
-		Root<QupmtCUnitpriceHead> root = cq.from(QupmtCUnitpriceHead.class);
+		Root<QupmtCUnitpriceHeader> root = cq.from(QupmtCUnitpriceHeader.class);
 		// Constructing list of parameters
 		List<Predicate> predicateList = new ArrayList<Predicate>();
 
 		// Construct condition.
-		predicateList.add(cb.equal(root.get(QupmtCUnitpriceHead_.qupmtCUnitpriceHeadPK).get(QupmtCUnitpriceHeadPK_.ccd),
+		predicateList.add(cb.equal(root.get(QupmtCUnitpriceHeader_.qupmtCUnitpriceHeadPK).get(QupmtCUnitpriceHeaderPK_.ccd),
 				companyCode.v()));
 		predicateList.add(
-				cb.equal(root.get(QupmtCUnitpriceHead_.qupmtCUnitpriceHeadPK).get(QupmtCUnitpriceHeadPK_.cUnitpriceCd),
+				cb.equal(root.get(QupmtCUnitpriceHeader_.qupmtCUnitpriceHeadPK).get(QupmtCUnitpriceHeaderPK_.cUnitpriceCd),
 						code.v()));
 
 		cq.select(cb.count(root));

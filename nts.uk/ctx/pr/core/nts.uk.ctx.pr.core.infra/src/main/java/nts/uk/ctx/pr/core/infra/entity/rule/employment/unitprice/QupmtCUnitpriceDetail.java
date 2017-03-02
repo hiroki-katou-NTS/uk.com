@@ -9,33 +9,31 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinColumns;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
- * The Class QupmtCUnitpriceHist.
+ * The Class QupmtCUnitpriceDetail.
  */
-@Data
+@Getter
+@Setter
 @Entity
-@Table(name = "QUPMT_C_UNITPRICE_HIST")
-public class QupmtCUnitpriceHist implements Serializable {
+@Table(name = "QUPMT_C_UNITPRICE_DETAIL")
+public class QupmtCUnitpriceDetail implements Serializable {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
-	/** The qupmt C unitprice hist PK. */
+	/** The qupmt C unitprice detail PK. */
 	@EmbeddedId
-	protected QupmtCUnitpriceHistPK qupmtCUnitpriceHistPK;
+	protected QupmtCUnitpriceDetailPK qupmtCUnitpriceDetailPK;
 
 	/** The ins date. */
 	@Column(name = "INS_DATE")
@@ -74,7 +72,7 @@ public class QupmtCUnitpriceHist implements Serializable {
 	/** The exclus ver. */
 	@Basic(optional = false)
 	@Column(name = "EXCLUS_VER")
-	private long exclusVer;
+	private int exclusVer;
 
 	/** The str ym. */
 	@Basic(optional = false)
@@ -85,12 +83,13 @@ public class QupmtCUnitpriceHist implements Serializable {
 	@Basic(optional = false)
 	@Column(name = "END_YM")
 	private int endYm;
+
+	/** The c unitprice. */
 	// @Max(value=?) @Min(value=?)//if you know range of your decimal fields
-	/** The budget. */
 	// consider using these annotations to enforce field validation
 	@Basic(optional = false)
-	@Column(name = "BUDGET")
-	private BigDecimal budget;
+	@Column(name = "C_UNITPRICE")
+	private BigDecimal cUnitprice;
 
 	/** The fix pay set. */
 	@Basic(optional = false)
@@ -126,30 +125,66 @@ public class QupmtCUnitpriceHist implements Serializable {
 	@Column(name = "MEMO")
 	private String memo;
 
-	/** The qupmt C unitprice head. */
-	@JoinColumns({ @JoinColumn(name = "CCD", referencedColumnName = "CCD", insertable = false, updatable = false),
-			@JoinColumn(name = "C_UNITPRICE_CD", referencedColumnName = "C_UNITPRICE_CD", insertable = false, updatable = false) })
-	@ManyToOne(optional = false, cascade = CascadeType.DETACH)
-	private QupmtCUnitpriceHead qupmtCUnitpriceHead;
-
 	/**
-	 * Instantiates a new qupmt C unitprice hist.
+	 * Instantiates a new qupmt C unitprice detail.
 	 */
-	public QupmtCUnitpriceHist() {
+	public QupmtCUnitpriceDetail() {
 	}
 
 	/**
-	 * Instantiates a new qupmt C unitprice hist.
+	 * Instantiates a new qupmt C unitprice detail.
 	 *
-	 * @param qupmtCUnitpriceHistPK
-	 *            the qupmt C unitprice hist PK
+	 * @param qupmtCUnitpriceDetailPK
+	 *            the qupmt C unitprice detail PK
 	 */
-	public QupmtCUnitpriceHist(QupmtCUnitpriceHistPK qupmtCUnitpriceHistPK) {
-		this.qupmtCUnitpriceHistPK = qupmtCUnitpriceHistPK;
+	public QupmtCUnitpriceDetail(QupmtCUnitpriceDetailPK qupmtCUnitpriceDetailPK) {
+		this.qupmtCUnitpriceDetailPK = qupmtCUnitpriceDetailPK;
 	}
 
 	/**
-	 * Instantiates a new qupmt C unitprice hist.
+	 * Instantiates a new qupmt C unitprice detail.
+	 *
+	 * @param qupmtCUnitpriceDetailPK
+	 *            the qupmt C unitprice detail PK
+	 * @param exclusVer
+	 *            the exclus ver
+	 * @param strYm
+	 *            the str ym
+	 * @param endYm
+	 *            the end ym
+	 * @param cUnitprice
+	 *            the c unitprice
+	 * @param fixPaySet
+	 *            the fix pay set
+	 * @param fixPayAtr
+	 *            the fix pay atr
+	 * @param fixPayAtrMonthly
+	 *            the fix pay atr monthly
+	 * @param fixPayAtrDaymonth
+	 *            the fix pay atr daymonth
+	 * @param fixPayAtrDaily
+	 *            the fix pay atr daily
+	 * @param fixPayAtrHourly
+	 *            the fix pay atr hourly
+	 */
+	public QupmtCUnitpriceDetail(QupmtCUnitpriceDetailPK qupmtCUnitpriceDetailPK, int exclusVer, int strYm, int endYm,
+			BigDecimal cUnitprice, short fixPaySet, short fixPayAtr, short fixPayAtrMonthly, short fixPayAtrDaymonth,
+			short fixPayAtrDaily, short fixPayAtrHourly) {
+		this.qupmtCUnitpriceDetailPK = qupmtCUnitpriceDetailPK;
+		this.exclusVer = exclusVer;
+		this.strYm = strYm;
+		this.endYm = endYm;
+		this.cUnitprice = cUnitprice;
+		this.fixPaySet = fixPaySet;
+		this.fixPayAtr = fixPayAtr;
+		this.fixPayAtrMonthly = fixPayAtrMonthly;
+		this.fixPayAtrDaymonth = fixPayAtrDaymonth;
+		this.fixPayAtrDaily = fixPayAtrDaily;
+		this.fixPayAtrHourly = fixPayAtrHourly;
+	}
+
+	/**
+	 * Instantiates a new qupmt C unitprice detail.
 	 *
 	 * @param ccd
 	 *            the ccd
@@ -158,8 +193,8 @@ public class QupmtCUnitpriceHist implements Serializable {
 	 * @param histId
 	 *            the hist id
 	 */
-	public QupmtCUnitpriceHist(String ccd, String cUnitpriceCd, String histId) {
-		this.qupmtCUnitpriceHistPK = new QupmtCUnitpriceHistPK(ccd, cUnitpriceCd, histId);
+	public QupmtCUnitpriceDetail(String ccd, String cUnitpriceCd, String histId) {
+		this.qupmtCUnitpriceDetailPK = new QupmtCUnitpriceDetailPK(ccd, cUnitpriceCd, histId);
 	}
 
 	/*
@@ -170,7 +205,7 @@ public class QupmtCUnitpriceHist implements Serializable {
 	@Override
 	public int hashCode() {
 		int hash = 0;
-		hash += (qupmtCUnitpriceHistPK != null ? qupmtCUnitpriceHistPK.hashCode() : 0);
+		hash += (qupmtCUnitpriceDetailPK != null ? qupmtCUnitpriceDetailPK.hashCode() : 0);
 		return hash;
 	}
 
@@ -181,16 +216,15 @@ public class QupmtCUnitpriceHist implements Serializable {
 	 */
 	@Override
 	public boolean equals(Object object) {
-		if (!(object instanceof QupmtCUnitpriceHist)) {
+		if (!(object instanceof QupmtCUnitpriceDetail)) {
 			return false;
 		}
-		QupmtCUnitpriceHist other = (QupmtCUnitpriceHist) object;
-		if ((this.qupmtCUnitpriceHistPK == null && other.qupmtCUnitpriceHistPK != null)
-				|| (this.qupmtCUnitpriceHistPK != null
-						&& !this.qupmtCUnitpriceHistPK.equals(other.qupmtCUnitpriceHistPK))) {
+		QupmtCUnitpriceDetail other = (QupmtCUnitpriceDetail) object;
+		if ((this.qupmtCUnitpriceDetailPK == null && other.qupmtCUnitpriceDetailPK != null)
+				|| (this.qupmtCUnitpriceDetailPK != null
+						&& !this.qupmtCUnitpriceDetailPK.equals(other.qupmtCUnitpriceDetailPK))) {
 			return false;
 		}
 		return true;
 	}
-
 }

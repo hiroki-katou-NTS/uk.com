@@ -17,7 +17,7 @@ import lombok.Data;
  */
 @Data
 @Embeddable
-public class QupmtCUnitpriceHeadPK implements Serializable {
+public class QupmtCUnitpriceHeaderPK implements Serializable {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
@@ -35,7 +35,7 @@ public class QupmtCUnitpriceHeadPK implements Serializable {
 	/**
 	 * Instantiates a new qupmt C unitprice head PK.
 	 */
-	public QupmtCUnitpriceHeadPK() {
+	public QupmtCUnitpriceHeaderPK() {
 	}
 
 	/**
@@ -46,7 +46,7 @@ public class QupmtCUnitpriceHeadPK implements Serializable {
 	 * @param cUnitpriceCd
 	 *            the c unitprice cd
 	 */
-	public QupmtCUnitpriceHeadPK(String ccd, String cUnitpriceCd) {
+	public QupmtCUnitpriceHeaderPK(String ccd, String cUnitpriceCd) {
 		this.ccd = ccd;
 		this.cUnitpriceCd = cUnitpriceCd;
 	}
@@ -71,10 +71,10 @@ public class QupmtCUnitpriceHeadPK implements Serializable {
 	 */
 	@Override
 	public boolean equals(Object object) {
-		if (!(object instanceof QupmtCUnitpriceHeadPK)) {
+		if (!(object instanceof QupmtCUnitpriceHeaderPK)) {
 			return false;
 		}
-		QupmtCUnitpriceHeadPK other = (QupmtCUnitpriceHeadPK) object;
+		QupmtCUnitpriceHeaderPK other = (QupmtCUnitpriceHeaderPK) object;
 		if ((this.ccd == null && other.ccd != null) || (this.ccd != null && !this.ccd.equals(other.ccd))) {
 			return false;
 		}

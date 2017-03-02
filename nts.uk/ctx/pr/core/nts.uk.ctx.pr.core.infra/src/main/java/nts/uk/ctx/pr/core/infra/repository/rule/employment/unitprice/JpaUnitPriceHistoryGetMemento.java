@@ -12,7 +12,7 @@ import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.Money;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.SettingType;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceCode;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceHistoryGetMemento;
-import nts.uk.ctx.pr.core.infra.entity.rule.employment.unitprice.QupmtCUnitpriceHist;
+import nts.uk.ctx.pr.core.infra.entity.rule.employment.unitprice.QupmtCUnitpriceDetail;
 import nts.uk.shr.com.primitive.Memo;
 
 /**
@@ -21,7 +21,7 @@ import nts.uk.shr.com.primitive.Memo;
 public class JpaUnitPriceHistoryGetMemento implements UnitPriceHistoryGetMemento {
 
 	/** The type value. */
-	protected QupmtCUnitpriceHist typeValue;
+	protected QupmtCUnitpriceDetail typeValue;
 
 	/**
 	 * Instantiates a new jpa unit price history get memento.
@@ -29,7 +29,7 @@ public class JpaUnitPriceHistoryGetMemento implements UnitPriceHistoryGetMemento
 	 * @param typeValue
 	 *            the type value
 	 */
-	public JpaUnitPriceHistoryGetMemento(QupmtCUnitpriceHist typeValue) {
+	public JpaUnitPriceHistoryGetMemento(QupmtCUnitpriceDetail typeValue) {
 		this.typeValue = typeValue;
 	}
 
@@ -41,7 +41,7 @@ public class JpaUnitPriceHistoryGetMemento implements UnitPriceHistoryGetMemento
 	 */
 	@Override
 	public String getId() {
-		return this.typeValue.getQupmtCUnitpriceHistPK().getHistId();
+		return this.typeValue.getQupmtCUnitpriceDetailPK().getHistId();
 	}
 
 	/*
@@ -52,7 +52,7 @@ public class JpaUnitPriceHistoryGetMemento implements UnitPriceHistoryGetMemento
 	 */
 	@Override
 	public CompanyCode getCompanyCode() {
-		return new CompanyCode(this.typeValue.getQupmtCUnitpriceHistPK().getCcd());
+		return new CompanyCode(this.typeValue.getQupmtCUnitpriceDetailPK().getCcd());
 	}
 
 	/*
@@ -63,7 +63,7 @@ public class JpaUnitPriceHistoryGetMemento implements UnitPriceHistoryGetMemento
 	 */
 	@Override
 	public UnitPriceCode getUnitPriceCode() {
-		return new UnitPriceCode(this.typeValue.getQupmtCUnitpriceHistPK().getCUnitpriceCd());
+		return new UnitPriceCode(this.typeValue.getQupmtCUnitpriceDetailPK().getCUnitpriceCd());
 	}
 
 	/*
@@ -85,7 +85,7 @@ public class JpaUnitPriceHistoryGetMemento implements UnitPriceHistoryGetMemento
 	 */
 	@Override
 	public Money getBudget() {
-		return new Money(this.typeValue.getBudget());
+		return new Money(this.typeValue.getCUnitprice());
 	}
 
 	/*

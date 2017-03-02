@@ -6,34 +6,33 @@ package nts.uk.ctx.pr.core.infra.entity.rule.employment.unitprice;
 
 import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
 
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
- * The Class QupmtCUnitpriceHead.
+ * The Class QupmtCUnitpriceHeader.
  */
-@Data
+@Getter
+@Setter
 @Entity
-@Table(name = "QUPMT_C_UNITPRICE_HEAD")
-public class QupmtCUnitpriceHead implements Serializable {
+@Table(name = "QUPMT_C_UNITPRICE_HEADER")
+public class QupmtCUnitpriceHeader implements Serializable {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
-	/** The qupmt C unitprice head PK. */
+	/** The qupmt C unitprice header PK. */
 	@EmbeddedId
-	protected QupmtCUnitpriceHeadPK qupmtCUnitpriceHeadPK;
+	protected QupmtCUnitpriceHeaderPK qupmtCUnitpriceHeaderPK;
 
 	/** The ins date. */
 	@Column(name = "INS_DATE")
@@ -72,55 +71,52 @@ public class QupmtCUnitpriceHead implements Serializable {
 	/** The exclus ver. */
 	@Basic(optional = false)
 	@Column(name = "EXCLUS_VER")
-	private long exclusVer;
+	private int exclusVer;
 
 	/** The c unitprice name. */
 	@Column(name = "C_UNITPRICE_NAME")
 	private String cUnitpriceName;
 
-	/** The qupmt C unitprice hist list. */
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "qupmtCUnitpriceHead")
-	private List<QupmtCUnitpriceHist> qupmtCUnitpriceHistList;
-
 	/**
-	 * Instantiates a new qupmt C unitprice head.
+	 * Instantiates a new qupmt C unitprice header.
 	 */
-	public QupmtCUnitpriceHead() {
+	public QupmtCUnitpriceHeader() {
+		super();
 	}
 
 	/**
-	 * Instantiates a new qupmt C unitprice head.
+	 * Instantiates a new qupmt C unitprice header.
 	 *
-	 * @param qupmtCUnitpriceHeadPK
-	 *            the qupmt C unitprice head PK
+	 * @param qupmtCUnitpriceHeaderPK
+	 *            the qupmt C unitprice header PK
 	 */
-	public QupmtCUnitpriceHead(QupmtCUnitpriceHeadPK qupmtCUnitpriceHeadPK) {
-		this.qupmtCUnitpriceHeadPK = qupmtCUnitpriceHeadPK;
+	public QupmtCUnitpriceHeader(QupmtCUnitpriceHeaderPK qupmtCUnitpriceHeaderPK) {
+		this.qupmtCUnitpriceHeaderPK = qupmtCUnitpriceHeaderPK;
 	}
 
 	/**
-	 * Instantiates a new qupmt C unitprice head.
+	 * Instantiates a new qupmt C unitprice header.
 	 *
-	 * @param qupmtCUnitpriceHeadPK
-	 *            the qupmt C unitprice head PK
+	 * @param qupmtCUnitpriceHeaderPK
+	 *            the qupmt C unitprice header PK
 	 * @param exclusVer
 	 *            the exclus ver
 	 */
-	public QupmtCUnitpriceHead(QupmtCUnitpriceHeadPK qupmtCUnitpriceHeadPK, long exclusVer) {
-		this.qupmtCUnitpriceHeadPK = qupmtCUnitpriceHeadPK;
+	public QupmtCUnitpriceHeader(QupmtCUnitpriceHeaderPK qupmtCUnitpriceHeaderPK, int exclusVer) {
+		this.qupmtCUnitpriceHeaderPK = qupmtCUnitpriceHeaderPK;
 		this.exclusVer = exclusVer;
 	}
 
 	/**
-	 * Instantiates a new qupmt C unitprice head.
+	 * Instantiates a new qupmt C unitprice header.
 	 *
 	 * @param ccd
 	 *            the ccd
 	 * @param cUnitpriceCd
 	 *            the c unitprice cd
 	 */
-	public QupmtCUnitpriceHead(String ccd, String cUnitpriceCd) {
-		this.qupmtCUnitpriceHeadPK = new QupmtCUnitpriceHeadPK(ccd, cUnitpriceCd);
+	public QupmtCUnitpriceHeader(String ccd, String cUnitpriceCd) {
+		this.qupmtCUnitpriceHeaderPK = new QupmtCUnitpriceHeaderPK(ccd, cUnitpriceCd);
 	}
 
 	/*
@@ -131,7 +127,7 @@ public class QupmtCUnitpriceHead implements Serializable {
 	@Override
 	public int hashCode() {
 		int hash = 0;
-		hash += (qupmtCUnitpriceHeadPK != null ? qupmtCUnitpriceHeadPK.hashCode() : 0);
+		hash += (qupmtCUnitpriceHeaderPK != null ? qupmtCUnitpriceHeaderPK.hashCode() : 0);
 		return hash;
 	}
 
@@ -142,16 +138,15 @@ public class QupmtCUnitpriceHead implements Serializable {
 	 */
 	@Override
 	public boolean equals(Object object) {
-		if (!(object instanceof QupmtCUnitpriceHead)) {
+		if (!(object instanceof QupmtCUnitpriceHeader)) {
 			return false;
 		}
-		QupmtCUnitpriceHead other = (QupmtCUnitpriceHead) object;
-		if ((this.qupmtCUnitpriceHeadPK == null && other.qupmtCUnitpriceHeadPK != null)
-				|| (this.qupmtCUnitpriceHeadPK != null
-						&& !this.qupmtCUnitpriceHeadPK.equals(other.qupmtCUnitpriceHeadPK))) {
+		QupmtCUnitpriceHeader other = (QupmtCUnitpriceHeader) object;
+		if ((this.qupmtCUnitpriceHeaderPK == null && other.qupmtCUnitpriceHeaderPK != null)
+				|| (this.qupmtCUnitpriceHeaderPK != null
+						&& !this.qupmtCUnitpriceHeaderPK.equals(other.qupmtCUnitpriceHeaderPK))) {
 			return false;
 		}
 		return true;
 	}
-
 }

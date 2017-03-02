@@ -10,13 +10,13 @@ import javax.persistence.metamodel.StaticMetamodel;
 /**
  * The Class QupmtCUnitpriceHeadPK_.
  */
-@StaticMetamodel(QupmtCUnitpriceHeadPK.class)
-public class QupmtCUnitpriceHeadPK_ {
+@StaticMetamodel(QupmtCUnitpriceHeaderPK.class)
+public class QupmtCUnitpriceHeaderPK_ {
 
 	/** The ccd. */
-	public static volatile SingularAttribute<QupmtCUnitpriceHeadPK, String> ccd;
+	public static volatile SingularAttribute<QupmtCUnitpriceHeaderPK, String> ccd;
 
 	/** The c unitprice cd. */
-	public static volatile SingularAttribute<QupmtCUnitpriceHeadPK, String> cUnitpriceCd;
+	public static volatile SingularAttribute<QupmtCUnitpriceHeaderPK, String> cUnitpriceCd;
 
 }
