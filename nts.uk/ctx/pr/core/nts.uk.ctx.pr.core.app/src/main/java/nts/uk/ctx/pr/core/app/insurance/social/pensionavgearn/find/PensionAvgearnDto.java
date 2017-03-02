@@ -7,6 +7,7 @@ package nts.uk.ctx.pr.core.app.insurance.social.pensionavgearn.find;
 import java.math.BigDecimal;
 
 import lombok.Builder;
+import lombok.Getter;
 import nts.uk.ctx.pr.core.dom.insurance.InsuranceAmount;
 import nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.PensionAvgearnSetMemento;
 import nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.PensionAvgearnValue;
@@ -15,34 +16,35 @@ import nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.PensionAvgearnValu
  * The Class PensionAvgearnDto.
  */
 @Builder
+@Getter
 public class PensionAvgearnDto implements PensionAvgearnSetMemento {
 
 	/** The history id. */
-	public String historyId;
+	private String historyId;
 
 	/** The level code. */
-	public Integer levelCode;
+	private Integer levelCode;
 
 	/** The child contribution amount. */
-	public BigDecimal childContributionAmount;
+	private BigDecimal childContributionAmount;
 
 	/** The company fund. */
-	public PensionAvgearnValueDto companyFund;
+	private PensionAvgearnValueDto companyFund;
 
 	/** The company fund exemption. */
-	public PensionAvgearnValueDto companyFundExemption;
+	private PensionAvgearnValueDto companyFundExemption;
 
 	/** The company pension. */
-	public PensionAvgearnValueDto companyPension;
+	private PensionAvgearnValueDto companyPension;
 
 	/** The personal fund. */
-	public PensionAvgearnValueDto personalFund;
+	private PensionAvgearnValueDto personalFund;
 
 	/** The personal fund exemption. */
-	public PensionAvgearnValueDto personalFundExemption;
+	private PensionAvgearnValueDto personalFundExemption;
 
 	/** The personal pension. */
-	public PensionAvgearnValueDto personalPension;
+	private PensionAvgearnValueDto personalPension;
 
 	/*
 	 * (non-Javadoc)

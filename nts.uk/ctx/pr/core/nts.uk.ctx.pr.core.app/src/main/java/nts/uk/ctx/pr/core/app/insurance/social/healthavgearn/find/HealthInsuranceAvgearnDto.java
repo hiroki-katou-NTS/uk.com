@@ -6,7 +6,6 @@ package nts.uk.ctx.pr.core.app.insurance.social.healthavgearn.find;
 
 import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.HealthInsuranceAvgearnSetMemento;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.HealthInsuranceAvgearnValue;
 
@@ -15,7 +14,6 @@ import nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.HealthInsuranceAvge
  */
 @Builder
 @Getter
-@Setter
 public class HealthInsuranceAvgearnDto implements HealthInsuranceAvgearnSetMemento {
 
 	/** The history id. */
