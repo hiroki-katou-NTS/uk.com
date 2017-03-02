@@ -38,15 +38,6 @@ var nts;
                                     }
                                     return listDto;
                                 }
-                                var model;
-                                (function (model) {
-                                    var AvgEarnLevelMasterSettingDto = (function () {
-                                        function AvgEarnLevelMasterSettingDto() {
-                                        }
-                                        return AvgEarnLevelMasterSettingDto;
-                                    }());
-                                    model.AvgEarnLevelMasterSettingDto = AvgEarnLevelMasterSettingDto;
-                                })(model = service.model || (service.model = {}));
                             })(service = common.service || (common.service = {}));
                         })(common = _0.common || (_0.common = {}));
                     })(_0 = qmm008._0 || (qmm008._0 = {}));

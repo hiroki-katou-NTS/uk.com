@@ -17,7 +17,7 @@ import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.HealthInsuranceRoundin
  */
 @Getter
 @Setter
-public abstract class HealthInsuranceBaseCommand {
+public class HealthInsuranceBaseCommand {
 
 	/** The history id. */
 	private String historyId;
@@ -30,10 +30,10 @@ public abstract class HealthInsuranceBaseCommand {
 
 	/** The start month. */
 	private String startMonth;
-	
+
 	/** The end month. */
 	private String endMonth;
-	
+
 	/** The auto calculate. */
 	private Integer autoCalculate;
 
