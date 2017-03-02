@@ -5,6 +5,8 @@
 package nts.uk.ctx.pr.core.app.insurance.social.healthavgearn.find;
 
 import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.HealthInsuranceAvgearnSetMemento;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.HealthInsuranceAvgearnValue;
 
@@ -12,19 +14,21 @@ import nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.HealthInsuranceAvge
  * @see java.lang.Object#toString()
  */
 @Builder
+@Getter
+@Setter
 public class HealthInsuranceAvgearnDto implements HealthInsuranceAvgearnSetMemento {
 
 	/** The history id. */
-	public String historyId;
+	private String historyId;
 
 	/** The level code. */
-	public Integer levelCode;
+	private Integer levelCode;
 
 	/** The company avg. */
-	public HealthInsuranceAvgearnValueDto companyAvg;
+	private HealthInsuranceAvgearnValueDto companyAvg;
 
 	/** The personal avg. */
-	public HealthInsuranceAvgearnValueDto personalAvg;
+	private HealthInsuranceAvgearnValueDto personalAvg;
 
 	/*
 	 * (non-Javadoc)

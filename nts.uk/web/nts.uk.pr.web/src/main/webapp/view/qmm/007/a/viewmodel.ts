@@ -100,6 +100,7 @@ module nts.uk.pr.view.qmm007.a {
                 var self = this;
                 nts.uk.ui.windows.setShared('unitPriceHistoryModel', ko.toJS(self.unitPriceHistoryModel()));
                 nts.uk.ui.windows.sub.modal('/view/qmm/007/b/index.xhtml', { title: '会社一律金額 の 登録 > 履歴の追加', dialogClass: 'no-close' }).onClosed(() => {
+                    // Get returned data from dialog.
                     let startMonth = nts.uk.ui.windows.getShared('startMonth');
                     if (startMonth) {
                         // Get the startMonth of the newly added history and set to the endMonth of the latest history.
@@ -124,6 +125,7 @@ module nts.uk.pr.view.qmm007.a {
                 nts.uk.ui.windows.setShared('unitPriceHistoryModel', ko.toJS(this.unitPriceHistoryModel()));
                 nts.uk.ui.windows.setShared('isLatestHistory', self.isLatestHistorySelected());
                 nts.uk.ui.windows.sub.modal('/view/qmm/007/c/index.xhtml', { title: '会社一律金額 の 登録 > 履歴の編集', dialogClass: 'no-close' }).onClosed(() => {
+                    // Get returned data from dialog.
                     let startMonth = nts.uk.ui.windows.getShared('startMonth');
                     let isRemoved = nts.uk.ui.windows.getShared('isRemoved');
 

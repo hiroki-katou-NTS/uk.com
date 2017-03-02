@@ -36,7 +36,7 @@ module nts.uk.pr.view.qmm008._0.common {
         * Model namespace.
         */
         export module model {
-            export class AvgEarnLevelMasterSettingDto {
+            export interface AvgEarnLevelMasterSettingDto {
                 code: number;
                 healthLevel: number;
                 pensionLevel: number;

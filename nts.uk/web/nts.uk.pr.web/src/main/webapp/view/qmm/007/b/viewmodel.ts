@@ -30,6 +30,17 @@ module nts.uk.pr.view.qmm007.b {
              */
             private btnApplyClicked(): void {
                 var self = this;
+                // Reset data if historyTakeOver = beginning
+                if (self.historyTakeOver() == 'beginning') {
+                    self.unitPriceHistoryModel.budget(0);
+                    self.unitPriceHistoryModel.fixPaySettingType('Company');
+                    self.unitPriceHistoryModel.fixPayAtr('NotApply');
+                    self.unitPriceHistoryModel.fixPayAtrMonthly('NotApply');
+                    self.unitPriceHistoryModel.fixPayAtrDayMonth('NotApply');
+                    self.unitPriceHistoryModel.fixPayAtrDaily('NotApply');
+                    self.unitPriceHistoryModel.fixPayAtrHourly('NotApply');
+                    self.unitPriceHistoryModel.memo('');
+                }
                 service.create(ko.toJS(self.unitPriceHistoryModel)).done(() => {
                     nts.uk.ui.windows.setShared('startMonth', self.unitPriceHistoryModel.startMonth());
                     nts.uk.ui.windows.close();

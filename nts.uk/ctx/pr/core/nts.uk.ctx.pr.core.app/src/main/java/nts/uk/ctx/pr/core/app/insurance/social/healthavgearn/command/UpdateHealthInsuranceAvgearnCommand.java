@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.pr.core.app.insurance.social.healthavgearn.command;
 
 import java.util.List;
@@ -13,8 +17,8 @@ import lombok.Setter;
 public class UpdateHealthInsuranceAvgearnCommand {
 
 	/** The list health insurance avgearn. */
-	List<HealthInsuranceAvgearnCommandDto> listHealthInsuranceAvgearn;
+	private List<HealthInsuranceAvgearnCommandDto> listHealthInsuranceAvgearn;
 
 	/** The office code. */
-	String officeCode;
+	private String officeCode;
 }
