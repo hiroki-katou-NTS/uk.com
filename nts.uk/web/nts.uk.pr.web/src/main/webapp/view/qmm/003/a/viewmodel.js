@@ -9,19 +9,27 @@ var qmm003;
                     this.editMode = true; // true là mode thêm mới, false là mode sửa 
                     this.filteredData = ko.observableArray([]);
                     this.testNode = [];
-                    this.test = ko.observableArray([]);
-                    this.count = 0;
+                    this.nodeRegionPrefectures = ko.observableArray([]);
                     this.japanLocation = [];
+                    this.precfecture = [];
+                    this.itemPrefecture = ko.observableArray([]);
                     this.residentalTaxList = ko.observableArray([]);
+                    this.currentResidential = ko.observable(null);
                     var self = this;
                     self.init();
-                    console.log(self.test());
-                    console.log(self.items());
-                    console.log(self.filteredData());
                     self.selectedCodes = ko.observableArray([]);
                     self.singleSelectedCode.subscribe(function (newChange) {
-                        self.findByCode(self.filteredData(), newChange);
-                        console.log(self.currentNode());
+                        if (self.editMode) {
+                            var currentNode = void 0;
+                            currentNode = self.findByCode(self.filteredData(), newChange);
+                            self.currentNode(ko.mapping.fromJS(currentNode));
+                            self.findPrefectureByResiTax(newChange);
+                            self.currentResi(self.findResidentialByCode(self.residentalTaxList(), newChange));
+                            self.currentResidential(ko.mapping.fromJS(self.currentResi()));
+                        }
+                        else {
+                            self.editMode = true;
+                        }
                     });
                 }
                 ScreenModel.prototype.findByCode = function (items, newValue) {
@@ -30,28 +38,72 @@ var qmm003;
                     _.find(items, function (obj) {
                         if (!node) {
                             if (obj.code == newValue) {
-                                node.code = obj.code;
-                                node.name = obj.name;
-                                node.childs = obj.childs;
-                                self.currentNode = ko.mapping.fromJS(node);
-                                console.log(self.currentNode());
+                                node = obj;
+                                $(document).ready(function (data) {
+                                    $("#A_INP_002").attr('disabled', 'true');
+                                    $("#A_INP_002").attr('readonly', 'true');
+                                });
                             }
                         }
                     });
                     return node;
                 };
                 ;
+                ScreenModel.prototype.findResidentialByCode = function (items, newValue) {
+                    var self = this;
+                    var objResi;
+                    _.find(items, function (obj) {
+                        if (!objResi) {
+                            if (obj.resiTaxCode == newValue) {
+                                objResi = obj;
+                            }
+                        }
+                    });
+                    return objResi;
+                };
+                ;
+                ScreenModel.prototype.findByName = function (items, name) {
+                    var self = this;
+                    var node;
+                    _.find(items, function (obj) {
+                        if (!node) {
+                            if (obj.name === name) {
+                                node = obj;
+                            }
+                        }
+                    });
+                    return node;
+                };
+                ScreenModel.prototype.findPrefectureByResiTax = function (code) {
+                    var self = this;
+                    _.each(self.items(), function (objRegion) {
+                        _.each(objRegion.childs, function (objPrefecture) {
+                            _.each(objPrefecture.childs, function (obj) {
+                                if (obj.code === code) {
+                                    self.selectedCode(objPrefecture.code);
+                                }
+                            });
+                        });
+                    });
+                };
+                ScreenModel.prototype.buildPrefectureArray = function () {
+                    var self = this;
+                    _.map(self.japanLocation, function (region) {
+                        _.each(region.prefectures, function (objPrefecture) {
+                            return self.precfecture.push(new Node(objPrefecture.prefectureCode, objPrefecture.prefectureName, []));
+                        });
+                    });
+                };
                 ScreenModel.prototype.resetData = function () {
                     var self = this;
                     self.editMode = false;
-                    self.currentNode(new Node("", "", []));
+                    self.currentNode(ko.mapping.fromJS(new Node('', '', [])));
                     self.singleSelectedCode("");
                     self.selectedCode("");
-                    self.labelSubsub("");
                 };
                 ScreenModel.prototype.search = function () {
                     var inputSearch = $("#search").find("input.ntsSearchBox").val();
-                    if (inputSearch == "") {
+                    if (inputSearch === '') {
                         $('#search').ntsError('set', 'inputSearch が入力されていません。');
                     }
                     else {
@@ -59,7 +111,7 @@ var qmm003;
                     }
                     // errror search
                     var error;
-                    _.find(this.filteredData2(), function (obj) {
+                    _.find(this.filteredData(), function (obj) {
                         if (obj.code !== inputSearch) {
                             error = true;
                         }
@@ -74,25 +126,27 @@ var qmm003;
                 ScreenModel.prototype.init = function () {
                     var self = this;
                     // 11.初期データ取得処理 11. Initial data acquisition processing [住民税納付先マスタ.SEL-1] 
-                    self.itemList = ko.observableArray([
-                        new Node('1', '青森市', []),
-                        new Node('2', '秋田市', []),
-                        new Node('3', '山形市', []),
-                        new Node('4', '福島市', []),
-                        new Node('5', '水戸市', []),
-                        new Node('6', '宇都宮市', []),
-                        new Node('7', '川越市', []),
-                        new Node('8', '熊谷市', []),
-                        new Node('9', '浦和市', [])
-                    ]);
                     // data of treegrid
                     self.items = ko.observableArray([]);
                     self.mode = ko.observable(null);
-                    var node = new Node("022012", "青森市", []);
-                    self.currentNode = ko.observable(ko.mapping.fromJS(node));
+                    self.currentNode = ko.observable(ko.mapping.fromJS(new Node("022012", "青森市", [])));
                     self.isEnable = ko.observable(true);
                     self.isEditable = ko.observable(true);
-                    self.selectedCode = ko.observable("1");
+                    self.selectedCode = ko.observable("11");
+                    self.singleSelectedCode = ko.observable('022012');
+                    var objResi = new a.service.model.ResidentialTax();
+                    objResi.companyCode = '0000';
+                    objResi.resiTaxCode = '062017';
+                    objResi.resiTaxAutonomy = '宇都宮市';
+                    objResi.prefectureCode = '42';
+                    objResi.resiTaxReportCode = '062014';
+                    objResi.registeredName = 'aaa';
+                    objResi.companyAccountNo = 'b';
+                    objResi.companySpecifiedNo = 'cccccc';
+                    objResi.cordinatePostalCode = '11111';
+                    objResi.cordinatePostOffice = 'bbbbb';
+                    objResi.memo = 'sssssssssssssssss';
+                    self.currentResi = ko.observable(objResi);
                 };
                 ScreenModel.prototype.openBDialog = function () {
                     var self = this;
@@ -111,7 +165,6 @@ var qmm003;
                     var labelSubsub;
                     nts.uk.ui.windows.sub.modeless("/view/qmm/003/c/index.xhtml", { title: '住民税納付先の登録＞住民税報告先一覧', dialogClass: "no-close" }).onClosed(function () {
                         labelSubsub = nts.uk.ui.windows.getShared('labelSubsub');
-                        //             self.editMode = false;
                         self.labelSubsub(labelSubsub);
                         console.log(labelSubsub);
                     });
@@ -145,9 +198,14 @@ var qmm003;
                             self.residentalTaxList(data);
                             (qmm003.a.service.getRegionPrefecture()).done(function (locationData) {
                                 self.japanLocation = locationData;
+                                self.buildPrefectureArray();
+                                self.itemPrefecture(self.precfecture);
+                                console.log(self.itemPrefecture());
                                 self.buildResidentalTaxTree();
-                                self.filteredData = ko.observableArray(nts.uk.util.flatArray(self.test(), "childs"));
-                                self.items(self.test());
+                                var node = [];
+                                node = nts.uk.util.flatArray(self.nodeRegionPrefectures(), "childs");
+                                self.filteredData(node);
+                                self.items(self.nodeRegionPrefectures());
                             });
                             self.mode(true); // true, update mode 
                         }
@@ -169,7 +227,7 @@ var qmm003;
                             var coutPre = false;
                             _.each(objRegion.prefectures, function (objPrefecture) {
                                 if (objPrefecture.prefectureCode === objResi.prefectureCode) {
-                                    _.each(self.test(), function (obj) {
+                                    _.each(self.nodeRegionPrefectures(), function (obj) {
                                         if (obj.code === objRegion.regionCode) {
                                             _.each(obj.childs, function (objChild) {
                                                 if (objChild.code === objPrefecture.prefectureCode) {
@@ -185,7 +243,7 @@ var qmm003;
                                     });
                                     if (cout === false) {
                                         var chi = [];
-                                        self.test.push(new Node(objRegion.regionCode, objRegion.regionName, [new Node(objPrefecture.prefectureCode, objPrefecture.prefectureName, [new Node(objResi.resiTaxCode, objResi.resiTaxAutonomy, [])])]));
+                                        self.nodeRegionPrefectures.push(new Node(objRegion.regionCode, objRegion.regionName, [new Node(objPrefecture.prefectureCode, objPrefecture.prefectureName, [new Node(objResi.resiTaxCode, objResi.resiTaxAutonomy, [])])]));
                                     }
                                 }
                             });
