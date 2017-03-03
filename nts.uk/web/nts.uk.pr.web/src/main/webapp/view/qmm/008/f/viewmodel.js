@@ -44,9 +44,14 @@ var nts;
                                     var self = this;
                                     self.OfficeItemModel().childs.forEach(function (item, index) {
                                         if (item.code == self.selectedHistoryCode()) {
-                                            var previousViewRangeString = self.OfficeItemModel().childs[index + 1].codeName;
-                                            var previousRangeCharIndex = previousViewRangeString.indexOf("~");
-                                            self.previousStartMonth(previousViewRangeString.substr(0, previousRangeCharIndex));
+                                            if (self.OfficeItemModel().childs.length > 1) {
+                                                var previousViewRangeString = self.OfficeItemModel().childs[index + 1].codeName;
+                                                var previousRangeCharIndex = previousViewRangeString.indexOf("~");
+                                                self.previousStartMonth(previousViewRangeString.substr(0, previousRangeCharIndex));
+                                            }
+                                            else {
+                                                self.previousStartMonth('');
+                                            }
                                             var viewRangeString = self.OfficeItemModel().childs[index].codeName;
                                             var rangeCharIndex = viewRangeString.indexOf("~");
                                             self.endMonth(viewRangeString.substr(rangeCharIndex + 1, viewRangeString.length));
@@ -99,20 +104,29 @@ var nts;
                                             });
                                         }
                                         else {
-                                            if (self.compareStringDate(self.previousStartMonth(), self.minusOneMonth(self.startMonth()))) {
+                                            if (self.previousStartMonth() != '') {
+                                                if (self.compareStringDate(self.previousStartMonth(), self.minusOneMonth(self.startMonth()))) {
+                                                    aservice.getHealthInsuranceItemDetail(self.OfficeItemModel().childs[0].code).done(function (data) {
+                                                        data.startMonth = self.startMonth();
+                                                        data.endMonth = self.convertMonth(data.endMonth);
+                                                        aservice.updateHealthRate(data);
+                                                    });
+                                                    aservice.getHealthInsuranceItemDetail(self.OfficeItemModel().childs[1].code).done(function (data) {
+                                                        data.startMonth = self.convertMonth(data.startMonth);
+                                                        data.endMonth = self.minusOneMonth(self.startMonth());
+                                                        aservice.updateHealthRate(data);
+                                                    });
+                                                }
+                                                else {
+                                                    alert("ER011");
+                                                }
+                                            }
+                                            else {
                                                 aservice.getHealthInsuranceItemDetail(self.OfficeItemModel().childs[0].code).done(function (data) {
                                                     data.startMonth = self.startMonth();
                                                     data.endMonth = self.convertMonth(data.endMonth);
                                                     aservice.updateHealthRate(data);
                                                 });
-                                                aservice.getHealthInsuranceItemDetail(self.OfficeItemModel().childs[1].code).done(function (data) {
-                                                    data.startMonth = self.convertMonth(data.startMonth);
-                                                    data.endMonth = self.minusOneMonth(self.startMonth());
-                                                    aservice.updateHealthRate(data);
-                                                });
-                                            }
-                                            else {
-                                                alert("ER011");
                                             }
                                         }
                                     }
@@ -126,34 +140,32 @@ var nts;
                                             });
                                         }
                                         else {
-                                            if (self.compareStringDate(self.previousStartMonth(), self.minusOneMonth(self.startMonth()))) {
+                                            if (self.previousStartMonth() != '') {
+                                                if (self.compareStringDate(self.previousStartMonth(), self.minusOneMonth(self.startMonth()))) {
+                                                    aservice.getPensionItemDetail(self.OfficeItemModel().childs[0].code).done(function (data) {
+                                                        data.startMonth = self.startMonth();
+                                                        data.endMonth = self.convertMonth(data.endMonth);
+                                                        aservice.updatePensionRate(data);
+                                                    });
+                                                    aservice.getPensionItemDetail(self.OfficeItemModel().childs[1].code).done(function (data) {
+                                                        data.startMonth = self.convertMonth(data.startMonth);
+                                                        data.endMonth = self.minusOneMonth(self.startMonth());
+                                                        aservice.updatePensionRate(data);
+                                                    });
+                                                }
+                                                else {
+                                                    alert("ER011");
+                                                }
+                                            }
+                                            else {
                                                 aservice.getPensionItemDetail(self.OfficeItemModel().childs[0].code).done(function (data) {
                                                     data.startMonth = self.startMonth();
                                                     data.endMonth = self.convertMonth(data.endMonth);
                                                     aservice.updatePensionRate(data);
                                                 });
-                                                aservice.getPensionItemDetail(self.OfficeItemModel().childs[1].code).done(function (data) {
-                                                    data.startMonth = self.convertMonth(data.startMonth);
-                                                    data.endMonth = self.minusOneMonth(self.startMonth());
-                                                    aservice.updatePensionRate(data);
-                                                });
-                                            }
-                                            else {
-                                                alert("ER011");
                                             }
                                         }
                                     }
-                                    self.OfficeItemModel().childs.forEach(function (item, index) {
-                                        if (item.code == self.selectedHistoryCode()) {
-                                            if (self.compareStringDate(self.startMonth(), self.endMonth()) && self.compareStringDate(self.previousStartMonth(), self.minusOneMonth(self.startMonth()))) {
-                                                self.OfficeItemModel().childs[index].codeName = self.startMonth() + "~" + self.endMonth();
-                                                self.OfficeItemModel().childs[index + 1].codeName = self.previousStartMonth() + "~" + self.minusOneMonth(self.startMonth());
-                                            }
-                                            else {
-                                                alert("ER011");
-                                            }
-                                        }
-                                    });
                                     nts.uk.ui.windows.setShared("updateHistoryChildValue", self.OfficeItemModel(), true);
                                     nts.uk.ui.windows.close();
                                 };

@@ -102,6 +102,7 @@ module nts.uk.pr.view.qmm008.c {
                 aservice.findInsuranceOffice('').done(function(data: Array<InsuranceOfficeItemDto>) {
                     //check list office is empty
                     if (data != null) {
+                        self.officeItems([]);
                         // Set data get from service to list.
                         data.forEach((item, index) => {
                             self.officeItems.push(new ItemModel(item.code, item.name));
@@ -168,12 +169,15 @@ module nts.uk.pr.view.qmm008.c {
                 //if register new office
                 else {
                     self.registerOffice();
-                    //set add item into list view
-                    if ((self.officeModel().officeCode() != '') && (self.officeModel().officeName() != ''))
-                        self.officeItems.push(new ItemModel(self.officeModel().officeCode(), self.officeModel().officeName()));
+                    //reload list office
+                    self.loadAllInsuranceOfficeData().done(function(){
+                    //focus add new item
+                           self.selectedOfficeCode(self.officeModel().officeCode()); 
+                    });
+//                    //set add item into list view
+//                    if ((self.officeModel().officeCode() != '') && (self.officeModel().officeName() != ''))
+//                        self.officeItems.push(new ItemModel(self.officeModel().officeCode(), self.officeModel().officeName()));
                 }
-                //TODO reload list Office and focus add new office item
-
             }
 
             //update office
@@ -201,21 +205,21 @@ module nts.uk.pr.view.qmm008.c {
                 var self = this;
                 if (self.selectedOfficeCode() != '') {
                     service.remove(self.selectedOfficeCode()).done(function() {
-                        //TODO if remove success    
+                        //if remove success
+                            
                     }).fail(function() {
                         //TODO if remove fail    
                     });
-                    self.officeItems().forEach(function(item, index) {
-                        if (item.code == self.selectedOfficeCode()) {
-                            self.officeItems().splice(index, 1);
-                            var data = self.officeItems();
-                            self.officeItems(data);
+                    
+                    //reload list
+                    self.loadAllInsuranceOfficeData().done(function() {
+                        // if empty list -> add new mode
+                        if (self.officeItems().length == 0) {
+                            self.addNew();
+                        } else {
+                            self.selectedOfficeCode(self.officeItems()[0].code);
                         }
                     });
-                    // if empty list -> add new mode
-                    if (self.officeItems().length == 0) {
-                        self.addNew();
-                    }
                 }
             }
 

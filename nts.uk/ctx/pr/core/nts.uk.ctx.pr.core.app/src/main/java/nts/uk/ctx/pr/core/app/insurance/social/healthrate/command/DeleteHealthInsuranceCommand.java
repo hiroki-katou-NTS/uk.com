@@ -13,6 +13,6 @@ import lombok.Data;
 public class DeleteHealthInsuranceCommand {
 	
 	/** The history id. */
-	String historyId;
+	private String historyId;
 	
 }

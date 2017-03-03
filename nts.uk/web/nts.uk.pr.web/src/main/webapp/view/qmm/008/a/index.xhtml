@@ -479,26 +479,7 @@
 									<td class="bg-green tbl_health_insurance_rate text_center">保険料率</td>
 									<td><div class="float_left">
 											<input
-												data-bind="ntsNumberEditor: {value: fundRateItems().salaryPersonalSonExemption ,option: $parent.Rate2}" />
-										</div>/1000</td>
-									<td><div class="float_left">
-											<input
-												data-bind="ntsNumberEditor: {value: fundRateItems().salaryCompanySonExemption , option: $parent.Rate2}" />
-										</div>/1000</td>
-									<td><div class="float_left">
-											<input
-												data-bind="ntsNumberEditor: {value: fundRateItems().bonusPersonalSonExemption , option: $parent.Rate2}" />
-										</div>/1000</td>
-									<td><div class="float_left">
-											<input
-												data-bind="ntsNumberEditor: {value: fundRateItems().bonusCompanySonExemption , option: $parent.Rate2}" />
-										</div>/1000</td>
-								</tr>
-								<tr>
-									<td class="bg-green tbl_health_insurance_rate text_center">免除保険料率</td>
-									<td><div class="float_left">
-											<input
-												data-bind="ntsNumberEditor: {value: fundRateItems().salaryPersonalSonBurden , option: $parent.Rate2}" />
+												data-bind="ntsNumberEditor: {value: fundRateItems().salaryPersonalSonBurden ,option: $parent.Rate2}" />
 										</div>/1000</td>
 									<td><div class="float_left">
 											<input
@@ -514,28 +495,28 @@
 										</div>/1000</td>
 								</tr>
 								<tr>
-									<td rowspan="2"
-										class="bg-green tbl_health_insurance_rate text_center">女子負担率</td>
-									<td class="bg-green tbl_health_insurance_rate text_center">保険料率</td>
+									<td class="bg-green tbl_health_insurance_rate text_center">免除保険料率</td>
 									<td><div class="float_left">
 											<input
-												data-bind="ntsNumberEditor: {value: fundRateItems().salaryPersonalDaughterExemption , option: $parent.Rate2}" />
+												data-bind="ntsNumberEditor: {value: fundRateItems().salaryPersonalSonExemption , option: $parent.Rate2}" />
 										</div>/1000</td>
 									<td><div class="float_left">
 											<input
-												data-bind="ntsNumberEditor: {value: fundRateItems().salaryCompanyDaughterExemption , option: $parent.Rate2}" />
+												data-bind="ntsNumberEditor: {value: fundRateItems().salaryCompanySonExemption , option: $parent.Rate2}" />
 										</div>/1000</td>
 									<td><div class="float_left">
 											<input
-												data-bind="ntsNumberEditor: {value: fundRateItems().bonusPersonalDaughterExemption , option: $parent.Rate2}" />
+												data-bind="ntsNumberEditor: {value: fundRateItems().bonusPersonalSonExemption , option: $parent.Rate2}" />
 										</div>/1000</td>
 									<td><div class="float_left">
 											<input
-												data-bind="ntsNumberEditor: {value: fundRateItems().bonusCompanyDaughterExemption , option: $parent.Rate2}" />
+												data-bind="ntsNumberEditor: {value: fundRateItems().bonusCompanySonExemption , option: $parent.Rate2}" />
 										</div>/1000</td>
 								</tr>
 								<tr>
-									<td class="bg-green tbl_health_insurance_rate text_center">免除保険料率</td>
+									<td rowspan="2"
+										class="bg-green tbl_health_insurance_rate text_center">女子負担率</td>
+									<td class="bg-green tbl_health_insurance_rate text_center">保険料率</td>
 									<td><div class="float_left">
 											<input
 												data-bind="ntsNumberEditor: {value: fundRateItems().salaryPersonalDaughterBurden , option: $parent.Rate2}" />
@@ -554,28 +535,28 @@
 										</div>/1000</td>
 								</tr>
 								<tr>
-									<td rowspan="2"
-										class="bg-green tbl_health_insurance_rate text_center">坑内員負担率</td>
-									<td class="bg-green tbl_health_insurance_rate text_center">保険料率</td>
+									<td class="bg-green tbl_health_insurance_rate text_center">免除保険料率</td>
 									<td><div class="float_left">
 											<input
-												data-bind="ntsNumberEditor: {value: fundRateItems().salaryPersonalUnknownExemption , option: $parent.Rate2}" />
+												data-bind="ntsNumberEditor: {value: fundRateItems().salaryPersonalDaughterExemption , option: $parent.Rate2}" />
 										</div>/1000</td>
 									<td><div class="float_left">
 											<input
-												data-bind="ntsNumberEditor: {value: fundRateItems().salaryCompanyUnknownExemption , option: $parent.Rate2}" />
+												data-bind="ntsNumberEditor: {value: fundRateItems().salaryCompanyDaughterExemption , option: $parent.Rate2}" />
 										</div>/1000</td>
 									<td><div class="float_left">
 											<input
-												data-bind="ntsNumberEditor: {value: fundRateItems().bonusPersonalUnknownExemption , option: $parent.Rate2}" />
+												data-bind="ntsNumberEditor: {value: fundRateItems().bonusPersonalDaughterExemption , option: $parent.Rate2}" />
 										</div>/1000</td>
 									<td><div class="float_left">
 											<input
-												data-bind="ntsNumberEditor: {value: fundRateItems().bonusCompanyUnknownExemption , option: $parent.Rate2}" />
+												data-bind="ntsNumberEditor: {value: fundRateItems().bonusCompanyDaughterExemption , option: $parent.Rate2}" />
 										</div>/1000</td>
 								</tr>
 								<tr>
-									<td class="bg-green tbl_health_insurance_rate text_center">免除保険料率</td>
+									<td rowspan="2"
+										class="bg-green tbl_health_insurance_rate text_center">坑内員負担率</td>
+									<td class="bg-green tbl_health_insurance_rate text_center">保険料率</td>
 									<td><div class="float_left">
 											<input
 												data-bind="ntsNumberEditor: {value: fundRateItems().salaryPersonalUnknownBurden , option: $parent.Rate2}" />
@@ -591,6 +572,25 @@
 									<td><div class="float_left">
 											<input
 												data-bind="ntsNumberEditor: {value: fundRateItems().bonusCompanyUnknownBurden , option: $parent.Rate2}" />
+										</div>/1000</td>
+								</tr>
+								<tr>
+									<td class="bg-green tbl_health_insurance_rate text_center">免除保険料率</td>
+									<td><div class="float_left">
+											<input
+												data-bind="ntsNumberEditor: {value: fundRateItems().salaryPersonalUnknownExemption , option: $parent.Rate2}" />
+										</div>/1000</td>
+									<td><div class="float_left">
+											<input
+												data-bind="ntsNumberEditor: {value: fundRateItems().salaryCompanyUnknownExemption , option: $parent.Rate2}" />
+										</div>/1000</td>
+									<td><div class="float_left">
+											<input
+												data-bind="ntsNumberEditor: {value: fundRateItems().bonusPersonalUnknownExemption , option: $parent.Rate2}" />
+										</div>/1000</td>
+									<td><div class="float_left">
+											<input
+												data-bind="ntsNumberEditor: {value: fundRateItems().bonusCompanyUnknownExemption , option: $parent.Rate2}" />
 										</div>/1000</td>
 								</tr>
 							</tbody>

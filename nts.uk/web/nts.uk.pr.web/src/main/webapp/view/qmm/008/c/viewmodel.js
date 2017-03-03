@@ -68,6 +68,7 @@ var nts;
                                     var dfd = $.Deferred();
                                     aservice.findInsuranceOffice('').done(function (data) {
                                         if (data != null) {
+                                            self.officeItems([]);
                                             data.forEach(function (item, index) {
                                                 self.officeItems.push(new ItemModel(item.code, item.name));
                                             });
@@ -125,8 +126,9 @@ var nts;
                                         self.updateOffice();
                                     else {
                                         self.registerOffice();
-                                        if ((self.officeModel().officeCode() != '') && (self.officeModel().officeName() != ''))
-                                            self.officeItems.push(new ItemModel(self.officeModel().officeCode(), self.officeModel().officeName()));
+                                        self.loadAllInsuranceOfficeData().done(function () {
+                                            self.selectedOfficeCode(self.officeModel().officeCode());
+                                        });
                                     }
                                 };
                                 ScreenModel.prototype.updateOffice = function () {
@@ -147,16 +149,14 @@ var nts;
                                         c.service.remove(self.selectedOfficeCode()).done(function () {
                                         }).fail(function () {
                                         });
-                                        self.officeItems().forEach(function (item, index) {
-                                            if (item.code == self.selectedOfficeCode()) {
-                                                self.officeItems().splice(index, 1);
-                                                var data = self.officeItems();
-                                                self.officeItems(data);
+                                        self.loadAllInsuranceOfficeData().done(function () {
+                                            if (self.officeItems().length == 0) {
+                                                self.addNew();
+                                            }
+                                            else {
+                                                self.selectedOfficeCode(self.officeItems()[0].code);
                                             }
                                         });
-                                        if (self.officeItems().length == 0) {
-                                            self.addNew();
-                                        }
                                     }
                                 };
                                 ScreenModel.prototype.collectData = function () {

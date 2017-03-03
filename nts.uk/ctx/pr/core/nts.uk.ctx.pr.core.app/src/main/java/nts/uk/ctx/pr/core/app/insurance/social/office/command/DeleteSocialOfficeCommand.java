@@ -13,5 +13,5 @@ import lombok.Data;
 public class DeleteSocialOfficeCommand {
 	
 	/** The insurance office code. */
-	String insuranceOfficeCode;
+	private String insuranceOfficeCode;
 }

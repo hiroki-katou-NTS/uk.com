@@ -12,7 +12,7 @@ public class DeleteHealthInsuranceCommandHandler extends CommandHandler<DeleteHe
 
 	/** The health insurance rate repository. */
 	@Inject
-	HealthInsuranceRateRepository healthInsuranceRateRepository;
+	private HealthInsuranceRateRepository healthInsuranceRateRepository;
 
 	@Override
 	protected void handle(CommandHandlerContext<DeleteHealthInsuranceCommand> command) {

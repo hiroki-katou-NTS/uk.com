@@ -58,9 +58,14 @@ module nts.uk.pr.view.qmm008.f {
                 self.OfficeItemModel().childs.forEach(function(item, index) {
                     if (item.code == self.selectedHistoryCode()) {
                         //get previous startMonth
-                        var previousViewRangeString = self.OfficeItemModel().childs[index + 1].codeName;
-                        var previousRangeCharIndex = previousViewRangeString.indexOf("~");
-                        self.previousStartMonth(previousViewRangeString.substr(0, previousRangeCharIndex));
+                        if (self.OfficeItemModel().childs.length > 1) {
+                            var previousViewRangeString = self.OfficeItemModel().childs[index + 1].codeName;
+                            var previousRangeCharIndex = previousViewRangeString.indexOf("~");
+                            self.previousStartMonth(previousViewRangeString.substr(0, previousRangeCharIndex));
+                        }
+                        else{
+                            self.previousStartMonth('');
+                        }
                         //get start and end month
                         var viewRangeString = self.OfficeItemModel().childs[index].codeName;
                         var rangeCharIndex = viewRangeString.indexOf("~");
@@ -127,8 +132,30 @@ module nts.uk.pr.view.qmm008.f {
                         });
                     }
                     else {
-                        //compare previous startMonth and startMonth -1
-                        if (self.compareStringDate(self.previousStartMonth(), self.minusOneMonth(self.startMonth()))) {
+                        if (self.previousStartMonth() != '') {
+                            //compare previous startMonth and startMonth -1
+                            if (self.compareStringDate(self.previousStartMonth(), self.minusOneMonth(self.startMonth()))) {
+                                //update current history
+                                aservice.getHealthInsuranceItemDetail(self.OfficeItemModel().childs[0].code).done(function(data: HealthInsuranceRateDto) {
+                                    //
+                                    data.startMonth = self.startMonth();
+                                    data.endMonth = self.convertMonth(data.endMonth);
+                                    aservice.updateHealthRate(data);
+                                });
+                                //TODO update previous history
+                                aservice.getHealthInsuranceItemDetail(self.OfficeItemModel().childs[1].code).done(function(data: HealthInsuranceRateDto) {
+                                    //update previous end month to 9999/12
+                                    data.startMonth = self.convertMonth(data.startMonth);
+                                    data.endMonth = self.minusOneMonth(self.startMonth());
+                                    aservice.updateHealthRate(data);
+                                });
+                            }
+                            else {
+                                //invalid date
+                                alert("ER011");
+                            }
+                        }
+                        else {
                             //update current history
                             aservice.getHealthInsuranceItemDetail(self.OfficeItemModel().childs[0].code).done(function(data: HealthInsuranceRateDto) {
                                 //
@@ -136,17 +163,6 @@ module nts.uk.pr.view.qmm008.f {
                                 data.endMonth = self.convertMonth(data.endMonth);
                                 aservice.updateHealthRate(data);
                             });
-                            //TODO update previous history
-                            aservice.getHealthInsuranceItemDetail(self.OfficeItemModel().childs[1].code).done(function(data: HealthInsuranceRateDto) {
-                                //update previous end month to 9999/12
-                                data.startMonth = self.convertMonth(data.startMonth);
-                                data.endMonth = self.minusOneMonth(self.startMonth());
-                                aservice.updateHealthRate(data);
-                            });
-                        }
-                        else {
-                            //invalid date
-                            alert("ER011");
                         }
                     }
                 }
@@ -165,8 +181,30 @@ module nts.uk.pr.view.qmm008.f {
                         });
                     }
                     else {
-                        //compare previous startMonth and startMonth -1
-                        if (self.compareStringDate(self.previousStartMonth(), self.minusOneMonth(self.startMonth()))) {
+                        if (self.previousStartMonth() != '') {
+                            //compare previous startMonth and startMonth -1
+                            if (self.compareStringDate(self.previousStartMonth(), self.minusOneMonth(self.startMonth()))) {
+                                //update current history
+                                aservice.getPensionItemDetail(self.OfficeItemModel().childs[0].code).done(function(data: PensionRateDto) {
+                                    //
+                                    data.startMonth = self.startMonth();
+                                    data.endMonth = self.convertMonth(data.endMonth);
+                                    aservice.updatePensionRate(data);
+                                });
+                                //TODO update previous history
+                                aservice.getPensionItemDetail(self.OfficeItemModel().childs[1].code).done(function(data: PensionRateDto) {
+                                    //update previous end month to 9999/12
+                                    data.startMonth = self.convertMonth(data.startMonth);
+                                    data.endMonth = self.minusOneMonth(self.startMonth());
+                                    aservice.updatePensionRate(data);
+                                });
+                            }
+                            else {
+                                //invalid date
+                                alert("ER011");
+                            }
+                        }
+                        else {
                             //update current history
                             aservice.getPensionItemDetail(self.OfficeItemModel().childs[0].code).done(function(data: PensionRateDto) {
                                 //
@@ -174,36 +212,25 @@ module nts.uk.pr.view.qmm008.f {
                                 data.endMonth = self.convertMonth(data.endMonth);
                                 aservice.updatePensionRate(data);
                             });
-                            //TODO update previous history
-                            aservice.getPensionItemDetail(self.OfficeItemModel().childs[1].code).done(function(data: PensionRateDto) {
-                                //update previous end month to 9999/12
-                                data.startMonth = self.convertMonth(data.startMonth);
-                                data.endMonth = self.minusOneMonth(self.startMonth());
-                                aservice.updatePensionRate(data);
-                            });
-                        }
-                        else {
-                            //invalid date
-                            alert("ER011");
                         }
                     }
 
                 }
                 //update
-                self.OfficeItemModel().childs.forEach(function(item, index) {
-                    //update history 
-                    if (item.code == self.selectedHistoryCode()) {
-                        //check start month < end month and previous startMonth < startMonth
-                        if (self.compareStringDate(self.startMonth(), self.endMonth()) && self.compareStringDate(self.previousStartMonth(), self.minusOneMonth(self.startMonth()))) {
-                            self.OfficeItemModel().childs[index].codeName = self.startMonth() + "~" + self.endMonth();
-                            //update endMonth of previous history
-                            self.OfficeItemModel().childs[index + 1].codeName = self.previousStartMonth() + "~" + self.minusOneMonth(self.startMonth());
-                        }
-                        else {
-                            alert("ER011");
-                        }
-                    }
-                });
+//                self.OfficeItemModel().childs.forEach(function(item, index) {
+//                    //update history 
+//                    if (item.code == self.selectedHistoryCode()) {
+//                        //check start month < end month and previous startMonth < startMonth
+//                        if (self.compareStringDate(self.startMonth(), self.endMonth()) && self.compareStringDate(self.previousStartMonth(), self.minusOneMonth(self.startMonth()))) {
+//                            self.OfficeItemModel().childs[index].codeName = self.startMonth() + "~" + self.endMonth();
+//                            //update endMonth of previous history
+////                            self.OfficeItemModel().childs[index + 1].codeName = self.previousStartMonth() + "~" + self.minusOneMonth(self.startMonth());
+//                        }
+//                        else {
+//                            alert("ER011");
+//                        }
+//                    }
+//                });
                 nts.uk.ui.windows.setShared("updateHistoryChildValue", self.OfficeItemModel(), true);
                 nts.uk.ui.windows.close();
             }

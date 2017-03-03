@@ -34,3 +34,7 @@
 .border_bottom{
 	border-bottom : solid 1px;
 }
+.kana_address{
+	padding-left:20px;
+	margin-top: 20px;
+}

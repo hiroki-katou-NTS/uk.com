@@ -26,11 +26,11 @@ public class UpdateSocialOfficeCommandHandler extends CommandHandler<UpdateSocia
 
 	/** The social insurance office service. */
 	@Inject
-	SocialInsuranceOfficeService socialInsuranceOfficeService;
+	private SocialInsuranceOfficeService socialInsuranceOfficeService;
 
 	/** The social insurance office repository. */
 	@Inject
-	SocialInsuranceOfficeRepository socialInsuranceOfficeRepository;
+	private SocialInsuranceOfficeRepository socialInsuranceOfficeRepository;
 
 	/*
 	 * (non-Javadoc)

@@ -96,10 +96,11 @@ public class JpaHealthInsuranceRateGetMemento implements HealthInsuranceRateGetM
 	 */
 	@Override
 	public CalculateMethod getAutoCalculate() {
-		if (this.typeValue.getKeepEntryFlg() == CalculateMethod.Auto.value)
+		if (this.typeValue.getKeepEntryFlg() == CalculateMethod.Auto.value) {
 			return CalculateMethod.Auto;
-		else
+		} else {
 			return CalculateMethod.Manual;
+		}
 	}
 
 	/*
@@ -127,7 +128,7 @@ public class JpaHealthInsuranceRateGetMemento implements HealthInsuranceRateGetM
 						new Ins3Rate(this.typeValue.getPPayGeneralRate())));
 		InsuranceRateItem generalBonus = new InsuranceRateItem(PaymentType.Bonus, HealthInsuranceType.General,
 				new HealthChargeRateItem(new Ins3Rate(this.typeValue.getCBnsGeneralRate()),
-						new Ins3Rate(this.typeValue.getCBnsGeneralRate())));
+						new Ins3Rate(this.typeValue.getPBnsGeneralRate())));
 		InsuranceRateItem nursingSalary = new InsuranceRateItem(PaymentType.Salary, HealthInsuranceType.Nursing,
 				new HealthChargeRateItem(new Ins3Rate(this.typeValue.getCPayNursingRate()),
 						new Ins3Rate(this.typeValue.getPPayNursingRate())));
