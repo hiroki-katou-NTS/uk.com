@@ -4,6 +4,7 @@ module qet001.b.viewmodel {
     import WageLedgerOutputSetting = qet001.a.service.model.WageLedgerOutputSetting;
     import WageledgerCategorySetting = qet001.a.service.model.WageledgerCategorySetting;
     import WageLedgerSettingItem = qet001.a.service.model.WageLedgerSettingItem;
+    import OuputSettingsService = qet001.a.service;
     
     export class ScreenModel {
         outputSettings: KnockoutObservable<OutputSettings>;
@@ -42,7 +43,7 @@ module qet001.b.viewmodel {
             var self = this;
             self.outputSettings().outputSettingSelectedCode.subscribe((newVal: string) => {
                 self.isLoading(true);
-                if (newVal== undefined || newVal == null || newVal == '') {
+                if (!newVal || newVal == '') {
                     self.outputSettingDetail(new OutputSettingDetail(self.aggregateItemsList, self.masterItemList));
                     self.isLoading(false);
                     return;
@@ -64,7 +65,7 @@ module qet001.b.viewmodel {
         public reloadReportItem() {
             var self = this;
             var data = self.outputSettingDetail();
-            if (data == undefined || data == null || data.categorySettings().length == 0) {
+            if (!data || data.categorySettings().length == 0) {
                 self.reportItems([]);
                 return;
             }
@@ -88,13 +89,32 @@ module qet001.b.viewmodel {
             // Load master items and aggregate items.
             $.when(self.loadAggregateItems(), self.loadMasterItems()).done(() => {
                 // Check output setting is empty.
-                if (outputSettings != undefined) {
-                    self.outputSettings().outputSettingList(outputSettings);
+                var isHasData = outputSettings && outputSettings.length > 0;
+                if (!isHasData) {
+                    dfd.resolve();
+                    return;
                 }
-                self.outputSettingDetail().isCreateMode(outputSettings == undefined || outputSettings.length == 0);
+                self.outputSettings().outputSettingList(outputSettings);
                 self.outputSettings().outputSettingSelectedCode(selectedSettingCode);
+                self.outputSettingDetail().isCreateMode(!isHasData);
                 dfd.resolve();
             });
+            return dfd.promise();
+        }
+        
+         /**
+         * Load all output setting.
+         */
+        public loadAllOutputSetting(): JQueryPromise<void> {
+            var dfd = $.Deferred<void>();
+            var self = this;
+            OuputSettingsService.findOutputSettings().done(function(data: WageLedgerOutputSetting[]) {
+                self.outputSettings().outputSettingList(data);
+                dfd.resolve();
+            }).fail(function(res) {
+                nts.uk.ui.dialog.alert(res.message);
+                dfd.reject();
+            })
             return dfd.promise();
         }
         
@@ -120,8 +140,13 @@ module qet001.b.viewmodel {
             if(!nts.uk.ui._viewModel.errors.isEmpty()) {
                 return;
             }
+            var currentSelectedCode = self.outputSettings().outputSettingSelectedCode();
             service.saveOutputSetting(self.outputSettingDetail()).done(function() {
                 nts.uk.ui.windows.setShared('isHasUpdate', true, false);
+                nts.uk.ui.dialog.alert('save success!').then(function() {
+                    self.loadAllOutputSetting().done(function() {
+                    });
+                })
             }).fail(function(res) {
                 // TODO: Show message duplicate code.
                 nts.uk.ui.dialog.alert(res.message);
@@ -142,9 +167,7 @@ module qet001.b.viewmodel {
             }
             service.removeOutputSetting(selectedCode).done(function() {
                 nts.uk.ui.windows.setShared('isHasUpdate', true, false);
-                var selectedSetting = self.outputSettings().outputSettingList()
-                        .filter(setting => setting.code == selectedCode)[0];
-                self.outputSettings().outputSettingList.remove(selectedSetting);
+                self.loadAllOutputSetting();
             }).fail(function(res) {
                 nts.uk.ui.dialog.alert(res.message);
             });
@@ -218,9 +241,9 @@ module qet001.b.viewmodel {
         outputSettingColumns: KnockoutObservableArray<any>;
         
         constructor() {
-            this.searchText = ko.observable('');
+            this.searchText = ko.observable(null);
             this.outputSettingList = ko.observableArray([]);
-            this.outputSettingSelectedCode = ko.observable('');
+            this.outputSettingSelectedCode = ko.observable(null);
             this.outputSettingColumns = ko.observableArray([
                 {headerText: 'コード', prop: 'code', width: 90}, 
                 {headerText: '名称', prop: 'name',  width: 100}]);

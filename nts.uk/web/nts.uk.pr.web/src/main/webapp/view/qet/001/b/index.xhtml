@@ -9,6 +9,7 @@
 		<ui:define name="htmlHead">
 			<com:stylefile path="main.css" />
 			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="../a/service.js" />
 			<com:scriptfile path="service.js" />
 			<com:scriptfile path="viewmodel.js" />
 			<com:scriptfile path="start.js" />
@@ -70,12 +71,12 @@
 									<div id="code-name-label" data-bind="ntsFormLabel: {constraint: ['WLOutputSettingCode','WLOutputSettingName'],
 										 required: true}">コード/名称</div>
 									<input id="code-input" data-name="コード" data-bind="ntsTextEditor: {value: settingCode, 
-													enable: isCreateMode() &amp;&amp; !$parent.isLoading(),
+													enable: isCreateMode() ,
 													constraint: 'WLOutputSettingCode',
 													required: true}"></input>
 									<div class="name-input">
 										<input id="name-input" data-name="名称" data-bind="ntsTextEditor: {value: settingName,
-														constraint: 'WLOutputSettingName', enable: !$parent.isLoading(),
+														constraint: 'WLOutputSettingName',
 														required: true}"></input>
 									</div>
 								</div>

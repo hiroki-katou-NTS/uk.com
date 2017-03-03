@@ -63,12 +63,11 @@ public class JpaWLOutputSettingRepository extends JpaRepository implements WLOut
 		if (!entity.isPresent()) {
 			throw new RuntimeException("Cannot update entity not exist!");
 		}
-
+		QlsptLedgerFormHead realEntity = entity.get();
 		// Convert to Memento;
-		outputSetting.saveToMemento(new JpaWLOutputSettingSetMemento(entity.get()));
-
+		outputSetting.saveToMemento(new JpaWLOutputSettingSetMemento(realEntity));
 		// Update to db.
-		this.commandProxy().update(entity);
+		this.commandProxy().update(realEntity);
 	}
 
 	/*
@@ -80,7 +79,12 @@ public class JpaWLOutputSettingRepository extends JpaRepository implements WLOut
 	 */
 	@Override
 	public void remove(WLOutputSettingCode code, CompanyCode companyCode) {
-		this.commandProxy().remove(QlsptLedgerFormHead.class, new QlsptLedgerFormHeadPK(code.v(), companyCode.v()));
+		Optional<QlsptLedgerFormHead> entity = this.queryProxy()
+				.find(new QlsptLedgerFormHeadPK(companyCode.v(), code.v()), QlsptLedgerFormHead.class);
+		if (!entity.isPresent()) {
+			return;
+		}
+		this.commandProxy().remove(entity.get());
 	}
 
 	/*

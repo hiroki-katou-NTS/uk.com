@@ -4,7 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.pr.report.infra.repository.wageledger;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -13,7 +12,6 @@ import nts.uk.ctx.pr.report.dom.wageledger.outputsetting.WLCategorySetting;
 import nts.uk.ctx.pr.report.dom.wageledger.outputsetting.WLOutputSettingCode;
 import nts.uk.ctx.pr.report.dom.wageledger.outputsetting.WLOutputSettingName;
 import nts.uk.ctx.pr.report.dom.wageledger.outputsetting.WLOutputSettingSetMemento;
-import nts.uk.ctx.pr.report.infra.entity.wageledger.QlsptLedgerFormDetail;
 import nts.uk.ctx.pr.report.infra.entity.wageledger.QlsptLedgerFormHead;
 import nts.uk.ctx.pr.report.infra.entity.wageledger.QlsptLedgerFormHeadPK;
 
@@ -21,6 +19,12 @@ import nts.uk.ctx.pr.report.infra.entity.wageledger.QlsptLedgerFormHeadPK;
  * The Class JpaWLOutputSettingSetMemento.
  */
 public class JpaWLOutputSettingSetMemento implements WLOutputSettingSetMemento{
+	
+	/** The company code. */
+	private CompanyCode companyCode;
+	
+	/** The code. */
+	private WLOutputSettingCode code;
 	
 	/** The entity. */
 	protected QlsptLedgerFormHead entity;
@@ -33,10 +37,9 @@ public class JpaWLOutputSettingSetMemento implements WLOutputSettingSetMemento{
 	public JpaWLOutputSettingSetMemento(QlsptLedgerFormHead entity) {
 		super();
 		this.entity = entity;
-		
-		// Init pk.
-		QlsptLedgerFormHeadPK pk = new QlsptLedgerFormHeadPK();
-		this.entity.setQlsptLedgerFormHeadPK(pk);
+		if (this.entity.getQlsptLedgerFormHeadPK() == null) {
+			this.entity.setQlsptLedgerFormHeadPK(new QlsptLedgerFormHeadPK());
+		}
 	}
 
 	/* (non-Javadoc)
@@ -45,8 +48,8 @@ public class JpaWLOutputSettingSetMemento implements WLOutputSettingSetMemento{
 	 */
 	@Override
 	public void setCode(WLOutputSettingCode code) {
-		this.entity.getQlsptLedgerFormHeadPK().setCcd(code.v());
-		
+		this.entity.getQlsptLedgerFormHeadPK().setFormCd(code.v());
+		this.code = code;
 	}
 
 	/* (non-Javadoc)
@@ -65,9 +68,10 @@ public class JpaWLOutputSettingSetMemento implements WLOutputSettingSetMemento{
 	@Override
 	public void setCategorySettings(List<WLCategorySetting> categorySettings) {
 		this.entity.setQlsptLedgerFormDetailList(categorySettings.stream().map(cate -> {
-			List<QlsptLedgerFormDetail> cateSetting = new ArrayList<>();
-			cate.saveToMemento(new JpaWLCategorySettingSetMemento(cateSetting));
-			return cateSetting;
+			JpaWLCategorySettingSetMemento setMemento = new JpaWLCategorySettingSetMemento(
+					this.companyCode, this.code);
+			cate.saveToMemento(setMemento);
+			return setMemento.getCategoryEntities();
 		}).flatMap(cate -> cate.stream()).collect(Collectors.toList()));
 	}
 
@@ -89,6 +93,7 @@ public class JpaWLOutputSettingSetMemento implements WLOutputSettingSetMemento{
 	@Override
 	public void setCompanyCode(CompanyCode companyCode) {
 		this.entity.getQlsptLedgerFormHeadPK().setCcd(companyCode.v());
+		this.companyCode = companyCode;
 	}
 
 	/* (non-Javadoc)
@@ -97,8 +102,7 @@ public class JpaWLOutputSettingSetMemento implements WLOutputSettingSetMemento{
 	 */
 	@Override
 	public void setVersion(long version) {
-		// Do nothing.
-		throw new UnsupportedOperationException();
+		this.entity.setExclusVer(0);
 	}
 
 

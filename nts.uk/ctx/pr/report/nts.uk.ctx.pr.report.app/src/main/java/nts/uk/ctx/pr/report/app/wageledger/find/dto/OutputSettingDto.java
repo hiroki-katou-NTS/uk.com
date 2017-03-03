@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import lombok.Builder;
+import nts.gul.collection.ListUtil;
 import nts.uk.ctx.pr.report.dom.company.CompanyCode;
 import nts.uk.ctx.pr.report.dom.wageledger.outputsetting.WLCategorySetting;
 import nts.uk.ctx.pr.report.dom.wageledger.outputsetting.WLOutputSettingCode;
@@ -56,6 +57,9 @@ public class OutputSettingDto implements WLOutputSettingSetMemento{
 	 */
 	@Override
 	public void setCategorySettings(List<WLCategorySetting> categorySettings) {
+		if (ListUtil.isEmpty(categorySettings)) {
+			return;
+		}
 		this.categorySettings = categorySettings.stream().map(setting -> {
 			CategorySettingDto dto = CategorySettingDto.builder().build();
 			setting.saveToMemento(dto);
@@ -79,7 +83,6 @@ public class OutputSettingDto implements WLOutputSettingSetMemento{
 	@Override
 	public void setCompanyCode(CompanyCode companyCode) {
 		// Do nothing.
-		throw new UnsupportedOperationException();
 	}
 
 	/* (non-Javadoc)
@@ -88,8 +91,6 @@ public class OutputSettingDto implements WLOutputSettingSetMemento{
 	 */
 	@Override
 	public void setVersion(long version) {
-		// Do nothing.
-		throw new UnsupportedOperationException();
 	}
 
 }

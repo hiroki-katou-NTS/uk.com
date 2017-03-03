@@ -7,9 +7,12 @@ package nts.uk.ctx.pr.report.infra.repository.wageledger;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import lombok.Getter;
+import nts.uk.ctx.pr.report.dom.company.CompanyCode;
 import nts.uk.ctx.pr.report.dom.wageledger.PaymentType;
 import nts.uk.ctx.pr.report.dom.wageledger.WLCategory;
 import nts.uk.ctx.pr.report.dom.wageledger.outputsetting.WLCategorySettingSetMemento;
+import nts.uk.ctx.pr.report.dom.wageledger.outputsetting.WLOutputSettingCode;
 import nts.uk.ctx.pr.report.dom.wageledger.outputsetting.WLSettingItem;
 import nts.uk.ctx.pr.report.infra.entity.wageledger.QlsptLedgerFormDetail;
 
@@ -19,15 +22,24 @@ import nts.uk.ctx.pr.report.infra.entity.wageledger.QlsptLedgerFormDetail;
 public class JpaWLCategorySettingSetMemento implements WLCategorySettingSetMemento {
 	
 	/** The category entitys. */
+	@Getter
 	private List<QlsptLedgerFormDetail> categoryEntities;
+	
+	/** The company code. */
+	private CompanyCode companyCode;
+	
+	/** The code. */
+	private WLOutputSettingCode code;
 	
 	/**
 	 * Instantiates a new jpa WL category setting set memento.
 	 *
 	 * @param entity the entity
 	 */
-	public JpaWLCategorySettingSetMemento(List<QlsptLedgerFormDetail> categoryEntities) {
-		this.categoryEntities = categoryEntities;
+	public JpaWLCategorySettingSetMemento(CompanyCode companyCode,
+			WLOutputSettingCode code) {
+		this.companyCode = companyCode;
+		this.code = code;
 	}
 
 	/* (non-Javadoc)
@@ -58,7 +70,9 @@ public class JpaWLCategorySettingSetMemento implements WLCategorySettingSetMemen
 	public void setOutputItems(List<WLSettingItem> outputItems) {
 		this.categoryEntities = outputItems.stream().map(item -> {
 			QlsptLedgerFormDetail detail = new QlsptLedgerFormDetail();
-			item.saveToMemento(new JpaWLSettingItemSetMemento(detail));
+			
+			// Convert setting items to entities.
+			item.saveToMemento(new JpaWLSettingItemSetMemento(detail, this.companyCode, this.code));
 			return detail;
 		}).collect(Collectors.toList());
 	}
