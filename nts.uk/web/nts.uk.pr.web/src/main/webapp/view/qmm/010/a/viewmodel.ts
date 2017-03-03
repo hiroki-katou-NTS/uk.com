@@ -53,7 +53,7 @@ module nts.uk.pr.view.qmm010.a {
             private readFromSocialTnsuranceOffice() {
                 var self = this;
                 self.enableButton(false);
-                nts.uk.ui.windows.sub.modal("/view/qmm/010/b/index.xhtml", { height: 800, width: 500, title: "社会保険事業所から読み込み" }).onClosed(() => {
+                nts.uk.ui.windows.sub.modal("/view/qmm/010/b/index.xhtml", { height: 700, width: 450, title: "社会保険事業所から読み込み" }).onClosed(() => {
                     self.enableButton(true);
                     self.reloadDataByAction('');
                 });
@@ -161,11 +161,7 @@ module nts.uk.pr.view.qmm010.a {
                 } else {
                     self.lstlaborInsuranceOfficeModel([]);
                 }
-                if (self.laborInsuranceOfficeModel == null || self.laborInsuranceOfficeModel == undefined) {
-                    self.laborInsuranceOfficeModel = ko.observable(new LaborInsuranceOfficeModel());
-                } else {
-                    self.resetValueLaborInsurance();
-                }
+                self.resetValueLaborInsurance();
                 self.selectCodeLstlaborInsuranceOffice('');
                 self.isEmpty(true);
             }
@@ -181,10 +177,6 @@ module nts.uk.pr.view.qmm010.a {
                             self.reloadDataByAction('');
                         });
                     }).ifNo(function() {
-                        self.reloadDataByAction(self.selectCodeLstlaborInsuranceOffice());
-                    }).ifCancel(function() {
-                        self.reloadDataByAction(self.selectCodeLstlaborInsuranceOffice());
-                    }).then(function() {
                         self.reloadDataByAction(self.selectCodeLstlaborInsuranceOffice());
                     })
                 }
@@ -261,7 +253,7 @@ module nts.uk.pr.view.qmm010.a {
                     constraint: 'ResidenceCode',
                     option: ko.mapping.fromJS(new nts.uk.ui.option.MultilineEditorOption({
                         resizeable: true,
-                        placeholder: "Placeholder for text editor",
+                        placeholder: "",
                         width: "",
                         textalign: "left"
                     })),
@@ -294,11 +286,13 @@ module nts.uk.pr.view.qmm010.a {
                     constraint: 'ResidenceCode',
                     option: ko.mapping.fromJS(new nts.uk.ui.option.MultilineEditorOption({
                         resizeable: true,
-                        placeholder: "Placeholder for text editor",
+                        placeholder: "",
                         width: "",
                         textalign: "left"
                     })),
                 });
+                this.isReadOnly(false);
+                this.isEnable(true);
             }
             updateData(officeInfo: LaborInsuranceOfficeDto) {
                 if (officeInfo != null) {
@@ -325,7 +319,7 @@ module nts.uk.pr.view.qmm010.a {
                         constraint: 'ResidenceCode',
                         option: ko.mapping.fromJS(new nts.uk.ui.option.MultilineEditorOption({
                             resizeable: true,
-                            placeholder: "Placeholder for text editor",
+                            placeholder: "",
                             width: "",
                             textalign: "left"
                         })),
@@ -335,7 +329,6 @@ module nts.uk.pr.view.qmm010.a {
             setReadOnly(readonly: boolean) {
                 this.isReadOnly(readonly);
                 this.isEnable(!readonly);
-
             }
 
         }

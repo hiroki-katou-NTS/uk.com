@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2016 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.core.app.wagetable.command.dto;
@@ -10,8 +10,9 @@ import nts.uk.ctx.pr.core.dom.wagetable.certification.Certification;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.CertificationGetMemento;
 
 /**
- * Instantiates a new certification dto.
+ * The Class CertificationDto.
  */
+
 @Data
 public class CertificationDto {
 
@@ -24,29 +25,59 @@ public class CertificationDto {
 	/**
 	 * To domain.
 	 *
-	 * @param companyCode
-	 *            the company code
+	 * @param companyCode the company code
 	 * @return the certification
 	 */
 	public Certification toDomain(String companyCode) {
-		CertificationDto dto = this;
-		return new Certification(new CertificationGetMemento() {
+		return new Certification(new CertificationGetMementoImpl(this, companyCode));
+	}
 
-			@Override
-			public String getName() {
-				return dto.name;
-			}
+	/**
+	 * The Class CertificationGetMementoImpl.
+	 */
+	public class CertificationGetMementoImpl implements CertificationGetMemento {
 
-			@Override
-			public CompanyCode getCompanyCode() {
-				return new CompanyCode(companyCode);
-			}
+		/** The dto. */
+		private CertificationDto dto;
 
-			@Override
-			public String getCode() {
-				return dto.code;
-			}
-		});
+		/** The company code. */
+		private String companyCode;
+
+		/**
+		 * Instantiates a new certification get memento impl.
+		 *
+		 * @param dto the dto
+		 * @param companyCode the company code
+		 */
+		public CertificationGetMementoImpl(CertificationDto dto, String companyCode) {
+			super();
+			this.dto = dto;
+			this.companyCode = companyCode;
+		}
+
+		/* (non-Javadoc)
+		 * @see nts.uk.ctx.pr.core.dom.wagetable.certification.CertificationGetMemento#getName()
+		 */
+		@Override
+		public String getName() {
+			return dto.name;
+		}
+
+		/* (non-Javadoc)
+		 * @see nts.uk.ctx.pr.core.dom.wagetable.certification.CertificationGetMemento#getCompanyCode()
+		 */
+		@Override
+		public CompanyCode getCompanyCode() {
+			return new CompanyCode(companyCode);
+		}
+
+		/* (non-Javadoc)
+		 * @see nts.uk.ctx.pr.core.dom.wagetable.certification.CertificationGetMemento#getCode()
+		 */
+		@Override
+		public String getCode() {
+			return dto.code;
+		}
 	}
 
 }

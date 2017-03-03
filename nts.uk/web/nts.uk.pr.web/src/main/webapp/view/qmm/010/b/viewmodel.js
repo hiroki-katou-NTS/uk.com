@@ -16,34 +16,11 @@ var nts;
                             var ScreenModel = (function () {
                                 function ScreenModel() {
                                     var self = this;
-                                    self.employmentName = ko.observable("");
-                                    self.textSearch = {
-                                        valueSearch: ko.observable(""),
-                                        option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                                            textmode: "text",
-                                            placeholder: "コード・名称で検索・・・",
-                                            width: "340",
-                                            textalign: "left"
-                                        }))
-                                    };
-                                    self.selectLstSocialInsuranceOffice = ko.observableArray([]);
+                                    self.selectLstSocialInsuranceOffice = ko.observable('');
                                     self.columnsLstSocialInsuranceOffice = ko.observableArray([
-                                        { headerText: 'コード', prop: 'code', width: 120 },
-                                        { headerText: '名称', prop: 'name', width: 120 }
+                                        { headerText: 'コード', prop: 'code', width: 100 },
+                                        { headerText: '名称', prop: 'name', width: 150 }
                                     ]);
-                                    self.multilineeditor = {
-                                        value: ko.observable(''),
-                                        constraint: 'ResidenceCode',
-                                        option: ko.mapping.fromJS(new nts.uk.ui.option.MultilineEditorOption({
-                                            resizeable: true,
-                                            placeholder: "Placeholder for text editor",
-                                            width: "",
-                                            textalign: "left"
-                                        })),
-                                        required: ko.observable(true),
-                                        enable: ko.observable(true),
-                                        readonly: ko.observable(false)
-                                    };
                                 }
                                 ScreenModel.prototype.startPage = function () {
                                     var self = this;

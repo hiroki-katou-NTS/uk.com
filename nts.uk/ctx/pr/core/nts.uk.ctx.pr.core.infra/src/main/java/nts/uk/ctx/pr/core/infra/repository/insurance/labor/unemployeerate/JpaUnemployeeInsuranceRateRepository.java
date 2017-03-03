@@ -19,7 +19,9 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.time.DateTimeConstraints;
 import nts.arc.time.YearMonth;
+import nts.gul.collection.ListUtil;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
@@ -77,9 +79,22 @@ public class JpaUnemployeeInsuranceRateRepository extends JpaRepository implemen
 	 * java.lang.Long)
 	 */
 	@Override
-	public void remove(String id, Long version) {
-		// TODO Auto-generated method stub
-
+	public void remove(CompanyCode companyCode, String historyId, Long version) {
+		List<UnemployeeInsuranceRate> lstUnemployeeInsuranceRate = findAll(companyCode);
+		if (!ListUtil.isEmpty(lstUnemployeeInsuranceRate)) {
+			if (lstUnemployeeInsuranceRate.get(0).getHistoryId().equals(historyId)) {
+				// Start Begin
+				this.commandProxy().remove(QismtEmpInsuRate.class, new QismtEmpInsuRatePK(companyCode.v(), historyId));
+				if (lstUnemployeeInsuranceRate.size() >= 2) {
+					UnemployeeInsuranceRate rateUpdate = lstUnemployeeInsuranceRate.get(1);
+					QismtEmpInsuRate entityUpdate = toEntity(rateUpdate);
+					// set max date
+					entityUpdate.setEndYm(YearMonth
+							.of(DateTimeConstraints.LIMIT_YEAR.max(), DateTimeConstraints.LIMIT_MONTH.max()).v());
+					this.commandProxy().update(entityUpdate);
+				}
+			}
+		}
 	}
 
 	/*
@@ -282,7 +297,7 @@ public class JpaUnemployeeInsuranceRateRepository extends JpaRepository implemen
 	 *            the history id
 	 * @return the list
 	 */
-	//Find end <= start order by start
+	// Find end <= start order by start
 	public List<QismtEmpInsuRate> findBetweenUpdate(CompanyCode companyCode, YearMonth yearMonth, String historyId) {
 		EntityManager em = getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();

@@ -20,6 +20,7 @@ import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.InsuBizRateItem;
  */
 @Data
 public class AccidentInsuranceRateDto {
+	
 	/** The history insurance. */
 	private HistoryAccidentInsuranceRateDto historyInsurance;
 
@@ -29,38 +30,61 @@ public class AccidentInsuranceRateDto {
 	/**
 	 * To domain.
 	 *
-	 * @param companyCode the company code
+	 * @param companyCode
+	 *            the company code
 	 * @return the accident insurance rate
 	 */
 	public AccidentInsuranceRate toDomain(String companyCode) {
-		AccidentInsuranceRateDto dto = this;
-		AccidentInsuranceRate accidentInsuranceRate = new AccidentInsuranceRate(new AccidentInsuranceRateGetMemento() {
+		return new AccidentInsuranceRate(new AccidentInsuranceRateGetMementoImpl(companyCode, this));
+	}
 
-			@Override
-			public Set<InsuBizRateItem> getRateItems() {
-				Set<InsuBizRateItem> setInsuBizRateItem = new HashSet<>();
-				for (InsuBizRateItemDto insuBizRateItemDto : dto.rateItems) {
-					setInsuBizRateItem.add(insuBizRateItemDto.toDomain());
-				}
-				return setInsuBizRateItem;
-			}
+	/**
+	 * The Class AccidentInsuranceRateGetMementoImpl.
+	 */
+	public class AccidentInsuranceRateGetMementoImpl implements AccidentInsuranceRateGetMemento {
 
-			@Override
-			public String getHistoryId() {
-				return dto.historyInsurance.getHistoryId();
-			}
+		/** The dto. */
+		private AccidentInsuranceRateDto dto;
 
-			@Override
-			public CompanyCode getCompanyCode() {
-				return new CompanyCode(companyCode);
-			}
+		/** The company code. */
+		private String companyCode;
 
-			@Override
-			public MonthRange getApplyRange() {
-				return dto.historyInsurance.toDomain();
+		/**
+		 * Instantiates a new WL category setting get memento impl.
+		 *
+		 * @param dto
+		 *            the dto
+		 */
+		public AccidentInsuranceRateGetMementoImpl(String companyCode, AccidentInsuranceRateDto dto) {
+			super();
+			this.dto = dto;
+			this.companyCode = companyCode;
+		}
+
+		@Override
+		public String getHistoryId() {
+			return dto.historyInsurance.getHistoryId();
+		}
+
+		@Override
+		public CompanyCode getCompanyCode() {
+			return new CompanyCode(companyCode);
+		}
+
+		@Override
+		public MonthRange getApplyRange() {
+			return dto.historyInsurance.toDomain();
+		}
+
+		@Override
+		public Set<InsuBizRateItem> getRateItems() {
+			Set<InsuBizRateItem> setInsuBizRateItem = new HashSet<>();
+			for (InsuBizRateItemDto insuBizRateItemDto : dto.rateItems) {
+				setInsuBizRateItem.add(insuBizRateItemDto.toDomain());
 			}
-		});
-		return accidentInsuranceRate;
+			return setInsuBizRateItem;
+		}
+
 	}
 
 }

@@ -39,7 +39,7 @@ module nts.uk.pr.view.qmm007.c {
                 var self = this;
                 if (self.isEditMode()) {
                     service.update(ko.toJS(self.unitPriceHistoryModel)).done(() => {
-                        nts.uk.ui.windows.setShared('startMonth', self.unitPriceHistoryModel.startMonth());
+                        nts.uk.ui.windows.setShared('isUpdated', true);
                         nts.uk.ui.windows.close();
                     });
                 } else {

@@ -13,6 +13,8 @@ import javax.ws.rs.Produces;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.pr.core.app.insurance.labor.unemployeerate.command.UnemployeeInsuranceRateAddCommand;
 import nts.uk.ctx.pr.core.app.insurance.labor.unemployeerate.command.UnemployeeInsuranceRateAddCommandHandler;
+import nts.uk.ctx.pr.core.app.insurance.labor.unemployeerate.command.UnemployeeInsuranceRateDeleteCommand;
+import nts.uk.ctx.pr.core.app.insurance.labor.unemployeerate.command.UnemployeeInsuranceRateDeleteCommandHandler;
 import nts.uk.ctx.pr.core.app.insurance.labor.unemployeerate.command.UnemployeeInsuranceRateUpdateCommand;
 import nts.uk.ctx.pr.core.app.insurance.labor.unemployeerate.command.UnemployeeInsuranceRateUpdateCommandHandler;
 import nts.uk.ctx.pr.core.app.insurance.labor.unemployeerate.find.UnemployeeInsuranceFinder;
@@ -31,11 +33,15 @@ public class UnemployeeInsuranceRateWs extends WebService {
 
 	/** The add. */
 	@Inject
-	UnemployeeInsuranceRateAddCommandHandler add;
+	private UnemployeeInsuranceRateAddCommandHandler add;
 
 	/** The update. */
 	@Inject
-	UnemployeeInsuranceRateUpdateCommandHandler update;
+	private UnemployeeInsuranceRateUpdateCommandHandler update;
+
+	/** The delete. */
+	@Inject
+	private UnemployeeInsuranceRateDeleteCommandHandler delete;
 
 	/**
 	 * Detail.
@@ -52,8 +58,7 @@ public class UnemployeeInsuranceRateWs extends WebService {
 	/**
 	 * Adds the.
 	 *
-	 * @param command
-	 *            the command
+	 * @param command the command
 	 */
 	@POST
 	@Path("add")
@@ -64,13 +69,23 @@ public class UnemployeeInsuranceRateWs extends WebService {
 	/**
 	 * Update.
 	 *
-	 * @param command
-	 *            the command
+	 * @param command the command
 	 */
 	@POST
 	@Path("update")
 	public void update(UnemployeeInsuranceRateUpdateCommand command) {
 		this.update.handle(command);
+	}
+
+	/**
+	 * Delete.
+	 *
+	 * @param command the command
+	 */
+	@POST
+	@Path("delete")
+	public void delete(UnemployeeInsuranceRateDeleteCommand command) {
+		this.delete.handle(command);
 	}
 
 }

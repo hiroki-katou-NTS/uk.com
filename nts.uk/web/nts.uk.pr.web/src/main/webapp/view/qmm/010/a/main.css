@@ -7,32 +7,36 @@
 	margin-right: 5px;
 }
 
-.trFull5 {
-	width: 50px;
+.tr360 {
+	width: 360px !important;
 }
 
-.trFull10 {
-	width: 50px;
+.tr120 {
+	width: 120px !important;
 }
 
-.trFull15 {
-	width: 100px;
+.tr180 {
+	width: 180px !important;
 }
 
-.trFull25 {
-	width: 25%;
+.tr500 {
+	width: 500px !important;
 }
 
-.trFull30 {
-	width: 30%;
+.tr240 {
+	width: 240px !important;
 }
 
-.trFull35 {
-	width: 35%;
+.tr40 {
+	width: 40px !important;
 }
 
-.trFull45 {
-	width: 180px;
+.tr50 {
+	width: 50px !important;
+}
+
+.tr90 {
+	width: 90px !important;
 }
 
 .left20 {

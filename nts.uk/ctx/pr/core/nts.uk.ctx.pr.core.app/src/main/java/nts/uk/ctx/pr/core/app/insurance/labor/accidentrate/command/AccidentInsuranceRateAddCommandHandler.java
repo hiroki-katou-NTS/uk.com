@@ -14,6 +14,7 @@ import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.AccidentInsuranceRate
 import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.AccidentInsuranceRateRepository;
 import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.service.AccidentInsuranceRateService;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.context.LoginUserContext;
 
 /**
  * The Class AccidentInsuranceRateAddCommandHandler.
@@ -39,10 +40,19 @@ public class AccidentInsuranceRateAddCommandHandler extends CommandHandler<Accid
 	 */
 	@Override
 	protected void handle(CommandHandlerContext<AccidentInsuranceRateAddCommand> context) {
-		String companyCode = AppContexts.user().companyCode();
-		AccidentInsuranceRate accidentInsuranceRate = context.getCommand().toDomain(companyCode);
+		// get user login
+		LoginUserContext loginUserContext = AppContexts.user();
+		// get commpany user login
+		String companyCode = loginUserContext.companyCode();
+		// get command
+		AccidentInsuranceRateAddCommand command = context.getCommand();
+		// get domain by action request
+		AccidentInsuranceRate accidentInsuranceRate = command.toDomain(companyCode);
+		// validate domain
 		accidentInsuranceRate.validate();
+		// validate input domian
 		accidentInsuranceRateService.validateDateRange(accidentInsuranceRate);
+		// connection repository running add
 		this.accidentInsuranceRateRepo.add(accidentInsuranceRate);
 	}
 

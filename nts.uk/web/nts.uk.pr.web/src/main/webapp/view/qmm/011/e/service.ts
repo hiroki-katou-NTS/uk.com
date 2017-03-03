@@ -1,4 +1,5 @@
 module nts.uk.pr.view.qmm011.e {
+    import InsuranceBusinessTypeUpdateDto = nts.uk.pr.view.qmm011.a.service.model.InsuranceBusinessTypeUpdateDto;
     export module service {
         var paths: any = {
             updateInsuranceBusinessType: "pr/insurance/labor/businesstype/update"

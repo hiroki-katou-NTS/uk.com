@@ -62,10 +62,8 @@ public class UnemployeeInsuranceRateFindOutDto implements UnemployeeInsuranceRat
 	 */
 	@Override
 	public void setApplyRange(MonthRange applyRange) {
-		this.historyInsurance.setEndMonthRage(this.historyInsurance.convertMonth(applyRange.getEndMonth()));
-		this.historyInsurance.setStartMonthRage(this.historyInsurance.convertMonth(applyRange.getStartMonth()));
-		this.historyInsurance.setInforMonthRage(
-				this.historyInsurance.getStartMonthRage() + " ~ " + this.historyInsurance.getEndMonthRage());
+		this.historyInsurance.setEndMonthRage(applyRange.getEndMonth().v());
+		this.historyInsurance.setStartMonthRage(applyRange.getStartMonth().v());
 	}
 
 	/*
