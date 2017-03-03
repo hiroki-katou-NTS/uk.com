@@ -11,12 +11,6 @@ import nts.uk.ctx.pr.core.dom.wagetable.WageTableElement;
 /**
  * The Class FineworkDimensionalMode.
  */
-
-/**
- * Gets the element 3 rd.
- *
- * @return the element 3 rd
- */
 @Getter
 public class FineworkDimensionalMode implements DemensionalMode {
 

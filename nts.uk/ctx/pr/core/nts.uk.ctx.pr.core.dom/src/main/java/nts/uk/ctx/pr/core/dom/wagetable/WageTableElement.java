@@ -32,4 +32,27 @@ public class WageTableElement {
 		this.demensionNo = demensionNo;
 		this.elementModeSetting = elementModeSetting;
 	}
+
+	// =================== Memento State Support Method ===================
+	/**
+	 * Instantiates a new wage table element.
+	 *
+	 * @param memento
+	 *            the memento
+	 */
+	public WageTableElement(WageTableElementGetMemento memento) {
+		this.demensionNo = memento.getDemensionNo();
+		this.elementModeSetting = memento.getElementModeSetting();
+	}
+
+	/**
+	 * Save to memento.
+	 *
+	 * @param memento
+	 *            the memento
+	 */
+	public void saveToMemento(WageTableElementSetMemento memento) {
+		memento.setDemensionNo(this.demensionNo);
+		memento.setElementModeSetting(this.elementModeSetting);
+	}
 }

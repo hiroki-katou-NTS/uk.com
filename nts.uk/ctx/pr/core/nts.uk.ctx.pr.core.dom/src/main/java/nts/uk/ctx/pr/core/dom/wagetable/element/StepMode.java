@@ -4,11 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.dom.wagetable.element;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import lombok.Getter;
-import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.pr.core.dom.wagetable.ElementType;
 
 /**
@@ -27,7 +23,7 @@ public class StepMode extends BaseMode {
 	private Integer interval;
 	
 	/** The items. */
-	private List<RangeItem> items;
+//	private List<RangeItem> items;
 	
 	/**
 	 * Instantiates a new age fix mode.
@@ -42,20 +38,20 @@ public class StepMode extends BaseMode {
 		this.upperLimit = upperLimit;
 		this.interval = interval;
 
-		List<RangeItem> items = new ArrayList<>();
-
-		int index = 0;
-		int start = lowerLimit;
-		while (start <= upperLimit) {
-			index++;
-			int end = start + interval - 1;
-
-			items.add(new RangeItem(index, start, ((end <= upperLimit) ? end : upperLimit),
-					IdentifierUtil.randomUniqueId()));
-
-			start = start + interval;
-		}
-
-		this.items = items;
+//		List<RangeItem> items = new ArrayList<>();
+//
+//		int index = 0;
+//		int start = lowerLimit;
+//		while (start <= upperLimit) {
+//			index++;
+//			int end = start + interval - 1;
+//
+//			items.add(new RangeItem(index, start, ((end <= upperLimit) ? end : upperLimit),
+//					IdentifierUtil.randomUniqueId()));
+//
+//			start = start + interval;
+//		}
+//
+//		this.items = items;
 	}
 }
