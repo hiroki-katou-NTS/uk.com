@@ -3,6 +3,8 @@
  */
 package nts.uk.ctx.pr.formula.app.find.formulaeasyhead;
 
+import java.math.BigDecimal;
+
 import lombok.Value;
 import nts.uk.ctx.pr.formula.dom.formula.FormulaEasyHead;
 
@@ -19,15 +21,15 @@ public class FormulaEasyHeadDto {
 	
 	String historyId;
 	
-	int conditionAtr;
+	BigDecimal conditionAtr;
 
-	int referenceMasterNo;
+	BigDecimal referenceMasterNo;
 	
 	public static FormulaEasyHeadDto fromDomain(FormulaEasyHead domain) {
 		return new FormulaEasyHeadDto(domain.getCompanyCode(),
 				domain.getFormulaCode().v(),
-				domain.getHistoryId().v(),
-				domain.getConditionAtr().value,
-				domain.getReferenceMasterNo().value);
+				domain.getHistoryId(),
+				new BigDecimal(domain.getConditionAtr().value),
+				new BigDecimal(domain.getReferenceMasterNo().value));
 	}
 }

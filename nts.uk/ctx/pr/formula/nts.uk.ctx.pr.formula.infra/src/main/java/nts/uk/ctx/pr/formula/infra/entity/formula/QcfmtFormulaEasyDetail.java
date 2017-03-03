@@ -29,34 +29,34 @@ public class QcfmtFormulaEasyDetail implements Serializable{
 	public BigDecimal easyFormulaTypeAttribute;
 	
 	@Column(name = "A_BASE_MNY_ATR")
-	public BigDecimal aBaseMnyAtr;
+	public BigDecimal baseAmountDevision;
 	
 	@Column(name = "A_BASE_MNY")
-	public BigDecimal aBaseMny;
+	public BigDecimal baseFixedAmount;
 	
 	@Column(name = "B_DIVIDE_VALUE_SET")
-	public BigDecimal bDivideValueSet;
+	public BigDecimal baseValueDevision;
 	
 	@Column(name = "B_DIVIDE_VALUE")
-	public BigDecimal bDivideValue;
+	public BigDecimal baseFixedValue;
 	
 	@Column(name = "C_PREMIUM_RATE")
-	public BigDecimal cPremiumRate;
+	public BigDecimal premiumRate;
 	
 	@Column(name = "D_ROUND_ATR")
-	public BigDecimal dRoundAtr;
+	public BigDecimal roundProcessingDevision;
 	
 	@Column(name = "E_WORK_ITEM_CD")
-	public String eWorkItemCd;
+	public String coefficientDivision;
 	
 	@Column(name = "E_WORK_VALUE")
-	public String eWorkValue;
+	public BigDecimal coefficientFixedValue;
 	
-	@Column(name = "F_ADJUSTMENT_ATR")
-	public String fAdjustmentAtr;
+	@Column(name = "G_ADJUSTMENT_ATR")
+	public BigDecimal adjustmentDevision;
 	
-	@Column(name = "G_ROUND_ATR")
-	public String gRoundAtr;
+	@Column(name = "F_ROUND_ATR")
+	public BigDecimal totalRounding;
 	
 	@Column(name = "MIN_LIMIT_VALUE")
 	public BigDecimal minLimitValue;

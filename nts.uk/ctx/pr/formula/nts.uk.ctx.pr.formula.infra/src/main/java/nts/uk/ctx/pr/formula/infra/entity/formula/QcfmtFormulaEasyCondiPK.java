@@ -1,27 +1,32 @@
 package nts.uk.ctx.pr.formula.infra.entity.formula;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
+import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
+/**
+ * @author nampt
+ *
+ */
 @Embeddable
 @NoArgsConstructor
+@AllArgsConstructor
 public class QcfmtFormulaEasyCondiPK implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 	
 	@Column(name = "CCD")
-	public String ccd;
+	public String companyCode;
 	
 	@Column(name = "FORMULA_CD")
-	public String formulaCd;
+	public String formulaCode;
 	
 	@Column(name = "HIST_ID")
-	public String histId;
+	public String historyId;
 	
 	@Column(name = "REF_MASTER_CD")
 	public String refMasterCd;

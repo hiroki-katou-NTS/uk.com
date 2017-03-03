@@ -1,16 +1,13 @@
 package nts.uk.ctx.pr.formula.dom.formula;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.math.BigDecimal;
 
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.pr.formula.dom.enums.ConditionAtr;
 import nts.uk.ctx.pr.formula.dom.enums.ReferenceMasterNo;
-import nts.uk.ctx.pr.formula.dom.primitive.CompanyCode;
 import nts.uk.ctx.pr.formula.dom.primitive.FormulaCode;
-import nts.uk.ctx.pr.formula.dom.primitive.HistoryId;
 
 /**
  * @author hungnm
@@ -23,7 +20,7 @@ public class FormulaEasyHead extends DomainObject {
 	
 	private FormulaCode formulaCode;
 	
-	private HistoryId historyId;
+	private String historyId;
 
 	private ConditionAtr conditionAtr;
 
@@ -36,7 +33,7 @@ public class FormulaEasyHead extends DomainObject {
 	 * @param conditionAtr
 	 * @param referenceMasterNo
 	 */
-	public FormulaEasyHead(String companyCode, FormulaCode formulaCode, HistoryId historyId,
+	public FormulaEasyHead(String companyCode, FormulaCode formulaCode, String historyId,
 			ConditionAtr conditionAtr, ReferenceMasterNo referenceMasterNo) {
 		super();
 		this.companyCode = companyCode;
@@ -46,10 +43,10 @@ public class FormulaEasyHead extends DomainObject {
 		this.referenceMasterNo = referenceMasterNo;
 	}
 
-	public FormulaEasyHead createFromJavaType(String companyCode, String formulaCode, String historyId, int conditionAtr, int referenceMasterNo) {
-		return new FormulaEasyHead(companyCode, new FormulaCode(formulaCode),new HistoryId(historyId),
-				EnumAdaptor.valueOf(conditionAtr, ConditionAtr.class),
-				EnumAdaptor.valueOf(referenceMasterNo, ReferenceMasterNo.class));
+	public static FormulaEasyHead createFromJavaType(String companyCode, String formulaCode, String historyId, BigDecimal conditionAtr, BigDecimal referenceMasterNo) {
+		return new FormulaEasyHead(companyCode, new FormulaCode(formulaCode), historyId,
+				EnumAdaptor.valueOf(conditionAtr.intValue(), ConditionAtr.class),
+				EnumAdaptor.valueOf(referenceMasterNo.intValue(), ReferenceMasterNo.class));
 	}
 
 }

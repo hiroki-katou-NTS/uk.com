@@ -14,6 +14,10 @@ import nts.uk.ctx.pr.formula.dom.primitive.FormulaName;
 import nts.uk.ctx.pr.formula.dom.repository.FormulaMasterRepository;
 import nts.uk.shr.com.context.AppContexts;
 
+/**
+ * @author nampt
+ *
+ */
 @RequestScoped
 public class UpdateFormulaMasterCommandHandler extends CommandHandler<UpdateFormulaMasterCommand>{
 	

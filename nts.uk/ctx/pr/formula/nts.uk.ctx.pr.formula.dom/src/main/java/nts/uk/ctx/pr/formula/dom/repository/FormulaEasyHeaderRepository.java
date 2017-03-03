@@ -5,7 +5,9 @@ package nts.uk.ctx.pr.formula.dom.repository;
 
 import java.util.Optional;
 
+import nts.uk.ctx.pr.formula.dom.enums.ReferenceMasterNo;
 import nts.uk.ctx.pr.formula.dom.formula.FormulaEasyHead;
+import nts.uk.ctx.pr.formula.dom.primitive.FormulaCode;
 
 /**
  * @author hungnm
@@ -19,7 +21,7 @@ public interface FormulaEasyHeaderRepository {
 	 * @param referenceMasterNo
 	 * @return a formulaEasyHead
 	 */
-	Optional<FormulaEasyHead> find(String companyCode, String formulaCode, String historyId, String referenceMasterNo);
+	Optional<FormulaEasyHead> findByPriKey(String companyCode, FormulaCode formulaCode, String historyId, ReferenceMasterNo referenceMasterNo);
 	
 	void add(FormulaEasyHead formulaEasyHead);
 }

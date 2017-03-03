@@ -1,15 +1,12 @@
 package nts.uk.ctx.pr.formula.dom.formula;
 
 import lombok.Getter;
-import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.arc.time.YearMonth;
 import nts.uk.ctx.pr.formula.dom.enums.DifficultyAtr;
-import nts.uk.ctx.pr.formula.dom.primitive.CompanyCode;
 import nts.uk.ctx.pr.formula.dom.primitive.FormulaCode;
 import nts.uk.ctx.pr.formula.dom.primitive.FormulaName;
-import nts.uk.ctx.pr.formula.dom.primitive.HistoryId;
+
 
 /**
  * @author hungnm

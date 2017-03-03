@@ -30,7 +30,7 @@ public class FormulaEasyConditionDto {
 	String referenceMasterCode;
 
 	public static FormulaEasyConditionDto fromDomain(FormulaEasyCondition domain) {
-		return new FormulaEasyConditionDto(domain.getCompanyCode() ,domain.getFormulaCode().v() ,domain.getHistoryId().v() ,
+		return new FormulaEasyConditionDto(domain.getCompanyCode() ,domain.getFormulaCode().v() ,domain.getHistoryId() ,
 				domain.getEasyFormulaCode().v(), domain.getFixFormulaAtr().value,
 				domain.getFixMoney().v(), domain.getReferenceMasterCode().v());
 	}

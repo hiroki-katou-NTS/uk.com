@@ -1,29 +1,21 @@
 package nts.uk.ctx.pr.formula.dom.formula;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.persistence.EnumType;
 
 import lombok.Getter;
-import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.DomainObject;
-import nts.gul.util.Range;
 import nts.uk.ctx.pr.formula.dom.enums.AdjustmentAtr;
 import nts.uk.ctx.pr.formula.dom.enums.BaseMoneyAtr;
 import nts.uk.ctx.pr.formula.dom.enums.DivideValueSet;
 import nts.uk.ctx.pr.formula.dom.enums.EasyFormulaTypeAtr;
 import nts.uk.ctx.pr.formula.dom.enums.RoundAtr;
-import nts.uk.ctx.pr.formula.dom.primitive.CompanyCode;
 import nts.uk.ctx.pr.formula.dom.primitive.DivideValue;
 import nts.uk.ctx.pr.formula.dom.primitive.EasyFormulaCode;	
 import nts.uk.ctx.pr.formula.dom.primitive.EasyFormulaName;
 import nts.uk.ctx.pr.formula.dom.primitive.FormulaCode;
-import nts.uk.ctx.pr.formula.dom.primitive.FormulaName;
-import nts.uk.ctx.pr.formula.dom.primitive.HistoryId;
-import nts.uk.ctx.pr.formula.dom.primitive.ItemCode;
+import nts.uk.ctx.pr.formula.dom.primitive.MaxValue;
+import nts.uk.ctx.pr.formula.dom.primitive.MinValue;
 import nts.uk.ctx.pr.formula.dom.primitive.Money;
 import nts.uk.ctx.pr.formula.dom.primitive.PremiumRate;
 import nts.uk.ctx.pr.formula.dom.primitive.WorkItemCode;
@@ -40,7 +32,7 @@ public class FormulaEasyDetail extends DomainObject {
 
 	private FormulaCode formulaCode;
 
-	private HistoryId historyId;
+	private String historyId;
 
 	private EasyFormulaCode easyFormulaCode;
 
@@ -68,7 +60,9 @@ public class FormulaEasyDetail extends DomainObject {
 
 	private RoundAtr totalRounding;
 
-	private Range<BigDecimal> limitValue;
+	private MaxValue maxValue;
+	
+	private MinValue minValue;
 
 	/**
 	 * @param companyCode
@@ -89,12 +83,12 @@ public class FormulaEasyDetail extends DomainObject {
 	 * @param totalRounding
 	 * @param limitValue
 	 */
-	public FormulaEasyDetail(String companyCode, FormulaCode formulaCode, HistoryId historyId,
+	public FormulaEasyDetail(String companyCode, FormulaCode formulaCode, String historyId,
 			EasyFormulaCode easyFormulaCode, EasyFormulaName easyFormulaName, EasyFormulaTypeAtr easyFormulaTypeAtr,
 			Money baseFixedAmount, BaseMoneyAtr baseAmountDevision, DivideValue baseFixedValue,
 			DivideValueSet baseValueDevision, PremiumRate premiumRate, RoundAtr roundProcessingDevision,
 			WorkItemCode coefficientDivision, WorkValue coefficientFixedValue, AdjustmentAtr adjustmentDevision,
-			RoundAtr totalRounding, Range<BigDecimal> limitValue) {
+			RoundAtr totalRounding, MaxValue maxValue, MinValue minValue) {
 		super();
 		this.companyCode = companyCode;
 		this.formulaCode = formulaCode;
@@ -112,20 +106,21 @@ public class FormulaEasyDetail extends DomainObject {
 		this.coefficientFixedValue = coefficientFixedValue;
 		this.adjustmentDevision = adjustmentDevision;
 		this.totalRounding = totalRounding;
-		this.limitValue = limitValue;
+		this.maxValue = maxValue;
+		this.minValue = minValue;
 	}
 	
-	public FormulaEasyDetail createFromJavaType (String companyCode, String formulaCode, String historyId,
-			String easyFormulaCode,String easyFormulaName, int easyFormulaTypeAtr,BigDecimal baseFixedAmount,
-			int baseAmountDevision, BigDecimal baseFixedValue, int baseValueDevision, BigDecimal premiumRate,
-			int roundProcessingDevision, String coefficientDivision, BigDecimal coefficientFixedValue, int adjustmentDevision,
-			int totalRounding, BigDecimal minValue, BigDecimal maxValue){
-		return new FormulaEasyDetail(companyCode, new FormulaCode(formulaCode), new HistoryId(historyId),
-				new EasyFormulaCode(easyFormulaCode), new EasyFormulaName(easyFormulaName), EnumAdaptor.valueOf(easyFormulaTypeAtr, EasyFormulaTypeAtr.class)
-				, new Money(baseFixedAmount), EnumAdaptor.valueOf(baseAmountDevision, BaseMoneyAtr.class), new DivideValue(baseFixedValue)
-				, EnumAdaptor.valueOf(baseValueDevision, DivideValueSet.class), new PremiumRate(premiumRate), EnumAdaptor.valueOf(roundProcessingDevision, RoundAtr.class)
-				, new WorkItemCode(coefficientDivision), new WorkValue(coefficientFixedValue), EnumAdaptor.valueOf(adjustmentDevision, AdjustmentAtr.class)
-				,EnumAdaptor.valueOf(totalRounding, RoundAtr.class), Range.between(minValue, maxValue));
+	public static FormulaEasyDetail createFromJavaType (String companyCode, String formulaCode, String historyId,
+			String easyFormulaCode,String easyFormulaName, BigDecimal easyFormulaTypeAtr,BigDecimal baseFixedAmount,
+			BigDecimal baseAmountDevision, BigDecimal baseFixedValue, BigDecimal baseValueDevision, BigDecimal premiumRate,
+			BigDecimal roundProcessingDevision, String coefficientDivision, BigDecimal coefficientFixedValue, BigDecimal adjustmentDevision,
+			BigDecimal totalRounding, BigDecimal minValue, BigDecimal maxValue){
+		return new FormulaEasyDetail(companyCode, new FormulaCode(formulaCode), historyId,
+				new EasyFormulaCode(easyFormulaCode), new EasyFormulaName(easyFormulaName), EnumAdaptor.valueOf(easyFormulaTypeAtr.intValue(), EasyFormulaTypeAtr.class)
+				, new Money(baseFixedAmount), EnumAdaptor.valueOf(baseAmountDevision.intValue(), BaseMoneyAtr.class), new DivideValue(baseFixedValue)
+				, EnumAdaptor.valueOf(baseValueDevision.intValue(), DivideValueSet.class), new PremiumRate(premiumRate), EnumAdaptor.valueOf(roundProcessingDevision.intValue(), RoundAtr.class)
+				, new WorkItemCode(coefficientDivision), new WorkValue(coefficientFixedValue), EnumAdaptor.valueOf(adjustmentDevision.intValue(), AdjustmentAtr.class)
+				,EnumAdaptor.valueOf(totalRounding.intValue(), RoundAtr.class), new MaxValue(maxValue), new MinValue(minValue));
 	}
 
 }

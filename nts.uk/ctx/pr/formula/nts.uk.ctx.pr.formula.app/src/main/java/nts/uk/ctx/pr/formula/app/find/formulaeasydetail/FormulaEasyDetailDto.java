@@ -4,8 +4,6 @@
 package nts.uk.ctx.pr.formula.app.find.formulaeasydetail;
 
 import java.math.BigDecimal;
-import java.util.List;
-import java.util.stream.Collectors;
 
 import lombok.Value;
 import nts.uk.ctx.pr.formula.dom.formula.FormulaEasyDetail;
@@ -16,44 +14,63 @@ import nts.uk.ctx.pr.formula.dom.formula.FormulaEasyDetail;
  */
 @Value
 public class FormulaEasyDetailDto {
+	
+	String companyCode;
+	
+	String formulaCode;
+	
+	String historyId;
+	
+	String easyFormulaCode;
+	
+	String easyFormulaName;
 
-	BigDecimal aBaseMoney;
+	BigDecimal easyFormulaTypeAtr;
+	
+	BigDecimal baseFixedAmount;
 
-	int aBaseMoneyAtr;
+	BigDecimal baseAmountDevision;
 
-	BigDecimal bDivideValue;
+	BigDecimal baseFixedValue;
 
-	int bDivideValueSet;
+	BigDecimal baseValueDevision;
 
-	BigDecimal cPremiumRate;
+	BigDecimal premiumRate;
 
-	int dRoundAtr;
+	BigDecimal roundProcessingDevision;
 
-	String formulaName;
+	String coefficientDivision;
 
-	int easyFormulaTypeAtr;
+	BigDecimal coefficientFixedValue;
 
-	String eWorkItemCode;
+	BigDecimal adjustmentDevision;
 
-	BigDecimal eWorkValue;
-
-	int fAdjustmentAtr;
-
-	int gRoundAtr;
-
-	int maxValue;
-
-	int minValue;
-
-	List<String> aItemCode;
+	BigDecimal totalRounding;
+	
+	BigDecimal maxLimitValue;
+	
+	BigDecimal minLimitValue;
 
 	public static FormulaEasyDetailDto fromDomain(FormulaEasyDetail domain) {
-		return new FormulaEasyDetailDto(domain.getABaseMoney().v(), domain.getABaseMoneyAtr().value,
-				domain.getBDivideValue().v(), domain.getBDivideValueSet().value, domain.getCPremiumRate().v(),
-				domain.getDRoundAtr().value, domain.getFormulaName().v(), domain.getEasyFormulaTypeAtr().value,
-				domain.getEWorkItemCode().v(), domain.getEWorkValue().v(), domain.getFAdjustmentAtr().value,
-				domain.getGRoundAtr().value, domain.getLimitValue().max(), domain.getLimitValue().min(),
-				domain.getAItemCode().stream().map(i -> i.v()).collect(Collectors.toList()));
+		return new FormulaEasyDetailDto(
+				domain.getCompanyCode(), 
+				domain.getFormulaCode().v(),
+				domain.getHistoryId(), 
+				domain.getEasyFormulaCode().v(), 
+				domain.getEasyFormulaName().v(),
+				new BigDecimal(domain.getEasyFormulaTypeAtr().value),
+				domain.getBaseFixedAmount().v(),
+				new BigDecimal(domain.getBaseAmountDevision().value),
+				domain.getBaseFixedValue().v(),
+				new BigDecimal(domain.getBaseValueDevision().value),
+				domain.getPremiumRate().v(),
+				new BigDecimal(domain.getRoundProcessingDevision().value),
+				domain.getCoefficientDivision().v(),
+				domain.getCoefficientFixedValue().v(),
+				new BigDecimal(domain.getAdjustmentDevision().value),
+				new BigDecimal(domain.getTotalRounding().value),
+				domain.getMaxValue().v(),
+				domain.getMinValue().v());
 	}
 
 }

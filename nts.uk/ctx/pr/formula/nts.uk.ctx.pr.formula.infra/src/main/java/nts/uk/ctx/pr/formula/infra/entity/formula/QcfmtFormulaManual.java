@@ -1,7 +1,6 @@
 package nts.uk.ctx.pr.formula.infra.entity.formula;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -11,6 +10,10 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
+/**
+ * @author nampt
+ *
+ */
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity

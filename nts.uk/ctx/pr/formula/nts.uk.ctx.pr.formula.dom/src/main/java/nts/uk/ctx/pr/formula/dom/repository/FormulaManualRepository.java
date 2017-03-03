@@ -6,6 +6,7 @@ package nts.uk.ctx.pr.formula.dom.repository;
 import java.util.Optional;
 
 import nts.uk.ctx.pr.formula.dom.formula.FormulaManual;
+import nts.uk.ctx.pr.formula.dom.primitive.FormulaCode;
 
 /**
  * @author hungnm
@@ -18,5 +19,5 @@ public interface FormulaManualRepository {
 	 * @param historyId
 	 * @return a formula manual
 	 */
-	Optional<FormulaManual> find(String companyCode, String formulaCode, String historyId);
+	Optional<FormulaManual> find(String companyCode, FormulaCode formulaCode, String historyId);
 }

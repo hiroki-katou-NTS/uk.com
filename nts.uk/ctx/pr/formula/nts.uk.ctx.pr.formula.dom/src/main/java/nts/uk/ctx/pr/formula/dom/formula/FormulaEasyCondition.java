@@ -1,18 +1,13 @@
 package nts.uk.ctx.pr.formula.dom.formula;
 
 import java.math.BigDecimal;
-import java.util.ArrayList;
-import java.util.List;
 
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.pr.formula.dom.enums.FixFormulaAtr;
-import nts.uk.ctx.pr.formula.dom.primitive.CompanyCode;
 import nts.uk.ctx.pr.formula.dom.primitive.EasyFormulaCode;
 import nts.uk.ctx.pr.formula.dom.primitive.FormulaCode;
-import nts.uk.ctx.pr.formula.dom.primitive.HistoryId;
 import nts.uk.ctx.pr.formula.dom.primitive.Money;
 import nts.uk.ctx.pr.formula.dom.primitive.ReferenceMasterCode;
 
@@ -27,7 +22,7 @@ public class FormulaEasyCondition extends AggregateRoot {
 	
 	private FormulaCode formulaCode;
 	
-	private HistoryId historyId;
+	private String historyId;
 	
 	private EasyFormulaCode easyFormulaCode;
 
@@ -48,7 +43,7 @@ public class FormulaEasyCondition extends AggregateRoot {
 	 * @param referenceMasterCode
 	 * @param formulaEasyDetail
 	 */
-	public FormulaEasyCondition(String companyCode, FormulaCode formulaCode, HistoryId historyId, EasyFormulaCode easyFormulaCode, FixFormulaAtr fixFormulaAtr, Money fixMoney,
+	public FormulaEasyCondition(String companyCode, FormulaCode formulaCode, String historyId, EasyFormulaCode easyFormulaCode, FixFormulaAtr fixFormulaAtr, Money fixMoney,
 			ReferenceMasterCode referenceMasterCode) {
 		super();
 		this.companyCode = companyCode;
@@ -62,7 +57,7 @@ public class FormulaEasyCondition extends AggregateRoot {
 
 	public static FormulaEasyCondition createFromJavaType(String companyCode, String formulaCode, String historyId, String easyFormulaCode, int fixFormulaAtr, BigDecimal fixMoney,
 			String referenceMasterCode) {
-		return new FormulaEasyCondition(companyCode, new FormulaCode(formulaCode), new HistoryId(historyId),
+		return new FormulaEasyCondition(companyCode, new FormulaCode(formulaCode), historyId,
 				new EasyFormulaCode(easyFormulaCode), EnumAdaptor.valueOf(fixFormulaAtr, FixFormulaAtr.class),
 				new Money(fixMoney), new ReferenceMasterCode(referenceMasterCode));
 	}

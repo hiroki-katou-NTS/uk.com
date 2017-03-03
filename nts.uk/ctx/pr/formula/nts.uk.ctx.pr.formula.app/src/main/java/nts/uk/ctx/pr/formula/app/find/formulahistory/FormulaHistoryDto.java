@@ -17,7 +17,7 @@ public class FormulaHistoryDto {
 	int endDate;
 	
 	public static FormulaHistoryDto fromDomain(FormulaHistory domain){
-		return new FormulaHistoryDto(domain.getCompanyCode(), domain.getFormulaCode().v(), domain.getHistoryId().v() 
+		return new FormulaHistoryDto(domain.getCompanyCode(), domain.getFormulaCode().v(), domain.getHistoryId() 
 				, domain.getStartDate().v(), domain.getEndDate().v());
 	}
 

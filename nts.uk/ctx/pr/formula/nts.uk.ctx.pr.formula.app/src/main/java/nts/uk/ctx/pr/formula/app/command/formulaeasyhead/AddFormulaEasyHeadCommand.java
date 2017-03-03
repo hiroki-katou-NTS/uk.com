@@ -3,6 +3,11 @@ package nts.uk.ctx.pr.formula.app.command.formulaeasyhead;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+/**
+ * @author nampt
+ *
+ */
+
 @Data
 @NoArgsConstructor
 public class AddFormulaEasyHeadCommand {

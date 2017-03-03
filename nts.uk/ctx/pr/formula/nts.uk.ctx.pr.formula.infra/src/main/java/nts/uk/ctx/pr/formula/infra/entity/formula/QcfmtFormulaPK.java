@@ -4,9 +4,11 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 import java.io.Serializable;
 
+import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
 @Embeddable
+@AllArgsConstructor
 @NoArgsConstructor
 public class QcfmtFormulaPK implements Serializable {
 	
