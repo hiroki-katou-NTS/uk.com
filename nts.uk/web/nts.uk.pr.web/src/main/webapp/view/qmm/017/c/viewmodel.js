@@ -380,7 +380,7 @@ var nts;
             CScreen.prototype.openDialogQ = function () {
                 var param = {};
                 nts.uk.ui.windows.setShared('paramFromScreenC', param);
-                nts.uk.ui.windows.sub.modal('/view/qmm/017/l/index.xhtml', { title: 'かんたん計算式の登録', width: 650, height: 700 }).onClosed(function () { });
+                nts.uk.ui.windows.sub.modal('/view/qmm/017/l/index.xhtml', { title: 'かんたん計算式の登録', width: 650, height: 750 }).onClosed(function () { });
             };
             return CScreen;
         }());

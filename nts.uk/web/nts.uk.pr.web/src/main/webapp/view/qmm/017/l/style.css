@@ -55,3 +55,12 @@
 .contain-abc .right-col{float:left; width: calc(100% - 120px); min-height:1px;}
 
 .ui-igcombo-wrapper {vertical-align: middle;}
+.col3 {margin: 5px 0 0 107px;}
+.nts-editor-wrapped {width: initial !important;}
+.switch-button-rounding-figures {display: inline-block;}
+#footer {
+	position: fixed;
+    bottom: 11px;
+    width: 620px;
+    text-align: center;
+}
