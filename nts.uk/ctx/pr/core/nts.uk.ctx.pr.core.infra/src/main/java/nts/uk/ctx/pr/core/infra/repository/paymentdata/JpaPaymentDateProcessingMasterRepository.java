@@ -43,10 +43,17 @@ public class JpaPaymentDateProcessingMasterRepository extends JpaRepository
 
 	private static PaymentDateProcessingMaster toDomain(QpdmtPaydayProcessing entity) {
 		PaymentDateProcessingMaster domain = PaymentDateProcessingMaster.createFromJavaType(
-				1, entity.qpdmtPaydayProcessingPK.processingNo,
+				entity.bonusAtr, entity.qpdmtPaydayProcessingPK.processingNo,
 				entity.processingName, entity.currentProcessingYm, entity.dispAtr);
 		//entity.toDomain(domain);
 		return domain;
+	}
+
+	@Override
+	public Optional<PaymentDateProcessingMaster> find(String companyCode, int processingNo) {
+		return this.queryProxy()
+				.find(new QpdmtPaydayProcessingPK(companyCode, processingNo), QpdmtPaydayProcessing.class)
+				.map(c -> toDomain(c));
 	}
 
 }

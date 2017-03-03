@@ -23,7 +23,7 @@ public class QpdmtPaydayProcessing extends TableEntity {
 	public int dispAtr;
 	
 	@Column(name = "BONUS_ATR")
-    public short bonusAtr;
+    public int bonusAtr;
 
 	@Column(name = "PROCESSING_NAME")
 	public String processingName;
