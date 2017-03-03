@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2016 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.pr.core.app.insurance.labor.accidentrate.command.dto;
 
 import lombok.Data;
@@ -5,8 +9,12 @@ import nts.uk.ctx.pr.core.dom.insurance.RoundingMethod;
 import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.InsuBizRateItem;
 import nts.uk.ctx.pr.core.dom.insurance.labor.businesstype.BusinessTypeEnum;
 
+/**
+ * Instantiates a new insu biz rate item dto.
+ */
 @Data
 public class InsuBizRateItemDto {
+	
 	/** The insu biz type. */
 	private Integer insuBizType;
 
@@ -16,6 +24,11 @@ public class InsuBizRateItemDto {
 	/** The insu round. */
 	private Integer insuRound;
 
+	/**
+	 * To domain.
+	 *
+	 * @return the insu biz rate item
+	 */
 	public InsuBizRateItem toDomain() {
 		InsuBizRateItem insuBizRateItem = new InsuBizRateItem();
 		insuBizRateItem.setInsuBizType(BusinessTypeEnum.valueOf(this.insuBizType));

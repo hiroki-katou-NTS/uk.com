@@ -178,7 +178,6 @@ module nts.uk.pr.view.qmm016.l {
                 if (self.typeAction() == TypeActionCertifyGroup.add) {
                     service.addCertifyGroup(self.convertDataModel()).done(data => {
                         self.reloadDataByAction(self.certifyGroupModel().code());
-                        self.clearErrorSave();
                     }).fail(function(error) {
                         self.showMessageSave(error.message);
                     })

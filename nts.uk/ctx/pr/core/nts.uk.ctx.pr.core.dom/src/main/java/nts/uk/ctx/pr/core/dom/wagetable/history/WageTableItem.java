@@ -10,7 +10,7 @@ import lombok.Getter;
 import nts.uk.ctx.pr.core.dom.wagetable.ElementId;
 
 /**
- * The Class WageTableAmount.
+ * The Class WageTableItem.
  */
 @Getter
 public class WageTableItem {
@@ -30,4 +30,56 @@ public class WageTableItem {
 	/** The amount. */
 	private BigDecimal amount;
 
+	/**
+	 * Instantiates a new wage table item.
+	 *
+	 * @param element1Id
+	 *            the element 1 id
+	 * @param element2Id
+	 *            the element 2 id
+	 * @param element3Id
+	 *            the element 3 id
+	 * @param amount
+	 *            the amount
+	 */
+	public WageTableItem(ElementId element1Id, ElementId element2Id, ElementId element3Id, BigDecimal amount) {
+		super();
+		this.element1Id = element1Id;
+		this.element2Id = element2Id;
+		this.element3Id = element3Id;
+		this.amount = amount;
+	}
+
+	// =================== Memento State Support Method ===================
+	/**
+	 * Instantiates a new wage table item.
+	 *
+	 * @param memento
+	 *            the memento
+	 */
+	public WageTableItem(WageTableItemGetMemento memento) {
+		// this.companyCode = memento.getCompanyCode();
+		// this.code = memento.getCode();
+		// this.historyId = memento.getHistoryId();
+		this.element1Id = memento.getElement1Id();
+		this.element2Id = memento.getElement2Id();
+		this.element3Id = memento.getElement3Id();
+		this.amount = memento.getAmount();
+	}
+
+	/**
+	 * Save to memento.
+	 *
+	 * @param memento
+	 *            the memento
+	 */
+	public void saveToMemento(WageTableItemSetMemento memento) {
+		// memento.setCompanyCode(this.companyCode);
+		// memento.setCode(this.code);
+		// memento.setHistoryId(this.historyId);
+		memento.setElement1Id(this.element1Id);
+		memento.setElement2Id(this.element2Id);
+		memento.setElement3Id(this.element3Id);
+		memento.setAmount(this.amount);
+	}
 }

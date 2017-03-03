@@ -8,7 +8,7 @@ import lombok.Data;
 import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.InsuBizRateItem;
 
 /**
- * Instantiates a new insu biz rate item dto.
+ * The Class InsuBizRateItemFindOutDto.
  */
 @Data
 public class InsuBizRateItemFindOutDto {
@@ -25,6 +25,11 @@ public class InsuBizRateItemFindOutDto {
 	/** The insurance business type. */
 	private String insuranceBusinessType;
 
+	/**
+	 * Instantiates a new insu biz rate item find out dto.
+	 *
+	 * @param item the item
+	 */
 	public InsuBizRateItemFindOutDto(InsuBizRateItem item) {
 		this.insuBizType = item.getInsuBizType().value;
 		this.insuRate = item.getInsuRate();

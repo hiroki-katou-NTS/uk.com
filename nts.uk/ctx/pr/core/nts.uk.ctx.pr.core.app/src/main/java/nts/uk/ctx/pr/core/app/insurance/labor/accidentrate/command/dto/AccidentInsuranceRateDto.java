@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2016 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.pr.core.app.insurance.labor.accidentrate.command.dto;
 
 import java.util.HashSet;
@@ -11,6 +15,9 @@ import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.AccidentInsuranceRate
 import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.AccidentInsuranceRateGetMemento;
 import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.InsuBizRateItem;
 
+/**
+ * The Class AccidentInsuranceRateDto.
+ */
 @Data
 public class AccidentInsuranceRateDto {
 	/** The history insurance. */
@@ -19,6 +26,12 @@ public class AccidentInsuranceRateDto {
 	/** The rate items. */
 	private List<InsuBizRateItemDto> rateItems;
 
+	/**
+	 * To domain.
+	 *
+	 * @param companyCode the company code
+	 * @return the accident insurance rate
+	 */
 	public AccidentInsuranceRate toDomain(String companyCode) {
 		AccidentInsuranceRateDto dto = this;
 		AccidentInsuranceRate accidentInsuranceRate = new AccidentInsuranceRate(new AccidentInsuranceRateGetMemento() {

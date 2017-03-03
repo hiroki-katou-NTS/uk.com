@@ -10,7 +10,7 @@ import lombok.Getter;
  * The Class CodeItem.
  */
 @Getter
-public class CodeItem {
+public class CodeItem implements BaseItem {
 
 	/** The reference code. */
 	private String referenceCode;

@@ -18,7 +18,6 @@ import nts.uk.ctx.pr.core.dom.insurance.labor.LaborInsuranceOffice;
 import nts.uk.ctx.pr.core.dom.insurance.labor.LaborInsuranceOfficeGetMemento;
 import nts.uk.shr.com.primitive.Memo;
 
-
 /**
  * Instantiates a new social insurance office import dto.
  */
@@ -26,80 +25,87 @@ import nts.uk.shr.com.primitive.Memo;
 public class SocialInsuranceOfficeImportDto {
 
 	/** The code. */
-	public String code;
+	private String code;
 
 	/** The name. */
-	public String name;
+	private String name;
 
 	/** The short name. */
-	public String shortName;
+	private String shortName;
 
 	/** The pic name. */
-	public String picName;
+	private String picName;
 
 	/** The pic position. */
-	public String picPosition;
+	private String picPosition;
 
 	/** The potal code. */
-	public String potalCode;
+	private String potalCode;
 
 	/** The prefecture. */
-	public String prefecture;
+	private String prefecture;
 
 	/** The address 1 st. */
-	public String address1st;
+	private String address1st;
 
 	/** The address 2 nd. */
-	public String address2nd;
+	private String address2nd;
 
 	/** The kana address 1 st. */
-	public String kanaAddress1st;
+	private String kanaAddress1st;
 
 	/** The kana address 2 nd. */
-	public String kanaAddress2nd;
+	private String kanaAddress2nd;
 
 	/** The phone number. */
-	public String phoneNumber;
+	private String phoneNumber;
 
 	/** The health insu office ref code 1 st. */
-	public String healthInsuOfficeRefCode1st;
+	private String healthInsuOfficeRefCode1st;
 
 	/** The health insu office ref code 2 nd. */
-	public String healthInsuOfficeRefCode2nd;
+	private String healthInsuOfficeRefCode2nd;
 
 	/** The pension office ref code 1 st. */
-	public String pensionOfficeRefCode1st;
+	private String pensionOfficeRefCode1st;
 
 	/** The pension office ref code 2 nd. */
-	public String pensionOfficeRefCode2nd;
+	private String pensionOfficeRefCode2nd;
 
 	/** The welfare pension fund code. */
-	public String welfarePensionFundCode;
+	private String welfarePensionFundCode;
 
 	/** The office pension fund code. */
-	public String officePensionFundCode;
+	private String officePensionFundCode;
 
 	/** The health insu city code. */
-	public String healthInsuCityCode;
+	private String healthInsuCityCode;
 
 	/** The health insu office sign. */
-	public String healthInsuOfficeSign;
+	private String healthInsuOfficeSign;
 
 	/** The pension city code. */
-	public String pensionCityCode;
+	private String pensionCityCode;
 
 	/** The pension office sign. */
-	public String pensionOfficeSign;
+	private String pensionOfficeSign;
 
 	/** The health insu office code. */
-	public String healthInsuOfficeCode;
+	private String healthInsuOfficeCode;
 
 	/** The health insu asso code. */
-	public String healthInsuAssoCode;
+	private String healthInsuAssoCode;
 
 	/** The memo. */
-	public String memo;
-	
+	private String memo;
+
+	/**
+	 * To domain.
+	 *
+	 * @param companyCode
+	 *            the company code
+	 * @return the labor insurance office
+	 */
 	public LaborInsuranceOffice toDomain(String companyCode) {
 		SocialInsuranceOfficeImportDto dto = this;
 		return new LaborInsuranceOffice(new LaborInsuranceOfficeGetMemento() {

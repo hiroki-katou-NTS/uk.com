@@ -6,7 +6,6 @@ import nts.arc.time.YearMonth;
 @Data
 public class HistoryInsuranceDto{
 	private String historyId;
-	//private MonthRange monthRage;
 	private String startMonthRage;
 	private String endMonthRage;
 	private String inforMonthRage;

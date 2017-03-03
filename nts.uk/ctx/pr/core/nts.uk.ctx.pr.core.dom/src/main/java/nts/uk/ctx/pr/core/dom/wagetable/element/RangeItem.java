@@ -10,7 +10,7 @@ import lombok.Getter;
  * The Class RangeItem.
  */
 @Getter
-public class RangeItem {
+public class RangeItem implements BaseItem{
 
 	/** The order number. */
 	private Integer orderNumber;

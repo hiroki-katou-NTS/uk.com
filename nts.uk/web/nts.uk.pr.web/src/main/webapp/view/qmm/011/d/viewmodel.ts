@@ -1,11 +1,9 @@
 module nts.uk.pr.view.qmm011.d {
     import option = nts.uk.ui.option;
     import TypeHistory = nts.uk.pr.view.qmm011.a.service.model.TypeHistory;
-    import HistoryUnemployeeInsuranceDto = nts.uk.pr.view.qmm011.a.service.model.HistoryUnemployeeInsuranceDto;
-    import HistoryAccidentInsuranceDto = nts.uk.pr.view.qmm011.a.service.model.HistoryAccidentInsuranceDto;
     export module viewmodel {
         export class ScreenModel {
-            dsel001: KnockoutObservableArray<any>;
+            selectModel: KnockoutObservableArray<BoxModel>;
             enable: KnockoutObservable<boolean>;
             textEditorOption: KnockoutObservable<any>;
             historyId: KnockoutObservable<string>;
@@ -17,47 +15,33 @@ module nts.uk.pr.view.qmm011.d {
 
             constructor() {
                 var self = this;
-                self.dsel001 = ko.observableArray([
-                    new BoxModel(1, '最新の履歴（N）から引き継ぐ'),
-                    new BoxModel(2, '初めから作成する')
-                ]);
                 self.enable = ko.observable(true);
                 self.textEditorOption = ko.mapping.fromJS(new option.TextEditorOption());
                 self.historyStart = ko.observable('');
                 self.historyEnd = ko.observable('9999/12');
                 self.selectedId = ko.observable(1);
-                self.typeHistory = ko.observable(nts.uk.ui.windows.getShared("type"));
-                self.selectedId.subscribe(function(typeSelect: number) {
-                    self.changeSelect(typeSelect);
-                });
+                var isEmpty = nts.uk.ui.windows.getShared("isEmpty");
+                if (!isEmpty) {
+                    var historyStart = nts.uk.ui.windows.getShared("historyStart");
+                    self.selectModel = ko.observableArray<BoxModel>([
+                        new BoxModel(1, '最新の履歴 (' + historyStart + ') から引き継ぐ'),
+                        new BoxModel(2, '初めから作成する')
+                    ]);
+                } else {
+                    self.selectModel = ko.observableArray<BoxModel>([
+                        new BoxModel(1, '最新の履歴（N）から引き継ぐ'),
+                        new BoxModel(2, '初めから作成する')
+                    ]);
+                }
             }
             fwaddHistoryInfo() {
                 var self = this;
-                if (self.typeHistory() == TypeHistory.HistoryUnemployee) {
-                    self.fwaddHistoryInfoUnemployeeInsurance();
-                } else {
-                    self.fwaddHistoryInfoAccidentInsurance();
-                }
+                var addHistoryInfoModel: AddHistoryInfoModel;
+                addHistoryInfoModel = new AddHistoryInfoModel();
+                addHistoryInfoModel.typeModel = self.selectedId();
+                addHistoryInfoModel.historyStart = self.historyStart();
+                nts.uk.ui.windows.setShared("addHistoryInfoModel", addHistoryInfoModel);
                 nts.uk.ui.windows.close();
-            }
-            fwaddHistoryInfoUnemployeeInsurance() {
-                var self = this;
-                var historyInfo: HistoryUnemployeeInsuranceDto;
-                historyInfo = new HistoryUnemployeeInsuranceDto("historyId001", self.historyStart(), "9999/12");
-                nts.uk.ui.windows.setShared("addHistoryUnemployeeInsuranceDto", historyInfo);
-            }
-
-            fwaddHistoryInfoAccidentInsurance() {
-                var self = this;
-                var historyInfo: HistoryAccidentInsuranceDto;
-                historyInfo = new HistoryAccidentInsuranceDto("", self.historyStart(), self.historyEnd());
-                nts.uk.ui.windows.setShared("addHistoryAccidentInsuranceDto", historyInfo);
-            }
-            changeSelect(typeSelect: number) {
-                var self = this;
-                if (typeSelect == 1) {
-                    self.historyEnd('9999/12');
-                }
             }
         }
 
@@ -69,6 +53,10 @@ module nts.uk.pr.view.qmm011.d {
                 self.id = id;
                 self.name = name;
             }
+        }
+        export class AddHistoryInfoModel {
+            typeModel: number;// add new, add before
+            historyStart: string;
         }
 
     }

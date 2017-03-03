@@ -11,10 +11,9 @@ import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 import nts.uk.ctx.pr.core.dom.wagetable.WageTableCode;
-import nts.uk.ctx.pr.core.dom.wagetable.mode.DemensionalMode;
 
 /**
- * The Class WageTableHist.
+ * The Class WageTableHistory.
  */
 @Getter
 public class WageTableHistory extends DomainObject {
@@ -31,10 +30,40 @@ public class WageTableHistory extends DomainObject {
 	/** The apply range. */
 	private MonthRange applyRange;
 
-	/** The elements. */
-	private List<WageTableItem> elements;
+	/** The demensions. */
+	private List<WageTableDemensionDetail> demensionItems;
 
-	/** The dimensional mode. */
-	private DemensionalMode dimensionSetting;
+	/** The items. */
+	private List<WageTableItem> valueItems;
 
+	// =================== Memento State Support Method ===================
+	/**
+	 * Instantiates a new wage table history.
+	 *
+	 * @param memento
+	 *            the memento
+	 */
+	public WageTableHistory(WageTableHistoryGetMemento memento) {
+		this.companyCode = memento.getCompanyCode();
+		this.code = memento.getCode();
+		this.historyId = memento.getHistoryId();
+		this.applyRange = memento.getApplyRange();
+		this.demensionItems = memento.getDemensionDetail();
+		this.valueItems = memento.getValueItems();
+	}
+
+	/**
+	 * Save to memento.
+	 *
+	 * @param memento
+	 *            the memento
+	 */
+	public void saveToMemento(WageTableHistorySetMemento memento) {
+		memento.setCompanyCode(this.companyCode);
+		memento.setCode(this.code);
+		memento.setHistoryId(this.historyId);
+		memento.setApplyRange(this.applyRange);
+		memento.setDemensionDetail(this.demensionItems);
+		memento.setValueItems(this.valueItems);
+	}
 }

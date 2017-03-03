@@ -14,8 +14,8 @@
 			<com:scriptfile path="viewmodel.js" />
 			<script type="text/javascript">
 				var dialogSize = {
-					width : 520,
-					height : 420
+					width : 540,
+					height : 460
 				};
 			</script>
 
@@ -39,7 +39,7 @@
 						<td>
 							<div
 								data-bind="ntsRadioBoxGroup: {
-								options: fsel001,
+								options: selectModel,
 								optionsValue: 'id',
 								optionsText: 'name',
 								value: selectedId,
@@ -58,6 +58,8 @@
 						</td>
 					</tr>
 				</TABLE>
+				<br/>
+				<br/>
 				<hr />
 				<div id="this-functions-area" class="control-group halign-center">
 					<button class="btn-default proceed x-large" id="btn_001"

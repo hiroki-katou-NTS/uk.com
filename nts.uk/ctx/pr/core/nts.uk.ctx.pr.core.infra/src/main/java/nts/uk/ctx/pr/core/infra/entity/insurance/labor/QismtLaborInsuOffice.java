@@ -125,15 +125,15 @@ public class QismtLaborInsuOffice implements Serializable {
 	private String officeMark;
 
 	/** The office no A. */
-	@Column(name = "OFFICE_NO_A")
+	@Column(name = "OFFICE_N0_A")
 	private String officeNoA;
 
 	/** The office no B. */
-	@Column(name = "OFFICE_NO_B")
+	@Column(name = "OFFICE_N0_B")
 	private String officeNoB;
 
 	/** The office no C. */
-	@Column(name = "OFFICE_NO_C")
+	@Column(name = "OFFICE_N0_C")
 	private String officeNoC;
 
 	/** The memo. */

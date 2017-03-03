@@ -47,21 +47,4 @@ public class UnemployeeInsuranceFinder {
 		return null;
 	}
 
-	/**
-	 * Find all.
-	 *
-	 * @param companyCode
-	 *            the company code
-	 * @return the list
-	 */
-	/*
-	 * public List<LaborInsuranceOfficeFindOutDto> findAll(String companyCode) {
-	 * List<LaborInsuranceOfficeFindOutDto> lstLaborInsuranceOfficeFindOutDto =
-	 * new ArrayList<>(); for (LaborInsuranceOffice laborInsuranceOffice :
-	 * this.laborInsuranceOfficeRepository .findAll(new
-	 * CompanyCode(companyCode))) {
-	 * lstLaborInsuranceOfficeFindOutDto.add(LaborInsuranceOfficeFindOutDto.
-	 * fromDomain(laborInsuranceOffice)); } return
-	 * lstLaborInsuranceOfficeFindOutDto; }
-	 */
 }

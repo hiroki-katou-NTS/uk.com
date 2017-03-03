@@ -34,7 +34,7 @@ public interface AccidentInsuranceRateRepository {
 	 * @param id the id
 	 * @param version the version
 	 */
-    void remove(String id, Long version);
+    void remove(CompanyCode companyCode,String historyId, Long version);
 
 	/**
 	 * Find all.

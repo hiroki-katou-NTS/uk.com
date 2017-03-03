@@ -33,8 +33,7 @@
 									<label>期間</label>
 								</div>
 							</td>
-							<td class="contentsRR"><div
-									data-bind="ntsDatePicker: {value: startMonthRage, dateFormat: 'yyyy/MM'} " />
+							<td class="contentsRR"><div data-bind="text: startMonthRage" />
 							</td>
 							<td><label id="B_LBL_002"> ~ </label></td>
 							<td><label id="B_LBL_003" data-bind="text: endMonthRage">
@@ -77,7 +76,7 @@
 													optionsValue: 'code',
 													value: personalSetting.roundAtr,
 													optionsText: 'name',
-													editable: true,
+													editable: false,
 													enable: true,
 													columns: [
 														{ prop: 'name', length: 10 },
@@ -100,7 +99,7 @@
 													optionsValue: 'code',
 													value: companySetting.roundAtr,
 													optionsText: 'name',
-													editable: true,
+													editable: false,
 													enable: true,
 													columns: [
 														{ prop: 'name', length: 10 },
@@ -128,7 +127,7 @@
 													optionsValue: 'code',
 													value: personalSetting.roundAtr,
 													optionsText: 'name',
-													editable: true,
+													editable: false,
 													enable: true,
 													columns: [
 														{ prop: 'name', length: 10 },
@@ -150,7 +149,7 @@
 													optionsValue: 'code',
 													value: companySetting.roundAtr,
 													optionsText: 'name',
-													editable: true,
+													editable: false,
 													enable: true,
 													columns: [
 														{ prop: 'name', length: 10 },
@@ -177,7 +176,7 @@
 													optionsValue: 'code',
 													value: personalSetting.roundAtr,
 													optionsText: 'name',
-													editable: true,
+													editable: false,
 													enable: true,
 													columns: [
 														{ prop: 'name', length: 10 },
@@ -199,7 +198,7 @@
 													optionsValue: 'code',
 													value: companySetting.roundAtr,
 													optionsText: 'name',
-													editable: true,
+													editable: false,
 													enable: true,
 													columns: [
 														{ prop: 'name', length: 10 },

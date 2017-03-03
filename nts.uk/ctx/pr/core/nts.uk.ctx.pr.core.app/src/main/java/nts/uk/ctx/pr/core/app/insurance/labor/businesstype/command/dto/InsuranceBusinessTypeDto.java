@@ -1,7 +1,14 @@
+/******************************************************************
+ * Copyright (c) 2016 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.pr.core.app.insurance.labor.businesstype.command.dto;
 
 import lombok.Data;
 
+/**
+ * The Class InsuranceBusinessTypeDto.
+ */
 @Data
 public class InsuranceBusinessTypeDto {
 	/** The biz name biz 1 st. */

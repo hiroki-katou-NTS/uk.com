@@ -6,16 +6,10 @@ package nts.uk.ctx.pr.core.dom.wagetable.mode;
 
 import lombok.Getter;
 import nts.uk.ctx.pr.core.dom.wagetable.ElementCount;
-import nts.uk.ctx.pr.core.dom.wagetable.WageTableElement;
+import nts.uk.ctx.pr.core.dom.wagetable.element.WageTableElement;
 
 /**
  * The Class FineworkDimensionalMode.
- */
-
-/**
- * Gets the element 3 rd.
- *
- * @return the element 3 rd
  */
 @Getter
 public class FineworkDimensionalMode implements DemensionalMode {
