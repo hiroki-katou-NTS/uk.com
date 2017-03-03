@@ -48,7 +48,7 @@
 						<div style="width: 400px; padding-left: 23px;"
 							data-bind="ntsSearchBox: {items: healthInsuranceOfficeList, selected: healthOfficeSelectedCode, selectedKey: 'code', childField: 'childs', filteredItems: healthFilteredData, fields: ['name', 'code']},constraint:['OfficeCode','OfficeName']" />
 						<button style="margin-left: 25px;"
-							data-bind="click: OpenModalAddHistory,enable:!isClickHealthHistory()">履歴追加</button>
+							data-bind="click: OpenModalAddHistory">履歴追加</button>
 						<button data-bind="click: OpenModalConfigHistory,enable:isClickHealthHistory()"
 							style="float: right; margin-right: 25px;">履歴編集</button>
 						<div style="padding-left: 25px; padding-top: 5px;">
@@ -308,7 +308,7 @@
 						<div style="width: 400px; padding-left: 23px;"
 							data-bind="ntsSearchBox: {items: pensionInsuranceOfficeList, selected: pensionOfficeSelectedCode, selectedKey: 'code', childField: 'childs', filteredItems: pensionFilteredData, fields: ['name', 'code'],constraint:['OfficeCode','OfficeName']}" />
 						<button style="margin-left: 25px;"
-							data-bind="click: OpenModalAddHistory,enable:!isClickPensionHistory()">履歴追加</button>
+							data-bind="click: OpenModalAddHistory">履歴追加</button>
 						<button data-bind="click: OpenModalConfigHistory,enable:isClickPensionHistory()"
 							style="float: right; margin-right: 25px;">履歴編集</button>
 						<div style="padding-left: 25px; padding-top: 5px;">

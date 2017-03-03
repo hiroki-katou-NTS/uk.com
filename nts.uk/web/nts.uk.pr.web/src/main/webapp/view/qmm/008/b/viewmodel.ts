@@ -63,6 +63,7 @@ module nts.uk.pr.view.qmm008.b {
                 var month = (Number(stringDate.substring(index + 1, stringDate.length)) - 1).toString();
                 if (month == "0") {
                     year = (Number(year) - 1).toString();
+                    month = "12";
                 }
                 return month.length == 1 ? year + "/0" + month : year + "/" + month;
             }
@@ -86,17 +87,22 @@ module nts.uk.pr.view.qmm008.b {
                         healthData.historyId = "";
                         healthData.startMonth = self.selectedDate();
                         healthData.endMonth = "9999/12";
-                        aservice.registerHealthRate(healthData).done(function() {
-                            //update previous
-                            if (self.getInsuranceOfficeItemDto().childs.length > 0) {
-                                var previousHealthData: HealthInsuranceRateDto = self.getPreviousInsuranceRateDto();
-                                previousHealthData.historyId = backupHistoryId;
-                                previousHealthData.startMonth = backupStartMonth;
-                                previousHealthData.endMonth = self.minusOneMonth(self.selectedDate());
-                                aservice.updateHealthRate(previousHealthData).done(function() {
-                                });
-                            }
-                        });
+                        if (!self.compareStringDate(backupStartMonth, self.minusOneMonth(self.selectedDate()))) {
+                            alert("ER011");
+                        }
+                        else {
+                            aservice.registerHealthRate(healthData).done(function() {
+                                //update previous
+                                if (self.getInsuranceOfficeItemDto().childs.length > 0) {
+                                    var previousHealthData: HealthInsuranceRateDto = self.getPreviousInsuranceRateDto();
+                                    previousHealthData.historyId = backupHistoryId;
+                                    previousHealthData.startMonth = backupStartMonth;
+                                    previousHealthData.endMonth = self.minusOneMonth(self.selectedDate());
+                                    aservice.updateHealthRate(previousHealthData).done(function() {
+                                    });
+                                }
+                            });
+                        }
                     }
                 }
                 //is pension 
@@ -114,17 +120,27 @@ module nts.uk.pr.view.qmm008.b {
                         pensionData.historyId = "";
                         pensionData.startMonth = self.selectedDate();
                         pensionData.endMonth = "9999/12";
-                        aservice.registerPensionRate(pensionData).done(function() {
-                            //update previous
-                            if (self.getInsuranceOfficeItemDto().childs.length > 0) {
-                                var previousPensionData: PensionRateDto = self.getPreviousInsuranceRateDto();
-                                previousPensionData.historyId = backupHistoryId;
-                                previousPensionData.startMonth = backupStartMonth;
-                                previousPensionData.endMonth = self.minusOneMonth(self.selectedDate());
-                                aservice.updatePensionRate(previousPensionData).done(function() {
-                                });
-                            }
-                        });
+                        if (!self.compareStringDate(backupStartMonth, self.minusOneMonth(self.selectedDate()))) {
+                            alert("ER011");
+                        }
+                        else {
+                            aservice.registerPensionRate(pensionData).done(function() {
+                                //update previous
+                                if (self.getInsuranceOfficeItemDto().childs.length > 0) {
+                                    var previousPensionData: PensionRateDto = self.getPreviousInsuranceRateDto();
+                                    previousPensionData.historyId = backupHistoryId;
+                                    previousPensionData.startMonth = backupStartMonth;
+                                    previousPensionData.endMonth = self.minusOneMonth(self.selectedDate());
+                                    if (!self.compareStringDate(previousPensionData.startMonth, previousPensionData.endMonth)) {
+                                        alert("ER011");
+                                    }
+                                    else {
+                                        aservice.updatePensionRate(previousPensionData).done(function() {
+                                        });
+                                    }
+                                }
+                            });
+                        }
                     }
                 }
                 //TODO recheck check if selected time invalid

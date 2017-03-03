@@ -14,7 +14,7 @@ var nts;
                         (function (viewmodel) {
                             var aservice = nts.uk.pr.view.qmm008.a.service;
                             var ScreenModel = (function () {
-                                function ScreenModel(selectedOfficeCode) {
+                                function ScreenModel() {
                                     var self = this;
                                     self.enabled = ko.observable(true);
                                     self.deleteButtonControll = ko.observable(true);

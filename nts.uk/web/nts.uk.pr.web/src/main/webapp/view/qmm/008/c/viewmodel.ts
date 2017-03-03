@@ -28,7 +28,7 @@ module nts.uk.pr.view.qmm008.c {
             enabled: KnockoutObservable<boolean>;
             deleteButtonControll: KnockoutObservable<boolean>;
 
-            constructor(selectedOfficeCode: any) {
+            constructor() {
                 var self = this;
                 self.enabled = ko.observable(true);
                 self.deleteButtonControll = ko.observable(true);

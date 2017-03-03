@@ -75,8 +75,8 @@ module nts.uk.pr.view.qmm008.a {
                 var self = this;
 
                 //init model
-                self.healthModel = ko.observable(new HealthInsuranceRateModel("code", 1, null, null, 15000));
-                self.pensionModel = ko.observable(new PensionRateModel("code", 1, 1, null, null, null, 35000, 1.5));
+                self.healthModel = ko.observable(new HealthInsuranceRateModel());
+                self.pensionModel = ko.observable(new PensionRateModel());
 
                 // init insurance offices list
                 self.healthInsuranceOfficeList = ko.observableArray<InsuranceOfficeItem>([]);
@@ -158,7 +158,7 @@ module nts.uk.pr.view.qmm008.a {
                 self.endMonthTemp = ko.observable('');
                 //subscribe change select office
                 self.healthOfficeSelectedCode.subscribe(function(officeSelectedCode: string) {
-                    if (officeSelectedCode != null || officeSelectedCode != undefined) {
+                    if (officeSelectedCode.length>1) {
                         //if click office item
                         if (self.healthCheckCode(officeSelectedCode)) {
                             self.healthCurrentParentCode(officeSelectedCode);
@@ -168,7 +168,7 @@ module nts.uk.pr.view.qmm008.a {
                             roudingList.healthSalaryCompanyComboBox(self.roundingList());
                             roudingList.healthBonusPersonalComboBox(self.roundingList());
                             roudingList.healthBonusCompanyComboBox(self.roundingList());
-                            self.healthModel(new HealthInsuranceRateModel("code", 1, null, roudingList, 15000));
+                            self.healthModel(new HealthInsuranceRateModel());
                             //TODO enabled button add new history
                             self.isClickHealthHistory(false);
                         }
@@ -192,7 +192,7 @@ module nts.uk.pr.view.qmm008.a {
 
                 //subscribe change select office
                 self.pensionOfficeSelectedCode.subscribe(function(officeSelectedCode: string) {
-                    if (officeSelectedCode != null || officeSelectedCode != undefined) {
+                    if (officeSelectedCode.length>1) {
                         //if click office item
                         if (self.pensionCheckCode(officeSelectedCode)) {
                             self.pensionCurrentParentCode(officeSelectedCode);
@@ -219,7 +219,7 @@ module nts.uk.pr.view.qmm008.a {
                     }
                 });
 
-                self.pensionModel().fundInputApply.subscribe(function(pensionFundInputOptions: any) {
+                self.pensionModel().fundInputApply.subscribe(function() {
                     //TODO change select -> disable fun input
                     if (self.pensionModel().fundInputApply() != 1) {
                         self.fundInputEnable(true);
@@ -234,18 +234,18 @@ module nts.uk.pr.view.qmm008.a {
                 var self = this;
                 var dfd = $.Deferred<any>();
                 //first load
-                self.loadHealthHistoryOfOffice().done(function(data) {
+                self.loadHealthHistoryOfOffice().done(function() {
                     
                     // Resolve
                     dfd.resolve(null);
                 });
                 //first load
-                self.loadPensionHistoryOfOffice().done(function(data) {
+                self.loadPensionHistoryOfOffice().done(function() {
                     // Resolve
                     dfd.resolve(null);
                 });
 
-                self.getAllRounding().done(function(data) {
+                self.getAllRounding().done(function() {
                     // Resolve
                     dfd.resolve(null);
                 });
@@ -812,11 +812,11 @@ module nts.uk.pr.view.qmm008.a {
             rateItems: KnockoutObservable<HealthInsuranceRateItemModel>;
             roundingMethods: KnockoutObservable<HealthInsuranceRoundingModel>;
             maxAmount: KnockoutObservable<number>;
-            constructor(officeCode: string, autoCalculate: number, rateItems: HealthInsuranceRateItemModel, roundingMethods: HealthInsuranceRoundingModel, maxAmount: number) {
-                this.startMonth = ko.observable("2016/04");
-                this.endMonth = ko.observable("2016/04");
+            constructor() {
+                this.startMonth = ko.observable("");
+                this.endMonth = ko.observable("");
                 this.officeCode = ko.observable('');
-                this.autoCalculate = ko.observable(autoCalculate);
+                this.autoCalculate = ko.observable(1);
                 this.rateItems = ko.observable(new HealthInsuranceRateItemModel());
                 this.roundingMethods = ko.observable(new HealthInsuranceRoundingModel());
                 this.maxAmount = ko.observable(0);
@@ -837,12 +837,12 @@ module nts.uk.pr.view.qmm008.a {
             roundingMethods: KnockoutObservable<PensionRateRoundingModel>;
             maxAmount: KnockoutObservable<number>;
             childContributionRate: KnockoutObservable<number>;
-            constructor(officeCode: string, fundInputApply: number, autoCalculate: number, rateItems: PensionRateItemModel, fundRateItems: FunRateItemModel, roundingMethods: PensionRateRoundingModel, maxAmount: number, childContributionRate: number) {
-                this.startMonth = ko.observable('2016/04');
-                this.endMonth = ko.observable("2016/04");
+            constructor() {
+                this.startMonth = ko.observable('');
+                this.endMonth = ko.observable('');
                 this.officeCode = ko.observable('');
-                this.fundInputApply = ko.observable(fundInputApply);
-                this.autoCalculate = ko.observable(autoCalculate);
+                this.fundInputApply = ko.observable(0);
+                this.autoCalculate = ko.observable(0);
                 this.rateItems = ko.observable(new PensionRateItemModel());
                 this.fundRateItems = ko.observable(new FunRateItemModel());
                 this.roundingMethods = ko.observable(new PensionRateRoundingModel());

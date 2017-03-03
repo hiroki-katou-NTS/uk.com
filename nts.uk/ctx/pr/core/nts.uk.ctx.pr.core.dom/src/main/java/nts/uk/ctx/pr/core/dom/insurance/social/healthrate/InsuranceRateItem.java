@@ -29,9 +29,11 @@ public class InsuranceRateItem extends DomainObject {
 	private HealthChargeRateItem chargeRate;
 
 	/**
-	 * @param chargeRate
-	 * @param payType
-	 * @param insuranceType
+	 * Instantiates a new insurance rate item.
+	 *
+	 * @param payType the pay type
+	 * @param insuranceType the insurance type
+	 * @param chargeRate the charge rate
 	 */
 	public InsuranceRateItem(PaymentType payType, HealthInsuranceType insuranceType, HealthChargeRateItem chargeRate) {
 		super();

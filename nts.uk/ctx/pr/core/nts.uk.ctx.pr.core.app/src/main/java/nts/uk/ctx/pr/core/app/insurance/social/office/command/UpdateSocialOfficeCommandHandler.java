@@ -55,7 +55,7 @@ public class UpdateSocialOfficeCommandHandler extends CommandHandler<UpdateSocia
 
 		Optional<SocialInsuranceOffice> findOffice = socialInsuranceOfficeRepository
 				.findById(command.getCode().toString());
-		if (findOffice != null) {
+		if (findOffice.get() != null) {
 			// TODO show error message
 		} else {
 			socialInsuranceOfficeRepository.update(socialInsuranceOffice);
