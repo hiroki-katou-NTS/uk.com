@@ -4,15 +4,18 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.enterprise.context.RequestScoped;
+import javax.transaction.Transactional;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.layer.ws.json.serializer.GeneralDateTimeSerializer;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.GeneralDateTime;
+import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.retirement.payment.RetirementPayment;
 import nts.uk.ctx.pr.core.dom.retirement.payment.RetirementPaymentRepository;
 import nts.uk.ctx.pr.core.infra.entity.retirement.payment.QredtRetirementPayment;
 import nts.uk.ctx.pr.core.infra.entity.retirement.payment.QredtRetirementPaymentPK;
+import nts.uk.shr.com.primitive.PersonId;
 
 /**
  * 
@@ -20,6 +23,7 @@ import nts.uk.ctx.pr.core.infra.entity.retirement.payment.QredtRetirementPayment
  *
  */
 @RequestScoped
+@Transactional
 public class JpaRetirementPaymentRepository extends JpaRepository implements RetirementPaymentRepository {
 	
 	private final String FindByCompanyCodeAndPersonId = "Select a From QredtRetirementPayment a "
@@ -28,14 +32,14 @@ public class JpaRetirementPaymentRepository extends JpaRepository implements Ret
 	
 	@Override
 	public void add(RetirementPayment retirementPayment) {
-		this.commandProxy().insert(retirementPayment);
+		this.commandProxy().insert(convertToEntity(retirementPayment));
 	}
 	
 	@Override
-	public List<RetirementPayment> findByCompanyCodeandPersonId(String companyCode, String personId) {
+	public List<RetirementPayment> findByCompanyCodeandPersonId(CompanyCode companyCode, PersonId personId) {
 		return this.queryProxy().query(FindByCompanyCodeAndPersonId, QredtRetirementPayment.class)
-				.setParameter("companyCode", companyCode)
-				.setParameter("personId", personId)
+				.setParameter("companyCode", companyCode.v())
+				.setParameter("personId", personId.v())
 				.getList(x -> RetirementPayment.createFromJavaType(
 						x.qredtRetirementPaymentPK.companyCode, 
 						x.qredtRetirementPaymentPK.personId, 
@@ -70,8 +74,8 @@ public class JpaRetirementPaymentRepository extends JpaRepository implements Ret
 	}
 	
 	@Override
-	public Optional<RetirementPayment> findRetirementPaymentInfo(String companyCode, String personId, GeneralDate dateTime) {
-		return this.queryProxy().find(new QredtRetirementPaymentPK(companyCode, personId, dateTime), QredtRetirementPayment.class)
+	public Optional<RetirementPayment> findRetirementPaymentInfo(CompanyCode companyCode, PersonId personId, GeneralDate dateTime) {
+		return this.queryProxy().find(new QredtRetirementPaymentPK(companyCode.v(), personId.v(), dateTime), QredtRetirementPayment.class)
 				.map(x -> RetirementPayment.createFromJavaType(
 						x.qredtRetirementPaymentPK.companyCode, 
 						x.qredtRetirementPaymentPK.personId, 
@@ -107,7 +111,7 @@ public class JpaRetirementPaymentRepository extends JpaRepository implements Ret
 	
 	@Override
 	public void update(RetirementPayment retirementPayment) {
-		this.commandProxy().update(retirementPayment);
+		this.commandProxy().update(convertToEntity(retirementPayment));
 	}
 	
 	@Override
@@ -120,5 +124,41 @@ public class JpaRetirementPaymentRepository extends JpaRepository implements Ret
 						retirementPayment.getPayDate()
 				)
 		);
+	}
+	
+	private QredtRetirementPayment convertToEntity(RetirementPayment retirementPayment){
+		return new QredtRetirementPayment(
+					new QredtRetirementPaymentPK(
+							retirementPayment.getCompanyCode().v(), 
+							retirementPayment.getPersonId().v(), 
+							retirementPayment.getPayDate()),
+					retirementPayment.getTrialPeriodSet().value,
+					retirementPayment.getExclusionYears().v(),
+					retirementPayment.getAdditionalBoardYears().v(),
+					retirementPayment.getBoardYears().v(),
+					retirementPayment.getTotalPaymentMoney().v(),
+					retirementPayment.getDeduction1Money().v(),
+					retirementPayment.getDeduction2Money().v(),
+					retirementPayment.getDeduction3Money().v(),
+					retirementPayment.getRetirementPayOption().value,
+					retirementPayment.getTaxCalculationMethod().value,
+					retirementPayment.getIncomeTaxMoney().v(),
+					retirementPayment.getCityTaxMoney().v(),
+					retirementPayment.getPrefectureTaxMoney().v(),
+					retirementPayment.getTotalDeclarationMoney().v(),
+					retirementPayment.getActualRecieveMoney().v(),
+					retirementPayment.getBankTransferOption1().value,
+					retirementPayment.getOption1Money().v(),
+					retirementPayment.getBankTransferOption2().value,
+					retirementPayment.getOption2Money().v(),
+					retirementPayment.getBankTransferOption3().value,
+					retirementPayment.getOption3Money().v(),
+					retirementPayment.getBankTransferOption4().value,
+					retirementPayment.getOption4Money().v(),
+					retirementPayment.getBankTransferOption5().value,
+					retirementPayment.getOption5Money().v(),
+					retirementPayment.getWithholdingMeno().v(),
+					retirementPayment.getStatementMemo().v()
+				);
 	}
 }

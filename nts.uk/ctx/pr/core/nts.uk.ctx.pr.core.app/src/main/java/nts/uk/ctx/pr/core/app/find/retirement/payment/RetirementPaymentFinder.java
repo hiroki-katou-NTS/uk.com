@@ -9,10 +9,12 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.app.find.retirement.payment.dto.RetirementPaymentDto;
 import nts.uk.ctx.pr.core.dom.retirement.payment.RetirementPayment;
 import nts.uk.ctx.pr.core.dom.retirement.payment.RetirementPaymentRepository;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.primitive.PersonId;
 
 /**
  * 
@@ -27,7 +29,7 @@ public class RetirementPaymentFinder {
 	
 	public List<RetirementPaymentDto> findByCompanyCodeandPersonId(String personId) {
 		String companyCode = AppContexts.user().companyCode();
-		return this.retirementPaymentRepository.findByCompanyCodeandPersonId(companyCode, personId)
+		return this.retirementPaymentRepository.findByCompanyCodeandPersonId(new CompanyCode(companyCode), new PersonId(personId))
 				.stream()
 				.map(x -> new RetirementPaymentDto(
 						x.getCompanyCode().v(), 
@@ -66,7 +68,10 @@ public class RetirementPaymentFinder {
 	public RetirementPaymentDto findRetirementPaymentInfo(String personId, String dateTime) {
 		String companyCode = AppContexts.user().companyCode();
 		GeneralDate date = GeneralDate.fromString(dateTime, "yyyy/MM/dd");
-		Optional<RetirementPayment> retirementPayment = this.retirementPaymentRepository.findRetirementPaymentInfo(companyCode, personId, date);
+		Optional<RetirementPayment> retirementPayment = this.retirementPaymentRepository.findRetirementPaymentInfo(
+				new CompanyCode(companyCode), 
+				new PersonId(personId), 
+				date);
 		if(!retirementPayment.isPresent()) { 
 			return null; 
 		}

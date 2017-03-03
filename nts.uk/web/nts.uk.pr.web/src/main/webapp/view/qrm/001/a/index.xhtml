@@ -16,8 +16,8 @@
 
 		<ui:define name="content">
 			<div id="functions-area">
-				<button class="proceed" data-bind="click: function(){saveData(isUpdate);},enable: $root.errors.isEmpty">計算/登録</button>
-				<button class="danger" data-bind="click: deleteData, enable: (isUpdate)&#38;(!$root.errors.isEmpty)">削除</button>
+				<button class="proceed" data-bind="click: function(){saveData(isUpdate());},enable: $root.errors.isEmpty">計算/登録</button>
+				<button class="danger" data-bind="click: deleteData, enable: (isUpdate()&#38;Boolean($root.errors.isEmpty()))">削除</button>
 			</div>
 			<div id="contents-area" class="table">
 				<div class="cell column1">
@@ -33,7 +33,7 @@
 						<div class="cell">
 							<span> 
 								<input data-bind="ntsTextEditor: {
-									value: currentEmployeeName,
+									value: currentEmployeeCode,
 									constraint: 'ResidenceCode',
 									option: { textmode: 'text', textalign: 'left' },
 									required: true }" />
@@ -54,9 +54,9 @@
 							<div id="combo-box7" data-bind="ntsComboBox: {
 												options: retirementPaymentKeyList,
 												optionsValue: 'payDate',
-												value: SEL_007_INP_014,
+												value: SEL_007,
 												optionsText: 'payDate',
-												enable: isUpdate } "></div>	
+												enable: isUpdate() } "></div>	
 							</div>
 						</div>
 					</div>
@@ -78,11 +78,11 @@
 									<tr>
 										<td>
 											<input id="inp-14" data-bind="ntsTextEditor: {
-														value: SEL_007_INP_014,
+														value: INP_014,
 														constraint: 'ResidenceCode',
 														option: { textmode: 'text' },
 														required: true, 
-														enable: !isUpdate }" />
+														enable: !isUpdate() }" />
 										</td>
 									</tr>
 								</tbody>

@@ -1,11 +1,15 @@
 package nts.uk.ctx.pr.core.app.command.retirement.payment;
 
+import java.util.Optional;
+
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.retirement.payment.BankTransferOption;
 import nts.uk.ctx.pr.core.dom.retirement.payment.PaymentMoney;
@@ -33,10 +37,17 @@ public class RegisterRetirementPaymentCommandHandler extends CommandHandler<Regi
 		// TODO Auto-generated method stub
 		RegisterRetirementPaymentCommand command = context.getCommand();
 		String companyCode = AppContexts.user().companyCode();
+		Optional<RetirementPayment> reOptional = this.retirementPaymentRepository.findRetirementPaymentInfo(
+																new CompanyCode(companyCode), 
+																new PersonId(command.getPersonId().toString()), 
+																GeneralDate.fromString(command.getPayDate(), "yyyy-MM-dd"));
+		if(reOptional.isPresent()) {
+			throw new BusinessException("Register Fail");
+		}
 		RetirementPayment retirementPayment = new RetirementPayment(
 				new CompanyCode(companyCode), 
 				new PersonId(command.getPersonId()), 
-				command.getPayDate(),
+				GeneralDate.fromString(command.getPayDate(), "yyyy-MM-dd"),
 				EnumAdaptor.valueOf(command.getTrialPeriodSet(), TrialPeriodSet.class),
 				new PaymentYear(command.getExclusionYears()), 
 				new PaymentYear(command.getAdditionalBoardYears()), 
@@ -64,7 +75,6 @@ public class RegisterRetirementPaymentCommandHandler extends CommandHandler<Regi
 				new PaymentMoney(command.getOption5Money()),
 				new Memo(command.getWithholdingMeno()),
 				new Memo(command.getStatementMemo()));
-		
 		retirementPaymentRepository.add(retirementPayment);
 	}
 }

@@ -4,6 +4,8 @@ import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.core.dom.company.CompanyCode;
+import nts.uk.shr.com.primitive.PersonId;
 
 /**
  * 
@@ -14,9 +16,9 @@ public interface RetirementPaymentRepository {
 	
 	void add(RetirementPayment retirementPayment);
 	
-	List<RetirementPayment> findByCompanyCodeandPersonId(String companyCode, String personId);
+	List<RetirementPayment> findByCompanyCodeandPersonId(CompanyCode companyCode, PersonId personId);
 
-	Optional<RetirementPayment> findRetirementPaymentInfo(String companyCode, String personId, GeneralDate dateTime);
+	Optional<RetirementPayment> findRetirementPaymentInfo(CompanyCode companyCode, PersonId personId, GeneralDate dateTime);
 	
 	void update(RetirementPayment retirementPayment);
 	

@@ -15,7 +15,7 @@ import nts.arc.time.GeneralDate;
 public class RegisterRetirementPaymentCommand {
 	private String companyCode;
 	private String personId;
-	private GeneralDate payDate;
+	private String payDate;
 	private int trialPeriodSet;
 	private int exclusionYears;
 	private int additionalBoardYears;
@@ -32,15 +32,15 @@ public class RegisterRetirementPaymentCommand {
 	private int totalDeclarationMoney;
 	private int actualRecieveMoney;
 	private int bankTransferOption1;
-	private int Option1Money;
+	private int option1Money;
 	private int bankTransferOption2;
-	private int Option2Money;
+	private int option2Money;
 	private int bankTransferOption3;
-	private int Option3Money;
+	private int option3Money;
 	private int bankTransferOption4;
-	private int Option4Money;
+	private int option4Money;
 	private int bankTransferOption5;
-	private int Option5Money;
+	private int option5Money;
 	private String withholdingMeno;
 	private String statementMemo;
 }
