@@ -7,7 +7,7 @@ package nts.uk.ctx.pr.core.dom.wagetable.history;
 import java.util.List;
 
 import lombok.Getter;
-import nts.uk.ctx.pr.core.dom.wagetable.DemensionOrder;
+import nts.uk.ctx.pr.core.dom.wagetable.DemensionNo;
 import nts.uk.ctx.pr.core.dom.wagetable.element.BaseItem;
 import nts.uk.ctx.pr.core.dom.wagetable.element.ElementMode;
 
@@ -18,7 +18,7 @@ import nts.uk.ctx.pr.core.dom.wagetable.element.ElementMode;
 public class WageTableDemensionDetail {
 
 	/** The demension no. */
-	private DemensionOrder demensionNo;
+	private DemensionNo demensionNo;
 
 	/** The element mode setting. */
 	private ElementMode elementModeSetting;

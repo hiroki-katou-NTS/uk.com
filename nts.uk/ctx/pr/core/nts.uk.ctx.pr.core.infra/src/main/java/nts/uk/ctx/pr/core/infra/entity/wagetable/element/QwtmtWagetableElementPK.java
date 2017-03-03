@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.pr.core.infra.entity.wagetable.history;
+package nts.uk.ctx.pr.core.infra.entity.wagetable.element;
 
 import java.io.Serializable;
 
@@ -37,7 +37,7 @@ public class QwtmtWagetableElementPK implements Serializable {
 	/** The demension no. */
 	@Basic(optional = false)
 	@Column(name = "DEMENSION_NO")
-	private short demensionNo;
+	private int demensionNo;
 
 	/**
 	 * Instantiates a new qwtmt wagetable element PK.

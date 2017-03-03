@@ -7,11 +7,16 @@ package nts.uk.ctx.pr.core.infra.entity.wagetable.history;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -89,7 +94,16 @@ public class QwtmtWagetableEleHist implements Serializable {
 	/** The demension interval. */
 	@Basic(optional = false)
 	@Column(name = "DEMENSION_INTERVAL")
-	private int demensionInterval;
+	private BigDecimal demensionInterval;
+
+	/** The qwtmt wagetable head. */
+	@JoinColumns({
+			@JoinColumn(name = "CCD", referencedColumnName = "CCD", insertable = false, updatable = false),
+			@JoinColumn(name = "WAGE_TABLE_CD", referencedColumnName = "WAGE_TABLE_CD", insertable = false, updatable = false),
+			@JoinColumn(name = "HIST_ID", referencedColumnName = "HIST_ID", insertable = false, updatable = false),
+			@JoinColumn(name = "DEMENSION_NO", referencedColumnName = "DEMENSION_NO", insertable = false, updatable = false) })
+	@OneToMany(cascade = CascadeType.ALL)
+	private List<QwtmtWagetableCd> qwtmtWagetableCdList;
 
 	/**
 	 * Instantiates a new qwtmt wagetable ele hist.
@@ -123,7 +137,8 @@ public class QwtmtWagetableEleHist implements Serializable {
 	 *            the demension interval
 	 */
 	public QwtmtWagetableEleHist(QwtmtWagetableEleHistPK qwtmtWagetableEleHistPK, int exclusVer,
-			BigDecimal demensionUpperLimit, BigDecimal demensionLowerLimit, int demensionInterval) {
+			BigDecimal demensionUpperLimit, BigDecimal demensionLowerLimit,
+			BigDecimal demensionInterval) {
 		this.qwtmtWagetableEleHistPK = qwtmtWagetableEleHistPK;
 		this.exclusVer = exclusVer;
 		this.demensionUpperLimit = demensionUpperLimit;
@@ -144,7 +159,8 @@ public class QwtmtWagetableEleHist implements Serializable {
 	 *            the demension no
 	 */
 	public QwtmtWagetableEleHist(String ccd, String wageTableCd, String histId, short demensionNo) {
-		this.qwtmtWagetableEleHistPK = new QwtmtWagetableEleHistPK(ccd, wageTableCd, histId, demensionNo);
+		this.qwtmtWagetableEleHistPK = new QwtmtWagetableEleHistPK(ccd, wageTableCd, histId,
+				demensionNo);
 	}
 
 	/*

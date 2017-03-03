@@ -4,38 +4,77 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.infra.repository.wagetable.element;
 
-import nts.uk.ctx.pr.core.dom.wagetable.DemensionOrder;
+import nts.uk.ctx.core.dom.company.CompanyCode;
+import nts.uk.ctx.pr.core.dom.wagetable.DemensionNo;
+import nts.uk.ctx.pr.core.dom.wagetable.WageTableCode;
 import nts.uk.ctx.pr.core.dom.wagetable.element.ElementMode;
+import nts.uk.ctx.pr.core.dom.wagetable.element.RefMode;
 import nts.uk.ctx.pr.core.dom.wagetable.element.WageTableElementSetMemento;
-import nts.uk.ctx.pr.core.infra.entity.wagetable.certification.QwtmtWagetableCertifyG;
+import nts.uk.ctx.pr.core.infra.entity.wagetable.element.QwtmtWagetableElement;
+import nts.uk.ctx.pr.core.infra.entity.wagetable.element.QwtmtWagetableElementPK;
 
 /**
- * The Class JpaCertifyGroupSetMemento.
+ * The Class JpaWageTableElementSetMemento.
  */
 public class JpaWageTableElementSetMemento implements WageTableElementSetMemento {
 
 	/** The type value. */
-	protected QwtmtWagetableCertifyG typeValue;
+	protected QwtmtWagetableElement typeValue;
 
 	/**
-	 * Instantiates a new jpa certify group set memento.
+	 * Instantiates a new jpa wage table element set memento.
 	 *
+	 * @param companyCode
+	 *            the company code
+	 * @param wageTableCode
+	 *            the wage table code
 	 * @param typeValue
 	 *            the type value
 	 */
-	public JpaWageTableElementSetMemento(QwtmtWagetableCertifyG typeValue) {
+	public JpaWageTableElementSetMemento(CompanyCode companyCode, WageTableCode wageTableCode,
+			QwtmtWagetableElement typeValue) {
+		QwtmtWagetableElementPK qwtmtWagetableElementPK = new QwtmtWagetableElementPK();
+		qwtmtWagetableElementPK.setCcd(companyCode.v());
+		qwtmtWagetableElementPK.setWageTableCd(wageTableCode.v());
+
 		this.typeValue = typeValue;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.wagetable.element.WageTableElementSetMemento#
+	 * setDemensionNo(nts.uk.ctx.pr.core.dom.wagetable.DemensionNo)
+	 */
 	@Override
-	public void setDemensionNo(DemensionOrder demensionNo) {
-		// TODO Auto-generated method stub
-
+	public void setDemensionNo(DemensionNo demensionNo) {
+		QwtmtWagetableElementPK qwtmtWagetableElementPK = new QwtmtWagetableElementPK();
+		qwtmtWagetableElementPK.setDemensionNo(demensionNo.value);
+		this.typeValue.setQwtmtWagetableElementPK(qwtmtWagetableElementPK);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.wagetable.element.WageTableElementSetMemento#
+	 * setElementModeSetting(nts.uk.ctx.pr.core.dom.wagetable.element.
+	 * ElementMode)
+	 */
 	@Override
 	public void setElementModeSetting(ElementMode elementModeSetting) {
-		// TODO Auto-generated method stub
+		this.typeValue.setDemensionType(elementModeSetting.getElementType().value);
+
+		switch (elementModeSetting.getElementType()) {
+		case MASTER_REF:
+			this.typeValue.setDemensionRefNo(((RefMode) elementModeSetting).getRefNo().v());
+			break;
+		case CODE_REF:
+			this.typeValue.setDemensionRefNo(((RefMode) elementModeSetting).getRefNo().v());
+			break;
+		default:
+			this.typeValue.setDemensionRefNo("000");
+			break;
+		}
 
 	}
 

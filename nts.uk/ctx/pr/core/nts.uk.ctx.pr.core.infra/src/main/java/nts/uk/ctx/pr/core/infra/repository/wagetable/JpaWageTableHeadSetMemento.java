@@ -9,54 +9,84 @@ import nts.uk.ctx.pr.core.dom.wagetable.WageTableCode;
 import nts.uk.ctx.pr.core.dom.wagetable.WageTableHeadSetMemento;
 import nts.uk.ctx.pr.core.dom.wagetable.WageTableName;
 import nts.uk.ctx.pr.core.dom.wagetable.mode.DemensionalMode;
-import nts.uk.ctx.pr.core.infra.entity.wagetable.certification.QwtmtWagetableCertifyG;
+import nts.uk.ctx.pr.core.infra.entity.wagetable.QwtmtWagetableHead;
+import nts.uk.ctx.pr.core.infra.entity.wagetable.QwtmtWagetableHeadPK;
 import nts.uk.shr.com.primitive.Memo;
 
 /**
- * The Class JpaCertifyGroupSetMemento.
+ * The Class JpaWageTableHeadSetMemento.
  */
 public class JpaWageTableHeadSetMemento implements WageTableHeadSetMemento {
 
 	/** The type value. */
-	protected QwtmtWagetableCertifyG typeValue;
+	protected QwtmtWagetableHead typeValue;
 
 	/**
-	 * Instantiates a new jpa certify group set memento.
+	 * Instantiates a new jpa wage table head set memento.
 	 *
 	 * @param typeValue
 	 *            the type value
 	 */
-	public JpaWageTableHeadSetMemento(QwtmtWagetableCertifyG typeValue) {
+	public JpaWageTableHeadSetMemento(QwtmtWagetableHead typeValue) {
 		this.typeValue = typeValue;
 	}
 
+	/**
+	 * Sets the company code.
+	 *
+	 * @param companyCode
+	 *            the new company code
+	 */
 	@Override
 	public void setCompanyCode(CompanyCode companyCode) {
-		// TODO Auto-generated method stub
-		
+		QwtmtWagetableHeadPK qwtmtWagetableHeadPK = new QwtmtWagetableHeadPK();
+		qwtmtWagetableHeadPK.setCcd(companyCode.v());
+		this.typeValue.setQwtmtWagetableHeadPK(qwtmtWagetableHeadPK);
 	}
 
+	/**
+	 * Sets the code.
+	 *
+	 * @param code
+	 *            the new code
+	 */
 	@Override
 	public void setCode(WageTableCode code) {
-		// TODO Auto-generated method stub
-		
+		QwtmtWagetableHeadPK qwtmtWagetableHeadPK = this.typeValue.getQwtmtWagetableHeadPK();
+		qwtmtWagetableHeadPK.setWageTableCd(code.v());
+		this.typeValue.setQwtmtWagetableHeadPK(qwtmtWagetableHeadPK);
 	}
 
+	/**
+	 * Sets the name.
+	 *
+	 * @param name
+	 *            the new name
+	 */
 	@Override
 	public void setName(WageTableName name) {
-		// TODO Auto-generated method stub
-		
+		this.typeValue.setWageTableName(name.v());
 	}
 
+	/**
+	 * Sets the demension setting.
+	 *
+	 * @param demensionSetting
+	 *            the new demension setting
+	 */
 	@Override
 	public void setDemensionSetting(DemensionalMode demensionSetting) {
-		// TODO Auto-generated method stub
-		
+		this.typeValue.setDemensionSet(demensionSetting.getMode().value);
 	}
 
+	/**
+	 * Sets the memo.
+	 *
+	 * @param memo
+	 *            the new memo
+	 */
 	@Override
 	public void setMemo(Memo memo) {
-		// TODO Auto-generated method stub
-		
+		this.typeValue.setMemo(memo.v());
 	}
 }

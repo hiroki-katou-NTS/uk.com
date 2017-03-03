@@ -4,7 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.dom.wagetable.element;
 
-import nts.uk.ctx.pr.core.dom.wagetable.DemensionOrder;
+import nts.uk.ctx.pr.core.dom.wagetable.DemensionNo;
 
 /**
  * The Interface WageTableElementSetMemento.
@@ -16,7 +16,7 @@ public interface WageTableElementSetMemento {
 	 *
 	 * @param demensionNo the new demension no
 	 */
-	void setDemensionNo(DemensionOrder demensionNo);
+	void setDemensionNo(DemensionNo demensionNo);
 
 	/**
 	 * Sets the element mode setting.

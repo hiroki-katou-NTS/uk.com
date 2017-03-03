@@ -4,7 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.dom.wagetable.element;
 
-import nts.uk.ctx.pr.core.dom.wagetable.DemensionOrder;
+import nts.uk.ctx.pr.core.dom.wagetable.DemensionNo;
 
 /**
  * The Interface WageTableElementGetMemento.
@@ -16,7 +16,7 @@ public interface WageTableElementGetMemento {
 	 *
 	 * @return the demension no
 	 */
-	DemensionOrder getDemensionNo();
+	DemensionNo getDemensionNo();
 
 	/**
 	 * Gets the element mode setting.

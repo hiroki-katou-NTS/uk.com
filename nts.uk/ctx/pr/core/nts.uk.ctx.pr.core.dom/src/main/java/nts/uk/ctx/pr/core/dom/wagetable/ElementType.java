@@ -10,26 +10,36 @@ package nts.uk.ctx.pr.core.dom.wagetable;
  */
 public enum ElementType {
 
-	/** The Master ref. */
-	MasterRef(0),
+	/** The master ref. */
+	MASTER_REF(0),
 
-	/** The Code ref. */
-	CodeRef(1),
+	/** The code ref. */
+	CODE_REF(1),
 
-	/** The Item data ref. */
-	ItemDataRef(2),
+	/** The item data ref. */
+	ITEM_DATA_REF(2),
 
-	/** The Experience fix. */
-	ExperienceFix(3),
+	/** The experience fix. */
+	EXPERIENCE_FIX(3),
 
-	/** The Age fix. */
-	AgeFix(4),
+	/** The age fix. */
+	AGE_FIX(4),
 
-	/** The Family mem fix. */
-	FamilyMemFix(5),
+	/** The family mem fix. */
+	FAMILY_MEM_FIX(5),
 
-	/** The Certification. */
-	Certification(6);
+	// Extend element type
+	/** The certification. */
+	CERTIFICATION(6),
+
+	/** The working days. */
+	WORKING_DAY(7),
+
+	/** The come late. */
+	COME_LATE(8),
+
+	/** The level. */
+	LEVEL(9);
 
 	/** The value. */
 	public int value;

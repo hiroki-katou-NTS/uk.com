@@ -6,7 +6,6 @@ package nts.uk.ctx.pr.core.dom.wagetable.mode;
 
 import lombok.Getter;
 import nts.uk.ctx.pr.core.dom.wagetable.ElementCount;
-import nts.uk.ctx.pr.core.dom.wagetable.element.WageTableElement;
 
 /**
  * The Class QualificaDimensionalMode.
@@ -16,9 +15,6 @@ public class QualificaDimensionalMode implements DemensionalMode {
 
 	/** The Constant mode. */
 	public static final ElementCount mode = ElementCount.Qualification;
-
-	/** The element. */
-	private WageTableElement element;
 
 	/*
 	 * (non-Javadoc)
@@ -32,13 +28,9 @@ public class QualificaDimensionalMode implements DemensionalMode {
 
 	/**
 	 * Instantiates a new qualifica dimensional mode.
-	 *
-	 * @param element
-	 *            the element
 	 */
-	public QualificaDimensionalMode(WageTableElement element) {
+	public QualificaDimensionalMode() {
 		super();
-		this.element = element;
 	}
 
 }

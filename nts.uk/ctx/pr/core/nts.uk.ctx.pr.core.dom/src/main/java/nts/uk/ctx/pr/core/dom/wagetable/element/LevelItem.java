@@ -7,19 +7,19 @@ package nts.uk.ctx.pr.core.dom.wagetable.element;
 import lombok.Getter;
 
 /**
- * The Class CertifyItem.
+ * The Class LevelItem.
  */
 @Getter
-public class CertifyItem extends CodeItem {
+public class LevelItem extends CodeItem {
 
 	/**
-	 * Instantiates a new certify item.
+	 * Instantiates a new level item.
 	 *
-	 * @param certifyCode the certify code
+	 * @param levelCode the level code
 	 * @param uuid the uuid
 	 */
-	public CertifyItem(String certifyCode, String uuid) {
-		super(certifyCode, uuid);
+	public LevelItem(String levelCode, String uuid) {
+		super(levelCode, uuid);
 	}
 
 }

@@ -6,17 +6,22 @@ package nts.uk.ctx.pr.core.infra.entity.wagetable;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.pr.core.infra.entity.wagetable.element.QwtmtWagetableElement;
 
 /**
  * The Class QwtmtWagetableHead.
@@ -81,11 +86,16 @@ public class QwtmtWagetableHead implements Serializable {
 	/** The demension set. */
 	@Basic(optional = false)
 	@Column(name = "DEMENSION_SET")
-	private short demensionSet;
+	private int demensionSet;
 
 	/** The memo. */
 	@Column(name = "MEMO")
 	private String memo;
+
+	/** The wagetable element list. */
+	@OrderBy("demensionNo ASC")
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "qwtmtWagetableHead")
+	private List<QwtmtWagetableElement> wagetableElementList;
 
 	/**
 	 * Instantiates a new qwtmt wagetable head.
@@ -116,8 +126,8 @@ public class QwtmtWagetableHead implements Serializable {
 	 * @param demensionSet
 	 *            the demension set
 	 */
-	public QwtmtWagetableHead(QwtmtWagetableHeadPK qwtmtWagetableHeadPK, int exclusVer, String wageTableName,
-			short demensionSet) {
+	public QwtmtWagetableHead(QwtmtWagetableHeadPK qwtmtWagetableHeadPK, int exclusVer,
+			String wageTableName, short demensionSet) {
 		this.qwtmtWagetableHeadPK = qwtmtWagetableHeadPK;
 		this.exclusVer = exclusVer;
 		this.wageTableName = wageTableName;

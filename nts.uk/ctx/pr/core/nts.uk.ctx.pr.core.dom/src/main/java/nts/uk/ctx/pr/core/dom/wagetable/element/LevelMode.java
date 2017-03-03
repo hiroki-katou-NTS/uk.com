@@ -4,19 +4,23 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.dom.wagetable.element;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import lombok.Getter;
+import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.pr.core.dom.wagetable.ElementType;
+import nts.uk.ctx.pr.core.dom.wagetable.EmployeeLevel;
 
 /**
  * The Class CodeRefMode.
  */
 @Getter
-public class CertifyMode extends BaseMode {
+public class LevelMode extends BaseMode {
 
 	/** The items. */
-	private List<CertifyItem> items;
+	private List<LevelItem> items;
 
 	/**
 	 * Instantiates a new code ref mode.
@@ -26,12 +30,13 @@ public class CertifyMode extends BaseMode {
 	 * @param refNo
 	 *            the ref no
 	 */
-	public CertifyMode() {
-		super(ElementType.CERTIFICATION);
+	public LevelMode() {
+		super(ElementType.LEVEL);
 
 		// Create items
-		this.items = null;
-		// new CertifyItem(code, );
+		this.items = Arrays.asList(EmployeeLevel.values()).stream()
+				.map(item -> new LevelItem(item.value, IdentifierUtil.randomUniqueId()))
+				.collect(Collectors.toList());
 	}
 
 }
