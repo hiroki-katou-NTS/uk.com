@@ -1,17 +1,15 @@
 module qmm003.a.viewmodel {
     export class ScreenModel {
         // data of items list - tree grid
-        items: any;
+        items: KnockoutObservableArray<Node>;
         item1s: any;
         singleSelectedCode: KnockoutObservable<string>;
         headers: any;
-        curentNode: any;
-        currentNode: any;
+        // curentNode: any;
+        currentNode: KnockoutObservable<Node>;
         nameBySelectedCode: any;
         arrayAfterFilter: any;
         labelSubsub: any; // show label sub sub of root
-
-
         // data of itemList - combox
         itemList: KnockoutObservableArray<Node>;
         currentCode: KnockoutObservable<number>
@@ -19,38 +17,35 @@ module qmm003.a.viewmodel {
         isEnable: KnockoutObservable<boolean>;
         isEditable: KnockoutObservable<boolean>;
         editMode: boolean = true; // true là mode thêm mới, false là mode sửa 
-        filteredData: KnockoutObservableArray<any> = ko.observableArray([]);
-        filteredData1: KnockoutObservableArray<Node>;
-        filteredData2: KnockoutObservableArray<Node>;
+        filteredData: KnockoutObservableArray<Node> = ko.observableArray([]);
         selectedCodes: KnockoutObservableArray<any>;
-        Value: KnockoutObservable<string>;
         mode: KnockoutObservable<boolean>;
-        region: KnockoutObservableArray<Node>;
-        precfecture: KnockoutObservableArray<Node>;
-        regionPrefect: KnockoutObservableArray<Node>;
         testNode = [];
-        test: KnockoutObservableArray<Node> = ko.observableArray([]);
-        count = 0;
+        nodeRegionPrefectures: KnockoutObservableArray<Node> = ko.observableArray([]);
         japanLocation: Array<service.model.RegionObject> = [];
+        precfecture: Array<Node> = [];
+        itemPrefecture: KnockoutObservableArray<Node> = ko.observableArray([]);
         residentalTaxList: KnockoutObservableArray<service.model.ResidentialTax> = ko.observableArray([]);
-
+        currentResidential: KnockoutObservable<service.model.ResidentialTax> = ko.observable(null);
+        currentResi: KnockoutObservable<service.model.ResidentialTax>;
         constructor() {
             let self = this;
-            self.currentNode = ko.observable('');
             self.init();
-            console.log(self.filteredData());
             self.selectedCodes = ko.observableArray([]);
             self.singleSelectedCode.subscribe(function(newChange) {
-                self.filteredData = nts.uk.util.flatArray(self.items(), "childs");
-                console.log(self.filteredData);
-                self.curentNode = self.findByCode(self.filteredData(), newChange);
+                if (self.editMode) {
+                    let currentNode: Node;
+                    currentNode = self.findByCode(self.filteredData(), newChange);
+                    self.currentNode(ko.mapping.fromJS(currentNode));
+                    self.findPrefectureByResiTax(newChange);
+                    
+                    self.currentResi(self.findResidentialByCode(self.residentalTaxList(), newChange));
+                    self.currentResidential(ko.mapping.fromJS(self.currentResi()));
 
-
+                } else {
+                    self.editMode = true;
+                }
             });
-
-
-
-
         }
 
         findByCode(items: Array<Node>, newValue: string): Node {
@@ -60,24 +55,76 @@ module qmm003.a.viewmodel {
                 if (!node) {
                     if (obj.code == newValue) {
                         node = obj;
+                        $(document).ready(function(data) {
+                            $("#A_INP_002").attr('disabled', 'true');
+                            $("#A_INP_002").attr('readonly', 'true');
+                        });
+                    }
+                }
+            });
+
+            return node;
+        };
+        findResidentialByCode(items: Array<service.model.ResidentialTax>, newValue: string): service.model.ResidentialTax {
+            let self = this;
+            let objResi: service.model.ResidentialTax;
+            _.find(items, function(obj: service.model.ResidentialTax) {
+                if (!objResi) {
+                    if (obj.resiTaxCode == newValue) {
+                        objResi = obj;
+                    }
+                }
+            });
+
+            return objResi;
+        };
+        findByName(items: Array<Node>, name: string): Node {
+            let self = this;
+            let node: Node;
+            _.find(items, function(obj: Node) {
+                if (!node) {
+                    if (obj.name === name) {
+                        node = obj;
                     }
                 }
             });
             return node;
-        };
+        }
+        findPrefectureByResiTax(code: string): void {
+            let self = this;
+            _.each(self.items(), function(objRegion: Node) {
+                _.each(objRegion.childs, function(objPrefecture: Node) {
+                    _.each(objPrefecture.childs, function(obj: Node) {
+                        if (obj.code === code) {
+                            self.selectedCode(objPrefecture.code);
+                        }
+                    });
+                });
+            });
+
+        }
+
+        buildPrefectureArray(): void {
+            let self = this;
+            _.map(self.japanLocation, function(region: service.model.RegionObject) {
+                _.each(region.prefectures, function(objPrefecture: service.model.PrefectureObject) {
+                    return self.precfecture.push(new Node(objPrefecture.prefectureCode, objPrefecture.prefectureName, []));
+                });
+            });
+
+        }
 
         resetData(): void {
             let self = this;
             self.editMode = false;
-            self.curentNode(new Node("", "", []));
+            self.currentNode(ko.mapping.fromJS(new Node('', '', [])));
             self.singleSelectedCode("");
             self.selectedCode("");
-            self.labelSubsub("");
         }
         search(): void {
 
             let inputSearch = $("#search").find("input.ntsSearchBox").val();
-            if (inputSearch == "") {
+            if (inputSearch === '') {
                 $('#search').ntsError('set', 'inputSearch が入力されていません。');
             } else {
                 $('#search').ntsError('clear');
@@ -85,7 +132,7 @@ module qmm003.a.viewmodel {
 
             // errror search
             let error: boolean;
-            _.find(this.filteredData2(), function(obj: Node) {
+            _.find(this.filteredData(), function(obj: Node) {
                 if (obj.code !== inputSearch) {
                     error = true;
                 }
@@ -97,49 +144,45 @@ module qmm003.a.viewmodel {
             }
 
 
+
         }
         init(): void {
             let self = this;
             // 11.初期データ取得処理 11. Initial data acquisition processing [住民税納付先マスタ.SEL-1] 
-            self.itemList = ko.observableArray([
-                new Node('1', '青森市', []),
-                new Node('2', '秋田市', []),
-                new Node('3', '山形市', []),
-                new Node('4', '福島市', []),
-                new Node('5', '水戸市', []),
-                new Node('6', '宇都宮市', []),
-                new Node('7', '川越市', []),
-                new Node('8', '熊谷市', []),
-                new Node('9', '浦和市', [])
-            ]);
-
             // data of treegrid
             self.items = ko.observableArray([]);
             self.mode = ko.observable(null);
-            self.currentCode = ko.observable(null);
-            self.item1s = ko.observable(new Node('', '', []));
+            self.currentNode = ko.observable(ko.mapping.fromJS(new Node("022012", "青森市", [])));
             self.isEnable = ko.observable(true);
             self.isEditable = ko.observable(true);
-            self.nameBySelectedCode = ko.observable(null);
-            self.Value = ko.observable(null);
-
-            self.singleSelectedCode = ko.observable("022012");
-            self.curentNode = ko.observable(new Node('022012', '青森市', []));
-            self.labelSubsub = ko.observable(new Node('052019', '秋田市', []));
-            self.selectedCode = ko.observable("1");
-            //self.filteredData = ko.observableArray([]);
+            self.selectedCode = ko.observable("11");
+            self.singleSelectedCode = ko.observable('022012');
+            let objResi = new service.model.ResidentialTax();
+            objResi.companyCode = '0000';
+            objResi.resiTaxCode = '062017';
+            objResi.resiTaxAutonomy ='宇都宮市';
+            objResi.prefectureCode = '42';
+            objResi.resiTaxReportCode = '062014';
+            objResi.registeredName = 'aaa';
+            objResi.companyAccountNo ='b';
+            objResi.companySpecifiedNo = 'cccccc';
+            objResi.cordinatePostalCode = '11111';
+            objResi.cordinatePostOffice = 'bbbbb';
+            objResi.memo = 'sssssssssssssssss';
+            self.currentResi = ko.observable(objResi);
+            
 
         }
         openBDialog() {
             let self = this;
             let singleSelectedCode: any;
-            let curentNode: any;
+            let currentNode: any;
             nts.uk.ui.windows.sub.modeless('/view/qmm/003/b/index.xhtml', { title: '住民税納付先の登録＞住民税納付先一覧', dialogClass: "no-close" }).onClosed(function(): any {
                 singleSelectedCode = nts.uk.ui.windows.getShared("singleSelectedCode");
-                curentNode = nts.uk.ui.windows.getShared("curentNode");
+                currentNode = nts.uk.ui.windows.getShared("currentNode");
                 self.editMode = false;
                 self.singleSelectedCode(singleSelectedCode);
-                self.curentNode(curentNode);
+                self.currentNode(currentNode);
             });
         }
         openCDialog() {
@@ -147,7 +190,6 @@ module qmm003.a.viewmodel {
             let labelSubsub: any;
             nts.uk.ui.windows.sub.modeless("/view/qmm/003/c/index.xhtml", { title: '住民税納付先の登録＞住民税報告先一覧', dialogClass: "no-close" }).onClosed(function(): any {
                 labelSubsub = nts.uk.ui.windows.getShared('labelSubsub');
-                //             self.editMode = false;
                 self.labelSubsub(labelSubsub);
                 console.log(labelSubsub);
             });
@@ -182,12 +224,14 @@ module qmm003.a.viewmodel {
                     self.residentalTaxList(data);
                     (qmm003.a.service.getRegionPrefecture()).done(function(locationData: Array<service.model.RegionObject>) {
                         self.japanLocation = locationData;
+                        self.buildPrefectureArray();
+                        self.itemPrefecture(self.precfecture);
+                        console.log(self.itemPrefecture());
                         self.buildResidentalTaxTree();
-                        self.filteredData = ko.observableArray([]);
-                        self.filteredData = ko.observableArray(nts.uk.util.flatArray(self.test(), "childs"));
-                        console.log(self.filteredData());
-                        self.items(self.test());
-                        console.log(self.items());
+                        let node: Array<Node> = [];
+                        node = nts.uk.util.flatArray(self.nodeRegionPrefectures(), "childs");
+                        self.filteredData(node);
+                        self.items(self.nodeRegionPrefectures());
                     });
 
                     self.mode(true);// true, update mode 
@@ -214,7 +258,7 @@ module qmm003.a.viewmodel {
                     let coutPre: boolean = false;
                     _.each(objRegion.prefectures, function(objPrefecture: service.model.PrefectureObject) {
                         if (objPrefecture.prefectureCode === objResi.prefectureCode) {
-                            _.each(self.test(), function(obj: Node) {
+                            _.each(self.nodeRegionPrefectures(), function(obj: Node) {
                                 if (obj.code === objRegion.regionCode) {
                                     _.each(obj.childs, function(objChild: Node) {
                                         if (objChild.code === objPrefecture.prefectureCode) {
@@ -230,7 +274,7 @@ module qmm003.a.viewmodel {
                             });
                             if (cout === false) {
                                 let chi = [];
-                                self.test.push(new Node(objRegion.regionCode, objRegion.regionName, [new Node(objPrefecture.prefectureCode, objPrefecture.prefectureName, [new Node(objResi.resiTaxCode, objResi.resiTaxAutonomy, [])])]));
+                                self.nodeRegionPrefectures.push(new Node(objRegion.regionCode, objRegion.regionName, [new Node(objPrefecture.prefectureCode, objPrefecture.prefectureName, [new Node(objResi.resiTaxCode, objResi.resiTaxAutonomy, [])])]));
                             }
                         }
                     });

@@ -78,7 +78,7 @@ public class JapanLocationService {
 		region.add(new PrefectureObject("45", "宮崎県"));
 		region.add(new PrefectureObject("46", "鹿児島県"));
 		region.add(new PrefectureObject("47", "沖縄県"));
-		result.add(new RegionObject("7", "四国",region));
+		result.add(new RegionObject("8", "四国",region));
 		return result;
 	}
 //	 public static void main(String[] args) {

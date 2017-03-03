@@ -25,7 +25,7 @@ public class AddResidentialTaxCommand {
 	private String memo;
 	/**
 	 * Convert to domain object from command values
-	 * @return
+	 * @return ResidentialTax
 	 */
 	public ResidentialTax toDomain(String companyCode){
 		return ResidentialTax.createFromJavaType(companyCode, resiTaxCode,
