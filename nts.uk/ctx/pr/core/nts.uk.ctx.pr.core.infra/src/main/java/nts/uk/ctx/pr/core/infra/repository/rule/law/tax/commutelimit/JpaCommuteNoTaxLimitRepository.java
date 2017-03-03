@@ -1,6 +1,7 @@
 package nts.uk.ctx.pr.core.infra.repository.rule.law.tax.commutelimit;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 
@@ -15,11 +16,18 @@ import nts.uk.ctx.pr.core.infra.entity.rule.law.tax.commutelimit.QtxmtCommuNotax
 public class JpaCommuteNoTaxLimitRepository extends JpaRepository implements CommuteNoTaxLimitRepository {
 
 	private final String SELECT_BY_COMPANYCODE = "SELECT c FROM QtxmtCommuNotaxLimit c WHERE c.qtxmtCommuNotaxLimitPK.companyCode = :ccd";
+	private final String SELECT_BY_TAXLIMITCODE= "SELECT c FROM QtxmtCommuNotaxLimit c WHERE c.qtxmtCommuNotaxLimitPK.companyCode = :ccd AND c.qtxmtCommuNotaxLimitPK.commuNotaxLimitCd = :commuNotaxLimitCd";
 
 	@Override
 	public List<CommuteNoTaxLimit> getCommuteNoTaxLimitByCompanyCode(String companyCode) {
 		return this.queryProxy().query(SELECT_BY_COMPANYCODE, QtxmtCommuNotaxLimit.class)
 				.setParameter("ccd", companyCode).getList(c -> convertToDomainObject(c));
+	}
+	
+	@Override
+	public Optional<CommuteNoTaxLimit> getCommuteNoTaxLimit(String companyCode, String taxLimitCode) {
+		return this.queryProxy().query(SELECT_BY_TAXLIMITCODE, QtxmtCommuNotaxLimit.class)
+				.setParameter("ccd", companyCode).setParameter("commuNotaxLimitCd", taxLimitCode).getSingle(c -> convertToDomainObject(c));
 	}
 
 	@Override
@@ -45,6 +53,7 @@ public class JpaCommuteNoTaxLimitRepository extends JpaRepository implements Com
 	}
 
 	private static QtxmtCommuNotaxLimit convertToInfaEnty(CommuteNoTaxLimit entity) {
+		
 		val qtxmtCommuNotaxLimit = new QtxmtCommuNotaxLimit();
 		qtxmtCommuNotaxLimit.qtxmtCommuNotaxLimitPK = new QtxmtCommuNotaxLimitPK();
 		qtxmtCommuNotaxLimit.qtxmtCommuNotaxLimitPK.companyCode = entity.getCompanyCode();
@@ -54,4 +63,5 @@ public class JpaCommuteNoTaxLimitRepository extends JpaRepository implements Com
 		return qtxmtCommuNotaxLimit;
 	}
 
+	
 }

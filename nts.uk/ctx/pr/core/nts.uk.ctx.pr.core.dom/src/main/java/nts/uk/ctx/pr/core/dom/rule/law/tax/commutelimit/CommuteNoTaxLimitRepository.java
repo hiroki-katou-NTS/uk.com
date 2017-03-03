@@ -1,6 +1,7 @@
 package nts.uk.ctx.pr.core.dom.rule.law.tax.commutelimit;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * @author tuongvc
@@ -15,6 +16,14 @@ public interface CommuteNoTaxLimitRepository {
 	 * @return CommuteNoTaxLimit
 	 */
 	List<CommuteNoTaxLimit> getCommuteNoTaxLimitByCompanyCode(String companyCode);
+	
+	/**
+	 * Get  CommuteNoTaxLimit
+	 * 
+	 * @param companyCode
+	 * @return CommuteNoTaxLimit
+	 */
+	Optional<CommuteNoTaxLimit> getCommuteNoTaxLimit(String companyCode, String taxLimitCode);
 
 	/**
 	 * add CommuteNoTaxLimit to DB

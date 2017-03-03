@@ -33,7 +33,7 @@ module qmm023.a.viewmodel {
                 { headerText: '説明', prop: 'taxLimit', width: 170 }
             ]);
             self.currentCode = ko.observable(null);
-            self.currentTax = ko.observable(new TaxModel('', '', null));
+            self.currentTax = ko.observable(new TaxModel('', '', 0));
             self.isUpdate = ko.observable(true);
             self.allowEditCode = ko.observable(false);
             self.isEnableDeleteBtn = ko.observable(true);
@@ -56,7 +56,7 @@ module qmm023.a.viewmodel {
         refreshLayout(): void {
             let self = this;
             self.allowEditCode(true);
-            self.currentTax(ko.mapping.fromJS(new TaxModel('', '', null)));
+            self.currentTax(ko.mapping.fromJS(new TaxModel('', '', 0)));
             self.currentCode(null);
             self.isUpdate(false);
             self.isEnableDeleteBtn(false);
@@ -64,18 +64,17 @@ module qmm023.a.viewmodel {
 
         insertUpdateData(): void {
             let self = this;
+            if (nts.uk.text.isNullOrEmpty(self.currentTax().code())) {
+                return;
+            }
             let insertUpdateModel = new InsertUpdateModel(nts.uk.text.padLeft(self.currentTax().code(), '0', 2), self.currentTax().name, self.currentTax().taxLimit);
             service.insertUpdateData(self.isUpdate(), insertUpdateModel).done(function() {
+                $.when(self.getCommuteNoTaxLimitList()).done(function() {
+                    self.currentCode(self.currentTax().code());
+                });
                 if (self.isUpdate() === false) {
-                    let itemInsert = new TaxModel(nts.uk.text.padLeft(self.currentTax().code(), '0', 2), self.currentTax().name, self.currentTax().taxLimit);
-                    self.items.push(_.cloneDeep(ko.mapping.toJS(itemInsert)));
                     self.isUpdate(true);
                     self.allowEditCode(false);
-                    self.currentCode(itemInsert.code);
-                } else {
-                    let indexItemUpdate = _.findIndex(self.items(), function(item) { return item.code == self.currentTax().code; });
-                    self.items().splice(indexItemUpdate, 1, _.cloneDeep(ko.mapping.toJS(self.currentTax())));
-                    self.items.valueHasMutated();
                 }
             }).fail(function(error) {
                 alert(error.message);
@@ -88,21 +87,31 @@ module qmm023.a.viewmodel {
             let deleteCode = self.currentTax().code();
             service.deleteData(new DeleteModel(deleteCode)).done(function() {
                 let indexItemDelete = _.findIndex(self.items(), function(item) { return item.code == self.currentTax().code(); });
-                self.items.remove(function(item) {
-                    return item.code == deleteCode;
+                $.when(self.getCommuteNoTaxLimitList()).done(function() {
+                    if (self.items().length === 0) {
+                        self.allowEditCode(true);
+                        self.isUpdate(false);
+                        self.refreshLayout();
+                        return;
+                    }
+                    if (self.items().length == indexItemDelete) {
+                        self.currentCode(self.items()[indexItemDelete - 1].code);
+                        return;
+                    }
+
+                    if (self.items().length < indexItemDelete) {
+                        self.currentCode(self.items()[0].code);
+                        return;
+                    }
+
+                    if (self.items().length > indexItemDelete) {
+                        self.currentCode(self.items()[indexItemDelete].code);
+                        return;
+                    }
                 });
-                self.items.valueHasMutated();
-                if (self.items().length === 0) {
-                    self.allowEditCode(true);
-                    self.isUpdate(false);
-                    self.refreshLayout();
-                } else if (self.items().length === indexItemDelete) {
-                    self.currentCode(self.items()[indexItemDelete - 1].code);
-                } else {
-                    self.currentCode(self.items()[indexItemDelete].code);
-                }
+
             }).fail(function(error) {
-                alert(error.message);
+
             });
         }
 
@@ -116,35 +125,36 @@ module qmm023.a.viewmodel {
         }
 
         // startpage
-        startPage(): JQueryPromise<Array<any>> {
-            var self = this;
-            return self.getCommuteNoTaxLimitList();
-        }
-
-        getCommuteNoTaxLimitList(): any {
-            var self = this;
-            var dfd = $.Deferred();
-            service.getCommutelimitsByCompanyCode().done(function(data) {
-                self.buildItemList(data);
-                self.currentTax(ko.mapping.fromJS(new TaxModel('', '', null)));
+        startPage(): any {
+            let self = this;
+            let dfd = $.Deferred();
+            $.when(self.getCommuteNoTaxLimitList()).done(function() {
+                self.currentTax(ko.mapping.fromJS(new TaxModel('', '', 0)));
                 if (self.items().length > 0) {
                     self.currentTax(_.first(self.items()));
                     self.currentCode(self.currentTax().code)
                 }
-                dfd.resolve(data);
+                dfd.resolve();
             }).fail(function(res) {
 
             });
             return dfd.promise();
         }
 
-        buildItemList(data: any): any {
-            var self = this;
-            _.forEach(data, function(item) {
-                self.items.push(new TaxModel(item.commuNoTaxLimitCode, item.commuNoTaxLimitName, item.commuNoTaxLimitValue));
-            });
-        }
+        getCommuteNoTaxLimitList(): any {
+            let self = this;
+            let dfd = $.Deferred();
+            service.getCommutelimitsByCompanyCode().done(function(data) {
+                self.items([]);
+                _.forEach(data, function(item) {
+                    self.items.push(new TaxModel(item.commuNoTaxLimitCode, item.commuNoTaxLimitName, item.commuNoTaxLimitValue));
+                });
+                dfd.resolve(data);
+            }).fail(function(error) {
 
+            });
+            return dfd.promise();
+        }
     }
 
     class TaxModel {

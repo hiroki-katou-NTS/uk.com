@@ -2,10 +2,15 @@
 
 .aligntLeft {
 	float: left;
+	margin: 8px 0px 0px 20px;
+}
+
+#functions-area {
+    height: 50px !important;
 }
 
 #A_BTN_004 {
-	margin-left: 165px;
+	margin-left: 200px !important;
 }
 
 .alignRight {
@@ -58,8 +63,9 @@ input {
 }
 
 #functions-area button {
-	margin-left: 10px;
-	margin-right: 10px;
+	margin-left: 5px;
+	margin-right: 5px;
+	min-width: 95px !important;
 }
 
 .single-list {
@@ -76,4 +82,7 @@ input {
 }
 #INP_004 {
 	max-width: 140px !important;
+}
+div.form-label > i {
+	width: 160px !important;
 }

@@ -7,7 +7,7 @@ import nts.arc.primitive.constraint.StringMaxLength;
  * @author tuongvc
  *
  */
-@StringMaxLength(40)
+@StringMaxLength(20)
 public class CommuNoTaxLimitName extends StringPrimitiveValue<CommuNoTaxLimitName> {
 
 	/**

@@ -3,6 +3,7 @@ package nts.uk.ctx.pr.core.dom.rule.law.tax.commutelimit;
 import java.math.BigDecimal;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 
 /**
@@ -10,6 +11,7 @@ import nts.arc.layer.dom.AggregateRoot;
  *
  */
 @Getter
+@Setter
 public class CommuteNoTaxLimit extends AggregateRoot {
 
 	/**
