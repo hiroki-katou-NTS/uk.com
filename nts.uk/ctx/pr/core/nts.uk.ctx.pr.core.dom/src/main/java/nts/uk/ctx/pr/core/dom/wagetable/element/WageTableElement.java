@@ -2,10 +2,10 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.pr.core.dom.wagetable;
+package nts.uk.ctx.pr.core.dom.wagetable.element;
 
 import lombok.Getter;
-import nts.uk.ctx.pr.core.dom.wagetable.element.ElementMode;
+import nts.uk.ctx.pr.core.dom.wagetable.DemensionOrder;
 
 /**
  * The Class WageTableElement.

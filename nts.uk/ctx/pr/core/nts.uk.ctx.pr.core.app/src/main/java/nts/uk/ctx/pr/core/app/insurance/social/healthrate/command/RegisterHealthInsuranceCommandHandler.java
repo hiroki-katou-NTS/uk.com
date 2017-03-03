@@ -24,11 +24,11 @@ public class RegisterHealthInsuranceCommandHandler extends CommandHandler<Regist
 
 	/** The health insurance rate service. */
 	@Inject
-	HealthInsuranceRateService healthInsuranceRateService;
+	private HealthInsuranceRateService healthInsuranceRateService;
 	
 	/** The health insurance rate repository. */
 	@Inject
-	HealthInsuranceRateRepository healthInsuranceRateRepository;
+	private HealthInsuranceRateRepository healthInsuranceRateRepository;
 
 	/* (non-Javadoc)
 	 * @see nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command.CommandHandlerContext)
@@ -47,7 +47,7 @@ public class RegisterHealthInsuranceCommandHandler extends CommandHandler<Regist
 
 		// Validate
 		healthInsuranceRateService.validateDateRange(healthInsuranceRate);
-//		healthInsuranceRateService.validateRequiredItem(healthInsuranceRate);
+		healthInsuranceRateService.validateRequiredItem(healthInsuranceRate);
 
 		// Insert into db.
 		healthInsuranceRateRepository.add(healthInsuranceRate);

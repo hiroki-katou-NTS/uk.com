@@ -65,12 +65,12 @@
 								<tr>
 									<td class="contentsRL">
 										<div id="lbl_code_name"
-											data-bind="ntsFormLabel: {constraint:['OfficeCode','OfficeName'], required: true}">
+											data-bind="ntsFormLabel: {constraints:['OfficeCode','OfficeName'], required: true}">
 											<label>コード/名称<br /></label>
 										</div>
 									</td>
-									<td class="contentsRR"><input id="inp_code" class="tr110 save-error"
-										data-name="code"
+									<td class="contentsRR"><input id="inp_code"
+										class="tr120 save-error" data-name="code"
 										data-bind="ntsTextEditor: {value: code,
 											constraint: 'OfficeCode', 
 											option: textEditorOption,
@@ -93,7 +93,7 @@
 										</div>
 									</td>
 									<td class="contentsRR"><input id="inp_shortName"
-										class="trFull35 save-error" data-name="shortName"
+										class="tr180 save-error" data-name="shortName"
 										data-bind="ntsTextEditor: {value: shortName,
 										constraint: 'ShortName', 
 										option: textEditorOption, 
@@ -109,7 +109,7 @@
 										</div>
 									</td>
 									<td class="contentsRR"><input id="inp_picName"
-										class="trFull25" data-name="picName"
+										class="tr180 save-error" data-name="picName"
 										data-bind="ntsTextEditor: {value: picName, 
 										constraint: 'PicName', 
 										option: textEditorOption, 
@@ -124,7 +124,7 @@
 										</div>
 									</td>
 									<td class="contentsRR"><input id="inp_picPosition"
-										class="trFull25" data-name="picPosition"
+										class="tr180 save-error" data-name="picPosition"
 										data-bind="ntsTextEditor: {value: picPosition, 
 										constraint: 'PicPosition', 
 										option: textEditorOption, 
@@ -160,7 +160,7 @@
 										</div>
 									</td>
 									<td class="contentsRR"><input id="inp_address1st"
-										class="tr240" data-name="address1st"
+										class="tr360 save-error" data-name="address1st"
 										data-bind="ntsTextEditor: {value: address1st, 
 										constraint: 'Address', 
 										option: textEditorOption, 
@@ -176,7 +176,7 @@
 										</div>
 									</td>
 									<td class="contentsRR"><input id="inp_kanaAddress1st"
-										class="trFull30" data-name="kanaAddress1st"
+										class="tr360 save-error" data-name="kanaAddress1st"
 										data-bind="ntsTextEditor: {value: kanaAddress1st, 
 										constraint: 'KanaAddress', 
 										option: textEditorOption, 
@@ -192,9 +192,9 @@
 										</div>
 									</td>
 									<td class="contentsRR"><input id="inp_address2nd"
-										class="tr240" data-name="address2nd"
+										class="tr500 save-error" data-name="address2nd"
 										data-bind="ntsTextEditor: {value: address2nd, 
-										constraint: 'Address2ND', 
+										constraint: 'Address', 
 										option: textEditorOption, 
 										enable: true}" />
 									</td>
@@ -208,7 +208,7 @@
 										</div>
 									</td>
 									<td class="contentsRR"><input id="inp_kanaAddress2nd"
-										class="trFull45" data-name="kanaAddress2nd"
+										class="tr500 save-error" data-name="kanaAddress2nd"
 										data-bind="ntsTextEditor: {value: kanaAddress2nd, 
 										constraint: 'KanaAddress', 
 										option: textEditorOption, 
@@ -223,7 +223,7 @@
 										</div>
 									</td>
 									<td class="contentsRR"><input id="inp_phoneNumber"
-										class="trFull45" data-name="phoneNumber"
+										class="tr240 save-error" data-name="phoneNumber"
 										data-bind="ntsTextEditor: {value: phoneNumber, 
 										option: textEditorOption, 
 										enable: true}" />
@@ -243,14 +243,15 @@
 										</div>
 									</td>
 									<td class="contentsRR"><label id="A_LBL_014">都市区符号
-											:</label><input id="inp_citySign" class="trFull5"
+											:</label><input id="inp_citySign" class="tr40 save-error"
 										data-name="citySign"
 										data-bind="ntsTextEditor: {value: citySign, 
 										option: textEditorOption, 
 										enable: true}" />
 
 										<label id="A_LBL_014">事業所記号 :</label><input
-										id="inp_officeMark" class="trFull15" data-name="officeMark"
+										id="inp_officeMark" class="tr40 save-error"
+										data-name="officeMark"
 										data-bind="ntsTextEditor: {value: officeMark, 
 										option: textEditorOption, 
 										enable: true}" />
@@ -264,17 +265,17 @@
 										</div>
 									</td>
 									<td class="contentsRR"><input id="inp_officeNoA"
-										class="trFull10" data-name="officeNoA"
+										class="tr50 save-error" data-name="officeNoA"
 										data-bind="ntsTextEditor: {value: officeNoA, 
 										option: textEditorOption, 
 										enable: true}" />
-										<label id="A_LBL_017">-</label><input id="inp_officeNoB"
-										class="trFull15" data-name="officeNoB"
+										<label id="A_LBL_017"> - </label><input id="inp_officeNoB"
+										class="tr90 save-error" data-name="officeNoB"
 										data-bind="ntsTextEditor: {value: officeNoB, 
 										option: textEditorOption, 
 										enable: true}" />
 										<label id="A_LBL_018">-</label> <input id="inp_officeNoC"
-										class="trFull5" data-name="officeNoC"
+										class="tr40 save-error" data-name="officeNoC"
 										data-bind="ntsTextEditor: {value: officeNoC, 
 										option: textEditorOption, 
 										enable: true}" />

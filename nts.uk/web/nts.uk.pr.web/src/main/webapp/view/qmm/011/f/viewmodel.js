@@ -13,7 +13,7 @@ var nts;
                         var option = nts.uk.ui.option;
                         var TypeHistory = nts.uk.pr.view.qmm011.a.service.model.TypeHistory;
                         var AccidentInsuranceRateDeleteDto = f.service.model.AccidentInsuranceRateDeleteDto;
-                        var HistoryUnemployeeInsuranceDto = nts.uk.pr.view.qmm011.a.service.model.HistoryUnemployeeInsuranceDto;
+                        var UnemployeeInsuranceDeleteDto = f.service.model.UnemployeeInsuranceDeleteDto;
                         var viewmodel;
                         (function (viewmodel) {
                             var ScreenModel = (function () {
@@ -33,39 +33,43 @@ var nts;
                                 }
                                 ScreenModel.prototype.fwupdateHistoryInfoUnemployeeInsurance = function () {
                                     var self = this;
-                                    var historyInfo;
-                                    historyInfo = new HistoryUnemployeeInsuranceDto(self.historyId(), self.historyStart(), self.historyEnd());
+                                    var unemployeeInsuranceDeleteDto;
+                                    unemployeeInsuranceDeleteDto = new UnemployeeInsuranceDeleteDto();
+                                    unemployeeInsuranceDeleteDto.code = self.historyId();
+                                    unemployeeInsuranceDeleteDto.version = 11;
+                                    var updateHistoryInfoModel;
+                                    updateHistoryInfoModel = new UpdateHistoryInfoModel();
+                                    updateHistoryInfoModel.typeUpdate = self.selectedId();
+                                    updateHistoryInfoModel.historyId = self.historyId();
+                                    updateHistoryInfoModel.historyStart = self.historyStart();
+                                    updateHistoryInfoModel.historyEnd = self.historyEnd();
                                     if (self.selectedId() == 1) {
-                                        var accidentInsuranceRateDeleteDto;
-                                        accidentInsuranceRateDeleteDto = new AccidentInsuranceRateDeleteDto();
-                                        accidentInsuranceRateDeleteDto.code = self.historyId();
-                                        accidentInsuranceRateDeleteDto.version = 11;
-                                        var updateHistoryInfoModel;
-                                        updateHistoryInfoModel.typeUpdate = self.selectedId();
-                                        updateHistoryInfoModel.historyId = self.historyId();
-                                        updateHistoryInfoModel.historyStart = self.historyStart();
-                                        updateHistoryInfoModel.historyEnd = self.historyEnd();
-                                        f.service.deleteAccidentInsuranceRate(accidentInsuranceRateDeleteDto).done(function (data) {
+                                        f.service.deleteUnemployeeInsurance(unemployeeInsuranceDeleteDto).done(function (data) {
                                             nts.uk.ui.windows.setShared("updateHistoryInfoModel", updateHistoryInfoModel);
+                                            nts.uk.ui.windows.close();
                                         }).fail(function (error) {
                                             nts.uk.ui.windows.setShared("updateHistoryInfoModel", updateHistoryInfoModel);
+                                            nts.uk.ui.windows.close();
                                         });
+                                    }
+                                    else {
+                                        nts.uk.ui.windows.setShared("updateHistoryInfoModel", updateHistoryInfoModel);
+                                        nts.uk.ui.windows.close();
                                     }
                                 };
                                 ScreenModel.prototype.fwupdateHistoryInfoAccidentInsurance = function () {
                                     var self = this;
-                                    var historyInfo;
-                                    historyInfo = new HistoryUnemployeeInsuranceDto(self.historyId(), self.historyStart(), self.historyEnd());
+                                    var accidentInsuranceRateDeleteDto;
+                                    accidentInsuranceRateDeleteDto = new AccidentInsuranceRateDeleteDto();
+                                    accidentInsuranceRateDeleteDto.code = self.historyId();
+                                    accidentInsuranceRateDeleteDto.version = 11;
+                                    var updateHistoryInfoModel;
+                                    updateHistoryInfoModel = new UpdateHistoryInfoModel();
+                                    updateHistoryInfoModel.typeUpdate = self.selectedId();
+                                    updateHistoryInfoModel.historyId = self.historyId();
+                                    updateHistoryInfoModel.historyStart = self.historyStart();
+                                    updateHistoryInfoModel.historyEnd = self.historyEnd();
                                     if (self.selectedId() == 1) {
-                                        var accidentInsuranceRateDeleteDto;
-                                        accidentInsuranceRateDeleteDto = new AccidentInsuranceRateDeleteDto();
-                                        accidentInsuranceRateDeleteDto.code = self.historyId();
-                                        accidentInsuranceRateDeleteDto.version = 11;
-                                        var updateHistoryInfoModel;
-                                        updateHistoryInfoModel.typeUpdate = self.selectedId();
-                                        updateHistoryInfoModel.historyId = self.historyId();
-                                        updateHistoryInfoModel.historyStart = self.historyStart();
-                                        updateHistoryInfoModel.historyEnd = self.historyEnd();
                                         f.service.deleteAccidentInsuranceRate(accidentInsuranceRateDeleteDto).done(function (data) {
                                             nts.uk.ui.windows.setShared("updateHistoryInfoModel", updateHistoryInfoModel);
                                             nts.uk.ui.windows.close();
@@ -73,6 +77,10 @@ var nts;
                                             nts.uk.ui.windows.setShared("updateHistoryInfoModel", updateHistoryInfoModel);
                                             nts.uk.ui.windows.close();
                                         });
+                                    }
+                                    else {
+                                        nts.uk.ui.windows.setShared("updateHistoryInfoModel", updateHistoryInfoModel);
+                                        nts.uk.ui.windows.close();
                                     }
                                 };
                                 ScreenModel.prototype.fwupdateHistoryInfo = function () {

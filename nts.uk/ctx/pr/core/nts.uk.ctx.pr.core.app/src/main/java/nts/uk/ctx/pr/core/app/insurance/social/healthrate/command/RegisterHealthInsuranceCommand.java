@@ -47,8 +47,9 @@ public class RegisterHealthInsuranceCommand extends HealthInsuranceBaseCommand {
 			@Override
 			public Set<HealthInsuranceRounding> getRoundingMethods() {
 				// TODO convert command -> domain
-				if (command.getRoundingMethods().isEmpty())
+				if (command.getRoundingMethods().isEmpty()) {
 					return null;
+				}
 				return new HashSet<HealthInsuranceRounding>(command.getRoundingMethods());
 			}
 

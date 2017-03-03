@@ -39,12 +39,12 @@
 
 		<ui:define name="content">
 			<div id="functions-area">
-				<button data-bind="click: addNew">新規</button>
-				<button data-bind="click: save" class="proceed">登録</button>
-				<button>印刷</button>
+				<button class ="btn_width new_btn" data-bind="click: addNew">新規</button>
+				<button data-bind="click: save" class="proceed btn_width">登録</button>
+				<button class = "btn_width" >印刷</button>
 				<button data-bind="click: remove, enable: deleteButtonControll()"
-					class="danger">削除</button>
-				<button data-bind="click: closeDialog">閉じる</button>
+					class="delete_btn btn_width danger">削除</button>
+				<button class = "btn_width" data-bind="click: closeDialog">閉じる</button>
 			</div>
 			<div id="contents-area">
 				<!-- left -->
@@ -77,7 +77,7 @@
 									<tr>
 										<td class="border_none"><div style="margin-top: 20px;"
 												data-bind="ntsFormLabel: {required: true}">コード/名称</div></td>
-										<td colspan="2" class="border_none padding_top"><div>
+										<td class="border_none padding_top"><div>
 												<input
 													data-bind="ntsTextEditor: {
 														value: officeCode ,
@@ -92,32 +92,32 @@
  														value: officeName ,
  														constraint: 'OfficeName',
  														required: true,  
-														option: $parent.textInputOption}" />
+														option: {textmode: 'text',width: '200',textalign: 'left'}}" />
 											</div></td>
 									</tr>
 									<tr>
 										<td class="border_none"><div style="margin-top: 20px;"
 												data-bind="ntsFormLabel: {}">略名</div></td>
-										<td colspan="2" class="border_none padding_top">
+										<td colspan="3" class="border_none padding_top">
 											<div>
 												<input
 													data-bind="ntsTextEditor: {
 														value: shortName ,
 														constraint: 'ShortName',
-														option: $parent.textInputOption}" />
+														option: {textmode: 'text',width: '150',textalign: 'left'}}" />
 											</div>
 										</td>
 									</tr>
 									<tr>
 										<td class="border_none"><div style="margin-top: 20px;"
 												data-bind="ntsFormLabel: {}">代表者名</div></td>
-										<td colspan="2" class="border_none padding_top">
+										<td colspan="3" class="border_none padding_top">
 											<div>
 												<input
 													data-bind="ntsTextEditor: {
 														value: PicName ,
 														constraint: 'PicName',
-														option: $parent.textInputOption}" />
+														option: {textmode: 'text',width: '150',textalign: 'left'}}" />
 											</div>
 										</td>
 									</tr>
@@ -126,15 +126,14 @@
 											class="no_left_border no_right_border no_top_border border_bottom "><div
 												style="margin-top: 20px; margin-bottom: 10px;"
 												data-bind="ntsFormLabel: {required: true}">代表者</div></td>
-										<td colspan="4"
-											class="no_left_border no_right_border no_top_border border_bottom padding_top ">
+										<td colspan="3" class="no_left_border no_right_border no_top_border border_bottom padding_top ">
 											<div>
 												<input
 													data-bind="ntsTextEditor: {
 														value: PicPosition ,
 														constraint: 'PicPosition',
 														required: true, 
-														option: $parent.textInputOption}" />
+														option: {textmode: 'text',width: '150',textalign: 'left'}}" />
 											</div>
 										</td>
 									</tr>
@@ -146,10 +145,10 @@
 													data-bind="ntsTextEditor: {
 														value: potalCode ,
 														constraint: 'PotalCode', 
-														option: $parent.textInputOption}" />
+														option: {textmode: 'text',width: '80',textalign: 'left'}}" />
 											</div></td>
-										<td>
-											<button>検索</button>
+										<td class ="padding_top">
+											<button >検索</button>
 										</td>
 									</tr>
 									<tr>
@@ -159,61 +158,59 @@
 												<input
 													data-bind="ntsTextEditor: {
 														value: prefecture , 
-														option: $parent.textInputOption}" />
+														option: {textmode: 'text',width: '80',textalign: 'left'}}" />
 											</div></td>
 									</tr>
 									<tr>
 										<td class="border_none"><div style="margin-top: 20px;"
 												data-bind="ntsFormLabel: {}">住所 １</div></td>
-										<td class="border_none padding_top"><div>
+										<td colspan= "3" class="border_none padding_top"><div>
 												<input
 													data-bind="ntsTextEditor: {
 														value: address1st ,
 														constraint: 'Address', 
-														option: $parent.textInputOption}" />
+														option: {textmode: 'text',width: '300',textalign: 'left'}}" />
 											</div></td>
 									</tr>
 									<tr>
-										<td class="border_none"><div style="margin-top: 20px;"
-												data-bind="ntsFormLabel: {}">カナ１</div></td>
-										<td class="border_none padding_top"><div>
+										<td class="border_none kana_address">カナ１</td>
+										<td colspan ="3" class="border_none padding_top"><div>
 												<input
 													data-bind="ntsTextEditor: {
 														value: kanaAddress1st ,
 														constraint: 'KanaAddress', 
-														option: $parent.textInputOption}" />
+														option: {textmode: 'text',width: '300',textalign: 'left'}}" />
 											</div></td>
 									</tr>
 									<tr>
 										<td class="border_none"><div style="margin-top: 20px;"
 												data-bind="ntsFormLabel: {}">住所 ２</div></td>
-										<td class="border_none padding_top"><div>
+										<td colspan= "3" class="border_none padding_top"><div>
 												<input
 													data-bind="ntsTextEditor: {
 														value: address2nd ,
 														constraint: 'Address', 
-														option: $parent.textInputOption}" />
+														option: {textmode: 'text',width: '300',textalign: 'left'}}" />
 											</div></td>
 									</tr>
 									<tr>
-										<td class="border_none"><div style="margin-top: 20px;"
-												data-bind="ntsFormLabel: {}">カナ ２</div></td>
-										<td class="border_none padding_top"><div>
+										<td class="border_none kana_address">カナ ２</td>
+										<td colspan ="3" class="border_none padding_top"><div>
 												<input
 													data-bind="ntsTextEditor: {
 														value: kanaAddress2nd ,
 														constraint: 'KanaAddress', 
-														option: $parent.textInputOption}" />
+														option: {textmode: 'text',width: '300',textalign: 'left'}}" />
 											</div></td>
 									</tr>
 									<tr>
 										<td class="border_none"><div style="margin-top: 20px;"
 												data-bind="ntsFormLabel: {}">電話番号</div></td>
-										<td class="border_none padding_top"><div>
+										<td colspan = "3" class="border_none padding_top"><div>
 												<input
 													data-bind="ntsTextEditor: {
 														value: phoneNumber , 
-														option: $parent.textInputOption}" />
+														option: {textmode: 'text',width: '150',textalign: 'left'}}" />
 											</div></td>
 									</tr>
 
@@ -231,13 +228,13 @@
 												<input
 													data-bind="ntsTextEditor: {
 														value: healthInsuOfficeRefCode1st , 
-														option: $parent.textInputOption}" />
+														option: {textmode: 'text',width: '50',textalign: 'left'}}" />
 											</div></td>
 										<td class="border_none"><div>
 												<input
 													data-bind="ntsTextEditor: {
 														value: healthInsuOfficeRefCode2nd , 
-														option: $parent.textInputOption}" />
+														option: {textmode: 'text',width: '70',textalign: 'left'}}" />
 											</div></td>
 									</tr>
 									<tr>
@@ -247,13 +244,13 @@
 												<input
 													data-bind="ntsTextEditor: {
 														value: pensionOfficeRefCode1st , 
-														option: $parent.textInputOption}" />
+														option: {textmode: 'text',width: '50',textalign: 'left'}}" />
 											</div></td>
 										<td class="border_none"><div>
 												<input
 													data-bind="ntsTextEditor: {
 														value: pensionOfficeRefCode2nd , 
-														option: $parent.textInputOption}" />
+														option: {textmode: 'text',width: '70',textalign: 'left'}}" />
 											</div></td>
 									</tr>
 									<tr>
@@ -266,7 +263,7 @@
 												<input
 													data-bind="ntsNumberEditor: {
 														value: welfarePensionFundCode , 
-														option: $parent.textInputOption}" />
+														option: {textmode: 'text',width: '60',textalign: 'left'}}" />
 											</div></td>
 									</tr>
 									<tr>
@@ -276,7 +273,7 @@
 												<input
 													data-bind="ntsTextEditor: {
 														value: officePensionFundCode , 
-														option: $parent.textInputOption}" />
+														option: {textmode: 'text',width: '80',textalign: 'left'}}" />
 											</div></td>
 									</tr>
 									<tr>
@@ -290,14 +287,14 @@
 												<input
 													data-bind="ntsTextEditor: {
 														value: healthInsuCityCode , 
-														option: $parent.textInputOption}" />
+														option: {textmode: 'text',width: '40',textalign: 'left'}}" />
 											</div></td>
 										<td>事業所記号:</td>
 										<td class="border_none"><div>
 												<input
 													data-bind="ntsTextEditor: {
 														value: healthInsuOfficeSign , 
-														option: $parent.textInputOption}" />
+														option: {textmode: 'text',width: '60',textalign: 'left'}}" />
 											</div></td>
 									</tr>
 									<tr>
@@ -308,14 +305,14 @@
 												<input
 													data-bind="ntsTextEditor: {
 														value: pensionCityCode , 
-														option: $parent.textInputOption}" />
+														option: {textmode: 'text',width: '40',textalign: 'left'}}" />
 											</div></td>
 										<td>事業所記号:</td>
 										<td class="border_none"><div>
 												<input
 													data-bind="ntsTextEditor: {
 														value: pensionOfficeSign , 
-														option: $parent.textInputOption}" />
+														option: {textmode: 'text',width: '60',textalign: 'left'}}" />
 											</div></td>
 									</tr>
 									<tr>
@@ -325,7 +322,7 @@
 												<input
 													data-bind="ntsTextEditor: {
 														value: healthInsuOfficeCode , 
-														option: $parent.textInputOption}" />
+														option: {textmode: 'text',width: '70',textalign: 'left'}}" />
 											</div></td>
 									</tr>
 									<tr>
@@ -335,7 +332,7 @@
 												<input
 													data-bind="ntsTextEditor: {
 														value: healthInsuAssoCode , 
-														option: $parent.textInputOption}" />
+														option: {textmode: 'text',width: '60',textalign: 'left'}}" />
 											</div></td>
 									</tr>
 									<tr>

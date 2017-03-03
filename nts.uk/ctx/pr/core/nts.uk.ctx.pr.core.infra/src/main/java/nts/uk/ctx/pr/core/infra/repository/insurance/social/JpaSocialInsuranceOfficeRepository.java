@@ -138,7 +138,7 @@ public class JpaSocialInsuranceOfficeRepository extends JpaRepository implements
 	@Override
 	public Optional<SocialInsuranceOffice> findById(String id) {
 		// TODO Mock data to send service
-		return null;
+		return Optional.of(null);
 	}
 
 	/*
@@ -167,7 +167,7 @@ public class JpaSocialInsuranceOfficeRepository extends JpaRepository implements
 		List<QismtSocialInsuOffice> result = em.createQuery(cq).getResultList();
 		// If have no record.
 		if (ListUtil.isEmpty(result)) {
-			return null;
+			return Optional.of(null);
 		}
 		// Return
 		SocialInsuranceOffice socialInsuranceOffice = new SocialInsuranceOffice(new JpaSocialInsuranceOfficeGetMemento(result.get(0)));

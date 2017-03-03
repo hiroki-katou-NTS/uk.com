@@ -55,7 +55,7 @@ var nts;
                                 ScreenModel.prototype.readFromSocialTnsuranceOffice = function () {
                                     var self = this;
                                     self.enableButton(false);
-                                    nts.uk.ui.windows.sub.modal("/view/qmm/010/b/index.xhtml", { height: 800, width: 500, title: "社会保険事業所から読み込み" }).onClosed(function () {
+                                    nts.uk.ui.windows.sub.modal("/view/qmm/010/b/index.xhtml", { height: 700, width: 450, title: "社会保険事業所から読み込み" }).onClosed(function () {
                                         self.enableButton(true);
                                         self.reloadDataByAction('');
                                     });
@@ -166,12 +166,7 @@ var nts;
                                     else {
                                         self.lstlaborInsuranceOfficeModel([]);
                                     }
-                                    if (self.laborInsuranceOfficeModel == null || self.laborInsuranceOfficeModel == undefined) {
-                                        self.laborInsuranceOfficeModel = ko.observable(new LaborInsuranceOfficeModel());
-                                    }
-                                    else {
-                                        self.resetValueLaborInsurance();
-                                    }
+                                    self.resetValueLaborInsurance();
                                     self.selectCodeLstlaborInsuranceOffice('');
                                     self.isEmpty(true);
                                 };
@@ -186,10 +181,6 @@ var nts;
                                                 self.reloadDataByAction('');
                                             });
                                         }).ifNo(function () {
-                                            self.reloadDataByAction(self.selectCodeLstlaborInsuranceOffice());
-                                        }).ifCancel(function () {
-                                            self.reloadDataByAction(self.selectCodeLstlaborInsuranceOffice());
-                                        }).then(function () {
                                             self.reloadDataByAction(self.selectCodeLstlaborInsuranceOffice());
                                         });
                                     }
@@ -245,7 +236,7 @@ var nts;
                                         constraint: 'ResidenceCode',
                                         option: ko.mapping.fromJS(new nts.uk.ui.option.MultilineEditorOption({
                                             resizeable: true,
-                                            placeholder: "Placeholder for text editor",
+                                            placeholder: "",
                                             width: "",
                                             textalign: "left"
                                         })),
@@ -277,11 +268,13 @@ var nts;
                                         constraint: 'ResidenceCode',
                                         option: ko.mapping.fromJS(new nts.uk.ui.option.MultilineEditorOption({
                                             resizeable: true,
-                                            placeholder: "Placeholder for text editor",
+                                            placeholder: "",
                                             width: "",
                                             textalign: "left"
                                         })),
                                     });
+                                    this.isReadOnly(false);
+                                    this.isEnable(true);
                                 };
                                 LaborInsuranceOfficeModel.prototype.updateData = function (officeInfo) {
                                     if (officeInfo != null) {
@@ -308,7 +301,7 @@ var nts;
                                             constraint: 'ResidenceCode',
                                             option: ko.mapping.fromJS(new nts.uk.ui.option.MultilineEditorOption({
                                                 resizeable: true,
-                                                placeholder: "Placeholder for text editor",
+                                                placeholder: "",
                                                 width: "",
                                                 textalign: "left"
                                             })),

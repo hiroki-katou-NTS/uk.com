@@ -101,18 +101,6 @@ public class SocialInsuranceOfficeDto implements SocialInsuranceOfficeSetMemento
 	/** The memo. */
 	public String memo;
 
-//	public static SocialInsuranceOfficeDto fromDomain(SocialInsuranceOffice domain) {
-//		return new SocialInsuranceOfficeDto(domain.getCompanyCode().v(), domain.getCode().v(), domain.getName().v(),
-//				domain.getShortName().v(), domain.getPicName().v(), domain.getPicPosition().v(),
-//				domain.getPotalCode().v(), domain.getPrefecture(), domain.getAddress1st().v(),
-//				domain.getAddress2nd().v(), domain.getKanaAddress1st().v(), domain.getKanaAddress2nd().v(),
-//				domain.getPhoneNumber(), domain.getHealthInsuOfficeRefCode1st(), domain.getHealthInsuOfficeRefCode2nd(),
-//				domain.getPensionOfficeRefCode1st(), domain.getPensionOfficeRefCode2nd(),
-//				domain.getWelfarePensionFundCode(), domain.getOfficePensionFundCode(), domain.getHealthInsuCityCode(),
-//				domain.getHealthInsuOfficeSign(), domain.getPensionCityCode(), domain.getPensionOfficeSign(),
-//				domain.getHealthInsuOfficeCode(), domain.getHealthInsuAssoCode(), domain.getMemo().v());
-//	}
-
 	/* (non-Javadoc)
  * @see nts.uk.ctx.pr.core.dom.insurance.social.SocialInsuranceOfficeSetMemento#setCompanyCode(nts.uk.ctx.core.dom.company.CompanyCode)
  */

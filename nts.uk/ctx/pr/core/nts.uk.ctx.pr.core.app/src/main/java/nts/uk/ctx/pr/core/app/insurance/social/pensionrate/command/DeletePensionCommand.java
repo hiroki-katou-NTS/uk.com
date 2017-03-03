@@ -13,6 +13,6 @@ import lombok.Data;
 public class DeletePensionCommand {
 	
 	/** The history id. */
-	String historyId;
+	private String historyId;
 	
 }

@@ -38,8 +38,6 @@ var nts;
                             service.findInsuranceOffice = findInsuranceOffice;
                             function findAllRounding() {
                                 var dfd = $.Deferred();
-                                var findPath = servicePath.getAllRoundingItem;
-                                var data = null;
                                 var roundingList = [
                                     new model.finder.Enum('0', '切り上げ'),
                                     new model.finder.Enum('1', '切捨て'),

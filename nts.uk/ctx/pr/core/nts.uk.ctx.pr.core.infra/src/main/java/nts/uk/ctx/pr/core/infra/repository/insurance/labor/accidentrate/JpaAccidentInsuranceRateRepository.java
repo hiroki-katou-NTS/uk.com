@@ -82,14 +82,15 @@ public class JpaAccidentInsuranceRateRepository extends JpaRepository implements
 	 */
 	@Override
 	public void remove(CompanyCode companyCode, String historyId, Long version) {
-		List<AccidentInsuranceRate> lstAccidentInsuranceRate= findAll(companyCode);
-		if(lstAccidentInsuranceRate!=null && !lstAccidentInsuranceRate.isEmpty()){
-			if(lstAccidentInsuranceRate.get(0).getHistoryId().equals(historyId)){
-				AccidentInsuranceRate rateRemove=this.findById(companyCode, historyId);
-				this.commandProxy().removeAll(toEntity(rateRemove));
-				if(lstAccidentInsuranceRate.size()>=2){
-					List<QismtWorkAccidentInsu> lstRateUpdate=this.findDataById(companyCode, lstAccidentInsuranceRate.get(1).getHistoryId());
-					for(QismtWorkAccidentInsu qismtWorkAccidentInsu: lstRateUpdate){
+		List<AccidentInsuranceRate> lstAccidentInsuranceRate = findAll(companyCode);
+		if (lstAccidentInsuranceRate != null && !lstAccidentInsuranceRate.isEmpty()) {
+			if (lstAccidentInsuranceRate.get(0).getHistoryId().equals(historyId)) {
+				List<QismtWorkAccidentInsu> lstRateRemove = this.findDataById(companyCode, historyId);
+				this.commandProxy().removeAll(lstRateRemove);
+				if (lstAccidentInsuranceRate.size() >= 2) {
+					List<QismtWorkAccidentInsu> lstRateUpdate = this.findDataById(companyCode,
+							lstAccidentInsuranceRate.get(1).getHistoryId());
+					for (QismtWorkAccidentInsu qismtWorkAccidentInsu : lstRateUpdate) {
 						qismtWorkAccidentInsu.setEndYm(YearMonth.of(9999, 12).v());
 					}
 					this.commandProxy().updateAll(lstRateUpdate);
@@ -140,10 +141,8 @@ public class JpaAccidentInsuranceRateRepository extends JpaRepository implements
 	/**
 	 * Find data by id.
 	 *
-	 * @param companyCode
-	 *            the company code
-	 * @param historyId
-	 *            the history id
+	 * @param companyCode the company code
+	 * @param historyId the history id
 	 * @return the list
 	 */
 	public List<QismtWorkAccidentInsu> findDataById(CompanyCode companyCode, String historyId) {
@@ -168,10 +167,7 @@ public class JpaAccidentInsuranceRateRepository extends JpaRepository implements
 	/**
 	 * Find between.
 	 *
-	 * @param companyCode
-	 *            the company code
-	 * @param yearMonth
-	 *            the year month
+	 * @param companyCode the company code
 	 * @return the list
 	 */
 	public List<QismtWorkAccidentInsu> findBetween(CompanyCode companyCode) {
@@ -196,12 +192,9 @@ public class JpaAccidentInsuranceRateRepository extends JpaRepository implements
 	/**
 	 * Find between update.
 	 *
-	 * @param companyCode
-	 *            the company code
-	 * @param yearMonth
-	 *            the year month
-	 * @param historyId
-	 *            the history id
+	 * @param companyCode the company code
+	 * @param yearMonth the year month
+	 * @param historyId the history id
 	 * @return the list
 	 */
 	// Find data by end<=x order by

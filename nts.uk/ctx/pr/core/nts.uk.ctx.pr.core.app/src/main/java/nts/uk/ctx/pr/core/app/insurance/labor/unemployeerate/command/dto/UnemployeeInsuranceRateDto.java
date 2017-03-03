@@ -10,6 +10,7 @@ import java.util.Set;
 
 import lombok.Data;
 import nts.uk.ctx.core.dom.company.CompanyCode;
+import nts.uk.ctx.core.dom.util.PrimitiveUtil;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsuranceRate;
 import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsuranceRateGetMemento;
@@ -20,7 +21,7 @@ import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsurance
  */
 @Data
 public class UnemployeeInsuranceRateDto {
-	
+
 	/** The history insurance. */
 	private HistoryUnemployeeInsuranceDto historyInsurance;
 
@@ -30,37 +31,63 @@ public class UnemployeeInsuranceRateDto {
 	/**
 	 * To domain.
 	 *
-	 * @param companyCode the company code
+	 * @param companyCode
+	 *            the company code
 	 * @return the unemployee insurance rate
 	 */
 	public UnemployeeInsuranceRate toDomain(String companyCode) {
-		UnemployeeInsuranceRateDto dto = this;
-		return new UnemployeeInsuranceRate(new UnemployeeInsuranceRateGetMemento() {
+		return new UnemployeeInsuranceRate(new UnemployeeInsuranceRateGetMementoImpl(companyCode, this));
+	}
 
-			@Override
-			public Set<UnemployeeInsuranceRateItem> getRateItems() {
-				Set<UnemployeeInsuranceRateItem> setUnemployeeInsuranceRateItem = new HashSet<>();
-				for (UnemployeeInsuranceRateItemDto unemployeeInsuranceRateItem : dto.rateItems) {
-					setUnemployeeInsuranceRateItem.add(unemployeeInsuranceRateItem.toDomain(companyCode));
-				}
-				return setUnemployeeInsuranceRateItem;
-			}
+	/**
+	 * The Class UnemployeeInsuranceRateGetMementoImpl.
+	 */
+	public class UnemployeeInsuranceRateGetMementoImpl implements UnemployeeInsuranceRateGetMemento {
 
-			@Override
-			public String getHistoryId() {
-				return historyInsurance.getHistoryId();
-			}
+		/** The company code. */
+		private String companyCode;
 
-			@Override
-			public CompanyCode getCompanyCode() {
-				return new CompanyCode(companyCode);
-			}
+		/** The dto. */
+		private UnemployeeInsuranceRateDto dto;
 
-			@Override
-			public MonthRange getApplyRange() {
-				return MonthRange.range(dto.historyInsurance.getStartMonthRage(),
-						dto.historyInsurance.getEndMonthRage(), "/");
+		/**
+		 * Instantiates a new unemployee insurance rate get memento impl.
+		 *
+		 * @param companyCode
+		 *            the company code
+		 * @param dto
+		 *            the dto
+		 */
+		public UnemployeeInsuranceRateGetMementoImpl(String companyCode, UnemployeeInsuranceRateDto dto) {
+			super();
+			this.companyCode = companyCode;
+			this.dto = dto;
+		}
+
+		@Override
+		public Set<UnemployeeInsuranceRateItem> getRateItems() {
+			Set<UnemployeeInsuranceRateItem> setUnemployeeInsuranceRateItem = new HashSet<>();
+			for (UnemployeeInsuranceRateItemDto unemployeeInsuranceRateItem : dto.rateItems) {
+				setUnemployeeInsuranceRateItem.add(unemployeeInsuranceRateItem.toDomain(companyCode));
 			}
-		});
+			return setUnemployeeInsuranceRateItem;
+		}
+
+		@Override
+		public String getHistoryId() {
+			return historyInsurance.getHistoryId();
+		}
+
+		@Override
+		public CompanyCode getCompanyCode() {
+			return new CompanyCode(companyCode);
+		}
+
+		@Override
+		public MonthRange getApplyRange() {
+			return MonthRange.range(dto.historyInsurance.getStartMonthRage(), dto.historyInsurance.getEndMonthRage(),
+					PrimitiveUtil.DEFAULT_YM_SEPARATOR_CHAR);
+		}
+
 	}
 }

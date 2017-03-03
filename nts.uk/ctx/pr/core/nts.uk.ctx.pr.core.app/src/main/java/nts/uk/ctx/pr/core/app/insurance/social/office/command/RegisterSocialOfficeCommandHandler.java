@@ -24,11 +24,11 @@ public class RegisterSocialOfficeCommandHandler extends CommandHandler<RegisterS
 
 	/** The insurance social service. */
 	@Inject
-	SocialInsuranceOfficeService insuranceSocialService;
+	private SocialInsuranceOfficeService insuranceSocialService;
 
 	/** The social insurance office repository. */
 	@Inject
-	SocialInsuranceOfficeRepository socialInsuranceOfficeRepository;
+	private SocialInsuranceOfficeRepository socialInsuranceOfficeRepository;
 
 	/*
 	 * (non-Javadoc)

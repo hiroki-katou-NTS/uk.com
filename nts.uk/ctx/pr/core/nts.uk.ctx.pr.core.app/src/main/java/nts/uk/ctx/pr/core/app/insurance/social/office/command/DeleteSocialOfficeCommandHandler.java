@@ -21,7 +21,7 @@ public class DeleteSocialOfficeCommandHandler extends CommandHandler<DeleteSocia
 
 	/** The social insurance office repository. */
 	@Inject
-	SocialInsuranceOfficeRepository socialInsuranceOfficeRepository;
+	private SocialInsuranceOfficeRepository socialInsuranceOfficeRepository;
 
 	/*
 	 * (non-Javadoc)

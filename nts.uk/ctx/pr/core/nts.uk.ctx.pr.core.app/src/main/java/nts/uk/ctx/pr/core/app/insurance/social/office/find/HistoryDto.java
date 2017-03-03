@@ -13,7 +13,7 @@ import lombok.Data;
 public class HistoryDto {
 	
 	/** The company code. */
-	private String companyCode;
+	public String companyCode;
 	
 	/** The office code. */
 	public String officeCode;
@@ -25,8 +25,8 @@ public class HistoryDto {
 	public String end;
 	
 	/** The code. */
-	private String code;
+	public String code;
 
 	/** The name. */
-	private String name;
+	public String name;
 }

@@ -26,11 +26,11 @@ public class UpdateSocialOfficeCommandHandler extends CommandHandler<UpdateSocia
 
 	/** The social insurance office service. */
 	@Inject
-	SocialInsuranceOfficeService socialInsuranceOfficeService;
+	private SocialInsuranceOfficeService socialInsuranceOfficeService;
 
 	/** The social insurance office repository. */
 	@Inject
-	SocialInsuranceOfficeRepository socialInsuranceOfficeRepository;
+	private SocialInsuranceOfficeRepository socialInsuranceOfficeRepository;
 
 	/*
 	 * (non-Javadoc)
@@ -55,7 +55,7 @@ public class UpdateSocialOfficeCommandHandler extends CommandHandler<UpdateSocia
 
 		Optional<SocialInsuranceOffice> findOffice = socialInsuranceOfficeRepository
 				.findById(command.getCode().toString());
-		if (findOffice != null) {
+		if (findOffice.get() != null) {
 			// TODO show error message
 		} else {
 			socialInsuranceOfficeRepository.update(socialInsuranceOffice);

@@ -51,6 +51,7 @@ var nts;
                                     var month = (Number(stringDate.substring(index + 1, stringDate.length)) - 1).toString();
                                     if (month == "0") {
                                         year = (Number(year) - 1).toString();
+                                        month = "12";
                                     }
                                     return month.length == 1 ? year + "/0" + month : year + "/" + month;
                                 };
@@ -69,16 +70,21 @@ var nts;
                                             healthData.historyId = "";
                                             healthData.startMonth = self.selectedDate();
                                             healthData.endMonth = "9999/12";
-                                            aservice.registerHealthRate(healthData).done(function () {
-                                                if (self.getInsuranceOfficeItemDto().childs.length > 0) {
-                                                    var previousHealthData = self.getPreviousInsuranceRateDto();
-                                                    previousHealthData.historyId = backupHistoryId;
-                                                    previousHealthData.startMonth = backupStartMonth;
-                                                    previousHealthData.endMonth = self.minusOneMonth(self.selectedDate());
-                                                    aservice.updateHealthRate(previousHealthData).done(function () {
-                                                    });
-                                                }
-                                            });
+                                            if (!self.compareStringDate(backupStartMonth, self.minusOneMonth(self.selectedDate()))) {
+                                                alert("ER011");
+                                            }
+                                            else {
+                                                aservice.registerHealthRate(healthData).done(function () {
+                                                    if (self.getInsuranceOfficeItemDto().childs.length > 0) {
+                                                        var previousHealthData = self.getPreviousInsuranceRateDto();
+                                                        previousHealthData.historyId = backupHistoryId;
+                                                        previousHealthData.startMonth = backupStartMonth;
+                                                        previousHealthData.endMonth = self.minusOneMonth(self.selectedDate());
+                                                        aservice.updateHealthRate(previousHealthData).done(function () {
+                                                        });
+                                                    }
+                                                });
+                                            }
                                         }
                                     }
                                     else {
@@ -93,16 +99,26 @@ var nts;
                                             pensionData.historyId = "";
                                             pensionData.startMonth = self.selectedDate();
                                             pensionData.endMonth = "9999/12";
-                                            aservice.registerPensionRate(pensionData).done(function () {
-                                                if (self.getInsuranceOfficeItemDto().childs.length > 0) {
-                                                    var previousPensionData = self.getPreviousInsuranceRateDto();
-                                                    previousPensionData.historyId = backupHistoryId;
-                                                    previousPensionData.startMonth = backupStartMonth;
-                                                    previousPensionData.endMonth = self.minusOneMonth(self.selectedDate());
-                                                    aservice.updatePensionRate(previousPensionData).done(function () {
-                                                    });
-                                                }
-                                            });
+                                            if (!self.compareStringDate(backupStartMonth, self.minusOneMonth(self.selectedDate()))) {
+                                                alert("ER011");
+                                            }
+                                            else {
+                                                aservice.registerPensionRate(pensionData).done(function () {
+                                                    if (self.getInsuranceOfficeItemDto().childs.length > 0) {
+                                                        var previousPensionData = self.getPreviousInsuranceRateDto();
+                                                        previousPensionData.historyId = backupHistoryId;
+                                                        previousPensionData.startMonth = backupStartMonth;
+                                                        previousPensionData.endMonth = self.minusOneMonth(self.selectedDate());
+                                                        if (!self.compareStringDate(previousPensionData.startMonth, previousPensionData.endMonth)) {
+                                                            alert("ER011");
+                                                        }
+                                                        else {
+                                                            aservice.updatePensionRate(previousPensionData).done(function () {
+                                                            });
+                                                        }
+                                                    }
+                                                });
+                                            }
                                         }
                                     }
                                     if (!self.compareStringDate(self.getLastHistory(self.getInsuranceOfficeItemDto()), self.selectedDate())) {

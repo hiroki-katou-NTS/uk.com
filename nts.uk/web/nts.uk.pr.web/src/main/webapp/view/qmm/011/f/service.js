@@ -13,7 +13,8 @@ var nts;
                         var service;
                         (function (service) {
                             var paths = {
-                                deleteAccidentInsuranceRate: "pr/insurance/labor/accidentrate/delete"
+                                deleteAccidentInsuranceRate: "pr/insurance/labor/accidentrate/delete",
+                                deleteUnemployeeInsurance: "pr/insurance/labor/unemployeerate/delete"
                             };
                             function deleteAccidentInsuranceRate(accidentInsuranceRateDeleteDto) {
                                 var dfd = $.Deferred();
@@ -28,6 +29,18 @@ var nts;
                                 return dfd.promise();
                             }
                             service.deleteAccidentInsuranceRate = deleteAccidentInsuranceRate;
+                            function deleteUnemployeeInsurance(unemployeeInsuranceDeleteDto) {
+                                var dfd = $.Deferred();
+                                nts.uk.request.ajax(paths.deleteUnemployeeInsurance, unemployeeInsuranceDeleteDto)
+                                    .done(function (res) {
+                                    dfd.resolve(res);
+                                })
+                                    .fail(function (res) {
+                                    dfd.reject(res);
+                                });
+                                return dfd.promise();
+                            }
+                            service.deleteUnemployeeInsurance = deleteUnemployeeInsurance;
                             var model;
                             (function (model) {
                                 var AccidentInsuranceRateDeleteDto = (function () {
@@ -36,6 +49,12 @@ var nts;
                                     return AccidentInsuranceRateDeleteDto;
                                 }());
                                 model.AccidentInsuranceRateDeleteDto = AccidentInsuranceRateDeleteDto;
+                                var UnemployeeInsuranceDeleteDto = (function () {
+                                    function UnemployeeInsuranceDeleteDto() {
+                                    }
+                                    return UnemployeeInsuranceDeleteDto;
+                                }());
+                                model.UnemployeeInsuranceDeleteDto = UnemployeeInsuranceDeleteDto;
                             })(model = service.model || (service.model = {}));
                         })(service = f.service || (f.service = {}));
                     })(f = qmm011.f || (qmm011.f = {}));

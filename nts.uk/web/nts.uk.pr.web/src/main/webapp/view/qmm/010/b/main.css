@@ -7,33 +7,9 @@
 	margin-right: 5px;
 }
 
-.trFull25 {
-	width: 25%;
-}
-
-.trFull45 {
-	width: 45%;
-}
-
-.trFull30 {
-	width: 30%;
-}
-
-.trFull5 {
-	width: 5%;
-}
-
-.left20 {
-	margin-left: 20px;
-}
-
 .labelRed {
 	font-weight: bold;
 	color: red;
-}
-
-.trFull15 {
-	width: 15%;
 }
 
 #A_BTN_005 {
@@ -111,6 +87,11 @@ button.nts-switch-button {
 	margin-top: 30px;
 }
 
-.tr300 {
-	width: 300px !important;
+.iconlabor {
+	margin: 60px 0 0 35px !important;
+}
+
+.search001 {
+	margin-left: 45px !important;
+	margin-top: 10px !important;
 }

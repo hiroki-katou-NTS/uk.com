@@ -24,11 +24,11 @@ public class UpdateHealthInsuranceCommandHandler extends CommandHandler<UpdateHe
 
 	/** The health insurance rate service. */
 	@Inject
-	HealthInsuranceRateService healthInsuranceRateService;
+	private HealthInsuranceRateService healthInsuranceRateService;
 	
 	/** The health insurance rate repository. */
 	@Inject
-	HealthInsuranceRateRepository healthInsuranceRateRepository;
+	private HealthInsuranceRateRepository healthInsuranceRateRepository;
 
 	/* (non-Javadoc)
 	 * @see nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command.CommandHandlerContext)

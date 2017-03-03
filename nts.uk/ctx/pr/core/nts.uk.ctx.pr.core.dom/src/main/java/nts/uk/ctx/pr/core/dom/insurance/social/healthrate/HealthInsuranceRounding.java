@@ -32,8 +32,10 @@ public class HealthInsuranceRounding {
 	}
 
 	/**
-	 * @param payType
-	 * @param roundAtrs
+	 * Instantiates a new health insurance rounding.
+	 *
+	 * @param payType the pay type
+	 * @param roundAtrs the round atrs
 	 */
 	public HealthInsuranceRounding(PaymentType payType, RoundingItem roundAtrs) {
 		super();

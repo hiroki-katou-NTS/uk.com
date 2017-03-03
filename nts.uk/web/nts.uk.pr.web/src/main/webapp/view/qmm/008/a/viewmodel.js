@@ -22,8 +22,8 @@ var nts;
                             var ScreenModel = (function () {
                                 function ScreenModel() {
                                     var self = this;
-                                    self.healthModel = ko.observable(new HealthInsuranceRateModel("code", 1, null, null, 15000));
-                                    self.pensionModel = ko.observable(new PensionRateModel("code", 1, 1, null, null, null, 35000, 1.5));
+                                    self.healthModel = ko.observable(new HealthInsuranceRateModel());
+                                    self.pensionModel = ko.observable(new PensionRateModel());
                                     self.healthInsuranceOfficeList = ko.observableArray([]);
                                     self.pensionInsuranceOfficeList = ko.observableArray([]);
                                     self.healthOfficeSelectedCode = ko.observable('');
@@ -61,11 +61,11 @@ var nts;
                                     self.selectedRuleCode = ko.observable(1);
                                     self.pensionFundInputOptions = ko.observableArray([
                                         { code: '1', name: '有' },
-                                        { code: '2', name: '無' }
+                                        { code: '0', name: '無' }
                                     ]);
                                     self.pensionCalculateOptions = ko.observableArray([
-                                        { code: '1', name: 'する' },
-                                        { code: '2', name: 'しない' }
+                                        { code: '0', name: 'する' },
+                                        { code: '1', name: 'しない' }
                                     ]);
                                     self.pensionCalculateSelectedCode = ko.observable(1);
                                     self.isTransistReturnData = ko.observable(false);
@@ -80,7 +80,7 @@ var nts;
                                     self.startMonthTemp = ko.observable('');
                                     self.endMonthTemp = ko.observable('');
                                     self.healthOfficeSelectedCode.subscribe(function (officeSelectedCode) {
-                                        if (officeSelectedCode != null || officeSelectedCode != undefined) {
+                                        if (officeSelectedCode.length > 1) {
                                             if (self.healthCheckCode(officeSelectedCode)) {
                                                 self.healthCurrentParentCode(officeSelectedCode);
                                                 var roudingList = new HealthInsuranceRoundingModel();
@@ -88,7 +88,7 @@ var nts;
                                                 roudingList.healthSalaryCompanyComboBox(self.roundingList());
                                                 roudingList.healthBonusPersonalComboBox(self.roundingList());
                                                 roudingList.healthBonusCompanyComboBox(self.roundingList());
-                                                self.healthModel(new HealthInsuranceRateModel("code", 1, null, roudingList, 15000));
+                                                self.healthModel(new HealthInsuranceRateModel());
                                                 self.isClickHealthHistory(false);
                                             }
                                             else {
@@ -103,7 +103,7 @@ var nts;
                                         }
                                     });
                                     self.pensionOfficeSelectedCode.subscribe(function (officeSelectedCode) {
-                                        if (officeSelectedCode != null || officeSelectedCode != undefined) {
+                                        if (officeSelectedCode.length > 1) {
                                             if (self.pensionCheckCode(officeSelectedCode)) {
                                                 self.pensionCurrentParentCode(officeSelectedCode);
                                                 self.isClickPensionHistory(false);
@@ -119,7 +119,7 @@ var nts;
                                             }
                                         }
                                     });
-                                    self.pensionModel().fundInputApply.subscribe(function (pensionFundInputOptions) {
+                                    self.pensionModel().fundInputApply.subscribe(function () {
                                         if (self.pensionModel().fundInputApply() != 1) {
                                             self.fundInputEnable(true);
                                         }
@@ -131,13 +131,13 @@ var nts;
                                 ScreenModel.prototype.start = function () {
                                     var self = this;
                                     var dfd = $.Deferred();
-                                    self.loadHealthHistoryOfOffice().done(function (data) {
+                                    self.loadHealthHistoryOfOffice().done(function () {
                                         dfd.resolve(null);
                                     });
-                                    self.loadPensionHistoryOfOffice().done(function (data) {
+                                    self.loadPensionHistoryOfOffice().done(function () {
                                         dfd.resolve(null);
                                     });
-                                    self.getAllRounding().done(function (data) {
+                                    self.getAllRounding().done(function () {
                                         dfd.resolve(null);
                                     });
                                     return dfd.promise();
@@ -191,9 +191,10 @@ var nts;
                                     a.service.getAllHealthOfficeItem().done(function (data) {
                                         self.healthInsuranceOfficeList(self.covert2Tree(data));
                                         if (self.healthInsuranceOfficeList().length > 0) {
-                                            if (self.healthInsuranceOfficeList()[0].childs.length > 0)
+                                            if (self.healthInsuranceOfficeList()[0].childs.length > 0) {
+                                                self.healthCurrentParentCode(self.healthInsuranceOfficeList()[0].code);
                                                 self.healthOfficeSelectedCode(self.healthInsuranceOfficeList()[0].childs[0].code);
-                                            self.healthCurrentParentCode(self.healthInsuranceOfficeList()[0].code);
+                                            }
                                         }
                                         else {
                                             self.OpenModalOfficeRegister();
@@ -225,6 +226,16 @@ var nts;
                                         case Rounding.DOWN5_UP6: return "3";
                                         case Rounding.DOWN4_UP5: return "4";
                                         default: return "0";
+                                    }
+                                };
+                                ScreenModel.prototype.convertToRounding = function (stringValue) {
+                                    switch (stringValue) {
+                                        case "0": return Rounding.ROUNDUP;
+                                        case "1": return Rounding.TRUNCATION;
+                                        case "2": return Rounding.ROUNDDOWN;
+                                        case "3": return Rounding.DOWN5_UP6;
+                                        case "4": return Rounding.DOWN4_UP5;
+                                        default: return Rounding.ROUNDUP;
                                     }
                                 };
                                 ScreenModel.prototype.loadHealth = function (historyCode) {
@@ -284,7 +295,7 @@ var nts;
                                                 self.healthModel().roundingMethods().healthSalaryCompanyComboBoxSelectedCode(self.convertRounding(item.roundAtrs.companyRoundAtr));
                                             }
                                             else {
-                                                self.healthModel().roundingMethods().healthSalaryPersonalComboBoxSelectedCode(self.convertRounding(item.roundAtrs.personalRoundAtr));
+                                                self.healthModel().roundingMethods().healthBonusPersonalComboBoxSelectedCode(self.convertRounding(item.roundAtrs.personalRoundAtr));
                                                 self.healthModel().roundingMethods().healthBonusCompanyComboBoxSelectedCode(self.convertRounding(item.roundAtrs.companyRoundAtr));
                                             }
                                         });
@@ -308,7 +319,7 @@ var nts;
                                         self.pensionModel().startMonth(data.startMonth.substring(0, 4) + "/" + data.startMonth.substring(4, data.startMonth.length));
                                         self.pensionModel().endMonth(data.endMonth.substring(0, 4) + "/" + data.endMonth.substring(4, data.endMonth.length));
                                         self.pensionModel().autoCalculate(data.autoCalculate);
-                                        self.pensionModel().fundInputApply(2);
+                                        self.pensionModel().fundInputApply(0);
                                         data.premiumRateItems.forEach(function (item, index) {
                                             if (item.payType == PaymentType.SALARY && item.genderType == InsuranceGender.MALE) {
                                                 self.pensionModel().rateItems().pensionSalaryPersonalSon(item.personalRate);
@@ -383,7 +394,7 @@ var nts;
                                                 self.pensionModel().roundingMethods().pensionSalaryCompanyComboBoxSelectedCode(self.convertRounding(item.roundAtrs.companyRoundAtr));
                                             }
                                             else {
-                                                self.pensionModel().roundingMethods().pensionSalaryPersonalComboBoxSelectedCode(self.convertRounding(item.roundAtrs.personalRoundAtr));
+                                                self.pensionModel().roundingMethods().pensionBonusPersonalComboBoxSelectedCode(self.convertRounding(item.roundAtrs.personalRoundAtr));
                                                 self.pensionModel().roundingMethods().pensionBonusCompanyComboBoxSelectedCode(self.convertRounding(item.roundAtrs.companyRoundAtr));
                                             }
                                         });
@@ -409,20 +420,20 @@ var nts;
                                     rateItems.push(new HealthInsuranceRateItemDto(PaymentType.BONUS, HealthInsuranceType.SPECIAL, new ChargeRateItemDto(rates.healthBonusCompanySpecific(), rates.healthBonusPersonalSpecific())));
                                     var roundingMethods = [];
                                     var rounding = self.healthModel().roundingMethods();
-                                    roundingMethods.push(new RoundingDto(PaymentType.SALARY, new RoundingItemDto(Rounding.ROUNDUP, Rounding.ROUNDUP)));
-                                    roundingMethods.push(new RoundingDto(PaymentType.BONUS, new RoundingItemDto(Rounding.ROUNDUP, Rounding.ROUNDUP)));
-                                    return new a.service.model.finder.HealthInsuranceRateDto(self.healthModel().historyId, self.healthModel().companyCode, self.healthCurrentParentCode(), self.healthModel().startMonth(), self.healthModel().endMonth(), 1, rateItems, roundingMethods, self.healthModel().maxAmount());
+                                    roundingMethods.push(new RoundingDto(PaymentType.SALARY, new RoundingItemDto(self.convertToRounding(self.healthModel().roundingMethods().healthSalaryPersonalComboBoxSelectedCode()), self.convertToRounding(self.healthModel().roundingMethods().healthSalaryCompanyComboBoxSelectedCode()))));
+                                    roundingMethods.push(new RoundingDto(PaymentType.BONUS, new RoundingItemDto(self.convertToRounding(self.healthModel().roundingMethods().healthBonusPersonalComboBoxSelectedCode()), self.convertToRounding(self.healthModel().roundingMethods().healthBonusCompanyComboBoxSelectedCode()))));
+                                    return new a.service.model.finder.HealthInsuranceRateDto(self.healthModel().historyId, self.healthModel().companyCode, self.healthCurrentParentCode(), self.healthModel().startMonth(), self.healthModel().endMonth(), self.healthModel().autoCalculate(), rateItems, roundingMethods, self.healthModel().maxAmount());
                                 };
                                 ScreenModel.prototype.pensionCollectData = function () {
                                     var self = this;
                                     var rates = self.pensionModel().rateItems();
                                     var rateItems = [];
-                                    rateItems.push(new PensionRateItemDto(PaymentType.SALARY, InsuranceGender.MALE, rates.pensionSalaryCompanySon(), rates.pensionSalaryPersonalSon()));
-                                    rateItems.push(new PensionRateItemDto(PaymentType.SALARY, InsuranceGender.FEMALE, rates.pensionSalaryCompanyDaughter(), rates.pensionSalaryPersonalDaughter()));
-                                    rateItems.push(new PensionRateItemDto(PaymentType.SALARY, InsuranceGender.UNKNOW, rates.pensionSalaryCompanyUnknown(), rates.pensionSalaryPersonalUnknown()));
-                                    rateItems.push(new PensionRateItemDto(PaymentType.BONUS, InsuranceGender.MALE, rates.pensionBonusCompanySon(), rates.pensionBonusPersonalSon()));
-                                    rateItems.push(new PensionRateItemDto(PaymentType.BONUS, InsuranceGender.FEMALE, rates.pensionBonusCompanyDaughter(), rates.pensionBonusPersonalDaughter()));
-                                    rateItems.push(new PensionRateItemDto(PaymentType.BONUS, InsuranceGender.UNKNOW, rates.pensionBonusCompanyUnknown(), rates.pensionBonusPersonalUnknown()));
+                                    rateItems.push(new PensionRateItemDto(PaymentType.SALARY, InsuranceGender.MALE, rates.pensionSalaryPersonalSon(), rates.pensionSalaryCompanySon()));
+                                    rateItems.push(new PensionRateItemDto(PaymentType.SALARY, InsuranceGender.FEMALE, rates.pensionSalaryPersonalDaughter(), rates.pensionSalaryCompanyDaughter()));
+                                    rateItems.push(new PensionRateItemDto(PaymentType.SALARY, InsuranceGender.UNKNOW, rates.pensionSalaryPersonalUnknown(), rates.pensionSalaryCompanyUnknown()));
+                                    rateItems.push(new PensionRateItemDto(PaymentType.BONUS, InsuranceGender.MALE, rates.pensionBonusPersonalSon(), rates.pensionBonusCompanySon()));
+                                    rateItems.push(new PensionRateItemDto(PaymentType.BONUS, InsuranceGender.FEMALE, rates.pensionBonusPersonalDaughter(), rates.pensionBonusCompanyDaughter()));
+                                    rateItems.push(new PensionRateItemDto(PaymentType.BONUS, InsuranceGender.UNKNOW, rates.pensionBonusPersonalUnknown(), rates.pensionBonusCompanyUnknown()));
                                     var fundRates = self.pensionModel().fundRateItems();
                                     var fundRateItems = [];
                                     fundRateItems.push(new FundRateItemDto(PaymentType.SALARY, InsuranceGender.MALE, fundRates.salaryPersonalSonBurden(), fundRates.salaryCompanySonBurden(), fundRates.salaryPersonalSonExemption(), fundRates.salaryCompanySonExemption()));
@@ -433,9 +444,9 @@ var nts;
                                     fundRateItems.push(new FundRateItemDto(PaymentType.BONUS, InsuranceGender.UNKNOW, fundRates.bonusPersonalUnknownBurden(), fundRates.bonusCompanyUnknownBurden(), fundRates.bonusPersonalUnknownExemption(), fundRates.bonusCompanyUnknownExemption()));
                                     var roundingMethods = [];
                                     var rounding = self.healthModel().roundingMethods();
-                                    roundingMethods.push(new RoundingDto(PaymentType.SALARY, new RoundingItemDto(Rounding.ROUNDUP, Rounding.ROUNDUP)));
-                                    roundingMethods.push(new RoundingDto(PaymentType.BONUS, new RoundingItemDto(Rounding.ROUNDUP, Rounding.ROUNDUP)));
-                                    return new a.service.model.finder.PensionRateDto(self.pensionModel().historyId, self.pensionModel().companyCode, self.pensionCurrentParentCode(), self.pensionModel().startMonth(), self.pensionModel().endMonth(), 1, true, rateItems, fundRateItems, roundingMethods, self.pensionModel().maxAmount(), self.pensionModel().childContributionRate());
+                                    roundingMethods.push(new RoundingDto(PaymentType.SALARY, new RoundingItemDto(self.convertToRounding(self.pensionModel().roundingMethods().pensionSalaryPersonalComboBoxSelectedCode()), self.convertToRounding(self.pensionModel().roundingMethods().pensionSalaryCompanyComboBoxSelectedCode()))));
+                                    roundingMethods.push(new RoundingDto(PaymentType.BONUS, new RoundingItemDto(self.convertToRounding(self.pensionModel().roundingMethods().pensionBonusPersonalComboBoxSelectedCode()), self.convertToRounding(self.pensionModel().roundingMethods().pensionBonusCompanyComboBoxSelectedCode()))));
+                                    return new a.service.model.finder.PensionRateDto(self.pensionModel().historyId, self.pensionModel().companyCode, self.pensionCurrentParentCode(), self.pensionModel().startMonth(), self.pensionModel().endMonth(), self.pensionModel().autoCalculate(), true, rateItems, fundRateItems, roundingMethods, self.pensionModel().maxAmount(), self.pensionModel().childContributionRate());
                                 };
                                 ScreenModel.prototype.getDataOfHealthSelectedOffice = function () {
                                     var self = this;
@@ -542,7 +553,7 @@ var nts;
                                     nts.uk.ui.windows.setShared("isTransistReturnData", this.isTransistReturnData());
                                     nts.uk.ui.windows.sub.modal("/view/qmm/008/c/index.xhtml", { title: "会社保険事業所の登録＞事業所の登録" }).onClosed(function () {
                                         self.start();
-                                        var returnValue = nts.uk.ui.windows.getShared("listOfficeOfChildValue");
+                                        var returnValue = nts.uk.ui.windows.getShared("insuranceOfficeChildValue");
                                     });
                                 };
                                 ScreenModel.prototype.OpenModalStandardMonthlyPriceHealth = function () {
@@ -566,6 +577,8 @@ var nts;
                                     var isHealth = true;
                                     if ($('#healthInsuranceTabPanel').hasClass("active")) {
                                         var sendOfficeItem = self.getDataOfHealthSelectedOffice();
+                                        if (sendOfficeItem == null) {
+                                        }
                                         isHealth = true;
                                     }
                                     else {
@@ -585,11 +598,11 @@ var nts;
                             }());
                             viewmodel.ScreenModel = ScreenModel;
                             var HealthInsuranceRateModel = (function () {
-                                function HealthInsuranceRateModel(officeCode, autoCalculate, rateItems, roundingMethods, maxAmount) {
-                                    this.startMonth = ko.observable("2016/04");
-                                    this.endMonth = ko.observable("2016/04");
+                                function HealthInsuranceRateModel() {
+                                    this.startMonth = ko.observable("");
+                                    this.endMonth = ko.observable("");
                                     this.officeCode = ko.observable('');
-                                    this.autoCalculate = ko.observable(autoCalculate);
+                                    this.autoCalculate = ko.observable(1);
                                     this.rateItems = ko.observable(new HealthInsuranceRateItemModel());
                                     this.roundingMethods = ko.observable(new HealthInsuranceRoundingModel());
                                     this.maxAmount = ko.observable(0);
@@ -598,12 +611,12 @@ var nts;
                             }());
                             viewmodel.HealthInsuranceRateModel = HealthInsuranceRateModel;
                             var PensionRateModel = (function () {
-                                function PensionRateModel(officeCode, fundInputApply, autoCalculate, rateItems, fundRateItems, roundingMethods, maxAmount, childContributionRate) {
-                                    this.startMonth = ko.observable('2016/04');
-                                    this.endMonth = ko.observable("2016/04");
+                                function PensionRateModel() {
+                                    this.startMonth = ko.observable('');
+                                    this.endMonth = ko.observable('');
                                     this.officeCode = ko.observable('');
-                                    this.fundInputApply = ko.observable(fundInputApply);
-                                    this.autoCalculate = ko.observable(autoCalculate);
+                                    this.fundInputApply = ko.observable(0);
+                                    this.autoCalculate = ko.observable(0);
                                     this.rateItems = ko.observable(new PensionRateItemModel());
                                     this.fundRateItems = ko.observable(new FunRateItemModel());
                                     this.roundingMethods = ko.observable(new PensionRateRoundingModel());

@@ -45,10 +45,8 @@ module nts.uk.pr.view.qmm008.a {
         export function findAllRounding(): JQueryPromise<Array<model.finder.Enum>> {
             // Init new dfd.
             var dfd = $.Deferred<Array<model.finder.Enum>>();
-            var findPath = servicePath.getAllRoundingItem;
             // Call ajax.
             //            nts.uk.request.ajax(findPath).done(function(data) {
-            var data = null;
             // Convert json to model here.
             var roundingList: Array<model.finder.Enum> = [
                 new model.finder.Enum('0', '切り上げ'),
