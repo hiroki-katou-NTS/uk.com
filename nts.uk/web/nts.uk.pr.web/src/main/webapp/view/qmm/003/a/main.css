@@ -56,15 +56,17 @@
 #A_LBL_002{
 	width: 200px;
 }
-#A_INP_002 {
+/* #A_INP_002 {
 	width:70px;
 	height: 15px;
-}
-#A_INP_003 {
-	height: 22.3px;
-    width: 200px;
+} */
+ #A_INP_003 {
     margin-left: 5px;
-}
+} 
+/* #A_BTN_007{
+	margin-top: 5px;
+	width: 50px;
+} */
 #A_BTN_010 {
 	width: 40px;
 	height: 25px;
@@ -86,12 +88,7 @@
 	margin-top: 5px;
 	width: 400px;
 	height: 150px;
-}/* 
-#treegrid2_container{
-	margin-top: auto;
-    margin-left: auto;
-    margin-right: auto;
-} */
+}
  #contents-area > div.nts-left-content > div > div:nth-child(3){
    margin-left: 25px;
    margin-top: 10px;
@@ -121,6 +118,9 @@ button.search-btn{
 	height: 100%;
 	vertical-align: middle;
 	margin-right: -0.25em;
+}
+#combo-box{
+	width: 100px;
 }
 
 .pseudo > * {display: inline-block;vertical-align: middle;}
