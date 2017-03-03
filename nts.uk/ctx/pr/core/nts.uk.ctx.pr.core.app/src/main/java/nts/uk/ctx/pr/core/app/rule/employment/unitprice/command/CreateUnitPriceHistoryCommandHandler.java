@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.app.rule.employment.unitprice.command;
 
+import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
@@ -11,6 +13,7 @@ import javax.transaction.Transactional;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.core.dom.company.CompanyCode;
+import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPrice;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceCode;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceGetMemento;
@@ -69,6 +72,25 @@ public class CreateUnitPriceHistoryCommandHandler extends CommandHandler<CreateU
 				return new UnitPriceCode(command.getUnitPriceCode());
 			}
 		});
+
+		Optional<UnitPriceHistory> lastUnitPriceHistory = unitPriceHistoryRepository.findLastHistory(companyCode,
+				unitPriceHistory.getUnitPriceCode());
+
+		// Update last history if present
+		if (lastUnitPriceHistory.isPresent()) {
+			UnitPriceHistory updatedLastUnitPriceHistory = lastUnitPriceHistory.get();
+
+			// Update month range
+			MonthRange updatedMonthRange = MonthRange.range(updatedLastUnitPriceHistory.getApplyRange().getStartMonth(),
+					unitPriceHistory.getApplyRange().getStartMonth().previousMonth());
+			updatedLastUnitPriceHistory.setApplyRange(updatedMonthRange);
+
+			// Validate
+			unitPriceHistoryService.validateRequiredItem(updatedLastUnitPriceHistory);
+			unitPriceHistoryService.validateDateRange(unitPriceHistory);
+
+			unitPriceHistoryRepository.update(unitPrice, updatedLastUnitPriceHistory);
+		}
 
 		// Validate
 		unitPriceHistoryService.validateRequiredItem(unitPriceHistory);

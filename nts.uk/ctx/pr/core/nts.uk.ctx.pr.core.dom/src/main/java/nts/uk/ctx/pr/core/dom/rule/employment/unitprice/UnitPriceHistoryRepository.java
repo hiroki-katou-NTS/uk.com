@@ -54,6 +54,24 @@ public interface UnitPriceHistoryRepository {
 	Optional<UnitPriceHistory> findById(CompanyCode companyCode, String histId);
 
 	/**
+	 * Find last history.
+	 *
+	 * @param companyCode the company code
+	 * @param unitPriceCode the unit price code
+	 * @return the optional
+	 */
+	Optional<UnitPriceHistory> findLastHistory(CompanyCode companyCode, UnitPriceCode unitPriceCode);
+
+	/**
+	 * Find second last history.
+	 *
+	 * @param companyCode the company code
+	 * @param unitPriceCode the unit price code
+	 * @return the optional
+	 */
+	Optional<UnitPriceHistory> findSecondLastHistory(CompanyCode companyCode, UnitPriceCode unitPriceCode);
+
+	/**
 	 * Validate date range.
 	 *
 	 * @param startMonth the start month

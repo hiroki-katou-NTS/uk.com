@@ -13,6 +13,7 @@ import javax.transaction.Transactional;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.core.dom.company.CompanyCode;
+import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPrice;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceCode;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceGetMemento;
@@ -82,6 +83,22 @@ public class UpdateUnitPriceHistoryCommandHandler extends CommandHandler<UpdateU
 
 		// Validate
 		unitPriceHistoryService.validateRequiredItem(updatedHistory);
+		//unitPriceHistoryService.validateDateRange(updatedHistory);
+
+		Optional<UnitPriceHistory> secondLastUnitPriceHistory = unitPriceHistoryRepo.findSecondLastHistory(companyCode,
+				unitPriceHistory.getUnitPriceCode());
+		// Update last history if present
+		if (secondLastUnitPriceHistory.isPresent()) {
+			UnitPriceHistory updatedSecondLastUnitPriceHistory = secondLastUnitPriceHistory.get();
+
+			// Update month range
+			MonthRange updatedMonthRange = MonthRange.range(
+					updatedSecondLastUnitPriceHistory.getApplyRange().getStartMonth(),
+					updatedHistory.getApplyRange().getStartMonth().previousMonth());
+			updatedSecondLastUnitPriceHistory.setApplyRange(updatedMonthRange);
+
+			unitPriceHistoryRepo.update(unitPrice, updatedSecondLastUnitPriceHistory);
+		}
 
 		// Update to db.
 		unitPriceHistoryRepo.update(unitPrice, updatedHistory);

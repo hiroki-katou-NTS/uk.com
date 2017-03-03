@@ -42,7 +42,7 @@ module nts.uk.pr.view.qmm007.b {
                     self.unitPriceHistoryModel.memo('');
                 }
                 service.create(ko.toJS(self.unitPriceHistoryModel)).done(() => {
-                    nts.uk.ui.windows.setShared('startMonth', self.unitPriceHistoryModel.startMonth());
+                    nts.uk.ui.windows.setShared('isCreated', true);
                     nts.uk.ui.windows.close();
                 });
             }

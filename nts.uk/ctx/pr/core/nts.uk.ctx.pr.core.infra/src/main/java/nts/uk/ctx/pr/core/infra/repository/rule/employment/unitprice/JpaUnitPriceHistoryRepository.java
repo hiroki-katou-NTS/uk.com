@@ -49,13 +49,17 @@ public class JpaUnitPriceHistoryRepository extends JpaRepository implements Unit
 		QupmtCUnitpriceDetail entity = new QupmtCUnitpriceDetail();
 		unitPriceHistory.saveToMemento(new JpaUnitPriceHistorySetMemento(entity));
 
+		Optional<QupmtCUnitpriceHeader> optQupmtCUnitpriceHead = this.queryProxy().find(
+				new QupmtCUnitpriceHeaderPK(unitPrice.getCompanyCode().v(), unitPrice.getCode().v()),
+				QupmtCUnitpriceHeader.class);
+
 		QupmtCUnitpriceHeader qupmtCUnitpriceHead = new QupmtCUnitpriceHeader();
 		unitPrice.saveToMemento(new JpaUnitPriceSetMemento(qupmtCUnitpriceHead));
-		if (this.queryProxy().find(qupmtCUnitpriceHead.getQupmtCUnitpriceHeaderPK(),
-				QupmtCUnitpriceHeader.class) == null) {
-			this.commandProxy().insert(qupmtCUnitpriceHead);
-		} else {
+
+		if (optQupmtCUnitpriceHead.isPresent()) {
 			this.commandProxy().update(qupmtCUnitpriceHead);
+		} else {
+			this.commandProxy().insert(qupmtCUnitpriceHead);
 		}
 
 		this.commandProxy().insert(entity);
@@ -73,14 +77,19 @@ public class JpaUnitPriceHistoryRepository extends JpaRepository implements Unit
 		QupmtCUnitpriceDetail entity = new QupmtCUnitpriceDetail();
 		unitPriceHistory.saveToMemento(new JpaUnitPriceHistorySetMemento(entity));
 
+		Optional<QupmtCUnitpriceHeader> optQupmtCUnitpriceHead = this.queryProxy().find(
+				new QupmtCUnitpriceHeaderPK(unitPrice.getCompanyCode().v(), unitPrice.getCode().v()),
+				QupmtCUnitpriceHeader.class);
+
 		QupmtCUnitpriceHeader qupmtCUnitpriceHead = new QupmtCUnitpriceHeader();
 		unitPrice.saveToMemento(new JpaUnitPriceSetMemento(qupmtCUnitpriceHead));
-		if (this.queryProxy().find(qupmtCUnitpriceHead.getQupmtCUnitpriceHeaderPK(),
-				QupmtCUnitpriceHeader.class) == null) {
-			this.commandProxy().insert(qupmtCUnitpriceHead);
-		} else {
+
+		if (optQupmtCUnitpriceHead.isPresent()) {
 			this.commandProxy().update(qupmtCUnitpriceHead);
+		} else {
+			this.commandProxy().insert(qupmtCUnitpriceHead);
 		}
+
 		this.commandProxy().update(entity);
 	}
 
@@ -94,14 +103,6 @@ public class JpaUnitPriceHistoryRepository extends JpaRepository implements Unit
 	public void remove(CompanyCode companyCode, UnitPriceCode cUnitpriceCd, String histId) {
 		this.commandProxy().remove(QupmtCUnitpriceDetail.class,
 				new QupmtCUnitpriceDetailPK(companyCode.v(), cUnitpriceCd.v(), histId));
-		QupmtCUnitpriceHeader unitPriceHeader = this.queryProxy()
-				.find(new QupmtCUnitpriceHeaderPK(companyCode.v(), cUnitpriceCd.v()), QupmtCUnitpriceHeader.class)
-				.get();
-		// Remove UnitPriceHeader if contains no histories
-		if (ListUtil.isEmpty(unitPriceHeader.getQupmtCUnitpriceHistList())) {
-			this.commandProxy().remove(unitPriceHeader);
-		}
-		;
 	}
 
 	/*
@@ -203,5 +204,48 @@ public class JpaUnitPriceHistoryRepository extends JpaRepository implements Unit
 		cq.where(predicateList.toArray(new Predicate[] {}));
 
 		return em.createQuery(cq).getSingleResult().longValue() > 0L;
+	}
+
+	@Override
+	public Optional<UnitPriceHistory> findLastHistory(CompanyCode companyCode, UnitPriceCode unitPriceCode) {
+		return findByIndex(0, companyCode, unitPriceCode);
+	}
+
+	@Override
+	public Optional<UnitPriceHistory> findSecondLastHistory(CompanyCode companyCode, UnitPriceCode unitPriceCode) {
+		return findByIndex(1, companyCode, unitPriceCode);
+	}
+
+	private Optional<UnitPriceHistory> findByIndex(int index, CompanyCode companyCode, UnitPriceCode unitPriceCode) {
+		// Get entity manager
+		EntityManager em = this.getEntityManager();
+
+		// Query for indicated stress check.
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<QupmtCUnitpriceDetail> cq = cb.createQuery(QupmtCUnitpriceDetail.class);
+		Root<QupmtCUnitpriceDetail> root = cq.from(QupmtCUnitpriceDetail.class);
+		// Constructing list of parameters
+		List<Predicate> predicateList = new ArrayList<Predicate>();
+
+		// Construct condition.
+		predicateList.add(
+				cb.equal(root.get(QupmtCUnitpriceDetail_.qupmtCUnitpriceDetailPK).get(QupmtCUnitpriceDetailPK_.ccd),
+						companyCode.v()));
+		predicateList.add(cb.equal(
+				root.get(QupmtCUnitpriceDetail_.qupmtCUnitpriceDetailPK).get(QupmtCUnitpriceDetailPK_.cUnitpriceCd),
+				unitPriceCode.v()));
+
+		cq.orderBy(cb.desc(root.get(QupmtCUnitpriceDetail_.strYm)));
+		cq.where(predicateList.toArray(new Predicate[] {}));
+
+		List<QupmtCUnitpriceDetail> result = em.createQuery(cq).getResultList();
+
+		// Check empty.
+		if (ListUtil.isEmpty(result)) {
+			return Optional.empty();
+		}
+
+		// Return
+		return Optional.of(new UnitPriceHistory(new JpaUnitPriceHistoryGetMemento(result.get(index))));
 	}
 }

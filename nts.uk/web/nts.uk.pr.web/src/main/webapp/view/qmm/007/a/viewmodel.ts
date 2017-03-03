@@ -101,17 +101,12 @@ module nts.uk.pr.view.qmm007.a {
                 nts.uk.ui.windows.setShared('unitPriceHistoryModel', ko.toJS(self.unitPriceHistoryModel()));
                 nts.uk.ui.windows.sub.modal('/view/qmm/007/b/index.xhtml', { title: '会社一律金額 の 登録 > 履歴の追加', dialogClass: 'no-close' }).onClosed(() => {
                     // Get returned data from dialog.
-                    let startMonth = nts.uk.ui.windows.getShared('startMonth');
-                    if (startMonth) {
-                        // Get the startMonth of the newly added history and set to the endMonth of the latest history.
-                        self.unitPriceHistoryModel().endMonth(startMonth);
-                        // Update endMonth of previous history
-                        service.update(ko.toJS(self.unitPriceHistoryModel())).done(() => {
-                            // Reload UnitPriceHistoryList
-                            self.loadUnitPriceHistoryList().done(() => {
-                                // Select latest history
-                                self.selectedId(self.getLatestHistoryId(self.unitPriceHistoryModel().unitPriceCode()));
-                            });
+                    let isCreated = nts.uk.ui.windows.getShared('isCreated');
+                    if (isCreated) {
+                        // Reload UnitPriceHistoryList
+                        self.loadUnitPriceHistoryList().done(() => {
+                            // Select latest history
+                            self.selectedId(self.getLatestHistoryId(self.unitPriceHistoryModel().unitPriceCode()));
                         });
                     }
                 });
@@ -126,61 +121,32 @@ module nts.uk.pr.view.qmm007.a {
                 nts.uk.ui.windows.setShared('isLatestHistory', self.isLatestHistorySelected());
                 nts.uk.ui.windows.sub.modal('/view/qmm/007/c/index.xhtml', { title: '会社一律金額 の 登録 > 履歴の編集', dialogClass: 'no-close' }).onClosed(() => {
                     // Get returned data from dialog.
-                    let startMonth = nts.uk.ui.windows.getShared('startMonth');
+                    let isUpdated = nts.uk.ui.windows.getShared('isUpdated');
                     let isRemoved = nts.uk.ui.windows.getShared('isRemoved');
-
                     // if removed history
                     if (isRemoved) {
-                        let secondLatestHistory = self.getSecondLatestHistoryId(self.unitPriceHistoryModel().unitPriceCode());
-                        // select second latest history if there are >= 2 histories
-                        if (secondLatestHistory) {
-                            // Get the latest history
-                            service.find(secondLatestHistory).done(dto => {
-                                self.setUnitPriceHistoryModel(dto);
-                                // Update endMonth
-                                self.unitPriceHistoryModel().endMonth('9999/12');
-                                service.update(ko.toJS(self.unitPriceHistoryModel())).done(() => {
-                                    // Reload UnitPriceHistoryList
-                                    self.loadUnitPriceHistoryList().done(() => {
-                                        // Select latest history
-                                        self.selectedId(self.getLatestHistoryId(self.unitPriceHistoryModel().unitPriceCode()));
-                                    });
-                                });
-                            });
-                        }
-                        // select null if there is only 1 history
-                        else {
-                            self.loadUnitPriceHistoryList().done(() => {
+                        // Reload UnitPriceHistoryList
+                        self.loadUnitPriceHistoryList().done(() => {
+                            let latestHistory = self.getLatestHistoryId(self.unitPriceHistoryModel().unitPriceCode());
+                            // select latest history if exist.
+                            if (latestHistory) {
+                                self.selectedId(latestHistory);
+                            }
+                            // select undefined if no history left.
+                            else {
                                 self.setUnitPriceHistoryModel(self.getDefaultUnitPriceHistory());
                                 self.isLatestHistorySelected(false);
                                 self.selectedId(undefined);
-                            });
-                        }
+                            }
+                        });
                     }
                     // if updated history
-                    else if (startMonth) {
-                        let secondLatestHistory = self.getSecondLatestHistoryId(self.unitPriceHistoryModel().unitPriceCode());
-                        // update the previous history if exist
-                        if (secondLatestHistory) {
-                            // Get the previous history
-                            service.find(secondLatestHistory).done(dto => {
-                                self.setUnitPriceHistoryModel(dto);
-                                // Update endMonth
-                                self.unitPriceHistoryModel().endMonth(startMonth);
-                                // Update the previous history
-                                service.update(ko.toJS(self.unitPriceHistoryModel())).done(() => {
-                                    // Reload UnitPriceHistoryList
-                                    self.loadUnitPriceHistoryList().done(() => {
-                                        self.loadUnitPriceDetail(self.selectedId());
-                                    });
-                                });
-                            });
-                        } else {
-                            // Reload UnitPriceHistoryList
-                            self.loadUnitPriceHistoryList().done(() => {
-                                self.loadUnitPriceDetail(self.selectedId());
-                            });
-                        }
+                    if (isUpdated) {
+                        // Reload UnitPriceHistoryList
+                        self.loadUnitPriceHistoryList().done(() => {
+                            // Select updated history
+                            self.loadUnitPriceDetail(self.selectedId());
+                        });
                     }
                 });
             }
@@ -283,24 +249,6 @@ module nts.uk.pr.view.qmm007.a {
                     }
                 });
                 return lastestHistoryId;
-            }
-
-            /**
-             * Get the latest historyId by unit price code after remove the latest history
-             */
-            private getSecondLatestHistoryId(code: string): string {
-                var self = this;
-                var latestHistoryId: string = '';
-                //find the group of the history by unit price code
-                self.historyList().some(node => {
-                    if (code == node.id) {
-                        // get the historyId of the first element (latest history)
-                        latestHistoryId = node.childs[1] ? node.childs[1].id : undefined;
-                        // break the execution
-                        return true;
-                    }
-                });
-                return latestHistoryId;
             }
 
             /**
