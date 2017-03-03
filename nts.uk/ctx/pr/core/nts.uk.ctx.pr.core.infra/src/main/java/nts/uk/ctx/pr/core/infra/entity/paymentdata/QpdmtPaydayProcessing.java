@@ -5,11 +5,13 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
-import nts.uk.shr.infra.data.entity.AggregateTableEntity;
+import lombok.AllArgsConstructor;
+import nts.uk.shr.infra.data.entity.TableEntity;
 
+@AllArgsConstructor
 @Entity
 @Table(name = "QPDMT_PAYDAY_PROCESSING")
-public class QpdmtPaydayProcessing {
+public class QpdmtPaydayProcessing extends TableEntity {
 
 	@EmbeddedId
 	public QpdmtPaydayProcessingPK qpdmtPaydayProcessingPK;
@@ -19,10 +21,16 @@ public class QpdmtPaydayProcessing {
 
 	@Column(name = "DISP_ATR")
 	public int dispAtr;
+	
+	@Column(name = "BONUS_ATR")
+    public short bonusAtr;
 
 	@Column(name = "PROCESSING_NAME")
 	public String processingName;
-
+	 
+	@Column(name = "B_CURRENT_PROCESSING_YM")
+	public int bCurrentProcessingYm;
+	 
 	public QpdmtPaydayProcessing() {
 	}
 
