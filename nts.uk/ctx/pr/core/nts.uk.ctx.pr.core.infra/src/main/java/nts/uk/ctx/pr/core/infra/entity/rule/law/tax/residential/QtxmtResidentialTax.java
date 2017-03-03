@@ -34,7 +34,7 @@ public class QtxmtResidentialTax extends TableEntity implements Serializable{
 	
 	@Basic(optional = true)
 	@Column(name ="RESI_TAX_REPORT_CD")
-	public String resiReportCode;
+	public String resiTaxReportCode;
 	
 	@Basic(optional = true)
 	@Column(name ="REGISTERED_NAME")

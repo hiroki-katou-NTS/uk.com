@@ -1,6 +1,6 @@
-module nts.uk.pr.view.qmm003.b {
+module qmm003.b.start {
     __viewContext.ready(function() {
-        let screenModel = new nts.uk.pr.view.qmm003.b.ScreenModel() ;
+        let screenModel = new qmm003.b.viewmodel.ScreenModel() ;
         __viewContext.bind(screenModel);
     });
 }

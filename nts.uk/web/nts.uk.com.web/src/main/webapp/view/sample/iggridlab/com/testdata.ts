@@ -3,12 +3,10 @@ module testdata {
     export class HogeItem {
         code: KnockoutObservable<String>;
         name: KnockoutObservable<String>;
-        flag: KnockoutObservable<boolean>;
         
         constructor(code: String, name: String) {
             this.code = ko.observable(code);
             this.name = ko.observable(name);
-            this.flag = ko.observable(true);
         }
     }
     
