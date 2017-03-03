@@ -22,7 +22,7 @@ var cmm008;
                     self.employmentOutCode = ko.observable("");
                     self.textEditorOption = ko.mapping.fromJS(new option.TextEditorOption());
                     self.dataSource = ko.observableArray([]);
-                    //self.listResult = ko.observableArray([]);
+                    self.currentCode = ko.observable("");
                     self.isEnable = ko.observable(false);
                     self.multilineeditor = {
                         memoValue: ko.observable(""),
@@ -99,16 +99,16 @@ var cmm008;
                 };
                 ScreenModel.prototype.dataSourceItem = function () {
                     var self = this;
-                    self.dataSource = ko.observableArray([]);
-                    a.service.getAllEmployments().done(function (listResult) {
+                    var dfd = $.Deferred();
+                    self.dataSource([]);
+                    $.when(a.service.getAllEmployments()).done(function (listResult) {
                         //self.listResult(listResult);
                         if (listResult.length === 0 || listResult === undefined) {
                             self.isEnable(true);
                         }
                         else {
                             self.isEnable(false);
-                            for (var _i = 0, listResult_1 = listResult; _i < listResult_1.length; _i++) {
-                                var employ = listResult_1[_i];
+                            _.forEach(listResult, function (employ) {
                                 if (employ.displayFlg == 1) {
                                     employ.displayStr = "●";
                                 }
@@ -116,12 +116,13 @@ var cmm008;
                                     employ.displayStr = "";
                                 }
                                 self.dataSource.push(employ);
-                            }
+                            });
                             if (self.currentCode() === "") {
                                 var obEmployment = _.first(self.dataSource());
                                 self.currentCode(obEmployment.employmentCode);
                             }
                         }
+                        dfd.resolve(listResult);
                     });
                     this.columns = ko.observableArray([
                         { headerText: 'コード', prop: 'employmentCode', width: 100 },
@@ -130,8 +131,9 @@ var cmm008;
                         { headerText: '処理日区分', prop: 'processingNo', width: 150 },
                         { headerText: '初期表示', prop: 'displayStr', width: 100 }
                     ]);
-                    this.currentCode = ko.observable("");
+                    //this.currentCode = ko.observable("");
                     self.singleSelectedCode = ko.observable(null);
+                    return dfd.promise();
                 };
                 //登録ボタンを押す
                 ScreenModel.prototype.createEmployment = function () {
@@ -172,25 +174,18 @@ var cmm008;
                             return;
                         }
                         a.service.createEmployment(employment).done(function () {
-                            self.dataSource.push(employment);
-                            self.currentCode(employment.employmentCode);
+                            $.when(self.dataSource()).done(function () {
+                                $.when(self.dataSourceItem()).done(function () {
+                                    self.currentCode(employment.employmentCode);
+                                });
+                            });
                         });
                     }
                     else {
-                        a.service.updateEmployment(employment).done(function () {
-                            var indexItemUpdate = _.findIndex(self.dataSource(), function (item) { return item.employmentCode == employment.employmentCode; });
-                            //                    if(employment.displayFlg == 1){
-                            //                        employment.displayStr = "●";    
-                            //                    }else{
-                            //                        employment.displayStr = "";    
-                            //                    }
-                            //                    self.dataSource().splice(indexItemUpdate, 1, _.cloneDeep(employment));
-                            //                    self.dataSource.valueHasMutated();           
-                            self.dataSourceItem();
-                            //var curentEmployment =  self.dataSource()[indexItemUpdate];
-                            self.currentCode(employment.employmentCode);
-                            self.dataSource().splice(indexItemUpdate, 1, _.cloneDeep(employment));
-                            self.dataSource.valueHasMutated();
+                        $.when(a.service.updateEmployment(employment)).done(function () {
+                            $.when(self.dataSourceItem()).done(function () {
+                                self.currentCode(employment.employmentCode);
+                            });
                         });
                     }
                 };
@@ -217,24 +212,25 @@ var cmm008;
                         employment.displayFlg = 0;
                     var indexItemDelete = _.findIndex(self.dataSource(), function (item) { return item.employmentCode == self.currentCode(); });
                     a.service.deleteEmployment(employment).done(function () {
-                        self.dataSource.remove(function (item) {
-                            return item.employmentCode == self.currentCode();
+                        $.when(self.dataSourceItem()).done(function () {
+                            if (self.dataSource().length === 0) {
+                                self.isEnable(true);
+                                self.newCreateEmployment();
+                            }
+                            else if (self.dataSource().length === indexItemDelete) {
+                                self.isEnable(false);
+                                self.currentCode(self.dataSource()[indexItemDelete - 1].employmentCode);
+                            }
+                            else {
+                                self.isEnable(false);
+                                if (indexItemDelete > self.dataSource().length) {
+                                    self.currentCode(self.dataSource()[0].employmentCode);
+                                }
+                                else {
+                                    self.currentCode(self.dataSource()[indexItemDelete].employmentCode);
+                                }
+                            }
                         });
-                        self.dataSource.valueHasMutated();
-                        self.dataSource.remove(function (item) {
-                            return item.employmentCode == self.currentCode();
-                        });
-                        self.dataSource.valueHasMutated();
-                        if (self.dataSource().length === 0) {
-                            self.isEnable(true);
-                            self.newCreateEmployment();
-                        }
-                        else if (self.dataSource().length === indexItemDelete) {
-                            self.currentCode(self.dataSource()[indexItemDelete - 1].employmentCode);
-                        }
-                        else {
-                            self.currentCode(self.dataSource()[indexItemDelete].employmentCode);
-                        }
                     });
                 };
                 return ScreenModel;

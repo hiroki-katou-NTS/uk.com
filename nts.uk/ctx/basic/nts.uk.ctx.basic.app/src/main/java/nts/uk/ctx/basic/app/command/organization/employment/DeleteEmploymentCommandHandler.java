@@ -1,6 +1,7 @@
 package nts.uk.ctx.basic.app.command.organization.employment;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -18,21 +19,31 @@ import nts.uk.shr.com.context.AppContexts;
 public class DeleteEmploymentCommandHandler extends CommandHandler<DeleteEmploymentCommand>{
 	@Inject
 	private EmploymentRepository repository;
+	
 	@Override
 	protected void handle(CommandHandlerContext<DeleteEmploymentCommand> context) {
 		try{
 			DeleteEmploymentCommand command = context.getCommand();
 			String companyCode = AppContexts.user().companyCode();
-			this.repository.remove(companyCode, command.getEmploymentCode());
 			//初期表示するのはコードの昇順で先頭になる項目です。
-			if(command.getDisplayAtr() == 1){
+			Optional<Employment> emDelete = repository.findEmployment(companyCode, command.getEmploymentCode());
+			if (emDelete != null && emDelete.get().getDisplayFlg() == ManageOrNot.MANAGE) {
 				List<Employment> lstEmployment = repository.findAllEmployment(companyCode);
 				if(lstEmployment != null){
-					Employment employmentInf = lstEmployment.get(0);
-					employmentInf.setDisplayFlg(ManageOrNot.MANAGE);
-					this.repository.update(employmentInf);
+					for (Employment employment : lstEmployment) {
+						if(employment.getEmploymentCode().v().equals(command.getEmploymentCode())) {
+							continue;
+						} else {
+							Employment employmentInf = employment;
+							employmentInf.setDisplayFlg(ManageOrNot.MANAGE);
+							this.repository.update(employmentInf);
+							break;
+						}
+					}
+					
 				}
-			}
+			}			
+			this.repository.remove(companyCode, command.getEmploymentCode());			
 		}
 		catch(Exception ex){
 			throw ex;

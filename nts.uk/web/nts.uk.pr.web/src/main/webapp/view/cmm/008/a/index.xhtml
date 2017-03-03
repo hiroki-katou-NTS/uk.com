@@ -26,19 +26,20 @@
 				<button class="danger btnStyle" id="BTN_004" data-bind = "click: deleteEmployment">削除</button>
 				<label id="LBL_001">雇用区分の登録</label>
 			</div>
-			<div id="contents-area">
+			<div id="contents-area" style="padding-top: 20px">
 				<table>
 					<tr>
-						<td id="contents-left" class="bg-green">
+						<td id="contents-left" class="bg-green caret-right caret-background">
+							<i class="icon icon-searchbox"></i>
 							<div  class="leftTop" data-bind="ntsSearchBox: {
 								comId: 'LST_001',
 								items: dataSource, 		
 								selected: singleSelectedCode, 
 								selectedKey: 'employmentCode', 
 								childField: 'childs', 
-								fields: ['employmentName', 'employmentCode']}" />																																														
-							<table id="LST_001" data-bind="ntsGridList: {								
-								height: 350,
+								fields: ['employmentName', 'employmentCode']}" />
+							<table id="LST_001" style="" data-bind="ntsGridList: {								
+								height: 700,
 								options: dataSource,
 								optionsValue: 'employmentCode',
 								columns: columns,
@@ -51,7 +52,7 @@
 							<table id="tableRight">
 								<tr>
 									<td class="contentsRL">
-										<div id="LBL_002" data-bind="ntsFormLabel: {required: true}">
+										<div id="LBL_002" data-bind="ntsFormLabel: {required: true, constraint: ['EmploymentCode', 'EmploymentName']}">
 											<label>コード/名称<br /></label>
 										</div>
 									</td>
@@ -151,7 +152,7 @@
 									</td>
 									<td class="contentsRR">
 										<div data-bind="with: multilineeditor">
-											<textarea style="width: 240px; height: 50px"
+											<textarea id="INP_005"
 												data-bind="ntsMultilineEditor: {
 													value: memoValue,
 													constraint: constraint,

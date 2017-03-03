@@ -49,7 +49,7 @@ var cmm013;
                             console.log(self.index_selected());
                             //get position
                             var dfd = $.Deferred();
-                            service.findAllPosition(self.index_selected())
+                            f.service.findAllPosition(self.index_selected())
                                 .done(function (position_arr) {
                                 self.dataSource(position_arr);
                                 self.currentCode(self.dataSource()[0].jobCode);
@@ -98,7 +98,7 @@ var cmm013;
                 ScreenModel.prototype.getPositionList = function () {
                     var self = this;
                     var dfd = $.Deferred();
-                    service.findAllPosition(self.index_selected()).done(function (position_arr) {
+                    f.service.findAllPosition(self.index_selected()).done(function (position_arr) {
                         self.dataSource(position_arr);
                         self.inp_002(self.dataSource()[0].jobCode);
                         self.inp_003(self.dataSource()[0].jobName);
@@ -118,7 +118,7 @@ var cmm013;
                     // Page load dfd.
                     var dfd = $.Deferred();
                     // get all history.     
-                    service.getAllHistory().done(function (history_arr) {
+                    f.service.getAllHistory().done(function (history_arr) {
                         self.listbox(history_arr);
                         self.selectedCode = ko.observable(self.listbox()[0].historyId);
                     }).fail(function (error) {
