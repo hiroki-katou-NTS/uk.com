@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2016 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.core.app.wagetable.command.dto;
@@ -38,43 +38,63 @@ public class CertifyGroupDto {
 	/**
 	 * To domain.
 	 *
-	 * @param companyCode
-	 *            the company code
+	 * @param companyCode the company code
 	 * @return the certify group
 	 */
 	public CertifyGroup toDomain(String companyCode) {
-		CertifyGroupDto dto = this;
-		CertifyGroup certifyGroup = new CertifyGroup(new CertifyGroupGetMemento() {
+		return new CertifyGroup(new CertifyGroupGetMementoImpl(companyCode, this));
+	}
 
-			@Override
-			public CertifyGroupName getName() {
-				return new CertifyGroupName(dto.name);
-			}
+	/**
+	 * The Class CertifyGroupGetMementoImpl.
+	 */
+	public class CertifyGroupGetMementoImpl implements CertifyGroupGetMemento {
 
-			@Override
-			public MultipleTargetSetting getMultiApplySet() {
-				return MultipleTargetSetting.valueOf(dto.multiApplySet);
-			}
+		/** The company code. */
+		private String companyCode;
 
-			@Override
-			public CompanyCode getCompanyCode() {
-				return new CompanyCode(companyCode);
-			}
+		/** The dto. */
+		private CertifyGroupDto dto;
 
-			@Override
-			public CertifyGroupCode getCode() {
-				return new CertifyGroupCode(dto.code);
-			}
+		/**
+		 * Instantiates a new certify group get memento impl.
+		 *
+		 * @param companyCode the company code
+		 * @param dto the dto
+		 */
+		public CertifyGroupGetMementoImpl(String companyCode, CertifyGroupDto dto) {
+			super();
+			this.companyCode = companyCode;
+			this.dto = dto;
+		}
 
-			@Override
-			public Set<Certification> getCertifies() {
-				Set<Certification> setCertification = new HashSet<>();
-				for (CertificationDto certificationDto : dto.certifies) {
-					setCertification.add(certificationDto.toDomain(companyCode));
-				}
-				return setCertification;
+		@Override
+		public CertifyGroupName getName() {
+			return new CertifyGroupName(dto.name);
+		}
+
+		@Override
+		public MultipleTargetSetting getMultiApplySet() {
+			return MultipleTargetSetting.valueOf(dto.multiApplySet);
+		}
+
+		@Override
+		public CompanyCode getCompanyCode() {
+			return new CompanyCode(companyCode);
+		}
+
+		@Override
+		public CertifyGroupCode getCode() {
+			return new CertifyGroupCode(dto.code);
+		}
+
+		@Override
+		public Set<Certification> getCertifies() {
+			Set<Certification> setCertification = new HashSet<>();
+			for (CertificationDto certificationDto : dto.certifies) {
+				setCertification.add(certificationDto.toDomain(companyCode));
 			}
-		});
-		return certifyGroup;
+			return setCertification;
+		}
 	}
 }

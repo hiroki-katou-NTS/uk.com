@@ -7,7 +7,6 @@ package nts.uk.ctx.pr.core.app.insurance.labor.unemployeerate.find.dto;
 import java.util.Set;
 
 import lombok.Data;
-import nts.arc.time.YearMonth;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsuranceRateItem;
@@ -23,13 +22,10 @@ public class HistoryUnemployeeInsuranceFindOutDto implements UnemployeeInsurance
 	private String historyId;
 
 	/** The start month rage. */
-	private String startMonthRage;
+	private int startMonthRage;
 
 	/** The end month rage. */
-	private String endMonthRage;
-
-	/** The infor month rage. */
-	private String inforMonthRage;
+	private int endMonthRage;
 
 	/**
 	 * Convert month.
@@ -38,17 +34,6 @@ public class HistoryUnemployeeInsuranceFindOutDto implements UnemployeeInsurance
 	 *            the year month
 	 * @return the string
 	 */
-	public static String convertMonth(YearMonth yearMonth) {
-		String convert = null;
-		String mounth = null;
-		if (yearMonth.month() < 10) {
-			mounth = "0" + yearMonth.month();
-		} else {
-			mounth = String.valueOf(yearMonth.month());
-		}
-		convert = yearMonth.year() + "/" + mounth;
-		return convert;
-	}
 
 	/*
 	 * (non-Javadoc)
@@ -72,10 +57,8 @@ public class HistoryUnemployeeInsuranceFindOutDto implements UnemployeeInsurance
 	 */
 	@Override
 	public void setApplyRange(MonthRange applyRange) {
-		this.endMonthRage = convertMonth(applyRange.getEndMonth());
-		this.startMonthRage = convertMonth(applyRange.getStartMonth());
-		this.inforMonthRage = this.startMonthRage + " ~ " + this.endMonthRage;
-
+		this.endMonthRage = applyRange.getEndMonth().v();
+		this.startMonthRage = applyRange.getStartMonth().v();
 	}
 
 	/*

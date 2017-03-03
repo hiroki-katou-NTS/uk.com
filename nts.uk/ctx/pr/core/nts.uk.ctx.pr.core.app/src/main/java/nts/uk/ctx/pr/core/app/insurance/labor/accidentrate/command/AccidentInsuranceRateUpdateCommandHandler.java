@@ -14,6 +14,7 @@ import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.AccidentInsuranceRate
 import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.AccidentInsuranceRateRepository;
 import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.service.AccidentInsuranceRateService;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.context.LoginUserContext;
 
 /**
  * The Class AccidentInsuranceRateUpdateCommandHandler.
@@ -39,9 +40,16 @@ public class AccidentInsuranceRateUpdateCommandHandler extends CommandHandler<Ac
 	 */
 	@Override
 	protected void handle(CommandHandlerContext<AccidentInsuranceRateUpdateCommand> context) {
-		AccidentInsuranceRate accidentInsuranceRate = context.getCommand().toDomain(AppContexts.user().companyCode());
+		// getCommand
+		AccidentInsuranceRateUpdateCommand command = context.getCommand();
+		// get user login
+		LoginUserContext loginUserContext = AppContexts.user();
+		AccidentInsuranceRate accidentInsuranceRate = command.toDomain(loginUserContext.companyCode());
+		// validate domain
 		accidentInsuranceRate.validate();
+		// validate input
 		this.accidentInsuranceRateService.validateDateRangeUpdate(accidentInsuranceRate);
+		// connection service update
 		this.accidentInsuranceRateRepo.update(accidentInsuranceRate);
 	}
 

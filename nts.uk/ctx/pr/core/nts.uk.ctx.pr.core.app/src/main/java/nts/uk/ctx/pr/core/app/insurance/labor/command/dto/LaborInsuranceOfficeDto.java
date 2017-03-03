@@ -87,103 +87,128 @@ public class LaborInsuranceOfficeDto {
 	 * @return the labor insurance office
 	 */
 	public LaborInsuranceOffice toDomain(String companyCode) {
-		LaborInsuranceOfficeDto dto = this;
-		return new LaborInsuranceOffice(new LaborInsuranceOfficeGetMemento() {
-
-			@Override
-			public ShortName getShortName() {
-				return new ShortName(dto.shortName);
-			}
-
-			@Override
-			public String getPrefecture() {
-				return dto.prefecture;
-			}
-
-			@Override
-			public PotalCode getPotalCode() {
-				return new PotalCode(dto.potalCode);
-			}
-
-			@Override
-			public PicPosition getPicPosition() {
-				return new PicPosition(dto.picPosition);
-			}
-
-			@Override
-			public PicName getPicName() {
-				return new PicName(dto.picName);
-			}
-
-			@Override
-			public String getPhoneNumber() {
-				return dto.phoneNumber;
-			}
-
-			@Override
-			public String getOfficeNoC() {
-				return dto.officeNoC;
-			}
-
-			@Override
-			public String getOfficeNoB() {
-				return dto.officeNoB;
-			}
-
-			@Override
-			public String getOfficeNoA() {
-				return dto.officeNoA;
-			}
-
-			@Override
-			public String getOfficeMark() {
-				return dto.officeMark;
-			}
-
-			@Override
-			public OfficeName getName() {
-				return new OfficeName(dto.name);
-			}
-
-			@Override
-			public Memo getMemo() {
-				return new Memo(dto.memo);
-			}
-
-			@Override
-			public KanaAddress getKanaAddress2nd() {
-				return new KanaAddress(dto.kanaAddress2nd);
-			}
-
-			@Override
-			public KanaAddress getKanaAddress1st() {
-				return new KanaAddress(dto.kanaAddress1st);
-			}
-
-			@Override
-			public CompanyCode getCompanyCode() {
-				return new CompanyCode(companyCode);
-			}
-
-			@Override
-			public OfficeCode getCode() {
-				return new OfficeCode(dto.code);
-			}
-
-			@Override
-			public String getCitySign() {
-				return dto.citySign;
-			}
-
-			@Override
-			public Address getAddress2nd() {
-				return new Address(dto.address2nd);
-			}
-
-			@Override
-			public Address getAddress1st() {
-				return new Address(dto.address1st);
-			}
-		});
+		return new LaborInsuranceOffice(new LaborInsuranceOfficeGetMementoImpl(companyCode, this));
 	}
+
+	/**
+	 * The Class LaborInsuranceOfficeGetMementoImpl.
+	 */
+	public class LaborInsuranceOfficeGetMementoImpl implements LaborInsuranceOfficeGetMemento {
+
+		/** The dto. */
+		private LaborInsuranceOfficeDto dto;
+
+		/** The company code. */
+		private String companyCode;
+
+		/**
+		 * Instantiates a new labor insurance office get memento impl.
+		 *
+		 * @param companyCode
+		 *            the company code
+		 * @param dto
+		 *            the dto
+		 */
+		public LaborInsuranceOfficeGetMementoImpl(String companyCode, LaborInsuranceOfficeDto dto) {
+			super();
+			this.dto = dto;
+			this.companyCode = companyCode;
+		}
+
+		@Override
+		public ShortName getShortName() {
+			return new ShortName(dto.shortName);
+		}
+
+		@Override
+		public String getPrefecture() {
+			return dto.prefecture;
+		}
+
+		@Override
+		public PotalCode getPotalCode() {
+			return new PotalCode(dto.potalCode);
+		}
+
+		@Override
+		public PicPosition getPicPosition() {
+			return new PicPosition(dto.picPosition);
+		}
+
+		@Override
+		public PicName getPicName() {
+			return new PicName(dto.picName);
+		}
+
+		@Override
+		public String getPhoneNumber() {
+			return dto.phoneNumber;
+		}
+
+		@Override
+		public String getOfficeNoC() {
+			return dto.officeNoC;
+		}
+
+		@Override
+		public String getOfficeNoB() {
+			return dto.officeNoB;
+		}
+
+		@Override
+		public String getOfficeNoA() {
+			return dto.officeNoA;
+		}
+
+		@Override
+		public String getOfficeMark() {
+			return dto.officeMark;
+		}
+
+		@Override
+		public OfficeName getName() {
+			return new OfficeName(dto.name);
+		}
+
+		@Override
+		public Memo getMemo() {
+			return new Memo(dto.memo);
+		}
+
+		@Override
+		public KanaAddress getKanaAddress2nd() {
+			return new KanaAddress(dto.kanaAddress2nd);
+		}
+
+		@Override
+		public KanaAddress getKanaAddress1st() {
+			return new KanaAddress(dto.kanaAddress1st);
+		}
+
+		@Override
+		public CompanyCode getCompanyCode() {
+			return new CompanyCode(companyCode);
+		}
+
+		@Override
+		public OfficeCode getCode() {
+			return new OfficeCode(dto.code);
+		}
+
+		@Override
+		public String getCitySign() {
+			return dto.citySign;
+		}
+
+		@Override
+		public Address getAddress2nd() {
+			return new Address(dto.address2nd);
+		}
+
+		@Override
+		public Address getAddress1st() {
+			return new Address(dto.address1st);
+		}
+	}
+
 }

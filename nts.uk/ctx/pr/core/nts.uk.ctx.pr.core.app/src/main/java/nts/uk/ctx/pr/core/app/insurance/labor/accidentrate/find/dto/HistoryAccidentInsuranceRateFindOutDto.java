@@ -23,31 +23,10 @@ public class HistoryAccidentInsuranceRateFindOutDto implements AccidentInsurance
 	private String historyId;
 
 	/** The start month rage. */
-	private String startMonthRage;
+	private int startMonthRage;
 
 	/** The end month rage. */
-	private String endMonthRage;
-
-	/** The infor month rage. */
-	private String inforMonthRage;
-
-	/**
-	 * Convert month.
-	 *
-	 * @param yearMonth
-	 *            the year month
-	 * @return the string
-	 */
-	public static String convertMonth(YearMonth yearMonth) {
-		String convert = "";
-		String mounth = "";
-		if (yearMonth.month() < 10) {
-			mounth = "0" + yearMonth.month();
-		} else
-			mounth = String.valueOf(yearMonth.month());
-		convert = yearMonth.year() + "/" + mounth;
-		return convert;
-	}
+	private int endMonthRage;
 
 	/*
 	 * (non-Javadoc)
@@ -83,9 +62,8 @@ public class HistoryAccidentInsuranceRateFindOutDto implements AccidentInsurance
 	 */
 	@Override
 	public void setApplyRange(MonthRange applyRange) {
-		this.endMonthRage = convertMonth(applyRange.getEndMonth());
-		this.startMonthRage = convertMonth(applyRange.getStartMonth());
-		this.inforMonthRage = this.startMonthRage + " ~ " + this.endMonthRage;
+		this.startMonthRage = applyRange.getStartMonth().v();
+		this.endMonthRage = applyRange.getEndMonth().v();
 	}
 
 	/*
