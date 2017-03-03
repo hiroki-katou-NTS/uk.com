@@ -2,19 +2,54 @@
 var qpp011;
 (function (qpp011) {
     var b;
-    (function (b) {
+    (function (b_1) {
         var ScreenModel = (function () {
             function ScreenModel() {
                 var self = this;
+                self.currentIndex = 0;
                 //start radiogroup data
+                //B_01
+                self.B_SEL_001_RadioItemList = ko.observableArray([
+                    new BoxModel(1, '本社'),
+                    new BoxModel(2, '法定調書出力用会社')
+                ]);
+                self.B_SEL_001_selectedId = ko.observable(1);
+                self.B_SEL_002_Enable = ko.observable(false);
+                self.B_SEL_001_selectedId.subscribe(function (newValue) {
+                    if (newValue == 1) {
+                        self.B_SEL_002_Enable(false);
+                    }
+                    else {
+                        self.B_SEL_002_Enable(true);
+                    }
+                });
+                //02
+                self.C_SEL_002_Enable = ko.observable(false);
+                self.C_SEL_001_selectedId = ko.observable(1);
+                self.C_SEL_001_selectedId.subscribe(function (newValue) {
+                    if (newValue == 1) {
+                        self.C_SEL_002_Enable(false);
+                    }
+                    else {
+                        self.C_SEL_002_Enable(true);
+                    }
+                });
                 self.RadioItemList = ko.observableArray([
                     new BoxModel(1, '本社'),
                     new BoxModel(2, '法定調書出力用会社')
                 ]);
                 self.selectedId = ko.observable(1);
-                self.enable = ko.observable(true);
+                self.enable = ko.observable(false);
+                self.selectedId.subscribe(function (newValue) {
+                    if (newValue == 1) {
+                        self.enable(false);
+                    }
+                    else {
+                        self.enable(true);
+                    }
+                });
                 //end radiogroup data
-                //start combobox data
+                //start cobobox data
                 self.ComboBoxItemList = ko.observableArray([
                     new ComboboxItemModel('0001', 'Item1'),
                     new ComboboxItemModel('0002', 'Item2'),
@@ -45,12 +80,24 @@ var qpp011;
                 };
                 self.B_LST_001_Data = ko.observable([]);
                 self.C_LST_001_Data = ko.observable([]);
+                self.ResidentialData = ko.observable([]);
                 //end number editer
-                b.service.findAllResidential().done(function (data) {
-                    self.B_LST_001_Data(data);
-                    self.C_LST_001_Data(data);
-                    BindTreeGrid("#B_LST_001", self.B_LST_001_Data(), self.selectedValue_B_LST_001);
-                    BindTreeGrid("#C_LST_001", self.C_LST_001_Data(), self.selectedValue_C_LST_001);
+                b_1.service.findAllResidential().done(function (data) {
+                    b_1.service.getlistLocation().done(function (listLocation) {
+                        //nghịch thôi
+                        data.sort(function (a, b) { return Number(a.resiTaxCode) - Number(b.resiTaxCode); });
+                        //
+                        self.ResidentialData(data);
+                        self.ListLocation = listLocation;
+                        var ArrayData = CreateDataArray(listLocation, data);
+                        self.B_LST_001_Data(ArrayData);
+                        self.C_LST_001_Data(ArrayData);
+                        BindTreeGrid("#B_LST_001", self.B_LST_001_Data(), self.selectedValue_B_LST_001);
+                        BindTreeGrid("#C_LST_001", self.C_LST_001_Data(), self.selectedValue_C_LST_001);
+                    }).fail(function (res) {
+                        // Alert message
+                        alert(res.message);
+                    });
                 }).fail(function (res) {
                     // Alert message
                     alert(res.message);
@@ -59,7 +106,7 @@ var qpp011;
                 self.C_SEL_004_ComboBoxItemList = ko.observableArray([]);
                 self.C_SEL_003_selectedCode = ko.observable("");
                 self.C_SEL_004_selectedCode = ko.observable("");
-                b.service.findAllLinebank().done(function (data) {
+                b_1.service.findAllLinebank().done(function (data) {
                     for (var _i = 0, data_1 = data; _i < data_1.length; _i++) {
                         var object = data_1[_i];
                         self.C_SEL_003_ComboBoxItemList.push(new C_SEL_003_ComboboxItemModel(object.bankCode, object.branchCode, object.lineBankCode, object.lineBankName));
@@ -67,12 +114,20 @@ var qpp011;
                     if (self.C_SEL_003_ComboBoxItemList.length > 0)
                         self.C_SEL_003_selectedCode(self.C_SEL_003_ComboBoxItemList[0].lineBankCode);
                 }).fail(function (res) {
-                    // Alert message
+                    alert(res.message);
+                });
+                b_1.service.getCurrentProcessingNo().done(function (data) {
+                    var yearMonth = data.currentProcessingYm;
+                    self.B_INP_001_yearMonth(nts.uk.time.formatYearMonth(yearMonth));
+                    self.B_INP_002_yearMonth(nts.uk.time.formatYearMonth(yearMonth));
+                    self.C_INP_001_yearMonth(nts.uk.time.formatYearMonth(yearMonth));
+                    self.C_INP_002_yearMonth(nts.uk.time.formatYearMonth(yearMonth));
+                }).fail(function (res) {
                     alert(res.message);
                 });
                 self.C_SEL_003_selectedCode.subscribe(function (newValue) {
                     self.C_SEL_004_ComboBoxItemList([]);
-                    b.service.findLinebank(newValue).done(function (data) {
+                    b_1.service.findLinebank(newValue).done(function (data) {
                         for (var _i = 0, _a = data.consignors; _i < _a.length; _i++) {
                             var object = _a[_i];
                             self.C_SEL_004_ComboBoxItemList.push(new C_SEL_004_ComboboxItemModel(object.code, object.memo));
@@ -80,26 +135,110 @@ var qpp011;
                         if (self.C_SEL_004_ComboBoxItemList.length > 0)
                             self.C_SEL_004_selectedCode(self.C_SEL_004_ComboBoxItemList[0].code);
                     }).fail(function (res) {
-                        // Alert message
                         alert(res);
                     });
                 });
                 self.columns = [
-                    { headerText: "resiTaxCode", key: "resiTaxCode", width: "250px", dataType: "string", hidden: true },
-                    { headerText: "companyCode", key: "companyCode", width: "300px", dataType: "string", hidden: true },
-                    { headerText: "companySpecifiedNo", key: "companySpecifiedNo", width: "130px", dataType: "string" },
-                    { headerText: "registeredName", key: "registeredName", width: "230px", dataType: "string" },
-                    { headerText: "prefectureCode", key: "prefectureCode", width: "130px", dataType: "string" }
+                    { headerText: "p", key: "position", width: "30px", dataType: "string", hidden: true },
+                    { headerText: "c", key: "code", width: "30px", dataType: "string", hidden: true },
+                    { headerText: "コード/名称", key: "displayText", width: "230px", dataType: "string" },
                 ];
+                function CreateDataArray(TreeData, Data) {
+                    self.TreeArray = [];
+                    var parentPositionIndex = 0;
+                    for (var _i = 0, Data_1 = Data; _i < Data_1.length; _i++) {
+                        var Object_1 = Data_1[_i];
+                        var positionIndex = CreateTreeBranchs(Object_1.prefectureCode);
+                        if (positionIndex) {
+                            self.TreeArray.push(new TreeItem(Object_1.resiTaxCode, Object_1.resiTaxName, positionIndex, positionIndex + 1, Object_1.resiTaxCode + " " + Object_1.registeredName, 'Item'));
+                            self.currentIndex++;
+                        }
+                    }
+                    return self.TreeArray;
+                }
+                function CreateTreeBranchs(prefectureCode) {
+                    return CreateBranch(CreateTreeRoot(prefectureCode), prefectureCode);
+                }
+                function CreateTreeRoot(prefectureCode) {
+                    var prefectureCodeInt = parseInt(prefectureCode);
+                    var PositionIndex;
+                    switch (true) {
+                        case (prefectureCodeInt == 1):
+                            PositionIndex = AddTreeRootToArray(prefectureCode, "1");
+                            break;
+                        case (2 <= prefectureCodeInt && prefectureCodeInt <= 7):
+                            PositionIndex = AddTreeRootToArray(prefectureCode, "2");
+                            break;
+                        case (8 <= prefectureCodeInt && prefectureCodeInt <= 14):
+                            PositionIndex = AddTreeRootToArray(prefectureCode, "3");
+                            break;
+                        case (15 <= prefectureCodeInt && prefectureCodeInt <= 23):
+                            PositionIndex = AddTreeRootToArray(prefectureCode, "4");
+                            break;
+                        case (24 <= prefectureCodeInt && prefectureCodeInt <= 30):
+                            PositionIndex = AddTreeRootToArray(prefectureCode, "5");
+                            break;
+                        case (31 <= prefectureCodeInt && prefectureCodeInt <= 35):
+                            PositionIndex = AddTreeRootToArray(prefectureCode, "6");
+                            break;
+                        case (26 <= prefectureCodeInt && prefectureCodeInt <= 39):
+                            PositionIndex = AddTreeRootToArray(prefectureCode, "7");
+                            break;
+                    }
+                    return PositionIndex;
+                }
+                function AddTreeRootToArray(prefectureCode, regionCode) {
+                    var positionIndex = self.currentIndex;
+                    var returnValue;
+                    var root = _.find(self.TreeArray, { 'code': regionCode, 'typeBranch': 'Root' });
+                    if (!root) {
+                        root = _.find(self.ListLocation, { 'regionCode': regionCode });
+                        if (root) {
+                            var NewRoot = new TreeItem(root.regionCode, root.regionName, -1, positionIndex + 1, root.regionName, 'Root');
+                            self.TreeArray.push(NewRoot);
+                            self.currentIndex++;
+                            returnValue = self.currentIndex;
+                        }
+                    }
+                    else {
+                        returnValue = root.position;
+                    }
+                    return returnValue;
+                }
+                function CreateBranch(parrentIndex, prefectureCode) {
+                    if (parrentIndex) {
+                        var firstBranch = _.find(self.TreeArray, { 'code': prefectureCode, 'typeBranch': 'firstBranch' });
+                        var positionIndex = self.currentIndex;
+                        var returnValue = void 0;
+                        if (!firstBranch) {
+                            for (var _i = 0, _a = self.ListLocation; _i < _a.length; _i++) {
+                                var object = _a[_i];
+                                firstBranch = _.find(object.prefectures, { 'prefectureCode': prefectureCode });
+                                if (firstBranch)
+                                    break;
+                            }
+                            if (firstBranch) {
+                                var NewBranch = new TreeItem(firstBranch.prefectureCode, firstBranch.prefectureName, parrentIndex, positionIndex + 1, firstBranch.prefectureName, 'firstBranch');
+                                self.TreeArray.push(NewBranch);
+                                self.currentIndex++;
+                                returnValue = self.currentIndex;
+                            }
+                        }
+                        else {
+                            returnValue = firstBranch.position;
+                        }
+                        return returnValue;
+                    }
+                }
                 function BindTreeGrid(gridID, Data, selectedValue) {
                     $(gridID).igTreeGrid({
                         width: "480px",
                         height: "500px",
                         dataSource: Data,
                         autoGenerateColumns: false,
-                        primaryKey: "resiTaxCode",
+                        primaryKey: "position",
+                        foreignKey: "child",
                         columns: self.columns,
-                        childDataKey: "files",
                         initialExpandDepth: 2,
                         features: [
                             {
@@ -126,8 +265,8 @@ var qpp011;
                 var $B_LST_001 = $("#B_LST_001");
                 self.selectedValue_B_LST_001.subscribe(function (newValue) {
                     var selectedRows = _.map($B_LST_001.igTreeGridSelection("selectedRows"), function (row) {
-                        if (row != undefined)
-                            return row.id;
+                        if (row)
+                            return row.position;
                     });
                     if (!_.isEqual(selectedRows, newValue)) {
                         $B_LST_001.igTreeGridSelection("clearSelection");
@@ -141,7 +280,7 @@ var qpp011;
                 self.selectedValue_C_LST_001.subscribe(function (newValue) {
                     var selectedRows = _.map($C_LST_001.igTreeGridSelection("selectedRows"), function (row) {
                         if (row != undefined)
-                            return row.id;
+                            return row.position;
                     });
                     if (!_.isEqual(selectedRows, newValue)) {
                         $C_LST_001.igTreeGridSelection("clearSelection");
@@ -150,27 +289,49 @@ var qpp011;
                         });
                     }
                 });
+                //B
                 //001
                 self.B_INP_001_yearMonth = ko.observable('2016/12');
                 self.B_INP_001_yearMonth.subscribe(function (newValue) {
-                    self.yearInJapanEmpire_LBL_005("(" + nts.uk.time.yearmonthInJapanEmpire(self.B_INP_001_yearMonth()).toString() + ")");
+                    self.yearInJapanEmpire_B_LBL_005("(" + nts.uk.time.yearmonthInJapanEmpire(self.B_INP_001_yearMonth()).toString() + ")");
                 });
-                self.yearInJapanEmpire_LBL_005 = ko.observable();
-                self.yearInJapanEmpire_LBL_005("(" + nts.uk.time.yearmonthInJapanEmpire(self.B_INP_001_yearMonth()).toString() + ")");
+                self.yearInJapanEmpire_B_LBL_005 = ko.observable();
+                self.yearInJapanEmpire_B_LBL_005("(" + nts.uk.time.yearmonthInJapanEmpire(self.B_INP_001_yearMonth()).toString() + ")");
                 //002
                 self.B_INP_002_yearMonth = ko.observable('2016/12');
                 self.B_INP_002_yearMonth.subscribe(function (newValue) {
-                    self.yearInJapanEmpire_LBL_008("(" + nts.uk.time.yearmonthInJapanEmpire(self.B_INP_002_yearMonth()).toString() + ")");
+                    self.yearInJapanEmpire_B_LBL_008("(" + nts.uk.time.yearmonthInJapanEmpire(self.B_INP_002_yearMonth()).toString() + ")");
                 });
-                self.yearInJapanEmpire_LBL_008 = ko.observable();
-                self.yearInJapanEmpire_LBL_008("(" + nts.uk.time.yearmonthInJapanEmpire(self.B_INP_002_yearMonth()).toString() + ")");
+                self.yearInJapanEmpire_B_LBL_008 = ko.observable();
+                self.yearInJapanEmpire_B_LBL_008("(" + nts.uk.time.yearmonthInJapanEmpire(self.B_INP_002_yearMonth()).toString() + ")");
                 //003
                 self.B_INP_003_yearMonth = ko.observable(new Date('2016/12/01'));
                 self.B_INP_003_yearMonth.subscribe(function (newValue) {
-                    self.yearInJapanEmpire_LBL_010("(" + nts.uk.time.yearmonthInJapanEmpire(self.B_INP_003_yearMonth()).toString() + ")");
+                    self.yearInJapanEmpire_B_LBL_010("(" + nts.uk.time.yearmonthInJapanEmpire(self.B_INP_003_yearMonth()).toString() + ")");
                 });
-                self.yearInJapanEmpire_LBL_010 = ko.observable();
-                self.yearInJapanEmpire_LBL_010("(" + nts.uk.time.yearmonthInJapanEmpire(self.B_INP_003_yearMonth()).toString() + ")");
+                self.yearInJapanEmpire_B_LBL_010 = ko.observable();
+                self.yearInJapanEmpire_B_LBL_010("(" + nts.uk.time.yearmonthInJapanEmpire(self.B_INP_003_yearMonth()).toString() + ")");
+                //C
+                self.C_INP_001_yearMonth = ko.observable('2016/12');
+                self.C_INP_001_yearMonth.subscribe(function (newValue) {
+                    self.yearInJapanEmpire_C_LBL_005("(" + nts.uk.time.yearmonthInJapanEmpire(self.C_INP_001_yearMonth()).toString() + ")");
+                });
+                self.yearInJapanEmpire_C_LBL_005 = ko.observable();
+                self.yearInJapanEmpire_C_LBL_005("(" + nts.uk.time.yearmonthInJapanEmpire(self.C_INP_001_yearMonth()).toString() + ")");
+                //002
+                self.C_INP_002_yearMonth = ko.observable('2016/12');
+                self.C_INP_002_yearMonth.subscribe(function (newValue) {
+                    self.yearInJapanEmpire_C_LBL_008("(" + nts.uk.time.yearmonthInJapanEmpire(self.C_INP_002_yearMonth()).toString() + ")");
+                });
+                self.yearInJapanEmpire_C_LBL_008 = ko.observable();
+                self.yearInJapanEmpire_C_LBL_008("(" + nts.uk.time.yearmonthInJapanEmpire(self.C_INP_002_yearMonth()).toString() + ")");
+                //003
+                self.C_INP_003_yearMonth = ko.observable(new Date('2016/12/01'));
+                self.C_INP_003_yearMonth.subscribe(function (newValue) {
+                    self.yearInJapanEmpire_C_LBL_010("(" + nts.uk.time.yearmonthInJapanEmpire(self.C_INP_003_yearMonth()).toString() + ")");
+                });
+                self.yearInJapanEmpire_C_LBL_010 = ko.observable();
+                self.yearInJapanEmpire_C_LBL_010("(" + nts.uk.time.yearmonthInJapanEmpire(self.C_INP_003_yearMonth()).toString() + ")");
             }
             ScreenModel.prototype.openFDialog = function () {
                 var self = this;
@@ -190,7 +351,7 @@ var qpp011;
             };
             return ScreenModel;
         }());
-        b.ScreenModel = ScreenModel;
+        b_1.ScreenModel = ScreenModel;
         var BoxModel = (function () {
             function BoxModel(id, name) {
                 var self = this;
@@ -199,15 +360,7 @@ var qpp011;
             }
             return BoxModel;
         }());
-        b.BoxModel = BoxModel;
-        var ComboboxItemModel = (function () {
-            function ComboboxItemModel(code, name) {
-                this.code = code;
-                this.name = name;
-            }
-            return ComboboxItemModel;
-        }());
-        b.ComboboxItemModel = ComboboxItemModel;
+        b_1.BoxModel = BoxModel;
         var C_SEL_003_ComboboxItemModel = (function () {
             function C_SEL_003_ComboboxItemModel(bankCode, branchCode, lineBankCode, lineBankName) {
                 this.bankCode = bankCode;
@@ -217,7 +370,7 @@ var qpp011;
             }
             return C_SEL_003_ComboboxItemModel;
         }());
-        b.C_SEL_003_ComboboxItemModel = C_SEL_003_ComboboxItemModel;
+        b_1.C_SEL_003_ComboboxItemModel = C_SEL_003_ComboboxItemModel;
         var C_SEL_004_ComboboxItemModel = (function () {
             function C_SEL_004_ComboboxItemModel(code, memo) {
                 this.code = code;
@@ -225,23 +378,27 @@ var qpp011;
             }
             return C_SEL_004_ComboboxItemModel;
         }());
-        b.C_SEL_004_ComboboxItemModel = C_SEL_004_ComboboxItemModel;
-        var GridItemModel_C_LST_001 = (function () {
-            function GridItemModel_C_LST_001(code, name) {
+        b_1.C_SEL_004_ComboboxItemModel = C_SEL_004_ComboboxItemModel;
+        var TreeItem = (function () {
+            function TreeItem(code, name, child, position, displayText, typeBranch) {
+                this.code = code;
+                this.name = name;
+                this.child = child;
+                this.position = position;
+                this.displayText = displayText;
+                this.typeBranch = typeBranch;
+            }
+            return TreeItem;
+        }());
+        b_1.TreeItem = TreeItem;
+        var ComboboxItemModel = (function () {
+            function ComboboxItemModel(code, name) {
                 this.code = code;
                 this.name = name;
             }
-            return GridItemModel_C_LST_001;
+            return ComboboxItemModel;
         }());
-        b.GridItemModel_C_LST_001 = GridItemModel_C_LST_001;
-        var GridItemModel_B_LST_001 = (function () {
-            function GridItemModel_B_LST_001(code, name) {
-                this.code = code;
-                this.name = name;
-            }
-            return GridItemModel_B_LST_001;
-        }());
-        b.GridItemModel_B_LST_001 = GridItemModel_B_LST_001;
+        b_1.ComboboxItemModel = ComboboxItemModel;
     })(b = qpp011.b || (qpp011.b = {}));
 })(qpp011 || (qpp011 = {}));
 ;

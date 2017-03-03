@@ -11,6 +11,8 @@ var qpp011;
                 findAllResidential: "pr/core/residential/findallresidential",
                 findAllLinebank: "basic/system/bank/linebank/findAll",
                 findLinebank: "basic/system/bank/linebank/find",
+                getlistLocation: "pr/core/residential/getlistLocation",
+                currentProcessingNo: "pr/proto/paymentdatemaster/processing/findbylogin",
             };
             /**
              * Get list payment date processing.
@@ -27,6 +29,18 @@ var qpp011;
                 return dfd.promise();
             }
             service.findresidentialTax = findresidentialTax;
+            function getCurrentProcessingNo() {
+                var dfd = $.Deferred();
+                nts.uk.request.ajax(paths.currentProcessingNo)
+                    .done(function (res) {
+                    dfd.resolve(res);
+                })
+                    .fail(function (res) {
+                    dfd.reject(res);
+                });
+                return dfd.promise();
+            }
+            service.getCurrentProcessingNo = getCurrentProcessingNo;
             function findLinebank(lineBankCode) {
                 var dfd = $.Deferred();
                 nts.uk.request.ajax("com", paths.findLinebank + "/" + lineBankCode)
@@ -51,6 +65,18 @@ var qpp011;
                 return dfd.promise();
             }
             service.findAllResidential = findAllResidential;
+            function getlistLocation() {
+                var dfd = $.Deferred();
+                nts.uk.request.ajax(paths.getlistLocation)
+                    .done(function (res) {
+                    dfd.resolve(res);
+                })
+                    .fail(function (res) {
+                    dfd.reject(res);
+                });
+                return dfd.promise();
+            }
+            service.getlistLocation = getlistLocation;
             function findAllLinebank() {
                 var dfd = $.Deferred();
                 nts.uk.request.ajax("com", paths.findAllLinebank)

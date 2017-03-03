@@ -21,9 +21,9 @@ module qpp011.f {
             self.F_LST_001_selectedValue = ko.observableArray([]);
             self.F_LST_001_columns = [
                 { headerText: "resiTaxCode", key: "resiTaxCode", width: "250px", dataType: "string", hidden: true },
-                { headerText: "コード/名称", key: "registeredName", width: "230px", dataType: "string", formatter: registeredNameText },
+                { headerText: "コード/名称", key: "registeredName", width: "230px", dataType: "string", formatter: registeredNameAndCode },
             ];
-            function registeredNameText(val, row) {
+            function registeredNameAndCode(val, row) {
                 return row.resiTaxCode + " " + row.registeredName;
             }
             service.findAllResidential().done(function(data: Array<any>) {

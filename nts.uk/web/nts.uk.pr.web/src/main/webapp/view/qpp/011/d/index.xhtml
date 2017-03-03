@@ -65,7 +65,7 @@
 							<hr style="margin-left: -10px;"></hr>
 							<div class="clearBoth floatLeft">
 								<div id="D_LBL_006" class="floatLeft"
-									data-bind="ntsFormLabel: { }">
+									data-bind="ntsFormLabel: {  }">
 									給与分 <br /> <span>（数値10桁）</span>
 								</div>
 								<div id="D_INP_002">
@@ -154,21 +154,18 @@
 							<hr style="margin-left: -10px;"></hr>
 							<div class="clearBoth floatLeft" style="margin-top: 3px;">
 								<div id="D_LBL_010" data-bind="ntsFormLabel: { }">あて先</div>
-								<div id="D_INP_006">
-									<input
-										data-bind="ntsNumberEditor: {
-											value: taxDemandChargeMoyney,
+								<input id="D_INP_006"
+									data-bind="ntsTextEditor:{
+											value: address,
 											constraint:  '',
 											option: {
-							                    grouplength: 3,
-							                    decimallength: 0,
-							                    currencyformat: 'JPY',
-							                    currencyposition: 'right'
+								            	textmode: 'text',
+								            	textalign: 'left'
 							                },
 											required: false,
 											enable: true,
 											readonly: false}" />
-								</div>
+
 							</div>
 							<div class="clearBoth floatLeft" style="margin-top: 10px;">
 								<div id="D_LBL_011" data-bind="ntsFormLabel: { }">納付期限</div>
@@ -197,7 +194,7 @@
 							</div>
 							<div class="clearBoth floatLeft" style="margin-top: 10px;">
 								<div id="D_LBL_014" class="floatLeft"
-									data-bind="ntsFormLabel: { }">
+									data-bind="ntsFormLabel: {  }">
 									退職手当等支払金額<br /> <span>（数値10桁）</span>
 								</div>
 								<div id="D_INP_009" class="floatLeft">
@@ -218,7 +215,7 @@
 							</div>
 							<div class="clearBoth floatLeft" style="margin-top: 10px;">
 								<div id="D_LBL_015" class="floatLeft"
-									data-bind="ntsFormLabel: { }">
+									data-bind="ntsFormLabel: {  }">
 									特別徴収税額 市民税<br /> <span>（数値10桁）</span>
 								</div>
 								<div id="D_INP_010" class="floatLeft">
@@ -239,7 +236,7 @@
 							</div>
 							<div class="clearBoth floatLeft" style="margin-top: 10px;">
 								<div class="floatLeft" id="D_LBL_016"
-									data-bind="ntsFormLabel: { }">
+									data-bind="ntsFormLabel: {  }">
 									特別徴収税額 県民税<br /> <span>（数値10桁）</span>
 
 								</div>

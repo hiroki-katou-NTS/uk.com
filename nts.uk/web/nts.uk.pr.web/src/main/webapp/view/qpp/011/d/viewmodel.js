@@ -9,9 +9,9 @@ var qpp011;
                 //gridlist data                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                         
                 self.columns_D_LST_001 = [
                     { headerText: "resiTaxCode", key: "resiTaxCode", width: "250px", dataType: "string", hidden: true },
-                    { headerText: "コード/名称", key: "registeredName", width: "230px", dataType: "string", formatter: registeredNameText },
+                    { headerText: "コード/名称", key: "registeredName", width: "230px", dataType: "string", formatter: registeredNameAndCode },
                 ];
-                function registeredNameText(val, row) {
+                function registeredNameAndCode(val, row) {
                     return row.resiTaxCode + " " + row.registeredName;
                 }
                 self.D_LST_001_selectedValue = ko.observableArray([]);
@@ -57,6 +57,7 @@ var qpp011;
                 self.headcount = ko.observable();
                 self.retirementBonusAmout = ko.observable();
                 self.cityTaxMoney = ko.observable();
+                self.address = ko.observable();
                 self.prefectureTaxMoney = ko.observable();
                 self.date_D_INP_007 = ko.observable(new Date());
                 self.yearInJapanEmpire_LBL_012 = ko.observable("(" + nts.uk.time.yearmonthInJapanEmpire(self.date_D_INP_007().toString()).toString() + ")");
@@ -65,6 +66,7 @@ var qpp011;
                     self.taxBonusMoney(newValue ? newValue.taxBonusMoney : null);
                     self.taxOverDueMoney(newValue ? newValue.taxOverDueMoney : null);
                     self.taxDemandChargeMoyney(newValue ? newValue.taxDemandChargeMoyney : null);
+                    self.address(newValue ? newValue.address : null);
                     self.headcount(newValue ? newValue.headcount : null);
                     self.retirementBonusAmout(newValue ? newValue.retirementBonusAmout : null);
                     self.cityTaxMoney(newValue ? newValue.cityTaxMoney : null);
@@ -118,7 +120,7 @@ var qpp011;
             ScreenModel.prototype.UpdateResidentialTax = function (selectedResiTaxCode) {
                 var self = this;
                 var TargetDate = self.D_LBL_018_Year_Month = self.D_LBL_018_Year_Month.replace("/", "");
-                var residentialTax = new d.service.model.residentialTax(selectedResiTaxCode, self.taxPayRollMoney(), TargetDate, self.taxBonusMoney(), self.taxOverDueMoney(), self.taxDemandChargeMoyney(), self.taxDemandChargeMoyney(), new Date(self.date_D_INP_007().toDateString()), self.headcount(), self.retirementBonusAmout(), self.cityTaxMoney(), self.prefectureTaxMoney());
+                var residentialTax = new d.service.model.residentialTax(selectedResiTaxCode, self.taxPayRollMoney(), TargetDate, self.taxBonusMoney(), self.taxOverDueMoney(), self.taxDemandChargeMoyney(), self.address(), new Date(self.date_D_INP_007().toDateString()), self.headcount(), self.retirementBonusAmout(), self.cityTaxMoney(), self.prefectureTaxMoney());
                 d.service.update(residentialTax).done(function (data) {
                     self.currentObject(residentialTax);
                 }).fail(function (res) {
@@ -128,12 +130,14 @@ var qpp011;
             ScreenModel.prototype.CreateResidentialTax = function (selectedResiTaxCode) {
                 var self = this;
                 var TargetDate = self.D_LBL_018_Year_Month = self.D_LBL_018_Year_Month.replace("/", "");
-                var residentialTax = new d.service.model.residentialTax(selectedResiTaxCode, self.taxPayRollMoney(), TargetDate, self.taxBonusMoney(), self.taxOverDueMoney(), self.taxDemandChargeMoyney(), self.taxDemandChargeMoyney(), new Date(self.date_D_INP_007().toDateString()), self.headcount(), self.retirementBonusAmout(), self.cityTaxMoney(), self.prefectureTaxMoney());
-                d.service.add(residentialTax).done(function (data) {
-                    self.currentObject(residentialTax);
-                }).fail(function (res) {
-                    alert(res.message);
-                });
+                var residentialTax = new d.service.model.residentialTax(selectedResiTaxCode, self.taxPayRollMoney(), TargetDate, self.taxBonusMoney(), self.taxOverDueMoney(), self.taxDemandChargeMoyney(), self.address(), new Date(self.date_D_INP_007().toDateString()), self.headcount(), self.retirementBonusAmout(), self.cityTaxMoney(), self.prefectureTaxMoney());
+                if (residentialTax.cityTaxMoney && residentialTax.dueDate && residentialTax.prefectureTaxMoney && residentialTax.resimentTaxCode && residentialTax.retirementBonusAmout && residentialTax.taxBonusMoney && residentialTax.taxDemandChargeMoyney && residentialTax.taxOverDueMoney && residentialTax.taxPayRollMoney && residentialTax.yearMonth) {
+                    d.service.add(residentialTax).done(function (data) {
+                        self.currentObject(residentialTax);
+                    }).fail(function (res) {
+                        alert(res.message);
+                    });
+                }
             };
             ScreenModel.prototype.submitDialog = function () {
                 var self = this;

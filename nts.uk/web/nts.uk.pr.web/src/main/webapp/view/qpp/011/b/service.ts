@@ -6,6 +6,9 @@ module qpp011.b.service {
         findAllResidential: "pr/core/residential/findallresidential",
         findAllLinebank: "basic/system/bank/linebank/findAll",
         findLinebank: "basic/system/bank/linebank/find",
+        getlistLocation: "pr/core/residential/getlistLocation",
+        currentProcessingNo: "pr/proto/paymentdatemaster/processing/findbylogin",
+        
     }
 
     /**
@@ -14,6 +17,17 @@ module qpp011.b.service {
     export function findresidentialTax(resimentTaxCode: string, yearMonth: string): JQueryPromise<any> {
         var dfd = $.Deferred<any>();
         nts.uk.request.ajax(paths.find + "/" + resimentTaxCode + "/" + yearMonth)
+            .done(function(res: any) {
+                dfd.resolve(res);
+            })
+            .fail(function(res) {
+                dfd.reject(res);
+            })
+        return dfd.promise();
+    }
+     export function getCurrentProcessingNo(): JQueryPromise<any> {
+        var dfd = $.Deferred<any>();
+        nts.uk.request.ajax(paths.currentProcessingNo)
             .done(function(res: any) {
                 dfd.resolve(res);
             })
@@ -36,6 +50,17 @@ module qpp011.b.service {
     export function findAllResidential(): JQueryPromise<Array<any>> {
         var dfd = $.Deferred<any>();
         nts.uk.request.ajax(paths.findAllResidential)
+            .done(function(res: Array<any>) {
+                dfd.resolve(res);
+            })
+            .fail(function(res) {
+                dfd.reject(res);
+            })
+        return dfd.promise();
+    }
+    export function getlistLocation(): JQueryPromise<Array<any>> {
+        var dfd = $.Deferred<any>();
+        nts.uk.request.ajax(paths.getlistLocation)
             .done(function(res: Array<any>) {
                 dfd.resolve(res);
             })
