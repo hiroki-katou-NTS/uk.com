@@ -63,7 +63,7 @@ var qmm023;
                     var insertUpdateModel = new InsertUpdateModel(nts.uk.text.padLeft(self.currentTax().code(), '0', 2), self.currentTax().name, self.currentTax().taxLimit);
                     a.service.insertUpdateData(self.isUpdate(), insertUpdateModel).done(function () {
                         $.when(self.getCommuteNoTaxLimitList()).done(function () {
-                            self.currentCode(self.currentTax().code());
+                            self.currentCode(nts.uk.text.padLeft(self.currentTax().code(), '0', 2));
                         });
                         if (self.isUpdate() === false) {
                             self.isUpdate(true);
