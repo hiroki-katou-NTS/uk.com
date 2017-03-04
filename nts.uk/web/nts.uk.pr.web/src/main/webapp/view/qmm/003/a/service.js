@@ -6,7 +6,9 @@ var qmm003;
         (function (service) {
             var paths = {
                 getResidentalTaxList: "pr/core/residential/findallresidential",
-                getRegionPrefecture: "pr/core/residential/getlistLocation"
+                getRegionPrefecture: "pr/core/residential/getlistLocation",
+                addResidential: "pr/core/residential/addresidential",
+                updateResidential: "pr/core/residential/updateresidential"
             };
             /**
              * Get list payment date processing.
@@ -27,14 +29,6 @@ var qmm003;
                 var dfd = $.Deferred();
                 nts.uk.request.ajax(paths.getRegionPrefecture)
                     .done(function (res) {
-                    //                var result = _.map(res, function(region: any) {
-                    //                    region.prefectures=_.map(region, function(obj:model.RegionObject ){
-                    //                         return new model.PrefectureObject(' ',' ');
-                    //                    });
-                    //                   
-                    //                    return new model.RegionObject(region.regionCode, region.regionName, region.prefectures);
-                    //
-                    //                });
                     dfd.resolve(res);
                 })
                     .fail(function (res) {
@@ -43,6 +37,29 @@ var qmm003;
                 return dfd.promise();
             }
             service.getRegionPrefecture = getRegionPrefecture;
+            function addResidential(residential) {
+                var dfd = $.Deferred();
+                nts.uk.request.ajax(paths.addResidential, residential).done(function (res) {
+                    dfd.resolve(res);
+                })
+                    .fail(function (res) {
+                    dfd.reject(res);
+                });
+                return dfd.promise();
+            }
+            service.addResidential = addResidential;
+            function updateData(residential) {
+                var dfd = $.Deferred();
+                nts.uk.request.ajax(paths.updateResidential, residential)
+                    .done(function (res) {
+                    dfd.resolve(res);
+                })
+                    .fail(function (res) {
+                    dfd.reject(res);
+                });
+                return dfd.promise();
+            }
+            service.updateData = updateData;
             var model;
             (function (model) {
                 var ResidentialTax = (function () {
