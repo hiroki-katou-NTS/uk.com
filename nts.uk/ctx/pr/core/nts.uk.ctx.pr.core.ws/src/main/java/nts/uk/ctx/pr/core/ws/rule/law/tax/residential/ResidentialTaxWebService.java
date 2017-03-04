@@ -16,6 +16,7 @@ import nts.uk.ctx.pr.core.app.command.rule.law.tax.residential.UpdateResidential
 import nts.uk.ctx.pr.core.app.command.rule.law.tax.residential.UpdateResidentialTaxCommandHandler;
 import nts.uk.ctx.pr.core.app.find.rule.law.tax.residential.ResidentialTaxDto;
 import nts.uk.ctx.pr.core.app.find.rule.law.tax.residential.ResidentialTaxFinder;
+import nts.uk.shr.com.context.AppContexts;
 
 @Path("pr/core/residential")
 @Produces("application/json")
@@ -32,14 +33,20 @@ public class ResidentialTaxWebService extends WebService {
 	@POST
 	@Path("findallresidential")
 	public List<ResidentialTaxDto> getAllResidential() {
-//		 this.finder.getAllResidentialTax()
-//			.stream().collect(Collectors.groupingBy(e -> e.getPrefectureCode(), Collectors.toList()));
 		return this.finder.getAllResidentialTax();
+	}
+// companyCode =0000
+	@POST
+	@Path("findallByCompanyCode")
+	public List<ResidentialTaxDto> getAllResidentialByCompanyCode() {
+		String companyCode = "0000";
+		return this.finder.getAllResidentialTax(companyCode);
 	}
 
 	@POST
 	@Path("addresidential")
 	public void addResidential(AddResidentialTaxCommand command) {
+		//String companyCode = AppContexts.user().companyCode();
 		this.addData.handle(command);
 	}
 

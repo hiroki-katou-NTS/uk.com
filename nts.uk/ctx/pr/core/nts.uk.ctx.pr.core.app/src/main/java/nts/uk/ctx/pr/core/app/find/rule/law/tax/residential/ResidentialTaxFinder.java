@@ -23,12 +23,11 @@ public class ResidentialTaxFinder {
 		String companyCode= AppContexts.user().companyCode();
 		List<ResidentialTaxDto> allResidential = this.resiTaxRepository.getAllResidentialTax(companyCode).stream().map(c -> ResidentialTaxDto.fromDomain(c))
 		.collect(Collectors.toList());
-		//11.初期データ取得処理 11. Initial data acquisition processing [住民税納付先マスタ.SEL-1] 
-//		if(allResidential.isEmpty()){
-//			companyCode="0000";
-//			allResidential = this.resiTaxRepository.getAllResidentialTax(companyCode).stream().map(c -> ResidentialTaxDto.fromDomain(c))
-//					.collect(Collectors.toList());
-//		}
+		return allResidential;
+	}
+	public List<ResidentialTaxDto> getAllResidentialTax(String companyCode){
+		List<ResidentialTaxDto> allResidential = this.resiTaxRepository.getAllResidentialTax(companyCode).stream().map(c -> ResidentialTaxDto.fromDomain(c))
+		.collect(Collectors.toList());
 		return allResidential;
 	}
 	// SEL2 get data by companyCode, resiTaxCode, resiTaxReportCode, purpose: check obj is not use or use in order to delete

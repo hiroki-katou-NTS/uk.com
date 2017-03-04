@@ -9,7 +9,6 @@
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
 			<com:ValidatorScript>
-					nts.uk.ctx.pr.core.dom.layout.LayoutName
 					nts.uk.ctx.pr.core.dom.rule.law.tax.residential.ResiTaxCode
 					nts.uk.ctx.pr.core.dom.rule.law.tax.residential.ResiTaxAutonomy
 					nts.uk.shr.com.primitive.Memo
@@ -31,7 +30,7 @@
 		<div id="functions-area">
 <!-- 		data-bind="click: resetData" -->
 				<button id="A_BTN_001" class="group-button-1 " data-bind="click: resetData">新規</button>
-				<button id="A_BTN_002" class="proceed group-button-1">登録</button>
+				<button id="A_BTN_002" class="proceed group-button-1" data-bind="click: ClickRegister, enable: $root.errors.isEmpty">登録</button>
 				<button id="A_BTN_003" class="group-button-1">印刷（PDF）</button>
 				<button id="A_BTN_004" class="group-button-1" data-bind="click: openEDialog">納付先の統合</button>
 				<button id="A_BTN_008" class="group-button-1">マスタ修正ログ</button>
@@ -148,7 +147,7 @@
 										<button id="A_BTN_009" data-bind="click: openCDialog" class="small">参照</button>													 		
 									</th>										
 									<th colspan="2">
- 			 							 <label id="A_LBL_012"  data-bind="text: currentResi().resiTaxReportCode"> 062014 山形市 </label>					
+ 			 							 <label id="A_LBL_012"  data-bind="text: residentialReportCode()"></label>					
 									</th>							
 								</tr>							
 								<!--  2  -->
@@ -204,20 +203,19 @@
 							<tr style="margin-top: 5px;">
 								<th colspan="1" class="th">
 									<div class="form-label" data-bind="ntsFormLabel:{constraint: 'CompanySpecifiedNo'}"
-										style="margin-top: 5px;">
+										style="margin-top: 5px; width: 200px">
 										<label id="A_LBL_007">指定番号</label>
 									</div>
 								</th>
 
-								<th colspan="2" >
+								<th colspan="2" class='th' >
 								<div data-bind="with: currentResidential">
 										<input id="A_INP_006" class="input-table" data-bind="ntsTextEditor: {
 												value: companySpecifiedNo,
 												constraint: 'CompanySpecifiedNo',
 												required: true,
 												enable: true,
-												readonly: false }" />									
-<!-- 								<input	id="A_INP_006" class="input-table" /> -->
+												readonly: false }" />
 								
 								</div>
 								</th>
@@ -232,7 +230,7 @@
 									</div>
 								</th>
 
-								<th colspan="2">
+								<th colspan="2" class='th'>
 								<div data-bind="with: currentResidential">
 										<input id="A_INP_007" class="input-table" data-bind="ntsTextEditor: {
 												value: cordinatePostalCode,
@@ -262,8 +260,7 @@
 												constraint: 'CordinatePostOffice',
 												required: true,
 												enable: true,
-												readonly: false }" />									
-<!-- 								<input id="A_INP_008" class="input-table"/> -->
+												readonly: false }" />				
 								</div>
 								</th>
 							</tr>

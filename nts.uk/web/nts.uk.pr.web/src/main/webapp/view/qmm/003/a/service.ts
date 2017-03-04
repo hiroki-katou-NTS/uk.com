@@ -1,7 +1,9 @@
 module qmm003.a.service {
     var paths = {
         getResidentalTaxList: "pr/core/residential/findallresidential",
-        getRegionPrefecture: "pr/core/residential/getlistLocation"
+        getRegionPrefecture: "pr/core/residential/getlistLocation",
+        addResidential: "pr/core/residential/addresidential",
+        updateResidential: "pr/core/residential/updateresidential"
     }
 
     /**
@@ -22,14 +24,27 @@ module qmm003.a.service {
         var dfd = $.Deferred<Array<model.RegionObject>>();
         nts.uk.request.ajax(paths.getRegionPrefecture)
             .done(function(res: Array<model.RegionObject>) {
-//                var result = _.map(res, function(region: any) {
-//                    region.prefectures=_.map(region, function(obj:model.RegionObject ){
-//                         return new model.PrefectureObject(' ',' ');
-//                    });
-//                   
-//                    return new model.RegionObject(region.regionCode, region.regionName, region.prefectures);
-//
-//                });
+                dfd.resolve(res);
+            })
+            .fail(function(res) {
+                dfd.reject(res);
+            })
+        return dfd.promise();
+    }
+    export function addResidential(residential: model.ResidentialTax) {
+        var dfd = $.Deferred<Array<any>>();
+        nts.uk.request.ajax(paths.addResidential, residential).done(function(res: Array<any>) {
+            dfd.resolve(res);
+        })
+            .fail(function(res) {
+                dfd.reject(res);
+            })
+        return dfd.promise();
+    }
+    export function updateData(residential: model.ResidentialTax) {
+        let dfd = $.Deferred<Array<any>>();
+        nts.uk.request.ajax(paths.updateResidential, residential)
+            .done(function(res: Array<any>) {
                 dfd.resolve(res);
             })
             .fail(function(res) {
@@ -74,7 +89,7 @@ module qmm003.a.service {
             contructor(regionCode: string, regionName: string, prefectures: Array<PrefectureObject>) {
                 this.regionCode = regionCode;
                 this.regionName = regionName;
-                this.prefectures=prefectures;
+                this.prefectures = prefectures;
             }
         }
 
