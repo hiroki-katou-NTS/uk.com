@@ -52,11 +52,6 @@ public class JpaResidentialTaxRepository extends JpaRepository implements Reside
 	public List<ResidentialTax> getAllResidentialTax(String companyCode) {
 		List<ResidentialTax> list= this.queryProxy().query(SEL_1, QtxmtResidentialTax.class).setParameter("companyCd", companyCode)
 				.getList(c -> toDomain(c));
-		if(list.isEmpty()){
-			companyCode="0000";
-			list = this.queryProxy().query(SEL_1, QtxmtResidentialTax.class).setParameter("companyCd", companyCode)
-					.getList(c -> toDomain(c));
-		}
 		return list;
 	}
 
@@ -100,7 +95,6 @@ public class JpaResidentialTaxRepository extends JpaRepository implements Reside
 				.getSingle(c -> toDomain(c));
 
 	}
-
 	// @Override
 	// public void delete(String resiTaxCode, String resiTaxReportCode) {
 	// // TODO Auto-generated method stub
