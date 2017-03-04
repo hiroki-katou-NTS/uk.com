@@ -28,15 +28,32 @@ public class AddResidentialTaxCommandHandler extends CommandHandler<AddResidenti
 	protected void handle(CommandHandlerContext<AddResidentialTaxCommand> context) {
 		String companyCode = AppContexts.user().companyCode();
 		AddResidentialTaxCommand add = context.getCommand();
+//		add.setCompanyAccountNo("1111");
+//		add.setCompanySpecifiedNo("111");
+//		add.setCordinatePostalCode("111");
+//		add.setCordinatePostOffice("â");
+//		add.setMemo("aaaaa");
+//		add.setPrefectureCode("067880");
+//		add.setRegisteredName("bbbb");
+//		add.setResiTaxAutonomy("aaaaa");
+//		add.setResiTaxCode("1111");
+//		add.setResiTaxReportCode("11111");
+//		add.setCompanyCode("0000");
+
 		List<ResidentialTax> listResiTax = this.repo.getAllResidentialTax(companyCode);
 		//ERROR5 resiTaxCode duplicate 
 		boolean error = true;
 		for(int i = 0; i < listResiTax.size(); i++){
-			if(listResiTax.get(i).getResiTaxCode().toString() == add.getResiTaxCode()){ 
-				error = false; break;
+			System.out.println(listResiTax.get(i).getResiTaxCode().toString());
+			System.out.println(add.getResiTaxCode().toString());
+			if(listResiTax.get(i).getResiTaxCode().toString().equals(add.getResiTaxCode().toString())){ 
+				error = false;
+				System.out.println(error);
+				break;
 			}
 		}
-		if(error = true){
+		System.out.println(error);
+		if(error){
 			
 			this.repo.add(ResidentialTax.createFromJavaType(companyCode, add.getCompanyAccountNo(), add.getCompanySpecifiedNo(),
 					add.getCordinatePostOffice(), add.getCordinatePostalCode(), add.getMemo(), 

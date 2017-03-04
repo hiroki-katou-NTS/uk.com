@@ -86,7 +86,7 @@
 }
 #A_INP_009 {
 	margin-top: 5px;
-	width: 400px;
+	width: 400px !important;
 	height: 150px;
 }
  #contents-area > div.nts-left-content > div > div:nth-child(3){

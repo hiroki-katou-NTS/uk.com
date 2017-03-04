@@ -1,8 +1,8 @@
 module qmm003.b.viewmodel {
     export class ScreenModel {
-        items: any;
-        singleSelectedCode: any;
-        filteredData: any;
+        items:  KnockoutObservableArray<Node>;
+        singleSelectedCode: KnockoutObservable<string>;
+        filteredData:  KnockoutObservableArray<Node> =  ko.observableArray([]);
         currentNode: KnockoutObservable<Node>;
         testNode = [];
         nodeRegionPrefectures: KnockoutObservableArray<Node> = ko.observableArray([]);
@@ -45,10 +45,9 @@ module qmm003.b.viewmodel {
         init(): void {
             let self = this;
             self.items = ko.observableArray([]);
-
-            self.singleSelectedCode = ko.observable(null);
-            self.filteredData = ko.observableArray(nts.uk.util.flatArray(self.items(), "childs"));
-            self.currentNode = ko.observable(new Node("", "", []));
+            self.singleSelectedCode = ko.observable(nts.uk.ui.windows.getShared("singleSelectedCode"));
+            //self.filteredData = ko.observableArray(nts.uk.util.flatArray(self.items(), "childs"));
+            self.currentNode = ko.observable((new Node("", "", [])));
         }
         register(): void {
 
@@ -78,15 +77,17 @@ module qmm003.b.viewmodel {
         start(): JQueryPromise<any> {
             var dfd = $.Deferred<any>();
             let self = this;
-            (qmm003.a.service.getResidentialTax()).done(function(data: Array<qmm003.a.service.model.ResidentialTax>) {
+            (qmm003.b.service.getResidentialTax()).done(function(data: Array<qmm003.b.service.model.ResidentialTax>) {
                 if (data.length > 0) {
                     self.residentalTaxList(data);
-                    (qmm003.a.service.getRegionPrefecture()).done(function(locationData: Array<service.model.RegionObject>) {
+                    (qmm003.b.service.getRegionPrefecture()).done(function(locationData: Array<service.model.RegionObject>) {
                         self.japanLocation = locationData;
                         self.itemPrefecture(self.precfecture);
                         console.log(self.itemPrefecture());
                         self.buildResidentalTaxTree();
-                        self.filteredData = ko.observableArray(nts.uk.util.flatArray(self.nodeRegionPrefectures(), "childs"));
+                        let node: Array<Node> = [];
+                        node = nts.uk.util.flatArray(self.nodeRegionPrefectures(), "childs");
+                        self.filteredData(node);
                         self.items(self.nodeRegionPrefectures());
                     });
                     }

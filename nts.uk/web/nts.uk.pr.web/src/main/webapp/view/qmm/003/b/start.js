@@ -6,7 +6,9 @@ var qmm003;
         (function (start) {
             __viewContext.ready(function () {
                 var screenModel = new qmm003.b.viewmodel.ScreenModel();
-                __viewContext.bind(screenModel);
+                screenModel.start().done(function () {
+                    __viewContext.bind(screenModel);
+                });
             });
         })(start = b.start || (b.start = {}));
     })(b = qmm003.b || (qmm003.b = {}));

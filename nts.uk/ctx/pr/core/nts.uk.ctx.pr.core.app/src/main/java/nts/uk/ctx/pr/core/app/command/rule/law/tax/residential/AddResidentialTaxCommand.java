@@ -4,6 +4,7 @@
 package nts.uk.ctx.pr.core.app.command.rule.law.tax.residential;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.uk.ctx.pr.core.dom.rule.law.tax.residential.ResidentialTax;
 
 /**
@@ -12,6 +13,7 @@ import nts.uk.ctx.pr.core.dom.rule.law.tax.residential.ResidentialTax;
  *
  */
 @Getter
+@Setter
 public class AddResidentialTaxCommand {
 	private String resiTaxCode;
 	private String resiTaxAutonomy;
@@ -23,6 +25,7 @@ public class AddResidentialTaxCommand {
 	private String cordinatePostalCode;
 	private String cordinatePostOffice;
 	private String memo;
+	private String companyCode;
 	/**
 	 * Convert to domain object from command values
 	 * @return ResidentialTax
