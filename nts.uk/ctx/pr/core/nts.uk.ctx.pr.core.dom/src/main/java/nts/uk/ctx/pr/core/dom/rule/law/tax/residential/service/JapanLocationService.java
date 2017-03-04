@@ -81,13 +81,4 @@ public class JapanLocationService {
 		result.add(new RegionObject("8", "四国",region));
 		return result;
 	}
-//	 public static void main(String[] args) {
-//		 List<RegionObject> result = new ArrayList<>();
-//		 result = JapanLocationService.getJapanLocation();
-//		 for(int i = 0; i< result.size(); i++){
-//			 System.out.println(result.get(i).getRegionCode());
-//			 
-//		 }
-//	        
-//	    }
 }
