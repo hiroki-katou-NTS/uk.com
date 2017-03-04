@@ -12,6 +12,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import nts.arc.time.GeneralDate;
 
 @Getter
 @Setter
@@ -26,11 +27,11 @@ public class CmnmtJobHist {
 
 	@Basic(optional = false)
 	@Column(name = "STR_D")
-	public String startDate;
+	public GeneralDate startDate;
 	
 	@Basic(optional = false)
 	@Column(name = "END_D")
-	public String endDate;
+	public GeneralDate endDate;
 
 	@Basic(optional = false)
 	@Column(name = "EXCLUS_VER")

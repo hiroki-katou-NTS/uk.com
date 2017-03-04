@@ -22,13 +22,16 @@ public class DeletePositionCommand {
 	private String jobOutCode;
 
 	private String memo;
-
+	
+	private String hiterarchyOrderCode;
 	
 	public JobTitle toDomain(){
-		return JobTitle.createSimpleFromJavaType(AppContexts.user().companyCode(),
+		return JobTitle.createFromJavaType(this.jobName,this.jobCode,this.jobOutCode,
 				this.historyId, 
-				this.jobCode,this.jobName,
-				this.presenceCheckScopeSet,
-				this.jobOutCode,this.memo);
+				AppContexts.user().companyCode(),
+				this.memo,
+				this.hiterarchyOrderCode,
+				this.presenceCheckScopeSet);
+				
 	}
 }

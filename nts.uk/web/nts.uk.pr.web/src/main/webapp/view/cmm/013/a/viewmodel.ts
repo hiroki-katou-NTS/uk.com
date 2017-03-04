@@ -44,6 +44,8 @@ module cmm013.a.viewmodel {
         selectedId: KnockoutObservable<any>;
         enable: KnockoutObservable<boolean>;
         
+         singleSelectedCode: KnockoutObservable<string>;
+        
         constructor() {
             var self = this;
 
@@ -118,6 +120,8 @@ module cmm013.a.viewmodel {
                 return dfd.promise();
                 }           
             }));
+            
+            self.singleSelectedCode = ko.observable(null);
             
                //inp_x - get detail position
             self.currentCode.subscribe((function(codeChanged) {
@@ -242,17 +246,31 @@ module cmm013.a.viewmodel {
 
         }
         
+        
+         openCDialog() {
+            var self = this;
+            if (self.singleSelectedCode() == null)
+                return false;
+            var singleSelectedCode = self.singleSelectedCode().split(';');
+            nts.uk.ui.windows.setShared('testdatashare', "data share");
+            nts.uk.ui.windows.sub.modal('/view/cmm/013/c/index.xhtml', { title: '明細レイアウトの作成＞履歴追加' }).onClosed(function(): any {
+                //self.start(self.singleSelectedCode());
+            });
+        }
+
+        openDDialog() {
+            var self = this;
+            if (self.singleSelectedCode() === null)
+                return false;
+            var singleSelectedCode = self.singleSelectedCode().split(';');
+            nts.uk.ui.windows.setShared('testshare', "test share1");
+            nts.uk.ui.windows.sub.modal('/view/cmm/013/d/index.xhtml', { title: '明細レイアウトの作成＞履歴の編集' }).onClosed(function(): any {
+                //self.start(self.singleSelectedCode());
+            });
+        }
 
         
-        openBDialog() {
-            nts.uk.ui.windows.sub.modal('/view/cmmhoa/013/b/index.xhtml', { title: '画面ID：B', });
-        }
-        openCDialog() {
-            nts.uk.ui.windows.sub.modal('/view/cmmhoa/013/c/index.xhtml', { title: '画面ID：c', });
-        }
-        openDDialog() {
-            nts.uk.ui.windows.sub.modal('/view/cmmhoa/013/d/index.xhtml', { title: '画面ID：D', });
-        }
+
     }
 
     export class Labels {

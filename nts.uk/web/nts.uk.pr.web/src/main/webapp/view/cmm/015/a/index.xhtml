@@ -7,70 +7,123 @@
 <body>
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
+		   	<com:ValidatorScript>
+					nts.uk.ctx.basic.dom.organization.payclassification.PayClassificationCode
+					nts.uk.ctx.basic.dom.organization.payclassification.PayClassificationName
+			</com:ValidatorScript>
 			<com:stylefile path="main.css" />
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="start.js" />
 			<com:scriptfile path="viewmodel.js" />
 			<com:scriptfile path="service.js" />
 			<script type="text/javascript">
-					__viewContext.primitiveValueConstraints.ClassificationCode = {
-							valueType: 'String',
-							charType: 'Numeric',
-							maxLength: 10,
-						};
-					
-					__viewContext.primitiveValueConstraints.ClassificationName = {
-							valueType: 'String',
-							charType: 'String',
-							maxLength: 20,
-						};
-				</script>
+			__viewContext.primitiveValueConstraints.Memo = {
+					valueType: 'String',
+					charType: 'AnyHalfWidth',
+					maxLength: 500,
+				};
+			</script>
 		</ui:define>
 
 		<ui:define name="content">
+
 			<div id="functions-area" class="divHeader">
-				<button id="BTN_001" class="btnStyle">新規</button>
-				<button id="BTN_002" class="proceed btnStyle">登録</button>
-				<button id="BTN_003">マスタ修正ログ</button>
-				<button id="BTN_004" class="danger btnStyle" >削除</button>
-				<label id="LBL_001">分類情報の登録</label>
+				<button id="A_BTN_001" data-bind="click: initRegisterPayClassification"
+					class="btnStyle">新規</button>
+				<button id="A_BTN_002" data-bind="click: RegisterPayClassification"
+					class="proceed btnStyle">登録</button>
+				<button id="A_BTN_003">マスタ修正ログ</button>
+				<button id="A_BTN_004" data-bind="click: DeletePayClassification"
+					class="danger btnStyle">削除</button>
+
 			</div>
+
 			<div id="contents-area">
-				<div class="relative bg-green caret-right caret-background">
-    				<i class="icon icon-searchbox"></i>
-					<div class = "search-line">
-					
+				<div id="left-content" class="bg-green caret-right caret-background">
+
+					<i class="icon icon-searchbox"></i>
+
+					<div class="cf">
+						<div style="float: left">
+							<div id="test"
+								data-bind="ntsSearchBox: {
+                                    comId: 'single-list',
+                                    items: dataSource,         
+                                    selected: currentCode, 
+                                    selectedKey: 'payClassificationCode', 
+                                    childField: 'childs', 
+                                    fields: ['payClassificationName', 'payClassificationCode']}" />
+							<br />
+							<table id="single-list"
+								data-bind="ntsGridList: {
+                                            width: 300,
+                                            height: 400,
+                                            options: dataSource,
+                                            optionsValue: 'payClassificationCode',
+                                            columns: columns,
+                                            multiple: false,
+                                            value: currentCode}"
+								class="cf">
+							</table>
+						</div>
 					</div>
 				</div>
-				<div class = "right-area">
-					<div class = "code-name-area">
-						<div data-bind="ntsFormLabel: { constraint: 'ClassificationCode', required: true }">コード/名称</div>
-						<div data-bind="with: texteditorcode">
-							<input data-bind="ntsTextEditor: {
-							value: value,
-							constraint: ClassificationCode,
-							required: required,
-							enable: enable}" />
-						</div>
-						<div data-bind="with: texteditorname">
-							<input data-bind="ntsTextEditor: {
-							value: value,
-							constraint: constraint,
-							required: required,
-							enable: enable}" />
-						</div>
-					</div>
-					<div class = "memo-area">
-					<div data-bind="ntsFormLabel: {}">メモ</div>
-						<div data-bind="with: multilineeditor">
-							<textarea data-bind="ntsMultilineEditor: {
-							value: value,
-							constraint: constraint,
-							option: option,
-							enable: enable,
-							readonly: readonly}" />
-						</div>
-					</div>
+
+				<div id="right-content">
+					<table class="table_content">
+						<colgroup>
+							<col width="230px" />
+							<col width="*" />
+						</colgroup>
+
+						<tr>
+							<td class="row_1">
+								<div
+									data-bind="ntsFormLabel: { constraint: ['PayClassificationCode', 'PayClassificationName'], required: true }">
+									コード/名称</div>
+
+
+							</td>
+							<td class="valign-center">
+								<div>
+									<div class="input_002">
+										<input
+											data-bind="ntsTextEditor: {
+                                            value: INP_002_code,
+                                            constraint: 'PayClassificationCode',
+                                            enable: INP_002_enable}" />
+									</div>
+
+									<div class="input_002">
+										<input
+											data-bind="ntsTextEditor: {
+                                            value: INP_003_name,
+                                            constraint: 'PayClassificationName'
+                                            
+                                            }" />
+									</div>
+
+								</div>
+							</td>
+						</tr>
+
+						<tr>
+							<td>
+								<div data-bind="ntsFormLabel: {constraint: 'Memo'}">
+									<label id="A_LBL_003">メモ</label>
+								</div>
+							</td>
+							<td class="valign-center">
+								<div>
+									<textarea id ="memo"
+										data-bind="ntsMultilineEditor: {
+											value: INP_004_notes,
+											constraint: 'Memo'
+											}" />
+								</div>
+							</td>
+						</tr>
+					</table>
 				</div>
 			</div>
 		</ui:define>

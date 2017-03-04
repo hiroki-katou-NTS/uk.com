@@ -46,6 +46,9 @@ var cmm013;
                 return dfd.promise();
             }
             service.updatePosition = updatePosition;
+            /**
+            * delete Position
+            */
             function deletePosition(position) {
                 var dfd = $.Deferred();
                 nts.uk.request.ajax("com", paths.deletePosition, position).done(function (res) {
@@ -57,6 +60,9 @@ var cmm013;
                 return dfd.promise();
             }
             service.deletePosition = deletePosition;
+            /**
+            * get all history
+            */
             function getAllHistory() {
                 var dfd = $.Deferred();
                 nts.uk.request.ajax("com", paths.getAllHistory)

@@ -7,7 +7,7 @@
         updatePosition: "basic/position/updatePosition",
         getAllHistory: "basic/position/getallhist"
         
-  
+
     }
     export function findAllPosition(historyId: string): JQueryPromise<Array<any>> {
         var dfd = $.Deferred<Array<any>>();
@@ -21,7 +21,7 @@
         return dfd.promise();
     }
     
-
+  
     
     export function addPosition(position: viewmodel.model.DeletePositionCommand){
         var dfd = $.Deferred<Array<any>>();
@@ -35,7 +35,7 @@
         return dfd.promise();
      }
 
- 
+  
 
     export function updatePosition(position: viewmodel.model.ListPositionDto) {
         var dfd = $.Deferred<Array<any>>();
@@ -51,7 +51,9 @@
         return dfd.promise();
     }
 
- 
+    /**
+    * delete Position
+    */
 
     export function deletePosition(position: viewmodel.model.DeletePositionCommand) {
         var dfd = $.Deferred<Array<any>>();
@@ -66,7 +68,9 @@
         return dfd.promise();
     }
     
-
+     /**
+     * get all history
+     */
     export function getAllHistory():JQueryPromise<Array<any>> {
         var dfd = $.Deferred<Array<any>>();
         nts.uk.request.ajax("com",paths.getAllHistory)
@@ -79,6 +83,6 @@
         return dfd.promise();
     }
 
-
+    //model
 
 }

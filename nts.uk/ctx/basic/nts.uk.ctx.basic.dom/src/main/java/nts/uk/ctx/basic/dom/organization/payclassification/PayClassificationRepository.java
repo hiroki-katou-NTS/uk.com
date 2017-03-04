@@ -46,7 +46,7 @@ public interface PayClassificationRepository {
 
 
 	Optional<PayClassification> findSinglePayClassification(String companyCode,
-			PayClassificationCode payClassificationCode);
+			String payClassificationCode);
 
 	void remove(String companyCode, PayClassificationCode payClassificationCode);
 }

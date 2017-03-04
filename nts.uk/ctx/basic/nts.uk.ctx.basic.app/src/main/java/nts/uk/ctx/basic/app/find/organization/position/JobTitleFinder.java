@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.basic.dom.organization.position.JobTitle;
 import nts.uk.ctx.basic.dom.organization.position.PositionRepository;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -13,15 +14,23 @@ public class JobTitleFinder {
 
 	@Inject
 	private PositionRepository repository;
-	private String companyCode = AppContexts.user().companyCode();
 		
-	public List<JobTitleDto> findAllPosition(String historyId){
-		
-		List<JobTitleDto> lst = this.repository.findAllPosition(companyCode,historyId)
-				.stream()
-				.map(c->JobTitleDto.fromDomain(c))
-				.collect(Collectors.toList());
-		return lst;
+	public List<JobTitleDto> findAllPosition(String historyId) {
+		String companyCode = AppContexts.user().companyCode();
+		return repository.findAllPosition(companyCode,historyId)
+				.stream().map(e->{return convertToDto(e);}).collect(Collectors.toList());
 	}
+
+	private JobTitleDto convertToDto(JobTitle position) {
+		JobTitleDto positionDto = new JobTitleDto();
+		positionDto.setJobCode(position.getJobCode().v());
+		positionDto.setHistoryId(position.getHistoryId());
+		positionDto.setMemo(position.getMemo().v());
+		positionDto.setJobOutCode(position.getJobOutCode().v());
+		positionDto.setHiterarchyOrderCode(position.getHiterarchyOrderCode().v());
+		positionDto.setPresenceCheckScopeSet(position.getPresenceCheckScopeSet().value);
+		return positionDto;
+	}
+
 	
 }

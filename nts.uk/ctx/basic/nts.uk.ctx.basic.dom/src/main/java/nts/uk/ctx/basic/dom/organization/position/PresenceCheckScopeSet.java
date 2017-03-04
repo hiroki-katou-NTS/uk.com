@@ -1,7 +1,5 @@
 package nts.uk.ctx.basic.dom.organization.position;
-import lombok.AllArgsConstructor;
 
-@AllArgsConstructor
 public enum PresenceCheckScopeSet {
 	EveryoneCanSee(0),
 	NotVisibleToEveryone(1),
@@ -9,5 +7,10 @@ public enum PresenceCheckScopeSet {
 
 	public final int value;
 
+	private PresenceCheckScopeSet(int value) {
+		this.value = value;
+	}
+
+	
 
 }

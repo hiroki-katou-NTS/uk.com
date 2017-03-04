@@ -1,10 +1,10 @@
-//package nts.uk.ctx.basic.app.command.position.hoatt;
+//package nts.uk.ctx.basic.app.command.organization.position;
 //
 //import java.time.LocalDateTime;
 //import lombok.Getter;
 //import lombok.Setter;
 //import nts.arc.time.GeneralDateTime;
-//import nts.uk.ctx.basic.dom.organization.position.hoatt.JobTitle;
+//import nts.uk.ctx.basic.dom.organization.position.JobTitle;
 //import nts.uk.shr.com.context.AppContexts;
 //
 //@Getter

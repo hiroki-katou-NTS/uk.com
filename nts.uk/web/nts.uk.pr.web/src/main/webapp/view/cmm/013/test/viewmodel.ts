@@ -1,7 +1,7 @@
 module cmm013.test.viewmodel {
 
     export class ScreenModel {
-        //A_label_x
+        
         label_002: KnockoutObservable<Labels>;
         label_003: KnockoutObservable<Labels>;
         label_004: KnockoutObservable<Labels>;
@@ -9,8 +9,9 @@ module cmm013.test.viewmodel {
         label_006: KnockoutObservable<Labels>;
         test: KnockoutObservable<string>;
         
+        radiobox: KnockoutObservable<RadioBox>;
         radiobox_2: KnockoutObservable<RadioBox2>;
-        //A_inp_x
+        
         inp_002: KnockoutObservable<string>;
         inp_002_enable: KnockoutObservable<boolean>;
         inp_003: KnockoutObservable<string>;
@@ -22,28 +23,26 @@ module cmm013.test.viewmodel {
         sel_0023: KnockoutObservable<SwitchButton>;
         sel_0024: KnockoutObservable<SwitchButton>;
         
-        //A_lst_001 - list history
-        listbox: KnockoutObservableArray<service.model.ListHistoryDto>;
+        listbox: KnockoutObservableArray<model.ListHistoryDto>;
         itemName: KnockoutObservable<string>;
         selectedCode: KnockoutObservable<any>
         isEnable: KnockoutObservable<boolean>;
-        itemHist: KnockoutObservable<service.model.ListHistoryDto>;
+        itemHist: KnockoutObservable<model.ListHistoryDto>;        
         index_selected: KnockoutObservable<any>;
         
-        //lst_002 - list position 
         currentCode: KnockoutObservable<any>;        
-        dataSource: KnockoutObservableArray<service.model.ListPositionDto>;
-        columns: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;       
-                
+        dataSource: KnockoutObservableArray<model.ListPositionDto>;
+        columns: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
+        
+        
+        
         currentCodeList: KnockoutObservableArray<any>;
-        currentItem: KnockoutObservable<service.model.ListPositionDto>;
+        currentItem: KnockoutObservable<model.ListPositionDto>;
         index_of_itemDelete: any;
         
-        //A_SEL_001
         itemList: KnockoutObservableArray<any>;
         selectedId: KnockoutObservable<any>;
         enable: KnockoutObservable<boolean>;
-        
         constructor() {
             var self = this;
 
@@ -52,7 +51,7 @@ module cmm013.test.viewmodel {
             self.label_004 = ko.observable(new Labels());
             self.label_005 = ko.observable(new Labels());
             self.label_006 = ko.observable(new Labels());
-            self.radiobox_2 = ko.observable(new RadioBox2());
+            self.radiobox = ko.observable(new RadioBox());
             
             self.inp_002 = ko.observable(null);
             self.inp_002_enable = ko.observable(false);
@@ -65,20 +64,20 @@ module cmm013.test.viewmodel {
             self.sel_0024 = ko.observable(new SwitchButton);
             self.test = ko.observable('2');
             
-            //lst_001
+            
             self.listbox = ko.observableArray([]);
-            self.selectedCode = ko.observable(''); 
+            self.selectedCode = ko.observable(null); 
             self.isEnable = ko.observable(true);    
             self.itemHist = ko.observable(null);
             self.itemName = ko.observable('');
             self.index_selected = ko.observable('');
             
-            
-            //lst_002
+          
             self.dataSource = ko.observableArray([]);
             self.currentItem = ko.observable(null);
             self.itemName = ko.observable('');
             self.currentCode = ko.observable();           
+            //self.multilineeditor = ko.observable(null);           
             self.currentCodeList = ko.observableArray([]);
             self.columns = ko.observableArray([
                 { headerText: 'コード', key: 'jobCode', width: 80 },
@@ -86,30 +85,27 @@ module cmm013.test.viewmodel {
 
             ]);
             
-            //A_SEL_001
             self.itemList = ko.observableArray([
                 new BoxModel(0, '全員参照可能'),
                 new BoxModel(1, '全員参照不可'),
                 new BoxModel(2, 'ロール毎に設定')
             ]);
-            self.selectedId = ko.observable();
-            self.enable = ko.observable(true);
-            
             self.selectedCode.subscribe((function(codeChanged){
                 self.itemHist(self.findHist(codeChanged));
                 if (self.itemHist() != null) {
                 self.index_selected(self.itemHist().historyId);
                     console.log(self.index_selected());
-                    //get position by historyId
+                   
                 var dfd = $.Deferred();
                 service.findAllPosition(self.index_selected())
-                    .done(function(position_arr: Array<service.model.ListPositionDto>) {
+                    .done(function(position_arr: Array<model.ListPositionDto>) {
                         self.dataSource(position_arr);
                         self.currentCode(self.dataSource()[0].jobCode);
                         self.inp_002(self.dataSource()[0].jobCode);
                         self.inp_003(self.dataSource()[0].jobName);
                         self.inp_005(self.dataSource()[0].memo);
                         self.selectedId(self.dataSource()[0].presenceCheckScopeSet);
+
                     }).fail(function(error){
                         alert(error.message);
 
@@ -119,7 +115,6 @@ module cmm013.test.viewmodel {
                 }           
             }));
             
-               //inp_x - get detail position
             self.currentCode.subscribe((function(codeChanged) {
                 self.currentItem(self.findPosition(codeChanged));
                 if (self.currentItem() != null) {
@@ -127,33 +122,16 @@ module cmm013.test.viewmodel {
                     self.inp_003(self.currentItem().jobName);
                     self.inp_005(self.currentItem().memo);
                     self.selectedId(self.currentItem().presenceCheckScopeSet);
-                    
                 }           
             }));
 
         }
         
-        //start
-        startPage(): JQueryPromise<any> {
-            var self = this;
-            var dfd = $.Deferred();
 
-            // get all history.     
-            service.getAllHistory().done(function(history_arr: Array<service.model.ListHistoryDto>){
-                self.listbox(history_arr);    
-                self.selectedCode(self.listbox()[0].startDate);            
-            }).fail(function(error) {
-               alert(error.message);
-            })            
-                dfd.resolve();
-                return dfd.promise();           
-        }
-        
-//        find history need to show position
         findHist(value: string): any {
             let self = this;
             var itemModel = null;
-            _.find(self.listbox(), function(obj: service.model.ListHistoryDto) {
+            _.find(self.listbox(), function(obj: viewmodel.model.ListHistoryDto) {
                 if (obj.startDate == value) {
                     itemModel = obj;
                 }
@@ -161,23 +139,21 @@ module cmm013.test.viewmodel {
             return itemModel;
         }
         
-//        find position need to show detail
+
         findPosition(value: string): any {
             let self = this;
             var itemModel = null;
-            _.find(self.dataSource(), function(obj: service.model.ListPositionDto) {
+            _.find(self.dataSource(), function(obj: viewmodel.model.ListPositionDto) {
                 if (obj.jobCode == value) {
                     itemModel = obj;
                 }
             })
             return itemModel;
         }
-        
-        //delete position is selected
-        deletePosition() {
+         deletePosition() {
             var self = this;
             var dfd = $.Deferred<any>();
-            var item = new service.model.DeletePositionCommand(self.currentItem().jobCode,self.currentItem().jobName);
+            var item = new model.DeletePositionCommand(self.currentItem().jobCode,self.currentItem().jobName);
             console.log(self.currentItem().presenceCheckScopeSet);
             self.index_of_itemDelete = self.dataSource().indexOf(self.currentItem());
             console.log(self.index_of_itemDelete);
@@ -191,7 +167,7 @@ module cmm013.test.viewmodel {
         getPositionList_aftefDelete(): any {
             var self = this;
             var dfd = $.Deferred<any>();
-            service.findAllPosition(self.index_selected()).done(function(position_arr: Array<service.model.ListPositionDto>) {
+            service.findAllPosition(self.index_selected()).done(function(position_arr: Array<model.ListPositionDto>) {
                 self.dataSource(position_arr);
                     
                 if (self.dataSource().length > 0) {
@@ -220,11 +196,10 @@ module cmm013.test.viewmodel {
 
         }
         
-        //get position 
         getPositionList(): any {
             var self = this;
             var dfd = $.Deferred<any>();
-            service.findAllPosition(self.index_selected()).done(function(position_arr: Array<service.model.ListPositionDto>) {
+            service.findAllPosition(self.index_selected()).done(function(position_arr: Array<model.ListPositionDto>) {
                 self.dataSource(position_arr);
                 self.inp_002(self.dataSource()[0].jobCode);
                 self.inp_003(self.dataSource()[0].jobName);
@@ -241,18 +216,38 @@ module cmm013.test.viewmodel {
             return dfd.promise();
 
         }
-        
+        startPage(): JQueryPromise<any> {
+            var self = this;
+            var dfd = $.Deferred<any>();
 
+            service.getAllHistory().done(function(history_arr: Array<model.ListHistoryDto>){
+                self.listbox(history_arr);    
+                self.selectedCode=ko.observable(self.listbox()[0].startDate);            
+            }).fail(function(error) {
+               alert(error.message);
+
+            })            
+                dfd.resolve();
+                return dfd.promise();
+           
+
+
+        }
         
+        //phai lam getshare
+
         openBDialog() {
-            nts.uk.ui.windows.sub.modal('/view/cmmhoa/013/b/index.xhtml', { title: '画面ID：B', });
+            nts.uk.ui.windows.sub.modal('/view/cmm/013/b/index.xhtml', { title: '画面ID：B', });
         }
         openCDialog() {
-            nts.uk.ui.windows.sub.modal('/view/cmmhoa/013/c/index.xhtml', { title: '画面ID：c', });
+            nts.uk.ui.windows.sub.modal('/view/cmm/013/c/index.xhtml', { title: '画面ID：c', });
         }
         openDDialog() {
-            nts.uk.ui.windows.sub.modal('/view/cmmhoa/013/d/index.xhtml', { title: '画面ID：D', });
+            nts.uk.ui.windows.sub.modal('/view/cmm/013/d/index.xhtml', { title: '画面ID：D', });
         }
+         
+        
+        
     }
 
     export class Labels {
@@ -267,7 +262,21 @@ module cmm013.test.viewmodel {
             self.enable = ko.observable(true);
         }
     }
-
+    class RadioBox {
+        itemList: KnockoutObservableArray<any>;
+        selectedId: KnockoutObservable<number>;
+        enable: KnockoutObservable<boolean>;
+        constructor() {
+            var self = this;
+            self.itemList = ko.observableArray([
+                new BoxModel(1, '全員参照可能'),
+                new BoxModel(2, '全員参照不可'),
+                new BoxModel(3, 'ロール毎に設定')
+            ]);
+            self.selectedId = ko.observable(1);
+            self.enable = ko.observable(true);
+        }
+    }
     class RadioBox2 {
         itemList: KnockoutObservableArray<any>;
         selectedId: KnockoutObservable<number>;
@@ -304,7 +313,7 @@ module cmm013.test.viewmodel {
                 constraint: 'ResidenceCode',
                 option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
                     textmode: "text",
-                    placeholder: "1",
+                    placeholder: "",
                     width: "10px",
                     textalign: "center"
                 })),
@@ -329,5 +338,42 @@ module cmm013.test.viewmodel {
         }
     }
 
+    export module model {
+        
+       export class ListHistoryDto{
+           startDate: string;
+           endDate: string;
+           historyId: string;
+           constructor(startDate: string, endDate: string, historyId: string){
+               var self = this;
+               self.startDate = startDate;
+               self.endDate = endDate;
+               self.historyId = historyId;
+           }    
+       }
+        
+       export class ListPositionDto {
+            jobCode: string;
+            jobName: string;
+            presenceCheckScopeSet: number;
+            memo: string;
+            constructor(code: string, name: string, presenceCheckScopeSet: number,memo: string) {
+                var self = this;
+                self.jobCode = code;
+                self.jobName = name;
+                self.presenceCheckScopeSet = presenceCheckScopeSet;
+                self.memo = memo;
+            }
+        }
+        
+        export class DeletePositionCommand {
+            jobCode: string;
+            historyId: string
+            constructor(jobCode: string,historyId: string) {
+                this.jobCode = jobCode;
+                this.historyId = historyId;
+            }
 
+        }
+    }
 }

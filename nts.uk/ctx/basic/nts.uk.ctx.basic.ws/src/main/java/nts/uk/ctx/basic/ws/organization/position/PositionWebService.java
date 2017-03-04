@@ -43,9 +43,11 @@ public class PositionWebService extends WebService{
 
 	@POST
 	@Path("getallhist")
-	public List<JobHistDto> getAllHistory(){
-
-		return this.histFinder.getAllHistory();
+	public List<JobHistDto> init(){
+//		List<JobHistDto> i =null;
+//		i = histFinder.init();
+//		System.out.println("==" + i);
+		return this.histFinder.init();
 	}
 //	@POST
 //	@Path("findposition/{jobCode}/{historyId}")

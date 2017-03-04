@@ -81,39 +81,6 @@ var cmm013;
                 return dfd.promise();
             }
             service.getAllHistory = getAllHistory;
-            //model
-            var model;
-            (function (model) {
-                var ListHistoryDto = (function () {
-                    function ListHistoryDto(startDate, endDate, historyId) {
-                        var self = this;
-                        self.startDate = startDate;
-                        self.endDate = endDate;
-                        self.historyId = historyId;
-                    }
-                    return ListHistoryDto;
-                }());
-                model.ListHistoryDto = ListHistoryDto;
-                var ListPositionDto = (function () {
-                    function ListPositionDto(code, name, presenceCheckScopeSet, memo) {
-                        var self = this;
-                        self.jobCode = code;
-                        self.jobName = name;
-                        self.presenceCheckScopeSet = presenceCheckScopeSet;
-                        self.memo = memo;
-                    }
-                    return ListPositionDto;
-                }());
-                model.ListPositionDto = ListPositionDto;
-                var DeletePositionCommand = (function () {
-                    function DeletePositionCommand(jobCode, historyId) {
-                        this.jobCode = jobCode;
-                        this.historyId = historyId;
-                    }
-                    return DeletePositionCommand;
-                }());
-                model.DeletePositionCommand = DeletePositionCommand;
-            })(model = service.model || (service.model = {}));
         })(service = test.service || (test.service = {}));
     })(test = cmm013.test || (cmm013.test = {}));
 })(cmm013 || (cmm013 = {}));

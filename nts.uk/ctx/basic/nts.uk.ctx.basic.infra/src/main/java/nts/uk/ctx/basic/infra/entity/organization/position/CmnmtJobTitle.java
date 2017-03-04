@@ -45,6 +45,66 @@ public class CmnmtJobTitle extends TableEntity implements Serializable{
 	@Basic(optional = false)
 	@Column(name = "HIERARCHY_ORDER_CD")
 	public String hierarchyOrderCode;
+
+	public CmnmtJobTitlePK getCmnmtJobTitlePK() {
+		return cmnmtJobTitlePK;
+	}
+
+	public void setCmnmtJobTitlePK(CmnmtJobTitlePK cmnmtJobTitlePK) {
+		this.cmnmtJobTitlePK = cmnmtJobTitlePK;
+	}
+
+	public int getExclusVersion() {
+		return exclusVersion;
+	}
+
+	public void setExclusVersion(int exclusVersion) {
+		this.exclusVersion = exclusVersion;
+	}
+
+	public String getJobName() {
+		return jobName;
+	}
+
+	public void setJobName(String jobName) {
+		this.jobName = jobName;
+	}
+
+	public int getPresenceCheckScopeSet() {
+		return presenceCheckScopeSet;
+	}
+
+	public void setPresenceCheckScopeSet(int presenceCheckScopeSet) {
+		this.presenceCheckScopeSet = presenceCheckScopeSet;
+	}
+
+	public String getJobOutCode() {
+		return jobOutCode;
+	}
+
+	public void setJobOutCode(String jobOutCode) {
+		this.jobOutCode = jobOutCode;
+	}
+
+	public String getMemo() {
+		return memo;
+	}
+
+	public void setMemo(String memo) {
+		this.memo = memo;
+	}
+
+	public String getHierarchyOrderCode() {
+		return hierarchyOrderCode;
+	}
+
+	public void setHierarchyOrderCode(String hierarchyOrderCode) {
+		this.hierarchyOrderCode = hierarchyOrderCode;
+	}
+
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
 	
 	
 }

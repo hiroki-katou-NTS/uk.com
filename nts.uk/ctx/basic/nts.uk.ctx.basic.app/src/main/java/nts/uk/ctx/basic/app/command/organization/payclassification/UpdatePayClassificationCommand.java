@@ -11,4 +11,6 @@ public class UpdatePayClassificationCommand {
 	
 	private String memo;
 
+	
+	
 }

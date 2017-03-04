@@ -1,5 +1,6 @@
 package nts.uk.ctx.basic.dom.organization.position;
 import java.util.List;
+import java.util.Optional;
 
 public interface PositionRepository {
 	
@@ -24,11 +25,17 @@ public interface PositionRepository {
 	
 	void updateHistory(JobHistory history);
 	
-	void deleteHist(String companyCode, HistoryId historyId);
+	void deleteHist(String companyCode, String historyId);
 
 	List<JobHistory> getAllHistory(String companyCode);
 	
 	List<JobTitleRef> findAllJobTitleRef(String companyCode, String historyId);
+	
+	
+
+	Optional<JobTitle> findSingle(String companyCode, String historyId, JobCode jobCode);
+
+	Optional<JobHistory> findSingleHistory(String companyCode, String historyId);
 
 
 	}

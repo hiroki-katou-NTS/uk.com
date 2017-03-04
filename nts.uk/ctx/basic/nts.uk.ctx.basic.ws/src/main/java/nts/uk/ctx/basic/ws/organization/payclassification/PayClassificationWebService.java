@@ -6,7 +6,6 @@ import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
 
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.basic.app.command.organization.payclassification.AddPayClassificationCommand;
@@ -20,8 +19,8 @@ import nts.uk.ctx.basic.app.find.organization.payclassification.PayClassificatio
 
 
 
-@Path("")
-@Produces(MediaType.APPLICATION_JSON)
+@Path("basic/payclassification")
+@Produces("application/json")
 public class PayClassificationWebService extends WebService {
 
 	@Inject
@@ -36,25 +35,28 @@ public class PayClassificationWebService extends WebService {
 	@Inject
 	private RemovePayClassificationCommandHandler removePayClassificationCommandHandler;
 
-	@Path("")
+	@Path("findAllPayClassification")
 	@POST
 	public List<PayClassificationDto> init() {
+		List<PayClassificationDto> i =null;
+		i = payClassificationFinder.init();
+		System.out.println("==" + i);
 		return payClassificationFinder.init();
 	}
 
-	@Path("")
+	@Path("add")
 	@POST
 	public void add(AddPayClassificationCommand command) {
 		this.addPayClassificationCommandHandler.handle(command);
 	}
 
-	@Path("")
+	@Path("update")
 	@POST
 	public void update(UpdatePayClassificationCommand command) {
 		this.updatePayClassificationCommandHandler.handle(command);
 	}
 
-	@Path("")
+	@Path("remove")
 	@POST
 	public void remove(RemovePayClassificationCommand command) {
 		this.removePayClassificationCommandHandler.handle(command);

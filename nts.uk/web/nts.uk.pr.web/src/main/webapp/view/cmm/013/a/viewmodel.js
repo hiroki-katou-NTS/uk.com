@@ -70,6 +70,7 @@ var cmm013;
                             return dfd.promise();
                         }
                     }));
+                    self.singleSelectedCode = ko.observable(null);
                     //inp_x - get detail position
                     self.currentCode.subscribe((function (codeChanged) {
                         self.currentItem(self.findPosition(codeChanged));
@@ -178,14 +179,25 @@ var cmm013;
                     dfd.resolve();
                     return dfd.promise();
                 };
-                ScreenModel.prototype.openBDialog = function () {
-                    nts.uk.ui.windows.sub.modal('/view/cmmhoa/013/b/index.xhtml', { title: '画面ID：B', });
-                };
                 ScreenModel.prototype.openCDialog = function () {
-                    nts.uk.ui.windows.sub.modal('/view/cmmhoa/013/c/index.xhtml', { title: '画面ID：c', });
+                    var self = this;
+                    if (self.singleSelectedCode() == null)
+                        return false;
+                    var singleSelectedCode = self.singleSelectedCode().split(';');
+                    nts.uk.ui.windows.setShared('testdatashare', "data share");
+                    nts.uk.ui.windows.sub.modal('/view/cmm/013/c/index.xhtml', { title: '明細レイアウトの作成＞履歴追加' }).onClosed(function () {
+                        //self.start(self.singleSelectedCode());
+                    });
                 };
                 ScreenModel.prototype.openDDialog = function () {
-                    nts.uk.ui.windows.sub.modal('/view/cmmhoa/013/d/index.xhtml', { title: '画面ID：D', });
+                    var self = this;
+                    if (self.singleSelectedCode() === null)
+                        return false;
+                    var singleSelectedCode = self.singleSelectedCode().split(';');
+                    nts.uk.ui.windows.setShared('testshare', "test share1");
+                    nts.uk.ui.windows.sub.modal('/view/cmm/013/d/index.xhtml', { title: '明細レイアウトの作成＞履歴の編集' }).onClosed(function () {
+                        //self.start(self.singleSelectedCode());
+                    });
                 };
                 return ScreenModel;
             }());

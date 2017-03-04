@@ -1,43 +1,47 @@
 package nts.uk.ctx.basic.dom.organization.position;
-	import java.time.LocalDate;
-	import lombok.Getter;
-	import nts.arc.layer.dom.AggregateRoot;
-	import nts.arc.time.GeneralDate;
-	import nts.uk.ctx.basic.dom.company.CompanyCode;
 
-	@Getter
-	public class JobHistory extends AggregateRoot{
-		
-		private GeneralDate startDate;
-		
-		private GeneralDate endDate;		
-				
-		private String historyId;
-		
-		private CompanyCode companyCode;
-			
-		public JobHistory(GeneralDate startDate , GeneralDate endDate, 
-				CompanyCode companyCode, String historyId) {
-			super();
+import lombok.Getter;
+import nts.arc.layer.dom.AggregateRoot;
+import nts.arc.time.GeneralDate;
+import nts.gul.text.IdentifierUtil;
 
-			this.startDate = startDate;
-			this.endDate = endDate;
-			this.historyId = historyId;
-			this.companyCode = companyCode;
-		}
+@Getter
+public class JobHistory extends AggregateRoot {
+	
+	private String historyId;
 
-		public static JobHistory createSimpleFromJavaType(
-				String startDate, 
-				String endDate , 
-				String companyCode, 
-				String historyId)
-		{
-			return new JobHistory(
-					GeneralDate.localDate(LocalDate.parse(startDate)),
-					GeneralDate.localDate(LocalDate.parse(endDate)),
-					new CompanyCode(companyCode), 
-					historyId);
-		}
+	private String companyCode;
+	
+	private GeneralDate endDate;
+	
+	private GeneralDate startDate;
+	
+	
+	
+	
+	
+	public JobHistory( String companyCode,String historyId,GeneralDate endDate,GeneralDate startDate) {
+
+		super();
 		
+		this.companyCode = companyCode;
+		this.historyId = historyId;
+		this.endDate = endDate;
+		this.startDate = startDate;
+	}
+
+	public JobHistory( String companyCode,GeneralDate endDate,GeneralDate startDate) {
+
+		super();
+		
+		this.companyCode = companyCode;
+		this.historyId = IdentifierUtil.randomUniqueId();
+		this.endDate = endDate;
+		this.startDate = startDate;
+	}
+	public static JobHistory createFromJavaType( String companyCode,String historyId,GeneralDate endDate,GeneralDate startDate) {
+		return new JobHistory(companyCode,historyId,endDate,startDate);
 
 	}
+
+}
