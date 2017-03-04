@@ -6,6 +6,7 @@ var qmm003;
         (function (viewmodel) {
             var ScreenModel = (function () {
                 function ScreenModel() {
+                    this.filteredData = ko.observableArray([]);
                     this.testNode = [];
                     this.nodeRegionPrefectures = ko.observableArray([]);
                     this.japanLocation = [];
@@ -43,9 +44,9 @@ var qmm003;
                 ScreenModel.prototype.init = function () {
                     var self = this;
                     self.items = ko.observableArray([]);
-                    self.singleSelectedCode = ko.observable(null);
-                    self.filteredData = ko.observableArray(nts.uk.util.flatArray(self.items(), "childs"));
-                    self.currentNode = ko.observable(new Node("", "", []));
+                    self.singleSelectedCode = ko.observable(nts.uk.ui.windows.getShared("singleSelectedCode"));
+                    //self.filteredData = ko.observableArray(nts.uk.util.flatArray(self.items(), "childs"));
+                    self.currentNode = ko.observable((new Node("", "", [])));
                 };
                 ScreenModel.prototype.register = function () {
                     var inputSearch = $("#B_SCH_001").find("input.ntsSearchBox").val();
@@ -73,15 +74,17 @@ var qmm003;
                 ScreenModel.prototype.start = function () {
                     var dfd = $.Deferred();
                     var self = this;
-                    (qmm003.a.service.getResidentialTax()).done(function (data) {
+                    (qmm003.b.service.getResidentialTax()).done(function (data) {
                         if (data.length > 0) {
                             self.residentalTaxList(data);
-                            (qmm003.a.service.getRegionPrefecture()).done(function (locationData) {
+                            (qmm003.b.service.getRegionPrefecture()).done(function (locationData) {
                                 self.japanLocation = locationData;
                                 self.itemPrefecture(self.precfecture);
                                 console.log(self.itemPrefecture());
                                 self.buildResidentalTaxTree();
-                                self.filteredData = ko.observableArray(nts.uk.util.flatArray(self.nodeRegionPrefectures(), "childs"));
+                                var node = [];
+                                node = nts.uk.util.flatArray(self.nodeRegionPrefectures(), "childs");
+                                self.filteredData(node);
                                 self.items(self.nodeRegionPrefectures());
                             });
                         }
