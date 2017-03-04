@@ -30,7 +30,7 @@ public class QmnmtPayClass implements Serializable{
 	
 	@Basic(optional = false)
 	@Column(name = "PAYCLASS_NAME")
-	public String payClassName;
+	public String payClassificationName;
 
 
 	public QmnmtPayClassPK getQmnmtPayClassPK() {
@@ -53,13 +53,13 @@ public class QmnmtPayClass implements Serializable{
 	}
 
 
-	public String getPayClassName() {
-		return payClassName;
+	public String getPayClassificationName() {
+		return payClassificationName;
 	}
 
 
-	public void setPayClassName(String payClassName) {
-		this.payClassName = payClassName;
+	public void setPayClassName(String payClassificationName) {
+		this.payClassificationName = payClassificationName;
 	}
 
 

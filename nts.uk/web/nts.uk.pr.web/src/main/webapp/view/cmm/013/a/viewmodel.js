@@ -7,132 +7,225 @@ var cmm013;
             var ScreenModel = (function () {
                 function ScreenModel() {
                     var self = this;
-                    self.tabs = ko.observableArray([
-                        { id: 'tab-1', title: '蝓ｺ譛ｬ諠・ｱ', content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true) },
-                        { id: 'tab-2', title: '險育ｮ怜ｼ上・險ｭ螳・, content: '.tab - content - 2, ', enable: ko.observable(true), visible: ko.observable(true) }:  }
+                    self.label_002 = ko.observable(new Labels());
+                    self.label_003 = ko.observable(new Labels());
+                    self.label_004 = ko.observable(new Labels());
+                    self.label_005 = ko.observable(new Labels());
+                    self.label_006 = ko.observable(new Labels());
+                    self.radiobox_2 = ko.observable(new RadioBox2());
+                    self.inp_002 = ko.observable(null);
+                    self.inp_002_enable = ko.observable(false);
+                    self.inp_003 = ko.observable(null);
+                    self.inp_004 = ko.observable(new TextEditor_3());
+                    self.inp_005 = ko.observable(null);
+                    self.sel_0021 = ko.observable(new SwitchButton);
+                    self.sel_0022 = ko.observable(new SwitchButton);
+                    self.sel_0023 = ko.observable(new SwitchButton);
+                    self.sel_0024 = ko.observable(new SwitchButton);
+                    self.test = ko.observable('2');
+                    //lst_001
+                    self.listbox = ko.observableArray([]);
+                    self.selectedCode = ko.observable('');
+                    self.isEnable = ko.observable(true);
+                    self.itemHist = ko.observable(null);
+                    self.itemName = ko.observable('');
+                    self.index_selected = ko.observable('');
+                    //lst_002
+                    self.dataSource = ko.observableArray([]);
+                    self.currentItem = ko.observable(null);
+                    self.itemName = ko.observable('');
+                    self.currentCode = ko.observable();
+                    self.currentCodeList = ko.observableArray([]);
+                    self.columns = ko.observableArray([
+                        { headerText: 'コード', key: 'jobCode', width: 80 },
+                        { headerText: '名称', key: 'jobName', width: 100 }
                     ]);
-                    self.selectedTab = ko.observable('tab-1');
-                    self.listbox = ko.observable(new ListBoxx());
-                    self.searchboxx = ko.observable(new GridLists());
-                    self.label_002 = ko.observable(new Label_002());
-                    self.label_003 = ko.observable(new Label_003());
-                    self.label_004 = ko.observable(new Label_004());
-                    self.label_005 = ko.observable(new Label_005());
-                    self.label_006 = ko.observable(new Label_006());
-                    self.selectbox = ko.observable(new SelectBox());
-                    self.selectbox_2 = ko.observable(new SelectBox_2());
-                    self.hasCellphone = ko.observable(false);
-                    self.switchbt_1 = ko.observable(new SwitchButton_1());
-                    self.switchbt_2 = ko.observable(new SwitchButton_2());
-                    self.switchbt_3 = ko.observable(new SwitchButton_3());
-                    self.switchbt_4 = ko.observable(new SwitchButton_4());
-                    self.inp_002 = ko.observable(new Input_002());
-                    self.inp_003 = ko.observable(new Input_003());
-                    self.inp_004 = ko.observable(new Input_004());
-                    self.inp_005 = ko.observable(new Input_005());
+                    //A_SEL_001
+                    self.itemList = ko.observableArray([
+                        new BoxModel(0, '全員参照可能'),
+                        new BoxModel(1, '全員参照不可'),
+                        new BoxModel(2, 'ロール毎に設定')
+                    ]);
+                    self.selectedId = ko.observable();
+                    self.enable = ko.observable(true);
+                    self.selectedCode.subscribe((function (codeChanged) {
+                        self.itemHist(self.findHist(codeChanged));
+                        if (self.itemHist() != null) {
+                            self.index_selected(self.itemHist().historyId);
+                            console.log(self.index_selected());
+                            //get position by historyId
+                            var dfd = $.Deferred();
+                            a.service.findAllPosition(self.index_selected())
+                                .done(function (position_arr) {
+                                self.dataSource(position_arr);
+                                self.currentCode(self.dataSource()[0].jobCode);
+                                self.inp_002(self.dataSource()[0].jobCode);
+                                self.inp_003(self.dataSource()[0].jobName);
+                                self.inp_005(self.dataSource()[0].memo);
+                                self.selectedId(self.dataSource()[0].presenceCheckScopeSet);
+                            }).fail(function (error) {
+                                alert(error.message);
+                            });
+                            dfd.resolve();
+                            return dfd.promise();
+                        }
+                    }));
+                    self.singleSelectedCode = ko.observable(null);
+                    //inp_x - get detail position
+                    self.currentCode.subscribe((function (codeChanged) {
+                        self.currentItem(self.findPosition(codeChanged));
+                        if (self.currentItem() != null) {
+                            self.inp_002(self.currentItem().jobCode);
+                            self.inp_003(self.currentItem().jobName);
+                            self.inp_005(self.currentItem().memo);
+                            self.selectedId(self.currentItem().presenceCheckScopeSet);
+                        }
+                    }));
                 }
+                //start
+                ScreenModel.prototype.startPage = function () {
+                    var self = this;
+                    var dfd = $.Deferred();
+                    // get all history.     
+                    a.service.getAllHistory().done(function (history_arr) {
+                        self.listbox(history_arr);
+                        self.selectedCode(self.listbox()[0].startDate);
+                    }).fail(function (error) {
+                        alert(error.message);
+                    });
+                    dfd.resolve();
+                    return dfd.promise();
+                };
+                //        find history need to show position
+                ScreenModel.prototype.findHist = function (value) {
+                    var self = this;
+                    var itemModel = null;
+                    _.find(self.listbox(), function (obj) {
+                        if (obj.startDate == value) {
+                            itemModel = obj;
+                        }
+                    });
+                    return itemModel;
+                };
+                //        find position need to show detail
+                ScreenModel.prototype.findPosition = function (value) {
+                    var self = this;
+                    var itemModel = null;
+                    _.find(self.dataSource(), function (obj) {
+                        if (obj.jobCode == value) {
+                            itemModel = obj;
+                        }
+                    });
+                    return itemModel;
+                };
+                //delete position is selected
+                ScreenModel.prototype.deletePosition = function () {
+                    var self = this;
+                    var dfd = $.Deferred();
+                    var item = new a.service.model.DeletePositionCommand(self.currentItem().jobCode, self.currentItem().historyId);
+                    console.log(self.currentItem().presenceCheckScopeSet);
+                    self.index_of_itemDelete = self.dataSource().indexOf(self.currentItem());
+                    console.log(self.index_of_itemDelete);
+                    a.service.deletePosition(item).done(function (res) {
+                        self.getPositionList_aftefDelete();
+                    }).fail(function (res) {
+                        dfd.reject(res);
+                    });
+                };
+                ScreenModel.prototype.getPositionList_aftefDelete = function () {
+                    var self = this;
+                    var dfd = $.Deferred();
+                    a.service.findAllPosition(self.index_selected()).done(function (position_arr) {
+                        self.dataSource(position_arr);
+                        if (self.dataSource().length > 0) {
+                            if (self.index_of_itemDelete === self.dataSource().length) {
+                                self.currentCode(self.dataSource()[self.index_of_itemDelete - 1].jobCode);
+                                self.inp_002(self.dataSource()[self.index_of_itemDelete - 1].jobCode);
+                                self.inp_003(self.dataSource()[self.index_of_itemDelete - 1].jobName);
+                                self.inp_005(self.dataSource()[self.index_of_itemDelete - 1].memo);
+                            }
+                            else {
+                                self.currentCode(self.dataSource()[self.index_of_itemDelete].jobCode);
+                                self.inp_002(self.dataSource()[self.index_of_itemDelete].jobCode);
+                                self.inp_003(self.dataSource()[self.index_of_itemDelete].jobName);
+                                self.inp_005(self.dataSource()[self.index_of_itemDelete].memo);
+                            }
+                        }
+                        else {
+                        }
+                        dfd.resolve();
+                    }).fail(function (error) {
+                        alert(error.message);
+                    });
+                    dfd.resolve();
+                    return dfd.promise();
+                };
+                //get position 
+                ScreenModel.prototype.getPositionList = function () {
+                    var self = this;
+                    var dfd = $.Deferred();
+                    a.service.findAllPosition(self.index_selected()).done(function (position_arr) {
+                        self.dataSource(position_arr);
+                        self.inp_002(self.dataSource()[0].jobCode);
+                        self.inp_003(self.dataSource()[0].jobName);
+                        self.inp_005(self.dataSource()[0].memo);
+                        if (self.dataSource().length > 1) {
+                            self.currentCode(self.dataSource()[0].jobCode);
+                        }
+                        dfd.resolve();
+                    }).fail(function (error) {
+                        alert(error.message);
+                    });
+                    dfd.resolve();
+                    return dfd.promise();
+                };
+                ScreenModel.prototype.openCDialog = function () {
+                    var self = this;
+                    if (self.singleSelectedCode() == null)
+                        return false;
+                    var singleSelectedCode = self.singleSelectedCode().split(';');
+                    nts.uk.ui.windows.setShared('testdatashare', "data share");
+                    nts.uk.ui.windows.sub.modal('/view/cmm/013/c/index.xhtml', { title: '明細レイアウトの作成＞履歴追加' }).onClosed(function () {
+                        //self.start(self.singleSelectedCode());
+                    });
+                };
+                ScreenModel.prototype.openDDialog = function () {
+                    var self = this;
+                    if (self.singleSelectedCode() === null)
+                        return false;
+                    var singleSelectedCode = self.singleSelectedCode().split(';');
+                    nts.uk.ui.windows.setShared('testshare', "test share1");
+                    nts.uk.ui.windows.sub.modal('/view/cmm/013/d/index.xhtml', { title: '明細レイアウトの作成＞履歴の編集' }).onClosed(function () {
+                        //self.start(self.singleSelectedCode());
+                    });
+                };
                 return ScreenModel;
             }());
             viewmodel.ScreenModel = ScreenModel;
-            var ListBoxx = (function () {
-                function ListBoxx() {
-                    var self = this;
-                    self.itemList = ko.observableArray([
-                        new ItemModel('2015/10/01 ~ 9999/12/31'),
-                        new ItemModel('2015/10/01 ~ 9999/12/31'),
-                        new ItemModel('2015/10/01 ~ 9999/12/31'),
-                        new ItemModel('2015/10/01 ~ 9999/12/31'),
-                        new ItemModel('2015/10/01 ~ 9999/12/31'),
-                        new ItemModel('2015/10/01 ~ 9999/12/31'),
-                        new ItemModel('2015/10/01 ~ 9999/12/31'),
-                        new ItemModel('2015/10/01 ~ 9999/12/31'),
-                    ]);
-                    self.itemName = ko.observable('');
-                    self.currentCode = ko.observable(3);
-                    self.selectedCode = ko.observable(null);
-                    self.isEnable = ko.observable(true);
-                    self.selectedCodes = ko.observableArray([]);
-                    $('#list-box').on('selectionChanging', function (event) {
-                        console.log('Selecting value:' + event.originalEvent.detail);
-                    });
-                    $('#list-box').on('selectionChanged', function (event) {
-                        console.log('Selected value:' + event.originalEvent.detail);
-                    });
-                }
-                return ListBoxx;
-            }());
-            viewmodel.ListBoxx = ListBoxx;
-            var ItemModel = (function () {
-                function ItemModel(code) {
-                    this.code = code;
-                }
-                return ItemModel;
-            }());
-            viewmodel.ItemModel = ItemModel;
-            var GridLists = (function () {
-                function GridLists() {
-                    this.dataSource = ko.observableArray([
-                        new ItemModel_GridList('001', '蝓ｺ譛ｬ邨ｦ', "description"),
-                        new ItemModel_GridList('002', '蝓ｺ譛ｬ邨ｦ', "description"),
-                        new ItemModel_GridList('003', '蝓ｺ12譛ｬ', "description"),
-                        new ItemModel_GridList('004', '蝓ｺ12譛ｬ', "description"),
-                        new ItemModel_GridList('005', '蝓ｺ12譛ｬ', "description"),
-                        new ItemModel_GridList('006', '蝓ｺ12譛ｬ', "description"),
-                        new ItemModel_GridList('007', '蝓ｺ12譛ｬ', "description"),
-                        new ItemModel_GridList('008', '蝓ｺ12譛ｬ', "description"),
-                        new ItemModel_GridList('009', '蝓ｺ12譛ｬ', "description"),
-                        new ItemModel_GridList('010', '蝓ｺ12譛ｬ', "description")
-                    ]);
-                    this.columns = ko.observableArray([
-                        { headerText: '繧ｳ繝ｼ繝・, prop: ', code: ', width: 50 }, },
-                        { headerText: '蜷咲ｧｰ', prop: 'name', width: 80 },
-                        { headerText: '隱ｬ譏・, prop: ', description: ', width: 80 } }
-                    ]);
-                    this.currentCode = ko.observable();
-                    this.currentCodeList = ko.observableArray([]);
-                }
-                return GridLists;
-            }());
-            var ItemModel_GridList = (function () {
-                function ItemModel_GridList(code, name, description) {
-                    this.code = code;
-                    this.name = name;
-                    this.description = description;
-                }
-                return ItemModel_GridList;
-            }());
-            var Label_002 = (function () {
-                function Label_002() {
+            var Labels = (function () {
+                function Labels() {
                     this.constraint = 'LayoutCode';
                     var self = this;
                     self.inline = ko.observable(true);
                     self.required = ko.observable(true);
                     self.enable = ko.observable(true);
                 }
-                return Label_002;
+                return Labels;
             }());
-            var Label_003 = (function () {
-                function Label_003() {
-                    this.constraint = 'LayoutName';
-                    var self = this;
-                    self.inline = ko.observable(true);
-                    self.required = ko.observable(true);
-                    self.enable = ko.observable(true);
-                }
-                return Label_003;
-            }());
-            var SelectBox = (function () {
-                function SelectBox() {
+            viewmodel.Labels = Labels;
+            var RadioBox2 = (function () {
+                function RadioBox2() {
                     var self = this;
                     self.itemList = ko.observableArray([
-                        new BoxModel(1, 'box 1'),
-                        new BoxModel(2, 'box 2'),
-                        new BoxModel(3, 'box 3')
+                        new BoxModel(1, '対象外'),
+                        new BoxModel(2, '看護師'),
+                        new BoxModel(3, '準看護師'),
+                        new BoxModel(4, '看護補助師')
                     ]);
                     self.selectedId = ko.observable(1);
                     self.enable = ko.observable(true);
                 }
-                return SelectBox;
+                return RadioBox2;
             }());
             var BoxModel = (function () {
                 function BoxModel(id, name) {
@@ -142,176 +235,39 @@ var cmm013;
                 }
                 return BoxModel;
             }());
-            var SwitchButton_1 = (function () {
-                function SwitchButton_1() {
-                    var self = this;
-                    self.roundingRules = ko.observableArray([
-                        { code: '1', name: '蝗帶昏莠泌・' },
-                        { code: '2', name: '蛻・ｊ荳翫￡' }
-                    ]);
-                    self.selectedRuleCode = ko.observable(1);
-                }
-                return SwitchButton_1;
-            }());
-            var SwitchButton_2 = (function () {
-                function SwitchButton_2() {
-                    var self = this;
-                    self.roundingRules = ko.observableArray([
-                        { code: '1', name: '蝗帶昏莠泌・' },
-                        { code: '2', name: '蛻・ｊ荳翫￡' }
-                    ]);
-                    self.selectedRuleCode = ko.observable(1);
-                }
-                return SwitchButton_2;
-            }());
-            var SwitchButton_3 = (function () {
-                function SwitchButton_3() {
-                    var self = this;
-                    self.roundingRules = ko.observableArray([
-                        { code: '1', name: '蝗帶昏莠泌・' },
-                        { code: '2', name: '蛻・ｊ荳翫￡' }
-                    ]);
-                    self.selectedRuleCode = ko.observable(1);
-                }
-                return SwitchButton_3;
-            }());
-            var SwitchButton_4 = (function () {
-                function SwitchButton_4() {
-                    var self = this;
-                    self.roundingRules = ko.observableArray([
-                        { code: '1', name: '蝗帶昏莠泌・' },
-                        { code: '2', name: '蛻・ｊ荳翫￡' }
-                    ]);
-                    self.selectedRuleCode = ko.observable(1);
-                }
-                return SwitchButton_4;
-            }());
-            var Input_002 = (function () {
-                function Input_002() {
+            viewmodel.BoxModel = BoxModel;
+            var TextEditor_3 = (function () {
+                function TextEditor_3() {
                     var self = this;
                     self.texteditor = {
                         value: ko.observable(''),
                         constraint: 'ResidenceCode',
                         option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
                             textmode: "text",
-                            placeholder: "Placeholder for text editor",
-                            width: "80px",
-                            textalign: "left"
+                            placeholder: "1",
+                            width: "10px",
+                            textalign: "center"
                         })),
                         required: ko.observable(true),
                         enable: ko.observable(false),
                         readonly: ko.observable(false)
                     };
                 }
-                return Input_002;
+                return TextEditor_3;
             }());
-            var Input_003 = (function () {
-                function Input_003() {
+            viewmodel.TextEditor_3 = TextEditor_3;
+            var SwitchButton = (function () {
+                function SwitchButton() {
                     var self = this;
-                    self.texteditor = {
-                        value: ko.observable(''),
-                        constraint: 'ResidenceCode',
-                        option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                            textmode: "text",
-                            placeholder: "Placeholder text",
-                            width: "160px",
-                            textalign: "left"
-                        })),
-                        required: ko.observable(true),
-                        enable: ko.observable(true),
-                        readonly: ko.observable(false)
-                    };
-                }
-                return Input_003;
-            }());
-            var Label_004 = (function () {
-                function Label_004() {
-                    this.constraint = 'LayoutName';
-                    var self = this;
-                    self.inline = ko.observable(true);
-                    self.required = ko.observable(true);
-                    self.enable = ko.observable(true);
-                }
-                return Label_004;
-            }());
-            var SelectBox_2 = (function () {
-                function SelectBox_2() {
-                    var self = this;
-                    self.itemList = ko.observableArray([
-                        new BoxModel_2(1, 'box 1'),
-                        new BoxModel_2(2, 'box 2'),
-                        new BoxModel_2(3, 'box 3'),
-                        new BoxModel_2(4, 'box 4')
+                    self.roundingRules = ko.observableArray([
+                        { code: '1', name: '可能' },
+                        { code: '2', name: '不可' },
                     ]);
-                    self.selectedId = ko.observable(1);
-                    self.enable = ko.observable(true);
+                    self.selectedRuleCode = ko.observable(1);
                 }
-                return SelectBox_2;
+                return SwitchButton;
             }());
-            var BoxModel_2 = (function () {
-                function BoxModel_2(id, name) {
-                    var self = this;
-                    self.id = id;
-                    self.name = name;
-                }
-                return BoxModel_2;
-            }());
-            var Input_004 = (function () {
-                function Input_004() {
-                    var self = this;
-                    self.texteditor = {
-                        value: ko.observable('1'),
-                        constraint: 'ResidenceCode',
-                        option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                            textmode: "text",
-                            placeholder: "",
-                            width: "30px",
-                            textalign: "left"
-                        })),
-                        required: ko.observable(true),
-                        enable: ko.observable(true),
-                        readonly: ko.observable(false)
-                    };
-                }
-                return Input_004;
-            }());
-            var Label_005 = (function () {
-                function Label_005() {
-                    this.constraint = 'LayoutName';
-                    var self = this;
-                    self.inline = ko.observable(true);
-                    self.enable = ko.observable(true);
-                }
-                return Label_005;
-            }());
-            var Label_006 = (function () {
-                function Label_006() {
-                    this.constraint = 'LayoutName';
-                    var self = this;
-                    self.inline = ko.observable(true);
-                    self.enable = ko.observable(true);
-                }
-                return Label_006;
-            }());
-            var Input_005 = (function () {
-                function Input_005() {
-                    var self = this;
-                    self.multilineeditor = {
-                        value: ko.observable(''),
-                        constraint: 'ResidenceCode',
-                        option: ko.mapping.fromJS(new nts.uk.ui.option.MultilineEditorOption({
-                            resizeable: true,
-                            placeholder: "Placeholder for text editor",
-                            width: "380",
-                            textalign: "left"
-                        })),
-                        required: ko.observable(true),
-                        enable: ko.observable(true),
-                        readonly: ko.observable(false)
-                    };
-                }
-                return Input_005;
-            }());
+            viewmodel.SwitchButton = SwitchButton;
         })(viewmodel = a.viewmodel || (a.viewmodel = {}));
     })(a = cmm013.a || (cmm013.a = {}));
 })(cmm013 || (cmm013 = {}));

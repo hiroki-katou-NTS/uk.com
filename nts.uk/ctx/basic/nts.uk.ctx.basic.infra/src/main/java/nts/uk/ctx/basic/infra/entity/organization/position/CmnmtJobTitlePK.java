@@ -11,28 +11,29 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@Getter
 @Setter
-@NoArgsConstructor
+@Getter
 @AllArgsConstructor
+@NoArgsConstructor
 @Embeddable
 public class CmnmtJobTitlePK implements Serializable{
 
 	/**
-	 * serialVersionUID
+	 * 
 	 */
-	public static final long serialVersionUID = 1L;
-	
-	@Basic(optional = false)
-	@Column(name ="CCD")
+	private static final long serialVersionUID = 1L;
+
+	@Basic(optional = false)	
+	@Column(name = "CCD")
 	public String companyCode;
 	
 	@Basic(optional = false)
-	@Column(name ="JOBCD")
+	@Column(name = "JOBCD")
 	public String jobCode;
-
-	@Basic(optional = false)
-	@Column(name ="HIST_ID")
-	public String historyID;
 	
+	@Basic(optional = false)
+	@Column(name = "HIST_ID")
+	public String historyId;
+	
+
 }

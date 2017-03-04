@@ -1,7 +1,7 @@
 package nts.uk.ctx.basic.infra.entity.organization.position;
 
 import java.io.Serializable;
-import java.time.LocalDate;
+
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -10,78 +10,56 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.uk.shr.infra.data.entity.TableEntity;
 
+@Entity
+@Table(name="CMNMT_JOB_TITLE")
 @AllArgsConstructor
 @NoArgsConstructor
-@Entity
-@Table(name = "CMNMT_JOB_TITLE")
-public class CmnmtJobTitle implements Serializable{
-
+public class CmnmtJobTitle extends TableEntity implements Serializable{
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	public CmnmtJobTitlePK cmnmtJobTitlePK;
-	
-	public CmnmtJobTitlePK getCmnmtJobTitlePK() {
-		return cmnmtJobTitlePK;
-	}
+    public CmnmtJobTitlePK cmnmtJobTitlePK;
 
 	@Basic(optional = false)
-	@Column(name ="STR_D")
-	public LocalDate startDate;
-
-	@Basic(optional = false)
-	@Column(name = "END_D")
-	public LocalDate endDate;
+	@Column(name = "EXCLUS_VER")
+	public int exclusVersion;
 	
 	@Basic(optional = false)
+	@Column(name = "JOBNAME")
+	public String jobName;
+	
+	@Basic(optional = false)
+	@Column(name = "PRESENCE_CHECK_SCOPE_SET")
+	public int presenceCheckScopeSet;
+	
+	@Basic(optional = true)
+	@Column(name = "JOB_OUT_CD")
+	public String jobOutCode;
+	
+	@Basic(optional = true)
 	@Column(name = "MEMO")
 	public String memo;
 	
 	@Basic(optional = false)
-	@Column(name ="JOBNAME")
-	public String jobName;
+	@Column(name = "HIERARCHY_ORDER_CD")
+	public String hierarchyOrderCode;
 
-	@Basic(optional = false)
-	@Column(name ="JOB_OUT_CODE")
-	public String jobOutCode;
-	
-	@Basic(optional = false)
-	@Column(name ="PRESENCE_CHECK_SCOPE_SET")
-	public int presenceCheckScopeSet;
-	
-	@Basic(optional = false)
-	@Column(name ="HIERARCHY_ORDER_CD")
-	public String hiterarchyOrderCode;
-	
-	public void setCmnmtJobTittlePK(CmnmtJobTitlePK cmnmtJobTitlePK) {
+	public CmnmtJobTitlePK getCmnmtJobTitlePK() {
+		return cmnmtJobTitlePK;
+	}
+
+	public void setCmnmtJobTitlePK(CmnmtJobTitlePK cmnmtJobTitlePK) {
 		this.cmnmtJobTitlePK = cmnmtJobTitlePK;
 	}
-	
-	
 
-	public LocalDate getStartDate() {
-		return startDate;
+	public int getExclusVersion() {
+		return exclusVersion;
 	}
 
-	public void setStartDate(LocalDate startDate) {
-		this.startDate = startDate;
-	}
-
-	public LocalDate getEndDate() {
-		return endDate;
-	}
-
-	public void setEndDate(LocalDate endDate) {
-		this.endDate = endDate;
-	}
-
-	public String getMemo() {
-		return memo;
-	}
-
-	public void setMemo(String memo) {
-		this.memo = memo;
+	public void setExclusVersion(int exclusVersion) {
+		this.exclusVersion = exclusVersion;
 	}
 
 	public String getJobName() {
@@ -92,6 +70,14 @@ public class CmnmtJobTitle implements Serializable{
 		this.jobName = jobName;
 	}
 
+	public int getPresenceCheckScopeSet() {
+		return presenceCheckScopeSet;
+	}
+
+	public void setPresenceCheckScopeSet(int presenceCheckScopeSet) {
+		this.presenceCheckScopeSet = presenceCheckScopeSet;
+	}
+
 	public String getJobOutCode() {
 		return jobOutCode;
 	}
@@ -100,33 +86,29 @@ public class CmnmtJobTitle implements Serializable{
 		this.jobOutCode = jobOutCode;
 	}
 
+	public String getMemo() {
+		return memo;
+	}
+
+	public void setMemo(String memo) {
+		this.memo = memo;
+	}
+
+	public String getHierarchyOrderCode() {
+		return hierarchyOrderCode;
+	}
+
+	public void setHierarchyOrderCode(String hierarchyOrderCode) {
+		this.hierarchyOrderCode = hierarchyOrderCode;
+	}
+
 	public static long getSerialversionuid() {
 		return serialVersionUID;
 	}
-
-
-
-	public int getPresenceCheckScopeSet() {
-		return presenceCheckScopeSet;
-	}
-
-
-
-	public void setPresenceCheckScopeSet(int presenceCheckScopeSet) {
-		this.presenceCheckScopeSet = presenceCheckScopeSet;
-	}
-
-
-
-	public String getHiterarchyOrderCode() {
-		return hiterarchyOrderCode;
-	}
-
-
-
-	public void setHiterarchyOrderCode(String hiterarchyOrderCode) {
-		this.hiterarchyOrderCode = hiterarchyOrderCode;
-	}
-
+	
 	
 }
+
+	
+
+

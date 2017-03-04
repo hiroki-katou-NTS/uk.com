@@ -36,7 +36,7 @@ var cmm013;
                     var startYm = nts.uk.ui.windows.getShared('startYm');
                     self.historyId(nts.uk.ui.windows.getShared('historyId'));
                     self.layoutStartYm(nts.uk.time.formatYearMonth(startYm));
-                    service.getLayout(layoutCode, self.historyId()).done(function (layout) {
+                    d.service.getLayout(layoutCode, self.historyId()).done(function (layout) {
                         self.selectLayout(layout);
                         self.startDiaglog();
                         dfd.resolve();
@@ -76,7 +76,7 @@ var cmm013;
                 };
                 ScreenModel.prototype.dataDelete = function () {
                     var self = this;
-                    service.deleteLayout(self.selectLayout()).done(function () {
+                    d.service.deleteLayout(self.selectLayout()).done(function () {
                         //alert("履歴を削除しました。");
                         nts.uk.ui.windows.close();
                     }).fail(function (res) {
@@ -106,7 +106,7 @@ var cmm013;
                         return false;
                     }
                     else {
-                        service.updateLayout(layoutInfor).done(function () {
+                        d.service.updateLayout(layoutInfor).done(function () {
                             //alert("履歴を修正しました。");
                             nts.uk.ui.windows.close();
                         }).fail(function (res) {

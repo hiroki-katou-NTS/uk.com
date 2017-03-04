@@ -28,7 +28,7 @@ public class QmnmtPayClassPK implements Serializable{
 	
 	@Basic(optional = false)
 	@Column(name ="PAYCLASS_CD")
-	public String payClassCode;
+	public String payClassificationCode;
 
 
 }

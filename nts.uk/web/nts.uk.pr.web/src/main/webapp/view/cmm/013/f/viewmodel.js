@@ -13,7 +13,6 @@ var cmm013;
                     self.label_005 = ko.observable(new Labels());
                     self.label_006 = ko.observable(new Labels());
                     self.radiobox = ko.observable(new RadioBox());
-                    self.radiobox_2 = ko.observable(new RadioBox2());
                     self.inp_002 = ko.observable(null);
                     self.inp_002_enable = ko.observable(false);
                     self.inp_003 = ko.observable(null);
@@ -24,14 +23,12 @@ var cmm013;
                     self.sel_0023 = ko.observable(new SwitchButton);
                     self.sel_0024 = ko.observable(new SwitchButton);
                     self.test = ko.observable('2');
-                    //lst_001
                     self.listbox = ko.observableArray([]);
                     self.selectedCode = ko.observable(null);
                     self.isEnable = ko.observable(true);
                     self.itemHist = ko.observable(null);
                     self.itemName = ko.observable('');
                     self.index_selected = ko.observable('');
-                    //lst_002
                     self.dataSource = ko.observableArray([]);
                     self.currentItem = ko.observable(null);
                     self.itemName = ko.observable('');
@@ -42,20 +39,25 @@ var cmm013;
                         { headerText: 'コード', key: 'jobCode', width: 80 },
                         { headerText: '名称', key: 'jobName', width: 100 }
                     ]);
+                    self.itemList = ko.observableArray([
+                        new BoxModel(0, '全員参照可能'),
+                        new BoxModel(1, '全員参照不可'),
+                        new BoxModel(2, 'ロール毎に設定')
+                    ]);
                     self.selectedCode.subscribe((function (codeChanged) {
                         self.itemHist(self.findHist(codeChanged));
                         if (self.itemHist() != null) {
                             self.index_selected(self.itemHist().historyId);
                             console.log(self.index_selected());
-                            //get position
                             var dfd = $.Deferred();
-                            service.findAllPosition(self.index_selected())
+                            f.service.findAllPosition(self.index_selected())
                                 .done(function (position_arr) {
                                 self.dataSource(position_arr);
                                 self.currentCode(self.dataSource()[0].jobCode);
                                 self.inp_002(self.dataSource()[0].jobCode);
                                 self.inp_003(self.dataSource()[0].jobName);
                                 self.inp_005(self.dataSource()[0].memo);
+                                self.selectedId(self.dataSource()[0].presenceCheckScopeSet);
                             }).fail(function (error) {
                                 alert(error.message);
                             });
@@ -63,17 +65,16 @@ var cmm013;
                             return dfd.promise();
                         }
                     }));
-                    //inp_x
                     self.currentCode.subscribe((function (codeChanged) {
                         self.currentItem(self.findPosition(codeChanged));
                         if (self.currentItem() != null) {
                             self.inp_002(self.currentItem().jobCode);
                             self.inp_003(self.currentItem().jobName);
                             self.inp_005(self.currentItem().memo);
+                            self.selectedId(self.currentItem().presenceCheckScopeSet);
                         }
                     }));
                 }
-                //        find history need to show position
                 ScreenModel.prototype.findHist = function (value) {
                     var self = this;
                     var itemModel = null;
@@ -84,7 +85,6 @@ var cmm013;
                     });
                     return itemModel;
                 };
-                //        find position need to show detail
                 ScreenModel.prototype.findPosition = function (value) {
                     var self = this;
                     var itemModel = null;
@@ -95,10 +95,51 @@ var cmm013;
                     });
                     return itemModel;
                 };
+                ScreenModel.prototype.deletePosition = function () {
+                    var self = this;
+                    var dfd = $.Deferred();
+                    var item = new model.DeletePositionCommand(self.currentItem().jobCode, self.currentItem().jobName);
+                    console.log(self.currentItem().presenceCheckScopeSet);
+                    self.index_of_itemDelete = self.dataSource().indexOf(self.currentItem());
+                    console.log(self.index_of_itemDelete);
+                    f.service.deletePosition(item).done(function (res) {
+                        self.getPositionList_aftefDelete();
+                    }).fail(function (res) {
+                        dfd.reject(res);
+                    });
+                };
+                ScreenModel.prototype.getPositionList_aftefDelete = function () {
+                    var self = this;
+                    var dfd = $.Deferred();
+                    f.service.findAllPosition(self.index_selected()).done(function (position_arr) {
+                        self.dataSource(position_arr);
+                        if (self.dataSource().length > 0) {
+                            if (self.index_of_itemDelete === self.dataSource().length) {
+                                self.currentCode(self.dataSource()[self.index_of_itemDelete - 1].jobCode);
+                                self.inp_002(self.dataSource()[self.index_of_itemDelete - 1].jobCode);
+                                self.inp_003(self.dataSource()[self.index_of_itemDelete - 1].jobName);
+                                self.inp_005(self.dataSource()[self.index_of_itemDelete - 1].memo);
+                            }
+                            else {
+                                self.currentCode(self.dataSource()[self.index_of_itemDelete].jobCode);
+                                self.inp_002(self.dataSource()[self.index_of_itemDelete].jobCode);
+                                self.inp_003(self.dataSource()[self.index_of_itemDelete].jobName);
+                                self.inp_005(self.dataSource()[self.index_of_itemDelete].memo);
+                            }
+                        }
+                        else {
+                        }
+                        dfd.resolve();
+                    }).fail(function (error) {
+                        alert(error.message);
+                    });
+                    dfd.resolve();
+                    return dfd.promise();
+                };
                 ScreenModel.prototype.getPositionList = function () {
                     var self = this;
                     var dfd = $.Deferred();
-                    service.findAllPosition(self.index_selected()).done(function (position_arr) {
+                    f.service.findAllPosition(self.index_selected()).done(function (position_arr) {
                         self.dataSource(position_arr);
                         self.inp_002(self.dataSource()[0].jobCode);
                         self.inp_003(self.dataSource()[0].jobName);
@@ -115,18 +156,17 @@ var cmm013;
                 };
                 ScreenModel.prototype.startPage = function () {
                     var self = this;
-                    // Page load dfd.
                     var dfd = $.Deferred();
-                    // get all history.     
-                    service.getAllHistory().done(function (history_arr) {
+                    f.service.getAllHistory().done(function (history_arr) {
                         self.listbox(history_arr);
-                        self.selectedCode = ko.observable(self.listbox()[0].historyId);
+                        self.selectedCode = ko.observable(self.listbox()[0].startDate);
                     }).fail(function (error) {
                         alert(error.message);
                     });
                     dfd.resolve();
                     return dfd.promise();
                 };
+                //phai lam getshare
                 ScreenModel.prototype.openBDialog = function () {
                     nts.uk.ui.windows.sub.modal('/view/cmm/013/b/index.xhtml', { title: '画面ID：B', });
                 };
@@ -231,18 +271,20 @@ var cmm013;
                 }());
                 model.ListHistoryDto = ListHistoryDto;
                 var ListPositionDto = (function () {
-                    function ListPositionDto(code, name, memo) {
+                    function ListPositionDto(code, name, presenceCheckScopeSet, memo) {
                         var self = this;
                         self.jobCode = code;
                         self.jobName = name;
+                        self.presenceCheckScopeSet = presenceCheckScopeSet;
                         self.memo = memo;
                     }
                     return ListPositionDto;
                 }());
                 model.ListPositionDto = ListPositionDto;
                 var DeletePositionCommand = (function () {
-                    function DeletePositionCommand(jobCode) {
+                    function DeletePositionCommand(jobCode, historyId) {
                         this.jobCode = jobCode;
+                        this.historyId = historyId;
                     }
                     return DeletePositionCommand;
                 }());

@@ -1,4 +1,4 @@
-module cmm013.f.viewmodel.a.start{
+module cmm013.test.viewmodel.start{
 __viewContext.ready(function() {
         var screenModel = new viewmodel.ScreenModel();
     

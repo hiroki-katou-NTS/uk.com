@@ -1,14 +1,13 @@
-module cmm013.f.service {
+ 
+  module cmm013.f.service {
     var paths = {
         findAllPosition: "basic/position/findallposition/",
-        addPosition: "basic/position/add",
-        deletePosition: "basic/position/remove",
-        updatePosition: "basic/position/update",
+        addPosition: "basic/position/addPosition",
+        deletePosition: "basic/position/deletePosition",
+        updatePosition: "basic/position/updatePosition",
         getAllHistory: "basic/position/getallhist"
         
-    /**
-     * get all Position
-     */
+
     }
     export function findAllPosition(historyId: string): JQueryPromise<Array<any>> {
         var dfd = $.Deferred<Array<any>>();
@@ -22,9 +21,7 @@ module cmm013.f.service {
         return dfd.promise();
     }
     
-    /**
-     * add Position
-     */
+  
     
     export function addPosition(position: viewmodel.model.DeletePositionCommand){
         var dfd = $.Deferred<Array<any>>();
@@ -38,9 +35,7 @@ module cmm013.f.service {
         return dfd.promise();
      }
 
-    /**
-     * update Position
-     */
+  
 
     export function updatePosition(position: viewmodel.model.ListPositionDto) {
         var dfd = $.Deferred<Array<any>>();
@@ -87,5 +82,7 @@ module cmm013.f.service {
             })
         return dfd.promise();
     }
+
+    //model
 
 }
