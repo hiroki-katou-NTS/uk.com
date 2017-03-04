@@ -7,30 +7,22 @@
 <body>
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
+			<com:ValidatorScript>
+					nts.uk.ctx.basic.dom.organization.classification.ClassificationCode
+					nts.uk.ctx.basic.dom.organization.classification.ClassificationName
+				</com:ValidatorScript>
 			<com:stylefile path="main.css" />
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="start.js" />
 			<com:scriptfile path="viewmodel.js" />
 			<com:scriptfile path="service.js" />
 			<script type="text/javascript">
-					__viewContext.primitiveValueConstraints.ClassificationCode = {
-							valueType: 'String',
-							charType: 'Numeric',
-							maxLength: 10,
-						};
-					
-					__viewContext.primitiveValueConstraints.ClassificationName = {
-							valueType: 'String',
-							charType: 'AnyHalfWidth',
-							maxLength: 20,
-						};
-					__viewContext.primitiveValueConstraints.Memo = {
-							valueType: 'String',
-							charType: 'AnyHalfWidth',
-							maxLength: 500,
-						};
-					
-				</script>
+			__viewContext.primitiveValueConstraints.Memo = {
+					valueType: 'String',
+					charType: 'AnyHalfWidth',
+					maxLength: 500,
+				};	
+			</script>
 		</ui:define>
 
 		<ui:define name="content">
@@ -61,11 +53,11 @@
                                     selectedKey: 'classificationCode', 
                                     childField: 'childs', 
                                     fields: ['classificationName', 'classificationCode']}" />
-							<br />
+							<br/>
 							<table id="single-list"
 								data-bind="ntsGridList: {
                                             width: 300,
-                                            height: 300,
+                                            height: 520,
                                             options: dataSource,
                                             optionsValue: 'classificationCode',
                                             columns: columns,
@@ -95,7 +87,7 @@
 							<td class="valign-center">
 								<div>
 									<div class="input_002">
-										<input
+										<input id = "A_INP_002"
 											data-bind="ntsTextEditor: {
                                             value: INP_002_code,
                                             constraint: 'ClassificationCode',
@@ -117,13 +109,13 @@
 
 						<tr>
 							<td>
-								<div data-bind="ntsFormLabel: {constraint: 'Memo'}">
+								<div style="margin-bottom: 56px;" data-bind="ntsFormLabel: {constraint: 'Memo'}">
 									<label id="A_LBL_003">メモ</label>
 								</div>
 							</td>
 							<td class="valign-center">
 								<div>
-									<textarea
+									<textarea style="margin-top: 20px; width: 296px; height: 107px"
 										data-bind="ntsMultilineEditor: {
 											value: INP_004_notes,
 											constraint: 'Memo'

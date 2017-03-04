@@ -46,6 +46,7 @@ public class JpaClassificationRepository extends JpaRepository implements Classi
 		QUERY_IS_EXISTED = builderString.toString();
 	}
 
+	
 	@Override
 	public void add(Classification classification) {
 		this.commandProxy().insert(convertToDbType(classification));
@@ -74,13 +75,11 @@ public class JpaClassificationRepository extends JpaRepository implements Classi
 					return Optional.of(convertToDomain(e));
 				}).orElse(Optional.empty());
 	}
-	
-	
+
 	@Override
 	public List<Classification> findAll(String companyCode) {
 		List<CmnmtClass> resultList = this.queryProxy().query(FIND_ALL, CmnmtClass.class)
-				.setParameter("companyCode",   companyCode )
-				.getList();
+				.setParameter("companyCode", companyCode).getList();
 		return !resultList.isEmpty() ? resultList.stream().map(e -> {
 			return convertToDomain(e);
 		}).collect(Collectors.toList()) : new ArrayList<>();
@@ -99,7 +98,8 @@ public class JpaClassificationRepository extends JpaRepository implements Classi
 				classification.getClassificationCode().toString());
 		cmnmtClass.setMemo(classification.getClassificationMemo().toString());
 		cmnmtClass.setName(classification.getClassificationName().toString());
-		cmnmtClass.setOutCode(classification.getClassificationOutCode() != null? classification.getClassificationOutCode().toString() : null);
+		cmnmtClass.setOutCode(classification.getClassificationOutCode() != null
+				? classification.getClassificationOutCode().toString() : null);
 		cmnmtClass.setCmnmtClassPK(cmnmtClassPK);
 		return cmnmtClass;
 	}
@@ -107,7 +107,8 @@ public class JpaClassificationRepository extends JpaRepository implements Classi
 	private Classification convertToDomain(CmnmtClass cmnmtClass) {
 		return new Classification(cmnmtClass.getCmnmtClassPK().getCompanyCode(),
 				new ClassificationCode(cmnmtClass.getCmnmtClassPK().getClassificationCode()),
-				new ClassificationName(cmnmtClass.getName()), new ClassificationCode(cmnmtClass.getOutCode() != null? cmnmtClass.getOutCode() : "" ),
+				new ClassificationName(cmnmtClass.getName()),
+				new ClassificationCode(cmnmtClass.getOutCode() != null ? cmnmtClass.getOutCode() : ""),
 				new Memo(cmnmtClass.getMemo()));
 	}
 

@@ -67,12 +67,12 @@ module cmm014.a.viewmodel {
             self.INP_004_notes("");
             self.currentCode(null);
             $("#test input").val("");
+            $("#A_INP_002").focus();
         }
 
         checkInput(): boolean {
             var self = this;
             if (self.INP_002_code() == '' || self.INP_003_name() == '') {
-                console.log("input is null");
                 return false;
             } else {
                 return true;
@@ -83,13 +83,20 @@ module cmm014.a.viewmodel {
             var self = this;
             var dfd = $.Deferred<any>();
             if (self.checkInput()) {
-                console.log("Insert(đăng ký mới) or Update Classification");
+                if (self.dataSource().length === 0) {
+                    let classification = new viewmodel.model.ClassificationDto(self.INP_002_code(), self.INP_003_name(), self.INP_004_notes());
+                    service.addClassification(classification).done(function() {
+                        self.getClassificationList_first();
+                    }).fail(function(res) {
+                        dfd.reject(res);
+                    })
+                }
                 for (let i = 0; i < self.dataSource().length; i++) {
                     if (self.INP_002_code() == self.dataSource()[i].classificationCode) {
                         var classification_old = self.dataSource()[i];
                         var classification_update = new viewmodel.model.ClassificationDto(self.INP_002_code(), self.INP_003_name(), self.INP_004_notes());
                         service.updateClassification(classification_update).done(function() {
-                            self.getClassificationList();
+                            self.getClassificationList_afterUpdateClassification();
                         }).fail(function(res) {
                             dfd.reject(res);
                         })
@@ -97,7 +104,7 @@ module cmm014.a.viewmodel {
                     } else if (self.INP_002_code() != self.dataSource()[i].classificationCode && i == self.dataSource().length - 1) {
                         var classification_new = new viewmodel.model.ClassificationDto(self.INP_002_code(), self.INP_003_name(), self.INP_004_notes());
                         service.addClassification(classification_new).done(function() {
-                            self.getClassificationList();
+                            self.getClassificationList_afterAddClassification();
                         }).fail(function(res) {
                             dfd.reject(res);
                         })
@@ -121,17 +128,18 @@ module cmm014.a.viewmodel {
             })
 
         }
-        //   self.dataSource.remove(self.currentItem());
 
         start(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred<any>();
             service.getAllClassification().done(function(classification_arr: Array<model.ClassificationDto>) {
-                self.dataSource(classification_arr);
-                self.INP_002_code(self.dataSource()[0].classificationCode);
-                self.INP_003_name(self.dataSource()[0].classificationName);
-                self.INP_004_notes(self.dataSource()[0].memo);
-                self.currentCode(self.dataSource()[0].classificationCode)
+                if (classification_arr.length > 0) {
+                    self.dataSource(classification_arr);
+                    self.INP_002_code(self.dataSource()[0].classificationCode);
+                    self.INP_003_name(self.dataSource()[0].classificationName);
+                    self.INP_004_notes(self.dataSource()[0].memo);
+                    self.currentCode(self.dataSource()[0].classificationCode)
+                }
                 dfd.resolve();
             }).fail(function(error) {
                 alert(error.message);
@@ -149,7 +157,7 @@ module cmm014.a.viewmodel {
                 self.INP_003_name(self.dataSource()[0].classificationName);
                 self.INP_004_notes(self.dataSource()[0].memo);
                 if (self.dataSource().length > 1) {
-                    self.currentCode(self.dataSource()[0].classificationCode)
+                    self.currentCode(self.dataSource()[0].classificationCode);
                 }
 
                 dfd.resolve();
@@ -160,7 +168,78 @@ module cmm014.a.viewmodel {
             return dfd.promise();
 
         }
+        // get list Classification after insert
+        getClassificationList_afterUpdateClassification(): any {
+            var self = this;
+            var dfd = $.Deferred<any>();
+            service.getAllClassification().done(function(classification_arr: Array<model.ClassificationDto>) {
+                self.dataSource(classification_arr);
 
+                if (self.dataSource().length > 1) {
+                    let i = self.currentItem().classificationCode;
+                    let j = self.dataSource().indexOf(self.currentItem());
+                    self.currentCode(i);
+                    self.INP_002_code(self.dataSource()[j].classificationCode);
+                    self.INP_003_name(self.dataSource()[j].classificationName);
+                    self.INP_004_notes(self.dataSource()[j].memo);
+                }
+
+                dfd.resolve();
+            }).fail(function(error) {
+                alert(error.message);
+            })
+            dfd.resolve();
+            return dfd.promise();
+
+        }
+        // get list Classification after insert
+        getClassificationList_first(): any {
+            var self = this;
+            var dfd = $.Deferred<any>();
+            service.getAllClassification().done(function(classification_arr: Array<model.ClassificationDto>) {
+                self.dataSource(classification_arr);
+                self.currentCode(self.dataSource()[0].classificationCode);
+                let i = self.dataSource().length;
+                if (i > 0) {
+                    self.INP_002_enable(false);
+                    self.INP_002_code(self.dataSource()[0].classificationCode);
+                    self.INP_003_name(self.dataSource()[0].classificationName);
+                    self.INP_004_notes(self.dataSource()[0].memo);
+                }
+                dfd.resolve();
+            }).fail(function(error) {
+                alert(error.message);
+            })
+            dfd.resolve();
+            return dfd.promise();
+
+        }
+
+
+        // get list Classification after insert
+        getClassificationList_afterAddClassification(): any {
+            var self = this;
+            var dfd = $.Deferred<any>();
+            service.getAllClassification().done(function(classification_arr: Array<model.ClassificationDto>) {
+                self.dataSource(classification_arr);
+                self.INP_002_code(self.dataSource()[0].classificationCode);
+                self.INP_002_enable = ko.observable(false);
+                self.INP_003_name(self.dataSource()[0].classificationName);
+                self.INP_004_notes(self.dataSource()[0].memo);
+                if (self.dataSource().length > 1) {
+                    let i = self.dataSource().length - 1;
+                    self.currentCode(self.dataSource()[i].classificationCode);
+                }
+                dfd.resolve();
+            }).fail(function(error) {
+                alert(error.message);
+            })
+            dfd.resolve();
+            return dfd.promise();
+
+        }
+
+        // get list Classification after remove
         getClassificationList_aftefDelete(): any {
             var self = this;
             var dfd = $.Deferred<any>();
@@ -196,7 +275,9 @@ module cmm014.a.viewmodel {
 
     }
 
-
+    /**
+    *  model
+    */
     export module model {
         export class ClassificationDto {
             classificationCode: string;
