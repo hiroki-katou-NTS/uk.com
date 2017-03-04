@@ -6,7 +6,7 @@
 }
 
 #functions-area {
-    height: 50px !important;
+	height: 50px !important;
 }
 
 #A_BTN_004 {
@@ -44,8 +44,16 @@
 }
 
 .ntsSearchDiv {
-	width: 500px;
-	margin: 20px 25px;
+	width: 400px;
+	margin: 20px 20px;
+}
+
+#content_data {
+	float: left;
+	width: 450px;
+	height: 500px;
+	padding-left: 10px;
+    padding-bottom: 10px;
 }
 
 .gridList {
@@ -77,12 +85,15 @@ input {
 	width: 35px !important;
 	text-align: center !important;
 }
+
 #INP_003 {
 	max-width: 180px !important;
 }
+
 #INP_004 {
 	max-width: 140px !important;
 }
-div.form-label > i {
+
+div.form-label>i {
 	width: 160px !important;
 }
