@@ -5,7 +5,7 @@ var qmm003;
         var service;
         (function (service) {
             var paths = {
-                getResidentalTaxList: "pr/core/residential/findallresidential",
+                getResidentalTaxList: "pr/core/residential/findallByCompanyCode",
                 getRegionPrefecture: "pr/core/residential/getlistLocation"
             };
             /**

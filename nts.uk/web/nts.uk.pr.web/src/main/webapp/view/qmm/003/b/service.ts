@@ -1,6 +1,6 @@
 module qmm003.b.service {
     var paths = {
-        getResidentalTaxList: "pr/core/residential/findallresidential",
+        getResidentalTaxList: "pr/core/residential/findallByCompanyCode",
         getRegionPrefecture: "pr/core/residential/getlistLocation"
     }
 

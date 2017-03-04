@@ -1,15 +1,23 @@
-module nts.uk.pr.view.qmm003.c {
+module qmm003.c.viewmodel {
     export class ScreenModel {
         items: any;
-        singleSelectedCode: KnockoutObservable<any>;
-        labelSubsub: any;
-        filteredData: any;
+        singleSelectedCode: KnockoutObservable<string>;
+        filteredData : KnockoutObservableArray<Node> = ko.observableArray([]);
+        currentNode: KnockoutObservable<Node>;
+        testNode = [];
+        nodeRegionPrefectures: KnockoutObservableArray<Node> = ko.observableArray([]);
+        japanLocation: Array<qmm003.c.service.model.RegionObject> = [];
+        precfecture: Array<Node> = [];
+        itemPrefecture: KnockoutObservableArray<Node> = ko.observableArray([]);
+        residentalTaxList: KnockoutObservableArray<qmm003.c.service.model.ResidentialTax> = ko.observableArray([]);
         constructor() {
             let self = this;
             self.init();
             self.singleSelectedCode.subscribe(function(newValue) {
-                self.labelSubsub(self.findByCode(self.filteredData(), newValue));
-                console.log(self.labelSubsub());
+                let node: Node;
+                node = self.findByCode(self.filteredData(),newValue);
+                console.log(node);
+                self.currentNode(node);
             });
         }
 
@@ -27,55 +35,20 @@ module nts.uk.pr.view.qmm003.c {
         }
         init(): void {
             let self = this;
-            self.items = ko.observableArray(
-                [
-                    new Node('1', '東北', [
-                        new Node('11', '青森県', [
-                            new Node('022012', '青森市', []),
-                            new Node('052019', '秋田市', [])
-                        ]),
-                        new Node('12', '東北', [
-                            new Node('062014', '山形市', [])
-                        ]),
-                        new Node('13', '福島県', [
-                            new Node('062015', '福島市', [])
-                        ])
-                    ]),
-                    new Node('2', '北海道', []),
-                    new Node('3', '東海', []),
-                    new Node('4', '関東', [
-                        new Node('41', '茨城県', [
-                            new Node('062016', '水戸市', []),
-                        ]),
-                        new Node('42', '栃木県', [
-                            new Node('062017', '宇都宮市', [])
-                        ]),
-                        new Node('43', '埼玉県', [
-                            new Node('062019', '川越市', []),
-                            new Node('062020', '熊谷市', []),
-                            new Node('062022', '浦和市', []),
-                        ])
-                    ]),
-                    new Node('5', '東海', []),
-                    new Node('6', '東海', [])
-                ]);
+            self.items = ko.observableArray([]);
             self.singleSelectedCode = ko.observable("11");
-            self.labelSubsub = ko.observable(new Node("", "", []));
-            self.filteredData = ko.observableArray(nts.uk.util.flatArray(self.items(), "childs"));
+            self.currentNode = ko.observable(new Node("","",[]));
         }
         clickButton(): void {
             let self = this;
-            nts.uk.ui.windows.setShared('singleSelectedCode', self.singleSelectedCode(), true);
-            nts.uk.ui.windows.setShared('labelSubsub', self.labelSubsub(), true);
+            //nts.uk.ui.windows.setShared('singleSelectedCode', self.singleSelectedCode(), true);
+            nts.uk.ui.windows.setShared('currentNode',self.currentNode(),true);
             nts.uk.ui.windows.close();
         }
         cancelButton(): void {
             nts.uk.ui.windows.close();
         }
         register(): void {
-            // if()
-            //                         $("#A_INP_002").attr('disabled', 'true');
-
             let inputSearch = $("#C_SCH_001").find("input.ntsSearchBox").val();
             if (inputSearch == "") {
                 $('#C_SCH_001').ntsError('set', 'inputSearch が入力されていません。');
@@ -97,6 +70,66 @@ module nts.uk.pr.view.qmm003.c {
             }
 
 
+        }
+        //11.初期データ取得処理 11. Initial data acquisition processing
+        start(): JQueryPromise<any> {
+            var dfd = $.Deferred<any>();
+            let self = this;
+            (qmm003.c.service.getResidentialTax()).done(function(data: Array<qmm003.c.service.model.ResidentialTax>) {
+                if (data.length > 0) {
+                    self.residentalTaxList(data);
+                    (qmm003.c.service.getRegionPrefecture()).done(function(locationData: Array<service.model.RegionObject>) {
+                        self.japanLocation = locationData;
+                        self.buildResidentalTaxTree();
+                        let node : Array<Node> = [];
+                        node = nts.uk.util.flatArray(self.nodeRegionPrefectures(), "childs");
+                        self.filteredData(node);
+                        self.items(self.nodeRegionPrefectures());
+                    });
+                }
+
+
+                dfd.resolve();
+
+            }).fail(function(res) {
+
+            });
+
+            return dfd.promise();
+        }
+        buildResidentalTaxTree() {
+            let self = this;
+            var child = [];
+            let i = 0;
+            _.each(self.residentalTaxList(), function(objResi: qmm003.c.service.model.ResidentialTax) {
+                _.each(self.japanLocation, function(objRegion: service.model.RegionObject) {
+                    let cout: boolean = false;
+                    let coutPre: boolean = false;
+                    _.each(objRegion.prefectures, function(objPrefecture: service.model.PrefectureObject) {
+                        if (objPrefecture.prefectureCode === objResi.prefectureCode) {
+                            _.each(self.nodeRegionPrefectures(), function(obj: Node) {
+                                if (obj.code === objRegion.regionCode) {
+                                    _.each(obj.childs, function(objChild: Node) {
+                                        if (objChild.code === objPrefecture.prefectureCode) {
+                                            objChild.childs.push(new Node(objResi.resiTaxCode, objResi.resiTaxAutonomy, []));
+                                            coutPre = true;
+                                        }
+                                    });
+                                    if (coutPre === false) {
+                                        obj.childs.push(new Node(objPrefecture.prefectureCode, objPrefecture.prefectureName, [new Node(objResi.resiTaxCode, objResi.resiTaxAutonomy, [])]));
+                                    }
+                                    cout = true;
+                                }
+                            });
+                            if (cout === false) {
+                                let chi = [];
+                                self.nodeRegionPrefectures.push(new Node(objRegion.regionCode, objRegion.regionName, [new Node(objPrefecture.prefectureCode, objPrefecture.prefectureName, [new Node(objResi.resiTaxCode, objResi.resiTaxAutonomy, [])])]));
+                            }
+                        }
+                    });
+                });
+
+            });
         }
     }
     export class Node {
