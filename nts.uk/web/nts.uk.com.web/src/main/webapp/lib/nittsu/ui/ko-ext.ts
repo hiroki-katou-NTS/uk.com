@@ -194,8 +194,8 @@ module nts.uk.ui.koExtentions {
         update($input: JQuery, data: any) {
             super.update($input, data);
             var option: any = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
-
-            $input.css({ 'text-align': 'right', "box-sizing": "border-box" });
+            var align = option.textalign !== "left" ? "right" : "left";
+            $input.css({ 'text-align': align, "box-sizing": "border-box" });
             var $parent = $input.parent();
             var width = option.width;// ? option.width : '100%';
             var parentTag = $parent.parent().prop("tagName").toLowerCase();
@@ -409,9 +409,6 @@ module nts.uk.ui.koExtentions {
          * Init.
          */
         init(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
-            var INPUT_PADDING_RIGHT = 20;
-            var INPUT_PADDING_LEFT = 40;
-            var INPUT_BORDER = 2;
             
             var searchBox = $(element);
             var data = valueAccessor();
@@ -436,7 +433,7 @@ module nts.uk.ui.koExtentions {
             var $input = $container.find("input.ntsSearchBox");
             $input.attr("placeholder", placeHolder);
             var $button = $container.find("button.search-btn");
-            $input.outerWidth($container.width() - $button.width() - 30);
+            $input.outerWidth($container.outerWidth(true) - $button.outerWidth(true));
             var nextSearch = function() {
                 var filtArr = searchBox.data("searchResult");
                 var compareKey = fields[0];

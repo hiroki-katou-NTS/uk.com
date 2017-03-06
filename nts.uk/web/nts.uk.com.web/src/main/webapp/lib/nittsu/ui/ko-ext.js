@@ -205,7 +205,8 @@ var nts;
                     NumberEditorProcessor.prototype.update = function ($input, data) {
                         _super.prototype.update.call(this, $input, data);
                         var option = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
-                        $input.css({ 'text-align': 'right', "box-sizing": "border-box" });
+                        var align = option.textalign !== "left" ? "right" : "left";
+                        $input.css({ 'text-align': align, "box-sizing": "border-box" });
                         var $parent = $input.parent();
                         var width = option.width; // ? option.width : '100%';
                         var parentTag = $parent.parent().prop("tagName").toLowerCase();
@@ -425,9 +426,6 @@ var nts;
                      * Init.
                      */
                     NtsSearchBoxBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                        var INPUT_PADDING_RIGHT = 20;
-                        var INPUT_PADDING_LEFT = 40;
-                        var INPUT_BORDER = 2;
                         var searchBox = $(element);
                         var data = valueAccessor();
                         var fields = ko.unwrap(data.fields);
@@ -451,7 +449,7 @@ var nts;
                         var $input = $container.find("input.ntsSearchBox");
                         $input.attr("placeholder", placeHolder);
                         var $button = $container.find("button.search-btn");
-                        $input.outerWidth($container.width() - $button.width() - 30);
+                        $input.outerWidth($container.outerWidth(true) - $button.outerWidth(true));
                         var nextSearch = function () {
                             var filtArr = searchBox.data("searchResult");
                             var compareKey = fields[0];
