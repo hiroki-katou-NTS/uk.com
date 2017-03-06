@@ -32,6 +32,7 @@ public class HealthInsuranceRateFinder {
 	/** The social insurance office repository. */
 	@Inject
 	private SocialInsuranceOfficeRepository socialInsuranceOfficeRepository;
+	
 	/**
 	 * Find.
 	 *
@@ -48,7 +49,7 @@ public class HealthInsuranceRateFinder {
 	}
 
 	/**
-	 * Find by office code.
+	 * Find all history.
 	 *
 	 * @return the list
 	 */

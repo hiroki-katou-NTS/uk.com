@@ -265,7 +265,7 @@ public class JpaSocialInsuranceOfficeSetMemento implements SocialInsuranceOffice
 	 */
 	@Override
 	public void setOfficePensionFundCode(String officePensionFundCode) {
-		this.typeValue.setPensionFundNo(officePensionFundCode);
+		this.typeValue.setPensionFundOfficeNo(officePensionFundCode);
 	}
 
 	/*

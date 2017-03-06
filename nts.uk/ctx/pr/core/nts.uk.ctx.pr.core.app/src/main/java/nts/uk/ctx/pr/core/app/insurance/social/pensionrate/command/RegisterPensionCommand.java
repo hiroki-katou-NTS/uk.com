@@ -34,8 +34,7 @@ public class RegisterPensionCommand extends PensionBaseCommand {
 	/**
 	 * To domain.
 	 *
-	 * @param companyCode
-	 *            the company code
+	 * @param companyCode the company code
 	 * @return the pension rate
 	 */
 	public PensionRate toDomain(CompanyCode companyCode) {

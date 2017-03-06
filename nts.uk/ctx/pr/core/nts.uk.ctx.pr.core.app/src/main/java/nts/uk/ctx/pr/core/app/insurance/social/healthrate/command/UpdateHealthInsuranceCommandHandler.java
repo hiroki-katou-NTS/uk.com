@@ -8,6 +8,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.core.dom.company.CompanyCode;
@@ -48,7 +49,7 @@ public class UpdateHealthInsuranceCommandHandler extends CommandHandler<UpdateHe
 		//if not exsits
 		if(findhealthInsuranceRate==null)
 		{
-			//TODO throw exception;
+			throw new BusinessException("ER010");
 		}
 		// Transfer data
 		HealthInsuranceRate updatedHealthInsuranceRate = command.toDomain(companyCode,

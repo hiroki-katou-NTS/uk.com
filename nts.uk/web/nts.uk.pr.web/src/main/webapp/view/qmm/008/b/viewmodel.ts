@@ -34,7 +34,7 @@ module nts.uk.pr.view.qmm008.b {
                 // Reset child value
                 //            nts.uk.ui.windows.setShared("childValue", null);
                 self.officeCodeName = ko.observable(receiveOfficeItem.codeName);
-                //TODO get current date time of system
+                //get current date time of system
                 if (receiveOfficeItem.childs.length > 0)
                     self.selectedDate = ko.observable(self.getLastHistory(receiveOfficeItem));
                 else {
@@ -70,7 +70,7 @@ module nts.uk.pr.view.qmm008.b {
             public clickSettingButton() {
                 var self = this;
                 var updateFlag = false;
-                //TODO save history service
+                //save history service
                 //add history to Health data
                 //check if health
                 if (self.isHealth()) {
@@ -143,7 +143,7 @@ module nts.uk.pr.view.qmm008.b {
                         }
                     }
                 }
-                //TODO recheck check if selected time invalid
+                // recheck check if selected time invalid
                 if (!self.compareStringDate(self.getLastHistory(self.getInsuranceOfficeItemDto()), self.selectedDate())) {
                     alert("ER011");
                 }

@@ -169,7 +169,7 @@ module nts.uk.pr.view.qmm008.a {
                             roudingList.healthBonusPersonalComboBox(self.roundingList());
                             roudingList.healthBonusCompanyComboBox(self.roundingList());
                             self.healthModel(new HealthInsuranceRateModel());
-                            //TODO enabled button add new history
+                            // enabled button add new history
                             self.isClickHealthHistory(false);
                         }
                         //if click history item
@@ -181,9 +181,9 @@ module nts.uk.pr.view.qmm008.a {
                             //if is creat new history
                             if (officeSelectedCode.length > 10) {
                                 $.when(self.loadHealth(officeSelectedCode)).done(function() {
-                                    //TODO load data success
+                                    //load data success
                                 }).fail(function(res) {
-                                    //TODO when load data error
+                                    //when load data error
                                 });
                             }
                         }
@@ -198,7 +198,7 @@ module nts.uk.pr.view.qmm008.a {
                             self.pensionCurrentParentCode(officeSelectedCode);
                             //TODO reset data on view
                             //                            self.pensionModel(new PensionRateModel("code", 1, 1, null, null, null, 35000, 1.5));
-                            //TODO enabled button add new history
+                            // enabled button add new history
                             self.isClickPensionHistory(false);
                         }
                         //if click history item
@@ -210,9 +210,9 @@ module nts.uk.pr.view.qmm008.a {
                             //if is creat new history
                             if (officeSelectedCode.length > 10) {
                                 $.when(self.loadPension(officeSelectedCode)).done(function() {
-                                    //TODO load data success
+                                    // load data success
                                 }).fail(function(res) {
-                                    //TODO when load data error
+                                    // when load data error
                                 });
                             }
                         }
@@ -220,7 +220,7 @@ module nts.uk.pr.view.qmm008.a {
                 });
 
                 self.pensionModel().fundInputApply.subscribe(function() {
-                    //TODO change select -> disable fun input
+                    //change select -> hide fund input table
                     if (self.pensionModel().fundInputApply() != 1) {
                         self.fundInputEnable(true);
                     } else {
@@ -340,9 +340,6 @@ module nts.uk.pr.view.qmm008.a {
                         if (self.pensionInsuranceOfficeList()[0].childs.length > 0)
                             self.pensionOfficeSelectedCode(self.pensionInsuranceOfficeList()[0].childs[0].code);
                         self.pensionCurrentParentCode(self.pensionInsuranceOfficeList()[0].code);
-                    } else {
-                        //Open register new office screen
-                        self.OpenModalOfficeRegister();
                     }
                 });
                 // Return.
@@ -381,7 +378,7 @@ module nts.uk.pr.view.qmm008.a {
                     if (data == null) {
                         return;
                     }
-                    // TODO Set detail health.
+                    //Set health detail.
                     self.healthModel().historyId = data.historyId;
                     self.healthModel().startMonth(data.startMonth.substring(0, 4) + "/" + data.startMonth.substring(4, data.startMonth.length));
                     self.healthModel().endMonth(data.endMonth.substring(0, 4) + "/" + data.endMonth.substring(4, data.endMonth.length));
@@ -429,7 +426,7 @@ module nts.uk.pr.view.qmm008.a {
                     self.healthModel().roundingMethods().healthBonusPersonalComboBox(self.roundingList());
                     self.healthModel().roundingMethods().healthBonusCompanyComboBox(self.roundingList());
 
-                    //TODO set selected rounding method
+                    //Set selected rounding method
                     data.roundingMethods.forEach(function(item, index) {
                         if (item.payType == PaymentType.SALARY) {
                             self.healthModel().roundingMethods().healthSalaryPersonalComboBoxSelectedCode(self.convertRounding(item.roundAtrs.personalRoundAtr));
@@ -444,7 +441,7 @@ module nts.uk.pr.view.qmm008.a {
                     // Resolve
                     dfd.resolve();
                 }).fail(function() {
-                    //TODO when load fail
+                    //when load fail
                 }).always(function(res) {
                 });
                 // Ret promise.
@@ -458,7 +455,7 @@ module nts.uk.pr.view.qmm008.a {
                     if (data == null) {
                         return;
                     }
-                    //TODO Set detail pension.
+                    //Set pension detail.
                     self.pensionModel().historyId = data.historyId;
                     self.pensionModel().companyCode = data.companyCode;
                     self.pensionModel().officeCode(data.officeCode);
@@ -543,7 +540,7 @@ module nts.uk.pr.view.qmm008.a {
                     self.pensionModel().roundingMethods().pensionBonusPersonalComboBox(self.roundingList());
                     self.pensionModel().roundingMethods().pensionBonusCompanyComboBox(self.roundingList());
 
-                    //TODO set selected rounding method
+                    //Set selected rounding method
                     data.roundingMethods.forEach(function(item, index) {
                         if (item.payType == PaymentType.SALARY) {
                             self.pensionModel().roundingMethods().pensionSalaryPersonalComboBoxSelectedCode(self.convertRounding(item.roundAtrs.personalRoundAtr));
@@ -560,7 +557,7 @@ module nts.uk.pr.view.qmm008.a {
                     // Resolve
                     dfd.resolve();
                 }).fail(function() {
-                    //TODO when load fail
+                    //when load fail
                 }).always(function(res) {
                 });
                 // Ret promise.
@@ -613,7 +610,7 @@ module nts.uk.pr.view.qmm008.a {
                 var rounding = self.healthModel().roundingMethods();
                 roundingMethods.push(new RoundingDto(PaymentType.SALARY, new RoundingItemDto(self.convertToRounding(self.pensionModel().roundingMethods().pensionSalaryPersonalComboBoxSelectedCode()), self.convertToRounding(self.pensionModel().roundingMethods().pensionSalaryCompanyComboBoxSelectedCode()))));
                 roundingMethods.push(new RoundingDto(PaymentType.BONUS, new RoundingItemDto(self.convertToRounding(self.pensionModel().roundingMethods().pensionBonusPersonalComboBoxSelectedCode()), self.convertToRounding(self.pensionModel().roundingMethods().pensionBonusCompanyComboBoxSelectedCode()))));
-                //TODO recheck start and end time // the value insert wrong
+                
                 return new service.model.finder.PensionRateDto(self.pensionModel().historyId, self.pensionModel().companyCode, self.pensionCurrentParentCode(), self.pensionModel().startMonth(), self.pensionModel().endMonth(), self.pensionModel().autoCalculate(), true, rateItems, fundRateItems, roundingMethods, self.pensionModel().maxAmount(), self.pensionModel().childContributionRate());
             }
 
