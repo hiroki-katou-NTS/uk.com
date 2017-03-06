@@ -34,8 +34,8 @@ public abstract class TableEntity {
     @Column(name = "INS_PG")
     private String insPg;
 
-	@Convert(converter = GeneralDateTimeToDBConverter.class)
     @Column(name = "UPD_DATE")
+    @Convert(converter = GeneralDateTimeToDBConverter.class)
     private GeneralDateTime updDate;
     
     @Column(name = "UPD_CCD")

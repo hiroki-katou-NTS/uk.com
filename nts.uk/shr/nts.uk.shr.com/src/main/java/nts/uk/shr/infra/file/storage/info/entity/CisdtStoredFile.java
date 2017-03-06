@@ -33,7 +33,7 @@ public class CisdtStoredFile implements Serializable {
 	@Column(name = "ORIGINAL_SIZE_BYTES")
 	public long originalSizeBytes;
 	
-	@Convert(converter = GeneralDateTimeToDBConverter.class)
 	@Column(name = "STORED_AT")
+	@Convert(converter = GeneralDateTimeToDBConverter.class)
     public GeneralDateTime storedAt;
 }
