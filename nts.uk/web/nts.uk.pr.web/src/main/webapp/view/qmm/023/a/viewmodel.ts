@@ -30,7 +30,7 @@ module qmm023.a.viewmodel {
             this.columns = ko.observableArray([
                 { headerText: 'コード', prop: 'code', width: 50 },
                 { headerText: '名称', prop: 'name', width: 120 },
-                { headerText: '説明', prop: 'taxLimit', width: 170 }
+                { headerText: '限度額', prop: 'taxLimit', width: 170 }
             ]);
             self.currentCode = ko.observable(null);
             self.currentTax = ko.observable(new TaxModel('', '', 0));

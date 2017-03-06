@@ -3,15 +3,13 @@ package nts.uk.ctx.pr.core.dom.rule.law.tax.commutelimit;
 import java.math.BigDecimal;
 
 import nts.arc.primitive.DecimalPrimitiveValue;
-import nts.arc.primitive.constraint.DecimalMaxValue;
-import nts.arc.primitive.constraint.DecimalMinValue;
+import nts.arc.primitive.constraint.DecimalRange;
 
 /**
  * @author tuongvc
  *
  */
-@DecimalMinValue(value = "0")
-@DecimalMaxValue(value = "9999999999")
+@DecimalRange(max = "9999999999", min = "0")
 public class CommuNoTaxLimitValue extends DecimalPrimitiveValue<CommuNoTaxLimitValue> {
 
 	/**
