@@ -2,6 +2,7 @@ package nts.uk.ctx.pr.formula.dom.repository;
 
 import java.util.List;
 
+import nts.uk.ctx.pr.formula.dom.formula.FormulaEasyStandardItem;
 import nts.uk.ctx.pr.formula.dom.primitive.EasyFormulaCode;
 import nts.uk.ctx.pr.formula.dom.primitive.FormulaCode;
 import nts.uk.ctx.pr.formula.dom.primitive.ItemCode;
@@ -10,7 +11,7 @@ import nts.uk.ctx.pr.formula.dom.primitive.ItemCode;
  * @author hungnm
  *
  */
-public interface FormulaEasyAItemRepository {
+public interface FormulaEasyStandardItemRepository {
 	
 	/**
 	 * @param companyCode
@@ -20,4 +21,6 @@ public interface FormulaEasyAItemRepository {
  	 * @return list item code of formula easy
 	 */
 	List<ItemCode> findAll(String companyCode, FormulaCode formulaCode, String historyId, EasyFormulaCode easyFormulaCode);
+	
+	void remove(FormulaEasyStandardItem formulaEasyStandardItem);
 }

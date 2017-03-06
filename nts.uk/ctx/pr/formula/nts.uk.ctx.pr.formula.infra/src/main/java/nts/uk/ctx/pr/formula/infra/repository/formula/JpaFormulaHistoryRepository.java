@@ -18,14 +18,14 @@ import nts.uk.ctx.pr.formula.infra.entity.formula.QcfmtFormulaHistPK;
 @Stateless
 public class JpaFormulaHistoryRepository extends JpaRepository implements FormulaHistoryRepository {
 
-	private final String FIND_ALL_BY_COMPANYCODE = "Select a From QcfmtFormulaHist a "
-			+ "where a.qcfmtFormulaHistPK.companyCode = :companyCode ";
+	private final String FIND_ALL_BY_COMPANYCODE = "SELECT a FROM QcfmtFormulaHist a "
+			+ " WHERE a.qcfmtFormulaHistPK.companyCode = :companyCode ";
 	
-	private final String FIND_ALL_DIFFERENT_FORMULACODE = "Select a From QcfmtFormulaHist a "
-			+ "where a.qcfmtFormulaHistPK.companyCode = :companyCode "
-			+ "AND a.startDate <= :baseDate"
-			+ "AND a.endDate >= :baseDate"
-			+ "AND a.qcfmtFormulaHistPK.formulaCode <> :formulaCode";
+	private final String FIND_ALL_DIFFERENT_FORMULACODE = "SELECT a FROM QcfmtFormulaHist a "
+			+ " WHERE a.qcfmtFormulaHistPK.companyCode = :companyCode "
+			+ " AND a.startDate <= :baseDate "
+			+ " AND a.endDate >= :baseDate "
+			+ " AND a.qcfmtFormulaHistPK.formulaCode <> :formulaCode ";
 
 	@Override
 	public List<FormulaHistory> findAll(String companyCode) {

@@ -11,23 +11,23 @@ import lombok.NoArgsConstructor;
 @Embeddable
 @NoArgsConstructor
 @AllArgsConstructor
-public class QcfmtFormulaEasyAPK implements Serializable{
+public class QcfmtFormulaEasyStandardItemPK implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
 	
 	@Column(name = "CCD")
-	public String ccd;
+	public String companyCode;
 	
 	@Column(name = "FORMULA_CD")
-	public String formulaCd;
+	public String formulaCode;
 	
 	@Column(name = "HIST_ID")
-	public String histId;
+	public String historyId;
 	
 	@Column(name = "EASY_FORMULA_CD")
-	public String easyFormulaCd;
+	public String easyFormulaCode;
 	
 	@Column(name = "A_ITEM_CD")
-	public String aItemCd;
+	public String referenceItemCode;
 
 }

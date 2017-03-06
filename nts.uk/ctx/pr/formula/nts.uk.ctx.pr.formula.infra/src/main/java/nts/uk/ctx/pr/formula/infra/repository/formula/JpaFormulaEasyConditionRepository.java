@@ -17,10 +17,10 @@ import nts.uk.ctx.pr.formula.infra.entity.formula.QcfmtFormulaEasyCondiPK;
 @Stateless
 public class JpaFormulaEasyConditionRepository extends JpaRepository implements FormulaEasyConditionRepository {
 
-	private final String REMOVE_EASY_CONDITION = "DELETE From QcfmtFormulaEasyCondi a "
-			+ "where a.QcfmtFormulaEasyCondiPK.companyCode = :companyCode AND"
-			+ "where a.QcfmtFormulaEasyCondiPK.formulaCode = :formulaCode AND"
-			+ "where a.QcfmtFormulaEasyCondiPK.historyId = :historyId";
+	private final String REMOVE_EASY_CONDITION = "DELETE FROM QcfmtFormulaEasyCondi a "
+			+ " WHERE a.QcfmtFormulaEasyCondiPK.companyCode = :companyCode "
+			+ " AND a.QcfmtFormulaEasyCondiPK.formulaCode = :formulaCode "
+			+ " AND a.QcfmtFormulaEasyCondiPK.historyId = :historyId ";
 
 
 	@Override

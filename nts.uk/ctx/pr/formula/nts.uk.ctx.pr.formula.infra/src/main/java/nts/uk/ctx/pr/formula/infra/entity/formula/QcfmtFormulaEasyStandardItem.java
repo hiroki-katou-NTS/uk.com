@@ -17,11 +17,11 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Entity
 @Table(name="QCFMT_FORMULA_EASY_A")
-public class QcfmtFormulaEasyA implements Serializable{
+public class QcfmtFormulaEasyStandardItem implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 	
 	@EmbeddedId
-    public QcfmtFormulaEasyAPK qcfmtFormulaEasyAPK;
+    public QcfmtFormulaEasyStandardItemPK qcfmtFormulaEasyAPK;
 	
 }

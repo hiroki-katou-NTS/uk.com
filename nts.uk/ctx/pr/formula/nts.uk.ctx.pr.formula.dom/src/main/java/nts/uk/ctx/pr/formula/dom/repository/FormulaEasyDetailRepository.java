@@ -24,4 +24,6 @@ public interface FormulaEasyDetailRepository {
 	Optional<FormulaEasyDetail> findByPriKey (String companyCode, FormulaCode formulaCode, String historyId, EasyFormulaCode easyFormulaCode);
 	
 	void remove(FormulaEasyDetail formulaEasyDetail);
+	
+	void add(FormulaEasyDetail formulaEasyDetail);
 }

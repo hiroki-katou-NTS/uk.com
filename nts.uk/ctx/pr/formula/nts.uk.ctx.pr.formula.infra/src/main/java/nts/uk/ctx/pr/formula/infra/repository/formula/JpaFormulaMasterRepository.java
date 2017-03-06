@@ -18,8 +18,8 @@ import nts.uk.ctx.pr.formula.infra.entity.formula.QcfmtFormulaPK;
 @Stateless
 public class JpaFormulaMasterRepository extends JpaRepository implements FormulaMasterRepository {
 
-	private final String FIND_ALL_BY_COMPANYCODE = "Select a From QcfmtFormula a "
-			+ "where a.qcfmtFormulaPK.companyCode = :companyCode ";
+	private final String FIND_ALL_BY_COMPANYCODE = "SELECT a FROM QcfmtFormula a "
+			+ " WHERE a.qcfmtFormulaPK.companyCode = :companyCode ";
 
 	@Override
 	public Optional<FormulaMaster> findByBaseYearMonth(String companyCode, FormulaCode formulaCode, YearMonth baseYM) {
@@ -53,7 +53,7 @@ public class JpaFormulaMasterRepository extends JpaRepository implements Formula
 		this.commandProxy().update(toEntity(formulaMaster));
 	}
 
-	private static FormulaMaster toDomain(QcfmtFormula f) {
+	private FormulaMaster toDomain(QcfmtFormula f) {
 		FormulaMaster formulaMaster = FormulaMaster.createFromJavaType(f.qcfmtFormulaPK.ccd, f.qcfmtFormulaPK.formulaCd,
 				f.difficultyAtr.intValue(), f.formulaName);
 		return formulaMaster;
