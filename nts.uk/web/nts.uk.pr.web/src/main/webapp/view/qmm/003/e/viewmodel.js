@@ -48,6 +48,7 @@ var nts;
                                 self.curentNode = ko.observable(new Node("", "", []));
                                 self.index = 0;
                                 self.filteredData = ko.observableArray(nts.uk.util.flatArray(self.items(), "childs"));
+                                self.filteredData1 = ko.observableArray(nts.uk.util.flatArray(self.items(), "childs"));
                                 self.selectedCodes = ko.observableArray([]);
                                 //Init();
                                 self.singleSelectedCode.subscribe(function (newValue) {
@@ -61,6 +62,48 @@ var nts;
                                 nts.uk.ui.windows.close();
                             };
                             ;
+                            ScreenModel.prototype.register = function () {
+                                var inputSearch1 = $("#E_SCH_001").find("input.ntsSearchBox").val();
+                                var inputSearch2 = $("#E_SCH_002").find("input.ntsSearchBox").val();
+                                var error;
+                                var error1;
+                                _.find(this.filteredData(), function (obj) {
+                                    if (obj.code !== inputSearch1) {
+                                        error = true;
+                                    }
+                                });
+                                _.find(this.filteredData1(), function (obj) {
+                                    if (obj.code !== inputSearch2) {
+                                        error1 = true;
+                                    }
+                                });
+                                //09.住民税納付先の統合_検索時エラーチェック処理  E_SCH_0002 9. Integration of inhabitant tax payment destination _ Error check processing at search time 
+                                if (inputSearch1 === "") {
+                                    $('#E_SCH_001').ntsError('set', 'inputSearch E_INP_001 が入力されていません。');
+                                }
+                                else {
+                                    $('#E_SCH_001').ntsError('clear');
+                                }
+                                if (error === true) {
+                                    $('#E_SCH_001').ntsError('set', 'inputSearch 対象データがありません。');
+                                }
+                                else {
+                                    $('#E_SCH_001').ntsError('clear');
+                                }
+                                //10.住民税納付先の統合_検索時エラーチェック処理 E_SCH_0002  10. Integration of inhabitant tax payment destination _ Error check processing at search time 
+                                if (inputSearch2 === "") {
+                                    $('#E_SCH_002').ntsError('set', 'inputSearch E_INP_002 が入力されていません。');
+                                }
+                                else {
+                                    $('#E_SCH_002').ntsError('clear');
+                                }
+                                if (error1 === true) {
+                                    $('#E_SCH_002').ntsError('set', 'inputSearch E_INP_002 対象データがありません。');
+                                }
+                                else {
+                                    $('#E_SCH_002').ntsError('clear');
+                                }
+                            };
                             return ScreenModel;
                         }());
                         e.ScreenModel = ScreenModel;

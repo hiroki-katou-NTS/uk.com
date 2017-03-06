@@ -1,7 +1,8 @@
 module nts.uk.pr.view.qmm002.b {
     export module service {
         var paths = {
-            getBankList: ""
+            getBankList: "",
+            removeListBank: "basic/system/bank/remove/list"
         };
         
         export function getBankList() {
@@ -25,6 +26,19 @@ module nts.uk.pr.view.qmm002.b {
             dfd.resolve(result);
             
             return dfd.promise(); 
+        }
+        
+        export function removeBank(data): JQueryPromise<any> {
+            var dfd = $.Deferred<any>();
+            var path = paths.removeListBank;
+            nts.uk.request.ajax("com", path, data)
+                .done(function(res: any) {
+                    dfd.resolve(res);
+                })
+                .fail(function(res) {
+                    dfd.reject(res);
+                })
+            return dfd.promise();
         }
     }    
 }
