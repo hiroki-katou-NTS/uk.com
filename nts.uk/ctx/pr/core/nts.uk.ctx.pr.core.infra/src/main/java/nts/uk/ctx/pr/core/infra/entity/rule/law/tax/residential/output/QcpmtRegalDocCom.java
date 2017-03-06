@@ -13,12 +13,14 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
+import lombok.AllArgsConstructor;
 import nts.uk.shr.infra.data.entity.TableEntity;
 
 /**
  *
  * @author chinhbv
  */
+@AllArgsConstructor
 @Entity
 @Table(name = "QCPMT_REGAL_DOC_COM")
 public class QcpmtRegalDocCom extends TableEntity implements Serializable {
@@ -80,7 +82,7 @@ public class QcpmtRegalDocCom extends TableEntity implements Serializable {
     public String bizType2;
     @Column(name = "BIZ_TYPE3")
     public String bizType3;
-    @Column(name = "TAX?OFFICE")
+    @Column(name = "TAX_OFFICE")
     public String taxOffice;
     @Column(name = "BANK_NAME")
     public String bankName;
