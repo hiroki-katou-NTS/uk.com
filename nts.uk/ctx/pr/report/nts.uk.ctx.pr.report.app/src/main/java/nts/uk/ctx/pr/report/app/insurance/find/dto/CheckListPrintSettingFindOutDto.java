@@ -25,6 +25,9 @@ public class CheckListPrintSettingFindOutDto implements ChecklistPrintSettingSet
 
 	/** The show office. */
 	private Boolean showOffice;
+	
+	/** The show total. */
+    private Boolean showTotal;
 
 	@Override
 	public void setCompanyCode(CompanyCode companyCode) {
@@ -50,4 +53,9 @@ public class CheckListPrintSettingFindOutDto implements ChecklistPrintSettingSet
 	public void setShowOffice(Boolean showOffice) {
 		this.showOffice = showOffice;
 	}
+
+    @Override
+    public void setShowTotal(Boolean showTotal) {
+        this.showTotal = showTotal;
+    }
 }

@@ -41,7 +41,7 @@ public class CheckListPrintSettingWs extends WebService {
 		dto.setShowDeliveryNoticeAmount(true);
 		dto.setShowDetail(true);
 		dto.setShowOffice(false);
-		// find.find();
+		dto.setShowTotal(false);
 		return dto;
 	}
 
