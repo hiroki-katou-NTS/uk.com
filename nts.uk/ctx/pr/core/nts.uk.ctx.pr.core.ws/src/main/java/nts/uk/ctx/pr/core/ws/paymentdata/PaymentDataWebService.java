@@ -10,6 +10,8 @@ import nts.uk.ctx.pr.core.app.command.paymentdata.CreatePaymentDataCommand;
 import nts.uk.ctx.pr.core.app.command.paymentdata.CreatePaymentDataCommandHandler;
 import nts.uk.ctx.pr.core.app.command.paymentdata.InsertPaymentDataCommand;
 import nts.uk.ctx.pr.core.app.command.paymentdata.InsertPaymentDataCommandHandler;
+import nts.uk.ctx.pr.core.app.command.paymentdata.RemovePaymentDataCommand;
+import nts.uk.ctx.pr.core.app.command.paymentdata.RemovePaymentDataCommandHandler;
 import nts.uk.ctx.pr.core.app.command.paymentdata.UpdatePaymentDataCommand;
 import nts.uk.ctx.pr.core.app.command.paymentdata.UpdatePaymentDataCommandHandler;
 
@@ -24,6 +26,9 @@ public class PaymentDataWebService extends WebService {
 
 	@Inject
 	private UpdatePaymentDataCommandHandler updateData;
+	
+	@Inject
+	private RemovePaymentDataCommandHandler removeData;
 
 	@POST
 	@Path("add")
@@ -41,6 +46,12 @@ public class PaymentDataWebService extends WebService {
 	@Path("update")
 	public void add(UpdatePaymentDataCommand command) {
 		this.updateData.handle(command);
+	}
+	
+	@POST
+	@Path("remove")
+	public void remove(RemovePaymentDataCommand command) {
+		this.removeData.handle(command);
 	}
 	
 	@POST

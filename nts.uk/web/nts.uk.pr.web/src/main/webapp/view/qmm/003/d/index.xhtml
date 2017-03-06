@@ -1,0 +1,52 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:com="http://xmlns.jcp.org/jsf/component"
+      xmlns:h="http://xmlns.jcp.org/jsf/html">
+    <body>
+        <ui:composition template="../../../../master/dialog.xhtml">
+            <ui:define name="htmlHead">
+            	<com:stylefile path="main.css" />
+				<com:scriptfile path="../../../../lib/generic/igniteui/js/infragistics.core.js" />
+				<com:scriptfile path="../../../../lib/generic/igniteui/js/infragistics.lob.js" />
+            	<com:scriptfile path="../../../../lib/generic/igniteui/js/extensions/infragistics.ui.combo.knockout-extensions.js" />
+				<com:scriptfile path="../../../../lib/nittsu/ui/textbox-options.js" />
+				<com:scriptfile path="start.js" />
+				<com:scriptfile path="viewmodel.js" />
+				<com:scriptfile path="service.js" />
+			    <script>var dialogSize = { width: 460, height: 700 };</script>
+            </ui:define>
+            
+            <ui:define name="content">
+            	<div id="contents-area">
+            	<div class="flex valign-center" style="margin-top:10px; margin-left:35px">
+            	<label id="D_LBL_001">削除したい項目を選択してください。</label>	
+            	</div>	 
+            	<i class="icon icon-searchbox"></i>	
+				<div id="D_SCH_001"
+								data-bind="ntsSearchBox: {items: items, selected: singleSelectedCode, selectedKey: 'code', childField: 'childs', filteredItems: filteredData, fields: ['name', 'code']}" />
+							<div>
+								<table id="treegrid2"
+									data-bind="ntsTreeGridView:{
+											   	width: 400,
+												height: 460,
+												options: items,
+												selectedValues: selectedCode,
+												optionsValue: 'code',
+												optionsChild: 'childs',
+												optionsText: 'nodeText',
+												multiple: true,
+												enable: true,
+												showCheckBox: true}"
+									class="cf"></table>
+							</div> 						
+				<div>
+					<button id="D_BTN_001" class="danger" data-bind="click: clickButton">決定</button>
+					<button id="D_BTN_002" data-bind="click: cancelButton">キャンセル</button>
+				</div>
+					</div>
+            </ui:define>
+    	</ui:composition>
+   	</body>
+</html>

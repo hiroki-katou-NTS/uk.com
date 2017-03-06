@@ -1,6 +1,5 @@
 package nts.uk.ctx.pr.core.app.command.paymentdata;
 
-import java.time.LocalDate;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -9,6 +8,7 @@ import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.pr.core.dom.itemmaster.ItemMaster;
 import nts.uk.ctx.pr.core.dom.itemmaster.ItemMasterRepository;
 import nts.uk.ctx.pr.core.dom.paymentdata.Payment;
@@ -41,10 +41,10 @@ public class InsertPaymentDataCommandHandler extends CommandHandler<InsertPaymen
 	protected void handle(CommandHandlerContext<InsertPaymentDataCommand> context) {
 		String companyCode = AppContexts.user().companyCode();
 		Payment payment = context.getCommand().toDomain(companyCode);
-		LocalDate mPayDate = this.payDateMasterRepository
+		GeneralDate mPayDate = this.payDateMasterRepository
 				.find(companyCode, payment.getPayBonusAtr().value, payment.getProcessingYM().v(),
 						payment.getSparePayAtr().value, payment.getProcessingNo().v())
-				.map(d -> d.getStandardDate()).orElse(LocalDate.now());
+				.map(d -> d.getStandardDate()).orElse(GeneralDate.today());
 
 		payment.setStandardDate(mPayDate);
 		payment.validate();
@@ -70,6 +70,8 @@ public class InsertPaymentDataCommandHandler extends CommandHandler<InsertPaymen
 					.find(payment.getCompanyCode().v(), item.getCategoryAtr().value, item.getItemCode().v()).get();
 			item.additionalInfo(mItem.getLimitMoney().v(), mItem.getFixedPaidAtr().value, mItem.getAvgPaidAtr().value,
 					mItem.getItemAtr().value);
+			
+			item.additionalInfo(item.getCorrectFlag(), mItem.getSocialInsuranceAtr().value, mItem.getLaborInsuranceAtr().value, mItem.getDeductAttribute());
 			this.paymentDataRepository.insertDetail(payment, item);
 		}
 	}

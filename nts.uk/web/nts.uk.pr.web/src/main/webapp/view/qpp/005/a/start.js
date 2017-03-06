@@ -92,7 +92,7 @@ var nts;
                                 });
                             }
                             utils.gridSetup = gridSetup;
-                            function setBackgroundColorForItem(nId, nVal) {
+                            function setBackgroundColorForItem(nId, nVal, sumScopeAtr) {
                                 var include = ko.utils.arrayFirst(window.bakData, function (item) {
                                     return item.id === nId && item.value === nVal;
                                 });
@@ -107,13 +107,15 @@ var nts;
                                     isCorrectFlag = true;
                                 }
                                 var ctId = nId.split('_')[0];
-                                if (ctId === 'ct0') {
-                                    $("#" + window.lastItems[0].id).css('background', '#f4b084');
-                                    $("#" + window.lastItems[window.lastItems.length - 1].id).css('background', '#f4b084');
-                                }
-                                if (ctId === 'ct1') {
-                                    $("#" + window.lastItems[1].id).css('background', '#f4b084');
-                                    $("#" + window.lastItems[window.lastItems.length - 1].id).css('background', '#f4b084');
+                                if (sumScopeAtr === 1) {
+                                    if (ctId === 'ct0') {
+                                        $("#" + window.lastItems[0].id).css('background', '#f4b084');
+                                        $("#" + window.lastItems[window.lastItems.length - 1].id).css('background', '#f4b084');
+                                    }
+                                    if (ctId === 'ct1') {
+                                        $("#" + window.lastItems[1].id).css('background', '#f4b084');
+                                        $("#" + window.lastItems[window.lastItems.length - 1].id).css('background', '#f4b084');
+                                    }
                                 }
                                 return isCorrectFlag;
                             }

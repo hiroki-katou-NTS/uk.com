@@ -25,6 +25,15 @@ public class JpaPaymentDataRepository extends JpaRepository implements PaymentDa
 			+ " AND c.qstdtPaymentHeaderPK.payBonusAtr = :PAY_BONUS_ATR"
 			+ " AND c.qstdtPaymentHeaderPK.processingYM = :PROCESSING_YM";
 
+	private final String REMOVE_DETAIL = "DELETE FROM QstdtPaymentDetail d "
+			+ "WHERE d.qstdtPaymentDetailPK.companyCode = :CCD" 
+			+" AND d.qstdtPaymentDetailPK.personId = :PID"
+			+" AND d.qstdtPaymentDetailPK.processingYM = :PROCESSING_YM" 
+			+" AND d.qstdtPaymentDetailPK.payBonusAttribute = :PAY_BONUS_ATR"
+			+" AND d.qstdtPaymentDetailPK.processingNo = :PROCESSING_NO"
+			+" AND d.qstdtPaymentDetailPK.sparePayAttribute = :SPARE_PAY_ATR";
+	
+	
 	@Override
 	public Optional<Payment> find(String companyCode, String personId, int processingNo, int payBonusAttribute,
 			int processingYM, int sparePayAttribute) {
@@ -114,8 +123,8 @@ public class JpaPaymentDataRepository extends JpaRepository implements PaymentDa
 		val domain = Payment.createFromJavaType(entity.qstdtPaymentHeaderPK.companyCode,
 				entity.qstdtPaymentHeaderPK.personId, entity.employeeName, entity.qstdtPaymentHeaderPK.processingNo,
 				entity.qstdtPaymentHeaderPK.payBonusAtr, entity.qstdtPaymentHeaderPK.processingYM,
-				entity.qstdtPaymentHeaderPK.sparePayAtr, entity.standardDate, entity.specificationCode, entity.specificationName,
-				entity.residenceCode, entity.residenceName, entity.healthInsuranceGrade,
+				entity.qstdtPaymentHeaderPK.sparePayAtr, entity.standardDate, entity.specificationCode,
+				entity.specificationName, entity.residenceCode, entity.residenceName, entity.healthInsuranceGrade,
 				entity.healthInsuranceAverageEarn, entity.ageContinuationInsureAtr, entity.tenureAtr, entity.taxAtr,
 				entity.pensionInsuranceGrade, entity.pensionAverageEarn, entity.employmentInsuranceAtr,
 				entity.dependentNumber, entity.workInsuranceCalculateAtr, entity.insuredAtr, entity.bonusTaxRate,
@@ -171,26 +180,26 @@ public class JpaPaymentDataRepository extends JpaRepository implements PaymentDa
 			PrintPositionCategory item2 = domain.getPrintCategories().get(2);
 			entity.printPositionCategoryATR3 = item2.getCategoryAtr().value;
 			entity.printPositionCategoryLines3 = item2.getLines().v();
-		}else {
+		} else {
 			entity.printPositionCategoryATR5 = 2;
 			entity.printPositionCategoryLines5 = -1;
 		}
-		
+
 		if (domain.getPrintCategories().size() >= 4) {
 			PrintPositionCategory item3 = domain.getPrintCategories().get(3);
 			entity.printPositionCategoryATR4 = item3.getCategoryAtr().value;
 			entity.printPositionCategoryLines4 = item3.getLines().v();
-		}else {
+		} else {
 			entity.printPositionCategoryATR5 = 3;
 			entity.printPositionCategoryLines5 = -1;
 		}
-		
+
 		if (domain.getPrintCategories().size() >= 5) {
 			PrintPositionCategory item4 = domain.getPrintCategories().get(4);
 			entity.printPositionCategoryATR5 = item4.getCategoryAtr().value;
 			entity.printPositionCategoryLines5 = item4.getLines().v();
 		} else {
-			entity.printPositionCategoryATR5 = 9;
+			entity.printPositionCategoryATR5 = -1;
 			entity.printPositionCategoryLines5 = -1;
 		}
 		// add by EAP 06.データ作成（実行）-登録処理 (update 28.11.2016)
@@ -225,7 +234,7 @@ public class JpaPaymentDataRepository extends JpaRepository implements PaymentDa
 				detail.getItemCode().v());
 		entity.value = BigDecimal.valueOf(detail.getValue());
 		entity.correctFlag = detail.getCorrectFlag().value;
-		entity.taxATR = domain.getTaxAtr().value;
+		entity.taxATR = detail.getTaxAtr();
 		entity.socialInsurranceAttribute = detail.getSocialInsuranceAtr().value;
 		entity.laborSubjectAttribute = detail.getLaborInsuranceAtr().value;
 		entity.columnPosition = detail.getItemPosition().getColumnPosition().v();
@@ -241,5 +250,22 @@ public class JpaPaymentDataRepository extends JpaRepository implements PaymentDa
 
 		return entity;
 	}
+	
+	@Override
+	public void removeDetails(String personId, Integer processingYM, String companyCode) {
+		this.getEntityManager().createQuery(REMOVE_DETAIL)
+							   .setParameter("CCD", companyCode)
+							   .setParameter("PID", personId)
+							   .setParameter("PROCESSING_YM", processingYM)
+							   .setParameter("PAY_BONUS_ATR", 0)
+							   .setParameter("PROCESSING_NO", 1)
+							   .setParameter("SPARE_PAY_ATR", 0).executeUpdate();
+	}
 
+	@Override
+	public void removeHeader(String personId, Integer processingYM, String companyCode) {
+		val pk = new QstdtPaymentHeaderPK(companyCode, personId, 1, 0, processingYM, 0);
+		this.commandProxy().remove(QstdtPaymentHeader.class, pk);
+	}
+	
 }
