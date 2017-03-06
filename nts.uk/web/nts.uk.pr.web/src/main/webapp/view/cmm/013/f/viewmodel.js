@@ -50,14 +50,15 @@ var cmm013;
                             self.index_selected(self.itemHist().historyId);
                             console.log(self.index_selected());
                             var dfd = $.Deferred();
-                            f.service.findAllPosition(self.index_selected())
-                                .done(function (position_arr) {
+                            f.service.findAllPosition(self.index_selected()).done(function (position_arr) {
                                 self.dataSource(position_arr);
-                                self.currentCode(self.dataSource()[0].jobCode);
-                                self.inp_002(self.dataSource()[0].jobCode);
-                                self.inp_003(self.dataSource()[0].jobName);
-                                self.inp_005(self.dataSource()[0].memo);
-                                self.selectedId(self.dataSource()[0].presenceCheckScopeSet);
+                                if (self.dataSource().length > 0) {
+                                    self.currentCode(self.dataSource()[0].jobCode);
+                                    self.inp_002(self.dataSource()[0].jobCode);
+                                    self.inp_003(self.dataSource()[0].jobName);
+                                    self.inp_005(self.dataSource()[0].memo);
+                                }
+                                dfd.resolve();
                             }).fail(function (error) {
                                 alert(error.message);
                             });
@@ -71,7 +72,6 @@ var cmm013;
                             self.inp_002(self.currentItem().jobCode);
                             self.inp_003(self.currentItem().jobName);
                             self.inp_005(self.currentItem().memo);
-                            self.selectedId(self.currentItem().presenceCheckScopeSet);
                         }
                     }));
                 }
@@ -271,10 +271,10 @@ var cmm013;
                 }());
                 model.ListHistoryDto = ListHistoryDto;
                 var ListPositionDto = (function () {
-                    function ListPositionDto(code, name, presenceCheckScopeSet, memo) {
+                    function ListPositionDto(jobCode, jobName, presenceCheckScopeSet, memo) {
                         var self = this;
-                        self.jobCode = code;
-                        self.jobName = name;
+                        self.jobCode = jobCode;
+                        self.jobName = jobName;
                         self.presenceCheckScopeSet = presenceCheckScopeSet;
                         self.memo = memo;
                     }

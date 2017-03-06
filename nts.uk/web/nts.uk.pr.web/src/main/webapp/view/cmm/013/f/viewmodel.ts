@@ -97,15 +97,15 @@ module cmm013.f.viewmodel {
                     console.log(self.index_selected());
                    
                 var dfd = $.Deferred();
-                service.findAllPosition(self.index_selected())
-                    .done(function(position_arr: Array<model.ListPositionDto>) {
+                service.findAllPosition(self.index_selected()).done(function(position_arr: Array<model.ListPositionDto>) {
                         self.dataSource(position_arr);
+                    if (self.dataSource().length > 0) {
                         self.currentCode(self.dataSource()[0].jobCode);
                         self.inp_002(self.dataSource()[0].jobCode);
                         self.inp_003(self.dataSource()[0].jobName);
                         self.inp_005(self.dataSource()[0].memo);
-                        self.selectedId(self.dataSource()[0].presenceCheckScopeSet);
-
+                    //    self.selectedId(self.dataSource()[0].presenceCheckScopeSet);
+}dfd.resolve();
                     }).fail(function(error){
                         alert(error.message);
 
@@ -121,7 +121,7 @@ module cmm013.f.viewmodel {
                     self.inp_002(self.currentItem().jobCode);
                     self.inp_003(self.currentItem().jobName);
                     self.inp_005(self.currentItem().memo);
-                    self.selectedId(self.currentItem().presenceCheckScopeSet);
+               //     self.selectedId(self.currentItem().presenceCheckScopeSet);
                 }           
             }));
 
@@ -357,10 +357,10 @@ module cmm013.f.viewmodel {
             jobName: string;
             presenceCheckScopeSet: number;
             memo: string;
-            constructor(code: string, name: string, presenceCheckScopeSet: number,memo: string) {
+            constructor(jobCode: string, jobName: string, presenceCheckScopeSet: number,memo: string) {
                 var self = this;
-                self.jobCode = code;
-                self.jobName = name;
+                self.jobCode = jobCode;
+                self.jobName = jobName;
                 self.presenceCheckScopeSet = presenceCheckScopeSet;
                 self.memo = memo;
             }
