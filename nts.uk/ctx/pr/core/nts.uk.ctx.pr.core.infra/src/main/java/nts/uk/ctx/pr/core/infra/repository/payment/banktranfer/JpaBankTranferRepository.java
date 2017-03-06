@@ -2,6 +2,8 @@ package nts.uk.ctx.pr.core.infra.repository.payment.banktranfer;
 
 import java.util.Optional;
 
+import javax.enterprise.context.RequestScoped;
+
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.pr.core.dom.payment.banktranfer.BankTranfer;
@@ -9,6 +11,7 @@ import nts.uk.ctx.pr.core.dom.payment.banktranfer.BankTranferRepository;
 import nts.uk.ctx.pr.core.infra.entity.payment.banktranfer.QbkdtBankTransfer;
 import nts.uk.ctx.pr.core.infra.entity.payment.banktranfer.QbkdtBankTransferPK;
 
+@RequestScoped
 public class JpaBankTranferRepository extends JpaRepository implements BankTranferRepository {
 
 	@Override
