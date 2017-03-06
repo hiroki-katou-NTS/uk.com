@@ -7,7 +7,7 @@ import lombok.Data;
 @Data
 public class LaborInsuranceOfficeImportDto {
 
-	private List<SocialInsuranceOfficeImportDto> lstSocialInsuranceOfficeImport;
-	
-	private int checkUpdateDuplicateCode; //0 update //1 none update
+	private SocialInsuranceOfficeImportDto socialInsuranceOfficeImport;
+
+	private int checkUpdateDuplicateCode; // 0 update //1 none update
 }

@@ -6,8 +6,6 @@ package nts.uk.ctx.pr.core.infra.repository.insurance.labor.accidentrate;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -19,31 +17,37 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.time.DateTimeConstraints;
 import nts.arc.time.YearMonth;
+import nts.gul.collection.ListUtil;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.AccidentInsuranceRate;
-import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.AccidentInsuranceRateGetMemento;
 import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.AccidentInsuranceRateRepository;
-import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.InsuBizRateItem;
 import nts.uk.ctx.pr.core.dom.insurance.labor.businesstype.BusinessTypeEnum;
-import nts.uk.ctx.pr.core.infra.entity.insurance.labor.QismtLaborInsuOffice;
-import nts.uk.ctx.pr.core.infra.entity.insurance.labor.QismtLaborInsuOfficePK;
 import nts.uk.ctx.pr.core.infra.entity.insurance.labor.accidentrate.QismtWorkAccidentInsu;
 import nts.uk.ctx.pr.core.infra.entity.insurance.labor.accidentrate.QismtWorkAccidentInsuPK;
 import nts.uk.ctx.pr.core.infra.entity.insurance.labor.accidentrate.QismtWorkAccidentInsuPK_;
 import nts.uk.ctx.pr.core.infra.entity.insurance.labor.accidentrate.QismtWorkAccidentInsu_;
-import nts.uk.ctx.pr.core.infra.entity.insurance.labor.unemployeerate.QismtEmpInsuRate;
-import nts.uk.ctx.pr.core.infra.entity.insurance.labor.unemployeerate.QismtEmpInsuRatePK;
-import nts.uk.ctx.pr.core.infra.entity.wagetable.certification.QwtmtWagetableCertifyG;
-import nts.uk.ctx.pr.core.infra.entity.wagetable.certification.QwtmtWagetableCertifyGPK;
 
 /**
  * The Class JpaAccidentInsuranceRateRepository.
  */
 @Stateless
 public class JpaAccidentInsuranceRateRepository extends JpaRepository implements AccidentInsuranceRateRepository {
+
+	/** The Constant BEGIN_FIRST. */
+	public static final int BEGIN_FIRST = 0;
+
+	/** The Constant BEGIN_SENDCOND. */
+	public static final int BEGIN_SECOND = 1;
+
+	/** The Constant SIZE_SECOND. */
+	public static final int SIZE_SECOND = 2;
+
+	/** The Constant SIZE_TEN. */
+	public static final int SIZE_TEN = 10;
 
 	/*
 	 * (non-Javadoc)
@@ -84,14 +88,15 @@ public class JpaAccidentInsuranceRateRepository extends JpaRepository implements
 	public void remove(CompanyCode companyCode, String historyId, Long version) {
 		List<AccidentInsuranceRate> lstAccidentInsuranceRate = findAll(companyCode);
 		if (lstAccidentInsuranceRate != null && !lstAccidentInsuranceRate.isEmpty()) {
-			if (lstAccidentInsuranceRate.get(0).getHistoryId().equals(historyId)) {
+			if (lstAccidentInsuranceRate.get(BEGIN_FIRST).getHistoryId().equals(historyId)) {
 				List<QismtWorkAccidentInsu> lstRateRemove = this.findDataById(companyCode, historyId);
 				this.commandProxy().removeAll(lstRateRemove);
-				if (lstAccidentInsuranceRate.size() >= 2) {
+				if (lstAccidentInsuranceRate.size() >= SIZE_SECOND) {
 					List<QismtWorkAccidentInsu> lstRateUpdate = this.findDataById(companyCode,
-							lstAccidentInsuranceRate.get(1).getHistoryId());
+							lstAccidentInsuranceRate.get(BEGIN_SECOND).getHistoryId());
 					for (QismtWorkAccidentInsu qismtWorkAccidentInsu : lstRateUpdate) {
-						qismtWorkAccidentInsu.setEndYm(YearMonth.of(9999, 12).v());
+						qismtWorkAccidentInsu.setEndYm(YearMonth
+								.of(DateTimeConstraints.LIMIT_YEAR.max(), DateTimeConstraints.LIMIT_MONTH.max()).v());
 					}
 					this.commandProxy().updateAll(lstRateUpdate);
 				}
@@ -167,7 +172,8 @@ public class JpaAccidentInsuranceRateRepository extends JpaRepository implements
 	/**
 	 * Find between.
 	 *
-	 * @param companyCode the company code
+	 * @param companyCode
+	 *            the company code
 	 * @return the list
 	 */
 	public List<QismtWorkAccidentInsu> findBetween(CompanyCode companyCode) {
@@ -192,9 +198,12 @@ public class JpaAccidentInsuranceRateRepository extends JpaRepository implements
 	/**
 	 * Find between update.
 	 *
-	 * @param companyCode the company code
-	 * @param yearMonth the year month
-	 * @param historyId the history id
+	 * @param companyCode
+	 *            the company code
+	 * @param yearMonth
+	 *            the year month
+	 * @param historyId
+	 *            the history id
 	 * @return the list
 	 */
 	// Find data by end<=x order by
@@ -239,19 +248,16 @@ public class JpaAccidentInsuranceRateRepository extends JpaRepository implements
 			return false;
 		}
 		List<QismtWorkAccidentInsu> lstQismtWorkAccidentInsu = findBetween(companyCode);
-		if (lstQismtWorkAccidentInsu != null && lstQismtWorkAccidentInsu.size() >= 1) {
-			if (lstQismtWorkAccidentInsu.get(0).getStrYm() > monthRange.getStartMonth().previousMonth().v()) {
-				return true;
-			}
-			List<QismtWorkAccidentInsu> lstQismtWorkAccidentInsuUpdate = findDataById(companyCode,
-					lstQismtWorkAccidentInsu.get(0).getQismtWorkAccidentInsuPK().getHistId());
-			for (QismtWorkAccidentInsu qismtWorkAccidentInsu : lstQismtWorkAccidentInsuUpdate) {
-				qismtWorkAccidentInsu.setEndYm(monthRange.getStartMonth().previousMonth().v());
-			}
-			update(toDomain(lstQismtWorkAccidentInsuUpdate));
-			return false;
+		if (lstQismtWorkAccidentInsu.get(BEGIN_FIRST).getStrYm() > monthRange.getStartMonth().previousMonth().v()) {
+			return true;
 		}
-		return true;
+		List<QismtWorkAccidentInsu> lstQismtWorkAccidentInsuUpdate = findDataById(companyCode,
+				lstQismtWorkAccidentInsu.get(BEGIN_FIRST).getQismtWorkAccidentInsuPK().getHistId());
+		for (QismtWorkAccidentInsu qismtWorkAccidentInsu : lstQismtWorkAccidentInsuUpdate) {
+			qismtWorkAccidentInsu.setEndYm(monthRange.getStartMonth().previousMonth().v());
+		}
+		update(toDomain(lstQismtWorkAccidentInsuUpdate));
+		return false;
 	}
 
 	/**
@@ -263,7 +269,7 @@ public class JpaAccidentInsuranceRateRepository extends JpaRepository implements
 	 */
 	public List<QismtWorkAccidentInsu> toEntity(AccidentInsuranceRate rate) {
 		List<QismtWorkAccidentInsu> lstQismtWorkAccidentInsu = new ArrayList<>();
-		for (int i = 0; i < 10; i++) {
+		for (int i = BEGIN_FIRST; i < SIZE_TEN; i++) {
 			lstQismtWorkAccidentInsu.add(new QismtWorkAccidentInsu());
 		}
 		rate.saveToMemento(new JpaAccidentInsuranceRateSetMemento(lstQismtWorkAccidentInsu));
@@ -296,16 +302,8 @@ public class JpaAccidentInsuranceRateRepository extends JpaRepository implements
 		return lstQismtWorkAccidentInsu;
 	}
 
-	/**
-	 * Checks if is invalid date range update.
-	 *
-	 * @param companyCode
-	 *            the company code
-	 * @param startMonth
-	 *            the start month
-	 * @param historyId
-	 *            the history id
-	 * @return true, if is invalid date range update
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.AccidentInsuranceRateRepository#isInvalidDateRangeUpdate(nts.uk.ctx.core.dom.company.CompanyCode, nts.uk.ctx.pr.core.dom.insurance.MonthRange, java.lang.String)
 	 */
 	@Override
 	public boolean isInvalidDateRangeUpdate(CompanyCode companyCode, MonthRange monthRange, String historyId) {
@@ -314,25 +312,22 @@ public class JpaAccidentInsuranceRateRepository extends JpaRepository implements
 		}
 		// data is begin update
 		List<QismtWorkAccidentInsu> lstQismtWorkAccidentInsuUpdate = findDataById(companyCode, historyId);
-		if (lstQismtWorkAccidentInsuUpdate != null && !lstQismtWorkAccidentInsuUpdate.isEmpty()) {
+		if (!ListUtil.isEmpty(lstQismtWorkAccidentInsuUpdate)) {
 			// begin update
 			List<QismtWorkAccidentInsu> lstQismtWorkAccidentInsu = findBetweenUpdate(companyCode,
-					YearMonth.of(lstQismtWorkAccidentInsuUpdate.get(0).getStrYm()), historyId);
+					YearMonth.of(lstQismtWorkAccidentInsuUpdate.get(BEGIN_FIRST).getStrYm()), historyId);
 			if (lstQismtWorkAccidentInsu == null || lstQismtWorkAccidentInsu.isEmpty()) {
 				return false;
 			}
-			if (lstQismtWorkAccidentInsu != null && lstQismtWorkAccidentInsu.size() >= 1) {
-				if (lstQismtWorkAccidentInsu.get(0).getStrYm() >= monthRange.getStartMonth().v()) {
-					return true;
-				}
-				List<QismtWorkAccidentInsu> lstQismtWorkAccidentInsuBeginUpdate = findDataById(companyCode,
-						lstQismtWorkAccidentInsu.get(0).getQismtWorkAccidentInsuPK().getHistId());
-				for (QismtWorkAccidentInsu qismtWorkAccidentInsu : lstQismtWorkAccidentInsuBeginUpdate) {
-					qismtWorkAccidentInsu.setEndYm(monthRange.getStartMonth().previousMonth().v());
-				}
-				update(toDomain(lstQismtWorkAccidentInsuBeginUpdate));
-				return false;
+			if (lstQismtWorkAccidentInsu.get(BEGIN_FIRST).getStrYm() >= monthRange.getStartMonth().v()) {
+				return true;
 			}
+			List<QismtWorkAccidentInsu> lstQismtWorkAccidentInsuBeginUpdate = findDataById(companyCode,
+					lstQismtWorkAccidentInsu.get(BEGIN_FIRST).getQismtWorkAccidentInsuPK().getHistId());
+			for (QismtWorkAccidentInsu qismtWorkAccidentInsu : lstQismtWorkAccidentInsuBeginUpdate) {
+				qismtWorkAccidentInsu.setEndYm(monthRange.getStartMonth().previousMonth().v());
+			}
+			update(toDomain(lstQismtWorkAccidentInsuBeginUpdate));
 			return false;
 		}
 		return true;

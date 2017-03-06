@@ -125,8 +125,8 @@ public class LaborInsuranceOfficeWs extends WebService {
 	@POST
 	@Path("importser/checkDuplicateCode")
 	public LaborInsuranceOfficeCheckImportDto checkDuplicateCode(
-			List<SocialInsuranceOfficeImportDto> lstSocialInsuranceOfficeImport) {
-		return importser.checkDuplicateCode(lstSocialInsuranceOfficeImport);
+			SocialInsuranceOfficeImportDto socialInsuranceOfficeImport) {
+		return importser.checkDuplicateCode(socialInsuranceOfficeImport);
 	}
 
 	/**

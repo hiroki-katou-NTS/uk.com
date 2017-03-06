@@ -55,9 +55,18 @@ var nts;
                                 ScreenModel.prototype.readFromSocialTnsuranceOffice = function () {
                                     var self = this;
                                     self.enableButton(false);
-                                    nts.uk.ui.windows.sub.modal("/view/qmm/010/b/index.xhtml", { height: 700, width: 450, title: "社会保険事業所から読み込み" }).onClosed(function () {
-                                        self.enableButton(true);
-                                        self.reloadDataByAction('');
+                                    a.service.findAllSocialInsuranceOffice().done(function (data) {
+                                        if (data != null && data.length > 0) {
+                                            nts.uk.ui.windows.setShared("dataInsuranceOffice", data);
+                                            nts.uk.ui.windows.sub.modal("/view/qmm/010/b/index.xhtml", { height: 700, width: 450, title: "社会保険事業所から読み込み" }).onClosed(function () {
+                                                self.enableButton(true);
+                                                self.reloadDataByAction('');
+                                            });
+                                        }
+                                        else {
+                                            alert("ER010");
+                                            self.enableButton(true);
+                                        }
                                     });
                                 };
                                 ScreenModel.prototype.startPage = function () {

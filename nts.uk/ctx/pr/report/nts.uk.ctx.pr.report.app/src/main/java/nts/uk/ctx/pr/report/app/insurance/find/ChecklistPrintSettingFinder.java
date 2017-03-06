@@ -24,6 +24,11 @@ public class ChecklistPrintSettingFinder {
 	@Inject
 	private ChecklistPrintSettingRepository checklistPrintSettingRepository;
 
+	/**
+	 * Find.
+	 *
+	 * @return the check list print setting find out dto
+	 */
 	public CheckListPrintSettingFindOutDto find() {
 		CheckListPrintSettingFindOutDto checkListPrintSettingFindOutDto = new CheckListPrintSettingFindOutDto();
 		Optional<ChecklistPrintSetting> optionalChecklistPrintSetting = checklistPrintSettingRepository
