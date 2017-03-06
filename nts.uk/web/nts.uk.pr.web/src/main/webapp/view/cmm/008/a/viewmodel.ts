@@ -26,13 +26,10 @@ module cmm008.a.viewmodel{
         employmentOutCode: KnockoutObservable<string>;
         isEnable: KnockoutObservable<boolean>;
         //memo
-        multilineeditor: any;        
-        //list values
-        //listResult : KnockoutObservableArray<service.model.employmentDto>;
+        multilineeditor: any;  
         
         constructor(){
             var self = this;
-            //self.employmentCode = ko.observable("");
             self.employmentName = ko.observable("");
             self.isCheckbox = ko.observable(true);
             self.closeDateList = ko.observableArray([]);
@@ -128,14 +125,13 @@ module cmm008.a.viewmodel{
             var dfd = $.Deferred<any>();
             self.dataSource([]);
             $.when(service.getAllEmployments()).done(function(listResult : Array<service.model.employmentDto>){
-                //self.listResult(listResult);
                 if(listResult.length === 0 || listResult === undefined){
                     self.isEnable(true);    
                 }else{
                     self.isEnable(false);
                     _.forEach(listResult, function(employ){
                         if (employ.displayFlg == 1) {
-                            employ.displayStr = "●";    
+                            employ.displayStr = "<span style='color: #00B050; font-size: 18px'>●</span>";    
                         } else {
                             employ.displayStr = "";
                         }
@@ -151,12 +147,11 @@ module cmm008.a.viewmodel{
             })            
             this.columns = ko.observableArray([
                 { headerText: 'コード', prop: 'employmentCode', width: 100 },
-                { headerText: '名称', prop: 'employmentName', width: 150 },
+                { headerText: '名称', prop: 'employmentName', width: 160 },
                 { headerText: '締め日', prop: 'closeDateNo', width: 150 },
                 { headerText: '処理日区分', prop: 'processingNo', width: 150 },
                 { headerText: '初期表示', prop: 'displayStr', width: 100 }
             ]);
-            //this.currentCode = ko.observable("");
             self.singleSelectedCode = ko.observable(null);
             return dfd.promise();
         }
@@ -164,8 +159,6 @@ module cmm008.a.viewmodel{
          //登録ボタンを押す
         createEmployment() : any{
             var self = this;
-            //self.employmentCode(nts.uk.text.padLeft(self.employmentCode(),'0',10));
-            self.currentCode(nts.uk.text.padLeft(self.currentCode(),'0',10));
             //必須項目の未入力チェック
             if(self.currentCode() === ""
                 || self.employmentName() === ""){
@@ -232,6 +225,8 @@ module cmm008.a.viewmodel{
         //削除
         deleteEmployment(): any{
             var self = this;
+            if(self.currentCode() === "")
+                return;
             var employment = new service.model.employmentDto();
             employment.employmentCode = self.currentCode();
             if(self.isCheckbox())

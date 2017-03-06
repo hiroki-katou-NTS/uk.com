@@ -56,7 +56,7 @@
 }
 
 #INP_003 {
-	width: 100%;
+	width: 240px !important;
 }
 #SEL_001{
 	float: right;
@@ -72,8 +72,8 @@ button.nts-switch-button {
 	max-width: 160px !important;
 }
 #INP_005{
-	width: 380px; 
-	height: 50px; 
+	width: 350px; 
+	height: 150px; 
 	margin-top: 5px;
 }
 #LST_001_container{
