@@ -14,7 +14,6 @@ var qmm034;
                         if (!nts.uk.text.isNullOrEmpty(codeChanged)) {
                             //goi Fix_Atr = servicw
                             self.currentEra(self.getEra(codeChanged));
-                            self.getErraAt(self.currentEra().startDate);
                             self.date(new Date(self.currentEra().startDate.toString()));
                             self.inputCode(self.currentEra().code);
                             self.inputName(self.currentEra().name);
@@ -37,7 +36,7 @@ var qmm034;
                         { headerText: '記号', key: 'name', width: 50 },
                         { headerText: '開始年月日', key: 'startDate', width: 80 },
                     ]);
-                    self.currentEra = ko.observable((new EraModel('大明', 'S', new Date("1926/12/25"), 1)));
+                    self.currentEra = ko.observable((new EraModel('大明', 'S', new Date("1926/12/25"), 1, '95F5047A-5065-4306-A6B7-184AA676A1DE')));
                     self.currentCode = ko.observable(null);
                     self.date = ko.observable(new Date());
                     self.dateTime = ko.observable('');
@@ -48,7 +47,7 @@ var qmm034;
                 };
                 ScreenModel.prototype.refreshLayout = function () {
                     var self = this;
-                    self.currentEra(new EraModel('', '', new Date(), 1));
+                    self.currentEra(new EraModel('', '', new Date(), 1, '95F5047A-5065-4306-A6B7-184AA676A1DE'));
                     self.currentCode(null);
                     self.isUpdate(false);
                     self.inputCode(null);
@@ -65,10 +64,11 @@ var qmm034;
                     eraMark = $('#A_INP_002').val();
                     var startDate = self.date();
                     var endDate;
+                    var eraHist;
                     var fixAttribute;
                     var dfd = $.Deferred();
                     var node;
-                    node = new qmm034.a.service.model.EraDto(eraName, eraMark, startDate, endDate, fixAttribute);
+                    node = new qmm034.a.service.model.EraDto(eraName, eraMark, startDate, endDate, fixAttribute, eraHist);
                     qmm034.a.service.addData(self.isUpdate(false), node).done(function (result) {
                         self.reload().done(function () {
                             self.currentCode(eraName);
@@ -90,7 +90,7 @@ var qmm034;
                 ScreenModel.prototype.reload = function () {
                     var dfd = $.Deferred();
                     var self = this;
-                    $.when(qmm034.a.service.getEraDetail()).done(function (data) {
+                    $.when(qmm034.a.service.getAllEras()).done(function (data) {
                         self.buildGridDataSource(data);
                         dfd.resolve();
                     }).fail(function (res) {
@@ -103,10 +103,11 @@ var qmm034;
                     eraName = $('#A_INP_001').val();
                     var eraMark;
                     eraMark = $('#A_INP_002').val();
+                    var eraHist = self.currentEra().eraHist;
                     var startDate = self.date();
                     var dfd = $.Deferred();
                     var node;
-                    node = new qmm034.a.service.model.EraDtoDelete(startDate);
+                    node = new qmm034.a.service.model.EraDtoDelete(eraHist);
                     qmm034.a.service.deleteData(node).done(function (result) {
                         var rowIndex = _.findIndex(self.items(), function (item) {
                             return item.code == self.currentEra().code;
@@ -164,17 +165,6 @@ var qmm034;
                     });
                     return dfd.promise();
                 };
-                ScreenModel.prototype.getErraAt = function (startDate) {
-                    var self = this;
-                    $.when(qmm034.a.service.getEraDetail(startDate)).done(function (data) {
-                        //                if (data.fixAttribute == 1) {
-                        //                    self.isEnableCode(true);
-                        //                } else {
-                        //                    self.isEnableCode(false);
-                        //                }
-                    }).fail(function (res) {
-                    });
-                };
                 ScreenModel.prototype.startPage = function () {
                     var self = this;
                     // Page load dfd.
@@ -182,7 +172,7 @@ var qmm034;
                     // Resolve start page dfd after load all data.
                     $.when(qmm034.a.service.getAllEras()).done(function (data) {
                         self.buildGridDataSource(data);
-                        self.currentEra = ko.observable((new EraModel('大明', 'S', new Date("1926/12/25"), 1)));
+                        self.currentEra = ko.observable((new EraModel('大明', 'S', new Date("1926/12/25"), 1, '95F5047A-5065-4306-A6B7-184AA676A1DE')));
                         if (self.items().length > 0) {
                             self.currentEra = ko.observable(_.cloneDeep(_.first(self.items())));
                             self.currentCode(self.currentEra().code);
@@ -196,18 +186,19 @@ var qmm034;
                     var self = this;
                     self.items([]);
                     _.forEach(items, function (obj) {
-                        self.items.push(new EraModel(obj.eraName, obj.eraMark, obj.startDate, obj.fixAttribute));
+                        self.items.push(new EraModel(obj.eraName, obj.eraMark, obj.startDate, obj.fixAttribute, obj.eraHist));
                     });
                 };
                 return ScreenModel;
             }());
             viewmodel.ScreenModel = ScreenModel;
             var EraModel = (function () {
-                function EraModel(code, name, startDate, fixAttribute) {
+                function EraModel(code, name, startDate, fixAttribute, eraHist) {
                     this.code = code;
                     this.name = name;
                     this.startDate = startDate;
                     this.fixAttribute = fixAttribute;
+                    this.eraHist = eraHist;
                 }
                 return EraModel;
             }());

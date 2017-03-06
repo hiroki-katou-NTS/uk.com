@@ -59,9 +59,10 @@ public class EraWebServices extends WebService {
 	}
 	
 	@POST
-	@Path("find/{startDate}")
-	public  Optional<EraDto> getDetail(@PathParam("startDate") String startDate){
-		return this.finder.getEraDetail(GeneralDate.fromString(startDate, "yyyy-MM-dd"));
+	@Path("find/{eraHist}")
+	public  Optional<EraDto> getDetail(@PathParam("eraHist") String eraHist){
+		//return this.finder.getEraDetail(GeneralDate.fromString(startDate, "yyyy-MM-dd"));
+		return this.finder.getEraDetail(eraHist);
 	}
 
 }

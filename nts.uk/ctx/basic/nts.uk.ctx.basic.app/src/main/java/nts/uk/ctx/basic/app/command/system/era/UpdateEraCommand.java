@@ -5,12 +5,13 @@ import nts.uk.ctx.basic.dom.system.era.Era;
 
 public class UpdateEraCommand {
 	private String eraName;
+	private String eraHist;
 	private String eraMark;
 	private GeneralDate startDate;
 	private GeneralDate endDate;
 	private int fixAttribute;
 	public Era toDomain(){
-		Era domain = Era.createFromDataType(this.eraName, this.eraMark, this.startDate, this.endDate, this.fixAttribute);
+		Era domain = Era.createFromDataType(this.eraName, this.eraHist, this.eraMark, this.startDate, this.endDate, this.fixAttribute);
 		return domain;
 	}
 }

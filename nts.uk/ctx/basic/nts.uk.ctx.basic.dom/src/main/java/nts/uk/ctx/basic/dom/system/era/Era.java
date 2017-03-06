@@ -10,6 +10,9 @@ public class Era extends AggregateRoot {
 	@Getter
 	private EraName eraName;
 	@Getter
+	@Setter
+	private String eraHist;
+	@Getter
 	private EraMark eraMark;
 	@Getter
 	private GeneralDate startDate;
@@ -19,30 +22,37 @@ public class Era extends AggregateRoot {
 	@Getter
 	private FixAttribute fixAttribute;
 
-	public Era(EraName eraName, EraMark eraMark, GeneralDate startDate, GeneralDate endDate,
+	public Era(EraName eraName, String eraHist, EraMark eraMark, GeneralDate startDate, GeneralDate endDate,
 			FixAttribute fixAttribute) {
 		super();
 		this.eraName = eraName;
+		this.eraHist = eraHist;
 		this.eraMark = eraMark;
 		this.startDate = startDate;
 		this.endDate = endDate;
 		this.fixAttribute = fixAttribute;
 	}
 	
-	public Era(GeneralDate startDate) {
+//	public Era(GeneralDate startDate) {
+//		super();
+//		this.startDate = startDate;
+//	}
+	
+	
+	public Era(String eraHist){
 		super();
-		this.startDate = startDate;
+		this.eraHist = eraHist;
 	}
 	// convert data to era type
-	public static Era createFromDataType(String eraName, String eraMark, GeneralDate startDate, GeneralDate endDate,
+	public static Era createFromDataType(String eraName, String eraHist, String eraMark, GeneralDate startDate, GeneralDate endDate,
 			int fixAttribute) {
-		return new Era(new EraName(eraName), new EraMark(eraMark), startDate, endDate,
+		return new Era(new EraName(eraName), eraHist, new EraMark(eraMark), startDate, endDate,
 				EnumAdaptor.valueOf(fixAttribute, FixAttribute.class));
 
 	}
 
-	public static Era createFromDataType1(GeneralDate startDate) {
-		return new Era(startDate);
+	public static Era createFromDataType(String eraHist) {
+		return new Era(eraHist);
 
 	}
 

@@ -17,16 +17,17 @@ module qmm034.a.service {
             .fail(function(res) {
                 dfd.reject(res);
             })
+        
         return dfd.promise();
 
     }
     /**
      * get a company 
      */
-    export function getEraDetail(startDate: Date): JQueryPromise<model.EraDto> {
+    export function getEraDetail(eraHist: string): JQueryPromise<model.EraDto> {
         let dfd = $.Deferred<model.EraDto>();
         let self = this;
-        let _path = nts.uk.text.format(paths.getEraDetail, startDate);
+        let _path = nts.uk.text.format(paths.getEraDetail, eraHist);
 
         nts.uk.request.ajax(_path).done(function(res: model.EraDto) {
             dfd.resolve(res);
@@ -88,7 +89,7 @@ module qmm034.a.service {
     }
     export function deleteData(command: model.EraDtoDelete): JQueryPromise<any> {
         var dfd = $.Deferred<any>();
-        var dateObject = ko.mapping.toJS(command);
+        //var dateObject = ko.mapping.toJS(command);
         nts.uk.request.ajax(paths.deleteEra, command)
             .done(function(res: Array<any>) {
                 dfd.resolve(res);
@@ -106,23 +107,25 @@ module qmm034.a.service {
             startDate: Date;
             endDate: string;
             fixAttribute: number;
+            eraHist: string;
 
-            constructor(eraName: string, eraMark: string, startDate: Date, endDate: string, fixAttribute: number) {
+            constructor(eraName: string, eraMark: string, startDate: Date, endDate: string, fixAttribute: number,  eraHist: string) {
                 this.eraName = eraName;
                 this.eraMark = eraMark;
                 this.startDate = startDate;
                 this.endDate = endDate;
                 this.fixAttribute = fixAttribute;
+                this.eraHist = eraHist;
             }
         }
     }
 
     export module model {
         export class EraDtoDelete {
-            startDate: Date;
+            eraHist: string;
 
-            constructor(startDate: Date) {
-                this.startDate = startDate;
+            constructor(eraHist: string) {
+                this.eraHist = eraHist;
 
             }
         }

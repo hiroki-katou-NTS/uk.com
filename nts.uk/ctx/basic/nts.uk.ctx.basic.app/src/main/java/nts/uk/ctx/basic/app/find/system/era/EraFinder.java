@@ -24,7 +24,7 @@ public class EraFinder {
 //	public Optional<EraDto> getEraDetail(GeneralDate startDate){
 //		return this.eraRepository.getEraDetail(startDate).map(era -> EraDto.fromDomain(era));
 //	}
-	public Optional<EraDto> getEraDetail(GeneralDate startDate){
-		return this.eraRepository.getEraDetail(startDate).map(era -> EraDto.fromDomain(era));
+	public Optional<EraDto> getEraDetail(String eraHist){
+		return this.eraRepository.getEraDetail(eraHist).map(era -> EraDto.fromDomain(era));
 	}
 }

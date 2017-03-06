@@ -26,7 +26,11 @@ public class CmnmtEra extends AggregateTableEntity implements Serializable{
 	public CmnmtEraPk cmnmtEraPk;
 	
 	@Basic(optional = false)
-//	@Column(name="ERA_NAME")
+	@Column(name = "STR_D")
+	@Convert(converter = GeneralDateToDBConverter.class)
+	public GeneralDate startDate;
+	
+	@Basic(optional = false)
 	@Column(name="ERA_NAME")
 	public String era_Name;
 	
@@ -34,10 +38,12 @@ public class CmnmtEra extends AggregateTableEntity implements Serializable{
 	@Column(name="ERA_MARK")
 	public String era_Mark;
 	
+	@Basic(optional = false)
 	@Column(name="END_D")
 	@Convert(converter= GeneralDateToDBConverter.class)
 	public GeneralDate end_D;
 
+	@Basic(optional = false)
 	@Column(name="FIX_ATR")
 	public int fix_Atr;
 	

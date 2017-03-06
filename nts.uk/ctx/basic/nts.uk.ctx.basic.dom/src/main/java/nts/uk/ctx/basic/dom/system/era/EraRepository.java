@@ -20,7 +20,7 @@ public interface EraRepository {
 	 * @param endDate
 	 * @return
 	 */
-	Optional<Era>getEraDetail(GeneralDate startDate);
+	Optional<Era>getEraDetail(String eraHist);
 	
 	/**
 	 * get the latest era which is has end_date = 9999/12/31
@@ -31,6 +31,7 @@ public interface EraRepository {
 	 * 
 	 * @param era
 	 */
+	Optional<Era> getStartDateEraMaster(GeneralDate startDate);
 	
 	void add(Era era);
 	/**
@@ -42,6 +43,6 @@ public interface EraRepository {
 	 * 
 	 * @param era
 	 */
-	void delete(GeneralDate startDate);
+	void delete(String eraHist);
 		
 }

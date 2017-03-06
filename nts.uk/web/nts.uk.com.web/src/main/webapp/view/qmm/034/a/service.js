@@ -28,10 +28,10 @@ var qmm034;
             /**
              * get a company
              */
-            function getEraDetail(startDate) {
+            function getEraDetail(eraHist) {
                 var dfd = $.Deferred();
                 var self = this;
-                var _path = nts.uk.text.format(paths.getEraDetail, startDate);
+                var _path = nts.uk.text.format(paths.getEraDetail, eraHist);
                 nts.uk.request.ajax(_path).done(function (res) {
                     dfd.resolve(res);
                 }).fail(function (res) {
@@ -93,7 +93,7 @@ var qmm034;
             service.addData = addData;
             function deleteData(command) {
                 var dfd = $.Deferred();
-                var dateObject = ko.mapping.toJS(command);
+                //var dateObject = ko.mapping.toJS(command);
                 nts.uk.request.ajax(paths.deleteEra, command)
                     .done(function (res) {
                     dfd.resolve(res);
@@ -107,12 +107,13 @@ var qmm034;
             var model;
             (function (model) {
                 var EraDto = (function () {
-                    function EraDto(eraName, eraMark, startDate, endDate, fixAttribute) {
+                    function EraDto(eraName, eraMark, startDate, endDate, fixAttribute, eraHist) {
                         this.eraName = eraName;
                         this.eraMark = eraMark;
                         this.startDate = startDate;
                         this.endDate = endDate;
                         this.fixAttribute = fixAttribute;
+                        this.eraHist = eraHist;
                     }
                     return EraDto;
                 }());
@@ -121,8 +122,8 @@ var qmm034;
             var model;
             (function (model) {
                 var EraDtoDelete = (function () {
-                    function EraDtoDelete(startDate) {
-                        this.startDate = startDate;
+                    function EraDtoDelete(eraHist) {
+                        this.eraHist = eraHist;
                     }
                     return EraDtoDelete;
                 }());
