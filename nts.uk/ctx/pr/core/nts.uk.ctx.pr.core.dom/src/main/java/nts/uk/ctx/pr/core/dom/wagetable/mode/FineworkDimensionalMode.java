@@ -49,6 +49,11 @@ public class FineworkDimensionalMode implements DemensionalMode {
 	public FineworkDimensionalMode(WageTableElement element1st, WageTableElement element2nd,
 			WageTableElement element3rd) {
 		super();
+		// TODO: Valid element
+		// Demension 1 = ElementType.WORKING_DAY
+		// Demension 2 = ElementType.COME_LATE
+		// Demension 3 = ElementType.LEVEL
+
 		this.element1st = element1st;
 		this.element2nd = element2nd;
 		this.element3rd = element3rd;

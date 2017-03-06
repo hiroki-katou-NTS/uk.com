@@ -2,21 +2,28 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.pr.core.infra.entity.wagetable.history;
+package nts.uk.ctx.pr.core.infra.entity.wagetable.element;
 
 import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.pr.core.infra.entity.wagetable.QwtmtWagetableHead;
+import nts.uk.ctx.pr.core.infra.entity.wagetable.history.QwtmtWagetableEleHist;
 
 /**
  * The Class QwtmtWagetableElement.
@@ -76,12 +83,27 @@ public class QwtmtWagetableElement implements Serializable {
 	/** The demension type. */
 	@Basic(optional = false)
 	@Column(name = "DEMENSION_TYPE")
-	private short demensionType;
+	private int demensionType;
 
 	/** The demension ref no. */
 	@Basic(optional = false)
 	@Column(name = "DEMENSION_REF_NO")
 	private String demensionRefNo;
+
+	/** The qwtmt wagetable head. */
+	@JoinColumns({
+			@JoinColumn(name = "CCD", referencedColumnName = "CCD", insertable = false, updatable = false),
+			@JoinColumn(name = "WAGE_TABLE_CD", referencedColumnName = "WAGE_TABLE_CD", insertable = false, updatable = false) })
+	@ManyToOne(optional = false)
+	private QwtmtWagetableHead qwtmtWagetableHead;
+
+	/** The qwtmt wagetable ele hist. */
+	@OneToOne(optional = true, cascade = CascadeType.ALL)
+	@JoinColumns({
+			@JoinColumn(name = "CCD", referencedColumnName = "CCD", insertable = false, updatable = false),
+			@JoinColumn(name = "WAGE_TABLE_CD", referencedColumnName = "WAGE_TABLE_CD", insertable = false, updatable = false),
+			@JoinColumn(name = "DEMENSION_NO", referencedColumnName = "DEMENSION_NO", insertable = false, updatable = false) })
+	private QwtmtWagetableEleHist qwtmtWagetableEleHist;
 
 	/**
 	 * Instantiates a new qwtmt wagetable element.
@@ -112,8 +134,8 @@ public class QwtmtWagetableElement implements Serializable {
 	 * @param demensionRefNo
 	 *            the demension ref no
 	 */
-	public QwtmtWagetableElement(QwtmtWagetableElementPK qwtmtWagetableElementPK, int exclusVer, short demensionType,
-			String demensionRefNo) {
+	public QwtmtWagetableElement(QwtmtWagetableElementPK qwtmtWagetableElementPK, int exclusVer,
+			short demensionType, String demensionRefNo) {
 		this.qwtmtWagetableElementPK = qwtmtWagetableElementPK;
 		this.exclusVer = exclusVer;
 		this.demensionType = demensionType;

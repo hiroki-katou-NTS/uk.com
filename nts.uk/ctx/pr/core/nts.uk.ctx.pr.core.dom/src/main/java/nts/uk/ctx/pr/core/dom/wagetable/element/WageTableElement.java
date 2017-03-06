@@ -5,7 +5,7 @@
 package nts.uk.ctx.pr.core.dom.wagetable.element;
 
 import lombok.Getter;
-import nts.uk.ctx.pr.core.dom.wagetable.DemensionOrder;
+import nts.uk.ctx.pr.core.dom.wagetable.DemensionNo;
 
 /**
  * The Class WageTableElement.
@@ -14,7 +14,7 @@ import nts.uk.ctx.pr.core.dom.wagetable.DemensionOrder;
 public class WageTableElement {
 
 	/** The demension no. */
-	private DemensionOrder demensionNo;
+	private DemensionNo demensionNo;
 
 	/** The element mode setting. */
 	private ElementMode elementModeSetting;
@@ -27,7 +27,7 @@ public class WageTableElement {
 	 * @param elementModeSetting
 	 *            the element mode setting
 	 */
-	public WageTableElement(DemensionOrder demensionNo, ElementMode elementModeSetting) {
+	public WageTableElement(DemensionNo demensionNo, ElementMode elementModeSetting) {
 		super();
 		this.demensionNo = demensionNo;
 		this.elementModeSetting = elementModeSetting;
