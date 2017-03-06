@@ -23,6 +23,34 @@
 			    nts.uk.ctx.pr.core.dom.insurance.Address
 			    nts.uk.ctx.pr.core.dom.insurance.KanaAddress
 			 </com:ValidatorScript>
+			<script>
+				__viewContext.primitiveValueConstraints.CitySign = {
+					valueType : 'String',
+					charType : 'Numeric',
+					maxLength : 2,
+				};
+
+				__viewContext.primitiveValueConstraints.OfficeMark = {
+					valueType : 'String',
+					charType : 'Numeric',
+					maxLength : 4,
+				};
+				__viewContext.primitiveValueConstraints.OfficeNoA = {
+					valueType : 'String',
+					charType : 'Numeric',
+					maxLength : 4,
+				};
+				__viewContext.primitiveValueConstraints.OfficeNoB = {
+					valueType : 'String',
+					charType : 'Numeric',
+					maxLength : 6,
+				};
+				__viewContext.primitiveValueConstraints.OfficeNoC = {
+					valueType : 'String',
+					charType : 'Numeric',
+					maxLength : 1,
+				};
+			</script>
 		</ui:define>
 
 		<ui:define name="content">
@@ -248,13 +276,15 @@
 										data-name="citySign"
 										data-bind="ntsTextEditor: {value: citySign, 
 										option: textEditorOption, 
+										constraint: 'CitySign',
 										enable: true}" />
 
 										<label id="A_LBL_014">事業所記号 :</label><input
 										id="inp_officeMark" class="tr40 save-error"
 										data-name="officeMark"
 										data-bind="ntsTextEditor: {value: officeMark, 
-										option: textEditorOption, 
+										option: textEditorOption,
+										constraint: 'OfficeMark', 
 										enable: true}" />
 									</td>
 								</tr>
@@ -269,15 +299,18 @@
 										class="tr50 save-error" data-name="officeNoA"
 										data-bind="ntsTextEditor: {value: officeNoA, 
 										option: textEditorOption, 
+										constraint: 'OfficeNoA',
 										enable: true}" />
 										<label id="A_LBL_017"> - </label><input id="inp_officeNoB"
 										class="tr90 save-error" data-name="officeNoB"
 										data-bind="ntsTextEditor: {value: officeNoB, 
+										constraint: 'OfficeNoB',
 										option: textEditorOption, 
 										enable: true}" />
 										<label id="A_LBL_018">-</label> <input id="inp_officeNoC"
 										class="tr40 save-error" data-name="officeNoC"
 										data-bind="ntsTextEditor: {value: officeNoC, 
+										constraint: 'OfficeNoC',
 										option: textEditorOption, 
 										enable: true}" />
 									</td>

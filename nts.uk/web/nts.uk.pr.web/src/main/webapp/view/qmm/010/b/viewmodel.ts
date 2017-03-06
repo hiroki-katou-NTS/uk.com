@@ -42,8 +42,6 @@ module nts.uk.pr.view.qmm010.b {
                         self.importData(0, socialInsuranceOfficeImport);
                     }).ifNo(function() {
                         self.importData(1, socialInsuranceOfficeImport);
-                    }).ifCancel(function() {
-                        self.importData(1, socialInsuranceOfficeImport);
                     })
                 } else {
                     self.importData(0, socialInsuranceOfficeImport);

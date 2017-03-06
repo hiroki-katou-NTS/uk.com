@@ -325,7 +325,7 @@ module nts.uk.pr.view.qmm011.a {
                         self.selectionHistoryUnemployeeInsuranceRate(historyId);
                         self.lstHistoryUnemployeeInsuranceRate(data);
                         self.detailHistoryUnemployeeInsuranceRate(historyId).done(data => {
-
+                            self.unemployeeInsuranceRateModel().setEnable(true);
                         });
                     } else {
                         self.newmodelEmptyDataUnemployeeInsuranceRate();
@@ -348,6 +348,7 @@ module nts.uk.pr.view.qmm011.a {
             private resetValueUnemployeeInsuranceRate() {
                 var self = this;
                 self.unemployeeInsuranceRateModel().resetValue(self.rateInputOptions, self.selectionRoundingMethod);
+                self.unemployeeInsuranceRateModel().setEnable(false);
                 self.typeActionUnemployeeInsurance(TypeActionInsuranceRate.add);
                 self.selectionHistoryUnemployeeInsuranceRate('');
             }
@@ -356,6 +357,7 @@ module nts.uk.pr.view.qmm011.a {
                 var self = this;
                 var dfd = $.Deferred<any>();
                 if (historyId != null && historyId != undefined && historyId != '') {
+                    console.log('historyId ' + historyId);
                     service.detailHistoryUnemployeeInsuranceRate(historyId).done(data => {
                         self.unemployeeInsuranceRateModel().setListItem(data.rateItems);
                         self.unemployeeInsuranceRateModel().setHistoryData(data.historyInsurance);
@@ -489,9 +491,11 @@ module nts.uk.pr.view.qmm011.a {
         export class UnemployeeInsuranceRateItemSettingModel {
             roundAtr: KnockoutObservable<number>;
             rate: KnockoutObservable<number>;
+            isEnable: KnockoutObservable<boolean>;
             constructor() {
                 this.roundAtr = ko.observable(0);
                 this.rate = ko.observable(0);
+                this.isEnable = ko.observable(true);
             }
             resetValue() {
                 if (this.roundAtr == null || this.roundAtr == undefined) {
@@ -504,10 +508,18 @@ module nts.uk.pr.view.qmm011.a {
                 } else {
                     this.rate(0);
                 }
+                if (this.isEnable == null || this.isEnable == undefined) {
+                    this.isEnable = ko.observable(false);
+                } else {
+                    this.isEnable(false);
+                }
             }
             setItem(unemployeeInsuranceRateItemSetting: UnemployeeInsuranceRateItemSettingDto) {
                 this.roundAtr(unemployeeInsuranceRateItemSetting.roundAtr);
                 this.rate(unemployeeInsuranceRateItemSetting.rate);
+            }
+            setEnable(isEnable: boolean) {
+                this.isEnable(isEnable);
             }
         }
 
@@ -540,6 +552,10 @@ module nts.uk.pr.view.qmm011.a {
                 this.companySetting.setItem(unemployeeInsuranceRateItemDto.companySetting);
                 this.personalSetting.setItem(unemployeeInsuranceRateItemDto.personalSetting);
             }
+            setEnable(isEnable: boolean) {
+                this.companySetting.setEnable(isEnable);
+                this.personalSetting.setEnable(isEnable);
+            }
         }
         export class HistoryUnemployeeInsuranceModel {
             historyId: KnockoutObservable<string>;
@@ -568,7 +584,6 @@ module nts.uk.pr.view.qmm011.a {
                 }
             }
             updateData(historyUnemployeeInsurance: HistoryUnemployeeInsuranceDto) {
-                this.resetValue();
                 this.historyId(historyUnemployeeInsurance.historyId);
                 this.startMonthRage(historyUnemployeeInsurance.startMonthRage);
                 this.endMonthRage(historyUnemployeeInsurance.endMonthRage);
@@ -580,11 +595,13 @@ module nts.uk.pr.view.qmm011.a {
             unemployeeInsuranceRateItemOtherModel: UnemployeeInsuranceRateItemModel;
             version: KnockoutObservable<number>;
             historyUnemployeeInsuranceModel: HistoryUnemployeeInsuranceModel;
+            isShowTable: KnockoutObservable<boolean>;
             constructor(rateInputOptions: any, selectionRoundingMethod: KnockoutObservableArray<RoundingMethodDto>) {
                 this.unemployeeInsuranceRateItemAgroforestryModel = new UnemployeeInsuranceRateItemModel(rateInputOptions, selectionRoundingMethod);
                 this.unemployeeInsuranceRateItemContructionModel = new UnemployeeInsuranceRateItemModel(rateInputOptions, selectionRoundingMethod);
                 this.unemployeeInsuranceRateItemOtherModel = new UnemployeeInsuranceRateItemModel(rateInputOptions, selectionRoundingMethod);
                 this.version = ko.observable(0);
+                this.isShowTable = ko.observable(false);
                 this.historyUnemployeeInsuranceModel = new HistoryUnemployeeInsuranceModel();
             }
             resetValue(rateInputOptions: any, selectionRoundingMethod: KnockoutObservableArray<RoundingMethodDto>) {
@@ -635,6 +652,12 @@ module nts.uk.pr.view.qmm011.a {
             }
             setVersion(version: number) {
                 this.version(version);
+            }
+            setEnable(isEnable: boolean) {
+                this.unemployeeInsuranceRateItemAgroforestryModel.setEnable(isEnable);
+                this.unemployeeInsuranceRateItemContructionModel.setEnable(isEnable);
+                this.unemployeeInsuranceRateItemOtherModel.setEnable(isEnable);
+                this.isShowTable(!isEnable);
             }
         }
         export class AccidentInsuranceRateDetailModel {

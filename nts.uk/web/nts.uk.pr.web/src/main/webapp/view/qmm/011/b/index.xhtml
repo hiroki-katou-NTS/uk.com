@@ -40,7 +40,7 @@
 							</label></td>
 						</tr>
 					</table>
-					<table id="tableRight">
+					<table id="tableRight" data-bind="css: { hidden: isShowTable() }" >
 						<tr>
 							<td colspan="2"><hr /></td>
 						</tr>
@@ -65,8 +65,9 @@
 														data-bind="ntsNumberEditor: {value: personalSetting.rate ,
 														required:true, 
 														constraint: 'RateItem',
-													option: rateInputOptions, 
-													enable: true}">
+														enable: personalSetting.isEnable,
+													option: rateInputOptions 
+													}">
 													</input>/1000
 												</div></td>
 											<td>
@@ -77,7 +78,7 @@
 													value: personalSetting.roundAtr,
 													optionsText: 'name',
 													editable: false,
-													enable: true,
+													enable: personalSetting.isEnable,
 													columns: [
 														{ prop: 'name', length: 10 },
 													]}"></div>
@@ -89,7 +90,7 @@
 													option: rateInputOptions, 
 													constraint:'RateItem',
 													required: true,
-													enable: true}">
+													enable: companySetting.isEnable}">
 													</input>/1000
 												</div></td>
 											<td>
@@ -100,7 +101,7 @@
 													value: companySetting.roundAtr,
 													optionsText: 'name',
 													editable: false,
-													enable: true,
+													enable: companySetting.isEnable,
 													columns: [
 														{ prop: 'name', length: 10 },
 													]}">
@@ -117,7 +118,7 @@
 													option: rateInputOptions, 
 													constraint: 'RateItem',
 													required:true,
-													enable: true}">
+													enable: personalSetting.isEnable}">
 													</input>/1000
 												</div></td>
 											<td>
@@ -128,7 +129,7 @@
 													value: personalSetting.roundAtr,
 													optionsText: 'name',
 													editable: false,
-													enable: true,
+													enable: personalSetting.isEnable,
 													columns: [
 														{ prop: 'name', length: 10 },
 													]}"></div>
@@ -139,7 +140,7 @@
 													option: rateInputOptions, 
 													constraint:'RateItem',
 													required: true,
-													enable: true}">
+													enable: companySetting.isEnable}">
 													</input>/1000
 												</div></td>
 											<td>
@@ -150,7 +151,7 @@
 													value: companySetting.roundAtr,
 													optionsText: 'name',
 													editable: false,
-													enable: true,
+													enable: companySetting.isEnable,
 													columns: [
 														{ prop: 'name', length: 10 },
 													]}">
@@ -166,7 +167,7 @@
 													option: rateInputOptions, 
 													constraint:'RateItem',
 													required: true,
-													enable: true}">
+													enable: personalSetting.isEnable}">
 													</input>/1000
 												</div></td>
 											<td>
@@ -177,7 +178,7 @@
 													value: personalSetting.roundAtr,
 													optionsText: 'name',
 													editable: false,
-													enable: true,
+													enable: personalSetting.isEnable,
 													columns: [
 														{ prop: 'name', length: 10 },
 													]}"></div>
@@ -188,7 +189,7 @@
 													option: rateInputOptions, 
 													constraint:'RateItem',
 													required: true,
-													enable: true}">
+													enable: companySetting.isEnable}">
 													</input>/1000
 												</div></td>
 											<td>
@@ -199,7 +200,7 @@
 													value: companySetting.roundAtr,
 													optionsText: 'name',
 													editable: false,
-													enable: true,
+													enable: companySetting.isEnable,
 													columns: [
 														{ prop: 'name', length: 10 },
 													]}">

@@ -100,7 +100,6 @@ var nts;
                                 var dfd = $.Deferred();
                                 nts.uk.request.ajax(paths.detailHistoryUnemployeeInsuranceRate + "/" + historyId)
                                     .done(function (res) {
-                                    console.log(res);
                                     var unemployeeInsuranceRateDto;
                                     unemployeeInsuranceRateDto = new model.UnemployeeInsuranceRateDto();
                                     unemployeeInsuranceRateDto.historyInsurance = new model.HistoryUnemployeeInsuranceDto();

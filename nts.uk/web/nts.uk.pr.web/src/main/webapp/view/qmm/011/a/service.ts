@@ -90,7 +90,6 @@ module nts.uk.pr.view.qmm011.a {
             var dfd = $.Deferred<model.UnemployeeInsuranceRateDto>();
             nts.uk.request.ajax(paths.detailHistoryUnemployeeInsuranceRate + "/" + historyId)
                 .done(function(res: model.UnemployeeInsuranceRateFindOutDto) {
-                    console.log(res);
                     var unemployeeInsuranceRateDto: model.UnemployeeInsuranceRateDto;
                     unemployeeInsuranceRateDto = new model.UnemployeeInsuranceRateDto();
                     unemployeeInsuranceRateDto.historyInsurance = new model.HistoryUnemployeeInsuranceDto();

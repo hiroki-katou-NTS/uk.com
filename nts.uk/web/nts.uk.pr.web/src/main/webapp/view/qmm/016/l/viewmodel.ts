@@ -32,16 +32,6 @@ module nts.uk.pr.view.qmm016.l {
                 ]);
                 self.currentCode = ko.observable();
                 self.currentCodeList = ko.observableArray([]);
-                self.textSearch = {
-                    valueSearch: ko.observable(""),
-                    option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                        textmode: "text",
-                        placeholder: "コード・名称で検索・・・",
-                        width: "270",
-                        textalign: "left"
-                    }))
-                }
-                self.enableButton = ko.observable(true);
                 self.selectedMultipleTargetSetting = ko.observable(MultipleTargetSetting.BigestMethod);
                 self.selectCodeLstLstCertifyGroup = ko.observable('');
                 self.selectLstCodeLstCertification = ko.observableArray([]);
