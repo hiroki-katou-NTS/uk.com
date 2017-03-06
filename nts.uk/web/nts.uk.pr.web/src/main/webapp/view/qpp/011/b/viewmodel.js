@@ -2,11 +2,11 @@
 var qpp011;
 (function (qpp011) {
     var b;
-    (function (b_1) {
+    (function (b) {
         var ScreenModel = (function () {
             function ScreenModel() {
+                this.currentIndex = 0;
                 var self = this;
-                self.currentIndex = 0;
                 //start radiogroup data
                 //B_01
                 self.B_SEL_001_RadioItemList = ko.observableArray([
@@ -79,21 +79,17 @@ var qpp011;
                     readonly: ko.observable(false)
                 };
                 self.B_LST_001_Data = ko.observable([]);
-                self.C_LST_001_Data = ko.observable([]);
                 self.ResidentialData = ko.observable([]);
                 //end number editer
-                b_1.service.findAllResidential().done(function (data) {
-                    b_1.service.getlistLocation().done(function (listLocation) {
-                        //nghịch thôi
-                        data.sort(function (a, b) { return Number(a.resiTaxCode) - Number(b.resiTaxCode); });
-                        //
+                //Set Tree Data 
+                b.service.findAllResidential().done(function (data) {
+                    b.service.getlistLocation().done(function (listLocation) {
                         self.ResidentialData(data);
                         self.ListLocation = listLocation;
                         var ArrayData = CreateDataArray(listLocation, data);
                         self.B_LST_001_Data(ArrayData);
-                        self.C_LST_001_Data(ArrayData);
                         BindTreeGrid("#B_LST_001", self.B_LST_001_Data(), self.selectedValue_B_LST_001);
-                        BindTreeGrid("#C_LST_001", self.C_LST_001_Data(), self.selectedValue_C_LST_001);
+                        BindTreeGrid("#C_LST_001", self.B_LST_001_Data(), self.selectedValue_C_LST_001);
                     }).fail(function (res) {
                         // Alert message
                         alert(res.message);
@@ -106,7 +102,7 @@ var qpp011;
                 self.C_SEL_004_ComboBoxItemList = ko.observableArray([]);
                 self.C_SEL_003_selectedCode = ko.observable("");
                 self.C_SEL_004_selectedCode = ko.observable("");
-                b_1.service.findAllLinebank().done(function (data) {
+                b.service.findAllLinebank().done(function (data) {
                     for (var _i = 0, data_1 = data; _i < data_1.length; _i++) {
                         var object = data_1[_i];
                         self.C_SEL_003_ComboBoxItemList.push(new C_SEL_003_ComboboxItemModel(object.bankCode, object.branchCode, object.lineBankCode, object.lineBankName));
@@ -116,7 +112,7 @@ var qpp011;
                 }).fail(function (res) {
                     alert(res.message);
                 });
-                b_1.service.getCurrentProcessingNo().done(function (data) {
+                b.service.getCurrentProcessingNo().done(function (data) {
                     var yearMonth = data.currentProcessingYm;
                     self.B_INP_001_yearMonth(nts.uk.time.formatYearMonth(yearMonth));
                     self.B_INP_002_yearMonth(nts.uk.time.formatYearMonth(yearMonth));
@@ -125,9 +121,24 @@ var qpp011;
                 }).fail(function (res) {
                     alert(res.message);
                 });
+                self.B_SEL_002_ComboBoxItemList = ko.observableArray([]);
+                self.B_SEL_002_selectedCode = ko.observable("");
+                self.C_SEL_002_selectedCode = ko.observable("");
+                b.service.findallRegalDoc().done(function (data) {
+                    for (var _i = 0, data_2 = data; _i < data_2.length; _i++) {
+                        var object = data_2[_i];
+                        self.B_SEL_002_ComboBoxItemList.push(new B_SEL_002_ComboboxItemModel(object.reganDocCompanyCode, object.reganDocCompanyName));
+                    }
+                    if (data.length > 0) {
+                        self.B_SEL_002_selectedCode(data[0].reganDocCompanyCode);
+                        self.C_SEL_002_selectedCode(data[0].reganDocCompanyCode);
+                    }
+                }).fail(function (res) {
+                    alert(res.message);
+                });
                 self.C_SEL_003_selectedCode.subscribe(function (newValue) {
                     self.C_SEL_004_ComboBoxItemList([]);
-                    b_1.service.findLinebank(newValue).done(function (data) {
+                    b.service.findLinebank(newValue).done(function (data) {
                         for (var _i = 0, _a = data.consignors; _i < _a.length; _i++) {
                             var object = _a[_i];
                             self.C_SEL_004_ComboBoxItemList.push(new C_SEL_004_ComboboxItemModel(object.code, object.memo));
@@ -139,10 +150,12 @@ var qpp011;
                     });
                 });
                 self.columns = [
-                    { headerText: "p", key: "position", width: "30px", dataType: "string", hidden: true },
-                    { headerText: "c", key: "code", width: "30px", dataType: "string", hidden: true },
+                    //   { headerText: "p", key: "position", width: "30px", dataType: "string", hidden: true },
+                    { headerText: "position", key: "position", width: "30px", dataType: "string", hidden: true },
+                    { headerText: "code", key: "code", width: "30px", dataType: "string", hidden: true },
                     { headerText: "コード/名称", key: "displayText", width: "230px", dataType: "string" },
                 ];
+                //Create Tree Data
                 function CreateDataArray(TreeData, Data) {
                     self.TreeArray = [];
                     var parentPositionIndex = 0;
@@ -150,8 +163,7 @@ var qpp011;
                         var Object_1 = Data_1[_i];
                         var positionIndex = CreateTreeBranchs(Object_1.prefectureCode);
                         if (positionIndex) {
-                            self.TreeArray.push(new TreeItem(Object_1.resiTaxCode, Object_1.resiTaxName, positionIndex, positionIndex + 1, Object_1.resiTaxCode + " " + Object_1.registeredName, 'Item'));
-                            self.currentIndex++;
+                            self.TreeArray.push(new TreeItem(Object_1.resiTaxCode, Object_1.resiTaxName, positionIndex, Object_1.resiTaxCode, Object_1.resiTaxCode + " " + Object_1.registeredName, 'Item'));
                         }
                     }
                     return self.TreeArray;
@@ -183,6 +195,9 @@ var qpp011;
                             break;
                         case (26 <= prefectureCodeInt && prefectureCodeInt <= 39):
                             PositionIndex = AddTreeRootToArray(prefectureCode, "7");
+                            break;
+                        case (40 <= prefectureCodeInt && prefectureCodeInt <= 47):
+                            PositionIndex = AddTreeRootToArray(prefectureCode, "8");
                             break;
                     }
                     return PositionIndex;
@@ -230,6 +245,7 @@ var qpp011;
                         return returnValue;
                     }
                 }
+                //End Create Tree Data
                 function BindTreeGrid(gridID, Data, selectedValue) {
                     $(gridID).igTreeGrid({
                         width: "480px",
@@ -351,7 +367,7 @@ var qpp011;
             };
             return ScreenModel;
         }());
-        b_1.ScreenModel = ScreenModel;
+        b.ScreenModel = ScreenModel;
         var BoxModel = (function () {
             function BoxModel(id, name) {
                 var self = this;
@@ -360,7 +376,7 @@ var qpp011;
             }
             return BoxModel;
         }());
-        b_1.BoxModel = BoxModel;
+        b.BoxModel = BoxModel;
         var C_SEL_003_ComboboxItemModel = (function () {
             function C_SEL_003_ComboboxItemModel(bankCode, branchCode, lineBankCode, lineBankName) {
                 this.bankCode = bankCode;
@@ -370,7 +386,15 @@ var qpp011;
             }
             return C_SEL_003_ComboboxItemModel;
         }());
-        b_1.C_SEL_003_ComboboxItemModel = C_SEL_003_ComboboxItemModel;
+        b.C_SEL_003_ComboboxItemModel = C_SEL_003_ComboboxItemModel;
+        var B_SEL_002_ComboboxItemModel = (function () {
+            function B_SEL_002_ComboboxItemModel(reganDocCompanyCode, reganDocCompanyName) {
+                this.reganDocCompanyCode = reganDocCompanyCode;
+                this.reganDocCompanyName = reganDocCompanyName;
+            }
+            return B_SEL_002_ComboboxItemModel;
+        }());
+        b.B_SEL_002_ComboboxItemModel = B_SEL_002_ComboboxItemModel;
         var C_SEL_004_ComboboxItemModel = (function () {
             function C_SEL_004_ComboboxItemModel(code, memo) {
                 this.code = code;
@@ -378,7 +402,8 @@ var qpp011;
             }
             return C_SEL_004_ComboboxItemModel;
         }());
-        b_1.C_SEL_004_ComboboxItemModel = C_SEL_004_ComboboxItemModel;
+        b.C_SEL_004_ComboboxItemModel = C_SEL_004_ComboboxItemModel;
+        //Tree Data Class
         var TreeItem = (function () {
             function TreeItem(code, name, child, position, displayText, typeBranch) {
                 this.code = code;
@@ -390,7 +415,8 @@ var qpp011;
             }
             return TreeItem;
         }());
-        b_1.TreeItem = TreeItem;
+        b.TreeItem = TreeItem;
+        // End Tree Data Class
         var ComboboxItemModel = (function () {
             function ComboboxItemModel(code, name) {
                 this.code = code;
@@ -398,7 +424,7 @@ var qpp011;
             }
             return ComboboxItemModel;
         }());
-        b_1.ComboboxItemModel = ComboboxItemModel;
+        b.ComboboxItemModel = ComboboxItemModel;
     })(b = qpp011.b || (qpp011.b = {}));
 })(qpp011 || (qpp011 = {}));
 ;

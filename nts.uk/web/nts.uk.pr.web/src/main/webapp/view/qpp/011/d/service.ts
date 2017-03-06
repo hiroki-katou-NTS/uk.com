@@ -3,7 +3,8 @@ module qpp011.d.service {
         find: "pr/core/rule/law/tax/residential/output/find",
         add: "pr/core/rule/law/tax/residential/output/add",
         update: "pr/core/rule/law/tax/residential/output/update",
-        findallresidential: "pr/core/residential/findallresidential"
+        findallresidential: "pr/core/residential/findallresidential",
+        getlistLocation: "pr/core/residential/getlistLocation",
     }
 
     /**
@@ -13,6 +14,17 @@ module qpp011.d.service {
         var dfd = $.Deferred<any>();
         nts.uk.request.ajax(paths.find + "/" + resimentTaxCode + "/" + yearMonth)
             .done(function(res: any) {
+                dfd.resolve(res);
+            })
+            .fail(function(res) {
+                dfd.reject(res);
+            })
+        return dfd.promise();
+    }
+    export function getlistLocation(): JQueryPromise<Array<any>> {
+        var dfd = $.Deferred<any>();
+        nts.uk.request.ajax(paths.getlistLocation)
+            .done(function(res: Array<any>) {
                 dfd.resolve(res);
             })
             .fail(function(res) {

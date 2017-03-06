@@ -12,6 +12,11 @@ module qpp011.b {
         C_SEL_001_selectedId: KnockoutObservable<number>;
         //combobox
         ComboBoxItemList: KnockoutObservableArray<ComboboxItemModel>;
+
+        B_SEL_002_ComboBoxItemList: KnockoutObservableArray<B_SEL_002_ComboboxItemModel>;
+        B_SEL_002_selectedCode: KnockoutObservable<string>;
+        C_SEL_002_selectedCode: KnockoutObservable<string>;
+
         C_SEL_003_ComboBoxItemList: KnockoutObservableArray<C_SEL_003_ComboboxItemModel>;
         C_SEL_003_selectedCode: KnockoutObservable<string>;
         C_SEL_004_ComboBoxItemList: KnockoutObservableArray<C_SEL_004_ComboboxItemModel>;
@@ -25,16 +30,17 @@ module qpp011.b {
         selectedCode: KnockoutObservable<string>;
         isEnable: KnockoutObservable<boolean>;
         isEditable: KnockoutObservable<boolean>;
+        //Tree Data Variable
         TreeArray: any;
         ListLocation: any;
         ResidentialData: any;
-        currentIndex: any;
+        currentIndex: any = 0;
+        //End Data Variable
         //
         selectedValue_B_LST_001: any;
         selectedValue_C_LST_001: any;
         //gridlist
         B_LST_001_Data: any;
-        C_LST_001_Data: any;
         columns: any;
         //B
         B_INP_001_yearMonth: any;
@@ -54,7 +60,6 @@ module qpp011.b {
         numbereditor: any;
         constructor() {
             var self = this;
-            self.currentIndex = 0;
             //start radiogroup data
             //B_01
             self.B_SEL_001_RadioItemList = ko.observableArray([
@@ -128,21 +133,18 @@ module qpp011.b {
                 readonly: ko.observable(false)
             }
             self.B_LST_001_Data = ko.observable([]);
-            self.C_LST_001_Data = ko.observable([]);
             self.ResidentialData = ko.observable([]);
             //end number editer
+            //Set Tree Data 
+
             service.findAllResidential().done(function(data: Array<any>) {
                 service.getlistLocation().done(function(listLocation: Array<any>) {
-                    //nghịch thôi
-                    data.sort(function(a, b) { return Number(a.resiTaxCode) - Number(b.resiTaxCode) });
-                    //
                     self.ResidentialData(data);
                     self.ListLocation = listLocation;
                     let ArrayData = CreateDataArray(listLocation, data);
                     self.B_LST_001_Data(ArrayData);
-                    self.C_LST_001_Data(ArrayData);
                     BindTreeGrid("#B_LST_001", self.B_LST_001_Data(), self.selectedValue_B_LST_001);
-                    BindTreeGrid("#C_LST_001", self.C_LST_001_Data(), self.selectedValue_C_LST_001);
+                    BindTreeGrid("#C_LST_001", self.B_LST_001_Data(), self.selectedValue_C_LST_001);
                 }).fail(function(res) {
                     // Alert message
                     alert(res.message);
@@ -152,6 +154,8 @@ module qpp011.b {
                 // Alert message
                 alert(res.message);
             });
+
+
             self.C_SEL_003_ComboBoxItemList = ko.observableArray([]);
             self.C_SEL_004_ComboBoxItemList = ko.observableArray([]);
             self.C_SEL_003_selectedCode = ko.observable("");
@@ -174,6 +178,21 @@ module qpp011.b {
             }).fail(function(res) {
                 alert(res.message);
             });
+            self.B_SEL_002_ComboBoxItemList = ko.observableArray([]);
+            self.B_SEL_002_selectedCode = ko.observable("");
+            self.C_SEL_002_selectedCode = ko.observable("");
+            service.findallRegalDoc().done(function(data: any) {
+                for (let object of data) {
+                    self.B_SEL_002_ComboBoxItemList.push(new B_SEL_002_ComboboxItemModel(object.reganDocCompanyCode, object.reganDocCompanyName))
+                }
+                if (data.length > 0) {
+                    self.B_SEL_002_selectedCode(data[0].reganDocCompanyCode);
+                    self.C_SEL_002_selectedCode(data[0].reganDocCompanyCode);
+                }
+
+            }).fail(function(res) {
+                alert(res.message);
+            });
             self.C_SEL_003_selectedCode.subscribe(function(newValue) {
                 self.C_SEL_004_ComboBoxItemList([]);
                 service.findLinebank(newValue).done(function(data: any) {
@@ -187,19 +206,21 @@ module qpp011.b {
                 })
             });
             self.columns = [
-                { headerText: "p", key: "position", width: "30px", dataType: "string", hidden: true },
-                { headerText: "c", key: "code", width: "30px", dataType: "string", hidden: true },
+                //   { headerText: "p", key: "position", width: "30px", dataType: "string", hidden: true },
+                { headerText: "position", key: "position", width: "30px", dataType: "string", hidden: true },
+                { headerText: "code", key: "code", width: "30px", dataType: "string", hidden: true },
                 { headerText: "コード/名称", key: "displayText", width: "230px", dataType: "string" },
 
             ];
+            //Create Tree Data
             function CreateDataArray(TreeData, Data) {
                 self.TreeArray = [];
                 let parentPositionIndex = 0;
                 for (let Object of Data) {
                     let positionIndex = CreateTreeBranchs(Object.prefectureCode);
                     if (positionIndex) {
-                        self.TreeArray.push(new TreeItem(Object.resiTaxCode, Object.resiTaxName, positionIndex, positionIndex + 1, Object.resiTaxCode + " " + Object.registeredName, 'Item'));
-                        self.currentIndex++;
+                        self.TreeArray.push(new TreeItem(Object.resiTaxCode, Object.resiTaxName, positionIndex, Object.resiTaxCode, Object.resiTaxCode + " " + Object.registeredName, 'Item'));
+                        // self.currentIndex++;
                     }
                 }
                 return self.TreeArray;
@@ -232,9 +253,9 @@ module qpp011.b {
                     case (26 <= prefectureCodeInt && prefectureCodeInt <= 39):
                         PositionIndex = AddTreeRootToArray(prefectureCode, "7");
                         break;
-                    //                    case (40 >= prefectureCodeInt && prefectureCodeInt <= 47):
-                    //                        PositionIndex = AddTreeRootToArray("8");
-                    //                        break;
+                    case (40 <= prefectureCodeInt && prefectureCodeInt <= 47):
+                        PositionIndex = AddTreeRootToArray(prefectureCode, "8");
+                        break;
 
                 }
                 return PositionIndex;
@@ -279,6 +300,7 @@ module qpp011.b {
                     return returnValue;
                 }
             }
+            //End Create Tree Data
             function BindTreeGrid(gridID, Data, selectedValue) {
                 $(gridID).igTreeGrid({
                     width: "480px",
@@ -422,6 +444,14 @@ module qpp011.b {
             this.lineBankName = lineBankName;
         }
     }
+    export class B_SEL_002_ComboboxItemModel {
+        reganDocCompanyCode: string;
+        reganDocCompanyName: string;
+        constructor(reganDocCompanyCode: string, reganDocCompanyName: string) {
+            this.reganDocCompanyCode = reganDocCompanyCode;
+            this.reganDocCompanyName = reganDocCompanyName;
+        }
+    }
     export class C_SEL_004_ComboboxItemModel {
         code: string;
         memo: string;
@@ -430,6 +460,7 @@ module qpp011.b {
             this.memo = memo;
         }
     }
+    //Tree Data Class
     export class TreeItem {
         code: string;
         name: string;
@@ -448,7 +479,7 @@ module qpp011.b {
         }
 
     }
-
+    // End Tree Data Class
     export class ComboboxItemModel {
         code: string;
         name: string;

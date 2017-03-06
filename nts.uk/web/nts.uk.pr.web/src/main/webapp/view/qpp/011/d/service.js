@@ -8,7 +8,8 @@ var qpp011;
                 find: "pr/core/rule/law/tax/residential/output/find",
                 add: "pr/core/rule/law/tax/residential/output/add",
                 update: "pr/core/rule/law/tax/residential/output/update",
-                findallresidential: "pr/core/residential/findallresidential"
+                findallresidential: "pr/core/residential/findallresidential",
+                getlistLocation: "pr/core/residential/getlistLocation",
             };
             /**
              * Get list payment date processing.
@@ -25,6 +26,18 @@ var qpp011;
                 return dfd.promise();
             }
             service.findresidentialTax = findresidentialTax;
+            function getlistLocation() {
+                var dfd = $.Deferred();
+                nts.uk.request.ajax(paths.getlistLocation)
+                    .done(function (res) {
+                    dfd.resolve(res);
+                })
+                    .fail(function (res) {
+                    dfd.reject(res);
+                });
+                return dfd.promise();
+            }
+            service.getlistLocation = getlistLocation;
             function findAllResidential() {
                 var dfd = $.Deferred();
                 nts.uk.request.ajax(paths.findallresidential)

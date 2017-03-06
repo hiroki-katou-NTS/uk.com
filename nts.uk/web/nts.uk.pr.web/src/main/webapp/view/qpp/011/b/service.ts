@@ -8,7 +8,7 @@ module qpp011.b.service {
         findLinebank: "basic/system/bank/linebank/find",
         getlistLocation: "pr/core/residential/getlistLocation",
         currentProcessingNo: "pr/proto/paymentdatemaster/processing/findbylogin",
-        
+        findallRegalDoc: "pr/core/rule/law/tax/residential/output/findallRegalDoc",
     }
 
     /**
@@ -25,7 +25,19 @@ module qpp011.b.service {
             })
         return dfd.promise();
     }
-     export function getCurrentProcessingNo(): JQueryPromise<any> {
+
+    export function findallRegalDoc(): JQueryPromise<any> {
+        var dfd = $.Deferred<any>();
+        nts.uk.request.ajax(paths.findallRegalDoc)
+            .done(function(res: any) {
+                dfd.resolve(res);
+            })
+            .fail(function(res) {
+                dfd.reject(res);
+            })
+        return dfd.promise();
+    }
+    export function getCurrentProcessingNo(): JQueryPromise<any> {
         var dfd = $.Deferred<any>();
         nts.uk.request.ajax(paths.currentProcessingNo)
             .done(function(res: any) {

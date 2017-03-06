@@ -13,6 +13,7 @@ var qpp011;
                 findLinebank: "basic/system/bank/linebank/find",
                 getlistLocation: "pr/core/residential/getlistLocation",
                 currentProcessingNo: "pr/proto/paymentdatemaster/processing/findbylogin",
+                findallRegalDoc: "pr/core/rule/law/tax/residential/output/findallRegalDoc",
             };
             /**
              * Get list payment date processing.
@@ -29,6 +30,18 @@ var qpp011;
                 return dfd.promise();
             }
             service.findresidentialTax = findresidentialTax;
+            function findallRegalDoc() {
+                var dfd = $.Deferred();
+                nts.uk.request.ajax(paths.findallRegalDoc)
+                    .done(function (res) {
+                    dfd.resolve(res);
+                })
+                    .fail(function (res) {
+                    dfd.reject(res);
+                });
+                return dfd.promise();
+            }
+            service.findallRegalDoc = findallRegalDoc;
             function getCurrentProcessingNo() {
                 var dfd = $.Deferred();
                 nts.uk.request.ajax(paths.currentProcessingNo)

@@ -45,14 +45,14 @@
 							</div>
 							<div id="B_SEL_002"
 								data-bind="ntsComboBox: {
-							options: ComboBoxItemList,
-							optionsValue: 'code',
-							value: selectedCode,
-							optionsText: 'name',
+							options: B_SEL_002_ComboBoxItemList,
+							optionsValue: 'reganDocCompanyCode',
+							value: B_SEL_002_selectedCode,
+							optionsText: 'reganDocCompanyName',
 							editable: false,
 							enable: B_SEL_002_Enable,
 							columns: [
-								{ prop: 'name', length: 10 },
+								{ prop: 'reganDocCompanyName', length: 6 },
 							]}">
 							</div>
 							<div style="clear: both;">
@@ -60,9 +60,9 @@
 									data-bind="ntsFormLabel: {  required: true }">対象年月</div>
 								<div id="B_INP_001"
 									data-bind="ntsDatePicker: {value: B_INP_001_yearMonth, dateFormat: 'yyyy/MM', startDate: '1900/01' , endDate:'9999/12'}"></div>
-								<span data-bind="text:yearInJapanEmpire_B_LBL_005" id="B_LBL_005"
-									style="margin-bottom: 15px; float: left">対象年月和暦 </span> <span
-									id="B_LBL_006" style="float: left">納付書印刷の設定 </span>
+								<span data-bind="text:yearInJapanEmpire_B_LBL_005"
+									id="B_LBL_005" style="margin-bottom: 15px; float: left">対象年月和暦
+								</span> <span id="B_LBL_006" style="float: left">納付書印刷の設定 </span>
 								<hr class="hrLabel"></hr>
 							</div>
 							<div style="clear: both;">
@@ -70,7 +70,8 @@
 									data-bind="ntsFormLabel: {  required: true }">指定年月</div>
 								<div id="B_INP_002"
 									data-bind="ntsDatePicker: {value: B_INP_002_yearMonth, dateFormat: 'yyyy/MM', startDate: '1900/01' , endDate:'9999/12'}"></div>
-								<span id="B_LBL_008" data-bind="text:yearInJapanEmpire_B_LBL_008"
+								<span id="B_LBL_008"
+									data-bind="text:yearInJapanEmpire_B_LBL_008"
 									style="float: left">指定年月和暦 </span>
 							</div>
 							<div style="clear: both;">
@@ -78,7 +79,8 @@
 									data-bind="ntsFormLabel: {  required: true }">納付期限</div>
 								<div id="B_INP_003"
 									data-bind="ntsDatePicker: {value: B_INP_003_yearMonth, dateFormat: 'yyyy/MM/dd', startDate: '1900/01/01' , endDate:'9999/12/31'}"></div>
-								<span id="B_LBL_010" data-bind="text:yearInJapanEmpire_B_LBL_010"
+								<span id="B_LBL_010"
+									data-bind="text:yearInJapanEmpire_B_LBL_010"
 									style="float: left">指定年月和暦 </span> <span id="B_LBL_011"
 									style="float: left">納付先ごとの設定 </span>
 								<hr class="hrLabel"></hr>
@@ -133,14 +135,14 @@
 							</div>
 							<div id="C_SEL_002"
 								data-bind="ntsComboBox: {
-							options: ComboBoxItemList,
-							optionsValue: 'code',
-							value: selectedCode,
-							optionsText: 'name',
+							options: B_SEL_002_ComboBoxItemList,
+							optionsValue: 'reganDocCompanyCode',
+							value: C_SEL_002_selectedCode,
+							optionsText: 'reganDocCompanyName',
 							editable: false,
 							enable: C_SEL_002_Enable,
 							columns: [
-								{ prop: 'name', length: 10 },
+								{ prop: 'reganDocCompanyName', length: 10 },
 							]}">
 							</div>
 							<div style="clear: both;">
@@ -148,9 +150,9 @@
 									data-bind="ntsFormLabel: {  required: true }">対象年月</div>
 								<div id="C_INP_001"
 									data-bind="ntsDatePicker: {value: C_INP_001_yearMonth, dateFormat: 'yyyy/MM', startDate: '1900/01/01' , endDate:'9999/12/31'}"></div>
-								<span data-bind="text:yearInJapanEmpire_C_LBL_005" id="C_LBL_005"
-									style="margin-bottom: 15px; float: left">対象年月和暦 </span> <span
-									id="C_LBL_006" style="float: left">振込の指定 </span>
+								<span data-bind="text:yearInJapanEmpire_C_LBL_005"
+									id="C_LBL_005" style="margin-bottom: 15px; float: left">対象年月和暦
+								</span> <span id="C_LBL_006" style="float: left">振込の指定 </span>
 								<hr class="hrLabel"></hr>
 							</div>
 							<div style="clear: both;">
@@ -158,7 +160,8 @@
 									data-bind="ntsFormLabel: {  required: true }">指定年月</div>
 								<div id="C_INP_002"
 									data-bind="ntsDatePicker: {value: C_INP_002_yearMonth, dateFormat: 'yyyy/MM', startDate: '1900/01/01' , endDate:'9999/12/31'}"></div>
-								<span id="C_LBL_008" data-bind="text:yearInJapanEmpire_C_LBL_008"
+								<span id="C_LBL_008"
+									data-bind="text:yearInJapanEmpire_C_LBL_008"
 									style="float: left">指定年月和暦 </span>
 
 							</div>
@@ -167,7 +170,8 @@
 									data-bind="ntsFormLabel: {  required: true }">納付期限</div>
 								<div id="C_INP_003"
 									data-bind="ntsDatePicker: {value: C_INP_003_yearMonth, dateFormat: 'yyyy/MM/dd', startDate: '1900/01/01' , endDate:'9999/12/31'}"></div>
-								<span id="C_LBL_010" data-bind="text:yearInJapanEmpire_C_LBL_010"
+								<span id="C_LBL_010"
+									data-bind="text:yearInJapanEmpire_C_LBL_010"
 									style="float: left">指定年月和暦 </span>
 
 							</div>
@@ -227,10 +231,10 @@
 								<div style="width: 700px" id="C_SCH_001"
 									data-bind="ntsSearchBox: {
 									comId: 'C_LST_001', 
-									items: C_LST_001_Data, 
+									items: B_LST_001_Data, 
 									selected: selectedValue_C_LST_001, 
-									selectedKey: 'resiTaxCode', 
-									fields: ['resiTaxCode'], 
+									selectedKey: 'position', 
+									fields: ['position'], 
 									childField: 'childs'}" />
 								<table id="C_LST_001">
 								</table>
