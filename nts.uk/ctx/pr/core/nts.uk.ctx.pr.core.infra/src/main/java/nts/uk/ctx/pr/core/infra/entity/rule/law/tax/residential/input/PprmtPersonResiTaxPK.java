@@ -12,5 +12,7 @@ public class PprmtPersonResiTaxPK {
 	@Column(name="CCD")
 	public String companyCode;
 	@Column(name="PID")
-	public String personID;
+	public String personId;
+	@Column(name="Y_K")
+	public int yearKey;
 }

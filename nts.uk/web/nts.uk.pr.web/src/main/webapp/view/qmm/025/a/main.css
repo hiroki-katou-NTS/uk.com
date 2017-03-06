@@ -55,7 +55,16 @@
 	margin-right: 85px;
 }
 
-#grid_Jun, #grid_Jul, #grid_Aug, #grid_Sep, #grid_Oct, #grid_Nov,
-	#grid_Dec, #grid_Jan, #grid_Feb, #grid_Mar, #grid_Apr, #grid_May {
+#grid_residenceTax01, #grid_residenceTax02, #grid_residenceTax03,
+	#grid_residenceTax04, #grid_residenceTax05, #grid_residenceTax06,
+	#grid_residenceTax07, #grid_residenceTax08, #grid_residenceTax09,
+	#grid_residenceTax10, #grid_residenceTax11, #grid_residenceTax12 {
 	text-align: center
+}
+
+.colStyle {
+	background-color: grey
+}
+.align_right{
+	text-align: right
 }

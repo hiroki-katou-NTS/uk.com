@@ -1,4 +1,4 @@
-var nwCustomersWithOrders = [{ "ID": "ALFKI", "Code": "A0000001", "Name": "Maria Anders", "TaxPaymentDestination": "Paris", "AnnualTaxAmount": "250,000", "TotalMonth": false, "Jun": "21,200", "Jul": "21,200", "Aug": "21,200", "Sep": "21,200", "Oct": "21,200", "Nov": "21,200", "Dec": "21,200", "Jan": "21,200", "Feb": "21,200", "Mar": "21,200", "Apr": "21,200", "May": "21,200" },
+var items1 = [{ "ID": "ALFKI", "Code": "A0000001", "Name": "Maria Anders", "TaxPaymentDestination": "Paris", "AnnualTaxAmount": "250,000", "TotalMonth": false, "Jun": "21,200", "Jul": "21,200", "Aug": "21,200", "Sep": "21,200", "Oct": "21,200", "Nov": "21,200", "Dec": "21,200", "Jan": "21,200", "Feb": "21,200", "Mar": "21,200", "Apr": "21,200", "May": "21,200" },
     { "ID": "ANATR", "Code": "A0000002", "Name": "Ana Trujillo", "TaxPaymentDestination": "Newyork", "AnnualTaxAmount": "250,000", "TotalMonth": false, "Jun": "21,200", "Jul": "21,200", "Aug": "21,200", "Sep": "21,200", "Oct": "21,200", "Nov": "21,200", "Dec": "21,200", "Jan": "21,200", "Feb": "21,200", "Mar": "21,200", "Apr": "21,200", "May": "21,200" }, { "ID": "ALFKI", "Code": "A0000021", "Name": "Maria Anders", "TaxPaymentDestination": "Paris", "AnnualTaxAmount": "250,000", "TotalMonth": false, "Jun": "21,200", "Jul": "21,200", "Aug": "21,200", "Sep": "21,200", "Oct": "21,200", "Nov": "21,200", "Dec": "21,200", "Jan": "21,200", "Feb": "21,200", "Mar": "21,200", "Apr": "21,200", "May": "21,200" },
     { "ID": "ANATR", "Code": "A0000003", "Name": "Ana Trujillo", "TaxPaymentDestination": "Newyork", "AnnualTaxAmount": "250,000", "TotalMonth": false, "Jun": "21,200", "Jul": "21,200", "Aug": "21,200", "Sep": "21,200", "Oct": "21,200", "Nov": "21,200", "Dec": "21,200", "Jan": "21,200", "Feb": "21,200", "Mar": "21,200", "Apr": "21,200", "May": "21,200" }, { "ID": "ALFKI", "Code": "A0000022", "Name": "Maria Anders", "TaxPaymentDestination": "Paris", "AnnualTaxAmount": "250,000", "TotalMonth": false, "Jun": "21,200", "Jul": "21,200", "Aug": "21,200", "Sep": "21,200", "Oct": "21,200", "Nov": "21,200", "Dec": "21,200", "Jan": "21,200", "Feb": "21,200", "Mar": "21,200", "Apr": "21,200", "May": "21,200" },
     { "ID": "ANATR", "Code": "A0000004", "Name": "Ana Trujillo", "TaxPaymentDestination": "Newyork", "AnnualTaxAmount": "250,000", "TotalMonth": false, "Jun": "21,200", "Jul": "21,200", "Aug": "21,200", "Sep": "21,200", "Oct": "21,200", "Nov": "21,200", "Dec": "21,200", "Jan": "21,200", "Feb": "21,200", "Mar": "21,200", "Apr": "21,200", "May": "21,200" }, { "ID": "ALFKI", "Code": "A0000023", "Name": "Maria Anders", "TaxPaymentDestination": "Paris", "AnnualTaxAmount": "250,000", "TotalMonth": false, "Jun": "21,200", "Jul": "21,200", "Aug": "21,200", "Sep": "21,200", "Oct": "21,200", "Nov": "21,200", "Dec": "21,200", "Jan": "21,200", "Feb": "21,200", "Mar": "21,200", "Apr": "21,200", "May": "21,200" },
@@ -23,46 +23,75 @@ var qmm025;
             var ScreenModel = (function () {
                 function ScreenModel() {
                     var self = this;
-                    self.texteditor1 = {
-                        value: ko.observable(''),
-                        constraint: 'ResidenceCode',
-                        option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                            textmode: "text",
-                            placeholder: "",
-                            width: "45px",
-                            textalign: "center"
-                        })),
-                        required: ko.observable(true),
-                        enable: ko.observable(true),
-                        readonly: ko.observable(false)
-                    };
+                    self.items = ko.observableArray([]);
+                    self.isEnable = ko.observable(false);
+                    //get current year
+                    self.yearKey = ko.observable((new Date()).getFullYear());
+                    self.yearInJapanEmpire = ko.computed(function () {
+                        return nts.uk.time.yearInJapanEmpire(self.yearKey()).toString();
+                    });
                     // checkbox square
                     $.ig.checkboxMarkupClasses = "ui-state-default ui-corner-all ui-igcheckbox-small";
+                }
+                ScreenModel.prototype.startPage = function () {
+                    var self = this;
+                    var dfd = $.Deferred();
+                    self.findAll();
+                    dfd.resolve();
+                    return dfd.promise();
+                };
+                ScreenModel.prototype.bindGrid = function (data) {
+                    var self = this;
+                    //khi row bi thay doi- updating when row edited
+                    $("#grid").on("iggridupdatingeditrowended", function (event, ui) {
+                        var residenceTax01 = ui.values["residenceTax01"];
+                        var residenceTax02 = ui.values["residenceTax02"];
+                        var residenceTax03 = ui.values["residenceTax03"];
+                        var residenceTax04 = ui.values["residenceTax04"];
+                        var residenceTax05 = ui.values["residenceTax05"];
+                        var residenceTax06 = ui.values["residenceTax06"];
+                        var residenceTax07 = ui.values["residenceTax07"];
+                        var residenceTax08 = ui.values["residenceTax08"];
+                        var residenceTax09 = ui.values["residenceTax09"];
+                        var residenceTax10 = ui.values["residenceTax10"];
+                        var residenceTax11 = ui.values["residenceTax11"];
+                        var residenceTax12 = ui.values["residenceTax12"];
+                        var totalValue = 0;
+                        if (ui.values["checkAllMonth"]) {
+                            totalValue = residenceTax06 + residenceTax07 * 11 || ui.values["residenceTaxPerYear"];
+                        }
+                        else {
+                            totalValue = residenceTax06 + residenceTax07 || ui.values["residenceTaxPerYear"];
+                        }
+                        $("#grid").igGridUpdating("setCellValue", ui.rowID, "residenceTaxPerYear", totalValue);
+                    });
                     $("#grid").igGrid({
                         columns: [
-                            { headerText: "部門", key: "ID", dataType: "string", width: "100px" },
-                            { headerText: "コード", key: "Code", dataType: "string", width: "100px" },
-                            { headerText: "名称", key: "Name", dataType: "string", width: "120px" },
-                            { headerText: "住民税納付先", key: "TaxPaymentDestination", dataType: "string", width: "100px" },
-                            { headerText: "年税額", key: "AnnualTaxAmount", dataType: "string", width: "100px" },
-                            { headerText: "全月", key: "TotalMonth", dataType: "bool", width: "35px" },
-                            { headerText: "6月", key: "Jun", dataType: "string", width: "100px", template: "${Jun}	<a style='float: right'>円</a>" },
-                            { headerText: "7月", key: "Jul", dataType: "string", width: "100px", template: "${Jul}	<a style='float: right'>円</a>" },
-                            { headerText: "8月", key: "Aug", dataType: "string", width: "100px", template: "${Aug}	<a style='float: right'>円</a>" },
-                            { headerText: "9月", key: "Sep", dataType: "string", width: "100px", template: "${Sep}	<a style='float: right'>円</a>" },
-                            { headerText: "10月", key: "Oct", dataType: "string", width: "100px", template: "${Oct}	<a style='float: right'>円</a>" },
-                            { headerText: "11月", key: "Nov", dataType: "string", width: "100px", template: "${Nov}	<a style='float: right'>円</a>" },
-                            { headerText: "12月", key: "Dec", dataType: "string", width: "100px", template: "${Dec}	<a style='float: right'>円</a>" },
-                            { headerText: "1月", key: "Jan", dataType: "string", width: "100px", template: "${Jan}	<a style='float: right'>円</a>" },
-                            { headerText: "2月", key: "Feb", dataType: "string", width: "100px", template: "${Feb}	<a style='float: right'>円</a>" },
-                            { headerText: "3月", key: "Mar", dataType: "string", width: "100px", template: "${Mar}	<a style='float: right'>円</a>" },
-                            { headerText: "4月", key: "Apr", dataType: "string", width: "100px", template: "${Apr}	<a style='float: right'>円</a>" },
-                            { headerText: "5月", key: "May", dataType: "string", width: "100px", template: "${May}	<a style='float: right'>円</a>" },
+                            { headerText: "部門", key: "department", dataType: "string", width: "100px", formatter: _.escape },
+                            { headerText: "コード", key: "code", dataType: "string", width: "100px", formatter: _.escape },
+                            { headerText: "名称", key: "name", dataType: "string", width: "120px", formatter: _.escape },
+                            { headerText: "住民税納付先", key: "add", dataType: "string", width: "100px", formatter: _.escape },
+                            {
+                                headerText: "年税額", key: "residenceTaxPerYear", dataType: "number", width: "100px", columnCssClass: "align_right"
+                            },
+                            { headerText: "全月", key: "checkAllMonth", dataType: "bool", width: "35px" },
+                            { headerText: "6月", key: "residenceTax06", dataType: "number", width: "100px", template: "<a style='float: right'>${residenceTax06}円</a>" },
+                            { headerText: "7月", key: "residenceTax07", dataType: "number", width: "100px", template: "<a style='float: right'>${residenceTax07}円</a>" },
+                            { headerText: "8月", key: "residenceTax08", dataType: "number", width: "100px", columnCssClass: "colStyle", template: "<a style='float: right'>${residenceTax08}円</a>" },
+                            { headerText: "9月", key: "residenceTax09", dataType: "number", width: "100px", columnCssClass: "colStyle", template: "<a style='float: right'>${residenceTax09}円</a>" },
+                            { headerText: "10月", key: "residenceTax10", dataType: "number", width: "100px", columnCssClass: "colStyle", template: "<a style='float: right'>${residenceTax10}円</a>" },
+                            { headerText: "11月", key: "residenceTax11", dataType: "number", width: "100px", columnCssClass: "colStyle", template: "<a style='float: right'>${residenceTax11}円</a>" },
+                            { headerText: "12月", key: "residenceTax12", dataType: "number", width: "100px", columnCssClass: "colStyle", template: "<a style='float: right'>${residenceTax12}円</a>" },
+                            { headerText: "1月", key: "residenceTax01", dataType: "number", width: "100px", columnCssClass: "colStyle", template: "<a style='float: right'>${residenceTax01}円</a>" },
+                            { headerText: "2月", key: "residenceTax02", dataType: "number", width: "100px", columnCssClass: "colStyle", template: "<a style='float: right'>${residenceTax02}円</a>" },
+                            { headerText: "3月", key: "residenceTax03", dataType: "number", width: "100px", columnCssClass: "colStyle", template: "<a style='float: right'>${residenceTax03}円</a>" },
+                            { headerText: "4月", key: "residenceTax04", dataType: "number", width: "100px", columnCssClass: "colStyle", template: "<a style='float: right'>${residenceTax04}円</a>" },
+                            { headerText: "5月", key: "residenceTax05", dataType: "number", width: "100px", columnCssClass: "colStyle", template: "<a style='float: right'>${residenceTax05}円</a>" },
                         ],
                         renderCheckboxes: true,
-                        primaryKey: 'Code',
+                        primaryKey: 'code',
                         autoGenerateColumns: false,
-                        dataSource: nwCustomersWithOrders,
+                        dataSource: data,
                         width: "1200px",
                         height: "550px",
                         features: [
@@ -72,31 +101,32 @@ var qmm025;
                                 fixingDirection: "left",
                                 columnSettings: [
                                     {
-                                        columnKey: "ID",
-                                        isFixed: true,
-                                        allowFixing: false
-                                    },
-                                    {
-                                        columnKey: "Code",
-                                        isFixed: true,
-                                        allowFixing: false
-                                    },
-                                    {
-                                        columnKey: "Name",
-                                        isFixed: true,
-                                        allowFixing: false
-                                    },
-                                    {
-                                        columnKey: "TaxPaymentDestination",
-                                        isFixed: true,
-                                        allowFixing: false
-                                    },
-                                    {
-                                        columnKey: "AnnualTaxAmount",
+                                        columnKey: "department",
                                         isFixed: true,
                                         allowFixing: false,
+                                        readOnly: true
                                     },
-                                ]
+                                    {
+                                        columnKey: "code",
+                                        isFixed: true,
+                                        allowFixing: false
+                                    },
+                                    {
+                                        columnKey: "name",
+                                        isFixed: true,
+                                        allowFixing: false
+                                    },
+                                    {
+                                        columnKey: "add",
+                                        isFixed: true,
+                                        allowFixing: false
+                                    },
+                                    {
+                                        columnKey: "residenceTaxPerYear",
+                                        isFixed: true,
+                                        allowFixing: false,
+                                        unbound: true
+                                    }]
                             },
                             {
                                 name: 'Paging',
@@ -117,14 +147,35 @@ var qmm025;
                             },
                             {
                                 name: "Updating",
-                                editMode: "cell",
+                                editMode: "row",
                                 enableAddRow: false,
                                 enableDeleteRow: false,
                                 editCellStarting: function (evt, ui) {
-                                    if (ui.columnKey === "TotalMonth" && $(evt.originalEvent.target).hasClass("ui-icon-check")) {
+                                    if (ui.columnKey === "checkAllMonth" && $(evt.originalEvent.target).hasClass("ui-icon-check")) {
                                         ui.value = !ui.value;
+                                        if (ui.value) {
+                                        }
                                     }
-                                }
+                                },
+                                columnSettings: [
+                                    { columnKey: "department", readOnly: true },
+                                    { columnKey: "code", readOnly: true },
+                                    { columnKey: "name", readOnly: true },
+                                    { columnKey: "add", readOnly: true },
+                                    { columnKey: "residenceTaxPerYear", readOnly: true },
+                                    { columnKey: "residenceTax06", required: true },
+                                    { columnKey: "residenceTax07", required: true },
+                                    { columnKey: "residenceTax08", readOnly: true },
+                                    { columnKey: "residenceTax09", readOnly: true },
+                                    { columnKey: "residenceTax10", readOnly: true },
+                                    { columnKey: "residenceTax11", readOnly: true },
+                                    { columnKey: "residenceTax12", readOnly: true },
+                                    { columnKey: "residenceTax01", readOnly: true },
+                                    { columnKey: "residenceTax02", readOnly: true },
+                                    { columnKey: "residenceTax03", readOnly: true },
+                                    { columnKey: "residenceTax04", readOnly: true },
+                                    { columnKey: "residenceTax05", readOnly: true }
+                                ]
                             },
                             {
                                 name: 'RowSelectors',
@@ -134,16 +185,54 @@ var qmm025;
                             }
                         ]
                     });
-                }
-                ScreenModel.prototype.startPage = function () {
+                };
+                ScreenModel.prototype.findAll = function () {
                     var self = this;
                     var dfd = $.Deferred();
-                    dfd.resolve();
+                    qmm025.a.service.findAll(self.yearKey())
+                        .done(function (data) {
+                        var perResiTaxData = [];
+                        var ttm = data[0].residenceTax[0].value + data[0].residenceTax[1].value + data[0].residenceTax[2].value +
+                            data[0].residenceTax[3].value + data[0].residenceTax[4].value + data[0].residenceTax[5].value +
+                            data[0].residenceTax[6].value + data[0].residenceTax[7].value + data[0].residenceTax[8].value +
+                            data[0].residenceTax[9].value + data[0].residenceTax[10].value + data[0].residenceTax[11].value;
+                        perResiTaxData.push(new ResidenceTax('NSVC', data[0].personId, 'name', 'Vietnam', false, data[0].residenceTax[0].value, data[0].residenceTax[1].value, data[0].residenceTax[2].value, data[0].residenceTax[3].value, data[0].residenceTax[4].value, data[0].residenceTax[5].value, data[0].residenceTax[6].value, data[0].residenceTax[7].value, data[0].residenceTax[8].value, data[0].residenceTax[9].value, data[0].residenceTax[10].value, data[0].residenceTax[11].value));
+                        perResiTaxData.push(new ResidenceTax('NSVC', '0000000000000001', 'name1', 'Japan', false, 10000, 10000, 10000, 10000, 10000, 10000, 10000, 10000, 10000, 10000, 10000, 10000));
+                        self.items(perResiTaxData);
+                        self.isEnable(true);
+                        self.bindGrid(self.items());
+                    })
+                        .fail(function (res) {
+                        dfd.reject(res);
+                    });
                     return dfd.promise();
                 };
                 return ScreenModel;
             }());
             viewmodel.ScreenModel = ScreenModel;
+            var ResidenceTax = (function () {
+                function ResidenceTax(department, code, name, add, checkAllMonth, residenceTax01, residenceTax02, residenceTax03, residenceTax04, residenceTax05, residenceTax06, residenceTax07, residenceTax08, residenceTax09, residenceTax10, residenceTax11, residenceTax12) {
+                    this.department = department;
+                    this.code = code;
+                    this.name = name;
+                    this.add = add;
+                    this.checkAllMonth = checkAllMonth;
+                    this.residenceTax01 = residenceTax01;
+                    this.residenceTax02 = residenceTax02;
+                    this.residenceTax03 = residenceTax03;
+                    this.residenceTax04 = residenceTax04;
+                    this.residenceTax05 = residenceTax05;
+                    this.residenceTax06 = residenceTax06;
+                    this.residenceTax07 = residenceTax07;
+                    this.residenceTax08 = residenceTax08;
+                    this.residenceTax09 = residenceTax09;
+                    this.residenceTax10 = residenceTax10;
+                    this.residenceTax11 = residenceTax11;
+                    this.residenceTax12 = residenceTax12;
+                    this.residenceTaxPerYear = this.residenceTax06 + this.residenceTax07;
+                }
+                return ResidenceTax;
+            }());
         })(viewmodel = a.viewmodel || (a.viewmodel = {}));
     })(a = qmm025.a || (qmm025.a = {}));
 })(qmm025 || (qmm025 = {}));

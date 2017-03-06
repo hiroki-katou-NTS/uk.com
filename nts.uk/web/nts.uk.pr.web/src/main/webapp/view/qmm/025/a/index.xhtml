@@ -8,8 +8,11 @@
 <body>
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
+				<com:scriptfile path="../../../../lib/generic/igniteui/js/infragistics.core.js" />
+				<com:scriptfile path="../../../../lib/generic/igniteui/js/infragistics.lob.js" />
+            	<com:scriptfile path="../../../../lib/generic/igniteui/js/extensions/infragistics.ui.combo.knockout-extensions.js" />
 			<com:ValidatorScript>
-					nts.uk.shr.com.primitive.PersonId
+					nts.uk.ctx.pr.core.dom.rule.law.tax.residential.input.YearKey
    				</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="main.css" />
@@ -24,31 +27,36 @@
 			<div id="functions-area">
 				<button id="A_BTN_001" class="proceed">登録</button>
 				<button id="A_BTN_002">マスタ修正ログ</button>
-				<a id="A_BTN_005"
-					data-bind="ntsLinkButton: { jump: 'linkbutton.xhtml' }">個人情報の登録へ</a>
+				<a id="A_BTN_005" data-bind="ntsLinkButton: {}">個人情報の登録へ</a>
 			</div>
 			<div id="contents-area">
 				<div class="left-content"></div>
 				<div class="right-content">
 					<div class="valign-center control-group">
 						<div id="A_LBL_001" data-bind="ntsFormLabel:{required: true}">対象年度</div>
-						<span id="A_INP_001" data-bind="with: texteditor1"> <input
-							class="text-editor1"
+						<span id="A_INP_001"> <input
 							data-bind="ntsTextEditor: {
-									value: value,
-									constraint: constraint,
-									option: option,
-									required: required,
-									enable: enable,
-									readonly: readonly}" /></span>
-						<span id="A_LBL_002">対象年度和暦</span> <span id="A_LBL_003">年度</span>
-						<button id="A_BTN_003">リスト表示ボタン</button>
+									value: yearKey,
+									constraint: 'YearKey',
+									option: {
+										textmode: 'text',
+					                    placeholder: '',
+					                    width: '45px',
+					                    textalign: 'center'
+									},
+									required: true,
+									enable: true,
+									readonly: false}" /></span>
+						<a id="A_LBL_002">(<span data-bind="text: yearInJapanEmpire"></span>)
+						</a> <span id="A_LBL_003">年度</span>
+						<button id="A_BTN_003" data-bind="click: findAll">リスト表示ボタン</button>
 					</div>
 					<div class="bg-green config">
 						<button id="BTN_004" class="danger">社員の住民税情報を削除</button>
 					</div>
-
-					<table id="grid"></table>
+					<div data-bind="visible: isEnable">
+						<table id="grid"></table>
+					</div>
 				</div>
 			</div>
 		</ui:define>

@@ -13,7 +13,7 @@ public interface PersonResiTaxRepository {
 	 * @param companyCode
 	 * @return
 	 */
-	List<PersonResiTax> findAll(String companyCode, String personId);
+	List<PersonResiTax> findAll(String companyCode, String personId, int yearKey);
 	
 	void update();
 	

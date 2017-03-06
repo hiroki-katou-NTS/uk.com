@@ -5,11 +5,11 @@ var qmm025;
         var service;
         (function (service) {
             var paths = {
-                getPaymentDateProcessingList: "pr/proto/paymentdatemaster/processing/findall"
+                findAll: "pr/core/rule/law/tax/residential/input/findAll"
             };
-            function getPaymentDateProcessingList() {
+            function findAll(yearKey) {
                 var dfd = $.Deferred();
-                nts.uk.request.ajax(paths.getPaymentDateProcessingList)
+                nts.uk.request.ajax(paths.findAll + "/" + yearKey)
                     .done(function (res) {
                     dfd.resolve(res);
                 })
@@ -18,7 +18,7 @@ var qmm025;
                 });
                 return dfd.promise();
             }
-            service.getPaymentDateProcessingList = getPaymentDateProcessingList;
+            service.findAll = findAll;
         })(service = a.service || (a.service = {}));
     })(a = qmm025.a || (qmm025.a = {}));
 })(qmm025 || (qmm025 = {}));

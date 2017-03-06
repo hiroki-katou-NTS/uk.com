@@ -1,11 +1,10 @@
 module qmm025.a.service {
     var paths: any = {
-        getPaymentDateProcessingList: "pr/proto/paymentdatemaster/processing/findall"
+        findAll: "pr/core/rule/law/tax/residential/input/findAll"
     }
-
-    export function getPaymentDateProcessingList(): JQueryPromise<Array<any>> {
-        var dfd = $.Deferred<Array<any>>();
-        nts.uk.request.ajax(paths.getPaymentDateProcessingList)
+    export function findAll(yearKey: number): JQueryPromise<Array<any>> {
+        var dfd = $.Deferred<any>();
+        nts.uk.request.ajax(paths.findAll + "/" + yearKey)
             .done(function(res: Array<any>) {
                 dfd.resolve(res);
             })

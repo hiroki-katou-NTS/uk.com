@@ -17,8 +17,6 @@ import lombok.NoArgsConstructor;
 public class PprmtPersonResiTax {
 	@EmbeddedId
 	public PprmtPersonResiTaxPK pprmtPersonResiTaxPK;
-	@Column(name="Y_K")
-	public int yearKey;
 	@Column(name="RESIDENCE_CD")
 	public String residenceCode;
 	@Column(name="RESIDENCE_TAX_BN")
@@ -33,11 +31,11 @@ public class PprmtPersonResiTax {
 	public BigDecimal residenceTax08;
 	@Column(name="RESIDENCE_TAX09")
 	public BigDecimal residenceTax09;
-	@Column(name="RESIDENCE_TAX010")
+	@Column(name="RESIDENCE_TAX10")
 	public BigDecimal residenceTax10;
 	@Column(name="RESIDENCE_TAX11")
 	public BigDecimal residenceTax11;
-	@Column(name="RESIDENCE_TAX012")
+	@Column(name="RESIDENCE_TAX12")
 	public BigDecimal residenceTax12;
 	@Column(name="RESIDENCE_TAX01")
 	public BigDecimal residenceTax01;
