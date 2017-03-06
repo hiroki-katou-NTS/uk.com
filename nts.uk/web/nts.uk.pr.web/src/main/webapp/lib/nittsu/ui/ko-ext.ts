@@ -15,18 +15,32 @@ module nts.uk.ui.koExtentions {
             }
             $input.addClass('nts-editor').addClass("nts-input");
             $input.wrap("<span class= 'nts-editor-wrapped ntsControl'/>");
+            
+            $input.focus(() => {
+                $input.select();
+            });
+            
             $input.change(() => {
                 var validator = this.getValidator(data);
-                var formatter = this.getFormatter(data);
                 var newText = $input.val();
                 var result = validator.validate(newText);
                 $input.ntsError('clear');
                 if (result.isValid) {
                     setValue(result.parsedValue);
-                    $input.val(formatter.format(result.parsedValue));
                 } else {
                     $input.ntsError('set', result.errorMessage);
                     setValue(newText);
+                }
+            });
+            
+            // format on blur
+            $input.blur(() => {
+                var validator = this.getValidator(data);
+                var formatter = this.getFormatter(data);
+                var newText = $input.val();
+                var result = validator.validate(newText);
+                if (result.isValid) {
+                    $input.val(formatter.format(result.parsedValue));
                 }
             });
         }
@@ -166,6 +180,16 @@ module nts.uk.ui.koExtentions {
     }
 
     class NumberEditorProcessor extends EditorProcessor {
+        
+        init($input: JQuery, data: any) {
+            var option: any = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
+            
+            $input.focus(() => {
+                $input.val(data.value());
+            });
+            
+            super.init($input, data);
+        }
 
         update($input: JQuery, data: any) {
             super.update($input, data);
@@ -389,6 +413,7 @@ module nts.uk.ui.koExtentions {
             var data = valueAccessor();
             var fields = ko.unwrap(data.fields);
             var searchText = (data.searchText !== undefined) ? ko.unwrap(data.searchText) : "検索";
+            var placeHolder = (data.placeHolder !== undefined) ? ko.unwrap(data.placeHolder) : "コード・名称で検索・・・";
             var selected = data.selected;
             var selectedKey = null;
             if (data.selectedKey) {
@@ -405,6 +430,7 @@ module nts.uk.ui.koExtentions {
             $container.append("<input class='ntsSearchBox' type='text' />");
             $container.append("<button class='search-btn caret-bottom'>" + searchText + "</button>");
             var $input = $container.find("input.ntsSearchBox");
+            $input.attr("placeholder", placeHolder);
             var $button = $container.find("button.search-btn");
             var nextSearch = function() {
                 var filtArr = searchBox.data("searchResult");
@@ -1646,7 +1672,7 @@ module nts.uk.ui.koExtentions {
             $(element).igTreeGrid({
                 width: width,
                 height: height,
-                dataSource: options,
+                dataSource: _.cloneDeep(options),
                 primaryKey: optionsValue,
                 columns: displayColumns,
                 childDataKey: optionsChild,
@@ -2390,8 +2416,9 @@ module nts.uk.ui.koExtentions {
             var currentSource = $grid1.igGrid('option', 'dataSource');
             var currentSelected = $grid2.igGrid('option', 'dataSource');
             var sources = (data.dataSource !== undefined ? data.dataSource() : data.options());
+            var selectedSources = data.value();
             _.remove(sources, function(item) {
-                return _.find(currentSelected, function(selected) {
+                return _.find(selectedSources, function(selected) {
                     return selected[primaryKey] === item[primaryKey];
                 }) !== undefined;
             });
@@ -2400,8 +2427,8 @@ module nts.uk.ui.koExtentions {
                 $grid1.igGrid("dataBind");
             }
 
-            if (!_.isEqual(currentSelected, data.value())) {
-                $grid2.igGrid('option', 'dataSource', data.value().slice());
+            if (!_.isEqual(currentSelected, selectedSources)) {
+                $grid2.igGrid('option', 'dataSource', selectedSources.slice());
                 $grid2.igGrid("dataBind");
             }
         }
