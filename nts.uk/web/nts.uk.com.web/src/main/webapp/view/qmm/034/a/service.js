@@ -6,7 +6,7 @@ var qmm034;
         (function (service) {
             var paths = {
                 getAllEras: "ctx/basic/era/finderas",
-                getEraDetail: "ctx/basic/era/find/{startDate}",
+                getEraDetail: "ctx/basic/era/find/{0}",
                 deleteEra: "ctx/basic/era/deleteData",
                 updateEra: "ctx/basic/era/updateData",
                 addEra: "ctx/basic/era/addData"
@@ -28,13 +28,13 @@ var qmm034;
             /**
              * get a company
              */
-            function getEraDetail() {
+            function getEraDetail(startDate) {
                 var dfd = $.Deferred();
-                nts.uk.request.ajax(paths.getEraDetail)
-                    .done(function (res) {
+                var self = this;
+                var _path = nts.uk.text.format(paths.getEraDetail, startDate);
+                nts.uk.request.ajax(_path).done(function (res) {
                     dfd.resolve(res);
-                })
-                    .fail(function (res) {
+                }).fail(function (res) {
                     dfd.reject(res);
                 });
                 return dfd.promise();
@@ -53,8 +53,8 @@ var qmm034;
             //        return dfd.promise();
             //    }
             /**
-             * delete Data
-             */
+                 * delete Data
+              */
             //    export function deleteData(layoutMaster: model.EraDto){
             //        var dfd = $.Deferred<Array<any>>();  
             //        nts.uk.request.ajax(paths.addCompany, layoutMaster).done(function(res: Array<any>){
@@ -74,10 +74,10 @@ var qmm034;
             //                dfd.resolve(res);
             //            })
             //            .fail(function(res) {
-            //                dfd.reject(res);
+            //                dfd.reject);
             //            })
             //        return dfd.promise();
-            //    }
+            //   }
             function addData(isCreated, command) {
                 var dfd = $.Deferred();
                 var path = isCreated ? paths.addEra : paths.updateEra;

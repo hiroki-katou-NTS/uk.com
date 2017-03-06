@@ -6,61 +6,59 @@ var qmm034;
         (function (viewmodel) {
             var ScreenModel = (function () {
                 function ScreenModel() {
-                    this.constraint = 'LayoutCode';
+                    // là cờ để phân biệt xem đang insert hay đang update
                     this.isUpdate = ko.observable(true);
                     var self = this;
                     self.init();
                     self.currentCode.subscribe(function (codeChanged) {
-                        if (codeChanged !== null) {
+                        if (!nts.uk.text.isNullOrEmpty(codeChanged)) {
+                            //goi Fix_Atr = servicw
                             self.currentEra(self.getEra(codeChanged));
+                            self.getErraAt(self.currentEra().startDate);
                             self.date(new Date(self.currentEra().startDate.toString()));
                             self.inputCode(self.currentEra().code);
                             self.inputName(self.currentEra().name);
                             self.currentCode(self.currentEra().code);
+                            self.isDeleteEnable(true);
+                            self.isEnableCode(true);
+                            if (self.currentEra().fixAttribute === 0) {
+                                self.isEnableCode(false);
+                            }
                         }
                     });
+                    //convert to Japan Emprise year
                     self.dateTime = ko.observable(nts.uk.time.yearInJapanEmpire(self.date()).toString());
                 }
                 ScreenModel.prototype.init = function () {
                     var self = this;
                     self.items = ko.observableArray([]);
-                    self.currentCodeList = ko.observableArray([]);
                     self.columns = ko.observableArray([
-                        { headerText: '元号', prop: 'code', width: 50 },
-                        { headerText: '記号', prop: 'name', width: 50 },
-                        { headerText: '開始年月日', prop: 'startDate', width: 80 },
+                        { headerText: '元号', key: 'code', width: 50 },
+                        { headerText: '記号', key: 'name', width: 50 },
+                        { headerText: '開始年月日', key: 'startDate', width: 80 },
                     ]);
-                    self.currentEra = ko.observable((new EraModel('大明', 'S', new Date("1926/12/25"))));
+                    self.currentEra = ko.observable((new EraModel('大明', 'S', new Date("1926/12/25"), 1)));
                     self.currentCode = ko.observable(null);
                     self.date = ko.observable(new Date());
                     self.dateTime = ko.observable('');
-                    self.eras = ko.observableArray([]);
                     self.inputCode = ko.observable('');
                     self.inputName = ko.observable('');
-                    self.findIndex = ko.observable(0);
-                    self.countItems = ko.observable(0);
-                    self.isSelectdFirstRow = ko.observable(true);
-                    self.isDeleteEnable = ko.observable(true);
+                    self.isDeleteEnable = ko.observable(false);
+                    self.isEnableCode = ko.observable(false);
                 };
                 ScreenModel.prototype.refreshLayout = function () {
                     var self = this;
-                    self.currentEra(new EraModel('', '', new Date()));
+                    self.currentEra(new EraModel('', '', new Date(), 1));
                     self.currentCode(null);
                     self.isUpdate(false);
                     self.inputCode(null);
                     self.inputName(null);
                     self.date(new Date());
+                    self.isDeleteEnable(false);
+                    self.isEnableCode(true);
                 };
                 ScreenModel.prototype.insertData = function () {
                     var self = this;
-                    //let newData = self.currentEra();
-                    //let newEradata = self;
-                    // var x = self.items();
-                    //x.push(newData);
-                    //            if (self.isUpdate() === false) {
-                    //                self.items.push(newData);
-                    //                self.isUpdate = ko.observable(true);
-                    //            }
                     var eraName;
                     eraName = $('#A_INP_001').val();
                     var eraMark;
@@ -89,17 +87,11 @@ var qmm034;
                         alert("you didnt delete!");
                     }
                 };
-                ScreenModel.prototype.selectedItem = function (item) {
-                    var self = this;
-                    self.currentCode(item.code);
-                    return new EraModel(item.code, item.name, item.startDate);
-                };
                 ScreenModel.prototype.reload = function () {
                     var dfd = $.Deferred();
                     var self = this;
-                    $.when(qmm034.a.service.getAllEras()).done(function (data) {
+                    $.when(qmm034.a.service.getEraDetail()).done(function (data) {
                         self.buildGridDataSource(data);
-                        self.currentEra = ko.observable(_.cloneDeep(_.first(self.items())));
                         dfd.resolve();
                     }).fail(function (res) {
                     });
@@ -107,8 +99,6 @@ var qmm034;
                 };
                 ScreenModel.prototype.deleteData = function () {
                     var self = this;
-                    //            let newDel = self.currentEra();
-                    //            self.items.splice(self.items().indexOf(newDel), 1);
                     var eraName;
                     eraName = $('#A_INP_001').val();
                     var eraMark;
@@ -163,16 +153,6 @@ var qmm034;
                     //                        //console.log(self.items());
                     //                    });
                 };
-                ScreenModel.prototype.selectSomeItems = function () {
-                    this.currentCode('150');
-                    this.currentCodeList.removeAll();
-                    this.currentCodeList.push('001');
-                    this.currentCodeList.push('ABC');
-                };
-                ScreenModel.prototype.deselectAll = function () {
-                    this.currentCode(null);
-                    this.currentCodeList.removeAll();
-                };
                 ScreenModel.prototype.start = function () {
                     var self = this;
                     // Page load dfd.
@@ -184,6 +164,17 @@ var qmm034;
                     });
                     return dfd.promise();
                 };
+                ScreenModel.prototype.getErraAt = function (startDate) {
+                    var self = this;
+                    $.when(qmm034.a.service.getEraDetail(startDate)).done(function (data) {
+                        //                if (data.fixAttribute == 1) {
+                        //                    self.isEnableCode(true);
+                        //                } else {
+                        //                    self.isEnableCode(false);
+                        //                }
+                    }).fail(function (res) {
+                    });
+                };
                 ScreenModel.prototype.startPage = function () {
                     var self = this;
                     // Page load dfd.
@@ -191,7 +182,7 @@ var qmm034;
                     // Resolve start page dfd after load all data.
                     $.when(qmm034.a.service.getAllEras()).done(function (data) {
                         self.buildGridDataSource(data);
-                        self.currentEra = ko.observable((new EraModel('大明', 'S', new Date("1926/12/25"))));
+                        self.currentEra = ko.observable((new EraModel('大明', 'S', new Date("1926/12/25"), 1)));
                         if (self.items().length > 0) {
                             self.currentEra = ko.observable(_.cloneDeep(_.first(self.items())));
                             self.currentCode(self.currentEra().code);
@@ -205,32 +196,18 @@ var qmm034;
                     var self = this;
                     self.items([]);
                     _.forEach(items, function (obj) {
-                        self.items.push(new EraModel(obj.eraName, obj.eraMark, obj.startDate));
+                        self.items.push(new EraModel(obj.eraName, obj.eraMark, obj.startDate, obj.fixAttribute));
                     });
                 };
                 return ScreenModel;
             }());
             viewmodel.ScreenModel = ScreenModel;
-            //    class Era{
-            //        eraName: KnockoutObservable<string>;
-            //        eraMark: KnockoutObservable<string>;
-            //        startDateEra: KnockoutObservable<Date>;    
-            //        
-            //        constructor(eraName: string, eraMark: string, startDateEra: Date){
-            //                this.eraName = ko.observable(eraName);
-            //                this.eraMark = ko.observable(eraMark);
-            //                this.startDateEra = ko.observable(startDateEra);
-            //        }
-            //    }
             var EraModel = (function () {
-                // startDateText: string;
-                function EraModel(code, name, startDate) {
+                function EraModel(code, name, startDate, fixAttribute) {
                     this.code = code;
                     this.name = name;
                     this.startDate = startDate;
-                    //this.startDateText = startDate;
-                    //console.log(startDate.year);
-                    //this.startDateText = startDate.toDateString();
+                    this.fixAttribute = fixAttribute;
                 }
                 return EraModel;
             }());

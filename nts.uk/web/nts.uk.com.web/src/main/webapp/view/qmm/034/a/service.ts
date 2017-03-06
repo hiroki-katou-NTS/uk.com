@@ -1,7 +1,7 @@
 module qmm034.a.service {
     var paths = {
         getAllEras: "ctx/basic/era/finderas",
-        getEraDetail: "ctx/basic/era/find/{startDate}",
+        getEraDetail: "ctx/basic/era/find/{0}",
         deleteEra: "ctx/basic/era/deleteData",
         updateEra: "ctx/basic/era/updateData",
         addEra: "ctx/basic/era/addData"
@@ -23,34 +23,33 @@ module qmm034.a.service {
     /**
      * get a company 
      */
-    export function getEraDetail(): JQueryPromise<Array<model.EraDto>> {
-        let dfd = $.Deferred<Array<any>>();
-        nts.uk.request.ajax(paths.getEraDetail)
-            .done(function(res: Array<any>) {
-                dfd.resolve(res);
-            })
-            .fail(function(res) {
-                dfd.reject(res);
+    export function getEraDetail(startDate: Date): JQueryPromise<model.EraDto> {
+        let dfd = $.Deferred<model.EraDto>();
+        let self = this;
+        let _path = nts.uk.text.format(paths.getEraDetail, startDate);
 
-            })
+        nts.uk.request.ajax(_path).done(function(res: model.EraDto) {
+            dfd.resolve(res);
+        }).fail(function(res) {
+            dfd.reject(res);
+        })
         return dfd.promise();
 
     }
     /**
      * add Data
-     */    
-//     export function addData(layoutMaster: model.EraDto) {
-//        var dfd = $.Deferred<Array<any>>();
-//        nts.uk.request.ajax(paths.addEra, layoutMaster).done(function(res: Array<any>) {
-//         dfd.resolve(res);
-//        }).fail(function(res) {
-//            dfd.reject(res);
-//        })
-//        return dfd.promise();
-//    }
+     */
+    //     export function addData(layoutMaster: model.EraDto) {
+    //        var dfd = $.Deferred<Array<any>>();
+    //        nts.uk.request.ajax(paths.addEra, layoutMaster).done(function(res: Array<any>) {
+    //         dfd.resolve(res);
+    //        }).fail(function(res) {
+    //            dfd.reject(res);
+    //        })
+    //        return dfd.promise();
+    //    }
     /**
-     * delete Data
-     */    
+         * delete Data      */
     //    export function deleteData(layoutMaster: model.EraDto){
     //        var dfd = $.Deferred<Array<any>>();  
     //        nts.uk.request.ajax(paths.addCompany, layoutMaster).done(function(res: Array<any>){
@@ -63,18 +62,18 @@ module qmm034.a.service {
     /**
      * update era 
      */
-//    export function updateData(): JQueryPromise<Array<model.EraDto>> {
-//        let dfd = $.Deferred<Array<any>>();
-//        nts.uk.request.ajax(paths.updateEra)
-//            .done(function(res: Array<any>) {
-//                dfd.resolve(res);
-//            })
-//            .fail(function(res) {
-//                dfd.reject(res);
-//            })
-//        return dfd.promise();
-//    }
-    
+    //    export function updateData(): JQueryPromise<Array<model.EraDto>> {
+    //        let dfd = $.Deferred<Array<any>>();
+    //        nts.uk.request.ajax(paths.updateEra)
+    //            .done(function(res: Array<any>) {
+    //                dfd.resolve(res);
+    //            })
+    //            .fail(function(res) {
+    //                dfd.reject);
+    //            })
+    //        return dfd.promise();
+    //   }
+
     export function addData(isCreated, command): JQueryPromise<Array<EraModel>> {
         let dfd = $.Deferred<Array<EraModel>>();
         let path = isCreated ? paths.addEra : paths.updateEra;
@@ -117,7 +116,7 @@ module qmm034.a.service {
             }
         }
     }
-    
+
     export module model {
         export class EraDtoDelete {
             startDate: Date;
@@ -128,5 +127,5 @@ module qmm034.a.service {
             }
         }
     }
-    
+
 }

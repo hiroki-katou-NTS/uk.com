@@ -2,7 +2,7 @@ package nts.uk.ctx.basic.dom.system.era;
 
 import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.StringMaxLength;
-@StringMaxLength(2)
+@StringMaxLength(1)
 public class EraMark extends StringPrimitiveValue<EraMark> {
 	
 	public EraMark(String arg0) {

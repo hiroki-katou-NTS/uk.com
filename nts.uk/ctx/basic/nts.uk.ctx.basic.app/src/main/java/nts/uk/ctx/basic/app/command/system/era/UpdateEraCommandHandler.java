@@ -27,6 +27,7 @@ public class UpdateEraCommandHandler  extends CommandHandler<UpdateEraCommand>{
 //		}
 		Optional<Era> latestEra = this.eraRepository.getLatestEra();
 		latestEra.get().setEndDate(era.getStartDate().addDays(-1));
+		//Optional<Era> eraa = this.eraRepository.getEraDetail(era.getStartDate());
 		this.eraRepository.update(latestEra.get());
 		
 	}
