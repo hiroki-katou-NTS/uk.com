@@ -42,7 +42,7 @@ public class QwtmtWagetableEleHistPK implements Serializable {
 	/** The demension no. */
 	@Basic(optional = false)
 	@Column(name = "DEMENSION_NO")
-	private short demensionNo;
+	private Integer demensionNo;
 
 	/**
 	 * Instantiates a new qwtmt wagetable ele hist PK.
@@ -63,7 +63,7 @@ public class QwtmtWagetableEleHistPK implements Serializable {
 	 * @param demensionNo
 	 *            the demension no
 	 */
-	public QwtmtWagetableEleHistPK(String ccd, String wageTableCd, String histId, short demensionNo) {
+	public QwtmtWagetableEleHistPK(String ccd, String wageTableCd, String histId, Integer demensionNo) {
 		this.ccd = ccd;
 		this.wageTableCd = wageTableCd;
 		this.histId = histId;

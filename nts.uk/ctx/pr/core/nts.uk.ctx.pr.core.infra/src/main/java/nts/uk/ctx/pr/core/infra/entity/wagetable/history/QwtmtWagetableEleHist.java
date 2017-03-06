@@ -77,7 +77,7 @@ public class QwtmtWagetableEleHist implements Serializable {
 	/** The exclus ver. */
 	@Basic(optional = false)
 	@Column(name = "EXCLUS_VER")
-	private int exclusVer;
+	private Integer exclusVer;
 
 	/** The demension upper limit. */
 	// @Max(value=?) @Min(value=?)//if you know range of your decimal fields
@@ -158,7 +158,7 @@ public class QwtmtWagetableEleHist implements Serializable {
 	 * @param demensionNo
 	 *            the demension no
 	 */
-	public QwtmtWagetableEleHist(String ccd, String wageTableCd, String histId, short demensionNo) {
+	public QwtmtWagetableEleHist(String ccd, String wageTableCd, String histId, Integer demensionNo) {
 		this.qwtmtWagetableEleHistPK = new QwtmtWagetableEleHistPK(ccd, wageTableCd, histId,
 				demensionNo);
 	}
