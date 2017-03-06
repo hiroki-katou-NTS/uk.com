@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.pr.core.app.insurance.social.pensionrate.command;
 
 import javax.ejb.Stateless;
@@ -12,13 +16,10 @@ public class DeletePensionCommandHandler extends CommandHandler<DeletePensionCom
 
 	/** The pension rate repository. */
 	@Inject
-	PensionRateRepository pensionRateRepository;
+	private PensionRateRepository pensionRateRepository;
 
 	@Override
 	protected void handle(CommandHandlerContext<DeletePensionCommand> command) {
-		// Get the current company code.
-		// String companyCode = AppContexts.user().companyCode();
-		// String officeCode = command.getCommand().getOfficeCode();
 		String historyId = command.getCommand().getHistoryId();
 		
 		pensionRateRepository.remove(historyId);

@@ -51,17 +51,17 @@ public class UpdateHealthInsuranceCommandHandler extends CommandHandler<UpdateHe
 		{
 			throw new BusinessException("ER010");
 		}
-		// Transfer data
-		HealthInsuranceRate updatedHealthInsuranceRate = command.toDomain(companyCode,
-				findhealthInsuranceRate.getHistoryId(), findhealthInsuranceRate.getOfficeCode());
+		else {
+			// Transfer data
+			HealthInsuranceRate updatedHealthInsuranceRate = command.toDomain(companyCode,
+					findhealthInsuranceRate.getHistoryId(), findhealthInsuranceRate.getOfficeCode());
+			// Validate
+			healthInsuranceRateService.validateRequiredItem(updatedHealthInsuranceRate);
+			healthInsuranceRateService.validateDateRange(updatedHealthInsuranceRate);
 
-		// Validate
-		healthInsuranceRateService.validateRequiredItem(updatedHealthInsuranceRate);
-		healthInsuranceRateService.validateDateRange(updatedHealthInsuranceRate);
-
-		// Update to db.
-		healthInsuranceRateRepository.update(updatedHealthInsuranceRate);
-
+			// Update to db.
+			healthInsuranceRateRepository.update(updatedHealthInsuranceRate);
+		}
 	}
 
 }
