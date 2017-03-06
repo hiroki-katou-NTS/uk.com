@@ -425,6 +425,9 @@ var nts;
                      * Init.
                      */
                     NtsSearchBoxBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        var INPUT_PADDING_RIGHT = 20;
+                        var INPUT_PADDING_LEFT = 40;
+                        var INPUT_BORDER = 2;
                         var searchBox = $(element);
                         var data = valueAccessor();
                         var fields = ko.unwrap(data.fields);
@@ -448,6 +451,7 @@ var nts;
                         var $input = $container.find("input.ntsSearchBox");
                         $input.attr("placeholder", placeHolder);
                         var $button = $container.find("button.search-btn");
+                        $input.outerWidth($container.width() - $button.width() - 30);
                         var nextSearch = function () {
                             var filtArr = searchBox.data("searchResult");
                             var compareKey = fields[0];
