@@ -8,7 +8,7 @@ __viewContext.ready(function () {
             }
             this.itemsSwap(array);
             this.columns = ko.observableArray([
-                { headerText: '繧ｳ繝ｼ繝・, key: ', code: ', width: 100 }, },
+                { headerText: '繧ｳ繝ｼ繝・', key: 'code', width: 100 },
                 { headerText: '蜷咲ｧｰ', key: 'name', width: 150 }
             ]);
             var x = [];
