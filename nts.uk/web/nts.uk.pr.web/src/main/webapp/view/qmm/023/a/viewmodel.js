@@ -7,7 +7,7 @@ var qmm023;
             var ScreenModel = (function () {
                 function ScreenModel() {
                     var self = this;
-                    self.init();
+                    self._init();
                     //get event when hover on table by subcribe
                     self.currentCode.subscribe(function (codeChanged) {
                         if (!nts.uk.text.isNullOrEmpty(codeChanged)) {
@@ -21,7 +21,7 @@ var qmm023;
                         }
                     });
                 }
-                ScreenModel.prototype.init = function () {
+                ScreenModel.prototype._init = function () {
                     var self = this;
                     self.items = ko.observableArray([]);
                     this.columns = ko.observableArray([
@@ -54,30 +54,40 @@ var qmm023;
                     self.currentCode(null);
                     self.isUpdate(false);
                     self.isEnableDeleteBtn(false);
+                    $('.save-error').ntsError('clear');
                 };
                 ScreenModel.prototype.insertUpdateData = function () {
                     var self = this;
-                    if (nts.uk.text.isNullOrEmpty(self.currentTax().code())) {
+                    var newCode = ko.mapping.toJS(self.currentTax().code);
+                    if (nts.uk.text.isNullOrEmpty(newCode)) {
                         return;
                     }
-                    var insertUpdateModel = new InsertUpdateModel(nts.uk.text.padLeft(self.currentTax().code(), '0', 2), self.currentTax().name, self.currentTax().taxLimit);
+                    var insertUpdateModel = new InsertUpdateModel(nts.uk.text.padLeft(newCode, '0', 2), self.currentTax().name, self.currentTax().taxLimit);
                     a.service.insertUpdateData(self.isUpdate(), insertUpdateModel).done(function () {
                         $.when(self.getCommuteNoTaxLimitList()).done(function () {
-                            self.currentCode(nts.uk.text.padLeft(self.currentTax().code(), '0', 2));
+                            self.currentCode(nts.uk.text.padLeft(newCode, '0', 2));
                         });
                         if (self.isUpdate() === false) {
                             self.isUpdate(true);
                             self.allowEditCode(false);
                         }
                     }).fail(function (error) {
-                        alert(error.message);
+                        if (error.message === '1') {
+                            $('#INP_002').ntsError('set', nts.uk.text.format('{0}が入力されていません。', 'コード'));
+                        }
+                        else if (error.message === '2') {
+                            $('#INP_003').ntsError('set', nts.uk.text.format('{0}が入力されていません。', '名称'));
+                        }
+                        else {
+                            $('#INP_002').ntsError('set', nts.uk.text.format('入力した{0}は既に存在しています。\r\n{1}を確認してください。', 'コード', 'コード'));
+                        }
                     });
                 };
                 ScreenModel.prototype.deleteData = function () {
                     var self = this;
-                    var deleteCode = self.currentTax().code();
+                    var deleteCode = ko.mapping.toJS(self.currentTax().code);
                     a.service.deleteData(new DeleteModel(deleteCode)).done(function () {
-                        var indexItemDelete = _.findIndex(self.items(), function (item) { return item.code == self.currentTax().code(); });
+                        var indexItemDelete = _.findIndex(self.items(), function (item) { return item.code == deleteCode; });
                         $.when(self.getCommuteNoTaxLimitList()).done(function () {
                             if (self.items().length === 0) {
                                 self.allowEditCode(true);
@@ -99,6 +109,7 @@ var qmm023;
                             }
                         });
                     }).fail(function (error) {
+                        alert(error.message);
                     });
                 };
                 ScreenModel.prototype.alertDelete = function () {
@@ -121,7 +132,8 @@ var qmm023;
                             self.currentCode(self.currentTax().code);
                         }
                         dfd.resolve();
-                    }).fail(function (res) {
+                    }).fail(function (error) {
+                        alert(error.message);
                     });
                     return dfd.promise();
                 };
@@ -135,6 +147,7 @@ var qmm023;
                         });
                         dfd.resolve(data);
                     }).fail(function (error) {
+                        alert(error.message);
                     });
                     return dfd.promise();
                 };

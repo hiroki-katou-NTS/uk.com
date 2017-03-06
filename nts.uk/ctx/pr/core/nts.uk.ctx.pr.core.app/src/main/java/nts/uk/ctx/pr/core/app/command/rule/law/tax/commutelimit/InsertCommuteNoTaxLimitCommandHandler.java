@@ -1,9 +1,12 @@
 package nts.uk.ctx.pr.core.app.command.rule.law.tax.commutelimit;
 
+import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.pr.core.dom.rule.law.tax.commutelimit.CommuNoTaxLimitCode;
@@ -25,6 +28,18 @@ public class InsertCommuteNoTaxLimitCommandHandler extends CommandHandler<Insert
 		// get context
 		String companyCode = AppContexts.user().companyCode();
 		InsertCommuteNoTaxLimitCommand ic = context.getCommand();
+		if(context.getCommand().getCommuNoTaxLimitCode() == null ||context.getCommand().getCommuNoTaxLimitCode().isEmpty()){
+			throw new BusinessException("1");
+		}
+		if(context.getCommand().getCommuNoTaxLimitName() == null || context.getCommand().getCommuNoTaxLimitName().isEmpty()){
+			throw new BusinessException("2");
+		}		
+		
+		Optional<CommuteNoTaxLimit> exitCommuteNoTaxLimit =  this.repository.getCommuteNoTaxLimit(companyCode, ic.getCommuNoTaxLimitCode());
+		
+		if(exitCommuteNoTaxLimit.isPresent()){
+			throw new BusinessException("3");
+		}
 		CommuteNoTaxLimit commuteNoTaxLimit = new CommuteNoTaxLimit(
 				companyCode,
 				new CommuNoTaxLimitCode(ic.getCommuNoTaxLimitCode()), 
