@@ -46,12 +46,11 @@ var cmm015;
                     self.INP_003_name("");
                     self.INP_004_notes("");
                     self.currentCode(null);
-                    $("#test input").val("");
+                    $("#A_INP_002").focus();
                 };
                 ScreenModel.prototype.checkInput = function () {
                     var self = this;
                     if (self.INP_002_code() == '' || self.INP_003_name() == '') {
-                        console.log("input is null");
                         return false;
                     }
                     else {
@@ -62,22 +61,29 @@ var cmm015;
                     var self = this;
                     var dfd = $.Deferred();
                     if (self.checkInput()) {
-                        console.log("");
+                        if (self.dataSource().length === 0) {
+                            var payClassification = new viewmodel.model.PayClassificationDto(self.INP_002_code(), self.INP_003_name(), self.INP_004_notes());
+                            a.service.addPayClassification(payClassification).done(function () {
+                                self.getPayClassificationList_first();
+                            }).fail(function (res) {
+                                dfd.reject(res);
+                            });
+                        }
                         for (var i = 0; i < self.dataSource().length; i++) {
                             if (self.INP_002_code() == self.dataSource()[i].payClassificationCode) {
-                                var payclassification_old = self.dataSource()[i];
-                                var payclassification_update = new viewmodel.model.PayClassificationDto(self.INP_002_code(), self.INP_003_name(), self.INP_004_notes());
-                                a.service.updatePayClassification(payclassification_update).done(function () {
-                                    self.getPayClassificationList();
+                                var payClassification_before = self.dataSource()[i];
+                                var payClassification_update = new viewmodel.model.PayClassificationDto(self.INP_002_code(), self.INP_003_name(), self.INP_004_notes());
+                                a.service.updatePayClassification(payClassification_update).done(function () {
+                                    self.getPayClassificationList_afterUpdate();
                                 }).fail(function (res) {
                                     dfd.reject(res);
                                 });
                                 break;
                             }
                             else if (self.INP_002_code() != self.dataSource()[i].payClassificationCode && i == self.dataSource().length - 1) {
-                                var classification_new = new viewmodel.model.PayClassificationDto(self.INP_002_code(), self.INP_003_name(), self.INP_004_notes());
-                                a.service.addPayClassification(classification_new).done(function () {
-                                    self.getPayClassificationList();
+                                var payClassification_new = new viewmodel.model.PayClassificationDto(self.INP_002_code(), self.INP_003_name(), self.INP_004_notes());
+                                a.service.addPayClassification(payClassification_new).done(function () {
+                                    self.getPayClassificationList_afterAdd();
                                 }).fail(function (res) {
                                     dfd.reject(res);
                                 });
@@ -108,15 +114,47 @@ var cmm015;
                             self.INP_003_name(self.dataSource()[0].payClassificationName);
                             self.INP_004_notes(self.dataSource()[0].memo);
                             self.currentCode(self.dataSource()[0].payClassificationCode);
-                            dfd.resolve();
                         }
+                        else {
+                            self.initRegisterPayClassification();
+                        }
+                        dfd.resolve();
                     }).fail(function (error) {
                         alert(error.message);
                     });
                     dfd.resolve();
                     return dfd.promise();
                 };
-                ScreenModel.prototype.getClassificationList_first = function () {
+                ScreenModel.prototype.getPayClassificationList_aftefDelete = function () {
+                    var self = this;
+                    var dfd = $.Deferred();
+                    a.service.getAllPayClassification().done(function (payClassification_arr) {
+                        self.dataSource(payClassification_arr);
+                        if (self.dataSource().length > 0) {
+                            if (self.index_of_itemDelete === self.dataSource().length) {
+                                self.currentCode(self.dataSource()[self.index_of_itemDelete - 1].payClassificationCode);
+                                self.INP_002_code(self.dataSource()[self.index_of_itemDelete - 1].payClassificationCode);
+                                self.INP_003_name(self.dataSource()[self.index_of_itemDelete - 1].payClassificationName);
+                                self.INP_004_notes(self.dataSource()[self.index_of_itemDelete - 1].memo);
+                            }
+                            else {
+                                self.currentCode(self.dataSource()[self.index_of_itemDelete].payClassificationCode);
+                                self.INP_002_code(self.dataSource()[self.index_of_itemDelete].payClassificationCode);
+                                self.INP_003_name(self.dataSource()[self.index_of_itemDelete].payClassificationName);
+                                self.INP_004_notes(self.dataSource()[self.index_of_itemDelete].memo);
+                            }
+                        }
+                        else {
+                            self.initRegisterPayClassification();
+                        }
+                        dfd.resolve();
+                    }).fail(function (error) {
+                        alert(error.message);
+                    });
+                    dfd.resolve();
+                    return dfd.promise();
+                };
+                ScreenModel.prototype.getPayClassificationList_first = function () {
                     var self = this;
                     var dfd = $.Deferred();
                     a.service.getAllPayClassification().done(function (payClassification_arr) {
@@ -186,35 +224,6 @@ var cmm015;
                         if (self.dataSource().length > 1) {
                             var i = self.dataSource().length - 1;
                             self.currentCode(self.dataSource()[i].payClassificationCode);
-                        }
-                        dfd.resolve();
-                    }).fail(function (error) {
-                        alert(error.message);
-                    });
-                    dfd.resolve();
-                    return dfd.promise();
-                };
-                ScreenModel.prototype.getPayClassificationList_aftefDelete = function () {
-                    var self = this;
-                    var dfd = $.Deferred();
-                    a.service.getAllPayClassification().done(function (payClassification_arr) {
-                        self.dataSource(payClassification_arr);
-                        if (self.dataSource().length > 0) {
-                            if (self.index_of_itemDelete === self.dataSource().length) {
-                                self.currentCode(self.dataSource()[self.index_of_itemDelete - 1].payClassificationCode);
-                                self.INP_002_code(self.dataSource()[self.index_of_itemDelete - 1].payClassificationCode);
-                                self.INP_003_name(self.dataSource()[self.index_of_itemDelete - 1].payClassificationName);
-                                self.INP_004_notes(self.dataSource()[self.index_of_itemDelete - 1].memo);
-                            }
-                            else {
-                                self.currentCode(self.dataSource()[self.index_of_itemDelete].payClassificationCode);
-                                self.INP_002_code(self.dataSource()[self.index_of_itemDelete].payClassificationCode);
-                                self.INP_003_name(self.dataSource()[self.index_of_itemDelete].payClassificationName);
-                                self.INP_004_notes(self.dataSource()[self.index_of_itemDelete].memo);
-                            }
-                        }
-                        else {
-                            self.initRegisterPayClassification();
                         }
                         dfd.resolve();
                     }).fail(function (error) {

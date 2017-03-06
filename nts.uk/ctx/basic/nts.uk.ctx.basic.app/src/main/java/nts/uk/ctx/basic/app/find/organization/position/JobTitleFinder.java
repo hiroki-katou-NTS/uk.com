@@ -24,6 +24,7 @@ public class JobTitleFinder {
 	private JobTitleDto convertToDto(JobTitle position) {
 		JobTitleDto positionDto = new JobTitleDto();
 		positionDto.setJobCode(position.getJobCode().v());
+		positionDto.setJobName(position.getJobName().v());
 		positionDto.setHistoryId(position.getHistoryId());
 		positionDto.setMemo(position.getMemo().v());
 		positionDto.setJobOutCode(position.getJobOutCode().v());
