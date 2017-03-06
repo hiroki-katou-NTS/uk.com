@@ -9,8 +9,10 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.uk.ctx.pr.report.dom.company.CompanyCode;
 import nts.uk.ctx.pr.report.dom.wageledger.aggregate.WLAggregateItemCode;
 import nts.uk.ctx.pr.report.dom.wageledger.aggregate.WLAggregateItemRepository;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class AggregateItemRemoveCommandHandler.
@@ -27,7 +29,8 @@ public class AggregateItemRemoveCommandHandler extends CommandHandler<AggregateI
 	 */
 	@Override
 	protected void handle(CommandHandlerContext<AggregateItemRemoveCommand> context) {
-		this.repository.remove(new WLAggregateItemCode(context.getCommand().getCode()));
+		CompanyCode companyCode = new CompanyCode(AppContexts.user().companyCode());
+		this.repository.remove(new WLAggregateItemCode(context.getCommand().getCode()), companyCode);
 	}
 
 }

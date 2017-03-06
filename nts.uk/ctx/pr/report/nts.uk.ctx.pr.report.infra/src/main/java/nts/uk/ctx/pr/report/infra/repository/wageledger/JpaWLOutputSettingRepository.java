@@ -60,14 +60,14 @@ public class JpaWLOutputSettingRepository extends JpaRepository implements WLOut
 		Optional<QlsptLedgerFormHead> entity = this.queryProxy().find(
 				new QlsptLedgerFormHeadPK(outputSetting.getCompanyCode().v(), outputSetting.getCode().v()),
 				QlsptLedgerFormHead.class);
-		if (!entity.isPresent()) {
-			throw new RuntimeException("Cannot update entity not exist!");
+		if (entity.isPresent()) {
+			QlsptLedgerFormHead realEntity = entity.get();
+			// Convert to Memento;
+			outputSetting.saveToMemento(new JpaWLOutputSettingSetMemento(realEntity));
+			// Update to db.
+			this.commandProxy().update(realEntity);
 		}
-		QlsptLedgerFormHead realEntity = entity.get();
-		// Convert to Memento;
-		outputSetting.saveToMemento(new JpaWLOutputSettingSetMemento(realEntity));
-		// Update to db.
-		this.commandProxy().update(realEntity);
+		throw new RuntimeException("Cannot update entity not exist!");
 	}
 
 	/*
@@ -81,10 +81,9 @@ public class JpaWLOutputSettingRepository extends JpaRepository implements WLOut
 	public void remove(WLOutputSettingCode code, CompanyCode companyCode) {
 		Optional<QlsptLedgerFormHead> entity = this.queryProxy()
 				.find(new QlsptLedgerFormHeadPK(companyCode.v(), code.v()), QlsptLedgerFormHead.class);
-		if (!entity.isPresent()) {
-			return;
+		if (entity.isPresent()) {
+			this.commandProxy().remove(entity.get());
 		}
-		this.commandProxy().remove(entity.get());
 	}
 
 	/*
@@ -99,12 +98,12 @@ public class JpaWLOutputSettingRepository extends JpaRepository implements WLOut
 		Optional<QlsptLedgerFormHead> entity = this.queryProxy()
 				.find(new QlsptLedgerFormHeadPK(companyCode.v(), code.v()), QlsptLedgerFormHead.class);
 
-		if (!entity.isPresent()) {
-			throw new RuntimeException("Not found entity.");
+		if (entity.isPresent()) {
+			// To Domain.
+			return new WLOutputSetting(new JpaWLOutputSettingGetMemento(entity.get()));
 		}
 
-		// To Domain.
-		return new WLOutputSetting(new JpaWLOutputSettingGetMemento(entity.get()));
+		throw new RuntimeException("Not found entity.");
 	}
 
 	/*
