@@ -212,9 +212,6 @@ var nts;
                                                 self.pensionOfficeSelectedCode(self.pensionInsuranceOfficeList()[0].childs[0].code);
                                             self.pensionCurrentParentCode(self.pensionInsuranceOfficeList()[0].code);
                                         }
-                                        else {
-                                            self.OpenModalOfficeRegister();
-                                        }
                                     });
                                     return dfd.promise();
                                 };

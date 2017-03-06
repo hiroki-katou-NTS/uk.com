@@ -46,7 +46,6 @@ public class RegisterHealthInsuranceCommand extends HealthInsuranceBaseCommand {
 
 			@Override
 			public Set<HealthInsuranceRounding> getRoundingMethods() {
-				// TODO convert command -> domain
 				if (command.getRoundingMethods().isEmpty()) {
 					return null;
 				}
@@ -55,7 +54,6 @@ public class RegisterHealthInsuranceCommand extends HealthInsuranceBaseCommand {
 
 			@Override
 			public Set<InsuranceRateItem> getRateItems() {
-				// TODO convert command -> domain
 				return new HashSet<InsuranceRateItem>(command.getRateItems().stream()
 						.map(dto -> new InsuranceRateItem(dto.getPayType(), dto.getInsuranceType(),
 								new HealthChargeRateItem(new Ins3Rate(dto.getChargeRate().getCompanyRate()),

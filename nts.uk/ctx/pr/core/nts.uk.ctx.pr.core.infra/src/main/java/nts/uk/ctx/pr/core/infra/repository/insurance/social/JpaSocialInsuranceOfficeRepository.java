@@ -16,6 +16,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+import nts.arc.error.BusinessException;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.ListUtil;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
@@ -96,7 +97,7 @@ public class JpaSocialInsuranceOfficeRepository extends JpaRepository implements
 			entity = result.get(0);
 			em.remove(entity);
 		} else {
-			// TODO not found delete element
+			throw new BusinessException("ER010");
 		}
 	}
 
@@ -138,7 +139,7 @@ public class JpaSocialInsuranceOfficeRepository extends JpaRepository implements
 	@Override
 	public Optional<SocialInsuranceOffice> findById(String id) {
 		// TODO Mock data to send service
-		return Optional.of(null);
+		return null;
 	}
 
 	/*
@@ -167,7 +168,7 @@ public class JpaSocialInsuranceOfficeRepository extends JpaRepository implements
 		List<QismtSocialInsuOffice> result = em.createQuery(cq).getResultList();
 		// If have no record.
 		if (ListUtil.isEmpty(result)) {
-			return Optional.of(null);
+			return null;
 		}
 		// Return
 		SocialInsuranceOffice socialInsuranceOffice = new SocialInsuranceOffice(new JpaSocialInsuranceOfficeGetMemento(result.get(0)));

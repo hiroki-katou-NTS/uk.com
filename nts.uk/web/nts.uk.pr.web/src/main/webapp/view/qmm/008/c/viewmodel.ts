@@ -67,9 +67,9 @@ module nts.uk.pr.view.qmm008.c {
                         self.deleteButtonControll(true);
                         //                        alert(officeSelectedCode);
                         $.when(self.load(selectedOfficeCode)).done(function() {
-                            //TODO load data success
+                            //load data success
                         }).fail(function(res) {
-                            //TODO when load data error
+                            //when load data error
                         });
                     }
                 });
@@ -184,9 +184,9 @@ module nts.uk.pr.view.qmm008.c {
             private updateOffice() {
                 var self = this;
                 service.update(self.collectData()).done(function() {
-                    //TODO when update done   
+                    //when update done   
                 }).fail(function() {
-                    //TODO if update fail    
+                    //update fail    
                 });
             }
 
@@ -194,9 +194,9 @@ module nts.uk.pr.view.qmm008.c {
             private registerOffice() {
                 var self = this;
                 service.register(self.collectData()).done(function() {
-                    //TODO when register done   
+                    // when register done   
                 }).fail(function() {
-                    //TODO if register fail    
+                    // if register fail    
                 });
             }
 
@@ -208,7 +208,7 @@ module nts.uk.pr.view.qmm008.c {
                         //if remove success
                             
                     }).fail(function() {
-                        //TODO if remove fail    
+                        // if remove fail    
                     });
                     
                     //reload list

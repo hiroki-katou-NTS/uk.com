@@ -24,7 +24,6 @@ import nts.uk.shr.com.context.AppContexts;
  * The Class LaborInsuranceOfficeFinder.
  */
 @Stateless
-@Transactional
 public class LaborInsuranceOfficeFinder {
 
 	/** The labor insurance office repository. */

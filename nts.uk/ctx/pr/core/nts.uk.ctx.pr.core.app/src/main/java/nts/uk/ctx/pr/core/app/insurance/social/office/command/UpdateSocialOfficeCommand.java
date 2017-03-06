@@ -29,8 +29,7 @@ public class UpdateSocialOfficeCommand extends SocialOfficeBaseCommand {
 	/**
 	 * To domain.
 	 *
-	 * @param companyCode
-	 *            the company code
+	 * @param companyCode the company code
 	 * @return the social insurance office
 	 */
 	public SocialInsuranceOffice toDomain(CompanyCode companyCode) {

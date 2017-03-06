@@ -18,6 +18,7 @@ var nts;
                                 addLaborInsuranceOffice: "ctx/pr/core/insurance/labor/add",
                                 updateLaborInsuranceOffice: "ctx/pr/core/insurance/labor/update",
                                 deleteLaborInsuranceOffice: "ctx/pr/core/insurance/labor/delete",
+                                findAllSocialInsuranceOffice: "pr/insurance/social/findall/detail"
                             };
                             function findAllLaborInsuranceOffice() {
                                 var dfd = $.Deferred();
@@ -31,6 +32,18 @@ var nts;
                                 return dfd.promise();
                             }
                             service.findAllLaborInsuranceOffice = findAllLaborInsuranceOffice;
+                            function findAllSocialInsuranceOffice() {
+                                var dfd = $.Deferred();
+                                nts.uk.request.ajax(paths.findAllSocialInsuranceOffice)
+                                    .done(function (res) {
+                                    dfd.resolve(res);
+                                })
+                                    .fail(function (res) {
+                                    dfd.reject(res);
+                                });
+                                return dfd.promise();
+                            }
+                            service.findAllSocialInsuranceOffice = findAllSocialInsuranceOffice;
                             function findLaborInsuranceOffice(officeCode) {
                                 var dfd = $.Deferred();
                                 nts.uk.request.ajax(paths.findLaborInsuranceOffice + "/" + officeCode)
@@ -49,8 +62,7 @@ var nts;
                                 nts.uk.request.ajax(paths.addLaborInsuranceOffice, data)
                                     .done(function (res) {
                                     dfd.resolve(res);
-                                })
-                                    .fail(function (res) {
+                                }).fail(function (res) {
                                     dfd.reject(res);
                                 });
                                 return dfd.promise();
@@ -62,8 +74,7 @@ var nts;
                                 nts.uk.request.ajax(paths.updateLaborInsuranceOffice, data)
                                     .done(function (res) {
                                     dfd.resolve(res);
-                                })
-                                    .fail(function (res) {
+                                }).fail(function (res) {
                                     dfd.reject(res);
                                 });
                                 return dfd.promise();
@@ -75,8 +86,7 @@ var nts;
                                 nts.uk.request.ajax(paths.deleteLaborInsuranceOffice, data)
                                     .done(function (res) {
                                     dfd.resolve(res);
-                                })
-                                    .fail(function (res) {
+                                }).fail(function (res) {
                                     dfd.reject(res);
                                 });
                                 return dfd.promise();

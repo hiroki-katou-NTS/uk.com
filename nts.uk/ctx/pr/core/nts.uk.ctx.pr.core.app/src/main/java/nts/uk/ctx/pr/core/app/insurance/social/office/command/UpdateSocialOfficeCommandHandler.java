@@ -10,6 +10,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.core.dom.company.CompanyCode;
@@ -50,17 +51,17 @@ public class UpdateSocialOfficeCommandHandler extends CommandHandler<UpdateSocia
 		// Convert Dto to Domain
 		SocialInsuranceOffice socialInsuranceOffice = command.toDomain(companyCode);
 
-		// TODO validate
+		//validate
 		socialInsuranceOfficeService.validateRequiredItem(socialInsuranceOffice);
 
 		Optional<SocialInsuranceOffice> findOffice = socialInsuranceOfficeRepository
-				.findById(command.getCode().toString());
-		if (findOffice.get() != null) {
-			// TODO show error message
+				.findByOfficeCode(command.getCode().toString());
+		if (findOffice.get() == null) {
+			throw new BusinessException("ER010");
 		} else {
 			socialInsuranceOfficeRepository.update(socialInsuranceOffice);
 		}
-		// TODO return item update
+		
 		return;
 	}
 

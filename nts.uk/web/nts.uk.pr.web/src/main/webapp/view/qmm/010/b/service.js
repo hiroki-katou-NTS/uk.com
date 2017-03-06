@@ -13,25 +13,12 @@ var nts;
                         var service;
                         (function (service) {
                             var paths = {
-                                findAllSocialInsuranceOffice: "pr/insurance/social/findall/detail",
                                 checkDuplicateCodeByImportData: "ctx/pr/core/insurance/labor/importser/checkDuplicateCode",
                                 importData: "ctx/pr/core/insurance/labor/importser/importData"
                             };
-                            function findAllSocialInsuranceOffice() {
+                            function checkDuplicateCodeByImportData(socialInsuranceOfficeImportDto) {
                                 var dfd = $.Deferred();
-                                nts.uk.request.ajax(paths.findAllSocialInsuranceOffice)
-                                    .done(function (res) {
-                                    dfd.resolve(res);
-                                })
-                                    .fail(function (res) {
-                                    dfd.reject(res);
-                                });
-                                return dfd.promise();
-                            }
-                            service.findAllSocialInsuranceOffice = findAllSocialInsuranceOffice;
-                            function checkDuplicateCodeByImportData(lstSocialInsuranceOfficeImportDto) {
-                                var dfd = $.Deferred();
-                                nts.uk.request.ajax(paths.checkDuplicateCodeByImportData, lstSocialInsuranceOfficeImportDto)
+                                nts.uk.request.ajax(paths.checkDuplicateCodeByImportData, socialInsuranceOfficeImportDto)
                                     .done(function (res) {
                                     dfd.resolve(res);
                                 })
@@ -69,7 +56,7 @@ var nts;
                                 model.LaborInsuranceOfficeImportOutDto = LaborInsuranceOfficeImportOutDto;
                                 var LaborInsuranceOfficeImportDto = (function () {
                                     function LaborInsuranceOfficeImportDto() {
-                                        this.lstSocialInsuranceOfficeImport = [];
+                                        this.socialInsuranceOfficeImport = new SocialInsuranceOfficeImportDto();
                                         this.checkUpdateDuplicateCode = 0;
                                     }
                                     return LaborInsuranceOfficeImportDto;

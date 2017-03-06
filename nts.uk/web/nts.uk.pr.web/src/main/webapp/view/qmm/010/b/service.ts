@@ -1,29 +1,14 @@
 module nts.uk.pr.view.qmm010.b {
     export module service {
         var paths: any = {
-            findAllSocialInsuranceOffice: "pr/insurance/social/findall/detail",
             checkDuplicateCodeByImportData: "ctx/pr/core/insurance/labor/importser/checkDuplicateCode",
             importData: "ctx/pr/core/insurance/labor/importser/importData"
         };
 
-        //Function connection service FindAll Social Insurance Office Service
-        export function findAllSocialInsuranceOffice(): JQueryPromise<Array<model.SocialInsuranceOfficeImportDto>> {
-            var dfd = $.Deferred<Array<model.SocialInsuranceOfficeImportDto>>();
-            nts.uk.request.ajax(paths.findAllSocialInsuranceOffice)
-                .done(function(res: Array<model.SocialInsuranceOfficeImportDto>) {
-                    dfd.resolve(res);
-                    //xyz
-                })
-                .fail(function(res) {
-                    dfd.reject(res);
-                })
-            return dfd.promise();
-        }
-
         //Function connnection service check Duplicate Code By ImportData
-        export function checkDuplicateCodeByImportData(lstSocialInsuranceOfficeImportDto: model.SocialInsuranceOfficeImportDto[]): JQueryPromise<model.LaborInsuranceOfficeCheckImportDto> {
+        export function checkDuplicateCodeByImportData(socialInsuranceOfficeImportDto: model.SocialInsuranceOfficeImportDto): JQueryPromise<model.LaborInsuranceOfficeCheckImportDto> {
             var dfd = $.Deferred<model.LaborInsuranceOfficeCheckImportDto>();
-            nts.uk.request.ajax(paths.checkDuplicateCodeByImportData, lstSocialInsuranceOfficeImportDto)
+            nts.uk.request.ajax(paths.checkDuplicateCodeByImportData, socialInsuranceOfficeImportDto)
                 .done(function(res: model.LaborInsuranceOfficeCheckImportDto) {
                     dfd.resolve(res);
                     //xyz
@@ -134,10 +119,10 @@ module nts.uk.pr.view.qmm010.b {
             }
 
             export class LaborInsuranceOfficeImportDto {
-                lstSocialInsuranceOfficeImport: SocialInsuranceOfficeImportDto[];
+                socialInsuranceOfficeImport: SocialInsuranceOfficeImportDto;
                 checkUpdateDuplicateCode: number; //0 update //1 none update
                 constructor() {
-                    this.lstSocialInsuranceOfficeImport = [];
+                    this.socialInsuranceOfficeImport = new SocialInsuranceOfficeImportDto();
                     this.checkUpdateDuplicateCode = 0;
                 }
             }

@@ -35,13 +35,13 @@
 			<div id="tabpanel-1" role="tabpanel">
 				<div class="sidebar-content-header">
 					<span class="title">健康保険</span>
-					<button data-bind="click: save" class="proceed">登録</button>
+					<button data-bind="click: save,enable: isClickHealthHistory()" class="proceed">登録</button>
 					<button >印刷(PDF)</button>
-					<button data-bind="click: OpenModalStandardMonthlyPriceHealth">標準報酬月額保険料額表</button>
+					<button data-bind="click: OpenModalStandardMonthlyPriceHealth,enable: isClickHealthHistory()">標準報酬月額保険料額表</button>
 					<button data-bind="click: OpenModalOfficeRegister">事業所登録</button>
 					<button>マスタ修正登録</button>
 				</div>
-				<div class="contents-area">
+				<div class="contents-area" id="health_panel">
 					<!-- left -->
 					<div class="bg-green caret-right caret-background"
 						style="float: left; width: 350px; height: 100%; margin: 20px 50px;">
@@ -295,13 +295,13 @@
 			<div id="tabpanel-2" role="tabpanel">
 				<div class="sidebar-content-header">
 					<span class="title">厚生年金</span>
-					<button data-bind="click: save" class="proceed">登録</button>
+					<button data-bind="click: save,enable: isClickPensionHistory()" class="proceed">登録</button>
 					<button>印刷(PDF)</button>
-					<button data-bind="click: OpenModalStandardMonthlyPricePension">標準報酬月額保険料額表</button>
+					<button data-bind="click: OpenModalStandardMonthlyPricePension,enable: isClickPensionHistory()">標準報酬月額保険料額表</button>
 					<button data-bind="click: OpenModalOfficeRegister">事業所登録</button>
 					<button>マスタ修正登録</button>
 				</div>
-				<div class="contents-area">
+				<div class="contents-area" id="pension_panel">
 					<!-- left -->
 					<div class="bg-green caret-right caret-background"
 						style="float: left; width: 350px; height: 100%; margin: 20px 50px;">
