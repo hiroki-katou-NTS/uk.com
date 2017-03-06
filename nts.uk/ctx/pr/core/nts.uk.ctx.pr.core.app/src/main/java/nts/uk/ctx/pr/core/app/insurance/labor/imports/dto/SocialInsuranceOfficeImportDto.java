@@ -142,22 +142,26 @@ public class SocialInsuranceOfficeImportDto {
 
 			@Override
 			public String getOfficeNoC() {
-				return dto.healthInsuCityCode;
+				return null;
+				//return dto.healthInsuCityCode;
 			}
 
 			@Override
 			public String getOfficeNoB() {
-				return dto.healthInsuOfficeRefCode2nd;
+				return null;
+				//return dto.healthInsuOfficeRefCode2nd;
 			}
 
 			@Override
 			public String getOfficeNoA() {
-				return dto.healthInsuOfficeRefCode1st;
+				return null;
+				//return dto.healthInsuOfficeRefCode1st;
 			}
 
 			@Override
 			public String getOfficeMark() {
-				return dto.healthInsuAssoCode;
+				return null;
+				//return dto.healthInsuAssoCode;
 			}
 
 			@Override

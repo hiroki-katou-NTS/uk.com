@@ -38,6 +38,21 @@ import nts.uk.ctx.pr.core.infra.entity.insurance.labor.unemployeerate.QismtEmpIn
 @Stateless
 public class JpaUnemployeeInsuranceRateRepository extends JpaRepository implements UnemployeeInsuranceRateRepository {
 
+	/** The Constant BEGIN_FIRST. */
+	public static final int BEGIN_FIRST = 0;
+
+	/** The Constant BEGIN_SENDCOND. */
+	public static final int BEGIN_SECOND = 1;
+
+	/** The Constant SIZE_ONE. */
+	public static final int SIZE_ONE = 1;
+
+	/** The Constant SIZE_TWO. */
+	public static final int SIZE_TWO = 2;
+
+	public static final YearMonth YEAR_MONTH_MAX = YearMonth.of(DateTimeConstraints.LIMIT_YEAR.max(),
+			DateTimeConstraints.LIMIT_MONTH.max());
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -82,15 +97,14 @@ public class JpaUnemployeeInsuranceRateRepository extends JpaRepository implemen
 	public void remove(CompanyCode companyCode, String historyId, Long version) {
 		List<UnemployeeInsuranceRate> lstUnemployeeInsuranceRate = findAll(companyCode);
 		if (!ListUtil.isEmpty(lstUnemployeeInsuranceRate)) {
-			if (lstUnemployeeInsuranceRate.get(0).getHistoryId().equals(historyId)) {
+			if (lstUnemployeeInsuranceRate.get(BEGIN_FIRST).getHistoryId().equals(historyId)) {
 				// Start Begin
 				this.commandProxy().remove(QismtEmpInsuRate.class, new QismtEmpInsuRatePK(companyCode.v(), historyId));
-				if (lstUnemployeeInsuranceRate.size() >= 2) {
+				if (lstUnemployeeInsuranceRate.size() >= SIZE_TWO) {
 					UnemployeeInsuranceRate rateUpdate = lstUnemployeeInsuranceRate.get(1);
 					QismtEmpInsuRate entityUpdate = toEntity(rateUpdate);
 					// set max date
-					entityUpdate.setEndYm(YearMonth
-							.of(DateTimeConstraints.LIMIT_YEAR.max(), DateTimeConstraints.LIMIT_MONTH.max()).v());
+					entityUpdate.setEndYm(YEAR_MONTH_MAX.v());
 					this.commandProxy().update(entityUpdate);
 				}
 			}
@@ -123,19 +137,17 @@ public class JpaUnemployeeInsuranceRateRepository extends JpaRepository implemen
 			return true;
 		}
 		List<UnemployeeInsuranceRate> lstUnemployeeInsuranceRate = findAll(companyCode);
-		if (lstUnemployeeInsuranceRate == null || lstUnemployeeInsuranceRate.isEmpty()) {
+		if (ListUtil.isEmpty(lstUnemployeeInsuranceRate)) {
 			return false;
 		}
-		if (lstUnemployeeInsuranceRate != null && !lstUnemployeeInsuranceRate.isEmpty()) {
-			if (lstUnemployeeInsuranceRate.get(0).getApplyRange().getStartMonth().nextMonth().v() > monthRange
-					.getStartMonth().v()) {
-				return true;
-			}
+		if (lstUnemployeeInsuranceRate.get(0).getApplyRange().getStartMonth().nextMonth().v() > monthRange
+				.getStartMonth().v()) {
+			return true;
 		}
 		List<QismtEmpInsuRate> lstQismtEmpInsuRate = findBetween(companyCode, monthRange.getStartMonth());
-		if (lstQismtEmpInsuRate != null && lstQismtEmpInsuRate.size() == 1) {
+		if (lstQismtEmpInsuRate != null && lstQismtEmpInsuRate.size() == SIZE_ONE) {
 			QismtEmpInsuRate qismtEmpInsuRateUpdate = findDataById(companyCode,
-					lstQismtEmpInsuRate.get(0).getQismtEmpInsuRatePK().getHistId());
+					lstQismtEmpInsuRate.get(BEGIN_FIRST).getQismtEmpInsuRatePK().getHistId());
 			qismtEmpInsuRateUpdate.setEndYm(monthRange.getStartMonth().previousMonth().v());
 			if (qismtEmpInsuRateUpdate != null)
 				update(toDomain(qismtEmpInsuRateUpdate));
@@ -271,16 +283,13 @@ public class JpaUnemployeeInsuranceRateRepository extends JpaRepository implemen
 			if (lstQismtEmpInsuRate == null || lstQismtEmpInsuRate.isEmpty()) {
 				return false;
 			}
-			if (lstQismtEmpInsuRate != null && lstQismtEmpInsuRate.size() >= 1) {
-				if (lstQismtEmpInsuRate.get(0).getStrYm() >= monthRange.getStartMonth().v()) {
-					return true;
-				}
-				QismtEmpInsuRate qismtEmpInsuRateBeginUpdate = findDataById(companyCode,
-						lstQismtEmpInsuRate.get(0).getQismtEmpInsuRatePK().getHistId());
-				qismtEmpInsuRateBeginUpdate.setEndYm(monthRange.getStartMonth().previousMonth().v());
-				update(toDomain(qismtEmpInsuRateBeginUpdate));
-				return false;
+			if (lstQismtEmpInsuRate.get(0).getStrYm() >= monthRange.getStartMonth().v()) {
+				return true;
 			}
+			QismtEmpInsuRate qismtEmpInsuRateBeginUpdate = findDataById(companyCode,
+					lstQismtEmpInsuRate.get(0).getQismtEmpInsuRatePK().getHistId());
+			qismtEmpInsuRateBeginUpdate.setEndYm(monthRange.getStartMonth().previousMonth().v());
+			update(toDomain(qismtEmpInsuRateBeginUpdate));
 			return false;
 		}
 		return true;
