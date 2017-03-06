@@ -7,7 +7,6 @@ package nts.uk.ctx.pr.core.app.insurance.labor.command;
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.pr.core.app.insurance.labor.command.dto.LaborInsuranceOfficeDeleteDto;
-import nts.uk.ctx.pr.core.app.insurance.labor.command.dto.LaborInsuranceOfficeDto;
 
 /**
  * The Class LaborInsuranceOfficeDeleteCommand.
