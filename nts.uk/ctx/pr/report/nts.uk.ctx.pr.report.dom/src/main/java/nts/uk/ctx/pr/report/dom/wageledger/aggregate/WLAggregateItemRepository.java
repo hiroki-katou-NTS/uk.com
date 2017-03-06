@@ -30,7 +30,7 @@ public interface WLAggregateItemRepository {
 	 *
 	 * @param aggregateItem the aggregate item
 	 */
-	void remove(WLAggregateItemCode code);
+	void remove(WLAggregateItemCode code, CompanyCode companyCode);
 	
 	/**
 	 * Find.
@@ -47,5 +47,5 @@ public interface WLAggregateItemRepository {
 	 * @param code the code
 	 * @return true, if is exist
 	 */
-	boolean isExist(WLAggregateItemCode code);
+	boolean isExist(WLAggregateItemCode code, CompanyCode companyCode);
 }
