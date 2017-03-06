@@ -37,7 +37,7 @@ public class QwtmtWagetableElementPK implements Serializable {
 	/** The demension no. */
 	@Basic(optional = false)
 	@Column(name = "DEMENSION_NO")
-	private int demensionNo;
+	private Integer demensionNo;
 
 	/**
 	 * Instantiates a new qwtmt wagetable element PK.
@@ -56,7 +56,7 @@ public class QwtmtWagetableElementPK implements Serializable {
 	 * @param demensionNo
 	 *            the demension no
 	 */
-	public QwtmtWagetableElementPK(String ccd, String wageTableCd, short demensionNo) {
+	public QwtmtWagetableElementPK(String ccd, String wageTableCd, Integer demensionNo) {
 		this.ccd = ccd;
 		this.wageTableCd = wageTableCd;
 		this.demensionNo = demensionNo;

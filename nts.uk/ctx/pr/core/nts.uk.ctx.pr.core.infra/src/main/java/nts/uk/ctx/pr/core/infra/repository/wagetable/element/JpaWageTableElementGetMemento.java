@@ -44,7 +44,9 @@ public class JpaWageTableElementGetMemento implements WageTableElementGetMemento
 	public ElementMode getElementModeSetting() {
 		CompanyCode companyCode = new CompanyCode(
 				this.typeValue.getQwtmtWagetableElementPK().getCcd());
-		QwtmtWagetableEleHist qwtmtWagetableEleHist = this.typeValue.getQwtmtWagetableEleHist();
+		// TODO: can xem xet lai.
+		QwtmtWagetableEleHist qwtmtWagetableEleHist = this.typeValue.getQwtmtWagetableEleHistList()
+				.get(0);
 
 		switch (ElementType.valueOf(this.typeValue.getDemensionType())) {
 		case MASTER_REF:

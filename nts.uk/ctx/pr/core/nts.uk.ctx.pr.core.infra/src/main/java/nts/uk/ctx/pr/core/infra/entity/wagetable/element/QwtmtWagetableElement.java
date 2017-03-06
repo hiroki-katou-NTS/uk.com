@@ -6,6 +6,7 @@ package nts.uk.ctx.pr.core.infra.entity.wagetable.element;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
@@ -15,7 +16,7 @@ import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -78,12 +79,12 @@ public class QwtmtWagetableElement implements Serializable {
 	/** The exclus ver. */
 	@Basic(optional = false)
 	@Column(name = "EXCLUS_VER")
-	private int exclusVer;
+	private Integer exclusVer;
 
 	/** The demension type. */
 	@Basic(optional = false)
 	@Column(name = "DEMENSION_TYPE")
-	private int demensionType;
+	private Integer demensionType;
 
 	/** The demension ref no. */
 	@Basic(optional = false)
@@ -98,12 +99,12 @@ public class QwtmtWagetableElement implements Serializable {
 	private QwtmtWagetableHead qwtmtWagetableHead;
 
 	/** The qwtmt wagetable ele hist. */
-	@OneToOne(optional = true, cascade = CascadeType.ALL)
 	@JoinColumns({
 			@JoinColumn(name = "CCD", referencedColumnName = "CCD", insertable = false, updatable = false),
 			@JoinColumn(name = "WAGE_TABLE_CD", referencedColumnName = "WAGE_TABLE_CD", insertable = false, updatable = false),
 			@JoinColumn(name = "DEMENSION_NO", referencedColumnName = "DEMENSION_NO", insertable = false, updatable = false) })
-	private QwtmtWagetableEleHist qwtmtWagetableEleHist;
+	@OneToMany(cascade = CascadeType.ALL)
+	private List<QwtmtWagetableEleHist> qwtmtWagetableEleHistList;
 
 	/**
 	 * Instantiates a new qwtmt wagetable element.
@@ -125,26 +126,6 @@ public class QwtmtWagetableElement implements Serializable {
 	/**
 	 * Instantiates a new qwtmt wagetable element.
 	 *
-	 * @param qwtmtWagetableElementPK
-	 *            the qwtmt wagetable element PK
-	 * @param exclusVer
-	 *            the exclus ver
-	 * @param demensionType
-	 *            the demension type
-	 * @param demensionRefNo
-	 *            the demension ref no
-	 */
-	public QwtmtWagetableElement(QwtmtWagetableElementPK qwtmtWagetableElementPK, int exclusVer,
-			short demensionType, String demensionRefNo) {
-		this.qwtmtWagetableElementPK = qwtmtWagetableElementPK;
-		this.exclusVer = exclusVer;
-		this.demensionType = demensionType;
-		this.demensionRefNo = demensionRefNo;
-	}
-
-	/**
-	 * Instantiates a new qwtmt wagetable element.
-	 *
 	 * @param ccd
 	 *            the ccd
 	 * @param wageTableCd
@@ -152,7 +133,7 @@ public class QwtmtWagetableElement implements Serializable {
 	 * @param demensionNo
 	 *            the demension no
 	 */
-	public QwtmtWagetableElement(String ccd, String wageTableCd, short demensionNo) {
+	public QwtmtWagetableElement(String ccd, String wageTableCd, Integer demensionNo) {
 		this.qwtmtWagetableElementPK = new QwtmtWagetableElementPK(ccd, wageTableCd, demensionNo);
 	}
 

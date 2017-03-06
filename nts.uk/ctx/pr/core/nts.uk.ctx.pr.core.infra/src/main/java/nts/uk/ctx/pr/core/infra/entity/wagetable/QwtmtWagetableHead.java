@@ -76,7 +76,7 @@ public class QwtmtWagetableHead implements Serializable {
 	/** The exclus ver. */
 	@Basic(optional = false)
 	@Column(name = "EXCLUS_VER")
-	private int exclusVer;
+	private Integer exclusVer;
 
 	/** The wage table name. */
 	@Basic(optional = false)
@@ -112,26 +112,6 @@ public class QwtmtWagetableHead implements Serializable {
 	 */
 	public QwtmtWagetableHead(QwtmtWagetableHeadPK qwtmtWagetableHeadPK) {
 		this.qwtmtWagetableHeadPK = qwtmtWagetableHeadPK;
-	}
-
-	/**
-	 * Instantiates a new qwtmt wagetable head.
-	 *
-	 * @param qwtmtWagetableHeadPK
-	 *            the qwtmt wagetable head PK
-	 * @param exclusVer
-	 *            the exclus ver
-	 * @param wageTableName
-	 *            the wage table name
-	 * @param demensionSet
-	 *            the demension set
-	 */
-	public QwtmtWagetableHead(QwtmtWagetableHeadPK qwtmtWagetableHeadPK, int exclusVer,
-			String wageTableName, short demensionSet) {
-		this.qwtmtWagetableHeadPK = qwtmtWagetableHeadPK;
-		this.exclusVer = exclusVer;
-		this.wageTableName = wageTableName;
-		this.demensionSet = demensionSet;
 	}
 
 	/**
