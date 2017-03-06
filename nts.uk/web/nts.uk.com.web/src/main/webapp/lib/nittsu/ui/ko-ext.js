@@ -205,7 +205,8 @@ var nts;
                     NumberEditorProcessor.prototype.update = function ($input, data) {
                         _super.prototype.update.call(this, $input, data);
                         var option = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
-                        $input.css({ 'text-align': 'right', "box-sizing": "border-box" });
+                        var align = option.textalign !== "left" ? "right" : "left";
+                        $input.css({ 'text-align': align, "box-sizing": "border-box" });
                         var $parent = $input.parent();
                         var width = option.width; // ? option.width : '100%';
                         var parentTag = $parent.parent().prop("tagName").toLowerCase();
@@ -448,6 +449,7 @@ var nts;
                         var $input = $container.find("input.ntsSearchBox");
                         $input.attr("placeholder", placeHolder);
                         var $button = $container.find("button.search-btn");
+                        $input.outerWidth($container.outerWidth(true) - $button.outerWidth(true));
                         var nextSearch = function () {
                             var filtArr = searchBox.data("searchResult");
                             var compareKey = fields[0];
@@ -2240,10 +2242,10 @@ var nts;
                             .height(gridHeight);
                         $grid2.ntsGridList('setupSelecting');
                         var $moveArea = $swap.find("#" + elementId + "-move-data")
-                            .append("<button class = 'move-button move-forward'/>")
-                            .append("<button class = 'move-button move-back'/>");
-                        var $moveForward = $moveArea.find(".move-forward").text("forward");
-                        var $moveBack = $moveArea.find(".move-back").text("back");
+                            .append("<button class = 'move-button move-forward'><i class='icon icon-button-arrow-right'></i></button>")
+                            .append("<button class = 'move-button move-back'><i class='icon icon-button-arrow-left'></i></button>");
+                        var $moveForward = $moveArea.find(".move-forward");
+                        var $moveBack = $moveArea.find(".move-back");
                         var move = function (id1, id2, key, currentSource, value, isForward) {
                             var selectedEmployees = _.sortBy($(isForward ? id1 : id2).igGrid("selectedRows"), 'id');
                             if (selectedEmployees.length > 0) {
@@ -2356,8 +2358,9 @@ var nts;
                             throw new Error('The target element of NtsUpDown is required.');
                         }
                         $upDown.addClass("ntsComponent ntsUpDown").append("<div class='upDown-container'/>");
-                        $upDown.find(".upDown-container").append("<button class = 'ntsUpButton ntsButton ntsUpDownButton' id= '" + elementId + "-up'/>")
-                            .append("<button class = 'ntsDownButton ntsButton ntsUpDownButton' id= '" + elementId + "-down'/>");
+                        $upDown.find(".upDown-container")
+                            .append("<button class = 'ntsUpButton ntsButton ntsUpDownButton auto-height' id= '" + elementId + "-up'/>")
+                            .append("<button class = 'ntsDownButton ntsButton ntsUpDownButton auto-height' id= '" + elementId + "-down'/>");
                         var $target = $(comId);
                         if (height !== undefined) {
                             $upDown.height(height);
@@ -2378,8 +2381,8 @@ var nts;
                         }
                         var $up = $upDown.find(".ntsUpButton");
                         var $down = $upDown.find(".ntsDownButton");
-                        $up.text("Up");
-                        $down.text("Down");
+                        $up.append("<i class='icon icon-button-arrow-top'/>");
+                        $down.append("<i class='icon icon-button-arrow-bottom'/>");
                         var move = function (upDown, $targetElement) {
                             var multySelectedRaw = $targetElement.igGrid("selectedRows");
                             var singleSelectedRaw = $targetElement.igGrid("selectedRow");
