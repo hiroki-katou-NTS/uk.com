@@ -10,6 +10,7 @@ import nts.arc.primitive.IntegerPrimitiveValue;
 import nts.arc.primitive.LongPrimitiveValue;
 import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.CharType;
+import nts.arc.primitive.constraint.DecimalRange;
 import nts.arc.primitive.constraint.IntegerMaxValue;
 import nts.arc.primitive.constraint.IntegerMinValue;
 import nts.arc.primitive.constraint.IntegerRange;
@@ -41,6 +42,7 @@ class Helper {
 	static {
 		CONSTRAINTS_MAX_MIN_PARAM.add(IntegerRange.class.getSimpleName());
 		CONSTRAINTS_MAX_MIN_PARAM.add(LongRange.class.getSimpleName());
+		CONSTRAINTS_MAX_MIN_PARAM.add(DecimalRange.class.getSimpleName());
 	}
 	
 	static HashMap<String, String> CHARTYPE_NAMES_MAP = new HashMap<>();
@@ -66,9 +68,11 @@ class Helper {
 	}
 	
 	static String getAnnotationName(String representationOfAnnotation) {
-    	int start = representationOfAnnotation.lastIndexOf(".") + 1;
     	int end = representationOfAnnotation.indexOf("(");
-    	return representationOfAnnotation.substring(start, end);
+    	String noEnd = representationOfAnnotation.substring(0, end);
+    	int start = noEnd.lastIndexOf(".") + 1;
+
+    	return noEnd.substring(start, end);
 	}
 	
 	static String getAnnotationParametersString(String representationOfAnnotation) {
