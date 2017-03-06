@@ -45,8 +45,8 @@ public class DefaultStoredFileInfoRepository extends JpaRepository implements St
 	
 	private static CisdtStoredFile toEntity(StoredFileInfo domain) {
 		val entity = new CisdtStoredFile();
-		entity.fileId = domain.getId();
 		entity.originalName = domain.getOriginalName();
+		entity.fileId = domain.getId();
 		entity.fileType = domain.getFileType();
 		entity.mimeType = domain.getMimeType();
 		entity.originalSizeBytes = domain.getOriginalSize();

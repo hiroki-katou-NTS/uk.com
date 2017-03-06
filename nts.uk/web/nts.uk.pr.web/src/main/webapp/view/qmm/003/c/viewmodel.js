@@ -77,6 +77,30 @@ var nts;
                             ScreenModel.prototype.cancelButton = function () {
                                 nts.uk.ui.windows.close();
                             };
+                            ScreenModel.prototype.register = function () {
+                                // if()
+                                //                         $("#A_INP_002").attr('disabled', 'true');
+                                var inputSearch = $("#C_SCH_001").find("input.ntsSearchBox").val();
+                                if (inputSearch == "") {
+                                    $('#C_SCH_001').ntsError('set', 'inputSearch が入力されていません。');
+                                }
+                                else {
+                                    $('#C_SCH_001').ntsError('clear');
+                                }
+                                // errror search
+                                var error;
+                                _.find(this.filteredData(), function (obj) {
+                                    if (obj.code !== inputSearch) {
+                                        error = true;
+                                    }
+                                });
+                                if (error = true) {
+                                    $('#C_SCH_001').ntsError('set', '対象データがありません。');
+                                }
+                                else {
+                                    $('#C_SCH_001').ntsError('clear');
+                                }
+                            };
                             return ScreenModel;
                         }());
                         c.ScreenModel = ScreenModel;
