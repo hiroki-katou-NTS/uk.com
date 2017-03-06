@@ -19,7 +19,7 @@ public class SettingItemDto {
 	private String code;
 	
 	/** The is aggregate. */
-	private boolean isAggregate;
+	private Boolean isAggregateItem;
 	
 	/** The order number. */
 	private int orderNumber;
@@ -66,7 +66,7 @@ public class SettingItemDto {
 		 */
 		@Override
 		public WLItemType getType() {
-			return dto.isAggregate ? WLItemType.Aggregate : WLItemType.Master;
+			return dto.isAggregateItem ? WLItemType.Aggregate : WLItemType.Master;
 		}
 
 		/* (non-Javadoc)

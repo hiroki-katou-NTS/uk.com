@@ -83,7 +83,8 @@ public class QlsptLedgerFormHead implements Serializable {
 	private int print1pageByPersonSet;
 
 	/** The qlspt ledger form detail list. */
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "qlsptLedgerFormHead", fetch = FetchType.LAZY)
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "qlsptLedgerFormHead", fetch = FetchType.LAZY,
+			orphanRemoval = true)
 	private List<QlsptLedgerFormDetail> qlsptLedgerFormDetailList;
 
 	/**

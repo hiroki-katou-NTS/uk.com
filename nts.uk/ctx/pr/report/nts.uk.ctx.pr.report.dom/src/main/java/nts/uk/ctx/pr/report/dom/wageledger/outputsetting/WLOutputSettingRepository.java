@@ -53,7 +53,7 @@ public interface WLOutputSettingRepository {
 	boolean isExist(WLOutputSettingCode code, CompanyCode companyCode);
 	
 	/**
-	 * Find all.
+	 * Find all output setting in company.
 	 *
 	 * @param companyCode the company code
 	 * @param isLoadHeaderDataOnly the is load header data only
