@@ -1,4 +1,4 @@
-﻿module nts.uk.ui {
+module nts.uk.ui {
 
 	export module windows {
 

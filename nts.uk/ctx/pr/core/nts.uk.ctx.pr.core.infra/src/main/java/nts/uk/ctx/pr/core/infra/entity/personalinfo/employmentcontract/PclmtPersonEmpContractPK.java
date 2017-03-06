@@ -29,4 +29,5 @@ public class PclmtPersonEmpContractPK implements Serializable {
 	@Column(name = "STR_D")
 	@Convert(converter = GeneralDateToDBConverter.class)
 	public GeneralDate strD;
+	
 }
