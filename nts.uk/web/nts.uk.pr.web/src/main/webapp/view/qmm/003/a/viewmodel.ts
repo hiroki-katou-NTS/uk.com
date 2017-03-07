@@ -222,8 +222,10 @@ module qmm003.a.viewmodel {
             let self = this;
             let objResidential : service.model.ResidentialTax;
             //objResidential = ko.toJS
-            console.log(ko.toJS(self.currentResidential()));
-            qmm003.a.service.deleteResidential(ko.toJS(self.currentResidential())).done(function(data) {
+            objResidential =(ko.toJS(self.currentResidential()));
+             let resiTaxCodes = [];
+              resiTaxCodes.push(objResidential.resiTaxCode);
+            qmm003.a.service.deleteResidential(resiTaxCodes).done(function(data) {
                 console.log(data);
                 self.items([]);
                 self.nodeRegionPrefectures([]);

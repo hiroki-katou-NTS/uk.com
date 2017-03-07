@@ -53,9 +53,19 @@ module qmm003.a.service {
             })
         return dfd.promise();
     }
-    export function deleteResidential(residential: model.ResidentialTax) {
+    //    export function deleteResidential(residential: model.ResidentialTax) {
+    //        var dfd = $.Deferred<Array<any>>();
+    //        nts.uk.request.ajax(paths.deleteResidential, residential).done(function(res: Array<any>) {
+    //            dfd.resolve(res);
+    //        })
+    //            .fail(function(res) {
+    //                dfd.reject(res);
+    //            })
+    //        return dfd.promise();
+    //    }
+    export function deleteResidential(param: Array<string>) {
         var dfd = $.Deferred<Array<any>>();
-        nts.uk.request.ajax(paths.deleteResidential, residential).done(function(res: Array<any>) {
+        nts.uk.request.ajax(paths.deleteResidential, { resiTaxCodes: param }).done(function(res: Array<any>) {
             dfd.resolve(res);
         })
             .fail(function(res) {
@@ -63,6 +73,7 @@ module qmm003.a.service {
             })
         return dfd.promise();
     }
+
     export module model {
         export class ResidentialTax {
             companyCode: string;
