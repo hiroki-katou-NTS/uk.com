@@ -6,6 +6,7 @@ package nts.uk.ctx.pr.report.app.wageledger.command;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 
 import lombok.val;
 import nts.arc.error.BusinessException;
@@ -31,21 +32,22 @@ public class AggregateItemSaveCommandHandler extends CommandHandler<AggregateIte
 	 * @see nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command.CommandHandlerContext)
 	 */
 	@Override
+	@Transactional
 	protected void handle(CommandHandlerContext<AggregateItemSaveCommand> context) {
-		val companyCode = AppContexts.user().companyCode();
+		val companyCode = new CompanyCode(AppContexts.user().companyCode());
 		val command = context.getCommand();
 		
 		// In case update.
 		if (!command.isCreateMode()) {
 			// Find aggregate item.
-			WLAggregateItem aggregateItem = this.repository.find(new WLAggregateItemCode(command.getCode()),
-					new CompanyCode(companyCode));
+			WLAggregateItem aggregateItem = this.repository.findByCode(companyCode,
+					new WLAggregateItemCode(command.getCode()));
 			if (aggregateItem == null) {
 				throw new BusinessException("ER026");
 			}
 			
 			// Convert to domain.
-			aggregateItem = command.toDomain(companyCode);
+			aggregateItem = command.toDomain(companyCode.v());
 			// Update.
 			this.repository.update(aggregateItem);
 			return;
@@ -53,12 +55,12 @@ public class AggregateItemSaveCommandHandler extends CommandHandler<AggregateIte
 		
 		// In case create.
 		// Check duplicate code.
-		if (this.repository.isExist(new WLAggregateItemCode(command.getCode()))) {
+		if (this.repository.isExist(companyCode, new WLAggregateItemCode(command.getCode()))) {
 			throw new BusinessException("ER011");
 		}
 		
 		// Convert to domain.
-		val aggregateItem = command.toDomain(companyCode);
+		val aggregateItem = command.toDomain(companyCode.v());
 		this.repository.create(aggregateItem);
 		return;
 	}

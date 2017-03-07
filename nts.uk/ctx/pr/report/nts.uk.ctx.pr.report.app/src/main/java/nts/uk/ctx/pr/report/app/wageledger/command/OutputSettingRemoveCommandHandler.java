@@ -6,6 +6,7 @@ package nts.uk.ctx.pr.report.app.wageledger.command;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
@@ -28,9 +29,10 @@ public class OutputSettingRemoveCommandHandler extends CommandHandler<OutputSett
 	 * @see nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command.CommandHandlerContext)
 	 */
 	@Override
+	@Transactional
 	protected void handle(CommandHandlerContext<OutputSettingRemoveCommand> context) {
-		this.repository.remove(new WLOutputSettingCode(context.getCommand().getCode()),
-				new CompanyCode(AppContexts.user().companyCode()));
+		this.repository.remove(new CompanyCode(AppContexts.user().companyCode()),
+				new WLOutputSettingCode(context.getCommand().getCode()));
 	}
 
 }

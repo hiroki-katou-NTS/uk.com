@@ -18,6 +18,7 @@ import nts.uk.ctx.pr.report.app.wageledger.command.OutputSettingRemoveCommandHan
 import nts.uk.ctx.pr.report.app.wageledger.command.OutputSettingSaveCommand;
 import nts.uk.ctx.pr.report.app.wageledger.command.OutputSettingSaveCommandHandler;
 import nts.uk.ctx.pr.report.app.wageledger.find.OutputSettingFinder;
+import nts.uk.ctx.pr.report.app.wageledger.find.dto.HeaderSettingDto;
 import nts.uk.ctx.pr.report.app.wageledger.find.dto.OutputSettingDto;
 
 /**
@@ -46,7 +47,7 @@ public class OutputSettingWebService extends WebService{
 	 */
 	@POST
 	@Path("findAll")
-	public List<OutputSettingDto> findAll(){
+	public List<HeaderSettingDto> findAll(){
 		return this.finder.findAll();
 	}
 	

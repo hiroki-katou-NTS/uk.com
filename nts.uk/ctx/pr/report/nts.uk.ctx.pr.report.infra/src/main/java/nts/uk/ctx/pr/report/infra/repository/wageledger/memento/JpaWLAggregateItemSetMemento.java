@@ -2,7 +2,7 @@
  * Copyright (c) 2015 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.pr.report.infra.repository.wageledger;
+package nts.uk.ctx.pr.report.infra.repository.wageledger.memento;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -169,7 +169,7 @@ public class JpaWLAggregateItemSetMemento implements WLAggregateItemSetMemento {
 		List<QlsptLedgerAggreDetail> itemList = new ArrayList<>();
 		subItems.parallelStream().forEach(item -> {
 			QlsptLedgerAggreDetail itemEntity = new QlsptLedgerAggreDetail(); 
-			String itemCode = "F" + paymentType.value + code.v().substring(code.v().length() - 2);
+			String itemCode = "F" + paymentType.value + item.substring(code.v().length() - 2);
 			itemEntity.setQlsptLedgerAggreDetailPK(new QlsptLedgerAggreDetailPK(
 					companyCode.v(), paymentType.value, code.v(), category.value, itemCode));
 			itemList.add(itemEntity);

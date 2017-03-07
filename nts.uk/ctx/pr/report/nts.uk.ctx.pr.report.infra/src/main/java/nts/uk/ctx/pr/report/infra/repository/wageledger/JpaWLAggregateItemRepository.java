@@ -24,6 +24,8 @@ import nts.uk.ctx.pr.report.infra.entity.wageledger.QlsptLedgerAggreHead;
 import nts.uk.ctx.pr.report.infra.entity.wageledger.QlsptLedgerAggreHeadPK;
 import nts.uk.ctx.pr.report.infra.entity.wageledger.QlsptLedgerAggreHeadPK_;
 import nts.uk.ctx.pr.report.infra.entity.wageledger.QlsptLedgerAggreHead_;
+import nts.uk.ctx.pr.report.infra.repository.wageledger.memento.JpaWLAggregateItemGetMemento;
+import nts.uk.ctx.pr.report.infra.repository.wageledger.memento.JpaWLAggregateItemSetMemento;
 
 /**
  * The Class JpaWLAggregateItemRepository.
@@ -73,7 +75,7 @@ public class JpaWLAggregateItemRepository extends JpaRepository implements WLAgg
 	 * #remove(nts.uk.ctx.pr.report.dom.wageledger.aggregate.WLAggregateItemCode)
 	 */
 	@Override
-	public void remove(WLAggregateItemCode code, CompanyCode companyCode) {
+	public void remove(CompanyCode companyCode, WLAggregateItemCode code) {
 		EntityManager em = this.getEntityManager();
 		
 		// Create criteria buider.
@@ -93,7 +95,7 @@ public class JpaWLAggregateItemRepository extends JpaRepository implements WLAgg
 	 * #find(nts.uk.ctx.pr.report.dom.wageledger.aggregate.WLAggregateItemCode, nts.uk.ctx.pr.report.dom.company.CompanyCode)
 	 */
 	@Override
-	public WLAggregateItem find(WLAggregateItemCode code, CompanyCode companyCode) {
+	public WLAggregateItem findByCode(CompanyCode companyCode, WLAggregateItemCode code) {
 		EntityManager em = this.getEntityManager();
 		
 		// Create criteria buider.
@@ -116,7 +118,7 @@ public class JpaWLAggregateItemRepository extends JpaRepository implements WLAgg
 	 * #isExist(nts.uk.ctx.pr.report.dom.wageledger.aggregate.WLAggregateItemCode)
 	 */
 	@Override
-	public boolean isExist(WLAggregateItemCode code, CompanyCode companyCode) {
+	public boolean isExist(CompanyCode companyCode, WLAggregateItemCode code) {
 		EntityManager em = this.getEntityManager();
 		
 		// Create criteria buider.

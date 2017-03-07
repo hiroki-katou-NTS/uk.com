@@ -19,6 +19,7 @@ import nts.uk.ctx.pr.report.app.wageledger.command.AggregateItemSaveCommand;
 import nts.uk.ctx.pr.report.app.wageledger.command.AggregateItemSaveCommandHandler;
 import nts.uk.ctx.pr.report.app.wageledger.find.AggregateItemFinder;
 import nts.uk.ctx.pr.report.app.wageledger.find.dto.AggregateItemDto;
+import nts.uk.ctx.pr.report.app.wageledger.find.dto.HeaderSettingDto;
 import nts.uk.ctx.pr.report.dom.wageledger.PaymentType;
 import nts.uk.ctx.pr.report.dom.wageledger.WLCategory;
 
@@ -48,7 +49,7 @@ public class AggregateItemWebservice extends WebService{
 	 */
 	@POST
 	@Path("findAll")
-	public List<AggregateItemDto> findAll() {
+	public List<HeaderSettingDto> findAll() {
 		return this.finder.findAll();
 	}
 	
@@ -73,7 +74,7 @@ public class AggregateItemWebservice extends WebService{
 	 */
 	@POST
 	@Path("findByCate/{category}/{paymentType}")
-	public List<AggregateItemDto> findByCategoryAndPaymentType(@PathParam("category") WLCategory category,
+	public List<HeaderSettingDto> findByCategoryAndPaymentType(@PathParam("category") WLCategory category,
 			@PathParam("paymentType") PaymentType paymentType) {
 		return this.finder.findByCategoryAndPaymentType(category,paymentType);
 	}

@@ -2,7 +2,7 @@
  * Copyright (c) 2015 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.pr.report.infra.repository.wageledger;
+package nts.uk.ctx.pr.report.infra.repository.wageledger.memento;
 
 import java.util.ArrayList;
 import java.util.List;
