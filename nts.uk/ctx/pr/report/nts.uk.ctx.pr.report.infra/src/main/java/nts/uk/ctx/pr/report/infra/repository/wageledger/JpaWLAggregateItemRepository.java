@@ -4,18 +4,34 @@
  *****************************************************************/
 package nts.uk.ctx.pr.report.infra.repository.wageledger;
 
-import javax.ejb.Stateless;
+import java.util.Optional;
 
+import javax.ejb.Stateless;
+import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaDelete;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Path;
+import javax.persistence.criteria.Root;
+
+import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.pr.report.dom.company.CompanyCode;
 import nts.uk.ctx.pr.report.dom.wageledger.aggregate.WLAggregateItem;
 import nts.uk.ctx.pr.report.dom.wageledger.aggregate.WLAggregateItemCode;
 import nts.uk.ctx.pr.report.dom.wageledger.aggregate.WLAggregateItemRepository;
+import nts.uk.ctx.pr.report.infra.entity.wageledger.QlsptLedgerAggreHead;
+import nts.uk.ctx.pr.report.infra.entity.wageledger.QlsptLedgerAggreHeadPK;
+import nts.uk.ctx.pr.report.infra.entity.wageledger.QlsptLedgerAggreHeadPK_;
+import nts.uk.ctx.pr.report.infra.entity.wageledger.QlsptLedgerAggreHead_;
+import nts.uk.ctx.pr.report.infra.repository.wageledger.memento.JpaWLAggregateItemGetMemento;
+import nts.uk.ctx.pr.report.infra.repository.wageledger.memento.JpaWLAggregateItemSetMemento;
 
 /**
  * The Class JpaWLAggregateItemRepository.
  */
 @Stateless
-public class JpaWLAggregateItemRepository implements WLAggregateItemRepository{
+public class JpaWLAggregateItemRepository extends JpaRepository implements WLAggregateItemRepository{
 
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.pr.report.dom.wageledger.aggregate.WLAggregateItemRepository
@@ -23,8 +39,12 @@ public class JpaWLAggregateItemRepository implements WLAggregateItemRepository{
 	 */
 	@Override
 	public void create(WLAggregateItem aggregateItem) {
-		// TODO Auto-generated method stub
+		// Convert domain to entity.
+		QlsptLedgerAggreHead entity = new QlsptLedgerAggreHead();
+		aggregateItem.saveToMemento(new JpaWLAggregateItemSetMemento(entity));
 		
+		// Insert to db.
+		this.commandProxy().insert(entity);
 	}
 
 	/* (non-Javadoc)
@@ -33,8 +53,21 @@ public class JpaWLAggregateItemRepository implements WLAggregateItemRepository{
 	 */
 	@Override
 	public void update(WLAggregateItem aggregateItem) {
-		// TODO Auto-generated method stub
-		
+		// Find entity.
+		QlsptLedgerAggreHeadPK pk = new QlsptLedgerAggreHeadPK(
+				aggregateItem.getCompanyCode().v(),
+				aggregateItem.getPaymentType().value,
+				aggregateItem.getCode().v(),
+				aggregateItem.getCategory().value);
+		Optional<QlsptLedgerAggreHead> optinalEntity = this.queryProxy().find(pk, QlsptLedgerAggreHead.class);
+		if (optinalEntity.isPresent()) {
+			QlsptLedgerAggreHead entity = optinalEntity.get();
+			
+			// Update entity with new domain.
+			aggregateItem.saveToMemento(new JpaWLAggregateItemSetMemento(entity));
+			this.commandProxy().update(entity);
+		}
+		throw new RuntimeException("Cannot update entity not exist!");
 	}
 
 	/* (non-Javadoc)
@@ -42,9 +75,19 @@ public class JpaWLAggregateItemRepository implements WLAggregateItemRepository{
 	 * #remove(nts.uk.ctx.pr.report.dom.wageledger.aggregate.WLAggregateItemCode)
 	 */
 	@Override
-	public void remove(WLAggregateItemCode code) {
-		// TODO Auto-generated method stub
+	public void remove(CompanyCode companyCode, WLAggregateItemCode code) {
+		EntityManager em = this.getEntityManager();
 		
+		// Create criteria buider.
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaDelete<QlsptLedgerAggreHead> cd = cb.createCriteriaDelete(QlsptLedgerAggreHead.class);
+		Root<QlsptLedgerAggreHead> root = cd.from(QlsptLedgerAggreHead.class);
+		Path<QlsptLedgerAggreHeadPK> pkPath = root.get(QlsptLedgerAggreHead_.qlsptLedgerAggreHeadPK);
+		cd.where(cb.equal(pkPath.get(QlsptLedgerAggreHeadPK_.aggregateCd), code.v()),
+				cb.equal(pkPath.get(QlsptLedgerAggreHeadPK_.ccd), companyCode.v()));
+		
+		// Excute.
+		em.createQuery(cd).executeUpdate();
 	}
 
 	/* (non-Javadoc)
@@ -52,9 +95,22 @@ public class JpaWLAggregateItemRepository implements WLAggregateItemRepository{
 	 * #find(nts.uk.ctx.pr.report.dom.wageledger.aggregate.WLAggregateItemCode, nts.uk.ctx.pr.report.dom.company.CompanyCode)
 	 */
 	@Override
-	public WLAggregateItem find(WLAggregateItemCode code, CompanyCode companyCode) {
-		// TODO Auto-generated method stub
-		return null;
+	public WLAggregateItem findByCode(CompanyCode companyCode, WLAggregateItemCode code) {
+		EntityManager em = this.getEntityManager();
+		
+		// Create criteria buider.
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<QlsptLedgerAggreHead> cq = cb.createQuery(QlsptLedgerAggreHead.class);
+		Root<QlsptLedgerAggreHead> root = cq.from(QlsptLedgerAggreHead.class);
+		Path<QlsptLedgerAggreHeadPK> pkPath = root.get(QlsptLedgerAggreHead_.qlsptLedgerAggreHeadPK);
+		cq.where(cb.equal(pkPath.get(QlsptLedgerAggreHeadPK_.aggregateCd), code.v()),
+				cb.equal(pkPath.get(QlsptLedgerAggreHeadPK_.ccd), companyCode.v()));
+		
+		// Query.
+		QlsptLedgerAggreHead result = em.createQuery(cq).getSingleResult();
+		
+		// Return.
+		return new WLAggregateItem(new JpaWLAggregateItemGetMemento(result));
 	}
 
 	/* (non-Javadoc)
@@ -62,9 +118,26 @@ public class JpaWLAggregateItemRepository implements WLAggregateItemRepository{
 	 * #isExist(nts.uk.ctx.pr.report.dom.wageledger.aggregate.WLAggregateItemCode)
 	 */
 	@Override
-	public boolean isExist(WLAggregateItemCode code) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean isExist(CompanyCode companyCode, WLAggregateItemCode code) {
+		EntityManager em = this.getEntityManager();
+		
+		// Create criteria buider.
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<QlsptLedgerAggreHead> cq = cb.createQuery(QlsptLedgerAggreHead.class);
+		Root<QlsptLedgerAggreHead> root = cq.from(QlsptLedgerAggreHead.class);
+		Path<QlsptLedgerAggreHeadPK> pkPath = root.get(QlsptLedgerAggreHead_.qlsptLedgerAggreHeadPK);
+		cq.where(cb.equal(pkPath.get(QlsptLedgerAggreHeadPK_.aggregateCd), code.v()),
+				cb.equal(pkPath.get(QlsptLedgerAggreHeadPK_.ccd), companyCode.v()));
+		
+		// Query.
+		QlsptLedgerAggreHead result;
+		try {
+			result = em.createQuery(cq).getSingleResult();
+		} catch (NoResultException e) {
+			return false;
+		}
+		
+		return result != null;
 	}
 	
 }

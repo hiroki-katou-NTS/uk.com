@@ -27,7 +27,8 @@ import nts.uk.shr.com.context.AppContexts;
  * The Class CreateUnitPriceHistoryCommandHandler.
  */
 @Stateless
-public class CreateUnitPriceHistoryCommandHandler extends CommandHandler<CreateUnitPriceHistoryCommand> {
+public class CreateUnitPriceHistoryCommandHandler
+		extends CommandHandler<CreateUnitPriceHistoryCommand> {
 
 	/** The unit price history repository. */
 	@Inject
@@ -71,17 +72,19 @@ public class CreateUnitPriceHistoryCommandHandler extends CommandHandler<CreateU
 			public UnitPriceCode getCode() {
 				return new UnitPriceCode(command.getUnitPriceCode());
 			}
+
 		});
 
-		Optional<UnitPriceHistory> lastUnitPriceHistory = unitPriceHistoryRepository.findLastHistory(companyCode,
-				unitPriceHistory.getUnitPriceCode());
+		Optional<UnitPriceHistory> lastUnitPriceHistory = unitPriceHistoryRepository
+				.findLastHistory(companyCode, unitPriceHistory.getUnitPriceCode());
 
 		// Update last history if present
 		if (lastUnitPriceHistory.isPresent()) {
 			UnitPriceHistory updatedLastUnitPriceHistory = lastUnitPriceHistory.get();
 
 			// Update month range
-			MonthRange updatedMonthRange = MonthRange.range(updatedLastUnitPriceHistory.getApplyRange().getStartMonth(),
+			MonthRange updatedMonthRange = MonthRange.range(
+					updatedLastUnitPriceHistory.getApplyRange().getStartMonth(),
 					unitPriceHistory.getApplyRange().getStartMonth().previousMonth());
 			updatedLastUnitPriceHistory.setApplyRange(updatedMonthRange);
 
@@ -95,6 +98,9 @@ public class CreateUnitPriceHistoryCommandHandler extends CommandHandler<CreateU
 		// Validate
 		unitPriceHistoryService.validateRequiredItem(unitPriceHistory);
 		unitPriceHistoryService.validateDateRange(unitPriceHistory);
+		if (command.isNewMode()) {
+			unitPriceHistoryService.checkDuplicateCode(unitPriceHistory);
+		}
 
 		// Insert into db.
 		unitPriceHistoryRepository.add(unitPrice, unitPriceHistory);

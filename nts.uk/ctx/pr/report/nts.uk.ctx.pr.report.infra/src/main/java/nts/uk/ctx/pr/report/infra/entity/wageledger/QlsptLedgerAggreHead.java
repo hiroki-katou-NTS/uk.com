@@ -87,7 +87,7 @@ public class QlsptLedgerAggreHead implements Serializable {
 	private int dispZeroAtr;
 
 	/** The qlspt ledger aggre detail list. */
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "qlsptLedgerAggreHead")
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "qlsptLedgerAggreHead", orphanRemoval = true)
 	private List<QlsptLedgerAggreDetail> qlsptLedgerAggreDetailList;
 
 	/**

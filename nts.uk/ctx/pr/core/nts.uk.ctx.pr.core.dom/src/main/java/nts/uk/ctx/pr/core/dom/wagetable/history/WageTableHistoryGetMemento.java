@@ -44,17 +44,17 @@ public interface WageTableHistoryGetMemento {
 	MonthRange getApplyRange();
 
 	/**
-	 * Gets the elements.
-	 *
-	 * @return the elements
-	 */
-	List<WageTableItem> getValueItems();
-
-	/**
 	 * Gets the demension items.
 	 *
 	 * @return the demension items
 	 */
 	List<WageTableDemensionDetail> getDemensionDetail();
+
+	/**
+	 * Gets the elements.
+	 *
+	 * @return the elements
+	 */
+	List<WageTableItem> getValueItems();
 
 }

@@ -5,12 +5,14 @@ module nts.uk.pr.view.qmm007.b {
 
         export class ScreenModel {
             unitPriceHistoryModel: UnitPriceHistoryModel;
+            lastHistory: string;
 
             historyTakeOver: KnockoutObservable<string>;
 
             constructor() {
                 var self = this;
                 self.unitPriceHistoryModel = ko.mapping.fromJS(nts.uk.ui.windows.getShared('unitPriceHistoryModel'));
+                self.lastHistory = self.unitPriceHistoryModel.startMonth();
                 self.historyTakeOver = ko.observable('latest');
 
             }
@@ -41,7 +43,7 @@ module nts.uk.pr.view.qmm007.b {
                     self.unitPriceHistoryModel.fixPayAtrHourly('NotApply');
                     self.unitPriceHistoryModel.memo('');
                 }
-                service.create(ko.toJS(self.unitPriceHistoryModel)).done(() => {
+                service.create(ko.toJS(self.unitPriceHistoryModel), false).done(() => {
                     nts.uk.ui.windows.setShared('isCreated', true);
                     nts.uk.ui.windows.close();
                 });

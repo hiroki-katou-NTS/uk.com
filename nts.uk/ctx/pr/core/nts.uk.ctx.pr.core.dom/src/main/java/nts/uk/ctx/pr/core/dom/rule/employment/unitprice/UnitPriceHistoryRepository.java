@@ -78,4 +78,13 @@ public interface UnitPriceHistoryRepository {
 	 * @return true, if successful
 	 */
 	boolean isInvalidDateRange(CompanyCode companyCode, UnitPriceCode cUnitpriceCd, YearMonth startMonth);
+	
+	/**
+	 * Checks if is duplicate code.
+	 *
+	 * @param companyCode the company code
+	 * @param unitPriceCode the unit price code
+	 * @return true, if is duplicate code
+	 */
+	boolean isDuplicateCode(CompanyCode companyCode, UnitPriceCode unitPriceCode);
 }

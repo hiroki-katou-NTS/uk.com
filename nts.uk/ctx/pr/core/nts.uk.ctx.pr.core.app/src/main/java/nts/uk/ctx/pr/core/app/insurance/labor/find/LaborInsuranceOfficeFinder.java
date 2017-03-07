@@ -10,7 +10,6 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import javax.transaction.Transactional;
 
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.app.insurance.labor.find.dto.LaborInsuranceOfficeFindDto;
@@ -24,7 +23,6 @@ import nts.uk.shr.com.context.AppContexts;
  * The Class LaborInsuranceOfficeFinder.
  */
 @Stateless
-@Transactional
 public class LaborInsuranceOfficeFinder {
 
 	/** The labor insurance office repository. */

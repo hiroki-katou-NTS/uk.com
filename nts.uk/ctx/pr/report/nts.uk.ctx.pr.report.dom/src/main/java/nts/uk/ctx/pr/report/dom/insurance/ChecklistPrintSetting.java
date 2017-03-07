@@ -40,8 +40,7 @@ public class ChecklistPrintSetting extends AggregateRoot {
 	/**
 	 * Instantiates a new checklist print setting.
 	 *
-	 * @param memento
-	 *            the memento
+	 * @param memento the memento
 	 */
 	public ChecklistPrintSetting(ChecklistPrintSettingGetMemento memento) {
 		super();

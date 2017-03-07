@@ -248,4 +248,34 @@ public class JpaUnitPriceHistoryRepository extends JpaRepository implements Unit
 		// Return
 		return Optional.of(new UnitPriceHistory(new JpaUnitPriceHistoryGetMemento(result.get(index))));
 	}
+
+	@Override
+	public boolean isDuplicateCode(CompanyCode companyCode, UnitPriceCode unitPriceCode) {
+		// Get entity manager
+		EntityManager em = this.getEntityManager();
+
+		// Query for indicated stress check.
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<QupmtCUnitpriceDetail> cq = cb.createQuery(QupmtCUnitpriceDetail.class);
+		Root<QupmtCUnitpriceDetail> root = cq.from(QupmtCUnitpriceDetail.class);
+		// Constructing list of parameters
+		List<Predicate> predicateList = new ArrayList<Predicate>();
+
+		// Construct condition.
+		predicateList.add(
+				cb.equal(root.get(QupmtCUnitpriceDetail_.qupmtCUnitpriceDetailPK).get(QupmtCUnitpriceDetailPK_.ccd),
+						companyCode.v()));
+		predicateList.add(cb.equal(
+				root.get(QupmtCUnitpriceDetail_.qupmtCUnitpriceDetailPK).get(QupmtCUnitpriceDetailPK_.cUnitpriceCd),
+				unitPriceCode));
+		cq.where(predicateList.toArray(new Predicate[] {}));
+
+		List<QupmtCUnitpriceDetail> result = em.createQuery(cq).getResultList();
+
+		// Check empty.
+		if (ListUtil.isEmpty(result)) {
+			return false;
+		}
+		return true;
+	}
 }

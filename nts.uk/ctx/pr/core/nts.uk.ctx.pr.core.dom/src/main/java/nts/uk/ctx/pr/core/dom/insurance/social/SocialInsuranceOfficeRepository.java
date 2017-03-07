@@ -7,6 +7,7 @@ package nts.uk.ctx.pr.core.dom.insurance.social;
 import java.util.List;
 import java.util.Optional;
 
+import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
 
 /**
@@ -34,7 +35,7 @@ public interface SocialInsuranceOfficeRepository {
 	 * @param companyCode the company code
 	 * @param officeCode the office code
 	 */
-    void remove(String companyCode, String officeCode);
+    void remove(CompanyCode companyCode, OfficeCode officeCode);
 
 	/**
 	 * Find all.
@@ -42,15 +43,7 @@ public interface SocialInsuranceOfficeRepository {
 	 * @param companyCode the company code
 	 * @return the list
 	 */
-	List<SocialInsuranceOffice> findAll(String companyCode);
-
-	/**
-	 * Find by id.
-	 *
-	 * @param id the id
-	 * @return the social insurance office
-	 */
-	Optional<SocialInsuranceOffice> findById(String id);
+	List<SocialInsuranceOffice> findAll(CompanyCode companyCode);
 
 	/**
 	 * Find by office code.
@@ -58,7 +51,7 @@ public interface SocialInsuranceOfficeRepository {
 	 * @param officeCode the office code
 	 * @return the social insurance office
 	 */
-	Optional<SocialInsuranceOffice> findByOfficeCode(String officeCode);
+	Optional<SocialInsuranceOffice> findByOfficeCode(CompanyCode companyCode, OfficeCode officeCode);
 
 	/**
 	 * Checks if is duplicate code.
@@ -66,5 +59,5 @@ public interface SocialInsuranceOfficeRepository {
 	 * @param code the code
 	 * @return true, if is duplicate code
 	 */
-	boolean isDuplicateCode(OfficeCode code);
+	boolean isDuplicateCode(CompanyCode companyCode, OfficeCode officeCode);
 }

@@ -8,48 +8,68 @@ import java.math.BigDecimal;
 
 import nts.uk.ctx.pr.core.dom.wagetable.ElementId;
 import nts.uk.ctx.pr.core.dom.wagetable.history.WageTableItemGetMemento;
-import nts.uk.ctx.pr.core.infra.entity.wagetable.certification.QwtmtWagetableCertifyG;
+import nts.uk.ctx.pr.core.infra.entity.wagetable.history.QwtmtWagetableMny;
 
 /**
- * The Class JpaWageTableHistoryGetMemento.
+ * The Class JpaWageTableItemGetMemento.
  */
 public class JpaWageTableItemGetMemento implements WageTableItemGetMemento {
 
 	/** The type value. */
-	protected QwtmtWagetableCertifyG typeValue;
+	protected QwtmtWagetableMny typeValue;
 
 	/**
-	 * Instantiates a new jpa certify group get memento.
+	 * Instantiates a new jpa wage table item get memento.
 	 *
 	 * @param typeValue
 	 *            the type value
 	 */
-	public JpaWageTableItemGetMemento(QwtmtWagetableCertifyG typeValue) {
+	public JpaWageTableItemGetMemento(QwtmtWagetableMny typeValue) {
 		this.typeValue = typeValue;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.wagetable.history.WageTableItemGetMemento#
+	 * getElement1Id()
+	 */
 	@Override
 	public ElementId getElement1Id() {
-		// TODO Auto-generated method stub
-		return null;
+		return new ElementId(this.typeValue.getQwtmtWagetableMnyPK().getElement1Id());
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.wagetable.history.WageTableItemGetMemento#
+	 * getElement2Id()
+	 */
 	@Override
 	public ElementId getElement2Id() {
-		// TODO Auto-generated method stub
-		return null;
+		return new ElementId(this.typeValue.getQwtmtWagetableMnyPK().getElement2Id());
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.wagetable.history.WageTableItemGetMemento#
+	 * getElement3Id()
+	 */
 	@Override
 	public ElementId getElement3Id() {
-		// TODO Auto-generated method stub
-		return null;
+		return new ElementId(this.typeValue.getQwtmtWagetableMnyPK().getElement3Id());
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.wagetable.history.WageTableItemGetMemento#
+	 * getAmount()
+	 */
 	@Override
 	public BigDecimal getAmount() {
-		// TODO Auto-generated method stub
-		return null;
+		return new BigDecimal(this.typeValue.getValueMny());
 	}
 
 }

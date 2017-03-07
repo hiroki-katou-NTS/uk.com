@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Optional;
 
 import nts.uk.ctx.core.dom.company.CompanyCode;
+import nts.uk.ctx.pr.core.dom.wagetable.WageTableCode;
 
 /**
  * The Interface WageTableElementRepository.
@@ -35,7 +36,7 @@ public interface WageTableHistoryRepository {
 	 * @param groupCode the group code
 	 * @param version the version
 	 */
-    void remove(CompanyCode companyCode, String groupCode, Long version);
+    void remove(CompanyCode companyCode, WageTableCode code, String historyId);
 
 	/**
 	 * Find all.

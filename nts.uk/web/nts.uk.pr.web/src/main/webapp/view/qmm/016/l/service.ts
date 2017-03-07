@@ -1,5 +1,6 @@
 module nts.uk.pr.view.qmm016.l {
     export module service {
+        
         var paths: any = {
             findAllCertification: "pr/wagetable/certification/findall",
             findAllCertifyGroup: "pr/wagetable/certifygroup/findall",
@@ -10,10 +11,10 @@ module nts.uk.pr.view.qmm016.l {
         };
 
         //Function connection service FindAll Certification
-        export function findAllCertification(): JQueryPromise<Array<model.CertificationFindInDto>> {
-            var dfd = $.Deferred<Array<model.CertificationFindInDto>>();
+        export function findAllCertification(): JQueryPromise<model.CertificationFindInDto[]> {
+            var dfd = $.Deferred<model.CertificationFindInDto[]>();
             nts.uk.request.ajax(paths.findAllCertification)
-                .done(function(res: Array<model.CertificationFindInDto>) {
+                .done(function(res: model.CertificationFindInDto[]) {
                     dfd.resolve(res);
                     //xyz
                 })
@@ -21,11 +22,12 @@ module nts.uk.pr.view.qmm016.l {
                 })
             return dfd.promise();
         }
+        
         //Function connection service FindAll CertifyGroup
-        export function findAllCertifyGroup(): JQueryPromise<Array<model.CertifyGroupFindOutDto>> {
-            var dfd = $.Deferred<Array<model.CertifyGroupFindOutDto>>();
+        export function findAllCertifyGroup(): JQueryPromise<model.CertifyGroupFindOutDto[]> {
+            var dfd = $.Deferred<model.CertifyGroupFindOutDto[]>();
             nts.uk.request.ajax(paths.findAllCertifyGroup)
-                .done(function(res: Array<model.CertifyGroupFindOutDto>) {
+                .done(function(res: model.CertifyGroupFindOutDto[]) {
                     dfd.resolve(res);
                     //xyz
                 })
@@ -34,6 +36,7 @@ module nts.uk.pr.view.qmm016.l {
                 })
             return dfd.promise();
         }
+        
         //Function connection service FindA CertifyGroup
         export function findCertifyGroup(code: string): JQueryPromise<model.CertifyGroupDto> {
             var dfd = $.Deferred<model.CertifyGroupDto>();
@@ -62,6 +65,7 @@ module nts.uk.pr.view.qmm016.l {
                 })
             return dfd.promise();
         }
+        
         //Function connection service Update CertifyGroup
         export function updateCertifyGroup(certifyGroupDto: model.CertifyGroupDto): JQueryPromise<any> {
             var dfd = $.Deferred<any>();
@@ -76,6 +80,7 @@ module nts.uk.pr.view.qmm016.l {
                 })
             return dfd.promise();
         }
+        
         //Function connection service Delete CertifyGroup
         export function deleteCertifyGroup(certifyGroupDeleteDto: model.CertifyGroupDeleteDto): JQueryPromise<any> {
             var dfd = $.Deferred<any>();
@@ -92,6 +97,7 @@ module nts.uk.pr.view.qmm016.l {
         }
 
         export module model {
+            
             export class CertificationDto {
                 code: string;
                 name: string;
@@ -101,6 +107,7 @@ module nts.uk.pr.view.qmm016.l {
                 code: string;
                 name: string;
             }
+            
             export class CertifyGroupFindOutDto {
                 code: string;
                 name: string;
@@ -127,10 +134,12 @@ module nts.uk.pr.view.qmm016.l {
                 /** The version. */
                 version: number;
             }
+            
             export enum MultipleTargetSetting {
                 BigestMethod = 0,//BigestMethod
                 TotalMethod = 1//TotalMethod
             }
+            
             export class MultipleTargetSettingDto {
                 code: number;
                 name: string;
@@ -139,6 +148,7 @@ module nts.uk.pr.view.qmm016.l {
                     this.name = name;
                 }
             }
+            
             export enum TypeActionCertifyGroup {
                 add = 1,
                 update = 2

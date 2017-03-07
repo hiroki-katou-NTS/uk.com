@@ -10,12 +10,14 @@ import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * The Class QwtmtWagetableCertifyGPK.
  */
-@Data
+@Getter
+@Setter
 @Embeddable
 public class QwtmtWagetableCertifyGPK implements Serializable {
 

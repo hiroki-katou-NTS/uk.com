@@ -26,7 +26,7 @@ public class JpaWageTableElementGetMemento implements WageTableElementGetMemento
 	protected QwtmtWagetableElement typeValue;
 
 	/**
-	 * Instantiates a new jpa certify group get memento.
+	 * Instantiates a new jpa wage table element get memento.
 	 *
 	 * @param typeValue
 	 *            the type value
@@ -35,11 +35,23 @@ public class JpaWageTableElementGetMemento implements WageTableElementGetMemento
 		this.typeValue = typeValue;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.wagetable.element.WageTableElementGetMemento#
+	 * getDemensionNo()
+	 */
 	@Override
 	public DemensionNo getDemensionNo() {
 		return DemensionNo.valueOf(this.typeValue.getQwtmtWagetableElementPK().getDemensionNo());
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.wagetable.element.WageTableElementGetMemento#
+	 * getElementModeSetting()
+	 */
 	@Override
 	public ElementMode getElementModeSetting() {
 		CompanyCode companyCode = new CompanyCode(

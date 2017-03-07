@@ -4,7 +4,10 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.dom.wagetable.mode;
 
+import java.util.List;
+
 import lombok.Getter;
+import nts.arc.error.BusinessException;
 import nts.uk.ctx.pr.core.dom.wagetable.ElementCount;
 import nts.uk.ctx.pr.core.dom.wagetable.element.WageTableElement;
 
@@ -14,11 +17,14 @@ import nts.uk.ctx.pr.core.dom.wagetable.element.WageTableElement;
 @Getter
 public class OneDimensionalMode implements DemensionalMode {
 
+	/** The Constant ELEMENT_COUNT. */
+	public static final int ELEMENT_COUNT = 1;
+
 	/** The Constant mode. */
 	public static final ElementCount mode = ElementCount.One;
 
 	/** The element. */
-	private WageTableElement element;
+	private List<WageTableElement> elements;
 
 	/*
 	 * (non-Javadoc)
@@ -36,9 +42,15 @@ public class OneDimensionalMode implements DemensionalMode {
 	 * @param element
 	 *            the element
 	 */
-	public OneDimensionalMode(WageTableElement element) {
+	public OneDimensionalMode(List<WageTableElement> elements) {
 		super();
-		this.element = element;
+
+		// TODO
+		if (elements.size() != ELEMENT_COUNT) {
+			throw new BusinessException("");
+		}
+
+		this.elements = elements;
 	}
 
 }

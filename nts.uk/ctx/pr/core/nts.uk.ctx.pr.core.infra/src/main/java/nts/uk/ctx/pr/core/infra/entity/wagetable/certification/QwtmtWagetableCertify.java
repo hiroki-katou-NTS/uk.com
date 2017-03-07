@@ -18,12 +18,14 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * The Class QwtmtWagetableCertify.
  */
-@Data
+@Getter
+@Setter
 @Entity
 @Table(name = "QWTMT_WAGETABLE_CERTIFY")
 public class QwtmtWagetableCertify implements Serializable {
@@ -101,19 +103,6 @@ public class QwtmtWagetableCertify implements Serializable {
 	 */
 	public QwtmtWagetableCertify(QwtmtWagetableCertifyPK qwtmtWagetableCertifyPK) {
 		this.qwtmtWagetableCertifyPK = qwtmtWagetableCertifyPK;
-	}
-
-	/**
-	 * Instantiates a new qwtmt wagetable certify.
-	 *
-	 * @param qwtmtWagetableCertifyPK
-	 *            the qwtmt wagetable certify PK
-	 * @param exclusVer
-	 *            the exclus ver
-	 */
-	public QwtmtWagetableCertify(QwtmtWagetableCertifyPK qwtmtWagetableCertifyPK, long exclusVer) {
-		this.qwtmtWagetableCertifyPK = qwtmtWagetableCertifyPK;
-		this.exclusVer = exclusVer;
 	}
 
 	/**

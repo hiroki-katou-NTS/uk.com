@@ -19,7 +19,6 @@ import nts.uk.shr.com.context.AppContexts;
  * The Class LaborInsuranceOfficeUpdateCommandHandler.
  */
 @Stateless
-@Transactional
 public class LaborInsuranceOfficeUpdateCommandHandler extends CommandHandler<LaborInsuranceOfficeUpdateCommand> {
 
 	/** The labor insurance office repository. */
@@ -31,13 +30,11 @@ public class LaborInsuranceOfficeUpdateCommandHandler extends CommandHandler<Lab
 	private LaborInsuranceOfficeService LaborInsuranceOfficeService;
 	
 
-	/**
-	 * Handle command.
-	 * 
-	 * @param context
-	 *            context
+	/* (non-Javadoc)
+	 * @see nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command.CommandHandlerContext)
 	 */
 	@Override
+	@Transactional
 	protected void handle(CommandHandlerContext<LaborInsuranceOfficeUpdateCommand> context) {
 		String companyCode = AppContexts.user().companyCode();
 		LaborInsuranceOffice laborInsuranceOffice = context.getCommand().toDomain(companyCode);

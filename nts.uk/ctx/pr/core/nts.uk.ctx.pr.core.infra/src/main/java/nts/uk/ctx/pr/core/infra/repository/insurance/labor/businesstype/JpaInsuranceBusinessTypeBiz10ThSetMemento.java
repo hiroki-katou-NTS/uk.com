@@ -16,7 +16,7 @@ import nts.uk.ctx.pr.core.infra.entity.insurance.labor.businesstype.QismtBusines
 public class JpaInsuranceBusinessTypeBiz10ThSetMemento implements InsuranceBusinessTypeSetMemento {
 
 	/** The type value. */
-	protected QismtBusinessType typeValue;
+	private QismtBusinessType typeValue;
 
 	/**
 	 * Instantiates a new jpa insurance business type set memento.
@@ -49,7 +49,7 @@ public class JpaInsuranceBusinessTypeBiz10ThSetMemento implements InsuranceBusin
 	 */
 	@Override
 	public void setBizOrder(BusinessTypeEnum businessTypeEnum) {
-		// TODO Auto-generated method stub
+		// Do nothing
 
 	}
 

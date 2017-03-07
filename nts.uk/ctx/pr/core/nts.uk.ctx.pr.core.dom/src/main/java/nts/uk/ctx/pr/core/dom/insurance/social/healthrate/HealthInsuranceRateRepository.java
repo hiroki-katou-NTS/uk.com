@@ -7,6 +7,7 @@ package nts.uk.ctx.pr.core.dom.insurance.social.healthrate;
 import java.util.List;
 import java.util.Optional;
 
+import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 
 /**
@@ -42,7 +43,7 @@ public interface HealthInsuranceRateRepository {
 	 * @param officeCode the office code
 	 * @return the list
 	 */
-	List<HealthInsuranceRate> findAll(String companyCode);
+	List<HealthInsuranceRate> findAll(CompanyCode companyCode);
 
 	/**
 	 * Find by id.

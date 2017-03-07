@@ -10,16 +10,16 @@ import lombok.Getter;
  * The Class RangeItem.
  */
 @Getter
-public class RangeItem implements BaseItem{
+public class RangeItem implements BaseItem {
 
 	/** The order number. */
 	private Integer orderNumber;
 
 	/** The start val. */
-	private Integer startVal;
+	private Double startVal;
 
 	/** The end val. */
-	private Integer endVal;
+	private Double endVal;
 
 	/** The uuid. */
 	private String uuid;
@@ -27,12 +27,16 @@ public class RangeItem implements BaseItem{
 	/**
 	 * Instantiates a new range item.
 	 *
-	 * @param orderNumber the order number
-	 * @param startVal the start val
-	 * @param endVal the end val
-	 * @param uuid the uuid
+	 * @param orderNumber
+	 *            the order number
+	 * @param startVal
+	 *            the start val
+	 * @param endVal
+	 *            the end val
+	 * @param uuid
+	 *            the uuid
 	 */
-	public RangeItem(Integer orderNumber, Integer startVal, Integer endVal, String uuid) {
+	public RangeItem(Integer orderNumber, Double startVal, Double endVal, String uuid) {
 		super();
 		this.orderNumber = orderNumber;
 		this.startVal = startVal;

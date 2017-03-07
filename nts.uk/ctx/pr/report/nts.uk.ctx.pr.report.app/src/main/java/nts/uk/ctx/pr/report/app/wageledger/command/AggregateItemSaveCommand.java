@@ -21,19 +21,7 @@ import nts.uk.ctx.pr.report.dom.wageledger.aggregate.WLAggregateItemName;
 /**
  * The Class AggregateItemSaveCommand.
  */
-
-/**
- * Checks if is creates the mode.
- *
- * @return true, if is creates the mode
- */
 @Getter
-
-/**
- * Sets the creates the mode.
- *
- * @param isCreateMode the new creates the mode
- */
 @Setter
 public class AggregateItemSaveCommand {
 	

@@ -7,7 +7,6 @@ package nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate;
 import java.util.List;
 import java.util.Optional;
 
-import nts.arc.time.YearMonth;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 

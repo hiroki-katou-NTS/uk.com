@@ -118,7 +118,7 @@ module nts.uk.pr.view.qmm008.f {
             // click button setting
             clickSettingButton() {
                 var self = this;
-                //TODO check health or pension
+                //check health or pension
                 if (self.isHealth()) {
                     if (self.isRemove()) {
                         //remove current history  
@@ -142,7 +142,7 @@ module nts.uk.pr.view.qmm008.f {
                                     data.endMonth = self.convertMonth(data.endMonth);
                                     aservice.updateHealthRate(data);
                                 });
-                                //TODO update previous history
+                                // update previous history
                                 aservice.getHealthInsuranceItemDetail(self.OfficeItemModel().childs[1].code).done(function(data: HealthInsuranceRateDto) {
                                     //update previous end month to 9999/12
                                     data.startMonth = self.convertMonth(data.startMonth);
@@ -191,7 +191,7 @@ module nts.uk.pr.view.qmm008.f {
                                     data.endMonth = self.convertMonth(data.endMonth);
                                     aservice.updatePensionRate(data);
                                 });
-                                //TODO update previous history
+                                // update previous history
                                 aservice.getPensionItemDetail(self.OfficeItemModel().childs[1].code).done(function(data: PensionRateDto) {
                                     //update previous end month to 9999/12
                                     data.startMonth = self.convertMonth(data.startMonth);

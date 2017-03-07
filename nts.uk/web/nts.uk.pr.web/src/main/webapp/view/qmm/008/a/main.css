@@ -28,7 +28,7 @@
 }
 
 .hr_width {
-	width: 99%
+	width: 760px;
 }
 
 .pad_top_10 {
@@ -107,4 +107,10 @@ th, td {
 }
 .tbl_health_child{
 	width: 100px;	
+}
+#health_panel{
+	width: 1200px;
+}
+#pension_panel{
+	width: 1200px;
 }

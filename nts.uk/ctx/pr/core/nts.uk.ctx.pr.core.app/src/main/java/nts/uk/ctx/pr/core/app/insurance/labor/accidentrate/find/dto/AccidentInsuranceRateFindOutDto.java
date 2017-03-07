@@ -32,8 +32,7 @@ public class AccidentInsuranceRateFindOutDto implements AccidentInsuranceRateSet
 	/**
 	 * Sets the dto to.
 	 *
-	 * @param lstDomain
-	 *            the new dto to
+	 * @param lstDomain the new dto to
 	 */
 	public void setDtoTo(List<InsuranceBusinessType> lstDomain) {
 		for (InsuranceBusinessType itemDomain : lstDomain) {

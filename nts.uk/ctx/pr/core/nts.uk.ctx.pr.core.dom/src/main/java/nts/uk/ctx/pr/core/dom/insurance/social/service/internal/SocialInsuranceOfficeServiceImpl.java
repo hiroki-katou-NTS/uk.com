@@ -32,8 +32,9 @@ public class SocialInsuranceOfficeServiceImpl implements SocialInsuranceOfficeSe
 	 */
 	@Override
 	public void validateRequiredItem(SocialInsuranceOffice office) {
-		if (office.getCode() == null || StringUtil.isNullOrEmpty(office.getCode().v(), true) || office.getName() == null
-				|| StringUtil.isNullOrEmpty(office.getName().v(), true) || office.getPicPosition() == null
+		if (office.getCode() == null || StringUtil.isNullOrEmpty(office.getCode().v(), true)
+				|| office.getName() == null || StringUtil.isNullOrEmpty(office.getName().v(), true)
+				|| office.getPicPosition() == null
 				|| StringUtil.isNullOrEmpty(office.getPicPosition().v(), true)) {
 			throw new BusinessException("ER001");
 		}
@@ -48,7 +49,8 @@ public class SocialInsuranceOfficeServiceImpl implements SocialInsuranceOfficeSe
 	 */
 	@Override
 	public void checkDuplicateCode(SocialInsuranceOffice office) {
-		if (socialInsuranceOfficeRepo.isDuplicateCode(office.getCode())) {
+
+		if (socialInsuranceOfficeRepo.isDuplicateCode(office.getCompanyCode(), office.getCode())) {
 			throw new BusinessException("ER005");
 		}
 	}

@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2016 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.core.ws.insurance.social;
@@ -27,49 +27,85 @@ import nts.uk.ctx.pr.core.app.insurance.social.office.find.SocialInsuranceOffice
 import nts.uk.ctx.pr.core.app.insurance.social.office.find.SocialInsuranceOfficeFinder;
 import nts.uk.ctx.pr.core.app.insurance.social.office.find.SocialInsuranceOfficeItemDto;
 import nts.uk.ctx.pr.core.app.insurance.social.pensionrate.command.RegisterPensionCommandHandler;
+import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
- * The Class SocialInsuranceOfficeService.
+ * The Class SocialInsuranceOfficeWs.
  */
 @Path("pr/insurance/social")
 @Produces("application/json")
 @Stateless
 public class SocialInsuranceOfficeWs extends WebService {
 
+	/** The register social office command handler. */
 	@Inject
 	private RegisterSocialOfficeCommandHandler registerSocialOfficeCommandHandler;
+
+	/** The update social office command handler. */
 	@Inject
 	private UpdateSocialOfficeCommandHandler updateSocialOfficeCommandHandler;
+
+	/** The delete social office command handler. */
 	@Inject
 	private DeleteSocialOfficeCommandHandler deleteSocialOfficeCommandHandler;
+
+	/** The register pension command handler. */
 	@Inject
 	private RegisterPensionCommandHandler registerPensionCommandHandler;
 
+	/** The social insurance office finder. */
 	@Inject
 	private SocialInsuranceOfficeFinder socialInsuranceOfficeFinder;
 
+	/**
+	 * Find all.
+	 *
+	 * @return the list
+	 */
 	@POST
 	@Path("findall")
 	public List<SocialInsuranceOfficeItemDto> findAll() {
+		CompanyCode companyCode = new CompanyCode(AppContexts.user().companyCode());
 
-		String companyCode = AppContexts.user().companyCode();
 		return socialInsuranceOfficeFinder.findAll(companyCode);
 	}
 
+	/**
+	 * Find all detail.
+	 *
+	 * @return the list
+	 */
 	@POST
 	@Path("findall/detail")
 	public List<SocialInsuranceOfficeDto> findAllDetail() {
-		String companyCode = AppContexts.user().companyCode();
+		CompanyCode companyCode = new CompanyCode(AppContexts.user().companyCode());
+
 		return socialInsuranceOfficeFinder.findAllDetail(companyCode);
 	}
 
+	/**
+	 * Find office.
+	 *
+	 * @param officeCode
+	 *            the office code
+	 * @return the social insurance office dto
+	 */
 	@POST
 	@Path("find/{officeCode}")
 	public SocialInsuranceOfficeDto findOffice(@PathParam("officeCode") String officeCode) {
-		return socialInsuranceOfficeFinder.find(officeCode).get();
+		CompanyCode companyCode = new CompanyCode(AppContexts.user().companyCode());
+
+		return socialInsuranceOfficeFinder.find(companyCode, new OfficeCode(officeCode)).get();
 	}
 
+	/**
+	 * Find history.
+	 *
+	 * @param officeCode
+	 *            the office code
+	 * @return the list
+	 */
 	@POST
 	@Path("history/{officeCode}")
 	public List<HistoryDto> findHistory(@PathParam("officeCode") String officeCode) {
@@ -113,12 +149,21 @@ public class SocialInsuranceOfficeWs extends WebService {
 		return returnHistory;
 	}
 
+	/**
+	 * Find rounding.
+	 */
 	@POST
 	@Path("find/rounding")
 	public void findRounding() {
 		// TODO convert class RoundingMethod to values and return
 	}
 
+	/**
+	 * Creates the office.
+	 *
+	 * @param command
+	 *            the command
+	 */
 	@POST
 	@Path("create")
 	public void createOffice(RegisterSocialOfficeCommand command) {
@@ -126,6 +171,12 @@ public class SocialInsuranceOfficeWs extends WebService {
 		return;
 	}
 
+	/**
+	 * Update office.
+	 *
+	 * @param command
+	 *            the command
+	 */
 	@POST
 	@Path("update")
 	public void updateOffice(UpdateSocialOfficeCommand command) {
@@ -133,6 +184,12 @@ public class SocialInsuranceOfficeWs extends WebService {
 		return;
 	}
 
+	/**
+	 * Removes the office.
+	 *
+	 * @param command
+	 *            the command
+	 */
 	@POST
 	@Path("remove")
 	public void removeOffice(DeleteSocialOfficeCommand command) {

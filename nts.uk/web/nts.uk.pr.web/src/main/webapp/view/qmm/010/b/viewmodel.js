@@ -33,33 +33,28 @@ var nts;
                                 ScreenModel.prototype.findAllInsuranceOffice = function () {
                                     var self = this;
                                     var dfd = $.Deferred();
-                                    b.service.findAllSocialInsuranceOffice().done(function (data) {
-                                        self.lstSocialInsuranceOffice = ko.observableArray(data);
-                                        dfd.resolve(self);
-                                    });
+                                    var data = nts.uk.ui.windows.getShared("dataInsuranceOffice");
+                                    self.lstSocialInsuranceOffice = ko.observableArray(data);
+                                    dfd.resolve(self);
                                     return dfd.promise();
                                 };
-                                ScreenModel.prototype.showConfirm = function (laborInsuranceOfficeCheckImportDto, lstSocialInsuranceOfficeImport) {
+                                ScreenModel.prototype.showConfirm = function (laborInsuranceOfficeCheckImportDto, socialInsuranceOfficeImport) {
                                     var self = this;
                                     if (laborInsuranceOfficeCheckImportDto.code === "1") {
                                         nts.uk.ui.dialog.confirm("Duplicate Code ! Do you replace All?").ifYes(function () {
-                                            self.importData(0, lstSocialInsuranceOfficeImport);
+                                            self.importData(0, socialInsuranceOfficeImport);
                                         }).ifNo(function () {
-                                            self.importData(1, lstSocialInsuranceOfficeImport);
-                                        }).ifCancel(function () {
-                                            self.importData(1, lstSocialInsuranceOfficeImport);
-                                        }).then(function () {
-                                            self.importData(1, lstSocialInsuranceOfficeImport);
+                                            self.importData(1, socialInsuranceOfficeImport);
                                         });
                                     }
                                     else {
-                                        self.importData(0, lstSocialInsuranceOfficeImport);
+                                        self.importData(0, socialInsuranceOfficeImport);
                                     }
                                 };
-                                ScreenModel.prototype.importData = function (checkUpdateDuplicateCode, lstSocialInsuranceOfficeImport) {
+                                ScreenModel.prototype.importData = function (checkUpdateDuplicateCode, socialInsuranceOfficeImport) {
                                     var laborInsuranceOfficeImportDto;
                                     laborInsuranceOfficeImportDto = new LaborInsuranceOfficeImportDto();
-                                    laborInsuranceOfficeImportDto.lstSocialInsuranceOfficeImport = lstSocialInsuranceOfficeImport;
+                                    laborInsuranceOfficeImportDto.socialInsuranceOfficeImport = socialInsuranceOfficeImport;
                                     laborInsuranceOfficeImportDto.checkUpdateDuplicateCode = checkUpdateDuplicateCode;
                                     b.service.importData(laborInsuranceOfficeImportDto).done(function (data) {
                                         nts.uk.ui.windows.close();
@@ -77,17 +72,11 @@ var nts;
                                 };
                                 ScreenModel.prototype.checkDuplicateCodeByImportData = function () {
                                     var self = this;
-                                    if (self.selectLstSocialInsuranceOffice() != null && self.selectLstSocialInsuranceOffice().length > 0) {
-                                        var lstSocialInsuranceOfficeImport;
-                                        lstSocialInsuranceOfficeImport = [];
-                                        for (var _i = 0, _a = self.selectLstSocialInsuranceOffice(); _i < _a.length; _i++) {
-                                            var item = _a[_i];
-                                            lstSocialInsuranceOfficeImport.push(self.findCode(item));
-                                        }
-                                        var laborInsuranceOfficeImportDto;
-                                        laborInsuranceOfficeImportDto = new LaborInsuranceOfficeImportDto();
-                                        b.service.checkDuplicateCodeByImportData(lstSocialInsuranceOfficeImport).done(function (data) {
-                                            self.showConfirm(data, lstSocialInsuranceOfficeImport);
+                                    if (self.selectLstSocialInsuranceOffice() != null) {
+                                        var socialInsuranceOfficeImport;
+                                        socialInsuranceOfficeImport = self.findCode(self.selectLstSocialInsuranceOffice());
+                                        b.service.checkDuplicateCodeByImportData(socialInsuranceOfficeImport).done(function (data) {
+                                            self.showConfirm(data, socialInsuranceOfficeImport);
                                         });
                                     }
                                 };
