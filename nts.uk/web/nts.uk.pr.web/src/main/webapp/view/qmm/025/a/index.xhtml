@@ -8,13 +8,13 @@
 <body>
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
-				<com:scriptfile path="../../../../lib/generic/igniteui/js/infragistics.core.js" />
-				<com:scriptfile path="../../../../lib/generic/igniteui/js/infragistics.lob.js" />
-            	<com:scriptfile path="../../../../lib/generic/igniteui/js/extensions/infragistics.ui.combo.knockout-extensions.js" />
 			<com:ValidatorScript>
 					nts.uk.ctx.pr.core.dom.rule.law.tax.residential.input.YearKey
    				</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
+				<com:scriptfile path="../../../../lib/generic/igniteui/js/infragistics.core.js" />
+				<com:scriptfile path="../../../../lib/generic/igniteui/js/infragistics.lob.js" />
+            	<com:scriptfile path="../../../../lib/generic/igniteui/js/extensions/infragistics.ui.combo.knockout-extensions.js" />
 			<com:stylefile path="main.css" />
 			<com:scriptfile path="start.js" />
 			<com:scriptfile path="viewmodel.js" />
@@ -35,14 +35,15 @@
 					<div class="valign-center control-group">
 						<div id="A_LBL_001" data-bind="ntsFormLabel:{required: true}">対象年度</div>
 						<span id="A_INP_001"> <input
-							data-bind="ntsTextEditor: {
+							data-bind="ntsNumberEditor: {
 									value: yearKey,
 									constraint: 'YearKey',
 									option: {
-										textmode: 'text',
+										grouplength: 0,
+										decimallength: 0,
 					                    placeholder: '',
-					                    width: '45px',
-					                    textalign: 'center'
+					                    width: '55px',
+					                    textalign: 'left'
 									},
 									required: true,
 									enable: true,
@@ -52,7 +53,7 @@
 						<button id="A_BTN_003" data-bind="click: findAll">リスト表示ボタン</button>
 					</div>
 					<div class="bg-green config">
-						<button id="BTN_004" class="danger">社員の住民税情報を削除</button>
+						<button id="BTN_004" class="danger" data-bind="click: remove">社員の住民税情報を削除</button>
 					</div>
 					<div data-bind="visible: isEnable">
 						<table id="grid"></table>

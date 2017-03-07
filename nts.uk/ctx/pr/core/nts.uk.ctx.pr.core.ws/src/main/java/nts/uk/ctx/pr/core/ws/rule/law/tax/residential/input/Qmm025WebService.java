@@ -9,6 +9,8 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.pr.core.app.command.rule.law.tax.residential.input.RemovePersonResiTaxCommand;
+import nts.uk.ctx.pr.core.app.command.rule.law.tax.residential.input.RemovePersonResiTaxCommandHandler;
 import nts.uk.ctx.pr.core.app.find.rule.law.tax.residential.input.PersonResiTaxDto;
 import nts.uk.ctx.pr.core.app.find.rule.law.tax.residential.input.PersonResiTaxFinder;
 
@@ -18,9 +20,18 @@ public class Qmm025WebService extends WebService {
 	@Inject
 	private PersonResiTaxFinder personResiTaxFinder;
 	
+	@Inject
+	private RemovePersonResiTaxCommandHandler removePersonResiTaxCommandHandler;
+	
 	@POST
 	@Path("findAll/{yearKey}")
 	public List<PersonResiTaxDto> findAll(@PathParam("yearKey") int yearKey){
 		return this.personResiTaxFinder.findAll(yearKey);
+	}
+	
+	@POST
+	@Path("remove")
+	public void remove(RemovePersonResiTaxCommand command){
+		this.removePersonResiTaxCommandHandler.handle(command);
 	}
 }

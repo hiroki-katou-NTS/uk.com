@@ -1,20 +1,3 @@
-var items1 = [{ "ID": "ALFKI", "Code": "A0000001", "Name": "Maria Anders", "TaxPaymentDestination": "Paris", "AnnualTaxAmount": "250,000", "TotalMonth": false, "Jun": "21,200", "Jul": "21,200", "Aug": "21,200", "Sep": "21,200", "Oct": "21,200", "Nov": "21,200", "Dec": "21,200", "Jan": "21,200", "Feb": "21,200", "Mar": "21,200", "Apr": "21,200", "May": "21,200" },
-    { "ID": "ANATR", "Code": "A0000002", "Name": "Ana Trujillo", "TaxPaymentDestination": "Newyork", "AnnualTaxAmount": "250,000", "TotalMonth": false, "Jun": "21,200", "Jul": "21,200", "Aug": "21,200", "Sep": "21,200", "Oct": "21,200", "Nov": "21,200", "Dec": "21,200", "Jan": "21,200", "Feb": "21,200", "Mar": "21,200", "Apr": "21,200", "May": "21,200" }, { "ID": "ALFKI", "Code": "A0000021", "Name": "Maria Anders", "TaxPaymentDestination": "Paris", "AnnualTaxAmount": "250,000", "TotalMonth": false, "Jun": "21,200", "Jul": "21,200", "Aug": "21,200", "Sep": "21,200", "Oct": "21,200", "Nov": "21,200", "Dec": "21,200", "Jan": "21,200", "Feb": "21,200", "Mar": "21,200", "Apr": "21,200", "May": "21,200" },
-    { "ID": "ANATR", "Code": "A0000003", "Name": "Ana Trujillo", "TaxPaymentDestination": "Newyork", "AnnualTaxAmount": "250,000", "TotalMonth": false, "Jun": "21,200", "Jul": "21,200", "Aug": "21,200", "Sep": "21,200", "Oct": "21,200", "Nov": "21,200", "Dec": "21,200", "Jan": "21,200", "Feb": "21,200", "Mar": "21,200", "Apr": "21,200", "May": "21,200" }, { "ID": "ALFKI", "Code": "A0000022", "Name": "Maria Anders", "TaxPaymentDestination": "Paris", "AnnualTaxAmount": "250,000", "TotalMonth": false, "Jun": "21,200", "Jul": "21,200", "Aug": "21,200", "Sep": "21,200", "Oct": "21,200", "Nov": "21,200", "Dec": "21,200", "Jan": "21,200", "Feb": "21,200", "Mar": "21,200", "Apr": "21,200", "May": "21,200" },
-    { "ID": "ANATR", "Code": "A0000004", "Name": "Ana Trujillo", "TaxPaymentDestination": "Newyork", "AnnualTaxAmount": "250,000", "TotalMonth": false, "Jun": "21,200", "Jul": "21,200", "Aug": "21,200", "Sep": "21,200", "Oct": "21,200", "Nov": "21,200", "Dec": "21,200", "Jan": "21,200", "Feb": "21,200", "Mar": "21,200", "Apr": "21,200", "May": "21,200" }, { "ID": "ALFKI", "Code": "A0000023", "Name": "Maria Anders", "TaxPaymentDestination": "Paris", "AnnualTaxAmount": "250,000", "TotalMonth": false, "Jun": "21,200", "Jul": "21,200", "Aug": "21,200", "Sep": "21,200", "Oct": "21,200", "Nov": "21,200", "Dec": "21,200", "Jan": "21,200", "Feb": "21,200", "Mar": "21,200", "Apr": "21,200", "May": "21,200" },
-    { "ID": "ANATR", "Code": "A0000005", "Name": "Ana Trujillo", "TaxPaymentDestination": "Newyork", "AnnualTaxAmount": "250,000", "TotalMonth": false, "Jun": "21,200", "Jul": "21,200", "Aug": "21,200", "Sep": "21,200", "Oct": "21,200", "Nov": "21,200", "Dec": "21,200", "Jan": "21,200", "Feb": "21,200", "Mar": "21,200", "Apr": "21,200", "May": "21,200" }, { "ID": "ALFKI", "Code": "A0000024", "Name": "Maria Anders", "TaxPaymentDestination": "Paris", "AnnualTaxAmount": "250,000", "TotalMonth": false, "Jun": "21,200", "Jul": "21,200", "Aug": "21,200", "Sep": "21,200", "Oct": "21,200", "Nov": "21,200", "Dec": "21,200", "Jan": "21,200", "Feb": "21,200", "Mar": "21,200", "Apr": "21,200", "May": "21,200" },
-    { "ID": "ANATR", "Code": "A0000006", "Name": "Ana Trujillo", "TaxPaymentDestination": "Newyork", "AnnualTaxAmount": "250,000", "TotalMonth": false, "Jun": "21,200", "Jul": "21,200", "Aug": "21,200", "Sep": "21,200", "Oct": "21,200", "Nov": "21,200", "Dec": "21,200", "Jan": "21,200", "Feb": "21,200", "Mar": "21,200", "Apr": "21,200", "May": "21,200" }, { "ID": "ALFKI", "Code": "A00000025", "Name": "Maria Anders", "TaxPaymentDestination": "Paris", "AnnualTaxAmount": "250,000", "TotalMonth": false, "Jun": "21,200", "Jul": "21,200", "Aug": "21,200", "Sep": "21,200", "Oct": "21,200", "Nov": "21,200", "Dec": "21,200", "Jan": "21,200", "Feb": "21,200", "Mar": "21,200", "Apr": "21,200", "May": "21,200" },
-    { "ID": "ANATR", "Code": "A0000007", "Name": "Ana Trujillo", "TaxPaymentDestination": "Newyork", "AnnualTaxAmount": "250,000", "TotalMonth": false, "Jun": "21,200", "Jul": "21,200", "Aug": "21,200", "Sep": "21,200", "Oct": "21,200", "Nov": "21,200", "Dec": "21,200", "Jan": "21,200", "Feb": "21,200", "Mar": "21,200", "Apr": "21,200", "May": "21,200" }, { "ID": "ALFKI", "Code": "A00000026", "Name": "Maria Anders", "TaxPaymentDestination": "Paris", "AnnualTaxAmount": "250,000", "TotalMonth": false, "Jun": "21,200", "Jul": "21,200", "Aug": "21,200", "Sep": "21,200", "Oct": "21,200", "Nov": "21,200", "Dec": "21,200", "Jan": "21,200", "Feb": "21,200", "Mar": "21,200", "Apr": "21,200", "May": "21,200" },
-    { "ID": "ANATR", "Code": "A0000008", "Name": "Ana Trujillo", "TaxPaymentDestination": "Newyork", "AnnualTaxAmount": "250,000", "TotalMonth": false, "Jun": "21,200", "Jul": "21,200", "Aug": "21,200", "Sep": "21,200", "Oct": "21,200", "Nov": "21,200", "Dec": "21,200", "Jan": "21,200", "Feb": "21,200", "Mar": "21,200", "Apr": "21,200", "May": "21,200" }, { "ID": "ALFKI", "Code": "A00000027", "Name": "Maria Anders", "TaxPaymentDestination": "Paris", "AnnualTaxAmount": "250,000", "TotalMonth": false, "Jun": "21,200", "Jul": "21,200", "Aug": "21,200", "Sep": "21,200", "Oct": "21,200", "Nov": "21,200", "Dec": "21,200", "Jan": "21,200", "Feb": "21,200", "Mar": "21,200", "Apr": "21,200", "May": "21,200" },
-    { "ID": "ANATR", "Code": "A0000009", "Name": "Ana Trujillo", "TaxPaymentDestination": "Newyork", "AnnualTaxAmount": "250,000", "TotalMonth": false, "Jun": "21,200", "Jul": "21,200", "Aug": "21,200", "Sep": "21,200", "Oct": "21,200", "Nov": "21,200", "Dec": "21,200", "Jan": "21,200", "Feb": "21,200", "Mar": "21,200", "Apr": "21,200", "May": "21,200" }, { "ID": "ALFKI", "Code": "A00000028", "Name": "Maria Anders", "TaxPaymentDestination": "Paris", "AnnualTaxAmount": "250,000", "TotalMonth": false, "Jun": "21,200", "Jul": "21,200", "Aug": "21,200", "Sep": "21,200", "Oct": "21,200", "Nov": "21,200", "Dec": "21,200", "Jan": "21,200", "Feb": "21,200", "Mar": "21,200", "Apr": "21,200", "May": "21,200" },
-    { "ID": "ANATR", "Code": "A0000010", "Name": "Ana Trujillo", "TaxPaymentDestination": "Newyork", "AnnualTaxAmount": "250,000", "TotalMonth": false, "Jun": "21,200", "Jul": "21,200", "Aug": "21,200", "Sep": "21,200", "Oct": "21,200", "Nov": "21,200", "Dec": "21,200", "Jan": "21,200", "Feb": "21,200", "Mar": "21,200", "Apr": "21,200", "May": "21,200" }, { "ID": "ALFKI", "Code": "A00000029", "Name": "Maria Anders", "TaxPaymentDestination": "Paris", "AnnualTaxAmount": "250,000", "TotalMonth": false, "Jun": "21,200", "Jul": "21,200", "Aug": "21,200", "Sep": "21,200", "Oct": "21,200", "Nov": "21,200", "Dec": "21,200", "Jan": "21,200", "Feb": "21,200", "Mar": "21,200", "Apr": "21,200", "May": "21,200" },
-    { "ID": "ANATR", "Code": "A0000011", "Name": "Ana Trujillo", "TaxPaymentDestination": "Newyork", "AnnualTaxAmount": "250,000", "TotalMonth": false, "Jun": "21,200", "Jul": "21,200", "Aug": "21,200", "Sep": "21,200", "Oct": "21,200", "Nov": "21,200", "Dec": "21,200", "Jan": "21,200", "Feb": "21,200", "Mar": "21,200", "Apr": "21,200", "May": "21,200" }, { "ID": "ALFKI", "Code": "A00000030", "Name": "Maria Anders", "TaxPaymentDestination": "Paris", "AnnualTaxAmount": "250,000", "TotalMonth": false, "Jun": "21,200", "Jul": "21,200", "Aug": "21,200", "Sep": "21,200", "Oct": "21,200", "Nov": "21,200", "Dec": "21,200", "Jan": "21,200", "Feb": "21,200", "Mar": "21,200", "Apr": "21,200", "May": "21,200" },
-    { "ID": "ANATR", "Code": "A0000012", "Name": "Ana Trujillo", "TaxPaymentDestination": "Newyork", "AnnualTaxAmount": "250,000", "TotalMonth": false, "Jun": "21,200", "Jul": "21,200", "Aug": "21,200", "Sep": "21,200", "Oct": "21,200", "Nov": "21,200", "Dec": "21,200", "Jan": "21,200", "Feb": "21,200", "Mar": "21,200", "Apr": "21,200", "May": "21,200" }, { "ID": "ALFKI", "Code": "A00000031", "Name": "Maria Anders", "TaxPaymentDestination": "Paris", "AnnualTaxAmount": "250,000", "TotalMonth": false, "Jun": "21,200", "Jul": "21,200", "Aug": "21,200", "Sep": "21,200", "Oct": "21,200", "Nov": "21,200", "Dec": "21,200", "Jan": "21,200", "Feb": "21,200", "Mar": "21,200", "Apr": "21,200", "May": "21,200" },
-    { "ID": "ANATR", "Code": "A00000013", "Name": "Ana Trujillo", "TaxPaymentDestination": "Newyork", "AnnualTaxAmount": "250,000", "TotalMonth": false, "Jun": "21,200", "Jul": "21,200", "Aug": "21,200", "Sep": "21,200", "Oct": "21,200", "Nov": "21,200", "Dec": "21,200", "Jan": "21,200", "Feb": "21,200", "Mar": "21,200", "Apr": "21,200", "May": "21,200" }, { "ID": "ALFKI", "Code": "A00000032", "Name": "Maria Anders", "TaxPaymentDestination": "Paris", "AnnualTaxAmount": "250,000", "TotalMonth": false, "Jun": "21,200", "Jul": "21,200", "Aug": "21,200", "Sep": "21,200", "Oct": "21,200", "Nov": "21,200", "Dec": "21,200", "Jan": "21,200", "Feb": "21,200", "Mar": "21,200", "Apr": "21,200", "May": "21,200" },
-    { "ID": "ANATR", "Code": "A00000014", "Name": "Ana Trujillo", "TaxPaymentDestination": "Newyork", "AnnualTaxAmount": "250,000", "TotalMonth": false, "Jun": "21,200", "Jul": "21,200", "Aug": "21,200", "Sep": "21,200", "Oct": "21,200", "Nov": "21,200", "Dec": "21,200", "Jan": "21,200", "Feb": "21,200", "Mar": "21,200", "Apr": "21,200", "May": "21,200" },
-    { "ID": "ANATR", "Code": "A00000015", "Name": "Ana Trujillo", "TaxPaymentDestination": "Newyork", "AnnualTaxAmount": "250,000", "TotalMonth": false, "Jun": "21,200", "Jul": "21,200", "Aug": "21,200", "Sep": "21,200", "Oct": "21,200", "Nov": "21,200", "Dec": "21,200", "Jan": "21,200", "Feb": "21,200", "Mar": "21,200", "Apr": "21,200", "May": "21,200" },
-];
-
 module qmm025.a.viewmodel {
     export class ScreenModel {
         items: KnockoutObservableArray<any>;
@@ -27,7 +10,7 @@ module qmm025.a.viewmodel {
             self.items = ko.observableArray([]);
             self.isEnable = ko.observable(false);
             //get current year
-            self.yearKey = ko.observable((new Date()).getFullYear());
+            self.yearKey = ko.observable(0);
             self.yearInJapanEmpire = ko.computed(function() {
                 return nts.uk.time.yearInJapanEmpire(self.yearKey()).toString();
             });
@@ -39,10 +22,92 @@ module qmm025.a.viewmodel {
         startPage(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
-            self.findAll();
-            dfd.resolve();
+            $.when(self.getYearKey()).done(function() {
+                self.findAll().done(function() {
+                    dfd.resolve();
+                }).fail(function(res) {
+                    dfd.reject(res);
+                });
+            }).fail(function(res) {
+                dfd.reject(res);
+            });
             return dfd.promise();
         }
+
+        findAll() {
+            var self = this;
+            var dfd = $.Deferred();
+            qmm025.a.service.findAll(self.yearKey())
+                .done(function(data) {
+                    var perResiTaxData = [];
+                    if (data[0] === undefined) {
+                        qmm025.a.service.findAll(self.yearKey() - 1)
+                            .done(function(data) {
+                                if (data[0] === undefined) {
+                                    alert("ERROR!");
+                                } else {
+                                    perResiTaxData.push(new ResidenceTax('NSVC', data[0].personId, 'name', 'Vietnam', false,
+                                        data[0].residenceTax[0].value, data[0].residenceTax[1].value, data[0].residenceTax[2].value,
+                                        data[0].residenceTax[3].value, data[0].residenceTax[4].value, data[0].residenceTax[5].value,
+                                        data[0].residenceTax[6].value, data[0].residenceTax[7].value, data[0].residenceTax[8].value,
+                                        data[0].residenceTax[9].value, data[0].residenceTax[10].value, data[0].residenceTax[11].value));
+
+                                    self.items(perResiTaxData);
+                                    self.isEnable(true);
+                                    self.bindGrid(self.items());
+                                }
+                                dfd.resolve();
+                            })
+                            .fail(function(res) {
+                                dfd.reject(res);
+                            });
+                    } else {
+                        perResiTaxData.push(new ResidenceTax('NSVC', data[0].personId, 'name', 'Vietnam', false,
+                            data[0].residenceTax[0].value, data[0].residenceTax[1].value, data[0].residenceTax[2].value,
+                            data[0].residenceTax[3].value, data[0].residenceTax[4].value, data[0].residenceTax[5].value,
+                            data[0].residenceTax[6].value, data[0].residenceTax[7].value, data[0].residenceTax[8].value,
+                            data[0].residenceTax[9].value, data[0].residenceTax[10].value, data[0].residenceTax[11].value));
+
+                        self.items(perResiTaxData);
+                        self.isEnable(true);
+                        self.bindGrid(self.items());
+                        dfd.resolve();
+                    }
+                })
+                .fail(function(res) {
+                    dfd.reject(res);
+                });
+            return dfd.promise();
+        }
+
+        getYearKey() {
+            var self = this;
+            var dfd = $.Deferred();
+            qmm025.a.service.getYearKey()
+                .done(function(res) {
+                    self.yearKey(res.currentProcessingYm);
+                    dfd.resolve();
+                })
+                .fail(function(res) {
+                    dfd.reject(res);
+                });
+            return dfd.promise();
+        }
+
+        remove() {
+            var self = this;
+            var yearKey = self.yearKey();
+            var obj = {
+                "yearKey": yearKey
+            }
+            qmm025.a.service.remove(obj)
+                .done(function() {
+                    self.findAll();
+                })
+                .fail(function() {
+                });
+        }
+
 
         bindGrid(data) {
             var self = this;
@@ -75,10 +140,7 @@ module qmm025.a.viewmodel {
                     { headerText: "コード", key: "code", dataType: "string", width: "100px", formatter: _.escape },
                     { headerText: "名称", key: "name", dataType: "string", width: "120px", formatter: _.escape },
                     { headerText: "住民税納付先", key: "add", dataType: "string", width: "100px", formatter: _.escape },
-                    {
-                        headerText: "年税額", key: "residenceTaxPerYear", dataType: "number", width: "100px", columnCssClass: "align_right"
-                        //                        , unbound: true, formula: function(row, grid) { return row.residenceTax06 + row.residenceTax07; }
-                    },
+                    { headerText: "年税額", key: "residenceTaxPerYear", dataType: "number", width: "100px", columnCssClass: "align_right" },
                     { headerText: "全月", key: "checkAllMonth", dataType: "bool", width: "35px" },
                     { headerText: "6月", key: "residenceTax06", dataType: "number", width: "100px", template: "<a style='float: right'>${residenceTax06}円</a>" },
                     { headerText: "7月", key: "residenceTax07", dataType: "number", width: "100px", template: "<a style='float: right'>${residenceTax07}円</a>" },
@@ -191,34 +253,6 @@ module qmm025.a.viewmodel {
                     }
                 ]
             });
-
-        }
-        findAll() {
-            var self = this;
-            var dfd = $.Deferred();
-            qmm025.a.service.findAll(self.yearKey())
-                .done(function(data) {
-                    var perResiTaxData = [];
-                    var ttm = data[0].residenceTax[0].value + data[0].residenceTax[1].value + data[0].residenceTax[2].value +
-                        data[0].residenceTax[3].value + data[0].residenceTax[4].value + data[0].residenceTax[5].value +
-                        data[0].residenceTax[6].value + data[0].residenceTax[7].value + data[0].residenceTax[8].value +
-                        data[0].residenceTax[9].value + data[0].residenceTax[10].value + data[0].residenceTax[11].value;
-
-                    perResiTaxData.push(new ResidenceTax('NSVC', data[0].personId, 'name', 'Vietnam', false,
-                        data[0].residenceTax[0].value, data[0].residenceTax[1].value, data[0].residenceTax[2].value,
-                        data[0].residenceTax[3].value, data[0].residenceTax[4].value, data[0].residenceTax[5].value,
-                        data[0].residenceTax[6].value, data[0].residenceTax[7].value, data[0].residenceTax[8].value,
-                        data[0].residenceTax[9].value, data[0].residenceTax[10].value, data[0].residenceTax[11].value));
-                    perResiTaxData.push(new ResidenceTax('NSVC', '0000000000000001', 'name1', 'Japan', false,
-                        10000, 10000, 10000, 10000, 10000, 10000, 10000, 10000, 10000, 10000, 10000, 10000));
-                    self.items(perResiTaxData);
-                    self.isEnable(true);
-                    self.bindGrid(self.items());
-                })
-                .fail(function(res) {
-                    dfd.reject(res);
-                });
-            return dfd.promise();
         }
     }
 

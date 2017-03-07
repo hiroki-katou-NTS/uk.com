@@ -17,5 +17,5 @@ public interface PersonResiTaxRepository {
 	
 	void update();
 	
-	void remove();
+	void remove(String companyCode, String personId, int yearKey);
 }
