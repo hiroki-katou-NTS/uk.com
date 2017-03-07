@@ -237,41 +237,22 @@ module qmm003.d.viewmodel {
         }
         clickButton(): void {
             let self = this;
-            let reportCode = [];
-            let objResidential: service.model.ResidentialTax;
-            _.each(self.arrayNode(), function(newValue) {
-                self.currentNode(self.findByCode(self.items(), newValue));
-                console.log(self.currentNode());
-                _.find(self.residentalTaxList(), function(obj: qmm003.d.service.model.ResidentialTax) {
-                    if (obj.resiTaxCode === self.currentNode().code) {
-                        reportCode.push(obj.resiTaxReportCode);
-                        objResidential = obj;
-                    }
+            let resiTaxCodes = [];
+//            qmm003.d.service.getResidentialTaxByResiTaxCode(self.arrayNode()[0],self.arrayNode()[0]).done(function(data){
+//                console.log(data);
+//            
+//            });
+            for (let i = 0; i < self.arrayNode().length; i++) {
+                resiTaxCodes.push(self.arrayNode()[i]);
+            }
+            console.log(resiTaxCodes);
+                qmm003.d.service.deleteResidential(resiTaxCodes).done(function(data) {
+                    console.log(data);
+                    self.items([]);
+                    self.nodeRegionPrefectures([]);
+                    //self.start();
+
                 });
-            })
-            console.log(reportCode);
-
-            console.log(self.currentNode().code);
-            console.log(reportCode);
-            //            _.each(reportCode, function(newValue) {
-            //                qmm003.d.service.getResidentialTaxByResiTaxCode(self., reportCode).done(function(data) {
-            //                    console.log(data);
-            //
-            //                });
-            //            });
-            qmm003.d.service.getResidentialTaxByResiTaxCode(self.arrayNode()[0], reportCode[0]).done(function(data) {
-                console.log(data);
-
-            });
-            //let residential :service.model.ResidentialTax;
-            qmm003.d.service.deleteResidential(objResidential).done(function(data) {
-                console.log(data);
-                self.items([]);
-                self.nodeRegionPrefectures([]);
-               // self.start();
-
-            });
-            nts.uk.ui.windows.setShared('items', self.items(), true);
             nts.uk.ui.windows.close();
         }
         cancelButton(): void {

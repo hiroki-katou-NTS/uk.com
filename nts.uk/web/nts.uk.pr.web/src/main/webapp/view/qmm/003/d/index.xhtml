@@ -20,10 +20,16 @@
             
             <ui:define name="content">
             	<div id="contents-area">
-            	<div class="flex valign-center" style="margin-top:10px; margin-left:35px">
+<!--             	<div class="flex valign-center" style="margin-top:10px; margin-left:35px">
+ -->            	<div>
             	<label id="D_LBL_001">削除したい項目を選択してください。</label>	
-            	</div>	 
-            	<i class="icon icon-searchbox"></i>	
+            	</div>
+            	<div style="margin-left: 25px">
+            	<label  id="D_LBL_002"> 「※地方や県を選択している場合、紐付く住民税納付先マスタが </label>
+            	削除対象となります。」を表示する。
+            	</div>
+<!--             	</div>	 
+ -->            	<i class="icon icon-searchbox"></i>	
 				<div id="D_SCH_001"
 								data-bind="ntsSearchBox: {items: items, selected: selectedCode, selectedKey: 'code', childField: 'childs', filteredItems: filteredData, fields: ['name', 'code']}" />
 							<div>

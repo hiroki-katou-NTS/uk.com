@@ -228,38 +228,21 @@ var qmm003;
                 };
                 ScreenModel.prototype.clickButton = function () {
                     var self = this;
-                    var reportCode = [];
-                    var objResidential;
-                    _.each(self.arrayNode(), function (newValue) {
-                        self.currentNode(self.findByCode(self.items(), newValue));
-                        console.log(self.currentNode());
-                        _.find(self.residentalTaxList(), function (obj) {
-                            if (obj.resiTaxCode === self.currentNode().code) {
-                                reportCode.push(obj.resiTaxReportCode);
-                                objResidential = obj;
-                            }
-                        });
-                    });
-                    console.log(reportCode);
-                    console.log(self.currentNode().code);
-                    console.log(reportCode);
-                    //            _.each(reportCode, function(newValue) {
-                    //                qmm003.d.service.getResidentialTaxByResiTaxCode(self., reportCode).done(function(data) {
-                    //                    console.log(data);
-                    //
-                    //                });
+                    var resiTaxCodes = [];
+                    //            qmm003.d.service.getResidentialTaxByResiTaxCode(self.arrayNode()[0],self.arrayNode()[0]).done(function(data){
+                    //                console.log(data);
+                    //            
                     //            });
-                    qmm003.d.service.getResidentialTaxByResiTaxCode(self.arrayNode()[0], reportCode[0]).done(function (data) {
-                        console.log(data);
-                    });
-                    //let residential :service.model.ResidentialTax;
-                    qmm003.d.service.deleteResidential(objResidential).done(function (data) {
+                    for (var i = 0; i < self.arrayNode().length; i++) {
+                        resiTaxCodes.push(self.arrayNode()[i]);
+                    }
+                    console.log(resiTaxCodes);
+                    qmm003.d.service.deleteResidential(resiTaxCodes).done(function (data) {
                         console.log(data);
                         self.items([]);
                         self.nodeRegionPrefectures([]);
-                        // self.start();
+                        //self.start();
                     });
-                    nts.uk.ui.windows.setShared('items', self.items(), true);
                     nts.uk.ui.windows.close();
                 };
                 ScreenModel.prototype.cancelButton = function () {

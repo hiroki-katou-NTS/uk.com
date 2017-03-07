@@ -20,10 +20,10 @@ module qmm003.d.service {
             })
         return dfd.promise();
     }
-    
+
     export function getResidentialTaxByResiTaxCode(resiTaxCode: string, resiReportCode: string): JQueryPromise<Array<model.ResidentialTax>> {
         var dfd = $.Deferred<Array<qmm003.d.service.model.ResidentialTax>>();
-         var objectLayout = {resiTaxCode: resiTaxCode, resiReportCode: resiReportCode};
+        var objectLayout = { resiTaxCode: resiTaxCode, resiReportCode: resiReportCode };
         var _path = nts.uk.text.format(paths.getResidentialTaxByResidential, resiTaxCode, resiReportCode);
         nts.uk.request.ajax(_path)
             .done(function(res: Array<qmm003.d.service.model.ResidentialTax>) {
@@ -34,7 +34,6 @@ module qmm003.d.service {
             })
         return dfd.promise();
     }
-    
     export function getResidentialTaxByResidential(): JQueryPromise<Array<model.ResidentialTax>> {
         var dfd = $.Deferred<Array<qmm003.d.service.model.ResidentialTax>>();
         nts.uk.request.ajax(paths.getResidentalTaxList)
@@ -57,9 +56,9 @@ module qmm003.d.service {
             })
         return dfd.promise();
     }
-    export function deleteResidential(residential: model.ResidentialTax) {
+    export function deleteResidential(param: Array<string>) {
         var dfd = $.Deferred<Array<any>>();
-        nts.uk.request.ajax(paths.deleteResidential, residential).done(function(res: Array<any>) {
+        nts.uk.request.ajax(paths.deleteResidential, { resiTaxCodes : param} ).done(function(res: Array<any>) {
             dfd.resolve(res);
         })
             .fail(function(res) {

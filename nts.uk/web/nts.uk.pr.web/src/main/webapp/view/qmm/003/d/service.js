@@ -63,9 +63,9 @@ var qmm003;
                 return dfd.promise();
             }
             service.getRegionPrefecture = getRegionPrefecture;
-            function deleteResidential(residential) {
+            function deleteResidential(param) {
                 var dfd = $.Deferred();
-                nts.uk.request.ajax(paths.deleteResidential, residential).done(function (res) {
+                nts.uk.request.ajax(paths.deleteResidential, { resiTaxCodes: param }).done(function (res) {
                     dfd.resolve(res);
                 })
                     .fail(function (res) {
