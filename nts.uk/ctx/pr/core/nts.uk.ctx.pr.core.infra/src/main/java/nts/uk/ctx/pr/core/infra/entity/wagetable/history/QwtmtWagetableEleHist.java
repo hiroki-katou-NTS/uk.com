@@ -16,13 +16,16 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinColumns;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OrderBy;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.pr.core.infra.entity.wagetable.element.QwtmtWagetableElement;
 
 /**
  * The Class QwtmtWagetableEleHist.
@@ -96,14 +99,32 @@ public class QwtmtWagetableEleHist implements Serializable {
 	@Column(name = "DEMENSION_INTERVAL")
 	private BigDecimal demensionInterval;
 
-	/** The qwtmt wagetable head. */
+	/** The qwtmt wagetable element. */
+	@JoinColumns({
+			@JoinColumn(name = "CCD", referencedColumnName = "CCD", insertable = false, updatable = false),
+			@JoinColumn(name = "WAGE_TABLE_CD", referencedColumnName = "WAGE_TABLE_CD", insertable = false, updatable = false),
+			@JoinColumn(name = "DEMENSION_NO", referencedColumnName = "DEMENSION_NO", insertable = false, updatable = false) })
+	@ManyToOne(optional = false)
+	private QwtmtWagetableElement qwtmtWagetableElement;
+
+	/** The qwtmt wagetable cd list. */
 	@JoinColumns({
 			@JoinColumn(name = "CCD", referencedColumnName = "CCD", insertable = false, updatable = false),
 			@JoinColumn(name = "WAGE_TABLE_CD", referencedColumnName = "WAGE_TABLE_CD", insertable = false, updatable = false),
 			@JoinColumn(name = "HIST_ID", referencedColumnName = "HIST_ID", insertable = false, updatable = false),
 			@JoinColumn(name = "DEMENSION_NO", referencedColumnName = "DEMENSION_NO", insertable = false, updatable = false) })
-	@OneToMany(cascade = CascadeType.ALL)
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<QwtmtWagetableCd> qwtmtWagetableCdList;
+
+	/** The qwtmt wagetable num list. */
+	@JoinColumns({
+			@JoinColumn(name = "CCD", referencedColumnName = "CCD", insertable = false, updatable = false),
+			@JoinColumn(name = "WAGE_TABLE_CD", referencedColumnName = "WAGE_TABLE_CD", insertable = false, updatable = false),
+			@JoinColumn(name = "HIST_ID", referencedColumnName = "HIST_ID", insertable = false, updatable = false),
+			@JoinColumn(name = "DEMENSION_NO", referencedColumnName = "DEMENSION_NO", insertable = false, updatable = false) })
+	@OrderBy("elementNumNo asc")
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<QwtmtWagetableNum> qwtmtWagetableNumList;
 
 	/**
 	 * Instantiates a new qwtmt wagetable ele hist.
@@ -125,30 +146,6 @@ public class QwtmtWagetableEleHist implements Serializable {
 	/**
 	 * Instantiates a new qwtmt wagetable ele hist.
 	 *
-	 * @param qwtmtWagetableEleHistPK
-	 *            the qwtmt wagetable ele hist PK
-	 * @param exclusVer
-	 *            the exclus ver
-	 * @param demensionUpperLimit
-	 *            the demension upper limit
-	 * @param demensionLowerLimit
-	 *            the demension lower limit
-	 * @param demensionInterval
-	 *            the demension interval
-	 */
-	public QwtmtWagetableEleHist(QwtmtWagetableEleHistPK qwtmtWagetableEleHistPK, int exclusVer,
-			BigDecimal demensionUpperLimit, BigDecimal demensionLowerLimit,
-			BigDecimal demensionInterval) {
-		this.qwtmtWagetableEleHistPK = qwtmtWagetableEleHistPK;
-		this.exclusVer = exclusVer;
-		this.demensionUpperLimit = demensionUpperLimit;
-		this.demensionLowerLimit = demensionLowerLimit;
-		this.demensionInterval = demensionInterval;
-	}
-
-	/**
-	 * Instantiates a new qwtmt wagetable ele hist.
-	 *
 	 * @param ccd
 	 *            the ccd
 	 * @param wageTableCd
@@ -158,7 +155,8 @@ public class QwtmtWagetableEleHist implements Serializable {
 	 * @param demensionNo
 	 *            the demension no
 	 */
-	public QwtmtWagetableEleHist(String ccd, String wageTableCd, String histId, Integer demensionNo) {
+	public QwtmtWagetableEleHist(String ccd, String wageTableCd, String histId,
+			Integer demensionNo) {
 		this.qwtmtWagetableEleHistPK = new QwtmtWagetableEleHistPK(ccd, wageTableCd, histId,
 				demensionNo);
 	}

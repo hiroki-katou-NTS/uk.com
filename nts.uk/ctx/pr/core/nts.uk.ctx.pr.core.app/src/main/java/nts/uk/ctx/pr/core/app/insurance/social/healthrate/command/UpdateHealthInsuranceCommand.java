@@ -50,7 +50,9 @@ public class UpdateHealthInsuranceCommand extends HealthInsuranceBaseCommand {
 			@Override
 			public Set<HealthInsuranceRounding> getRoundingMethods() {
 				if (command.getRoundingMethods().isEmpty())
+				{
 					return null;
+				}
 				return new HashSet<HealthInsuranceRounding>(command.getRoundingMethods());
 			}
 

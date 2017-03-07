@@ -8,7 +8,6 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.pr.core.dom.insurance.PaymentType;
-import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.InsuranceGender;
 
 /**
  * The Class PensionPremiumRateItem.

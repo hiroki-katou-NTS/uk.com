@@ -18,7 +18,6 @@ import nts.uk.shr.com.context.AppContexts;
  * The Class AccidentInsuranceRateAddCommandHandler.
  */
 @Stateless
-@Transactional
 public class AccidentInsuranceRateDeleteCommandHandler extends CommandHandler<AccidentInsuranceRateDeleteCommand> {
 
 	/** The accident insurance rate repository. */
@@ -33,6 +32,7 @@ public class AccidentInsuranceRateDeleteCommandHandler extends CommandHandler<Ac
 	 * .CommandHandlerContext)
 	 */
 	@Override
+	@Transactional
 	protected void handle(CommandHandlerContext<AccidentInsuranceRateDeleteCommand> context) {
 		String companyCode = AppContexts.user().companyCode();
 		this.accidentInsuranceRateRepo.remove(new CompanyCode(companyCode),

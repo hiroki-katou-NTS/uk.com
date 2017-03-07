@@ -13,7 +13,6 @@ var qet002;
                     this.upperLimitValue = ko.observable(null);
                 }
                 ScreenModel.prototype.start = function () {
-                    var self = this;
                     var dfd = $.Deferred();
                     dfd.resolve();
                     return dfd.promise();

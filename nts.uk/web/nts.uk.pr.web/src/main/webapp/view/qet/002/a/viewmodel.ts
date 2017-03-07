@@ -11,8 +11,7 @@ module qet002.a.viewmodel {
             this.isLowerLimit = ko.observable(true);
             this.isUpperLimit = ko.observable(true);
             this.lowerLimitValue = ko.observable(null);
-            this.upperLimitValue = ko.observable(null);
-            //this.printData();
+            this.upperLimitValue = ko.observable(null);           
 
         }
 
@@ -20,14 +19,7 @@ module qet002.a.viewmodel {
          * Start screen.
          */
         public start(): JQueryPromise<void> {
-            let self = this;
-
             var dfd = $.Deferred<void>();
-//            let query: any;
-//            qet002.a.service.printService().done(function() {
-//                // self.printData();
-//                //console.log("jejejejjejejeje");
-//            });
             dfd.resolve();
             return dfd.promise();
         }
@@ -36,8 +28,7 @@ module qet002.a.viewmodel {
         /**
          * Print Report
          */
-       public printData(){
-            //console.log("hehe");
+       public printData(){           
             let query: string;
             var hasError = false;
             if (this.targetYear() == null) {

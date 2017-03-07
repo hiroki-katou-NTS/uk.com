@@ -18,7 +18,6 @@ import nts.uk.shr.com.context.AppContexts;
  * The Class LaborInsuranceOfficeDeleteCommandHandler.
  */
 @Stateless
-@Transactional
 public class LaborInsuranceOfficeDeleteCommandHandler extends CommandHandler<LaborInsuranceOfficeDeleteCommand> {
 
 	/** The labor insurance office repository. */
@@ -33,6 +32,7 @@ public class LaborInsuranceOfficeDeleteCommandHandler extends CommandHandler<Lab
 	 * .CommandHandlerContext)
 	 */
 	@Override
+	@Transactional
 	protected void handle(CommandHandlerContext<LaborInsuranceOfficeDeleteCommand> context) {
 		LaborInsuranceOfficeDeleteCommand laborInsuranceOffice = context.getCommand();
 		String companyCode = AppContexts.user().companyCode();

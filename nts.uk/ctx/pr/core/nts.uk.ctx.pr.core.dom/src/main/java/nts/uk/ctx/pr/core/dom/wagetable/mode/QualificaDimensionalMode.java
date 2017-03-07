@@ -4,8 +4,12 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.dom.wagetable.mode;
 
+import java.util.List;
+
 import lombok.Getter;
+import nts.arc.error.BusinessException;
 import nts.uk.ctx.pr.core.dom.wagetable.ElementCount;
+import nts.uk.ctx.pr.core.dom.wagetable.element.WageTableElement;
 
 /**
  * The Class QualificaDimensionalMode.
@@ -13,8 +17,14 @@ import nts.uk.ctx.pr.core.dom.wagetable.ElementCount;
 @Getter
 public class QualificaDimensionalMode implements DemensionalMode {
 
+	/** The Constant ELEMENT_COUNT. */
+	public static final int ELEMENT_COUNT = 1;
+
 	/** The Constant mode. */
 	public static final ElementCount mode = ElementCount.Qualification;
+
+	/** The elements. */
+	private List<WageTableElement> elements;
 
 	/*
 	 * (non-Javadoc)
@@ -29,8 +39,14 @@ public class QualificaDimensionalMode implements DemensionalMode {
 	/**
 	 * Instantiates a new qualifica dimensional mode.
 	 */
-	public QualificaDimensionalMode() {
+	public QualificaDimensionalMode(List<WageTableElement> elements) {
 		super();
+		// TODO: Valid element
+		if (elements.size() != ELEMENT_COUNT) {
+			throw new BusinessException("");
+		}
+
+		this.elements = elements;
 	}
 
 }

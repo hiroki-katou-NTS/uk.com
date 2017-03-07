@@ -45,8 +45,9 @@ module nts.uk.pr.view.qmm007.a {
         /**
          *  Create UnitPriceHistory
          */
-        export function create(unitPriceHistory: model.UnitPriceHistoryDto): JQueryPromise<any> {
+        export function create(unitPriceHistory: model.UnitPriceHistoryDto, isNewmode: boolean): JQueryPromise<any> {
             var dfd = $.Deferred<any>();
+            unitPriceHistory['newMode'] = isNewmode;
             nts.uk.request.ajax(paths.createUnitPriceHistory, unitPriceHistory)
                 .done(res => {
                     dfd.resolve(res);

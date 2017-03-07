@@ -43,8 +43,9 @@ var nts;
                                 return dfd.promise();
                             }
                             service.find = find;
-                            function create(unitPriceHistory) {
+                            function create(unitPriceHistory, isNewmode) {
                                 var dfd = $.Deferred();
+                                unitPriceHistory['newMode'] = isNewmode;
                                 nts.uk.request.ajax(paths.createUnitPriceHistory, unitPriceHistory)
                                     .done(function (res) {
                                     dfd.resolve(res);

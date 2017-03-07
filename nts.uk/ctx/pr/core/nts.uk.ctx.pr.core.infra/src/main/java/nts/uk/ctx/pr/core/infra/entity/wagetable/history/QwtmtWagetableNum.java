@@ -110,29 +110,6 @@ public class QwtmtWagetableNum implements Serializable {
 	/**
 	 * Instantiates a new qwtmt wagetable num.
 	 *
-	 * @param qwtmtWagetableNumPK
-	 *            the qwtmt wagetable num PK
-	 * @param exclusVer
-	 *            the exclus ver
-	 * @param elementStr
-	 *            the element str
-	 * @param elementEnd
-	 *            the element end
-	 * @param elementId
-	 *            the element id
-	 */
-	public QwtmtWagetableNum(QwtmtWagetableNumPK qwtmtWagetableNumPK, int exclusVer, BigDecimal elementStr,
-			BigDecimal elementEnd, String elementId) {
-		this.qwtmtWagetableNumPK = qwtmtWagetableNumPK;
-		this.exclusVer = exclusVer;
-		this.elementStr = elementStr;
-		this.elementEnd = elementEnd;
-		this.elementId = elementId;
-	}
-
-	/**
-	 * Instantiates a new qwtmt wagetable num.
-	 *
 	 * @param ccd
 	 *            the ccd
 	 * @param wageTableCd
@@ -144,8 +121,10 @@ public class QwtmtWagetableNum implements Serializable {
 	 * @param elementNumNo
 	 *            the element num no
 	 */
-	public QwtmtWagetableNum(String ccd, String wageTableCd, String histId, short demensionNo, long elementNumNo) {
-		this.qwtmtWagetableNumPK = new QwtmtWagetableNumPK(ccd, wageTableCd, histId, demensionNo, elementNumNo);
+	public QwtmtWagetableNum(String ccd, String wageTableCd, String histId, Integer demensionNo,
+			Integer elementNumNo) {
+		this.qwtmtWagetableNumPK = new QwtmtWagetableNumPK(ccd, wageTableCd, histId, demensionNo,
+				elementNumNo);
 	}
 
 	/*
@@ -172,7 +151,8 @@ public class QwtmtWagetableNum implements Serializable {
 		}
 		QwtmtWagetableNum other = (QwtmtWagetableNum) object;
 		if ((this.qwtmtWagetableNumPK == null && other.qwtmtWagetableNumPK != null)
-				|| (this.qwtmtWagetableNumPK != null && !this.qwtmtWagetableNumPK.equals(other.qwtmtWagetableNumPK))) {
+				|| (this.qwtmtWagetableNumPK != null
+						&& !this.qwtmtWagetableNumPK.equals(other.qwtmtWagetableNumPK))) {
 			return false;
 		}
 		return true;

@@ -4,15 +4,21 @@
  *****************************************************************/
 package nts.uk.pr.file.infra.accumulatedpayment;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 import javax.ejb.Stateless;
 
+import com.aspose.cells.BackgroundType;
 import com.aspose.cells.BorderType;
+import com.aspose.cells.Cell;
 import com.aspose.cells.CellBorderType;
 import com.aspose.cells.Cells;
 import com.aspose.cells.Color;
 import com.aspose.cells.PageSetup;
+import com.aspose.cells.Range;
 import com.aspose.cells.Style;
 import com.aspose.cells.Workbook;
 import com.aspose.cells.Worksheet;
@@ -38,16 +44,28 @@ public class AsposeAccPaymentReportGenerator extends AsposeCellsReportGenerator 
 	private static final String TEMPLATE_FILE = "report/AccumulatedPaymentReport.xlsx";
 
 	/** The Constant FIRST_ROW_INDEX. */
-	private static final int FIRST_ROW_INDEX = 13;
+	private static final int FIRST_ROW_INDEX = 12;
 
 	/** The Constant FIRSTCOLUMN. */
-	private static final int FIRSTCOLUMN = 0;
+	private static final int FIRST_COLUMN = 0;
+	
+	/** The Constant AMOUNT_COLUMN. */
+	private static final int AMOUNT_COLUMN = 7;
 
-	/** The Constant BREAKINGPAGE1INDEX. */
-	private static final int BREAKINGPAGE1INDEX = 50;
-
-	/** The Constant BREAKINGPAGE2INDEX. */
-	private static final int BREAKINGPAGE2INDEX = 112;
+	/** The Constant AMOUNT_PER_PAGE. */
+	private static final int AMOUNT_PER_PAGE = 46;
+	
+	/** The Constant AMOUNT_ROWS_IN_PAGE. */
+	private static final int AMOUNT_ROWS_IN_PAGE = 60;
+	
+	/** The Constant SPACES. */
+	private static final String SPACES = "             ";
+	
+	/** The Constant COLUMN_INDEX. */
+	private static final int[] COLUMN_INDEX = {0, 1, 2, 3, 4, 5, 6};
+	
+	/** The Constant ROW_HEIGHT. */
+	private static final int ROW_HEIGHT = 28;
 
 	/*
 	 * (non-Javadoc)
@@ -58,104 +76,227 @@ public class AsposeAccPaymentReportGenerator extends AsposeCellsReportGenerator 
 	 */
 	@Override
 	public void generate(FileGeneratorContext generatorContext, AccPaymentDataSource dataSource) {
-		ArrayList<AccPaymentItemData> accumulatedPaymentList = new ArrayList<>();
-		for (int i = 0; i < 130; i++) {
-			AccPaymentItemData accumulatedPayment = AccPaymentItemData.builder().empDesignation("Designation" + (i + 1))
-					.empCode("Code " + (i + 1)).empName("Name " + (i + 1)).taxAmount(1.0 + i)
-					.socialInsuranceAmount(1.0 + i).widthHoldingTaxAmount(1.0 + i).amountAfterTaxDeduction(1.0 + i)
-					.enrollmentStatus("Enrolment Status").directionalStatus("onloan").build();
-			accumulatedPaymentList.add(accumulatedPayment);
-		}
-
+		List<AccPaymentItemData> accumulatedPaymentList = dataSource.getAccPaymentItemData();
 		try {
-			// accumulatedPaymentList = (ArrayList<AccPaymentItemData>)
-			// dataSource.getAccPaymentItemData();
-			// WorkbookDesigner designer = new WorkbookDesigner();
 			val designer = this.createContext(TEMPLATE_FILE);
 			Workbook workbook = designer.getWorkbook();
-
+			
 			// create worksheet and Formatting ...
 			WorksheetCollection worksheets = workbook.getWorksheets();
-			// FIRST WORKSHEET
-			createSheet(worksheets, 0, FIRSTCOLUMN, BREAKINGPAGE1INDEX, FIRST_ROW_INDEX, accumulatedPaymentList);
-			// WORKSHEET Number 2
-			createSheet(worksheets, 1, BREAKINGPAGE1INDEX, BREAKINGPAGE2INDEX, 0, accumulatedPaymentList);
-			// FINAL WORKSHEET
-			createSheet(worksheets, 2, BREAKINGPAGE2INDEX, accumulatedPaymentList.size(), 0, accumulatedPaymentList);
+			Worksheet worksheet = worksheets.get(0);
+			Cells cells = worksheet.getCells();
+			
+			// Fill data
+			// Print Date
+			Date date = new Date();
+			SimpleDateFormat sf = new SimpleDateFormat("yyyy/mm/dd hh:mm");
+			String str = sf.format(date);
+			designer.setDataSource("HeaderTime", str);
+			
+			int amountEmployee= accumulatedPaymentList.size();
+			int startIndex = 0;
+			int firstRowIndex = FIRST_ROW_INDEX;			
+			int numberOfPage = 0;
+			int rangeRows = AMOUNT_PER_PAGE;
+			
+			while(amountEmployee > 0){				
+				int endIndex = startIndex + AMOUNT_PER_PAGE;
+				List<AccPaymentItemData> subList = subAccList(accumulatedPaymentList, startIndex, endIndex);
+				
+				// Create ranges 
+				if(amountEmployee < AMOUNT_PER_PAGE){
+					rangeRows= Math.min(amountEmployee, AMOUNT_PER_PAGE);
+				}
+				createRange(cells, firstRowIndex, rangeRows);
+				
+				// Print Title 
+				printTitleRow(worksheets, firstRowIndex-1);	
+				
+				// Print content
+				createContent(cells, firstRowIndex, subList);
+				
+				// Reset variable for new page
+				amountEmployee -= AMOUNT_PER_PAGE;
+				startIndex += AMOUNT_PER_PAGE;
+				numberOfPage++;
+				firstRowIndex += AMOUNT_ROWS_IN_PAGE;
+				
+				// Set Print Area				
+				PageSetup pageSetup = worksheet.getPageSetup();
+				int totalRow = numberOfPage * AMOUNT_ROWS_IN_PAGE;
+				pageSetup.setPrintArea("A1:G" + totalRow);				
+			}			
 			designer.getDesigner().setWorkbook(workbook);
 			designer.processDesigner();
 			designer.saveAsPdf(this.createNewFile(generatorContext, REPORT_FILE_NAME));
-			// designer.getWorkbook().save("D:/test.pdf", FileFormatType.PDF);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
-			// e.printStackTrace();
+		}
+	}
+	
+	/**
+	 * Prints the title row.
+	 *
+	 * @param worksheets the worksheets
+	 * @param rowIndex the row index
+	 */
+	private void printTitleRow(WorksheetCollection worksheets, int rowIndex){
+		Worksheet worksheet = worksheets.get(0);
+		Cells cells = worksheet.getCells();
+		// Set Row height
+		cells.setRowHeightPixel(rowIndex, ROW_HEIGHT);
+		
+		// Print Employee Header
+		Cell empCell = cells.get(rowIndex, COLUMN_INDEX[0]);		
+		empCell.setValue("社員");
+		setTitleStyle(empCell);
+		
+		// Print Tax Amount Header
+		Cell taxCell = cells.get(rowIndex, COLUMN_INDEX[1]);		
+		taxCell.setValue("課税対象支給額");
+		setTitleStyle(taxCell);
+		
+		// Print Social Insurance Header
+		Cell socialInsCell = cells.get(rowIndex, COLUMN_INDEX[2]);		
+		socialInsCell.setValue("社会保険合計額");
+		setTitleStyle(socialInsCell);
+		
+		// Print Amount after tax deduction Header
+		Cell afterTaxDeductionCell = cells.get(rowIndex, COLUMN_INDEX[3]);		
+		afterTaxDeductionCell.setValue("社保控除後の額");
+		setTitleStyle(afterTaxDeductionCell);
+		
+		// Print Witholding Tax Amount Header
+		Cell widthHoldingTaxAmCell = cells.get(rowIndex, COLUMN_INDEX[4]);
+		widthHoldingTaxAmCell.setValue("源泉徴収税額");
+		setTitleStyle(widthHoldingTaxAmCell);
+		
+		// Print Enrolment Status Header
+		Cell enrolmentCell = cells.get(rowIndex, COLUMN_INDEX[5]);
+		enrolmentCell.setValue("在籍状態");
+		setTitleStyle(enrolmentCell);
+		
+		// Print Direction Status Header
+		Cell directionCell = cells.get(rowIndex, COLUMN_INDEX[6]);
+		directionCell.setValue("出向状態");
+		setTitleStyle(directionCell);		
+	}
+	
+	/**
+	 * Creates the content.
+	 *
+	 * @param worksheet the worksheet
+	 * @param firstRowIndex the first row index
+	 * @param accumulatedPaymentList the accumulated payment list
+	 */
+	private void createContent(Cells cells, int firstRowIndex,
+			List<AccPaymentItemData> accumulatedPaymentList){
+		for(int i = 0; i < accumulatedPaymentList.size(); i++, firstRowIndex++){
+			// Set Row height
+			cells.setRowHeightPixel(firstRowIndex, ROW_HEIGHT);
+			
+			AccPaymentItemData accPayment = accumulatedPaymentList.get(i);			
+			// Print Employee Code and Name
+			Cell empCell = cells.get(firstRowIndex, COLUMN_INDEX[0]);		
+			empCell.setValue(accPayment.getEmpCode() + SPACES + accPayment.getEmpName());
+			
+			// Print Tax Amount
+			Cell taxAmountCell = cells.get(firstRowIndex, COLUMN_INDEX[1]);
+			taxAmountCell.setValue(accPayment.getTaxAmount());
+			
+			// Print Social Insurance 
+			Cell socialInsCell = cells.get(firstRowIndex, COLUMN_INDEX[2]);
+			socialInsCell.setValue(accPayment.getSocialInsuranceAmount());	
+			
+			// Print Amount after tax deduction
+			Cell afterTaxDeductionCell = cells.get(firstRowIndex, COLUMN_INDEX[3]);
+			afterTaxDeductionCell.setValue(accPayment.getAmountAfterTaxDeduction());
+			
+			// Print Witholding Tax Amount
+			Cell widthHoldingTaxAmCell = cells.get(firstRowIndex, COLUMN_INDEX[4]);
+			widthHoldingTaxAmCell.setValue(accPayment.getWidthHoldingTaxAmount());
+			
+			// Print Enrolment Status
+			Cell enrolmentCell = cells.get(firstRowIndex, COLUMN_INDEX[5]);
+			enrolmentCell.setValue(accPayment.getEnrollmentStatus());
+			
+			// Print Direction Status
+			Cell directionCell = cells.get(firstRowIndex, COLUMN_INDEX[6]);
+			directionCell.setValue(accPayment.getDirectionalStatus());
+			
+			// Set Background Color for odd rows
+			if ((i % 2) == 1) {
+				for(int c: COLUMN_INDEX){
+					Cell oddCell = cells.get(firstRowIndex, COLUMN_INDEX[c]);
+					setBackgroundcolor(oddCell);
+				}
+			}
 		}
 	}
 
+	
 	/**
-	 * Sets the column width.
+	 * Creates the range.
 	 *
-	 * @param cells the new column width
+	 * @param cells the cells
+	 * @param firstRow the first row
+	 * @param totalRow the total row
 	 */
-	// Set Columns Width Method
-	private void setColumnWidth(Cells cells) {
-		cells.setColumnWidth(0, 12);
-		cells.setColumnWidth(1, 8);
-		cells.setColumnWidth(2, 12);
-		cells.setColumnWidth(3, 12);
-		cells.setColumnWidth(4, 12);
-		cells.setColumnWidth(5, 12);
-		cells.setColumnWidth(6, 7);
-		cells.setColumnWidth(7, 40);
+	private void createRange(Cells cells, int firstRow, int totalRow){
+		for(int i = FIRST_COLUMN; i<AMOUNT_COLUMN; i++){
+			Range range = cells.createRange(firstRow, i, totalRow, 1);			
+			range.setOutlineBorders(CellBorderType.THIN, Color.getGray());
+			
+		}
 	}
-
+	
 	/**
-	 * Creates the sheet.
+	  * Safe sub list.
+	  *
+	  * @param <T> the generic type
+	  * @param list the list
+	  * @param fromIndex the from index
+	  * @param toIndex the to index
+	  * @return the list
+	  */
+	 protected <T> List<T> subAccList(List<T> list, int fromIndex, int toIndex) {
+	  int size = list.size();
+	  if (fromIndex >= size || toIndex <= 0 || fromIndex >= toIndex) {
+	   return new ArrayList<>();
+	  }
+
+	  fromIndex = Math.max(0, fromIndex);
+	  toIndex = Math.min(size, toIndex);
+	  return list.subList(fromIndex, toIndex);
+	 }
+	
+	/**
+	 * Sets the title style.
 	 *
-	 * @param worksheets the worksheets
-	 * @param sheetIndex the sheet index
-	 * @param firstIndex the first index
-	 * @param breakingPageIndex the breaking page index
-	 * @param rowIndex the row index
-	 * @param accumulatedPaymentList the accumulated payment list
+	 * @param cell the new title style
 	 */
-	// Create Sheet
-	private void createSheet(WorksheetCollection worksheets, int sheetIndex, int firstIndex, int breakingPageIndex,
-			int rowIndex, ArrayList<AccPaymentItemData> accumulatedPaymentList) {
-		int addSheet = worksheets.add();
-		Worksheet worksheet = worksheets.get(sheetIndex);
-		Cells cells = worksheet.getCells();
-		PageSetup pageSetup = worksheet.getPageSetup();
-		pageSetup.setPrintArea("A1:H63");
-		pageSetup.setFitToPagesTall(1);
-		pageSetup.setFitToPagesWide(1);
-		Style style = cells.getStyle();
-		style.setBackgroundColor(Color.getGreen());
+	private void setTitleStyle(Cell cell){
+		Style style = cell.getStyle();
+		style.setForegroundColor(Color.fromArgb(197, 241, 247));
+		style.setPattern(BackgroundType.SOLID);
 		style.setBorder(BorderType.TOP_BORDER, CellBorderType.THIN, Color.getGray());
 		style.setBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getGray());
 		style.setBorder(BorderType.LEFT_BORDER, CellBorderType.THIN, Color.getGray());
 		style.setBorder(BorderType.RIGHT_BORDER, CellBorderType.THIN, Color.getGray());
-		// Set Columns Width
-		setColumnWidth(cells);
-		// Print Items
-		for (int i = firstIndex, j = rowIndex; i < breakingPageIndex; i++, j++) {
-			cells.get(j, 0).setValue(accumulatedPaymentList.get(i).getEmpCode());
-			cells.get(j, 0).setStyle(style);
-			cells.get(j, 1).setValue(accumulatedPaymentList.get(i).getEmpName());
-			cells.get(j, 1).setStyle(style);
-			cells.get(j, 2).setValue(accumulatedPaymentList.get(i).getTaxAmount());
-			cells.get(j, 2).setStyle(style);
-			cells.get(j, 3).setValue(accumulatedPaymentList.get(i).getSocialInsuranceAmount());
-			cells.get(j, 3).setStyle(style);
-			cells.get(j, 4).setValue(accumulatedPaymentList.get(i).getAmountAfterTaxDeduction());
-			cells.get(j, 4).setStyle(style);
-			cells.get(j, 5).setValue(accumulatedPaymentList.get(i).getWidthHoldingTaxAmount());
-			cells.get(j, 5).setStyle(style);
-			cells.get(j, 6).setValue(accumulatedPaymentList.get(i).getEnrollmentStatus());
-			cells.get(j, 6).setStyle(style);
-			cells.get(j, 7).setValue(accumulatedPaymentList.get(i).getDirectionalStatus());
-			cells.get(j, 7).setStyle(style);
-		}
+		cell.setStyle(style);
 	}
 
+
+	/**
+	 * Sets the backgroundcolor.
+	 *
+	 * @param cell the new backgroundcolor
+	 */
+	private void setBackgroundcolor(Cell cell){
+		Style style = cell.getStyle();
+		style.setForegroundColor(Color.fromArgb(199, 243, 145));
+		style.setPattern(BackgroundType.SOLID);
+		cell.setStyle(style);
+	}
+	
 }

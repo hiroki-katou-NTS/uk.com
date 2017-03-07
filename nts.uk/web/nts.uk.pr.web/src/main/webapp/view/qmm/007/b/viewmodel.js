@@ -17,6 +17,7 @@ var nts;
                                 function ScreenModel() {
                                     var self = this;
                                     self.unitPriceHistoryModel = ko.mapping.fromJS(nts.uk.ui.windows.getShared('unitPriceHistoryModel'));
+                                    self.lastHistory = self.unitPriceHistoryModel.startMonth();
                                     self.historyTakeOver = ko.observable('latest');
                                 }
                                 ScreenModel.prototype.startPage = function () {
@@ -37,7 +38,7 @@ var nts;
                                         self.unitPriceHistoryModel.fixPayAtrHourly('NotApply');
                                         self.unitPriceHistoryModel.memo('');
                                     }
-                                    service.create(ko.toJS(self.unitPriceHistoryModel)).done(function () {
+                                    service.create(ko.toJS(self.unitPriceHistoryModel), false).done(function () {
                                         nts.uk.ui.windows.setShared('isCreated', true);
                                         nts.uk.ui.windows.close();
                                     });

@@ -50,7 +50,6 @@ public class AggregateItemDto implements WLAggregateItemSetMemento{
 	@Override
 	public void setCompanyCode(CompanyCode companyCode) {
 		// Do nothing.
-		throw new UnsupportedOperationException();
 	}
 
 	/* (non-Javadoc)

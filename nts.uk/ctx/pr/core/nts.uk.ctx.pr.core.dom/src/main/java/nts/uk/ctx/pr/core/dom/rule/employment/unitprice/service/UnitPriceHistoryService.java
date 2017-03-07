@@ -24,4 +24,11 @@ public interface UnitPriceHistoryService {
 	 * @param unitPriceHistory the unit price history
 	 */
 	void validateDateRange(UnitPriceHistory unitPriceHistory);
+
+	/**
+	 * Check duplicate code.
+	 *
+	 * @param unitPriceHistory the unit price history
+	 */
+	void checkDuplicateCode(UnitPriceHistory unitPriceHistory);
 }

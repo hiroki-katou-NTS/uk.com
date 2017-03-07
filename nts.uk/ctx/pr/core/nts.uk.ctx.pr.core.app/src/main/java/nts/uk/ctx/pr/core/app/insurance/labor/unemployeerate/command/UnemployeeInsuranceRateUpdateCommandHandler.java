@@ -19,7 +19,6 @@ import nts.uk.shr.com.context.AppContexts;
  * The Class UnemployeeInsuranceRateUpdateCommandHandler.
  */
 @Stateless
-@Transactional
 public class UnemployeeInsuranceRateUpdateCommandHandler extends CommandHandler<UnemployeeInsuranceRateUpdateCommand> {
 
 	/** CompanyRepository */
@@ -30,13 +29,11 @@ public class UnemployeeInsuranceRateUpdateCommandHandler extends CommandHandler<
 	@Inject
 	private UnemployeeInsuranceRateService unemployeeInsuranceRateService;
 
-	/**
-	 * Handle command.
-	 * 
-	 * @param context
-	 *            context
+	/* (non-Javadoc)
+	 * @see nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command.CommandHandlerContext)
 	 */
 	@Override
+	@Transactional
 	protected void handle(CommandHandlerContext<UnemployeeInsuranceRateUpdateCommand> context) {
 		String companyCode = AppContexts.user().companyCode();
 		UnemployeeInsuranceRate unemployeeInsuranceRate = context.getCommand().toDomain(companyCode);

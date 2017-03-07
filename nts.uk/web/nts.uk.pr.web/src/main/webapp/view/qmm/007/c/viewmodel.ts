@@ -8,12 +8,12 @@ module nts.uk.pr.view.qmm007.c {
 
             edittingMethod: KnockoutObservable<string>;
             isEditMode: KnockoutObservable<boolean>;
-            isLatestHistory: KnockoutObservable<boolean>;
+            isLatestHistory: boolean;
 
             constructor() {
                 var self = this;
                 self.unitPriceHistoryModel = ko.mapping.fromJS(nts.uk.ui.windows.getShared('unitPriceHistoryModel'));
-                self.isLatestHistory = ko.observable(nts.uk.ui.windows.getShared('isLatestHistory'));
+                self.isLatestHistory = nts.uk.ui.windows.getShared('isLatestHistory');
                 self.edittingMethod = ko.observable('Edit');
                 self.isEditMode = ko.observable(true);
 

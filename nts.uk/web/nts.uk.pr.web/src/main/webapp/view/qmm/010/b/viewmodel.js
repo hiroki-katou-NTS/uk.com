@@ -45,8 +45,6 @@ var nts;
                                             self.importData(0, socialInsuranceOfficeImport);
                                         }).ifNo(function () {
                                             self.importData(1, socialInsuranceOfficeImport);
-                                        }).ifCancel(function () {
-                                            self.importData(1, socialInsuranceOfficeImport);
                                         });
                                     }
                                     else {

@@ -94,7 +94,7 @@ public class QwtmtWagetableHead implements Serializable {
 
 	/** The wagetable element list. */
 	@OrderBy("demensionNo ASC")
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "qwtmtWagetableHead")
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "qwtmtWagetableHead", orphanRemoval = true)
 	private List<QwtmtWagetableElement> wagetableElementList;
 
 	/**

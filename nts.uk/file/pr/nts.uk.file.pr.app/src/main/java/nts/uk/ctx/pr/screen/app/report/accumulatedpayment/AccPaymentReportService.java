@@ -4,6 +4,9 @@
  *****************************************************************/
 package nts.uk.ctx.pr.screen.app.report.accumulatedpayment;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -11,6 +14,7 @@ import lombok.val;
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.uk.ctx.pr.screen.app.report.accumulatedpayment.data.AccPaymentDataSource;
+import nts.uk.ctx.pr.screen.app.report.accumulatedpayment.data.AccPaymentItemData;
 import nts.uk.ctx.pr.screen.app.report.accumulatedpayment.query.AccPaymentReportQuery;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -35,8 +39,28 @@ public class AccPaymentReportService extends ExportService<AccPaymentReportQuery
 	protected void handle(ExportServiceContext<AccPaymentReportQuery> context) {
 
 		// Query data.
-		val items = this.repository.getItems(AppContexts.user().companyCode(), context.getQuery());
-
+		List<AccPaymentItemData> items = this.repository.getItems(AppContexts.user().companyCode(), context.getQuery());
+		
+		// Fake List of AccumulatedItemData
+		List<AccPaymentItemData> accumulatedPaymentList = new ArrayList<>();
+		for (int i = 0; i < 255; i++) {
+			AccPaymentItemData accumulatedPayment = AccPaymentItemData
+					.builder()
+					.empDesignation("Designation" + (i + 1))
+					.empCode("code000000")
+					.empName("氏名 " + (i + 1)).taxAmount(13456.0 + 100*i)
+					.socialInsuranceAmount(10156.0 + 100*i)
+					.widthHoldingTaxAmount(3956.0 + 100*i)
+					.amountAfterTaxDeduction(5567.0 + 100*i)
+					.enrollmentStatus("退職")
+					.directionalStatus("xxxxxxxxxxxxx   から　  出向")
+					.build();
+			accumulatedPaymentList.add(accumulatedPayment);
+		}
+		
+		if(items == null){
+			items = accumulatedPaymentList;
+		}
 		// Create header object.
 		
 

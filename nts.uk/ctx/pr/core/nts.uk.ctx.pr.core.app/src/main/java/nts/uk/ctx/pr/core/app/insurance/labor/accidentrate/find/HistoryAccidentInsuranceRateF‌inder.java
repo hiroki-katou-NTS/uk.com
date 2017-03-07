@@ -9,7 +9,6 @@ import java.util.List;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import javax.transaction.Transactional;
 
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.app.insurance.labor.accidentrate.find.dto.HistoryAccidentInsuranceRateFindOutDto;
@@ -21,7 +20,6 @@ import nts.uk.shr.com.context.AppContexts;
  * The Class HistoryAccidentInsuranceRateF‌inder.
  */
 @Stateless
-@Transactional
 public class HistoryAccidentInsuranceRateF‌inder {
 
 	/** The accident insurance rate repository. */

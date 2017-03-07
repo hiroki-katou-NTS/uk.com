@@ -48,7 +48,7 @@ public interface WageTableHistorySetMemento {
 	 *
 	 * @return the demension items
 	 */
-	void setDemensionDetail(List<WageTableDemensionDetail> demensionDetail);
+	void setDemensionDetail(List<WageTableDemensionDetail> demensionDetails);
 
 	/**
 	 * Sets the elements.

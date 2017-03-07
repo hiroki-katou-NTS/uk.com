@@ -37,8 +37,7 @@ var nts;
                                 nts.uk.request.ajax(paths.findAllSocialInsuranceOffice)
                                     .done(function (res) {
                                     dfd.resolve(res);
-                                })
-                                    .fail(function (res) {
+                                }).fail(function (res) {
                                     dfd.reject(res);
                                 });
                                 return dfd.promise();
@@ -49,8 +48,7 @@ var nts;
                                 nts.uk.request.ajax(paths.findLaborInsuranceOffice + "/" + officeCode)
                                     .done(function (res) {
                                     dfd.resolve(res);
-                                })
-                                    .fail(function (res) {
+                                }).fail(function (res) {
                                     dfd.reject(res);
                                 });
                                 return dfd.promise();

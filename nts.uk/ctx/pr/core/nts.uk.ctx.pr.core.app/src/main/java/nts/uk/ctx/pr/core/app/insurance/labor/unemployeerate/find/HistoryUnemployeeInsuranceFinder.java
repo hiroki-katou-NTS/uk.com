@@ -10,7 +10,6 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import javax.transaction.Transactional;
 
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.app.insurance.labor.unemployeerate.find.dto.HistoryUnemployeeInsuranceFindOutDto;
@@ -22,7 +21,6 @@ import nts.uk.shr.com.context.AppContexts;
  * The Class HistoryUnemployeeInsuranceFinder.
  */
 @Stateless
-@Transactional
 public class HistoryUnemployeeInsuranceFinder {
 
 	/** The unemployee insurance rate repository. */

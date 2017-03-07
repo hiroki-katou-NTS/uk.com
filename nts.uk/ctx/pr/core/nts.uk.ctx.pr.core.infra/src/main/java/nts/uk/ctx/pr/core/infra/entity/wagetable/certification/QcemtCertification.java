@@ -18,12 +18,14 @@ import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * The Class QcemtCertification.
  */
-@Data
+@Getter
+@Setter
 @Entity
 @Table(name = "QCEMT_CERTIFICATION")
 public class QcemtCertification implements Serializable {
@@ -98,22 +100,6 @@ public class QcemtCertification implements Serializable {
 	 */
 	public QcemtCertification(QcemtCertificationPK qcemtCertificationPK) {
 		this.qcemtCertificationPK = qcemtCertificationPK;
-	}
-
-	/**
-	 * Instantiates a new qcemt certification.
-	 *
-	 * @param qcemtCertificationPK
-	 *            the qcemt certification PK
-	 * @param exclusVer
-	 *            the exclus ver
-	 * @param name
-	 *            the name
-	 */
-	public QcemtCertification(QcemtCertificationPK qcemtCertificationPK, long exclusVer, String name) {
-		this.qcemtCertificationPK = qcemtCertificationPK;
-		this.exclusVer = exclusVer;
-		this.name = name;
 	}
 
 	/**

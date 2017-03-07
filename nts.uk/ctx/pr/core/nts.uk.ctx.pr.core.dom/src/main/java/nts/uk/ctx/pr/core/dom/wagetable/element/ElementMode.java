@@ -10,11 +10,12 @@ import nts.uk.ctx.pr.core.dom.wagetable.ElementType;
  * The Class WageTableHist.
  */
 public interface ElementMode {
-	
+
 	/**
 	 * Gets the type.
 	 *
 	 * @return the type
 	 */
 	ElementType getElementType();
+
 }
