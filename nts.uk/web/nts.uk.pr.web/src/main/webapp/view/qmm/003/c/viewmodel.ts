@@ -1,8 +1,8 @@
 module qmm003.c.viewmodel {
     export class ScreenModel {
-        items: any;
+        items: KnockoutObservableArray<Node>;
         singleSelectedCode: KnockoutObservable<string>;
-        filteredData : KnockoutObservableArray<Node> = ko.observableArray([]);
+        filteredData: KnockoutObservableArray<Node> = ko.observableArray([]);
         currentNode: KnockoutObservable<Node>;
         testNode = [];
         nodeRegionPrefectures: KnockoutObservableArray<Node> = ko.observableArray([]);
@@ -15,61 +15,40 @@ module qmm003.c.viewmodel {
             self.init();
             self.singleSelectedCode.subscribe(function(newValue) {
                 let node: Node;
-                node = self.findByCode(self.filteredData(),newValue);
-                console.log(node);
+                node = self.findByCode(self.filteredData(), newValue);
                 self.currentNode(node);
             });
-        }
 
+        }
         findByCode(items: Array<Node>, newValue: string): Node {
             let self = this;
-            let _node: Node;
-            _.find(items, function(_obj: Node) {
-                if (!_node) {
-                    if (_obj.code == newValue) {
-                        _node = _obj;
+            let node: Node;
+            _.find(items, function(obj: Node) {
+                if (!node) {
+                    if (obj.code == newValue) {
+                        node = obj;
+
                     }
                 }
             });
-            return _node;
-        }
-        init(): void {
-            let self = this;
-            self.items = ko.observableArray([]);
-            self.singleSelectedCode = ko.observable("11");
-            self.currentNode = ko.observable(new Node("","",[]));
-        }
-        clickButton(): void {
+
+            return node;
+        };
+        clickButton(): any {
             let self = this;
             //nts.uk.ui.windows.setShared('singleSelectedCode', self.singleSelectedCode(), true);
-            nts.uk.ui.windows.setShared('currentNode',self.currentNode(),true);
+            nts.uk.ui.windows.setShared('currentNode', self.currentNode(), true);
             nts.uk.ui.windows.close();
+
         }
         cancelButton(): void {
             nts.uk.ui.windows.close();
         }
-        register(): void {
-            let inputSearch = $("#C_SCH_001").find("input.ntsSearchBox").val();
-            if (inputSearch == "") {
-                $('#C_SCH_001').ntsError('set', 'inputSearch が入力されていません。');
-            } else {
-                $('#C_SCH_001').ntsError('clear');
-            }
-
-            // errror search
-            let error: boolean;
-            _.find(this.filteredData(), function(obj: Node) {
-                if (obj.code !== inputSearch) {
-                    error = true;
-                }
-            });
-            if (error = true) {
-                $('#C_SCH_001').ntsError('set', '対象データがありません。');
-            } else {
-                $('#C_SCH_001').ntsError('clear');
-            }
-
-
+        init(): void {
+            let self = this;
+            self.items = ko.observableArray([]);
+            self.singleSelectedCode = ko.observable("");
+            self.currentNode = ko.observable((new Node("", "", [])));
         }
         //11.初期データ取得処理 11. Initial data acquisition processing
         start(): JQueryPromise<any> {
@@ -81,7 +60,7 @@ module qmm003.c.viewmodel {
                     (qmm003.c.service.getRegionPrefecture()).done(function(locationData: Array<service.model.RegionObject>) {
                         self.japanLocation = locationData;
                         self.buildResidentalTaxTree();
-                        let node : Array<Node> = [];
+                        let node: Array<Node> = [];
                         node = nts.uk.util.flatArray(self.nodeRegionPrefectures(), "childs");
                         self.filteredData(node);
                         self.items(self.nodeRegionPrefectures());
@@ -97,6 +76,7 @@ module qmm003.c.viewmodel {
 
             return dfd.promise();
         }
+
         buildResidentalTaxTree() {
             let self = this;
             var child = [];
@@ -131,6 +111,7 @@ module qmm003.c.viewmodel {
 
             });
         }
+
     }
     export class Node {
         code: string;
@@ -144,8 +125,8 @@ module qmm003.c.viewmodel {
             self.name = name;
             self.nodeText = self.code + ' ' + self.name;
             self.childs = childs;
-
         }
     }
 
-}
+
+};

@@ -18,28 +18,22 @@ var qmm003;
                     self.singleSelectedCode.subscribe(function (newValue) {
                         var node;
                         node = self.findByCode(self.filteredData(), newValue);
-                        console.log(node);
                         self.currentNode(node);
                     });
                 }
                 ScreenModel.prototype.findByCode = function (items, newValue) {
                     var self = this;
-                    var _node;
-                    _.find(items, function (_obj) {
-                        if (!_node) {
-                            if (_obj.code == newValue) {
-                                _node = _obj;
+                    var node;
+                    _.find(items, function (obj) {
+                        if (!node) {
+                            if (obj.code == newValue) {
+                                node = obj;
                             }
                         }
                     });
-                    return _node;
+                    return node;
                 };
-                ScreenModel.prototype.init = function () {
-                    var self = this;
-                    self.items = ko.observableArray([]);
-                    self.singleSelectedCode = ko.observable("11");
-                    self.currentNode = ko.observable(new Node("", "", []));
-                };
+                ;
                 ScreenModel.prototype.clickButton = function () {
                     var self = this;
                     //nts.uk.ui.windows.setShared('singleSelectedCode', self.singleSelectedCode(), true);
@@ -49,27 +43,11 @@ var qmm003;
                 ScreenModel.prototype.cancelButton = function () {
                     nts.uk.ui.windows.close();
                 };
-                ScreenModel.prototype.register = function () {
-                    var inputSearch = $("#C_SCH_001").find("input.ntsSearchBox").val();
-                    if (inputSearch == "") {
-                        $('#C_SCH_001').ntsError('set', 'inputSearch が入力されていません。');
-                    }
-                    else {
-                        $('#C_SCH_001').ntsError('clear');
-                    }
-                    // errror search
-                    var error;
-                    _.find(this.filteredData(), function (obj) {
-                        if (obj.code !== inputSearch) {
-                            error = true;
-                        }
-                    });
-                    if (error = true) {
-                        $('#C_SCH_001').ntsError('set', '対象データがありません。');
-                    }
-                    else {
-                        $('#C_SCH_001').ntsError('clear');
-                    }
+                ScreenModel.prototype.init = function () {
+                    var self = this;
+                    self.items = ko.observableArray([]);
+                    self.singleSelectedCode = ko.observable("");
+                    self.currentNode = ko.observable((new Node("", "", [])));
                 };
                 //11.初期データ取得処理 11. Initial data acquisition processing
                 ScreenModel.prototype.start = function () {
@@ -142,3 +120,4 @@ var qmm003;
         })(viewmodel = c.viewmodel || (c.viewmodel = {}));
     })(c = qmm003.c || (qmm003.c = {}));
 })(qmm003 || (qmm003 = {}));
+;
