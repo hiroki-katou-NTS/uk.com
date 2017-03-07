@@ -14,6 +14,7 @@ import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.core.dom.company.CompanyCode;
+import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
 import nts.uk.ctx.pr.core.dom.insurance.social.SocialInsuranceOffice;
 import nts.uk.ctx.pr.core.dom.insurance.social.SocialInsuranceOfficeRepository;
 import nts.uk.ctx.pr.core.dom.insurance.social.service.SocialInsuranceOfficeService;
@@ -51,17 +52,18 @@ public class UpdateSocialOfficeCommandHandler extends CommandHandler<UpdateSocia
 		// Convert Dto to Domain
 		SocialInsuranceOffice socialInsuranceOffice = command.toDomain(companyCode);
 
-		//validate
+		// validate
 		socialInsuranceOfficeService.validateRequiredItem(socialInsuranceOffice);
 
 		Optional<SocialInsuranceOffice> findOffice = socialInsuranceOfficeRepository
-				.findByOfficeCode(command.getCode().toString());
+				.findByOfficeCode(companyCode, new OfficeCode(command.getCode()));
+
 		if (findOffice.get() == null) {
 			throw new BusinessException("ER010");
 		} else {
 			socialInsuranceOfficeRepository.update(socialInsuranceOffice);
 		}
-		
+
 		return;
 	}
 

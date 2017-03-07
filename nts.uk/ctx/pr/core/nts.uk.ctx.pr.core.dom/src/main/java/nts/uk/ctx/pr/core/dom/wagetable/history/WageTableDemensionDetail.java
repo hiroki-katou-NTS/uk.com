@@ -4,15 +4,12 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.dom.wagetable.history;
 
-import java.util.List;
-
 import lombok.Getter;
 import nts.uk.ctx.pr.core.dom.wagetable.DemensionNo;
-import nts.uk.ctx.pr.core.dom.wagetable.element.BaseItem;
 import nts.uk.ctx.pr.core.dom.wagetable.element.ElementMode;
 
 /**
- * The Class WageTableDemension.
+ * The Class WageTableDemensionDetail.
  */
 @Getter
 public class WageTableDemensionDetail {
@@ -23,7 +20,27 @@ public class WageTableDemensionDetail {
 	/** The element mode setting. */
 	private ElementMode elementModeSetting;
 
-	/** The items. */
-	private List<BaseItem> items;
+	// =================== Memento State Support Method ===================
+	/**
+	 * Instantiates a new wage table demension detail.
+	 *
+	 * @param memento
+	 *            the memento
+	 */
+	public WageTableDemensionDetail(WageTableDetailGetMemento memento) {
+		this.demensionNo = memento.getDemensionNo();
+		this.elementModeSetting = memento.getElementModeSetting();
+	}
+
+	/**
+	 * Save to memento.
+	 *
+	 * @param memento
+	 *            the memento
+	 */
+	public void saveToMemento(WageTableDetailSetMemento memento) {
+		memento.setDemensionNo(this.demensionNo);
+		memento.setElementModeSetting(this.elementModeSetting);
+	}
 
 }

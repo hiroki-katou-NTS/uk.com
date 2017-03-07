@@ -28,8 +28,10 @@ public class PensionRateRounding {
 	}
 
 	/**
-	 * @param payType
-	 * @param roundAtrs
+	 * Instantiates a new pension rate rounding.
+	 *
+	 * @param payType the pay type
+	 * @param roundAtrs the round atrs
 	 */
 	public PensionRateRounding(PaymentType payType, RoundingItem roundAtrs) {
 		super();

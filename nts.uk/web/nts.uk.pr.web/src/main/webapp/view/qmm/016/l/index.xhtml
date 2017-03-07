@@ -115,14 +115,13 @@
 								<div class="div100">
 									<div id="swap-list"
 										data-bind="ntsSwapList: {
-								showSearchBox: { showLeft : true, showRight: true},
-								height: 300,
-								options: lstCertification,
-								primaryKey: 'code',
-								optionsValue: 'code',
-								columns: columnsCertification,
-								value: certifies
-							}"></div>
+						showSearchBox: true,
+						height: 300,
+						dataSource: lstCertification,
+						primaryKey: 'code',
+						columns: columnsCertification,
+						value: certifies
+					}"></div>
 								</div>
 							</div>
 						</td>

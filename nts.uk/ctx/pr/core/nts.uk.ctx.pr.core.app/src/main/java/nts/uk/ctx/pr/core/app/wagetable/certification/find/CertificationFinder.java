@@ -2,7 +2,7 @@
  * Copyright (c) 2016 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.pr.core.app.wagetable.find;
+package nts.uk.ctx.pr.core.app.wagetable.certification.find;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -12,7 +12,7 @@ import javax.inject.Inject;
 import javax.transaction.Transactional;
 
 import nts.uk.ctx.core.dom.company.CompanyCode;
-import nts.uk.ctx.pr.core.app.wagetable.find.dto.CertificationFindInDto;
+import nts.uk.ctx.pr.core.app.wagetable.certification.find.dto.CertificationFindInDto;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.Certification;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.CertificationReponsitory;
 import nts.uk.shr.com.context.AppContexts;

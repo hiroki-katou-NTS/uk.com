@@ -11,38 +11,44 @@ package nts.uk.ctx.pr.core.dom.wagetable;
 public enum ElementType {
 
 	/** The master ref. */
-	MASTER_REF(0),
+	MASTER_REF(0, true, false),
 
 	/** The code ref. */
-	CODE_REF(1),
+	CODE_REF(1, true, false),
 
 	/** The item data ref. */
-	ITEM_DATA_REF(2),
+	ITEM_DATA_REF(2, false, true),
 
 	/** The experience fix. */
-	EXPERIENCE_FIX(3),
+	EXPERIENCE_FIX(3, false, true),
 
 	/** The age fix. */
-	AGE_FIX(4),
+	AGE_FIX(4, false, true),
 
 	/** The family mem fix. */
-	FAMILY_MEM_FIX(5),
+	FAMILY_MEM_FIX(5, false, true),
 
 	// Extend element type
 	/** The certification. */
-	CERTIFICATION(6),
+	CERTIFICATION(6, true, false),
 
-	/** The working days. */
-	WORKING_DAY(7),
+	/** The working day. */
+	WORKING_DAY(7, false, true),
 
 	/** The come late. */
-	COME_LATE(8),
+	COME_LATE(8, false, true),
 
 	/** The level. */
-	LEVEL(9);
+	LEVEL(9, true, false);
 
 	/** The value. */
 	public int value;
+
+	/** The is code mode. */
+	public boolean isCodeMode;
+
+	/** The is range mode. */
+	public boolean isRangeMode;
 
 	/** The Constant values. */
 	private final static ElementType[] values = ElementType.values();
@@ -52,9 +58,15 @@ public enum ElementType {
 	 *
 	 * @param value
 	 *            the value
+	 * @param isCodeMode
+	 *            the is code mode
+	 * @param isRangeMode
+	 *            the is range mode
 	 */
-	private ElementType(int value) {
+	private ElementType(int value, boolean isCodeMode, boolean isRangeMode) {
 		this.value = value;
+		this.isCodeMode = isCodeMode;
+		this.isRangeMode = isRangeMode;
 	}
 
 	/**

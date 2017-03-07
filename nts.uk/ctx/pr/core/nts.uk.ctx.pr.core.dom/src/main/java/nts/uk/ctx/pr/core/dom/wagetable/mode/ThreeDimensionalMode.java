@@ -4,7 +4,10 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.dom.wagetable.mode;
 
+import java.util.List;
+
 import lombok.Getter;
+import nts.arc.error.BusinessException;
 import nts.uk.ctx.pr.core.dom.wagetable.ElementCount;
 import nts.uk.ctx.pr.core.dom.wagetable.element.WageTableElement;
 
@@ -14,17 +17,14 @@ import nts.uk.ctx.pr.core.dom.wagetable.element.WageTableElement;
 @Getter
 public class ThreeDimensionalMode implements DemensionalMode {
 
+	/** The Constant ELEMENT_COUNT. */
+	public static final int ELEMENT_COUNT = 3;
+	
 	/** The Constant mode. */
 	public static final ElementCount mode = ElementCount.Three;
 
 	/** The element 1 st. */
-	private WageTableElement element1st;
-
-	/** The element 2 nd. */
-	private WageTableElement element2nd;
-
-	/** The element 3 rd. */
-	private WageTableElement element3rd;
+	private List<WageTableElement> elements;
 
 	/*
 	 * (non-Javadoc)
@@ -46,10 +46,12 @@ public class ThreeDimensionalMode implements DemensionalMode {
 	 * @param element3rd
 	 *            the element 3 rd
 	 */
-	public ThreeDimensionalMode(WageTableElement element1st, WageTableElement element2nd, WageTableElement element3rd) {
+	public ThreeDimensionalMode(List<WageTableElement> elements) {
 		super();
-		this.element1st = element1st;
-		this.element2nd = element2nd;
-		this.element3rd = element3rd;
+		// TODO: Valid element
+		if (elements.size() != ELEMENT_COUNT) {
+			throw new BusinessException("");
+		}
+		this.elements = elements;
 	}
 }

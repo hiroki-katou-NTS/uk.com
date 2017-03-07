@@ -6,11 +6,16 @@ package nts.uk.ctx.pr.core.infra.entity.wagetable.history;
 
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -21,7 +26,20 @@ import lombok.Setter;
 /**
  * The Class QwtmtWagetableHist.
  */
+
+/**
+ * Gets the qwtmt wagetable mny list.
+ *
+ * @return the qwtmt wagetable mny list
+ */
 @Getter
+
+/**
+ * Sets the qwtmt wagetable mny list.
+ *
+ * @param qwtmtWagetableMnyList
+ *            the new qwtmt wagetable mny list
+ */
 @Setter
 @Entity
 @Table(name = "QWTMT_WAGETABLE_HIST")
@@ -83,6 +101,22 @@ public class QwtmtWagetableHist implements Serializable {
 	@Column(name = "END_YM")
 	private int endYm;
 
+	/** The qwtmt wagetable ele hist list. */
+	@JoinColumns({
+			@JoinColumn(name = "CCD", referencedColumnName = "CCD", insertable = false, updatable = false),
+			@JoinColumn(name = "WAGE_TABLE_CD", referencedColumnName = "WAGE_TABLE_CD", insertable = false, updatable = false),
+			@JoinColumn(name = "HIST_ID", referencedColumnName = "HIST_ID", insertable = false, updatable = false) })
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<QwtmtWagetableEleHist> qwtmtWagetableEleHistList;
+
+	/** The qwtmt wagetable mny list. */
+	@JoinColumns({
+			@JoinColumn(name = "CCD", referencedColumnName = "CCD", insertable = false, updatable = false),
+			@JoinColumn(name = "WAGE_TABLE_CD", referencedColumnName = "WAGE_TABLE_CD", insertable = false, updatable = false),
+			@JoinColumn(name = "HIST_ID", referencedColumnName = "HIST_ID", insertable = false, updatable = false) })
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+	private List<QwtmtWagetableMny> qwtmtWagetableMnyList;
+
 	/**
 	 * Instantiates a new qwtmt wagetable hist.
 	 */
@@ -112,7 +146,8 @@ public class QwtmtWagetableHist implements Serializable {
 	 * @param endYm
 	 *            the end ym
 	 */
-	public QwtmtWagetableHist(QwtmtWagetableHistPK qwtmtWagetableHistPK, int exclusVer, int strYm, int endYm) {
+	public QwtmtWagetableHist(QwtmtWagetableHistPK qwtmtWagetableHistPK, int exclusVer, int strYm,
+			int endYm) {
 		this.qwtmtWagetableHistPK = qwtmtWagetableHistPK;
 		this.exclusVer = exclusVer;
 		this.strYm = strYm;

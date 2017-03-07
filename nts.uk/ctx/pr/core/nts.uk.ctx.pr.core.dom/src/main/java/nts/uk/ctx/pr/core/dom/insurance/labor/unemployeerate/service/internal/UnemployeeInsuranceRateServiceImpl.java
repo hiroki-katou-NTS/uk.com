@@ -45,13 +45,9 @@ public class UnemployeeInsuranceRateServiceImpl implements UnemployeeInsuranceRa
 	 */
 	@Override
 	public void validateDateRange(UnemployeeInsuranceRate rate) {
-		if (unemployeeInsuranceRateRepo.isInvalidDateRange(rate.getCompanyCode(),
-				rate.getApplyRange())) {
-			// History after start date and time exists
+		if (unemployeeInsuranceRateRepo.isInvalidDateRange(rate.getCompanyCode(), rate.getApplyRange())) {
 			throw new BusinessException("ER010");
 
-			// TODO: Check duplicate start date. !? in EAP file.
-			// throw new BusinessException("ER005");
 		}
 	}
 
@@ -64,13 +60,10 @@ public class UnemployeeInsuranceRateServiceImpl implements UnemployeeInsuranceRa
 	 */
 	@Override
 	public void validateDateRangeUpdate(UnemployeeInsuranceRate rate) {
-		if (unemployeeInsuranceRateRepo.isInvalidDateRangeUpdate(rate.getCompanyCode(),
-				rate.getApplyRange(), rate.getHistoryId())) {
-			// History after start date and time exists
+		if (unemployeeInsuranceRateRepo.isInvalidDateRangeUpdate(rate.getCompanyCode(), rate.getApplyRange(),
+				rate.getHistoryId())) {
 			throw new BusinessException("ER010");
 
-			// TODO: Check duplicate start date. !? in EAP file.
-			// throw new BusinessException("ER005");
 		}
 
 	}

@@ -44,7 +44,7 @@ public class HistoryUnemployeeInsuranceFindOutDto implements UnemployeeInsurance
 	 */
 	@Override
 	public void setCompanyCode(CompanyCode companyCode) {
-		// TODO Auto-generated method stub
+		// Do nothing
 
 	}
 

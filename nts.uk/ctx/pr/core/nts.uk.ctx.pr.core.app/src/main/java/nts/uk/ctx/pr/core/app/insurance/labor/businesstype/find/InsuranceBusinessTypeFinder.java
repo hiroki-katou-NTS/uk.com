@@ -9,7 +9,6 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.app.insurance.labor.businesstype.find.dto.InsuranceBusinessTypeFindOutDto;
-// TODO: Auto-generated Javadoc
 import nts.uk.ctx.pr.core.dom.insurance.labor.businesstype.InsuranceBusinessTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -26,9 +25,7 @@ public class InsuranceBusinessTypeFinder {
 	/**
 	 * Find all.
 	 *
-	 * @param companyCode
-	 *            the company code
-	 * @return the insurance business type update dto
+	 * @return the insurance business type find out dto
 	 */
 	public InsuranceBusinessTypeFindOutDto findAll() {
 		return InsuranceBusinessTypeFindOutDto

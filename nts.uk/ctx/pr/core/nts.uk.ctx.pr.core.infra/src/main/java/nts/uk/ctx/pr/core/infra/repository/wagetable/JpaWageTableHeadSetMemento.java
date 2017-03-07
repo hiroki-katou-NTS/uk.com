@@ -4,6 +4,9 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.infra.repository.wagetable;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.wagetable.WageTableCode;
 import nts.uk.ctx.pr.core.dom.wagetable.WageTableHeadSetMemento;
@@ -11,6 +14,8 @@ import nts.uk.ctx.pr.core.dom.wagetable.WageTableName;
 import nts.uk.ctx.pr.core.dom.wagetable.mode.DemensionalMode;
 import nts.uk.ctx.pr.core.infra.entity.wagetable.QwtmtWagetableHead;
 import nts.uk.ctx.pr.core.infra.entity.wagetable.QwtmtWagetableHeadPK;
+import nts.uk.ctx.pr.core.infra.entity.wagetable.element.QwtmtWagetableElement;
+import nts.uk.ctx.pr.core.infra.repository.wagetable.element.JpaWageTableElementSetMemento;
 import nts.uk.shr.com.primitive.Memo;
 
 /**
@@ -76,7 +81,18 @@ public class JpaWageTableHeadSetMemento implements WageTableHeadSetMemento {
 	 */
 	@Override
 	public void setDemensionSetting(DemensionalMode demensionSetting) {
+		String company = this.typeValue.getQwtmtWagetableHeadPK().getCcd();
+		String wageTableCode = this.typeValue.getQwtmtWagetableHeadPK().getWageTableCd();
+
 		this.typeValue.setDemensionSet(demensionSetting.getMode().value);
+		List<QwtmtWagetableElement> wagetableElementList = demensionSetting.getElements().stream()
+				.map(item -> {
+					QwtmtWagetableElement entity = new QwtmtWagetableElement();
+					item.saveToMemento(
+							new JpaWageTableElementSetMemento(company, wageTableCode, entity));
+					return entity;
+				}).collect(Collectors.toList());
+		this.typeValue.setWagetableElementList(wagetableElementList);
 	}
 
 	/**

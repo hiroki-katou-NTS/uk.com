@@ -25,6 +25,9 @@ import nts.uk.shr.com.primitive.Memo;
 @Setter
 public class CreateUnitPriceHistoryCommand extends UnitPriceHistoryBaseCommand {
 
+	/** The new mode. */
+	private boolean newMode;
+
 	/**
 	 * To domain.
 	 *

@@ -1,6 +1,7 @@
 module nts.uk.pr.view.qmm016.a {
     export module viewmodel {
         export class ScreenModel {
+            
             // UI
             tabs: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel>;
             wageTableList: any;
@@ -45,8 +46,6 @@ module nts.uk.pr.view.qmm016.a {
                     { code: '4', name: '精皆勤手当' }
                 ]);
 
-
-
                 // Process
                 self.selectedCode = ko.observable('0001');
                 self.selectedTab = ko.observable('tab-1');
@@ -64,6 +63,7 @@ module nts.uk.pr.view.qmm016.a {
             goToB() {
                 nts.uk.ui.windows.sub.modal('/view/qmm/007/b/index.xhtml', { dialogClass: 'no-close', height: 380, width: 400 }).setTitle('å±¥æ­´ã�®è¿½åŠ ');
             }
+            
             //open dialog edit HistoryAccidentInsurance => show view model xhtml (action event edit)
             private openSetupEntitlementGroup() {
                 // Set parent value
@@ -84,11 +84,11 @@ module nts.uk.pr.view.qmm016.a {
                     }*/
                 });
             }
-
         }
 
 
         export class WageTableItem {
+            
             code: string;
             name: string;
             nodeText: string;
@@ -104,6 +104,7 @@ module nts.uk.pr.view.qmm016.a {
         }
 
         export class WageTableHistoryItem {
+            
             code: string;
             startMonth: string;
             endMonth: string;

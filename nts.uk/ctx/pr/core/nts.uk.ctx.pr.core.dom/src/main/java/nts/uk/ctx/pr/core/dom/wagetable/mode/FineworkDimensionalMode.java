@@ -4,7 +4,10 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.dom.wagetable.mode;
 
+import java.util.List;
+
 import lombok.Getter;
+import nts.arc.error.BusinessException;
 import nts.uk.ctx.pr.core.dom.wagetable.ElementCount;
 import nts.uk.ctx.pr.core.dom.wagetable.element.WageTableElement;
 
@@ -13,18 +16,14 @@ import nts.uk.ctx.pr.core.dom.wagetable.element.WageTableElement;
  */
 @Getter
 public class FineworkDimensionalMode implements DemensionalMode {
+	/** The Constant ELEMENT_COUNT. */
+	public static final int ELEMENT_COUNT = 3;
 
 	/** The Constant mode. */
 	public static final ElementCount mode = ElementCount.Finework;
 
 	/** The element 1 st. */
-	private WageTableElement element1st;
-
-	/** The element 2 nd. */
-	private WageTableElement element2nd;
-
-	/** The element 3 rd. */
-	private WageTableElement element3rd;
+	private List<WageTableElement> elements;
 
 	/*
 	 * (non-Javadoc)
@@ -39,24 +38,21 @@ public class FineworkDimensionalMode implements DemensionalMode {
 	/**
 	 * Instantiates a new finework dimensional mode.
 	 *
-	 * @param element1st
-	 *            the element 1 st
-	 * @param element2nd
-	 *            the element 2 nd
-	 * @param element3nd
-	 *            the element 3 nd
+	 * @param elements
+	 *            the elements
 	 */
-	public FineworkDimensionalMode(WageTableElement element1st, WageTableElement element2nd,
-			WageTableElement element3rd) {
+	public FineworkDimensionalMode(List<WageTableElement> elements) {
 		super();
+
 		// TODO: Valid element
 		// Demension 1 = ElementType.WORKING_DAY
 		// Demension 2 = ElementType.COME_LATE
 		// Demension 3 = ElementType.LEVEL
+		if (elements.size() != ELEMENT_COUNT) {
+			throw new BusinessException("");
+		}
 
-		this.element1st = element1st;
-		this.element2nd = element2nd;
-		this.element3rd = element3rd;
+		this.elements = elements;
 	}
 
 }

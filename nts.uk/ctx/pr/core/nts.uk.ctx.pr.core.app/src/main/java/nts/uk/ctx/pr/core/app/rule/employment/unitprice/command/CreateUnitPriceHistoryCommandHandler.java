@@ -95,6 +95,9 @@ public class CreateUnitPriceHistoryCommandHandler extends CommandHandler<CreateU
 		// Validate
 		unitPriceHistoryService.validateRequiredItem(unitPriceHistory);
 		unitPriceHistoryService.validateDateRange(unitPriceHistory);
+		if (command.isNewMode()) {
+			unitPriceHistoryService.checkDuplicateCode(unitPriceHistory);
+		}
 
 		// Insert into db.
 		unitPriceHistoryRepository.add(unitPrice, unitPriceHistory);

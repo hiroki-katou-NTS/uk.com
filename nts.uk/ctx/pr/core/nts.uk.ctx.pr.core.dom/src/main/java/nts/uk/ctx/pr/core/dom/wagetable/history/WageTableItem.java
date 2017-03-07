@@ -42,7 +42,8 @@ public class WageTableItem {
 	 * @param amount
 	 *            the amount
 	 */
-	public WageTableItem(ElementId element1Id, ElementId element2Id, ElementId element3Id, BigDecimal amount) {
+	public WageTableItem(ElementId element1Id, ElementId element2Id, ElementId element3Id,
+			BigDecimal amount) {
 		super();
 		this.element1Id = element1Id;
 		this.element2Id = element2Id;
@@ -58,9 +59,6 @@ public class WageTableItem {
 	 *            the memento
 	 */
 	public WageTableItem(WageTableItemGetMemento memento) {
-		// this.companyCode = memento.getCompanyCode();
-		// this.code = memento.getCode();
-		// this.historyId = memento.getHistoryId();
 		this.element1Id = memento.getElement1Id();
 		this.element2Id = memento.getElement2Id();
 		this.element3Id = memento.getElement3Id();
@@ -74,9 +72,6 @@ public class WageTableItem {
 	 *            the memento
 	 */
 	public void saveToMemento(WageTableItemSetMemento memento) {
-		// memento.setCompanyCode(this.companyCode);
-		// memento.setCode(this.code);
-		// memento.setHistoryId(this.historyId);
 		memento.setElement1Id(this.element1Id);
 		memento.setElement2Id(this.element2Id);
 		memento.setElement3Id(this.element3Id);

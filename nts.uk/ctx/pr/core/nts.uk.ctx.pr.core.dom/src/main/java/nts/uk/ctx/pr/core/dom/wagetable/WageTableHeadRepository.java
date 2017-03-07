@@ -32,10 +32,9 @@ public interface WageTableHeadRepository {
 	 * Removes the.
 	 *
 	 * @param companyCode the company code
-	 * @param groupCode the group code
-	 * @param version the version
+	 * @param wageTableCode the wage table code
 	 */
-    void remove(CompanyCode companyCode, String groupCode, Long version);
+    void remove(CompanyCode companyCode, WageTableCode wageTableCode);
 
 	/**
 	 * Find all.
