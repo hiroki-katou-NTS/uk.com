@@ -35,7 +35,7 @@
 				<button id="A_BTN_004" class="group-button-1" data-bind="click: openEDialog">納付先の統合</button>
 				<button id="A_BTN_008" class="group-button-1">マスタ修正ログ</button>
 			<!-- 	 data-bind="click: Confirm" -->
-				<button id="A_BTN_005" class="group-button-2 ">削除</button>
+				<button id="A_BTN_005" class="group-button-2 " data-bind="click: deleteAResidential">削除</button>
 				<button id="A_BTN_006" class="group-button-2" data-bind="click: openDDialog">一括削除</button>
 		
 		</div>
@@ -77,16 +77,16 @@
 						<!-- table  -->
 						<table id="expand-example2">
 							<tbody>
-								<tr style="margin-top: 5px;">
-									<th colspan="1" class="th">
-										<div data-bind="ntsFormLabel: {constraint: 'ResiTaxCode', required: true ,readonly: true}" class="form-label ">
+								<tr class ="flex">
+									<th colspan="1" class="th flex">
+										<div data-bind="ntsFormLabel: {constraint: 'ResiTaxCode', required: true ,readonly: true}" class="form-label">
 											<label id="A_LBL_002">コード/名称</label>
 										</div>
 									</th>
 									<th colspan="1" >
 									
 		                           <div data-bind="with: currentNode">
-										<input id="A_INP_002" class="input-table" data-bind="ntsTextEditor: {
+										<input id="A_INP_002"  data-bind="ntsTextEditor: {
 												value: code,
 												constraint: 'ResiTaxCode',
 												required: true,
@@ -96,7 +96,7 @@
 									</th>
 									<th colspan="2" >
 		                           <div data-bind="with: currentNode">
-										<input id="A_INP_003" class="input-table" data-bind="ntsTextEditor: {
+										<input id="A_INP_003" data-bind="ntsTextEditor: {
 												value: name,
 												constraint: 'ResiTaxAutonomy',
 												required: true,
@@ -110,8 +110,8 @@
 								</tr>							
 
 								<!--  3  -->
-								<tr style="margin-top: 5px;">
-									<th colspan="1" class="th">
+								<tr class= "flex">
+									<th colspan="1" class="th flex">
 										<div data-bind="ntsFormLabel: {required: true}" class="form-label ">
 											<label id="A_LBL_003">都道府県</label>
 										</div>
@@ -137,7 +137,7 @@
 					<div>
 						<table id="expand-example1">
 							<tbody>
-								<tr style="margin-top: 5px;">
+								<tr class= "flex">
 									<th colspan="1" class="th">
 										<div data-bind="ntsFormLabel: {}">
 											<label id="A_LBL_004"> 住民税報告先 </label>
@@ -151,7 +151,7 @@
 									</th>							
 								</tr>							
 								<!--  2  -->
-								<tr style="margin-top: 5px;">
+								<tr class= "flex">
 									<th colspan="1" class="th">
 										<div class="form-label"
 											data-bind="ntsFormLabel:{constraint: 'CompanyAccountNo', required: false}"
@@ -162,7 +162,7 @@
 
 									<th colspan="2" class="th">
 									<div data-bind="with: currentResidential">
-										<input id="A_INP_004" class="input-table" data-bind="ntsTextEditor: {
+										<input id="A_INP_004" data-bind="ntsTextEditor: {
 												value: companyAccountNo,
 												constraint: 'CompanyAccountNo',
 												required: true,
@@ -172,7 +172,7 @@
 									</th>
 								</tr>
 								<!--  3  -->
-								<tr style="margin-top: 5px;">
+								<tr class= "flex">
 									<th colspan="1" class="th">
 										<div class="form-label" data-bind="ntsFormLabel:{constraint:'RegisteredName'}"
 											style="margin-top: 5px;">
@@ -182,7 +182,7 @@
 
 									<th colspan="2" class="th">
 									<div data-bind="with: currentResidential">
-										<input id="A_INP_005" class="input-table" data-bind="ntsTextEditor: {
+										<input id="A_INP_005"  data-bind="ntsTextEditor: {
 												value: registeredName,
 												constraint: 'RegisteredName',
 												required: true,
@@ -200,7 +200,7 @@
 					<table id="expand-example">
 						<tbody>
 							<!-- 1  -->
-							<tr style="margin-top: 5px;">
+							<tr class= "flex">
 								<th colspan="1" class="th">
 									<div class="form-label" data-bind="ntsFormLabel:{constraint: 'CompanySpecifiedNo'}"
 										style="margin-top: 5px; width: 200px">
@@ -210,7 +210,7 @@
 
 								<th colspan="2" class='th' >
 								<div data-bind="with: currentResidential">
-										<input id="A_INP_006" class="input-table" data-bind="ntsTextEditor: {
+										<input id="A_INP_006"  data-bind="ntsTextEditor: {
 												value: companySpecifiedNo,
 												constraint: 'CompanySpecifiedNo',
 												required: true,
@@ -222,7 +222,7 @@
 							</tr>
 
 							<!-- 2  -->
-							<tr style="margin-top: 5px;">
+							<tr class= "flex">
 								<th colspan="1" class="th">
 									<div class="form-label" data-bind="ntsFormLabel:{constraint: 'CordinatePostalCode'}"
 										style="margin-top: 5px;">
@@ -232,7 +232,7 @@
 
 								<th colspan="2" class='th'>
 								<div data-bind="with: currentResidential">
-										<input id="A_INP_007" class="input-table" data-bind="ntsTextEditor: {
+										<input id="A_INP_007"  data-bind="ntsTextEditor: {
 												value: cordinatePostalCode,
 												constraint: 'CordinatePostalCode',
 												required: true,
@@ -245,7 +245,7 @@
 								</th>
 							</tr>
 							<!-- 3  -->
-							<tr style="margin-top: 5px;">
+							<tr class= "flex">
 								<th colspan="1" class="th">
 									<div class="form-label" data-bind="ntsFormLabel:{constraint:'CordinatePostOffice'}"
 										style="margin-top: 5px;">
@@ -255,7 +255,7 @@
 
 								<th colspan="2" class="th">
 								<div data-bind="with: currentResidential">
-										<input id="A_INP_008" class="input-table" data-bind="ntsTextEditor: {
+										<input id="A_INP_008"  data-bind="ntsTextEditor: {
 												value: cordinatePostOffice,
 												constraint: 'CordinatePostOffice',
 												required: true,
@@ -265,7 +265,7 @@
 								</th>
 							</tr>
 							<!-- 4  -->
- 							<tr style="margin-top: 20px;">
+ 							<tr class= "flex">
 								<th colspan="1" class="th" style="vertical-align: top;">
 									<div class="flex">
 									<div class="form-label" data-bind="ntsFormLabel:{constraint: 'Memo'}">

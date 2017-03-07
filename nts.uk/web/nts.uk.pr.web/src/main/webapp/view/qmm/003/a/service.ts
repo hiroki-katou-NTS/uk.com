@@ -1,17 +1,18 @@
 module qmm003.a.service {
     var paths = {
-        getResidentalTaxList: "pr/core/residential/findallresidential",
+        getResidentialTaxList: "pr/core/residential/findallresidential",
         getRegionPrefecture: "pr/core/residential/getlistLocation",
         addResidential: "pr/core/residential/addresidential",
-        updateResidential: "pr/core/residential/updateresidential"
+        updateResidential: "pr/core/residential/updateresidential",
+        deleteResidential: "pr/core/residential/deleteresidential"
     }
 
     /**
-     * Get list payment date processing.
+     * Get list residential date processing.
      */
     export function getResidentialTax(): JQueryPromise<Array<model.ResidentialTax>> {
         var dfd = $.Deferred<Array<qmm003.a.service.model.ResidentialTax>>();
-        nts.uk.request.ajax(paths.getResidentalTaxList)
+        nts.uk.request.ajax(paths.getResidentialTaxList)
             .done(function(res: Array<qmm003.a.service.model.ResidentialTax>) {
                 dfd.resolve(res);
             })
@@ -47,6 +48,16 @@ module qmm003.a.service {
             .done(function(res: Array<any>) {
                 dfd.resolve(res);
             })
+            .fail(function(res) {
+                dfd.reject(res);
+            })
+        return dfd.promise();
+    }
+    export function deleteResidential(residential: model.ResidentialTax) {
+        var dfd = $.Deferred<Array<any>>();
+        nts.uk.request.ajax(paths.deleteResidential, residential).done(function(res: Array<any>) {
+            dfd.resolve(res);
+        })
             .fail(function(res) {
                 dfd.reject(res);
             })

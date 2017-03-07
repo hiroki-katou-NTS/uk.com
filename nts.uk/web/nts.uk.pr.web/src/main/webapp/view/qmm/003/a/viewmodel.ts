@@ -38,13 +38,18 @@ module qmm003.a.viewmodel {
                     self.currentResi(ko.mapping.fromJS(self.findResidentialByCode(self.residentalTaxList(), newChange)));
                     self.residentialReportCode(self.currentResi().resiTaxReportCode);
                     self.currentResidential(ko.mapping.fromJS(self.currentResi()));
+                    console.log(self.currentResidential());
+                    console.log(self.currentResi());
 
                 } else {
                     self.editMode = true;
                 }
             });
+            self.selectedCode.subscribe(function(newChange) {
+                console.log(newChange);
+            });
         }
-        
+
         // find Node By code (singleSelectedCode)
         findByCode(items: Array<Node>, newValue: string): Node {
             let self = this;
@@ -63,7 +68,7 @@ module qmm003.a.viewmodel {
 
             return node;
         };
-        
+
         // find  Node by resiTaxCode
         findResidentialByCode(items: Array<service.model.ResidentialTax>, newValue: string): service.model.ResidentialTax {
             let self = this;
@@ -99,6 +104,7 @@ module qmm003.a.viewmodel {
                     _.each(objPrefecture.childs, function(obj: Node) {
                         if (obj.code === code) {
                             self.selectedCode(objPrefecture.code);
+                            console.log(self.selectedCode());
                         }
                     });
                 });
@@ -108,14 +114,16 @@ module qmm003.a.viewmodel {
         // create array prefecture from japan location
         buildPrefectureArray(): void {
             let self = this;
+            //(qmm003.b.service.getResidentialTax()).done(function(data: Array<qmm003.b.service.model.ResidentialTax>) {
             _.map(self.japanLocation, function(region: service.model.RegionObject) {
                 _.each(region.prefectures, function(objPrefecture: service.model.PrefectureObject) {
                     return self.precfecture.push(new Node(objPrefecture.prefectureCode, objPrefecture.prefectureName, []));
                 });
             });
+            //  });
 
         }
-        
+
         // reset Data
         resetData(): void {
             let self = this;
@@ -138,44 +146,20 @@ module qmm003.a.viewmodel {
             self.singleSelectedCode("");
             self.selectedCode("");
         }
-        // function not use
-        search(): void {
-
-            let inputSearch = $("#search").find("input.ntsSearchBox").val();
-            if (inputSearch === '') {
-                $('#search').ntsError('set', 'inputSearch が入力されていません。');
-            } else {
-                $('#search').ntsError('clear');
-            }
-
-            // errror search
-            let error: boolean;
-            _.find(this.filteredData(), function(obj: Node) {
-                if (obj.code !== inputSearch) {
-                    error = true;
-                }
-            });
-            if (error = true) {
-                $('#search').ntsError('set', '対象データがありません。');
-            } else {
-                $('#search').ntsError('clear');
-            }
-        }
-        
         // init menu
         init(): void {
             let self = this;
             // data of treegrid
             self.items = ko.observableArray([]);
             self.mode = ko.observable(null);
-            let node : Node;
+            let node: Node;
             self.currentNode = ko.observable(ko.mapping.fromJS(new Node('022012', '青森市', [])));
             self.isEnable = ko.observable(true);
             self.isEditable = ko.observable(true);
             self.selectedCode = ko.observable("11");
             self.singleSelectedCode = ko.observable('022012');
             let objResi = new service.model.ResidentialTax();
-            objResi.companyCode ='a';
+            objResi.companyCode = 'a';
             objResi.resiTaxCode = 'a';
             objResi.resiTaxAutonomy = 'a';
             objResi.prefectureCode = '42';
@@ -189,41 +173,65 @@ module qmm003.a.viewmodel {
             self.currentResi = ko.observable((objResi));
             self.currentResidential = ko.observable(ko.mapping.fromJS(self.currentResi()));
         }
+        //BTN007
         openBDialog() {
             let self = this;
             let singleSelectedCode: any;
             let currentNode: Node;
+            let selectedCode: string;
             nts.uk.ui.windows.setShared('singleSelectedCode', self.singleSelectedCode(), true);
             nts.uk.ui.windows.sub.modeless('/view/qmm/003/b/index.xhtml', { title: '住民税納付先の登録＞住民税納付先一覧', dialogClass: "no-close" }).onClosed(function(): any {
                 singleSelectedCode = nts.uk.ui.windows.getShared("singleSelectedCode");
                 currentNode = nts.uk.ui.windows.getShared("currentNode");
+                selectedCode = nts.uk.ui.windows.getShared("selectedCode");
                 console.log(currentNode);
                 self.editMode = false;
                 self.singleSelectedCode(singleSelectedCode);
                 self.currentNode(ko.mapping.fromJS(currentNode));
-                //console.log(ko.mapping.fromJS(self.currentNode()));
+                self.selectedCode(selectedCode);
+                console.log(self.selectedCode());
+
             });
         }
+        //BTN009
         openCDialog() {
             let self = this;
             let currentNode: Node;
             nts.uk.ui.windows.sub.modeless("/view/qmm/003/c/index.xhtml", { title: '住民税納付先の登録＞住民税報告先一覧', dialogClass: "no-close" }).onClosed(function(): any {
                 currentNode = nts.uk.ui.windows.getShared('currentNode');
                 self.residentialReportCode(currentNode.nodeText);
-//                self.currentResi().resiTaxReportCode = ko.mapping.fromJS(currentNode.nodeText);
-//                console.log(self.residentialReportCode());
-//                console.log(self.currentResi().resiTaxReportCode);
 
             });
         }
+
+        //BTN006
         openDDialog() {
             let self = this;
             let items: any;
             nts.uk.ui.windows.sub.modeless("/view/qmm/003/d/index.xhtml", { title: '住民税納付先の登録　＞　一括削除', dialogClass: "no-close" }).onClosed(function(): any {
                 items = nts.uk.ui.windows.getShared('items');
+                console.log(items);
                 self.items([]);
-                self.items(items);
+                self.nodeRegionPrefectures([]);
+                self.start();
+                //self.items(items);
             });
+        }
+        //BTN005
+        deleteAResidential(): void {
+            let self = this;
+            let objResidential : service.model.ResidentialTax;
+            //objResidential = ko.toJS
+            console.log(ko.toJS(self.currentResidential()));
+            qmm003.a.service.deleteResidential(ko.toJS(self.currentResidential())).done(function(data) {
+                console.log(data);
+                self.items([]);
+                self.nodeRegionPrefectures([]);
+                self.start();
+
+            });
+
+
         }
         openEDialog() {
 
@@ -242,6 +250,7 @@ module qmm003.a.viewmodel {
             (qmm003.a.service.getResidentialTax()).done(function(data: Array<qmm003.a.service.model.ResidentialTax>) {
                 if (data.length > 0) {
                     self.mode(true); // true, update mode 
+                    console.log(self.mode());
                     self.residentalTaxList(data);
                     (qmm003.a.service.getRegionPrefecture()).done(function(locationData: Array<service.model.RegionObject>) {
                         self.japanLocation = locationData;
@@ -252,11 +261,24 @@ module qmm003.a.viewmodel {
                         node = nts.uk.util.flatArray(self.nodeRegionPrefectures(), "childs");
                         self.filteredData(node);
                         self.items(self.nodeRegionPrefectures());
+                        //self.singleSelectedCode(self.nodeRegionPrefecture[1]().);
                     });
 
 
                 } else {
+                    self.resetData();
+                    $(document).ready(function(data) {
+                        $("#A_BTN_009").prop('disabled', 'false');
+                    });
+                    (qmm003.a.service.getRegionPrefecture()).done(function(locationData: Array<service.model.RegionObject>) {
+                        self.japanLocation = locationData;
+                        self.buildPrefectureArray();
+                        self.itemPrefecture(self.precfecture);
+                    });
+
                     self.mode(false)// false, new mode
+
+                    console.log(self.mode());
                 }
 
                 dfd.resolve();
@@ -306,23 +328,33 @@ module qmm003.a.viewmodel {
         ClickRegister(): void {
             let self = this;
             let objResi = new service.model.ResidentialTax();
-            let node = new  Node('','',[]);
+            let node = new Node('', '', []);
             node = ko.toJS(self.currentNode());
-            console.log(node.name);
-            console.log(node.code);
             objResi = ko.toJS(self.currentResidential());
             objResi.resiTaxCode = node.code;
             objResi.resiTaxAutonomy = node.name;
             objResi.prefectureCode = self.selectedCode();
-            objResi.resiTaxReportCode = self.residentialReportCode();
-            console.log(objResi);
-            qmm003.a.service.addResidential(objResi).done(function() {
-                self.items([]);
-                self.nodeRegionPrefectures([]);
-                self.start();
-                self.singleSelectedCode(objResi.resiTaxCode);
+            objResi.resiTaxReportCode = self.residentialReportCode().substring(0, 6);
+            if (!self.mode()) {
+                qmm003.a.service.addResidential(objResi).done(function() {
+                    self.items([]);
+                    self.nodeRegionPrefectures([]);
+                    self.start();
+                    $(document).ready(function(data) {
+                        $("#A_BTN_009").removeAttr('disabled');
+                        $("#A_BTN_009").prop('disabled', 'false');
+                    });
+                    self.singleSelectedCode(objResi.resiTaxCode);
 
-            });
+                });
+            } else {
+                qmm003.a.service.updateData(objResi).done(function() {
+                    self.items([]);
+                    self.nodeRegionPrefectures([]);
+                    self.start();
+                    self.singleSelectedCode(objResi.resiTaxCode);
+                });
+            }
 
 
 

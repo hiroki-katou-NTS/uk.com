@@ -13,10 +13,13 @@ var qmm003;
                     this.precfecture = [];
                     this.itemPrefecture = ko.observableArray([]);
                     this.residentalTaxList = ko.observableArray([]);
+                    this.selectedCode = ko.observable("");
                     var self = this;
                     self.init();
                     self.singleSelectedCode.subscribe(function (newValue) {
                         self.currentNode(self.findByCode(self.filteredData(), newValue));
+                        self.findPrefectureByResiTax(newValue);
+                        console.log(self.selectedCode());
                     });
                 }
                 ScreenModel.prototype.findByCode = function (items, newValue) {
@@ -35,6 +38,7 @@ var qmm003;
                 ScreenModel.prototype.clickButton = function () {
                     var self = this;
                     nts.uk.ui.windows.setShared('singleSelectedCode', self.singleSelectedCode(), true);
+                    nts.uk.ui.windows.setShared('selectedCode', self.selectedCode(), true);
                     nts.uk.ui.windows.setShared('currentNode', self.currentNode(), true);
                     nts.uk.ui.windows.close();
                 };
@@ -45,30 +49,7 @@ var qmm003;
                     var self = this;
                     self.items = ko.observableArray([]);
                     self.singleSelectedCode = ko.observable(nts.uk.ui.windows.getShared("singleSelectedCode"));
-                    //self.filteredData = ko.observableArray(nts.uk.util.flatArray(self.items(), "childs"));
                     self.currentNode = ko.observable((new Node("", "", [])));
-                };
-                ScreenModel.prototype.register = function () {
-                    var inputSearch = $("#B_SCH_001").find("input.ntsSearchBox").val();
-                    if (inputSearch == "") {
-                        $('#B_SCH_001').ntsError('set', 'inputSearch が入力されていません。');
-                    }
-                    else {
-                        $('#B_SCH_001').ntsError('clear');
-                    }
-                    // errror search
-                    var error;
-                    _.find(this.filteredData(), function (obj) {
-                        if (obj.code !== inputSearch) {
-                            error = true;
-                        }
-                    });
-                    if (error = true) {
-                        $('#B_SCH_001').ntsError('set', '対象データがありません。');
-                    }
-                    else {
-                        $('#B_SCH_001').ntsError('clear');
-                    }
                 };
                 //11.初期データ取得処理 11. Initial data acquisition processing
                 ScreenModel.prototype.start = function () {
@@ -121,6 +102,19 @@ var qmm003;
                                         var chi = [];
                                         self.nodeRegionPrefectures.push(new Node(objRegion.regionCode, objRegion.regionName, [new Node(objPrefecture.prefectureCode, objPrefecture.prefectureName, [new Node(objResi.resiTaxCode, objResi.resiTaxAutonomy, [])])]));
                                     }
+                                }
+                            });
+                        });
+                    });
+                };
+                ScreenModel.prototype.findPrefectureByResiTax = function (code) {
+                    var self = this;
+                    var node;
+                    _.each(self.items(), function (objRegion) {
+                        _.each(objRegion.childs, function (objPrefecture) {
+                            _.each(objPrefecture.childs, function (obj) {
+                                if (obj.code === code) {
+                                    self.selectedCode(objPrefecture.code);
                                 }
                             });
                         });
