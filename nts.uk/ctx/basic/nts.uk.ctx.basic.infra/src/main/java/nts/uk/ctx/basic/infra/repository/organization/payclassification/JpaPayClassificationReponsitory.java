@@ -96,7 +96,7 @@ public class JpaPayClassificationReponsitory extends JpaRepository implements Pa
 		QmnmtPayClass qmnmtPayClass = new QmnmtPayClass();
 		QmnmtPayClassPK qmnmtPayClassPK = new QmnmtPayClassPK(payClassification.getCompanyCode(),
 				payClassification.getPayClassificationCode().toString());
-		qmnmtPayClass.setMemo(qmnmtPayClass.getMemo() != null ? qmnmtPayClass.getMemo().toString() : "");
+		qmnmtPayClass.setMemo(payClassification.getMemo() != null ? payClassification.getMemo().toString() : "");
 		qmnmtPayClass.setPayClassName(payClassification.getPayClassificationName().toString());
 		qmnmtPayClass.setQmnmtPayClassPK(qmnmtPayClassPK);
 		return qmnmtPayClass;
@@ -113,23 +113,7 @@ public class JpaPayClassificationReponsitory extends JpaRepository implements Pa
 		
 	}
 
-	@Override
-	public List<PayClassification> getPayClassifications(String companyCode) {
-		// TODO Auto-generated method stub
-		return null;
-	}
 
-	@Override
-	public Optional<PayClassification> getPayClassification(String companyCode, String payClassificationCode) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	@Override
-	public void remove(String companyCode) {
-		// TODO Auto-generated method stub
-		
-	}
 	
 	
 	

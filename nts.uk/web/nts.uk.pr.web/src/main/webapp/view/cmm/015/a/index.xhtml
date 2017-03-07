@@ -8,7 +8,6 @@
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
 		   	<com:ValidatorScript>
-					nts.uk.ctx.basic.dom.organization.payclassification.PayClassificationCode
 					nts.uk.ctx.basic.dom.organization.payclassification.PayClassificationName
 			</com:ValidatorScript>
 			<com:stylefile path="main.css" />
@@ -22,6 +21,11 @@
 					charType: 'AnyHalfWidth',
 					maxLength: 500,
 				};
+			__viewContext.primitiveValueConstraints.PayClassificationCode = {
+					valueType: 'String',
+					charType: 'AnyHalfWidth',
+					maxLength: 10,
+				};
 			</script>
 		</ui:define>
 
@@ -30,10 +34,10 @@
 			<div id="functions-area" class="divHeader">
 				<button id="A_BTN_001" data-bind="click: initRegisterPayClassification"
 					class="btnStyle">新規</button>
-				<button id="A_BTN_002" data-bind="click: RegisterPayClassification"
+				<button id="A_BTN_002" data-bind="click: addPayClassification"
 					class="proceed btnStyle">登録</button>
 				<button id="A_BTN_003">マスタ修正ログ</button>
-				<button id="A_BTN_004" data-bind="click: DeletePayClassification"
+				<button id="A_BTN_004" data-bind="click: deletePayClassification"
 					class="danger btnStyle">削除</button>
 
 			</div>
@@ -56,7 +60,7 @@
 							<br />
 							<table id="single-list"
 								data-bind="ntsGridList: {
-                                            width: 300,
+                                            width: 400,
                                             height: 400,
                                             options: dataSource,
                                             optionsValue: 'payClassificationCode',
