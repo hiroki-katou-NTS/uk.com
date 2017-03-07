@@ -1,6 +1,5 @@
 package nts.uk.ctx.pr.core.infra.repository.personalinfo.holiday;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -10,11 +9,10 @@ import javax.ejb.Stateless;
 import lombok.val;
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.time.GeneralDate;
 import nts.gul.collection.ListUtil;
-import nts.uk.ctx.pr.core.dom.personalinfo.employmentcontract.PersonalEmploymentContract;
 import nts.uk.ctx.pr.core.dom.personalinfo.holiday.HolidayPaid;
 import nts.uk.ctx.pr.core.dom.personalinfo.holiday.HolidayPaidRepository;
-import nts.uk.ctx.pr.core.infra.entity.personalinfo.employmentcontract.PclmtPersonEmpContract;
 import nts.uk.ctx.pr.core.infra.entity.personalinfo.holiday.PhldtHolidayPaid;
 import nts.uk.ctx.pr.core.infra.entity.personalinfo.holiday.PhldtHolidayPaidPK;
 
@@ -43,7 +41,7 @@ public class JpaHolidayPaidRepository extends JpaRepository implements HolidayPa
 	}
 
 	@Override
-	public Optional<HolidayPaid> find(String companyCode, String personId, LocalDate startDate) {
+	public Optional<HolidayPaid> find(String companyCode, String personId, GeneralDate startDate) {
 		Optional<HolidayPaid> result = this.queryProxy()
 				.find(new PhldtHolidayPaidPK(companyCode, personId, startDate), PhldtHolidayPaid.class)
 				.map(c -> toDomain(c));
@@ -64,5 +62,4 @@ public class JpaHolidayPaidRepository extends JpaRepository implements HolidayPa
 		
 		return Optional.of(holidayList.get(0));
 	}
-
 }

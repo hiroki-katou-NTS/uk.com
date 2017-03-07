@@ -33,12 +33,13 @@
 						<h1>NumberEditor</h1>
 						<h2>Overview</h2>
 						<div data-bind="with: numbereditor">
-							<input data-bind="ntsNumberEditor: {value: value, constraint: constraint, option: option, required: required, enable: enable, readonly: readonly}" />
+							<input id="number-1" data-bind="ntsNumberEditor: {value: value, constraint: constraint, option: option, required: required, enable: enable, readonly: readonly}" />
 							<span data-bind="ntsCheckBox: {checked: enable}">Enable</span>
 							<span data-bind="ntsCheckBox: {checked: readonly}">Readonly</span>
 						</div>
+						<br /><br />
 						<div data-bind="with: numbereditor2">
-							<input data-bind="ntsNumberEditor: {value: value, constraint: constraint, option: option, required: required, enable: enable, readonly: readonly}" />
+							<input id="number-2" data-bind="ntsNumberEditor: {value: value, constraint: constraint, option: option, required: required, enable: enable, readonly: readonly}" />
 							<span data-bind="ntsCheckBox: {checked: enable}">Enable</span>
 							<span data-bind="ntsCheckBox: {checked: readonly}">Readonly</span>
 						</div>
@@ -233,14 +234,14 @@
 						<h2>Overview</h2>
 						<div data-bind="with: currencyeditor">
 							<h3>Yen</h3>
-							<input data-bind="ntsNumberEditor: {value: value, constraint: constraint, option: option, required: required, enable: enable, readonly: readonly}" />
+							<input id="currency-1" data-bind="ntsNumberEditor: {value: value, constraint: constraint, option: option, required: required, enable: enable, readonly: readonly}" />
 							<span data-bind="ntsCheckBox: {checked: enable}">Enable</span>
 							<span data-bind="ntsCheckBox: {checked: readonly}">Readonly</span>
 						</div>
 						<br/>
 						<div data-bind="with: currencyeditor2">
 							<h3>USD</h3>
-							<input data-bind="ntsNumberEditor: {value: value, constraint: constraint, option: option, required: required, enable: enable, readonly: readonly}" />
+							<input id="currency-2" data-bind="ntsNumberEditor: {value: value, constraint: constraint, option: option, required: required, enable: enable, readonly: readonly}" />
 							<span data-bind="ntsCheckBox: {checked: enable}">Enable</span>
 							<span data-bind="ntsCheckBox: {checked: readonly}">Readonly</span>
 						</div>

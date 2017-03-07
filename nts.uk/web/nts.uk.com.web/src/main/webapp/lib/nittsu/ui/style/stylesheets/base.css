@@ -279,36 +279,41 @@ article, aside, details, figcaption, figure, footer, header, hgroup, main, menu,
 /* line 61, ../sass/components/_commons.scss */
 div.form-label {
   display: inline-block;
-  height: 27px;
+  box-sizing: border-box;
+  height: 37px;
   border-style: solid;
   border-color: #97D155;
   border-width: 0 0 0 5px;
-  padding: 10px 10px 0 8px;
+  padding: 0 10px 0 8px;
 }
-/* line 84, ../sass/components/_commons.scss */
-div.form-label.broken {
-  padding-top: 0;
-  padding-bottom: 10px;
+/* line 83, ../sass/components/_commons.scss */
+div.form-label.broken label {
+  line-height: inherit;
+}
+/* line 86, ../sass/components/_commons.scss */
+div.form-label.inline {
+  height: 23px;
+  line-height: 23px;
 }
 /* line 89, ../sass/components/_commons.scss */
-div.form-label.inline {
-  height: 18px;
-  padding-top: 3px;
-  padding-bottom: 2px;
+div.form-label.inline label {
+  line-height: 23px;
 }
-/* line 95, ../sass/components/_commons.scss */
+/* line 92, ../sass/components/_commons.scss */
 div.form-label.required {
   border-color: #FAC002;
 }
-/* line 99, ../sass/components/_commons.scss */
+/* line 96, ../sass/components/_commons.scss */
 div.form-label.disabled {
   border-color: #AAA;
 }
-/* line 103, ../sass/components/_commons.scss */
+/* line 100, ../sass/components/_commons.scss */
 div.form-label > label {
+  max-height: 100%;
   font-size: 14px;
+  line-height: 37px;
 }
-/* line 107, ../sass/components/_commons.scss */
+/* line 106, ../sass/components/_commons.scss */
 div.form-label > i {
   display: block;
   margin-top: 1px;
@@ -316,15 +321,15 @@ div.form-label > i {
   font-weight: normal;
   color: #777777;
 }
-/* line 114, ../sass/components/_commons.scss */
+/* line 113, ../sass/components/_commons.scss */
 div.form-label > i:before {
   content: '(';
 }
-/* line 118, ../sass/components/_commons.scss */
+/* line 117, ../sass/components/_commons.scss */
 div.form-label > i:after {
   content: ')';
 }
-/* line 123, ../sass/components/_commons.scss */
+/* line 122, ../sass/components/_commons.scss */
 div.form-label.inline > i {
   display: inline-block;
   margin-left: 5px;
@@ -333,14 +338,15 @@ div.form-label.inline > i {
 /*****************************
   NtsLinkButton
 *****************************/
-/* line 133, ../sass/components/_commons.scss */
-div.link-button {
+/* line 132, ../sass/components/_commons.scss */
+.link-button {
   display: inline-block;
   padding: 3px 12px;
   background-color: #E0F59E;
   color: #0D86D1;
   text-decoration: underline;
   cursor: pointer;
+  user-select: none;
 }
 
 /*****************************
@@ -361,19 +367,14 @@ div.popup-panel {
   NtsEditor
 *****************************/
 /* line 158, ../sass/components/_commons.scss */
-.nts-editor.error {
+.ntsControl.error .nts-editor {
   border-color: #ff6666;
-}
-
-/* line 162, ../sass/components/_commons.scss */
-.error {
-  border: 1px solid #ff6666 !important;
 }
 
 /*****************************
   ErrorNotifier
 *****************************/
-/* line 169, ../sass/components/_commons.scss */
+/* line 166, ../sass/components/_commons.scss */
 #func-notifier-errors {
   position: absolute;
   display: none;
@@ -389,13 +390,13 @@ div.popup-panel {
   color: #dd3a3a;
   cursor: pointer;
 }
-/* line 182, ../sass/components/_commons.scss */
+/* line 179, ../sass/components/_commons.scss */
 #func-notifier-errors:hover {
   background-color: #ffcccc;
   color: #cc2222;
   border-color: #cc2222;
 }
-/* line 188, ../sass/components/_commons.scss */
+/* line 185, ../sass/components/_commons.scss */
 #func-notifier-errors.shown {
   display: inline-block;
 }
@@ -403,32 +404,32 @@ div.popup-panel {
 /*****************************
   Label
 *****************************/
-/* line 197, ../sass/components/_commons.scss */
+/* line 194, ../sass/components/_commons.scss */
 .label {
   display: inline-block;
   box-sizing: border-box;
 }
-/* line 201, ../sass/components/_commons.scss */
+/* line 198, ../sass/components/_commons.scss */
 .label.warning {
   padding: 15px 10px;
   font-size: 1.2rem;
   background-color: #F7EFD4;
   color: #C12017;
 }
-/* line 208, ../sass/components/_commons.scss */
+/* line 205, ../sass/components/_commons.scss */
 .label.with-image {
   padding: 5px 10px 5px 5px;
   border-radius: 5px;
   background-color: #E0F59E;
   color: #00B050;
 }
-/* line 214, ../sass/components/_commons.scss */
+/* line 211, ../sass/components/_commons.scss */
 .label.with-image .image {
   vertical-align: middle;
   margin-right: 10px;
 }
 
-/* line 220, ../sass/components/_commons.scss */
+/* line 217, ../sass/components/_commons.scss */
 div.label {
   width: 100%;
 }
@@ -436,23 +437,23 @@ div.label {
 /*****************************
   Icon
 *****************************/
-/* line 227, ../sass/components/_commons.scss */
+/* line 224, ../sass/components/_commons.scss */
 .icon {
   position: relative;
   display: inline-block;
 }
-/* line 231, ../sass/components/_commons.scss */
+/* line 228, ../sass/components/_commons.scss */
 .icon::before, .icon::after {
   content: '';
   position: absolute;
   display: block;
 }
-/* line 237, ../sass/components/_commons.scss */
+/* line 234, ../sass/components/_commons.scss */
 .icon.icon-close {
   width: 16px;
   height: 16px;
 }
-/* line 240, ../sass/components/_commons.scss */
+/* line 237, ../sass/components/_commons.scss */
 .icon.icon-close::before, .icon.icon-close::after {
   height: 3px;
   width: 100%;
@@ -461,7 +462,7 @@ div.label {
   margin-top: -1px;
   background: #404040;
 }
-/* line 248, ../sass/components/_commons.scss */
+/* line 245, ../sass/components/_commons.scss */
 .icon.icon-close::before {
   -webkit-transform: rotate(45deg);
   -moz-transform: rotate(45deg);
@@ -469,7 +470,7 @@ div.label {
   -o-transform: rotate(45deg);
   transform: rotate(45deg);
 }
-/* line 251, ../sass/components/_commons.scss */
+/* line 248, ../sass/components/_commons.scss */
 .icon.icon-close::after {
   -webkit-transform: rotate(-45deg);
   -moz-transform: rotate(-45deg);
@@ -477,7 +478,7 @@ div.label {
   -o-transform: rotate(-45deg);
   transform: rotate(-45deg);
 }
-/* line 256, ../sass/components/_commons.scss */
+/* line 253, ../sass/components/_commons.scss */
 .icon.icon-dot {
   width: 16px;
   height: 16px;
@@ -486,7 +487,7 @@ div.label {
   background: #00B050;
   box-sizing: border-box;
 }
-/* line 265, ../sass/components/_commons.scss */
+/* line 262, ../sass/components/_commons.scss */
 .icon.icon-search {
   width: 12px;
   height: 12px;
@@ -494,7 +495,7 @@ div.label {
   border-radius: 100%;
   transform: rotate(-45deg);
 }
-/* line 271, ../sass/components/_commons.scss */
+/* line 268, ../sass/components/_commons.scss */
 .icon.icon-search::after {
   top: 12px;
   left: 5px;
@@ -502,7 +503,7 @@ div.label {
   width: 2px;
   background-color: #333333;
 }
-/* line 279, ../sass/components/_commons.scss */
+/* line 276, ../sass/components/_commons.scss */
 .icon.icon-searchbox {
   position: absolute;
   top: 0;
@@ -513,7 +514,7 @@ div.label {
   background: #00B050;
   border-radius: 5px;
 }
-/* line 289, ../sass/components/_commons.scss */
+/* line 286, ../sass/components/_commons.scss */
 .icon.icon-searchbox:before {
   width: 12px;
   height: 12px;
@@ -522,7 +523,7 @@ div.label {
   top: 6px;
   left: 7px;
 }
-/* line 297, ../sass/components/_commons.scss */
+/* line 294, ../sass/components/_commons.scss */
 .icon.icon-searchbox::after {
   top: 18px;
   left: 22px;
@@ -532,14 +533,14 @@ div.label {
   background-color: #FFF;
   transform: rotate(-45deg);
 }
-/* line 307, ../sass/components/_commons.scss */
+/* line 304, ../sass/components/_commons.scss */
 .icon.icon-button-arrow-left {
   margin: 10px 0 10px 3px;
   width: 40px;
   height: 4px;
   background-color: #00B050;
 }
-/* line 313, ../sass/components/_commons.scss */
+/* line 310, ../sass/components/_commons.scss */
 .icon.icon-button-arrow-left:before {
   width: 16px;
   border-top: solid 4px #00B050;
@@ -548,7 +549,7 @@ div.label {
   left: -3px;
   top: -4px;
 }
-/* line 321, ../sass/components/_commons.scss */
+/* line 318, ../sass/components/_commons.scss */
 .icon.icon-button-arrow-left:after {
   width: 16px;
   border-top: solid 4px #00B050;
@@ -557,14 +558,14 @@ div.label {
   left: -3px;
   top: 4px;
 }
-/* line 330, ../sass/components/_commons.scss */
+/* line 327, ../sass/components/_commons.scss */
 .icon.icon-button-arrow-right {
   margin: 10px 3px 10px 0;
   width: 40px;
   height: 4px;
   background-color: #00B050;
 }
-/* line 336, ../sass/components/_commons.scss */
+/* line 333, ../sass/components/_commons.scss */
 .icon.icon-button-arrow-right:before {
   width: 16px;
   border-top: solid 4px #00B050;
@@ -573,7 +574,7 @@ div.label {
   right: -3px;
   top: -4px;
 }
-/* line 344, ../sass/components/_commons.scss */
+/* line 341, ../sass/components/_commons.scss */
 .icon.icon-button-arrow-right:after {
   width: 16px;
   border-top: solid 4px #00B050;
@@ -582,14 +583,14 @@ div.label {
   right: -3px;
   top: 4px;
 }
-/* line 353, ../sass/components/_commons.scss */
+/* line 350, ../sass/components/_commons.scss */
 .icon.icon-button-arrow-top {
   margin: 8px 5px 0 5px;
   width: 4px;
   height: 30px;
   background-color: #00B050;
 }
-/* line 359, ../sass/components/_commons.scss */
+/* line 356, ../sass/components/_commons.scss */
 .icon.icon-button-arrow-top:before {
   width: 16px;
   border-top: solid 4px #00B050;
@@ -598,7 +599,7 @@ div.label {
   left: -2px;
   top: 2px;
 }
-/* line 367, ../sass/components/_commons.scss */
+/* line 364, ../sass/components/_commons.scss */
 .icon.icon-button-arrow-top:after {
   width: 16px;
   border-top: solid 4px #00B050;
@@ -607,14 +608,14 @@ div.label {
   left: -10px;
   top: 2px;
 }
-/* line 376, ../sass/components/_commons.scss */
+/* line 373, ../sass/components/_commons.scss */
 .icon.icon-button-arrow-bottom {
   margin: 5px 5px 3px 5px;
   width: 4px;
   height: 30px;
   background-color: #00B050;
 }
-/* line 382, ../sass/components/_commons.scss */
+/* line 379, ../sass/components/_commons.scss */
 .icon.icon-button-arrow-bottom:before {
   width: 16px;
   border-top: solid 4px #00B050;
@@ -623,7 +624,7 @@ div.label {
   left: -2px;
   bottom: 2px;
 }
-/* line 390, ../sass/components/_commons.scss */
+/* line 387, ../sass/components/_commons.scss */
 .icon.icon-button-arrow-bottom:after {
   width: 16px;
   border-top: solid 4px #00B050;
@@ -2519,7 +2520,7 @@ button.nts-switch-button[disabled]:hover {
 
 /* line 1, ../sass/components/_updown.scss */
 .ntsUpDown {
-  width: 70px;
+  width: 30px;
   height: 100%;
   display: inline-block;
 }
@@ -2532,7 +2533,7 @@ button.nts-switch-button[disabled]:hover {
 
 /* line 10, ../sass/components/_updown.scss */
 .ntsUpDownButton {
-  width: 70px;
+  width: 30px;
 }
 
 /* line 13, ../sass/components/_updown.scss */

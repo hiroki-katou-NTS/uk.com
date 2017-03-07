@@ -12,16 +12,19 @@ __viewContext.ready(function() {
             
             var array = [];
             for (var i = 0; i < 10000; i++) {
-                array.push(new ItemModel("test" + i, '基本給', "description"));
+                array.push(new ItemModel(i, '蝓ｺ譛ｬ邨ｦ', "description"));
             }
             this.itemsSwap(array);
 
             this.columns = ko.observableArray([
-                { headerText: 'コード', key: 'code', width: 100 },
-                { headerText: '名称', key: 'name', width: 150 }
+                { headerText: '繧ｳ繝ｼ繝・', key: 'code', width: 100 },
+                { headerText: '蜷咲ｧｰ', key: 'name', width: 150 }
             ]);
-
-            this.currentCodeListSwap = ko.observableArray([]);
+            var x = [];
+            x.push(_.cloneDeep(array[0]));
+            x.push(_.cloneDeep(array[1]));
+            x.push(_.cloneDeep(array[2]));
+            this.currentCodeListSwap = ko.observableArray(x);
             this.test = ko.observableArray([]);
         }
         
@@ -32,13 +35,15 @@ __viewContext.ready(function() {
     }
     
     class ItemModel {
-        code: string;
+        code: number;
         name: string;
         description: string;
-        constructor(code: string, name: string, description: string) {
+        deletable: boolean;
+        constructor(code: number, name: string, description: string) {
             this.code = code;
             this.name = name;
             this.description = description;
+            this.deletable = code % 3 === 0;
         }
     }
 
