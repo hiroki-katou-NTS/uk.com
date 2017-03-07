@@ -11,7 +11,7 @@ import nts.arc.error.BusinessException;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroup;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroupRepository;
-import nts.uk.ctx.pr.core.dom.wagetable.service.CertifyGroupService;
+import nts.uk.ctx.pr.core.dom.wagetable.certification.service.CertifyGroupService;
 
 /**
  * The Class CertifyGroupServiceImpl.

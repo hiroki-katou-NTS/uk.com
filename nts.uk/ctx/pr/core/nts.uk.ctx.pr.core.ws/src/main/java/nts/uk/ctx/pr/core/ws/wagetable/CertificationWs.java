@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2016 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.core.ws.wagetable;
@@ -12,9 +12,12 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.pr.core.app.wagetable.find.CertificationFinder;
-import nts.uk.ctx.pr.core.app.wagetable.find.dto.CertificationFindInDto;
+import nts.uk.ctx.pr.core.app.wagetable.certification.find.CertificationFinder;
+import nts.uk.ctx.pr.core.app.wagetable.certification.find.dto.CertificationFindInDto;
 
+/**
+ * The Class CertificationWs.
+ */
 @Path("pr/wagetable/certification")
 @Produces("application/json")
 public class CertificationWs extends WebService {
@@ -26,8 +29,6 @@ public class CertificationWs extends WebService {
 	/**
 	 * Find all.
 	 *
-	 * @param companyCode
-	 *            the company code
 	 * @return the list
 	 */
 	@POST
