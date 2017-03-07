@@ -42,17 +42,18 @@ public class QwtmtWagetableNumPK implements Serializable {
 	/** The demension no. */
 	@Basic(optional = false)
 	@Column(name = "DEMENSION_NO")
-	private short demensionNo;
+	private Integer demensionNo;
 
 	/** The element num no. */
 	@Basic(optional = false)
 	@Column(name = "ELEMENT_NUM_NO")
-	private long elementNumNo;
+	private Integer elementNumNo;
 
 	/**
 	 * Instantiates a new qwtmt wagetable num PK.
 	 */
 	public QwtmtWagetableNumPK() {
+		super();
 	}
 
 	/**
@@ -69,7 +70,8 @@ public class QwtmtWagetableNumPK implements Serializable {
 	 * @param elementNumNo
 	 *            the element num no
 	 */
-	public QwtmtWagetableNumPK(String ccd, String wageTableCd, String histId, short demensionNo, long elementNumNo) {
+	public QwtmtWagetableNumPK(String ccd, String wageTableCd, String histId, Integer demensionNo,
+			Integer elementNumNo) {
 		this.ccd = ccd;
 		this.wageTableCd = wageTableCd;
 		this.histId = histId;
@@ -104,7 +106,8 @@ public class QwtmtWagetableNumPK implements Serializable {
 			return false;
 		}
 		QwtmtWagetableNumPK other = (QwtmtWagetableNumPK) object;
-		if ((this.ccd == null && other.ccd != null) || (this.ccd != null && !this.ccd.equals(other.ccd))) {
+		if ((this.ccd == null && other.ccd != null)
+				|| (this.ccd != null && !this.ccd.equals(other.ccd))) {
 			return false;
 		}
 		if ((this.wageTableCd == null && other.wageTableCd != null)

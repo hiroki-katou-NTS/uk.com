@@ -4,39 +4,40 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.dom.wagetable.element;
 
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import lombok.Getter;
-import nts.gul.text.IdentifierUtil;
+import lombok.Setter;
 import nts.uk.ctx.pr.core.dom.wagetable.ElementType;
-import nts.uk.ctx.pr.core.dom.wagetable.EmployeeLevel;
 
 /**
- * The Class CodeRefMode.
+ * The Class LevelMode.
  */
 @Getter
 public class LevelMode extends BaseMode {
 
 	/** The items. */
-	private List<LevelItem> items;
+	@Setter
+	private List<CodeItem> items;
 
 	/**
-	 * Instantiates a new code ref mode.
-	 *
-	 * @param companyCode
-	 *            the company code
-	 * @param refNo
-	 *            the ref no
+	 * Instantiates a new level mode.
 	 */
 	public LevelMode() {
 		super(ElementType.LEVEL);
+	}
 
-		// Create items
-		this.items = Arrays.asList(EmployeeLevel.values()).stream()
-				.map(item -> new LevelItem(item.value, IdentifierUtil.randomUniqueId()))
-				.collect(Collectors.toList());
+	/**
+	 * Instantiates a new level mode.
+	 *
+	 * @param type
+	 *            the type
+	 * @param items
+	 *            the items
+	 */
+	public LevelMode(ElementType type, List<CodeItem> items) {
+		super(type);
+		this.items = items;
 	}
 
 }

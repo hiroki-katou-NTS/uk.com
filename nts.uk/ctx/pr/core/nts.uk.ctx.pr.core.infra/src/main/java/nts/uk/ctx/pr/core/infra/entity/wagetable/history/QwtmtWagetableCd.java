@@ -104,7 +104,8 @@ public class QwtmtWagetableCd implements Serializable {
 	 * @param elementId
 	 *            the element id
 	 */
-	public QwtmtWagetableCd(QwtmtWagetableCdPK qwtmtWagetableCdPK, int exclusVer, String elementId) {
+	public QwtmtWagetableCd(QwtmtWagetableCdPK qwtmtWagetableCdPK, int exclusVer,
+			String elementId) {
 		this.qwtmtWagetableCdPK = qwtmtWagetableCdPK;
 		this.exclusVer = exclusVer;
 		this.elementId = elementId;
@@ -124,8 +125,10 @@ public class QwtmtWagetableCd implements Serializable {
 	 * @param elementCd
 	 *            the element cd
 	 */
-	public QwtmtWagetableCd(String ccd, String wageTableCd, String histId, short demensionNo, String elementCd) {
-		this.qwtmtWagetableCdPK = new QwtmtWagetableCdPK(ccd, wageTableCd, histId, demensionNo, elementCd);
+	public QwtmtWagetableCd(String ccd, String wageTableCd, String histId, Integer demensionNo,
+			String elementCd) {
+		this.qwtmtWagetableCdPK = new QwtmtWagetableCdPK(ccd, wageTableCd, histId, demensionNo,
+				elementCd);
 	}
 
 	/*
@@ -152,7 +155,8 @@ public class QwtmtWagetableCd implements Serializable {
 		}
 		QwtmtWagetableCd other = (QwtmtWagetableCd) object;
 		if ((this.qwtmtWagetableCdPK == null && other.qwtmtWagetableCdPK != null)
-				|| (this.qwtmtWagetableCdPK != null && !this.qwtmtWagetableCdPK.equals(other.qwtmtWagetableCdPK))) {
+				|| (this.qwtmtWagetableCdPK != null
+						&& !this.qwtmtWagetableCdPK.equals(other.qwtmtWagetableCdPK))) {
 			return false;
 		}
 		return true;
