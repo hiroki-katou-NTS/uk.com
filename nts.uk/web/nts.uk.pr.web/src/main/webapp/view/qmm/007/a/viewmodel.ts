@@ -19,10 +19,9 @@ module nts.uk.pr.view.qmm007.a {
             isContractSettingEnabled: KnockoutObservable<boolean>;
 
             // Flags
-            isInputEnabled: KnockoutObservable<boolean>;
             isLoading: KnockoutObservable<boolean>;
             isNewMode: KnockoutObservable<boolean>;
-            isLatestHistorySelected: KnockoutObservable<boolean>;
+            hasSelected: KnockoutObservable<boolean>;
 
             // Nts text editor options
             textEditorOption: KnockoutObservable<nts.uk.ui.option.TextEditorOption>;
@@ -33,13 +32,12 @@ module nts.uk.pr.view.qmm007.a {
                 var self = this;
                 self.isNewMode = ko.observable(false);
                 self.isLoading = ko.observable(true);
-                self.isInputEnabled = ko.observable(false);
-                self.isLatestHistorySelected = ko.observable(false);
-                self.isLatestHistorySelected.subscribe(val => {
+                self.hasSelected = ko.observable(false);
+                self.hasSelected.subscribe(val => {
                     if (val == true) {
-                        self.isInputEnabled(true);
+                        //self.isInputEnabled(true);
                     } else {
-                        self.isInputEnabled(false);
+                        //self.isInputEnabled(false);
                     }
                 });
 
@@ -60,7 +58,6 @@ module nts.uk.pr.view.qmm007.a {
                         }
                         // when selected a child node
                         else {
-                            self.isLoading(true);
                             $('.save-error').ntsError('clear');
                             self.loadUnitPriceDetail(id);
                         }
@@ -87,6 +84,7 @@ module nts.uk.pr.view.qmm007.a {
             public startPage(): JQueryPromise<void> {
                 var self = this;
                 var dfd = $.Deferred<void>();
+                self.isLoading(true);
                 self.loadUnitPriceHistoryList().done(() => {
                     dfd.resolve();
                 });
@@ -94,11 +92,28 @@ module nts.uk.pr.view.qmm007.a {
             }
 
             /**
-             * Go to Add UnitPriceHistory dialog.
+             * Select latest history then go to add dialog.
              */
             private openAddDialog(): void {
                 var self = this;
-                nts.uk.ui.windows.setShared('unitPriceHistoryModel', ko.toJS(self.unitPriceHistoryModel()));
+                var currentModel = self.unitPriceHistoryModel();
+                // Check if selected history is latest
+                if (self.isLatest(currentModel.id, currentModel.unitPriceCode())) {
+                    self.openAddDialogThenReloadIfAdded();
+                }
+                // Select latest history
+                else {
+                    self.selectedId(self.getLatestHistoryId(currentModel.unitPriceCode()));
+                    self.openAddDialogThenReloadIfAdded();
+                }
+
+            }
+
+            /**
+             * Go to Add UnitPriceHistory dialog. Reload history list if a history is added.
+             */
+            private openAddDialogThenReloadIfAdded(): void {
+                var self = this;
                 nts.uk.ui.windows.sub.modal('/view/qmm/007/b/index.xhtml', { title: '会社一律金額 の 登録 > 履歴の追加', dialogClass: 'no-close' }).onClosed(() => {
                     // Get returned data from dialog.
                     let isCreated = nts.uk.ui.windows.getShared('isCreated');
@@ -117,8 +132,8 @@ module nts.uk.pr.view.qmm007.a {
              */
             private openEditDialog(): void {
                 var self = this;
-                nts.uk.ui.windows.setShared('unitPriceHistoryModel', ko.toJS(this.unitPriceHistoryModel()));
-                nts.uk.ui.windows.setShared('isLatestHistory', self.isLatestHistorySelected());
+                var currentModel = self.unitPriceHistoryModel();
+                nts.uk.ui.windows.setShared('isLatestHistory', self.isLatest(currentModel.id, currentModel.unitPriceCode()));
                 nts.uk.ui.windows.sub.modal('/view/qmm/007/c/index.xhtml', { title: '会社一律金額 の 登録 > 履歴の編集', dialogClass: 'no-close' }).onClosed(() => {
                     // Get returned data from dialog.
                     let isUpdated = nts.uk.ui.windows.getShared('isUpdated');
@@ -135,7 +150,6 @@ module nts.uk.pr.view.qmm007.a {
                             // select undefined if no history left.
                             else {
                                 self.setUnitPriceHistoryModel(self.getDefaultUnitPriceHistory());
-                                self.isLatestHistorySelected(false);
                                 self.selectedId(undefined);
                             }
                         });
@@ -177,9 +191,9 @@ module nts.uk.pr.view.qmm007.a {
             private enableNewMode(): void {
                 var self = this;
                 $('.save-error').ntsError('clear');
+                self.hasSelected(false);
                 self.selectedId('');
                 self.setUnitPriceHistoryModel(self.getDefaultUnitPriceHistory());
-                self.isInputEnabled(true);
                 self.isNewMode(true);
             }
 
@@ -227,10 +241,10 @@ module nts.uk.pr.view.qmm007.a {
             /**
              * Check if the if the history is latest
              */
-            private isLatest(history: UnitPriceHistoryDto): boolean {
+            private isLatest(historyId: string, unitPriceCode: string): boolean {
                 var self = this;
-                var latestHistoryId = self.getLatestHistoryId(history.unitPriceCode);
-                return history.id == latestHistoryId ? true : false;
+                var latestHistoryId = self.getLatestHistoryId(unitPriceCode);
+                return historyId == latestHistoryId ? true : false;
             }
 
             /**
@@ -254,14 +268,19 @@ module nts.uk.pr.view.qmm007.a {
             /**
              * Load UnitPriceHistory detail.
              */
-            private loadUnitPriceDetail(id: string): void {
+            private loadUnitPriceDetail(id: string): JQueryPromise<void> {
                 var self = this;
+                var dfd = $.Deferred<void>();
+                self.isLoading(true);
                 service.find(id).done(dto => {
                     self.setUnitPriceHistoryModel(dto);
-                    self.isLatestHistorySelected(self.isLatest(dto));
                     self.isNewMode(false);
+                    self.hasSelected(true);
                     self.isLoading(false);
+                    nts.uk.ui.windows.setShared('unitPriceHistoryModel', ko.toJS(this.unitPriceHistoryModel()));
+                    dfd.resolve();
                 });
+                return dfd.promise();
             }
 
             /**
@@ -270,6 +289,7 @@ module nts.uk.pr.view.qmm007.a {
             private loadUnitPriceHistoryList(): JQueryPromise<void> {
                 var self = this;
                 var dfd = $.Deferred<void>();
+                self.isLoading(true);
                 service.getUnitPriceHistoryList().done(data => {
                     self.historyList(data.map((item, index) => { return new UnitPriceHistoryNode(item) }));
                     self.isLoading(false);

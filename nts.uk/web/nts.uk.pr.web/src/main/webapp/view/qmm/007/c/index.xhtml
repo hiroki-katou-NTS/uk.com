@@ -36,7 +36,7 @@
 								data-bind="ntsFormLabel: { required: true }">編集方法の選択</div></td>
 						<td><label class="ntsRadioBox"> <input type="radio"
 								name="textRadio"
-								data-bind="checkedValue: 'Remove', checked: edittingMethod" />
+								data-bind="checkedValue: 'Remove', checked: edittingMethod, enable: isLatestHistory" />
 								<span class="box"></span><span class="label"
 								data-bind="text: '履歴を削除する'"></span>
 						</label></td>
@@ -49,7 +49,7 @@
 						<td><div class="invisible" data-bind="ntsFormLabel: {}"> </div></td>
 						<td><label class="ntsRadioBox"> <input type="radio"
 								name="textRadio"
-								data-bind="checkedValue: 'Edit', checked: edittingMethod, enable: isLatestHistory()" /> <span
+								data-bind="checkedValue: 'Edit', checked: edittingMethod" /> <span
 								class="box"></span><span class="label"
 								data-bind="text: '履歴を修正する'"></span>
 						</label></td>

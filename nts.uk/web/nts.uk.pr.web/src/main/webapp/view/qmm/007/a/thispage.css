@@ -61,9 +61,6 @@
 	margin-left: 10px;
 	min-width: 80px;
 }
-
 textarea {
-	resize: none;
-	width: 350px;
 	height: 120px;
 }

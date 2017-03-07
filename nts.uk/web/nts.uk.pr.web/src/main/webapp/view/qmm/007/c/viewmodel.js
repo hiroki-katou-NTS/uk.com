@@ -17,7 +17,7 @@ var nts;
                                 function ScreenModel() {
                                     var self = this;
                                     self.unitPriceHistoryModel = ko.mapping.fromJS(nts.uk.ui.windows.getShared('unitPriceHistoryModel'));
-                                    self.isLatestHistory = ko.observable(nts.uk.ui.windows.getShared('isLatestHistory'));
+                                    self.isLatestHistory = nts.uk.ui.windows.getShared('isLatestHistory');
                                     self.edittingMethod = ko.observable('Edit');
                                     self.isEditMode = ko.observable(true);
                                     self.edittingMethod.subscribe(function (val) {
