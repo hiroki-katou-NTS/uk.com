@@ -2,8 +2,10 @@ package nts.uk.ctx.pr.core.infra.entity.payment.banktranfer;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Embeddable;
 
+import nts.arc.layer.infra.data.entity.type.GeneralDateToDBConverter;
 import nts.arc.time.GeneralDate;
 
 @Embeddable
@@ -43,6 +45,7 @@ public class QbkdtBankTransferPK {
     public int payBonusAtr;
     @Basic(optional = false)
     @Column(name = "PAY_DATE")
+    @Convert(converter = GeneralDateToDBConverter.class)
     public GeneralDate payDate;
     @Basic(optional = false)
     @Column(name = "SPARE_PAY_ATR")
