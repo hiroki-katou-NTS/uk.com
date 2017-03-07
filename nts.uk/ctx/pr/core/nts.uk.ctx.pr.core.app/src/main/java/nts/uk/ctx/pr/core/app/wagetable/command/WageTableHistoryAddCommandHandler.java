@@ -10,24 +10,20 @@ import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroup;
-import nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroupRepository;
-import nts.uk.ctx.pr.core.dom.wagetable.service.CertifyGroupService;
+import nts.uk.ctx.core.dom.company.CompanyCode;
+import nts.uk.ctx.pr.core.dom.wagetable.history.WageTableHistory;
+import nts.uk.ctx.pr.core.dom.wagetable.history.WageTableHistoryRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
- * The Class CertifyGroupAddCommandHandler.
+ * The Class WageTableHistoryAddCommandHandler.
  */
 @Stateless
-@Transactional
-public class CertifyGroupAddCommandHandler extends CommandHandler<CertifyGroupAddCommand> {
+public class WageTableHistoryAddCommandHandler extends CommandHandler<WageTableHistoryAddCommand> {
 
 	/** The certify group repository. */
 	@Inject
-	private CertifyGroupRepository certifyGroupRepository;
-
-	@Inject
-	private CertifyGroupService certifyGroupService;
+	private WageTableHistoryRepository certifyGroupRepository;
 
 	/*
 	 * (non-Javadoc)
@@ -37,11 +33,15 @@ public class CertifyGroupAddCommandHandler extends CommandHandler<CertifyGroupAd
 	 * .CommandHandlerContext)
 	 */
 	@Override
-	protected void handle(CommandHandlerContext<CertifyGroupAddCommand> context) {
-		String companyCode = AppContexts.user().companyCode();
-		CertifyGroup certifyGroup = context.getCommand().toDomain(companyCode);
-		certifyGroupService.validateRequiredItem(certifyGroup);
-		certifyGroupService.checkDuplicateCode(certifyGroup);
+	@Transactional
+	protected void handle(CommandHandlerContext<WageTableHistoryAddCommand> context) {
+
+		WageTableHistoryAddCommand command = context.getCommand();
+
+		CompanyCode companyCode = new CompanyCode(AppContexts.user().companyCode());
+
+		WageTableHistory certifyGroup = command.toDomain(companyCode);
+
 		this.certifyGroupRepository.add(certifyGroup);
 	}
 

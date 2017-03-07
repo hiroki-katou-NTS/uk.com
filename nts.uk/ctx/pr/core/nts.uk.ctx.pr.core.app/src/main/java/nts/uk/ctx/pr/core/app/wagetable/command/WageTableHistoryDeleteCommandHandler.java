@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2016 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.core.app.wagetable.command;
@@ -11,19 +11,21 @@ import javax.transaction.Transactional;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.core.dom.company.CompanyCode;
-import nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroupRepository;
+import nts.uk.ctx.pr.core.dom.wagetable.WageTableCode;
+import nts.uk.ctx.pr.core.dom.wagetable.history.WageTableHistoryRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
- * The Class CertifyGroupAddCommandHandler.
+ * The Class WageTableHistoryDeleteCommandHandler.
  */
 @Stateless
 @Transactional
-public class CertifyGroupDeleteCommandHandler extends CommandHandler<CertifyGroupDeleteCommand> {
+public class WageTableHistoryDeleteCommandHandler
+		extends CommandHandler<WageTableHistoryDeleteCommand> {
 
-	/** The certify group repository. */
+	/** The wage table history repository. */
 	@Inject
-	private CertifyGroupRepository certifyGroupRepository;
+	private WageTableHistoryRepository wageTableHistoryRepo;
 
 	/*
 	 * (non-Javadoc)
@@ -33,11 +35,14 @@ public class CertifyGroupDeleteCommandHandler extends CommandHandler<CertifyGrou
 	 * .CommandHandlerContext)
 	 */
 	@Override
-	protected void handle(CommandHandlerContext<CertifyGroupDeleteCommand> context) {
-		String companyCode = AppContexts.user().companyCode();
-		this.certifyGroupRepository.remove(new CompanyCode(companyCode),
-				context.getCommand().getCertifyGroupDeleteDto().getGroupCode(),
-				context.getCommand().getCertifyGroupDeleteDto().getVersion());
+	protected void handle(CommandHandlerContext<WageTableHistoryDeleteCommand> context) {
+
+		CompanyCode companyCode = new CompanyCode(AppContexts.user().companyCode());
+
+		WageTableHistoryDeleteCommand command = context.getCommand();
+
+		this.wageTableHistoryRepo.remove(companyCode, new WageTableCode(command.getWageTableCode()),
+				command.getHistoryId());
 	}
 
 }

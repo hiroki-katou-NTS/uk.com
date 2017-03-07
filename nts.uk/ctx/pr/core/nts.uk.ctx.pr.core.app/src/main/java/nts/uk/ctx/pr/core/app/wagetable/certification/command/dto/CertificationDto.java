@@ -2,7 +2,7 @@
  * Copyright (c) 2016 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.pr.core.app.wagetable.command.dto;
+package nts.uk.ctx.pr.core.app.wagetable.certification.command.dto;
 
 import lombok.Data;
 import nts.uk.ctx.core.dom.company.CompanyCode;

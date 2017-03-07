@@ -4,7 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.infra.repository.wagetable.history;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -85,10 +84,6 @@ public class JpaWageTableDetailSetMemento implements WageTableDetailSetMemento {
 			this.typeValue.setDemensionLowerLimit(stepMode.getLowerLimit());
 			this.typeValue.setDemensionUpperLimit(stepMode.getUpperLimit());
 			this.typeValue.setDemensionInterval(stepMode.getInterval());
-		} else {
-			this.typeValue.setDemensionLowerLimit(BigDecimal.ZERO);
-			this.typeValue.setDemensionUpperLimit(BigDecimal.ZERO);
-			this.typeValue.setDemensionInterval(BigDecimal.ZERO);
 		}
 
 		// Save item

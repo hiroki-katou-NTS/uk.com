@@ -10,25 +10,21 @@ import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroup;
-import nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroupRepository;
-import nts.uk.ctx.pr.core.dom.wagetable.service.CertifyGroupService;
+import nts.uk.ctx.core.dom.company.CompanyCode;
+import nts.uk.ctx.pr.core.dom.wagetable.history.WageTableHistory;
+import nts.uk.ctx.pr.core.dom.wagetable.history.WageTableHistoryRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
- * The Class CertifyGroupUpdateCommandHandler.
+ * The Class WageTableHistoryUpdateCommandHandler.
  */
 @Stateless
-@Transactional
-public class CertifyGroupUpdateCommandHandler extends CommandHandler<CertifyGroupUpdateCommand> {
+public class WageTableHistoryUpdateCommandHandler
+		extends CommandHandler<WageTableHistoryUpdateCommand> {
 
 	/** The certify group repository. */
 	@Inject
-	private CertifyGroupRepository certifyGroupRepository;
-
-	/** The certify group service. */
-	@Inject
-	private CertifyGroupService certifyGroupService;
+	private WageTableHistoryRepository wageTableHistoryRepo;
 
 	/*
 	 * (non-Javadoc)
@@ -38,11 +34,16 @@ public class CertifyGroupUpdateCommandHandler extends CommandHandler<CertifyGrou
 	 * .CommandHandlerContext)
 	 */
 	@Override
-	protected void handle(CommandHandlerContext<CertifyGroupUpdateCommand> context) {
-		String companyCode = AppContexts.user().companyCode();
-		CertifyGroup certifyGroup = context.getCommand().toDomain(companyCode);
-		certifyGroupService.validateRequiredItem(certifyGroup);
-		this.certifyGroupRepository.update(certifyGroup);
+	@Transactional
+	protected void handle(CommandHandlerContext<WageTableHistoryUpdateCommand> context) {
+
+		WageTableHistoryUpdateCommand command = context.getCommand();
+
+		CompanyCode companyCode = new CompanyCode(AppContexts.user().companyCode());
+
+		WageTableHistory wageTableHistory = command.toDomain(companyCode);
+
+		this.wageTableHistoryRepo.update(wageTableHistory);
 	}
 
 }

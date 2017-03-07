@@ -51,7 +51,7 @@ public interface WageTableHeadRepository {
 	 * @param code the code
 	 * @return the optional
 	 */
-	Optional<WageTableHead> findById(CompanyCode companyCode, String code);
+	Optional<WageTableHead> findByCode(CompanyCode companyCode, WageTableCode code);
 
 	/**
 	 * Checks if is duplicate code.

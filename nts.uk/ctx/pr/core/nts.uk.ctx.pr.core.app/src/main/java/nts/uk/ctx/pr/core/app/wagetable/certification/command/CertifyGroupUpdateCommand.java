@@ -1,26 +1,18 @@
 /******************************************************************
- * Copyright (c) 2016 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.core.app.wagetable.certification.command;
 
 import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.core.dom.company.CompanyCode;
-import nts.uk.ctx.pr.core.app.wagetable.command.dto.CertificationDto;
-import nts.uk.ctx.pr.core.app.wagetable.command.dto.CertifyGroupDto;
-import nts.uk.ctx.pr.core.dom.wagetable.certification.Certification;
-import nts.uk.ctx.pr.core.dom.wagetable.certification.CertificationGetMemento;
+import nts.uk.ctx.pr.core.app.wagetable.certification.command.dto.CertifyGroupDto;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroup;
-import nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroupGetMemento;
-import nts.uk.ctx.pr.core.dom.wagetable.certification.MultipleTargetSetting;
 
 /**
- * The Class CertifyGroupAddCommand.
+ * The Class CertifyGroupUpdateCommand.
  */
 @Setter
 @Getter
@@ -35,6 +27,7 @@ public class CertifyGroupUpdateCommand implements Serializable {
 	/**
 	 * To domain.
 	 *
+	 * @param companyCode the company code
 	 * @return the certify group
 	 */
 	public CertifyGroup toDomain(String companyCode) {

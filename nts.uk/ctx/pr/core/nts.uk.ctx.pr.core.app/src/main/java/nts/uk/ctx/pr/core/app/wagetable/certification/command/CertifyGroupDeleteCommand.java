@@ -8,7 +8,7 @@ import java.io.Serializable;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.pr.core.app.wagetable.command.dto.CertifyGroupDeleteDto;
+import nts.uk.ctx.pr.core.app.wagetable.certification.command.dto.CertifyGroupDeleteDto;
 
 /**
  * The Class CertifyGroupDeleteCommand.

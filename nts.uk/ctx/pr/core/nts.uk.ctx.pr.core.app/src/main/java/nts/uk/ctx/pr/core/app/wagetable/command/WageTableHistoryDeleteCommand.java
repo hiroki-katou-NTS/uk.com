@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2016 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.core.app.wagetable.command;
@@ -8,19 +8,21 @@ import java.io.Serializable;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.pr.core.app.wagetable.command.dto.CertifyGroupDeleteDto;
 
 /**
- * The Class CertifyGroupDeleteCommand.
+ * The Class WageTableHistoryDeleteCommand.
  */
 @Setter
 @Getter
-public class CertifyGroupDeleteCommand implements Serializable {
+public class WageTableHistoryDeleteCommand implements Serializable {
 
 	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
 
-	/** The certify group dto. */
-	private CertifyGroupDeleteDto certifyGroupDeleteDto;
+	/** The wage table code. */
+	private String wageTableCode;
+
+	/** The history id. */
+	private String historyId;
 
 }
