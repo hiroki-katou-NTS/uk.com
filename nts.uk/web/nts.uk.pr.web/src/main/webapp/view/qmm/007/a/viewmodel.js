@@ -19,12 +19,6 @@ var nts;
                                     self.isNewMode = ko.observable(false);
                                     self.isLoading = ko.observable(true);
                                     self.hasSelected = ko.observable(false);
-                                    self.hasSelected.subscribe(function (val) {
-                                        if (val == true) {
-                                        }
-                                        else {
-                                        }
-                                    });
                                     self.unitPriceHistoryModel = ko.observable(new UnitPriceHistoryModel(self.getDefaultUnitPriceHistory()));
                                     self.historyList = ko.observableArray([]);
                                     self.switchButtonDataSource = ko.observableArray([
@@ -38,7 +32,6 @@ var nts;
                                                 self.selectedId(self.getLatestHistoryId(id));
                                             }
                                             else {
-                                                $('.save-error').ntsError('clear');
                                                 self.loadUnitPriceDetail(id);
                                             }
                                         }
@@ -58,6 +51,7 @@ var nts;
                                     var dfd = $.Deferred();
                                     self.isLoading(true);
                                     self.loadUnitPriceHistoryList().done(function () {
+                                        self.selectedId(self.historyList()[0].id);
                                         dfd.resolve();
                                     });
                                     return dfd.promise();
@@ -195,6 +189,7 @@ var nts;
                                         self.hasSelected(true);
                                         self.isLoading(false);
                                         nts.uk.ui.windows.setShared('unitPriceHistoryModel', ko.toJS(_this.unitPriceHistoryModel()));
+                                        $('.save-error').ntsError('clear');
                                         dfd.resolve();
                                     });
                                     return dfd.promise();
