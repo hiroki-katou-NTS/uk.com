@@ -1,0 +1,57 @@
+@CHARSET "UTF-8";
+
+#E_INP_005 {
+	border-radius: 5px;
+}
+
+#E_SEL_011 button {
+	height: 30px;
+	font-size: 0.8rem;
+	width: 130px;
+}
+
+#E_SEL_002 button {
+	height: 30px;
+	width: 120px;
+	font-size: 0.8rem;
+}
+
+#E_SCH_001 input {
+	width: 165px;
+	height: 30px;
+}
+
+#right-content-bottom-right {
+	margin-left: 40px;
+	margin-top: 4px;
+}
+
+#E_SEL_012 {
+	margin-left: 10px;
+}
+
+#E_LBL_013 {
+	margin-left: 20px;
+}
+
+#E_LBL_014 {
+	margin-left: 20px;
+}
+
+#E_INP_001 input, #E_INP_002 input, #E_INP_003 input, #E_INP_004 input,
+	#E_INP_005 input {
+	width: 100px;
+}
+
+#E_BTN_001, #E_BTN_002 {
+	width: 120px;
+	margin-top: 5px;
+}
+
+#Group1, #Group2, #Group3, #Group4 {
+	display: none;
+}
+
+#contents-area {
+	width: 1400px;
+}

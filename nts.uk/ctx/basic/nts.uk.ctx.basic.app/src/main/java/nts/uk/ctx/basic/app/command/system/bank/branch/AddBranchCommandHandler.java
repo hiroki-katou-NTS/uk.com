@@ -26,10 +26,13 @@ public class AddBranchCommandHandler extends CommandHandler<AddBranchCommand> {
 		
 		Optional<BankBranch> branch = bankBranchRepository.find(companyCode, command.getBankCode(), command.getBranchCode());
 		if (branch.isPresent()) {
-			throw new BusinessException("Bank branch exists!");
+			throw new BusinessException("ER005");
 		}
 		
 		BankBranch domain =  BankBranch.createFromJavaType(companyCode, command.getBankCode(), command.getBranchCode(), command.getBranchName(), command.getBranchKnName(), command.getMemo());
+		
+		// validate
+		domain.validate();
 		
 		bankBranchRepository.add(domain);
 	}

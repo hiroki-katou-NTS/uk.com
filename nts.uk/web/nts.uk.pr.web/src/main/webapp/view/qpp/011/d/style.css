@@ -1,0 +1,154 @@
+#content-header {
+	position: relative;
+	padding: 10px;
+	border-bottom: solid 1px #B1B1B1;
+}
+
+#D_BTN_001 {
+	margin-left: 30px;
+}
+
+#D_BTN_002 {
+	margin-left: 15px;
+}
+
+#SearchBackGround {
+	background-color: #E0F59E;
+	width: 330px;
+	height: 100%;
+	border-radius: 5px;
+}
+
+#contents-area {
+	height: 440px;
+}
+
+#D_LBL_001 {
+	margin: 10px 0px 0px 25px;
+}
+
+.clearBoth {
+	clear: both;
+}
+
+#D_INP_001 {
+	width: 100px;
+}
+
+input {
+	border-radius: 3px;
+	border: solid thin gray;
+	height: 25px;
+	padding: 1px 0px;
+}
+
+#SCH_001 {
+	width: 70px;
+	height: 40px;
+	margin-left: 30px;
+}
+
+.D_LST_001 {
+	padding: 10px 25px;
+}
+
+.floatLeft {
+	float: left;
+}
+
+.fullHeight {
+	height: 100%;
+}
+
+.fullWidth {
+	width: 100%;
+}
+
+#D_LBL_002, #D_LBL_003 {
+	font-size: 1.1rem;
+}
+
+#D_LBL_003 {
+	margin-left: 10px;
+}
+
+#D_LBL_004 {
+	margin-top: 20px;
+}
+
+#D_INP_002, #D_INP_003, #D_INP_004, #D_INP_005 {
+	display: inline-block;
+	margin-top: 10px;
+}
+
+#D_INP_002 input, #D_INP_003 input, #D_INP_004 input, #D_INP_005 input {
+	width: 100px;
+}
+
+#D_INP_002 input, #D_INP_003 input, #D_INP_004 input, #D_INP_005 input, #D_INP_006 input,
+	#D_INP_007 input, #D_INP_008 input, #D_INP_009 input, #D_INP_010 input,
+	#D_INP_011 input {
+	height: 29px;
+}
+
+#D_LBL_005 {
+	margin-left: -10px;
+}
+
+#D_INP_006 {
+	margin-left: 30px;
+}
+
+#D_INP_007 {
+	margin-left: 10px;
+}
+
+#D_INP_006 input{
+	width: 190px;
+}
+
+#D_INP_007 input{
+	width: 100px;
+}
+
+#D_INP_008 {
+	margin-left: 128px;
+}
+
+#D_INP_008 input, #D_INP_009 input, #D_INP_010 input, #D_INP_011 input{
+	width: 100px;
+}
+
+#D_INP_009 {
+	width: 100px;
+	margin-top: 10px;
+	margin-left: 35px;
+}
+
+#D_INP_010, #D_INP_011 {
+	width: 100px;
+	margin-top: 10px;
+	margin-left: 30px;
+}
+
+#D_INP_006, #D_INP_007, #D_INP_008, #D_INP_009, #D_INP_010, #D_INP_011 {
+	display: inline-block;
+}
+
+.form-label span {
+	font-size: 0.8rem;
+}
+
+#D_SCH_001 input {
+	width: 110px;
+	height: 30px;
+}
+
+#D_SCH_001 {
+	display: inline;
+}
+
+#D_LBL_006, #D_LBL_007, #D_LBL_008, #D_LBL_009, #D_LBL_014, #D_LBL_015,
+	#D_LBL_016 {
+	padding-top: 10px;
+}

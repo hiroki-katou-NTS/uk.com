@@ -1,99 +1,144 @@
-var nts;
-(function (nts) {
-    var uk;
-    (function (uk) {
-        var pr;
-        (function (pr) {
-            var view;
-            (function (view) {
-                var qmm003;
-                (function (qmm003) {
-                    var c;
-                    (function (c) {
-                        var ScreenModel = (function () {
-                            function ScreenModel() {
-                                var self = this;
-                                self.init();
-                                self.singleSelectedCode.subscribe(function (newValue) {
-                                    self.labelSubsub(self.findByCode(self.filteredData(), newValue));
-                                    console.log(self.labelSubsub());
-                                });
+var qmm003;
+(function (qmm003) {
+    var c;
+    (function (c) {
+        var viewmodel;
+        (function (viewmodel) {
+            var ScreenModel = (function () {
+                function ScreenModel() {
+                    this.filteredData = ko.observableArray([]);
+                    this.testNode = [];
+                    this.nodeRegionPrefectures = ko.observableArray([]);
+                    this.japanLocation = [];
+                    this.precfecture = [];
+                    this.itemPrefecture = ko.observableArray([]);
+                    this.residentalTaxList = ko.observableArray([]);
+                    var self = this;
+                    self.init();
+                    self.singleSelectedCode.subscribe(function (newValue) {
+                        var node;
+                        node = self.findByCode(self.filteredData(), newValue);
+                        console.log(node);
+                        self.currentNode(node);
+                    });
+                }
+                ScreenModel.prototype.findByCode = function (items, newValue) {
+                    var self = this;
+                    var _node;
+                    _.find(items, function (_obj) {
+                        if (!_node) {
+                            if (_obj.code == newValue) {
+                                _node = _obj;
                             }
-                            ScreenModel.prototype.findByCode = function (items, newValue) {
-                                var self = this;
-                                var _node;
-                                _.find(items, function (_obj) {
-                                    if (!_node) {
-                                        if (_obj.code == newValue) {
-                                            _node = _obj;
+                        }
+                    });
+                    return _node;
+                };
+                ScreenModel.prototype.init = function () {
+                    var self = this;
+                    self.items = ko.observableArray([]);
+                    self.singleSelectedCode = ko.observable("11");
+                    self.currentNode = ko.observable(new Node("", "", []));
+                };
+                ScreenModel.prototype.clickButton = function () {
+                    var self = this;
+                    //nts.uk.ui.windows.setShared('singleSelectedCode', self.singleSelectedCode(), true);
+                    nts.uk.ui.windows.setShared('currentNode', self.currentNode(), true);
+                    nts.uk.ui.windows.close();
+                };
+                ScreenModel.prototype.cancelButton = function () {
+                    nts.uk.ui.windows.close();
+                };
+                ScreenModel.prototype.register = function () {
+                    var inputSearch = $("#C_SCH_001").find("input.ntsSearchBox").val();
+                    if (inputSearch == "") {
+                        $('#C_SCH_001').ntsError('set', 'inputSearch が入力されていません。');
+                    }
+                    else {
+                        $('#C_SCH_001').ntsError('clear');
+                    }
+                    // errror search
+                    var error;
+                    _.find(this.filteredData(), function (obj) {
+                        if (obj.code !== inputSearch) {
+                            error = true;
+                        }
+                    });
+                    if (error = true) {
+                        $('#C_SCH_001').ntsError('set', '対象データがありません。');
+                    }
+                    else {
+                        $('#C_SCH_001').ntsError('clear');
+                    }
+                };
+                //11.初期データ取得処理 11. Initial data acquisition processing
+                ScreenModel.prototype.start = function () {
+                    var dfd = $.Deferred();
+                    var self = this;
+                    (qmm003.c.service.getResidentialTax()).done(function (data) {
+                        if (data.length > 0) {
+                            self.residentalTaxList(data);
+                            (qmm003.c.service.getRegionPrefecture()).done(function (locationData) {
+                                self.japanLocation = locationData;
+                                self.buildResidentalTaxTree();
+                                var node = [];
+                                node = nts.uk.util.flatArray(self.nodeRegionPrefectures(), "childs");
+                                self.filteredData(node);
+                                self.items(self.nodeRegionPrefectures());
+                            });
+                        }
+                        dfd.resolve();
+                    }).fail(function (res) {
+                    });
+                    return dfd.promise();
+                };
+                ScreenModel.prototype.buildResidentalTaxTree = function () {
+                    var self = this;
+                    var child = [];
+                    var i = 0;
+                    _.each(self.residentalTaxList(), function (objResi) {
+                        _.each(self.japanLocation, function (objRegion) {
+                            var cout = false;
+                            var coutPre = false;
+                            _.each(objRegion.prefectures, function (objPrefecture) {
+                                if (objPrefecture.prefectureCode === objResi.prefectureCode) {
+                                    _.each(self.nodeRegionPrefectures(), function (obj) {
+                                        if (obj.code === objRegion.regionCode) {
+                                            _.each(obj.childs, function (objChild) {
+                                                if (objChild.code === objPrefecture.prefectureCode) {
+                                                    objChild.childs.push(new Node(objResi.resiTaxCode, objResi.resiTaxAutonomy, []));
+                                                    coutPre = true;
+                                                }
+                                            });
+                                            if (coutPre === false) {
+                                                obj.childs.push(new Node(objPrefecture.prefectureCode, objPrefecture.prefectureName, [new Node(objResi.resiTaxCode, objResi.resiTaxAutonomy, [])]));
+                                            }
+                                            cout = true;
                                         }
+                                    });
+                                    if (cout === false) {
+                                        var chi = [];
+                                        self.nodeRegionPrefectures.push(new Node(objRegion.regionCode, objRegion.regionName, [new Node(objPrefecture.prefectureCode, objPrefecture.prefectureName, [new Node(objResi.resiTaxCode, objResi.resiTaxAutonomy, [])])]));
                                     }
-                                });
-                                return _node;
-                            };
-                            ScreenModel.prototype.init = function () {
-                                var self = this;
-                                self.items = ko.observableArray([
-                                    new Node('1', '東北', [
-                                        new Node('11', '青森県', [
-                                            new Node('022012', '青森市', []),
-                                            new Node('052019', '秋田市', [])
-                                        ]),
-                                        new Node('12', '東北', [
-                                            new Node('062014', '山形市', [])
-                                        ]),
-                                        new Node('13', '福島県', [
-                                            new Node('062015', '福島市', [])
-                                        ])
-                                    ]),
-                                    new Node('2', '北海道', []),
-                                    new Node('3', '東海', []),
-                                    new Node('4', '関東', [
-                                        new Node('41', '茨城県', [
-                                            new Node('062016', '水戸市', []),
-                                        ]),
-                                        new Node('42', '栃木県', [
-                                            new Node('062017', '宇都宮市', [])
-                                        ]),
-                                        new Node('43', '埼玉県', [
-                                            new Node('062019', '川越市', []),
-                                            new Node('062020', '熊谷市', []),
-                                            new Node('062022', '浦和市', []),
-                                        ])
-                                    ]),
-                                    new Node('5', '東海', []),
-                                    new Node('6', '東海', [])
-                                ]);
-                                self.singleSelectedCode = ko.observable("11");
-                                self.labelSubsub = ko.observable(new Node("", "", []));
-                                self.filteredData = ko.observableArray(nts.uk.util.flatArray(self.items(), "childs"));
-                            };
-                            ScreenModel.prototype.clickButton = function () {
-                                var self = this;
-                                nts.uk.ui.windows.setShared('singleSelectedCode', self.singleSelectedCode(), true);
-                                nts.uk.ui.windows.setShared('labelSubsub', self.labelSubsub(), true);
-                                nts.uk.ui.windows.close();
-                            };
-                            ScreenModel.prototype.cancelButton = function () {
-                                nts.uk.ui.windows.close();
-                            };
-                            return ScreenModel;
-                        }());
-                        c.ScreenModel = ScreenModel;
-                        var Node = (function () {
-                            function Node(code, name, childs) {
-                                var self = this;
-                                self.code = code;
-                                self.name = name;
-                                self.nodeText = self.code + ' ' + self.name;
-                                self.childs = childs;
-                            }
-                            return Node;
-                        }());
-                        c.Node = Node;
-                    })(c = qmm003.c || (qmm003.c = {}));
-                })(qmm003 = view.qmm003 || (view.qmm003 = {}));
-            })(view = pr.view || (pr.view = {}));
-        })(pr = uk.pr || (uk.pr = {}));
-    })(uk = nts.uk || (nts.uk = {}));
-})(nts || (nts = {}));
+                                }
+                            });
+                        });
+                    });
+                };
+                return ScreenModel;
+            }());
+            viewmodel.ScreenModel = ScreenModel;
+            var Node = (function () {
+                function Node(code, name, childs) {
+                    var self = this;
+                    self.code = code;
+                    self.name = name;
+                    self.nodeText = self.code + ' ' + self.name;
+                    self.childs = childs;
+                }
+                return Node;
+            }());
+            viewmodel.Node = Node;
+        })(viewmodel = c.viewmodel || (c.viewmodel = {}));
+    })(c = qmm003.c || (qmm003.c = {}));
+})(qmm003 || (qmm003 = {}));
