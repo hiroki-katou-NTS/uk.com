@@ -10,6 +10,7 @@
 			<com:ValidatorScript>
 					nts.uk.ctx.basic.dom.organization.classification.ClassificationCode
 					nts.uk.ctx.basic.dom.organization.classification.ClassificationName
+					nts.uk.shr.com.primitive.Memo
 				</com:ValidatorScript>
 			<com:stylefile path="main.css" />
 			<com:scriptfile set="IGNITE" />
@@ -17,11 +18,6 @@
 			<com:scriptfile path="viewmodel.js" />
 			<com:scriptfile path="service.js" />
 			<script type="text/javascript">
-			__viewContext.primitiveValueConstraints.Memo = {
-					valueType: 'String',
-					charType: 'AnyHalfWidth',
-					maxLength: 500,
-				};	
 			</script>
 		</ui:define>
 
@@ -30,7 +26,8 @@
 			<div id="functions-area" class="divHeader">
 				<button id="A_BTN_001" data-bind="click: initRegisterClassification"
 					class="btnStyle">新規</button>
-				<button id="A_BTN_002" data-bind="click: RegisterClassification"
+				<button id="A_BTN_002"
+					data-bind="click: RegisterClassification , enable: $root.errors.isEmpty"
 					class="proceed btnStyle">登録</button>
 				<button id="A_BTN_003">マスタ修正ログ</button>
 				<button id="A_BTN_004" data-bind="click: DeleteClassification"
@@ -53,10 +50,10 @@
                                     selectedKey: 'classificationCode', 
                                     childField: 'childs', 
                                     fields: ['classificationName', 'classificationCode']}" />
-							<br/>
+							<br />
 							<table id="single-list"
 								data-bind="ntsGridList: {
-                                            width: 300,
+                                            width: 400,
                                             height: 520,
                                             options: dataSource,
                                             optionsValue: 'classificationCode',
@@ -87,7 +84,7 @@
 							<td class="valign-center">
 								<div>
 									<div class="input_002">
-										<input id = "A_INP_002"
+										<input id="A_INP_002"
 											data-bind="ntsTextEditor: {
                                             value: INP_002_code,
                                             constraint: 'ClassificationCode',
@@ -109,7 +106,8 @@
 
 						<tr>
 							<td>
-								<div style="margin-bottom: 56px;" data-bind="ntsFormLabel: {constraint: 'Memo'}">
+								<div style="margin-bottom: 56px;"
+									data-bind="ntsFormLabel: {constraint: 'Memo'}">
 									<label id="A_LBL_003">メモ</label>
 								</div>
 							</td>

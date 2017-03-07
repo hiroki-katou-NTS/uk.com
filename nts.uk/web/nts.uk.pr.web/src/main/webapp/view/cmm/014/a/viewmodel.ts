@@ -13,6 +13,8 @@ module cmm014.a.viewmodel {
         INP_004_notes: KnockoutObservable<string>;
         multilineeditor: KnockoutObservable<any>;
         index_of_itemDelete: any;
+        itemdata_add: any;
+        itemdata_update: any;
 
         constructor() {
             var self = this;
@@ -30,7 +32,8 @@ module cmm014.a.viewmodel {
             self.INP_002_enable = ko.observable(false);
             self.INP_003_name = ko.observable(null);
             self.INP_004_notes = ko.observable(null);
-
+            self.itemdata_add = ko.observable(null);
+            self.itemdata_update = ko.observable(null);
 
 
 
@@ -38,6 +41,7 @@ module cmm014.a.viewmodel {
                 self.currentItem(self.findObj(codeChanged));
                 if (self.currentItem() != null) {
                     self.INP_002_code(self.currentItem().classificationCode);
+                    self.INP_002_enable(false);
                     self.INP_003_name(self.currentItem().classificationName);
                     self.INP_004_notes(self.currentItem().memo);
                 }
@@ -72,7 +76,8 @@ module cmm014.a.viewmodel {
 
         checkInput(): boolean {
             var self = this;
-            if (self.INP_002_code() == '' || self.INP_003_name() == '') {
+            if (self.INP_002_code().length === 0) {
+                alert("が入力されていません。");
                 return false;
             } else {
                 return true;
@@ -88,6 +93,7 @@ module cmm014.a.viewmodel {
                     service.addClassification(classification).done(function() {
                         self.getClassificationList_first();
                     }).fail(function(res) {
+
                         dfd.reject(res);
                     })
                 }
@@ -96,16 +102,20 @@ module cmm014.a.viewmodel {
                         var classification_old = self.dataSource()[i];
                         var classification_update = new viewmodel.model.ClassificationDto(self.INP_002_code(), self.INP_003_name(), self.INP_004_notes());
                         service.updateClassification(classification_update).done(function() {
+                            self.itemdata_update(classification_update);
                             self.getClassificationList_afterUpdateClassification();
                         }).fail(function(res) {
+                            alert("更新対象のデータが存在しません。");
                             dfd.reject(res);
                         })
                         break;
                     } else if (self.INP_002_code() != self.dataSource()[i].classificationCode && i == self.dataSource().length - 1) {
                         var classification_new = new viewmodel.model.ClassificationDto(self.INP_002_code(), self.INP_003_name(), self.INP_004_notes());
                         service.addClassification(classification_new).done(function() {
+                            self.itemdata_add(classification_new);
                             self.getClassificationList_afterAddClassification();
                         }).fail(function(res) {
+                            alert("入力した は既に存在しています。");
                             dfd.reject(res);
                         })
                         break;
@@ -120,7 +130,6 @@ module cmm014.a.viewmodel {
             var dfd = $.Deferred<any>();
             var item = new model.RemoveClassificationCommand(self.currentItem().classificationCode);
             self.index_of_itemDelete = self.dataSource().indexOf(self.currentItem());
-            console.log(self.index_of_itemDelete);
             service.removeClassification(item).done(function(res) {
                 self.getClassificationList_aftefDelete();
             }).fail(function(res) {
@@ -139,6 +148,8 @@ module cmm014.a.viewmodel {
                     self.INP_003_name(self.dataSource()[0].classificationName);
                     self.INP_004_notes(self.dataSource()[0].memo);
                     self.currentCode(self.dataSource()[0].classificationCode)
+                } else if (classification_arr.length === 0) {
+                    self.INP_002_enable(true);
                 }
                 dfd.resolve();
             }).fail(function(error) {
@@ -176,12 +187,7 @@ module cmm014.a.viewmodel {
                 self.dataSource(classification_arr);
 
                 if (self.dataSource().length > 1) {
-                    let i = self.currentItem().classificationCode;
-                    let j = self.dataSource().indexOf(self.currentItem());
-                    self.currentCode(i);
-                    self.INP_002_code(self.dataSource()[j].classificationCode);
-                    self.INP_003_name(self.dataSource()[j].classificationName);
-                    self.INP_004_notes(self.dataSource()[j].memo);
+                    self.currentCode(self.itemdata_update().classificationCode);
                 }
 
                 dfd.resolve();
@@ -228,7 +234,7 @@ module cmm014.a.viewmodel {
                 self.INP_004_notes(self.dataSource()[0].memo);
                 if (self.dataSource().length > 1) {
                     let i = self.dataSource().length - 1;
-                    self.currentCode(self.dataSource()[i].classificationCode);
+                    self.currentCode(self.itemdata_add().classificationCode);
                 }
                 dfd.resolve();
             }).fail(function(error) {
