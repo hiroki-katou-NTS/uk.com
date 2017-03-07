@@ -20,8 +20,10 @@ import nts.uk.ctx.pr.core.infra.entity.rule.law.tax.residential.QtxmtResidential
 @Stateless
 public class JpaResidentialTaxRepository extends JpaRepository implements ResidentialTaxRepository {
 	private final String SEL_1 = "SELECT c FROM QtxmtResidentialTax c WHERE c.qtxmtResidentialTaxPk.companyCd =:companyCd";
-	private final String SEL_2 = "SELECT c FROM QtxmtResidentialTax c WHERE c.qtxmtResidentialTaxPk.companyCd =:companyCd && c.qtxmtResidentialTaxPk.resiTaxCode =:resiTaxCode && c.resiTaxReportCode :=resiTaxReportCode";
+	private final String SEL_2 = "SELECT c FROM QtxmtResidentialTax c WHERE c.qtxmtResidentialTaxPk.companyCd =:companyCd AND c.qtxmtResidentialTaxPk.resiTaxCode <>:resiTaxCode AND c.resiTaxReportCode =:resiTaxReportCode ";
 	// key CCD RESI_TAX_CD
+	private final String SEL_3 = "SELECT c FROM QtxmtResidentialTax c WHERE c.qtxmtResidentialTaxPk.companyCd =:companyCd && c.qtxmtResidentialTaxPk.resiTaxCode =:resiTaxCode";
+
 
 	private static ResidentialTax toDomain(QtxmtResidentialTax entity) {
 		val domain = ResidentialTax.createFromJavaType(entity.qtxmtResidentialTaxPk.companyCd, entity.companyAccountNo,
@@ -77,28 +79,22 @@ public class JpaResidentialTaxRepository extends JpaRepository implements Reside
 		objectKey.companyCd = companyCode;
 		objectKey.resiTaxCode = resiTaxCode;
 		this.commandProxy().remove(QtxmtResidentialTax.class, objectKey);
-
 	}
-
-	// @Override
-	// public void update(String companyCode, String resiTaxCode) {
-	// // TODO Auto-generated method stub
-	//
-	// }
-
 	@Override
-	public Optional<ResidentialTax> getAllResidialTax(String companyCode, String resiTaxCode,
+	public List<ResidentialTax> getAllResidentialTax(String companyCode, String resiTaxCode,
 			String resiTaxReportCode) {
-		// TODO Auto-generated method stub
 		return this.queryProxy().query(SEL_2, QtxmtResidentialTax.class).setParameter("companyCd", companyCode)
 				.setParameter("resiTaxCode", resiTaxCode).setParameter("resiTaxReportCode", resiTaxReportCode)
+				.getList(c -> toDomain(c));
+
+	}
+	@Override
+	public Optional<ResidentialTax> getResidentialTax(String companyCode, String resiTaxCode) {
+		// TODO Auto-generated method stub
+		return this.queryProxy().query(SEL_3, QtxmtResidentialTax.class).setParameter("companyCd", companyCode)
+				.setParameter("resiTaxCode", resiTaxCode)
 				.getSingle(c -> toDomain(c));
 
 	}
-	// @Override
-	// public void delete(String resiTaxCode, String resiTaxReportCode) {
-	// // TODO Auto-generated method stub
-	//
-	// }
 
 }

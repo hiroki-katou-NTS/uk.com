@@ -25,15 +25,25 @@ public class ResidentialTaxFinder {
 		.collect(Collectors.toList());
 		return allResidential;
 	}
+	// SEL_1 where CCD= 0000
 	public List<ResidentialTaxDto> getAllResidentialTax(String companyCode){
 		List<ResidentialTaxDto> allResidential = this.resiTaxRepository.getAllResidentialTax(companyCode).stream().map(c -> ResidentialTaxDto.fromDomain(c))
 		.collect(Collectors.toList());
 		return allResidential;
 	}
 	// SEL2 get data by companyCode, resiTaxCode, resiTaxReportCode, purpose: check obj is not use or use in order to delete
-	public Optional<ResidentialTaxDto> getAllResidialTax(String resiTaxCode,  String  resiTaxReportCode){
+	public List<ResidentialTaxDto> getAllResidentialTax(String resiTaxCode,  String  resiTaxReportCode){
 		String companyCode= AppContexts.user().companyCode();
-		return this.resiTaxRepository.getAllResidialTax(companyCode, resiTaxCode, resiTaxReportCode).map(c -> ResidentialTaxDto.fromDomain(c));
+		List<ResidentialTaxDto> allResidential = this.resiTaxRepository.getAllResidentialTax(companyCode, resiTaxCode, resiTaxReportCode)
+				.stream()
+				.map(c -> ResidentialTaxDto.fromDomain(c))
+				.collect(Collectors.toList());
+		return allResidential;
+	}
+	//SEL3
+	public Optional<ResidentialTaxDto> getResidentialTax(String companyCode, String resiTaxCode){
+		Optional<ResidentialTaxDto> residential = this.resiTaxRepository.getResidentialTax(companyCode, resiTaxCode).map(c -> ResidentialTaxDto.fromDomain(c));
+		return residential;
 	}
 
 }
