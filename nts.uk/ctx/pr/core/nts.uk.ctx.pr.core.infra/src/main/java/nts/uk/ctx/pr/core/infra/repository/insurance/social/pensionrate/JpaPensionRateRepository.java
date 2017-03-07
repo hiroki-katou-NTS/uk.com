@@ -79,7 +79,7 @@ public class JpaPensionRateRepository extends JpaRepository implements PensionRa
 		// Get entity manager
 		EntityManager em = this.getEntityManager();
 
-		// Query for indicated stress check.
+		// Query for.
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<QismtPensionRate> cq = cb.createQuery(QismtPensionRate.class);
 		Root<QismtPensionRate> root = cq.from(QismtPensionRate.class);
@@ -88,7 +88,8 @@ public class JpaPensionRateRepository extends JpaRepository implements PensionRa
 
 		// Construct condition.
 		predicateList.add(cb.equal(
-				root.get(QismtPensionRate_.qismtPensionRatePK).get(QismtPensionRatePK_.histId), historyId));
+				root.get(QismtPensionRate_.qismtPensionRatePK).get(QismtPensionRatePK_.histId),
+				historyId));
 		cq.where(predicateList.toArray(new Predicate[] {}));
 		List<QismtPensionRate> result = em.createQuery(cq).getResultList();
 		// If have no record.
@@ -113,20 +114,25 @@ public class JpaPensionRateRepository extends JpaRepository implements PensionRa
 	public List<PensionRate> findAll(String companyCode) {
 		// Get entity manager
 		EntityManager em = this.getEntityManager();
-		// Query for indicated stress check.
+
+		// Query for.
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<QismtPensionRate> cq = cb.createQuery(QismtPensionRate.class);
 		Root<QismtPensionRate> root = cq.from(QismtPensionRate.class);
+
 		// Constructing list of parameters
 		List<Predicate> predicateList = new ArrayList<Predicate>();
 
 		// Construct condition.
-		predicateList.add(
-				cb.equal(root.get(QismtPensionRate_.qismtPensionRatePK).get(QismtPensionRatePK_.ccd), companyCode));
+		predicateList.add(cb.equal(
+				root.get(QismtPensionRate_.qismtPensionRatePK).get(QismtPensionRatePK_.ccd),
+				companyCode));
+
 		cq.where(predicateList.toArray(new Predicate[] {}));
 		cq.orderBy(cb.desc(root.get(QismtPensionRate_.strYm)));
 		return em.createQuery(cq).getResultList().stream()
-				.map(item -> new PensionRate(new JpaPensionRateGetMemento(item))).collect(Collectors.toList());
+				.map(item -> new PensionRate(new JpaPensionRateGetMemento(item)))
+				.collect(Collectors.toList());
 	}
 
 	/*
@@ -141,19 +147,24 @@ public class JpaPensionRateRepository extends JpaRepository implements PensionRa
 
 		// Get entity manager
 		EntityManager em = this.getEntityManager();
-		// Query for indicated stress check.
+
+		// Query for.
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<QismtPensionRate> cq = cb.createQuery(QismtPensionRate.class);
 		Root<QismtPensionRate> root = cq.from(QismtPensionRate.class);
+
 		// Constructing list of parameters
 		List<Predicate> predicateList = new ArrayList<Predicate>();
 
 		// Construct condition.
-		predicateList.add(cb.equal(root.get(QismtPensionRate_.qismtPensionRatePK).get(QismtPensionRatePK_.histId), id));
+		predicateList.add(cb.equal(
+				root.get(QismtPensionRate_.qismtPensionRatePK).get(QismtPensionRatePK_.histId),
+				id));
 
 		cq.where(predicateList.toArray(new Predicate[] {}));
 		return Optional.of(em.createQuery(cq).getResultList().stream()
-				.map(item -> new PensionRate(new JpaPensionRateGetMemento(item))).collect(Collectors.toList()).get(0));
+				.map(item -> new PensionRate(new JpaPensionRateGetMemento(item)))
+				.collect(Collectors.toList()).get(0));
 	}
 
 	@Override

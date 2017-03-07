@@ -30,7 +30,8 @@ import nts.uk.ctx.pr.core.infra.entity.insurance.social.QismtSocialInsuOffice_;
  * The Class JpaSocialInsuranceOfficeRepository.
  */
 @Stateless
-public class JpaSocialInsuranceOfficeRepository extends JpaRepository implements SocialInsuranceOfficeRepository {
+public class JpaSocialInsuranceOfficeRepository extends JpaRepository
+		implements SocialInsuranceOfficeRepository {
 
 	/*
 	 * (non-Javadoc)
@@ -42,10 +43,10 @@ public class JpaSocialInsuranceOfficeRepository extends JpaRepository implements
 	@Override
 	public void add(SocialInsuranceOffice office) {
 		EntityManager em = this.getEntityManager();
-		
+
 		QismtSocialInsuOffice entity = new QismtSocialInsuOffice();
 		office.saveToMemento(new JpaSocialInsuranceOfficeSetMemento(entity));
-		
+
 		em.persist(entity);
 	}
 
@@ -78,17 +79,17 @@ public class JpaSocialInsuranceOfficeRepository extends JpaRepository implements
 		// Get entity manager
 		EntityManager em = this.getEntityManager();
 
-		// Query for indicated stress check.
+		// Query for.
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<QismtSocialInsuOffice> cq = cb.createQuery(QismtSocialInsuOffice.class);
 		Root<QismtSocialInsuOffice> root = cq.from(QismtSocialInsuOffice.class);
+
 		// Constructing list of parameters
 		List<Predicate> predicateList = new ArrayList<Predicate>();
 
 		// Construct condition.
-		predicateList.add(cb.equal(
-				root.get(QismtSocialInsuOffice_.qismtSocialInsuOfficePK).get(QismtSocialInsuOfficePK_.siOfficeCd),
-				officeCode));
+		predicateList.add(cb.equal(root.get(QismtSocialInsuOffice_.qismtSocialInsuOfficePK)
+				.get(QismtSocialInsuOfficePK_.siOfficeCd), officeCode));
 		cq.where(predicateList.toArray(new Predicate[] {}));
 		List<QismtSocialInsuOffice> result = em.createQuery(cq).getResultList();
 		// If have no record.
@@ -113,19 +114,18 @@ public class JpaSocialInsuranceOfficeRepository extends JpaRepository implements
 
 		// Get entity manager
 		EntityManager em = this.getEntityManager();
-		// Query for indicated stress check.
+		// Query for.
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<QismtSocialInsuOffice> cq = cb.createQuery(QismtSocialInsuOffice.class);
 		Root<QismtSocialInsuOffice> root = cq.from(QismtSocialInsuOffice.class);
 		// Constructing list of parameters
 		List<Predicate> predicateList = new ArrayList<Predicate>();
 		// Construct condition.
-		predicateList.add(
-				cb.equal(root.get(QismtSocialInsuOffice_.qismtSocialInsuOfficePK).get(QismtSocialInsuOfficePK_.ccd),
-						companyCode));
+		predicateList.add(cb.equal(root.get(QismtSocialInsuOffice_.qismtSocialInsuOfficePK)
+				.get(QismtSocialInsuOfficePK_.ccd), companyCode));
 		cq.where(predicateList.toArray(new Predicate[] {}));
-		return em.createQuery(cq).getResultList().stream()
-				.map(item -> new SocialInsuranceOffice(new JpaSocialInsuranceOfficeGetMemento(item)))
+		return em.createQuery(cq).getResultList().stream().map(
+				item -> new SocialInsuranceOffice(new JpaSocialInsuranceOfficeGetMemento(item)))
 				.collect(Collectors.toList());
 	}
 
@@ -151,11 +151,11 @@ public class JpaSocialInsuranceOfficeRepository extends JpaRepository implements
 	 */
 	@Override
 	public Optional<SocialInsuranceOffice> findByOfficeCode(String officeCode) {
-		
+
 		// Get entity manager
 		EntityManager em = this.getEntityManager();
 
-		// Query for indicated stress check.
+		// Query for.
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<QismtSocialInsuOffice> cq = cb.createQuery(QismtSocialInsuOffice.class);
 		Root<QismtSocialInsuOffice> root = cq.from(QismtSocialInsuOffice.class);
@@ -163,7 +163,8 @@ public class JpaSocialInsuranceOfficeRepository extends JpaRepository implements
 		List<Predicate> predicateList = new ArrayList<Predicate>();
 
 		// Construct condition.
-		predicateList.add(cb.equal(root.get(QismtSocialInsuOffice_.qismtSocialInsuOfficePK).get(QismtSocialInsuOfficePK_.siOfficeCd), officeCode));
+		predicateList.add(cb.equal(root.get(QismtSocialInsuOffice_.qismtSocialInsuOfficePK)
+				.get(QismtSocialInsuOfficePK_.siOfficeCd), officeCode));
 		cq.where(predicateList.toArray(new Predicate[] {}));
 		List<QismtSocialInsuOffice> result = em.createQuery(cq).getResultList();
 		// If have no record.
@@ -171,7 +172,8 @@ public class JpaSocialInsuranceOfficeRepository extends JpaRepository implements
 			return null;
 		}
 		// Return
-		SocialInsuranceOffice socialInsuranceOffice = new SocialInsuranceOffice(new JpaSocialInsuranceOfficeGetMemento(result.get(0)));
+		SocialInsuranceOffice socialInsuranceOffice = new SocialInsuranceOffice(
+				new JpaSocialInsuranceOfficeGetMemento(result.get(0)));
 		return Optional.of(socialInsuranceOffice);
 	}
 
@@ -180,7 +182,7 @@ public class JpaSocialInsuranceOfficeRepository extends JpaRepository implements
 		// Get entity manager
 		EntityManager em = this.getEntityManager();
 
-		// Query for indicated stress check.
+		// Query for.
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<QismtSocialInsuOffice> cq = cb.createQuery(QismtSocialInsuOffice.class);
 		Root<QismtSocialInsuOffice> root = cq.from(QismtSocialInsuOffice.class);
@@ -188,9 +190,8 @@ public class JpaSocialInsuranceOfficeRepository extends JpaRepository implements
 		List<Predicate> predicateList = new ArrayList<Predicate>();
 
 		// Construct condition.
-		predicateList.add(cb.equal(
-				root.get(QismtSocialInsuOffice_.qismtSocialInsuOfficePK).get(QismtSocialInsuOfficePK_.siOfficeCd),
-				code));
+		predicateList.add(cb.equal(root.get(QismtSocialInsuOffice_.qismtSocialInsuOfficePK)
+				.get(QismtSocialInsuOfficePK_.siOfficeCd), code));
 		cq.where(predicateList.toArray(new Predicate[] {}));
 		List<QismtSocialInsuOffice> result = em.createQuery(cq).getResultList();
 		// If have no record.
