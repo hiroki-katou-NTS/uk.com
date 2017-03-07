@@ -1,3 +1,8 @@
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
 var nts;
 (function (nts) {
     var uk;
@@ -12,12 +17,11 @@ var nts;
                     (function (a) {
                         var viewmodel;
                         (function (viewmodel) {
-                            var ScreenModel = (function () {
+                            var ScreenModel = (function (_super) {
+                                __extends(ScreenModel, _super);
                                 function ScreenModel() {
+                                    _super.call(this, qmm016.service.instance);
                                     var self = this;
-                                    self.wageTableList = ko.observableArray([new WageTableItem('0001', 'あああああ', []),
-                                        new WageTableItem('0002', '明細書 B', []),
-                                        new WageTableItem('0003', '資格手当 テーブル', [new WageTableHistoryItem('1', '2015/04', '2016/03')])]);
                                     self.tabs = ko.observableArray([
                                         { id: 'tab-1', title: '基本情報', content: '#tab-content-1', enable: ko.observable(true), visible: ko.observable(true) },
                                         { id: 'tab-2', title: '賃金テーブルの情報', content: '#tab-content-2', enable: ko.observable(true), visible: ko.observable(true) }
@@ -42,39 +46,9 @@ var nts;
                                     self.memo = ko.observable('');
                                     self.selectedDimensionType = ko.observable(0);
                                 }
-                                ScreenModel.prototype.goToB = function () {
-                                    nts.uk.ui.windows.sub.modal('/view/qmm/007/b/index.xhtml', { dialogClass: 'no-close', height: 380, width: 400 }).setTitle('å±¥æ­´ã�®è¿½åŠ ');
-                                };
-                                ScreenModel.prototype.openSetupEntitlementGroup = function () {
-                                    var self = this;
-                                    nts.uk.ui.windows.sub.modal("/view/qmm/016/l/index.xhtml", { height: 800, width: 1319, title: "資格グループの設定" }).onClosed(function () {
-                                    });
-                                };
                                 return ScreenModel;
-                            }());
+                            }(view.base.simlehistory.viewmodel.ScreenBaseModel));
                             viewmodel.ScreenModel = ScreenModel;
-                            var WageTableItem = (function () {
-                                function WageTableItem(code, name, histories) {
-                                    var self = this;
-                                    self.code = code;
-                                    self.name = name;
-                                    self.nodeText = self.code + ' ' + self.name;
-                                    self.histories = histories;
-                                }
-                                return WageTableItem;
-                            }());
-                            viewmodel.WageTableItem = WageTableItem;
-                            var WageTableHistoryItem = (function () {
-                                function WageTableHistoryItem(code, startMonth, endMonth) {
-                                    var self = this;
-                                    self.code = code;
-                                    self.startMonth = startMonth;
-                                    self.endMonth = endMonth;
-                                    self.nodeText = self.startMonth + ' ~ ' + self.endMonth;
-                                }
-                                return WageTableHistoryItem;
-                            }());
-                            viewmodel.WageTableHistoryItem = WageTableHistoryItem;
                         })(viewmodel = a.viewmodel || (a.viewmodel = {}));
                     })(a = qmm016.a || (qmm016.a = {}));
                 })(qmm016 = view.qmm016 || (view.qmm016 = {}));
@@ -82,3 +56,4 @@ var nts;
         })(pr = uk.pr || (uk.pr = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+//# sourceMappingURL=viewmodel.js.map
