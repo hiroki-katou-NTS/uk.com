@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2016 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.core.app.insurance.social.office.command;
@@ -10,6 +10,8 @@ import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.uk.ctx.core.dom.company.CompanyCode;
+import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
 import nts.uk.ctx.pr.core.dom.insurance.social.SocialInsuranceOfficeRepository;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -21,7 +23,7 @@ public class DeleteSocialOfficeCommandHandler extends CommandHandler<DeleteSocia
 
 	/** The social insurance office repository. */
 	@Inject
-	private SocialInsuranceOfficeRepository socialInsuranceOfficeRepository;
+	private SocialInsuranceOfficeRepository socialInsuranceOfficeRepo;
 
 	/*
 	 * (non-Javadoc)
@@ -34,9 +36,10 @@ public class DeleteSocialOfficeCommandHandler extends CommandHandler<DeleteSocia
 	@Transactional
 	protected void handle(CommandHandlerContext<DeleteSocialOfficeCommand> command) {
 		// Get the current company code.
-		String companyCode = AppContexts.user().companyCode();
-		String officeCode = command.getCommand().getInsuranceOfficeCode();
-		socialInsuranceOfficeRepository.remove(companyCode, officeCode);
-		return;
+		CompanyCode companyCode = new CompanyCode(AppContexts.user().companyCode());
+
+		OfficeCode officeCode = new OfficeCode(command.getCommand().getInsuranceOfficeCode());
+
+		socialInsuranceOfficeRepo.remove(companyCode, officeCode);
 	}
 }

@@ -18,6 +18,7 @@ import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.ListUtil;
+import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.HealthInsuranceRate;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.HealthInsuranceRateRepository;
@@ -106,7 +107,7 @@ public class JpaHealthInsuranceRateRepository extends JpaRepository
 	 * HealthInsuranceRateRepository#findAll(java.lang.String, java.lang.String)
 	 */
 	@Override
-	public List<HealthInsuranceRate> findAll(String companyCode) {
+	public List<HealthInsuranceRate> findAll(CompanyCode companyCode) {
 
 		// Get entity manager
 		EntityManager em = this.getEntityManager();
@@ -121,7 +122,7 @@ public class JpaHealthInsuranceRateRepository extends JpaRepository
 
 		// Construct condition.
 		predicateList.add(cb.equal(root.get(QismtHealthInsuRate_.qismtHealthInsuRatePK)
-				.get(QismtHealthInsuRatePK_.ccd), companyCode));
+				.get(QismtHealthInsuRatePK_.ccd), companyCode.v()));
 
 		cq.where(predicateList.toArray(new Predicate[] {}));
 		cq.orderBy(cb.desc(root.get(QismtHealthInsuRate_.strYm)));
