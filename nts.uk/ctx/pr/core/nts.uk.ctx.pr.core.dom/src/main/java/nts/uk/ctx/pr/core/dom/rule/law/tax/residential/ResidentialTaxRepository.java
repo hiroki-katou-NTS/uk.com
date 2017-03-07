@@ -18,7 +18,9 @@ public interface ResidentialTaxRepository {
 	 * @return List<ResidentalTax>
 	 */
 	List<ResidentialTax> getAllResidentialTax(String companyCode);
-	Optional<ResidentialTax> getAllResidialTax(String companyCode, String resiTaxCode,  String  resiTaxReportCode);
+	List<ResidentialTax> getAllResidentialTax(String companyCode, String resiTaxCode,  String  resiTaxReportCode);
+	//SELECT_3
+	Optional<ResidentialTax> getResidentialTax(String companyCode, String resiTaxCode);
 
 	//Optional<ResidentalTax> getDetailResidentalTax(String);
 	void add(ResidentialTax residentalTax);
