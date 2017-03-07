@@ -1,8 +1,8 @@
 module qmm003.b.viewmodel {
     export class ScreenModel {
-        items:  KnockoutObservableArray<Node>;
+        items: KnockoutObservableArray<Node>;
         singleSelectedCode: KnockoutObservable<string>;
-        filteredData:  KnockoutObservableArray<Node> =  ko.observableArray([]);
+        filteredData: KnockoutObservableArray<Node> = ko.observableArray([]);
         currentNode: KnockoutObservable<Node>;
         testNode = [];
         nodeRegionPrefectures: KnockoutObservableArray<Node> = ko.observableArray([]);
@@ -10,11 +10,14 @@ module qmm003.b.viewmodel {
         precfecture: Array<Node> = [];
         itemPrefecture: KnockoutObservableArray<Node> = ko.observableArray([]);
         residentalTaxList: KnockoutObservableArray<qmm003.b.service.model.ResidentialTax> = ko.observableArray([]);
+        selectedCode: KnockoutObservable<string> = ko.observable("");
         constructor() {
             let self = this;
             self.init();
             self.singleSelectedCode.subscribe(function(newValue) {
                 self.currentNode(self.findByCode(self.filteredData(), newValue));
+                self.findPrefectureByResiTax(newValue);
+                console.log(self.selectedCode());
             });
 
         }
@@ -35,6 +38,7 @@ module qmm003.b.viewmodel {
         clickButton(): any {
             let self = this;
             nts.uk.ui.windows.setShared('singleSelectedCode', self.singleSelectedCode(), true);
+            nts.uk.ui.windows.setShared('selectedCode', self.selectedCode(), true);
             nts.uk.ui.windows.setShared('currentNode', self.currentNode(), true);
             nts.uk.ui.windows.close();
 
@@ -46,32 +50,7 @@ module qmm003.b.viewmodel {
             let self = this;
             self.items = ko.observableArray([]);
             self.singleSelectedCode = ko.observable(nts.uk.ui.windows.getShared("singleSelectedCode"));
-            //self.filteredData = ko.observableArray(nts.uk.util.flatArray(self.items(), "childs"));
             self.currentNode = ko.observable((new Node("", "", [])));
-        }
-        register(): void {
-
-            let inputSearch = $("#B_SCH_001").find("input.ntsSearchBox").val();
-            if (inputSearch == "") {
-                $('#B_SCH_001').ntsError('set', 'inputSearch が入力されていません。');
-            } else {
-                $('#B_SCH_001').ntsError('clear');
-            }
-
-            // errror search
-            let error: boolean;
-            _.find(this.filteredData(), function(obj: Node) {
-                if (obj.code !== inputSearch) {
-                    error = true;
-                }
-            });
-            if (error = true) {
-                $('#B_SCH_001').ntsError('set', '対象データがありません。');
-            } else {
-                $('#B_SCH_001').ntsError('clear');
-            }
-
-
         }
         //11.初期データ取得処理 11. Initial data acquisition processing
         start(): JQueryPromise<any> {
@@ -90,7 +69,7 @@ module qmm003.b.viewmodel {
                         self.filteredData(node);
                         self.items(self.nodeRegionPrefectures());
                     });
-                    }
+                }
 
 
                 dfd.resolve();
@@ -136,6 +115,20 @@ module qmm003.b.viewmodel {
 
             });
         }
+        findPrefectureByResiTax(code: string): void {
+            let self = this;
+            let node: Node;
+            _.each(self.items(), function(objRegion: Node) {
+                _.each(objRegion.childs, function(objPrefecture: Node) {
+                    _.each(objPrefecture.childs, function(obj: Node) {
+                        if (obj.code === code) {
+                            self.selectedCode(objPrefecture.code);
+                        }
+                    });
+                });
+            });
+
+        }
     }
     export class Node {
         code: string;
@@ -149,7 +142,6 @@ module qmm003.b.viewmodel {
             self.name = name;
             self.nodeText = self.code + ' ' + self.name;
             self.childs = childs;
-
         }
     }
 
