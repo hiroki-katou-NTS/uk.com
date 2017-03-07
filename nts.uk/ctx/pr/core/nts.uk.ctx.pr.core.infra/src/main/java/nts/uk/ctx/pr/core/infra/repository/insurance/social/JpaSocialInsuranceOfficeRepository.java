@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2016 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.core.infra.repository.insurance.social;
@@ -19,6 +19,7 @@ import javax.persistence.criteria.Root;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.ListUtil;
+import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
 import nts.uk.ctx.pr.core.dom.insurance.social.SocialInsuranceOffice;
 import nts.uk.ctx.pr.core.dom.insurance.social.SocialInsuranceOfficeRepository;
@@ -30,7 +31,8 @@ import nts.uk.ctx.pr.core.infra.entity.insurance.social.QismtSocialInsuOffice_;
  * The Class JpaSocialInsuranceOfficeRepository.
  */
 @Stateless
-public class JpaSocialInsuranceOfficeRepository extends JpaRepository implements SocialInsuranceOfficeRepository {
+public class JpaSocialInsuranceOfficeRepository extends JpaRepository
+		implements SocialInsuranceOfficeRepository {
 
 	/*
 	 * (non-Javadoc)
@@ -42,10 +44,10 @@ public class JpaSocialInsuranceOfficeRepository extends JpaRepository implements
 	@Override
 	public void add(SocialInsuranceOffice office) {
 		EntityManager em = this.getEntityManager();
-		
+
 		QismtSocialInsuOffice entity = new QismtSocialInsuOffice();
 		office.saveToMemento(new JpaSocialInsuranceOfficeSetMemento(entity));
-		
+
 		em.persist(entity);
 	}
 
@@ -74,21 +76,21 @@ public class JpaSocialInsuranceOfficeRepository extends JpaRepository implements
 	 * remove(java.lang.String, java.lang.Long)
 	 */
 	@Override
-	public void remove(String companyCode, String officeCode) {
+	public void remove(CompanyCode companyCode, OfficeCode officeCode) {
 		// Get entity manager
 		EntityManager em = this.getEntityManager();
 
-		// Query for indicated stress check.
+		// Query for.
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<QismtSocialInsuOffice> cq = cb.createQuery(QismtSocialInsuOffice.class);
 		Root<QismtSocialInsuOffice> root = cq.from(QismtSocialInsuOffice.class);
+
 		// Constructing list of parameters
 		List<Predicate> predicateList = new ArrayList<Predicate>();
 
 		// Construct condition.
-		predicateList.add(cb.equal(
-				root.get(QismtSocialInsuOffice_.qismtSocialInsuOfficePK).get(QismtSocialInsuOfficePK_.siOfficeCd),
-				officeCode));
+		predicateList.add(cb.equal(root.get(QismtSocialInsuOffice_.qismtSocialInsuOfficePK)
+				.get(QismtSocialInsuOfficePK_.siOfficeCd), officeCode));
 		cq.where(predicateList.toArray(new Predicate[] {}));
 		List<QismtSocialInsuOffice> result = em.createQuery(cq).getResultList();
 		// If have no record.
@@ -109,37 +111,26 @@ public class JpaSocialInsuranceOfficeRepository extends JpaRepository implements
 	 * findAll(int)
 	 */
 	@Override
-	public List<SocialInsuranceOffice> findAll(String companyCode) {
-
+	public List<SocialInsuranceOffice> findAll(CompanyCode companyCode) {
 		// Get entity manager
 		EntityManager em = this.getEntityManager();
-		// Query for indicated stress check.
+
+		// Query for.
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<QismtSocialInsuOffice> cq = cb.createQuery(QismtSocialInsuOffice.class);
 		Root<QismtSocialInsuOffice> root = cq.from(QismtSocialInsuOffice.class);
+
 		// Constructing list of parameters
 		List<Predicate> predicateList = new ArrayList<Predicate>();
-		// Construct condition.
-		predicateList.add(
-				cb.equal(root.get(QismtSocialInsuOffice_.qismtSocialInsuOfficePK).get(QismtSocialInsuOfficePK_.ccd),
-						companyCode));
-		cq.where(predicateList.toArray(new Predicate[] {}));
-		return em.createQuery(cq).getResultList().stream()
-				.map(item -> new SocialInsuranceOffice(new JpaSocialInsuranceOfficeGetMemento(item)))
-				.collect(Collectors.toList());
-	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * nts.uk.ctx.pr.core.dom.insurance.social.SocialInsuranceOfficeRepository#
-	 * findById(java.lang.String)
-	 */
-	@Override
-	public Optional<SocialInsuranceOffice> findById(String id) {
-		// TODO Mock data to send service
-		return null;
+		// Construct condition.
+		predicateList.add(cb.equal(root.get(QismtSocialInsuOffice_.qismtSocialInsuOfficePK)
+				.get(QismtSocialInsuOfficePK_.ccd), companyCode));
+		cq.where(predicateList.toArray(new Predicate[] {}));
+
+		return em.createQuery(cq).getResultList().stream().map(
+				item -> new SocialInsuranceOffice(new JpaSocialInsuranceOfficeGetMemento(item)))
+				.collect(Collectors.toList());
 	}
 
 	/*
@@ -150,53 +141,72 @@ public class JpaSocialInsuranceOfficeRepository extends JpaRepository implements
 	 * findByOfficeCode(java.lang.String)
 	 */
 	@Override
-	public Optional<SocialInsuranceOffice> findByOfficeCode(String officeCode) {
-		
+	public Optional<SocialInsuranceOffice> findByOfficeCode(CompanyCode companyCode,
+			OfficeCode officeCode) {
+
 		// Get entity manager
 		EntityManager em = this.getEntityManager();
 
-		// Query for indicated stress check.
+		// Query for.
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<QismtSocialInsuOffice> cq = cb.createQuery(QismtSocialInsuOffice.class);
 		Root<QismtSocialInsuOffice> root = cq.from(QismtSocialInsuOffice.class);
+
 		// Constructing list of parameters
 		List<Predicate> predicateList = new ArrayList<Predicate>();
 
 		// Construct condition.
-		predicateList.add(cb.equal(root.get(QismtSocialInsuOffice_.qismtSocialInsuOfficePK).get(QismtSocialInsuOfficePK_.siOfficeCd), officeCode));
+		predicateList.add(cb.equal(root.get(QismtSocialInsuOffice_.qismtSocialInsuOfficePK)
+				.get(QismtSocialInsuOfficePK_.ccd), companyCode));
+		predicateList.add(cb.equal(root.get(QismtSocialInsuOffice_.qismtSocialInsuOfficePK)
+				.get(QismtSocialInsuOfficePK_.siOfficeCd), officeCode));
 		cq.where(predicateList.toArray(new Predicate[] {}));
 		List<QismtSocialInsuOffice> result = em.createQuery(cq).getResultList();
+
 		// If have no record.
 		if (ListUtil.isEmpty(result)) {
 			return null;
 		}
+
 		// Return
-		SocialInsuranceOffice socialInsuranceOffice = new SocialInsuranceOffice(new JpaSocialInsuranceOfficeGetMemento(result.get(0)));
+		SocialInsuranceOffice socialInsuranceOffice = new SocialInsuranceOffice(
+				new JpaSocialInsuranceOfficeGetMemento(result.get(0)));
 		return Optional.of(socialInsuranceOffice);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.dom.insurance.social.SocialInsuranceOfficeRepository#
+	 * isDuplicateCode(nts.uk.ctx.pr.core.dom.insurance.OfficeCode)
+	 */
 	@Override
-	public boolean isDuplicateCode(OfficeCode code) {
+	public boolean isDuplicateCode(CompanyCode companyCode, OfficeCode officeCode) {
 		// Get entity manager
 		EntityManager em = this.getEntityManager();
 
-		// Query for indicated stress check.
+		// Query for.
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<QismtSocialInsuOffice> cq = cb.createQuery(QismtSocialInsuOffice.class);
 		Root<QismtSocialInsuOffice> root = cq.from(QismtSocialInsuOffice.class);
+
 		// Constructing list of parameters
 		List<Predicate> predicateList = new ArrayList<Predicate>();
 
 		// Construct condition.
-		predicateList.add(cb.equal(
-				root.get(QismtSocialInsuOffice_.qismtSocialInsuOfficePK).get(QismtSocialInsuOfficePK_.siOfficeCd),
-				code));
+		predicateList.add(cb.equal(root.get(QismtSocialInsuOffice_.qismtSocialInsuOfficePK)
+				.get(QismtSocialInsuOfficePK_.ccd), companyCode));
+		predicateList.add(cb.equal(root.get(QismtSocialInsuOffice_.qismtSocialInsuOfficePK)
+				.get(QismtSocialInsuOfficePK_.siOfficeCd), officeCode));
 		cq.where(predicateList.toArray(new Predicate[] {}));
 		List<QismtSocialInsuOffice> result = em.createQuery(cq).getResultList();
+
 		// If have no record.
 		if (ListUtil.isEmpty(result)) {
 			return false;
 		}
+
 		return true;
 	}
 }

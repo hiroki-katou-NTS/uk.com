@@ -33,13 +33,6 @@ module nts.uk.pr.view.qmm007.a {
                 self.isNewMode = ko.observable(false);
                 self.isLoading = ko.observable(true);
                 self.hasSelected = ko.observable(false);
-                self.hasSelected.subscribe(val => {
-                    if (val == true) {
-                        //self.isInputEnabled(true);
-                    } else {
-                        //self.isInputEnabled(false);
-                    }
-                });
 
                 self.unitPriceHistoryModel = ko.observable(new UnitPriceHistoryModel(self.getDefaultUnitPriceHistory()));
                 self.historyList = ko.observableArray<UnitPriceHistoryNode>([]);
@@ -58,7 +51,6 @@ module nts.uk.pr.view.qmm007.a {
                         }
                         // when selected a child node
                         else {
-                            $('.save-error').ntsError('clear');
                             self.loadUnitPriceDetail(id);
                         }
                     }
@@ -86,6 +78,8 @@ module nts.uk.pr.view.qmm007.a {
                 var dfd = $.Deferred<void>();
                 self.isLoading(true);
                 self.loadUnitPriceHistoryList().done(() => {
+                    // Select first history.
+                    self.selectedId(self.historyList()[0].id);
                     dfd.resolve();
                 });
                 return dfd.promise();
@@ -278,6 +272,7 @@ module nts.uk.pr.view.qmm007.a {
                     self.hasSelected(true);
                     self.isLoading(false);
                     nts.uk.ui.windows.setShared('unitPriceHistoryModel', ko.toJS(this.unitPriceHistoryModel()));
+                    $('.save-error').ntsError('clear');
                     dfd.resolve();
                 });
                 return dfd.promise();

@@ -18,6 +18,7 @@ import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.ListUtil;
+import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.HealthInsuranceRate;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.HealthInsuranceRateRepository;
@@ -29,7 +30,8 @@ import nts.uk.ctx.pr.core.infra.entity.insurance.social.healthrate.QismtHealthIn
  * The Class JpaHealthInsuranceRateRepository.
  */
 @Stateless
-public class JpaHealthInsuranceRateRepository extends JpaRepository implements HealthInsuranceRateRepository {
+public class JpaHealthInsuranceRateRepository extends JpaRepository
+		implements HealthInsuranceRateRepository {
 
 	/*
 	 * (non-Javadoc)
@@ -76,7 +78,7 @@ public class JpaHealthInsuranceRateRepository extends JpaRepository implements H
 		// Get entity manager
 		EntityManager em = this.getEntityManager();
 
-		// Query for indicated stress check.
+		// Query for.
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<QismtHealthInsuRate> cq = cb.createQuery(QismtHealthInsuRate.class);
 		Root<QismtHealthInsuRate> root = cq.from(QismtHealthInsuRate.class);
@@ -84,8 +86,8 @@ public class JpaHealthInsuranceRateRepository extends JpaRepository implements H
 		List<Predicate> predicateList = new ArrayList<Predicate>();
 
 		// Construct condition.
-		predicateList.add(cb.equal(
-				root.get(QismtHealthInsuRate_.qismtHealthInsuRatePK).get(QismtHealthInsuRatePK_.histId), historyId));
+		predicateList.add(cb.equal(root.get(QismtHealthInsuRate_.qismtHealthInsuRatePK)
+				.get(QismtHealthInsuRatePK_.histId), historyId));
 		cq.where(predicateList.toArray(new Predicate[] {}));
 		List<QismtHealthInsuRate> result = em.createQuery(cq).getResultList();
 		// If have no record.
@@ -105,20 +107,22 @@ public class JpaHealthInsuranceRateRepository extends JpaRepository implements H
 	 * HealthInsuranceRateRepository#findAll(java.lang.String, java.lang.String)
 	 */
 	@Override
-	public List<HealthInsuranceRate> findAll(String companyCode) {
+	public List<HealthInsuranceRate> findAll(CompanyCode companyCode) {
 
 		// Get entity manager
 		EntityManager em = this.getEntityManager();
-		// Query for indicated stress check.
+
+		// Query for.
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<QismtHealthInsuRate> cq = cb.createQuery(QismtHealthInsuRate.class);
 		Root<QismtHealthInsuRate> root = cq.from(QismtHealthInsuRate.class);
+
 		// Constructing list of parameters
 		List<Predicate> predicateList = new ArrayList<Predicate>();
 
 		// Construct condition.
-		predicateList.add(cb.equal(root.get(QismtHealthInsuRate_.qismtHealthInsuRatePK).get(QismtHealthInsuRatePK_.ccd),
-				companyCode));
+		predicateList.add(cb.equal(root.get(QismtHealthInsuRate_.qismtHealthInsuRatePK)
+				.get(QismtHealthInsuRatePK_.ccd), companyCode.v()));
 
 		cq.where(predicateList.toArray(new Predicate[] {}));
 		cq.orderBy(cb.desc(root.get(QismtHealthInsuRate_.strYm)));
@@ -135,19 +139,21 @@ public class JpaHealthInsuranceRateRepository extends JpaRepository implements H
 	 */
 	@Override
 	public Optional<HealthInsuranceRate> findById(String historyId) {
-		
+
 		// Get entity manager
 		EntityManager em = this.getEntityManager();
-		// Query for indicated stress check.
+
+		// Query for.
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<QismtHealthInsuRate> cq = cb.createQuery(QismtHealthInsuRate.class);
 		Root<QismtHealthInsuRate> root = cq.from(QismtHealthInsuRate.class);
+
 		// Constructing list of parameters
 		List<Predicate> predicateList = new ArrayList<Predicate>();
 
 		// Construct condition.
-		predicateList.add(cb.equal(root.get(QismtHealthInsuRate_.qismtHealthInsuRatePK).get(QismtHealthInsuRatePK_.histId),
-				historyId));
+		predicateList.add(cb.equal(root.get(QismtHealthInsuRate_.qismtHealthInsuRatePK)
+				.get(QismtHealthInsuRatePK_.histId), historyId));
 
 		cq.where(predicateList.toArray(new Predicate[] {}));
 		return Optional.of(em.createQuery(cq).getResultList().stream()

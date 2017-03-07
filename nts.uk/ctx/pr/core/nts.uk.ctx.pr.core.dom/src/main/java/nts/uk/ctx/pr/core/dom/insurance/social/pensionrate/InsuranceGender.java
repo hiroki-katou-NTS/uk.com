@@ -3,7 +3,7 @@
  * All right reserved.                                            *
  *****************************************************************/
 
-package nts.uk.ctx.pr.core.dom.insurance.social.healthrate;
+package nts.uk.ctx.pr.core.dom.insurance.social.pensionrate;
 
 /**
  * The Enum InsuranceGender.

@@ -54,4 +54,19 @@ public class UnitPriceHistoryServiceImpl implements UnitPriceHistoryService {
 		}
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.rule.employment.unitprice.service.
+	 * UnitPriceHistoryService#checkDuplicateCode(nts.uk.ctx.pr.core.dom.rule.
+	 * employment.unitprice.UnitPriceHistory)
+	 */
+	@Override
+	public void checkDuplicateCode(UnitPriceHistory unitPriceHistory) {
+		if (unitPriceHistoryRepo.isDuplicateCode(unitPriceHistory.getCompanyCode(),
+				unitPriceHistory.getUnitPriceCode())) {
+			throw new BusinessException("ER005");
+		}
+	}
+
 }

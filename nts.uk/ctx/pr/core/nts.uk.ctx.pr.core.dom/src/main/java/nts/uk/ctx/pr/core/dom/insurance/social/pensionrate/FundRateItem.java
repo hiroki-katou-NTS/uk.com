@@ -6,7 +6,6 @@ package nts.uk.ctx.pr.core.dom.insurance.social.pensionrate;
 
 import lombok.Data;
 import nts.uk.ctx.pr.core.dom.insurance.PaymentType;
-import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.InsuranceGender;
 
 /**
  * The Class FundRateItem.
