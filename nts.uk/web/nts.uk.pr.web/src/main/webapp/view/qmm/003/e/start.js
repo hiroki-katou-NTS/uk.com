@@ -1,22 +1,15 @@
-var nts;
-(function (nts) {
-    var uk;
-    (function (uk) {
-        var pr;
-        (function (pr) {
-            var view;
-            (function (view) {
-                var qmm003;
-                (function (qmm003) {
-                    var e;
-                    (function (e) {
-                        __viewContext.ready(function () {
-                            var screenModel = new nts.uk.pr.view.qmm003.e.ScreenModel();
-                            __viewContext.bind(screenModel);
-                        });
-                    })(e = qmm003.e || (qmm003.e = {}));
-                })(qmm003 = view.qmm003 || (view.qmm003 = {}));
-            })(view = pr.view || (pr.view = {}));
-        })(pr = uk.pr || (uk.pr = {}));
-    })(uk = nts.uk || (nts.uk = {}));
-})(nts || (nts = {}));
+var qmm003;
+(function (qmm003) {
+    var e;
+    (function (e) {
+        var start;
+        (function (start) {
+            __viewContext.ready(function () {
+                var screenModel = new qmm003.e.viewmodel.ScreenModel();
+                screenModel.start().done(function () {
+                    __viewContext.bind(screenModel);
+                });
+            });
+        })(start = e.start || (e.start = {}));
+    })(e = qmm003.e || (qmm003.e = {}));
+})(qmm003 || (qmm003 = {}));

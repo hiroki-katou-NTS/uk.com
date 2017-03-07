@@ -23,6 +23,12 @@
 		<div class="flex valign-center" style="margin-top:20px">
 			<label id="E_LBL_001">個人情報で登録した納付先を置換えます。</label>
 		</div>
+		<div>
+		<div data-bind="ntsFormLabel: {}" class="form-label">
+		 <label id="D_LBL_002">「【統合元情報】」を表示する。</label>
+		</div>
+		
+		</div>
 
 			<div id="contents-area" class="cf">
 
@@ -62,7 +68,7 @@
 					<div>
 					<i class="icon icon-searchbox"></i>	
 						<div  id ="E_SCH_002" style="width: 410px"
-							data-bind="ntsSearchBox: {items: items, selected: singleSelectedCode, selectedKey: 'code', childField: 'childs', filteredItems: filteredData1, fields: ['name', 'code']}" />
+							data-bind="ntsSearchBox: {items: items, selected: singleSelectedCode, selectedKey: 'code', childField: 'childs', filteredItems: filteredData, fields: ['name', 'code']}" />
 						<div>
 							<table id="treegrid2"
 								data-bind="ntsTreeGridView:{
