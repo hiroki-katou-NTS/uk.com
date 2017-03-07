@@ -9,7 +9,6 @@ import java.util.List;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import javax.transaction.Transactional;
 
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.app.wagetable.certification.find.dto.CertificationFindInDto;
@@ -21,7 +20,6 @@ import nts.uk.shr.com.context.AppContexts;
  * The Class CertificationFinder.
  */
 @Stateless
-@Transactional
 public class CertificationFinder {
 
 	/** The find. */

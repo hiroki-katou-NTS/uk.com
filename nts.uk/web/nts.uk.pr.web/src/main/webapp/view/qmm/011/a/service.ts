@@ -18,14 +18,14 @@ module nts.uk.pr.view.qmm011.a {
         //Function connection service add Unemployee Insurance Rate
         export function addUnemployeeInsuranceRate(
             unemployeeInsuranceRateModel: viewmodel.UnemployeeInsuranceRateModel)
-            : JQueryPromise<any> {
-            var dfd = $.Deferred<any>();
+            : JQueryPromise<void> {
+            var dfd = $.Deferred<void>();
             var data = {
                 unemployeeInsuranceRate
                 : service.convertUnemployeeInsuranceRateModelDTO(unemployeeInsuranceRateModel)
             };
             nts.uk.request.ajax(paths.addUnemployeeInsuranceRate, data)
-                .done(function(res: any) {
+                .done(function(res: void) {
                     dfd.resolve(res);
                     //xyz
                 })
@@ -37,13 +37,13 @@ module nts.uk.pr.view.qmm011.a {
 
         //Function connection service update Unemployee Insurance Rate
         export function updateUnemployeeInsuranceRate(
-            unemployeeInsuranceRateModel: viewmodel.UnemployeeInsuranceRateModel): JQueryPromise<any> {
-            var dfd = $.Deferred<any>();
+            unemployeeInsuranceRateModel: viewmodel.UnemployeeInsuranceRateModel): JQueryPromise<void> {
+            var dfd = $.Deferred<void>();
             var data = {
                 unemployeeInsuranceRate: service.convertUnemployeeInsuranceRateModelDTO(unemployeeInsuranceRateModel)
             };
             nts.uk.request.ajax(paths.updateUnemployeeInsuranceRate, data)
-                .done(function(res: any) {
+                .done(function(res: void) {
                     dfd.resolve(res);
                     //xyz
                 })

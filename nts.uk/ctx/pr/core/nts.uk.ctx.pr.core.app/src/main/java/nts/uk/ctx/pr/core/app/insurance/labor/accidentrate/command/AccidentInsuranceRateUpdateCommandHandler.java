@@ -20,7 +20,6 @@ import nts.uk.shr.com.context.LoginUserContext;
  * The Class AccidentInsuranceRateUpdateCommandHandler.
  */
 @Stateless
-@Transactional
 public class AccidentInsuranceRateUpdateCommandHandler extends CommandHandler<AccidentInsuranceRateUpdateCommand> {
 
 	/** The accident insurance rate repository. */
@@ -39,6 +38,7 @@ public class AccidentInsuranceRateUpdateCommandHandler extends CommandHandler<Ac
 	 * .CommandHandlerContext)
 	 */
 	@Override
+	@Transactional
 	protected void handle(CommandHandlerContext<AccidentInsuranceRateUpdateCommand> context) {
 		// getCommand
 		AccidentInsuranceRateUpdateCommand command = context.getCommand();

@@ -41,6 +41,7 @@ module nts.uk.pr.view.qmm011.a {
             //労災保険 detail C
             lstHistoryAccidentInsuranceRate: KnockoutObservableArray<HistoryAccidentInsuranceDto>;
             selectionHistoryAccidentInsuranceRate: KnockoutObservable<string>;
+            beginHistoryStartAccidentInsuranceRate: KnockoutObservable<string>;
             //detail D
             accidentInsuranceRateModel: KnockoutObservable<AccidentInsuranceRateModel>;
             //Update or Add  typeAccidentInsurance: KnockoutObservable<number>;
@@ -81,6 +82,7 @@ module nts.uk.pr.view.qmm011.a {
                 self.isEnableSaveActionAccidentInsurance = ko.observable(true);
                 self.isEnableEditActionAccidentInsurance = ko.observable(true);
                 self.beginHistoryStartUnemployeeInsuranceRate = ko.observable('');
+                self.beginHistoryStartAccidentInsuranceRate = ko.observable('');
             }
 
             //open dialog edit HistoryUnemployeeInsuranceRate => show view model xhtml (action event add)
@@ -234,7 +236,7 @@ module nts.uk.pr.view.qmm011.a {
                 nts.uk.ui.windows.setShared("isEmpty", self.isEmptyAccident());
 
                 if (!self.isEmptyAccident()) {
-                    nts.uk.ui.windows.setShared("historyStart", self.accidentInsuranceRateModel().historyAccidentInsuranceRateModel.startMonthRage());
+                    nts.uk.ui.windows.setShared("historyStart", self.beginHistoryStartAccidentInsuranceRate());
                 }
 
                 //open dialog /d/index.xhtml
@@ -639,6 +641,7 @@ module nts.uk.pr.view.qmm011.a {
                         self.typeActionAccidentInsurance(TypeActionInsuranceRate.update);
                         self.accidentInsuranceRateModel().setHistoryData(data.historyInsurance);
                         self.accidentInsuranceRateModel().setEnable(true);
+                        self.beginHistoryStartAccidentInsuranceRate(data.historyInsurance.startMonthRage);
                         dfd.resolve(null);
                     });
                 }

@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.infra.repository.wagetable.certification;
 
+import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
@@ -14,6 +15,7 @@ import nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroupGetMemento;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroupName;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.MultipleTargetSetting;
 import nts.uk.ctx.pr.core.infra.entity.wagetable.certification.QcemtCertification;
+import nts.uk.ctx.pr.core.infra.entity.wagetable.certification.QwtmtWagetableCertify;
 import nts.uk.ctx.pr.core.infra.entity.wagetable.certification.QwtmtWagetableCertifyG;
 
 /**
@@ -87,8 +89,7 @@ public class JpaCertifyGroupGetMemento implements CertifyGroupGetMemento {
 	public Set<Certification> getCertifies() {
 		Set<Certification> certifications = this.typeValue.getQwtmtWagetableCertifyList().stream()
 				.map(item -> new Certification(new JpaCertificationGetMemento(
-						new QcemtCertification(this.typeValue.getQwtmtWagetableCertifyGPK().getCcd(),
-								item.getQwtmtWagetableCertifyPK().getCertifyCd()))))
+						item.getQcemtCertification())))
 				.collect(Collectors.toSet());
 		return certifications;
 	}

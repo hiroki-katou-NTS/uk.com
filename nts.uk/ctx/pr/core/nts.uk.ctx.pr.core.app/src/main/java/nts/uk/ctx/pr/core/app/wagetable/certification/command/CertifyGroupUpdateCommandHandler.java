@@ -19,7 +19,6 @@ import nts.uk.shr.com.context.AppContexts;
  * The Class CertifyGroupUpdateCommandHandler.
  */
 @Stateless
-@Transactional
 public class CertifyGroupUpdateCommandHandler extends CommandHandler<CertifyGroupUpdateCommand> {
 
 	/** The certify group repository. */
@@ -38,6 +37,7 @@ public class CertifyGroupUpdateCommandHandler extends CommandHandler<CertifyGrou
 	 * .CommandHandlerContext)
 	 */
 	@Override
+	@Transactional
 	protected void handle(CommandHandlerContext<CertifyGroupUpdateCommand> context) {
 		String companyCode = AppContexts.user().companyCode();
 		CertifyGroup certifyGroup = context.getCommand().toDomain(companyCode);

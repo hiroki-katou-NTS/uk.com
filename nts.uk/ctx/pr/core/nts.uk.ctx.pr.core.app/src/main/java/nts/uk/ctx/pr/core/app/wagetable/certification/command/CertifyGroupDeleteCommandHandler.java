@@ -18,7 +18,6 @@ import nts.uk.shr.com.context.AppContexts;
  * The Class CertifyGroupAddCommandHandler.
  */
 @Stateless
-@Transactional
 public class CertifyGroupDeleteCommandHandler extends CommandHandler<CertifyGroupDeleteCommand> {
 
 	/** The certify group repository. */
@@ -33,6 +32,7 @@ public class CertifyGroupDeleteCommandHandler extends CommandHandler<CertifyGrou
 	 * .CommandHandlerContext)
 	 */
 	@Override
+	@Transactional
 	protected void handle(CommandHandlerContext<CertifyGroupDeleteCommand> context) {
 		String companyCode = AppContexts.user().companyCode();
 		this.certifyGroupRepository.remove(new CompanyCode(companyCode),

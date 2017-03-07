@@ -49,6 +49,7 @@ var nts;
                                     self.isEnableSaveActionAccidentInsurance = ko.observable(true);
                                     self.isEnableEditActionAccidentInsurance = ko.observable(true);
                                     self.beginHistoryStartUnemployeeInsuranceRate = ko.observable('');
+                                    self.beginHistoryStartAccidentInsuranceRate = ko.observable('');
                                 }
                                 ScreenModel.prototype.openEditHistoryUnemployeeInsuranceRate = function () {
                                     var self = this;
@@ -147,7 +148,7 @@ var nts;
                                     var self = this;
                                     nts.uk.ui.windows.setShared("isEmpty", self.isEmptyAccident());
                                     if (!self.isEmptyAccident()) {
-                                        nts.uk.ui.windows.setShared("historyStart", self.accidentInsuranceRateModel().historyAccidentInsuranceRateModel.startMonthRage());
+                                        nts.uk.ui.windows.setShared("historyStart", self.beginHistoryStartAccidentInsuranceRate());
                                     }
                                     nts.uk.ui.windows.sub.modal('/view/qmm/011/d/index.xhtml', { title: '労働保険料率の登録>履歴の追加', dialogClass: 'no-close' }).onClosed(function () {
                                         var addHistoryInfoModel = nts.uk.ui.windows.getShared("addHistoryInfoModel");
@@ -417,6 +418,7 @@ var nts;
                                             self.typeActionAccidentInsurance(TypeActionInsuranceRate.update);
                                             self.accidentInsuranceRateModel().setHistoryData(data.historyInsurance);
                                             self.accidentInsuranceRateModel().setEnable(true);
+                                            self.beginHistoryStartAccidentInsuranceRate(data.historyInsurance.startMonthRage);
                                             dfd.resolve(null);
                                         });
                                     }
