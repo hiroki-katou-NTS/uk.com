@@ -3,7 +3,7 @@ module nts.uk.pr.view.qmm011.a {
 
         var paths: any = {
             findAllHistoryUnemployeeInsuranceRate: "pr/insurance/labor/unemployeerate/history/findall",
-            findHisotryUnemployeeInsuranceRate: "pr/insurance/labor/unemployeerate/history/find",
+            findHistoryUnemployeeInsuranceRate: "pr/insurance/labor/unemployeerate/history/find",
             detailHistoryUnemployeeInsuranceRate: "pr/insurance/labor/unemployeerate/detail",
             addUnemployeeInsuranceRate: "pr/insurance/labor/unemployeerate/add",
             updateUnemployeeInsuranceRate: "pr/insurance/labor/unemployeerate/update",
@@ -76,10 +76,10 @@ module nts.uk.pr.view.qmm011.a {
         }
 
         //Function connection service Find History By historyId
-        export function findHisotryUnemployeeInsuranceRate(historyId: string)
+        export function findHistoryUnemployeeInsuranceRate(historyId: string)
             : JQueryPromise<model.HistoryUnemployeeInsuranceDto> {
             var dfd = $.Deferred<model.HistoryUnemployeeInsuranceDto>();
-            nts.uk.request.ajax(paths.findHisotryUnemployeeInsuranceRate + "/" + historyId)
+            nts.uk.request.ajax(paths.findHistoryUnemployeeInsuranceRate + "/" + historyId)
                 .done(function(res: model.HistoryInsuranceFindOutDto) {
                     var historyUnemployeeInsuranceDto: model.HistoryUnemployeeInsuranceDto;
                     historyUnemployeeInsuranceDto = new model.HistoryUnemployeeInsuranceDto();

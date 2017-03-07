@@ -19,15 +19,6 @@ var nts;
                             var ScreenModel = (function () {
                                 function ScreenModel() {
                                     var self = this;
-                                    self.textSearch = {
-                                        valueSearch: ko.observable(""),
-                                        option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                                            textmode: "text",
-                                            placeholder: "コード・名称で検索・・・",
-                                            width: "270",
-                                            textalign: "left"
-                                        }))
-                                    };
                                     self.columnsLstlaborInsuranceOffice = ko.observableArray([
                                         { headerText: 'コード', prop: 'code', width: 120 },
                                         { headerText: '名称', prop: 'name', width: 120 }
@@ -37,6 +28,7 @@ var nts;
                                     self.isEmpty = ko.observable(true);
                                     self.laborInsuranceOfficeModel = ko.observable(new LaborInsuranceOfficeModel());
                                     self.selectCodeLstlaborInsuranceOffice = ko.observable('');
+                                    self.isEnableDelete = ko.observable(true);
                                 }
                                 ScreenModel.prototype.resetValueLaborInsurance = function () {
                                     var self = this;
@@ -46,6 +38,7 @@ var nts;
                                     self.laborInsuranceOfficeModel().setReadOnly(false);
                                     if (!self.isEmpty())
                                         self.clearErrorSave();
+                                    self.isEnableDelete(false);
                                 };
                                 ScreenModel.prototype.clearErrorSave = function () {
                                     var self = this;
@@ -90,6 +83,7 @@ var nts;
                                             self.detailLaborInsuranceOffice(data[0].code).done(function (data) {
                                                 dfd.resolve(self);
                                             });
+                                            self.isEnableDelete(true);
                                         }
                                         else {
                                             self.newmodelEmptyData();
@@ -140,6 +134,7 @@ var nts;
                                             self.selectCodeLstlaborInsuranceOffice(code);
                                             self.laborInsuranceOfficeModel().updateData(data);
                                             self.laborInsuranceOfficeModel().setReadOnly(true);
+                                            self.isEnableDelete(true);
                                         });
                                         dfd.resolve(null);
                                     }

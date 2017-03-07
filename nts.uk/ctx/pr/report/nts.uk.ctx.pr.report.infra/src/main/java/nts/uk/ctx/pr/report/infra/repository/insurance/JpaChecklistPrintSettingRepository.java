@@ -13,8 +13,7 @@ public class JpaChecklistPrintSettingRepository implements ChecklistPrintSetting
 
 	@Override
 	public void save(ChecklistPrintSetting printSetting) {
-		// TODO Auto-generated method stub
-
+		//Do nothing
 	}
 
 	@Override

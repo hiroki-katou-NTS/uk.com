@@ -19,7 +19,7 @@ var nts;
                         (function (service) {
                             var paths = {
                                 findAllHistoryUnemployeeInsuranceRate: "pr/insurance/labor/unemployeerate/history/findall",
-                                findHisotryUnemployeeInsuranceRate: "pr/insurance/labor/unemployeerate/history/find",
+                                findHistoryUnemployeeInsuranceRate: "pr/insurance/labor/unemployeerate/history/find",
                                 detailHistoryUnemployeeInsuranceRate: "pr/insurance/labor/unemployeerate/detail",
                                 addUnemployeeInsuranceRate: "pr/insurance/labor/unemployeerate/add",
                                 updateUnemployeeInsuranceRate: "pr/insurance/labor/unemployeerate/update",
@@ -81,9 +81,9 @@ var nts;
                                 return dfd.promise();
                             }
                             service.findAllHistoryUnemployeeInsuranceRate = findAllHistoryUnemployeeInsuranceRate;
-                            function findHisotryUnemployeeInsuranceRate(historyId) {
+                            function findHistoryUnemployeeInsuranceRate(historyId) {
                                 var dfd = $.Deferred();
-                                nts.uk.request.ajax(paths.findHisotryUnemployeeInsuranceRate + "/" + historyId)
+                                nts.uk.request.ajax(paths.findHistoryUnemployeeInsuranceRate + "/" + historyId)
                                     .done(function (res) {
                                     var historyUnemployeeInsuranceDto;
                                     historyUnemployeeInsuranceDto = new model.HistoryUnemployeeInsuranceDto();
@@ -95,7 +95,7 @@ var nts;
                                 });
                                 return dfd.promise();
                             }
-                            service.findHisotryUnemployeeInsuranceRate = findHisotryUnemployeeInsuranceRate;
+                            service.findHistoryUnemployeeInsuranceRate = findHistoryUnemployeeInsuranceRate;
                             function detailHistoryUnemployeeInsuranceRate(historyId) {
                                 var dfd = $.Deferred();
                                 nts.uk.request.ajax(paths.detailHistoryUnemployeeInsuranceRate + "/" + historyId)
