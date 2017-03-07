@@ -1,4 +1,4 @@
-package nts.uk.ctx.basic.ws.organization.employment.copy;
+package nts.uk.ctx.basic.ws.organization.employment;
 
 import java.util.List;
 
