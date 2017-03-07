@@ -66,10 +66,17 @@ module qmm023.a.viewmodel {
         insertUpdateData(): void {
             let self = this;
             let newCode = ko.mapping.toJS(self.currentTax().code);
+            let newName = ko.mapping.toJS(self.currentTax().name);
+            let newTaxLimit = ko.mapping.toJS(self.currentTax().taxLimit);
             if (nts.uk.text.isNullOrEmpty(newCode)) {
+                $('#INP_002').ntsError('set', nts.uk.text.format('{0}が入力されていません。', 'コード'));
                 return;
             }
-            let insertUpdateModel = new InsertUpdateModel(nts.uk.text.padLeft(newCode, '0', 2), self.currentTax().name, self.currentTax().taxLimit);
+            if (nts.uk.text.isNullOrEmpty(newName)) {
+                $('#INP_003').ntsError('set', nts.uk.text.format('{0}が入力されていません。', '名称'));
+                return;
+            }
+            let insertUpdateModel = new InsertUpdateModel(nts.uk.text.padLeft(newCode, '0', 2), newName, newTaxLimit);
             service.insertUpdateData(self.isUpdate(), insertUpdateModel).done(function() {
                 $.when(self.getCommuteNoTaxLimitList()).done(function() {
                     self.currentCode(nts.uk.text.padLeft(newCode, '0', 2));
@@ -79,12 +86,12 @@ module qmm023.a.viewmodel {
                     self.allowEditCode(false);
                 }
             }).fail(function(error) {
-                if(error.message === '1'){
-                     $('#INP_002').ntsError('set',nts.uk.text.format('{0}が入力されていません。', 'コード'));
-                } else if(error.message === '2'){
-                     $('#INP_003').ntsError('set',nts.uk.text.format('{0}が入力されていません。', '名称'));
+                if (error.message === '1') {
+                    $('#INP_002').ntsError('set', nts.uk.text.format('{0}が入力されていません。', 'コード'));
+                } else if (error.message === '2') {
+                    $('#INP_003').ntsError('set', nts.uk.text.format('{0}が入力されていません。', '名称'));
                 } else {
-                     $('#INP_002').ntsError('set',nts.uk.text.format('入力した{0}は既に存在しています。\r\n{1}を確認してください。', 'コード' , 'コード'));
+                    $('#INP_002').ntsError('set', nts.uk.text.format('入力した{0}は既に存在しています。\r\n{1}を確認してください。', 'コード', 'コード'));
                 }
             });
 
@@ -93,6 +100,10 @@ module qmm023.a.viewmodel {
         deleteData(): void {
             let self = this;
             let deleteCode = ko.mapping.toJS(self.currentTax().code);
+            if (nts.uk.text.isNullOrEmpty(deleteCode)) {
+                $('#INP_002').ntsError('set', nts.uk.text.format('{0}が入力されていません。', 'コード'));
+                return;
+            }
             service.deleteData(new DeleteModel(deleteCode)).done(function() {
                 let indexItemDelete = _.findIndex(self.items(), function(item) { return item.code == deleteCode; });
                 $.when(self.getCommuteNoTaxLimitList()).done(function() {

@@ -59,10 +59,17 @@ var qmm023;
                 ScreenModel.prototype.insertUpdateData = function () {
                     var self = this;
                     var newCode = ko.mapping.toJS(self.currentTax().code);
+                    var newName = ko.mapping.toJS(self.currentTax().name);
+                    var newTaxLimit = ko.mapping.toJS(self.currentTax().taxLimit);
                     if (nts.uk.text.isNullOrEmpty(newCode)) {
+                        $('#INP_002').ntsError('set', nts.uk.text.format('{0}が入力されていません。', 'コード'));
                         return;
                     }
-                    var insertUpdateModel = new InsertUpdateModel(nts.uk.text.padLeft(newCode, '0', 2), self.currentTax().name, self.currentTax().taxLimit);
+                    if (nts.uk.text.isNullOrEmpty(newName)) {
+                        $('#INP_003').ntsError('set', nts.uk.text.format('{0}が入力されていません。', '名称'));
+                        return;
+                    }
+                    var insertUpdateModel = new InsertUpdateModel(nts.uk.text.padLeft(newCode, '0', 2), newName, newTaxLimit);
                     a.service.insertUpdateData(self.isUpdate(), insertUpdateModel).done(function () {
                         $.when(self.getCommuteNoTaxLimitList()).done(function () {
                             self.currentCode(nts.uk.text.padLeft(newCode, '0', 2));
@@ -86,6 +93,10 @@ var qmm023;
                 ScreenModel.prototype.deleteData = function () {
                     var self = this;
                     var deleteCode = ko.mapping.toJS(self.currentTax().code);
+                    if (nts.uk.text.isNullOrEmpty(deleteCode)) {
+                        $('#INP_002').ntsError('set', nts.uk.text.format('{0}が入力されていません。', 'コード'));
+                        return;
+                    }
                     a.service.deleteData(new DeleteModel(deleteCode)).done(function () {
                         var indexItemDelete = _.findIndex(self.items(), function (item) { return item.code == deleteCode; });
                         $.when(self.getCommuteNoTaxLimitList()).done(function () {
