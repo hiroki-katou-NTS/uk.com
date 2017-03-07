@@ -107,7 +107,7 @@ var nts;
                                 ScreenModel.prototype.save = function () {
                                     var self = this;
                                     if (self.isNewMode()) {
-                                        a.service.create(ko.toJS(self.unitPriceHistoryModel())).done(function () {
+                                        a.service.create(ko.toJS(self.unitPriceHistoryModel()), true).done(function () {
                                             self.loadUnitPriceHistoryList().done(function () {
                                                 self.selectedId(self.getLatestHistoryId(self.unitPriceHistoryModel().unitPriceCode()));
                                             });

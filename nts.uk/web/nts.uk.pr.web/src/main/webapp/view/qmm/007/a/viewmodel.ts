@@ -165,7 +165,7 @@ module nts.uk.pr.view.qmm007.a {
             private save(): void {
                 var self = this;
                 if (self.isNewMode()) {
-                    service.create(ko.toJS(self.unitPriceHistoryModel())).done(() => {
+                    service.create(ko.toJS(self.unitPriceHistoryModel()), true).done(() => {
                         self.loadUnitPriceHistoryList().done(() => {
                             self.selectedId(self.getLatestHistoryId(self.unitPriceHistoryModel().unitPriceCode()));
                         });
