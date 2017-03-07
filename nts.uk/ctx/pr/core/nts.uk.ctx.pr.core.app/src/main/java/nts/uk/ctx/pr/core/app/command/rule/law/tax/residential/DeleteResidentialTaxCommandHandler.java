@@ -30,14 +30,36 @@ public class DeleteResidentialTaxCommandHandler extends CommandHandler<DeleteRes
 	protected void handle(CommandHandlerContext<DeleteResidentialTaxCommand> context) {
 		String companyCode = AppContexts.user().companyCode();
 		DeleteResidentialTaxCommand delete = context.getCommand();
-		List<ResidentialTax> allResidential = this.resiTaxRepository.getAllResidentialTax(companyCode,
-				delete.getResiTaxCode().toString(), delete.getResiTaxReportCode().toString());
-		//17.住民税納付先の一括削除_削除時チェック処理 SEL_2 if result >=1 throw error  selected obj is used -> dont' delete this obj
-		if (allResidential.isEmpty()) {
-			this.resiTaxRepository.delele(companyCode, delete.getResiTaxCode());
-		}else{
-			
-			throw new BusinessException(new RawErrorMessage("選択された  住民税納付先マスタ object  は使用されているため削除できません。"));
+		boolean error = true;
+		if (delete.getResiTaxCodes().size() == 1) {
+			List<ResidentialTax> allResidential = this.resiTaxRepository.getAllResidentialTax(companyCode,
+					delete.getResiTaxCodes().get(0).toString(), delete.getResiTaxCodes().get(0).toString());
+			if (allResidential.isEmpty()) {
+				this.resiTaxRepository.delele(companyCode, delete.getResiTaxCodes().get(0));
+			} else {
+
+				throw new BusinessException(new RawErrorMessage("選択された  住民税納付先マスタ object  は使用されているため削除できません。"));
+			}
+		} else {
+			for (int i = 0; i < delete.getResiTaxCodes().size(); i++) {
+				List<ResidentialTax> allResidential = this.resiTaxRepository.getAllResidentialTax(companyCode,
+						delete.getResiTaxCodes().get(i).toString(), delete.getResiTaxCodes().get(i).toString());
+				if (!allResidential.isEmpty()) {
+					error = false;
+					break;
+				}
+			}
+			// 17.住民税納付先の一括削除_削除時チェック処理 SEL_2 if result >=1 throw error selected
+			// obj is used -> dont' delete this obj
+			if (!error) {
+				throw new BusinessException(new RawErrorMessage("選択された  住民税納付先マスタ object  は使用されているため削除できません。"));
+			} else {
+				for (int i = 0; i < delete.getResiTaxCodes().size(); i++) {
+					this.resiTaxRepository.delele(companyCode, delete.getResiTaxCodes().get(i));
+
+				}
+
+			}
 		}
 	}
 

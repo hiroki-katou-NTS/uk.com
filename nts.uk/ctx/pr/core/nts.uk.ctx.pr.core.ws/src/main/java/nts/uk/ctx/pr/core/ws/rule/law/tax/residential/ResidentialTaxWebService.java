@@ -72,7 +72,8 @@ public class ResidentialTaxWebService extends WebService {
 
 	@POST
 	@Path("deleteresidential")
-	public void addResidential(DeleteResidentialTaxCommand command) {
+	public void deleleResidential(DeleteResidentialTaxCommand command) {
+		System.out.println(command);
 		this.deleleData.handle(command);
 	}
 

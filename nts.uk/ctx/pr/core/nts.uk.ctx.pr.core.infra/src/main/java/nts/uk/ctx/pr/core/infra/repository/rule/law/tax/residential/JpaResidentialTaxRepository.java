@@ -78,6 +78,8 @@ public class JpaResidentialTaxRepository extends JpaRepository implements Reside
 		val objectKey = new QtxmtResidentialTaxPk();
 		objectKey.companyCd = companyCode;
 		objectKey.resiTaxCode = resiTaxCode;
+		System.out.println(companyCode);
+		System.out.println(resiTaxCode);
 		this.commandProxy().remove(QtxmtResidentialTax.class, objectKey);
 	}
 	@Override
