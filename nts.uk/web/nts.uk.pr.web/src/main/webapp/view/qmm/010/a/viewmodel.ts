@@ -1,11 +1,15 @@
 module nts.uk.pr.view.qmm010.a {
+    
     import option = nts.uk.ui.option;
     import LaborInsuranceOfficeDto = service.model.LaborInsuranceOfficeDto;
     import LaborInsuranceOfficeFindOutDto = service.model.LaborInsuranceOfficeFindOutDto;
     import TypeActionLaborInsuranceOffice = service.model.TypeActionLaborInsuranceOffice;
     import LaborInsuranceOfficeDeleteDto = service.model.LaborInsuranceOfficeDeleteDto;
+    
     export module viewmodel {
+        
         export class ScreenModel {
+            
             //ojbect value binding
             laborInsuranceOfficeModel: KnockoutObservable<LaborInsuranceOfficeModel>;
             lstlaborInsuranceOfficeModel: KnockoutObservableArray<LaborInsuranceOfficeFindOutDto>
@@ -16,6 +20,7 @@ module nts.uk.pr.view.qmm010.a {
             isEmpty: KnockoutObservable<boolean>;
             //update add LaborInsuranceOffice
             typeAction: KnockoutObservable<number>;
+            
             constructor() {
                 var self = this;
                 self.textSearch = {
@@ -37,6 +42,7 @@ module nts.uk.pr.view.qmm010.a {
                 self.laborInsuranceOfficeModel = ko.observable(new LaborInsuranceOfficeModel());
                 self.selectCodeLstlaborInsuranceOffice = ko.observable('');
             }
+            
             private resetValueLaborInsurance() {
                 var self = this;
                 self.laborInsuranceOfficeModel().resetAllValue();
@@ -45,11 +51,13 @@ module nts.uk.pr.view.qmm010.a {
                 self.laborInsuranceOfficeModel().setReadOnly(false);
                 if (!self.isEmpty()) self.clearErrorSave();
             }
+            
             private clearErrorSave() {
                 var self = this;
                 $('.save-error').ntsError('clear');
                 $('#btn_save').ntsError('clear');
             }
+            
             private readFromSocialTnsuranceOffice() {
                 var self = this;
                 self.enableButton(false);
@@ -65,8 +73,8 @@ module nts.uk.pr.view.qmm010.a {
                         self.enableButton(true);
                     }
                 });
-
             }
+            
             public startPage(): JQueryPromise<any> {
                 var self = this;
                 var dfd = $.Deferred<any>();
@@ -75,6 +83,7 @@ module nts.uk.pr.view.qmm010.a {
                 });
                 return dfd.promise();
             }
+            
             //Connection service find All InsuranceOffice
             private findAllInsuranceOffice(): JQueryPromise<any> {
                 var self = this;
@@ -93,13 +102,14 @@ module nts.uk.pr.view.qmm010.a {
                         self.newmodelEmptyData();
                         dfd.resolve(self);
                     }
-
                 });
                 return dfd.promise();
             }
+            
             private showMessageSave(message: string) {
                 $('#btn_save').ntsError('set', message);
             }
+            
             private saveLaborInsuranceOffice() {
                 var self = this;
                 if (self.typeAction() == TypeActionLaborInsuranceOffice.add) {
@@ -115,6 +125,7 @@ module nts.uk.pr.view.qmm010.a {
                     });
                 }
             }
+            
             private showchangeLaborInsuranceOfficep(selectionCodeLstLstLaborInsuranceOffice: string) {
                 var self = this;
                 if (selectionCodeLstLstLaborInsuranceOffice != null
@@ -124,6 +135,7 @@ module nts.uk.pr.view.qmm010.a {
                     self.detailLaborInsuranceOffice(selectionCodeLstLstLaborInsuranceOffice);
                 }
             }
+            
             private detailLaborInsuranceOffice(code: string): JQueryPromise<any> {
                 var dfd = $.Deferred<any>();
                 if (code != null && code != undefined && code != '') {
@@ -143,6 +155,7 @@ module nts.uk.pr.view.qmm010.a {
                 }
                 return dfd.promise();
             }
+            
             //reload action
             private reloadDataByAction(code: string) {
                 var self = this;
@@ -163,6 +176,7 @@ module nts.uk.pr.view.qmm010.a {
                     }
                 });
             }
+            
             private newmodelEmptyData() {
                 var self = this;
                 if (self.lstlaborInsuranceOfficeModel == null || self.lstlaborInsuranceOfficeModel == undefined) {
@@ -190,6 +204,7 @@ module nts.uk.pr.view.qmm010.a {
                     })
                 }
             }
+            
             //Convert Model => DTO
             public collectData(): LaborInsuranceOfficeDto {
                 var self = this;
@@ -214,10 +229,10 @@ module nts.uk.pr.view.qmm010.a {
                 laborInsuranceOffice.memo = self.laborInsuranceOfficeModel().multilineeditor().memo();
                 return laborInsuranceOffice;
             }
-
         }
 
         export class LaborInsuranceOfficeModel {
+            
             code: KnockoutObservable<string>;
             name: KnockoutObservable<string>;
             shortName: KnockoutObservable<string>;
@@ -238,6 +253,7 @@ module nts.uk.pr.view.qmm010.a {
             multilineeditor: KnockoutObservable<any>;
             isReadOnly: KnockoutObservable<boolean>;
             isEnable: KnockoutObservable<boolean>;
+            
             constructor() {
                 this.code = ko.observable('');
                 this.name = ko.observable('');
@@ -270,6 +286,7 @@ module nts.uk.pr.view.qmm010.a {
                 this.isReadOnly = ko.observable(true);
                 this.isEnable = ko.observable(true);
             }
+            
             //Reset value in view Model
             resetAllValue() {
                 this.code('');
@@ -303,6 +320,7 @@ module nts.uk.pr.view.qmm010.a {
                 this.isReadOnly(false);
                 this.isEnable(true);
             }
+            
             updateData(officeInfo: LaborInsuranceOfficeDto) {
                 if (officeInfo != null) {
                     this.code(officeInfo.code);
@@ -335,12 +353,11 @@ module nts.uk.pr.view.qmm010.a {
                     });
                 }
             }
+            
             setReadOnly(readonly: boolean) {
                 this.isReadOnly(readonly);
                 this.isEnable(!readonly);
             }
-
         }
-
     }
 }
