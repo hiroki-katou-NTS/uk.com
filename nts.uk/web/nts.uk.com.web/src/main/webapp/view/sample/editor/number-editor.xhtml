@@ -39,6 +39,7 @@
 						</div>
 						<br /><br />
 						<div data-bind="with: numbereditor2">
+							<div data-bind="ntsFormLabel: { constraint: 'CommonAmount', enable: false }">CommonAmount</div><br /><br />
 							<input id="number-2" data-bind="ntsNumberEditor: {value: value, constraint: constraint, option: option, required: required, enable: enable, readonly: readonly}" />
 							<span data-bind="ntsCheckBox: {checked: enable}">Enable</span>
 							<span data-bind="ntsCheckBox: {checked: readonly}">Readonly</span>
