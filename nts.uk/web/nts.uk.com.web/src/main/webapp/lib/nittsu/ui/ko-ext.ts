@@ -16,10 +16,6 @@ module nts.uk.ui.koExtentions {
             $input.addClass('nts-editor').addClass("nts-input");
             $input.wrap("<span class= 'nts-editor-wrapped ntsControl'/>");
             
-            $input.focus(() => {
-                $input.select();
-            });
-            
             $input.change(() => {
                 var validator = this.getValidator(data);
                 var newText = $input.val();
@@ -185,8 +181,18 @@ module nts.uk.ui.koExtentions {
             var option: any = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
             
             $input.focus(() => {
+                var selectionType = document.getSelection().type;
+                
+                // remove separator (comma)
                 $input.val(data.value());
+                
+                // if focusing is caused by Tab key, select text.
+                // this code is needed because removing separator deselects.
+                if (selectionType === 'Range') {
+                    $input.select();
+                }
             });
+            
             
             super.init($input, data);
         }

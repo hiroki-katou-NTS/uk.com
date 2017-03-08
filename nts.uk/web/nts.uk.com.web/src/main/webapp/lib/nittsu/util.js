@@ -2,6 +2,10 @@ var nts;
 (function (nts) {
     var uk;
     (function (uk) {
+        var KeyCodes;
+        (function (KeyCodes) {
+            KeyCodes.Tab = 9;
+        })(KeyCodes = uk.KeyCodes || (uk.KeyCodes = {}));
         var util;
         (function (util) {
             /**

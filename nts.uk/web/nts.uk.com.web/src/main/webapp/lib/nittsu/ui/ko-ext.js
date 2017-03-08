@@ -27,9 +27,6 @@ var nts;
                         }
                         $input.addClass('nts-editor').addClass("nts-input");
                         $input.wrap("<span class= 'nts-editor-wrapped ntsControl'/>");
-                        $input.focus(function () {
-                            $input.select();
-                        });
                         $input.change(function () {
                             var validator = _this.getValidator(data);
                             var newText = $input.val();
@@ -198,7 +195,14 @@ var nts;
                     NumberEditorProcessor.prototype.init = function ($input, data) {
                         var option = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
                         $input.focus(function () {
+                            var selectionType = document.getSelection().type;
+                            // remove separator (comma)
                             $input.val(data.value());
+                            // if focusing is caused by Tab key, select text.
+                            // this code is needed because removing separator deselects.
+                            if (selectionType === 'Range') {
+                                $input.select();
+                            }
                         });
                         _super.prototype.init.call(this, $input, data);
                     };
