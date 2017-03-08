@@ -47,11 +47,11 @@ public class WageTableHistoryAddCommandTest extends TestCase {
 		CompanyCode companyCode = new CompanyCode("0001");
 
 		CodeItemDto codeItemDto1 = new CodeItemDto();
-		codeItemDto1.setReferenceCode("referenceCode1");
+		codeItemDto1.setReferenceCode("refCode1");
 		codeItemDto1.setUuid("uuid1");
 
 		CodeItemDto codeItemDto2 = new CodeItemDto();
-		codeItemDto2.setReferenceCode("referenceCode2");
+		codeItemDto2.setReferenceCode("refCode2");
 		codeItemDto2.setUuid("uuid2");
 
 		List<CodeItemDto> codeItemDtos = Arrays.asList(codeItemDto1, codeItemDto2);
@@ -128,9 +128,9 @@ public class WageTableHistoryAddCommandTest extends TestCase {
 		// assertEquals("0001", elementMode1.getCompanyCode().v());
 		assertEquals(ElementType.MASTER_REF.value, elementMode1.getElementType().value);
 		assertEquals("tb01", elementMode1.getRefNo().v());
-		assertEquals("referenceCode1", elementMode1.getItems().get(0).getReferenceCode());
+		assertEquals("refCode1", elementMode1.getItems().get(0).getReferenceCode());
 		assertEquals("uuid1", elementMode1.getItems().get(0).getUuid());
-		assertEquals("referenceCode2", elementMode1.getItems().get(1).getReferenceCode());
+		assertEquals("refCode2", elementMode1.getItems().get(1).getReferenceCode());
 		assertEquals("uuid2", elementMode1.getItems().get(1).getUuid());
 
 		WageTableDemensionDetail wageTableDemensionDetail2 = wageTableHistory.getDemensionItems()
