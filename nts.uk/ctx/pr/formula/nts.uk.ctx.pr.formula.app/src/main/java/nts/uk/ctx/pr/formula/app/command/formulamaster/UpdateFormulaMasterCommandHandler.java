@@ -1,7 +1,6 @@
 package nts.uk.ctx.pr.formula.app.command.formulamaster;
 
 import javax.ejb.Stateless;
-import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;

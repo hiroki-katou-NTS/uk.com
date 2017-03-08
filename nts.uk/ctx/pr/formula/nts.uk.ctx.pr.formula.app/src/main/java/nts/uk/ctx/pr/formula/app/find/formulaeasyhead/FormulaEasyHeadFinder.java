@@ -6,10 +6,8 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.enums.EnumAdaptor;
 import nts.uk.ctx.pr.formula.dom.enums.ReferenceMasterNo;
 import nts.uk.ctx.pr.formula.dom.primitive.FormulaCode;
-import nts.uk.ctx.pr.formula.dom.primitive.ReferenceMasterCode;
 import nts.uk.ctx.pr.formula.dom.repository.FormulaEasyHeaderRepository;
 
 /**
