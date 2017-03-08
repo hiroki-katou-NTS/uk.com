@@ -2,6 +2,91 @@ var nts;
 (function (nts) {
     var qmm017;
     (function (qmm017) {
+        var CScreen = (function () {
+            function CScreen(data) {
+                var self = this;
+                self.roundingRulesEasySettings = ko.observableArray([
+                    { code: '0', name: '固定値' },
+                    { code: '1', name: '計算式' }
+                ]);
+                self.selectedRuleCodeEasySettings = ko.observable(0);
+                self.selectedRuleCode = ko.observable(data().selectedRuleCode());
+                self.selectedRuleCode2 = ko.observable(data().selectedRuleCode2());
+                data().selectedRuleCode.subscribe(function (val) {
+                    self.selectedRuleCode(val);
+                });
+                data().selectedRuleCode2.subscribe(function (val) {
+                    self.selectedRuleCode2(val);
+                });
+                var c_sel_001 = [
+                    { code: 1, name: '雇用マスタ' },
+                    { code: 2, name: '部門マスタ' },
+                    { code: 3, name: '分類マスタ' },
+                    { code: 4, name: '給与分類マスタ' },
+                    { code: 5, name: '職位マスタ' },
+                    { code: 6, name: '給与形態' }
+                ];
+                var c_sel_007 = [
+                    { code: 1, name: '当月' },
+                    { code: 2, name: '1ヶ月前' },
+                    { code: 3, name: '2ヶ月前' },
+                    { code: 4, name: '3ヶ月前' },
+                    { code: 5, name: '4ヶ月前' },
+                    { code: 6, name: '5ヶ月前' },
+                    { code: 7, name: '6ヶ月前' },
+                    { code: 8, name: '7ヶ月前' },
+                    { code: 9, name: '8ヶ月前' },
+                    { code: 10, name: '9ヶ月前' },
+                    { code: 11, name: '10ヶ月前' },
+                    { code: 12, name: '11ヶ月前' },
+                    { code: 13, name: '12ヶ月前' },
+                ];
+                var c_sel_008 = [
+                    { code: 1, name: '切上げ' },
+                    { code: 2, name: '切捨て' },
+                    { code: 3, name: '一捨二入' },
+                    { code: 4, name: '二捨三入' },
+                    { code: 5, name: '三捨四入' },
+                    { code: 6, name: '四捨五入' },
+                    { code: 7, name: '五捨六入' },
+                    { code: 8, name: '六捨七入' },
+                    { code: 9, name: '七捨八入' },
+                    { code: 10, name: '八捨九入' },
+                ];
+                self.formulaManualContent = ko.observable(new TextEditor());
+                self.c_sel_001 = ko.observable(new ComboBox(c_sel_001, true, false));
+                self.c_sel_006 = ko.observableArray([
+                    { id: 'tab-1', title: '明細・勤怠', content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true) },
+                    { id: 'tab-2', title: '関数', content: '.tab-content-2', enable: ko.observable(true), visible: ko.observable(true) },
+                    { id: 'tab-3', title: 'システム変数', content: '.tab-content-3', enable: ko.observable(true), visible: ko.observable(true) },
+                    { id: 'tab-4', title: '個人情報', content: '.tab-content-4', enable: ko.observable(true), visible: ko.observable(true) },
+                    { id: 'tab-5', title: '計算式', content: '.tab-content-5', enable: ko.observable(true), visible: ko.observable(true) },
+                    { id: 'tab-6', title: '賃金テーブル', content: '.tab-content-6', style: 'margin-left: 50px;', enable: ko.observable(true), visible: ko.observable(true) }
+                ]);
+                self.c_sel_007 = ko.observable(new ComboBox(c_sel_007, true, false));
+                self.c_sel_008 = ko.observable(new ComboBox(c_sel_008, true, false));
+                self.selectedTabCSel006 = ko.observable('tab-1');
+                self.easyFormulaName = ko.observable('');
+            }
+            CScreen.prototype.undo = function () {
+                document.execCommand("undo", false, null);
+            };
+            CScreen.prototype.redo = function () {
+                document.execCommand("redo", false, null);
+            };
+            CScreen.prototype.openDialogQ = function () {
+                var param = {};
+                nts.uk.ui.windows.setShared('paramFromScreenC', param);
+                nts.uk.ui.windows.sub.modal('/view/qmm/017/l/index.xhtml', { title: 'かんたん計算式の登録', width: 650, height: 750 }).onClosed(function () {
+                });
+            };
+            CScreen.prototype.validateTextArea = function () {
+                var self = this;
+                self.formulaManualContent().testError();
+            };
+            return CScreen;
+        }());
+        qmm017.CScreen = CScreen;
         var ComboBox = (function () {
             function ComboBox(data, isEnable, isEditable) {
                 var self = this;
@@ -18,13 +103,13 @@ var nts;
         function showError(event) {
             var self = this;
             var currentString = $("#input-text").val();
-            var selectValue = $(self).attr("messege");
+            var selectValue = $(self).attr("message");
             if (selectValue !== undefined) {
                 $("#error-message").text(selectValue);
                 var position = $("#input-containner").position();
                 $("#error-containner").css({
-                    "top": (event.data.pageY - position.top + 2 - 95) + "px",
-                    "left": (event.data.pageX - position.left + 2 - 400) + "px"
+                    "top": (event.data.pageY - position.top - 93) + "px",
+                    "left": (event.data.pageX - position.left - 398) + "px"
                 });
                 $("#error-containner").show();
             }
@@ -43,6 +128,9 @@ var nts;
         qmm017.ItemModelTextEditor = ItemModelTextEditor;
         var TextEditor = (function () {
             function TextEditor() {
+                this.ERROR_BRACKET = "カッコ()の数に誤りがあります。";
+                this.ERROR_CONSECUTIVELY = "構文に誤りがあります。＋と＋が連続して入力されています。";
+                this.ERROR_MUSTCONTAINATSIGN = "「基本給」は利用できない文字列です。";
                 var self = this;
                 //----------------------------------------------------------------------------
                 self.autoComplete = ko.observableArray([
@@ -62,8 +150,9 @@ var nts;
                 self.col = ko.observable(1);
                 self.index = ko.observable(1);
                 self.error = ko.observable("");
+                self.textArea = ko.observable("");
                 self.autoSelected.subscribe(function (value) {
-                    if (value !== undefined) {
+                    if (value) {
                         var currentString = $("#input-text").val();
                         var index = self.index() + 1;
                         var selectValue = value.name();
@@ -77,8 +166,7 @@ var nts;
                         self.autoSelected(undefined);
                     }
                 }, self);
-                self.textArea = ko.observable("");
-                self.divValue = ko.observable("");
+                self.contentValue = ko.observable("");
                 $("#error-containner").hide();
                 $(document).on("keyup", "#input-text", function (event) {
                     if (!event.shiftKey && event.keyCode === 16 && event.key === "@") {
@@ -89,7 +177,6 @@ var nts;
                     var end = $("#input-text")[0].selectionEnd;
                     var maxWidthCharacter = 15;
                     if (((event.shiftKey && event.keyCode === 50) || event.keyCode === 192) && event.key === "@") {
-                        self.testError();
                         var currentRow = self.getCurrentPosition(end);
                         self.index(end);
                         $("#auto-complete-containner").show();
@@ -97,7 +184,6 @@ var nts;
                     }
                     else {
                         $("#auto-complete-containner").hide();
-                        self.testError();
                     }
                 });
                 $(document).on("mouseleave", "#error-containner", function (event) {
@@ -111,12 +197,15 @@ var nts;
                             && (x.left + $(d).outerWidth()) >= event.pageX
                             && (x.top + $(d).outerHeight()) >= event.pageY;
                     });
-                    if (y !== undefined) {
+                    if (y) {
                         $(y).click({ pageX: event.pageX, pageY: event.pageY }, showError);
                         $(y).click();
                     }
                 });
             }
+            TextEditor.prototype.markError = function (tag, message) {
+                tag.addClass("error-char").attr("message", message);
+            };
             TextEditor.prototype.insertString = function (original, sub, position) {
                 if (original.length === position) {
                     return original + sub;
@@ -172,9 +261,11 @@ var nts;
                     }
                 }
                 html += "</span>";
-                self.divValue(html);
-                self.testGachChan($(".special-char"));
-                self.divValue($("#input-content-area").html());
+                self.contentValue(html);
+                var specialChar = $(".special-char");
+                self.validateConsecutively(specialChar);
+                self.validateBracket(specialChar);
+                self.contentValue($("#input-content-area").html());
             };
             TextEditor.prototype.getCurrentPosition = function (position) {
                 var uiPosition = {};
@@ -201,36 +292,56 @@ var nts;
             TextEditor.prototype.checkJapanese = function (char) {
                 return !nts.uk.text.allHalf(char);
             };
-            TextEditor.prototype.testGachChan = function (specialChar) {
+            TextEditor.prototype.validateBracket = function (specialChar) {
+                var self = this;
+                var openBracket = _.remove(specialChar, function (n) {
+                    return $(n).html() === "\(";
+                });
+                var closeBracket = _.remove(specialChar, function (n) {
+                    return $(n).html() === "\)";
+                });
+                if (closeBracket.length === 0) {
+                    self.markError($(openBracket), self.ERROR_BRACKET);
+                }
+                else if (openBracket.length === 0) {
+                    self.markError($(closeBracket), self.ERROR_BRACKET);
+                }
+                else {
+                    var openError = [];
+                    for (var i = openBracket.length - 1; i >= 0; i--) {
+                        var currentOpen = openBracket[i];
+                        var id = parseInt($(currentOpen).attr("id").split("-")[1]);
+                        var currentClose = _.find(closeBracket, function (a) {
+                            return parseInt($(a).attr("id").split("-")[1]) > id;
+                        });
+                        if (currentClose === undefined) {
+                            openError.unshift(currentOpen);
+                        }
+                        else {
+                            closeBracket.splice(closeBracket.indexOf(currentClose), 1);
+                        }
+                    }
+                    self.markError($(openError), self.ERROR_BRACKET);
+                    self.markError($(closeBracket), self.ERROR_BRACKET);
+                }
+            };
+            TextEditor.prototype.validateConsecutively = function (specialChar) {
                 var self = this;
                 var singleSpecial = {
                     "+": "+",
                     "-": "-",
                     "^": "^",
                     "*": "*",
-                    "/": "/",
                     "=": "=",
-                    "!": "!",
                     "#": "#",
-                    "$": "$",
-                    "%": "%"
+                    "%": "%",
+                    "<": "<",
+                    ">": ">",
+                    "≦": "≦",
+                    "≧": "≧"
                 };
-                var closeTriangle = _.remove(specialChar, function (n) {
-                    return $(n).html() === "&gt;";
-                });
-                var openTriangle = _.remove(specialChar, function (n) {
-                    return $(n).html() === "&lt;";
-                });
-                var openRound = _.remove(specialChar, function (n) {
-                    return $(n).html() === "\(";
-                });
-                var closeRound = _.remove(specialChar, function (n) {
-                    return $(n).html() === "\)";
-                });
-                self.checkOpenClose(openTriangle, closeTriangle);
-                self.checkOpenClose(openRound, closeRound);
-                var element = self.toArrayChar(specialChar);
                 for (var i = 0; i < specialChar.length; i++) {
+                    var self = this;
                     var $data = $(specialChar[i]);
                     var charCount = parseInt($data.attr("id").split("-")[1]);
                     var char = $data.text();
@@ -238,42 +349,14 @@ var nts;
                     if (single !== undefined) {
                         var neighborCount = self.countNeighbor(charCount, specialChar, true, true);
                         if (neighborCount > 0) {
-                            $data.addClass("error-char").attr("messege", "test 2");
+                            self.markError($data, self.ERROR_CONSECUTIVELY);
                         }
                     }
-                    else if (char !== "@") {
-                        $data.addClass("error-char").attr("messege", "test 4");
-                    }
-                }
-            };
-            TextEditor.prototype.checkOpenClose = function (openTriangle, closeTriangle) {
-                if (closeTriangle.length === 0) {
-                    $(openTriangle).addClass("error-char").attr("messege", "test 1");
-                }
-                else if (openTriangle.length === 0) {
-                    $(closeTriangle).addClass("error-char").attr("messege", "test 1");
-                }
-                else {
-                    var openError = [];
-                    for (var i = openTriangle.length - 1; i >= 0; i--) {
-                        var currentOpen = openTriangle[i];
-                        var id = parseInt($(currentOpen).attr("id").split("-")[1]);
-                        var currentClose = _.find(closeTriangle, function (a) {
-                            return parseInt($(a).attr("id").split("-")[1]) > id;
-                        });
-                        if (currentClose === undefined) {
-                            openError.unshift(currentOpen);
-                        }
-                        else {
-                            closeTriangle.splice(closeTriangle.indexOf(currentClose), 1);
-                        }
-                    }
-                    $(openError).addClass("error-char").attr("messege", "test 1");
-                    $(closeTriangle).addClass("error-char").attr("messege", "test 1");
                 }
             };
             TextEditor.prototype.countNeighbor = function (index, array, countNext, countPrev) {
                 var self = this;
+                var current = _.find(array, function (a) { return $(a).attr("id") === "span-" + (index); });
                 var previous = _.find(array, function (a) { return $(a).attr("id") === "span-" + (index - 1); });
                 var next = _.find(array, function (a) { return $(a).attr("id") === "span-" + (index + 1); });
                 if (previous === undefined && next === undefined) {
@@ -281,13 +364,17 @@ var nts;
                 }
                 var previousCount = 0;
                 var nextCount = 0;
-                if (countNext && next !== undefined) {
-                    nextCount++;
-                    nextCount += self.countNeighbor(index + 1, array, countNext, false);
+                if (countNext && next) {
+                    if (next.innerText !== '(') {
+                        nextCount++;
+                        nextCount += self.countNeighbor(index + 1, array, countNext, false);
+                    }
                 }
-                if (countPrev && previous !== undefined) {
-                    previousCount++;
-                    previousCount += self.countNeighbor(index - 1, array, false, countPrev);
+                if (countPrev && previous) {
+                    if (previous.innerText !== ')') {
+                        previousCount++;
+                        previousCount += self.countNeighbor(index - 1, array, false, countPrev);
+                    }
                 }
                 return previousCount + nextCount;
             };
@@ -305,85 +392,5 @@ var nts;
             return TextEditor;
         }());
         qmm017.TextEditor = TextEditor;
-        var CScreen = (function () {
-            function CScreen(data) {
-                var self = this;
-                self.roundingRulesEasySettings = ko.observableArray([
-                    { code: '0', name: '固定値' },
-                    { code: '1', name: '計算式' }
-                ]);
-                self.selectedRuleCodeEasySettings = ko.observable(0);
-                self.selectedRuleCode = ko.observable(data().selectedRuleCode());
-                self.selectedRuleCode2 = ko.observable(data().selectedRuleCode2());
-                data().selectedRuleCode.subscribe(function (val) {
-                    self.selectedRuleCode(val);
-                });
-                data().selectedRuleCode2.subscribe(function (val) {
-                    self.selectedRuleCode2(val);
-                });
-                var c_sel_001 = [
-                    { code: 1, name: '雇用マスタ' },
-                    { code: 2, name: '部門マスタ' },
-                    { code: 3, name: '分類マスタ' },
-                    { code: 4, name: '給与分類マスタ' },
-                    { code: 5, name: '職位マスタ' },
-                    { code: 6, name: '給与形態' }
-                ];
-                var c_sel_007 = [
-                    { code: 1, name: '当月' },
-                    { code: 2, name: '1ヶ月前' },
-                    { code: 3, name: '2ヶ月前' },
-                    { code: 4, name: '3ヶ月前' },
-                    { code: 5, name: '4ヶ月前' },
-                    { code: 6, name: '5ヶ月前' },
-                    { code: 7, name: '6ヶ月前' },
-                    { code: 8, name: '7ヶ月前' },
-                    { code: 9, name: '8ヶ月前' },
-                    { code: 10, name: '9ヶ月前' },
-                    { code: 11, name: '10ヶ月前' },
-                    { code: 12, name: '11ヶ月前' },
-                    { code: 13, name: '12ヶ月前' },
-                ];
-                var c_sel_008 = [
-                    { code: 1, name: '切上げ' },
-                    { code: 2, name: '切捨て' },
-                    { code: 3, name: '一捨二入' },
-                    { code: 4, name: '二捨三入' },
-                    { code: 5, name: '三捨四入' },
-                    { code: 6, name: '四捨五入' },
-                    { code: 7, name: '五捨六入' },
-                    { code: 8, name: '六捨七入' },
-                    { code: 9, name: '七捨八入' },
-                    { code: 10, name: '八捨九入' },
-                ];
-                self.c_inp_003 = ko.observable(new TextEditor());
-                self.c_sel_001 = ko.observable(new ComboBox(c_sel_001, true, false));
-                self.c_sel_006 = ko.observableArray([
-                    { id: 'tab-1', title: '明細・勤怠', content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true) },
-                    { id: 'tab-2', title: '関数', content: '.tab-content-2', enable: ko.observable(true), visible: ko.observable(true) },
-                    { id: 'tab-3', title: 'システム変数', content: '.tab-content-3', enable: ko.observable(true), visible: ko.observable(true) },
-                    { id: 'tab-4', title: '個人情報', content: '.tab-content-4', enable: ko.observable(true), visible: ko.observable(true) },
-                    { id: 'tab-5', title: '計算式', content: '.tab-content-5', enable: ko.observable(true), visible: ko.observable(true) },
-                    { id: 'tab-6', title: '賃金テーブル', content: '.tab-content-6', style: 'margin-left: 50px;', enable: ko.observable(true), visible: ko.observable(true) }
-                ]);
-                self.c_sel_007 = ko.observable(new ComboBox(c_sel_007, true, false));
-                self.c_sel_008 = ko.observable(new ComboBox(c_sel_008, true, false));
-                self.selectedTabCSel006 = ko.observable('tab-1');
-                self.easyFormulaName = ko.observable('');
-            }
-            CScreen.prototype.undo = function () {
-                document.execCommand("undo", false, null);
-            };
-            CScreen.prototype.redo = function () {
-                document.execCommand("redo", false, null);
-            };
-            CScreen.prototype.openDialogQ = function () {
-                var param = {};
-                nts.uk.ui.windows.setShared('paramFromScreenC', param);
-                nts.uk.ui.windows.sub.modal('/view/qmm/017/l/index.xhtml', { title: 'かんたん計算式の登録', width: 650, height: 750 }).onClosed(function () { });
-            };
-            return CScreen;
-        }());
-        qmm017.CScreen = CScreen;
     })(qmm017 = nts.qmm017 || (nts.qmm017 = {}));
 })(nts || (nts = {}));
