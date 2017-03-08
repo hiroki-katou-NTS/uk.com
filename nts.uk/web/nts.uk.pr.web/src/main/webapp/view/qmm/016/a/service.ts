@@ -3,7 +3,7 @@ module nts.uk.pr.view.qmm016 {
      * Module service.
      */
     export module service {
-        export class Service implements base.simlehistory.service.Service<model.WageTable, model.WageTableHistory> {
+        export class Service implements base.simplehistory.service.Service<model.WageTable, model.WageTableHistory> {
             loadMasterModelList(): JQueryPromise<Array<model.WageTable>> {
                 var dfd = $.Deferred<Array<model.WageTable>>();
                 dfd.resolve([{
@@ -32,11 +32,11 @@ module nts.uk.pr.view.qmm016 {
         /**
          * Wage table.
          */
-        export interface WageTable extends base.simlehistory.model.MasterModel<WageTableHistory> {}
+        export interface WageTable extends base.simplehistory.model.MasterModel<WageTableHistory> {}
         
         /**
          * Wage table history model.
          */
-        export interface WageTableHistory extends base.simlehistory.model.HistoryModel {}
+        export interface WageTableHistory extends base.simplehistory.model.HistoryModel {}
     }
 }

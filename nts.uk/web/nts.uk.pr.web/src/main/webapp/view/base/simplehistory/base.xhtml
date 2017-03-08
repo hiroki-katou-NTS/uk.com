@@ -18,9 +18,10 @@
 			<!-- BEGIN FUNCTION AREA-->
 			<div id="functions-area">
 				<button id="btnNew"
+					data-bind="click: registNew"
 					class="large btn-default">新規</button>
 				<button id="btnUpdate" class="large proceed btn-default"
-					data-bind="enable: $root.errors.isEmpty">登録</button>
+					data-bind="enable: $root.errors.isEmpty, click: save">登録</button>
 				<ui:insert name="extendedAction" />
 			</div>
 			<!-- END FUNCTION AREA-->
@@ -39,14 +40,14 @@
 							childField: 'childs', 
 							fields: ['nodeText']}"></span>
 					</div>
-					<div class="margin-top-bot-20" style="margin: 5px;">
+					<div style="margin: 5px;">
 						<div>
 							<button class="pull-left" id="addHistory"
-								data-bind="enable: canAddNewHistory">履歴追加</button>
+								data-bind="enable: canAddNewHistory, click: openAddNewHistoryDialog">履歴追加</button>
 							<button class="pull-right" id="editHistory"
 								data-bind="enable: canUpdateHistory">履歴編集</button>
 						</div>
-						<div class="padding-top-10 pull-left cf">
+						<div class="pull-left cf">
 							<table id="historyTree"
 								data-bind="ntsTreeGridView:{
 										height: 370,

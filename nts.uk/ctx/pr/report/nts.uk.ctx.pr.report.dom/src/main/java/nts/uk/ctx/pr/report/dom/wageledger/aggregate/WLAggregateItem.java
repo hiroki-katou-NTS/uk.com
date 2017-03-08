@@ -8,9 +8,6 @@ import java.util.Set;
 
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.pr.report.dom.company.CompanyCode;
-import nts.uk.ctx.pr.report.dom.wageledger.PaymentType;
-import nts.uk.ctx.pr.report.dom.wageledger.WLCategory;
 
 /**
  * The Class WageLedgerAggregateItem.
@@ -18,17 +15,8 @@ import nts.uk.ctx.pr.report.dom.wageledger.WLCategory;
 @Getter
 public class WLAggregateItem extends AggregateRoot{
 	
-	/** The company code. */
-	private CompanyCode companyCode;
-	
-	/** The category. */
-	private WLCategory category;
-	
-	/** The payment type. */
-	private PaymentType paymentType;
-	
-	/** The code. */
-	private WLAggregateItemCode code;
+	/** The subject. */
+	private WLItemSubject subject;
 	
 	/** The name. */
 	private WLAggregateItemName name;
@@ -49,10 +37,7 @@ public class WLAggregateItem extends AggregateRoot{
 	 */
 	public WLAggregateItem(WLAggregateItemGetMemento memento) {
 		super();
-		this.companyCode = memento.getCompanyCode();
-		this.category = memento.getCategory();
-		this.paymentType = memento.getPaymentType();
-		this.code = memento.getCode();
+		this.subject = memento.getSubject();
 		this.name = memento.getName();
 		this.showNameZeroValue = memento.getShowNameZeroValue();
 		this.showValueZeroValue = memento.getShowValueZeroValue();
@@ -65,11 +50,8 @@ public class WLAggregateItem extends AggregateRoot{
 	 * @param memento the memento
 	 */
 	public void saveToMemento(WLAggregateItemSetMemento memento) {
-		memento.setCategory(this.category);
-		memento.setCode(this.code);
-		memento.setCompanyCode(this.companyCode);
+		memento.setSubject(this.subject);
 		memento.setName(this.name);
-		memento.setPaymentType(this.paymentType);
 		memento.setShowNameZeroValue(this.showNameZeroValue);
 		memento.setShowValueZeroValue(this.showValueZeroValue);
 		memento.setSubItems(this.subItems);

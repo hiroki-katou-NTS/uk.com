@@ -63,7 +63,7 @@ var qet001;
                             self.setStyle();
                             return;
                         }
-                        self.loadDetailAggregateItem(code).done(function (res) {
+                        self.loadDetailAggregateItem(self.category, self.paymentType, code).done(function (res) {
                             self.aggregateItemDetail(new AggregateItemDetail(paymentType, categoryName, masterItemInCate, res));
                             self.setStyle();
                         });
@@ -82,9 +82,9 @@ var qet001;
                     });
                     return dfd.promise();
                 };
-                AggregateCategory.prototype.loadDetailAggregateItem = function (code) {
+                AggregateCategory.prototype.loadDetailAggregateItem = function (category, paymentType, code) {
                     var dfd = $.Deferred();
-                    i.service.findAggregateItemDetail(code).done(function (data) {
+                    i.service.findAggregateItemDetail(category, paymentType, code).done(function (data) {
                         dfd.resolve(data);
                     }).fail(function (res) {
                         nts.uk.ui.dialog.alert(res.message);
@@ -104,6 +104,8 @@ var qet001;
                         return;
                     }
                     i.service.save(self.aggregateItemDetail()).done(function () {
+                        nts.uk.ui.dialog.alert('Save success!');
+                        self.loadAggregateItemByCategory();
                     }).fail(function (res) {
                         nts.uk.ui.dialog.alert(res.message);
                     });
@@ -113,8 +115,19 @@ var qet001;
                     if (self.aggregateItemSelectedCode() == null) {
                         return;
                     }
-                    i.service.remove(self.aggregateItemSelectedCode()).done(function () {
-                        self.aggregateItemSelectedCode(null);
+                    i.service.remove(self.category, self.paymentType, self.aggregateItemSelectedCode()).done(function () {
+                        var itemSelected = self.itemList().filter(function (item) { return item.code == self.aggregateItemSelectedCode(); })[0];
+                        var indexSelected = self.itemList().indexOf(itemSelected);
+                        self.itemList.remove(itemSelected);
+                        if (self.itemList.length == 0) {
+                            self.aggregateItemSelectedCode(null);
+                            return;
+                        }
+                        if (self.itemList()[indexSelected]) {
+                            self.aggregateItemSelectedCode(self.itemList()[indexSelected].code);
+                            return;
+                        }
+                        self.aggregateItemSelectedCode(self.itemList()[indexSelected - 1].code);
                     }).fail(function (res) {
                         nts.uk.ui.dialog.alert(res.message);
                     });

@@ -17,6 +17,7 @@ import nts.uk.ctx.pr.report.app.wageledger.command.AggregateItemRemoveCommand;
 import nts.uk.ctx.pr.report.app.wageledger.command.AggregateItemRemoveCommandHandler;
 import nts.uk.ctx.pr.report.app.wageledger.command.AggregateItemSaveCommand;
 import nts.uk.ctx.pr.report.app.wageledger.command.AggregateItemSaveCommandHandler;
+import nts.uk.ctx.pr.report.app.wageledger.command.dto.ItemSubjectDto;
 import nts.uk.ctx.pr.report.app.wageledger.find.AggregateItemFinder;
 import nts.uk.ctx.pr.report.app.wageledger.find.dto.AggregateItemDto;
 import nts.uk.ctx.pr.report.app.wageledger.find.dto.HeaderSettingDto;
@@ -60,9 +61,9 @@ public class AggregateItemWebservice extends WebService{
 	 * @return the aggregate item dto
 	 */
 	@POST
-	@Path("findByCode/{code}")
-	public AggregateItemDto findAggregateItemDetail(@PathParam("code") String code) {
-		return this.finder.findDetail(code);
+	@Path("findBySubject")
+	public AggregateItemDto findAggregateItemDetail(ItemSubjectDto subject) {
+		return this.finder.findDetail(subject);
 	}
 	
 	/**

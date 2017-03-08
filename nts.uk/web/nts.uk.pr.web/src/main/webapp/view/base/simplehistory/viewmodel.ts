@@ -1,42 +1,65 @@
-module nts.uk.pr.view.base.simlehistory {
+module nts.uk.pr.view.base.simplehistory {
     export module viewmodel {
         /**
          * Base screen model for simple history.
          */
-        export abstract class ScreenBaseModel<T extends model.MasterModel<V>, V extends model.HistoryModel> {
+        export abstract class ScreenBaseModel<M extends model.MasterModel<H>, H extends model.HistoryModel> {
             // Service.
-            service: service.Service<T, V>;
+            service: service.Service<M, H>;
 
             // Whether or not in new mode.
             isNewMode: KnockoutObservable<boolean>;
-            masterHistoryList: Array<T>;
-            masterHistoryDatasource: KnockoutObservableArray<Node>
+            
+            // Master history.
+            masterHistoryList: Array<M>;
+            
+            // Data source.
+            masterHistoryDatasource: KnockoutObservableArray<Node>;
+            
+            // Selected hsitory uuid.
             selectedHistoryUuid: KnockoutObservable<string>;
 
             // Flag
             private canUpdateHistory: KnockoutObservable<boolean>;
             private canAddNewHistory: KnockoutObservable<boolean>;
-            
+            private functionName: string;
+
             /**
              * Constructor.
              */
-            constructor(service: service.Service<T, V>) {
+            constructor(functionName: string, service: service.Service<M, H>) {
                 var self = this;
 
                 // Set.
+                self.functionName = functionName;
                 self.service = service;
 
                 // Init.
                 self.isNewMode = ko.observable(true);
                 self.masterHistoryDatasource = ko.observableArray([]);
                 self.selectedHistoryUuid = ko.observable(undefined);
-                
+
                 // Can update history flag.
                 self.canUpdateHistory = ko.computed(() => {
-                    return self.selectedHistoryUuid() != null;
+                    return self.selectedHistoryUuid() != null && self.getCurrentHistoryNode() != null;
                 })
                 self.canAddNewHistory = ko.computed(() => {
-                    return self.selectedHistoryUuid() != null;
+                    return self.selectedHistoryUuid() != null && self.getCurrentHistoryNode() != null;
+                })
+
+                // On history select.
+                self.selectedHistoryUuid.subscribe((id) => {
+                    if (id && id.length == 36) {
+                        self.isNewMode(false);
+                        self.onSelectHistory(id);
+                    }
+                })
+                
+                // On new mode.
+                self.isNewMode.subscribe(val => {
+                    if (val) {
+                        self.onRegistNew();
+                    }
                 })
             }
 
@@ -46,12 +69,15 @@ module nts.uk.pr.view.base.simlehistory {
             startPage(): JQueryPromise<any> {
                 var self = this;
                 var dfd = $.Deferred();
-
                 $.when(self.loadMasterHistory(), self.start()).done((res1, res2) => {
                     if (!self.masterHistoryList || self.masterHistoryList.length == 0) {
+                        // Set new mode.
                         self.isNewMode(true);
+                        self.onRegistNew();
                     } else {
+                        // Not new mode and select first history.
                         self.isNewMode(false);
+                        self.selectedHistoryUuid(self.masterHistoryDatasource()[0].childs[0].id);
                     }
                     
                     // resole.
@@ -64,7 +90,7 @@ module nts.uk.pr.view.base.simlehistory {
             /**
              * Load master history.
              */
-            loadMasterHistory(): JQueryPromise<Array<T>> {
+            loadMasterHistory(): JQueryPromise<Array<M>> {
                 var self = this;
                 var dfd = $.Deferred();
                 
@@ -82,7 +108,7 @@ module nts.uk.pr.view.base.simlehistory {
                         var masterChild = _.map(master.historyList, history => {
                             var node:Node = {
                                 id: history.uuid,
-                                nodeText: history.start + '~' + history.end,
+                                nodeText: nts.uk.time.formatYearMonth(history.start) + '~' + nts.uk.time.formatYearMonth(history.end),
                                 nodeType: 1,
                                 parent: masterNode,
                                 data: history
@@ -103,6 +129,70 @@ module nts.uk.pr.view.base.simlehistory {
             }
 
             /**
+             * Start registr new.
+             */
+            registNew(): void {
+                var self = this;
+                self.isNewMode(true);
+
+                // Clear select history uuid.
+                self.selectedHistoryUuid(undefined);
+            }
+
+            /**
+             * Save current master and history data.
+             */
+            save(): void {
+                var self = this;
+                self.onSave().done((uuid) => {
+                    self.loadMasterHistory().done(() => {
+                        self.selectedHistoryUuid(uuid);
+                    })
+                }).fail(() => {
+                    // Do nothing.
+                })
+            }
+
+            /**
+             * Open add new hisotry dialog.
+             */
+            openAddNewHistoryDialog(): void {
+                var self = this;
+                var currentNode = self.getCurrentHistoryNode();
+                var newHistoryOptions: newhistory.viewmodel.NewHistoryScreenOption = {
+                    name: self.functionName,
+                    master: currentNode.parent.data,
+                    lastest: currentNode.data,
+                    
+                    // Copy.
+                    onCopyCallBack: (data) => {
+                        self.service.createHistory(data.masterCode, data.startYearMonth, true)
+                            .done(h => self.reloadMasterHistory(h.uuid));
+                    },
+
+                    // Init.
+                    onCreateCallBack: (data) => {
+                        self.service.createHistory(data.masterCode, data.startYearMonth, false)
+                            .done(h => self.reloadMasterHistory(h.uuid));
+                    }
+                };
+                nts.uk.ui.windows.setShared('options', newHistoryOptions);
+                var ntsDialogOptions = { title: nts.uk.text.format('{0} の 登録 > 履歴の追加', self.functionName),
+                        dialogClass: 'no-close' }; 
+                nts.uk.ui.windows.sub.modal('/view/base/simplehistory/newhistory/index.xhtml', ntsDialogOptions);
+            }
+
+            /**
+             * Reload master history then set.
+             */
+            reloadMasterHistory(uuid: string) {
+                var self = this;
+                self.loadMasterHistory().done(() => {
+                    self.selectedHistoryUuid(uuid);
+                })
+            }
+            
+            /**
              * Internal start for each page.
              * Override if you need to do any thing.
              */
@@ -110,6 +200,38 @@ module nts.uk.pr.view.base.simlehistory {
                 var dfd = $.Deferred();
                 dfd.resolve();                
                 return dfd.promise();
+            }
+            
+            /**
+             * On select history.
+             */
+            abstract onSelectHistory(uuid: string): void;
+
+            /**
+             * On regist new.
+             */
+            abstract onRegistNew(): void;
+            
+            /**
+             * On save click.
+             * Do validate your self.
+             * Set error your self.
+             * @return resolve with uuid of saved history or failed with any. 
+             */
+            abstract onSave(): JQueryPromise<string>;
+
+            /**
+             * Get current history node.
+             */
+            private getCurrentHistoryNode(): Node {
+                var self = this;
+                var nodeList = _.flatMap(self.masterHistoryDatasource(), (node) => {
+                    return node.childs;
+                })
+                return _.first(_.filter(nodeList, (node) => {
+                    return node.id == self.selectedHistoryUuid()
+                        && self.selectedHistoryUuid().length > 4;
+                }));
             }
         }
 

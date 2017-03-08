@@ -1,13 +1,19 @@
 /******************************************************************
- * Copyright (c) 2016 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.core.dom.rule.employment.unitprice;
 
+import java.math.BigDecimal;
+
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.arc.primitive.PrimitiveValue;
+import nts.arc.time.YearMonth;
+import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.core.dom.company.CompanyCode;
+import nts.uk.ctx.pr.core.dom.base.simplehistory.History;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 import nts.uk.shr.com.primitive.Memo;
 
@@ -15,7 +21,7 @@ import nts.uk.shr.com.primitive.Memo;
  * The Class UnitPriceHistory.
  */
 @Getter
-public class UnitPriceHistory extends AggregateRoot {
+public class UnitPriceHistory extends AggregateRoot implements History<UnitPriceHistory> {
 
 	/** The id. */
 	// UuId
@@ -63,6 +69,13 @@ public class UnitPriceHistory extends AggregateRoot {
 	@Setter
 	private Memo memo;
 
+	/**
+	 * Instantiates a new unit price history.
+	 */
+	private UnitPriceHistory() {
+		this.id = IdentifierUtil.randomUniqueId();
+	};
+
 	// =================== Memento State Support Method ===================
 	/**
 	 * Instantiates a new unit price history.
@@ -106,4 +119,96 @@ public class UnitPriceHistory extends AggregateRoot {
 		memento.setMemo(this.memo);
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.pr.core.dom.base.simplehistory.History#getUuid()
+	 */
+	@Override
+	public String getUuid() {
+		return this.id;
+	}
+
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.pr.core.dom.base.simplehistory.History#getMasterCode()
+	 */
+	@Override
+	public PrimitiveValue<String> getMasterCode() {
+		return this.unitPriceCode;
+	}
+
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.pr.core.dom.base.simplehistory.History#getStart()
+	 */
+	@Override
+	public YearMonth getStart() {
+		return this.applyRange.getStartMonth();
+	}
+
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.pr.core.dom.base.simplehistory.History#getEnd()
+	 */
+	@Override
+	public YearMonth getEnd() {
+		return this.applyRange.getEndMonth();
+	}
+
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.pr.core.dom.base.simplehistory.History#setStart(nts.arc.time.YearMonth)
+	 */
+	@Override
+	public void setStart(YearMonth yearMonth) {
+		this.applyRange = MonthRange.range(yearMonth,
+				this.applyRange.getEndMonth());
+	}
+
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.pr.core.dom.base.simplehistory.History#setEnd(nts.arc.time.YearMonth)
+	 */
+	@Override
+	public void setEnd(YearMonth yearMonth) {
+		this.applyRange = MonthRange.range(this.applyRange.getStartMonth(),
+				yearMonth);
+	}
+
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.pr.core.dom.base.simplehistory.History#copyWithDate(nts.arc.time.YearMonth)
+	 */
+	@Override
+	public UnitPriceHistory copyWithDate(YearMonth start) {
+		UnitPriceHistory newHistory = new UnitPriceHistory();
+		newHistory.companyCode = this.companyCode;
+		newHistory.unitPriceCode = this.unitPriceCode;
+		newHistory.applyRange = MonthRange.range(start, this.applyRange.getEndMonth());
+		newHistory.budget = this.budget;
+		newHistory.fixPaySettingType = this.fixPaySettingType;
+		newHistory.fixPayAtr = this.fixPayAtr;
+		newHistory.fixPayAtrMonthly = this.fixPayAtrMonthly;
+		newHistory.fixPayAtrDayMonth = this.fixPayAtrDayMonth;
+		newHistory.fixPayAtrDaily = this.fixPayAtrDaily;
+		newHistory.fixPayAtrHourly = this.fixPayAtrHourly;
+		newHistory.memo = this.memo;
+		return newHistory;
+	}
+
+	/**
+	 * Creates the with intial.
+	 *
+	 * @param companyCode the company code
+	 * @param unitPriceCode the unit price code
+	 * @return the unit price history
+	 */
+	public static final UnitPriceHistory createWithIntial(CompanyCode companyCode, UnitPriceCode unitPriceCode, YearMonth startYearMonth) {
+		UnitPriceHistory history = new UnitPriceHistory();
+		history.companyCode = companyCode;
+		history.unitPriceCode = unitPriceCode;
+		history.applyRange = MonthRange.range(startYearMonth, new YearMonth(999999));
+		history.budget = new Money(BigDecimal.ZERO);
+		history.fixPaySettingType = SettingType.Company;
+		history.fixPayAtr = ApplySetting.NotApply;
+		history.fixPayAtrMonthly = ApplySetting.NotApply;
+		history.fixPayAtrDayMonth = ApplySetting.NotApply;
+		history.fixPayAtrDaily = ApplySetting.NotApply;
+		history.fixPayAtrHourly = ApplySetting.NotApply;
+		history.memo = null;
+		return history;
+	}
 }

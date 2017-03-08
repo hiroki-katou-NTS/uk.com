@@ -64,7 +64,7 @@ public class StepMode extends BaseMode {
 	 * @param items
 	 *            the items
 	 */
-	public StepMode(ElementType type, BigDecimal upperLimit, BigDecimal lowerLimit,
+	public StepMode(ElementType type, BigDecimal lowerLimit, BigDecimal upperLimit,
 			BigDecimal interval, List<RangeItem> items) {
 		super(type);
 		this.upperLimit = upperLimit;

@@ -39,44 +39,66 @@ public class WageTableHistoryUpdateCommand extends WageTableHistoryBaseCommand {
 		WageTableHistoryUpdateCommand command = this;
 
 		// Transfer data
-		WageTableHistory wageTableHistory = new WageTableHistory(new WageTableHistoryGetMemento() {
-
-			@Override
-			public List<WageTableItem> getValueItems() {
-				return command.getValueItems().stream().map(item -> new WageTableItem(item))
-						.collect(Collectors.toList());
-			}
-
-			@Override
-			public String getHistoryId() {
-				return command.getHistoryId();
-			}
-
-			@Override
-			public List<WageTableDemensionDetail> getDemensionDetail() {
-				return command.getDemensionDetails().stream()
-						.map(item -> new WageTableDemensionDetail(item))
-						.collect(Collectors.toList());
-			}
-
-			@Override
-			public CompanyCode getCompanyCode() {
-				return companyCode;
-			}
-
-			@Override
-			public WageTableCode getCode() {
-				return new WageTableCode(command.getCode());
-			}
-
-			@Override
-			public MonthRange getApplyRange() {
-				return MonthRange.range(command.getStartMonth(), command.getEndMonth(),
-						PrimitiveUtil.DEFAULT_YM_SEPARATOR_CHAR);
-			}
-		});
+		WageTableHistory wageTableHistory = new WageTableHistory(
+				new WageTableHistoryUpdateCommandMemento(companyCode, command));
 
 		return wageTableHistory;
+	}
 
+	/**
+	 * The Class WageTableHistoryUpdateCommandMemento.
+	 */
+	private class WageTableHistoryUpdateCommandMemento implements WageTableHistoryGetMemento {
+
+		/** The type value. */
+		protected WageTableHistoryUpdateCommand command;
+
+		/** The company code. */
+		protected CompanyCode companyCode;
+
+		/**
+		 * Instantiates a new jpa accident insurance rate get memento.
+		 *
+		 * @param typeValue
+		 *            the type value
+		 */
+		public WageTableHistoryUpdateCommandMemento(CompanyCode companyCode,
+				WageTableHistoryUpdateCommand command) {
+			this.companyCode = companyCode;
+			this.command = command;
+		}
+
+		@Override
+		public List<WageTableItem> getValueItems() {
+			return command.getValueItems().stream().map(item -> new WageTableItem(item))
+					.collect(Collectors.toList());
+		}
+
+		@Override
+		public String getHistoryId() {
+			return command.getHistoryId();
+		}
+
+		@Override
+		public List<WageTableDemensionDetail> getDemensionDetail() {
+			return command.getDemensionDetails().stream()
+					.map(item -> new WageTableDemensionDetail(item)).collect(Collectors.toList());
+		}
+
+		@Override
+		public CompanyCode getCompanyCode() {
+			return companyCode;
+		}
+
+		@Override
+		public WageTableCode getCode() {
+			return new WageTableCode(command.getCode());
+		}
+
+		@Override
+		public MonthRange getApplyRange() {
+			return MonthRange.range(command.getStartMonth(), command.getEndMonth(),
+					PrimitiveUtil.DEFAULT_YM_SEPARATOR_CHAR);
+		}
 	}
 }

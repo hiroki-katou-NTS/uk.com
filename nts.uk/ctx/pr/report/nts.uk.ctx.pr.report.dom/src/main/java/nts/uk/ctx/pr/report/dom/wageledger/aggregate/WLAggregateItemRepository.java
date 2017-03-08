@@ -4,8 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.pr.report.dom.wageledger.aggregate;
 
-import nts.uk.ctx.pr.report.dom.company.CompanyCode;
-
 /**
  * The Interface WageLedgerAggregateItemRepository.
  */
@@ -30,7 +28,7 @@ public interface WLAggregateItemRepository {
 	 *
 	 * @param aggregateItem the aggregate item
 	 */
-	void remove(CompanyCode companyCode, WLAggregateItemCode code);
+	void remove(WLItemSubject subject);
 	
 	/**
 	 * Find.
@@ -39,7 +37,7 @@ public interface WLAggregateItemRepository {
 	 * @param companyCode the company code
 	 * @return the wage ledger aggregate item
 	 */
-	WLAggregateItem findByCode(CompanyCode companyCode, WLAggregateItemCode code);
+	WLAggregateItem findByCode(WLItemSubject subject);
 	
 	/**
 	 * Checks if is exist.
@@ -47,5 +45,5 @@ public interface WLAggregateItemRepository {
 	 * @param code the code
 	 * @return true, if is exist
 	 */
-	boolean isExist(CompanyCode companyCode, WLAggregateItemCode code);
+	boolean isExist(WLItemSubject subject);
 }
