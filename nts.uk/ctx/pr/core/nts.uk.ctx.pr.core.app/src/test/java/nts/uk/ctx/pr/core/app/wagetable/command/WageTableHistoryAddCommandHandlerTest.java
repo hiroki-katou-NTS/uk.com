@@ -64,7 +64,8 @@ public class WageTableHistoryAddCommandHandlerTest extends TestCase {
 		command.setDemensionDetails(demensionDetails);
 		command.setValueItems(valueItems);
 
-		MockUp<CommandHandlerContext<WageTableHistoryAddCommand>> mockedContext = new MockUp<CommandHandlerContext<WageTableHistoryAddCommand>>() {
+		MockUp<CommandHandlerContext<WageTableHistoryAddCommand>> 
+			mockedContext = new MockUp<CommandHandlerContext<WageTableHistoryAddCommand>>() {
 			@Mock
 			WageTableHistoryAddCommand getCommand() {
 				return command;

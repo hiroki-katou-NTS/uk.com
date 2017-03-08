@@ -44,6 +44,9 @@ public class WageTableHistoryAddCommand extends WageTableHistoryBaseCommand {
 
 	}
 
+	/**
+	 * The Class WageTableHistoryAddCommandMemento.
+	 */
 	private class WageTableHistoryAddCommandMemento implements WageTableHistoryGetMemento {
 
 		/** The type value. */

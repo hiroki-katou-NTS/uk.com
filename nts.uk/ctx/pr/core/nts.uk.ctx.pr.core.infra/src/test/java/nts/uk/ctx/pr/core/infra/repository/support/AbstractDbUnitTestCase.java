@@ -37,6 +37,7 @@ import org.junit.runner.RunWith;
 
 import mockit.Deencapsulation;
 import mockit.Injectable;
+import mockit.StrictExpectations;
 import mockit.Tested;
 import mockit.integration.junit4.JMockit;
 import nts.uk.shr.infra.data.DefaultEntityManagerLoader;
@@ -189,13 +190,13 @@ public abstract class AbstractDbUnitTestCase extends DBTestCase {
 		}
 
 		// Expectation.
-//		new NonStrictExpectations() {
-//			{
-//				// Get entity manager.
-//				dataConnection.getEntityManager();
-//				this.result = entityManagerMap.get();
-//			}
-//		};
+		new StrictExpectations() {
+			{
+				// Get entity manager.
+				dataConnection.getEntityManager();
+				this.result = entityManagerMap.get();
+			}
+		};
 	}
 
 	/**

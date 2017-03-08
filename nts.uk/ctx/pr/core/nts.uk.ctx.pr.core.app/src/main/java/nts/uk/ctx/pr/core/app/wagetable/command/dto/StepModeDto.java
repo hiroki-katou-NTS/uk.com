@@ -4,7 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.app.wagetable.command.dto;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 import lombok.Getter;
@@ -18,13 +17,13 @@ import lombok.Setter;
 public class StepModeDto extends BaseModeDto {
 
 	/** The upper limit. */
-	private BigDecimal upperLimit;
+	private Double upperLimit;
 
 	/** The lower limit. */
-	private BigDecimal lowerLimit;
+	private Double lowerLimit;
 
 	/** The interval. */
-	private BigDecimal interval;
+	private Double interval;
 
 	/** The items. */
 	private List<RangeItemDto> items;
