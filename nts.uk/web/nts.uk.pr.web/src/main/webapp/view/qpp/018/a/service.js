@@ -13,12 +13,17 @@ var nts;
                         var service;
                         (function (service) {
                             var servicePath = {
-                                getallInsuranceOffice: "ctx/pr/report/insurance/office/findAll"
+                                getallInsuranceOffice: "ctx/pr/report/insurance/office/findAll",
+                                saveAsPdf: "screen/pr/QPP018/saveAsPdf"
                             };
                             function getAllInsuranceOffice() {
                                 return nts.uk.request.ajax(servicePath.getallInsuranceOffice);
                             }
                             service.getAllInsuranceOffice = getAllInsuranceOffice;
+                            function saveAsPdf() {
+                                return nts.uk.request.ajax(servicePath.saveAsPdf);
+                            }
+                            service.saveAsPdf = saveAsPdf;
                             var model;
                             (function (model) {
                                 var InsuranceOffice = (function () {

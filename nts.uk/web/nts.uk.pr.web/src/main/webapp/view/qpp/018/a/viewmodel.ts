@@ -50,17 +50,22 @@ module nts.uk.pr.view.qpp018.a {
              *  Export Data
              */
 
-            exportData(): boolean {
+            exportData(): any {
+                var self = this;
+                var dfd = $.Deferred<any>();
                 if ((this.yearMonth() == '') || (this.selectedOfficeList() == null) || (!(this.isEqual()) && !(this.isDeficent()) && !(this.isRedundant()))) {
                     alert("Something is not right");
-                    return false;
+                    return;
                 }
-                else {
-                    nts.uk.ui.windows.setShared("exportDataDetails", this.exportDataDetails(), true);
-                    nts.uk.ui.windows.close();
-                    alert("Exported: " + this.exportDataDetails());
-                    return true;
-                }
+//                nts.uk.ui.windows.setShared("exportDataDetails", this.exportDataDetails(), true);
+//                nts.uk.ui.windows.close();
+//                alert("Exported: " + this.exportDataDetails());
+                service.saveAsPdf().done(function() {
+                    dfd.resolve();
+                }).fail(function(res) {
+                    nts.uk.ui.dialog.alert(res.message);
+                    dfd.reject();
+                });
             }
             public start(): JQueryPromise<any> {
                 var dfd = $.Deferred<any>();

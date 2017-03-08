@@ -34,16 +34,18 @@ var nts;
                                     });
                                 };
                                 ScreenModel.prototype.exportData = function () {
+                                    var self = this;
+                                    var dfd = $.Deferred();
                                     if ((this.yearMonth() == '') || (this.selectedOfficeList() == null) || (!(this.isEqual()) && !(this.isDeficent()) && !(this.isRedundant()))) {
                                         alert("Something is not right");
-                                        return false;
+                                        return;
                                     }
-                                    else {
-                                        nts.uk.ui.windows.setShared("exportDataDetails", this.exportDataDetails(), true);
-                                        nts.uk.ui.windows.close();
-                                        alert("Exported: " + this.exportDataDetails());
-                                        return true;
-                                    }
+                                    a.service.saveAsPdf().done(function () {
+                                        dfd.resolve();
+                                    }).fail(function (res) {
+                                        nts.uk.ui.dialog.alert(res.message);
+                                        dfd.reject();
+                                    });
                                 };
                                 ScreenModel.prototype.start = function () {
                                     var dfd = $.Deferred();
