@@ -28,7 +28,7 @@ body > div:nth-child(6) > div.ui-dialog-titlebar.ui-corner-all.ui-widget-header.
     margin-right: 40px;
 }
 input.ntsSearchBox{
-	width: 250px;
+	width: 250px !important;
 	margin-top: auto;
 	margin-left: 70px;
 }
