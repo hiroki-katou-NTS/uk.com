@@ -57,17 +57,17 @@
 								</div>
 								<input id="inp_code" class="tr50" data-name="code"
 									data-bind="ntsTextEditor: {value: code,
-											constraint: 'CertifyGroupCode', 
-											option: $root.textEditorOption, 
-											readonly: isReadOnly, 
-											enable: isEnable,
-											required:true}" />
+									constraint: 'CertifyGroupCode', 
+									option: $root.textEditorOption, 
+									readonly: isReadOnly, 
+									enable: isEnable,
+									required:true}" />
 								<input class="tr180" id="inp_name" data-name="name"
 									data-bind="ntsTextEditor: {value: name,
-											constraint: 'CertifyGroupName', 
-											option: $root.textEditorOption, 
-											enable: true,
-											required:true}" />
+									constraint: 'CertifyGroupName', 
+									option: $root.textEditorOption, 
+									enable: true,
+									required:true}" />
 							</div> <br />
 							<table>
 								<tr>
@@ -83,15 +83,15 @@
 									<td>
 										<div style="margin-left: 20px;"
 											data-bind="ntsComboBox: {
-													options: selectionMultipleTargetSetting,
-													optionsValue: 'code',
-													value: multiApplySet,
-													optionsText: 'name',
-													editable: true,
-													enable: true,
-													columns: [
-														{ prop: 'name', length: 10 },
-													]}"></div>
+											options: selectionMultipleTargetSetting,
+											optionsValue: 'code',
+											value: multiApplySet,
+											optionsText: 'name',
+											editable: true,
+											enable: true,
+											columns: [
+												{ prop: 'name', length: 10 },
+											]}"></div>
 									</td>
 								</tr>
 							</table>
@@ -115,13 +115,13 @@
 								<div class="div100">
 									<div id="swap-list"
 										data-bind="ntsSwapList: {
-						showSearchBox: true,
-						height: 300,
-						dataSource: lstCertification,
-						primaryKey: 'code',
-						columns: columnsCertification,
-						value: certifies
-					}"></div>
+										showSearchBox: true,
+										height: 300,
+										dataSource: lstCertification,
+										primaryKey: 'code',
+										columns: columnsCertification,
+										value: certifies
+									}"></div>
 								</div>
 							</div>
 						</td>

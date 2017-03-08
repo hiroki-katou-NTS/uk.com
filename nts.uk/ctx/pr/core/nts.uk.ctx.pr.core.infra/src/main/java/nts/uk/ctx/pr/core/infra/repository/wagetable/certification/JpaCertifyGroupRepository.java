@@ -118,17 +118,26 @@ public class JpaCertifyGroupRepository extends JpaRepository implements CertifyG
 	 */
 	@Override
 	public List<CertifyGroup> findAll(CompanyCode companyCode) {
+		// get entity manager
 		EntityManager em = getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+		// call QWTMT_WAGETABLE_CERTIFY_G (QwtmtWagetableCertifyG SQL)
 		CriteriaQuery<QwtmtWagetableCertifyG> cq = criteriaBuilder.createQuery(QwtmtWagetableCertifyG.class);
+		// root data
 		Root<QwtmtWagetableCertifyG> root = cq.from(QwtmtWagetableCertifyG.class);
+		// select root
 		cq.select(root);
-		List<Predicate> lstpredicate = new ArrayList<>();
-		lstpredicate.add(criteriaBuilder.equal(
+		// add where
+		List<Predicate> lstpredicateWhere = new ArrayList<>();
+		// eq CompanyCode
+		lstpredicateWhere.add(criteriaBuilder.equal(
 				root.get(QwtmtWagetableCertifyG_.qwtmtWagetableCertifyGPK).get(QwtmtWagetableCertifyGPK_.ccd),
 				companyCode.v()));
-		cq.where(lstpredicate.toArray(new Predicate[] {}));
+		// set where to SQL
+		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+		// creat query
 		TypedQuery<QwtmtWagetableCertifyG> query = em.createQuery(cq);
+		// exclude select
 		List<CertifyGroup> lstCertifyGroup = query.getResultList().stream().map(item -> toDomain(item))
 				.collect(Collectors.toList());
 		return lstCertifyGroup;

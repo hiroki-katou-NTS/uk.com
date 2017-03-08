@@ -17,6 +17,7 @@ import nts.uk.ctx.pr.core.app.wagetable.certification.find.dto.CertifyGroupFindO
 import nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroup;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroupRepository;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.context.LoginUserContext;
 
 /**
  * The Class CertifyGroupFinder.
@@ -34,12 +35,12 @@ public class CertifyGroupFinder {
 	 * @return the list
 	 */
 	public List<CertifyGroupFindOutDto> findAll() {
-
-		List<CertifyGroup> lstCertifyGroup = find
-				.findAll(new CompanyCode(AppContexts.user().companyCode()));
-
+		// get info login
+		LoginUserContext loginUserContext = AppContexts.user();
+		//call findAll
+		List<CertifyGroup> lstCertifyGroup = find.findAll(new CompanyCode(loginUserContext.companyCode()));
 		List<CertifyGroupFindOutDto> lstCertifyGroupFindInDto = new ArrayList<>();
-
+		//to Dto
 		for (CertifyGroup certifyGroup : lstCertifyGroup) {
 			CertifyGroupFindOutDto certifyGroupFindOutDto = new CertifyGroupFindOutDto();
 			certifyGroup.saveToMemento(certifyGroupFindOutDto);
@@ -57,17 +58,19 @@ public class CertifyGroupFinder {
 	 * @return the certify group find dto
 	 */
 	public CertifyGroupFindDto find(String code) {
+		//get info login
+		LoginUserContext loginUserContext = AppContexts.user();
 		CertifyGroupFindDto certifyGroupFindDto = new CertifyGroupFindDto();
-
-		Optional<CertifyGroup> optionalCertifyGroup = find
-				.findById(new CompanyCode(AppContexts.user().companyCode()), code);
-
+		//call findById
+		Optional<CertifyGroup> optionalCertifyGroup = find.findById(new CompanyCode(AppContexts.user().companyCode()),
+				code);
+		//not value find
 		if (!optionalCertifyGroup.isPresent()) {
 			return null;
 		}
-
+		//to Dto
 		optionalCertifyGroup.get().saveToMemento(certifyGroupFindDto);
-
+		
 		return certifyGroupFindDto;
 	}
 

@@ -4,16 +4,21 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.app.insurance.labor.unemployeerate.command;
 
+import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsuranceRate;
 import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsuranceRateRepository;
 import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.service.UnemployeeInsuranceRateService;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.context.LoginUserContext;
 
 /**
  * The Class UnemployeeInsuranceRateUpdateCommandHandler.
@@ -29,16 +34,43 @@ public class UnemployeeInsuranceRateUpdateCommandHandler extends CommandHandler<
 	@Inject
 	private UnemployeeInsuranceRateService unemployeeInsuranceRateService;
 
-	/* (non-Javadoc)
-	 * @see nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command.CommandHandlerContext)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command
+	 * .CommandHandlerContext)
 	 */
 	@Override
 	@Transactional
 	protected void handle(CommandHandlerContext<UnemployeeInsuranceRateUpdateCommand> context) {
-		String companyCode = AppContexts.user().companyCode();
-		UnemployeeInsuranceRate unemployeeInsuranceRate = context.getCommand().toDomain(companyCode);
+		// get user login info
+		LoginUserContext loginUserContext = AppContexts.user();
+		// get companyCode by user login
+		String companyCode = loginUserContext.companyCode();
+		// get command
+		UnemployeeInsuranceRateUpdateCommand command = context.getCommand();
+		// to domain
+		UnemployeeInsuranceRate unemployeeInsuranceRate = command.toDomain(companyCode);
+		// validate
 		unemployeeInsuranceRate.validate();
 		unemployeeInsuranceRateService.validateDateRangeUpdate(unemployeeInsuranceRate);
+		// call get by id
+		Optional<UnemployeeInsuranceRate> optionalUnemployeeInsuranceRate;
+		optionalUnemployeeInsuranceRate = this.unemployeeInsuranceRateRepository
+				.findById(unemployeeInsuranceRate.getCompanyCode(), unemployeeInsuranceRate.getHistoryId());
+		// get <= start
+		Optional<UnemployeeInsuranceRate> optionalBetweenUpdate = this.unemployeeInsuranceRateRepository
+				.findBetweenUpdate(unemployeeInsuranceRate.getCompanyCode(),
+						optionalUnemployeeInsuranceRate.get().getApplyRange().getStartMonth(),
+						optionalUnemployeeInsuranceRate.get().getHistoryId());
+		
+		// update end year month start previous
+		if (optionalBetweenUpdate.isPresent()) {
+			this.unemployeeInsuranceRateRepository.updateYearMonth(optionalBetweenUpdate.get(),
+					unemployeeInsuranceRate.getApplyRange().getStartMonth().previousMonth());
+		}
+		//update value
 		this.unemployeeInsuranceRateRepository.update(unemployeeInsuranceRate);
 	}
 

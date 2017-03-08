@@ -40,11 +40,14 @@ public class AccidentInsuranceRateUpdateCommandHandler extends CommandHandler<Ac
 	@Override
 	@Transactional
 	protected void handle(CommandHandlerContext<AccidentInsuranceRateUpdateCommand> context) {
-		// getCommand
-		AccidentInsuranceRateUpdateCommand command = context.getCommand();
 		// get user login
 		LoginUserContext loginUserContext = AppContexts.user();
-		AccidentInsuranceRate accidentInsuranceRate = command.toDomain(loginUserContext.companyCode());
+		// get companyCode by user login
+		String companyCode = loginUserContext.companyCode();
+		// getCommand
+		AccidentInsuranceRateUpdateCommand command = context.getCommand();
+		// to domain
+		AccidentInsuranceRate accidentInsuranceRate = command.toDomain(companyCode);
 		// validate domain
 		accidentInsuranceRate.validate();
 		// validate input

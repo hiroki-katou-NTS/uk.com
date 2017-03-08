@@ -1,11 +1,12 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2016 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.core.infra.repository.wagetable.certification;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -17,13 +18,17 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.ListUtil;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.Certification;
-import nts.uk.ctx.pr.core.dom.wagetable.certification.CertificationGetMemento;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.CertificationReponsitory;
+import nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroupCode;
 import nts.uk.ctx.pr.core.infra.entity.wagetable.certification.QcemtCertification;
 import nts.uk.ctx.pr.core.infra.entity.wagetable.certification.QcemtCertificationPK_;
 import nts.uk.ctx.pr.core.infra.entity.wagetable.certification.QcemtCertification_;
+import nts.uk.ctx.pr.core.infra.entity.wagetable.certification.QwtmtWagetableCertify;
+import nts.uk.ctx.pr.core.infra.entity.wagetable.certification.QwtmtWagetableCertifyPK_;
+import nts.uk.ctx.pr.core.infra.entity.wagetable.certification.QwtmtWagetableCertify_;
 
 /**
  * The Class JpaCertificationRepository.
@@ -38,27 +43,32 @@ public class JpaCertificationRepository extends JpaRepository implements Certifi
 	 * nts.uk.ctx.pr.core.dom.wagetable.certification.CertificationReponsitory#
 	 * findAll(nts.uk.ctx.core.dom.company.CompanyCode)
 	 */
+	// Function get all Certification by companyCode
 	@Override
 	public List<Certification> findAll(CompanyCode companyCode) {
+		// get entity manager
 		EntityManager em = getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
-		CriteriaQuery<QcemtCertification> cq = criteriaBuilder
-				.createQuery(QcemtCertification.class);
-		
+		// call QCEMT_CERTIFICATION (QcemtCertification SQL)
+		CriteriaQuery<QcemtCertification> cq = criteriaBuilder.createQuery(QcemtCertification.class);
+		// root data
 		Root<QcemtCertification> root = cq.from(QcemtCertification.class);
+		// select root
 		cq.select(root);
-		List<Predicate> lstpredicate = new ArrayList<>();
-		lstpredicate.add(criteriaBuilder.equal(
-				root.get(QcemtCertification_.qcemtCertificationPK).get(QcemtCertificationPK_.ccd),
-				companyCode.v()));
-		
-		cq.where(lstpredicate.toArray(new Predicate[] {}));
+		// add where
+		List<Predicate> lstpredicateWhere = new ArrayList<>();
+		// eq CompanyCode
+		lstpredicateWhere.add(criteriaBuilder.equal(
+				root.get(QcemtCertification_.qcemtCertificationPK).get(QcemtCertificationPK_.ccd), companyCode.v()));
+		// set where to SQL
+		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+		// creat query
 		TypedQuery<QcemtCertification> query = em.createQuery(cq);
+		// exclude select
+		List<Certification> lstCertification = query.getResultList().stream().map(item -> toDomain(item))
+				.collect(Collectors.toList());
 		
-		List<Certification> lstCertifyGroup = query.getResultList().stream()
-				.map(item -> toDomain(item)).collect(Collectors.toList());
-		
-		return lstCertifyGroup;
+		return lstCertification;
 	}
 
 	/**
@@ -69,23 +79,90 @@ public class JpaCertificationRepository extends JpaRepository implements Certifi
 	 * @return the certification
 	 */
 	private Certification toDomain(QcemtCertification qcemtCertification) {
-		Certification certification = new Certification(new CertificationGetMemento() {
+		return new Certification(new JpaCertificationGetMemento(qcemtCertification));
+	}
 
-			@Override
-			public String getName() {
-				return qcemtCertification.getName();
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.dom.wagetable.certification.CertificationReponsitory#
+	 * findAllNoneOfGroup(nts.uk.ctx.core.dom.company.CompanyCode)
+	 */
+	// Function get all Certification none of Group
+	@Override
+	public List<Certification> findAllNoneOfGroup(CompanyCode companyCode) {
+		// getAll
+		List<Certification> lstCertificationFull = findAll(companyCode);
+		List<Certification> resCertification = new ArrayList<>();
+		for (Certification certification : lstCertificationFull) {
+			if (!checkExistOfGroup(certification, null)) {
+				resCertification.add(certification);
 			}
+		}
+		return resCertification;
+	}
 
-			@Override
-			public CompanyCode getCompanyCode() {
-				return new CompanyCode(qcemtCertification.getQcemtCertificationPK().getCcd());
-			}
+	/**
+	 * Check exist of group.
+	 *
+	 * @param certification
+	 *            the certification
+	 * @param certifyGroupCodeNone
+	 *            the certify group code none
+	 * @return true, if successful
+	 */
+	// check Certification ExistOfGroup and none of CertifyGroupCode
+	private boolean checkExistOfGroup(Certification certification, CertifyGroupCode certifyGroupCodeNone) {
+		// get entity manager
+		EntityManager em = getEntityManager();
+		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+		// QWTMT_WAGETABLE_CERTIFY (QwtmtWagetableCertify) SQL
+		CriteriaQuery<Long> cq = criteriaBuilder.createQuery(Long.class);
+		// root data QwtmtWagetableCertify
+		Root<QwtmtWagetableCertify> root = cq.from(QwtmtWagetableCertify.class);
+		// select count(*) root (SQL SELECT)
+		cq.select(criteriaBuilder.count(root));
+		// add where
+		List<Predicate> lstpredicateWhere = new ArrayList<>();
+		// eq CompanyCode (where)
+		lstpredicateWhere.add(criteriaBuilder.equal(
+				root.get(QwtmtWagetableCertify_.qwtmtWagetableCertifyPK).get(QwtmtWagetableCertifyPK_.ccd),
+				certification.getCompanyCode().v()));
+		// eq CerticationCode (where)
+		lstpredicateWhere.add(criteriaBuilder.equal(
+				root.get(QwtmtWagetableCertify_.qwtmtWagetableCertifyPK).get(QwtmtWagetableCertifyPK_.certifyCd),
+				certification.getCode()));
+		// noteq CertifyGroupCodeNone (certifyGroupCodeNone not null)
+		if (certifyGroupCodeNone != null) {
+			lstpredicateWhere.add(criteriaBuilder.notEqual(root.get(QwtmtWagetableCertify_.qwtmtWagetableCertifyPK)
+					.get(QwtmtWagetableCertifyPK_.certifyGroupCd), certifyGroupCodeNone.v()));
+		}
+		// set where to SQL
+		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+		return (em.createQuery(cq).getSingleResult() > 0);
+	}
 
-			@Override
-			public String getCode() {
-				return qcemtCertification.getQcemtCertificationPK().getCertCd();
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.dom.wagetable.certification.CertificationReponsitory#
+	 * isDulicateCertification(nts.uk.ctx.core.dom.company.CompanyCode,
+	 * java.util.List,
+	 * nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroupCode)
+	 */
+	@Override
+	public boolean isDulicateCertification(CompanyCode companyCode, Set<Certification> lstCertification,
+			CertifyGroupCode certifyGroupCode) {
+		if (ListUtil.isEmpty(lstCertification)) {
+			return false;
+		}
+		for (Certification certification : lstCertification) {
+			if (checkExistOfGroup(certification, certifyGroupCode)) {
+				return true;
 			}
-		});
-		return certification;
+		}
+		return false;
 	}
 }

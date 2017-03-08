@@ -34,7 +34,7 @@ module nts.uk.pr.view.qmm011.a {
             //雇用保険 detail B
             lstHistoryUnemployeeInsuranceRate: KnockoutObservableArray<HistoryUnemployeeInsuranceDto>;
             unemployeeInsuranceRateModel: KnockoutObservable<UnemployeeInsuranceRateModel>;
-            rateInputOptions: any;
+            rateInputOptions: KnockoutObservable<nts.uk.ui.option.NumberEditorOption>;
             selectionHistoryUnemployeeInsuranceRate: KnockoutObservable<string>;
             beginHistoryStartUnemployeeInsuranceRate: KnockoutObservable<string>;
             isEmptyUnemployee: KnockoutObservable<boolean>;
@@ -46,7 +46,7 @@ module nts.uk.pr.view.qmm011.a {
             accidentInsuranceRateModel: KnockoutObservable<AccidentInsuranceRateModel>;
             //Update or Add  typeAccidentInsurance: KnockoutObservable<number>;
             typeActionAccidentInsurance: KnockoutObservable<number>;
-            textEditorOption: KnockoutObservable<any>;
+            textEditorOption: KnockoutObservable<nts.uk.ui.option.TextEditorOption>;
             isEnable: KnockoutObservable<boolean>;
             isEnableSaveUnemployeeInsurance: KnockoutObservable<boolean>;
             isEnableEditUnemployeeInsurance: KnockoutObservable<boolean>;

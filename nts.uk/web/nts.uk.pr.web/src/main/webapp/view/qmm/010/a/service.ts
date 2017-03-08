@@ -15,11 +15,12 @@ module nts.uk.pr.view.qmm010.a {
 
         //Function connection service FindAll Labor Insurance Office
         export function findAllLaborInsuranceOffice(): JQueryPromise<model.LaborInsuranceOfficeFindOutDto[]> {
+            //set respone
             var dfd = $.Deferred<model.LaborInsuranceOfficeFindOutDto[]>();
+            //call service server 
             nts.uk.request.ajax(paths.findAllLaborInsuranceOffice)
                 .done(function(res: model.LaborInsuranceOfficeFindOutDto[]) {
                     dfd.resolve(res);
-                    //xyz
                 })
                 .fail(function(res) {
                     dfd.reject(res);
@@ -29,11 +30,12 @@ module nts.uk.pr.view.qmm010.a {
 
         //Function connection service FindAll Social Insurance Office Service
         export function findAllSocialInsuranceOffice(): JQueryPromise<SocialInsuranceOfficeImportDto[]> {
+            //set respone
             var dfd = $.Deferred<SocialInsuranceOfficeImportDto[]>();
+            //call service server 
             nts.uk.request.ajax(paths.findAllSocialInsuranceOffice)
                 .done(function(res: SocialInsuranceOfficeImportDto[]) {
                     dfd.resolve(res);
-                    //xyz
                 }).fail(function(res) {
                     dfd.reject(res);
                 })
@@ -43,11 +45,12 @@ module nts.uk.pr.view.qmm010.a {
         //Function connection service findLaborInsuranceOffice By Code
         export function findLaborInsuranceOffice(officeCode: string)
             : JQueryPromise<model.LaborInsuranceOfficeDto> {
+            //set respone
             var dfd = $.Deferred<model.LaborInsuranceOfficeDto>();
+            //call service server
             nts.uk.request.ajax(paths.findLaborInsuranceOffice + "/" + officeCode)
                 .done(function(res: model.LaborInsuranceOfficeDto) {
                     dfd.resolve(res);
-                    //xyz
                 }).fail(function(res) {
                     dfd.reject(res);
                 })
@@ -57,8 +60,11 @@ module nts.uk.pr.view.qmm010.a {
         //Function connection service add LaborInsuranceOffice
         export function addLaborInsuranceOffice(
             laborInsuranceOfficeDto: model.LaborInsuranceOfficeDto): JQueryPromise<any> {
+            //set respone
             var dfd = $.Deferred<any>();
+            //set up data request
             var data = { laborInsuranceOfficeDto: laborInsuranceOfficeDto };
+            //call service server
             nts.uk.request.ajax(paths.addLaborInsuranceOffice, data)
                 .done(function(res: any) {
                     dfd.resolve(res);
@@ -72,12 +78,14 @@ module nts.uk.pr.view.qmm010.a {
         //Function connection service update LaborInsuranceOffice
         export function updateLaborInsuranceOffice(
             laborInsuranceOfficeDto: model.LaborInsuranceOfficeDto): JQueryPromise<any> {
+            //set up respone
             var dfd = $.Deferred<any>();
+            //set up data request
             var data = { laborInsuranceOfficeDto: laborInsuranceOfficeDto };
+            //call service server
             nts.uk.request.ajax(paths.updateLaborInsuranceOffice, data)
                 .done(function(res: any) {
                     dfd.resolve(res);
-                    //xyz
                 }).fail(function(res) {
                     dfd.reject(res);
                 })
@@ -87,12 +95,14 @@ module nts.uk.pr.view.qmm010.a {
         //Function connection service delete LaborInsuranceOffice  
         export function deleteLaborInsuranceOffice(
             laborInsuranceOfficeDeleteDto: model.LaborInsuranceOfficeDeleteDto): JQueryPromise<any> {
+            //set up data respone
             var dfd = $.Deferred<any>();
+            //set up data request
             var data = { laborInsuranceOfficeDeleteDto: laborInsuranceOfficeDeleteDto };
+            //call service server
             nts.uk.request.ajax(paths.deleteLaborInsuranceOffice, data)
                 .done(function(res: any) {
                     dfd.resolve(res);
-                    //xyz
                 }).fail(function(res) {
                     dfd.reject(res);
                 })
@@ -101,7 +111,7 @@ module nts.uk.pr.view.qmm010.a {
 
         /*Model namespace. LaborInsuranceOfficeDto*/
         export module model {
-            
+
             export class LaborInsuranceOfficeDto {
                 /** The code. officeCode*/
                 code: string;
@@ -148,7 +158,7 @@ module nts.uk.pr.view.qmm010.a {
                 /** The name. officeName*/
                 name: string;
             }
-            
+
             export enum TypeActionLaborInsuranceOffice {
                 add = 1,
                 update = 2
