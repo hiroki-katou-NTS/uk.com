@@ -104,7 +104,7 @@
 	margin-bottom: 10px;
 }
 input.ntsSearchBox{
-	width: 260px;
+	width: 260px !important;
 	margin-top: 15px;
 	margin-left: 25px;
 }

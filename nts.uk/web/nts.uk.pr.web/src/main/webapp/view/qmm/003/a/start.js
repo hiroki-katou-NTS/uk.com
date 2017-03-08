@@ -6,7 +6,7 @@ var qmm003;
         (function (start) {
             __viewContext.ready(function () {
                 var screenModel = new qmm003.a.viewmodel.ScreenModel();
-                screenModel.start().done(function () {
+                screenModel.start(undefined).done(function () {
                     __viewContext.bind(screenModel);
                 });
             });
