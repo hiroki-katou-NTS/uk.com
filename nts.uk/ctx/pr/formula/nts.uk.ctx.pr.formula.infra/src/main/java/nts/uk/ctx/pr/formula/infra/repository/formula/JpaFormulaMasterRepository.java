@@ -55,7 +55,7 @@ public class JpaFormulaMasterRepository extends JpaRepository implements Formula
 
 	private FormulaMaster toDomain(QcfmtFormula f) {
 		FormulaMaster formulaMaster = FormulaMaster.createFromJavaType(f.qcfmtFormulaPK.ccd, f.qcfmtFormulaPK.formulaCd,
-				f.difficultyAtr.intValue(), f.formulaName);
+				f.difficultyAtr, f.formulaName);
 		return formulaMaster;
 	}
 

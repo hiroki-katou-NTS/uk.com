@@ -9,22 +9,27 @@ import nts.arc.time.YearMonth;
 import nts.uk.ctx.pr.formula.dom.formula.FormulaHistory;
 import nts.uk.ctx.pr.formula.dom.primitive.FormulaCode;
 import nts.uk.ctx.pr.formula.dom.repository.FormulaHistoryRepository;
-import nts.uk.shr.com.context.AppContexts;;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * @author nampt
  *
  */
 @Stateless
-public class AddFormulaHistoryCommandHandler extends CommandHandler<AddFormulaHistoryCommand>{
+public class RemoveFormulaHistoryCommandHandler extends CommandHandler<RemoveFormulaHistoryCommand>{
+
 
 	@Inject
 	private FormulaHistoryRepository repository;
 	
+	/**
+	 * @ CCD = login company code
+	 * @ FORMULA CD = [K _ LBL _ 002]
+	 * History ID of the history selected with @HIST_ID = [A_LST_001]
+	 */
 	@Override
-	protected void handle(CommandHandlerContext<AddFormulaHistoryCommand> context) {
-		
-		AddFormulaHistoryCommand command = context.getCommand();
+	protected void handle(CommandHandlerContext<RemoveFormulaHistoryCommand> context) {
+		RemoveFormulaHistoryCommand command = context.getCommand();
 		String companyCode = AppContexts.user().companyCode();
 		
 		FormulaHistory formulaHistory = new FormulaHistory(
@@ -34,7 +39,7 @@ public class AddFormulaHistoryCommandHandler extends CommandHandler<AddFormulaHi
 				new YearMonth(command.getStartDate()),
 				new YearMonth(command.getEndDate()));
 		
-		repository.add(formulaHistory);		
+		repository.remove(formulaHistory);		
 	}
-	
+
 }

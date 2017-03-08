@@ -7,6 +7,8 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.pr.formula.dom.primitive.FormulaCode;
 import nts.uk.ctx.pr.formula.dom.repository.FormulaManualRepository;
+import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.context.LoginUserContext;
 
 /**
  * @author hungnm
@@ -17,8 +19,21 @@ public class FormulaManualFinder {
 	@Inject
 	private FormulaManualRepository repository;
 
-	public Optional<FormulaManualDto> find(String companyCode, String formulaCode, String historyId) {
-		return this.repository.find(companyCode, new FormulaCode(formulaCode), historyId).map(f -> FormulaManualDto.fromDomain(f));
+	/**
+	 * @CCD = Login company code
+	 * @FORMULA_CD = 【B_INP_001】
+	 * @HIST_ID = History ID of the history selected with @HIST_ID = [A_LST_001]
+	 * 
+	 * @param formulaCode
+	 * @param historyId
+	 * @return
+	 */
+	public Optional<FormulaManualDto> findByPriKey(String formulaCode, String historyId) {
+
+		LoginUserContext login = AppContexts.user();
+
+		return this.repository.findByPriKey(login.companyCode(), new FormulaCode(formulaCode), historyId)
+				.map(f -> FormulaManualDto.fromDomain(f));
 	}
 
 }

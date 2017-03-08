@@ -15,12 +15,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Entity
 @Table(name="QCFMT_FORMULA_HIST")
-public class QcfmtFormulaHist implements Serializable{
+public class QcfmtFormulaHistory implements Serializable{
 	
 	private static final long serialVersionUID = 1L;
 	
 	@EmbeddedId
-	public QcfmtFormulaHistPK qcfmtFormulaHistPK;
+	public QcfmtFormulaHistoryPK qcfmtFormulaHistoryPK;
 	
 	@Column(name ="STR_YM")
 	public BigDecimal startDate;

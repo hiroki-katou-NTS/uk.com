@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.formula.app.command.formulaeasystandarditem;
+package nts.uk.ctx.pr.formula.app.command.formulahistory;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -9,15 +9,16 @@ import lombok.NoArgsConstructor;
  */
 @Data
 @NoArgsConstructor
-public class RemoveFormulaEasyStandardItemCommand {
+public class RemoveFormulaHistoryCommand {
 	
 	String companyCode;
 
 	String formulaCode;
 
 	String historyId;
+	
+	int startDate;
+	
+	int endDate;
 
-	String easyFormulaCode;
-
-	String referenceItemCode;
 }

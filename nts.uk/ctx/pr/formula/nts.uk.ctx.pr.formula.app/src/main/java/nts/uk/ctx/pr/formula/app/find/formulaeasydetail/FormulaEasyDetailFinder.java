@@ -3,7 +3,9 @@
  */
 package nts.uk.ctx.pr.formula.app.find.formulaeasydetail;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -43,7 +45,15 @@ public class FormulaEasyDetailFinder {
 
 		LoginUserContext login = AppContexts.user();
 
-		return formulaEasyDetailRepository.findByPriKey(login.companyCode(), new FormulaCode(formulaCode), historyId, new EasyFormulaCode(easyFormulaCode))
-				.map(f -> FormulaEasyDetailDto.fromDomain(f));
+		return formulaEasyDetailRepository.findByPriKey(login.companyCode(), new FormulaCode(formulaCode), historyId,
+				new EasyFormulaCode(easyFormulaCode)).map(f -> FormulaEasyDetailDto.fromDomain(f));
+	}
+
+	public List<FormulaEasyDetailDto> findWithoutPriKey(String formulaCode, String historyId) {
+		LoginUserContext login = AppContexts.user();
+
+		return formulaEasyDetailRepository
+				.findWithOutPriKey(login.companyCode(), new FormulaCode(formulaCode), historyId).stream()
+				.map(f -> {return FormulaEasyDetailDto.fromDomain(f);}).collect(Collectors.toList());
 	}
 }

@@ -3,12 +3,10 @@
  */
 package nts.uk.ctx.pr.formula.dom.repository;
 
-import java.util.Optional;
+import java.util.List;
 
 import nts.uk.ctx.pr.formula.dom.formula.FormulaEasyCondition;
 import nts.uk.ctx.pr.formula.dom.primitive.FormulaCode;
-import nts.uk.ctx.pr.formula.dom.primitive.HistoryId;
-import nts.uk.ctx.pr.formula.dom.primitive.ReferenceMasterCode;
 
 /**
  * @author hungnm
@@ -17,13 +15,16 @@ import nts.uk.ctx.pr.formula.dom.primitive.ReferenceMasterCode;
 public interface FormulaEasyConditionRepository {
 	
 	/**
+	 * @ CCD = login company code
+	 * @ FORMULA_CD = [B_INP_ 001]
+	 * History ID of the history selected with @HIST_ID = [A_LST_001]
+	 * 
 	 * @param companyCode
 	 * @param formulaCode
 	 * @param historyId
-	 * @param referenceMasterCode
 	 * @return a formula easy condition
 	 */
-	Optional<FormulaEasyCondition> find(String companyCode, FormulaCode formulaCode, String historyId, ReferenceMasterCode referenceMasterCode);
+	List<FormulaEasyCondition> find(String companyCode, FormulaCode formulaCode, String historyId);
 	
 	void add(FormulaEasyCondition formulaEasyCondition);
 	

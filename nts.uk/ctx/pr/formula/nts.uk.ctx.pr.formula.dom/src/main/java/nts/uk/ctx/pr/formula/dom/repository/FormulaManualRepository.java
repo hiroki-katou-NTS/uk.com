@@ -19,5 +19,17 @@ public interface FormulaManualRepository {
 	 * @param historyId
 	 * @return a formula manual
 	 */
-	Optional<FormulaManual> find(String companyCode, FormulaCode formulaCode, String historyId);
+	Optional<FormulaManual> findByPriKey(String companyCode, FormulaCode formulaCode, String historyId);
+	
+	void add(FormulaManual formulaManual);
+	
+	void update(FormulaManual formulaManual);
+	
+	/**
+	 * @ CCD = login company code
+	 * @ FORMULA CD = [K _ LBL _ 002]
+	 * History ID of the history selected with @HIST_ID = [A_LST_001]
+	 * @param formulaManual
+	 */
+	void remove(FormulaManual formulaManual);
 }

@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.formula.app.command.formulaeasyhead;
+package nts.uk.ctx.pr.formula.app.command.formulaeasyheader;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-public class AddFormulaEasyHeadCommand {
+public class RemoveFormulaEasyHeadCommand {
 	
 	private String companyCode;
 	
@@ -21,4 +21,5 @@ public class AddFormulaEasyHeadCommand {
 	private int conditionAtr;
 
 	private int referenceMasterNo;
+
 }

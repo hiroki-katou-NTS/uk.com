@@ -6,7 +6,7 @@ package nts.uk.ctx.pr.formula.app.find.formulaeasyhead;
 import java.math.BigDecimal;
 
 import lombok.Value;
-import nts.uk.ctx.pr.formula.dom.formula.FormulaEasyHead;
+import nts.uk.ctx.pr.formula.dom.formula.FormulaEasyHeader;
 
 /**
  * @author hungnm
@@ -25,7 +25,7 @@ public class FormulaEasyHeadDto {
 
 	BigDecimal referenceMasterNo;
 	
-	public static FormulaEasyHeadDto fromDomain(FormulaEasyHead domain) {
+	public static FormulaEasyHeadDto fromDomain(FormulaEasyHeader domain) {
 		return new FormulaEasyHeadDto(domain.getCompanyCode(),
 				domain.getFormulaCode().v(),
 				domain.getHistoryId(),

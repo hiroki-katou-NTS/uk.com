@@ -35,7 +35,7 @@ public class FormulaEasyStandardItem {
 		this.referenceItemCode = referenceItemCode;
 	}
 
-	public FormulaEasyStandardItem createFromJavaType(String companyCode, String formulaCode, String historyId,
+	public static FormulaEasyStandardItem createFromJavaType(String companyCode, String formulaCode, String historyId,
 			String easyFormulaCode, String referenceItemCode) {
 		return new FormulaEasyStandardItem(companyCode, new FormulaCode(formulaCode),
 				historyId, new EasyFormulaCode(easyFormulaCode),

@@ -15,12 +15,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Entity
 @Table(name="QCFMT_FORMULA_EASY_CONDI")
-public class QcfmtFormulaEasyCondi implements Serializable{
+public class QcfmtFormulaEasyCondition implements Serializable{
 	
 private static final long serialVersionUID = 1L;
 	
 	@EmbeddedId
-    public QcfmtFormulaEasyCondiPK qcfmtFormulaEasyCondiPK;
+    public QcfmtFormulaEasyConditionPK qcfmtFormulaEasyConditionPK;
 	
 	@Column(name = "FIX_FORMULA_ATR")
 	public BigDecimal fixFormulaAtr;

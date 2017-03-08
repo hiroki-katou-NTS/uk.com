@@ -14,7 +14,7 @@ import nts.uk.ctx.pr.formula.dom.primitive.FormulaCode;
  *
  */
 @Getter
-public class FormulaEasyHead extends DomainObject {
+public class FormulaEasyHeader extends DomainObject {
 	
 	private String companyCode;
 	
@@ -33,7 +33,7 @@ public class FormulaEasyHead extends DomainObject {
 	 * @param conditionAtr
 	 * @param referenceMasterNo
 	 */
-	public FormulaEasyHead(String companyCode, FormulaCode formulaCode, String historyId,
+	public FormulaEasyHeader(String companyCode, FormulaCode formulaCode, String historyId,
 			ConditionAtr conditionAtr, ReferenceMasterNo referenceMasterNo) {
 		super();
 		this.companyCode = companyCode;
@@ -43,8 +43,8 @@ public class FormulaEasyHead extends DomainObject {
 		this.referenceMasterNo = referenceMasterNo;
 	}
 
-	public static FormulaEasyHead createFromJavaType(String companyCode, String formulaCode, String historyId, BigDecimal conditionAtr, BigDecimal referenceMasterNo) {
-		return new FormulaEasyHead(companyCode, new FormulaCode(formulaCode), historyId,
+	public static FormulaEasyHeader createFromJavaType(String companyCode, String formulaCode, String historyId, BigDecimal conditionAtr, BigDecimal referenceMasterNo) {
+		return new FormulaEasyHeader(companyCode, new FormulaCode(formulaCode), historyId,
 				EnumAdaptor.valueOf(conditionAtr.intValue(), ConditionAtr.class),
 				EnumAdaptor.valueOf(referenceMasterNo.intValue(), ReferenceMasterNo.class));
 	}

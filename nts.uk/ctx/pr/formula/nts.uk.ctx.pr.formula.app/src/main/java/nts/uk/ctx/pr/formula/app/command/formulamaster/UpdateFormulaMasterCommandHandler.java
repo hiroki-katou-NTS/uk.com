@@ -18,7 +18,7 @@ import nts.uk.shr.com.context.AppContexts;
  * @author nampt
  *
  */
-@RequestScoped
+@Stateless
 public class UpdateFormulaMasterCommandHandler extends CommandHandler<UpdateFormulaMasterCommand>{
 	
 	@Inject
@@ -31,7 +31,7 @@ public class UpdateFormulaMasterCommandHandler extends CommandHandler<UpdateForm
 		
 		FormulaMaster formulaMaster = new FormulaMaster(companyCode, 
 				new FormulaCode(command.getFormulaCode()),
-				EnumAdaptor.valueOf(command.getDifficultyAtr(), DifficultyAtr.class),
+				EnumAdaptor.valueOf(command.getDifficultyAtr().intValue(), DifficultyAtr.class),
 				new FormulaName(command.getFormulaName()));
 		
 		formulaMasterRepository.update(formulaMaster);

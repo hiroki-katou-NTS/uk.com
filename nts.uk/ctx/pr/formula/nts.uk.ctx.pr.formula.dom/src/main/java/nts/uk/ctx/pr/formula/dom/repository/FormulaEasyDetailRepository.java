@@ -3,6 +3,7 @@
  */
 package nts.uk.ctx.pr.formula.dom.repository;
 
+import java.util.List;
 import java.util.Optional;
 
 import nts.uk.ctx.pr.formula.dom.formula.FormulaEasyDetail;
@@ -22,6 +23,8 @@ public interface FormulaEasyDetailRepository {
 	 * @return formulaEasyDetail
 	 */
 	Optional<FormulaEasyDetail> findByPriKey (String companyCode, FormulaCode formulaCode, String historyId, EasyFormulaCode easyFormulaCode);
+	
+	List<FormulaEasyDetail> findWithOutPriKey(String companyCode, FormulaCode formulaCode, String historyId);
 	
 	void remove(FormulaEasyDetail formulaEasyDetail);
 	

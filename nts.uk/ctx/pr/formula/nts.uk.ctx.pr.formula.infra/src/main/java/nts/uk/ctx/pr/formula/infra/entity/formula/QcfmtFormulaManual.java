@@ -1,6 +1,7 @@
 package nts.uk.ctx.pr.formula.infra.entity.formula;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -29,12 +30,12 @@ public class QcfmtFormulaManual implements Serializable {
 	public String formulaContent;
 	
 	@Column(name = "REFER_MONTH_ATR")
-	public String referMonthAtr;
+	public BigDecimal referMonthAtr;
 	
 	@Column(name = "ROUND_DIGIT")
-	public String roundDigit;
+	public BigDecimal roundDigit;
 	
 	@Column(name = "ROUND_ATR")
-	public String roundAtr;
+	public BigDecimal roundAtr;
 	
 }

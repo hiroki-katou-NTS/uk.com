@@ -1,5 +1,7 @@
 package nts.uk.ctx.pr.formula.dom.formula;
 
+import java.math.BigDecimal;
+
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.DomainObject;
@@ -52,10 +54,10 @@ public class FormulaManual extends DomainObject {
 		this.roundDigit = roundDigit;
 	}
 
-	public FormulaManual createFromJavaType(String companyCode, String formulaCode, String historyId, String formulaContent, int referenceMonthAtr, int roundAtr,
-			int roundDigit) {
+	public static FormulaManual createFromJavaType(String companyCode, String formulaCode, String historyId, String formulaContent, BigDecimal referenceMonthAtr, BigDecimal roundAtr,
+			BigDecimal roundDigit) {
 		return new FormulaManual(companyCode, new FormulaCode(formulaCode), historyId, new FormulaContent(formulaContent),
-				EnumAdaptor.valueOf(referenceMonthAtr, ReferenceMonthAtr.class),
-				EnumAdaptor.valueOf(roundAtr, RoundMethod.class), EnumAdaptor.valueOf(roundDigit, RoundDigit.class));
+				EnumAdaptor.valueOf(referenceMonthAtr.intValue(), ReferenceMonthAtr.class),
+				EnumAdaptor.valueOf(roundAtr.intValue(), RoundMethod.class), EnumAdaptor.valueOf(roundDigit.intValue(), RoundDigit.class));
 	}
 }

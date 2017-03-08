@@ -20,7 +20,9 @@ public interface FormulaEasyStandardItemRepository {
 	 * @param easyFormulaCode
  	 * @return list item code of formula easy
 	 */
-	List<ItemCode> findAll(String companyCode, FormulaCode formulaCode, String historyId, EasyFormulaCode easyFormulaCode);
+	List<FormulaEasyStandardItem> findAll(String companyCode, FormulaCode formulaCode, String historyId, EasyFormulaCode easyFormulaCode);
 	
 	void remove(FormulaEasyStandardItem formulaEasyStandardItem);
+	
+	void add(FormulaEasyStandardItem formulaEasyStandardItem);
 }

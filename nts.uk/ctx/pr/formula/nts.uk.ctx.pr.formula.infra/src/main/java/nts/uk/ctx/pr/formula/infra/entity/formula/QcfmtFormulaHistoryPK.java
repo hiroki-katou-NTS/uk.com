@@ -8,15 +8,11 @@ import javax.persistence.Embeddable;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
-/**
- * @author nampt
- *
- */
 @Embeddable
 @NoArgsConstructor
 @AllArgsConstructor
-public class QcfmtFormulaEasyCondiPK implements Serializable{
-
+public class QcfmtFormulaHistoryPK implements Serializable {
+	
 	private static final long serialVersionUID = 1L;
 	
 	@Column(name = "CCD")
@@ -27,7 +23,4 @@ public class QcfmtFormulaEasyCondiPK implements Serializable{
 	
 	@Column(name = "HIST_ID")
 	public String historyId;
-	
-	@Column(name = "REF_MASTER_CD")
-	public String refMasterCd;
 }

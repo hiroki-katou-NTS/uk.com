@@ -1,7 +1,7 @@
 package nts.uk.ctx.pr.formula.infra.repository.formula;
 
 import java.math.BigDecimal;
-import java.util.Optional;
+import java.util.List;
 
 import javax.ejb.Stateless;
 
@@ -9,19 +9,22 @@ import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.pr.formula.dom.formula.FormulaEasyCondition;
 import nts.uk.ctx.pr.formula.dom.primitive.FormulaCode;
-import nts.uk.ctx.pr.formula.dom.primitive.ReferenceMasterCode;
 import nts.uk.ctx.pr.formula.dom.repository.FormulaEasyConditionRepository;
-import nts.uk.ctx.pr.formula.infra.entity.formula.QcfmtFormulaEasyCondi;
-import nts.uk.ctx.pr.formula.infra.entity.formula.QcfmtFormulaEasyCondiPK;
+import nts.uk.ctx.pr.formula.infra.entity.formula.QcfmtFormulaEasyCondition;
+import nts.uk.ctx.pr.formula.infra.entity.formula.QcfmtFormulaEasyConditionPK;
 
 @Stateless
 public class JpaFormulaEasyConditionRepository extends JpaRepository implements FormulaEasyConditionRepository {
 
-	private final String REMOVE_EASY_CONDITION = "DELETE FROM QcfmtFormulaEasyCondi a "
-			+ " WHERE a.QcfmtFormulaEasyCondiPK.companyCode = :companyCode "
-			+ " AND a.QcfmtFormulaEasyCondiPK.formulaCode = :formulaCode "
-			+ " AND a.QcfmtFormulaEasyCondiPK.historyId = :historyId ";
+	private final String REMOVE_EASY_CONDITION = "DELETE FROM QcfmtFormulaEasyCondition a "
+			+ " WHERE a.qcfmtFormulaEasyConditionPK.companyCode = :companyCode "
+			+ " AND a.qcfmtFormulaEasyConditionPK.formulaCode = :formulaCode "
+			+ " AND a.qcfmtFormulaEasyConditionPK.historyId = :historyId ";
 
+	private final String FIND_FORMULA_EASY_CONDITION = "SELECT a FROM QcfmtFormulaEasyCondition a "
+			+ " WHERE a.qcfmtFormulaEasyConditionPK.companyCode = :companyCode "
+			+ " AND a.qcfmtFormulaEasyConditionPK.formulaCode = :formulaCode "
+			+ " AND a.qcfmtFormulaEasyConditionPK.historyId = :historyId ";
 
 	@Override
 	public void remove(FormulaEasyCondition formulaEasyCondition) {
@@ -39,20 +42,29 @@ public class JpaFormulaEasyConditionRepository extends JpaRepository implements 
 	}
 
 	@Override
-	public Optional<FormulaEasyCondition> find(String companyCode, FormulaCode formulaCode, String historyId,
-			ReferenceMasterCode referenceMasterCode) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<FormulaEasyCondition> find(String companyCode, FormulaCode formulaCode, String historyId) {
+		return this.queryProxy().query(FIND_FORMULA_EASY_CONDITION, QcfmtFormulaEasyCondition.class)
+				.setParameter("companyCode", companyCode).setParameter("formulaCode", formulaCode.v())
+				.setParameter("historyId", historyId).getList(f -> (toDomain(f)));
 	}
 
-	private QcfmtFormulaEasyCondi toEntity(FormulaEasyCondition command) {
-		val entity = new QcfmtFormulaEasyCondi();
+	private FormulaEasyCondition toDomain(QcfmtFormulaEasyCondition f) {
+		FormulaEasyCondition formulaEasyCondition = FormulaEasyCondition.createFromJavaType(
+				f.qcfmtFormulaEasyConditionPK.companyCode, f.qcfmtFormulaEasyConditionPK.formulaCode, f.qcfmtFormulaEasyConditionPK.historyId,
+				f.easyFormulaCd, f.fixFormulaAtr,
+				f.fixMny, f.qcfmtFormulaEasyConditionPK.refMasterCd);
+		
+		return formulaEasyCondition;
+	}
 
-		entity.qcfmtFormulaEasyCondiPK = new QcfmtFormulaEasyCondiPK();
-		entity.qcfmtFormulaEasyCondiPK.companyCode = command.getCompanyCode();
-		entity.qcfmtFormulaEasyCondiPK.formulaCode = command.getFormulaCode().v();
-		entity.qcfmtFormulaEasyCondiPK.historyId = command.getHistoryId();
-		entity.qcfmtFormulaEasyCondiPK.refMasterCd = command.getReferenceMasterCode().v();
+	private QcfmtFormulaEasyCondition toEntity(FormulaEasyCondition command) {
+		val entity = new QcfmtFormulaEasyCondition();
+
+		entity.qcfmtFormulaEasyConditionPK = new QcfmtFormulaEasyConditionPK();
+		entity.qcfmtFormulaEasyConditionPK.companyCode = command.getCompanyCode();
+		entity.qcfmtFormulaEasyConditionPK.formulaCode = command.getFormulaCode().v();
+		entity.qcfmtFormulaEasyConditionPK.historyId = command.getHistoryId();
+		entity.qcfmtFormulaEasyConditionPK.refMasterCd = command.getReferenceMasterCode().v();
 		entity.easyFormulaCd = command.getEasyFormulaCode().v();
 		entity.fixFormulaAtr = new BigDecimal(command.getFixFormulaAtr().value);
 		entity.fixMny = command.getFixMoney().v();

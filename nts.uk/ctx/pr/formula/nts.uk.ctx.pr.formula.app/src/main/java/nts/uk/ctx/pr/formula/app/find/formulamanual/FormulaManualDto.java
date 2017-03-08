@@ -1,5 +1,7 @@
 package nts.uk.ctx.pr.formula.app.find.formulamanual;
 
+import java.math.BigDecimal;
+
 import lombok.Value;
 import nts.uk.ctx.pr.formula.dom.formula.FormulaManual;
 
@@ -9,16 +11,24 @@ import nts.uk.ctx.pr.formula.dom.formula.FormulaManual;
  */
 @Value
 public class FormulaManualDto {
+
+	String companyCode;
+
+	String formulaCode;
+
+	String historyId;
+
 	String formulaContent;
 
-	int referenceMonthAtr;
+	BigDecimal referenceMonthAtr;
 
-	int roundAtr;
+	BigDecimal roundAtr;
 
-	int roundDigit;
+	BigDecimal roundDigit;
 
 	public static FormulaManualDto fromDomain(FormulaManual domain) {
-		return new FormulaManualDto(domain.getFormulaContent().v(), domain.getReferenceMonthAtr().value,
-				domain.getRoundAtr().value, domain.getRoundDigit().value);
+		return new FormulaManualDto(domain.getCompanyCode(), domain.getFormulaCode().v(), domain.getHistoryId(),
+				domain.getFormulaContent().v(), new BigDecimal(domain.getReferenceMonthAtr().value),new BigDecimal(domain.getRoundAtr().value),
+				new BigDecimal(domain.getRoundDigit().value));
 	}
 }

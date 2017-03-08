@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
  */
 @Data
 @NoArgsConstructor
-public class RemoveFormulaEasyStandardItemCommand {
+public class AddFormulaEasyStandardItemCommand {
 	
 	String companyCode;
 
@@ -20,4 +20,5 @@ public class RemoveFormulaEasyStandardItemCommand {
 	String easyFormulaCode;
 
 	String referenceItemCode;
+	
 }

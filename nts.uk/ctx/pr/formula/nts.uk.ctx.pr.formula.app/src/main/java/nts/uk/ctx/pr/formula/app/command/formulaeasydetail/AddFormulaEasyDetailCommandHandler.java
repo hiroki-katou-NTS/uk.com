@@ -1,5 +1,6 @@
 package nts.uk.ctx.pr.formula.app.command.formulaeasydetail;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
@@ -24,6 +25,11 @@ import nts.uk.ctx.pr.formula.dom.primitive.WorkValue;
 import nts.uk.ctx.pr.formula.dom.repository.FormulaEasyDetailRepository;
 import nts.uk.shr.com.context.AppContexts;
 
+/**
+ * @author nampt
+ *
+ */
+@Stateless
 public class AddFormulaEasyDetailCommandHandler extends CommandHandler<AddFormulaEasyDetailCommand>{
 
 	@Inject

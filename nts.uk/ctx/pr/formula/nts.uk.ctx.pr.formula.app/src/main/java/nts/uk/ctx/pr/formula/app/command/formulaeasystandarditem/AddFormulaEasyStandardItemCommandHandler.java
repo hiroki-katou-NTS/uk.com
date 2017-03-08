@@ -17,15 +17,15 @@ import nts.uk.shr.com.context.AppContexts;
  *
  */
 @Stateless
-public class RemoveFormulaEasyStandardItemCommandHandler extends CommandHandler<RemoveFormulaEasyStandardItemCommand>{
-
+public class AddFormulaEasyStandardItemCommandHandler extends CommandHandler<AddFormulaEasyStandardItemCommand>{
+	
 	@Inject
 	private FormulaEasyStandardItemRepository repository;
-	
+
 	@Override
-	protected void handle(CommandHandlerContext<RemoveFormulaEasyStandardItemCommand> context) {
-		
-		RemoveFormulaEasyStandardItemCommand command = context.getCommand();
+	protected void handle(CommandHandlerContext<AddFormulaEasyStandardItemCommand> context) {
+
+		AddFormulaEasyStandardItemCommand command = context.getCommand();
 		String companyCode = AppContexts.user().companyCode();
 		
 		FormulaEasyStandardItem formulaEasyStandardItem = new FormulaEasyStandardItem(
@@ -35,7 +35,7 @@ public class RemoveFormulaEasyStandardItemCommandHandler extends CommandHandler<
 				new EasyFormulaCode(command.getEasyFormulaCode()),
 				new ReferenceItemCode(command.getReferenceItemCode()));
 		
-		repository.remove(formulaEasyStandardItem);
+		repository.add(formulaEasyStandardItem);
 	}
 
 }

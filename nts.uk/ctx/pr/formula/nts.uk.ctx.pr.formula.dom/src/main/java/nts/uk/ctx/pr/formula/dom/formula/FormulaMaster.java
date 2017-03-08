@@ -1,5 +1,7 @@
 package nts.uk.ctx.pr.formula.dom.formula;
 
+import java.math.BigDecimal;
+
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
@@ -43,10 +45,10 @@ public class FormulaMaster extends AggregateRoot {
 	 * 
 	 * @return LayoutMaster
 	 */
-	public static FormulaMaster createFromJavaType(String companyCode, String formulaCode, int difficultyAtr,
+	public static FormulaMaster createFromJavaType(String companyCode, String formulaCode, BigDecimal difficultyAtr,
 			String formulaName) {
 		return new FormulaMaster(companyCode, new FormulaCode(formulaCode), 
-				EnumAdaptor.valueOf(difficultyAtr, DifficultyAtr.class),
+				EnumAdaptor.valueOf(difficultyAtr.intValue(), DifficultyAtr.class),
 				new FormulaName(formulaName));
 	}
 }

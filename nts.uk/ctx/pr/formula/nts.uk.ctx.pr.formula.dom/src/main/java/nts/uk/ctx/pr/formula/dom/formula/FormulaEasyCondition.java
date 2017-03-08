@@ -55,10 +55,10 @@ public class FormulaEasyCondition extends AggregateRoot {
 		this.referenceMasterCode = referenceMasterCode;
 	}
 
-	public static FormulaEasyCondition createFromJavaType(String companyCode, String formulaCode, String historyId, String easyFormulaCode, int fixFormulaAtr, BigDecimal fixMoney,
+	public static FormulaEasyCondition createFromJavaType(String companyCode, String formulaCode, String historyId, String easyFormulaCode, BigDecimal fixFormulaAtr, BigDecimal fixMoney,
 			String referenceMasterCode) {
 		return new FormulaEasyCondition(companyCode, new FormulaCode(formulaCode), historyId,
-				new EasyFormulaCode(easyFormulaCode), EnumAdaptor.valueOf(fixFormulaAtr, FixFormulaAtr.class),
+				new EasyFormulaCode(easyFormulaCode), EnumAdaptor.valueOf(fixFormulaAtr.intValue(), FixFormulaAtr.class),
 				new Money(fixMoney), new ReferenceMasterCode(referenceMasterCode));
 	}
 

@@ -21,4 +21,6 @@ public interface FormulaHistoryRepository {
 	
 	void add (FormulaHistory formulaHistory);
 	
+	void remove (FormulaHistory formulaHistory);
+	
 }

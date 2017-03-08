@@ -12,6 +12,10 @@ import nts.uk.ctx.pr.formula.dom.repository.FormulaHistoryRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 
+/**
+ * @author nampt
+ *
+ */
 @Stateless
 public class FormulaHistoryFinder {
 
@@ -28,6 +32,15 @@ public class FormulaHistoryFinder {
 
 	}
 
+	/**
+	 * @ CCD = login company code
+	 * @ FORMULA_CD = calculation formula code of the item selected on the caller screen
+     * @ HIST_ID = History ID of the latest history of the item selected on the caller screen
+	 * 
+	 * @param formulaCode
+	 * @param historyId
+	 * @return
+	 */
 	public Optional<FormulaHistoryDto> findByPriKey(String formulaCode, String historyId) {
 
 		LoginUserContext login = AppContexts.user();

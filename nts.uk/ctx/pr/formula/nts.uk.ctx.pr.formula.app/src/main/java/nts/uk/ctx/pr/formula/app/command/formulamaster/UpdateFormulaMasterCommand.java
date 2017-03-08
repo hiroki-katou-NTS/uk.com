@@ -1,5 +1,7 @@
 package nts.uk.ctx.pr.formula.app.command.formulamaster;
 
+import java.math.BigDecimal;
+
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -17,5 +19,5 @@ public class UpdateFormulaMasterCommand {
 	
 	private String formulaName;
 
-	private int difficultyAtr;
+	private BigDecimal difficultyAtr;
 }
