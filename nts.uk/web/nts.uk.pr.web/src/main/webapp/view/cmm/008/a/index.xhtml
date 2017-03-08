@@ -1,0 +1,182 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:stylefile path="main.css" />
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="start.js" />
+			<com:scriptfile path="viewmodel.js" />
+			<com:scriptfile path="service.js" />
+			<script type="text/javascript">
+					__viewContext.primitiveValueConstraints.EmployementCode = {
+							valueType: 'String',
+							charType: 'Numeric',
+							maxLength: 2,
+						};
+					
+					__viewContext.primitiveValueConstraints.EmployementName = {
+							valueType: 'String',
+							charType: 'String',
+							maxLength: 20,
+						};
+				</script>
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="functions-area" class="divHeader">
+				<button id="BTN_001" class="btnStyle">新規</button>
+				<button class="proceed btnStyle" id="BTN_002" data-bind="click: createEmployment, enable: $root.errors.isEmpty">登録</button>
+				<button id="BTN_003">マスタ修正ログ</button>
+				<button class="danger btnStyle" id="BTN_004">削除</button>
+				<label id="LBL_001">雇用区分の登録</label>
+			</div>
+			<div id="contents-area">
+				<table>
+					<tr>
+						<td id="contents-left" class="bg-green">
+							<div  class="leftTop" data-bind="ntsSearchBox: {
+								comId: 'LST_001',
+								items: dataSource, 		
+								selected: singleSelectedCode, 
+								selectedKey: 'code', 
+								childField: 'childs', 
+								fields: ['name', 'code']}" />																																														
+							<table id="LST_001" data-bind="ntsGridList: {								
+								height: 350,
+								options: dataSource,
+								optionsValue: 'code',
+								columns: columns,
+								multiple: false,
+								value: currentCode
+							}"
+							class="cf"></table>
+						</td>
+						<td id="contents-right">
+							<table id="tableRight">
+								<tr>
+									<td class="contentsRL">
+										<div id="LBL_002" data-bind="ntsFormLabel: {required: true}">
+											<label>コード/名称<br /></label>
+										</div>
+									</td>
+									<td class="contentsRR"><input id="INP_002"
+										data-name="code"
+										data-bind="ntsTextEditor: {value: employmentCode, 
+																					constraint: 'EmploymentCode', 
+																					option: textEditorOption, 
+																					enable: isEnable}" />
+										<input id="INP_003" data-name="name"
+										data-bind="ntsTextEditor: {value: employmentName, 
+																					constraint: 'EmploymentName',
+																					option: textEditorOption,
+																					enable: true}" />
+										<div id="SEL_001"
+											data-bind="ntsCheckBox: { checked: isCheckbox, enable: true, text: 'この項目を初期表示する' }"></div>
+									</td>
+								</tr>
+								<tr>
+									<td class="contentsRL">
+										<div id="LBL_003" data-bind="ntsFormLabel: {required: true}">
+											<label>締め日</label>
+										</div>
+									</td>
+									<td class="contentsRR">
+										<div id="SEL-002"
+											data-bind="ntsComboBox: {options: closeDateList,
+																			optionsValue: 'closeDateCode',
+																			value: selectedCloseCode,
+																			optionsText: 'closeDatename',
+																			editable: false,
+																			enable: true,
+																			columns: [
+																				{ prop: 'closeDateCode', length: 1 },
+																				{ prop: 'closeDatename', length: 10 },
+																			]}"></div>
+									</td>
+								</tr>
+								<tr>
+									<td class="contentsRL">
+										<div id="LBL_004" data-bind="ntsFormLabel: {required: true}">
+											<label>公休の管理</label>
+										</div>
+									</td>
+									<td class="contentsRR">
+										<div id="SEL_003"
+											data-bind="ntsSwitchButton: {
+												options: managementHolidays,
+												optionsValue: 'code',
+												optionsText: 'name',
+												value: holidayCode }"
+											class="cf"></div>
+									</td>
+								</tr>
+								<tr>
+									<td class="contentsRL">
+										<div id="LBL_005" data-bind="ntsFormLabel: {required: true}">
+											<label>処理日区分</label>
+										</div>
+									</td>
+									<td class="contentsRR">
+										<div id="SEL-004"
+											data-bind="ntsComboBox: {options: processingDateList,
+																			optionsValue: 'processingDateCode',
+																			value: selectedProcessCode,
+																			optionsText: 'processingDatename',
+																			editable: false,
+																			enable: true,
+																			columns: [
+																				{ prop: 'processingDateCode', length: 1 },
+																				{ prop: 'processingDatename', length: 10 },
+																			]}"></div>
+									</td>
+								</tr>
+								<tr>
+									<td colspan="2"><hr /></td>
+								</tr>
+								<tr>
+									<td class="contentsRL">
+										<div id="LBL_006" data-bind="ntsFormLabel: {required: false}">
+											<label>外部コード</label>
+										</div>
+									</td>
+									<td class="contentsRR"><input id="INP_004"
+										data-name="code"
+										data-bind="ntsTextEditor: {value: employmentOutCode, 
+																					constraint: 'EmploymentCode', 
+																					option: textEditorOption, 
+																					enable: true}" />
+									</td>
+								</tr>
+								<tr>
+									<td class="contentsRL">
+										<div id="LBL_007" data-bind="ntsFormLabel: {required: false}">
+											<label>メモ</label>
+										</div>
+									</td>
+									<td class="contentsRR">
+										<div data-bind="with: multilineeditor">
+											<textarea style="width: 240px; height: 50px"
+												data-bind="ntsMultilineEditor: {
+													value: memoValue,
+													constraint: constraint,
+													option: option,
+													enable: true,
+													readonly: false}" />
+										</div>
+									</td>
+								</tr>
+							</table>
+
+						</td>
+					</tr>
+				</table>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

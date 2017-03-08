@@ -12,13 +12,13 @@ __viewContext.ready(function() {
             
             var array = [];
             for (var i = 0; i < 10000; i++) {
-                array.push(new ItemModel(i, '基本給', "description"));
+                array.push(new ItemModel(i, '蝓ｺ譛ｬ邨ｦ', "description"));
             }
             this.itemsSwap(array);
 
             this.columns = ko.observableArray([
-                { headerText: 'コード', key: 'code', width: 100 },
-                { headerText: '名称', key: 'name', width: 150 }
+                { headerText: '繧ｳ繝ｼ繝・, key: 'code', width: 100 },
+                { headerText: '蜷咲ｧｰ', key: 'name', width: 150 }
             ]);
             var x = [];
             x.push(_.cloneDeep(array[0]));
