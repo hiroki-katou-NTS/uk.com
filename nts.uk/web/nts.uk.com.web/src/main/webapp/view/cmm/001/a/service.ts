@@ -46,7 +46,7 @@ module cmm001.a.service {
         })
         return dfd.promise(); 
     }
-        export function updateData(company: model.CompanyDto): JQueryPromise<Array<model.CompanyDto>>{
+        export function updateData(company: model.CompanyDto){
            let dfd = $.Deferred<Array<any>>();
             nts.uk.request.ajax(paths.updateCompany,company)
                     .done(function(res: Array<any>){

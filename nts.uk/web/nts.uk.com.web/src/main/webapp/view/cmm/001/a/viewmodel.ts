@@ -4,7 +4,8 @@ module cmm001.a {
         items: KnockoutObservableArray<Company>;
         item1s: KnockoutObservableArray<Company>;
         columns2: KnockoutObservableArray<any>;
-        currentCode: any;
+        currentCode: KnockoutObservable<string>;
+        firstCode: KnockoutObservable<string>;
         currentCompanyDto: KnockoutObservable<cmm001.a.service.model.CompanyDto>;
         testCompany: KnockoutObservable<cmm001.a.service.model.CompanyDto>;
         currentCodeList: KnockoutObservableArray<any>;
@@ -44,24 +45,25 @@ module cmm001.a {
             let node: Company;
             self.init();
             self.currentCode.subscribe(function(newValue) {
-                let dfd = $.Deferred<any>();
-                cmm001.a.service.getAllCompanys().done(function(companies) {
-                    if (companies.length > 0) {
-                        self.companys(companies);
+                console.log(self.items());
+//                let dfd = $.Deferred<any>();
+//                cmm001.a.service.getAllCompanys().done(function(companies) {
+//                    if (companies.length > 0) {
+//                        self.companys(companies);
                         if (self.editMode) {
-                            self.getDetailCompany(self.companys(), newValue);
+                            self.getDetailCompany(self.companys(),newValue);
 
                         }
                         else {
                             self.editMode = true;
                         }
 
-                    }
-                    dfd.resolve();
-                });
+//                    }
+//                    dfd.resolve();
+//                });
             });
              self.selectedCode.subscribe(function(newValue){
-                 console.log(newValue);
+                
              })
             //            self.checked2.subscribe(function(newValue) {
             //
@@ -106,6 +108,7 @@ module cmm001.a {
                     $grid.igGrid("option", "width", "400px");
                 }
                 $grid.igGrid("option", "columns", currentColumns);
+                self.start(undefined);
             });
 
         }
@@ -113,8 +116,8 @@ module cmm001.a {
             let self = this;
             let node = new cmm001.a.service.model.CompanyDto();
             _.find(items, function(obj: cmm001.a.service.model.CompanyDto) {
-                if (obj.companyCode.toString() == newValue) {
-                    console.log(obj);
+                if (obj.companyCode == newValue) {
+                  
                     $(document).ready(function(data) {
                         $("#A_INP_002").attr('disabled', 'true');
                         $("#A_INP_002").attr('readonly', 'true');
@@ -152,7 +155,7 @@ module cmm001.a {
         resetData(): void {
             let self = this;
             self.editMode = false;
-            self.currentCode({});
+            self.currentCode('');
             let companyDto = new cmm001.a.service.model.CompanyDto();
             companyDto.companyCode = "";
             companyDto.companyName = "";
@@ -176,9 +179,7 @@ module cmm001.a {
             companyDto.use_Kt_Set = 0;
             companyDto.use_Qy_Set = 0;
             companyDto.use_Jj_Set = 0;
-            self.testCompany(ko.mapping.fromJS(companyDto));
             self.currentCompanyDto(ko.mapping.fromJS(companyDto));
-            console.log(self.currentCompanyDto());
 
         }
         init(): void {
@@ -190,7 +191,8 @@ module cmm001.a {
                 { headerText: '名称', prop: 'name', width: 200 },
                 { headerText: '廃止', prop: 'description', width: 50, hidden: false }
             ]);
-            self.currentCode = ko.observable("");
+            self.currentCode = ko.observable('');
+            self.firstCode = ko.observable('');
             self.currentCodeList = ko.observableArray(null);
             //tabpanel
             self.tabs = ko.observableArray([
@@ -269,23 +271,25 @@ module cmm001.a {
             companyDto.use_Jj_Set = 1;
             self.testCompany = ko.observable(ko.mapping.fromJS(companyDto));
             self.currentCompanyDto = ko.observable(ko.mapping.fromJS(companyDto));
-            self.currentCode("0001");
         }
         // register company information
         //BTN-002 
         ClickRegister(): any {
             let self = this;
             let dfd = $.Deferred<any>();
-            self.currentCompanyDto().companyCode = $("#A_INP_002").val();
+            let currentCompany : service.model.CompanyDto;
+            currentCompany = ko.toJS(self.currentCompanyDto);
+            //console.log( currentCompany);
+            //self.currentCompanyDto().companyCode = $("#A_INP_002").val();
             let companyNameGlobal: string;
 
-            self.currentCompanyDto().address2 = $("#C_INP_003").val();
-            self.currentCompanyDto().companyNameAbb = $("#A_INP_005").val();
+            //self.currentCompanyDto().address2 = $("#C_INP_003").val();
+           // self.currentCompanyDto().companyNameAbb = $("#A_INP_005").val();
 
-            self.currentCompanyDto().faxNo = $("#C_INP_007").val();
+            //self.currentCompanyDto().faxNo = $("#C_INP_007").val();
 
-            self.currentCompanyDto().presidentName = $("#B_INP_002").val()
-            self.currentCompanyDto().presidentJobTitle = $("#B_INP_003").val();
+           // self.currentCompanyDto().presidentName = $("#B_INP_002").val()
+          //  self.currentCompanyDto().presidentJobTitle = $("#B_INP_003").val();
 
             let termBeginMon: number;
 
@@ -308,11 +312,10 @@ module cmm001.a {
             let use_Rs07_Set: number;
             let use_Rs08_Set: number;
             let use_Rs10_Set: number;
-            let items: any;
             let error: boolean;
-            if (nts.uk.text.allHalfKatakana($("#A_INP_004").val()) === true) {
+            if (nts.uk.text.allHalfKatakana(currentCompany.companyNameKana) === true) {
                 $('#A_INP_004').ntsError('clear');
-                self.currentCompanyDto().companyNameKana = $("#A_INP_004").val();
+                //self.currentCompanyDto().companyNameKana = $("#A_INP_004").val();
                 error = true;
 
             } else {
@@ -322,9 +325,9 @@ module cmm001.a {
                 error = false;
             }
             let error1: boolean;
-            if ($("#A_INP_003").val() !== "") {
+            if (currentCompany.companyName !== "") {
                 $('#A_INP_003').ntsError('clear');
-                self.currentCompanyDto().companyName = $("#A_INP_003").val();
+                //self.currentCompanyDto().companyName = $("#A_INP_003").val();
                 error1 = true;
             } else {
                 $("#A_INP_003").ntsError('set', 'this text must be not null');
@@ -332,16 +335,17 @@ module cmm001.a {
 
             }
             let error2: boolean;
-            if ($("#C_INP_002").val() != "") {
+            if (currentCompany.address1 != "") {
                 $('#C_INP_002').ntsError('clear');
-                self.currentCompanyDto().address1 = $("#C_INP_002").val();
+               // self.currentCompanyDto().address1 = $("#C_INP_002").val();
                 error2 = true;
             } else {
                 $("#C_INP_002").ntsError('set', 'this address must not null');
                 error2 = false;
             }
             let error3: boolean;
-            let t1 = $("#C_INP_001").val();
+            //let t1 = $("#C_INP_001").val();
+            let t1 = currentCompany.postal;
             let t2 = t1.split("-");
             let text = "";
             for (let i = 0; i < t2.length; i++) {
@@ -349,7 +353,7 @@ module cmm001.a {
             }
             if (Number(text) > 0) {
                 $('#C_INP_001').ntsError('clear');
-                self.currentCompanyDto().postal = $("#C_INP_001").val();
+                //self.currentCompanyDto().postal = $("#C_INP_001").val();
                 error3 = true;
             } else {
                 $("#C_INP_001").ntsError('set', 'this postal is  invalid text');
@@ -360,9 +364,9 @@ module cmm001.a {
             //let addressKana1;
             let error4: boolean;
 
-            if (nts.uk.text.allHalfKatakana($("#C_INP_004").val()) === true && ($("#C_INP_004").val() === "" || $("#C_INP_004").val() !== "")) {
+            if (nts.uk.text.allHalfKatakana(currentCompany.addressKana1) === true && (currentCompany.addressKana1 === "" || currentCompany.addressKana1 !== "")) {
                 $('#C_INP_004').ntsError('clear');
-                self.currentCompanyDto().addressKana1 = $("#C_INP_004").val();
+                //self.currentCompanyDto().addressKana1 = $("#C_INP_004").val();
                 error4 = true;
 
             } else {
@@ -370,9 +374,9 @@ module cmm001.a {
                 error4 = false;
             }
             let error5: boolean;
-            if (nts.uk.text.allHalfKatakana($("#C_INP_005").val()) === true && ($("#C_INP_005").val() === "" || $("#C_INP_005").val() !== "")) {
+            if (nts.uk.text.allHalfKatakana(currentCompany.addressKana2) === true && (currentCompany.addressKana2 === "" || currentCompany.addressKana2 !== "")) {
                 $('#C_INP_005').ntsError('clear');
-                self.currentCompanyDto().addressKana2 = $("#C_INP_005").val();
+                //self.currentCompanyDto().addressKana2 = $("#C_INP_005").val();
                 error5 = true;
 
             } else {
@@ -381,7 +385,7 @@ module cmm001.a {
             }
 
             let error6: boolean;
-            let telNo = $("#C_INP_006").val();
+            let telNo = currentCompany.telephoneNo;
             let test1 = telNo.split('-');
             let checkTel: boolean;
             for (let i = 0; i < test1.length; i++) {
@@ -390,14 +394,14 @@ module cmm001.a {
             }
             if ((telNo === " " || telNo !== "") && checkTel) {
                 $('#C_INP_006').ntsError('clear');
-                self.currentCompanyDto().telephoneNo = $("#C_INP_006").val();
+                //self.currentCompanyDto().telephoneNo = $("#C_INP_006").val();
                 error6 = true;
             } else {
                 $("#C_INP_006").ntsError('set', 'this telephone Number is  invalid text');
                 error6 = false;
             }
             let error7: boolean;
-            let faxNo = $("#C_INP_007").val();
+            let faxNo = currentCompany.faxNo;
             let test2 = faxNo.split('-');
             let checkFax: boolean;
             for (let i = 0; i < test2.length; i++) {
@@ -406,7 +410,7 @@ module cmm001.a {
             }
             if (((faxNo === " " || faxNo !== "")) && checkFax) {
                 $('#C_INP_007').ntsError('clear');
-                self.currentCompanyDto().faxNo = $("#C_INP_007").val();
+                //self.currentCompanyDto().faxNo = $("#C_INP_007").val();
                 error7 = true;
             } else {
                 $("#C_INP_007").ntsError('set', 'this fax Number is  invalid text');
@@ -415,27 +419,20 @@ module cmm001.a {
             let allerror: boolean;
             allerror = error && error1 && error2 && error3 && error4 && error5 && error6 && error7;
             if (allerror === true) {
-                if (self.currentCompanyDto().companyCode != self.currentCode()) {
-                    cmm001.a.service.addData(self.currentCompanyDto()).done(function() {
-                        self.start();
-                        self.currentCode(self.currentCompanyDto().companyCode);
-
+                if (currentCompany.companyCode != self.currentCode()) {
+                    cmm001.a.service.addData(currentCompany).done(function() {
+                        self.start(currentCompany.companyCode);
                     });
-                    self.currentCode(self.currentCompanyDto().companyCode);
 
                 } else {
-                    cmm001.a.service.updateData(self.currentCompanyDto()).done(function() {
-                        self.start();
-                        self.currentCode("0001");
-                        self.currentCode(self.currentCompanyDto().companyCode);
+                    cmm001.a.service.updateData(currentCompany).done(function() {
+                        self.start(currentCompany.companyCode);
 
                     });
 
 
-                    self.currentCode(self.currentCompanyDto().companyCode);
                 }
             }
-            self.currentCode(self.currentCompanyDto().companyCode);
         }
         //BTN-003 -Setting cac thong so ban dau
         ClickSetting(): void {
@@ -465,15 +462,21 @@ module cmm001.a {
         Browse(): void {
             alert("Browse!");
         }
-        start(): JQueryPromise<any> {
+        start(currentCode: string): JQueryPromise<any> {
             let self = this;
             let dfd = $.Deferred<any>();
             cmm001.a.service.getAllCompanys().done(function(companies) {
                 if (companies.length > 0) {
                     self.companys(companies);
                     self.buildGridDataSource(companies);
+                    if(currentCode === undefined){
+                        self.currentCode(self.firstCode());
+                        self.getDetailCompany(self.companys, self.firstCode());
+                    }else{
+                        self.currentCode(currentCode);
+                    }
                     //if(self.currentCompanyDto().companyCode === undefined)
-                    self.currentCode(self.currentCompanyDto().companyCode);
+                   // self.currentCode(self.currentCompanyDto().companyCode);
                     //self.currentCode("0001");
                 }
                 dfd.resolve();
@@ -486,7 +489,8 @@ module cmm001.a {
             _.forEach(items, function(obj) {
                 self.items().push(new Company(obj.companyCode.toString(), obj.companyName, ""));
             });
-            self.currentCode(self.currentCompanyDto().companyCode);
+            self.firstCode(self.items()[0].code);
+            //self.currentCode(self.currentCompanyDto().companyCode);
 
         }
 

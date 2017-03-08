@@ -18,7 +18,7 @@ import nts.uk.shr.infra.data.entity.TableEntity;
  *
  */
 @Entity
-@Table(name="CMNMT_COMPANY1")
+@Table(name="CMNMT_COMPANY")
 @AllArgsConstructor
 @NoArgsConstructor
 public class CmnmtCompany extends TableEntity implements Serializable{

@@ -11,22 +11,22 @@ var cmm001;
                 var node;
                 self.init();
                 self.currentCode.subscribe(function (newValue) {
-                    var dfd = $.Deferred();
-                    cmm001.a.service.getAllCompanys().done(function (companies) {
-                        if (companies.length > 0) {
-                            self.companys(companies);
-                            if (self.editMode) {
-                                self.getDetailCompany(self.companys(), newValue);
-                            }
-                            else {
-                                self.editMode = true;
-                            }
-                        }
-                        dfd.resolve();
-                    });
+                    console.log(self.items());
+                    //                let dfd = $.Deferred<any>();
+                    //                cmm001.a.service.getAllCompanys().done(function(companies) {
+                    //                    if (companies.length > 0) {
+                    //                        self.companys(companies);
+                    if (self.editMode) {
+                        self.getDetailCompany(self.companys(), newValue);
+                    }
+                    else {
+                        self.editMode = true;
+                    }
+                    //                    }
+                    //                    dfd.resolve();
+                    //                });
                 });
                 self.selectedCode.subscribe(function (newValue) {
-                    console.log(newValue);
                 });
                 //            self.checked2.subscribe(function(newValue) {
                 //
@@ -72,14 +72,14 @@ var cmm001;
                         $grid.igGrid("option", "width", "400px");
                     }
                     $grid.igGrid("option", "columns", currentColumns);
+                    self.start(undefined);
                 });
             }
             ScreenModel.prototype.getDetailCompany = function (items, newValue) {
                 var self = this;
                 var node = new cmm001.a.service.model.CompanyDto();
                 _.find(items, function (obj) {
-                    if (obj.companyCode.toString() == newValue) {
-                        console.log(obj);
+                    if (obj.companyCode == newValue) {
                         $(document).ready(function (data) {
                             $("#A_INP_002").attr('disabled', 'true');
                             $("#A_INP_002").attr('readonly', 'true');
@@ -117,7 +117,7 @@ var cmm001;
             ScreenModel.prototype.resetData = function () {
                 var self = this;
                 self.editMode = false;
-                self.currentCode({});
+                self.currentCode('');
                 var companyDto = new cmm001.a.service.model.CompanyDto();
                 companyDto.companyCode = "";
                 companyDto.companyName = "";
@@ -141,9 +141,7 @@ var cmm001;
                 companyDto.use_Kt_Set = 0;
                 companyDto.use_Qy_Set = 0;
                 companyDto.use_Jj_Set = 0;
-                self.testCompany(ko.mapping.fromJS(companyDto));
                 self.currentCompanyDto(ko.mapping.fromJS(companyDto));
-                console.log(self.currentCompanyDto());
             };
             ScreenModel.prototype.init = function () {
                 var self = this;
@@ -154,7 +152,8 @@ var cmm001;
                     { headerText: '名称', prop: 'name', width: 200 },
                     { headerText: '廃止', prop: 'description', width: 50, hidden: false }
                 ]);
-                self.currentCode = ko.observable("");
+                self.currentCode = ko.observable('');
+                self.firstCode = ko.observable('');
                 self.currentCodeList = ko.observableArray(null);
                 //tabpanel
                 self.tabs = ko.observableArray([
@@ -232,20 +231,22 @@ var cmm001;
                 companyDto.use_Jj_Set = 1;
                 self.testCompany = ko.observable(ko.mapping.fromJS(companyDto));
                 self.currentCompanyDto = ko.observable(ko.mapping.fromJS(companyDto));
-                self.currentCode("0001");
             };
             // register company information
             //BTN-002 
             ScreenModel.prototype.ClickRegister = function () {
                 var self = this;
                 var dfd = $.Deferred();
-                self.currentCompanyDto().companyCode = $("#A_INP_002").val();
+                var currentCompany;
+                currentCompany = ko.toJS(self.currentCompanyDto);
+                //console.log( currentCompany);
+                //self.currentCompanyDto().companyCode = $("#A_INP_002").val();
                 var companyNameGlobal;
-                self.currentCompanyDto().address2 = $("#C_INP_003").val();
-                self.currentCompanyDto().companyNameAbb = $("#A_INP_005").val();
-                self.currentCompanyDto().faxNo = $("#C_INP_007").val();
-                self.currentCompanyDto().presidentName = $("#B_INP_002").val();
-                self.currentCompanyDto().presidentJobTitle = $("#B_INP_003").val();
+                //self.currentCompanyDto().address2 = $("#C_INP_003").val();
+                // self.currentCompanyDto().companyNameAbb = $("#A_INP_005").val();
+                //self.currentCompanyDto().faxNo = $("#C_INP_007").val();
+                // self.currentCompanyDto().presidentName = $("#B_INP_002").val()
+                //  self.currentCompanyDto().presidentJobTitle = $("#B_INP_003").val();
                 var termBeginMon;
                 self.currentCompanyDto().use_Kt_Set = self.selectedRuleCode1();
                 self.currentCompanyDto().use_Jj_Set = self.selectedRuleCode();
@@ -266,11 +267,10 @@ var cmm001;
                 var use_Rs07_Set;
                 var use_Rs08_Set;
                 var use_Rs10_Set;
-                var items;
                 var error;
-                if (nts.uk.text.allHalfKatakana($("#A_INP_004").val()) === true) {
+                if (nts.uk.text.allHalfKatakana(currentCompany.companyNameKana) === true) {
                     $('#A_INP_004').ntsError('clear');
-                    self.currentCompanyDto().companyNameKana = $("#A_INP_004").val();
+                    //self.currentCompanyDto().companyNameKana = $("#A_INP_004").val();
                     error = true;
                 }
                 else {
@@ -278,9 +278,9 @@ var cmm001;
                     error = false;
                 }
                 var error1;
-                if ($("#A_INP_003").val() !== "") {
+                if (currentCompany.companyName !== "") {
                     $('#A_INP_003').ntsError('clear');
-                    self.currentCompanyDto().companyName = $("#A_INP_003").val();
+                    //self.currentCompanyDto().companyName = $("#A_INP_003").val();
                     error1 = true;
                 }
                 else {
@@ -288,9 +288,9 @@ var cmm001;
                     error1 = false;
                 }
                 var error2;
-                if ($("#C_INP_002").val() != "") {
+                if (currentCompany.address1 != "") {
                     $('#C_INP_002').ntsError('clear');
-                    self.currentCompanyDto().address1 = $("#C_INP_002").val();
+                    // self.currentCompanyDto().address1 = $("#C_INP_002").val();
                     error2 = true;
                 }
                 else {
@@ -298,7 +298,8 @@ var cmm001;
                     error2 = false;
                 }
                 var error3;
-                var t1 = $("#C_INP_001").val();
+                //let t1 = $("#C_INP_001").val();
+                var t1 = currentCompany.postal;
                 var t2 = t1.split("-");
                 var text = "";
                 for (var i = 0; i < t2.length; i++) {
@@ -306,7 +307,7 @@ var cmm001;
                 }
                 if (Number(text) > 0) {
                     $('#C_INP_001').ntsError('clear');
-                    self.currentCompanyDto().postal = $("#C_INP_001").val();
+                    //self.currentCompanyDto().postal = $("#C_INP_001").val();
                     error3 = true;
                 }
                 else {
@@ -315,9 +316,9 @@ var cmm001;
                 }
                 //let addressKana1;
                 var error4;
-                if (nts.uk.text.allHalfKatakana($("#C_INP_004").val()) === true && ($("#C_INP_004").val() === "" || $("#C_INP_004").val() !== "")) {
+                if (nts.uk.text.allHalfKatakana(currentCompany.addressKana1) === true && (currentCompany.addressKana1 === "" || currentCompany.addressKana1 !== "")) {
                     $('#C_INP_004').ntsError('clear');
-                    self.currentCompanyDto().addressKana1 = $("#C_INP_004").val();
+                    //self.currentCompanyDto().addressKana1 = $("#C_INP_004").val();
                     error4 = true;
                 }
                 else {
@@ -325,9 +326,9 @@ var cmm001;
                     error4 = false;
                 }
                 var error5;
-                if (nts.uk.text.allHalfKatakana($("#C_INP_005").val()) === true && ($("#C_INP_005").val() === "" || $("#C_INP_005").val() !== "")) {
+                if (nts.uk.text.allHalfKatakana(currentCompany.addressKana2) === true && (currentCompany.addressKana2 === "" || currentCompany.addressKana2 !== "")) {
                     $('#C_INP_005').ntsError('clear');
-                    self.currentCompanyDto().addressKana2 = $("#C_INP_005").val();
+                    //self.currentCompanyDto().addressKana2 = $("#C_INP_005").val();
                     error5 = true;
                 }
                 else {
@@ -335,7 +336,7 @@ var cmm001;
                     error5 = false;
                 }
                 var error6;
-                var telNo = $("#C_INP_006").val();
+                var telNo = currentCompany.telephoneNo;
                 var test1 = telNo.split('-');
                 var checkTel;
                 for (var i = 0; i < test1.length; i++) {
@@ -349,7 +350,7 @@ var cmm001;
                 }
                 if ((telNo === " " || telNo !== "") && checkTel) {
                     $('#C_INP_006').ntsError('clear');
-                    self.currentCompanyDto().telephoneNo = $("#C_INP_006").val();
+                    //self.currentCompanyDto().telephoneNo = $("#C_INP_006").val();
                     error6 = true;
                 }
                 else {
@@ -357,7 +358,7 @@ var cmm001;
                     error6 = false;
                 }
                 var error7;
-                var faxNo = $("#C_INP_007").val();
+                var faxNo = currentCompany.faxNo;
                 var test2 = faxNo.split('-');
                 var checkFax;
                 for (var i = 0; i < test2.length; i++) {
@@ -371,7 +372,7 @@ var cmm001;
                 }
                 if (((faxNo === " " || faxNo !== "")) && checkFax) {
                     $('#C_INP_007').ntsError('clear');
-                    self.currentCompanyDto().faxNo = $("#C_INP_007").val();
+                    //self.currentCompanyDto().faxNo = $("#C_INP_007").val();
                     error7 = true;
                 }
                 else {
@@ -381,23 +382,17 @@ var cmm001;
                 var allerror;
                 allerror = error && error1 && error2 && error3 && error4 && error5 && error6 && error7;
                 if (allerror === true) {
-                    if (self.currentCompanyDto().companyCode != self.currentCode()) {
-                        cmm001.a.service.addData(self.currentCompanyDto()).done(function () {
-                            self.start();
-                            self.currentCode(self.currentCompanyDto().companyCode);
+                    if (currentCompany.companyCode != self.currentCode()) {
+                        cmm001.a.service.addData(currentCompany).done(function () {
+                            self.start(currentCompany.companyCode);
                         });
-                        self.currentCode(self.currentCompanyDto().companyCode);
                     }
                     else {
-                        cmm001.a.service.updateData(self.currentCompanyDto()).done(function () {
-                            self.start();
-                            self.currentCode("0001");
-                            self.currentCode(self.currentCompanyDto().companyCode);
+                        cmm001.a.service.updateData(currentCompany).done(function () {
+                            self.start(currentCompany.companyCode);
                         });
-                        self.currentCode(self.currentCompanyDto().companyCode);
                     }
                 }
-                self.currentCode(self.currentCompanyDto().companyCode);
             };
             //BTN-003 -Setting cac thong so ban dau
             ScreenModel.prototype.ClickSetting = function () {
@@ -423,15 +418,20 @@ var cmm001;
             ScreenModel.prototype.Browse = function () {
                 alert("Browse!");
             };
-            ScreenModel.prototype.start = function () {
+            ScreenModel.prototype.start = function (currentCode) {
                 var self = this;
                 var dfd = $.Deferred();
                 cmm001.a.service.getAllCompanys().done(function (companies) {
                     if (companies.length > 0) {
                         self.companys(companies);
                         self.buildGridDataSource(companies);
-                        //if(self.currentCompanyDto().companyCode === undefined)
-                        self.currentCode(self.currentCompanyDto().companyCode);
+                        if (currentCode === undefined) {
+                            self.currentCode(self.firstCode());
+                            self.getDetailCompany(self.companys, self.firstCode());
+                        }
+                        else {
+                            self.currentCode(currentCode);
+                        }
                     }
                     dfd.resolve();
                 });
@@ -443,7 +443,8 @@ var cmm001;
                 _.forEach(items, function (obj) {
                     self.items().push(new Company(obj.companyCode.toString(), obj.companyName, ""));
                 });
-                self.currentCode(self.currentCompanyDto().companyCode);
+                self.firstCode(self.items()[0].code);
+                //self.currentCode(self.currentCompanyDto().companyCode);
             };
             return ScreenModel;
         }());
