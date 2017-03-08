@@ -5,11 +5,11 @@ var cmm008;
         var service;
         (function (service) {
             var path = {
-                getAllEmployment: "basic/employment/findallemployments",
-                createEmployment: "basic/employment/createemployment",
-                updateEmployment: "basic/employment/updateemployment",
-                deleteEmployment: "basic/employment/deleteemployment/",
-                getEmploymentByCode: "basic/employment/findemploymentbycode/"
+                getAllEmployment: "basic/organization/employment/findallemployments",
+                createEmployment: "basic/organization/employment/createemployment",
+                updateEmployment: "basic/organization/employment/updateemployment",
+                deleteEmployment: "basic/organization/employment/deleteemployment/",
+                getEmploymentByCode: "basic/organization/employment/findemploymentbycode/"
             };
             //find all employment data
             function getAllEmployments() {
