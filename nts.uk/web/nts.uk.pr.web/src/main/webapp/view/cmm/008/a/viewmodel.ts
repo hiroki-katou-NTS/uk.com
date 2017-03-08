@@ -2,15 +2,15 @@ module cmm008.a.viewmodel{
     import option = nts.uk.ui.option;
     
     export class ScreenModel {
-        employmentCode: KnockoutObservable<string>;
+        //employmentCode: KnockoutObservable<string>;
         employmentName: KnockoutObservable<string>;
         textEditorOption: KnockoutObservable<any>;
         isCheckbox: KnockoutObservable<Boolean>;
         
         //search box
-        dataSource: any;
+        dataSource: KnockoutObservableArray<service.model.employmentDto>;;
         columns: KnockoutObservableArray<any>;
-        currentCode: KnockoutObservable<any>;
+        currentCode: KnockoutObservable<string>;
         singleSelectedCode: any;
 //        headers: any;
         //締め日 DATA COMBOBOX
@@ -26,12 +26,10 @@ module cmm008.a.viewmodel{
         employmentOutCode: KnockoutObservable<string>;
         isEnable: KnockoutObservable<boolean>;
         //memo
-        multilineeditor: any;
-        memoValue: KnockoutObservable<string>;
+        multilineeditor: any;  
         
         constructor(){
             var self = this;
-            self.employmentCode = ko.observable("");
             self.employmentName = ko.observable("");
             self.isCheckbox = ko.observable(true);
             self.closeDateList = ko.observableArray([]);
@@ -41,12 +39,12 @@ module cmm008.a.viewmodel{
             self.processingDateList = ko.observableArray([]);
             self.selectedProcessCode = ko.observable(0);
             self.employmentOutCode = ko.observable("");
-            self.memoValue = ko.observable("");
             self.textEditorOption = ko.mapping.fromJS(new option.TextEditorOption());
             self.dataSource = ko.observableArray([]);
+            self.currentCode = ko.observable("");
             self.isEnable = ko.observable(false);
             self.multilineeditor = {
-                memoValue: ko.observable(''),
+                memoValue: ko.observable(""),
                 constraint: '',
                 option: ko.mapping.fromJS(new nts.uk.ui.option.MultilineEditorOption({
                     resizeable: true,
@@ -56,7 +54,6 @@ module cmm008.a.viewmodel{
                 })),
                 required: ko.observable(true),
             };
-            //list data click
             
             
         }
@@ -75,6 +72,26 @@ module cmm008.a.viewmodel{
             self.processingDateItem();
             self.dataSourceItem();
             
+            //list data click
+            self.currentCode.subscribe(function(newValue){
+                let newEmployment = _.find(self.dataSource(), function(employ){
+                    if(employ.employmentCode === newValue){
+                        self.isEnable(false);
+                        self.currentCode(employ.employmentCode);                        
+                        self.employmentName(employ.employmentName);
+                        self.selectedCloseCode(employ.closeDateNo);
+                        self.selectedProcessCode(employ.processingNo);
+                        self.multilineeditor.memoValue(employ.memo);
+                        self.employmentOutCode(employ.employementOutCd); 
+                        if(employ.displayFlg == 1){
+                            self.isCheckbox(true);    
+                        }else{
+                            self.isCheckbox(false);    
+                        }
+                        return;
+                    }
+                })
+            });
             dfd.resolve();
             // Return.
             return dfd.promise();
@@ -103,52 +120,139 @@ module cmm008.a.viewmodel{
             self.processingDateList.push(new ItemProcessingDate(2, '2')); 
         }
         
-        dataSourceItem(): any{
+        dataSourceItem(): any {
             var self = this;
-            self.dataSource = ko.observableArray([]);
-            service.getAllEmployments().done(function(listResult : Array<service.model.employmentDto>){
+            var dfd = $.Deferred<any>();
+            self.dataSource([]);
+            $.when(service.getAllEmployments()).done(function(listResult : Array<service.model.employmentDto>){
                 if(listResult.length === 0 || listResult === undefined){
                     self.isEnable(true);    
                 }else{
                     self.isEnable(false);
-                    for(let employ of listResult){
-                        var closeDate = employ.closeDateNo.toString();
-                        var processingNo = employ.processingNo.toString();
-                        var displayText = employ.displayFlg.toString();
-                        self.dataSource.push(new ItemModel(employ.employmentCode, employ.employmentName, closeDate, processingNo, displayText));    
+                    _.forEach(listResult, function(employ){
+                        if (employ.displayFlg == 1) {
+                            employ.displayStr = "<span style='color: #00B050; font-size: 18px'>●</span>";    
+                        } else {
+                            employ.displayStr = "";
+                        }
+                            
+                        self.dataSource.push(employ); 
+                    })
+                    if(self.currentCode() === ""){
+                        var obEmployment =_.first(self.dataSource()); 
+                        self.currentCode(obEmployment.employmentCode);    
                     }
                 }
+                dfd.resolve(listResult);
             })            
             this.columns = ko.observableArray([
-                { headerText: 'コード', prop: 'code', width: 100 },
-                { headerText: '名称', prop: 'name', width: 150 },
-                { headerText: '締め日', prop: 'closeDate', width: 150 },
+                { headerText: 'コード', prop: 'employmentCode', width: 100 },
+                { headerText: '名称', prop: 'employmentName', width: 160 },
+                { headerText: '締め日', prop: 'closeDateNo', width: 150 },
                 { headerText: '処理日区分', prop: 'processingNo', width: 150 },
-                { headerText: '初期表示', prop: 'displayFlg', width: 150 }
+                { headerText: '初期表示', prop: 'displayStr', width: 100 }
             ]);
-            this.currentCode = ko.observable();
             self.singleSelectedCode = ko.observable(null);
+            return dfd.promise();
         }
         
          //登録ボタンを押す
         createEmployment() : any{
             var self = this;
-            if(self.isEnable){
-                var employment = new service.model.employmentDto();
-                employment.employmentCode = self.employmentCode();
-                employment.employmentName = self.employmentName();
-                employment.closeDateNo = self.selectedCloseCode();
-                employment.processingNo = self.selectedProcessCode();
-                employment.statutoryHolidayAtr = self.holidayCode();
-                employment.employementOutCd = self.employmentOutCode();
-                if(self.isCheckbox)
-                    employment.displayFlg = 1;
-                else
-                    employment.displayFlg = 0;
-                service.createEmployment(employment).done(function(){
-                    
-                })    
+            //必須項目の未入力チェック
+            if(self.currentCode() === ""
+                || self.employmentName() === ""){
+                alert("コード/名称が入力されていません。");    
+                return;
             }
+            var employment = new service.model.employmentDto();
+            employment.employmentCode = self.currentCode();
+            employment.employmentName = self.employmentName();
+            employment.closeDateNo = self.selectedCloseCode();
+            employment.processingNo = self.selectedProcessCode();
+            employment.statutoryHolidayAtr = self.holidayCode();
+            employment.employementOutCd = self.employmentOutCode();
+            employment.memo = self.multilineeditor.memoValue();
+            if(self.isCheckbox())
+                employment.displayFlg = 1;
+            else
+                employment.displayFlg = 0;
+            //新規の時
+            if(self.isEnable()){
+                var isCheck = false;
+                //コード重複チェック
+                service.getEmploymentByCode(self.currentCode()).done(function(employmentChk: service.model.employmentDto){
+                     if(employmentChk !== undefined && employmentChk !== null){
+                         alert("入力したコードは既に存在しています。\r\nコードを確認してください。");
+                         isCheck = true;
+                         return;   
+                     }
+                })
+                if(isCheck){
+                    $("#INP_002").focus();
+                    return;                    
+                }
+                
+                service.createEmployment(employment).done(function(){
+                    $.when(self.dataSource()).done(function(){
+                        $.when(self.dataSourceItem()).done(function(){
+                            self.currentCode(employment.employmentCode);
+                        })    
+                    })
+                })   
+            //更新の時 
+            }else{
+                $.when(service.updateEmployment(employment)).done(function(){                    
+                    $.when(self.dataSourceItem()).done(function(){
+                        self.currentCode(employment.employmentCode);
+                    })
+                })                
+            }
+            
+        }
+        //新規ボタンを押す
+        newCreateEmployment(): any{
+            var self = this;
+            self.currentCode("");
+            self.employmentName("");
+            self.isEnable(true);
+            self.multilineeditor.memoValue("");
+            self.employmentOutCode("");
+            self.currentCode("");
+            self.isCheckbox(false);
+            $("#INP_002").focus();
+        }
+        //削除
+        deleteEmployment(): any{
+            var self = this;
+            if(self.currentCode() === "")
+                return;
+            var employment = new service.model.employmentDto();
+            employment.employmentCode = self.currentCode();
+            if(self.isCheckbox())
+                employment.displayFlg = 1;
+            else
+                employment.displayFlg = 0;
+            let indexItemDelete = _.findIndex(self.dataSource(), function(item) { return item.employmentCode == self.currentCode(); });
+            service.deleteEmployment(employment).done(function(){
+                $.when(self.dataSourceItem()).done(function(){
+                    if (self.dataSource().length === 0) {
+                        self.isEnable(true);
+                        self.newCreateEmployment();
+                    } else if (self.dataSource().length === indexItemDelete) {
+                        self.isEnable(false);
+                        self.currentCode(self.dataSource()[indexItemDelete - 1].employmentCode);
+                    } else {
+                        self.isEnable(false);
+                        if(indexItemDelete > self.dataSource().length) {
+                            self.currentCode(self.dataSource()[0].employmentCode);
+                        } else {
+                            self.currentCode(self.dataSource()[indexItemDelete].employmentCode);
+                        }
+                        
+                    }
+                })
+            })
         }
     }   
     
@@ -168,22 +272,6 @@ module cmm008.a.viewmodel{
             this.processingDateCode = processingDateCode;
             this.processingDatename = processingDatename;    
         }   
-    }
-   class ItemModel {
-        code: string;
-        name: string;
-        description: string;
-        other1: string;
-        other2: string;
-        //childs: any;
-        constructor(code: string, name: string, description: string, other1?: string, other2?: string) {
-            this.code = code;
-            this.name = name;
-            this.description = description;
-            this.other1 = other1;
-            this.other2 = other2 || other1;    
-            //this.childs = childs;     
-        }
     }
    
 }

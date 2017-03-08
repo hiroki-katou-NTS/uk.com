@@ -29,6 +29,17 @@ public class UpdateEmploymentCommandHandler extends CommandHandler<UpdateEmploym
 		try{
 			UpdateEmploymentCommand command = context.getCommand();
 			String companyCode = AppContexts.user().companyCode();		
+			//A_SEL_001にチェックが付いている場合
+			if(command.getDisplayFlg() == 1){
+				Optional<Employment> employmentByDisplayFlg = repository.findEmploymnetByDisplayFlg(companyCode);
+				if(employmentByDisplayFlg != null){
+					//[雇用マスタ.UPD-2]を実施する
+					Employment employmentDisplay = employmentByDisplayFlg.get();
+					employmentDisplay.setDisplayFlg(ManageOrNot.NOT_MANAGE);
+					repository.update(employmentDisplay);
+				}
+			}
+			
 			Employment employment = new Employment(companyCode,
 					new EmploymentCode(command.getEmploymentCode()),
 					new EmploymentName(command.getEmploymentName()),
@@ -37,19 +48,11 @@ public class UpdateEmploymentCommandHandler extends CommandHandler<UpdateEmploym
 					new ProcessingNo(command.getProcessingNo()),
 					EnumAdaptor.valueOf( command.getStatutoryHolidayAtr(), ManageOrNot.class),
 					new EmploymentCode(command.getEmployementOutCd()),
-					EnumAdaptor.valueOf( command.getDisplayFlg(), ManageOrNot.class));
+					EnumAdaptor.valueOf( command.getDisplayFlg(), ManageOrNot.class)
+			);
 			
 			this.repository.update(employment);
-			//A_SEL_001にチェックが付いている場合
-			if(command.isChkDisplayFlg()){
-				Optional<Employment> employmentByDisplayFlg = repository.findEmploymnetByDisplayFlg(companyCode);
-				if(employmentByDisplayFlg.isPresent()){
-					//[雇用マスタ.UPD-2]を実施する
-					Employment employmentDisplay = employmentByDisplayFlg.get();
-					employmentDisplay.setDisplayFlg(ManageOrNot.NOT_MANAGE);
-					repository.update(employmentDisplay);
-				}
-			}
+			
 		}
 		catch(Exception ex){
 			throw ex;

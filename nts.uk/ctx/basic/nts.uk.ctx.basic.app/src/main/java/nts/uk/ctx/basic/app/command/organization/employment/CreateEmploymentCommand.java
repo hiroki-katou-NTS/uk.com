@@ -5,7 +5,7 @@ import nts.uk.ctx.basic.dom.organization.employment.Employment;
 import nts.uk.shr.com.context.AppContexts;
 
 @Getter
-public class CreateEmploymentCommand {
+public class CreateEmploymentCommand {	
 	private String employmentCode;
 	private String employmentName;
 	private String memo;
@@ -14,7 +14,7 @@ public class CreateEmploymentCommand {
 	private int statutoryHolidayAtr;
 	private String employementOutCd;
 	private int displayFlg;
-	private boolean chkDisplayFlg;
+	//private boolean chkDisplayFlg;
 	
 	public Employment toDomain(){
 		return Employment.createFromJavaType(AppContexts.user().companyCode(),

@@ -40,6 +40,7 @@ public class JpaEmploymentRepository extends JpaRepository implements Employment
 		entity.processingNo = employment.getProcessingNo().v();
 		entity.statutoryHolidayAtr = employment.getStatutoryHolidayAtr().value;
 		entity.employementOutCd = employment.getEmployementOutCd().v();
+		entity.displayFlg = employment.getDisplayFlg().value;
 		return entity;
 	}
 
@@ -60,7 +61,7 @@ public class JpaEmploymentRepository extends JpaRepository implements Employment
 
 	@Override
 	public List<Employment> findAllEmployment(String companyCode) {
-		List<Employment> test = this.queryProxy().query(SELECT_ALL_EMP_BY_COMPANY, CmnmtEmp.class)
+		List<Employment> test = this.queryProxy().query(SELECT_ALL_EMP_BY_COMPANY + " ORDER by c.cmnmtEmpPk.employmentCode", CmnmtEmp.class)
 				.setParameter("companyCode", companyCode)
 				.getList(c -> toDomain(c));
 		return test;

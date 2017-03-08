@@ -3,7 +3,8 @@ module cmm008.a.service{
         getAllEmployment: "basic/employment/findallemployments",
         createEmployment: "basic/employment/createemployment",
         updateEmployment: "basic/employment/updateemployment",
-        deleteEmployment: "basic/employment/deleteemployment" 
+        deleteEmployment: "basic/employment/deleteemployment/" ,
+        getEmploymentByCode: "basic/employment/findemploymentbycode/"
     }
     //find all employment data
     export function getAllEmployments(): JQueryPromise<Array<model.employmentDto>>{
@@ -17,10 +18,22 @@ module cmm008.a.service{
             })
         return dfd.promise();
     }
+    
+    export function getEmploymentByCode(employmentCode: string): JQueryPromise<model.employmentDto>{
+        var dfd = $.Deferred<model.employmentDto>();
+        nts.uk.request.ajax("com",path.getEmploymentByCode + employmentCode)
+            .done(function(res: model.employmentDto){
+                dfd.resolve(res);             
+            })
+            .fail(function(res){
+                dfd.reject(res);    
+            })
+        return dfd.promise();
+    }
     //create new employment data
     export function createEmployment(employment: model.employmentDto){
         var dfd = $.Deferred<Array<any>>();  
-        nts.uk.request.ajax("com", path.createEmployment).done(function(res: Array<any>){
+        nts.uk.request.ajax("com", path.createEmployment, employment).done(function(res: Array<any>){
             dfd.resolve(res);        
         }).fail(function(res){
             dfd.resolve(res);
@@ -30,7 +43,7 @@ module cmm008.a.service{
     //update employment data
     export function updateEmployment(employment: model.employmentDto){
         var dfd = $.Deferred<Array<any>>();
-        nts.uk.request.ajax("com",path.updateEmployment).done(function(res: Array<any>){
+        nts.uk.request.ajax("com",path.updateEmployment,employment).done(function(res: Array<any>){
             dfd.resolve(res);
         }).fail(function(res){
             dfd.resolve(res);
@@ -40,7 +53,7 @@ module cmm008.a.service{
     //delete employment data
     export function deleteEmployment(employment: model.employmentDto){
         var dfd = $.Deferred<Array<any>>();
-        nts.uk.request.ajax("com",path.deleteEmployment).done(function(res: Array<any>){
+        nts.uk.request.ajax("com",path.deleteEmployment, employment).done(function(res: Array<any>){
             dfd.resolve(res);
         }).fail(function(res){
             dfd.resolve(res);
@@ -53,11 +66,13 @@ module cmm008.a.service{
         export class employmentDto{
             employmentCode: string;
             employmentName: string;
+            memo: string;
             closeDateNo: number;
             processingNo: number;
             statutoryHolidayAtr: number;
             employementOutCd: string;
-            displayFlg: number;    
+            displayFlg: number;   
+            displayStr: string; 
         }    
     }
 }

@@ -20,15 +20,18 @@ public class CreateEmploymentCommandHandler extends CommandHandler<CreateEmploym
 	@Override
 	protected void handle(CommandHandlerContext<CreateEmploymentCommand> context) {
 		try{
-			CreateEmploymentCommand command = new CreateEmploymentCommand();
+			CreateEmploymentCommand command = context.getCommand();
 			String companyCode = AppContexts.user().companyCode();
 			Employment employ = command.toDomain();
-			employ.validate();
+			Optional<Employment> employmentByDisplayFlg = repository.findEmploymnetByDisplayFlg(companyCode);
+			if(employmentByDisplayFlg == null)			
+				employ.setDisplayFlg(ManageOrNot.MANAGE);
+			//employ.validate();
 			this.repository.add(employ);	
 			//A_SEL_001にチェックが付いている場合
-			if(command.isChkDisplayFlg()){
-				Optional<Employment> employmentByDisplayFlg = repository.findEmploymnetByDisplayFlg(companyCode);
-				if(employmentByDisplayFlg.isPresent()){
+			if(command.getDisplayFlg() == 1){
+				
+				if(employmentByDisplayFlg != null && employmentByDisplayFlg.isPresent()){
 					//[雇用マスタ.UPD-2]を実施する
 					Employment employmentDisplay = employmentByDisplayFlg.get();
 					employmentDisplay.setDisplayFlg(ManageOrNot.NOT_MANAGE);
@@ -39,7 +42,5 @@ public class CreateEmploymentCommandHandler extends CommandHandler<CreateEmploym
 		catch(Exception ex){
 			throw ex;
 		}
-		
 	}
-
 }
