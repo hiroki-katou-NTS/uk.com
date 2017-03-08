@@ -25,14 +25,17 @@ public class AddBankCommandHandler extends CommandHandler<AddBankCommand> {
 		
 		AddBankCommand command = context.getCommand();
 		String companyCode = AppContexts.user().companyCode();
-		
+				
 		// check exists bank
 		Optional<Bank> bank = bankRepository.find(companyCode, command.getBankCode());
 		if (bank.isPresent()) {
-			throw new BusinessException("Exists bank code");
+			throw new BusinessException("ER005");
 		}
 		
 		Bank domain = Bank.createFromJavaType(companyCode, command.getBankCode().trim(), command.getBankName(), command.getBankNameKana(), command.getMemo());
+		
+		// validate
+		domain.validate();
 		
 		bankRepository.add(domain);
 	}

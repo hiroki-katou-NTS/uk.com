@@ -27,19 +27,30 @@ var nts;
                         }
                         $input.addClass('nts-editor').addClass("nts-input");
                         $input.wrap("<span class= 'nts-editor-wrapped ntsControl'/>");
+                        $input.focus(function () {
+                            $input.select();
+                        });
                         $input.change(function () {
                             var validator = _this.getValidator(data);
-                            var formatter = _this.getFormatter(data);
                             var newText = $input.val();
                             var result = validator.validate(newText);
                             $input.ntsError('clear');
                             if (result.isValid) {
                                 setValue(result.parsedValue);
-                                $input.val(formatter.format(result.parsedValue));
                             }
                             else {
                                 $input.ntsError('set', result.errorMessage);
                                 setValue(newText);
+                            }
+                        });
+                        // format on blur
+                        $input.blur(function () {
+                            var validator = _this.getValidator(data);
+                            var formatter = _this.getFormatter(data);
+                            var newText = $input.val();
+                            var result = validator.validate(newText);
+                            if (result.isValid) {
+                                $input.val(formatter.format(result.parsedValue));
                             }
                         });
                     };
@@ -184,6 +195,13 @@ var nts;
                     function NumberEditorProcessor() {
                         _super.apply(this, arguments);
                     }
+                    NumberEditorProcessor.prototype.init = function ($input, data) {
+                        var option = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
+                        $input.focus(function () {
+                            $input.val(data.value());
+                        });
+                        _super.prototype.init.call(this, $input, data);
+                    };
                     NumberEditorProcessor.prototype.update = function ($input, data) {
                         _super.prototype.update.call(this, $input, data);
                         var option = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
@@ -407,10 +425,14 @@ var nts;
                      * Init.
                      */
                     NtsSearchBoxBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        var INPUT_PADDING_RIGHT = 20;
+                        var INPUT_PADDING_LEFT = 40;
+                        var INPUT_BORDER = 2;
                         var searchBox = $(element);
                         var data = valueAccessor();
                         var fields = ko.unwrap(data.fields);
                         var searchText = (data.searchText !== undefined) ? ko.unwrap(data.searchText) : "検索";
+                        var placeHolder = (data.placeHolder !== undefined) ? ko.unwrap(data.placeHolder) : "コード・名称で検索・・・";
                         var selected = data.selected;
                         var selectedKey = null;
                         if (data.selectedKey) {
@@ -427,7 +449,9 @@ var nts;
                         $container.append("<input class='ntsSearchBox' type='text' />");
                         $container.append("<button class='search-btn caret-bottom'>" + searchText + "</button>");
                         var $input = $container.find("input.ntsSearchBox");
+                        $input.attr("placeholder", placeHolder);
                         var $button = $container.find("button.search-btn");
+                        $input.outerWidth($container.width() - $button.width() - 30);
                         var nextSearch = function () {
                             var filtArr = searchBox.data("searchResult");
                             var compareKey = fields[0];
@@ -1600,7 +1624,7 @@ var nts;
                         $(element).igTreeGrid({
                             width: width,
                             height: height,
-                            dataSource: options,
+                            dataSource: _.cloneDeep(options),
                             primaryKey: optionsValue,
                             columns: displayColumns,
                             childDataKey: optionsChild,
@@ -2220,10 +2244,10 @@ var nts;
                             .height(gridHeight);
                         $grid2.ntsGridList('setupSelecting');
                         var $moveArea = $swap.find("#" + elementId + "-move-data")
-                            .append("<button class = 'move-button move-forward'/>")
-                            .append("<button class = 'move-button move-back'/>");
-                        var $moveForward = $moveArea.find(".move-forward").text("forward");
-                        var $moveBack = $moveArea.find(".move-back").text("back");
+                            .append("<button class = 'move-button move-forward'><i class='icon icon-button-arrow-right'></i></button>")
+                            .append("<button class = 'move-button move-back'><i class='icon icon-button-arrow-left'></i></button>");
+                        var $moveForward = $moveArea.find(".move-forward");
+                        var $moveBack = $moveArea.find(".move-back");
                         var move = function (id1, id2, key, currentSource, value, isForward) {
                             var selectedEmployees = _.sortBy($(isForward ? id1 : id2).igGrid("selectedRows"), 'id');
                             if (selectedEmployees.length > 0) {
@@ -2290,8 +2314,9 @@ var nts;
                         var currentSource = $grid1.igGrid('option', 'dataSource');
                         var currentSelected = $grid2.igGrid('option', 'dataSource');
                         var sources = (data.dataSource !== undefined ? data.dataSource() : data.options());
+                        var selectedSources = data.value();
                         _.remove(sources, function (item) {
-                            return _.find(currentSelected, function (selected) {
+                            return _.find(selectedSources, function (selected) {
                                 return selected[primaryKey] === item[primaryKey];
                             }) !== undefined;
                         });
@@ -2299,8 +2324,8 @@ var nts;
                             $grid1.igGrid('option', 'dataSource', sources.slice());
                             $grid1.igGrid("dataBind");
                         }
-                        if (!_.isEqual(currentSelected, data.value())) {
-                            $grid2.igGrid('option', 'dataSource', data.value().slice());
+                        if (!_.isEqual(currentSelected, selectedSources)) {
+                            $grid2.igGrid('option', 'dataSource', selectedSources.slice());
                             $grid2.igGrid("dataBind");
                         }
                     };
@@ -2335,8 +2360,9 @@ var nts;
                             throw new Error('The target element of NtsUpDown is required.');
                         }
                         $upDown.addClass("ntsComponent ntsUpDown").append("<div class='upDown-container'/>");
-                        $upDown.find(".upDown-container").append("<button class = 'ntsUpButton ntsButton ntsUpDownButton' id= '" + elementId + "-up'/>")
-                            .append("<button class = 'ntsDownButton ntsButton ntsUpDownButton' id= '" + elementId + "-down'/>");
+                        $upDown.find(".upDown-container")
+                            .append("<button class = 'ntsUpButton ntsButton ntsUpDownButton auto-height' id= '" + elementId + "-up'/>")
+                            .append("<button class = 'ntsDownButton ntsButton ntsUpDownButton auto-height' id= '" + elementId + "-down'/>");
                         var $target = $(comId);
                         if (height !== undefined) {
                             $upDown.height(height);
@@ -2357,8 +2383,8 @@ var nts;
                         }
                         var $up = $upDown.find(".ntsUpButton");
                         var $down = $upDown.find(".ntsDownButton");
-                        $up.text("Up");
-                        $down.text("Down");
+                        $up.append("<i class='icon icon-button-arrow-top'/>");
+                        $down.append("<i class='icon icon-button-arrow-bottom'/>");
                         var move = function (upDown, $targetElement) {
                             var multySelectedRaw = $targetElement.igGrid("selectedRows");
                             var singleSelectedRaw = $targetElement.igGrid("selectedRow");

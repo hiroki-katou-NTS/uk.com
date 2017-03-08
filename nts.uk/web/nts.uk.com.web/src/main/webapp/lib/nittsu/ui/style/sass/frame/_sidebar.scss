@@ -4,17 +4,8 @@ $sidebar_background_color: #7f7f7f;
 $sidebar_border_color: #666;
 $sidebar_arrow_width: 50px;
 
-.sidebar-html,
-.sidebar-html body,
-.sidebar-html #master-wrapper{height: 100%;}
-
-.sidebar-html #master-content{height: calc(100% - #{$header_height + 1});}
-
-.sidebar-html #header{
-	background: $sidebar_background_color;
-	border-bottom: 1px solid $sidebar_border_color;
-	color: $sidebar_theme_color;
-}
+#sidebar-html,
+#sidebar-html body{height: 100%;}
 
 #sidebar {height: 100%; width: 100%;}
 #sidebar > tbody > tr > td {vertical-align: top;}

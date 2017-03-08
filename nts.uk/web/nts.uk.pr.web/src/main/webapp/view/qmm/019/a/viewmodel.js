@@ -324,7 +324,7 @@ var qmm019;
             };
             ScreenModel.prototype.openEDialog = function () {
                 var self = this;
-                if (self.singleSelectedCode() == null)
+                if (self.singleSelectedCode() === null)
                     return false;
                 var singleSelectedCode = self.singleSelectedCode().split(';');
                 if (singleSelectedCode[0] === undefined

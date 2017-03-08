@@ -1,0 +1,27 @@
+.content-1 {
+	margin-left: 25px
+}
+
+#B_INP_001 {
+	width: 370px;
+	border: 1px solid #4F4F4F;
+	border-radius: 5px;
+	padding: 5px 0px
+}
+
+#B_SCH_001 {
+	padding: 0px 20px
+}
+
+#B_BTN_001 {
+	margin-left: 120px;
+}
+
+#B_BTN_002 {
+	margin-left: 80px;
+}
+
+i {
+	margin-top: 50px;
+	margin-left: 38px
+}

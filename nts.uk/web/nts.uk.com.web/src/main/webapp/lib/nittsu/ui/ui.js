@@ -629,18 +629,6 @@ var nts;
                         return parseInt($anyElementInRow.closest('tr').attr('data-row-idx'), 10);
                     }
                     grid.getRowIndexFrom = getRowIndexFrom;
-                    var header;
-                    (function (header) {
-                        function getCell(gridId, columnKey) {
-                            var $headers = $('#' + gridId).igGrid("headersTable");
-                            return $headers.find('#' + gridId + '_' + columnKey);
-                        }
-                        header.getCell = getCell;
-                        function getLabel(gridId, columnKey) {
-                            return getCell(gridId, columnKey).find('span');
-                        }
-                        header.getLabel = getLabel;
-                    })(header = grid.header || (grid.header = {}));
                 })(grid = ig.grid || (ig.grid = {}));
             })(ig = ui_1.ig || (ui_1.ig = {}));
         })(ui = uk.ui || (uk.ui = {}));

@@ -1,27 +1,31 @@
 package nts.uk.ctx.pr.core.app.find.rule.law.tax.residential;
 
 import lombok.Value;
-import nts.uk.ctx.pr.core.dom.rule.law.tax.residential.ResidentalTax;
+import nts.uk.ctx.pr.core.dom.rule.law.tax.residential.ResidentialTax;
+
+/**
+ * 
+ * @author lanlt
+ *
+ */
 @Value
 public class ResidentialTaxDto {
 	private String companyCode;
 	private String resiTaxCode;
+	private String resiTaxAutonomy;
+	private String prefectureCode;
+	private String resiTaxReportCode;
+	private String registeredName;
 	private String companyAccountNo;
 	private String companySpecifiedNo;
 	private String cordinatePostalCode;
 	private String cordinatePostOffice;
-	private String Memo;
-	private String prefectureCode;
-	private String registeredName;
-	private String remark1;
-	private String resiTaxAutonomy;
-	private String resiReportCode;
-//	public ResidentialTaxDto fromDomain(ResidentalTax domain){
-//		return new ResidentialTaxDto(domain.getCompanyCode().v(),
-//				domain.getResiTaxCode().v(), domain.getCompanyAccountNo().v(),
-//				domain.getCompanySpecifiedNo().v(), domain.getCordinatePostalCode().v(),
-//				domain.getCordinatePostOffice().v(), domain.getMemo().v(),
-//				domain.getPrefectureCode().v(), domain.getRegisteredName().v(),
-//				domain.getR, remark2, resiTaxAutonomy, resiReportCode)
-//	}
+	private String memo;
+
+	public static ResidentialTaxDto fromDomain(ResidentialTax domain) {
+		return new ResidentialTaxDto(domain.getCompanyCode().v(), domain.getResiTaxCode().v(),
+				domain.getResiTaxAutonomy().v(), domain.getPrefectureCode().v(), domain.getResiTaxReportCode().v(),
+				domain.getRegisteredName().v(), domain.getCompanyAccountNo().v(), domain.getCompanySpecifiedNo().v(),
+				domain.getCordinatePostalCode().v(), domain.getCordinatePostOffice().v(), domain.getMemo().v());
+	}
 }
