@@ -81,22 +81,8 @@ public class JpaAccidentInsuranceRateRepository extends JpaRepository implements
 	 */
 	@Override
 	public void remove(CompanyCode companyCode, String historyId, Long version) {
-		List<AccidentInsuranceRate> lstAccidentInsuranceRate = findAll(companyCode);
-		if (lstAccidentInsuranceRate != null && !lstAccidentInsuranceRate.isEmpty()) {
-			if (lstAccidentInsuranceRate.get(BEGIN_FIRST).getHistoryId().equals(historyId)) {
-				List<QismtWorkAccidentInsu> lstRateRemove = this.findDataById(companyCode, historyId);
-				this.commandProxy().removeAll(lstRateRemove);
-				if (lstAccidentInsuranceRate.size() >= SIZE_SECOND) {
-					List<QismtWorkAccidentInsu> lstRateUpdate = this.findDataById(companyCode,
-							lstAccidentInsuranceRate.get(BEGIN_SECOND).getHistoryId());
-					for (QismtWorkAccidentInsu qismtWorkAccidentInsu : lstRateUpdate) {
-						qismtWorkAccidentInsu.setEndYm(YearMonth
-								.of(DateTimeConstraints.LIMIT_YEAR.max(), DateTimeConstraints.LIMIT_MONTH.max()).v());
-					}
-					this.commandProxy().updateAll(lstRateUpdate);
-				}
-			}
-		}
+		List<QismtWorkAccidentInsu> lstRateRemove = this.findDataById(companyCode, historyId);
+		this.commandProxy().removeAll(lstRateRemove);
 	}
 
 	/*

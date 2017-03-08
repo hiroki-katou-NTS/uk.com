@@ -4,14 +4,12 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.service.internal;
 
-import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
-import nts.gul.collection.ListUtil;
 import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsuranceRate;
 import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsuranceRateRepository;
 import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.service.UnemployeeInsuranceRateService;
@@ -110,6 +108,7 @@ public class UnemployeeInsuranceRateServiceImpl implements UnemployeeInsuranceRa
 		if (!optionalUnemployeeInsuranceRate.isPresent()) {
 			return true;
 		}
+		//get first data update
 		Optional<UnemployeeInsuranceRate> optionalBetweenUpdate = this.unemployeeInsuranceRateRepo.findBetweenUpdate(
 				rate.getCompanyCode(), optionalUnemployeeInsuranceRate.get().getApplyRange().getStartMonth(),
 				optionalUnemployeeInsuranceRate.get().getHistoryId());

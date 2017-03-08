@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.app.insurance.labor.accidentrate.command;
 
+import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
@@ -52,6 +54,14 @@ public class AccidentInsuranceRateUpdateCommandHandler extends CommandHandler<Ac
 		accidentInsuranceRate.validate();
 		// validate input
 		this.accidentInsuranceRateService.validateDateRangeUpdate(accidentInsuranceRate);
+		//get first by update
+		Optional<AccidentInsuranceRate> optionalUpdate = this.accidentInsuranceRateRepo.findBetweenUpdate(
+				accidentInsuranceRate.getCompanyCode(), accidentInsuranceRate.getApplyRange().getStartMonth(),
+				accidentInsuranceRate.getHistoryId());
+		if (optionalUpdate.isPresent()) {
+			this.accidentInsuranceRateRepo.updateYearMonth(optionalUpdate.get(),
+					accidentInsuranceRate.getApplyRange().getStartMonth().previousMonth());
+		}
 		// connection service update
 		this.accidentInsuranceRateRepo.update(accidentInsuranceRate);
 	}
