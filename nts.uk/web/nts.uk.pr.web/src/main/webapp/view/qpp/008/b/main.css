@@ -1,83 +1,100 @@
-.div1 {
-	width: 700px;
-	border-bottom: grey solid 1px;
-	margin-left: 15px;
-}
-
-.div2 {
-	margin-left: 18px;
-	margin-top: 15px;
-	/* width: 100%; */
-	height: 270px;
-}
-.spanC{
-	margin-bottom: 5px;
-	margin-top: 15px;
-}
-.div2Left {
-	width: 160px;
-	float: left;
-}
-.div2Right{
-	padding-top:110px;
-	float: left;
-	width: 500px;
-	height: 70px
-}
-.div2Bottom{
-	height: 50px;
-}
-.div2Label04{
-	height: 50px;
-}
-
-.tableCheckBox {
+.div-title-page {
 	width: 100%;
+	border-bottom: grey solid 1px;
 }
 
-.tableCheckBox tr {
-	height: 40px !important;
-}
-#B_LBL_001{
-	font-size: 1.2rem !important;
-}
-#B_LBL_004{
-	font-size: 1.2rem !important;
-}
-#B_LBL_005{
-	font-size: 1.2rem !important;
-}
-#B_LBL_008{
-	font-size: 1.2rem !important;
-}
-.divLBL004{
-	border-bottom: grey solid 1px;
-	width: 700px;
-	margin-left: 18px;
-}
-.B_SEL_010{
+.div-title-content {
+	width: auto;
+	height: 35px;
+	border-bottom: #cccccc solid 1px;
 	margin-left: 20px;
-	margin-top: 15px;
+	margin-right: 20px;
+	margin-top: 10px;
 }
-.div4{
-	border-bottom: grey solid 1px;
+
+.div-checkbox-list {
+	margin-left: 45px;
+	height: 270px;
+	margin-bottom: 20px;
+}
+
+/* Lable css*/
+#B_LBL_001 {
+	margin: 10px 10px 0px 10px;
+	float: left;
+}
+
+#B_LBL_002 {
+	margin: 10px 10px 0px 10px;
+	float: right;
+}
+
+#B_LBL_003 {
+	margin: 5px 0px 10px 10px;
+}
+
+#B_LBL_004, #B_LBL_005, #B_LBL_008 {
+	padding-top: 15px;
+}
+
+#B_LBL_006, #B_LBL_007 {
+	margin-left: 120px;
+}
+
+#B_LBL_009, #B_LBL_011 {
+	margin: 10px 0px 0px 40px;
+}
+
+#B_LBL_013 {
+	margin: 10px 0px 5px 30px;
+}
+
+/* Checkbox css*/
+#B_SEL_004 {
+	margin-right: 20px;
+}
+
+#B_SEL_010, #B_SEL_011 {
+	margin: 10px 0px 0px 45px
+}
+
+/* Button css*/
+#B_BTN_001, #B_BTN_002 {
+	margin: 5px 0px 20px 10px;
+}
+
+/* Table css*/
+.tableCheckBox {
+	width: 90% !important;
+}
+
+.tableCheckBox td {
+	padding-top: 5px;
+}
+
+.tableCheckBoxChild {
+	width: 100% !important;
+}
+
+.tableCheckBoxChild td {
+	padding: 5px 0px 5px 30px;
+}
+
+.table_setting_color td {
+	
+}
+
+/* div css*/
+.contents-area-boder {
 	width: 700px;
-	margin-left: 18px;
-	margin-top: 30px;
+	border: 1px solid black;
 }
-.LBL_0607{
-	margin-left: 115px;
+
+.div-checkbox-child {
+	border: 1px solid #cccccc;
+	margin: 10px 30px 15px 30px;
 }
-.divLBL008{
-	border-bottom: grey solid 1px;
-	width: 700px;
-	margin-left: 18px;
-	margin-top: 20px;
-}
-.divBottom{
-	/* margin-top: 150px; */
-}	
-#B_BTN_001{
-	margin-left: 235px;
-	margin-right: 10px;
+
+.div_button_submit {
+	text-align: center;
 }
