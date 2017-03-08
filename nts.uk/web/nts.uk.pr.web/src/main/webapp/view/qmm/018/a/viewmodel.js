@@ -7,7 +7,7 @@ var qmm018;
             var ScreenModel = (function () {
                 function ScreenModel() {
                     var self = this;
-                    self.averagePay = ko.observable(new AveragePay(1, 1, 0, 1));
+                    self.averagePay = ko.observable(new AveragePay(null, null, null, null));
                     self.selectedItemList1 = ko.observableArray([]);
                     self.selectedItemList2 = ko.observableArray([]);
                     self.texteditor1 = ko.observable({
@@ -34,6 +34,18 @@ var qmm018;
                             return s;
                         })
                     });
+                    self.selectedItemList1.subscribe(function (value) {
+                        if (!value.length)
+                            $("#inp-3").ntsError('set', 'ER007');
+                        else
+                            $("#inp-3").ntsError('clear');
+                    });
+                    self.selectedItemList2.subscribe(function (value) {
+                        if (!value.length)
+                            $("#inp-1").ntsError('set', 'ER007');
+                        else
+                            $("#inp-1").ntsError('clear');
+                    });
                     self.isUpdate = false;
                 }
                 ScreenModel.prototype.startPage = function () {
@@ -50,14 +62,10 @@ var qmm018;
                             self.isUpdate = true;
                         }
                         else {
-                            self.averagePay(new AveragePay(0, 0, 0, 0));
+                            self.averagePay(new AveragePay(0, 0, 0, null));
                             self.isUpdate = false;
                         }
                         dfd.resolve();
-                        if (!self.isUpdate) {
-                            $("#inp-3").ntsError('set', 'ER001');
-                            $("#inp-1").ntsError('set', 'ER007');
-                        }
                     }).fail(function (res) {
                     });
                     return dfd.promise();
@@ -70,6 +78,7 @@ var qmm018;
                         qmm018.a.service.qapmt_Ave_Pay_UPD_1(command).done(function (data) {
                             dfd.resolve();
                         }).fail(function (res) {
+                            nts.uk.ui.dialog.alert("Update Fail");
                         });
                     }
                     else {
@@ -88,6 +97,7 @@ var qmm018;
                             });
                             dfd.resolve();
                         }).fail(function (res) {
+                            nts.uk.ui.dialog.alert("Register Fail");
                         });
                     }
                     return dfd.promise();
@@ -109,20 +119,12 @@ var qmm018;
                             if (selectedList().length) {
                                 ko.utils.arrayForEach(selectedList(), function (item) { self.selectedItemList1.push(item); });
                             }
-                            if (!self.selectedItemList2().length)
-                                $("#inp-3").ntsError('set', 'ER001');
-                            else
-                                $("#inp-3").ntsError('clear');
                         }
                         else {
                             self.selectedItemList2.removeAll();
                             if (selectedList().length) {
                                 ko.utils.arrayForEach(selectedList(), function (item) { self.selectedItemList2.push(item); });
                             }
-                            if (!self.selectedItemList2().length)
-                                $("#inp-1").ntsError('set', 'ER007');
-                            else
-                                $("#inp-1").ntsError('clear');
                         }
                     });
                 };

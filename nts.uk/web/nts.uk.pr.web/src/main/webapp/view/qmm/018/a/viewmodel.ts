@@ -8,7 +8,7 @@ module qmm018.a.viewmodel {
         isUpdate: any;
         constructor() {
             var self = this;
-            self.averagePay = ko.observable(new AveragePay(1, 1, 0, 1));
+            self.averagePay = ko.observable(new AveragePay(null, null, null, null));
             self.selectedItemList1 = ko.observableArray([]);
             self.selectedItemList2 = ko.observableArray([]);
             self.texteditor1 = ko.observable({
@@ -24,6 +24,12 @@ module qmm018.a.viewmodel {
                     ko.utils.arrayForEach(self.selectedItemList2(),function(item){if(!s){s=item.name} else {s+=" + "+item.name}});
                     return s;
                 })
+            });
+            self.selectedItemList1.subscribe(function(value){
+                if(!value.length) $("#inp-3").ntsError('set', 'ER007'); else $("#inp-3").ntsError('clear');       
+            });
+            self.selectedItemList2.subscribe(function(value){
+                if(!value.length) $("#inp-1").ntsError('set', 'ER007'); else $("#inp-1").ntsError('clear');       
             });
             self.isUpdate = false;
             
@@ -46,26 +52,24 @@ module qmm018.a.viewmodel {
                             data.exceptionPayRate));
                     self.isUpdate = true;
                 } else {
-                    self.averagePay(new AveragePay(0,0,0,0));
+                    self.averagePay(new AveragePay(0,0,0,null));
                     self.isUpdate = false;
                 }
                 dfd.resolve();
-                if(!self.isUpdate) {
-                $("#inp-3").ntsError('set', 'ER001');
-                $("#inp-1").ntsError('set', 'ER007'); }
             }).fail(function(res) {
 
             });
             return dfd.promise();
         }
         saveData(isUpdate){
-                var self = this;
-                var dfd = $.Deferred();
-                var command = ko.mapping.toJS(self.averagePay());
+            var self = this;
+            var dfd = $.Deferred();
+            var command = ko.mapping.toJS(self.averagePay());
                 if(isUpdate){
                     qmm018.a.service.qapmt_Ave_Pay_UPD_1(command).done(function(data) {
                         dfd.resolve();
                     }).fail(function(res) {
+                        nts.uk.ui.dialog.alert("Update Fail");
                     });
                 } else {
                     qmm018.a.service.qapmt_Ave_Pay_INS_1(command).done(function(data) {
@@ -85,9 +89,10 @@ module qmm018.a.viewmodel {
                         });
                         dfd.resolve();
                     }).fail(function(res) {
+                        nts.uk.ui.dialog.alert("Register Fail");
                     });
                 }
-                return dfd.promise();    
+            return dfd.promise();    
         }
         openSubWindow(n) {
             var self = this;
@@ -105,13 +110,11 @@ module qmm018.a.viewmodel {
                     if(selectedList().length){
                         ko.utils.arrayForEach(selectedList(),function(item){self.selectedItemList1.push(item)});
                     }
-                    if(!self.selectedItemList2().length) $("#inp-3").ntsError('set', 'ER001'); else $("#inp-3").ntsError('clear');
                 } else {
                     self.selectedItemList2.removeAll();
                     if(selectedList().length){
                         ko.utils.arrayForEach(selectedList(),function(item){self.selectedItemList2.push(item)});
                     }
-                    if(!self.selectedItemList2().length) $("#inp-1").ntsError('set', 'ER007'); else $("#inp-1").ntsError('clear');
                 }
             }); 
         }

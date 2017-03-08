@@ -1,9 +1,12 @@
 package nts.uk.ctx.pr.core.app.command.rule.employment.averagepay;
 
+import java.util.Optional;
+
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.core.dom.company.CompanyCode;
@@ -29,7 +32,10 @@ public class UpdateAveragePayCommandHandler extends CommandHandler<UpdateAverage
 			UpdateAveragePayCommand command = context.getCommand();
 		
 			String companyCode = AppContexts.user().companyCode();
-			
+			Optional<AveragePay> avepay = this.averagePayRepository.findByCompanyCode(companyCode);
+			if(!avepay.isPresent()) {
+				throw new BusinessException("Update Fail");
+			}
 			AveragePay averagePay = new AveragePay(
 					new CompanyCode(companyCode),
 					EnumAdaptor.valueOf(command.getAttendDayGettingSet(), AttendDayGettingSet.class), 
