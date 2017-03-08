@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2016 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.core.app.wagetable.command;
@@ -21,9 +21,9 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class WageTableHistoryAddCommandHandler extends CommandHandler<WageTableHistoryAddCommand> {
 
-	/** The certify group repository. */
+	/** The wage table history repo. */
 	@Inject
-	private WageTableHistoryRepository certifyGroupRepository;
+	private WageTableHistoryRepository wageTableHistoryRepo;
 
 	/*
 	 * (non-Javadoc)
@@ -42,7 +42,7 @@ public class WageTableHistoryAddCommandHandler extends CommandHandler<WageTableH
 
 		WageTableHistory certifyGroup = command.toDomain(companyCode);
 
-		this.certifyGroupRepository.add(certifyGroup);
+		this.wageTableHistoryRepo.add(certifyGroup);
 	}
 
 }

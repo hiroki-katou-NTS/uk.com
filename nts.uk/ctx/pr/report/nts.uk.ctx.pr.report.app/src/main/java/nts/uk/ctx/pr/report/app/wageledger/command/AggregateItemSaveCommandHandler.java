@@ -14,8 +14,8 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.pr.report.dom.company.CompanyCode;
 import nts.uk.ctx.pr.report.dom.wageledger.aggregate.WLAggregateItem;
-import nts.uk.ctx.pr.report.dom.wageledger.aggregate.WLAggregateItemCode;
 import nts.uk.ctx.pr.report.dom.wageledger.aggregate.WLAggregateItemRepository;
+import nts.uk.ctx.pr.report.dom.wageledger.aggregate.WLItemSubject;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -36,12 +36,12 @@ public class AggregateItemSaveCommandHandler extends CommandHandler<AggregateIte
 	protected void handle(CommandHandlerContext<AggregateItemSaveCommand> context) {
 		val companyCode = new CompanyCode(AppContexts.user().companyCode());
 		val command = context.getCommand();
+		WLItemSubject subject = command.getSubject().toDomain(companyCode.v());
 		
 		// In case update.
 		if (!command.isCreateMode()) {
 			// Find aggregate item.
-			WLAggregateItem aggregateItem = this.repository.findByCode(companyCode,
-					new WLAggregateItemCode(command.getCode()));
+			WLAggregateItem aggregateItem = this.repository.findByCode(subject);
 			if (aggregateItem == null) {
 				throw new BusinessException("ER026");
 			}
@@ -55,7 +55,7 @@ public class AggregateItemSaveCommandHandler extends CommandHandler<AggregateIte
 		
 		// In case create.
 		// Check duplicate code.
-		if (this.repository.isExist(companyCode, new WLAggregateItemCode(command.getCode()))) {
+		if (this.repository.isExist(subject)) {
 			throw new BusinessException("ER011");
 		}
 		

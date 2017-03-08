@@ -6,42 +6,17 @@ package nts.uk.ctx.pr.report.dom.wageledger.aggregate;
 
 import java.util.Set;
 
-import nts.uk.ctx.pr.report.dom.company.CompanyCode;
-import nts.uk.ctx.pr.report.dom.wageledger.PaymentType;
-import nts.uk.ctx.pr.report.dom.wageledger.WLCategory;
-
 /**
  * The Interface WLAggregateItemGetMemento.
  */
 public interface WLAggregateItemGetMemento {
 	
 	/**
-	 * Gets the company code.
+	 * Gets the subject.
 	 *
-	 * @return the company code
+	 * @return the subject
 	 */
-	CompanyCode getCompanyCode();
-	
-	/**
-	 * Gets the category.
-	 *
-	 * @return the category
-	 */
-	WLCategory getCategory();
-	
-	/**
-	 * Gets the payment type.
-	 *
-	 * @return the payment type
-	 */
-	PaymentType getPaymentType();
-	
-	/**
-	 * Gets the code.
-	 *
-	 * @return the code
-	 */
-	WLAggregateItemCode getCode();
+	WLItemSubject getSubject();
 	
 	/**
 	 * Gets the name.

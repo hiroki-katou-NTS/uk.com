@@ -7,12 +7,9 @@ package nts.uk.ctx.pr.report.infra.repository.wageledger.memento;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import nts.uk.ctx.pr.report.dom.company.CompanyCode;
-import nts.uk.ctx.pr.report.dom.wageledger.PaymentType;
-import nts.uk.ctx.pr.report.dom.wageledger.WLCategory;
-import nts.uk.ctx.pr.report.dom.wageledger.aggregate.WLAggregateItemCode;
 import nts.uk.ctx.pr.report.dom.wageledger.aggregate.WLAggregateItemGetMemento;
 import nts.uk.ctx.pr.report.dom.wageledger.aggregate.WLAggregateItemName;
+import nts.uk.ctx.pr.report.dom.wageledger.aggregate.WLItemSubject;
 import nts.uk.ctx.pr.report.infra.entity.wageledger.QlsptLedgerAggreHead;
 
 /**
@@ -31,50 +28,6 @@ public class JpaWLAggregateItemGetMemento implements WLAggregateItemGetMemento {
 	public JpaWLAggregateItemGetMemento(QlsptLedgerAggreHead entity) {
 		super();
 		this.entity = entity;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see
-	 * nts.uk.ctx.pr.report.dom.wageledger.aggregate.WLAggregateItemGetMemento#
-	 * getCompanyCode()
-	 */
-	@Override
-	public CompanyCode getCompanyCode() {
-		return new CompanyCode(this.entity.getQlsptLedgerAggreHeadPK().getCcd());
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see
-	 * nts.uk.ctx.pr.report.dom.wageledger.aggregate.WLAggregateItemGetMemento#
-	 * getCategory()
-	 */
-	@Override
-	public WLCategory getCategory() {
-		return WLCategory.valueOf(this.entity.getQlsptLedgerAggreHeadPK().getCtgAtr());
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see
-	 * nts.uk.ctx.pr.report.dom.wageledger.aggregate.WLAggregateItemGetMemento#
-	 * getPaymentType()
-	 */
-	@Override
-	public PaymentType getPaymentType() {
-		return PaymentType.valueOf(this.entity.getQlsptLedgerAggreHeadPK().getPayBonusAtr());
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * @see
-	 * nts.uk.ctx.pr.report.dom.wageledger.aggregate.WLAggregateItemGetMemento#
-	 * getCode()
-	 */
-	@Override
-	public WLAggregateItemCode getCode() {
-		return new WLAggregateItemCode(this.entity.getQlsptLedgerAggreHeadPK().getAggregateCd());
 	}
 
 	/*
@@ -121,6 +74,16 @@ public class JpaWLAggregateItemGetMemento implements WLAggregateItemGetMemento {
 		return this.entity.getQlsptLedgerAggreDetailList().stream()
 				.map(item -> item.getQlsptLedgerAggreDetailPK().getItemCd())
 				.collect(Collectors.toSet());
+	}
+
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.pr.report.dom.wageledger.aggregate.WLAggregateItemGetMemento#
+	 * getSubject()
+	 */
+	@Override
+	public WLItemSubject getSubject() {
+		return new WLItemSubject(
+				new JpaWLItemSubjectGetMemento(this.entity.getQlsptLedgerAggreHeadPK()));
 	}
 
 }

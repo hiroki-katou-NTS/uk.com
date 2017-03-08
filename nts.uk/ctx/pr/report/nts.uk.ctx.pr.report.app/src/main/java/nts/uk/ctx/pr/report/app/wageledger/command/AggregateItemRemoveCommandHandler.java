@@ -11,7 +11,6 @@ import javax.transaction.Transactional;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.pr.report.dom.company.CompanyCode;
-import nts.uk.ctx.pr.report.dom.wageledger.aggregate.WLAggregateItemCode;
 import nts.uk.ctx.pr.report.dom.wageledger.aggregate.WLAggregateItemRepository;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -32,7 +31,7 @@ public class AggregateItemRemoveCommandHandler extends CommandHandler<AggregateI
 	@Transactional
 	protected void handle(CommandHandlerContext<AggregateItemRemoveCommand> context) {
 		CompanyCode companyCode = new CompanyCode(AppContexts.user().companyCode());
-		this.repository.remove(companyCode, new WLAggregateItemCode(context.getCommand().getCode()));
+		this.repository.remove(context.getCommand().getSubject().toDomain(companyCode.v()));
 	}
 
 }

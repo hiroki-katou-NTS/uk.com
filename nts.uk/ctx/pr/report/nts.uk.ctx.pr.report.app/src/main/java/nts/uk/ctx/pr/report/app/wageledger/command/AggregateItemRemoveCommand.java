@@ -5,6 +5,7 @@
 package nts.uk.ctx.pr.report.app.wageledger.command;
 
 import lombok.Getter;
+import nts.uk.ctx.pr.report.app.wageledger.command.dto.ItemSubjectDto;
 
 /**
  * The Class AggregateItemRemoveCommand.
@@ -12,6 +13,6 @@ import lombok.Getter;
 @Getter
 public class AggregateItemRemoveCommand {
 	
-	/** The code. */
-	private String code;
+	/** The subject. */
+	private ItemSubjectDto subject; 
 }

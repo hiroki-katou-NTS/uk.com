@@ -101,7 +101,8 @@ public class JpaWageLedgerSettingRepository extends JpaRepository implements Wag
 		}
 		
 		// Create select.
-		cq.multiselect(pkPath.get(QlsptLedgerAggreHeadPK_.aggregateCd), root.get(QlsptLedgerAggreHead_.aggregateName))
+		cq.multiselect(pkPath.get(QlsptLedgerAggreHeadPK_.aggregateCd), root.get(QlsptLedgerAggreHead_.aggregateName),
+				pkPath.get(QlsptLedgerAggreHeadPK_.ctgAtr), pkPath.get(QlsptLedgerAggreHeadPK_.payBonusAtr))
 			.where(conditions.toArray(new Predicate[conditions.size()]))
 			.orderBy(cb.asc(pkPath.get(QlsptLedgerAggreHeadPK_.aggregateCd)));
 		
@@ -117,6 +118,8 @@ public class JpaWageLedgerSettingRepository extends JpaRepository implements Wag
 			return HeaderSettingDto.builder()
 					.code((String) res[0])
 					.name((String) res[1])
+					.category(WLCategory.valueOf((int) res[2]))
+					.paymentType(PaymentType.valueOf((int) res[3]))
 					.build();
 		}).collect(Collectors.toList());
 	}

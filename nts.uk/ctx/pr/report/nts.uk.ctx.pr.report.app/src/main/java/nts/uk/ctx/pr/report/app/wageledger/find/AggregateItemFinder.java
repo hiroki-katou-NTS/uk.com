@@ -10,12 +10,12 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import lombok.val;
+import nts.uk.ctx.pr.report.app.wageledger.command.dto.ItemSubjectDto;
 import nts.uk.ctx.pr.report.app.wageledger.find.dto.AggregateItemDto;
 import nts.uk.ctx.pr.report.app.wageledger.find.dto.HeaderSettingDto;
 import nts.uk.ctx.pr.report.dom.company.CompanyCode;
 import nts.uk.ctx.pr.report.dom.wageledger.PaymentType;
 import nts.uk.ctx.pr.report.dom.wageledger.WLCategory;
-import nts.uk.ctx.pr.report.dom.wageledger.aggregate.WLAggregateItemCode;
 import nts.uk.ctx.pr.report.dom.wageledger.aggregate.WLAggregateItemRepository;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -61,11 +61,11 @@ public class AggregateItemFinder {
 	 * @param code the code
 	 * @return the aggregate item dto
 	 */
-	public AggregateItemDto findDetail(String code) {
+	public AggregateItemDto findDetail(ItemSubjectDto subject) {
+		String companyCode = AppContexts.user().companyCode();
 		
 		// Query data.
-		val aggregateItem = this.repository.findByCode(new CompanyCode(AppContexts.user().companyCode()), 
-				new WLAggregateItemCode(code));
+		val aggregateItem = this.repository.findByCode(subject.toDomain(companyCode));
 		
 		// Return dto.
 		val dto = AggregateItemDto.builder().build();
