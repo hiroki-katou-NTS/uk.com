@@ -156,12 +156,12 @@
             return convertToTree(original, openChar, closeChar, seperatorChar);
         }
         
-        function convertToTree(original: string, openChar: string, closeChar: string, seperatorChar: string): Array<TreeObject>[]{
+        function convertToTree(original: string, openChar: string, closeChar: string, separatorChar: string): Array<TreeObject>[]{
             let result = [];
             while (original.trim().length > 0){  
                 let firstOpenIndex = original.indexOf(openChar);
                 if(firstOpenIndex < 0){
-                    let values = original.split(seperatorChar);
+                    let values = original.split(separatorChar);
                     _.forEach(values, function(value){
                         let object = new TreeObject();
                         object.value = value;
@@ -174,9 +174,9 @@
                     object.value = original.substring(0, firstOpenIndex).trim();
                     let closeIndex = findIndexOfCloseChar(original, openChar, closeChar, firstOpenIndex);
                     if(closeIndex >= 0){
-                        object.children = convertToTree(original.substring(firstOpenIndex + 1, closeIndex).trim(), openChar, closeChar, seperatorChar);
+                        object.children = convertToTree(original.substring(firstOpenIndex + 1, closeIndex).trim(), openChar, closeChar, separatorChar);
                         result.push(object);              
-                        let firstSeperatorIndex = original.indexOf(seperatorChar, closeIndex);
+                        let firstSeperatorIndex = original.indexOf(separatorChar, closeIndex);
                         if(firstSeperatorIndex >= 0){
                             original = original.substring(firstSeperatorIndex + 1, original.length).trim();    
                         }else{

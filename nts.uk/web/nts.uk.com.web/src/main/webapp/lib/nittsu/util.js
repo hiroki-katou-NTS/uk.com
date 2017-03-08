@@ -173,12 +173,12 @@ var nts;
                 return convertToTree(original, openChar, closeChar, seperatorChar);
             }
             util.createTreeFromString = createTreeFromString;
-            function convertToTree(original, openChar, closeChar, seperatorChar) {
+            function convertToTree(original, openChar, closeChar, separatorChar) {
                 var result = [];
                 while (original.trim().length > 0) {
                     var firstOpenIndex = original.indexOf(openChar);
                     if (firstOpenIndex < 0) {
-                        var values = original.split(seperatorChar);
+                        var values = original.split(separatorChar);
                         _.forEach(values, function (value) {
                             var object = new TreeObject();
                             object.value = value;
@@ -192,9 +192,9 @@ var nts;
                         object.value = original.substring(0, firstOpenIndex).trim();
                         var closeIndex = findIndexOfCloseChar(original, openChar, closeChar, firstOpenIndex);
                         if (closeIndex >= 0) {
-                            object.children = convertToTree(original.substring(firstOpenIndex + 1, closeIndex).trim(), openChar, closeChar, seperatorChar);
+                            object.children = convertToTree(original.substring(firstOpenIndex + 1, closeIndex).trim(), openChar, closeChar, separatorChar);
                             result.push(object);
-                            var firstSeperatorIndex = original.indexOf(seperatorChar, closeIndex);
+                            var firstSeperatorIndex = original.indexOf(separatorChar, closeIndex);
                             if (firstSeperatorIndex >= 0) {
                                 original = original.substring(firstSeperatorIndex + 1, original.length).trim();
                             }
