@@ -19,7 +19,7 @@ import nts.uk.ctx.pr.core.app.find.retirement.payitem.dto.RetirementPayItemDto;
  */
 @Path("pr/core/retirement/payitem")
 @Produces("application/json")
-public class Qrm007WebService extends WebService{
+public class RetirementPayItemWebService extends WebService{
 	@Inject
 	private RetirementPayItemFinder retirementPayItemFinder;
 	
