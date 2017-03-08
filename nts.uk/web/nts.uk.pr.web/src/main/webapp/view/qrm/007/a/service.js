@@ -5,12 +5,12 @@ var qrm007;
         var service;
         (function (service) {
             var paths = {
-                getRetirementPayItemList: "pr/core/retirement/payitem/findBycompanyCode",
-                updateRetirementPayItem: "pr/core/retirement/payitem/update"
+                qremt_Retire_Pay_Item_SEL_1: "pr/core/retirement/payitem/findBycompanyCode",
+                qremt_Retire_Pay_Item_UPD_1: "pr/core/retirement/payitem/update"
             };
-            function getRetirementPayItemList() {
+            function qremt_Retire_Pay_Item_SEL_1() {
                 var dfd = $.Deferred();
-                nts.uk.request.ajax(paths.getRetirementPayItemList)
+                nts.uk.request.ajax(paths.qremt_Retire_Pay_Item_SEL_1)
                     .done(function (res) {
                     dfd.resolve(res);
                 })
@@ -19,10 +19,10 @@ var qrm007;
                 });
                 return dfd.promise();
             }
-            service.getRetirementPayItemList = getRetirementPayItemList;
-            function updateRetirementPayItem(command) {
+            service.qremt_Retire_Pay_Item_SEL_1 = qremt_Retire_Pay_Item_SEL_1;
+            function qremt_Retire_Pay_Item_UPD_1(command) {
                 var dfd = $.Deferred();
-                nts.uk.request.ajax(paths.updateRetirementPayItem, command)
+                nts.uk.request.ajax(paths.qremt_Retire_Pay_Item_UPD_1, command)
                     .done(function (res) {
                     dfd.resolve(res);
                 })
@@ -31,7 +31,7 @@ var qrm007;
                 });
                 return dfd.promise();
             }
-            service.updateRetirementPayItem = updateRetirementPayItem;
+            service.qremt_Retire_Pay_Item_UPD_1 = qremt_Retire_Pay_Item_UPD_1;
         })(service = a.service || (a.service = {}));
     })(a = qrm007.a || (qrm007.a = {}));
 })(qrm007 || (qrm007 = {}));

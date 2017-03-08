@@ -20,18 +20,18 @@ module qrm007.a.viewmodel {
                     if (self.dirty.isDirty()) {
                         nts.uk.ui.dialog.confirm("Do you want to change Item ?").
                         ifYes(function(){
+                            $('#inp-1').ntsError('clear');
                             self.currentCode(ui.row.id);
                             self.currentItem(RetirementPayItem.converToObject(_.find(self.retirementPayItemList(), function(o) { return o.itemCode == self.currentCode(); }))); 
                             self.dirty = new nts.uk.ui.DirtyChecker(self.currentItem);
-                            $('#inp-1').ntsError('clear');
                         }).ifNo(function(){
                             self.currentCode(ui.selectedRows[0].id);
                         });
                     } else {
+                        $('#inp-1').ntsError('clear');
                         self.currentCode(ui.row.id);
                         self.currentItem(RetirementPayItem.converToObject(_.find(self.retirementPayItemList(), function(o) { return o.itemCode == self.currentCode(); })));  
                         self.dirty = new nts.uk.ui.DirtyChecker(self.currentItem);
-                        $('#inp-1').ntsError('clear');
                     }
                 });
                 
@@ -43,7 +43,7 @@ module qrm007.a.viewmodel {
         findRetirementPayItemList(notFirstTime) {
             var self = this;
             var dfd = $.Deferred();
-            qrm007.a.service.getRetirementPayItemList().
+            qrm007.a.service.qremt_Retire_Pay_Item_SEL_1().
             done(function(data) {
                 self.retirementPayItemList.removeAll();
                 if(data.length){
@@ -67,7 +67,7 @@ module qrm007.a.viewmodel {
             var self = this;
             var dfd = $.Deferred();
             var command = ko.mapping.toJS(self.currentItem());
-            qrm007.a.service.updateRetirementPayItem(command).
+            qrm007.a.service.qremt_Retire_Pay_Item_UPD_1(command).
             done(function(data) { 
                 self.findRetirementPayItemList(true); 
                 nts.uk.ui.dialog.alert("Update Success");
