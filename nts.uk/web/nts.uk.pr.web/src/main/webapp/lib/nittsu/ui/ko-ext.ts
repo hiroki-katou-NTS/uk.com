@@ -1917,6 +1917,14 @@ module nts.uk.ui.koExtentions {
                         constraintText += (constraintText.length > 0) ? "/" : "";
                         constraintText += uk.text.getCharType(primitiveValue).buildConstraintText(constraint.maxLength);
                         break;
+                    case 'Decimal':
+                        constraintText += (constraintText.length > 0) ? "/" : "";
+                        constraintText += constraint.min + "～" + constraint.max; 
+                        break;
+                    case 'Integer':
+                        constraintText += (constraintText.length > 0) ? "/" : "";
+                        constraintText += constraint.min + "～" + constraint.max; 
+                        break;
                     default:
                         constraintText += 'ERROR';
                         break;
