@@ -4,9 +4,17 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.app.wagetable.command.dto;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
- * The Class WageTableHist.
+ * The Class BaseMode.
  */
-public interface ElementModeDto {
+@Getter
+@Setter
+public class BaseModeDto implements ElementModeDto {
+
+	/** The type. */
+	private Integer type;
 
 }

@@ -17,12 +17,6 @@ import nts.uk.ctx.pr.core.dom.wagetable.ElementType;
 public class CertifyMode extends BaseMode {
 
 	/** The items. */
-	
-	/**
-	 * Sets the items.
-	 *
-	 * @param items the new items
-	 */
 	@Setter
 	private List<CodeItem> items;
 
@@ -36,12 +30,14 @@ public class CertifyMode extends BaseMode {
 	/**
 	 * Instantiates a new certify mode.
 	 *
-	 * @param type the type
-	 * @param items the items
+	 * @param type
+	 *            the type
+	 * @param items
+	 *            the items
 	 */
 	public CertifyMode(ElementType type, List<CodeItem> items) {
 		super(type);
 		this.items = items;
 	}
-	
+
 }

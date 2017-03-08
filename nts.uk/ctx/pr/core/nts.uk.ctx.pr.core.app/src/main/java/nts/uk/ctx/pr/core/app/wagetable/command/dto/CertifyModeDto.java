@@ -4,9 +4,26 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.app.wagetable.command.dto;
 
+import java.util.List;
+
+import lombok.Getter;
+import lombok.Setter;
+
 /**
- * The Class WageTableHist.
+ * The Class CertifyMode.
  */
-public interface ElementModeDto {
+@Getter
+@Setter
+public class CertifyModeDto extends BaseModeDto {
+
+	/** The items. */
+
+	/**
+	 * Sets the items.
+	 *
+	 * @param items
+	 *            the new items
+	 */
+	private List<CodeItemDto> items;
 
 }

@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2016 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.core.app.wagetable.command;
@@ -22,7 +22,7 @@ import nts.uk.shr.com.context.AppContexts;
 public class WageTableHistoryUpdateCommandHandler
 		extends CommandHandler<WageTableHistoryUpdateCommand> {
 
-	/** The certify group repository. */
+	/** The wage table history repo. */
 	@Inject
 	private WageTableHistoryRepository wageTableHistoryRepo;
 

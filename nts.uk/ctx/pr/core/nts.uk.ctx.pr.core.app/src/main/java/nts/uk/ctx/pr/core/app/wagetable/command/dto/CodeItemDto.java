@@ -2,24 +2,23 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.pr.core.dom.wagetable.element;
+package nts.uk.ctx.pr.core.app.wagetable.command.dto;
 
 import lombok.Getter;
+import lombok.Setter;
+import nts.uk.ctx.pr.core.dom.wagetable.element.BaseItem;
 
 /**
- * The Class LevelItem.
+ * The Class CodeItem.
  */
 @Getter
-public class LevelItem extends CodeItem {
+@Setter
+public class CodeItemDto implements BaseItem {
 
-	/**
-	 * Instantiates a new level item.
-	 *
-	 * @param levelCode the level code
-	 * @param uuid the uuid
-	 */
-	public LevelItem(String levelCode, String uuid) {
-		super(levelCode, uuid);
-	}
+	/** The reference code. */
+	private String referenceCode;
+
+	/** The uuid. */
+	private String uuid;
 
 }

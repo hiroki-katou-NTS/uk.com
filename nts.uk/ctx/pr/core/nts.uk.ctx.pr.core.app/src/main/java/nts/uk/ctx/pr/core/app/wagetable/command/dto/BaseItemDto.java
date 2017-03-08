@@ -7,6 +7,7 @@ package nts.uk.ctx.pr.core.app.wagetable.command.dto;
 /**
  * The Class WageTableHist.
  */
-public interface ElementModeDto {
-
+public interface BaseItemDto {
+	
+	
 }
