@@ -6,47 +6,63 @@ module qrm001.a.viewmodel {
         currentEmployee: KnockoutObservable<EmployeeInfo>;
         currentEmployeeCode: KnockoutObservable<any>;
         currentEmployeeIndex: KnockoutObservable<any>;
+        currentEmployeeIndexOld: KnockoutObservable<any>;
         previous: KnockoutObservable<any>;
         next: KnockoutObservable<any>;
-        
+        dirty: nts.uk.ui.DirtyChecker;
         
         //Retirement Payment Process Value
-        SEL_007: KnockoutObservable<any>;
-        INP_014: KnockoutObservable<any>;
-        SEL_001: KnockoutObservable<any>;
-        INP_002: KnockoutObservable<any>;
-        INP_003: KnockoutObservable<any>;
-        INP_004: KnockoutObservable<any>;
-        INP_005: KnockoutObservable<any>;
-        INP_006: KnockoutObservable<any>;
-        INP_007: KnockoutObservable<any>;
-        INP_008: KnockoutObservable<any>;
-        SEL_004: KnockoutObservable<any>;
-        SEL_005: KnockoutObservable<any>;
-        INP_009: KnockoutObservable<any>;
-        INP_010: KnockoutObservable<any>;
-        INP_011: KnockoutObservable<any>;
+        date: KnockoutObservable<any>;
+        personCom: KnockoutObservable<PersonCom>;
         retirementPaymentKeyList: KnockoutObservableArray<RetirementPaymentKey>;
-        retirementPaymentKeyCurrent: KnockoutObservable<RetirementPaymentKey>;
-        retirementPaymentInfoList: KnockoutObservableArray<RetirementPaymentInfo>;
-        retirementPaymentInfoCurrent: KnockoutObservable<RetirementPaymentInfo>;
-        transferBankMoneyList: KnockoutObservableArray<Array<TransferBankMoney>>;
-        transferBankMoneyCurrent: KnockoutObservableArray<TransferBankMoney>;
-        selectList10: KnockoutObservableArray<any>;
-        
-        bankTransferList: KnockoutObservableArray<BankTransferInfo>;
-        moneyTransferList: KnockoutObservableArray<TransferBankMoney>;
+        retirementPaymentList: KnockoutObservableArray<RetirementPayment>;
+        retirementPaymentCurrent: KnockoutObservable<RetirementPayment>;
+        bankTransferList: KnockoutObservableArray<PersonBankAccount>;
         fullSetSelect: KnockoutObservableArray<any>;
+        select6List: KnockoutObservableArray<any>;
+        select6Code: KnockoutObservableArray<KnockoutObservable<any>>;
         isUpdate: KnockoutObservable<any>;
         constructor() {
             var self = this;
+            var dfd = $.Deferred();
+            //Retirement Payment Process
+            self.bankTransferList = ko.observableArray([
+                new PersonBankAccount('bank1', 'branch1', '0001'),
+                new PersonBankAccount('bank2', 'branch2', '0002'),
+                new PersonBankAccount('bank3', 'branch3', '0003'),
+                new PersonBankAccount('bank4', 'branch4', '0004'),
+                new PersonBankAccount('bank5', 'branch5', '0005')
+            ]);
+            self.fullSetSelect = ko.observableArray([
+                    { code: 0, name: '使用しない' },
+                    { code: 1, name: '支給1' },
+                    { code: 2, name: '支給2' },
+                    { code: 3, name: '支給3' },
+                    { code: 4, name: '支給4' },
+                    { code: 5, name: '支給5' }]);
+            self.isUpdate = ko.observable(false);
+            self.retirementPaymentKeyList = ko.observableArray([new RetirementPaymentKey("A0001","2016-12-28",12)]);
+            self.retirementPaymentList = ko.observableArray([]);
+            self.retirementPaymentCurrent = ko.observable(new RetirementPayment(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0) );
+            self.select6List = ko.observableArray(self.refreshSelect(self.fullSetSelect, self.retirementPaymentCurrent, 5));
+            self.select6Code = ko.observableArray([ko.observable(1),ko.observable(2),ko.observable(3),ko.observable(4),ko.observable(5)]);
+            self.select6Code().forEach(function(item,index){
+                self.select6Code()[index].subscribe(function(value){
+                    self.retirementPaymentCurrent()["optionSet"+(index+1)](value);  
+                    self.retirementPaymentCurrent()["money"+(index+1)](value?value:null); 
+                    self.select6List(self.refreshSelect(self.fullSetSelect, self.retirementPaymentCurrent, 5));
+                });        
+            });
             //Employee Process 
              self.employeeList = ko.observableArray([
                 new EmployeeInfo('A0001','A'),
                 new EmployeeInfo('A0002','B'),
                 new EmployeeInfo('A0003','C')
             ]);
+            self.personCom = ko.observable(new PersonCom('A',0,0,4,4,9));
+            self.date = ko.observable("2016-12-28");
             self.currentEmployeeIndex = ko.observable(0);
+            self.currentEmployeeIndexOld = ko.observable(0);
             self.currentEmployeeCode = ko.observable('A0001');
             self.currentEmployee = ko.observable(self.employeeList()[self.currentEmployeeIndex()]);
             self.previous = ko.observable(false);
@@ -56,96 +72,43 @@ module qrm001.a.viewmodel {
                 self.next((value === (self.employeeList().length-1))?false:true);
                 self.currentEmployee(self.employeeList()[value]);
                 self.currentEmployeeCode(self.currentEmployee().personId());
-                self.getRetirementPaymentByPersonId(self.currentEmployeeCode());
-            });
-            
-            //Retirement Payment Process
-            self.fullSetSelect = ko.observableArray([
-                { code: 0, name: '使用しない' },
-                { code: 1, name: '支給1' },
-                { code: 2, name: '支給2' },
-                { code: 3, name: '支給3' },
-                { code: 4, name: '支給4' },
-                { code: 5, name: '支給5' }]);
-            self.bankTransferList = ko.observableArray([
-                new BankTransferInfo('bank1', 'branch1', '0001'),
-                new BankTransferInfo('bank2', 'branch2', '0002'),
-                new BankTransferInfo('bank3', 'branch3', '0003'),
-                new BankTransferInfo('bank4', 'branch4', '0004'),
-                new BankTransferInfo('bank5', 'branch5', '0005')
-            ]);
-            self.isUpdate = ko.observable(false);
-            self.SEL_007 = ko.observable();
-            self.INP_014 = ko.observable();
-            self.SEL_001 = ko.observable(); 
-            self.INP_002 = ko.observable();
-            self.INP_003 = ko.observable();
-            self.INP_004 = ko.observable();
-            self.INP_005 = ko.observable();
-            self.INP_006 = ko.observable();
-            self.INP_007 = ko.observable();
-            self.INP_008 = ko.observable();
-            self.SEL_004 = ko.observable(2);
-            self.SEL_005 = ko.observable();
-            self.INP_009 = ko.observable();
-            self.INP_010 = ko.observable();
-            self.INP_011 = ko.observable();
-            self.SEL_007.subscribe(function(value){ 
-                        let index = _.findIndex(self.retirementPaymentKeyList(),function(o){return o.payDate == value});
-                        self.retirementPaymentKeyCurrent(self.retirementPaymentKeyList()[index]);
-                        self.retirementPaymentInfoCurrent(self.retirementPaymentInfoList()[index]);
-                        self.transferBankMoneyCurrent(self.transferBankMoneyList()[index]); 
-                        self.INP_014(value);
-                        self.SEL_001(self.retirementPaymentInfoCurrent().trialPeriodSet()); 
-                        self.INP_002(self.retirementPaymentInfoCurrent().exclusionYears());
-                        self.INP_003(self.retirementPaymentInfoCurrent().additionalBoardYears());
-                        self.INP_004(self.retirementPaymentInfoCurrent().boardYears());
-                        self.INP_005(self.retirementPaymentInfoCurrent().totalPaymentMoney());
-                        self.INP_006(self.retirementPaymentInfoCurrent().deduction1Money());
-                        self.INP_007(self.retirementPaymentInfoCurrent().deduction2Money());
-                        self.INP_008(self.retirementPaymentInfoCurrent().deduction3Money());
-                        self.SEL_004(self.retirementPaymentInfoCurrent().retirementPayOption());
-                        self.INP_009(self.retirementPaymentInfoCurrent().incomeTaxMoney());
-                        self.INP_010(self.retirementPaymentInfoCurrent().cityTaxMoney());
-                        self.INP_011(self.retirementPaymentInfoCurrent().prefectureTaxMoney());
-                        self.SEL_005(self.retirementPaymentInfoCurrent().taxCalculationMethod());
+                if(self.dirty.isDirty()){
+                    nts.uk.ui.dialog.confirm("Do you want to say \"Hello World!\"?").ifYes(function(){
+                        self.getRetirementPaymentByPersonId(self.currentEmployeeCode()).done(function(){
+                            dfd.resolve();
+                        }).fail(function(){
+                        }); 
+                    }).ifNo(function(){
+                    }); 
+                } else {
+                    self.getRetirementPaymentByPersonId(self.currentEmployeeCode()).done(function(){
+                        dfd.resolve();
+                    }).fail(function(){
+                            
                     });
-            self.SEL_005.subscribe(function(value){
-                if(!value){
-                    self.autoCaculator();
-                    $(".caculator").css('background-color', '#ffc000');
-                } else $(".caculator").css('background-color', '#cee6ff');    
-            });
-            self.INP_005.subscribe(function(valueinp5){if(!self.SEL_005()){self.autoCaculator();}});
-            self.INP_006.subscribe(function(valueinp6){if(!self.SEL_005()){self.autoCaculator();}});
-            self.INP_007.subscribe(function(valueinp7){if(!self.SEL_005()){self.autoCaculator();}});
-            self.INP_008.subscribe(function(valueinp8){if(!self.SEL_005()){self.autoCaculator();}});
-            self.SEL_004.subscribe(function(valuesel4){if(!self.SEL_005()){self.autoCaculator();}}); 
-            self.retirementPaymentKeyList = ko.observableArray([]);
-            self.retirementPaymentKeyCurrent = ko.observable(new RetirementPaymentKey(null,null));
-            self.retirementPaymentInfoList = ko.observableArray([]);
-            self.retirementPaymentInfoCurrent = ko.observable(new RetirementPaymentInfo(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0) );
-            self.transferBankMoneyList = ko.observableArray([[]]);
-            self.transferBankMoneyCurrent = ko.observableArray([
-                new TransferBankMoney(0,null),new TransferBankMoney(0,null),new TransferBankMoney(0,null),new TransferBankMoney(0,null),new TransferBankMoney(0,null)
-            ]);
-            self.selectList10 = ko.observableArray(self.refreshSelect(self.fullSetSelect, self.transferBankMoneyCurrent, 5));
-            self.transferBankMoneyCurrent().forEach(function(item){
-                item.optionSet.subscribe(function(value){
-                    if(value){
-                        item.money(null);
-                        self.selectList10(self.refreshSelect(self.fullSetSelect, self.transferBankMoneyCurrent, 5));
-                    } else {
-                        item.money(null);
-                        self.selectList10(self.refreshSelect(self.fullSetSelect, self.transferBankMoneyCurrent, 5));
-                    }
-                });
+                }
             });
         }
         startPage(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
             self.getRetirementPaymentByPersonId(self.currentEmployeeCode()).done(function(){
+                $(document).delegate("#combo-box7", "igcomboselectionchanging", function (evt, ui) {
+                    if(self.dirty.isDirty()){
+                    nts.uk.ui.dialog.confirm("Do you want to say \"Hello World!\"?").ifYes(function(){
+                        self.date(ui.items[0].data.payDate);
+                        self.retirementPaymentCurrent(_.find(self.retirementPaymentList(),function(o){return o.payDate() == self.date();}));
+                        self.dirty = new nts.uk.ui.DirtyChecker(self.retirementPaymentCurrent);    
+                    }).ifNo(function(){
+                        self.date(ui.currentItems[0].data.payDate);
+                        self.retirementPaymentCurrent(_.find(self.retirementPaymentList(),function(o){return o.payDate() == self.date();}));
+                    });
+                    } else {
+                        self.date(ui.items[0].data.payDate);
+                        self.retirementPaymentCurrent(_.find(self.retirementPaymentList(),function(o){return o.payDate() == self.date();}));
+                        self.dirty = new nts.uk.ui.DirtyChecker(self.retirementPaymentCurrent);    
+                    }
+                });
                 dfd.resolve();    
             }).fail(function(){
                 dfd.resolve();    
@@ -160,19 +123,19 @@ module qrm001.a.viewmodel {
             var self = this;
             self.currentEmployeeIndex(self.currentEmployeeIndex()-1);
         }
-        filter(dataset: KnockoutObservableArray<any>,currentSet: KnockoutObservableArray<TransferBankMoney>,index: number): any{
+        filter(dataset: KnockoutObservableArray<any>,currentItem: KnockoutObservable<RetirementPayment>,index: number): any{
             var self = this;
             return _.filter(dataset(), function(o) { 
                     return  o.code == 0 ||
-                            o.code == currentSet()[index].optionSet() ||
-                            o.code !== currentSet()[0].optionSet() && 
-                            o.code !== currentSet()[1].optionSet() &&
-                            o.code !== currentSet()[2].optionSet() &&  
-                            o.code !== currentSet()[3].optionSet() && 
-                            o.code !== currentSet()[4].optionSet();
+                            o.code == currentItem()["bankTransferOption"+(index+1)]() ||
+                            o.code !== currentItem().bankTransferOption1() && 
+                            o.code !== currentItem().bankTransferOption2() &&
+                            o.code !== currentItem().bankTransferOption3() &&  
+                            o.code !== currentItem().bankTransferOption4() && 
+                            o.code !== currentItem().bankTransferOption5();
             });
         }
-        refreshSelect(source1: KnockoutObservableArray<any>, source2: KnockoutObservableArray<TransferBankMoney>, length: number): any{
+        refreshSelect(source1: KnockoutObservableArray<any>, source2: KnockoutObservable<RetirementPayment>, length: number): any{
             var self = this;
             let array = [];
             for(let i=0;i<length;i++){
@@ -180,36 +143,22 @@ module qrm001.a.viewmodel {
             }
             return array;        
         }
-        manualCaculator(){
+        openDialog(){
             var self = this;
-            let totalPaymentMoney = parseInt(self.INP_005());
-            let deduction1 = parseInt(self.INP_006());
-            let deduction2 = parseInt(self.INP_007());
-            let deduction3 = parseInt(self.INP_008());
-            let incomeTax = parseInt(self.INP_009());
-            let cityTax = parseInt(self.INP_010());
-            let prefectureTax = parseInt(self.INP_011());
-            let totalDeclarationMoney = 
-                (deduction1?deduction1:0)+
-                (deduction2?deduction2:0)+
-                (deduction3?deduction3:0)+
-                (incomeTax?incomeTax:0)+
-                (cityTax?cityTax:0)+
-                (prefectureTax?prefectureTax:0);
-            self.retirementPaymentInfoCurrent().totalDeclarationMoney(totalDeclarationMoney);
-            self.retirementPaymentInfoCurrent().actualRecieveMoney(totalPaymentMoney - totalDeclarationMoney); 
+            console.log(self.retirementPaymentCurrent());
+            nts.uk.ui.windows.sub.modal('/view/qrm/001/b/index.xhtml', {title: '入力欄の背景色について', dialogClass: "no-close"});
         }
-        autoCaculator(){
-            var self = this;
+        static autoCaculator(retirementPayment: RetirementPayment){
+            var self = retirementPayment;
             let year; // LBL003
             let reduction; // Khau tru
-            let totalPaymentMoney = parseInt(self.INP_005());
+            let totalPaymentMoney = parseInt(self.totalPaymentMoney());
             let rs = (totalPaymentMoney-reduction)/2;
             let tax = (rs<0)?rs:0; // Thue nghi viec
-            let payOption = self.SEL_004();
-            let deduction1 = parseInt(self.INP_006());
-            let deduction2 = parseInt(self.INP_007());
-            let deduction3 = parseInt(self.INP_008());
+            let payOption = self.retirementPayOption();
+            let deduction1 = parseInt(self.deduction1Money());
+            let deduction2 = parseInt(self.deduction2Money());
+            let deduction3 = parseInt(self.deduction3Money());
             let incomeTax;
             if(payOption==2){
                 incomeTax = totalPaymentMoney*20.42/100;
@@ -250,49 +199,30 @@ module qrm001.a.viewmodel {
                 (incomeTax?incomeTax:0)+
                 (cityTax?cityTax:0)+
                 (prefectureTax?prefectureTax:0));
-            self.INP_009(incomeTax);
-            self.INP_010(cityTax);
-            self.INP_011(prefectureTax);
-            self.retirementPaymentInfoCurrent().totalDeclarationMoney(totalDeclarationMoney);
-            self.retirementPaymentInfoCurrent().actualRecieveMoney(totalPaymentMoney - totalDeclarationMoney); 
+            self.incomeTaxMoney(incomeTax);
+            self.cityTaxMoney(cityTax);
+            self.prefectureTaxMoney(prefectureTax);
+            self.totalDeclarationMoney(totalDeclarationMoney);
+            self.actualRecieveMoney(totalPaymentMoney - totalDeclarationMoney);     
         }
-        openDialog(){
-            nts.uk.ui.windows.sub.modal('/view/qrm/001/b/index.xhtml', {title: '入力欄の背景色について', dialogClass: "no-close"});
-        }
-        createCommand(): any{
-            var self = this;
-            let command = {
-                personId: self.retirementPaymentKeyCurrent().personId(),
-                payDate: self.isUpdate()?self.SEL_007():self.INP_014(),
-                trialPeriodSet: self.SEL_001(),
-                exclusionYears: self.INP_002(),
-                additionalBoardYears: self.INP_003(),
-                boardYears: self.INP_004(),
-                totalPaymentMoney: self.INP_005(),
-                deduction1Money: self.INP_006(),
-                deduction2Money: self.INP_007(),
-                deduction3Money: self.INP_008(),
-                retirementPayOption: self.SEL_004(),
-                taxCalculationMethod: self.SEL_005(),
-                incomeTaxMoney: self.INP_009(),
-                cityTaxMoney: self.INP_010(),
-                prefectureTaxMoney: self.INP_011(),
-                totalDeclarationMoney: self.retirementPaymentInfoCurrent().totalDeclarationMoney(),
-                actualRecieveMoney: self.retirementPaymentInfoCurrent().actualRecieveMoney(),
-                bankTransferOption1: self.transferBankMoneyCurrent()[0].optionSet(),
-                Option1Money: self.transferBankMoneyCurrent()[0].money(),
-                bankTransferOption2: self.transferBankMoneyCurrent()[1].optionSet(),
-                Option2Money: self.transferBankMoneyCurrent()[1].money(),
-                bankTransferOption3: self.transferBankMoneyCurrent()[2].optionSet(),
-                Option3Money: self.transferBankMoneyCurrent()[2].money(),
-                bankTransferOption4: self.transferBankMoneyCurrent()[3].optionSet(),
-                Option4Money: self.transferBankMoneyCurrent()[3].money(),
-                bankTransferOption5: self.transferBankMoneyCurrent()[4].optionSet(),
-                Option5Money: self.transferBankMoneyCurrent()[4].money(),  
-                withholdingMeno: self.retirementPaymentInfoCurrent().withholdingMeno(),
-                statementMemo: self.retirementPaymentInfoCurrent().statementMemo()
-            };
-            return command;
+        static manualCaculator(retirementPayment: RetirementPayment){
+            var self = retirementPayment;
+            let totalPaymentMoney = parseInt(self.totalPaymentMoney());
+            let deduction1 = parseInt(self.deduction1Money());
+            let deduction2 = parseInt(self.deduction2Money());
+            let deduction3 = parseInt(self.deduction3Money());
+            let incomeTax = parseInt(self.incomeTaxMoney());
+            let cityTax = parseInt(self.cityTaxMoney());
+            let prefectureTax = parseInt(self.prefectureTaxMoney());
+            let totalDeclarationMoney = 
+                (deduction1?deduction1:0)+
+                (deduction2?deduction2:0)+
+                (deduction3?deduction3:0)+
+                (incomeTax?incomeTax:0)+
+                (cityTax?cityTax:0)+
+                (prefectureTax?prefectureTax:0);
+            self.totalDeclarationMoney(totalDeclarationMoney);
+            self.actualRecieveMoney(totalPaymentMoney - totalDeclarationMoney);         
         }
         getRetirementPaymentByPersonId(personId){
             var self = this;
@@ -300,46 +230,17 @@ module qrm001.a.viewmodel {
             qrm001.a.service.getRetirementPaymentList(personId).done(function(data) {
                 if(!data.length){ 
                     self.isUpdate(false); 
-                    self.retirementPaymentKeyList([new RetirementPaymentKey(personId,'')]);
-                    self.retirementPaymentInfoCurrent(new RetirementPaymentInfo(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,null,null));
-                    self.transferBankMoneyCurrent([
-                        new TransferBankMoney(0,null),new TransferBankMoney(0,null),new TransferBankMoney(0,null),new TransferBankMoney(0,null),new TransferBankMoney(0,null)
-                    ]);
-                    self.SEL_007('');
-                    self.INP_014('');
-                    self.SEL_001(0); 
-                    self.INP_002(0);
-                    self.INP_003(0);
-                    self.INP_004(0);
-                    self.INP_005(0);
-                    self.INP_006(0);
-                    self.INP_007(0);
-                    self.INP_008(0);
-                    self.SEL_004(0);
-                    self.SEL_005(0);
-                    self.INP_009(0);
-                    self.INP_010(0);
-                    self.INP_011(0);
-                    self.SEL_005.subscribe(function(value){
-                        if(!value){
-                            self.autoCaculator();
-                            $(".caculator").css('background-color', '#ffc000');
-                        } else $(".caculator").css('background-color', '#cee6ff');    
-                    });
-                    self.INP_005.subscribe(function(valueinp5){if(!self.SEL_005()){self.autoCaculator();}});
-                    self.INP_006.subscribe(function(valueinp6){if(!self.SEL_005()){self.autoCaculator();}});
-                    self.INP_007.subscribe(function(valueinp7){if(!self.SEL_005()){self.autoCaculator();}});
-                    self.INP_008.subscribe(function(valueinp8){if(!self.SEL_005()){self.autoCaculator();}});
-                    self.SEL_004.subscribe(function(valuesel4){if(!self.SEL_005()){self.autoCaculator();}}); 
-                    self.selectList10(self.refreshSelect(self.fullSetSelect, self.transferBankMoneyCurrent, 5));
+                    self.retirementPaymentCurrent(new RetirementPayment(0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0) );
+                    self.dirty = new nts.uk.ui.DirtyChecker(self.retirementPaymentCurrent);
                 }
                 else { 
                     self.isUpdate(true);
-                    let length = self.retirementPaymentKeyList().length;
-                    self.retirementPaymentInfoList.removeAll();
-                    self.transferBankMoneyList.removeAll();
+                    self.retirementPaymentKeyList.removeAll();
+                    self.retirementPaymentList.removeAll();
                     data.forEach(function(item) {
-                        self.retirementPaymentInfoList.push(new RetirementPaymentInfo(
+                        self.retirementPaymentList.push(new RetirementPayment(
+                            item.personId,
+                            item.payDate,
                             item.trialPeriodSet,
                             item.exclusionYears,
                             item.additionalBoardYears,
@@ -355,22 +256,30 @@ module qrm001.a.viewmodel {
                             item.prefectureTaxMoney,
                             item.totalDeclarationMoney,
                             item.actualRecieveMoney,
+                            item.bankTransferOption1,
+                            item.option1Money,
+                            item.bankTransferOption2,
+                            item.option2Money,
+                            item.bankTransferOption3,
+                            item.option3Money,
+                            item.bankTransferOption4,
+                            item.option4Money,
+                            item.bankTransferOption5,
+                            item.option5Money,
                             item.withholdingMeno,
                             item.statementMemo));
-                        self.transferBankMoneyList.push([
-                            new TransferBankMoney(item.bankTransferOption1, item.option1Money),
-                            new TransferBankMoney(item.bankTransferOption2, item.option2Money),
-                            new TransferBankMoney(item.bankTransferOption3, item.option3Money),
-                            new TransferBankMoney(item.bankTransferOption4, item.option4Money),
-                            new TransferBankMoney(item.bankTransferOption5, item.option5Money)]);
                         self.retirementPaymentKeyList.push(new RetirementPaymentKey(
                             item.personId,
-                            item.payDate));
+                            item.payDate,
+                            item.totalDeclarationMoney));
                     });
-                    for(let i=0;i<length;i++) {
-                        self.retirementPaymentKeyList.remove(self.retirementPaymentKeyList()[i]);    
-                    }
-                    self.SEL_007(_.first(self.retirementPaymentKeyList()).payDate);
+                    self.retirementPaymentCurrent(_.first(self.retirementPaymentList()));
+                    self.select6List(self.refreshSelect(self.fullSetSelect, self.retirementPaymentCurrent, 5));
+                    self.select6Code().forEach(function(item,index){
+                        self.select6Code()[index](self.retirementPaymentCurrent()["bankTransferOption"+(index+1)]());        
+                    });
+                    self.date(_.first(self.retirementPaymentList()).payDate);
+                    self.dirty = new nts.uk.ui.DirtyChecker(self.retirementPaymentCurrent);
                 }
                 dfd.resolve();
             }).fail(function(res) {
@@ -378,12 +287,19 @@ module qrm001.a.viewmodel {
             });
             return dfd.promise();        
         }
+        static changeColor(value: any, retirementPayment: RetirementPayment){
+            var self = this;
+            if(!value){
+                self.autoCaculator(retirementPayment);
+                $(".caculator").css('background-color', '#ffc000');
+            } else $(".caculator").css('background-color', '#cee6ff');         
+        }
         saveData(isUpdate){
             var self = this;
             var dfd = $.Deferred();
-            var command = self.createCommand();
+            self.retirementPaymentCurrent().payDate(self.date());
+            var command = ko.mapping.toJS(self.retirementPaymentCurrent());
             if(isUpdate) {
-                nts.uk.ui.dialog.confirm("Do you want to Update ?").ifYes(function(){
                     qrm001.a.service.updateRetirementPaymentInfo(command).done(function(data){
                         nts.uk.ui.dialog.alert("Update Success");
                         dfd.resolve();
@@ -391,33 +307,41 @@ module qrm001.a.viewmodel {
                         nts.uk.ui.dialog.alert("Update Fail");
                         dfd.resolve();    
                     });   
-                }).ifNo(function(){});
             } else {
-                nts.uk.ui.dialog.confirm("Do you want to Register ?").ifYes(function(){
                     qrm001.a.service.registerRetirementPaymentInfo(command).done(function(data){
                         nts.uk.ui.dialog.alert("Register Success");
                         dfd.resolve(); 
                     }).fail(function(res){
                         nts.uk.ui.dialog.alert("Register Fail");
                         dfd.resolve();     
-                    });  
-                }).ifNo(function(){});
+                    })
             }
             return dfd.promise();
         }
         deleteData(){
             var self = this;
             var dfd = $.Deferred();
-            var command = self.createCommand();
-            nts.uk.ui.dialog.confirm("Do you want to Remove ?").ifYes(function(){
+            self.retirementPaymentCurrent().payDate(self.date());
+            var command = ko.mapping.toJS(self.retirementPaymentCurrent());
+            if(self.dirty.isDirty()){
+                nts.uk.ui.dialog.confirm("Do you want to Remove ?").ifYes(function(){
+                    qrm001.a.service.removeRetirementPaymentInfo(command).done(function(data){
+                        nts.uk.ui.dialog.alert("Remove Success");
+                        dfd.resolve(); 
+                    }).fail(function(res){
+                        nts.uk.ui.dialog.alert("Remove Fail");
+                        dfd.resolve();
+                    });  
+                }).ifNo(function(){});   
+            } else {
                 qrm001.a.service.removeRetirementPaymentInfo(command).done(function(data){
-                    nts.uk.ui.dialog.alert("Remove Success");
-                    dfd.resolve(); 
-                }).fail(function(res){
-                    nts.uk.ui.dialog.alert("Remove Success");
-                    dfd.resolve();
-                });  
-            }).ifCancel(function(){});   
+                        nts.uk.ui.dialog.alert("Remove Success");
+                        dfd.resolve(); 
+                    }).fail(function(res){
+                        nts.uk.ui.dialog.alert("Remove Fail");
+                        dfd.resolve();
+                    });  
+            }    
             return dfd.promise();  
         }
     }
@@ -431,7 +355,24 @@ module qrm001.a.viewmodel {
         }   
     }
     
-    class BankTransferInfo {
+    class PersonCom {
+        scd: KnockoutObservable<any>; 
+        startDate: KnockoutObservable<any>;
+        endDate: KnockoutObservable<any>;
+        adoptType: KnockoutObservable<any>;
+        quitFiringAtr: KnockoutObservable<any>;
+        quitFiringReason_atr: KnockoutObservable<any>;
+        constructor(scd: any, startDate: any, endDate: any, adoptType: number, quitFiringAtr: any, quitFiringReason_atr: any){
+            this.scd = ko.observable(scd);
+            this.startDate = ko.observable(startDate);
+            this.endDate = ko.observable(endDate);  
+            this.adoptType = ko.observable(adoptType);
+            this.quitFiringAtr = ko.observable(quitFiringAtr);
+            this.quitFiringReason_atr = ko.observable(quitFiringReason_atr);
+        }   
+    }
+    
+    class PersonBankAccount {
         bankName: KnockoutObservable<any>;
         branchName: KnockoutObservable<any>;
         accountNumber: KnockoutObservable<any>;
@@ -445,13 +386,17 @@ module qrm001.a.viewmodel {
     class RetirementPaymentKey {
         personId: KnockoutObservable<any>;
         payDate: any;
-        constructor(personId: any, payDate: any){
-            this.personId = ko.observable(personId);    
-            this.payDate = payDate;
+        totalDeclarationMoney: KnockoutObservable<any>;
+        constructor(personId: any, payDate: any, totalDeclarationMoney: any){
+            this.personId = ko.observable(personId);
+            this.payDate = payDate;  
+            this.totalDeclarationMoney = ko.observable(totalDeclarationMoney);  
         }   
     }
 
-    class RetirementPaymentInfo {
+    class RetirementPayment {
+        personId: KnockoutObservable<any>;
+        payDate: KnockoutObservable<any>;
         trialPeriodSet: KnockoutObservable<any>;
         exclusionYears: KnockoutObservable<any>;
         additionalBoardYears: KnockoutObservable<any>;
@@ -467,9 +412,21 @@ module qrm001.a.viewmodel {
         prefectureTaxMoney: KnockoutObservable<any>;
         totalDeclarationMoney: KnockoutObservable<any>;
         actualRecieveMoney: KnockoutObservable<any>;
+        bankTransferOption1: KnockoutObservable<any>;
+        option1Money: KnockoutObservable<any>;
+        bankTransferOption2: KnockoutObservable<any>;
+        option2Money: KnockoutObservable<any>;
+        bankTransferOption3: KnockoutObservable<any>;
+        option3Money: KnockoutObservable<any>;
+        bankTransferOption4: KnockoutObservable<any>;
+        option4Money: KnockoutObservable<any>;
+        bankTransferOption5: KnockoutObservable<any>;
+        option5Money: KnockoutObservable<any>;
         withholdingMeno: KnockoutObservable<any>;
         statementMemo: KnockoutObservable<any>;
         constructor(
+            personId: any,
+            payDate: any,
             trialPeriodSet: any,
             exclusionYears: any,
             additionalBoardYears: any,
@@ -485,9 +442,21 @@ module qrm001.a.viewmodel {
             prefectureTaxMoney: any,
             totalDeclarationMoney: any,
             actualRecieveMoney: any,
+            bankTransferOption1: any,
+            option1Money: any,
+            bankTransferOption2: any,
+            option2Money: any,
+            bankTransferOption3: any,
+            option3Money: any,
+            bankTransferOption4: any,
+            option4Money: any,
+            bankTransferOption5: any,
+            option5Money: any,
             withholdingMeno: any,
             statementMemo: any ){
                 var self = this;
+                self.personId = ko.observable(personId);
+                self.payDate = ko.observable(payDate);
                 self.trialPeriodSet = ko.observable(trialPeriodSet);
                 self.exclusionYears = ko.observable(exclusionYears);
                 self.additionalBoardYears = ko.observable(additionalBoardYears);
@@ -503,17 +472,26 @@ module qrm001.a.viewmodel {
                 self.prefectureTaxMoney = ko.observable(prefectureTaxMoney);     
                 self.totalDeclarationMoney = ko.observable(totalDeclarationMoney);
                 self.actualRecieveMoney = ko.observable(actualRecieveMoney);
+                self.bankTransferOption1 = ko.observable(bankTransferOption1);
+                self.option1Money = ko.observable(self.bankTransferOption1()?option1Money:null);
+                self.bankTransferOption2 = ko.observable(bankTransferOption2);
+                self.option2Money = ko.observable(self.bankTransferOption2()?option2Money:null);
+                self.bankTransferOption3 = ko.observable(bankTransferOption3);
+                self.option3Money = ko.observable(self.bankTransferOption3()?option3Money:null);
+                self.bankTransferOption4 = ko.observable(bankTransferOption4);
+                self.option4Money = ko.observable(self.bankTransferOption4()?option4Money:null);
+                self.bankTransferOption5 = ko.observable(bankTransferOption5);
+                self.option5Money = ko.observable(self.bankTransferOption5()?option5Money:null);
                 self.withholdingMeno = ko.observable(withholdingMeno);
                 self.statementMemo = ko.observable(statementMemo);
+                qrm001.a.viewmodel.ScreenModel.autoCaculator(self);
+                qrm001.a.viewmodel.ScreenModel.changeColor(self.taxCalculationMethod(), self);
+                self.taxCalculationMethod.subscribe(function(value){qrm001.a.viewmodel.ScreenModel.changeColor(value, self);});
+                self.totalPaymentMoney.subscribe(function(valueinp5){if(!self.taxCalculationMethod()){qrm001.a.viewmodel.ScreenModel.autoCaculator(self);}});
+                self.deduction1Money.subscribe(function(valueinp6){if(!self.taxCalculationMethod()){qrm001.a.viewmodel.ScreenModel.autoCaculator(self);}});
+                self.deduction2Money.subscribe(function(valueinp7){if(!self.taxCalculationMethod()){qrm001.a.viewmodel.ScreenModel.autoCaculator(self);}});
+                self.deduction3Money.subscribe(function(valueinp8){if(!self.taxCalculationMethod()){qrm001.a.viewmodel.ScreenModel.autoCaculator(self);}});
+                self.retirementPayOption.subscribe(function(valuesel4){if(!self.taxCalculationMethod()){qrm001.a.viewmodel.ScreenModel.autoCaculator(self);}}); 
         }
-    }
-    
-    class TransferBankMoney {
-        optionSet: KnockoutObservable<any>;
-        money: KnockoutObservable<any>;
-        constructor(optionSet: any, money: any){
-            this.optionSet = ko.observable(optionSet);
-            this.money = ko.observable(money);    
-        }   
     }
 }

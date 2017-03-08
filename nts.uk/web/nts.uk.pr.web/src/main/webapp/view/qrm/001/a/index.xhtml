@@ -33,7 +33,7 @@
 						<div class="cell">
 							<span> 
 								<input data-bind="ntsTextEditor: {
-									value: currentEmployeeCode,
+									value: retirementPaymentCurrent().personId,
 									constraint: 'ResidenceCode',
 									option: { textmode: 'text', textalign: 'left' },
 									required: true }" />
@@ -41,7 +41,7 @@
 							<span id="symbol">&#8629;</span>
 						</div>
 						<div class="cell">
-							<span data-bind="text: currentEmployee().name"></span>
+							<span data-bind="text: retirementPaymentCurrent().personId"></span>
 						</div>
 						<div class="cell">
 							<img id="person-img" src="data:image/png;base64,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" />
@@ -51,12 +51,12 @@
 						</div>
 						<div class="cell">
 							<div>
-							<div id="combo-box7" data-bind="ntsComboBox: {
-												options: retirementPaymentKeyList,
-												optionsValue: 'payDate',
-												value: SEL_007,
-												optionsText: 'payDate',
-												enable: isUpdate() } "></div>	
+								<div id="combo-box7" data-bind="ntsComboBox: {
+											options: retirementPaymentKeyList,
+											optionsValue: 'payDate',
+											value: date,
+											optionsText: 'payDate',
+											enable: isUpdate }"></div>
 							</div>
 						</div>
 					</div>
@@ -78,7 +78,7 @@
 									<tr>
 										<td>
 											<input id="inp-14" data-bind="ntsTextEditor: {
-														value: INP_014,
+														value: retirementPaymentCurrent().payDate,
 														constraint: 'ResidenceCode',
 														option: { textmode: 'text' },
 														required: true, 
@@ -101,8 +101,8 @@
 									</thead>
 									<tbody>
 										<tr>
-											<td class="const"></td>
-											<td class="const"></td>
+											<td class="const" data-bind="text: personCom().startDate"></td>
+											<td class="const" data-bind="text: personCom().endDate"></td>
 											<td>
 												<div id="combo-box1" data-bind="ntsComboBox: {
 													options: ko.observableArray([
@@ -110,14 +110,14 @@
 										                { code: 1, name: '試用期間あり' }
 										            ]),
 													optionsValue: 'code',
-													value: SEL_001,
+													value: retirementPaymentCurrent().trialPeriodSet,
 													optionsText: 'name',
 													enable: true }"></div>	
 											</td>
 											<td>
 												<div>
 													<input id="inp-2" data-bind="ntsNumberEditor: {
-														value: INP_002,
+														value: retirementPaymentCurrent().exclusionYears,
 														constraint: 'ResidenceCode',
 														option: { textmode: 'text' },
 														required: true }" />
@@ -143,7 +143,7 @@
 											<td>
 												<div>
 													<input id="inp-3" data-bind="ntsNumberEditor: {
-														value: INP_003,
+														value: retirementPaymentCurrent().additionalBoardYears,
 														constraint: 'ResidenceCode',
 														option: { textmode: 'text' },
 														required: true }" />
@@ -152,13 +152,26 @@
 											<td>
 												<div>
 													<input id="inp-4" data-bind="ntsNumberEditor: {
-														value: INP_004,
+														value: retirementPaymentCurrent().boardYears,
 														constraint: 'ResidenceCode',
 														option: { textmode: 'text' },
 														required: true }" />
 												</div>
 											</td>
-											<td class="const"></td>
+											<td class="const">
+												<div id="static-combo-box1" class="static-combo-box" data-bind="ntsComboBox: {
+														options: ko.observableArray([
+											                { code: 0, name: 'なし' },
+											                { code: 1, name: '定期採用' },
+											                { code: 2, name: '中途採用' },
+											                { code: 3, name: '臨時採用' },
+											                { code: 4, name: '転籍受入' }
+											            ]),
+														optionsValue: 'code',
+														value: personCom().adoptType,
+														optionsText: 'name',
+														columns: [{ prop: 'name', length: 4 }] }"></div>
+											</td>
 										</tr>
 									</tbody>
 								</table>
@@ -176,8 +189,40 @@
 								</thead>
 								<tbody>
 									<tr>
-										<td class="const"></td>
-										<td class="const"></td>
+										<td class="const">
+												<div id="static-combo-box2" class="static-combo-box" data-bind="ntsComboBox: {
+														options: ko.observableArray([
+											                { code: 1, name: '退職' },
+											                { code: 2, name: '転籍' },
+											                { code: 3, name: '解雇' },
+											                { code: 4, name: '定年' }
+											            ]),
+														optionsValue: 'code',
+														value: personCom().quitFiringAtr,
+														optionsText: 'name',
+														columns: [{ prop: 'name', length: 2 }] }"></div>
+										</td>
+										<td class="const">
+												<div id="static-combo-box3" class="static-combo-box" data-bind="ntsComboBox: {
+														options: ko.observableArray([
+											                { code: 1, name: '自己都合による退職' },
+											                { code: 2, name: '会社の勧奨による退職' },
+											                { code: 3, name: '定年による退職' },
+											                { code: 4, name: '契約期間の満了による退職' },
+											                { code: 5, name: '移籍出向による退職' },
+											                { code: 6, name: 'その他理由による退職' },
+											                { code: 7, name: '天災その他やむを得ない理由による解雇' },
+											                { code: 8, name: '会社都合による解雇' },
+											                { code: 9, name: '職務命令に対する重大違反行為による解雇' },
+											                { code: 10, name: '業務について不正な行為による解雇' },
+											                { code: 11, name: '勤務不良であることによる解雇' },
+											                { code: 12, name: 'その他理由による解雇' }
+											            ]),
+														optionsValue: 'code',
+														value: personCom().quitFiringReason_atr,
+														optionsText: 'name',
+														columns: [{ prop: 'name', length: 20 }] }"></div>
+										</td>
 									</tr>
 								</tbody>
 							</table>
@@ -198,7 +243,7 @@
 											<td>
 												<div>
 													<input id="inp-5" data-bind="ntsNumberEditor: {
-														value: INP_005,
+														value: retirementPaymentCurrent().totalPaymentMoney,
 														constraint: 'ResidenceCode',
 														option: { textmode: 'text' },
 														required: true }" />
@@ -217,7 +262,7 @@
 									</thead>
 									<tbody>
 										<tr>
-											<td class="caculator" data-bind="text: retirementPaymentInfoCurrent().totalDeclarationMoney"></td>
+											<td class="caculator" data-bind="text: retirementPaymentCurrent().totalDeclarationMoney"></td>
 										</tr>
 									</tbody>
 								</table>
@@ -231,7 +276,7 @@
 									</thead>
 									<tbody>
 										<tr>
-											<td class="caculator" data-bind="text: retirementPaymentInfoCurrent().actualRecieveMoney"></td>
+											<td class="caculator" data-bind="text: retirementPaymentCurrent().actualRecieveMoney"></td>
 										</tr>
 									</tbody>
 								</table>
@@ -252,7 +297,7 @@
 											<td>
 												<div>
 													<input id="inp-6" data-bind="ntsNumberEditor: {
-														value: INP_006,
+														value: retirementPaymentCurrent().deduction1Money,
 														constraint: 'ResidenceCode',
 														option: { textmode: 'text' },
 														required: true }" />
@@ -261,7 +306,7 @@
 											<td>
 												<div>
 													<input id="inp-7" data-bind="ntsNumberEditor: {
-														value: INP_007,
+														value: retirementPaymentCurrent().deduction2Money,
 														constraint: 'ResidenceCode',
 														option: { textmode: 'text' },
 														required: true }" />
@@ -270,7 +315,7 @@
 											<td>
 												<div>
 													<input id="inp-8" data-bind="ntsNumberEditor: {
-														value: INP_008,
+														value: retirementPaymentCurrent().deduction3Money,
 														constraint: 'ResidenceCode',
 														option: { textmode: 'text' },
 														required: true }" />
@@ -298,9 +343,9 @@
 										                { code: 2, name: '申告書無し（税率　一律20.42%）' }
 										            ]),
 													optionsValue: 'code',
-													value: SEL_004,
+													value: retirementPaymentCurrent().retirementPayOption,
 													optionsText: 'name',
-													enable: Boolean(!SEL_005()) }"></span>	
+													enable: Boolean(!retirementPaymentCurrent().taxCalculationMethod()) }"></span>	
 											</td>
 											<td>
 												<div id="combo-box5" data-bind="ntsComboBox: {
@@ -309,7 +354,7 @@
 										                { code: 1, name: '手入力' }
 										            ]),
 													optionsValue: 'code',
-													value: SEL_005,
+													value: retirementPaymentCurrent().taxCalculationMethod,
 													optionsText: 'name',
 													enable: true }"></div>	
 											</td>
@@ -329,37 +374,37 @@
 											<td>
 												<div>
 													<input id="inp-9" data-bind="ntsNumberEditor: {
-														value: INP_009,
+														value: retirementPaymentCurrent().incomeTaxMoney,
 														constraint: '',
 														option: { textmode: 'text' },
 														required: true,
-														enable: Boolean(SEL_005()) }" />
+														enable: Boolean(retirementPaymentCurrent().taxCalculationMethod()) }" />
 												</div>
 											</td>
 											<td>
 												<div>
 													<input id="inp-10" data-bind="ntsNumberEditor: {
-														value: INP_010,
+														value: retirementPaymentCurrent().cityTaxMoney,
 														constraint: 'ResidenceCode',
 														option: { textmode: 'text' },
 														required: true,
-														enable: Boolean(SEL_005()) }" />
+														enable: Boolean(retirementPaymentCurrent().taxCalculationMethod()) }" />
 												</div>
 											</td>
 											<td>
 												<div>
 													<input id="inp-11" data-bind="ntsNumberEditor: {
-														value: INP_011,
+														value: retirementPaymentCurrent().prefectureTaxMoney,
 														constraint: 'ResidenceCode',
 														option: { textmode: 'text' },
 														required: true,
-														enable: Boolean(SEL_005()) }" />
+														enable: Boolean(retirementPaymentCurrent().taxCalculationMethod()) }" />
 												</div>
 											</td>
 										</tr>
 									</tbody>
 								</table>
-								<button id="btn-2" data-bind="click: manualCaculator, enable: SEL_005">計算結果の確認</button>
+								<button id="btn-2" data-bind="click: function(){retirementPaymentCurrent().manualCaculator(retirementPaymentCurrent());}, enable: retirementPaymentCurrent().taxCalculationMethod()">計算結果の確認</button>
 							</div>
 						</div>
 						<div>
@@ -376,27 +421,119 @@
 									</tr>
 								</thead>
 								
-								<tbody data-bind="foreach: transferBankMoneyCurrent">
+								<tbody>
 									<tr>
 										<td>
-											<span id="combo-box10" data-bind="ntsComboBox: {
-													options: $parent.selectList10()[$index()],
+											<span class="combo-box10" data-bind="ntsComboBox: {
+													options: select6List()[0],
 													optionsValue: 'code',
-													value: optionSet,
+													value: select6Code()[0],
 													optionsText: 'name',
 													enable: true }"></span>	
 										</td>
-										<td><span data-bind="text: Boolean(optionSet())?$parent.bankTransferList()[optionSet()-1].bankName:null, visible: Boolean(optionSet())"></span></td>
-										<td><span data-bind="text: Boolean(optionSet())?$parent.bankTransferList()[optionSet()-1].branchName:null, visible: Boolean(optionSet())"></span></td>
-										<td><span data-bind="text: Boolean(optionSet())?$parent.bankTransferList()[optionSet()-1].accountNumber:null, visible: Boolean(optionSet())"></span></td>
+										<td><span data-bind="text: select6Code()[0]()?bankTransferList()[select6Code()[0]()-1].bankName:null"></span></td>
+										<td><span data-bind="text: select6Code()[0]()?bankTransferList()[select6Code()[0]()-1].branchName:null"></span></td>
+										<td><span data-bind="text: select6Code()[0]()?bankTransferList()[select6Code()[0]()-1].accountNumber:null"></span></td>
 										<td>
 											<span>
 												<input data-bind="ntsNumberEditor: {
-													value: money,
+													value: retirementPaymentCurrent().option1Money,
 													constraint: 'ResidenceCode',
 													option: { textmode: 'text' },
 													required: true,
-													enable: Boolean(optionSet()) }" />
+													enable: Boolean(select6Code()[0]()) }" />
+											</span>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<span class="combo-box10" data-bind="ntsComboBox: {
+													options: select6List()[1],
+													optionsValue: 'code',
+													value: select6Code()[1],
+													optionsText: 'name',
+													enable: true }"></span>	
+										</td>
+										<td><span data-bind="text: select6Code()[1]()?bankTransferList()[select6Code()[1]()-1].bankName:null"></span></td>
+										<td><span data-bind="text: select6Code()[1]()?bankTransferList()[select6Code()[1]()-1].branchName:null"></span></td>
+										<td><span data-bind="text: select6Code()[1]()?bankTransferList()[select6Code()[1]()-1].accountNumber:null"></span></td>
+										<td>
+											<span>
+												<input data-bind="ntsNumberEditor: {
+													value: retirementPaymentCurrent().option2Money,
+													constraint: 'ResidenceCode',
+													option: { textmode: 'text' },
+													required: true,
+													enable: Boolean(select6Code()[1]()) }" />
+											</span>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<span class="combo-box10" data-bind="ntsComboBox: {
+													options: select6List()[2],
+													optionsValue: 'code',
+													value: select6Code()[2],
+													optionsText: 'name',
+													enable: true }"></span>	
+										</td>
+										<td><span data-bind="text: select6Code()[2]()?bankTransferList()[select6Code()[2]()-1].bankName:null"></span></td>
+										<td><span data-bind="text: select6Code()[2]()?bankTransferList()[select6Code()[2]()-1].branchName:null"></span></td>
+										<td><span data-bind="text: select6Code()[2]()?bankTransferList()[select6Code()[2]()-1].accountNumber:null"></span></td>
+										<td>
+											<span>
+												<input data-bind="ntsNumberEditor: {
+													value: retirementPaymentCurrent().option3Money,
+													constraint: 'ResidenceCode',
+													option: { textmode: 'text' },
+													required: true,
+													enable: Boolean(select6Code()[2]()) }" />
+											</span>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<span class="combo-box10" data-bind="ntsComboBox: {
+													options: select6List()[3],
+													optionsValue: 'code',
+													value: select6Code()[3],
+													optionsText: 'name',
+													enable: true }"></span>	
+										</td>
+										<td><span data-bind="text: select6Code()[3]()?bankTransferList()[select6Code()[3]()-1].bankName:null"></span></td>
+										<td><span data-bind="text: select6Code()[3]()?bankTransferList()[select6Code()[3]()-1].branchName:null"></span></td>
+										<td><span data-bind="text: select6Code()[3]()?bankTransferList()[select6Code()[3]()-1].accountNumber:null"></span></td>
+										<td>
+											<span>
+												<input data-bind="ntsNumberEditor: {
+													value: retirementPaymentCurrent().option4Money,
+													constraint: 'ResidenceCode',
+													option: { textmode: 'text' },
+													required: true,
+													enable: Boolean(select6Code()[3]()) }" />
+											</span>
+										</td>
+									</tr>
+									<tr>
+										<td>
+											<span class="combo-box10" data-bind="ntsComboBox: {
+													options: select6List()[4],
+													optionsValue: 'code',
+													value: select6Code()[4],
+													optionsText: 'name',
+													enable: true }"></span>	
+										</td>
+										<td><span data-bind="text: select6Code()[4]()?bankTransferList()[select6Code()[4]()-1].bankName:null"></span></td>
+										<td><span data-bind="text: select6Code()[4]()?bankTransferList()[select6Code()[4]()-1].branchName:null"></span></td>
+										<td><span data-bind="text: select6Code()[4]()?bankTransferList()[select6Code()[4]()-1].accountNumber:null"></span></td>
+										<td>
+											<span>
+												<input data-bind="ntsNumberEditor: {
+													value: retirementPaymentCurrent().option5Money,
+													constraint: 'ResidenceCode',
+													option: { textmode: 'text' },
+													required: true,
+													enable: Boolean(select6Code()[4]()) }" />
 											</span>
 										</td>
 									</tr>
@@ -409,20 +546,18 @@
 							<div>
 								<textarea
 									data-bind="ntsMultilineEditor: {
-									value: retirementPaymentInfoCurrent().withholdingMeno,
+									value: retirementPaymentCurrent().withholdingMeno,
 									constraint: 'ResidenceCode',
-									option: { resizeable: true, textalign: 'left' },
-									required: true }" />
+									option: { resizeable: true, textalign: 'left' }}" />
 							</div>
 							<p class="title-label">退職所得の源泉徴収票、摘要欄記載事項</p>
 							<hr id="hr-11" class="table-division" align="left" />
 							<div>
 								<textarea
 									data-bind="ntsMultilineEditor: {
-									value: retirementPaymentInfoCurrent().statementMemo,
+									value: retirementPaymentCurrent().statementMemo,
 									constraint: 'ResidenceCode',
-									option: { resizeable: true, textalign: 'left' },
-									required: true }" />
+									option: { resizeable: true, textalign: 'left' }}" />
 							</div>
 						</div>
 					</div>

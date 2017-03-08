@@ -129,11 +129,14 @@ table { margin-top: -4px; }
 #table-2 tbody td:NTH-CHILD(2), #inp-4 { width: 80px; }
 #table-2 tbody td:NTH-CHILD(1) input { padding-left: 10px; padding-right: 10px; }
 #table-2 tbody td:NTH-CHILD(2) input { padding-left: 10px; padding-right: 10px; }
+#static-combo-box1 {width: 100px; height: 20px;} 
 
 #hr-3 { width: 498px; }
 #table-3 { width: 500px; }
 #table-3 tbody tr { height: 24px; }
 #table-3 tbody td:NTH-CHILD(1) { width: 100px; }
+#static-combo-box2 {width: 150px; height: 20px;} 
+#static-combo-box3 {height: 20px;}
 
 #hr-4, #hr-5, #hr-6 { width: 163px; }
 #table-4, #table-5, #table-6 { width: 165px; }
@@ -169,7 +172,7 @@ table { margin-top: -4px; }
 	padding-left: 10px;
 	padding-right: 10px;
 }
-#combo-box10 { width: 120px; height: 18px; }
+.combo-box10 { width: 120px; height: 18px; }
 #hr-11 { width: 718px; }
 
 textarea {
@@ -231,5 +234,9 @@ textarea {
 
 .ntsControl .nts-input {
 	border-radius: 0;
+}
+
+.static-combo-box .ui-igcombo-buttonicon .ui-icon-triangle-1-s .ui-icon {
+	background-image: none;
 }
 
