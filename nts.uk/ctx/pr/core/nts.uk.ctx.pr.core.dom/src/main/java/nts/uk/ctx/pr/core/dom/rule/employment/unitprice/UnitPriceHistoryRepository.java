@@ -9,11 +9,12 @@ import java.util.Optional;
 
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.core.dom.company.CompanyCode;
+import nts.uk.ctx.pr.core.dom.base.simplehistory.SimpleHistoryRepository;
 
 /**
  * The Interface UnitPriceHistoryRepository.
  */
-public interface UnitPriceHistoryRepository {
+public interface UnitPriceHistoryRepository extends SimpleHistoryRepository<UnitPrice, UnitPriceHistory> {
 
 	/**
 	 * Adds the.

@@ -180,7 +180,9 @@ public class JpaUnitPriceHistorySetMemento implements UnitPriceHistorySetMemento
 	 */
 	@Override
 	public void setMemo(Memo memo) {
-		this.typeValue.setMemo(memo.v());
+		if (memo != null) {
+			this.typeValue.setMemo(memo.v());
+		}
 	}
 
 	/*

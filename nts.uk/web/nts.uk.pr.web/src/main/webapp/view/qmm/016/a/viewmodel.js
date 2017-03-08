@@ -20,7 +20,7 @@ var nts;
                             var ScreenModel = (function (_super) {
                                 __extends(ScreenModel, _super);
                                 function ScreenModel() {
-                                    _super.call(this, qmm016.service.instance);
+                                    _super.call(this, 'test', qmm016.service.instance);
                                     var self = this;
                                     self.tabs = ko.observableArray([
                                         { id: 'tab-1', title: '基本情報', content: '#tab-content-1', enable: ko.observable(true), visible: ko.observable(true) },
@@ -47,7 +47,7 @@ var nts;
                                     self.selectedDimensionType = ko.observable(0);
                                 }
                                 return ScreenModel;
-                            }(view.base.simlehistory.viewmodel.ScreenBaseModel));
+                            }(view.base.simplehistory.viewmodel.ScreenBaseModel));
                             viewmodel.ScreenModel = ScreenModel;
                         })(viewmodel = a.viewmodel || (a.viewmodel = {}));
                     })(a = qmm016.a || (qmm016.a = {}));

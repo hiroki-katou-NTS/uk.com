@@ -1,4 +1,4 @@
-module nts.uk.pr.view.base.simlehistory {
+module nts.uk.pr.view.base.simplehistory {
     export module model {
         /**
          * Contains master model.
@@ -19,6 +19,7 @@ module nts.uk.pr.view.base.simlehistory {
              */
             historyList: T[];
         }
+        
         
         export interface HistoryModel {
             /**
@@ -43,7 +44,22 @@ module nts.uk.pr.view.base.simlehistory {
          * Services.
          */
         export interface Service<T extends model.MasterModel<V>, V extends model.HistoryModel> {
+            /**
+             * Load master model list.
+             */
             loadMasterModelList(): JQueryPromise<Array<T>>;
+
+            /**
+             * Create year month.
+             * Return: Promise of created history uuid.
+             */
+            createHistory(masterCode: string, startYearMonth: number, isCopyFromLatest: boolean): JQueryPromise<V>;
+            
+            /**
+             * Delete history.
+             * @param historyUuid history uuid.
+             */
+            deleteHistory(masterCode: string, historyUuid: string): JQueryPromise<void>;
         }
 
         /**
@@ -51,8 +67,10 @@ module nts.uk.pr.view.base.simlehistory {
          */
         export interface Path {
             historyMasterPath: string;
+            createHisotyPath: string;
+            deleteHistoryPath: string;
         }
-        
+
         /**
          * Simple base service.
          * Provide load master with path.
@@ -70,6 +88,29 @@ module nts.uk.pr.view.base.simlehistory {
             loadMasterModelList(): JQueryPromise<Array<T>> {
                 var self = this;
                 return nts.uk.request.ajax(self.path.historyMasterPath);
+            }
+
+            /**
+             * @see Service.
+             */
+            createHistory(masterCode: string, startYearMonth: number, isCopyFromLatest: boolean): JQueryPromise<V> {
+                var self = this;
+                return nts.uk.request.ajax(self.path.createHisotyPath, {
+                    masterCode: masterCode,
+                    startYearMonth: startYearMonth,
+                    copyFromLatest: isCopyFromLatest 
+                });
+            }
+
+            /**
+             * @see Service.
+             */
+            deleteHistory(masterCode: string, historyUuid: string): JQueryPromise<void> {
+                var self = this;
+                return nts.uk.request.ajax(self.path.deleteHistoryPath, {
+                    masterCode: masterCode,
+                    historyUuid: historyUuid
+                });
             }
         }
     }

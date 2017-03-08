@@ -8,22 +8,34 @@ var nts;
             (function (view) {
                 var base;
                 (function (base) {
-                    var simlehistory;
-                    (function (simlehistory) {
+                    var simplehistory;
+                    (function (simplehistory) {
                         var viewmodel;
                         (function (viewmodel) {
                             var ScreenBaseModel = (function () {
-                                function ScreenBaseModel(service) {
+                                function ScreenBaseModel(functionName, service) {
                                     var self = this;
+                                    self.functionName = functionName;
                                     self.service = service;
                                     self.isNewMode = ko.observable(true);
                                     self.masterHistoryDatasource = ko.observableArray([]);
                                     self.selectedHistoryUuid = ko.observable(undefined);
                                     self.canUpdateHistory = ko.computed(function () {
-                                        return self.selectedHistoryUuid() != null;
+                                        return self.selectedHistoryUuid() != null && self.getCurrentHistoryNode() != null;
                                     });
                                     self.canAddNewHistory = ko.computed(function () {
-                                        return self.selectedHistoryUuid() != null;
+                                        return self.selectedHistoryUuid() != null && self.getCurrentHistoryNode() != null;
+                                    });
+                                    self.selectedHistoryUuid.subscribe(function (id) {
+                                        if (id && id.length == 36) {
+                                            self.isNewMode(false);
+                                            self.onSelectHistory(id);
+                                        }
+                                    });
+                                    self.isNewMode.subscribe(function (val) {
+                                        if (val) {
+                                            self.onRegistNew();
+                                        }
                                     });
                                 }
                                 ScreenBaseModel.prototype.startPage = function () {
@@ -32,9 +44,11 @@ var nts;
                                     $.when(self.loadMasterHistory(), self.start()).done(function (res1, res2) {
                                         if (!self.masterHistoryList || self.masterHistoryList.length == 0) {
                                             self.isNewMode(true);
+                                            self.onRegistNew();
                                         }
                                         else {
                                             self.isNewMode(false);
+                                            self.selectedHistoryUuid(self.masterHistoryDatasource()[0].childs[0].id);
                                         }
                                         dfd.resolve();
                                     }).fail(dfd.fail);
@@ -54,7 +68,7 @@ var nts;
                                             var masterChild = _.map(master.historyList, function (history) {
                                                 var node = {
                                                     id: history.uuid,
-                                                    nodeText: history.start + '~' + history.end,
+                                                    nodeText: nts.uk.time.formatYearMonth(history.start) + '~' + nts.uk.time.formatYearMonth(history.end),
                                                     nodeType: 1,
                                                     parent: masterNode,
                                                     data: history
@@ -70,16 +84,67 @@ var nts;
                                     });
                                     return dfd.promise();
                                 };
+                                ScreenBaseModel.prototype.registNew = function () {
+                                    var self = this;
+                                    self.isNewMode(true);
+                                    self.selectedHistoryUuid(undefined);
+                                };
+                                ScreenBaseModel.prototype.save = function () {
+                                    var self = this;
+                                    self.onSave().done(function (uuid) {
+                                        self.loadMasterHistory().done(function () {
+                                            self.selectedHistoryUuid(uuid);
+                                        });
+                                    }).fail(function () {
+                                    });
+                                };
+                                ScreenBaseModel.prototype.openAddNewHistoryDialog = function () {
+                                    var self = this;
+                                    var currentNode = self.getCurrentHistoryNode();
+                                    var newHistoryOptions = {
+                                        name: self.functionName,
+                                        master: currentNode.parent.data,
+                                        lastest: currentNode.data,
+                                        onCopyCallBack: function (data) {
+                                            self.service.createHistory(data.masterCode, data.startYearMonth, true)
+                                                .done(function (h) { return self.reloadMasterHistory(h.uuid); });
+                                        },
+                                        onCreateCallBack: function (data) {
+                                            self.service.createHistory(data.masterCode, data.startYearMonth, false)
+                                                .done(function (h) { return self.reloadMasterHistory(h.uuid); });
+                                        }
+                                    };
+                                    nts.uk.ui.windows.setShared('options', newHistoryOptions);
+                                    var ntsDialogOptions = { title: nts.uk.text.format('{0} の 登録 > 履歴の追加', self.functionName),
+                                        dialogClass: 'no-close' };
+                                    nts.uk.ui.windows.sub.modal('/view/base/simplehistory/newhistory/index.xhtml', ntsDialogOptions);
+                                };
+                                ScreenBaseModel.prototype.reloadMasterHistory = function (uuid) {
+                                    var self = this;
+                                    self.loadMasterHistory().done(function () {
+                                        self.selectedHistoryUuid(uuid);
+                                    });
+                                };
                                 ScreenBaseModel.prototype.start = function () {
                                     var dfd = $.Deferred();
                                     dfd.resolve();
                                     return dfd.promise();
                                 };
+                                ScreenBaseModel.prototype.getCurrentHistoryNode = function () {
+                                    var self = this;
+                                    var nodeList = _.flatMap(self.masterHistoryDatasource(), function (node) {
+                                        return node.childs;
+                                    });
+                                    return _.first(_.filter(nodeList, function (node) {
+                                        return node.id == self.selectedHistoryUuid()
+                                            && self.selectedHistoryUuid().length > 4;
+                                    }));
+                                };
                                 return ScreenBaseModel;
                             }());
                             viewmodel.ScreenBaseModel = ScreenBaseModel;
-                        })(viewmodel = simlehistory.viewmodel || (simlehistory.viewmodel = {}));
-                    })(simlehistory = base.simlehistory || (base.simlehistory = {}));
+                        })(viewmodel = simplehistory.viewmodel || (simplehistory.viewmodel = {}));
+                    })(simplehistory = base.simplehistory || (base.simplehistory = {}));
                 })(base = view.base || (view.base = {}));
             })(view = pr.view || (pr.view = {}));
         })(pr = uk.pr || (uk.pr = {}));

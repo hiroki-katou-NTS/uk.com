@@ -10,19 +10,6 @@
 	margin-top: 15px;
 }
 
-#inp_001 {
-	width: 80px;
-}
-
-#btn_001 {
-	min-width: 120px;
-}
-
-#btn_002 {
-	margin-left: 10px;
-	min-width: 100px;
-}
-
-#lbl_004 {
-	margin-left: 25px;
+.form-default td {
+	padding-top: 10px;
 }
