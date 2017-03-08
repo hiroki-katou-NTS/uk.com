@@ -24,9 +24,16 @@
 			<label id="E_LBL_001">個人情報で登録した納付先を置換えます。</label>
 		</div>
 		<div>
-		<div data-bind="ntsFormLabel: {}" class="form-label">
-		 <label id="D_LBL_002">「【統合元情報】」を表示する。</label>
+		<div style="margin-left: 55px" data-bind="ntsFormLabel: { required: true }" class="form-label">
+		 <label id="E_LBL_004">対象年度</label>
 		</div>
+		<input id="E_INP_003"  />
+<!-- 												<input id="A_INP_002"  data-bind="ntsTextEditor: {
+												value: code,
+												constraint: 'ResiTaxCode',
+												required: true,
+												enable: true,
+												readonly: false }" /> -->
 		
 		</div>
 
@@ -74,7 +81,7 @@
 								data-bind="ntsTreeGridView:{
 								   	width: 385,
 									height: 460,
-									options: items,
+									options: item1s,
 									value: singleSelectedCode,
 									optionsValue: 'code',
 									optionsChild: 'childs',

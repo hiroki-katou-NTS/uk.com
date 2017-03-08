@@ -170,6 +170,7 @@ var qmm003;
                 ScreenModel.prototype.init = function () {
                     var self = this;
                     self.items = ko.observableArray([]);
+                    self.item1s = ko.observableArray([]);
                     self.singleSelectedCode = ko.observable(nts.uk.ui.windows.getShared("singleSelectedCode"));
                     self.currentNode = ko.observable((new Node("", "", [])));
                 };

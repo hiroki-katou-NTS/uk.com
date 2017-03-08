@@ -124,6 +124,7 @@
 module qmm003.e.viewmodel {
     export class ScreenModel {
         items: KnockoutObservableArray<Node>;
+        item1s: KnockoutObservableArray<Node>;
         singleSelectedCode: KnockoutObservable<string>;
         filteredData: KnockoutObservableArray<Node> = ko.observableArray([]);
         currentNode: KnockoutObservable<Node>;
@@ -172,6 +173,7 @@ module qmm003.e.viewmodel {
         init(): void {
             let self = this;
             self.items = ko.observableArray([]);
+            self.item1s = ko.observableArray([]);
             self.singleSelectedCode = ko.observable(nts.uk.ui.windows.getShared("singleSelectedCode"));
             self.currentNode = ko.observable((new Node("", "", [])));
         }
