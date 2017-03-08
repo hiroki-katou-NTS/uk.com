@@ -49,12 +49,12 @@ var qmm023;
                 };
                 ScreenModel.prototype.refreshLayout = function () {
                     var self = this;
+                    $('.save-error').ntsError('clear');
                     self.allowEditCode(true);
                     self.currentTax(ko.mapping.fromJS(new TaxModel('', '', 0)));
                     self.currentCode(null);
                     self.isUpdate(false);
                     self.isEnableDeleteBtn(false);
-                    $('.save-error').ntsError('clear');
                 };
                 ScreenModel.prototype.insertUpdateData = function () {
                     var self = this;

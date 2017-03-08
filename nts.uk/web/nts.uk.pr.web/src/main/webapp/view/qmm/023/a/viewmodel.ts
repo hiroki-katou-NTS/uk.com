@@ -55,12 +55,12 @@ module qmm023.a.viewmodel {
 
         refreshLayout(): void {
             let self = this;
+            $('.save-error').ntsError('clear');
             self.allowEditCode(true);
             self.currentTax(ko.mapping.fromJS(new TaxModel('', '', 0)));
             self.currentCode(null);
             self.isUpdate(false);
             self.isEnableDeleteBtn(false);
-            $('.save-error').ntsError('clear');
         }
 
         insertUpdateData(): void {
