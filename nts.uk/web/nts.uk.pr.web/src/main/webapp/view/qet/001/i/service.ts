@@ -5,7 +5,7 @@ module qet001.i {
         // Service paths.
         var servicePath = {
             findAggregateItemsByCategory: 'ctx/pr/report/wageledger/aggregateitem/findByCate',
-            findAggregateItemDetail: 'ctx/pr/report/wageledger/aggregateitem/findByCode',
+            findAggregateItemDetail: 'ctx/pr/report/wageledger/aggregateitem/findBySubject',
             findMasterItems: '???',
             saveAggregateItem: 'ctx/pr/report/wageledger/aggregateitem/save',
             removeAggegateItem: 'ctx/pr/report/wageledger/aggregateitem/remove'
@@ -38,8 +38,13 @@ module qet001.i {
         /**
          * Find aggregate item detail.
          */
-        export function findAggregateItemDetail(code: string) : JQueryPromise<Item> {
-            return nts.uk.request.ajax(servicePath.findAggregateItemDetail + '/' + code);
+        export function findAggregateItemDetail(category: string, paymentType: string, code: string) : JQueryPromise<Item> {
+            var subject = {
+                code: code,
+                category: category,
+                paymentType: paymentType
+            }
+            return nts.uk.request.ajax(servicePath.findAggregateItemDetail, subject);
         }
         
         /**
@@ -48,9 +53,11 @@ module qet001.i {
         export function save(data: viewmodel.AggregateItemDetail): JQueryPromise<void> {
             // Convert to json data.
             var dataJson = {
-                category: data.category,
-                paymentType: data.paymentType,
-                code: data.code(),
+                subject: {
+                    category: data.category,
+                    paymentType: data.paymentType,
+                    code: data.code(),
+                },
                 name: data.name(),
                 showNameZeroValue: data.showNameZeroValue(),
                 showValueZeroValue: data.showValueZeroValue(),
@@ -63,8 +70,13 @@ module qet001.i {
         /**
          * Remove aggregate item.
          */
-        export function remove(code: string): JQueryPromise<void> {
-            return nts.uk.request.ajax(servicePath.removeAggegateItem + '/' + code);
+        export function remove(category: string, paymentType: string, code: string): JQueryPromise<void> {
+            var subject = {
+                code: code,
+                category: category,
+                paymentType: paymentType
+            }
+            return nts.uk.request.ajax(servicePath.removeAggegateItem, {subject});
         }
         
         /**

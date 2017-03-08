@@ -9,12 +9,11 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import lombok.Builder;
-import nts.uk.ctx.pr.report.dom.company.CompanyCode;
 import nts.uk.ctx.pr.report.dom.wageledger.PaymentType;
 import nts.uk.ctx.pr.report.dom.wageledger.WLCategory;
-import nts.uk.ctx.pr.report.dom.wageledger.aggregate.WLAggregateItemCode;
 import nts.uk.ctx.pr.report.dom.wageledger.aggregate.WLAggregateItemName;
 import nts.uk.ctx.pr.report.dom.wageledger.aggregate.WLAggregateItemSetMemento;
+import nts.uk.ctx.pr.report.dom.wageledger.aggregate.WLItemSubject;
 
 /**
  * The Class AggregateItemDto.
@@ -42,42 +41,6 @@ public class AggregateItemDto implements WLAggregateItemSetMemento{
 	
 	/** The sub items. */
 	public List<SubItemDto> subItems;
-
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.pr.report.dom.wageledger.aggregate.WLAggregateItemSetMemento
-	 * #setCompanyCode(nts.uk.ctx.pr.report.dom.company.CompanyCode)
-	 */
-	@Override
-	public void setCompanyCode(CompanyCode companyCode) {
-		// Do nothing.
-	}
-
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.pr.report.dom.wageledger.aggregate.WLAggregateItemSetMemento
-	 * #setCategory(nts.uk.ctx.pr.report.dom.wageledger.WLCategory)
-	 */
-	@Override
-	public void setCategory(WLCategory category) {
-		this.category = category;
-	}
-
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.pr.report.dom.wageledger.aggregate.WLAggregateItemSetMemento
-	 * #setPaymentType(nts.uk.ctx.pr.report.dom.wageledger.PaymentType)
-	 */
-	@Override
-	public void setPaymentType(PaymentType paymentType) {
-		this.paymentType = paymentType;
-	}
-
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.pr.report.dom.wageledger.aggregate.WLAggregateItemSetMemento
-	 * #setCode(nts.uk.ctx.pr.report.dom.wageledger.aggregate.WLAggregateItemCode)
-	 */
-	@Override
-	public void setCode(WLAggregateItemCode code) {
-		this.code = code.v();
-	}
 
 	/* (non-Javadoc)
 	 * @see nts.uk.ctx.pr.report.dom.wageledger.aggregate.WLAggregateItemSetMemento
@@ -115,5 +78,16 @@ public class AggregateItemDto implements WLAggregateItemSetMemento{
 		this.subItems = subItems.stream()
 				.map(item -> SubItemDto.builder().code(item).build())
 				.collect(Collectors.toList());
+	}
+
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.pr.report.dom.wageledger.aggregate.WLAggregateItemSetMemento
+	 * #setSubject(nts.uk.ctx.pr.report.dom.wageledger.aggregate.WLItemSubject)
+	 */
+	@Override
+	public void setSubject(WLItemSubject itemSubject) {
+		this.code = itemSubject.getCode().v();
+		this.category = itemSubject.getCategory();
+		this.paymentType = itemSubject.getPaymentType();
 	}
 }
