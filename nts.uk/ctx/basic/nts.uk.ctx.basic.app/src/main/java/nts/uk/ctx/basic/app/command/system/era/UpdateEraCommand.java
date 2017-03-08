@@ -1,8 +1,9 @@
 package nts.uk.ctx.basic.app.command.system.era;
 
+import lombok.Value;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.basic.dom.system.era.Era;
-
+@Value
 public class UpdateEraCommand {
 	private String eraName;
 	private String eraHist;

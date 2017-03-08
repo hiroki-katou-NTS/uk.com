@@ -1,6 +1,5 @@
 package nts.uk.ctx.basic.app.find.system.era;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -8,7 +7,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.arc.time.GeneralDate;
+import nts.arc.error.BusinessException;
 import nts.uk.ctx.basic.dom.system.era.EraRepository;
 
 @Stateless
@@ -26,5 +25,13 @@ public class EraFinder {
 //	}
 	public Optional<EraDto> getEraDetail(String eraHist){
 		return this.eraRepository.getEraDetail(eraHist).map(era -> EraDto.fromDomain(era));
+	}
+	
+	public int getFixAtribute(String eraHist){
+		Optional<EraDto> eraDto = this.eraRepository.getEraDetail(eraHist).map(era -> EraDto.fromDomain(era));
+		if(eraDto.isPresent()){
+			return eraDto.get().getFixAttribute();
+		}
+		throw new BusinessException("not found");
 	}
 }

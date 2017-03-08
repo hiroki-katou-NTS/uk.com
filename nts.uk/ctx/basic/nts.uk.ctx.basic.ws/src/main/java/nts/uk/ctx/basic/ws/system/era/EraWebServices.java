@@ -10,7 +10,6 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.arc.time.GeneralDate;
 import nts.uk.ctx.basic.app.command.system.era.AddEraCommand;
 import nts.uk.ctx.basic.app.command.system.era.AddEraCommandHandler;
 import nts.uk.ctx.basic.app.command.system.era.DeleteEraCommand;
@@ -63,6 +62,12 @@ public class EraWebServices extends WebService {
 	public  Optional<EraDto> getDetail(@PathParam("eraHist") String eraHist){
 		//return this.finder.getEraDetail(GeneralDate.fromString(startDate, "yyyy-MM-dd"));
 		return this.finder.getEraDetail(eraHist);
+	}
+	
+	@POST
+	@Path("getFixAttribute/{eraHist}")
+	public  int getFixAttribute(@PathParam("eraHist") String eraHist){
+		return this.finder.getFixAtribute(eraHist);
 	}
 
 }

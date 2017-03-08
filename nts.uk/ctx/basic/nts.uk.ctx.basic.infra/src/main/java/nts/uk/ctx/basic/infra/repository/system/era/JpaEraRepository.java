@@ -18,7 +18,8 @@ import nts.uk.ctx.basic.infra.entity.system.era.CmnmtEraPk;
 public class JpaEraRepository extends JpaRepository implements EraRepository {
 	private static final String SEL_1 = "SELECT e FROM CmnmtEra e";
 	private static final String SEL_LATEST_ERA =  SEL_1 + " WHERE e.end_D = :endDate";
-	private static final String SEL_STARTDATE_ERAMASTER = SEL_1 + " WHERE e.startDate >= :startDate";
+	private static final String SEL_STARTDATE_ERAMASTER = SEL_1 + " WHERE e.startDate > :startDate";
+	private static final String SEL_UPD1= SEL_1 + " WHERE e.cmnmtEraPk.hist_Id = :eraHist";
 	//private static final String SEL_3 = ""
 	private final Era toDomain(CmnmtEra entity){
 		val domain = Era.createFromDataType(entity.era_Name,
@@ -81,8 +82,20 @@ public class JpaEraRepository extends JpaRepository implements EraRepository {
 				.getSingle(s -> toDomain(s));
 	}
 	@Override
-	public Optional<Era> getStartDateEraMaster(GeneralDate startDate){
+	public List<Era> getStartDateEraMaster(GeneralDate startDate){
 		return this.queryProxy().query(SEL_STARTDATE_ERAMASTER, CmnmtEra.class)
-				.setParameter("startDate", startDate).getSingle(s -> toDomain(s));
+				.setParameter("startDate", startDate).getList(s -> toDomain(s));
 	}
+	@Override
+	public Optional<Era> getHistIdUpdate(String eraHist) {
+		
+		return this.queryProxy().query(SEL_UPD1, CmnmtEra.class)
+				.setParameter("eraHist", eraHist)
+				.getSingle(s-> toDomain(s));
+	}
+	@Override
+	public Optional<Era> getEndDateBefore(GeneralDate endDate) {
+		return this.queryProxy().query(SEL_LATEST_ERA, CmnmtEra.class).setParameter("endDate", endDate).getSingle(c -> toDomain(c));
+	}
+	
 }

@@ -31,7 +31,10 @@ public interface EraRepository {
 	 * 
 	 * @param era
 	 */
-	Optional<Era> getStartDateEraMaster(GeneralDate startDate);
+	List<Era> getStartDateEraMaster(GeneralDate startDate);
+	
+	Optional<Era> getHistIdUpdate(String eraHist);
+	Optional<Era> getEndDateBefore(GeneralDate endDate);
 	
 	void add(Era era);
 	/**
