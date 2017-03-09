@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2016 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.core.app.rule.employment.unitprice.command;
@@ -12,16 +12,11 @@ import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.core.dom.company.CompanyCode;
-import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPrice;
-import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceCode;
-import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceGetMemento;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceHistory;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceHistoryRepository;
-import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceName;
+import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceRepository;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.service.UnitPriceHistoryService;
-import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class UpdateUnitPriceHistoryCommandHandler.
@@ -33,13 +28,17 @@ public class UpdateUnitPriceHistoryCommandHandler extends CommandHandler<UpdateU
 	@Inject
 	private UnitPriceHistoryRepository unitPriceHistoryRepo;
 
+	/** The unit price repo. */
+	@Inject
+	private UnitPriceRepository unitPriceRepo;
+
 	/** The unit price history service. */
 	@Inject
 	private UnitPriceHistoryService unitPriceHistoryService;
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command
 	 * .CommandHandlerContext)
@@ -50,57 +49,28 @@ public class UpdateUnitPriceHistoryCommandHandler extends CommandHandler<UpdateU
 		// Get command.
 		UpdateUnitPriceHistoryCommand command = context.getCommand();
 
-		// Get the current company code.
-		CompanyCode companyCode = new CompanyCode(AppContexts.user().companyCode());
+		// Update history.
+		Optional<UnitPriceHistory> optUnitPriceHistory = this.unitPriceHistoryRepo.findHistoryByUuid(command.getId());
+		UnitPriceHistory history = optUnitPriceHistory.get();
+		history.setBudget(command.getBudget());
+		history.setFixPaySettingType(command.getFixPaySettingType());
+		history.setFixPayAtr(command.getFixPayAtr());
+		history.setFixPayAtrDaily(command.getFixPayAtrDaily());
+		history.setFixPayAtrDayMonth(command.getFixPayAtrDayMonth());
+		history.setFixPayAtrHourly(command.getFixPayAtrHourly());
+		history.setFixPayAtrMonthly(command.getFixPayAtrMonthly());
+		history.setMemo(command.getMemo());
 
-		// Get the history.
-		Optional<UnitPriceHistory> optUnitPriceHistory = unitPriceHistoryRepo.findById(companyCode, command.getId());
-		if (!optUnitPriceHistory.isPresent()) {
-			return;
-		}
-		UnitPriceHistory unitPriceHistory = optUnitPriceHistory.get();
-
-		// Transfer data
-		UnitPriceHistory updatedHistory = command.toDomain(companyCode, unitPriceHistory.getId(),
-				unitPriceHistory.getUnitPriceCode());
-		UnitPrice unitPrice = new UnitPrice(new UnitPriceGetMemento() {
-
-			@Override
-			public UnitPriceName getName() {
-				return new UnitPriceName(command.getUnitPriceName());
-			}
-
-			@Override
-			public CompanyCode getCompanyCode() {
-				return companyCode;
-			}
-
-			@Override
-			public UnitPriceCode getCode() {
-				return new UnitPriceCode(command.getUnitPriceCode());
-			}
-		});
+		// Update unit price.
+		Optional<UnitPrice> optUnitPrice = this.unitPriceRepo.findByCode(history.getCompanyCode(), history.getUnitPriceCode());
+		UnitPrice unitPrice = optUnitPrice.get();
+		unitPrice.setName(command.getName());
 
 		// Validate
-		unitPriceHistoryService.validateRequiredItem(updatedHistory);
-		//unitPriceHistoryService.validateDateRange(updatedHistory);
-
-		Optional<UnitPriceHistory> secondLastUnitPriceHistory = unitPriceHistoryRepo.findSecondLastHistory(companyCode,
-				unitPriceHistory.getUnitPriceCode());
-		// Update last history if present
-		if (secondLastUnitPriceHistory.isPresent()) {
-			UnitPriceHistory updatedSecondLastUnitPriceHistory = secondLastUnitPriceHistory.get();
-
-			// Update month range
-			MonthRange updatedMonthRange = MonthRange.range(
-					updatedSecondLastUnitPriceHistory.getApplyRange().getStartMonth(),
-					updatedHistory.getApplyRange().getStartMonth().previousMonth());
-			updatedSecondLastUnitPriceHistory.setApplyRange(updatedMonthRange);
-
-			unitPriceHistoryRepo.update(unitPrice, updatedSecondLastUnitPriceHistory);
-		}
+		this.unitPriceHistoryService.validateRequiredItem(history);
 
 		// Update to db.
-		unitPriceHistoryRepo.update(unitPrice, updatedHistory);
+		this.unitPriceRepo.update(unitPrice);
+		this.unitPriceHistoryRepo.update(history);
 	}
 }
