@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.app.wagetable.command.dto;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -77,8 +78,9 @@ public class WageTableDemensionDetailDto implements WageTableDetailGetMemento {
 					.collect(Collectors.toList());
 
 			return new StepMode(ElementType.valueOf(stepModeDto.getType()),
-					stepModeDto.getLowerLimit(), stepModeDto.getUpperLimit(),
-					stepModeDto.getInterval(), rangeItems);
+					BigDecimal.valueOf(stepModeDto.getLowerLimit()),
+					BigDecimal.valueOf(stepModeDto.getUpperLimit()),
+					BigDecimal.valueOf(stepModeDto.getInterval()), rangeItems);
 		}
 
 		if (elementModeSetting instanceof LevelModeDto) {

@@ -66,17 +66,26 @@ public class JpaLaborInsuranceOfficeRepository extends JpaRepository implements 
 	 */
 	@Override
 	public List<LaborInsuranceOffice> findAll(CompanyCode companyCode) {
+		// get entity manager
 		EntityManager em = getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+		// call QISMT_LABOR_INSU_OFFICE (QismtLaborInsuOffice SQL)
 		CriteriaQuery<QismtLaborInsuOffice> cq = criteriaBuilder.createQuery(QismtLaborInsuOffice.class);
+		// root data
 		Root<QismtLaborInsuOffice> root = cq.from(QismtLaborInsuOffice.class);
+		// select root
 		cq.select(root);
-		List<Predicate> lstpredicate = new ArrayList<>();
-		lstpredicate.add(criteriaBuilder.equal(
+		// add where
+		List<Predicate> lstpredicateWhere = new ArrayList<>();
+		// eq CompanyCode
+		lstpredicateWhere.add(criteriaBuilder.equal(
 				root.get(QismtLaborInsuOffice_.qismtLaborInsuOfficePK).get(QismtLaborInsuOfficePK_.ccd),
 				companyCode.v()));
-		cq.where(lstpredicate.toArray(new Predicate[] {}));
+		// set where to SQL
+		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+		// creat query
 		TypedQuery<QismtLaborInsuOffice> query = em.createQuery(cq);
+		// exclude select
 		List<LaborInsuranceOffice> lstLaborInsuranceOffice = query.getResultList().stream().map(item -> toDomain(item))
 				.collect(Collectors.toList());
 		return lstLaborInsuranceOffice;
@@ -106,19 +115,27 @@ public class JpaLaborInsuranceOfficeRepository extends JpaRepository implements 
 	 */
 	@Override
 	public boolean isDuplicateCode(CompanyCode companyCode, OfficeCode code) {
+		// get entity manager
 		EntityManager em = getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+		// call QISMT_LABOR_INSU_OFFICE (QismtLaborInsuOffice SQL)
 		CriteriaQuery<Long> cq = criteriaBuilder.createQuery(Long.class);
-		cq.select(criteriaBuilder.count(cq.from(QismtLaborInsuOffice.class)));
+		// root data
 		Root<QismtLaborInsuOffice> root = cq.from(QismtLaborInsuOffice.class);
-		List<Predicate> lstpredicate = new ArrayList<>();
-		lstpredicate.add(criteriaBuilder.equal(
+		// select count(*) data root
+		cq.select(criteriaBuilder.count(cq.from(QismtLaborInsuOffice.class)));
+		// add where
+		List<Predicate> lstpredicateWhere = new ArrayList<>();
+		// eq Company Code
+		lstpredicateWhere.add(criteriaBuilder.equal(
 				root.get(QismtLaborInsuOffice_.qismtLaborInsuOfficePK).get(QismtLaborInsuOfficePK_.ccd),
 				companyCode.v()));
-		lstpredicate.add(criteriaBuilder.equal(
+		// eq Office Code
+		lstpredicateWhere.add(criteriaBuilder.equal(
 				root.get(QismtLaborInsuOffice_.qismtLaborInsuOfficePK).get(QismtLaborInsuOfficePK_.liOfficeCd),
 				code.v()));
-		cq.where(lstpredicate.toArray(new Predicate[] {}));
+		// set where to SQL
+		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 		return (em.createQuery(cq).getSingleResult() > 0);
 	}
 
@@ -160,12 +177,4 @@ public class JpaLaborInsuranceOfficeRepository extends JpaRepository implements 
 	public void remove(CompanyCode companyCode, String officeCode, Long version) {
 		this.commandProxy().remove(QismtLaborInsuOffice.class, new QismtLaborInsuOfficePK(companyCode.v(), officeCode));
 	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * nts.uk.ctx.pr.core.dom.insurance.labor.LaborInsuranceOfficeRepository#
-	 * addList(java.util.List)
-	 */
 }

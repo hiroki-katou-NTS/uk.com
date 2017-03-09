@@ -5,77 +5,32 @@
 	xmlns:com="http://xmlns.jcp.org/jsf/component"
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 <body>
-	<ui:composition template="../../../../master/base.xhtml">
-		<ui:define name="htmlHead">
+	<ui:composition template="../../../base/simplehistory/base.xhtml">
+		<ui:define name="extendedHead">
 			<com:ValidatorScript>
 				nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceCode
 				nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceName
 				nts.uk.ctx.pr.core.dom.rule.employment.unitprice.Money
 				nts.uk.shr.com.primitive.Memo
   			</com:ValidatorScript>
-			<com:scriptfile set="IGNITE" />
+
 			<com:stylefile path="../common.css" />
-			<com:stylefile path="thispage.css" />
+			<com:stylefile path="style.css" />
 			<com:scriptfile path="service.js" />
 			<com:scriptfile path="viewmodel.js" />
 			<com:scriptfile path="start.js" />
 		</ui:define>
 
-		<ui:define name="content">
-			<!-- BEGIN FUNCTION AREA-->
-			<div id="functions-area">
-				<button id="btn_001" data-bind="click: enableNewMode"
-					class="large btn-default">新規</button>
-				<button id="btn_002" class="large proceed btn-default"
-					data-bind="click: save, enable: $root.errors.isEmpty">登録</button>
+		<!-- EXTENDED ACTION -->
+		<ui:define name="extendedAction">
 				<button id="btn_003" class="large btn-default" data-bind="">印刷
 					(PDF)</button>
 				<button id="btn_006" class="large btn-default" data-bind="">マスタ修正ログ</button>
-			</div>
-			<!-- END FUNCTION AREA-->
+		</ui:define>
 
-			<!-- BEGIN CONTENT AREA-->
-			<div id="contents-area" data-bind="visible: !isLoading()" style="display: none">
-				<!-- BEGIN LEFT CONTENT-->
-				<div id="left-content" class="bg-green caret-right caret-background">
-					<div>
-						<div id="lbl_002" data-bind="ntsFormLabel: {}">コード/名称</div>
-						<span id="sch_001"
-							data-bind="ntsSearchBox: {comId:'lst_001' ,
-							items: historyList, 
-							selected: selectedId, 
-							selectedKey: 'id', 
-							childField: 'childs', 
-							fields: ['nodeText']}"></span>
-					</div>
-					<div class="margin-top-bot-20">
-						<button class="pull-left" id="btn_004"
-							data-bind="click: openAddDialog, enable: hasSelected()">履歴追加</button>
-						<button class="pull-right" id="btn_005"
-							data-bind="click: openEditDialog, enable: hasSelected()">履歴編集</button>
-						<div class="padding-top-10 pull-left cf">
-							<table id="lst_001"
-								data-bind="ntsTreeGridView:{
-										width: 290,
-										height: 350,
-										options: historyList,
-										value: selectedId,
-										optionsValue: 'id',
-										optionsChild: 'childs',
-										optionsText: 'nodeText',
-										multiple: false,
-										enable: true,
-										showCheckBox: false}"
-								class="cf">
-							</table>
-						</div>
-					</div>
-				</div>
-				<!-- END LEFT CONTENT-->
-
-				<!-- BEGIN RIGHT CONTENT-->
-				<div id="right-content">
-					<table class="form-default">
+		<!-- PAGE CONTENT -->
+		<ui:define name="pageContent">
+			<table class="form-default">
 						<tr>
 							<td><div id="lbl_003"
 									data-bind="ntsFormLabel: {constraint: ['UnitPriceCode','UnitPriceName'], required: true }">コード/名称</div></td>
@@ -216,10 +171,6 @@
 								</div></td>
 						</tr>
 					</table>
-				</div>
-				<!-- END RIGHT CONTENT-->
-			</div>
-			<!-- END CONTENT AREA-->
 		</ui:define>
 	</ui:composition>
 </body>

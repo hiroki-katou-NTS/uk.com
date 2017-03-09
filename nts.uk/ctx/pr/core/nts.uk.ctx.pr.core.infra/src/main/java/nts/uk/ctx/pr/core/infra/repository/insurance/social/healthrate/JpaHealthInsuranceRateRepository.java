@@ -20,6 +20,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.ListUtil;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
+import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.HealthInsuranceRate;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.HealthInsuranceRateRepository;
 import nts.uk.ctx.pr.core.infra.entity.insurance.social.healthrate.QismtHealthInsuRate;
@@ -165,5 +166,32 @@ public class JpaHealthInsuranceRateRepository extends JpaRepository
 	public boolean isInvalidDateRange(MonthRange applyRange) {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	@Override
+	public List<HealthInsuranceRate> findAllOffice(CompanyCode companyCode, OfficeCode officeCode) {
+		// Get entity manager
+		EntityManager em = this.getEntityManager();
+
+		// Query for.
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<QismtHealthInsuRate> cq = cb.createQuery(QismtHealthInsuRate.class);
+		Root<QismtHealthInsuRate> root = cq.from(QismtHealthInsuRate.class);
+
+		// Constructing list of parameters
+		List<Predicate> predicateList = new ArrayList<Predicate>();
+
+		// Construct condition.
+		predicateList.add(cb.equal(root.get(QismtHealthInsuRate_.qismtHealthInsuRatePK).get(QismtHealthInsuRatePK_.ccd),
+				companyCode.v()));
+		predicateList.add(
+				cb.equal(root.get(QismtHealthInsuRate_.qismtHealthInsuRatePK).get(QismtHealthInsuRatePK_.siOfficeCd),
+						officeCode.v()));
+
+		cq.where(predicateList.toArray(new Predicate[] {}));
+		cq.orderBy(cb.desc(root.get(QismtHealthInsuRate_.strYm)));
+		return em.createQuery(cq).getResultList().stream()
+				.map(item -> new HealthInsuranceRate(new JpaHealthInsuranceRateGetMemento(item)))
+				.collect(Collectors.toList());
 	}
 }

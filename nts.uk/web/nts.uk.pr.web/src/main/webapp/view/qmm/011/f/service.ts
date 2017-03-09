@@ -5,13 +5,16 @@ module nts.uk.pr.view.qmm011.f {
             deleteUnemployeeInsurance: "pr/insurance/labor/unemployeerate/delete"
         };
         //connection service delete AccidentInsuranceRate
-        export function deleteAccidentInsuranceRate(accidentInsuranceRateDeleteDto: model.AccidentInsuranceRateDeleteDto): JQueryPromise<any> {
-            var dfd = $.Deferred<any>();
+        export function deleteAccidentInsuranceRate(accidentInsuranceRateDeleteDto: model.AccidentInsuranceRateDeleteDto)
+            : JQueryPromise<void> {
+            //set up data respone
+            var dfd = $.Deferred<void>();
+            //set up data request
             var data = { accidentInsuranceRateDeleteDto: accidentInsuranceRateDeleteDto };
+            //call service server
             nts.uk.request.ajax(paths.deleteAccidentInsuranceRate, data)
-                .done(function(res: any) {
+                .done(function(res: void) {
                     dfd.resolve(res);
-                    //xyz
                 })
                 .fail(function(res) {
                     dfd.reject(res);
@@ -20,12 +23,14 @@ module nts.uk.pr.view.qmm011.f {
 
         }
         //connection service delete UnemployeeInsurance
-        export function deleteUnemployeeInsurance(unemployeeInsuranceDeleteDto: model.UnemployeeInsuranceDeleteDto): JQueryPromise<any> {
-            var dfd = $.Deferred<any>();
+        export function deleteUnemployeeInsurance(unemployeeInsuranceDeleteDto: model.UnemployeeInsuranceDeleteDto)
+            : JQueryPromise<void> {
+            //set up data respone
+            var dfd = $.Deferred<void>();
+            //call server server
             nts.uk.request.ajax(paths.deleteUnemployeeInsurance, unemployeeInsuranceDeleteDto)
-                .done(function(res: any) {
+                .done(function(res: void) {
                     dfd.resolve(res);
-                    //xyz
                 })
                 .fail(function(res) {
                     dfd.reject(res);

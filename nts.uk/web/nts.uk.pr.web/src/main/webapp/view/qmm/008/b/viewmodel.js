@@ -13,6 +13,7 @@ var nts;
                         var viewmodel;
                         (function (viewmodel) {
                             var aservice = nts.uk.pr.view.qmm008.a.service;
+                            var AddNewHistoryDto = nts.uk.pr.view.qmm008.a.service.model.finder.AddNewHistoryDto;
                             var ScreenModel = (function () {
                                 function ScreenModel(receiveOfficeItem, data, isHealth) {
                                     var self = this;
@@ -21,7 +22,7 @@ var nts;
                                     self.getPreviousInsuranceRateDto = ko.observable(data);
                                     self.returnInsuranceOfficeItemDto = ko.observable(null);
                                     self.listOptions = ko.observableArray([new optionsModel(1, "最新の履歴(2016/04)から引き継ぐ"), new optionsModel(2, "初めから作成する")]);
-                                    self.selectedValue = ko.observable(new optionsModel(1, ""));
+                                    self.selectedValue = ko.observable(self.listOptions()[0]);
                                     self.isTransistReturnData = ko.observable(nts.uk.ui.windows.getShared("isTransistReturnData"));
                                     self.officeCodeName = ko.observable(receiveOfficeItem.codeName);
                                     if (receiveOfficeItem.childs.length > 0)
@@ -67,14 +68,21 @@ var nts;
                                             var backupHistoryId = healthData.historyId;
                                             var backupStartMonth = healthData.startMonth;
                                             var backupEndMonth = healthData.endMonth;
-                                            healthData.historyId = "";
-                                            healthData.startMonth = self.selectedDate();
-                                            healthData.endMonth = "9999/12";
+                                            var registerItem = new AddNewHistoryDto();
+                                            if (self.selectedValue().id == 1) {
+                                                registerItem.isCloneData = true;
+                                            }
+                                            else {
+                                                registerItem.isCloneData = false;
+                                            }
+                                            registerItem.startMonth = self.selectedDate();
+                                            registerItem.endMonth = "9999/12";
+                                            registerItem.officeCode = self.getInsuranceOfficeItemDto().code;
                                             if (!self.compareStringDate(backupStartMonth, self.minusOneMonth(self.selectedDate()))) {
                                                 alert("ER011");
                                             }
                                             else {
-                                                aservice.registerHealthRate(healthData).done(function () {
+                                                aservice.registerHealthRate(registerItem).done(function () {
                                                     if (self.getInsuranceOfficeItemDto().childs.length > 0) {
                                                         var previousHealthData = self.getPreviousInsuranceRateDto();
                                                         previousHealthData.historyId = backupHistoryId;

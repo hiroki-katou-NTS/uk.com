@@ -22,9 +22,10 @@ module nts.uk.pr.view.qmm010.b {
                 ]);
             }
 
-            startPage(): JQueryPromise<any> {
+            //start page
+            startPage(): JQueryPromise<this> {
                 var self = this;
-                var dfd = $.Deferred<any>();
+                var dfd = $.Deferred<this>();
                 self.findAllInsuranceOffice().done(data => {
                     dfd.resolve(self);
                 });
@@ -32,35 +33,39 @@ module nts.uk.pr.view.qmm010.b {
             }
 
             //Connection service find All InsuranceOffice
-            findAllInsuranceOffice(): JQueryPromise<any> {
+            findAllInsuranceOffice(): JQueryPromise<this> {
                 var self = this;
-                var dfd = $.Deferred<any>();
+                var dfd = $.Deferred<this>();
                 var data = nts.uk.ui.windows.getShared("dataInsuranceOffice");
                 self.lstSocialInsuranceOffice = ko.observableArray<SocialInsuranceOfficeImportDto>(data);
                 dfd.resolve(self);
                 return dfd.promise();
             }
 
+            //show confirm by dulicate code
             private showConfirm(laborInsuranceOfficeCheckImportDto: LaborInsuranceOfficeCheckImportDto,
                 socialInsuranceOfficeImport: SocialInsuranceOfficeImportDto) {
                 var self = this;
                 if (laborInsuranceOfficeCheckImportDto.code === "1") {
-                    nts.uk.ui.dialog.confirm("Duplicate Code ! Do you replace All?").ifYes(function() {
-                        self.importData(0, socialInsuranceOfficeImport);
-                    }).ifNo(function() {
-                        self.importData(1, socialInsuranceOfficeImport);
-                    })
+                    nts.uk.ui.dialog.confirm("Duplicate Code ! Do you replace All?")
+                        .ifYes(function() {
+                            self.importData(0, socialInsuranceOfficeImport);
+                        }).ifNo(function() {
+                            self.importData(1, socialInsuranceOfficeImport);
+                        })
                 } else {
                     self.importData(0, socialInsuranceOfficeImport);
                 }
             }
-
+            
+            //import data
             private importData(checkUpdateDuplicateCode: number,
                 socialInsuranceOfficeImport: SocialInsuranceOfficeImportDto) {
                 var laborInsuranceOfficeImportDto: LaborInsuranceOfficeImportDto;
                 laborInsuranceOfficeImportDto = new LaborInsuranceOfficeImportDto();
                 laborInsuranceOfficeImportDto.socialInsuranceOfficeImport = socialInsuranceOfficeImport;
                 laborInsuranceOfficeImportDto.checkUpdateDuplicateCode = checkUpdateDuplicateCode;
+                //call servier import data
                 service.importData(laborInsuranceOfficeImportDto).done(data => {
                     nts.uk.ui.windows.close();
                 });
@@ -77,11 +82,13 @@ module nts.uk.pr.view.qmm010.b {
                 return null;
             }
 
+            //check dulicate code
             private checkDuplicateCodeByImportData() {
                 var self = this;
                 if (self.selectLstSocialInsuranceOffice() != null) {
                     var socialInsuranceOfficeImport: SocialInsuranceOfficeImportDto;
                     socialInsuranceOfficeImport = self.findCode(self.selectLstSocialInsuranceOffice());
+                    //call service check duplicate
                     service.checkDuplicateCodeByImportData(socialInsuranceOfficeImport).done(data => {
                         self.showConfirm(data, socialInsuranceOfficeImport);
                     });

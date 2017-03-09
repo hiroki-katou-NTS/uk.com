@@ -112,10 +112,12 @@ module nts.uk.pr.view.qmm010.a {
                 return dfd.promise();
             }
 
+            //Function show message error message
             private showMessageSave(message: string) {
                 $('#btn_save').ntsError('set', message);
             }
 
+            //Function action button save Onclick
             private saveLaborInsuranceOffice() {
                 var self = this;
                 //get ismode
@@ -140,6 +142,7 @@ module nts.uk.pr.view.qmm010.a {
                 }
             }
 
+            //Function show view by change selection
             private showchangeLaborInsuranceOfficep(selectionCodeLstLstLaborInsuranceOffice: string) {
                 var self = this;
                 if (selectionCodeLstLstLaborInsuranceOffice != null
@@ -150,6 +153,7 @@ module nts.uk.pr.view.qmm010.a {
                 }
             }
 
+            //Function detail
             private detailLaborInsuranceOffice(code: string): JQueryPromise<any> {
                 var dfd = $.Deferred<any>();
                 if (code != null && code != undefined && code != '') {
@@ -176,12 +180,15 @@ module nts.uk.pr.view.qmm010.a {
             //reload action
             private reloadDataByAction(code: string) {
                 var self = this;
+                //call service findAll
                 service.findAllLaborInsuranceOffice().done(data => {
+                    //reset list data
                     if (self.lstlaborInsuranceOfficeModel == null || self.lstlaborInsuranceOfficeModel == undefined) {
                         self.lstlaborInsuranceOfficeModel = ko.observableArray<LaborInsuranceOfficeFindOutDto>(data);
                     } else {
                         self.lstlaborInsuranceOfficeModel(data);
                     }
+                    //set data view
                     if (code != null && code != undefined && code != '') {
                         self.detailLaborInsuranceOffice(code);
                     } else {
@@ -194,13 +201,16 @@ module nts.uk.pr.view.qmm010.a {
                 });
             }
 
+            //Function empty data respone
             private newmodelEmptyData() {
                 var self = this;
+                //reset list data
                 if (self.lstlaborInsuranceOfficeModel == null || self.lstlaborInsuranceOfficeModel == undefined) {
                     self.lstlaborInsuranceOfficeModel = ko.observableArray<LaborInsuranceOfficeFindOutDto>([]);
                 } else {
                     self.lstlaborInsuranceOfficeModel([]);
                 }
+                //reset value
                 self.resetValueLaborInsurance();
                 self.selectCodeLstlaborInsuranceOffice('');
                 self.isEmpty(true);

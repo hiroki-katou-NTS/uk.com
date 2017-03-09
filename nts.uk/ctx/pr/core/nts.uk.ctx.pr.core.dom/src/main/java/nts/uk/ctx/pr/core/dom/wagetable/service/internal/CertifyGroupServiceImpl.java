@@ -9,7 +9,9 @@ import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
 import nts.gul.text.StringUtil;
+import nts.uk.ctx.pr.core.dom.wagetable.certification.CertificationReponsitory;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroup;
+import nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroupCode;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroupRepository;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.service.CertifyGroupService;
 
@@ -23,6 +25,10 @@ public class CertifyGroupServiceImpl implements CertifyGroupService {
 	@Inject
 	private CertifyGroupRepository certifyGroupRepository;
 
+	/** The certification reponsitory. */
+	@Inject
+	private CertificationReponsitory certificationReponsitory;
+
 	@Override
 	public void validateRequiredItem(CertifyGroup certifyGroup) {
 		if (certifyGroup.getCode() == null || StringUtil.isNullOrEmpty(certifyGroup.getCode().v(), true)
@@ -35,6 +41,14 @@ public class CertifyGroupServiceImpl implements CertifyGroupService {
 	@Override
 	public void checkDuplicateCode(CertifyGroup certifyGroup) {
 		if (certifyGroupRepository.isDuplicateCode(certifyGroup.getCompanyCode(), certifyGroup.getCode())) {
+			throw new BusinessException("ER005");
+		}
+
+	}
+
+	@Override
+	public void checkDulicateCertification(CertifyGroup certifyGroup, CertifyGroupCode certifyGroupCode) {
+		if (certificationReponsitory.isDulicateCertification(certifyGroup.getCompanyCode(), certifyGroup.getCertifies(), certifyGroupCode)) {
 			throw new BusinessException("ER005");
 		}
 

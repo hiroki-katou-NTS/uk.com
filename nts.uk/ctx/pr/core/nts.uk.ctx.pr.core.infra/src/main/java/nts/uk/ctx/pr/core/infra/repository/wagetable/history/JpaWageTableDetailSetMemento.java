@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.infra.repository.wagetable.history;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -84,6 +85,10 @@ public class JpaWageTableDetailSetMemento implements WageTableDetailSetMemento {
 			this.typeValue.setDemensionLowerLimit(stepMode.getLowerLimit());
 			this.typeValue.setDemensionUpperLimit(stepMode.getUpperLimit());
 			this.typeValue.setDemensionInterval(stepMode.getInterval());
+		} else {
+			this.typeValue.setDemensionLowerLimit(BigDecimal.ZERO);
+			this.typeValue.setDemensionUpperLimit(BigDecimal.ZERO);
+			this.typeValue.setDemensionInterval(BigDecimal.ONE);
 		}
 
 		// Save item
@@ -107,6 +112,8 @@ public class JpaWageTableDetailSetMemento implements WageTableDetailSetMemento {
 					.getItems().stream().map(item -> {
 						QwtmtWagetableNum entity = new QwtmtWagetableNum(companyCode, wageTableCd,
 								histId, demensionNo, item.getOrderNumber());
+						entity.setElementStr(BigDecimal.valueOf(item.getStartVal()));
+						entity.setElementEnd(BigDecimal.valueOf(item.getEndVal()));
 						entity.setElementId(item.getUuid());
 						return entity;
 					}).collect(Collectors.toList());

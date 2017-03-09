@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2016 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.core.infra.repository.rule.employment.unitprice;
@@ -277,5 +277,71 @@ public class JpaUnitPriceHistoryRepository extends JpaRepository implements Unit
 			return false;
 		}
 		return true;
+	}
+
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.pr.core.dom.base.simplehistory.SimpleHistoryRepository#deleteHistory(java.lang.String)
+	 */
+	@Override
+	public void deleteHistory(String uuid) {
+	}
+
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.pr.core.dom.base.simplehistory.SimpleHistoryRepository#findLastestHistoryByMasterCode(java.lang.String, java.lang.String)
+	 */
+	@Override
+	public Optional<UnitPriceHistory> findLastestHistoryByMasterCode(String companyCode, String masterCode) {
+		return this.findByIndex(0, new CompanyCode(companyCode), new UnitPriceCode(masterCode));
+	}
+
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.pr.core.dom.base.simplehistory.SimpleHistoryRepository#findHistoryByUuid(java.lang.String)
+	 */
+	@Override
+	public Optional<UnitPriceHistory> findHistoryByUuid(String uuid) {
+		// Get entity manager
+		EntityManager em = this.getEntityManager();
+
+		// Query for indicated stress check.
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<QupmtCUnitpriceDetail> cq = cb.createQuery(QupmtCUnitpriceDetail.class);
+		Root<QupmtCUnitpriceDetail> root = cq.from(QupmtCUnitpriceDetail.class);
+		// Constructing list of parameters
+		List<Predicate> predicateList = new ArrayList<Predicate>();
+
+		// Construct condition.
+		predicateList.add(cb.equal(
+				root.get(QupmtCUnitpriceDetail_.qupmtCUnitpriceDetailPK).get(QupmtCUnitpriceDetailPK_.histId), uuid));
+		cq.where(predicateList.toArray(new Predicate[] {}));
+
+		List<QupmtCUnitpriceDetail> result = em.createQuery(cq).getResultList();
+
+		// Check empty.
+		if (ListUtil.isEmpty(result)) {
+			return Optional.empty();
+		}
+
+		// Return
+		return Optional.of(new UnitPriceHistory(new JpaUnitPriceHistoryGetMemento(result.get(0))));
+	}
+
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.pr.core.dom.base.simplehistory.SimpleHistoryRepository#addHistory(nts.uk.ctx.pr.core.dom.base.simplehistory.History)
+	 */
+	@Override
+	public void addHistory(UnitPriceHistory history) {
+		QupmtCUnitpriceDetail entity = new QupmtCUnitpriceDetail();
+		history.saveToMemento(new JpaUnitPriceHistorySetMemento(entity));
+		this.commandProxy().update(entity);		
+	}
+
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.pr.core.dom.base.simplehistory.SimpleHistoryRepository#updateHistory(nts.uk.ctx.pr.core.dom.base.simplehistory.History)
+	 */
+	@Override
+	public void updateHistory(UnitPriceHistory unitPriceHistory) {
+		QupmtCUnitpriceDetail entity = new QupmtCUnitpriceDetail();
+		unitPriceHistory.saveToMemento(new JpaUnitPriceHistorySetMemento(entity));
+		this.commandProxy().update(entity);
 	}
 }

@@ -80,25 +80,23 @@ var nts;
                                     self.startMonthTemp = ko.observable('');
                                     self.endMonthTemp = ko.observable('');
                                     self.healthOfficeSelectedCode.subscribe(function (officeSelectedCode) {
-                                        if (officeSelectedCode.length > 1) {
-                                            if (self.healthCheckCode(officeSelectedCode)) {
-                                                self.healthCurrentParentCode(officeSelectedCode);
-                                                var roudingList = new HealthInsuranceRoundingModel();
-                                                roudingList.healthSalaryPersonalComboBox(self.roundingList());
-                                                roudingList.healthSalaryCompanyComboBox(self.roundingList());
-                                                roudingList.healthBonusPersonalComboBox(self.roundingList());
-                                                roudingList.healthBonusCompanyComboBox(self.roundingList());
-                                                self.healthModel(new HealthInsuranceRateModel());
-                                                self.isClickHealthHistory(false);
-                                            }
-                                            else {
-                                                self.healthCurrentChildCode(officeSelectedCode);
-                                                self.isClickHealthHistory(true);
-                                                if (officeSelectedCode.length > 10) {
-                                                    $.when(self.loadHealth(officeSelectedCode)).done(function () {
-                                                    }).fail(function (res) {
-                                                    });
-                                                }
+                                        if (self.healthCheckCode(officeSelectedCode)) {
+                                            self.healthCurrentParentCode(officeSelectedCode);
+                                            var roudingList = new HealthInsuranceRoundingModel();
+                                            roudingList.healthSalaryPersonalComboBox(self.roundingList());
+                                            roudingList.healthSalaryCompanyComboBox(self.roundingList());
+                                            roudingList.healthBonusPersonalComboBox(self.roundingList());
+                                            roudingList.healthBonusCompanyComboBox(self.roundingList());
+                                            self.healthModel(new HealthInsuranceRateModel());
+                                            self.isClickHealthHistory(false);
+                                        }
+                                        else {
+                                            self.healthCurrentChildCode(officeSelectedCode);
+                                            self.isClickHealthHistory(true);
+                                            if (officeSelectedCode.length > 10) {
+                                                $.when(self.loadHealth(officeSelectedCode)).done(function () {
+                                                }).fail(function (res) {
+                                                });
                                             }
                                         }
                                     });
@@ -448,7 +446,7 @@ var nts;
                                 ScreenModel.prototype.getDataOfHealthSelectedOffice = function () {
                                     var self = this;
                                     var saveVal = null;
-                                    this.healthInsuranceOfficeList().forEach(function (item, index) {
+                                    self.healthInsuranceOfficeList().forEach(function (item, index) {
                                         if (self.healthCurrentParentCode() == item.code) {
                                             saveVal = item;
                                         }
@@ -458,7 +456,7 @@ var nts;
                                 ScreenModel.prototype.getDataOfPensionSelectedOffice = function () {
                                     var self = this;
                                     var saveVal = null;
-                                    this.pensionInsuranceOfficeList().forEach(function (item, index) {
+                                    self.pensionInsuranceOfficeList().forEach(function (item, index) {
                                         if (self.pensionCurrentParentCode() == item.code) {
                                             saveVal = item;
                                         }

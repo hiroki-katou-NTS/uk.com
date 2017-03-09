@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.app.insurance.labor.accidentrate.find;
 
+import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -13,6 +15,7 @@ import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.AccidentInsuranceRate
 import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.AccidentInsuranceRateRepository;
 import nts.uk.ctx.pr.core.dom.insurance.labor.businesstype.InsuranceBusinessTypeRepository;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.context.LoginUserContext;
 
 /**
  * The Class HistoryAccidentInsuranceRateF‌inder.
@@ -36,10 +39,18 @@ public class AccidentInsuranceRateF‌inder {
 	 * @return the history accident insurance rate dto
 	 */
 	public AccidentInsuranceRateFindOutDto find(String historyId) {
-		AccidentInsuranceRateFindOutDto accidentInsuranceRateFindOutDto = new AccidentInsuranceRateFindOutDto();
-		AccidentInsuranceRate accidentInsuranceRate = accidentInsuranceRateRepository
-				.findById(new CompanyCode(AppContexts.user().companyCode()), historyId);
-		accidentInsuranceRate.saveToMemento(accidentInsuranceRateFindOutDto);
+		// get user login
+		LoginUserContext loginUserContext = AppContexts.user();
+		// get companyCode by user login
+		String companyCode = loginUserContext.companyCode();
+		// call repository finder
+		AccidentInsuranceRateFindOutDto accidentInsuranceRateFindOutDto;
+		accidentInsuranceRateFindOutDto = new AccidentInsuranceRateFindOutDto();
+		Optional<AccidentInsuranceRate> optionalAccidentInsuranceRate = accidentInsuranceRateRepository
+				.findById(new CompanyCode(companyCode), historyId);
+		if (optionalAccidentInsuranceRate.isPresent()) {
+			optionalAccidentInsuranceRate.get().saveToMemento(accidentInsuranceRateFindOutDto);
+		}
 		return accidentInsuranceRateFindOutDto;
 	}
 

@@ -64,7 +64,7 @@ module nts.uk.pr.view.qmm008.h {
             private loadHealthInsuranceAvgearn(): JQueryPromise<void> {
                 var self = this;
                 var dfd = $.Deferred<void>();
-                service.findHealthInsuranceAvgEarn('11521ea4-6f09-4dd7-8d91-41c0f547fa4e').done(res => {
+                service.findHealthInsuranceAvgEarn(self.healthInsuranceRateModel.historyId).done(res => {
                     res.forEach(item => {
                         self.listHealthInsuranceAvgearn.push(
                             new HealthInsuranceAvgEarnModel(
@@ -132,7 +132,7 @@ module nts.uk.pr.view.qmm008.h {
                 var rate = levelMasterSetting.avgEarn / 1000;
 
                 return new HealthInsuranceAvgEarnModel(
-                    '11521ea4-6f09-4dd7-8d91-41c0f547fa4e', //self.healthInsuranceRateModel.historyId;
+                    historyId,
                     levelMasterSetting.code,
                     new HealthInsuranceAvgEarnValueModel(
                         rateItems.healthSalaryCompanyGeneral() * rate,

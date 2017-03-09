@@ -4,12 +4,15 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.app.insurance.labor.accidentrate.command;
 
+import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.AccidentInsuranceRate;
 import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.AccidentInsuranceRateRepository;
 import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.service.AccidentInsuranceRateService;
@@ -52,6 +55,13 @@ public class AccidentInsuranceRateAddCommandHandler extends CommandHandler<Accid
 		accidentInsuranceRate.validate();
 		// validate input domian
 		accidentInsuranceRateService.validateDateRange(accidentInsuranceRate);
+		// get first data
+		Optional<AccidentInsuranceRate> optionalFirst = this.accidentInsuranceRateRepo
+				.findFirstData(new CompanyCode(companyCode));
+		if (optionalFirst.isPresent()) {
+			this.accidentInsuranceRateRepo.updateYearMonth(optionalFirst.get(),
+					accidentInsuranceRate.getApplyRange().getStartMonth().previousMonth());
+		}
 		// connection repository running add
 		this.accidentInsuranceRateRepo.add(accidentInsuranceRate);
 	}

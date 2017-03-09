@@ -34,10 +34,14 @@ public class CertifyGroupDeleteCommandHandler extends CommandHandler<CertifyGrou
 	@Override
 	@Transactional
 	protected void handle(CommandHandlerContext<CertifyGroupDeleteCommand> context) {
+		// get info login user companyCode
 		String companyCode = AppContexts.user().companyCode();
+		// get command
+		CertifyGroupDeleteCommand command = context.getCommand();
+		// call server remove
 		this.certifyGroupRepository.remove(new CompanyCode(companyCode),
-				context.getCommand().getCertifyGroupDeleteDto().getGroupCode(),
-				context.getCommand().getCertifyGroupDeleteDto().getVersion());
+				command.getCertifyGroupDeleteDto().getGroupCode(), 
+				command.getCertifyGroupDeleteDto().getVersion());
 	}
 
 }

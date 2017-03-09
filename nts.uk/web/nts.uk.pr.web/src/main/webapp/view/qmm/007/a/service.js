@@ -1,3 +1,8 @@
+var __extends = (this && this.__extends) || function (d, b) {
+    for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
+    function __() { this.constructor = d; }
+    d.prototype = b === null ? Object.create(b) : (__.prototype = b.prototype, new __());
+};
 var nts;
 (function (nts) {
     var uk;
@@ -8,110 +13,43 @@ var nts;
             (function (view) {
                 var qmm007;
                 (function (qmm007) {
-                    var a;
-                    (function (a) {
-                        var service;
-                        (function (service) {
-                            var paths = {
-                                getUnitPriceHistoryList: "pr/proto/unitprice/findall",
-                                getUnitPriceHistoryDetail: "pr/proto/unitprice/find",
-                                createUnitPriceHistory: "pr/proto/unitprice/create",
-                                updateUnitPriceHistory: "pr/proto/unitprice/update",
-                                removeUnitPriceHistory: "pr/proto/unitprice/remove"
+                    var service;
+                    (function (service) {
+                        var paths = {
+                            getUnitPriceHistoryList: "pr/proto/unitprice/findall",
+                            getUnitPriceHistoryDetail: "pr/proto/unitprice/find",
+                            createUnitPriceHistory: "pr/proto/unitprice/create",
+                            updateUnitPriceHistory: "pr/proto/unitprice/update",
+                            removeUnitPriceHistory: "pr/proto/unitprice/remove"
+                        };
+                        var Service = (function (_super) {
+                            __extends(Service, _super);
+                            function Service(path) {
+                                _super.call(this, path);
+                            }
+                            Service.prototype.findHistoryByUuid = function (id) {
+                                return nts.uk.request.ajax(paths.getUnitPriceHistoryDetail + "/" + id);
                             };
-                            function getUnitPriceHistoryList() {
-                                var dfd = $.Deferred();
-                                nts.uk.request.ajax(paths.getUnitPriceHistoryList)
-                                    .done(function (res) {
-                                    dfd.resolve(res);
-                                })
-                                    .fail(function (res) {
-                                    dfd.reject(res);
-                                });
-                                return dfd.promise();
-                            }
-                            service.getUnitPriceHistoryList = getUnitPriceHistoryList;
-                            function find(id) {
-                                var dfd = $.Deferred();
-                                nts.uk.request.ajax(paths.getUnitPriceHistoryDetail + "/" + id)
-                                    .done(function (res) {
-                                    dfd.resolve(res);
-                                })
-                                    .fail(function (res) {
-                                    dfd.reject(res);
-                                });
-                                return dfd.promise();
-                            }
-                            service.find = find;
-                            function create(unitPriceHistory, isNewmode) {
-                                var dfd = $.Deferred();
-                                unitPriceHistory['newMode'] = isNewmode;
-                                nts.uk.request.ajax(paths.createUnitPriceHistory, unitPriceHistory)
-                                    .done(function (res) {
-                                    dfd.resolve(res);
-                                })
-                                    .fail(function (res) {
-                                    dfd.reject(res);
-                                });
-                                return dfd.promise();
-                            }
-                            service.create = create;
-                            function update(unitPriceHistory) {
-                                var dfd = $.Deferred();
-                                nts.uk.request.ajax(paths.updateUnitPriceHistory, unitPriceHistory)
-                                    .done(function (res) {
-                                    dfd.resolve(res);
-                                })
-                                    .fail(function (res) {
-                                    dfd.reject(res);
-                                });
-                                return dfd.promise();
-                            }
-                            service.update = update;
-                            function remove(histId, unitPriceCode) {
-                                var command = { id: histId, unitPriceCode: unitPriceCode };
-                                var dfd = $.Deferred();
-                                nts.uk.request.ajax(paths.removeUnitPriceHistory, command)
-                                    .done(function (res) {
-                                    dfd.resolve(res);
-                                })
-                                    .fail(function (res) {
-                                    dfd.reject(res);
-                                });
-                                return dfd.promise();
-                            }
-                            service.remove = remove;
-                            var model;
-                            (function (model) {
-                                var UnitPriceHistoryDto = (function () {
-                                    function UnitPriceHistoryDto() {
-                                    }
-                                    return UnitPriceHistoryDto;
-                                }());
-                                model.UnitPriceHistoryDto = UnitPriceHistoryDto;
-                                var UnitPriceHistoryItemDto = (function () {
-                                    function UnitPriceHistoryItemDto(id, startMonth, endMonth) {
-                                        this.id = id;
-                                        this.startMonth = startMonth;
-                                        this.endMonth = endMonth;
-                                    }
-                                    return UnitPriceHistoryItemDto;
-                                }());
-                                model.UnitPriceHistoryItemDto = UnitPriceHistoryItemDto;
-                                var UnitPriceItemDto = (function () {
-                                    function UnitPriceItemDto(unitPriceCode, unitPriceName, histories) {
-                                        this.unitPriceCode = unitPriceCode;
-                                        this.unitPriceName = unitPriceName;
-                                        this.histories = histories;
-                                    }
-                                    return UnitPriceItemDto;
-                                }());
-                                model.UnitPriceItemDto = UnitPriceItemDto;
-                            })(model = service.model || (service.model = {}));
-                        })(service = a.service || (a.service = {}));
-                    })(a = qmm007.a || (qmm007.a = {}));
+                            return Service;
+                        }(view.base.simplehistory.service.BaseService));
+                        service.Service = Service;
+                        service.instance = new Service({
+                            historyMasterPath: 'pr/proto/unitprice/masterhistory',
+                            createHisotyPath: 'pr/proto/unitprice/history/create',
+                            deleteHistoryPath: 'pr/proto/unitprice/history/delete'
+                        });
+                        function update(unitPriceHistory) {
+                            return nts.uk.request.ajax(paths.updateUnitPriceHistory, unitPriceHistory);
+                        }
+                        service.update = update;
+                        var model;
+                        (function (model) {
+                            ;
+                        })(model = service.model || (service.model = {}));
+                    })(service = qmm007.service || (qmm007.service = {}));
                 })(qmm007 = view.qmm007 || (view.qmm007 = {}));
             })(view = pr.view || (pr.view = {}));
         })(pr = uk.pr || (uk.pr = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+//# sourceMappingURL=service.js.map

@@ -3,6 +3,7 @@ module nts.uk.pr.view.qmm008.b {
         import InsuranceOfficeItemDto = nts.uk.pr.view.qmm008.a.service.model.finder.InsuranceOfficeItemDto;
         import aservice = nts.uk.pr.view.qmm008.a.service;
         import HealthInsuranceRateDto = nts.uk.pr.view.qmm008.a.service.model.finder.HealthInsuranceRateDto;
+        import AddNewHistoryDto = nts.uk.pr.view.qmm008.a.service.model.finder.AddNewHistoryDto;
         import PensionRateDto = nts.uk.pr.view.qmm008.a.service.model.finder.PensionRateDto;
         export class ScreenModel {
             getInsuranceOfficeItemDto: KnockoutObservable<InsuranceOfficeItemDto>;
@@ -28,7 +29,7 @@ module nts.uk.pr.view.qmm008.b {
                 //select options 
                 self.listOptions = ko.observableArray([new optionsModel(1, "最新の履歴(2016/04)から引き継ぐ"), new optionsModel(2, "初めから作成する")]);
 
-                self.selectedValue = ko.observable(new optionsModel(1, ""));
+                self.selectedValue = ko.observable(self.listOptions()[0]);
 
                 self.isTransistReturnData = ko.observable(nts.uk.ui.windows.getShared("isTransistReturnData"));
                 // Reset child value
@@ -83,15 +84,21 @@ module nts.uk.pr.view.qmm008.b {
                         var backupHistoryId = healthData.historyId;
                         var backupStartMonth = healthData.startMonth;
                         var backupEndMonth = healthData.endMonth;
+                        var registerItem : AddNewHistoryDto = new AddNewHistoryDto();
 
-                        healthData.historyId = "";
-                        healthData.startMonth = self.selectedDate();
-                        healthData.endMonth = "9999/12";
+                        if (self.selectedValue().id == 1) {
+                            registerItem.isCloneData = true;
+                        } else {
+                            registerItem.isCloneData = false;
+                        }
+                        registerItem.startMonth = self.selectedDate();
+                        registerItem.endMonth = "9999/12";
+                        registerItem.officeCode = self.getInsuranceOfficeItemDto().code;
                         if (!self.compareStringDate(backupStartMonth, self.minusOneMonth(self.selectedDate()))) {
                             alert("ER011");
                         }
                         else {
-                            aservice.registerHealthRate(healthData).done(function() {
+                            aservice.registerHealthRate(registerItem).done(function() {
                                 //update previous
                                 if (self.getInsuranceOfficeItemDto().childs.length > 0) {
                                     var previousHealthData: HealthInsuranceRateDto = self.getPreviousInsuranceRateDto();

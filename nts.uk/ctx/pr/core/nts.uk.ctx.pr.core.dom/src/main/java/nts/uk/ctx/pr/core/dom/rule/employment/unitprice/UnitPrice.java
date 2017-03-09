@@ -8,12 +8,13 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.core.dom.company.CompanyCode;
+import nts.uk.ctx.pr.core.dom.base.simplehistory.Master;
 
 /**
  * The Class UnitPrice.
  */
 @Getter
-public class UnitPrice extends DomainObject {
+public class UnitPrice extends DomainObject implements Master{
 
 	/** The company code. */
 	private CompanyCode companyCode;

@@ -1,12 +1,11 @@
 module nts.uk.pr.view.qmm011.d {
-    
+
     import option = nts.uk.ui.option;
     import TypeHistory = nts.uk.pr.view.qmm011.a.service.model.TypeHistory;
-    
+
     export module viewmodel {
-        
         export class ScreenModel {
-            
+
             selectModel: KnockoutObservableArray<BoxModel>;
             enable: KnockoutObservable<boolean>;
             textEditorOption: KnockoutObservable<any>;
@@ -24,6 +23,7 @@ module nts.uk.pr.view.qmm011.d {
                 self.historyStart = ko.observable('');
                 self.historyEnd = ko.observable('9999/12');
                 self.selectedId = ko.observable(1);
+                //get data fw => 
                 var isEmpty = nts.uk.ui.windows.getShared("isEmpty");
                 if (!isEmpty) {
                     var historyStart = nts.uk.ui.windows.getShared("historyStart");
@@ -38,7 +38,7 @@ module nts.uk.pr.view.qmm011.d {
                     ]);
                 }
             }
-            
+
             fwaddHistoryInfo() {
                 var self = this;
                 var addHistoryInfoModel: AddHistoryInfoModel;
@@ -51,17 +51,17 @@ module nts.uk.pr.view.qmm011.d {
         }
 
         export class BoxModel {
-            
+
             id: number;
             name: string;
-            
+
             constructor(id, name) {
                 var self = this;
                 self.id = id;
                 self.name = name;
             }
         }
-        
+
         export class AddHistoryInfoModel {
             typeModel: number;// add new, add before
             historyStart: string;

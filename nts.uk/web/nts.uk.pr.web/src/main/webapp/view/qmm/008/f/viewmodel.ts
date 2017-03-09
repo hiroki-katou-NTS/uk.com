@@ -26,7 +26,7 @@ module nts.uk.pr.view.qmm008.f {
                 self.selectedHistoryCode = ko.observable(selectedHistoryCode);
 
                 self.listOptions = ko.observableArray([new optionsModel(1, "履歴を削除する"), new optionsModel(2, "履歴を修正する")]);
-                self.selectedValue = ko.observable(self.listOptions()[1]);
+                self.selectedValue = ko.observable(self.listOptions()[0]);
 
                 self.modalValue = ko.observable("Goodbye world!");
                 self.isTransistReturnData = ko.observable(nts.uk.ui.windows.getShared("isTransistReturnData"));

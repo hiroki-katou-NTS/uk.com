@@ -9,6 +9,7 @@ import java.util.Optional;
 
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
+import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
 
 /**
  * The Interface HealthInsuranceRateRepository.
@@ -54,6 +55,15 @@ public interface HealthInsuranceRateRepository {
 	 */
 	Optional<HealthInsuranceRate> findById(String id);
 
+
+	/**
+	 * Find all office.
+	 *
+	 * @param companyCode the company code
+	 * @param officeCode the office code
+	 * @return the optional
+	 */
+	List<HealthInsuranceRate> findAllOffice(CompanyCode companyCode , OfficeCode officeCode);
 	/**
 	 * Checks if is invalid date range.
 	 *

@@ -1,6 +1,6 @@
 module nts.uk.pr.view.qmm016.a {
     export module viewmodel {
-        export class ScreenModel extends base.simlehistory.viewmodel.ScreenBaseModel<model.WageTable, model.WageTableHistory> {
+        export class ScreenModel extends base.simplehistory.viewmodel.ScreenBaseModel<model.WageTable, model.WageTableHistory> {
             // UI
             tabs: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel>;
             wageTableList: any;
@@ -22,7 +22,7 @@ module nts.uk.pr.view.qmm016.a {
             specialTableTypes: KnockoutObservableArray<any>;
 
             constructor() {
-                super(service.instance);
+                super('test', service.instance);
                 var self = this;
 
                 // Tabs.

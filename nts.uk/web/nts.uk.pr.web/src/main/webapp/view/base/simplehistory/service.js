@@ -8,8 +8,8 @@ var nts;
             (function (view) {
                 var base;
                 (function (base) {
-                    var simlehistory;
-                    (function (simlehistory) {
+                    var simplehistory;
+                    (function (simplehistory) {
                         var service;
                         (function (service) {
                             var BaseService = (function () {
@@ -21,11 +21,26 @@ var nts;
                                     var self = this;
                                     return nts.uk.request.ajax(self.path.historyMasterPath);
                                 };
+                                BaseService.prototype.createHistory = function (masterCode, startYearMonth, isCopyFromLatest) {
+                                    var self = this;
+                                    return nts.uk.request.ajax(self.path.createHisotyPath, {
+                                        masterCode: masterCode,
+                                        startYearMonth: startYearMonth,
+                                        copyFromLatest: isCopyFromLatest
+                                    });
+                                };
+                                BaseService.prototype.deleteHistory = function (masterCode, historyUuid) {
+                                    var self = this;
+                                    return nts.uk.request.ajax(self.path.deleteHistoryPath, {
+                                        masterCode: masterCode,
+                                        historyUuid: historyUuid
+                                    });
+                                };
                                 return BaseService;
                             }());
                             service.BaseService = BaseService;
-                        })(service = simlehistory.service || (simlehistory.service = {}));
-                    })(simlehistory = base.simlehistory || (base.simlehistory = {}));
+                        })(service = simplehistory.service || (simplehistory.service = {}));
+                    })(simplehistory = base.simplehistory || (base.simplehistory = {}));
                 })(base = view.base || (view.base = {}));
             })(view = pr.view || (pr.view = {}));
         })(pr = uk.pr || (uk.pr = {}));
