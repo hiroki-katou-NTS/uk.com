@@ -56,7 +56,7 @@ public class JpaWageTableHistoryGetMemento implements WageTableHistoryGetMemento
 	 * getCode()
 	 */
 	@Override
-	public WageTableCode getCode() {
+	public WageTableCode getWageTableCode() {
 		return new WageTableCode(this.typeValue.getQwtmtWagetableHistPK().getWageTableCd());
 	}
 

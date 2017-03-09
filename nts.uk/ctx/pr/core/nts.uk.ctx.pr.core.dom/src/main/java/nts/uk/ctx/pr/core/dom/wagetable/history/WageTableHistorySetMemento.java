@@ -28,7 +28,7 @@ public interface WageTableHistorySetMemento {
 	 *
 	 * @param code the new code
 	 */
-	void setCode(WageTableCode code);
+	void setWageTableCode(WageTableCode code);
 
 	/**
 	 * Sets the history id.

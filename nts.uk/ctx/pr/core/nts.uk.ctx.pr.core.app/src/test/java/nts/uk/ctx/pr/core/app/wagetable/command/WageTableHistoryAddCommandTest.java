@@ -119,7 +119,7 @@ public class WageTableHistoryAddCommandTest extends TestCase {
 				new WageTableCode(wageTableHeadDto.getCode()));
 
 		// Assert
-		assertEquals("001", wageTableHistory.getCode().v());
+		assertEquals("001", wageTableHistory.getWageTableCode().v());
 		assertEquals(true, wageTableHistory.getApplyRange().getStartMonth().v() == 201601);
 		assertEquals(true, wageTableHistory.getApplyRange().getEndMonth().v() == 201607);
 

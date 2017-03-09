@@ -44,12 +44,12 @@ public class WageTableHistoryDto extends WageTableDetailDto {
 	 *            the company code
 	 * @return the wage table history
 	 */
-	public WageTableHistory toDomain(CompanyCode companyCode, WageTableCode wageTableCode) {
+	public WageTableHistory toDomain(String companyCode, String wageTableCode) {
 		WageTableHistoryDto dto = this;
 
 		// Transfer data
-		WageTableHistory wageTableHistory = new WageTableHistory(
-				new WageTableHistoryDtoMemento(companyCode, wageTableCode, dto));
+		WageTableHistory wageTableHistory = new WageTableHistory(new WageTableHistoryDtoMemento(
+				new CompanyCode(companyCode), new WageTableCode(wageTableCode), dto));
 
 		return wageTableHistory;
 	}
@@ -104,7 +104,7 @@ public class WageTableHistoryDto extends WageTableDetailDto {
 		}
 
 		@Override
-		public WageTableCode getCode() {
+		public WageTableCode getWageTableCode() {
 			return this.wageTableCode;
 		}
 

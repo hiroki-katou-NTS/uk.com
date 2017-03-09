@@ -8,14 +8,15 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.core.dom.company.CompanyCode;
-import nts.uk.ctx.pr.core.dom.wagetable.WageTableCode;
 import nts.uk.ctx.pr.core.dom.wagetable.WageTableHead;
 import nts.uk.ctx.pr.core.dom.wagetable.WageTableHeadRepository;
 import nts.uk.ctx.pr.core.dom.wagetable.history.WageTableHistory;
 import nts.uk.ctx.pr.core.dom.wagetable.history.WageTableHistoryRepository;
+import nts.uk.ctx.pr.core.dom.wagetable.history.service.WageTableHeadService;
+import nts.uk.ctx.pr.core.dom.wagetable.history.service.WageTableHistoryService;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -33,6 +34,14 @@ public class WageTableHistoryUpdateCommandHandler
 	@Inject
 	private WageTableHistoryRepository wageTableHistoryRepo;
 
+	/** The history service. */
+	@Inject
+	private WageTableHistoryService historyService;
+
+	/** The head service. */
+	@Inject
+	private WageTableHeadService headService;
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -46,23 +55,28 @@ public class WageTableHistoryUpdateCommandHandler
 
 		WageTableHistoryUpdateCommand command = context.getCommand();
 
-		CompanyCode companyCode = new CompanyCode(AppContexts.user().companyCode());
+		String companyCode = AppContexts.user().companyCode();
 
 		boolean isExistHeader = this.wageTableHeadRepo.isExistCode(companyCode,
-				new WageTableCode(command.getWageTableHeadDto().getCode()));
+				command.getWageTableHeadDto().getCode());
 
 		WageTableHead header = command.getWageTableHeadDto().toDomain(companyCode);
 
-		if (isExistHeader) {
-			this.wageTableHeadRepo.update(header);
-		} else {
-			this.wageTableHeadRepo.add(header);
+		if (!isExistHeader) {
+			// TODO
+			throw new BusinessException("errorMessage");
 		}
 
 		WageTableHistory history = command.getWageTableHistoryDto().toDomain(companyCode,
-				header.getCode());
+				header.getCode().v());
 
-		this.wageTableHistoryRepo.update(history);
+		headService.validateRequiredItem(header);
+
+		historyService.validateRequiredItem(history);
+		historyService.validateDateRange(history);
+
+		this.wageTableHeadRepo.update(header);
+		this.wageTableHistoryRepo.updateHistory(history);
 	}
 
 }

@@ -114,7 +114,7 @@ public class JpaWageTableHistoryRepositoryTest extends AbstractDbUnitTestCase {
 		List<WageTableItemDto> valueItems = Arrays.asList(wageTableItemDto);
 
 		WageTableHistoryAddCommand command = new WageTableHistoryAddCommand();
-		command.setCode("001");
+		command.setWageTableCode("001");
 		command.setStartMonth("2016/01");
 		command.setEndMonth("2016/07");
 		command.setDemensionDetails(demensionDetails);

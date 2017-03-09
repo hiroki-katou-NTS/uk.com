@@ -7,6 +7,7 @@ package nts.uk.ctx.pr.core.dom.wagetable;
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.core.dom.company.CompanyCode;
+import nts.uk.ctx.pr.core.dom.base.simplehistory.Master;
 import nts.uk.ctx.pr.core.dom.wagetable.mode.DemensionalMode;
 import nts.uk.shr.com.primitive.Memo;
 
@@ -14,7 +15,7 @@ import nts.uk.shr.com.primitive.Memo;
  * The Class WageTableHead.
  */
 @Getter
-public class WageTableHead extends DomainObject {
+public class WageTableHead extends DomainObject implements Master {
 
 	/** The company code. */
 	private CompanyCode companyCode;

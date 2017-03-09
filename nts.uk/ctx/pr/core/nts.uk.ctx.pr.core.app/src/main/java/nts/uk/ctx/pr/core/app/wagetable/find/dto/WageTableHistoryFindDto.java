@@ -36,7 +36,7 @@ public class WageTableHistoryFindDto implements WageTableHistorySetMemento {
 	}
 
 	@Override
-	public void setCode(WageTableCode code) {
+	public void setWageTableCode(WageTableCode code) {
 		this.code = code.v();
 	}
 
@@ -53,13 +53,11 @@ public class WageTableHistoryFindDto implements WageTableHistorySetMemento {
 
 	@Override
 	public void setDemensionDetail(List<WageTableElement> demensionDetail) {
-		// TODO Auto-generated method stub
-
+		
 	}
 
 	@Override
 	public void setValueItems(List<WageTableItem> elements) {
-		// TODO Auto-generated method stub
 
 	}
 
