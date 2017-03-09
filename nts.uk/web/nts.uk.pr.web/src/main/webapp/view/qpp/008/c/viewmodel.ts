@@ -7,15 +7,15 @@ module qpp008.c.viewmodel {
         /*SwapList*/
         //swapList1
         itemsSwap: KnockoutObservableArray<ItemModel>;
-        columnsSwap: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
+        columnsSwap: KnockoutObservableArray<any>;
         currentCodeListSwap: KnockoutObservableArray<ItemModel>;
         //swapList2
         itemsSwap2: KnockoutObservableArray<ItemModel>;
-        columnsSwap2: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>
+        columnsSwap2: KnockoutObservableArray<any>
         currentCodeListSwap2: KnockoutObservableArray<ItemModel>;
         //swapList3
         itemsSwap3: KnockoutObservableArray<ItemModel>;
-        columnsSwap3: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>
+        columnsSwap3: KnockoutObservableArray<any>
         currentCodeListSwap3: KnockoutObservableArray<ItemModel>;
         /*TabPanel*/
         tabs: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel>;
@@ -120,27 +120,7 @@ module qpp008.c.viewmodel {
                 x = x.concat(self.currentCodeListSwap3());
                 return x;
             }, self).extend({ deferred: true });
-//            self.currentCodeListSwap2.subscribe(function(swapItems) {
-//                self.items2.removeAll();
-//                _.forEach(swapItems, function(value) {
-//                    console.log(value)
-//                    if (self.findDuplicateSwaps(value.code) == false) {
-//                        self.items2.push(value);
-//                    }
-//
-//                });
-//
-//            });
-
-            //gridList2
-//            self.items2 = ko.observableArray([]);
-            //            var str = ['a0', 'b0', 'c0', 'd0'];
-            //            for (var j = 0; j < 4; j++) {
-            //                for (var i = 1; i < 51; i++) {
-            //                    var code = i < 10 ? str[j] + '0' + i : str[j] + i;
-            //                    this.items2.push(new ItemModel(code, code, code, code));
-            //                }
-            //            }
+//           
             self.columns2 = ko.observableArray([
                 { headerText: 'コード', prop: 'code', width: 60 },
                 { headerText: '名称', prop: 'name', width: 120 },
@@ -154,11 +134,7 @@ module qpp008.c.viewmodel {
             //self.allowEditCode(true);
             self.cInp002Code(true);
             self.currentItem(ko.mapping.fromJS(new ItemModel('', '', '', '', '')));
-            //self.currentCode() = ko.observable();
-            // self.currentItem=ko.observable(new ItemModel('', '', '','',''));
-            //            self.currentCode = ko.observable();
-            //            self.currentItem = ko.observable(ko.mapping.fromJS(_.first(self.items())));
-            //elf.cInp002Code = ko.observable(false);
+           
         }
         insertData() {
             let self = this;

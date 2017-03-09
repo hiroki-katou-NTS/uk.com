@@ -85,26 +85,7 @@ var qpp008;
                         x = x.concat(self.currentCodeListSwap3());
                         return x;
                     }, self).extend({ deferred: true });
-                    //            self.currentCodeListSwap2.subscribe(function(swapItems) {
-                    //                self.items2.removeAll();
-                    //                _.forEach(swapItems, function(value) {
-                    //                    console.log(value)
-                    //                    if (self.findDuplicateSwaps(value.code) == false) {
-                    //                        self.items2.push(value);
-                    //                    }
-                    //
-                    //                });
-                    //
-                    //            });
-                    //gridList2
-                    //            self.items2 = ko.observableArray([]);
-                    //            var str = ['a0', 'b0', 'c0', 'd0'];
-                    //            for (var j = 0; j < 4; j++) {
-                    //                for (var i = 1; i < 51; i++) {
-                    //                    var code = i < 10 ? str[j] + '0' + i : str[j] + i;
-                    //                    this.items2.push(new ItemModel(code, code, code, code));
-                    //                }
-                    //            }
+                    //           
                     self.columns2 = ko.observableArray([
                         { headerText: 'コード', prop: 'code', width: 60 },
                         { headerText: '名称', prop: 'name', width: 120 },
@@ -116,11 +97,6 @@ var qpp008;
                     //self.allowEditCode(true);
                     self.cInp002Code(true);
                     self.currentItem(ko.mapping.fromJS(new ItemModel('', '', '', '', '')));
-                    //self.currentCode() = ko.observable();
-                    // self.currentItem=ko.observable(new ItemModel('', '', '','',''));
-                    //            self.currentCode = ko.observable();
-                    //            self.currentItem = ko.observable(ko.mapping.fromJS(_.first(self.items())));
-                    //elf.cInp002Code = ko.observable(false);
                 };
                 ScreenModel.prototype.insertData = function () {
                     var self = this;

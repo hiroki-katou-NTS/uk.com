@@ -29,22 +29,18 @@
 				<button id="C_BTN_004" data-bind="click: closeDialog">閉じる</button>
 			</div>
 			<div id="contents-area">
-				<div class="container">
-					<div class="nts-left-content">
-						<div class="bg-green caret-right caret-background"
-							style="width: 260px !important; height: 500px;">
-							<i class="icon icon-searchbox"></i>
-							<div class="cf" style="float: left">
-								<div style="width: 355px" class="divSearch inputNtsSearchBox"
-									data-bind="ntsSearchBox: {
-												comId: 'C_LST_001', 
-												items: items, 
-												selected: currentCode, 
-												selectedKey: 'code', 
-												fields: ['name', 'code']}" />
-								<table id="C_LST_001"
-									data-bind="ntsGridList: {
-											width: 230,
+				<div class="nts-left-content bg-green caret-right caret-background">
+					<i class="icon icon-searchbox"></i>
+					<div class="divSearch" style="width: 100%"
+						data-bind="ntsSearchBox: {
+												comId: 'C_LST_001',
+												items: items,
+												selected: currentCode,
+												selectedKey: 'code',
+												fields: ['code','name']}" />
+					<table id="C_LST_001"
+						data-bind="ntsGridList: {
+											width:'100%',
 											height: 320,
 											options: items,
 											optionsValue: 'code',
@@ -52,113 +48,129 @@
 											multiple: false,
 											value: currentCode
 										}"
-									class="cf"></table>
-							</div>
+						class="cf">
+					</table>
+				</div>
+				<div class="nts-right-content">
+					<div class="divRightTop valign-center control-group">
+						<div id="C_LBL_001" data-bind="ntsFormLabel: {required: true }">レイアウトコード</div>
+						<div class="C_INP_23" data-bind="with: currentItem">
+							<input id="C_INP_002"
+								data-bind="ntsTextEditor: {value: code, enable: $root.content.cInp002Code}" />
+							<input id="C_INP_003" data-bind="ntsTextEditor: { value: name }" />
 						</div>
 					</div>
-					<div class="nts-right-content">
-						<div class="divRightTop valign-center control-group">
-							<div id="_LBL_001" data-bind="ntsFormLabel: {required: true }">レイアウトコード</div>
-							<div class="C_INP_23">
-								<div data-bind="with: currentItem">
-									<input id="C_INP_002"
-										data-bind="ntsTextEditor: {value: code, enable: $root.content.cInp002Code}" />
-									<input id="C_INP_003"
-										data-bind="ntsTextEditor: { value: name }" />
-								</div>
-								<!-- <input id="C_INP_002" data-bind="ntsTextEditor: { currentItem().code, enable: enableC_INP_002}" /-->
+					<hr />
+					<div class="divRightBottom">
+						<div class="div-right-bottom-right">
+							<div class="tabPanel relative">
+								<span class="caret-right"></span>
+								<div id="tab-panel"
+									data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}">
+									<div class="tab-content-1">
+										<div class="LBL_1_2">
+											<div id="D_LBL_001" data-bind="ntsFormLabel: {}">表に追加できる項目</div>
+											<hr />
+										</div>
+										<div class="LBL_1_2 div-pading-LBL_002">
+											<div id="D_LBL_002" data-bind="ntsFormLabel: {}">表に追加した項目</div>
+											<hr />
+										</div>
 
-								<!--<input id="C_INP_002" data-bind="ntsTextEditor: { cInp002Code, enable: enableC_INP_002}" />-->
-							</div>
-						</div>
-						<hr />
-						<div class="divRightBottom">
-							<div class="divRBt1">
-								<div class="tabPanel relative">
-									<span class="caret-right"></span>
-									<div id="tab-panel"
-										data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}">
-										<div class="tab-content-1">
-											<div class="divRBt1Up">
-												<div id="D_LBL_001" class="D_LBL_1_2"
-													data-bind="ntsFormLabel: {}">表に追加できる項目</div>
-												<div id="D_LBL_002" class="D_LBL_1_2"
-													data-bind="ntsFormLabel: {}">表に追加した項目</div>
-											</div>
-											<div class="divRBt1Down"></div>
+										<div style="display: inline-block;">
 											<div id="D_LST_001"
 												data-bind="ntsSwapList: {
-																			showSearchBox: true,
-																			height: 300,
-																			options: itemsSwap,
-																			optionsValue: 'code',
-																			columns: columnsSwap,
-																			value: currentCodeListSwap
-																		}"
-												class=""></div>
+												showSearchBox: { showLeft : true, showRight: false},
+												height: 350,
+												dataSource: itemsSwap,
+												primaryKey: 'code',
+												columns: columnsSwap,
+												value: currentCodeListSwap}">
+											</div>
 										</div>
-										<div class="tab-content-2">
-											<div class="divRBt1Up">
-												<div id="D_LBL_001" class="D_LBL_1_2"
-													data-bind="ntsFormLabel: {}">表に追加できる項目</div>
-												<div id="D_LBL_002" class="D_LBL_1_2"
-													data-bind="ntsFormLabel: {}">表に追加した項目</div>
-											</div>
-											<div class="divRBt1Down">
-												<div id="E_LST_001"
-													data-bind="ntsSwapList: {
-																				showSearchBox: true,
-																				height: 300,
-																				options: itemsSwap2,
-																				optionsValue: 'code',
-																				columns: columnsSwap2,
-																				value: currentCodeListSwap2
-																			}"
-													class=""></div>
-													<div id="swap-up-down"
-															data-bind="ntsUpDown: {
-																	targetSource: currentCodeListSwap2,
-																	primaryKey: 'code',
-																	comId: '#E_LST_001',
-																	type: 'swap',
-																	swapTarget: 'right'
-																}"
-															class="swapUpDown"></div>
-											</div>
-											
+										<div id="swap-up-down"
+											data-bind="ntsUpDown: {
+													targetSource: currentCodeListSwap2,
+													primaryKey: 'code',
+													comId: '#D_LST_001',
+													type: 'swap',
+													swapTarget: 'right'
+												}" class="swapUpDown">
 										</div>
-										<div class="tab-content-3">
-											<div class="divRBt1Up">
-												<div id="D_LBL_001" class="D_LBL_1_2"
-													data-bind="ntsFormLabel: {}">表に追加できる項目</div>
-												<div id="D_LBL_002" class="D_LBL_1_2"
-													data-bind="ntsFormLabel: {}">表に追加した項目</div>
-											</div>
-											<div class="divRBt1Down">
 
-												<div id="F_LST_001"
-													data-bind="ntsSwapList: {
-																			showSearchBox: true,
-																			height: 300,
-																			options: itemsSwap3,
-																			optionsValue: 'code',
-																			columns: columnsSwap3,
-																			value: currentCodeListSwap3
-																		}"
-													class=""></div>
+									</div>
+									<div class="tab-content-2">
+										<div class="LBL_1_2">
+											<div id="E_LBL_001" data-bind="ntsFormLabel: {}">表に追加できる項目</div>
+											<hr />
+										</div>
+										<div class="LBL_1_2 div-pading-LBL_002">
+											<div id="E_LBL_002" data-bind="ntsFormLabel: {}">表に追加した項目</div>
+											<hr />
+										</div>
+
+										<div style="display: inline-block;">
+											<div id="E_LST_001"
+												data-bind="ntsSwapList: {
+												showSearchBox: { showLeft : true, showRight: false},
+												height: 350,
+												dataSource: itemsSwap,
+												primaryKey: 'code',
+												columns: columnsSwap,
+												value: currentCodeListSwap}">
 											</div>
 										</div>
+										<div id="swap-up-down"
+											data-bind="ntsUpDown: {
+													targetSource: currentCodeListSwap2,
+													primaryKey: 'code',
+													comId: '#E_LST_001',
+													type: 'swap',
+													swapTarget: 'right'
+												}"
+											class="swapUpDown"></div>
+									</div>
+									<div class="tab-content-3">
+										<div class="LBL_1_2">
+											<div id="F_LBL_001" data-bind="ntsFormLabel: {}">表に追加できる項目</div>
+											<hr />
+										</div>
+										<div class="LBL_1_2 div-pading-LBL_002">
+											<div id="F_LBL_002" data-bind="ntsFormLabel: {}">表に追加した項目</div>
+											<hr />
+										</div>
+
+										<div style="display: inline-block;">
+											<div id="F_LST_001"
+												data-bind="ntsSwapList: {
+												showSearchBox: { showLeft : true, showRight: false},
+												height: 350,
+												dataSource: itemsSwap,
+												primaryKey: 'code',
+												columns: columnsSwap,
+												value: currentCodeListSwap}">
+											</div>
+										</div>
+										<div id="swap-up-down"
+											data-bind="ntsUpDown: {
+													targetSource: currentCodeListSwap2,
+													primaryKey: 'code',
+													comId: '#F_LST_001',
+													type: 'swap',
+													swapTarget: 'right'
+												}"
+											class="swapUpDown"></div>
 									</div>
 								</div>
 							</div>
-							<div class="divRBt2">
-								<div class="control-group valign-center">
-									<div id="C_LBL_002"
-										data-bind="ntsFormLabel: { required: true }">レイアウトコード</div>
-									<button id="helpButton" class="small">?</button>
-								</div>
-								<table id="C_LST_002"
-									data-bind="ntsGridList: {
+						</div>
+						<div class="div-right-bottom-left">
+							<div class="control-group valign-center">
+								<div id="C_LBL_002" data-bind="ntsFormLabel: { required: true }">レイアウトコード</div>
+								<button id="helpButton" class="small">?</button>
+							</div>
+							<table id="C_LST_002"
+								data-bind="ntsGridList: {
 																	width: 200,
 																	height: 300,
 																	options: items2,
@@ -167,10 +179,10 @@
 																	multiple: false,
 																	value: currentCode2
 																						}"></table>
-							</div>
 						</div>
 					</div>
 				</div>
+
 			</div>
 		</ui:define>
 	</ui:composition>
