@@ -177,7 +177,7 @@ public class UnitPriceHistory extends AggregateRoot implements History<UnitPrice
 		UnitPriceHistory newHistory = new UnitPriceHistory();
 		newHistory.companyCode = this.companyCode;
 		newHistory.unitPriceCode = this.unitPriceCode;
-		newHistory.applyRange = MonthRange.range(start, this.applyRange.getEndMonth());
+		newHistory.applyRange = MonthRange.toMaxDate(start);
 		newHistory.budget = this.budget;
 		newHistory.fixPaySettingType = this.fixPaySettingType;
 		newHistory.fixPayAtr = this.fixPayAtr;
@@ -200,7 +200,7 @@ public class UnitPriceHistory extends AggregateRoot implements History<UnitPrice
 		UnitPriceHistory history = new UnitPriceHistory();
 		history.companyCode = companyCode;
 		history.unitPriceCode = unitPriceCode;
-		history.applyRange = MonthRange.range(startYearMonth, new YearMonth(999999));
+		history.applyRange = MonthRange.toMaxDate(startYearMonth);
 		history.budget = new Money(BigDecimal.ZERO);
 		history.fixPaySettingType = SettingType.Company;
 		history.fixPayAtr = ApplySetting.NotApply;
