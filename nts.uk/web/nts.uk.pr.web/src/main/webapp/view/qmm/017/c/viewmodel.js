@@ -128,9 +128,97 @@ var nts;
         qmm017.ItemModelTextEditor = ItemModelTextEditor;
         var TextEditor = (function () {
             function TextEditor() {
+                var _this = this;
+                //list error messsage
                 this.ERROR_BRACKET = "カッコ()の数に誤りがあります。";
-                this.ERROR_CONSECUTIVELY = "構文に誤りがあります。＋と＋が連続して入力されています。";
-                this.ERROR_MUSTCONTAINATSIGN = "「基本給」は利用できない文字列です。";
+                this.ERROR_CONSECUTIVELY = "構文に誤りがあります。{0}と{1}が連続して入力されています。";
+                this.ERROR_MUST_CONTAIN_ATSIGN = "「{0}」は利用できない文字列です。";
+                this.ERROR_BEFORE_ATSIGN = "「{0}＠」は利用できない文字列です。";
+                this.ERROR_DIVIDE_ZERO = "計算式中に「÷0」となる部分が含まれています。";
+                this.ERROR_EMPTY_INPUT = "計算式が入力されていません。";
+                this.ERROR_NESTED_MORE_THAN_10 = "関数を10回を超えて入れ子にすることはできません。";
+                this.ERROR_DIGITS_AFTER_DECIMAL = "「{0}」は小数点以下の桁数が多すぎます。 計算式で利用できる小数は小数点以下5桁までです。";
+                this.ERROR_TOO_MUCH_PARAM = "「{0}」の引数が多く指定されています。";
+                this.ERROR_NOT_ENOUGH_PARAM = "「{0}」の引数が不足しています。";
+                this.ERROR_AFTER_ATSIGN = "「{0}」は利用できない文字列です。";
+                this.ERROR_PARAM_TYPE = "「{0}」の第#引数の型が不正です。";
+                this.listSpecialChar = ["+", "-", "×", "÷", "＾", "（", "）", "＜", "＞", "≦", "≧", "＝", "≠"];
+                this.listOperatorChar = ["+", "-", "×", "÷"];
+                this.validateNumberOfParam = function (functionName, numberOfParam) {
+                    var self = _this;
+                    if (functionName === "関数＠条件式" && numberOfParam === 3) {
+                        return true;
+                    }
+                    else if (functionName === "関数＠かつ" && numberOfParam === 2) {
+                        return true;
+                    }
+                    else if (functionName === "関数＠または" && numberOfParam === 2) {
+                        return true;
+                    }
+                    else if (functionName === "関数＠四捨五入" && numberOfParam === 1) {
+                        return true;
+                    }
+                    else if (functionName === "関数＠切捨て" && numberOfParam === 1) {
+                        return true;
+                    }
+                    else if (functionName === "関数＠切上げ" && numberOfParam === 1) {
+                        return true;
+                    }
+                    else if (functionName === "関数＠最大値" && numberOfParam === 2) {
+                        return true;
+                    }
+                    else if (functionName === "関数＠最小値" && numberOfParam === 2) {
+                        return true;
+                    }
+                    else if (functionName === "関数＠家族人数" && numberOfParam === 2) {
+                        return true;
+                    }
+                    else if (functionName === "関数＠月加算" && numberOfParam === 2) {
+                        return true;
+                    }
+                    else if (functionName === "関数＠年抽出" && numberOfParam === 1) {
+                        return true;
+                    }
+                    else if (functionName === "関数＠月抽出" && numberOfParam === 1) {
+                        return true;
+                    }
+                    return false;
+                };
+                this.validateContentFunction = function (contentFunction) {
+                    var self = _this;
+                    var treeFunction = nts.uk.util.createTreeFromString(contentFunction, "（", "）", ",");
+                    return self.validateTreeFunction(treeFunction[0]);
+                };
+                this.validateTreeFunction = function (treeObject) {
+                    var self = _this;
+                    var functionName = treeObject.value;
+                    var params = treeObject.children;
+                    if (params.length > 0) {
+                        if (self.validateNumberOfParam(functionName, params.length)) {
+                            for (var i = 0; i < params.length; i++) {
+                                return self.validateTreeFunction(params[i]);
+                            }
+                        }
+                        return false;
+                    }
+                    return true;
+                };
+                this.checkEqualInArray = function (target, array) {
+                    for (var count = 0; count < array.length; count++) {
+                        if (target === array[count]) {
+                            return true;
+                        }
+                    }
+                    return false;
+                };
+                this.checkContainsInArray = function (target, array) {
+                    for (var count = 0; count < array.length; count++) {
+                        if (target.indexOf(array[count]) !== -1) {
+                            return true;
+                        }
+                    }
+                    return false;
+                };
                 var self = this;
                 //----------------------------------------------------------------------------
                 self.autoComplete = ko.observableArray([
@@ -191,20 +279,185 @@ var nts;
                 });
                 $(document).on("click", "#input-area", function (event) {
                     $("#error-containner").hide();
-                    var y = _.findLast($(".special-char"), function (d) {
-                        var x = $(d).offset();
-                        return x.top <= event.pageY && x.left <= event.pageX
-                            && (x.left + $(d).outerWidth()) >= event.pageX
-                            && (x.top + $(d).outerHeight()) >= event.pageY;
-                    });
-                    if (y) {
-                        $(y).click({ pageX: event.pageX, pageY: event.pageY }, showError);
-                        $(y).click();
-                    }
+                    self.observeError($(".error-char"));
                 });
             }
-            TextEditor.prototype.markError = function (tag, message) {
-                tag.addClass("error-char").attr("message", message);
+            TextEditor.prototype.observeError = function (subjectTags) {
+                var currentClickedTag = _.findLast(subjectTags, function (tag) {
+                    var x = $(tag).offset();
+                    return x.top <= event.pageY && x.left <= event.pageX
+                        && (x.left + $(tag).outerWidth()) >= event.pageX
+                        && (x.top + $(tag).outerHeight()) >= event.pageY;
+                });
+                if (currentClickedTag) {
+                    $(currentClickedTag).click({ pageX: event.pageX, pageY: event.pageY }, showError);
+                    $(currentClickedTag).click();
+                }
+            };
+            TextEditor.prototype.validateBracket = function (bracketTags) {
+                var self = this;
+                var openBracket = _.remove(bracketTags, function (n) {
+                    return $(n).html() === "\（";
+                });
+                var closeBracket = _.remove(bracketTags, function (n) {
+                    return $(n).html() === "\）";
+                });
+                if (closeBracket.length === 0) {
+                    self.markError($(openBracket), self.ERROR_BRACKET, []);
+                }
+                else if (openBracket.length === 0) {
+                    self.markError($(closeBracket), self.ERROR_BRACKET, []);
+                }
+                else {
+                    var openError = [];
+                    for (var i = openBracket.length - 1; i >= 0; i--) {
+                        var currentOpen = openBracket[i];
+                        var id = parseInt($(currentOpen).attr("id").split("-")[1]);
+                        var currentClose = _.find(closeBracket, function (a) {
+                            return parseInt($(a).attr("id").split("-")[1]) > id;
+                        });
+                        if (currentClose === undefined) {
+                            openError.unshift(currentOpen);
+                        }
+                        else {
+                            closeBracket.splice(closeBracket.indexOf(currentClose), 1);
+                        }
+                    }
+                    self.markError($(openError), self.ERROR_BRACKET, []);
+                    self.markError($(closeBracket), self.ERROR_BRACKET, []);
+                }
+            };
+            TextEditor.prototype.validateConsecutively = function (specialChar) {
+                var self = this;
+                var singleSpecial = {
+                    "+": "+",
+                    "-": "-",
+                    "＾": "＾",
+                    "×": "×",
+                    "＝": "＝",
+                    "≠": "≠",
+                    "÷": "÷",
+                    "＜": "＜",
+                    "＞": "＞",
+                    "≦": "≦",
+                    "≧": "≧",
+                    "＠": "＠"
+                };
+                for (var i = 0; i < specialChar.length; i++) {
+                    var $data = $(specialChar[i]);
+                    var charCount = parseInt($data.attr("id").split("-")[1]);
+                    var char = $data.text();
+                    var single = singleSpecial[char];
+                    if (single !== undefined) {
+                        var neighborCount = self.countNeighbor(charCount, specialChar, true, true);
+                        if (neighborCount > 0) {
+                            self.markError($data, self.ERROR_CONSECUTIVELY, [specialChar[i].innerText, specialChar[i].innerText]);
+                        }
+                    }
+                }
+            };
+            TextEditor.prototype.validateContainAtSign = function (tagsJapaneseChar) {
+                var self = this;
+                for (var tagOrder = 0; tagOrder < tagsJapaneseChar.length; tagOrder++) {
+                    if (tagsJapaneseChar[tagOrder].innerText.indexOf('＠') === -1) {
+                        var contentToChars = tagsJapaneseChar[tagOrder].innerText.split('');
+                        if (contentToChars[0] !== '”' || contentToChars[contentToChars.length - 1] !== '”') {
+                            self.markError($(tagsJapaneseChar[tagOrder]), self.ERROR_MUST_CONTAIN_ATSIGN, [tagsJapaneseChar[tagOrder].innerText]);
+                        }
+                    }
+                }
+            };
+            TextEditor.prototype.validateBeforeAtSign = function (tagsJapaneseChar) {
+                var self = this;
+                var lstSyntaxBeforeAtSign = ["支給", "控除", "勤怠", "会社単価", "個人単価", "関数", "変数", "個人", "計算式", "賃金TBL"];
+                for (var tagOrder = 0; tagOrder < tagsJapaneseChar.length; tagOrder++) {
+                    if (tagsJapaneseChar[tagOrder].innerText.indexOf('＠') !== -1) {
+                        var splitByAtSign = tagsJapaneseChar[tagOrder].innerText.split('＠');
+                        if (!self.checkEqualInArray(splitByAtSign[0], lstSyntaxBeforeAtSign)) {
+                            self.markError($(tagsJapaneseChar[tagOrder]), self.ERROR_BEFORE_ATSIGN, [splitByAtSign[0]]);
+                        }
+                    }
+                }
+            };
+            TextEditor.prototype.validateDivideZero = function (tagsSpecialChar) {
+                var self = this;
+                for (var tagOrder = 0; tagOrder < tagsSpecialChar.length; tagOrder++) {
+                    if (tagsSpecialChar[tagOrder].innerText === '÷') {
+                        var nextTag = $(tagsSpecialChar[tagOrder]).next();
+                        if (nextTag) {
+                            var contentNextTag = nextTag[0].innerText;
+                            if (contentNextTag.trim() === '0') {
+                                self.markError($(tagsSpecialChar[tagOrder]), self.ERROR_DIVIDE_ZERO, []);
+                            }
+                        }
+                    }
+                }
+            };
+            TextEditor.prototype.validateEmptyInput = function () {
+                var self = this;
+                var contentInput = $("#input-text").val();
+                if (!contentInput || contentInput.trim() === '') {
+                    var html = "<span class='editor-line'><span id='span-1' class='error-char' message='" + self.ERROR_EMPTY_INPUT + "'>  </span></span>";
+                    self.contentValue(html);
+                }
+            };
+            TextEditor.prototype.validateNestedMoreThan10 = function (tagsSpecialChar) {
+                var self = this;
+                var countChar = 0;
+                for (var tagOrder = 0; tagOrder < tagsSpecialChar.length; tagOrder++) {
+                    if (tagsSpecialChar[tagOrder].innerText === '（') {
+                        countChar++;
+                        if (countChar > 10) {
+                            self.markError($(tagsSpecialChar[tagOrder]), self.ERROR_NESTED_MORE_THAN_10, []);
+                        }
+                    }
+                    else {
+                        countChar = 0;
+                    }
+                }
+            };
+            TextEditor.prototype.validateDigitsAfterDecimal = function (tagsUnknownChar) {
+                var self = this;
+                for (var tagOrder = 0; tagOrder < tagsUnknownChar.length; tagOrder++) {
+                    if (tagsUnknownChar[tagOrder].innerText >= '0' && tagsUnknownChar[tagOrder].innerText <= '9' && tagsUnknownChar[tagOrder].innerText.indexOf('.') !== -1) {
+                        var splitContentTag = tagsUnknownChar[tagOrder].innerText.split('.');
+                        if (splitContentTag[1].length > 5) {
+                            self.markError($(tagsUnknownChar[tagOrder]), self.ERROR_DIGITS_AFTER_DECIMAL, [tagsUnknownChar[tagOrder].innerText]);
+                        }
+                    }
+                }
+            };
+            TextEditor.prototype.validateFunction = function (allElementTag) {
+                var self = this;
+                var inputContent = [];
+                var inputTags = [];
+                var splitContent = "";
+                var splitTags = [];
+                for (var tagOrder = 0; tagOrder < allElementTag.length; tagOrder++) {
+                    if (!self.checkEqualInArray(allElementTag[tagOrder].innerText, self.listOperatorChar)) {
+                        splitContent += allElementTag[tagOrder].innerText;
+                        splitTags.push($(allElementTag[tagOrder]));
+                    }
+                    else {
+                        inputContent.push(splitContent);
+                        inputTags.push(splitTags);
+                        splitContent = "";
+                        splitTags = [];
+                    }
+                }
+                if (!self.validateContentFunction(inputContent[0])) {
+                }
+            };
+            TextEditor.prototype.markError = function (tag, message, param) {
+                var errorContent = message;
+                if (tag) {
+                    if (param && param.length > 0) {
+                        for (var paramOrder = 0; paramOrder < param.length; paramOrder++) {
+                            errorContent = errorContent.replace("{" + paramOrder + "}", param[paramOrder]);
+                        }
+                    }
+                    tag.addClass("error-char").attr("message", errorContent);
+                }
             };
             TextEditor.prototype.insertString = function (original, sub, position) {
                 if (original.length === position) {
@@ -225,46 +478,56 @@ var nts;
                     }
                     else {
                         if (toChar[i] === "@") {
-                            html += "<span id='span-" + count + "' class='autocomplete-char'>" + toChar[i] + "</span>";
+                            html += "<span id='span-" + count + "' class='element-content autocomplete-char'>" + toChar[i] + "</span>";
+                            count++;
+                        }
+                        else if (self.checkEqualInArray(toChar[i], self.listSpecialChar)) {
+                            html += "<span id='span-" + count + "' class='element-content special-char'>" + toChar[i] + "</span>";
                             count++;
                         }
                         else if (self.checkJapanese(toChar[i])) {
                             if (toChar[i - 1] === undefined || toChar[i - 1] === "\n") {
-                                html += "<span id='span-" + count + "' class='japanese-character'>" + toChar[i] + "</span>";
+                                html += "<span id='span-" + count + "' class='element-content japanese-character'>" + toChar[i] + "</span>";
                                 count++;
                             }
-                            else if (self.checkJapanese(toChar[i - 1])) {
+                            else if (self.checkJapanese(toChar[i - 1]) && !self.checkEqualInArray(toChar[i - 1], self.listSpecialChar)) {
                                 html = self.insertString(html, toChar[i], html.length - 7);
                             }
                             else {
-                                html += "<span id='span-" + count + "' class='japanese-character'>" + toChar[i] + "</span>";
+                                html += "<span id='span-" + count + "' class='element-content japanese-character'>" + toChar[i] + "</span>";
                                 count++;
                             }
                         }
                         else if (self.checkAlphaOrEmpty(toChar[i])) {
                             if (toChar[i - 1] === undefined || toChar[i - 1] === "\n") {
-                                html += "<span id='span-" + count + "'>" + toChar[i] + "</span>";
+                                html += "<span id='span-" + count + "' class='element-content unknown-char'>" + toChar[i] + "</span>";
                                 count++;
                             }
                             else if (self.checkAlphaOrEmpty(toChar[i - 1]) && toChar[i - 1] !== "@") {
                                 html = self.insertString(html, toChar[i], html.length - 7);
                             }
                             else {
-                                html += "<span id='span-" + count + "'>" + toChar[i] + "</span>";
+                                html += "<span id='span-" + count + "' class='element-content unknown-char'>" + toChar[i] + "</span>";
                                 count++;
                             }
                         }
                         else {
-                            html += "<span id='span-" + count + "' class='special-char'>" + toChar[i] + "</span>";
+                            html += "<span id='span-" + count + "' class='element-content unknown-char'>" + toChar[i] + "</span>";
                             count++;
                         }
                     }
                 }
                 html += "</span>";
                 self.contentValue(html);
-                var specialChar = $(".special-char");
-                self.validateConsecutively(specialChar);
-                self.validateBracket(specialChar);
+                self.validateConsecutively($(".special-char"));
+                self.validateBracket($(".special-char"));
+                self.validateContainAtSign($(".japanese-character"));
+                self.validateBeforeAtSign($(".japanese-character"));
+                self.validateDivideZero($(".special-char"));
+                self.validateEmptyInput();
+                self.validateNestedMoreThan10($(".special-char"));
+                self.validateDigitsAfterDecimal($(".unknown-char"));
+                self.validateFunction($(".element-content"));
                 self.contentValue($("#input-content-area").html());
             };
             TextEditor.prototype.getCurrentPosition = function (position) {
@@ -273,6 +536,7 @@ var nts;
                 var index = 0;
                 $lines.each(function (index, line) {
                     var $line = $(line);
+                    z;
                     var char = _.find($line.children(), function (text) {
                         var current = index + $(text).text().length;
                         index += $(text).text().length;
@@ -286,73 +550,11 @@ var nts;
                 return uiPosition;
             };
             TextEditor.prototype.checkAlphaOrEmpty = function (char) {
-                var speChar = new RegExp(/[~`!#$%\^&*+=\-\[\]\\;\',/{}|\\\":<>\?\(\)]/g);
+                var speChar = new RegExp(/[~`!#$×%\（）＜＞≦≧＝≠^＾÷&*+=\-\[\]\\;\',/{}|\\\":<>\?\(\)]/g);
                 return !speChar.test(char) || char === " " || char === undefined;
             };
             TextEditor.prototype.checkJapanese = function (char) {
                 return !nts.uk.text.allHalf(char);
-            };
-            TextEditor.prototype.validateBracket = function (specialChar) {
-                var self = this;
-                var openBracket = _.remove(specialChar, function (n) {
-                    return $(n).html() === "\(";
-                });
-                var closeBracket = _.remove(specialChar, function (n) {
-                    return $(n).html() === "\)";
-                });
-                if (closeBracket.length === 0) {
-                    self.markError($(openBracket), self.ERROR_BRACKET);
-                }
-                else if (openBracket.length === 0) {
-                    self.markError($(closeBracket), self.ERROR_BRACKET);
-                }
-                else {
-                    var openError = [];
-                    for (var i = openBracket.length - 1; i >= 0; i--) {
-                        var currentOpen = openBracket[i];
-                        var id = parseInt($(currentOpen).attr("id").split("-")[1]);
-                        var currentClose = _.find(closeBracket, function (a) {
-                            return parseInt($(a).attr("id").split("-")[1]) > id;
-                        });
-                        if (currentClose === undefined) {
-                            openError.unshift(currentOpen);
-                        }
-                        else {
-                            closeBracket.splice(closeBracket.indexOf(currentClose), 1);
-                        }
-                    }
-                    self.markError($(openError), self.ERROR_BRACKET);
-                    self.markError($(closeBracket), self.ERROR_BRACKET);
-                }
-            };
-            TextEditor.prototype.validateConsecutively = function (specialChar) {
-                var self = this;
-                var singleSpecial = {
-                    "+": "+",
-                    "-": "-",
-                    "^": "^",
-                    "*": "*",
-                    "=": "=",
-                    "#": "#",
-                    "%": "%",
-                    "<": "<",
-                    ">": ">",
-                    "≦": "≦",
-                    "≧": "≧"
-                };
-                for (var i = 0; i < specialChar.length; i++) {
-                    var self = this;
-                    var $data = $(specialChar[i]);
-                    var charCount = parseInt($data.attr("id").split("-")[1]);
-                    var char = $data.text();
-                    var single = singleSpecial[char];
-                    if (single !== undefined) {
-                        var neighborCount = self.countNeighbor(charCount, specialChar, true, true);
-                        if (neighborCount > 0) {
-                            self.markError($data, self.ERROR_CONSECUTIVELY);
-                        }
-                    }
-                }
             };
             TextEditor.prototype.countNeighbor = function (index, array, countNext, countPrev) {
                 var self = this;
@@ -365,13 +567,13 @@ var nts;
                 var previousCount = 0;
                 var nextCount = 0;
                 if (countNext && next) {
-                    if (next.innerText !== '(') {
+                    if (next.innerText !== '（' && next.innerText !== '(') {
                         nextCount++;
                         nextCount += self.countNeighbor(index + 1, array, countNext, false);
                     }
                 }
                 if (countPrev && previous) {
-                    if (previous.innerText !== ')') {
+                    if (previous.innerText !== '）' && previous.innerText !== ')') {
                         previousCount++;
                         previousCount += self.countNeighbor(index - 1, array, false, countPrev);
                     }
