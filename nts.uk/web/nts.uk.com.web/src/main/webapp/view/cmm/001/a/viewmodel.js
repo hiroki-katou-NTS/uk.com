@@ -28,37 +28,6 @@ var cmm001;
                 });
                 self.selectedCode.subscribe(function (newValue) {
                 });
-                //            self.checked2.subscribe(function(newValue) {
-                //
-                //                self.columns2()[2]._initiallyHidden = false;
-                //                self.columns2()[2].hidden = false;
-                //                // chu y khi code chinh phai lay lai datasource khong se bi thay doi source
-                //                self.item1s = ko.observableArray([
-                //                    new Company('01', '日通システム株式会社', ''),
-                //                    new Company('02', '有限会社日通ベトナム', ''),
-                //                    new Company('03', 'UKシステム株式会社', ''),
-                //                    new Company('04', '○○株式会社', '<i class="icon icon-close"></i>')
-                //                ]);
-                //                if (!newValue) {
-                //
-                //                    for (let i = 0; i < _.size(self.items()); i++) {
-                //                        if (self.items()[i].description === '<i class="icon icon-close"></i>') {
-                //                            node = self.items()[i];
-                //                            self.items()[i] = new Company('', '', '');
-                //                            self.items()[i] = new Company(node.code, node.name, '');
-                //                           // console.log(self.items()[i]);
-                //                            self.currentCode(self.items()[i].code);
-                //                        }
-                //                    }
-                //
-                //
-                //                } else {
-                //                    self.items([]);
-                //                    self.items(self.item1s());
-                //                    self.currentCode(self.items()[0].code);
-                //                }
-                //
-                //            });
                 self.checked1.subscribe(function (newValue) {
                     var $grid = $("#single-list");
                     var currentColumns = $grid.igGrid("option", "columns");
@@ -109,11 +78,11 @@ var cmm001;
                         node.use_Qy_Set = obj.use_Qy_Set;
                         node.depWorkPlaceSet = obj.depWorkPlaceSet;
                         node.termBeginMon = obj.termBeginMon;
-                        self.selectedRuleCode(obj.use_Jj_Set);
-                        self.selectedRuleCode1(obj.use_Kt_Set);
-                        self.selectedRuleCode2(obj.use_Qy_Set);
-                        self.selectedRuleCode3(obj.depWorkPlaceSet);
-                        self.selectedCode(obj.termBeginMon);
+                        self.selectedRuleCode(obj.use_Jj_Set.toString());
+                        self.selectedRuleCode1(obj.use_Kt_Set.toString());
+                        self.selectedRuleCode2(obj.use_Qy_Set.toString());
+                        self.selectedRuleCode3(obj.depWorkPlaceSet.toString());
+                        self.selectedCode(obj.termBeginMon.toString());
                         self.testCompany(ko.mapping.fromJS(node));
                         self.currentCompanyDto(ko.mapping.fromJS(node));
                     }
@@ -245,20 +214,13 @@ var cmm001;
                 var dfd = $.Deferred();
                 var currentCompany;
                 currentCompany = ko.toJS(self.currentCompanyDto);
-                //console.log( currentCompany);
-                //self.currentCompanyDto().companyCode = $("#A_INP_002").val();
                 var companyNameGlobal;
-                //self.currentCompanyDto().address2 = $("#C_INP_003").val();
-                // self.currentCompanyDto().companyNameAbb = $("#A_INP_005").val();
-                //self.currentCompanyDto().faxNo = $("#C_INP_007").val();
-                // self.currentCompanyDto().presidentName = $("#B_INP_002").val()
-                //  self.currentCompanyDto().presidentJobTitle = $("#B_INP_003").val();
                 var termBeginMon;
-                self.currentCompanyDto().use_Kt_Set = self.selectedRuleCode1();
-                self.currentCompanyDto().use_Jj_Set = self.selectedRuleCode();
-                self.currentCompanyDto().use_Qy_Set = self.selectedRuleCode2();
-                self.currentCompanyDto().depWorkPlaceSet = self.selectedRuleCode3();
-                self.currentCompanyDto().termBeginMon = self.selectedCode();
+                currentCompany.use_Kt_Set = Number(self.selectedRuleCode1());
+                currentCompany.use_Jj_Set = Number(self.selectedRuleCode());
+                currentCompany.use_Qy_Set = Number(self.selectedRuleCode2());
+                currentCompany.depWorkPlaceSet = Number(self.selectedRuleCode3());
+                currentCompany.termBeginMon = Number(self.selectedCode());
                 var use_Ac_Set;
                 var use_Gw_Set;
                 var use_Hc_Set;
@@ -387,6 +349,7 @@ var cmm001;
                 }
                 var allerror;
                 allerror = error && error1 && error2 && error3 && error4 && error5 && error6 && error7;
+                console.log(currentCompany);
                 if (allerror === true) {
                     if (currentCompany.companyCode != self.currentCode()) {
                         cmm001.a.service.addData(currentCompany).done(function () {
