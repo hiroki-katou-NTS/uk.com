@@ -19,7 +19,7 @@ import nts.uk.ctx.basic.app.find.organization.classification.ClassificationDto;
 import nts.uk.ctx.basic.app.find.organization.classification.ClassificationFinder;
 import nts.uk.shr.com.context.AppContexts;
 
-@Path("basic/organization/")
+@Path("basic/organization/classification/")
 @Produces(MediaType.APPLICATION_JSON)
 public class ClassificationWebService extends WebService {
 
