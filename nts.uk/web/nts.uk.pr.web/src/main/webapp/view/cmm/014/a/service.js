@@ -5,10 +5,10 @@ var cmm014;
         var service;
         (function (service) {
             var paths = {
-                getAllClassification: "basic/organization/findAllClassification",
-                addClassification: "basic/organization/add",
-                updateClassification: "basic/organization/update",
-                removeClassification: "basic/organization/remove"
+                getAllClassification: "basic/organization/classification/findAllClassification",
+                addClassification: "basic/organization/classification/add",
+                updateClassification: "basic/organization/classification/update",
+                removeClassification: "basic/organization/classification/remove"
             };
             /**
              * Get list classification

@@ -54,13 +54,15 @@ var cmm014;
                 };
                 ScreenModel.prototype.checkInput = function () {
                     var self = this;
-                    if (self.INP_002_code().length === 0) {
-                        alert("が入力されていません。");
+                    if (!self.INP_002_code()) {
+                        alert("コードが入力されていません。");
                         return false;
                     }
-                    else {
-                        return true;
+                    else if (!self.INP_003_name()) {
+                        alert("名称が入力されていません。");
+                        return false;
                     }
+                    return true;
                 };
                 ScreenModel.prototype.RegisterClassification = function () {
                     var self = this;
@@ -75,27 +77,31 @@ var cmm014;
                             });
                         }
                         for (var i = 0; i < self.dataSource().length; i++) {
-                            if (self.INP_002_code() == self.dataSource()[i].classificationCode) {
+                            if (self.INP_002_code() == self.dataSource()[i].classificationCode && self.INP_002_enable() == false) {
                                 var classification_old = self.dataSource()[i];
                                 var classification_update = new viewmodel.model.ClassificationDto(self.INP_002_code(), self.INP_003_name(), self.INP_004_notes());
                                 a.service.updateClassification(classification_update).done(function () {
                                     self.itemdata_update(classification_update);
                                     self.getClassificationList_afterUpdateClassification();
                                 }).fail(function (res) {
-                                    alert("更新対象のデータが存在しません。");
                                     dfd.reject(res);
                                 });
                                 break;
                             }
-                            else if (self.INP_002_code() != self.dataSource()[i].classificationCode && i == self.dataSource().length - 1) {
+                            else if (self.INP_002_code() != self.dataSource()[i].classificationCode
+                                && i == self.dataSource().length - 1
+                                && self.INP_002_enable() == true) {
                                 var classification_new = new viewmodel.model.ClassificationDto(self.INP_002_code(), self.INP_003_name(), self.INP_004_notes());
                                 a.service.addClassification(classification_new).done(function () {
                                     self.itemdata_add(classification_new);
                                     self.getClassificationList_afterAddClassification();
                                 }).fail(function (res) {
-                                    alert("入力した は既に存在しています。");
                                     dfd.reject(res);
                                 });
+                                break;
+                            }
+                            else if (self.INP_002_code() == self.dataSource()[i].classificationCode && self.INP_002_enable() == true) {
+                                alert("入力したコードは既に存在しています。\r\n コードを確認してください。  ");
                                 break;
                             }
                         }
@@ -104,13 +110,17 @@ var cmm014;
                 ScreenModel.prototype.DeleteClassification = function () {
                     var self = this;
                     var dfd = $.Deferred();
-                    var item = new model.RemoveClassificationCommand(self.currentItem().classificationCode);
-                    self.index_of_itemDelete = self.dataSource().indexOf(self.currentItem());
-                    a.service.removeClassification(item).done(function (res) {
-                        self.getClassificationList_aftefDelete();
-                    }).fail(function (res) {
-                        dfd.reject(res);
-                    });
+                    if (self.dataSource().length > 0) {
+                        var item = new model.RemoveClassificationCommand(self.currentItem().classificationCode);
+                        self.index_of_itemDelete = self.dataSource().indexOf(self.currentItem());
+                        a.service.removeClassification(item).done(function (res) {
+                            self.getClassificationList_aftefDelete();
+                        }).fail(function (res) {
+                            dfd.reject(res);
+                        });
+                    }
+                    else {
+                    }
                 };
                 ScreenModel.prototype.start = function () {
                     var self = this;
@@ -125,6 +135,7 @@ var cmm014;
                         }
                         else if (classification_arr.length === 0) {
                             self.INP_002_enable(true);
+                            $("#A_INP_002").focus();
                         }
                         dfd.resolve();
                     }).fail(function (error) {
