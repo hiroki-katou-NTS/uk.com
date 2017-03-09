@@ -28,12 +28,8 @@
 		 <label id="E_LBL_004">対象年度</label>
 		</div>
 		<input id="E_INP_003"  />
-<!-- 												<input id="A_INP_002"  data-bind="ntsTextEditor: {
-												value: code,
-												constraint: 'ResiTaxCode',
-												required: true,
-												enable: true,
-												readonly: false }" /> -->
+		<label id="E_LBL_005">対象年度</label>
+		
 		
 		</div>
 
@@ -52,7 +48,7 @@
 							<table id="treegrid21"
 								data-bind="ntsTreeGridView:{
 								   	width: 385,
-									height: 460,
+									height: 400,
 									options: items,
 									value: singleSelectedCode,
 									optionsValue: 'code',
@@ -80,9 +76,9 @@
 							<table id="treegrid2"
 								data-bind="ntsTreeGridView:{
 								   	width: 385,
-									height: 460,
-									options: item1s,
-									value: singleSelectedCode,
+									height: 400,
+									options: items,
+									value: singleSelectedCode1,
 									optionsValue: 'code',
 									optionsChild: 'childs',
 									optionsText: 'nodeText',
