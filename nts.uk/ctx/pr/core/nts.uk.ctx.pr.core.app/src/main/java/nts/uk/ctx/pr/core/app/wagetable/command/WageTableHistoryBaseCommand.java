@@ -4,33 +4,22 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.app.wagetable.command;
 
-import java.util.List;
-
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.pr.core.app.wagetable.command.dto.WageTableDemensionDetailDto;
-import nts.uk.ctx.pr.core.app.wagetable.command.dto.WageTableItemDto;
+import nts.uk.ctx.pr.core.app.wagetable.command.dto.WageTableHeadDto;
+import nts.uk.ctx.pr.core.app.wagetable.command.dto.WageTableHistoryDto;
 
 /**
  * The Class WageTableHistoryAddCommand.
  */
 @Setter
 @Getter
-public abstract class WageTableHistoryBaseCommand {
+public class WageTableHistoryBaseCommand {
 
-	/** The code. */
-	private String code;
+	/** The wage table head dto. */
+	private WageTableHeadDto wageTableHeadDto;
 
-	/** The start month. */
-	private String startMonth;
-
-	/** The end month. */
-	private String endMonth;
-
-	/** The demension details. */
-	private List<WageTableDemensionDetailDto> demensionDetails;
-
-	/** The value items. */
-	private List<WageTableItemDto> valueItems;
+	/** The wage table history dto. */
+	private WageTableHistoryDto wageTableHistoryDto;
 
 }

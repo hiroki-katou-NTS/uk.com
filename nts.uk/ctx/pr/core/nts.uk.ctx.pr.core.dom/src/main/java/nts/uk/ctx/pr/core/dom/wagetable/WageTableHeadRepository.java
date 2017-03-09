@@ -60,6 +60,6 @@ public interface WageTableHeadRepository {
 	 * @param code the code
 	 * @return true, if is duplicate code
 	 */
-	boolean isDuplicateCode(CompanyCode companyCode, WageTableCode code);
+	boolean isExistCode(CompanyCode companyCode, WageTableCode code);
 
 }

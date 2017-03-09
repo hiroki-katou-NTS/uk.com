@@ -19,6 +19,8 @@ import mockit.Tested;
 import mockit.integration.junit4.JMockit;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.pr.core.app.wagetable.command.dto.WageTableDemensionDetailDto;
+import nts.uk.ctx.pr.core.app.wagetable.command.dto.WageTableHeadDto;
+import nts.uk.ctx.pr.core.app.wagetable.command.dto.WageTableHistoryDto;
 import nts.uk.ctx.pr.core.app.wagetable.command.dto.WageTableItemDto;
 import nts.uk.ctx.pr.core.dom.wagetable.history.WageTableHistory;
 import nts.uk.ctx.pr.core.dom.wagetable.history.WageTableHistoryRepository;
@@ -57,15 +59,20 @@ public class WageTableHistoryAddCommandHandlerTest extends TestCase {
 
 		List<WageTableItemDto> valueItems = Arrays.asList(new WageTableItemDto());
 
-		WageTableHistoryAddCommand command = new WageTableHistoryAddCommand();
-		command.setCode("Code");
-		command.setStartMonth("01/2016");
-		command.setEndMonth("07/2016");
-		command.setDemensionDetails(demensionDetails);
-		command.setValueItems(valueItems);
+		WageTableHeadDto wageTableHeadDto = new WageTableHeadDto();
 
-		MockUp<CommandHandlerContext<WageTableHistoryAddCommand>> 
-			mockedContext = new MockUp<CommandHandlerContext<WageTableHistoryAddCommand>>() {
+		WageTableHistoryDto wageTableHistoryDto = new WageTableHistoryDto();
+
+		wageTableHistoryDto.setStartMonth("01/2016");
+		wageTableHistoryDto.setEndMonth("07/2016");
+		wageTableHistoryDto.setDemensionDetails(demensionDetails);
+		wageTableHistoryDto.setValueItems(valueItems);
+
+		WageTableHistoryAddCommand command = new WageTableHistoryAddCommand();
+		command.setWageTableHeadDto(wageTableHeadDto);
+		command.setWageTableHistoryDto(wageTableHistoryDto);
+
+		MockUp<CommandHandlerContext<WageTableHistoryAddCommand>> mockedContext = new MockUp<CommandHandlerContext<WageTableHistoryAddCommand>>() {
 			@Mock
 			WageTableHistoryAddCommand getCommand() {
 				return command;

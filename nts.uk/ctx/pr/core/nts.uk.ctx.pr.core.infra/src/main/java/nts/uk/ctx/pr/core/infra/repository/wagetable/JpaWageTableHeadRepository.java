@@ -149,7 +149,7 @@ public class JpaWageTableHeadRepository extends JpaRepository implements WageTab
 	 * nts.uk.ctx.pr.core.dom.wagetable.WageTableCode)
 	 */
 	@Override
-	public boolean isDuplicateCode(CompanyCode companyCode, WageTableCode code) {
+	public boolean isExistCode(CompanyCode companyCode, WageTableCode code) {
 		// Get entity manager
 		EntityManager em = getEntityManager();
 
