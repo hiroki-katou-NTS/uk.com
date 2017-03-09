@@ -50,12 +50,12 @@ public class WageTableHeadDto extends WageTableDetailDto {
 	 *            the company code
 	 * @return the wage table history
 	 */
-	public WageTableHead toDomain(CompanyCode companyCode) {
+	public WageTableHead toDomain(String companyCode) {
 		WageTableHeadDto dto = this;
 
 		// Transfer data
 		WageTableHead wageTableHead = new WageTableHead(
-				new WageTableHeadDtoMemento(companyCode, dto));
+				new WageTableHeadDtoMemento(new CompanyCode(companyCode), dto));
 
 		return wageTableHead;
 	}

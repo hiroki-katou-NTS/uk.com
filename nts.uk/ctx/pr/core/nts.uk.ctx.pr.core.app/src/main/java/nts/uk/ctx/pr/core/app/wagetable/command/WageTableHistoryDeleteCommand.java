@@ -4,8 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.app.wagetable.command;
 
-import java.io.Serializable;
-
 import lombok.Getter;
 import lombok.Setter;
 
@@ -14,13 +12,7 @@ import lombok.Setter;
  */
 @Setter
 @Getter
-public class WageTableHistoryDeleteCommand implements Serializable {
-
-	/** The Constant serialVersionUID. */
-	private static final long serialVersionUID = 1L;
-
-	/** The wage table code. */
-	private String wageTableCode;
+public class WageTableHistoryDeleteCommand {
 
 	/** The history id. */
 	private String historyId;

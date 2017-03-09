@@ -28,7 +28,7 @@ public interface WageTableHistoryGetMemento {
 	 *
 	 * @return the code
 	 */
-	WageTableCode getCode();
+	WageTableCode getWageTableCode();
 
 	/**
 	 * Gets the history id.

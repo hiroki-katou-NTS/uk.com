@@ -7,8 +7,6 @@ package nts.uk.ctx.pr.core.dom.wagetable.element;
 import java.util.List;
 import java.util.Optional;
 
-import nts.uk.ctx.core.dom.company.CompanyCode;
-
 /**
  * The Interface WageTableElementRepository.
  */
@@ -35,7 +33,7 @@ public interface WageTableElementRepository {
 	 * @param groupCode the group code
 	 * @param version the version
 	 */
-    void remove(CompanyCode companyCode, String groupCode, Long version);
+    void remove(String companyCode, String groupCode);
 
 	/**
 	 * Find all.
@@ -43,7 +41,7 @@ public interface WageTableElementRepository {
 	 * @param companyCode the company code
 	 * @return the list
 	 */
-	List<WageTableElement> findAll(CompanyCode companyCode);
+	List<WageTableElement> findAll(String companyCode);
 
 	/**
 	 * Find by id.
@@ -52,6 +50,6 @@ public interface WageTableElementRepository {
 	 * @param code the code
 	 * @return the optional
 	 */
-	Optional<WageTableElement> findById(CompanyCode companyCode, String code);
+	Optional<WageTableElement> findById(String companyCode, String code);
 
 }

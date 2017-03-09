@@ -56,7 +56,7 @@ public class JpaWageTableHistorySetMemento implements WageTableHistorySetMemento
 	 * setCode(nts.uk.ctx.pr.core.dom.wagetable.WageTableCode)
 	 */
 	@Override
-	public void setCode(WageTableCode code) {
+	public void setWageTableCode(WageTableCode code) {
 		QwtmtWagetableHistPK qwtmtWagetableHistPK = this.typeValue.getQwtmtWagetableHistPK();
 		qwtmtWagetableHistPK.setWageTableCd(code.v());
 		this.typeValue.setQwtmtWagetableHistPK(qwtmtWagetableHistPK);

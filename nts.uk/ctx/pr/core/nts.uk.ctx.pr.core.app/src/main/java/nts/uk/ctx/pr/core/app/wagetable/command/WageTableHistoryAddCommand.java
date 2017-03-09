@@ -14,4 +14,7 @@ import lombok.Setter;
 @Getter
 public class WageTableHistoryAddCommand extends WageTableHistoryBaseCommand {
 
+	/** The is create header. */
+	private boolean isCreateHeader;
+
 }

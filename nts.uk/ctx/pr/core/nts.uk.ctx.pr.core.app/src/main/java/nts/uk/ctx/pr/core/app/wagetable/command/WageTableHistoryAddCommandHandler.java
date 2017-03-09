@@ -11,13 +11,13 @@ import javax.transaction.Transactional;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.gul.text.IdentifierUtil;
-import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.app.wagetable.command.dto.WageTableHistoryDto;
-import nts.uk.ctx.pr.core.dom.wagetable.WageTableCode;
 import nts.uk.ctx.pr.core.dom.wagetable.WageTableHead;
 import nts.uk.ctx.pr.core.dom.wagetable.WageTableHeadRepository;
 import nts.uk.ctx.pr.core.dom.wagetable.history.WageTableHistory;
 import nts.uk.ctx.pr.core.dom.wagetable.history.WageTableHistoryRepository;
+import nts.uk.ctx.pr.core.dom.wagetable.history.service.WageTableHeadService;
+import nts.uk.ctx.pr.core.dom.wagetable.history.service.WageTableHistoryService;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -28,11 +28,19 @@ public class WageTableHistoryAddCommandHandler extends CommandHandler<WageTableH
 
 	/** The wage table head repo. */
 	@Inject
-	private WageTableHeadRepository wageTableHeadRepo;
+	private WageTableHeadRepository headRepo;
 
 	/** The wage table history repo. */
 	@Inject
-	private WageTableHistoryRepository wageTableHistoryRepo;
+	private WageTableHistoryRepository historyRepo;
+
+	/** The history service. */
+	@Inject
+	private WageTableHistoryService historyService;
+
+	/** The head service. */
+	@Inject
+	private WageTableHeadService headService;
 
 	/*
 	 * (non-Javadoc)
@@ -47,24 +55,27 @@ public class WageTableHistoryAddCommandHandler extends CommandHandler<WageTableH
 
 		WageTableHistoryAddCommand command = context.getCommand();
 
-		CompanyCode companyCode = new CompanyCode(AppContexts.user().companyCode());
-
-		boolean isExistHeader = this.wageTableHeadRepo.isExistCode(companyCode,
-				new WageTableCode(command.getWageTableHeadDto().getCode()));
+		String companyCode = AppContexts.user().companyCode();
 
 		WageTableHead header = command.getWageTableHeadDto().toDomain(companyCode);
-
-		if (isExistHeader) {
-			this.wageTableHeadRepo.update(header);
-		} else {
-			this.wageTableHeadRepo.add(header);
-		}
 
 		WageTableHistoryDto historyDto = command.getWageTableHistoryDto();
 		historyDto.setHistoryId(IdentifierUtil.randomUniqueId());
 
-		WageTableHistory history = historyDto.toDomain(companyCode, header.getCode());
+		WageTableHistory history = historyDto.toDomain(companyCode, header.getCode().v());
 
-		this.wageTableHistoryRepo.add(history);
+		headService.validateRequiredItem(header);
+
+		if (command.isCreateHeader()) {
+			headService.checkDuplicateCode(header);
+			this.headRepo.add(header);
+		} else {
+			this.headRepo.update(header);
+		}
+
+		historyService.validateRequiredItem(history);
+		historyService.validateDateRange(history);
+
+		this.historyRepo.addHistory(history);
 	}
 }
