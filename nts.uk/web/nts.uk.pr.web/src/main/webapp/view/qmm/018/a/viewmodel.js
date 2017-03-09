@@ -53,7 +53,22 @@ var qmm018;
                     var dfd = $.Deferred();
                     qmm018.a.service.qapmt_Ave_Pay_SEL_1().done(function (data) {
                         if (data) {
-                            qmm018.a.service.qcamt_Item_SEL_4().done(function (data2) {
+                            qmm018.a.service.qcamt_Item_Salary_SEL_3().done(function (data2) {
+                                console.log(data2);
+                                dfd.resolve();
+                            }).fail(function (res) {
+                            });
+                            qmm018.a.service.qcamt_Item_SEL_5(0, 1).done(function (data2) {
+                                console.log(data2);
+                                dfd.resolve();
+                            }).fail(function (res) {
+                            });
+                            qmm018.a.service.qcamt_Item_Salary_SEL_4().done(function (data2) {
+                                console.log(data2);
+                                dfd.resolve();
+                            }).fail(function (res) {
+                            });
+                            qmm018.a.service.qcamt_Item_SEL_5(2, 1).done(function (data2) {
                                 console.log(data2);
                                 dfd.resolve();
                             }).fail(function (res) {
@@ -83,15 +98,15 @@ var qmm018;
                     }
                     else {
                         qmm018.a.service.qapmt_Ave_Pay_INS_1(command).done(function (data) {
-                            qmm018.a.service.qcamt_Item_UPD_2(0, 1).done(function () {
+                            qmm018.a.service.qcamt_Item_Salary_UPD_2(1).done(function () {
                                 if (self.averagePay().attendDayGettingSet()) {
                                     if (self.isUpdate) {
-                                        qmm018.a.service.qcamt_Item_SEL_8(2, 1).done(function () {
-                                            qmm018.a.service.qcamt_Item_UPD_2(2, 1).done(function () {
+                                        qmm018.a.service.qcamt_Item_Salary_SEL_2(1).done(function () {
+                                            qmm018.a.service.qcamt_Item_Salary_UPD_2(1).done(function () {
                                             });
                                         });
                                     }
-                                    qmm018.a.service.qcamt_Item_UPD_2(2, 1).done(function () {
+                                    qmm018.a.service.qcamt_Item_Salary_UPD_2(1).done(function () {
                                     });
                                 }
                             });
