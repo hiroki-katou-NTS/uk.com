@@ -27,18 +27,16 @@ public class JpaFormulaEasyConditionRepository extends JpaRepository implements 
 			+ " AND a.qcfmtFormulaEasyConditionPK.historyId = :historyId ";
 
 	@Override
-	public void remove(FormulaEasyCondition formulaEasyCondition) {
+	public void remove(String companyCode, FormulaCode formulaCode, String historyId) {
 
-		this.getEntityManager().createQuery(REMOVE_EASY_CONDITION)
-				.setParameter("companyCode", formulaEasyCondition.getCompanyCode())
-				.setParameter("formulaCode", formulaEasyCondition.getFormulaCode().v())
-				.setParameter("historyId", formulaEasyCondition.getHistoryId()).executeUpdate();
+		this.getEntityManager().createQuery(REMOVE_EASY_CONDITION).setParameter("companyCode", companyCode)
+				.setParameter("formulaCode", formulaCode.v()).setParameter("historyId", historyId).executeUpdate();
 
 	}
 
 	@Override
-	public void add(FormulaEasyCondition formulaEasyCondition) {
-		this.commandProxy().insert(toEntity(formulaEasyCondition));
+	public void add(List<FormulaEasyCondition> formulaEasyCondition) {
+		formulaEasyCondition.forEach(item -> this.commandProxy().insert(toEntity(item)));
 	}
 
 	@Override
@@ -50,10 +48,10 @@ public class JpaFormulaEasyConditionRepository extends JpaRepository implements 
 
 	private FormulaEasyCondition toDomain(QcfmtFormulaEasyCondition f) {
 		FormulaEasyCondition formulaEasyCondition = FormulaEasyCondition.createFromJavaType(
-				f.qcfmtFormulaEasyConditionPK.companyCode, f.qcfmtFormulaEasyConditionPK.formulaCode, f.qcfmtFormulaEasyConditionPK.historyId,
-				f.easyFormulaCd, f.fixFormulaAtr,
-				f.fixMny, f.qcfmtFormulaEasyConditionPK.refMasterCd);
-		
+				f.qcfmtFormulaEasyConditionPK.companyCode, f.qcfmtFormulaEasyConditionPK.formulaCode,
+				f.qcfmtFormulaEasyConditionPK.historyId, f.easyFormulaCd, f.fixFormulaAtr, f.fixMny,
+				f.qcfmtFormulaEasyConditionPK.refMasterCd);
+
 		return formulaEasyCondition;
 	}
 

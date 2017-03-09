@@ -41,7 +41,7 @@ public class RemoveFormulaEasyConditionCommandHandler extends CommandHandler<Rem
 				new Money(command.getFixMoney()),
 				new ReferenceMasterCode(command.getReferenceMasterCode()));
 		
-		repository.remove(formulaEasyCondition);
+		repository.remove(companyCode, formulaEasyCondition.getFormulaCode(), formulaEasyCondition.getHistoryId());
 	}
 	
 }

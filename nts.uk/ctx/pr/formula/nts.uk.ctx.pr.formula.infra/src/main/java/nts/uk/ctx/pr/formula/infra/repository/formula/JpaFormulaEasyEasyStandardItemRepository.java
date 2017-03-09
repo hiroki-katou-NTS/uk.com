@@ -43,16 +43,16 @@ public class JpaFormulaEasyEasyStandardItemRepository extends JpaRepository
 	}
 
 	@Override
-	public void remove(FormulaEasyStandardItem formulaEasyStandardItem) {
+	public void remove(String companyCode, FormulaCode formulaCode, String historyId) {
 		this.getEntityManager().createQuery(REMOVE_FORMULA_EASY_STANRDARD_ITEM)
-				.setParameter("companyCode", formulaEasyStandardItem.getCompanyCode())
-				.setParameter("formulaCode", formulaEasyStandardItem.getFormulaCode())
-				.setParameter("historyId", formulaEasyStandardItem.getHistoryId()).executeUpdate();
+				.setParameter("companyCode", companyCode)
+				.setParameter("formulaCode", formulaCode.v())
+				.setParameter("historyId", historyId).executeUpdate();
 	}
 
 	@Override
-	public void add(FormulaEasyStandardItem formulaEasyStandardItem) {
-		this.commandProxy().insert(toEntity(formulaEasyStandardItem));
+	public void add(List<FormulaEasyStandardItem> formulaEasyStandardItem) {
+		formulaEasyStandardItem.stream().forEach(item -> this.commandProxy().insert(toEntity(item)));		;
 	}
 
 	private QcfmtFormulaEasyStandardItem toEntity(FormulaEasyStandardItem command) {

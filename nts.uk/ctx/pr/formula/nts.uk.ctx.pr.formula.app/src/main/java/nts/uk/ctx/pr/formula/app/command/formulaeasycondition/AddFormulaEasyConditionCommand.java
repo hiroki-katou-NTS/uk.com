@@ -1,6 +1,7 @@
 package nts.uk.ctx.pr.formula.app.command.formulaeasycondition;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -19,7 +20,7 @@ public class AddFormulaEasyConditionCommand {
 	
 	String historyId;
 
-	String easyFormulaCode;
+	List<EasyConditionDto> easyFormulaCode;
 
 	int fixFormulaAtr;
 

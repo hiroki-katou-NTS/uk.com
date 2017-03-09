@@ -62,7 +62,7 @@ public class RemoveFormulaEasyDetailCommandHandler extends CommandHandler<Remove
 				new MaxValue(command.getMaxLimitValue()), 
 				new MinValue(command.getMinLimitValue()));
 		
-		repository.remove(formulaEasyDetail);
+		repository.remove(companyCode, formulaEasyDetail.getFormulaCode(), formulaEasyDetail.getHistoryId());
 	}
 	
 	

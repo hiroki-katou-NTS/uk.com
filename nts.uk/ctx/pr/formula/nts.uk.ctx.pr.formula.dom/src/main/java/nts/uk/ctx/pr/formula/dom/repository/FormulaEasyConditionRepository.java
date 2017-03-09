@@ -26,7 +26,7 @@ public interface FormulaEasyConditionRepository {
 	 */
 	List<FormulaEasyCondition> find(String companyCode, FormulaCode formulaCode, String historyId);
 	
-	void add(FormulaEasyCondition formulaEasyCondition);
+	void add(List<FormulaEasyCondition> formulaEasyCondition);
 	
-	void remove(FormulaEasyCondition formulaEasyCondition);
+	void remove(String companyCode, FormulaCode formulaCode, String historyId);
 }

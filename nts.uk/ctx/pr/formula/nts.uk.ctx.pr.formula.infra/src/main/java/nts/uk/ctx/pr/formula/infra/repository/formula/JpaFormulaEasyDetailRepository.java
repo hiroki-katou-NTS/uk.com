@@ -40,12 +40,12 @@ public class JpaFormulaEasyDetailRepository extends JpaRepository implements For
 	}
 
 	@Override
-	public void remove(FormulaEasyDetail formulaEasyDetail) {
+	public void remove(String companyCode, FormulaCode formulaCode, String historyId) {
 
 		this.getEntityManager().createQuery(REMOVE_EASY_DETAIL_CONDITION)
-				.setParameter("companyCode", formulaEasyDetail.getCompanyCode())
-				.setParameter("formulaCode", formulaEasyDetail.getFormulaCode().v())
-				.setParameter("historyId", formulaEasyDetail.getHistoryId()).executeUpdate();
+				.setParameter("companyCode", companyCode)
+				.setParameter("formulaCode", formulaCode.v())
+				.setParameter("historyId", historyId).executeUpdate();
 	}
 
 	@Override

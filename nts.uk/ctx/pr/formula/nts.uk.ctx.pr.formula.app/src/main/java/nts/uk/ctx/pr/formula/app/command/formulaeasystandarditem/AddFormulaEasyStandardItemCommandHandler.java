@@ -35,7 +35,7 @@ public class AddFormulaEasyStandardItemCommandHandler extends CommandHandler<Add
 				new EasyFormulaCode(command.getEasyFormulaCode()),
 				new ReferenceItemCode(command.getReferenceItemCode()));
 		
-		repository.add(formulaEasyStandardItem);
+//		repository.add(formulaEasyStandardItem);
 	}
 
 }

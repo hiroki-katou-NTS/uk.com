@@ -22,7 +22,7 @@ public interface FormulaEasyStandardItemRepository {
 	 */
 	List<FormulaEasyStandardItem> findAll(String companyCode, FormulaCode formulaCode, String historyId, EasyFormulaCode easyFormulaCode);
 	
-	void remove(FormulaEasyStandardItem formulaEasyStandardItem);
+	void remove(String companyCode, FormulaCode formulaCode, String historyId);
 	
-	void add(FormulaEasyStandardItem formulaEasyStandardItem);
+	void add(List<FormulaEasyStandardItem> formulaEasyStandardItem);
 }

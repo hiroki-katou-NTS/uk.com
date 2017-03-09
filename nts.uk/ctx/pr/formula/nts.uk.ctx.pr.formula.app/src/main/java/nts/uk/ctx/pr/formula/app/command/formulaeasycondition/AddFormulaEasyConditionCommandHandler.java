@@ -1,5 +1,8 @@
 package nts.uk.ctx.pr.formula.app.command.formulaeasycondition;
 
+import java.util.List;
+import java.util.stream.Collectors;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -20,26 +23,26 @@ import nts.uk.shr.com.context.AppContexts;
  *
  */
 @Stateless
-public class AddFormulaEasyConditionCommandHandler extends CommandHandler<AddFormulaEasyConditionCommand>{
-	
+public class AddFormulaEasyConditionCommandHandler extends CommandHandler<AddFormulaEasyConditionCommand> {
+
 	@Inject
-	private FormulaEasyConditionRepository repository; 
+	private FormulaEasyConditionRepository repository;
 
 	@Override
 	protected void handle(CommandHandlerContext<AddFormulaEasyConditionCommand> context) {
-		
+
 		AddFormulaEasyConditionCommand command = context.getCommand();
 		String companyCode = AppContexts.user().companyCode();
-		
-		FormulaEasyCondition formulaEasyCondition = new FormulaEasyCondition(
-				companyCode,
-				new FormulaCode(command.getFormulaCode()),
-				command.getHistoryId(),
-				new EasyFormulaCode(command.getEasyFormulaCode()),
-				EnumAdaptor.valueOf(command.getFixFormulaAtr(), FixFormulaAtr.class),
-				new Money(command.getFixMoney()),
-				new ReferenceMasterCode(command.getReferenceMasterCode()));
-		
+
+		List<FormulaEasyCondition> formulaEasyCondition = command.getEasyFormulaCode().stream().map(item -> {
+			return new FormulaEasyCondition(companyCode, new FormulaCode(command.getFormulaCode()),
+					command.getHistoryId(),
+					new EasyFormulaCode(item.getEasyFormulaCode()),
+					EnumAdaptor.valueOf(command.getFixFormulaAtr(), FixFormulaAtr.class),
+					new Money(command.getFixMoney()),
+					new ReferenceMasterCode(command.getReferenceMasterCode()));
+		}).collect(Collectors.toList());
+
 		repository.add(formulaEasyCondition);
 	}
 }

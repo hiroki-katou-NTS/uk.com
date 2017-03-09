@@ -1,5 +1,7 @@
 package nts.uk.ctx.pr.formula.app.command.formulamaster;
 
+import java.math.BigDecimal;
+
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -17,6 +19,16 @@ public class AddFormulaMasterCommand {
 	
 	private String formulaName;
 
-	private int difficultyAtr;
+	private BigDecimal difficultyAtr;
+	
+	private String historyId;
+	
+	private int startDate;
+	
+	private int endDate;
+	
+	private int conditionAtr;
+	
+	private int refMasterNo;
 	
 }

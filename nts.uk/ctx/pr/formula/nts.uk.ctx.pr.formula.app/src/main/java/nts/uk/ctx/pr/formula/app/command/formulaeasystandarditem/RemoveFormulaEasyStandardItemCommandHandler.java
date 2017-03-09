@@ -35,7 +35,7 @@ public class RemoveFormulaEasyStandardItemCommandHandler extends CommandHandler<
 				new EasyFormulaCode(command.getEasyFormulaCode()),
 				new ReferenceItemCode(command.getReferenceItemCode()));
 		
-		repository.remove(formulaEasyStandardItem);
+		repository.remove(companyCode, formulaEasyStandardItem.getFormulaCode(), formulaEasyStandardItem.getHistoryId());
 	}
 
 }
