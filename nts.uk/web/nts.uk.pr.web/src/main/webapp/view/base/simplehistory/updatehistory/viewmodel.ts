@@ -1,9 +1,9 @@
-module nts.uk.pr.view.base.simplehistory.newhistory {
+module nts.uk.pr.view.base.simplehistory.updatehistory {
     export module viewmodel {
         /**
          * New history screen options.
          */
-        export interface NewHistoryScreenOption {
+        export interface UpdateHistoryScreenOption {
             /**
              * Function name.
              */
@@ -17,24 +17,30 @@ module nts.uk.pr.view.base.simplehistory.newhistory {
             /**
              * Latest model.
              */
-            lastest: model.HistoryModel;
+            history: model.HistoryModel;
+
+            /**
+             * Remove master on lasthiotory remove.
+             */
+            removeMasterOnLastHistoryRemove?: boolean;
 
             /**
              * On copy call back.
              */
-            onCopyCallBack: (data: NewHistoryCallBackData) => void;
+            onDeleteCallBack: (data: UpdateHistoryCallBackData) => void;
 
             /**
              * On create call back.
              */
-            onCreateCallBack: (data: NewHistoryCallBackData) => void;
+            onUpdateCallBack: (data: UpdateHistoryCallBackData) => void;
         }
         
         /**
          * Callback data.
          */
-        export interface NewHistoryCallBackData {
+        export interface UpdateHistoryCallBackData {
             masterCode: string;
+            historyId: string;
             startYearMonth: number;
         }
 
@@ -42,18 +48,18 @@ module nts.uk.pr.view.base.simplehistory.newhistory {
          * Add simple history screen model.
          */
         export class ScreenModel {
-            private static CREATE_TYPE_COPY_LATEST: string = 'COPY';
-            private static CREATE_TYPE_INIT: string = 'INIT';
+            private static ACTION_TYPE_DELETE: string = 'DELETE';
+            private static ACTION_TYPE_UPDATE: string = 'UPDATE';
 
             /**
              * Dialog options.
              */
-            dialogOptions: NewHistoryScreenOption;
+            dialogOptions: UpdateHistoryScreenOption;
 
             /**
              * Create type.
              */
-            createType: KnockoutObservable<string>;
+            actionType: KnockoutObservable<string>;
 
             /**
              * Start year month.
@@ -63,7 +69,7 @@ module nts.uk.pr.view.base.simplehistory.newhistory {
             /**
              * Last year month.
              */
-            lastYearMonth: string;
+            endYearMonth: string;
             
             /**
              * Constructor.
@@ -71,9 +77,9 @@ module nts.uk.pr.view.base.simplehistory.newhistory {
             constructor() {
                 var self = this;
                 self.dialogOptions = nts.uk.ui.windows.getShared('options');
-                self.createType = ko.observable(ScreenModel.CREATE_TYPE_COPY_LATEST);
-                self.startYearMonth = ko.observable(self.dialogOptions.lastest.start);
-                self.lastYearMonth = nts.uk.time.formatYearMonth(self.dialogOptions.lastest.start);
+                self.actionType = ko.observable(ScreenModel.ACTION_TYPE_DELETE);
+                self.startYearMonth = ko.observable(self.dialogOptions.history.start);
+                self.endYearMonth = nts.uk.time.formatYearMonth(self.dialogOptions.history.end);
             }
 
             /**
@@ -91,14 +97,15 @@ module nts.uk.pr.view.base.simplehistory.newhistory {
              */
             private btnApplyClicked(): void {
                 var self = this;
-                var callBackData: NewHistoryCallBackData = {
+                var callBackData: UpdateHistoryCallBackData = {
                     masterCode: self.dialogOptions.master.code,
+                    historyId: self.dialogOptions.history.uuid,
                     startYearMonth: self.startYearMonth()
                 };
-                if (self.createType() == ScreenModel.CREATE_TYPE_COPY_LATEST) {
-                      self.dialogOptions.onCopyCallBack(callBackData);
+                if (self.actionType() == ScreenModel.ACTION_TYPE_DELETE) {
+                      self.dialogOptions.onDeleteCallBack(callBackData);
                 } else {
-                    self.dialogOptions.onCreateCallBack(callBackData);
+                    self.dialogOptions.onUpdateCallBack(callBackData);
                 }
                 nts.uk.ui.windows.close();
             }

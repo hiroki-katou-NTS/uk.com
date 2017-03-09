@@ -43,15 +43,15 @@ public class UnitPriceHistoryFinder {
 	 *            the id
 	 * @return the optional
 	 */
-	public Optional<UnitPriceHistoryDto> find(CompanyCode companyCode, String id) {
+	public Optional<UnitPriceHistoryDto> find(String id) {
 		// Get the detail history.
-		Optional<UnitPriceHistory> optUnitPriceHistory = unitPriceHistoryRepo.findById(companyCode, id);
+		Optional<UnitPriceHistory> optUnitPriceHistory = this.unitPriceHistoryRepo.findHistoryByUuid(id);
 		UnitPriceHistoryDto dto = null;
 
 		// Check exsit.
 		if (optUnitPriceHistory.isPresent()) {
 			UnitPriceHistory unitPrisceHistory = optUnitPriceHistory.get();
-			Optional<UnitPrice> optUnitPrice = unitPriceRepo.findByCode(companyCode,
+			Optional<UnitPrice> optUnitPrice = this.unitPriceRepo.findByCode(unitPrisceHistory.getCompanyCode(),
 					unitPrisceHistory.getUnitPriceCode());
 			dto = UnitPriceHistoryDto.builder().build();
 			unitPrisceHistory.saveToMemento(dto);

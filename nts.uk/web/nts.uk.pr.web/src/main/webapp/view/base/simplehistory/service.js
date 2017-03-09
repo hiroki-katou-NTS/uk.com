@@ -32,8 +32,7 @@ var nts;
                                 BaseService.prototype.deleteHistory = function (masterCode, historyUuid) {
                                     var self = this;
                                     return nts.uk.request.ajax(self.path.deleteHistoryPath, {
-                                        masterCode: masterCode,
-                                        historyUuid: historyUuid
+                                        historyId: historyUuid
                                     });
                                 };
                                 return BaseService;

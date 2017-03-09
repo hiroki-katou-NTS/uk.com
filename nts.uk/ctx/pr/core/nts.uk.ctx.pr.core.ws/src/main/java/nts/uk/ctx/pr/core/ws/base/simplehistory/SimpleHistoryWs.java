@@ -67,9 +67,10 @@ public abstract class SimpleHistoryWs<M extends Master, H extends History<H>> ex
 	 *
 	 * @param uuid the uuid
 	 */
+	@POST
 	@Path("history/delete")
 	public void removeHistory(DeleteHistoryCommand command) {
-		this.getServices().deleteHistory(command.getMasterCode());
+		this.getServices().deleteHistory(command.getHistoryId());
 	}
 
 	/**

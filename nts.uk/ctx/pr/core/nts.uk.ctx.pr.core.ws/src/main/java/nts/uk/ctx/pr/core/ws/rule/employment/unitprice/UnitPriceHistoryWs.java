@@ -16,7 +16,6 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import nts.arc.error.BusinessException;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.app.rule.employment.unitprice.command.CreateUnitPriceHistoryCommand;
 import nts.uk.ctx.pr.core.app.rule.employment.unitprice.command.CreateUnitPriceHistoryCommandHandler;
@@ -62,11 +61,11 @@ public class UnitPriceHistoryWs extends SimpleHistoryWs<UnitPrice, UnitPriceHist
 	/** The unit price history repo. */
 	@Inject
 	private UnitPriceHistoryRepository unitPriceHistoryRepo;
-	
+
 	/** The service. */
 	@Inject
 	private UnitPriceHistoryService service;
-	
+
 	/**
 	 * Find.
 	 *
@@ -77,15 +76,7 @@ public class UnitPriceHistoryWs extends SimpleHistoryWs<UnitPrice, UnitPriceHist
 	@POST
 	@Path("find/{id}")
 	public UnitPriceHistoryDto find(@PathParam("id") String id) {
-		// Get the current company code.
-		CompanyCode companyCode = new CompanyCode(AppContexts.user().companyCode());
-
-		Optional<UnitPriceHistoryDto> optHistoryDto = unitPriceHistoryFinder.find(companyCode, id);
-
-		if (!optHistoryDto.isPresent()) {
-			throw new BusinessException("????");
-		}
-
+		Optional<UnitPriceHistoryDto> optHistoryDto = this.unitPriceHistoryFinder.find(id);
 		return optHistoryDto.get();
 	}
 
@@ -97,8 +88,13 @@ public class UnitPriceHistoryWs extends SimpleHistoryWs<UnitPrice, UnitPriceHist
 	 */
 	@POST
 	@Path("create")
-	public void create(CreateUnitPriceHistoryCommand command) {
-		this.createUnitPriceHistoryCommandHandler.handle(command);
+	public HistoryModel create(CreateUnitPriceHistoryCommand command) {
+		UnitPriceHistory history = this.createUnitPriceHistoryCommandHandler.handle(command);
+		return HistoryModel.builder()
+				.uuid(history.getUuid())
+				.start(history.getStart().v())
+				.end(history.getEnd().v())
+				.build();
 	}
 
 	/**

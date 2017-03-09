@@ -10,17 +10,17 @@ var nts;
                 (function (base) {
                     var simplehistory;
                     (function (simplehistory) {
-                        var newhistory;
-                        (function (newhistory) {
+                        var updatehistory;
+                        (function (updatehistory) {
                             var viewmodel;
                             (function (viewmodel) {
                                 var ScreenModel = (function () {
                                     function ScreenModel() {
                                         var self = this;
                                         self.dialogOptions = nts.uk.ui.windows.getShared('options');
-                                        self.createType = ko.observable(ScreenModel.CREATE_TYPE_COPY_LATEST);
-                                        self.startYearMonth = ko.observable(self.dialogOptions.lastest.start);
-                                        self.lastYearMonth = nts.uk.time.formatYearMonth(self.dialogOptions.lastest.start);
+                                        self.actionType = ko.observable(ScreenModel.ACTION_TYPE_DELETE);
+                                        self.startYearMonth = ko.observable(self.dialogOptions.history.start);
+                                        self.endYearMonth = nts.uk.time.formatYearMonth(self.dialogOptions.history.end);
                                     }
                                     ScreenModel.prototype.startPage = function () {
                                         var self = this;
@@ -32,26 +32,27 @@ var nts;
                                         var self = this;
                                         var callBackData = {
                                             masterCode: self.dialogOptions.master.code,
+                                            historyId: self.dialogOptions.history.uuid,
                                             startYearMonth: self.startYearMonth()
                                         };
-                                        if (self.createType() == ScreenModel.CREATE_TYPE_COPY_LATEST) {
-                                            self.dialogOptions.onCopyCallBack(callBackData);
+                                        if (self.actionType() == ScreenModel.ACTION_TYPE_DELETE) {
+                                            self.dialogOptions.onDeleteCallBack(callBackData);
                                         }
                                         else {
-                                            self.dialogOptions.onCreateCallBack(callBackData);
+                                            self.dialogOptions.onUpdateCallBack(callBackData);
                                         }
                                         nts.uk.ui.windows.close();
                                     };
                                     ScreenModel.prototype.btnCancelClicked = function () {
                                         nts.uk.ui.windows.close();
                                     };
-                                    ScreenModel.CREATE_TYPE_COPY_LATEST = 'COPY';
-                                    ScreenModel.CREATE_TYPE_INIT = 'INIT';
+                                    ScreenModel.ACTION_TYPE_DELETE = 'DELETE';
+                                    ScreenModel.ACTION_TYPE_UPDATE = 'UPDATE';
                                     return ScreenModel;
                                 }());
                                 viewmodel.ScreenModel = ScreenModel;
-                            })(viewmodel = newhistory.viewmodel || (newhistory.viewmodel = {}));
-                        })(newhistory = simplehistory.newhistory || (simplehistory.newhistory = {}));
+                            })(viewmodel = updatehistory.viewmodel || (updatehistory.viewmodel = {}));
+                        })(updatehistory = simplehistory.updatehistory || (simplehistory.updatehistory = {}));
                     })(simplehistory = base.simplehistory || (base.simplehistory = {}));
                 })(base = view.base || (view.base = {}));
             })(view = pr.view || (pr.view = {}));

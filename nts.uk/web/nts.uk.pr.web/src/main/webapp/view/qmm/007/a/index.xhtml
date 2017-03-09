@@ -56,7 +56,7 @@
 							<td><span id="ipnStartMonth"
 								data-bind="ntsDatePicker: {value: unitPriceHistoryModel().startMonth, dateFormat: 'yyyy/MM'}"></span>
 								<label id="lblEndMonth"
-								data-bind="text: ' ~ ' + unitPriceHistoryModel().endMonth()"></label></td>
+								data-bind="text: ' ~ ' + nts.uk.time.formatYearMonth(unitPriceHistoryModel().endMonth())"></label></td>
 						</tr>
 						<tr>
 							<td><div id="lbl_006"

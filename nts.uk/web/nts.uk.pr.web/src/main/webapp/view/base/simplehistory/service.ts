@@ -108,8 +108,7 @@ module nts.uk.pr.view.base.simplehistory {
             deleteHistory(masterCode: string, historyUuid: string): JQueryPromise<void> {
                 var self = this;
                 return nts.uk.request.ajax(self.path.deleteHistoryPath, {
-                    masterCode: masterCode,
-                    historyUuid: historyUuid
+                    historyId: historyUuid
                 });
             }
         }

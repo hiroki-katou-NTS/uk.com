@@ -18,7 +18,10 @@ module nts.uk.pr.view.qmm007.a {
             switchButtonDataSource: KnockoutObservableArray<SwitchButtonDataSource>;
 
             constructor() {
-                super('会社一律金額', service.instance);
+                super({
+                    functionName: '会社一律金額',
+                    service: service.instance,
+                    removeMasterOnLastHistoryRemove: true});
                 var self = this;
                 self.isLoading = ko.observable(true);
 
@@ -44,23 +47,20 @@ module nts.uk.pr.view.qmm007.a {
             /**
              * Create or Update UnitPriceHistory.
              */
-            private save(): void {
+            onSave(): JQueryPromise<string> {
                 var self = this;
+                var dfd = $.Deferred<string>();
                 if (self.isNewMode()) {
-                    service.create(ko.toJS(self.unitPriceHistoryModel()), true).done(() => {
-                        self.loadUnitPriceHistoryList().done(() => {
-                            self.selectedId(self.getLatestHistoryId(self.unitPriceHistoryModel().unitPriceCode()));
-                        });
-                    });
+                    service.instance.create(ko.toJS(self.unitPriceHistoryModel())).done(res => {
+                        dfd.resolve(res.uuid);
+                    })
                 } else {
-                    service.update(ko.toJS(self.unitPriceHistoryModel())).done(() => {
-                        self.loadUnitPriceHistoryList().done(() => {
-                            self.loadUnitPriceDetail(self.selectedId());
-                        });
+                    service.instance.update(ko.toJS(self.unitPriceHistoryModel())).done((res) => {
+                        dfd.resolve(self.unitPriceHistoryModel().id);
                     });
                 }
+                return dfd.promise();
             }
-
 
             /**
              * Set the UnitPriceHistoryModel
@@ -70,8 +70,8 @@ module nts.uk.pr.view.qmm007.a {
                 model.id = dto.id;
                 model.unitPriceCode(dto.unitPriceCode);
                 model.unitPriceName(dto.unitPriceName);
-                model.startMonth(nts.uk.time.formatYearMonth(dto.startMonth));
-                model.endMonth(nts.uk.time.formatYearMonth(dto.endMonth));
+                model.startMonth(dto.startMonth);
+                model.endMonth(dto.endMonth);
                 model.budget(dto.budget);
                 model.fixPaySettingType(dto.fixPaySettingType);
                 model.fixPayAtr(dto.fixPayAtr);
@@ -116,7 +116,7 @@ module nts.uk.pr.view.qmm007.a {
                 defaultHist.id = '';
                 defaultHist.unitPriceCode = '';
                 defaultHist.unitPriceName = '';
-                defaultHist.startMonth = 201701;
+                defaultHist.startMonth = nts.uk.time.parseTime(new Date()).toValue();;
                 defaultHist.endMonth = 999912;
                 defaultHist.budget = 0;
                 defaultHist.fixPaySettingType = 'Company';
@@ -134,8 +134,8 @@ module nts.uk.pr.view.qmm007.a {
             id: string;
             unitPriceCode: KnockoutObservable<string>;
             unitPriceName: KnockoutObservable<string>;
-            startMonth: KnockoutObservable<string>;
-            endMonth: KnockoutObservable<string>;
+            startMonth: KnockoutObservable<number>;
+            endMonth: KnockoutObservable<number>;
             budget: KnockoutObservable<number>;
             fixPaySettingType: KnockoutObservable<string>;
             fixPayAtr: KnockoutObservable<string>;
@@ -149,8 +149,8 @@ module nts.uk.pr.view.qmm007.a {
                 this.id = historyDto.id;
                 this.unitPriceCode = ko.observable(historyDto.unitPriceCode);
                 this.unitPriceName = ko.observable(historyDto.unitPriceName);
-                this.startMonth = ko.observable(nts.uk.time.formatYearMonth(historyDto.startMonth));
-                this.endMonth = ko.observable(nts.uk.time.formatYearMonth(historyDto.endMonth));
+                this.startMonth = ko.observable(historyDto.startMonth);
+                this.endMonth = ko.observable(historyDto.endMonth);
                 this.budget = ko.observable(historyDto.budget);
                 this.fixPaySettingType = ko.observable(historyDto.fixPaySettingType);
                 this.fixPayAtr = ko.observable(historyDto.fixPayAtr);

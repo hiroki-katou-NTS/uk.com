@@ -4,11 +4,9 @@ module nts.uk.pr.view.qmm007 {
          *  Service paths
          */
         var paths: any = {
-            getUnitPriceHistoryList: "pr/proto/unitprice/findall",
             getUnitPriceHistoryDetail: "pr/proto/unitprice/find",
             createUnitPriceHistory: "pr/proto/unitprice/create",
-            updateUnitPriceHistory: "pr/proto/unitprice/update",
-            removeUnitPriceHistory: "pr/proto/unitprice/remove"
+            updateUnitPriceHistory: "pr/proto/unitprice/update"
         };
 
         /**
@@ -25,6 +23,20 @@ module nts.uk.pr.view.qmm007 {
             findHistoryByUuid(id: string): JQueryPromise<model.UnitPriceHistoryDto> {
                 return nts.uk.request.ajax(paths.getUnitPriceHistoryDetail + "/" + id);
             }
+
+            /**
+             * Create unit price and first history.
+             */
+            create(unitPriceDto: model.UnitPriceHistoryDto): JQueryPromise<model.UnitPriceHistory> {
+                return nts.uk.request.ajax(paths.createUnitPriceHistory, unitPriceDto);
+            }
+
+            /**
+             * Create unit price and first history.
+             */
+            update(unitPriceDto: model.UnitPriceHistoryDto): JQueryPromise<void> {
+                return nts.uk.request.ajax(paths.updateUnitPriceHistory, unitPriceDto);
+            }
         }
 
         /**
@@ -35,13 +47,6 @@ module nts.uk.pr.view.qmm007 {
             createHisotyPath: 'pr/proto/unitprice/history/create',
             deleteHistoryPath: 'pr/proto/unitprice/history/delete'
         });
-
-        /**
-         *  Update UnitPriceHistory
-         */
-        export function update(unitPriceHistory: model.UnitPriceHistoryDto): JQueryPromise<any> {
-            return nts.uk.request.ajax(paths.updateUnitPriceHistory, unitPriceHistory);
-        }
 
         /**
         * Model namespace.

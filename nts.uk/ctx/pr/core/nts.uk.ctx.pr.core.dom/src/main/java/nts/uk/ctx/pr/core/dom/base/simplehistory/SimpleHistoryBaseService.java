@@ -6,7 +6,9 @@ package nts.uk.ctx.pr.core.dom.base.simplehistory;
 
 import java.util.Optional;
 
+import nts.arc.time.DateTimeConstraints;
 import nts.arc.time.YearMonth;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class SimpleHistoryBaseService.
@@ -19,7 +21,9 @@ public abstract class SimpleHistoryBaseService<M extends Master, H extends Histo
 	 * @param uuid the uuid
 	 */
 	public void deleteHistory(String uuid) {
-		Optional<H> hisOpt = this.getRepository().findHistoryByUuid(uuid);
+		SimpleHistoryRepository<H> repo = this.getRepository();
+		Optional<H> hisOpt = repo.findHistoryByUuid(uuid);
+
 		if (!hisOpt.isPresent()) {
 			throw new RuntimeException("History not found.");
 
@@ -27,6 +31,17 @@ public abstract class SimpleHistoryBaseService<M extends Master, H extends Histo
 
 		// Remove history.
 		H history = hisOpt.get();
+
+		// Check if current history is last.
+		H lastHistory = repo.findLastestHistoryByMasterCode(AppContexts.user().companyCode(),
+				history.getMasterCode().v()).get();
+
+		// Latest history.
+		if (!history.getUuid().equals(lastHistory.getUuid())) {
+			throw new IllegalAccessError("Can not remove not latest history.");
+		}
+
+		// Delete current history.
 		this.getRepository().deleteHistory(history.getUuid());
 
 		// Update latest history.
@@ -35,7 +50,7 @@ public abstract class SimpleHistoryBaseService<M extends Master, H extends Histo
 				history.getMasterCode().v());
 		if (hisOpt.isPresent()) {
 			history = hisOpt.get();
-			history.setEnd(YearMonth.of(999999));
+			history.setEnd(YearMonth.of(DateTimeConstraints.LIMIT_YEAR.max(), DateTimeConstraints.LIMIT_MONTH.max()));
 			this.getRepository().updateHistory(history);
 		}
 	}
@@ -94,7 +109,7 @@ public abstract class SimpleHistoryBaseService<M extends Master, H extends Histo
 	 *
 	 * @return the repository
 	 */
-	public abstract SimpleHistoryRepository<M, H> getRepository();
+	public abstract SimpleHistoryRepository<H> getRepository();
 
 	/**
 	 * Creates the inital history.

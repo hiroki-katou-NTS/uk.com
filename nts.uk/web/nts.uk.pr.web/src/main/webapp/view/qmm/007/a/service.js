@@ -16,11 +16,9 @@ var nts;
                     var service;
                     (function (service) {
                         var paths = {
-                            getUnitPriceHistoryList: "pr/proto/unitprice/findall",
                             getUnitPriceHistoryDetail: "pr/proto/unitprice/find",
                             createUnitPriceHistory: "pr/proto/unitprice/create",
-                            updateUnitPriceHistory: "pr/proto/unitprice/update",
-                            removeUnitPriceHistory: "pr/proto/unitprice/remove"
+                            updateUnitPriceHistory: "pr/proto/unitprice/update"
                         };
                         var Service = (function (_super) {
                             __extends(Service, _super);
@@ -30,6 +28,12 @@ var nts;
                             Service.prototype.findHistoryByUuid = function (id) {
                                 return nts.uk.request.ajax(paths.getUnitPriceHistoryDetail + "/" + id);
                             };
+                            Service.prototype.create = function (unitPriceDto) {
+                                return nts.uk.request.ajax(paths.createUnitPriceHistory, unitPriceDto);
+                            };
+                            Service.prototype.update = function (unitPriceDto) {
+                                return nts.uk.request.ajax(paths.updateUnitPriceHistory, unitPriceDto);
+                            };
                             return Service;
                         }(view.base.simplehistory.service.BaseService));
                         service.Service = Service;
@@ -38,10 +42,6 @@ var nts;
                             createHisotyPath: 'pr/proto/unitprice/history/create',
                             deleteHistoryPath: 'pr/proto/unitprice/history/delete'
                         });
-                        function update(unitPriceHistory) {
-                            return nts.uk.request.ajax(paths.updateUnitPriceHistory, unitPriceHistory);
-                        }
-                        service.update = update;
                         var model;
                         (function (model) {
                             ;

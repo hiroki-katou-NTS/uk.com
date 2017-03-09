@@ -13,7 +13,7 @@
 			<script type="text/javascript">
 				var dialogSize = {
 					width : 580,
-					height : 340
+					height : 380
 				};
 			</script>
 		</ui:define>
@@ -21,41 +21,45 @@
 		<ui:define name="content">
 			<!-- BEGIN CONTENT AREA-->
 			<div id="this-contents-area">
-				<label>新たに作成する履歴の、作成情報を入力してください。</label>
+				<label>履歴情報を確認し、削除またはしゅうせいを行ってださい。</label>
 				<table class="form-default">
 					<tr data-bind="with: dialogOptions">
 						<td><div data-bind="ntsFormLabel: {}">コード/名称</div></td>
 						<td><label data-bind="text: master.code + ' ' + master.name"/></td>
 					</tr>
-
 					<tr>
-						<td><div data-bind="ntsFormLabel: { required: true }">期間</div></td>
+						<td><div data-bind="ntsFormLabel: { required: true }">編集方法の選択</div></td>
 						<td>
-							<span id="startYearMonth" data-bind="ntsDatePicker: {value: startYearMonth, dateFormat: 'yyyy/MM'}"/>
-							<label data-bind="text: ' ~ 9999/12'"/>
-						</td>
-					</tr>
-					<tr>
-						<td><div data-bind="ntsFormLabel: { required: true }">履歴の引継ぎ</div></td>
-						<td><label class="ntsRadioBox">
+						<label class="ntsRadioBox">
 							<input type="radio"
 								name="createType"
-								id="createTypeCopy"
-								data-bind="checkedValue: 'COPY', checked: createType" />
+								id="actionDelete"
+								data-bind="checkedValue: 'DELETE', checked: actionType" />
 							<span class="box"/>
-							<label for="createTypeCopy" class="label" data-bind="text: '最新の履歴 (' + lastYearMonth + ') から引き継ぐ'"/>
-						</label></td>
+							<label for="actionDelete" class="label">履歴を削除する</label>
+						</label>
+						<com:ko tag="if" bind="dialogOptions.removeMasterOnLastHistoryRemove">
+							<div class="bg-yellow color-danger" style="height: 40px; line-height: 40px; margin: 10px;">全ての履歴を削除すると、会社一律金額のデータも削除します。</div>
+						</com:ko>
+						</td>
 					</tr>
 					<tr>
 						<td></td>
 						<td><label class="ntsRadioBox">
 							<input type="radio"
 								name="createType"
-								id="createTypeInit"
-								data-bind="checkedValue: 'INIT', checked: createType" />
+								id="actionUpdate"
+								data-bind="checkedValue: 'UPDATE', checked: actionType" />
 							<span class="box"/>
-							<label for="createTypeInit" class="label" data-bind="text: '初めから作成する'"/>
+							<label for="actionUpdate" class="label">履歴を修正する</label>
 						</label></td>
+					</tr>
+					<tr>
+						<td><div data-bind="ntsFormLabel: { required: true }">期間</div></td>
+						<td>
+							<span id="startYearMonth" data-bind="ntsDatePicker: {value: startYearMonth, dateFormat: 'yyyy/MM'}"/>
+							<label data-bind="text: ' ~ '　+ endYearMonth"/>
+						</td>
 					</tr>
 				</table>
 			</div>

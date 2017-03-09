@@ -18,10 +18,10 @@
 			<!-- BEGIN FUNCTION AREA-->
 			<div id="functions-area">
 				<button id="btnNew"
-					data-bind="click: registNew"
+					data-bind="click: registBtnClick"
 					class="large btn-default">新規</button>
 				<button id="btnUpdate" class="large proceed btn-default"
-					data-bind="enable: $root.errors.isEmpty, click: save">登録</button>
+					data-bind="enable: $root.errors.isEmpty, click: saveBtnClick">登録</button>
 				<ui:insert name="extendedAction" />
 			</div>
 			<!-- END FUNCTION AREA-->
@@ -43,9 +43,9 @@
 					<div style="margin: 5px;">
 						<div>
 							<button class="pull-left" id="addHistory"
-								data-bind="enable: canAddNewHistory, click: openAddNewHistoryDialog">履歴追加</button>
+								data-bind="enable: canAddNewHistory, click: addNewHistoryBtnClick">履歴追加</button>
 							<button class="pull-right" id="editHistory"
-								data-bind="enable: canUpdateHistory">履歴編集</button>
+								data-bind="enable: canUpdateHistory, click: updateHistoryBtnClick">履歴編集</button>
 						</div>
 						<div class="pull-left cf">
 							<table id="historyTree"
