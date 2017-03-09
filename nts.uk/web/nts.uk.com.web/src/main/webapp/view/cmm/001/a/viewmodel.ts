@@ -46,25 +46,25 @@ module cmm001.a {
             self.init();
             self.currentCode.subscribe(function(newValue) {
                 console.log(self.items());
-//                let dfd = $.Deferred<any>();
-//                cmm001.a.service.getAllCompanys().done(function(companies) {
-//                    if (companies.length > 0) {
-//                        self.companys(companies);
-                        if (self.editMode) {
-                            self.getDetailCompany(self.companys(),newValue);
+                //                let dfd = $.Deferred<any>();
+                //                cmm001.a.service.getAllCompanys().done(function(companies) {
+                //                    if (companies.length > 0) {
+                //                        self.companys(companies);
+                if (self.editMode) {
+                    self.getDetailCompany(self.companys(), newValue);
 
-                        }
-                        else {
-                            self.editMode = true;
-                        }
+                }
+                else {
+                    self.editMode = true;
+                }
 
-//                    }
-//                    dfd.resolve();
-//                });
+                //                    }
+                //                    dfd.resolve();
+                //                });
             });
-             self.selectedCode.subscribe(function(newValue){
-                
-             })
+            self.selectedCode.subscribe(function(newValue) {
+
+            })
             //            self.checked2.subscribe(function(newValue) {
             //
             //                self.columns2()[2]._initiallyHidden = false;
@@ -117,11 +117,16 @@ module cmm001.a {
             let node = new cmm001.a.service.model.CompanyDto();
             _.find(items, function(obj: cmm001.a.service.model.CompanyDto) {
                 if (obj.companyCode == newValue) {
-                  
+
                     $(document).ready(function(data) {
                         $("#A_INP_002").attr('disabled', 'true');
                         $("#A_INP_002").attr('readonly', 'true');
                     });
+                    if (obj.displayAttribute.toString() === '0') {
+                        self.checked2(false);
+                    } else {
+                        self.checked2(true);
+                    }
                     node.companyCode = obj.companyCode;
                     node.companyName = obj.companyName;
                     node.companyNameAbb = obj.companyNameAbb;
@@ -148,6 +153,7 @@ module cmm001.a {
                     self.selectedCode(obj.termBeginMon);
                     self.testCompany(ko.mapping.fromJS(node));
                     self.currentCompanyDto(ko.mapping.fromJS(node));
+
                 }
             });
             return node;
@@ -277,19 +283,19 @@ module cmm001.a {
         ClickRegister(): any {
             let self = this;
             let dfd = $.Deferred<any>();
-            let currentCompany : service.model.CompanyDto;
+            let currentCompany: service.model.CompanyDto;
             currentCompany = ko.toJS(self.currentCompanyDto);
             //console.log( currentCompany);
             //self.currentCompanyDto().companyCode = $("#A_INP_002").val();
             let companyNameGlobal: string;
 
             //self.currentCompanyDto().address2 = $("#C_INP_003").val();
-           // self.currentCompanyDto().companyNameAbb = $("#A_INP_005").val();
+            // self.currentCompanyDto().companyNameAbb = $("#A_INP_005").val();
 
             //self.currentCompanyDto().faxNo = $("#C_INP_007").val();
 
-           // self.currentCompanyDto().presidentName = $("#B_INP_002").val()
-          //  self.currentCompanyDto().presidentJobTitle = $("#B_INP_003").val();
+            // self.currentCompanyDto().presidentName = $("#B_INP_002").val()
+            //  self.currentCompanyDto().presidentJobTitle = $("#B_INP_003").val();
 
             let termBeginMon: number;
 
@@ -337,7 +343,7 @@ module cmm001.a {
             let error2: boolean;
             if (currentCompany.address1 != "") {
                 $('#C_INP_002').ntsError('clear');
-               // self.currentCompanyDto().address1 = $("#C_INP_002").val();
+                // self.currentCompanyDto().address1 = $("#C_INP_002").val();
                 error2 = true;
             } else {
                 $("#C_INP_002").ntsError('set', 'this address must not null');
@@ -422,11 +428,13 @@ module cmm001.a {
                 if (currentCompany.companyCode != self.currentCode()) {
                     cmm001.a.service.addData(currentCompany).done(function() {
                         self.start(currentCompany.companyCode);
+                        alert("変更された内容が登録されていません。\r\nよろしいですか。");
                     });
 
                 } else {
                     cmm001.a.service.updateData(currentCompany).done(function() {
                         self.start(currentCompany.companyCode);
+                        alert("変更された内容が登録されていません。\r\nよろしいですか。");
 
                     });
 
@@ -469,25 +477,27 @@ module cmm001.a {
                 if (companies.length > 0) {
                     self.companys(companies);
                     self.buildGridDataSource(companies);
-                    if(currentCode === undefined){
+                    if (currentCode === undefined) {
                         self.currentCode(self.firstCode());
                         self.getDetailCompany(self.companys, self.firstCode());
-                    }else{
+                    } else {
                         self.currentCode(currentCode);
                     }
-                    //if(self.currentCompanyDto().companyCode === undefined)
-                   // self.currentCode(self.currentCompanyDto().companyCode);
-                    //self.currentCode("0001");
                 }
                 dfd.resolve();
             });
             return dfd.promise();
         }
-        buildGridDataSource(items: any): any {
+        buildGridDataSource(items: Array<cmm001.a.service.model.CompanyDto>): any {
             let self = this;
             self.items = ko.observableArray([]);
-            _.forEach(items, function(obj) {
-                self.items().push(new Company(obj.companyCode.toString(), obj.companyName, ""));
+            _.forEach(items, function(obj: cmm001.a.service.model.CompanyDto) {
+                if (obj.displayAttribute.toString() === "0") {
+                    self.items().push(new Company(obj.companyCode.toString(), obj.companyName, ''));
+                } else {
+                    self.items().push(new Company(obj.companyCode.toString(), obj.companyName, '<i style="margin-left: 15px" class="icon icon-close"></i>'));
+                }
+
             });
             self.firstCode(self.items()[0].code);
             //self.currentCode(self.currentCompanyDto().companyCode);

@@ -84,6 +84,12 @@ var cmm001;
                             $("#A_INP_002").attr('disabled', 'true');
                             $("#A_INP_002").attr('readonly', 'true');
                         });
+                        if (obj.displayAttribute.toString() === '0') {
+                            self.checked2(false);
+                        }
+                        else {
+                            self.checked2(true);
+                        }
                         node.companyCode = obj.companyCode;
                         node.companyName = obj.companyName;
                         node.companyNameAbb = obj.companyNameAbb;
@@ -385,11 +391,13 @@ var cmm001;
                     if (currentCompany.companyCode != self.currentCode()) {
                         cmm001.a.service.addData(currentCompany).done(function () {
                             self.start(currentCompany.companyCode);
+                            alert("変更された内容が登録されていません。\r\nよろしいですか。");
                         });
                     }
                     else {
                         cmm001.a.service.updateData(currentCompany).done(function () {
                             self.start(currentCompany.companyCode);
+                            alert("変更された内容が登録されていません。\r\nよろしいですか。");
                         });
                     }
                 }
@@ -441,7 +449,12 @@ var cmm001;
                 var self = this;
                 self.items = ko.observableArray([]);
                 _.forEach(items, function (obj) {
-                    self.items().push(new Company(obj.companyCode.toString(), obj.companyName, ""));
+                    if (obj.displayAttribute.toString() === "0") {
+                        self.items().push(new Company(obj.companyCode.toString(), obj.companyName, ''));
+                    }
+                    else {
+                        self.items().push(new Company(obj.companyCode.toString(), obj.companyName, '<i style="margin-left: 15px" class="icon icon-close"></i>'));
+                    }
                 });
                 self.firstCode(self.items()[0].code);
                 //self.currentCode(self.currentCompanyDto().companyCode);
