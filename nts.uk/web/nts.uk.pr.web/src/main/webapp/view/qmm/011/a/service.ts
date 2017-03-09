@@ -27,7 +27,6 @@ module nts.uk.pr.view.qmm011.a {
             nts.uk.request.ajax(paths.addUnemployeeInsuranceRate, data)
                 .done(function(res: void) {
                     dfd.resolve(res);
-                    //xyz
                 })
                 .fail(function(res) {
                     dfd.reject(res);
@@ -45,7 +44,6 @@ module nts.uk.pr.view.qmm011.a {
             nts.uk.request.ajax(paths.updateUnemployeeInsuranceRate, data)
                 .done(function(res: void) {
                     dfd.resolve(res);
-                    //xyz
                 })
                 .fail(function(res) {
                     dfd.reject(res);
@@ -67,7 +65,6 @@ module nts.uk.pr.view.qmm011.a {
                         convertRes.push(historyUnemployeeInsuranceDto);
                     }
                     dfd.resolve(convertRes);
-                    //xyz
                 })
                 .fail(function(res) {
                     dfd.reject(res);
@@ -92,6 +89,7 @@ module nts.uk.pr.view.qmm011.a {
                 })
             return dfd.promise();
         }
+
         //Funtion connection service detail by historyId 
         export function detailHistoryUnemployeeInsuranceRate(historyId: string)
             : JQueryPromise<model.UnemployeeInsuranceRateDto> {
@@ -100,12 +98,13 @@ module nts.uk.pr.view.qmm011.a {
                 .done(function(res: model.UnemployeeInsuranceRateFindOutDto) {
                     var unemployeeInsuranceRateDto: model.UnemployeeInsuranceRateDto;
                     unemployeeInsuranceRateDto = new model.UnemployeeInsuranceRateDto();
-                    unemployeeInsuranceRateDto.historyInsurance = new model.HistoryUnemployeeInsuranceDto();
-                    unemployeeInsuranceRateDto.historyInsurance.setDataHistory(res.historyInsurance);
+                    unemployeeInsuranceRateDto.historyInsurance = new model.HistoryInsuranceInDto();
+                    unemployeeInsuranceRateDto.historyInsurance.historyId = res.historyInsurance.historyId;
+                    unemployeeInsuranceRateDto.historyInsurance.startMonth = res.historyInsurance.startMonth;
+                    unemployeeInsuranceRateDto.historyInsurance.endMonth = res.historyInsurance.endMonth;
                     unemployeeInsuranceRateDto.rateItems = res.rateItems;
                     unemployeeInsuranceRateDto.version = res.version;
                     dfd.resolve(unemployeeInsuranceRateDto);
-                    //xyz
                 })
                 .fail(function(res) {
                     dfd.reject(res);
@@ -113,6 +112,7 @@ module nts.uk.pr.view.qmm011.a {
             return dfd.promise();
 
         }
+
         //Function connection service add Accident Insurance Rate
         export function addAccidentInsuranceRate(
             accidentInsuranceRateModel: viewmodel.AccidentInsuranceRateModel): JQueryPromise<any> {
@@ -198,7 +198,9 @@ module nts.uk.pr.view.qmm011.a {
                     var accidentInsuranceRateDto: model.AccidentInsuranceRateDto;
                     accidentInsuranceRateDto = new model.AccidentInsuranceRateDto();
                     accidentInsuranceRateDto.historyInsurance = new model.HistoryAccidentInsuranceDto();
-                    accidentInsuranceRateDto.historyInsurance.setDataHistory(res.historyInsurance);
+                    accidentInsuranceRateDto.historyInsurance.historyId = res.historyInsurance.historyId;
+                    accidentInsuranceRateDto.historyInsurance.endMonth = res.historyInsurance.endMonth;
+                    accidentInsuranceRateDto.historyInsurance.startMonth = res.historyInsurance.startMonth;
                     accidentInsuranceRateDto.rateItems = res.rateItems;
                     accidentInsuranceRateDto.version = res.version;
                     dfd.resolve(accidentInsuranceRateDto);
@@ -212,13 +214,13 @@ module nts.uk.pr.view.qmm011.a {
 
         //Function convert Model => DTO (HistoryAccidentInsuranceDto)
         export function convertHistoryUnemployeeInsuranceDto(historyUnemployeeInsuranceModel: viewmodel.HistoryUnemployeeInsuranceModel)
-            : model.HistoryUnemployeeInsuranceDto {
-            var historyUnemployeeInsuranceDto: model.HistoryUnemployeeInsuranceDto;
-            historyUnemployeeInsuranceDto = new model.HistoryUnemployeeInsuranceDto();
-            historyUnemployeeInsuranceDto.historyId = historyUnemployeeInsuranceModel.historyId();
-            historyUnemployeeInsuranceDto.startMonthRage = historyUnemployeeInsuranceModel.startMonthRage();
-            historyUnemployeeInsuranceDto.endMonthRage = historyUnemployeeInsuranceModel.endMonthRage();
-            return historyUnemployeeInsuranceDto;
+            : model.HistoryInsuranceInDto {
+            var historyDto: model.HistoryInsuranceInDto;
+            historyDto = new model.HistoryInsuranceInDto();
+            historyDto.historyId = historyUnemployeeInsuranceModel.historyId();
+            historyDto.startMonth = historyUnemployeeInsuranceModel.startMonth();
+            historyDto.endMonth = historyUnemployeeInsuranceModel.endMonth();
+            return historyDto;
         }
 
         //Function convert Model => DTO (UnemployeeInsuranceRateItemSettingModel)
@@ -412,7 +414,9 @@ module nts.uk.pr.view.qmm011.a {
 
                 historyId: string;
                 startMonthRage: string;
+                startMonth: number;
                 endMonthRage: string;
+                endMonth: number;
                 inforMonthRage: string;
 
                 constructor() {
@@ -424,16 +428,24 @@ module nts.uk.pr.view.qmm011.a {
 
                 setDataHistory(historyData: HistoryInsuranceFindOutDto) {
                     this.historyId = historyData.historyId;
-                    this.startMonthRage = nts.uk.time.formatYearMonth(historyData.startMonthRage);
-                    this.endMonthRage = nts.uk.time.formatYearMonth(historyData.endMonthRage);
+                    this.startMonthRage = nts.uk.time.formatYearMonth(historyData.startMonth);
+                    this.endMonthRage = nts.uk.time.formatYearMonth(historyData.endMonth);
                     this.inforMonthRage = this.startMonthRage + ' ~ ' + this.endMonthRage;
+                    this.startMonth = historyData.startMonth;
+                    this.endMonth = historyData.endMonth;
                 }
             }
 
             export class HistoryInsuranceFindOutDto {
                 historyId: string;
-                startMonthRage: number;
-                endMonthRage: number;
+                startMonth: number;
+                endMonth: number;
+            }
+
+            export class HistoryInsuranceInDto {
+                historyId: string;
+                startMonth: number;
+                endMonth: number;
             }
 
             export class HistoryUnemployeeInsuranceDto extends HistoryInsuranceDto {
@@ -451,7 +463,7 @@ module nts.uk.pr.view.qmm011.a {
             }
 
             export class UnemployeeInsuranceRateDto {
-                historyInsurance: HistoryUnemployeeInsuranceDto;
+                historyInsurance: HistoryInsuranceInDto;
                 rateItems: UnemployeeInsuranceRateItemDto[];
                 version: number;
             }
@@ -465,7 +477,7 @@ module nts.uk.pr.view.qmm011.a {
             }
 
             export class AccidentInsuranceRateDto {
-                historyInsurance: HistoryAccidentInsuranceDto;
+                historyInsurance: HistoryInsuranceInDto;
                 rateItems: InsuBizRateItemDto[];
                 version: number;
             }

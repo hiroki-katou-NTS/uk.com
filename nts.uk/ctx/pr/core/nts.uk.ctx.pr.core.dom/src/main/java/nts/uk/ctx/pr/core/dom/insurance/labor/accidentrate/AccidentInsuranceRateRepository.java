@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.core.dom.company.CompanyCode;
 
 /**
  * The Interface AccidentInsuranceRateRepository.
@@ -35,7 +34,7 @@ public interface AccidentInsuranceRateRepository {
 	 * @param id the id
 	 * @param version the version
 	 */
-    void remove(CompanyCode companyCode,String historyId, Long version);
+    void remove(String companyCode,String historyId, long version);
 
 	/**
 	 * Find all.
@@ -43,7 +42,7 @@ public interface AccidentInsuranceRateRepository {
 	 * @param companyCode the company code
 	 * @return the list
 	 */
-	List<AccidentInsuranceRate> findAll(CompanyCode companyCode);
+	List<AccidentInsuranceRate> findAll(String companyCode);
 
 	/**
 	 * Find by id.
@@ -51,7 +50,7 @@ public interface AccidentInsuranceRateRepository {
 	 * @param id the id
 	 * @return the accident insurance rate
 	 */
-	Optional<AccidentInsuranceRate> findById(CompanyCode companyCode, String historyId);
+	Optional<AccidentInsuranceRate> findById(String companyCode, String historyId);
 	
 	/**
 	 * Find first data.
@@ -59,7 +58,7 @@ public interface AccidentInsuranceRateRepository {
 	 * @param companyCode the company code
 	 * @return the optional
 	 */
-	Optional<AccidentInsuranceRate> findFirstData(CompanyCode companyCode);
+	Optional<AccidentInsuranceRate> findFirstData(String companyCode);
 	
 	/**
 	 * Update year month.
@@ -77,5 +76,5 @@ public interface AccidentInsuranceRateRepository {
 	 * @param historyId the history id
 	 * @return the optional
 	 */
-	Optional<AccidentInsuranceRate> findBetweenUpdate(CompanyCode companyCode, YearMonth yearMonth,String historyId);
+	Optional<AccidentInsuranceRate> findBetweenUpdate(String companyCode, YearMonth yearMonth,String historyId);
 }

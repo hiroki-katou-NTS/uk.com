@@ -16,16 +16,16 @@ import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsurance
  * The Class HistoryUnemployeeInsuranceFindOutDto.
  */
 @Data
-public class HistoryUnemployeeInsuranceFindOutDto implements UnemployeeInsuranceRateSetMemento {
+public class UnemployeeInsuranceHistoryFindOutDto implements UnemployeeInsuranceRateSetMemento {
 
 	/** The history id. */
 	private String historyId;
 
 	/** The start month rage. */
-	private int startMonthRage;
+	private int startMonth;
 
 	/** The end month rage. */
-	private int endMonthRage;
+	private int endMonth;
 
 	/**
 	 * Convert month.
@@ -57,8 +57,8 @@ public class HistoryUnemployeeInsuranceFindOutDto implements UnemployeeInsurance
 	 */
 	@Override
 	public void setApplyRange(MonthRange applyRange) {
-		this.endMonthRage = applyRange.getEndMonth().v();
-		this.startMonthRage = applyRange.getStartMonth().v();
+		this.endMonth = applyRange.getEndMonth().v();
+		this.startMonth = applyRange.getStartMonth().v();
 	}
 
 	/*

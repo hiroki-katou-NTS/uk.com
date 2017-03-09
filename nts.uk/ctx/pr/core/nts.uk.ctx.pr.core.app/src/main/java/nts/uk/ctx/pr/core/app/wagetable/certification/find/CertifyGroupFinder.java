@@ -37,10 +37,10 @@ public class CertifyGroupFinder {
 	public List<CertifyGroupFindOutDto> findAll() {
 		// get info login
 		LoginUserContext loginUserContext = AppContexts.user();
-		//call findAll
-		List<CertifyGroup> lstCertifyGroup = find.findAll(new CompanyCode(loginUserContext.companyCode()));
+		// call findAll
+		List<CertifyGroup> lstCertifyGroup = find.findAll(loginUserContext.companyCode());
 		List<CertifyGroupFindOutDto> lstCertifyGroupFindInDto = new ArrayList<>();
-		//to Dto
+		// to Dto
 		for (CertifyGroup certifyGroup : lstCertifyGroup) {
 			CertifyGroupFindOutDto certifyGroupFindOutDto = new CertifyGroupFindOutDto();
 			certifyGroup.saveToMemento(certifyGroupFindOutDto);
@@ -58,19 +58,18 @@ public class CertifyGroupFinder {
 	 * @return the certify group find dto
 	 */
 	public CertifyGroupFindDto find(String code) {
-		//get info login
+		// get info login
 		LoginUserContext loginUserContext = AppContexts.user();
 		CertifyGroupFindDto certifyGroupFindDto = new CertifyGroupFindDto();
-		//call findById
-		Optional<CertifyGroup> optionalCertifyGroup = find.findById(new CompanyCode(AppContexts.user().companyCode()),
-				code);
-		//not value find
+		// call findById
+		Optional<CertifyGroup> optionalCertifyGroup = find.findById(loginUserContext.companyCode(), code);
+		// not value find
 		if (!optionalCertifyGroup.isPresent()) {
 			return null;
 		}
-		//to Dto
+		// to Dto
 		optionalCertifyGroup.get().saveToMemento(certifyGroupFindDto);
-		
+
 		return certifyGroupFindDto;
 	}
 

@@ -3,7 +3,7 @@ module nts.uk.pr.view.qmm011.a {
     //import data class .... BEGIN
     import option = nts.uk.ui.option;
     import RoundingMethodDto = service.model.RoundingMethodDto;
-    import HistoryUnemployeeInsuranceDto = service.model.HistoryUnemployeeInsuranceDto;
+    import HistoryInsuranceInDto = service.model.HistoryInsuranceInDto;
     import MonthRange = service.model.MonthRange;
     import YearMonth = service.model.YearMonth;
     import UnemployeeInsuranceRateItemSettingDto = service.model.UnemployeeInsuranceRateItemSettingDto;
@@ -32,7 +32,7 @@ module nts.uk.pr.view.qmm011.a {
             //Update or Add To service 1 add 2 update
             typeActionUnemployeeInsurance: KnockoutObservable<number>;
             //雇用保険 detail B
-            lstHistoryUnemployeeInsuranceRate: KnockoutObservableArray<HistoryUnemployeeInsuranceDto>;
+            lstHistoryUnemployeeInsuranceRate: KnockoutObservableArray<HistoryInsuranceInDto>;
             unemployeeInsuranceRateModel: KnockoutObservable<UnemployeeInsuranceRateModel>;
             rateInputOptions: KnockoutObservable<nts.uk.ui.option.NumberEditorOption>;
             selectionHistoryUnemployeeInsuranceRate: KnockoutObservable<string>;
@@ -73,7 +73,7 @@ module nts.uk.pr.view.qmm011.a {
                 self.isEmptyAccident = ko.observable(true);
                 self.accidentInsuranceRateModel = ko.observable(new AccidentInsuranceRateModel(self.rateInputOptions, self.selectionRoundingMethod));
                 self.unemployeeInsuranceRateModel = ko.observable(new UnemployeeInsuranceRateModel(self.rateInputOptions, self.selectionRoundingMethod));
-                self.lstHistoryUnemployeeInsuranceRate = ko.observableArray<HistoryUnemployeeInsuranceDto>([]);
+                self.lstHistoryUnemployeeInsuranceRate = ko.observableArray<HistoryInsuranceInDto>([]);
                 self.lstHistoryAccidentInsuranceRate = ko.observableArray<HistoryAccidentInsuranceDto>([]);
                 self.selectionHistoryUnemployeeInsuranceRate = ko.observable('');
                 self.selectionHistoryAccidentInsuranceRate = ko.observable('');
@@ -112,12 +112,12 @@ module nts.uk.pr.view.qmm011.a {
                                 //set up type is update
                                 self.typeActionUnemployeeInsurance(TypeActionInsuranceRate.update);
                                 //update action => set data by action
-                                var historyUnemployeeInsuranceDto: HistoryUnemployeeInsuranceDto;
+                                var historyUnemployeeInsuranceDto: HistoryInsuranceInDto;
                                 //get data update
-                                historyUnemployeeInsuranceDto = new HistoryUnemployeeInsuranceDto();
+                                historyUnemployeeInsuranceDto = new HistoryInsuranceInDto();
                                 historyUnemployeeInsuranceDto.historyId = updateHistoryInfoModel.historyId;
-                                historyUnemployeeInsuranceDto.startMonthRage = updateHistoryInfoModel.historyStart;
-                                historyUnemployeeInsuranceDto.endMonthRage = updateHistoryInfoModel.historyEnd;
+                                historyUnemployeeInsuranceDto.startMonth = updateHistoryInfoModel.historyStart;
+                                historyUnemployeeInsuranceDto.endMonth = updateHistoryInfoModel.historyEnd;
                                 //update to viewmodel
                                 self.unemployeeInsuranceRateModel().setHistoryData(historyUnemployeeInsuranceDto);
                             }
@@ -143,8 +143,8 @@ module nts.uk.pr.view.qmm011.a {
                     //get fw d => respone
                     var addHistoryInfoModel: AddHistoryInfoModel = nts.uk.ui.windows.getShared("addHistoryInfoModel");
                     if (addHistoryInfoModel != null && addHistoryInfoModel != undefined) {
-                        var historyUnemployeeInsuranceDto: HistoryUnemployeeInsuranceDto;
-                        historyUnemployeeInsuranceDto = new HistoryUnemployeeInsuranceDto();
+                        var historyUnemployeeInsuranceDto: HistoryInsuranceInDto;
+                        historyUnemployeeInsuranceDto = new HistoryInsuranceInDto();
 
                         if (addHistoryInfoModel.typeModel == 2) {
                             //(1) => reset data
@@ -153,9 +153,10 @@ module nts.uk.pr.view.qmm011.a {
 
                         // (1) => update data history
                         historyUnemployeeInsuranceDto.historyId = '';
-                        historyUnemployeeInsuranceDto.startMonthRage = addHistoryInfoModel.historyStart;
-                        historyUnemployeeInsuranceDto.endMonthRage = '9999/12';
+                        historyUnemployeeInsuranceDto.startMonth = addHistoryInfoModel.starMonth;
+                        historyUnemployeeInsuranceDto.endMonth = 999912;
                         self.unemployeeInsuranceRateModel().setHistoryData(historyUnemployeeInsuranceDto);
+                        self.unemployeeInsuranceRateModel().historyUnemployeeInsuranceModel.setMonthRage(addHistoryInfoModel.starMonth, 999912);
                         //set action add
                         self.typeActionUnemployeeInsurance(TypeActionInsuranceRate.add);
                         self.isEnableSaveUnemployeeInsurance(true);
@@ -219,8 +220,8 @@ module nts.uk.pr.view.qmm011.a {
                                 var historyAccidentInsuranceDto: HistoryAccidentInsuranceDto;
                                 historyAccidentInsuranceDto = new HistoryAccidentInsuranceDto();
                                 historyAccidentInsuranceDto.historyId = updateHistoryInfoModel.historyId;
-                                historyAccidentInsuranceDto.startMonthRage = updateHistoryInfoModel.historyStart;
-                                historyAccidentInsuranceDto.endMonthRage = updateHistoryInfoModel.historyEnd;
+                                historyAccidentInsuranceDto.startMonth = updateHistoryInfoModel.historyStart;
+                                historyAccidentInsuranceDto.endMonth = updateHistoryInfoModel.historyEnd;
                                 //setup data history by update
                                 self.accidentInsuranceRateModel().setHistoryData(historyAccidentInsuranceDto);
                             }
@@ -517,7 +518,7 @@ module nts.uk.pr.view.qmm011.a {
                         self.unemployeeInsuranceRateModel().setHistoryData(data.historyInsurance);
                         //set ismode type action is update
                         self.typeActionUnemployeeInsurance(TypeActionInsuranceRate.update);
-                        self.beginHistoryStartUnemployeeInsuranceRate(data.historyInsurance.startMonthRage);
+                        self.beginHistoryStartUnemployeeInsuranceRate(nts.uk.time.formatYearMonth(data.historyInsurance.startMonth));
                         dfd.resolve(null);
                     });
                 }
@@ -641,7 +642,7 @@ module nts.uk.pr.view.qmm011.a {
                         self.typeActionAccidentInsurance(TypeActionInsuranceRate.update);
                         self.accidentInsuranceRateModel().setHistoryData(data.historyInsurance);
                         self.accidentInsuranceRateModel().setEnable(true);
-                        self.beginHistoryStartAccidentInsuranceRate(data.historyInsurance.startMonthRage);
+                        self.beginHistoryStartAccidentInsuranceRate(nts.uk.time.formatYearMonth(data.historyInsurance.startMonth));
                         dfd.resolve(null);
                     });
                 }
@@ -804,12 +805,16 @@ module nts.uk.pr.view.qmm011.a {
 
             historyId: KnockoutObservable<string>;
             startMonthRage: KnockoutObservable<string>;
+            startMonth: KnockoutObservable<number>;
+            endMonth: KnockoutObservable<number>;
             endMonthRage: KnockoutObservable<string>;
 
             constructor() {
                 this.historyId = ko.observable('');
                 this.startMonthRage = ko.observable('');
                 this.endMonthRage = ko.observable('');
+                this.endMonth = ko.observable(0);
+                this.startMonth = ko.observable(0);
             }
 
             resetValue() {
@@ -828,12 +833,29 @@ module nts.uk.pr.view.qmm011.a {
                 } else {
                     this.endMonthRage = ko.observable('9999/12');
                 }
+                if (this.endMonth != null && this.endMonth != undefined) {
+                    this.endMonth(999912);
+                } else {
+                    this.endMonth = ko.observable(999912);
+                }
+                if (this.startMonth != null && this.startMonth != undefined) {
+                    this.endMonth(0);
+                } else {
+                    this.startMonth = ko.observable(0);
+                }
             }
 
-            updateData(historyUnemployeeInsurance: HistoryUnemployeeInsuranceDto) {
+            updateData(historyUnemployeeInsurance: HistoryInsuranceInDto) {
                 this.historyId(historyUnemployeeInsurance.historyId);
-                this.startMonthRage(historyUnemployeeInsurance.startMonthRage);
-                this.endMonthRage(historyUnemployeeInsurance.endMonthRage);
+                this.startMonthRage(nts.uk.time.formatYearMonth(historyUnemployeeInsurance.startMonth));
+                this.endMonthRage(nts.uk.time.formatYearMonth(historyUnemployeeInsurance.endMonth));
+                this.startMonth(historyUnemployeeInsurance.startMonth);
+                this.endMonth(historyUnemployeeInsurance.endMonth);
+            }
+
+            setMonthRage(startDate: number, endDate: number) {
+                this.startMonth(startDate);
+                this.endMonth(endDate);
             }
         }
 
@@ -891,7 +913,7 @@ module nts.uk.pr.view.qmm011.a {
                 }
             }
 
-            setHistoryData(historyUnemployeeInsuranceDto: HistoryUnemployeeInsuranceDto) {
+            setHistoryData(historyUnemployeeInsuranceDto: HistoryInsuranceInDto) {
                 this.historyUnemployeeInsuranceModel.updateData(historyUnemployeeInsuranceDto);
             }
 
@@ -981,12 +1003,16 @@ module nts.uk.pr.view.qmm011.a {
 
             historyId: KnockoutObservable<string>;
             startMonthRage: KnockoutObservable<string>;
+            startMonth: KnockoutObservable<number>;
             endMonthRage: KnockoutObservable<string>;
+            endMonth: KnockoutObservable<number>;
 
             constructor() {
                 this.historyId = ko.observable('');
                 this.startMonthRage = ko.observable('');
                 this.endMonthRage = ko.observable('');
+                this.endMonth = ko.observable(0);
+                this.startMonth = ko.observable(0);
             }
 
             resetValue() {
@@ -1005,13 +1031,27 @@ module nts.uk.pr.view.qmm011.a {
                 } else {
                     this.endMonthRage = ko.observable('9999/12');
                 }
+
+                if (this.startMonth != null && this.startMonth != undefined) {
+                    this.startMonth = ko.observable(0);
+                } else {
+                    this.startMonth(0);
+                }
+
+                if (this.endMonth != null && this.endMonth != undefined) {
+                    this.endMonth = ko.observable(0);
+                } else {
+                    this.endMonth(0);
+                }
             }
 
-            updateData(historyAccidentInsuranceRateDto: HistoryAccidentInsuranceDto) {
+            updateData(historyDto: HistoryInsuranceInDto) {
                 this.resetValue();
-                this.historyId(historyAccidentInsuranceRateDto.historyId);
-                this.startMonthRage(historyAccidentInsuranceRateDto.startMonthRage);
-                this.endMonthRage(historyAccidentInsuranceRateDto.endMonthRage);
+                this.historyId(historyDto.historyId);
+                this.startMonth(historyDto.startMonth);
+                this.endMonth(historyDto.endMonth);
+                this.startMonthRage(nts.uk.time.formatYearMonth(historyDto.startMonth));
+                this.endMonthRage(nts.uk.time.formatYearMonth(historyDto.endMonth));
             }
         }
 
@@ -1110,8 +1150,8 @@ module nts.uk.pr.view.qmm011.a {
                 }
             }
 
-            setHistoryData(historyAccidentInsuranceRateDto: HistoryAccidentInsuranceDto) {
-                this.historyAccidentInsuranceRateModel.updateData(historyAccidentInsuranceRateDto);
+            setHistoryData(historyDto: HistoryInsuranceInDto) {
+                this.historyAccidentInsuranceRateModel.updateData(historyDto);
             }
 
             resetValue(rateInputOptions: any,

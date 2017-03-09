@@ -21,7 +21,7 @@ import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsurance
 public class UnemployeeInsuranceRateFindOutDto implements UnemployeeInsuranceRateSetMemento {
 
 	/** The history insurance. */
-	private HistoryUnemployeeInsuranceFindOutDto historyInsurance;
+	private UnemployeeInsuranceHistoryFindOutDto historyInsurance;
 
 	/** The rate items. */
 	private List<UnemployeeInsuranceRateItemFindOutDto> rateItems;
@@ -35,7 +35,7 @@ public class UnemployeeInsuranceRateFindOutDto implements UnemployeeInsuranceRat
 	@Override
 	public void setHistoryId(String historyId) {
 		if (this.historyInsurance == null)
-			this.historyInsurance = new HistoryUnemployeeInsuranceFindOutDto();
+			this.historyInsurance = new UnemployeeInsuranceHistoryFindOutDto();
 		this.historyInsurance.setHistoryId(historyId);
 
 	}
@@ -62,8 +62,8 @@ public class UnemployeeInsuranceRateFindOutDto implements UnemployeeInsuranceRat
 	 */
 	@Override
 	public void setApplyRange(MonthRange applyRange) {
-		this.historyInsurance.setEndMonthRage(applyRange.getEndMonth().v());
-		this.historyInsurance.setStartMonthRage(applyRange.getStartMonth().v());
+		this.historyInsurance.setEndMonth(applyRange.getEndMonth().v());
+		this.historyInsurance.setStartMonth(applyRange.getStartMonth().v());
 	}
 
 	/*

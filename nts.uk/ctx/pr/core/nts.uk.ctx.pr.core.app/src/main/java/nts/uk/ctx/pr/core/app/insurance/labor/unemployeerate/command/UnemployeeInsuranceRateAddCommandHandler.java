@@ -39,26 +39,34 @@ public class UnemployeeInsuranceRateAddCommandHandler extends CommandHandler<Une
 	@Override
 	@Transactional
 	protected void handle(CommandHandlerContext<UnemployeeInsuranceRateAddCommand> context) {
+
 		// get user login info
 		LoginUserContext loginUserContext = AppContexts.user();
+
 		// get companyCode by user login
 		String companyCode = loginUserContext.companyCode();
+
 		// get command
 		UnemployeeInsuranceRateAddCommand command = context.getCommand();
+
 		// to domain
 		UnemployeeInsuranceRate unemployeeInsuranceRate = command.toDomain(companyCode);
+
 		// validate
 		unemployeeInsuranceRate.validate();
 		unemployeeInsuranceRateService.validateDateRange(unemployeeInsuranceRate);
+
 		// find first data
 		Optional<UnemployeeInsuranceRate> optionalFisrtData = this.unemployeeInsuranceRateRepository
-				.findFirstData(unemployeeInsuranceRate.getCompanyCode());
+				.findFirstData(unemployeeInsuranceRate.getCompanyCode().v());
 		if (optionalFisrtData.isPresent()) {
 			this.unemployeeInsuranceRateRepository.updateYearMonth(optionalFisrtData.get(),
 					unemployeeInsuranceRate.getApplyRange().getStartMonth().previousMonth());
 		}
+
 		// call repository add (insert database)
-		this.unemployeeInsuranceRateRepository.add(unemployeeInsuranceRate);
+		this.unemployeeInsuranceRateRepository
+				.add(unemployeeInsuranceRate.copyWithDate(unemployeeInsuranceRate.getStart()));
 	}
 
 }

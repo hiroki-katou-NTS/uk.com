@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.dom.insurance.labor.service.internal;
 
+import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -48,7 +50,10 @@ public class LaborInsuranceOfficeServiceImpl implements LaborInsuranceOfficeServ
 	 */
 	@Override
 	public void checkDuplicateCode(LaborInsuranceOffice office) {
-		if (laborInsuranceOfficeRepo.isDuplicateCode(office.getCompanyCode(), office.getCode())) {
+		Optional<LaborInsuranceOffice> optionalCheck = this.laborInsuranceOfficeRepo
+				.findById(office.getCompanyCode().v(), office.getCode().v());
+
+		if (optionalCheck.isPresent()) {
 			throw new BusinessException("ER005");
 		}
 	}

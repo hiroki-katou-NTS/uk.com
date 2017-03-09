@@ -13,8 +13,8 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.pr.core.app.insurance.labor.unemployeerate.find.HistoryUnemployeeInsuranceFinder;
-import nts.uk.ctx.pr.core.app.insurance.labor.unemployeerate.find.dto.HistoryUnemployeeInsuranceFindOutDto;
+import nts.uk.ctx.pr.core.app.insurance.labor.unemployeerate.find.UnemployeeInsuranceHistoryFinder;
+import nts.uk.ctx.pr.core.app.insurance.labor.unemployeerate.find.dto.UnemployeeInsuranceHistoryFindOutDto;
 
 /**
  * The Class HistoryUnemployeeInsuranceWs.
@@ -25,7 +25,7 @@ public class HistoryUnemployeeInsuranceWs extends WebService {
 
 	/** The find. */
 	@Inject
-	private HistoryUnemployeeInsuranceFinder find;
+	private UnemployeeInsuranceHistoryFinder find;
 
 	/**
 	 * Find all.
@@ -35,7 +35,7 @@ public class HistoryUnemployeeInsuranceWs extends WebService {
 	// get History UnemployeeInsuranceRate
 	@POST
 	@Path("findall")
-	public List<HistoryUnemployeeInsuranceFindOutDto> findAll() {
+	public List<UnemployeeInsuranceHistoryFindOutDto> findAll() {
 		return find.findAll();
 	}
 
@@ -48,7 +48,7 @@ public class HistoryUnemployeeInsuranceWs extends WebService {
 	 */
 	@POST
 	@Path("find/{historyId}")
-	public HistoryUnemployeeInsuranceFindOutDto findHistory(@PathParam("historyId") String historyId) {
+	public UnemployeeInsuranceHistoryFindOutDto findHistory(@PathParam("historyId") String historyId) {
 		return find.find(historyId);
 	}
 }

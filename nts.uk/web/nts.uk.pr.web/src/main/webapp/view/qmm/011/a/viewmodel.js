@@ -12,7 +12,7 @@ var nts;
                     (function (a) {
                         var option = nts.uk.ui.option;
                         var RoundingMethodDto = a.service.model.RoundingMethodDto;
-                        var HistoryUnemployeeInsuranceDto = a.service.model.HistoryUnemployeeInsuranceDto;
+                        var HistoryInsuranceInDto = a.service.model.HistoryInsuranceInDto;
                         var CareerGroupDto = a.service.model.CareerGroupDto;
                         var BusinessTypeEnumDto = a.service.model.BusinessTypeEnumDto;
                         var TypeHistory = a.service.model.TypeHistory;
@@ -69,10 +69,10 @@ var nts;
                                                 else {
                                                     self.typeActionUnemployeeInsurance(TypeActionInsuranceRate.update);
                                                     var historyUnemployeeInsuranceDto;
-                                                    historyUnemployeeInsuranceDto = new HistoryUnemployeeInsuranceDto();
+                                                    historyUnemployeeInsuranceDto = new HistoryInsuranceInDto();
                                                     historyUnemployeeInsuranceDto.historyId = updateHistoryInfoModel.historyId;
-                                                    historyUnemployeeInsuranceDto.startMonthRage = updateHistoryInfoModel.historyStart;
-                                                    historyUnemployeeInsuranceDto.endMonthRage = updateHistoryInfoModel.historyEnd;
+                                                    historyUnemployeeInsuranceDto.startMonth = updateHistoryInfoModel.historyStart;
+                                                    historyUnemployeeInsuranceDto.endMonth = updateHistoryInfoModel.historyEnd;
                                                     self.unemployeeInsuranceRateModel().setHistoryData(historyUnemployeeInsuranceDto);
                                                 }
                                             }
@@ -89,14 +89,15 @@ var nts;
                                         var addHistoryInfoModel = nts.uk.ui.windows.getShared("addHistoryInfoModel");
                                         if (addHistoryInfoModel != null && addHistoryInfoModel != undefined) {
                                             var historyUnemployeeInsuranceDto;
-                                            historyUnemployeeInsuranceDto = new HistoryUnemployeeInsuranceDto();
+                                            historyUnemployeeInsuranceDto = new HistoryInsuranceInDto();
                                             if (addHistoryInfoModel.typeModel == 2) {
                                                 self.resetValueUnemployeeInsuranceRate();
                                             }
                                             historyUnemployeeInsuranceDto.historyId = '';
-                                            historyUnemployeeInsuranceDto.startMonthRage = addHistoryInfoModel.historyStart;
-                                            historyUnemployeeInsuranceDto.endMonthRage = '9999/12';
+                                            historyUnemployeeInsuranceDto.startMonth = addHistoryInfoModel.starMonth;
+                                            historyUnemployeeInsuranceDto.endMonth = 999912;
                                             self.unemployeeInsuranceRateModel().setHistoryData(historyUnemployeeInsuranceDto);
+                                            self.unemployeeInsuranceRateModel().historyUnemployeeInsuranceModel.setMonthRage(addHistoryInfoModel.starMonth, 999912);
                                             self.typeActionUnemployeeInsurance(TypeActionInsuranceRate.add);
                                             self.isEnableSaveUnemployeeInsurance(true);
                                         }
@@ -136,8 +137,8 @@ var nts;
                                                     var historyAccidentInsuranceDto;
                                                     historyAccidentInsuranceDto = new HistoryAccidentInsuranceDto();
                                                     historyAccidentInsuranceDto.historyId = updateHistoryInfoModel.historyId;
-                                                    historyAccidentInsuranceDto.startMonthRage = updateHistoryInfoModel.historyStart;
-                                                    historyAccidentInsuranceDto.endMonthRage = updateHistoryInfoModel.historyEnd;
+                                                    historyAccidentInsuranceDto.startMonth = updateHistoryInfoModel.historyStart;
+                                                    historyAccidentInsuranceDto.endMonth = updateHistoryInfoModel.historyEnd;
                                                     self.accidentInsuranceRateModel().setHistoryData(historyAccidentInsuranceDto);
                                                 }
                                             }
@@ -326,7 +327,7 @@ var nts;
                                             self.unemployeeInsuranceRateModel().setListItem(data.rateItems);
                                             self.unemployeeInsuranceRateModel().setHistoryData(data.historyInsurance);
                                             self.typeActionUnemployeeInsurance(TypeActionInsuranceRate.update);
-                                            self.beginHistoryStartUnemployeeInsuranceRate(data.historyInsurance.startMonthRage);
+                                            self.beginHistoryStartUnemployeeInsuranceRate(nts.uk.time.formatYearMonth(data.historyInsurance.startMonth));
                                             dfd.resolve(null);
                                         });
                                     }
@@ -418,7 +419,7 @@ var nts;
                                             self.typeActionAccidentInsurance(TypeActionInsuranceRate.update);
                                             self.accidentInsuranceRateModel().setHistoryData(data.historyInsurance);
                                             self.accidentInsuranceRateModel().setEnable(true);
-                                            self.beginHistoryStartAccidentInsuranceRate(data.historyInsurance.startMonthRage);
+                                            self.beginHistoryStartAccidentInsuranceRate(nts.uk.time.formatYearMonth(data.historyInsurance.startMonth));
                                             dfd.resolve(null);
                                         });
                                     }
@@ -568,6 +569,8 @@ var nts;
                                     this.historyId = ko.observable('');
                                     this.startMonthRage = ko.observable('');
                                     this.endMonthRage = ko.observable('');
+                                    this.endMonth = ko.observable(0);
+                                    this.startMonth = ko.observable(0);
                                 }
                                 HistoryUnemployeeInsuranceModel.prototype.resetValue = function () {
                                     if (this.historyId != null && this.historyId != undefined) {
@@ -588,11 +591,29 @@ var nts;
                                     else {
                                         this.endMonthRage = ko.observable('9999/12');
                                     }
+                                    if (this.endMonth != null && this.endMonth != undefined) {
+                                        this.endMonth(999912);
+                                    }
+                                    else {
+                                        this.endMonth = ko.observable(999912);
+                                    }
+                                    if (this.startMonth != null && this.startMonth != undefined) {
+                                        this.endMonth(0);
+                                    }
+                                    else {
+                                        this.startMonth = ko.observable(0);
+                                    }
                                 };
                                 HistoryUnemployeeInsuranceModel.prototype.updateData = function (historyUnemployeeInsurance) {
                                     this.historyId(historyUnemployeeInsurance.historyId);
-                                    this.startMonthRage(historyUnemployeeInsurance.startMonthRage);
-                                    this.endMonthRage(historyUnemployeeInsurance.endMonthRage);
+                                    this.startMonthRage(nts.uk.time.formatYearMonth(historyUnemployeeInsurance.startMonth));
+                                    this.endMonthRage(nts.uk.time.formatYearMonth(historyUnemployeeInsurance.endMonth));
+                                    this.startMonth(historyUnemployeeInsurance.startMonth);
+                                    this.endMonth(historyUnemployeeInsurance.endMonth);
+                                };
+                                HistoryUnemployeeInsuranceModel.prototype.setMonthRage = function (startDate, endDate) {
+                                    this.startMonth(startDate);
+                                    this.endMonth(endDate);
                                 };
                                 return HistoryUnemployeeInsuranceModel;
                             }());
@@ -725,6 +746,8 @@ var nts;
                                     this.historyId = ko.observable('');
                                     this.startMonthRage = ko.observable('');
                                     this.endMonthRage = ko.observable('');
+                                    this.endMonth = ko.observable(0);
+                                    this.startMonth = ko.observable(0);
                                 }
                                 HistoryAccidentInsuranceRateModel.prototype.resetValue = function () {
                                     if (this.historyId != null && this.historyId != undefined) {
@@ -745,12 +768,26 @@ var nts;
                                     else {
                                         this.endMonthRage = ko.observable('9999/12');
                                     }
+                                    if (this.startMonth != null && this.startMonth != undefined) {
+                                        this.startMonth = ko.observable(0);
+                                    }
+                                    else {
+                                        this.startMonth(0);
+                                    }
+                                    if (this.endMonth != null && this.endMonth != undefined) {
+                                        this.endMonth = ko.observable(0);
+                                    }
+                                    else {
+                                        this.endMonth(0);
+                                    }
                                 };
-                                HistoryAccidentInsuranceRateModel.prototype.updateData = function (historyAccidentInsuranceRateDto) {
+                                HistoryAccidentInsuranceRateModel.prototype.updateData = function (historyDto) {
                                     this.resetValue();
-                                    this.historyId(historyAccidentInsuranceRateDto.historyId);
-                                    this.startMonthRage(historyAccidentInsuranceRateDto.startMonthRage);
-                                    this.endMonthRage(historyAccidentInsuranceRateDto.endMonthRage);
+                                    this.historyId(historyDto.historyId);
+                                    this.startMonth(historyDto.startMonth);
+                                    this.endMonth(historyDto.endMonth);
+                                    this.startMonthRage(nts.uk.time.formatYearMonth(historyDto.startMonth));
+                                    this.endMonthRage(nts.uk.time.formatYearMonth(historyDto.endMonth));
                                 };
                                 return HistoryAccidentInsuranceRateModel;
                             }());
@@ -823,8 +860,8 @@ var nts;
                                         this.version(version);
                                     }
                                 };
-                                AccidentInsuranceRateModel.prototype.setHistoryData = function (historyAccidentInsuranceRateDto) {
-                                    this.historyAccidentInsuranceRateModel.updateData(historyAccidentInsuranceRateDto);
+                                AccidentInsuranceRateModel.prototype.setHistoryData = function (historyDto) {
+                                    this.historyAccidentInsuranceRateModel.updateData(historyDto);
                                 };
                                 AccidentInsuranceRateModel.prototype.resetValue = function (rateInputOptions, selectionRoundingMethod) {
                                     if (this.accidentInsuranceRateBiz1StModel == null

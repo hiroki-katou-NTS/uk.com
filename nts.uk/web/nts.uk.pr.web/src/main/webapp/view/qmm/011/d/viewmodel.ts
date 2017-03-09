@@ -10,7 +10,7 @@ module nts.uk.pr.view.qmm011.d {
             enable: KnockoutObservable<boolean>;
             textEditorOption: KnockoutObservable<any>;
             historyId: KnockoutObservable<string>;
-            historyStart: KnockoutObservable<string>;
+            historyStart: KnockoutObservable<number>;
             historyTakeover: KnockoutObservable<boolean>;
             historyEnd: KnockoutObservable<string>;
             selectedId: KnockoutObservable<number>;
@@ -20,7 +20,7 @@ module nts.uk.pr.view.qmm011.d {
                 var self = this;
                 self.enable = ko.observable(true);
                 self.textEditorOption = ko.mapping.fromJS(new option.TextEditorOption());
-                self.historyStart = ko.observable('');
+                self.historyStart = ko.observable(0);
                 self.historyEnd = ko.observable('9999/12');
                 self.selectedId = ko.observable(1);
                 //get data fw => 
@@ -44,7 +44,8 @@ module nts.uk.pr.view.qmm011.d {
                 var addHistoryInfoModel: AddHistoryInfoModel;
                 addHistoryInfoModel = new AddHistoryInfoModel();
                 addHistoryInfoModel.typeModel = self.selectedId();
-                addHistoryInfoModel.historyStart = self.historyStart();
+                addHistoryInfoModel.historyStart = nts.uk.time.formatYearMonth(self.historyStart());
+                addHistoryInfoModel.starMonth = self.historyStart();
                 nts.uk.ui.windows.setShared("addHistoryInfoModel", addHistoryInfoModel);
                 nts.uk.ui.windows.close();
             }
@@ -65,6 +66,7 @@ module nts.uk.pr.view.qmm011.d {
         export class AddHistoryInfoModel {
             typeModel: number;// add new, add before
             historyStart: string;
+            starMonth: number;
         }
     }
 }

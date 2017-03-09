@@ -10,8 +10,8 @@ module nts.uk.pr.view.qmm011.f {
             enable: KnockoutObservable<boolean>;
             textEditorOption: KnockoutObservable<any>;
             historyId: KnockoutObservable<string>;
-            historyStart: KnockoutObservable<string>;
-            historyEnd: KnockoutObservable<string>;
+            historyStart: KnockoutObservable<number>;
+            historyEnd: KnockoutObservable<number>;
             typeHistory: KnockoutObservable<number>;
 
             constructor() {
@@ -104,8 +104,8 @@ module nts.uk.pr.view.qmm011.f {
         export class UpdateHistoryInfoModel {
             typeUpdate: number;//1 delete, 2 update
             historyId: string;
-            historyStart: string;
-            historyEnd: string;
+            historyStart: number;
+            historyEnd: number;
         }
 
     }

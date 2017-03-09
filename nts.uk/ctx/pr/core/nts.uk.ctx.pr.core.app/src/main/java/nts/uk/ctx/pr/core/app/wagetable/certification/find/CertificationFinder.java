@@ -36,7 +36,7 @@ public class CertificationFinder {
 		// get info login
 		LoginUserContext loginUserContext = AppContexts.user();
 		//call findAll None Group
-		List<Certification> lstCertification = find.findAllNoneOfGroup(new CompanyCode(loginUserContext.companyCode()));
+		List<Certification> lstCertification = find.findAllNoneOfGroup(loginUserContext.companyCode());
 		//to Dto
 		List<CertificationFindInDto> lstCertificationFindIn = new ArrayList<>();
 		for (Certification certification : lstCertification) {

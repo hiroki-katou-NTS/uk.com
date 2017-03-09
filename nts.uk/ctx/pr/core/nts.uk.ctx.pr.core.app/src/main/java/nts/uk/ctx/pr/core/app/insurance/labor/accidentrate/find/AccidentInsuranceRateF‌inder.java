@@ -9,7 +9,6 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.app.insurance.labor.accidentrate.find.dto.AccidentInsuranceRateFindOutDto;
 import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.AccidentInsuranceRate;
 import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.AccidentInsuranceRateRepository;
@@ -47,7 +46,7 @@ public class AccidentInsuranceRateF‌inder {
 		AccidentInsuranceRateFindOutDto accidentInsuranceRateFindOutDto;
 		accidentInsuranceRateFindOutDto = new AccidentInsuranceRateFindOutDto();
 		Optional<AccidentInsuranceRate> optionalAccidentInsuranceRate = accidentInsuranceRateRepository
-				.findById(new CompanyCode(companyCode), historyId);
+				.findById(companyCode, historyId);
 		if (optionalAccidentInsuranceRate.isPresent()) {
 			optionalAccidentInsuranceRate.get().saveToMemento(accidentInsuranceRateFindOutDto);
 		}

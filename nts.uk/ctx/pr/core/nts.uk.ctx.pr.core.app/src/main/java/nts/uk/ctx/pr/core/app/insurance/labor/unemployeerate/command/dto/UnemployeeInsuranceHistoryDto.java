@@ -7,20 +7,22 @@ package nts.uk.ctx.pr.core.app.insurance.labor.unemployeerate.command.dto;
 import lombok.Data;
 
 /**
- * The Class HistoryUnemployeeInsuranceDto.
+ * The Class UnemployeeInsuranceHistoryDto.
+ */
+
+/**
+ * Instantiates a new unemployee insurance history dto.
  */
 @Data
-public class HistoryUnemployeeInsuranceDto {
-	
+public class UnemployeeInsuranceHistoryDto {
+
 	/** The history id. */
 	private String historyId;
-	
-	/** The start month rage. */
-	private String startMonthRage;
-	
-	/** The end month rage. */
-	private String endMonthRage;
-	
-	/** The infor month rage. */
-	private String inforMonthRage;
+
+	/** The start month. */
+	private int startMonth;
+
+	/** The end month. */
+	private int endMonth;
+
 }

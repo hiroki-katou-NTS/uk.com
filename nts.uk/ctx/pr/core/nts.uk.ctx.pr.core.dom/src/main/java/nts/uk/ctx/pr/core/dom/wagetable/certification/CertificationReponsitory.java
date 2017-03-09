@@ -5,9 +5,7 @@
 package nts.uk.ctx.pr.core.dom.wagetable.certification;
 
 import java.util.List;
-import java.util.Set;
-
-import nts.uk.ctx.core.dom.company.CompanyCode;
+import java.util.Optional;
 
 /**
  * The Interface CertificationReponsitory.
@@ -20,7 +18,7 @@ public interface CertificationReponsitory {
 	 * @param companyCode the company code
 	 * @return the list
 	 */
-	List<Certification> findAll(CompanyCode companyCode);
+	List<Certification> findAll(String companyCode);
 
 	/**
 	 * Find all none of group.
@@ -28,15 +26,15 @@ public interface CertificationReponsitory {
 	 * @param companyCode the company code
 	 * @return the list
 	 */
-	List<Certification> findAllNoneOfGroup(CompanyCode companyCode);
+	List<Certification> findAllNoneOfGroup(String companyCode);
 
 	/**
-	 * Checks if is dulicate certification.
+	 * Find by id.
 	 *
 	 * @param companyCode the company code
-	 * @param lstCertification the lst certification
 	 * @param certifyGroupCode the certify group code
-	 * @return true, if is dulicate certification
+	 * @return the optional
 	 */
-	boolean isDulicateCertification (CompanyCode companyCode, Set<Certification> setCertification, CertifyGroupCode certifyGroupCode );
+	Optional<Certification> findById (String companyCode,String certificationcode,String certifyGroupCode);
+
 }

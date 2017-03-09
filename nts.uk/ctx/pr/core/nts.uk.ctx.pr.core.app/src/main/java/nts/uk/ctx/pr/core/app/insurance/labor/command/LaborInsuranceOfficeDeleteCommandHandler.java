@@ -10,7 +10,6 @@ import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.labor.LaborInsuranceOfficeRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
@@ -42,8 +41,7 @@ public class LaborInsuranceOfficeDeleteCommandHandler extends CommandHandler<Lab
 		// get command
 		LaborInsuranceOfficeDeleteCommand command = context.getCommand();
 		// call Repository remove
-		this.laborInsuranceOfficeRepo.remove(new CompanyCode(companyCode),
-				command.getLaborInsuranceOfficeDeleteDto().getCode(),
+		this.laborInsuranceOfficeRepo.remove(companyCode, command.getLaborInsuranceOfficeDeleteDto().getCode(),
 				command.getLaborInsuranceOfficeDeleteDto().getVersion());
 	}
 

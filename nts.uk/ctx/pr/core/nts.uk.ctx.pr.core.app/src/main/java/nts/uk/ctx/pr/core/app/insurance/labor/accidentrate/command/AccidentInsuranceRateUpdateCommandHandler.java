@@ -54,9 +54,9 @@ public class AccidentInsuranceRateUpdateCommandHandler extends CommandHandler<Ac
 		accidentInsuranceRate.validate();
 		// validate input
 		this.accidentInsuranceRateService.validateDateRangeUpdate(accidentInsuranceRate);
-		//get first by update
+		// get first by update
 		Optional<AccidentInsuranceRate> optionalUpdate = this.accidentInsuranceRateRepo.findBetweenUpdate(
-				accidentInsuranceRate.getCompanyCode(), accidentInsuranceRate.getApplyRange().getStartMonth(),
+				accidentInsuranceRate.getCompanyCode().v(), accidentInsuranceRate.getApplyRange().getStartMonth(),
 				accidentInsuranceRate.getHistoryId());
 		if (optionalUpdate.isPresent()) {
 			this.accidentInsuranceRateRepo.updateYearMonth(optionalUpdate.get(),

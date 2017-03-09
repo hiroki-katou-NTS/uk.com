@@ -39,8 +39,7 @@ public class CertifyGroupDeleteCommandHandler extends CommandHandler<CertifyGrou
 		// get command
 		CertifyGroupDeleteCommand command = context.getCommand();
 		// call server remove
-		this.certifyGroupRepository.remove(new CompanyCode(companyCode),
-				command.getCertifyGroupDeleteDto().getGroupCode(), 
+		this.certifyGroupRepository.remove(companyCode, command.getCertifyGroupDeleteDto().getGroupCode(),
 				command.getCertifyGroupDeleteDto().getVersion());
 	}
 

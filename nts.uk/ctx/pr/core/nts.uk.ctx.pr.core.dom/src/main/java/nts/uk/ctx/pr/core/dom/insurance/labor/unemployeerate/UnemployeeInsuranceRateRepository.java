@@ -9,7 +9,6 @@ import java.util.Optional;
 
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.core.dom.company.CompanyCode;
-import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 
 /**
  * The Interface UnemployeeInsuranceRateRepository.
@@ -36,7 +35,7 @@ public interface UnemployeeInsuranceRateRepository {
 	 * @param id the id
 	 * @param version the version
 	 */
-    void remove(CompanyCode companyCode, String historyId, Long version);
+    void remove(String companyCode, String historyId, Long version);
 
 	/**
 	 * Find all.
@@ -44,7 +43,7 @@ public interface UnemployeeInsuranceRateRepository {
 	 * @param companyCode the company code
 	 * @return the list
 	 */
-	List<UnemployeeInsuranceRate> findAll(CompanyCode companyCode);
+	List<UnemployeeInsuranceRate> findAll(String companyCode);
 
 	/**
 	 * Find by id.
@@ -52,7 +51,7 @@ public interface UnemployeeInsuranceRateRepository {
 	 * @param id the id
 	 * @return the unemployee insurance rate
 	 */
-	Optional<UnemployeeInsuranceRate> findById(CompanyCode companyCode,String historyId);
+	Optional<UnemployeeInsuranceRate> findById(String companyCode,String historyId);
 
 	/**
 	 * Find between update.
@@ -61,7 +60,7 @@ public interface UnemployeeInsuranceRateRepository {
 	 * @param yearMonth the year month
 	 * @return the optional
 	 */
-	Optional<UnemployeeInsuranceRate> findBetweenUpdate(CompanyCode companyCode, YearMonth yearMonth,String historyId);
+	Optional<UnemployeeInsuranceRate> findBetweenUpdate(String companyCode, YearMonth yearMonth,String historyId);
 
 	/**
 	 * Update to max year month.
@@ -69,13 +68,13 @@ public interface UnemployeeInsuranceRateRepository {
 	 * @param rate the rate
 	 */
 	void updateYearMonth(UnemployeeInsuranceRate rate,YearMonth yearMonth);
-	
+
 	/**
 	 * Find fisrt data.
 	 *
 	 * @param companyCode the company code
 	 * @return the optional
 	 */
-	Optional<UnemployeeInsuranceRate> findFirstData(CompanyCode companyCode);
+	Optional<UnemployeeInsuranceRate> findFirstData(String companyCode);
 
 }

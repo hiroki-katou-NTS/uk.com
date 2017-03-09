@@ -102,8 +102,10 @@ var nts;
                                     .done(function (res) {
                                     var unemployeeInsuranceRateDto;
                                     unemployeeInsuranceRateDto = new model.UnemployeeInsuranceRateDto();
-                                    unemployeeInsuranceRateDto.historyInsurance = new model.HistoryUnemployeeInsuranceDto();
-                                    unemployeeInsuranceRateDto.historyInsurance.setDataHistory(res.historyInsurance);
+                                    unemployeeInsuranceRateDto.historyInsurance = new model.HistoryInsuranceInDto();
+                                    unemployeeInsuranceRateDto.historyInsurance.historyId = res.historyInsurance.historyId;
+                                    unemployeeInsuranceRateDto.historyInsurance.startMonth = res.historyInsurance.startMonth;
+                                    unemployeeInsuranceRateDto.historyInsurance.endMonth = res.historyInsurance.endMonth;
                                     unemployeeInsuranceRateDto.rateItems = res.rateItems;
                                     unemployeeInsuranceRateDto.version = res.version;
                                     dfd.resolve(unemployeeInsuranceRateDto);
@@ -187,7 +189,9 @@ var nts;
                                     var accidentInsuranceRateDto;
                                     accidentInsuranceRateDto = new model.AccidentInsuranceRateDto();
                                     accidentInsuranceRateDto.historyInsurance = new model.HistoryAccidentInsuranceDto();
-                                    accidentInsuranceRateDto.historyInsurance.setDataHistory(res.historyInsurance);
+                                    accidentInsuranceRateDto.historyInsurance.historyId = res.historyInsurance.historyId;
+                                    accidentInsuranceRateDto.historyInsurance.endMonth = res.historyInsurance.endMonth;
+                                    accidentInsuranceRateDto.historyInsurance.startMonth = res.historyInsurance.startMonth;
                                     accidentInsuranceRateDto.rateItems = res.rateItems;
                                     accidentInsuranceRateDto.version = res.version;
                                     dfd.resolve(accidentInsuranceRateDto);
@@ -199,12 +203,12 @@ var nts;
                             }
                             service.findAccidentInsuranceRate = findAccidentInsuranceRate;
                             function convertHistoryUnemployeeInsuranceDto(historyUnemployeeInsuranceModel) {
-                                var historyUnemployeeInsuranceDto;
-                                historyUnemployeeInsuranceDto = new model.HistoryUnemployeeInsuranceDto();
-                                historyUnemployeeInsuranceDto.historyId = historyUnemployeeInsuranceModel.historyId();
-                                historyUnemployeeInsuranceDto.startMonthRage = historyUnemployeeInsuranceModel.startMonthRage();
-                                historyUnemployeeInsuranceDto.endMonthRage = historyUnemployeeInsuranceModel.endMonthRage();
-                                return historyUnemployeeInsuranceDto;
+                                var historyDto;
+                                historyDto = new model.HistoryInsuranceInDto();
+                                historyDto.historyId = historyUnemployeeInsuranceModel.historyId();
+                                historyDto.startMonth = historyUnemployeeInsuranceModel.startMonth();
+                                historyDto.endMonth = historyUnemployeeInsuranceModel.endMonth();
+                                return historyDto;
                             }
                             service.convertHistoryUnemployeeInsuranceDto = convertHistoryUnemployeeInsuranceDto;
                             function convertUnemployeeInsuranceRateItemSettingModelDTO(unemployeeInsuranceRateItemSettingModel) {
@@ -346,9 +350,11 @@ var nts;
                                     }
                                     HistoryInsuranceDto.prototype.setDataHistory = function (historyData) {
                                         this.historyId = historyData.historyId;
-                                        this.startMonthRage = nts.uk.time.formatYearMonth(historyData.startMonthRage);
-                                        this.endMonthRage = nts.uk.time.formatYearMonth(historyData.endMonthRage);
+                                        this.startMonthRage = nts.uk.time.formatYearMonth(historyData.startMonth);
+                                        this.endMonthRage = nts.uk.time.formatYearMonth(historyData.endMonth);
                                         this.inforMonthRage = this.startMonthRage + ' ~ ' + this.endMonthRage;
+                                        this.startMonth = historyData.startMonth;
+                                        this.endMonth = historyData.endMonth;
                                     };
                                     return HistoryInsuranceDto;
                                 }());
@@ -359,6 +365,12 @@ var nts;
                                     return HistoryInsuranceFindOutDto;
                                 }());
                                 model.HistoryInsuranceFindOutDto = HistoryInsuranceFindOutDto;
+                                var HistoryInsuranceInDto = (function () {
+                                    function HistoryInsuranceInDto() {
+                                    }
+                                    return HistoryInsuranceInDto;
+                                }());
+                                model.HistoryInsuranceInDto = HistoryInsuranceInDto;
                                 var HistoryUnemployeeInsuranceDto = (function (_super) {
                                     __extends(HistoryUnemployeeInsuranceDto, _super);
                                     function HistoryUnemployeeInsuranceDto() {

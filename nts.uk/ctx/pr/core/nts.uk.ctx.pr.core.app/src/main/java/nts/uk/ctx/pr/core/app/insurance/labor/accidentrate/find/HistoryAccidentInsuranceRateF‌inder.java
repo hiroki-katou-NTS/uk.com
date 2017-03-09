@@ -11,7 +11,6 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.app.insurance.labor.accidentrate.find.dto.HistoryAccidentInsuranceRateFindOutDto;
 import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.AccidentInsuranceRate;
 import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.AccidentInsuranceRateRepository;
@@ -42,7 +41,7 @@ public class HistoryAccidentInsuranceRateF‌inder {
 		String companyCode = loginUserContext.companyCode();
 		// call repository find
 		List<HistoryAccidentInsuranceRateFindOutDto> lstHistoryAccidentInsuranceRateFindOutDto = accidentInsuranceRateRepository
-				.findAll(new CompanyCode(companyCode)).stream().map(accidentInsuranceRate -> {
+				.findAll(companyCode).stream().map(accidentInsuranceRate -> {
 					HistoryAccidentInsuranceRateFindOutDto historyAccidentInsuranceRateFindOutDto;
 					historyAccidentInsuranceRateFindOutDto = new HistoryAccidentInsuranceRateFindOutDto();
 					accidentInsuranceRate.saveToMemento(historyAccidentInsuranceRateFindOutDto);
@@ -67,7 +66,7 @@ public class HistoryAccidentInsuranceRateF‌inder {
 		HistoryAccidentInsuranceRateFindOutDto historyAccidentInsuranceRateFindOutDto;
 		historyAccidentInsuranceRateFindOutDto = new HistoryAccidentInsuranceRateFindOutDto();
 		Optional<AccidentInsuranceRate> optionalAccidentInsuranceRate = accidentInsuranceRateRepository
-				.findById(new CompanyCode(AppContexts.user().companyCode()), historyId);
+				.findById(companyCode, historyId);
 		if (optionalAccidentInsuranceRate.isPresent()) {
 			optionalAccidentInsuranceRate.get().saveToMemento(historyAccidentInsuranceRateFindOutDto);
 		}
