@@ -55,10 +55,13 @@
 						</label></td>
 					</tr>
 					<tr>
-						<td><div data-bind="ntsFormLabel: { required: true }">期間</div></td>
+						<td></td>
 						<td>
-							<span id="startYearMonth" data-bind="ntsDatePicker: {value: startYearMonth, dateFormat: 'yyyy/MM'}"/>
-							<label data-bind="text: ' ~ '　+ endYearMonth"/>
+							<div>
+								<div data-bind="ntsFormLabel: { required: true }">期間</div>
+								<span id="startYearMonth" data-bind="ntsDatePicker: {value: startYearMonth, dateFormat: 'yyyy/MM'}"/>
+								<label data-bind="text: ' ~ '　+ endYearMonth"/>
+							</div>
 						</td>
 					</tr>
 				</table>
