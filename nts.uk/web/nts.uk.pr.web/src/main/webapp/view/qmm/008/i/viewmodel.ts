@@ -73,7 +73,7 @@ module nts.uk.pr.view.qmm008.i {
             private loadPensionAvgearn(): JQueryPromise<void> {
                 var self = this;
                 var dfd = $.Deferred<any>();
-                service.findPensionAvgearn('11').done(res => { //fixed id
+                service.findPensionAvgearn(self.pensionRateModel.historyId).done(res => {
                     res.forEach(item => {
                         self.listPensionAvgearnModel.push(new PensionAvgearnModel(
                             item.historyId,
@@ -168,7 +168,7 @@ module nts.uk.pr.view.qmm008.i {
                 var rate = levelMasterSetting.avgEarn / 1000;
 
                 return new PensionAvgearnModel(
-                    '11', // fake id.
+                    model.historyId, 
                     levelMasterSetting.code,
                     new PensionAvgearnValueModel(
                         rateItems.salaryCompanySonExemption() * rate,
