@@ -28,7 +28,7 @@
 						<td><label data-bind="text: master.code + ' ' + master.name"/></td>
 					</tr>
 					<tr>
-						<td><div data-bind="ntsFormLabel: { required: true }">編集方法の選択</div></td>
+						<td style="vertical-align: top"><div data-bind="ntsFormLabel: { required: true }">編集方法の選択</div></td>
 						<td>
 						<label class="ntsRadioBox">
 							<input type="radio"
@@ -58,7 +58,7 @@
 						<td></td>
 						<td>
 							<div>
-								<div data-bind="ntsFormLabel: { required: true }">期間</div>
+								<div style="margin-right: 20px;" data-bind="ntsFormLabel: { required: true }">期間</div>
 								<span id="startYearMonth" data-bind="ntsDatePicker: {value: startYearMonth, dateFormat: 'yyyy/MM'}"/>
 								<label data-bind="text: ' ~ '　+ endYearMonth"/>
 							</div>
