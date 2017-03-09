@@ -41,7 +41,8 @@ var nts;
                                 ScreenModel.prototype.showConfirm = function (laborInsuranceOfficeCheckImportDto, socialInsuranceOfficeImport) {
                                     var self = this;
                                     if (laborInsuranceOfficeCheckImportDto.code === "1") {
-                                        nts.uk.ui.dialog.confirm("Duplicate Code ! Do you replace All?").ifYes(function () {
+                                        nts.uk.ui.dialog.confirm("Duplicate Code ! Do you replace All?")
+                                            .ifYes(function () {
                                             self.importData(0, socialInsuranceOfficeImport);
                                         }).ifNo(function () {
                                             self.importData(1, socialInsuranceOfficeImport);

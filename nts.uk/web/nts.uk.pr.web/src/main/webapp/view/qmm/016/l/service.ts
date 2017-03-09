@@ -12,11 +12,12 @@ module nts.uk.pr.view.qmm016.l {
 
         //Function connection service FindAll Certification
         export function findAllCertification(): JQueryPromise<model.CertificationFindInDto[]> {
+            //set up data respone
             var dfd = $.Deferred<model.CertificationFindInDto[]>();
+            //call server service
             nts.uk.request.ajax(paths.findAllCertification)
                 .done(function(res: model.CertificationFindInDto[]) {
                     dfd.resolve(res);
-                    //xyz
                 })
                 .fail(function(res) {
                 })
@@ -25,11 +26,12 @@ module nts.uk.pr.view.qmm016.l {
         
         //Function connection service FindAll CertifyGroup
         export function findAllCertifyGroup(): JQueryPromise<model.CertifyGroupFindOutDto[]> {
+            //set up data respone
             var dfd = $.Deferred<model.CertifyGroupFindOutDto[]>();
+            //call service server
             nts.uk.request.ajax(paths.findAllCertifyGroup)
                 .done(function(res: model.CertifyGroupFindOutDto[]) {
                     dfd.resolve(res);
-                    //xyz
                 })
                 .fail(function(res) {
                     dfd.reject(res);
@@ -43,7 +45,6 @@ module nts.uk.pr.view.qmm016.l {
             nts.uk.request.ajax(paths.findCertifyGroup + "/" + code)
                 .done(function(res: model.CertifyGroupDto) {
                     dfd.resolve(res);
-                    //xyz
                 })
                 .fail(function(res) {
                     dfd.reject(res);
@@ -58,7 +59,6 @@ module nts.uk.pr.view.qmm016.l {
             nts.uk.request.ajax(paths.addCertifyGroup, data)
                 .done(function(res: any) {
                     dfd.resolve(res);
-                    //xyz
                 })
                 .fail(function(res) {
                     dfd.reject(res);
@@ -73,7 +73,6 @@ module nts.uk.pr.view.qmm016.l {
             nts.uk.request.ajax(paths.updateCertifyGroup, data)
                 .done(function(res: any) {
                     dfd.resolve(res);
-                    //xyz
                 })
                 .fail(function(res) {
                     dfd.reject(res);
@@ -88,7 +87,6 @@ module nts.uk.pr.view.qmm016.l {
             nts.uk.request.ajax(paths.deleteCertifyGroup, data)
                 .done(function(res: any) {
                     dfd.resolve(res);
-                    //xyz
                 })
                 .fail(function(res) {
                     dfd.reject(res);

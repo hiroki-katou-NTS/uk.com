@@ -15,6 +15,7 @@ import nts.uk.ctx.pr.core.app.wagetable.certification.find.dto.CertificationFind
 import nts.uk.ctx.pr.core.dom.wagetable.certification.Certification;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.CertificationReponsitory;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.context.LoginUserContext;
 
 /**
  * The Class CertificationFinder.
@@ -29,13 +30,16 @@ public class CertificationFinder {
 	/**
 	 * Find all.
 	 *
-	 * @param companyCode
-	 *            the company code
 	 * @return the list
 	 */
 	public List<CertificationFindInDto> findAll() {
+		// get info login
+		LoginUserContext loginUserContext = AppContexts.user();
+		//call findAll None Group
+		List<Certification> lstCertification = find.findAllNoneOfGroup(new CompanyCode(loginUserContext.companyCode()));
+		//to Dto
 		List<CertificationFindInDto> lstCertificationFindIn = new ArrayList<>();
-		for (Certification certification : find.findAll(new CompanyCode(AppContexts.user().companyCode()))) {
+		for (Certification certification : lstCertification) {
 			CertificationFindInDto certificationFindInDto = new CertificationFindInDto();
 			certification.saveToMemento(certificationFindInDto);
 			lstCertificationFindIn.add(certificationFindInDto);

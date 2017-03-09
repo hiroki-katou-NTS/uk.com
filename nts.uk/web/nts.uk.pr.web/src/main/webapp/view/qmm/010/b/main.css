@@ -12,14 +12,6 @@
 	color: red;
 }
 
-#A_BTN_005 {
-	margin-left: 200px;
-}
-
-#A_LBL_001 {
-	float: right;
-}
-
 #contents-left, #contents-right {
 	padding: 20px;
 	vertical-align: top !important;
@@ -56,22 +48,8 @@
 	width: 100%;
 }
 
-#A_INP_002 {
-	width: 100px;
-}
-
-#A_INP_003 {
-	width: 30%;
-	margin-left: 10px;
-}
-
 button.nts-switch-button {
 	min-width: 80px;
-}
-
-#SEL-002, #SEL-004 {
-	min-width: 0px !important;
-	max-width: 160px !important;
 }
 
 #search_001 {

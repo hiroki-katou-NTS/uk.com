@@ -230,6 +230,12 @@ var nts;
                                         return RoundingItemDto;
                                     }());
                                     finder.RoundingItemDto = RoundingItemDto;
+                                    var AddNewHistoryDto = (function () {
+                                        function AddNewHistoryDto() {
+                                        }
+                                        return AddNewHistoryDto;
+                                    }());
+                                    finder.AddNewHistoryDto = AddNewHistoryDto;
                                     var Enum = (function () {
                                         function Enum(code, name) {
                                             this.code = code;

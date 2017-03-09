@@ -51,7 +51,7 @@ public class AccidentInsuranceRateWs extends WebService {
 	public AccidentInsuranceRateFindOutDto find(@PathParam("historyId") String historyId) {
 		return this.find.find(historyId);
 	}
-
+ 
 	/**
 	 * Adds the.
 	 *

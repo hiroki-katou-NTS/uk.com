@@ -7,6 +7,7 @@ package nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate;
 import java.util.List;
 import java.util.Optional;
 
+import nts.arc.time.YearMonth;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 
@@ -54,21 +55,27 @@ public interface UnemployeeInsuranceRateRepository {
 	Optional<UnemployeeInsuranceRate> findById(CompanyCode companyCode,String historyId);
 
 	/**
-	 * Checks if is invalid date range.
-	 *
-	 * @param applyRange the apply range
-	 * @return true, if is invalid date range
-	 */
-	boolean isInvalidDateRange(CompanyCode companyCode,MonthRange monthRange);
-
-	/**
-	 * Checks if is invalid date range update.
+	 * Find between update.
 	 *
 	 * @param companyCode the company code
 	 * @param yearMonth the year month
-	 * @param historyId the history id
-	 * @return true, if is invalid date range update
+	 * @return the optional
 	 */
-	boolean isInvalidDateRangeUpdate(CompanyCode companyCode,MonthRange monthRange,String historyId);
+	Optional<UnemployeeInsuranceRate> findBetweenUpdate(CompanyCode companyCode, YearMonth yearMonth,String historyId);
+
+	/**
+	 * Update to max year month.
+	 *
+	 * @param rate the rate
+	 */
+	void updateYearMonth(UnemployeeInsuranceRate rate,YearMonth yearMonth);
+	
+	/**
+	 * Find fisrt data.
+	 *
+	 * @param companyCode the company code
+	 * @return the optional
+	 */
+	Optional<UnemployeeInsuranceRate> findFirstData(CompanyCode companyCode);
 
 }

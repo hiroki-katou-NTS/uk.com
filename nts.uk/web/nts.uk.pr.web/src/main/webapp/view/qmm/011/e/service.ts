@@ -6,13 +6,16 @@ module nts.uk.pr.view.qmm011.e {
             updateInsuranceBusinessType: "pr/insurance/labor/businesstype/update"
         };
         
-        export function updateInsuranceBusinessType(insuranceBusinessType: InsuranceBusinessTypeDto): JQueryPromise<any> {
-            var dfd = $.Deferred<any>();
+        //Function update 
+        export function updateInsuranceBusinessType(insuranceBusinessType: InsuranceBusinessTypeDto): JQueryPromise<void> {
+            //set up respone
+            var dfd = $.Deferred<void>();
+            //set up data request
             var data = { insuranceBusinessType: insuranceBusinessType };
+            //call service server
             nts.uk.request.ajax(paths.updateInsuranceBusinessType, data)
-                .done(function(res: any) {
+                .done(function(res: void) {
                     dfd.resolve(res);
-                    //xyz
                 })
                 .fail(function(res) {
                     dfd.reject(res);

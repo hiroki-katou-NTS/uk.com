@@ -20,12 +20,15 @@ import nts.uk.ctx.pr.core.app.wagetable.command.dto.RangeItemDto;
 import nts.uk.ctx.pr.core.app.wagetable.command.dto.RefModeDto;
 import nts.uk.ctx.pr.core.app.wagetable.command.dto.StepModeDto;
 import nts.uk.ctx.pr.core.app.wagetable.command.dto.WageTableDemensionDetailDto;
+import nts.uk.ctx.pr.core.app.wagetable.command.dto.WageTableHeadDto;
+import nts.uk.ctx.pr.core.app.wagetable.command.dto.WageTableHistoryDto;
 import nts.uk.ctx.pr.core.app.wagetable.command.dto.WageTableItemDto;
 import nts.uk.ctx.pr.core.dom.wagetable.DemensionNo;
 import nts.uk.ctx.pr.core.dom.wagetable.ElementType;
+import nts.uk.ctx.pr.core.dom.wagetable.WageTableCode;
 import nts.uk.ctx.pr.core.dom.wagetable.element.RefMode;
 import nts.uk.ctx.pr.core.dom.wagetable.element.StepMode;
-import nts.uk.ctx.pr.core.dom.wagetable.history.WageTableDemensionDetail;
+import nts.uk.ctx.pr.core.dom.wagetable.element.WageTableElement;
 import nts.uk.ctx.pr.core.dom.wagetable.history.WageTableHistory;
 import nts.uk.ctx.pr.core.dom.wagetable.history.WageTableItem;
 
@@ -47,11 +50,11 @@ public class WageTableHistoryAddCommandTest extends TestCase {
 		CompanyCode companyCode = new CompanyCode("0001");
 
 		CodeItemDto codeItemDto1 = new CodeItemDto();
-		codeItemDto1.setReferenceCode("referenceCode1");
+		codeItemDto1.setReferenceCode("refCode1");
 		codeItemDto1.setUuid("uuid1");
 
 		CodeItemDto codeItemDto2 = new CodeItemDto();
-		codeItemDto2.setReferenceCode("referenceCode2");
+		codeItemDto2.setReferenceCode("refCode2");
 		codeItemDto2.setUuid("uuid2");
 
 		List<CodeItemDto> codeItemDtos = Arrays.asList(codeItemDto1, codeItemDto2);
@@ -103,22 +106,24 @@ public class WageTableHistoryAddCommandTest extends TestCase {
 		List<WageTableItemDto> valueItems = Arrays.asList(wageTableItemDto);
 
 		command = new WageTableHistoryAddCommand();
-		command.setCode("001");
-		command.setStartMonth("2016/01");
-		command.setEndMonth("2016/07");
-		command.setDemensionDetails(demensionDetails);
-		command.setValueItems(valueItems);
+		WageTableHeadDto wageTableHeadDto = new WageTableHeadDto();
+
+		WageTableHistoryDto wageTableHistoryDto = new WageTableHistoryDto();
+		wageTableHistoryDto.setStartMonth("2016/01");
+		wageTableHistoryDto.setEndMonth("2016/07");
+		wageTableHistoryDto.setDemensionDetails(demensionDetails);
+		wageTableHistoryDto.setValueItems(valueItems);
 
 		// Execute
-		WageTableHistory wageTableHistory = command.toDomain(companyCode);
+		WageTableHistory wageTableHistory = command.getWageTableHistoryDto().toDomain(companyCode,
+				new WageTableCode(wageTableHeadDto.getCode()));
 
 		// Assert
 		assertEquals("001", wageTableHistory.getCode().v());
 		assertEquals(true, wageTableHistory.getApplyRange().getStartMonth().v() == 201601);
 		assertEquals(true, wageTableHistory.getApplyRange().getEndMonth().v() == 201607);
 
-		WageTableDemensionDetail wageTableDemensionDetail1 = wageTableHistory.getDemensionItems()
-				.get(0);
+		WageTableElement wageTableDemensionDetail1 = wageTableHistory.getDemensionItems().get(0);
 		assertEquals(DemensionNo.DEMENSION_1ST.value,
 				wageTableDemensionDetail1.getDemensionNo().value);
 
@@ -128,13 +133,12 @@ public class WageTableHistoryAddCommandTest extends TestCase {
 		// assertEquals("0001", elementMode1.getCompanyCode().v());
 		assertEquals(ElementType.MASTER_REF.value, elementMode1.getElementType().value);
 		assertEquals("tb01", elementMode1.getRefNo().v());
-		assertEquals("referenceCode1", elementMode1.getItems().get(0).getReferenceCode());
+		assertEquals("refCode1", elementMode1.getItems().get(0).getReferenceCode());
 		assertEquals("uuid1", elementMode1.getItems().get(0).getUuid());
-		assertEquals("referenceCode2", elementMode1.getItems().get(1).getReferenceCode());
+		assertEquals("refCode2", elementMode1.getItems().get(1).getReferenceCode());
 		assertEquals("uuid2", elementMode1.getItems().get(1).getUuid());
 
-		WageTableDemensionDetail wageTableDemensionDetail2 = wageTableHistory.getDemensionItems()
-				.get(1);
+		WageTableElement wageTableDemensionDetail2 = wageTableHistory.getDemensionItems().get(1);
 		assertEquals(DemensionNo.DEMENSION_2ND.value,
 				wageTableDemensionDetail2.getDemensionNo().value);
 

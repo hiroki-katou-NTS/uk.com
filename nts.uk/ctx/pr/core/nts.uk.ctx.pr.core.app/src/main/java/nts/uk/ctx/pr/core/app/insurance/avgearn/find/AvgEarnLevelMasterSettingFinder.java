@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.avgearn.AvgEarnLevelMasterSettingRepository;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -25,7 +26,10 @@ public class AvgEarnLevelMasterSettingFinder {
 	 * @return the list
 	 */
 	public List<AvgEarnLevelMasterSettingDto> findAll() {
-		String companyCode = AppContexts.user().companyCode();
+		// Get the current company code.
+		CompanyCode companyCode = new CompanyCode(AppContexts.user().companyCode());
+
+		// Get list AvgEarnLevelMasterSetting.
 		return repository.findAll(companyCode).stream().map(AvgEarnLevelMasterSettingDto::fromDomain)
 				.collect(Collectors.toList());
 	}

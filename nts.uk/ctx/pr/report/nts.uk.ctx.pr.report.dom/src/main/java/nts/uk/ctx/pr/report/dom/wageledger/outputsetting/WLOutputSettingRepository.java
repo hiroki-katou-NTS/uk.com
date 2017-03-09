@@ -5,6 +5,7 @@
 package nts.uk.ctx.pr.report.dom.wageledger.outputsetting;
 
 import nts.uk.ctx.pr.report.dom.company.CompanyCode;
+import nts.uk.ctx.pr.report.dom.wageledger.aggregate.WLItemSubject;
 
 /**
  * The Interface WLOutputSettingRepository.
@@ -49,4 +50,11 @@ public interface WLOutputSettingRepository {
 	 * @return true, if is exist
 	 */
 	boolean isExist(CompanyCode companyCode, WLOutputSettingCode code);
+	
+	/**
+	 * Removes the aggregate item used.
+	 *
+	 * @param itemSubject the item subject
+	 */
+	void removeAggregateItemUsed(WLItemSubject itemSubject);
 }

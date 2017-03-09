@@ -23,7 +23,7 @@ import nts.uk.shr.com.context.AppContexts;
 public class WageTableHistoryDeleteCommandHandler
 		extends CommandHandler<WageTableHistoryDeleteCommand> {
 
-	/** The wage table history repository. */
+	/** The wage table history repo. */
 	@Inject
 	private WageTableHistoryRepository wageTableHistoryRepo;
 

@@ -6,26 +6,31 @@ module nts.uk.pr.view.qmm010.b {
         };
 
         //Function connnection service check Duplicate Code By ImportData
-        export function checkDuplicateCodeByImportData(socialInsuranceOfficeImportDto: model.SocialInsuranceOfficeImportDto): JQueryPromise<model.LaborInsuranceOfficeCheckImportDto> {
+        export function checkDuplicateCodeByImportData(
+            socialInsuranceOfficeImportDto: model.SocialInsuranceOfficeImportDto)
+            : JQueryPromise<model.LaborInsuranceOfficeCheckImportDto> {
+            //set up data respone
             var dfd = $.Deferred<model.LaborInsuranceOfficeCheckImportDto>();
+            //call server service
             nts.uk.request.ajax(paths.checkDuplicateCodeByImportData, socialInsuranceOfficeImportDto)
                 .done(function(res: model.LaborInsuranceOfficeCheckImportDto) {
                     dfd.resolve(res);
-                    //xyz
                 })
                 .fail(function(res) {
                     dfd.reject(res);
                 })
             return dfd.promise();
         }
-        //Function 
 
-        export function importData(laborInsuranceOfficeImportDto: model.LaborInsuranceOfficeImportDto): JQueryPromise<model.LaborInsuranceOfficeImportOutDto> {
+        //Function import data
+        export function importData(laborInsuranceOfficeImportDto: model.LaborInsuranceOfficeImportDto)
+            : JQueryPromise<model.LaborInsuranceOfficeImportOutDto> {
+            //set up data respone
             var dfd = $.Deferred<model.LaborInsuranceOfficeImportOutDto>();
+            //call server service
             nts.uk.request.ajax(paths.importData, laborInsuranceOfficeImportDto)
                 .done(function(res: model.LaborInsuranceOfficeImportOutDto) {
                     dfd.resolve(res);
-                    //xyz
                 })
                 .fail(function(res) {
                     dfd.reject(res);

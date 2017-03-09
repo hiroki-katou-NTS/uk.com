@@ -4,8 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.infra.repository.insurance.social.pensionrate;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.core.dom.company.CompanyCode;
@@ -111,8 +111,8 @@ public class JpaPensionRateGetMemento implements PensionRateGetMemento {
 	 * #getFundRateItems()
 	 */
 	@Override
-	public List<FundRateItem> getFundRateItems() {
-		List<FundRateItem> fundRateItems = new ArrayList<FundRateItem>();
+	public Set<FundRateItem> getFundRateItems() {
+		Set<FundRateItem> fundRateItems = new HashSet<FundRateItem>();
 
 		PensionChargeRateItem salaryMaleBurden = new PensionChargeRateItem();
 		salaryMaleBurden.setCompanyRate(new Ins2Rate(this.typeValue.getCPayFundMaleRate()));
@@ -185,9 +185,9 @@ public class JpaPensionRateGetMemento implements PensionRateGetMemento {
 	 * #getPremiumRateItems()
 	 */
 	@Override
-	public List<PensionPremiumRateItem> getPremiumRateItems() {
+	public Set<PensionPremiumRateItem> getPremiumRateItems() {
 
-		List<PensionPremiumRateItem> pensionRates = new ArrayList<PensionPremiumRateItem>();
+		Set<PensionPremiumRateItem> pensionRates = new HashSet<PensionPremiumRateItem>();
 
 		PensionChargeRateItem salaryMaleCharge = new PensionChargeRateItem();
 		salaryMaleCharge.setCompanyRate(new Ins2Rate(this.typeValue.getCPayPensionMaleRate()));
@@ -255,8 +255,8 @@ public class JpaPensionRateGetMemento implements PensionRateGetMemento {
 	 * #getRoundingMethods()
 	 */
 	@Override
-	public List<PensionRateRounding> getRoundingMethods() {
-		List<PensionRateRounding> listRounding = new ArrayList<PensionRateRounding>();
+	public Set<PensionRateRounding> getRoundingMethods() {
+		Set<PensionRateRounding> listRounding = new HashSet<PensionRateRounding>();
 		RoundingItem salaryRoundingItem = new RoundingItem();
 		RoundingItem bonusRoundingItem = new RoundingItem();
 		salaryRoundingItem.setCompanyRoundAtr(RoundingMethod.valueOf(this.typeValue.getCPayPensionRoundAtr()));

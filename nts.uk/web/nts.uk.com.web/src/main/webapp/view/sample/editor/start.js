@@ -26,7 +26,10 @@ __viewContext.ready(function () {
                 })),
                 required: ko.observable(false),
                 enable: ko.observable(true),
-                readonly: ko.observable(false)
+                readonly: ko.observable(false),
+                clear: function () {
+                    $("#text-1").ntsError("clear");
+                }
             };
             // EmployeeCodeEditor
             self.employeeeditor = {
@@ -59,7 +62,9 @@ __viewContext.ready(function () {
                 value: ko.observable(12),
                 constraint: 'CommonAmount',
                 option: ko.mapping.fromJS(new nts.uk.ui.option.NumberEditorOption({
-                    grouplength: 3 })),
+                    grouplength: 3,
+                    textalign: 'left',
+                    width: "500" })),
                 required: ko.observable(false),
                 enable: ko.observable(true),
                 readonly: ko.observable(false)

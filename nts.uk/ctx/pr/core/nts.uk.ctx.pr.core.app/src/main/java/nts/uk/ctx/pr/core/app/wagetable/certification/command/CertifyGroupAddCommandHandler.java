@@ -39,15 +39,17 @@ public class CertifyGroupAddCommandHandler extends CommandHandler<CertifyGroupAd
 	@Override
 	@Transactional
 	protected void handle(CommandHandlerContext<CertifyGroupAddCommand> context) {
-
+		// get login user info companyCode
 		String companyCode = AppContexts.user().companyCode();
-
-		CertifyGroup certifyGroup = context.getCommand().toDomain(companyCode);
-
+		// get command
+		CertifyGroupAddCommand command = context.getCommand();
+		// to domain
+		CertifyGroup certifyGroup = command.toDomain(companyCode);
+		//validate check ....
 		certifyGroupService.validateRequiredItem(certifyGroup);
-
 		certifyGroupService.checkDuplicateCode(certifyGroup);
-
+		certifyGroupService.checkDulicateCertification(certifyGroup, null);
+		//add to server database
 		this.certifyGroupRepository.add(certifyGroup);
 	}
 

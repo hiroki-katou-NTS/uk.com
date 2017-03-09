@@ -11,8 +11,6 @@ import java.math.BigDecimal;
 import java.util.Arrays;
 import java.util.List;
 
-import org.dbunit.dataset.excel.XlsDataSet;
-import org.dbunit.operation.DatabaseOperation;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 
@@ -51,20 +49,20 @@ public class JpaWageTableHistoryRepositoryTest extends AbstractDbUnitTestCase {
 	@Test
 	public void add_001() throws Exception {
 
-//		// Get data set.
-//		XlsDataSet dataSet = this.getDataSet("001_in.xls");
-//
-//		// Db operation.
-//		DatabaseOperation.CLEAN_INSERT.execute(getJpaConnection(), dataSet);
+		// // Get data set.
+		// XlsDataSet dataSet = this.getDataSet("001_in.xls");
+		//
+		// // Db operation.
+		// DatabaseOperation.CLEAN_INSERT.execute(getJpaConnection(), dataSet);
 
 		CompanyCode companyCode = new CompanyCode("0001");
 
 		CodeItemDto codeItemDto1 = new CodeItemDto();
-		codeItemDto1.setReferenceCode("referenceCode1");
+		codeItemDto1.setReferenceCode("refCode1");
 		codeItemDto1.setUuid("uuid1");
 
 		CodeItemDto codeItemDto2 = new CodeItemDto();
-		codeItemDto2.setReferenceCode("referenceCode2");
+		codeItemDto2.setReferenceCode("refCode2");
 		codeItemDto2.setUuid("uuid2");
 
 		List<CodeItemDto> codeItemDtos = Arrays.asList(codeItemDto1, codeItemDto2);
@@ -82,7 +80,7 @@ public class JpaWageTableHistoryRepositoryTest extends AbstractDbUnitTestCase {
 		rangeItemDto1.setUuid("uuid3");
 
 		RangeItemDto rangeItemDto2 = new RangeItemDto();
-		rangeItemDto2.setOrderNumber(1);
+		rangeItemDto2.setOrderNumber(2);
 		rangeItemDto2.setStartVal(5d);
 		rangeItemDto2.setEndVal(10d);
 		rangeItemDto2.setUuid("uuid4");
@@ -126,10 +124,7 @@ public class JpaWageTableHistoryRepositoryTest extends AbstractDbUnitTestCase {
 		WageTableHistory wageTableHistory = command.toDomain(companyCode);
 
 		// Exec
-		this.executeTestWithTransaction(() -> {
-			repository.add(wageTableHistory);
-			return null;
-		});
+		repository.add(wageTableHistory);
 
 		// // Get updated.
 		// IDataSet updatedDataSet = getJpaConnection().createDataSet();

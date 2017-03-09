@@ -14,6 +14,7 @@ import nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroup;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroupRepository;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.service.CertifyGroupService;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.context.LoginUserContext;
 
 /**
  * The Class CertifyGroupUpdateCommandHandler.
@@ -39,9 +40,19 @@ public class CertifyGroupUpdateCommandHandler extends CommandHandler<CertifyGrou
 	@Override
 	@Transactional
 	protected void handle(CommandHandlerContext<CertifyGroupUpdateCommand> context) {
-		String companyCode = AppContexts.user().companyCode();
-		CertifyGroup certifyGroup = context.getCommand().toDomain(companyCode);
+		// get login user info
+		LoginUserContext loginUserContext = AppContexts.user();
+		// get companyCode by user
+		String companyCode = loginUserContext.companyCode();
+		// get command
+		CertifyGroupUpdateCommand command = context.getCommand();
+		//to domain by command
+		CertifyGroup certifyGroup = command.toDomain(companyCode);
+		//validate
 		certifyGroupService.validateRequiredItem(certifyGroup);
+		//check duplicate
+		certifyGroupService.checkDulicateCertification(certifyGroup, certifyGroup.getCode());
+		//update
 		this.certifyGroupRepository.update(certifyGroup);
 	}
 

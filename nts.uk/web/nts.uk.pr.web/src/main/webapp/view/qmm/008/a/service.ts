@@ -140,7 +140,7 @@ module nts.uk.pr.view.qmm008.a {
         /**
         * Function is used to save new Health insurance rate with office code and history id.
         */
-        export function registerHealthRate(data: model.finder.HealthInsuranceRateDto): JQueryPromise<model.finder.HealthInsuranceRateDto> {
+        export function registerHealthRate(data: model.finder.AddNewHistoryDto): JQueryPromise<model.finder.AddNewHistoryDto> {
             return nts.uk.request.ajax(servicePath.registerHealthRate, data);
         }
 
@@ -150,6 +150,7 @@ module nts.uk.pr.view.qmm008.a {
         export function updateHealthRate(data: model.finder.HealthInsuranceRateDto): JQueryPromise<model.finder.HealthInsuranceRateDto> {
             return nts.uk.request.ajax(servicePath.updateHealthRate, data);
         }
+        
         /**
         * Function is used to update new Health insurance rate with office code and history id.
         */
@@ -326,6 +327,12 @@ module nts.uk.pr.view.qmm008.a {
                         this.personalRoundAtr = personalRoundAtr;
                         this.companyRoundAtr = companyRoundAtr;
                     }
+                }
+                export class AddNewHistoryDto{
+                    officeCode: string;
+                    startMonth: string;
+                    endMonth: string;
+                    isCloneData: boolean;
                 }
                 export class Enum {
                     code: string;

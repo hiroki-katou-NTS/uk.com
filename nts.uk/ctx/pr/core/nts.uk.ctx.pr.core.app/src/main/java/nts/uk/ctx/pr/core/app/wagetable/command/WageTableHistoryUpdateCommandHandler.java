@@ -11,6 +11,9 @@ import javax.transaction.Transactional;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.core.dom.company.CompanyCode;
+import nts.uk.ctx.pr.core.dom.wagetable.WageTableCode;
+import nts.uk.ctx.pr.core.dom.wagetable.WageTableHead;
+import nts.uk.ctx.pr.core.dom.wagetable.WageTableHeadRepository;
 import nts.uk.ctx.pr.core.dom.wagetable.history.WageTableHistory;
 import nts.uk.ctx.pr.core.dom.wagetable.history.WageTableHistoryRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -21,6 +24,10 @@ import nts.uk.shr.com.context.AppContexts;
 @Stateless
 public class WageTableHistoryUpdateCommandHandler
 		extends CommandHandler<WageTableHistoryUpdateCommand> {
+
+	/** The wage table head repo. */
+	@Inject
+	private WageTableHeadRepository wageTableHeadRepo;
 
 	/** The wage table history repo. */
 	@Inject
@@ -41,9 +48,21 @@ public class WageTableHistoryUpdateCommandHandler
 
 		CompanyCode companyCode = new CompanyCode(AppContexts.user().companyCode());
 
-		WageTableHistory wageTableHistory = command.toDomain(companyCode);
+		boolean isExistHeader = this.wageTableHeadRepo.isExistCode(companyCode,
+				new WageTableCode(command.getWageTableHeadDto().getCode()));
 
-		this.wageTableHistoryRepo.update(wageTableHistory);
+		WageTableHead header = command.getWageTableHeadDto().toDomain(companyCode);
+
+		if (isExistHeader) {
+			this.wageTableHeadRepo.update(header);
+		} else {
+			this.wageTableHeadRepo.add(header);
+		}
+
+		WageTableHistory history = command.getWageTableHistoryDto().toDomain(companyCode,
+				header.getCode());
+
+		this.wageTableHistoryRepo.update(history);
 	}
 
 }

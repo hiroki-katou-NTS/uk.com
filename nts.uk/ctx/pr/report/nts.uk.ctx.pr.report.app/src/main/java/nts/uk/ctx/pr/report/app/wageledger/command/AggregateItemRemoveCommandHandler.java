@@ -12,6 +12,8 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.pr.report.dom.company.CompanyCode;
 import nts.uk.ctx.pr.report.dom.wageledger.aggregate.WLAggregateItemRepository;
+import nts.uk.ctx.pr.report.dom.wageledger.aggregate.WLItemSubject;
+import nts.uk.ctx.pr.report.dom.wageledger.outputsetting.WLOutputSettingRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -23,6 +25,10 @@ public class AggregateItemRemoveCommandHandler extends CommandHandler<AggregateI
 	/** The repository. */
 	@Inject
 	private WLAggregateItemRepository repository;
+	
+	/** The output setting repo. */
+	@Inject
+	private WLOutputSettingRepository outputSettingRepo;
 
 	/* (non-Javadoc)
 	 * @see nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command.CommandHandlerContext)
@@ -31,7 +37,13 @@ public class AggregateItemRemoveCommandHandler extends CommandHandler<AggregateI
 	@Transactional
 	protected void handle(CommandHandlerContext<AggregateItemRemoveCommand> context) {
 		CompanyCode companyCode = new CompanyCode(AppContexts.user().companyCode());
-		this.repository.remove(context.getCommand().getSubject().toDomain(companyCode.v()));
+		WLItemSubject itemSubject = context.getCommand().getSubject().toDomain(companyCode.v());
+		
+		// Remove aggregate item.
+		this.repository.remove(itemSubject);
+		
+		// Remove aggregate item used by output setting.
+		this.outputSettingRepo.removeAggregateItemUsed(itemSubject);
 	}
 
 }
