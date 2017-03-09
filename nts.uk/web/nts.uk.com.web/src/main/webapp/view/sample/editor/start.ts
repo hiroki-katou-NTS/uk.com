@@ -42,7 +42,7 @@ __viewContext.ready(function () {
                 enable: ko.observable(true),
                 readonly: ko.observable(false),
                 clear: function(){
-                    self.texteditor.value("");    
+                    $("#text-1").ntsError("clear");    
                 }
             };
             // EmployeeCodeEditor
