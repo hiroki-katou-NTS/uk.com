@@ -7,6 +7,8 @@ module qmm003.a.viewmodel {
         currentNode: KnockoutObservable<Node>;
         selectedCode: KnockoutObservable<string>;
         isEnable: KnockoutObservable<boolean>;
+        enableBTN007: KnockoutObservable<boolean>;
+        enableBTN009: KnockoutObservable<boolean>;
         isEditable: KnockoutObservable<boolean>;
         editMode: boolean = true; // true là mode thêm mới, false là mode sửa 
         filteredData: KnockoutObservableArray<Node> = ko.observableArray([]);
@@ -57,7 +59,6 @@ module qmm003.a.viewmodel {
                         node = obj;
                         $(document).ready(function(data) {
                             $("#A_INP_002").attr('disabled', 'true');
-                            $("#A_INP_002").attr('readonly', 'true');
                         });
                     }
                 }
@@ -125,6 +126,7 @@ module qmm003.a.viewmodel {
         resetData(): void {
             let self = this;
             self.editMode = false;
+            self.enableBTN007(true);
             self.currentNode(ko.mapping.fromJS(new Node('', '', [])));
             let node = new service.model.ResidentialTax();
             node.companyCode = '';
@@ -151,6 +153,9 @@ module qmm003.a.viewmodel {
             self.mode = ko.observable(null);
             self.currentNode = ko.observable(ko.mapping.fromJS(new Node('022012', '青森市', [])));
             self.isEnable = ko.observable(true);
+            //self.enableINP002 = ko.observable(null);
+            self.enableBTN007 = ko.observable(null);
+            self.enableBTN009 = ko.observable(null);
             self.isEditable = ko.observable(true);
             self.singleSelectedCode = ko.observable("");
             self.selectedCode = ko.observable("11");
@@ -246,7 +251,6 @@ module qmm003.a.viewmodel {
             (qmm003.a.service.getResidentialTax()).done(function(data: Array<qmm003.a.service.model.ResidentialTax>) {
                 if (data.length > 0) {
                     self.mode(true); // true, update mode 
-                    console.log(self.mode());
                     self.residentalTaxList(data);
                     (qmm003.a.service.getRegionPrefecture()).done(function(locationData: Array<service.model.RegionObject>) {
                         self.japanLocation = locationData;
@@ -257,27 +261,26 @@ module qmm003.a.viewmodel {
                         node = nts.uk.util.flatArray(self.nodeRegionPrefectures(), "childs");
                         self.filteredData(node);
                         self.items(self.nodeRegionPrefectures());
-                        if(currentSelectedCode === undefined){
+                        if (currentSelectedCode === undefined) {
                             self.singleSelectedCode(self.firstSelectedCode());
-                        }else{
+                        } else {
                             self.singleSelectedCode(currentSelectedCode);
                         }
+                        self.enableBTN007(false);
+                        self.enableBTN009(true);
                     });
 
 
                 } else {
                     self.resetData();
-                    $(document).ready(function(data) {
-                        $("#A_BTN_009").prop('disabled', 'false');
-                    });
                     (qmm003.a.service.getRegionPrefecture()).done(function(locationData: Array<service.model.RegionObject>) {
                         self.japanLocation = locationData;
                         self.buildPrefectureArray();
                         self.itemPrefecture(self.precfecture);
                     });
-
                     self.mode(false)// false, new mode
-
+                    self.enableBTN007(true);
+                    self.enableBTN009(false);
                     console.log(self.mode());
                 }
 
@@ -346,11 +349,7 @@ module qmm003.a.viewmodel {
                     self.items([]);
                     self.nodeRegionPrefectures([]);
                     self.start(objResi.resiTaxCode);
-                    $(document).ready(function(data) {
-                        $("#A_BTN_009").removeAttr('disabled');
-                        $("#A_BTN_009").prop('disabled', 'false');
-                    });
-                   // self.singleSelectedCode(objResi.resiTaxCode);
+                    // self.singleSelectedCode(objResi.resiTaxCode);
 
                 });
             } else {
@@ -358,7 +357,7 @@ module qmm003.a.viewmodel {
                     self.items([]);
                     self.nodeRegionPrefectures([]);
                     self.start(objResi.resiTaxCode);
-                   // self.singleSelectedCode(objResi.resiTaxCode);
+                    // self.singleSelectedCode(objResi.resiTaxCode);
                 });
             }
 

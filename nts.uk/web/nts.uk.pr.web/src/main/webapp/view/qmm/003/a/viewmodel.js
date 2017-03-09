@@ -49,7 +49,6 @@ var qmm003;
                                 node = obj;
                                 $(document).ready(function (data) {
                                     $("#A_INP_002").attr('disabled', 'true');
-                                    $("#A_INP_002").attr('readonly', 'true');
                                 });
                             }
                         }
@@ -113,6 +112,7 @@ var qmm003;
                 ScreenModel.prototype.resetData = function () {
                     var self = this;
                     self.editMode = false;
+                    self.enableBTN007(true);
                     self.currentNode(ko.mapping.fromJS(new Node('', '', [])));
                     var node = new a.service.model.ResidentialTax();
                     node.companyCode = '';
@@ -139,6 +139,9 @@ var qmm003;
                     self.mode = ko.observable(null);
                     self.currentNode = ko.observable(ko.mapping.fromJS(new Node('022012', '青森市', [])));
                     self.isEnable = ko.observable(true);
+                    //self.enableINP002 = ko.observable(null);
+                    self.enableBTN007 = ko.observable(null);
+                    self.enableBTN009 = ko.observable(null);
                     self.isEditable = ko.observable(true);
                     self.singleSelectedCode = ko.observable("");
                     self.selectedCode = ko.observable("11");
@@ -225,7 +228,6 @@ var qmm003;
                     (qmm003.a.service.getResidentialTax()).done(function (data) {
                         if (data.length > 0) {
                             self.mode(true); // true, update mode 
-                            console.log(self.mode());
                             self.residentalTaxList(data);
                             (qmm003.a.service.getRegionPrefecture()).done(function (locationData) {
                                 self.japanLocation = locationData;
@@ -242,19 +244,20 @@ var qmm003;
                                 else {
                                     self.singleSelectedCode(currentSelectedCode);
                                 }
+                                self.enableBTN007(false);
+                                self.enableBTN009(true);
                             });
                         }
                         else {
                             self.resetData();
-                            $(document).ready(function (data) {
-                                $("#A_BTN_009").prop('disabled', 'false');
-                            });
                             (qmm003.a.service.getRegionPrefecture()).done(function (locationData) {
                                 self.japanLocation = locationData;
                                 self.buildPrefectureArray();
                                 self.itemPrefecture(self.precfecture);
                             });
                             self.mode(false); // false, new mode
+                            self.enableBTN007(true);
+                            self.enableBTN009(false);
                             console.log(self.mode());
                         }
                         dfd.resolve();
@@ -316,10 +319,6 @@ var qmm003;
                             self.items([]);
                             self.nodeRegionPrefectures([]);
                             self.start(objResi.resiTaxCode);
-                            $(document).ready(function (data) {
-                                $("#A_BTN_009").removeAttr('disabled');
-                                $("#A_BTN_009").prop('disabled', 'false');
-                            });
                             // self.singleSelectedCode(objResi.resiTaxCode);
                         });
                     }
