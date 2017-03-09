@@ -22,13 +22,16 @@ import nts.uk.ctx.pr.core.dom.wagetable.element.RangeItem;
 import nts.uk.ctx.pr.core.dom.wagetable.element.RefMode;
 import nts.uk.ctx.pr.core.dom.wagetable.element.StepMode;
 import nts.uk.ctx.pr.core.dom.wagetable.history.WageTableDetailGetMemento;
+import nts.uk.ctx.pr.core.dom.wagetable.history.WageTableDetailSetMemento;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class WageTableDemensionDetailDto.
  */
 @Setter
 @Getter
-public class WageTableDemensionDetailDto implements WageTableDetailGetMemento {
+public class WageTableDemensionDetailDto
+		implements WageTableDetailGetMemento, WageTableDetailSetMemento {
 
 	/** The demension no. */
 	private Integer demensionNo;
@@ -56,7 +59,7 @@ public class WageTableDemensionDetailDto implements WageTableDetailGetMemento {
 	@Override
 	public ElementMode getElementModeSetting() {
 		// TODO: get from???
-		CompanyCode companyCode = null;
+		String companyCode = AppContexts.user().companyCode();
 
 		if (elementModeSetting instanceof RefModeDto) {
 			RefModeDto refModeDto = (RefModeDto) this.elementModeSetting;
@@ -65,8 +68,9 @@ public class WageTableDemensionDetailDto implements WageTableDetailGetMemento {
 					.map(item -> new CodeItem(item.getReferenceCode(), item.getUuid()))
 					.collect(Collectors.toList());
 
-			return new RefMode(ElementType.valueOf(refModeDto.getType()), companyCode,
-					new WtElementRefNo(refModeDto.getRefNo()), codeItems);
+			return new RefMode(ElementType.valueOf(refModeDto.getType()),
+					new CompanyCode(companyCode), new WtElementRefNo(refModeDto.getRefNo()),
+					codeItems);
 		}
 
 		if (elementModeSetting instanceof StepModeDto) {
@@ -104,5 +108,64 @@ public class WageTableDemensionDetailDto implements WageTableDetailGetMemento {
 		}
 
 		return null;
+	}
+
+	@Override
+	public void setDemensionNo(DemensionNo demensionNo) {
+		this.demensionNo = demensionNo.value;
+	}
+
+	@Override
+	public void setElementModeSetting(ElementMode elementModeSetting) {
+
+		switch (elementModeSetting.getElementType()) {
+		case LEVEL: {
+			LevelMode levelMode = ((LevelMode) elementModeSetting);
+			List<CodeItemDto> items = levelMode.getItems()
+					.stream().map(item -> CodeItemDto.builder()
+							.referenceCode(item.getReferenceCode()).uuid(item.getUuid()).build())
+					.collect(Collectors.toList());
+			this.elementModeSetting = LevelModeDto.builder().items(items).build();
+			break;
+		}
+
+		case CERTIFICATION: {
+			CertifyMode certifyMode = ((CertifyMode) elementModeSetting);
+			List<CodeItemDto> items = certifyMode.getItems()
+					.stream().map(item -> CodeItemDto.builder()
+							.referenceCode(item.getReferenceCode()).uuid(item.getUuid()).build())
+					.collect(Collectors.toList());
+			this.elementModeSetting = CertifyModeDto.builder().items(items).build();
+			break;
+		}
+
+		default:
+			// Do nothing
+			break;
+		}
+
+		if (elementModeSetting.getElementType().isCodeMode) {
+			RefMode refMode = ((RefMode) elementModeSetting);
+			List<CodeItemDto> items = refMode.getItems()
+					.stream().map(item -> CodeItemDto.builder()
+							.referenceCode(item.getReferenceCode()).uuid(item.getUuid()).build())
+					.collect(Collectors.toList());
+			this.elementModeSetting = RefModeDto.builder().items(items).build();
+			return;
+		}
+
+		if (elementModeSetting.getElementType().isRangeMode) {
+			StepMode stepMode = ((StepMode) elementModeSetting);
+			List<RangeItemDto> items = stepMode.getItems().stream()
+					.map(item -> RangeItemDto.builder().orderNumber(item.getOrderNumber())
+							.startVal(item.getStartVal()).endVal(item.getEndVal())
+							.uuid(item.getUuid()).build())
+					.collect(Collectors.toList());
+			this.elementModeSetting = StepModeDto.builder()
+					.lowerLimit(stepMode.getLowerLimit().doubleValue())
+					.upperLimit(stepMode.getUpperLimit().doubleValue())
+					.interval(stepMode.getInterval().doubleValue()).items(items).build();
+		}
+
 	}
 }

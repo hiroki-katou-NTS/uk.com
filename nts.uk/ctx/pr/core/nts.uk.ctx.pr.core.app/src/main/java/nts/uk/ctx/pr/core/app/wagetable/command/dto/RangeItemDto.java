@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.app.wagetable.command.dto;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,6 +13,7 @@ import lombok.Setter;
  */
 @Getter
 @Setter
+@Builder
 public class RangeItemDto implements BaseItemDto {
 
 	/** The order number. */

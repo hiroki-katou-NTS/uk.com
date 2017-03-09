@@ -17,8 +17,6 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.core.dom.company.CompanyCode;
-import nts.uk.ctx.pr.core.dom.wagetable.WageTableCode;
 import nts.uk.ctx.pr.core.dom.wagetable.WageTableHead;
 import nts.uk.ctx.pr.core.dom.wagetable.WageTableHeadRepository;
 import nts.uk.ctx.pr.core.infra.entity.wagetable.QwtmtWagetableHead;
@@ -65,13 +63,12 @@ public class JpaWageTableHeadRepository extends JpaRepository implements WageTab
 	 * 
 	 * @see
 	 * nts.uk.ctx.pr.core.dom.wagetable.WageTableHeadRepository#remove(nts.uk.
-	 * ctx.core.dom.company.CompanyCode,
-	 * nts.uk.ctx.pr.core.dom.wagetable.WageTableCode)
+	 * ctx.core.dom.company.String, nts.uk.ctx.pr.core.dom.wagetable.String)
 	 */
 	@Override
-	public void remove(CompanyCode companyCode, WageTableCode wageTableCode) {
+	public void remove(String companyCode, String wageTableCode) {
 		this.commandProxy().remove(QwtmtWagetableHead.class,
-				new QwtmtWagetableHeadPK(companyCode.v(), wageTableCode.v()));
+				new QwtmtWagetableHeadPK(companyCode, wageTableCode));
 	}
 
 	/*
@@ -79,10 +76,10 @@ public class JpaWageTableHeadRepository extends JpaRepository implements WageTab
 	 * 
 	 * @see
 	 * nts.uk.ctx.pr.core.dom.wagetable.WageTableHeadRepository#findAll(nts.uk.
-	 * ctx.core.dom.company.CompanyCode)
+	 * ctx.core.dom.company.String)
 	 */
 	@Override
-	public List<WageTableHead> findAll(CompanyCode companyCode) {
+	public List<WageTableHead> findAll(String companyCode) {
 		// Get entity manager
 		EntityManager em = this.getEntityManager();
 
@@ -97,7 +94,7 @@ public class JpaWageTableHeadRepository extends JpaRepository implements WageTab
 		// Construct condition.
 		predicateList.add(cb.equal(
 				root.get(QwtmtWagetableHead_.qwtmtWagetableHeadPK).get(QwtmtWagetableHeadPK_.ccd),
-				companyCode.v()));
+				companyCode));
 
 		cq.where(predicateList.toArray(new Predicate[] {}));
 
@@ -111,10 +108,10 @@ public class JpaWageTableHeadRepository extends JpaRepository implements WageTab
 	 * 
 	 * @see
 	 * nts.uk.ctx.pr.core.dom.wagetable.WageTableHeadRepository#findById(nts.uk.
-	 * ctx.core.dom.company.CompanyCode, java.lang.String)
+	 * ctx.core.dom.company.String, java.lang.String)
 	 */
 	@Override
-	public Optional<WageTableHead> findByCode(CompanyCode companyCode, WageTableCode code) {
+	public Optional<WageTableHead> findByCode(String companyCode, String code) {
 		// Get entity manager
 		EntityManager em = this.getEntityManager();
 
@@ -129,7 +126,7 @@ public class JpaWageTableHeadRepository extends JpaRepository implements WageTab
 		// Construct condition.
 		predicateList.add(cb.equal(
 				root.get(QwtmtWagetableHead_.qwtmtWagetableHeadPK).get(QwtmtWagetableHeadPK_.ccd),
-				companyCode.v()));
+				companyCode));
 		predicateList.add(cb.equal(root.get(QwtmtWagetableHead_.qwtmtWagetableHeadPK)
 				.get(QwtmtWagetableHeadPK_.wageTableCd), code));
 
@@ -145,11 +142,11 @@ public class JpaWageTableHeadRepository extends JpaRepository implements WageTab
 	 * 
 	 * @see
 	 * nts.uk.ctx.pr.core.dom.wagetable.WageTableHeadRepository#isDuplicateCode(
-	 * nts.uk.ctx.core.dom.company.CompanyCode,
-	 * nts.uk.ctx.pr.core.dom.wagetable.WageTableCode)
+	 * nts.uk.ctx.core.dom.company.String,
+	 * nts.uk.ctx.pr.core.dom.wagetable.String)
 	 */
 	@Override
-	public boolean isExistCode(CompanyCode companyCode, WageTableCode code) {
+	public boolean isExistCode(String companyCode, String code) {
 		// Get entity manager
 		EntityManager em = getEntityManager();
 
@@ -165,7 +162,7 @@ public class JpaWageTableHeadRepository extends JpaRepository implements WageTab
 		// Construct condition.
 		predicateList.add(cb.equal(
 				root.get(QwtmtWagetableHead_.qwtmtWagetableHeadPK).get(QwtmtWagetableHeadPK_.ccd),
-				companyCode.v()));
+				companyCode));
 		predicateList.add(cb.equal(root.get(QwtmtWagetableHead_.qwtmtWagetableHeadPK)
 				.get(QwtmtWagetableHeadPK_.wageTableCd), code));
 

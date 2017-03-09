@@ -2,23 +2,25 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.pr.core.app.wagetable.command.dto;
+package nts.uk.ctx.pr.core.app.wagetable.find.dto;
 
 import java.util.List;
 
 import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
 
 /**
- * The Class LevelMode.
+ * The Class WageTableItemDto.
  */
-@Getter
-@Setter
 @Builder
-public class LevelModeDto extends BaseModeDto {
+public class WageTableItemDto {
 
-	/** The items. */
-	private List<CodeItemDto> items;
+	/** The wage table code. */
+	public String wageTableCode;
+
+	/** The wage table name. */
+	public String wageTableName;
+
+	/** The histories. */
+	public List<WageTableHistoryItemDto> histories;
 
 }

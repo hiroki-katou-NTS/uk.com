@@ -13,7 +13,6 @@ import nts.gul.text.StringUtil;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.base.simplehistory.SimpleHistoryRepository;
 import nts.uk.ctx.pr.core.dom.wagetable.WageTableCode;
-import nts.uk.ctx.pr.core.dom.wagetable.WageTableHead;
 import nts.uk.ctx.pr.core.dom.wagetable.WageTableHeadRepository;
 import nts.uk.ctx.pr.core.dom.wagetable.history.WageTableHistory;
 import nts.uk.ctx.pr.core.dom.wagetable.history.WageTableHistoryRepository;
@@ -85,7 +84,7 @@ public class WageTableHistoryServiceImpl extends WageTableHistoryService {
 	 * getRepository()
 	 */
 	@Override
-	public SimpleHistoryRepository<WageTableHead, WageTableHistory> getRepository() {
+	public SimpleHistoryRepository<WageTableHistory> getRepository() {
 		return this.wageTableHistoryRepo;
 	}
 

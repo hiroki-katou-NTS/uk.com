@@ -21,9 +21,6 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.ListUtil;
 import nts.uk.ctx.pr.core.dom.wagetable.history.WageTableHistory;
 import nts.uk.ctx.pr.core.dom.wagetable.history.WageTableHistoryRepository;
-import nts.uk.ctx.pr.core.infra.entity.rule.employment.unitprice.QupmtCUnitpriceDetail;
-import nts.uk.ctx.pr.core.infra.entity.rule.employment.unitprice.QupmtCUnitpriceDetailPK_;
-import nts.uk.ctx.pr.core.infra.entity.rule.employment.unitprice.QupmtCUnitpriceDetail_;
 import nts.uk.ctx.pr.core.infra.entity.wagetable.history.QwtmtWagetableHist;
 import nts.uk.ctx.pr.core.infra.entity.wagetable.history.QwtmtWagetableHistPK_;
 import nts.uk.ctx.pr.core.infra.entity.wagetable.history.QwtmtWagetableHist_;
@@ -229,21 +226,50 @@ public class JpaWageTableHistoryRepository extends JpaRepository
 		// Create query condition.
 		CriteriaBuilder cb = em.getCriteriaBuilder();
 		CriteriaQuery<Long> cq = cb.createQuery(Long.class);
-		Root<QupmtCUnitpriceDetail> root = cq.from(QupmtCUnitpriceDetail.class);
+		Root<QwtmtWagetableHist> root = cq.from(QwtmtWagetableHist.class);
 		// Constructing list of parameters
 		List<Predicate> predicateList = new ArrayList<Predicate>();
 
 		// Construct condition.
-		predicateList.add(cb.equal(root.get(QupmtCUnitpriceDetail_.qupmtCUnitpriceDetailPK)
-				.get(QupmtCUnitpriceDetailPK_.ccd), companyCode));
-		predicateList.add(cb.equal(root.get(QupmtCUnitpriceDetail_.qupmtCUnitpriceDetailPK)
-				.get(QupmtCUnitpriceDetailPK_.cUnitpriceCd), wageTableCode));
-		predicateList.add(cb.ge(root.get(QupmtCUnitpriceDetail_.strYm), startMonth));
+		predicateList.add(cb.equal(
+				root.get(QwtmtWagetableHist_.qwtmtWagetableHistPK).get(QwtmtWagetableHistPK_.ccd),
+				companyCode));
+		predicateList.add(cb.equal(root.get(QwtmtWagetableHist_.qwtmtWagetableHistPK)
+				.get(QwtmtWagetableHistPK_.wageTableCd), wageTableCode));
+		predicateList.add(cb.ge(root.get(QwtmtWagetableHist_.strYm), startMonth));
 
 		cq.select(cb.count(root));
 		cq.where(predicateList.toArray(new Predicate[] {}));
 
 		return !(em.createQuery(cq).getSingleResult().longValue() > 0L);
+	}
+
+	@Override
+	public List<WageTableHistory> findAllHistoryByMasterCode(String companyCode,
+			String masterCode) {
+		// Get entity manager
+		EntityManager em = this.getEntityManager();
+
+		// Query for indicated stress check.
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<QwtmtWagetableHist> cq = cb.createQuery(QwtmtWagetableHist.class);
+		Root<QwtmtWagetableHist> root = cq.from(QwtmtWagetableHist.class);
+		// Constructing list of parameters
+		List<Predicate> predicateList = new ArrayList<Predicate>();
+
+		// Construct condition.
+		predicateList.add(cb.equal(
+				root.get(QwtmtWagetableHist_.qwtmtWagetableHistPK).get(QwtmtWagetableHistPK_.ccd),
+				companyCode));
+		predicateList.add(cb.equal(root.get(QwtmtWagetableHist_.qwtmtWagetableHistPK)
+				.get(QwtmtWagetableHistPK_.wageTableCd), masterCode));
+
+		cq.orderBy(cb.desc(root.get(QwtmtWagetableHist_.strYm)));
+		cq.where(predicateList.toArray(new Predicate[] {}));
+
+		return em.createQuery(cq).getResultList().stream()
+				.map(item -> new WageTableHistory(new JpaWageTableHistoryGetMemento(item)))
+				.collect(Collectors.toList());
 	}
 
 }
