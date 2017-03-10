@@ -12,6 +12,8 @@
 #contents-area {
 	padding-left: 20px;
 	margin-top: 15px;
+	height: 600px;
+	display: inline-flex;
 }
 
 .caret-background.caret-right:after {
@@ -20,7 +22,7 @@
 }
 
 #C_BTN_003 {
-	margin-left: 150px !important;
+	margin-left: 140px !important;
 }
 
 #C_BTN_004 {
@@ -28,17 +30,17 @@
 }
 
 .nts-left-content {
-	float: left;
 	width: 280px;
-	height: 500px;
 	padding: 15px !important;
-	clear: both;
+	float: left;
+	height: 500px;
+
 }
 
-.nts-right-content {
-	float: left;
+.nts-right-content {	
 	padding: 0px 15px;
 	width: 975px;
+	float: left;
 }
 
 .C_INP_23 {
@@ -64,8 +66,10 @@
 	float: left;
 }
 
-#D_LST_001-grid1_container, #D_LST_001-grid2_container,#E_LST_001-grid1_container, #E_LST_001-grid2_container,
-#F_LST_001-grid1_container, #F_LST_001-grid2_container {
+#D_LST_001-grid1_container, #D_LST_001-grid2_container,
+	#E_LST_001-grid1_container, #E_LST_001-grid2_container,
+	#F_LST_001-grid1_container, #F_LST_001-grid2_container,
+	#C_LST_002_container {
 	border: 1px solid gray !important;
 }
 
@@ -99,6 +103,7 @@
 .div-right-bottom-right {
 	width: 700px;
 	float: left;
+	height: auto;
 }
 
 .div-right-bottom-right>swapUpDown {

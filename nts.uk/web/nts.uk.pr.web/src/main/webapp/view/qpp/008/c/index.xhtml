@@ -41,7 +41,7 @@
 					<table id="C_LST_001"
 						data-bind="ntsGridList: {
 											width:'100%',
-											height: 320,
+											height: 430,
 											options: items,
 											optionsValue: 'code',
 											columns: columns,
@@ -53,7 +53,7 @@
 				</div>
 				<div class="nts-right-content">
 					<div class="divRightTop valign-center control-group">
-						<div id="C_LBL_001" data-bind="ntsFormLabel: {required: true }">レイアウトコード</div>
+						<div id="C_LBL_001" data-bind="ntsFormLabel: {required: true }">コード/名称</div>
 						<div class="C_INP_23" data-bind="with: currentItem">
 							<input id="C_INP_002"
 								data-bind="ntsTextEditor: {value: code, enable: $root.content.cInp002Code}" />
@@ -90,13 +90,13 @@
 										</div>
 										<div id="swap-up-down"
 											data-bind="ntsUpDown: {
-													targetSource: currentCodeListSwap2,
+													targetSource: currentCodeListSwap,
 													primaryKey: 'code',
 													comId: '#D_LST_001',
 													type: 'swap',
 													swapTarget: 'right'
-												}" class="swapUpDown">
-										</div>
+												}"
+											class="swapUpDown"></div>
 
 									</div>
 									<div class="tab-content-2">
@@ -114,10 +114,10 @@
 												data-bind="ntsSwapList: {
 												showSearchBox: { showLeft : true, showRight: false},
 												height: 350,
-												dataSource: itemsSwap,
+												dataSource: itemsSwap2,
 												primaryKey: 'code',
-												columns: columnsSwap,
-												value: currentCodeListSwap}">
+												columns: columnsSwap2,
+												value: currentCodeListSwap2}">
 											</div>
 										</div>
 										<div id="swap-up-down"
@@ -145,15 +145,15 @@
 												data-bind="ntsSwapList: {
 												showSearchBox: { showLeft : true, showRight: false},
 												height: 350,
-												dataSource: itemsSwap,
+												dataSource: itemsSwap3,
 												primaryKey: 'code',
-												columns: columnsSwap,
-												value: currentCodeListSwap}">
+												columns: columnsSwap3,
+												value: currentCodeListSwap3}">
 											</div>
 										</div>
 										<div id="swap-up-down"
 											data-bind="ntsUpDown: {
-													targetSource: currentCodeListSwap2,
+													targetSource: currentCodeListSwap3,
 													primaryKey: 'code',
 													comId: '#F_LST_001',
 													type: 'swap',
@@ -166,23 +166,22 @@
 						</div>
 						<div class="div-right-bottom-left">
 							<div class="control-group valign-center">
-								<div id="C_LBL_002" data-bind="ntsFormLabel: { required: true }">レイアウトコード</div>
+								<div id="C_LBL_002" data-bind="ntsFormLabel: { required: false }">帳票出力項目の一覧</div>
 								<button id="helpButton" class="small">?</button>
-							</div>
+							</div>							
 							<table id="C_LST_002"
 								data-bind="ntsGridList: {
-																	width: 200,
-																	height: 300,
-																	options: items2,
-																	optionsValue: 'code',
-																	columns: columns,
-																	multiple: false,
-																	value: currentCode2
-																						}"></table>
+									width:'250',
+									height: 370,
+									options: items2,
+									optionsValue: 'code',
+									columns: columns,
+									multiple: false,
+									value: currentCode2}" class="cf">
+							</table>
 						</div>
 					</div>
 				</div>
-
 			</div>
 		</ui:define>
 	</ui:composition>

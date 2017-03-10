@@ -54,7 +54,7 @@ module qpp008.c.viewmodel {
 
             self.columnsSwap = ko.observableArray([
                 { headerText: 'コード', prop: 'code', width: 60 },
-                { headerText: '名称', prop: 'name', width: 116 }
+                { headerText: '名称', prop: 'name', width: 120 }
             ]);
 
             self.currentCodeListSwap = ko.observableArray([]);
@@ -67,7 +67,7 @@ module qpp008.c.viewmodel {
 
             self.columnsSwap2 = ko.observableArray([
                 { headerText: 'コード', prop: 'code', width: 60 },
-                { headerText: '名称', prop: 'name', width: 116 }
+                { headerText: '名称', prop: 'name', width: 120 }
             ]);
             self.currentCodeListSwap2 = ko.observableArray([]);
             //swapList3
@@ -78,7 +78,7 @@ module qpp008.c.viewmodel {
             self.itemsSwap3(array2);
             self.columnsSwap3 = ko.observableArray([
                 { headerText: 'コード', prop: 'code', width: 60 },
-                { headerText: '名称', prop: 'name', width: 116 }
+                { headerText: '名称', prop: 'name', width: 120 }
             ]);
             self.currentCodeListSwap3 = ko.observableArray([]);
             /*TextEditer*/
@@ -86,11 +86,11 @@ module qpp008.c.viewmodel {
 
             /*TabPanel*/
             self.tabs = ko.observableArray([
-                { id: 'tab-1', title: 'Tab Title 1', content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true) },
-                { id: 'tab-2', title: 'Tab Title 2', content: '.tab-content-2', enable: ko.observable(true), visible: ko.observable(true) },
-                { id: 'tab-3', title: 'Tab Title 3', content: '.tab-content-3', enable: ko.observable(true), visible: ko.observable(true) }
+                { id: 'tab-1', title: '支給', content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true) },
+                { id: 'tab-2', title: '控除', content: '.tab-content-2', enable: ko.observable(true), visible: ko.observable(true) },
+                { id: 'tab-3', title: '記事', content: '.tab-content-3', enable: ko.observable(true), visible: ko.observable(true) }
             ]);
-            self.selectedTab = ko.observable('tab-2');
+            self.selectedTab = ko.observable('tab-1');
             /*gridList*/
             //gridList1
             self.items = ko.observableArray([]);
@@ -103,7 +103,7 @@ module qpp008.c.viewmodel {
             }
             self.columns = ko.observableArray([
                 { headerText: 'コード', prop: 'code', width: 60 },
-                { headerText: '名称', prop: 'name', width: 115 },
+                { headerText: '名称', prop: 'name', width: 120 },
 
             ]);
             //get event when hover on table by subcribe
