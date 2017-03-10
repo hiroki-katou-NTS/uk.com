@@ -31,8 +31,7 @@ module cmm014.a.service {
         nts.uk.request.ajax("com", paths.addClassification, classification).done(
             function(res: any) {
                 dfd.resolve(res);
-            }
-            )
+            })
             .fail(function(res) {
                 dfd.reject(res);
             })

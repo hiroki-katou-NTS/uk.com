@@ -3,6 +3,7 @@ package nts.uk.ctx.basic.app.command.organization.classification;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.basic.dom.organization.classification.ClassificationCode;
@@ -18,6 +19,10 @@ public class RemoveClassificationCommandHandler extends CommandHandler<RemoveCla
 	@Override
 	protected void handle(CommandHandlerContext<RemoveClassificationCommand> context) {
 		String companyCode = AppContexts.user().companyCode();
+		if (!classificationRepository.isExisted(companyCode,
+				new ClassificationCode(context.getCommand().getClassificationCode()))) {
+			throw new BusinessException("ER06");
+		}
 		classificationRepository.remove(companyCode,
 				new ClassificationCode(context.getCommand().getClassificationCode()));
 	}
