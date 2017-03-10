@@ -119,8 +119,8 @@ public class QwtmtWagetableEleHist implements Serializable {
 			@JoinColumn(name = "WAGE_TABLE_CD", referencedColumnName = "WAGE_TABLE_CD", insertable = false, updatable = false),
 			@JoinColumn(name = "HIST_ID", referencedColumnName = "HIST_ID", insertable = false, updatable = false),
 			@JoinColumn(name = "DEMENSION_NO", referencedColumnName = "DEMENSION_NO", insertable = false, updatable = false) })
-	@OrderBy("elementNumNo asc")
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+	@OrderBy("qwtmtWagetableNumPK.elementNumNo asc")
 	private List<QwtmtWagetableNum> qwtmtWagetableNumList;
 
 	/**
