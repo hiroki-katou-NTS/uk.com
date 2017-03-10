@@ -2,21 +2,22 @@
  * Copyright (c) 2015 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.file.pr.app.export.wageledger.data;
+package nts.uk.file.pr.app.export.wageledger.data.oldlayout;
 
 import java.util.List;
 
 import lombok.Builder;
+import nts.uk.file.pr.app.export.wageledger.data.share.ReportItemDto;
 
 /**
- * The Class WageLedgerReportData.
+ * The Class DeductionData.
  */
 @Builder
-public class WageLedgerReportData {
+public class DeductionData {
 	
-	/** The header data. */
-	public HeaderReportData headerData;
+	/** The aggregate item list. */
+	public List<ReportItemDto> aggregateItemList;
 	
-	/** The report items. */
-	public List<ReportItemDto> reportItems;
+	/** The total deduction. */
+	public ReportItemDto totalDeduction;
 }

@@ -11,9 +11,9 @@ module qet001.a.viewmodel {
         constructor() {
             this.targetYear = ko.observable(2016);
             this.isAggreatePreliminaryMonth = ko.observable(true);
-            this.layoutSelected = ko.observable(LayoutOutput.WAGE_LEDGER);
+            this.layoutSelected = ko.observable(LayoutOutput.ONE_PAGE);
             this.isPageBreakIndicator = ko.observable(false);
-            this.outputTypeSelected = ko.observable(OutputType.DETAIL_ITEM);
+            this.outputTypeSelected = ko.observable(OutputType.MASTER_ITEMS);
             this.outputSettings = ko.observableArray([]);
             this.outputSettingSelectedCode = ko.observable('');
         }
@@ -105,12 +105,12 @@ module qet001.a.viewmodel {
         /**
          * 賃金台帳（A4横1ページ）を出力する
          */
-        static WAGE_LEDGER = 0;
+        static ONE_PAGE = 'OnePage';
         
         /**
-         * 賃金一覧表を出力する
+         * 賃金一覧表を出力する => print with new layout.
          */
-        static WAGE_LIST = 1;
+        static NEW_LAYOUT = 'NewLayout';
     }
     
     /**
@@ -120,10 +120,10 @@ module qet001.a.viewmodel {
         /**
          * 明細書項目を出力する
          */
-        static DETAIL_ITEM = 0;
+        static MASTER_ITEMS = 'MasterItems';
         /**
          * 明細書の集約項目を出力する
          */
-        static SUMMARY_DETAIL_ITEMS = 1;
+        static OUTPUT_SETTING_ITEMS = 'OutputSettingItems';
     }
 }

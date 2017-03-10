@@ -17,10 +17,10 @@ var qet001;
                 var dataJson = {
                     targetYear: data.targetYear(),
                     isAggreatePreliminaryMonth: data.isAggreatePreliminaryMonth(),
-                    layoutSelected: data.layoutSelected(),
+                    layoutType: data.layoutSelected(),
                     isPageBreakIndicator: data.isPageBreakIndicator(),
-                    outputTypeSelected: data.outputTypeSelected(),
-                    outputSettingSelectedCode: data.outputSettingSelectedCode()
+                    outputType: data.outputTypeSelected(),
+                    outputSettingCode: data.outputSettingSelectedCode()
                 };
                 nts.uk.request.exportFile(servicePath.printReport, dataJson).done(function () {
                     dfd.resolve();

@@ -8,7 +8,7 @@ import javax.ejb.Stateless;
 
 import nts.uk.file.pr.app.export.wageledger.WageLedgerDataRepository;
 import nts.uk.file.pr.app.export.wageledger.WageLedgerReportQuery;
-import nts.uk.file.pr.app.export.wageledger.data.WageLedgerReportData;
+import nts.uk.file.pr.app.export.wageledger.data.WLOldLayoutReportData;
 
 /**
  * The Class JpaWageLedgerDataRepository.
@@ -21,7 +21,7 @@ public class JpaWageLedgerDataRepository implements WageLedgerDataRepository {
 	 * #findReportData(nts.uk.file.pr.app.export.wageledger.WageLedgerReportQuery)
 	 */
 	@Override
-	public WageLedgerReportData findReportData(WageLedgerReportQuery query) {
+	public WLOldLayoutReportData findReportData(WageLedgerReportQuery query) {
 		// TODO Auto-generated method stub
 		return null;
 	}
