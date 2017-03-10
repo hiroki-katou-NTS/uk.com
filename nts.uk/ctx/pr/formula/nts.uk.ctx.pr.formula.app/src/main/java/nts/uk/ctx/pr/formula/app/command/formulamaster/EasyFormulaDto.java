@@ -12,6 +12,7 @@ public class EasyFormulaDto {
 	
 	private BigDecimal value;
 
+	/* Formula Easy Standard Item */
 	private List<ReferenceItemCodeDto> referenceItemCode;
 
 	/**

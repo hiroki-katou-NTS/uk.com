@@ -19,18 +19,24 @@ import nts.uk.ctx.pr.formula.dom.enums.DivideValueSet;
 import nts.uk.ctx.pr.formula.dom.enums.EasyFormulaTypeAtr;
 import nts.uk.ctx.pr.formula.dom.enums.FixFormulaAtr;
 import nts.uk.ctx.pr.formula.dom.enums.ReferenceMasterNo;
+import nts.uk.ctx.pr.formula.dom.enums.ReferenceMonthAtr;
 import nts.uk.ctx.pr.formula.dom.enums.RoundAtr;
+import nts.uk.ctx.pr.formula.dom.enums.RoundDigit;
+import nts.uk.ctx.pr.formula.dom.enums.RoundMethod;
 import nts.uk.ctx.pr.formula.dom.formula.FormulaEasyCondition;
 import nts.uk.ctx.pr.formula.dom.formula.FormulaEasyDetail;
 import nts.uk.ctx.pr.formula.dom.formula.FormulaEasyHeader;
 import nts.uk.ctx.pr.formula.dom.formula.FormulaEasyStandardItem;
 import nts.uk.ctx.pr.formula.dom.formula.FormulaHistory;
+import nts.uk.ctx.pr.formula.dom.formula.FormulaManual;
 import nts.uk.ctx.pr.formula.dom.formula.FormulaMaster;
 import nts.uk.ctx.pr.formula.dom.primitive.DivideValue;
 import nts.uk.ctx.pr.formula.dom.primitive.EasyFormulaCode;
 import nts.uk.ctx.pr.formula.dom.primitive.EasyFormulaName;
 import nts.uk.ctx.pr.formula.dom.primitive.FormulaCode;
+import nts.uk.ctx.pr.formula.dom.primitive.FormulaContent;
 import nts.uk.ctx.pr.formula.dom.primitive.FormulaName;
+import nts.uk.ctx.pr.formula.dom.primitive.HistoryId;
 import nts.uk.ctx.pr.formula.dom.primitive.MaxValue;
 import nts.uk.ctx.pr.formula.dom.primitive.MinValue;
 import nts.uk.ctx.pr.formula.dom.primitive.Money;
@@ -83,23 +89,30 @@ public class UpdateFormulaMasterCommandHandler extends CommandHandler<UpdateForm
 				new Money(command.getBaseFixedAmount()),
 				EnumAdaptor.valueOf(command.getBaseAmountDevision(), BaseMoneyAtr.class),
 				new DivideValue(command.getBaseFixedValue()),
-				EnumAdaptor.valueOf(command.getBaseValueDevision(), DivideValueSet.class), new PremiumRate(command.getPremiumRate()),
+				EnumAdaptor.valueOf(command.getBaseValueDevision(), DivideValueSet.class),
+				new PremiumRate(command.getPremiumRate()),
 				EnumAdaptor.valueOf(command.getRoundProcessingDevision(), RoundAtr.class),
-				new WorkItemCode(command.getCoefficientDivision()),
-				new WorkValue(command.getCoefficientFixedValue()),
+				new WorkItemCode(command.getCoefficientDivision()), new WorkValue(command.getCoefficientFixedValue()),
 				EnumAdaptor.valueOf(command.getAdjustmentDevision(), AdjustmentAtr.class),
-				EnumAdaptor.valueOf(command.getTotalRounding(), RoundAtr.class),
-				new MaxValue(command.getMaxValue()),
+				EnumAdaptor.valueOf(command.getTotalRounding(), RoundAtr.class), new MaxValue(command.getMaxValue()),
 				new MinValue(command.getMinValue()));
 		List<FormulaEasyStandardItem> formulaEasyStandardItem = new ArrayList<>();
-	    command.getEasyFormulaCode().forEach(item -> {
-	    	formulaEasyStandardItem.addAll(item.getReferenceItemCode().stream().map(item2 -> {
-				return new FormulaEasyStandardItem(companyCode, new FormulaCode(command.getFormulaCode()), command.getHistoryId()
-						, new EasyFormulaCode(item.getEasyFormulaCode()), new ReferenceItemCode(item2.getReferenceItemCode()));
+		command.getEasyFormulaCode().forEach(item -> {
+			formulaEasyStandardItem.addAll(item.getReferenceItemCode().stream().map(item2 -> {
+				return new FormulaEasyStandardItem(companyCode, new FormulaCode(command.getFormulaCode()),
+						command.getHistoryId(), new EasyFormulaCode(item.getEasyFormulaCode()),
+						new ReferenceItemCode(item2.getReferenceItemCode()));
 			}).collect(Collectors.toList()));
 		});
 
-		formulaMasterDomainService.update(formulaMaster, formulaHistory, formulaEasyHeader, formulaEasyCondition, formulaEasyDetail, formulaEasyStandardItem);
+		FormulaManual formulaManual = new FormulaManual(companyCode, new FormulaCode(command.getFormulaCode()),
+				command.getHistoryId(), new FormulaContent(command.getFormulaContent()),
+				EnumAdaptor.valueOf(command.getReferenceMonthAtr(), ReferenceMonthAtr.class), 
+				EnumAdaptor.valueOf(command.getRoundAtr(), RoundMethod.class),
+				EnumAdaptor.valueOf(command.getRoundDigit(), RoundDigit.class));
+
+		formulaMasterDomainService.update(formulaMaster, formulaHistory, formulaEasyHeader, formulaEasyCondition,
+				formulaEasyDetail, formulaEasyStandardItem ,formulaManual);
 	}
 
 }

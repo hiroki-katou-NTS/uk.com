@@ -76,6 +76,12 @@ public class UpdateFormulaMasterCommand {
 	
 	private BigDecimal minValue;
 	
-	/* Formula Easy Standard Item */
-	
+	/* Formula Manual */
+	private String formulaContent;
+
+	private int referenceMonthAtr;
+
+	private int roundAtr;
+
+	private int roundDigit;
 }
