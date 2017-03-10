@@ -4,6 +4,10 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.infra.repository.wagetable.element;
 
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.wagetable.DemensionNo;
 import nts.uk.ctx.pr.core.dom.wagetable.ElementType;
@@ -54,11 +58,17 @@ public class JpaWageTableElementGetMemento implements WageTableElementGetMemento
 	 */
 	@Override
 	public ElementMode getElementModeSetting() {
+
 		CompanyCode companyCode = new CompanyCode(
 				this.typeValue.getQwtmtWagetableElementPK().getCcd());
-		// TODO: can xem xet lai.
-		QwtmtWagetableEleHist qwtmtWagetableEleHist = this.typeValue.getQwtmtWagetableEleHistList()
-				.get(0);
+
+		Map<Integer, QwtmtWagetableEleHist> eleHistMap = this.typeValue
+				.getQwtmtWagetableEleHistList().stream().collect(
+						Collectors.toMap(item -> item.getQwtmtWagetableEleHistPK().getDemensionNo(),
+								Function.identity()));
+
+		QwtmtWagetableEleHist qwtmtWagetableEleHist = eleHistMap
+				.get(this.typeValue.getQwtmtWagetableElementPK().getDemensionNo());
 
 		switch (ElementType.valueOf(this.typeValue.getDemensionType())) {
 		case LEVEL:
@@ -68,23 +78,21 @@ public class JpaWageTableElementGetMemento implements WageTableElementGetMemento
 			return new CertifyMode();
 
 		default:
-			// Do nothing
-			break;
+			if (ElementType.valueOf(this.typeValue.getDemensionType()).isCodeMode) {
+				return new RefMode(ElementType.valueOf(this.typeValue.getDemensionType()),
+						companyCode, new WtElementRefNo(this.typeValue.getDemensionRefNo()));
+			}
+
+			if (ElementType.valueOf(this.typeValue.getDemensionType()).isRangeMode) {
+				return new StepMode(ElementType.valueOf(this.typeValue.getDemensionType()),
+						qwtmtWagetableEleHist.getDemensionLowerLimit(),
+						qwtmtWagetableEleHist.getDemensionUpperLimit(),
+						qwtmtWagetableEleHist.getDemensionInterval());
+			}
+
+			return null;
 		}
 
-		if (ElementType.valueOf(this.typeValue.getDemensionType()).isCodeMode) {
-			return new RefMode(ElementType.valueOf(this.typeValue.getDemensionType()), companyCode,
-					new WtElementRefNo(this.typeValue.getDemensionRefNo()));
-		}
-
-		if (ElementType.valueOf(this.typeValue.getDemensionType()).isRangeMode) {
-			return new StepMode(ElementType.valueOf(this.typeValue.getDemensionType()),
-					qwtmtWagetableEleHist.getDemensionLowerLimit(),
-					qwtmtWagetableEleHist.getDemensionUpperLimit(),
-					qwtmtWagetableEleHist.getDemensionInterval());
-		}
-
-		return null;
 	}
 
 }

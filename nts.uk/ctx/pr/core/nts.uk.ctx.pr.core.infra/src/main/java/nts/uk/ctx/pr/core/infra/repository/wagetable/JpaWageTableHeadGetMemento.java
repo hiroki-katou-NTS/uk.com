@@ -20,6 +20,7 @@ import nts.uk.ctx.pr.core.dom.wagetable.mode.QualificaDimensionalMode;
 import nts.uk.ctx.pr.core.dom.wagetable.mode.ThreeDimensionalMode;
 import nts.uk.ctx.pr.core.dom.wagetable.mode.TwoDimensionalMode;
 import nts.uk.ctx.pr.core.infra.entity.wagetable.QwtmtWagetableHead;
+import nts.uk.ctx.pr.core.infra.entity.wagetable.element.QwtmtWagetableElement;
 import nts.uk.ctx.pr.core.infra.repository.wagetable.element.JpaWageTableElementGetMemento;
 import nts.uk.shr.com.primitive.Memo;
 
@@ -81,8 +82,11 @@ public class JpaWageTableHeadGetMemento implements WageTableHeadGetMemento {
 	@Override
 	public DemensionalMode getDemensionSetting() {
 
-		List<WageTableElement> wagetableElementList = this.typeValue.getWagetableElementList()
-				.stream().map(item -> new WageTableElement(new JpaWageTableElementGetMemento(item)))
+		List<QwtmtWagetableElement> qwtmtWagetableElements = this.typeValue
+				.getWagetableElementList();
+
+		List<WageTableElement> wagetableElementList = qwtmtWagetableElements.stream()
+				.map(item -> new WageTableElement(new JpaWageTableElementGetMemento(item)))
 				.collect(Collectors.toList());
 
 		switch (ElementCount.valueOf(this.typeValue.getDemensionSet())) {

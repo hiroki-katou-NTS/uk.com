@@ -58,7 +58,6 @@ public class WageTableDemensionDetailDto
 	 */
 	@Override
 	public ElementMode getElementModeSetting() {
-		// TODO: get from???
 		String companyCode = AppContexts.user().companyCode();
 
 		if (elementModeSetting instanceof RefModeDto) {
@@ -125,8 +124,10 @@ public class WageTableDemensionDetailDto
 					.stream().map(item -> CodeItemDto.builder()
 							.referenceCode(item.getReferenceCode()).uuid(item.getUuid()).build())
 					.collect(Collectors.toList());
-			this.elementModeSetting = LevelModeDto.builder().items(items).build();
-			break;
+			LevelModeDto levelModeDto = LevelModeDto.builder().items(items).build();
+			levelModeDto.setType(elementModeSetting.getElementType().value);
+			this.elementModeSetting = levelModeDto;
+			return;
 		}
 
 		case CERTIFICATION: {
@@ -135,8 +136,10 @@ public class WageTableDemensionDetailDto
 					.stream().map(item -> CodeItemDto.builder()
 							.referenceCode(item.getReferenceCode()).uuid(item.getUuid()).build())
 					.collect(Collectors.toList());
-			this.elementModeSetting = CertifyModeDto.builder().items(items).build();
-			break;
+			CertifyModeDto certifyModeDto = CertifyModeDto.builder().items(items).build();
+			certifyModeDto.setType(elementModeSetting.getElementType().value);
+			this.elementModeSetting = certifyModeDto;
+			return;
 		}
 
 		default:
@@ -150,7 +153,10 @@ public class WageTableDemensionDetailDto
 					.stream().map(item -> CodeItemDto.builder()
 							.referenceCode(item.getReferenceCode()).uuid(item.getUuid()).build())
 					.collect(Collectors.toList());
-			this.elementModeSetting = RefModeDto.builder().items(items).build();
+			RefModeDto refModeDto = RefModeDto.builder().items(items).build();
+			refModeDto.setType(elementModeSetting.getElementType().value);
+			refModeDto.setRefNo(refMode.getRefNo().v());
+			this.elementModeSetting = refModeDto;
 			return;
 		}
 
@@ -161,10 +167,13 @@ public class WageTableDemensionDetailDto
 							.startVal(item.getStartVal()).endVal(item.getEndVal())
 							.uuid(item.getUuid()).build())
 					.collect(Collectors.toList());
-			this.elementModeSetting = StepModeDto.builder()
+			StepModeDto stepModeDto = StepModeDto.builder()
 					.lowerLimit(stepMode.getLowerLimit().doubleValue())
 					.upperLimit(stepMode.getUpperLimit().doubleValue())
 					.interval(stepMode.getInterval().doubleValue()).items(items).build();
+			stepModeDto.setType(elementModeSetting.getElementType().value);
+			this.elementModeSetting = stepModeDto;
+			return;
 		}
 
 	}

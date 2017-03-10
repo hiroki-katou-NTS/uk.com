@@ -13,6 +13,8 @@ import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
 import javax.persistence.OneToMany;
 import javax.persistence.OrderBy;
 import javax.persistence.Table;
@@ -74,9 +76,8 @@ public class QwtmtWagetableHead implements Serializable {
 	private String updPg;
 
 	/** The exclus ver. */
-	@Basic(optional = false)
 	@Column(name = "EXCLUS_VER")
-	private Integer exclusVer;
+	private long exclusVer;
 
 	/** The wage table name. */
 	@Basic(optional = false)
@@ -93,8 +94,11 @@ public class QwtmtWagetableHead implements Serializable {
 	private String memo;
 
 	/** The wagetable element list. */
-	@OrderBy("demensionNo ASC")
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "qwtmtWagetableHead", orphanRemoval = true)
+	@JoinColumns({
+			@JoinColumn(name = "CCD", referencedColumnName = "CCD", insertable = false, updatable = false),
+			@JoinColumn(name = "WAGE_TABLE_CD", referencedColumnName = "WAGE_TABLE_CD", insertable = false, updatable = false) })
+	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+	@OrderBy("qwtmtWagetableElementPK.demensionNo ASC")
 	private List<QwtmtWagetableElement> wagetableElementList;
 
 	/**

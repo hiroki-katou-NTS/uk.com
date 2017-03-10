@@ -8,8 +8,8 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
-import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.pr.core.app.wagetable.command.dto.WageTableHistoryDto;
 import nts.uk.ctx.pr.core.dom.wagetable.WageTableHead;
@@ -24,7 +24,8 @@ import nts.uk.shr.com.context.AppContexts;
  * The Class WageTableHistoryAddCommandHandler.
  */
 @Stateless
-public class WageTableHistoryAddCommandHandler extends CommandHandler<WageTableHistoryAddCommand> {
+public class WageTableHistoryAddCommandHandler
+		extends CommandHandlerWithResult<WageTableHistoryAddCommand, WageTableHistory> {
 
 	/** The wage table head repo. */
 	@Inject
@@ -51,7 +52,7 @@ public class WageTableHistoryAddCommandHandler extends CommandHandler<WageTableH
 	 */
 	@Override
 	@Transactional
-	protected void handle(CommandHandlerContext<WageTableHistoryAddCommand> context) {
+	protected WageTableHistory handle(CommandHandlerContext<WageTableHistoryAddCommand> context) {
 
 		WageTableHistoryAddCommand command = context.getCommand();
 
@@ -77,5 +78,7 @@ public class WageTableHistoryAddCommandHandler extends CommandHandler<WageTableH
 		historyService.validateDateRange(history);
 
 		this.historyRepo.addHistory(history);
+
+		return history;
 	}
 }
