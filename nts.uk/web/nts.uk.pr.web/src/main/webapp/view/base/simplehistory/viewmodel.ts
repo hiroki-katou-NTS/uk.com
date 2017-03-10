@@ -213,7 +213,9 @@ module nts.uk.pr.view.base.simplehistory {
 
                     // Update call back.
                     onUpdateCallBack: (data) => {
-                        alert('update');
+                        self.service.updateHistoryStart(data.masterCode, data.historyId, data.startYearMonth).done(() => {
+                            self.reloadMasterHistory(self.selectedHistoryUuid());
+                        })
                     }
                 };
                 nts.uk.ui.windows.setShared('options', newHistoryOptions);

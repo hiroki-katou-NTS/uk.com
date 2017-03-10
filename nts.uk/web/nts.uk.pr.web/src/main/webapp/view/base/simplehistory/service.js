@@ -35,6 +35,13 @@ var nts;
                                         historyId: historyUuid
                                     });
                                 };
+                                BaseService.prototype.updateHistoryStart = function (masterCode, historyUuid, newStart) {
+                                    var self = this;
+                                    return nts.uk.request.ajax(self.path.updateHistoryStartPath, {
+                                        historyId: historyUuid,
+                                        newYearMonth: newStart
+                                    });
+                                };
                                 return BaseService;
                             }());
                             service.BaseService = BaseService;

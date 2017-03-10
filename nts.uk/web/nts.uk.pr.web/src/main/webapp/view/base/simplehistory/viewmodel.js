@@ -133,7 +133,9 @@ var nts;
                                             });
                                         },
                                         onUpdateCallBack: function (data) {
-                                            alert('update');
+                                            self.service.updateHistoryStart(data.masterCode, data.historyId, data.startYearMonth).done(function () {
+                                                self.reloadMasterHistory(self.selectedHistoryUuid());
+                                            });
                                         }
                                     };
                                     nts.uk.ui.windows.setShared('options', newHistoryOptions);
