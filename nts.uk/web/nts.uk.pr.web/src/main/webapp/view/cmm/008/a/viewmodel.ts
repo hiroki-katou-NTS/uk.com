@@ -159,9 +159,14 @@ module cmm008.a.viewmodel{
         createEmployment() : any{
             var self = this;
             //必須項目の未入力チェック
-            if(self.currentCode() === ""
-                || self.employmentName() === ""){
-                alert("コード/名称が入力されていません。");    
+            if(self.currentCode() === ""){
+                alert("コードが入力されていません。");   
+                $("#INP_002").focus(); 
+                return;
+            }
+            if(self.employmentName() === ""){
+                alert("名称が入力されていません。");  
+                $("#INP_003").focus();  
                 return;
             }
             var employment = new service.model.employmentDto();
@@ -178,20 +183,6 @@ module cmm008.a.viewmodel{
                 employment.displayFlg = 0;
             //新規の時
             if(self.isEnable()){
-                var isCheck = false;
-//                //コード重複チェック
-//                service.getEmploymentByCode(self.currentCode()).done(function(employmentChk: service.model.employmentDto){
-//                     if(employmentChk !== undefined && employmentChk !== null){
-//                         alert("入力したコードは既に存在しています。\r\nコードを確認してください。");
-//                         isCheck = true;
-//                         return;   
-//                     }
-//                })
-//                if(isCheck){
-//                    $("#INP_002").focus();
-//                    return;                    
-//                }
-//                
                 service.createEmployment(employment).done(function(){
                     $.when(self.dataSource()).done(function(){
                         $.when(self.dataSourceItem()).done(function(){
@@ -200,6 +191,8 @@ module cmm008.a.viewmodel{
                     })
                 }).fail(function(error){
                     alert(error.message);    
+                    self.isEnable(true);
+                    $("#INP_002").focus();
                 })   
             //更新の時 
             }else{

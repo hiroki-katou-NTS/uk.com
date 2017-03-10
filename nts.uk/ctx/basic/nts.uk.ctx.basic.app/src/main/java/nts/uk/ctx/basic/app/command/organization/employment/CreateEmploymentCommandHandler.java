@@ -27,7 +27,7 @@ public class CreateEmploymentCommandHandler extends CommandHandler<CreateEmploym
 			Employment employ = command.toDomain();
 			Optional<Employment> getEmploy = repository.findEmployment(companyCode, command.getEmploymentCode());
 			if(getEmploy.isPresent()){
-				throw new BusinessException("1");
+				throw new BusinessException("入力したコードは既に存在しています。\r\nコードを確認してください。");
 			}
 			Optional<Employment> employmentByDisplayFlg = repository.findEmploymnetByDisplayFlg(companyCode);
 			if(employmentByDisplayFlg.isPresent())			

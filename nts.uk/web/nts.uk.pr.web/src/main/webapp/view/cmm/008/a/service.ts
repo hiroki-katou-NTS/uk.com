@@ -36,7 +36,7 @@ module cmm008.a.service{
         nts.uk.request.ajax("com", path.createEmployment, employment).done(function(res: Array<any>){
             dfd.resolve(res);        
         }).fail(function(res){
-            dfd.resolve(res);
+            dfd.reject(res);
         })
         return dfd.promise();
     }
@@ -46,7 +46,7 @@ module cmm008.a.service{
         nts.uk.request.ajax("com",path.updateEmployment,employment).done(function(res: Array<any>){
             dfd.resolve(res);
         }).fail(function(res){
-            dfd.resolve(res);
+            dfd.reject(res);
         })
         return dfd.promise();
     }
@@ -56,7 +56,7 @@ module cmm008.a.service{
         nts.uk.request.ajax("com",path.deleteEmployment, employment).done(function(res: Array<any>){
             dfd.resolve(res);
         }).fail(function(res){
-            dfd.resolve(res);
+            dfd.reject(res);
         })
         return dfd.promise();
     }
