@@ -44,24 +44,33 @@ public class JpaCertificationRepository extends JpaRepository implements Certifi
 	// Function get all Certification by companyCode
 	@Override
 	public List<Certification> findAll(String companyCode) {
+		
 		// get entity manager
 		EntityManager em = getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+		
 		// call QCEMT_CERTIFICATION (QcemtCertification SQL)
 		CriteriaQuery<QcemtCertification> cq = criteriaBuilder.createQuery(QcemtCertification.class);
+		
 		// root data
 		Root<QcemtCertification> root = cq.from(QcemtCertification.class);
+		
 		// select root
 		cq.select(root);
+		
 		// add where
 		List<Predicate> lstpredicateWhere = new ArrayList<>();
+		
 		// eq CompanyCode
 		lstpredicateWhere.add(criteriaBuilder
 				.equal(root.get(QcemtCertification_.qcemtCertificationPK).get(QcemtCertificationPK_.ccd), companyCode));
+		
 		// set where to SQL
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+		
 		// creat query
 		TypedQuery<QcemtCertification> query = em.createQuery(cq);
+		
 		// exclude select
 		List<Certification> lstCertification = query.getResultList().stream().map(item -> toDomain(item))
 				.collect(Collectors.toList());
@@ -112,32 +121,42 @@ public class JpaCertificationRepository extends JpaRepository implements Certifi
 	 */
 	// check Certification ExistOfGroup and none of CertifyGroupCode
 	private boolean checkExistOfGroup(String companyCode, String certificationCode, String certifyGroupCode) {
+		
 		// get entity manager
 		EntityManager em = getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+		
 		// QWTMT_WAGETABLE_CERTIFY (QwtmtWagetableCertify) SQL
 		CriteriaQuery<Long> cq = criteriaBuilder.createQuery(Long.class);
+		
 		// root data QwtmtWagetableCertify
 		Root<QwtmtWagetableCertify> root = cq.from(QwtmtWagetableCertify.class);
+		
 		// select count(*) root (SQL SELECT)
 		cq.select(criteriaBuilder.count(root));
+		
 		// add where
 		List<Predicate> lstpredicateWhere = new ArrayList<>();
+		
 		// eq CompanyCode (where)
 		lstpredicateWhere.add(criteriaBuilder.equal(
 				root.get(QwtmtWagetableCertify_.qwtmtWagetableCertifyPK).get(QwtmtWagetableCertifyPK_.ccd),
 				companyCode));
+		
 		// eq CerticationCode (where)
 		lstpredicateWhere.add(criteriaBuilder.equal(
 				root.get(QwtmtWagetableCertify_.qwtmtWagetableCertifyPK).get(QwtmtWagetableCertifyPK_.certifyCd),
 				certificationCode));
+		
 		// noteq CertifyGroupCodeNone (certifyGroupCodeNone not null)
 		if (certifyGroupCode != null) {
 			lstpredicateWhere.add(criteriaBuilder.equal(root.get(QwtmtWagetableCertify_.qwtmtWagetableCertifyPK)
 					.get(QwtmtWagetableCertifyPK_.certifyGroupCd), certifyGroupCode));
 		}
+		
 		// set where to SQL
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+		
 		return (em.createQuery(cq).getSingleResult() > 0);
 	}
 

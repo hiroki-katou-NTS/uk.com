@@ -254,35 +254,47 @@ public class JpaAccidentInsuranceRateRepository extends JpaRepository implements
 	 */
 	@Override
 	public Optional<AccidentInsuranceRate> findFirstData(String companyCode) {
+		
 		// get entity manager
 		EntityManager em = getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+		
 		// call QISMT_WORK_ACCIDENT_INSU (QismtWorkAccidentInsu SQL)
 		CriteriaQuery<QismtWorkAccidentInsu> cq = criteriaBuilder.createQuery(QismtWorkAccidentInsu.class);
+		
 		// root data
 		Root<QismtWorkAccidentInsu> root = cq.from(QismtWorkAccidentInsu.class);
+		
 		// select root
 		cq.select(root);
+		
 		// add where
 		List<Predicate> lstpredicateWhere = new ArrayList<>();
+		
 		// eq String
 		lstpredicateWhere.add(criteriaBuilder.equal(
 				root.get(QismtWorkAccidentInsu_.qismtWorkAccidentInsuPK).get(QismtWorkAccidentInsuPK_.ccd),
 				companyCode));
+		
 		// eq business type 1st
 		lstpredicateWhere.add(criteriaBuilder.equal(
 				root.get(QismtWorkAccidentInsu_.qismtWorkAccidentInsuPK).get(QismtWorkAccidentInsuPK_.waInsuCd),
 				BusinessTypeEnum.Biz1St.value));
+		
 		// set where to SQL
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+		
 		// set order
 		cq.orderBy(criteriaBuilder.desc(root.get(QismtWorkAccidentInsu_.strYm)));
+		
 		// exclude select
 		TypedQuery<QismtWorkAccidentInsu> query = em.createQuery(cq);
 		List<QismtWorkAccidentInsu> lstQismtWorkAccidentInsu = query.getResultList();
+		
 		if (ListUtil.isEmpty(lstQismtWorkAccidentInsu)) {
 			return Optional.empty();
 		}
+		
 		return findById(companyCode, lstQismtWorkAccidentInsu.get(BEGIN_FIRST).getQismtWorkAccidentInsuPK().getHistId());
 	}
 
@@ -313,39 +325,52 @@ public class JpaAccidentInsuranceRateRepository extends JpaRepository implements
 	 */
 	@Override
 	public Optional<AccidentInsuranceRate> findBetweenUpdate(String companyCode, YearMonth yearMonth, String historyId) {
+		
 		// get entity manager
 		EntityManager em = getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+		
 		// call QISMT_WORK_ACCIDENT_INSU (QismtWorkAccidentInsu SQL)
 		CriteriaQuery<QismtWorkAccidentInsu> cq = criteriaBuilder.createQuery(QismtWorkAccidentInsu.class);
+		
 		// root data
 		Root<QismtWorkAccidentInsu> root = cq.from(QismtWorkAccidentInsu.class);
+		
 		// select root
 		cq.select(root);
+		
 		// add where
 		List<Predicate> lstpredicateWhere = new ArrayList<>();
+		
 		// eq String
 		lstpredicateWhere.add(criteriaBuilder.equal(
 				root.get(QismtWorkAccidentInsu_.qismtWorkAccidentInsuPK).get(QismtWorkAccidentInsuPK_.ccd),
 				companyCode));
+		
 		// not eq historyId
 		lstpredicateWhere.add(criteriaBuilder.notEqual(
 				root.get(QismtWorkAccidentInsu_.qismtWorkAccidentInsuPK).get(QismtWorkAccidentInsuPK_.histId),
 				historyId));
+		
 		// eq business type 1st
 		lstpredicateWhere.add(criteriaBuilder.equal(
 				root.get(QismtWorkAccidentInsu_.qismtWorkAccidentInsuPK).get(QismtWorkAccidentInsuPK_.waInsuCd),
 				BusinessTypeEnum.Biz1St.value));
+		
 		// set where to SQL
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+		
 		// set order
 		cq.orderBy(criteriaBuilder.desc(root.get(QismtWorkAccidentInsu_.strYm)));
+		
 		// exclude select
 		TypedQuery<QismtWorkAccidentInsu> query = em.createQuery(cq);
 		List<QismtWorkAccidentInsu> lstQismtWorkAccidentInsu = query.getResultList();
+		
 		if (ListUtil.isEmpty(lstQismtWorkAccidentInsu)) {
 			return Optional.empty();
 		}
+		
 		return findById(companyCode, lstQismtWorkAccidentInsu.get(BEGIN_FIRST).getQismtWorkAccidentInsuPK().getHistId());
 	}
 

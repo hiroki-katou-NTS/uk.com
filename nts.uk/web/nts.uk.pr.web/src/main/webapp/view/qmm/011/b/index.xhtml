@@ -4,19 +4,19 @@
 			<tr>
 				<td id="contents-left" class="bg-green caret-right caret-background">
 					<div class="leftTop">
-						<button id="btn_addHistoryUnemployeeInsurance"
-							data-bind="click: openAddHistoryUnemployeeInsuranceRate">履歴追加</button>
-						<button id="btn_editHistoryUnemployeeInsurance" class="floatRight"
-							data-bind="click: openEditHistoryUnemployeeInsuranceRate,enable: isEnableEditUnemployeeInsurance">履歴編集</button>
+						<button id="btn_addUnemployeeInsuranceHistory"
+							data-bind="click: openAddUnemployeeInsuranceRateHistory">履歴追加</button>
+						<button id="btn_editUnemployeeInsuranceHistory" class="floatRight"
+							data-bind="click: openEditUnemployeeInsuranceRateHistory,enable: isEnableEditUnemployeeInsurance">履歴編集</button>
 					</div>
 
 					<div class="list-box" id="list-box1"
 						data-bind="ntsListBox: {
-											options: lstHistoryUnemployeeInsuranceRate,
+											options: lstUnemployeeInsuranceRateHistory,
 											primaryKey: 'historyId',
 											primaryText: 'inforMonthRage',
 											multiple: false,
-											value: selectionHistoryUnemployeeInsuranceRate,
+											value: selectionUnemployeeInsuranceRateHistory,
 											enable: true,
 											rows: 10,
 											required: true,
@@ -26,7 +26,7 @@
 				</td>
 				<td id="contents-right"
 					data-bind="with: unemployeeInsuranceRateModel">
-					<table data-bind="with: historyUnemployeeInsuranceModel">
+					<table data-bind="with: unemployeeInsuranceHistoryModel">
 						<tr>
 							<td class="trFull60B">
 								<div id="B_LBL_001" data-bind="ntsFormLabel: {required: true}">

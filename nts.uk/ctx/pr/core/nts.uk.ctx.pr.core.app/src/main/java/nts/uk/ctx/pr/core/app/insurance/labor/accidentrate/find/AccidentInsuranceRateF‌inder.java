@@ -38,18 +38,24 @@ public class AccidentInsuranceRateF‌inder {
 	 * @return the history accident insurance rate dto
 	 */
 	public AccidentInsuranceRateFindOutDto find(String historyId) {
+		
 		// get user login
 		LoginUserContext loginUserContext = AppContexts.user();
+		
 		// get companyCode by user login
 		String companyCode = loginUserContext.companyCode();
+		
 		// call repository finder
 		AccidentInsuranceRateFindOutDto accidentInsuranceRateFindOutDto;
 		accidentInsuranceRateFindOutDto = new AccidentInsuranceRateFindOutDto();
+		// find by id
 		Optional<AccidentInsuranceRate> optionalAccidentInsuranceRate = accidentInsuranceRateRepository
 				.findById(companyCode, historyId);
+		
 		if (optionalAccidentInsuranceRate.isPresent()) {
 			optionalAccidentInsuranceRate.get().saveToMemento(accidentInsuranceRateFindOutDto);
 		}
+		// respone => .....
 		return accidentInsuranceRateFindOutDto;
 	}
 

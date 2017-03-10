@@ -30,6 +30,7 @@ var nts;
                                     self.historyStart = ko.observable(nts.uk.ui.windows.getShared("historyStart"));
                                     self.historyId = ko.observable(nts.uk.ui.windows.getShared("historyId"));
                                     self.historyEnd = ko.observable(nts.uk.ui.windows.getShared("historyEnd"));
+                                    self.endMonthRage = ko.observable(nts.uk.time.formatYearMonth(self.historyEnd()));
                                 }
                                 ScreenModel.prototype.fwupdateHistoryInfoUnemployeeInsurance = function () {
                                     var self = this;

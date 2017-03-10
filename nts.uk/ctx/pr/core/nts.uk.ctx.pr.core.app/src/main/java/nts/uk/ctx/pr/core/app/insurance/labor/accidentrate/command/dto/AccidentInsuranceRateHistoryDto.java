@@ -5,22 +5,23 @@
 package nts.uk.ctx.pr.core.app.insurance.labor.accidentrate.command.dto;
 
 import lombok.Data;
+import nts.arc.time.YearMonth;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 
 /**
  * The Class HistoryAccidentInsuranceRateDto.
  */
 @Data
-public class HistoryAccidentInsuranceRateDto {
+public class AccidentInsuranceRateHistoryDto {
 
 	/** The history id. */
 	private String historyId;
 
 	/** The start month rage. */
-	private String startMonthRage;
+	private int startMonth;
 
 	/** The end month rage. */
-	private String endMonthRage;
+	private int endMonth;
 
 	/**
 	 * To domain.
@@ -28,6 +29,6 @@ public class HistoryAccidentInsuranceRateDto {
 	 * @return the month range
 	 */
 	public MonthRange toDomain() {
-		return MonthRange.range(this.startMonthRage, this.endMonthRage, "/");
+		return MonthRange.range(YearMonth.of(this.startMonth), YearMonth.of(this.endMonth));
 	}
 }

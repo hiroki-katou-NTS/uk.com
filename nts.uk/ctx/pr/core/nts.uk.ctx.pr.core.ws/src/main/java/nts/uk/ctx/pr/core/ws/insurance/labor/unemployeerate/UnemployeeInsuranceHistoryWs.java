@@ -21,7 +21,7 @@ import nts.uk.ctx.pr.core.app.insurance.labor.unemployeerate.find.dto.Unemployee
  */
 @Path("pr/insurance/labor/unemployeerate/history")
 @Produces("application/json")
-public class HistoryUnemployeeInsuranceWs extends WebService {
+public class UnemployeeInsuranceHistoryWs extends WebService {
 
 	/** The find. */
 	@Inject

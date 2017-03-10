@@ -7,7 +7,6 @@ package nts.uk.ctx.pr.core.app.insurance.labor.accidentrate.find.dto;
 import java.util.Set;
 
 import lombok.Data;
-import nts.arc.time.YearMonth;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.AccidentInsuranceRateSetMemento;
@@ -17,16 +16,16 @@ import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.InsuBizRateItem;
  * The Class HistoryAccidentInsuranceRateFindOutDto.
  */
 @Data
-public class HistoryAccidentInsuranceRateFindOutDto implements AccidentInsuranceRateSetMemento {
+public class AccidentInsuranceRateHistoryFindOutDto implements AccidentInsuranceRateSetMemento {
 
 	/** The history id. */
 	private String historyId;
 
 	/** The start month rage. */
-	private int startMonthRage;
+	private int startMonth;
 
 	/** The end month rage. */
-	private int endMonthRage;
+	private int endMonth;
 
 	/*
 	 * (non-Javadoc)
@@ -62,8 +61,8 @@ public class HistoryAccidentInsuranceRateFindOutDto implements AccidentInsurance
 	 */
 	@Override
 	public void setApplyRange(MonthRange applyRange) {
-		this.startMonthRage = applyRange.getStartMonth().v();
-		this.endMonthRage = applyRange.getEndMonth().v();
+		this.startMonth = applyRange.getStartMonth().v();
+		this.endMonth = applyRange.getEndMonth().v();
 	}
 
 	/*
