@@ -7,6 +7,8 @@ import javax.inject.Inject;
 import javax.transaction.Transactional;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.error.BusinessException;
+import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.basic.dom.organization.employment.CloseDateNo;
@@ -28,7 +30,12 @@ public class UpdateEmploymentCommandHandler extends CommandHandler<UpdateEmploym
 	protected void handle(CommandHandlerContext<UpdateEmploymentCommand> context) {
 		try{
 			UpdateEmploymentCommand command = context.getCommand();
-			String companyCode = AppContexts.user().companyCode();		
+			String companyCode = AppContexts.user().companyCode();	
+			Optional<Employment> employmentInf = repository.findEmployment(companyCode, command.getEmploymentCode());
+			if(!employmentInf.isPresent()){
+				throw new BusinessException(new RawErrorMessage("更新対象のデータが存在しません。"));
+			}
+				
 			//A_SEL_001にチェックが付いている場合
 			if(command.getDisplayFlg() == 1){
 				Optional<Employment> employmentByDisplayFlg = repository.findEmploymnetByDisplayFlg(companyCode);

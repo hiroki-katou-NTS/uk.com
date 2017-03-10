@@ -51,7 +51,7 @@ var cmm008;
                     //list data click
                     self.currentCode.subscribe(function (newValue) {
                         var newEmployment = _.find(self.dataSource(), function (employ) {
-                            if (employ.employmentCode === newValue) {
+                            if (employ.employmentCode === newValue && !self.isEnable()) {
                                 self.isEnable(false);
                                 self.currentCode(employ.employmentCode);
                                 self.employmentName(employ.employmentName);
@@ -65,7 +65,6 @@ var cmm008;
                                 else {
                                     self.isCheckbox(false);
                                 }
-                                return;
                             }
                         });
                     });
@@ -154,24 +153,27 @@ var cmm008;
                     //新規の時
                     if (self.isEnable()) {
                         var isCheck = false;
-                        //コード重複チェック
-                        a.service.getEmploymentByCode(self.currentCode()).done(function (employmentChk) {
-                            if (employmentChk !== undefined && employmentChk !== null) {
-                                alert("入力したコードは既に存在しています。\r\nコードを確認してください。");
-                                isCheck = true;
-                                return;
-                            }
-                        });
-                        if (isCheck) {
-                            $("#INP_002").focus();
-                            return;
-                        }
+                        //                //コード重複チェック
+                        //                service.getEmploymentByCode(self.currentCode()).done(function(employmentChk: service.model.employmentDto){
+                        //                     if(employmentChk !== undefined && employmentChk !== null){
+                        //                         alert("入力したコードは既に存在しています。\r\nコードを確認してください。");
+                        //                         isCheck = true;
+                        //                         return;   
+                        //                     }
+                        //                })
+                        //                if(isCheck){
+                        //                    $("#INP_002").focus();
+                        //                    return;                    
+                        //                }
+                        //                
                         a.service.createEmployment(employment).done(function () {
                             $.when(self.dataSource()).done(function () {
                                 $.when(self.dataSourceItem()).done(function () {
                                     self.currentCode(employment.employmentCode);
                                 });
                             });
+                        }).fail(function (error) {
+                            alert(error.message);
                         });
                     }
                     else {

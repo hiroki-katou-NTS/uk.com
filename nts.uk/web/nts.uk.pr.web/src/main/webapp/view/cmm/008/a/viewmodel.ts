@@ -75,7 +75,7 @@ module cmm008.a.viewmodel{
             //list data click
             self.currentCode.subscribe(function(newValue){
                 let newEmployment = _.find(self.dataSource(), function(employ){
-                    if(employ.employmentCode === newValue){
+                    if(employ.employmentCode === newValue && !self.isEnable()){
                         self.isEnable(false);
                         self.currentCode(employ.employmentCode);                        
                         self.employmentName(employ.employmentName);
@@ -88,7 +88,6 @@ module cmm008.a.viewmodel{
                         }else{
                             self.isCheckbox(false);    
                         }
-                        return;
                     }
                 })
             });
@@ -180,25 +179,27 @@ module cmm008.a.viewmodel{
             //新規の時
             if(self.isEnable()){
                 var isCheck = false;
-                //コード重複チェック
-                service.getEmploymentByCode(self.currentCode()).done(function(employmentChk: service.model.employmentDto){
-                     if(employmentChk !== undefined && employmentChk !== null){
-                         alert("入力したコードは既に存在しています。\r\nコードを確認してください。");
-                         isCheck = true;
-                         return;   
-                     }
-                })
-                if(isCheck){
-                    $("#INP_002").focus();
-                    return;                    
-                }
-                
+//                //コード重複チェック
+//                service.getEmploymentByCode(self.currentCode()).done(function(employmentChk: service.model.employmentDto){
+//                     if(employmentChk !== undefined && employmentChk !== null){
+//                         alert("入力したコードは既に存在しています。\r\nコードを確認してください。");
+//                         isCheck = true;
+//                         return;   
+//                     }
+//                })
+//                if(isCheck){
+//                    $("#INP_002").focus();
+//                    return;                    
+//                }
+//                
                 service.createEmployment(employment).done(function(){
                     $.when(self.dataSource()).done(function(){
                         $.when(self.dataSourceItem()).done(function(){
                             self.currentCode(employment.employmentCode);
                         })    
                     })
+                }).fail(function(error){
+                    alert(error.message);    
                 })   
             //更新の時 
             }else{

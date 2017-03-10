@@ -6,6 +6,8 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
+import nts.arc.error.BusinessException;
+import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.basic.dom.organization.employment.Employment;
@@ -23,8 +25,12 @@ public class CreateEmploymentCommandHandler extends CommandHandler<CreateEmploym
 			CreateEmploymentCommand command = context.getCommand();
 			String companyCode = AppContexts.user().companyCode();
 			Employment employ = command.toDomain();
+			Optional<Employment> getEmploy = repository.findEmployment(companyCode, command.getEmploymentCode());
+			if(getEmploy.isPresent()){
+				throw new BusinessException("1");
+			}
 			Optional<Employment> employmentByDisplayFlg = repository.findEmploymnetByDisplayFlg(companyCode);
-			if(employmentByDisplayFlg == null)			
+			if(employmentByDisplayFlg.isPresent())			
 				employ.setDisplayFlg(ManageOrNot.MANAGE);
 			//employ.validate();
 			this.repository.add(employ);	
