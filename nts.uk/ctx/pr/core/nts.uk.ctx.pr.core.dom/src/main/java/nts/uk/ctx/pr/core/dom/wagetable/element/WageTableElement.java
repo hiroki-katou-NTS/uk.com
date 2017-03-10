@@ -6,6 +6,8 @@ package nts.uk.ctx.pr.core.dom.wagetable.element;
 
 import lombok.Getter;
 import nts.uk.ctx.pr.core.dom.wagetable.DemensionNo;
+import nts.uk.ctx.pr.core.dom.wagetable.history.WageTableDetailGetMemento;
+import nts.uk.ctx.pr.core.dom.wagetable.history.WageTableDetailSetMemento;
 
 /**
  * The Class WageTableElement.
@@ -46,6 +48,17 @@ public class WageTableElement {
 	}
 
 	/**
+	 * Instantiates a new wage table element.
+	 *
+	 * @param memento
+	 *            the memento
+	 */
+	public WageTableElement(WageTableDetailGetMemento memento) {
+		this.demensionNo = memento.getDemensionNo();
+		this.elementModeSetting = memento.getElementModeSetting();
+	}
+
+	/**
 	 * Save to memento.
 	 *
 	 * @param memento
@@ -55,4 +68,16 @@ public class WageTableElement {
 		memento.setDemensionNo(this.demensionNo);
 		memento.setElementModeSetting(this.elementModeSetting);
 	}
+
+	/**
+	 * Save to memento.
+	 *
+	 * @param memento
+	 *            the memento
+	 */
+	public void saveToMemento(WageTableDetailSetMemento memento) {
+		memento.setDemensionNo(this.demensionNo);
+		memento.setElementModeSetting(this.elementModeSetting);
+	}
+
 }

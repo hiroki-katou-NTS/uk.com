@@ -1,24 +1,31 @@
 module nts.uk.pr.view.qmm011.e {
+
     import option = nts.uk.ui.option;
     import InsuranceBusinessType = nts.uk.pr.view.qmm011.a.service.model.InsuranceBusinessType;
     import InsuBizRateItemDto = nts.uk.pr.view.qmm011.a.service.model.InsuBizRateItemDto;
     import AccidentInsuranceRateModel = nts.uk.pr.view.qmm011.a.viewmodel.AccidentInsuranceRateModel;
     import AccidentInsuranceRateDetailModel = nts.uk.pr.view.qmm011.a.viewmodel.AccidentInsuranceRateDetailModel;
     import InsuranceBusinessTypeDto = nts.uk.pr.view.qmm011.a.service.model.InsuranceBusinessTypeDto;
+
     export module viewmodel {
+
         export class ScreenModel {
+
             insuranceBusinessTypeUpdateModel: KnockoutObservable<InsuranceBusinessTypeUpdateModel>;
-            rateInputOptions: any;
-            textEditorOption: KnockoutObservable<any>;
+            textEditorOption: KnockoutObservable<option.TextEditorOption>;
+
             constructor() {
                 var self = this;
                 self.textEditorOption = ko.mapping.fromJS(new option.TextEditorOption());
-                var InsuranceBusinessTypeDto = nts.uk.ui.windows.getShared("InsuranceBusinessTypeDto");
-                self.insuranceBusinessTypeUpdateModel = ko.observable(new InsuranceBusinessTypeUpdateModel(InsuranceBusinessTypeDto));
+                var insuranceBusinessTypeDto = nts.uk.ui.windows.getShared("InsuranceBusinessTypeDto");
+                self.insuranceBusinessTypeUpdateModel
+                    = ko.observable(new InsuranceBusinessTypeUpdateModel(insuranceBusinessTypeDto));
             }
+
             updateInsuranceBusinessType() {
                 var self = this;
                 var insuranceBusinessType: InsuranceBusinessTypeDto;
+                //set up data resquest
                 insuranceBusinessType =
                     new InsuranceBusinessTypeDto(self.insuranceBusinessTypeUpdateModel().bizNameBiz1St(),
                         self.insuranceBusinessTypeUpdateModel().bizNameBiz2Nd(),
@@ -31,14 +38,16 @@ module nts.uk.pr.view.qmm011.e {
                         self.insuranceBusinessTypeUpdateModel().bizNameBiz9Th(),
                         self.insuranceBusinessTypeUpdateModel().bizNameBiz10Th(),
                         self.insuranceBusinessTypeUpdateModel().version());
+                //call service update
                 service.updateInsuranceBusinessType(insuranceBusinessType).done(data => {
                     nts.uk.ui.windows.setShared("insuranceBusinessTypeUpdateModel", self.insuranceBusinessTypeUpdateModel());
                     nts.uk.ui.windows.close();
                 });
-
             }
         }
+
         export class InsuranceBusinessTypeUpdateModel {
+
             bizNameBiz1St: KnockoutObservable<string>;
             bizNameBiz2Nd: KnockoutObservable<string>;
             bizNameBiz3Rd: KnockoutObservable<string>;
@@ -50,6 +59,7 @@ module nts.uk.pr.view.qmm011.e {
             bizNameBiz9Th: KnockoutObservable<string>;
             bizNameBiz10Th: KnockoutObservable<string>;
             version: KnockoutObservable<number>;
+
             constructor(insuranceBusinessTypeDto: InsuranceBusinessTypeDto) {
                 this.bizNameBiz1St = ko.observable(insuranceBusinessTypeDto.bizNameBiz1St);
                 this.bizNameBiz2Nd = ko.observable(insuranceBusinessTypeDto.bizNameBiz2Nd);
@@ -65,5 +75,4 @@ module nts.uk.pr.view.qmm011.e {
             }
         }
     }
-
 }

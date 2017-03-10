@@ -24,7 +24,7 @@ public class AccidentInsuranceRateFindOutDto implements AccidentInsuranceRateSet
 
 	/** The history insurance. */
 	// historyId
-	private HistoryAccidentInsuranceRateFindOutDto historyInsurance;
+	private AccidentInsuranceRateHistoryFindOutDto historyInsurance;
 
 	/** The rate items. */
 	private List<InsuBizRateItemFindOutDto> rateItems;
@@ -32,8 +32,7 @@ public class AccidentInsuranceRateFindOutDto implements AccidentInsuranceRateSet
 	/**
 	 * Sets the dto to.
 	 *
-	 * @param lstDomain
-	 *            the new dto to
+	 * @param lstDomain the new dto to
 	 */
 	public void setDtoTo(List<InsuranceBusinessType> lstDomain) {
 		for (InsuranceBusinessType itemDomain : lstDomain) {
@@ -53,7 +52,7 @@ public class AccidentInsuranceRateFindOutDto implements AccidentInsuranceRateSet
 	 */
 	@Override
 	public void setHistoryId(String historyId) {
-		this.historyInsurance = new HistoryAccidentInsuranceRateFindOutDto();
+		this.historyInsurance = new AccidentInsuranceRateHistoryFindOutDto();
 		this.historyInsurance.setHistoryId(historyId);
 	}
 
@@ -78,8 +77,8 @@ public class AccidentInsuranceRateFindOutDto implements AccidentInsuranceRateSet
 	 */
 	@Override
 	public void setApplyRange(MonthRange applyRange) {
-		this.historyInsurance.setStartMonthRage(applyRange.getStartMonth().v());
-		this.historyInsurance.setEndMonthRage(applyRange.getEndMonth().v());
+		this.historyInsurance.setStartMonth(applyRange.getStartMonth().v());
+		this.historyInsurance.setEndMonth(applyRange.getEndMonth().v());
 	}
 
 	/*

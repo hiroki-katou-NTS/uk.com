@@ -17,7 +17,7 @@ var nts;
                             };
                             function updateInsuranceBusinessType(insuranceBusinessType) {
                                 var dfd = $.Deferred();
-                                var data = { insuranceBusinessType: insuranceBusinessType, companyCode: "CC0001" };
+                                var data = { insuranceBusinessType: insuranceBusinessType };
                                 nts.uk.request.ajax(paths.updateInsuranceBusinessType, data)
                                     .done(function (res) {
                                     dfd.resolve(res);

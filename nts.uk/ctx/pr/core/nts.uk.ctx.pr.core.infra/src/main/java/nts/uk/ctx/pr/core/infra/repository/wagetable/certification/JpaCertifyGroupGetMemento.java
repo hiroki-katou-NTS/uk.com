@@ -13,7 +13,6 @@ import nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroupCode;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroupGetMemento;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroupName;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.MultipleTargetSetting;
-import nts.uk.ctx.pr.core.infra.entity.wagetable.certification.QcemtCertification;
 import nts.uk.ctx.pr.core.infra.entity.wagetable.certification.QwtmtWagetableCertifyG;
 
 /**
@@ -52,7 +51,8 @@ public class JpaCertifyGroupGetMemento implements CertifyGroupGetMemento {
 	 */
 	@Override
 	public CertifyGroupCode getCode() {
-		return new CertifyGroupCode(this.typeValue.getQwtmtWagetableCertifyGPK().getCertifyGroupCd());
+		return new CertifyGroupCode(
+				this.typeValue.getQwtmtWagetableCertifyGPK().getCertifyGroupCd());
 	}
 
 	/*
@@ -86,9 +86,8 @@ public class JpaCertifyGroupGetMemento implements CertifyGroupGetMemento {
 	@Override
 	public Set<Certification> getCertifies() {
 		Set<Certification> certifications = this.typeValue.getQwtmtWagetableCertifyList().stream()
-				.map(item -> new Certification(new JpaCertificationGetMemento(
-						new QcemtCertification(this.typeValue.getQwtmtWagetableCertifyGPK().getCcd(),
-								item.getQwtmtWagetableCertifyPK().getCertifyCd()))))
+				.map(item -> new Certification(
+						new JpaCertificationGetMemento(item.getQcemtCertification())))
 				.collect(Collectors.toSet());
 		return certifications;
 	}

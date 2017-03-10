@@ -56,4 +56,17 @@ public class UnemployeeInsuranceRateItem {
 		memento.setPersonalSetting(this.personalSetting);
 	}
 
+	/**
+	 * Value intial.
+	 *
+	 * @param careerGroup the career group
+	 * @return the unemployee insurance rate item
+	 */
+	public static final UnemployeeInsuranceRateItem valueIntial(CareerGroup careerGroup) {
+		UnemployeeInsuranceRateItem value = new UnemployeeInsuranceRateItem();
+		value.careerGroup = careerGroup;
+		value.companySetting = UnemployeeInsuranceRateItemSetting.valueIntial();
+		value.personalSetting = UnemployeeInsuranceRateItemSetting.valueIntial();
+		return value;
+	}
 }

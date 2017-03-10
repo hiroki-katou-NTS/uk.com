@@ -7,8 +7,8 @@ package nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate;
 import java.util.List;
 import java.util.Optional;
 
+import nts.arc.time.YearMonth;
 import nts.uk.ctx.core.dom.company.CompanyCode;
-import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 
 /**
  * The Interface UnemployeeInsuranceRateRepository.
@@ -35,7 +35,7 @@ public interface UnemployeeInsuranceRateRepository {
 	 * @param id the id
 	 * @param version the version
 	 */
-    void remove(CompanyCode companyCode, String historyId, Long version);
+    void remove(String companyCode, String historyId, Long version);
 
 	/**
 	 * Find all.
@@ -43,7 +43,7 @@ public interface UnemployeeInsuranceRateRepository {
 	 * @param companyCode the company code
 	 * @return the list
 	 */
-	List<UnemployeeInsuranceRate> findAll(CompanyCode companyCode);
+	List<UnemployeeInsuranceRate> findAll(String companyCode);
 
 	/**
 	 * Find by id.
@@ -51,24 +51,30 @@ public interface UnemployeeInsuranceRateRepository {
 	 * @param id the id
 	 * @return the unemployee insurance rate
 	 */
-	Optional<UnemployeeInsuranceRate> findById(CompanyCode companyCode,String historyId);
+	Optional<UnemployeeInsuranceRate> findById(String companyCode,String historyId);
 
 	/**
-	 * Checks if is invalid date range.
-	 *
-	 * @param applyRange the apply range
-	 * @return true, if is invalid date range
-	 */
-	boolean isInvalidDateRange(CompanyCode companyCode,MonthRange monthRange);
-
-	/**
-	 * Checks if is invalid date range update.
+	 * Find between update.
 	 *
 	 * @param companyCode the company code
 	 * @param yearMonth the year month
-	 * @param historyId the history id
-	 * @return true, if is invalid date range update
+	 * @return the optional
 	 */
-	boolean isInvalidDateRangeUpdate(CompanyCode companyCode,MonthRange monthRange,String historyId);
+	Optional<UnemployeeInsuranceRate> findBetweenUpdate(String companyCode, YearMonth yearMonth,String historyId);
+
+	/**
+	 * Update to max year month.
+	 *
+	 * @param rate the rate
+	 */
+	void updateYearMonth(UnemployeeInsuranceRate rate,YearMonth yearMonth);
+
+	/**
+	 * Find fisrt data.
+	 *
+	 * @param companyCode the company code
+	 * @return the optional
+	 */
+	Optional<UnemployeeInsuranceRate> findFirstData(String companyCode);
 
 }

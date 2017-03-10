@@ -10,15 +10,14 @@ import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.labor.LaborInsuranceOfficeRepository;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.context.LoginUserContext;
 
 /**
  * The Class LaborInsuranceOfficeDeleteCommandHandler.
  */
 @Stateless
-@Transactional
 public class LaborInsuranceOfficeDeleteCommandHandler extends CommandHandler<LaborInsuranceOfficeDeleteCommand> {
 
 	/** The labor insurance office repository. */
@@ -33,12 +32,17 @@ public class LaborInsuranceOfficeDeleteCommandHandler extends CommandHandler<Lab
 	 * .CommandHandlerContext)
 	 */
 	@Override
+	@Transactional
 	protected void handle(CommandHandlerContext<LaborInsuranceOfficeDeleteCommand> context) {
-		LaborInsuranceOfficeDeleteCommand laborInsuranceOffice = context.getCommand();
-		String companyCode = AppContexts.user().companyCode();
-		this.laborInsuranceOfficeRepo.remove(new CompanyCode(companyCode),
-				context.getCommand().getLaborInsuranceOfficeDeleteDto().getCode(),
-				context.getCommand().getLaborInsuranceOfficeDeleteDto().getVersion());
+		// get user login info
+		LoginUserContext loginUserContext = AppContexts.user();
+		// get companyCode by user login
+		String companyCode = loginUserContext.companyCode();
+		// get command
+		LaborInsuranceOfficeDeleteCommand command = context.getCommand();
+		// call Repository remove
+		this.laborInsuranceOfficeRepo.remove(companyCode, command.getLaborInsuranceOfficeDeleteDto().getCode(),
+				command.getLaborInsuranceOfficeDeleteDto().getVersion());
 	}
 
 }

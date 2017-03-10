@@ -1,11 +1,12 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2016 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.core.infra.repository.wagetable.certification;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -17,13 +18,15 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.Certification;
-import nts.uk.ctx.pr.core.dom.wagetable.certification.CertificationGetMemento;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.CertificationReponsitory;
+import nts.uk.ctx.pr.core.infra.entity.insurance.labor.QismtLaborInsuOfficePK;
 import nts.uk.ctx.pr.core.infra.entity.wagetable.certification.QcemtCertification;
 import nts.uk.ctx.pr.core.infra.entity.wagetable.certification.QcemtCertificationPK_;
 import nts.uk.ctx.pr.core.infra.entity.wagetable.certification.QcemtCertification_;
+import nts.uk.ctx.pr.core.infra.entity.wagetable.certification.QwtmtWagetableCertify;
+import nts.uk.ctx.pr.core.infra.entity.wagetable.certification.QwtmtWagetableCertifyPK_;
+import nts.uk.ctx.pr.core.infra.entity.wagetable.certification.QwtmtWagetableCertify_;
 
 /**
  * The Class JpaCertificationRepository.
@@ -36,89 +39,43 @@ public class JpaCertificationRepository extends JpaRepository implements Certifi
 	 * 
 	 * @see
 	 * nts.uk.ctx.pr.core.dom.wagetable.certification.CertificationReponsitory#
-	 * add(nts.uk.ctx.pr.core.dom.wagetable.certification.Certification)
-	 */
-	@Override
-	public void add(Certification certification) {
-		// TODO Auto-generated method stub
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * nts.uk.ctx.pr.core.dom.wagetable.certification.CertificationReponsitory#
-	 * update(nts.uk.ctx.pr.core.dom.wagetable.certification.Certification)
-	 */
-	@Override
-	public void update(Certification certification) {
-		// TODO Auto-generated method stub
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * nts.uk.ctx.pr.core.dom.wagetable.certification.CertificationReponsitory#
-	 * remove(java.lang.String, java.lang.Long)
-	 */
-	@Override
-	public void remove(String id, Long version) {
-		// TODO Auto-generated method stub
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * nts.uk.ctx.pr.core.dom.wagetable.certification.CertificationReponsitory#
 	 * findAll(nts.uk.ctx.core.dom.company.CompanyCode)
 	 */
+	// Function get all Certification by companyCode
 	@Override
-	public List<Certification> findAll(CompanyCode companyCode) {
+	public List<Certification> findAll(String companyCode) {
+		
+		// get entity manager
 		EntityManager em = getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+		
+		// call QCEMT_CERTIFICATION (QcemtCertification SQL)
 		CriteriaQuery<QcemtCertification> cq = criteriaBuilder.createQuery(QcemtCertification.class);
+		
+		// root data
 		Root<QcemtCertification> root = cq.from(QcemtCertification.class);
+		
+		// select root
 		cq.select(root);
-		List<Predicate> lstpredicate = new ArrayList<>();
-		lstpredicate.add(criteriaBuilder.equal(
-				root.get(QcemtCertification_.qcemtCertificationPK).get(QcemtCertificationPK_.ccd), companyCode.v()));
-		cq.where(lstpredicate.toArray(new Predicate[] {}));
+		
+		// add where
+		List<Predicate> lstpredicateWhere = new ArrayList<>();
+		
+		// eq CompanyCode
+		lstpredicateWhere.add(criteriaBuilder
+				.equal(root.get(QcemtCertification_.qcemtCertificationPK).get(QcemtCertificationPK_.ccd), companyCode));
+		
+		// set where to SQL
+		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+		
+		// creat query
 		TypedQuery<QcemtCertification> query = em.createQuery(cq);
-		List<Certification> lstCertifyGroup = query.getResultList().stream().map(item -> toDomain(item))
+		
+		// exclude select
+		List<Certification> lstCertification = query.getResultList().stream().map(item -> toDomain(item))
 				.collect(Collectors.toList());
-		return lstCertifyGroup;
-	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * nts.uk.ctx.pr.core.dom.wagetable.certification.CertificationReponsitory#
-	 * findById(nts.uk.ctx.core.dom.company.CompanyCode, java.lang.String)
-	 */
-	@Override
-	public Certification findById(CompanyCode companyCode, String code) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * nts.uk.ctx.pr.core.dom.wagetable.certification.CertificationReponsitory#
-	 * isDuplicateCode(nts.uk.ctx.core.dom.company.CompanyCode,
-	 * java.lang.String)
-	 */
-	@Override
-	public boolean isDuplicateCode(CompanyCode companyCode, String code) {
-		// TODO Auto-generated method stub
-		return false;
+		return lstCertification;
 	}
 
 	/**
@@ -129,26 +86,87 @@ public class JpaCertificationRepository extends JpaRepository implements Certifi
 	 * @return the certification
 	 */
 	private Certification toDomain(QcemtCertification qcemtCertification) {
-		Certification certification = new Certification(new CertificationGetMemento() {
+		return new Certification(new JpaCertificationGetMemento(qcemtCertification));
+	}
 
-			@Override
-			public String getName() {
-				// TODO Auto-generated method stub
-				return qcemtCertification.getName();
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.dom.wagetable.certification.CertificationReponsitory#
+	 * findAllNoneOfGroup(nts.uk.ctx.core.dom.company.CompanyCode)
+	 */
+	// Function get all Certification none of Group
+	@Override
+	public List<Certification> findAllNoneOfGroup(String companyCode) {
+		// getAll
+		List<Certification> lstCertificationFull = findAll(companyCode);
+		List<Certification> resCertification = new ArrayList<>();
+		for (Certification certification : lstCertificationFull) {
+			if (!checkExistOfGroup(companyCode, certification.getCode(), null)) {
+				resCertification.add(certification);
 			}
+		}
+		return resCertification;
+	}
 
-			@Override
-			public CompanyCode getCompanyCode() {
-				// TODO Auto-generated method stub
-				return new CompanyCode(qcemtCertification.getQcemtCertificationPK().getCcd());
-			}
+	/**
+	 * Check exist of group.
+	 *
+	 * @param certification
+	 *            the certification
+	 * @param certifyGroupCodeNone
+	 *            the certify group code none
+	 * @return true, if successful
+	 */
+	// check Certification ExistOfGroup and none of CertifyGroupCode
+	private boolean checkExistOfGroup(String companyCode, String certificationCode, String certifyGroupCode) {
+		
+		// get entity manager
+		EntityManager em = getEntityManager();
+		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+		
+		// QWTMT_WAGETABLE_CERTIFY (QwtmtWagetableCertify) SQL
+		CriteriaQuery<Long> cq = criteriaBuilder.createQuery(Long.class);
+		
+		// root data QwtmtWagetableCertify
+		Root<QwtmtWagetableCertify> root = cq.from(QwtmtWagetableCertify.class);
+		
+		// select count(*) root (SQL SELECT)
+		cq.select(criteriaBuilder.count(root));
+		
+		// add where
+		List<Predicate> lstpredicateWhere = new ArrayList<>();
+		
+		// eq CompanyCode (where)
+		lstpredicateWhere.add(criteriaBuilder.equal(
+				root.get(QwtmtWagetableCertify_.qwtmtWagetableCertifyPK).get(QwtmtWagetableCertifyPK_.ccd),
+				companyCode));
+		
+		// eq CerticationCode (where)
+		lstpredicateWhere.add(criteriaBuilder.equal(
+				root.get(QwtmtWagetableCertify_.qwtmtWagetableCertifyPK).get(QwtmtWagetableCertifyPK_.certifyCd),
+				certificationCode));
+		
+		// noteq CertifyGroupCodeNone (certifyGroupCodeNone not null)
+		if (certifyGroupCode != null) {
+			lstpredicateWhere.add(criteriaBuilder.equal(root.get(QwtmtWagetableCertify_.qwtmtWagetableCertifyPK)
+					.get(QwtmtWagetableCertifyPK_.certifyGroupCd), certifyGroupCode));
+		}
+		
+		// set where to SQL
+		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+		
+		return (em.createQuery(cq).getSingleResult() > 0);
+	}
 
-			@Override
-			public String getCode() {
-				// TODO Auto-generated method stub
-				return qcemtCertification.getQcemtCertificationPK().getCertCd();
-			}
-		});
-		return certification;
+	@Override
+	public Optional<Certification> findById(String companyCode, String certificationCode, String certifyGroupCode) {
+		if (checkExistOfGroup(companyCode, certificationCode, certifyGroupCode)) {
+			return this.queryProxy()
+					.find(new QismtLaborInsuOfficePK(companyCode, certificationCode), QcemtCertification.class)
+					.map(c -> toDomain(c));
+		}
+		return Optional.empty();
 	}
 }

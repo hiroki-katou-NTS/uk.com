@@ -4,14 +4,16 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import nts.arc.error.BusinessException;
 import nts.uk.ctx.pr.core.dom.insurance.CommonAmount;
 
 /**
  * The Class PensionAvgearnValue.
  */
-@Data
+@Getter
+@Setter
 public class PensionAvgearnValue {
 
 	/** The male amount. */

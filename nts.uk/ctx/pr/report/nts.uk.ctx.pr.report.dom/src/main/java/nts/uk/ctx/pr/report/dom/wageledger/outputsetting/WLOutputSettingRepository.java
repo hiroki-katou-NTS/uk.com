@@ -4,9 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.pr.report.dom.wageledger.outputsetting;
 
-import java.util.List;
-
 import nts.uk.ctx.pr.report.dom.company.CompanyCode;
+import nts.uk.ctx.pr.report.dom.wageledger.aggregate.WLItemSubject;
 
 /**
  * The Interface WLOutputSettingRepository.
@@ -33,7 +32,7 @@ public interface WLOutputSettingRepository {
 	 *
 	 * @param outputSetting the output setting
 	 */
-	void remove(WLOutputSettingCode code, CompanyCode companyCode);
+	void remove(CompanyCode companyCode, WLOutputSettingCode code);
 	
 	/**
 	 * Find.
@@ -42,7 +41,7 @@ public interface WLOutputSettingRepository {
 	 * @param companyCode the company code
 	 * @return the WL output setting
 	 */
-	WLOutputSetting findByCode(WLOutputSettingCode code, CompanyCode companyCode);
+	WLOutputSetting findByCode(CompanyCode companyCode, WLOutputSettingCode code);
 	
 	/**
 	 * Checks if is exist.
@@ -50,14 +49,12 @@ public interface WLOutputSettingRepository {
 	 * @param code the code
 	 * @return true, if is exist
 	 */
-	boolean isExist(WLOutputSettingCode code, CompanyCode companyCode);
+	boolean isExist(CompanyCode companyCode, WLOutputSettingCode code);
 	
 	/**
-	 * Find all output setting in company.
+	 * Removes the aggregate item used.
 	 *
-	 * @param companyCode the company code
-	 * @param isLoadHeaderDataOnly the is load header data only
-	 * @return the list
+	 * @param itemSubject the item subject
 	 */
-	List<WLOutputSetting> findAll(CompanyCode companyCode, boolean isLoadHeaderDataOnly);
+	void removeAggregateItemUsed(WLItemSubject itemSubject);
 }

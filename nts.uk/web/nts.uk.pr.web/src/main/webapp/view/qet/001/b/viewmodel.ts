@@ -91,6 +91,7 @@ module qet001.b.viewmodel {
                 // Check output setting is empty.
                 var isHasData = outputSettings && outputSettings.length > 0;
                 if (!isHasData) {
+                    self.switchToCreateMode();
                     dfd.resolve();
                     return;
                 }
@@ -144,8 +145,7 @@ module qet001.b.viewmodel {
             service.saveOutputSetting(self.outputSettingDetail()).done(function() {
                 nts.uk.ui.windows.setShared('isHasUpdate', true, false);
                 nts.uk.ui.dialog.alert('save success!').then(function() {
-                    self.loadAllOutputSetting().done(function() {
-                    });
+                    self.loadAllOutputSetting();
                 })
             }).fail(function(res) {
                 // TODO: Show message duplicate code.
@@ -167,7 +167,28 @@ module qet001.b.viewmodel {
             }
             service.removeOutputSetting(selectedCode).done(function() {
                 nts.uk.ui.windows.setShared('isHasUpdate', true, false);
-                self.loadAllOutputSetting();
+                // Find item selected.
+                var itemSelected = self.outputSettings().outputSettingList().filter(item => item.code == selectedCode)[0];
+                var indexSelected = self.outputSettings().outputSettingList().indexOf(itemSelected);
+                // Remove item selected in list.
+                self.outputSettings().outputSettingList.remove(itemSelected);
+                
+                // If list is empty -> new mode.
+                if (self.outputSettings().outputSettingList().length == 0) {
+                    self.outputSettings().outputSettingSelectedCode(null);
+                    return;
+                }
+                
+                // Select same row with item selected.
+                if (self.outputSettings().outputSettingList()[indexSelected]) {
+                    self.outputSettings().outputSettingSelectedCode(
+                        self.outputSettings().outputSettingList()[indexSelected].code);
+                    return;
+                }
+                
+                // Select next higher row.
+                self.outputSettings().outputSettingSelectedCode(
+                    self.outputSettings().outputSettingList()[indexSelected - 1].code)
             }).fail(function(res) {
                 nts.uk.ui.dialog.alert(res.message);
             });

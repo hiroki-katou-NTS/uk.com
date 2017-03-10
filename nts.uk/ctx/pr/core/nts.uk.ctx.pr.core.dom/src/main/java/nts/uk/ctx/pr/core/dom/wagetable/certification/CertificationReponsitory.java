@@ -5,32 +5,12 @@
 package nts.uk.ctx.pr.core.dom.wagetable.certification;
 
 import java.util.List;
+import java.util.Optional;
 
-import nts.uk.ctx.core.dom.company.CompanyCode;
-
+/**
+ * The Interface CertificationReponsitory.
+ */
 public interface CertificationReponsitory {
-	
-	/**
-	 * Adds the.
-	 *
-	 * @param certification the certification
-	 */
-    void add(Certification certification);
-
-	/**
-	 * Update.
-	 *
-	 * @param certification the certification
-	 */
-    void update(Certification certification);
-
-	/**
-	 * Removes the.
-	 *
-	 * @param id the id
-	 * @param version the version
-	 */
-    void remove(String id, Long version);
 
 	/**
 	 * Find all.
@@ -38,23 +18,23 @@ public interface CertificationReponsitory {
 	 * @param companyCode the company code
 	 * @return the list
 	 */
-	List<Certification> findAll(CompanyCode companyCode);
+	List<Certification> findAll(String companyCode);
+
+	/**
+	 * Find all none of group.
+	 *
+	 * @param companyCode the company code
+	 * @return the list
+	 */
+	List<Certification> findAllNoneOfGroup(String companyCode);
 
 	/**
 	 * Find by id.
 	 *
 	 * @param companyCode the company code
-	 * @param code the code
-	 * @return the certification
+	 * @param certifyGroupCode the certify group code
+	 * @return the optional
 	 */
-	Certification findById(CompanyCode companyCode, String code);
+	Optional<Certification> findById (String companyCode,String certificationcode,String certifyGroupCode);
 
-	/**
-	 * Checks if is duplicate code.
-	 *
-	 * @param companyCode the company code
-	 * @param code the code
-	 * @return true, if is duplicate code
-	 */
-	boolean isDuplicateCode(CompanyCode companyCode, String code);
 }

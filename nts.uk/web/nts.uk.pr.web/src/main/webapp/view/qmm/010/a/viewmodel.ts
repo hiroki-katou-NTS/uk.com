@@ -1,32 +1,28 @@
 module nts.uk.pr.view.qmm010.a {
+
     import option = nts.uk.ui.option;
     import LaborInsuranceOfficeDto = service.model.LaborInsuranceOfficeDto;
     import LaborInsuranceOfficeFindOutDto = service.model.LaborInsuranceOfficeFindOutDto;
     import TypeActionLaborInsuranceOffice = service.model.TypeActionLaborInsuranceOffice;
     import LaborInsuranceOfficeDeleteDto = service.model.LaborInsuranceOfficeDeleteDto;
+
     export module viewmodel {
+
         export class ScreenModel {
+
             //ojbect value binding
             laborInsuranceOfficeModel: KnockoutObservable<LaborInsuranceOfficeModel>;
             lstlaborInsuranceOfficeModel: KnockoutObservableArray<LaborInsuranceOfficeFindOutDto>
             columnsLstlaborInsuranceOffice: KnockoutObservableArray<any>;
             selectCodeLstlaborInsuranceOffice: KnockoutObservable<string>;
-            textSearch: any;
             enableButton: KnockoutObservable<boolean>;
             isEmpty: KnockoutObservable<boolean>;
+            isEnableDelete: KnockoutObservable<boolean>;
             //update add LaborInsuranceOffice
             typeAction: KnockoutObservable<number>;
+
             constructor() {
                 var self = this;
-                self.textSearch = {
-                    valueSearch: ko.observable(""),
-                    option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                        textmode: "text",
-                        placeholder: "コード・名称で検索・・・",
-                        width: "270",
-                        textalign: "left"
-                    }))
-                }
                 self.columnsLstlaborInsuranceOffice = ko.observableArray([
                     { headerText: 'コード', prop: 'code', width: 120 },
                     { headerText: '名称', prop: 'name', width: 120 }
@@ -36,37 +32,51 @@ module nts.uk.pr.view.qmm010.a {
                 self.isEmpty = ko.observable(true);
                 self.laborInsuranceOfficeModel = ko.observable(new LaborInsuranceOfficeModel());
                 self.selectCodeLstlaborInsuranceOffice = ko.observable('');
+                self.isEnableDelete = ko.observable(true);
             }
+
+            //function reset value viewmodel
             private resetValueLaborInsurance() {
                 var self = this;
                 self.laborInsuranceOfficeModel().resetAllValue();
+                //set type action (ismode) add
                 self.typeAction(TypeActionLaborInsuranceOffice.add);
+                //reset value model
                 self.selectCodeLstlaborInsuranceOffice('');
                 self.laborInsuranceOfficeModel().setReadOnly(false);
                 if (!self.isEmpty()) self.clearErrorSave();
+                self.isEnableDelete(false);
             }
+
+            //function clear message error
             private clearErrorSave() {
                 var self = this;
                 $('.save-error').ntsError('clear');
                 $('#btn_save').ntsError('clear');
             }
+
+            //function read all SocialTnsuranceOffice
             private readFromSocialTnsuranceOffice() {
                 var self = this;
                 self.enableButton(false);
+                //call service find all SocialTnsuranceOffice
                 service.findAllSocialInsuranceOffice().done(data => {
                     if (data != null && data.length > 0) {
+                        //set data fw /b
                         nts.uk.ui.windows.setShared("dataInsuranceOffice", data);
+                        //open dialog /b/index.xhtml
                         nts.uk.ui.windows.sub.modal("/view/qmm/010/b/index.xhtml", { height: 700, width: 450, title: "社会保険事業所から読み込み" }).onClosed(() => {
                             self.enableButton(true);
                             self.reloadDataByAction('');
                         });
                     } else {
+                        //show message
                         alert("ER010");
                         self.enableButton(true);
                     }
                 });
-
             }
+
             public startPage(): JQueryPromise<any> {
                 var self = this;
                 var dfd = $.Deferred<any>();
@@ -75,12 +85,15 @@ module nts.uk.pr.view.qmm010.a {
                 });
                 return dfd.promise();
             }
+
             //Connection service find All InsuranceOffice
             private findAllInsuranceOffice(): JQueryPromise<any> {
                 var self = this;
                 var dfd = $.Deferred<any>();
                 service.findAllLaborInsuranceOffice().done(data => {
                     if (data != null && data.length > 0) {
+                        //data not null length > 0
+                        //reset List Labor Insurance Office
                         self.lstlaborInsuranceOfficeModel = ko.observableArray<LaborInsuranceOfficeFindOutDto>(data);
                         self.selectCodeLstlaborInsuranceOffice(data[0].code);
                         self.selectCodeLstlaborInsuranceOffice.subscribe(function(selectCodeLstlaborInsuranceOffice: string) {
@@ -89,32 +102,47 @@ module nts.uk.pr.view.qmm010.a {
                         self.detailLaborInsuranceOffice(data[0].code).done(data => {
                             dfd.resolve(self);
                         });
+                        self.isEnableDelete(true);
                     } else {
+                        //new reset data value
                         self.newmodelEmptyData();
                         dfd.resolve(self);
                     }
-
                 });
                 return dfd.promise();
             }
+
+            //Function show message error message
             private showMessageSave(message: string) {
                 $('#btn_save').ntsError('set', message);
             }
+
+            //Function action button save Onclick
             private saveLaborInsuranceOffice() {
                 var self = this;
+                //get ismode
                 if (self.typeAction() == TypeActionLaborInsuranceOffice.add) {
+                    //is mode is add
+                    //call service add labor insurance office
                     service.addLaborInsuranceOffice(self.collectData()).done(data => {
+                        //reload labor insurance office
                         self.reloadDataByAction(self.laborInsuranceOfficeModel().code());
+                        //clear error
                         self.clearErrorSave();
                     }).fail(function(res) {
+                        //show error message error
                         self.showMessageSave(res.message);
                     })
                 } else {
+                    //is mode is update
+                    //call service update labor insurance office
                     service.updateLaborInsuranceOffice(self.collectData()).done(data => {
                         self.reloadDataByAction(self.laborInsuranceOfficeModel().code());
                     });
                 }
             }
+
+            //Function show view by change selection
             private showchangeLaborInsuranceOfficep(selectionCodeLstLstLaborInsuranceOffice: string) {
                 var self = this;
                 if (selectionCodeLstLstLaborInsuranceOffice != null
@@ -124,10 +152,13 @@ module nts.uk.pr.view.qmm010.a {
                     self.detailLaborInsuranceOffice(selectionCodeLstLstLaborInsuranceOffice);
                 }
             }
+
+            //Function detail
             private detailLaborInsuranceOffice(code: string): JQueryPromise<any> {
                 var dfd = $.Deferred<any>();
                 if (code != null && code != undefined && code != '') {
                     var self = this;
+                    //call service find labor insurance office
                     service.findLaborInsuranceOffice(code).done(data => {
                         if (self.isEmpty()) {
                             self.selectCodeLstlaborInsuranceOffice.subscribe(function(selectionCodeLstLstLaborInsuranceOffice: string) {
@@ -135,23 +166,29 @@ module nts.uk.pr.view.qmm010.a {
                             });
                             self.isEmpty(false);
                         }
+                        //set data labor insurance office
                         self.selectCodeLstlaborInsuranceOffice(code);
                         self.laborInsuranceOfficeModel().updateData(data);
                         self.laborInsuranceOfficeModel().setReadOnly(true);
+                        self.isEnableDelete(true);
                     });
                     dfd.resolve(null);
                 }
                 return dfd.promise();
             }
+
             //reload action
             private reloadDataByAction(code: string) {
                 var self = this;
+                //call service findAll
                 service.findAllLaborInsuranceOffice().done(data => {
+                    //reset list data
                     if (self.lstlaborInsuranceOfficeModel == null || self.lstlaborInsuranceOfficeModel == undefined) {
                         self.lstlaborInsuranceOfficeModel = ko.observableArray<LaborInsuranceOfficeFindOutDto>(data);
                     } else {
                         self.lstlaborInsuranceOfficeModel(data);
                     }
+                    //set data view
                     if (code != null && code != undefined && code != '') {
                         self.detailLaborInsuranceOffice(code);
                     } else {
@@ -163,13 +200,17 @@ module nts.uk.pr.view.qmm010.a {
                     }
                 });
             }
+
+            //Function empty data respone
             private newmodelEmptyData() {
                 var self = this;
+                //reset list data
                 if (self.lstlaborInsuranceOfficeModel == null || self.lstlaborInsuranceOfficeModel == undefined) {
                     self.lstlaborInsuranceOfficeModel = ko.observableArray<LaborInsuranceOfficeFindOutDto>([]);
                 } else {
                     self.lstlaborInsuranceOfficeModel([]);
                 }
+                //reset value
                 self.resetValueLaborInsurance();
                 self.selectCodeLstlaborInsuranceOffice('');
                 self.isEmpty(true);
@@ -190,6 +231,7 @@ module nts.uk.pr.view.qmm010.a {
                     })
                 }
             }
+
             //Convert Model => DTO
             public collectData(): LaborInsuranceOfficeDto {
                 var self = this;
@@ -214,10 +256,10 @@ module nts.uk.pr.view.qmm010.a {
                 laborInsuranceOffice.memo = self.laborInsuranceOfficeModel().multilineeditor().memo();
                 return laborInsuranceOffice;
             }
-
         }
 
         export class LaborInsuranceOfficeModel {
+
             code: KnockoutObservable<string>;
             name: KnockoutObservable<string>;
             shortName: KnockoutObservable<string>;
@@ -238,6 +280,7 @@ module nts.uk.pr.view.qmm010.a {
             multilineeditor: KnockoutObservable<any>;
             isReadOnly: KnockoutObservable<boolean>;
             isEnable: KnockoutObservable<boolean>;
+
             constructor() {
                 this.code = ko.observable('');
                 this.name = ko.observable('');
@@ -270,6 +313,7 @@ module nts.uk.pr.view.qmm010.a {
                 this.isReadOnly = ko.observable(true);
                 this.isEnable = ko.observable(true);
             }
+
             //Reset value in view Model
             resetAllValue() {
                 this.code('');
@@ -303,6 +347,7 @@ module nts.uk.pr.view.qmm010.a {
                 this.isReadOnly(false);
                 this.isEnable(true);
             }
+
             updateData(officeInfo: LaborInsuranceOfficeDto) {
                 if (officeInfo != null) {
                     this.code(officeInfo.code);
@@ -335,12 +380,11 @@ module nts.uk.pr.view.qmm010.a {
                     });
                 }
             }
+
             setReadOnly(readonly: boolean) {
                 this.isReadOnly(readonly);
                 this.isEnable(!readonly);
             }
-
         }
-
     }
 }

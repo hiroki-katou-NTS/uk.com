@@ -5,7 +5,7 @@
 package nts.uk.ctx.pr.core.app.insurance.social.pensionrate.find;
 
 import java.math.BigDecimal;
-import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import lombok.Builder;
@@ -45,16 +45,16 @@ public class PensionRateDto implements PensionRateSetMemento {
 	public BigDecimal maxAmount;
 
 	/** The fund rate items. */
-	public List<FundRateItemDto> fundRateItems;
+	public Set<FundRateItemDto> fundRateItems;
 
 	/** The premium rate items. */
-	public List<PensionPremiumRateItemDto> premiumRateItems;
+	public Set<PensionPremiumRateItemDto> premiumRateItems;
 
 	/** The child contribution rate. */
 	public BigDecimal childContributionRate;
 
 	/** The rounding methods. */
-	public List<PensionRateRounding> roundingMethods;
+	public Set<PensionRateRounding> roundingMethods;
 
 	/** The fund input apply. */
 	public Boolean fundInputApply;
@@ -132,9 +132,9 @@ public class PensionRateDto implements PensionRateSetMemento {
 	 * #setFundRateItems(java.util.List)
 	 */
 	@Override
-	public void setFundRateItems(List<FundRateItem> fundRateItems) {
+	public void setFundRateItems(Set<FundRateItem> fundRateItems) {
 		this.fundRateItems = fundRateItems.stream().map(item -> FundRateItemDto.fromDomain(item))
-				.collect(Collectors.toList());
+				.collect(Collectors.toSet());
 	}
 
 	/*
@@ -145,9 +145,9 @@ public class PensionRateDto implements PensionRateSetMemento {
 	 * #setPremiumRateItems(java.util.List)
 	 */
 	@Override
-	public void setPremiumRateItems(List<PensionPremiumRateItem> premiumRateItems) {
+	public void setPremiumRateItems(Set<PensionPremiumRateItem> premiumRateItems) {
 		this.premiumRateItems = premiumRateItems.stream().map(item -> PensionPremiumRateItemDto.fromDomain(item))
-				.collect(Collectors.toList());
+				.collect(Collectors.toSet());
 	}
 
 	/*
@@ -170,7 +170,7 @@ public class PensionRateDto implements PensionRateSetMemento {
 	 * #setRoundingMethods(java.util.List)
 	 */
 	@Override
-	public void setRoundingMethods(List<PensionRateRounding> roundingMethods) {
+	public void setRoundingMethods(Set<PensionRateRounding> roundingMethods) {
 		this.roundingMethods = roundingMethods;
 	}
 

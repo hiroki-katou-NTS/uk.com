@@ -5,84 +5,32 @@
 	xmlns:com="http://xmlns.jcp.org/jsf/component"
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 <body>
-	<ui:composition template="../../../../master/base.xhtml">
-		<ui:define name="htmlHead">
-			<!-- <script>
-				__viewContext.primitiveValueConstraints.Money = {
-					valueType : 'String',
-					charType : 'Numeric',
-					maxLength : 10,
-				};
-			</script> -->
+	<ui:composition template="../../../base/simplehistory/base.xhtml">
+		<ui:define name="extendedHead">
 			<com:ValidatorScript>
 				nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceCode
 				nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceName
 				nts.uk.ctx.pr.core.dom.rule.employment.unitprice.Money
 				nts.uk.shr.com.primitive.Memo
   			</com:ValidatorScript>
-			<com:scriptfile set="IGNITE" />
+
 			<com:stylefile path="../common.css" />
-			<com:stylefile path="thispage.css" />
+			<com:stylefile path="style.css" />
 			<com:scriptfile path="service.js" />
 			<com:scriptfile path="viewmodel.js" />
 			<com:scriptfile path="start.js" />
 		</ui:define>
 
-		<ui:define name="content">
-			<!-- BEGIN FUNCTION AREA-->
-			<div id="functions-area">
-				<button id="btn_001" data-bind="click: enableNewMode"
-					class="large btn-default">新規</button>
-				<button id="btn_002" class="large proceed btn-default"
-					data-bind="click: save, enable: $root.errors.isEmpty &amp;&amp; isInputEnabled()">登録</button>
+		<!-- EXTENDED ACTION -->
+		<ui:define name="extendedAction">
 				<button id="btn_003" class="large btn-default" data-bind="">印刷
 					(PDF)</button>
 				<button id="btn_006" class="large btn-default" data-bind="">マスタ修正ログ</button>
-			</div>
-			<!-- END FUNCTION AREA-->
+		</ui:define>
 
-			<!-- BEGIN CONTENT AREA-->
-			<div id="contents-area">
-				<!-- BEGIN LEFT CONTENT-->
-				<div id="left-content" class="bg-green caret-right caret-background">
-					<div>
-						<div id="lbl_002" data-bind="ntsFormLabel: {}">コード/名称</div>
-						<span id="sch_001"
-							data-bind="ntsSearchBox: {comId:'lst_001' ,
-							items: historyList, 
-							selected: selectedId, 
-							selectedKey: 'id', 
-							childField: 'childs', 
-							fields: ['nodeText']}"></span>
-					</div>
-					<div class="margin-top-bot-20">
-						<button class="pull-left" id="btn_004"
-							data-bind="click: openAddDialog, enable: isInputEnabled() &amp;&amp; !isNewMode()">履歴追加</button>
-						<button class="pull-right" id="btn_005"
-							data-bind="click: openEditDialog, enable: isInputEnabled() &amp;&amp; !isNewMode()">履歴編集</button>
-						<div class="padding-top-10 pull-left cf">
-							<table id="lst_001"
-								data-bind="ntsTreeGridView:{
-										width: 290,
-										height: 350,
-										options: historyList,
-										value: selectedId,
-										optionsValue: 'id',
-										optionsChild: 'childs',
-										optionsText: 'nodeText',
-										multiple: false,
-										enable: true,
-										showCheckBox: false}"
-								class="cf">
-							</table>
-						</div>
-					</div>
-				</div>
-				<!-- END LEFT CONTENT-->
-
-				<!-- BEGIN RIGHT CONTENT-->
-				<div id="right-content">
-					<table class="form-default">
+		<!-- PAGE CONTENT -->
+		<ui:define name="pageContent">
+			<table class="form-default">
 						<tr>
 							<td><div id="lbl_003"
 									data-bind="ntsFormLabel: {constraint: ['UnitPriceCode','UnitPriceName'], required: true }">コード/名称</div></td>
@@ -99,17 +47,16 @@
 									value: unitPriceHistoryModel().unitPriceName,
 									constraint: 'UnitPriceName',
 									option: textEditorOption,
-									required: true,
-									enable: isInputEnabled()}" />
+									required: true}" />
 							</td>
 						</tr>
 						<tr>
 							<td><div id="lbl_004"
 									data-bind="ntsFormLabel: { required: true }">開始年月</div></td>
 							<td><span id="ipnStartMonth"
-								data-bind="ntsDatePicker: {value: unitPriceHistoryModel().startMonth, dateFormat: 'yyyy/MM', enable: isInputEnabled()}"></span>
+								data-bind="ntsDatePicker: {value: unitPriceHistoryModel().startMonth, dateFormat: 'yyyy/MM'}"></span>
 								<label id="lblEndMonth"
-								data-bind="text: ' ~ ' + unitPriceHistoryModel().endMonth()"></label></td>
+								data-bind="text: ' ~ ' + nts.uk.time.formatYearMonth(unitPriceHistoryModel().endMonth())"></label></td>
 						</tr>
 						<tr>
 							<td><div id="lbl_006"
@@ -123,21 +70,20 @@
 						                    decimallength: 2,
 						                    currencyformat: 'JPY',
 						                    currencyposition: 'right'},
-									required: true,
-									enable: isInputEnabled()}" />
+									required: true}" />
 							</td>
 						</tr>
 						<tr>
 							<td><div id="lbl_007" data-bind="ntsFormLabel: {}">固定的賃金</div></td>
 							<td><label class="ntsRadioBox"> <input type="radio"
 									name="textRadio"
-									data-bind="checkedValue: 'Company', checked: unitPriceHistoryModel().fixPaySettingType, enable: isInputEnabled()" />
+									data-bind="checkedValue: 'Company', checked: unitPriceHistoryModel().fixPaySettingType" />
 									<span class="box"></span><span class="label"
 									data-bind="text: '全員一律で指定する'"></span>
 							</label></td>
 							<td colspan="2"><label class="ntsRadioBox"><input
 									type="radio" name="textRadio"
-									data-bind="checkedValue: 'Contract', checked: unitPriceHistoryModel().fixPaySettingType, enable: isInputEnabled()" />
+									data-bind="checkedValue: 'Contract', checked: unitPriceHistoryModel().fixPaySettingType" />
 									<span class="box"></span><span class="label"
 									data-bind="text: '給与契約形態ごとに指定する'"></span></label></td>
 						</tr>
@@ -149,7 +95,7 @@
 						options: switchButtonDataSource,
 						optionsValue: 'code',
 						optionsText: 'name',
-						enable: !isContractSettingEnabled() &amp;&amp; isInputEnabled(),
+						enable: !isContractSettingEnabled(),
 						value: unitPriceHistoryModel().fixPayAtr}"></div></td>
 							<td><label id="lbl_009">月給者</label></td>
 							<td class="">
@@ -158,7 +104,7 @@
 						options: switchButtonDataSource,
 						optionsValue: 'code',
 						optionsText: 'name',
-						enable: isContractSettingEnabled() &amp;&amp; isInputEnabled(),
+						enable: isContractSettingEnabled(),
 						value: unitPriceHistoryModel().fixPayAtrMonthly}"></div>
 							</td>
 						</tr>
@@ -171,7 +117,7 @@
 						options: switchButtonDataSource,
 						optionsValue: 'code',
 						optionsText: 'name',
-						enable: isContractSettingEnabled() &amp;&amp; isInputEnabled(),
+						enable: isContractSettingEnabled(),
 						value: unitPriceHistoryModel().fixPayAtrDayMonth}"></div>
 							</td>
 						</tr>
@@ -184,7 +130,7 @@
 						options: switchButtonDataSource,
 						optionsValue: 'code',
 						optionsText: 'name',
-						enable: isContractSettingEnabled() &amp;&amp; isInputEnabled(),
+						enable: isContractSettingEnabled(),
 						value: unitPriceHistoryModel().fixPayAtrDaily}"></div>
 							</td>
 						</tr>
@@ -197,7 +143,7 @@
 						options: switchButtonDataSource,
 						optionsValue: 'code',
 						optionsText: 'name',
-						enable: isContractSettingEnabled() &amp;&amp; isInputEnabled(),
+						enable: isContractSettingEnabled(),
 						value: unitPriceHistoryModel().fixPayAtrHourly}"></div>
 							</td>
 						</tr>
@@ -211,16 +157,20 @@
 							<td class="valign-top"><div id="lbl_008"
 									data-bind="ntsFormLabel: {constraint: 'Memo'}">メモ</div></td>
 							<td colspan="3"><div id="inpMemo">
-									<TEXTAREA placeholder=""
-										data-bind="value: unitPriceHistoryModel().memo, enable: isInputEnabled()"
-										class="inp-default"></TEXTAREA>
+									<textarea placeholder=""
+										data-bind="ntsMultilineEditor: {
+										value: unitPriceHistoryModel().memo,
+										constraint: 'Memo',
+										option: {
+											resizeable: false,
+											placeholder: '',
+											width: '350',
+											textalign: 'left'
+											}
+										}"/>
 								</div></td>
 						</tr>
 					</table>
-				</div>
-				<!-- END RIGHT CONTENT-->
-			</div>
-			<!-- END CONTENT AREA-->
 		</ui:define>
 	</ui:composition>
 </body>

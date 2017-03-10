@@ -27,16 +27,6 @@ var nts;
                                     ]);
                                     self.currentCode = ko.observable();
                                     self.currentCodeList = ko.observableArray([]);
-                                    self.textSearch = {
-                                        valueSearch: ko.observable(""),
-                                        option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                                            textmode: "text",
-                                            placeholder: "コード・名称で検索・・・",
-                                            width: "270",
-                                            textalign: "left"
-                                        }))
-                                    };
-                                    self.enableButton = ko.observable(true);
                                     self.selectedMultipleTargetSetting = ko.observable(MultipleTargetSetting.BigestMethod);
                                     self.selectCodeLstLstCertifyGroup = ko.observable('');
                                     self.selectLstCodeLstCertification = ko.observableArray([]);
@@ -94,7 +84,7 @@ var nts;
                                         self.certifyGroupModel = ko.observable(new CertifyGroupModel(data));
                                         var dataClear = data.certifies;
                                         l.service.findAllCertification().done(function (data) {
-                                            self.certifyGroupModel().lstCertification(self.clearCertifyGroupFind(data, dataClear));
+                                            self.certifyGroupModel().lstCertification(data);
                                             self.lstCertification = data;
                                             dfd.resolve(self);
                                         });
@@ -116,31 +106,13 @@ var nts;
                                             self.certifyGroupModel().name(data.name);
                                             self.certifyGroupModel().multiApplySet(data.multiApplySet);
                                             self.certifyGroupModel().certifies(data.certifies);
-                                            self.certifyGroupModel().lstCertification(self.clearCertifyGroupFind(self.lstCertification, data.certifies));
                                             self.typeAction(TypeActionCertifyGroup.update);
                                             self.certifyGroupModel().setReadOnly(true);
+                                            l.service.findAllCertification().done(function (dataCertification) {
+                                                self.certifyGroupModel().setLstCertification(dataCertification);
+                                            });
                                         });
                                     }
-                                };
-                                ScreenModel.prototype.clearCertifyGroupFind = function (datafull, dataClear) {
-                                    var i = -1;
-                                    var dataSetup = [];
-                                    for (var _i = 0, datafull_1 = datafull; _i < datafull_1.length; _i++) {
-                                        var itemOfDataFull = datafull_1[_i];
-                                        i++;
-                                        var exitClear = 1;
-                                        for (var _a = 0, dataClear_1 = dataClear; _a < dataClear_1.length; _a++) {
-                                            var itemOfDataClear = dataClear_1[_a];
-                                            if (itemOfDataFull.code === itemOfDataClear.code) {
-                                                exitClear = 0;
-                                                break;
-                                            }
-                                        }
-                                        if (exitClear == 1) {
-                                            dataSetup.push(itemOfDataFull);
-                                        }
-                                    }
-                                    return dataSetup;
                                 };
                                 ScreenModel.prototype.showchangeCertifyGroup = function (selectionCodeLstLstCertifyGroup) {
                                     var self = this;
@@ -169,6 +141,7 @@ var nts;
                                             self.reloadDataByAction(self.certifyGroupModel().code());
                                         }).fail(function (error) {
                                             self.showMessageSave(error.message);
+                                            self.reloadDataByAction('');
                                         });
                                     }
                                     else {
@@ -177,6 +150,7 @@ var nts;
                                             self.clearErrorSave();
                                         }).fail(function (error) {
                                             self.showMessageSave(error.message);
+                                            self.reloadDataByAction(self.certifyGroupModel().code());
                                         });
                                     }
                                 };
@@ -240,6 +214,7 @@ var nts;
                                 };
                                 ScreenModel.prototype.showMessageSave = function (message) {
                                     $('#btn_saveCertifyGroup').ntsError('set', message);
+                                    nts.uk.ui.dialog.alert(message);
                                 };
                                 ScreenModel.prototype.clearErrorSave = function () {
                                     var self = this;
@@ -267,7 +242,7 @@ var nts;
                                     this.isEnable = ko.observable(false);
                                 }
                                 CertifyGroupModel.prototype.setLstCertification = function (lstCertification) {
-                                    this.lstCertification = ko.observableArray(lstCertification);
+                                    this.lstCertification(lstCertification);
                                 };
                                 CertifyGroupModel.prototype.setReadOnly = function (readonly) {
                                     this.isReadOnly(readonly);

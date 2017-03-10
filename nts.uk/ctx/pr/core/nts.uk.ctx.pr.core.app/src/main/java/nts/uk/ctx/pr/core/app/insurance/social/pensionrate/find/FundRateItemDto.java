@@ -8,8 +8,8 @@ import java.math.BigDecimal;
 
 import lombok.Data;
 import nts.uk.ctx.pr.core.dom.insurance.PaymentType;
-import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.InsuranceGender;
 import nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.FundRateItem;
+import nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.InsuranceGender;
 
 /**
  * The Class FundRateItemDto.

@@ -22,6 +22,7 @@
 					valueType : 'String',
 					charType : 'Numeric',
 					maxLength : 12,
+					max : 1000
 				};
 			</script>
 		</ui:define>
@@ -37,8 +38,8 @@
 			<div id="tabpanel-1" role="tabpanel">
 				<div class="sidebar-content-header">
 					<span class="title">雇用保険</span>
-					<button id="btn_saveHistoryUnemployeeInsurance" class="proceed"
-						data-bind="click: saveHistoryUnemployeeInsurance">登録</button>
+					<button id="btn_saveUnemployeeInsuranceHistory" class="proceed"
+						data-bind="click: saveUnemployeeInsuranceHistory, enable: isEnableSaveUnemployeeInsurance">登録</button>
 					<button id="A_BTN_003">マスタ修正ログ</button>
 					<label class="floatRight">労働保険事業所の登録</label>
 				</div>
@@ -50,8 +51,8 @@
 			<div id="tabpanel-2" role="tabpanel">
 				<div class="sidebar-content-header">
 					<span class="title">労災保険</span>
-					<button id="btn_saveHistoryAccidentInsurance" class="proceed"
-						data-bind="click: saveHistoryAccidentInsurance">登録</button>
+					<button id="btn_saveAccidentInsuranceHistory" class="proceed"
+						data-bind="click: saveAccidentInsuranceHistory, enable: isEnableSaveActionAccidentInsurance">登録</button>
 					<button id="A_BTN_002"
 						data-bind="click: openEditInsuranceBusinessType">事業種類の登録</button>
 					<button id="A_BTN_003">マスタ修正ログ</button>

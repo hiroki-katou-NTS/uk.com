@@ -14,12 +14,12 @@ import nts.uk.ctx.pr.core.dom.insurance.labor.LaborInsuranceOffice;
 import nts.uk.ctx.pr.core.dom.insurance.labor.LaborInsuranceOfficeRepository;
 import nts.uk.ctx.pr.core.dom.insurance.labor.service.LaborInsuranceOfficeService;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.context.LoginUserContext;
 
 /**
  * The Class LaborInsuranceOfficeUpdateCommandHandler.
  */
 @Stateless
-@Transactional
 public class LaborInsuranceOfficeUpdateCommandHandler extends CommandHandler<LaborInsuranceOfficeUpdateCommand> {
 
 	/** The labor insurance office repository. */
@@ -31,18 +31,24 @@ public class LaborInsuranceOfficeUpdateCommandHandler extends CommandHandler<Lab
 	private LaborInsuranceOfficeService LaborInsuranceOfficeService;
 	
 
-	/**
-	 * Handle command.
-	 * 
-	 * @param context
-	 *            context
+	/* (non-Javadoc)
+	 * @see nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command.CommandHandlerContext)
 	 */
 	@Override
+	@Transactional
 	protected void handle(CommandHandlerContext<LaborInsuranceOfficeUpdateCommand> context) {
-		String companyCode = AppContexts.user().companyCode();
-		LaborInsuranceOffice laborInsuranceOffice = context.getCommand().toDomain(companyCode);
+		// get user login info
+		LoginUserContext loginUserContext = AppContexts.user();
+		// get companyCode by user login
+		String companyCode = loginUserContext.companyCode();
+		// get command
+		LaborInsuranceOfficeUpdateCommand command = context.getCommand();
+		//to Domain
+		LaborInsuranceOffice laborInsuranceOffice = command.toDomain(companyCode);
+		//validate
 		laborInsuranceOffice.validate();
 		LaborInsuranceOfficeService.validateRequiredItem(laborInsuranceOffice);
+		//call respository
 		this.laborInsuranceOfficeRepository.update(laborInsuranceOffice);
 	}
 

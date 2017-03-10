@@ -18,8 +18,9 @@ var nts;
                                 function ScreenModel() {
                                     var self = this;
                                     self.textEditorOption = ko.mapping.fromJS(new option.TextEditorOption());
-                                    var InsuranceBusinessTypeDto = nts.uk.ui.windows.getShared("InsuranceBusinessTypeDto");
-                                    self.insuranceBusinessTypeUpdateModel = ko.observable(new InsuranceBusinessTypeUpdateModel(InsuranceBusinessTypeDto));
+                                    var insuranceBusinessTypeDto = nts.uk.ui.windows.getShared("InsuranceBusinessTypeDto");
+                                    self.insuranceBusinessTypeUpdateModel
+                                        = ko.observable(new InsuranceBusinessTypeUpdateModel(insuranceBusinessTypeDto));
                                 }
                                 ScreenModel.prototype.updateInsuranceBusinessType = function () {
                                     var self = this;

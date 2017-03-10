@@ -16,20 +16,7 @@ import lombok.Setter;
 /**
  * The Class QwtmtWagetableHeadPK.
  */
-
-/**
- * Gets the wage table cd.
- *
- * @return the wage table cd
- */
 @Getter
-
-/**
- * Sets the wage table cd.
- *
- * @param wageTableCd
- *            the new wage table cd
- */
 @Setter
 @Embeddable
 public class QwtmtWagetableHeadPK implements Serializable {

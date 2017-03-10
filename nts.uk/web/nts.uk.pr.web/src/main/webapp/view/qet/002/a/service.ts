@@ -4,7 +4,7 @@ module qet002.a {
             printService: "/screen/pr/qet002/generate",
         };
 
-        export function printService(query: any): JQueryPromise<qet002.a.viewmodel.AccumulatedPaymentResultViewModel> {
+        export function printService(query: viewmodel.ScreenModel): JQueryPromise<qet002.a.viewmodel.AccumulatedPaymentResultViewModel> {
             var dfd = $.Deferred<qet002.a.viewmodel.AccumulatedPaymentResultViewModel>();
             //            new nts.uk.ui.file.FileDownload("/screen/pr/qet002/generate", query).print().done(function() {
             //                dfd.resolve();
@@ -15,7 +15,14 @@ module qet002.a {
             //            nts.uk.request.exportFile('/screen/pr/qet002/generate', { value: 'abc' }).done(() => {
             //                console.log('DONE!!');
             //            });
-            nts.uk.request.exportFile(servicePath.printService, { value: 'abc' }).done(function() {
+             var accquery = {
+                 targetYear: query.targetYear(),
+                 isLowerLimit: query.isLowerLimit(),
+                 lowerLimitValue: query.lowerLimitValue(),
+                 isUpperLimit: query.isUpperLimit(),
+                 upperLimitValue: query.upperLimitValue()
+             }
+            nts.uk.request.exportFile(servicePath.printService, accquery).done(function() {
                 dfd.resolve();
             }).fail(function(res) {
                 dfd.reject(res);

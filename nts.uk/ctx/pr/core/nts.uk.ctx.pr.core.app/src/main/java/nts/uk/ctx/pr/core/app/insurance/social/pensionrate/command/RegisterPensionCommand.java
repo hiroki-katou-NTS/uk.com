@@ -4,7 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.app.insurance.social.pensionrate.command;
 
-import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import lombok.Getter;
@@ -44,18 +44,18 @@ public class RegisterPensionCommand extends PensionBaseCommand {
 		PensionRate pensionRate = new PensionRate(new PensionRateGetMemento() {
 
 			@Override
-			public List<PensionRateRounding> getRoundingMethods() {
+			public Set<PensionRateRounding> getRoundingMethods() {
 				return command.getRoundingMethods();
 			}
 
 			@Override
-			public List<PensionPremiumRateItem> getPremiumRateItems() {
+			public Set<PensionPremiumRateItem> getPremiumRateItems() {
 				return command.getPremiumRateItems().stream().map(dto -> {
 					PensionChargeRateItem pensionChargeRateItem = new PensionChargeRateItem();
 					pensionChargeRateItem.setCompanyRate(new Ins2Rate(dto.getCompanyRate()));
 					pensionChargeRateItem.setPersonalRate(new Ins2Rate(dto.getPersonalRate()));
 					return new PensionPremiumRateItem(dto.getPayType(), dto.getGenderType(), pensionChargeRateItem);
-				}).collect(Collectors.toList());
+				}).collect(Collectors.toSet());
 			}
 
 			@Override
@@ -77,7 +77,7 @@ public class RegisterPensionCommand extends PensionBaseCommand {
 			}
 
 			@Override
-			public List<FundRateItem> getFundRateItems() {
+			public Set<FundRateItem> getFundRateItems() {
 				return command.getFundRateItems().stream().map(dto -> {
 					PensionChargeRateItem burdenPensionChargeRateItem = new PensionChargeRateItem();
 					burdenPensionChargeRateItem.setCompanyRate(new Ins2Rate(dto.getBurdenChargeCompanyRate()));
@@ -88,7 +88,7 @@ public class RegisterPensionCommand extends PensionBaseCommand {
 					exemptionPensionChargeRateItem.setPersonalRate(new Ins2Rate(dto.getExemptionChargePersonalRate()));
 
 					return new FundRateItem(dto.getPayType(), dto.getGenderType(), burdenPensionChargeRateItem,exemptionPensionChargeRateItem);
-				}).collect(Collectors.toList());
+				}).collect(Collectors.toSet());
 			}
 
 			@Override

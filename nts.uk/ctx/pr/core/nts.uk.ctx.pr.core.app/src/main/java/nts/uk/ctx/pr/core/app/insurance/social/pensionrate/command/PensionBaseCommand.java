@@ -5,7 +5,7 @@
 package nts.uk.ctx.pr.core.app.insurance.social.pensionrate.command;
 
 import java.math.BigDecimal;
-import java.util.List;
+import java.util.Set;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -42,13 +42,13 @@ public abstract class PensionBaseCommand {
 	private Integer autoCalculate;
 
 	/** The premium rate items. */
-	private List<PensionPremiumRateItemDto> premiumRateItems;
+	private Set<PensionPremiumRateItemDto> premiumRateItems;
 
 	/** The fund rate items. */
-	private List<FundRateItemDto> fundRateItems;
+	private Set<FundRateItemDto> fundRateItems;
 
 	/** The rounding methods. */
-	private List<PensionRateRounding> roundingMethods;
+	private Set<PensionRateRounding> roundingMethods;
 
 	/** The max amount. */
 	private BigDecimal maxAmount;

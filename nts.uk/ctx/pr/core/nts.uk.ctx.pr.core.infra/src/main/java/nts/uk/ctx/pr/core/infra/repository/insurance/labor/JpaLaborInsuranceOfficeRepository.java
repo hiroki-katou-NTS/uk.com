@@ -18,8 +18,6 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.core.dom.company.CompanyCode;
-import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
 import nts.uk.ctx.pr.core.dom.insurance.labor.LaborInsuranceOffice;
 import nts.uk.ctx.pr.core.dom.insurance.labor.LaborInsuranceOfficeRepository;
 import nts.uk.ctx.pr.core.infra.entity.insurance.labor.QismtLaborInsuOffice;
@@ -65,18 +63,26 @@ public class JpaLaborInsuranceOfficeRepository extends JpaRepository implements 
 	 * findAll(java.lang.String)
 	 */
 	@Override
-	public List<LaborInsuranceOffice> findAll(CompanyCode companyCode) {
+	public List<LaborInsuranceOffice> findAll(String companyCode) {
+		// get entity manager
 		EntityManager em = getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+		// call QISMT_LABOR_INSU_OFFICE (QismtLaborInsuOffice SQL)
 		CriteriaQuery<QismtLaborInsuOffice> cq = criteriaBuilder.createQuery(QismtLaborInsuOffice.class);
+		// root data
 		Root<QismtLaborInsuOffice> root = cq.from(QismtLaborInsuOffice.class);
+		// select root
 		cq.select(root);
-		List<Predicate> lstpredicate = new ArrayList<>();
-		lstpredicate.add(criteriaBuilder.equal(
-				root.get(QismtLaborInsuOffice_.qismtLaborInsuOfficePK).get(QismtLaborInsuOfficePK_.ccd),
-				companyCode.v()));
-		cq.where(lstpredicate.toArray(new Predicate[] {}));
+		// add where
+		List<Predicate> lstpredicateWhere = new ArrayList<>();
+		// eq CompanyCode
+		lstpredicateWhere.add(criteriaBuilder.equal(
+				root.get(QismtLaborInsuOffice_.qismtLaborInsuOfficePK).get(QismtLaborInsuOfficePK_.ccd), companyCode));
+		// set where to SQL
+		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+		// creat query
 		TypedQuery<QismtLaborInsuOffice> query = em.createQuery(cq);
+		// exclude select
 		List<LaborInsuranceOffice> lstLaborInsuranceOffice = query.getResultList().stream().map(item -> toDomain(item))
 				.collect(Collectors.toList());
 		return lstLaborInsuranceOffice;
@@ -90,36 +96,9 @@ public class JpaLaborInsuranceOfficeRepository extends JpaRepository implements 
 	 * findById(java.lang.String, java.lang.String)
 	 */
 	@Override
-	public Optional<LaborInsuranceOffice> findById(CompanyCode companyCode, OfficeCode officeCode) {
-		return this.queryProxy()
-				.find(new QismtLaborInsuOfficePK(companyCode.v(), officeCode.v()), QismtLaborInsuOffice.class)
+	public Optional<LaborInsuranceOffice> findById(String companyCode, String officeCode) {
+		return this.queryProxy().find(new QismtLaborInsuOfficePK(companyCode, officeCode), QismtLaborInsuOffice.class)
 				.map(c -> toDomain(c));
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * nts.uk.ctx.pr.core.dom.insurance.labor.LaborInsuranceOfficeRepository#
-	 * isDuplicateCode(nts.uk.ctx.core.dom.company.CompanyCode,
-	 * nts.uk.ctx.pr.core.dom.insurance.OfficeCode)
-	 */
-	@Override
-	public boolean isDuplicateCode(CompanyCode companyCode, OfficeCode code) {
-		EntityManager em = getEntityManager();
-		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
-		CriteriaQuery<Long> cq = criteriaBuilder.createQuery(Long.class);
-		cq.select(criteriaBuilder.count(cq.from(QismtLaborInsuOffice.class)));
-		Root<QismtLaborInsuOffice> root = cq.from(QismtLaborInsuOffice.class);
-		List<Predicate> lstpredicate = new ArrayList<>();
-		lstpredicate.add(criteriaBuilder.equal(
-				root.get(QismtLaborInsuOffice_.qismtLaborInsuOfficePK).get(QismtLaborInsuOfficePK_.ccd),
-				companyCode.v()));
-		lstpredicate.add(criteriaBuilder.equal(
-				root.get(QismtLaborInsuOffice_.qismtLaborInsuOfficePK).get(QismtLaborInsuOfficePK_.liOfficeCd),
-				code.v()));
-		cq.where(lstpredicate.toArray(new Predicate[] {}));
-		return (em.createQuery(cq).getSingleResult() > 0);
 	}
 
 	/**
@@ -157,15 +136,7 @@ public class JpaLaborInsuranceOfficeRepository extends JpaRepository implements 
 	 * java.lang.Long)
 	 */
 	@Override
-	public void remove(CompanyCode companyCode, String officeCode, Long version) {
-		this.commandProxy().remove(QismtLaborInsuOffice.class, new QismtLaborInsuOfficePK(companyCode.v(), officeCode));
+	public void remove(String companyCode, String officeCode, long version) {
+		this.commandProxy().remove(QismtLaborInsuOffice.class, new QismtLaborInsuOfficePK(companyCode, officeCode));
 	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * nts.uk.ctx.pr.core.dom.insurance.labor.LaborInsuranceOfficeRepository#
-	 * addList(java.util.List)
-	 */
 }

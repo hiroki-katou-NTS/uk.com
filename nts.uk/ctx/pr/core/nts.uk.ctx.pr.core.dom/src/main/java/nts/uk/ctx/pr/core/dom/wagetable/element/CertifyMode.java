@@ -7,31 +7,37 @@ package nts.uk.ctx.pr.core.dom.wagetable.element;
 import java.util.List;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.uk.ctx.pr.core.dom.wagetable.ElementType;
 
 /**
- * The Class CodeRefMode.
+ * The Class CertifyMode.
  */
 @Getter
 public class CertifyMode extends BaseMode {
 
 	/** The items. */
-	private List<CertifyItem> items;
+	@Setter
+	private List<CodeItem> items;
 
 	/**
-	 * Instantiates a new code ref mode.
-	 *
-	 * @param companyCode
-	 *            the company code
-	 * @param refNo
-	 *            the ref no
+	 * Instantiates a new certify mode.
 	 */
 	public CertifyMode() {
 		super(ElementType.CERTIFICATION);
+	}
 
-		// Create items
-		this.items = null;
-		// new CertifyItem(code, );
+	/**
+	 * Instantiates a new certify mode.
+	 *
+	 * @param type
+	 *            the type
+	 * @param items
+	 *            the items
+	 */
+	public CertifyMode(ElementType type, List<CodeItem> items) {
+		super(type);
+		this.items = items;
 	}
 
 }

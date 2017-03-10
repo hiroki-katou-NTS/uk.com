@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.app.insurance.labor.accidentrate.command;
 
+import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
@@ -20,7 +22,6 @@ import nts.uk.shr.com.context.LoginUserContext;
  * The Class AccidentInsuranceRateUpdateCommandHandler.
  */
 @Stateless
-@Transactional
 public class AccidentInsuranceRateUpdateCommandHandler extends CommandHandler<AccidentInsuranceRateUpdateCommand> {
 
 	/** The accident insurance rate repository. */
@@ -39,16 +40,37 @@ public class AccidentInsuranceRateUpdateCommandHandler extends CommandHandler<Ac
 	 * .CommandHandlerContext)
 	 */
 	@Override
+	@Transactional
 	protected void handle(CommandHandlerContext<AccidentInsuranceRateUpdateCommand> context) {
-		// getCommand
-		AccidentInsuranceRateUpdateCommand command = context.getCommand();
+		
 		// get user login
 		LoginUserContext loginUserContext = AppContexts.user();
-		AccidentInsuranceRate accidentInsuranceRate = command.toDomain(loginUserContext.companyCode());
+		
+		// get companyCode by user login
+		String companyCode = loginUserContext.companyCode();
+		
+		// getCommand
+		AccidentInsuranceRateUpdateCommand command = context.getCommand();
+		
+		// to domain
+		AccidentInsuranceRate accidentInsuranceRate = command.toDomain(companyCode);
+		
 		// validate domain
 		accidentInsuranceRate.validate();
+		
 		// validate input
 		this.accidentInsuranceRateService.validateDateRangeUpdate(accidentInsuranceRate);
+		
+		// get first by update
+		Optional<AccidentInsuranceRate> optionalUpdate = this.accidentInsuranceRateRepo.findBetweenUpdate(
+				accidentInsuranceRate.getCompanyCode().v(), accidentInsuranceRate.getApplyRange().getStartMonth(),
+				accidentInsuranceRate.getHistoryId());
+		
+		if (optionalUpdate.isPresent()) {
+			this.accidentInsuranceRateRepo.updateYearMonth(optionalUpdate.get(),
+					accidentInsuranceRate.getApplyRange().getStartMonth().previousMonth());
+		}
+		
 		// connection service update
 		this.accidentInsuranceRateRepo.update(accidentInsuranceRate);
 	}

@@ -4,24 +4,20 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.app.insurance.social.healthrate.command;
 
+import java.math.BigDecimal;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.gul.text.IdentifierUtil;
-import nts.uk.ctx.core.dom.company.CompanyCode;
-import nts.uk.ctx.core.dom.util.PrimitiveUtil;
-import nts.uk.ctx.pr.core.dom.insurance.CalculateMethod;
-import nts.uk.ctx.pr.core.dom.insurance.CommonAmount;
+import nts.uk.ctx.pr.core.app.insurance.social.healthrate.find.AddNewHistoryDto;
 import nts.uk.ctx.pr.core.dom.insurance.Ins3Rate;
-import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
-import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
+import nts.uk.ctx.pr.core.dom.insurance.PaymentType;
+import nts.uk.ctx.pr.core.dom.insurance.RoundingItem;
+import nts.uk.ctx.pr.core.dom.insurance.RoundingMethod;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.HealthChargeRateItem;
-import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.HealthInsuranceRate;
-import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.HealthInsuranceRateGetMemento;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.HealthInsuranceRounding;
+import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.HealthInsuranceType;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.InsuranceRateItem;
 
 /**
@@ -29,73 +25,52 @@ import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.InsuranceRateItem;
  */
 @Getter
 @Setter
-public class RegisterHealthInsuranceCommand extends HealthInsuranceBaseCommand {
-
-	/**
-	 * To domain.
-	 *
-	 * @param companyCode
-	 *            the company code
-	 * @return the health insurance rate
-	 */
-	public HealthInsuranceRate toDomain(CompanyCode companyCode) {
-		RegisterHealthInsuranceCommand command = this;
-
-		// Transfer data
-		HealthInsuranceRate healthInsuranceRate = new HealthInsuranceRate(new HealthInsuranceRateGetMemento() {
-
-			@Override
-			public Set<HealthInsuranceRounding> getRoundingMethods() {
-				if (command.getRoundingMethods().isEmpty()) {
-					return null;
-				}
-				return new HashSet<HealthInsuranceRounding>(command.getRoundingMethods());
-			}
-
-			@Override
-			public Set<InsuranceRateItem> getRateItems() {
-				return new HashSet<InsuranceRateItem>(command.getRateItems().stream()
-						.map(dto -> new InsuranceRateItem(dto.getPayType(), dto.getInsuranceType(),
-								new HealthChargeRateItem(new Ins3Rate(dto.getChargeRate().getCompanyRate()),
-										new Ins3Rate(dto.getChargeRate().getPersonalRate()))))
-						.collect(Collectors.toList()));
-			}
-
-			@Override
-			public OfficeCode getOfficeCode() {
-				return new OfficeCode(command.getOfficeCode());
-			}
-
-			@Override
-			public CommonAmount getMaxAmount() {
-				return new CommonAmount(command.getMaxAmount());
-			}
-
-			@Override
-			public String getHistoryId() {
-				if (command.getHistoryId().equals("")) {
-					return IdentifierUtil.randomUniqueId();
-				}
-				return command.getHistoryId();
-			}
-
-			@Override
-			public CompanyCode getCompanyCode() {
-				return companyCode;
-			}
-
-			@Override
-			public CalculateMethod getAutoCalculate() {
-				return CalculateMethod.valueOf(command.getAutoCalculate());
-			}
-
-			@Override
-			public MonthRange getApplyRange() {
-				return MonthRange.range(PrimitiveUtil.toYearMonth(command.getStartMonth(), "/"),
-						PrimitiveUtil.toYearMonth(command.getEndMonth(), "/"));
-			}
-		});
-
-		return healthInsuranceRate;
+public class RegisterHealthInsuranceCommand extends AddNewHistoryDto {
+	RegisterHealthInsuranceCommand command = this;
+	//init default rate values
+	public Set<InsuranceRateItem> setDafaultRateItems() {
+		Set<InsuranceRateItem> setItem = new HashSet<InsuranceRateItem>();
+		InsuranceRateItem item1 = new InsuranceRateItem(PaymentType.Salary, HealthInsuranceType.Basic,
+				new HealthChargeRateItem(new Ins3Rate(new BigDecimal(0)), new Ins3Rate(new BigDecimal(0))));
+		setItem.add(item1);
+		InsuranceRateItem item2 = new InsuranceRateItem(PaymentType.Salary, HealthInsuranceType.General,
+				new HealthChargeRateItem(new Ins3Rate(new BigDecimal(0)), new Ins3Rate(new BigDecimal(0))));
+		setItem.add(item2);
+		InsuranceRateItem item3 = new InsuranceRateItem(PaymentType.Salary, HealthInsuranceType.Nursing,
+				new HealthChargeRateItem(new Ins3Rate(new BigDecimal(0)), new Ins3Rate(new BigDecimal(0))));
+		setItem.add(item3);
+		InsuranceRateItem item4 = new InsuranceRateItem(PaymentType.Salary, HealthInsuranceType.Special,
+				new HealthChargeRateItem(new Ins3Rate(new BigDecimal(0)), new Ins3Rate(new BigDecimal(0))));
+		setItem.add(item4);
+		InsuranceRateItem item5 = new InsuranceRateItem(PaymentType.Bonus, HealthInsuranceType.Basic,
+				new HealthChargeRateItem(new Ins3Rate(new BigDecimal(0)), new Ins3Rate(new BigDecimal(0))));
+		setItem.add(item5);
+		InsuranceRateItem item6 = new InsuranceRateItem(PaymentType.Bonus, HealthInsuranceType.General,
+				new HealthChargeRateItem(new Ins3Rate(new BigDecimal(0)), new Ins3Rate(new BigDecimal(0))));
+		setItem.add(item6);
+		InsuranceRateItem item7 = new InsuranceRateItem(PaymentType.Bonus, HealthInsuranceType.Nursing,
+				new HealthChargeRateItem(new Ins3Rate(new BigDecimal(0)), new Ins3Rate(new BigDecimal(0))));
+		setItem.add(item7);
+		InsuranceRateItem item8 = new InsuranceRateItem(PaymentType.Bonus, HealthInsuranceType.Special,
+				new HealthChargeRateItem(new Ins3Rate(new BigDecimal(0)), new Ins3Rate(new BigDecimal(0))));
+		setItem.add(item8);
+		return setItem;
 	}
+	
+	//init default rounding values
+		public Set<HealthInsuranceRounding> setDafaultRounding() {
+			Set<HealthInsuranceRounding> setItem = new HashSet<HealthInsuranceRounding>();
+			RoundingItem salRounding = new RoundingItem();
+			salRounding.setCompanyRoundAtr(RoundingMethod.RoundUp);
+			salRounding.setPersonalRoundAtr(RoundingMethod.RoundUp);
+			HealthInsuranceRounding item1 = new HealthInsuranceRounding(PaymentType.Salary,salRounding);
+			setItem.add(item1);
+			RoundingItem bnsRounding = new RoundingItem();
+			bnsRounding.setCompanyRoundAtr(RoundingMethod.RoundUp);
+			bnsRounding.setPersonalRoundAtr(RoundingMethod.RoundUp);
+			HealthInsuranceRounding item2 = new HealthInsuranceRounding(PaymentType.Bonus,bnsRounding);
+			setItem.add(item2);
+			
+			return setItem;
+		}
 }

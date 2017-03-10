@@ -64,7 +64,7 @@ public class UnitPriceHistoryDto implements UnitPriceHistorySetMemento {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see nts.uk.ctx.pr.core.dom.rule.employment.unitprice.
 	 * UnitPriceHistorySetMemento#setId(java.lang.String)
 	 */
@@ -75,7 +75,7 @@ public class UnitPriceHistoryDto implements UnitPriceHistorySetMemento {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see nts.uk.ctx.pr.core.dom.rule.employment.unitprice.
 	 * UnitPriceHistorySetMemento#setCompanyCode(nts.uk.ctx.core.dom.company.
 	 * CompanyCode)
@@ -87,7 +87,7 @@ public class UnitPriceHistoryDto implements UnitPriceHistorySetMemento {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see nts.uk.ctx.pr.core.dom.rule.employment.unitprice.
 	 * UnitPriceHistorySetMemento#setUnitPriceCode(nts.uk.ctx.pr.core.dom.rule.
 	 * employment.unitprice.UnitPriceCode)
@@ -99,7 +99,7 @@ public class UnitPriceHistoryDto implements UnitPriceHistorySetMemento {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see nts.uk.ctx.pr.core.dom.rule.employment.unitprice.
 	 * UnitPriceHistorySetMemento#setApplyRange(nts.uk.ctx.pr.core.dom.insurance
 	 * .MonthRange)
@@ -112,7 +112,7 @@ public class UnitPriceHistoryDto implements UnitPriceHistorySetMemento {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see nts.uk.ctx.pr.core.dom.rule.employment.unitprice.
 	 * UnitPriceHistorySetMemento#setBudget(nts.uk.ctx.pr.core.dom.rule.
 	 * employment.unitprice.Money)
@@ -124,7 +124,7 @@ public class UnitPriceHistoryDto implements UnitPriceHistorySetMemento {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see nts.uk.ctx.pr.core.dom.rule.employment.unitprice.
 	 * UnitPriceHistorySetMemento#setFixPaySettingType(nts.uk.ctx.pr.core.dom.
 	 * rule.employment.unitprice.SettingType)
@@ -136,7 +136,7 @@ public class UnitPriceHistoryDto implements UnitPriceHistorySetMemento {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see nts.uk.ctx.pr.core.dom.rule.employment.unitprice.
 	 * UnitPriceHistorySetMemento#setFixPayAtr(nts.uk.ctx.pr.core.dom.rule.
 	 * employment.unitprice.ApplySetting)
@@ -148,7 +148,7 @@ public class UnitPriceHistoryDto implements UnitPriceHistorySetMemento {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see nts.uk.ctx.pr.core.dom.rule.employment.unitprice.
 	 * UnitPriceHistorySetMemento#setFixPayAtrMonthly(nts.uk.ctx.pr.core.dom.
 	 * rule.employment.unitprice.ApplySetting)
@@ -160,7 +160,7 @@ public class UnitPriceHistoryDto implements UnitPriceHistorySetMemento {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see nts.uk.ctx.pr.core.dom.rule.employment.unitprice.
 	 * UnitPriceHistorySetMemento#setFixPayAtrDayMonth(nts.uk.ctx.pr.core.dom.
 	 * rule.employment.unitprice.ApplySetting)
@@ -172,7 +172,7 @@ public class UnitPriceHistoryDto implements UnitPriceHistorySetMemento {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see nts.uk.ctx.pr.core.dom.rule.employment.unitprice.
 	 * UnitPriceHistorySetMemento#setFixPayAtrDaily(nts.uk.ctx.pr.core.dom.rule.
 	 * employment.unitprice.ApplySetting)
@@ -184,7 +184,7 @@ public class UnitPriceHistoryDto implements UnitPriceHistorySetMemento {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see nts.uk.ctx.pr.core.dom.rule.employment.unitprice.
 	 * UnitPriceHistorySetMemento#setFixPayAtrHourly(nts.uk.ctx.pr.core.dom.rule
 	 * .employment.unitprice.ApplySetting)
@@ -196,7 +196,7 @@ public class UnitPriceHistoryDto implements UnitPriceHistorySetMemento {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see nts.uk.ctx.pr.core.dom.rule.employment.unitprice.
 	 * UnitPriceHistorySetMemento#setMemo(nts.uk.shr.com.primitive.Memo)
 	 */
@@ -207,7 +207,7 @@ public class UnitPriceHistoryDto implements UnitPriceHistorySetMemento {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see nts.uk.ctx.pr.core.dom.rule.employment.unitprice.
 	 * UnitPriceHistorySetMemento#setUnitPriceName(nts.uk.ctx.pr.core.dom.rule.
 	 * employment.unitprice.UnitPriceName)

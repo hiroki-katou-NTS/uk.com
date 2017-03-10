@@ -38,7 +38,7 @@ public class OutputSettingSaveCommandHandler extends CommandHandler<OutputSettin
 		
 		if (command.isCreateMode()) {
 			// Check exist.
-			if (this.repository.isExist(new WLOutputSettingCode(command.getCode()), new CompanyCode(companyCode))) {
+			if (this.repository.isExist(new CompanyCode(companyCode), new WLOutputSettingCode(command.getCode()))) {
 				throw new BusinessException("ER026");
 			}
 			
@@ -49,8 +49,8 @@ public class OutputSettingSaveCommandHandler extends CommandHandler<OutputSettin
 		}
 		
 		// Case update.
-		WLOutputSetting outputSetting = this.repository.findByCode(new WLOutputSettingCode(command.getCode()), 
-				new CompanyCode(companyCode));
+		WLOutputSetting outputSetting = this.repository.findByCode(new CompanyCode(companyCode), 
+				new WLOutputSettingCode(command.getCode()));
 		if (outputSetting == null) {
 			throw new IllegalStateException("Output Setting is not found");
 		}

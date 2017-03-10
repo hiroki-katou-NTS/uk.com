@@ -5,9 +5,9 @@
 package nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate;
 
 import java.util.List;
+import java.util.Optional;
 
-import nts.uk.ctx.core.dom.company.CompanyCode;
-import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
+import nts.arc.time.YearMonth;
 
 /**
  * The Interface AccidentInsuranceRateRepository.
@@ -34,7 +34,7 @@ public interface AccidentInsuranceRateRepository {
 	 * @param id the id
 	 * @param version the version
 	 */
-    void remove(CompanyCode companyCode,String historyId, Long version);
+    void remove(String companyCode,String historyId, long version);
 
 	/**
 	 * Find all.
@@ -42,7 +42,7 @@ public interface AccidentInsuranceRateRepository {
 	 * @param companyCode the company code
 	 * @return the list
 	 */
-	List<AccidentInsuranceRate> findAll(CompanyCode companyCode);
+	List<AccidentInsuranceRate> findAll(String companyCode);
 
 	/**
 	 * Find by id.
@@ -50,23 +50,31 @@ public interface AccidentInsuranceRateRepository {
 	 * @param id the id
 	 * @return the accident insurance rate
 	 */
-	AccidentInsuranceRate findById(CompanyCode companyCode, String historyId);
-
+	Optional<AccidentInsuranceRate> findById(String companyCode, String historyId);
+	
 	/**
-	 * Checks if is invalid date range.
-	 *
-	 * @param startMonth the start month
-	 * @return true, if is invalid date range
-	 */
-	boolean isInvalidDateRange(CompanyCode companyCode, MonthRange monthRange);
-
-	/**
-	 * Checks if is invalid date range update.
+	 * Find first data.
 	 *
 	 * @param companyCode the company code
-	 * @param monthRange the month range
-	 * @param historyId the history id
-	 * @return true, if is invalid date range update
+	 * @return the optional
 	 */
-	boolean isInvalidDateRangeUpdate(CompanyCode companyCode, MonthRange monthRange,String historyId);
+	Optional<AccidentInsuranceRate> findFirstData(String companyCode);
+	
+	/**
+	 * Update year month.
+	 *
+	 * @param rate the rate
+	 * @param yearMonth the year month
+	 */
+	void updateYearMonth(AccidentInsuranceRate rate,YearMonth yearMonth);
+	
+	/**
+	 * Find between update.
+	 *
+	 * @param companyCode the company code
+	 * @param yearMonth the year month
+	 * @param historyId the history id
+	 * @return the optional
+	 */
+	Optional<AccidentInsuranceRate> findBetweenUpdate(String companyCode, YearMonth yearMonth,String historyId);
 }

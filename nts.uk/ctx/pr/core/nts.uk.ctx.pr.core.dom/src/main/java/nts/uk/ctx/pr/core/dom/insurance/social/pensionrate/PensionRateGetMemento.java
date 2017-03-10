@@ -4,7 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.dom.insurance.social.pensionrate;
 
-import java.util.List;
+import java.util.Set;
 
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.CalculateMethod;
@@ -72,14 +72,14 @@ public interface PensionRateGetMemento {
 	 *
 	 * @return the fund rate items
 	 */
-	List<FundRateItem> getFundRateItems();
+	Set<FundRateItem> getFundRateItems();
 
 	/**
 	 * Gets the premium rate items.
 	 *
 	 * @return the premium rate items
 	 */
-	List<PensionPremiumRateItem> getPremiumRateItems();
+	Set<PensionPremiumRateItem> getPremiumRateItems();
 
 	/**
 	 * Gets the child contribution rate.
@@ -93,6 +93,6 @@ public interface PensionRateGetMemento {
 	 *
 	 * @return the rounding methods
 	 */
-	List<PensionRateRounding> getRoundingMethods();
+	Set<PensionRateRounding> getRoundingMethods();
 
 }

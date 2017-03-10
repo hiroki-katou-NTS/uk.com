@@ -22,7 +22,7 @@ import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.InsuBizRateItem;
 public class AccidentInsuranceRateDto {
 	
 	/** The history insurance. */
-	private HistoryAccidentInsuranceRateDto historyInsurance;
+	private AccidentInsuranceRateHistoryDto historyInsurance;
 
 	/** The rate items. */
 	private List<InsuBizRateItemDto> rateItems;

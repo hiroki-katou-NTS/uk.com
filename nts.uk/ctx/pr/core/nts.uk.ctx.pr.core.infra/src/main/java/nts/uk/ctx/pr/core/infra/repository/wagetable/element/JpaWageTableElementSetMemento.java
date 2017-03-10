@@ -4,9 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.infra.repository.wagetable.element;
 
-import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.wagetable.DemensionNo;
-import nts.uk.ctx.pr.core.dom.wagetable.WageTableCode;
 import nts.uk.ctx.pr.core.dom.wagetable.element.ElementMode;
 import nts.uk.ctx.pr.core.dom.wagetable.element.RefMode;
 import nts.uk.ctx.pr.core.dom.wagetable.element.WageTableElementSetMemento;
@@ -31,12 +29,11 @@ public class JpaWageTableElementSetMemento implements WageTableElementSetMemento
 	 * @param typeValue
 	 *            the type value
 	 */
-	public JpaWageTableElementSetMemento(CompanyCode companyCode, WageTableCode wageTableCode,
+	public JpaWageTableElementSetMemento(String companyCode, String wageTableCode,
 			QwtmtWagetableElement typeValue) {
 		QwtmtWagetableElementPK qwtmtWagetableElementPK = new QwtmtWagetableElementPK();
-		qwtmtWagetableElementPK.setCcd(companyCode.v());
-		qwtmtWagetableElementPK.setWageTableCd(wageTableCode.v());
-
+		qwtmtWagetableElementPK.setCcd(companyCode);
+		qwtmtWagetableElementPK.setWageTableCd(wageTableCode);
 		this.typeValue = typeValue;
 	}
 
@@ -64,18 +61,13 @@ public class JpaWageTableElementSetMemento implements WageTableElementSetMemento
 	public void setElementModeSetting(ElementMode elementModeSetting) {
 		this.typeValue.setDemensionType(elementModeSetting.getElementType().value);
 
-		switch (elementModeSetting.getElementType()) {
-		case MASTER_REF:
+		if (elementModeSetting.getElementType().isCodeMode) {
 			this.typeValue.setDemensionRefNo(((RefMode) elementModeSetting).getRefNo().v());
-			break;
-		case CODE_REF:
-			this.typeValue.setDemensionRefNo(((RefMode) elementModeSetting).getRefNo().v());
-			break;
-		default:
-			this.typeValue.setDemensionRefNo("000");
-			break;
 		}
 
+		if (elementModeSetting.getElementType().isRangeMode) {
+			this.typeValue.setDemensionRefNo("000");
+		}
 	}
 
 }

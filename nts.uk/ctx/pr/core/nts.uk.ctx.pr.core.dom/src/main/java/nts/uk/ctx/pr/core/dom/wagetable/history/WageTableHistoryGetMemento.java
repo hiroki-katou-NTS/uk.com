@@ -9,6 +9,7 @@ import java.util.List;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 import nts.uk.ctx.pr.core.dom.wagetable.WageTableCode;
+import nts.uk.ctx.pr.core.dom.wagetable.element.WageTableElement;
 
 /**
  * The Interface WageTableHistoryGetMemento.
@@ -27,7 +28,7 @@ public interface WageTableHistoryGetMemento {
 	 *
 	 * @return the code
 	 */
-	WageTableCode getCode();
+	WageTableCode getWageTableCode();
 
 	/**
 	 * Gets the history id.
@@ -44,17 +45,17 @@ public interface WageTableHistoryGetMemento {
 	MonthRange getApplyRange();
 
 	/**
+	 * Gets the demension items.
+	 *
+	 * @return the demension items
+	 */
+	List<WageTableElement> getDemensionDetail();
+
+	/**
 	 * Gets the elements.
 	 *
 	 * @return the elements
 	 */
 	List<WageTableItem> getValueItems();
-
-	/**
-	 * Gets the demension items.
-	 *
-	 * @return the demension items
-	 */
-	List<WageTableDemensionDetail> getDemensionDetail();
 
 }

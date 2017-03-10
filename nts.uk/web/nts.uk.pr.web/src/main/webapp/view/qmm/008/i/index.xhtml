@@ -15,7 +15,7 @@
 			</script>
 			<com:ValidatorScript>
 				nts.uk.ctx.pr.core.dom.insurance.CommonAmount
-				<!-- nts.uk.ctx.pr.core.dom.insurance.InsuranceAmount -->
+				nts.uk.ctx.pr.core.dom.insurance.InsuranceAmount
   			</com:ValidatorScript>
 			<com:stylefile path="main.css" />
 			<com:scriptfile set="IGNITE" />
@@ -170,7 +170,7 @@
 													<td><input data-bind="ntsNumberEditor: {value: unknownAmount, constraint:'CommonAmount', option: $parents[2].numberEditorCommonOption}"></input></td>
 												</com:ko-if>
 											</com:ko>
-											<td><input data-bind="ntsNumberEditor: {value: childContributionAmount, constraint:'', option: {grouplength: 3, decimallength: 2}}"></input></td>
+											<td><input data-bind="ntsNumberEditor: {value: childContributionAmount, constraint:'InsuranceAmount', option: {grouplength: 3, decimallength: 2}}"></input></td>
 										</com:ko-if>
 									</com:ko-foreach>
 								</tr>

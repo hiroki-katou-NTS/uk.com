@@ -68,6 +68,7 @@ var qet001;
                     $.when(self.loadAggregateItems(), self.loadMasterItems()).done(function () {
                         var isHasData = outputSettings && outputSettings.length > 0;
                         if (!isHasData) {
+                            self.switchToCreateMode();
                             dfd.resolve();
                             return;
                         }
@@ -108,8 +109,7 @@ var qet001;
                     b.service.saveOutputSetting(self.outputSettingDetail()).done(function () {
                         nts.uk.ui.windows.setShared('isHasUpdate', true, false);
                         nts.uk.ui.dialog.alert('save success!').then(function () {
-                            self.loadAllOutputSetting().done(function () {
-                            });
+                            self.loadAllOutputSetting();
                         });
                     }).fail(function (res) {
                         nts.uk.ui.dialog.alert(res.message);
@@ -124,7 +124,18 @@ var qet001;
                     }
                     b.service.removeOutputSetting(selectedCode).done(function () {
                         nts.uk.ui.windows.setShared('isHasUpdate', true, false);
-                        self.loadAllOutputSetting();
+                        var itemSelected = self.outputSettings().outputSettingList().filter(function (item) { return item.code == selectedCode; })[0];
+                        var indexSelected = self.outputSettings().outputSettingList().indexOf(itemSelected);
+                        self.outputSettings().outputSettingList.remove(itemSelected);
+                        if (self.outputSettings().outputSettingList().length == 0) {
+                            self.outputSettings().outputSettingSelectedCode(null);
+                            return;
+                        }
+                        if (self.outputSettings().outputSettingList()[indexSelected]) {
+                            self.outputSettings().outputSettingSelectedCode(self.outputSettings().outputSettingList()[indexSelected].code);
+                            return;
+                        }
+                        self.outputSettings().outputSettingSelectedCode(self.outputSettings().outputSettingList()[indexSelected - 1].code);
                     }).fail(function (res) {
                         nts.uk.ui.dialog.alert(res.message);
                     });

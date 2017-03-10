@@ -1,13 +1,16 @@
 module nts.uk.pr.view.qmm011.d {
+
     import option = nts.uk.ui.option;
     import TypeHistory = nts.uk.pr.view.qmm011.a.service.model.TypeHistory;
+
     export module viewmodel {
         export class ScreenModel {
+
             selectModel: KnockoutObservableArray<BoxModel>;
             enable: KnockoutObservable<boolean>;
             textEditorOption: KnockoutObservable<any>;
             historyId: KnockoutObservable<string>;
-            historyStart: KnockoutObservable<string>;
+            historyStart: KnockoutObservable<number>;
             historyTakeover: KnockoutObservable<boolean>;
             historyEnd: KnockoutObservable<string>;
             selectedId: KnockoutObservable<number>;
@@ -17,9 +20,10 @@ module nts.uk.pr.view.qmm011.d {
                 var self = this;
                 self.enable = ko.observable(true);
                 self.textEditorOption = ko.mapping.fromJS(new option.TextEditorOption());
-                self.historyStart = ko.observable('');
+                self.historyStart = ko.observable(0);
                 self.historyEnd = ko.observable('9999/12');
                 self.selectedId = ko.observable(1);
+                //get data fw => 
                 var isEmpty = nts.uk.ui.windows.getShared("isEmpty");
                 if (!isEmpty) {
                     var historyStart = nts.uk.ui.windows.getShared("historyStart");
@@ -34,30 +38,35 @@ module nts.uk.pr.view.qmm011.d {
                     ]);
                 }
             }
+
             fwaddHistoryInfo() {
                 var self = this;
                 var addHistoryInfoModel: AddHistoryInfoModel;
                 addHistoryInfoModel = new AddHistoryInfoModel();
                 addHistoryInfoModel.typeModel = self.selectedId();
-                addHistoryInfoModel.historyStart = self.historyStart();
+                addHistoryInfoModel.historyStart = nts.uk.time.formatYearMonth(self.historyStart());
+                addHistoryInfoModel.starMonth = self.historyStart();
                 nts.uk.ui.windows.setShared("addHistoryInfoModel", addHistoryInfoModel);
                 nts.uk.ui.windows.close();
             }
         }
 
         export class BoxModel {
+
             id: number;
             name: string;
+
             constructor(id, name) {
                 var self = this;
                 self.id = id;
                 self.name = name;
             }
         }
+
         export class AddHistoryInfoModel {
             typeModel: number;// add new, add before
             historyStart: string;
+            starMonth: number;
         }
-
     }
 }

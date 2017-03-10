@@ -158,7 +158,7 @@ module nts.uk.pr.view.qmm008.a {
                 self.endMonthTemp = ko.observable('');
                 //subscribe change select office
                 self.healthOfficeSelectedCode.subscribe(function(officeSelectedCode: string) {
-                    if (officeSelectedCode.length>1) {
+//                    if (officeSelectedCode.length>1) {
                         //if click office item
                         if (self.healthCheckCode(officeSelectedCode)) {
                             self.healthCurrentParentCode(officeSelectedCode);
@@ -187,7 +187,7 @@ module nts.uk.pr.view.qmm008.a {
                                 });
                             }
                         }
-                    }
+//                    }
                 });
 
                 //subscribe change select office
@@ -619,7 +619,7 @@ module nts.uk.pr.view.qmm008.a {
                 var self = this;
                 var saveVal = null;
                 // Set parent value
-                this.healthInsuranceOfficeList().forEach(function(item, index) {
+                self.healthInsuranceOfficeList().forEach(function(item, index) {
                     if (self.healthCurrentParentCode() == item.code) {
                         saveVal = item;
                     }
@@ -632,7 +632,7 @@ module nts.uk.pr.view.qmm008.a {
                 var self = this;
                 var saveVal = null;
                 // Set parent value
-                this.pensionInsuranceOfficeList().forEach(function(item, index) {
+                self.pensionInsuranceOfficeList().forEach(function(item, index) {
                     if (self.pensionCurrentParentCode() == item.code) {
                         saveVal = item;
                     }

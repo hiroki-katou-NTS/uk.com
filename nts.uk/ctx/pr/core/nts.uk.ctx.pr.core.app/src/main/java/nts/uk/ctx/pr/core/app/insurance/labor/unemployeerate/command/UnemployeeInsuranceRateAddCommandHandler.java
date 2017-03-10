@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.app.insurance.labor.unemployeerate.command;
 
+import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
@@ -14,32 +16,57 @@ import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsurance
 import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsuranceRateRepository;
 import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.service.UnemployeeInsuranceRateService;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.context.LoginUserContext;
 
 @Stateless
-@Transactional
 public class UnemployeeInsuranceRateAddCommandHandler extends CommandHandler<UnemployeeInsuranceRateAddCommand> {
 
 	/** CompanyRepository */
 	@Inject
 	private UnemployeeInsuranceRateRepository unemployeeInsuranceRateRepository;
-	
+
 	/** The unemployee insurance rate service. */
 	@Inject
 	private UnemployeeInsuranceRateService unemployeeInsuranceRateService;
 
-	/**
-	 * Handle command.
+	/*
+	 * (non-Javadoc)
 	 * 
-	 * @param context
-	 *            context
+	 * @see
+	 * nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command
+	 * .CommandHandlerContext)
 	 */
 	@Override
+	@Transactional
 	protected void handle(CommandHandlerContext<UnemployeeInsuranceRateAddCommand> context) {
-		String companyCode = AppContexts.user().companyCode();
-		UnemployeeInsuranceRate unemployeeInsuranceRate = context.getCommand().toDomain(companyCode);
+
+		// get user login info
+		LoginUserContext loginUserContext = AppContexts.user();
+
+		// get companyCode by user login
+		String companyCode = loginUserContext.companyCode();
+
+		// get command
+		UnemployeeInsuranceRateAddCommand command = context.getCommand();
+
+		// to domain
+		UnemployeeInsuranceRate unemployeeInsuranceRate = command.toDomain(companyCode);
+
+		// validate
 		unemployeeInsuranceRate.validate();
 		unemployeeInsuranceRateService.validateDateRange(unemployeeInsuranceRate);
-		this.unemployeeInsuranceRateRepository.add(unemployeeInsuranceRate);
+
+		// find first data
+		Optional<UnemployeeInsuranceRate> optionalFisrtData = this.unemployeeInsuranceRateRepository
+				.findFirstData(unemployeeInsuranceRate.getCompanyCode().v());
+		if (optionalFisrtData.isPresent()) {
+			this.unemployeeInsuranceRateRepository.updateYearMonth(optionalFisrtData.get(),
+					unemployeeInsuranceRate.getApplyRange().getStartMonth().previousMonth());
+		}
+
+		// call repository add (insert database)
+		this.unemployeeInsuranceRateRepository
+				.add(unemployeeInsuranceRate.copyWithDate(unemployeeInsuranceRate.getStart()));
 	}
 
 }

@@ -5,37 +5,13 @@
 package nts.uk.ctx.pr.core.dom.wagetable.history;
 
 import java.util.List;
-import java.util.Optional;
 
-import nts.uk.ctx.core.dom.company.CompanyCode;
+import nts.uk.ctx.pr.core.dom.base.simplehistory.SimpleHistoryRepository;
 
 /**
- * The Interface WageTableElementRepository.
+ * The Interface WageTableHistoryRepository.
  */
-public interface WageTableHistoryRepository {
-
-	/**
-	 * Adds the.
-	 *
-	 * @param wageTableElement the wage table element
-	 */
-    void add(WageTableHistory wageTableHistory);
-
-	/**
-	 * Update.
-	 *
-	 * @param wageTableElement the wage table element
-	 */
-    void update(WageTableHistory wageTableHistory);
-
-	/**
-	 * Removes the.
-	 *
-	 * @param companyCode the company code
-	 * @param groupCode the group code
-	 * @param version the version
-	 */
-    void remove(CompanyCode companyCode, String groupCode, Long version);
+public interface WageTableHistoryRepository extends SimpleHistoryRepository<WageTableHistory> {
 
 	/**
 	 * Find all.
@@ -43,15 +19,15 @@ public interface WageTableHistoryRepository {
 	 * @param companyCode the company code
 	 * @return the list
 	 */
-	List<WageTableHistory> findAll(CompanyCode companyCode);
+	List<WageTableHistory> findAll(String companyCode);
 
 	/**
-	 * Find by id.
+	 * Checks if is valid date range.
 	 *
 	 * @param companyCode the company code
-	 * @param code the code
-	 * @return the optional
+	 * @param wageTableCode the wage table code
+	 * @param startMonth the start month
+	 * @return true, if is valid date range
 	 */
-	Optional<WageTableHistory> findById(CompanyCode companyCode, String code);
-
+	boolean isValidDateRange(String companyCode, String wageTableCode, Integer startMonth) ;
 }

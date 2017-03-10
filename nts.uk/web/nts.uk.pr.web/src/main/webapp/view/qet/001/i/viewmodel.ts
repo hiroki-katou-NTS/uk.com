@@ -90,7 +90,7 @@ module qet001.i.viewmodel {
                     self.setStyle();
                     return;
                 }
-                self.loadDetailAggregateItem(code).done(function(res: service.Item) {
+                self.loadDetailAggregateItem(self.category, self.paymentType, code).done(function(res: service.Item) {
                     self.aggregateItemDetail(new AggregateItemDetail(paymentType,
                         categoryName, masterItemInCate, res));
                     self.setStyle();
@@ -120,9 +120,9 @@ module qet001.i.viewmodel {
         /**
          * Load detail aggregate item.
          */
-        public loadDetailAggregateItem(code: string): JQueryPromise<service.Item> {
+        public loadDetailAggregateItem(category: string, paymentType: string, code: string): JQueryPromise<service.Item> {
             var dfd = $.Deferred<service.Item>();
-            service.findAggregateItemDetail(code).done((data: service.Item) => {
+            service.findAggregateItemDetail(category, paymentType, code).done((data: service.Item) => {
                 dfd.resolve(data);
             }).fail((res) => {
                 nts.uk.ui.dialog.alert(res.message);
@@ -151,6 +151,8 @@ module qet001.i.viewmodel {
             // save.
             service.save(self.aggregateItemDetail()).done(function() {
                 // TODO: Show message save success.
+                nts.uk.ui.dialog.alert('Save success!');
+                self.loadAggregateItemByCategory();
             }).fail(function(res) {
                 nts.uk.ui.dialog.alert(res.message);
             });
@@ -162,9 +164,27 @@ module qet001.i.viewmodel {
                 return;
             }
             // save.
-            service.remove(self.aggregateItemSelectedCode()).done(function() {
-                // TODO: Show message remove success.
-                self.aggregateItemSelectedCode(null);
+            service.remove(self.category, self.paymentType, self.aggregateItemSelectedCode()).done(function() {
+                // Find item selected.
+                var itemSelected = self.itemList().filter(item => item.code == self.aggregateItemSelectedCode())[0];
+                var indexSelected = self.itemList().indexOf(itemSelected);
+                // Remove item selected in list.
+                self.itemList.remove(itemSelected);
+                
+                // If list is empty -> new mode.
+                if (self.itemList.length == 0) {
+                    self.aggregateItemSelectedCode(null);
+                    return;
+                }
+                
+                // Select same row with item selected.
+                if (self.itemList()[indexSelected]) {
+                    self.aggregateItemSelectedCode(self.itemList()[indexSelected].code);
+                    return;
+                }
+                
+                // Select next higher row.
+                self.aggregateItemSelectedCode(self.itemList()[indexSelected - 1].code)
             }).fail(function(res) {
                 nts.uk.ui.dialog.alert(res.message);
             });

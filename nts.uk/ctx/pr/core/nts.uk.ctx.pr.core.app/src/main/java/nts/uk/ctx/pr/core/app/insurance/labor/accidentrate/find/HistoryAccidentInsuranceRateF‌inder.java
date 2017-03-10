@@ -4,24 +4,23 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.app.insurance.labor.accidentrate.find;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-import javax.transaction.Transactional;
 
-import nts.uk.ctx.core.dom.company.CompanyCode;
-import nts.uk.ctx.pr.core.app.insurance.labor.accidentrate.find.dto.HistoryAccidentInsuranceRateFindOutDto;
+import nts.uk.ctx.pr.core.app.insurance.labor.accidentrate.find.dto.AccidentInsuranceRateHistoryFindOutDto;
 import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.AccidentInsuranceRate;
 import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.AccidentInsuranceRateRepository;
 import nts.uk.shr.com.context.AppContexts;
+import nts.uk.shr.com.context.LoginUserContext;
 
 /**
  * The Class HistoryAccidentInsuranceRateF‌inder.
  */
 @Stateless
-@Transactional
 public class HistoryAccidentInsuranceRateF‌inder {
 
 	/** The accident insurance rate repository. */
@@ -35,29 +34,42 @@ public class HistoryAccidentInsuranceRateF‌inder {
 	 *            the company code
 	 * @return the list
 	 */
-	public List<HistoryAccidentInsuranceRateFindOutDto> findAll() {
-		List<HistoryAccidentInsuranceRateFindOutDto> lstHistoryAccidentInsuranceRateFindOutDto = new ArrayList<>();
-		for (AccidentInsuranceRate accidentInsuranceRate : accidentInsuranceRateRepository
-				.findAll(new CompanyCode(AppContexts.user().companyCode()))) {
-			HistoryAccidentInsuranceRateFindOutDto historyAccidentInsuranceRateFindOutDto = new HistoryAccidentInsuranceRateFindOutDto();
-			accidentInsuranceRate.saveToMemento(historyAccidentInsuranceRateFindOutDto);
-			lstHistoryAccidentInsuranceRateFindOutDto.add(historyAccidentInsuranceRateFindOutDto);
-		}
+	public List<AccidentInsuranceRateHistoryFindOutDto> findAll() {
+		// get user login info
+		LoginUserContext loginUserContext = AppContexts.user();
+		// get companyCode by user login
+		String companyCode = loginUserContext.companyCode();
+		// call repository find
+		List<AccidentInsuranceRateHistoryFindOutDto> lstHistoryAccidentInsuranceRateFindOutDto = accidentInsuranceRateRepository
+				.findAll(companyCode).stream().map(accidentInsuranceRate -> {
+					AccidentInsuranceRateHistoryFindOutDto historyAccidentInsuranceRateFindOutDto;
+					historyAccidentInsuranceRateFindOutDto = new AccidentInsuranceRateHistoryFindOutDto();
+					accidentInsuranceRate.saveToMemento(historyAccidentInsuranceRateFindOutDto);
+					return historyAccidentInsuranceRateFindOutDto;
+				}).collect(Collectors.toList());
 		return lstHistoryAccidentInsuranceRateFindOutDto;
 	}
 
 	/**
 	 * Find.
 	 *
-	 * @param historyAccidentInsuranceRateFindInDto
-	 *            the history accident insurance rate find in dto
-	 * @return the history accident insurance rate dto
+	 * @param historyId
+	 *            the history id
+	 * @return the history accident insurance rate find out dto
 	 */
-	public HistoryAccidentInsuranceRateFindOutDto find(String historyId) {
-		HistoryAccidentInsuranceRateFindOutDto historyAccidentInsuranceRateFindOutDto = new HistoryAccidentInsuranceRateFindOutDto();
-		AccidentInsuranceRate accidentInsuranceRate = accidentInsuranceRateRepository
-				.findById(new CompanyCode(AppContexts.user().companyCode()), historyId);
-		accidentInsuranceRate.saveToMemento(historyAccidentInsuranceRateFindOutDto);
+	public AccidentInsuranceRateHistoryFindOutDto find(String historyId) {
+		// get user login info
+		LoginUserContext loginUserContext = AppContexts.user();
+		// get companyCode by user login
+		String companyCode = loginUserContext.companyCode();
+		// call repository find
+		AccidentInsuranceRateHistoryFindOutDto historyAccidentInsuranceRateFindOutDto;
+		historyAccidentInsuranceRateFindOutDto = new AccidentInsuranceRateHistoryFindOutDto();
+		Optional<AccidentInsuranceRate> optionalAccidentInsuranceRate = accidentInsuranceRateRepository
+				.findById(companyCode, historyId);
+		if (optionalAccidentInsuranceRate.isPresent()) {
+			optionalAccidentInsuranceRate.get().saveToMemento(historyAccidentInsuranceRateFindOutDto);
+		}
 		return historyAccidentInsuranceRateFindOutDto;
 	}
 

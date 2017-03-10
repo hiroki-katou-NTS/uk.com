@@ -4,18 +4,18 @@
 			<tr>
 				<td id="contents-left" class="bg-green caret-right caret-background">
 					<div class="leftTop">
-						<button id="btn_addHistoryAccidentInsuranceRate"
-							data-bind="click: openAddHistoryAccidentInsuranceRate">履歴追加</button>
+						<button id="btn_addAccidentInsuranceRateHistory"
+							data-bind="click: openAddAccidentInsuranceRateHistory">履歴追加</button>
 						<button id="C_BTN_002" class="floatRight"
-							data-bind="click: openEditHistoryAccidentInsuranceRate">履歴編集</button>
+							data-bind="click: openEditAccidentInsuranceRateHistory, enable: isEnableEditActionAccidentInsurance">履歴編集</button>
 					</div>
 					<div class="list-box" id="list-box"
 						data-bind="ntsListBox: {
-											options: lstHistoryAccidentInsuranceRate,
+											options: lstAccidentInsuranceRateHistory,
 											primaryKey: 'historyId',
 											primaryText: 'inforMonthRage',
 											multiple: false,
-											value: selectionHistoryAccidentInsuranceRate,
+											value: selectionAccidentInsuranceRateHistory,
 											enable: true,
 											rows: 10,
 											required: true,
@@ -25,7 +25,7 @@
 				</td>
 				<td id="contents-right">
 					<table data-bind="with: accidentInsuranceRateModel">
-						<tr data-bind="with: historyAccidentInsuranceRateModel">
+						<tr data-bind="with: accidentInsuranceRateHistoryModel">
 							<td class="trFull60B">
 								<div id="C_LBL_001" data-bind="ntsFormLabel: {required: true}">
 									<label>期間</label>
@@ -39,10 +39,10 @@
 						</tr>
 					</table>
 					<table id="tableRight" data-bind="with: accidentInsuranceRateModel">
-						<tr>
+						<tr data-bind="css: { hidden: isShowTable() }">
 							<td colspan="2"><hr /></td>
 						</tr>
-						<tr>
+						<tr data-bind="css: { hidden: isShowTable() }">
 							<td colspan="2">
 								<table id="health_insurance_rate_table"
 									class="table_border_black">
@@ -61,7 +61,7 @@
 													<input class="health-input" data-name="insuRate"
 														data-bind="ntsNumberEditor: {value: insuRate, 
 													option: rateInputOptions, 
-													enable: true}"></input>/1000
+													enable: isEnable}"></input>/1000
 												</div></td>
 											<td>
 												<div
@@ -71,7 +71,7 @@
 													value: insuRound,
 													optionsText: 'name',
 													editable: false,
-													enable: true,
+													enable: isEnable,
 													columns: [
 														{ prop: 'name', length: 10 },
 													]}"></div>
@@ -87,7 +87,7 @@
 													option: rateInputOptions, 
 													constraint:'RateItem',
 													required: true,
-													enable: true}"></input>/1000
+													enable: isEnable}"></input>/1000
 												</div></td>
 											<td>
 												<div
@@ -97,7 +97,7 @@
 													value: insuRound,
 													optionsText: 'name',
 													editable: false,
-													enable: true,
+													enable: isEnable,
 													columns: [
 														{ prop: 'name', length: 10 },
 													]}"></div>
@@ -113,7 +113,7 @@
 													option: rateInputOptions, 
 													constraint:'RateItem',
 													required: true,
-													enable: true}"></input>/1000
+													enable: isEnable}"></input>/1000
 												</div></td>
 											<td>
 												<div
@@ -123,7 +123,7 @@
 													value: insuRound,
 													optionsText: 'name',
 													editable: false,
-													enable: true,
+													enable: isEnable,
 													columns: [
 														{ prop: 'name', length: 10 },
 													]}"></div>
@@ -139,7 +139,7 @@
 													option: rateInputOptions, 
 													constraint:'RateItem',
 													required: true,
-													enable: true}"></input>/1000
+													enable: isEnable}"></input>/1000
 												</div></td>
 											<td>
 												<div
@@ -149,7 +149,7 @@
 													value: insuRound,
 													optionsText: 'name',
 													editable: false,
-													enable: true,
+													enable: isEnable,
 													columns: [
 														{ prop: 'name', length: 10 },
 													]}"></div>
@@ -165,7 +165,7 @@
 													option: rateInputOptions, 
 													constraint:'RateItem',
 													required: true,
-													enable: true}"></input>/1000
+													enable: isEnable}"></input>/1000
 												</div></td>
 											<td>
 												<div
@@ -175,7 +175,7 @@
 													value: insuRound,
 													optionsText: 'name',
 													editable: false,
-													enable: true,
+													enable: isEnable,
 													columns: [
 														{ prop: 'name', length: 10 },
 													]}"></div>
@@ -191,7 +191,7 @@
 													option: rateInputOptions, 
 													constraint:'RateItem',
 													required: true,
-													enable: true}"></input>/1000
+													enable: isEnable}"></input>/1000
 												</div></td>
 											<td>
 												<div
@@ -201,7 +201,7 @@
 													value: insuRound,
 													optionsText: 'name',
 													editable: false,
-													enable: true,
+													enable: isEnable,
 													columns: [
 														{ prop: 'name', length: 10 },
 													]}"></div>
@@ -217,7 +217,7 @@
 													option: rateInputOptions, 
 													constraint:'RateItem',
 													required: true,
-													enable: true}"></input>/1000
+													enable: isEnable}"></input>/1000
 												</div></td>
 											<td>
 												<div
@@ -227,7 +227,7 @@
 													value: insuRound,
 													optionsText: 'name',
 													editable: false,
-													enable: true,
+													enable: isEnable,
 													columns: [
 														{ prop: 'name', length: 10 },
 													]}"></div>
@@ -243,7 +243,7 @@
 													option: rateInputOptions, 
 													constraint:'RateItem',
 													required: true,
-													enable: true}"></input>/1000
+													enable: isEnable}"></input>/1000
 												</div></td>
 											<td>
 												<div
@@ -253,7 +253,7 @@
 													value: insuRound,
 													optionsText: 'name',
 													editable: false,
-													enable: true,
+													enable: isEnable,
 													columns: [
 														{ prop: 'name', length: 10 },
 													]}"></div>
@@ -269,7 +269,7 @@
 													option: rateInputOptions, 
 													constraint:'RateItem',
 													required: true,
-													enable: true}"></input>/1000
+													enable: isEnable}"></input>/1000
 												</div></td>
 											<td>
 												<div
@@ -279,7 +279,7 @@
 													value: insuRound,
 													optionsText: 'name',
 													editable: false,
-													enable: true,
+													enable: isEnable,
 													columns: [
 														{ prop: 'name', length: 10 },
 													]}"></div>
@@ -295,7 +295,7 @@
 													option: rateInputOptions, 
 													constraint:'RateItem',
 													required: true,
-													enable: true}"></input>/1000
+													enable: isEnable}"></input>/1000
 												</div></td>
 											<td>
 												<div
@@ -305,7 +305,7 @@
 													value: insuRound,
 													optionsText: 'name',
 													editable: false,
-													enable: true,
+													enable: isEnable,
 													columns: [
 														{ prop: 'name', length: 10 },
 													]}"></div>
