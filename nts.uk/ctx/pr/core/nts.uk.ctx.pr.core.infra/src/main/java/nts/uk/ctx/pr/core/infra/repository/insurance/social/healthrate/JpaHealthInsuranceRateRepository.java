@@ -194,4 +194,35 @@ public class JpaHealthInsuranceRateRepository extends JpaRepository
 				.map(item -> new HealthInsuranceRate(new JpaHealthInsuranceRateGetMemento(item)))
 				.collect(Collectors.toList());
 	}
+
+	@Override
+	public void deleteHistory(String uuid) {
+		this.remove(uuid);
+	}
+
+	@Override
+	public Optional<HealthInsuranceRate> findLastestHistoryByMasterCode(String companyCode, String officeCode) {
+		return Optional.of(this.findAllOffice(new CompanyCode(companyCode),new OfficeCode(officeCode)).get(0));
+	}
+
+	@Override
+	public Optional<HealthInsuranceRate> findHistoryByUuid(String uuid) {
+		return this.findById(uuid);
+	}
+
+	@Override
+	public void addHistory(HealthInsuranceRate history) {
+		this.add(history);
+	}
+
+	@Override
+	public void updateHistory(HealthInsuranceRate history) {
+		this.update(history);
+	}
+
+	@Override
+	public List<HealthInsuranceRate> findAllHistoryByMasterCode(String companyCode, String masterCode) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }
