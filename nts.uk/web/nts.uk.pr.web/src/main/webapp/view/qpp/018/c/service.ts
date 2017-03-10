@@ -20,9 +20,8 @@ module nts.uk.pr.view.qpp018.c {
             return dfd.promise();
         }
         //Function connection service save CheckListPrintSetting
-        export function saveCheckListPrintSetting(checkListPrintSettingDto: model.CheckListPrintSettingDto): JQueryPromise<any> {
+        export function saveCheckListPrintSetting(data): JQueryPromise<any> {
             var dfd = $.Deferred<any>();
-            var data = { checkListPrintSettingDto: checkListPrintSettingDto };
             nts.uk.request.ajax(paths.saveCheckListPrintSetting, data)
                 .done(function(res: any) {
                     dfd.resolve(res);

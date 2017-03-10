@@ -28,9 +28,8 @@ var nts;
                                 return dfd.promise();
                             }
                             service.findCheckListPrintSetting = findCheckListPrintSetting;
-                            function saveCheckListPrintSetting(checkListPrintSettingDto) {
+                            function saveCheckListPrintSetting(data) {
                                 var dfd = $.Deferred();
-                                var data = { checkListPrintSettingDto: checkListPrintSettingDto };
                                 nts.uk.request.ajax(paths.saveCheckListPrintSetting, data)
                                     .done(function (res) {
                                     dfd.resolve(res);

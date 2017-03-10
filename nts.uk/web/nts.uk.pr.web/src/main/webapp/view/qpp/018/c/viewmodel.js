@@ -29,7 +29,7 @@ var nts;
                                     nts.uk.ui.windows.setShared("printSettingValue", this.printSettingValue(), true);
                                     nts.uk.ui.windows.close();
                                 };
-                                ScreenModel.prototype.setupPrintSetting = function () {
+                                ScreenModel.prototype.saveConfigurePrintSetting = function () {
                                     var self = this;
                                     if (!(self.checkListPrintSettingModel().showCategoryInsuranceItem())
                                         && !(self.checkListPrintSettingModel().showDeliveryNoticeAmount())
@@ -39,10 +39,13 @@ var nts;
                                     }
                                     else {
                                         nts.uk.ui.windows.setShared("printSettingValue", this.printSettingValue(), true);
-                                        c.service.saveCheckListPrintSetting(self.checkListPrintSettingModel().toDto()).done(function (data) {
-                                            alert("Something is not right YES");
+                                        var command = {
+                                            checkListPrintSettingDto: self.checkListPrintSettingModel().toDto()
+                                        };
+                                        c.service.saveCheckListPrintSetting(command).done(function (data) {
+                                            alert("Configure successful.");
                                         }).fail(function (res) {
-                                            alert("Something is not right NO");
+                                            alert("Configure fail.");
                                         });
                                         nts.uk.ui.windows.close();
                                     }

@@ -7,6 +7,7 @@
  */
 package nts.uk.pr.file.infra.insurance;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -28,8 +29,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.val;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.uk.file.pr.app.export.insurance.SocialInsuranceGenerator;
-import nts.uk.file.pr.app.export.insurance.data.ColumnInformation;
-import nts.uk.file.pr.app.export.insurance.data.SocialInsuranceItemDto;
+import nts.uk.file.pr.app.export.insurance.data.EmployeeDto;
+import nts.uk.file.pr.app.export.insurance.data.OfficeDto;
 import nts.uk.file.pr.app.export.insurance.data.SocialInsuranceReportData;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 
@@ -43,12 +44,12 @@ public class AsposeSocialInsuranceReportGenerator extends AsposeCellsReportGener
         implements SocialInsuranceGenerator {
 
     private static final String TEMPLATE_FILE = "report/SocialInsurance.xlsx";
-    private static final String REPORT_FILE_NAME = "SocialInsurance.pdf";
-    private static final String FILE_EXCEL = "SocialInsurance.xlsx";
-    private static final String PRINT_AREA = "A1:H63";
+    private static final String REPORT_FILE_NAME = "/Users/mrken57/Work/UniversalK/project/export/SocialInsurance.pdf";
+    private static final String FILE_EXCEL = "/Users/mrken57/Work/UniversalK/project/export/SocialInsurance_Export.xlsx";
+    private static final int NUMBER_ZERO = 0;
     private static final int NUMBER_ONE = 1;
-    private static final int INDEX_TITLE_ROW = 0;
-    private static final int COLUMN_WIDTH = 20;
+    private static final int NUMBER_SECOND = 2;
+    private static final int INDEX_ROW_CONTENT_AREA = 10;
 
     @Override
     public void generate(FileGeneratorContext fileContext, SocialInsuranceReportData reportData) {
@@ -65,90 +66,170 @@ public class AsposeSocialInsuranceReportGenerator extends AsposeCellsReportGener
         }
     }
 
-    private void createNewSheet(WorksheetCollection worksheets, String sheetName,
-            SocialInsuranceReportData dataSource) {
-        int sheetLastIndex = worksheets.add();
-        Worksheet worksheet = worksheets.get(sheetLastIndex);
+    private void createNewSheet(WorksheetCollection worksheets, String sheetName, SocialInsuranceReportData reportData)
+            throws Exception {
+        Worksheet worksheet = worksheets.get(0);
         worksheet.setName(sheetName);
+        worksheet.autoFitColumns();
         settingPage(worksheet);
-        setContentHeader();
-        List<ColumnInformation> columns = dataSource.getColumns();
-        int numberOfColumn = columns.size();
-        setColumnWidth(worksheet, numberOfColumn);
-        setTitleRow(worksheet, columns);
-        setContentArea(worksheet, dataSource);
+        int numberOfColumn = 17;
+//        worksheet.getCells().hideColumn(16);
+//        numberOfColumn = 16;
+        setHeaderPage();
+        setContentArea(worksheet, reportData.getOfficeItems(), numberOfColumn);
+        setFooterPage(worksheet, reportData.getOfficeItems());
     }
-    
+
     private void settingPage(Worksheet worksheet) {
         PageSetup pageSetup = worksheet.getPageSetup();
-        pageSetup.setPrintArea(PRINT_AREA);
         pageSetup.setFitToPagesTall(NUMBER_ONE);
         pageSetup.setFitToPagesWide(NUMBER_ONE);
         pageSetup.setCenterHorizontally(true);
     }
 
-    private void setContentHeader() {
+    private void setHeaderPage() {
         // TODO: set header
     }
 
-    private void setColumnWidth(Worksheet worksheet, int numberOfColumn) {
-        Cells cells = worksheet.getCells();
-        for (int i = 0; i < numberOfColumn; i++) {
-            cells.setColumnWidth(i, COLUMN_WIDTH);
+    private void setContentArea(Worksheet worksheet, List<OfficeDto> offices, int numberOfColumn) {
+        int indexRowHeaderOffice = INDEX_ROW_CONTENT_AREA;
+        for (OfficeDto office : offices) {
+            setHeaderOffice(worksheet, office, numberOfColumn, indexRowHeaderOffice);
+            int indexRowContentOffice = indexRowHeaderOffice + NUMBER_ONE;
+            setContentOffice(worksheet, office, numberOfColumn, indexRowContentOffice);
+            int indexRowFooterOffice = indexRowContentOffice + office.getEmployeeDtos().size();
+            setFooterOffice(worksheet, office, numberOfColumn, indexRowContentOffice, indexRowFooterOffice);
+            indexRowHeaderOffice = indexRowFooterOffice + NUMBER_ONE;
         }
     }
 
-    private void setTitleRow(Worksheet worksheet, List<ColumnInformation> columns) {
-        Style style = getStyleCell();
-        Cells cells = worksheet.getCells();
-        for (int i = 0; i < columns.size(); i++) {
-            cells.get(INDEX_TITLE_ROW, i).setStyle(style);
-            String columnName = columns.get(i).getColumnName();
-            cells.get(INDEX_TITLE_ROW, i).setValue(columnName);
-        }
+    private void setHeaderOffice(Worksheet worksheet, OfficeDto office, int numberOfColumn, int indexRowHeader) {
+        drawBorderColumnEmployee(worksheet, true, indexRowHeader, numberOfColumn, office.getOfficeCode(),
+                office.getOfficeName());
     }
 
-    private void setContentArea(Worksheet worksheet, SocialInsuranceReportData dataSource) {
-        Cells cells = worksheet.getCells();
-        Style style = getStyleCell();
-        List<ColumnInformation> columns = dataSource.getColumns();
-        for (int i = 0; i < dataSource.reportItems.size(); i++) {
-            if (i % 2 == 0) {
-                style.setForegroundColor(Color.getGreen());
+    private void setContentOffice(Worksheet worksheet, OfficeDto office, int numberOfColumn, int indexRow) {
+        for (int i = 0; i < office.getEmployeeDtos().size(); i++) {
+            EmployeeDto employee = office.getEmployeeDtos().get(i);
+            Color colorRow = Color.getWhite();
+            if (i % NUMBER_SECOND != 0) {
+                colorRow = Color.getGreenYellow();
             }
-            int indexContent = i + NUMBER_ONE;
-            SocialInsuranceItemDto item = dataSource.reportItems.get(i);
-            List<String> attributes = convertObjectToList(item);
-            for (int j = 0; j < columns.size(); j++) {
-                cells.get(indexContent, j).setStyle(style);
-                cells.get(indexContent, j).setValue(attributes.get(j));
+            setRowData(worksheet, employee, indexRow, colorRow);
+            int indexColumnLast = numberOfColumn - NUMBER_ONE;
+            drawBorderCell(worksheet, indexRow, indexColumnLast, BorderType.RIGHT_BORDER);
+            indexRow++;
+        }
+    }
+
+    private void setFooterOffice(Worksheet worksheet, OfficeDto office, int numberOfColumn, int indexRowBeginEmployee, int indexRow) {
+        int numberEmployeeOffice = office.getEmployeeDtos().size();
+        String totalEmployeeOffice = String.valueOf(numberEmployeeOffice).concat("人");
+        drawBorderColumnEmployee(worksheet, true, indexRow, numberOfColumn, "事業所　計", totalEmployeeOffice);
+        drawRowCalculation(worksheet, true, indexRow, numberOfColumn, indexRowBeginEmployee);
+    }
+
+    private void setFooterPage(Worksheet worksheet, List<OfficeDto> offices) {
+    }
+
+    @SuppressWarnings("rawtypes")
+    private void setRowData(Worksheet worksheet, EmployeeDto rowData, int indexRow, Color colorRow) {
+        Cells cells = worksheet.getCells();
+        List valueOfAttributes = convertObjectToList(rowData);
+        int numOfColumn = valueOfAttributes.size();
+        for (int j = 0; j < numOfColumn; j++) {
+            Style style = cells.get(indexRow, j).getStyle();
+            style.setForegroundColor(colorRow);
+            cells.get(indexRow, j).setStyle(style);
+            if (j < NUMBER_SECOND) {
+                String employeeCode = String.valueOf(valueOfAttributes.get(NUMBER_ZERO));
+                String employeeName = String.valueOf(valueOfAttributes.get(NUMBER_ONE));
+                drawBorderColumnEmployee(worksheet, false, indexRow, numOfColumn, employeeCode, employeeName);
+                j = NUMBER_ONE;
+                cells.get(indexRow, NUMBER_ONE).setStyle(style);
+            } else {
+                drawBorderCell(worksheet, indexRow, j, BorderType.RIGHT_BORDER);
+                cells.get(indexRow, j).setValue(valueOfAttributes.get(j));
             }
         }
     }
 
-    private Style getStyleCell() {
-        Style style = new Style();
-        style.setPattern(BackgroundType.SOLID);
-        style.setBackgroundColor(Color.getGreen());
-        style.setBorder(BorderType.TOP_BORDER, CellBorderType.THIN, Color.getBlack());
-        style.setBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
-        style.setBorder(BorderType.LEFT_BORDER, CellBorderType.THIN, Color.getBlack());
-        style.setBorder(BorderType.RIGHT_BORDER, CellBorderType.THIN, Color.getBlack());
-        // set font
-        style.getFont().setName("Arial");
-        style.getFont().setColor(Color.getBlack());
-        return style;
+    private void drawRowCalculation(Worksheet worksheet, boolean isOffice, int indexRow, int numberOfColumn,
+            int indexRowBeginEmployee) {
+        Cells cells = worksheet.getCells();
+        for (int i = NUMBER_SECOND; i < numberOfColumn; i++) {
+            String cellStart = cells.get(indexRowBeginEmployee, i).getName();;
+            int indexPrevious = indexRow - NUMBER_ONE;
+            String cellEnd = cells.get(indexPrevious, i).getName();
+            String formulaCalculateSum = "SUM(" + cellStart + ":" + cellEnd + ")";
+            cells.get(indexRow, i).setFormula(formulaCalculateSum);
+        }
     }
     
-    @SuppressWarnings("unchecked")
-    private List<String> convertObjectToList(SocialInsuranceItemDto data) {
-        List<String> attributes = new ArrayList<>();
-        ObjectMapper oMapper = new ObjectMapper();
-        HashMap<String, Object> mapObject = oMapper.convertValue(data, HashMap.class);
-        for(String key : mapObject.keySet()) {
-            String item = (String) mapObject.get(key);
-            attributes.add(item);
+    private void drawBorderColumnEmployee(Worksheet worksheet, boolean isOffice, int indexRow, int numberOfColumn,
+            String... data) {
+        Cells cells = worksheet.getCells();
+        cells.get(indexRow, NUMBER_ZERO).setValue(data[NUMBER_ZERO]);
+        cells.get(indexRow, NUMBER_ONE).setValue(data[NUMBER_ONE]);
+        if (isOffice) {
+            drawBorderLine(worksheet, indexRow, numberOfColumn, BorderType.TOP_BORDER);
+            drawBorderLine(worksheet, indexRow, numberOfColumn, BorderType.BOTTOM_BORDER);
         }
-        return attributes;
+        drawBorderCell(worksheet, indexRow, NUMBER_ZERO, BorderType.LEFT_BORDER);
+        drawBorderCell(worksheet, indexRow, NUMBER_ONE, BorderType.RIGHT_BORDER);
+        int indexColumnLast = numberOfColumn - NUMBER_ONE;
+        drawBorderCell(worksheet, indexRow, indexColumnLast, BorderType.RIGHT_BORDER);
+    }
+
+    private void drawBorderLine(Worksheet worksheet, int indexRow, int number, int offset) {
+        Cells cells = worksheet.getCells();
+        for (int i = 0; i < number; i++) {
+            Style style = cells.get(indexRow, i).getStyle();
+            style.setPattern(BackgroundType.SOLID);
+            style.setBackgroundColor(Color.getGreen());
+            style.setBorder(offset, CellBorderType.THIN, Color.getBlack());
+
+            cells.get(indexRow, i).setStyle(style);
+        }
+    }
+
+    private void drawBorderCell(Worksheet worksheet, int indexRow, int indexColumn, int offset) {
+        Cells cells = worksheet.getCells();
+        Style style = cells.get(indexRow, indexColumn).getStyle();
+        style.setPattern(BackgroundType.SOLID);
+        style.setBackgroundColor(Color.getGreen());
+        style.setBorder(offset, CellBorderType.THIN, Color.getBlack());
+
+        cells.get(indexRow, indexColumn).setStyle(style);
+    }
+
+    @SuppressWarnings({ "unchecked", "rawtypes" })
+    private List convertObjectToList(Object obj) {
+        if (obj == null) {
+            return null;
+        }
+        if (obj instanceof EmployeeDto) {
+            obj = (EmployeeDto) obj;
+        }
+        List valueOfAttributes = new ArrayList<>();
+        ObjectMapper oMapper = new ObjectMapper();
+        HashMap<String, Object> mapObject = oMapper.convertValue(obj, HashMap.class);
+        Field[] fields = obj.getClass().getDeclaredFields();
+        for (Field field : fields) {
+            Object attr = field.getName();
+            Object val = mapObject.get(attr);
+            Object item = null;
+            if (val == null) {
+                item = "";
+            }
+            if (val instanceof String) {
+                item = (String) val;
+            }
+            if (val instanceof Double) {
+                item = (Double) val;
+            }
+            valueOfAttributes.add(item);
+        }
+        return valueOfAttributes;
     }
 }

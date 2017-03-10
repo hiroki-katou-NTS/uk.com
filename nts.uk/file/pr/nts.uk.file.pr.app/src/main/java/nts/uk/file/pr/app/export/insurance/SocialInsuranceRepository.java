@@ -5,21 +5,17 @@
 /**
  * 
  */
-package nts.uk.file.pr.app.export.insurance.data;
+package nts.uk.file.pr.app.export.insurance;
 
-import lombok.Getter;
-import lombok.Setter;
+import java.util.List;
+
+import nts.uk.file.pr.app.export.insurance.data.SocialInsuranceReportData;
 
 /**
  * @author duongnd
  *
  */
+public interface SocialInsuranceRepository {
 
-@Setter
-@Getter
-public class SocialInsuranceItemDto {
-
-    // add dataSource export PDF.
-    private String code;
-    private String name;
+    SocialInsuranceReportData findByCode(SocialInsuranceQuery query);
 }

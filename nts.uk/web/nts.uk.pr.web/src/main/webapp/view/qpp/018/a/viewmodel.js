@@ -14,20 +14,21 @@ var nts;
                         (function (viewmodel) {
                             var ScreenModel = (function () {
                                 function ScreenModel() {
-                                    this.yearMonth = ko.observable('2016/05');
+                                    var self = this;
+                                    this.yearMonth = ko.observable(self.getCurrentYearMonth());
                                     this.checked = ko.observable(true);
                                     this.isEqual = ko.observable(true);
                                     this.isDeficent = ko.observable(true);
                                     this.isRedundant = ko.observable(true);
                                     this.insuranceOffice = ko.observableArray([]);
                                     this.columns = ko.observableArray([
-                                        { headerText: 'コード', prop: 'code', width: 100 },
-                                        { headerText: '名称 ', prop: 'name', width: 100 }
+                                        { headerText: 'コード', key: 'code', width: 100 },
+                                        { headerText: '名称 ', key: 'name', width: 100 }
                                     ]);
                                     this.selectedOfficeList = ko.observableArray([]);
                                     this.exportDataDetails = ko.observable('Something');
                                 }
-                                ScreenModel.prototype.openPrintSettingScr = function () {
+                                ScreenModel.prototype.showDialogChecklistPrintSetting = function () {
                                     nts.uk.ui.windows.setShared("socialInsuranceFeeChecklist", null);
                                     nts.uk.ui.windows.sub.modal("/view/qpp/018/c/index.xhtml", { title: "印刷の設定" }).onClosed(function () {
                                         var returnValue = nts.uk.ui.windows.getShared("printSettingValue");
@@ -66,6 +67,19 @@ var nts;
                                         dfd.reject();
                                     });
                                     return dfd.promise();
+                                };
+                                ScreenModel.prototype.getCurrentYearMonth = function () {
+                                    var today = new Date();
+                                    var month = today.getMonth() + 1;
+                                    var year = today.getFullYear();
+                                    var yearMonth = year + '/';
+                                    if (month < 10) {
+                                        yearMonth += '0' + month;
+                                    }
+                                    else {
+                                        yearMonth += month.toLocaleString();
+                                    }
+                                    return yearMonth;
                                 };
                                 return ScreenModel;
                             }());

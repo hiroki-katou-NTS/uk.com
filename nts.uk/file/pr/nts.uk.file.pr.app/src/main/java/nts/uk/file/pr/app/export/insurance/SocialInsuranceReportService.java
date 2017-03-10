@@ -16,8 +16,9 @@ import javax.inject.Inject;
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.uk.file.pr.app.export.insurance.data.ColumnInformation;
+import nts.uk.file.pr.app.export.insurance.data.EmployeeDto;
+import nts.uk.file.pr.app.export.insurance.data.OfficeDto;
 import nts.uk.file.pr.app.export.insurance.data.SocialInsuranceHeaderReportData;
-import nts.uk.file.pr.app.export.insurance.data.SocialInsuranceItemDto;
 import nts.uk.file.pr.app.export.insurance.data.SocialInsuranceReportData;
 
 /**
@@ -46,30 +47,63 @@ public class SocialInsuranceReportService extends ExportService<SocialInsuranceQ
         SocialInsuranceHeaderReportData headerData = new SocialInsuranceHeaderReportData();
         reportData.setHeaderData(headerData);
         
-        List<ColumnInformation> columns = new ArrayList<>();
-        ColumnInformation column1 = new ColumnInformation();
-        column1.setColumnName("Idetified Employee");
-        
-        ColumnInformation column2 = new ColumnInformation();
-        column2.setColumnName("Employee Name");
-        
-        columns.add(column1);
-        columns.add(column2);
-        reportData.setColumns(columns);
-        
-        List<SocialInsuranceItemDto> reportItems = new ArrayList<>();
-        for (int i = 0; i < 10; i++) {
-            String code = "A0000" + String.valueOf(i + 1);
-            String name = "User " + String.valueOf(i + 1);
-            SocialInsuranceItemDto item = new SocialInsuranceItemDto();
-            item.setCode(code);
-            item.setName(name);
-            reportItems.add(item);
-        }
-        
-        reportData.setReportItems(reportItems);
+        List<OfficeDto> officeItems = fakeOffice();
+        reportData.setOfficeItems(officeItems);
         
         return reportData;
+    }
+    
+    private List<OfficeDto> fakeOffice() {
+        List<OfficeDto> offices = new ArrayList<>();
+        for(int i=0; i<10; i++) {
+            OfficeDto office = setOffice(i + 1);
+            offices.add(office);
+        }
+        return offices;
+    }
+    private OfficeDto setOffice(int index) {
+        OfficeDto office = new OfficeDto();
+        
+        office.setNumberOfEmployee(5);
+        office.setOfficeCode("A000" + index);
+        office.setOfficeName("Office " + index);
+        
+        List<EmployeeDto> employees = new ArrayList<>();
+        for (int i=0; i< office.getNumberOfEmployee(); i++) {
+            EmployeeDto employee = setEmployee("Employee", 1);
+            employees.add(employee);
+        }
+        office.setEmployeeDtos(employees);
+        
+        return office;
+    }
+    
+    private EmployeeDto setEmployee(String name, int indexRaw) {
+        double index = indexRaw;
+        EmployeeDto employee = new EmployeeDto();
+        
+        employee.setEmployeeCode("E000" + index);
+        employee.setEmployeeName(name +" " + index);
+        
+        employee.setMonthlyHealthInsuranceNormal(index);index++;
+        employee.setMonthlyGeneralInsuranceNormal(index);index++;
+        employee.setMonthlyLongTermInsuranceNormal(index);index++;
+        employee.setMonthlySpecificInsuranceNormal(index);index++;
+        employee.setMonthlyBasicInsuranceNormal(index);index++;
+        
+        employee.setMonthlyHealthInsuranceDeduction(index);index++;
+        employee.setMonthlyGeneralInsuranceDeduction(index);index++;
+        employee.setMonthlyLongTermInsuranceDeduction(index);index++;
+        employee.setMonthlySpecificInsuranceDeduction(index);index++;
+        employee.setMonthlyBasicInsuranceDeduction(index);index++;
+        
+        employee.setWelfarePensionInsuranceNormal(index);index++;
+        employee.setWelfarePensionInsuranceDeduction(index);index++;
+        employee.setWelfarePensionFundNormal(index);index++;
+        employee.setWelfarePensionFundDeduction(index);index++;
+        employee.setChildRaisingContributionMoney(index);index++;
+        
+        return employee;
     }
 
 }

@@ -48,7 +48,8 @@
 #output-setting{
 	float: left;
 	width: 200px;
-	padding: 25px;
+	padding-left: 20px;
+    padding-top: 10px;
 }
 .check-output{
 	width: 100%;
@@ -63,15 +64,19 @@
 #tbl-function-buttons td{
 	padding-left: 18px;
 }
-#setup-button{
+#configure-button {
 	width: 148px;
 	height: 50px;
 	font-size: 30px;	
 }
-#cancel-button{
-	
-	font-size: 20px;	
+#cancel-button {
+	font-size: 20px;
+	height: 35px;
 }
 div#print-setting {
     margin-top: 35px;
+}
+.switch-button {
+	padding-top: 6px;
+	padding-left: 13px;
 }

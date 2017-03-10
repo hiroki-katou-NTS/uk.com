@@ -13,21 +13,25 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * The Class SocialInsuranceReportData.
+ * The Class SocialInsuranceItemDto.
  *
  * @author duongnd
  */
 
 @Setter
 @Getter
-public class SocialInsuranceReportData {
+public class OfficeDto {
 
-    /** The header data. */
-    public SocialInsuranceHeaderReportData headerData;
+    /** The number of employee. */
+    private int numberOfEmployee;
     
-    /** The columns.*/
-    private List<ColumnInformation> columns;
+    /** The office code. */
+    private String officeCode;
     
-    /** The report item. */
-    public List<OfficeDto> officeItems;
+    /** The office name. */
+    private String officeName;
+    
+    /** The employee dto. */
+    private List<EmployeeDto> employeeDtos;
+    
 }

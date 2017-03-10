@@ -25,6 +25,9 @@ public class CheckListPrintSettingDto {
 
 	/** The show office. */
 	private Boolean showOffice;
+	
+	/** The show total. */
+    private Boolean showTotal;
 
 	/**
 	 * To domain.
@@ -61,6 +64,11 @@ public class CheckListPrintSettingDto {
 			public CompanyCode getCompanyCode() {
 				return new CompanyCode(companyCode);
 			}
+
+            @Override
+            public Boolean getShowTotal() {
+                return dto.showTotal;
+            }
 		});
 	}
 

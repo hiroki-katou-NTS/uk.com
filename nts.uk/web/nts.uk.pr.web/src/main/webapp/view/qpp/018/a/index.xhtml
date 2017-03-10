@@ -18,7 +18,7 @@
 			<div id="functions-area" class="divHeader">
 				<div class="function-class">
 					<button id="export-PDF" class="proceed" style="width:350px" data-bind="click: exportData">給与社会保険料チェックリストを印刷 (PDF)</button>
-					<button data-bind="click: openPrintSettingScr" id="print-setting-button">印刷の設定</button>
+					<button data-bind="click: showDialogChecklistPrintSetting" id="print-setting-button">印刷の設定</button>
 					<button id="print-excution-log-button">印刷実行ログ</button>					
 				</div>
 			</div>
@@ -51,9 +51,9 @@
 							</td>
 							<td colspan="3" style="width: 370px ">
 								<div style="margin-top: 20px">
-									<label style="padding-left: 5px;">「算定月額と対象月控除の被保険者の社会保険料を比較し															
-　対象月控除が算定月額に対して</label>
-								</div>
+										<label style="padding-left: 5px;">算定月額と対象月控除の被保険者の社会保険料を比較し
+											対象月控除が算定月額に対して</label>
+									</div>
 							</td>
 						</tr>
 						<tr>

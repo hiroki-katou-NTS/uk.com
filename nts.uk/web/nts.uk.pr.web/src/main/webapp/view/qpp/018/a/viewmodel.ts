@@ -14,29 +14,26 @@ module nts.uk.pr.view.qpp018.a {
             exportDataDetails: KnockoutObservable<string>;
 
             constructor() {
+                var self = this;
                 //this.date = ko.observable(new Date('2016/12/01'));
-                this.yearMonth = ko.observable('2016/05');
+                this.yearMonth = ko.observable(self.getCurrentYearMonth());
                 this.checked = ko.observable(true);
                 this.isEqual = ko.observable(true);
                 this.isDeficent = ko.observable(true);
                 this.isRedundant = ko.observable(true);
-                this.insuranceOffice = ko.observableArray<InsuranceOfficeModel>([
-                    //                new InsuranceOfficeModel('0001','Insurance Office 1'),
-                    //                new InsuranceOfficeModel('0002','Insurance Office 2'),
-                    //                new InsuranceOfficeModel('0003','Insurance Office 3')
-                ]);
+                this.insuranceOffice = ko.observableArray<InsuranceOfficeModel>([]);
                 this.columns = ko.observableArray<nts.uk.ui.NtsGridListColumn>([
-                    { headerText: 'コード', prop: 'code', width: 100 },
-                    { headerText: '名称 ', prop: 'name', width: 100 }
+                    { headerText: 'コード', key: 'code', width: 100 },
+                    { headerText: '名称 ', key: 'name', width: 100 }
                 ]);
                 this.selectedOfficeList = ko.observableArray<InsuranceOfficeModel>([]);
                 this.exportDataDetails = ko.observable('Something');
             }
 
             /**
-             *  Open Print Setting Screen
+             *  Show dialog ChecklistPrintSetting
              */
-            openPrintSettingScr() {
+            showDialogChecklistPrintSetting() {
                 // Set parent value
                 nts.uk.ui.windows.setShared("socialInsuranceFeeChecklist", null);
                 //            nts.uk.ui.windows.setShared("isTransistReturnData", this.isTransistRetu            
@@ -89,12 +86,25 @@ module nts.uk.pr.view.qpp018.a {
                 })
                 return dfd.promise();
             }
+            
+            public getCurrentYearMonth(): string {
+                var today = new Date();
+                var month = today.getMonth() + 1; //January is 0!
+                var year = today.getFullYear();
+                var yearMonth = <string><any>year + '/';
+                if (month < 10) {
+                    yearMonth += '0' + <string><any>month;
+                } else {
+                    yearMonth += month.toLocaleString();
+                }
+                return yearMonth; 
+            }
 
         }
 
         /**
-     * Class InsuranceOfficeMo    */      
-
+          * Class InsuranceOfficeMo
+          */
         export class InsuranceOfficeModel {
             code: string;
             name: string;

@@ -22,12 +22,14 @@ module nts.uk.pr.view.qpp018.c {
                 self.printSettingValue = ko.observable('PrintSetting Value');
                 self.checkListPrintSettingModel = ko.observable(new CheckListPrintSettingModel());
             }
+            
             closePrintSetting() {
                 // Set child value
                 nts.uk.ui.windows.setShared("printSettingValue", this.printSettingValue(), true);
                 nts.uk.ui.windows.close();
             }
-            setupPrintSetting() {
+            
+            saveConfigurePrintSetting() {
                 var self = this;
                 if (!(self.checkListPrintSettingModel().showCategoryInsuranceItem())
                     && !(self.checkListPrintSettingModel().showDeliveryNoticeAmount())
@@ -36,10 +38,13 @@ module nts.uk.pr.view.qpp018.c {
                     alert("Something is not right");
                 } else {
                     nts.uk.ui.windows.setShared("printSettingValue", this.printSettingValue(), true);
-                    service.saveCheckListPrintSetting(self.checkListPrintSettingModel().toDto()).done(data => {
-                        alert("Something is not right YES");
+                    var command = {
+                        checkListPrintSettingDto : self.checkListPrintSettingModel().toDto()
+                    };
+                    service.saveCheckListPrintSetting(command).done(data => {
+                        alert("Configure successful.");
                     }).fail(function(res) {
-                        alert("Something is not right NO");
+                        alert("Configure fail.");
                     })
                     nts.uk.ui.windows.close();
                 }
