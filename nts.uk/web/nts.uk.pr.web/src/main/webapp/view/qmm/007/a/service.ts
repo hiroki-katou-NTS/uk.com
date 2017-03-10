@@ -45,7 +45,8 @@ module nts.uk.pr.view.qmm007 {
         export var instance = new Service({
             historyMasterPath: 'pr/proto/unitprice/masterhistory',
             createHisotyPath: 'pr/proto/unitprice/history/create',
-            deleteHistoryPath: 'pr/proto/unitprice/history/delete'
+            deleteHistoryPath: 'pr/proto/unitprice/history/delete',
+            updateHistoryStartPath: 'pr/proto/unitprice/history/update/start'
         });
 
         /**

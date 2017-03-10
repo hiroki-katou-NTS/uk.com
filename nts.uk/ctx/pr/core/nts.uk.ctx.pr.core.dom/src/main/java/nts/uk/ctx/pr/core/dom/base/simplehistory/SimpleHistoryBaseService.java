@@ -4,8 +4,10 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.dom.base.simplehistory;
 
+import java.util.List;
 import java.util.Optional;
 
+import nts.arc.error.BusinessException;
 import nts.arc.time.DateTimeConstraints;
 import nts.arc.time.YearMonth;
 import nts.uk.shr.com.context.AppContexts;
@@ -65,7 +67,7 @@ public abstract class SimpleHistoryBaseService<M extends Master, H extends Histo
 		Optional<H> historyOpt = this.getRepository().findLastestHistoryByMasterCode(companyCode, masterCode);
 		if (!historyOpt.isPresent()) {
 			throw new RuntimeException("History not found.");
-		}		
+		}
 		H lastestHistory = historyOpt.get();
 
 		// New history.
@@ -102,6 +104,49 @@ public abstract class SimpleHistoryBaseService<M extends Master, H extends Histo
 
 		// Ret.
 		return newHistory;
+	}
+
+	/**
+	 * Update history start.
+	 *
+	 * @param companyCode the company code
+	 * @param masterCode the master code
+	 * @param uuid the uuid
+	 * @param newYearMonth the new year month
+	 * @return the h
+	 */
+	public H updateHistoryStart(String uuid, YearMonth newYearMonth) {
+		SimpleHistoryRepository<H> repo = this.getRepository();
+
+		// Get updated uuid.
+		Optional<H> optH = repo.findHistoryByUuid(uuid);
+		if (!optH.isPresent()) {
+			throw new IllegalStateException("Can not find history.");
+		}
+
+		H h = optH.get();
+		List<H> historyList = repo.findAllHistoryByMasterCode(h.getCompanyCode().v(), h.getMasterCode().v());
+		int indexOfH = historyList.indexOf(h);
+		H beforeH = indexOfH > 0 ? historyList.get(indexOfH -1 ) : null;
+		H afterH = indexOfH < historyList.size() ? historyList.get(indexOfH + 1) : null;
+
+		// Validate new yearmonth.
+		if (beforeH != null && newYearMonth.v() <= beforeH.getStart().v()) {
+			// Error.
+			throw new BusinessException("Invalid new year month.");
+		}
+
+		if (afterH != null && newYearMonth.v() >= afterH.getStart().v()) {
+			// Error.
+			throw new BusinessException("Invalid new year month.");
+		}
+
+		// Update h.
+		h.setStart(newYearMonth);
+		repo.updateHistory(h);
+
+		// Ret.
+		return h;
 	}
 
 	/**

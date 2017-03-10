@@ -8,8 +8,12 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
+import nts.arc.time.YearMonth;
 import nts.gul.collection.ListUtil;
 import nts.gul.text.StringUtil;
+import nts.uk.ctx.core.dom.company.CompanyCode;
+import nts.uk.ctx.pr.core.dom.base.simplehistory.SimpleHistoryRepository;
+import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
 import nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionRate;
 import nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionRateRepository;
 import nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.service.PensionRateService;
@@ -18,7 +22,7 @@ import nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.service.PensionRateSe
  * The Class PensionRateServiceImpl.
  */
 @Stateless
-public class PensionRateServiceImpl implements PensionRateService {
+public class PensionRateServiceImpl extends PensionRateService {
 
 	/** The fund rate item count. */
 	private final int FUND_RATE_ITEM_COUNT = 6;
@@ -62,6 +66,17 @@ public class PensionRateServiceImpl implements PensionRateService {
 			// TODO throw new BusinessException("ER011"); ER0123!?
 			throw new BusinessException("ER011");
 		}
+	}
+
+	@Override
+	public SimpleHistoryRepository<PensionRate> getRepository() {
+		return this.pensionRateRepo;
+	}
+
+	@Override
+	public PensionRate createInitalHistory(String companyCode, String officeCode, YearMonth startTime) {
+		return PensionRate.createWithIntial(new CompanyCode(companyCode), new OfficeCode(officeCode),
+				startTime);
 	}
 
 }

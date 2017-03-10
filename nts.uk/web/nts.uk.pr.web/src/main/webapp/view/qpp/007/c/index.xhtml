@@ -21,21 +21,21 @@
 		</ui:define>
 
 		<ui:define name="content">
-			<!-- BEGIN FUNCTION AREA-->
+			<!-- BEGIN FUNCTION AREA -->
 			<div id="functions-area">
 				<button id="new-button" data-bind="">新規</button>
 				<button id="register-button" class="proceed"
 					data-bind="enable: $root.errors.isEmpty">登録</button>
-				<button id="setting-button">集計項目の設定</button>
+				<button id="setting-button" data-bind="click: commonSettingBtnClick">集計項目の設定</button>
 				<button id="delete-button" class="danger" data-bind="">削除</button>
 				<button id="close-button" data-bind="">閉じる</button>
 			</div>
 
-			<!-- END FUNCTION AREA-->
+			<!-- END FUNCTION AREA -->
 
-			<!-- BEGIN CONTENT AREA-->
+			<!-- BEGIN CONTENT AREA -->
 			<div id="contents-area">
-				<!-- BEGIN CONTENT LEFT-->
+				<!-- BEGIN CONTENT LEFT -->
 				<div id="contents-left"
 					class="bg-green caret-right caret-background">
 					<div id="inpSearch" class="ntsSearchBox"
@@ -44,7 +44,7 @@
 										items: 'items', 
 										selected: 'currentCode', 
 										selectedKey: 'code', 
-										fields: ['name', 'code']}"
+										fields: ['name', 'code', 'description']}"
 						placeholder="コード・名称"></div>
 					<div id="left-grid-list">
 						<table id="single-list"
@@ -54,116 +54,49 @@
 							dataSource: items,
 							primaryKey: 'code',
 							columns: columns,
-							deleteOptions : {visible : true, deleteField: 'deletable'},
 							multiple: false,
 							value: currentCode
 						}"
 							class="cf"></table>
 					</div>
 				</div>
-				<!-- END CONTENT LEFT-->
+				<!-- END CONTENT LEFT -->
 
 				<!-- BEGIN CONTENT CENTER-->
-				<div id="contents-center" class="caret-right caret-background">
+				<div id="contents-center" class="caret-right caret-background" data-bind="with: outputSettingDetailModel">
 					<div class="flex valign-center">
 						<div id="lblCodeName" data-bind="ntsFormLabel: {required: true}">コード/名称</div>
 						<input id="inpCode"
-							data-bind="ntsTextEditor: {value: code, required: true, enable: false}"></input>
+							data-bind="ntsTextEditor: {value: settingCode, required: true, enable: false}"></input>
 						<input id="inpName"
-							data-bind="ntsTextEditor: {value: name, required: true}"></input>
+							data-bind="ntsTextEditor: {value: settingName, required: true}"></input>
 					</div>
-					<div id="tab-panel"
-						data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}">
-						<div class="tab-content-1">
-							<table>
-								<tr>
-									<td><div id="a"
-											data-bind="ntsFormLabel: {required: false}">コード/名称コード/名称</div>
-										<hr />
-										<table id="single-list"
-											data-bind="ntsGridList: {
-											height: 200,
-											width: 240,
-											dataSource: items,
-											primaryKey: 'code',
-											columns: columns,
-											deleteOptions : {visible : true, deleteField: 'deletable'},
-											multiple: false,
-											value: currentCode
-										}"
-											class="cf"></table></td>
-									<td><button class="margin-left-10 btn-right">
-											<i class="icon icon-button-arrow-right"></i>
-										</button></td>
-									<td rowspan="2" style="vertical-align: top">
-										<div class="margin-left-10">
-											<div data-bind="ntsFormLabel: {required: false}">コード/名称コード/名称</div>
-											<hr />
-											<div class="panel-content-table-right">
-												<table id="single-list"
-													data-bind="ntsGridList: {
-											height: 450,
-											width: 240,
-											dataSource: items,
-											primaryKey: 'code',
-											columns: columns,
-											deleteOptions : {visible : true, deleteField: 'deletable'},
-											multiple: false,
-											value: currentCode
-										}"
-													class="cf"></table>
-												<div class="margin-left-10">
-													<button class="auto-height btn-up">
-														<i class="icon icon-button-arrow-top" />
-													</button>
-													<br />
-													<button class="auto-height">
-														<i class="icon icon-button-arrow-bottom" />
-													</button>
-												</div>
-											</div>
-										</div>
-									</td>
-								</tr>
-								<tr>
-									<td>
-										<div id="a" data-bind="ntsFormLabel: {required: false}">コード/名称コード/名称</div>
-										<hr />
-										<table id="single-list"
-											data-bind="ntsGridList: {
-											height: 200,
-											width: 240,
-											dataSource: items,
-											primaryKey: 'code',
-											columns: columns,
-											deleteOptions : {visible : true, deleteField: 'deletable'},
-											multiple: false,
-											value: currentCode
-										}"
-											class="cf"></table>
-									</td>
-									<td>
-										<button class="margin-left-10 btn-right">
-											<i class="icon icon-button-arrow-right"></i>
-										</button>
-									</td>
-								</tr>
-							</table>
-						</div>
-						<div class="tab-content-2">
-							<span>Tab Content 2</span><br />
-						</div>
-						<div class="tab-content-3">
-							<span>Tab Content 3</span><br />
-						</div>
-						<div class="tab-content-4">
-							<span>Tab Content 4</span><br />
-						</div>
-					</div>
-				</div>
-				<!-- END CONTENT CENTER-->
 
-				<!-- BEGIN CONTENT RIGHT-->
+					<!-- BEGIN TAB PANEL -->
+					<div id="tab-panel"
+						data-bind="ntsTabPanel: { dataSource: categorySettingTabs, active: selectedCategory}">
+						<!-- Salary payment Tab -->
+						<div id="supply" data-bind="if: selectedCategory() == 'supply'">
+							<com:ko tag="template" bind="{name: 'tab-template', data: categorySetting}"></com:ko>
+						</div>
+						<!-- Salary deduction Tab -->
+						<div id="deduction" data-bind="if: selectedCategory() == 'deduction'">
+							<span>tab2</span>
+						</div>
+						<!-- Salary attendance Tab -->
+						<div id="attendance" data-bind="if: selectedCategory() == 'attendance'">
+							<com:ko tag="template" bind="{name: 'tab-template', data: categorySetting}"></com:ko>
+						</div>
+						<!-- Bonus payment Tab -->
+						<div id="article-others" data-bind="if: selectedCategory() == 'article-others'">
+							<span>tab4</span>
+						</div>
+					</div>
+					<!-- END TAB PANEL -->
+				</div>
+				<!-- END CONTENT CENTER -->
+
+				<!-- BEGIN CONTENT RIGHT -->
 				<div id="contents-right">
 					<div id="lblCodeName" data-bind="ntsFormLabel: {required: true}">帳票出力項目の一覧</div>
 					<button class="btn-help"
@@ -176,7 +109,6 @@
 							dataSource: items,
 							primaryKey: 'code',
 							columns: columns,
-							deleteOptions : {visible : true, deleteField: 'deletable'},
 							multiple: false,
 							value: currentCode
 						}"
@@ -187,9 +119,76 @@
 			</div>
 			<!-- END CONTENT AREA-->
 
-			<!-- TAB TEMPLATE-->
-			<!-- TODO: de mai tinh-->
+			<!-- TAB TEMPLATE -->
+			<!-- TODO: de mai tinh -->
 			<script type="text/html" id="tab-template">
+							<table>
+							    <tr>
+							        <td>
+							            <div data-bind="ntsFormLabel: {required: false}">コード/名称コード/名称</div>
+							            <hr />
+							            <table id="single-list" data-bind="ntsGridList: {
+																		height: 200,
+																		width: 240,
+																		dataSource: items,
+																		primaryKey: 'code',
+																		columns: columns,
+																		value: currentCode
+																	}" class="cf"></table>
+							        </td>
+							        <td>
+							            <button class="margin-left-10 btn-right">
+							                <i class="icon icon-button-arrow-right"></i>
+							            </button>
+							        </td>
+							        <td rowspan="2" style="vertical-align: top">
+							            <div class="margin-left-10">
+							                <div data-bind="ntsFormLabel: {required: false}">コード/名称コード/名称</div>
+							                <hr />
+							                <div class="panel-content-table-right">
+							                    <div style="display: inline-block;">
+							                        <table id="grid-test" data-bind="ntsGridList: {
+																	height: 450,
+																	width: 240,
+																	dataSource: items,
+																	primaryKey: 'code',
+																	columns: columns,
+																	value: currentCode,
+																	multiple: false,
+																	deleteOptions : {visible : true, deleteField: 'deletable'},
+																}, rended: currentCode"></table>
+							                    </div>
+							                    <div id="up-down" data-bind="ntsUpDown: {
+																	targetSource: items,
+																	primaryKey: 'code',
+																	comId: '#grid-test',
+																	type: 'grid'
+																}" class=""></div>
+							                </div>
+							            </div>
+							        </td>
+							    </tr>
+							    <tr>
+							        <td>
+							            <div id="a" data-bind="ntsFormLabel: {required: false}">コード/名称コード/名称</div>
+							            <hr />
+							            <table id="single-list" data-bind="ntsGridList: {
+																		height: 200,
+																		width: 240,
+																		dataSource: items,
+																		primaryKey: 'code',
+																		columns: columns,
+																		multiple: false,
+																		value: currentCode
+																	}" class="cf"></table>
+							        </td>
+							        <td>
+							            <button class="margin-left-10 btn-right">
+							                <i class="icon icon-button-arrow-right"></i>
+							            </button>
+							        </td>
+							    </tr>
+							</table>
 			</script>
 		</ui:define>
 	</ui:composition>

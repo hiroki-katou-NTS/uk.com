@@ -9,7 +9,8 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
-import nts.uk.file.pr.app.export.wageledger.data.WageLedgerReportData;
+import nts.uk.file.pr.app.export.wageledger.WageLedgerReportQuery.LayoutType;
+import nts.uk.file.pr.app.export.wageledger.data.WLOldLayoutReportData;
 
 /**
  * The Class WageLedgerReportSevice.
@@ -35,9 +36,13 @@ public class WageLedgerReportSevice extends ExportService<WageLedgerReportQuery>
 		WageLedgerReportQuery query = context.getQuery();
 		
 		// Query Data.
-		WageLedgerReportData reportData = this.repository.findReportData(query);
+		WLOldLayoutReportData reportData = this.repository.findReportData(query);
 		
 		// Generate report.
-		this.generator.generate(context.getGeneratorContext(), reportData);
+		if (query.layoutType == LayoutType.NewLayout) {
+			this.generator.generateWithNewLayout(context.getGeneratorContext(), null);
+		} else {
+			this.generator.generateWithOldLayout(context.getGeneratorContext(), reportData);
+		}
 	}
 }

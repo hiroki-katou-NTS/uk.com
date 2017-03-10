@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2016 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.core.ws.wagetable;
@@ -34,6 +34,6 @@ public class CertificationWs extends WebService {
 	@POST
 	@Path("findall")
 	public List<CertificationFindInDto> findAll() {
-		return find.findAll();
+		return this.find.findAll();
 	}
 }

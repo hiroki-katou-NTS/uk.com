@@ -12,6 +12,7 @@ module nts.uk.pr.view.qmm011.f {
             historyId: KnockoutObservable<string>;
             historyStart: KnockoutObservable<number>;
             historyEnd: KnockoutObservable<number>;
+            endMonthRage: KnockoutObservable<string>;
             typeHistory: KnockoutObservable<number>;
 
             constructor() {
@@ -27,6 +28,7 @@ module nts.uk.pr.view.qmm011.f {
                 self.historyStart = ko.observable(nts.uk.ui.windows.getShared("historyStart"));
                 self.historyId = ko.observable(nts.uk.ui.windows.getShared("historyId"));
                 self.historyEnd = ko.observable(nts.uk.ui.windows.getShared("historyEnd"));
+                self.endMonthRage = ko.observable(nts.uk.time.formatYearMonth(self.historyEnd()));
             }
             fwupdateHistoryInfoUnemployeeInsurance() {
                 var self = this;

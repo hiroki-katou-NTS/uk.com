@@ -21,6 +21,9 @@ import nts.uk.ctx.pr.core.dom.insurance.CommonAmount;
 import nts.uk.ctx.pr.core.dom.insurance.Ins2Rate;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
+import nts.uk.ctx.pr.core.dom.insurance.PaymentType;
+import nts.uk.ctx.pr.core.dom.insurance.RoundingItem;
+import nts.uk.ctx.pr.core.dom.insurance.RoundingMethod;
 
 /**
  * The Class PensionRate.
@@ -194,7 +197,6 @@ public class PensionRate extends AggregateRoot implements History<PensionRate> {
 	public static final PensionRate createWithIntial(CompanyCode companyCode, OfficeCode officeCode,
 			YearMonth startYearMonth) {
 		PensionRate pensionRate = new PensionRate();
-		// TODO: review default values.
 		pensionRate.companyCode = companyCode;
 		pensionRate.officeCode = officeCode;
 		pensionRate.applyRange = MonthRange.toMaxDate(startYearMonth);
@@ -202,10 +204,83 @@ public class PensionRate extends AggregateRoot implements History<PensionRate> {
 		pensionRate.fundInputApply = true;
 		pensionRate.maxAmount = new CommonAmount(BigDecimal.ZERO);
 		pensionRate.childContributionRate = new Ins2Rate(BigDecimal.ZERO);
-		pensionRate.fundRateItems = new HashSet<FundRateItem>();
-		pensionRate.premiumRateItems = new HashSet<PensionPremiumRateItem>();
-		pensionRate.roundingMethods = new HashSet<PensionRateRounding>();
+		pensionRate.fundRateItems = setDafaultFunRateItems();
+		pensionRate.premiumRateItems = setDefaultPremiumRateItems();
+		pensionRate.roundingMethods = setDefaultRounding();
 		return pensionRate;
 	}
+	
+	/**
+	 * Sets the dafault fun rate items.
+	 *
+	 * @return the sets the
+	 */
+	private static Set<FundRateItem> setDafaultFunRateItems() {
+		Set<FundRateItem> setItems = new HashSet<FundRateItem>();
+		
+		PensionChargeRateItem charge = new PensionChargeRateItem();
+		charge.setCompanyRate(new Ins2Rate(BigDecimal.ZERO));
+		charge.setPersonalRate(new Ins2Rate(BigDecimal.ZERO));
+		
+		FundRateItem item1 = new FundRateItem(PaymentType.Salary,InsuranceGender.Male,charge,charge);
+		setItems.add(item1);
+		FundRateItem item2 = new FundRateItem(PaymentType.Salary,InsuranceGender.Female,charge,charge);
+		setItems.add(item2);
+		FundRateItem item3 = new FundRateItem(PaymentType.Salary,InsuranceGender.Unknow,charge,charge);
+		setItems.add(item3);
+		FundRateItem item4 = new FundRateItem(PaymentType.Bonus,InsuranceGender.Male,charge,charge);
+		setItems.add(item4);
+		FundRateItem item5 = new FundRateItem(PaymentType.Bonus,InsuranceGender.Female,charge,charge);
+		setItems.add(item5);
+		FundRateItem item6 = new FundRateItem(PaymentType.Bonus,InsuranceGender.Unknow,charge,charge);
+		setItems.add(item6);
+		return setItems;
+	}
 
+	/**
+	 * Sets the default premium rate items.
+	 *
+	 * @return the sets the
+	 */
+	private static Set<PensionPremiumRateItem> setDefaultPremiumRateItems(){
+		Set<PensionPremiumRateItem> setItems = new HashSet<PensionPremiumRateItem>();
+		PensionChargeRateItem charge = new PensionChargeRateItem();
+		charge.setCompanyRate(new Ins2Rate(BigDecimal.ZERO));
+		charge.setPersonalRate(new Ins2Rate(BigDecimal.ZERO));
+		PensionPremiumRateItem item1 = new PensionPremiumRateItem(PaymentType.Salary,InsuranceGender.Male,charge);
+		setItems.add(item1);
+		PensionPremiumRateItem item2 = new PensionPremiumRateItem(PaymentType.Salary,InsuranceGender.Female,charge);
+		setItems.add(item2);
+		PensionPremiumRateItem item3 = new PensionPremiumRateItem(PaymentType.Salary,InsuranceGender.Unknow,charge);
+		setItems.add(item3);
+		PensionPremiumRateItem item4 = new PensionPremiumRateItem(PaymentType.Bonus,InsuranceGender.Male,charge);
+		setItems.add(item4);
+		PensionPremiumRateItem item5 = new PensionPremiumRateItem(PaymentType.Bonus,InsuranceGender.Female,charge);
+		setItems.add(item5);
+		PensionPremiumRateItem item6 = new PensionPremiumRateItem(PaymentType.Bonus,InsuranceGender.Unknow,charge);
+		setItems.add(item6);
+		return setItems;
+	}
+
+	/**
+	 * Sets the default rounding.
+	 *
+	 * @return the sets the
+	 */
+	// init default rounding values
+	private static Set<PensionRateRounding> setDefaultRounding() {
+		Set<PensionRateRounding> setItems = new HashSet<PensionRateRounding>();
+		RoundingItem salRounding = new RoundingItem();
+		salRounding.setCompanyRoundAtr(RoundingMethod.RoundUp);
+		salRounding.setPersonalRoundAtr(RoundingMethod.RoundUp);
+		PensionRateRounding item1 = new PensionRateRounding(PaymentType.Salary, salRounding);
+		setItems.add(item1);
+		RoundingItem bnsRounding = new RoundingItem();
+		bnsRounding.setCompanyRoundAtr(RoundingMethod.RoundUp);
+		bnsRounding.setPersonalRoundAtr(RoundingMethod.RoundUp);
+		PensionRateRounding item2 = new PensionRateRounding(PaymentType.Bonus, bnsRounding);
+		setItems.add(item2);
+
+		return setItems;
+	}
 }

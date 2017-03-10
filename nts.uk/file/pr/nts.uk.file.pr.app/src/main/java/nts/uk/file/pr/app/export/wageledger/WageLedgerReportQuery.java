@@ -16,14 +16,38 @@ public class WageLedgerReportQuery {
 	public Boolean isAggreatePreliminaryMonth;
 	
 	/** The layout type. */
-	public int layoutType;
+	public LayoutType layoutType;
 	
 	/** The is page break indicator. */
 	public Boolean isPageBreakIndicator;
 	
 	/** The output type. */
-	public int outputType;
+	public OutputType outputType;
 	
 	/** The output setting code. */
 	public String outputSettingCode;
+	
+	/**
+	 * The Enum LayoutType.
+	 */
+	public enum LayoutType {
+		
+		/** The One page. */
+		OnePage,
+		
+		/** The New layout. */
+		NewLayout
+	}
+	
+	/**
+	 * The Enum OutputType.
+	 */
+	public enum OutputType {
+		
+		/** The Detail item. */
+		MasterItems,
+		
+		/** The Output setting item. */
+		OutputSettingItems
+	}
 }

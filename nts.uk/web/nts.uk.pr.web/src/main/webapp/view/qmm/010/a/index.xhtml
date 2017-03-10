@@ -22,6 +22,7 @@
 			    nts.uk.ctx.pr.core.dom.insurance.PotalCode
 			    nts.uk.ctx.pr.core.dom.insurance.Address
 			    nts.uk.ctx.pr.core.dom.insurance.KanaAddress
+			    nts.uk.shr.com.primitive.Memo
 			 </com:ValidatorScript>
 			<script>
 				__viewContext.primitiveValueConstraints.CitySign = {
@@ -50,6 +51,11 @@
 					charType : 'Numeric',
 					maxLength : 1,
 				};
+				__viewContext.primitiveValueConstraints.PhoneNumber = {
+					valueType : 'String',
+					charType : 'Numeric',
+					maxLength : 13,
+				};
 			</script>
 		</ui:define>
 
@@ -72,9 +78,10 @@
 					<tr>
 						<td id="contents-left"
 							class="bg-green caret-right caret-background">
+							<i class="icon icon-searchbox"></i>
 							<div
 								data-bind="ntsSearchBox: {comId: 'sdufisdfui', items: lstlaborInsuranceOfficeModel, selected: selectCodeLstlaborInsuranceOffice, selectedKey: 'code', fields: ['code','name']}" />
-							<div id="search_001">
+							<div id="searchlaborInsuranceOffice">
 								<table id="single-list"
 									data-bind="ntsGridList: {
 									width: 350,
@@ -86,15 +93,14 @@
 									value: selectCodeLstlaborInsuranceOffice,
 									enable: true
 							}"></table>
-							</div>
-						</td>
+							</div></td>
 						<td id="contents-right"
 							data-bind="with: laborInsuranceOfficeModel">
 							<table id="tableRight">
 								<tr>
 									<td class="contentsRL">
 										<div id="lbl_code_name"
-											data-bind="ntsFormLabel: {constraints:['OfficeCode','OfficeName'], required: true}">
+											data-bind="ntsFormLabel: {constraint:['OfficeCode','OfficeName'], required: true}">
 											<label>コード/名称<br /></label>
 										</div>
 									</td>
@@ -116,7 +122,7 @@
 								</tr>
 								<tr>
 									<td class="contentsRL">
-										<div id="A_LBL_003"
+										<div
 											data-bind="ntsFormLabel: {constraint: 'ShortName',required: false}">
 											<label>略名</label>
 										</div>
@@ -132,7 +138,7 @@
 
 								<tr>
 									<td class="contentsRL">
-										<div id="A_LBL_004"
+										<div
 											data-bind="ntsFormLabel: {constraint:'PicName',required: false}">
 											<label>代表者名</label>
 										</div>
@@ -166,7 +172,7 @@
 								</tr>
 								<tr>
 									<td class="contentsRL">
-										<div id="A_LBL_006"
+										<div
 											data-bind="ntsFormLabel: {constraint:'PotalCode',required: false}">
 											<label>郵便番号</label>
 										</div>
@@ -183,7 +189,7 @@
 								</tr>
 								<tr>
 									<td class="contentsRL">
-										<div id="A_LBL_007"
+										<div
 											data-bind="ntsFormLabel: {constraint:'Address',required: false}">
 											<label>住所1</label>
 										</div>
@@ -199,7 +205,7 @@
 
 								<tr>
 									<td class="contentsRL">
-										<div id="A_LBL_008" class="left20 border_none"
+										<div class="left20 border_none"
 											data-bind="ntsFormLabel: {constraint:'KanaAddress',required: false}">
 											<label>ｶﾅ1</label>
 										</div>
@@ -215,7 +221,7 @@
 
 								<tr>
 									<td class="contentsRL">
-										<div id="A_LBL_009"
+										<div
 											data-bind="ntsFormLabel: {constraint:'Address',required: false}">
 											<label>住所2</label>
 										</div>
@@ -231,7 +237,7 @@
 
 								<tr>
 									<td class="contentsRL">
-										<div id="A_LBL_010" class="left20 border_none"
+										<div  class="left20 border_none"
 											data-bind="ntsFormLabel: {constraint:'KanaAddress',required: false}">
 											<label>ｶﾅ2</label>
 										</div>
@@ -246,8 +252,8 @@
 								</tr>
 								<tr>
 									<td class="contentsRL">
-										<div id="A_LBL_011"
-											data-bind="ntsFormLabel: {required: false}">
+										<div 
+											data-bind="ntsFormLabel: {constraint: 'PhoneNumber', required: false}">
 											<label>電話番号</label>
 										</div>
 									</td>
@@ -255,6 +261,7 @@
 										class="tr240 save-error" data-name="phoneNumber"
 										data-bind="ntsTextEditor: {value: phoneNumber, 
 										option: textEditorOption, 
+										constraint: 'PhoneNumber',
 										enable: true}" />
 									</td>
 								</tr>
@@ -266,12 +273,12 @@
 								</tr>
 								<tr>
 									<td class="contentsRL">
-										<div id="A_LBL_013"
+										<div
 											data-bind="ntsFormLabel: {required: false}">
 											<label>時期媒体・e-Gov用</label>
 										</div>
 									</td>
-									<td class="contentsRR"><label id="A_LBL_014">都市区符号
+									<td class="contentsRR"><label >都市区符号
 											:</label><input id="inp_citySign" class="tr40 save-error"
 										data-name="citySign"
 										data-bind="ntsTextEditor: {value: citySign, 
@@ -279,7 +286,7 @@
 										constraint: 'CitySign',
 										enable: true}" />
 
-										<label id="A_LBL_014">事業所記号 :</label><input
+										<label >事業所記号 :</label><input
 										id="inp_officeMark" class="tr40 save-error"
 										data-name="officeMark"
 										data-bind="ntsTextEditor: {value: officeMark, 
@@ -290,7 +297,7 @@
 								</tr>
 								<tr>
 									<td class="contentsRL">
-										<div id="A_LBL_016"
+										<div
 											data-bind="ntsFormLabel: {required: false}">
 											<label>事務所整理番号</label>
 										</div>
@@ -301,13 +308,13 @@
 										option: textEditorOption, 
 										constraint: 'OfficeNoA',
 										enable: true}" />
-										<label id="A_LBL_017"> - </label><input id="inp_officeNoB"
+										<label> - </label><input id="inp_officeNoB"
 										class="tr90 save-error" data-name="officeNoB"
 										data-bind="ntsTextEditor: {value: officeNoB, 
 										constraint: 'OfficeNoB',
 										option: textEditorOption, 
 										enable: true}" />
-										<label id="A_LBL_018">-</label> <input id="inp_officeNoC"
+										<label>-</label> <input id="inp_officeNoC"
 										class="tr40 save-error" data-name="officeNoC"
 										data-bind="ntsTextEditor: {value: officeNoC, 
 										constraint: 'OfficeNoC',
@@ -320,8 +327,8 @@
 								</tr>
 								<tr>
 									<td class="contentsRL">
-										<div id="A_LBL_019"
-											data-bind="ntsFormLabel: {required: false}">
+										<div
+											data-bind="ntsFormLabel: {constraint: 'Memo', required: false}">
 											<label>メモ</label>
 										</div>
 									</td>

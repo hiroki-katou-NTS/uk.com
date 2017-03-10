@@ -77,9 +77,8 @@ public class QwtmtWagetableElement implements Serializable {
 	private String updPg;
 
 	/** The exclus ver. */
-	@Basic(optional = false)
 	@Column(name = "EXCLUS_VER")
-	private Integer exclusVer;
+	private int exclusVer;
 
 	/** The demension type. */
 	@Basic(optional = false)

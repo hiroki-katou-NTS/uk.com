@@ -8,12 +8,13 @@ import java.util.List;
 import java.util.Optional;
 
 import nts.uk.ctx.core.dom.company.CompanyCode;
+import nts.uk.ctx.pr.core.dom.base.simplehistory.SimpleHistoryRepository;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 
 /**
  * The Interface PensionRateRepository.
  */
-public interface PensionRateRepository {
+public interface PensionRateRepository extends SimpleHistoryRepository<PensionRate>{
 
 	/**
 	 * Adds the.
@@ -44,6 +45,15 @@ public interface PensionRateRepository {
 	 * @return the list
 	 */
 	List<PensionRate> findAll(CompanyCode companyCode);
+
+	/**
+	 * Find all office.
+	 *
+	 * @param companyCode the company code
+	 * @param officeCode the office code
+	 * @return the list
+	 */
+	List<PensionRate> findAllOffice(String companyCode,String officeCode);
 
 	/**
 	 * Find by id.

@@ -22,10 +22,10 @@ module qet001.a {
             var dataJson = {
                 targetYear: data.targetYear(),
                 isAggreatePreliminaryMonth: data.isAggreatePreliminaryMonth(),
-                layoutSelected: data.layoutSelected(),
+                layoutType: data.layoutSelected(),
                 isPageBreakIndicator: data.isPageBreakIndicator(),
-                outputTypeSelected: data.outputTypeSelected(),
-                outputSettingSelectedCode: data.outputSettingSelectedCode()
+                outputType: data.outputTypeSelected(),
+                outputSettingCode: data.outputSettingSelectedCode()
                 // TODO: need employee code list.
             }
             nts.uk.request.exportFile(servicePath.printReport, dataJson).done(function() {

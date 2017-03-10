@@ -1,0 +1,108 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:stylefile path="main.css" />
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="viewmodel.js" />
+			<com:scriptfile path="start.js" />
+			<script type="text/javascript">
+				var dialogSize = {
+					width : 1300,
+					height : 800
+				};
+			</script>
+		</ui:define>
+
+		<ui:define name="content">
+			<!-- BEGIN FUNCTION AREA -->
+			<div id="functions-area">
+				<button id="register-button" class="proceed"
+					data-bind="enable: $root.errors.isEmpty">登録</button>
+				<button id="close-button" data-bind="click: closeDialogBtnClicked">閉じる</button>
+			</div>
+			<!-- END FUNCTION AREA -->
+
+			<!-- BEGIN CONTENT AREA -->
+			<div id="contents-area">
+				<div id="tab-panel1"
+					data-bind="ntsTabPanel: { dataSource: tabs1, active: selectedTab1}">
+					<div id="1">
+						<div id="tab-panel2" class="cf"
+							data-bind="ntsTabPanel: { dataSource: tabs2, active: selectedTab2, direction: 'vertical' }">
+							<div id="tab-content-1">
+								<div class="control-group">
+								<div id="lblDisplayName" data-bind="ntsFormLabel: {required: true}">表示名</div>
+								<input id="inpDisplayName" data-bind="ntsTextEditor: {value: name, required: true}"></input>
+								</div>
+								<div class="control-group">
+								<div id="lblCanBeAdded" data-bind="ntsFormLabel: {required: false}">集計対象に追加できる項目</div>
+								<div id="lblAdded" data-bind="ntsFormLabel: {required: false}">集計対象に追加した項目</div>
+								</div>
+								<div id="swap-list" data-bind="ntsSwapList: {
+								showSearchBox: { showLeft : true, showRight: false},
+								height: 500,
+								dataSource: itemsSwap,
+								primaryKey: 'code',
+								columns: columns,
+								value: currentCodeListSwap
+								}"></div>
+							
+							</div>
+							<div id="tab-content-2">
+								<span>Tab Content 2</span><br />
+							</div>
+							<div id="tab-content-3">
+								<span>Tab Content 3</span><br />
+							</div>
+							<div id="tab-content-4">
+							<span>Tab Content 3</span><br />
+							</div>
+						</div>
+					</div>
+					<div id="2">
+						<div id="tab-panel2" class="cf"
+							data-bind="ntsTabPanel: { dataSource: tabs2, active: selectedTab2, direction: 'vertical' }">
+							<div id="tab-content-1">
+								<div class="control-group">
+								<div id="lblDisplayName" data-bind="ntsFormLabel: {required: true}">表示名</div>
+								<input id="inpDisplayName" data-bind="ntsTextEditor: {value: name, required: true}"></input>
+								</div>
+								<div class="control-group">
+								<div id="lblCanBeAdded" data-bind="ntsFormLabel: {required: false}">集計対象に追加できる項目</div>
+								<div id="lblAdded" data-bind="ntsFormLabel: {required: false}">集計対象に追加した項目</div>
+								</div>
+								<div id="swap-list" data-bind="ntsSwapList: {
+								showSearchBox: { showLeft : true, showRight: false},
+								height: 500,
+								dataSource: itemsSwap,
+								primaryKey: 'code',
+								columns: columns,
+								value: currentCodeListSwap
+								}"></div>
+							
+							</div>
+							<div id="tab-content-2">
+								<span>Tab Content 2</span><br />
+							</div>
+							<div id="tab-content-3">
+								<span>Tab Content 3</span><br />
+							</div>
+							<div id="tab-content-4">
+							<span>Tab Content 3</span><br />
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!-- END CONTENT AREA-->
+
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

@@ -40,19 +40,28 @@ public class CertifyGroupUpdateCommandHandler extends CommandHandler<CertifyGrou
 	@Override
 	@Transactional
 	protected void handle(CommandHandlerContext<CertifyGroupUpdateCommand> context) {
+
 		// get login user info
 		LoginUserContext loginUserContext = AppContexts.user();
+
 		// get companyCode by user
 		String companyCode = loginUserContext.companyCode();
+
 		// get command
 		CertifyGroupUpdateCommand command = context.getCommand();
-		//to domain by command
+
+		// to domain by command
 		CertifyGroup certifyGroup = command.toDomain(companyCode);
-		//validate
+
+		// validate domain
+		certifyGroup.validate();
+
+		// validate
 		certifyGroupService.validateRequiredItem(certifyGroup);
-		//check duplicate
-		certifyGroupService.checkDulicateCertification(certifyGroup, certifyGroup.getCode());
-		//update
+		// check duplicate
+		certifyGroupService.checkDulicateCertification(certifyGroup, certifyGroup.getCode().v());
+
+		// update
 		this.certifyGroupRepository.update(certifyGroup);
 	}
 

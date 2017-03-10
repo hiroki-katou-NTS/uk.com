@@ -13,6 +13,7 @@ import nts.arc.layer.ws.WebService;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.pr.core.app.command.base.simplehistory.CreateHistoryCommand;
 import nts.uk.ctx.pr.core.app.command.base.simplehistory.DeleteHistoryCommand;
+import nts.uk.ctx.pr.core.app.command.base.simplehistory.UpdateStartHistoryCommand;
 import nts.uk.ctx.pr.core.dom.base.simplehistory.History;
 import nts.uk.ctx.pr.core.dom.base.simplehistory.Master;
 import nts.uk.ctx.pr.core.dom.base.simplehistory.SimpleHistoryBaseService;
@@ -71,6 +72,18 @@ public abstract class SimpleHistoryWs<M extends Master, H extends History<H>> ex
 	@Path("history/delete")
 	public void removeHistory(DeleteHistoryCommand command) {
 		this.getServices().deleteHistory(command.getHistoryId());
+	}
+
+	/**
+	 * Removes the history.
+	 *
+	 * @param uuid the uuid
+	 */
+	@POST
+	@Path("history/update/start")
+	public void updateHistoryStart(UpdateStartHistoryCommand command) {
+		this.getServices().updateHistoryStart(command.getHistoryId(),
+				new YearMonth(command.getNewYearMonth()));
 	}
 
 	/**

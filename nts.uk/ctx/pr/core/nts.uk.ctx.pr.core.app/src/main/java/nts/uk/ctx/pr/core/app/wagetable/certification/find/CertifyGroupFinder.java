@@ -4,14 +4,13 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.app.wagetable.certification.find;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.app.wagetable.certification.find.dto.CertifyGroupFindDto;
 import nts.uk.ctx.pr.core.app.wagetable.certification.find.dto.CertifyGroupFindOutDto;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroup;
@@ -35,19 +34,19 @@ public class CertifyGroupFinder {
 	 * @return the list
 	 */
 	public List<CertifyGroupFindOutDto> findAll() {
+
 		// get info login
 		LoginUserContext loginUserContext = AppContexts.user();
+
 		// call findAll
 		List<CertifyGroup> lstCertifyGroup = find.findAll(loginUserContext.companyCode());
-		List<CertifyGroupFindOutDto> lstCertifyGroupFindInDto = new ArrayList<>();
+
 		// to Dto
-		for (CertifyGroup certifyGroup : lstCertifyGroup) {
+		return lstCertifyGroup.stream().map(certifyGroup -> {
 			CertifyGroupFindOutDto certifyGroupFindOutDto = new CertifyGroupFindOutDto();
 			certifyGroup.saveToMemento(certifyGroupFindOutDto);
-			lstCertifyGroupFindInDto.add(certifyGroupFindOutDto);
-		}
-
-		return lstCertifyGroupFindInDto;
+			return certifyGroupFindOutDto;
+		}).collect(Collectors.toList());
 	}
 
 	/**
@@ -58,15 +57,19 @@ public class CertifyGroupFinder {
 	 * @return the certify group find dto
 	 */
 	public CertifyGroupFindDto find(String code) {
+		
 		// get info login
 		LoginUserContext loginUserContext = AppContexts.user();
 		CertifyGroupFindDto certifyGroupFindDto = new CertifyGroupFindDto();
+		
 		// call findById
 		Optional<CertifyGroup> optionalCertifyGroup = find.findById(loginUserContext.companyCode(), code);
+		
 		// not value find
 		if (!optionalCertifyGroup.isPresent()) {
 			return null;
 		}
+		
 		// to Dto
 		optionalCertifyGroup.get().saveToMemento(certifyGroupFindDto);
 

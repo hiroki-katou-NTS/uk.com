@@ -8,9 +8,9 @@ var qet001;
                 function ScreenModel() {
                     this.targetYear = ko.observable(2016);
                     this.isAggreatePreliminaryMonth = ko.observable(true);
-                    this.layoutSelected = ko.observable(LayoutOutput.WAGE_LEDGER);
+                    this.layoutSelected = ko.observable(LayoutOutput.ONE_PAGE);
                     this.isPageBreakIndicator = ko.observable(false);
-                    this.outputTypeSelected = ko.observable(OutputType.DETAIL_ITEM);
+                    this.outputTypeSelected = ko.observable(OutputType.MASTER_ITEMS);
                     this.outputSettings = ko.observableArray([]);
                     this.outputSettingSelectedCode = ko.observable('');
                 }
@@ -71,16 +71,16 @@ var qet001;
             var LayoutOutput = (function () {
                 function LayoutOutput() {
                 }
-                LayoutOutput.WAGE_LEDGER = 0;
-                LayoutOutput.WAGE_LIST = 1;
+                LayoutOutput.ONE_PAGE = 'OnePage';
+                LayoutOutput.NEW_LAYOUT = 'NewLayout';
                 return LayoutOutput;
             }());
             viewmodel.LayoutOutput = LayoutOutput;
             var OutputType = (function () {
                 function OutputType() {
                 }
-                OutputType.DETAIL_ITEM = 0;
-                OutputType.SUMMARY_DETAIL_ITEMS = 1;
+                OutputType.MASTER_ITEMS = 'MasterItems';
+                OutputType.OUTPUT_SETTING_ITEMS = 'OutputSettingItems';
                 return OutputType;
             }());
             viewmodel.OutputType = OutputType;

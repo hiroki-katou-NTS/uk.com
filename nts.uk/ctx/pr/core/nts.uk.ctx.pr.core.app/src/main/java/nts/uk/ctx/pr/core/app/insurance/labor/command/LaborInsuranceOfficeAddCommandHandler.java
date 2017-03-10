@@ -41,6 +41,7 @@ public class LaborInsuranceOfficeAddCommandHandler extends CommandHandler<LaborI
 	protected void handle(CommandHandlerContext<LaborInsuranceOfficeAddCommand> context) {
 		String companyCode = AppContexts.user().companyCode();
 		LaborInsuranceOffice laborInsuranceOffice = context.getCommand().toDomain(companyCode);
+		laborInsuranceOffice.validate();
 		laborInsuranceOfficeService.validateRequiredItem(laborInsuranceOffice);
 		laborInsuranceOfficeService.checkDuplicateCode(laborInsuranceOffice);
 		this.laborInsuranceOfficeRepo.add(laborInsuranceOffice);

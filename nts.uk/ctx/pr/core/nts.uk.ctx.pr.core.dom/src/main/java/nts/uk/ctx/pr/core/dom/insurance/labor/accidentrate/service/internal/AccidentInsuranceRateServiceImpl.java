@@ -66,11 +66,16 @@ public class AccidentInsuranceRateServiceImpl implements AccidentInsuranceRateSe
 	 * @return the validate range
 	 */
 	private boolean getValidateRange(AccidentInsuranceRate rate) {
-		if (rate.getApplyRange().getStartMonth().v() >= rate.getApplyRange().getEndMonth().v()) {
+		//validate Add 
+		// ? (start <= end)
+		if (rate.getApplyRange().getStartMonth().v() > rate.getApplyRange().getEndMonth().v()) {
 			return true;
 		}
+		
+		//? start > start first (order by desc) 
 		Optional<AccidentInsuranceRate> optionalFirst = this.accidentInsuranceRateRepo
 				.findFirstData(rate.getCompanyCode().v());
+		
 		if (optionalFirst.isPresent()) {
 			if (optionalFirst.get().getApplyRange().getStartMonth().nextMonth().v() > rate.getApplyRange()
 					.getStartMonth().v()) {
