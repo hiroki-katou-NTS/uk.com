@@ -1,193 +1,308 @@
-
-
 module cmm013.a.viewmodel {
 
-   export class ScreenModel {
-        listbox: KnockoutObservable<ListBoxx>;
-        searchboxx: KnockoutObservable<GridLists>;
-        label_002: KnockoutObservable<Label_002>;
-        label_003: KnockoutObservable<Label_003>;
-        label_004: KnockoutObservable<Label_004>;
-        label_005: KnockoutObservable<Label_005>;
-        label_006: KnockoutObservable<Label_006>;
-        hasCellphone: KnockoutObservable<boolean>;
-        selectbox: KnockoutObservable<SelectBox>;
-        selectbox_2: KnockoutObservable<SelectBox_2>;
-        inp_002: KnockoutObservable<Input_002>;
-        inp_003: KnockoutObservable<Input_003>;
-        inp_004: KnockoutObservable<Input_004>;
-        inp_005: KnockoutObservable<Input_005>;
-        switchbt_1: KnockoutObservable<SwitchButton_1>;
-        switchbt_2: KnockoutObservable<SwitchButton_2>;
-        switchbt_3: KnockoutObservable<SwitchButton_3>;
-        switchbt_4: KnockoutObservable<SwitchButton_4>;
-        tabs: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel>;
-        selectedTab: KnockoutObservable<string>;
-        constructor() {
-            var self = this;
-            self.tabs = ko.observableArray([
-                { id: 'tab-1', title: '蝓ｺ譛ｬ諠・ｱ', content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true) },
-                { id: 'tab-2', title: '險育ｮ怜ｼ上・險ｭ螳・, content: '.tab-content-2', enable: ko.observable(true), visible: ko.observable(true) }
-            ]);
-            self.selectedTab = ko.observable('tab-1');
-            self.listbox = ko.observable(new ListBoxx());
-            self.searchboxx = ko.observable(new GridLists());
-            self.label_002 = ko.observable(new Label_002());
-            self.label_003 = ko.observable(new Label_003());
-            self.label_004 = ko.observable(new Label_004());
-            self.label_005 = ko.observable(new Label_005());
-            self.label_006 = ko.observable(new Label_006());
-            self.selectbox = ko.observable(new SelectBox());
-            self.selectbox_2 = ko.observable(new SelectBox_2());
-            self.hasCellphone = ko.observable(false);
-            self.switchbt_1 = ko.observable(new SwitchButton_1());
-            self.switchbt_2 = ko.observable(new SwitchButton_2());
-            self.switchbt_3 = ko.observable(new SwitchButton_3());
-            self.switchbt_4 = ko.observable(new SwitchButton_4());
-            self.inp_002 = ko.observable(new Input_002());
-            self.inp_003 = ko.observable(new Input_003());
-            self.inp_004 = ko.observable(new Input_004());
-            self.inp_005 = ko.observable(new Input_005());
-        }
-    }
-
-    export class ListBoxx {
-        itemList: KnockoutObservableArray<ItemModel>;
+    export class ScreenModel {
+        //A_label_x
+        label_002: KnockoutObservable<Labels>;
+        label_003: KnockoutObservable<Labels>;
+        label_004: KnockoutObservable<Labels>;
+        label_005: KnockoutObservable<Labels>;
+        label_006: KnockoutObservable<Labels>;
+        test: KnockoutObservable<string>;
+        
+        radiobox_2: KnockoutObservable<RadioBox2>;
+        //A_inp_x
+        inp_002: KnockoutObservable<string>;
+        inp_002_enable: KnockoutObservable<boolean>;
+        inp_003: KnockoutObservable<string>;
+        inp_004: KnockoutObservable<TextEditor_3>;
+        inp_005: KnockoutObservable<string>;
+        
+        sel_0021: KnockoutObservable<SwitchButton>;
+        sel_0022: KnockoutObservable<SwitchButton>;
+        sel_0023: KnockoutObservable<SwitchButton>;
+        sel_0024: KnockoutObservable<SwitchButton>;
+        
+        //A_lst_001 - list history
+        listbox: KnockoutObservableArray<service.model.ListHistoryDto>;
         itemName: KnockoutObservable<string>;
-        currentCode: KnockoutObservable<number>
-        selectedCode: KnockoutObservable<string>;
-        selectedCodes: KnockoutObservableArray<string>;
+        selectedCode: KnockoutObservable<any>
         isEnable: KnockoutObservable<boolean>;
-
-
+        itemHist: KnockoutObservable<service.model.ListHistoryDto>;
+        index_selected: KnockoutObservable<any>;
+        
+        //lst_002 - list position 
+        currentCode: KnockoutObservable<any>;        
+        dataSource: KnockoutObservableArray<service.model.ListPositionDto>;
+        columns: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;       
+                
+        currentCodeList: KnockoutObservableArray<any>;
+        currentItem: KnockoutObservable<service.model.ListPositionDto>;
+        index_of_itemDelete: any;
+        
+        //A_SEL_001
+        itemList: KnockoutObservableArray<any>;
+        selectedId: KnockoutObservable<any>;
+        enable: KnockoutObservable<boolean>;
+        
+         singleSelectedCode: KnockoutObservable<string>;
+        
         constructor() {
             var self = this;
-            self.itemList = ko.observableArray([
-                new ItemModel('2015/10/01 ~ 9999/12/31'),
-                new ItemModel('2015/10/01 ~ 9999/12/31'),
-                new ItemModel('2015/10/01 ~ 9999/12/31'),
-                new ItemModel('2015/10/01 ~ 9999/12/31'),
-                new ItemModel('2015/10/01 ~ 9999/12/31'),
-                new ItemModel('2015/10/01 ~ 9999/12/31'),
-                new ItemModel('2015/10/01 ~ 9999/12/31'),
-                new ItemModel('2015/10/01 ~ 9999/12/31'),
-            ]);
+
+            self.label_002 = ko.observable(new Labels());
+            self.label_003 = ko.observable(new Labels());
+            self.label_004 = ko.observable(new Labels());
+            self.label_005 = ko.observable(new Labels());
+            self.label_006 = ko.observable(new Labels());
+            self.radiobox_2 = ko.observable(new RadioBox2());
+            
+            self.inp_002 = ko.observable(null);
+            self.inp_002_enable = ko.observable(false);
+            self.inp_003 = ko.observable(null);
+            self.inp_004 = ko.observable(new TextEditor_3());
+            self.inp_005 = ko.observable(null);
+            self.sel_0021 = ko.observable(new SwitchButton);
+            self.sel_0022 = ko.observable(new SwitchButton);
+            self.sel_0023 = ko.observable(new SwitchButton);
+            self.sel_0024 = ko.observable(new SwitchButton);
+            self.test = ko.observable('2');
+            
+            //lst_001
+            self.listbox = ko.observableArray([]);
+            self.selectedCode = ko.observable(''); 
+            self.isEnable = ko.observable(true);    
+            self.itemHist = ko.observable(null);
             self.itemName = ko.observable('');
-            self.currentCode = ko.observable(3);
-            self.selectedCode = ko.observable(null)
-            self.isEnable = ko.observable(true);
-            self.selectedCodes = ko.observableArray([]);
-
-
-            $('#list-box').on('selectionChanging', function(event) {
-                console.log('Selecting value:' + (<any>event.originalEvent).detail);
-            })
-            $('#list-box').on('selectionChanged', function(event: any) {
-                console.log('Selected value:' + (<any>event.originalEvent).detail)
-            })
-        }
-    }
-
-    export class ItemModel {
-        code: string;
-        constructor(code: string) {
-            this.code = code;
-        }
-    }
-
-
-
-    class GridLists {
-        dataSource: KnockoutObservableArray<ItemModel>;
-        columns: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
-        currentCode: KnockoutObservable<any>;
-        currentCodeList: KnockoutObservableArray<any>;
-
-        constructor() {
-            this.dataSource = ko.observableArray([
-                new ItemModel_GridList('001', '蝓ｺ譛ｬ邨ｦ', "description"),
-                new ItemModel_GridList('002', '蝓ｺ譛ｬ邨ｦ', "description"),
-                new ItemModel_GridList('003', '蝓ｺ12譛ｬ', "description"),
-                new ItemModel_GridList('004', '蝓ｺ12譛ｬ', "description"),
-                new ItemModel_GridList('005', '蝓ｺ12譛ｬ', "description"),
-                new ItemModel_GridList('006', '蝓ｺ12譛ｬ', "description"),
-                new ItemModel_GridList('007', '蝓ｺ12譛ｬ', "description"),
-                new ItemModel_GridList('008', '蝓ｺ12譛ｬ', "description"),
-                new ItemModel_GridList('009', '蝓ｺ12譛ｬ', "description"),
-                new ItemModel_GridList('010', '蝓ｺ12譛ｬ', "description")
+            self.index_selected = ko.observable('');
+            
+            
+            //lst_002
+            self.dataSource = ko.observableArray([]);
+            self.currentItem = ko.observable(null);
+            self.itemName = ko.observable('');
+            self.currentCode = ko.observable();           
+            self.currentCodeList = ko.observableArray([]);
+            self.columns = ko.observableArray([
+                { headerText: 'コード', key: 'jobCode', width: 80 },
+                { headerText: '名称', key: 'jobName', width: 100 }
 
             ]);
-            this.columns = ko.observableArray([
-                { headerText: '繧ｳ繝ｼ繝・, prop: 'code', width: 50 },
-                { headerText: '蜷咲ｧｰ', prop: 'name', width: 80 },
-                { headerText: '隱ｬ譏・, prop: 'description', width: 80 }
+            
+            //A_SEL_001
+            self.itemList = ko.observableArray([
+                new BoxModel(0, '全員参照可能'),
+                new BoxModel(1, '全員参照不可'),
+                new BoxModel(2, 'ロール毎に設定')
             ]);
-            this.currentCode = ko.observable();
-            this.currentCodeList = ko.observableArray([]);
+            self.selectedId = ko.observable();
+            self.enable = ko.observable(true);
+            
+            self.selectedCode.subscribe((function(codeChanged){
+                self.itemHist(self.findHist(codeChanged));
+                if (self.itemHist() != null) {
+                self.index_selected(self.itemHist().historyId);
+                    console.log(self.index_selected());
+                    //get position by historyId
+                var dfd = $.Deferred();
+                service.findAllPosition(self.index_selected())
+                    .done(function(position_arr: Array<service.model.ListPositionDto>) {
+                        self.dataSource(position_arr);
+                        self.currentCode(self.dataSource()[0].jobCode);
+                        self.inp_002(self.dataSource()[0].jobCode);
+                        self.inp_003(self.dataSource()[0].jobName);
+                        self.inp_005(self.dataSource()[0].memo);
+                        self.selectedId(self.dataSource()[0].presenceCheckScopeSet);
+                    }).fail(function(error){
+                        alert(error.message);
+
+                })
+                dfd.resolve();
+                return dfd.promise();
+                }           
+            }));
+            
+            self.singleSelectedCode = ko.observable(null);
+            
+               //inp_x - get detail position
+            self.currentCode.subscribe((function(codeChanged) {
+                self.currentItem(self.findPosition(codeChanged));
+                if (self.currentItem() != null) {
+                    self.inp_002(self.currentItem().jobCode);
+                    self.inp_003(self.currentItem().jobName);
+                    self.inp_005(self.currentItem().memo);
+                    self.selectedId(self.currentItem().presenceCheckScopeSet);
+                    
+                }           
+            }));
+
         }
+        
+        //start
+        startPage(): JQueryPromise<any> {
+            var self = this;
+            var dfd = $.Deferred();
+
+            // get all history.     
+            service.getAllHistory().done(function(history_arr: Array<service.model.ListHistoryDto>){
+                self.listbox(history_arr);    
+                self.selectedCode(self.listbox()[0].startDate);            
+            }).fail(function(error) {
+               alert(error.message);
+            })            
+                dfd.resolve();
+                return dfd.promise();           
+        }
+        
+//        find history need to show position
+        findHist(value: string): any {
+            let self = this;
+            var itemModel = null;
+            _.find(self.listbox(), function(obj: service.model.ListHistoryDto) {
+                if (obj.startDate == value) {
+                    itemModel = obj;
+                }
+            })
+            return itemModel;
+        }
+        
+//        find position need to show detail
+        findPosition(value: string): any {
+            let self = this;
+            var itemModel = null;
+            _.find(self.dataSource(), function(obj: service.model.ListPositionDto) {
+                if (obj.jobCode == value) {
+                    itemModel = obj;
+                }
+            })
+            return itemModel;
+        }
+        
+        //delete position is selected
+        deletePosition() {
+            var self = this;
+            var dfd = $.Deferred<any>();
+            var item = new service.model.DeletePositionCommand(self.currentItem().jobCode,self.currentItem().historyId);
+            console.log(self.currentItem().presenceCheckScopeSet);
+            self.index_of_itemDelete = self.dataSource().indexOf(self.currentItem());
+            console.log(self.index_of_itemDelete);
+            service.deletePosition(item).done(function(res) {
+               self.getPositionList_aftefDelete();
+            }).fail(function(res) {
+                dfd.reject(res);
+            })
+        }
+        
+        getPositionList_aftefDelete(): any {
+            var self = this;
+            var dfd = $.Deferred<any>();
+            service.findAllPosition(self.index_selected()).done(function(position_arr: Array<service.model.ListPositionDto>) {
+                self.dataSource(position_arr);
+                    
+                if (self.dataSource().length > 0) {
+                    if (self.index_of_itemDelete === self.dataSource().length) {
+                        self.currentCode(self.dataSource()[self.index_of_itemDelete - 1].jobCode)
+                        self.inp_002(self.dataSource()[self.index_of_itemDelete - 1].jobCode);
+                        self.inp_003(self.dataSource()[self.index_of_itemDelete - 1].jobName);
+                        self.inp_005(self.dataSource()[self.index_of_itemDelete - 1].memo);
+                    } else {
+                        self.currentCode(self.dataSource()[self.index_of_itemDelete].jobCode)
+                        self.inp_002(self.dataSource()[self.index_of_itemDelete].jobCode);
+                        self.inp_003(self.dataSource()[self.index_of_itemDelete].jobName);
+                        self.inp_005(self.dataSource()[self.index_of_itemDelete].memo);
+                    }
+
+                } else {
+                   // self.initRegisterPosition();
+                }
+
+                dfd.resolve();
+            }).fail(function(error) {
+                alert(error.message);
+            })
+            dfd.resolve();
+            return dfd.promise();
+
+        }
+        
+        //get position 
+        getPositionList(): any {
+            var self = this;
+            var dfd = $.Deferred<any>();
+            service.findAllPosition(self.index_selected()).done(function(position_arr: Array<service.model.ListPositionDto>) {
+                self.dataSource(position_arr);
+                self.inp_002(self.dataSource()[0].jobCode);
+                self.inp_003(self.dataSource()[0].jobName);
+                self.inp_005(self.dataSource()[0].memo);
+                if (self.dataSource().length > 1) {
+                    self.currentCode(self.dataSource()[0].jobCode)
+                }
+
+                dfd.resolve();
+            }).fail(function(error) {
+                alert(error.message);
+            })
+            dfd.resolve();
+            return dfd.promise();
+
+        }
+        
+        
+         openCDialog() {
+            var self = this;
+            if (self.singleSelectedCode() == null)
+                return false;
+            var singleSelectedCode = self.singleSelectedCode().split(';');
+            nts.uk.ui.windows.setShared('testdatashare', "data share");
+            nts.uk.ui.windows.sub.modal('/view/cmm/013/c/index.xhtml', { title: '明細レイアウトの作成＞履歴追加' }).onClosed(function(): any {
+                //self.start(self.singleSelectedCode());
+            });
+        }
+
+        openDDialog() {
+            var self = this;
+            if (self.singleSelectedCode() === null)
+                return false;
+            var singleSelectedCode = self.singleSelectedCode().split(';');
+            nts.uk.ui.windows.setShared('testshare', "test share1");
+            nts.uk.ui.windows.sub.modal('/view/cmm/013/d/index.xhtml', { title: '明細レイアウトの作成＞履歴の編集' }).onClosed(function(): any {
+                //self.start(self.singleSelectedCode());
+            });
+        }
+
+        
+
     }
 
-    class ItemModel_GridList {
-        code: string;
-        name: string;
-        description: string;
-
-        constructor(code: string, name: string, description: string) {
-            this.code = code;
-            this.name = name;
-            this.description = description;
-        }
-    }
-
-    class Label_002 {
+    export class Labels {
         constraint: string = 'LayoutCode';
         inline: KnockoutObservable<boolean>;
         required: KnockoutObservable<boolean>;
         enable: KnockoutObservable<boolean>;
-
-
         constructor() {
             var self = this;
             self.inline = ko.observable(true);
-            self.required = ko.observable(true)
-            self.enable = ko.observable(true);
-
-        }
-    }
-
-    class Label_003 {
-        constraint: string = 'LayoutName';
-        inline: KnockoutObservable<boolean>;
-        required: KnockoutObservable<boolean>;
-        enable: KnockoutObservable<boolean>;
-
-
-        constructor() {
-            var self = this;
-            self.inline = ko.observable(true);
-            self.required = ko.observable(true)
+            self.required = ko.observable(true);
             self.enable = ko.observable(true);
         }
     }
 
-    class SelectBox {
+    class RadioBox2 {
         itemList: KnockoutObservableArray<any>;
         selectedId: KnockoutObservable<number>;
         enable: KnockoutObservable<boolean>;
-
         constructor() {
             var self = this;
             self.itemList = ko.observableArray([
-                new BoxModel(1, 'box 1'),
-                new BoxModel(2, 'box 2'),
-                new BoxModel(3, 'box 3')
+                new BoxModel(1, '対象外'),
+                new BoxModel(2, '看護師'),
+                new BoxModel(3, '準看護師'),
+                new BoxModel(4, '看護補助師')
             ]);
             self.selectedId = ko.observable(1);
             self.enable = ko.observable(true);
         }
     }
-
-    class BoxModel {
+   export class BoxModel {
         id: number;
         name: string;
         constructor(id, name) {
@@ -197,65 +312,9 @@ module cmm013.a.viewmodel {
         }
     }
 
-    class SwitchButton_1 {
-        roundingRules: KnockoutObservableArray<any>;
-        selectedRuleCode: any;
 
-        constructor() {
-            var self = this;
-            self.roundingRules = ko.observableArray([
-                { code: '1', name: '蝗帶昏莠泌・' },
-                { code: '2', name: '蛻・ｊ荳翫￡' }
-            ]);
-            self.selectedRuleCode = ko.observable(1);
-        }
-    }
-
-    class SwitchButton_2 {
-        roundingRules: KnockoutObservableArray<any>;
-        selectedRuleCode: any;
-
-        constructor() {
-            var self = this;
-            self.roundingRules = ko.observableArray([
-                { code: '1', name: '蝗帶昏莠泌・' },
-                { code: '2', name: '蛻・ｊ荳翫￡' }
-            ]);
-            self.selectedRuleCode = ko.observable(1);
-        }
-    }
-
-    class SwitchButton_3 {
-        roundingRules: KnockoutObservableArray<any>;
-        selectedRuleCode: any;
-
-        constructor() {
-            var self = this;
-            self.roundingRules = ko.observableArray([
-                { code: '1', name: '蝗帶昏莠泌・' },
-                { code: '2', name: '蛻・ｊ荳翫￡' }
-            ]);
-            self.selectedRuleCode = ko.observable(1);
-        }
-    }
-
-    class SwitchButton_4 {
-        roundingRules: KnockoutObservableArray<any>;
-        selectedRuleCode: any;
-
-        constructor() {
-            var self = this;
-            self.roundingRules = ko.observableArray([
-                { code: '1', name: '蝗帶昏莠泌・' },
-                { code: '2', name: '蛻・ｊ荳翫￡' }
-            ]);
-            self.selectedRuleCode = ko.observable(1);
-        }
-    }
-
-    class Input_002 {
+   export class TextEditor_3 {
         texteditor: any;
-
         constructor() {
             var self = this;
             self.texteditor = {
@@ -263,9 +322,9 @@ module cmm013.a.viewmodel {
                 constraint: 'ResidenceCode',
                 option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
                     textmode: "text",
-                    placeholder: "Placeholder for text editor",
-                    width: "80px",
-                    textalign: "left"
+                    placeholder: "1",
+                    width: "10px",
+                    textalign: "center"
                 })),
                 required: ko.observable(true),
                 enable: ko.observable(false),
@@ -274,139 +333,19 @@ module cmm013.a.viewmodel {
         }
     }
 
-    class Input_003 {
-        texteditor: any;
+    export class SwitchButton {
+        roundingRules: KnockoutObservableArray<any>;
+        selectedRuleCode: any;
 
         constructor() {
             var self = this;
-            self.texteditor = {
-                value: ko.observable(''),
-                constraint: 'ResidenceCode',
-                option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                    textmode: "text",
-                    placeholder: "Placeholder text",
-                    width: "160px",
-                    textalign: "left"
-                })),
-                required: ko.observable(true),
-                enable: ko.observable(true),
-                readonly: ko.observable(false)
-            };
-        }
-    }
-
-    class Label_004 {
-        constraint: string = 'LayoutName';
-        inline: KnockoutObservable<boolean>;
-        required: KnockoutObservable<boolean>;
-        enable: KnockoutObservable<boolean>;
-
-
-        constructor() {
-            var self = this;
-            self.inline = ko.observable(true);
-            self.required = ko.observable(true)
-            self.enable = ko.observable(true);
-        }
-    }
-
-    class SelectBox_2 {
-        itemList: KnockoutObservableArray<any>;
-        selectedId: KnockoutObservable<number>;
-        enable: KnockoutObservable<boolean>;
-
-        constructor() {
-            var self = this;
-            self.itemList = ko.observableArray([
-                new BoxModel_2(1, 'box 1'),
-                new BoxModel_2(2, 'box 2'),
-                new BoxModel_2(3, 'box 3'),
-                new BoxModel_2(4, 'box 4')
+            self.roundingRules = ko.observableArray([
+                { code: '1', name: '可能' },
+                { code: '2', name: '不可' },
             ]);
-            self.selectedId = ko.observable(1);
-            self.enable = ko.observable(true);
+            self.selectedRuleCode = ko.observable(1);
         }
     }
 
-    class BoxModel_2 {
-        id: number;
-        name: string;
-        constructor(id, name) {
-            var self = this;
-            self.id = id;
-            self.name = name;
-        }
-    }
-
-    class Input_004 {
-        texteditor: any;
-
-        constructor() {
-            var self = this;
-            self.texteditor = {
-                value: ko.observable('1'),
-                constraint: 'ResidenceCode',
-                option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                    textmode: "text",
-                    placeholder: "",
-                    width: "30px",
-                    textalign: "left"
-                })),
-                required: ko.observable(true),
-                enable: ko.observable(true),
-                readonly: ko.observable(false)
-            };
-        }
-    }
-
-    class Label_005 {
-        constraint: string = 'LayoutName';
-        inline: KnockoutObservable<boolean>;
-        required: KnockoutObservable<boolean>;
-        enable: KnockoutObservable<boolean>;
-
-
-        constructor() {
-            var self = this;
-            self.inline = ko.observable(true);
-            self.enable = ko.observable(true);
-        }
-    }
-
-    class Label_006 {
-        constraint: string = 'LayoutName';
-        inline: KnockoutObservable<boolean>;
-        required: KnockoutObservable<boolean>;
-        enable: KnockoutObservable<boolean>;
-
-
-        constructor() {
-            var self = this;
-            self.inline = ko.observable(true);
-            self.enable = ko.observable(true);
-        }
-    }
-
-    class Input_005 {
-        multilineeditor: any;
-        constructor() {
-            var self = this;
-            self.multilineeditor = {
-                value: ko.observable(''),
-                constraint: 'ResidenceCode',
-                option: ko.mapping.fromJS(new nts.uk.ui.option.MultilineEditorOption({
-                    resizeable: true,
-                    placeholder: "Placeholder for text editor",
-                    width: "380",
-                    textalign: "left"
-                })),
-                required: ko.observable(true),
-                enable: ko.observable(true),
-                readonly: ko.observable(false)
-            };
-        }
-    }
-
-    }
 
 }

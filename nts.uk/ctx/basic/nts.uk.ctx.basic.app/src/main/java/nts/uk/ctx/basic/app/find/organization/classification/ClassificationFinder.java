@@ -16,12 +16,15 @@ public class ClassificationFinder {
 	@Inject
 	private ClassificationRepository classificationRepository;
 
+	/* get All Classification */
 	public List<ClassificationDto> init() {
 		String companyCode = AppContexts.user().companyCode();
-		return classificationRepository.findAll(companyCode)
-				.stream().map(e->{return convertToDto(e);}).collect(Collectors.toList());
+		return classificationRepository.findAll(companyCode).stream().map(e -> {
+			return convertToDto(e);
+		}).collect(Collectors.toList());
 	}
 
+	/* Convert Classification of Dom to  ClassificationDto of App*/
 	private ClassificationDto convertToDto(Classification classification) {
 		ClassificationDto classificationDto = new ClassificationDto();
 		classificationDto.setClassificationCode(classification.getClassificationCode().toString());

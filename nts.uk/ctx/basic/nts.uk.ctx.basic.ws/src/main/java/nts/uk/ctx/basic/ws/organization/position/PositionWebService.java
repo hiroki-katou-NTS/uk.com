@@ -9,79 +9,67 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.basic.app.command.organization.position.CreateJobTitleCommand;
-import nts.uk.ctx.basic.app.command.organization.position.CreateJobTitleCommandHandler;
-import nts.uk.ctx.basic.app.command.organization.position.RemoveJobTitleCommand;
-import nts.uk.ctx.basic.app.command.organization.position.RemoveJobTitleCommandHandler;
-import nts.uk.ctx.basic.app.command.organization.position.UpdateJobTitleCommand;
-import nts.uk.ctx.basic.app.command.organization.position.UpdateJobTitleCommandHandler;
+import nts.uk.ctx.basic.app.command.organization.position.DeletePositionCommand;
+import nts.uk.ctx.basic.app.command.organization.position.DeletePositionCommandHandler;
+import nts.uk.ctx.basic.app.command.organization.position.UpdatePositionCommand;
+import nts.uk.ctx.basic.app.command.organization.position.UpdatePositionCommandHandler;
+import nts.uk.ctx.basic.app.find.organization.position.JobHistDto;
+import nts.uk.ctx.basic.app.find.organization.position.JobHistFinder;
 import nts.uk.ctx.basic.app.find.organization.position.JobTitleDto;
 import nts.uk.ctx.basic.app.find.organization.position.JobTitleFinder;
-import nts.uk.ctx.basic.app.find.organization.positionhistory.JobTitleHisDto;
-import nts.uk.ctx.basic.app.find.organization.positionhistory.JobTitleHistoryFinder;
-
-
-
 
 
 @Path("basic/position")
 @Produces("application/json")
-public class PositionWebService extends WebService {
+public class PositionWebService extends WebService{
 
 	@Inject
 	private JobTitleFinder positionFinder;
-	
 	@Inject
-	private JobTitleHistoryFinder historyFinder;
-
+	private JobHistFinder histFinder;
+	//@Inject
+	//private CreatePositionCommandHandler addPosition;
 	@Inject
-	private CreateJobTitleCommandHandler createPositionCommandHandler;
-
+	private UpdatePositionCommandHandler updatePosition;
 	@Inject
-	private UpdateJobTitleCommandHandler updatePositionCommandHandler;
-
-	@Inject
-	private RemoveJobTitleCommandHandler removePositionCommandHandler;
-	
+	private DeletePositionCommandHandler deletePosition;
 	
 	@POST
 	@Path("findallposition/{historyId}")
-	public List<JobTitleDto> findAllPositionByHis(@PathParam("historyId") String historyId){
+	public List<JobTitleDto> findAllPosition(@PathParam("historyId") String historyId){
 
-		return this.positionFinder.findAllPositionByHis(historyId);
+		return this.positionFinder.findAllPosition(historyId);
 	}
 
 	@POST
 	@Path("getallhist")
-	public List<JobTitleHisDto> getAllHistory(){
-
-		return this.historyFinder.getAllHistory();
+	public List<JobHistDto> init(){
+//		List<JobHistDto> i =null;
+//		i = histFinder.init();
+//		System.out.println("==" + i);
+		return this.histFinder.init();
 	}
-
-	@Path("findallposition")
+//	@POST
+//	@Path("findposition/{jobCode}/{historyId}")
+//	public Optional<PositionDto> find(@PathParam("jobCode") String jobCode,@PathParam("historyId") String historyId){
+//		return this.finder.find(jobCode, historyId);
+//	}
+	
+//	@POST
+//	@Path("addPosition")
+//	public void add(CreatePositionCommand command){
+//		this.addPosition.handle(command);		
+//	}
+	
 	@POST
-	public List<JobTitleDto> findAllPosition() {
-		return positionFinder.findAllPosition();
-	}
-
-
-	@Path("add")
-	@POST
-	public void add(CreateJobTitleCommand command) {
-		this.createPositionCommandHandler.handle(command);
-	}
-
-	@Path("update")
-	@POST
-	public void update(UpdateJobTitleCommand command) {
-		this.updatePositionCommandHandler.handle(command);
-	}
-
-	@Path("remove")
-	@POST
-	public void remove(RemoveJobTitleCommand command) {
-		this.removePositionCommandHandler.handle(command);
+	@Path("updatePosition")
+	public void update(UpdatePositionCommand command){
+		this.updatePosition.handle(command);
 	}
 	
-
+	@POST
+	@Path("deletePosition")
+	public void deletePosition(DeletePositionCommand command){
+		this.deletePosition.handle(command);
+	}
 }

@@ -6,47 +6,23 @@ import java.util.Optional;
 
 public interface PayClassificationRepository {
 
-	/**
-	 * 
-	 * 
-	 * @param companyCode
-	 * @return
-	 */
-	List<PayClassification> getPayClassifications(String companyCode);
 
 
-
-	/**
-	 * get Item Master
-	 * 
-	 * @param companyCode
-	 * @param payClassificationCode
-	 * @return list PayClassification
-	 */
-	Optional<PayClassification> getPayClassification(String companyCode, String payClassificationCode);
-	
-
-
+	//add pay class
 	void add(PayClassification payClassification);
 
+	//update pay class
 	void update(PayClassification payClassification);
 
-
-
-	void remove(String companyCode);
-
-
-
+	//check existed
 	boolean isExisted(String companyCode, PayClassificationCode payClassificationCode);
 
-
-
+	//find all pay class
 	List<PayClassification> findAll(String companyCode);
 
-
-
 	Optional<PayClassification> findSinglePayClassification(String companyCode,
-			PayClassificationCode payClassificationCode);
+			String payClassificationCode);
 
+	//delete payclass
 	void remove(String companyCode, PayClassificationCode payClassificationCode);
 }

@@ -20,10 +20,13 @@ var cmm014;
                     self.INP_002_enable = ko.observable(false);
                     self.INP_003_name = ko.observable(null);
                     self.INP_004_notes = ko.observable(null);
+                    self.itemdata_add = ko.observable(null);
+                    self.itemdata_update = ko.observable(null);
                     self.currentCode.subscribe((function (codeChanged) {
                         self.currentItem(self.findObj(codeChanged));
                         if (self.currentItem() != null) {
                             self.INP_002_code(self.currentItem().classificationCode);
+                            self.INP_002_enable(false);
                             self.INP_003_name(self.currentItem().classificationName);
                             self.INP_004_notes(self.currentItem().memo);
                         }
@@ -47,40 +50,58 @@ var cmm014;
                     self.INP_004_notes("");
                     self.currentCode(null);
                     $("#test input").val("");
+                    $("#A_INP_002").focus();
                 };
                 ScreenModel.prototype.checkInput = function () {
                     var self = this;
-                    if (self.INP_002_code() == '' || self.INP_003_name() == '') {
-                        console.log("input is null");
+                    if (!self.INP_002_code()) {
+                        alert("コードが入力されていません。");
                         return false;
                     }
-                    else {
-                        return true;
+                    else if (!self.INP_003_name()) {
+                        alert("名称が入力されていません。");
+                        return false;
                     }
+                    return true;
                 };
                 ScreenModel.prototype.RegisterClassification = function () {
                     var self = this;
                     var dfd = $.Deferred();
                     if (self.checkInput()) {
-                        console.log("Insert(đăng ký mới) or Update Classification");
+                        if (self.dataSource().length === 0) {
+                            var classification = new viewmodel.model.ClassificationDto(self.INP_002_code(), self.INP_003_name(), self.INP_004_notes());
+                            a.service.addClassification(classification).done(function () {
+                                self.getClassificationList_first();
+                            }).fail(function (res) {
+                                dfd.reject(res);
+                            });
+                        }
                         for (var i = 0; i < self.dataSource().length; i++) {
-                            if (self.INP_002_code() == self.dataSource()[i].classificationCode) {
+                            if (self.INP_002_code() == self.dataSource()[i].classificationCode && self.INP_002_enable() == false) {
                                 var classification_old = self.dataSource()[i];
                                 var classification_update = new viewmodel.model.ClassificationDto(self.INP_002_code(), self.INP_003_name(), self.INP_004_notes());
                                 a.service.updateClassification(classification_update).done(function () {
-                                    self.getClassificationList();
+                                    self.itemdata_update(classification_update);
+                                    self.getClassificationList_afterUpdateClassification();
                                 }).fail(function (res) {
                                     dfd.reject(res);
                                 });
                                 break;
                             }
-                            else if (self.INP_002_code() != self.dataSource()[i].classificationCode && i == self.dataSource().length - 1) {
+                            else if (self.INP_002_code() != self.dataSource()[i].classificationCode
+                                && i == self.dataSource().length - 1
+                                && self.INP_002_enable() == true) {
                                 var classification_new = new viewmodel.model.ClassificationDto(self.INP_002_code(), self.INP_003_name(), self.INP_004_notes());
                                 a.service.addClassification(classification_new).done(function () {
-                                    self.getClassificationList();
+                                    self.itemdata_add(classification_new);
+                                    self.getClassificationList_afterAddClassification();
                                 }).fail(function (res) {
                                     dfd.reject(res);
                                 });
+                                break;
+                            }
+                            else if (self.INP_002_code() == self.dataSource()[i].classificationCode && self.INP_002_enable() == true) {
+                                alert("入力したコードは既に存在しています。\r\n コードを確認してください。  ");
                                 break;
                             }
                         }
@@ -89,25 +110,33 @@ var cmm014;
                 ScreenModel.prototype.DeleteClassification = function () {
                     var self = this;
                     var dfd = $.Deferred();
-                    var item = new model.RemoveClassificationCommand(self.currentItem().classificationCode);
-                    self.index_of_itemDelete = self.dataSource().indexOf(self.currentItem());
-                    console.log(self.index_of_itemDelete);
-                    a.service.removeClassification(item).done(function (res) {
-                        self.getClassificationList_aftefDelete();
-                    }).fail(function (res) {
-                        dfd.reject(res);
-                    });
+                    if (self.dataSource().length > 0) {
+                        var item = new model.RemoveClassificationCommand(self.currentItem().classificationCode);
+                        self.index_of_itemDelete = self.dataSource().indexOf(self.currentItem());
+                        a.service.removeClassification(item).done(function (res) {
+                            self.getClassificationList_aftefDelete();
+                        }).fail(function (res) {
+                            dfd.reject(res);
+                        });
+                    }
+                    else {
+                    }
                 };
-                //   self.dataSource.remove(self.currentItem());
                 ScreenModel.prototype.start = function () {
                     var self = this;
                     var dfd = $.Deferred();
                     a.service.getAllClassification().done(function (classification_arr) {
-                        self.dataSource(classification_arr);
-                        self.INP_002_code(self.dataSource()[0].classificationCode);
-                        self.INP_003_name(self.dataSource()[0].classificationName);
-                        self.INP_004_notes(self.dataSource()[0].memo);
-                        self.currentCode(self.dataSource()[0].classificationCode);
+                        if (classification_arr.length > 0) {
+                            self.dataSource(classification_arr);
+                            self.INP_002_code(self.dataSource()[0].classificationCode);
+                            self.INP_003_name(self.dataSource()[0].classificationName);
+                            self.INP_004_notes(self.dataSource()[0].memo);
+                            self.currentCode(self.dataSource()[0].classificationCode);
+                        }
+                        else if (classification_arr.length === 0) {
+                            self.INP_002_enable(true);
+                            $("#A_INP_002").focus();
+                        }
                         dfd.resolve();
                     }).fail(function (error) {
                         alert(error.message);
@@ -133,6 +162,65 @@ var cmm014;
                     dfd.resolve();
                     return dfd.promise();
                 };
+                // get list Classification after insert
+                ScreenModel.prototype.getClassificationList_afterUpdateClassification = function () {
+                    var self = this;
+                    var dfd = $.Deferred();
+                    a.service.getAllClassification().done(function (classification_arr) {
+                        self.dataSource(classification_arr);
+                        if (self.dataSource().length > 1) {
+                            self.currentCode(self.itemdata_update().classificationCode);
+                        }
+                        dfd.resolve();
+                    }).fail(function (error) {
+                        alert(error.message);
+                    });
+                    dfd.resolve();
+                    return dfd.promise();
+                };
+                // get list Classification after insert
+                ScreenModel.prototype.getClassificationList_first = function () {
+                    var self = this;
+                    var dfd = $.Deferred();
+                    a.service.getAllClassification().done(function (classification_arr) {
+                        self.dataSource(classification_arr);
+                        self.currentCode(self.dataSource()[0].classificationCode);
+                        var i = self.dataSource().length;
+                        if (i > 0) {
+                            self.INP_002_enable(false);
+                            self.INP_002_code(self.dataSource()[0].classificationCode);
+                            self.INP_003_name(self.dataSource()[0].classificationName);
+                            self.INP_004_notes(self.dataSource()[0].memo);
+                        }
+                        dfd.resolve();
+                    }).fail(function (error) {
+                        alert(error.message);
+                    });
+                    dfd.resolve();
+                    return dfd.promise();
+                };
+                // get list Classification after insert
+                ScreenModel.prototype.getClassificationList_afterAddClassification = function () {
+                    var self = this;
+                    var dfd = $.Deferred();
+                    a.service.getAllClassification().done(function (classification_arr) {
+                        self.dataSource(classification_arr);
+                        self.INP_002_code(self.dataSource()[0].classificationCode);
+                        self.INP_002_enable = ko.observable(false);
+                        self.INP_003_name(self.dataSource()[0].classificationName);
+                        self.INP_004_notes(self.dataSource()[0].memo);
+                        if (self.dataSource().length > 1) {
+                            var i = self.dataSource().length - 1;
+                            self.currentCode(self.itemdata_add().classificationCode);
+                        }
+                        dfd.resolve();
+                    }).fail(function (error) {
+                        alert(error.message);
+                    });
+                    dfd.resolve();
+                    return dfd.promise();
+                };
+                // get list Classification after remove
                 ScreenModel.prototype.getClassificationList_aftefDelete = function () {
                     var self = this;
                     var dfd = $.Deferred();
@@ -165,6 +253,9 @@ var cmm014;
                 return ScreenModel;
             }());
             viewmodel.ScreenModel = ScreenModel;
+            /**
+            *  model
+            */
             var model;
             (function (model) {
                 var ClassificationDto = (function () {

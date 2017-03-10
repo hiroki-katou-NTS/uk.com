@@ -97,7 +97,7 @@ subprojects {
 		compile group: 'org.slf4j', name: 'slf4j-log4j12', version: '1.7.22'
 		
 		compile group: 'nts.gul', name: 'nts.gul', version: '0.13'
-		compile group: 'nts.arc', name: 'nts.arc', version: '0.17.2'
+		compile group: 'nts.arc', name: 'nts.arc', version: '0.18'
 	}
 }
 

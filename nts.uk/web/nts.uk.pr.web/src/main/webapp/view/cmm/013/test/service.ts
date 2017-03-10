@@ -1,4 +1,5 @@
-module cmm013.test.service {
+ 
+  module cmm013.test.service {
     var paths = {
         findAllPosition: "basic/position/findallposition/",
         addPosition: "basic/position/addPosition",
@@ -87,5 +88,7 @@ module cmm013.test.service {
             })
         return dfd.promise();
     }
+
+    //model
 
 }
