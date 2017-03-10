@@ -59,7 +59,7 @@
 								<div id="A_LBL_002" data-bind="ntsFormLabel: {required: true, constraint: 'EraName' }">元号</div>
 							</td>
 							<td>
-							<input id="A_INP_001"  data-bind="ntsTextEditor: { value: inputCode, constraint: 'EraName'}, enable: isEnableCode" /> 
+							<input id="A_INP_001"  data-bind="ntsTextEditor: { required: true, value: inputCode, constraint: 'EraName'}, enable: isEnableCode" /> 
 							</td>
 						</tr>
 						<tr>
@@ -67,7 +67,7 @@
 								<div id="A_LBL_003" data-bind="ntsFormLabel: { required: true,constraint: 'EraMark' }">記号</div>
 							</td>
 							<td>
-								<input id="A_INP_002"  data-bind="ntsTextEditor: { value: inputName, constraint: 'EraMark'}"/>
+								<input id="A_INP_002"  data-bind="ntsTextEditor: { required: true, value: inputName, constraint: 'EraMark'}"/>
 							</td>
 						</tr>
 						<tr>

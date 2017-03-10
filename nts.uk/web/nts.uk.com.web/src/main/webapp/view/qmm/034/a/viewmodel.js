@@ -6,11 +6,30 @@ var qmm034;
         (function (viewmodel) {
             var ScreenModel = (function () {
                 function ScreenModel() {
+                    this.isCheckedDirty = false;
                     var self = this;
                     self.init();
+                    self.currentCode.subscribe(function (oldcode) {
+                        //check xem user co thay doi value cua cac field can check dirty
+                        //neu isCheckedDirty = true thi dung action, neu = false thi action
+                        if (!nts.uk.text.isNullOrEmpty(oldcode) && !self.isCheckedDirty) {
+                            if (self.dirty1.isDirty() || self.dirty2.isDirty() || self.dirty3.isDirty()) {
+                                if (confirm("Data is changed.Do you want to changing select row?") === false) {
+                                    self.isCheckedDirty = true;
+                                    return;
+                                }
+                                self.isCheckedDirty = false;
+                            }
+                        }
+                    }, self, "beforeChange");
                     self.currentCode.subscribe(function (codeChanged) {
+                        //neu isCheckedDirty = true thi dung action, neu = false thi action
+                        if (self.isCheckedDirty) {
+                            self.currentCode(self.currentEra().code);
+                            self.isCheckedDirty = false;
+                            return;
+                        }
                         if (!nts.uk.text.isNullOrEmpty(codeChanged)) {
-                            //goi Fix_Atr = servicw
                             self.currentEra(self.getEra(codeChanged));
                             self.date(new Date(self.currentEra().startDate.toString()));
                             self.inputCode(self.currentEra().code);
@@ -26,6 +45,9 @@ var qmm034;
                             }).fail(function (error) {
                                 alert(error.message);
                             });
+                            self.dirty1 = new nts.uk.ui.DirtyChecker(self.inputCode);
+                            self.dirty2 = new nts.uk.ui.DirtyChecker(self.inputName);
+                            self.dirty3 = new nts.uk.ui.DirtyChecker(self.date);
                         }
                     });
                     //convert to Japan Emprise year
@@ -48,17 +70,6 @@ var qmm034;
                     self.isDeleteEnable = ko.observable(false);
                     self.isEnableCode = ko.observable(false);
                     self.isUpdate = ko.observable(false);
-                };
-                ScreenModel.prototype.refreshLayout = function () {
-                    var self = this;
-                    self.currentEra(new EraModel('', '', new Date(), 1, '95F5047A-5065-4306-A6B7-184AA676A1DE', new Date("1929/12/25")));
-                    self.currentCode(null);
-                    self.isUpdate(false);
-                    self.inputCode(null);
-                    self.inputName(null);
-                    self.date(new Date());
-                    self.isDeleteEnable(false);
-                    self.isEnableCode(true);
                 };
                 ScreenModel.prototype.insertData = function () {
                     var self = this;
@@ -155,8 +166,10 @@ var qmm034;
                         self.buildGridDataSource(data);
                         self.currentEra = ko.observable((new EraModel('大明', 'S', new Date("1926/12/25"), 1, '95F5047A-5065-4306-A6B7-184AA676A1DE', new Date("1929/12/25"))));
                         if (self.items().length > 0) {
-                            self.currentEra = ko.observable(_.cloneDeep(_.first(self.items())));
+                            self.currentEra(_.cloneDeep(_.first(self.items())));
                             self.currentCode(self.currentEra().code);
+                            self.inputCode(self.currentEra().code);
+                            self.inputName(self.currentEra().name);
                         }
                         dfd.resolve();
                     }).fail(function (res) {
@@ -164,6 +177,30 @@ var qmm034;
                         //alert(res.message);
                     });
                     return dfd.promise();
+                };
+                ScreenModel.prototype.refreshLayout = function () {
+                    var self = this;
+                    if (!self.dirty1.isDirty() && !self.dirty2.isDirty() && !self.dirty3.isDirty()) {
+                        self.currentEra(new EraModel('', '', new Date(), 1, '95F5047A-5065-4306-A6B7-184AA676A1DE', new Date("1929/12/25")));
+                        self.currentCode(null);
+                        self.isUpdate(false);
+                        self.inputCode(null);
+                        self.inputName(null);
+                        self.date(new Date());
+                        self.isDeleteEnable(false);
+                        self.isEnableCode(true);
+                        return;
+                    }
+                    if (confirm("Data is changed.Do you want to refresh?") === true) {
+                        self.currentEra(new EraModel('', '', new Date(), 1, '95F5047A-5065-4306-A6B7-184AA676A1DE', new Date("1929/12/25")));
+                        self.currentCode(null);
+                        self.isUpdate(false);
+                        self.inputCode(null);
+                        self.inputName(null);
+                        self.date(new Date());
+                        self.isDeleteEnable(false);
+                        self.isEnableCode(true);
+                    }
                 };
                 ScreenModel.prototype.buildGridDataSource = function (items) {
                     var self = this;
