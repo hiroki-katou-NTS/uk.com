@@ -52,10 +52,10 @@ public interface WageTableHistorySetMemento {
 	void setDemensionDetail(List<WageTableElement> demensionDetails);
 
 	/**
-	 * Sets the elements.
+	 * Sets the value items.
 	 *
-	 * @param elements the new elements
+	 * @param valueItems the new value items
 	 */
-	void setValueItems(List<WageTableItem> elements);
+	void setValueItems(List<WageTableItem> valueItems);
 
 }

@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.pr.core.app.wagetable.find.dto;
+package nts.uk.ctx.pr.core.ws.wagetable.dto;
 
 import lombok.Builder;
 import lombok.Getter;
