@@ -38,8 +38,11 @@ public class AccPaymentReportService extends ExportService<AccPaymentReportQuery
 	@Override
 	protected void handle(ExportServiceContext<AccPaymentReportQuery> context) {
 
+		// Get Query
+		AccPaymentReportQuery query = context.getQuery();
+		
 		// Query data.
-		List<AccPaymentItemData> items = this.repository.getItems(AppContexts.user().companyCode(), context.getQuery());
+		List<AccPaymentItemData> items = this.repository.getItems(AppContexts.user().companyCode(), query);
 		
 		// Fake List of AccumulatedItemData
 		List<AccPaymentItemData> accumulatedPaymentList = new ArrayList<>();
@@ -73,6 +76,6 @@ public class AccPaymentReportService extends ExportService<AccPaymentReportQuery
 				.build();
 
 		// Call generator.
-		this.generator.generate(context.getGeneratorContext(),dataSource);		
+		this.generator.generate(context.getGeneratorContext(),dataSource, query);		
 	}
 }

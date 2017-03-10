@@ -28,8 +28,9 @@ module qet002.a.viewmodel {
         /**
          * Print Report
          */
-       public printData(){           
-            let query: string;
+       public printData(){  
+       
+           // Validate
             var hasError = false;
             if (this.targetYear() == null) {
                 hasError = true;
@@ -64,13 +65,17 @@ module qet002.a.viewmodel {
             }
            
            //Print Report
-           service.printService(query).done(function() {}).done(function(data: any) {                
+           service.printService(this).done(function(data: any) {                
             }).fail(function(res) {
                 nts.uk.ui.dialog.alert(res.message);
             })
 
         }
     }
+    
+    /**
+     * Accumulated Payment Result Dto
+     */
     export class AccumulatedPaymentResultViewModel {
         empDesignation: string;
         empCode: string;
