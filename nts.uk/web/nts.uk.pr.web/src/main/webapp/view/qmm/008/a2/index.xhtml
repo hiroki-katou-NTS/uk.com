@@ -7,7 +7,7 @@
 
 <body>
 
-	<ui:composition template="../../../base/simplehistory/base.xhtml">
+	<ui:composition template="../../../base/simplehistory/basesidebar.xhtml">
 		<ui:define name="extendedHead">
 			<com:ValidatorScript>
 				nts.uk.ctx.pr.core.dom.insurance.Ins3Rate
@@ -23,20 +23,21 @@
 		</ui:define>
 
 		<ui:define name="extendedAction">
+			<button>印刷(PDF)</button>
+			<button
+				data-bind="click: OpenModalStandardMonthlyPricePension,enable: isClickPensionHistory()">標準報酬月額保険料額表</button>
+			<button data-bind="click: OpenModalOfficeRegister">事業所登録</button>
+			<button>マスタ修正登録</button>
 		</ui:define>
-
+		
+		<ui:define name="sidebar">
+			<ul class="navigator">
+				<li><a id="healthInsuranceTabPanel" href="#tabpanel-1" >健康保険</a></li>
+				<li><a href="#tabpanel-2" role="tab-navigator" class="active">厚生年金</a></li>
+			</ul>
+		</ui:define>
+		
 		<ui:define name="pageContent">
-			<div class="sidebar-content-header">
-				<span class="title">厚生年金</span>
-				<button data-bind="click: save,enable: isClickPensionHistory()"
-					class="proceed">登録</button>
-				<button>印刷(PDF)</button>
-				<button
-					data-bind="click: OpenModalStandardMonthlyPricePension,enable: isClickPensionHistory()">標準報酬月額保険料額表</button>
-				<button data-bind="click: OpenModalOfficeRegister">事業所登録</button>
-				<button>マスタ修正登録</button>
-			</div>
-			<div class="contents-area" id="pension_panel">
 				<!-- right -->
 				<div data-bind="with: pensionModel" class="right">
 					<table id="pension_detail_table" class="border_none">
@@ -407,7 +408,6 @@
 					</div>
 				</div>
 				<!-- end right -->
-			</div>
 		</ui:define>
 	</ui:composition>
 </body>

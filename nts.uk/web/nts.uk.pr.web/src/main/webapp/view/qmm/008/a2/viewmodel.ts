@@ -25,9 +25,6 @@ module nts.uk.pr.view.qmm008.a2 {
             //numberInputOptions
             Rate2: any;
             pensionFilteredData: any;
-            pensionOfficeSelectedCode: KnockoutObservable<string>;
-            pensionCurrentParentCode: KnockoutObservable<string>;
-            pensionCurrentChildCode: KnockoutObservable<string>;
 
             selectedRuleCode: KnockoutObservable<number>;
             //for pension fund switch button
@@ -38,18 +35,12 @@ module nts.uk.pr.view.qmm008.a2 {
 
             //for control data after close dialog
             isTransistReturnData: KnockoutObservable<boolean>;
-            //pensionCurrency
-            pensionCurrency: KnockoutObservable<number>;
-            pensionOwnerRate: KnockoutObservable<number>;
-
             fundInputEnable: KnockoutObservable<boolean>;
             isClickPensionHistory: KnockoutObservable<boolean>;
 
-            startMonthTemp: KnockoutObservable<string>;
-            endMonthTemp: KnockoutObservable<string>;
-            
             // Flags
             isLoading: KnockoutObservable<boolean>;
+            currentOfficeCode : KnockoutObservable<string>;
             constructor() {
                 super({
                     functionName: '社会保険事業所',
@@ -63,9 +54,6 @@ module nts.uk.pr.view.qmm008.a2 {
                 // init insurance offices list
                 self.pensionInsuranceOfficeList = ko.observableArray<InsuranceOfficeItem>([]);
 
-                self.pensionOfficeSelectedCode = ko.observable('');
-                self.pensionCurrentParentCode = ko.observable('');
-                self.pensionCurrentChildCode = ko.observable('');
 
                 self.pensionFilteredData = ko.observableArray(nts.uk.util.flatArray(self.pensionInsuranceOfficeList(), "childs"));
 
@@ -108,48 +96,11 @@ module nts.uk.pr.view.qmm008.a2 {
                 // add history dialog
                 self.isTransistReturnData = ko.observable(false);
 
-                // Health CurrencyEditor
-                //Pension CurrencyEditor
-                self.pensionCurrency = ko.observable(1500000);
-                //pension owner rate
-                self.pensionOwnerRate = ko.observable(1.5);
-
                 self.fundInputEnable = ko.observable(false);
                 self.isClickPensionHistory = ko.observable(false);
-                self.startMonthTemp = ko.observable('');
-                self.endMonthTemp = ko.observable('');
                 
                 self.isLoading = ko.observable(true);
-
-                //subscribe change select office
-                self.pensionOfficeSelectedCode.subscribe(function(officeSelectedCode: string) {
-                    if (officeSelectedCode.length > 1) {
-                        //if click office item
-                        if (self.pensionCheckCode(officeSelectedCode)) {
-                            self.pensionCurrentParentCode(officeSelectedCode);
-                            //TODO reset data on view
-                            //                            self.pensionModel(new PensionRateModel("code", 1, 1, null, null, null, 35000, 1.5));
-                            // enabled button add new history
-                            self.isClickPensionHistory(false);
-                        }
-                        //if click history item
-                        else {
-                            self.pensionCurrentChildCode(officeSelectedCode);
-                            //disabled button add new history
-                            self.isClickPensionHistory(true);
-                            //officeSelectedCode = historyCode
-                            //if is creat new history
-                            if (officeSelectedCode.length > 10) {
-//                                $.when(self.loadPension(officeSelectedCode)).done(function() {
-//                                    // load data success
-//                                }).fail(function(res) {
-//                                    // when load data error
-//                                });
-                            }
-                        }
-                    }
-                });
-
+                self.currentOfficeCode = ko.observable('');
                 self.pensionModel().fundInputApply.subscribe(function() {
                     //change select -> hide fund input table
                     if (self.pensionModel().fundInputApply() != 1) {
@@ -164,12 +115,6 @@ module nts.uk.pr.view.qmm008.a2 {
             public start(): JQueryPromise<any> {
                 var self = this;
                 var dfd = $.Deferred<any>();
-                //first load
-                self.loadPensionHistoryOfOffice().done(function() {
-                    // Resolve
-                    dfd.resolve(null);
-                });
-
                 self.getAllRounding().done(function() {
                     // Resolve
                     dfd.resolve(null);
@@ -187,53 +132,6 @@ module nts.uk.pr.view.qmm008.a2 {
                     // Set list.
                     self.roundingList(data);
                     dfd.resolve(data);
-                });
-                // Return.
-                return dfd.promise();
-            }
-
-            //check code of parent or child
-            public pensionCheckCode(code: string) {
-                var flag = false;
-                this.pensionInsuranceOfficeList().forEach(function(item, index) {
-                    if (item.code == code) {
-                        flag = true;
-                    }
-                });
-                return flag;
-            }
-
-            //convert from OfficeItemDto to Tree list
-            public covert2Tree(data: Array<OfficeItemDto>) {
-                var returnData: Array<InsuranceOfficeItem> = [];
-                data.forEach(function(item, index) {
-                    var childData: Array<InsuranceOfficeItem> = [];
-                    //convert child list
-                    if (item.listHistory != null) {
-                        item.listHistory.forEach(function(item2, index2) {
-                            childData.push(new InsuranceOfficeItem(item.officeCode, item.officeName, item2.historyId, [], item2.startMonth.substring(0, 4) + "/" + item2.startMonth.substring(4, item2.startMonth.length) + "~" + item2.endMonth.substring(0, 4) + "/" + item2.endMonth.substring(4, item2.endMonth.length)));
-                        });
-                    }
-                    else {
-                        childData = [];
-                    }
-                    //push to array
-                    returnData.push(new InsuranceOfficeItem(item.officeCode, item.officeName, item.officeCode, childData, item.officeCode + "\u00A0" + "\u00A0" + "\u00A0" + item.officeName));
-                });
-                return returnData;
-            }
-
-            //get all pension history
-            public loadPensionHistoryOfOffice(): JQueryPromise<any> {
-                var self = this;
-                var dfd = $.Deferred<any>();
-                service.getAllPensionOfficeItem().done(function(data: Array<OfficeItemDto>) {
-                    self.pensionInsuranceOfficeList(self.covert2Tree(data));
-                    if (self.pensionInsuranceOfficeList().length > 0) {
-                        if (self.pensionInsuranceOfficeList()[0].childs.length > 0)
-                            self.pensionOfficeSelectedCode(self.pensionInsuranceOfficeList()[0].childs[0].code);
-                        self.pensionCurrentParentCode(self.pensionInsuranceOfficeList()[0].code);
-                    }
                 });
                 // Return.
                 return dfd.promise();
@@ -395,7 +293,7 @@ module nts.uk.pr.view.qmm008.a2 {
                 roundingMethods.push(new RoundingDto(PaymentType.SALARY, new RoundingItemDto(self.convertToRounding(self.pensionModel().roundingMethods().pensionSalaryPersonalComboBoxSelectedCode()), self.convertToRounding(self.pensionModel().roundingMethods().pensionSalaryCompanyComboBoxSelectedCode()))));
                 roundingMethods.push(new RoundingDto(PaymentType.BONUS, new RoundingItemDto(self.convertToRounding(self.pensionModel().roundingMethods().pensionBonusPersonalComboBoxSelectedCode()), self.convertToRounding(self.pensionModel().roundingMethods().pensionBonusCompanyComboBoxSelectedCode()))));
 
-                return new service.model.finder.PensionRateDto(self.pensionModel().historyId, self.pensionModel().companyCode, self.pensionCurrentParentCode(), self.pensionModel().startMonth(), self.pensionModel().endMonth(), self.pensionModel().autoCalculate(), true, rateItems, fundRateItems, roundingMethods, self.pensionModel().maxAmount(), self.pensionModel().childContributionRate());
+                return new service.model.finder.PensionRateDto(self.pensionModel().historyId, self.pensionModel().companyCode, self.currentOfficeCode(), self.pensionModel().startMonth(), self.pensionModel().endMonth(), self.pensionModel().autoCalculate(), true, rateItems, fundRateItems, roundingMethods, self.pensionModel().maxAmount(), self.pensionModel().childContributionRate());
             }
 
             //get current item office 
@@ -404,23 +302,11 @@ module nts.uk.pr.view.qmm008.a2 {
                 var saveVal = null;
                 // Set parent value
                 self.pensionInsuranceOfficeList().forEach(function(item, index) {
-                    if (self.pensionCurrentParentCode() == item.code) {
+                    if (self.currentOfficeCode() == item.code) {
                         saveVal = item;
                     }
                 });
                 return saveVal;
-            }
-
-            public refreshOfficeList(returnValue: InsuranceOfficeItem) {
-                var self = this;
-                setTimeout(function() {
-                    self.loadPensionHistoryOfOffice();
-                    if (returnValue.childs.length > 0) {
-                        self.pensionOfficeSelectedCode(returnValue.childs[0].code);
-                        self.pensionModel().startMonth(returnValue.childs[0].codeName.substr(0, 7));
-                        self.pensionModel().endMonth(returnValue.childs[0].codeName.substr(9, returnValue.childs[0].codeName.length));
-                    }
-                }, 1000);
             }
 
             public save() {
@@ -428,7 +314,6 @@ module nts.uk.pr.view.qmm008.a2 {
                 //update pension
                 service.updatePensionRate(self.pensionCollectData()).done(function() {
                 });
-                self.loadPensionHistoryOfOffice();
             }
             
              /**
@@ -438,6 +323,8 @@ module nts.uk.pr.view.qmm008.a2 {
                 var self = this;
                 var dfd = $.Deferred<void>();
                 self.isLoading(true);
+                self.isClickPensionHistory(true);
+                self.currentOfficeCode(self.getCurrentOfficeCode(id));
                 service.instance.findHistoryByUuid(id).done(dto => {
                     self.loadPension(dto);
                     self.isLoading(false);
@@ -448,40 +335,35 @@ module nts.uk.pr.view.qmm008.a2 {
                 return dfd.promise();
             }
             
-            // open dialog add history 
-            public OpenModalAddHistory() {
+            onSave(): JQueryPromise<void>{
                 var self = this;
-                var data;
-                var sendOfficeItem = self.getDataOfPensionSelectedOffice();
-                data = self.pensionCollectData();
-                //get history of first child office
-                self.pensionInsuranceOfficeList().forEach(function(item, index) {
-                    if (item.code == self.pensionCurrentParentCode()) {
-                        if (item.childs.length > 0) {
-                            data.historyId = item.childs[0].code;
-                            data.startMonth = item.childs[0].codeName.substr(0, 7);
-                            data.endMonth = item.childs[0].codeName.substr(8, item.childs[0].codeName.length)
-                        }
-                    }
-                });
-                nts.uk.ui.windows.setShared("sendOfficeParentValue", sendOfficeItem);
-                nts.uk.ui.windows.setShared("dataParentValue", data);
-                nts.uk.ui.windows.setShared("isHealthParentValue", false);
-                nts.uk.ui.windows.setShared("isTransistReturnData", this.isTransistReturnData());
-                nts.uk.ui.windows.sub.modal("/view/qmm/008/b/index.xhtml", { title: "会社保険事業所の登録＞履歴の追加" }).onClosed(() => {
-                    // Get child value return office Item
-                    var returnValue = nts.uk.ui.windows.getShared("addHistoryChildValue");
-                    if (returnValue != null) {
-                        self.refreshOfficeList(returnValue);
-                    }
-                });
+                var dfd = $.Deferred<void>();
+                self.save();
+                return dfd.promise();
             }
-
+           
+            public getCurrentOfficeCode(childId: string) {
+                var self = this;
+                if (self.masterHistoryList.length > 0) {
+                    self.masterHistoryList.forEach(function(parentItem) {
+                        if (parentItem.historyList) {
+                            parentItem.historyList.forEach(function(childItem) {
+                                if (childItem.uuid == childId) {
+                                    return parentItem.code;
+                                }
+                            });
+                        } else {
+                            return parentItem.code;
+                        }
+                    });
+                }
+                return "";
+            }
+            
             //open office register dialog
             public OpenModalOfficeRegister() {
                 var self = this;
                 // Set parent value
-                nts.uk.ui.windows.setShared("officeCodeOfParentValue", self.pensionOfficeSelectedCode());
                 nts.uk.ui.windows.setShared("isTransistReturnData", this.isTransistReturnData());
                 nts.uk.ui.windows.sub.modal("/view/qmm/008/c/index.xhtml", { title: "会社保険事業所の登録＞事業所の登録" }).onClosed(() => {
                     //when close dialog -> reload office list
@@ -501,23 +383,6 @@ module nts.uk.pr.view.qmm008.a2 {
                 nts.uk.ui.windows.sub.modal("/view/qmm/008/i/index.xhtml", { title: "会社保険事業所の登録＞標準報酬月額保険料額表" }).onClosed(() => {
                     // Get child value
                     var returnValue = nts.uk.ui.windows.getShared("listOfficeOfChildValue");
-                });
-            }
-
-            //open modal config history 
-            public OpenModalConfigHistory() {
-                var self = this;
-                var sendOfficeItem = self.getDataOfPensionSelectedOffice();
-                // Set parent value
-                nts.uk.ui.windows.setShared("sendOfficeParentValue", sendOfficeItem);
-                nts.uk.ui.windows.setShared("isHealthParentValue", false);
-                nts.uk.ui.windows.setShared("currentChildCode", self.pensionCurrentChildCode());
-                nts.uk.ui.windows.setShared("isTransistReturnData", this.isTransistReturnData());
-                nts.uk.ui.windows.sub.modal("/view/qmm/008/f/index.xhtml", { title: "会社保険事業所の登録＞履歴の編集" }).onClosed(() => {
-
-                    // Get child value return office Item
-                    var returnValue = nts.uk.ui.windows.getShared("updateHistoryChildValue");
-                    self.refreshOfficeList(returnValue);
                 });
             }
         }

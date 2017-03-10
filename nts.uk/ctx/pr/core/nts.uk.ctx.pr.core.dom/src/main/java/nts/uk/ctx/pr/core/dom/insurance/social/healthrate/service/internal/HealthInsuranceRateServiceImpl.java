@@ -41,6 +41,7 @@ public class HealthInsuranceRateServiceImpl extends HealthInsuranceRateService {
 	 * HealthInsuranceRateService#validateRequiredItem(nts.uk.ctx.pr.core.dom.
 	 * insurance.social.healthrate.HealthInsuranceRate)
 	 */
+	@Override
 	public void validateRequiredItem(HealthInsuranceRate rate) {
 		if (StringUtil.isNullOrEmpty(rate.getOfficeCode().v(), true) || rate.getApplyRange() == null
 				|| rate.getMaxAmount() == null || ListUtil.isEmpty(rate.getRateItems())
@@ -58,6 +59,7 @@ public class HealthInsuranceRateServiceImpl extends HealthInsuranceRateService {
 	 * HealthInsuranceRateService#validateDateRange(nts.uk.ctx.pr.core.dom.
 	 * insurance.social.healthrate.HealthInsuranceRate)
 	 */
+	@Override
 	public void validateDateRange(HealthInsuranceRate rate) {
 		if (healthInsuranceRateRepo.isInvalidDateRange(rate.getApplyRange())) {
 			// History after start date and time exists
@@ -72,9 +74,8 @@ public class HealthInsuranceRateServiceImpl extends HealthInsuranceRateService {
 	}
 
 	@Override
-	public HealthInsuranceRate createInitalHistory(String companyCode, String officeCode, YearMonth startYearMonth) {
+	public HealthInsuranceRate createInitalHistory(String companyCode, String officeCode, YearMonth startTime) {
 		return HealthInsuranceRate.createWithIntial(new CompanyCode(companyCode), new OfficeCode(officeCode),
-				startYearMonth);
+				startTime);
 	}
-
 }

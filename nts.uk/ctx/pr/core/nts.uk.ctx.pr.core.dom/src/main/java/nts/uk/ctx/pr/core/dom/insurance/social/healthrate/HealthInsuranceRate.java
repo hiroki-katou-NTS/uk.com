@@ -116,20 +116,18 @@ public class HealthInsuranceRate extends DomainObject implements History<HealthI
 
 	@Override
 	public void setStart(YearMonth yearMonth) {
-		this.applyRange = MonthRange.range(yearMonth,
-				this.applyRange.getStartMonth());
+		this.applyRange = MonthRange.range(yearMonth, this.applyRange.getEndMonth());
 	}
 
 	@Override
 	public void setEnd(YearMonth yearMonth) {
-		this.applyRange = MonthRange.range(yearMonth,
-				this.applyRange.getEndMonth());
+		this.applyRange = MonthRange.range(this.applyRange.getStartMonth(), yearMonth);
 	}
 
 	@Override
 	public HealthInsuranceRate copyWithDate(YearMonth start) {
 		HealthInsuranceRate HealthInsuranceRate = new HealthInsuranceRate();
-		HealthInsuranceRate.applyRange = this.applyRange;
+		HealthInsuranceRate.applyRange = MonthRange.toMaxDate(start);;
 		HealthInsuranceRate.autoCalculate = this.autoCalculate;
 		HealthInsuranceRate.companyCode = this.companyCode;
 		HealthInsuranceRate.maxAmount = this.maxAmount;
@@ -143,7 +141,7 @@ public class HealthInsuranceRate extends DomainObject implements History<HealthI
 		HealthInsuranceRate HealthInsuranceRate = new HealthInsuranceRate();
 		HealthInsuranceRate.companyCode = companyCode;
 		HealthInsuranceRate.officeCode = officeCode;
-		HealthInsuranceRate.applyRange = MonthRange.range(startYearMonth, new YearMonth(999912));
+		HealthInsuranceRate.applyRange = MonthRange.toMaxDate(startYearMonth);
 		HealthInsuranceRate.autoCalculate = CalculateMethod.Auto;
 		HealthInsuranceRate.maxAmount = new CommonAmount(BigDecimal.ZERO);
 		HealthInsuranceRate.rateItems = setDefaultRateItems();

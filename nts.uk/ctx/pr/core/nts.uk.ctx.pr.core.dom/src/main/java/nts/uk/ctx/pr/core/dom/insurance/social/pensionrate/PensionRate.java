@@ -24,7 +24,6 @@ import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
 import nts.uk.ctx.pr.core.dom.insurance.PaymentType;
 import nts.uk.ctx.pr.core.dom.insurance.RoundingItem;
 import nts.uk.ctx.pr.core.dom.insurance.RoundingMethod;
-import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.HealthInsuranceRounding;
 
 /**
  * The Class PensionRate.

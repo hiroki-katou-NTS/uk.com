@@ -28,23 +28,16 @@ module nts.uk.pr.view.qmm008.a1 {
 
             healthFilteredData: any;
 
-            healthOfficeSelectedCode: KnockoutObservable<string>;
-            healthCurrentParentCode: KnockoutObservable<string>;
-            healthCurrentChildCode: KnockoutObservable<string>;
-
             //for health auto calculate switch button
             healthAutoCalculateOptions: KnockoutObservableArray<any>;
             selectedRuleCode: KnockoutObservable<number>;
             //for control data after close dialog
             isTransistReturnData: KnockoutObservable<boolean>;
             //healthTotal
-            healthTotal: KnockoutObservable<number>;
             isClickHealthHistory: KnockoutObservable<boolean>;
-
-            startMonthTemp: KnockoutObservable<string>;
-            endMonthTemp: KnockoutObservable<string>;
             // Flags
             isLoading: KnockoutObservable<boolean>;
+            currentOfficeCode : KnockoutObservable<string>;
             constructor() {
                 super({
                     functionName: '社会保険事業所',
@@ -57,14 +50,7 @@ module nts.uk.pr.view.qmm008.a1 {
                 // init insurance offices list
                 self.healthInsuranceOfficeList = ko.observableArray<InsuranceOfficeItem>([]);
 
-                self.healthOfficeSelectedCode = ko.observable('');
-                self.healthCurrentParentCode = ko.observable('');
-                self.healthCurrentChildCode = ko.observable('');
-
                 self.healthFilteredData = ko.observableArray(nts.uk.util.flatArray(self.healthInsuranceOfficeList(), "childs"));
-
-                self.searchKey = ko.observable('');
-
                 //init rounding list
                 self.roundingList = ko.observableArray<Enum>([]);
 
@@ -90,48 +76,12 @@ module nts.uk.pr.view.qmm008.a1 {
                     { code: '0', name: 'する' },
                     { code: '1', name: 'しない' }
                 ]);
-                self.selectedRuleCode = ko.observable(1);//
                 // add history dialog
                 self.isTransistReturnData = ko.observable(false);
                 // Health CurrencyEditor
-                self.healthTotal = ko.observable(5400000);
                 self.isClickHealthHistory = ko.observable(false);
-                self.startMonthTemp = ko.observable('');
-                self.endMonthTemp = ko.observable('');
-                //subscribe change select office
-                self.healthOfficeSelectedCode.subscribe(function(officeSelectedCode: string) {
-                    //                    if (officeSelectedCode.length>1) {
-                    //if click office item
-                    if (self.healthCheckCode(officeSelectedCode)) {
-                        self.healthCurrentParentCode(officeSelectedCode);
-                        //reset data on view
-                        var roudingList = new HealthInsuranceRoundingModel();
-                        roudingList.healthSalaryPersonalComboBox(self.roundingList());
-                        roudingList.healthSalaryCompanyComboBox(self.roundingList());
-                        roudingList.healthBonusPersonalComboBox(self.roundingList());
-                        roudingList.healthBonusCompanyComboBox(self.roundingList());
-                        self.healthModel(new HealthInsuranceRateModel());
-                        // enabled button add new history
-                        self.isClickHealthHistory(false);
-                    }
-                    //if click history item
-                    else {
-                        self.healthCurrentChildCode(officeSelectedCode);
-                        //disabled button add new history
-                        self.isClickHealthHistory(true);
-                        //officeSelectedCode = historyCode
-                        //if is creat new history
-                        if (officeSelectedCode.length > 10) {
-//                            $.when(self.loadHealth(officeSelectedCode)).done(function() {
-//                                //load data success
-//                            }).fail(function(res) {
-//                                //when load data error
-//                            });
-                        }
-                    }
-                    //                    }
-                });
                 self.isLoading = ko.observable(true);
+                self.currentOfficeCode = ko.observable('');
             } //end constructor
 
             // Start
@@ -158,17 +108,6 @@ module nts.uk.pr.view.qmm008.a1 {
                 });
                 // Return.
                 return dfd.promise();
-            }
-
-            //check code of parent or child
-            public healthCheckCode(code: string) {
-                var flag = false;
-                this.healthInsuranceOfficeList().forEach(function(item, index) {
-                    if (item.code == code) {
-                        flag = true;
-                    }
-                });
-                return flag;
             }
 
             //string rounding to value
@@ -198,8 +137,6 @@ module nts.uk.pr.view.qmm008.a1 {
             //load health data by history code
             public loadHealth(data: HealthInsuranceRateDto) {
                 var self = this;
-//                var dfd = $.Deferred<any>();
-//                service.getHealthInsuranceItemDetail(historyCode).done(function(data: HealthInsuranceRateDto) {
                     if (data == null) {
                         return;
                     }
@@ -263,14 +200,6 @@ module nts.uk.pr.view.qmm008.a1 {
                         }
                     });
                     self.healthModel().maxAmount(data.maxAmount);
-                    // Resolve
-//                    dfd.resolve();
-//                }).fail(function() {
-                    //when load fail
-//                }).always(function(res) {
-//                });
-                // Ret promise.
-//                return dfd.promise();
             }
 
             private healthCollectData() {
@@ -291,7 +220,7 @@ module nts.uk.pr.view.qmm008.a1 {
                 var rounding = self.healthModel().roundingMethods();
                 roundingMethods.push(new RoundingDto(PaymentType.SALARY, new RoundingItemDto(self.convertToRounding(self.healthModel().roundingMethods().healthSalaryPersonalComboBoxSelectedCode()), self.convertToRounding(self.healthModel().roundingMethods().healthSalaryCompanyComboBoxSelectedCode()))));
                 roundingMethods.push(new RoundingDto(PaymentType.BONUS, new RoundingItemDto(self.convertToRounding(self.healthModel().roundingMethods().healthBonusPersonalComboBoxSelectedCode()), self.convertToRounding(self.healthModel().roundingMethods().healthBonusCompanyComboBoxSelectedCode()))));
-                return new service.model.finder.HealthInsuranceRateDto(self.healthModel().historyId, self.healthModel().companyCode, self.healthCurrentParentCode(), self.healthModel().startMonth(), self.healthModel().endMonth(), self.healthModel().autoCalculate(), rateItems, roundingMethods, self.healthModel().maxAmount());
+                return new service.model.finder.HealthInsuranceRateDto(self.healthModel().historyId, self.healthModel().companyCode, self.currentOfficeCode(), self.healthModel().startMonth(), self.healthModel().endMonth(), self.healthModel().autoCalculate(), rateItems, roundingMethods, self.healthModel().maxAmount());
             }
 
             //get current item office 
@@ -300,22 +229,11 @@ module nts.uk.pr.view.qmm008.a1 {
                 var saveVal = null;
                 // Set parent value
                 self.healthInsuranceOfficeList().forEach(function(item, index) {
-                    if (self.healthCurrentParentCode() == item.code) {
+                    if (self.currentOfficeCode() == item.code) {
                         saveVal = item;
                     }
                 });
                 return saveVal;
-            }
-
-            public refreshOfficeList(returnValue: InsuranceOfficeItem) {
-                var self = this;
-                setTimeout(function() {
-                    if (returnValue.childs.length > 0) {
-                        self.healthOfficeSelectedCode(returnValue.childs[0].code);
-                        self.healthModel().startMonth(returnValue.childs[0].codeName.substr(0, 7));
-                        self.healthModel().endMonth(returnValue.childs[0].codeName.substr(9, returnValue.childs[0].codeName.length));
-                    }
-                }, 1000);
             }
 
             public save() {
@@ -333,6 +251,7 @@ module nts.uk.pr.view.qmm008.a1 {
                 var dfd = $.Deferred<void>();
                 self.isLoading(true);
                 self.isClickHealthHistory(true);
+                self.currentOfficeCode(self.getCurrentOfficeCode(id));
                 service.instance.findHistoryByUuid(id).done(dto => {
                     self.loadHealth(dto);
                     self.isLoading(false);
@@ -341,6 +260,29 @@ module nts.uk.pr.view.qmm008.a1 {
                     dfd.resolve();
                 });
                 return dfd.promise();
+            }
+            onSave(): JQueryPromise<void>  {
+                var self = this;
+                var dfd = $.Deferred<void>();
+                self.save();
+                return dfd.promise();
+            }
+            public getCurrentOfficeCode(childId: string) {
+                var self = this;
+                if (self.masterHistoryList.length > 0) {
+                    self.masterHistoryList.forEach(function(parentItem) {
+                        if (parentItem.historyList) {
+                            parentItem.historyList.forEach(function(childItem) {
+                                if (childItem.uuid == childId) {
+                                    return parentItem.code;
+                                }
+                            });
+                        } else {
+                            return parentItem.code;
+                        }
+                    });
+                }
+                return "";
             }
             
 //            /**
@@ -351,46 +293,14 @@ module nts.uk.pr.view.qmm008.a1 {
 //                $('.save-error').ntsError('clear');
 //                self.setUnitPriceHistoryModel(self.getDefaultUnitPriceHistory());
 //            }
-            
-            // open dialog add history 
-            public OpenModalAddHistory() {
-                var self = this;
-                var data;
-                var isHealth = true;
-                data = self.healthCollectData();
-                //get history of first child office
-                self.healthInsuranceOfficeList().forEach(function(item, index) {
-                    if (item.code == self.healthCurrentParentCode()) {
-                        if (item.childs.length > 0) {
-                            data.historyId = item.childs[0].code;
-                            data.startMonth = item.childs[0].codeName.substr(0, 7);
-                            data.endMonth = item.childs[0].codeName.substr(8, item.childs[0].codeName.length)
-                        }
-                    }
-                });
-
-                nts.uk.ui.windows.setShared("sendOfficeParentValue", self.getDataOfHealthSelectedOffice());
-                nts.uk.ui.windows.setShared("dataParentValue", data);
-                nts.uk.ui.windows.setShared("isHealthParentValue", isHealth);
-                nts.uk.ui.windows.setShared("isTransistReturnData", this.isTransistReturnData());
-                nts.uk.ui.windows.sub.modal("/view/qmm/008/b/index.xhtml", { title: "会社保険事業所の登録＞履歴の追加" }).onClosed(() => {
-                    // Get child value return office Item
-                    var returnValue = nts.uk.ui.windows.getShared("addHistoryChildValue");
-                    if (returnValue != null) {
-                        self.refreshOfficeList(returnValue);
-                    }
-                });
-            }
 
             //open office register dialog
             public OpenModalOfficeRegister() {
                 var self = this;
                 // Set parent value
-                nts.uk.ui.windows.setShared("officeCodeOfParentValue", self.healthOfficeSelectedCode());
-                nts.uk.ui.windows.setShared("isTransistReturnData", this.isTransistReturnData());
                 nts.uk.ui.windows.sub.modal("/view/qmm/008/c/index.xhtml", { title: "会社保険事業所の登録＞事業所の登録" }).onClosed(() => {
                     //when close dialog -> reload office list
-                    self.start();
+                    self.startPage();
                     // Get child value
                     var returnValue = nts.uk.ui.windows.getShared("insuranceOfficeChildValue");
                 });
@@ -406,23 +316,6 @@ module nts.uk.pr.view.qmm008.a1 {
                 nts.uk.ui.windows.sub.modal("/view/qmm/008/h/index.xhtml", { title: "会社保険事業所の登録＞標準報酬月額保険料額表" }).onClosed(() => {
                     // Get child value
                     var returnValue = nts.uk.ui.windows.getShared("listOfficeOfChildValue");
-                });
-            }
-
-            //open modal config history 
-            public OpenModalConfigHistory() {
-                var self = this;
-                var isHealth = true;
-                // Set parent value
-                nts.uk.ui.windows.setShared("sendOfficeParentValue", self.getDataOfHealthSelectedOffice());
-                nts.uk.ui.windows.setShared("isHealthParentValue", isHealth);
-                nts.uk.ui.windows.setShared("currentChildCode", self.healthCurrentChildCode());
-                nts.uk.ui.windows.setShared("isTransistReturnData", this.isTransistReturnData());
-                nts.uk.ui.windows.sub.modal("/view/qmm/008/f/index.xhtml", { title: "会社保険事業所の登録＞履歴の編集" }).onClosed(() => {
-
-                    // Get child value return office Item
-                    var returnValue = nts.uk.ui.windows.getShared("updateHistoryChildValue");
-                    self.refreshOfficeList(returnValue);
                 });
             }
         }
