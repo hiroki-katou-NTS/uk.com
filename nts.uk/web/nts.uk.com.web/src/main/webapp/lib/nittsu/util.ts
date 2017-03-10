@@ -155,6 +155,89 @@
             }
             return false;
         };
+        
+        export function createTreeFromString(original: string, openChar: string, closeChar: string, seperatorChar: string): Array<TreeObject>[]{
+            return convertToTree(original, openChar, closeChar, seperatorChar, 1).result;
+        }
+        
+        function convertToTree(original: string, openChar: string, closeChar: string, separatorChar: string, index: number): {"result": Array<TreeObject>[], "index": number}{
+            let result = [];
+            while (original.trim().length > 0){  
+                let firstOpenIndex = original.indexOf(openChar);
+                if(firstOpenIndex < 0){
+                    let values = original.split(separatorChar);
+                    _.forEach(values, function(value){
+                        let object = new TreeObject();
+                        object.value = value;
+                        object.children = [];
+                        result.push(object);     
+                    }); 
+                    return {
+                        "result": result,
+                        "index": index    
+                    };             
+                }else{
+                    let object = new TreeObject();
+                    object.value = original.substring(0, firstOpenIndex).trim();
+                    object.index = index;
+                    let closeIndex = findIndexOfCloseChar(original, openChar, closeChar, firstOpenIndex);
+                    if(closeIndex >= 0){
+                        index++;
+                        let res = convertToTree(original.substring(firstOpenIndex + 1, closeIndex).trim(), openChar, closeChar, separatorChar, index);
+                        object.children = res.result;
+                        index = res.index++;
+                        result.push(object);              
+                        let firstSeperatorIndex = original.indexOf(separatorChar, closeIndex);
+                        if(firstSeperatorIndex >= 0){
+                            original = original.substring(firstSeperatorIndex + 1, original.length).trim();    
+                        }else{
+                            return {
+                                "result": result,
+                                "index": index    
+                            };    
+                        }
+                    }else {
+                        return {
+                            "result": result,
+                            "index": index    
+                        };        
+                    }    
+                }
+            }
+            
+            return result;
+        }
+        
+        function findIndexOfCloseChar(original: string, openChar: string, closeChar: string, firstOpenIndex: number): number{
+            let openCount = 0;
+            let closeCount = 0;
+            for(var i = firstOpenIndex; i < original.length; i++){
+                if(original.charAt(i) === openChar){
+                    openCount++;
+                } else if(original.charAt(i) === closeChar){
+                    closeCount++;
+                }     
+                if(openCount > 0 && openCount === closeCount){
+                    return i;
+                } 
+            }
+            
+            return -1;
+        }
+        
+        export class TreeObject{
+            value: string;
+            children: Array<TreeObject>[];
+            index: number;
+            
+            constructor(value?: string, children?: Array<TreeObject>[], index?: number){
+                var self = this;
+                
+                self.value = value;
+                self.children = children;
+                self.index = index;
+            }
+        }
     
         /**
          * Like Java Optional
