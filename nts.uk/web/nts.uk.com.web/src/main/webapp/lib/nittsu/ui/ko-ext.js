@@ -27,9 +27,6 @@ var nts;
                         }
                         $input.addClass('nts-editor').addClass("nts-input");
                         $input.wrap("<span class= 'nts-editor-wrapped ntsControl'/>");
-                        $input.focus(function () {
-                            $input.select();
-                        });
                         $input.change(function () {
                             var validator = _this.getValidator(data);
                             var newText = $input.val();
@@ -198,7 +195,14 @@ var nts;
                     NumberEditorProcessor.prototype.init = function ($input, data) {
                         var option = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
                         $input.focus(function () {
+                            var selectionType = document.getSelection().type;
+                            // remove separator (comma)
                             $input.val(data.value());
+                            // if focusing is caused by Tab key, select text.
+                            // this code is needed because removing separator deselects.
+                            if (selectionType === 'Range') {
+                                $input.select();
+                            }
                         });
                         _super.prototype.init.call(this, $input, data);
                     };
@@ -1643,7 +1647,7 @@ var nts;
                                         }
                                         else {
                                             if (ko.isObservable(data.value)) {
-                                                data.value(selectedRows[0].id);
+                                                data.value(selectedRows.length <= 0 ? undefined : selectedRows[0].id);
                                             }
                                         }
                                     }
@@ -1846,6 +1850,14 @@ var nts;
                                     constraintText += (constraintText.length > 0) ? "/" : "";
                                     constraintText += uk.text.getCharType(primitiveValue).buildConstraintText(constraint.maxLength);
                                     break;
+                                case 'Decimal':
+                                    constraintText += (constraintText.length > 0) ? "/" : "";
+                                    constraintText += constraint.min + "～" + constraint.max;
+                                    break;
+                                case 'Integer':
+                                    constraintText += (constraintText.length > 0) ? "/" : "";
+                                    constraintText += constraint.min + "～" + constraint.max;
+                                    break;
                                 default:
                                     constraintText += 'ERROR';
                                     break;
@@ -1975,7 +1987,8 @@ var nts;
                             });
                         else
                             $input.on('change', function (event) {
-                                data.value($input.val());
+                                var result = nts.uk.time.parseYearMonth($input.val());
+                                data.value(result.toValue());
                             });
                         $input.width(Math.floor(atomWidth * length));
                         if (data.disabled !== undefined && ko.unwrap(data.disabled) == true) {
@@ -2006,11 +2019,12 @@ var nts;
                             $input.val(nts.uk.time.formatDate(newValue, dateFormat));
                         }
                         else {
-                            var newDate = new Date(newValue + "/01");
+                            var formatted = nts.uk.time.parseYearMonth(newValue);
+                            var newDate = new Date(formatted.format() + "/01");
                             var oldDate = $input.datepicker("getDate");
-                            if (oldDate.getFullYear() != newDate.getFullYear() || oldDate.getMonth() != newDate.getMonth() || oldDate.getDate() != newDate.getDate())
+                            if (oldDate.getFullYear() != newDate.getFullYear() || oldDate.getMonth() != newDate.getMonth())
                                 $input.datepicker("setDate", newDate);
-                            $input.val(newValue);
+                            $input.val(formatted.format());
                         }
                         if (data.disabled !== undefined && ko.unwrap(data.disabled) == true) {
                             $input.prop("disabled", true);
