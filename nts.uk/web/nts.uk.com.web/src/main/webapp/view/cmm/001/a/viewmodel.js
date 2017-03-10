@@ -5,28 +5,19 @@ var cmm001;
         var ScreenModel = (function () {
             function ScreenModel() {
                 this.editMode = true;
+                this.mode = ko.observable(null);
                 //search box
                 this.textSearch = "";
                 var self = this;
                 var node;
                 self.init();
                 self.currentCode.subscribe(function (newValue) {
-                    console.log(self.items());
-                    //                let dfd = $.Deferred<any>();
-                    //                cmm001.a.service.getAllCompanys().done(function(companies) {
-                    //                    if (companies.length > 0) {
-                    //                        self.companys(companies);
                     if (self.editMode) {
                         self.getDetailCompany(self.companys(), newValue);
                     }
                     else {
                         self.editMode = true;
                     }
-                    //                    }
-                    //                    dfd.resolve();
-                    //                });
-                });
-                self.selectedCode.subscribe(function (newValue) {
                 });
                 self.checked1.subscribe(function (newValue) {
                     var $grid = $("#single-list");
@@ -42,6 +33,7 @@ var cmm001;
                     }
                     $grid.igGrid("option", "columns", currentColumns);
                     self.start(undefined);
+                    nts.uk.ui.dialog.alert("変更された内容が登録されていません。\r\nよろしいですか。");
                 });
             }
             ScreenModel.prototype.getDetailCompany = function (items, newValue) {
@@ -116,7 +108,14 @@ var cmm001;
                 companyDto.use_Kt_Set = 0;
                 companyDto.use_Qy_Set = 0;
                 companyDto.use_Jj_Set = 0;
+                self.selectedRuleCode("0");
+                self.selectedRuleCode1("0");
+                self.selectedRuleCode2("0");
+                self.selectedRuleCode3("0");
+                self.selectedCode("0");
                 self.currentCompanyDto(ko.mapping.fromJS(companyDto));
+                self.mode(false);
+                nts.uk.ui.dialog.alert("変更された内容が登録されていません。\r\nよろしいですか。");
             };
             ScreenModel.prototype.init = function () {
                 var self = this;
@@ -221,6 +220,12 @@ var cmm001;
                 currentCompany.use_Qy_Set = Number(self.selectedRuleCode2());
                 currentCompany.depWorkPlaceSet = Number(self.selectedRuleCode3());
                 currentCompany.termBeginMon = Number(self.selectedCode());
+                if (self.checked2()) {
+                    currentCompany.displayAttribute = 1;
+                }
+                else {
+                    currentCompany.displayAttribute = 0;
+                }
                 var use_Ac_Set;
                 var use_Gw_Set;
                 var use_Hc_Set;
@@ -238,7 +243,6 @@ var cmm001;
                 var error;
                 if (nts.uk.text.allHalfKatakana(currentCompany.companyNameKana) === true) {
                     $('#A_INP_004').ntsError('clear');
-                    //self.currentCompanyDto().companyNameKana = $("#A_INP_004").val();
                     error = true;
                 }
                 else {
@@ -248,7 +252,6 @@ var cmm001;
                 var error1;
                 if (currentCompany.companyName !== "") {
                     $('#A_INP_003').ntsError('clear');
-                    //self.currentCompanyDto().companyName = $("#A_INP_003").val();
                     error1 = true;
                 }
                 else {
@@ -258,7 +261,6 @@ var cmm001;
                 var error2;
                 if (currentCompany.address1 != "") {
                     $('#C_INP_002').ntsError('clear');
-                    // self.currentCompanyDto().address1 = $("#C_INP_002").val();
                     error2 = true;
                 }
                 else {
@@ -266,7 +268,6 @@ var cmm001;
                     error2 = false;
                 }
                 var error3;
-                //let t1 = $("#C_INP_001").val();
                 var t1 = currentCompany.postal;
                 var t2 = t1.split("-");
                 var text = "";
@@ -275,18 +276,15 @@ var cmm001;
                 }
                 if (Number(text) > 0) {
                     $('#C_INP_001').ntsError('clear');
-                    //self.currentCompanyDto().postal = $("#C_INP_001").val();
                     error3 = true;
                 }
                 else {
                     $("#C_INP_001").ntsError('set', 'this postal is  invalid text');
                     error3 = false;
                 }
-                //let addressKana1;
                 var error4;
                 if (nts.uk.text.allHalfKatakana(currentCompany.addressKana1) === true && (currentCompany.addressKana1 === "" || currentCompany.addressKana1 !== "")) {
                     $('#C_INP_004').ntsError('clear');
-                    //self.currentCompanyDto().addressKana1 = $("#C_INP_004").val();
                     error4 = true;
                 }
                 else {
@@ -296,7 +294,6 @@ var cmm001;
                 var error5;
                 if (nts.uk.text.allHalfKatakana(currentCompany.addressKana2) === true && (currentCompany.addressKana2 === "" || currentCompany.addressKana2 !== "")) {
                     $('#C_INP_005').ntsError('clear');
-                    //self.currentCompanyDto().addressKana2 = $("#C_INP_005").val();
                     error5 = true;
                 }
                 else {
@@ -318,7 +315,6 @@ var cmm001;
                 }
                 if ((telNo === " " || telNo !== "") && checkTel) {
                     $('#C_INP_006').ntsError('clear');
-                    //self.currentCompanyDto().telephoneNo = $("#C_INP_006").val();
                     error6 = true;
                 }
                 else {
@@ -340,7 +336,6 @@ var cmm001;
                 }
                 if (((faxNo === " " || faxNo !== "")) && checkFax) {
                     $('#C_INP_007').ntsError('clear');
-                    //self.currentCompanyDto().faxNo = $("#C_INP_007").val();
                     error7 = true;
                 }
                 else {
@@ -351,17 +346,19 @@ var cmm001;
                 allerror = error && error1 && error2 && error3 && error4 && error5 && error6 && error7;
                 console.log(currentCompany);
                 if (allerror === true) {
-                    if (currentCompany.companyCode != self.currentCode()) {
-                        cmm001.a.service.addData(currentCompany).done(function () {
+                    if (self.mode()) {
+                        cmm001.a.service.updateData(currentCompany).done(function () {
                             self.start(currentCompany.companyCode);
-                            alert("変更された内容が登録されていません。\r\nよろしいですか。");
+                            nts.uk.ui.dialog.alert("変更された内容が登録されていません。\r\nよろしいですか。");
                         });
                     }
                     else {
-                        cmm001.a.service.updateData(currentCompany).done(function () {
-                            self.start(currentCompany.companyCode);
-                            alert("変更された内容が登録されていません。\r\nよろしいですか。");
-                        });
+                        if (currentCompany.companyCode != self.currentCode()) {
+                            cmm001.a.service.addData(currentCompany).done(function () {
+                                self.start(currentCompany.companyCode);
+                                nts.uk.ui.dialog.alert("変更された内容が登録されていません。\r\nよろしいですか。");
+                            });
+                        }
                     }
                 }
             };
@@ -394,6 +391,7 @@ var cmm001;
                 var dfd = $.Deferred();
                 cmm001.a.service.getAllCompanys().done(function (companies) {
                     if (companies.length > 0) {
+                        self.mode(true);
                         self.companys(companies);
                         self.buildGridDataSource(companies);
                         if (currentCode === undefined) {
@@ -403,6 +401,9 @@ var cmm001;
                         else {
                             self.currentCode(currentCode);
                         }
+                    }
+                    else {
+                        self.mode(false);
                     }
                     dfd.resolve();
                 });
@@ -420,7 +421,6 @@ var cmm001;
                     }
                 });
                 self.firstCode(self.items()[0].code);
-                //self.currentCode(self.currentCompanyDto().companyCode);
             };
             return ScreenModel;
         }());

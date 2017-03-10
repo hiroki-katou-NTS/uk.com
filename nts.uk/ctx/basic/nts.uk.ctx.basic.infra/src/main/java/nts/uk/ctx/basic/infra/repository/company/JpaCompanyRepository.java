@@ -55,6 +55,7 @@ public class JpaCompanyRepository extends JpaRepository implements CompanyReposi
 		entity.tel_No = domain.getTelephoneNo().v();
 		entity.fax_No = domain.getFaxNo().v();
 		entity.dep_Work_Place_Set = domain.getDepWorkPlaceSet().value;
+		entity.term_Begin_Mon = domain.getTermBeginMon().v();
 		entity.use_Gr_Set = domain.getCompanyUseSet().getUse_Gr_Set().v();
 		entity.use_Kt_Set = domain.getCompanyUseSet().getUse_Kt_Set().v();
 		entity.use_Qy_Set = domain.getCompanyUseSet().getUse_Qy_Set().v();
@@ -113,7 +114,7 @@ public class JpaCompanyRepository extends JpaRepository implements CompanyReposi
 	public void update(Company company) {
 		try {
 			this.commandProxy().update(toEntity(company));
-			System.out.println(company.getCompanyName());
+			System.out.println(toEntity(company));
 		} catch (Exception e) {
 			throw (e);
 		}

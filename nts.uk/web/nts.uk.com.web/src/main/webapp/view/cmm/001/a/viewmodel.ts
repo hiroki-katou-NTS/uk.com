@@ -11,6 +11,7 @@ module cmm001.a {
         currentCodeList: KnockoutObservableArray<any>;
         currentNode: KnockoutObservable<Company>;
         editMode: boolean = true;
+        mode: KnockoutObservable<boolean> = ko.observable(null);
         //tabpanel
         tabs: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel>;
         selectedTab: KnockoutObservable<string>;
@@ -45,11 +46,6 @@ module cmm001.a {
             let node: Company;
             self.init();
             self.currentCode.subscribe(function(newValue) {
-                console.log(self.items());
-                //                let dfd = $.Deferred<any>();
-                //                cmm001.a.service.getAllCompanys().done(function(companies) {
-                //                    if (companies.length > 0) {
-                //                        self.companys(companies);
                 if (self.editMode) {
                     self.getDetailCompany(self.companys(), newValue);
 
@@ -57,14 +53,7 @@ module cmm001.a {
                 else {
                     self.editMode = true;
                 }
-
-                //                    }
-                //                    dfd.resolve();
-                //                });
             });
-            self.selectedCode.subscribe(function(newValue) {
-
-            })
             self.checked1.subscribe(function(newValue) {
                 let $grid = $("#single-list");
                 var currentColumns = $grid.igGrid("option", "columns");
@@ -78,6 +67,7 @@ module cmm001.a {
                 }
                 $grid.igGrid("option", "columns", currentColumns);
                 self.start(undefined);
+                nts.uk.ui.dialog.alert("変更された内容が登録されていません。\r\nよろしいですか。");
             });
 
         }
@@ -154,7 +144,14 @@ module cmm001.a {
             companyDto.use_Kt_Set = 0;
             companyDto.use_Qy_Set = 0;
             companyDto.use_Jj_Set = 0;
+            self.selectedRuleCode("0");
+            self.selectedRuleCode1("0");
+            self.selectedRuleCode2("0");
+            self.selectedRuleCode3("0");
+            self.selectedCode("0");
             self.currentCompanyDto(ko.mapping.fromJS(companyDto));
+            self.mode(false);
+            nts.uk.ui.dialog.alert("変更された内容が登録されていません。\r\nよろしいですか。");
 
         }
         init(): void {
@@ -261,6 +258,12 @@ module cmm001.a {
             currentCompany.use_Qy_Set = Number(self.selectedRuleCode2());
             currentCompany.depWorkPlaceSet = Number(self.selectedRuleCode3());
             currentCompany.termBeginMon = Number(self.selectedCode());
+            if (self.checked2()) {
+                currentCompany.displayAttribute = 1;
+            } else {
+                currentCompany.displayAttribute = 0;
+            }
+
             let use_Ac_Set: number;
             let use_Gw_Set: number;
             let use_Hc_Set: number;
@@ -278,19 +281,15 @@ module cmm001.a {
             let error: boolean;
             if (nts.uk.text.allHalfKatakana(currentCompany.companyNameKana) === true) {
                 $('#A_INP_004').ntsError('clear');
-                //self.currentCompanyDto().companyNameKana = $("#A_INP_004").val();
                 error = true;
 
             } else {
                 $('#A_INP_004').ntsError('set', 'this text must be half katakana type');
-
-
                 error = false;
             }
             let error1: boolean;
             if (currentCompany.companyName !== "") {
                 $('#A_INP_003').ntsError('clear');
-                //self.currentCompanyDto().companyName = $("#A_INP_003").val();
                 error1 = true;
             } else {
                 $("#A_INP_003").ntsError('set', 'this text must be not null');
@@ -300,14 +299,12 @@ module cmm001.a {
             let error2: boolean;
             if (currentCompany.address1 != "") {
                 $('#C_INP_002').ntsError('clear');
-                // self.currentCompanyDto().address1 = $("#C_INP_002").val();
                 error2 = true;
             } else {
                 $("#C_INP_002").ntsError('set', 'this address must not null');
                 error2 = false;
             }
             let error3: boolean;
-            //let t1 = $("#C_INP_001").val();
             let t1 = currentCompany.postal;
             let t2 = t1.split("-");
             let text = "";
@@ -316,7 +313,6 @@ module cmm001.a {
             }
             if (Number(text) > 0) {
                 $('#C_INP_001').ntsError('clear');
-                //self.currentCompanyDto().postal = $("#C_INP_001").val();
                 error3 = true;
             } else {
                 $("#C_INP_001").ntsError('set', 'this postal is  invalid text');
@@ -324,12 +320,10 @@ module cmm001.a {
 
             }
 
-            //let addressKana1;
             let error4: boolean;
 
             if (nts.uk.text.allHalfKatakana(currentCompany.addressKana1) === true && (currentCompany.addressKana1 === "" || currentCompany.addressKana1 !== "")) {
                 $('#C_INP_004').ntsError('clear');
-                //self.currentCompanyDto().addressKana1 = $("#C_INP_004").val();
                 error4 = true;
 
             } else {
@@ -337,9 +331,9 @@ module cmm001.a {
                 error4 = false;
             }
             let error5: boolean;
+
             if (nts.uk.text.allHalfKatakana(currentCompany.addressKana2) === true && (currentCompany.addressKana2 === "" || currentCompany.addressKana2 !== "")) {
                 $('#C_INP_005').ntsError('clear');
-                //self.currentCompanyDto().addressKana2 = $("#C_INP_005").val();
                 error5 = true;
 
             } else {
@@ -357,7 +351,6 @@ module cmm001.a {
             }
             if ((telNo === " " || telNo !== "") && checkTel) {
                 $('#C_INP_006').ntsError('clear');
-                //self.currentCompanyDto().telephoneNo = $("#C_INP_006").val();
                 error6 = true;
             } else {
                 $("#C_INP_006").ntsError('set', 'this telephone Number is  invalid text');
@@ -373,7 +366,6 @@ module cmm001.a {
             }
             if (((faxNo === " " || faxNo !== "")) && checkFax) {
                 $('#C_INP_007').ntsError('clear');
-                //self.currentCompanyDto().faxNo = $("#C_INP_007").val();
                 error7 = true;
             } else {
                 $("#C_INP_007").ntsError('set', 'this fax Number is  invalid text');
@@ -383,21 +375,21 @@ module cmm001.a {
             allerror = error && error1 && error2 && error3 && error4 && error5 && error6 && error7;
             console.log(currentCompany);
             if (allerror === true) {
-                if (currentCompany.companyCode != self.currentCode()) {
-                    cmm001.a.service.addData(currentCompany).done(function() {
-                        self.start(currentCompany.companyCode);
-                        alert("変更された内容が登録されていません。\r\nよろしいですか。");
-                    });
-
-                } else {
+                if (self.mode()) {
                     cmm001.a.service.updateData(currentCompany).done(function() {
                         self.start(currentCompany.companyCode);
-                        alert("変更された内容が登録されていません。\r\nよろしいですか。");
-
+                        nts.uk.ui.dialog.alert("変更された内容が登録されていません。\r\nよろしいですか。");
                     });
+                } else {
+                    if (currentCompany.companyCode != self.currentCode()) {
+                        cmm001.a.service.addData(currentCompany).done(function() {
+                            self.start(currentCompany.companyCode);
+                            nts.uk.ui.dialog.alert("変更された内容が登録されていません。\r\nよろしいですか。");
+                        });
 
-
+                    }
                 }
+
             }
         }
         //BTN-003 -Setting cac thong so ban dau
@@ -433,6 +425,7 @@ module cmm001.a {
             let dfd = $.Deferred<any>();
             cmm001.a.service.getAllCompanys().done(function(companies) {
                 if (companies.length > 0) {
+                    self.mode(true);
                     self.companys(companies);
                     self.buildGridDataSource(companies);
                     if (currentCode === undefined) {
@@ -441,6 +434,10 @@ module cmm001.a {
                     } else {
                         self.currentCode(currentCode);
                     }
+                } else {
+                    self.mode(false);
+
+
                 }
                 dfd.resolve();
             });
@@ -458,7 +455,6 @@ module cmm001.a {
 
             });
             self.firstCode(self.items()[0].code);
-            //self.currentCode(self.currentCompanyDto().companyCode);
 
         }
 
