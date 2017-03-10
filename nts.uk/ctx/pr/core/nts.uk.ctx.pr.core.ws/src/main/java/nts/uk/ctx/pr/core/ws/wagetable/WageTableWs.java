@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.ws.wagetable;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -21,6 +22,7 @@ import nts.uk.ctx.pr.core.app.wagetable.command.WageTableHistoryAddCommandHandle
 import nts.uk.ctx.pr.core.app.wagetable.command.WageTableHistoryUpdateCommand;
 import nts.uk.ctx.pr.core.app.wagetable.command.WageTableHistoryUpdateCommandHandler;
 import nts.uk.ctx.pr.core.dom.base.simplehistory.SimpleHistoryBaseService;
+import nts.uk.ctx.pr.core.dom.wagetable.ElementType;
 import nts.uk.ctx.pr.core.dom.wagetable.WageTableCode;
 import nts.uk.ctx.pr.core.dom.wagetable.WageTableHead;
 import nts.uk.ctx.pr.core.dom.wagetable.WageTableHeadRepository;
@@ -30,6 +32,7 @@ import nts.uk.ctx.pr.core.dom.wagetable.history.service.WageTableHistoryService;
 import nts.uk.ctx.pr.core.ws.base.simplehistory.SimpleHistoryWs;
 import nts.uk.ctx.pr.core.ws.base.simplehistory.dto.HistoryModel;
 import nts.uk.ctx.pr.core.ws.base.simplehistory.dto.MasterModel;
+import nts.uk.ctx.pr.core.ws.wagetable.dto.DemensionItemModel;
 import nts.uk.ctx.pr.core.ws.wagetable.dto.WageTableHeadDto;
 import nts.uk.ctx.pr.core.ws.wagetable.dto.WageTableHistoryModel;
 import nts.uk.shr.com.context.AppContexts;
@@ -66,7 +69,7 @@ public class WageTableWs extends SimpleHistoryWs<WageTableHead, WageTableHistory
 	 *
 	 * @param id
 	 *            the id
-	 * @return the wage table history dto
+	 * @return the wage table history model
 	 */
 	@POST
 	@Path("find/{id}")
@@ -102,65 +105,6 @@ public class WageTableWs extends SimpleHistoryWs<WageTableHead, WageTableHistory
 	@POST
 	@Path("create")
 	public HistoryModel create(WageTableHistoryAddCommand command) {
-		// WageTableHistoryAddCommand command = null;
-		// CompanyCode companyCode = new
-		// CompanyCode(AppContexts.user().companyCode());
-		//
-		// List<CodeItem> codeItems = Arrays.asList(new CodeItem("refCode1",
-		// "uuid1"),
-		// new CodeItem("refCode2", "uuid2"));
-		//
-		// RefMode refMode = new RefMode(ElementType.MASTER_REF, companyCode,
-		// new WtElementRefNo("tb01"), codeItems);
-		//
-		// List<RangeItem> rangeItems = Arrays.asList(new RangeItem(1, 1d, 5d,
-		// "uuid3"),
-		// new RangeItem(2, 6d, 10d, "uuid4"));
-		//
-		// StepMode stepModeDto = new StepMode(ElementType.AGE_FIX,
-		// BigDecimal.valueOf(1),
-		// BigDecimal.valueOf(10), BigDecimal.valueOf(5), rangeItems);
-		//
-		// WageTableDemensionDetailDto demensionDetailDto1 = new
-		// WageTableDemensionDetailDto();
-		// demensionDetailDto1.setDemensionNo(DemensionNo.DEMENSION_1ST);
-		// demensionDetailDto1.setElementModeSetting(refMode);
-		//
-		// WageTableDemensionDetailDto demensionDetailDto2 = new
-		// WageTableDemensionDetailDto();
-		// demensionDetailDto2.setDemensionNo(DemensionNo.DEMENSION_2ND);
-		// demensionDetailDto2.setElementModeSetting(stepModeDto);
-		//
-		// List<WageTableDemensionDetailDto> demensionDetails =
-		// Arrays.asList(demensionDetailDto1,
-		// demensionDetailDto2);
-		//
-		// WageTableItemDto wageTableItemDto = new WageTableItemDto();
-		// wageTableItemDto.setElement1Id("uuid1");
-		// wageTableItemDto.setElement2Id("uuid3");
-		// // wageTableItemDto.setElement3Id("element3Id");
-		// wageTableItemDto.setAmount(BigDecimal.valueOf(111111));
-		//
-		// List<WageTableItemDto> valueItems = Arrays.asList(wageTableItemDto);
-		//
-		// WageTableHistoryDto wageTableHistoryDto = new WageTableHistoryDto();
-		// wageTableHistoryDto.setStartMonth("2016/08");
-		// wageTableHistoryDto.setEndMonth("2016/09");
-		// wageTableHistoryDto.setDemensionDetails(demensionDetails);
-		// wageTableHistoryDto.setValueItems(valueItems);
-		//
-		// WageTableHeadDto wageTableHeadDto = new WageTableHeadDto();
-		// wageTableHeadDto.setCode("001");
-		// wageTableHeadDto.setName("WageTable1");
-		// wageTableHeadDto.setDemensionSet(ElementCount.Two.value);
-		// wageTableHeadDto.setMemo("memo");
-		// wageTableHeadDto.setDemensionDetails(demensionDetails);
-		//
-		// command = new WageTableHistoryAddCommand();
-		// command.setCreateHeader(true);
-		// command.setWageTableHistoryDto(wageTableHistoryDto);
-		// command.setWageTableHeadDto(wageTableHeadDto);
-
 		WageTableHistory history = this.createWageTableHistoryCommandHandler.handle(command);
 		return HistoryModel.builder().uuid(history.getUuid()).start(history.getStart().v())
 				.end(history.getEnd().v()).build();
@@ -209,6 +153,60 @@ public class WageTableWs extends SimpleHistoryWs<WageTableHead, WageTableHistory
 			return MasterModel.builder().code(item.getCode().v()).name(item.getName().v())
 					.historyList(historyMap.get(item.getCode())).build();
 		}).collect(Collectors.toList());
+	}
+
+	/**
+	 * Load demension selection list.
+	 *
+	 * @return the list
+	 */
+	@POST
+	@Path("demensions")
+	public List<DemensionItemModel> loadDemensionSelectionList() {
+		List<DemensionItemModel> items = new ArrayList<>();
+
+		/** The age fix. */
+		// AGE_FIX(4, false, true),
+		items.add(new DemensionItemModel(ElementType.AGE_FIX));
+
+		/** The experience fix. */
+		// EXPERIENCE_FIX(3, false, true),
+		items.add(new DemensionItemModel(ElementType.EXPERIENCE_FIX));
+
+		/** The family mem fix. */
+		// FAMILY_MEM_FIX(5, false, true),
+		items.add(new DemensionItemModel(ElementType.FAMILY_MEM_FIX));
+
+		/** The master ref. */
+		// MASTER_REF(0, true, false),
+		// Find all in MASTER_REF table.
+
+		/** The code ref. */
+		// CODE_REF(1, true, false),
+		// Find all in CODE_REF table.
+
+		/** The item data ref. */
+		// ITEM_DATA_REF(2, false, true),
+		items.add(new DemensionItemModel(ElementType.ITEM_DATA_REF));
+
+		// Extend element type
+		/** The certification. */
+		// CERTIFICATION(6, true, false),
+		// Have no this selection.
+
+		/** The working day. */
+		// WORKING_DAY(7, false, true),
+		items.add(new DemensionItemModel(ElementType.WORKING_DAY));
+
+		/** The come late. */
+		// COME_LATE(8, false, true),
+		items.add(new DemensionItemModel(ElementType.COME_LATE));
+
+		/** The level. */
+		// LEVEL(9, true, false);
+		items.add(new DemensionItemModel(ElementType.LEVEL));
+
+		return items;
 	}
 
 	/*

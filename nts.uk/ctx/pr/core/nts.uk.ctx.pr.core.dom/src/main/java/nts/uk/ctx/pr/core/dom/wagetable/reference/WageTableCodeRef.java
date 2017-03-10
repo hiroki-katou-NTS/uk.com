@@ -9,7 +9,7 @@ import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.wagetable.WtElementRefNo;
 
 /**
- * The Class WageTableRefCd.
+ * The Class WageTableCodeRef.
  */
 @Getter
 public class WageTableCodeRef {
@@ -34,5 +34,21 @@ public class WageTableCodeRef {
 
 	/** The wage person query. */
 	private String wagePersonQuery;
+
+	// =================== Memento State Support Method ===================
+	/**
+	 * Instantiates a new wage table code ref.
+	 *
+	 * @param memento the memento
+	 */
+	public WageTableCodeRef(WageTableCodeRefGetMemento memento) {
+		this.companyCode = memento.getCompanyCode();
+		this.refNo = memento.getRefNo();
+		this.refName = memento.getRefName();
+		this.wageRefValue = memento.getWageRefValue();
+		this.wagePersonTable = memento.getWagePersonTable();
+		this.wagePersonField = memento.getWagePersonField();
+		this.wagePersonQuery = memento.getWagePersonQuery();
+	}
 
 }
