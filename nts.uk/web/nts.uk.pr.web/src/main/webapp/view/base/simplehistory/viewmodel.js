@@ -26,11 +26,15 @@ var nts;
                                     self.canAddNewHistory = ko.computed(function () {
                                         return self.selectedHistoryUuid() != null && self.getCurrentHistoryNode() != null;
                                     });
-                                    self.selectedHistoryUuid.subscribe(function (id) {
+                                    self.igGridSelectedHistoryUuid = ko.observable('');
+                                    self.igGridSelectedHistoryUuid.subscribe(function (id) {
                                         if (id && id.length == 36) {
-                                            self.isNewMode(false);
-                                            self.onSelectHistory(id);
+                                            self.selectedHistoryUuid(id);
                                         }
+                                    });
+                                    self.selectedHistoryUuid.subscribe(function (id) {
+                                        self.isNewMode(false);
+                                        self.onSelectHistory(id);
                                     });
                                     self.isNewMode.subscribe(function (val) {
                                         if (val) {
@@ -61,6 +65,7 @@ var nts;
                                         var nodeList = _.map(res, function (master) {
                                             var masterNode = {
                                                 id: master.code,
+                                                searchText: master.code + ' ' + master.name,
                                                 nodeText: master.code + ' ' + master.name,
                                                 nodeType: 0,
                                                 data: master
@@ -68,6 +73,7 @@ var nts;
                                             var masterChild = _.map(master.historyList, function (history) {
                                                 var node = {
                                                     id: history.uuid,
+                                                    searchText: '',
                                                     nodeText: nts.uk.time.formatYearMonth(history.start) + '~' + nts.uk.time.formatYearMonth(history.end),
                                                     nodeType: 1,
                                                     parent: masterNode,
