@@ -2,6 +2,10 @@ var nts;
 (function (nts) {
     var uk;
     (function (uk) {
+        var KeyCodes;
+        (function (KeyCodes) {
+            KeyCodes.Tab = 9;
+        })(KeyCodes = uk.KeyCodes || (uk.KeyCodes = {}));
         var util;
         (function (util) {
             /**
@@ -170,40 +174,53 @@ var nts;
             util.isIn = isIn;
             ;
             function createTreeFromString(original, openChar, closeChar, seperatorChar) {
-                return convertToTree(original, openChar, closeChar, seperatorChar);
+                return convertToTree(original, openChar, closeChar, seperatorChar, 1).result;
             }
             util.createTreeFromString = createTreeFromString;
-            function convertToTree(original, openChar, closeChar, seperatorChar) {
+            function convertToTree(original, openChar, closeChar, separatorChar, index) {
                 var result = [];
                 while (original.trim().length > 0) {
                     var firstOpenIndex = original.indexOf(openChar);
                     if (firstOpenIndex < 0) {
-                        var values = original.split(seperatorChar);
+                        var values = original.split(separatorChar);
                         _.forEach(values, function (value) {
                             var object = new TreeObject();
                             object.value = value;
                             object.children = [];
                             result.push(object);
                         });
-                        return result;
+                        return {
+                            "result": result,
+                            "index": index
+                        };
                     }
                     else {
                         var object = new TreeObject();
                         object.value = original.substring(0, firstOpenIndex).trim();
+                        object.index = index;
                         var closeIndex = findIndexOfCloseChar(original, openChar, closeChar, firstOpenIndex);
                         if (closeIndex >= 0) {
-                            object.children = convertToTree(original.substring(firstOpenIndex + 1, closeIndex).trim(), openChar, closeChar, seperatorChar);
+                            index++;
+                            var res = convertToTree(original.substring(firstOpenIndex + 1, closeIndex).trim(), openChar, closeChar, separatorChar, index);
+                            object.children = res.result;
+                            index = res.index++;
                             result.push(object);
-                            var firstSeperatorIndex = original.indexOf(seperatorChar, closeIndex);
+                            var firstSeperatorIndex = original.indexOf(separatorChar, closeIndex);
                             if (firstSeperatorIndex >= 0) {
                                 original = original.substring(firstSeperatorIndex + 1, original.length).trim();
                             }
                             else {
-                                return result;
+                                return {
+                                    "result": result,
+                                    "index": index
+                                };
                             }
                         }
                         else {
-                            return result;
+                            return {
+                                "result": result,
+                                "index": index
+                            };
                         }
                     }
                 }
@@ -226,10 +243,11 @@ var nts;
                 return -1;
             }
             var TreeObject = (function () {
-                function TreeObject(value, children) {
+                function TreeObject(value, children, index) {
                     var self = this;
                     self.value = value;
                     self.children = children;
+                    self.index = index;
                 }
                 return TreeObject;
             }());
