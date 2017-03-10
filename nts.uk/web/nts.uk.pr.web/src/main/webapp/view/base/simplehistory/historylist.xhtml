@@ -13,10 +13,10 @@
 				<span id="historyTreeSearchBox"
 					data-bind="ntsSearchBox: {comId:'historyTree',
 					items: masterHistoryDatasource, 
-					selected: selectedHistoryUuid,
+					selected: igGridSelectedHistoryUuid,
 					selectedKey: 'id', 
 					childField: 'childs', 
-					fields: ['nodeText']}"></span>
+					fields: ['searchText']}"></span>
 			</div>
 			<div style="margin: 5px;">
 				<div>
@@ -30,7 +30,7 @@
 						data-bind="ntsTreeGridView:{
 								height: 370,
 								options: masterHistoryDatasource,
-								value: selectedHistoryUuid,
+								value: igGridSelectedHistoryUuid,
 								optionsValue: 'id',
 								optionsChild: 'childs',
 								optionsText: 'nodeText',

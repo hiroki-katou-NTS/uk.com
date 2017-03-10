@@ -54,9 +54,9 @@ public class CertifyGroupServiceImpl implements CertifyGroupService {
 	}
 
 	@Override
-	public void checkDulicateCertification(CertifyGroup certifyGroup, CertifyGroupCode certifyGroupCode) {
+	public void checkDulicateCertification(CertifyGroup certifyGroup, String certifyGroupCode) {
 		if (this.checkDulicateCertification(certifyGroup.getCompanyCode().v(), certifyGroup.getCertifies(),
-				certifyGroupCode.v())) {
+				certifyGroupCode)) {
 			throw new BusinessException("ER005");
 		}
 

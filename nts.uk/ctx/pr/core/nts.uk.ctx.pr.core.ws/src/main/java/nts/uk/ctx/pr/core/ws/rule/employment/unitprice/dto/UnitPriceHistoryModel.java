@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.pr.core.app.rule.employment.unitprice.find;
+package nts.uk.ctx.pr.core.ws.rule.employment.unitprice.dto;
 
 import java.math.BigDecimal;
 
@@ -21,7 +21,7 @@ import nts.uk.shr.com.primitive.Memo;
  * The Class UnitPriceHistoryDto.
  */
 @Builder
-public class UnitPriceHistoryDto implements UnitPriceHistorySetMemento {
+public class UnitPriceHistoryModel implements UnitPriceHistorySetMemento {
 
 	/** The id. */
 	public String id;

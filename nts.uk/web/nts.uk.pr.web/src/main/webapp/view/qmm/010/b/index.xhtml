@@ -13,16 +13,14 @@
 			<com:scriptfile path="service.js" />
 			<com:scriptfile path="viewmodel.js" />
 		</ui:define>
-
 		<ui:define name="content">
 			<div id="contents-area">
 				<div id="contents-left">
-					<div id="B_LBL_001" class="label001">読み込み対象社会保険事業所 を 選択 し て ください 。</div>
+					<div>読み込み対象社会保険事業所 を 選択 し て ください 。</div>
 					<i class="icon icon-searchbox iconlabor"></i>
-					<div
-					class="search001"
+					<div class="searchSocialInsuranceOffice"
 						data-bind="ntsSearchBox: {comId: 'single-list', items: lstSocialInsuranceOffice, selected: selectLstSocialInsuranceOffice, selectedKey: 'code', fields: ['code','name']}" />
-					<div id="search_001">
+					<div id="searchSocialInsuranceOffice">
 						<table id="single-list"
 							data-bind="ntsGridList: {
 									width: 380,
@@ -40,7 +38,7 @@
 				<div id="this-functions-area" class="control-group halign-center">
 					<button class="btn-default proceed x-large" id="btn_001"
 						data-bind="click: checkDuplicateCodeByImportData">決定</button>
-					<button class="" id="btn_002" onclick="nts.uk.ui.windows.close()">キャンセル</button>
+					<button onclick="nts.uk.ui.windows.close()">キャンセル</button>
 				</div>
 			</div>
 		</ui:define>

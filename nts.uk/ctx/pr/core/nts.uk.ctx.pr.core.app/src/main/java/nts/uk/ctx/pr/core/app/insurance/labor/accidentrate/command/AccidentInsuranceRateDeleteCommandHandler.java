@@ -28,14 +28,14 @@ public class AccidentInsuranceRateDeleteCommandHandler extends CommandHandler<Ac
 	/** The Constant YEAR_MONTH_MAX. */
 	public static final YearMonth YEAR_MONTH_MAX = YearMonth.of(DateTimeConstraints.LIMIT_YEAR.max(),
 			DateTimeConstraints.LIMIT_MONTH.max());
-	
+
 	/** The accident insurance rate repo. */
 	@Inject
 	private AccidentInsuranceRateRepository accidentInsuranceRateRepo;
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command
 	 * .CommandHandlerContext)
@@ -46,27 +46,27 @@ public class AccidentInsuranceRateDeleteCommandHandler extends CommandHandler<Ac
 
 		// get user login info
 		LoginUserContext loginUserContext = AppContexts.user();
-		
+
 		// get companyCode by user login
 		String companyCode = loginUserContext.companyCode();
-		
+
 		// get command
 		AccidentInsuranceRateDeleteCommand command = context.getCommand();
-		
+
 		//get first data (remove)
 		Optional<AccidentInsuranceRate> optionalRemove = this.accidentInsuranceRateRepo.findFirstData(companyCode);
 
 		if (optionalRemove.isPresent() && optionalRemove.get().getHistoryId()
 				.equals(command.getAccidentInsuranceRateDeleteDto().getCode())) {
-			
+
 			// history first
 			this.accidentInsuranceRateRepo.remove(companyCode, command.getAccidentInsuranceRateDeleteDto().getCode(),
 					command.getAccidentInsuranceRateDeleteDto().getVersion());
-			
+
 			//get first data (update)
 			Optional<AccidentInsuranceRate> optionalUpdate = this.accidentInsuranceRateRepo.findFirstData(companyCode);
 			if(optionalUpdate.isPresent()){
-				this.accidentInsuranceRateRepo.updateYearMonth(optionalUpdate.get(), YEAR_MONTH_MAX);
+				this.accidentInsuranceRateRepo.updateYearMonth(optionalUpdate.get(), AccidentInsuranceRateDeleteCommandHandler.YEAR_MONTH_MAX);
 			}
 		}
 	}

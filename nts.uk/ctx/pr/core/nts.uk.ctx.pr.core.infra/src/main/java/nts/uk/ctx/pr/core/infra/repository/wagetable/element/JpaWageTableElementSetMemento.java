@@ -31,10 +31,11 @@ public class JpaWageTableElementSetMemento implements WageTableElementSetMemento
 	 */
 	public JpaWageTableElementSetMemento(String companyCode, String wageTableCode,
 			QwtmtWagetableElement typeValue) {
+		this.typeValue = typeValue;
 		QwtmtWagetableElementPK qwtmtWagetableElementPK = new QwtmtWagetableElementPK();
 		qwtmtWagetableElementPK.setCcd(companyCode);
 		qwtmtWagetableElementPK.setWageTableCd(wageTableCode);
-		this.typeValue = typeValue;
+		this.typeValue.setQwtmtWagetableElementPK(qwtmtWagetableElementPK);
 	}
 
 	/*
@@ -45,7 +46,8 @@ public class JpaWageTableElementSetMemento implements WageTableElementSetMemento
 	 */
 	@Override
 	public void setDemensionNo(DemensionNo demensionNo) {
-		QwtmtWagetableElementPK qwtmtWagetableElementPK = new QwtmtWagetableElementPK();
+		QwtmtWagetableElementPK qwtmtWagetableElementPK = this.typeValue
+				.getQwtmtWagetableElementPK();
 		qwtmtWagetableElementPK.setDemensionNo(demensionNo.value);
 		this.typeValue.setQwtmtWagetableElementPK(qwtmtWagetableElementPK);
 	}
