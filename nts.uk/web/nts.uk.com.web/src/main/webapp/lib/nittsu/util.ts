@@ -1,4 +1,8 @@
 ﻿module nts.uk {
+    
+    export module KeyCodes {
+        export const Tab = 9;
+    }
 
     export module util {
     
@@ -151,6 +155,74 @@
             }
             return false;
         };
+        
+        export function createTreeFromString(original: string, openChar: string, closeChar: string, seperatorChar: string): Array<TreeObject>[]{
+            return convertToTree(original, openChar, closeChar, seperatorChar);
+        }
+        
+        function convertToTree(original: string, openChar: string, closeChar: string, separatorChar: string): Array<TreeObject>[]{
+            let result = [];
+            while (original.trim().length > 0){  
+                let firstOpenIndex = original.indexOf(openChar);
+                if(firstOpenIndex < 0){
+                    let values = original.split(separatorChar);
+                    _.forEach(values, function(value){
+                        let object = new TreeObject();
+                        object.value = value;
+                        object.children = [];
+                        result.push(object);     
+                    }); 
+                    return result;             
+                }else{
+                    let object = new TreeObject();
+                    object.value = original.substring(0, firstOpenIndex).trim();
+                    let closeIndex = findIndexOfCloseChar(original, openChar, closeChar, firstOpenIndex);
+                    if(closeIndex >= 0){
+                        object.children = convertToTree(original.substring(firstOpenIndex + 1, closeIndex).trim(), openChar, closeChar, separatorChar);
+                        result.push(object);              
+                        let firstSeperatorIndex = original.indexOf(separatorChar, closeIndex);
+                        if(firstSeperatorIndex >= 0){
+                            original = original.substring(firstSeperatorIndex + 1, original.length).trim();    
+                        }else{
+                            return result;    
+                        }
+                    }else {
+                        return result;        
+                    }    
+                }
+            }
+            
+            return result;
+        }
+        
+        function findIndexOfCloseChar(original: string, openChar: string, closeChar: string, firstOpenIndex: number): number{
+            let openCount = 0;
+            let closeCount = 0;
+            for(var i = firstOpenIndex; i < original.length; i++){
+                if(original.charAt(i) === openChar){
+                    openCount++;
+                } else if(original.charAt(i) === closeChar){
+                    closeCount++;
+                }     
+                if(openCount > 0 && openCount === closeCount){
+                    return i;
+                } 
+            }
+            
+            return -1;
+        }
+        
+        export class TreeObject{
+            value: string;
+            children: Array<TreeObject>[];
+            
+            constructor(value?: string, children?: Array<TreeObject>[]){
+                var self = this;
+                
+                self.value = value;
+                self.children = children;
+            }
+        }
     
         /**
          * Like Java Optional

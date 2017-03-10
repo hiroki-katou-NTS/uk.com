@@ -16,10 +16,6 @@ module nts.uk.ui.koExtentions {
             $input.addClass('nts-editor').addClass("nts-input");
             $input.wrap("<span class= 'nts-editor-wrapped ntsControl'/>");
             
-            $input.focus(() => {
-                $input.select();
-            });
-            
             $input.change(() => {
                 var validator = this.getValidator(data);
                 var newText = $input.val();
@@ -185,8 +181,18 @@ module nts.uk.ui.koExtentions {
             var option: any = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
             
             $input.focus(() => {
+                var selectionType = document.getSelection().type;
+                
+                // remove separator (comma)
                 $input.val(data.value());
+                
+                // if focusing is caused by Tab key, select text.
+                // this code is needed because removing separator deselects.
+                if (selectionType === 'Range') {
+                    $input.select();
+                }
             });
+            
             
             super.init($input, data);
         }
@@ -1694,7 +1700,7 @@ module nts.uk.ui.koExtentions {
                                 }
                             } else {
                                 if (ko.isObservable(data.value)) {
-                                    data.value(selectedRows[0].id);
+                                    data.value(selectedRows.length <= 0 ? undefined : selectedRows[0].id);
                                 }
                             }
                         }
@@ -1917,6 +1923,14 @@ module nts.uk.ui.koExtentions {
                         constraintText += (constraintText.length > 0) ? "/" : "";
                         constraintText += uk.text.getCharType(primitiveValue).buildConstraintText(constraint.maxLength);
                         break;
+                    case 'Decimal':
+                        constraintText += (constraintText.length > 0) ? "/" : "";
+                        constraintText += constraint.min + "～" + constraint.max; 
+                        break;
+                    case 'Integer':
+                        constraintText += (constraintText.length > 0) ? "/" : "";
+                        constraintText += constraint.min + "～" + constraint.max; 
+                        break;
                     default:
                         constraintText += 'ERROR';
                         break;
@@ -2046,7 +2060,8 @@ module nts.uk.ui.koExtentions {
                 });
             else
                 $input.on('change', (event: any) => {
-                    data.value($input.val());
+                    let result = nts.uk.time.parseYearMonth($input.val());
+                    data.value(result.toValue());
                 });
             $input.width(Math.floor(atomWidth * length));
             if (data.disabled !== undefined && ko.unwrap(data.disabled) == true) {
@@ -2078,11 +2093,12 @@ module nts.uk.ui.koExtentions {
                     $input.datepicker("setDate", newValue);
                 $input.val(nts.uk.time.formatDate(newValue, dateFormat));
             } else {
-                var newDate = new Date(newValue + "/01");
+                let formatted = nts.uk.time.parseYearMonth(newValue);
+                var newDate = new Date(formatted.format() + "/01");
                 var oldDate = $input.datepicker("getDate");
-                if (oldDate.getFullYear() != newDate.getFullYear() || oldDate.getMonth() != newDate.getMonth() || oldDate.getDate() != newDate.getDate())
+                if (oldDate.getFullYear() != newDate.getFullYear() || oldDate.getMonth() != newDate.getMonth())
                     $input.datepicker("setDate", newDate);
-                $input.val(newValue);
+                $input.val(formatted.format());
             }
             if (data.disabled !== undefined && ko.unwrap(data.disabled) == true) {
                 $input.prop("disabled", true);
