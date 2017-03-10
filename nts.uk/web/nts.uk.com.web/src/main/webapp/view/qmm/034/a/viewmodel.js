@@ -84,6 +84,14 @@ var qmm034;
                     var dfd = $.Deferred();
                     var node;
                     node = new qmm034.a.service.model.EraDto(eraName, eraMark, startDate, endDate, fixAttribute, eraHist);
+                    if (node.eraName == "") {
+                        $("#A_INP_001").ntsError("set", "the era name must require");
+                        return false;
+                    }
+                    if (node.eraMark == "") {
+                        $("#A_INP_002").ntsError("set", "the era mark must require");
+                        return false;
+                    }
                     qmm034.a.service.addData(self.isUpdate(), node).done(function (result) {
                         self.reload().done(function () {
                             self.currentCode(eraName);
@@ -91,7 +99,7 @@ var qmm034;
                         });
                     }).fail(function (res) {
                         //alert(res.message);
-                        $("#A_INP_001").ntsError("set", res.message);
+                        $("#A_INP_003").ntsError("set", res.message);
                     });
                     return dfd.promise();
                 };

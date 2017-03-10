@@ -26,6 +26,9 @@ public class AddEraCommandHandler extends CommandHandler<AddEraCommand> {
 	public void handle(CommandHandlerContext<AddEraCommand> context) {
 		Era era = context.getCommand().toDomain();
 		era.setEraHist(IdentifierUtil.randomUniqueId());
+//		if(era.getEraName()== null || era.getEraMark()== null || era.getStartDate()==null){
+//			throw new BusinessException("The input data is not null");
+//		}
 		// check exist of that era
 		Optional<Era> eraOpt = this.eraRepository.getEraDetail(era.getEraHist());
 		if(eraOpt.isPresent()){
