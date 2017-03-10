@@ -18,11 +18,9 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.arc.time.DateTimeConstraints;
 import nts.arc.time.YearMonth;
 import nts.gul.collection.ListUtil;
 import nts.gul.text.IdentifierUtil;
-import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.AccidentInsuranceRate;
 import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.AccidentInsuranceRateRepository;
 import nts.uk.ctx.pr.core.dom.insurance.labor.businesstype.BusinessTypeEnum;
@@ -51,131 +49,144 @@ public class JpaAccidentInsuranceRateRepository extends JpaRepository implements
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.
 	 * AccidentInsuranceRateRepository#add(nts.uk.ctx.pr.core.dom.insurance.
 	 * labor.accidentrate.AccidentInsuranceRate)
 	 */
 	@Override
 	public void add(AccidentInsuranceRate rate) {
-		this.commandProxy().insertAll(ramdomHistory(rate));
+		this.commandProxy().insertAll(this.ramdomHistory(rate));
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.
 	 * AccidentInsuranceRateRepository#update(nts.uk.ctx.pr.core.dom.insurance.
 	 * labor.accidentrate.AccidentInsuranceRate)
 	 */
 	@Override
 	public void update(AccidentInsuranceRate rate) {
-		this.commandProxy().updateAll(toEntity(rate));
+		this.commandProxy().updateAll(this.toEntity(rate));
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.
 	 * AccidentInsuranceRateRepository#remove(java.lang.String, java.lang.Long)
 	 */
 	@Override
-	public void remove(CompanyCode companyCode, String historyId, Long version) {
+	public void remove(String companyCode, String historyId, long version) {
 		List<QismtWorkAccidentInsu> lstRateRemove = this.findDataById(companyCode, historyId);
 		this.commandProxy().removeAll(lstRateRemove);
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.
 	 * AccidentInsuranceRateRepository#findAll(int)
 	 */
 	@Override
-	public List<AccidentInsuranceRate> findAll(CompanyCode companyCode) {
-		EntityManager em = getEntityManager();
+	public List<AccidentInsuranceRate> findAll(String companyCode) {
+
+		// get entity manager
+		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+
+		// call QISMT_WORK_ACCIDENT_INSU (QismtWorkAccidentInsu SQL)
 		CriteriaQuery<QismtWorkAccidentInsu> cq = criteriaBuilder.createQuery(QismtWorkAccidentInsu.class);
+
+		// root data
 		Root<QismtWorkAccidentInsu> root = cq.from(QismtWorkAccidentInsu.class);
+
+		// select root
 		cq.select(root);
-		List<Predicate> lstpredicate = new ArrayList<>();
-		lstpredicate.add(criteriaBuilder.equal(
+
+		// add where
+		List<Predicate> lstpredicateWhere = new ArrayList<>();
+
+		// eq String
+		lstpredicateWhere.add(criteriaBuilder.equal(
 				root.get(QismtWorkAccidentInsu_.qismtWorkAccidentInsuPK).get(QismtWorkAccidentInsuPK_.ccd),
-				companyCode.v()));
-		lstpredicate.add(criteriaBuilder.equal(
+				companyCode));
+
+		// eq type business 1st
+		lstpredicateWhere.add(criteriaBuilder.equal(
 				root.get(QismtWorkAccidentInsu_.qismtWorkAccidentInsuPK).get(QismtWorkAccidentInsuPK_.waInsuCd),
 				BusinessTypeEnum.Biz1St.value));
-		cq.where(lstpredicate.toArray(new Predicate[] {}));
+
+		// set where to SQL
+		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+
+		// set order
 		cq.orderBy(criteriaBuilder.desc(root.get(QismtWorkAccidentInsu_.strYm)));
+
+		// exclude select
 		TypedQuery<QismtWorkAccidentInsu> query = em.createQuery(cq);
 		List<AccidentInsuranceRate> lstAccidentInsuranceRate = query.getResultList().stream()
-				.map(item -> toDomainHistory(item)).collect(Collectors.toList());
+				.map(item -> this.toDomainHistory(item)).collect(Collectors.toList());
 		return lstAccidentInsuranceRate;
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.
 	 * AccidentInsuranceRateRepository#findById(java.lang.String)
 	 */
 	@Override
-	public Optional<AccidentInsuranceRate> findById(CompanyCode companyCode, String historyId) {
-		return Optional.ofNullable(toDomain(findDataById(companyCode, historyId)));
+	public Optional<AccidentInsuranceRate> findById(String String, String historyId) {
+		return Optional.ofNullable(this.toDomain(this.findDataById(String, historyId)));
 	}
 
 	/**
 	 * Find data by id.
 	 *
-	 * @param companyCode
+	 * @param String
 	 *            the company code
 	 * @param historyId
 	 *            the history id
 	 * @return the list
 	 */
-	public List<QismtWorkAccidentInsu> findDataById(CompanyCode companyCode, String historyId) {
-		EntityManager em = getEntityManager();
+	public List<QismtWorkAccidentInsu> findDataById(String companyCode, String historyId) {
+
+		// get entity manager
+		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+
+		// call QISMT_WORK_ACCIDENT_INSU (QismtWorkAccidentInsu SQL)
 		CriteriaQuery<QismtWorkAccidentInsu> cq = criteriaBuilder.createQuery(QismtWorkAccidentInsu.class);
+
+		// root data
 		Root<QismtWorkAccidentInsu> root = cq.from(QismtWorkAccidentInsu.class);
+
+		// select root
 		cq.select(root);
-		List<Predicate> lstpredicate = new ArrayList<>();
-		lstpredicate.add(criteriaBuilder.equal(
+
+		// add where
+		List<Predicate> lstpredicateWhere = new ArrayList<>();
+
+		// eq String
+		lstpredicateWhere.add(criteriaBuilder.equal(
 				root.get(QismtWorkAccidentInsu_.qismtWorkAccidentInsuPK).get(QismtWorkAccidentInsuPK_.ccd),
-				companyCode.v()));
-		lstpredicate.add(criteriaBuilder.equal(
+				companyCode));
+
+		// eq historyId
+		lstpredicateWhere.add(criteriaBuilder.equal(
 				root.get(QismtWorkAccidentInsu_.qismtWorkAccidentInsuPK).get(QismtWorkAccidentInsuPK_.histId),
 				historyId));
-		cq.where(lstpredicate.toArray(new Predicate[] {}));
+
+		// set where to SQL
+		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+		// set order
+		cq.orderBy(criteriaBuilder.desc(root.get(QismtWorkAccidentInsu_.strYm)));
+		// exclude select
 		TypedQuery<QismtWorkAccidentInsu> query = em.createQuery(cq);
 		List<QismtWorkAccidentInsu> lstQismtWorkAccidentInsu = query.getResultList();
 		return lstQismtWorkAccidentInsu;
-	}
-
-	/**
-	 * Find between.
-	 *
-	 * @param companyCode
-	 *            the company code
-	 * @return the list
-	 */
-	public List<QismtWorkAccidentInsu> findBetween(CompanyCode companyCode) {
-		EntityManager em = getEntityManager();
-		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
-		CriteriaQuery<QismtWorkAccidentInsu> cq = criteriaBuilder.createQuery(QismtWorkAccidentInsu.class);
-		Root<QismtWorkAccidentInsu> root = cq.from(QismtWorkAccidentInsu.class);
-		cq.select(root);
-		List<Predicate> lstpredicate = new ArrayList<>();
-		lstpredicate.add(criteriaBuilder.equal(
-				root.get(QismtWorkAccidentInsu_.qismtWorkAccidentInsuPK).get(QismtWorkAccidentInsuPK_.ccd),
-				companyCode.v()));
-		lstpredicate.add(criteriaBuilder.equal(
-				root.get(QismtWorkAccidentInsu_.qismtWorkAccidentInsuPK).get(QismtWorkAccidentInsuPK_.waInsuCd),
-				BusinessTypeEnum.Biz1St.value));
-		cq.orderBy(criteriaBuilder.desc(root.get(QismtWorkAccidentInsu_.strYm)));
-		cq.where(lstpredicate.toArray(new Predicate[] {}));
-		TypedQuery<QismtWorkAccidentInsu> query = em.createQuery(cq);
-		return query.getResultList();
 	}
 
 	/**
@@ -187,17 +198,31 @@ public class JpaAccidentInsuranceRateRepository extends JpaRepository implements
 	 */
 	public List<QismtWorkAccidentInsu> toEntity(AccidentInsuranceRate rate) {
 		List<QismtWorkAccidentInsu> lstQismtWorkAccidentInsu = new ArrayList<>();
-		for (int i = BEGIN_FIRST; i < SIZE_TEN; i++) {
+		for (int i = JpaAccidentInsuranceRateRepository.BEGIN_FIRST; i < JpaAccidentInsuranceRateRepository.SIZE_TEN; i++) {
 			lstQismtWorkAccidentInsu.add(new QismtWorkAccidentInsu());
 		}
 		rate.saveToMemento(new JpaAccidentInsuranceRateSetMemento(lstQismtWorkAccidentInsu));
 		return lstQismtWorkAccidentInsu;
 	}
 
+	/**
+	 * To domain.
+	 *
+	 * @param entity
+	 *            the entity
+	 * @return the accident insurance rate
+	 */
 	public AccidentInsuranceRate toDomain(List<QismtWorkAccidentInsu> entity) {
 		return new AccidentInsuranceRate(new JpaAccidentInsuranceRateGetMemento(entity));
 	}
 
+	/**
+	 * To domain history.
+	 *
+	 * @param entity
+	 *            the entity
+	 * @return the accident insurance rate
+	 */
 	public AccidentInsuranceRate toDomainHistory(QismtWorkAccidentInsu entity) {
 		return new AccidentInsuranceRate(new JpaHistoryAccidentInsuranceRateGetMemento(entity));
 	}
@@ -210,7 +235,7 @@ public class JpaAccidentInsuranceRateRepository extends JpaRepository implements
 	 * @return the list
 	 */
 	public List<QismtWorkAccidentInsu> ramdomHistory(AccidentInsuranceRate rate) {
-		List<QismtWorkAccidentInsu> lstQismtWorkAccidentInsu = toEntity(rate);
+		List<QismtWorkAccidentInsu> lstQismtWorkAccidentInsu = this.toEntity(rate);
 		String historyId = IdentifierUtil.randomUniqueId();
 		for (QismtWorkAccidentInsu qismtWorkAccidentInsu : lstQismtWorkAccidentInsu) {
 			QismtWorkAccidentInsuPK pk = qismtWorkAccidentInsu.getQismtWorkAccidentInsuPK();
@@ -220,69 +245,139 @@ public class JpaAccidentInsuranceRateRepository extends JpaRepository implements
 		return lstQismtWorkAccidentInsu;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.
+	 * AccidentInsuranceRateRepository#findFirstData(nts.uk.ctx.core.dom.company
+	 * .String)
+	 */
 	@Override
-	public Optional<AccidentInsuranceRate> findFirstData(CompanyCode companyCode) {
-		EntityManager em = getEntityManager();
+	public Optional<AccidentInsuranceRate> findFirstData(String companyCode) {
+
+		// get entity manager
+		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+
+		// call QISMT_WORK_ACCIDENT_INSU (QismtWorkAccidentInsu SQL)
 		CriteriaQuery<QismtWorkAccidentInsu> cq = criteriaBuilder.createQuery(QismtWorkAccidentInsu.class);
+
+		// root data
 		Root<QismtWorkAccidentInsu> root = cq.from(QismtWorkAccidentInsu.class);
+
+		// select root
 		cq.select(root);
-		List<Predicate> lstpredicate = new ArrayList<>();
-		lstpredicate.add(criteriaBuilder.equal(
+
+		// add where
+		List<Predicate> lstpredicateWhere = new ArrayList<>();
+
+		// eq String
+		lstpredicateWhere.add(criteriaBuilder.equal(
 				root.get(QismtWorkAccidentInsu_.qismtWorkAccidentInsuPK).get(QismtWorkAccidentInsuPK_.ccd),
-				companyCode.v()));
-		lstpredicate.add(criteriaBuilder.equal(
+				companyCode));
+
+		// eq business type 1st
+		lstpredicateWhere.add(criteriaBuilder.equal(
 				root.get(QismtWorkAccidentInsu_.qismtWorkAccidentInsuPK).get(QismtWorkAccidentInsuPK_.waInsuCd),
 				BusinessTypeEnum.Biz1St.value));
-		cq.where(lstpredicate.toArray(new Predicate[] {}));
+
+		// set where to SQL
+		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+
+		// set order
 		cq.orderBy(criteriaBuilder.desc(root.get(QismtWorkAccidentInsu_.strYm)));
+
+		// exclude select
 		TypedQuery<QismtWorkAccidentInsu> query = em.createQuery(cq);
 		List<QismtWorkAccidentInsu> lstQismtWorkAccidentInsu = query.getResultList();
+
 		if (ListUtil.isEmpty(lstQismtWorkAccidentInsu)) {
 			return Optional.empty();
 		}
-		return findById(companyCode,
-				lstQismtWorkAccidentInsu.get(BEGIN_FIRST).getQismtWorkAccidentInsuPK().getHistId());
+
+		return this.findById(companyCode,
+				lstQismtWorkAccidentInsu.get(JpaAccidentInsuranceRateRepository.BEGIN_FIRST).getQismtWorkAccidentInsuPK().getHistId());
 	}
 
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.
+	 * AccidentInsuranceRateRepository#updateYearMonth(nts.uk.ctx.pr.core.dom.
+	 * insurance.labor.accidentrate.AccidentInsuranceRate,
+	 * nts.arc.time.YearMonth)
+	 */
 	@Override
 	public void updateYearMonth(AccidentInsuranceRate rate, YearMonth yearMonth) {
 		// to entity
-		List<QismtWorkAccidentInsu> lstEntity = toEntity(rate);
+		List<QismtWorkAccidentInsu> lstEntity = this.toEntity(rate);
 		for (QismtWorkAccidentInsu entity : lstEntity) {
 			entity.setEndYm(yearMonth.v());
 		}
-		update(toDomain(lstEntity));
+		this.update(this.toDomain(lstEntity));
 	}
 
+	/*
+	 * (non-Javadoc)
+	 *
+	 * @see nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.
+	 * AccidentInsuranceRateRepository#findBetweenUpdate(nts.uk.ctx.core.dom.
+	 * company.String, nts.arc.time.YearMonth, java.lang.String)
+	 */
 	@Override
-	public Optional<AccidentInsuranceRate> findBetweenUpdate(CompanyCode companyCode, YearMonth yearMonth,
+	public Optional<AccidentInsuranceRate> findBetweenUpdate(String companyCode, YearMonth yearMonth,
 			String historyId) {
-		EntityManager em = getEntityManager();
+
+		// get entity manager
+		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+
+		// call QISMT_WORK_ACCIDENT_INSU (QismtWorkAccidentInsu SQL)
 		CriteriaQuery<QismtWorkAccidentInsu> cq = criteriaBuilder.createQuery(QismtWorkAccidentInsu.class);
+
+		// root data
 		Root<QismtWorkAccidentInsu> root = cq.from(QismtWorkAccidentInsu.class);
+
+		// select root
 		cq.select(root);
-		List<Predicate> lstpredicate = new ArrayList<>();
-		lstpredicate.add(criteriaBuilder.equal(
+
+		// add where
+		List<Predicate> lstpredicateWhere = new ArrayList<>();
+
+		// eq String
+		lstpredicateWhere.add(criteriaBuilder.equal(
 				root.get(QismtWorkAccidentInsu_.qismtWorkAccidentInsuPK).get(QismtWorkAccidentInsuPK_.ccd),
-				companyCode.v()));
-		lstpredicate.add(criteriaBuilder.notEqual(
+				companyCode));
+
+		// not eq historyId
+		lstpredicateWhere.add(criteriaBuilder.notEqual(
 				root.get(QismtWorkAccidentInsu_.qismtWorkAccidentInsuPK).get(QismtWorkAccidentInsuPK_.histId),
 				historyId));
-		lstpredicate.add(criteriaBuilder.equal(
+
+		// eq business type 1st
+		lstpredicateWhere.add(criteriaBuilder.equal(
 				root.get(QismtWorkAccidentInsu_.qismtWorkAccidentInsuPK).get(QismtWorkAccidentInsuPK_.waInsuCd),
 				BusinessTypeEnum.Biz1St.value));
-		lstpredicate.add(criteriaBuilder.le(root.get(QismtWorkAccidentInsu_.endYm), yearMonth.previousMonth().v()));
+
+		// le start year month
+		lstpredicateWhere.add(criteriaBuilder.le(root.get(QismtWorkAccidentInsu_.strYm), yearMonth.v()));
+
+		// set where to SQL
+		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+
+		// set order
 		cq.orderBy(criteriaBuilder.desc(root.get(QismtWorkAccidentInsu_.strYm)));
-		cq.where(lstpredicate.toArray(new Predicate[] {}));
+
+		// exclude select
 		TypedQuery<QismtWorkAccidentInsu> query = em.createQuery(cq);
 		List<QismtWorkAccidentInsu> lstQismtWorkAccidentInsu = query.getResultList();
+
 		if (ListUtil.isEmpty(lstQismtWorkAccidentInsu)) {
 			return Optional.empty();
 		}
-		return findById(companyCode,
-				lstQismtWorkAccidentInsu.get(BEGIN_FIRST).getQismtWorkAccidentInsuPK().getHistId());
+
+		return this.findById(companyCode,
+				lstQismtWorkAccidentInsu.get(JpaAccidentInsuranceRateRepository.BEGIN_FIRST).getQismtWorkAccidentInsuPK().getHistId());
 	}
 
 }

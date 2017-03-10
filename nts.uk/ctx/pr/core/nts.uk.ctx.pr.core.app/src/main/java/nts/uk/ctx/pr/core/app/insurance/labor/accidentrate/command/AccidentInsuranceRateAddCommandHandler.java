@@ -12,7 +12,6 @@ import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.AccidentInsuranceRate;
 import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.AccidentInsuranceRateRepository;
 import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.service.AccidentInsuranceRateService;
@@ -43,25 +42,34 @@ public class AccidentInsuranceRateAddCommandHandler extends CommandHandler<Accid
 	@Override
 	@Transactional
 	protected void handle(CommandHandlerContext<AccidentInsuranceRateAddCommand> context) {
+		
 		// get user login
 		LoginUserContext loginUserContext = AppContexts.user();
+		
 		// get commpany user login
 		String companyCode = loginUserContext.companyCode();
+		
 		// get command
 		AccidentInsuranceRateAddCommand command = context.getCommand();
+		
 		// get domain by action request
 		AccidentInsuranceRate accidentInsuranceRate = command.toDomain(companyCode);
+		
 		// validate domain
 		accidentInsuranceRate.validate();
+		
 		// validate input domian
 		accidentInsuranceRateService.validateDateRange(accidentInsuranceRate);
+		
 		// get first data
 		Optional<AccidentInsuranceRate> optionalFirst = this.accidentInsuranceRateRepo
-				.findFirstData(new CompanyCode(companyCode));
+				.findFirstData(companyCode);
+		
 		if (optionalFirst.isPresent()) {
 			this.accidentInsuranceRateRepo.updateYearMonth(optionalFirst.get(),
 					accidentInsuranceRate.getApplyRange().getStartMonth().previousMonth());
 		}
+		
 		// connection repository running add
 		this.accidentInsuranceRateRepo.add(accidentInsuranceRate);
 	}

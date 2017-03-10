@@ -7,18 +7,18 @@ package nts.uk.ctx.pr.core.app.insurance.labor.imports;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.app.insurance.labor.imports.dto.LaborInsuranceOfficeCheckImportDto;
 import nts.uk.ctx.pr.core.app.insurance.labor.imports.dto.LaborInsuranceOfficeImportDto;
 import nts.uk.ctx.pr.core.app.insurance.labor.imports.dto.LaborInsuranceOfficeImportOutDto;
 import nts.uk.ctx.pr.core.app.insurance.labor.imports.dto.SocialInsuranceOfficeImportDto;
-import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
 import nts.uk.ctx.pr.core.dom.insurance.labor.LaborInsuranceOffice;
 import nts.uk.ctx.pr.core.dom.insurance.labor.LaborInsuranceOfficeRepository;
+import nts.uk.ctx.pr.core.dom.insurance.labor.service.LaborInsuranceOfficeService;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -33,6 +33,10 @@ public class LaborInsuranceOfficeImporter implements Serializable {
 	@Inject
 	private LaborInsuranceOfficeRepository laborInsuranceOfficeRepository;
 
+	/** The labor insurance office service. */
+	@Inject
+	private LaborInsuranceOfficeService laborInsuranceOfficeService;
+
 	/**
 	 * To domain.
 	 *
@@ -40,37 +44,51 @@ public class LaborInsuranceOfficeImporter implements Serializable {
 	 */
 	public LaborInsuranceOfficeCheckImportDto checkDuplicateCode(
 			SocialInsuranceOfficeImportDto socialInsuranceOfficeImport) {
+		// get user login companyCode
 		String companyCode = AppContexts.user().companyCode();
 		List<LaborInsuranceOffice> lstLaborInsuranceOffice = new ArrayList<>();
 		LaborInsuranceOfficeCheckImportDto laborInsuranceOfficeCheckImport = new LaborInsuranceOfficeCheckImportDto();
 		laborInsuranceOfficeCheckImport.setCode("0");
 		laborInsuranceOfficeCheckImport.setMessage("SUCC");
-		if (laborInsuranceOfficeRepository.isDuplicateCode(new CompanyCode(companyCode),
-				new OfficeCode(socialInsuranceOfficeImport.getCode()))) {
+		// check exist
+		Optional<LaborInsuranceOffice> optionalCheck = this.laborInsuranceOfficeRepository.findById(companyCode,
+				socialInsuranceOfficeImport.getCode());
+
+		if (optionalCheck.isPresent()) {
 			laborInsuranceOfficeCheckImport.setCode("1");
 			laborInsuranceOfficeCheckImport.setMessage("FAIL");
 		}
+
 		return laborInsuranceOfficeCheckImport;
 	}
 
 	public LaborInsuranceOfficeImportOutDto importData(LaborInsuranceOfficeImportDto laborInsuranceOfficeImportDto) {
+
+		// get userlogin companyCode
 		String companyCode = AppContexts.user().companyCode();
 		LaborInsuranceOfficeImportOutDto laborInsuranceOfficeImportOutDto = new LaborInsuranceOfficeImportOutDto();
 		int totalImport = 0;
 		laborInsuranceOfficeImportOutDto.setCode("0");
-		if (laborInsuranceOfficeRepository.isDuplicateCode(new CompanyCode(companyCode),
-				new OfficeCode(laborInsuranceOfficeImportDto.getSocialInsuranceOfficeImport().getCode()))) {
+
+		// check exist
+		Optional<LaborInsuranceOffice> optionalCheck = this.laborInsuranceOfficeRepository.findById(companyCode,
+				laborInsuranceOfficeImportDto.getSocialInsuranceOfficeImport().getCode());
+
+		if (optionalCheck.isPresent()) {
 			if (laborInsuranceOfficeImportDto.getCheckUpdateDuplicateCode() == 0) {
+				// update
 				laborInsuranceOfficeRepository
 						.update(laborInsuranceOfficeImportDto.getSocialInsuranceOfficeImport().toDomain(companyCode));
 				totalImport++;
 			}
 		} else {
+			// add new
 			laborInsuranceOfficeRepository
 					.add(laborInsuranceOfficeImportDto.getSocialInsuranceOfficeImport().toDomain(companyCode));
 			totalImport++;
 		}
 		laborInsuranceOfficeImportOutDto.setTotalImport(totalImport);
+		
 		return laborInsuranceOfficeImportOutDto;
 	}
 

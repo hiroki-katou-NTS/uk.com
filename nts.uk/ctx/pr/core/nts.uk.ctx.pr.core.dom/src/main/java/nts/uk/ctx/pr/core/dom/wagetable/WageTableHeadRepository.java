@@ -7,8 +7,6 @@ package nts.uk.ctx.pr.core.dom.wagetable;
 import java.util.List;
 import java.util.Optional;
 
-import nts.uk.ctx.core.dom.company.CompanyCode;
-
 /**
  * The Interface WageTableHeadRepository.
  */
@@ -34,7 +32,7 @@ public interface WageTableHeadRepository {
 	 * @param companyCode the company code
 	 * @param wageTableCode the wage table code
 	 */
-    void remove(CompanyCode companyCode, WageTableCode wageTableCode);
+    void remove(String companyCode, String wageTableCode);
 
 	/**
 	 * Find all.
@@ -42,7 +40,7 @@ public interface WageTableHeadRepository {
 	 * @param companyCode the company code
 	 * @return the list
 	 */
-	List<WageTableHead> findAll(CompanyCode companyCode);
+	List<WageTableHead> findAll(String companyCode);
 
 	/**
 	 * Find by id.
@@ -51,7 +49,7 @@ public interface WageTableHeadRepository {
 	 * @param code the code
 	 * @return the optional
 	 */
-	Optional<WageTableHead> findByCode(CompanyCode companyCode, WageTableCode code);
+	Optional<WageTableHead> findByCode(String companyCode, String code);
 
 	/**
 	 * Checks if is duplicate code.
@@ -60,6 +58,6 @@ public interface WageTableHeadRepository {
 	 * @param code the code
 	 * @return true, if is duplicate code
 	 */
-	boolean isDuplicateCode(CompanyCode companyCode, WageTableCode code);
+	boolean isExistCode(String companyCode, String code);
 
 }

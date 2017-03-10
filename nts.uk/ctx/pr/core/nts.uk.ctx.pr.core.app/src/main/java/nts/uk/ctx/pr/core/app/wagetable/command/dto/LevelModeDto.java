@@ -6,18 +6,19 @@ package nts.uk.ctx.pr.core.app.wagetable.command.dto;
 
 import java.util.List;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.pr.core.dom.wagetable.element.CodeItem;
 
 /**
  * The Class LevelMode.
  */
 @Getter
 @Setter
+@Builder
 public class LevelModeDto extends BaseModeDto {
 
 	/** The items. */
-	private List<CodeItem> items;
+	private List<CodeItemDto> items;
 
 }

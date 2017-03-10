@@ -10,10 +10,8 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
-import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsuranceRate;
 import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsuranceRateRepository;
 import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.service.UnemployeeInsuranceRateService;
@@ -44,34 +42,43 @@ public class UnemployeeInsuranceRateUpdateCommandHandler extends CommandHandler<
 	@Override
 	@Transactional
 	protected void handle(CommandHandlerContext<UnemployeeInsuranceRateUpdateCommand> context) {
+
 		// get user login info
 		LoginUserContext loginUserContext = AppContexts.user();
+
 		// get companyCode by user login
 		String companyCode = loginUserContext.companyCode();
+
 		// get command
 		UnemployeeInsuranceRateUpdateCommand command = context.getCommand();
+
 		// to domain
 		UnemployeeInsuranceRate unemployeeInsuranceRate = command.toDomain(companyCode);
+
 		// validate
 		unemployeeInsuranceRate.validate();
 		unemployeeInsuranceRateService.validateDateRangeUpdate(unemployeeInsuranceRate);
+
 		// call get by id
-		Optional<UnemployeeInsuranceRate> optionalUnemployeeInsuranceRate;
-		optionalUnemployeeInsuranceRate = this.unemployeeInsuranceRateRepository
-				.findById(unemployeeInsuranceRate.getCompanyCode(), unemployeeInsuranceRate.getHistoryId());
+		Optional<UnemployeeInsuranceRate> optionalFirst;
+		optionalFirst = this.unemployeeInsuranceRateRepository.findById(unemployeeInsuranceRate.getCompanyCode().v(),
+				unemployeeInsuranceRate.getHistoryId());
+
 		// get <= start
-		Optional<UnemployeeInsuranceRate> optionalBetweenUpdate = this.unemployeeInsuranceRateRepository
-				.findBetweenUpdate(unemployeeInsuranceRate.getCompanyCode(),
-						optionalUnemployeeInsuranceRate.get().getApplyRange().getStartMonth(),
-						optionalUnemployeeInsuranceRate.get().getHistoryId());
-		
-		// update end year month start previous
-		if (optionalBetweenUpdate.isPresent()) {
-			this.unemployeeInsuranceRateRepository.updateYearMonth(optionalBetweenUpdate.get(),
-					unemployeeInsuranceRate.getApplyRange().getStartMonth().previousMonth());
+		if (optionalFirst.isPresent()) {
+			Optional<UnemployeeInsuranceRate> optionalBetweenUpdate = this.unemployeeInsuranceRateRepository
+					.findBetweenUpdate(unemployeeInsuranceRate.getCompanyCode().v(),
+							optionalFirst.get().getApplyRange().getStartMonth(), optionalFirst.get().getHistoryId());
+
+			// update end year month start previous
+			if (optionalBetweenUpdate.isPresent()) {
+				this.unemployeeInsuranceRateRepository.updateYearMonth(optionalBetweenUpdate.get(),
+						unemployeeInsuranceRate.getApplyRange().getStartMonth().previousMonth());
+			}
+
+			// update value
+			this.unemployeeInsuranceRateRepository.update(unemployeeInsuranceRate);
 		}
-		//update value
-		this.unemployeeInsuranceRateRepository.update(unemployeeInsuranceRate);
 	}
 
 }

@@ -4,19 +4,23 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.dom.rule.employment.unitprice.service.internal;
 
+import java.util.List;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
 import nts.arc.time.YearMonth;
+import nts.gul.collection.ListUtil;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.base.simplehistory.SimpleHistoryRepository;
-import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPrice;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceCode;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceHistory;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceHistoryRepository;
+import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceRepository;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.service.UnitPriceHistoryService;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class UnitPriceHistoryServiceImpl.
@@ -28,7 +32,30 @@ public class UnitPriceHistoryServiceImpl extends UnitPriceHistoryService {
 	@Inject
 	private UnitPriceHistoryRepository unitPriceHistoryRepo;
 
-	
+	/** The unit price repo. */
+	@Inject
+	private UnitPriceRepository unitPriceRepo;
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.base.simplehistory.SimpleHistoryBaseService#
+	 * deleteHistory(java.lang.String)
+	 */
+	@Override
+	public void deleteHistory(String uuid) {
+		UnitPriceHistory history = this.unitPriceHistoryRepo.findHistoryByUuid(uuid).get();
+		List<UnitPriceHistory> unitPriceHistoryList = this.unitPriceHistoryRepo
+				.findAllHistoryByMasterCode(AppContexts.user().companyCode(), history.getMasterCode().v());
+
+		super.deleteHistory(uuid);
+
+		// Remove unit price.
+		if (!ListUtil.isEmpty(unitPriceHistoryList) && unitPriceHistoryList.size() == 1) {
+			this.unitPriceRepo.remove(history.getCompanyCode(), history.getUnitPriceCode());
+		}
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -42,7 +69,6 @@ public class UnitPriceHistoryServiceImpl extends UnitPriceHistoryService {
 			throw new BusinessException("ER001");
 		}
 	}
-
 
 	/*
 	 * (non-Javadoc)
@@ -80,7 +106,7 @@ public class UnitPriceHistoryServiceImpl extends UnitPriceHistoryService {
 	 * getRepository()
 	 */
 	@Override
-	public SimpleHistoryRepository<UnitPrice, UnitPriceHistory> getRepository() {
+	public SimpleHistoryRepository<UnitPriceHistory> getRepository() {
 		return this.unitPriceHistoryRepo;
 	}
 
@@ -92,8 +118,7 @@ public class UnitPriceHistoryServiceImpl extends UnitPriceHistoryService {
 	 */
 	@Override
 	public UnitPriceHistory createInitalHistory(String companyCode, String masterCode, YearMonth startYearMonth) {
-		return UnitPriceHistory.createWithIntial(new CompanyCode(companyCode),
-				new UnitPriceCode(masterCode),
+		return UnitPriceHistory.createWithIntial(new CompanyCode(companyCode), new UnitPriceCode(masterCode),
 				startYearMonth);
 	}
 }

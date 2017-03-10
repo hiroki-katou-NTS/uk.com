@@ -14,4 +14,8 @@ import lombok.Setter;
 @Setter
 public class CertifyItemDto extends CodeItemDto {
 
+	CertifyItemDto(String referenceCode, String uuid) {
+		super(referenceCode, uuid);
+	}
+
 }

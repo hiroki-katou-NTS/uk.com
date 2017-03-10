@@ -10,10 +10,7 @@ import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.core.dom.company.CompanyCode;
-import nts.uk.ctx.pr.core.dom.wagetable.WageTableCode;
 import nts.uk.ctx.pr.core.dom.wagetable.history.WageTableHistoryRepository;
-import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class WageTableHistoryDeleteCommandHandler.
@@ -23,7 +20,7 @@ import nts.uk.shr.com.context.AppContexts;
 public class WageTableHistoryDeleteCommandHandler
 		extends CommandHandler<WageTableHistoryDeleteCommand> {
 
-	/** The wage table history repository. */
+	/** The wage table history repo. */
 	@Inject
 	private WageTableHistoryRepository wageTableHistoryRepo;
 
@@ -37,12 +34,9 @@ public class WageTableHistoryDeleteCommandHandler
 	@Override
 	protected void handle(CommandHandlerContext<WageTableHistoryDeleteCommand> context) {
 
-		CompanyCode companyCode = new CompanyCode(AppContexts.user().companyCode());
-
 		WageTableHistoryDeleteCommand command = context.getCommand();
 
-		this.wageTableHistoryRepo.remove(companyCode, new WageTableCode(command.getWageTableCode()),
-				command.getHistoryId());
+		this.wageTableHistoryRepo.deleteHistory(command.getHistoryId());
 	}
 
 }

@@ -9,8 +9,8 @@ import java.util.List;
 import java.util.Set;
 
 import lombok.Data;
+import nts.arc.time.YearMonth;
 import nts.uk.ctx.core.dom.company.CompanyCode;
-import nts.uk.ctx.core.dom.util.PrimitiveUtil;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsuranceRate;
 import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsuranceRateGetMemento;
@@ -23,7 +23,7 @@ import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsurance
 public class UnemployeeInsuranceRateDto {
 
 	/** The history insurance. */
-	private HistoryUnemployeeInsuranceDto historyInsurance;
+	private UnemployeeInsuranceHistoryDto historyInsurance;
 
 	/** The rate items. */
 	private List<UnemployeeInsuranceRateItemDto> rateItems;
@@ -85,8 +85,8 @@ public class UnemployeeInsuranceRateDto {
 
 		@Override
 		public MonthRange getApplyRange() {
-			return MonthRange.range(dto.historyInsurance.getStartMonthRage(), dto.historyInsurance.getEndMonthRage(),
-					PrimitiveUtil.DEFAULT_YM_SEPARATOR_CHAR);
+			return MonthRange.range(YearMonth.of(dto.getHistoryInsurance().getStartMonth()),
+					YearMonth.of(dto.getHistoryInsurance().getEndMonth()));
 		}
 
 	}

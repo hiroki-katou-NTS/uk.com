@@ -60,6 +60,11 @@ module nts.uk.pr.view.base.simplehistory {
              * @param historyUuid history uuid.
              */
             deleteHistory(masterCode: string, historyUuid: string): JQueryPromise<void>;
+
+            /**
+             * Update history start.
+             */
+            updateHistoryStart(masterCode: string, historyUuid: string, newStart: number): JQueryPromise<void>;
         }
 
         /**
@@ -69,6 +74,7 @@ module nts.uk.pr.view.base.simplehistory {
             historyMasterPath: string;
             createHisotyPath: string;
             deleteHistoryPath: string;
+            updateHistoryStartPath: string;
         }
 
         /**
@@ -108,9 +114,19 @@ module nts.uk.pr.view.base.simplehistory {
             deleteHistory(masterCode: string, historyUuid: string): JQueryPromise<void> {
                 var self = this;
                 return nts.uk.request.ajax(self.path.deleteHistoryPath, {
-                    masterCode: masterCode,
-                    historyUuid: historyUuid
+                    historyId: historyUuid
                 });
+            }
+
+            /**
+             * @see Service
+             */
+            updateHistoryStart(masterCode: string, historyUuid: string, newStart: number): JQueryPromise<void> {
+                var self = this;
+                return nts.uk.request.ajax(self.path.updateHistoryStartPath, {
+                    historyId: historyUuid,
+                    newYearMonth: newStart
+                })
             }
         }
     }

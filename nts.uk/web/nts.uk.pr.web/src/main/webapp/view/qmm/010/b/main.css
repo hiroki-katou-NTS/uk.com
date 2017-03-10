@@ -1,64 +1,11 @@
-.divHeader {
-	margin: 5px;
-}
-
-.btnStyle {
-	width: 70px;
-	margin-right: 5px;
-}
-
-.labelRed {
-	font-weight: bold;
-	color: red;
-}
 
 #contents-left, #contents-right {
 	padding: 20px;
 	vertical-align: top !important;
 }
 
-#contents-right {
-	padding-left: 40px !important;
-}
-
-.leftTop {
-	display: inline;
-	width: 100%;
-}
-
-#SCH_001 {
-	width: 100%;
-}
-
-.spanSearch {
-	float: right;
-	width: 20%;
-}
-
-.contentsRL {
-	width: 20%;
-	padding-bottom: 5px;
-}
-
-.contentsRR {
-	width: 70%;
-}
-
-#tableRight {
-	width: 100%;
-}
-
-button.nts-switch-button {
-	min-width: 80px;
-}
-
-#search_001 {
+#searchSocialInsuranceOffice {
 	margin-top: 20px;
-}
-
-.ntsRadioBox {
-	display: block;
-	padding-top: 20px;
 }
 
 .control-group {
@@ -69,7 +16,11 @@ button.nts-switch-button {
 	margin: 60px 0 0 35px !important;
 }
 
-.search001 {
+.searchSocialInsuranceOffice {
 	margin-left: 45px !important;
 	margin-top: 10px !important;
+}
+
+.ntsSearchBox{
+	width: 267px !important;
 }

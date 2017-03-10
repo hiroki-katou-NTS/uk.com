@@ -14,4 +14,8 @@ import lombok.Setter;
 @Setter
 public class LevelItemDto extends CodeItemDto {
 
+	LevelItemDto(String referenceCode, String uuid) {
+		super(referenceCode, uuid);
+	}
+
 }

@@ -4,13 +4,12 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.app.wagetable.certification.find;
 
-import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.app.wagetable.certification.find.dto.CertificationFindInDto;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.Certification;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.CertificationReponsitory;
@@ -33,18 +32,19 @@ public class CertificationFinder {
 	 * @return the list
 	 */
 	public List<CertificationFindInDto> findAll() {
+
 		// get info login
 		LoginUserContext loginUserContext = AppContexts.user();
-		//call findAll None Group
-		List<Certification> lstCertification = find.findAllNoneOfGroup(new CompanyCode(loginUserContext.companyCode()));
-		//to Dto
-		List<CertificationFindInDto> lstCertificationFindIn = new ArrayList<>();
-		for (Certification certification : lstCertification) {
+		// call findAll None Group
+
+		List<Certification> lstCertification = this.find.findAllNoneOfGroup(loginUserContext.companyCode());
+
+		// to Dto
+		return lstCertification.stream().map(certification -> {
 			CertificationFindInDto certificationFindInDto = new CertificationFindInDto();
 			certification.saveToMemento(certificationFindInDto);
-			lstCertificationFindIn.add(certificationFindInDto);
-		}
-		return lstCertificationFindIn;
+			return certificationFindInDto;
+		}).collect(Collectors.toList());
 	}
 
 }

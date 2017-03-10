@@ -1,5 +1,15 @@
 module nts.uk.pr.view.base.simplehistory {
     export module viewmodel {
+        
+        /**
+         * Simple history screen options.
+         */
+        export interface SimpleHistoryScreenOptions<M extends model.MasterModel<H>, H extends model.HistoryModel> {
+            functionName: string;
+            removeMasterOnLastHistoryRemove?: boolean;
+            service: service.Service<M, H>
+        }
+        
         /**
          * Base screen model for simple history.
          */
@@ -18,21 +28,22 @@ module nts.uk.pr.view.base.simplehistory {
             
             // Selected hsitory uuid.
             selectedHistoryUuid: KnockoutObservable<string>;
+            igGridSelectedHistoryUuid: KnockoutObservable<string>;
 
             // Flag
             private canUpdateHistory: KnockoutObservable<boolean>;
             private canAddNewHistory: KnockoutObservable<boolean>;
-            private functionName: string;
+            private options: SimpleHistoryScreenOptions<M, H>;
 
             /**
              * Constructor.
              */
-            constructor(functionName: string, service: service.Service<M, H>) {
+            constructor(options: SimpleHistoryScreenOptions<M, H>) {
                 var self = this;
 
                 // Set.
-                self.functionName = functionName;
-                self.service = service;
+                self.options = options;
+                self.service = options.service;
 
                 // Init.
                 self.isNewMode = ko.observable(true);
@@ -47,12 +58,18 @@ module nts.uk.pr.view.base.simplehistory {
                     return self.selectedHistoryUuid() != null && self.getCurrentHistoryNode() != null;
                 })
 
+                // On searched result.
+                self.igGridSelectedHistoryUuid = ko.observable('');
+                self.igGridSelectedHistoryUuid.subscribe(id => {
+                    if (id && id.length == 36) {
+                        self.selectedHistoryUuid(id);    
+                    }
+                })
+                
                 // On history select.
                 self.selectedHistoryUuid.subscribe((id) => {
-                    if (id && id.length == 36) {
-                        self.isNewMode(false);
-                        self.onSelectHistory(id);
-                    }
+                    self.isNewMode(false);
+                    self.onSelectHistory(id);
                 })
                 
                 // On new mode.
@@ -99,6 +116,7 @@ module nts.uk.pr.view.base.simplehistory {
                         // Current node.
                         var masterNode:Node = {
                             id: master.code,
+                            searchText: master.code + ' ' + master.name,
                             nodeText: master.code + ' ' + master.name,
                             nodeType: 0,
                             data: master
@@ -108,6 +126,7 @@ module nts.uk.pr.view.base.simplehistory {
                         var masterChild = _.map(master.historyList, history => {
                             var node:Node = {
                                 id: history.uuid,
+                                searchText: '',
                                 nodeText: nts.uk.time.formatYearMonth(history.start) + '~' + nts.uk.time.formatYearMonth(history.end),
                                 nodeType: 1,
                                 parent: masterNode,
@@ -131,7 +150,7 @@ module nts.uk.pr.view.base.simplehistory {
             /**
              * Start registr new.
              */
-            registNew(): void {
+            registBtnClick(): void {
                 var self = this;
                 self.isNewMode(true);
 
@@ -142,7 +161,7 @@ module nts.uk.pr.view.base.simplehistory {
             /**
              * Save current master and history data.
              */
-            save(): void {
+            saveBtnClick(): void {
                 var self = this;
                 self.onSave().done((uuid) => {
                     self.loadMasterHistory().done(() => {
@@ -156,11 +175,11 @@ module nts.uk.pr.view.base.simplehistory {
             /**
              * Open add new hisotry dialog.
              */
-            openAddNewHistoryDialog(): void {
+            addNewHistoryBtnClick(): void {
                 var self = this;
                 var currentNode = self.getCurrentHistoryNode();
                 var newHistoryOptions: newhistory.viewmodel.NewHistoryScreenOption = {
-                    name: self.functionName,
+                    name: self.options.functionName,
                     master: currentNode.parent.data,
                     lastest: currentNode.data,
                     
@@ -177,18 +196,56 @@ module nts.uk.pr.view.base.simplehistory {
                     }
                 };
                 nts.uk.ui.windows.setShared('options', newHistoryOptions);
-                var ntsDialogOptions = { title: nts.uk.text.format('{0} の 登録 > 履歴の追加', self.functionName),
+                var ntsDialogOptions = { title: nts.uk.text.format('{0}の登録 > 履歴の追加', self.options.functionName),
                         dialogClass: 'no-close' }; 
                 nts.uk.ui.windows.sub.modal('/view/base/simplehistory/newhistory/index.xhtml', ntsDialogOptions);
             }
 
+            /**
+             * Open update history btn.
+             */
+            updateHistoryBtnClick(): void {
+                var self = this;
+                var currentNode = self.getCurrentHistoryNode();
+                var newHistoryOptions: updatehistory.viewmodel.UpdateHistoryScreenOption = {
+                    name: self.options.functionName,
+                    master: currentNode.parent.data,
+                    history: currentNode.data,
+                    removeMasterOnLastHistoryRemove: self.options.removeMasterOnLastHistoryRemove,
+
+                    // Delete callback.
+                    onDeleteCallBack: (data) => {
+                        self.service.deleteHistory(data.masterCode, data.historyId).done(() => {
+                            self.reloadMasterHistory(null);
+                        });
+                    },
+
+                    // Update call back.
+                    onUpdateCallBack: (data) => {
+                        self.service.updateHistoryStart(data.masterCode, data.historyId, data.startYearMonth).done(() => {
+                            self.reloadMasterHistory(self.selectedHistoryUuid());
+                        })
+                    }
+                };
+                nts.uk.ui.windows.setShared('options', newHistoryOptions);
+                var ntsDialogOptions = { title: nts.uk.text.format('{0}の登録 > 履歴の編集', self.options.functionName),
+                        dialogClass: 'no-close' }; 
+                nts.uk.ui.windows.sub.modal('/view/base/simplehistory/updatehistory/index.xhtml', ntsDialogOptions);
+            }
+            
             /**
              * Reload master history then set.
              */
             reloadMasterHistory(uuid: string) {
                 var self = this;
                 self.loadMasterHistory().done(() => {
-                    self.selectedHistoryUuid(uuid);
+                    if (uuid) {
+                        self.selectedHistoryUuid(uuid);
+                    } else {
+                        if (self.masterHistoryList.length > 0) {
+                            self.selectedHistoryUuid(self.masterHistoryList[0].historyList[0].uuid);
+                        }
+                    }
                 })
             }
             
@@ -240,6 +297,7 @@ module nts.uk.pr.view.base.simplehistory {
          */
         export interface Node {
             id: string;
+            searchText: string;
             nodeText: string;
             nodeType: number;
             parent?: Node;

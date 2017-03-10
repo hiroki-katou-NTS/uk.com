@@ -15,27 +15,17 @@ var nts;
                             var ScreenModel = (function () {
                                 function ScreenModel() {
                                     var self = this;
-                                    self.code = ko.observable('1234');
-                                    self.name = ko.observable('4312');
                                     self.items = ko.observableArray([]);
-                                    this.currentCode = ko.observable();
-                                    for (var i = 1; i < 100; i++) {
-                                        this.items.push(new ItemModel('00' + i, '基本給', "description " + i, i % 3 === 0, "other" + i));
+                                    self.currentCode = ko.observable();
+                                    self.outputSettingDetailModel = ko.observable(new OutputSettingDetailModel());
+                                    for (var i = 1; i < 30; i++) {
+                                        this.items.push(new ItemModel('00' + i, '基本給', "name " + i, i % 3 === 0));
                                     }
                                     this.columns = ko.observableArray([
-                                        { headerText: 'コード', key: 'code', width: 100, hidden: true },
-                                        { headerText: '名称', key: 'name', width: 150, hidden: true },
-                                        { headerText: '説明', key: 'description', width: 150 },
-                                        { headerText: '説明1', key: 'other1', width: 150 },
-                                        { headerText: '説明2', key: 'other2', width: 150 }
+                                        { headerText: 'コード', key: 'code', width: 50, hidden: true },
+                                        { headerText: '名称', key: 'name', width: 50, hidden: true },
+                                        { headerText: '説明', key: 'description', width: 100 }
                                     ]);
-                                    self.tabs = ko.observableArray([
-                                        { id: 'tab-1', title: '支給', content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true) },
-                                        { id: 'tab-2', title: '控除', content: '.tab-content-2', enable: ko.observable(true), visible: ko.observable(true) },
-                                        { id: 'tab-3', title: '勤怠', content: '.tab-content-3', enable: ko.observable(true), visible: ko.observable(true) },
-                                        { id: 'tab-4', title: '記事・その他', content: '.tab-content-4', enable: ko.observable(true), visible: ko.observable(true) }
-                                    ]);
-                                    self.selectedTab = ko.observable('tab-1');
                                 }
                                 ScreenModel.prototype.startPage = function () {
                                     var self = this;
@@ -43,21 +33,55 @@ var nts;
                                     dfd.resolve();
                                     return dfd.promise();
                                 };
+                                ScreenModel.prototype.commonSettingBtnClick = function () {
+                                    nts.uk.ui.windows.sub.modal('/view/qpp/007/j/index.xhtml', { title: '集計項目の設定', dialogClass: 'no-close' });
+                                };
                                 return ScreenModel;
                             }());
                             viewmodel.ScreenModel = ScreenModel;
                             var ItemModel = (function () {
-                                function ItemModel(code, name, description, deletable, other1, other2) {
+                                function ItemModel(code, name, description, deletable) {
                                     this.code = code;
                                     this.name = name;
                                     this.description = description;
-                                    this.other1 = other1;
-                                    this.other2 = other2 || other1;
                                     this.deletable = deletable;
                                 }
                                 return ItemModel;
                             }());
                             viewmodel.ItemModel = ItemModel;
+                            var OutputSettingDetailModel = (function () {
+                                function OutputSettingDetailModel() {
+                                    this.settingCode = ko.observable('code');
+                                    this.settingName = ko.observable('name 123');
+                                    this.categorySetting = ko.observable(new CategorySetting());
+                                    this.categorySettingTabs = ko.observableArray([
+                                        { id: 'supply', title: '支給', content: '#supply', enable: ko.observable(true), visible: ko.observable(true) },
+                                        { id: 'deduction', title: '控除', content: '#deduction', enable: ko.observable(true), visible: ko.observable(true) },
+                                        { id: 'attendance', title: '勤怠', content: '#attendance', enable: ko.observable(true), visible: ko.observable(true) },
+                                        { id: 'article-others', title: '記事・その他', content: '#article-others', enable: ko.observable(true), visible: ko.observable(true) }
+                                    ]);
+                                    this.selectedCategory = ko.observable('supply');
+                                }
+                                return OutputSettingDetailModel;
+                            }());
+                            viewmodel.OutputSettingDetailModel = OutputSettingDetailModel;
+                            var CategorySetting = (function () {
+                                function CategorySetting() {
+                                    var self = this;
+                                    self.items = ko.observableArray([]);
+                                    self.currentCode = ko.observable();
+                                    for (var i = 1; i < 15; i++) {
+                                        this.items.push(new ItemModel('00' + i, '基本給', "description " + i, i % 3 === 0));
+                                    }
+                                    this.columns = ko.observableArray([
+                                        { headerText: 'コード', key: 'code', width: 50, hidden: true },
+                                        { headerText: '名称', key: 'name', width: 50, hidden: true },
+                                        { headerText: '説明', key: 'description', width: 100 }
+                                    ]);
+                                }
+                                return CategorySetting;
+                            }());
+                            viewmodel.CategorySetting = CategorySetting;
                         })(viewmodel = c.viewmodel || (c.viewmodel = {}));
                     })(c = qpp007.c || (qpp007.c = {}));
                 })(qpp007 = view.qpp007 || (view.qpp007 = {}));

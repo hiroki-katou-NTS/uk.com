@@ -4,6 +4,10 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.infra.repository.wagetable.element;
 
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
+
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.wagetable.DemensionNo;
 import nts.uk.ctx.pr.core.dom.wagetable.ElementType;
@@ -54,88 +58,41 @@ public class JpaWageTableElementGetMemento implements WageTableElementGetMemento
 	 */
 	@Override
 	public ElementMode getElementModeSetting() {
+
 		CompanyCode companyCode = new CompanyCode(
 				this.typeValue.getQwtmtWagetableElementPK().getCcd());
-		// TODO: can xem xet lai.
-		QwtmtWagetableEleHist qwtmtWagetableEleHist = this.typeValue.getQwtmtWagetableEleHistList()
-				.get(0);
+
+		Map<Integer, QwtmtWagetableEleHist> eleHistMap = this.typeValue
+				.getQwtmtWagetableEleHistList().stream().collect(
+						Collectors.toMap(item -> item.getQwtmtWagetableEleHistPK().getDemensionNo(),
+								Function.identity()));
+
+		QwtmtWagetableEleHist qwtmtWagetableEleHist = eleHistMap
+				.get(this.typeValue.getQwtmtWagetableElementPK().getDemensionNo());
 
 		switch (ElementType.valueOf(this.typeValue.getDemensionType())) {
-		case MASTER_REF:
-			return new RefMode(ElementType.MASTER_REF, companyCode,
-					new WtElementRefNo(this.typeValue.getDemensionRefNo()));
-
-		case CODE_REF:
-			return new RefMode(ElementType.CODE_REF, companyCode,
-					new WtElementRefNo(this.typeValue.getDemensionRefNo()));
-
-		case ITEM_DATA_REF:
-			if (qwtmtWagetableEleHist == null) {
-				// TODO: Add msg.
-				throw new RuntimeException("");
-			}
-			return new StepMode(ElementType.ITEM_DATA_REF,
-					qwtmtWagetableEleHist.getDemensionLowerLimit(),
-					qwtmtWagetableEleHist.getDemensionUpperLimit(),
-					qwtmtWagetableEleHist.getDemensionInterval());
-
-		case EXPERIENCE_FIX:
-			if (qwtmtWagetableEleHist == null) {
-				// TODO: Add msg.
-				throw new RuntimeException("");
-			}
-			return new StepMode(ElementType.EXPERIENCE_FIX,
-					qwtmtWagetableEleHist.getDemensionLowerLimit(),
-					qwtmtWagetableEleHist.getDemensionUpperLimit(),
-					qwtmtWagetableEleHist.getDemensionInterval());
-
-		case AGE_FIX:
-			if (qwtmtWagetableEleHist == null) {
-				// TODO: Add msg.
-				throw new RuntimeException("");
-			}
-			return new StepMode(ElementType.EXPERIENCE_FIX,
-					qwtmtWagetableEleHist.getDemensionLowerLimit(),
-					qwtmtWagetableEleHist.getDemensionUpperLimit(),
-					qwtmtWagetableEleHist.getDemensionInterval());
-
-		case FAMILY_MEM_FIX:
-			if (qwtmtWagetableEleHist == null) {
-				// TODO: Add msg.
-				throw new RuntimeException("");
-			}
-			return new StepMode(ElementType.EXPERIENCE_FIX,
-					qwtmtWagetableEleHist.getDemensionLowerLimit(),
-					qwtmtWagetableEleHist.getDemensionUpperLimit(),
-					qwtmtWagetableEleHist.getDemensionInterval());
-
-		case WORKING_DAY:
-			if (qwtmtWagetableEleHist == null) {
-				// TODO: Add msg.
-				throw new RuntimeException("");
-			}
-			return new StepMode(ElementType.WORKING_DAY,
-					qwtmtWagetableEleHist.getDemensionLowerLimit(),
-					qwtmtWagetableEleHist.getDemensionUpperLimit(),
-					qwtmtWagetableEleHist.getDemensionInterval());
-
-		case COME_LATE:
-			if (qwtmtWagetableEleHist == null) {
-				// TODO: Add msg.
-				throw new RuntimeException("");
-			}
-			return new StepMode(ElementType.COME_LATE,
-					qwtmtWagetableEleHist.getDemensionLowerLimit(),
-					qwtmtWagetableEleHist.getDemensionUpperLimit(),
-					qwtmtWagetableEleHist.getDemensionInterval());
-
 		case LEVEL:
 			return new LevelMode();
 
-		// case CERTIFICATION:
-		default:
+		case CERTIFICATION:
 			return new CertifyMode();
+
+		default:
+			if (ElementType.valueOf(this.typeValue.getDemensionType()).isCodeMode) {
+				return new RefMode(ElementType.valueOf(this.typeValue.getDemensionType()),
+						companyCode, new WtElementRefNo(this.typeValue.getDemensionRefNo()));
+			}
+
+			if (ElementType.valueOf(this.typeValue.getDemensionType()).isRangeMode) {
+				return new StepMode(ElementType.valueOf(this.typeValue.getDemensionType()),
+						qwtmtWagetableEleHist.getDemensionLowerLimit(),
+						qwtmtWagetableEleHist.getDemensionUpperLimit(),
+						qwtmtWagetableEleHist.getDemensionInterval());
+			}
+
+			return null;
 		}
+
 	}
 
 }

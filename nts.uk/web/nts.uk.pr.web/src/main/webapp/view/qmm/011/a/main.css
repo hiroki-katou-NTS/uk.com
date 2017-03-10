@@ -1,12 +1,3 @@
-.divHeader {
-	margin: 5px;
-}
-
-.btnStyle {
-	width: 70px;
-	margin-right: 5px;
-}
-
 .trFull60B {
 	min-width: 60px;
 	padding-bottom: 5px;
@@ -47,10 +38,6 @@
 	width: 15%;
 }
 
-#A_BTN_005 {
-	margin-left: 200px;
-}
-
 .floatRight {
 	float: right;
 }
@@ -86,23 +73,11 @@
 	width: 100%;
 }
 
-#A_INP_002 {
-	width: 100px;
-}
-
-#A_INP_003 {
-	width: 30%;
-	margin-left: 10px;
-}
 
 button.nts-switch-button {
 	min-width: 80px;
 }
 
-#SEL-002, #SEL-004 {
-	min-width: 0px !important;
-	max-width: 160px !important;
-}
 
 #search_001 {
 	margin-top: 20px;

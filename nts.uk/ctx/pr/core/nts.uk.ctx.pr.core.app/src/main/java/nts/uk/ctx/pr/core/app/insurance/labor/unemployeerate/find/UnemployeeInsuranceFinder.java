@@ -9,7 +9,6 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.app.insurance.labor.unemployeerate.find.dto.UnemployeeInsuranceRateFindOutDto;
 import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsuranceRate;
 import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsuranceRateRepository;
@@ -33,14 +32,18 @@ public class UnemployeeInsuranceFinder {
 	 * @return the unemployee insurance rate find out dto
 	 */
 	public UnemployeeInsuranceRateFindOutDto findById(String historyId) {
+		
 		// get user login info
 		LoginUserContext loginUserContext = AppContexts.user();
+		
 		// get companyCode by user login
 		String companyCode = loginUserContext.companyCode();
+		
 		//call finder repository
 		UnemployeeInsuranceRateFindOutDto unemployeeInsuranceRateFindOutDto = new UnemployeeInsuranceRateFindOutDto();
-		Optional<UnemployeeInsuranceRate> optionalUnemployeeInsuranceRate = find.findById(new CompanyCode(companyCode),
+		Optional<UnemployeeInsuranceRate> optionalUnemployeeInsuranceRate = find.findById(companyCode,
 				historyId);
+		
 		//exist value
 		if (optionalUnemployeeInsuranceRate.isPresent()) {
 			optionalUnemployeeInsuranceRate.get().saveToMemento(unemployeeInsuranceRateFindOutDto);

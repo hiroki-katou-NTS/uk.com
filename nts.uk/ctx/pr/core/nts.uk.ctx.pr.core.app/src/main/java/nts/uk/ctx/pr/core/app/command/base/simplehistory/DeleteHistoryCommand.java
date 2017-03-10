@@ -13,6 +13,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class DeleteHistoryCommand {
-	/** The master code. */
-	private String masterCode;
+	/** The history id. */
+	private String historyId;
 }

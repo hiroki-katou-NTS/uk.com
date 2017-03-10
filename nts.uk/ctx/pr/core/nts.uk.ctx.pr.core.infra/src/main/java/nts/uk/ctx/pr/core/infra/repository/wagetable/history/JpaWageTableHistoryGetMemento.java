@@ -13,7 +13,7 @@ import nts.gul.collection.ListUtil;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 import nts.uk.ctx.pr.core.dom.wagetable.WageTableCode;
-import nts.uk.ctx.pr.core.dom.wagetable.history.WageTableDemensionDetail;
+import nts.uk.ctx.pr.core.dom.wagetable.element.WageTableElement;
 import nts.uk.ctx.pr.core.dom.wagetable.history.WageTableHistoryGetMemento;
 import nts.uk.ctx.pr.core.dom.wagetable.history.WageTableItem;
 import nts.uk.ctx.pr.core.infra.entity.wagetable.history.QwtmtWagetableEleHist;
@@ -56,7 +56,7 @@ public class JpaWageTableHistoryGetMemento implements WageTableHistoryGetMemento
 	 * getCode()
 	 */
 	@Override
-	public WageTableCode getCode() {
+	public WageTableCode getWageTableCode() {
 		return new WageTableCode(this.typeValue.getQwtmtWagetableHistPK().getWageTableCd());
 	}
 
@@ -110,7 +110,7 @@ public class JpaWageTableHistoryGetMemento implements WageTableHistoryGetMemento
 	 * getDemensionDetail()
 	 */
 	@Override
-	public List<WageTableDemensionDetail> getDemensionDetail() {
+	public List<WageTableElement> getDemensionDetail() {
 		List<QwtmtWagetableEleHist> qwtmtWagetableEleHistList = this.typeValue
 				.getQwtmtWagetableEleHistList();
 
@@ -120,7 +120,7 @@ public class JpaWageTableHistoryGetMemento implements WageTableHistoryGetMemento
 		}
 
 		return qwtmtWagetableEleHistList.stream()
-				.map(item -> new WageTableDemensionDetail(new JpaWageTableDetailGetMemento(item)))
+				.map(item -> new WageTableElement(new JpaWageTableDetailGetMemento(item)))
 				.collect(Collectors.toList());
 	}
 

@@ -4,25 +4,27 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.service;
 
+import nts.uk.ctx.pr.core.dom.base.simplehistory.SimpleHistoryBaseService;
+import nts.uk.ctx.pr.core.dom.insurance.social.SocialInsuranceOffice;
 import nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionRate;
 
 /**
  * The Interface UnemployeeInsuranceRateService.
  */
-public interface PensionRateService {
+public abstract class PensionRateService extends SimpleHistoryBaseService<SocialInsuranceOffice, PensionRate> {
 
 	/**
 	 * Validate required item.
 	 *
 	 * @param rate the rate
 	 */
-	void validateRequiredItem(PensionRate rate);
+	public abstract void validateRequiredItem(PensionRate rate);
 
 	/**
 	 * Validate date range.
 	 *
 	 * @param rate the rate
 	 */
-	void validateDateRange(PensionRate rate);
+	public abstract void validateDateRange(PensionRate rate);
 
 }

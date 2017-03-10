@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 import nts.uk.ctx.pr.core.dom.wagetable.WageTableCode;
-import nts.uk.ctx.pr.core.dom.wagetable.history.WageTableDemensionDetail;
+import nts.uk.ctx.pr.core.dom.wagetable.element.WageTableElement;
 import nts.uk.ctx.pr.core.dom.wagetable.history.WageTableHistorySetMemento;
 import nts.uk.ctx.pr.core.dom.wagetable.history.WageTableItem;
 import nts.uk.ctx.pr.core.infra.entity.wagetable.history.QwtmtWagetableEleHist;
@@ -56,7 +56,7 @@ public class JpaWageTableHistorySetMemento implements WageTableHistorySetMemento
 	 * setCode(nts.uk.ctx.pr.core.dom.wagetable.WageTableCode)
 	 */
 	@Override
-	public void setCode(WageTableCode code) {
+	public void setWageTableCode(WageTableCode code) {
 		QwtmtWagetableHistPK qwtmtWagetableHistPK = this.typeValue.getQwtmtWagetableHistPK();
 		qwtmtWagetableHistPK.setWageTableCd(code.v());
 		this.typeValue.setQwtmtWagetableHistPK(qwtmtWagetableHistPK);
@@ -94,7 +94,7 @@ public class JpaWageTableHistorySetMemento implements WageTableHistorySetMemento
 	 * setDemensionDetail(java.util.List)
 	 */
 	@Override
-	public void setDemensionDetail(List<WageTableDemensionDetail> demensionDetails) {
+	public void setDemensionDetail(List<WageTableElement> demensionDetails) {
 		QwtmtWagetableHistPK qwtmtWagetableHistPK = this.typeValue.getQwtmtWagetableHistPK();
 		String companyCode = qwtmtWagetableHistPK.getCcd();
 		String wageTableCd = qwtmtWagetableHistPK.getWageTableCd();

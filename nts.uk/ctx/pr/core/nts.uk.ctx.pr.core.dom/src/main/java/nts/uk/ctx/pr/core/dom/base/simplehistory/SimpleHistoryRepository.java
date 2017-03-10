@@ -4,12 +4,13 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.dom.base.simplehistory;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
  * The Interface SimpleHistoryRepository.
  */
-public interface SimpleHistoryRepository<V extends Master, T extends History<T>> {
+public interface SimpleHistoryRepository<T extends History<T>> {
 
 	/**
 	 * Delete history.
@@ -25,6 +26,15 @@ public interface SimpleHistoryRepository<V extends Master, T extends History<T>>
 	 * @return the t
 	 */
 	Optional<T> findLastestHistoryByMasterCode(String companyCode, String masterCode);
+
+	/**
+	 * Find all history by master code (in order).
+	 *
+	 * @param companyCode the company code
+	 * @param masterCode the master code
+	 * @return the list
+	 */
+	List<T> findAllHistoryByMasterCode(String companyCode, String masterCode);
 
 	/**
 	 * Find history by uuid.

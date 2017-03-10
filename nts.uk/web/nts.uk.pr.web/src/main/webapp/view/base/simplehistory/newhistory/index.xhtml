@@ -13,7 +13,7 @@
 			<script type="text/javascript">
 				var dialogSize = {
 					width : 580,
-					height : 340
+					height : 380
 				};
 			</script>
 		</ui:define>
@@ -58,15 +58,14 @@
 						</label></td>
 					</tr>
 				</table>
+				<br/>
+				<br/>
 			</div>
 			<hr />
 			<!-- END CONTENT AREA-->
 
 			<!-- BEGIN FUNCTION AREA-->
-			<div id="this-functions-area" class="halign-center">
-				<button class="proceed x-large" data-bind="click: btnApplyClicked">決定</button>
-				<button data-bind="click: btnCancelClicked">キャンセル</button>
-			</div>
+			<ui:include src="../dialogaction.xhtml"/>
 			<!-- END FUNCTION AREA-->
 		</ui:define>
 	</ui:composition>

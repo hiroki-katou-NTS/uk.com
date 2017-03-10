@@ -19,7 +19,7 @@ var nts;
                                         var self = this;
                                         self.dialogOptions = nts.uk.ui.windows.getShared('options');
                                         self.createType = ko.observable(ScreenModel.CREATE_TYPE_COPY_LATEST);
-                                        self.startYearMonth = ko.observable(nts.uk.time.formatYearMonth(self.dialogOptions.lastest.start));
+                                        self.startYearMonth = ko.observable(self.dialogOptions.lastest.start);
                                         self.lastYearMonth = nts.uk.time.formatYearMonth(self.dialogOptions.lastest.start);
                                     }
                                     ScreenModel.prototype.startPage = function () {
@@ -32,7 +32,7 @@ var nts;
                                         var self = this;
                                         var callBackData = {
                                             masterCode: self.dialogOptions.master.code,
-                                            startYearMonth: nts.uk.time.parseYearMonth(self.startYearMonth()).toValue()
+                                            startYearMonth: self.startYearMonth()
                                         };
                                         if (self.createType() == ScreenModel.CREATE_TYPE_COPY_LATEST) {
                                             self.dialogOptions.onCopyCallBack(callBackData);

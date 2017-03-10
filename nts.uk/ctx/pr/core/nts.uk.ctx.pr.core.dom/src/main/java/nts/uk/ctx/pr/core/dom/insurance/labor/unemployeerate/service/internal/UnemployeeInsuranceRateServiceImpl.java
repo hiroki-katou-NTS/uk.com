@@ -63,13 +63,12 @@ public class UnemployeeInsuranceRateServiceImpl implements UnemployeeInsuranceRa
 		if (rate.getApplyRange().getStartMonth().v() > rate.getApplyRange().getEndMonth().v()) {
 			return true;
 		}
+
 		Optional<UnemployeeInsuranceRate> optionalFirst = this.unemployeeInsuranceRateRepo
-				.findFirstData(rate.getCompanyCode());
-		if (optionalFirst.isPresent()) {
-			if (optionalFirst.get().getApplyRange().getStartMonth().nextMonth().v() > rate.getApplyRange().getStartMonth()
-					.v()) {
-				return true;
-			}
+				.findFirstData(rate.getCompanyCode().v());
+		if (optionalFirst.isPresent() && optionalFirst.get().getApplyRange().getStartMonth().nextMonth().v() > rate
+				.getApplyRange().getStartMonth().v()) {
+			return true;
 		}
 		return false;
 
@@ -103,14 +102,14 @@ public class UnemployeeInsuranceRateServiceImpl implements UnemployeeInsuranceRa
 		}
 		// data is begin update
 		Optional<UnemployeeInsuranceRate> optionalUnemployeeInsuranceRate;
-		optionalUnemployeeInsuranceRate = this.unemployeeInsuranceRateRepo.findById(rate.getCompanyCode(),
+		optionalUnemployeeInsuranceRate = this.unemployeeInsuranceRateRepo.findById(rate.getCompanyCode().v(),
 				rate.getHistoryId());
 		if (!optionalUnemployeeInsuranceRate.isPresent()) {
 			return true;
 		}
-		//get first data update
+		// get first data update
 		Optional<UnemployeeInsuranceRate> optionalBetweenUpdate = this.unemployeeInsuranceRateRepo.findBetweenUpdate(
-				rate.getCompanyCode(), optionalUnemployeeInsuranceRate.get().getApplyRange().getStartMonth(),
+				rate.getCompanyCode().v(), optionalUnemployeeInsuranceRate.get().getApplyRange().getStartMonth(),
 				optionalUnemployeeInsuranceRate.get().getHistoryId());
 		if (!optionalBetweenUpdate.isPresent()) {
 			return false;

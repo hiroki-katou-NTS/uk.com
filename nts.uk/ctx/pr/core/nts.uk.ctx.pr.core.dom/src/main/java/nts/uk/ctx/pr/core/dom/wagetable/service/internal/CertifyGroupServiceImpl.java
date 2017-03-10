@@ -4,11 +4,16 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.dom.wagetable.service.internal;
 
+import java.util.Optional;
+import java.util.Set;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
+import nts.gul.collection.ListUtil;
 import nts.gul.text.StringUtil;
+import nts.uk.ctx.pr.core.dom.wagetable.certification.Certification;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.CertificationReponsitory;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroup;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroupCode;
@@ -40,18 +45,36 @@ public class CertifyGroupServiceImpl implements CertifyGroupService {
 
 	@Override
 	public void checkDuplicateCode(CertifyGroup certifyGroup) {
-		if (certifyGroupRepository.isDuplicateCode(certifyGroup.getCompanyCode(), certifyGroup.getCode())) {
+		Optional<CertifyGroup> optionalCheck = this.certifyGroupRepository.findById(certifyGroup.getCompanyCode().v(),
+				certifyGroup.getCode().v());
+		if (optionalCheck.isPresent()) {
 			throw new BusinessException("ER005");
 		}
 
 	}
 
 	@Override
-	public void checkDulicateCertification(CertifyGroup certifyGroup, CertifyGroupCode certifyGroupCode) {
-		if (certificationReponsitory.isDulicateCertification(certifyGroup.getCompanyCode(), certifyGroup.getCertifies(), certifyGroupCode)) {
+	public void checkDulicateCertification(CertifyGroup certifyGroup, String certifyGroupCode) {
+		if (this.checkDulicateCertification(certifyGroup.getCompanyCode().v(), certifyGroup.getCertifies(),
+				certifyGroupCode)) {
 			throw new BusinessException("ER005");
 		}
 
+	}
+
+	boolean checkDulicateCertification(String companyCode, Set<Certification> setCertification,
+			String certifyGroupCode) {
+		if (ListUtil.isEmpty(setCertification)) {
+			return false;
+		}
+		for (Certification certification : setCertification) {
+			Optional<Certification> optionalCheck = this.certificationReponsitory.findById(companyCode,
+					certification.getCode(), certifyGroupCode);
+			if (optionalCheck.isPresent()) {
+				return true;
+			}
+		}
+		return false;
 	}
 
 }

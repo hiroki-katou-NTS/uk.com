@@ -13,10 +13,10 @@ var nts;
                         var viewmodel;
                         (function (viewmodel) {
                             var ScreenBaseModel = (function () {
-                                function ScreenBaseModel(functionName, service) {
+                                function ScreenBaseModel(options) {
                                     var self = this;
-                                    self.functionName = functionName;
-                                    self.service = service;
+                                    self.options = options;
+                                    self.service = options.service;
                                     self.isNewMode = ko.observable(true);
                                     self.masterHistoryDatasource = ko.observableArray([]);
                                     self.selectedHistoryUuid = ko.observable(undefined);
@@ -26,11 +26,15 @@ var nts;
                                     self.canAddNewHistory = ko.computed(function () {
                                         return self.selectedHistoryUuid() != null && self.getCurrentHistoryNode() != null;
                                     });
-                                    self.selectedHistoryUuid.subscribe(function (id) {
+                                    self.igGridSelectedHistoryUuid = ko.observable('');
+                                    self.igGridSelectedHistoryUuid.subscribe(function (id) {
                                         if (id && id.length == 36) {
-                                            self.isNewMode(false);
-                                            self.onSelectHistory(id);
+                                            self.selectedHistoryUuid(id);
                                         }
+                                    });
+                                    self.selectedHistoryUuid.subscribe(function (id) {
+                                        self.isNewMode(false);
+                                        self.onSelectHistory(id);
                                     });
                                     self.isNewMode.subscribe(function (val) {
                                         if (val) {
@@ -61,6 +65,7 @@ var nts;
                                         var nodeList = _.map(res, function (master) {
                                             var masterNode = {
                                                 id: master.code,
+                                                searchText: master.code + ' ' + master.name,
                                                 nodeText: master.code + ' ' + master.name,
                                                 nodeType: 0,
                                                 data: master
@@ -68,6 +73,7 @@ var nts;
                                             var masterChild = _.map(master.historyList, function (history) {
                                                 var node = {
                                                     id: history.uuid,
+                                                    searchText: '',
                                                     nodeText: nts.uk.time.formatYearMonth(history.start) + '~' + nts.uk.time.formatYearMonth(history.end),
                                                     nodeType: 1,
                                                     parent: masterNode,
@@ -84,12 +90,12 @@ var nts;
                                     });
                                     return dfd.promise();
                                 };
-                                ScreenBaseModel.prototype.registNew = function () {
+                                ScreenBaseModel.prototype.registBtnClick = function () {
                                     var self = this;
                                     self.isNewMode(true);
                                     self.selectedHistoryUuid(undefined);
                                 };
-                                ScreenBaseModel.prototype.save = function () {
+                                ScreenBaseModel.prototype.saveBtnClick = function () {
                                     var self = this;
                                     self.onSave().done(function (uuid) {
                                         self.loadMasterHistory().done(function () {
@@ -98,11 +104,11 @@ var nts;
                                     }).fail(function () {
                                     });
                                 };
-                                ScreenBaseModel.prototype.openAddNewHistoryDialog = function () {
+                                ScreenBaseModel.prototype.addNewHistoryBtnClick = function () {
                                     var self = this;
                                     var currentNode = self.getCurrentHistoryNode();
                                     var newHistoryOptions = {
-                                        name: self.functionName,
+                                        name: self.options.functionName,
                                         master: currentNode.parent.data,
                                         lastest: currentNode.data,
                                         onCopyCallBack: function (data) {
@@ -115,14 +121,45 @@ var nts;
                                         }
                                     };
                                     nts.uk.ui.windows.setShared('options', newHistoryOptions);
-                                    var ntsDialogOptions = { title: nts.uk.text.format('{0} の 登録 > 履歴の追加', self.functionName),
+                                    var ntsDialogOptions = { title: nts.uk.text.format('{0}の登録 > 履歴の追加', self.options.functionName),
                                         dialogClass: 'no-close' };
                                     nts.uk.ui.windows.sub.modal('/view/base/simplehistory/newhistory/index.xhtml', ntsDialogOptions);
+                                };
+                                ScreenBaseModel.prototype.updateHistoryBtnClick = function () {
+                                    var self = this;
+                                    var currentNode = self.getCurrentHistoryNode();
+                                    var newHistoryOptions = {
+                                        name: self.options.functionName,
+                                        master: currentNode.parent.data,
+                                        history: currentNode.data,
+                                        removeMasterOnLastHistoryRemove: self.options.removeMasterOnLastHistoryRemove,
+                                        onDeleteCallBack: function (data) {
+                                            self.service.deleteHistory(data.masterCode, data.historyId).done(function () {
+                                                self.reloadMasterHistory(null);
+                                            });
+                                        },
+                                        onUpdateCallBack: function (data) {
+                                            self.service.updateHistoryStart(data.masterCode, data.historyId, data.startYearMonth).done(function () {
+                                                self.reloadMasterHistory(self.selectedHistoryUuid());
+                                            });
+                                        }
+                                    };
+                                    nts.uk.ui.windows.setShared('options', newHistoryOptions);
+                                    var ntsDialogOptions = { title: nts.uk.text.format('{0}の登録 > 履歴の編集', self.options.functionName),
+                                        dialogClass: 'no-close' };
+                                    nts.uk.ui.windows.sub.modal('/view/base/simplehistory/updatehistory/index.xhtml', ntsDialogOptions);
                                 };
                                 ScreenBaseModel.prototype.reloadMasterHistory = function (uuid) {
                                     var self = this;
                                     self.loadMasterHistory().done(function () {
-                                        self.selectedHistoryUuid(uuid);
+                                        if (uuid) {
+                                            self.selectedHistoryUuid(uuid);
+                                        }
+                                        else {
+                                            if (self.masterHistoryList.length > 0) {
+                                                self.selectedHistoryUuid(self.masterHistoryList[0].historyList[0].uuid);
+                                            }
+                                        }
                                     });
                                 };
                                 ScreenBaseModel.prototype.start = function () {
@@ -150,4 +187,3 @@ var nts;
         })(pr = uk.pr || (uk.pr = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
-//# sourceMappingURL=viewmodel.js.map

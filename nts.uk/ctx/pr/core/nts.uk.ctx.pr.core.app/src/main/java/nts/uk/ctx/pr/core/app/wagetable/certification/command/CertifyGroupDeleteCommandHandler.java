@@ -10,7 +10,6 @@ import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroupRepository;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -34,13 +33,15 @@ public class CertifyGroupDeleteCommandHandler extends CommandHandler<CertifyGrou
 	@Override
 	@Transactional
 	protected void handle(CommandHandlerContext<CertifyGroupDeleteCommand> context) {
+		
 		// get info login user companyCode
 		String companyCode = AppContexts.user().companyCode();
+		
 		// get command
 		CertifyGroupDeleteCommand command = context.getCommand();
+		
 		// call server remove
-		this.certifyGroupRepository.remove(new CompanyCode(companyCode),
-				command.getCertifyGroupDeleteDto().getGroupCode(), 
+		this.certifyGroupRepository.remove(companyCode, command.getCertifyGroupDeleteDto().getGroupCode(),
 				command.getCertifyGroupDeleteDto().getVersion());
 	}
 

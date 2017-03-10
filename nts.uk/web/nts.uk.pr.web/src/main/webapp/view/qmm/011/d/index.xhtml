@@ -23,24 +23,21 @@
 
 		<ui:define name="content">
 			<div id="contents-area">
-				<div id="D_LBL_001">ナビゲーションメッセージ</div>
+				<div>ナビゲーションメッセージ</div>
 				<hr />
 				<TABLE class="margin-top-bot-20 form-default">
 					<tr>
 						<td>
-							<div id="D_LBL_002" data-bind="ntsFormLabel: {}">名称</div>
+							<div data-bind="ntsFormLabel: {}">名称</div>
 						</td>
 						<td><label>保険名称</label></td>
 					</tr>
 					<tr>
-						<td>
-							<br />
-							<div id="D_LBL_004" data-bind="ntsFormLabel: {required: true}">期間</div>
-						</td>
-						<td><div id="D_INP_001" class="w80" data-name="code"
+						<td><br />
+							<div data-bind="ntsFormLabel: {required: true}">期間</div></td>
+						<td><div class="fix-starthistory" data-name="code"
 								data-bind="ntsDatePicker: {value: historyStart, dateFormat: 'yyyy/MM'} " />
-							<labbel id="D_LBL_005">～</labbel> <label id="D_LBL_006"
-							data-bind="text: historyEnd"></label></td>
+							<labbel>～</labbel> <label data-bind="text: historyEnd"></label></td>
 					</tr>
 					<tr>
 						<td>

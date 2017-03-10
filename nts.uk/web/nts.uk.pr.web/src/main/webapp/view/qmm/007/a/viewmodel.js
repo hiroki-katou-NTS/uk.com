@@ -21,7 +21,10 @@ var nts;
                             var ScreenModel = (function (_super) {
                                 __extends(ScreenModel, _super);
                                 function ScreenModel() {
-                                    _super.call(this, '会社一律金額', qmm007.service.instance);
+                                    _super.call(this, {
+                                        functionName: '会社一律金額',
+                                        service: qmm007.service.instance,
+                                        removeMasterOnLastHistoryRemove: true });
                                     var self = this;
                                     self.isLoading = ko.observable(true);
                                     self.unitPriceHistoryModel = ko.observable(new UnitPriceHistoryModel(self.getDefaultUnitPriceHistory()));
@@ -38,30 +41,28 @@ var nts;
                                         textalign: "left"
                                     }));
                                 }
-                                ScreenModel.prototype.save = function () {
+                                ScreenModel.prototype.onSave = function () {
                                     var self = this;
+                                    var dfd = $.Deferred();
                                     if (self.isNewMode()) {
-                                        qmm007.service.create(ko.toJS(self.unitPriceHistoryModel()), true).done(function () {
-                                            self.loadUnitPriceHistoryList().done(function () {
-                                                self.selectedId(self.getLatestHistoryId(self.unitPriceHistoryModel().unitPriceCode()));
-                                            });
+                                        qmm007.service.instance.create(ko.toJS(self.unitPriceHistoryModel())).done(function (res) {
+                                            dfd.resolve(res.uuid);
                                         });
                                     }
                                     else {
-                                        qmm007.service.update(ko.toJS(self.unitPriceHistoryModel())).done(function () {
-                                            self.loadUnitPriceHistoryList().done(function () {
-                                                self.loadUnitPriceDetail(self.selectedId());
-                                            });
+                                        qmm007.service.instance.update(ko.toJS(self.unitPriceHistoryModel())).done(function (res) {
+                                            dfd.resolve(self.unitPriceHistoryModel().id);
                                         });
                                     }
+                                    return dfd.promise();
                                 };
                                 ScreenModel.prototype.setUnitPriceHistoryModel = function (dto) {
                                     var model = this.unitPriceHistoryModel();
                                     model.id = dto.id;
                                     model.unitPriceCode(dto.unitPriceCode);
                                     model.unitPriceName(dto.unitPriceName);
-                                    model.startMonth(nts.uk.time.formatYearMonth(dto.startMonth));
-                                    model.endMonth(nts.uk.time.formatYearMonth(dto.endMonth));
+                                    model.startMonth(dto.startMonth);
+                                    model.endMonth(dto.endMonth);
                                     model.budget(dto.budget);
                                     model.fixPaySettingType(dto.fixPaySettingType);
                                     model.fixPayAtr(dto.fixPayAtr);
@@ -95,7 +96,8 @@ var nts;
                                     defaultHist.id = '';
                                     defaultHist.unitPriceCode = '';
                                     defaultHist.unitPriceName = '';
-                                    defaultHist.startMonth = 201701;
+                                    defaultHist.startMonth = nts.uk.time.parseTime(new Date()).toValue();
+                                    ;
                                     defaultHist.endMonth = 999912;
                                     defaultHist.budget = 0;
                                     defaultHist.fixPaySettingType = 'Company';
@@ -115,8 +117,8 @@ var nts;
                                     this.id = historyDto.id;
                                     this.unitPriceCode = ko.observable(historyDto.unitPriceCode);
                                     this.unitPriceName = ko.observable(historyDto.unitPriceName);
-                                    this.startMonth = ko.observable(nts.uk.time.formatYearMonth(historyDto.startMonth));
-                                    this.endMonth = ko.observable(nts.uk.time.formatYearMonth(historyDto.endMonth));
+                                    this.startMonth = ko.observable(historyDto.startMonth);
+                                    this.endMonth = ko.observable(historyDto.endMonth);
                                     this.budget = ko.observable(historyDto.budget);
                                     this.fixPaySettingType = ko.observable(historyDto.fixPaySettingType);
                                     this.fixPayAtr = ko.observable(historyDto.fixPayAtr);

@@ -10,7 +10,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
-import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.pr.core.app.insurance.labor.unemployeerate.command.UnemployeeInsuranceRateAddCommand;
 import nts.uk.ctx.pr.core.app.insurance.labor.unemployeerate.command.UnemployeeInsuranceRateAddCommandHandler;
 import nts.uk.ctx.pr.core.app.insurance.labor.unemployeerate.command.UnemployeeInsuranceRateDeleteCommand;
@@ -19,17 +18,19 @@ import nts.uk.ctx.pr.core.app.insurance.labor.unemployeerate.command.UnemployeeI
 import nts.uk.ctx.pr.core.app.insurance.labor.unemployeerate.command.UnemployeeInsuranceRateUpdateCommandHandler;
 import nts.uk.ctx.pr.core.app.insurance.labor.unemployeerate.find.UnemployeeInsuranceFinder;
 import nts.uk.ctx.pr.core.app.insurance.labor.unemployeerate.find.dto.UnemployeeInsuranceRateFindOutDto;
+import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.service.UnemployeeInsuranceRateService;
 
 /**
  * The Class UnemployeeInsuranceRateWs.
  */
 @Path("pr/insurance/labor/unemployeerate")
 @Produces("application/json")
-public class UnemployeeInsuranceRateWs extends WebService {
+public class UnemployeeInsuranceRateWs {
 
 	/** The find. */
 	@Inject
 	private UnemployeeInsuranceFinder find;
+
 
 	/** The add. */
 	@Inject
@@ -43,22 +44,28 @@ public class UnemployeeInsuranceRateWs extends WebService {
 	@Inject
 	private UnemployeeInsuranceRateDeleteCommandHandler delete;
 
+	/** The service. */
+	@Inject
+	private UnemployeeInsuranceRateService service;
+
 	/**
 	 * Detail.
 	 *
-	 * @param historyId the history id
+	 * @param historyId
+	 *            the history id
 	 * @return the unemployee insurance rate find out dto
 	 */
 	@POST
 	@Path("detail/{historyId}")
 	public UnemployeeInsuranceRateFindOutDto detail(@PathParam("historyId") String historyId) {
-		return find.findById(historyId);
+		return this.find.findById(historyId);
 	}
 
 	/**
 	 * Adds the.
 	 *
-	 * @param command the command
+	 * @param command
+	 *            the command
 	 */
 	@POST
 	@Path("add")
@@ -69,7 +76,8 @@ public class UnemployeeInsuranceRateWs extends WebService {
 	/**
 	 * Update.
 	 *
-	 * @param command the command
+	 * @param command
+	 *            the command
 	 */
 	@POST
 	@Path("update")
@@ -80,7 +88,8 @@ public class UnemployeeInsuranceRateWs extends WebService {
 	/**
 	 * Delete.
 	 *
-	 * @param command the command
+	 * @param command
+	 *            the command
 	 */
 	@POST
 	@Path("delete")

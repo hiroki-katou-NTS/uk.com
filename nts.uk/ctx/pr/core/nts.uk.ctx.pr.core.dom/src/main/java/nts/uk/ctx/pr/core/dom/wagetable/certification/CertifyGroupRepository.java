@@ -7,8 +7,6 @@ package nts.uk.ctx.pr.core.dom.wagetable.certification;
 import java.util.List;
 import java.util.Optional;
 
-import nts.uk.ctx.core.dom.company.CompanyCode;
-
 public interface CertifyGroupRepository {
 
 	/**
@@ -32,14 +30,14 @@ public interface CertifyGroupRepository {
 	 * @param groupCode the group code
 	 * @param version the version
 	 */
-    void remove(CompanyCode companyCode, String groupCode, Long version);
+    void remove(String companyCode, String groupCode, long version);
 
 	/**
 	 * Find all.
 	 *
 	 * @return the list
 	 */
-	List<CertifyGroup> findAll(CompanyCode companyCode);
+	List<CertifyGroup> findAll(String companyCode);
 
 	/**
 	 * Find by id.
@@ -48,15 +46,5 @@ public interface CertifyGroupRepository {
 	 * @param code the code
 	 * @return the certify group
 	 */
-	Optional<CertifyGroup> findById(CompanyCode companyCode, String code);
-
-	/**
-	 * Checks if is duplicate code.
-	 *
-	 * @param companyCode the company code
-	 * @param code the code
-	 * @return true, if is duplicate code
-	 */
-	boolean isDuplicateCode(CompanyCode companyCode, CertifyGroupCode code);
-
+	Optional<CertifyGroup> findById(String companyCode, String code);
 }

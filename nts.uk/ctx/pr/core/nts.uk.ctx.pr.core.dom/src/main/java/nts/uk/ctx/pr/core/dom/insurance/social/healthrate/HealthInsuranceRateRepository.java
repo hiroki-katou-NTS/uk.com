@@ -8,13 +8,14 @@ import java.util.List;
 import java.util.Optional;
 
 import nts.uk.ctx.core.dom.company.CompanyCode;
+import nts.uk.ctx.pr.core.dom.base.simplehistory.SimpleHistoryRepository;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
 
 /**
  * The Interface HealthInsuranceRateRepository.
  */
-public interface HealthInsuranceRateRepository {
+public interface HealthInsuranceRateRepository extends SimpleHistoryRepository<HealthInsuranceRate>{
 
 	/**
 	 * Adds the.

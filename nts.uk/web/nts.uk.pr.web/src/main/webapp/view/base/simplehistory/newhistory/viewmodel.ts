@@ -58,7 +58,7 @@ module nts.uk.pr.view.base.simplehistory.newhistory {
             /**
              * Start year month.
              */
-            startYearMonth: KnockoutObservable<string>;
+            startYearMonth: KnockoutObservable<number>;
 
             /**
              * Last year month.
@@ -72,7 +72,7 @@ module nts.uk.pr.view.base.simplehistory.newhistory {
                 var self = this;
                 self.dialogOptions = nts.uk.ui.windows.getShared('options');
                 self.createType = ko.observable(ScreenModel.CREATE_TYPE_COPY_LATEST);
-                self.startYearMonth = ko.observable(nts.uk.time.formatYearMonth(self.dialogOptions.lastest.start));
+                self.startYearMonth = ko.observable(self.dialogOptions.lastest.start);
                 self.lastYearMonth = nts.uk.time.formatYearMonth(self.dialogOptions.lastest.start);
             }
 
@@ -93,7 +93,7 @@ module nts.uk.pr.view.base.simplehistory.newhistory {
                 var self = this;
                 var callBackData: NewHistoryCallBackData = {
                     masterCode: self.dialogOptions.master.code,
-                    startYearMonth: nts.uk.time.parseYearMonth(self.startYearMonth()).toValue()
+                    startYearMonth: self.startYearMonth()
                 };
                 if (self.createType() == ScreenModel.CREATE_TYPE_COPY_LATEST) {
                       self.dialogOptions.onCopyCallBack(callBackData);
