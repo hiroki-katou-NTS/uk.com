@@ -30,7 +30,7 @@
 					data-bind="click: RegisterClassification , enable: $root.errors.isEmpty"
 					class="proceed btnStyle">登録</button>
 				<button id="A_BTN_003">マスタ修正ログ</button>
-				<button id="A_BTN_004" data-bind="click: DeleteClassification"
+				<button id="A_BTN_004" data-bind="click: DeleteClassification , enable: hasCellphone"
 					class="danger btnStyle">削除</button>
 
 			</div>

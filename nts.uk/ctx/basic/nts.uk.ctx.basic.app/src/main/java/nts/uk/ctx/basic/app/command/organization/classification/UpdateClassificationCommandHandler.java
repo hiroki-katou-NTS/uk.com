@@ -2,6 +2,8 @@ package nts.uk.ctx.basic.app.command.organization.classification;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.basic.dom.organization.classification.Classification;
@@ -20,6 +22,10 @@ public class UpdateClassificationCommandHandler extends CommandHandler<UpdateCla
 	@Override
 	protected void handle(CommandHandlerContext<UpdateClassificationCommand> context) {
 		String companyCode = AppContexts.user().companyCode();
+		if (!classificationRepository.isExisted(companyCode,
+				new ClassificationCode(context.getCommand().getClassificationCode()))) {
+			throw new BusinessException("ER026");
+		}
 		Classification classification = new Classification(companyCode,
 				new ClassificationCode(context.getCommand().getClassificationCode()),
 				new ClassificationName(context.getCommand().getClassificationName()), null,
