@@ -7,27 +7,17 @@
 <body>
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
+			<com:ValidatorScript>
+				nts.uk.ctx.basic.dom.organization.payclassification.PayClassificationCode
+				nts.uk.ctx.basic.dom.organization.payclassification.PayClassificationName
+				nts.uk.ctx.basic.dom.organization.payclassification.Memo
+			</com:ValidatorScript>
 			<com:stylefile path="main.css" />
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="start.js" />
 			<com:scriptfile path="viewmodel.js" />
 			<com:scriptfile path="service.js" />
 			<script type="text/javascript">
-			__viewContext.primitiveValueConstraints.Memo = {
-					valueType: 'String',
-					charType: 'AnyHalfWidth',
-					maxLength: 1000,
-				};
-			__viewContext.primitiveValueConstraints.PayClassificationCode = {
-					valueType: 'String',
-					charType: 'AnyHalfWidth',
-					maxLength: 10,
-				};
-			__viewContext.primitiveValueConstraints.PayClassificationName = {
-					valueType: 'String',
-					charType: 'AnyHalfWidth',
-					maxLength: 20,
-				};
 			</script>
 		</ui:define>
 
@@ -39,7 +29,7 @@
 				<button id="A_BTN_002" data-bind="click: addPayClassification"
 					class="proceed btnStyle">登録</button>
 				<button id="A_BTN_003">マスタ修正ログ</button>
-				<button id="A_BTN_004" data-bind="click: deletePayClassification"
+				<button id="A_BTN_004" data-bind="click: deletePayClassification, enable : isDeleteEnable"
 					class="danger btnStyle">削除</button>
 
 			</div>

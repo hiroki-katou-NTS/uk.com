@@ -88,8 +88,8 @@ public class JpaPayClassificationReponsitory extends JpaRepository implements Pa
 	@Override
 	public boolean isExisted(String companyCode, PayClassificationCode payClassificationCode) {
 		return this.queryProxy().query(QUERY_IS_EXISTED, long.class)
-		.setParameter("companyCode", "'" + companyCode + "'")
-		.setParameter("payClassificationCode", "'" + payClassificationCode.toString() + "'")
+		.setParameter("companyCode", companyCode )
+		.setParameter("payClassificationCode",  payClassificationCode.toString() )
 		.getSingle().get() > 0;
 	}
 

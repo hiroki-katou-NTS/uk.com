@@ -10,10 +10,9 @@ module cmm015.a.viewmodel {
         INP_002_enable: KnockoutObservable<boolean>;
         INP_003_name: KnockoutObservable<string>;
         INP_004_notes: KnockoutObservable<string>;
-        multilineeditor: KnockoutObservable<any>;
-        index_of_itemDelete: any;
-        itemdata: any;
+        index_of_itemDelete: KnockoutObservable<number>;;
         adddata: any;
+        isDeleteEnable: KnockoutObservable<boolean>;
 
         currentCode: KnockoutObservable<string>;
         currentCodeList: KnockoutObservableArray<any>;
@@ -29,16 +28,16 @@ module cmm015.a.viewmodel {
                 { headerText: '名称', key: 'payClassificationName', width: 80 }
 
             ]);
+            self.index_of_itemDelete = ko.observable(-1);
             self.currentCode = ko.observable(null);
             self.currentCodeList = ko.observableArray([]);
             self.currentItem = ko.observable(null);
-            self.multilineeditor = ko.observable(null);
             self.INP_002_code = ko.observable(null);
             self.INP_002_enable = ko.observable(false);
+            self.isDeleteEnable = ko.observable(true);
             self.INP_003_name = ko.observable(null);
             self.INP_004_notes = ko.observable(null);
             self.findIndex = ko.observable(null);
-            self.itemdata = ko.observable(null);
             self.adddata = ko.observable(null);
             self.updatedata = ko.observable(null);
             self.currentCode.subscribe((function(codeChanged) {
@@ -64,32 +63,33 @@ module cmm015.a.viewmodel {
             self.INP_003_name("");
             self.INP_004_notes("");
             self.currentCode(null);
-            $("#A_INP_002").focus();
+            self.isDeleteEnable(false);
+            $("#INP_002_code").focus();
+
 
         }
 
 
         checkPage(): boolean {
             var self = this;
-            if (self.INP_002_code() == '' || self.INP_003_name() == '') {
-                alert("が入力されていません。");
+            if (self.INP_002_code() == '') {
+                alert("コードが入力されていません。");
+                $("#INP_002_code").focus();
                 return false;
-            } else {
-                return true;
-            }
+            } else if (self.INP_003_name() == '') {
+                alert("名称が入力されていません。");
+                $("#INP_003_name").focus();
+                return false;
+            } else { return true; }
         }
 
 
 
         find(value: string): any {
             let self = this;
-            var itemModel = null;
-            _.find(self.dataSource(), function(obj: viewmodel.model.PayClassificationDto) {
-                if (obj.payClassificationCode == value) {
-                    itemModel = obj;
-                }
-            })
-            return itemModel;
+            return _.find(self.dataSource(), function(obj) {
+                return obj.payClassificationCode == value;
+            });
         }
 
         addPayClassification() {
@@ -101,27 +101,23 @@ module cmm015.a.viewmodel {
                     service.addPayClassification(payClassification).done(function() {
 
                         self.getPayClassificationList_first();
-
+                        self.isDeleteEnable(true);
                     }).fail(function(res) {
                         dfd.reject(res);
                     })
                 }
-                for (let i = 0; i < self.dataSource().length; i++) {
+                for (let i = 0; i < self.dataSource().length ; i++) {
                     if (self.INP_002_code() == self.dataSource()[i].payClassificationCode && self.INP_002_enable() == false) {
-
                         var payClassification_before = self.dataSource()[i];
                         var payClassification_update = new viewmodel.model.PayClassificationDto(self.INP_002_code(), self.INP_003_name(), self.INP_004_notes());
                         service.updatePayClassification(payClassification_update).done(function() {
                             self.updatedata(payClassification_update);
                             self.getPayClassificationList_afterUpdate();
-
                         }).fail(function(res) {
-
                             dfd.reject(res);
                         })
                         break;
                     } else if (self.INP_002_code() != self.dataSource()[i].payClassificationCode
-                        && i == self.dataSource().length - 1
                         && self.INP_002_enable() == true) {
                         var payClassification_new = new viewmodel.model.PayClassificationDto(self.INP_002_code(), self.INP_003_name(), self.INP_004_notes());
                         service.addPayClassification(payClassification_new).done(function() {
@@ -129,9 +125,7 @@ module cmm015.a.viewmodel {
                             self.currentCode(self.adddata().payClassificationCode);
                             self.getPayClassificationList_afterAdd();
                         }).fail(function(res) {
-
                             alert(res.message);
-
                             dfd.reject(res);
                         })
                         break;
@@ -171,41 +165,47 @@ module cmm015.a.viewmodel {
         }
 
         deletePayClassification() {
+
             var self = this;
             var dfd = $.Deferred<any>();
+
             if (self.dataSource().length > 0) {
                 var item = new model.RemovePayClassificationCommand(self.currentItem().payClassificationCode);
-                self.index_of_itemDelete = self.dataSource().indexOf(self.currentItem());
-                service.removePayClassification(item).done(function(res) {
-                    //                if (self.dataSource().length > 0){
-                    self.getPayClassificationList_aftefDelete();
+                self.index_of_itemDelete(_.findIndex(self.dataSource(), function(item)
+                { return item.payClassificationCode === self.currentItem().payClassificationCode; }));
+                nts.uk.ui.dialog.confirm("データを削除します。\r\nよろしいですか？").ifYes(function() {
+                    service.removePayClassification(item).done(function(res) {
 
-                    //               } else {return null}
-                }).fail(function(res) {
-                    dfd.reject(res);
-                })
+                        self.getPayClassificationList_aftefDelete();
+
+                    }).fail(function(res) {
+                        dfd.reject(res);
+                    })
+
+                }).ifNo(function() {
+                });
             } else { return null }
-
         }
 
 
         getPayClassificationList_aftefDelete(): any {
+
             var self = this;
             var dfd = $.Deferred<any>();
             service.getAllPayClassification().done(function(payClassification_arr: Array<model.PayClassificationDto>) {
                 self.dataSource(payClassification_arr);
 
                 if (self.dataSource().length > 0) {
-                    if (self.index_of_itemDelete === self.dataSource().length) {
-                        self.currentCode(self.dataSource()[self.index_of_itemDelete - 1].payClassificationCode)
-                        self.INP_002_code(self.dataSource()[self.index_of_itemDelete - 1].payClassificationCode);
-                        self.INP_003_name(self.dataSource()[self.index_of_itemDelete - 1].payClassificationName);
-                        self.INP_004_notes(self.dataSource()[self.index_of_itemDelete - 1].memo);
+                    if (self.index_of_itemDelete() === self.dataSource().length) {
+                        self.currentCode(self.dataSource()[self.index_of_itemDelete() - 1].payClassificationCode)
+                        self.INP_002_code(self.dataSource()[self.index_of_itemDelete() - 1].payClassificationCode);
+                        self.INP_003_name(self.dataSource()[self.index_of_itemDelete() - 1].payClassificationName);
+                        self.INP_004_notes(self.dataSource()[self.index_of_itemDelete() - 1].memo);
                     } else {
-                        self.currentCode(self.dataSource()[self.index_of_itemDelete].payClassificationCode)
-                        self.INP_002_code(self.dataSource()[self.index_of_itemDelete].payClassificationCode);
-                        self.INP_003_name(self.dataSource()[self.index_of_itemDelete].payClassificationName);
-                        self.INP_004_notes(self.dataSource()[self.index_of_itemDelete].memo);
+                        self.currentCode(self.dataSource()[self.index_of_itemDelete()].payClassificationCode)
+                        self.INP_002_code(self.dataSource()[self.index_of_itemDelete()].payClassificationCode);
+                        self.INP_003_name(self.dataSource()[self.index_of_itemDelete()].payClassificationName);
+                        self.INP_004_notes(self.dataSource()[self.index_of_itemDelete()].memo);
                     }
                     dfd.resolve();
                 } else { self.initRegisterPayClassification(); }
@@ -214,6 +214,7 @@ module cmm015.a.viewmodel {
             }).fail(function(res) {
                 alert(res.message);
             })
+
             dfd.resolve();
             return dfd.promise();
 
@@ -232,6 +233,7 @@ module cmm015.a.viewmodel {
                     self.INP_002_code(self.dataSource()[0].payClassificationCode);
                     self.INP_003_name(self.dataSource()[0].payClassificationName);
                     self.INP_004_notes(self.dataSource()[0].memo);
+                    self.isDeleteEnable(true);
                 }
                 dfd.resolve();
             }).fail(function(res) {
@@ -271,16 +273,6 @@ module cmm015.a.viewmodel {
             var dfd = $.Deferred<any>();
             service.getAllPayClassification().done(function(payClassification_arr: Array<model.PayClassificationDto>) {
                 self.dataSource(payClassification_arr);
-                //                if (self.dataSource().length > 1) {
-                //                    let i = self.currentItem().payClassificationCode;
-                //                    let j = self.dataSource().indexOf(self.currentItem());
-                //                    self.currentCode(i);
-                //
-                //                    self.INP_002_code(self.dataSource()[j].payClassificationCode);
-                //                    self.INP_003_name(self.dataSource()[j].payCe);
-                //                    self.INP_004_notes(self.dataSource()[j].memo);
-                //                }
-
                 if (self.dataSource().length > 1) {
                     self.currentCode(self.updatedata().payClassificationCode);
                     self.INP_002_enable(false);
@@ -308,6 +300,9 @@ module cmm015.a.viewmodel {
                 self.INP_004_notes(self.adddata().memo);
                 self.currentCode(self.adddata().payClassificationCode);
                 self.INP_002_enable(false);
+                self.isDeleteEnable(true);
+                self.currentItem(self.adddata());
+
                 dfd.resolve();
             }).fail(function(res) {
                 alert(res.message);
