@@ -16,9 +16,6 @@ import nts.uk.ctx.pr.core.dom.enums.CategoryAtr;
 import nts.uk.ctx.pr.core.dom.itemmaster.ItemCode;
 import nts.uk.ctx.pr.core.dom.itemmaster.ItemMaster;
 import nts.uk.ctx.pr.core.dom.itemmaster.ItemMasterRepository;
-import nts.uk.ctx.pr.core.dom.layout.detail.LayoutMasterDetail;
-import nts.uk.ctx.pr.core.dom.layout.line.LayoutMasterLine;
-import nts.uk.ctx.pr.core.dom.layout.line.LineDispAtr;
 import nts.uk.ctx.pr.core.dom.paymentdata.PaymentCalculationBasicInformation;
 import nts.uk.ctx.pr.core.dom.paymentdata.dataitem.CorrectFlag;
 import nts.uk.ctx.pr.core.dom.paymentdata.dataitem.DetailItem;
@@ -29,6 +26,9 @@ import nts.uk.ctx.pr.core.dom.personalinfo.commute.PersonalCommuteFee;
 import nts.uk.ctx.pr.core.dom.personalinfo.commute.PersonalCommuteFeeRepository;
 import nts.uk.ctx.pr.core.dom.personalinfo.holiday.HolidayPaid;
 import nts.uk.ctx.pr.core.dom.personalinfo.wage.PersonalWage;
+import nts.uk.ctx.pr.core.dom.rule.employment.layout.detail.LayoutMasterDetail;
+import nts.uk.ctx.pr.core.dom.rule.employment.layout.line.LayoutMasterLine;
+import nts.uk.ctx.pr.core.dom.rule.employment.layout.line.LineDispAtr;
 
 @Stateless
 public class PaymentDetailServiceImpl implements PaymentDetailService {
