@@ -1,5 +1,10 @@
 package nts.uk.ctx.pr.core.dom.itemperiod;
 
-public class ItemClass {
+import nts.arc.primitive.IntegerPrimitiveValue;
 
+public class ItemClass extends IntegerPrimitiveValue<ItemClass> {
+
+	public ItemClass(int rawValue) {
+		super(rawValue);
+	}
 }

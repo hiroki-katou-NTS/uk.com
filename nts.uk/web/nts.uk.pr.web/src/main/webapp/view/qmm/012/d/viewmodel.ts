@@ -33,10 +33,10 @@ module qmm012.d.viewmodel {
             self.enable = ko.observable(true);
             self.selectedCode_D_001 = ko.observable('1');
             self.ComboBoxItemList_D_001 = ko.observableArray([
-                new ComboboxItemModel('1', '任意控除項目'),
-                new ComboboxItemModel('2', '社会保険項目'),
-                new ComboboxItemModel('3', '所得税項目'),
-                new ComboboxItemModel('4', '住民税項目')
+                new ComboboxItemModel('1', '莉ｻ諢乗而髯､鬆�逶ｮ'),
+                new ComboboxItemModel('2', '遉ｾ莨壻ｿ晞匱鬆�逶ｮ'),
+                new ComboboxItemModel('3', '謇�蠕礼ｨ朱��逶ｮ'),
+                new ComboboxItemModel('4', '菴乗ｰ醍ｨ朱��逶ｮ')
             ]);
             self.selectedCode_D_001 = ko.observable('1');
             //end combobox data
@@ -52,8 +52,8 @@ module qmm012.d.viewmodel {
             self.checked_D_007 = ko.observable(true);
             //D_002
             self.roundingRules_D_002 = ko.observableArray([
-                { code: '1', name: 'ゼロを表示する' },
-                { code: '2', name: 'ゼロを表示しない' }
+                { code: '1', name: '繧ｼ繝ｭ繧定｡ｨ遉ｺ縺吶ｋ' },
+                { code: '2', name: '繧ｼ繝ｭ繧定｡ｨ遉ｺ縺励↑縺�' }
             ]);
             self.selectedRuleCode_D_002 = ko.observable(1);
             self.currencyeditor_D_001 = {
@@ -72,12 +72,7 @@ module qmm012.d.viewmodel {
             //start textarea
             self.textArea_D_005 = ko.observable("");
         }
-        start(): JQueryPromise<any> {
-            var self = this;
-            // Page load dfd.
-            var dfd = $.Deferred();
-            //dropdownlist event
-        }
+      
     }
 
     class ComboboxItemModel {

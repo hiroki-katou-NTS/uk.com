@@ -18,7 +18,8 @@ public class JpaItemMasterRepository extends JpaRepository implements ItemMaster
 	private final String SEL_3 = SEL + " WHERE c.qcamtItemPK.ccd = :companyCode AND c.avePayAtr = :avePayAtr";
 	private final String SEL_3_1 = SEL + " WHERE c.qcamtItemPK.ccd = :companyCode AND c.qcamtItemPK.ctgAtr = :ctgAtr";
 	private final String SEL_10 = "";
-	
+	private final String SEL_1 = SEL + " WHERE c.qcamtItemPK.ccd = :companyCode ";
+
 	@Override
 	public Optional<ItemMaster> find(String companyCode, int categoryAtr, String itemCode) {
 		// SEL_2
@@ -28,49 +29,67 @@ public class JpaItemMasterRepository extends JpaRepository implements ItemMaster
 
 	@Override
 	public List<ItemMaster> findAll(String companyCode, int avePayAtr) {
-		return this.queryProxy().query(SEL_3, QcamtItem.class)
-				.setParameter("companyCode", companyCode)
-				.setParameter("avePayAtr", avePayAtr)
+		return this.queryProxy().query(SEL_3, QcamtItem.class).setParameter("companyCode", companyCode)
+				.setParameter("avePayAtr", avePayAtr).getList(c -> toDomain(c));
+	}
+
+	@Override
+	public List<ItemMaster> findAllNoAvePayAtr(String companyCode) {
+		return this.queryProxy().query(SEL_1, QcamtItem.class).setParameter("companyCode", companyCode)
 				.getList(c -> toDomain(c));
 	}
 
 	@Override
 	public List<ItemMaster> findAllByCategory(String companyCode, int categoryAtr) {
-		return this.queryProxy().query(SEL_3_1, QcamtItem.class)
-				.setParameter("companyCode", companyCode)
-				.setParameter("ctgAtr", categoryAtr)
-				.getList(c -> toDomain(c));
+		return this.queryProxy().query(SEL_3_1, QcamtItem.class).setParameter("companyCode", companyCode)
+				.setParameter("ctgAtr", categoryAtr).getList(c -> toDomain(c));
 	}
 
 	@Override
 	public List<ItemMaster> findAll(String companyCode, int categoryAtr, String itemCode, int fixAtr) {
-		return this.queryProxy().query(SEL_10, QcamtItem.class)
-				.setParameter("companyCode", companyCode)
-				.setParameter("itemCode", itemCode)
-				.setParameter("fixAtr", fixAtr)
-				.getList(c -> toDomain(c));
+		return this.queryProxy().query(SEL_10, QcamtItem.class).setParameter("companyCode", companyCode)
+				.setParameter("itemCode", itemCode).setParameter("fixAtr", fixAtr).getList(c -> toDomain(c));
+	}
+
+	public void remove(String companyCode, int categoryAtr, String itemCode) {
+		QcamtItemPK key = new QcamtItemPK(companyCode, categoryAtr, itemCode);
+		this.commandProxy().remove(QcamtItem.class, key);
+	}
+
+	@Override
+	public void add(ItemMaster itemMaster) {
+		this.commandProxy().insert(toEntity(itemMaster));
+	}
+
+	private QcamtItem toEntity(ItemMaster domain) {
+		val entity = new QcamtItem();
+		entity.qcamtItemPK.ccd = domain.getCompanyCode().v();
+		entity.qcamtItemPK.ctgAtr = domain.getCategoryAtr().value;
+		entity.qcamtItemPK.itemCd = domain.getItemCode().v();
+		entity.fixAtr = domain.getFixAtr();
+		entity.itemName = domain.getItemName().v();
+		entity.itemAbName = domain.getItemAbName().v();
+		entity.itemAbNameE = domain.getItemAbNameE().v();
+		entity.itemAbNameO = domain.getItemAbNameO().v();
+		entity.dispSet = domain.getDisplaySet().value;
+		entity.uniteCd = domain.getUniteCode().v();
+		entity.zeroDispSet = domain.getZeroDisplaySet().value;
+		entity.itemDispAtr = domain.getItemDisplayAtr().value;
+		return entity;
 	}
 
 	/**
 	 * Convert to domain
+	 * 
 	 * @param entity
 	 * @return
 	 */
 	private ItemMaster toDomain(QcamtItem entity) {
-		val domain = ItemMaster.createFromJavaType(
-				entity.qcamtItemPK.ccd,
-				entity.qcamtItemPK.itemCd, 
-				entity.itemName, 
-				entity.itemAbName,
-				entity.itemAbNameE, 
-				entity.itemAbNameO, 
-				entity.qcamtItemPK.ctgAtr, 
-				entity.fixAtr, 
-				entity.dispSet,
-				entity.uniteCd, 
-				entity.zeroDispSet, 
-				entity.itemDispAtr);
-		
+		val domain = ItemMaster.createFromJavaType(entity.qcamtItemPK.ccd, entity.qcamtItemPK.itemCd, entity.itemName,
+				entity.itemAbName, entity.itemAbNameE, entity.itemAbNameO, entity.qcamtItemPK.ctgAtr, entity.fixAtr,
+				entity.dispSet, entity.uniteCd, entity.zeroDispSet, entity.itemDispAtr);
+
 		return domain;
 	}
+
 }

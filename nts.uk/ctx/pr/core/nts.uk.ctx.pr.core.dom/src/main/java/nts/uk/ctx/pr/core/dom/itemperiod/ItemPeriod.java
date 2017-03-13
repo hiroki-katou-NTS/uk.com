@@ -1,72 +1,35 @@
 package nts.uk.ctx.pr.core.dom.itemperiod;
 
-import java.time.YearMonth;
-
 import lombok.Getter;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.core.dom.company.CompanyCode;
+import nts.uk.ctx.pr.core.dom.itemmaster.ItemCode;
 
+@Getter
 public class ItemPeriod extends AggregateRoot {
-
-	@Getter
 	private CompanyCode companyCode;
-
-	@Getter
 	private ItemClass itemclass;
-
-	@Getter
-	private String ItemCode;
-
-	@Getter
+	private ItemCode itemCode;
 	private DateUseClassification expirationDateUseClassification;
-
-	@Getter
-	private YearMonth startYear;
-
-	@Getter
-	private YearMonth endYear;
-
-	@Getter
+	private Year startYear;
+	private Year endYear;
 	private UsageClassification cycleUsageClassification;
-
-	@Getter
 	private UsageClassification januaryUsageClassification;
-
-	@Getter
 	private UsageClassification februaryUsageClassification;
-
-	@Getter
 	private UsageClassification marchUsageClassification;
-
-	@Getter
 	private UsageClassification aprilUsageClassification;
-
-	@Getter
 	private UsageClassification mayUsageClassification;
-
-	@Getter
 	private UsageClassification juneUsageClassification;
-
-	@Getter
 	private UsageClassification julyUsageClassification;
-
-	@Getter
 	private UsageClassification augustUsageClassification;
-
-	@Getter
 	private UsageClassification septemberUsageClassification;
-
-	@Getter
 	private UsageClassification octoberUsageClassification;
-
-	@Getter
 	private UsageClassification novemberUsageClassification;
-
-	@Getter
 	private UsageClassification decemberUsageClassification;
 
-	public ItemPeriod(CompanyCode companyCode, ItemClass itemclass, String itemCode,
-			DateUseClassification expirationDateUseClassification, YearMonth startYear, YearMonth endYear,
+	public ItemPeriod(CompanyCode companyCode, ItemClass itemclass, ItemCode itemCode,
+			DateUseClassification expirationDateUseClassification, Year startYear, Year endYear,
 			UsageClassification cycleUsageClassification, UsageClassification januaryUsageClassification,
 			UsageClassification februaryUsageClassification, UsageClassification marchUsageClassification,
 			UsageClassification aprilUsageClassification, UsageClassification mayUsageClassification,
@@ -77,7 +40,7 @@ public class ItemPeriod extends AggregateRoot {
 		super();
 		this.companyCode = companyCode;
 		this.itemclass = itemclass;
-		ItemCode = itemCode;
+		this.itemCode = itemCode;
 		this.expirationDateUseClassification = expirationDateUseClassification;
 		this.startYear = startYear;
 		this.endYear = endYear;
@@ -94,6 +57,50 @@ public class ItemPeriod extends AggregateRoot {
 		this.octoberUsageClassification = octoberUsageClassification;
 		this.novemberUsageClassification = novemberUsageClassification;
 		this.decemberUsageClassification = decemberUsageClassification;
+	}
+
+	public static ItemPeriod createFromJavaType(
+			String companyCode, 
+			int itemclass, 
+			String itemcode,
+			int expirationDateUseClassification, 
+			int startYear, 
+			int endYear, 
+			int cycleUsageClassification,
+			int januaryUsageClassification, 
+			int februaryUsageClassification, 
+			int marchUsageClassification,
+			int aprilUsageClassification, 
+			int mayUsageClassification, 
+			int juneUsageClassification,
+			int julyUsageClassification, 
+			int augustUsageClassification, 
+			int septemberUsageClassification,
+			int octoberUsageClassification, 
+			int novemberUsageClassification, 
+			int decemberUsageClassification) {
+		
+		return new ItemPeriod( 
+				new CompanyCode(companyCode) , 
+				new ItemClass(itemclass), 
+				new ItemCode(itemcode) , 
+				EnumAdaptor.valueOf(expirationDateUseClassification, DateUseClassification.class), 
+				new Year( startYear), 
+				new Year(endYear), 
+				EnumAdaptor.valueOf(cycleUsageClassification, UsageClassification.class), 
+				EnumAdaptor.valueOf(januaryUsageClassification, UsageClassification.class),
+				EnumAdaptor.valueOf(februaryUsageClassification, UsageClassification.class),
+				EnumAdaptor.valueOf(marchUsageClassification, UsageClassification.class),
+				EnumAdaptor.valueOf(aprilUsageClassification, UsageClassification.class),
+				EnumAdaptor.valueOf(mayUsageClassification, UsageClassification.class),
+				EnumAdaptor.valueOf(juneUsageClassification, UsageClassification.class),
+				EnumAdaptor.valueOf(julyUsageClassification, UsageClassification.class),
+				EnumAdaptor.valueOf(augustUsageClassification, UsageClassification.class),
+				EnumAdaptor.valueOf(septemberUsageClassification, UsageClassification.class),
+				EnumAdaptor.valueOf(octoberUsageClassification, UsageClassification.class),
+				EnumAdaptor.valueOf(novemberUsageClassification, UsageClassification.class),
+				EnumAdaptor.valueOf(decemberUsageClassification, UsageClassification.class));
+
 	}
 
 }

@@ -11,6 +11,8 @@ import javax.ws.rs.Produces;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.pr.core.app.command.itemmaster.AddItemMasterCommand;
 import nts.uk.ctx.pr.core.app.command.itemmaster.AddItemMasterCommandHandler;
+import nts.uk.ctx.pr.core.app.command.itemmaster.DeleteItemMasterCommand;
+import nts.uk.ctx.pr.core.app.command.itemmaster.DeleteItemMasterCommandHandler;
 import nts.uk.ctx.pr.core.app.command.itemmaster.UpdateItemMasterCommand;
 import nts.uk.ctx.pr.core.app.command.itemmaster.UpdateItemMasterCommandHandler;
 import nts.uk.ctx.pr.core.app.find.itemmaster.ItemMasterFinder;
@@ -26,34 +28,48 @@ public class ItemMasterWebService extends WebService {
 	private UpdateItemMasterCommandHandler updateHandler;
 	@Inject
 	private AddItemMasterCommandHandler addHandler;
-	
+	@Inject
+	private DeleteItemMasterCommandHandler deleteHandler;
+
 	@POST
 	@Path("findall/avepay/time")
-	public List<ItemMasterDto> findByAvePayAtrTime(){
+	public List<ItemMasterDto> findByAvePayAtrTime() {
 		return itemFinder.findAllByItemAtr(ItemAtr.TIMES);
 	}
-	
+
 	@POST
 	@Path("findall/category/{categoryAtr}")
-	public List<ItemMasterDto> findBy(@PathParam("categoryAtr") int categoryAtr){
+	public List<ItemMasterDto> findBy(@PathParam("categoryAtr") int categoryAtr) {
 		return itemFinder.findBy(categoryAtr);
 	}
 
 	@POST
 	@Path("find/{categoryAtr}/{itemCode}")
-	public ItemMasterDto find(@PathParam("categoryAtr") int categoryAtr, @PathParam("itemCode") String itemCode){
+	public ItemMasterDto find(@PathParam("categoryAtr") int categoryAtr, @PathParam("itemCode") String itemCode) {
 		return itemFinder.find(categoryAtr, itemCode);
 	}
-	
+
 	@POST
 	@Path("add")
 	public void add(AddItemMasterCommand command) {
 		this.addHandler.handle(command);
 	}
-	
+
+	@POST
+	@Path("delete")
+	public void add(DeleteItemMasterCommand command) {
+		this.deleteHandler.handle(command);
+	}
+
 	@POST
 	@Path("update")
 	public void update(UpdateItemMasterCommand command) {
 		this.updateHandler.handle(command);
+	}
+
+	@POST
+	@Path("findAllItemMaster")
+	public List<ItemMasterDto> findAllNoAvePayAtr() {
+		return itemFinder.findAllNoAvePayAtr();
 	}
 }

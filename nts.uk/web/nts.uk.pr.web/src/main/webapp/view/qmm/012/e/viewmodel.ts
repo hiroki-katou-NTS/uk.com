@@ -35,16 +35,16 @@ module qmm012.e.viewmodel {
             //E_001 To 003
             //E_001To003
             self.roundingRules_E_001 = ko.observableArray([
-                { code: '1', name: '時間' },
-                { code: '2', name: '回数' }
+                { code: '1', name: '譎る俣' },
+                { code: '2', name: '蝗樊焚' }
             ]);
             self.roundingRules_E_002 = ko.observableArray([
-                { code: '1', name: '対象' },
-                { code: '2', name: '非対称' }
+                { code: '1', name: '蟇ｾ雎｡' },
+                { code: '2', name: '髱槫ｯｾ遘ｰ' }
             ]);
             self.roundingRules_E_003 = ko.observableArray([
-                { code: '1', name: 'ゼロを表示する' },
-                { code: '2', name: 'ゼロを表示しない' }
+                { code: '1', name: '繧ｼ繝ｭ繧定｡ｨ遉ｺ縺吶ｋ' },
+                { code: '2', name: '繧ｼ繝ｭ繧定｡ｨ遉ｺ縺励↑縺�' }
             ]);
             self.selectedRuleCode_E_001 = ko.observable(1);
             self.selectedRuleCode_E_002 = ko.observable(1);
@@ -66,12 +66,7 @@ module qmm012.e.viewmodel {
             //start textarea
             self.textArea_E_005 = ko.observable("");
         }
-        start(): JQueryPromise<any> {
-            var self = this;
-            // Page load dfd.
-            var dfd = $.Deferred();
-            //dropdownlist event
-        }
+        
     }
 
 
