@@ -20,6 +20,12 @@ public class JobTitleFinder {
 		return repository.findAllPosition(companyCode,historyId)
 				.stream().map(e->{return convertToDto(e);}).collect(Collectors.toList());
 	}
+	
+	public List<JobTitleDto> findAll() {
+		String companyCode = AppContexts.user().companyCode();
+		return repository.findAll(companyCode)
+				.stream().map(e->{return convertToDto(e);}).collect(Collectors.toList());
+	}
 
 	private JobTitleDto convertToDto(JobTitle position) {
 		JobTitleDto positionDto = new JobTitleDto();

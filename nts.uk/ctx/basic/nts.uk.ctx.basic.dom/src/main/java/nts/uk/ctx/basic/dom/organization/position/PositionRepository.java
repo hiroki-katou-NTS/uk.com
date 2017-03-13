@@ -11,9 +11,9 @@ public interface PositionRepository {
 	/*
 	 * add,update,delete position
 	 */
-	void add(JobTitle position);
+	void add(JobTitle jobTitle);
 	
-	void update (JobTitle position);
+	void update (JobTitle jobTitle);
 	
 	void delete (String companyCode,JobCode jobCode,String historyId);
 	
@@ -36,6 +36,8 @@ public interface PositionRepository {
 	Optional<JobTitle> findSingle(String companyCode, String historyId, JobCode jobCode);
 
 	Optional<JobHistory> findSingleHistory(String companyCode, String historyId);
+
+	List<JobTitle> findAll(String companyCode);
 
 
 	}

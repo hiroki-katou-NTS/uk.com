@@ -25,13 +25,7 @@
 					<div class="cf">
 						<div class="form-label inline required">
 							<label id="LBL_001">対象データ</label>
-							<label id="LBL_002" data-bind="text: selectLayoutCode">01</label>
-							<label id="LBL_003" data-bind="text: selectLayoutName">正社員用明細書</label>
-							<label id="">（</label>
-							<label id="LBL_004" data-bind="text: layoutStartYm">2016/04</label>
-							<label id="">　　～　　</label>
-							<label id="LBL_005" data-bind="text: selectLayoutEndYm"></label>
-							<label id="">）</label>
+						
 						</div><br />
 						<br />
 						<div class = "form-label inline required">
@@ -54,16 +48,16 @@
 								<div style="display: flex; margin-top: 10px">
 									<div style="margin-right: 10px"><label id="LBL_008">開始年月</label></div>
 									<div><input  id = "INP_001" maxlength="7" style="ime-mode: inactive" 
-									 data-bind="ntsTimeEditor: {value: selectLayoutStartYm, option: timeEditorOption, enable: enableYm}"></input></div>
+									 data-bind="ntsTimeEditor: {value: selectPositionStartDate, option: timeEditorOption, enable: enableDate}"></input></div>
 									<div><label id="">　　～　　</label></div>
-									<div><label id = "LBL_009" data-bind="text: selectLayoutEndYm"></label></div>
+									<div><label id = "LBL_009" data-bind="text: selectLayoutEndDate"></label></div>
 								</div>
 							</div>
 						</div>
 						<br />
 						<hr></hr>
 						<div class = "bottomStype">
-							<button class="x-large proceed" id = "BTN_001" data-bind = "click: layoutProcess, enable: $root.errors.isEmpty">決定</button>
+							<button class="x-large proceed" id = "BTN_001" data-bind = "click: positionProcess, enable: $root.errors.isEmpty">決定</button>
 							<button class="large" id="BTN_002" data-bind = "click: closeDialog">キャンセル</button><br />
 						</div>
 					</div>

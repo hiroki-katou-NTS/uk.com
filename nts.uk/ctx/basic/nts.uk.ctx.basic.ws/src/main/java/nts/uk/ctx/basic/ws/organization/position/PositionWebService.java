@@ -9,6 +9,8 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.basic.app.command.organization.position.AddPositionCommand;
+import nts.uk.ctx.basic.app.command.organization.position.AddPositionCommandHandler;
 import nts.uk.ctx.basic.app.command.organization.position.DeletePositionCommand;
 import nts.uk.ctx.basic.app.command.organization.position.DeletePositionCommandHandler;
 import nts.uk.ctx.basic.app.command.organization.position.UpdatePositionCommand;
@@ -18,58 +20,66 @@ import nts.uk.ctx.basic.app.find.organization.position.JobHistFinder;
 import nts.uk.ctx.basic.app.find.organization.position.JobTitleDto;
 import nts.uk.ctx.basic.app.find.organization.position.JobTitleFinder;
 
-
 @Path("basic/position")
 @Produces("application/json")
-public class PositionWebService extends WebService{
+public class PositionWebService extends WebService {
 
 	@Inject
 	private JobTitleFinder positionFinder;
 	@Inject
 	private JobHistFinder histFinder;
-	//@Inject
-	//private CreatePositionCommandHandler addPosition;
+	 @Inject
+	 private AddPositionCommandHandler addPosition;
 	@Inject
 	private UpdatePositionCommandHandler updatePosition;
 	@Inject
 	private DeletePositionCommandHandler deletePosition;
-	
+
 	@POST
 	@Path("findallposition/{historyId}")
-	public List<JobTitleDto> findAllPosition(@PathParam("historyId") String historyId){
-
+	public List<JobTitleDto> findAllPosition(@PathParam("historyId") String historyId) {
+		List<JobTitleDto> t = this.positionFinder.findAllPosition(historyId);
 		return this.positionFinder.findAllPosition(historyId);
 	}
 
 	@POST
+	@Path("findall}")
+	public List<JobTitleDto> findAll() {
+
+		return this.positionFinder.findAll();
+	}
+
+	@POST
 	@Path("getallhist")
-	public List<JobHistDto> init(){
-//		List<JobHistDto> i =null;
-//		i = histFinder.init();
-//		System.out.println("==" + i);
+	public List<JobHistDto> init() {
+		// List<JobHistDto> i =null;
+		// i = histFinder.init();
+		// System.out.println("==" + i);
 		return this.histFinder.init();
 	}
-//	@POST
-//	@Path("findposition/{jobCode}/{historyId}")
-//	public Optional<PositionDto> find(@PathParam("jobCode") String jobCode,@PathParam("historyId") String historyId){
-//		return this.finder.find(jobCode, historyId);
-//	}
-	
-//	@POST
-//	@Path("addPosition")
-//	public void add(CreatePositionCommand command){
-//		this.addPosition.handle(command);		
-//	}
-	
+	// @POST
+	// @Path("findposition/{jobCode}/{historyId}")
+	// public Optional<PositionDto> find(@PathParam("jobCode") String
+	// jobCode,@PathParam("historyId") String historyId){
+	// return this.finder.find(jobCode, historyId);
+	// }
+
+	 @POST
+	 @Path("addPosition")
+	 public void add(AddPositionCommand command){
+	 this.addPosition.handle(command);
+	 }
+
 	@POST
 	@Path("updatePosition")
-	public void update(UpdatePositionCommand command){
+	public void update(UpdatePositionCommand command) {
 		this.updatePosition.handle(command);
 	}
-	
+
 	@POST
 	@Path("deletePosition")
-	public void deletePosition(DeletePositionCommand command){
+	public void deletePosition(DeletePositionCommand command) {
 		this.deletePosition.handle(command);
 	}
+
 }

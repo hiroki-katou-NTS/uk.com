@@ -28,9 +28,7 @@ public class JobTitle extends AggregateRoot {
 	
 	private PresenceCheckScopeSet presenceCheckScopeSet;
 	
-	private ReferenceSettings referenceSettings;
-	
-	private AuthorizationCode authorizationCode;
+
 	
 	public JobTitle( JobName jobName, JobCode jobCode, JobCode jobOutCode,
 			 String historyId, String companyCode, Memo memo ,HiterarchyOrderCode hiterarchyOrderCode ,PresenceCheckScopeSet presenceCheckScopeSet) {
@@ -68,6 +66,16 @@ public class JobTitle extends AggregateRoot {
 		return new JobTitle(new JobName(jobName),  new JobCode(jobCode), new JobCode(jobOutCode), 
 				historyId, companyCode, new Memo(memo),new HiterarchyOrderCode(hiterarchyOrderCode) ,EnumAdaptor.valueOf(presenceCheckScopeSet, PresenceCheckScopeSet.class));
 
+	}
+
+
+	public JobTitle(JobName jobName, JobCode jobCode, String historyId, Memo memo , String companyCode) {
+		super();
+		this.jobName = jobName;
+		this.jobCode = jobCode;
+		this.historyId = historyId;
+		this.memo = memo;
+		this.companyCode = companyCode;
 	}
 
 }
