@@ -62,9 +62,9 @@
 	text-align: center
 }
 
-.colStyle {
-	background-color: grey
-}
 .align_right{
 	text-align: right
+}
+.columnCss{
+	background-color: grey
 }

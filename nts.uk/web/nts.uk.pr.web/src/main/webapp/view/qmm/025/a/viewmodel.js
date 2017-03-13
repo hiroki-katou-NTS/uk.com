@@ -45,6 +45,7 @@ var qmm025;
                                 }
                                 else {
                                     perResiTaxData.push(new ResidenceTax('NSVC', data[0].personId, 'name', 'Vietnam', false, data[0].residenceTax[0].value, data[0].residenceTax[1].value, data[0].residenceTax[2].value, data[0].residenceTax[3].value, data[0].residenceTax[4].value, data[0].residenceTax[5].value, data[0].residenceTax[6].value, data[0].residenceTax[7].value, data[0].residenceTax[8].value, data[0].residenceTax[9].value, data[0].residenceTax[10].value, data[0].residenceTax[11].value));
+                                    perResiTaxData.push(new ResidenceTax('NSVC', '00001', 'name1', 'Japan', false, 25000, 25000, 25000, 15000, 25000, 25000, 25000, 25000, 25000, 25000, 15000, 25000));
                                     self.items(perResiTaxData);
                                     self.isEnable(true);
                                     self.bindGrid(self.items());
@@ -57,6 +58,7 @@ var qmm025;
                         }
                         else {
                             perResiTaxData.push(new ResidenceTax('NSVC', data[0].personId, 'name', 'Vietnam', false, data[0].residenceTax[0].value, data[0].residenceTax[1].value, data[0].residenceTax[2].value, data[0].residenceTax[3].value, data[0].residenceTax[4].value, data[0].residenceTax[5].value, data[0].residenceTax[6].value, data[0].residenceTax[7].value, data[0].residenceTax[8].value, data[0].residenceTax[9].value, data[0].residenceTax[10].value, data[0].residenceTax[11].value));
+                            perResiTaxData.push(new ResidenceTax('NSVC', '00001', 'name1', 'Japan', false, 15000, 25000, 25000, 25000, 25000, 25000, 25000, 25000, 25000, 25000, 25000, 25000));
                             self.items(perResiTaxData);
                             self.isEnable(true);
                             self.bindGrid(self.items());
@@ -96,8 +98,9 @@ var qmm025;
                 };
                 ScreenModel.prototype.bindGrid = function (data) {
                     var self = this;
-                    //khi row bi thay doi- updating when row edited
+                    //tinh lai tong khi row bi thay doi- updating when row edited
                     $("#grid").on("iggridupdatingeditrowended", function (event, ui) {
+                        var grid = ui.owner.grid;
                         var residenceTax01 = ui.values["residenceTax01"];
                         var residenceTax02 = ui.values["residenceTax02"];
                         var residenceTax03 = ui.values["residenceTax03"];
@@ -113,9 +116,18 @@ var qmm025;
                         var totalValue = 0;
                         if (ui.values["checkAllMonth"]) {
                             totalValue = residenceTax06 + residenceTax07 * 11 || ui.values["residenceTaxPerYear"];
+                            $("#grid").igGridUpdating("setCellValue", ui.rowID, "residenceTax08", residenceTax07);
+                            //set background-color khi thay doi trang thai cua totalValue
+                            for (var i = 3; i < 13; i++) {
+                                $(grid.cellAt(i, 0)).css('background-color', 'transparent');
+                            }
                         }
                         else {
                             totalValue = residenceTax06 + residenceTax07 || ui.values["residenceTaxPerYear"];
+                            //set background-color khi thay doi trang thai cua totalValue
+                            for (var i = 3; i < 13; i++) {
+                                $(grid.cellAt(i, 0)).css('background-color', 'grey');
+                            }
                         }
                         $("#grid").igGridUpdating("setCellValue", ui.rowID, "residenceTaxPerYear", totalValue);
                     });
@@ -127,23 +139,24 @@ var qmm025;
                             { headerText: "住民税納付先", key: "add", dataType: "string", width: "100px", formatter: _.escape },
                             { headerText: "年税額", key: "residenceTaxPerYear", dataType: "number", width: "100px", columnCssClass: "align_right" },
                             { headerText: "全月", key: "checkAllMonth", dataType: "bool", width: "35px" },
-                            { headerText: "6月", key: "residenceTax06", dataType: "number", width: "100px", template: "<a style='float: right'>${residenceTax06}円</a>" },
-                            { headerText: "7月", key: "residenceTax07", dataType: "number", width: "100px", template: "<a style='float: right'>${residenceTax07}円</a>" },
-                            { headerText: "8月", key: "residenceTax08", dataType: "number", width: "100px", columnCssClass: "colStyle", template: "<a style='float: right'>${residenceTax08}円</a>" },
-                            { headerText: "9月", key: "residenceTax09", dataType: "number", width: "100px", columnCssClass: "colStyle", template: "<a style='float: right'>${residenceTax09}円</a>" },
-                            { headerText: "10月", key: "residenceTax10", dataType: "number", width: "100px", columnCssClass: "colStyle", template: "<a style='float: right'>${residenceTax10}円</a>" },
-                            { headerText: "11月", key: "residenceTax11", dataType: "number", width: "100px", columnCssClass: "colStyle", template: "<a style='float: right'>${residenceTax11}円</a>" },
-                            { headerText: "12月", key: "residenceTax12", dataType: "number", width: "100px", columnCssClass: "colStyle", template: "<a style='float: right'>${residenceTax12}円</a>" },
-                            { headerText: "1月", key: "residenceTax01", dataType: "number", width: "100px", columnCssClass: "colStyle", template: "<a style='float: right'>${residenceTax01}円</a>" },
-                            { headerText: "2月", key: "residenceTax02", dataType: "number", width: "100px", columnCssClass: "colStyle", template: "<a style='float: right'>${residenceTax02}円</a>" },
-                            { headerText: "3月", key: "residenceTax03", dataType: "number", width: "100px", columnCssClass: "colStyle", template: "<a style='float: right'>${residenceTax03}円</a>" },
-                            { headerText: "4月", key: "residenceTax04", dataType: "number", width: "100px", columnCssClass: "colStyle", template: "<a style='float: right'>${residenceTax04}円</a>" },
-                            { headerText: "5月", key: "residenceTax05", dataType: "number", width: "100px", columnCssClass: "colStyle", template: "<a style='float: right'>${residenceTax05}円</a>" },
+                            { headerText: "6月", key: "residenceTax06", dataType: "number", width: "100px", template: "<a style='float: right'>${residenceTax06} 円</a>" },
+                            { headerText: "7月", key: "residenceTax07", dataType: "number", width: "100px", template: "<a style='float: right'>${residenceTax07} 円</a>" },
+                            { headerText: "8月", key: "residenceTax08", dataType: "number", width: "100px", columnCssClass: "columnCss", template: "<a style='float: right'>${residenceTax08} 円</a>" },
+                            { headerText: "9月", key: "residenceTax09", dataType: "number", width: "100px", columnCssClass: "columnCss", template: "<a style='float: right'>${residenceTax09} 円</a>" },
+                            { headerText: "10月", key: "residenceTax10", dataType: "number", width: "100px", columnCssClass: "columnCss", template: "<a style='float: right'>${residenceTax10} 円</a>" },
+                            { headerText: "11月", key: "residenceTax11", dataType: "number", width: "100px", columnCssClass: "columnCss", template: "<a style='float: right'>${residenceTax11} 円</a>" },
+                            { headerText: "12月", key: "residenceTax12", dataType: "number", width: "100px", columnCssClass: "columnCss", template: "<a style='float: right'>${residenceTax12} 円</a>" },
+                            { headerText: "1月", key: "residenceTax01", dataType: "number", width: "100px", columnCssClass: "columnCss", template: "<a style='float: right'>${residenceTax01} 円</a>" },
+                            { headerText: "2月", key: "residenceTax02", dataType: "number", width: "100px", columnCssClass: "columnCss", template: "<a style='float: right'>${residenceTax02} 円</a>" },
+                            { headerText: "3月", key: "residenceTax03", dataType: "number", width: "100px", columnCssClass: "columnCss", template: "<a style='float: right'>${residenceTax03} 円</a>" },
+                            { headerText: "4月", key: "residenceTax04", dataType: "number", width: "100px", columnCssClass: "columnCss", template: "<a style='float: right'>${residenceTax04} 円</a>" },
+                            { headerText: "5月", key: "residenceTax05", dataType: "number", width: "100px", columnCssClass: "columnCss", template: "<a style='float: right'>${residenceTax05} 円</a>" }
                         ],
                         renderCheckboxes: true,
                         primaryKey: 'code',
                         autoGenerateColumns: false,
                         dataSource: data,
+                        //1755px
                         width: "1200px",
                         height: "550px",
                         features: [
