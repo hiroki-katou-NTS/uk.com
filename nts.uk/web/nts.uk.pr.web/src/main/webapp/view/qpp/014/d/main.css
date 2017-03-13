@@ -1,11 +1,12 @@
 @CHARSET "UTF-8";
 
 @import url("../a/base.css");
-
-#contents-area {
-	width: 1350px;
+#content {
+	width: 1000px;
+	height: 700px;	
 }
-
+#header { display: none;}
+#functions-area { display: none;}
 .nts-left-content {
 	float: left;
 	width: 250px;
@@ -41,7 +42,7 @@
 	background-size: contain;
 }
 
-#D_BTN_001 {
+#D_BTN_002 {
 	vertical-align: bottom;
 	margin-left: 20px;
 	width: 160px;
@@ -52,14 +53,67 @@
 
 .divLine-col-1 {
 	width: 150px;
+	margin-left: 20px;
 }
 
 #D_SEL_001 button {
-	width: 100px;
+	width: 130px;
 	height: 30px;
 }
-#D_BTN_002 {
-	width: 150px;
-	margin-left: 50px;
+#D_BTN_001 {
+	display: block;
+	width: 240px;
 	height: 25px;
+	margin-left: 120px;
+	margin-bottom: 10px;
 }
+.caret-bottom:after {
+    border-top: 1.5em solid;
+    border-right: 7em solid transparent;
+    border-left: 7em solid transparent;
+    color: #E0F59E;
+    margin-left: 140px;
+}
+#D_INP_001 {
+	width: 150px;
+	height: 18px;
+}
+#D_LBL_007 {
+	margin-left: 50px;
+}
+#D_LBL_003 {
+	font-size: large;
+	margin-left: 15px;
+}
+#label-area {
+	padding: 3px 5px 0px 3px;
+	border: 2px solid #808080;
+	border-radius: 5px;
+	width: 500px;
+}
+
+#label-area label {
+	vertical-align: 10px;
+}
+#label-area div {
+	display: inline-block;
+	background-color: #E0F59E;
+	height: 34px;
+	border-radius: 2px;
+}
+#icon {
+	border-radius: 5px;
+}
+#D_LBL_001 {
+	margin-left: 5px;
+    margin-right: 5px;
+    font-size: 16px;
+}
+#D_LBL_002 {
+	margin-left: 15px;
+	margin-right: 15px;
+}
+#data_TBL {
+	margin-left: 20px;
+}
+#divLine4 { margin-left: 15px; }

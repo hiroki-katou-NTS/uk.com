@@ -22,33 +22,29 @@
 
 		<ui:define name="content">
 			<div id="functions-area">
-				<div id="B_BTN_001">
-					<a data-bind="ntsLinkButton: { jump: 'linkbutton.xhtml' }">リンク</a>
-				</div>
-				<button id="B_BTN_002">履歴追加</button>
 			</div>
-
 			<div id="contents-area" class="cf">
-				<div class="nts-left-content"></div>
-				<div class="nts-right-content">
 					<div class="divLine">
-						<label id="G_LBL_001">01</label>
+						<label id="G_LBL_001">給与 振込データを「全銀協フォーマット」にてテキスト出力します。</label>
 					</div>
 					<div class="divLine">
-						<label id="G_LBL_002">02</label>
+						<label id="G_LBL_002">振込データ出力の指定</label>
 					</div>
 					<hr id="G_HR_001" />
 					<div class="divLine">
 						<div class="divLine-col-1">
-							<div id="G_LBL_003" data-bind="ntsFormLabel: {required: false}">レイアウトコード</div>
+							<div id="G_LBL_003" data-bind="ntsFormLabel: {required: false}">処理年月</div>
 						</div>
 						<div class="divLine-col-2">
-							<label id="G_LBL_004">04</label> <label id="G_LBL_005">05</label>
+							<label id="G_LBL_004">04</label> 
+							<label id="G_LBL_005">05</label> 
+							<label id="G_LBL_016">16</label> 
+							<label id="G_LBL_017">17</label> 
 						</div>
 					</div>
 					<div class="divLine">
 						<div class="divLine-col-1">
-							<div id="G_LBL_006" data-bind="ntsFormLabel: {required: false}">レイアウトコード</div>
+							<div id="G_LBL_006" data-bind="ntsFormLabel: {required: false}">振込指定日</div>
 						</div>
 						<div class="divLine-col-2">
 							<div id="G_INP_001"
@@ -58,7 +54,7 @@
 					</div>
 					<div class="divLine">
 						<div class="divLine-col-1">
-							<div id="G_LBL_008" data-bind="ntsFormLabel: {required: true}">レイアウトコード</div>
+							<div id="G_LBL_008" data-bind="ntsFormLabel: {required: true}">振込元銀行名</div>
 						</div>
 						<div class="divLine-col-2">
 							<div id="G_SEL_001"
@@ -78,7 +74,7 @@
 					</div>
 					<div class="divLine">
 						<div class="divLine-col-1">
-							<div id="G_LBL_009" data-bind="ntsFormLabel: {required: false}">レイアウトコード</div>
+							<div id="G_LBL_009" data-bind="ntsFormLabel: {required: false}">預金種目</div>
 						</div>
 						<div class="divLine-col-2">
 							<label id="G_LBL_010">010</label>
@@ -86,7 +82,7 @@
 					</div>
 					<div class="divLine">
 						<div class="divLine-col-1">
-							<div id="G_LBL_011" data-bind="ntsFormLabel: {required: false}">レイアウトコード</div>
+							<div id="G_LBL_011" data-bind="ntsFormLabel: {required: false}">口座番号</div>
 						</div>
 						<div class="divLine-col-2">
 							<label id="G_LBL_012">012</label>
@@ -94,7 +90,7 @@
 					</div>
 					<div class="divLine">
 						<div class="divLine-col-1">
-							<div id="G_LBL_013" data-bind="ntsFormLabel: {required: true}">レイアウトコード</div>
+							<div id="G_LBL_013" data-bind="ntsFormLabel: {required: true}">委託者コード</div>
 						</div>
 						<div class="divLine-col-2">
 							<div id="G_SEL_002"
@@ -114,7 +110,7 @@
 					</div>
 					<div class="divLine">
 						<div class="divLine-col-1">
-							<div id="G_LBL_014" data-bind="ntsFormLabel: {required: true}">レイアウトコード</div>
+							<div id="G_LBL_014" data-bind="ntsFormLabel: {required: true}">種別コード</div>
 						</div>
 						<div class="divLine-col-2">
 							<div data-bind="with: numbereditor_G_INP_002">
@@ -125,12 +121,15 @@
 					</div>
 					<div class="divLine">
 						<div class="divLine-col-1">
-							<div id="G_LBL_015" data-bind="ntsFormLabel: {required: true}">レイアウトコード</div>
+							<div id="G_LBL_015" data-bind="ntsFormLabel: {required: true}">改行コード</div>
 						</div>
 						<div class="divLine-col-2">
 							<div class="cf" id="G_SEL_003"
 								data-bind="ntsSwitchButton: {
-									options: roundingRules_G_SEL_003,
+									options: ko.observableArray([
+							            { code: '1', name: '付加する' },
+							            { code: '2', name: '付加しない' }
+							        ]),
 									optionsValue: 'code',
 									optionsText: 'name',
 									value: selectedRuleCode_G_SEL_003,
@@ -139,10 +138,9 @@
 						</div>
 					</div>
 					<div class="divLine" style="width: 100%;">
-						<button id="G_BTN_001" class="x-large proceed">X-large</button>
+						<button id="G_BTN_001" class="x-large proceed">テキスト出力</button>
 					</div>
 				</div>
-			</div>
 		</ui:define>
 	</ui:composition>
 </body>

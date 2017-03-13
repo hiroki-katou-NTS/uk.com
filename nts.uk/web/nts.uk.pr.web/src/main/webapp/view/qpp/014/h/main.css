@@ -1,10 +1,12 @@
 @CHARSET "UTF-8";
 
 @import url("../a/base.css");
-
-#contents-area {
-	width: 1350px;
+#content {
+	width: 1000px;
+	height: 700px;	
 }
+#header { display: none;}
+#functions-area { display: none;}
 
 .nts-left-content {
 	float: left;
@@ -54,6 +56,7 @@
 
 .divLine-col-1 {
 	width: 100px;
+	margin-left: 20px;
 }
 
 .divLine-col-2 {
@@ -62,7 +65,20 @@
 
 #H_HR_001 {
 	clear: both;
+	float: left;
+	width: 430px;
+	margin-left: 15px;
 }
 #H_BTN_001{
-	float: right;
+	margin-left: 500px;
+	margin-top: 5px;
 }
+#H_LBL_007 { 
+	margin-left: 15px; 
+	font-size: large;
+}
+#H_LBL_008 { 
+	margin-left: 15px; 
+	font-size: 16px;
+}
+#data_TBL { margin-left: 15px; }

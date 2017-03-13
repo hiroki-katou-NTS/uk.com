@@ -29,14 +29,15 @@
 }
 
 #A_BTN_001 {
-	width: 300px;
-	height: 360px;
+	margin-left: 20px;
+	width: 350px;
+	height: 420px;
 }
 
 #A_BTN_002 {
 	vertical-align: top;
-	width: 300px;
-	height: 100px;
+	width: 380px;
+	height: 125px;
 	margin-left: 30px;
 }
 
@@ -44,4 +45,12 @@
 	vertical-align: middle;
     min-width: 200px !important;
     width: 200px ;
+}
+#A_LBL_002 {
+	margin-top: 20px;
+	margin-left: 20px;
+}
+#contents-area > div:NTH-LAST-CHILD(2){
+	margin-top: 10px;
+	margin-bottom: 15px;
 }

@@ -22,60 +22,65 @@
 
 		<ui:define name="content">
 			<div id="functions-area">
-				<div id="B_BTN_001">
-					<a data-bind="ntsLinkButton: { jump: 'linkbutton.xhtml' }">リンク</a>
-				</div>
-				<button id="B_BTN_002">履歴追加</button>
 			</div>
 
 			<div id="contents-area" class="cf">
-				<div class="nts-left-content"></div>
-				<div class="nts-right-content">
 					<div class="divLine">
-						<label id="H_LBL_001">01</label>
+						<label id="H_LBL_007">給与 振込データを「全銀協フォーマット」にてテキスト出力します。</label>
 					</div>
 					<div class="divLine">
-						<label id="H_LBL_002">02</label>
+						<label id="H_LBL_008">振込依頼書の印刷指定</label>
 					</div>
 					<hr id="H_HR_001" />
 					<div class="divLine">
 						<div class="divLine-col-1">
-							<div id="H_LBL_003" data-bind="ntsFormLabel: {required: false}">レイアウトコード</div>
+							<div id="H_LBL_001" data-bind="ntsFormLabel: {required: false}">処理年月</div>
 						</div>
 						<div class="divLine-col-2">
-							<label id="H_LBL_004">04</label> <label id="H_LBL_005">05</label>
+							<label id="H_LBL_002">02</label> 
+							<label id="H_LBL_003">03</label>
+							<label id="H_LBL_009">09</label>
+							<label id="H_LBL_011">11</label>
 						</div>
 					</div>
 					<div class="divLine">
 						<div class="divLine-col-1">
-							<div id="H_LBL_006" data-bind="ntsFormLabel: {required: true}">レイアウトコード</div>
+							<div id="H_LBL_004" data-bind="ntsFormLabel: {required: true}">振込指定日</div>
 						</div>
 						<div class="divLine-col-2">
 							<div id="H_INP_001"
 								data-bind="ntsDatePicker: { value: date_H_INP_001, dateFormat: 'yyyy/MM/dd', startDate: '2016/12/01'}"></div>
-							<label id="H_LBL_007">07</label>
+							<label id="H_LBL_005">05</label>
 						</div>
 					</div>
 					<div class="divLine">
-						<div id="H_LBL_008" data-bind="ntsFormLabel: {required: false}">レイアウトコード</div>
+						<div class="divLine-col-1">
+							<div id="H_LBL_006" data-bind="ntsFormLabel: {required: true}">振込元銀行</div>
+						</div>
 					</div>
-					<div class="divLine">
+					<div class="divLine" id="data_TBL">
 						<table id="H_LST_001"
 							data-bind="ntsGridList: {
-							width: 550,
-							height: 270,
+							width: 650,
+							height: 265,
 							dataSource: items_H_LST_001,
 							primaryKey: 'code',
-							columns: columns_H_LST_001,
-							multiple: false,
+							columns: ko.observableArray([
+				                { headerText: '振込元銀行', prop: 'code', width: 90 },
+				                { headerText: '銀行コード', prop: 'code', width: 80 },
+				                { headerText: '銀行名', prop: 'code', width: 90 },
+				                { headerText: '支店名', prop: 'code', width: 70 },
+				                { headerText: '口座区分', prop: 'name', width: 70 },
+				                { headerText: '口座番号', prop: 'description', width: 150 }
+				            ]),
+							multiple: true,
 							value: currentCode_H_LST_001}">
 						</table>
 					</div>
-					<div class="divLine" style="width: 100%">
-						<button id="H_BTN_001" class="x-large proceed">X-large</button>
+					<div class="divLine">
+						<button id="H_BTN_001" class="x-large proceed">印刷(PDF)</button>
 					</div>
 				</div>
-			</div>
 		</ui:define>
 	</ui:composition>
 </body>
