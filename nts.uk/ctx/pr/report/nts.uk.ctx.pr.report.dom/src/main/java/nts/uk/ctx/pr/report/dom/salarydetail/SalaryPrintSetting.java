@@ -5,13 +5,14 @@
 package nts.uk.ctx.pr.report.dom.salarydetail;
 
 import lombok.Getter;
+import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.pr.report.dom.company.CompanyCode;
 
 /**
  * The Class SalaryPrintSetting.
  */
 @Getter
-public class SalaryPrintSetting {
+public class SalaryPrintSetting extends DomainObject {
 	
 	/** The company code. */
 	private CompanyCode companyCode;

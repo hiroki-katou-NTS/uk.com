@@ -7,19 +7,14 @@ package nts.uk.ctx.pr.report.dom.salarydetail.aggregate;
 import java.util.Set;
 
 import lombok.Getter;
+import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.pr.report.dom.company.CompanyCode;
 
 /**
  * The Class SalaryAggregateItem.
  */
-
-/**
- * Gets the item category.
- *
- * @return the item category
- */
 @Getter
-public class SalaryAggregateItem {
+public class SalaryAggregateItem extends DomainObject {
 
 	/** The code. */
 	private SalaryAggregateItemCode code;

@@ -7,13 +7,14 @@ package nts.uk.ctx.pr.report.dom.salarydetail.outputsetting;
 import java.util.List;
 
 import lombok.Getter;
+import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.pr.report.dom.company.CompanyCode;
 
 /**
  * The Class SalaryOutputSetting.
  */
 @Getter
-public class SalaryOutputSetting {
+public class SalaryOutputSetting extends DomainObject {
 
 	/** The company code. */
 	private CompanyCode companyCode;
