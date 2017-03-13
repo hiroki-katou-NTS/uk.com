@@ -12,19 +12,22 @@ import nts.uk.shr.com.context.AppContexts;
 
 public class UpdatePositionCommand {
 
-	private LocalDateTime endDate;
-
 	private String jobName;
-
-	private String jobOutCode;
-
-	private String memo;
-
-	private String companyCode;
 
 	private String jobCode;
 
-	private LocalDateTime startDate;
+	private String jobOutCode;
+
+	private String historyId;
+
+	private String companyCode;
+
+	private String memo;
+
+	private String hiterarchyOrderCode;
+	
+	private int presenceCheckScopeSet;
+	
 	
 //	public JobTitle toDomain(){
 //		return JobTitle.createSimpleFromJavaType(GeneralDateTime.localDateTime(this.endDate), GeneralDateTime.localDateTime(this.startDate), 

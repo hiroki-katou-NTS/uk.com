@@ -1,6 +1,7 @@
 package nts.uk.ctx.basic.app.command.organization.payclassification;
 
 
+
 import java.util.Optional;
 
 import javax.ejb.Stateless;
@@ -26,22 +27,19 @@ public class AddPayClassificationCommandHandler extends CommandHandler<AddPayCla
 	@Override
 	protected void handle(CommandHandlerContext<AddPayClassificationCommand> context) {
 		
-		AddPayClassificationCommand command = context.getCommand();
+
 		String companyCode = AppContexts.user().companyCode();
 		
+
+		if(payClassificationRepository.isExisted(companyCode, 
+				new PayClassificationCode(context.getCommand().getPayClassificationCode()))){
+			//throw err[ER026]
+			throw new BusinessException("ER005");}
 		
-		Optional<PayClassification> payclass = payClassificationRepository.findSinglePayClassification(companyCode, command.getPayClassificationCode());
-		
-		if (payclass.isPresent()) {
-			throw new BusinessException("ER005");
-		}
-//		if(payClassificationRepository.isExisted(companyCode, 
-//				new PayClassificationCode(context.getCommand().getPayClassificationCode()))){
-//			throw new BusinessException(new RawErrorMessage("ER05"));
-//		}
 		PayClassification payClassification = new PayClassification(new Memo(context.getCommand().getMemo()),new PayClassificationName(context.getCommand().getPayClassificationName()),
 				new PayClassificationCode(context.getCommand().getPayClassificationCode()),companyCode);
 		payClassificationRepository.add(payClassification);
 	}
 
 }
+	

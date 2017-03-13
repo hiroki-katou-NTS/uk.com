@@ -42,6 +42,7 @@ public class JpaPayClassificationReponsitory extends JpaRepository implements Pa
 		
 		builderString = new StringBuilder();
 		builderString.append("SELECT COUNT(c)");
+		builderString.append(" FROM QmnmtPayClass c");
 		builderString.append(" WHERE c.qmnmtPayClassPK.companyCode = :companyCode");
 		builderString.append(" AND c.qmnmtPayClassPK.payClassificationCode = :payClassificationCode");
 		QUERY_IS_EXISTED = builderString.toString();

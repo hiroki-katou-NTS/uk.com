@@ -1,18 +1,17 @@
 module cmm013.d.service {
     var paths:any = {
-        getLayoutInfor : "/pr/proto/layout/findlayout/{0}/{1}",
-        pathDeleteLayout: "/pr/proto/layout/deletedata",
-        pathUpdateLayout: "/pr/proto/layout/updatedata"
+        getPositionInfor : "basic/position/findallposition/",
+        pathDeletePosition: "basic/position/deletedata",
+        pathUpdatePosition: "basic/position/updatedata"
     }
     
     /**
      * Get list layout master new history
      */
-    export function getLayout(stmtCode: string, historyId: string): JQueryPromise<model.LayoutMasterDto> {
+    export function getPosition(historyId: string): JQueryPromise<model.JobHistDto> {
         var dfd = $.Deferred<any>();
-        var objectLayout = {stmtCode: stmtCode, historyId: historyId};
-        var _path = nts.uk.text.format(paths.getLayoutInfor, stmtCode, historyId);
-        nts.uk.request.ajax(_path)
+        nts.uk.request.ajax("com",paths.findAllPosition + historyId)
+       
             .done(function(res: any){
                 dfd.resolve(res);
             })
@@ -22,18 +21,11 @@ module cmm013.d.service {
         return dfd.promise(); 
     }
     
-    export function deleteLayout(layoutMaster : model.LayoutMasterDto){
+    export function deletePosition(position : model.JobHistDto){
         var dfd = $.Deferred<Array<any>>();  
-//        var dto : model.LayoutMasterDto = {
-//            companyCode: layoutMaster.companyCode,
-//            stmtCode: layoutMaster.stmtCode,
-//            startYm: layoutMaster.startYm,
-//            stmtName: layoutMaster.stmtName,
-//            endYM: layoutMaster.endYM,
-//            layoutAtr: layoutMaster.layoutAtr
-//        };
-        var _path = nts.uk.text.format(paths.pathDeleteLayout, layoutMaster);
-        nts.uk.request.ajax(paths.pathDeleteLayout, layoutMaster).done(function(res: Array<any>){
+        var _path = nts.uk.text.format(paths.pathDeleteLayout, position);
+        nts.uk.request.ajax(paths.pathDeletePosition, position)
+        .done(function(res: Array<any>){
             dfd.resolve(res);    
         }).fail(function(res){
             dfd.reject(res);
@@ -42,9 +34,9 @@ module cmm013.d.service {
         return dfd.promise(); 
     }
     
-    export function updateLayout(layoutMaster : model.LayoutMasterDto){
+    export function updatePosition(position : model.JobHistDto){
         var dfd = $.Deferred<Array<any>>();  
-        nts.uk.request.ajax(paths.pathUpdateLayout, layoutMaster).done(function(res: Array<any>){
+        nts.uk.request.ajax(paths.pathUpdatePosition, position).done(function(res: Array<any>){
             dfd.resolve(res);    
         }).fail(function(res){
             dfd.reject(res);
@@ -58,14 +50,10 @@ module cmm013.d.service {
         */
         export module model {
             // layout
-            export class LayoutMasterDto {
-                companyCode: string;
-                stmtCode: string;
-                startYm: number;
-                stmtName: string;
-                endYm: number;
-                layoutAtr: number;
-                startYmOriginal: number;
+            export class JobHistDto {
+                companyCode: string;              
+                startDate: number;              
+                endDate: number;        
                 histortyId: string;
             }
 

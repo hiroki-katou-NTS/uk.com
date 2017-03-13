@@ -11,16 +11,14 @@ var cmm013;
                  */
                 function ScreenModel() {
                     var self = this;
-                    self.selectedLayoutAtr = ko.observable(null);
-                    self.selectLayoutCode = ko.observable(null);
-                    self.selectLayoutName = ko.observable(null);
-                    self.selectLayoutStartYm = ko.observable(null);
-                    self.selectLayoutEndYm = ko.observable(null);
-                    self.selectLayout = ko.observable(null);
-                    self.layoutStartYm = ko.observable(null);
+                    self.selectedPositionAtr = ko.observable(null);
+                    self.selectPositionStartDate = ko.observable(null);
+                    self.selectPositionEndDate = ko.observable(null);
+                    self.selectPosition = ko.observable(null);
+                    self.positionStartDate = ko.observable(null);
                     self.timeEditorOption = ko.mapping.fromJS(new option.TimeEditorOption({ inputFormat: "yearmonth" }));
                     self.historyId = ko.observable(null);
-                    self.enableYm = ko.observable(true);
+                    self.enableDate = ko.observable(true);
                     //---radio
                     self.itemsRadio = ko.observableArray([
                         { value: 1, text: '履歴を削除する' },
@@ -35,9 +33,9 @@ var cmm013;
                     var layoutCode = nts.uk.ui.windows.getShared('stmtCode');
                     var startYm = nts.uk.ui.windows.getShared('startYm');
                     self.historyId(nts.uk.ui.windows.getShared('historyId'));
-                    self.layoutStartYm(nts.uk.time.formatYearMonth(startYm));
-                    d.service.getLayout(layoutCode, self.historyId()).done(function (layout) {
-                        self.selectLayout(layout);
+                    self.positionStartDate(nts.uk.time.formatYearMonth(startYm));
+                    d.service.getPosition(self.historyId()).done(function (position) {
+                        self.selectPosition(position);
                         self.startDiaglog();
                         dfd.resolve();
                     }).fail(function (res) {
@@ -46,10 +44,10 @@ var cmm013;
                     //checkbox change
                     self.isRadioCheck.subscribe(function (newValue) {
                         if (newValue === 2) {
-                            self.enableYm(true);
+                            self.enableDate(true);
                         }
                         else {
-                            self.enableYm(false);
+                            self.enableDate(false);
                         }
                     });
                     // Return.
@@ -57,16 +55,12 @@ var cmm013;
                 };
                 ScreenModel.prototype.startDiaglog = function () {
                     var self = this;
-                    var layout = self.selectLayout();
-                    var code = layout.stmtCode;
-                    self.selectLayoutCode(code);
-                    self.selectLayoutName(layout.stmtName);
-                    self.selectLayoutStartYm(nts.uk.time.formatYearMonth(layout.startYm));
-                    self.selectLayoutEndYm(nts.uk.time.formatYearMonth(layout.endYm));
+                    var position = self.selectPosition();
+                    self.selectPositionStartDate(nts.uk.time.formatYearMonth(position.startDate));
+                    self.selectPositionEndDate(nts.uk.time.formatYearMonth(position.endDate));
                 };
-                ScreenModel.prototype.layoutProcess = function () {
+                ScreenModel.prototype.positionProcess = function () {
                     var self = this;
-                    //履歴の編集-削除処理
                     if (self.isRadioCheck() === 1) {
                         self.dataDelete();
                     }
@@ -76,8 +70,7 @@ var cmm013;
                 };
                 ScreenModel.prototype.dataDelete = function () {
                     var self = this;
-                    d.service.deleteLayout(self.selectLayout()).done(function () {
-                        //alert("履歴を削除しました。");
+                    d.service.deletePosition(self.selectPosition()).done(function () {
                         nts.uk.ui.windows.close();
                     }).fail(function (res) {
                         alert(res);
@@ -85,29 +78,19 @@ var cmm013;
                 };
                 ScreenModel.prototype.dataUpdate = function () {
                     var self = this;
-                    var layoutInfor = self.selectLayout();
-                    //check YM
+                    var positionInfor = self.selectPosition();
                     var inputYm = $("#INP_001").val();
                     if (!nts.uk.time.parseYearMonth(inputYm).success) {
                         alert(nts.uk.time.parseYearMonth(inputYm).msg);
                         return false;
                     }
-                    layoutInfor.startYmOriginal = +self.layoutStartYm().replace('/', '');
-                    layoutInfor.startYm = +$("#INP_001").val().replace('/', '');
-                    //直前の[明細書マスタ]の開始年月　>　入力した開始年月　>=　終了年月　の場合
-                    if (layoutInfor.startYmOriginal > layoutInfor.startYm
-                        || layoutInfor.startYm > +self.selectLayoutEndYm().replace('/', '')) {
+                    positionInfor.startDate = +$("#INP_001").val().replace('/', '');
+                    if (positionInfor.startDate > +self.selectPositionEndDate().replace('/', '')) {
                         alert("履歴の期間が重複しています。");
                         return false;
                     }
-                    else if (layoutInfor.startYmOriginal == layoutInfor.startYm) {
-                        //alert("履歴を修正しました。");
-                        nts.uk.ui.windows.close();
-                        return false;
-                    }
                     else {
-                        d.service.updateLayout(layoutInfor).done(function () {
-                            //alert("履歴を修正しました。");
+                        d.service.updatePosition(positionInfor).done(function () {
                             nts.uk.ui.windows.close();
                         }).fail(function (res) {
                             alert(res);

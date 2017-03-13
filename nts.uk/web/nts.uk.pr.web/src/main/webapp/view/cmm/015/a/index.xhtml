@@ -7,9 +7,6 @@
 <body>
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
-		   	<com:ValidatorScript>
-					nts.uk.ctx.basic.dom.organization.payclassification.PayClassificationName
-			</com:ValidatorScript>
 			<com:stylefile path="main.css" />
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="start.js" />
@@ -19,12 +16,17 @@
 			__viewContext.primitiveValueConstraints.Memo = {
 					valueType: 'String',
 					charType: 'AnyHalfWidth',
-					maxLength: 500,
+					maxLength: 1000,
 				};
 			__viewContext.primitiveValueConstraints.PayClassificationCode = {
 					valueType: 'String',
 					charType: 'AnyHalfWidth',
 					maxLength: 10,
+				};
+			__viewContext.primitiveValueConstraints.PayClassificationName = {
+					valueType: 'String',
+					charType: 'AnyHalfWidth',
+					maxLength: 20,
 				};
 			</script>
 		</ui:define>

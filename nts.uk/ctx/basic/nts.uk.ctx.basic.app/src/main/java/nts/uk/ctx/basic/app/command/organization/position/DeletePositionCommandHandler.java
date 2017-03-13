@@ -14,13 +14,13 @@ import nts.uk.shr.com.context.AppContexts;
 public class DeletePositionCommandHandler extends CommandHandler<DeletePositionCommand>{
 
 	@Inject
-	private PositionRepository positionRepo;
+	private PositionRepository positionRepository;
 	
 	@Override
 	protected void handle(CommandHandlerContext<DeletePositionCommand> context) {
 
 		String companyCode = AppContexts.user().companyCode();
-		positionRepo.delete(companyCode,
+		positionRepository.delete(companyCode,
 				new JobCode(context.getCommand().getJobCode()),
 				context.getCommand().getHistoryId());
 	}

@@ -9,7 +9,8 @@ var cmm013;
                 addPosition: "basic/position/addPosition",
                 deletePosition: "basic/position/deletePosition",
                 updatePosition: "basic/position/updatePosition",
-                getAllHistory: "basic/position/getallhist"
+                getAllHistory: "basic/position/getallhist",
+                findAllPosition2: "basic/position/findall"
             };
             function findAllPosition(historyId) {
                 var dfd = $.Deferred();
@@ -23,6 +24,18 @@ var cmm013;
                 return dfd.promise();
             }
             service.findAllPosition = findAllPosition;
+            function findAllPosition2() {
+                var dfd = $.Deferred();
+                nts.uk.request.ajax("com", paths.findAllPosition2)
+                    .done(function (res) {
+                    dfd.resolve(res);
+                })
+                    .fail(function (res) {
+                    dfd.reject(res);
+                });
+                return dfd.promise();
+            }
+            service.findAllPosition2 = findAllPosition2;
             function addPosition(position) {
                 var dfd = $.Deferred();
                 nts.uk.request.ajax("com", paths.addPosition, position)
