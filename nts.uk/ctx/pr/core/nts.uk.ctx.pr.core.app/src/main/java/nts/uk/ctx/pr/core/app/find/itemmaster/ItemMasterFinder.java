@@ -54,4 +54,11 @@ public class ItemMasterFinder {
 		
 		return !itemOp.isPresent() ? null : itemOp.get();
 	}
+	
+	
+	public List<ItemMasterDto> findAllNoAvePayAtr() {
+		return this.itemMasterRepo.findAllNoAvePayAtr(AppContexts.user().companyCode()).stream()
+				.map(item -> ItemMasterDto.fromDomain(item))
+				.collect(Collectors.toList());
+	}
 }
