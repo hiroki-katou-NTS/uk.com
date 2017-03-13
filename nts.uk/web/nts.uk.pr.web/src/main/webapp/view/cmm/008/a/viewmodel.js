@@ -21,6 +21,7 @@ var cmm008;
                     self.dataSource = ko.observableArray([]);
                     self.currentCode = ko.observable("");
                     self.isEnable = ko.observable(false);
+                    self.isDelete = ko.observable(true);
                     self.multilineeditor = {
                         memoValue: ko.observable(""),
                         constraint: '',
@@ -100,9 +101,11 @@ var cmm008;
                     $.when(a.service.getAllEmployments()).done(function (listResult) {
                         if (listResult.length === 0 || listResult === undefined) {
                             self.isEnable(true);
+                            self.isDelete(false);
                         }
                         else {
                             self.isEnable(false);
+                            self.isDelete(true);
                             _.forEach(listResult, function (employ) {
                                 if (employ.displayFlg == 1) {
                                     employ.displayStr = "<span style='color: #00B050; font-size: 18px'>●</span>";
@@ -134,12 +137,12 @@ var cmm008;
                     var self = this;
                     //必須項目の未入力チェック
                     if (self.currentCode() === "") {
-                        alert("コードが入力されていません。");
+                        nts.uk.ui.dialog.alert("コードが入力されていません。");
                         $("#INP_002").focus();
                         return;
                     }
                     if (self.employmentName() === "") {
-                        alert("名称が入力されていません。");
+                        nts.uk.ui.dialog.alert("名称が入力されていません。");
                         $("#INP_003").focus();
                         return;
                     }
@@ -164,7 +167,7 @@ var cmm008;
                                 });
                             });
                         }).fail(function (error) {
-                            alert(error.message);
+                            nts.uk.ui.dialog.alert(error.message);
                             self.isEnable(true);
                             $("#INP_002").focus();
                         });
@@ -187,6 +190,7 @@ var cmm008;
                     self.employmentOutCode("");
                     self.currentCode("");
                     self.isCheckbox(false);
+                    self.isDelete(false);
                     $("#INP_002").focus();
                 };
                 //削除
@@ -194,6 +198,9 @@ var cmm008;
                     var self = this;
                     if (self.currentCode() === "")
                         return;
+                    nts.uk.ui.dialog.confirm("データを削除します。\r\nよろしいですか？").ifNo(function () {
+                        return;
+                    });
                     var employment = new a.service.model.employmentDto();
                     employment.employmentCode = self.currentCode();
                     if (self.isCheckbox())
@@ -205,14 +212,17 @@ var cmm008;
                         $.when(self.dataSourceItem()).done(function () {
                             if (self.dataSource().length === 0) {
                                 self.isEnable(true);
+                                self.isDelete(false);
                                 self.newCreateEmployment();
                             }
                             else if (self.dataSource().length === indexItemDelete) {
                                 self.isEnable(false);
+                                self.isDelete(true);
                                 self.currentCode(self.dataSource()[indexItemDelete - 1].employmentCode);
                             }
                             else {
                                 self.isEnable(false);
+                                self.isDelete(true);
                                 if (indexItemDelete > self.dataSource().length) {
                                     self.currentCode(self.dataSource()[0].employmentCode);
                                 }
@@ -221,6 +231,8 @@ var cmm008;
                                 }
                             }
                         });
+                    }).fail(function (res) {
+                        nts.uk.ui.dialog.alert(res.message);
                     });
                 };
                 return ScreenModel;

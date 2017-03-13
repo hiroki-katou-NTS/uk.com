@@ -23,7 +23,7 @@
 				<button id="BTN_001" class="btnStyle" data-bind = "click: newCreateEmployment">新規</button>
 				<button class="proceed btnStyle" id="BTN_002" data-bind="click: createEmployment, enable: $root.errors.isEmpty">登録</button>
 				<button id="BTN_003">マスタ修正ログ</button>
-				<button class="danger btnStyle" id="BTN_004" data-bind = "click: deleteEmployment">削除</button>
+				<button class="danger btnStyle" id="BTN_004" data-bind = "click: deleteEmployment, enable: isDelete">削除</button>
 				<label id="LBL_001">雇用区分の登録</label>
 			</div>
 			<div id="contents-area" style="padding-top: 20px">
