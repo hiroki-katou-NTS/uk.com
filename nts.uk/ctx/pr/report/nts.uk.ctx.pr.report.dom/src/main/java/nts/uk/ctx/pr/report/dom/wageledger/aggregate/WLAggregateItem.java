@@ -7,13 +7,13 @@ package nts.uk.ctx.pr.report.dom.wageledger.aggregate;
 import java.util.Set;
 
 import lombok.Getter;
-import nts.arc.layer.dom.AggregateRoot;
+import nts.arc.layer.dom.DomainObject;
 
 /**
  * The Class WageLedgerAggregateItem.
  */
 @Getter
-public class WLAggregateItem extends AggregateRoot{
+public class WLAggregateItem extends DomainObject {
 	
 	/** The subject. */
 	private WLItemSubject subject;

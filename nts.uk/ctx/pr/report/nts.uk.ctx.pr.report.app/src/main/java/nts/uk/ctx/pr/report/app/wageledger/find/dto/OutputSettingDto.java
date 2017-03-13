@@ -84,13 +84,4 @@ public class OutputSettingDto implements WLOutputSettingSetMemento{
 	public void setCompanyCode(CompanyCode companyCode) {
 		// Do nothing.
 	}
-
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.pr.report.dom.wageledger.outputsetting.WLOutputSettingSetMemento
-	 * #setVersion(long)
-	 */
-	@Override
-	public void setVersion(long version) {
-	}
-
 }
