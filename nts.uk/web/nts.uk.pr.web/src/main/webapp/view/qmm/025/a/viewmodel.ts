@@ -46,17 +46,7 @@ module qmm025.a.viewmodel {
                                 if (data[0] === undefined) {
                                     alert("ERROR!");
                                 } else {
-                                    perResiTaxData.push(new ResidenceTax('NSVC', data[0].personId, 'name', 'Vietnam', false,
-                                        data[0].residenceTax[0].value, data[0].residenceTax[1].value, data[0].residenceTax[2].value,
-                                        data[0].residenceTax[3].value, data[0].residenceTax[4].value, data[0].residenceTax[5].value,
-                                        data[0].residenceTax[6].value, data[0].residenceTax[7].value, data[0].residenceTax[8].value,
-                                        data[0].residenceTax[9].value, data[0].residenceTax[10].value, data[0].residenceTax[11].value));
-                                    perResiTaxData.push(new ResidenceTax('NSVC', '00001', 'name1', 'Japan', false,
-                                        25000, 25000, 25000, 15000, 25000, 25000, 25000, 25000, 25000, 25000, 15000, 25000));
-
-                                    self.items(perResiTaxData);
-                                    self.isEnable(true);
-                                    self.bindGrid(self.items());
+                                    self.getData(perResiTaxData, data);
                                 }
                                 dfd.resolve();
                             })
@@ -64,16 +54,7 @@ module qmm025.a.viewmodel {
                                 dfd.reject(res);
                             });
                     } else {
-                        perResiTaxData.push(new ResidenceTax('NSVC', data[0].personId, 'name', 'Vietnam', false,
-                            data[0].residenceTax[0].value, data[0].residenceTax[1].value, data[0].residenceTax[2].value,
-                            data[0].residenceTax[3].value, data[0].residenceTax[4].value, data[0].residenceTax[5].value,
-                            data[0].residenceTax[6].value, data[0].residenceTax[7].value, data[0].residenceTax[8].value,
-                            data[0].residenceTax[9].value, data[0].residenceTax[10].value, data[0].residenceTax[11].value));
-                        perResiTaxData.push(new ResidenceTax('NSVC', '00001', 'name1', 'Japan', false,
-                            15000, 25000, 25000, 25000, 25000, 25000, 25000, 25000, 25000, 25000, 25000, 25000));
-                        self.items(perResiTaxData);
-                        self.isEnable(true);
-                        self.bindGrid(self.items());
+                        self.getData(perResiTaxData, data);
                         dfd.resolve();
                     }
                 })
@@ -81,6 +62,20 @@ module qmm025.a.viewmodel {
                     dfd.reject(res);
                 });
             return dfd.promise();
+        }
+        //lay du lieu tu DB de hien thi ra man hinh
+        getData(perResiTaxData = [], data) {
+            var self = this;
+            perResiTaxData.push(new ResidenceTax('NSVC', data[0].personId, 'name', 'Vietnam', false,
+                data[0].residenceTax[0].value, data[0].residenceTax[1].value, data[0].residenceTax[2].value,
+                data[0].residenceTax[3].value, data[0].residenceTax[4].value, data[0].residenceTax[5].value,
+                data[0].residenceTax[6].value, data[0].residenceTax[7].value, data[0].residenceTax[8].value,
+                data[0].residenceTax[9].value, data[0].residenceTax[10].value, data[0].residenceTax[11].value));
+            perResiTaxData.push(new ResidenceTax('NSVC', '00001', 'name1', 'Japan', false,
+                15000, 25000, 25000, 25000, 25000, 25000, 25000, 25000, 25000, 25000, 25000, 25000));
+            self.items(perResiTaxData);
+            self.isEnable(true);
+            self.bindGrid(self.items());
         }
 
         getYearKey() {
@@ -97,11 +92,16 @@ module qmm025.a.viewmodel {
             return dfd.promise();
         }
 
+        saveData() {
+            var self = this;
+            var obj = {}
+
+        }
+
         remove() {
             var self = this;
-            var yearKey = self.yearKey();
             var obj = {
-                "yearKey": yearKey
+                "yearKey": self.yearKey()
             }
             qmm025.a.service.remove(obj)
                 .done(function() {

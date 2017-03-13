@@ -11,11 +11,21 @@ public interface PersonResiTaxRepository {
 	/**
 	 * 
 	 * @param companyCode
+	 * @param personId
+	 * @param yearKey
 	 * @return
 	 */
 	List<PersonResiTax> findAll(String companyCode, String personId, int yearKey);
-	
-	void update();
-	
+	/**
+	 * 
+	 * @param domain
+	 */
+	void update(PersonResiTax domain);
+	/**
+	 * 
+	 * @param companyCode
+	 * @param personId
+	 * @param yearKey
+	 */
 	void remove(String companyCode, String personId, int yearKey);
 }
