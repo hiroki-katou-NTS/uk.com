@@ -241,9 +241,15 @@ public class JpaWageTableHistoryRepository extends JpaRepository
 		cq.select(cb.count(root));
 		cq.where(predicateList.toArray(new Predicate[] {}));
 
-		return !(em.createQuery(cq).getSingleResult().longValue() > 0L);
+		return em.createQuery(cq).getSingleResult().longValue() == 0L;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.base.simplehistory.SimpleHistoryRepository#
+	 * findAllHistoryByMasterCode(java.lang.String, java.lang.String)
+	 */
 	@Override
 	public List<WageTableHistory> findAllHistoryByMasterCode(String companyCode,
 			String masterCode) {

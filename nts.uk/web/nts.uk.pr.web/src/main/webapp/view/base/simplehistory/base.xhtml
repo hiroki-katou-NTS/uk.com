@@ -28,43 +28,7 @@
 
 			<!-- BEGIN CONTENT AREA-->
 			<div id="contents-area">
-				<!-- BEGIN LEFT CONTENT-->
-				<div id="left-content" class="bg-green caret-right caret-background" style="width: 370px">
-					<div>
-						<div data-bind="ntsFormLabel: {}">コード/名称</div>
-						<span id="historyTreeSearchBox"
-							data-bind="ntsSearchBox: {comId:'historyTree',
-							items: masterHistoryDatasource, 
-							selected: selectedHistoryUuid,
-							selectedKey: 'id', 
-							childField: 'childs', 
-							fields: ['nodeText']}"></span>
-					</div>
-					<div style="margin: 5px;">
-						<div>
-							<button class="pull-left" id="addHistory"
-								data-bind="enable: canAddNewHistory, click: addNewHistoryBtnClick">履歴追加</button>
-							<button class="pull-right" id="editHistory"
-								data-bind="enable: canUpdateHistory, click: updateHistoryBtnClick">履歴編集</button>
-						</div>
-						<div class="pull-left cf">
-							<table id="historyTree"
-								data-bind="ntsTreeGridView:{
-										height: 370,
-										options: masterHistoryDatasource,
-										value: selectedHistoryUuid,
-										optionsValue: 'id',
-										optionsChild: 'childs',
-										optionsText: 'nodeText',
-										multiple: false,
-										enable: true,
-										showCheckBox: false}"
-								class="cf">
-							</table>
-						</div>
-					</div>
-				</div>
-				<!-- END LEFT CONTENT-->
+				<ui:include src="historylist.xhtml"/>
 
 				<!-- BEGIN RIGHT CONTENT-->
 				<div id="right-content">

@@ -21,8 +21,6 @@ import nts.uk.ctx.pr.core.app.rule.employment.unitprice.command.CreateUnitPriceH
 import nts.uk.ctx.pr.core.app.rule.employment.unitprice.command.CreateUnitPriceHistoryCommandHandler;
 import nts.uk.ctx.pr.core.app.rule.employment.unitprice.command.UpdateUnitPriceHistoryCommand;
 import nts.uk.ctx.pr.core.app.rule.employment.unitprice.command.UpdateUnitPriceHistoryCommandHandler;
-import nts.uk.ctx.pr.core.app.rule.employment.unitprice.find.UnitPriceHistoryDto;
-import nts.uk.ctx.pr.core.app.rule.employment.unitprice.find.UnitPriceHistoryFinder;
 import nts.uk.ctx.pr.core.dom.base.simplehistory.SimpleHistoryBaseService;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPrice;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceCode;
@@ -33,6 +31,7 @@ import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.service.UnitPriceHistory
 import nts.uk.ctx.pr.core.ws.base.simplehistory.SimpleHistoryWs;
 import nts.uk.ctx.pr.core.ws.base.simplehistory.dto.HistoryModel;
 import nts.uk.ctx.pr.core.ws.base.simplehistory.dto.MasterModel;
+import nts.uk.ctx.pr.core.ws.rule.employment.unitprice.dto.UnitPriceHistoryModel;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -41,10 +40,6 @@ import nts.uk.shr.com.context.AppContexts;
 @Path("pr/proto/unitprice")
 @Produces(MediaType.APPLICATION_JSON)
 public class UnitPriceHistoryWs extends SimpleHistoryWs<UnitPrice, UnitPriceHistory> {
-
-	/** The unit price history finder. */
-	@Inject
-	private UnitPriceHistoryFinder unitPriceHistoryFinder;
 
 	/** The create unit price history command handler. */
 	@Inject
@@ -75,9 +70,24 @@ public class UnitPriceHistoryWs extends SimpleHistoryWs<UnitPrice, UnitPriceHist
 	 */
 	@POST
 	@Path("find/{id}")
-	public UnitPriceHistoryDto find(@PathParam("id") String id) {
-		Optional<UnitPriceHistoryDto> optHistoryDto = this.unitPriceHistoryFinder.find(id);
-		return optHistoryDto.get();
+	public UnitPriceHistoryModel find(@PathParam("id") String id) {
+		// Get the detail history.
+		Optional<UnitPriceHistory> optUnitPriceHistory = this.unitPriceHistoryRepo
+				.findHistoryByUuid(id);
+		UnitPriceHistoryModel dto = null;
+
+		// Check exsit.
+		if (optUnitPriceHistory.isPresent()) {
+			UnitPriceHistory unitPrisceHistory = optUnitPriceHistory.get();
+			Optional<UnitPrice> optUnitPrice = this.unitPriceRepo.findByCode(
+					unitPrisceHistory.getCompanyCode(), unitPrisceHistory.getUnitPriceCode());
+			dto = UnitPriceHistoryModel.builder().build();
+			unitPrisceHistory.saveToMemento(dto);
+			dto.setUnitPriceName(optUnitPrice.get().getName());
+		}
+
+		// Return
+		return dto;
 	}
 
 	/**
@@ -90,11 +100,8 @@ public class UnitPriceHistoryWs extends SimpleHistoryWs<UnitPrice, UnitPriceHist
 	@Path("create")
 	public HistoryModel create(CreateUnitPriceHistoryCommand command) {
 		UnitPriceHistory history = this.createUnitPriceHistoryCommandHandler.handle(command);
-		return HistoryModel.builder()
-				.uuid(history.getUuid())
-				.start(history.getStart().v())
-				.end(history.getEnd().v())
-				.build();
+		return HistoryModel.builder().uuid(history.getUuid()).start(history.getStart().v())
+				.end(history.getEnd().v()).build();
 	}
 
 	/**
@@ -109,41 +116,44 @@ public class UnitPriceHistoryWs extends SimpleHistoryWs<UnitPrice, UnitPriceHist
 		this.updateUnitPriceHistoryCommandHandler.handle(command);
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.pr.core.ws.base.simplehistory.SimpleHistoryWs#loadMasterModelList()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.ws.base.simplehistory.SimpleHistoryWs#
+	 * loadMasterModelList()
 	 */
 	@Override
 	@Path("masterhistory")
 	@POST
 	public List<MasterModel> loadMasterModelList() {
 		// Get list of unit price.
-		List<UnitPrice> unitPrices = this.unitPriceRepo.findAll(new CompanyCode(AppContexts.user().companyCode()));
+		List<UnitPrice> unitPrices = this.unitPriceRepo
+				.findAll(new CompanyCode(AppContexts.user().companyCode()));
 
 		// Get list of unit price history.
-		List<UnitPriceHistory> unitPriceHistories = this.unitPriceHistoryRepo.findAll(new CompanyCode(AppContexts.user().companyCode()));
+		List<UnitPriceHistory> unitPriceHistories = this.unitPriceHistoryRepo
+				.findAll(new CompanyCode(AppContexts.user().companyCode()));
 
 		// Group histories by unit code.
 		Map<UnitPriceCode, List<HistoryModel>> historyMap = unitPriceHistories.stream()
-				.collect(Collectors.groupingBy(UnitPriceHistory::getUnitPriceCode, Collectors.mapping((res) -> {
-					return HistoryModel.builder()
-							.uuid(res.getUuid())
-							.start(res.getStart().v())
-							.end(res.getEnd().v())
-							.build();
-				}, Collectors.toList())));
+				.collect(Collectors.groupingBy(UnitPriceHistory::getUnitPriceCode,
+						Collectors.mapping((res) -> {
+							return HistoryModel.builder().uuid(res.getUuid())
+									.start(res.getStart().v()).end(res.getEnd().v()).build();
+						}, Collectors.toList())));
 
 		// Return
 		return unitPrices.stream().map(item -> {
-			return MasterModel.builder()
-					.code(item.getCode().v())
-					.name(item.getName().v())
-					.historyList(historyMap.get(item.getCode()))
-					.build();
+			return MasterModel.builder().code(item.getCode().v()).name(item.getName().v())
+					.historyList(historyMap.get(item.getCode())).build();
 		}).collect(Collectors.toList());
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.pr.core.ws.base.simplehistory.SimpleHistoryWs#getServices()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.ws.base.simplehistory.SimpleHistoryWs#getServices()
 	 */
 	@Override
 	protected SimpleHistoryBaseService<UnitPrice, UnitPriceHistory> getServices() {

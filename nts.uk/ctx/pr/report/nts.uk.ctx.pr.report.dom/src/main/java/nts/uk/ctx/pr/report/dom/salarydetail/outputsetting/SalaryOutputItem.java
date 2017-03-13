@@ -5,19 +5,14 @@
 package nts.uk.ctx.pr.report.dom.salarydetail.outputsetting;
 
 import lombok.Getter;
+import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.pr.report.dom.salarydetail.SalaryItemType;
 
 /**
  * The Class SalaryOutputItem.
  */
-
-/**
- * Gets the type.
- *
- * @return the type
- */
 @Getter
-public class SalaryOutputItem {
+public class SalaryOutputItem extends DomainObject {
 
 	/** The linkage code. */
 	private String linkageCode;

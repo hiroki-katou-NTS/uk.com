@@ -10,7 +10,6 @@ import java.util.Date;
 import java.util.List;
 
 import javax.ejb.Stateless;
-
 import com.aspose.cells.BackgroundType;
 import com.aspose.cells.BorderType;
 import com.aspose.cells.Cell;
@@ -29,6 +28,7 @@ import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.uk.ctx.pr.screen.app.report.accumulatedpayment.AccPaymentReportGenerator;
 import nts.uk.ctx.pr.screen.app.report.accumulatedpayment.data.AccPaymentDataSource;
 import nts.uk.ctx.pr.screen.app.report.accumulatedpayment.data.AccPaymentItemData;
+import nts.uk.ctx.pr.screen.app.report.accumulatedpayment.query.AccPaymentReportQuery;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 
 /**
@@ -46,7 +46,7 @@ public class AsposeAccPaymentReportGenerator extends AsposeCellsReportGenerator 
 	/** The Constant FIRST_ROW_INDEX. */
 	private static final int FIRST_ROW_INDEX = 12;
 
-	/** The Constant FIRSTCOLUMN. */
+	/** The Constant FIRST_COLUMN. */
 	private static final int FIRST_COLUMN = 0;
 	
 	/** The Constant AMOUNT_COLUMN. */
@@ -75,7 +75,7 @@ public class AsposeAccPaymentReportGenerator extends AsposeCellsReportGenerator 
 	 * nts.uk.ctx.pr.screen.app.report.qet002.data.AccPaymentDataSource)
 	 */
 	@Override
-	public void generate(FileGeneratorContext generatorContext, AccPaymentDataSource dataSource) {
+	public void generate(FileGeneratorContext generatorContext, AccPaymentDataSource dataSource, AccPaymentReportQuery query) {
 		List<AccPaymentItemData> accumulatedPaymentList = dataSource.getAccPaymentItemData();
 		try {
 			val designer = this.createContext(TEMPLATE_FILE);
@@ -93,7 +93,8 @@ public class AsposeAccPaymentReportGenerator extends AsposeCellsReportGenerator 
 			String str = sf.format(date);
 			designer.setDataSource("HeaderTime", str);
 			
-			int amountEmployee= accumulatedPaymentList.size();
+			// List Item Data			
+			int amountEmployee = accumulatedPaymentList.size();
 			int startIndex = 0;
 			int firstRowIndex = FIRST_ROW_INDEX;			
 			int numberOfPage = 0;
@@ -101,7 +102,7 @@ public class AsposeAccPaymentReportGenerator extends AsposeCellsReportGenerator 
 			
 			while(amountEmployee > 0){				
 				int endIndex = startIndex + AMOUNT_PER_PAGE;
-				List<AccPaymentItemData> subList = subAccList(accumulatedPaymentList, startIndex, endIndex);
+				List<AccPaymentItemData> subList = subAccList(accumulatedPaymentList, startIndex, endIndex);				
 				
 				// Create ranges 
 				if(amountEmployee < AMOUNT_PER_PAGE){
@@ -115,7 +116,7 @@ public class AsposeAccPaymentReportGenerator extends AsposeCellsReportGenerator 
 				// Print content
 				createContent(cells, firstRowIndex, subList);
 				
-				// Reset variable for new page
+				// Reset variables for new page
 				amountEmployee -= AMOUNT_PER_PAGE;
 				startIndex += AMOUNT_PER_PAGE;
 				numberOfPage++;
@@ -149,43 +150,41 @@ public class AsposeAccPaymentReportGenerator extends AsposeCellsReportGenerator 
 		// Print Employee Header
 		Cell empCell = cells.get(rowIndex, COLUMN_INDEX[0]);		
 		empCell.setValue("社員");
-		setTitleStyle(empCell);
 		
 		// Print Tax Amount Header
 		Cell taxCell = cells.get(rowIndex, COLUMN_INDEX[1]);		
 		taxCell.setValue("課税対象支給額");
-		setTitleStyle(taxCell);
 		
 		// Print Social Insurance Header
 		Cell socialInsCell = cells.get(rowIndex, COLUMN_INDEX[2]);		
 		socialInsCell.setValue("社会保険合計額");
-		setTitleStyle(socialInsCell);
 		
 		// Print Amount after tax deduction Header
 		Cell afterTaxDeductionCell = cells.get(rowIndex, COLUMN_INDEX[3]);		
 		afterTaxDeductionCell.setValue("社保控除後の額");
-		setTitleStyle(afterTaxDeductionCell);
 		
 		// Print Witholding Tax Amount Header
 		Cell widthHoldingTaxAmCell = cells.get(rowIndex, COLUMN_INDEX[4]);
 		widthHoldingTaxAmCell.setValue("源泉徴収税額");
-		setTitleStyle(widthHoldingTaxAmCell);
 		
 		// Print Enrolment Status Header
 		Cell enrolmentCell = cells.get(rowIndex, COLUMN_INDEX[5]);
 		enrolmentCell.setValue("在籍状態");
-		setTitleStyle(enrolmentCell);
 		
 		// Print Direction Status Header
 		Cell directionCell = cells.get(rowIndex, COLUMN_INDEX[6]);
 		directionCell.setValue("出向状態");
-		setTitleStyle(directionCell);		
+		
+		for (int c: COLUMN_INDEX) {
+			Cell cell = cells.get(rowIndex, COLUMN_INDEX[c]);			
+			setTitleStyle(cell);
+		}
 	}
 	
 	/**
 	 * Creates the content.
 	 *
-	 * @param worksheet the worksheet
+	 * @param cells the cells
 	 * @param firstRowIndex the first row index
 	 * @param accumulatedPaymentList the accumulated payment list
 	 */
@@ -251,14 +250,14 @@ public class AsposeAccPaymentReportGenerator extends AsposeCellsReportGenerator 
 	}
 	
 	/**
-	  * Safe sub list.
-	  *
-	  * @param <T> the generic type
-	  * @param list the list
-	  * @param fromIndex the from index
-	  * @param toIndex the to index
-	  * @return the list
-	  */
+	 * Sub acc list.
+	 *
+	 * @param <T> the generic type
+	 * @param list the list
+	 * @param fromIndex the from index
+	 * @param toIndex the to index
+	 * @return the list
+	 */
 	 protected <T> List<T> subAccList(List<T> list, int fromIndex, int toIndex) {
 	  int size = list.size();
 	  if (fromIndex >= size || toIndex <= 0 || fromIndex >= toIndex) {

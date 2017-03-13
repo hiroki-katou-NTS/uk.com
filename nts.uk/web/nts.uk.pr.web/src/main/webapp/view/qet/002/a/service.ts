@@ -3,18 +3,11 @@ module qet002.a {
         var servicePath = {
             printService: "/screen/pr/qet002/generate",
         };
-
-        export function printService(query: viewmodel.ScreenModel): JQueryPromise<qet002.a.viewmodel.AccumulatedPaymentResultViewModel> {
-            var dfd = $.Deferred<qet002.a.viewmodel.AccumulatedPaymentResultViewModel>();
-            //            new nts.uk.ui.file.FileDownload("/screen/pr/qet002/generate", query).print().done(function() {
-            //                dfd.resolve();
-            //            }).fail(function(res){
-            //                dfd.reject(res);
-            //            });
-            //            
-            //            nts.uk.request.exportFile('/screen/pr/qet002/generate', { value: 'abc' }).done(() => {
-            //                console.log('DONE!!');
-            //            });
+        
+        
+        // Print Report Service
+        export function printService(query: viewmodel.ScreenModel): JQueryPromise<void> {
+            var dfd = $.Deferred<void>();
              var accquery = {
                  targetYear: query.targetYear(),
                  isLowerLimit: query.isLowerLimit(),

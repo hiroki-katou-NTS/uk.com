@@ -174,4 +174,59 @@ public class JpaPensionRateRepository extends JpaRepository implements PensionRa
 		return false;
 	}
 
+	@Override
+	public void deleteHistory(String uuid) {
+		this.remove(uuid);
+	}
+
+	@Override
+	public Optional<PensionRate> findLastestHistoryByMasterCode(String companyCode, String officeCode) {
+		return Optional.of(this.findAllOffice(companyCode,officeCode).get(0));
+	}
+
+	@Override
+	public List<PensionRate> findAllHistoryByMasterCode(String companyCode, String officeCode) {
+		return this.findAllOffice(companyCode,officeCode);
+	}
+
+	@Override
+	public Optional<PensionRate> findHistoryByUuid(String uuid) {
+		return this.findById(uuid);
+	}
+
+	@Override
+	public void addHistory(PensionRate history) {
+		this.add(history);
+	}
+
+	@Override
+	public void updateHistory(PensionRate history) {
+		this.update(history);
+	}
+
+	@Override
+	public List<PensionRate> findAllOffice(String companyCode, String officeCode) {
+		// Get entity manager
+		EntityManager em = this.getEntityManager();
+
+		// Query for.
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<QismtPensionRate> cq = cb.createQuery(QismtPensionRate.class);
+		Root<QismtPensionRate> root = cq.from(QismtPensionRate.class);
+
+		// Constructing list of parameters
+		List<Predicate> predicateList = new ArrayList<Predicate>();
+
+		// Construct condition.
+		predicateList.add(
+				cb.equal(root.get(QismtPensionRate_.qismtPensionRatePK).get(QismtPensionRatePK_.ccd), companyCode));
+		predicateList.add(cb.equal(root.get(QismtPensionRate_.qismtPensionRatePK).get(QismtPensionRatePK_.siOfficeCd),
+				officeCode));
+
+		cq.where(predicateList.toArray(new Predicate[] {}));
+		cq.orderBy(cb.desc(root.get(QismtPensionRate_.strYm)));
+		return em.createQuery(cq).getResultList().stream()
+				.map(item -> new PensionRate(new JpaPensionRateGetMemento(item))).collect(Collectors.toList());
+	}
+
 }

@@ -28,12 +28,14 @@ module nts.uk.pr.view.base.simplehistory {
             
             // Selected hsitory uuid.
             selectedHistoryUuid: KnockoutObservable<string>;
+            igGridSelectedHistoryUuid: KnockoutObservable<string>;
 
             // Flag
             private canUpdateHistory: KnockoutObservable<boolean>;
             private canAddNewHistory: KnockoutObservable<boolean>;
             private options: SimpleHistoryScreenOptions<M, H>;
-
+            
+            isClickHistory: KnockoutObservable<boolean>;
             /**
              * Constructor.
              */
@@ -57,12 +59,24 @@ module nts.uk.pr.view.base.simplehistory {
                     return self.selectedHistoryUuid() != null && self.getCurrentHistoryNode() != null;
                 })
 
+                // On searched result.
+                self.igGridSelectedHistoryUuid = ko.observable('');
+                self.isClickHistory = ko.observable(false);
+                
+                self.igGridSelectedHistoryUuid.subscribe(id => {
+                    if (id && id.length == 36) {
+                        self.selectedHistoryUuid(id);
+                        self.isClickHistory(true);
+                    }
+                    else {
+                        self.isClickHistory(false);
+                    }
+                })
+                
                 // On history select.
                 self.selectedHistoryUuid.subscribe((id) => {
-                    if (id && id.length == 36) {
-                        self.isNewMode(false);
-                        self.onSelectHistory(id);
-                    }
+                    self.isNewMode(false);
+                    self.onSelectHistory(id);
                 })
                 
                 // On new mode.
@@ -87,6 +101,7 @@ module nts.uk.pr.view.base.simplehistory {
                     } else {
                         // Not new mode and select first history.
                         self.isNewMode(false);
+                        if(self.masterHistoryDatasource()[0].childs.length>0)
                         self.selectedHistoryUuid(self.masterHistoryDatasource()[0].childs[0].id);
                     }
                     
@@ -109,6 +124,7 @@ module nts.uk.pr.view.base.simplehistory {
                         // Current node.
                         var masterNode:Node = {
                             id: master.code,
+                            searchText: master.code + ' ' + master.name,
                             nodeText: master.code + ' ' + master.name,
                             nodeType: 0,
                             data: master
@@ -118,6 +134,7 @@ module nts.uk.pr.view.base.simplehistory {
                         var masterChild = _.map(master.historyList, history => {
                             var node:Node = {
                                 id: history.uuid,
+                                searchText: '',
                                 nodeText: nts.uk.time.formatYearMonth(history.start) + '~' + nts.uk.time.formatYearMonth(history.end),
                                 nodeType: 1,
                                 parent: masterNode,
@@ -213,7 +230,9 @@ module nts.uk.pr.view.base.simplehistory {
 
                     // Update call back.
                     onUpdateCallBack: (data) => {
-                        alert('update');
+                        self.service.updateHistoryStart(data.masterCode, data.historyId, data.startYearMonth).done(() => {
+                            self.reloadMasterHistory(self.selectedHistoryUuid());
+                        })
                     }
                 };
                 nts.uk.ui.windows.setShared('options', newHistoryOptions);
@@ -286,6 +305,7 @@ module nts.uk.pr.view.base.simplehistory {
          */
         export interface Node {
             id: string;
+            searchText: string;
             nodeText: string;
             nodeType: number;
             parent?: Node;

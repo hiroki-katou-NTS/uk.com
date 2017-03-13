@@ -18,7 +18,6 @@ var qet002;
                     return dfd.promise();
                 };
                 ScreenModel.prototype.printData = function () {
-                    var query;
                     var hasError = false;
                     if (this.targetYear() == null) {
                         hasError = true;
@@ -51,7 +50,7 @@ var qet002;
                     if (hasError) {
                         return;
                     }
-                    a.service.printService(query).done(function () { }).done(function (data) {
+                    a.service.printService(this).done(function (data) {
                     }).fail(function (res) {
                         nts.uk.ui.dialog.alert(res.message);
                     });

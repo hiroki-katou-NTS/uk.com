@@ -11,6 +11,12 @@ import nts.uk.ctx.pr.core.dom.wagetable.WtElementRefNo;
 /**
  * The Class WageTableMasterRef.
  */
+
+/**
+ * Gets the wage person query.
+ *
+ * @return the wage person query
+ */
 @Getter
 public class WageTableMasterRef {
 
@@ -43,5 +49,25 @@ public class WageTableMasterRef {
 
 	/** The wage person query. */
 	private String wagePersonQuery;
+
+	// =================== Memento State Support Method ===================
+	/**
+	 * Instantiates a new wage table master ref.
+	 *
+	 * @param memento
+	 *            the memento
+	 */
+	public WageTableMasterRef(WageTableMasterRefGetMemento memento) {
+		this.companyCode = memento.getCompanyCode();
+		this.refNo = memento.getRefNo();
+		this.refName = memento.getRefName();
+		this.wageRefTable = memento.getWageRefTable();
+		this.wageRefField = memento.getWageRefField();
+		this.wageRefDispField = memento.getWageRefDispField();
+		this.wagePersonTable = memento.getWagePersonTable();
+		this.wagePersonField = memento.getWagePersonField();
+		this.wageRefQuery = memento.getWageRefQuery();
+		this.wagePersonQuery = memento.getWagePersonQuery();
+	}
 
 }

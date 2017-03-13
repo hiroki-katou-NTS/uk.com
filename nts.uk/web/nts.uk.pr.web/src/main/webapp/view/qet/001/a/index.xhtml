@@ -65,19 +65,19 @@
 									<div id="output-layout-selects">
 										<div class="ntsControl"> <label class="ntsRadioBox">
 												<input type="radio" name="layoutOutput" id="wage-ledger-layout"
-												data-bind="checkedValue: 0, checked: layoutSelected" /> <span
+												data-bind="checkedValue: 'OnePage', checked: layoutSelected" /> <span
 												class="box"></span><span class="label">賃金台帳（A4横1ページ）を出力する</span>
 											</label>
 										</div> 
 										<div id="wage-list-layout">
 											<span class="ntsControl"> <label class="ntsRadioBox">
 													<input type="radio" name="layoutOutput"
-													data-bind="checkedValue: 1, checked: layoutSelected" /> <span
+													data-bind="checkedValue: 'NewLayout', checked: layoutSelected" /> <span
 													class="box"></span><span class="label">賃金一覧表を出力する</span>
 											</label>
 											</span>
 											<div id="page-break-indicator-checkbox"
-												data-bind="ntsCheckBox: { checked: isPageBreakIndicator, enable: layoutSelected() == 1}">改ページ区分</div>
+												data-bind="ntsCheckBox: { checked: isPageBreakIndicator, enable: layoutSelected() == 'NewLayout'}">改ページ区分</div>
 										</div>
 									</div>
 								</div>
@@ -88,7 +88,7 @@
 										<div class="ntsControl">
 											<label class="ntsRadioBox"> <input type="radio"
 												name="outputType" id="detail-item"
-												data-bind="checkedValue: 0, checked: outputTypeSelected" />
+												data-bind="checkedValue: 'MasterItems', checked: outputTypeSelected" />
 												<span class="box"></span><span class="label">明細書項目を出力する</span>
 											</label>
 										</div>
@@ -96,7 +96,7 @@
 											<div class="ntsControl">
 												<label class="ntsRadioBox"> <input type="radio"
 													name="outputType"
-													data-bind="checkedValue: 1, checked: outputTypeSelected" />
+													data-bind="checkedValue: 'OutputSettingItems', checked: outputTypeSelected" />
 													<span class="box"></span><span class="label">明細書の集約項目を出力する</span>
 												</label>
 											</div>
@@ -107,7 +107,7 @@
 												value: outputSettingSelectedCode,
 												optionsText: 'name',
 												editable: false,
-												enable: outputTypeSelected() == 1 }"></div>
+												enable: outputTypeSelected() == 'OutputSettingItems' }"></div>
 											
 											<div id="output-settings-button"><button data-bind="click: goToOutputSetting">設定</button></div>
 										</div>

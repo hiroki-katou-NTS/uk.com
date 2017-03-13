@@ -11,35 +11,35 @@ package nts.uk.ctx.pr.core.dom.wagetable;
 public enum ElementType {
 
 	/** The master ref. */
-	MASTER_REF(0, true, false),
+	MASTER_REF(0, true, false, "マスタ参照"),
 
 	/** The code ref. */
-	CODE_REF(1, true, false),
+	CODE_REF(1, true, false, "コード名称参照"),
 
 	/** The item data ref. */
-	ITEM_DATA_REF(2, false, true),
+	ITEM_DATA_REF(2, false, true, "明細データ参照"),
 
 	/** The experience fix. */
-	EXPERIENCE_FIX(3, false, true),
+	EXPERIENCE_FIX(3, false, true, "勤続年数"),
 
 	/** The age fix. */
-	AGE_FIX(4, false, true),
+	AGE_FIX(4, false, true, "年齢"),
 
 	/** The family mem fix. */
-	FAMILY_MEM_FIX(5, false, true),
+	FAMILY_MEM_FIX(5, false, true, "家族人数"),
 
 	// Extend element type
 	/** The certification. */
-	CERTIFICATION(6, true, false),
+	CERTIFICATION(6, true, false, "資格"),
 
 	/** The working day. */
-	WORKING_DAY(7, false, true),
+	WORKING_DAY(7, false, true, "精皆勤"),
 
 	/** The come late. */
-	COME_LATE(8, false, true),
+	COME_LATE(8, false, true, "遅刻早退"),
 
 	/** The level. */
-	LEVEL(9, true, false);
+	LEVEL(9, true, false, "レベル");
 
 	/** The value. */
 	public int value;
@@ -49,6 +49,9 @@ public enum ElementType {
 
 	/** The is range mode. */
 	public boolean isRangeMode;
+
+	/** The display name. */
+	public String displayName;
 
 	/** The Constant values. */
 	private final static ElementType[] values = ElementType.values();
@@ -63,10 +66,11 @@ public enum ElementType {
 	 * @param isRangeMode
 	 *            the is range mode
 	 */
-	private ElementType(int value, boolean isCodeMode, boolean isRangeMode) {
+	private ElementType(int value, boolean isCodeMode, boolean isRangeMode, String displayName) {
 		this.value = value;
 		this.isCodeMode = isCodeMode;
 		this.isRangeMode = isRangeMode;
+		this.displayName = displayName;
 	}
 
 	/**

@@ -7,19 +7,14 @@ package nts.uk.ctx.pr.report.dom.salarydetail.outputsetting;
 import java.util.List;
 
 import lombok.Getter;
+import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.pr.report.dom.salarydetail.SalaryCategory;
 
 /**
  * The Class SalaryCategorySetting.
  */
-
-/**
- * Gets the items.
- *
- * @return the items
- */
 @Getter
-public class SalaryCategorySetting {
+public class SalaryCategorySetting extends DomainObject {
 
 	/** The category. */
 	private SalaryCategory category;

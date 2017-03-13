@@ -17,6 +17,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.gul.collection.ListUtil;
 import nts.uk.ctx.pr.core.dom.wagetable.WageTableHead;
 import nts.uk.ctx.pr.core.dom.wagetable.WageTableHeadRepository;
 import nts.uk.ctx.pr.core.infra.entity.wagetable.QwtmtWagetableHead;
@@ -132,9 +133,15 @@ public class JpaWageTableHeadRepository extends JpaRepository implements WageTab
 
 		cq.where(predicateList.toArray(new Predicate[] {}));
 
-		return Optional.of(em.createQuery(cq).getResultList().stream()
-				.map(item -> new WageTableHead(new JpaWageTableHeadGetMemento(item)))
-				.collect(Collectors.toList()).get(0));
+		List<QwtmtWagetableHead> result = em.createQuery(cq).getResultList();
+
+		if (ListUtil.isEmpty(result)) {
+			return Optional.empty();
+		}
+
+		return Optional.of(
+				result.stream().map(item -> new WageTableHead(new JpaWageTableHeadGetMemento(item)))
+						.collect(Collectors.toList()).get(0));
 	}
 
 	/*

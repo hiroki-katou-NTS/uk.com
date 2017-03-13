@@ -5,7 +5,8 @@
 package nts.uk.file.pr.app.export.wageledger;
 
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
-import nts.uk.file.pr.app.export.wageledger.data.WageLedgerReportData;
+import nts.uk.file.pr.app.export.wageledger.data.WLNewLayoutReportData;
+import nts.uk.file.pr.app.export.wageledger.data.WLOldLayoutReportData;
 
 /**
  * The Interface WageLedgerReportGenerator.
@@ -13,10 +14,18 @@ import nts.uk.file.pr.app.export.wageledger.data.WageLedgerReportData;
 public interface WageLedgerReportGenerator {
 	
 	/**
-	 * Generate.
+	 * Generate with old layout.
 	 *
 	 * @param fileContext the file context
 	 * @param reportData the report data
 	 */
-	void generate(FileGeneratorContext fileContext, WageLedgerReportData reportData);
+	void generateWithOldLayout(FileGeneratorContext fileContext, WLOldLayoutReportData reportData);
+	
+	/**
+	 * Generate with new layout.
+	 *
+	 * @param fileContext the file context
+	 * @param reportData the report data
+	 */
+	void generateWithNewLayout(FileGeneratorContext fileContext, WLNewLayoutReportData reportData);
 }

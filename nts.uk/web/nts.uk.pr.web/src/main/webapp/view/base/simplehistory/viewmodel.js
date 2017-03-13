@@ -24,13 +24,22 @@ var nts;
                                         return self.selectedHistoryUuid() != null && self.getCurrentHistoryNode() != null;
                                     });
                                     self.canAddNewHistory = ko.computed(function () {
-                                        return self.selectedHistoryUuid() != null && self.getCurrentHistoryNode() != null;
+                                        return true;
+                                    });
+                                    self.igGridSelectedHistoryUuid = ko.observable('');
+                                    self.isClickHistory = ko.observable(false);
+                                    self.igGridSelectedHistoryUuid.subscribe(function (id) {
+                                        if (id && id.length == 36) {
+                                            self.selectedHistoryUuid(id);
+                                            self.isClickHistory(true);
+                                        }
+                                        else {
+                                            self.isClickHistory(false);
+                                        }
                                     });
                                     self.selectedHistoryUuid.subscribe(function (id) {
-                                        if (id && id.length == 36) {
-                                            self.isNewMode(false);
-                                            self.onSelectHistory(id);
-                                        }
+                                        self.isNewMode(false);
+                                        self.onSelectHistory(id);
                                     });
                                     self.isNewMode.subscribe(function (val) {
                                         if (val) {
@@ -48,7 +57,8 @@ var nts;
                                         }
                                         else {
                                             self.isNewMode(false);
-                                            self.selectedHistoryUuid(self.masterHistoryDatasource()[0].childs[0].id);
+                                            if (self.masterHistoryDatasource()[0].childs.length > 0)
+                                                self.selectedHistoryUuid(self.masterHistoryDatasource()[0].childs[0].id);
                                         }
                                         dfd.resolve();
                                     }).fail(dfd.fail);
@@ -61,6 +71,7 @@ var nts;
                                         var nodeList = _.map(res, function (master) {
                                             var masterNode = {
                                                 id: master.code,
+                                                searchText: master.code + ' ' + master.name,
                                                 nodeText: master.code + ' ' + master.name,
                                                 nodeType: 0,
                                                 data: master
@@ -68,6 +79,7 @@ var nts;
                                             var masterChild = _.map(master.historyList, function (history) {
                                                 var node = {
                                                     id: history.uuid,
+                                                    searchText: '',
                                                     nodeText: nts.uk.time.formatYearMonth(history.start) + '~' + nts.uk.time.formatYearMonth(history.end),
                                                     nodeType: 1,
                                                     parent: masterNode,
@@ -133,7 +145,9 @@ var nts;
                                             });
                                         },
                                         onUpdateCallBack: function (data) {
-                                            alert('update');
+                                            self.service.updateHistoryStart(data.masterCode, data.historyId, data.startYearMonth).done(function () {
+                                                self.reloadMasterHistory(self.selectedHistoryUuid());
+                                            });
                                         }
                                     };
                                     nts.uk.ui.windows.setShared('options', newHistoryOptions);
@@ -179,4 +193,3 @@ var nts;
         })(pr = uk.pr || (uk.pr = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
-//# sourceMappingURL=viewmodel.js.map

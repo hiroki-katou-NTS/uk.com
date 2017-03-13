@@ -8,18 +8,27 @@ import java.util.List;
 
 import lombok.Data;
 
+/**
+ * Instantiates a new acc payment report query.
+ */
 @Data
 public class AccPaymentReportQuery {
 
-	/** The year. */
-	private int year;
+	/** The target year. */
+	private int targetYear;
 
 	/** The emp id list. */
 	private List<String> empIdList;
+	
+	/** The is lower limit. */
+	private boolean isLowerLimit;
+	
+	/** The is upper limit. */
+	private boolean isUpperLimit;
 
-	/** The lower limit. */
-	private Long lowerLimit;
+	/** The lower limit value. */
+	private Long lowerLimitValue;
 
-	/** The upper limit. */
-	private Long upperLimit;
+	/** The upper limit value. */
+	private Long upperLimitValue;
 }

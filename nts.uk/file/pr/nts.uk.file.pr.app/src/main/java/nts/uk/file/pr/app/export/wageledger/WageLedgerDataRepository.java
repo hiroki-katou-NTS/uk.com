@@ -4,7 +4,7 @@
  *****************************************************************/
 package nts.uk.file.pr.app.export.wageledger;
 
-import nts.uk.file.pr.app.export.wageledger.data.WageLedgerReportData;
+import nts.uk.file.pr.app.export.wageledger.data.WLOldLayoutReportData;
 
 /**
  * The Interface WageLedgerDataRepository.
@@ -17,5 +17,5 @@ public interface WageLedgerDataRepository {
 	 * @param query the query
 	 * @return the wage ledger report data
 	 */
-	WageLedgerReportData findReportData(WageLedgerReportQuery query);
+	WLOldLayoutReportData findReportData(WageLedgerReportQuery query);
 }
