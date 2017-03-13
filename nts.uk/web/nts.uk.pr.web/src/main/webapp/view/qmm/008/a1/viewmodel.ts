@@ -33,11 +33,12 @@ module nts.uk.pr.view.qmm008.a1 {
             selectedRuleCode: KnockoutObservable<number>;
             //for control data after close dialog
             isTransistReturnData: KnockoutObservable<boolean>;
-            //healthTotal
-            isClickHealthHistory: KnockoutObservable<boolean>;
             // Flags
             isLoading: KnockoutObservable<boolean>;
             currentOfficeCode : KnockoutObservable<string>;
+            sendOfficeData :KnockoutObservable<any>;
+            
+            japanYear: KnockoutObservable<string>;
             constructor() {
                 super({
                     functionName: '社会保険事業所',
@@ -79,9 +80,10 @@ module nts.uk.pr.view.qmm008.a1 {
                 // add history dialog
                 self.isTransistReturnData = ko.observable(false);
                 // Health CurrencyEditor
-                self.isClickHealthHistory = ko.observable(false);
                 self.isLoading = ko.observable(true);
                 self.currentOfficeCode = ko.observable('');
+                self.sendOfficeData = ko.observable(null);
+                self.japanYear = ko.observable('');
             } //end constructor
 
             // Start
@@ -142,9 +144,10 @@ module nts.uk.pr.view.qmm008.a1 {
                     }
                     //Set health detail.
                     self.healthModel().historyId = data.historyId;
-                    self.healthModel().startMonth(data.startMonth.substring(0, 4) + "/" + data.startMonth.substring(4, data.startMonth.length));
-                    self.healthModel().endMonth(data.endMonth.substring(0, 4) + "/" + data.endMonth.substring(4, data.endMonth.length));
-
+                    self.healthModel().startMonth(nts.uk.time.formatYearMonth(parseInt(data.startMonth)));
+                    self.healthModel().endMonth(nts.uk.time.formatYearMonth(parseInt(data.endMonth)));
+                    self.japanYear("("+nts.uk.time.yearmonthInJapanEmpire(data.startMonth).toString()+")");
+                
                     self.healthModel().companyCode = data.companyCode;
                     self.healthModel().officeCode(data.officeCode);
                     self.healthModel().autoCalculate(data.autoCalculate);
@@ -240,7 +243,7 @@ module nts.uk.pr.view.qmm008.a1 {
                 var self = this;
                 //update health
                 service.updateHealthRate(self.healthCollectData()).done(function() {
-                });
+                }).fail();
             }
             
             /**
@@ -250,8 +253,10 @@ module nts.uk.pr.view.qmm008.a1 {
                 var self = this;
                 var dfd = $.Deferred<void>();
                 self.isLoading(true);
-                self.isClickHealthHistory(true);
+                //get current office
                 self.currentOfficeCode(self.getCurrentOfficeCode(id));
+                // clear all error
+                
                 service.instance.findHistoryByUuid(id).done(dto => {
                     self.loadHealth(dto);
                     self.isLoading(false);
@@ -264,17 +269,25 @@ module nts.uk.pr.view.qmm008.a1 {
             onSave(): JQueryPromise<void>  {
                 var self = this;
                 var dfd = $.Deferred<void>();
-                self.save();
+                if (nts.uk.ui._viewModel.errors.isEmpty()) {
+                    self.save();
+                }
+                else {
+                    alert('TODO has error!');
+                    //TODO if has error 
+                }
                 return dfd.promise();
             }
-            public getCurrentOfficeCode(childId: string) {
+            public getCurrentOfficeCode(childId: string):string {
                 var self = this;
+                var returnValue :string;
                 if (self.masterHistoryList.length > 0) {
                     self.masterHistoryList.forEach(function(parentItem) {
+                        self.sendOfficeData(parentItem);
                         if (parentItem.historyList) {
                             parentItem.historyList.forEach(function(childItem) {
                                 if (childItem.uuid == childId) {
-                                    return parentItem.code;
+                                    returnValue = parentItem.code;
                                 }
                             });
                         } else {
@@ -282,17 +295,17 @@ module nts.uk.pr.view.qmm008.a1 {
                         }
                     });
                 }
-                return "";
+                return returnValue;
             }
             
-//            /**
-//             * Clear all input and switch to new mode.
-//             */
-//            onRegistNew(): void {
-//                var self = this;
+            /**
+             * Clear all input and switch to new mode.
+             */
+            onRegistNew(): void {
+                var self = this;
 //                $('.save-error').ntsError('clear');
-//                self.setUnitPriceHistoryModel(self.getDefaultUnitPriceHistory());
-//            }
+                self.OpenModalOfficeRegister();
+            }
 
             //open office register dialog
             public OpenModalOfficeRegister() {
@@ -309,7 +322,7 @@ module nts.uk.pr.view.qmm008.a1 {
             //open modal standard monthly price health
             public OpenModalStandardMonthlyPriceHealth() {
                 // Set parent value
-                nts.uk.ui.windows.setShared("dataOfSelectedOffice", this.getDataOfHealthSelectedOffice());
+                nts.uk.ui.windows.setShared("dataOfSelectedOffice", this.sendOfficeData());
                 nts.uk.ui.windows.setShared("healthModel", this.healthModel());
 
                 nts.uk.ui.windows.setShared("isTransistReturnData", this.isTransistReturnData());

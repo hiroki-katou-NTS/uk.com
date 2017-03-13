@@ -19,7 +19,7 @@
 				<div class="sidebar-content-header">
 					<span class="title" data-bind="text: $root.content.options.functionName"/>
 					<button id="btnUpdate" class="large proceed btn-default"
-						data-bind="enable: $root.errors.isEmpty, click: saveBtnClick">登録</button>
+						data-bind="enable: isClickHistory(), click: saveBtnClick">登録</button>
 					<ui:insert name="extendedAction" />
 				</div>
 			</div>

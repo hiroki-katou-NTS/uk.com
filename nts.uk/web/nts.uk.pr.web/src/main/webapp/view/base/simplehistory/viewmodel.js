@@ -24,12 +24,17 @@ var nts;
                                         return self.selectedHistoryUuid() != null && self.getCurrentHistoryNode() != null;
                                     });
                                     self.canAddNewHistory = ko.computed(function () {
-                                        return self.selectedHistoryUuid() != null && self.getCurrentHistoryNode() != null;
+                                        return true;
                                     });
                                     self.igGridSelectedHistoryUuid = ko.observable('');
+                                    self.isClickHistory = ko.observable(false);
                                     self.igGridSelectedHistoryUuid.subscribe(function (id) {
                                         if (id && id.length == 36) {
                                             self.selectedHistoryUuid(id);
+                                            self.isClickHistory(true);
+                                        }
+                                        else {
+                                            self.isClickHistory(false);
                                         }
                                     });
                                     self.selectedHistoryUuid.subscribe(function (id) {
@@ -52,7 +57,8 @@ var nts;
                                         }
                                         else {
                                             self.isNewMode(false);
-                                            self.selectedHistoryUuid(self.masterHistoryDatasource()[0].childs[0].id);
+                                            if (self.masterHistoryDatasource()[0].childs.length > 0)
+                                                self.selectedHistoryUuid(self.masterHistoryDatasource()[0].childs[0].id);
                                         }
                                         dfd.resolve();
                                     }).fail(dfd.fail);

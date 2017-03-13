@@ -41,6 +41,7 @@ module nts.uk.pr.view.qmm008.a2 {
             // Flags
             isLoading: KnockoutObservable<boolean>;
             currentOfficeCode : KnockoutObservable<string>;
+            japanYear: KnockoutObservable<string>;
             constructor() {
                 super({
                     functionName: '社会保険事業所',
@@ -101,6 +102,7 @@ module nts.uk.pr.view.qmm008.a2 {
                 
                 self.isLoading = ko.observable(true);
                 self.currentOfficeCode = ko.observable('');
+                self.japanYear = ko.observable('');
                 self.pensionModel().fundInputApply.subscribe(function() {
                     //change select -> hide fund input table
                     if (self.pensionModel().fundInputApply() != 1) {
@@ -170,14 +172,15 @@ module nts.uk.pr.view.qmm008.a2 {
                 self.pensionModel().historyId = data.historyId;
                 self.pensionModel().companyCode = data.companyCode;
                 self.pensionModel().officeCode(data.officeCode);
-                self.pensionModel().startMonth(data.startMonth.substring(0, 4) + "/" + data.startMonth.substring(4, data.startMonth.length));
-                self.pensionModel().endMonth(data.endMonth.substring(0, 4) + "/" + data.endMonth.substring(4, data.endMonth.length));
+                self.pensionModel().startMonth(nts.uk.time.formatYearMonth(parseInt(data.startMonth)));
+                self.pensionModel().endMonth(nts.uk.time.formatYearMonth(parseInt(data.endMonth)));
+                self.japanYear("("+nts.uk.time.yearmonthInJapanEmpire(data.startMonth).toString()+")");
                 self.pensionModel().autoCalculate(data.autoCalculate);
                 //TODO fundInputApply
                 //                    if (data.fundInputApply)
                 //                        self.pensionModel().fundInputApply(1);
                 //                    else
-                self.pensionModel().fundInputApply(0);
+                self.pensionModel().fundInputApply(1);
 
                 data.premiumRateItems.forEach(function(item, index) {
                     if (item.payType == PaymentType.SALARY && item.genderType == InsuranceGender.MALE) {
@@ -338,18 +341,25 @@ module nts.uk.pr.view.qmm008.a2 {
             onSave(): JQueryPromise<void>{
                 var self = this;
                 var dfd = $.Deferred<void>();
-                self.save();
+                if (nts.uk.ui._viewModel.errors.isEmpty()) {
+                    self.save();
+                }
+                else {
+                    alert('TODO has error!');
+                    //TODO if has error 
+                }
                 return dfd.promise();
             }
            
-            public getCurrentOfficeCode(childId: string) {
+            public getCurrentOfficeCode(childId: string):string {
                 var self = this;
+                var returnValue :string;
                 if (self.masterHistoryList.length > 0) {
                     self.masterHistoryList.forEach(function(parentItem) {
                         if (parentItem.historyList) {
                             parentItem.historyList.forEach(function(childItem) {
                                 if (childItem.uuid == childId) {
-                                    return parentItem.code;
+                                    returnValue = parentItem.code;
                                 }
                             });
                         } else {
@@ -357,7 +367,7 @@ module nts.uk.pr.view.qmm008.a2 {
                         }
                     });
                 }
-                return "";
+                return returnValue;
             }
             
             //open office register dialog

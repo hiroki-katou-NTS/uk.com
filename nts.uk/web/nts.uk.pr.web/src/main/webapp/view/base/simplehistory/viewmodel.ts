@@ -34,7 +34,8 @@ module nts.uk.pr.view.base.simplehistory {
             private canUpdateHistory: KnockoutObservable<boolean>;
             private canAddNewHistory: KnockoutObservable<boolean>;
             private options: SimpleHistoryScreenOptions<M, H>;
-
+            
+            isClickHistory: KnockoutObservable<boolean>;
             /**
              * Constructor.
              */
@@ -60,9 +61,15 @@ module nts.uk.pr.view.base.simplehistory {
 
                 // On searched result.
                 self.igGridSelectedHistoryUuid = ko.observable('');
+                self.isClickHistory = ko.observable(false);
+                
                 self.igGridSelectedHistoryUuid.subscribe(id => {
                     if (id && id.length == 36) {
-                        self.selectedHistoryUuid(id);    
+                        self.selectedHistoryUuid(id);
+                        self.isClickHistory(true);
+                    }
+                    else {
+                        self.isClickHistory(false);
                     }
                 })
                 
@@ -94,6 +101,7 @@ module nts.uk.pr.view.base.simplehistory {
                     } else {
                         // Not new mode and select first history.
                         self.isNewMode(false);
+                        if(self.masterHistoryDatasource()[0].childs.length>0)
                         self.selectedHistoryUuid(self.masterHistoryDatasource()[0].childs[0].id);
                     }
                     

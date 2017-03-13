@@ -54,9 +54,10 @@ var nts;
                                         { code: '1', name: 'しない' }
                                     ]);
                                     self.isTransistReturnData = ko.observable(false);
-                                    self.isClickHealthHistory = ko.observable(false);
                                     self.isLoading = ko.observable(true);
                                     self.currentOfficeCode = ko.observable('');
+                                    self.sendOfficeData = ko.observable(null);
+                                    self.japanYear = ko.observable('');
                                 }
                                 ScreenModel.prototype.start = function () {
                                     var self = this;
@@ -101,8 +102,9 @@ var nts;
                                         return;
                                     }
                                     self.healthModel().historyId = data.historyId;
-                                    self.healthModel().startMonth(data.startMonth.substring(0, 4) + "/" + data.startMonth.substring(4, data.startMonth.length));
-                                    self.healthModel().endMonth(data.endMonth.substring(0, 4) + "/" + data.endMonth.substring(4, data.endMonth.length));
+                                    self.healthModel().startMonth(nts.uk.time.formatYearMonth(parseInt(data.startMonth)));
+                                    self.healthModel().endMonth(nts.uk.time.formatYearMonth(parseInt(data.endMonth)));
+                                    self.japanYear("(" + nts.uk.time.yearmonthInJapanEmpire(data.startMonth).toString() + ")");
                                     self.healthModel().companyCode = data.companyCode;
                                     self.healthModel().officeCode(data.officeCode);
                                     self.healthModel().autoCalculate(data.autoCalculate);
@@ -187,13 +189,12 @@ var nts;
                                 ScreenModel.prototype.save = function () {
                                     var self = this;
                                     a1.service.updateHealthRate(self.healthCollectData()).done(function () {
-                                    });
+                                    }).fail();
                                 };
                                 ScreenModel.prototype.onSelectHistory = function (id) {
                                     var self = this;
                                     var dfd = $.Deferred();
                                     self.isLoading(true);
-                                    self.isClickHealthHistory(true);
                                     self.currentOfficeCode(self.getCurrentOfficeCode(id));
                                     a1.service.instance.findHistoryByUuid(id).done(function (dto) {
                                         self.loadHealth(dto);
@@ -206,17 +207,24 @@ var nts;
                                 ScreenModel.prototype.onSave = function () {
                                     var self = this;
                                     var dfd = $.Deferred();
-                                    self.save();
+                                    if (nts.uk.ui._viewModel.errors.isEmpty()) {
+                                        self.save();
+                                    }
+                                    else {
+                                        alert('TODO has error!');
+                                    }
                                     return dfd.promise();
                                 };
                                 ScreenModel.prototype.getCurrentOfficeCode = function (childId) {
                                     var self = this;
+                                    var returnValue;
                                     if (self.masterHistoryList.length > 0) {
                                         self.masterHistoryList.forEach(function (parentItem) {
+                                            self.sendOfficeData(parentItem);
                                             if (parentItem.historyList) {
                                                 parentItem.historyList.forEach(function (childItem) {
                                                     if (childItem.uuid == childId) {
-                                                        return parentItem.code;
+                                                        returnValue = parentItem.code;
                                                     }
                                                 });
                                             }
@@ -225,7 +233,11 @@ var nts;
                                             }
                                         });
                                     }
-                                    return "";
+                                    return returnValue;
+                                };
+                                ScreenModel.prototype.onRegistNew = function () {
+                                    var self = this;
+                                    self.OpenModalOfficeRegister();
                                 };
                                 ScreenModel.prototype.OpenModalOfficeRegister = function () {
                                     var self = this;
@@ -235,7 +247,7 @@ var nts;
                                     });
                                 };
                                 ScreenModel.prototype.OpenModalStandardMonthlyPriceHealth = function () {
-                                    nts.uk.ui.windows.setShared("dataOfSelectedOffice", this.getDataOfHealthSelectedOffice());
+                                    nts.uk.ui.windows.setShared("dataOfSelectedOffice", this.sendOfficeData());
                                     nts.uk.ui.windows.setShared("healthModel", this.healthModel());
                                     nts.uk.ui.windows.setShared("isTransistReturnData", this.isTransistReturnData());
                                     nts.uk.ui.windows.sub.modal("/view/qmm/008/h/index.xhtml", { title: "会社保険事業所の登録＞標準報酬月額保険料額表" }).onClosed(function () {

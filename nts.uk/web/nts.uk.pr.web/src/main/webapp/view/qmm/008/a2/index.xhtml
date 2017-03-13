@@ -25,7 +25,7 @@
 		<ui:define name="extendedAction">
 			<button>印刷(PDF)</button>
 			<button
-				data-bind="click: OpenModalStandardMonthlyPricePension,enable: isClickPensionHistory()">標準報酬月額保険料額表</button>
+				data-bind="click: OpenModalStandardMonthlyPricePension,enable: isClickHistory()">標準報酬月額保険料額表</button>
 			<button data-bind="click: OpenModalOfficeRegister">事業所登録</button>
 			<button>マスタ修正登録</button>
 		</ui:define>
@@ -48,7 +48,7 @@
 							<td class="border_none padding_top_20">
 								<div>
 									<p data-bind="text:startMonth" class="float_left"></p>
-									(平成28年04月)
+									<p data-bind="text:$parent.japanYear" class="float_left"></p>
 								</div>
 							</td>
 							<td class="border_none padding_top_20">~
@@ -79,7 +79,7 @@
 							optionsValue: 'code',
 							optionsText: 'name',
 							value: autoCalculate,
-							enable: $parent.isClickPensionHistory() }"></div></td>
+							enable: $parent.isClickHistory() }"></div></td>
 							<td class="border_none"><button
 									style="margin-left: 20px; margin-top: 20px; float: left;">?</button></td>
 						</tr>
@@ -108,57 +108,57 @@
 								<td class="bg-green tbl_pension_rate text_center" colspan="2">男子負担率（第1種）</td>
 								<td><div class="float_left">
 										<input
-											data-bind="ntsNumberEditor: {value: rateItems().pensionSalaryPersonalSon, option: $parent.Rate2,enable: $parent.isClickPensionHistory(), constraint: 'Ins2Rate'}" />
+											data-bind="ntsNumberEditor: {value: rateItems().pensionSalaryPersonalSon, option: $parent.Rate2,enable: $parent.isClickHistory(), constraint: 'Ins2Rate'}" />
 									</div>/1000</td>
 								<td><div class="float_left">
 										<input
-											data-bind="ntsNumberEditor: {value: rateItems().pensionSalaryCompanySon, option: $parent.Rate2,enable: $parent.isClickPensionHistory(), constraint: 'Ins2Rate'}" />
+											data-bind="ntsNumberEditor: {value: rateItems().pensionSalaryCompanySon, option: $parent.Rate2,enable: $parent.isClickHistory(), constraint: 'Ins2Rate'}" />
 									</div>/1000</td>
 								<td><div class="float_left">
 										<input
-											data-bind="ntsNumberEditor: {value: rateItems().pensionBonusPersonalSon, option: $parent.Rate2,enable: $parent.isClickPensionHistory(), constraint: 'Ins2Rate'}" />
+											data-bind="ntsNumberEditor: {value: rateItems().pensionBonusPersonalSon, option: $parent.Rate2,enable: $parent.isClickHistory(), constraint: 'Ins2Rate'}" />
 									</div>/1000</td>
 								<td><div class="float_left">
 										<input
-											data-bind="ntsNumberEditor: {value: rateItems().pensionBonusCompanySon, option: $parent.Rate2,enable: $parent.isClickPensionHistory(), constraint: 'Ins2Rate'}" />
+											data-bind="ntsNumberEditor: {value: rateItems().pensionBonusCompanySon, option: $parent.Rate2,enable: $parent.isClickHistory(), constraint: 'Ins2Rate'}" />
 									</div>/1000</td>
 							</tr>
 							<tr>
 								<td class="bg-green tbl_pension_rate text_center" colspan="2">女子負担率（第2種）</td>
 								<td><div class="float_left">
 										<input
-											data-bind="ntsNumberEditor: {value: rateItems().pensionSalaryPersonalDaughter, option: $parent.Rate2,enable: $parent.isClickPensionHistory(), constraint: 'Ins2Rate'}" />
+											data-bind="ntsNumberEditor: {value: rateItems().pensionSalaryPersonalDaughter, option: $parent.Rate2,enable: $parent.isClickHistory(), constraint: 'Ins2Rate'}" />
 									</div>/1000</td>
 								<td><div class="float_left">
 										<input
-											data-bind="ntsNumberEditor: {value: rateItems().pensionSalaryCompanyDaughter, option: $parent.Rate2,enable: $parent.isClickPensionHistory(), constraint: 'Ins2Rate'}" />
+											data-bind="ntsNumberEditor: {value: rateItems().pensionSalaryCompanyDaughter, option: $parent.Rate2,enable: $parent.isClickHistory(), constraint: 'Ins2Rate'}" />
 									</div>/1000</td>
 								<td><div class="float_left">
 										<input
-											data-bind="ntsNumberEditor: {value: rateItems().pensionBonusPersonalDaughter, option: $parent.Rate2,enable: $parent.isClickPensionHistory(), constraint: 'Ins2Rate'}" />
+											data-bind="ntsNumberEditor: {value: rateItems().pensionBonusPersonalDaughter, option: $parent.Rate2,enable: $parent.isClickHistory(), constraint: 'Ins2Rate'}" />
 									</div>/1000</td>
 								<td><div class="float_left">
 										<input
-											data-bind="ntsNumberEditor: {value: rateItems().pensionBonusCompanyDaughter, option: $parent.Rate2,enable: $parent.isClickPensionHistory(), constraint: 'Ins2Rate'}" />
+											data-bind="ntsNumberEditor: {value: rateItems().pensionBonusCompanyDaughter, option: $parent.Rate2,enable: $parent.isClickHistory(), constraint: 'Ins2Rate'}" />
 									</div>/1000</td>
 							</tr>
 							<tr>
 								<td class="bg-green tbl_pension_rate text_center" colspan="2">坑内員負担率（第3種）</td>
 								<td><div class="float_left">
 										<input
-											data-bind="ntsNumberEditor: {value: rateItems().pensionSalaryPersonalUnknown, option: $parent.Rate2,enable: $parent.isClickPensionHistory(), constraint: 'Ins2Rate'}" />
+											data-bind="ntsNumberEditor: {value: rateItems().pensionSalaryPersonalUnknown, option: $parent.Rate2,enable: $parent.isClickHistory(), constraint: 'Ins2Rate'}" />
 									</div>/1000</td>
 								<td><div class="float_left">
 										<input
-											data-bind="ntsNumberEditor: {value: rateItems().pensionSalaryCompanyUnknown, option: $parent.Rate2,enable: $parent.isClickPensionHistory(), constraint: 'Ins2Rate'}" />
+											data-bind="ntsNumberEditor: {value: rateItems().pensionSalaryCompanyUnknown, option: $parent.Rate2,enable: $parent.isClickHistory(), constraint: 'Ins2Rate'}" />
 									</div>/1000</td>
 								<td><div class="float_left">
 										<input
-											data-bind="ntsNumberEditor: {value: rateItems().pensionBonusPersonalUnknown, option: $parent.Rate2,enable: $parent.isClickPensionHistory(), constraint: 'Ins2Rate'}" />
+											data-bind="ntsNumberEditor: {value: rateItems().pensionBonusPersonalUnknown, option: $parent.Rate2,enable: $parent.isClickHistory(), constraint: 'Ins2Rate'}" />
 									</div>/1000</td>
 								<td><div class="float_left">
 										<input
-											data-bind="ntsNumberEditor: {value: rateItems().pensionBonusCompanyUnknown, option: $parent.Rate2,enable: $parent.isClickPensionHistory(), constraint: 'Ins2Rate'}" />
+											data-bind="ntsNumberEditor: {value: rateItems().pensionBonusCompanyUnknown, option: $parent.Rate2,enable: $parent.isClickHistory(), constraint: 'Ins2Rate'}" />
 									</div>/1000</td>
 							</tr>
 						</tbody>
@@ -332,7 +332,7 @@
 												optionsValue: 'code',
 												value: roundingMethods().pensionSalaryPersonalComboBoxSelectedCode,
 												optionsText: 'name',
-												enable:$parent.isClickPensionHistory(),
+												enable:$parent.isClickHistory(),
 												columns: [
 													{ prop: 'name', length: 5 },
 												]}"></div>
@@ -343,7 +343,7 @@
 												optionsValue: 'code',
 												value: roundingMethods().pensionSalaryCompanyComboBoxSelectedCode,
 												optionsText: 'name',
-												enable:$parent.isClickPensionHistory(),
+												enable:$parent.isClickHistory(),
 												columns: [
 													{ prop: 'name', length: 5 },
 												]}"></div></td>
@@ -353,7 +353,7 @@
 												optionsValue: 'code',
 												value: roundingMethods().pensionBonusPersonalComboBoxSelectedCode,
 												optionsText: 'name',
-												enable:$parent.isClickPensionHistory(),
+												enable:$parent.isClickHistory(),
 												columns: [
 													{ prop: 'name', length: 5 },
 												]}"></div></td>
@@ -363,7 +363,7 @@
 												optionsValue: 'code',
 												value: roundingMethods().pensionBonusCompanyComboBoxSelectedCode,
 												optionsText: 'name',
-												enable:$parent.isClickPensionHistory(),
+												enable:$parent.isClickHistory(),
 												columns: [
 													{ prop: 'name', length: 5 },
 												]}"></div></td>

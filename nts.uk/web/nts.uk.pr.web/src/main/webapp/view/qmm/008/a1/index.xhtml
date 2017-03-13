@@ -23,7 +23,7 @@
 		</ui:define>
 		<ui:define name="extendedAction">
 			<button >印刷(PDF)</button>
-			<button data-bind="click: OpenModalStandardMonthlyPriceHealth,enable: isClickHealthHistory()">標準報酬月額保険料額表</button>
+			<button data-bind="click: OpenModalStandardMonthlyPriceHealth,enable: isClickHistory()">標準報酬月額保険料額表</button>
 			<button data-bind="click: OpenModalOfficeRegister">事業所登録</button>
 			<button>マスタ修正登録</button>
 		</ui:define>
@@ -31,7 +31,7 @@
 		<ui:define name="sidebar">
 			<ul class="navigator">
 				<li><a id="healthInsuranceTabPanel" href="#tabpanel-1" role="tab-navigator" class="active">健康保険</a></li>
-				<li><a href="#tabpanel-2" >厚生年金</a></li>
+				<li><a id="goToPension" href="#tabpanel-2" >厚生年金</a></li>
 			</ul>
 		</ui:define>
 
@@ -43,7 +43,8 @@
 						<td class="border_none"><div style="margin-top: 20px;"
 								data-bind="ntsFormLabel: {}">期間</div></td>
 						<td class="border_none padding_top_20">
-							<p data-bind="text:startMonth" class="float_left"></p>(平成28年04月)
+							<p data-bind="text:startMonth" class="float_left"></p>
+							<p data-bind="text:$parent.japanYear" class="float_left"></p>
 						</td>
 						<td class="border_none padding_top_20">~
 							<p class="float_right" data-bind="text:endMonth"></p> <br />
@@ -60,7 +61,7 @@
 									optionsValue: 'code',
 									optionsText: 'name',
 									value: autoCalculate,
-									enable: $parent.isClickHealthHistory() }"></div></td>
+									enable: $parent.isClickHistory() }"></div></td>
 						<td class="border_none"><button
 								style="margin-left: 20px; margin-top: 20px; float: left;">?</button>
 						</td>
@@ -91,40 +92,40 @@
 							<td class="bg-green tbl_health_insurance_rate text_center"
 								colspan="2">健康保険率(介護なし)</td>
 							<td><div class="float_left">
-									<input
-										data-bind="ntsNumberEditor: {value: rateItems().healthSalaryPersonalGeneral,enable: $parent.isClickHealthHistory(), option: $parent.Rate3, constraint: 'Ins3Rate'}" />
+									<input class = "save-error"
+										data-bind="ntsNumberEditor: {value: rateItems().healthSalaryPersonalGeneral,enable: $parent.isClickHistory(), option: $parent.Rate3, constraint: 'Ins3Rate'}" />
 								</div>/1000</td>
 							<td><div class="float_left">
-									<input
-										data-bind="ntsNumberEditor: {value: rateItems().healthSalaryCompanyGeneral,enable: $parent.isClickHealthHistory(), option: $parent.Rate3, constraint: 'Ins3Rate'}" />
+									<input class = "save-error"
+										data-bind="ntsNumberEditor: {value: rateItems().healthSalaryCompanyGeneral,enable: $parent.isClickHistory(), option: $parent.Rate3, constraint: 'Ins3Rate'}" />
 								</div>/1000</td>
 							<td><div class="float_left">
-									<input
-										data-bind="ntsNumberEditor: {value: rateItems().healthBonusPersonalGeneral,enable: $parent.isClickHealthHistory() , option: $parent.Rate3, constraint: 'Ins3Rate'}" />
+									<input class = "save-error"
+										data-bind="ntsNumberEditor: {value: rateItems().healthBonusPersonalGeneral,enable: $parent.isClickHistory() , option: $parent.Rate3, constraint: 'Ins3Rate'}" />
 								</div>/1000</td>
 							<td><div class="float_left">
-									<input
-										data-bind="ntsNumberEditor: {value: rateItems().healthBonusCompanyGeneral,enable: $parent.isClickHealthHistory() , option: $parent.Rate3, constraint: 'Ins3Rate'}" />
+									<input class = "save-error"
+										data-bind="ntsNumberEditor: {value: rateItems().healthBonusCompanyGeneral,enable: $parent.isClickHistory() , option: $parent.Rate3, constraint: 'Ins3Rate'}" />
 								</div>/1000</td>
 						</tr>
 						<tr>
 							<td class="bg-green tbl_health_insurance_rate text_center"
 								colspan="2">健康保険率(介護ある)</td>
 							<td><div class="float_left">
-									<input
-										data-bind="ntsNumberEditor: {value: rateItems().healthSalaryPersonalNursing,enable: $parent.isClickHealthHistory(), option: $parent.Rate3, constraint: 'Ins3Rate'}" />
+									<input class = "save-error"
+										data-bind="ntsNumberEditor: {value: rateItems().healthSalaryPersonalNursing,enable: $parent.isClickHistory(), option: $parent.Rate3, constraint: 'Ins3Rate'}" />
 								</div>/1000</td>
 							<td><div class="float_left">
-									<input
-										data-bind="ntsNumberEditor: {value: rateItems().healthSalaryCompanyNursing,enable: $parent.isClickHealthHistory(), option: $parent.Rate3, constraint: 'Ins3Rate'}" />
+									<input class = "save-error"
+										data-bind="ntsNumberEditor: {value: rateItems().healthSalaryCompanyNursing,enable: $parent.isClickHistory(), option: $parent.Rate3, constraint: 'Ins3Rate'}" />
 								</div>/1000</td>
 							<td><div class="float_left">
-									<input
-										data-bind="ntsNumberEditor: {value: rateItems().healthBonusPersonalNursing,enable: $parent.isClickHealthHistory(), option: $parent.Rate3, constraint: 'Ins3Rate'}" />
+									<input class = "save-error"
+										data-bind="ntsNumberEditor: {value: rateItems().healthBonusPersonalNursing,enable: $parent.isClickHistory(), option: $parent.Rate3, constraint: 'Ins3Rate'}" />
 								</div>/1000</td>
 							<td><div class="float_left">
-									<input
-										data-bind="ntsNumberEditor: {value: rateItems().healthBonusCompanyNursing,enable: $parent.isClickHealthHistory(), option: $parent.Rate3, constraint: 'Ins3Rate'}" />
+									<input class = "save-error"
+										data-bind="ntsNumberEditor: {value: rateItems().healthBonusCompanyNursing,enable: $parent.isClickHistory(), option: $parent.Rate3, constraint: 'Ins3Rate'}" />
 								</div>/1000</td>
 						</tr>
 						<tr>
@@ -138,20 +139,20 @@
 								class="health_empty_col bg-green no_top_border no_bottom_border "></td>
 							<td class="bg-green text_center tbl_health_child">特定保険率</td>
 							<td><div class="float_left">
-									<input
-										data-bind="ntsNumberEditor: {value: rateItems().healthSalaryPersonalBasic,enable: $parent.isClickHealthHistory(), option: $parent.Rate3, constraint: 'Ins3Rate'}" />
+									<input class = "save-error"
+										data-bind="ntsNumberEditor: {value: rateItems().healthSalaryPersonalBasic,enable: $parent.isClickHistory(), option: $parent.Rate3, constraint: 'Ins3Rate'}" />
 								</div>/1000</td>
 							<td><div class="float_left">
-									<input
-										data-bind="ntsNumberEditor: {value: rateItems().healthSalaryCompanyBasic,enable: $parent.isClickHealthHistory(), option: $parent.Rate3, constraint: 'Ins3Rate'}" />
+									<input class = "save-error"
+										data-bind="ntsNumberEditor: {value: rateItems().healthSalaryCompanyBasic,enable: $parent.isClickHistory(), option: $parent.Rate3, constraint: 'Ins3Rate'}" />
 								</div>/1000</td>
 							<td><div class="float_left">
-									<input
-										data-bind="ntsNumberEditor: {value: rateItems().healthBonusPersonalBasic,enable: $parent.isClickHealthHistory(), option: $parent.Rate3, constraint: 'Ins3Rate'}" />
+									<input class = "save-error"
+										data-bind="ntsNumberEditor: {value: rateItems().healthBonusPersonalBasic,enable: $parent.isClickHistory(), option: $parent.Rate3, constraint: 'Ins3Rate'}" />
 								</div>/1000</td>
 							<td><div class="float_left">
-									<input
-										data-bind="ntsNumberEditor: {value: rateItems().healthBonusCompanyBasic,enable: $parent.isClickHealthHistory(), option: $parent.Rate3, constraint: 'Ins3Rate'}" />
+									<input class = "save-error"
+										data-bind="ntsNumberEditor: {value: rateItems().healthBonusCompanyBasic,enable: $parent.isClickHistory(), option: $parent.Rate3, constraint: 'Ins3Rate'}" />
 								</div>/1000</td>
 						</tr>
 						<tr>
@@ -159,20 +160,20 @@
 								class="health_empty_col bg-green no_top_border no_bottom_border"></td>
 							<td class="bg-green text_center tbl_health_child">基本保険率</td>
 							<td><div class="float_left">
-									<input
-										data-bind="ntsNumberEditor: {value: rateItems().healthSalaryPersonalSpecific,enable: $parent.isClickHealthHistory(), option: $parent.Rate3, constraint: 'Ins3Rate'}" />
+									<input class = "save-error"
+										data-bind="ntsNumberEditor: {value: rateItems().healthSalaryPersonalSpecific,enable: $parent.isClickHistory(), option: $parent.Rate3, constraint: 'Ins3Rate'}" />
 								</div>/1000</td>
 							<td><div class="float_left">
-									<input
-										data-bind="ntsNumberEditor: {value: rateItems().healthSalaryCompanySpecific,enable: $parent.isClickHealthHistory(), option: $parent.Rate3, constraint: 'Ins3Rate'}" />
+									<input class = "save-error"
+										data-bind="ntsNumberEditor: {value: rateItems().healthSalaryCompanySpecific,enable: $parent.isClickHistory(), option: $parent.Rate3, constraint: 'Ins3Rate'}" />
 								</div>/1000</td>
 							<td><div class="float_left">
-									<input
-										data-bind="ntsNumberEditor: {value: rateItems().healthBonusPersonalSpecific,enable: $parent.isClickHealthHistory(), option: $parent.Rate3, constraint: 'Ins3Rate'}" />
+									<input class = "save-error"
+										data-bind="ntsNumberEditor: {value: rateItems().healthBonusPersonalSpecific,enable: $parent.isClickHistory(), option: $parent.Rate3, constraint: 'Ins3Rate'}" />
 								</div>/1000</td>
 							<td><div class="float_left">
-									<input
-										data-bind="ntsNumberEditor: {value: rateItems().healthBonusCompanySpecific,enable: $parent.isClickHealthHistory(), option: $parent.Rate3, constraint: 'Ins3Rate'}" />
+									<input class = "save-error"
+										data-bind="ntsNumberEditor: {value: rateItems().healthBonusCompanySpecific,enable: $parent.isClickHistory(), option: $parent.Rate3, constraint: 'Ins3Rate'}" />
 								</div>/1000</td>
 						</tr>
 					</tbody>
@@ -201,7 +202,7 @@
 											optionsValue: 'code',
 											value: roundingMethods().healthSalaryPersonalComboBoxSelectedCode,
 											optionsText: 'name',
-											enable:$parent.isClickHealthHistory(),
+											enable:$parent.isClickHistory(),
 											columns: [
 												{ prop: 'name', length: 5 },
 											]}"></div>
@@ -212,7 +213,7 @@
 											optionsValue: 'code',
 											value: roundingMethods().healthSalaryCompanyComboBoxSelectedCode,
 											optionsText: 'name',
-											enable:$parent.isClickHealthHistory(),
+											enable:$parent.isClickHistory(),
 											columns: [
 												{ prop: 'name', length: 5 },
 											]}"></div></td>
@@ -222,7 +223,7 @@
 											optionsValue: 'code',
 											value: roundingMethods().healthBonusPersonalComboBoxSelectedCode,
 											optionsText: 'name',
-											enable:$parent.isClickHealthHistory(),
+											enable:$parent.isClickHistory(),
 											columns: [
 												{ prop: 'name', length: 5 },
 											]}"></div></td>
@@ -232,7 +233,7 @@
 											optionsValue: 'code',
 											value: roundingMethods().healthBonusCompanyComboBoxSelectedCode,
 											optionsText: 'name',
-											enable:$parent.isClickHealthHistory(),
+											enable:$parent.isClickHistory(),
 											columns: [
 												{ prop: 'name', length: 5 },
 											]}"></div></td>
@@ -245,13 +246,13 @@
 				</div>
 				<div style="float: left;" data-bind="ntsFormLabel: {}">健康保険累計限度額</div>
 				<div class="pad_top_10">
-					<input
+					<input class = "save-error"
 						data-bind="ntsNumberEditor: {
 							value: maxAmount, 
 							constraint: '', 
 							option: $parent.moneyInputOptions, 
 							required: true, 
-							enable: $parent.isClickHealthHistory(), 
+							enable: $parent.isClickHistory(), 
 							readonly: false}" />
 				</div>
 			</div>
