@@ -15,16 +15,18 @@ var nts;
                             var ScreenModel = (function () {
                                 function ScreenModel() {
                                     var self = this;
+                                    self.isLoading = ko.observable(true);
                                     self.items = ko.observableArray([]);
                                     self.currentCode = ko.observable();
                                     self.outputSettingDetailModel = ko.observable(new OutputSettingDetailModel());
+                                    self.reportItems = ko.observableArray([]);
+                                    self.reportItemSelected = ko.observable('');
                                     for (var i = 1; i < 30; i++) {
-                                        this.items.push(new ItemModel('00' + i, '基本給', "name " + i, i % 3 === 0));
+                                        this.items.push(new ItemModel('00' + i, '基本給' + i, "name " + i, i % 3 === 0));
                                     }
                                     this.columns = ko.observableArray([
-                                        { headerText: 'コード', key: 'code', width: 50, hidden: true },
-                                        { headerText: '名称', key: 'name', width: 50, hidden: true },
-                                        { headerText: '説明', key: 'description', width: 100 }
+                                        { headerText: 'コード', key: 'code', width: 50 },
+                                        { headerText: '名称', key: 'name', width: 50 }
                                     ]);
                                 }
                                 ScreenModel.prototype.startPage = function () {
@@ -53,14 +55,18 @@ var nts;
                                 function OutputSettingDetailModel() {
                                     this.settingCode = ko.observable('code');
                                     this.settingName = ko.observable('name 123');
-                                    this.categorySetting = ko.observable(new CategorySetting());
+                                    this.categorySettings = ko.observableArray([]);
+                                    this.categorySettings.push(new CategorySetting());
+                                    this.categorySettings.push(new CategorySetting());
+                                    this.categorySettings.push(new CategorySetting());
+                                    this.categorySettings.push(new CategorySetting());
                                     this.categorySettingTabs = ko.observableArray([
-                                        { id: 'supply', title: '支給', content: '#supply', enable: ko.observable(true), visible: ko.observable(true) },
-                                        { id: 'deduction', title: '控除', content: '#deduction', enable: ko.observable(true), visible: ko.observable(true) },
-                                        { id: 'attendance', title: '勤怠', content: '#attendance', enable: ko.observable(true), visible: ko.observable(true) },
-                                        { id: 'article-others', title: '記事・その他', content: '#article-others', enable: ko.observable(true), visible: ko.observable(true) }
+                                        { id: SalaryCategory.SUPPLY, title: '支給', content: '#supply', enable: ko.observable(true), visible: ko.observable(true) },
+                                        { id: SalaryCategory.DEDUCTION, title: '控除', content: '#deduction', enable: ko.observable(true), visible: ko.observable(true) },
+                                        { id: SalaryCategory.ATTENDANCE, title: '勤怠', content: '#attendance', enable: ko.observable(true), visible: ko.observable(true) },
+                                        { id: SalaryCategory.ARTICLE_OTHERS, title: '記事・その他', content: '#article-others', enable: ko.observable(true), visible: ko.observable(true) }
                                     ]);
-                                    this.selectedCategory = ko.observable('supply');
+                                    this.selectedCategory = ko.observable(SalaryCategory.SUPPLY);
                                 }
                                 return OutputSettingDetailModel;
                             }());
@@ -68,20 +74,128 @@ var nts;
                             var CategorySetting = (function () {
                                 function CategorySetting() {
                                     var self = this;
-                                    self.items = ko.observableArray([]);
-                                    self.currentCode = ko.observable();
+                                    self.outputItems = ko.observableArray([]);
+                                    self.aggregateItems = ko.observableArray([]);
+                                    self.masterItems = ko.observableArray([]);
+                                    self.outputItemSelected = ko.observable(null);
+                                    self.aggregateItemsSelected = ko.observableArray([]);
+                                    self.masterItemsSelected = ko.observableArray([]);
                                     for (var i = 1; i < 15; i++) {
-                                        this.items.push(new ItemModel('00' + i, '基本給', "description " + i, i % 3 === 0));
+                                        this.aggregateItems.push({ code: '00' + i, name: '基本給' + i, subsItem: [], taxDivision: 'Payment', value: i });
                                     }
-                                    this.columns = ko.observableArray([
-                                        { headerText: 'コード', key: 'code', width: 50, hidden: true },
-                                        { headerText: '名称', key: 'name', width: 50, hidden: true },
-                                        { headerText: '説明', key: 'description', width: 100 }
+                                    for (var i = 1; i < 15; i++) {
+                                        this.masterItems.push({ code: '00' + i, name: '基本給' + i, paymentType: 'Salary', taxDivision: 'Deduction' });
+                                    }
+                                    this.outputItemColumns = ko.observableArray([
+                                        { headerText: 'コード', key: 'code', width: 50 },
+                                        { headerText: '名称', key: 'name', width: 50 }
                                     ]);
                                 }
+                                CategorySetting.prototype.moveMasterItem = function () {
+                                    if (this.masterItemsSelected()[0]) {
+                                        var self = this;
+                                        var selectedItems = [];
+                                        self.masterItemsSelected().forEach(function (selectedCode) {
+                                            selectedItems.push(self.masterItems().filter(function (item) {
+                                                return selectedCode == item.code;
+                                            })[0]);
+                                        });
+                                        selectedItems.forEach(function (item) {
+                                            self.masterItems.remove(item);
+                                            self.outputItems.push({
+                                                code: item.code,
+                                                name: item.name,
+                                                isAggregateItem: false,
+                                                removable: true
+                                            });
+                                        });
+                                        self.masterItemsSelected([]);
+                                    }
+                                };
+                                CategorySetting.prototype.moveAggregateItem = function () {
+                                    if (this.aggregateItemsSelected()[0]) {
+                                        var self = this;
+                                        var selectedItems = [];
+                                        self.aggregateItemsSelected().forEach(function (selectedCode) {
+                                            selectedItems.push(self.aggregateItems().filter(function (item) {
+                                                return selectedCode == item.code;
+                                            })[0]);
+                                        });
+                                        selectedItems.forEach(function (item) {
+                                            self.aggregateItems.remove(item);
+                                            self.outputItems.push({
+                                                code: item.code,
+                                                name: item.name,
+                                                isAggregateItem: true,
+                                                removable: true
+                                            });
+                                        });
+                                        self.masterItemsSelected([]);
+                                    }
+                                };
                                 return CategorySetting;
                             }());
                             viewmodel.CategorySetting = CategorySetting;
+                            var AggregateItem = (function () {
+                                function AggregateItem() {
+                                }
+                                return AggregateItem;
+                            }());
+                            viewmodel.AggregateItem = AggregateItem;
+                            var MasterItem = (function () {
+                                function MasterItem() {
+                                }
+                                return MasterItem;
+                            }());
+                            viewmodel.MasterItem = MasterItem;
+                            var OutputItem = (function () {
+                                function OutputItem() {
+                                }
+                                return OutputItem;
+                            }());
+                            viewmodel.OutputItem = OutputItem;
+                            var SalaryCategory = (function () {
+                                function SalaryCategory() {
+                                }
+                                SalaryCategory.SUPPLY = 'Supply';
+                                SalaryCategory.PAYMENT_TOTAL = 'PaymentTotal';
+                                SalaryCategory.DEDUCTION = 'Deduction';
+                                SalaryCategory.DEDUCTION_TABULATION = 'DeductionTabulation';
+                                SalaryCategory.ATTENDANCE = 'Attendance';
+                                SalaryCategory.ARTICLE_OTHERS = 'ArticleOthers';
+                                return SalaryCategory;
+                            }());
+                            viewmodel.SalaryCategory = SalaryCategory;
+                            var TaxDivision = (function () {
+                                function TaxDivision() {
+                                }
+                                TaxDivision.PAYMENT = 'Payment';
+                                TaxDivision.DEDUCTION = 'Deduction';
+                                return TaxDivision;
+                            }());
+                            viewmodel.TaxDivision = TaxDivision;
+                            var SalaryOutputDistinction = (function () {
+                                function SalaryOutputDistinction() {
+                                    this.HOURLY = 'Hourly';
+                                    this.MINUTLY = 'Minutely';
+                                }
+                                return SalaryOutputDistinction;
+                            }());
+                            viewmodel.SalaryOutputDistinction = SalaryOutputDistinction;
+                            var PaymentType = (function () {
+                                function PaymentType() {
+                                    this.SALARY = 'Salary';
+                                    this.BONUS = 'Bonus';
+                                }
+                                return PaymentType;
+                            }());
+                            viewmodel.PaymentType = PaymentType;
+                            var ReportItem = (function () {
+                                function ReportItem() {
+                                }
+                                return ReportItem;
+                            }());
+                            viewmodel.ReportItem = ReportItem;
                         })(viewmodel = c.viewmodel || (c.viewmodel = {}));
                     })(c = qpp007.c || (qpp007.c = {}));
                 })(qpp007 = view.qpp007 || (view.qpp007 = {}));
