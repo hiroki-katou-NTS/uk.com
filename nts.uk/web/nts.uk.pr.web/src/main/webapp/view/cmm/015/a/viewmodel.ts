@@ -106,34 +106,26 @@ module cmm015.a.viewmodel {
                         dfd.reject(res);
                     })
                 }
-                for (let i = 0; i < self.dataSource().length; i++) {
+                for (let i = 0; i < self.dataSource().length ; i++) {
                     if (self.INP_002_code() == self.dataSource()[i].payClassificationCode && self.INP_002_enable() == false) {
-
                         var payClassification_before = self.dataSource()[i];
                         var payClassification_update = new viewmodel.model.PayClassificationDto(self.INP_002_code(), self.INP_003_name(), self.INP_004_notes());
                         service.updatePayClassification(payClassification_update).done(function() {
                             self.updatedata(payClassification_update);
                             self.getPayClassificationList_afterUpdate();
-
                         }).fail(function(res) {
-
                             dfd.reject(res);
                         })
                         break;
                     } else if (self.INP_002_code() != self.dataSource()[i].payClassificationCode
-                        && i == self.dataSource().length - 1
                         && self.INP_002_enable() == true) {
                         var payClassification_new = new viewmodel.model.PayClassificationDto(self.INP_002_code(), self.INP_003_name(), self.INP_004_notes());
                         service.addPayClassification(payClassification_new).done(function() {
                             self.adddata(payClassification_new);
                             self.currentCode(self.adddata().payClassificationCode);
                             self.getPayClassificationList_afterAdd();
-
-
                         }).fail(function(res) {
-
                             alert(res.message);
-
                             dfd.reject(res);
                         })
                         break;
@@ -173,27 +165,31 @@ module cmm015.a.viewmodel {
         }
 
         deletePayClassification() {
+
             var self = this;
             var dfd = $.Deferred<any>();
+
             if (self.dataSource().length > 0) {
                 var item = new model.RemovePayClassificationCommand(self.currentItem().payClassificationCode);
+                self.index_of_itemDelete(_.findIndex(self.dataSource(), function(item)
+                { return item.payClassificationCode === self.currentItem().payClassificationCode; }));
+                nts.uk.ui.dialog.confirm("データを削除します。\r\nよろしいですか？").ifYes(function() {
+                    service.removePayClassification(item).done(function(res) {
 
-                self.index_of_itemDelete(_.findIndex(self.dataSource(), function(item) { return item.payClassificationCode === self.currentItem().payClassificationCode; }));
-                
-                service.removePayClassification(item).done(function(res) {
-                    //if (self.dataSource().length > 0){
-                    self.getPayClassificationList_aftefDelete();
+                        self.getPayClassificationList_aftefDelete();
 
-                    //} else {return null}
-                }).fail(function(res) {
-                    dfd.reject(res);
-                })
+                    }).fail(function(res) {
+                        dfd.reject(res);
+                    })
+
+                }).ifNo(function() {
+                });
             } else { return null }
-
         }
 
 
         getPayClassificationList_aftefDelete(): any {
+
             var self = this;
             var dfd = $.Deferred<any>();
             service.getAllPayClassification().done(function(payClassification_arr: Array<model.PayClassificationDto>) {
@@ -218,6 +214,7 @@ module cmm015.a.viewmodel {
             }).fail(function(res) {
                 alert(res.message);
             })
+
             dfd.resolve();
             return dfd.promise();
 

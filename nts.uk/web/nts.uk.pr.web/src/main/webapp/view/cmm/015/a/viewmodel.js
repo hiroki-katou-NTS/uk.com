@@ -93,7 +93,6 @@ var cmm015;
                                 break;
                             }
                             else if (self.INP_002_code() != self.dataSource()[i].payClassificationCode
-                                && i == self.dataSource().length - 1
                                 && self.INP_002_enable() == true) {
                                 var payClassification_new = new viewmodel.model.PayClassificationDto(self.INP_002_code(), self.INP_003_name(), self.INP_004_notes());
                                 a.service.addPayClassification(payClassification_new).done(function () {
@@ -136,12 +135,13 @@ var cmm015;
                     if (self.dataSource().length > 0) {
                         var item = new model.RemovePayClassificationCommand(self.currentItem().payClassificationCode);
                         self.index_of_itemDelete(_.findIndex(self.dataSource(), function (item) { return item.payClassificationCode === self.currentItem().payClassificationCode; }));
-                        a.service.removePayClassification(item).done(function (res) {
-                            //if (self.dataSource().length > 0){
-                            self.getPayClassificationList_aftefDelete();
-                            //} else {return null}
-                        }).fail(function (res) {
-                            dfd.reject(res);
+                        nts.uk.ui.dialog.confirm("データを削除します。\r\nよろしいですか？").ifYes(function () {
+                            a.service.removePayClassification(item).done(function (res) {
+                                self.getPayClassificationList_aftefDelete();
+                            }).fail(function (res) {
+                                dfd.reject(res);
+                            });
+                        }).ifNo(function () {
                         });
                     }
                     else {
