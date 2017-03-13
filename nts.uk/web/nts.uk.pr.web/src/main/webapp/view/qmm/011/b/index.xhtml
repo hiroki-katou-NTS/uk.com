@@ -12,17 +12,17 @@
 
 					<div class="list-box" id="list-box1"
 						data-bind="ntsListBox: {
-											options: lstUnemployeeInsuranceRateHistory,
-											primaryKey: 'historyId',
-											primaryText: 'inforMonthRage',
-											multiple: false,
-											value: selectionUnemployeeInsuranceRateHistory,
-											enable: true,
-											rows: 10,
-											required: true,
-											columns: [
-												{ key: 'inforMonthRage', length: 10 }
-											]}"></div>
+							options: lstUnemployeeInsuranceRateHistory,
+							primaryKey: 'historyId',
+							primaryText: 'inforMonthRage',
+							multiple: false,
+							value: selectionUnemployeeInsuranceRateHistory,
+							enable: true,
+							rows: 10,
+							required: true,
+							columns: [
+								{ key: 'inforMonthRage', length: 10 }
+							]}"></div>
 				</td>
 				<td id="contents-right"
 					data-bind="with: unemployeeInsuranceRateModel">
@@ -33,7 +33,7 @@
 									<label>期間</label>
 								</div>
 							</td>
-							<td class="contentsRR"><div data-bind="text: startMonthRage" />
+							<td class="contentsRR"><div data-bind="text: startJapStartMonth" />
 							</td>
 							<td><label> ~ </label></td>
 							<td><label data-bind="text: endMonthRage">

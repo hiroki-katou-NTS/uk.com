@@ -202,6 +202,7 @@ var nts;
                                             self.clearErrorSaveUnemployeeInsurance();
                                         }).fail(function (res) {
                                             self.showMessageSaveUnemployeeInsurance(res.message);
+                                            self.reloadDataUnemployeeInsuranceRateByAction();
                                         });
                                     }
                                     else {
@@ -210,6 +211,7 @@ var nts;
                                             self.clearErrorSaveUnemployeeInsurance();
                                         }).fail(function (res) {
                                             self.showMessageSaveUnemployeeInsurance(res.message);
+                                            self.reloadDataUnemployeeInsuranceRateByAction();
                                         });
                                     }
                                     return true;
@@ -569,7 +571,7 @@ var nts;
                             var UnemployeeInsuranceHistoryModel = (function () {
                                 function UnemployeeInsuranceHistoryModel() {
                                     this.historyId = ko.observable('');
-                                    this.startMonthRage = ko.observable('');
+                                    this.startJapStartMonth = ko.observable('');
                                     this.endMonthRage = ko.observable('');
                                     this.endMonth = ko.observable(0);
                                     this.startMonth = ko.observable(0);
@@ -581,11 +583,11 @@ var nts;
                                     else {
                                         this.historyId = ko.observable('');
                                     }
-                                    if (this.startMonthRage != null && this.startMonthRage != undefined) {
-                                        this.startMonthRage('');
+                                    if (this.startJapStartMonth != null && this.startJapStartMonth != undefined) {
+                                        this.startJapStartMonth('');
                                     }
                                     else {
-                                        this.startMonthRage = ko.observable('');
+                                        this.startJapStartMonth = ko.observable('');
                                     }
                                     if (this.endMonthRage != null && this.endMonthRage != undefined) {
                                         this.endMonthRage('9999/12');
@@ -606,12 +608,13 @@ var nts;
                                         this.startMonth = ko.observable(0);
                                     }
                                 };
-                                UnemployeeInsuranceHistoryModel.prototype.updateData = function (UnemployeeInsuranceHistory) {
-                                    this.historyId(UnemployeeInsuranceHistory.historyId);
-                                    this.startMonthRage(nts.uk.time.formatYearMonth(UnemployeeInsuranceHistory.startMonth));
-                                    this.endMonthRage(nts.uk.time.formatYearMonth(UnemployeeInsuranceHistory.endMonth));
-                                    this.startMonth(UnemployeeInsuranceHistory.startMonth);
-                                    this.endMonth(UnemployeeInsuranceHistory.endMonth);
+                                UnemployeeInsuranceHistoryModel.prototype.updateData = function (unemployeeInsuranceHistory) {
+                                    this.historyId(unemployeeInsuranceHistory.historyId);
+                                    this.startJapStartMonth(nts.uk.time.formatYearMonth(unemployeeInsuranceHistory.startMonth)
+                                        + ' (' + nts.uk.time.yearmonthInJapanEmpire(unemployeeInsuranceHistory.startMonth).toString() + ') ');
+                                    this.endMonthRage(nts.uk.time.formatYearMonth(unemployeeInsuranceHistory.endMonth));
+                                    this.startMonth(unemployeeInsuranceHistory.startMonth);
+                                    this.endMonth(unemployeeInsuranceHistory.endMonth);
                                 };
                                 UnemployeeInsuranceHistoryModel.prototype.setMonthRage = function (startDate, endDate) {
                                     this.startMonth(startDate);
@@ -788,7 +791,8 @@ var nts;
                                     this.historyId(historyDto.historyId);
                                     this.startMonth(historyDto.startMonth);
                                     this.endMonth(historyDto.endMonth);
-                                    this.startMonthRage(nts.uk.time.formatYearMonth(historyDto.startMonth));
+                                    this.startMonthRage(nts.uk.time.formatYearMonth(historyDto.startMonth)
+                                        + ' (' + nts.uk.time.yearmonthInJapanEmpire(historyDto.startMonth).toString() + ') ');
                                     this.endMonthRage(nts.uk.time.formatYearMonth(historyDto.endMonth));
                                 };
                                 return AccidentInsuranceRateHistoryModel;
