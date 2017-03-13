@@ -220,7 +220,6 @@ var nts;
                                 ScreenModel.prototype.OpenCdialog = function () {
                                     var self = this;
                                     if (!self.checkDirty()) {
-                                        debugger;
                                         nts.uk.ui.windows.sub.modal("/view/qmm/002/c/index.xhtml", { title: "銀行の登録　＞　銀行の統合" });
                                         nts.uk.ui.windows.setShared('listItem', self.lst_001());
                                     }
