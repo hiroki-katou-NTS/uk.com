@@ -63,9 +63,14 @@ public interface LayoutMasterLineRepository {
 
 	Optional<LayoutMasterLine> getLine(String companyCd, String stmtCd, int strYm, String autoLineId);
 
-	List<LayoutMasterLine> getLines(String companyCd, String stmtCd, int strYm);
+	List<LayoutMasterLine> getLines(String companyCd, String stmtCd, String historyId);
+	
+	List<LayoutMasterLine> getLines(String historyId);
 	
 	List<LayoutMasterLine> getLinesBefore(String companyCd, String stmtCd, int endYm);
+	List<LayoutMasterLine> getLinesBefore(String companyCd, String stmtCd, String historyId);
 	
+	List<LayoutMasterLine> getLines(String companyCd, String stmtCd, int strYm);
 	List<LayoutMasterLine> getLines(String companyCd, String stmtCd, int strYm, int categoryAtr);
+	List<LayoutMasterLine> getLines(String companyCd, String stmtCd, String historyId, int categoryAtr);
 }

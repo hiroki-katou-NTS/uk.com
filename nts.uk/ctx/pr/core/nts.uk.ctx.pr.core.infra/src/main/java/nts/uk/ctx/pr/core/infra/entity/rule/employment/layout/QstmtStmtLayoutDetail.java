@@ -2,24 +2,15 @@ package nts.uk.ctx.pr.core.infra.entity.rule.employment.layout;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
-import java.util.List;
 
 import javax.persistence.Basic;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinColumns;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.pr.core.infra.entity.paymentdata.QcamtItem;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -30,14 +21,6 @@ public class QstmtStmtLayoutDetail implements Serializable {
 
 	@EmbeddedId
 	public QstmtStmtLayoutDetailPK qstmtStmtLayoutDetailPk;
-
-	@Basic(optional = false)
-	@Column(name ="STR_YM")
-	public int strYm;
-
-	@Basic(optional = false)
-	@Column(name ="END_YM")
-	public int endYm;
 
 	@Basic(optional = false)
 	@Column(name ="AUTO_LINE_ID")
@@ -70,7 +53,7 @@ public class QstmtStmtLayoutDetail implements Serializable {
 	public String wageTableCd;
 
 	@Column(name ="COMMON_MNY")
-	public int commonMny;
+	public BigDecimal commonMny;
 
 	@Basic(optional = false)
 	@Column(name ="SETOFF_ITEM_CD")

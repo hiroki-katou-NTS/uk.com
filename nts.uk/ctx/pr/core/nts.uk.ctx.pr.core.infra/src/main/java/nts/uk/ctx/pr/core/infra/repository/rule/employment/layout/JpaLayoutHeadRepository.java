@@ -1,11 +1,8 @@
 package nts.uk.ctx.pr.core.infra.repository.rule.employment.layout;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
 import javax.ejb.Stateless;
-
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.pr.core.dom.rule.employment.layout.LayoutMaster;
@@ -14,70 +11,77 @@ import nts.uk.ctx.pr.core.infra.entity.rule.employment.layout.QstmtStmtLayoutHea
 import nts.uk.ctx.pr.core.infra.entity.rule.employment.layout.QstmtStmtLayoutHeadPK;
 
 @Stateless
-public class JpaLayoutMasterRepository extends JpaRepository implements LayoutMasterRepository {
+public class JpaLayoutHeadRepository extends JpaRepository implements LayoutMasterRepository {
 
 	private final String SELECT_NO_WHERE = "SELECT c FROM QstmtStmtLayoutHead c";
-	private final String SELECT_ALL = SELECT_NO_WHERE + " WHERE c.qstmtStmtLayoutHeadPK.companyCd = :companyCd"
-			+ " ORDER BY c.strYm DESC";
+	private final String SELECT_NO_WHERE_HIST= "SELECT h FROM QstmtStmtLayoutHistory h";
+	private final String SEL_1= SELECT_NO_WHERE + " INNER JOIN QstmtStmtLayoutHistory h" +  " ON ("
+			+ " c.qstmtStmtLayoutHeadPK.companyCd = h.qstmtStmtLayoutHistPK.companyCd"
+			+ " AND c.qstmtStmtLayoutHeadPK.stmtCd = h.qstmtStmtLayoutHistPK.stmtCd)"
+			+ " WHERE c.qstmtStmtLayoutHeadPK.companyCd = :companyCd"
+			+ " AND c.qstmtStmtLayoutDetailPk.stmtCd = :stmtCd" + " AND c.strYm = :strYm";
+	//SEL_1
+	private final String SELECT_ALL = SELECT_NO_WHERE + " WHERE c.qstmtStmtLayoutHeadPK.companyCd = :companyCd";
+//	anh Lam
+//	private final String SELECT_ALL = SELECT_NO_WHERE + " WHERE c.qstmtStmtLayoutHeadPK.companyCd = :companyCd"
+//			+ " ORDER BY c.strYm DESC";
+	//lanlt add SEL_3 + SEL_4
+	private final String SEL_3 = SELECT_NO_WHERE + " WHERE c.qstmtStmtLayoutHeadPK.companyCd = :companyCd" + " AND c.qstmtStmtLayoutHeadPK.stmtCd = :stmtCd"
+	        + " AND c.strYm = :strYm" ;
+	private final String SEL_4 =  SELECT_NO_WHERE
+			+ " WHERE c.qstmtStmtLayoutHeadPK.companyCd = :companyCode" + " AND c.endYm = 999912";
 	private final String SELECT_LAYOUT_BEFORE = "SELECT c FROM QstmtStmtLayoutHead c"
 			+ " WHERE c.qstmtStmtLayoutHeadPK.companyCd = :companyCd" + " AND c.qstmtStmtLayoutHeadPK.stmtCd = :stmtCd"
 			+ " AND c.strYm < :strYm" + " ORDER BY c.strYm DESC";
 	private final String SELECT_LAYOUT_MAX_START = SELECT_NO_WHERE
-			+ " WHERE c.qstmtStmtLayoutHeadPK.companyCd = :companyCode"
-			+ " AND c.endYm = 999912";
+			+ " WHERE c.qstmtStmtLayoutHeadPK.companyCd = :companyCode" + " AND c.endYm = 999912";
 	// private final String SELECT_PREVIOUS_TARGET = "SELECT e FROM
 	// QstmtStmtLayoutHead e "
 	// + "WHERE e.qstmtStmtLayoutHeadPK.companyCd = :companyCd AND
 	// c.qstmtStmtLayoutHeadPK.stmtCd = :stmtCd Order by e.endYm DESC";
-	private final String SEL_5 = SELECT_NO_WHERE 
-			+ " WHERE c.qstmtStmtLayoutHeadPK.companyCd = :companyCode "
-			+ " AND c.qstmtStmtLayoutHeadPK.stmtCd = :stmtCode"
-			+ " AND c.strYm <= :baseYearMonth "
-			+ " AND c.endYm >= :baseYearMonth "; 
+//	private final String SEL_5 = SELECT_NO_WHERE + " WHERE c.qstmtStmtLayoutHeadPK.companyCd = :companyCode "
+//			+ " AND c.qstmtStmtLayoutHeadPK.stmtCd = :stmtCode" + " AND c.strYm <= :baseYearMonth "
+//			+ " AND c.endYm >= :baseYearMonth ";
+	private final String SEL_5 = SELECT_NO_WHERE + " WHERE c.qstmtStmtLayoutHeadPK.companyCd = :companyCode "
+			+ " AND c.qstmtStmtLayoutHeadPK.stmtCd = :stmtCode";
+	
+	private final String SEL_7 = SELECT_NO_WHERE + " WHERE c.qstmtStmtLayoutHeadPK.companyCd = :companyCode "
+			+ " AND c.qstmtStmtLayoutHeadPK.stmtCd = :stmtCode";
 
 	private final LayoutMaster toDomain(QstmtStmtLayoutHead entity) {
 		val domain = LayoutMaster.createFromJavaType(entity.qstmtStmtLayoutHeadPK.companyCd,
-				entity.strYm, entity.qstmtStmtLayoutHeadPK.stmtCd, entity.endYm, entity.layoutAtr,
-				entity.stmtName, entity.qstmtStmtLayoutHeadPK.historyId);
+				entity.qstmtStmtLayoutHeadPK.stmtCd, entity.stmtName);
 
 		return domain;
 	}
 
 	private static QstmtStmtLayoutHead toEntity(LayoutMaster domain) {
 		QstmtStmtLayoutHead entity = new QstmtStmtLayoutHead();
-		entity.qstmtStmtLayoutHeadPK = new QstmtStmtLayoutHeadPK(domain.getCompanyCode().v(),
-				domain.getStmtCode().v(),
-				domain.getHistoryId());
-		entity.strYm = domain.getStartYM().v();
-		entity.endYm = domain.getEndYm().v();
-		entity.layoutAtr = domain.getLayoutAtr().value;
+		entity.qstmtStmtLayoutHeadPK = new QstmtStmtLayoutHeadPK(domain.getCompanyCode().v(), domain.getStmtCode().v());
 		entity.stmtName = domain.getStmtName().v();
-
 		return entity;
 	}
 
 	@Override
 	public Optional<LayoutMaster> getLayout(String companyCode, String historyId, String stmtCode) {
 		try {
-			return this.queryProxy().find(new QstmtStmtLayoutHeadPK(companyCode, stmtCode, historyId), 
-					QstmtStmtLayoutHead.class)
-					.map(c -> toDomain(c));	
+			return this.queryProxy()
+					.find(new QstmtStmtLayoutHeadPK(companyCode, stmtCode), QstmtStmtLayoutHead.class)
+					.map(c -> toDomain(c));
 		} catch (Exception e) {
 			throw e;
 		}
-		
+
 	}
 
 	@Override
 	public Optional<LayoutMaster> getHistoryBefore(String companyCode, String stmtCode, int strYm) {
 		try {
-			List<LayoutMaster> lstHistoryBefore = this.queryProxy().query(SELECT_LAYOUT_BEFORE, QstmtStmtLayoutHead.class)
-					.setParameter("companyCd", companyCode)
-					.setParameter("stmtCd", stmtCode)
-					.setParameter("strYm", strYm)
-					.getList(c -> toDomain(c));
+			List<LayoutMaster> lstHistoryBefore = this.queryProxy()
+					.query(SELECT_LAYOUT_BEFORE, QstmtStmtLayoutHead.class).setParameter("companyCd", companyCode)
+					.setParameter("stmtCd", stmtCode).setParameter("strYm", strYm).getList(c -> toDomain(c));
 			LayoutMaster layoutMaster;
-			if(!lstHistoryBefore.isEmpty()){
+			if (!lstHistoryBefore.isEmpty()) {
 				layoutMaster = lstHistoryBefore.get(0);
 				return Optional.of(layoutMaster);
 			}
@@ -88,9 +92,9 @@ public class JpaLayoutMasterRepository extends JpaRepository implements LayoutMa
 	}
 
 	@Override
-	public List<LayoutMaster> getLayouts(String companyCode) {
+	public List<LayoutMaster> getLayoutHeads(String companyCd) {
 
-		return this.queryProxy().query(SELECT_ALL, QstmtStmtLayoutHead.class).setParameter("companyCd", companyCode)
+		return this.queryProxy().query(SELECT_ALL, QstmtStmtLayoutHead.class).setParameter("companyCd", companyCd)
 
 				.getList(c -> toDomain(c));
 
@@ -103,10 +107,9 @@ public class JpaLayoutMasterRepository extends JpaRepository implements LayoutMa
 
 	@Override
 	public void update(LayoutMaster layoutMaster) {
-		try{
+		try {
 			this.commandProxy().update(toEntity(layoutMaster));
-		}
-		catch(Exception ex){
+		} catch (Exception ex) {
 			throw ex;
 		}
 	}
@@ -116,7 +119,6 @@ public class JpaLayoutMasterRepository extends JpaRepository implements LayoutMa
 		val objectKey = new QstmtStmtLayoutHeadPK();
 		objectKey.companyCd = companyCode;
 		objectKey.stmtCd = layoutCode;
-		objectKey.historyId = historyId;
 		this.commandProxy().remove(QstmtStmtLayoutHead.class, objectKey);
 	}
 
@@ -130,9 +132,8 @@ public class JpaLayoutMasterRepository extends JpaRepository implements LayoutMa
 	public List<LayoutMaster> getLayoutsWithMaxStartYm(String companyCode) {
 		try {
 			return this.queryProxy().query(SELECT_LAYOUT_MAX_START, QstmtStmtLayoutHead.class)
-			.setParameter("companyCode", companyCode)
-			.getList(c -> toDomain(c));
-			
+					.setParameter("companyCode", companyCode).getList(c -> toDomain(c));
+
 		} catch (Exception e) {
 			throw e;
 		}
@@ -157,16 +158,23 @@ public class JpaLayoutMasterRepository extends JpaRepository implements LayoutMa
 
 	@Override
 	public List<LayoutMaster> findAll(String companyCode, String stmtCode, int baseYearMonth) {
-		return this.queryProxy().query(SEL_5, QstmtStmtLayoutHead.class)
-				.setParameter("companyCode", companyCode)
-				.setParameter("stmtCode", stmtCode)
-				.setParameter("baseYearMonth", baseYearMonth)
+		return this.queryProxy().query(SEL_5, QstmtStmtLayoutHead.class).setParameter("companyCode", companyCode)
+				.setParameter("stmtCode", stmtCode).setParameter("baseYearMonth", baseYearMonth)
 				.getList(x -> toDomain(x));
 	}
 
 	@Override
 	public Optional<LayoutMaster> getBy_SEL_7(String companyCode, String stmtCode) {
 		// TODO Auto-generated method stub
-		return null;
+		return this.queryProxy().query(SEL_7, QstmtStmtLayoutHead.class).setParameter("companyCode", companyCode)
+				.setParameter("stmtCode", stmtCode)
+				.getSingle(x -> toDomain(x));
+	}
+
+	@Override
+	public Optional<LayoutMaster> getHistoryBefore(String companyCode, String stmtCode) {
+		return this.queryProxy().query(SEL_5, QstmtStmtLayoutHead.class).setParameter("companyCode", companyCode)
+				.setParameter("stmtCode", stmtCode)
+				.getSingle(x -> toDomain(x));
 	}
 }

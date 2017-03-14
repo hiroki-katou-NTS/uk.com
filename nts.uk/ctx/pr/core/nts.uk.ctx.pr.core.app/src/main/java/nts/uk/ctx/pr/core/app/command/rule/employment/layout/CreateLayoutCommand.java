@@ -1,6 +1,7 @@
 package nts.uk.ctx.pr.core.app.command.rule.employment.layout;
 
 import lombok.Getter;
+import nts.uk.ctx.pr.core.dom.rule.employment.layout.LayoutHistory;
 import nts.uk.ctx.pr.core.dom.rule.employment.layout.LayoutMaster;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -18,12 +19,23 @@ public class CreateLayoutCommand {
 	private int layoutAtr;
 	private String stmtName;
 	private int endYm;
+
 	/**
 	 * Convert to domain object from command values
+	 * 
 	 * @return
 	 */
-	public LayoutMaster toDomain(String newHistoryId){
-		return LayoutMaster.createFromJavaType(AppContexts.user().companyCode(), 
-					this.startYm, this.stmtCode, this.endYm, this.layoutAtr, this.stmtName, newHistoryId);
+	public LayoutMaster toDomain() {
+		return LayoutMaster.createFromJavaType(AppContexts.user().companyCode(), this.stmtCode, this.stmtName);
 	}
+
+	public LayoutHistory toDomain(String newHistoryId) {
+		return LayoutHistory.createFromJavaType(AppContexts.user().companyCode(), this.stmtCode, newHistoryId,
+				this.startYm, this.endYm, this.layoutAtr);
+	}
+	// code cua anh Lam truoc khi thay doi DB
+	// public LayoutMaster toDomain(String newHistoryId) {
+	// return LayoutMaster.createFromJavaType(AppContexts.user().companyCode(),
+	// this.stmtCode, this.stmtName);
+	// }
 }

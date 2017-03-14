@@ -59,8 +59,12 @@ public interface LayoutMasterCategoryRepository {
 	 * @return List Categories
 	 */
 	List<LayoutMasterCategory> getCategories(String companyCode, String stmtCode, int startYm);
+	List<LayoutMasterCategory> getCategories(String companyCode, String stmtCode,  String historyId);
+	
+	List<LayoutMasterCategory> getCategories(String historyId);
 
 	List<LayoutMasterCategory> getCategoriesBefore(String companyCode, String stmtCode, int endYm);
+	List<LayoutMasterCategory> getCategoriesBefore(String companyCode, String stmtCode, String historyId);
 	
 	/**
 	 * Find layout master category

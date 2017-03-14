@@ -41,7 +41,7 @@ class Helper {
 		categoryList.forEach(category -> {
 			// find line
 			List<LayoutMasterLine> lines = lineList.stream()
-					.filter(x -> x.getCategoryAtr() == category.getCtAtr() && LineDispAtr.ENABLE == x.getLineDispayAttribute())
+					.filter(x -> x.getCategoryAtr() == category.getCtAtr() && LineDispAtr.ENABLE == x.getLineDisplayAttribute())
 					.collect(Collectors.toList());
 			
 			PrintPositionCategory printPositionCategory = new PrintPositionCategory(category.getCtAtr(), new PrintPosCatalogLines(lines.size()));

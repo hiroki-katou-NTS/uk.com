@@ -12,7 +12,6 @@ import nts.arc.error.BusinessException;
 import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.arc.time.YearMonth;
 import nts.gul.text.IdentifierUtil;
 import nts.gul.util.Range;
 import nts.uk.ctx.core.dom.company.CompanyCode;
@@ -20,15 +19,19 @@ import nts.uk.ctx.pr.core.dom.enums.CategoryAtr;
 import nts.uk.ctx.pr.core.dom.enums.CommuteAtr;
 import nts.uk.ctx.pr.core.dom.enums.DisplayAtr;
 import nts.uk.ctx.pr.core.dom.enums.UseOrNot;
+import nts.uk.ctx.pr.core.dom.fomula.FormulaCode;
 import nts.uk.ctx.pr.core.dom.itemmaster.ItemCode;
 import nts.uk.ctx.pr.core.dom.personalinfo.wage.wagename.PersonalWageCode;
 import nts.uk.ctx.pr.core.dom.rule.employment.layout.LayoutCode;
+import nts.uk.ctx.pr.core.dom.rule.employment.layout.LayoutHistRepository;
+import nts.uk.ctx.pr.core.dom.rule.employment.layout.LayoutHistory;
 import nts.uk.ctx.pr.core.dom.rule.employment.layout.LayoutMaster;
 import nts.uk.ctx.pr.core.dom.rule.employment.layout.LayoutMasterRepository;
 import nts.uk.ctx.pr.core.dom.rule.employment.layout.category.CategoryPosition;
 import nts.uk.ctx.pr.core.dom.rule.employment.layout.category.LayoutMasterCategory;
 import nts.uk.ctx.pr.core.dom.rule.employment.layout.category.LayoutMasterCategoryRepository;
 import nts.uk.ctx.pr.core.dom.rule.employment.layout.detail.CalculationMethod;
+import nts.uk.ctx.pr.core.dom.rule.employment.layout.detail.CommonAmount;
 import nts.uk.ctx.pr.core.dom.rule.employment.layout.detail.ItemPosColumn;
 import nts.uk.ctx.pr.core.dom.rule.employment.layout.detail.LayoutMasterDetail;
 import nts.uk.ctx.pr.core.dom.rule.employment.layout.detail.LayoutMasterDetailRepository;
@@ -42,6 +45,7 @@ import nts.uk.ctx.pr.core.dom.rule.employment.layout.line.LayoutMasterLine;
 import nts.uk.ctx.pr.core.dom.rule.employment.layout.line.LayoutMasterLineRepository;
 import nts.uk.ctx.pr.core.dom.rule.employment.layout.line.LineDispAtr;
 import nts.uk.ctx.pr.core.dom.rule.employment.layout.line.LinePosition;
+import nts.uk.ctx.pr.core.dom.wagetable.WageTableCode;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -55,6 +59,8 @@ public class CreateLayoutCommandHandler extends CommandHandler<CreateLayoutComma
 
 	@Inject
 	private LayoutMasterRepository layoutRepo;
+	@Inject
+	private LayoutHistRepository layoutHistRepo;
 	@Inject
 	private LayoutMasterCategoryRepository categoryRepo;
 	@Inject
@@ -72,17 +78,20 @@ public class CreateLayoutCommandHandler extends CommandHandler<CreateLayoutComma
 				throw new BusinessException(new RawErrorMessage("入力した明細書コードは既に存在しています。\r\n明細書コードを確認してください。"));
 			}
 			
-			LayoutMaster layout = command.toDomain(IdentifierUtil.randomUniqueId());
-			layout.validate();
-			this.layoutRepo.add(layout);
+			//LayoutMaster layout = command.toDomain(IdentifierUtil.randomUniqueId());
+			LayoutMaster layoutHead = command.toDomain();
+			LayoutHistory layoutHistory = command.toDomain(IdentifierUtil.randomUniqueId());
+			layoutHead.validate();
+			this.layoutRepo.add(layoutHead);
+			this.layoutHistRepo.add(layoutHistory);
 			//作成方法で「既存のレイアウトをコピーして作成」を選択した場合
 			if (command.isCheckCopy()) {
-				copyNewData(command, companyCode, layout);
+				copyNewData(command, companyCode, layoutHead, layoutHistory);
 			}
 			//作成方法で「新規に作成」を選択した場合
 			else{
 				
-				createNewData(layout, companyCode);
+				createNewData(layoutHead,layoutHistory, companyCode);
 			}
 		
 		}
@@ -91,31 +100,25 @@ public class CreateLayoutCommandHandler extends CommandHandler<CreateLayoutComma
 		}
 	}
 	
-	public void createNewData(LayoutMaster layout, String companyCode){
+	public void createNewData(LayoutMaster layout, LayoutHistory layoutHistory,String companyCode){
 		//データベース登録[明細書マスタカテゴリ.INS-1] を実施する
 		LayoutMasterCategory category = new LayoutMasterCategory(new CompanyCode(companyCode),
-				layout.getStartYM(), 
 				layout.getStmtCode(),
 				CategoryAtr.PAYMENT,
-				layout.getEndYm(), 
 				new CategoryPosition(1),
-				layout.getHistoryId());
+				layoutHistory.getHistoryId());
 		this.categoryRepo.add(category);
 		category = new LayoutMasterCategory(new CompanyCode(companyCode),
-				layout.getStartYM(), 
 				layout.getStmtCode(),
 				CategoryAtr.DEDUCTION,
-				layout.getEndYm(), 
 				new CategoryPosition(2),
-				layout.getHistoryId());
+				layoutHistory.getHistoryId());
 		this.categoryRepo.add(category);
-		category = new LayoutMasterCategory(new CompanyCode(companyCode),
-				layout.getStartYM(), 
+		category = new LayoutMasterCategory(new CompanyCode(companyCode), 
 				layout.getStmtCode(),
 				CategoryAtr.ARTICLES,
-				layout.getEndYm(), 
 				new CategoryPosition(3),
-				layout.getHistoryId());
+				layoutHistory.getHistoryId());
 		this.categoryRepo.add(category);
 		//データベース登録[明細書マスタ行.INS-1] を実施する
 				String autoLineId1 = IdentifierUtil.randomUniqueId();
@@ -124,15 +127,15 @@ public class CreateLayoutCommandHandler extends CommandHandler<CreateLayoutComma
 				String autoLineId4 = IdentifierUtil.randomUniqueId();
 				String autoLineId5 = IdentifierUtil.randomUniqueId();
 				String autoLineId6 = IdentifierUtil.randomUniqueId();
-				createLineDefault(layout, companyCode, CategoryAtr.PAYMENT, autoLineId1, 1);
-				createLineDefault(layout, companyCode, CategoryAtr.PAYMENT, autoLineId2, 2);
-				createLineDefault(layout, companyCode, CategoryAtr.PAYMENT, autoLineId3, 3);
-				createLineDefault(layout, companyCode, CategoryAtr.DEDUCTION, autoLineId4, 1);
-				createLineDefault(layout, companyCode, CategoryAtr.DEDUCTION, autoLineId5, 2);
-				createLineDefault(layout, companyCode, CategoryAtr.ARTICLES, autoLineId6, 1);
+				createLineDefault(layout, layoutHistory, companyCode, CategoryAtr.PAYMENT, autoLineId1, 1);
+				createLineDefault(layout, layoutHistory,companyCode, CategoryAtr.PAYMENT, autoLineId2, 2);
+				createLineDefault(layout, layoutHistory, companyCode, CategoryAtr.PAYMENT, autoLineId3, 3);
+				createLineDefault(layout, layoutHistory, companyCode, CategoryAtr.DEDUCTION, autoLineId4, 1);
+				createLineDefault(layout, layoutHistory,companyCode, CategoryAtr.DEDUCTION, autoLineId5, 2);
+				createLineDefault(layout, layoutHistory, companyCode, CategoryAtr.ARTICLES, autoLineId6, 1);
 				//データベース登録[明細書マスタ明細.INS-1] を実施する
 				//支給3項目
-				createDetailDefault(layout,
+				createDetailDefault(layout,layoutHistory,
 						companyCode,
 						CategoryAtr.PAYMENT,
 						"F001",
@@ -140,7 +143,7 @@ public class CreateLayoutCommandHandler extends CommandHandler<CreateLayoutComma
 						9,
 						SumScopeAtr.EXCLUDED,
 						CalculationMethod.SYSTEM_CALCULATION);
-				createDetailDefault(layout,
+				createDetailDefault(layout,layoutHistory,
 						companyCode,
 						CategoryAtr.PAYMENT,
 						"F002",
@@ -148,7 +151,7 @@ public class CreateLayoutCommandHandler extends CommandHandler<CreateLayoutComma
 						9,
 						SumScopeAtr.EXCLUDED,
 						CalculationMethod.SYSTEM_CALCULATION);
-				createDetailDefault(layout,
+				createDetailDefault(layout,layoutHistory,
 						companyCode,
 						CategoryAtr.PAYMENT,
 						"F003",
@@ -158,7 +161,7 @@ public class CreateLayoutCommandHandler extends CommandHandler<CreateLayoutComma
 						CalculationMethod.SYSTEM_CALCULATION);
 				
 				//控除9項目
-				createDetailDefault(layout,
+				createDetailDefault(layout,layoutHistory,
 						companyCode,
 						CategoryAtr.DEDUCTION,
 						"F101",
@@ -166,7 +169,7 @@ public class CreateLayoutCommandHandler extends CommandHandler<CreateLayoutComma
 						1,
 						SumScopeAtr.INCLUDED,
 						CalculationMethod.MANUAL_ENTRY);
-				createDetailDefault(layout,
+				createDetailDefault(layout,layoutHistory,
 						companyCode,
 						CategoryAtr.DEDUCTION,
 						"F102",
@@ -174,7 +177,7 @@ public class CreateLayoutCommandHandler extends CommandHandler<CreateLayoutComma
 						2,
 						SumScopeAtr.INCLUDED,
 						CalculationMethod.MANUAL_ENTRY);
-				createDetailDefault(layout,
+				createDetailDefault(layout,layoutHistory,
 						companyCode,
 						CategoryAtr.DEDUCTION,
 						"F103",
@@ -182,7 +185,7 @@ public class CreateLayoutCommandHandler extends CommandHandler<CreateLayoutComma
 						3,
 						SumScopeAtr.INCLUDED,
 						CalculationMethod.MANUAL_ENTRY);
-				createDetailDefault(layout,
+				createDetailDefault(layout,layoutHistory,
 						companyCode,
 						CategoryAtr.DEDUCTION,
 						"F104",
@@ -190,7 +193,7 @@ public class CreateLayoutCommandHandler extends CommandHandler<CreateLayoutComma
 						4,
 						SumScopeAtr.INCLUDED,
 						CalculationMethod.MANUAL_ENTRY);
-				createDetailDefault(layout,
+				createDetailDefault(layout,layoutHistory,
 						companyCode,
 						CategoryAtr.DEDUCTION,
 						"F105",
@@ -198,7 +201,7 @@ public class CreateLayoutCommandHandler extends CommandHandler<CreateLayoutComma
 						5,
 						SumScopeAtr.EXCLUDED,
 						CalculationMethod.SYSTEM_CALCULATION);
-				createDetailDefault(layout,
+				createDetailDefault(layout,layoutHistory,
 						companyCode,
 						CategoryAtr.DEDUCTION,
 						"F106",
@@ -206,7 +209,7 @@ public class CreateLayoutCommandHandler extends CommandHandler<CreateLayoutComma
 						6,
 						SumScopeAtr.EXCLUDED,
 						CalculationMethod.SYSTEM_CALCULATION);
-				createDetailDefault(layout,
+				createDetailDefault(layout,layoutHistory,
 						companyCode,
 						CategoryAtr.DEDUCTION,
 						"F107",
@@ -214,7 +217,7 @@ public class CreateLayoutCommandHandler extends CommandHandler<CreateLayoutComma
 						7,
 						SumScopeAtr.INCLUDED,
 						CalculationMethod.MANUAL_ENTRY);
-				createDetailDefault(layout,
+				createDetailDefault(layout,layoutHistory,
 						companyCode,
 						CategoryAtr.DEDUCTION,
 						"F108",
@@ -222,7 +225,7 @@ public class CreateLayoutCommandHandler extends CommandHandler<CreateLayoutComma
 						8,
 						SumScopeAtr.INCLUDED,
 						CalculationMethod.MANUAL_ENTRY);
-				createDetailDefault(layout,
+				createDetailDefault(layout,layoutHistory,
 						companyCode,
 						CategoryAtr.DEDUCTION,
 						"F114",
@@ -230,7 +233,7 @@ public class CreateLayoutCommandHandler extends CommandHandler<CreateLayoutComma
 						9,
 						SumScopeAtr.EXCLUDED,
 						CalculationMethod.SYSTEM_CALCULATION);
-				createDetailDefault(layout,
+				createDetailDefault(layout, layoutHistory,
 						companyCode,
 						CategoryAtr.ARTICLES,
 						"F309",
@@ -240,6 +243,7 @@ public class CreateLayoutCommandHandler extends CommandHandler<CreateLayoutComma
 						CalculationMethod.SYSTEM_CALCULATION);
 	}
 	private void createDetailDefault(LayoutMaster layout, 
+			LayoutHistory layoutHistory,
 			String companyCode,
 			CategoryAtr cateAtr,
 			String itemCode,
@@ -252,8 +256,7 @@ public class CreateLayoutCommandHandler extends CommandHandler<CreateLayoutComma
 		Distribute distribute = new Distribute(DistributeWay.CALCULATED_PERCENTAGE, DistributeSet.NOT_PROPORTIONAL);
 		LayoutMasterDetail detailData = new LayoutMasterDetail(new CompanyCode(companyCode),
 				layout.getStmtCode(),
-				layout.getStartYM(),
-				layout.getEndYm(),
+				layoutHistory.getHistoryId(),
 				cateAtr,
 				new ItemCode(itemCode),
 				new AutoLineId(autoLineId),
@@ -264,96 +267,89 @@ public class CreateLayoutCommandHandler extends CommandHandler<CreateLayoutComma
 				DisplayAtr.DISPLAY,
 				error,
 				sumAtr,
-				new ItemCode("0000"),
-				CommuteAtr.TRANSPORTATION_EQUIPMENT,
+				new FormulaCode("00"),
 				new PersonalWageCode("00"),
-				layout.getHistoryId());
+				new WageTableCode("00"),
+				new CommonAmount(new BigDecimal("0")),
+				new ItemCode("0000"),
+				CommuteAtr.TRANSPORTATION_EQUIPMENT);
 		
 		this.detailRepo.add(detailData);
 	}
 	
-	private void createLineDefault(LayoutMaster layout, 
+	private void createLineDefault(LayoutMaster layout,
+			LayoutHistory layoutHistory,
 			String companyCode,
 			CategoryAtr cateAtr,
 			String autoLine,
 			int linePos){
 		LayoutMasterLine line = new LayoutMasterLine(new CompanyCode(companyCode),
-				layout.getStartYM(),
 				layout.getStmtCode(),
-				layout.getEndYm(),
 				new AutoLineId(autoLine),
 				cateAtr,
 				LineDispAtr.ENABLE,
 				new LinePosition(linePos),
-				layout.getHistoryId());
+				layoutHistory.getHistoryId());
 		this.lineRepo.add(line);
 	}
-	private void copyNewData(CreateLayoutCommand command, String companyCode, LayoutMaster layout) {
+	private void copyNewData(CreateLayoutCommand command, String companyCode, LayoutMaster layout, LayoutHistory layoutHistory) {
 		//List<LayoutMasterCategory> categoriesOrigin = categoryRepo.getCategories(companyCode, command.getStmtCodeCopied(), command.getStartYmCopied());
 		//[明細書マスタカテゴリ]の明細書コード = G_SEL_002で選択している項目の明細書コード AND　[明細書マスタカテゴリ]の終了年月 = 999912
-		List<LayoutMasterCategory> categoriesOrigin = categoryRepo.getCategoriesBefore(companyCode, command.getStmtCodeCopied(), 999912);
+		List<LayoutMasterCategory> categoriesOrigin = categoryRepo.getCategoriesBefore(companyCode, command.getStmtCodeCopied(), layoutHistory.getHistoryId());
 		if(!categoriesOrigin.isEmpty()){
 			List<LayoutMasterCategory> categoriesNew = categoriesOrigin.stream().map(
 					org -> {
 						return LayoutMasterCategory.createFromDomain(
 								org.getCompanyCode(), 
-								new YearMonth(command.getStartYm()), 
-								//org.getStmtCode(),
 								new LayoutCode(command.getStmtCode()),
 								org.getCtAtr(), 
-								new YearMonth(command.getEndYm()), 
 								org.getCtgPos(),
-								layout.getHistoryId());
+								layoutHistory.getHistoryId());
 					}).collect(Collectors.toList());
 			categoryRepo.add(categoriesNew);
 		}
 
 		//[明細書マスタ行]の明細書コード = G_SEL_002で選択している項目の明細書コード	　AND　[明細書マスタ行]の終了年月 = 999912
-		List<LayoutMasterLine> linesOrigin = lineRepo.getLinesBefore(companyCode, command.getStmtCodeCopied(), 999912);
+		List<LayoutMasterLine> linesOrigin = lineRepo.getLinesBefore(companyCode, command.getStmtCodeCopied(), layoutHistory.getHistoryId());
 		if(!linesOrigin.isEmpty())
 		{
 			List<LayoutMasterLine> linesNew = linesOrigin.stream().map(
 					org ->{
-						return LayoutMasterLine.createFromDomain(
-								org.getCompanyCode(), 
-								new YearMonth(command.getStartYm()), 
-								//org.getStmtCode(),
-								new LayoutCode(command.getStmtCode()),
-								new YearMonth(command.getEndYm()), 
-								org.getAutoLineId(), 
+						return LayoutMasterLine.createFromDomain(org.getCompanyCode(),
+								org.getStmtCode(), 
+								org.getAutoLineId(),
 								org.getCategoryAtr(), 
-								org.getLineDispayAttribute(), 
-								org.getLinePosition(),
-								layout.getHistoryId());
+								org.getLineDisplayAttribute(),
+								org.getLinePosition(), layoutHistory.getHistoryId());
 					}).collect(Collectors.toList());
 			lineRepo.add(linesNew);
 		}
 		
 		//[明細書マスタ明細]の明細書コード = G_SEL_002で選択している項目の明細書コードAND　[明細書マスタ明細]の終了年月 = 999912
-		List<LayoutMasterDetail> detailsOrigin = detailRepo.getDetailsBefore(companyCode, command.getStmtCodeCopied(), 999912);
+		List<LayoutMasterDetail> detailsOrigin = detailRepo.getDetailsBefore(companyCode, command.getStmtCodeCopied(), layoutHistory.getHistoryId());
 		if(!detailsOrigin.isEmpty()){
 			List<LayoutMasterDetail> detailsNew = detailsOrigin.stream().map(
 					org -> {
 						return LayoutMasterDetail.createFromDomain(
 								org.getCompanyCode(), 
-								//org.getLayoutCode(),
 								new LayoutCode(command.getStmtCode()),
-								new YearMonth(command.getStartYm()), 
-								new YearMonth(command.getEndYm()), 
 								org.getCategoryAtr(), 
 								org.getItemCode(), 
 								org.getAutoLineId(), 
-								org.getItemPosColumn(), 
-								org.getAlarm(), 
-								org.getCalculationMethod(), 
+								org.getItemPosColumn(),
+								org.getError(),
+								org.getCalculationMethod(),
 								org.getDistribute(), 
-								org.getDisplayAtr(), 
-								org.getError(), 
-								org.getSumScopeAtr(), 
-								org.getSetOffItemCode(), 
-								org.getCommuteAtr(), 
+								org.getDisplayAtr(),  
+								org.getAlarm(), 
+								org.getSumScopeAtr(),
+								org.getSetOffItemCode(),
+								org.getCommuteAtr(),
+								org.getFormulaCode(),
 								org.getPersonalWageCode(),
-								layout.getHistoryId());
+								org.getWageTableCode(),
+								org.getCommonAmount(),
+								layoutHistory.getHistoryId());
 					}).collect(Collectors.toList());
 			
 			detailRepo.add(detailsNew);

@@ -2,13 +2,11 @@ package nts.uk.ctx.pr.core.infra.repository.rule.employment.layout;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.pr.core.dom.enums.CategoryAtr;
 import nts.uk.ctx.pr.core.dom.rule.employment.layout.category.LayoutMasterCategory;
 import nts.uk.ctx.pr.core.dom.rule.employment.layout.category.LayoutMasterCategoryRepository;
 import nts.uk.ctx.pr.core.infra.entity.rule.employment.layout.QstmtStmtLayoutCtg;
@@ -23,15 +21,21 @@ public class JpaLayoutCategoryRepository extends JpaRepository implements Layout
 			+ " WHERE c.qstmtStmtLayoutCtgPk.companyCd = :companyCd"
 			+ " AND c.qstmtStmtLayoutCtgPk.stmtCd = :stmtCd" 
 			+ " AND c.strYm = :startYm";
+	private final String SELECT_ALL_BY_HISTORY_ID = SELECT_NO_WHERE 
+			+ " WHERE c.qstmtStmtLayoutCtgPk.historyId = :historyId";
 	private final String SELECT_ALL_DETAILS_BEFORE = SELECT_NO_WHERE 
 			+ " WHERE c.qstmtStmtLayoutCtgPk.companyCd = :companyCd"
 			+ " AND c.qstmtStmtLayoutCtgPk.stmtCd = :stmtCd" 
 			+ " AND c.endYm = :endYm";
+	private final String SELECT_ALL_DETAILS_BEFORE1 = SELECT_NO_WHERE 
+			+ " WHERE c.qstmtStmtLayoutCtgPk.companyCd = :companyCd"
+			+ " AND c.qstmtStmtLayoutCtgPk.stmtCd = :stmtCd" 
+			+ " AND c.qstmtStmtLayoutCtgPk.historyId = :historyId";
 
 	private static LayoutMasterCategory toDomain(QstmtStmtLayoutCtg entity) {
 		LayoutMasterCategory domain = LayoutMasterCategory.createFromJavaType(entity.qstmtStmtLayoutCtgPk.companyCd,
-				entity.strYm, entity.qstmtStmtLayoutCtgPk.stmtCd,
-				entity.qstmtStmtLayoutCtgPk.ctgAtr, entity.endYm, entity.ctgPos, entity.qstmtStmtLayoutCtgPk.historyId);
+				 entity.qstmtStmtLayoutCtgPk.stmtCd,
+				entity.qstmtStmtLayoutCtgPk.ctgAtr,  entity.ctgPos, entity.qstmtStmtLayoutCtgPk.historyId);
 
 		return domain;
 	}
@@ -42,9 +46,7 @@ public class JpaLayoutCategoryRepository extends JpaRepository implements Layout
 		entity.qstmtStmtLayoutCtgPk = new QstmtStmtLayoutCtgPK();
 		entity.qstmtStmtLayoutCtgPk.companyCd = domain.getCompanyCode().v();
 		entity.qstmtStmtLayoutCtgPk.stmtCd = domain.getStmtCode().v();
-		entity.strYm = domain.getStartYM().v();
 		entity.qstmtStmtLayoutCtgPk.ctgAtr = domain.getCtAtr().value;
-		entity.endYm = domain.getEndYm().v();
 		entity.ctgPos = domain.getCtgPos().v();
 		entity.qstmtStmtLayoutCtgPk.historyId = domain.getHistoryId();
 
@@ -135,5 +137,33 @@ public class JpaLayoutCategoryRepository extends JpaRepository implements Layout
 		QstmtStmtLayoutCtgPK primaryKey = new QstmtStmtLayoutCtgPK(companyCode, stmtCode, historyId, categoryAtr);
 		
 		return this.queryProxy().find(primaryKey, QstmtStmtLayoutCtg.class).map(x -> toDomain(x));
+	}
+
+	@Override
+	public List<LayoutMasterCategory> getCategories(String historyId) {
+		return this.queryProxy().query(SELECT_ALL_BY_HISTORY_ID, QstmtStmtLayoutCtg.class)
+				.setParameter("historyId", historyId)
+				.getList(c -> toDomain(c));
+	}
+
+	@Override
+	public List<LayoutMasterCategory> getCategories(String companyCode, String stmtCode, String historyId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<LayoutMasterCategory> getCategoriesBefore(String companyCode, String stmtCode, String historyId) {
+		try {
+			List<LayoutMasterCategory> lstCategory = this.queryProxy().query(SELECT_ALL_DETAILS_BEFORE1, QstmtStmtLayoutCtg.class)
+				.setParameter("companyCd", companyCode)
+				.setParameter("stmtCd", stmtCode)
+				.setParameter("historyId", historyId)
+				.getList(c -> toDomain(c));
+		return lstCategory;
+		} catch (Exception e) {
+			// TODO: handle exception
+			throw e;
+		}
 	}
 }

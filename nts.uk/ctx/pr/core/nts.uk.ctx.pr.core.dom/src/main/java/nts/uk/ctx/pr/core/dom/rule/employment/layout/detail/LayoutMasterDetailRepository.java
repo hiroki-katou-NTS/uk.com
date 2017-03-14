@@ -3,11 +3,6 @@ package nts.uk.ctx.pr.core.dom.rule.employment.layout.detail;
 import java.util.List;
 import java.util.Optional;
 
-import nts.arc.time.YearMonth;
-import nts.uk.ctx.core.dom.company.CompanyCode;
-import nts.uk.ctx.pr.core.dom.itemmaster.ItemCode;
-import nts.uk.ctx.pr.core.dom.rule.employment.layout.LayoutCode;
-
 public interface LayoutMasterDetailRepository {
 
 	/**
@@ -59,17 +54,27 @@ public interface LayoutMasterDetailRepository {
 			String companyCd, 
 			String stmtCd, 
 			int startYm);
+
+	List<LayoutMasterDetail> getDetails(String historyId);
 	
 	List<LayoutMasterDetail> getDetailsBefore(
 			String companyCd, 
 			String stmtCd, 
 			int endYm);
+	List<LayoutMasterDetail> getDetailsBefore(
+			String companyCd, 
+			String stmtCd, 
+			String historyId);
 	
 	List<LayoutMasterDetail> getDetailsByCategory(
 			String companyCd, 
 			String stmtCd, 
 			int startYm,
 			int categoryAtr);
+	List<LayoutMasterDetail> getDetailsByCategory(
+			String historyId,
+			int categoryAtr);
+	
 
 	List<LayoutMasterDetail> getDetailsByLine(
 			String autoLineId);

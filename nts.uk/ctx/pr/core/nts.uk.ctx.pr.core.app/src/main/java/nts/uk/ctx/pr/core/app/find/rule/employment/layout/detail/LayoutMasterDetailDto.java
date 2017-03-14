@@ -8,11 +8,7 @@ import nts.uk.ctx.pr.core.dom.rule.employment.layout.detail.LayoutMasterDetail;
 /** Finder DTO of item */
 @Value
 public class LayoutMasterDetailDto {
-	private String layoutCode;
-	/**開始年月*/
-	private int startYm;
-	/** 終了年月 */
-	private int endYm;
+	private String stmtCode;
 	/**カテゴリ区分 */
 	private int categoryAtr;
 	/**項目CD*/
@@ -21,8 +17,6 @@ public class LayoutMasterDetailDto {
 	private String autoLineId;
 	/**項目位置（列）	 */
 	private int itemPosColumn;
-	/** name */
-	private String itemAbName;
 	/** 合計対象区分 */
 	private int sumScopeAtr;
 	/** 支給相殺コード */	
@@ -35,8 +29,15 @@ public class LayoutMasterDetailDto {
 	private int distributeSet;
 	/**按分方法	 */
 	private int distributeWay;
+	
+	private String formulaCode;
 	/**個人金額コード	 */
 	private String personalWageCode;
+	
+	private String wageTableCode;
+	
+	private BigDecimal commonAmount;
+	
 	/**エラー範囲上限利用区分	 */
 	private int isUseHighError;
 	/**エラー範囲上限	 */
@@ -57,21 +58,21 @@ public class LayoutMasterDetailDto {
 	public static LayoutMasterDetailDto fromDomain(LayoutMasterDetail domain)
 	{
 		return new LayoutMasterDetailDto(
-				domain.getLayoutCode().v(),
-				domain.getStartYm().v(),
-				domain.getEndYm().v(),
+				domain.getStmtCode().v(),
 				domain.getCategoryAtr().value,
 				domain.getItemCode().v(), 
 				domain.getAutoLineId().v(),
 				domain.getItemPosColumn().v(),
-				domain.getItemAbName() == null ? "" : domain.getItemAbName().v(),
 				domain.getSumScopeAtr().value,
 				domain.getSetOffItemCode().v(),
 				domain.getCommuteAtr().value,
 				domain.getCalculationMethod().value,
 				domain.getDistribute().getSetting().value, 
 				domain.getDistribute().getMethod().value,
+				domain.getFormulaCode().v(),
 				domain.getPersonalWageCode().v(),
+				domain.getWageTableCode().v(),
+				domain.getCommonAmount().v(),
 				domain.getError().getIsUseHigh().value,
 				domain.getError().getRange().max(),
 				domain.getError().getIsUseLow().value,				

@@ -286,7 +286,7 @@ public class PaymentDetailServiceImpl implements PaymentDetailService {
 				.findFirst().orElseThrow(() -> new BusinessException("対象データがありません。"));
 		
 		int linePosition;
-		if (line.getLineDispayAttribute() == LineDispAtr.DISABLE) {
+		if (line.getLineDisplayAttribute() == LineDispAtr.DISABLE) {
 			linePosition = 0;
 		} else {
 			linePosition = line.getLinePosition().v();

@@ -18,45 +18,44 @@ import nts.uk.ctx.pr.core.infra.entity.rule.employment.layout.QstmtStmtLayoutLin
 public class JpaLayoutLineRepository extends JpaRepository implements LayoutMasterLineRepository {
 
 	private final String SELECT_NO_WHERE = "SELECT c FROM QstmtStmtLayoutLines c";
-	private final String SELECT_ALL_DETAILS = SELECT_NO_WHERE 
-			+ " WHERE c.qstmtStmtLayoutLinesPk.companyCd = :companyCd"
-			+ " AND c.qstmtStmtLayoutLinesPk.stmtCd = :stmtCd" 
-			+ " AND c.strYm = :strYm";
+	private final String SELECT_ALL_DETAILS = SELECT_NO_WHERE + " WHERE c.qstmtStmtLayoutLinesPk.companyCd = :companyCd"
+			+ " AND c.qstmtStmtLayoutLinesPk.stmtCd = :stmtCd" + " AND c.strYm = :strYm";
+	private final String SELECT_ALL_BY_HISTORY_ID = SELECT_NO_WHERE
+			+ " WHERE c.qstmtStmtLayoutLinesPk.historyId = :historyId";
 
-	private final String SELECT_ALL_LINE_BY_CATEGORY = SELECT_NO_WHERE 
+	private final String SELECT_ALL_LINES = SELECT_NO_WHERE + " WHERE c.qstmtStmtLayoutLinesPk.historyId = :historyId"
+			+ " AND c.qstmtStmtLayoutLinesPk.stmtCd = :stmtCd" + " AND c.qstmtStmtLayoutLinesPk.ctgAtr = :ctgAtr"
+			+ " c.qstmtStmtLayoutLinesPk.companyCd = :companyCd";
+
+	private final String SELECT_ALL_LINE_BY_CATEGORY = SELECT_NO_WHERE
 			+ " WHERE c.qstmtStmtLayoutLinesPk.companyCd = :companyCd"
-			+ " AND c.qstmtStmtLayoutLinesPk.stmtCd = :stmtCd" 
-			+ " AND c.strYm = :strYm"
+			+ " AND c.qstmtStmtLayoutLinesPk.stmtCd = :stmtCd" + " AND c.strYm = :strYm"
 			+ " AND c.qstmtStmtLayoutLinesPk.ctgAtr = :ctgAtr";
-	
-	private final String SELECT_ALL_DETAILS_BEFORE = SELECT_NO_WHERE 
+
+	private final String SELECT_ALL_DETAILS_BEFORE = SELECT_NO_WHERE
 			+ " WHERE c.qstmtStmtLayoutLinesPk.companyCd = :companyCd"
-			+ " AND c.qstmtStmtLayoutLinesPk.stmtCd = :stmtCd" 
-			+ " AND c.endYm = :endYm";
-	
+			+ " AND c.qstmtStmtLayoutLinesPk.stmtCd = :stmtCd" + " AND c.endYm = :endYm";
+
+	private final String SELECT_ALL_DETAILS_BEFORE1 = SELECT_NO_WHERE
+			+ " WHERE c.qstmtStmtLayoutLinesPk.companyCd = :companyCd"
+			+ " AND c.qstmtStmtLayoutLinesPk.stmtCd = :stmtCd" + " AND c.qstmtStmtLayoutLinesPk.historyId = :historyId";
+
 	@Override
 	public List<LayoutMasterLine> getLines(String companyCd, String stmtCd, int strYm) {
-			return this.queryProxy().query(SELECT_ALL_DETAILS, QstmtStmtLayoutLines.class)
-					.setParameter("companyCd", companyCd)
-					.setParameter("stmtCd", stmtCd)
-					.setParameter("strYm", strYm)
-					.getList(c -> toDomain(c));
-	
+		return this.queryProxy().query(SELECT_ALL_DETAILS, QstmtStmtLayoutLines.class)
+				.setParameter("companyCd", companyCd).setParameter("stmtCd", stmtCd).setParameter("strYm", strYm)
+				.getList(c -> toDomain(c));
+
 	}
 
 	private static LayoutMasterLine toDomain(QstmtStmtLayoutLines entity) {
 		val domain = LayoutMasterLine.createFromJavaType(entity.qstmtStmtLayoutLinesPk.companyCd,
-				entity.strYm, entity.qstmtStmtLayoutLinesPk.stmtCd,
-				entity.endYm,
-				entity.qstmtStmtLayoutLinesPk.autoLineId,
-				entity.lineDispAtr,
-				entity.linePos,
-				entity.qstmtStmtLayoutLinesPk.ctgAtr,
-				entity.qstmtStmtLayoutLinesPk.historyId
-				);
+				entity.qstmtStmtLayoutLinesPk.stmtCd, entity.qstmtStmtLayoutLinesPk.autoLineId, entity.lineDispAtr,
+				entity.linePos, entity.qstmtStmtLayoutLinesPk.ctgAtr, entity.qstmtStmtLayoutLinesPk.historyId);
 
 		return domain;
 	}
+
 	private QstmtStmtLayoutLinesPK toEntityPk(LayoutMasterLine domain) {
 		val entityPk = new QstmtStmtLayoutLinesPK();
 		entityPk.companyCd = domain.getCompanyCode().v();
@@ -67,18 +66,18 @@ public class JpaLayoutLineRepository extends JpaRepository implements LayoutMast
 
 		return entityPk;
 	}
-	
+
 	private QstmtStmtLayoutLines toEntity(LayoutMasterLine domain) {
 		val entity = new QstmtStmtLayoutLines();
 		entity.qstmtStmtLayoutLinesPk = new QstmtStmtLayoutLinesPK();
 		entity.qstmtStmtLayoutLinesPk.companyCd = domain.getCompanyCode().v();
 		entity.qstmtStmtLayoutLinesPk.stmtCd = domain.getStmtCode().v();
-		entity.strYm = domain.getStartYM().v();
+		// entity.strYm = domain.getStartYM().v(); Lanlt cmt
 		entity.qstmtStmtLayoutLinesPk.ctgAtr = domain.getCategoryAtr().value;
 		entity.qstmtStmtLayoutLinesPk.autoLineId = domain.getAutoLineId().v();
-		entity.endYm = domain.getEndYM().v();
+		// entity.endYm = domain.getEndYM().v(); Lanlt cmt
 		entity.linePos = domain.getLinePosition().v();
-		entity.lineDispAtr = domain.getLineDispayAttribute().value;
+		entity.lineDispAtr = domain.getLineDisplayAttribute().value;
 		entity.qstmtStmtLayoutLinesPk.historyId = domain.getHistoryId();
 
 		return entity;
@@ -113,28 +112,27 @@ public class JpaLayoutLineRepository extends JpaRepository implements LayoutMast
 
 	@Override
 	public void add(List<LayoutMasterLine> lines) {
-		for(LayoutMasterLine line : lines){
+		for (LayoutMasterLine line : lines) {
 			this.commandProxy().insert(toEntity(line));
 		}
-		
+
 	}
 
 	@Override
 	public void update(List<LayoutMasterLine> lines) {
-		for(LayoutMasterLine line : lines){
+		for (LayoutMasterLine line : lines) {
 			this.commandProxy().update(toEntity(line));
 		}
-		
+
 	}
 
 	@Override
 	public void remove(List<LayoutMasterLine> lines) {
 
-		List<QstmtStmtLayoutLinesPK> linesEntityPk = lines.stream().map(
-				line -> {
-							return this.toEntityPk(line); 
-						}).collect(Collectors.toList());
-		
+		List<QstmtStmtLayoutLinesPK> linesEntityPk = lines.stream().map(line -> {
+			return this.toEntityPk(line);
+		}).collect(Collectors.toList());
+
 		this.commandProxy().removeAll(QstmtStmtLayoutLines.class, linesEntityPk);
 
 	}
@@ -142,27 +140,50 @@ public class JpaLayoutLineRepository extends JpaRepository implements LayoutMast
 	@Override
 	public List<LayoutMasterLine> getLines(String companyCd, String stmtCd, int strYm, int categoryAtr) {
 		return this.queryProxy().query(SELECT_ALL_LINE_BY_CATEGORY, QstmtStmtLayoutLines.class)
-				.setParameter("companyCd", companyCd)
-				.setParameter("stmtCd", stmtCd)
-				.setParameter("strYm", strYm)
-				.setParameter("ctgAtr", categoryAtr)
-				.getList(c -> toDomain(c));
+				.setParameter("companyCd", companyCd).setParameter("stmtCd", stmtCd).setParameter("strYm", strYm)
+				.setParameter("ctgAtr", categoryAtr).getList(c -> toDomain(c));
 	}
 
 	@Override
 	public List<LayoutMasterLine> getLinesBefore(String companyCd, String stmtCd, int endYm) {
 		return this.queryProxy().query(SELECT_ALL_DETAILS_BEFORE, QstmtStmtLayoutLines.class)
-				.setParameter("companyCd", companyCd)
-				.setParameter("stmtCd", stmtCd)
-				.setParameter("endYm", endYm)
+				.setParameter("companyCd", companyCd).setParameter("stmtCd", stmtCd).setParameter("endYm", endYm)
 				.getList(c -> toDomain(c));
 	}
 
 	@Override
 	public Optional<LayoutMasterLine> find(String companyCode, String stmtCode, String historyId, int categoryAtr,
 			String autoLineId) {
-		QstmtStmtLayoutLinesPK primaryKey = new QstmtStmtLayoutLinesPK(companyCode, stmtCode, historyId, categoryAtr, autoLineId);
-		return this.queryProxy().find(primaryKey, QstmtStmtLayoutLines.class)
-				.map(x -> toDomain(x));
+		QstmtStmtLayoutLinesPK primaryKey = new QstmtStmtLayoutLinesPK(companyCode, stmtCode, historyId, categoryAtr,
+				autoLineId);
+		return this.queryProxy().find(primaryKey, QstmtStmtLayoutLines.class).map(x -> toDomain(x));
+	}
+
+	@Override
+	public List<LayoutMasterLine> getLines(String historyId) {
+		return this.queryProxy().query(SELECT_ALL_BY_HISTORY_ID, QstmtStmtLayoutLines.class)
+				.setParameter("historyId", historyId).getList(c -> toDomain(c));
+	}
+
+	@Override
+	public List<LayoutMasterLine> getLines(String companyCd, String stmtCd, String historyId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public List<LayoutMasterLine> getLines(String companyCd, String stmtCd, String historyId, int categoryAtr) {
+
+		return this.queryProxy().query(SELECT_ALL_LINES, QstmtStmtLayoutLines.class)
+				.setParameter("historyId", historyId).setParameter("stmtCd", stmtCd)
+				.setParameter("categoryAtr", categoryAtr).setParameter("companyCd", companyCd)
+				.getList(c -> toDomain(c));
+	}
+
+	@Override
+	public List<LayoutMasterLine> getLinesBefore(String companyCd, String stmtCd, String historyId) {
+		return this.queryProxy().query(SELECT_ALL_DETAILS_BEFORE, QstmtStmtLayoutLines.class)
+				.setParameter("companyCd", companyCd).setParameter("stmtCd", stmtCd)
+				.setParameter("historyId", historyId).getList(c -> toDomain(c));
 	}
 }

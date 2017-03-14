@@ -12,7 +12,7 @@ module qmm019.a {
         textSearch: string = "";
         singleSelectedCode: KnockoutObservable<string>;
         layouts: KnockoutObservableArray<service.model.LayoutMasterDto>;
-        layoutsMax: KnockoutObservableArray<service.model.LayoutMasterDto>;
+        layoutsMax: KnockoutObservableArray<service.model.LayoutHeadDto>;
         layoutMaster: KnockoutObservable<service.model.LayoutMasterDto>;
         categories: KnockoutObservableArray<service.model.Category>;
         notHasKintai: KnockoutObservable<boolean> = ko.observable(false);
@@ -44,7 +44,7 @@ module qmm019.a {
                     self.layoutMaster(layoutFind);  
                     self.startYm(nts.uk.time.formatYearMonth(self.layoutMaster().startYm));
                     self.endYm(nts.uk.time.formatYearMonth(self.layoutMaster().endYm));
-                    service.getCategoryFull(layoutFind.stmtCode, layoutFind.startYm)
+                    service.getCategoryFull(layoutFind.stmtCode, layoutFind.historyId, layoutFind.startYm)
                         .done(function(listResult : Array<service.model.Category>){
                             self.categories(listResult);
                             self.calculateLine();
@@ -133,11 +133,11 @@ module qmm019.a {
             var self = this;
             var dfd = $.Deferred<any>();
 
-            service.getAllLayout().done(function(layouts: Array<service.model.LayoutMasterDto>) {
+            service.getAllLayoutHist().done(function(layouts: Array<service.model.LayoutMasterDto>) {
                 if (layouts.length > 0) {
                 
                     self.layouts(layouts);
-                    service.getLayoutsWithMaxStartYm().done(function(layoutsMax: Array<service.model.LayoutMasterDto>) {
+                    service.getAllLayoutHead().done(function(layoutsMax: Array<service.model.LayoutHeadDto>) {
                         self.layoutsMax(layoutsMax);
                         self.buildTreeDataSource();
                         //let firstLayout: service.model.LayoutMasterDto = _.first(self.layouts());
@@ -185,7 +185,7 @@ module qmm019.a {
         registerLayout() {
             var self = this;
             service.registerLayout(self.layoutMaster(), self.categories()).done(function (res) {
-                service.getCategoryFull(self.layoutMaster().stmtCode, self.layoutMaster().startYm)
+                service.getCategoryFull(self.layoutMaster().stmtCode, self.layoutMaster().historyId, self.layoutMaster().startYm)
                     .done(function(listResult : Array<service.model.Category>){
                         self.categories(listResult);
                         self.checkKintaiKiji();

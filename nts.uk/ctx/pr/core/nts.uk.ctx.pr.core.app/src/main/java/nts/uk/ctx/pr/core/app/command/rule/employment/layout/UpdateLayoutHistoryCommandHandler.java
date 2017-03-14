@@ -54,7 +54,7 @@ public class UpdateLayoutHistoryCommandHandler extends CommandHandler<UpdateLayo
 		//validateHistorySpan(command, layoutOrigin, layoutBefore);
 
 		//this.layoutRepo.remove(companyCode, command.getStmtCode(), command.getStartYmOriginal());
-		layoutOrigin.setStartYM(new YearMonth(command.getStartYm()));
+		//layoutOrigin.setStartYM(new YearMonth(command.getStartYm()));
 		this.layoutRepo.update(layoutOrigin);
 		//layoutRepo.update(layoutOrigin);
 		//trong truong hop ngay bat dau lon hon ngay ket thuc 
@@ -62,7 +62,7 @@ public class UpdateLayoutHistoryCommandHandler extends CommandHandler<UpdateLayo
 		if(layoutBefore != null){
 			LayoutMaster layout = layoutBefore.get();
 			//this.layoutRepo.remove(companyCode, command.getStmtCode(), layout.getStartYM().v());
-			layout.setEndYm(new YearMonth(command.getStartYm()).previousMonth());
+			//layout.setEndYm(new YearMonth(command.getStartYm()).previousMonth());
 			layoutRepo.update(layout);
 			//update thang dang truoc no
 			updatePreviousObject(command, companyCode, layoutOrigin);

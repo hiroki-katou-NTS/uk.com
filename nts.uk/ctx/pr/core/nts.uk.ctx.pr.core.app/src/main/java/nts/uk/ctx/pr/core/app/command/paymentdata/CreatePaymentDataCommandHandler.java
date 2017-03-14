@@ -193,15 +193,16 @@ public class CreatePaymentDataCommandHandler extends CommandHandler<CreatePaymen
 		}
 		LayoutMaster layoutMaster = layoutMasterList.get(0);
 		
+		//LamVT: fix tam gia tri startYm = 0 vi dang update do thay đổi bảng dữ liệu
 		// get layout detail master
 		List<LayoutMasterDetail> layoutMasterDetailList = layoutDetailMasterRepo.getDetails(loginInfo.companyCode(),
-						stmtCode, layoutMaster.getStartYM().v());
+						stmtCode, 0);
 		
 		// get lay master category
-		List<LayoutMasterCategory> categoryList = layoutMasterCtgRepo.getCategories(loginInfo.companyCode(), stmtCode, layoutMaster.getStartYM().v());
+		List<LayoutMasterCategory> categoryList = layoutMasterCtgRepo.getCategories(loginInfo.companyCode(), stmtCode, 0);
 		
 		// get layout master line
-		List<LayoutMasterLine> lineList = layoutMasterLineRepo.getLines(loginInfo.companyCode(), stmtCode, layoutMaster.getStartYM().v());
+		List<LayoutMasterLine> lineList = layoutMasterLineRepo.getLines(loginInfo.companyCode(), stmtCode, 0);
 		
 		// get personal wage list
 		List<PersonalWage> personWageList = personalWageRepo.findAll(loginInfo.companyCode(), personId, baseYearMonth.v());
@@ -345,7 +346,7 @@ public class CreatePaymentDataCommandHandler extends CommandHandler<CreatePaymen
 				.findFirst().orElseThrow(() -> new BusinessException("対象データがありません。"));
 		
 		int linePosition;
-		if (line.getLineDispayAttribute() == LineDispAtr.DISABLE) {
+		if (line.getLineDisplayAttribute() == LineDispAtr.DISABLE) {
 			linePosition = -1;
 		} else {
 			linePosition = line.getLinePosition().v();

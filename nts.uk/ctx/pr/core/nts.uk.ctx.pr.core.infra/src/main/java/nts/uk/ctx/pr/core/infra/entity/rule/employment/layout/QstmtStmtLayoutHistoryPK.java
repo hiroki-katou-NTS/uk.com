@@ -7,10 +7,15 @@ import javax.persistence.Embeddable;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 
+/**
+ * 
+ * @author lanlt
+ *
+ */
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
-public class QstmtStmtLayoutHeadPK {
+public class QstmtStmtLayoutHistoryPK {
 
 	/**
 	 * serialVersionUID
@@ -24,9 +29,8 @@ public class QstmtStmtLayoutHeadPK {
 	@Basic(optional = false)
 	@Column(name ="STMT_CD")
 	public String stmtCd;
-//Lant remove
-//	@Basic(optional = false)
-//	@Column(name ="HIST_ID")
-//	public String historyId;
 	
+    @Basic(optional = false)
+	@Column(name ="HIST_ID")
+	public String historyId;
 }

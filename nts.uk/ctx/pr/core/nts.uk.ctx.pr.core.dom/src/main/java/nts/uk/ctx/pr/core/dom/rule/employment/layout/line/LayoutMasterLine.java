@@ -18,77 +18,51 @@ public class LayoutMasterLine extends AggregateRoot {
 	private CompanyCode companyCode;
 
 	@Getter
-	private YearMonth startYM;
-
-	@Getter
 	private LayoutCode stmtCode;
 	@Getter
 	private String historyId;
 
 	@Getter
-	private YearMonth endYM;
-
-	@Getter
 	private AutoLineId autoLineId;
 
 	@Getter
-	private LineDispAtr lineDispayAttribute;
+	private LineDispAtr lineDisplayAttribute;
 
 	@Getter
 	private LinePosition linePosition;
-	
+
 	@Getter
 	private CategoryAtr categoryAtr;
 
 	@Getter
 	private List<LayoutMasterDetail> layoutMasterDetails;
 
-	public LayoutMasterLine(CompanyCode companyCode, YearMonth startYM, LayoutCode stmtCode, YearMonth endYM,
-			AutoLineId autoLineId, CategoryAtr categoryAtr, LineDispAtr lineDispayAttribute, LinePosition linePosition,
-			String historyId) {
+	public LayoutMasterLine(CompanyCode companyCode, LayoutCode stmtCode, AutoLineId autoLineId,
+			CategoryAtr categoryAtr, LineDispAtr lineDispayAttribute, LinePosition linePosition, String historyId) {
 		super();
 		this.companyCode = companyCode;
-		this.startYM = startYM;
 		this.stmtCode = stmtCode;
-		this.endYM = endYM;
 		this.autoLineId = autoLineId;
 		this.categoryAtr = categoryAtr;
-		this.lineDispayAttribute = lineDispayAttribute;
+		this.lineDisplayAttribute = lineDispayAttribute;
 		this.linePosition = linePosition;
 		this.historyId = historyId;
 	}
 
-	public static LayoutMasterLine createFromJavaType(String companyCode, int startYM, String stmtCode, int endYM,
-			String autoLineId, int lineDispayAttribute, int linePosition, int categoryAtr, String historyId) {
+	public static LayoutMasterLine createFromJavaType(String companyCode, String stmtCode, String autoLineId,
+			int lineDispayAttribute, int linePosition, int categoryAtr, String historyId) {
 
-		return new LayoutMasterLine(
-				new CompanyCode(companyCode), 
-				new YearMonth(startYM), 
-				new LayoutCode(stmtCode),
-				new YearMonth(endYM), 
-				new AutoLineId(autoLineId),
+		return new LayoutMasterLine(new CompanyCode(companyCode), new LayoutCode(stmtCode), new AutoLineId(autoLineId),
 				EnumAdaptor.valueOf(categoryAtr, CategoryAtr.class),
-				EnumAdaptor.valueOf(lineDispayAttribute, LineDispAtr.class), 
-				new LinePosition(linePosition),
-				historyId
-				);
+				EnumAdaptor.valueOf(lineDispayAttribute, LineDispAtr.class), new LinePosition(linePosition), historyId);
 
 	}
 
-	public static LayoutMasterLine createFromDomain(
-			CompanyCode companyCode, 
-			YearMonth startYM, 
-			LayoutCode stmtCode,
-			YearMonth endYM, 
-			AutoLineId autoLineId,
-			CategoryAtr categoryAtr,
-			LineDispAtr lineDispayAttribute, 
-			LinePosition linePosition,
-			String historyId){
-		
-		return new LayoutMasterLine(companyCode, startYM, stmtCode, endYM, autoLineId, 
-				categoryAtr, lineDispayAttribute, linePosition,
+	public static LayoutMasterLine createFromDomain(CompanyCode companyCode, LayoutCode stmtCode, AutoLineId autoLineId,
+			CategoryAtr categoryAtr, LineDispAtr lineDispayAttribute, LinePosition linePosition, String historyId) {
+
+		return new LayoutMasterLine(companyCode, stmtCode, autoLineId, categoryAtr, lineDispayAttribute, linePosition,
 				historyId);
 	}
-	
+
 }

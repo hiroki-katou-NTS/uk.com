@@ -33,18 +33,19 @@ public class LayoutDetail {
 	/** 合計対象区分 */	
 	private int sumScopeAtr;	
 	//今回、対応対象外	
-//	/** 計算式コード */
-//	private String formulaCode;	
-//	/** 賃金テーブルコード */
-//	private String wageTableCode;
-//	/** 共通金額 */
-//	private String commonAmount;	
+	/** 計算式コード */
+	private String formulaCode;	
+	/**個人金額コード	 */
+	private String personalWageCode;
+	/** 賃金テーブルコード */
+	private String wageTableCode;
+	/** 共通金額 */
+	private BigDecimal commonAmount;	
 	/** 支給相殺コード */	
 	private String setOffItemCode;	
 	/**通勤区分*/
 	private int commuteAtr;
-	/**個人金額コード	 */
-	private String personalWageCode;	
+	
 	/**按分方法	 */
 	private int distributeWay;
 	/**按分設定	 */
@@ -66,13 +67,11 @@ public class LayoutDetail {
 	/**アラーム範囲下限	 */
 	private BigDecimal alamRangeLow;
 	
-	public LayoutMasterDetail toDomain(String layoutCode, int startYm, int endYm, String historyId){
+	public LayoutMasterDetail toDomain(String layoutCode,String historyId){
 		
 		return LayoutMasterDetail.createFromJavaType(
 				AppContexts.user().companyCode(), 
 				layoutCode, 
-				startYm, 
-				endYm, 
 				this.categoryAtr, 
 				this.itemCode, 
 				this.autoLineId, 
@@ -81,7 +80,10 @@ public class LayoutDetail {
 				this.calculationMethod, 
 				this.distributeWay, 
 				this.distributeSet,
-				this.personalWageCode, 
+				this.formulaCode,
+				this.personalWageCode,
+				this.wageTableCode,
+				this.commonAmount,
 				this.setOffItemCode,
 				this.commuteAtr,
 				this.isErrorUseHigh, 

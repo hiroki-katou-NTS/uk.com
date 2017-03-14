@@ -7,12 +7,16 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.uk.ctx.pr.core.dom.rule.employment.layout.LayoutHistRepository;
 import nts.uk.ctx.pr.core.dom.rule.employment.layout.LayoutMasterRepository;
 
 @Stateless
 public class LayoutMasterFinder {
 	@Inject
 	private LayoutMasterRepository repository;
+	
+	@Inject
+	private LayoutHistRepository layoutHistRepo;
 
 	/**
 	 * finder all layout by company code and layout code
@@ -20,9 +24,14 @@ public class LayoutMasterFinder {
 	 * @param companyCode
 	 * @return
 	 */
-	public List<LayoutDto> getAllLayout(String companyCode) {
-		return this.repository.getLayouts(companyCode).stream().map(layout -> LayoutDto.fromDomain(layout))
+	public List<LayoutHeadDto> getAllLayoutHead(String companyCode) {
+		return this.repository.getLayoutHeads(companyCode).stream().map(layout -> LayoutHeadDto.fromDomain(layout))
 				.collect(Collectors.toList());
+	}
+	
+	public List<LayoutHistoryDto> getAllLayoutHist(String companyCode) {
+		return layoutHistRepo.getAllLayoutHist(companyCode).stream()
+				.map(layout -> LayoutHistoryDto.fromDomain(layout)).collect(Collectors.toList());
 	}
 
 	/**
@@ -33,18 +42,18 @@ public class LayoutMasterFinder {
 	 * @param strYm
 	 * @return
 	 */
-	public Optional<LayoutDto> getLayout(String companyCode, String stmtCode, String historyId) {
-		return this.repository.getLayout(companyCode, historyId, stmtCode).map(layout -> LayoutDto.fromDomain(layout));
+	public Optional<LayoutHeadDto> getLayout(String companyCode, String stmtCode, String historyId) {
+		return this.repository.getLayout(companyCode, historyId, stmtCode).map(layout -> LayoutHeadDto.fromDomain(layout));
 	}
 	/**
 	 * find all layouts with max startYM
 	 * @param companyCode
 	 * @return
 	 */
-	public List<LayoutDto> getLayoutsWithMaxStartYm(String companyCode)
+	public List<LayoutHeadDto> getLayoutsWithMaxStartYm(String companyCode)
 	{
 		return this.repository.getLayoutsWithMaxStartYm(companyCode).stream()
-				.map(layout -> LayoutDto.fromDomain(layout))
+				.map(layout -> LayoutHeadDto.fromDomain(layout))
 				.collect(Collectors.toList());
 	}
 

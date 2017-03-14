@@ -35,7 +35,7 @@ var qmm019;
                         self.layoutMaster(layoutFind);
                         self.startYm(nts.uk.time.formatYearMonth(self.layoutMaster().startYm));
                         self.endYm(nts.uk.time.formatYearMonth(self.layoutMaster().endYm));
-                        a.service.getCategoryFull(layoutFind.stmtCode, layoutFind.startYm)
+                        a.service.getCategoryFull(layoutFind.stmtCode, layoutFind.historyId, layoutFind.startYm)
                             .done(function (listResult) {
                             self.categories(listResult);
                             self.calculateLine();
@@ -124,10 +124,10 @@ var qmm019;
             ScreenModel.prototype.start = function (currentLayoutSelectedCode) {
                 var self = this;
                 var dfd = $.Deferred();
-                a.service.getAllLayout().done(function (layouts) {
+                a.service.getAllLayoutHist().done(function (layouts) {
                     if (layouts.length > 0) {
                         self.layouts(layouts);
-                        a.service.getLayoutsWithMaxStartYm().done(function (layoutsMax) {
+                        a.service.getAllLayoutHead().done(function (layoutsMax) {
                             self.layoutsMax(layoutsMax);
                             self.buildTreeDataSource();
                             //let firstLayout: service.model.LayoutMasterDto = _.first(self.layouts());
@@ -172,7 +172,7 @@ var qmm019;
             ScreenModel.prototype.registerLayout = function () {
                 var self = this;
                 a.service.registerLayout(self.layoutMaster(), self.categories()).done(function (res) {
-                    a.service.getCategoryFull(self.layoutMaster().stmtCode, self.layoutMaster().startYm)
+                    a.service.getCategoryFull(self.layoutMaster().stmtCode, self.layoutMaster().historyId, self.layoutMaster().startYm)
                         .done(function (listResult) {
                         self.categories(listResult);
                         self.checkKintaiKiji();

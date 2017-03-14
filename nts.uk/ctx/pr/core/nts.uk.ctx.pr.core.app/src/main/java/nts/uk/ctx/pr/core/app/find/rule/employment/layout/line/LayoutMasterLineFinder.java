@@ -21,4 +21,12 @@ public class LayoutMasterLineFinder {
 				.map(item -> LayoutMasterLineDto.fromDomain(item))
 				.collect(Collectors.toList());
 	}
+	public List<LayoutMasterLineDto> getLines(
+			String companyCd,
+			String stmtCd,
+			String historyId){
+		return this.repository.getLines(companyCd, stmtCd, historyId).stream()
+				.map(item -> LayoutMasterLineDto.fromDomain(item))
+				.collect(Collectors.toList());
+	}
 }

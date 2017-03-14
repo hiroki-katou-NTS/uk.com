@@ -12,13 +12,9 @@ public class LayoutMasterCategoryDto {
 	/**会社コード 	 */
 	private String companyCd;
 	/**明細書コード*/
-	private String layoutCd;
-	/**開始年月*/
-	private int startYm;
+	private String stmtCd;
 	/**カテゴリ区分	 */
 	private int categoryAtr;
-	/**終了年月	 */
-	private int endYm;
 	/**カテゴリ表示位置 */
 	private int ctgPos;
 	private List<LayoutMasterLineDto> lines;
@@ -27,9 +23,7 @@ public class LayoutMasterCategoryDto {
 		return new LayoutMasterCategoryDto(
 				domain.getCompanyCode().v(), 
 				domain.getStmtCode().v(), 
-				domain.getStartYM().v(),
 				domain.getCtAtr().value,
-				domain.getEndYm().v(),
 				domain.getCtgPos().v(), 
 				new ArrayList<>());
 	}

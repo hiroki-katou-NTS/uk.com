@@ -22,12 +22,13 @@ public interface LayoutMasterRepository {
 	Optional<LayoutMaster> getLayout(String companyCode, String historyId, String stmtCode);
 	
 	Optional<LayoutMaster> getHistoryBefore(String companyCode, String stmtCode, int startYm);
+	Optional<LayoutMaster> getHistoryBefore(String companyCode, String stmtCode);
 	/**
 	 * find all layout master by company code, start date
 	 * 
 	 * @return layout master
 	 */
-	List<LayoutMaster> getLayouts(String companyCode);
+	List<LayoutMaster> getLayoutHeads(String companyCode);
 
 	/**
 	 * Add a new layout master

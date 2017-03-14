@@ -19,7 +19,8 @@ import nts.uk.ctx.pr.core.app.command.rule.employment.layout.UpdateLayoutHistory
 import nts.uk.ctx.pr.core.app.command.rule.employment.layout.UpdateLayoutHistoryCommandHandler;
 import nts.uk.ctx.pr.core.app.command.rule.employment.layout.register.RegisterLayoutCommand;
 import nts.uk.ctx.pr.core.app.command.rule.employment.layout.register.RegisterLayoutCommandHandler;
-import nts.uk.ctx.pr.core.app.find.rule.employment.layout.LayoutDto;
+import nts.uk.ctx.pr.core.app.find.rule.employment.layout.LayoutHeadDto;
+import nts.uk.ctx.pr.core.app.find.rule.employment.layout.LayoutHistoryDto;
 import nts.uk.ctx.pr.core.app.find.rule.employment.layout.LayoutMasterFinder;
 import nts.uk.ctx.pr.core.app.find.rule.employment.layout.category.LayoutMasterCategoryDto;
 import nts.uk.ctx.pr.core.app.find.rule.employment.layout.category.LayoutMasterCategoryFinder;
@@ -49,13 +50,20 @@ public class LayoutWebService extends WebService {
 	private LayoutMasterDetailFinder detailFinder;
 	
 	@POST
-	@Path("findalllayout")
-	public List<LayoutDto> getAllLayout(){
-		return this.find.getAllLayout(AppContexts.user().companyCode());		
+	@Path("findalllayoutHead")
+	public List<LayoutHeadDto> getAllLayoutHead(){
+		return this.find.getAllLayoutHead(AppContexts.user().companyCode());		
 	}
+
+	@POST
+	@Path("findalllayoutHist")
+	public List<LayoutHistoryDto> getAllLayoutHist(){
+		return this.find.getAllLayoutHist(AppContexts.user().companyCode());		
+	}
+	
 	@POST
 	@Path("findlayout/{stmtCode}/{historyId}")
-	public LayoutDto getLayout(@PathParam("stmtCode") String stmtCode, @PathParam("historyId") String historyId){
+	public LayoutHeadDto getLayout(@PathParam("stmtCode") String stmtCode, @PathParam("historyId") String historyId){
 		return this.find.getLayout(AppContexts.user().companyCode(), stmtCode, historyId).get();
 	}
 	@POST
@@ -73,13 +81,15 @@ public class LayoutWebService extends WebService {
 		}
 	}
 	@POST
-	@Path("findCategoies/full/{layoutCd}/{startYm}")
-	public List<LayoutMasterCategoryDto> getCategoriesFullData(@PathParam("layoutCd") String layoutCd, @PathParam("startYm") int startYm){
-		return this.categoryFinder.getCategoriesFullData(layoutCd, startYm);
+	@Path("findCategoies/full/{layoutCd}/{historyId}/{startYm}")
+	public List<LayoutMasterCategoryDto> getCategoriesFullData(@PathParam("layoutCd") String layoutCd,
+											@PathParam("historyId") String historyId,
+											@PathParam("startYm") int startYm){
+		return this.categoryFinder.getCategoriesFullData(layoutCd, historyId, startYm);
 	}
 	@POST
 	@Path("findlayoutwithmaxstartym")
-	public List<LayoutDto> getLayoutsWithMaxStartYm(){
+	public List<LayoutHeadDto> getLayoutsWithMaxStartYm(){
 		return this.find.getLayoutsWithMaxStartYm(AppContexts.user().companyCode());
 	}
 	
