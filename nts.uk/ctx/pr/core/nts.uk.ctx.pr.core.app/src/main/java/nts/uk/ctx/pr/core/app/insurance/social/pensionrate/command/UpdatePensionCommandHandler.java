@@ -52,7 +52,7 @@ public class UpdatePensionCommandHandler extends CommandHandler<UpdatePensionCom
 		// Transfer data
 		PensionRate updatedPensionRate = command.toDomain(companyCode, pensionRate.getHistoryId(),
 				pensionRate.getOfficeCode());
-
+		updatedPensionRate.validate();
 		// Validate
 		pensionRateService.validateRequiredItem(updatedPensionRate);
 		pensionRateService.validateDateRange(updatedPensionRate);

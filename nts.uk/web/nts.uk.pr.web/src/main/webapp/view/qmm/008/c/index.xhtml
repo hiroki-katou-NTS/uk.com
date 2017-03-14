@@ -23,10 +23,22 @@
 				nts.uk.ctx.pr.core.dom.insurance.PicName
 				nts.uk.ctx.pr.core.dom.insurance.PicPosition
 				nts.uk.ctx.pr.core.dom.insurance.PotalCode
+				nts.uk.ctx.pr.core.dom.insurance.Phone
 				<!-- province address -->
-				
+				nts.uk.shr.com.primitive.Memo
 				nts.uk.ctx.pr.core.dom.insurance.Address
 				nts.uk.ctx.pr.core.dom.insurance.KanaAddress
+				
+				<!-- add new primitive -->
+				nts.uk.ctx.pr.core.dom.insurance.OfficeRefCode1
+				nts.uk.ctx.pr.core.dom.insurance.OfficeRefCode2
+				nts.uk.ctx.pr.core.dom.insurance.WelfarePensionFundCode
+				nts.uk.ctx.pr.core.dom.insurance.OfficePensionFundCode
+				nts.uk.ctx.pr.core.dom.insurance.CityCode
+				nts.uk.ctx.pr.core.dom.insurance.OfficeSign
+				nts.uk.ctx.pr.core.dom.insurance.HealthInsuOfficeCode
+				nts.uk.ctx.pr.core.dom.insurance.HealthInsuAssoCode
+				
   			</com:ValidatorScript>
 
 			<com:stylefile path="main.css" />
@@ -35,6 +47,50 @@
 			<com:scriptfile path="../a/service.js" />
 			<com:scriptfile path="viewmodel.js" />
 			<com:scriptfile path="start.js" />
+			<!-- <script>
+				__viewContext.primitiveValueConstraints.OfficeRefCode1 = {
+					valueType : 'String',
+					maxLength : 6,
+				};
+				__viewContext.primitiveValueConstraints.OfficeRefCode2 = {
+						valueType : 'String',
+						maxLength : 8,
+					};
+				//
+				__viewContext.primitiveValueConstraints.WelfarePensionFundCode = {
+					valueType : 'Number',
+					charType : 'Numeric',
+					maxLength : 4,
+				}
+			
+				__viewContext.primitiveValueConstraints.OfficePensionFundCode = {
+					valueType : 'Number',
+					charType : 'Numeric',
+					maxLength : 7,
+				}
+				
+				__viewContext.primitiveValueConstraints.CityCode = {
+						valueType : 'Number',
+						charType : 'Numeric',
+						maxLength : 2,
+					}
+				__viewContext.primitiveValueConstraints.OfficeSign = {
+						valueType : 'Number',
+						charType : 'Numeric',
+						maxLength : 4,
+					}
+				//
+				__viewContext.primitiveValueConstraints.HealthInsuOfficeCode = {
+						valueType : 'Number',
+						charType : 'Numeric',
+						maxLength : 5,
+					}
+				__viewContext.primitiveValueConstraints.HealthInsuAssoCode = {
+						valueType : 'Number',
+						charType : 'Numeric',
+						maxLength : 4,
+					}
+			</script> -->
 		</ui:define>
 
 		<ui:define name="content">
@@ -76,7 +132,7 @@
 								<table class="border_none">
 									<tr>
 										<td class="border_none"><div style="margin-top: 20px;"
-												data-bind="ntsFormLabel: {required: true}">コード/名称</div></td>
+												data-bind="ntsFormLabel: {required: true,constraint:['OfficeCode','OfficeName'] }">コード/名称</div></td>
 										<td class="border_none padding_top"><div>
 												<input
 													data-bind="ntsTextEditor: {
@@ -97,7 +153,7 @@
 									</tr>
 									<tr>
 										<td class="border_none"><div style="margin-top: 20px;"
-												data-bind="ntsFormLabel: {}">略名</div></td>
+												data-bind="ntsFormLabel: {constraint:'ShortName'}">略名</div></td>
 										<td colspan="3" class="border_none padding_top">
 											<div>
 												<input
@@ -110,7 +166,7 @@
 									</tr>
 									<tr>
 										<td class="border_none"><div style="margin-top: 20px;"
-												data-bind="ntsFormLabel: {}">代表者名</div></td>
+												data-bind="ntsFormLabel: {constraint:'PicName'}">代表者名</div></td>
 										<td colspan="3" class="border_none padding_top">
 											<div>
 												<input
@@ -125,7 +181,7 @@
 										<td
 											class="no_left_border no_right_border no_top_border border_bottom "><div
 												style="margin-top: 20px; margin-bottom: 10px;"
-												data-bind="ntsFormLabel: {required: true}">代表者</div></td>
+												data-bind="ntsFormLabel: {required: true,constraint:'PicPosition'}">代表者</div></td>
 										<td colspan="3"
 											class="no_left_border no_right_border no_top_border border_bottom padding_top ">
 											<div>
@@ -142,7 +198,7 @@
 									</tr>
 									<tr>
 										<td class="border_none"><div style="margin-top: 20px;"
-												data-bind="ntsFormLabel: {}">郵便番号</div></td>
+												data-bind="ntsFormLabel: {constraint:'PotalCode'}">郵便番号</div></td>
 										<td class="border_none padding_top"><div>
 												<input
 													data-bind="ntsTextEditor: {
@@ -166,7 +222,7 @@
 									</tr>
 									<tr>
 										<td class="border_none"><div style="margin-top: 20px;"
-												data-bind="ntsFormLabel: {}">住所 １</div></td>
+												data-bind="ntsFormLabel: {constraint:'Address'}">住所 １</div></td>
 										<td colspan="3" class="border_none padding_top"><div>
 												<input
 													data-bind="ntsTextEditor: {
@@ -176,7 +232,7 @@
 											</div></td>
 									</tr>
 									<tr>
-										<td class="border_none kana_address">カナ１</td>
+										<td class="border_none kana_address" ><div style="border: none !important" data-bind="ntsFormLabel: {constraint:'KanaAddress'}">カナ１</div></td>
 										<td colspan="3" class="border_none padding_top"><div>
 												<input
 													data-bind="ntsTextEditor: {
@@ -187,7 +243,7 @@
 									</tr>
 									<tr>
 										<td class="border_none"><div style="margin-top: 20px;"
-												data-bind="ntsFormLabel: {}">住所 ２</div></td>
+												data-bind="ntsFormLabel: {constraint:'Address'}">住所 ２</div></td>
 										<td colspan="3" class="border_none padding_top"><div>
 												<input
 													data-bind="ntsTextEditor: {
@@ -197,7 +253,7 @@
 											</div></td>
 									</tr>
 									<tr>
-										<td class="border_none kana_address">カナ ２</td>
+										<td class="border_none kana_address"> <div style="border: none !important" data-bind="ntsFormLabel: {constraint:'KanaAddress'}">カナ ２</div></td>
 										<td colspan="3" class="border_none padding_top"><div>
 												<input
 													data-bind="ntsTextEditor: {
@@ -208,11 +264,12 @@
 									</tr>
 									<tr>
 										<td class="border_none"><div style="margin-top: 20px;"
-												data-bind="ntsFormLabel: {}">電話番号</div></td>
+												data-bind="ntsFormLabel: {constraint:'Phone'}">電話番号</div></td>
 										<td colspan="3" class="border_none padding_top"><div>
 												<input
 													data-bind="ntsTextEditor: {
-														value: phoneNumber , 
+														value: phoneNumber ,
+														constraint: 'Phone', 
 														option: {textmode: 'text',width: '150',textalign: 'left'}}" />
 											</div></td>
 									</tr>
@@ -230,13 +287,15 @@
 										<td class="border_none"><div>
 												<input
 													data-bind="ntsTextEditor: {
-														value: healthInsuOfficeRefCode1st , 
+														value: healthInsuOfficeRefCode1st ,
+														constraint:  'OfficeRefCode1',
 														option: {textmode: 'text',width: '50',textalign: 'left'}}" />
 											</div></td>
 										<td class="border_none"><div>
 												<input
 													data-bind="ntsTextEditor: {
-														value: healthInsuOfficeRefCode2nd , 
+														value: healthInsuOfficeRefCode2nd ,
+														constraint: 'OfficeRefCode2', 
 														option: {textmode: 'text',width: '70',textalign: 'left'}}" />
 											</div></td>
 									</tr>
@@ -246,13 +305,15 @@
 										<td class="border_none"><div>
 												<input
 													data-bind="ntsTextEditor: {
-														value: pensionOfficeRefCode1st , 
+														value: pensionOfficeRefCode1st ,
+														constraint:  'OfficeRefCode1', 
 														option: {textmode: 'text',width: '50',textalign: 'left'}}" />
 											</div></td>
 										<td class="border_none"><div>
 												<input
 													data-bind="ntsTextEditor: {
-														value: pensionOfficeRefCode2nd , 
+														value: pensionOfficeRefCode2nd ,
+														constraint: 'OfficeRefCode2', 
 														option: {textmode: 'text',width: '70',textalign: 'left'}}" />
 											</div></td>
 									</tr>
@@ -266,7 +327,8 @@
 										<td class="border_none"><div>
 												<input
 													data-bind="ntsNumberEditor: {
-														value: welfarePensionFundCode , 
+														value: welfarePensionFundCode ,
+														constraint: 'WelfarePensionFundCode', 
 														option: {textmode: 'text',width: '60',textalign: 'left'}}" />
 											</div></td>
 									</tr>
@@ -276,7 +338,8 @@
 										<td class="border_none"><div>
 												<input
 													data-bind="ntsTextEditor: {
-														value: officePensionFundCode , 
+														value: officePensionFundCode ,
+														constraint : 'OfficePensionFundCode', 
 														option: {textmode: 'text',width: '80',textalign: 'left'}}" />
 											</div></td>
 									</tr>
@@ -291,13 +354,15 @@
 												<input
 													data-bind="ntsTextEditor: {
 														value: healthInsuCityCode , 
+														constraint : 'CityCode',
 														option: {textmode: 'text',width: '40',textalign: 'left'}}" />
 											</div></td>
 										<td>事業所記号:</td>
 										<td class="border_none"><div>
 												<input
 													data-bind="ntsTextEditor: {
-														value: healthInsuOfficeSign , 
+														value: healthInsuOfficeSign ,
+														constraint: 'OfficeSign', 
 														option: {textmode: 'text',width: '60',textalign: 'left'}}" />
 											</div></td>
 									</tr>
@@ -308,14 +373,16 @@
 										<td class="border_none"><div>
 												<input
 													data-bind="ntsTextEditor: {
-														value: pensionCityCode , 
+														value: pensionCityCode ,
+														constraint : 'CityCode', 
 														option: {textmode: 'text',width: '40',textalign: 'left'}}" />
 											</div></td>
 										<td>事業所記号:</td>
 										<td class="border_none"><div>
 												<input
 													data-bind="ntsTextEditor: {
-														value: pensionOfficeSign , 
+														value: pensionOfficeSign ,
+														constraint: 'OfficeSign', 
 														option: {textmode: 'text',width: '60',textalign: 'left'}}" />
 											</div></td>
 									</tr>
@@ -328,7 +395,8 @@
 										<td class="border_none"><div>
 												<input
 													data-bind="ntsNumberEditor: {
-														value: healthInsuOfficeCode , 
+														value: healthInsuOfficeCode ,
+														constraint: 'HealthInsuOfficeCode', 
 														option: {textmode: 'text',width: '70',textalign: 'left'}}" />
 											</div></td>
 									</tr>
@@ -338,7 +406,8 @@
 										<td class="border_none"><div>
 												<input
 													data-bind="ntsTextEditor: {
-														value: healthInsuAssoCode , 
+														value: healthInsuAssoCode ,
+														constraint: 'HealthInsuAssoCode', 
 														option: {textmode: 'text',width: '60',textalign: 'left'}}" />
 											</div></td>
 									</tr>
@@ -346,7 +415,17 @@
 										<td colspan="2" class="border_none"><div
 												class="margin_top_10" data-bind="ntsFormLabel: {}">メモ</div></td>
 										<td colspan="4" class="border_none"><TEXTAREA
-												id="input-text" rows="4" cols="60" data-bind="value: memo"></TEXTAREA>
+												id="input-text" rows="4" cols="60"
+												data-bind="ntsMultilineEditor: {
+													value: memo,
+													constraint: 'Memo',
+													option: {
+														resizeable: false,
+														placeholder: '',
+														width: '350',
+														textalign: 'left'
+														}
+													}"></TEXTAREA>
 										</td>
 									</tr>
 								</table>

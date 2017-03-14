@@ -84,7 +84,7 @@ public class RegisterHealthInsuranceCommandHandler extends CommandHandler<Regist
 		}
 		HealthInsuranceRate addNewHealthInsuranceRate = new HealthInsuranceRate(
 				this.covertToMemento(healthInsuranceRate, command));
-
+		addNewHealthInsuranceRate.validate();
 		// Validate
 		healthInsuranceRateService.validateDateRange(addNewHealthInsuranceRate);
 		healthInsuranceRateService.validateRequiredItem(addNewHealthInsuranceRate);

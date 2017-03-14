@@ -45,7 +45,7 @@ public interface HealthInsuranceRateRepository extends SimpleHistoryRepository<H
 	 * @param officeCode the office code
 	 * @return the list
 	 */
-	List<HealthInsuranceRate> findAll(CompanyCode companyCode);
+	List<HealthInsuranceRate> findAll(String companyCode);
 
 	/**
 	 * Find by id.

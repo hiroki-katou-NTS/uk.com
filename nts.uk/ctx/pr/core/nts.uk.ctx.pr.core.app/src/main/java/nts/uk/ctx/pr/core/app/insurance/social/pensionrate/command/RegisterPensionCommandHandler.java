@@ -72,7 +72,7 @@ public class RegisterPensionCommandHandler extends CommandHandler<RegisterPensio
 
 		// Transfer data
 		PensionRate pensionRate = command.toDomain(companyCode);
-
+		pensionRate.validate();
 		// Validate
 		pensionRateService.validateDateRange(pensionRate);
 		pensionRateService.validateRequiredItem(pensionRate);

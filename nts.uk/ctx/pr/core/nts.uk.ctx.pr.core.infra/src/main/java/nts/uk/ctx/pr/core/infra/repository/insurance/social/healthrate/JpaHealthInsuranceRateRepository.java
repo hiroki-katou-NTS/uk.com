@@ -108,7 +108,7 @@ public class JpaHealthInsuranceRateRepository extends JpaRepository
 	 * HealthInsuranceRateRepository#findAll(java.lang.String, java.lang.String)
 	 */
 	@Override
-	public List<HealthInsuranceRate> findAll(CompanyCode companyCode) {
+	public List<HealthInsuranceRate> findAll(String companyCode) {
 
 		// Get entity manager
 		EntityManager em = this.getEntityManager();
@@ -123,7 +123,7 @@ public class JpaHealthInsuranceRateRepository extends JpaRepository
 
 		// Construct condition.
 		predicateList.add(cb.equal(root.get(QismtHealthInsuRate_.qismtHealthInsuRatePK)
-				.get(QismtHealthInsuRatePK_.ccd), companyCode.v()));
+				.get(QismtHealthInsuRatePK_.ccd), companyCode));
 
 		cq.where(predicateList.toArray(new Predicate[] {}));
 		cq.orderBy(cb.desc(root.get(QismtHealthInsuRate_.strYm)));

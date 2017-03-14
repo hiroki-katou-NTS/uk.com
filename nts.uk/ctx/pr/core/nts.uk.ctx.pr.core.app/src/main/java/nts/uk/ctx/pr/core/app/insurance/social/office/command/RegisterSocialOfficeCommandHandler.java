@@ -46,7 +46,7 @@ public class RegisterSocialOfficeCommandHandler extends CommandHandler<RegisterS
 
 		// convert to domain
 		SocialInsuranceOffice socialInsuranceOffice = command.toDomain(companyCode);
-
+		socialInsuranceOffice.validate();
 		// Validate
 		insuranceSocialService.validateRequiredItem(socialInsuranceOffice);
 		insuranceSocialService.checkDuplicateCode(socialInsuranceOffice);
