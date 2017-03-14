@@ -9,7 +9,6 @@ var qmm025;
                     var self = this;
                     self.items = ko.observableArray([]);
                     self.isEnable = ko.observable(false);
-                    //get current year
                     self.yearKey = ko.observable(0);
                     self.yearInJapanEmpire = ko.computed(function () {
                         return nts.uk.time.yearInJapanEmpire(self.yearKey()).toString();
@@ -67,7 +66,7 @@ var qmm025;
                     if (perResiTaxData === void 0) { perResiTaxData = []; }
                     var self = this;
                     perResiTaxData.push(new ResidenceTax('NSVC', data[0].personId, 'name', 'Vietnam', false, data[0].residenceTax[0].value, data[0].residenceTax[1].value, data[0].residenceTax[2].value, data[0].residenceTax[3].value, data[0].residenceTax[4].value, data[0].residenceTax[5].value, data[0].residenceTax[6].value, data[0].residenceTax[7].value, data[0].residenceTax[8].value, data[0].residenceTax[9].value, data[0].residenceTax[10].value, data[0].residenceTax[11].value));
-                    perResiTaxData.push(new ResidenceTax('NSVC', '00001', 'name1', 'Japan', false, 15000, 25000, 25000, 25000, 25000, 25000, 25000, 25000, 25000, 25000, 25000, 25000));
+                    perResiTaxData.push(new ResidenceTax('NSVC', '00001', 'name1', 'Japan', false, 25000, 25000, 25000, 25000, 25000, 15000, 25000, 25000, 25000, 25000, 25000, 25000));
                     self.items(perResiTaxData);
                     self.isEnable(true);
                     self.bindGrid(self.items());
@@ -88,11 +87,17 @@ var qmm025;
                 ScreenModel.prototype.saveData = function () {
                     var self = this;
                     var obj = {};
+                    qmm025.a.service.update(obj)
+                        .done(function () {
+                        self.findAll();
+                    })
+                        .fail(function () {
+                    });
                 };
                 ScreenModel.prototype.remove = function () {
                     var self = this;
                     var obj = {
-                        "yearKey": self.yearKey()
+                        yearKey: self.yearKey()
                     };
                     qmm025.a.service.remove(obj)
                         .done(function () {
@@ -101,30 +106,20 @@ var qmm025;
                         .fail(function () {
                     });
                 };
-                ScreenModel.prototype.bindGrid = function (data) {
+                ScreenModel.prototype.bindGrid = function (items) {
                     var self = this;
                     //tinh lai tong khi row bi thay doi- updating when row edited
                     $("#grid").on("iggridupdatingeditrowended", function (event, ui) {
                         var grid = ui.owner.grid;
-                        var residenceTax01 = ui.values["residenceTax01"];
-                        var residenceTax02 = ui.values["residenceTax02"];
-                        var residenceTax03 = ui.values["residenceTax03"];
-                        var residenceTax04 = ui.values["residenceTax04"];
-                        var residenceTax05 = ui.values["residenceTax05"];
                         var residenceTax06 = ui.values["residenceTax06"];
                         var residenceTax07 = ui.values["residenceTax07"];
-                        var residenceTax08 = ui.values["residenceTax08"];
-                        var residenceTax09 = ui.values["residenceTax09"];
-                        var residenceTax10 = ui.values["residenceTax10"];
-                        var residenceTax11 = ui.values["residenceTax11"];
-                        var residenceTax12 = ui.values["residenceTax12"];
                         var totalValue = 0;
                         if (ui.values["checkAllMonth"]) {
                             totalValue = residenceTax06 + residenceTax07 * 11 || ui.values["residenceTaxPerYear"];
                             $("#grid").igGridUpdating("setCellValue", ui.rowID, "residenceTax08", residenceTax07);
                             //set background-color khi thay doi trang thai cua totalValue
                             for (var i = 3; i < 13; i++) {
-                                $(grid.cellAt(i, 0)).css('background-color', 'transparent');
+                                $(grid.cellAt(i, 0)).css('background-color', 'red');
                             }
                         }
                         else {
@@ -160,8 +155,7 @@ var qmm025;
                         renderCheckboxes: true,
                         primaryKey: 'code',
                         autoGenerateColumns: false,
-                        dataSource: data,
-                        //1755px
+                        dataSource: items,
                         width: "1200px",
                         height: "550px",
                         features: [
@@ -221,10 +215,8 @@ var qmm025;
                                 enableAddRow: false,
                                 enableDeleteRow: false,
                                 editCellStarting: function (evt, ui) {
-                                    if (ui.columnKey === "checkAllMonth" && $(evt.originalEvent.target).hasClass("ui-icon-check")) {
+                                    if (ui.columnKey === "checkAllMonth") {
                                         ui.value = !ui.value;
-                                        if (ui.value) {
-                                        }
                                     }
                                 },
                                 columnSettings: [

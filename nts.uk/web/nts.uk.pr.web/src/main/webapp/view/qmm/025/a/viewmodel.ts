@@ -4,12 +4,12 @@ module qmm025.a.viewmodel {
         isEnable: KnockoutObservable<boolean>;
         yearKey: KnockoutObservable<number>;
         yearInJapanEmpire: KnockoutObservable<string>;
+        residenceTax10: any;
 
         constructor() {
             var self = this;
             self.items = ko.observableArray([]);
             self.isEnable = ko.observable(false);
-            //get current year
             self.yearKey = ko.observable(0);
             self.yearInJapanEmpire = ko.computed(function() {
                 return nts.uk.time.yearInJapanEmpire(self.yearKey()).toString();
@@ -72,7 +72,7 @@ module qmm025.a.viewmodel {
                 data[0].residenceTax[6].value, data[0].residenceTax[7].value, data[0].residenceTax[8].value,
                 data[0].residenceTax[9].value, data[0].residenceTax[10].value, data[0].residenceTax[11].value));
             perResiTaxData.push(new ResidenceTax('NSVC', '00001', 'name1', 'Japan', false,
-                15000, 25000, 25000, 25000, 25000, 25000, 25000, 25000, 25000, 25000, 25000, 25000));
+                25000, 25000, 25000, 25000, 25000, 15000, 25000, 25000, 25000, 25000, 25000, 25000));
             self.items(perResiTaxData);
             self.isEnable(true);
             self.bindGrid(self.items());
@@ -94,14 +94,26 @@ module qmm025.a.viewmodel {
 
         saveData() {
             var self = this;
-            var obj = {}
-
+            var obj = {
+                //                residenceTaxBn:
+                //                residenceTaxAve:
+                //                residenceTax: [
+                //                    { "month": 1, "value":}, { "month": 2, "value":}, { "month": 3, "value":}, { "month": 4, "value":}, { "month": 5, "value":}, { "month": 6, "value":},
+                //                    { "month": 7, "value":}, { "month": 8, "value":}, { "month": 9, "value":}, { "month": 10, "value":}, { "month": 11, "value":}, { "month": 12, "value":},
+                //                ]
+            };
+            qmm025.a.service.update(obj)
+                .done(function() {
+                    self.findAll();
+                })
+                .fail(function() {
+                });
         }
 
         remove() {
             var self = this;
             var obj = {
-                "yearKey": self.yearKey()
+                yearKey: self.yearKey()
             }
             qmm025.a.service.remove(obj)
                 .done(function() {
@@ -111,30 +123,20 @@ module qmm025.a.viewmodel {
                 });
         }
 
-        bindGrid(data) {
+        bindGrid(items) {
             var self = this;
             //tinh lai tong khi row bi thay doi- updating when row edited
             $("#grid").on("iggridupdatingeditrowended", function(event, ui) {
                 var grid = ui.owner.grid;
-                var residenceTax01 = ui.values["residenceTax01"];
-                var residenceTax02 = ui.values["residenceTax02"];
-                var residenceTax03 = ui.values["residenceTax03"];
-                var residenceTax04 = ui.values["residenceTax04"];
-                var residenceTax05 = ui.values["residenceTax05"];
                 var residenceTax06 = ui.values["residenceTax06"];
                 var residenceTax07 = ui.values["residenceTax07"];
-                var residenceTax08 = ui.values["residenceTax08"];
-                var residenceTax09 = ui.values["residenceTax09"];
-                var residenceTax10 = ui.values["residenceTax10"];
-                var residenceTax11 = ui.values["residenceTax11"];
-                var residenceTax12 = ui.values["residenceTax12"];
                 var totalValue = 0;
                 if (ui.values["checkAllMonth"]) {
                     totalValue = residenceTax06 + residenceTax07 * 11 || ui.values["residenceTaxPerYear"];
                     $("#grid").igGridUpdating("setCellValue", ui.rowID, "residenceTax08", residenceTax07);
                     //set background-color khi thay doi trang thai cua totalValue
                     for (var i = 3; i < 13; i++) {
-                        $(grid.cellAt(i, 0)).css('background-color', 'transparent');
+                        $(grid.cellAt(i, 0)).css('background-color', 'red');
                     }
                 } else {
                     totalValue = residenceTax06 + residenceTax07 || ui.values["residenceTaxPerYear"];
@@ -170,8 +172,7 @@ module qmm025.a.viewmodel {
                 renderCheckboxes: true,
                 primaryKey: 'code',
                 autoGenerateColumns: false,
-                dataSource: data,
-                //1755px
+                dataSource: items,
                 width: "1200px",
                 height: "550px",
                 features: [
@@ -232,11 +233,8 @@ module qmm025.a.viewmodel {
                         enableAddRow: false,
                         enableDeleteRow: false,
                         editCellStarting: function(evt, ui) {
-                            if (ui.columnKey === "checkAllMonth" && $(evt.originalEvent.target).hasClass("ui-icon-check")) {
+                            if (ui.columnKey === "checkAllMonth") {
                                 ui.value = !ui.value;
-                                if (ui.value) {
-                                }
-                                //                                console.log($("#grid").igGridUpdating("option", "columnSettings")[0].columnKey);
                             }
                         },
                         columnSettings: [

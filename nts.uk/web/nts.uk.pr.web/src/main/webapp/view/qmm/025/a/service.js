@@ -7,7 +7,8 @@ var qmm025;
             var paths = {
                 findAll: "pr/core/rule/law/tax/residential/input/findAll",
                 getYearKey: "pr/proto/paymentdatemaster/processing/findbylogin",
-                remove: "pr/core/rule/law/tax/residential/input/remove"
+                remove: "pr/core/rule/law/tax/residential/input/remove",
+                update: "pr/core/rule/law/tax/residential/input/update"
             };
             function findAll(yearKey) {
                 var dfd = $.Deferred();
@@ -45,6 +46,18 @@ var qmm025;
                 return dfd.promise();
             }
             service.remove = remove;
+            function update(command) {
+                var dfd = $.Deferred();
+                nts.uk.request.ajax(paths.update, command)
+                    .done(function (res) {
+                    dfd.resolve(res);
+                })
+                    .fail(function (res) {
+                    dfd.reject(res);
+                });
+                return dfd.promise();
+            }
+            service.update = update;
         })(service = a.service || (a.service = {}));
     })(a = qmm025.a || (qmm025.a = {}));
 })(qmm025 || (qmm025 = {}));
