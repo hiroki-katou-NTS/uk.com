@@ -9,6 +9,7 @@
 		<ui:define name="htmlHead">
 			<com:stylefile path="main.css" />
 			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="../c/viewmodel.js" />
 			<com:scriptfile path="viewmodel.js" />
 			<com:scriptfile path="start.js" />
 			<script type="text/javascript">
@@ -41,8 +42,16 @@
 								<input id="inpDisplayName" data-bind="ntsTextEditor: {value: name, required: true}"></input>
 								</div>
 								<div class="control-group">
-								<div id="lblCanBeAdded" data-bind="ntsFormLabel: {required: false}">集計対象に追加できる項目</div>
-								<div id="lblAdded" data-bind="ntsFormLabel: {required: false}">集計対象に追加した項目</div>
+								<table>
+								<tr>
+								<td><div data-bind="ntsFormLabel: {required: false}">集計対象に追加できる項目</div></td>
+								<td style="padding-left: 80px"><div data-bind="ntsFormLabel: {required: false}">集計対象に追加した項目</div></td>
+								</tr>
+								<tr>
+								<td style="width: 315px"><hr /></td>
+								<td style="width: 315px; padding-left: 80px"><hr /></td>
+								</tr>
+								</table>
 								</div>
 								<div id="swap-list" data-bind="ntsSwapList: {
 								showSearchBox: { showLeft : true, showRight: false},

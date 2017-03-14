@@ -98,9 +98,18 @@ var qet001;
                 };
                 AggregateCategory.prototype.save = function () {
                     var self = this;
-                    if (self.aggregateItemDetail().code() == undefined || self.aggregateItemDetail().code() == null
-                        || self.aggregateItemDetail().name() == undefined || self.aggregateItemDetail().name() == null) {
-                        nts.uk.ui.dialog.alert('未入力エラー');
+                    $('#code-input').ntsError('clear');
+                    $('#name-input').ntsError('clear');
+                    var hasError = false;
+                    if (self.aggregateItemDetail().code() == '') {
+                        $('#code-input').ntsError('set', '未入力エラー');
+                        hasError = true;
+                    }
+                    if (self.aggregateItemDetail().name() == '') {
+                        $('#name-input').ntsError('set', '未入力エラー');
+                        hasError = true;
+                    }
+                    if (hasError) {
                         return;
                     }
                     i.service.save(self.aggregateItemDetail()).done(function () {
@@ -144,8 +153,8 @@ var qet001;
             viewmodel.AggregateCategory = AggregateCategory;
             var AggregateItemDetail = (function () {
                 function AggregateItemDetail(paymentType, category, masterItems, item) {
-                    this.code = item == undefined ? ko.observable(null) : ko.observable(item.code);
-                    this.name = item == undefined ? ko.observable(null) : ko.observable(item.name);
+                    this.code = item == undefined ? ko.observable('') : ko.observable(item.code);
+                    this.name = item == undefined ? ko.observable('') : ko.observable(item.name);
                     this.paymentType = paymentType;
                     this.category = category;
                     this.showNameZeroValue = item == undefined ? ko.observable(true)

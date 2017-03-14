@@ -95,16 +95,4 @@ public class JpaWLOutputSettingSetMemento implements WLOutputSettingSetMemento{
 		this.entity.getQlsptLedgerFormHeadPK().setCcd(companyCode.v());
 		this.companyCode = companyCode;
 	}
-
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.pr.report.dom.wageledger.outputsetting.WLOutputSettingSetMemento
-	 * #setVersion(long)
-	 */
-	@Override
-	public void setVersion(long version) {
-		this.entity.setExclusVer(0);
-	}
-
-
-
 }

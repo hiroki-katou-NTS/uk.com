@@ -46,13 +46,15 @@ public class OutputSettingFinder {
 		outputSetting.saveToMemento(dto);
 		// TODO: Find item name in Setting items.
 		// Fake master item name.
-		dto.categorySettings.forEach(cate -> {
-			cate.outputItems.forEach(item -> {
-				if (!item.isAggregateItem) {
-					item.name = "Master item " + item.code;
-				}
+		if (dto.categorySettings != null) {
+			dto.categorySettings.forEach(cate -> {
+				cate.outputItems.forEach(item -> {
+					if (!item.isAggregateItem) {
+						item.name = "Master item " + item.code;
+					}
+				});
 			});
-		});
+		}
 		return dto;
 	}
 	

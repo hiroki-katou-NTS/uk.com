@@ -47,3 +47,6 @@
 .switch-button-class {
     margin-left: 92px;
 }
+#search-input > .ntsSearchBox {
+	width: 192px !important;
+}

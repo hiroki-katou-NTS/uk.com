@@ -44,6 +44,7 @@ public class OutputSettingSaveCommandHandler extends CommandHandler<OutputSettin
 			
 			// Convert To Domain and save.
 			WLOutputSetting outputSetting = command.toDomain(companyCode);
+			outputSetting.validate();
 			this.repository.create(outputSetting);
 			return;
 		}
@@ -55,6 +56,7 @@ public class OutputSettingSaveCommandHandler extends CommandHandler<OutputSettin
 			throw new IllegalStateException("Output Setting is not found");
 		}
 		outputSetting = command.toDomain(companyCode);
+		outputSetting.validate();
 		this.repository.update(outputSetting);
 	}
 

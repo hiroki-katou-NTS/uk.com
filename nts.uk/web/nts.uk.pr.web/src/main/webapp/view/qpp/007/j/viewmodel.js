@@ -12,13 +12,14 @@ var nts;
                     (function (j) {
                         var viewmodel;
                         (function (viewmodel) {
+                            var SalaryCategory = nts.uk.pr.view.qpp007.c.viewmodel.SalaryCategory;
                             var ScreenModel = (function () {
                                 function ScreenModel() {
                                     var self = this;
                                     self.name = ko.observable('');
                                     self.tabs1 = ko.observableArray([
-                                        { id: '1', title: '支給集計', content: '#1', enable: ko.observable(true), visible: ko.observable(true) },
-                                        { id: '2', title: '控除集計', content: '#2', enable: ko.observable(true), visible: ko.observable(true) },
+                                        { id: SalaryCategory.PAYMENT_TOTAL, title: '支給集計', content: '#1', enable: ko.observable(true), visible: ko.observable(true) },
+                                        { id: SalaryCategory.DEDUCTION_TABULATION, title: '控除集計', content: '#2', enable: ko.observable(true), visible: ko.observable(true) },
                                     ]);
                                     self.tabs2 = ko.observableArray([
                                         { id: 'tab-1', title: '集計項目1', content: '#tab-content-1', enable: ko.observable(true), visible: ko.observable(true) },
@@ -26,7 +27,7 @@ var nts;
                                         { id: 'tab-3', title: '集計項目3', content: '#tab-content-3', enable: ko.observable(true), visible: ko.observable(true) },
                                         { id: 'tab-4', title: '集計項目4', content: '#tab-content-4', enable: ko.observable(true), visible: ko.observable(true) },
                                     ]);
-                                    self.selectedTab1 = ko.observable('1');
+                                    self.selectedTab1 = ko.observable(SalaryCategory.PAYMENT_TOTAL);
                                     self.selectedTab2 = ko.observable('tab-1');
                                     this.itemsSwap = ko.observableArray([]);
                                     var array = [];

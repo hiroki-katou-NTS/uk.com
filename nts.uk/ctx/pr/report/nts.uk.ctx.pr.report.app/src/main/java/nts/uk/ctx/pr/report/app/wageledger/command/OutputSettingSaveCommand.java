@@ -86,15 +86,6 @@ public class OutputSettingSaveCommand {
 		
 		/* (non-Javadoc)
 		 * @see nts.uk.ctx.pr.report.dom.wageledger.outputsetting.WLOutputSettingGetMemento
-		 * #getVersion()
-		 */
-		@Override
-		public long getVersion() {
-			return 0;
-		}
-		
-		/* (non-Javadoc)
-		 * @see nts.uk.ctx.pr.report.dom.wageledger.outputsetting.WLOutputSettingGetMemento
 		 * #getOnceSheetPerPerson()
 		 */
 		@Override

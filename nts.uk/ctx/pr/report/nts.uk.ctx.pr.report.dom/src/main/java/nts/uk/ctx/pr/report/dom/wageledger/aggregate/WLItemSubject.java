@@ -5,6 +5,7 @@
 package nts.uk.ctx.pr.report.dom.wageledger.aggregate;
 
 import lombok.Getter;
+import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.pr.report.dom.company.CompanyCode;
 import nts.uk.ctx.pr.report.dom.wageledger.PaymentType;
 import nts.uk.ctx.pr.report.dom.wageledger.WLCategory;
@@ -13,7 +14,7 @@ import nts.uk.ctx.pr.report.dom.wageledger.WLCategory;
  * The Class WLAggregateItemSubject.
  */
 @Getter
-public class WLItemSubject {
+public class WLItemSubject extends DomainObject{
 	
 	/** The category. */
 	private WLCategory category;
