@@ -66,6 +66,7 @@ var nts;
                                     self.isLoading = ko.observable(true);
                                     self.currentOfficeCode = ko.observable('');
                                     self.japanYear = ko.observable('');
+                                    self.sendOfficeData = ko.observable('');
                                     self.pensionModel().fundInputApply.subscribe(function () {
                                         if (self.pensionModel().fundInputApply() != 1) {
                                             self.fundInputEnable(true);
@@ -278,6 +279,7 @@ var nts;
                                             if (parentItem.historyList) {
                                                 parentItem.historyList.forEach(function (childItem) {
                                                     if (childItem.uuid == childId) {
+                                                        self.sendOfficeData(parentItem.name);
                                                         returnValue = parentItem.code;
                                                     }
                                                 });
@@ -298,7 +300,7 @@ var nts;
                                     });
                                 };
                                 ScreenModel.prototype.OpenModalStandardMonthlyPricePension = function () {
-                                    nts.uk.ui.windows.setShared("dataOfSelectedOffice", this.getDataOfPensionSelectedOffice());
+                                    nts.uk.ui.windows.setShared("officeName", this.sendOfficeData());
                                     nts.uk.ui.windows.setShared("pensionModel", this.pensionModel());
                                     nts.uk.ui.windows.setShared("isTransistReturnData", this.isTransistReturnData());
                                     nts.uk.ui.windows.sub.modal("/view/qmm/008/i/index.xhtml", { title: "会社保険事業所の登録＞標準報酬月額保険料額表" }).onClosed(function () {

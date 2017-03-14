@@ -10,9 +10,15 @@ import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.Address;
+import nts.uk.ctx.pr.core.dom.insurance.CitySign;
 import nts.uk.ctx.pr.core.dom.insurance.KanaAddress;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
+import nts.uk.ctx.pr.core.dom.insurance.OfficeMark;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeName;
+import nts.uk.ctx.pr.core.dom.insurance.OfficeNoA;
+import nts.uk.ctx.pr.core.dom.insurance.OfficeNoB;
+import nts.uk.ctx.pr.core.dom.insurance.OfficeNoC;
+import nts.uk.ctx.pr.core.dom.insurance.PhoneNumber;
 import nts.uk.ctx.pr.core.dom.insurance.PicName;
 import nts.uk.ctx.pr.core.dom.insurance.PicPosition;
 import nts.uk.ctx.pr.core.dom.insurance.PotalCode;
@@ -63,22 +69,22 @@ public class LaborInsuranceOffice extends DomainObject {
 
 	/** The phone number. */
 	// TODO: TelephoneNo
-	private String phoneNumber;
+	private PhoneNumber phoneNumber;
 
 	/** The city sign. */
-	private String citySign;
+	private CitySign citySign;
 
 	/** The office mark. */
-	private String officeMark;
+	private OfficeMark officeMark;
 
 	/** The office no A. */
-	private String officeNoA;
+	private OfficeNoA officeNoA;
 
 	/** The office no B. */
-	private String officeNoB;
+	private OfficeNoB officeNoB;
 
 	/** The office no C. */
-	private String officeNoC;
+	private OfficeNoC officeNoC;
 
 	/** The memo. */
 	private Memo memo;

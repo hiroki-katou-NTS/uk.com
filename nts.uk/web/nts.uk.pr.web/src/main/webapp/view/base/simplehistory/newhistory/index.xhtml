@@ -8,8 +8,10 @@
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
 			<com:stylefile path="newhistory.css" />
+			<com:scriptfile path="../dialogbase/base.js" />
 			<com:scriptfile path="viewmodel.js" />
 			<com:scriptfile path="start.js" />
+			
 			<script type="text/javascript">
 				var dialogSize = {
 					width : 580,
@@ -23,11 +25,7 @@
 			<div id="this-contents-area">
 				<label>新たに作成する履歴の、作成情報を入力してください。</label>
 				<table class="form-default">
-					<tr data-bind="with: dialogOptions">
-						<td><div data-bind="ntsFormLabel: {}">コード/名称</div></td>
-						<td><label data-bind="text: master.code + ' ' + master.name"/></td>
-					</tr>
-
+					<ui:include src="../dialogbase/namepart.xhtml"/>
 					<tr>
 						<td><div data-bind="ntsFormLabel: { required: true }">期間</div></td>
 						<td>

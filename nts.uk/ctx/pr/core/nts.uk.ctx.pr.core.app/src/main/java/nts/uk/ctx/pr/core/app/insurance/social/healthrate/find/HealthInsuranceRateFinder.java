@@ -63,7 +63,7 @@ public class HealthInsuranceRateFinder {
 		List<SocialInsuranceOffice> listOffice = socialInsuranceOfficeRepository
 				.findAll(companyCode);
 
-		List<HealthInsuranceRate> listHealth = healthInsuranceRateRepository.findAll(companyCode);
+		List<HealthInsuranceRate> listHealth = healthInsuranceRateRepository.findAll(companyCode.v());
 
 		// group health same office code
 		Map<OfficeCode, List<HealthInsuranceHistoryItemDto>> historyMap = listHealth.stream()

@@ -14,11 +14,11 @@ var nts;
                         (function (viewmodel) {
                             var commonService = nts.uk.pr.view.qmm008._0.common.service;
                             var ScreenModel = (function () {
-                                function ScreenModel(dataOfSelectedOffice, pensionModel) {
+                                function ScreenModel(officeName, pensionModel) {
                                     var self = this;
                                     self.listAvgEarnLevelMasterSetting = [];
                                     self.listPensionAvgearnModel = ko.observableArray([]);
-                                    self.pensionRateModel = new PensionRateModel(pensionModel.historyId, dataOfSelectedOffice.code, dataOfSelectedOffice.name, pensionModel.startMonth(), pensionModel.endMonth(), pensionModel.fundRateItems(), pensionModel.childContributionRate());
+                                    self.pensionRateModel = new PensionRateModel(pensionModel.historyId, pensionModel.officeCode(), officeName, pensionModel.startMonth(), pensionModel.endMonth(), pensionModel.fundRateItems(), pensionModel.childContributionRate());
                                     self.leftShow = ko.observable(true);
                                     self.rightShow = ko.observable(true);
                                     self.leftBtnText = ko.computed(function () { if (self.leftShow())

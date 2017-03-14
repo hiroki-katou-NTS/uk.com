@@ -51,10 +51,13 @@
 							data-bind="ntsGridList: {
 							height: 350,
 							width: 240,
-							dataSource: items,
+							dataSource: outputSettings,
 							primaryKey: 'code',
-							columns: columns,
-							value: currentCode
+							columns: ko.observableArray([
+			                    { headerText: 'コード', key: 'code', width: 50 },
+			                    { headerText: '名称', key: 'name', width: 50 }
+			                ]),
+							value: outputSettingSelectedCode
 						}"
 							class="cf"></table>
 					</div>
@@ -107,7 +110,7 @@
 							width: 300,
 							dataSource: reportItems,
 							primaryKey: 'code',
-							columns: columns,
+							columns: reportItemColumns,
 							value: reportItemSelected
 						}"
 							class="cf"></table>
@@ -122,10 +125,10 @@
 							<table>
 							    <tr>
 							        <td>
-							            <div data-bind="ntsFormLabel: {required: false}">コード/名称コード/名称</div>
+							            <div data-bind="ntsFormLabel: {required: false}">表に追加できる支給項目</div>
 							            <hr />
 							            <table id="master-items" data-bind="ntsGridList: {
- 															width: 240,
+ 															width: 250,
  															height: 180,
  															options: masterItems,
  															optionsValue: 'code',
@@ -142,19 +145,18 @@
 							        </td>
 							        <td rowspan="2" style="vertical-align: top">
 							            <div class="margin-left-10">
-							                <div data-bind="ntsFormLabel: {required: false}">コード/名称コード/名称</div>
+							                <div data-bind="ntsFormLabel: {required: false}">表に追加した項目</div>
 							                <hr />
 							                <div class="panel-content-table-right">
 							                    <div style="display: inline-block;">
 							                        <table id="grid-test" data-bind="ntsGridList: {
 																	height: 450,
-																	width: 240,
+																	width: 280,
 																	options: outputItems,
 																	optionsValue: 'code',
 																	columns: outputItemColumns,
 	 																value: outputItemSelected,
-																	deleteOptions : {visible : true, deleteField: 'removable'},
-																}, rended: currentCode"></table>
+																}, rended: outputItemSelected"></table>
 							                    </div>
 							                    <div id="up-down" data-bind="ntsUpDown: {
 																	targetSource: outputItems,
@@ -168,10 +170,10 @@
 							    </tr>
 							    <tr>
 							        <td>
-							            <div style="margin-top: 40px" data-bind="ntsFormLabel: {required: false}">コード/名称コード/名称</div>
+							            <div style="margin-top: 40px" data-bind="ntsFormLabel: {required: false}">表に追加できる集約項目</div>
 							            <hr />
 							           <table id="aggregate-items" data-bind="ntsGridList: {
- 															width: 240,
+ 															width: 250,
  															height: 180,
  															options: aggregateItems,
  															optionsValue: 'code',

@@ -6,6 +6,7 @@ module nts.uk.pr.view.qmm011.a {
             findUnemployeeInsuranceRateHistory: "pr/insurance/labor/unemployeerate/history/find",
             detailUnemployeeInsuranceRateHistory: "pr/insurance/labor/unemployeerate/detail",
             addUnemployeeInsuranceRate: "pr/insurance/labor/unemployeerate/add",
+            copyUnemployeeInsuranceRate: "pr/insurance/labor/unemployeerate/copy",
             updateUnemployeeInsuranceRate: "pr/insurance/labor/unemployeerate/update",
             findAllAccidentInsuranceRateHistory: "pr/insurance/labor/accidentrate/history/findall",
             findAccidentInsuranceRateHistory: "pr/insurance/labor/accidentrate/history/find",
@@ -111,6 +112,11 @@ module nts.uk.pr.view.qmm011.a {
                 })
             return dfd.promise();
 
+        }
+
+        //Function connection service copy 
+        export function copyUnemployeeInsuranceRate(unemployeeInsuranceRateCopyDto: model.UnemployeeInsuranceRateCopyDto): JQueryPromise<void> {
+            return nts.uk.request.ajax(paths.copyUnemployeeInsuranceRate, unemployeeInsuranceRateCopyDto);
         }
 
         //Function connection service add Accident Insurance Rate
@@ -407,6 +413,23 @@ module nts.uk.pr.view.qmm011.a {
                     this.careerGroup = careerGroup;
                     this.companySetting = companySetting;
                     this.personalSetting = personalSetting;
+                }
+            }
+
+            export class UnemployeeInsuranceRateCopyDto {
+                /** The history id copy. */
+                historyIdCopy: string;
+
+                /** The start month. */
+                startMonth: number;
+
+                /** The add new. */
+                addNew: boolean;
+
+                constructor() {
+                    this.historyIdCopy = '';
+                    this.startMonth = 0;
+                    this.addNew = false;
                 }
             }
 

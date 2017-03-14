@@ -9,6 +9,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import lombok.Getter;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.DomainObject;
 import nts.arc.primitive.PrimitiveValue;
 import nts.arc.time.YearMonth;
@@ -126,6 +127,11 @@ public class HealthInsuranceRate extends DomainObject implements History<HealthI
 
 	@Override
 	public HealthInsuranceRate copyWithDate(YearMonth start) {
+		//check if duplicate start date 
+		if(this.applyRange.getStartMonth().equals(start))
+		{
+			throw new BusinessException("ER011");
+		}
 		HealthInsuranceRate HealthInsuranceRate = new HealthInsuranceRate();
 		HealthInsuranceRate.applyRange = MonthRange.toMaxDate(start);;
 		HealthInsuranceRate.autoCalculate = this.autoCalculate;

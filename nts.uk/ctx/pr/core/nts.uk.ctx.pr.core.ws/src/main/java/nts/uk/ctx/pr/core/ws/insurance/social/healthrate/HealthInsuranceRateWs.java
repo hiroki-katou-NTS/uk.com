@@ -94,7 +94,7 @@ public class HealthInsuranceRateWs extends SimpleHistoryWs<SocialInsuranceOffice
 
 		// Get list of unit price history.
 		List<HealthInsuranceRate> healthInsuranceRates = this.healthInsuranceRateRepository
-				.findAll(new CompanyCode(AppContexts.user().companyCode()));
+				.findAll(AppContexts.user().companyCode());
 
 		// Group histories by unit code.
 		Map<OfficeCode, List<HistoryModel>> historyMap = healthInsuranceRates.stream()

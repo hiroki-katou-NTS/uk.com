@@ -36,7 +36,7 @@ module nts.uk.pr.view.qmm008.a1 {
             // Flags
             isLoading: KnockoutObservable<boolean>;
             currentOfficeCode : KnockoutObservable<string>;
-            sendOfficeData :KnockoutObservable<any>;
+            sendOfficeData :KnockoutObservable<string>;
             
             japanYear: KnockoutObservable<string>;
             constructor() {
@@ -82,7 +82,7 @@ module nts.uk.pr.view.qmm008.a1 {
                 // Health CurrencyEditor
                 self.isLoading = ko.observable(true);
                 self.currentOfficeCode = ko.observable('');
-                self.sendOfficeData = ko.observable(null);
+                self.sendOfficeData = ko.observable('');
                 self.japanYear = ko.observable('');
             } //end constructor
 
@@ -283,10 +283,10 @@ module nts.uk.pr.view.qmm008.a1 {
                 var returnValue :string;
                 if (self.masterHistoryList.length > 0) {
                     self.masterHistoryList.forEach(function(parentItem) {
-                        self.sendOfficeData(parentItem);
                         if (parentItem.historyList) {
                             parentItem.historyList.forEach(function(childItem) {
                                 if (childItem.uuid == childId) {
+                                    self.sendOfficeData(parentItem.name);
                                     returnValue = parentItem.code;
                                 }
                             });
@@ -322,7 +322,7 @@ module nts.uk.pr.view.qmm008.a1 {
             //open modal standard monthly price health
             public OpenModalStandardMonthlyPriceHealth() {
                 // Set parent value
-                nts.uk.ui.windows.setShared("dataOfSelectedOffice", this.sendOfficeData());
+                nts.uk.ui.windows.setShared("officeName", this.sendOfficeData());
                 nts.uk.ui.windows.setShared("healthModel", this.healthModel());
 
                 nts.uk.ui.windows.setShared("isTransistReturnData", this.isTransistReturnData());

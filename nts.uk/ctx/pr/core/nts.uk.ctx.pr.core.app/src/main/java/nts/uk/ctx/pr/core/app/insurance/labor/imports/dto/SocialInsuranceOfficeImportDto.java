@@ -7,9 +7,15 @@ package nts.uk.ctx.pr.core.app.insurance.labor.imports.dto;
 import lombok.Data;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.Address;
+import nts.uk.ctx.pr.core.dom.insurance.CitySign;
 import nts.uk.ctx.pr.core.dom.insurance.KanaAddress;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
+import nts.uk.ctx.pr.core.dom.insurance.OfficeMark;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeName;
+import nts.uk.ctx.pr.core.dom.insurance.OfficeNoA;
+import nts.uk.ctx.pr.core.dom.insurance.OfficeNoB;
+import nts.uk.ctx.pr.core.dom.insurance.OfficeNoC;
+import nts.uk.ctx.pr.core.dom.insurance.PhoneNumber;
 import nts.uk.ctx.pr.core.dom.insurance.PicName;
 import nts.uk.ctx.pr.core.dom.insurance.PicPosition;
 import nts.uk.ctx.pr.core.dom.insurance.PotalCode;
@@ -136,30 +142,30 @@ public class SocialInsuranceOfficeImportDto {
 			}
 
 			@Override
-			public String getPhoneNumber() {
-				return dto.phoneNumber;
+			public PhoneNumber getPhoneNumber() {
+				return new PhoneNumber(dto.phoneNumber);
 			}
 
 			@Override
-			public String getOfficeNoC() {
+			public OfficeNoC getOfficeNoC() {
 				return null;
 				//return dto.healthInsuCityCode;
 			}
 
 			@Override
-			public String getOfficeNoB() {
+			public OfficeNoB getOfficeNoB() {
 				return null;
 				//return dto.healthInsuOfficeRefCode2nd;
 			}
 
 			@Override
-			public String getOfficeNoA() {
+			public OfficeNoA getOfficeNoA() {
 				return null;
 				//return dto.healthInsuOfficeRefCode1st;
 			}
 
 			@Override
-			public String getOfficeMark() {
+			public OfficeMark getOfficeMark() {
 				return null;
 				//return dto.healthInsuAssoCode;
 			}
@@ -195,8 +201,8 @@ public class SocialInsuranceOfficeImportDto {
 			}
 
 			@Override
-			public String getCitySign() {
-				return dto.healthInsuCityCode;
+			public CitySign getCitySign() {
+				return new CitySign(dto.healthInsuCityCode);
 			}
 
 			@Override

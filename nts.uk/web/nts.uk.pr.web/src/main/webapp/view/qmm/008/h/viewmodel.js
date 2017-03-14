@@ -14,9 +14,9 @@ var nts;
                         (function (viewmodel) {
                             var commonService = nts.uk.pr.view.qmm008._0.common.service;
                             var ScreenModel = (function () {
-                                function ScreenModel(dataOfSelectedOffice, healthModel) {
+                                function ScreenModel(officeName, healthModel) {
                                     var self = this;
-                                    self.healthInsuranceRateModel = new HealthInsuranceRateModel(dataOfSelectedOffice.code, dataOfSelectedOffice.name, healthModel.historyId, healthModel.startMonth(), healthModel.endMonth(), healthModel.rateItems());
+                                    self.healthInsuranceRateModel = new HealthInsuranceRateModel(healthModel.officeCode(), officeName, healthModel.historyId, healthModel.startMonth(), healthModel.endMonth(), healthModel.rateItems());
                                     self.listAvgEarnLevelMasterSetting = [];
                                     self.listHealthInsuranceAvgearn = ko.observableArray([]);
                                     self.numberEditorCommonOption = ko.mapping.fromJS(new nts.uk.ui.option.NumberEditorOption({
@@ -79,7 +79,7 @@ var nts;
                                     var historyId = self.healthInsuranceRateModel.historyId;
                                     var rateItems = self.healthInsuranceRateModel.rateItems;
                                     var rate = levelMasterSetting.avgEarn / 1000;
-                                    return new HealthInsuranceAvgEarnModel(historyId, levelMasterSetting.code, new HealthInsuranceAvgEarnValueModel(rateItems.healthSalaryCompanyGeneral() * rate, rateItems.healthSalaryCompanyNursing() * rate, rateItems.healthSalaryCompanyBasic() * rate, rateItems.healthSalaryCompanySpecific() * rate), new HealthInsuranceAvgEarnValueModel(rateItems.healthSalaryPersonalGeneral() * rate, rateItems.healthSalaryPersonalNursing() * rate, rateItems.healthSalaryPersonalBasic() * rate, rateItems.healthSalaryPersonalSpecific() * rate));
+                                    return new HealthInsuranceAvgEarnModel(historyId, levelMasterSetting.code, new HealthInsuranceAvgEarnValueModel(rateItems.healthSalaryPersonalGeneral() * rate, rateItems.healthSalaryPersonalNursing() * rate, rateItems.healthSalaryPersonalBasic() * rate, rateItems.healthSalaryPersonalSpecific() * rate), new HealthInsuranceAvgEarnValueModel(rateItems.healthSalaryCompanyGeneral() * rate, rateItems.healthSalaryCompanyNursing() * rate, rateItems.healthSalaryCompanyBasic() * rate, rateItems.healthSalaryCompanySpecific() * rate));
                                 };
                                 ScreenModel.prototype.closeDialog = function () {
                                     nts.uk.ui.windows.close();

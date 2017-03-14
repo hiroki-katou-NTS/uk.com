@@ -18,6 +18,7 @@ var nts;
                                     function ScreenModel() {
                                         var self = this;
                                         self.dialogOptions = nts.uk.ui.windows.getShared('options');
+                                        self.dialogOptions.screenMode = self.dialogOptions.screenMode || simplehistory.dialogbase.ScreenMode.MODE_MASTER_HISTORY;
                                         self.createType = ko.observable(ScreenModel.CREATE_TYPE_COPY_LATEST);
                                         self.startYearMonth = ko.observable(self.dialogOptions.lastest.start);
                                         self.lastYearMonth = nts.uk.time.formatYearMonth(self.dialogOptions.lastest.start);

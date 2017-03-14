@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.service.internal;
 
+import java.util.List;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -75,6 +77,12 @@ public class PensionRateServiceImpl extends PensionRateService {
 
 	@Override
 	public PensionRate createInitalHistory(String companyCode, String officeCode, YearMonth startTime) {
+		List<PensionRate> listPensionOfOffice = this.pensionRateRepo.findAllOffice(companyCode,officeCode);
+		PensionRate obj = listPensionOfOffice.stream().filter(c -> c.getStart().equals(startTime)).findFirst()
+				.get();
+		if (obj != null) {
+			throw new BusinessException("ER011");
+		}
 		return PensionRate.createWithIntial(new CompanyCode(companyCode), new OfficeCode(officeCode),
 				startTime);
 	}

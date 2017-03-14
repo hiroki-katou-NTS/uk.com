@@ -14,6 +14,7 @@
 				nts.uk.ctx.pr.core.dom.insurance.Ins2Rate
 				nts.uk.ctx.pr.core.dom.insurance.OfficeCode
 				nts.uk.ctx.pr.core.dom.insurance.OfficeName
+				nts.uk.ctx.pr.core.dom.insurance.CommonAmount
   			</com:ValidatorScript>
 
 			<com:scriptfile path="service.js" />
@@ -66,7 +67,7 @@
 							optionsValue: 'code',
 							optionsText: 'name',
 							value: fundInputApply,
-							enable:true }"></div></td>
+							enable:$parent.isClickHistory() }"></div></td>
 						</tr>
 						<tr>
 							<td class="border_none"><div
@@ -380,7 +381,7 @@
 							<input
 								data-bind="ntsNumberEditor: {
 									value: maxAmount, 
-									constraint: '', 
+									constraint: 'CommonAmount', 
 									option: $parent.moneyInputOptions, 
 									required: true, 
 									enable: true, 
@@ -388,7 +389,7 @@
 						</div>
 					</div>
 					<br />
-					<div class="pad_top_10">子ども。子育て</div>
+					<div class="pad_top_10">子ども。子育て拠出金</div>
 					<div class="hr_width">
 						<hr />
 					</div>
@@ -398,7 +399,7 @@
 							<input
 								data-bind="ntsNumberEditor: {
 									value: childContributionRate, 
-									constraint: '', 
+									constraint: 'Ins2Rate', 
 									option: $parent.Rate2, 
 									required: true, 
 									enable: true, 

@@ -42,6 +42,7 @@ module nts.uk.pr.view.qmm008.a2 {
             isLoading: KnockoutObservable<boolean>;
             currentOfficeCode : KnockoutObservable<string>;
             japanYear: KnockoutObservable<string>;
+            sendOfficeData :KnockoutObservable<string>;
             constructor() {
                 super({
                     functionName: '社会保険事業所',
@@ -103,6 +104,7 @@ module nts.uk.pr.view.qmm008.a2 {
                 self.isLoading = ko.observable(true);
                 self.currentOfficeCode = ko.observable('');
                 self.japanYear = ko.observable('');
+                self.sendOfficeData = ko.observable('');
                 self.pensionModel().fundInputApply.subscribe(function() {
                     //change select -> hide fund input table
                     if (self.pensionModel().fundInputApply() != 1) {
@@ -359,6 +361,7 @@ module nts.uk.pr.view.qmm008.a2 {
                         if (parentItem.historyList) {
                             parentItem.historyList.forEach(function(childItem) {
                                 if (childItem.uuid == childId) {
+                                    self.sendOfficeData(parentItem.name);
                                     returnValue = parentItem.code;
                                 }
                             });
@@ -386,7 +389,7 @@ module nts.uk.pr.view.qmm008.a2 {
             //open modal standard monthly price pension 
             public OpenModalStandardMonthlyPricePension() {
                 // Set parent value
-                nts.uk.ui.windows.setShared("dataOfSelectedOffice", this.getDataOfPensionSelectedOffice());
+                nts.uk.ui.windows.setShared("officeName", this.sendOfficeData());
                 nts.uk.ui.windows.setShared("pensionModel", this.pensionModel());
 
                 nts.uk.ui.windows.setShared("isTransistReturnData", this.isTransistReturnData());

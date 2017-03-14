@@ -14,6 +14,7 @@
 				nts.uk.ctx.pr.core.dom.insurance.Ins2Rate
 				nts.uk.ctx.pr.core.dom.insurance.OfficeCode
 				nts.uk.ctx.pr.core.dom.insurance.OfficeName
+				nts.uk.ctx.pr.core.dom.insurance.CommonAmount
   			</com:ValidatorScript>
 
 			<com:scriptfile path="service.js" />
@@ -249,7 +250,7 @@
 					<input class = "save-error"
 						data-bind="ntsNumberEditor: {
 							value: maxAmount, 
-							constraint: '', 
+							constraint: 'CommonAmount', 
 							option: $parent.moneyInputOptions, 
 							required: true, 
 							enable: $parent.isClickHistory(), 
