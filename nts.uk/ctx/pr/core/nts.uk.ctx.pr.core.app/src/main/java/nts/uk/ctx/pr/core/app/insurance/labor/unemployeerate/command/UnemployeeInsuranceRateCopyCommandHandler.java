@@ -56,6 +56,7 @@ public class UnemployeeInsuranceRateCopyCommandHandler extends CommandHandler<Un
 			unemployeeInsuranceRate = UnemployeeInsuranceRate.createWithIntial(companyCode,
 					YearMonth.of(command.getStartMonth()));
 		} else {
+			// add new with start historyId
 			Optional<UnemployeeInsuranceRate> optionalFindAdd = this.unemployeeInsuranceRateRepository
 					.findById(companyCode, command.getHistoryIdCopy());
 			if (optionalFindAdd.isPresent()) {
@@ -67,6 +68,9 @@ public class UnemployeeInsuranceRateCopyCommandHandler extends CommandHandler<Un
 			}
 		}
 		// validate
+
+		unemployeeInsuranceRate.setMaxDate();
+		
 		unemployeeInsuranceRate.validate();
 		unemployeeInsuranceRateService.validateDateRange(unemployeeInsuranceRate);
 

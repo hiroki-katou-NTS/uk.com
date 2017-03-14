@@ -28,6 +28,7 @@ var nts;
                                 findAccidentInsuranceRateHistory: "pr/insurance/labor/accidentrate/history/find",
                                 findAccidentInsuranceRate: "pr/insurance/labor/accidentrate/find",
                                 addAccidentInsuranceRate: "pr/insurance/labor/accidentrate/add",
+                                copyAccidentInsuranceRate: "pr/insurance/labor/accidentrate/copy",
                                 updateAccidentInsuranceRate: "pr/insurance/labor/accidentrate/update",
                                 findAllInsuranceBusinessType: "pr/insurance/labor/businesstype/findall"
                             };
@@ -117,10 +118,10 @@ var nts;
                                 return dfd.promise();
                             }
                             service.detailUnemployeeInsuranceRateHistory = detailUnemployeeInsuranceRateHistory;
-                            function copyUnemployeeInsuranceRate(unemployeeInsuranceRateCopyDto) {
-                                return nts.uk.request.ajax(paths.copyUnemployeeInsuranceRate, unemployeeInsuranceRateCopyDto);
+                            function copyAccidentInsuranceRate(accidentInsuranceRateCopyDto) {
+                                return nts.uk.request.ajax(paths.copyAccidentInsuranceRate, accidentInsuranceRateCopyDto);
                             }
-                            service.copyUnemployeeInsuranceRate = copyUnemployeeInsuranceRate;
+                            service.copyAccidentInsuranceRate = copyAccidentInsuranceRate;
                             function addAccidentInsuranceRate(accidentInsuranceRateModel) {
                                 var dfd = $.Deferred();
                                 var data = {
@@ -136,6 +137,10 @@ var nts;
                                 return dfd.promise();
                             }
                             service.addAccidentInsuranceRate = addAccidentInsuranceRate;
+                            function copyUnemployeeInsuranceRate(unemployeeInsuranceRateCopyDto) {
+                                return nts.uk.request.ajax(paths.copyUnemployeeInsuranceRate, unemployeeInsuranceRateCopyDto);
+                            }
+                            service.copyUnemployeeInsuranceRate = copyUnemployeeInsuranceRate;
                             function updateAccidentInsuranceRate(accidentInsuranceRateModel) {
                                 var dfd = $.Deferred();
                                 var data = {
@@ -357,6 +362,15 @@ var nts;
                                     return UnemployeeInsuranceRateCopyDto;
                                 }());
                                 model.UnemployeeInsuranceRateCopyDto = UnemployeeInsuranceRateCopyDto;
+                                var AccidentInsuranceRateCopyDto = (function () {
+                                    function AccidentInsuranceRateCopyDto() {
+                                        this.historyIdCopy = '';
+                                        this.startMonth = 0;
+                                        this.addNew = false;
+                                    }
+                                    return AccidentInsuranceRateCopyDto;
+                                }());
+                                model.AccidentInsuranceRateCopyDto = AccidentInsuranceRateCopyDto;
                                 var HistoryInsuranceDto = (function () {
                                     function HistoryInsuranceDto() {
                                         this.historyId = '';

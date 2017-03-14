@@ -16,9 +16,10 @@ var nts;
                         var CareerGroupDto = a.service.model.CareerGroupDto;
                         var BusinessTypeEnumDto = a.service.model.BusinessTypeEnumDto;
                         var TypeHistory = a.service.model.TypeHistory;
-                        var AccidentInsuranceHistoryDto = a.service.model.AccidentInsuranceHistoryDto;
-                        var TypeActionInsuranceRate = a.service.model.TypeActionInsuranceRate;
                         var UnemployeeInsuranceRateCopyDto = a.service.model.UnemployeeInsuranceRateCopyDto;
+                        var AccidentInsuranceHistoryDto = a.service.model.AccidentInsuranceHistoryDto;
+                        var AccidentInsuranceRateCopyDto = a.service.model.AccidentInsuranceRateCopyDto;
+                        var TypeActionInsuranceRate = a.service.model.TypeActionInsuranceRate;
                         var viewmodel;
                         (function (viewmodel) {
                             var ScreenModel = (function () {
@@ -101,6 +102,7 @@ var nts;
                                                 a.service.copyUnemployeeInsuranceRate(unemployeeInsuranceRateCopyDto).done(function (data) {
                                                     self.typeActionUnemployeeInsurance(TypeActionInsuranceRate.add);
                                                     self.reloadDataUnemployeeInsuranceRateByAction();
+                                                    self.clearErrorSaveUnemployeeInsurance();
                                                 }).fail(function (error) {
                                                     self.showMessageSaveUnemployeeInsurance(error.message);
                                                 });
@@ -168,19 +170,23 @@ var nts;
                                     nts.uk.ui.windows.sub.modal('/view/qmm/011/d/index.xhtml', { title: '労働保険料率の登録>履歴の追加', dialogClass: 'no-close' }).onClosed(function () {
                                         var addHistoryInfoModel = nts.uk.ui.windows.getShared("addHistoryInfoModel");
                                         if (addHistoryInfoModel != null && addHistoryInfoModel != undefined) {
-                                            var accidentInsuranceHistoryDto;
-                                            accidentInsuranceHistoryDto = new AccidentInsuranceHistoryDto();
+                                            var accidentInsuranceRateCopyDto;
+                                            accidentInsuranceRateCopyDto = new AccidentInsuranceRateCopyDto();
+                                            accidentInsuranceRateCopyDto.historyIdCopy = self.selectionAccidentInsuranceRateHistory();
+                                            accidentInsuranceRateCopyDto.startMonth = addHistoryInfoModel.starMonth;
                                             if (addHistoryInfoModel.typeModel == 2) {
-                                                self.resetValueAccidentInsuranceRate();
+                                                accidentInsuranceRateCopyDto.addNew = true;
                                             }
-                                            accidentInsuranceHistoryDto.historyId = '';
-                                            accidentInsuranceHistoryDto.startMonthRage = nts.uk.time.formatYearMonth(addHistoryInfoModel.starMonth);
-                                            accidentInsuranceHistoryDto.startMonth = addHistoryInfoModel.starMonth;
-                                            accidentInsuranceHistoryDto.endMonth = 999912;
-                                            accidentInsuranceHistoryDto.endMonthRage = '9999/12';
-                                            self.accidentInsuranceRateModel().setHistoryData(accidentInsuranceHistoryDto);
-                                            self.typeActionAccidentInsurance(TypeActionInsuranceRate.add);
-                                            self.isEnableSaveActionAccidentInsurance(true);
+                                            else {
+                                                accidentInsuranceRateCopyDto.addNew = false;
+                                            }
+                                            a.service.copyAccidentInsuranceRate(accidentInsuranceRateCopyDto).done(function (data) {
+                                                self.typeActionAccidentInsurance(TypeActionInsuranceRate.add);
+                                                self.reloadDataAccidentInsuranceRateByAction();
+                                                self.clearErrorSaveAccidentInsurance();
+                                            }).fail(function (error) {
+                                                self.showMessageSaveAccidentInsurance(error.message);
+                                            });
                                         }
                                     });
                                 };

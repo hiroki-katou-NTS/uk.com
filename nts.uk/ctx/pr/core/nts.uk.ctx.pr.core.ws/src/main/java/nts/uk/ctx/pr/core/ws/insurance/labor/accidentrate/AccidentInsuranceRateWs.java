@@ -13,6 +13,8 @@ import javax.ws.rs.Produces;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.pr.core.app.insurance.labor.accidentrate.command.AccidentInsuranceRateAddCommand;
 import nts.uk.ctx.pr.core.app.insurance.labor.accidentrate.command.AccidentInsuranceRateAddCommandHandler;
+import nts.uk.ctx.pr.core.app.insurance.labor.accidentrate.command.AccidentInsuranceRateCopyCommand;
+import nts.uk.ctx.pr.core.app.insurance.labor.accidentrate.command.AccidentInsuranceRateCopyCommandHandler;
 import nts.uk.ctx.pr.core.app.insurance.labor.accidentrate.command.AccidentInsuranceRateDeleteCommand;
 import nts.uk.ctx.pr.core.app.insurance.labor.accidentrate.command.AccidentInsuranceRateDeleteCommandHandler;
 import nts.uk.ctx.pr.core.app.insurance.labor.accidentrate.command.AccidentInsuranceRateUpdateCommand;
@@ -27,6 +29,10 @@ public class AccidentInsuranceRateWs extends WebService {
 	/** The add. */
 	@Inject
 	private AccidentInsuranceRateAddCommandHandler add;
+
+	/** The copy. */
+	@Inject
+	private AccidentInsuranceRateCopyCommandHandler copy;
 
 	/** The update. */
 	@Inject
@@ -43,7 +49,8 @@ public class AccidentInsuranceRateWs extends WebService {
 	/**
 	 * Find.
 	 *
-	 * @param historyId the history id
+	 * @param historyId
+	 *            the history id
 	 * @return the accident insurance rate find out dto
 	 */
 	@POST
@@ -51,11 +58,12 @@ public class AccidentInsuranceRateWs extends WebService {
 	public AccidentInsuranceRateFindOutDto find(@PathParam("historyId") String historyId) {
 		return this.find.find(historyId);
 	}
- 
+
 	/**
 	 * Adds the.
 	 *
-	 * @param command the command
+	 * @param command
+	 *            the command
 	 */
 	@POST
 	@Path("add")
@@ -64,9 +72,22 @@ public class AccidentInsuranceRateWs extends WebService {
 	}
 
 	/**
+	 * Adds the.
+	 *
+	 * @param command
+	 *            the command
+	 */
+	@POST
+	@Path("copy")
+	public void copy(AccidentInsuranceRateCopyCommand command) {
+		this.copy.handle(command);
+	}
+
+	/**
 	 * Update.
 	 *
-	 * @param command the command
+	 * @param command
+	 *            the command
 	 */
 	@POST
 	@Path("update")
@@ -77,7 +98,8 @@ public class AccidentInsuranceRateWs extends WebService {
 	/**
 	 * Delete.
 	 *
-	 * @param command the command
+	 * @param command
+	 *            the command
 	 */
 	@POST
 	@Path("delete")
