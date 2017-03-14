@@ -6,8 +6,8 @@ import javax.enterprise.context.RequestScoped;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.pr.core.dom.itemSalary.ItemSalary;
-import nts.uk.ctx.pr.core.dom.itemSalary.ItemSalaryRespository;
+import nts.uk.ctx.pr.core.dom.itemmaster.itemsalary.ItemSalary;
+import nts.uk.ctx.pr.core.dom.itemmaster.itemsalary.ItemSalaryRespository;
 import nts.uk.ctx.pr.core.infra.entity.itemmaster.QcamtItemSalary;
 
 

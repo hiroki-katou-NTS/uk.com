@@ -6,8 +6,8 @@ import javax.enterprise.context.RequestScoped;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.pr.core.dom.itemperiod.ItemPeriod;
-import nts.uk.ctx.pr.core.dom.itemperiod.ItemPeriodRepository;
+import nts.uk.ctx.pr.core.dom.itemmaster.itemperiod.ItemPeriod;
+import nts.uk.ctx.pr.core.dom.itemmaster.itemperiod.ItemPeriodRepository;
 import nts.uk.ctx.pr.core.infra.entity.itemmaster.QcamtItemPeriod;
 
 @RequestScoped
