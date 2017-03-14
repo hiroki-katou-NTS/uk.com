@@ -131,6 +131,9 @@ module qet001.b.viewmodel {
          */
         public save() {
             var self = this;
+            // clear error.
+            $('#code-input').ntsError('clear');
+            $('#name-input').ntsError('clear');
             // Validate.
             if (self.outputSettingDetail().settingCode() == '') {
                 $('#code-input').ntsError('set', '未入力エラー');

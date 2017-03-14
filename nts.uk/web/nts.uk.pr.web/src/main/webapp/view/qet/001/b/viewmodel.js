@@ -96,6 +96,8 @@ var qet001;
                 };
                 ScreenModel.prototype.save = function () {
                     var self = this;
+                    $('#code-input').ntsError('clear');
+                    $('#name-input').ntsError('clear');
                     if (self.outputSettingDetail().settingCode() == '') {
                         $('#code-input').ntsError('set', '未入力エラー');
                     }
