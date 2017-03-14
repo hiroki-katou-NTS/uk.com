@@ -8,17 +8,40 @@ var qmm023;
                 function ScreenModel() {
                     var self = this;
                     self._init();
-                    //get event when hover on table by subcribe
                     self.currentCode.subscribe(function (codeChanged) {
-                        if (!nts.uk.text.isNullOrEmpty(codeChanged)) {
-                            self.currentTax(ko.mapping.fromJS(self.getTax(codeChanged)));
-                            self.allowEditCode(false);
-                            self.isUpdate(true);
-                            self.isEnableDeleteBtn(true);
+                        if (nts.uk.text.isNullOrEmpty(codeChanged)) {
+                            if (self.isUpdate() === true) {
+                                self.refreshLayout();
+                            }
+                            return;
                         }
-                        else {
-                            self.refreshLayout();
+                        if ($('.nts-editor').ntsError("hasError")) {
+                            $('.save-error').ntsError('clear');
                         }
+                        var oldCode = ko.mapping.toJS(self.currentTax().code);
+                        if (ko.mapping.toJS(codeChanged) !== oldCode && self.currentTaxDirty.isDirty()) {
+                            self.flatDirty = false;
+                            nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\nよろしいですか。").ifYes(function () {
+                                self.flatDirty = true;
+                                self.currentTax(ko.mapping.fromJS(self.getTax(codeChanged)));
+                                self.allowEditCode(false);
+                                self.isUpdate(true);
+                                self.isEnableDeleteBtn(true);
+                                self.currentTaxDirty = new nts.uk.ui.DirtyChecker(self.currentTax);
+                            }).ifCancel(function () {
+                                self.flatDirty = false;
+                                self.currentCode(ko.mapping.toJS(self.currentTax().code));
+                            });
+                        }
+                        if (!self.flatDirty) {
+                            self.flatDirty = true;
+                            return;
+                        }
+                        self.currentTax(ko.mapping.fromJS(self.getTax(codeChanged)));
+                        self.allowEditCode(false);
+                        self.isUpdate(true);
+                        self.isEnableDeleteBtn(true);
+                        self.currentTaxDirty = new nts.uk.ui.DirtyChecker(self.currentTax);
                     });
                 }
                 ScreenModel.prototype._init = function () {
@@ -34,6 +57,7 @@ var qmm023;
                     self.isUpdate = ko.observable(true);
                     self.allowEditCode = ko.observable(false);
                     self.isEnableDeleteBtn = ko.observable(true);
+                    self.flatDirty = true;
                     if (self.items.length <= 0) {
                         self.allowEditCode = ko.observable(true);
                         self.isUpdate = ko.observable(false);
@@ -55,6 +79,21 @@ var qmm023;
                     self.currentCode(null);
                     self.isUpdate(false);
                     self.isEnableDeleteBtn(false);
+                    self.flatDirty = true;
+                    self.currentTaxDirty = new nts.uk.ui.DirtyChecker(self.currentTax);
+                };
+                ScreenModel.prototype.createButtonClick = function () {
+                    var self = this;
+                    if (self.currentTaxDirty.isDirty()) {
+                        nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\nよろしいですか。").ifYes(function () {
+                            self.refreshLayout();
+                        }).ifCancel(function () {
+                            return;
+                        });
+                    }
+                    else {
+                        self.refreshLayout();
+                    }
                 };
                 ScreenModel.prototype.insertUpdateData = function () {
                     var self = this;
@@ -85,8 +124,14 @@ var qmm023;
                         else if (error.message === '2') {
                             $('#INP_003').ntsError('set', nts.uk.text.format('{0}が入力されていません。', '名称'));
                         }
-                        else {
+                        else if (error.message === '3') {
                             $('#INP_002').ntsError('set', nts.uk.text.format('入力した{0}は既に存在しています。\r\n{1}を確認してください。', 'コード', 'コード'));
+                        }
+                        else if (error.message === '4') {
+                            $('#INP_002').ntsError('set', "対象データがありません。");
+                        }
+                        else {
+                            $('#INP_002').ntsError('set', error.message);
                         }
                     });
                 };
@@ -120,17 +165,19 @@ var qmm023;
                             }
                         });
                     }).fail(function (error) {
-                        alert(error.message);
+                        if (error.message === '1') {
+                            $('#INP_002').ntsError('set', "対象データがありません。");
+                        }
+                        else {
+                            $('#INP_002').ntsError('set', error.message);
+                        }
                     });
                 };
                 ScreenModel.prototype.alertDelete = function () {
                     var self = this;
-                    if (confirm("do you wanna delete") === true) {
+                    nts.uk.ui.dialog.confirm("データを削除します。\r\nよろしいですか？").ifYes(function () {
                         self.deleteData();
-                    }
-                    else {
-                        alert("you didn't delete!");
-                    }
+                    });
                 };
                 // startpage
                 ScreenModel.prototype.startPage = function () {

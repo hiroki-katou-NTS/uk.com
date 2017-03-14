@@ -39,7 +39,7 @@ public class UpdateCommuteNoTaxLimitCommandHandler extends CommandHandler<Update
 				ic.getCommuNoTaxLimitCode());
 			
 		if (!commuteNoTaxLimitUpdate.isPresent()) {
-			return;
+			throw new BusinessException("4");
 		}
 		commuteNoTaxLimitUpdate.get().setCommuNoTaxLimitName(new CommuNoTaxLimitName(ic.getCommuNoTaxLimitName()));
 		commuteNoTaxLimitUpdate.get()

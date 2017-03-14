@@ -8,20 +8,50 @@ module qmm023.a.viewmodel {
         isUpdate: KnockoutObservable<boolean>;
         allowEditCode: KnockoutObservable<boolean>;
         isEnableDeleteBtn: KnockoutObservable<boolean>;
+        currentTaxDirty: nts.uk.ui.DirtyChecker;
+        flatDirty: boolean;
         constructor() {
-            var self = this;
+            let self = this;
             self._init();
-            //get event when hover on table by subcribe
+
             self.currentCode.subscribe(function(codeChanged) {
-                if (!nts.uk.text.isNullOrEmpty(codeChanged)) {
-                    self.currentTax(ko.mapping.fromJS(self.getTax(codeChanged)));
-                    self.allowEditCode(false);
-                    self.isUpdate(true);
-                    self.isEnableDeleteBtn(true);
-                } else {
-                    self.refreshLayout();
+                if (nts.uk.text.isNullOrEmpty(codeChanged)) {
+                    if (self.isUpdate() === true) {
+                        self.refreshLayout();
+                    }
+                    return;
                 }
+                if ($('.nts-editor').ntsError("hasError")) {
+                    $('.save-error').ntsError('clear');
+                }
+                let oldCode = ko.mapping.toJS(self.currentTax().code);
+                if (ko.mapping.toJS(codeChanged) !== oldCode && self.currentTaxDirty.isDirty()) {
+                    self.flatDirty = false;
+                    nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\nよろしいですか。").ifYes(function() {
+                        self.flatDirty = true;
+                        self.currentTax(ko.mapping.fromJS(self.getTax(codeChanged)));
+                        self.allowEditCode(false);
+                        self.isUpdate(true);
+                        self.isEnableDeleteBtn(true);
+                        self.currentTaxDirty = new nts.uk.ui.DirtyChecker(self.currentTax);
+                    }).ifCancel(function() {
+                        self.flatDirty = false;
+                        self.currentCode(ko.mapping.toJS(self.currentTax().code));
+                    })
+                }
+                if (!self.flatDirty) {
+                    self.flatDirty = true;
+                    return;
+                }
+                self.currentTax(ko.mapping.fromJS(self.getTax(codeChanged)));
+                self.allowEditCode(false);
+                self.isUpdate(true);
+                self.isEnableDeleteBtn(true);
+                self.currentTaxDirty = new nts.uk.ui.DirtyChecker(self.currentTax);
+
             });
+
+
         }
 
         _init(): void {
@@ -37,12 +67,12 @@ module qmm023.a.viewmodel {
             self.isUpdate = ko.observable(true);
             self.allowEditCode = ko.observable(false);
             self.isEnableDeleteBtn = ko.observable(true);
+            self.flatDirty = true;
             if (self.items.length <= 0) {
                 self.allowEditCode = ko.observable(true);
                 self.isUpdate = ko.observable(false);
                 self.isEnableDeleteBtn = ko.observable(false);
             }
-
         }
 
         getTax(codeNew: string): TaxModel {
@@ -61,6 +91,21 @@ module qmm023.a.viewmodel {
             self.currentCode(null);
             self.isUpdate(false);
             self.isEnableDeleteBtn(false);
+            self.flatDirty = true;
+            self.currentTaxDirty = new nts.uk.ui.DirtyChecker(self.currentTax);
+        }
+
+        createButtonClick(): void {
+            let self = this;
+            if (self.currentTaxDirty.isDirty()) {
+                nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\nよろしいですか。").ifYes(function() {
+                    self.refreshLayout();
+                }).ifCancel(function() {
+                    return;
+                })
+            } else {
+                self.refreshLayout();
+            }
         }
 
         insertUpdateData(): void {
@@ -90,8 +135,12 @@ module qmm023.a.viewmodel {
                     $('#INP_002').ntsError('set', nts.uk.text.format('{0}が入力されていません。', 'コード'));
                 } else if (error.message === '2') {
                     $('#INP_003').ntsError('set', nts.uk.text.format('{0}が入力されていません。', '名称'));
-                } else {
+                } else if (error.message === '3') {
                     $('#INP_002').ntsError('set', nts.uk.text.format('入力した{0}は既に存在しています。\r\n{1}を確認してください。', 'コード', 'コード'));
+                } else if (error.message === '4') {
+                    $('#INP_002').ntsError('set', "対象データがありません。");
+                } else {
+                    $('#INP_002').ntsError('set', error.message);
                 }
             });
 
@@ -130,17 +179,20 @@ module qmm023.a.viewmodel {
                 });
 
             }).fail(function(error) {
-                alert(error.message);
+                if (error.message === '1') {
+                    $('#INP_002').ntsError('set', "対象データがありません。");
+                } else {
+                    $('#INP_002').ntsError('set', error.message);
+                }
             });
         }
 
         alertDelete() {
             let self = this;
-            if (confirm("do you wanna delete") === true) {
+            nts.uk.ui.dialog.confirm("データを削除します。\r\nよろしいですか？").ifYes(function() {
                 self.deleteData();
-            } else {
-                alert("you didn't delete!");
-            }
+            })
+
         }
 
         // startpage
