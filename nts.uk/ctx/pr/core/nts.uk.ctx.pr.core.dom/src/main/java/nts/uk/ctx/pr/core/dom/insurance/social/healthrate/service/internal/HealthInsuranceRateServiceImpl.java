@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.dom.insurance.social.healthrate.service.internal;
 
+import java.util.List;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
@@ -75,6 +77,12 @@ public class HealthInsuranceRateServiceImpl extends HealthInsuranceRateService {
 
 	@Override
 	public HealthInsuranceRate createInitalHistory(String companyCode, String officeCode, YearMonth startTime) {
+		List<HealthInsuranceRate> listHealthOfOffice = this.healthInsuranceRateRepo.findAllOffice(companyCode,officeCode);
+		HealthInsuranceRate obj = listHealthOfOffice.stream().filter(c -> c.getStart().equals(startTime)).findFirst()
+				.get();
+		if (obj != null) {
+			throw new BusinessException("ER011");
+		}
 		return HealthInsuranceRate.createWithIntial(new CompanyCode(companyCode), new OfficeCode(officeCode),
 				startTime);
 	}
