@@ -5,15 +5,17 @@ import java.math.BigDecimal;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.core.dom.company.CompanyCode;
-import nts.uk.ctx.pr.core.dom.itemmaster.ItemCode;
+import nts.uk.ctx.pr.core.dom.itemmaster.itemsalary.AlRangeHigh;
+import nts.uk.ctx.pr.core.dom.itemmaster.itemsalary.AlRangeLow;
+import nts.uk.ctx.pr.core.dom.itemmaster.itemsalary.ErrRangeHigh;
+import nts.uk.ctx.pr.core.dom.itemmaster.itemsalary.ErrRangeLow;
+import nts.uk.ctx.pr.core.dom.itemmaster.itemsalary.RangeAtr;
 import nts.uk.shr.com.primitive.Memo;
 
 @Getter
 public class ItemDeduct extends AggregateRoot {
 
-	private CompanyCode ccd;
-	private ItemCode itemCd;
+	
 	public DeductAtr deductAtr;
 	public RangeAtr errRangeLowAtr;
 	public ErrRangeLow errRangeLow;
@@ -25,12 +27,10 @@ public class ItemDeduct extends AggregateRoot {
 	public AlRangeHigh alRangeHigh;
 	public Memo memo;
 
-	public ItemDeduct(CompanyCode ccd, ItemCode itemCd, DeductAtr deductAtr, RangeAtr errRangeLowAtr,
+	public ItemDeduct( DeductAtr deductAtr, RangeAtr errRangeLowAtr,
 			ErrRangeLow errRangeLow, RangeAtr errRangeHighAtr, ErrRangeHigh errRangeHigh, RangeAtr alRangeLowAtr,
 			AlRangeLow alRangeLow, RangeAtr alRangeHighAtr, AlRangeHigh alRangeHigh, Memo memo) {
 		super();
-		this.ccd = ccd;
-		this.itemCd = itemCd;
 		this.deductAtr = deductAtr;
 		this.errRangeLowAtr = errRangeLowAtr;
 		this.errRangeLow = errRangeLow;
@@ -48,7 +48,7 @@ public class ItemDeduct extends AggregateRoot {
 			BigDecimal alRangeLow, int alRangeHighAtr, BigDecimal alRangeHigh, String memo
 
 	) {
-		return new ItemDeduct(new CompanyCode(ccd), new ItemCode(itemCd),
+		return new ItemDeduct(
 				EnumAdaptor.valueOf(deductAtr, DeductAtr.class), EnumAdaptor.valueOf(errRangeLowAtr, RangeAtr.class),
 				new ErrRangeLow(errRangeLow), EnumAdaptor.valueOf(errRangeHighAtr, RangeAtr.class),
 				new ErrRangeHigh(errRangeHigh), EnumAdaptor.valueOf(alRangeLowAtr, RangeAtr.class),
