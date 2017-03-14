@@ -1,14 +1,20 @@
 /******************************************************************
- * Copyright (c) 2015 Nittsu System to present.                   *
+ * Copyright (c) 2016 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.core.dom.insurance.labor;
 
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.Address;
+import nts.uk.ctx.pr.core.dom.insurance.CitySign;
 import nts.uk.ctx.pr.core.dom.insurance.KanaAddress;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
+import nts.uk.ctx.pr.core.dom.insurance.OfficeMark;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeName;
+import nts.uk.ctx.pr.core.dom.insurance.OfficeNoA;
+import nts.uk.ctx.pr.core.dom.insurance.OfficeNoB;
+import nts.uk.ctx.pr.core.dom.insurance.OfficeNoC;
+import nts.uk.ctx.pr.core.dom.insurance.PhoneNumber;
 import nts.uk.ctx.pr.core.dom.insurance.PicName;
 import nts.uk.ctx.pr.core.dom.insurance.PicPosition;
 import nts.uk.ctx.pr.core.dom.insurance.PotalCode;
@@ -113,42 +119,42 @@ public interface LaborInsuranceOfficeGetMemento {
 	 * @return the phone number
 	 */
 	// TODO: TelephoneNo
-	String getPhoneNumber();
+	PhoneNumber getPhoneNumber();
 
 	/**
 	 * Gets the city sign.
 	 *
 	 * @return the city sign
 	 */
-	String getCitySign();
+	CitySign getCitySign();
 
 	/**
 	 * Gets the office mark.
 	 *
 	 * @return the office mark
 	 */
-	String getOfficeMark();
+	OfficeMark getOfficeMark();
 
 	/**
 	 * Gets the office no A.
 	 *
 	 * @return the office no A
 	 */
-	String getOfficeNoA();
+	OfficeNoA getOfficeNoA();
 
 	/**
 	 * Gets the office no B.
 	 *
 	 * @return the office no B
 	 */
-	String getOfficeNoB();
+	OfficeNoB getOfficeNoB();
 
 	/**
 	 * Gets the office no C.
 	 *
 	 * @return the office no C
 	 */
-	String getOfficeNoC();
+	OfficeNoC getOfficeNoC();
 
 	/**
 	 * Gets the memo.
