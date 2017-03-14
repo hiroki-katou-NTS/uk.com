@@ -18,14 +18,35 @@ import nts.uk.ctx.pr.formula.infra.entity.formula.QcfmtFormulaHistoryPK;
 @Stateless
 public class JpaFormulaHistoryRepository extends JpaRepository implements FormulaHistoryRepository {
 
-	private final String FIND_ALL_BY_COMPANYCODE = "SELECT a FROM QcfmtFormulaHistory a "
-			+ " WHERE a.qcfmtFormulaHistoryPK.companyCode = :companyCode ";
-	
-	private final String FIND_ALL_DIFFERENT_FORMULACODE = "SELECT a FROM QcfmtFormulaHistory a "
-			+ " WHERE a.qcfmtFormulaHistoryPK.companyCode = :companyCode "
-			+ " AND a.startDate <= :baseDate "
-			+ " AND a.endDate >= :baseDate "
-			+ " AND a.qcfmtFormulaHistoryPK.formulaCode <> :formulaCode ";
+	private static final String FIND_ALL_BY_COMPANYCODE;
+
+	private static final String FIND_ALL_DIFFERENT_FORMULACODE;
+
+	private static final String IS_EXISTED_HISTORY;
+
+	static {
+		StringBuilder builderString = new StringBuilder();
+		builderString.append("SELECT COUNT(a) ");
+		builderString.append("FROM QcfmtFormulaHistory a ");
+		builderString.append("WHERE a.qcfmtFormulaHistoryPK.companyCode = :companyCode ");
+		IS_EXISTED_HISTORY = builderString.toString();
+
+		builderString = new StringBuilder();
+		builderString.append("SELECT a ");
+		builderString.append("FROM QcfmtFormulaHistory a ");
+		builderString.append("WHERE a.qcfmtFormulaHistoryPK.companyCode = :companyCode ");
+		builderString.append("ORDER BY a.qcfmtFormulaHistoryPK.companyCode, a.qcfmtFormulaHistoryPK.formulaCode, a.qcfmtFormulaHistoryPK.historyId ");
+		FIND_ALL_BY_COMPANYCODE = builderString.toString();
+
+		builderString = new StringBuilder();
+		builderString.append("SELECT a ");
+		builderString.append("FROM QcfmtFormulaHistory a ");
+		builderString.append("WHERE a.qcfmtFormulaHistoryPK.companyCode = :companyCode ");
+		builderString.append("AND a.startDate <= :baseDate ");
+		builderString.append("AND a.endDate >= :baseDate ");
+		builderString.append("AND a.qcfmtFormulaHistoryPK.formulaCode <> :formulaCode ");
+		FIND_ALL_DIFFERENT_FORMULACODE = builderString.toString();
+	}
 
 	@Override
 	public List<FormulaHistory> findAll(String companyCode) {
@@ -42,10 +63,10 @@ public class JpaFormulaHistoryRepository extends JpaRepository implements Formul
 	}
 
 	@Override
-	public List<FormulaHistory> findDataDifFormulaCode(String companyCode, FormulaCode formulaCode, YearMonth baseDate) {
+	public List<FormulaHistory> findDataDifFormulaCode(String companyCode, FormulaCode formulaCode,
+			YearMonth baseDate) {
 		return this.queryProxy().query(FIND_ALL_DIFFERENT_FORMULACODE, QcfmtFormulaHistory.class)
-				.setParameter("companyCode", companyCode)
-				.setParameter("formulaCode",formulaCode.v())
+				.setParameter("companyCode", companyCode).setParameter("formulaCode", formulaCode.v())
 				.setParameter("baseDate", baseDate.v()).getList(f -> toDomain(f));
 	}
 
@@ -56,7 +77,7 @@ public class JpaFormulaHistoryRepository extends JpaRepository implements Formul
 
 	@Override
 	public void remove(FormulaHistory formulaHistory) {
-		this.commandProxy().remove(toEntity(formulaHistory));		
+		this.commandProxy().remove(toEntity(formulaHistory));
 	}
 
 	private static FormulaHistory toDomain(QcfmtFormulaHistory hist) {
@@ -81,5 +102,10 @@ public class JpaFormulaHistoryRepository extends JpaRepository implements Formul
 		return entity;
 	}
 
+	@Override
+	public boolean isExistedHistory(String companyCode) {
+		return this.queryProxy().query(IS_EXISTED_HISTORY, long.class).setParameter("companyCode", companyCode)
+				.getSingle().get() > 0;
+	}
 
 }

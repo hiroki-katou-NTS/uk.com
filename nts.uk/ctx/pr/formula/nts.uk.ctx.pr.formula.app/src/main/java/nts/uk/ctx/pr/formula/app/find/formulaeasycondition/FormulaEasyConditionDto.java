@@ -3,35 +3,19 @@
  */
 package nts.uk.ctx.pr.formula.app.find.formulaeasycondition;
 
-import java.math.BigDecimal;
+import java.util.List;
 
-import lombok.Value;
-import nts.uk.ctx.pr.formula.dom.formula.FormulaEasyCondition;
+import lombok.Data;
 
 /**
  * @author hungnm
  *
  */
-@Value
+@Data
 public class FormulaEasyConditionDto {
 	
-	String companyCode;
-	
-	String formulaCode;
-	
-	String historyId;
-
-	String easyFormulaCode;
-
 	int fixFormulaAtr;
-
-	BigDecimal fixMoney;
-
-	String referenceMasterCode;
-
-	public static FormulaEasyConditionDto fromDomain(FormulaEasyCondition domain) {
-		return new FormulaEasyConditionDto(domain.getCompanyCode() ,domain.getFormulaCode().v() ,domain.getHistoryId() ,
-				domain.getEasyFormulaCode().v(), domain.getFixFormulaAtr().value,
-				domain.getFixMoney().v(), domain.getReferenceMasterCode().v());
-	}
+	
+	List<EasyFormulaConditionDto> easyFormulaConditionDto;
+	
 }

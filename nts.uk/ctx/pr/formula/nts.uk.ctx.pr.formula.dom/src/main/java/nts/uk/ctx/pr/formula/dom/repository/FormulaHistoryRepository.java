@@ -23,4 +23,6 @@ public interface FormulaHistoryRepository {
 	
 	void remove (FormulaHistory formulaHistory);
 	
+	boolean isExistedHistory(String companyCode);
+	
 }

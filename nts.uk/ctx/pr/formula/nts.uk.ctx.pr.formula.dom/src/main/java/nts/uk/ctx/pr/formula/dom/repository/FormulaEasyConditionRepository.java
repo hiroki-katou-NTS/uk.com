@@ -4,6 +4,7 @@
 package nts.uk.ctx.pr.formula.dom.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import nts.uk.ctx.pr.formula.dom.formula.FormulaEasyCondition;
 import nts.uk.ctx.pr.formula.dom.primitive.FormulaCode;
@@ -24,7 +25,7 @@ public interface FormulaEasyConditionRepository {
 	 * @param historyId
 	 * @return a formula easy condition
 	 */
-	List<FormulaEasyCondition> find(String companyCode, FormulaCode formulaCode, String historyId);
+	Optional<FormulaEasyCondition> find(String companyCode, FormulaCode formulaCode, String historyId);
 	
 	void add(List<FormulaEasyCondition> formulaEasyCondition);
 	

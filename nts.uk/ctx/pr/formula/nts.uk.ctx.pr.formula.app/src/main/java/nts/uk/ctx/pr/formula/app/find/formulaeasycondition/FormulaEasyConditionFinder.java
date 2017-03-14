@@ -30,8 +30,9 @@ public class FormulaEasyConditionFinder {
 	 */
 	public List<FormulaEasyConditionDto> find(String formulaCode, String historyId) {
 		LoginUserContext login = AppContexts.user();
-
-		return repository.find(login.companyCode(), new FormulaCode(formulaCode), historyId).stream()
-				.map(f -> {return FormulaEasyConditionDto.fromDomain(f);}).collect(Collectors.toList());
+//
+//		return repository.find(login.companyCode(), new FormulaCode(formulaCode), historyId).stream()
+//				.map(f -> {return FormulaEasyConditionDto}).collect(Collectors.toList());
+		return null;
 	}
 }

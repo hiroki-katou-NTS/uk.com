@@ -18,8 +18,24 @@ import nts.uk.ctx.pr.formula.infra.entity.formula.QcfmtFormulaPK;
 @Stateless
 public class JpaFormulaMasterRepository extends JpaRepository implements FormulaMasterRepository {
 
-	private final String FIND_ALL_BY_COMPANYCODE = "SELECT a FROM QcfmtFormula a "
-			+ " WHERE a.qcfmtFormulaPK.companyCode = :companyCode ";
+	private static final String FIND_ALL_BY_COMPANYCODE;
+	
+	private static final String IS_EXISTED_FORMULA;
+	
+	static{
+		StringBuilder builderString = new StringBuilder();
+		builderString.append("SELECT COUNT(a) ");
+		builderString.append("FROM QcfmtFormula a ");
+		builderString.append("WHERE a.qcfmtFormulaPK.companyCode = :companyCode ");
+		IS_EXISTED_FORMULA = builderString.toString();
+		
+		builderString = new StringBuilder();
+		builderString.append("SELECT a ");
+		builderString.append("FROM QcfmtFormula a ");
+		builderString.append("WHERE a.qcfmtFormulaPK.companyCode = :companyCode ");
+		builderString.append("ORDER BY a.qcfmtFormulaPK.companyCode, a.qcfmtFormulaPK.formulaCd ");
+		FIND_ALL_BY_COMPANYCODE = builderString.toString();
+	}
 
 	@Override
 	public Optional<FormulaMaster> findByBaseYearMonth(String companyCode, FormulaCode formulaCode, YearMonth baseYM) {
@@ -69,6 +85,12 @@ public class JpaFormulaMasterRepository extends JpaRepository implements Formula
 		entity.formulaName = command.getFormulaName().v();
 
 		return entity;
+	}
+
+	@Override
+	public boolean isExistedFormula(String companyCode) {
+		return this.queryProxy().query(IS_EXISTED_FORMULA, long.class)
+				.setParameter("companyCode", companyCode).getSingle().get() > 0;
 	}
 
 }

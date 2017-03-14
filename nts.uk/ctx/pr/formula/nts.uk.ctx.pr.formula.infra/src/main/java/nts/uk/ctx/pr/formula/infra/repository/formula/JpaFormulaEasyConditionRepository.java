@@ -2,6 +2,7 @@ package nts.uk.ctx.pr.formula.infra.repository.formula;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 
@@ -40,10 +41,10 @@ public class JpaFormulaEasyConditionRepository extends JpaRepository implements 
 	}
 
 	@Override
-	public List<FormulaEasyCondition> find(String companyCode, FormulaCode formulaCode, String historyId) {
+	public Optional<FormulaEasyCondition> find(String companyCode, FormulaCode formulaCode, String historyId) {
 		return this.queryProxy().query(FIND_FORMULA_EASY_CONDITION, QcfmtFormulaEasyCondition.class)
 				.setParameter("companyCode", companyCode).setParameter("formulaCode", formulaCode.v())
-				.setParameter("historyId", historyId).getList(f -> (toDomain(f)));
+				.setParameter("historyId", historyId).getSingle(f -> (toDomain(f)));
 	}
 
 	private FormulaEasyCondition toDomain(QcfmtFormulaEasyCondition f) {

@@ -49,11 +49,11 @@ public class FormulaEasyDetailFinder {
 				new EasyFormulaCode(easyFormulaCode)).map(f -> FormulaEasyDetailDto.fromDomain(f));
 	}
 
-	public List<FormulaEasyDetailDto> findWithoutPriKey(String formulaCode, String historyId) {
+	public Optional<FormulaEasyDetailDto> findWithoutPriKey(String formulaCode, String historyId) {
 		LoginUserContext login = AppContexts.user();
 
 		return formulaEasyDetailRepository
-				.findWithOutPriKey(login.companyCode(), new FormulaCode(formulaCode), historyId).stream()
-				.map(f -> {return FormulaEasyDetailDto.fromDomain(f);}).collect(Collectors.toList());
+				.findWithOutPriKey(login.companyCode(), new FormulaCode(formulaCode), historyId)
+				.map(f -> {return FormulaEasyDetailDto.fromDomain(f);});
 	}
 }

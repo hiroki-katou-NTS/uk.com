@@ -21,7 +21,7 @@ public interface FormulaEasyHeaderRepository {
 	 * @param referenceMasterNo
 	 * @return a formulaEasyHead
 	 */
-	Optional<FormulaEasyHeader> findByPriKey(String companyCode, FormulaCode formulaCode, String historyId, ReferenceMasterNo referenceMasterNo);
+	Optional<FormulaEasyHeader> findByPriKey(String companyCode, FormulaCode formulaCode, String historyId);
 	
 	void add(FormulaEasyHeader formulaEasyHead);
 	

@@ -54,10 +54,10 @@ public class JpaFormulaEasyDetailRepository extends JpaRepository implements For
 	}
 
 	@Override
-	public List<FormulaEasyDetail> findWithOutPriKey(String companyCode, FormulaCode formulaCode, String historyId) {
+	public Optional<FormulaEasyDetail> findWithOutPriKey(String companyCode, FormulaCode formulaCode, String historyId) {
 		return this.queryProxy().query(FIND_WITHOUT_PRI_KEY, QcfmtFormulaEasyDetail.class)
 				.setParameter("companyCode", companyCode).setParameter("formulaCode", formulaCode.v())
-				.setParameter("historyId", historyId).getList(f -> toDomain(f));
+				.setParameter("historyId", historyId).getSingle(f -> toDomain(f));
 	}
 
 	private QcfmtFormulaEasyDetail toEntity(FormulaEasyDetail formulaEasyDetail) {
