@@ -14,11 +14,11 @@ module nts.uk.pr.view.qmm008.h {
             healthInsuranceRateModel: HealthInsuranceRateModel;
             numberEditorCommonOption: KnockoutObservable<nts.uk.ui.option.NumberEditorOption>;
 
-            constructor(dataOfSelectedOffice: InsuranceOfficeItemDto, healthModel: HealthInsuranceRateModelofScreenA) {
+            constructor(officeName: string, healthModel: HealthInsuranceRateModelofScreenA) {
                 var self = this;
                 self.healthInsuranceRateModel = new HealthInsuranceRateModel(
-                    dataOfSelectedOffice.code,
-                    dataOfSelectedOffice.name,
+                    healthModel.officeCode(),
+                    officeName,
                     healthModel.historyId,
                     healthModel.startMonth(),
                     healthModel.endMonth(),
@@ -135,16 +135,16 @@ module nts.uk.pr.view.qmm008.h {
                     historyId,
                     levelMasterSetting.code,
                     new HealthInsuranceAvgEarnValueModel(
-                        rateItems.healthSalaryCompanyGeneral() * rate,
-                        rateItems.healthSalaryCompanyNursing() * rate,
-                        rateItems.healthSalaryCompanyBasic() * rate,
-                        rateItems.healthSalaryCompanySpecific() * rate
-                    ),
-                    new HealthInsuranceAvgEarnValueModel(
                         rateItems.healthSalaryPersonalGeneral() * rate,
                         rateItems.healthSalaryPersonalNursing() * rate,
                         rateItems.healthSalaryPersonalBasic() * rate,
                         rateItems.healthSalaryPersonalSpecific() * rate
+                    ),
+                    new HealthInsuranceAvgEarnValueModel(
+                        rateItems.healthSalaryCompanyGeneral() * rate,
+                        rateItems.healthSalaryCompanyNursing() * rate,
+                        rateItems.healthSalaryCompanyBasic() * rate,
+                        rateItems.healthSalaryCompanySpecific() * rate
                     )
                 );
             }
