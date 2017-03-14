@@ -140,11 +140,21 @@ module qet001.i.viewmodel {
         }
         
         public save() {
-            // validate.
             var self = this;
-            if (self.aggregateItemDetail().code() == undefined || self.aggregateItemDetail().code() == null
-                || self.aggregateItemDetail().name() == undefined || self.aggregateItemDetail().name() == null) {
-                nts.uk.ui.dialog.alert('未入力エラー');
+            // clear error.
+            $('#code-input').ntsError('clear');
+            $('#name-input').ntsError('clear');
+            // Validate.
+            var hasError = false;
+            if (self.aggregateItemDetail().code() == '') {
+                $('#code-input').ntsError('set', '未入力エラー');
+                hasError = true;
+            }
+            if (self.aggregateItemDetail().name() == '') {
+                $('#name-input').ntsError('set', '未入力エラー');
+                hasError = true;
+            }
+            if(hasError) {
                 return;
             }
             
@@ -229,8 +239,8 @@ module qet001.i.viewmodel {
         
         constructor(paymentType: string, category: string, 
                 masterItems: service.Item[], item?: service.Item) {
-            this.code = item == undefined ? ko.observable(null) : ko.observable(item.code);
-            this.name = item == undefined ? ko.observable(null) : ko.observable(item.name);
+            this.code = item == undefined ? ko.observable('') : ko.observable(item.code);
+            this.name = item == undefined ? ko.observable('') : ko.observable(item.name);
             this.paymentType = paymentType;
             this.category = category;
             this.showNameZeroValue = item == undefined ? ko.observable(true) 
