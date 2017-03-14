@@ -16,24 +16,51 @@ var nts;
                                 function ScreenModel() {
                                     var self = this;
                                     self.isLoading = ko.observable(true);
-                                    self.items = ko.observableArray([]);
-                                    self.currentCode = ko.observable();
+                                    self.outputSettings = ko.observableArray([]);
+                                    self.outputSettingSelectedCode = ko.observable('');
                                     self.outputSettingDetailModel = ko.observable(new OutputSettingDetailModel());
                                     self.reportItems = ko.observableArray([]);
                                     self.reportItemSelected = ko.observable('');
+                                    self.outputSettingSelectedCode;
                                     for (var i = 1; i < 30; i++) {
-                                        this.items.push(new ItemModel('00' + i, '基本給' + i, "name " + i, i % 3 === 0));
+                                        this.outputSettings.push(new ItemModel('00' + i, '基本給' + i, "name " + i, i % 3 === 0));
                                     }
-                                    this.columns = ko.observableArray([
-                                        { headerText: 'コード', key: 'code', width: 50 },
-                                        { headerText: '名称', key: 'name', width: 50 }
+                                    this.reportItemColumns = ko.observableArray([
+                                        {
+                                            headerText: '集約', prop: 'isAggregate', width: 40,
+                                            formatter: function (isAggregate) {
+                                                if (isAggregate == 'true') {
+                                                    return '<div class="halign-center"><i class="icon icon-dot"></i></div>';
+                                                }
+                                                return '';
+                                            }
+                                        },
+                                        { headerText: 'コード', prop: 'code', width: 100 },
+                                        { headerText: '名称', prop: 'name', width: 100 },
                                     ]);
+                                    self.outputSettingDetailModel().reloadReportItems = self.reloadReportItems.bind(self);
                                 }
                                 ScreenModel.prototype.startPage = function () {
                                     var self = this;
                                     var dfd = $.Deferred();
                                     dfd.resolve();
                                     return dfd.promise();
+                                };
+                                ScreenModel.prototype.reloadReportItems = function () {
+                                    var self = this;
+                                    var data = self.outputSettingDetailModel();
+                                    if (!data || data.categorySettings().length == 0) {
+                                        self.reportItems([]);
+                                        return;
+                                    }
+                                    var reportItemList = [];
+                                    data.categorySettings().forEach(function (setting) {
+                                        var categoryName = setting.category;
+                                        setting.outputItems().forEach(function (item) {
+                                            reportItemList.push(new ReportItem(item.code, item.name, categoryName, item.isAggregateItem));
+                                        });
+                                    });
+                                    self.reportItems(reportItemList);
                                 };
                                 ScreenModel.prototype.commonSettingBtnClick = function () {
                                     nts.uk.ui.windows.sub.modal('/view/qpp/007/j/index.xhtml', { title: '集計項目の設定', dialogClass: 'no-close' });
@@ -67,6 +94,12 @@ var nts;
                                         { id: SalaryCategory.ARTICLE_OTHERS, title: '記事・その他', content: '#article-others', enable: ko.observable(true), visible: ko.observable(true) }
                                     ]);
                                     this.selectedCategory = ko.observable(SalaryCategory.SUPPLY);
+                                    var self = this;
+                                    self.categorySettings().forEach(function (setting) {
+                                        setting.outputItems.subscribe(function (newValue) {
+                                            self.reloadReportItems();
+                                        });
+                                    });
                                 }
                                 return OutputSettingDetailModel;
                             }());
@@ -87,9 +120,37 @@ var nts;
                                         this.masterItems.push({ code: '00' + i, name: '基本給' + i, paymentType: 'Salary', taxDivision: 'Deduction' });
                                     }
                                     this.outputItemColumns = ko.observableArray([
-                                        { headerText: 'コード', key: 'code', width: 50 },
-                                        { headerText: '名称', key: 'name', width: 50 }
+                                        {
+                                            headerText: '集約', prop: 'isAggregateItem', width: 40,
+                                            formatter: function (data) {
+                                                if (data == 'true') {
+                                                    return '<div class="halign-center"><i class="icon icon-dot"></i></div>';
+                                                }
+                                                return '';
+                                            }
+                                        },
+                                        { headerText: 'コード', prop: 'code', width: 50 },
+                                        { headerText: '名称', prop: 'name', width: 60 },
+                                        { headerText: '削除', prop: 'code', width: 60,
+                                            formatter: function (code) {
+                                                return '<div class="halign-center"><button class="icon icon-close" id="' + code + '" >'
+                                                    + '</button></div>';
+                                            }
+                                        }
                                     ]);
+                                    ko.bindingHandlers.rended = {
+                                        init: function (element, valueAccessor, allBindings, viewModel, bindingContext) { },
+                                        update: function (element, valueAccessor, allBindings, viewModel, bindingContext) {
+                                            var code = valueAccessor();
+                                            viewModel.outputItems().forEach(function (item) {
+                                                $('#' + item.code).on('click', function () {
+                                                    code(item.code);
+                                                    viewModel.remove();
+                                                    code(null);
+                                                });
+                                            });
+                                        }
+                                    };
                                 }
                                 CategorySetting.prototype.moveMasterItem = function () {
                                     if (this.masterItemsSelected()[0]) {
@@ -130,8 +191,31 @@ var nts;
                                                 removable: true
                                             });
                                         });
-                                        self.masterItemsSelected([]);
+                                        self.aggregateItemsSelected([]);
                                     }
+                                };
+                                CategorySetting.prototype.remove = function () {
+                                    var self = this;
+                                    var selectedItem = self.outputItems().filter(function (item) {
+                                        return item.code == self.outputItemSelected();
+                                    })[0];
+                                    self.outputItems.remove(selectedItem);
+                                    if (selectedItem.isAggregateItem) {
+                                        self.aggregateItems.push({
+                                            code: selectedItem.code,
+                                            name: selectedItem.name,
+                                            subsItem: [],
+                                            taxDivision: 'Payment',
+                                            value: 5
+                                        });
+                                        return;
+                                    }
+                                    self.masterItems.push({
+                                        code: selectedItem.code,
+                                        name: selectedItem.name,
+                                        paymentType: 'Salary',
+                                        taxDivision: 'Deduction'
+                                    });
                                 };
                                 return CategorySetting;
                             }());
@@ -191,7 +275,11 @@ var nts;
                             }());
                             viewmodel.PaymentType = PaymentType;
                             var ReportItem = (function () {
-                                function ReportItem() {
+                                function ReportItem(code, name, categoryName, isAggregate) {
+                                    this.code = code;
+                                    this.name = name;
+                                    this.categoryName = categoryName;
+                                    this.isAggregate = isAggregate;
                                 }
                                 return ReportItem;
                             }());

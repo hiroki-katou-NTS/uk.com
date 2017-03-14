@@ -2,30 +2,49 @@ module nts.uk.pr.view.qpp007.c {
     export module viewmodel {
 
         export class ScreenModel {
-            items: KnockoutObservableArray<ItemModel>;
-            currentCode: KnockoutObservable<any>;
-            columns: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
+            outputSettings: KnockoutObservableArray<ItemModel>;
+            outputSettingSelectedCode: KnockoutObservable<string>;
+            outputSettingColumns: KnockoutObservableArray<any>;
             outputSettingDetailModel: KnockoutObservable<OutputSettingDetailModel>;
             reportItems: KnockoutObservableArray<ReportItem>;
             reportItemSelected: KnockoutObservable<string>;
+            reportItemColumns: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
             isLoading: KnockoutObservable<boolean>;
 
             constructor() {
                 var self = this;
                 self.isLoading = ko.observable(true);
-                self.items = ko.observableArray<ItemModel>([]);
-                self.currentCode = ko.observable();
+                self.outputSettings = ko.observableArray<ItemModel>([]);
+                self.outputSettingSelectedCode = ko.observable('');
                 self.outputSettingDetailModel = ko.observable(new OutputSettingDetailModel());
                 self.reportItems = ko.observableArray<ReportItem>([]);
                 self.reportItemSelected = ko.observable('');
+                self.outputSettingSelectedCode
 
                 for (let i = 1; i < 30; i++) {
-                    this.items.push(new ItemModel('00' + i, '基本給' + i, "name " + i, i % 3 === 0));
+                    this.outputSettings.push(new ItemModel('00' + i, '基本給' + i, "name " + i, i % 3 === 0));
                 }
-                this.columns = ko.observableArray<nts.uk.ui.NtsGridListColumn>([
-                    { headerText: 'コード', key: 'code', width: 50 },
-                    { headerText: '名称', key: 'name', width: 50 }
+
+                this.reportItemColumns = ko.observableArray<nts.uk.ui.NtsGridListColumn>([
+                    //{headerText: '区分', prop: '', width: 50},
+                    {
+                        headerText: '集約', prop: 'isAggregate', width: 40,
+                        formatter: function(isAggregate: string) {
+                            if (isAggregate == 'true') {
+                                return '<div class="halign-center"><i class="icon icon-dot"></i></div>';
+                            }
+                            return '';
+                        }
+                    },
+                    { headerText: 'コード', prop: 'code', width: 100 },
+                    { headerText: '名称', prop: 'name', width: 100 },
                 ]);
+
+                //                self.outputSettingDetailModel.subscribe((data: OutputSettingDetailModel) => {
+                //                    self.reloadReportItem();
+                //                    data.reloadReportItems = self.reloadReportItem.bind(self);
+                //                });
+                self.outputSettingDetailModel().reloadReportItems = self.reloadReportItems.bind(self);
             }
 
             /**
@@ -36,6 +55,27 @@ module nts.uk.pr.view.qpp007.c {
                 var dfd = $.Deferred<void>();
                 dfd.resolve();
                 return dfd.promise();
+            }
+
+            /**
+            * Reload report items.
+            */
+            public reloadReportItems(): void {
+                var self = this;
+                var data = self.outputSettingDetailModel();
+                if (!data || data.categorySettings().length == 0) {
+                    self.reportItems([]);
+                    return;
+                }
+                // Set data to report item list.
+                var reportItemList: ReportItem[] = [];
+                data.categorySettings().forEach((setting) => {
+                    var categoryName: string = setting.category;
+                    setting.outputItems().forEach((item) => {
+                        reportItemList.push(new ReportItem(item.code, item.name, categoryName, item.isAggregateItem));
+                    });
+                });
+                self.reportItems(reportItemList);
             }
 
             public commonSettingBtnClick() {
@@ -75,6 +115,12 @@ module nts.uk.pr.view.qpp007.c {
                     { id: SalaryCategory.ARTICLE_OTHERS, title: '記事・その他', content: '#article-others', enable: ko.observable(true), visible: ko.observable(true) }
                 ]);
                 this.selectedCategory = ko.observable(SalaryCategory.SUPPLY);
+                var self = this;
+                self.categorySettings().forEach((setting) => {
+                    setting.outputItems.subscribe((newValue) => {
+                        self.reloadReportItems();
+                    });
+                });
             }
         }
 
@@ -95,16 +141,49 @@ module nts.uk.pr.view.qpp007.c {
                 self.aggregateItemsSelected = ko.observableArray<string>([]);
                 self.masterItemsSelected = ko.observableArray<string>([]);
 
+                // mock data
                 for (let i = 1; i < 15; i++) {
                     this.aggregateItems.push({ code: '00' + i, name: '基本給' + i, subsItem: [], taxDivision: 'Payment', value: i });
                 }
                 for (let i = 1; i < 15; i++) {
                     this.masterItems.push({ code: '00' + i, name: '基本給' + i, paymentType: 'Salary', taxDivision: 'Deduction' });
                 }
+
+                // Define outputItemColumns.
                 this.outputItemColumns = ko.observableArray<nts.uk.ui.NtsGridListColumn>([
-                    { headerText: 'コード', key: 'code', width: 50 },
-                    { headerText: '名称', key: 'name', width: 50 }
+                    {
+                        headerText: '集約', prop: 'isAggregateItem', width: 40,
+                        formatter: function(data: string) {
+                            if (data == 'true') {
+                                return '<div class="halign-center"><i class="icon icon-dot"></i></div>';
+                            }
+                            return '';
+                        }
+                    },
+                    { headerText: 'コード', prop: 'code', width: 50 },
+                    { headerText: '名称', prop: 'name', width: 60 },
+                    {headerText: '削除', prop: 'code', width: 60,
+                        formatter: function(code: string) {
+                            return '<div class="halign-center"><button class="icon icon-close" id="' + code + '" >'
+                                + '</button></div>';
+                        }
+                    }
                 ]);
+
+                // Customs handle.
+                (<any>ko.bindingHandlers).rended = {
+                    init: function(element, valueAccessor, allBindings, viewModel, bindingContext) { },
+                    update: function(element, valueAccessor, allBindings, viewModel: CategorySetting, bindingContext) {
+                        var code = valueAccessor();
+                        viewModel.outputItems().forEach(item => {
+                            $('#' + item.code).on('click', function() {
+                                code(item.code);
+                                viewModel.remove();
+                                code(null);
+                            })
+                        });
+                    }
+                };
             }
 
             /**
@@ -161,9 +240,41 @@ module nts.uk.pr.view.qpp007.c {
                             removable: true
                         });
                     });
-                    self.masterItemsSelected([]);
+                    self.aggregateItemsSelected([]);
                 }
             }
+
+            /**
+            * Remove item from outputItems.
+            */
+            public remove(): void {
+                var self = this;
+                var selectedItem = self.outputItems().filter((item) => {
+                    return item.code == self.outputItemSelected();
+                })[0];
+                self.outputItems.remove(selectedItem);
+
+                // Return item.
+                if (selectedItem.isAggregateItem) {
+                    // Return to Aggregate items table.
+                    self.aggregateItems.push({
+                        code: selectedItem.code,
+                        name: selectedItem.name,
+                        subsItem: [],
+                        taxDivision: 'Payment',
+                        value: 5
+                    });
+                    return;
+                }
+                // Return to master items table.
+                self.masterItems.push({
+                    code: selectedItem.code,
+                    name: selectedItem.name,
+                    paymentType: 'Salary',
+                    taxDivision: 'Deduction'
+                });
+            }
+
         }
         export class AggregateItem {
             code: string;
@@ -209,6 +320,12 @@ module nts.uk.pr.view.qpp007.c {
             name: string;
             categoryName: string;
             isAggregate: boolean;
+            constructor(code: string, name: string, categoryName: string, isAggregate: boolean) {
+                this.code = code;
+                this.name = name;
+                this.categoryName = categoryName;
+                this.isAggregate = isAggregate;
+            }
         }
     }
 }
