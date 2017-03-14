@@ -10,14 +10,16 @@
 	<ui:composition template="../a/master/dialog.xhtml">
 		<ui:define name="htmlHead">
 			<com:scriptfile path="start.js" />
+			<com:scriptfile path="service.js" />
+			<com:scriptfile path="viewmodel.js" />
 			<com:stylefile path="style.css" />
 			<com:scriptfile set="IGNITE" />
 		</ui:define>
 		<ui:define name="content">
 			<div id="content-header">
-				<button id="I_BTN_001" onclick="closeDialog()"
+				<button id="I_BTN_001" data-bind="click:SubmitDialog"
 					class="inputNomalSize">新規</button>
-				<button id="I_BTN_002" onclick="submitInfo()"
+				<button id="I_BTN_002" data-bind="click:CloseDialog"
 					class="proceed inputNomalSize">登録</button>
 				<button id="I_BTN_003" class=" danger inputNomalSize">コピー</button>
 				<button id="I_BTN_004" class=" inputNomalSize">削除</button>

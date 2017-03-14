@@ -52,6 +52,8 @@ module qmm012.b {
                 itemAbNameE: string;
                 displaySet: number;
                 uniteCode: string;
+                zeroDisplaySet: number;
+                itemDisplayAtr: number;
                 constructor(
                     itemCode: string,
                     itemName: string,
@@ -61,7 +63,9 @@ module qmm012.b {
                     itemAbNameO: string,
                     itemAbNameE: string,
                     displaySet: number,
-                    uniteCode: string
+                    uniteCode: string,
+                    zeroDisplaySet: number,
+                    itemDisplayAtr: number
                 ) {
                     this.itemCode = itemCode;
                     this.itemName = itemName;
@@ -72,7 +76,7 @@ module qmm012.b {
                     this.itemAbNameE = itemAbNameE;
                     this.displaySet = displaySet;
                     this.uniteCode = uniteCode;
-
+                    this.zeroDisplaySet = itemDisplayAtr;
                 }
             }
 

@@ -1,10 +1,10 @@
 var qmm012;
 (function (qmm012) {
-    var h;
-    (function (h) {
+    var k;
+    (function (k) {
         __viewContext.ready(function () {
-            var screenModel = new h.viewmodel.ScreenModel();
+            var screenModel = new k.viewmodel.ScreenModel();
             __viewContext.bind(screenModel);
         });
-    })(h = qmm012.h || (qmm012.h = {}));
+    })(k = qmm012.k || (qmm012.k = {}));
 })(qmm012 || (qmm012 = {}));

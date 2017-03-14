@@ -69,6 +69,7 @@ var qmm012;
                             self.enable_B_INP_002(false);
                             b.service.findItemperiod(self.GridCurrentCategoryAtr_B_001(), self.GridlistCurrentCode_B_001()).done(function (PeriodItem) {
                                 self.screenModel.screenModelC.CurrentItemPeriod(PeriodItem);
+                                self.screenModel.screenModelC.CurrentItemMaster(self.GridlistCurrentItem_B_001());
                             }).fail(function (res) {
                                 // Alert message
                                 alert(res);

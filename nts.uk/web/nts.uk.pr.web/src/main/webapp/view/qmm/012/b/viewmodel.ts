@@ -63,6 +63,7 @@ module qmm012.b.viewmodel {
                     return ItemModel.itemCode == newValue;
                 });
                 self.GridlistCurrentItem_B_001(item);
+                
             });
 
             self.GridlistCurrentItem_B_001.subscribe(function(itemModel: service.model.ItemMasterModel) {
@@ -77,6 +78,7 @@ module qmm012.b.viewmodel {
                     self.enable_B_INP_002(false);
                     service.findItemperiod(self.GridCurrentCategoryAtr_B_001(), self.GridlistCurrentCode_B_001()).done(function(PeriodItem: service.model.ItemPeriodModel) {
                         self.screenModel.screenModelC.CurrentItemPeriod(PeriodItem);
+                        self.screenModel.screenModelC.CurrentItemMaster( self.GridlistCurrentItem_B_001());
                     }).fail(function(res) {
                         // Alert message
                         alert(res);
