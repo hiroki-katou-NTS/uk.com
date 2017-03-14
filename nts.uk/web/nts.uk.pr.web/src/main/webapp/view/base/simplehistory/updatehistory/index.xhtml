@@ -8,6 +8,7 @@
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
 			<com:stylefile path="newhistory.css" />
+			<com:scriptfile path="../dialogbase/base.js" />
 			<com:scriptfile path="viewmodel.js" />
 			<com:scriptfile path="start.js" />
 			<script type="text/javascript">
@@ -23,10 +24,7 @@
 			<div id="this-contents-area">
 				<label>履歴情報を確認し、削除またはしゅうせいを行ってださい。</label>
 				<table class="form-default">
-					<tr data-bind="with: dialogOptions">
-						<td><div data-bind="ntsFormLabel: {}">コード/名称</div></td>
-						<td><label data-bind="text: master.code + ' ' + master.name"/></td>
-					</tr>
+					<ui:include src="../dialogbase/namepart.xhtml"/>
 					<tr>
 						<td style="vertical-align: top"><div data-bind="ntsFormLabel: { required: true }">編集方法の選択</div></td>
 						<td>
