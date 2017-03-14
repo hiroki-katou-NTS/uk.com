@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.core.infra.repository.itemSalary;
+package nts.uk.ctx.pr.core.infra.repository.itemmaster;
 
 import java.util.Optional;
 

@@ -23,13 +23,13 @@ public class ItemSalary extends AggregateRoot {
 	public ApplyFor applyForDaylyPayEmp;
 	public ApplyFor applyForHourlyPayEmp;
 	public ApplyFor avePayAtr;
-	public ErrRangeAtr errRangeLowAtr;
+	public RangeAtr errRangeLowAtr;
 	public ErrRangeLow errRangeLow;
-	public ErrRangeAtr errRangeHighAtr;
+	public RangeAtr errRangeHighAtr;
 	public ErrRangeHigh errRangeHigh;
-	public ErrRangeAtr alRangeLowAtr;
+	public RangeAtr alRangeLowAtr;
 	public AlRangeLow alRangeLow;
-	public ErrRangeAtr alRangeHighAtr;
+	public RangeAtr alRangeHighAtr;
 	public AlRangeHigh alRangeHigh;
 	public Memo memo;
 	public LimitMnyAtr limitMnyAtr;
@@ -39,8 +39,8 @@ public class ItemSalary extends AggregateRoot {
 	public ItemSalary(CompanyCode companyCode, ItemCode itemCode, TaxAtr taxAtr, InsAtr socialInsAtr,
 			InsAtr laborInsAtr, FixPayAtr fixPayAtr, ApplyFor applyForAllEmpFlg, ApplyFor applyForMonthlyPayEmp,
 			ApplyFor applyForDaymonthlyPayEmp, ApplyFor applyForDaylyPayEmp, ApplyFor applyForHourlyPayEmp,
-			ApplyFor avePayAtr, ErrRangeAtr errRangeLowAtr, ErrRangeLow errRangeLow, ErrRangeAtr errRangeHighAtr,
-			ErrRangeHigh errRangeHigh, ErrRangeAtr alRangeLowAtr, AlRangeLow alRangeLow, ErrRangeAtr alRangeHighAtr,
+			ApplyFor avePayAtr, RangeAtr errRangeLowAtr, ErrRangeLow errRangeLow, RangeAtr errRangeHighAtr,
+			ErrRangeHigh errRangeHigh, RangeAtr alRangeLowAtr, AlRangeLow alRangeLow, RangeAtr alRangeHighAtr,
 			AlRangeHigh alRangeHigh, Memo memo, LimitMnyAtr limitMnyAtr, LimitMnyRefItemCd limitMnyRefItemCd,
 			LimitMny limitMny) {
 		super();
@@ -90,13 +90,13 @@ public class ItemSalary extends AggregateRoot {
 				EnumAdaptor.valueOf(applyForDaylyPayEmp, ApplyFor.class),
 				EnumAdaptor.valueOf(applyForHourlyPayEmp, ApplyFor.class),
 				EnumAdaptor.valueOf(avePayAtr, ApplyFor.class), 
-				EnumAdaptor.valueOf(errRangeLowAtr, ErrRangeAtr.class),
+				EnumAdaptor.valueOf(errRangeLowAtr, RangeAtr.class),
 				new ErrRangeLow(errRangeLow),
-				EnumAdaptor.valueOf(errRangeHighAtr, ErrRangeAtr.class),
+				EnumAdaptor.valueOf(errRangeHighAtr, RangeAtr.class),
 				new ErrRangeHigh(errRangeHigh) ,
-				EnumAdaptor.valueOf(alRangeLowAtr, ErrRangeAtr.class),
+				EnumAdaptor.valueOf(alRangeLowAtr, RangeAtr.class),
 				new AlRangeLow(alRangeLow),
-				EnumAdaptor.valueOf(alRangeHighAtr, ErrRangeAtr.class),
+				EnumAdaptor.valueOf(alRangeHighAtr, RangeAtr.class),
 				new AlRangeHigh(alRangeHigh) , 
 				new Memo(memo),
 				EnumAdaptor.valueOf(limitMnyAtr, LimitMnyAtr.class),
