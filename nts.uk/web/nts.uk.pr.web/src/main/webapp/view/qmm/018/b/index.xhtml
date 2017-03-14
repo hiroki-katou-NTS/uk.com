@@ -24,7 +24,7 @@
 						<div id="swap-list" data-bind="ntsSwapList: {
 							showSearchBox: { showLeft : true, showRight: true},
 							height: 300,
-							dataSource: items,
+							dataSource: unselectedCodeListSwap,
 							primaryKey: 'code',
 							columns: ko.observableArray([
 				                { headerText: 'コード', prop: 'code', width: 50 },
@@ -34,7 +34,7 @@
 					</div>
 					<hr id="division"/>
 					<div id="center-bottom" class="valign-center control-group">
-						<button class="x-large proceed center-e" data-bind="click: saveData, enable: $root.errors.isEmpty">決定</button>
+						<button class="x-large proceed center-e" data-bind="click: submitData, enable: $root.errors.isEmpty">決定</button>
 						<button class="ui-dialog-titlebar-close" data-bind="click: closeWindow">キャンセル</button>
 					</div>
 				</div>

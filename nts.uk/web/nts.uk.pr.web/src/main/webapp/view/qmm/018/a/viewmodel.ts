@@ -3,6 +3,8 @@ module qmm018.a.viewmodel {
         averagePay: KnockoutObservable<AveragePay>;
         selectedItemList1: KnockoutObservableArray<ItemModel>;
         selectedItemList2: KnockoutObservableArray<ItemModel>;
+        unSelectedItemList1: KnockoutObservableArray<ItemModel>;
+        unSelectedItemList2: KnockoutObservableArray<ItemModel>;
         texteditor1: KnockoutObservable<any>;
         texteditor2: KnockoutObservable<any>;
         isUpdate: any;
@@ -11,6 +13,8 @@ module qmm018.a.viewmodel {
             self.averagePay = ko.observable(new AveragePay(null, null, null, null));
             self.selectedItemList1 = ko.observableArray([]);
             self.selectedItemList2 = ko.observableArray([]);
+            self.unSelectedItemList1 = ko.observableArray([]);
+            self.unSelectedItemList2 = ko.observableArray([]);
             self.texteditor1 = ko.observable({
                 value: ko.computed(function(){
                     let s: any;
@@ -72,7 +76,7 @@ module qmm018.a.viewmodel {
                 }
                 dfd.resolve();
             }).fail(function(res) {
-
+                dfd.reject(res);
             });
             return dfd.promise();
         }
@@ -112,24 +116,37 @@ module qmm018.a.viewmodel {
         openSubWindow(n) {
             var self = this;
             if(!n){
-                nts.uk.ui.windows.setShared('selectedItemList', self.selectedItemList1);
+                nts.uk.ui.windows.setShared('selectedItemList', self.selectedItemList1());
                 nts.uk.ui.windows.setShared('categoryAtr', 1);        
             } else {
-                nts.uk.ui.windows.setShared('selectedItemList', self.selectedItemList2);
+                nts.uk.ui.windows.setShared('selectedItemList', self.selectedItemList2());
                 nts.uk.ui.windows.setShared('categoryAtr', 2);
             }
             nts.uk.ui.windows.sub.modal("/view/qmm/018/b/index.xhtml", {title: "労働日数項目一覧", dialogClass: "no-close"}).onClosed(function(){
-                let selectedList: KnockoutObservableArray<ItemModel> = nts.uk.ui.windows.getShared('selectedItemList');
+                let selectedList: Array<ItemModel> = nts.uk.ui.windows.getShared('selectedItemList');
+                let unSelectedList: Array<ItemModel> = nts.uk.ui.windows.getShared('unSelectedItemList');
                 if(!n){
-                    self.selectedItemList1.removeAll();
-                    if(selectedList().length){
-                        ko.utils.arrayForEach(selectedList(),function(item){self.selectedItemList1.push(item)});
-                    }
+                    if(selectedList.length) {
+                        if(!_.isEqual(selectedList, self.selectedItemList1())){
+                            self.selectedItemList1.removeAll();
+                            ko.utils.arrayForEach(selectedList,function(item){self.selectedItemList1.push(item)});
+                            if(unSelectedList.length){
+                                self.unSelectedItemList1.removeAll();
+                                ko.utils.arrayForEach(unSelectedList,function(item){self.unSelectedItemList1.push(item)});
+                            } else { self.unSelectedItemList1([]); }
+                        }
+                    } else { self.selectedItemList1([]); }
                 } else {
-                    self.selectedItemList2.removeAll();
-                    if(selectedList().length){
-                        ko.utils.arrayForEach(selectedList(),function(item){self.selectedItemList2.push(item)});
-                    }
+                    if(selectedList.length) {
+                        if(!_.isEqual(selectedList, self.selectedItemList2())){
+                            self.selectedItemList2.removeAll();
+                            ko.utils.arrayForEach(selectedList,function(item){self.selectedItemList2.push(item)});
+                            if(unSelectedList.length){
+                                self.unSelectedItemList2.removeAll();
+                                ko.utils.arrayForEach(unSelectedList,function(item){self.unSelectedItemList2.push(item)});
+                            } else { self.unSelectedItemList2([]); }
+                        }
+                    } else { self.selectedItemList2([]); } 
                 }
             }); 
         }
