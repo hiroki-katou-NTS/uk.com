@@ -56,9 +56,10 @@ module qmm012.c.viewmodel {
         CurrentApplyForDaylyPayEmp: KnockoutObservable<any> = ko.observable(null);
         CurrentApplyForHourlyPayEmp: KnockoutObservable<any> = ko.observable(null);
         CurrentAvePayAtr: KnockoutObservable<any> = ko.observable(null);
-        CurrentlimitMnyAtr: KnockoutObservable<any> = ko.observable(null);
+        CurrentLimitMnyAtr: KnockoutObservable<any> = ko.observable(null);
         CurrentZeroDisplaySet: KnockoutObservable<any> = ko.observable(null);
         CurrentItemDisplayAtr: KnockoutObservable<any> = ko.observable(null);
+        CurrentLimitMnyRefItemCd: KnockoutObservable<any> = ko.observable(null);
         CurrentErrRangeHighAtr: KnockoutObservable<number> = ko.observable(0);
         CurrentAlRangeHighAtr: KnockoutObservable<number> = ko.observable(0);
         CurrentErrRangeLowAtr: KnockoutObservable<number> = ko.observable(0);
@@ -258,7 +259,9 @@ module qmm012.c.viewmodel {
                 self.CurrentApplyForDaylyPayEmp(NewValue ? NewValue.applyForDaylyPayEmp : "");
                 self.CurrentApplyForHourlyPayEmp(NewValue ? NewValue.applyForHourlyPayEmp : "");
                 self.CurrentAvePayAtr(NewValue ? NewValue.avePayAtr : "");
-                self.CurrentlimitMnyAtr(NewValue ? NewValue.limitMnyAtr : "");
+                self.CurrentLimitMnyAtr(NewValue ? NewValue.limitMnyAtr : "");
+                self.CurrentLimitMnyRefItemCd(NewValue ? NewValue.limitMnyRefItemCd : "");
+
 
                 self.C_SEL_013_Selected(NewValue ? NewValue.errRangeHighAtr == 0 ? false : true : false);
                 self.C_SEL_014_Selected(NewValue ? NewValue.alRangeHighAtr == 0 ? false : true : false);
@@ -268,7 +271,7 @@ module qmm012.c.viewmodel {
 
             });
 
-            self.CurrentlimitMnyAtr.subscribe(function(newValue) {
+            self.CurrentLimitMnyAtr.subscribe(function(newValue) {
                 $('#C_Div_002').hide();
                 $('#C_Div_003').hide();
                 switch (newValue) {

@@ -27,9 +27,10 @@ var qmm012;
                     this.CurrentApplyForDaylyPayEmp = ko.observable(null);
                     this.CurrentApplyForHourlyPayEmp = ko.observable(null);
                     this.CurrentAvePayAtr = ko.observable(null);
-                    this.CurrentlimitMnyAtr = ko.observable(null);
+                    this.CurrentLimitMnyAtr = ko.observable(null);
                     this.CurrentZeroDisplaySet = ko.observable(null);
                     this.CurrentItemDisplayAtr = ko.observable(null);
+                    this.CurrentLimitMnyRefItemCd = ko.observable(null);
                     this.CurrentErrRangeHighAtr = ko.observable(0);
                     this.CurrentAlRangeHighAtr = ko.observable(0);
                     this.CurrentErrRangeLowAtr = ko.observable(0);
@@ -224,13 +225,14 @@ var qmm012;
                         self.CurrentApplyForDaylyPayEmp(NewValue ? NewValue.applyForDaylyPayEmp : "");
                         self.CurrentApplyForHourlyPayEmp(NewValue ? NewValue.applyForHourlyPayEmp : "");
                         self.CurrentAvePayAtr(NewValue ? NewValue.avePayAtr : "");
-                        self.CurrentlimitMnyAtr(NewValue ? NewValue.limitMnyAtr : "");
+                        self.CurrentLimitMnyAtr(NewValue ? NewValue.limitMnyAtr : "");
+                        self.CurrentLimitMnyRefItemCd(NewValue ? NewValue.limitMnyRefItemCd : "");
                         self.C_SEL_013_Selected(NewValue ? NewValue.errRangeHighAtr == 0 ? false : true : false);
                         self.C_SEL_014_Selected(NewValue ? NewValue.alRangeHighAtr == 0 ? false : true : false);
                         self.C_SEL_015_Selected(NewValue ? NewValue.errRangeLowAtr == 0 ? false : true : false);
                         self.C_SEL_016_Selected(NewValue ? NewValue.alRangeLowAtr == 0 ? false : true : false);
                     });
-                    self.CurrentlimitMnyAtr.subscribe(function (newValue) {
+                    self.CurrentLimitMnyAtr.subscribe(function (newValue) {
                         $('#C_Div_002').hide();
                         $('#C_Div_003').hide();
                         switch (newValue) {
