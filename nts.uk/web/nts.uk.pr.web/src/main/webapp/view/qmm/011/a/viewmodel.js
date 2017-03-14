@@ -18,6 +18,7 @@ var nts;
                         var TypeHistory = a.service.model.TypeHistory;
                         var AccidentInsuranceHistoryDto = a.service.model.AccidentInsuranceHistoryDto;
                         var TypeActionInsuranceRate = a.service.model.TypeActionInsuranceRate;
+                        var UnemployeeInsuranceRateCopyDto = a.service.model.UnemployeeInsuranceRateCopyDto;
                         var viewmodel;
                         (function (viewmodel) {
                             var ScreenModel = (function () {
@@ -90,16 +91,29 @@ var nts;
                                         if (addHistoryInfoModel != null && addHistoryInfoModel != undefined) {
                                             var UnemployeeInsuranceHistoryDto;
                                             UnemployeeInsuranceHistoryDto = new HistoryInsuranceInDto();
+                                            var unemployeeInsuranceRateCopyDto;
+                                            unemployeeInsuranceRateCopyDto = new UnemployeeInsuranceRateCopyDto();
+                                            unemployeeInsuranceRateCopyDto.historyIdCopy = self.selectionUnemployeeInsuranceRateHistory();
+                                            unemployeeInsuranceRateCopyDto.startMonth = addHistoryInfoModel.starMonth;
                                             if (addHistoryInfoModel.typeModel == 2) {
                                                 self.resetValueUnemployeeInsuranceRate();
+                                                unemployeeInsuranceRateCopyDto.addNew = true;
+                                                a.service.copyUnemployeeInsuranceRate(unemployeeInsuranceRateCopyDto).done(function (data) {
+                                                    self.typeActionUnemployeeInsurance(TypeActionInsuranceRate.add);
+                                                    self.reloadDataUnemployeeInsuranceRateByAction();
+                                                }).fail(function (error) {
+                                                    self.showMessageSaveUnemployeeInsurance(error.message);
+                                                });
                                             }
-                                            UnemployeeInsuranceHistoryDto.historyId = '';
-                                            UnemployeeInsuranceHistoryDto.startMonth = addHistoryInfoModel.starMonth;
-                                            UnemployeeInsuranceHistoryDto.endMonth = 999912;
-                                            self.unemployeeInsuranceRateModel().setHistoryData(UnemployeeInsuranceHistoryDto);
-                                            self.unemployeeInsuranceRateModel().unemployeeInsuranceHistoryModel.setMonthRage(addHistoryInfoModel.starMonth, 999912);
-                                            self.typeActionUnemployeeInsurance(TypeActionInsuranceRate.add);
-                                            self.isEnableSaveUnemployeeInsurance(true);
+                                            else {
+                                                unemployeeInsuranceRateCopyDto.addNew = false;
+                                                a.service.copyUnemployeeInsuranceRate(unemployeeInsuranceRateCopyDto).done(function (data) {
+                                                    self.typeActionUnemployeeInsurance(TypeActionInsuranceRate.add);
+                                                    self.reloadDataUnemployeeInsuranceRateByAction();
+                                                }).fail(function (error) {
+                                                    self.showMessageSaveUnemployeeInsurance(error.message);
+                                                });
+                                            }
                                         }
                                     });
                                 };

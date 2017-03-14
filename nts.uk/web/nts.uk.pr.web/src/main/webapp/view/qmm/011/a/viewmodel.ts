@@ -19,6 +19,7 @@ module nts.uk.pr.view.qmm011.a {
     import InsuBizRateItemDto = service.model.InsuBizRateItemDto;
     import TypeActionInsuranceRate = service.model.TypeActionInsuranceRate;
     import InsuranceBusinessTypeDto = service.model.InsuranceBusinessTypeDto;
+    import UnemployeeInsuranceRateCopyDto = service.model.UnemployeeInsuranceRateCopyDto;
     import InsuranceBusinessTypeUpdateModel = nts.uk.pr.view.qmm011.e.viewmodel.InsuranceBusinessTypeUpdateModel;
     import AddHistoryInfoModel = nts.uk.pr.view.qmm011.d.viewmodel.AddHistoryInfoModel;
     import UpdateHistoryInfoModel = nts.uk.pr.view.qmm011.f.viewmodel.UpdateHistoryInfoModel;
@@ -145,21 +146,30 @@ module nts.uk.pr.view.qmm011.a {
                     if (addHistoryInfoModel != null && addHistoryInfoModel != undefined) {
                         var UnemployeeInsuranceHistoryDto: HistoryInsuranceInDto;
                         UnemployeeInsuranceHistoryDto = new HistoryInsuranceInDto();
-
+                        var unemployeeInsuranceRateCopyDto: UnemployeeInsuranceRateCopyDto;
+                        unemployeeInsuranceRateCopyDto = new UnemployeeInsuranceRateCopyDto();
+                        unemployeeInsuranceRateCopyDto.historyIdCopy = self.selectionUnemployeeInsuranceRateHistory();
+                        unemployeeInsuranceRateCopyDto.startMonth = addHistoryInfoModel.starMonth;
                         if (addHistoryInfoModel.typeModel == 2) {
                             //(1) => reset data
                             self.resetValueUnemployeeInsuranceRate();
-                        }
 
-                        // (1) => update data history
-                        UnemployeeInsuranceHistoryDto.historyId = '';
-                        UnemployeeInsuranceHistoryDto.startMonth = addHistoryInfoModel.starMonth;
-                        UnemployeeInsuranceHistoryDto.endMonth = 999912;
-                        self.unemployeeInsuranceRateModel().setHistoryData(UnemployeeInsuranceHistoryDto);
-                        self.unemployeeInsuranceRateModel().unemployeeInsuranceHistoryModel.setMonthRage(addHistoryInfoModel.starMonth, 999912);
-                        //set action add
-                        self.typeActionUnemployeeInsurance(TypeActionInsuranceRate.add);
-                        self.isEnableSaveUnemployeeInsurance(true);
+                            unemployeeInsuranceRateCopyDto.addNew = true;
+                            service.copyUnemployeeInsuranceRate(unemployeeInsuranceRateCopyDto).done(data => {
+                                self.typeActionUnemployeeInsurance(TypeActionInsuranceRate.add);
+                                self.reloadDataUnemployeeInsuranceRateByAction();
+                            }).fail(function(error) {
+                                self.showMessageSaveUnemployeeInsurance(error.message)
+                            });
+                        } else {
+                            unemployeeInsuranceRateCopyDto.addNew = false;
+                            service.copyUnemployeeInsuranceRate(unemployeeInsuranceRateCopyDto).done(data => {
+                                self.typeActionUnemployeeInsurance(TypeActionInsuranceRate.add);
+                                self.reloadDataUnemployeeInsuranceRateByAction();
+                            }).fail(function(error) {
+                                self.showMessageSaveUnemployeeInsurance(error.message)
+                            });
+                        }
                     }
                 });
             }

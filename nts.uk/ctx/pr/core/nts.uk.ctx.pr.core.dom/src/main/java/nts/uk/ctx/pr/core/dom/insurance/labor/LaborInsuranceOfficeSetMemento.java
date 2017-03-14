@@ -6,9 +6,15 @@ package nts.uk.ctx.pr.core.dom.insurance.labor;
 
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.Address;
+import nts.uk.ctx.pr.core.dom.insurance.CitySign;
 import nts.uk.ctx.pr.core.dom.insurance.KanaAddress;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
+import nts.uk.ctx.pr.core.dom.insurance.OfficeMark;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeName;
+import nts.uk.ctx.pr.core.dom.insurance.OfficeNoA;
+import nts.uk.ctx.pr.core.dom.insurance.OfficeNoB;
+import nts.uk.ctx.pr.core.dom.insurance.OfficeNoC;
+import nts.uk.ctx.pr.core.dom.insurance.PhoneNumber;
 import nts.uk.ctx.pr.core.dom.insurance.PicName;
 import nts.uk.ctx.pr.core.dom.insurance.PicPosition;
 import nts.uk.ctx.pr.core.dom.insurance.PotalCode;
@@ -112,42 +118,42 @@ public interface LaborInsuranceOfficeSetMemento {
 	 *
 	 * @param phoneNumber the new phone number
 	 */
-	void setPhoneNumber(String phoneNumber);
+	void setPhoneNumber(PhoneNumber phoneNumber);
 
 	/**
 	 * Sets the city sign.
 	 *
 	 * @param citySign the new city sign
 	 */
-	void setCitySign(String citySign);
+	void setCitySign(CitySign citySign);
 
 	/**
 	 * Sets the office mark.
 	 *
 	 * @param officeMark the new office mark
 	 */
-	void setOfficeMark(String officeMark);
+	void setOfficeMark(OfficeMark officeMark);
 
 	/**
 	 * Sets the office no A.
 	 *
 	 * @param officeNoA the new office no A
 	 */
-	void setOfficeNoA(String officeNoA);
+	void setOfficeNoA(OfficeNoA officeNoA);
 
 	/**
 	 * Sets the office no B.
 	 *
 	 * @param officeNoB the new office no B
 	 */
-	void setOfficeNoB(String officeNoB);
+	void setOfficeNoB(OfficeNoB officeNoB);
 
 	/**
 	 * Sets the office no C.
 	 *
 	 * @param officeNoC the new office no C
 	 */
-	void setOfficeNoC(String officeNoC);
+	void setOfficeNoC(OfficeNoC officeNoC);
 
 	/**
 	 * Sets the memo.
