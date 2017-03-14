@@ -18,6 +18,7 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.CommonAmount;
 import nts.uk.ctx.pr.core.dom.insurance.InsuranceAmount;
+import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
 import nts.uk.ctx.pr.core.dom.insurance.PaymentType;
 import nts.uk.ctx.pr.core.dom.insurance.avgearn.AvgEarnLevelMasterSetting;
 import nts.uk.ctx.pr.core.dom.insurance.avgearn.AvgEarnLevelMasterSettingRepository;
@@ -69,14 +70,15 @@ public class RegisterPensionCommandHandler extends CommandHandler<RegisterPensio
 
 		// Get the current company code.
 		CompanyCode companyCode = new CompanyCode(AppContexts.user().companyCode());
-
+		OfficeCode officeCode = new OfficeCode(command.getOfficeCode());
+		
 		// Transfer data
 		PensionRate pensionRate = command.toDomain(companyCode);
 		pensionRate.validate();
 		// Validate
 		pensionRateService.validateDateRange(pensionRate);
 		pensionRateService.validateRequiredItem(pensionRate);
-
+		pensionRateService.createInitalHistory(companyCode.v(),officeCode.v(), pensionRate.getStart());
 		// Insert into db.
 		pensionRateRepository.add(pensionRate);
 

@@ -10,6 +10,7 @@ import java.util.Set;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.primitive.PrimitiveValue;
 import nts.arc.time.YearMonth;
@@ -172,6 +173,10 @@ public class PensionRate extends AggregateRoot implements History<PensionRate> {
 	 */
 	@Override
 	public PensionRate copyWithDate(YearMonth start) {
+		if(this.applyRange.getStartMonth().equals(start))
+		{
+			throw new BusinessException("ER011");
+		}
 		PensionRate newPensionRate = new PensionRate();
 		newPensionRate.companyCode = this.companyCode;
 		newPensionRate.officeCode = this.officeCode;
