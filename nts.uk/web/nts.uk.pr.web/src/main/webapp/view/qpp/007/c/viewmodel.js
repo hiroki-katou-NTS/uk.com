@@ -87,13 +87,28 @@ var nts;
                                     this.categorySettings.push(new CategorySetting());
                                     this.categorySettings.push(new CategorySetting());
                                     this.categorySettings.push(new CategorySetting());
+                                    for (var i = 1; i < 15; i++) {
+                                        this.categorySettings()[2].outputItems.push({
+                                            code: i,
+                                            name: 'name' + i,
+                                            isAggregateItem: false,
+                                            removable: true
+                                        });
+                                        this.categorySettings()[3].outputItems.push({
+                                            code: i + 1,
+                                            name: 'name' + i + 1,
+                                            isAggregateItem: false,
+                                            removable: true
+                                        });
+                                    }
+                                    ;
                                     this.categorySettingTabs = ko.observableArray([
-                                        { id: SalaryCategory.SUPPLY, title: '支給', content: '#supply', enable: ko.observable(true), visible: ko.observable(true) },
+                                        { id: SalaryCategory.PAYMENT, title: '支給', content: '#payment', enable: ko.observable(true), visible: ko.observable(true) },
                                         { id: SalaryCategory.DEDUCTION, title: '控除', content: '#deduction', enable: ko.observable(true), visible: ko.observable(true) },
                                         { id: SalaryCategory.ATTENDANCE, title: '勤怠', content: '#attendance', enable: ko.observable(true), visible: ko.observable(true) },
                                         { id: SalaryCategory.ARTICLE_OTHERS, title: '記事・その他', content: '#article-others', enable: ko.observable(true), visible: ko.observable(true) }
                                     ]);
-                                    this.selectedCategory = ko.observable(SalaryCategory.SUPPLY);
+                                    this.selectedCategory = ko.observable(SalaryCategory.PAYMENT);
                                     var self = this;
                                     self.categorySettings().forEach(function (setting) {
                                         setting.outputItems.subscribe(function (newValue) {
@@ -101,18 +116,23 @@ var nts;
                                         });
                                     });
                                 }
+                                OutputSettingDetailModel.prototype.afterRender = function () {
+                                    $('.master-table-label').width($('#swap-list-gridArea1').width());
+                                    $('.sub-table-label').width($('#swap-list-gridArea2').width());
+                                };
                                 return OutputSettingDetailModel;
                             }());
                             viewmodel.OutputSettingDetailModel = OutputSettingDetailModel;
                             var CategorySetting = (function () {
                                 function CategorySetting() {
                                     var self = this;
-                                    self.outputItems = ko.observableArray([]);
                                     self.aggregateItems = ko.observableArray([]);
-                                    self.masterItems = ko.observableArray([]);
-                                    self.outputItemSelected = ko.observable(null);
                                     self.aggregateItemsSelected = ko.observableArray([]);
+                                    self.masterItems = ko.observableArray([]);
                                     self.masterItemsSelected = ko.observableArray([]);
+                                    self.outputItems = ko.observableArray([]);
+                                    self.outputItemSelected = ko.observable(null);
+                                    self.outputItemsSelected = ko.observableArray([]);
                                     for (var i = 1; i < 15; i++) {
                                         this.aggregateItems.push({ code: '00' + i, name: '基本給' + i, subsItem: [], taxDivision: 'Payment', value: i });
                                     }
@@ -131,7 +151,8 @@ var nts;
                                         },
                                         { headerText: 'コード', prop: 'code', width: 50 },
                                         { headerText: '名称', prop: 'name', width: 60 },
-                                        { headerText: '削除', prop: 'code', width: 60,
+                                        {
+                                            headerText: '削除', prop: 'code', width: 60,
                                             formatter: function (code) {
                                                 return '<div class="halign-center"><button class="icon icon-close" id="' + code + '" >'
                                                     + '</button></div>';
@@ -241,7 +262,7 @@ var nts;
                             var SalaryCategory = (function () {
                                 function SalaryCategory() {
                                 }
-                                SalaryCategory.SUPPLY = 'Supply';
+                                SalaryCategory.PAYMENT = 'Payment';
                                 SalaryCategory.PAYMENT_TOTAL = 'PaymentTotal';
                                 SalaryCategory.DEDUCTION = 'Deduction';
                                 SalaryCategory.DEDUCTION_TABULATION = 'DeductionTabulation';

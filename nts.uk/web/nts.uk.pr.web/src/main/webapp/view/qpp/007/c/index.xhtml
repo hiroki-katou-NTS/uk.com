@@ -78,20 +78,20 @@
 					<div id="tab-panel"
 						data-bind="ntsTabPanel: { dataSource: categorySettingTabs, active: selectedCategory}">
 						<!-- Salary payment Tab -->
-						<div id="supply" data-bind="if: selectedCategory() == 'Supply'">
-							<com:ko tag="template" bind="{name: 'tab-template', data: categorySettings()[0]}"></com:ko>
+						<div id="payment" data-bind="if: selectedCategory() == 'Payment'">
+							<com:ko tag="template" bind="{name: 'tab-template1', data: categorySettings()[0]}"></com:ko>
 						</div>
 						<!-- Salary deduction Tab -->
 						<div id="deduction" data-bind="if: selectedCategory() == 'Deduction'">
-							<com:ko tag="template" bind="{name: 'tab-template', data: categorySettings()[1]}"></com:ko>
+							<com:ko tag="template" bind="{name: 'tab-template1', data: categorySettings()[1]}"></com:ko>
 						</div>
 						<!-- Salary attendance Tab -->
 						<div id="attendance" data-bind="if: selectedCategory() == 'Attendance'">
-							<com:ko tag="template" bind="{name: 'tab-template', data: categorySettings()[2]}"></com:ko>
+							<com:ko tag="template" bind="{name: 'tab-template2', data: categorySettings()[2], afterRender: afterRender}"></com:ko>
 						</div>
 						<!-- Bonus payment Tab -->
 						<div id="article-others" data-bind="if: selectedCategory() == 'ArticleOthers'">
-							<com:ko tag="template" bind="{name: 'tab-template', data: categorySettings()[3]}"></com:ko>
+							<com:ko tag="template" bind="{name: 'tab-template2', data: categorySettings()[3], afterRender: afterRender}"></com:ko>
 						</div>
 					</div>
 					<!-- END TAB PANEL -->
@@ -108,11 +108,10 @@
 							data-bind="ntsGridList: {
 							height: 500,
 							width: 300,
-							dataSource: reportItems,
+							options: reportItems,
 							primaryKey: 'code',
 							columns: reportItemColumns,
-							value: reportItemSelected
-						}"
+							value: reportItemSelected}"
 							class="cf"></table>
 					</div>
 				</div>
@@ -121,7 +120,7 @@
 			<!-- END CONTENT AREA-->
 
 			<!-- TAB TEMPLATE -->
-			<script type="text/html" id="tab-template">
+			<script type="text/html" id="tab-template1">
 							<table>
 							    <tr>
 							        <td>
@@ -190,6 +189,30 @@
 							        </td>
 							    </tr>
 							</table>
+			</script>
+			<script type="text/html" id="tab-template2">
+				<div class="swaplist-label">
+					<div class="master-table-label">
+						<div data-bind="ntsFormLabel: {}">選択できる給与支給項目</div>
+						<div class="head-end"></div>
+					</div>
+					<div class="sub-table-label">
+						<div data-bind="ntsFormLabel: {}">集約する給与支給項目</div>
+						<div class="head-end"></div>
+					</div>
+				</div>
+				<div id="swap-list" data-bind="ntsSwapList: {
+					showSearchBox: { showLeft : false, showRight: false},
+					height: 500,
+					width: 750,
+					dataSource: outputItems,
+					primaryKey: 'code',
+					columns: ko.observableArray([
+						{headerText: 'コード', prop: 'code', width: 50},
+						{headerText: '名称', prop: 'name', width: 70}
+					]),
+					value: outputItemsSelected}">
+				</div>
 			</script>
 		</ui:define>
 	</ui:composition>

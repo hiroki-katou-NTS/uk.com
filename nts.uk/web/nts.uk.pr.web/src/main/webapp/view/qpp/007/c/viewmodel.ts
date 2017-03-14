@@ -81,6 +81,7 @@ module nts.uk.pr.view.qpp007.c {
             public commonSettingBtnClick() {
                 nts.uk.ui.windows.sub.modal('/view/qpp/007/j/index.xhtml', { title: '集計項目の設定', dialogClass: 'no-close' });
             }
+
         }
         export class ItemModel {
             code: string;
@@ -108,13 +109,27 @@ module nts.uk.pr.view.qpp007.c {
                 this.categorySettings = ko.observableArray<CategorySetting>([]);
                 this.categorySettings.push(new CategorySetting()); this.categorySettings.push(new CategorySetting());
                 this.categorySettings.push(new CategorySetting()); this.categorySettings.push(new CategorySetting());
+                for (let i = 1; i < 15; i++) {
+                    this.categorySettings()[2].outputItems.push({
+                        code: i,
+                        name: 'name' + i,
+                        isAggregateItem: false,
+                        removable: true
+                    });
+                    this.categorySettings()[3].outputItems.push({
+                        code: i+1,
+                        name: 'name' + i+1,
+                        isAggregateItem: false,
+                        removable: true
+                    });
+                };
                 this.categorySettingTabs = ko.observableArray<nts.uk.ui.NtsTabPanelModel>([
-                    { id: SalaryCategory.SUPPLY, title: '支給', content: '#supply', enable: ko.observable(true), visible: ko.observable(true) },
+                    { id: SalaryCategory.PAYMENT, title: '支給', content: '#payment', enable: ko.observable(true), visible: ko.observable(true) },
                     { id: SalaryCategory.DEDUCTION, title: '控除', content: '#deduction', enable: ko.observable(true), visible: ko.observable(true) },
                     { id: SalaryCategory.ATTENDANCE, title: '勤怠', content: '#attendance', enable: ko.observable(true), visible: ko.observable(true) },
                     { id: SalaryCategory.ARTICLE_OTHERS, title: '記事・その他', content: '#article-others', enable: ko.observable(true), visible: ko.observable(true) }
                 ]);
-                this.selectedCategory = ko.observable(SalaryCategory.SUPPLY);
+                this.selectedCategory = ko.observable(SalaryCategory.PAYMENT);
                 var self = this;
                 self.categorySettings().forEach((setting) => {
                     setting.outputItems.subscribe((newValue) => {
@@ -122,24 +137,35 @@ module nts.uk.pr.view.qpp007.c {
                     });
                 });
             }
+
+            /**
+             * Change swaplist's width after render
+             */
+            public afterRender() {
+                $('.master-table-label').width($('#swap-list-gridArea1').width());
+                $('.sub-table-label').width($('#swap-list-gridArea2').width());
+            }
+
         }
 
         export class CategorySetting {
-            outputItems: KnockoutObservableArray<OutputItem>;
             aggregateItems: KnockoutObservableArray<AggregateItem>;
-            masterItems: KnockoutObservableArray<MasterItem>;
             aggregateItemsSelected: KnockoutObservableArray<string>;
+            masterItems: KnockoutObservableArray<MasterItem>;
             masterItemsSelected: KnockoutObservableArray<string>;
+            outputItems: KnockoutObservableArray<OutputItem>;
             outputItemSelected: KnockoutObservable<string>;
+            outputItemsSelected: KnockoutObservableArray<string>;
             outputItemColumns: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
             constructor() {
                 var self = this;
-                self.outputItems = ko.observableArray<OutputItem>([]);
                 self.aggregateItems = ko.observableArray<AggregateItem>([]);
-                self.masterItems = ko.observableArray<MasterItem>([]);
-                self.outputItemSelected = ko.observable(null);
                 self.aggregateItemsSelected = ko.observableArray<string>([]);
+                self.masterItems = ko.observableArray<MasterItem>([]);
                 self.masterItemsSelected = ko.observableArray<string>([]);
+                self.outputItems = ko.observableArray<OutputItem>([]);
+                self.outputItemSelected = ko.observable(null);
+                self.outputItemsSelected = ko.observableArray<string>([]);
 
                 // mock data
                 for (let i = 1; i < 15; i++) {
@@ -162,7 +188,8 @@ module nts.uk.pr.view.qpp007.c {
                     },
                     { headerText: 'コード', prop: 'code', width: 50 },
                     { headerText: '名称', prop: 'name', width: 60 },
-                    {headerText: '削除', prop: 'code', width: 60,
+                    {
+                        headerText: '削除', prop: 'code', width: 60,
                         formatter: function(code: string) {
                             return '<div class="halign-center"><button class="icon icon-close" id="' + code + '" >'
                                 + '</button></div>';
@@ -296,7 +323,7 @@ module nts.uk.pr.view.qpp007.c {
             removable: boolean;
         }
         export class SalaryCategory {
-            static SUPPLY = 'Supply';
+            static PAYMENT = 'Payment';
             static PAYMENT_TOTAL = 'PaymentTotal';
             static DEDUCTION = 'Deduction';
             static DEDUCTION_TABULATION = 'DeductionTabulation';
