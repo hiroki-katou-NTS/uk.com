@@ -6,41 +6,54 @@ var qmm012;
         (function (viewmodel) {
             var ScreenModel = (function () {
                 function ScreenModel() {
+                    //Checkbox
+                    //D_003
+                    this.checked_D_003 = ko.observable(false);
+                    //D_003
+                    this.checked_D_004 = ko.observable(false);
+                    //D_003
+                    this.checked_D_005 = ko.observable(false);
+                    //D_003
+                    this.checked_D_006 = ko.observable(false);
+                    //D_003
+                    this.checked_D_007 = ko.observable(false);
+                    this.CurrentItemMaster = ko.observable(null);
+                    this.CurrentItemDeduct = ko.observable(null);
+                    this.CurrentAlRangeHigh = ko.observable(0);
+                    this.CurrentAlRangeHighAtr = ko.observable(0);
+                    this.CurrentAlRangeLow = ko.observable(0);
+                    this.CurrentAlRangeLowAtr = ko.observable(0);
+                    this.CurrentDeductAtr = ko.observable(0);
+                    this.CurrentErrRangeHigh = ko.observable(0);
+                    this.CurrentErrRangeHighAtr = ko.observable(0);
+                    this.CurrentErrRangeLow = ko.observable(0);
+                    this.CurrentErrRangeLowAtr = ko.observable(0);
+                    this.CurrentMemo = ko.observable("");
+                    this.CurrentItemDisplayAtr = ko.observable(1);
+                    this.CurrentZeroDisplaySet = ko.observable(0);
                     var self = this;
                     self.isEditable = ko.observable(true);
                     self.isEnable = ko.observable(true);
                     self.enable = ko.observable(true);
-                    self.selectedCode_D_001 = ko.observable('1');
                     self.ComboBoxItemList_D_001 = ko.observableArray([
-                        new ComboboxItemModel('1', '莉ｻ諢乗而髯､鬆�逶ｮ'),
-                        new ComboboxItemModel('2', '遉ｾ莨壻ｿ晞匱鬆�逶ｮ'),
-                        new ComboboxItemModel('3', '謇�蠕礼ｨ朱��逶ｮ'),
-                        new ComboboxItemModel('4', '菴乗ｰ醍ｨ朱��逶ｮ')
+                        new ComboboxItemModel(0, '任意控除項目'),
+                        new ComboboxItemModel(1, '社会保険項目'),
+                        new ComboboxItemModel(2, '所得税項目'),
+                        new ComboboxItemModel(3, '住民税項目')
                     ]);
-                    self.selectedCode_D_001 = ko.observable('1');
                     //end combobox data
-                    //D_003
-                    self.checked_D_003 = ko.observable(true);
-                    //D_004
-                    self.checked_D_004 = ko.observable(true);
-                    //D_005
-                    self.checked_D_005 = ko.observable(true);
-                    //D_006
-                    self.checked_D_006 = ko.observable(true);
-                    //D_006
-                    self.checked_D_007 = ko.observable(true);
                     //D_002
                     self.roundingRules_D_002 = ko.observableArray([
-                        { code: '1', name: '繧ｼ繝ｭ繧定｡ｨ遉ｺ縺吶ｋ' },
-                        { code: '2', name: '繧ｼ繝ｭ繧定｡ｨ遉ｺ縺励↑縺�' }
+                        { code: 0, name: 'ゼロを表示する' },
+                        { code: 1, name: 'ゼロを表示しない' }
                     ]);
-                    self.selectedRuleCode_D_002 = ko.observable(1);
+                    //currencyeditor
+                    //001
                     self.currencyeditor_D_001 = {
-                        value: ko.observable(),
+                        value: self.CurrentErrRangeHigh,
                         constraint: '',
                         option: ko.mapping.fromJS(new nts.uk.ui.option.CurrencyEditorOption({
                             grouplength: 3,
-                            decimallength: 2,
                             currencyformat: "JPY",
                             currencyposition: 'right'
                         })),
@@ -48,9 +61,92 @@ var qmm012;
                         enable: ko.observable(true),
                         readonly: ko.observable(false)
                     };
-                    //start textarea
-                    self.textArea_D_005 = ko.observable("");
+                    //002
+                    self.currencyeditor_D_002 = {
+                        value: self.CurrentAlRangeHigh,
+                        constraint: '',
+                        option: ko.mapping.fromJS(new nts.uk.ui.option.CurrencyEditorOption({
+                            grouplength: 3,
+                            currencyformat: "JPY",
+                            currencyposition: 'right'
+                        })),
+                        required: ko.observable(false),
+                        enable: ko.observable(true),
+                        readonly: ko.observable(false)
+                    };
+                    //003
+                    self.currencyeditor_D_003 = {
+                        value: self.CurrentErrRangeLow,
+                        constraint: '',
+                        option: ko.mapping.fromJS(new nts.uk.ui.option.CurrencyEditorOption({
+                            grouplength: 3,
+                            currencyformat: "JPY",
+                            currencyposition: 'right'
+                        })),
+                        required: ko.observable(false),
+                        enable: ko.observable(true),
+                        readonly: ko.observable(false)
+                    };
+                    //004
+                    self.currencyeditor_D_004 = {
+                        value: self.CurrentAlRangeLow,
+                        constraint: '',
+                        option: ko.mapping.fromJS(new nts.uk.ui.option.CurrencyEditorOption({
+                            grouplength: 3,
+                            currencyformat: "JPY",
+                            currencyposition: 'right'
+                        })),
+                        required: ko.observable(false),
+                        enable: ko.observable(true),
+                        readonly: ko.observable(false)
+                    };
+                    self.CurrentItemMaster.subscribe(function (ItemMaster) {
+                        d.service.findItemDeduct(ItemMaster.itemCode).done(function (ItemDeduct) {
+                            self.CurrentItemDeduct(ItemDeduct);
+                            self.checked_D_003(ItemMaster ? ItemMaster.itemDisplayAtr == 0 ? false : true : false);
+                            self.CurrentZeroDisplaySet(ItemMaster.zeroDisplaySet);
+                        }).fail(function (res) {
+                            // Alert message
+                            alert(res);
+                        });
+                    });
+                    self.CurrentItemDeduct.subscribe(function (ItemDeduct) {
+                        self.CurrentAlRangeHigh(ItemDeduct ? ItemDeduct.alRangeHigh : 0);
+                        self.CurrentAlRangeLow(ItemDeduct ? ItemDeduct.alRangeLow : 0);
+                        self.CurrentAlRangeLowAtr(ItemDeduct ? ItemDeduct.alRangeLowAtr : 0);
+                        self.CurrentDeductAtr(ItemDeduct ? ItemDeduct.deductAtr : 0);
+                        self.CurrentErrRangeHigh(ItemDeduct ? ItemDeduct.errRangeHigh : 0);
+                        self.CurrentErrRangeLow(ItemDeduct ? ItemDeduct.errRangeLow : 0);
+                        self.CurrentMemo(ItemDeduct ? ItemDeduct.memo : "");
+                        self.checked_D_004(ItemDeduct ? ItemDeduct.errRangeHighAtr == 0 ? false : true : false);
+                        self.checked_D_005(ItemDeduct ? ItemDeduct.alRangeHighAtr == 0 ? false : true : false);
+                        self.checked_D_006(ItemDeduct ? ItemDeduct.errRangeLowAtr == 0 ? false : true : false);
+                        self.checked_D_007(ItemDeduct ? ItemDeduct.alRangeLowAtr == 0 ? false : true : false);
+                    });
+                    self.checked_D_003.subscribe(function (NewValue) {
+                        self.CurrentItemDisplayAtr(NewValue == true ? 1 : 0);
+                    });
+                    self.checked_D_004.subscribe(function (NewValue) {
+                        self.CurrentErrRangeHighAtr(NewValue == true ? 1 : 0);
+                    });
+                    self.checked_D_005.subscribe(function (NewValue) {
+                        self.CurrentAlRangeHighAtr(NewValue == true ? 1 : 0);
+                    });
+                    self.checked_D_006.subscribe(function (NewValue) {
+                        self.CurrentErrRangeLowAtr(NewValue == true ? 1 : 0);
+                    });
+                    self.checked_D_007.subscribe(function (NewValue) {
+                        self.CurrentAlRangeLowAtr(NewValue == true ? 1 : 0);
+                    });
                 }
+                ScreenModel.prototype.openHDialog = function () {
+                    nts.uk.ui.windows.sub.modal('../h/index.xhtml', { height: 570, width: 735, dialogClass: "no-close" }).onClosed(function () {
+                    });
+                };
+                ScreenModel.prototype.openIDialog = function () {
+                    nts.uk.ui.windows.sub.modal('../i/index.xhtml', { height: 600, width: 1015, dialogClass: "no-close" }).onClosed(function () {
+                    });
+                };
                 return ScreenModel;
             }());
             viewmodel.ScreenModel = ScreenModel;

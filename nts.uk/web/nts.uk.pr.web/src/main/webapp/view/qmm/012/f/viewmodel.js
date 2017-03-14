@@ -6,6 +6,7 @@ var qmm012;
         (function (viewmodel) {
             var ScreenModel = (function () {
                 function ScreenModel() {
+                    this.CurrentItemMaster = ko.observable(null);
                     var self = this;
                     self.enable = ko.observable(true);
                     //F_005

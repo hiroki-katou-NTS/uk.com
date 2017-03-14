@@ -67,13 +67,6 @@ var qmm012;
                         self.GridCurrentCategoryAtrName_B_001(itemModel ? itemModel.categoryAtrName : '');
                         if (self.GridlistCurrentCode_B_001()) {
                             self.enable_B_INP_002(false);
-                            b.service.findItemperiod(self.GridCurrentCategoryAtr_B_001(), self.GridlistCurrentCode_B_001()).done(function (PeriodItem) {
-                                self.screenModel.screenModelC.CurrentItemPeriod(PeriodItem);
-                                self.screenModel.screenModelC.CurrentItemMaster(self.GridlistCurrentItem_B_001());
-                            }).fail(function (res) {
-                                // Alert message
-                                alert(res);
-                            });
                         }
                     });
                     self.GridCurrentCategoryAtr_B_001.subscribe(function (newValue) {
@@ -85,15 +78,19 @@ var qmm012;
                         switch (newValue) {
                             case 0:
                                 $('#screenC').show();
+                                self.screenModel.screenModelC.CurrentItemMaster(self.GridlistCurrentItem_B_001());
                                 break;
                             case 1:
                                 $('#screenD').show();
+                                self.screenModel.screenModelD.CurrentItemMaster(self.GridlistCurrentItem_B_001());
                                 break;
                             case 2:
                                 $('#screenE').show();
+                                self.screenModel.screenModelE.CurrentItemMaster(self.GridlistCurrentItem_B_001());
                                 break;
                             case 3:
                                 $('#screenF').show();
+                                self.screenModel.screenModelF.CurrentItemMaster(self.GridlistCurrentItem_B_001());
                                 break;
                         }
                     });
@@ -103,7 +100,7 @@ var qmm012;
                             self.GridlistItems_B_001.push(item);
                         }
                         if (self.GridlistItems_B_001().length > 0)
-                            self.GridlistCurrentCode_B_001(self.GridlistItems_B_001()[0].itemCode);
+                            self.GridlistCurrentCode_B_001(self.GridlistItems_B_001()[1].itemCode);
                     }).fail(function (res) {
                         // Alert message
                         alert(res);

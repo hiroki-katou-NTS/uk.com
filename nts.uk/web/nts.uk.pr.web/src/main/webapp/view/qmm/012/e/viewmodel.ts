@@ -20,6 +20,7 @@ module qmm012.e.viewmodel {
         selectedRuleCode_E_002: any;
         selectedRuleCode_E_003: any;
         textArea_E_005: any;
+        CurrentItemMaster: KnockoutObservable<qmm012.b.service.model.ItemMasterModel> = ko.observable(null);
         constructor() {
             let self = this;
             //E_004

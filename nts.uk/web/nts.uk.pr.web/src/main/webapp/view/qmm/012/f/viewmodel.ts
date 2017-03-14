@@ -6,6 +6,7 @@ module qmm012.f.viewmodel {
         //F 001
         roundingRules_F_001: KnockoutObservableArray<any>;
         selectedRuleCode_F_001: any;
+        CurrentItemMaster: KnockoutObservable<qmm012.b.service.model.ItemMasterModel> = ko.observable(null);
         constructor() {
             let self = this;
             self.enable = ko.observable(true);
@@ -18,6 +19,6 @@ module qmm012.f.viewmodel {
             ]);
             self.selectedRuleCode_F_001 = ko.observable(1);
         }
-      
+
     }
 }

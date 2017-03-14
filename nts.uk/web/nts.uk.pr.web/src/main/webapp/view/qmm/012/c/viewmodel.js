@@ -182,8 +182,14 @@ var qmm012;
                         }
                     });
                     self.CurrentItemMaster.subscribe(function (ItemMaster) {
-                        self.CurrentZeroDisplaySet(ItemMaster.zeroDisplaySet);
-                        self.C_SEL_012_Selected(ItemMaster.itemDisplayAtr == 0 ? false : true);
+                        c.service.findItemSalary(ItemMaster.itemCode).done(function (ItemSalary) {
+                            self.CurrentItemSalary(ItemSalary);
+                            self.CurrentZeroDisplaySet(ItemMaster.zeroDisplaySet);
+                            self.C_SEL_012_Selected(ItemMaster.itemDisplayAtr == 0 ? false : true);
+                        }).fail(function (res) {
+                            // Alert message
+                            alert(res);
+                        });
                     });
                     self.C_SEL_012_Selected.subscribe(function (NewValue) {
                         self.CurrentItemDisplayAtr(NewValue ? 1 : 0);
@@ -200,14 +206,9 @@ var qmm012;
                     self.C_SEL_016_Selected.subscribe(function (NewValue) {
                         self.CurrentAlRangeLowAtr(NewValue ? 1 : 0);
                     });
-                    self.CurrentItemPeriod.subscribe(function (ItemPeriod) {
-                        c.service.findItemSalary(ItemPeriod.itemCode).done(function (ItemSalary) {
-                            self.CurrentItemSalary(ItemSalary);
-                        }).fail(function (res) {
-                            // Alert message
-                            alert(res);
-                        });
-                    });
+                    //            self.CurrentItemPeriod.subscribe(function(ItemPeriod: qmm012.b.service.model.ItemPeriodModel) {
+                    //               
+                    //            });
                     self.CurrentItemSalary.subscribe(function (NewValue) {
                         self.CurrentLimitMny(NewValue ? NewValue.limitMny : "");
                         self.CurrentErrRangeHigh(NewValue ? NewValue.errRangeHigh : "");

@@ -213,9 +213,14 @@ module qmm012.c.viewmodel {
                 }
             });
             self.CurrentItemMaster.subscribe(function(ItemMaster: qmm012.b.service.model.ItemMasterModel) {
-                self.CurrentZeroDisplaySet(ItemMaster.zeroDisplaySet);
-                self.C_SEL_012_Selected(ItemMaster.itemDisplayAtr == 0 ? false : true);
-
+                service.findItemSalary(ItemMaster.itemCode).done(function(ItemSalary: service.model.ItemSalaryModel) {
+                    self.CurrentItemSalary(ItemSalary);
+                    self.CurrentZeroDisplaySet(ItemMaster.zeroDisplaySet);
+                    self.C_SEL_012_Selected(ItemMaster.itemDisplayAtr == 0 ? false : true);
+                }).fail(function(res) {
+                    // Alert message
+                    alert(res);
+                });
             });
             self.C_SEL_012_Selected.subscribe(function(NewValue: boolean) {
                 self.CurrentItemDisplayAtr(NewValue ? 1 : 0);
@@ -233,14 +238,9 @@ module qmm012.c.viewmodel {
                 self.CurrentAlRangeLowAtr(NewValue ? 1 : 0);
             });
 
-            self.CurrentItemPeriod.subscribe(function(ItemPeriod: qmm012.b.service.model.ItemPeriodModel) {
-                service.findItemSalary(ItemPeriod.itemCode).done(function(ItemSalary: service.model.ItemSalaryModel) {
-                    self.CurrentItemSalary(ItemSalary);
-                }).fail(function(res) {
-                    // Alert message
-                    alert(res);
-                });
-            });
+            //            self.CurrentItemPeriod.subscribe(function(ItemPeriod: qmm012.b.service.model.ItemPeriodModel) {
+            //               
+            //            });
             self.CurrentItemSalary.subscribe(function(NewValue: service.model.ItemSalaryModel) {
 
                 self.CurrentLimitMny(NewValue ? NewValue.limitMny : "");
