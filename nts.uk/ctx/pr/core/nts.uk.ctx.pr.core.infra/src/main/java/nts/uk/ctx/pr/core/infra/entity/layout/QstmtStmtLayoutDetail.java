@@ -1,6 +1,7 @@
 package nts.uk.ctx.pr.core.infra.entity.layout;
 
 import java.io.Serializable;
+import java.math.BigDecimal;
 import java.util.List;
 
 import javax.persistence.Basic;
@@ -93,7 +94,7 @@ public class QstmtStmtLayoutDetail implements Serializable {
 
 	@Basic(optional = false)
 	@Column(name ="ERR_RANGE_LOW")
-	public int errRangeLow;
+	public BigDecimal errRangeLow;
 
 	@Basic(optional = false)
 	@Column(name ="ERR_RANGE_HIGH_ATR")
@@ -101,7 +102,7 @@ public class QstmtStmtLayoutDetail implements Serializable {
 
 	@Basic(optional = false)
 	@Column(name ="ERR_RANGE_HIGH")
-	public int errRangeHigh;
+	public BigDecimal errRangeHigh;
 
 	@Basic(optional = false)
 	@Column(name ="AL_RANGE_LOW_ATR")
@@ -109,7 +110,7 @@ public class QstmtStmtLayoutDetail implements Serializable {
 
 	@Basic(optional = false)
 	@Column(name ="AL_RANGE_LOW")
-	public int alRangeLow;
+	public BigDecimal alRangeLow;
 
 	@Basic(optional = false)
 	@Column(name ="AL_RANGE_HIGH_ATR")
@@ -117,7 +118,7 @@ public class QstmtStmtLayoutDetail implements Serializable {
 
 	@Basic(optional = false)
 	@Column(name ="AL_RANGE_HIGH")
-	public int alRangeHigh;
+	public BigDecimal alRangeHigh;
 	
 //	@OneToMany(cascade=CascadeType.ALL,mappedBy="layoutDetail")
 //	public List<QstmtStmtLayoutLines> layoutLines;

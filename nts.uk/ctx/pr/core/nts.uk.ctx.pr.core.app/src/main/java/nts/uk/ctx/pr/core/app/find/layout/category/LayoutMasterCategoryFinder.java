@@ -1,7 +1,7 @@
 package nts.uk.ctx.pr.core.app.find.layout.category;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
-import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -58,7 +58,10 @@ public class LayoutMasterCategoryFinder {
 							&& d.getCategoryAtr() == line.getCategoryAtr()
 							&& d.getItemPosColumn() == posColumn).findFirst()
 							.orElse(
-									new LayoutMasterDetailDto(layoutCd, startYm, category.getEndYm(), category.getCategoryAtr(), "itemTemp-" + String.valueOf(i), line.getAutoLineId(), i, "+", 0, "", 0, 0, 0, 0, "", 0, 0, 0, 0, 0, 0, 0, 0));
+									new LayoutMasterDetailDto(layoutCd, startYm, category.getEndYm(), 
+											category.getCategoryAtr(), "itemTemp-" + String.valueOf(i), 
+											line.getAutoLineId(), i, "+", 0, "", 0, 0, 0, 0, "", 
+											0, BigDecimal.ZERO, 0, BigDecimal.ZERO, 0, BigDecimal.ZERO, 0, BigDecimal.ZERO));
 					detail9Items.add(item);
 				}
 				
