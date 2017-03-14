@@ -103,7 +103,7 @@ var qmm012;
                     self.CurrentItemMaster.subscribe(function (ItemMaster) {
                         d.service.findItemDeduct(ItemMaster.itemCode).done(function (ItemDeduct) {
                             self.CurrentItemDeduct(ItemDeduct);
-                            self.checked_D_003(ItemMaster ? ItemMaster.itemDisplayAtr == 0 ? false : true : false);
+                            self.checked_D_003(ItemMaster ? ItemMaster.itemDisplayAtr == 0 ? true : false : false);
                             self.CurrentZeroDisplaySet(ItemMaster.zeroDisplaySet);
                         }).fail(function (res) {
                             // Alert message
@@ -124,7 +124,7 @@ var qmm012;
                         self.checked_D_007(ItemDeduct ? ItemDeduct.alRangeLowAtr == 0 ? false : true : false);
                     });
                     self.checked_D_003.subscribe(function (NewValue) {
-                        self.CurrentItemDisplayAtr(NewValue == true ? 1 : 0);
+                        self.CurrentItemDisplayAtr(NewValue == true ? 0 : 1);
                     });
                     self.checked_D_004.subscribe(function (NewValue) {
                         self.CurrentErrRangeHighAtr(NewValue == true ? 1 : 0);

@@ -116,7 +116,7 @@ module qmm012.b.viewmodel {
                     self.GridlistItems_B_001.push(item);
                 }
                 if(self.GridlistItems_B_001().length>0)
-                    self.GridlistCurrentCode_B_001(self.GridlistItems_B_001()[1].itemCode);
+                    self.GridlistCurrentCode_B_001(self.GridlistItems_B_001()[2].itemCode);
             }).fail(function(res) {
                 // Alert message
                 alert(res);

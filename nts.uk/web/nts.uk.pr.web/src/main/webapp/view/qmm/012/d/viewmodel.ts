@@ -112,7 +112,7 @@ module qmm012.d.viewmodel {
             self.CurrentItemMaster.subscribe(function(ItemMaster: qmm012.b.service.model.ItemMasterModel) {
                 service.findItemDeduct(ItemMaster.itemCode).done(function(ItemDeduct: service.model.ItemDeduct) {
                     self.CurrentItemDeduct(ItemDeduct);
-                    self.checked_D_003(ItemMaster ? ItemMaster.itemDisplayAtr == 0 ? false : true : false);
+                    self.checked_D_003(ItemMaster ? ItemMaster.itemDisplayAtr == 0 ? true : false : false);
                     self.CurrentZeroDisplaySet(ItemMaster.zeroDisplaySet);
                 }).fail(function(res) {
                     // Alert message
@@ -134,7 +134,7 @@ module qmm012.d.viewmodel {
             });
 
             self.checked_D_003.subscribe(function(NewValue) {
-                self.CurrentItemDisplayAtr(NewValue == true ? 1 : 0);
+                self.CurrentItemDisplayAtr(NewValue == true ? 0 : 1);
             });
             self.checked_D_004.subscribe(function(NewValue) {
                 self.CurrentErrRangeHighAtr(NewValue == true ? 1 : 0);

@@ -49,13 +49,13 @@ public class ItemAttend extends AggregateRoot {
 	public static ItemAttend createFromJavaType(int avePayAtr, int itemAtr, int errRangeLowAtr, BigDecimal errRangeLow,
 			int errRangeHighAtr, BigDecimal errRangeHigh, int alRangeLowAtr, BigDecimal alRangeLow, int alRangeHighAtr,
 			BigDecimal alRangeHigh, int workDaysScopeAtr, String memo) {
-		new ItemAttend(EnumAdaptor.valueOf(avePayAtr, AvePayAtr.class), EnumAdaptor.valueOf(itemAtr, ItemAtr.class),
+		return new ItemAttend(EnumAdaptor.valueOf(avePayAtr, AvePayAtr.class),
+				EnumAdaptor.valueOf(itemAtr, ItemAtr.class),
 				EnumAdaptor.valueOf(errRangeLowAtr, RangeAtr.class), new ErrRangeLow(errRangeLow),
 				EnumAdaptor.valueOf(errRangeHighAtr, RangeAtr.class), new ErrRangeHigh(errRangeHigh),
 				EnumAdaptor.valueOf(alRangeLowAtr, RangeAtr.class), new AlRangeLow(alRangeLow),
 				EnumAdaptor.valueOf(alRangeHighAtr, RangeAtr.class), new AlRangeHigh(alRangeHigh),
 				EnumAdaptor.valueOf(workDaysScopeAtr, WorkDaysScopeAtr.class), new Memo(memo));
-		return null;
 	}
 
 }
