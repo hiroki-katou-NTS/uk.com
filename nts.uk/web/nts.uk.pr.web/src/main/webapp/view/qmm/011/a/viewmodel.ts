@@ -317,6 +317,7 @@ module nts.uk.pr.view.qmm011.a {
                     }).fail(function(res) {
                         //show message by exception message
                         self.showMessageSaveUnemployeeInsurance(res.message);
+                        self.reloadDataUnemployeeInsuranceRateByAction();
                     })
                 } else {
                     //type action is update
@@ -329,6 +330,7 @@ module nts.uk.pr.view.qmm011.a {
                     }).fail(function(res) {
                         //show message by exception message
                         self.showMessageSaveUnemployeeInsurance(res.message);
+                        self.reloadDataUnemployeeInsuranceRateByAction();
                     })
                 }
 
@@ -806,14 +808,14 @@ module nts.uk.pr.view.qmm011.a {
         export class UnemployeeInsuranceHistoryModel {
 
             historyId: KnockoutObservable<string>;
-            startMonthRage: KnockoutObservable<string>;
+            startJapStartMonth: KnockoutObservable<string>;
             startMonth: KnockoutObservable<number>;
             endMonth: KnockoutObservable<number>;
             endMonthRage: KnockoutObservable<string>;
 
             constructor() {
                 this.historyId = ko.observable('');
-                this.startMonthRage = ko.observable('');
+                this.startJapStartMonth = ko.observable('');
                 this.endMonthRage = ko.observable('');
                 this.endMonth = ko.observable(0);
                 this.startMonth = ko.observable(0);
@@ -825,10 +827,10 @@ module nts.uk.pr.view.qmm011.a {
                 } else {
                     this.historyId = ko.observable('');
                 }
-                if (this.startMonthRage != null && this.startMonthRage != undefined) {
-                    this.startMonthRage('');
+                if (this.startJapStartMonth != null && this.startJapStartMonth != undefined) {
+                    this.startJapStartMonth('');
                 } else {
-                    this.startMonthRage = ko.observable('');
+                    this.startJapStartMonth = ko.observable('');
                 }
                 if (this.endMonthRage != null && this.endMonthRage != undefined) {
                     this.endMonthRage('9999/12');
@@ -847,12 +849,13 @@ module nts.uk.pr.view.qmm011.a {
                 }
             }
 
-            updateData(UnemployeeInsuranceHistory: HistoryInsuranceInDto) {
-                this.historyId(UnemployeeInsuranceHistory.historyId);
-                this.startMonthRage(nts.uk.time.formatYearMonth(UnemployeeInsuranceHistory.startMonth));
-                this.endMonthRage(nts.uk.time.formatYearMonth(UnemployeeInsuranceHistory.endMonth));
-                this.startMonth(UnemployeeInsuranceHistory.startMonth);
-                this.endMonth(UnemployeeInsuranceHistory.endMonth);
+            updateData(unemployeeInsuranceHistory: HistoryInsuranceInDto) {
+                this.historyId(unemployeeInsuranceHistory.historyId);
+                this.startJapStartMonth(nts.uk.time.formatYearMonth(unemployeeInsuranceHistory.startMonth)
+                    + ' (' + nts.uk.time.yearmonthInJapanEmpire(unemployeeInsuranceHistory.startMonth).toString() + ') ');
+                this.endMonthRage(nts.uk.time.formatYearMonth(unemployeeInsuranceHistory.endMonth));
+                this.startMonth(unemployeeInsuranceHistory.startMonth);
+                this.endMonth(unemployeeInsuranceHistory.endMonth);
             }
 
             setMonthRage(startDate: number, endDate: number) {
@@ -1052,7 +1055,8 @@ module nts.uk.pr.view.qmm011.a {
                 this.historyId(historyDto.historyId);
                 this.startMonth(historyDto.startMonth);
                 this.endMonth(historyDto.endMonth);
-                this.startMonthRage(nts.uk.time.formatYearMonth(historyDto.startMonth));
+                this.startMonthRage(nts.uk.time.formatYearMonth(historyDto.startMonth)
+                    + ' (' + nts.uk.time.yearmonthInJapanEmpire(historyDto.startMonth).toString() + ') ');
                 this.endMonthRage(nts.uk.time.formatYearMonth(historyDto.endMonth));
             }
         }

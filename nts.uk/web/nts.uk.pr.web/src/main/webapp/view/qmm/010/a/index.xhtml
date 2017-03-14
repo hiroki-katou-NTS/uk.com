@@ -56,6 +56,11 @@
 					charType : 'Numeric',
 					maxLength : 13,
 				};
+				__viewContext.primitiveValueConstraints.SearchItem = {
+						valueType : 'String',
+						charType : 'Numeric',
+						maxLength : 20,
+					};
 			</script>
 		</ui:define>
 
@@ -77,10 +82,10 @@
 				<table>
 					<tr>
 						<td id="contents-left"
-							class="bg-green caret-right caret-background">
-							<i class="icon icon-searchbox"></i>
+							class="bg-green caret-right caret-background"><i
+							class="icon icon-searchbox"></i>
 							<div
-								data-bind="ntsSearchBox: {comId: 'sdufisdfui', items: lstlaborInsuranceOfficeModel, selected: selectCodeLstlaborInsuranceOffice, selectedKey: 'code', fields: ['code','name']}" />
+								data-bind="ntsSearchBox: {comId: 'sdufisdfui', items: lstlaborInsuranceOfficeModel, selected: selectCodeLstlaborInsuranceOffice, selectedKey: 'code', fields: ['code','name'], constraint: 'SearchItem'}" />
 							<div id="searchlaborInsuranceOffice">
 								<table id="single-list"
 									data-bind="ntsGridList: {
@@ -177,15 +182,17 @@
 											<label>郵便番号</label>
 										</div>
 									</td>
-									<td class="contentsRR"><input id="inp_postalCode"
-										class="trFull15" data-name="postalCode"
-										data-bind="ntsTextEditor: {value: postalCode, 
-										constraint: 'PostalCode', 
-										option: textEditorOption, 
-										enable: true}" />
+									<td class="contentsRR">
+										<input id="inp_postalCode"
+											class="trFull15" data-name="postalCode"
+											data-bind="ntsTextEditor: {value: postalCode, 
+											constraint: 'PostalCode', 
+											option: textEditorOption, 
+											enable: true}" />
 										<button id="btn_postalCode" class="btnStyle">
 											<label class="labelRed">〒</label>検索
-										</button></td>
+										</button>
+									</td>
 								</tr>
 								<tr>
 									<td class="contentsRL">
@@ -237,7 +244,7 @@
 
 								<tr>
 									<td class="contentsRL">
-										<div  class="left20 border_none"
+										<div class="left20 border_none"
 											data-bind="ntsFormLabel: {constraint:'KanaAddress',required: false}">
 											<label>ｶﾅ2</label>
 										</div>
@@ -252,7 +259,7 @@
 								</tr>
 								<tr>
 									<td class="contentsRL">
-										<div 
+										<div
 											data-bind="ntsFormLabel: {constraint: 'PhoneNumber', required: false}">
 											<label>電話番号</label>
 										</div>
@@ -273,22 +280,19 @@
 								</tr>
 								<tr>
 									<td class="contentsRL">
-										<div
-											data-bind="ntsFormLabel: {required: false}">
+										<div data-bind="ntsFormLabel: {required: false}">
 											<label>時期媒体・e-Gov用</label>
 										</div>
 									</td>
-									<td class="contentsRR"><label >都市区符号
-											:</label><input id="inp_citySign" class="tr40 save-error"
-										data-name="citySign"
+									<td class="contentsRR"><label>都市区符号 :</label><input
+										id="inp_citySign" class="tr40 save-error" data-name="citySign"
 										data-bind="ntsTextEditor: {value: citySign, 
 										option: textEditorOption, 
 										constraint: 'CitySign',
 										enable: true}" />
 
-										<label >事業所記号 :</label><input
-										id="inp_officeMark" class="tr40 save-error"
-										data-name="officeMark"
+										<label>事業所記号 :</label><input id="inp_officeMark"
+										class="tr40 save-error" data-name="officeMark"
 										data-bind="ntsTextEditor: {value: officeMark, 
 										option: textEditorOption,
 										constraint: 'OfficeMark', 
@@ -297,8 +301,7 @@
 								</tr>
 								<tr>
 									<td class="contentsRL">
-										<div
-											data-bind="ntsFormLabel: {required: false}">
+										<div data-bind="ntsFormLabel: {required: false}">
 											<label>事務所整理番号</label>
 										</div>
 									</td>
@@ -332,15 +335,16 @@
 											<label>メモ</label>
 										</div>
 									</td>
-									<td class="contentsRR"><div
-											data-bind="with: multilineeditor">
+									<td class="contentsRR">
+										<div data-bind="with: multilineeditor">
 											<textarea style="width: 500px; height: 60px"
 												data-bind="ntsMultilineEditor: {
 												value: memo,
 												constraint: 'Memo',
 												option: option,
 												enable: true}" />
-										</div></td>
+										</div>
+									</td>
 								</tr>
 							</table>
 
