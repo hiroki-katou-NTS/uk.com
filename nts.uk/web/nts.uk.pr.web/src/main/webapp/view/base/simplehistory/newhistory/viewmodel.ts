@@ -101,7 +101,7 @@ module nts.uk.pr.view.base.simplehistory.newhistory {
             private btnApplyClicked(): void {
                 var self = this;
                 var callBackData: NewHistoryCallBackData = {
-                    masterCode: self.dialogOptions.master.code,
+                    masterCode: self.dialogOptions.master ? self.dialogOptions.master.code : undefined,
                     startYearMonth: self.startYearMonth()
                 };
                 if (self.createType() == ScreenModel.CREATE_TYPE_COPY_LATEST) {

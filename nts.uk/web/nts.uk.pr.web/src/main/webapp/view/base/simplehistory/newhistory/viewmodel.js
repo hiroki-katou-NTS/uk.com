@@ -32,7 +32,7 @@ var nts;
                                     ScreenModel.prototype.btnApplyClicked = function () {
                                         var self = this;
                                         var callBackData = {
-                                            masterCode: self.dialogOptions.master.code,
+                                            masterCode: self.dialogOptions.master ? self.dialogOptions.master.code : undefined,
                                             startYearMonth: self.startYearMonth()
                                         };
                                         if (self.createType() == ScreenModel.CREATE_TYPE_COPY_LATEST) {
@@ -59,3 +59,4 @@ var nts;
         })(pr = uk.pr || (uk.pr = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+//# sourceMappingURL=viewmodel.js.map
