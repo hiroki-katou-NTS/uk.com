@@ -4,48 +4,72 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ItemMasterRepository {
-
 	/**
-	 * Get all of company
+	 * Find item master
 	 * 
 	 * @param companyCode
+	 *            company code
+	 * @param categoryAtr
+	 *            category attribute
+	 * @param itemCode
+	 *            item code
+	 * @return item master
+	 */
+	Optional<ItemMaster> find(String companyCode, int categoryAtr, String itemCode);
+
+	/**
+	 * Find all item by
+	 * 
+	 * @param companyCode
+	 *            company code
+	 * @param avePayAtr
+	 *            ave payment attribute
 	 * @return
 	 */
-	List<ItemMaster> findAll(String companyCode);
+	List<ItemMaster> findAll(String companyCode, int avePayAtr);
 
 	/**
-	 * get All Item Master
+	 * Find all item by
 	 * 
 	 * @param companyCode
+	 *            company code
 	 * @param categoryAtr
+	 *            category attribute
 	 * @return list Item Master
 	 */
 	List<ItemMaster> findAllByCategory(String companyCode, int categoryAtr);
 
 	/**
-	 * get Item Master
+	 * Find all item by
 	 * 
+	 * @param companyCode
+	 *            company code
+	 * @param categoryAtr
+	 *            category attribute
+	 * @param itemCode
+	 *            item code
+	 * @param fixAtr
+	 *            fix attribute
+	 * @return
+	 */
+	List<ItemMaster> findAll(String companyCode, int categoryAtr, String itemCode, int fixAtr);
+
+	/**
+	 * @param companyCode
+	 * @return
+	 */
+	List<ItemMaster> findAllNoAvePayAtr(String companyCode);
+
+	/**
 	 * @param companyCode
 	 * @param categoryAtr
 	 * @param itemCode
-	 * @return list Item Master
 	 */
-	Optional<ItemMaster> getItemMaster(String companyCode, int categoryAtr, String itemCode);
+	void remove(String companyCode, int categoryAtr, String itemCode);
+	
 	
 	/**
-	 * Find item master
-	 * @param companyCode company code
-	 * @param categoryAtr category attribute
-	 * @param itemCode item code
-	 * @return item master
+	 * @param itemMaster: Object need Add New.
 	 */
-	Optional<ItemMaster> find(String companyCode, int categoryAtr, String itemCode);
-	
-	/**
-	 * Find all item master with avePayAtr
-	 * @param companyCode company code
-	 * @param avePayAtr ave payment attribute
-	 * @return
-	 */
-	List<ItemMaster> findAll(String companyCode, int avePayAtr);
+	void add(ItemMaster itemMaster);
 }

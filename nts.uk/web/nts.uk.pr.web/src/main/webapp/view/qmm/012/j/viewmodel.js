@@ -31,11 +31,11 @@ var qmm012;
                         new ItemModel('020', 'name1', "name1")
                     ]);
                     self.columns = ko.observableArray([
-                        { headerText: '繧ｳ繝ｼ繝�', prop: 'code', width: 40 },
-                        { headerText: '蜷咲ｧｰ', prop: 'name', width: 130 },
-                        { headerText: '蜊ｰ蛻ｷ逕ｨ蜷咲ｧｰ', prop: 'description', width: 150 },
-                        { headerText: '蜊ｰ蛻ｷ逕ｨｧｰ', prop: 'mieo', width: 130 },
-                        { headerText: '蜊ｰ蛻ｷ逕ｨｰ', prop: 'pika', width: 170 }
+                        { headerText: '郢ｧ�ｽｳ郢晢ｽｼ郢晢ｿｽ', prop: 'code', width: 40 },
+                        { headerText: '陷ｷ蜥ｲ�ｽｧ�ｽｰ', prop: 'name', width: 130 },
+                        { headerText: '陷奇ｽｰ陋ｻ�ｽｷ騾包ｽｨ陷ｷ蜥ｲ�ｽｧ�ｽｰ', prop: 'description', width: 150 },
+                        { headerText: '陷奇ｽｰ陋ｻ�ｽｷ騾包ｽｨ�ｽｧ�ｽｰ', prop: 'mieo', width: 130 },
+                        { headerText: '陷奇ｽｰ陋ｻ�ｽｷ騾包ｽｨ�ｽｰ', prop: 'pika', width: 170 }
                     ]);
                     self.currentCode = ko.observable();
                 }

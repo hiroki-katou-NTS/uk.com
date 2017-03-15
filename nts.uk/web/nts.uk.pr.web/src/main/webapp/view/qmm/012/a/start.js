@@ -5,7 +5,6 @@ var qmm012;
         __viewContext.ready(function () {
             var screenModel = new a.viewmodel.ScreenModel();
             __viewContext.bind(screenModel);
-            screenModel.start();
         });
     })(a = qmm012.a || (qmm012.a = {}));
 })(qmm012 || (qmm012 = {}));

@@ -11,8 +11,8 @@ import javax.inject.Inject;
 import nts.arc.error.BusinessException;
 import nts.uk.ctx.pr.core.dom.allot.CompanyAllotSettingRepository;
 import nts.uk.ctx.pr.core.dom.allot.PersonalAllotSettingRepository;
-import nts.uk.ctx.pr.core.dom.itemmaster.ItemMaster;
-import nts.uk.ctx.pr.core.dom.itemmaster.ItemMasterRepository;
+import nts.uk.ctx.pr.core.dom.itemmaster.ItemMasterV1;
+import nts.uk.ctx.pr.core.dom.itemmaster.ItemMasterV1Repository;
 import nts.uk.ctx.pr.core.dom.layout.LayoutMaster;
 import nts.uk.ctx.pr.core.dom.layout.LayoutMasterRepository;
 import nts.uk.ctx.pr.core.dom.layout.category.LayoutMasterCategory;
@@ -74,7 +74,7 @@ public class PrintPaymentDataQueryProcessor {
 	private PaymentDataQueryRepository queryRepository;
 
 	@Inject
-	private ItemMasterRepository itemMasterRepository;
+	private ItemMasterV1Repository itemMasterRepository;
 
 	/**
 	 * get data detail
@@ -120,7 +120,7 @@ public class PrintPaymentDataQueryProcessor {
 		List<LayoutMasterDetail> mDetails = this.layoutMasterDetailRepository.findAll(companyCode, stmtCode, startYM);
 
 		// get 項目マスタ
-		List<ItemMaster> mItems = this.itemMasterRepository.findAll(companyCode);
+		List<ItemMasterV1> mItems = this.itemMasterRepository.findAll(companyCode);
 
 		// get header of payment
 		Optional<Payment> optPHeader = this.paymentDataRepository.find(companyCode, query.getPersonId(), PROCESSING_NO,
@@ -180,7 +180,7 @@ public class PrintPaymentDataQueryProcessor {
 	 */
 	private static List<LayoutMasterCategoryDto> mergeDataToLayout(List<LayoutMasterCategory> mCates,
 			List<LayoutMasterLine> lines, List<LayoutMasterDetail> details, List<DetailItemDto> datas,
-			List<ItemMaster> mItems) {
+			List<ItemMasterV1> mItems) {
 
 		List<LayoutMasterCategoryDto> categories = new ArrayList<>();
 
@@ -214,7 +214,7 @@ public class PrintPaymentDataQueryProcessor {
 	 * @return
 	 */
 	private static List<LineDto> getDetailItems(List<LayoutMasterLine> mLines, List<LayoutMasterDetail> mDetails,
-			List<DetailItemDto> datas, int ctAtr, List<ItemMaster> mItems) {
+			List<DetailItemDto> datas, int ctAtr, List<ItemMasterV1> mItems) {
 		List<LineDto> rLines = new ArrayList<>();
 
 		for (LayoutMasterLine mLine : mLines) {
@@ -227,7 +227,7 @@ public class PrintPaymentDataQueryProcessor {
 								&& x.getAutoLineId().v().equals(mLine.getAutoLineId().v())
 								&& x.getItemPosColumn().v() == posCol)
 						.findFirst().map(d -> {
-							ItemMaster mItem = mItems.stream().filter(m -> m.getCategoryAtr().value == ctAtr
+							ItemMasterV1 mItem = mItems.stream().filter(m -> m.getCategoryAtr().value == ctAtr
 									&& m.getItemCode().v().equals(d.getItemCode().v())).findFirst().get();
 							boolean isTaxtAtr = mItem.getTaxAtr().value == 3 || mItem.getTaxAtr().value == 4;
 							Optional<DetailItemDto> dValue = datas.stream().filter(
