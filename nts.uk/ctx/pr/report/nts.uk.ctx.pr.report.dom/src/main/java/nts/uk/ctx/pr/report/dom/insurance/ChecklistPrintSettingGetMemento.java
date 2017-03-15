@@ -42,4 +42,11 @@ public interface ChecklistPrintSettingGetMemento {
 	 * @return the show office
 	 */
 	Boolean getShowOffice();
+	
+	/**
+	 * Gets the show total.
+	 *
+	 * @return the show total
+	 */
+	Boolean getShowTotal();
 }

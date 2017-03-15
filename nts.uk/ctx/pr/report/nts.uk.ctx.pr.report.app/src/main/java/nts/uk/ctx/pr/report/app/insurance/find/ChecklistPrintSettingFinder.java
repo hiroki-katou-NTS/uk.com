@@ -11,7 +11,6 @@ import javax.inject.Inject;
 import javax.transaction.Transactional;
 
 import nts.uk.ctx.pr.report.app.insurance.find.dto.CheckListPrintSettingFindOutDto;
-import nts.uk.ctx.pr.report.dom.company.CompanyCode;
 import nts.uk.ctx.pr.report.dom.insurance.ChecklistPrintSetting;
 import nts.uk.ctx.pr.report.dom.insurance.ChecklistPrintSettingRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -30,9 +29,10 @@ public class ChecklistPrintSettingFinder {
 	 * @return the check list print setting find out dto
 	 */
 	public CheckListPrintSettingFindOutDto find() {
+	    String companyCode = AppContexts.user().companyCode();
 		CheckListPrintSettingFindOutDto checkListPrintSettingFindOutDto = new CheckListPrintSettingFindOutDto();
 		Optional<ChecklistPrintSetting> optionalChecklistPrintSetting = checklistPrintSettingRepository
-				.findByCompanyCode(new CompanyCode(AppContexts.user().companyCode()));
+				.findByCompanyCode(companyCode);
 		if (optionalChecklistPrintSetting.isPresent()) {
 			optionalChecklistPrintSetting.get().saveToMemento(checkListPrintSettingFindOutDto);
 			return checkListPrintSettingFindOutDto;

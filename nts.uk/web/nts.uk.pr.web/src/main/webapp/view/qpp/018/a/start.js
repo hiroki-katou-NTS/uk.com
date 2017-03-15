@@ -14,7 +14,7 @@ var nts;
                         (function (start) {
                             __viewContext.ready(function () {
                                 var screenModel = new a.viewmodel.ScreenModel();
-                                screenModel.start().done(function () {
+                                screenModel.startPage().done(function () {
                                     __viewContext.bind(screenModel);
                                 });
                             });
