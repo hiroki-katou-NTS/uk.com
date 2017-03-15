@@ -29,7 +29,7 @@ public class AddBankCommandHandler extends CommandHandler<AddBankCommand> {
 		// check exists bank
 		Optional<Bank> bank = bankRepository.find(companyCode, command.getBankCode());
 		if (bank.isPresent()) {
-			throw new BusinessException("Exists bank code");
+			throw new BusinessException("ER005");
 		}
 		
 		Bank domain = Bank.createFromJavaType(companyCode, command.getBankCode().trim(), command.getBankName(), command.getBankNameKana(), command.getMemo());

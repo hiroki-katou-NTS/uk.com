@@ -7,9 +7,9 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<script>var dialogSize = { width: 520, height: 600 };</script>
+			<script>var dialogSize = { width: 540, height: 600 };</script>
 			<com:scriptfile set="IGNITE" />
-			<com:stylefile path="style.css" />
+			<com:stylefile path="main.css" />
 			<com:scriptfile path="start.js" />
 			<com:scriptfile path="viewmodel.js" />
 			<com:scriptfile path="service.js" />
@@ -21,7 +21,7 @@
 					<label id="lbl_001">「削除したい項目を選択してください。」を表示する。</label>
 				</div>
 				<div id="lst_001">
-					<div style="width: 500px;"
+					<div class="search-wrap" style="width: 500px;"
 						data-bind="ntsSearchBox: {
 							comId: 'treegrid1',
 							items: lst_001,  
@@ -47,8 +47,8 @@
 				</div>
 				
 				<div id="ft">
-					<hr/>
-					<button id="btn_001" data-bind="click: excute" class="x-large danger">削除</button>
+					<hr style="width: 100%;"/>
+					<button id="btn_001" data-bind="click: btn_001" class="x-large danger">削除</button>
 					<button id="btn_002" style="margin-left: 50px;" data-bind="click: close">キャンセル</button>
 				</div>
 			</div>

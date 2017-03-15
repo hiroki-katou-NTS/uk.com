@@ -10,8 +10,7 @@ final class FileTagsHelper {
         String filePath;
         
         if (specifiedPath.charAt(0) == '/') {
-            //String appPath = ((HttpServletRequest) context.getExternalContext().getRequest()).getContextPath();
-            String appPath = "/nts.uk.com.web";
+            String appPath = ((HttpServletRequest) context.getExternalContext().getRequest()).getContextPath();
             filePath = appPath + specifiedPath;
         } else {
             filePath = specifiedPath;

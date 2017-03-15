@@ -47,7 +47,7 @@ public class RemoveBankCommandHandler extends CommandHandler<RemoveBankCommand> 
        
        // check exists person bank account
        if(personBankAccountRepository.checkExistsBankAccount(companyCode, bankCodeList)){
-    	   throw new BusinessException("選択された＊は使用されているため削除できません。"); // ER008
+    	   throw new BusinessException("ER008"); // ER008  	   
        }
        
        // delete all branch by bank code

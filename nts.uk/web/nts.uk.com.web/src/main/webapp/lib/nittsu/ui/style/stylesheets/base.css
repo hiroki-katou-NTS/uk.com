@@ -2520,7 +2520,7 @@ button.nts-switch-button[disabled]:hover {
 
 /* line 1, ../sass/components/_updown.scss */
 .ntsUpDown {
-  width: 70px;
+  width: 30px;
   height: 100%;
   display: inline-block;
 }
@@ -2533,7 +2533,7 @@ button.nts-switch-button[disabled]:hover {
 
 /* line 10, ../sass/components/_updown.scss */
 .ntsUpDownButton {
-  width: 70px;
+  width: 30px;
 }
 
 /* line 13, ../sass/components/_updown.scss */
