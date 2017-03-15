@@ -9,7 +9,7 @@ module qpp008.a.viewmodel {
 
         /*Multiple selecting GridList*/
         items: KnockoutObservableArray<ItemModel>;
-        columns: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
+        columns: KnockoutObservableArray<any>;
         currentCode: KnockoutObservable<any>;
         currentCodeList: KnockoutObservableArray<any>;
 

@@ -146,11 +146,13 @@ var qpp008;
                 ScreenModel.prototype.startPage = function () {
                     var self = this;
                     var dfd = $.Deferred();
-                    c.service.getPaymentDateProcessingList().done(function (data) {
-                        // self.paymentDateProcessingList(data);
-                        dfd.resolve();
-                    }).fail(function (res) {
-                    });
+                    dfd.resolve();
+                    //            service.getPaymentDateProcessingList().done(function(data) {
+                    //                // self.paymentDateProcessingList(data);
+                    //                dfd.resolve();
+                    //            }).fail(function(res) {
+                    //
+                    //            });
                     return dfd.promise();
                 };
                 ScreenModel.prototype.closeDialog = function () {
