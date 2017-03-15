@@ -51,7 +51,14 @@ public interface LayoutMasterRepository {
 	 * @param stmtCode
 	 * @param startYm
 	 */
-	void remove(String companyCode, String stmtCode, String historyId);
+//	void remove(String companyCode, String stmtCode, String historyId);
+	/**
+	 * delete a layout master
+	 * 
+	 * @param companyCode
+	 * @param stmtCode
+	 */
+	void remove(String companyCode, String stmtCode);
 
 	/**
 	 * 

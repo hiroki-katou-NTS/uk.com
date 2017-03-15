@@ -5,7 +5,8 @@ package nts.uk.ctx.pr.core.infra.repository.rule.employment.layout;
 
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
+
+import javax.ejb.Stateless;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
@@ -19,9 +20,10 @@ import nts.uk.ctx.pr.core.infra.entity.rule.employment.layout.QstmtStmtLayoutHis
  * @author lanlt
  *
  */
+@Stateless
 public class JpaLayoutHistoryRepository extends JpaRepository implements LayoutHistRepository {
 	private final String SELECT_NO_WHERE = "SELECT c FROM QstmtStmtLayoutHistory c";
-	private final String SELECT_ALL = SELECT_NO_WHERE + " WHERE c.QstmtStmtLayoutHistoryPK.companyCd = :companyCd";
+	private final String SELECT_ALL = SELECT_NO_WHERE + " WHERE c.qstmtStmtLayoutHistPK.companyCd = :companyCd";
 	private final String SEL_1 = SELECT_NO_WHERE + " WHERE c.qstmtStmtLayoutHistPK.companyCd = :companyCode "
 			+ " AND c.startYear <= :baseYearMonth " + " AND c.endYear >= :baseYearMonth ";
 	private final String SEL_2 = SELECT_NO_WHERE + " WHERE c.qstmtStmtLayoutHistPK.companyCd = :companyCode "
@@ -109,9 +111,9 @@ public class JpaLayoutHistoryRepository extends JpaRepository implements LayoutH
 	}
 
 	@Override
-	public List<LayoutHistory> getAllLayoutHist(String companyCode) {
+	public List<LayoutHistory> getAllLayoutHist(String companyCd) {
 		return this.queryProxy().query(SELECT_ALL, QstmtStmtLayoutHistory.class)
-				.setParameter("companyCode", companyCode)
+				.setParameter("companyCd", companyCd)
 				.getList(entity -> toDomain(entity));
 	}
 

@@ -59,8 +59,10 @@ public class CreateLayoutCommandHandler extends CommandHandler<CreateLayoutComma
 
 	@Inject
 	private LayoutMasterRepository layoutRepo;
+	
 	@Inject
 	private LayoutHistRepository layoutHistRepo;
+	
 	@Inject
 	private LayoutMasterCategoryRepository categoryRepo;
 	@Inject
