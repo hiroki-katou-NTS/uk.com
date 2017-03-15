@@ -4,8 +4,11 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn;
 
+import java.math.BigDecimal;
+
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
+import nts.uk.ctx.pr.core.dom.insurance.CommonAmount;
 
 /**
  * The Class HealthInsuranceAvgearn.
@@ -26,12 +29,17 @@ public class HealthInsuranceAvgearn extends DomainObject {
 	/** The personal avg. */
 	private HealthInsuranceAvgearnValue personalAvg;
 
+	/**
+	 * Instantiates a new HealthInsuranceAvgearn.
+	 */
+	private HealthInsuranceAvgearn() {
+	};
+
 	// =================== Memento State Support Method ===================
 	/**
 	 * Instantiates a new health insurance rate.
 	 *
-	 * @param memento
-	 *            the memento
+	 * @param memento the memento
 	 */
 	public HealthInsuranceAvgearn(HealthInsuranceAvgearnGetMemento memento) {
 		this.historyId = memento.getHistoryId();
@@ -43,14 +51,47 @@ public class HealthInsuranceAvgearn extends DomainObject {
 	/**
 	 * Save to memento.
 	 *
-	 * @param memento
-	 *            the memento
+	 * @param memento the memento
 	 */
 	public void saveToMemento(HealthInsuranceAvgearnSetMemento memento) {
 		memento.setHistoryId(this.historyId);
 		memento.setLevelCode(this.levelCode);
 		memento.setCompanyAvg(this.companyAvg);
 		memento.setPersonalAvg(this.personalAvg);
+	}
+
+	/**
+	 * Copy with new history id.
+	 *
+	 * @param newHistoryId the new history id
+	 * @return the health insurance avgearn
+	 */
+	public HealthInsuranceAvgearn copyWithNewHistoryId(String newHistoryId) {
+		HealthInsuranceAvgearn healthInsuranceAvgearn = new HealthInsuranceAvgearn();
+		healthInsuranceAvgearn.historyId = newHistoryId;
+		healthInsuranceAvgearn.levelCode = this.levelCode;
+		healthInsuranceAvgearn.companyAvg = this.companyAvg;
+		healthInsuranceAvgearn.personalAvg = this.personalAvg;
+		return healthInsuranceAvgearn;
+	}
+
+	/**
+	 * Creates the with intial.
+	 *
+	 * @param newHistoryId the new history id
+	 * @param levelCode the level code
+	 * @return the health insurance avgearn
+	 */
+	public static HealthInsuranceAvgearn createWithIntial(String newHistoryId, Integer levelCode) {
+		HealthInsuranceAvgearn healthInsuranceAvgearn = new HealthInsuranceAvgearn();
+		healthInsuranceAvgearn.historyId = newHistoryId;
+		healthInsuranceAvgearn.levelCode = levelCode;
+		CommonAmount defaultAmount = new CommonAmount(BigDecimal.ZERO);
+		healthInsuranceAvgearn.companyAvg = new HealthInsuranceAvgearnValue(defaultAmount, defaultAmount, defaultAmount,
+				defaultAmount);
+		healthInsuranceAvgearn.personalAvg = new HealthInsuranceAvgearnValue(defaultAmount, defaultAmount,
+				defaultAmount, defaultAmount);
+		return healthInsuranceAvgearn;
 	}
 
 }
