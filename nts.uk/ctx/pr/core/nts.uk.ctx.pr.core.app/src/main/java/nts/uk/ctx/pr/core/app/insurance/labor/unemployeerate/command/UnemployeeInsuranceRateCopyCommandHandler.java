@@ -70,7 +70,7 @@ public class UnemployeeInsuranceRateCopyCommandHandler extends CommandHandler<Un
 		// validate
 
 		unemployeeInsuranceRate.setMaxDate();
-		
+
 		unemployeeInsuranceRate.validate();
 		unemployeeInsuranceRateService.validateDateRange(unemployeeInsuranceRate);
 

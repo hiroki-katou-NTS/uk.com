@@ -8,6 +8,10 @@ module nts.uk.pr.view.qmm011.a {
     import YearMonth = service.model.YearMonth;
     import UnemployeeInsuranceRateItemSettingDto = service.model.UnemployeeInsuranceRateItemSettingDto;
     import UnemployeeInsuranceRateItemDto = service.model.UnemployeeInsuranceRateItemDto;
+    import UnemployeeInsuranceHistoryUpdateDto = service.model.UnemployeeInsuranceHistoryUpdateDto;
+    import AccidentInsuranceHistoryUpdateDto = service.model.AccidentInsuranceHistoryUpdateDto;
+    import UnemployeeInsuranceDeleteDto = service.model.UnemployeeInsuranceDeleteDto;
+    import AccidentInsuranceRateDeleteDto = service.model.AccidentInsuranceRateDeleteDto;
     import CareerGroupDto = service.model.CareerGroupDto;
     import AccidentInsuranceRateDto = service.model.AccidentInsuranceRateDto;
     import BusinessTypeEnumDto = service.model.BusinessTypeEnumDto;
@@ -22,9 +26,8 @@ module nts.uk.pr.view.qmm011.a {
     import TypeActionInsuranceRate = service.model.TypeActionInsuranceRate;
     import InsuranceBusinessTypeDto = service.model.InsuranceBusinessTypeDto;
     import InsuranceBusinessTypeUpdateModel = nts.uk.pr.view.qmm011.e.viewmodel.InsuranceBusinessTypeUpdateModel;
-    import AddHistoryInfoModel = nts.uk.pr.view.qmm011.d.viewmodel.AddHistoryInfoModel;
-    import UpdateHistoryInfoModel = nts.uk.pr.view.qmm011.f.viewmodel.UpdateHistoryInfoModel;
     import NewHistoryScreenOption = nts.uk.pr.view.base.simplehistory.newhistory.viewmodel.NewHistoryScreenOption;
+    import UpdateHistoryScreenOption = nts.uk.pr.view.base.simplehistory.updatehistory.viewmodel.UpdateHistoryScreenOption;
     import HistoryModel = nts.uk.pr.view.base.simplehistory.model.HistoryModel;
     import ScreenMode = nts.uk.pr.view.base.simplehistory.dialogbase.ScreenMode;
     //import data class ... END
@@ -93,59 +96,79 @@ module nts.uk.pr.view.qmm011.a {
             //open dialog edit UnemployeeInsuranceRateHistory => show view model xhtml (action event add)
             private openEditUnemployeeInsuranceRateHistory() {
                 var self = this;
-                //get historyId by selection of view
-                var historyId = self.selectionUnemployeeInsuranceRateHistory();
-                //call service find data by historyId
-                service.findUnemployeeInsuranceRateHistory(historyId).done(data => {
-                    //set data fw to f
-                    nts.uk.ui.windows.setShared("historyEnd", data.endMonth);
-                    nts.uk.ui.windows.setShared("historyStart", data.startMonth);
-                    nts.uk.ui.windows.setShared("historyId", data.historyId);
-                    nts.uk.ui.windows.setShared("type", TypeHistory.HistoryUnemployee);
+                service.findUnemployeeInsuranceRateHistory(self.selectionUnemployeeInsuranceRateHistory()).done(data => {
+                    var history: HistoryModel;
+                    var endMonth: number = data.endMonth;
+                    var name: string = '雇用保険料率';
+                    history = {
+                        uuid: self.selectionUnemployeeInsuranceRateHistory(),
+                        start: data.startMonth,
+                        end: endMonth
+                    };
 
-                    //open dialog f/index.xhtml
-                    nts.uk.ui.windows.sub.modal('/view/qmm/011/f/index.xhtml', { title: '労働保険料率の登録>マスタ修正ログ', dialogClass: 'no-close' }).onClosed(() => {
-                        //OnClose => call
-                        //get fw f=>respone
-                        var updateHistoryInfoModel: UpdateHistoryInfoModel = nts.uk.ui.windows.getShared("updateHistoryInfoModel");
-                        if (updateHistoryInfoModel != null && updateHistoryInfoModel != undefined) {
-                            if (updateHistoryInfoModel.typeUpdate == 1) {
-                                //delete action => reload view
+                    var newHistoryOptions: UpdateHistoryScreenOption = {
+                        screenMode: ScreenMode.MODE_HISTORY_ONLY,
+                        name: name,
+                        master: null,
+                        history: history,
+                        removeMasterOnLastHistoryRemove: false,
+
+                        // Delete callback.
+                        onDeleteCallBack: (data) => {
+                            var unemployeeInsuranceDeleteDto: UnemployeeInsuranceDeleteDto;
+                            unemployeeInsuranceDeleteDto = new UnemployeeInsuranceDeleteDto();
+                            unemployeeInsuranceDeleteDto.code = data.historyId;
+                            unemployeeInsuranceDeleteDto.version = 0;
+                            service.deleteUnemployeeInsurance(unemployeeInsuranceDeleteDto).done(data => {
                                 self.typeActionUnemployeeInsurance(TypeActionInsuranceRate.add);
                                 self.reloadDataUnemployeeInsuranceRateByAction();
-                            } else {
-                                //set up type is update
-                                self.typeActionUnemployeeInsurance(TypeActionInsuranceRate.update);
-                                //update action => set data by action
-                                var UnemployeeInsuranceHistoryDto: HistoryInsuranceInDto;
-                                //get data update
-                                UnemployeeInsuranceHistoryDto = new HistoryInsuranceInDto();
-                                UnemployeeInsuranceHistoryDto.historyId = updateHistoryInfoModel.historyId;
-                                UnemployeeInsuranceHistoryDto.startMonth = updateHistoryInfoModel.historyStart;
-                                UnemployeeInsuranceHistoryDto.endMonth = updateHistoryInfoModel.historyEnd;
-                                //update to viewmodel
-                                self.unemployeeInsuranceRateModel().setHistoryData(UnemployeeInsuranceHistoryDto);
-                            }
+                            }).fail(function(error) {
+                                self.showMessageSaveUnemployeeInsurance(error.message)
+                            });
+                        },
+
+                        // Update call back.
+                        onUpdateCallBack: (data) => {
+                            var unemployeeInsuranceHistoryUpdateDto: UnemployeeInsuranceHistoryUpdateDto;
+                            unemployeeInsuranceHistoryUpdateDto = new UnemployeeInsuranceHistoryUpdateDto();
+                            unemployeeInsuranceHistoryUpdateDto.historyId = data.historyId;
+                            unemployeeInsuranceHistoryUpdateDto.startMonth = data.startYearMonth;
+                            unemployeeInsuranceHistoryUpdateDto.endMonth = endMonth;
+                            service.updateUnemployeeInsuranceRateHistory(unemployeeInsuranceHistoryUpdateDto).done(() => {
+                                self.typeActionUnemployeeInsurance(TypeActionInsuranceRate.add);
+                                self.reloadDataUnemployeeInsuranceRateByAction();
+                            }).fail(function(error) {
+                                self.showMessageSaveUnemployeeInsurance(error.message)
+                            });
                         }
-                    });
+                    };
+
+                    nts.uk.ui.windows.setShared('options', newHistoryOptions);
+                    var ntsDialogOptions = {
+                        title: nts.uk.text.format('{0}の登録 > 履歴の編集', name),
+                        dialogClass: 'no-close'
+                    };
+                    nts.uk.ui.windows.sub.modal('/view/base/simplehistory/updatehistory/index.xhtml', ntsDialogOptions);
+
                 });
             }
 
             //open dialog add UnemployeeInsuranceRateHistory => show view model xhtml (action event add)
             private openAddUnemployeeInsuranceRateHistory() {
-
+                //set info
                 var self = this;
                 var lastest: HistoryModel;
-                var name: string = '労働保険料率';
+                var name: string = '雇用保険料率';
                 lastest = {
                     uuid: self.selectionUnemployeeInsuranceRateHistory(),
                     start: self.unemployeeInsuranceRateModel().unemployeeInsuranceHistoryModel.startMonth(),
                     end: self.unemployeeInsuranceRateModel().unemployeeInsuranceHistoryModel.endMonth()
                 };
-
+                //set info history
                 var unemployeeInsuranceRateCopyDto: UnemployeeInsuranceRateCopyDto;
                 unemployeeInsuranceRateCopyDto = new UnemployeeInsuranceRateCopyDto();
                 unemployeeInsuranceRateCopyDto.historyIdCopy = self.selectionUnemployeeInsuranceRateHistory();
+                //set info option
                 var newHistoryOptions: NewHistoryScreenOption = {
                     screenMode: ScreenMode.MODE_HISTORY_ONLY,
                     name: name,
@@ -178,59 +201,13 @@ module nts.uk.pr.view.qmm011.a {
                         });
                     }
                 };
+
                 nts.uk.ui.windows.setShared('options', newHistoryOptions);
                 var ntsDialogOptions = {
                     title: nts.uk.text.format('{0}の登録 > 履歴の追加', name),
                     dialogClass: 'no-close'
                 };
                 nts.uk.ui.windows.sub.modal('/view/base/simplehistory/newhistory/index.xhtml', ntsDialogOptions);
-
-                /*
-                var self = this;
-                //set data fw to /d/
-                nts.uk.ui.windows.setShared("isEmpty", self.isEmptyUnemployee());
-
-                if (!self.isEmptyUnemployee()) {
-                    //set historyStart => begin set data using type !=2 (1)
-                    nts.uk.ui.windows.setShared("historyStart", self.beginHistoryStartUnemployeeInsuranceRate());
-                }
-
-                //open d/index.xhtml 
-                nts.uk.ui.windows.sub.modal('/view/qmm/011/d/index.xhtml', { title: '労働保険料率の登録>履歴の追加', dialogClass: 'no-close' }).onClosed(() => {
-                    //OnClose => call
-                    //get fw d => respone
-                    var addHistoryInfoModel: AddHistoryInfoModel = nts.uk.ui.windows.getShared("addHistoryInfoModel");
-                    if (addHistoryInfoModel != null && addHistoryInfoModel != undefined) {
-                        var UnemployeeInsuranceHistoryDto: HistoryInsuranceInDto;
-                        UnemployeeInsuranceHistoryDto = new HistoryInsuranceInDto();
-                        var unemployeeInsuranceRateCopyDto: UnemployeeInsuranceRateCopyDto;
-                        unemployeeInsuranceRateCopyDto = new UnemployeeInsuranceRateCopyDto();
-                        unemployeeInsuranceRateCopyDto.historyIdCopy = self.selectionUnemployeeInsuranceRateHistory();
-                        unemployeeInsuranceRateCopyDto.startMonth = addHistoryInfoModel.starMonth;
-                        if (addHistoryInfoModel.typeModel == 2) {
-                            //(1) => reset data
-                            self.resetValueUnemployeeInsuranceRate();
-
-                            unemployeeInsuranceRateCopyDto.addNew = true;
-                            service.copyUnemployeeInsuranceRate(unemployeeInsuranceRateCopyDto).done(data => {
-                                self.typeActionUnemployeeInsurance(TypeActionInsuranceRate.add);
-                                self.reloadDataUnemployeeInsuranceRateByAction();
-                                self.clearErrorSaveUnemployeeInsurance();
-                            }).fail(function(error) {
-                                self.showMessageSaveUnemployeeInsurance(error.message)
-                            });
-                        } else {
-                            unemployeeInsuranceRateCopyDto.addNew = false;
-                            service.copyUnemployeeInsuranceRate(unemployeeInsuranceRateCopyDto).done(data => {
-                                self.typeActionUnemployeeInsurance(TypeActionInsuranceRate.add);
-                                self.reloadDataUnemployeeInsuranceRateByAction();
-                            }).fail(function(error) {
-                                self.showMessageSaveUnemployeeInsurance(error.message)
-                            });
-                        }
-                    }
-                });
-                */
             }
 
             //open dialog edit InsuranceBusinessType => show view model xhtml (action event edit)
@@ -259,83 +236,122 @@ module nts.uk.pr.view.qmm011.a {
 
             //open dialog edit AccidentInsuranceHistory => show view model xhtml (action event edit)
             private openEditAccidentInsuranceRateHistory() {
+
                 var self = this;
-                //get historyId by selection view
-                var historyId = self.selectionAccidentInsuranceRateHistory();
-                //call service get info history by historyId
-                service.findAccidentInsuranceRateHistory(historyId).done(data => {
-                    //set data fw to /f
-                    nts.uk.ui.windows.setShared("historyEnd", data.endMonth);
-                    nts.uk.ui.windows.setShared("historyStart", data.startMonth);
-                    nts.uk.ui.windows.setShared("historyId", data.historyId);
-                    nts.uk.ui.windows.setShared("type", TypeHistory.HistoryAccident);
+                service.findAccidentInsuranceRateHistory(self.selectionAccidentInsuranceRateHistory()).done(data => {
+                    var history: HistoryModel;
+                    var endMonth: number = data.endMonth;
+                    var name: string = '労働保険料率';
+                    history = {
+                        uuid: data.historyId,
+                        start: data.startMonth,
+                        end: endMonth
+                    };
 
-                    //open dialog /f/index.xhtml
-                    nts.uk.ui.windows.sub.modal('/view/qmm/011/f/index.xhtml', { title: '労働保険料率の登録>マスタ修正ログ', dialogClass: 'no-close' }).onClosed(() => {
-                        //get data f => respone
-                        var updateHistoryInfoModel: UpdateHistoryInfoModel = nts.uk.ui.windows.getShared("updateHistoryInfoModel");
+                    var newHistoryOptions: UpdateHistoryScreenOption = {
+                        screenMode: ScreenMode.MODE_HISTORY_ONLY,
+                        name: name,
+                        master: null,
+                        history: history,
+                        removeMasterOnLastHistoryRemove: false,
 
-                        if (updateHistoryInfoModel != null && updateHistoryInfoModel != undefined) {
-                            //get action by respone
-                            if (updateHistoryInfoModel.typeUpdate == 1) {
-                                //set type action accident insurance add
+                        // Delete callback.
+                        onDeleteCallBack: (data) => {
+                            var accidentInsuranceRateDeleteDto: AccidentInsuranceRateDeleteDto;
+                            accidentInsuranceRateDeleteDto = new AccidentInsuranceRateDeleteDto();
+                            accidentInsuranceRateDeleteDto.code = data.historyId;
+                            accidentInsuranceRateDeleteDto.version = 0;
+                            service.deleteAccidentInsuranceRate(accidentInsuranceRateDeleteDto).done(data => {
                                 self.typeActionAccidentInsurance(TypeActionInsuranceRate.add);
-                                //delete action => reload data viewmodel
                                 self.reloadDataAccidentInsuranceRateByAction();
-                            } else {
-                                //set type action accident insurance update
-                                self.typeActionAccidentInsurance(TypeActionInsuranceRate.update);
-                                //update action => setup info update to viewmodel
-                                var accidentInsuranceHistoryDto: AccidentInsuranceHistoryDto;
-                                accidentInsuranceHistoryDto = new AccidentInsuranceHistoryDto();
-                                accidentInsuranceHistoryDto.historyId = updateHistoryInfoModel.historyId;
-                                accidentInsuranceHistoryDto.startMonth = updateHistoryInfoModel.historyStart;
-                                accidentInsuranceHistoryDto.endMonth = updateHistoryInfoModel.historyEnd;
-                                //setup data history by update
-                                self.accidentInsuranceRateModel().setHistoryData(accidentInsuranceHistoryDto);
-                            }
+                            }).fail(function(error) {
+                                self.showMessageSaveAccidentInsurance(error.message)
+                            });
+                        },
+
+                        // Update call back.
+                        onUpdateCallBack: (data) => {
+                            var accidentInsuranceHistoryUpdateDto: AccidentInsuranceHistoryUpdateDto;
+                            accidentInsuranceHistoryUpdateDto = new AccidentInsuranceHistoryUpdateDto();
+                            accidentInsuranceHistoryUpdateDto.historyId = data.historyId;
+                            accidentInsuranceHistoryUpdateDto.startMonth = data.startYearMonth;
+                            accidentInsuranceHistoryUpdateDto.endMonth = endMonth;
+                            service.updateAccidentInsuranceRateHistory(accidentInsuranceHistoryUpdateDto).done(() => {
+                                self.typeActionAccidentInsurance(TypeActionInsuranceRate.add);
+                                self.reloadDataAccidentInsuranceRateByAction();
+                            }).fail(function(error) {
+                                self.showMessageSaveAccidentInsurance(error.message)
+                            });
                         }
-                    });
+                    };
+
+                    nts.uk.ui.windows.setShared('options', newHistoryOptions);
+                    var ntsDialogOptions = {
+                        title: nts.uk.text.format('{0}の登録 > 履歴の編集', name),
+                        dialogClass: 'no-close'
+                    };
+                    nts.uk.ui.windows.sub.modal('/view/base/simplehistory/updatehistory/index.xhtml', ntsDialogOptions);
+
                 });
             }
 
             //open dialog add AccidentInsuranceRateHistory => show view model xhtml (action event add)
             private openAddAccidentInsuranceRateHistory() {
+
+                //set info
                 var self = this;
-                //set data fw to /d/
-                nts.uk.ui.windows.setShared("isEmpty", self.isEmptyAccident());
+                var lastest: HistoryModel;
+                var name: string = '労働保険料率';
+                lastest = {
+                    uuid: self.selectionAccidentInsuranceRateHistory(),
+                    start: self.accidentInsuranceRateModel().accidentInsuranceRateHistoryModel.startMonth(),
+                    end: self.accidentInsuranceRateModel().accidentInsuranceRateHistoryModel.endMonth()
+                };
+                //set info history
+                var accidentInsuranceRateCopyDto: AccidentInsuranceRateCopyDto;
+                accidentInsuranceRateCopyDto = new AccidentInsuranceRateCopyDto();
+                accidentInsuranceRateCopyDto.historyIdCopy = self.selectionAccidentInsuranceRateHistory();
+                //set info option
+                var newHistoryOptions: NewHistoryScreenOption = {
+                    screenMode: ScreenMode.MODE_HISTORY_ONLY,
+                    name: name,
+                    master: null,
+                    lastest: lastest,
 
-                if (!self.isEmptyAccident()) {
-                    nts.uk.ui.windows.setShared("historyStart", self.beginHistoryStartAccidentInsuranceRate());
-                }
-
-                //open dialog /d/index.xhtml
-                nts.uk.ui.windows.sub.modal('/view/qmm/011/d/index.xhtml', { title: '労働保険料率の登録>履歴の追加', dialogClass: 'no-close' }).onClosed(() => {
-                    //OnClose => call
-                    //get fw d => respone
-                    var addHistoryInfoModel: AddHistoryInfoModel = nts.uk.ui.windows.getShared("addHistoryInfoModel");
-                    if (addHistoryInfoModel != null && addHistoryInfoModel != undefined) {
-                        var accidentInsuranceRateCopyDto: AccidentInsuranceRateCopyDto;
-                        accidentInsuranceRateCopyDto = new AccidentInsuranceRateCopyDto();
-                        accidentInsuranceRateCopyDto.historyIdCopy = self.selectionAccidentInsuranceRateHistory();
-                        accidentInsuranceRateCopyDto.startMonth = addHistoryInfoModel.starMonth;
-                        //get type action add by respone
-                        if (addHistoryInfoModel.typeModel == 2) {
-                            //type reset data
-                            accidentInsuranceRateCopyDto.addNew = true;
-
-                        } else {
-                            accidentInsuranceRateCopyDto.addNew = false;
-                        }
+                    // Copy.
+                    onCopyCallBack: (data) => {
+                        accidentInsuranceRateCopyDto.startMonth = data.startYearMonth;
+                        accidentInsuranceRateCopyDto.addNew = false;
                         service.copyAccidentInsuranceRate(accidentInsuranceRateCopyDto).done(data => {
                             self.typeActionAccidentInsurance(TypeActionInsuranceRate.add);
                             self.reloadDataAccidentInsuranceRateByAction();
                             self.clearErrorSaveAccidentInsurance();
                         }).fail(function(error) {
-                            self.showMessageSaveAccidentInsurance(error.message);
+                            self.showMessageSaveAccidentInsurance(error.message)
+                        });
+                    },
+
+                    // Init.
+                    onCreateCallBack: (data) => {
+                        accidentInsuranceRateCopyDto.startMonth = data.startYearMonth;
+                        accidentInsuranceRateCopyDto.addNew = true;
+                        service.copyAccidentInsuranceRate(accidentInsuranceRateCopyDto).done(data => {
+                            self.typeActionAccidentInsurance(TypeActionInsuranceRate.add);
+                            self.reloadDataAccidentInsuranceRateByAction();
+                            self.clearErrorSaveAccidentInsurance();
+                        }).fail(function(error) {
+                            self.showMessageSaveAccidentInsurance(error.message)
                         });
                     }
-                });
+                };
+
+                nts.uk.ui.windows.setShared('options', newHistoryOptions);
+                var ntsDialogOptions = {
+                    title: nts.uk.text.format('{0}の登録 > 履歴の追加', name),
+                    dialogClass: 'no-close'
+                };
+                nts.uk.ui.windows.sub.modal('/view/base/simplehistory/newhistory/index.xhtml', ntsDialogOptions);
+
             }
 
             //show UnemployeeInsuranceHistory (change event)

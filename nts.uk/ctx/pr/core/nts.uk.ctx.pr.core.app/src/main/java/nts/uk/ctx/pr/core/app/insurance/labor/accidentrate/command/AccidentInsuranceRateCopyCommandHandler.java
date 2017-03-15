@@ -57,7 +57,7 @@ public class AccidentInsuranceRateCopyCommandHandler extends CommandHandler<Acci
 		AccidentInsuranceRate accidentInsuranceRate = AccidentInsuranceRate.createWithIntial(companyCode,
 				YearMonth.of(command.getStartMonth()));
 
-		if (!command.isAddNew()) {
+		if (!command.isAddNew() && command.getHistoryIdCopy() != null && command.getHistoryIdCopy().length() > 0) {
 			// add new with start historyId
 			Optional<AccidentInsuranceRate> optionalFindAdd = this.accidentInsuranceRateRepo.findById(companyCode,
 					command.getHistoryIdCopy());

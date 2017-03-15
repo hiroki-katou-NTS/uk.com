@@ -31,5 +31,4 @@ public interface UnemployeeInsuranceRateService {
 	 * @param rate the rate
 	 */
 	void validateDateRangeUpdate(UnemployeeInsuranceRate rate);
-
 }

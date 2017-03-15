@@ -20,18 +20,39 @@ var nts;
                             var paths = {
                                 findAllUnemployeeInsuranceRateHistory: "pr/insurance/labor/unemployeerate/history/findall",
                                 findUnemployeeInsuranceRateHistory: "pr/insurance/labor/unemployeerate/history/find",
+                                updateUnemployeeInsuranceRateHistory: "pr/insurance/labor/unemployeerate/history/update",
                                 detailUnemployeeInsuranceRateHistory: "pr/insurance/labor/unemployeerate/detail",
                                 addUnemployeeInsuranceRate: "pr/insurance/labor/unemployeerate/add",
                                 copyUnemployeeInsuranceRate: "pr/insurance/labor/unemployeerate/copy",
+                                deleteUnemployeeInsurance: "pr/insurance/labor/unemployeerate/delete",
                                 updateUnemployeeInsuranceRate: "pr/insurance/labor/unemployeerate/update",
                                 findAllAccidentInsuranceRateHistory: "pr/insurance/labor/accidentrate/history/findall",
                                 findAccidentInsuranceRateHistory: "pr/insurance/labor/accidentrate/history/find",
+                                updateAccidentInsuranceRateHistory: "pr/insurance/labor/accidentrate/history/update",
                                 findAccidentInsuranceRate: "pr/insurance/labor/accidentrate/find",
                                 addAccidentInsuranceRate: "pr/insurance/labor/accidentrate/add",
                                 copyAccidentInsuranceRate: "pr/insurance/labor/accidentrate/copy",
                                 updateAccidentInsuranceRate: "pr/insurance/labor/accidentrate/update",
-                                findAllInsuranceBusinessType: "pr/insurance/labor/businesstype/findall"
+                                findAllInsuranceBusinessType: "pr/insurance/labor/businesstype/findall",
+                                deleteAccidentInsuranceRate: "pr/insurance/labor/accidentrate/delete"
                             };
+                            function updateUnemployeeInsuranceRateHistory(unemployeeInsuranceHistoryUpdateDto) {
+                                return nts.uk.request.ajax(paths.updateUnemployeeInsuranceRateHistory, unemployeeInsuranceHistoryUpdateDto);
+                            }
+                            service.updateUnemployeeInsuranceRateHistory = updateUnemployeeInsuranceRateHistory;
+                            function updateAccidentInsuranceRateHistory(accidentInsuranceHistoryUpdateDto) {
+                                return nts.uk.request.ajax(paths.updateAccidentInsuranceRateHistory, accidentInsuranceHistoryUpdateDto);
+                            }
+                            service.updateAccidentInsuranceRateHistory = updateAccidentInsuranceRateHistory;
+                            function deleteAccidentInsuranceRate(accidentInsuranceRateDeleteDto) {
+                                var data = { accidentInsuranceRateDeleteDto: accidentInsuranceRateDeleteDto };
+                                return nts.uk.request.ajax(paths.deleteAccidentInsuranceRate, data);
+                            }
+                            service.deleteAccidentInsuranceRate = deleteAccidentInsuranceRate;
+                            function deleteUnemployeeInsurance(unemployeeInsuranceDeleteDto) {
+                                return nts.uk.request.ajax(paths.deleteUnemployeeInsurance, unemployeeInsuranceDeleteDto);
+                            }
+                            service.deleteUnemployeeInsurance = deleteUnemployeeInsurance;
                             function addUnemployeeInsuranceRate(unemployeeInsuranceRateModel) {
                                 var dfd = $.Deferred();
                                 var data = {
@@ -415,12 +436,36 @@ var nts;
                                     return UnemployeeInsuranceHistoryFindInDto;
                                 }());
                                 model.UnemployeeInsuranceHistoryFindInDto = UnemployeeInsuranceHistoryFindInDto;
+                                var UnemployeeInsuranceHistoryUpdateDto = (function () {
+                                    function UnemployeeInsuranceHistoryUpdateDto() {
+                                    }
+                                    return UnemployeeInsuranceHistoryUpdateDto;
+                                }());
+                                model.UnemployeeInsuranceHistoryUpdateDto = UnemployeeInsuranceHistoryUpdateDto;
+                                var AccidentInsuranceHistoryUpdateDto = (function () {
+                                    function AccidentInsuranceHistoryUpdateDto() {
+                                    }
+                                    return AccidentInsuranceHistoryUpdateDto;
+                                }());
+                                model.AccidentInsuranceHistoryUpdateDto = AccidentInsuranceHistoryUpdateDto;
                                 var UnemployeeInsuranceRateFindOutDto = (function () {
                                     function UnemployeeInsuranceRateFindOutDto() {
                                     }
                                     return UnemployeeInsuranceRateFindOutDto;
                                 }());
                                 model.UnemployeeInsuranceRateFindOutDto = UnemployeeInsuranceRateFindOutDto;
+                                var AccidentInsuranceRateDeleteDto = (function () {
+                                    function AccidentInsuranceRateDeleteDto() {
+                                    }
+                                    return AccidentInsuranceRateDeleteDto;
+                                }());
+                                model.AccidentInsuranceRateDeleteDto = AccidentInsuranceRateDeleteDto;
+                                var UnemployeeInsuranceDeleteDto = (function () {
+                                    function UnemployeeInsuranceDeleteDto() {
+                                    }
+                                    return UnemployeeInsuranceDeleteDto;
+                                }());
+                                model.UnemployeeInsuranceDeleteDto = UnemployeeInsuranceDeleteDto;
                                 var UnemployeeInsuranceRateDto = (function () {
                                     function UnemployeeInsuranceRateDto() {
                                     }

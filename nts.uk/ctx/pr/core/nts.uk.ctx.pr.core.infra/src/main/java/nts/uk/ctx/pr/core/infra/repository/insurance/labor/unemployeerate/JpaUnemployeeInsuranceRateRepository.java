@@ -269,4 +269,5 @@ public class JpaUnemployeeInsuranceRateRepository extends JpaRepository implemen
 		// get fisrt data
 		return Optional.ofNullable(toDomain(lstQismtEmpInsuRate.get(BEGIN_FIRST)));
 	}
+
 }

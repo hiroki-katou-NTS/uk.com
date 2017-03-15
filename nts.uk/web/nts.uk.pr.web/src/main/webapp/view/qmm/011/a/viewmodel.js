@@ -12,12 +12,13 @@ var nts;
                     (function (a) {
                         var option = nts.uk.ui.option;
                         var RoundingMethodDto = a.service.model.RoundingMethodDto;
-                        var HistoryInsuranceInDto = a.service.model.HistoryInsuranceInDto;
+                        var UnemployeeInsuranceHistoryUpdateDto = a.service.model.UnemployeeInsuranceHistoryUpdateDto;
+                        var AccidentInsuranceHistoryUpdateDto = a.service.model.AccidentInsuranceHistoryUpdateDto;
+                        var UnemployeeInsuranceDeleteDto = a.service.model.UnemployeeInsuranceDeleteDto;
+                        var AccidentInsuranceRateDeleteDto = a.service.model.AccidentInsuranceRateDeleteDto;
                         var CareerGroupDto = a.service.model.CareerGroupDto;
                         var BusinessTypeEnumDto = a.service.model.BusinessTypeEnumDto;
-                        var TypeHistory = a.service.model.TypeHistory;
                         var UnemployeeInsuranceRateCopyDto = a.service.model.UnemployeeInsuranceRateCopyDto;
-                        var AccidentInsuranceHistoryDto = a.service.model.AccidentInsuranceHistoryDto;
                         var AccidentInsuranceRateCopyDto = a.service.model.AccidentInsuranceRateCopyDto;
                         var TypeActionInsuranceRate = a.service.model.TypeActionInsuranceRate;
                         var ScreenMode = nts.uk.pr.view.base.simplehistory.dialogbase.ScreenMode;
@@ -56,36 +57,59 @@ var nts;
                                 }
                                 ScreenModel.prototype.openEditUnemployeeInsuranceRateHistory = function () {
                                     var self = this;
-                                    var historyId = self.selectionUnemployeeInsuranceRateHistory();
-                                    a.service.findUnemployeeInsuranceRateHistory(historyId).done(function (data) {
-                                        nts.uk.ui.windows.setShared("historyEnd", data.endMonth);
-                                        nts.uk.ui.windows.setShared("historyStart", data.startMonth);
-                                        nts.uk.ui.windows.setShared("historyId", data.historyId);
-                                        nts.uk.ui.windows.setShared("type", TypeHistory.HistoryUnemployee);
-                                        nts.uk.ui.windows.sub.modal('/view/qmm/011/f/index.xhtml', { title: '労働保険料率の登録>マスタ修正ログ', dialogClass: 'no-close' }).onClosed(function () {
-                                            var updateHistoryInfoModel = nts.uk.ui.windows.getShared("updateHistoryInfoModel");
-                                            if (updateHistoryInfoModel != null && updateHistoryInfoModel != undefined) {
-                                                if (updateHistoryInfoModel.typeUpdate == 1) {
+                                    a.service.findUnemployeeInsuranceRateHistory(self.selectionUnemployeeInsuranceRateHistory()).done(function (data) {
+                                        var history;
+                                        var endMonth = data.endMonth;
+                                        var name = '雇用保険料率';
+                                        history = {
+                                            uuid: self.selectionUnemployeeInsuranceRateHistory(),
+                                            start: data.startMonth,
+                                            end: endMonth
+                                        };
+                                        var newHistoryOptions = {
+                                            screenMode: ScreenMode.MODE_HISTORY_ONLY,
+                                            name: name,
+                                            master: null,
+                                            history: history,
+                                            removeMasterOnLastHistoryRemove: false,
+                                            onDeleteCallBack: function (data) {
+                                                var unemployeeInsuranceDeleteDto;
+                                                unemployeeInsuranceDeleteDto = new UnemployeeInsuranceDeleteDto();
+                                                unemployeeInsuranceDeleteDto.code = data.historyId;
+                                                unemployeeInsuranceDeleteDto.version = 0;
+                                                a.service.deleteUnemployeeInsurance(unemployeeInsuranceDeleteDto).done(function (data) {
                                                     self.typeActionUnemployeeInsurance(TypeActionInsuranceRate.add);
                                                     self.reloadDataUnemployeeInsuranceRateByAction();
-                                                }
-                                                else {
-                                                    self.typeActionUnemployeeInsurance(TypeActionInsuranceRate.update);
-                                                    var UnemployeeInsuranceHistoryDto;
-                                                    UnemployeeInsuranceHistoryDto = new HistoryInsuranceInDto();
-                                                    UnemployeeInsuranceHistoryDto.historyId = updateHistoryInfoModel.historyId;
-                                                    UnemployeeInsuranceHistoryDto.startMonth = updateHistoryInfoModel.historyStart;
-                                                    UnemployeeInsuranceHistoryDto.endMonth = updateHistoryInfoModel.historyEnd;
-                                                    self.unemployeeInsuranceRateModel().setHistoryData(UnemployeeInsuranceHistoryDto);
-                                                }
+                                                }).fail(function (error) {
+                                                    self.showMessageSaveUnemployeeInsurance(error.message);
+                                                });
+                                            },
+                                            onUpdateCallBack: function (data) {
+                                                var unemployeeInsuranceHistoryUpdateDto;
+                                                unemployeeInsuranceHistoryUpdateDto = new UnemployeeInsuranceHistoryUpdateDto();
+                                                unemployeeInsuranceHistoryUpdateDto.historyId = data.historyId;
+                                                unemployeeInsuranceHistoryUpdateDto.startMonth = data.startYearMonth;
+                                                unemployeeInsuranceHistoryUpdateDto.endMonth = endMonth;
+                                                a.service.updateUnemployeeInsuranceRateHistory(unemployeeInsuranceHistoryUpdateDto).done(function () {
+                                                    self.typeActionUnemployeeInsurance(TypeActionInsuranceRate.add);
+                                                    self.reloadDataUnemployeeInsuranceRateByAction();
+                                                }).fail(function (error) {
+                                                    self.showMessageSaveUnemployeeInsurance(error.message);
+                                                });
                                             }
-                                        });
+                                        };
+                                        nts.uk.ui.windows.setShared('options', newHistoryOptions);
+                                        var ntsDialogOptions = {
+                                            title: nts.uk.text.format('{0}の登録 > 履歴の編集', name),
+                                            dialogClass: 'no-close'
+                                        };
+                                        nts.uk.ui.windows.sub.modal('/view/base/simplehistory/updatehistory/index.xhtml', ntsDialogOptions);
                                     });
                                 };
                                 ScreenModel.prototype.openAddUnemployeeInsuranceRateHistory = function () {
                                     var self = this;
                                     var lastest;
-                                    var name = '労働保険料率';
+                                    var name = '雇用保険料率';
                                     lastest = {
                                         uuid: self.selectionUnemployeeInsuranceRateHistory(),
                                         start: self.unemployeeInsuranceRateModel().unemployeeInsuranceHistoryModel.startMonth(),
@@ -145,51 +169,86 @@ var nts;
                                 };
                                 ScreenModel.prototype.openEditAccidentInsuranceRateHistory = function () {
                                     var self = this;
-                                    var historyId = self.selectionAccidentInsuranceRateHistory();
-                                    a.service.findAccidentInsuranceRateHistory(historyId).done(function (data) {
-                                        nts.uk.ui.windows.setShared("historyEnd", data.endMonth);
-                                        nts.uk.ui.windows.setShared("historyStart", data.startMonth);
-                                        nts.uk.ui.windows.setShared("historyId", data.historyId);
-                                        nts.uk.ui.windows.setShared("type", TypeHistory.HistoryAccident);
-                                        nts.uk.ui.windows.sub.modal('/view/qmm/011/f/index.xhtml', { title: '労働保険料率の登録>マスタ修正ログ', dialogClass: 'no-close' }).onClosed(function () {
-                                            var updateHistoryInfoModel = nts.uk.ui.windows.getShared("updateHistoryInfoModel");
-                                            if (updateHistoryInfoModel != null && updateHistoryInfoModel != undefined) {
-                                                if (updateHistoryInfoModel.typeUpdate == 1) {
+                                    a.service.findAccidentInsuranceRateHistory(self.selectionAccidentInsuranceRateHistory()).done(function (data) {
+                                        var history;
+                                        var endMonth = data.endMonth;
+                                        var name = '労働保険料率';
+                                        history = {
+                                            uuid: data.historyId,
+                                            start: data.startMonth,
+                                            end: endMonth
+                                        };
+                                        var newHistoryOptions = {
+                                            screenMode: ScreenMode.MODE_HISTORY_ONLY,
+                                            name: name,
+                                            master: null,
+                                            history: history,
+                                            removeMasterOnLastHistoryRemove: false,
+                                            onDeleteCallBack: function (data) {
+                                                var accidentInsuranceRateDeleteDto;
+                                                accidentInsuranceRateDeleteDto = new AccidentInsuranceRateDeleteDto();
+                                                accidentInsuranceRateDeleteDto.code = data.historyId;
+                                                accidentInsuranceRateDeleteDto.version = 0;
+                                                a.service.deleteAccidentInsuranceRate(accidentInsuranceRateDeleteDto).done(function (data) {
                                                     self.typeActionAccidentInsurance(TypeActionInsuranceRate.add);
                                                     self.reloadDataAccidentInsuranceRateByAction();
-                                                }
-                                                else {
-                                                    self.typeActionAccidentInsurance(TypeActionInsuranceRate.update);
-                                                    var accidentInsuranceHistoryDto;
-                                                    accidentInsuranceHistoryDto = new AccidentInsuranceHistoryDto();
-                                                    accidentInsuranceHistoryDto.historyId = updateHistoryInfoModel.historyId;
-                                                    accidentInsuranceHistoryDto.startMonth = updateHistoryInfoModel.historyStart;
-                                                    accidentInsuranceHistoryDto.endMonth = updateHistoryInfoModel.historyEnd;
-                                                    self.accidentInsuranceRateModel().setHistoryData(accidentInsuranceHistoryDto);
-                                                }
+                                                }).fail(function (error) {
+                                                    self.showMessageSaveAccidentInsurance(error.message);
+                                                });
+                                            },
+                                            onUpdateCallBack: function (data) {
+                                                var accidentInsuranceHistoryUpdateDto;
+                                                accidentInsuranceHistoryUpdateDto = new AccidentInsuranceHistoryUpdateDto();
+                                                accidentInsuranceHistoryUpdateDto.historyId = data.historyId;
+                                                accidentInsuranceHistoryUpdateDto.startMonth = data.startYearMonth;
+                                                accidentInsuranceHistoryUpdateDto.endMonth = endMonth;
+                                                a.service.updateAccidentInsuranceRateHistory(accidentInsuranceHistoryUpdateDto).done(function () {
+                                                    self.typeActionAccidentInsurance(TypeActionInsuranceRate.add);
+                                                    self.reloadDataAccidentInsuranceRateByAction();
+                                                }).fail(function (error) {
+                                                    self.showMessageSaveAccidentInsurance(error.message);
+                                                });
                                             }
-                                        });
+                                        };
+                                        nts.uk.ui.windows.setShared('options', newHistoryOptions);
+                                        var ntsDialogOptions = {
+                                            title: nts.uk.text.format('{0}の登録 > 履歴の編集', name),
+                                            dialogClass: 'no-close'
+                                        };
+                                        nts.uk.ui.windows.sub.modal('/view/base/simplehistory/updatehistory/index.xhtml', ntsDialogOptions);
                                     });
                                 };
                                 ScreenModel.prototype.openAddAccidentInsuranceRateHistory = function () {
                                     var self = this;
-                                    nts.uk.ui.windows.setShared("isEmpty", self.isEmptyAccident());
-                                    if (!self.isEmptyAccident()) {
-                                        nts.uk.ui.windows.setShared("historyStart", self.beginHistoryStartAccidentInsuranceRate());
-                                    }
-                                    nts.uk.ui.windows.sub.modal('/view/qmm/011/d/index.xhtml', { title: '労働保険料率の登録>履歴の追加', dialogClass: 'no-close' }).onClosed(function () {
-                                        var addHistoryInfoModel = nts.uk.ui.windows.getShared("addHistoryInfoModel");
-                                        if (addHistoryInfoModel != null && addHistoryInfoModel != undefined) {
-                                            var accidentInsuranceRateCopyDto;
-                                            accidentInsuranceRateCopyDto = new AccidentInsuranceRateCopyDto();
-                                            accidentInsuranceRateCopyDto.historyIdCopy = self.selectionAccidentInsuranceRateHistory();
-                                            accidentInsuranceRateCopyDto.startMonth = addHistoryInfoModel.starMonth;
-                                            if (addHistoryInfoModel.typeModel == 2) {
-                                                accidentInsuranceRateCopyDto.addNew = true;
-                                            }
-                                            else {
-                                                accidentInsuranceRateCopyDto.addNew = false;
-                                            }
+                                    var lastest;
+                                    var name = '労働保険料率';
+                                    lastest = {
+                                        uuid: self.selectionAccidentInsuranceRateHistory(),
+                                        start: self.accidentInsuranceRateModel().accidentInsuranceRateHistoryModel.startMonth(),
+                                        end: self.accidentInsuranceRateModel().accidentInsuranceRateHistoryModel.endMonth()
+                                    };
+                                    var accidentInsuranceRateCopyDto;
+                                    accidentInsuranceRateCopyDto = new AccidentInsuranceRateCopyDto();
+                                    accidentInsuranceRateCopyDto.historyIdCopy = self.selectionAccidentInsuranceRateHistory();
+                                    var newHistoryOptions = {
+                                        screenMode: ScreenMode.MODE_HISTORY_ONLY,
+                                        name: name,
+                                        master: null,
+                                        lastest: lastest,
+                                        onCopyCallBack: function (data) {
+                                            accidentInsuranceRateCopyDto.startMonth = data.startYearMonth;
+                                            accidentInsuranceRateCopyDto.addNew = false;
+                                            a.service.copyAccidentInsuranceRate(accidentInsuranceRateCopyDto).done(function (data) {
+                                                self.typeActionAccidentInsurance(TypeActionInsuranceRate.add);
+                                                self.reloadDataAccidentInsuranceRateByAction();
+                                                self.clearErrorSaveAccidentInsurance();
+                                            }).fail(function (error) {
+                                                self.showMessageSaveAccidentInsurance(error.message);
+                                            });
+                                        },
+                                        onCreateCallBack: function (data) {
+                                            accidentInsuranceRateCopyDto.startMonth = data.startYearMonth;
+                                            accidentInsuranceRateCopyDto.addNew = true;
                                             a.service.copyAccidentInsuranceRate(accidentInsuranceRateCopyDto).done(function (data) {
                                                 self.typeActionAccidentInsurance(TypeActionInsuranceRate.add);
                                                 self.reloadDataAccidentInsuranceRateByAction();
@@ -198,7 +257,13 @@ var nts;
                                                 self.showMessageSaveAccidentInsurance(error.message);
                                             });
                                         }
-                                    });
+                                    };
+                                    nts.uk.ui.windows.setShared('options', newHistoryOptions);
+                                    var ntsDialogOptions = {
+                                        title: nts.uk.text.format('{0}の登録 > 履歴の追加', name),
+                                        dialogClass: 'no-close'
+                                    };
+                                    nts.uk.ui.windows.sub.modal('/view/base/simplehistory/newhistory/index.xhtml', ntsDialogOptions);
                                 };
                                 ScreenModel.prototype.showchangeUnemployeeInsuranceHistory = function (selectionUnemployeeInsuranceRateHistory) {
                                     if (selectionUnemployeeInsuranceRateHistory != null

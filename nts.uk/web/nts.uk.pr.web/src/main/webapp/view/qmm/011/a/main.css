@@ -91,6 +91,7 @@ button.nts-switch-button {
 .list-box {
 	width: 150px;
 	margin-top: 10px;
+	min-height: 450px;
 }
 
 .backgroundGreen {
