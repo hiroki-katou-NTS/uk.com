@@ -4,7 +4,7 @@
 
 #contents-area #ft {
 	width: 500px;
-    border: 1px black;
+	border: 1px black;
 	text-align: center;
 }
 
@@ -13,9 +13,13 @@
 	margin-left: 10px;
 }
 
-.ntsSearchBox {
+.search-wrap{
 	margin-left: 10px;
 	margin-top: 10px;
+}
+
+.ntsSearchBox {
+	width: 442px !important;
 }
 
 .search-btn caret-bottom {

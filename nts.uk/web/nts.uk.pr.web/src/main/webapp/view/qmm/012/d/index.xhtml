@@ -13,7 +13,7 @@
 				data-bind="ntsComboBox: {
 										options: ComboBoxItemList_D_001,
 										optionsValue: 'code',
-										value: selectedCode_D_001,
+										value: CurrentDeductAtr,
 										optionsText: 'name',
 										editable: isEditable,
 										enable: isEnable,
@@ -34,7 +34,7 @@
 										options: roundingRules_D_002,
 										optionsValue: 'code',
 										optionsText: 'name',
-										value: selectedRuleCode_D_002,
+										value: CurrentItemDisplayAtr,
 										enable: enable }"></div>
 			<div id="D_SEL_003"
 				data-bind="ntsCheckBox: { checked: checked_D_003, enable: enable, text: '項目名も表示しない' }"></div>
@@ -47,36 +47,30 @@
 		</div>
 		<div class="divLineCol2">
 			<div id="D_SEL_004"
-				data-bind="ntsCheckBox: { checked: checked_D_004, enable: enable, text: '項目名も表示しない' }"></div>
+				data-bind="ntsCheckBox: { checked: checked_D_004, enable: enable, text: '' }"></div>
 			<div id="D_INP_001" data-bind="with: currencyeditor_D_001">
 				<input
 					data-bind="ntsNumberEditor: {
 										value: value,
 										constraint: constraint,
-										option: option,
-										required: required,
-										enable: enable,
-										readonly: readonly}" />
+										option: option}" />
 			</div>
-			<label id="D_LBL_004">月給者 </label>
+			<label id="D_LBL_004">を超える場合にエラーとする</label>
 		</div>
 	</div>
 	<div class="divLine">
 		<div class="divLineCol1"></div>
 		<div class="divLineCol2">
 			<div id="D_SEL_005"
-				data-bind="ntsCheckBox: { checked: checked_D_005, enable: enable, text: '項目名も表示しない' }"></div>
-			<div id="D_INP_002" data-bind="with: currencyeditor_D_001">
+				data-bind="ntsCheckBox: { checked: checked_D_005, enable: enable, text: '' }"></div>
+			<div id="D_INP_002" data-bind="with: currencyeditor_D_002">
 				<input
 					data-bind="ntsNumberEditor: {
 										value: value,
 										constraint: constraint,
-										option: option,
-										required: required,
-										enable: enable,
-										readonly: readonly}" />
+										option: option}" />
 			</div>
-			<label id="D_LBL_005">月給者 </label>
+			<label id="D_LBL_007">未満の場合にエラーとする</label>
 		</div>
 	</div>
 	<div class="divLine">
@@ -85,42 +79,37 @@
 		</div>
 		<div class="divLineCol2 verticalAlignBottom">
 			<div id="D_SEL_006"
-				data-bind="ntsCheckBox: { checked: checked_D_006, enable: enable, text: '項目名も表示しない' }"></div>
-			<div id="D_INP_003" data-bind="with: currencyeditor_D_001">
+				data-bind="ntsCheckBox: { checked: checked_D_006, enable: enable, text: '' }"></div>
+			<div id="D_INP_003" data-bind="with: currencyeditor_D_003">
 				<input
 					data-bind="ntsNumberEditor: {
 										value: value,
 										constraint: constraint,
-										option: option,
-										required: required,
-										enable: enable,
-										readonly: readonly}" />
+										option: option}" />
 			</div>
-			<label id="D_LBL_007">月給者 </label>
+			<label id="D_LBL_005">を超える場合にアラームとする</label>
 		</div>
 	</div>
 	<div class="divLine">
 		<div class="divLineCol1"></div>
 		<div class="divLineCol2">
 			<div id="D_SEL_007"
-				data-bind="ntsCheckBox: { checked: checked_D_007, enable: enable, text: '項目名も表示しない' }"></div>
-			<div id="D_INP_004" data-bind="with: currencyeditor_D_001">
+				data-bind="ntsCheckBox: { checked: checked_D_007, enable: enable, text: '' }"></div>
+			<div id="D_INP_004" data-bind="with: currencyeditor_D_004">
 				<input
 					data-bind="ntsNumberEditor: {
 										value: value,
 										constraint: constraint,
-										option: option,
-										required: required,
-										enable: enable,
-										readonly: readonly}" />
+										option: option}" />
 			</div>
-			<label id="D_LBL_008">月給者 </label>
+			<label id="D_LBL_008">未満の場合にアラームとする</label>
 		</div>
 	</div>
 	<div class="divLine">
 		<div class="divLineCol1"></div>
 		<div class="divLineCol2">
-			<label id="D_LBL_009"> ナビゲーションメッセージ1 <br />ナビゲーションメッセージ1
+			<label id="D_LBL_009">「※エラーの場合は、データが登録されません。 <br />
+				アラームの場合は、メッセージが表示されます。（データが登録されます）」と表記
 			</label>
 
 		</div>
@@ -132,7 +121,7 @@
 			</div>
 		</div>
 		<div class="divLineCol2">
-			<button id="D_BTN_001" class="small">有効期間設定</button>
+			<button id="D_BTN_001" class="small" data-bind="click:openHDialog">有効期間設定</button>
 			<label id="D_LBL_011">設定区分 </label>
 
 		</div>
@@ -143,7 +132,7 @@
 			<div id="D_LBL_016" data-bind="ntsFormLabel: {  required: false }">内訳</div>
 		</div>
 		<div class="divLineCol2">
-			<button id="D_BTN_002" class="small">有効期間設定</button>
+			<button id="D_BTN_002" class="small" data-bind="click:openIDialog">有効期間設定</button>
 			<label id="D_LBL_012">サイクル設定区分</label>
 		</div>
 
@@ -154,7 +143,7 @@
 		</div>
 		<div class="divLineCol2">
 			<TEXTAREA id="D_INP_005" rows="5" cols="40"
-				data-bind="value: textArea_D_005"></TEXTAREA>
+				data-bind="value: CurrentMemo"></TEXTAREA>
 		</div>
 	</div>
 </body>
