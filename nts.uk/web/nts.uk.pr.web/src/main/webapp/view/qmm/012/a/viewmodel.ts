@@ -2,16 +2,16 @@ module qmm012.a.viewmodel {
     export class ScreenModel {
         //Switch
         roundingRules: KnockoutObservableArray<any>;
-        selectedRuleCode: any;
+        selectedRuleCode: any = ko.observable(0);
         enable: KnockoutObservable<boolean> = ko.observable(true);
         constructor() {
             let self = this;
             //start Switch Data
-            self.enable 
+            self.enable
             self.roundingRules = ko.observableArray([
-                { code: 0 , name: 'x‹‹€–Ú' },
-                { code: 1 , name: 'Tœ€–Ú' },
-                { code: 2 , name: '‹Î‘Ó€–Ú' }
+                { code: 0, name: 'æ”¯çµ¦é …ç›®' },
+                { code: 1, name: 'æ§é™¤é …ç›®' },
+                { code: 2, name: 'å‹¤æ€ é …ç›®' }
             ]);
             self.selectedRuleCode = ko.observable(0);
             //endSwitch Data
@@ -19,7 +19,7 @@ module qmm012.a.viewmodel {
         submitInfo() {
             let self = this;
             let groupCode = self.selectedRuleCode();
-            nts.uk.ui.windows.setShared('groupCode', groupCode);
+            nts.uk.sessionStorage.setItem('groupCode', groupCode);
             nts.uk.ui.windows.close();
         }
         closeDialog() {

@@ -35,9 +35,9 @@ module qmm012.c {
                 alRangeLow: number;
                 alRangeHighAtr: number;
                 alRangeHigh: number;
-                memo: String;
+                memo: string;
                 limitMnyAtr: number;
-                limitMnyRefItemCd: String;
+                limitMnyRefItemCd: string;
                 limitMny: number;
                 constructor(
                     taxAtr: number,
@@ -58,9 +58,9 @@ module qmm012.c {
                     alRangeLow: number,
                     alRangeHighAtr: number,
                     alRangeHigh: number,
-                    memo: String,
+                    memo: string,
                     limitMnyAtr: number,
-                    limitMnyRefItemCd: String,
+                    limitMnyRefItemCd: string,
                     limitMny: number
 
                 ) {
