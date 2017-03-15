@@ -65,8 +65,8 @@ module nts.uk.pr.view.base.simplehistory {
                 
                 self.igGridSelectedHistoryUuid.subscribe(id => {
                     if (id && id.length == 36) {
-                        self.selectedHistoryUuid(id);
-                        self.isClickHistory(true);
+                        self.isNewMode(false);
+                        self.onSelectHistory(id);
                     }
                     else {
                         self.isClickHistory(false);
@@ -104,7 +104,7 @@ module nts.uk.pr.view.base.simplehistory {
                         if(self.masterHistoryDatasource()[0].childs.length>0)
                         self.selectedHistoryUuid(self.masterHistoryDatasource()[0].childs[0].id);
                     }
-                    
+
                     // resole.
                     dfd.resolve();
                 }).fail(dfd.fail);
@@ -163,7 +163,7 @@ module nts.uk.pr.view.base.simplehistory {
                 self.isNewMode(true);
 
                 // Clear select history uuid.
-                self.selectedHistoryUuid(undefined);
+                self.igGridSelectedHistoryUuid(undefined);
             }
 
             /**
