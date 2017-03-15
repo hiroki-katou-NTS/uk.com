@@ -12,6 +12,19 @@ var cmm013;
                     self.startDateNew = ko.observable('');
                     self.startDateUpdate = ko.observable('');
                     self.endDateUpdate = ko.observable('');
+                    self.startDateLast = ko.observable(null);
+                    self.historyIdLast = ko.observable(null);
+                    self.length = ko.observable(0);
+                    self.startDateAddNew = ko.observable("");
+                    self.startDateUpdate = ko.observable(null);
+                    self.endDateUpdate = ko.observable(null);
+                    self.historyIdUpdate = ko.observable(null);
+                    self.startDateUpdateNew = ko.observable(null);
+                    self.startDatePre = ko.observable(null);
+                    self.jobHistory = ko.observable(null);
+                    self.selectedCode = ko.observable(null);
+                    self.checkDelete = ko.observable(null);
+                    self.listbox = ko.observableArray([]);
                     self.itemList = ko.observableArray([
                         new BoxModel(1, '履歴を削除する '),
                         new BoxModel(2, '履歴を修正する')
@@ -27,6 +40,69 @@ var cmm013;
                         }
                     }));
                 }
+                ScreenModel.prototype.deleteJobHist = function () {
+                    var self = this;
+                    var dfd = $.Deferred();
+                    var checkUpdate = nts.uk.ui.windows.getShared('check_d');
+                    self.startDateUpdateNew(nts.uk.ui.windows.getShared('startUpdateNew'));
+                    if (self.startDateUpdateNew() == null || self.startDateUpdateNew() == '') {
+                        if (checkUpdate() == '1') {
+                            if (self.checkDelete() == self.startDateUpdate()) {
+                                var jobHistDelete = new model.ListHistoryDto(self.startDateUpdate(), '1', self.endDateUpdate(), self.historyIdUpdate());
+                            }
+                            else {
+                                var jobHistDelete = new model.ListHistoryDto(self.startDateUpdate(), '0', self.endDateUpdate(), self.historyIdUpdate());
+                            }
+                            var dfd = $.Deferred();
+                            service.deleteJobHist(jobHistDelete).done(function (res) {
+                                nts.uk.ui.windows.setShared('check_d', '', true);
+                                self.getAllHist();
+                            }).fail(function (res) {
+                                dfd.reject(res);
+                            });
+                        }
+                        else
+                            return;
+                    }
+                };
+                ScreenModel.prototype.updtateJobHist = function () {
+                    var self = this;
+                    var dfd = $.Deferred();
+                    var checkUpdate = nts.uk.ui.windows.getShared('check_d');
+                    self.startDateUpdateNew(nts.uk.ui.windows.getShared('startUpdateNew'));
+                    var jobHistUpdateSdate = new model.ListHistoryDto(self.startDateUpdate(), self.startDateUpdateNew(), self.endDateUpdate(), self.historyIdUpdate());
+                    service.updateJobHist(jobHistUpdateSdate).done(function () {
+                        nts.uk.ui.windows.setShared('startUpdateNew', '', true);
+                        self.getAllHist();
+                    }).fail(function (res) {
+                        dfd.reject(res);
+                    });
+                };
+                ScreenModel.prototype.getAllHist = function () {
+                    var self = this;
+                    var dfd = $.Deferred();
+                    self.selectedCode('');
+                    self.listbox([]);
+                    service.getAllHistory().done(function (history_arr) {
+                        if (history_arr === undefined || history_arr.length === 0)
+                            return;
+                        self.listbox(history_arr);
+                        _.forEach(history_arr, function (strHistory) {
+                            self.listbox.push(strHistory);
+                        });
+                        var historyFirst = _.first(history_arr);
+                        var historyLast = _.last(history_arr);
+                        self.checkDelete(historyLast.startDate);
+                        self.selectedCode(historyFirst.startDate);
+                        self.startDateUpdate(historyFirst.startDate);
+                        self.endDateUpdate(historyFirst.endDate);
+                        self.historyIdUpdate(historyFirst.historyId);
+                        self.startDateLast(historyFirst.startDate);
+                        self.historyIdLast(historyFirst.historyId);
+                        dfd.resolve(history_arr);
+                    });
+                    return dfd.promise();
+                };
                 ScreenModel.prototype.startPage = function () {
                     var self = this;
                     var dfd = $.Deferred();
@@ -67,6 +143,29 @@ var cmm013;
                 }
                 return BoxModel;
             }());
+            var model;
+            (function (model) {
+                var historyDto = (function () {
+                    function historyDto(startDate, endDate, historyId) {
+                        this.startDate = startDate;
+                        this.endDate = endDate;
+                        this.historyId = historyId;
+                    }
+                    return historyDto;
+                }());
+                model.historyDto = historyDto;
+                var ListHistoryDto = (function () {
+                    function ListHistoryDto(companyCode, startDate, endDate, historyId) {
+                        var self = this;
+                        self.companyCode = companyCode;
+                        self.startDate = startDate;
+                        self.endDate = endDate;
+                        self.historyId = historyId;
+                    }
+                    return ListHistoryDto;
+                }());
+                model.ListHistoryDto = ListHistoryDto;
+            })(model = viewmodel.model || (viewmodel.model = {}));
         })(viewmodel = d.viewmodel || (d.viewmodel = {}));
     })(d = cmm013.d || (cmm013.d = {}));
 })(cmm013 || (cmm013 = {}));

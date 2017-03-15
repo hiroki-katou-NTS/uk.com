@@ -10,6 +10,21 @@ module cmm013.d.viewmodel {
         itemList: KnockoutObservableArray<any>;
         selectedId: KnockoutObservable<number>;
         enable: KnockoutObservable<boolean>;
+        
+         res: KnockoutObservableArray<string>;
+        startDateLast: KnockoutObservable<string>;
+        historyIdLast: KnockoutObservable<string>;
+        length: KnockoutObservable<number>;
+        startDateAddNew: KnockoutObservable<string>;
+        listbox: KnockoutObservableArray<model.ListHistoryDto>;
+         selectedCode: KnockoutObservable<any>;
+        checkDelete: KnockoutObservable<any>;
+
+
+        historyIdUpdate: KnockoutObservable<string>;
+        startDateUpdateNew: KnockoutObservable<string>;
+        startDatePre: KnockoutObservable<string>;
+        jobHistory: KnockoutObservable<model.ListHistoryDto>;
         constructor() {
             var self = this;
             self.inp_003 = ko.observable(null);
@@ -17,6 +32,21 @@ module cmm013.d.viewmodel {
             self.startDateNew = ko.observable('');
             self.startDateUpdate = ko.observable('');
             self.endDateUpdate = ko.observable('');
+            
+              self.startDateLast = ko.observable(null);
+            self.historyIdLast = ko.observable(null);
+            self.length = ko.observable(0);
+            self.startDateAddNew = ko.observable("");
+
+            self.startDateUpdate = ko.observable(null);
+            self.endDateUpdate = ko.observable(null);
+            self.historyIdUpdate = ko.observable(null);
+            self.startDateUpdateNew = ko.observable(null);
+            self.startDatePre = ko.observable(null);
+            self.jobHistory = ko.observable(null);
+               self.selectedCode = ko.observable(null);
+            self.checkDelete = ko.observable(null);
+            self.listbox = ko.observableArray([]);
            
             self.itemList = ko.observableArray([
                 new BoxModel(1, '履歴を削除する '),
@@ -34,6 +64,71 @@ module cmm013.d.viewmodel {
                 }  
             }));
         }
+        
+                deleteJobHist(){
+                     var self = this;
+            var dfd = $.Deferred<any>();
+            var checkUpdate=nts.uk.ui.windows.getShared('check_d');
+            self.startDateUpdateNew(nts.uk.ui.windows.getShared('startUpdateNew'));
+            if(self.startDateUpdateNew() == null || self.startDateUpdateNew()==''){
+                if(checkUpdate()=='1'){
+                    if(self.checkDelete() ==self.startDateUpdate()){
+                        var jobHistDelete = new model.ListHistoryDto(self.startDateUpdate(),'1',self.endDateUpdate(),self.historyIdUpdate());
+                    }else{
+                         var jobHistDelete = new model.ListHistoryDto(self.startDateUpdate(),'0',self.endDateUpdate(),self.historyIdUpdate());   
+                    }
+                        var dfd = $.Deferred<any>();
+                    service.deleteJobHist(jobHistDelete).done(function(res){
+                        nts.uk.ui.windows.setShared('check_d','',true);
+                        self.getAllHist();
+                    }).fail(function(res){
+                        dfd.reject(res);
+                    })
+                }else 
+                    return;    
+            }
+        }
+        
+         updtateJobHist (){
+            var self = this;
+            var dfd = $.Deferred<any>();
+            var checkUpdate=nts.uk.ui.windows.getShared('check_d');
+            self.startDateUpdateNew(nts.uk.ui.windows.getShared('startUpdateNew'));
+       
+                var jobHistUpdateSdate = new model.ListHistoryDto(self.startDateUpdate(),self.startDateUpdateNew(),self.endDateUpdate(),self.historyIdUpdate());
+                service.updateJobHist(jobHistUpdateSdate).done(function(){
+                    nts.uk.ui.windows.setShared('startUpdateNew','',true)
+                    self.getAllHist();
+                }).fail(function(res){
+                    dfd.reject(res);    
+                })
+            }
+          getAllHist(): any{
+            var self = this;
+            var dfd = $.Deferred<any>();
+            self.selectedCode('');
+            self.listbox([]);
+            service.getAllHistory().done(function(history_arr: Array<model.ListHistoryDto>){
+                if(history_arr === undefined || history_arr.length === 0)
+                    return;
+                self.listbox(history_arr);
+                _.forEach(history_arr, function(strHistory){
+                    self.listbox.push(strHistory);
+                })
+                var historyFirst = _.first(history_arr);
+                var historyLast= _.last(history_arr);
+                self.checkDelete(historyLast.startDate);
+                self.selectedCode(historyFirst.startDate);
+                self.startDateUpdate(historyFirst.startDate);
+                self.endDateUpdate(historyFirst.endDate);
+                self.historyIdUpdate(historyFirst.historyId);
+                self.startDateLast(historyFirst.startDate);
+                self.historyIdLast(historyFirst.historyId);
+                dfd.resolve(history_arr);
+            })   
+            return dfd.promise();    
+        }
+  
         
         startPage(): JQueryPromise<any>{
             var self = this;
@@ -74,5 +169,34 @@ module cmm013.d.viewmodel {
             self.id = id;
             self.name = name;
         }    
-    }    
+    }
+    
+         export module model {
+               export class historyDto{
+           startDate: string;
+           endDate: string;
+           historyId: string; 
+           constructor (startDate: string, endDate: string,historyId: string){
+               this.startDate = startDate;
+               this.endDate = endDate;
+               this.historyId = historyId;
+           }  
+       }
+
+ export class ListHistoryDto {
+            companyCode: string;
+            startDate: string;
+            endDate: string;
+            historyId: string;
+            constructor( companyCode: string,startDate: string, endDate: string, historyId: string) {
+                var self = this;
+                self.companyCode = companyCode;
+                self.startDate = startDate;
+                self.endDate = endDate;
+                self.historyId = historyId;
+            }
+        }
+
+
+}
 }

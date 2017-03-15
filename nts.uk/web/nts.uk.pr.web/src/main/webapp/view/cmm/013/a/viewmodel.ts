@@ -1,4 +1,4 @@
-module cmm013Test.a.viewmodel {
+module cmm013.a.viewmodel {
 
     export class ScreenModel {
 
@@ -39,8 +39,6 @@ module cmm013Test.a.viewmodel {
         currentYm: KnockoutObservable<string>;
         dataSource: KnockoutObservableArray<model.ListPositionDto>;
         columns: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
-
-
 
 
         currentCodeList: KnockoutObservableArray<any>;
@@ -107,7 +105,6 @@ module cmm013Test.a.viewmodel {
             self.startDateAddNew = ko.observable("");
 
             self.startDateUpdate = ko.observable(null);
-            self.endDateUpdate = ko.observable(null);
             self.historyIdUpdate = ko.observable(null);
             self.startDateUpdateNew = ko.observable(null);
             self.startDatePre = ko.observable(null);
@@ -333,7 +330,7 @@ module cmm013Test.a.viewmodel {
         }
 
         
-         getAllJobHistAfterHandler(): any{
+         getAllHist(): any{
             var self = this;
             var dfd = $.Deferred<any>();
             self.selectedCode('');
@@ -417,7 +414,7 @@ module cmm013Test.a.viewmodel {
             nts.uk.ui.windows.setShared('Id_13', self.index_selected());
             nts.uk.ui.windows.setShared('startLast',self.startDateLast());
                      nts.uk.ui.windows.setShared('endUpdate', self.endDateUpdate());
-            nts.uk.ui.windows.sub.modal('/view/cmm/013/g/index.xhtml', { title: '画面ID：C', }).onClosed(function(){
+            nts.uk.ui.windows.sub.modal('/view/cmm/013/c/index.xhtml', { title: '画面ID：C', }).onClosed(function(){
                 let newStartDate = nts.uk.ui.windows.getShared('startNew');
                 let isCopy = nts.uk.ui.windows.getShared('copy_c');
             });
@@ -428,66 +425,12 @@ module cmm013Test.a.viewmodel {
             var self = this;
             nts.uk.ui.windows.setShared('startUpdate', self.startDateUpdate());
             nts.uk.ui.windows.setShared('endUpdate', self.endDateUpdate());
-            nts.uk.ui.windows.sub.modal('/view/cmm/013/h/index.xhtml', { title: '画面ID：D', });
+            nts.uk.ui.windows.sub.modal('/view/cmm/013/d/index.xhtml', { title: '画面ID：D', }).onClosed(function(){});
         }
     
         
         
-         addHist(){
-            var self = this;
-            var dfd = $.Deferred<any>();
-
-           if(self.listbox() ===undefined || self.listbox()==null|| self.listbox().length ==0){
-                var jobHistNew = new model.ListHistoryDto('1',self.startDateAddNew(),'','');
-            }else{
-                var jobHistNew = new model.ListHistoryDto('0',self.startDateAddNew(),'','');
-            }
-            service.addJobHist(jobHistNew).done(function() {
-                nts.uk.ui.windows.setShared('startNew','', true);
-                self.getAllJobHistAfterHandler();
-                }).fail(function(res) {
-                    alert('fail');
-                })
-        }
-        
-        deleteJobHist(){
-                     var self = this;
-            var dfd = $.Deferred<any>();
-            var checkUpdate=nts.uk.ui.windows.getShared('check_d');
-            self.startDateUpdateNew(nts.uk.ui.windows.getShared('startUpdateNew'));
-            if(self.startDateUpdateNew() == null || self.startDateUpdateNew()==''){
-                if(checkUpdate()=='1'){
-                    if(self.checkDelete() ==self.startDateUpdate()){
-                        var jobHistDelete = new model.ListHistoryDto(self.startDateUpdate(),'1',self.endDateUpdate(),self.historyIdUpdate());
-                    }else{
-                         var jobHistDelete = new model.ListHistoryDto(self.startDateUpdate(),'0',self.endDateUpdate(),self.historyIdUpdate());   
-                    }
-                        var dfd = $.Deferred<any>();
-                    service.deleteJobHist(jobHistDelete).done(function(res){
-                        nts.uk.ui.windows.setShared('check_d','',true);
-                        self.getAllJobHistAfterHandler();
-                    }).fail(function(res){
-                        dfd.reject(res);
-                    })
-                }else 
-                    return;    
-            }
-        }
-        
-            updtateJobHist (){
-            var self = this;
-            var dfd = $.Deferred<any>();
-            var checkUpdate=nts.uk.ui.windows.getShared('check_d');
-            self.startDateUpdateNew(nts.uk.ui.windows.getShared('startUpdateNew'));
-       
-                var jobHistUpdateSdate = new model.ListHistoryDto(self.startDateUpdate(),self.startDateUpdateNew(),self.endDateUpdate(),self.historyIdUpdate());
-                service.updateJobHist(jobHistUpdateSdate).done(function(){
-                    nts.uk.ui.windows.setShared('startUpdateNew','',true)
-                    self.getAllJobHistAfterHandler();
-                }).fail(function(res){
-                    dfd.reject(res);    
-                })
-            }
+     
         
   
         

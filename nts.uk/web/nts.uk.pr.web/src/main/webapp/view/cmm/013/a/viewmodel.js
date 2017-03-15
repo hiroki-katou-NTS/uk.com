@@ -1,5 +1,5 @@
-var cmm013Test;
-(function (cmm013Test) {
+var cmm013;
+(function (cmm013) {
     var a;
     (function (a) {
         var viewmodel;
@@ -39,7 +39,6 @@ var cmm013Test;
                     self.length = ko.observable(0);
                     self.startDateAddNew = ko.observable("");
                     self.startDateUpdate = ko.observable(null);
-                    self.endDateUpdate = ko.observable(null);
                     self.historyIdUpdate = ko.observable(null);
                     self.startDateUpdateNew = ko.observable(null);
                     self.startDatePre = ko.observable(null);
@@ -122,7 +121,7 @@ var cmm013Test;
                     var dfd = $.Deferred();
                     var item = new model.DeletePositionCommand(self.currentItem().jobCode, self.currentItem().historyId);
                     self.index_of_itemDelete = self.dataSource().indexOf(self.currentItem());
-                    service.deletePosition(item).done(function (res) {
+                    a.service.deletePosition(item).done(function (res) {
                         self.getPositionList_aftefDelete();
                     }).fail(function (res) {
                         dfd.reject(res);
@@ -131,7 +130,7 @@ var cmm013Test;
                 ScreenModel.prototype.getPositionList_aftefDelete = function () {
                     var self = this;
                     var dfd = $.Deferred();
-                    service.findAllPosition(self.index_selected()).done(function (position_arr) {
+                    a.service.findAllPosition(self.index_selected()).done(function (position_arr) {
                         self.dataSource(position_arr);
                         if (self.dataSource().length > 0) {
                             if (self.index_of_itemDelete === self.dataSource().length) {
@@ -160,7 +159,7 @@ var cmm013Test;
                 ScreenModel.prototype.getPositionList = function () {
                     var self = this;
                     var dfd = $.Deferred();
-                    service.findAllPosition(self.index_selected()).done(function (position_arr) {
+                    a.service.findAllPosition(self.index_selected()).done(function (position_arr) {
                         self.dataSource(position_arr);
                         self.inp_002_code(self.dataSource()[0].jobCode);
                         self.inp_003_name(self.dataSource()[0].jobName);
@@ -186,7 +185,7 @@ var cmm013Test;
                             self.endDateUpdate(self.itemHist().endDate);
                             self.historyIdUpdate(self.itemHist().historyId);
                             var dfd = $.Deferred();
-                            service.findAllPosition(self.index_selected()).done(function (position_arr) {
+                            a.service.findAllPosition(self.index_selected()).done(function (position_arr) {
                                 self.dataSource(position_arr);
                                 if (self.dataSource().length > 0) {
                                     self.currentCode(self.dataSource()[0].jobCode);
@@ -202,7 +201,7 @@ var cmm013Test;
                             return dfd.promise();
                         }
                     }));
-                    service.getAllHistory().done(function (history_arr) {
+                    a.service.getAllHistory().done(function (history_arr) {
                         self.listbox(history_arr);
                         if (history_arr.length > 0) {
                             self.selectedCode(history_arr[0].historyId);
@@ -232,12 +231,12 @@ var cmm013Test;
                     dfd.resolve();
                     return dfd.promise();
                 };
-                ScreenModel.prototype.getAllJobHistAfterHandler = function () {
+                ScreenModel.prototype.getAllHist = function () {
                     var self = this;
                     var dfd = $.Deferred();
                     self.selectedCode('');
                     self.listbox([]);
-                    service.getAllHistory().done(function (history_arr) {
+                    a.service.getAllHistory().done(function (history_arr) {
                         if (history_arr === undefined || history_arr.length === 0)
                             return;
                         self.listbox(history_arr);
@@ -260,7 +259,7 @@ var cmm013Test;
                 ScreenModel.prototype.getPosition_first = function () {
                     var self = this;
                     var dfd = $.Deferred();
-                    service.findAllPosition(self.index_selected()).done(function (position_arr) {
+                    a.service.findAllPosition(self.index_selected()).done(function (position_arr) {
                         self.dataSource(position_arr);
                         self.currentCode(self.dataSource()[0].historyId);
                         var i = self.dataSource().length;
@@ -279,7 +278,7 @@ var cmm013Test;
                 };
                 ScreenModel.prototype.getPositionList_afterUpdate = function () {
                     var self = this;
-                    service.findAllPosition(self.index_selected()).done(function (position_arr) {
+                    a.service.findAllPosition(self.index_selected()).done(function (position_arr) {
                         self.dataSource([]);
                         self.dataSource(position_arr);
                         if (position_arr.length) {
@@ -291,7 +290,7 @@ var cmm013Test;
                 };
                 ScreenModel.prototype.getPositionList_afterAdd = function () {
                     var self = this;
-                    service.findAllPosition(self.index_selected()).done(function (position_arr) {
+                    a.service.findAllPosition(self.index_selected()).done(function (position_arr) {
                         self.dataSource(position_arr);
                         self.inp_002_code(self.adddata().jobCode);
                         self.inp_002_enable(false);
@@ -309,7 +308,7 @@ var cmm013Test;
                     nts.uk.ui.windows.setShared('Id_13', self.index_selected());
                     nts.uk.ui.windows.setShared('startLast', self.startDateLast());
                     nts.uk.ui.windows.setShared('endUpdate', self.endDateUpdate());
-                    nts.uk.ui.windows.sub.modal('/view/cmm/013/g/index.xhtml', { title: '画面ID：C', }).onClosed(function () {
+                    nts.uk.ui.windows.sub.modal('/view/cmm/013/c/index.xhtml', { title: '画面ID：C', }).onClosed(function () {
                         var newStartDate = nts.uk.ui.windows.getShared('startNew');
                         var isCopy = nts.uk.ui.windows.getShared('copy_c');
                     });
@@ -318,61 +317,7 @@ var cmm013Test;
                     var self = this;
                     nts.uk.ui.windows.setShared('startUpdate', self.startDateUpdate());
                     nts.uk.ui.windows.setShared('endUpdate', self.endDateUpdate());
-                    nts.uk.ui.windows.sub.modal('/view/cmm/013/h/index.xhtml', { title: '画面ID：D', });
-                };
-                ScreenModel.prototype.addHist = function () {
-                    var self = this;
-                    var dfd = $.Deferred();
-                    if (self.listbox() === undefined || self.listbox() == null || self.listbox().length == 0) {
-                        var jobHistNew = new model.ListHistoryDto('1', self.startDateAddNew(), '', '');
-                    }
-                    else {
-                        var jobHistNew = new model.ListHistoryDto('0', self.startDateAddNew(), '', '');
-                    }
-                    service.addJobHist(jobHistNew).done(function () {
-                        nts.uk.ui.windows.setShared('startNew', '', true);
-                        self.getAllJobHistAfterHandler();
-                    }).fail(function (res) {
-                        alert('fail');
-                    });
-                };
-                ScreenModel.prototype.deleteJobHist = function () {
-                    var self = this;
-                    var dfd = $.Deferred();
-                    var checkUpdate = nts.uk.ui.windows.getShared('check_d');
-                    self.startDateUpdateNew(nts.uk.ui.windows.getShared('startUpdateNew'));
-                    if (self.startDateUpdateNew() == null || self.startDateUpdateNew() == '') {
-                        if (checkUpdate() == '1') {
-                            if (self.checkDelete() == self.startDateUpdate()) {
-                                var jobHistDelete = new model.ListHistoryDto(self.startDateUpdate(), '1', self.endDateUpdate(), self.historyIdUpdate());
-                            }
-                            else {
-                                var jobHistDelete = new model.ListHistoryDto(self.startDateUpdate(), '0', self.endDateUpdate(), self.historyIdUpdate());
-                            }
-                            var dfd = $.Deferred();
-                            service.deleteJobHist(jobHistDelete).done(function (res) {
-                                nts.uk.ui.windows.setShared('check_d', '', true);
-                                self.getAllJobHistAfterHandler();
-                            }).fail(function (res) {
-                                dfd.reject(res);
-                            });
-                        }
-                        else
-                            return;
-                    }
-                };
-                ScreenModel.prototype.updtateJobHist = function () {
-                    var self = this;
-                    var dfd = $.Deferred();
-                    var checkUpdate = nts.uk.ui.windows.getShared('check_d');
-                    self.startDateUpdateNew(nts.uk.ui.windows.getShared('startUpdateNew'));
-                    var jobHistUpdateSdate = new model.ListHistoryDto(self.startDateUpdate(), self.startDateUpdateNew(), self.endDateUpdate(), self.historyIdUpdate());
-                    service.updateJobHist(jobHistUpdateSdate).done(function () {
-                        nts.uk.ui.windows.setShared('startUpdateNew', '', true);
-                        self.getAllJobHistAfterHandler();
-                    }).fail(function (res) {
-                        dfd.reject(res);
-                    });
+                    nts.uk.ui.windows.sub.modal('/view/cmm/013/d/index.xhtml', { title: '画面ID：D', }).onClosed(function () { });
                 };
                 ScreenModel.prototype.addPosition = function () {
                     var self = this;
@@ -384,7 +329,7 @@ var cmm013Test;
                         if (self.dataSource().length === 0) {
                             var position = new viewmodel.model.ListPositionDto(self.inp_002_code(), self.inp_003_name(), self.inp_005_memo());
                             position.historyId = selectHistory.historyId;
-                            service.addPosition(position).done(function () {
+                            a.service.addPosition(position).done(function () {
                                 self.getPosition_first();
                             }).fail(function (res) {
                                 dfd.reject(res);
@@ -395,7 +340,7 @@ var cmm013Test;
                             currentItem_1.jobCode = self.inp_002_code();
                             currentItem_1.jobName = self.inp_003_name();
                             currentItem_1.memo = self.inp_005_memo();
-                            service.updatePosition(currentItem_1).done(function () {
+                            a.service.updatePosition(currentItem_1).done(function () {
                                 self.updatedata(currentItem_1);
                                 self.getPositionList_afterUpdate();
                             }).fail(function (res) {
@@ -406,7 +351,7 @@ var cmm013Test;
                         else {
                             var position_new_1 = new viewmodel.model.ListPositionDto(self.inp_002_code(), self.inp_003_name(), self.inp_005_memo());
                             position_new_1.historyId = selectHistory.historyId;
-                            service.addPosition(position_new_1).done(function () {
+                            a.service.addPosition(position_new_1).done(function () {
                                 self.adddata(position_new_1);
                                 self.currentCode(self.adddata().jobCode);
                                 self.getPositionList_afterAdd();
@@ -530,5 +475,5 @@ var cmm013Test;
                 model.DeletePositionCommand = DeletePositionCommand;
             })(model = viewmodel.model || (viewmodel.model = {}));
         })(viewmodel = a.viewmodel || (a.viewmodel = {}));
-    })(a = cmm013Test.a || (cmm013Test.a = {}));
-})(cmm013Test || (cmm013Test = {}));
+    })(a = cmm013.a || (cmm013.a = {}));
+})(cmm013 || (cmm013 = {}));
