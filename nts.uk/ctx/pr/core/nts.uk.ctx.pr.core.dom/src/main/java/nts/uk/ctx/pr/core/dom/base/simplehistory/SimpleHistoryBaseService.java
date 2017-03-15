@@ -79,6 +79,11 @@ public abstract class SimpleHistoryBaseService<M extends Master, H extends Histo
 		}
 		H lastestHistory = historyOpt.get();
 
+		// Validate start year.
+		if (startYear.v() <= lastestHistory.getStart().v()) {
+			throw new RuntimeException("Start year must greater than latest history start.");
+		}
+
 		// New history.
 		H newHistory = lastestHistory.copyWithDate(startYear);
 		this.getRepository().addHistory(newHistory);
@@ -119,6 +124,13 @@ public abstract class SimpleHistoryBaseService<M extends Master, H extends Histo
 		// Update old history.
 		if (historyOpt.isPresent()) {
 			H lastestHistory = historyOpt.get();
+			
+			// Validate start year.
+			if (startYear.v() <= lastestHistory.getStart().v()) {
+				throw new RuntimeException("Start year must greater than latest history start.");
+			}
+
+			// Update latest history.
 			lastestHistory.setEnd(startYear.previousMonth());
 			this.getRepository().updateHistory(lastestHistory);
 		}
