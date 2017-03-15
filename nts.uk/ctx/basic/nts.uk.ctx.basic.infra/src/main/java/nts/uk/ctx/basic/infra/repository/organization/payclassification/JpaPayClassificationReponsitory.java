@@ -42,6 +42,7 @@ public class JpaPayClassificationReponsitory extends JpaRepository implements Pa
 		
 		builderString = new StringBuilder();
 		builderString.append("SELECT COUNT(c)");
+		builderString.append(" FROM QmnmtPayClass c");
 		builderString.append(" WHERE c.qmnmtPayClassPK.companyCode = :companyCode");
 		builderString.append(" AND c.qmnmtPayClassPK.payClassificationCode = :payClassificationCode");
 		QUERY_IS_EXISTED = builderString.toString();
@@ -87,8 +88,8 @@ public class JpaPayClassificationReponsitory extends JpaRepository implements Pa
 	@Override
 	public boolean isExisted(String companyCode, PayClassificationCode payClassificationCode) {
 		return this.queryProxy().query(QUERY_IS_EXISTED, long.class)
-		.setParameter("companyCode", "'" + companyCode + "'")
-		.setParameter("payClassificationCode", "'" + payClassificationCode.toString() + "'")
+		.setParameter("companyCode", companyCode )
+		.setParameter("payClassificationCode",  payClassificationCode.toString() )
 		.getSingle().get() > 0;
 	}
 

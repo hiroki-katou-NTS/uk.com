@@ -3,7 +3,7 @@ package nts.uk.ctx.basic.dom.organization.payclassification;
 import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.StringMaxLength;
 
-@StringMaxLength(500)
+@StringMaxLength(1000)
 public class Memo extends StringPrimitiveValue<Memo> {
 
 	public Memo(String rawValue) {

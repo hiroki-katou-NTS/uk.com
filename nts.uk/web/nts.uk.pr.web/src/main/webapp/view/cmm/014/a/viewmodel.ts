@@ -12,6 +12,7 @@ module cmm014.a.viewmodel {
         INP_003_name: KnockoutObservable<string>;
         INP_004_notes: KnockoutObservable<string>;
         multilineeditor: KnockoutObservable<any>;
+        hasCellphone: KnockoutObservable<boolean>;
         index_of_itemDelete: any;
         itemdata_add: any;
         itemdata_update: any;
@@ -34,6 +35,7 @@ module cmm014.a.viewmodel {
             self.INP_004_notes = ko.observable(null);
             self.itemdata_add = ko.observable(null);
             self.itemdata_update = ko.observable(null);
+            self.hasCellphone = ko.observable(true);
 
 
 
@@ -44,6 +46,7 @@ module cmm014.a.viewmodel {
                     self.INP_002_enable(false);
                     self.INP_003_name(self.currentItem().classificationName);
                     self.INP_004_notes(self.currentItem().memo);
+                    self.hasCellphone(true);
                 }
             }));
 
@@ -72,6 +75,7 @@ module cmm014.a.viewmodel {
             self.currentCode(null);
             $("#test input").val("");
             $("#A_INP_002").focus();
+            self.hasCellphone(false);
         }
 
         checkInput(): boolean {
@@ -96,7 +100,9 @@ module cmm014.a.viewmodel {
                     service.addClassification(classification).done(function() {
                         self.getClassificationList_first();
                     }).fail(function(res) {
-
+                        if (res.message == "ER05") {
+                            alert("入力したコードは既に存在しています。\r\n コードを確認してください。 ");
+                        }
                         dfd.reject(res);
                     })
                 }
@@ -108,6 +114,9 @@ module cmm014.a.viewmodel {
                             self.itemdata_update(classification_update);
                             self.getClassificationList_afterUpdateClassification();
                         }).fail(function(res) {
+                            if (res.message == "ER026") {
+                                alert("更新対象のデータが存在しません。");
+                            }
                             dfd.reject(res);
                         })
                         break;
@@ -119,6 +128,9 @@ module cmm014.a.viewmodel {
                             self.itemdata_add(classification_new);
                             self.getClassificationList_afterAddClassification();
                         }).fail(function(res) {
+                            if (res.message == "ER05") {
+                                alert("入力したコードは既に存在しています。\r\n コードを確認してください。");
+                            }
                             dfd.reject(res);
                         })
                         break;
@@ -127,6 +139,7 @@ module cmm014.a.viewmodel {
                         break;
                     }
                 }
+                self.hasCellphone(true);
             }
         }
 
@@ -139,6 +152,9 @@ module cmm014.a.viewmodel {
                 service.removeClassification(item).done(function(res) {
                     self.getClassificationList_aftefDelete();
                 }).fail(function(res) {
+                    if (res.message == "ER06") {
+                        alert("対象データがありません。");
+                    }
                     dfd.reject(res);
                 })
             } else {
@@ -178,7 +194,7 @@ module cmm014.a.viewmodel {
                 self.INP_002_code(self.dataSource()[0].classificationCode);
                 self.INP_003_name(self.dataSource()[0].classificationName);
                 self.INP_004_notes(self.dataSource()[0].memo);
-                if (self.dataSource().length > 1) {
+                if (self.dataSource().length > 0) {
                     self.currentCode(self.dataSource()[0].classificationCode);
                 }
 
@@ -240,13 +256,10 @@ module cmm014.a.viewmodel {
             service.getAllClassification().done(function(classification_arr: Array<model.ClassificationDto>) {
                 self.dataSource(classification_arr);
                 self.INP_002_code(self.dataSource()[0].classificationCode);
-                self.INP_002_enable = ko.observable(false);
+                self.INP_002_enable(false);
                 self.INP_003_name(self.dataSource()[0].classificationName);
                 self.INP_004_notes(self.dataSource()[0].memo);
-                if (self.dataSource().length > 1) {
-                    let i = self.dataSource().length - 1;
-                    self.currentCode(self.itemdata_add().classificationCode);
-                }
+                self.currentCode(self.itemdata_add().classificationCode);
                 dfd.resolve();
             }).fail(function(error) {
                 alert(error.message);

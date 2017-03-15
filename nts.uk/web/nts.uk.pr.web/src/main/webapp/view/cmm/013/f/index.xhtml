@@ -37,12 +37,11 @@
 		</ui:define>
 		<ui:define name="content">
 			<div id="function_area">
-				<button id="btn_001" class="button separate-button fix-button">新規</button>
-				<button id="btn_002" class="button proceed separate-button fix-button">登録</button>
-				<button id="btn_003" class="button separate-button fix-button">序列 をまとめて設定</button>
+				<button id="btn_001" data-bind="click: initRegisterPosition" class="button separate-button fix-button">新規</button>
+				<button id="btn_002"  data-bind="click: addPosition" class="button proceed separate-button fix-button">登録</button>
 				<button id="btn_004" class="button separate-button fix-button"
 						data-bind="click: openBDialog">マスタ修正ログ</button>
-				<button id="btn_005" class="button danger separate-button fix-button">削除</button>				
+				<button id="btn_005" data-bind="click: deletePosition" class="button danger separate-button fix-button" >削除</button>				
 			</div>
 				
 			<div id="content-area">
@@ -57,7 +56,7 @@
 					<div>
 						<div id="list-box" data-bind="ntsListBox: {
 								options: listbox,
-								primaryKey: 'startDate',
+								primaryKey: 'historyId',
 								primaryText: 'endDate',
 								multiple: false,
 								value: selectedCode,
@@ -120,14 +119,14 @@
 									<div >
 										<div id="inp_002" style="width: 20px">
 											<input data-bind="ntsTextEditor: {
-	                                            value: inp_002,
+	                                            value: inp_002_code,
 	                                            constraint: 'JobCode',
 	                                            enable: inp_002_enable}" />
 										</div>
 	
 										<div id="inp_003" style="width: 50px">
 											<input data-bind="ntsTextEditor: {
-	                                            value: inp_003,
+	                                            value: inp_003_name,
 	                                            constraint: 'JobName'
 	                                            }" />
 										</div>
@@ -242,7 +241,7 @@
 								<div>
 									<textarea
 										data-bind="ntsMultilineEditor: {
-											value: inp_005,
+											value: inp_005_memo,
 											constraint: 'Memo'
 											}" />
 								</div>

@@ -8,16 +8,16 @@ public class JobTitleRef extends AggregateRoot{
 	
 	private AuthorizationCode authorizationCode;
 			
-	private HistoryId historyId;
+	private String historyId;
 	
-	private CompanyCode companyCode;
+	private String companyCode;
 	
 	private JobCode jobCode;
 	
 	private ReferenceSettings referenceSettings;
 	
 	public JobTitleRef(AuthorizationCode authorizationCode, ReferenceSettings referenceSettings, 
-			CompanyCode companyCode, HistoryId historyId,JobCode jobCode) {
+			String companyCode, String historyId,JobCode jobCode) {
 		super();
 		this.authorizationCode = authorizationCode;
 		this.historyId = historyId;
@@ -30,7 +30,7 @@ public class JobTitleRef extends AggregateRoot{
 			 String companyCode, String historyId,String jobCode)
 	{
 		return new JobTitleRef(new AuthorizationCode(authorizationCode), ReferenceSettings.valueOf(String.valueOf(referenceSettings)),
-				new CompanyCode(companyCode), new HistoryId(historyId),new JobCode(jobCode));
+				companyCode, historyId,new JobCode(jobCode));
 	}
 
 }

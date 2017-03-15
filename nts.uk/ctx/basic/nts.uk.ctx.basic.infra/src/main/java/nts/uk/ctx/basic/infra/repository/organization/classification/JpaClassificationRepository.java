@@ -41,12 +41,12 @@ public class JpaClassificationRepository extends JpaRepository implements Classi
 
 		builderString = new StringBuilder();
 		builderString.append("SELECT COUNT(e)");
+		builderString.append(" FROM CmnmtClass e");
 		builderString.append(" WHERE e.cmnmtClassPK.companyCode = :companyCode");
 		builderString.append(" AND e.cmnmtClassPK.classificationCode = :classificationCode");
 		QUERY_IS_EXISTED = builderString.toString();
 	}
 
-	
 	@Override
 	public void add(Classification classification) {
 		this.commandProxy().insert(convertToDbType(classification));
@@ -87,9 +87,8 @@ public class JpaClassificationRepository extends JpaRepository implements Classi
 
 	@Override
 	public boolean isExisted(String companyCode, ClassificationCode classificationCode) {
-		return this.queryProxy().query(QUERY_IS_EXISTED, long.class)
-				.setParameter("companyCode", "'" + companyCode + "'")
-				.setParameter("classificationCode", "'" + classificationCode.toString() + "'").getSingle().get() > 0;
+		return this.queryProxy().query(QUERY_IS_EXISTED, long.class).setParameter("companyCode", companyCode)
+				.setParameter("classificationCode", classificationCode.toString()).getSingle().get() > 0;
 	}
 
 	private CmnmtClass convertToDbType(Classification classification) {
