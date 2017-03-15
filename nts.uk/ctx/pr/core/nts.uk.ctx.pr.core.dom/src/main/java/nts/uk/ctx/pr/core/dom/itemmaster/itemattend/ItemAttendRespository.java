@@ -6,4 +6,10 @@ public interface ItemAttendRespository {
 	
 	Optional<ItemAttend> find(String companyCode, String itemCode);
 	
+	/**
+	 * Update information of item attend
+	 * @param item domain
+	 */
+	void update(String companyCode, ItemAttend item);
+	
 }
