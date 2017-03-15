@@ -18,7 +18,6 @@
 			<com:scriptfile path="viewmodel.js" />
 			<com:scriptfile path="service.js" />
 		</ui:define>
-
 		<ui:define name="content">
 			<div id="functions-area">
 				<button id="BTN_001" data-bind="click: btn_001">新規</button>
@@ -27,7 +26,7 @@
 				<button id="BTN_007">マスタ修正ログ</button>
 				<button id="BTN_004" class="danger" data-bind="click: btn_004">削除</button>
 			</div>
-			<div id="contents-area">
+			<div id="contents-area" >
 				<div class="left-content">
 					<div class="cf">
 						<div style="float: left; width: 480px"
@@ -60,7 +59,7 @@
 						</div>
 					</div>
 				</div>
-				<div class="right-content">
+				<div class="right-content" data-bind="with: currentItem">
 					<div class="right-content-left">
 						<div id="LBL_002"
 							data-bind="ntsFormLabel:{constraint: ['PersonalUnitPriceCode', 'PersonalUnitPriceName'],required: true}">コード/名称</div>
@@ -70,23 +69,28 @@
 					</div>
 					<div class="right-content-right">
 						<div class="control-group">
-							<span id="INP_002" data-bind="with: INP_002"> <input
-								class="text-editor1"
+							<span id="INP_002"> <input class="text-editor1"
 								data-bind="ntsTextEditor: {
-									value: value,
+									value: personalUnitPriceCode,
 									constraint: 'PersonalUnitPriceCode',
-									option: option,
+									option: {
+										textmode: 'text',
+						                placeholder: '',
+						                width: '45px',
+						                textalign: 'center'},
 									required: true,
-									enable: enable}" /></span>
-							<span id="INP_003" data-bind="with: INP_003"> <input
-								class="text-editor2"
+									enable: $parent.isCreated}" /></span>
+							<span id="INP_003"> <input class="text-editor2"
 								data-bind="ntsTextEditor: {
-									value: value,
+									value: personalUnitPriceName,
 									constraint: 'PersonalUnitPriceName',
-									option: option,
+									option: {
+										textmode: 'text',
+					                    placeholder: '',
+					                    width: '180px',
+					                    textalign: 'left'},
 									required: true,
 									enable: true}" /></span>
-
 							<div class="bg-yellow"
 								style="width: 200px; height: 25px; display: inline-block; margin-left: 46px">
 								<div style="margin-left: 5px;"
@@ -96,18 +100,21 @@
 							</div>
 						</div>
 						<div class="control-group">
-							<span id="INP_004" data-bind="with: inp_004"> <input
-								class="text-editor2"
+							<span id="INP_004"> <input class="text-editor2"
 								data-bind="ntsTextEditor: {
-									value: value,
-									option: option,
+									value: personalUnitPriceShortName,
+									option: {
+										textmode: 'text',
+					                    placeholder: '',
+					                    width: '180px',
+					                    textalign: 'left'
+									},
 									required: true,
 									enable: true}" /></span>
 						</div>
 						<div class="control-group">
 							<button id="BTN_006">参照</button>
-							<label id="LBL_012" data-bind="text: uniteCode">002</label> <label
-								id="LBL_013">支店名称</label>
+							<label id="LBL_012" data-bind="text: uniteCode">002</label> <label id="LBL_013">支店名称</label>
 						</div>
 					</div>
 					<hr />
@@ -118,21 +125,21 @@
 						<div class="control-group">
 							<div id="SEL_003" class="SEL_003"
 								data-bind="ntsRadioBoxGroup: {
-								options: itemList,
+								options: $parent.itemList,
 								optionsValue: 'id',
 								optionsText: 'name',
-								value: selectedId,
+								value: paymentSettingType,
 								enable: true}">
 							</div>
 						</div>
 						<div class="control-group-left" style="float: left; width: 30%">
 							<div id="SEL_005" class="cf"
 								data-bind="ntsSwitchButton: {
-								options: roundingRules,
+								options: $parent.roundingRules,
 								optionsValue: 'code',
 								optionsText: 'name',
-								value: SEL_005_check,
-								enable: !isCompany() }">
+								value: fixPaymentAtr,
+								enable: !$parent.isCompany() }">
 							</div>
 						</div>
 						<div class="control-group-right" style="float: left">
@@ -141,11 +148,11 @@
 									style="float: left; margin: 8px 0px 0px 37px; width: 110px">月給者</span>
 								<div id="SEL_006" style="float: left"
 									data-bind="ntsSwitchButton: {
-								options: roundingRules,
+								options: $parent.roundingRules,
 								optionsValue: 'code',
 								optionsText: 'name',
-								value: SEL_006_check,
-								enable: isCompany }">
+								value: fixPaymentMonthly,
+								enable: $parent.isCompany()}">
 								</div>
 							</div>
 							<div class="cf">
@@ -153,11 +160,11 @@
 									style="float: left; margin: 8px 0px 0px 37px; width: 110px">日給月給者</span>
 								<div id="SEL_007" style="float: left"
 									data-bind="ntsSwitchButton: {
-								options: roundingRules,
+								options: $parent.roundingRules,
 								optionsValue: 'code',
 								optionsText: 'name',
-								value: SEL_007_check,
-								enable: isCompany }">
+								value: fixPaymentDayMonth,
+								enable: $parent.isCompany() }">
 								</div>
 							</div>
 							<div class="cf">
@@ -165,11 +172,11 @@
 									style="float: left; margin: 8px 0px 0px 37px; width: 110px">日給者</span>
 								<div id="SEL_008" style="float: left"
 									data-bind="ntsSwitchButton: {
-								options: roundingRules,
+								options: $parent.roundingRules,
 								optionsValue: 'code',
 								optionsText: 'name',
-								value: SEL_008_check,
-								enable: isCompany }">
+								value: fixPaymentDaily,
+								enable: $parent.isCompany() }">
 								</div>
 							</div>
 							<div class="cf">
@@ -177,11 +184,11 @@
 									style="float: left; margin: 8px 0px 0px 37px; width: 110px">時給者</span>
 								<div id="SEL_009" style="float: left"
 									data-bind="ntsSwitchButton: {
-								options: roundingRules,
+								options: $parent.roundingRules,
 								optionsValue: 'code',
 								optionsText: 'name',
-								value: SEL_009_check,
-								enable: isCompany }">
+								value: fixPaymentHoursly,
+								enable: $parent.isCompany() }">
 								</div>
 							</div>
 						</div>
@@ -192,10 +199,10 @@
 					<div class="right-content-right">
 						<div class="cf"
 							data-bind="ntsSwitchButton: {
-								options: SEL_004,
+								options: $parent.SEL_004,
 								optionsValue: 'code',
 								optionsText: 'name',
-								value: SEL_004_check,
+								value: unitPriceAtr,
 								enable: true }">
 						</div>
 					</div>
@@ -205,11 +212,16 @@
 					</div>
 					<div class="right-content-right">
 						<div class="control-group">
-							<span id="INP_005" data-bind="with: INP_005"> <textarea
+							<span id="INP_005"> <textarea
 									style="height: 130px; width: 450px" class="text-editor1"
 									data-bind="ntsMultilineEditor: {
-									value: value,
-									option: option,
+									value: memo,
+									option: {
+											resizeable: true,
+						                    placeholder: '',
+						                    width: '450px',
+						                    textalign: 'left'
+									},
 									enable: true,
 									readonly: false}" />
 							</span>

@@ -1,86 +1,53 @@
-module qmm013.a.viewmodel {
+module qmm013.b.viewmodel {
     export class ScreenModel {
         items: KnockoutObservableArray<ItemModel>;
         columns: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
         currentCode: KnockoutObservable<any>;
-        currentName: KnockoutObservable<any>;
-        currentCodeList: KnockoutObservableArray<any>;
         itemList: KnockoutObservableArray<any>;
-        selectedId: KnockoutObservable<number>;
-        currentItem: KnockoutObservable<any>;
-        isCompany: KnockoutObservable<boolean>;
-        roundingRules: KnockoutObservableArray<any>;
-        SEL_004: KnockoutObservableArray<any>;
-        SEL_005_check: any;
-        SEL_006_check: any;
-        SEL_007_check: any;
-        SEL_008_check: any;
-        SEL_009_check: any;
-        SEL_004_check: any;
-        INP_002: any;
-        INP_003: any;
-        inp_004: any;
-        INP_005: any;
-        uniteCode: KnockoutObservable<string>;
-        displayAtr: KnockoutObservable<boolean>;
+        currentItem: KnockoutObservable<PersonalUnitPrice>;
         displayAll: KnockoutObservable<boolean>;
-        messages: KnockoutObservableArray<any>;
+        selectedId: KnockoutObservable<number>;
+        roundingRules: KnockoutObservableArray<any>;
+        isCompany: KnockoutObservable<boolean>;
+        SEL_004: KnockoutObservableArray<any>;
         dirty: nts.uk.ui.DirtyChecker;
+        isCreated: any;
 
         constructor() {
             var self = this;
-            self.currentName = ko.observable();
-            self.currentCodeList = ko.observableArray([]);
             self.items = ko.observableArray([]);
-            self.currentItem = ko.observable();
+            self.currentItem = ko.observable(new PersonalUnitPrice(null, null, null, null, null, null, null, null, null, null, null, null, null));
+            self.currentCode = ko.observable();
+            self.displayAll = ko.observable(true);
+            self.selectedId = ko.observable(0);
+            self.isCreated = ko.observable(true);
+            self.dirty = new nts.uk.ui.DirtyChecker(self.currentItem);
             self.columns = ko.observableArray([
                 { headerText: 'コード', prop: 'code', width: 100, key: 'code' },
                 { headerText: '名称', prop: 'name', width: 150, key: 'name' },
                 { headerText: '廃止', prop: 'abolition', width: 50, key: 'abolition' }
             ]);
-
-            self.messages = ko.observableArray([
-                { messageId: "AL001", message: "変更された内容が登録されていません。\r\nよろしいですか。" },
-                { messageId: "ER001", message: "＊が入力されていません。" },
-                { messageId: "ER005", message: "入力した＊は既に存在しています。\r\n＊を確認してください。" },
-                { messageId: "AL002", message: "データを削除します。\r\nよろしいですか？" }
-            ]);
-
-            self.currentCode = ko.observable();
-            self.currentCode.subscribe(function(newCode) {
-                self.selectedUnitPrice(newCode);
-            });
-
             self.itemList = ko.observableArray([
                 new BoxModel(0, '全員一律で指定する'),
                 new BoxModel(1, '給与約束形態ごとに指定する')
             ]);
-            self.selectedId = ko.observable(0);
-            self.isCompany = ko.computed(function() {
-                return !(self.selectedId() == 0);
-            });
-
 
             self.roundingRules = ko.observableArray([
                 { code: '1', name: '対象' },
                 { code: '0', name: '対象外' }
             ]);
 
-
             self.SEL_004 = ko.observableArray([
                 { code: '0', name: '時間単価' },
                 { code: '1', name: '金額' },
                 { code: '2', name: 'その他' },
             ]);
-            self.SEL_005_check = ko.observable(0);
-            self.SEL_006_check = ko.observable(0);
-            self.SEL_007_check = ko.observable(0);
-            self.SEL_008_check = ko.observable(0);
-            self.SEL_009_check = ko.observable(0);
-            self.SEL_004_check = ko.observable(0);
-            self.uniteCode = ko.observable("002");
-            self.displayAtr = ko.observable(false);
-            self.displayAll = ko.observable(true);
+
+            self.currentCode.subscribe(function(newCode) {
+                self.selectedUnitPrice(newCode);
+                self.isCreated(false);
+            });
+
             self.displayAll.subscribe(function(newValue) {
                 if (!self.checkDirty()) {
                     self.getPersonalUnitPriceList().done(function() {
@@ -93,51 +60,12 @@ module qmm013.a.viewmodel {
                         });
                     })
                 }
-
             });
 
-            self.INP_002 = {
-                value: ko.observable(null),
-                option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                    textmode: "text",
-                    placeholder: "",
-                    width: "45px",
-                    textalign: "center"
-                })),
-                enable: ko.observable(true)
-            };
+            self.isCompany = ko.computed(function() {
+                return !(self.currentItem().paymentSettingType() == 0);
+            });
 
-            self.INP_003 = {
-                value: ko.observable(null),
-                option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                    textmode: "text",
-                    placeholder: "",
-                    width: "180px",
-                    textalign: "left"
-                })),
-                enable: ko.observable(true)
-            };
-
-            self.inp_004 = {
-                value: ko.observable(null),
-                option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                    textmode: "text",
-                    placeholder: "",
-                    width: "180px",
-                    textalign: "left"
-                })),
-                enable: ko.observable(true)
-            };
-
-            self.INP_005 = {
-                value: ko.observable(null),
-                option: ko.mapping.fromJS(new nts.uk.ui.option.MultilineEditorOption({
-                    resizeable: true,
-                    placeholder: "",
-                    width: "450px",
-                    textalign: "left"
-                })),
-            };
         }
 
         startPage() {
@@ -163,16 +91,6 @@ module qmm013.a.viewmodel {
             return dfd.promise();
         }
 
-        selectedFirstUnitPrice() {
-            var self = this;
-            if (self.items().length > 0) {
-                self.currentCode(self.items()[0].code);
-            } else {
-                self.INP_002.enable(true);
-                self.btn_001();
-            }
-        }
-
         selectedUnitPrice(code) {
             var self = this;
             if (!code) {
@@ -185,22 +103,8 @@ module qmm013.a.viewmodel {
             });
         }
 
-        checkDirty(): boolean {
-            var self = this;
-            if (self.dirty.isDirty()) {
-                return true;
-            } else {
-                return false;
-            }
-        };
-
-
-        /**
-         * Reset form
-         */
         fillForm(data) {
             var self = this;
-            debugger;
             self.currentItem(new PersonalUnitPrice(
                 data.personalUnitPriceCode,
                 data.personalUnitPriceName,
@@ -216,79 +120,63 @@ module qmm013.a.viewmodel {
                 data.unitPriceAtr,
                 data.memo));
             self.dirty = new nts.uk.ui.DirtyChecker(self.currentItem)
-            self.SEL_005_check(data.fixPaymentAtr);
-            self.SEL_006_check(data.fixPaymentMonthly);
-            self.SEL_007_check(data.fixPaymentDayMonth);
-            self.SEL_008_check(data.fixPaymentDaily);
-            self.SEL_009_check(data.fixPaymentHoursly);
-            self.SEL_004_check(data.unitPriceAtr);
-            self.INP_002.value(data.personalUnitPriceCode);
-            self.INP_002.enable(false);
-            self.INP_003.value(data.personalUnitPriceName);
-            self.INP_003.enable(true);
-            self.inp_004.value(self.currentItem().personalUnitPriceShortName());
-            self.INP_005.value(data.memo);
-            self.uniteCode(data.uniteCode);
-            self.displayAtr(data.displayAtr == 0);
-            self.selectedId(data.paymentSettingType);
         }
 
-        /**
-         * Clean form
-         */
+        checkDirty(): boolean {
+            var self = this;
+            if (self.dirty.isDirty()) {
+                return true;
+            } else {
+                return false;
+            }
+        };
+
+
         btn_001() {
             var self = this;
-            self.SEL_005_check(0);
-            self.SEL_006_check(0);
-            self.SEL_007_check(0);
-            self.SEL_008_check(0);
-            self.SEL_009_check(0);
-            self.SEL_004_check(0);
-            self.INP_002.value("");
-            self.INP_002.enable(true);
-            self.INP_003.value("");
-            self.INP_003.enable(true);
-            self.inp_004.value("");
-            self.INP_005.value("");
-            self.uniteCode("");
+            if (!self.checkDirty()) {
+                self.currentItem(new PersonalUnitPrice(null, null, null, null, null, null, null, null, null, null, null, null, null));
+                self.currentCode("");
+                self.isCreated(true);
+            } else {
+                nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\nよろしいですか。").ifYes(function() {
+                    self.currentItem(new PersonalUnitPrice(null, null, null, null, null, null, null, null, null, null, null, null, null));
+                    self.currentCode("");
+                    self.isCreated(true);
+                })
+            }
         }
 
-        /**
-         * Update and Add
-         */
         btn_002() {
             var self = this;
             var PersonalUnitPrice = {
-                personalUnitPriceCode: self.INP_002.value(),
-                personalUnitPriceName: self.INP_003.value(),
-                personalUnitPriceShortName: self.inp_004.value(),
-                displayAtr: self.displayAtr() ? 0 : 1,
-                uniteCode: self.uniteCode(),
-                paymentSettingType: self.selectedId(),
-                fixPaymentAtr: self.SEL_005_check(),
-                fixPaymentMonthly: self.SEL_006_check(),
-                fixPaymentDayMonth: self.SEL_007_check(),
-                fixPaymentDaily: self.SEL_008_check(),
-                fixPaymentHoursly: self.SEL_009_check(),
-                unitPriceAtr: self.SEL_004_check(),
-                memo: self.INP_005.value()
+                personalUnitPriceCode: self.currentItem().personalUnitPriceCode(),
+                personalUnitPriceName: self.currentItem().personalUnitPriceName(),
+                personalUnitPriceShortName: self.currentItem().personalUnitPriceShortName(),
+                displayAtr: self.currentItem().displayAtr() ? 0 : 1,
+                uniteCode: "2",
+                paymentSettingType: self.currentItem().paymentSettingType(),
+                fixPaymentAtr: self.currentItem().fixPaymentAtr(),
+                fixPaymentMonthly: self.currentItem().fixPaymentMonthly(),
+                fixPaymentDayMonth: self.currentItem().fixPaymentDayMonth(),
+                fixPaymentDaily: self.currentItem().fixPaymentDaily(),
+                fixPaymentHoursly: self.currentItem().fixPaymentHoursly(),
+                unitPriceAtr: self.currentItem().unitPriceAtr(),
+                memo: self.currentItem().memo()
             };
-            service.addPersonalUnitPrice(self.INP_002.enable(), PersonalUnitPrice).done(function() {
-                self.selectedUnitPrice(self.INP_002.value());
+            service.addPersonalUnitPrice(self.isCreated(), PersonalUnitPrice).done(function() {
+                self.currentCode(PersonalUnitPrice.personalUnitPriceCode);
                 self.getPersonalUnitPriceList();
             }).fail(function(error) {
                 alert(error.message);
             });
         }
 
-        /**
-         * Delete
-         */
         btn_004() {
             var self = this;
             if (!self.checkDirty()) {
                 var data = {
-                    personalUnitPriceCode: self.INP_002.value()
+                    personalUnitPriceCode: self.currentItem().personalUnitPriceCode()
                 };
                 service.removePersonalUnitPrice(data).done(function() {
                     // reload list
@@ -299,7 +187,7 @@ module qmm013.a.viewmodel {
             } else {
                 nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\nよろしいですか。").ifYes(function() {
                     var data = {
-                        personalUnitPriceCode: self.INP_002.value()
+                        personalUnitPriceCode: self.currentItem().personalUnitPriceCode()
                     };
                     service.removePersonalUnitPrice(data).done(function() {
                         // reload list
@@ -308,6 +196,15 @@ module qmm013.a.viewmodel {
                         alert(error.message);
                     });
                 })
+            }
+        }
+
+        selectedFirstUnitPrice() {
+            var self = this;
+            if (self.items().length > 0) {
+                self.currentCode(self.items()[0].code);
+            } else {
+                self.btn_001();
             }
         }
 

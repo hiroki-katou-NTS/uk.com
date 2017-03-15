@@ -9,15 +9,18 @@ var qmm013;
                     var self = this;
                     self.currentName = ko.observable();
                     self.currentCodeList = ko.observableArray([]);
-                    self.items = ko.observableArray([
-                        new ItemModel('001', '基本給', '<i class="icon icon-close"></i>'),
-                        new ItemModel('150', '役職手当', '<i class="icon icon-close"></i>'),
-                        new ItemModel('ABC', '基本給', '<i class="icon icon-close"></i>')
-                    ]);
+                    self.items = ko.observableArray([]);
+                    self.currentItem = ko.observable();
                     self.columns = ko.observableArray([
                         { headerText: 'コード', prop: 'code', width: 100, key: 'code' },
                         { headerText: '名称', prop: 'name', width: 150, key: 'name' },
                         { headerText: '廃止', prop: 'abolition', width: 50, key: 'abolition' }
+                    ]);
+                    self.messages = ko.observableArray([
+                        { messageId: "AL001", message: "変更された内容が登録されていません。\r\nよろしいですか。" },
+                        { messageId: "ER001", message: "＊が入力されていません。" },
+                        { messageId: "ER005", message: "入力した＊は既に存在しています。\r\n＊を確認してください。" },
+                        { messageId: "AL002", message: "データを削除します。\r\nよろしいですか？" }
                     ]);
                     self.currentCode = ko.observable();
                     self.currentCode.subscribe(function (newCode) {
@@ -50,9 +53,18 @@ var qmm013;
                     self.displayAtr = ko.observable(false);
                     self.displayAll = ko.observable(true);
                     self.displayAll.subscribe(function (newValue) {
-                        self.getPersonalUnitPriceList().done(function () {
-                            self.selectedFirstUnitPrice();
-                        });
+                        if (!self.checkDirty()) {
+                            self.getPersonalUnitPriceList().done(function () {
+                                self.selectedFirstUnitPrice();
+                            });
+                        }
+                        else {
+                            nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\nよろしいですか。").ifYes(function () {
+                                self.getPersonalUnitPriceList().done(function () {
+                                    self.selectedFirstUnitPrice();
+                                });
+                            });
+                        }
                     });
                     self.INP_002 = {
                         value: ko.observable(null),
@@ -136,11 +148,24 @@ var qmm013;
                         alert(res.message);
                     });
                 };
+                ScreenModel.prototype.checkDirty = function () {
+                    var self = this;
+                    if (self.dirty.isDirty()) {
+                        return true;
+                    }
+                    else {
+                        return false;
+                    }
+                };
+                ;
                 /**
                  * Reset form
                  */
                 ScreenModel.prototype.fillForm = function (data) {
                     var self = this;
+                    debugger;
+                    self.currentItem(new PersonalUnitPrice(data.personalUnitPriceCode, data.personalUnitPriceName, data.personalUnitPriceShortName, data.displayAtr == 0, data.uniteCode, data.paymentSettingType, data.fixPaymentAtr, data.fixPaymentMonthly, data.fixPaymentDayMonth, data.fixPaymentDaily, data.fixPaymentHoursly, data.unitPriceAtr, data.memo));
+                    self.dirty = new nts.uk.ui.DirtyChecker(self.currentItem);
                     self.SEL_005_check(data.fixPaymentAtr);
                     self.SEL_006_check(data.fixPaymentMonthly);
                     self.SEL_007_check(data.fixPaymentDayMonth);
@@ -151,7 +176,7 @@ var qmm013;
                     self.INP_002.enable(false);
                     self.INP_003.value(data.personalUnitPriceName);
                     self.INP_003.enable(true);
-                    self.inp_004.value(data.personalUnitPriceShortName);
+                    self.inp_004.value(self.currentItem().personalUnitPriceShortName());
                     self.INP_005.value(data.memo);
                     self.uniteCode(data.uniteCode);
                     self.displayAtr(data.displayAtr == 0);
@@ -181,7 +206,7 @@ var qmm013;
                  */
                 ScreenModel.prototype.btn_002 = function () {
                     var self = this;
-                    var data = {
+                    var PersonalUnitPrice = {
                         personalUnitPriceCode: self.INP_002.value(),
                         personalUnitPriceName: self.INP_003.value(),
                         personalUnitPriceShortName: self.inp_004.value(),
@@ -196,7 +221,7 @@ var qmm013;
                         unitPriceAtr: self.SEL_004_check(),
                         memo: self.INP_005.value()
                     };
-                    a.service.addPersonalUnitPrice(self.INP_002.enable(), data).done(function () {
+                    a.service.addPersonalUnitPrice(self.INP_002.enable(), PersonalUnitPrice).done(function () {
                         self.selectedUnitPrice(self.INP_002.value());
                         self.getPersonalUnitPriceList();
                     }).fail(function (error) {
@@ -208,15 +233,30 @@ var qmm013;
                  */
                 ScreenModel.prototype.btn_004 = function () {
                     var self = this;
-                    var data = {
-                        personalUnitPriceCode: self.INP_002.value()
-                    };
-                    a.service.removePersonalUnitPrice(data).done(function () {
-                        // reload list
-                        self.getPersonalUnitPriceList();
-                    }).fail(function (error) {
-                        alert(error.message);
-                    });
+                    if (!self.checkDirty()) {
+                        var data = {
+                            personalUnitPriceCode: self.INP_002.value()
+                        };
+                        a.service.removePersonalUnitPrice(data).done(function () {
+                            // reload list
+                            self.getPersonalUnitPriceList();
+                        }).fail(function (error) {
+                            alert(error.message);
+                        });
+                    }
+                    else {
+                        nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\nよろしいですか。").ifYes(function () {
+                            var data = {
+                                personalUnitPriceCode: self.INP_002.value()
+                            };
+                            a.service.removePersonalUnitPrice(data).done(function () {
+                                // reload list
+                                self.getPersonalUnitPriceList();
+                            }).fail(function (error) {
+                                alert(error.message);
+                            });
+                        });
+                    }
                 };
                 return ScreenModel;
             }());
@@ -236,6 +276,24 @@ var qmm013;
                     self.name = name;
                 }
                 return BoxModel;
+            }());
+            var PersonalUnitPrice = (function () {
+                function PersonalUnitPrice(personalUnitPriceCode, personalUnitPriceName, personalUnitPriceShortName, displayAtr, uniteCode, paymentSettingType, fixPaymentAtr, fixPaymentMonthly, fixPaymentDayMonth, fixPaymentDaily, fixPaymentHoursly, unitPriceAtr, memo) {
+                    this.personalUnitPriceCode = ko.observable(personalUnitPriceCode);
+                    this.personalUnitPriceName = ko.observable(personalUnitPriceName);
+                    this.personalUnitPriceShortName = ko.observable(personalUnitPriceShortName);
+                    this.displayAtr = ko.observable(displayAtr);
+                    this.uniteCode = ko.observable(uniteCode);
+                    this.paymentSettingType = ko.observable(paymentSettingType);
+                    this.fixPaymentAtr = ko.observable(fixPaymentAtr);
+                    this.fixPaymentMonthly = ko.observable(fixPaymentMonthly);
+                    this.fixPaymentDayMonth = ko.observable(fixPaymentDayMonth);
+                    this.fixPaymentDaily = ko.observable(fixPaymentDaily);
+                    this.fixPaymentHoursly = ko.observable(fixPaymentHoursly);
+                    this.unitPriceAtr = ko.observable(unitPriceAtr);
+                    this.memo = ko.observable(memo);
+                }
+                return PersonalUnitPrice;
             }());
         })(viewmodel = a.viewmodel || (a.viewmodel = {}));
     })(a = qmm013.a || (qmm013.a = {}));
