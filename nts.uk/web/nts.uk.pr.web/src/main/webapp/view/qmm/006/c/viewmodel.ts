@@ -16,9 +16,9 @@ module qmm006.c.viewmodel {
             self.items1 = ko.observableArray([]);
 
             self.columns = ko.observableArray([
-                { headerText: 'コード', key: 'lineBankCode', width: 50, formatter: _.escape },
-                { headerText: '名称', key: 'lineBankName', width: 160, formatter: _.escape },
-                { headerText: '口座区分', key: 'accountAtr', width: 120, formatter: _.escape },
+                { headerText: 'コード', key: 'lineBankCode', width: 45, formatter: _.escape },
+                { headerText: '名称', key: 'lineBankName', width: 120, formatter: _.escape },
+                { headerText: '口座区分', key: 'accountAtr', width: 110, formatter: _.escape },
                 { headerText: '口座番号', key: 'accountNo', width: 100, formatter: _.escape }
             ]);
         }
@@ -45,32 +45,49 @@ module qmm006.c.viewmodel {
 
         }
 
+        transferData(data, newLineBankCode) {
+            service.transfer(data)
+                .done(function() {
+                    nts.uk.ui.windows.setShared("currentCode", newLineBankCode, true);
+                    nts.uk.ui.windows.close();
+                })
+                .fail(function(error) {
+                    nts.uk.ui.dialog.alert(error.message);
+                });
+        }
+
         transfer() {
             var self = this;
             var oldLineBankCode = self.currentCode();
             var newLineBankCode = self.currentCode1();
             if (oldLineBankCode == null || newLineBankCode == null) {
                 nts.uk.ui.dialog.alert("＊が選択されていません。");//ER007
+                return;
             }
             else if (oldLineBankCode == newLineBankCode) {
                 nts.uk.ui.dialog.alert("統合元と統合先で同じコードの＊が選択されています。\r\n  ＊を確認してください。");//ER009
+                return;
             } else {
-                var data = {
-                    oldLineBankCode: oldLineBankCode,
-                    newLineBankCode: newLineBankCode,
-                }
-                nts.uk.ui.dialog.confirm("置換元のマスタを削除しますか？[はい/いいえ]").ifYes(function() {
-                    service.transfer(data)
-                        .done(function() {
-                            nts.uk.ui.windows.setShared("currentCode", newLineBankCode, true);
-                            nts.uk.ui.windows.close();
-                        })
-                        .fail(function(error) {
-                            nts.uk.ui.dialog.alert(error.message);
-                        });
+                //Al003
+                nts.uk.ui.dialog.confirm("統合元から統合先へデータを置換えます。\r\n よろしいですか？").ifYes(function() {
+                    nts.uk.ui.dialog.confirm("置換元のマスタを削除しますか？[はい/いいえ]").ifYes(function() {
+                        var data = {
+                            oldLineBankCode: oldLineBankCode,
+                            newLineBankCode: newLineBankCode,
+                            allowDelete: 1,
+                        }
+                        self.transferData(data, newLineBankCode);
+                    }).ifNo(function() {
+                        var data = {
+                            oldLineBankCode: oldLineBankCode,
+                            newLineBankCode: newLineBankCode,
+                            allowDelete: 0,
+                        }
+                        self.transferData(data, newLineBankCode);
+                    })
                 }).ifNo(function() {
                     return;
-                }).then(function() { })
+                })
             }
         }
 
@@ -78,6 +95,7 @@ module qmm006.c.viewmodel {
             nts.uk.ui.windows.close();
         }
     }
+
 
     class LineBankC {
         lineBankCode: KnockoutObservable<string>;
