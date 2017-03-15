@@ -42,4 +42,11 @@ public interface ChecklistPrintSettingSetMemento {
 	 * @param showOffice the new show office
 	 */
 	void setShowOffice(Boolean showOffice);
+	
+	/**
+	 * Sets the show total.
+	 *
+	 * @param showTotal the new show total
+	 */
+	void setShowTotal(Boolean showTotal);
 }

@@ -12,7 +12,7 @@ var nts;
                     (function (c) {
                         __viewContext.ready(function () {
                             var screenModel = new c.viewmodel.ScreenModel();
-                            screenModel.start().done(function (data) {
+                            screenModel.startPage().done(function (data) {
                                 __viewContext.bind(data);
                             });
                         });

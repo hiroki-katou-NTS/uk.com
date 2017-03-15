@@ -17,28 +17,11 @@ var nts;
                                 saveCheckListPrintSetting: "ctx/pr/report/insurance/checklist/save"
                             };
                             function findCheckListPrintSetting() {
-                                var dfd = $.Deferred();
-                                nts.uk.request.ajax(paths.findCheckListPrintSetting)
-                                    .done(function (res) {
-                                    dfd.resolve(res);
-                                })
-                                    .fail(function (res) {
-                                    dfd.reject(res);
-                                });
-                                return dfd.promise();
+                                return nts.uk.request.ajax(paths.findCheckListPrintSetting);
                             }
                             service.findCheckListPrintSetting = findCheckListPrintSetting;
-                            function saveCheckListPrintSetting(checkListPrintSettingDto) {
-                                var dfd = $.Deferred();
-                                var data = { checkListPrintSettingDto: checkListPrintSettingDto };
-                                nts.uk.request.ajax(paths.saveCheckListPrintSetting, data)
-                                    .done(function (res) {
-                                    dfd.resolve(res);
-                                })
-                                    .fail(function (res) {
-                                    dfd.reject(res);
-                                });
-                                return dfd.promise();
+                            function saveCheckListPrintSetting(command) {
+                                return nts.uk.request.ajax(paths.saveCheckListPrintSetting, command);
                             }
                             service.saveCheckListPrintSetting = saveCheckListPrintSetting;
                             var model;

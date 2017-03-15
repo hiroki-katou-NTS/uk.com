@@ -83,10 +83,11 @@ public abstract class SimpleHistoryBaseService<M extends Master, H extends Histo
 		H newHistory = lastestHistory.copyWithDate(startYear);
 		this.getRepository().addHistory(newHistory);
 
+		this.onCopyHistory(companyCode, masterCode, lastestHistory, newHistory);
+		
 		// Update old history.
 		lastestHistory.setEnd(startYear.previousMonth());
 		this.getRepository().updateHistory(lastestHistory);
-		this.onCopyHistory(companyCode, masterCode, lastestHistory, newHistory);
 
 		// Ret.
 		return newHistory;
