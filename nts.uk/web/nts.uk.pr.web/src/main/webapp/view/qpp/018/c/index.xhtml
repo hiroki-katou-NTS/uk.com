@@ -23,11 +23,11 @@
 								<div data-bind="ntsFormLabel: {}">健康保険料の内訳表示選択</div>
 								<div style="padding-left: 13px">健康保険内訳項目（一般健康料 介護保険料 特定保険料 基本情報）を</div>
 								<div class="switch-button" data-bind="ntsSwitchButton: {
-																		options: showHealthInsuranceType,
+																		options: healthInsuranceItems,
 																		optionsValue: 'code',
 																		optionsText: 'name',
-																		value: selectedCode,
-																		enable: enable }">
+																		value: selectedHealthInsuranceItem,
+																		enable: true }">
 								</div>
 							</div>
 							<div style="padding-top: 20px">
@@ -37,10 +37,10 @@
 								</div>	
 								<button id="helpBtn" data-bind="ntsHelpButton: {image: 'test-image.png', position: 'bottom right', enable: true}">?</button>
 								</div>
-								<div id="output-setting" data-bind="with: checkListPrintSettingModel">
-		 							<div class="check-output" data-bind="ntsCheckBox: { checked: showDetail , text:'明細'}"></div>
+								<div id="output-setting" >
+		 							<div class="check-output" data-bind="ntsCheckBox: { checked: showCategoryInsuranceItem , text:'明細'}"></div>
 									<div class="check-output" data-bind="ntsCheckBox: { checked: showOffice , text:'事務所月計'}"></div>
-									<div class="check-output" data-bind="ntsCheckBox: { checked: showCategoryInsuranceItem , text:'総合月計'}"></div>
+									<div class="check-output" data-bind="ntsCheckBox: { checked: showTotal , text:'総合月計'}"></div>
 									<div class="check-output" data-bind="ntsCheckBox: { checked: showDeliveryNoticeAmount , text:'納入告知額'}"></div>
 								</div>
 							</div>
@@ -52,10 +52,10 @@
 							<tbody>
 								<tr>
 									<td>
-										<button id="configure-button" class="proceed" data-bind="click: saveConfigurePrintSetting">設定</button>
+										<button id="configure-button" class="proceed" data-bind="click: saveConfigSetting" >設定</button>
 									</td>
 									<td>
-										<button data-bind="click: closePrintSetting" id="cancel-button">キャンセル</button>
+										<button id="cancel-button" data-bind="click: closeDialog">キャンセル</button>
 									</td>
 								</tr>
 							</tbody>

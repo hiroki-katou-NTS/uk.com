@@ -1,132 +1,155 @@
 module nts.uk.pr.view.qpp018.c {
-    //import CheckListPrintSettingDto = nts.uk.pr.view.qpp018.c.service.model.CheckListPrintSettingDto;
     export module viewmodel {
         export class ScreenModel {
-            required: KnockoutObservable<boolean>;
-            showHealthInsuranceType: KnockoutObservableArray<HealthInsuranceType>;
-            enable: KnockoutObservable<boolean>;
-            selectedCode: KnockoutObservable<string>;
-            printSettingValue: KnockoutObservable<string>;
-            checkListPrintSettingModel: KnockoutObservable<CheckListPrintSettingModel>;
-
-            constructor() {
-                var self = this;
-                self.required = ko.observable(true);
-                self.showHealthInsuranceType = ko.observableArray<HealthInsuranceType>([
-                    new HealthInsuranceType('1', '表示する'),
-                    new HealthInsuranceType('2', '表示しない'),
-                ]);
-
-                self.selectedCode = ko.observable('1');
-                self.enable = ko.observable(true);
-                self.printSettingValue = ko.observable('PrintSetting Value');
-                self.checkListPrintSettingModel = ko.observable(new CheckListPrintSettingModel());
-            }
             
-            closePrintSetting() {
-                // Set child value
-                nts.uk.ui.windows.setShared("printSettingValue", this.printSettingValue(), true);
-                nts.uk.ui.windows.close();
-            }
-            
-            saveConfigurePrintSetting() {
-                var self = this;
-                if (!(self.checkListPrintSettingModel().showCategoryInsuranceItem())
-                    && !(self.checkListPrintSettingModel().showDeliveryNoticeAmount())
-                    && !(self.checkListPrintSettingModel().showDetail())
-                    && !(self.checkListPrintSettingModel().showOffice())) {
-                    alert("Something is not right");
-                } else {
-                    nts.uk.ui.windows.setShared("printSettingValue", this.printSettingValue(), true);
-                    var command = {
-                        checkListPrintSettingDto : self.checkListPrintSettingModel().toDto()
-                    };
-                    service.saveCheckListPrintSetting(command).done(data => {
-                        alert("Configure successful.");
-                    }).fail(function(res) {
-                        alert("Configure fail.");
-                    })
-                    nts.uk.ui.windows.close();
-                }
-            }
-
-            public start(): JQueryPromise<any> {
-                var dfd = $.Deferred<any>();
-                var self = this;
-                self.loadAllCheckListPrintSetting().done(data => {
-                    dfd.resolve(self);
-                });
-                return dfd.promise();
-            }
-
-            public loadAllCheckListPrintSetting(): JQueryPromise<any> {
-                var dfd = $.Deferred<any>();
-                var self = this;
-                service.findCheckListPrintSetting().done(data => {
-                    self.checkListPrintSettingModel().setData(data);
-                    dfd.resolve();
-                }).fail(function(res) {
-                    nts.uk.ui.dialog.alert(res.message);
-                    dfd.reject();
-                })
-                return dfd.promise();
-            }
-            private saveCheckListPrintSetting() {
-                var self = this;
-
-            }
-
-        }
-        /**
-         * Class HealthInsuranceType
-         */
-        export class HealthInsuranceType {
-            code: string;
-            name: string;
-
-            constructor(code: string, name: string) {
-                this.code = code;
-                this.name = name;
-            }
-        }
-
-        /**
-         * Class CheckListPrintSettingModel 
-         */
-        export class CheckListPrintSettingModel {
+            healthInsuranceItems: KnockoutObservableArray<any>;
+            selectedHealthInsuranceItem: KnockoutObservable<string>;
             showCategoryInsuranceItem: KnockoutObservable<boolean>;
             showDeliveryNoticeAmount: KnockoutObservable<boolean>;
             showDetail: KnockoutObservable<boolean>;
             showOffice: KnockoutObservable<boolean>;
-            constructor() {
-                this.showCategoryInsuranceItem = ko.observable(false);
-                this.showDeliveryNoticeAmount = ko.observable(false);
-                this.showDetail = ko.observable(false);
-                this.showOffice = ko.observable(false);
-            }
-            setData(checkListPrintSettingDto: service.model.CheckListPrintSettingDto) {
-                this.showCategoryInsuranceItem(checkListPrintSettingDto.showCategoryInsuranceItem);
-                this.showDeliveryNoticeAmount(checkListPrintSettingDto.showDeliveryNoticeAmount);
-                this.showDetail(checkListPrintSettingDto.showDetail);
-                this.showOffice(checkListPrintSettingDto.showOffice);
-            }
-            resetValue() {
-                this.showCategoryInsuranceItem(false);
-                this.showDeliveryNoticeAmount(false);
-                this.showDetail(false);
-                this.showOffice(false);
-            }
-            toDto(): service.model.CheckListPrintSettingDto {
-                var checkListPrintSettingDto: service.model.CheckListPrintSettingDto;
-                checkListPrintSettingDto = new service.model.CheckListPrintSettingDto();
-                checkListPrintSettingDto.showCategoryInsuranceItem = this.showCategoryInsuranceItem();
-                checkListPrintSettingDto.showDeliveryNoticeAmount = this.showDeliveryNoticeAmount();
-                checkListPrintSettingDto.showDetail = this.showDetail();
-                checkListPrintSettingDto.showOffice = this.showOffice();
-                return checkListPrintSettingDto;
+            showTotal: KnockoutObservable<boolean>;
 
+            constructor() {
+                let self = this;
+                self.showDeliveryNoticeAmount = ko.observable(false);
+                self.showCategoryInsuranceItem = ko.observable(false);
+                self.showOffice = ko.observable(false);
+                self.showTotal = ko.observable(false);
+                self.healthInsuranceItems = ko.observableArray([
+                    {code: "indicate", name: "表示する"},
+                    {code: "hide", name: "表示しない"}
+                ]);
+                self.selectedHealthInsuranceItem = ko.observable("indicate");
+                self.showDetail = ko.computed(function () {
+                    if (self.selectedHealthInsuranceItem() == 'indicate') {
+                        return true;
+                    }
+                    return false;
+                }, self);
+            }
+            
+            public startPage(): JQueryPromise<any> {
+                let self = this;
+                let dfd = $.Deferred<any>();
+                self.loadCheckListPrintSetting().done(function() {
+                    dfd.resolve(self);
+                });
+                return dfd.promise();
+            }
+            
+            loadCheckListPrintSetting(): JQueryPromise<service.model.CheckListPrintSettingDto> {
+                var self = this;
+                var dfd = $.Deferred<service.model.CheckListPrintSettingDto>();
+                service.findCheckListPrintSetting().done(function (data) {
+                    self.initUI(data);
+                    dfd.resolve();
+                }).fail(function(res) {
+                    nts.uk.ui.dialog.alert(res.message);
+                })
+                return dfd.promise();
+            }
+            
+            saveConfigSetting(): JQueryPromise<any> {
+                let self = this;
+                let dfd = $.Deferred<any>();
+                var command = self.toJSObject();
+                service.saveCheckListPrintSetting(command).done(function(res: any) {
+                    dfd.resolve(res);
+                }).fail(function(res) {
+                    dfd.reject(res);
+                })
+                return dfd.promise();
+            }
+            
+            closeDialog() {
+                nts.uk.ui.windows.close();
+            }
+            
+            initUI(res: service.model.CheckListPrintSettingDto): void {
+                let self = this;
+                if (res) {
+                    self.setData(res);
+                } else {
+                    self.defaultValue();
+                }
+            }
+            
+            setData(dto: service.model.CheckListPrintSettingDto): void {
+                let self = this;
+                if (dto.showDetail) {
+                    self.selectedHealthInsuranceItem("indicate");
+                } else {
+                    self.selectedHealthInsuranceItem("hide");
+                }
+                self.showDeliveryNoticeAmount(dto.showDeliveryNoticeAmount);
+                self.showCategoryInsuranceItem(dto.showDetail);
+                self.showOffice(dto.showOffice);
+                self.showTotal(dto.showTotal);
+            }
+            
+            defaultValue(): void {
+                let self = this;
+                self.selectedHealthInsuranceItem("indicate");
+                self.showCategoryInsuranceItem(false);
+                self.showOffice(false);
+                self.showTotal(false);
+                self.showDeliveryNoticeAmount(false);
+            }
+            
+            toJSObject(): any {
+                let self = this;
+                let command: any = {};
+                let checkListPrintSetting: any = {}; 
+                checkListPrintSetting.showDetail = self.showDetail();
+                checkListPrintSetting.showCategoryInsuranceItem = self.showCategoryInsuranceItem();
+                checkListPrintSetting.showOffice = self.showOffice();
+                checkListPrintSetting.showTotal = self.showTotal();
+                checkListPrintSetting.showDeliveryNoticeAmount = self.showDeliveryNoticeAmount();
+                
+                command.checkListPrintSettingDto = checkListPrintSetting;
+                return command;
             }
         }
+        
+        /**
+         * Class HealthInsuranceType
+         */
+//        export class HealthInsuranceTypeList {
+//            
+//            items: KnockoutObservableArray<service.model.HealthInsuranceTypeItem>;
+//            selectedCode: KnockoutObservable<string>;
+//
+//            constructor() {
+//                let self = this;
+//                self.items = ko.observableArray<service.model.HealthInsuranceTypeItem>([]);
+//                self.selectedCode = ko.observable("");
+//            }
+//            
+//            findHealthInsuranceTypeList(): JQueryPromise<service.model.HealthInsuranceTypeItem[]> {
+//                let self = this;
+//                let dfd = $.Deferred<service.model.HealthInsuranceTypeItem[]>();
+//                service.findHealthInsuranceTypeList().done(function(res: service.model.HealthInsuranceTypeItem[]) {
+//                    // get 2 enum first.
+//                    for (let i = 0; i < res.length; i++) {
+//                        if (i == 2) {
+//                            break;
+//                        }
+//                        self.items().push(res[i]);
+//                    }
+////                    self.items(res);
+//                    dfd.resolve();
+//                }).fail(function(res) {
+//                    nts.uk.ui.dialog.alert(res.message);
+//                })
+//                return dfd.promise();
+//            }
+//            
+//            selectFirst(): void {
+//                let self = this;
+//                self.selectedCode(self.items()[0].code);
+//            }
+//        }
     }
 
 }

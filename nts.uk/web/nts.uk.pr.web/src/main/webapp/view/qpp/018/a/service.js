@@ -13,21 +13,31 @@ var nts;
                         var service;
                         (function (service) {
                             var servicePath = {
-                                getallInsuranceOffice: "ctx/pr/report/insurance/office/findAll",
+                                findAllInsuranceOffice: "screen/pr/QPP018/findAllOffice",
                                 saveAsPdf: "screen/pr/QPP018/saveAsPdf"
                             };
-                            function getAllInsuranceOffice() {
-                                return nts.uk.request.ajax(servicePath.getallInsuranceOffice);
+                            function findAllInsuranceOffice() {
+                                var dfd = $.Deferred();
+                                nts.uk.request.ajax(servicePath.findAllInsuranceOffice).done(function (res) {
+                                    var list = _.map(res, function (item) {
+                                        return new model.InsuranceOffice(item.officeCode, item.officeName);
+                                    });
+                                    dfd.resolve(list);
+                                });
+                                return dfd.promise();
                             }
-                            service.getAllInsuranceOffice = getAllInsuranceOffice;
-                            function saveAsPdf() {
-                                return nts.uk.request.ajax(servicePath.saveAsPdf);
+                            service.findAllInsuranceOffice = findAllInsuranceOffice;
+                            function saveAsPdf(command) {
+                                return nts.uk.request.ajax(servicePath.saveAsPdf, command);
                             }
                             service.saveAsPdf = saveAsPdf;
                             var model;
                             (function (model) {
                                 var InsuranceOffice = (function () {
-                                    function InsuranceOffice() {
+                                    function InsuranceOffice(code, name) {
+                                        var self = this;
+                                        self.code = code;
+                                        self.name = name;
                                     }
                                     return InsuranceOffice;
                                 }());

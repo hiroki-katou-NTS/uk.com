@@ -17,7 +17,7 @@ import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.uk.file.pr.app.export.insurance.data.ColumnInformation;
 import nts.uk.file.pr.app.export.insurance.data.EmployeeDto;
-import nts.uk.file.pr.app.export.insurance.data.OfficeDto;
+import nts.uk.file.pr.app.export.insurance.data.InsuranceOfficeDto;
 import nts.uk.file.pr.app.export.insurance.data.SocialInsuranceHeaderReportData;
 import nts.uk.file.pr.app.export.insurance.data.SocialInsuranceReportData;
 
@@ -47,22 +47,22 @@ public class SocialInsuranceReportService extends ExportService<SocialInsuranceQ
         SocialInsuranceHeaderReportData headerData = new SocialInsuranceHeaderReportData();
         reportData.setHeaderData(headerData);
         
-        List<OfficeDto> officeItems = fakeOffice();
+        List<InsuranceOfficeDto> officeItems = fakeOffice();
         reportData.setOfficeItems(officeItems);
         
         return reportData;
     }
     
-    private List<OfficeDto> fakeOffice() {
-        List<OfficeDto> offices = new ArrayList<>();
+    private List<InsuranceOfficeDto> fakeOffice() {
+        List<InsuranceOfficeDto> offices = new ArrayList<>();
         for(int i=0; i<10; i++) {
-            OfficeDto office = setOffice(i + 1);
+            InsuranceOfficeDto office = setOffice(i + 1);
             offices.add(office);
         }
         return offices;
     }
-    private OfficeDto setOffice(int index) {
-        OfficeDto office = new OfficeDto();
+    private InsuranceOfficeDto setOffice(int index) {
+        InsuranceOfficeDto office = new InsuranceOfficeDto();
         
         office.setNumberOfEmployee(5);
         office.setOfficeCode("A000" + index);

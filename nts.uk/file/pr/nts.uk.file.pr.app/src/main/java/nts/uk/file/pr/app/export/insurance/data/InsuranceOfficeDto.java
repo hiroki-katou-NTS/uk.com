@@ -20,7 +20,7 @@ import lombok.Setter;
 
 @Setter
 @Getter
-public class OfficeDto {
+public class InsuranceOfficeDto {
 
     /** The number of employee. */
     private int numberOfEmployee;

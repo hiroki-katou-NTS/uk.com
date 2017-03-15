@@ -14,6 +14,8 @@ import nts.uk.ctx.pr.report.dom.insurance.ChecklistPrintSettingSetMemento;
 @Data
 public class CheckListPrintSettingFindOutDto implements ChecklistPrintSettingSetMemento {
 
+//    private HealthInsuranceType healthInsuranceType;
+    
 	/** The show category insurance item. */
 	private Boolean showCategoryInsuranceItem;
 

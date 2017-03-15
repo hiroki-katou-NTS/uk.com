@@ -19,35 +19,36 @@ import nts.uk.ctx.pr.report.app.insurance.find.dto.CheckListPrintSettingFindOutD
 @Produces("application/json")
 public class CheckListPrintSettingWs extends WebService {
 
-	/** The find. */
-	@Inject
-	private ChecklistPrintSettingFinder find;
+    /** The find. */
+    @Inject
+    private ChecklistPrintSettingFinder checklistPrintSettingFinder;
 
-	/** The save. */
+    /** The save. */
 
-	@Inject
-	private CheckListPrintSettingSaveCommandHandler save;
+    @Inject
+    private CheckListPrintSettingSaveCommandHandler saveCommmandHandler;
 
-	/**
-	 * Find all.
-	 *
-	 * @return the check list print setting dto
-	 */
-	@POST
-	@Path("find")
-	public CheckListPrintSettingFindOutDto find() {
-		CheckListPrintSettingFindOutDto dto = new CheckListPrintSettingFindOutDto();
-		dto.setShowCategoryInsuranceItem(false);
-		dto.setShowDeliveryNoticeAmount(true);
-		dto.setShowDetail(true);
-		dto.setShowOffice(false);
-		dto.setShowTotal(false);
-		return dto;
-	}
+    /**
+     * Find all.
+     *
+     * @return the check list print setting dto
+     */
+    @POST
+    @Path("find")
+    public CheckListPrintSettingFindOutDto find() {
+//        return checklistPrintSettingFinder.find();
+        CheckListPrintSettingFindOutDto dto = new CheckListPrintSettingFindOutDto();
+        dto.setShowCategoryInsuranceItem(true);
+        dto.setShowDetail(true);
+        dto.setShowOffice(false);
+        dto.setShowTotal(true);
+        dto.setShowDeliveryNoticeAmount(true);
+        return dto;
+    }
 
-	@POST
-	@Path("save")
-	public void save(CheckListPrintSettingSaveCommand command) {
-		this.save.handle(command);
-	}
+    @POST
+    @Path("save")
+    public void save(CheckListPrintSettingSaveCommand command) {
+        this.saveCommmandHandler.handle(command);
+    }
 }

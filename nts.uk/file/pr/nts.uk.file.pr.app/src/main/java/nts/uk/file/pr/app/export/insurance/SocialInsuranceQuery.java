@@ -7,11 +7,34 @@
  */
 package nts.uk.file.pr.app.export.insurance;
 
+import java.util.List;
+
+import lombok.Getter;
+import lombok.Setter;
+import nts.uk.file.pr.app.export.insurance.data.InsuranceOfficeDto;
+
 /**
- * @author duongnd
+ * The Class SocialInsuranceQuery.
  *
+ * @author duongnd
  */
+
+@Setter
+@Getter
 public class SocialInsuranceQuery {
 
-    // add condition query.
+    /** The year month. */
+    private String yearMonth;
+    
+    /** The is equal. */
+    private boolean isEqual;
+    
+    /** The is deficient. */
+    private boolean isDeficient;
+    
+    /** The is redundant. */
+    private boolean isRedundant;
+    
+    /** The insurance offices. */
+    private List<InsuranceOfficeDto> insuranceOffices;
 }

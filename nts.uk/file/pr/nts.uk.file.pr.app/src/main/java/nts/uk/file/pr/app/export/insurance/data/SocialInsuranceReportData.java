@@ -29,5 +29,5 @@ public class SocialInsuranceReportData {
     private List<ColumnInformation> columns;
     
     /** The report item. */
-    public List<OfficeDto> officeItems;
+    public List<InsuranceOfficeDto> officeItems;
 }

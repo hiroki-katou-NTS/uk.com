@@ -27,7 +27,7 @@ import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.gul.reflection.ReflectionUtil;
 import nts.uk.file.pr.app.export.insurance.SocialInsuranceGenerator;
 import nts.uk.file.pr.app.export.insurance.data.EmployeeDto;
-import nts.uk.file.pr.app.export.insurance.data.OfficeDto;
+import nts.uk.file.pr.app.export.insurance.data.InsuranceOfficeDto;
 import nts.uk.file.pr.app.export.insurance.data.SocialInsuranceReportData;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 
@@ -52,6 +52,7 @@ public class AsposeSocialInsuranceReportGenerator extends AsposeCellsReportGener
     private static final String RANGE_OFFICE = "RangeOffice";
     private static final String RANGE_EMPLOYEE = "RangeEmployee";
     private static final String RANGE_FOOTER_EACH_OFFICE = "RangeFooterEachOffice";
+    private static final String RANGE_FOOTER_PAGE = "RangeFooterPage";
     private static final String ALPHABET_A = "A";
     private static final String ALPHABET_Q = "Q";
     
@@ -64,7 +65,7 @@ public class AsposeSocialInsuranceReportGenerator extends AsposeCellsReportGener
             reportContext.getDesigner().setWorkbook(workbook);
             workbook.calculateFormula(true);
             reportContext.processDesigner();
-            workbook.save(FILE_EXCEL);
+//            workbook.save(FILE_EXCEL);
             reportContext.saveAsPdf(this.createNewFile(fileContext, REPORT_FILE_NAME));
         } catch (Exception e) {
             throw new RuntimeException(e);
@@ -87,9 +88,10 @@ public class AsposeSocialInsuranceReportGenerator extends AsposeCellsReportGener
         mapRange.put(RANGE_EMPLOYEE, rangeEmployee);
         Range rangeFooterEachOffice = worksheets.getRangeByName(RANGE_FOOTER_EACH_OFFICE);
         mapRange.put(RANGE_FOOTER_EACH_OFFICE, rangeFooterEachOffice);
+        Range rangeFooterPage = worksheets.getRangeByName(RANGE_FOOTER_PAGE);
         
         int indexRowCurrent = writeContentArea(worksheet, reportData.getOfficeItems(), numberOfColumn, mapRange);
-        setFooterPage(worksheet, reportData.getOfficeItems(), numberOfColumn, indexRowCurrent);
+        setFooterPage(worksheet, reportData.getOfficeItems(), numberOfColumn, indexRowCurrent + NUMBER_ONE, rangeFooterPage);
         removeRowTemplate(worksheets.getNamedRanges().length, worksheet, mapRange);
     }
 
@@ -98,11 +100,12 @@ public class AsposeSocialInsuranceReportGenerator extends AsposeCellsReportGener
         pageSetup.setFitToPagesTall(NUMBER_ONE);
         pageSetup.setFitToPagesWide(NUMBER_ONE);
         pageSetup.setCenterHorizontally(true);
+        pageSetup.setPaperSize(75);
     }
 
-    private int writeContentArea(Worksheet worksheet, List<OfficeDto> offices, int numberOfColumn, HashMap<String, Range> mapRange) throws Exception {
-        int indexRowHeaderOffice = INDEX_ROW_CONTENT_AREA + 5;
-        for (OfficeDto office : offices) {
+    private int writeContentArea(Worksheet worksheet, List<InsuranceOfficeDto> offices, int numberOfColumn, HashMap<String, Range> mapRange) throws Exception {
+        int indexRowHeaderOffice = INDEX_ROW_CONTENT_AREA + 6;
+        for (InsuranceOfficeDto office : offices) {
             setHeaderOffice(worksheet, office, numberOfColumn, indexRowHeaderOffice, mapRange.get(RANGE_OFFICE));
             int indexRowContentOffice = indexRowHeaderOffice + NUMBER_ONE;
             setContentOffice(worksheet, office, numberOfColumn, indexRowContentOffice, mapRange.get(RANGE_EMPLOYEE));
@@ -115,56 +118,46 @@ public class AsposeSocialInsuranceReportGenerator extends AsposeCellsReportGener
         return indexRowHeaderOffice;
     }
 
-    private void setHeaderOffice(Worksheet worksheet, OfficeDto office, int numberOfColumn, int indexRowHeader, Range rangeOffice) throws Exception {
-        Cells cells = worksheet.getCells();
-        String cellStart = ALPHABET_A.concat(String.valueOf(indexRowHeader));
-        String cellEnd = ALPHABET_Q.concat(String.valueOf(indexRowHeader));
-        Range newRange = cells.createRange(cellStart, cellEnd);
-        newRange.copy(rangeOffice);
-        setDataRangeFirstRow(worksheet, newRange, office.getOfficeCode(), office.getOfficeName());
+    private void setHeaderOffice(Worksheet worksheet, InsuranceOfficeDto office, int numberOfColumn, int indexRowHeader, Range rangeOffice) throws Exception {
+        Range newRange = createRangeFromOtherRange(worksheet, indexRowHeader, rangeOffice);
+        setDataRangeFirstRow(worksheet, newRange, NUMBER_ZERO, office.getOfficeCode(), office.getOfficeName());
     }
 
-    private void setContentOffice(Worksheet worksheet, OfficeDto office, int numberOfColumn, int indexRow,
+    private void setContentOffice(Worksheet worksheet, InsuranceOfficeDto office, int numberOfColumn, int indexRow,
             Range rangeEmployee) throws Exception {
-        Cells cells = worksheet.getCells();
         for (int i = 0; i < office.getEmployeeDtos().size(); i++) {
             boolean isForegroundColor = false;
             if (i %  NUMBER_SECOND != 0) {
                 isForegroundColor = true;
             }
             EmployeeDto employee = office.getEmployeeDtos().get(i);
-            String cellStart = ALPHABET_A.concat(String.valueOf(indexRow));
-            String cellEnd = ALPHABET_Q.concat(String.valueOf(indexRow));
-            Range newRange = cells.createRange(cellStart, cellEnd);
-            newRange.copy(rangeEmployee);
+            Range newRange = createRangeFromOtherRange(worksheet, indexRow, rangeEmployee);
             setDataRangeFirstRow(worksheet, employee, newRange, isForegroundColor);
             indexRow++;
         }
     }
 
-    private void setFooterEachOffice(Worksheet worksheet, OfficeDto office, int numberOfColumn, int indexRowBeginEmployee,
+    private void setFooterEachOffice(Worksheet worksheet, InsuranceOfficeDto office, int numberOfColumn, int indexRowBeginEmployee,
             int indexRow, Range rangeFooterEachOffice) throws Exception {
         int numberEmployeeOffice = office.getEmployeeDtos().size();
         String totalEmployeeOffice = String.valueOf(numberEmployeeOffice).concat(" 人");
-        Cells cells = worksheet.getCells();
-        String cellStart = ALPHABET_A.concat(String.valueOf(indexRow));
-        String cellEnd = ALPHABET_Q.concat(String.valueOf(indexRow));
-        Range newRange = cells.createRange(cellStart, cellEnd);
-        newRange.copy(rangeFooterEachOffice);
-        setDataRangeFirstRow(worksheet, newRange, "事業所　計", totalEmployeeOffice);
-        setDataRangeRowCalculation(worksheet, newRange, indexRowBeginEmployee);
+        Range newRange = createRangeFromOtherRange(worksheet, indexRow, rangeFooterEachOffice);
+        setDataRangeFirstRow(worksheet, newRange, NUMBER_ZERO, "事業所　計", totalEmployeeOffice);
+        setDataRangeRowCalculationSum(worksheet, newRange, indexRowBeginEmployee);
     }
     
     private void setSummaryOffice(Worksheet worksheet, int numberOfColumn, int indexRowCurrent, Range rangeFooterOffice) throws Exception {
-        Cells cells = worksheet.getCells();
-        String cellStart = ALPHABET_A.concat(String.valueOf(indexRowCurrent));
-        String cellEnd = ALPHABET_Q.concat(String.valueOf(indexRowCurrent));
-        Range newRange = cells.createRange(cellStart, cellEnd);
-        newRange.copy(rangeFooterOffice);
-        setDataRangeFirstRow(worksheet, newRange, "総合計");
+        Range newRange = createRangeFromOtherRange(worksheet, indexRowCurrent, rangeFooterOffice);
+        setDataRangeFirstRow(worksheet, newRange, NUMBER_ZERO, "総合計");
     }
 
-    private void setFooterPage(Worksheet worksheet, List<OfficeDto> offices, int numberOfColumn, int indexRow) {
+    private void setFooterPage(Worksheet worksheet, List<InsuranceOfficeDto> offices, int numberOfColumn, int indexRow,
+            Range rangeFooterPage) throws Exception {
+        Range newRange = createRangeFromOtherRange(worksheet, indexRow, rangeFooterPage);
+        // TODO: hardcode
+        setDataRangeFirstRow(worksheet, newRange, 3, 80);
+        setDataRangeFirstRow(worksheet, newRange, 8, 30);
+        setDataRangeRowCalculateSub(worksheet, newRange);
     }
 
     @SuppressWarnings("rawtypes")
@@ -181,15 +174,18 @@ public class AsposeSocialInsuranceReportGenerator extends AsposeCellsReportGener
         }
     }
     
-    private void setDataRangeFirstRow(Worksheet worksheet, Range range, Object...data) {
+    private void setDataRangeFirstRow(Worksheet worksheet, Range range, int indexColumnBegin, Object...data) {
         Cells cells = worksheet.getCells();
         int indexRowCurrent = range.getFirstRow();
-        for (int i = 0; i < data.length; i++) {
-            cells.get(indexRowCurrent, i).setValue(data[i]);
+        int index = NUMBER_ZERO;
+        while(index < data.length) {
+            int indexColumn = indexColumnBegin + index;
+            cells.get(indexRowCurrent, indexColumn).setValue(data[index]);
+            index++;
         }
     }
     
-    private void setDataRangeRowCalculation(Worksheet worksheet, Range range, int indexRowBeginEmployee) {
+    private void setDataRangeRowCalculationSum(Worksheet worksheet, Range range, int indexRowBeginEmployee) {
         Cells cells = worksheet.getCells();
         int numColumnNeedCalculate = range.getColumnCount();
         int indexRowCurrent = range.getFirstRow();
@@ -200,6 +196,25 @@ public class AsposeSocialInsuranceReportGenerator extends AsposeCellsReportGener
             String formulaCalculateSum = "SUM(" + cellStart + ":" + cellEnd + ")";
             cells.get(indexRowCurrent, i).setFormula(formulaCalculateSum);
         }
+    }
+    
+    private void setDataRangeRowCalculateSub(Worksheet worksheet, Range rangeFooterPage) {
+        Cells cells = worksheet.getCells();
+        int indexRowCurrent = rangeFooterPage.getFirstRow();
+        // TODO: hardcode
+        String cellStart = cells.get(indexRowCurrent, 3).getName();
+        String cellEnd = cells.get(indexRowCurrent, 8).getName();
+        String formulaSubtract = cellStart.concat("-").concat(cellEnd);
+        cells.get(indexRowCurrent, 13).setFormula(formulaSubtract);
+    }
+    
+    private Range createRangeFromOtherRange(Worksheet worksheet, int indexRow, Range range) throws Exception {
+        Cells cells = worksheet.getCells();
+        String cellStart = ALPHABET_A.concat(String.valueOf(indexRow));
+        String cellEnd = ALPHABET_Q.concat(String.valueOf(indexRow));
+        Range newRange = cells.createRange(cellStart, cellEnd);
+        newRange.copy(range);
+        return newRange;
     }
     
     private void removeRowTemplate(int totalRange, Worksheet worksheet, HashMap<String, Range> mapRange) {

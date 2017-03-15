@@ -9,9 +9,9 @@
 		<ui:define name="htmlHead">
 			<com:stylefile path="main.css" />
 			<com:scriptfile set="IGNITE" />
-			<com:scriptfile path="viewmodel.js" />
 			<com:scriptfile path="start.js" />
 			<com:scriptfile path="service.js" />
+			<com:scriptfile path="viewmodel.js" />
 		</ui:define>
 
 		<ui:define name="content">
@@ -62,7 +62,7 @@
 							<td colspan="3">
 								<div style="margin-top: 20px" >
 									<div data-bind="ntsCheckBox: { checked: isEqual , text: '全て同じ' }" style="width: 100px;"></div>
-									<div data-bind="ntsCheckBox: { checked: isDeficent, text: '不足'  }" style="width: 100px;">	</div>
+									<div data-bind="ntsCheckBox: { checked: isDeficient, text: '不足'  }" style="width: 100px;">	</div>
 									<div data-bind="ntsCheckBox: { checked: isRedundant, text: '超過' }" style="width: 100px;">	</div>
 								</div>
 							</td>
@@ -72,21 +72,22 @@
 								<div data-bind="ntsFormLabel: {required: true}" style="margin-top: 20px; margin-bottom:4px">
 									<label>社会保険事業所</label>
 								</div>
+								<div id="grid-error" class="save-error"></div>
 							</td>
 						</tr>
 					</tbody>
 				</table>
 				</div>
-				<div id="lst-insurrance-office" style="margin-left:20px">
-				<table id="multi-list" data-bind="ntsGridList: {
-												height: 350,
-												width: 400,
-												options: insuranceOffice,
-												optionsValue: 'code',
-												columns: columns,
-												multiple: true,
-												value: selectedOfficeList
-											}">
+				<div id="lst-insurrance-office" style="margin-left:20px" data-bind="with: insuranceOffice">
+					<table id="multi-list" data-bind="ntsGridList: {
+													height: 350,
+													width: 400,
+													options: items,
+													optionsValue: 'code',
+													columns: columns,
+													multiple: true,
+													value: selectedOfficeList
+												}">
 				</table>					
 				</div>
 			</div>

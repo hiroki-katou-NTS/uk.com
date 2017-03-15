@@ -14,6 +14,7 @@ import nts.uk.ctx.pr.report.dom.insurance.ChecklistPrintSettingGetMemento;
  */
 @Data
 public class CheckListPrintSettingDto {
+    
 	/** The show category insurance item. */
 	private Boolean showCategoryInsuranceItem;
 
