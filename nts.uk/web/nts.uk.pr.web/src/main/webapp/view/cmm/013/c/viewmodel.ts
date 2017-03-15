@@ -1,165 +1,96 @@
-module cmm013.c.viewmodel {
-    import option = nts.uk.ui.option;
+module cmm013.c.viewmodel { 
+
     export class ScreenModel {
-        selectLayoutAtr: KnockoutObservable<string>;
-        itemList: KnockoutObservableArray<ItemModel>;
-        isEnable: KnockoutObservable<boolean>;
-        layouts: KnockoutObservableArray<service.model.LayoutMasterDto>;
-        selectStmtCode : KnockoutObservable<string>;
-        selectStmtName : KnockoutObservable<string>;
-        selectStartYm: KnockoutObservable<string>;
-        layoutSelect:  KnockoutObservable<string>;
-        valueSel001:   KnockoutObservable<string>;
-        createlayout:  KnockoutObservable<service.model.LayoutMasterDto>;
-        startYmHis: KnockoutObservable<number>;
-        timeEditorOption: KnockoutObservable<any>;
-        //---radio        
-        isRadioCheck: KnockoutObservable<number>;
-        itemsRadio: KnockoutObservableArray<any>;
-        /**
-         * Init screen model.
-         */
+        label_002: KnockoutObservable<Labels>;
+        inp_003: KnockoutObservable<string>;
+        historyId: KnockoutObservable<string>;
+        startDateLast: KnockoutObservable<string>;
+        itemList: KnockoutObservableArray<any>;
+        selectedId: KnockoutObservable<number>;
+        enable: KnockoutObservable<boolean>;
+        res: KnockoutObservableArray<string>;
+        endDateUpdate: KnockoutObservable<string>;
+
         constructor() {
             var self = this;
-            self.selectLayoutAtr = ko.observable("3");
-            self.itemList = ko.observableArray([]);
-            self.isEnable = ko.observable(true);
-            self.layouts = ko.observableArray([]);
-            self.selectStmtCode = ko.observable(null);
-            self.selectStmtName = ko.observable(null);
-            self.selectStartYm =  ko.observable(null);
-            self.layoutSelect = ko.observable(nts.uk.ui.windows.getShared('stmtCode'));
-            self.valueSel001 = ko.observable("");
-            self.createlayout = ko.observable(null);
-            self.startYmHis = ko.observable(null);
-            console.log(option);
-            self.timeEditorOption = ko.mapping.fromJS(new option.TimeEditorOption({inputFormat: "yearmonth"}));
-            //---radio
-            self.itemsRadio = ko.observableArray([
-                {value: 1, text: ko.observable('最新の履歴（'+self.selectStartYm()+'）から引き継ぐ')},
-                {value: 2, text: ko.observable('初めから作成する')}
-            ]);
-            self.isRadioCheck = ko.observable(1);
-        } 
-        
-        start(): JQueryPromise<any> {
-            var self = this;
-            var dfd = $.Deferred<any>();   
-            //list data
-            $('#LST_001').on('selectionChanging', function(event) {
-                console.log('Selecting value:' + (<any>event.originalEvent).detail);
-            })
-            $('#LST_001').on('selectionChanged', function(event: any) {
-                console.log('Selected value:' + (<any>event.originalEvent).detail)
-            })
-            //fill data to dialog
-            service.getLayoutWithMaxStartYm().done(function(layout: Array<service.model.LayoutMasterDto>){
-                self.layouts(layout);
-                self.startDialog();
-            });
-            
-             dfd.resolve();
-            // Return.
-            return dfd.promise();    
+            self.label_002 = ko.observable(new Labels()); 
+            self.inp_003 = ko.observable(null);
+            self.historyId = ko.observable(null);
+            self.startDateLast = ko.observable('');
+            self.endDateUpdate = ko.observable('');
+            self.selectedId = ko.observable(1);
+            self.enable = ko.observable(true); 
         }
-        
-        
-        startDialog() : any{
+       
+       
+      
+        add(){
             var self = this;
-            _.forEach(self.layouts(), function(layout){
-                var stmtCode = layout.stmtCode;
-                if(stmtCode == self.layoutSelect()){
-                    self.selectStmtCode(stmtCode);
-                    self.selectStmtName(layout.stmtName);
-                    self.selectStartYm(nts.uk.time.formatYearMonth(layout.startYm));
-                    self.itemsRadio()[0].text('最新の履歴（'+self.selectStartYm()+'）から引き継ぐ');
-                    self.startYmHis(layout.startYm);
-                    return false;                    
-                }
-            });     
-        }
-        
-       createHistoryLayout(): any{
-           var self = this;
-           var inputYm = $('#INP_001').val();
-           //check YM
-           if(!nts.uk.time.parseYearMonth(inputYm).success){
-               alert(nts.uk.time.parseYearMonth(inputYm).msg);
-               return false;    
-           }
-           var selectYm = self.startYmHis();
-           inputYm = inputYm.replace('/','');
-           if(+inputYm < +selectYm
-             || + inputYm == +selectYm){
-              alert('履歴の期間が正しくありません。');
-               return false;
-           }
-           else{
-                self.createData();
-               if(self.isRadioCheck() === 1){
-                    self.createlayout().checkContinue = true;
+            if(self.inp_003() <= self.startDateLast()){
+                alert("");    
+                return;
+            }
+            else {
+                if(self.startDateLast()!=''&& self.startDateLast()!= null) {
+                    var check = self.selectedId();
                 }else{
-                    self.createlayout().checkContinue = false; 
+                    var check = 2;
                 }
-               service.createLayoutHistory(self.createlayout()).done(function(){
-                   //alert("追加しました。"); 
-                   nts.uk.ui.windows.close();   
-               }).fail(function(res){
-                   alert(res);
-                   nts.uk.ui.windows.close();
-               })
-           }
-       }
-       createData(): any{
-           var self = this;
-           var start = +$('#INP_001').val().replace('/','');
-           
-           self.createlayout({
-               checkContinue: false,
-               stmtCode: self.selectStmtCode(),
-               startYm: start,
-               endYm: start,
-               startPrevious: self.startYmHis(),
-               layoutAtr: 3,
-               stmtName: ""
-          });
-       }
-        closeDialog(): any{
-            nts.uk.ui.windows.close();   
+                nts.uk.ui.windows.setShared('startNew',self.inp_003());
+                nts.uk.ui.windows.setShared('copy_c',check);
+                nts.uk.ui.windows.close();
+            }
         }
+        
+         startPage(): JQueryPromise<any> {
+            var self = this;
+            var dfd = $.Deferred();
+            self.historyId(nts.uk.ui.windows.getShared('Id_13'));
+            self.startDateLast(nts.uk.ui.windows.getShared('startLast'));
+            self.endDateUpdate(nts.uk.ui.windows.getShared('endUpdate'));
+
+            if(self.startDateLast() !='' && self.startDateLast()!= null){
+                self.itemList = ko.observableArray([
+                    new BoxModel(1, '最新の履歴（'+self.startDateLast()+'）から引き継ぐ  '),
+                    new BoxModel(2, '全員参照不可')
+                ]);
+            }
+            else {
+                self.itemList = ko.observableArray([
+                    new BoxModel(1, '全員参照不可')
+                ]);
+            }                
+
+            dfd.resolve();
+            return dfd.promise();                    
+        }
+        
+        
     }
+
+     export class Labels{
+        constraint: string =  'LayoutCode';
+        inline: KnockoutObservable<boolean>;
+        required: KnockoutObservable<boolean>;
+        enable: KnockoutObservable<boolean>;
     
-        /**
-     * Class Item model.
-     */
-    export class ItemModel {
-        stt: string;
-        printType: string;
-        paperType: string;
-        direction: string;
-        numberPeople: string;
-        numberDisplayItems: string;
-        reference: string;
-        
-        
-        constructor(stt: string,printType: string, paperType: string, direction: string, numberPeople: string, numberDisplayItems: string, reference: string) {
-            this.stt = stt;
-            this.printType = printType;
-            this.paperType = paperType;
-            this.direction = direction;
-            this.numberPeople = numberPeople;
-            this.numberDisplayItems = numberDisplayItems;
-            this.reference = reference;
-        }
+        constructor() {
+            var self = this;
+            self.inline = ko.observable(true);
+            self.required = ko.observable(true);
+            self.enable = ko.observable(true);
+        }    
     }
-    
-    export class ItemCombobox{
-        layoutCode: string;
-        layoutName: string;
+
+    export class BoxModel{
+        id: number;
+        name: string;
+        constructor(id, name){
+            var self = this;
+            self.id = id;
+            self.name = name;
+        }    
+    }    
         
-        constructor(layoutCode: string, layoutName: string){
-            this.layoutCode = layoutCode;
-            this.layoutName = layoutName;    
-        }
-    }
+
 }

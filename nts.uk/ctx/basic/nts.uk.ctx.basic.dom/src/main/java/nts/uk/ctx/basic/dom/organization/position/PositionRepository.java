@@ -38,6 +38,6 @@ public interface PositionRepository {
 	Optional<JobHistory> findSingleHistory(String companyCode, String historyId);
 
 	List<JobTitle> findAll(String companyCode);
-
+	Optional<JobHistory> getHistoryByEdate(String companyCode, String endDate);
 
 	}

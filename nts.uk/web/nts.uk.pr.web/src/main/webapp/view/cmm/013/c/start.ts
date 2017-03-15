@@ -1,9 +1,8 @@
-__viewContext.ready(function () {
-    var screenModel = new cmm013.c.viewmodel.ScreenModel();
-    var vm = screenModel;
-    
-    screenModel.start().done(function() {
+module cmm013.c {
+    __viewContext.ready(function() {
+        var screenModel = new viewmodel.ScreenModel();
+        screenModel.startPage().done(function() {
             __viewContext.bind(screenModel);
         });
-    //this.bind(vm);
-});
+    });
+}

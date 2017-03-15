@@ -1,11 +1,14 @@
 package nts.uk.ctx.basic.infra.repository.organization.position;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
 
+import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.basic.dom.organization.position.JobCode;
 import nts.uk.ctx.basic.dom.organization.position.JobHistory;
 import nts.uk.ctx.basic.dom.organization.position.JobTitle;
@@ -24,6 +27,8 @@ public class JpaPositionRepository extends JpaRepository implements PositionRepo
 	private static final String FIND_SINGLE_HISTORY;
 	private static final String FIND_SINGLE;
 	private static final String SELECT_ALL;
+	private static final String SELECT_HISTORY_BY_END_DATE;
+	
 
 	static {
 		StringBuilder builderString = new StringBuilder();
@@ -59,6 +64,15 @@ public class JpaPositionRepository extends JpaRepository implements PositionRepo
 		builderString.append(" WHERE e.cmnmtJobTitlePK.companyCode = :companyCode");
 		builderString.append(" AND e.cmnmtJobTitlePK.historyID = :historyID");
 		FIND_SINGLE_HISTORY = builderString.toString();
+		
+		builderString = new StringBuilder();
+		builderString.append("SELECT e");
+		builderString.append(" FROM CmnmtJobHist e");
+		builderString.append(" WHERE e.cmnmtJobHistPK.companyCode = :companyCode");
+		builderString.append(" AND e.endDate = :endDate");
+		SELECT_HISTORY_BY_END_DATE = builderString.toString();
+		
+		
 
 	}
 
@@ -221,6 +235,27 @@ public class JpaPositionRepository extends JpaRepository implements PositionRepo
 				.getSingle().map(e -> {
 					return Optional.of(convertToDomain2(e));
 				}).orElse(Optional.empty());
+	}
+	
+	private static JobHistory toDomainHist(CmnmtJobHist entity) {
+		val domain = JobHistory.createFromJavaType(
+				entity.cmnmtJobHistPK.companyCode,
+				entity.cmnmtJobHistPK.historyId,
+				entity.startDate,
+				entity.endDate
+				);
+		return domain;
+	}
+	@Override
+	public Optional<JobHistory> getHistoryByEdate(String companyCode, String endDate) {
+		GeneralDate sDate = GeneralDate.localDate(LocalDate.parse(endDate));
+		GeneralDate eDate = sDate.addDays(-1);
+		return this.queryProxy().query(SELECT_HISTORY_BY_END_DATE, CmnmtJobHist.class)
+				.setParameter("companyCode", companyCode)
+				.setParameter("endDate", eDate)
+				.getSingle(c->toDomainHist(c));
+				
+		
 	}
 
 	// @Override

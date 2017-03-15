@@ -15,9 +15,9 @@ public class JobHistFinder {
 
 	@Inject
 	private PositionRepository repository;
-		
+	String companyCode = AppContexts.user().companyCode();
 	public List<JobHistDto> init() {
-		String companyCode = AppContexts.user().companyCode();
+		
 		return repository.getAllHistory(companyCode).stream().map(e -> {
 			return convertToDto(e);
 		}).collect(Collectors.toList());
@@ -31,5 +31,5 @@ public class JobHistFinder {
 		positionHisDto.setEndDate(e.getEndDate());
 		return positionHisDto;
 	}
-	
+
 }

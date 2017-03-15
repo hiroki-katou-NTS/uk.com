@@ -7,26 +7,27 @@
 .fix-button {
 	min-width: 75px;
 }
-#btn_005 {
+#BTN_005_DEL {
+	margin-left: 150px;
+}
+#BTN_004 {
 	margin-left: 150px;
 }
 
-#btn_007 {
-	margin-left: 50px;
-}
-#left-content {
-	margin-left: 20px;
-	margin-top:	20px;
-	padding: 20px;
-	float: left;
-	min-height: 550px;
-}
 #right-content {
 	margin-left: 40px;
 	float: left;
 	min-height: 550px;
 	margin-top: 20px;
 	
+}
+
+
+.lst_003 {
+	margin-top:10px;
+	display: inline-block;
+	height: 185px;
+	overflow-y: scroll;
 }
 .ntsRadioBox {
     width: 100%;
@@ -44,13 +45,7 @@
 .inp_004 {
 	padding-bottom: 20px;
 	padding-top: 20px;
-	
-}
-.lst_003 {
-	margin-top:10px;
-	display: inline-block;
-	height: 185px;
-	overflow-y: scroll;
+
 }
 .line {
 	display: inline-block;
@@ -62,4 +57,16 @@
 .row {
 	border: 1px solid #aaa;
 	padding: 2px;
+}
+
+
+#BTN_007_D {
+	margin-left: 50px;
+}
+#left-content {
+	margin-left: 20px;
+	margin-top:	20px;
+	padding: 20px;
+	float: left;
+	min-height: 550px;
 }

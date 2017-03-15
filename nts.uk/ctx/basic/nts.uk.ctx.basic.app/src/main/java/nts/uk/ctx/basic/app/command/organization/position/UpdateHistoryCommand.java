@@ -21,5 +21,6 @@ public class UpdateHistoryCommand {
 
 	private GeneralDate startDate; 
 	
+	private GeneralDate oldStartDate;
 
 }

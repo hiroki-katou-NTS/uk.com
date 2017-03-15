@@ -1,18 +1,12 @@
-var cmm013;
-(function (cmm013) {
-    var test;
-    (function (test) {
-        var viewmodel;
-        (function (viewmodel) {
-            var start;
-            (function (start) {
-                __viewContext.ready(function () {
-                    var screenModel = new viewmodel.ScreenModel();
-                    screenModel.startPage().done(function () {
-                        __viewContext.bind(screenModel);
-                    });
-                });
-            })(start = viewmodel.start || (viewmodel.start = {}));
-        })(viewmodel = test.viewmodel || (test.viewmodel = {}));
-    })(test = cmm013.test || (cmm013.test = {}));
-})(cmm013 || (cmm013 = {}));
+var cmmhoa013;
+(function (cmmhoa013) {
+    var a;
+    (function (a) {
+        __viewContext.ready(function () {
+            var screenModel = new a.viewmodel.ScreenModel();
+            screenModel.startPage().done(function () {
+                __viewContext.bind(screenModel);
+            });
+        });
+    })(a = cmmhoa013.a || (cmmhoa013.a = {}));
+})(cmmhoa013 || (cmmhoa013 = {}));

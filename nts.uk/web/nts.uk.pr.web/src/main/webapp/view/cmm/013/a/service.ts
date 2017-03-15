@@ -1,18 +1,21 @@
+
 module cmm013.a.service {
     var paths = {
         findAllPosition: "basic/position/findallposition/",
         addPosition: "basic/position/addPosition",
         deletePosition: "basic/position/deletePosition",
         updatePosition: "basic/position/updatePosition",
-        getAllHistory: "basic/position/getallhist"
-        
-    /**
-     * get all Position
-     */
+        getAllHistory: "basic/position/getallhist",
+        addHist: "basic/organization/position/addHist",
+        updateHist: "basic/organization/position/updateHist",
+        deleteHist: "basic/organization/position/deleteHist",
+        findAllPosition2: "basic/position/findall"
+
+
     }
     export function findAllPosition(historyId: string): JQueryPromise<Array<any>> {
         var dfd = $.Deferred<Array<any>>();
-        nts.uk.request.ajax("com",paths.findAllPosition + historyId)
+        nts.uk.request.ajax("com", paths.findAllPosition + historyId)
             .done(function(res: Array<any>) {
                 dfd.resolve(res);
             })
@@ -21,29 +24,35 @@ module cmm013.a.service {
             })
         return dfd.promise();
     }
-    
-    /**
-     * add Position
-     */
-    
-    export function addPosition(position: model.DeletePositionCommand){
+
+    export function findAllPosition2(): JQueryPromise<Array<any>> {
         var dfd = $.Deferred<Array<any>>();
-        nts.uk.request.ajax("com",paths.addPosition, position)
-            .done(function(res: any){
-                dfd.resolve(res);    
-            })    
-            .fail(function(res){
+        nts.uk.request.ajax("com", paths.findAllPosition2)
+            .done(function(res: Array<any>) {
+                dfd.resolve(res);
+            })
+            .fail(function(res) {
                 dfd.reject(res);
             })
         return dfd.promise();
-     }
+    }
 
-    /**
-     * update Position
-     */
-
-    export function updatePosition(position: model.ListPositionDto) {
+    export function addPosition(position: viewmodel.model.ListPositionDto) {
         var dfd = $.Deferred<Array<any>>();
+        nts.uk.request.ajax("com", paths.addPosition, position)
+            .done(function(res: any) {
+                dfd.resolve(res);
+            })
+            .fail(function(res) {
+                dfd.reject(res);
+            })
+        return dfd.promise();
+    }
+
+
+
+    export function updatePosition(position: viewmodel.model.ListPositionDto) {
+        let dfd = $.Deferred();
         nts.uk.request.ajax("com", paths.updatePosition, position).done(
             function(res: any) {
                 dfd.resolve(res);
@@ -60,7 +69,7 @@ module cmm013.a.service {
     * delete Position
     */
 
-    export function deletePosition(position: model.DeletePositionCommand) {
+    export function deletePosition(position: viewmodel.model.DeletePositionCommand) {
         var dfd = $.Deferred<Array<any>>();
         nts.uk.request.ajax("com", paths.deletePosition, position).done(
             function(res: any) {
@@ -72,13 +81,13 @@ module cmm013.a.service {
             })
         return dfd.promise();
     }
-    
-     /**
-     * get all history
-     */
-    export function getAllHistory():JQueryPromise<Array<any>> {
+
+    /**
+    * get all history
+    */
+    export function getAllHistory(): JQueryPromise<Array<any>> {
         var dfd = $.Deferred<Array<any>>();
-        nts.uk.request.ajax("com",paths.getAllHistory)
+        nts.uk.request.ajax("com", paths.getAllHistory)
             .done(function(res: Array<any>) {
                 dfd.resolve(res);
             })
@@ -88,45 +97,41 @@ module cmm013.a.service {
         return dfd.promise();
     }
 
-    //model
-    export module model {
-        
-       export class ListHistoryDto{
-           startDate: string;
-           endDate: string;
-           historyId: string;
-           constructor(startDate: string, endDate: string, historyId: string){
-               var self = this;
-               self.startDate = startDate;
-               self.endDate = endDate;
-               self.historyId = historyId;
-           }    
-       }
-        
-       export class ListPositionDto {
-            jobCode: string;
-            jobName: string;
-            presenceCheckScopeSet: number;
-            memo: string;
-           historyId: string;
-            constructor(code: string, name: string, presenceCheckScopeSet: number,memo: string, historyId: string) {
-                var self = this;
-                self.jobCode = code;
-                self.jobName = name;
-                self.presenceCheckScopeSet = presenceCheckScopeSet;
-                self.memo = memo;
-                self.historyId = historyId;
-            }
-        }
-        
-        export class DeletePositionCommand {
-            jobCode: string;
-            historyId: string
-            constructor(jobCode: string,historyId: string) {
-                this.jobCode = jobCode;
-                this.historyId = historyId;
-            }
 
-        }
-    }
+
+      export function addJobHist(jobHist: viewmodel.model.ListHistoryDto){
+        var dfd = $.Deferred<Array<any>>();
+        nts.uk.request.ajax("com",paths.addHist, jobHist)
+            .done(function(res: any){
+                dfd.resolve(res);    
+            })    
+            .fail(function(res){
+                dfd.reject(res);
+            })
+        return dfd.promise();
+     }
+    
+    export function updateJobHist(jobHist: viewmodel.model.ListHistoryDto){
+        var dfd = $.Deferred<Array<any>>();
+        nts.uk.request.ajax("com",paths.updateHist, jobHist)
+            .done(function(res: any){
+                dfd.resolve(res);    
+            })    
+            .fail(function(res){
+                dfd.reject(res);
+            })
+        return dfd.promise();
+     }
+
+    export function deleteJobHist(jobHist:viewmodel.model.ListHistoryDto){
+        var dfd = $.Deferred<Array<any>>();
+        nts.uk.request.ajax("com",paths.deleteHist, jobHist)
+            .done(function(res: any){
+                dfd.resolve(res);    
+            })    
+            .fail(function(res){
+                dfd.reject(res);
+            })
+        return dfd.promise();
+     }
 }

@@ -9,7 +9,11 @@ var cmm013;
                 addPosition: "basic/position/addPosition",
                 deletePosition: "basic/position/deletePosition",
                 updatePosition: "basic/position/updatePosition",
-                getAllHistory: "basic/position/getallhist"
+                getAllHistory: "basic/position/getallhist",
+                addHist: "basic/organization/position/addHist",
+                updateHist: "basic/organization/position/updateHist",
+                deleteHist: "basic/organization/position/deleteHist",
+                findAllPosition2: "basic/position/findall"
             };
             function findAllPosition(historyId) {
                 var dfd = $.Deferred();
@@ -23,9 +27,18 @@ var cmm013;
                 return dfd.promise();
             }
             service.findAllPosition = findAllPosition;
-            /**
-             * add Position
-             */
+            function findAllPosition2() {
+                var dfd = $.Deferred();
+                nts.uk.request.ajax("com", paths.findAllPosition2)
+                    .done(function (res) {
+                    dfd.resolve(res);
+                })
+                    .fail(function (res) {
+                    dfd.reject(res);
+                });
+                return dfd.promise();
+            }
+            service.findAllPosition2 = findAllPosition2;
             function addPosition(position) {
                 var dfd = $.Deferred();
                 nts.uk.request.ajax("com", paths.addPosition, position)
@@ -38,9 +51,6 @@ var cmm013;
                 return dfd.promise();
             }
             service.addPosition = addPosition;
-            /**
-             * update Position
-             */
             function updatePosition(position) {
                 var dfd = $.Deferred();
                 nts.uk.request.ajax("com", paths.updatePosition, position).done(function (res) {
@@ -81,40 +91,42 @@ var cmm013;
                 return dfd.promise();
             }
             service.getAllHistory = getAllHistory;
-            //model
-            var model;
-            (function (model) {
-                var ListHistoryDto = (function () {
-                    function ListHistoryDto(startDate, endDate, historyId) {
-                        var self = this;
-                        self.startDate = startDate;
-                        self.endDate = endDate;
-                        self.historyId = historyId;
-                    }
-                    return ListHistoryDto;
-                }());
-                model.ListHistoryDto = ListHistoryDto;
-                var ListPositionDto = (function () {
-                    function ListPositionDto(code, name, presenceCheckScopeSet, memo, historyId) {
-                        var self = this;
-                        self.jobCode = code;
-                        self.jobName = name;
-                        self.presenceCheckScopeSet = presenceCheckScopeSet;
-                        self.memo = memo;
-                        self.historyId = historyId;
-                    }
-                    return ListPositionDto;
-                }());
-                model.ListPositionDto = ListPositionDto;
-                var DeletePositionCommand = (function () {
-                    function DeletePositionCommand(jobCode, historyId) {
-                        this.jobCode = jobCode;
-                        this.historyId = historyId;
-                    }
-                    return DeletePositionCommand;
-                }());
-                model.DeletePositionCommand = DeletePositionCommand;
-            })(model = service.model || (service.model = {}));
+            function addJobHist(jobHist) {
+                var dfd = $.Deferred();
+                nts.uk.request.ajax("com", paths.addHist, jobHist)
+                    .done(function (res) {
+                    dfd.resolve(res);
+                })
+                    .fail(function (res) {
+                    dfd.reject(res);
+                });
+                return dfd.promise();
+            }
+            service.addJobHist = addJobHist;
+            function updateJobHist(jobHist) {
+                var dfd = $.Deferred();
+                nts.uk.request.ajax("com", paths.updateHist, jobHist)
+                    .done(function (res) {
+                    dfd.resolve(res);
+                })
+                    .fail(function (res) {
+                    dfd.reject(res);
+                });
+                return dfd.promise();
+            }
+            service.updateJobHist = updateJobHist;
+            function deleteJobHist(jobHist) {
+                var dfd = $.Deferred();
+                nts.uk.request.ajax("com", paths.deleteHist, jobHist)
+                    .done(function (res) {
+                    dfd.resolve(res);
+                })
+                    .fail(function (res) {
+                    dfd.reject(res);
+                });
+                return dfd.promise();
+            }
+            service.deleteJobHist = deleteJobHist;
         })(service = a.service || (a.service = {}));
     })(a = cmm013.a || (cmm013.a = {}));
 })(cmm013 || (cmm013 = {}));

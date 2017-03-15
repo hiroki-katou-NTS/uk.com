@@ -1,53 +1,39 @@
-#LBL_007{
-	padding-right: 20px;
-	margin-left: 5px;
-}
-#LBL_005{
-	padding-right: 100px;
-}
-#LBL_002{
-	margin-right: 65px;
-}
-#LBL_003{
-	padding-right: 20px;
-}
-#INP_001{
-	width: 70px !important;	
-	padding-left: 0px !important;
-}
-.inlineInfor{
-	display: flex;
+@CHARSET "UTF-8";
+
+.separate-button {
+	margin-left: 10px;
+	margin-top:	5px;
 }
 
-#SEL_001{
-	margin-left: 20px;
-	margin-top: 5px;
-	width: 270px;
-}
-.label009{
-	margin-left: 150px;
-}
-
-.bottomStype{
-	margin-top: 20px;
-	margin-left: 350px;
-}
-#BTN_001{
-	margin-right: 20px;
-
+.header {
+	margin: 5px;
+	padding:5px;
+	border-bottom: 1px solid #aaa;
+	height: 30px;
+	width: 100%;
 }
 
-.lstBox{
-	border: 2px solid gray;
-    margin-left: 150px;
-    padding-top: 5px;
-    width: 750px;
-    height: 205px;
-    margin-top: 10px;
+.body {
+	padding:10px;
 }
-#header{
-	display: none;
+.row {
+	padding:10px;
 }
-.timeInput{
-	display: flex;
+#lbl_003 {
+	float: right;
+	margin-left: 10px;
 }
+#inp_001 {
+	float: left;
+}
+.div {
+	border-top: 1px solid #aaa;
+	height: 70px;
+	margin-top: 10px;
+	padding-top: 15px;
+}
+#btn_001 {
+	margin-left: 100px;
+	padding-bottom: 10px;
+}
+

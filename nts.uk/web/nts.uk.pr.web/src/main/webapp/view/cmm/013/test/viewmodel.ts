@@ -1,7 +1,7 @@
-module cmm013.test.viewmodel {
+module cmmhoa013.a.viewmodel {
 
     export class ScreenModel {
-        
+        //A_label_x
         label_002: KnockoutObservable<Labels>;
         label_003: KnockoutObservable<Labels>;
         label_004: KnockoutObservable<Labels>;
@@ -9,13 +9,10 @@ module cmm013.test.viewmodel {
         label_006: KnockoutObservable<Labels>;
         test: KnockoutObservable<string>;
         
-        radiobox: KnockoutObservable<RadioBox>;
-        radiobox_2: KnockoutObservable<RadioBox2>;
-        
+        //A_inp_x
         inp_002: KnockoutObservable<string>;
         inp_002_enable: KnockoutObservable<boolean>;
         inp_003: KnockoutObservable<string>;
-        inp_004: KnockoutObservable<TextEditor_3>;
         inp_005: KnockoutObservable<string>;
         
         sel_0021: KnockoutObservable<SwitchButton>;
@@ -23,40 +20,52 @@ module cmm013.test.viewmodel {
         sel_0023: KnockoutObservable<SwitchButton>;
         sel_0024: KnockoutObservable<SwitchButton>;
         
-        listbox: KnockoutObservableArray<model.ListHistoryDto>;
+        //A_lst_001 - list history
+        listbox: KnockoutObservableArray<service.model.JobHistDto>;
         itemName: KnockoutObservable<string>;
         selectedCode: KnockoutObservable<any>
         isEnable: KnockoutObservable<boolean>;
-        itemHist: KnockoutObservable<model.ListHistoryDto>;        
-        index_selected: KnockoutObservable<any>;
+        itemHist: KnockoutObservable<service.model.JobHistDto>;
+        index_selected: KnockoutObservable<string>;
         
+        //lst_002 - list position 
         currentCode: KnockoutObservable<any>;        
-        dataSource: KnockoutObservableArray<model.ListPositionDto>;
-        columns: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
-        
-        
-        
+        dataSource: KnockoutObservableArray<service.model.ListPositionDto>;
+        columns: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;       
+                
         currentCodeList: KnockoutObservableArray<any>;
-        currentItem: KnockoutObservable<model.ListPositionDto>;
+        currentItem: KnockoutObservable<service.model.ListPositionDto>;
         index_of_itemDelete: any;
         
+        //A_SEL_001
         itemList: KnockoutObservableArray<any>;
-        selectedId: KnockoutObservable<any>;
+        selectedId: KnockoutObservable<number>;
         enable: KnockoutObservable<boolean>;
+        
+        //A_BTN_006
+        startDateLast: KnockoutObservable<string>;
+        historyIdLast: KnockoutObservable<string>;
+        length: KnockoutObservable<number>;
+        startDateAddNew: KnockoutObservable<string>;
+        //A_BTN_007
+        startDateUpdate: KnockoutObservable<string>;
+        endDateUpdate: KnockoutObservable<string>;
+        historyIdUpdate: KnockoutObservable<string>;
+        startDateUpdateNew: KnockoutObservable<string>;
+        startDatePre: KnockoutObservable<string>;
+        jobHistory: KnockoutObservable<service.model.JobHistDto>;
         constructor() {
             var self = this;
-
+            
             self.label_002 = ko.observable(new Labels());
             self.label_003 = ko.observable(new Labels());
             self.label_004 = ko.observable(new Labels());
             self.label_005 = ko.observable(new Labels());
             self.label_006 = ko.observable(new Labels());
-            self.radiobox = ko.observable(new RadioBox());
             
             self.inp_002 = ko.observable(null);
             self.inp_002_enable = ko.observable(false);
             self.inp_003 = ko.observable(null);
-            self.inp_004 = ko.observable(new TextEditor_3());
             self.inp_005 = ko.observable(null);
             self.sel_0021 = ko.observable(new SwitchButton);
             self.sel_0022 = ko.observable(new SwitchButton);
@@ -64,20 +73,31 @@ module cmm013.test.viewmodel {
             self.sel_0024 = ko.observable(new SwitchButton);
             self.test = ko.observable('2');
             
-            
+            //lst_001
             self.listbox = ko.observableArray([]);
-            self.selectedCode = ko.observable(null); 
+            self.selectedCode = ko.observable(''); 
             self.isEnable = ko.observable(true);    
             self.itemHist = ko.observable(null);
             self.itemName = ko.observable('');
             self.index_selected = ko.observable('');
             
-          
+            //A_BTN_006
+            self.startDateLast = ko.observable(null);
+            self.historyIdLast = ko.observable(null);
+            self.length = ko.observable(0);
+            self.startDateAddNew = ko.observable("");
+            //A_BTN_007
+            self.startDateUpdate = ko.observable(null);
+            self.endDateUpdate = ko.observable(null);
+            self.historyIdUpdate = ko.observable(null);
+            self.startDateUpdateNew = ko.observable(null);
+            self.startDatePre = ko.observable(null);
+            self.jobHistory = ko.observable(null);
+            //lst_002
             self.dataSource = ko.observableArray([]);
             self.currentItem = ko.observable(null);
             self.itemName = ko.observable('');
             self.currentCode = ko.observable();           
-            //self.multilineeditor = ko.observable(null);           
             self.currentCodeList = ko.observableArray([]);
             self.columns = ko.observableArray([
                 { headerText: 'コード', key: 'jobCode', width: 80 },
@@ -85,171 +105,224 @@ module cmm013.test.viewmodel {
 
             ]);
             
+            //A_SEL_001
             self.itemList = ko.observableArray([
                 new BoxModel(0, '全員参照可能'),
                 new BoxModel(1, '全員参照不可'),
                 new BoxModel(2, 'ロール毎に設定')
             ]);
+            self.selectedId = ko.observable(0);
+            self.enable = ko.observable(true);
+            /**
+             * get job history selected
+             */
             self.selectedCode.subscribe((function(codeChanged){
-                self.itemHist(self.findHist(codeChanged));
-                if (self.itemHist() != null) {
+            self.itemHist(self.findHist(codeChanged));
+            if (self.itemHist() != null) {
                 self.index_selected(self.itemHist().historyId);
-                    console.log(self.index_selected());
-                   
-                var dfd = $.Deferred();
-                service.findAllPosition(self.index_selected())
-                    .done(function(position_arr: Array<model.ListPositionDto>) {
-                        self.dataSource(position_arr);
-                        self.currentCode(self.dataSource()[0].jobCode);
-                        self.inp_002(self.dataSource()[0].jobCode);
-                        self.inp_003(self.dataSource()[0].jobName);
-                        self.inp_005(self.dataSource()[0].memo);
-                        self.selectedId(self.dataSource()[0].presenceCheckScopeSet);
-
-                    }).fail(function(error){
-                        alert(error.message);
-
-                })
-                dfd.resolve();
-                return dfd.promise();
-                }           
-            }));
-            
-            self.currentCode.subscribe((function(codeChanged) {
-                self.currentItem(self.findPosition(codeChanged));
-                if (self.currentItem() != null) {
-                    self.inp_002(self.currentItem().jobCode);
-                    self.inp_003(self.currentItem().jobName);
-                    self.inp_005(self.currentItem().memo);
-                    self.selectedId(self.currentItem().presenceCheckScopeSet);
-                }           
-            }));
-
+                self.startDateUpdate(self.itemHist().startDate);
+                self.endDateUpdate(self.itemHist().endDate);
+                self.historyIdUpdate(self.itemHist().historyId);
+             }
+            })); 
         }
-        
+        /**
+         * start page
+         * get all jobHist
+         * jobHist entity: open dialog C (add job history)
+         */
+        startPage(): JQueryPromise<any> {
+            var self = this;
+            var dfd = $.Deferred();
+            service.getAllHistory().done(function(lstHistory: Array<service.model.JobHistDto>){
+                if(lstHistory === undefined || lstHistory.length === 0){
+                    self.openCDialog();
+                }else{
+                self.listbox(lstHistory);
 
+                var historyFirst = _.first(lstHistory);
+                self.selectedCode(historyFirst.startDate);
+                self.startDateUpdate(historyFirst.startDate);
+                self.endDateUpdate(historyFirst.endDate);
+                self.historyIdUpdate(historyFirst.historyId);
+                self.startDateLast(historyFirst.startDate);
+                self.historyIdLast(historyFirst.historyId);
+                dfd.resolve(lstHistory);
+                    }
+            })                      
+            return dfd.promise();           
+        }
+
+     
+        //delete position is selected
+        deletePosition() {
+            alert("vui vai");
+        }
+        // register position without change history
+        //1. check xem co can phai them ls hoac thay doi lich su hay ko
+        //2. check la them hay sua title
+        registerPosition(): any {
+
+            var self = this;
+            var dfd = $.Deferred<any>();
+            /**
+             * add job history
+             */
+            alert('bat dau xu ly register');
+            self.startDateAddNew(nts.uk.ui.windows.getShared('cmm013C_startDateNew'));
+            self.startDateUpdateNew(nts.uk.ui.windows.getShared('cmm013D_startDateUpdateNew'));
+            var checkUpdate = nts.uk.ui.windows.getShared('cmm013D_check');
+            var checkAddHist = nts.uk.ui.windows.getShared('cmm013C_copy');
+            //check add job history
+            if(self.startDateAddNew() == null||self.startDateAddNew() === undefined){
+                //check update job history
+                if(self.startDateUpdateNew() == null || self.startDateUpdateNew()==''){
+                    if(checkUpdate==1){
+                        var jobHistDelete = new service.model.JobHistDto(self.startDateUpdate(),'',self.endDateUpdate(),self.historyIdUpdate());
+                        var dfd = $.Deferred<any>();
+                        service.deleteJobHist(jobHistDelete).done(function(res){
+                            alert('xoa thanh cong');
+                            checkUpdate==0;
+                            self.getAllJobHistAfterHandler();
+                        }).fail(function(res){
+                            dfd.reject(res);
+                        })
+                    }else 
+                        return;    
+                }
+                else{
+                    //update job history (update start date of jobHist current and update end date of jobHist previous)
+                    var jobHistUpdateSdate = new service.model.JobHistDto(self.startDateUpdate(),self.startDateUpdateNew(),self.endDateUpdate(),self.historyIdUpdate());
+                    self.updateStartDate(jobHistUpdateSdate);
+                    self.getAllJobHistAfterHandler();
+                        
+                }
+            }
+            else {     
+                //add job history        
+                if(self.listbox() ===undefined || self.listbox()==null|| self.listbox.length ==0){
+                    //add lan dau   
+                    var jobHistNew = new service.model.JobHistDto('1',self.startDateAddNew(),'','');
+                }else{
+                    //add lan n
+                    var jobHistNew = new service.model.JobHistDto('0',self.startDateAddNew(),'','');
+                }
+                service.addJobHist(jobHistNew).done(function() {
+                    self.getAllJobHistAfterHandler();
+                    alert('add thanh cong');
+                    }).fail(function(res) {
+                        alert('fail');
+                        dfd.reject(res);
+                    })
+                //update endDate after add job history new
+                var jobHist = new service.model.JobHistDto('1',self.startDateLast(),self.startDateAddNew(),self.historyIdLast());
+                self.updateEndDate(jobHist);
+                self.getAllJobHistAfterHandler();
+            }          
+
+            dfd.resolve();
+            return dfd.promise();
+        }
+        /**
+         * update end date of job history before job history new
+         */
+        updateEndDate(jobHist: service.model.JobHistDto){
+            var self = this;
+            var dfd = $.Deferred<any>();
+            service.updateJobHist(jobHist).done(function(){
+                self.startDateUpdateNew(null);
+                self.startDateAddNew(null);
+                console.log('update successful');
+                self.getAllJobHistAfterHandler();
+            }).fail(function(res){
+                dfd.reject(res);    
+            })
+        }
+         /**
+         * update start date of job history before job history new
+         */
+        updateStartDate(jobHist: service.model.JobHistDto){
+            var self = this;
+            var dfd = $.Deferred<any>();
+            service.updateJobHist(jobHist).done(function(){
+                self.getAllJobHistAfterHandler();
+            }).fail(function(res){
+                dfd.reject(res);    
+            })
+        }
+
+        /**
+         * find job history is selected
+         */
         findHist(value: string): any {
             let self = this;
             var itemModel = null;
-            _.find(self.listbox(), function(obj: viewmodel.model.ListHistoryDto) {
+            _.find(self.listbox(), function(obj: service.model.historyDto) {
                 if (obj.startDate == value) {
                     itemModel = obj;
                 }
             })
             return itemModel;
         }
-        
-
-        findPosition(value: string): any {
-            let self = this;
-            var itemModel = null;
-            _.find(self.dataSource(), function(obj: viewmodel.model.ListPositionDto) {
-                if (obj.jobCode == value) {
-                    itemModel = obj;
-                }
-            })
-            return itemModel;
-        }
-         deletePosition() {
+        getAllJobHistAfterHandler(): any{
             var self = this;
             var dfd = $.Deferred<any>();
-            var item = new model.DeletePositionCommand(self.currentItem().jobCode,self.currentItem().jobName);
-            console.log(self.currentItem().presenceCheckScopeSet);
-            self.index_of_itemDelete = self.dataSource().indexOf(self.currentItem());
-            console.log(self.index_of_itemDelete);
-            service.deletePosition(item).done(function(res) {
-               self.getPositionList_aftefDelete();
-            }).fail(function(res) {
-                dfd.reject(res);
-            })
+            self.selectedCode('');
+            self.listbox([]);
+            service.getAllHistory().done(function(lstHistory: Array<service.model.JobHistDto>){
+                if(lstHistory === undefined || lstHistory.length === 0)
+                    return;
+                self.listbox(lstHistory);
+                _.forEach(lstHistory, function(strHistory){
+                    self.listbox.push(strHistory);
+                })
+                var historyFirst = _.first(lstHistory);
+                self.selectedCode(historyFirst.startDate);
+                self.startDateUpdate(historyFirst.startDate);
+                self.endDateUpdate(historyFirst.endDate);
+                self.historyIdUpdate(historyFirst.historyId);
+                self.startDateLast(historyFirst.startDate);
+                self.historyIdLast(historyFirst.historyId);
+                dfd.resolve(lstHistory);
+            })   
+            return dfd.promise();    
         }
         
-        getPositionList_aftefDelete(): any {
+        /**
+         * check input: A_INP_002(jobCode) and A_INP_003(jobName)
+         */
+        checkInput(): boolean {
             var self = this;
-            var dfd = $.Deferred<any>();
-            service.findAllPosition(self.index_selected()).done(function(position_arr: Array<model.ListPositionDto>) {
-                self.dataSource(position_arr);
-                    
-                if (self.dataSource().length > 0) {
-                    if (self.index_of_itemDelete === self.dataSource().length) {
-                        self.currentCode(self.dataSource()[self.index_of_itemDelete - 1].jobCode)
-                        self.inp_002(self.dataSource()[self.index_of_itemDelete - 1].jobCode);
-                        self.inp_003(self.dataSource()[self.index_of_itemDelete - 1].jobName);
-                        self.inp_005(self.dataSource()[self.index_of_itemDelete - 1].memo);
-                    } else {
-                        self.currentCode(self.dataSource()[self.index_of_itemDelete].jobCode)
-                        self.inp_002(self.dataSource()[self.index_of_itemDelete].jobCode);
-                        self.inp_003(self.dataSource()[self.index_of_itemDelete].jobName);
-                        self.inp_005(self.dataSource()[self.index_of_itemDelete].memo);
-                    }
-
-                } else {
-                   // self.initRegisterPosition();
-                }
-
-                dfd.resolve();
-            }).fail(function(error) {
-                alert(error.message);
-            })
-            dfd.resolve();
-            return dfd.promise();
-
+            if (self.inp_002() == '' || self.inp_003() == '') {
+                alert("nhap day du thong tin");
+                return false;
+            } else {
+                return true;
+            }
         }
         
-        getPositionList(): any {
-            var self = this;
-            var dfd = $.Deferred<any>();
-            service.findAllPosition(self.index_selected()).done(function(position_arr: Array<model.ListPositionDto>) {
-                self.dataSource(position_arr);
-                self.inp_002(self.dataSource()[0].jobCode);
-                self.inp_003(self.dataSource()[0].jobName);
-                self.inp_005(self.dataSource()[0].memo);
-                if (self.dataSource().length > 1) {
-                    self.currentCode(self.dataSource()[0].jobCode)
-                }
-
-                dfd.resolve();
-            }).fail(function(error) {
-                alert(error.message);
-            })
-            dfd.resolve();
-            return dfd.promise();
-
-        }
-        startPage(): JQueryPromise<any> {
-            var self = this;
-            var dfd = $.Deferred<any>();
-
-            service.getAllHistory().done(function(history_arr: Array<model.ListHistoryDto>){
-                self.listbox(history_arr);    
-                self.selectedCode=ko.observable(self.listbox()[0].startDate);            
-            }).fail(function(error) {
-               alert(error.message);
-
-            })            
-                dfd.resolve();
-                return dfd.promise();
-           
-
-
-        }
-        
-        //phai lam getshare
-
-        openBDialog() {
-            nts.uk.ui.windows.sub.modal('/view/cmm/013/b/index.xhtml', { title: '画面ID：B', });
-        }
+        /**
+         * open sub windows add jobHist(画面ID：C) when click button A_BTN_006 (履歴追加)
+         */
         openCDialog() {
-            nts.uk.ui.windows.sub.modal('/view/cmm/013/c/index.xhtml', { title: '画面ID：c', });
+            var self = this;
+            nts.uk.ui.windows.setShared('CMM013_historyId', self.index_selected());
+            nts.uk.ui.windows.setShared('CMM013_startDateLast',self.startDateLast());
+            nts.uk.ui.windows.sub.modal('/view/cmm/013/c/index.xhtml', { title: '画面ID：C', });
         }
+        
+        /**
+         * open sub windows update jobHist(画面ID：D) when click button A_BTN_007 (履歴編集)
+         */
         openDDialog() {
+            var self = this;
+            console.log(self.endDateUpdate());
+            nts.uk.ui.windows.setShared('CMM013_startDateUpdate', self.startDateUpdate());
+            nts.uk.ui.windows.setShared('CMM013_endDateUpdate', self.endDateUpdate());
             nts.uk.ui.windows.sub.modal('/view/cmm/013/d/index.xhtml', { title: '画面ID：D', });
         }
-         
-        
-        
+    
     }
-
     export class Labels {
         constraint: string = 'LayoutCode';
         inline: KnockoutObservable<boolean>;
@@ -262,37 +335,8 @@ module cmm013.test.viewmodel {
             self.enable = ko.observable(true);
         }
     }
-    class RadioBox {
-        itemList: KnockoutObservableArray<any>;
-        selectedId: KnockoutObservable<number>;
-        enable: KnockoutObservable<boolean>;
-        constructor() {
-            var self = this;
-            self.itemList = ko.observableArray([
-                new BoxModel(1, '全員参照可能'),
-                new BoxModel(2, '全員参照不可'),
-                new BoxModel(3, 'ロール毎に設定')
-            ]);
-            self.selectedId = ko.observable(1);
-            self.enable = ko.observable(true);
-        }
-    }
-    class RadioBox2 {
-        itemList: KnockoutObservableArray<any>;
-        selectedId: KnockoutObservable<number>;
-        enable: KnockoutObservable<boolean>;
-        constructor() {
-            var self = this;
-            self.itemList = ko.observableArray([
-                new BoxModel(1, '対象外'),
-                new BoxModel(2, '看護師'),
-                new BoxModel(3, '準看護師'),
-                new BoxModel(4, '看護補助師')
-            ]);
-            self.selectedId = ko.observable(1);
-            self.enable = ko.observable(true);
-        }
-    }
+
+
    export class BoxModel {
         id: number;
         name: string;
@@ -300,27 +344,6 @@ module cmm013.test.viewmodel {
             var self = this;
             self.id = id;
             self.name = name;
-        }
-    }
-
-
-   export class TextEditor_3 {
-        texteditor: any;
-        constructor() {
-            var self = this;
-            self.texteditor = {
-                value: ko.observable(''),
-                constraint: 'ResidenceCode',
-                option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                    textmode: "text",
-                    placeholder: "",
-                    width: "10px",
-                    textalign: "center"
-                })),
-                required: ko.observable(true),
-                enable: ko.observable(false),
-                readonly: ko.observable(false)
-            };
         }
     }
 
@@ -338,42 +361,5 @@ module cmm013.test.viewmodel {
         }
     }
 
-    export module model {
-        
-       export class ListHistoryDto{
-           startDate: string;
-           endDate: string;
-           historyId: string;
-           constructor(startDate: string, endDate: string, historyId: string){
-               var self = this;
-               self.startDate = startDate;
-               self.endDate = endDate;
-               self.historyId = historyId;
-           }    
-       }
-        
-       export class ListPositionDto {
-            jobCode: string;
-            jobName: string;
-            presenceCheckScopeSet: number;
-            memo: string;
-            constructor(code: string, name: string, presenceCheckScopeSet: number,memo: string) {
-                var self = this;
-                self.jobCode = code;
-                self.jobName = name;
-                self.presenceCheckScopeSet = presenceCheckScopeSet;
-                self.memo = memo;
-            }
-        }
-        
-        export class DeletePositionCommand {
-            jobCode: string;
-            historyId: string
-            constructor(jobCode: string,historyId: string) {
-                this.jobCode = jobCode;
-                this.historyId = historyId;
-            }
 
-        }
-    }
 }

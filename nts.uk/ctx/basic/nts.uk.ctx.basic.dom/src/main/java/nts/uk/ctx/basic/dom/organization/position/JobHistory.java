@@ -1,9 +1,11 @@
 package nts.uk.ctx.basic.dom.organization.position;
 
 import lombok.Getter;
+
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.gul.text.IdentifierUtil;
+
 
 @Getter
 public class JobHistory extends AggregateRoot {
@@ -15,6 +17,7 @@ public class JobHistory extends AggregateRoot {
 	private GeneralDate endDate;
 	
 	private GeneralDate startDate;
+	
 	
 	
 	
@@ -42,6 +45,10 @@ public class JobHistory extends AggregateRoot {
 	public static JobHistory createFromJavaType( String companyCode,String historyId,GeneralDate endDate,GeneralDate startDate) {
 		return new JobHistory(companyCode,historyId,endDate,startDate);
 
+	}
+
+	public void setEndDate(GeneralDate endDate) {
+		this.endDate = endDate;
 	}
 
 }

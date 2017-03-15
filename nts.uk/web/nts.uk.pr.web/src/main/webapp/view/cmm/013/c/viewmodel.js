@@ -4,141 +4,78 @@ var cmm013;
     (function (c) {
         var viewmodel;
         (function (viewmodel) {
-            var option = nts.uk.ui.option;
             var ScreenModel = (function () {
-                /**
-                 * Init screen model.
-                 */
                 function ScreenModel() {
                     var self = this;
-                    self.selectLayoutAtr = ko.observable("3");
-                    self.itemList = ko.observableArray([]);
-                    self.isEnable = ko.observable(true);
-                    self.layouts = ko.observableArray([]);
-                    self.selectStmtCode = ko.observable(null);
-                    self.selectStmtName = ko.observable(null);
-                    self.selectStartYm = ko.observable(null);
-                    self.layoutSelect = ko.observable(nts.uk.ui.windows.getShared('stmtCode'));
-                    self.valueSel001 = ko.observable("");
-                    self.createlayout = ko.observable(null);
-                    self.startYmHis = ko.observable(null);
-                    console.log(option);
-                    self.timeEditorOption = ko.mapping.fromJS(new option.TimeEditorOption({ inputFormat: "yearmonth" }));
-                    //---radio
-                    self.itemsRadio = ko.observableArray([
-                        { value: 1, text: ko.observable('最新の履歴（' + self.selectStartYm() + '）から引き継ぐ') },
-                        { value: 2, text: ko.observable('初めから作成する') }
-                    ]);
-                    self.isRadioCheck = ko.observable(1);
+                    self.label_002 = ko.observable(new Labels());
+                    self.inp_003 = ko.observable(null);
+                    self.historyId = ko.observable(null);
+                    self.startDateLast = ko.observable('');
+                    self.endDateUpdate = ko.observable('');
+                    self.selectedId = ko.observable(1);
+                    self.enable = ko.observable(true);
                 }
-                ScreenModel.prototype.start = function () {
+                ScreenModel.prototype.add = function () {
                     var self = this;
-                    var dfd = $.Deferred();
-                    //list data
-                    $('#LST_001').on('selectionChanging', function (event) {
-                        console.log('Selecting value:' + event.originalEvent.detail);
-                    });
-                    $('#LST_001').on('selectionChanged', function (event) {
-                        console.log('Selected value:' + event.originalEvent.detail);
-                    });
-                    //fill data to dialog
-                    c.service.getLayoutWithMaxStartYm().done(function (layout) {
-                        self.layouts(layout);
-                        self.startDialog();
-                    });
-                    dfd.resolve();
-                    // Return.
-                    return dfd.promise();
-                };
-                ScreenModel.prototype.startDialog = function () {
-                    var self = this;
-                    _.forEach(self.layouts(), function (layout) {
-                        var stmtCode = layout.stmtCode;
-                        if (stmtCode == self.layoutSelect()) {
-                            self.selectStmtCode(stmtCode);
-                            self.selectStmtName(layout.stmtName);
-                            self.selectStartYm(nts.uk.time.formatYearMonth(layout.startYm));
-                            self.itemsRadio()[0].text('最新の履歴（' + self.selectStartYm() + '）から引き継ぐ');
-                            self.startYmHis(layout.startYm);
-                            return false;
-                        }
-                    });
-                };
-                ScreenModel.prototype.createHistoryLayout = function () {
-                    var self = this;
-                    var inputYm = $('#INP_001').val();
-                    //check YM
-                    if (!nts.uk.time.parseYearMonth(inputYm).success) {
-                        alert(nts.uk.time.parseYearMonth(inputYm).msg);
-                        return false;
-                    }
-                    var selectYm = self.startYmHis();
-                    inputYm = inputYm.replace('/', '');
-                    if (+inputYm < +selectYm
-                        || +inputYm == +selectYm) {
-                        alert('履歴の期間が正しくありません。');
-                        return false;
+                    if (self.inp_003() <= self.startDateLast()) {
+                        alert("");
+                        return;
                     }
                     else {
-                        self.createData();
-                        if (self.isRadioCheck() === 1) {
-                            self.createlayout().checkContinue = true;
+                        if (self.startDateLast() != '' && self.startDateLast() != null) {
+                            var check = self.selectedId();
                         }
                         else {
-                            self.createlayout().checkContinue = false;
+                            var check = 2;
                         }
-                        c.service.createLayoutHistory(self.createlayout()).done(function () {
-                            //alert("追加しました。"); 
-                            nts.uk.ui.windows.close();
-                        }).fail(function (res) {
-                            alert(res);
-                            nts.uk.ui.windows.close();
-                        });
+                        nts.uk.ui.windows.setShared('startNew', self.inp_003());
+                        nts.uk.ui.windows.setShared('copy_c', check);
+                        nts.uk.ui.windows.close();
                     }
                 };
-                ScreenModel.prototype.createData = function () {
+                ScreenModel.prototype.startPage = function () {
                     var self = this;
-                    var start = +$('#INP_001').val().replace('/', '');
-                    self.createlayout({
-                        checkContinue: false,
-                        stmtCode: self.selectStmtCode(),
-                        startYm: start,
-                        endYm: start,
-                        startPrevious: self.startYmHis(),
-                        layoutAtr: 3,
-                        stmtName: ""
-                    });
-                };
-                ScreenModel.prototype.closeDialog = function () {
-                    nts.uk.ui.windows.close();
+                    var dfd = $.Deferred();
+                    self.historyId(nts.uk.ui.windows.getShared('Id_13'));
+                    self.startDateLast(nts.uk.ui.windows.getShared('startLast'));
+                    self.endDateUpdate(nts.uk.ui.windows.getShared('endUpdate'));
+                    if (self.startDateLast() != '' && self.startDateLast() != null) {
+                        self.itemList = ko.observableArray([
+                            new BoxModel(1, '最新の履歴（' + self.startDateLast() + '）から引き継ぐ  '),
+                            new BoxModel(2, '全員参照不可')
+                        ]);
+                    }
+                    else {
+                        self.itemList = ko.observableArray([
+                            new BoxModel(1, '全員参照不可')
+                        ]);
+                    }
+                    dfd.resolve();
+                    return dfd.promise();
                 };
                 return ScreenModel;
             }());
             viewmodel.ScreenModel = ScreenModel;
-            /**
-         * Class Item model.
-         */
-            var ItemModel = (function () {
-                function ItemModel(stt, printType, paperType, direction, numberPeople, numberDisplayItems, reference) {
-                    this.stt = stt;
-                    this.printType = printType;
-                    this.paperType = paperType;
-                    this.direction = direction;
-                    this.numberPeople = numberPeople;
-                    this.numberDisplayItems = numberDisplayItems;
-                    this.reference = reference;
+            var Labels = (function () {
+                function Labels() {
+                    this.constraint = 'LayoutCode';
+                    var self = this;
+                    self.inline = ko.observable(true);
+                    self.required = ko.observable(true);
+                    self.enable = ko.observable(true);
                 }
-                return ItemModel;
+                return Labels;
             }());
-            viewmodel.ItemModel = ItemModel;
-            var ItemCombobox = (function () {
-                function ItemCombobox(layoutCode, layoutName) {
-                    this.layoutCode = layoutCode;
-                    this.layoutName = layoutName;
+            viewmodel.Labels = Labels;
+            var BoxModel = (function () {
+                function BoxModel(id, name) {
+                    var self = this;
+                    self.id = id;
+                    self.name = name;
                 }
-                return ItemCombobox;
+                return BoxModel;
             }());
-            viewmodel.ItemCombobox = ItemCombobox;
+            viewmodel.BoxModel = BoxModel;
         })(viewmodel = c.viewmodel || (c.viewmodel = {}));
     })(c = cmm013.c || (cmm013.c = {}));
 })(cmm013 || (cmm013 = {}));

@@ -1,7 +1,7 @@
-var cmm013;
-(function (cmm013) {
-    var test;
-    (function (test) {
+var cmmhoa013;
+(function (cmmhoa013) {
+    var a;
+    (function (a) {
         var viewmodel;
         (function (viewmodel) {
             var ScreenModel = (function () {
@@ -12,69 +12,189 @@ var cmm013;
                     self.label_004 = ko.observable(new Labels());
                     self.label_005 = ko.observable(new Labels());
                     self.label_006 = ko.observable(new Labels());
-                    self.radiobox = ko.observable(new RadioBox());
                     self.inp_002 = ko.observable(null);
                     self.inp_002_enable = ko.observable(false);
                     self.inp_003 = ko.observable(null);
-                    self.inp_004 = ko.observable(new TextEditor_3());
                     self.inp_005 = ko.observable(null);
                     self.sel_0021 = ko.observable(new SwitchButton);
                     self.sel_0022 = ko.observable(new SwitchButton);
                     self.sel_0023 = ko.observable(new SwitchButton);
                     self.sel_0024 = ko.observable(new SwitchButton);
                     self.test = ko.observable('2');
+                    //lst_001
                     self.listbox = ko.observableArray([]);
-                    self.selectedCode = ko.observable(null);
+                    self.selectedCode = ko.observable('');
                     self.isEnable = ko.observable(true);
                     self.itemHist = ko.observable(null);
                     self.itemName = ko.observable('');
                     self.index_selected = ko.observable('');
+                    //A_BTN_006
+                    self.startDateLast = ko.observable(null);
+                    self.historyIdLast = ko.observable(null);
+                    self.length = ko.observable(0);
+                    self.startDateAddNew = ko.observable("");
+                    //A_BTN_007
+                    self.startDateUpdate = ko.observable(null);
+                    self.endDateUpdate = ko.observable(null);
+                    self.historyIdUpdate = ko.observable(null);
+                    self.startDateUpdateNew = ko.observable(null);
+                    self.startDatePre = ko.observable(null);
+                    self.jobHistory = ko.observable(null);
+                    //lst_002
                     self.dataSource = ko.observableArray([]);
                     self.currentItem = ko.observable(null);
                     self.itemName = ko.observable('');
                     self.currentCode = ko.observable();
-                    //self.multilineeditor = ko.observable(null);           
                     self.currentCodeList = ko.observableArray([]);
                     self.columns = ko.observableArray([
                         { headerText: 'コード', key: 'jobCode', width: 80 },
                         { headerText: '名称', key: 'jobName', width: 100 }
                     ]);
+                    //A_SEL_001
                     self.itemList = ko.observableArray([
                         new BoxModel(0, '全員参照可能'),
                         new BoxModel(1, '全員参照不可'),
                         new BoxModel(2, 'ロール毎に設定')
                     ]);
+                    self.selectedId = ko.observable(0);
+                    self.enable = ko.observable(true);
+                    /**
+                     * get job history selected
+                     */
                     self.selectedCode.subscribe((function (codeChanged) {
                         self.itemHist(self.findHist(codeChanged));
                         if (self.itemHist() != null) {
                             self.index_selected(self.itemHist().historyId);
-                            console.log(self.index_selected());
-                            var dfd = $.Deferred();
-                            test.service.findAllPosition(self.index_selected())
-                                .done(function (position_arr) {
-                                self.dataSource(position_arr);
-                                self.currentCode(self.dataSource()[0].jobCode);
-                                self.inp_002(self.dataSource()[0].jobCode);
-                                self.inp_003(self.dataSource()[0].jobName);
-                                self.inp_005(self.dataSource()[0].memo);
-                                self.selectedId(self.dataSource()[0].presenceCheckScopeSet);
-                            }).fail(function (error) {
-                                alert(error.message);
-                            });
-                            dfd.resolve();
-                            return dfd.promise();
-                        }
-                    }));
-                    self.currentCode.subscribe((function (codeChanged) {
-                        self.currentItem(self.findPosition(codeChanged));
-                        if (self.currentItem() != null) {
-                            self.inp_002(self.currentItem().jobCode);
-                            self.inp_003(self.currentItem().jobName);
-                            self.inp_005(self.currentItem().memo);
-                            self.selectedId(self.currentItem().presenceCheckScopeSet);
+                            self.startDateUpdate(self.itemHist().startDate);
+                            self.endDateUpdate(self.itemHist().endDate);
+                            self.historyIdUpdate(self.itemHist().historyId);
                         }
                     }));
                 }
+                /**
+                 * start page
+                 * get all jobHist
+                 * jobHist entity: open dialog C (add job history)
+                 */
+                ScreenModel.prototype.startPage = function () {
+                    var self = this;
+                    var dfd = $.Deferred();
+                    a.service.getAllHistory().done(function (lstHistory) {
+                        if (lstHistory === undefined || lstHistory.length === 0) {
+                            self.openCDialog();
+                        }
+                        else {
+                            self.listbox(lstHistory);
+                            var historyFirst = _.first(lstHistory);
+                            self.selectedCode(historyFirst.startDate);
+                            self.startDateUpdate(historyFirst.startDate);
+                            self.endDateUpdate(historyFirst.endDate);
+                            self.historyIdUpdate(historyFirst.historyId);
+                            self.startDateLast(historyFirst.startDate);
+                            self.historyIdLast(historyFirst.historyId);
+                            dfd.resolve(lstHistory);
+                        }
+                    });
+                    return dfd.promise();
+                };
+                //delete position is selected
+                ScreenModel.prototype.deletePosition = function () {
+                    alert("vui vai");
+                };
+                // register position without change history
+                //1. check xem co can phai them ls hoac thay doi lich su hay ko
+                //2. check la them hay sua title
+                ScreenModel.prototype.registerPosition = function () {
+                    var self = this;
+                    var dfd = $.Deferred();
+                    /**
+                     * add job history
+                     */
+                    alert('bat dau xu ly register');
+                    self.startDateAddNew(nts.uk.ui.windows.getShared('cmm013C_startDateNew'));
+                    self.startDateUpdateNew(nts.uk.ui.windows.getShared('cmm013D_startDateUpdateNew'));
+                    var checkUpdate = nts.uk.ui.windows.getShared('cmm013D_check');
+                    var checkAddHist = nts.uk.ui.windows.getShared('cmm013C_copy');
+                    //check add job history
+                    if (self.startDateAddNew() == null || self.startDateAddNew() === undefined) {
+                        //check update job history
+                        if (self.startDateUpdateNew() == null || self.startDateUpdateNew() == '') {
+                            if (checkUpdate == 1) {
+                                var jobHistDelete = new a.service.model.JobHistDto(self.startDateUpdate(), '', self.endDateUpdate(), self.historyIdUpdate());
+                                var dfd = $.Deferred();
+                                a.service.deleteJobHist(jobHistDelete).done(function (res) {
+                                    alert('xoa thanh cong');
+                                    checkUpdate == 0;
+                                    self.getAllJobHistAfterHandler();
+                                }).fail(function (res) {
+                                    dfd.reject(res);
+                                });
+                            }
+                            else
+                                return;
+                        }
+                        else {
+                            //update job history (update start date of jobHist current and update end date of jobHist previous)
+                            var jobHistUpdateSdate = new a.service.model.JobHistDto(self.startDateUpdate(), self.startDateUpdateNew(), self.endDateUpdate(), self.historyIdUpdate());
+                            self.updateStartDate(jobHistUpdateSdate);
+                            self.getAllJobHistAfterHandler();
+                        }
+                    }
+                    else {
+                        //add job history        
+                        if (self.listbox() === undefined || self.listbox() == null || self.listbox.length == 0) {
+                            //add lan dau   
+                            var jobHistNew = new a.service.model.JobHistDto('1', self.startDateAddNew(), '', '');
+                        }
+                        else {
+                            //add lan n
+                            var jobHistNew = new a.service.model.JobHistDto('0', self.startDateAddNew(), '', '');
+                        }
+                        a.service.addJobHist(jobHistNew).done(function () {
+                            self.getAllJobHistAfterHandler();
+                            alert('add thanh cong');
+                        }).fail(function (res) {
+                            alert('fail');
+                            dfd.reject(res);
+                        });
+                        //update endDate after add job history new
+                        var jobHist = new a.service.model.JobHistDto('1', self.startDateLast(), self.startDateAddNew(), self.historyIdLast());
+                        self.updateEndDate(jobHist);
+                        self.getAllJobHistAfterHandler();
+                    }
+                    dfd.resolve();
+                    return dfd.promise();
+                };
+                /**
+                 * update end date of job history before job history new
+                 */
+                ScreenModel.prototype.updateEndDate = function (jobHist) {
+                    var self = this;
+                    var dfd = $.Deferred();
+                    a.service.updateJobHist(jobHist).done(function () {
+                        self.startDateUpdateNew(null);
+                        self.startDateAddNew(null);
+                        console.log('update successful');
+                        self.getAllJobHistAfterHandler();
+                    }).fail(function (res) {
+                        dfd.reject(res);
+                    });
+                };
+                /**
+                * update start date of job history before job history new
+                */
+                ScreenModel.prototype.updateStartDate = function (jobHist) {
+                    var self = this;
+                    var dfd = $.Deferred();
+                    a.service.updateJobHist(jobHist).done(function () {
+                        self.getAllJobHistAfterHandler();
+                    }).fail(function (res) {
+                        dfd.reject(res);
+                    });
+                };
+                /**
+                 * find job history is selected
+                 */
                 ScreenModel.prototype.findHist = function (value) {
                     var self = this;
                     var itemModel = null;
@@ -85,95 +205,59 @@ var cmm013;
                     });
                     return itemModel;
                 };
-                ScreenModel.prototype.findPosition = function (value) {
-                    var self = this;
-                    var itemModel = null;
-                    _.find(self.dataSource(), function (obj) {
-                        if (obj.jobCode == value) {
-                            itemModel = obj;
-                        }
-                    });
-                    return itemModel;
-                };
-                ScreenModel.prototype.deletePosition = function () {
+                ScreenModel.prototype.getAllJobHistAfterHandler = function () {
                     var self = this;
                     var dfd = $.Deferred();
-                    var item = new model.DeletePositionCommand(self.currentItem().jobCode, self.currentItem().jobName);
-                    console.log(self.currentItem().presenceCheckScopeSet);
-                    self.index_of_itemDelete = self.dataSource().indexOf(self.currentItem());
-                    console.log(self.index_of_itemDelete);
-                    test.service.deletePosition(item).done(function (res) {
-                        self.getPositionList_aftefDelete();
-                    }).fail(function (res) {
-                        dfd.reject(res);
+                    self.selectedCode('');
+                    self.listbox([]);
+                    a.service.getAllHistory().done(function (lstHistory) {
+                        if (lstHistory === undefined || lstHistory.length === 0)
+                            return;
+                        self.listbox(lstHistory);
+                        _.forEach(lstHistory, function (strHistory) {
+                            self.listbox.push(strHistory);
+                        });
+                        var historyFirst = _.first(lstHistory);
+                        self.selectedCode(historyFirst.startDate);
+                        self.startDateUpdate(historyFirst.startDate);
+                        self.endDateUpdate(historyFirst.endDate);
+                        self.historyIdUpdate(historyFirst.historyId);
+                        self.startDateLast(historyFirst.startDate);
+                        self.historyIdLast(historyFirst.historyId);
+                        dfd.resolve(lstHistory);
                     });
-                };
-                ScreenModel.prototype.getPositionList_aftefDelete = function () {
-                    var self = this;
-                    var dfd = $.Deferred();
-                    test.service.findAllPosition(self.index_selected()).done(function (position_arr) {
-                        self.dataSource(position_arr);
-                        if (self.dataSource().length > 0) {
-                            if (self.index_of_itemDelete === self.dataSource().length) {
-                                self.currentCode(self.dataSource()[self.index_of_itemDelete - 1].jobCode);
-                                self.inp_002(self.dataSource()[self.index_of_itemDelete - 1].jobCode);
-                                self.inp_003(self.dataSource()[self.index_of_itemDelete - 1].jobName);
-                                self.inp_005(self.dataSource()[self.index_of_itemDelete - 1].memo);
-                            }
-                            else {
-                                self.currentCode(self.dataSource()[self.index_of_itemDelete].jobCode);
-                                self.inp_002(self.dataSource()[self.index_of_itemDelete].jobCode);
-                                self.inp_003(self.dataSource()[self.index_of_itemDelete].jobName);
-                                self.inp_005(self.dataSource()[self.index_of_itemDelete].memo);
-                            }
-                        }
-                        else {
-                        }
-                        dfd.resolve();
-                    }).fail(function (error) {
-                        alert(error.message);
-                    });
-                    dfd.resolve();
                     return dfd.promise();
                 };
-                ScreenModel.prototype.getPositionList = function () {
+                /**
+                 * check input: A_INP_002(jobCode) and A_INP_003(jobName)
+                 */
+                ScreenModel.prototype.checkInput = function () {
                     var self = this;
-                    var dfd = $.Deferred();
-                    test.service.findAllPosition(self.index_selected()).done(function (position_arr) {
-                        self.dataSource(position_arr);
-                        self.inp_002(self.dataSource()[0].jobCode);
-                        self.inp_003(self.dataSource()[0].jobName);
-                        self.inp_005(self.dataSource()[0].memo);
-                        if (self.dataSource().length > 1) {
-                            self.currentCode(self.dataSource()[0].jobCode);
-                        }
-                        dfd.resolve();
-                    }).fail(function (error) {
-                        alert(error.message);
-                    });
-                    dfd.resolve();
-                    return dfd.promise();
+                    if (self.inp_002() == '' || self.inp_003() == '') {
+                        alert("nhap day du thong tin");
+                        return false;
+                    }
+                    else {
+                        return true;
+                    }
                 };
-                ScreenModel.prototype.startPage = function () {
-                    var self = this;
-                    var dfd = $.Deferred();
-                    test.service.getAllHistory().done(function (history_arr) {
-                        self.listbox(history_arr);
-                        self.selectedCode = ko.observable(self.listbox()[0].startDate);
-                    }).fail(function (error) {
-                        alert(error.message);
-                    });
-                    dfd.resolve();
-                    return dfd.promise();
-                };
-                //phai lam getshare
-                ScreenModel.prototype.openBDialog = function () {
-                    nts.uk.ui.windows.sub.modal('/view/cmm/013/b/index.xhtml', { title: '画面ID：B', });
-                };
+                /**
+                 * open sub windows add jobHist(画面ID：C) when click button A_BTN_006 (履歴追加)
+                 */
                 ScreenModel.prototype.openCDialog = function () {
-                    nts.uk.ui.windows.sub.modal('/view/cmm/013/c/index.xhtml', { title: '画面ID：c', });
+                    var self = this;
+                    nts.uk.ui.windows.setShared('CMM013_historyId', self.index_selected());
+                    nts.uk.ui.windows.setShared('CMM013_startDateLast', self.startDateLast());
+                    nts.uk.ui.windows.sub.modal('/view/cmm/013/c/index.xhtml', { title: '画面ID：C', });
                 };
+                /**
+                 * open sub windows update jobHist(画面ID：D) when click button A_BTN_007 (履歴編集)
+                 */
                 ScreenModel.prototype.openDDialog = function () {
+                    var self = this;
+                    console.log(self.endDateUpdate());
+                    nts.uk.ui.windows.setShared('CMM013_startDateUpdate', self.startDateUpdate());
+                    nts.uk.ui.windows.setShared('CMM013_endDateUpdate', self.endDateUpdate());
                     nts.uk.ui.windows.sub.modal('/view/cmm/013/d/index.xhtml', { title: '画面ID：D', });
                 };
                 return ScreenModel;
@@ -190,33 +274,6 @@ var cmm013;
                 return Labels;
             }());
             viewmodel.Labels = Labels;
-            var RadioBox = (function () {
-                function RadioBox() {
-                    var self = this;
-                    self.itemList = ko.observableArray([
-                        new BoxModel(1, '全員参照可能'),
-                        new BoxModel(2, '全員参照不可'),
-                        new BoxModel(3, 'ロール毎に設定')
-                    ]);
-                    self.selectedId = ko.observable(1);
-                    self.enable = ko.observable(true);
-                }
-                return RadioBox;
-            }());
-            var RadioBox2 = (function () {
-                function RadioBox2() {
-                    var self = this;
-                    self.itemList = ko.observableArray([
-                        new BoxModel(1, '対象外'),
-                        new BoxModel(2, '看護師'),
-                        new BoxModel(3, '準看護師'),
-                        new BoxModel(4, '看護補助師')
-                    ]);
-                    self.selectedId = ko.observable(1);
-                    self.enable = ko.observable(true);
-                }
-                return RadioBox2;
-            }());
             var BoxModel = (function () {
                 function BoxModel(id, name) {
                     var self = this;
@@ -226,26 +283,6 @@ var cmm013;
                 return BoxModel;
             }());
             viewmodel.BoxModel = BoxModel;
-            var TextEditor_3 = (function () {
-                function TextEditor_3() {
-                    var self = this;
-                    self.texteditor = {
-                        value: ko.observable(''),
-                        constraint: 'ResidenceCode',
-                        option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                            textmode: "text",
-                            placeholder: "",
-                            width: "10px",
-                            textalign: "center"
-                        })),
-                        required: ko.observable(true),
-                        enable: ko.observable(false),
-                        readonly: ko.observable(false)
-                    };
-                }
-                return TextEditor_3;
-            }());
-            viewmodel.TextEditor_3 = TextEditor_3;
             var SwitchButton = (function () {
                 function SwitchButton() {
                     var self = this;
@@ -258,38 +295,6 @@ var cmm013;
                 return SwitchButton;
             }());
             viewmodel.SwitchButton = SwitchButton;
-            var model;
-            (function (model) {
-                var ListHistoryDto = (function () {
-                    function ListHistoryDto(startDate, endDate, historyId) {
-                        var self = this;
-                        self.startDate = startDate;
-                        self.endDate = endDate;
-                        self.historyId = historyId;
-                    }
-                    return ListHistoryDto;
-                }());
-                model.ListHistoryDto = ListHistoryDto;
-                var ListPositionDto = (function () {
-                    function ListPositionDto(code, name, presenceCheckScopeSet, memo) {
-                        var self = this;
-                        self.jobCode = code;
-                        self.jobName = name;
-                        self.presenceCheckScopeSet = presenceCheckScopeSet;
-                        self.memo = memo;
-                    }
-                    return ListPositionDto;
-                }());
-                model.ListPositionDto = ListPositionDto;
-                var DeletePositionCommand = (function () {
-                    function DeletePositionCommand(jobCode, historyId) {
-                        this.jobCode = jobCode;
-                        this.historyId = historyId;
-                    }
-                    return DeletePositionCommand;
-                }());
-                model.DeletePositionCommand = DeletePositionCommand;
-            })(model = viewmodel.model || (viewmodel.model = {}));
-        })(viewmodel = test.viewmodel || (test.viewmodel = {}));
-    })(test = cmm013.test || (cmm013.test = {}));
-})(cmm013 || (cmm013 = {}));
+        })(viewmodel = a.viewmodel || (a.viewmodel = {}));
+    })(a = cmmhoa013.a || (cmmhoa013.a = {}));
+})(cmmhoa013 || (cmmhoa013 = {}));
