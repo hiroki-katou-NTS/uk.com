@@ -10,6 +10,7 @@ package nts.uk.ctx.pr.screen.app.query.qpp018;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.core.dom.company.CompanyCode;
@@ -22,6 +23,7 @@ import nts.uk.shr.com.context.AppContexts;
  * @author duongnd
  *
  */
+@Stateless
 public class SocialInsuranceQueryProcessor {
 
     /** The social insurance office repository. */

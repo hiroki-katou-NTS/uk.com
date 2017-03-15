@@ -96,7 +96,7 @@
 		<ui:define name="content">
 			<div id="functions-area">
 				<button class="btn_width new_btn" data-bind="click: addNew">新規</button>
-				<button data-bind="click: save" class="proceed btn_width">登録</button>
+				<button data-bind="click: save,enable: $root.errors.isEmpty" class="proceed btn_width">登録</button>
 				<button class="btn_width">印刷</button>
 				<button data-bind="click: remove, enable: deleteButtonControll()"
 					class="delete_btn btn_width danger">削除</button>
@@ -134,7 +134,7 @@
 										<td class="border_none"><div style="margin-top: 20px;"
 												data-bind="ntsFormLabel: {required: true,constraint:['OfficeCode','OfficeName'] }">コード/名称</div></td>
 										<td class="border_none padding_top"><div>
-												<input
+												<input class ="save-error"
 													data-bind="ntsTextEditor: {
 														value: officeCode ,
 														constraint: 'OfficeCode',
@@ -143,7 +143,7 @@
 														enable : $parent.enabled()}" />
 											</div></td>
 										<td colspan="2" class="border_none padding_top padding_left"><div>
-												<input
+												<input class ="save-error"
 													data-bind="ntsTextEditor: {
  														value: officeName ,
  														constraint: 'OfficeName',
@@ -157,6 +157,7 @@
 										<td colspan="3" class="border_none padding_top">
 											<div>
 												<input
+												class ="save-error"
 													data-bind="ntsTextEditor: {
 														value: shortName ,
 														constraint: 'ShortName',
@@ -169,7 +170,7 @@
 												data-bind="ntsFormLabel: {constraint:'PicName'}">代表者名</div></td>
 										<td colspan="3" class="border_none padding_top">
 											<div>
-												<input
+												<input class ="save-error"
 													data-bind="ntsTextEditor: {
 														value: PicName ,
 														constraint: 'PicName',
@@ -185,7 +186,7 @@
 										<td colspan="3"
 											class="no_left_border no_right_border no_top_border border_bottom padding_top ">
 											<div>
-												<input
+												<input class ="save-error"
 													data-bind="ntsTextEditor: {
 														value: PicPosition ,
 														constraint: 'PicPosition',
@@ -200,7 +201,7 @@
 										<td class="border_none"><div style="margin-top: 20px;"
 												data-bind="ntsFormLabel: {constraint:'PotalCode'}">郵便番号</div></td>
 										<td class="border_none padding_top"><div>
-												<input
+												<input class ="save-error"
 													data-bind="ntsTextEditor: {
 														value: potalCode ,
 														constraint: 'PotalCode', 
@@ -214,7 +215,7 @@
 										<td class="border_none"><div style="margin-top: 20px;"
 												data-bind="ntsFormLabel: {}">都道府県名</div></td>
 										<td class="border_none padding_top"><div>
-												<input
+												<input class ="save-error"
 													data-bind="ntsTextEditor: {
 														value: prefecture , 
 														option: {textmode: 'text',width: '80',textalign: 'left'}}" />
@@ -224,7 +225,7 @@
 										<td class="border_none"><div style="margin-top: 20px;"
 												data-bind="ntsFormLabel: {constraint:'Address'}">住所 １</div></td>
 										<td colspan="3" class="border_none padding_top"><div>
-												<input
+												<input class ="save-error"
 													data-bind="ntsTextEditor: {
 														value: address1st ,
 														constraint: 'Address', 
@@ -234,7 +235,7 @@
 									<tr>
 										<td class="border_none kana_address" ><div style="border: none !important" data-bind="ntsFormLabel: {constraint:'KanaAddress'}">カナ１</div></td>
 										<td colspan="3" class="border_none padding_top"><div>
-												<input
+												<input class ="save-error"
 													data-bind="ntsTextEditor: {
 														value: kanaAddress1st ,
 														constraint: 'KanaAddress', 
@@ -245,7 +246,7 @@
 										<td class="border_none"><div style="margin-top: 20px;"
 												data-bind="ntsFormLabel: {constraint:'Address'}">住所 ２</div></td>
 										<td colspan="3" class="border_none padding_top"><div>
-												<input
+												<input class ="save-error"
 													data-bind="ntsTextEditor: {
 														value: address2nd ,
 														constraint: 'Address', 
@@ -255,7 +256,7 @@
 									<tr>
 										<td class="border_none kana_address"> <div style="border: none !important" data-bind="ntsFormLabel: {constraint:'KanaAddress'}">カナ ２</div></td>
 										<td colspan="3" class="border_none padding_top"><div>
-												<input
+												<input class ="save-error"
 													data-bind="ntsTextEditor: {
 														value: kanaAddress2nd ,
 														constraint: 'KanaAddress', 
@@ -266,7 +267,7 @@
 										<td class="border_none"><div style="margin-top: 20px;"
 												data-bind="ntsFormLabel: {constraint:'Phone'}">電話番号</div></td>
 										<td colspan="3" class="border_none padding_top"><div>
-												<input
+												<input class ="save-error"
 													data-bind="ntsTextEditor: {
 														value: phoneNumber ,
 														constraint: 'Phone', 
@@ -285,14 +286,14 @@
 										<td colspan="2" class="border_none"><div
 												class="margin_top_10" data-bind="ntsFormLabel: {}">健康保険事務所整理番号</div></td>
 										<td class="border_none"><div>
-												<input
+												<input class ="save-error"
 													data-bind="ntsTextEditor: {
 														value: healthInsuOfficeRefCode1st ,
 														constraint:  'OfficeRefCode1',
 														option: {textmode: 'text',width: '50',textalign: 'left'}}" />
 											</div></td>
 										<td class="border_none"><div>
-												<input
+												<input class ="save-error"
 													data-bind="ntsTextEditor: {
 														value: healthInsuOfficeRefCode2nd ,
 														constraint: 'OfficeRefCode2', 
@@ -303,14 +304,14 @@
 										<td colspan="2" class="border_none"><div
 												class="margin_top_10" data-bind="ntsFormLabel: {}">厚生年金事務所整理番号</div></td>
 										<td class="border_none"><div>
-												<input
+												<input class ="save-error"
 													data-bind="ntsTextEditor: {
 														value: pensionOfficeRefCode1st ,
 														constraint:  'OfficeRefCode1', 
 														option: {textmode: 'text',width: '50',textalign: 'left'}}" />
 											</div></td>
 										<td class="border_none"><div>
-												<input
+												<input class ="save-error"
 													data-bind="ntsTextEditor: {
 														value: pensionOfficeRefCode2nd ,
 														constraint: 'OfficeRefCode2', 
@@ -325,7 +326,7 @@
 										<td colspan="2" class="border_none"><div
 												class="margin_top_10" data-bind="ntsFormLabel: {}">厚生年金基金番号</div></td>
 										<td class="border_none"><div>
-												<input
+												<input class ="save-error"
 													data-bind="ntsNumberEditor: {
 														value: welfarePensionFundCode ,
 														constraint: 'WelfarePensionFundCode', 
@@ -336,7 +337,7 @@
 										<td colspan="2" class="border_none"><div
 												class="margin_top_10" data-bind="ntsFormLabel: {}">厚生年金基金事務所番号</div></td>
 										<td class="border_none"><div>
-												<input
+												<input class ="save-error"
 													data-bind="ntsTextEditor: {
 														value: officePensionFundCode ,
 														constraint : 'OfficePensionFundCode', 
@@ -351,7 +352,7 @@
 												class="margin_top_10" data-bind="ntsFormLabel: {}">健康保険</div></td>
 										<td>郡市区府号:</td>
 										<td class="border_none"><div>
-												<input
+												<input class ="save-error"
 													data-bind="ntsTextEditor: {
 														value: healthInsuCityCode , 
 														constraint : 'CityCode',
@@ -359,7 +360,7 @@
 											</div></td>
 										<td>事業所記号:</td>
 										<td class="border_none"><div>
-												<input
+												<input class ="save-error"
 													data-bind="ntsTextEditor: {
 														value: healthInsuOfficeSign ,
 														constraint: 'OfficeSign', 
@@ -371,7 +372,7 @@
 												class="margin_top_10" data-bind="ntsFormLabel: {}">厚生年金</div></td>
 										<td>郡市区府号:</td>
 										<td class="border_none"><div>
-												<input
+												<input class ="save-error"
 													data-bind="ntsTextEditor: {
 														value: pensionCityCode ,
 														constraint : 'CityCode', 
@@ -379,7 +380,7 @@
 											</div></td>
 										<td>事業所記号:</td>
 										<td class="border_none"><div>
-												<input
+												<input class ="save-error"
 													data-bind="ntsTextEditor: {
 														value: pensionOfficeSign ,
 														constraint: 'OfficeSign', 
@@ -393,7 +394,7 @@
 										<td colspan="2" class="border_none"><div
 												class="margin_top_10" data-bind="ntsFormLabel: {}">健康保険事業所番号</div></td>
 										<td class="border_none"><div>
-												<input
+												<input class ="save-error"
 													data-bind="ntsNumberEditor: {
 														value: healthInsuOfficeCode ,
 														constraint: 'HealthInsuOfficeCode', 
@@ -404,7 +405,7 @@
 										<td colspan="2" class="border_none"><div
 												class="margin_top_10" data-bind="ntsFormLabel: {}">健康具合事業所番号</div></td>
 										<td class="border_none"><div>
-												<input
+												<input class ="save-error"
 													data-bind="ntsTextEditor: {
 														value: healthInsuAssoCode ,
 														constraint: 'HealthInsuAssoCode', 
@@ -414,7 +415,7 @@
 									<tr>
 										<td colspan="2" class="border_none"><div
 												class="margin_top_10" data-bind="ntsFormLabel: {}">メモ</div></td>
-										<td colspan="4" class="border_none"><TEXTAREA
+										<td colspan="4" class="border_none"><TEXTAREA class ="save-error"
 												id="input-text" rows="4" cols="60"
 												data-bind="ntsMultilineEditor: {
 													value: memo,

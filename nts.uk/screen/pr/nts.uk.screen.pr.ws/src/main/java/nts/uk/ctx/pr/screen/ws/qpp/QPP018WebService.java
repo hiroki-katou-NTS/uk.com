@@ -4,7 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.pr.screen.ws.qpp;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -14,6 +13,8 @@ import javax.ws.rs.Produces;
 
 import nts.arc.layer.app.file.export.ExportServiceResult;
 import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.pr.screen.app.query.qpp018.SocialInsuranceQueryProcessor;
+import nts.uk.ctx.pr.screen.app.query.qpp018.dto.InsuranceOfficeDto;
 import nts.uk.file.pr.app.export.insurance.SocialInsuranceQuery;
 import nts.uk.file.pr.app.export.insurance.SocialInsuranceReportService;
 
