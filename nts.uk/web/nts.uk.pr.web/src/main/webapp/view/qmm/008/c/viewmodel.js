@@ -40,6 +40,7 @@ var nts;
                                     }));
                                     self.selectedOfficeCode = ko.observable('');
                                     self.selectedOfficeCode.subscribe(function (selectedOfficeCode) {
+                                        $('.save-error').ntsError('clear');
                                         if (selectedOfficeCode != null && selectedOfficeCode != undefined && selectedOfficeCode != "") {
                                             self.enabled(false);
                                             self.deleteButtonControll(true);
@@ -54,12 +55,11 @@ var nts;
                                     var dfd = $.Deferred();
                                     self.loadAllInsuranceOfficeData().done(function () {
                                         if (self.officeItems().length > 0) {
-                                            self.selectedOfficeCode(self.officeItems()[0].code);
                                         }
                                         else {
                                             self.addNew();
                                         }
-                                        dfd.resolve(null);
+                                        dfd.resolve();
                                     });
                                     return dfd.promise();
                                 };
@@ -140,7 +140,8 @@ var nts;
                                 ScreenModel.prototype.registerOffice = function () {
                                     var self = this;
                                     c.service.register(self.collectData()).done(function () {
-                                    }).fail(function () {
+                                    }).fail(function (res) {
+                                        alert(res.message);
                                     });
                                 };
                                 ScreenModel.prototype.remove = function () {
