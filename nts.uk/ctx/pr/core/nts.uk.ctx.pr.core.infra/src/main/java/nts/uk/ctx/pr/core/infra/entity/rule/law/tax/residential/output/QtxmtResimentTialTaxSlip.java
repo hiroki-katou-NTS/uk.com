@@ -15,19 +15,20 @@ import lombok.NoArgsConstructor;
 import nts.arc.layer.infra.data.entity.type.GeneralDateToDBConverter;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.pr.core.dom.rule.law.tax.residential.output.StaffNo;
+import nts.uk.shr.infra.data.entity.TableEntity;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "QTXMT_RESIDENTIAL_TAXSLIP")
 @Entity
-public class QtxmtResimentTialTaxSlip {
+public class QtxmtResimentTialTaxSlip extends TableEntity {
 	@EmbeddedId
 	public QtxmtResimentTialTaxSlipPk qtxmtResimentTialTaxSlipPk;
 	
 	@Column(name = "TAX_PAYROLL_MNY")
 	public BigDecimal taxPayRollMoney;
 	
-	@Column(name = "TAX_BONUS_MNY")
+	@Column(name = "TAX_RETIREMENT_MNY")
 	public BigDecimal taxBonusMoney;
 	
 	@Column(name = "TAX_OVERDUE_MNY")
