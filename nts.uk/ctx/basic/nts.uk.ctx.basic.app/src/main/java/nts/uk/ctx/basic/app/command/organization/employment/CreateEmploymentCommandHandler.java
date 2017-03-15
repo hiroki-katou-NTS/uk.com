@@ -29,7 +29,7 @@ public class CreateEmploymentCommandHandler extends CommandHandler<CreateEmploym
 				throw new BusinessException("入力したコードは既に存在しています。\r\nコードを確認してください。");
 			}
 			Optional<Employment> employmentByDisplayFlg = repository.findEmploymnetByDisplayFlg(companyCode);
-			if(employmentByDisplayFlg.isPresent())			
+			if(!employmentByDisplayFlg.isPresent())			
 				employ.setDisplayFlg(ManageOrNot.MANAGE);
 			//employ.validate();
 			this.repository.add(employ);	

@@ -83,16 +83,10 @@ public class JpaEmploymentRepository extends JpaRepository implements Employment
 
 	@Override
 	public Optional<Employment> findEmploymnetByDisplayFlg(String companyCode) {		
-		List<Employment> lstEmployment= this.queryProxy().query(SELECT_EMP_BY_DISPLAY_FLG, CmnmtEmp.class)
+		Optional<Employment> lstEmployment= this.queryProxy().query(SELECT_EMP_BY_DISPLAY_FLG, CmnmtEmp.class)
 				.setParameter("companyCode", companyCode)
-				.getList(c -> toDomain(c));
-		Employment employment;
-		if(lstEmployment.isEmpty())
-			return null;
-		else{
-			employment = lstEmployment.get(0);
-			return Optional.of(employment);
-		}
+				.getSingle(c -> toDomain(c));
+		return lstEmployment;
 			
 	}
 
