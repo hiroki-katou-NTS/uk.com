@@ -1,9 +1,15 @@
 package nts.uk.ctx.pr.report.dom.payment.comparing;
 
-public class FormName {
+import nts.arc.primitive.StringPrimitiveValue;
+import nts.arc.primitive.constraint.StringMaxLength;
 
-	public FormName() {
-		// TODO Auto-generated constructor stub
+@StringMaxLength(40)
+public class FormName extends StringPrimitiveValue<FormName> {
+
+	private static final long serialVersionUID = 1L;
+
+	public FormName(String rawValue) {
+		super(rawValue);
 	}
 
 }

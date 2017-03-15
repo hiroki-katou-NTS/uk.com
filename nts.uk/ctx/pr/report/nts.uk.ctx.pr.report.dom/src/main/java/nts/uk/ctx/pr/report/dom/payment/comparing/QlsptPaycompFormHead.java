@@ -1,9 +1,23 @@
 package nts.uk.ctx.pr.report.dom.payment.comparing;
 
-public class QlsptPaycompFormHead {
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import nts.arc.layer.dom.AggregateRoot;
 
-	public QlsptPaycompFormHead() {
-		// TODO Auto-generated constructor stub
+@NoArgsConstructor
+@AllArgsConstructor
+@Getter
+public class QlsptPaycompFormHead extends AggregateRoot {
+
+	private String companyCode;
+
+	private FormCode formCode;
+
+	private FormName formName;
+
+	public static QlsptPaycompFormHead createFromJavaType(String companyCode, String formCode, String formName) {
+		return new QlsptPaycompFormHead(companyCode, new FormCode(formCode), new FormName(formName));
 	}
 
 }
