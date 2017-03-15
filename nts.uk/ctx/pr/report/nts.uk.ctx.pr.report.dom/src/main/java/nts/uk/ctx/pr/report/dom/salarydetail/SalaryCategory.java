@@ -8,28 +8,22 @@ package nts.uk.ctx.pr.report.dom.salarydetail;
  * The Enum PayrollSummaryCategory.
  */
 public enum SalaryCategory {
-	
+
 	/** The Payment. */
 	Payment(1),
-	
-	/** The Payment total. */
-	PaymentTotal(2),
-	
+
 	/** The Deduction. */
-	Deduction(3),
-	
-	/** The Deduction tabulation. */
-	DeductionTabulation(4),
-	
+	Deduction(2),
+
 	/** The Attendance. */
-	Attendance(5),
-	
+	Attendance(3),
+
 	/** The Article others. */
-	ArticleOthers(6);
-	
+	ArticleOthers(4);
+
 	/** The value. */
 	public final int value;
-	
+
 	/**
 	 * Instantiates a new payroll summary category.
 	 *

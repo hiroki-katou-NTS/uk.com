@@ -7,8 +7,6 @@ package nts.uk.ctx.pr.report.dom.insurance;
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.pr.report.dom.company.CompanyCode;
-import nts.uk.ctx.pr.report.dom.salarydetail.aggregate.SalaryAggregateItemGetMemento;
-import nts.uk.ctx.pr.report.dom.salarydetail.aggregate.SalaryAggregateItemSetMemento;
 
 /**
  * The Class ChecklistPrintSetting.
@@ -36,6 +34,9 @@ public class ChecklistPrintSetting extends AggregateRoot {
 
 	/** The show office. */
 	private Boolean showOffice;
+	
+	/** The show total. */
+    private Boolean showTotal;
 
 	/**
 	 * Instantiates a new checklist print setting.
@@ -49,6 +50,7 @@ public class ChecklistPrintSetting extends AggregateRoot {
 		this.showDeliveryNoticeAmount = memento.getShowDeliveryNoticeAmount();
 		this.showDetail = memento.getShowDetail();
 		this.showOffice = memento.getShowOffice();
+		this.showTotal = memento.getShowTotal();
 	}
 
 	/**
@@ -63,6 +65,7 @@ public class ChecklistPrintSetting extends AggregateRoot {
 		memento.setShowDeliveryNoticeAmount(this.showDeliveryNoticeAmount);
 		memento.setShowDetail(this.showDetail);
 		memento.setShowOffice(this.showOffice);
+		memento.setShowTotal(this.showTotal);
 	}
 
 }
