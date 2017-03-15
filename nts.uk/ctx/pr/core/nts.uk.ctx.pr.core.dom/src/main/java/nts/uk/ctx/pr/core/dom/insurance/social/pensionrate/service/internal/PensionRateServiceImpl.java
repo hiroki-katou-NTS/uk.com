@@ -5,6 +5,7 @@
 package nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.service.internal;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -16,6 +17,10 @@ import nts.gul.text.StringUtil;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.base.simplehistory.SimpleHistoryRepository;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
+import nts.uk.ctx.pr.core.dom.insurance.avgearn.AvgEarnLevelMasterSetting;
+import nts.uk.ctx.pr.core.dom.insurance.avgearn.AvgEarnLevelMasterSettingRepository;
+import nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.PensionAvgearn;
+import nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.PensionAvgearnRepository;
 import nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionRate;
 import nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionRateRepository;
 import nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.service.PensionRateService;
@@ -35,7 +40,14 @@ public class PensionRateServiceImpl extends PensionRateService {
 	/** The pension rate repo. */
 	@Inject
 	private PensionRateRepository pensionRateRepo;
+	
+	/** The avg earn level master setting repository. */
+	@Inject
+	private AvgEarnLevelMasterSettingRepository avgEarnLevelMasterSettingRepository;
 
+	/** The pension rate repo. */
+	@Inject
+	private PensionAvgearnRepository pensionAvgearnRepository;
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -78,13 +90,56 @@ public class PensionRateServiceImpl extends PensionRateService {
 	@Override
 	public PensionRate createInitalHistory(String companyCode, String officeCode, YearMonth startTime) {
 		List<PensionRate> listPensionOfOffice = this.pensionRateRepo.findAllOffice(companyCode,officeCode);
-		PensionRate obj = listPensionOfOffice.stream().filter(c -> c.getStart().equals(startTime)).findFirst()
-				.get();
-		if (obj != null) {
+		List<PensionRate> lstPensionRate = listPensionOfOffice.stream().filter(c -> c.getStart().equals(startTime))
+				.collect(Collectors.toList());
+		if (!lstPensionRate.isEmpty()) {
 			throw new BusinessException("ER011");
 		}
 		return PensionRate.createWithIntial(new CompanyCode(companyCode), new OfficeCode(officeCode),
 				startTime);
 	}
+	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.base.simplehistory.SimpleHistoryBaseService#
+	 * onCopyHistory(java.lang.String, java.lang.String,
+	 * nts.uk.ctx.pr.core.dom.base.simplehistory.History,
+	 * nts.uk.ctx.pr.core.dom.base.simplehistory.History)
+	 */
+	@Override
+	protected void onCopyHistory(String companyCode, String masterCode, PensionRate copiedHistory,
+			PensionRate newHistory) {
+		super.onCopyHistory(companyCode, masterCode, copiedHistory, newHistory);
+		// Get listAvgEarn of copiedHistory.
+		List<PensionAvgearn> listPensionAvgearn = pensionAvgearnRepository
+				.find(copiedHistory.getHistoryId());
+		// Update newHistoryId.
+		List<PensionAvgearn> updatedList = listPensionAvgearn.stream().map(item -> {
+			return item.copyWithNewHistoryId(newHistory.getHistoryId());
+		}).collect(Collectors.toList());
 
+		this.pensionAvgearnRepository.update(updatedList, companyCode, newHistory.getOfficeCode().v());
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.base.simplehistory.SimpleHistoryBaseService#
+	 * onCreateHistory(java.lang.String, java.lang.String,
+	 * nts.uk.ctx.pr.core.dom.base.simplehistory.History)
+	 */
+	@Override
+	protected void onCreateHistory(String companyCode, String masterCode, PensionRate newHistory) {
+		super.onCreateHistory(companyCode, masterCode, newHistory);
+		// Get listAvgEarnLevelMasterSetting.
+		List<AvgEarnLevelMasterSetting> listAvgEarnLevelMasterSetting = avgEarnLevelMasterSettingRepository
+				.findAll(new CompanyCode(companyCode));
+		// Create HealthInsuranceAvgearn list with initial values.
+		List<PensionAvgearn> newList = listAvgEarnLevelMasterSetting.stream().map(setting -> {
+			return PensionAvgearn.createWithIntial(newHistory.getHistoryId(), setting.getCode());
+		}).collect(Collectors.toList());
+
+		this.pensionAvgearnRepository.update(newList, companyCode, newHistory.getOfficeCode().v());
+	}
 }

@@ -30,8 +30,8 @@ var nts;
                                     self.isClickHistory = ko.observable(false);
                                     self.igGridSelectedHistoryUuid.subscribe(function (id) {
                                         if (id && id.length == 36) {
-                                            self.selectedHistoryUuid(id);
-                                            self.isClickHistory(true);
+                                            self.isNewMode(false);
+                                            self.onSelectHistory(id);
                                         }
                                         else {
                                             self.isClickHistory(false);
@@ -99,7 +99,7 @@ var nts;
                                 ScreenBaseModel.prototype.registBtnClick = function () {
                                     var self = this;
                                     self.isNewMode(true);
-                                    self.selectedHistoryUuid(undefined);
+                                    self.igGridSelectedHistoryUuid(undefined);
                                 };
                                 ScreenBaseModel.prototype.saveBtnClick = function () {
                                     var self = this;

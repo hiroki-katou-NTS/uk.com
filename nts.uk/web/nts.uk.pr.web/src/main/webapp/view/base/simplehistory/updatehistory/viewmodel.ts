@@ -107,7 +107,7 @@ module nts.uk.pr.view.base.simplehistory.updatehistory {
             private btnApplyClicked(): void {
                 var self = this;
                 var callBackData: UpdateHistoryCallBackData = {
-                    masterCode: self.dialogOptions.master.code,
+                    masterCode: self.dialogOptions.master ? self.dialogOptions.master.code : undefined,
                     historyId: self.dialogOptions.history.uuid,
                     startYearMonth: self.startYearMonth()
                 };

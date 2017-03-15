@@ -35,7 +35,8 @@ public class CheckListPrintSettingSaveCommandHandler extends CommandHandler<Chec
 	@Override
 	protected void handle(CommandHandlerContext<CheckListPrintSettingSaveCommand> context) {
 		String companyCode = AppContexts.user().companyCode();
-		ChecklistPrintSetting checklistPrintSetting = context.getCommand().toDomain(companyCode);
+		ChecklistPrintSetting checklistPrintSetting = context.getCommand().getCheckListPrintSettingDto()
+		        .toDomain(companyCode);
 		this.checklistPrintSettingRepository.save(checklistPrintSetting);
 	}
 

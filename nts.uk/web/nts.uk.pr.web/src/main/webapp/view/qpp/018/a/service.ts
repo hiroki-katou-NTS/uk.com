@@ -3,19 +3,43 @@ module nts.uk.pr.view.qpp018.a {
 
         // Service paths.
         var servicePath = {
-            getallInsuranceOffice: "ctx/pr/report/insurance/office/findAll"
+            findAllInsuranceOffice: "screen/pr/QPP018/findAllOffice",
+            saveAsPdf: "screen/pr/QPP018/saveAsPdf"
         };
+        
         /**
-         * get All Insurance Office
+         * find All Insurance Office
          */
-        export function getAllInsuranceOffice(): JQueryPromise<model.InsuranceOffice[]> {
-            return nts.uk.request.ajax(servicePath.getallInsuranceOffice);
+        export function findAllInsuranceOffice(): JQueryPromise<model.InsuranceOffice[]> {
+            var dfd = $.Deferred();
+            nts.uk.request.ajax(servicePath.findAllInsuranceOffice).done(function (res: any) {
+                var list = _.map(res, function (item: any) {
+                    return new model.InsuranceOffice(item.code, item.name);
+                });
+                dfd.resolve(list);
+            });
+            return dfd.promise();
         }
-
+        
+        export function saveAsPdf(command: any): JQueryPromise<any> {
+            return nts.uk.request.ajax(servicePath.saveAsPdf, command);
+        }
+        
+        /**
+         * insurance office
+         */
         export module model {
+            
             export class InsuranceOffice {
+                
                 code: string;
                 name: string;
+                
+                constructor(code: string, name: string) {
+                    let self = this;
+                    self.code = code;
+                    self.name = name;
+                }
             }
         }
     }

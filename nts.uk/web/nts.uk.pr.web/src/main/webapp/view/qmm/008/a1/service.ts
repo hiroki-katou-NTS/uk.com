@@ -38,7 +38,8 @@ module nts.uk.pr.view.qmm008.a1 {
         export var instance = new Service({
             historyMasterPath: 'ctx/pr/core/insurance/social/healthrate/masterhistory',
             createHisotyPath: 'ctx/pr/core/insurance/social/healthrate/history/create',
-            deleteHistoryPath: 'ctx/pr/core/insurance/social/healthrate/history/delete'
+            deleteHistoryPath: 'ctx/pr/core/insurance/social/healthrate/history/delete',
+            updateHistoryStartPath: 'ctx/pr/core/insurance/social/healthrate/history/update/start'
         });
         ////////////////////////
         

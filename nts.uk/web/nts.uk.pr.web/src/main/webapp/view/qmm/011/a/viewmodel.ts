@@ -14,15 +14,19 @@ module nts.uk.pr.view.qmm011.a {
     import InsuranceBusinessType = service.model.InsuranceBusinessType;
     import TypeHistory = service.model.TypeHistory;
     import UnemployeeInsuranceRateDto = service.model.UnemployeeInsuranceRateDto;
+    import UnemployeeInsuranceRateCopyDto = service.model.UnemployeeInsuranceRateCopyDto;
     import AccidentInsuranceHistoryDto = service.model.AccidentInsuranceHistoryDto;
     import AccidentInsuranceRateHistoryFindInDto = service.model.AccidentInsuranceRateHistoryFindInDto;
+    import AccidentInsuranceRateCopyDto = service.model.AccidentInsuranceRateCopyDto;
     import InsuBizRateItemDto = service.model.InsuBizRateItemDto;
     import TypeActionInsuranceRate = service.model.TypeActionInsuranceRate;
     import InsuranceBusinessTypeDto = service.model.InsuranceBusinessTypeDto;
-    import UnemployeeInsuranceRateCopyDto = service.model.UnemployeeInsuranceRateCopyDto;
     import InsuranceBusinessTypeUpdateModel = nts.uk.pr.view.qmm011.e.viewmodel.InsuranceBusinessTypeUpdateModel;
     import AddHistoryInfoModel = nts.uk.pr.view.qmm011.d.viewmodel.AddHistoryInfoModel;
     import UpdateHistoryInfoModel = nts.uk.pr.view.qmm011.f.viewmodel.UpdateHistoryInfoModel;
+    import NewHistoryScreenOption = nts.uk.pr.view.base.simplehistory.newhistory.viewmodel.NewHistoryScreenOption;
+    import HistoryModel = nts.uk.pr.view.base.simplehistory.model.HistoryModel;
+    import ScreenMode = nts.uk.pr.view.base.simplehistory.dialogbase.ScreenMode;
     //import data class ... END
 
     export module viewmodel {
@@ -129,6 +133,59 @@ module nts.uk.pr.view.qmm011.a {
 
             //open dialog add UnemployeeInsuranceRateHistory => show view model xhtml (action event add)
             private openAddUnemployeeInsuranceRateHistory() {
+
+                var self = this;
+                var lastest: HistoryModel;
+                var name: string = '労働保険料率';
+                lastest = {
+                    uuid: self.selectionUnemployeeInsuranceRateHistory(),
+                    start: self.unemployeeInsuranceRateModel().unemployeeInsuranceHistoryModel.startMonth(),
+                    end: self.unemployeeInsuranceRateModel().unemployeeInsuranceHistoryModel.endMonth()
+                };
+
+                var unemployeeInsuranceRateCopyDto: UnemployeeInsuranceRateCopyDto;
+                unemployeeInsuranceRateCopyDto = new UnemployeeInsuranceRateCopyDto();
+                unemployeeInsuranceRateCopyDto.historyIdCopy = self.selectionUnemployeeInsuranceRateHistory();
+                var newHistoryOptions: NewHistoryScreenOption = {
+                    screenMode: ScreenMode.MODE_HISTORY_ONLY,
+                    name: name,
+                    master: null,
+                    lastest: lastest,
+
+                    // Copy.
+                    onCopyCallBack: (data) => {
+                        unemployeeInsuranceRateCopyDto.startMonth = data.startYearMonth;
+                        unemployeeInsuranceRateCopyDto.addNew = false;
+                        service.copyUnemployeeInsuranceRate(unemployeeInsuranceRateCopyDto).done(data => {
+                            self.typeActionUnemployeeInsurance(TypeActionInsuranceRate.add);
+                            self.reloadDataUnemployeeInsuranceRateByAction();
+                            self.clearErrorSaveUnemployeeInsurance();
+                        }).fail(function(error) {
+                            self.showMessageSaveUnemployeeInsurance(error.message)
+                        });
+                    },
+
+                    // Init.
+                    onCreateCallBack: (data) => {
+                        unemployeeInsuranceRateCopyDto.startMonth = data.startYearMonth;
+                        unemployeeInsuranceRateCopyDto.addNew = true;
+                        service.copyUnemployeeInsuranceRate(unemployeeInsuranceRateCopyDto).done(data => {
+                            self.typeActionUnemployeeInsurance(TypeActionInsuranceRate.add);
+                            self.reloadDataUnemployeeInsuranceRateByAction();
+                            self.clearErrorSaveUnemployeeInsurance();
+                        }).fail(function(error) {
+                            self.showMessageSaveUnemployeeInsurance(error.message)
+                        });
+                    }
+                };
+                nts.uk.ui.windows.setShared('options', newHistoryOptions);
+                var ntsDialogOptions = {
+                    title: nts.uk.text.format('{0}の登録 > 履歴の追加', name),
+                    dialogClass: 'no-close'
+                };
+                nts.uk.ui.windows.sub.modal('/view/base/simplehistory/newhistory/index.xhtml', ntsDialogOptions);
+
+                /*
                 var self = this;
                 //set data fw to /d/
                 nts.uk.ui.windows.setShared("isEmpty", self.isEmptyUnemployee());
@@ -158,6 +215,7 @@ module nts.uk.pr.view.qmm011.a {
                             service.copyUnemployeeInsuranceRate(unemployeeInsuranceRateCopyDto).done(data => {
                                 self.typeActionUnemployeeInsurance(TypeActionInsuranceRate.add);
                                 self.reloadDataUnemployeeInsuranceRateByAction();
+                                self.clearErrorSaveUnemployeeInsurance();
                             }).fail(function(error) {
                                 self.showMessageSaveUnemployeeInsurance(error.message)
                             });
@@ -172,6 +230,7 @@ module nts.uk.pr.view.qmm011.a {
                         }
                     }
                 });
+                */
             }
 
             //open dialog edit InsuranceBusinessType => show view model xhtml (action event edit)
@@ -256,23 +315,25 @@ module nts.uk.pr.view.qmm011.a {
                     //get fw d => respone
                     var addHistoryInfoModel: AddHistoryInfoModel = nts.uk.ui.windows.getShared("addHistoryInfoModel");
                     if (addHistoryInfoModel != null && addHistoryInfoModel != undefined) {
-                        var accidentInsuranceHistoryDto: AccidentInsuranceHistoryDto;
-                        accidentInsuranceHistoryDto = new AccidentInsuranceHistoryDto();
+                        var accidentInsuranceRateCopyDto: AccidentInsuranceRateCopyDto;
+                        accidentInsuranceRateCopyDto = new AccidentInsuranceRateCopyDto();
+                        accidentInsuranceRateCopyDto.historyIdCopy = self.selectionAccidentInsuranceRateHistory();
+                        accidentInsuranceRateCopyDto.startMonth = addHistoryInfoModel.starMonth;
                         //get type action add by respone
                         if (addHistoryInfoModel.typeModel == 2) {
                             //type reset data
-                            self.resetValueAccidentInsuranceRate();
+                            accidentInsuranceRateCopyDto.addNew = true;
+
+                        } else {
+                            accidentInsuranceRateCopyDto.addNew = false;
                         }
-                        //update history info
-                        accidentInsuranceHistoryDto.historyId = '';
-                        accidentInsuranceHistoryDto.startMonthRage = nts.uk.time.formatYearMonth(addHistoryInfoModel.starMonth);
-                        accidentInsuranceHistoryDto.startMonth = addHistoryInfoModel.starMonth;
-                        accidentInsuranceHistoryDto.endMonth = 999912;
-                        accidentInsuranceHistoryDto.endMonthRage = '9999/12';
-                        self.accidentInsuranceRateModel().setHistoryData(accidentInsuranceHistoryDto);
-                        //set to viewmodel update history info
-                        self.typeActionAccidentInsurance(TypeActionInsuranceRate.add);
-                        self.isEnableSaveActionAccidentInsurance(true);
+                        service.copyAccidentInsuranceRate(accidentInsuranceRateCopyDto).done(data => {
+                            self.typeActionAccidentInsurance(TypeActionInsuranceRate.add);
+                            self.reloadDataAccidentInsuranceRateByAction();
+                            self.clearErrorSaveAccidentInsurance();
+                        }).fail(function(error) {
+                            self.showMessageSaveAccidentInsurance(error.message);
+                        });
                     }
                 });
             }

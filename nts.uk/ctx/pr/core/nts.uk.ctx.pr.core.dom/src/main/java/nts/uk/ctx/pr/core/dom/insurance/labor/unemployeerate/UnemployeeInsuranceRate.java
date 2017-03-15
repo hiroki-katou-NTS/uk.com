@@ -114,4 +114,8 @@ public class UnemployeeInsuranceRate extends DomainObject {
 		domain.rateItems = setItem;
 		return domain;
 	}
+
+	public void setMaxDate() {
+		this.applyRange = MonthRange.toMaxDate(this.getApplyRange().getStartMonth());
+	}
 }

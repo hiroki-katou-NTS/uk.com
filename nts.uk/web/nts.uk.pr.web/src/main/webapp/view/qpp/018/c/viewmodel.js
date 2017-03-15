@@ -15,103 +15,100 @@ var nts;
                             var ScreenModel = (function () {
                                 function ScreenModel() {
                                     var self = this;
-                                    self.required = ko.observable(true);
-                                    self.showHealthInsuranceType = ko.observableArray([
-                                        new HealthInsuranceType('1', '表示する'),
-                                        new HealthInsuranceType('2', '表示しない'),
+                                    self.showDeliveryNoticeAmount = ko.observable(false);
+                                    self.showCategoryInsuranceItem = ko.observable(false);
+                                    self.showOffice = ko.observable(false);
+                                    self.showTotal = ko.observable(false);
+                                    self.healthInsuranceItems = ko.observableArray([
+                                        { code: "indicate", name: "表示する" },
+                                        { code: "hide", name: "表示しない" }
                                     ]);
-                                    self.selectedCode = ko.observable('1');
-                                    self.enable = ko.observable(true);
-                                    self.printSettingValue = ko.observable('PrintSetting Value');
-                                    self.checkListPrintSettingModel = ko.observable(new CheckListPrintSettingModel());
+                                    self.selectedHealthInsuranceItem = ko.observable("indicate");
+                                    self.showDetail = ko.computed(function () {
+                                        if (self.selectedHealthInsuranceItem() == 'indicate') {
+                                            return true;
+                                        }
+                                        return false;
+                                    }, self);
                                 }
-                                ScreenModel.prototype.closePrintSetting = function () {
-                                    nts.uk.ui.windows.setShared("printSettingValue", this.printSettingValue(), true);
-                                    nts.uk.ui.windows.close();
-                                };
-                                ScreenModel.prototype.setupPrintSetting = function () {
+                                ScreenModel.prototype.startPage = function () {
                                     var self = this;
-                                    if (!(self.checkListPrintSettingModel().showCategoryInsuranceItem())
-                                        && !(self.checkListPrintSettingModel().showDeliveryNoticeAmount())
-                                        && !(self.checkListPrintSettingModel().showDetail())
-                                        && !(self.checkListPrintSettingModel().showOffice())) {
-                                        alert("Something is not right");
-                                    }
-                                    else {
-                                        nts.uk.ui.windows.setShared("printSettingValue", this.printSettingValue(), true);
-                                        c.service.saveCheckListPrintSetting(self.checkListPrintSettingModel().toDto()).done(function (data) {
-                                            alert("Something is not right YES");
-                                        }).fail(function (res) {
-                                            alert("Something is not right NO");
-                                        });
-                                        nts.uk.ui.windows.close();
-                                    }
-                                };
-                                ScreenModel.prototype.start = function () {
                                     var dfd = $.Deferred();
-                                    var self = this;
-                                    self.loadAllCheckListPrintSetting().done(function (data) {
+                                    self.loadCheckListPrintSetting().done(function () {
                                         dfd.resolve(self);
                                     });
                                     return dfd.promise();
                                 };
-                                ScreenModel.prototype.loadAllCheckListPrintSetting = function () {
-                                    var dfd = $.Deferred();
+                                ScreenModel.prototype.loadCheckListPrintSetting = function () {
                                     var self = this;
+                                    var dfd = $.Deferred();
                                     c.service.findCheckListPrintSetting().done(function (data) {
-                                        self.checkListPrintSettingModel().setData(data);
+                                        self.initUI(data);
                                         dfd.resolve();
                                     }).fail(function (res) {
                                         nts.uk.ui.dialog.alert(res.message);
-                                        dfd.reject();
                                     });
                                     return dfd.promise();
                                 };
-                                ScreenModel.prototype.saveCheckListPrintSetting = function () {
+                                ScreenModel.prototype.saveConfigSetting = function () {
                                     var self = this;
+                                    var dfd = $.Deferred();
+                                    var command = self.toJSObject();
+                                    c.service.saveCheckListPrintSetting(command).done(function (res) {
+                                        dfd.resolve(res);
+                                    }).fail(function (res) {
+                                        dfd.reject(res);
+                                    });
+                                    return dfd.promise();
+                                };
+                                ScreenModel.prototype.closeDialog = function () {
+                                    nts.uk.ui.windows.close();
+                                };
+                                ScreenModel.prototype.initUI = function (res) {
+                                    var self = this;
+                                    if (res) {
+                                        self.setData(res);
+                                    }
+                                    else {
+                                        self.defaultValue();
+                                    }
+                                };
+                                ScreenModel.prototype.setData = function (dto) {
+                                    var self = this;
+                                    if (dto.showDetail) {
+                                        self.selectedHealthInsuranceItem("indicate");
+                                    }
+                                    else {
+                                        self.selectedHealthInsuranceItem("hide");
+                                    }
+                                    self.showDeliveryNoticeAmount(dto.showDeliveryNoticeAmount);
+                                    self.showCategoryInsuranceItem(dto.showDetail);
+                                    self.showOffice(dto.showOffice);
+                                    self.showTotal(dto.showTotal);
+                                };
+                                ScreenModel.prototype.defaultValue = function () {
+                                    var self = this;
+                                    self.selectedHealthInsuranceItem("indicate");
+                                    self.showCategoryInsuranceItem(false);
+                                    self.showOffice(false);
+                                    self.showTotal(false);
+                                    self.showDeliveryNoticeAmount(false);
+                                };
+                                ScreenModel.prototype.toJSObject = function () {
+                                    var self = this;
+                                    var command = {};
+                                    var checkListPrintSetting = {};
+                                    checkListPrintSetting.showDetail = self.showDetail();
+                                    checkListPrintSetting.showCategoryInsuranceItem = self.showCategoryInsuranceItem();
+                                    checkListPrintSetting.showOffice = self.showOffice();
+                                    checkListPrintSetting.showTotal = self.showTotal();
+                                    checkListPrintSetting.showDeliveryNoticeAmount = self.showDeliveryNoticeAmount();
+                                    command.checkListPrintSettingDto = checkListPrintSetting;
+                                    return command;
                                 };
                                 return ScreenModel;
                             }());
                             viewmodel.ScreenModel = ScreenModel;
-                            var HealthInsuranceType = (function () {
-                                function HealthInsuranceType(code, name) {
-                                    this.code = code;
-                                    this.name = name;
-                                }
-                                return HealthInsuranceType;
-                            }());
-                            viewmodel.HealthInsuranceType = HealthInsuranceType;
-                            var CheckListPrintSettingModel = (function () {
-                                function CheckListPrintSettingModel() {
-                                    this.showCategoryInsuranceItem = ko.observable(false);
-                                    this.showDeliveryNoticeAmount = ko.observable(false);
-                                    this.showDetail = ko.observable(false);
-                                    this.showOffice = ko.observable(false);
-                                }
-                                CheckListPrintSettingModel.prototype.setData = function (checkListPrintSettingDto) {
-                                    this.showCategoryInsuranceItem(checkListPrintSettingDto.showCategoryInsuranceItem);
-                                    this.showDeliveryNoticeAmount(checkListPrintSettingDto.showDeliveryNoticeAmount);
-                                    this.showDetail(checkListPrintSettingDto.showDetail);
-                                    this.showOffice(checkListPrintSettingDto.showOffice);
-                                };
-                                CheckListPrintSettingModel.prototype.resetValue = function () {
-                                    this.showCategoryInsuranceItem(false);
-                                    this.showDeliveryNoticeAmount(false);
-                                    this.showDetail(false);
-                                    this.showOffice(false);
-                                };
-                                CheckListPrintSettingModel.prototype.toDto = function () {
-                                    var checkListPrintSettingDto;
-                                    checkListPrintSettingDto = new c.service.model.CheckListPrintSettingDto();
-                                    checkListPrintSettingDto.showCategoryInsuranceItem = this.showCategoryInsuranceItem();
-                                    checkListPrintSettingDto.showDeliveryNoticeAmount = this.showDeliveryNoticeAmount();
-                                    checkListPrintSettingDto.showDetail = this.showDetail();
-                                    checkListPrintSettingDto.showOffice = this.showOffice();
-                                    return checkListPrintSettingDto;
-                                };
-                                return CheckListPrintSettingModel;
-                            }());
-                            viewmodel.CheckListPrintSettingModel = CheckListPrintSettingModel;
                         })(viewmodel = c.viewmodel || (c.viewmodel = {}));
                     })(c = qpp018.c || (qpp018.c = {}));
                 })(qpp018 = view.qpp018 || (view.qpp018 = {}));

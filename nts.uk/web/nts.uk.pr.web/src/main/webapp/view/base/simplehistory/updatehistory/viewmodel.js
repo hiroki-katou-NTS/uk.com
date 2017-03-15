@@ -32,7 +32,7 @@ var nts;
                                     ScreenModel.prototype.btnApplyClicked = function () {
                                         var self = this;
                                         var callBackData = {
-                                            masterCode: self.dialogOptions.master.code,
+                                            masterCode: self.dialogOptions.master ? self.dialogOptions.master.code : undefined,
                                             historyId: self.dialogOptions.history.uuid,
                                             startYearMonth: self.startYearMonth()
                                         };

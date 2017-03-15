@@ -1,12 +1,12 @@
 module nts.uk.pr.view.qpp007.j {
     export module viewmodel {
-        import SalaryCategory = nts.uk.pr.view.qpp007.c.viewmodel.SalaryCategory;
+        import TaxDivision = nts.uk.pr.view.qpp007.c.viewmodel.TaxDivision;
 
         export class ScreenModel {
-            tabs1: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel>;
-            tabs2: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel>;
-            selectedTab1: KnockoutObservable<string>;
-            selectedTab2: KnockoutObservable<string>;
+            taxDivisionTab: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel>;
+            aggregateItemTab: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel>;
+            selectedDivision: KnockoutObservable<string>;
+            selectedAggregateItem: KnockoutObservable<string>;
 
             name: KnockoutObservable<string>;
 
@@ -17,26 +17,32 @@ module nts.uk.pr.view.qpp007.j {
             constructor() {
                 var self = this;
                 self.name = ko.observable('');
-                self.tabs1 = ko.observableArray<nts.uk.ui.NtsTabPanelModel>([
-                    { id: SalaryCategory.PAYMENT_TOTAL, title: '支給集計', content: '#1', enable: ko.observable(true), visible: ko.observable(true) },
-                    { id: SalaryCategory.DEDUCTION_TABULATION, title: '控除集計', content: '#2', enable: ko.observable(true), visible: ko.observable(true) },
+                self.taxDivisionTab = ko.observableArray<nts.uk.ui.NtsTabPanelModel>([
+                    { id: TaxDivision.PAYMENT, title: '支給集計', content: '#tab-payment', enable: ko.observable(true), visible: ko.observable(true) },
+                    { id: TaxDivision.DEDUCTION, title: '控除集計', content: '#tab-deduction', enable: ko.observable(true), visible: ko.observable(true) },
                 ]);
-                self.tabs2 = ko.observableArray<nts.uk.ui.NtsTabPanelModel>([
-                    { id: 'tab-1', title: '集計項目1', content: '#tab-content-1', enable: ko.observable(true), visible: ko.observable(true) },
-                    { id: 'tab-2', title: '集計項目2', content: '#tab-content-2', enable: ko.observable(true), visible: ko.observable(true) },
-                    { id: 'tab-3', title: '集計項目3', content: '#tab-content-3', enable: ko.observable(true), visible: ko.observable(true) },
-                    { id: 'tab-4', title: '集計項目4', content: '#tab-content-4', enable: ko.observable(true), visible: ko.observable(true) },
+                self.aggregateItemTab = ko.observableArray<nts.uk.ui.NtsTabPanelModel>([
+                    { id: 'aggregate1', title: '集計項目1', content: '#aggregate-item-1', enable: ko.observable(true), visible: ko.observable(true) },
+                    { id: 'aggregate2', title: '集計項目2', content: '#aggregate-item-2', enable: ko.observable(true), visible: ko.observable(true) },
+                    { id: 'aggregate3', title: '集計項目3', content: '#aggregate-item-3', enable: ko.observable(true), visible: ko.observable(true) },
+                    { id: 'aggregate4', title: '集計項目4', content: '#aggregate-item-4', enable: ko.observable(true), visible: ko.observable(true) },
+                    { id: 'aggregate5', title: '集計項目5', content: '#aggregate-item-5', enable: ko.observable(true), visible: ko.observable(true) },
+                    { id: 'aggregate6', title: '集計項目6', content: '#aggregate-item-6', enable: ko.observable(true), visible: ko.observable(true) },
+                    { id: 'aggregate7', title: '集計項目7', content: '#aggregate-item-7', enable: ko.observable(true), visible: ko.observable(true) },
+                    { id: 'aggregate8', title: '集計項目8', content: '#aggregate-item-8', enable: ko.observable(true), visible: ko.observable(true) },
+                    { id: 'aggregate9', title: '集計項目9', content: '#aggregate-item-9', enable: ko.observable(true), visible: ko.observable(true) },
+                    { id: 'aggregate10', title: '集計項目10', content: '#aggregate-item-10', enable: ko.observable(true), visible: ko.observable(true) }
 
                 ]);
 
-                self.selectedTab1 = ko.observable(SalaryCategory.PAYMENT_TOTAL);
-                self.selectedTab2 = ko.observable('tab-1');
+                self.selectedDivision = ko.observable(TaxDivision.PAYMENT);
+                self.selectedAggregateItem = ko.observable('aggregate1');
 
                 this.itemsSwap = ko.observableArray<ItemModel>([]);
 
                 var array = [];
                 for (var i = 0; i < 20; i++) {
-                    array.push(new ItemModel(i, '基本給', "description"));
+                    array.push(new ItemModel(i, '基本給'));
                 }
                 this.itemsSwap(array);
 
@@ -66,13 +72,9 @@ module nts.uk.pr.view.qpp007.j {
         class ItemModel {
             code: number;
             name: string;
-            description: string;
-            deletable: boolean;
-            constructor(code: number, name: string, description: string) {
+            constructor(code: number, name: string) {
                 this.code = code;
                 this.name = name;
-                this.description = description;
-                this.deletable = code % 3 === 0;
             }
         }
     }

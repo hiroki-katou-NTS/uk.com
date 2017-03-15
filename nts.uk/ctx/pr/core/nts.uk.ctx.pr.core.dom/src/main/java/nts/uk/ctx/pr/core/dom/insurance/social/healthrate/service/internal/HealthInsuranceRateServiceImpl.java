@@ -5,6 +5,7 @@
 package nts.uk.ctx.pr.core.dom.insurance.social.healthrate.service.internal;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -16,6 +17,10 @@ import nts.gul.text.StringUtil;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.base.simplehistory.SimpleHistoryRepository;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
+import nts.uk.ctx.pr.core.dom.insurance.avgearn.AvgEarnLevelMasterSetting;
+import nts.uk.ctx.pr.core.dom.insurance.avgearn.AvgEarnLevelMasterSettingRepository;
+import nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.HealthInsuranceAvgearn;
+import nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.HealthInsuranceAvgearnRepository;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.HealthInsuranceRate;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.HealthInsuranceRateRepository;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.service.HealthInsuranceRateService;
@@ -35,6 +40,14 @@ public class HealthInsuranceRateServiceImpl extends HealthInsuranceRateService {
 	/** The health insurance rate repo. */
 	@Inject
 	private HealthInsuranceRateRepository healthInsuranceRateRepo;
+
+	/** The avg earn level master setting repository. */
+	@Inject
+	private AvgEarnLevelMasterSettingRepository avgEarnLevelMasterSettingRepository;
+
+	/** The health insurance avgearn repository. */
+	@Inject
+	private HealthInsuranceAvgearnRepository healthInsuranceAvgearnRepository;
 
 	/*
 	 * (non-Javadoc)
@@ -77,13 +90,58 @@ public class HealthInsuranceRateServiceImpl extends HealthInsuranceRateService {
 
 	@Override
 	public HealthInsuranceRate createInitalHistory(String companyCode, String officeCode, YearMonth startTime) {
-		List<HealthInsuranceRate> listHealthOfOffice = this.healthInsuranceRateRepo.findAllOffice(companyCode,officeCode);
-		HealthInsuranceRate obj = listHealthOfOffice.stream().filter(c -> c.getStart().equals(startTime)).findFirst()
-				.get();
-		if (obj != null) {
+		List<HealthInsuranceRate> listHealthOfOffice = this.healthInsuranceRateRepo.findAllOffice(companyCode,
+				officeCode);
+		List<HealthInsuranceRate> obj = listHealthOfOffice.stream()
+				.filter(c -> c.getApplyRange().getStartMonth().equals(startTime)).collect(Collectors.toList());
+		if (!obj.isEmpty()) {
 			throw new BusinessException("ER011");
 		}
 		return HealthInsuranceRate.createWithIntial(new CompanyCode(companyCode), new OfficeCode(officeCode),
 				startTime);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.base.simplehistory.SimpleHistoryBaseService#
+	 * onCopyHistory(java.lang.String, java.lang.String,
+	 * nts.uk.ctx.pr.core.dom.base.simplehistory.History,
+	 * nts.uk.ctx.pr.core.dom.base.simplehistory.History)
+	 */
+	@Override
+	protected void onCopyHistory(String companyCode, String masterCode, HealthInsuranceRate copiedHistory,
+			HealthInsuranceRate newHistory) {
+		super.onCopyHistory(companyCode, masterCode, copiedHistory, newHistory);
+		// Get listAvgEarn of copiedHistory.
+		List<HealthInsuranceAvgearn> listHealthInsuranceAvgearn = healthInsuranceAvgearnRepository
+				.findById(copiedHistory.getHistoryId());
+		// Update newHistoryId.
+		List<HealthInsuranceAvgearn> updatedList = listHealthInsuranceAvgearn.stream().map(item -> {
+			return item.copyWithNewHistoryId(newHistory.getHistoryId());
+		}).collect(Collectors.toList());
+
+		this.healthInsuranceAvgearnRepository.update(updatedList, companyCode, newHistory.getOfficeCode().v());
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.base.simplehistory.SimpleHistoryBaseService#
+	 * onCreateHistory(java.lang.String, java.lang.String,
+	 * nts.uk.ctx.pr.core.dom.base.simplehistory.History)
+	 */
+	@Override
+	protected void onCreateHistory(String companyCode, String masterCode, HealthInsuranceRate newHistory) {
+		super.onCreateHistory(companyCode, masterCode, newHistory);
+		// Get listAvgEarnLevelMasterSetting.
+		List<AvgEarnLevelMasterSetting> listAvgEarnLevelMasterSetting = avgEarnLevelMasterSettingRepository
+				.findAll(new CompanyCode(companyCode));
+		// Create HealthInsuranceAvgearn list with initial values.
+		List<HealthInsuranceAvgearn> newList = listAvgEarnLevelMasterSetting.stream().map(setting -> {
+			return HealthInsuranceAvgearn.createWithIntial(newHistory.getHistoryId(), setting.getCode());
+		}).collect(Collectors.toList());
+
+		this.healthInsuranceAvgearnRepository.update(newList, companyCode, newHistory.getOfficeCode().v());
 	}
 }

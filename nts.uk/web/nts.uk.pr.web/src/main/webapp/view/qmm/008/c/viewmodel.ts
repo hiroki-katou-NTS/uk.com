@@ -62,10 +62,10 @@ module nts.uk.pr.view.qmm008.c {
                 }));
                 self.selectedOfficeCode = ko.observable('');
                 self.selectedOfficeCode.subscribe(function(selectedOfficeCode: string) {
+                    $('.save-error').ntsError('clear');
                     if (selectedOfficeCode != null && selectedOfficeCode != undefined && selectedOfficeCode != "") {
                         self.enabled(false);
                         self.deleteButtonControll(true);
-                        //                        alert(officeSelectedCode);
                         $.when(self.load(selectedOfficeCode)).done(function() {
                             //load data success
                         }).fail(function(res) {
@@ -83,13 +83,13 @@ module nts.uk.pr.view.qmm008.c {
                     // Load first result.
                     if (self.officeItems().length > 0) {
                         //load first office
-                        self.selectedOfficeCode(self.officeItems()[0].code);
+//                        self.selectedOfficeCode(self.officeItems()[0].code);
                     } else {
                         //register new office mode
                         self.addNew();
                     }
                     // Resolve
-                    dfd.resolve(null);
+                    dfd.resolve();
                 });
                 // Return.
                 return dfd.promise();
@@ -195,8 +195,8 @@ module nts.uk.pr.view.qmm008.c {
                 var self = this;
                 service.register(self.collectData()).done(function() {
                     // when register done   
-                }).fail(function() {
-                    // if register fail    
+                }).fail(function(res) {
+                    alert(res.message);    
                 });
             }
 

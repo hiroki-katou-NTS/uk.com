@@ -20,35 +20,69 @@ var nts;
                             var ScreenModel = (function (_super) {
                                 __extends(ScreenModel, _super);
                                 function ScreenModel() {
-                                    _super.call(this, 'test', qmm016.service.instance);
+                                    _super.call(this, {
+                                        functionName: '賃金テープル',
+                                        service: qmm016.service.instance,
+                                        removeMasterOnLastHistoryRemove: true });
                                     var self = this;
+                                    self.head = new WageTableHeadViewModel();
+                                    self.selectedTab = ko.observable('tab-1');
                                     self.tabs = ko.observableArray([
                                         { id: 'tab-1', title: '基本情報', content: '#tab-content-1', enable: ko.observable(true), visible: ko.observable(true) },
                                         { id: 'tab-2', title: '賃金テーブルの情報', content: '#tab-content-2', enable: ko.observable(true), visible: ko.observable(true) }
                                     ]);
-                                    self.generalTableTypes = ko.observableArray([
-                                        { code: '0', name: '一次元' },
-                                        { code: '1', name: '二次元' },
-                                        { code: '2', name: '三次元' }
-                                    ]);
-                                    self.specialTableTypes = ko.observableArray([
-                                        { code: '3', name: '資格' },
-                                        { code: '4', name: '精皆勤手当' }
-                                    ]);
-                                    self.selectedCode = ko.observable('0001');
-                                    self.selectedTab = ko.observable('tab-1');
-                                    self.code = ko.observable('');
-                                    self.name = ko.observable('');
-                                    self.startMonth = ko.observable('');
-                                    self.endMonth = ko.observable('9999/12');
-                                    self.monthRange = ko.computed(function () { return self.startMonth() + " ~ " + self.endMonth(); });
-                                    self.selectedDimensionName = ko.computed(function () { return '一次元'; });
-                                    self.memo = ko.observable('');
-                                    self.selectedDimensionType = ko.observable(0);
+                                    self.generalTableTypes = ko.observableArray(qmm016.model.normalDemension);
+                                    self.specialTableTypes = ko.observableArray(qmm016.model.specialDemension);
                                 }
+                                ScreenModel.prototype.onSelectHistory = function (id) {
+                                    var self = this;
+                                    var dfd = $.Deferred();
+                                    qmm016.service.instance.loadHistoryByUuid(id).done(function (model) {
+                                        self.head.resetBy(model.head);
+                                    });
+                                    dfd.resolve();
+                                    return dfd.promise();
+                                };
+                                ScreenModel.prototype.onSave = function () {
+                                    var self = this;
+                                    var dfd = $.Deferred();
+                                    dfd.resolve();
+                                    return dfd.promise();
+                                };
+                                ScreenModel.prototype.onRegistNew = function () {
+                                    var self = this;
+                                    $('.save-error').ntsError('clear');
+                                    self.head.reset();
+                                };
                                 return ScreenModel;
                             }(view.base.simplehistory.viewmodel.ScreenBaseModel));
                             viewmodel.ScreenModel = ScreenModel;
+                            var WageTableHeadViewModel = (function () {
+                                function WageTableHeadViewModel() {
+                                    var self = this;
+                                    self.code = ko.observable(undefined);
+                                    self.name = ko.observable(undefined);
+                                    self.demensionSet = ko.observable(undefined);
+                                    self.memo = ko.observable(undefined);
+                                    self.reset();
+                                }
+                                WageTableHeadViewModel.prototype.reset = function () {
+                                    var self = this;
+                                    self.code('');
+                                    self.name('');
+                                    self.demensionSet(qmm016.model.allDemension[0].code);
+                                    self.memo('');
+                                };
+                                WageTableHeadViewModel.prototype.resetBy = function (head) {
+                                    var self = this;
+                                    self.code(head.code);
+                                    self.name(head.name);
+                                    self.demensionSet(head.demensionSet);
+                                    self.memo(head.memo);
+                                };
+                                return WageTableHeadViewModel;
+                            }());
+                            viewmodel.WageTableHeadViewModel = WageTableHeadViewModel;
                         })(viewmodel = a.viewmodel || (a.viewmodel = {}));
                     })(a = qmm016.a || (qmm016.a = {}));
                 })(qmm016 = view.qmm016 || (view.qmm016 = {}));

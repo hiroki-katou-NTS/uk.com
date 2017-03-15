@@ -16,14 +16,14 @@ var nts;
                                 function ScreenModel() {
                                     var self = this;
                                     self.isLoading = ko.observable(true);
+                                    self.isNewMode = ko.observable(false);
                                     self.outputSettings = ko.observableArray([]);
                                     self.outputSettingSelectedCode = ko.observable('');
                                     self.outputSettingDetailModel = ko.observable(new OutputSettingDetailModel());
                                     self.reportItems = ko.observableArray([]);
                                     self.reportItemSelected = ko.observable('');
-                                    self.outputSettingSelectedCode;
                                     for (var i = 1; i < 30; i++) {
-                                        this.outputSettings.push(new ItemModel('00' + i, '基本給' + i, "name " + i, i % 3 === 0));
+                                        this.outputSettings.push(new OutputSettingHeader('00' + i, '基本給' + i));
                                     }
                                     this.reportItemColumns = ko.observableArray([
                                         {
@@ -39,10 +39,15 @@ var nts;
                                         { headerText: '名称', prop: 'name', width: 100 },
                                     ]);
                                     self.outputSettingDetailModel().reloadReportItems = self.reloadReportItems.bind(self);
+                                    self.outputSettingSelectedCode.subscribe(function (id) {
+                                        self.isNewMode(false);
+                                        self.onSelectOutputSetting(id);
+                                    });
                                 }
                                 ScreenModel.prototype.startPage = function () {
                                     var self = this;
                                     var dfd = $.Deferred();
+                                    self.isLoading(false);
                                     dfd.resolve();
                                     return dfd.promise();
                                 };
@@ -62,22 +67,51 @@ var nts;
                                     });
                                     self.reportItems(reportItemList);
                                 };
+                                ScreenModel.prototype.collectData = function () {
+                                    var self = this;
+                                    var model = self.outputSettingDetailModel();
+                                    var data = new OutputSettingDto();
+                                    data.code = model.settingCode();
+                                    data.name = model.settingName();
+                                    var settings = new Array();
+                                    model.categorySettings().forEach(function (item) {
+                                        settings.push(new CategorySettingDto(SalaryCategory.PAYMENT, item.outputItems()));
+                                    });
+                                    data.categorySettings = settings;
+                                    return data;
+                                };
+                                ScreenModel.prototype.onSelectOutputSetting = function (id) {
+                                };
+                                ScreenModel.prototype.save = function () {
+                                    var self = this;
+                                    console.log(self.collectData());
+                                };
+                                ScreenModel.prototype.delete = function () {
+                                    var self = this;
+                                };
                                 ScreenModel.prototype.commonSettingBtnClick = function () {
                                     nts.uk.ui.windows.sub.modal('/view/qpp/007/j/index.xhtml', { title: '集計項目の設定', dialogClass: 'no-close' });
+                                };
+                                ScreenModel.prototype.close = function () {
+                                    nts.uk.ui.windows.close();
                                 };
                                 return ScreenModel;
                             }());
                             viewmodel.ScreenModel = ScreenModel;
-                            var ItemModel = (function () {
-                                function ItemModel(code, name, description, deletable) {
+                            var OutputSettingHeader = (function () {
+                                function OutputSettingHeader(code, name) {
                                     this.code = code;
                                     this.name = name;
-                                    this.description = description;
-                                    this.deletable = deletable;
                                 }
-                                return ItemModel;
+                                return OutputSettingHeader;
                             }());
-                            viewmodel.ItemModel = ItemModel;
+                            viewmodel.OutputSettingHeader = OutputSettingHeader;
+                            var OutputSettingDto = (function () {
+                                function OutputSettingDto() {
+                                }
+                                return OutputSettingDto;
+                            }());
+                            viewmodel.OutputSettingDto = OutputSettingDto;
                             var OutputSettingDetailModel = (function () {
                                 function OutputSettingDetailModel() {
                                     this.settingCode = ko.observable('code');
@@ -88,12 +122,12 @@ var nts;
                                     this.categorySettings.push(new CategorySetting());
                                     this.categorySettings.push(new CategorySetting());
                                     this.categorySettingTabs = ko.observableArray([
-                                        { id: SalaryCategory.SUPPLY, title: '支給', content: '#supply', enable: ko.observable(true), visible: ko.observable(true) },
+                                        { id: SalaryCategory.PAYMENT, title: '支給', content: '#payment', enable: ko.observable(true), visible: ko.observable(true) },
                                         { id: SalaryCategory.DEDUCTION, title: '控除', content: '#deduction', enable: ko.observable(true), visible: ko.observable(true) },
                                         { id: SalaryCategory.ATTENDANCE, title: '勤怠', content: '#attendance', enable: ko.observable(true), visible: ko.observable(true) },
                                         { id: SalaryCategory.ARTICLE_OTHERS, title: '記事・その他', content: '#article-others', enable: ko.observable(true), visible: ko.observable(true) }
                                     ]);
-                                    this.selectedCategory = ko.observable(SalaryCategory.SUPPLY);
+                                    this.selectedCategory = ko.observable(SalaryCategory.PAYMENT);
                                     var self = this;
                                     self.categorySettings().forEach(function (setting) {
                                         setting.outputItems.subscribe(function (newValue) {
@@ -104,15 +138,24 @@ var nts;
                                 return OutputSettingDetailModel;
                             }());
                             viewmodel.OutputSettingDetailModel = OutputSettingDetailModel;
+                            var CategorySettingDto = (function () {
+                                function CategorySettingDto(category, outputItems) {
+                                    this.category = category;
+                                    this.outputItems = outputItems;
+                                }
+                                return CategorySettingDto;
+                            }());
+                            viewmodel.CategorySettingDto = CategorySettingDto;
                             var CategorySetting = (function () {
                                 function CategorySetting() {
                                     var self = this;
-                                    self.outputItems = ko.observableArray([]);
                                     self.aggregateItems = ko.observableArray([]);
-                                    self.masterItems = ko.observableArray([]);
-                                    self.outputItemSelected = ko.observable(null);
                                     self.aggregateItemsSelected = ko.observableArray([]);
+                                    self.masterItems = ko.observableArray([]);
                                     self.masterItemsSelected = ko.observableArray([]);
+                                    self.outputItems = ko.observableArray([]);
+                                    self.outputItemSelected = ko.observable(null);
+                                    self.outputItemsSelected = ko.observableArray([]);
                                     for (var i = 1; i < 15; i++) {
                                         this.aggregateItems.push({ code: '00' + i, name: '基本給' + i, subsItem: [], taxDivision: 'Payment', value: i });
                                     }
@@ -131,7 +174,8 @@ var nts;
                                         },
                                         { headerText: 'コード', prop: 'code', width: 50 },
                                         { headerText: '名称', prop: 'name', width: 60 },
-                                        { headerText: '削除', prop: 'code', width: 60,
+                                        {
+                                            headerText: '削除', prop: 'code', width: 60,
                                             formatter: function (code) {
                                                 return '<div class="halign-center"><button class="icon icon-close" id="' + code + '" >'
                                                     + '</button></div>';
@@ -167,7 +211,6 @@ var nts;
                                                 code: item.code,
                                                 name: item.name,
                                                 isAggregateItem: false,
-                                                removable: true
                                             });
                                         });
                                         self.masterItemsSelected([]);
@@ -188,7 +231,6 @@ var nts;
                                                 code: item.code,
                                                 name: item.name,
                                                 isAggregateItem: true,
-                                                removable: true
                                             });
                                         });
                                         self.aggregateItemsSelected([]);
@@ -241,10 +283,8 @@ var nts;
                             var SalaryCategory = (function () {
                                 function SalaryCategory() {
                                 }
-                                SalaryCategory.SUPPLY = 'Supply';
-                                SalaryCategory.PAYMENT_TOTAL = 'PaymentTotal';
+                                SalaryCategory.PAYMENT = 'Payment';
                                 SalaryCategory.DEDUCTION = 'Deduction';
-                                SalaryCategory.DEDUCTION_TABULATION = 'DeductionTabulation';
                                 SalaryCategory.ATTENDANCE = 'Attendance';
                                 SalaryCategory.ARTICLE_OTHERS = 'ArticleOthers';
                                 return SalaryCategory;

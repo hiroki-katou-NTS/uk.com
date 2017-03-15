@@ -11,7 +11,7 @@ import java.util.Set;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.error.BusinessException;
-import nts.arc.layer.dom.AggregateRoot;
+import nts.arc.layer.dom.DomainObject;
 import nts.arc.primitive.PrimitiveValue;
 import nts.arc.time.YearMonth;
 import nts.gul.text.IdentifierUtil;
@@ -30,7 +30,7 @@ import nts.uk.ctx.pr.core.dom.insurance.RoundingMethod;
  * The Class PensionRate.
  */
 @Getter
-public class PensionRate extends AggregateRoot implements History<PensionRate> {
+public class PensionRate extends DomainObject implements History<PensionRate> {
 
 	/** The history id. */
 	// historyId
