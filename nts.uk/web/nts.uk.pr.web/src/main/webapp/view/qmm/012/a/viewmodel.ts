@@ -3,35 +3,27 @@ module qmm012.a.viewmodel {
         //Switch
         roundingRules: KnockoutObservableArray<any>;
         selectedRuleCode: any;
-        enable: KnockoutObservable<boolean>;
+        enable: KnockoutObservable<boolean> = ko.observable(true);
         constructor() {
             let self = this;
             //start Switch Data
-            self.enable = ko.observable(true);
+            self.enable 
             self.roundingRules = ko.observableArray([
-                { code: 'group1', name: 'x‹‹€–Ú' },
-                { code: 'group2', name: 'Tœ€–Ú' },
-                { code: 'group3', name: '‹Î‘Ó€–Ú' }
+                { code: 0 , name: 'x‹‹€–Ú' },
+                { code: 1 , name: 'Tœ€–Ú' },
+                { code: 2 , name: '‹Î‘Ó€–Ú' }
             ]);
-            self.selectedRuleCode = ko.observable('group1');
+            self.selectedRuleCode = ko.observable(0);
             //endSwitch Data
         }
         submitInfo() {
             let self = this;
-            let groupName = self.selectedRuleCode;
-            nts.uk.ui.windows.setShared('groupName', groupName());
+            let groupCode = self.selectedRuleCode();
+            nts.uk.ui.windows.setShared('groupCode', groupCode);
             nts.uk.ui.windows.close();
         }
         closeDialog() {
             nts.uk.ui.windows.close();
         }
-        
-        start(): JQueryPromise<any> {
-            let self = this;
-            // Page load dfd.
-            var dfd = $.Deferred();
-            //dropdownlist event
-        }
     }
-
 }
