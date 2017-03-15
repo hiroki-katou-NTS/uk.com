@@ -16,14 +16,14 @@ var nts;
                                 function ScreenModel() {
                                     var self = this;
                                     self.isLoading = ko.observable(true);
+                                    self.isNewMode = ko.observable(false);
                                     self.outputSettings = ko.observableArray([]);
                                     self.outputSettingSelectedCode = ko.observable('');
                                     self.outputSettingDetailModel = ko.observable(new OutputSettingDetailModel());
                                     self.reportItems = ko.observableArray([]);
                                     self.reportItemSelected = ko.observable('');
-                                    self.outputSettingSelectedCode;
                                     for (var i = 1; i < 30; i++) {
-                                        this.outputSettings.push(new ItemModel('00' + i, '基本給' + i, "name " + i, i % 3 === 0));
+                                        this.outputSettings.push(new OutputSettingHeader('00' + i, '基本給' + i));
                                     }
                                     this.reportItemColumns = ko.observableArray([
                                         {
@@ -39,10 +39,15 @@ var nts;
                                         { headerText: '名称', prop: 'name', width: 100 },
                                     ]);
                                     self.outputSettingDetailModel().reloadReportItems = self.reloadReportItems.bind(self);
+                                    self.outputSettingSelectedCode.subscribe(function (id) {
+                                        self.isNewMode(false);
+                                        self.onSelectOutputSetting(id);
+                                    });
                                 }
                                 ScreenModel.prototype.startPage = function () {
                                     var self = this;
                                     var dfd = $.Deferred();
+                                    self.isLoading(false);
                                     dfd.resolve();
                                     return dfd.promise();
                                 };
@@ -62,22 +67,51 @@ var nts;
                                     });
                                     self.reportItems(reportItemList);
                                 };
+                                ScreenModel.prototype.collectData = function () {
+                                    var self = this;
+                                    var model = self.outputSettingDetailModel();
+                                    var data = new OutputSettingDto();
+                                    data.code = model.settingCode();
+                                    data.name = model.settingName();
+                                    var settings = new Array();
+                                    model.categorySettings().forEach(function (item) {
+                                        settings.push(new CategorySettingDto(SalaryCategory.PAYMENT, item.outputItems()));
+                                    });
+                                    data.categorySettings = settings;
+                                    return data;
+                                };
+                                ScreenModel.prototype.onSelectOutputSetting = function (id) {
+                                };
+                                ScreenModel.prototype.save = function () {
+                                    var self = this;
+                                    console.log(self.collectData());
+                                };
+                                ScreenModel.prototype.delete = function () {
+                                    var self = this;
+                                };
                                 ScreenModel.prototype.commonSettingBtnClick = function () {
                                     nts.uk.ui.windows.sub.modal('/view/qpp/007/j/index.xhtml', { title: '集計項目の設定', dialogClass: 'no-close' });
+                                };
+                                ScreenModel.prototype.close = function () {
+                                    nts.uk.ui.windows.close();
                                 };
                                 return ScreenModel;
                             }());
                             viewmodel.ScreenModel = ScreenModel;
-                            var ItemModel = (function () {
-                                function ItemModel(code, name, description, deletable) {
+                            var OutputSettingHeader = (function () {
+                                function OutputSettingHeader(code, name) {
                                     this.code = code;
                                     this.name = name;
-                                    this.description = description;
-                                    this.deletable = deletable;
                                 }
-                                return ItemModel;
+                                return OutputSettingHeader;
                             }());
-                            viewmodel.ItemModel = ItemModel;
+                            viewmodel.OutputSettingHeader = OutputSettingHeader;
+                            var OutputSettingDto = (function () {
+                                function OutputSettingDto() {
+                                }
+                                return OutputSettingDto;
+                            }());
+                            viewmodel.OutputSettingDto = OutputSettingDto;
                             var OutputSettingDetailModel = (function () {
                                 function OutputSettingDetailModel() {
                                     this.settingCode = ko.observable('code');
@@ -87,21 +121,6 @@ var nts;
                                     this.categorySettings.push(new CategorySetting());
                                     this.categorySettings.push(new CategorySetting());
                                     this.categorySettings.push(new CategorySetting());
-                                    for (var i = 1; i < 15; i++) {
-                                        this.categorySettings()[2].outputItems.push({
-                                            code: i,
-                                            name: 'name' + i,
-                                            isAggregateItem: false,
-                                            removable: true
-                                        });
-                                        this.categorySettings()[3].outputItems.push({
-                                            code: i + 1,
-                                            name: 'name' + i + 1,
-                                            isAggregateItem: false,
-                                            removable: true
-                                        });
-                                    }
-                                    ;
                                     this.categorySettingTabs = ko.observableArray([
                                         { id: SalaryCategory.PAYMENT, title: '支給', content: '#payment', enable: ko.observable(true), visible: ko.observable(true) },
                                         { id: SalaryCategory.DEDUCTION, title: '控除', content: '#deduction', enable: ko.observable(true), visible: ko.observable(true) },
@@ -116,13 +135,17 @@ var nts;
                                         });
                                     });
                                 }
-                                OutputSettingDetailModel.prototype.afterRender = function () {
-                                    $('.master-table-label').width($('#swap-list-gridArea1').width());
-                                    $('.sub-table-label').width($('#swap-list-gridArea2').width());
-                                };
                                 return OutputSettingDetailModel;
                             }());
                             viewmodel.OutputSettingDetailModel = OutputSettingDetailModel;
+                            var CategorySettingDto = (function () {
+                                function CategorySettingDto(category, outputItems) {
+                                    this.category = category;
+                                    this.outputItems = outputItems;
+                                }
+                                return CategorySettingDto;
+                            }());
+                            viewmodel.CategorySettingDto = CategorySettingDto;
                             var CategorySetting = (function () {
                                 function CategorySetting() {
                                     var self = this;
@@ -188,7 +211,6 @@ var nts;
                                                 code: item.code,
                                                 name: item.name,
                                                 isAggregateItem: false,
-                                                removable: true
                                             });
                                         });
                                         self.masterItemsSelected([]);
@@ -209,7 +231,6 @@ var nts;
                                                 code: item.code,
                                                 name: item.name,
                                                 isAggregateItem: true,
-                                                removable: true
                                             });
                                         });
                                         self.aggregateItemsSelected([]);
@@ -263,9 +284,7 @@ var nts;
                                 function SalaryCategory() {
                                 }
                                 SalaryCategory.PAYMENT = 'Payment';
-                                SalaryCategory.PAYMENT_TOTAL = 'PaymentTotal';
                                 SalaryCategory.DEDUCTION = 'Deduction';
-                                SalaryCategory.DEDUCTION_TABULATION = 'DeductionTabulation';
                                 SalaryCategory.ATTENDANCE = 'Attendance';
                                 SalaryCategory.ARTICLE_OTHERS = 'ArticleOthers';
                                 return SalaryCategory;
