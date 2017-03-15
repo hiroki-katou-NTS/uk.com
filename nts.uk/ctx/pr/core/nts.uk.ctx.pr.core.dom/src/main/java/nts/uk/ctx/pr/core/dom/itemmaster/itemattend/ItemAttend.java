@@ -5,6 +5,8 @@ import java.math.BigDecimal;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
+import nts.uk.ctx.core.dom.company.CompanyCode;
+import nts.uk.ctx.pr.core.dom.itemmaster.ItemCode;
 import nts.uk.ctx.pr.core.dom.itemmaster.Memo;
 import nts.uk.ctx.pr.core.dom.itemmaster.itemsalary.AlRangeHigh;
 import nts.uk.ctx.pr.core.dom.itemmaster.itemsalary.AlRangeLow;
@@ -14,19 +16,20 @@ import nts.uk.ctx.pr.core.dom.itemmaster.itemsalary.RangeAtr;
 
 @Getter
 public class ItemAttend extends AggregateRoot {
-
-	public AvePayAtr avePayAtr;
-	public ItemAtr itemAtr;
-	public RangeAtr errRangeLowAtr;
-	public ErrRangeLow errRangeLow;
-	public RangeAtr errRangeHighAtr;
-	public ErrRangeHigh errRangeHigh;
-	public RangeAtr alRangeLowAtr;
-	public AlRangeLow alRangeLow;
-	public RangeAtr alRangeHighAtr;
-	public AlRangeHigh alRangeHigh;
-	public WorkDaysScopeAtr workDaysScopeAtr;
-	public Memo memo;
+	private CompanyCode companyCode;
+	private ItemCode itemCode;
+	private AvePayAtr avePayAtr;
+	private ItemAtr itemAtr;
+	private RangeAtr errRangeLowAtr;
+	private ErrRangeLow errRangeLow;
+	private RangeAtr errRangeHighAtr;
+	private ErrRangeHigh errRangeHigh;
+	private RangeAtr alRangeLowAtr;
+	private AlRangeLow alRangeLow;
+	private RangeAtr alRangeHighAtr;
+	private AlRangeHigh alRangeHigh;
+	private WorkDaysScopeAtr workDaysScopeAtr;
+	private Memo memo;
 
 	public ItemAttend(AvePayAtr avePayAtr, ItemAtr itemAtr, RangeAtr errRangeLowAtr, ErrRangeLow errRangeLow,
 			RangeAtr errRangeHighAtr, ErrRangeHigh errRangeHigh, RangeAtr alRangeLowAtr, AlRangeLow alRangeLow,

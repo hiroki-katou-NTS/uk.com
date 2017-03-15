@@ -9,6 +9,7 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.pr.core.dom.itemmaster.itemsalary.ItemSalary;
 import nts.uk.ctx.pr.core.dom.itemmaster.itemsalary.ItemSalaryRespository;
 import nts.uk.ctx.pr.core.infra.entity.itemmaster.QcamtItemSalary;
+import nts.uk.ctx.pr.core.infra.entity.itemmaster.QcamtItemSalaryPK;
 
 
 @RequestScoped
@@ -22,6 +23,11 @@ public class JpaItemSalaryRepository extends JpaRepository implements ItemSalary
 		return this.queryProxy().query(SEL_1, QcamtItemSalary.class).setParameter("companyCode", companyCode)
 				.setParameter("itemCd", itemCode).getSingle(c -> toDomain(c));
 	}
+	
+	@Override
+	public void update(ItemSalary item) {
+		this.commandProxy().update(toEntity(item));
+	}
 
 	private ItemSalary toDomain(QcamtItemSalary entity) {
 
@@ -34,5 +40,37 @@ public class JpaItemSalaryRepository extends JpaRepository implements ItemSalary
 				entity.limitMny);
 		// TODO Auto-generated method stub
 		return domain;
+	}
+	
+	/**
+	 * Convert domain object to entity object
+	 * @param domain ItemSalary
+	 * @return QcamtItemSalary
+	 */
+	private QcamtItemSalary toEntity(ItemSalary domain) {
+		return new QcamtItemSalary(
+				new QcamtItemSalaryPK(domain.getCompanyCode().v(), domain.getItemCode().v()),
+				domain.getTaxAtr().value, 
+				domain.getSocialInsAtr().value, 
+				domain.getLaborInsAtr().value, 
+				domain.getFixPayAtr().value, 
+				domain.getApplyForAllEmpFlg().value, 
+				domain.getApplyForMonthlyPayEmp().value,
+				domain.getApplyForDaymonthlyPayEmp().value, 
+				domain.getApplyForDaylyPayEmp().value, 
+				domain.getApplyForHourlyPayEmp().value, 
+				domain.getAvePayAtr().value, 
+				domain.getErrRangeLowAtr().value, 
+				domain.getErrRangeLow().v(), 
+				domain.getErrRangeHighAtr().value, 
+				domain.getErrRangeHigh().v(),
+				domain.getAlRangeLowAtr().value, 
+				domain.getAlRangeLow().v(), 
+				domain.getAlRangeHighAtr().value,
+				domain.getAlRangeHigh().v(),
+				domain.getMemo().v(),
+				domain.getLimitMnyAtr().value, 
+				domain.getLimitMnyRefItemCd().v(), 
+				domain.getLimitMny().v());
 	}
 }
