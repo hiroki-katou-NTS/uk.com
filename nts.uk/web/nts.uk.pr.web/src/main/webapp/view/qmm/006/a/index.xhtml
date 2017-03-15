@@ -29,8 +29,8 @@
 				<button id="A_BTN_002"
 					data-bind="click: saveData, enable: $root.errors.isEmpty"
 					class="proceed">登録</button>
-				<button id="A_BTN_003" data-bind="click: OpenCDialog">振込元銀行の置換</button>
-				<button id="A_BTN_007" data-bind="click: BTN007">マスタ修正ログ</button>
+				<button id="A_BTN_003" data-bind="click: openCDialog">振込元銀行の置換</button>
+				<button id="A_BTN_007" data-bind="click: btn007">マスタ修正ログ</button>
 				<button id="A_BTN_004"
 					data-bind="click: remove, enable : isDeleteEnable" class="danger">削除</button>
 				<a href="#" id="A_BTN_005"
@@ -75,7 +75,7 @@
 					                    textalign: 'center'
 					                },
 									required: true,
-									enable: $parent.isEnable,
+									enable: $parent.isInp001Enable,
 									readonly: false}" /></span>
 							<span> <input id="A_INP_002" data-name="取引銀行名"
 								data-bind="ntsTextEditor: {
@@ -93,11 +93,11 @@
 						</div>
 						<div class="control-group">
 							<button id="A_BTN_006"
-								data-bind="click: $parent.OpenBDialog.bind($parent)">参照</button>
+								data-bind="click: $parent.openBDialog.bind($parent)">参照</button>
 							<label id="A_LBL_004" data-name="銀行コード"
 								data-bind="text: bankCode"></label> <label id="A_LBL_005"
 								data-bind="text: $parent.bankName"></label> <label
-								id="A_LBL_006" data-bind="visible: $parent.isAppear">-</label> <label
+								id="A_LBL_006" data-bind="visible: $parent.isHyphensAppear">-</label> <label
 								id="A_LBL_007" data-name="支店コード" data-bind="text: branchCode"></label>
 							<label id="A_LBL_008" data-bind="text: $parent.branchName"></label>
 						</div>
@@ -138,7 +138,7 @@
 
 					<div class="right-content-right">
 						<div class="control-group">
-							<span id="A_INP_004"> <input data-name="振込依頼者名 "
+							<span> <input id="A_INP_004" data-name="振込依頼者名 "
 								data-bind="ntsTextEditor: {
 									value: requesterName,
 									constraint:'RequesterName',
