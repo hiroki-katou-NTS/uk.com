@@ -10,6 +10,8 @@
 	<ui:composition template="../a/master/dialog.xhtml">
 		<ui:define name="htmlHead">
 			<com:scriptfile path="start.js" />
+			<com:scriptfile path="service.js" />
+			<com:scriptfile path="viewmodel.js" />
 			<com:stylefile path="style.css" />
 			<com:scriptfile set="IGNITE" />
 		</ui:define>
@@ -103,8 +105,7 @@
 						<div class="divLineCol1"></div>
 						<div class="divLineCol2">
 							<div id="H_Text_002">
-								<label id="H_LBL_010">項目区分項目区分項目区分項目区分項目区分項目区分<br />
-									項目区分項目区分項目区分項目区分項目区分項目区分項目区分項目区分項目区分項目区分項目区分項目区分
+								<label id="H_LBL_010">「※する場合…有効期間内で、以下でチェックした月のみ、項目を表示します。」
 								</label>
 							</div>
 						</div>
@@ -147,8 +148,8 @@
 			</div>
 			<div id="contents-area">
 				<button id="H_BTN_001" class="x-large proceed"
-					onclick="submitInfo()">選択ボタン</button>
-				<button id="H_BTN_002" class="large" onclick="closeDialog()">キャンセルボタン</button>
+					data-bind="click:SubmitDialog">選択ボタン</button>
+				<button id="H_BTN_002" class="large" data-bind="click:CloseDialog">キャンセルボタン</button>
 			</div>
 		</ui:define>
 	</ui:composition>

@@ -58,3 +58,7 @@
 #A_SEL_001 {
 	margin: 10px 0px 0px 50px;
 }
+
+#Group1, #Group2, #Group3, #Group4 {
+	display: none;
+}

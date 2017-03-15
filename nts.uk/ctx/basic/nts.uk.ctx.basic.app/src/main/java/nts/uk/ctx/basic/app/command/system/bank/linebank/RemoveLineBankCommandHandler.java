@@ -25,12 +25,13 @@ public class RemoveLineBankCommandHandler extends CommandHandler<RemoveLineBankC
 	protected void handle(CommandHandlerContext<RemoveLineBankCommand> context) {
 		RemoveLineBankCommand command = context.getCommand();
 		String companyCode = AppContexts.user().companyCode();
-		String lineBankCode = context.getCommand().toDomain(companyCode).getLineBankCode().v();
-		List<String> lineCodeList = new ArrayList<String>();
-		lineCodeList.add(command.getLineBankCode());
+//		String lineBankCode = command.toDomain(companyCode).getLineBankCode().v();
+		String lineBankCode = command.getLineBankCode();
+		List<String> lineBankCodeList = new ArrayList<String>();
+		lineBankCodeList.add(lineBankCode);
 		
 		// check exists linebank in person_bank_account (xem linebank co ng nao su dung k, neu co ng su dung thi k dc xoa)
-		if (personBankAccountRepository.checkExistsLineBankAccount(companyCode, lineCodeList)) {
+		if (personBankAccountRepository.checkExistsLineBankAccount(companyCode, lineBankCodeList)) {
 			throw new BusinessException("ER008");
 		}
 

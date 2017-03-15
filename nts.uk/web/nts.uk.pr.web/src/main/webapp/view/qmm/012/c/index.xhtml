@@ -11,15 +11,15 @@
 		<div class="divLineCol2">
 			<div id="C_SEL_001"
 				data-bind="ntsComboBox: {
-										options: ComboBoxItemList_C_001, 
+										options: ComboBoxItemList_C_SEL_001, 
 										optionsValue: 'code', 
- 										value: selectedCode_C_001, 
+ 										value: selectedCode_C_SEL_001, 
  										optionsText: 'name', 
 									editable: isEditable, 
  										enable: isEnable, 
  										columns: [ 
  											{ prop: 'name', length: 10 }, 
-										]}"> 
+										]}">
 			</div>
 		</div>
 	</div>
@@ -35,7 +35,7 @@
 										options: roundingRules_C_017,
 										optionsValue: 'code',
 										optionsText: 'name',
-										value: selectedRuleCode_C_017,
+										value: CurrentLimitMnyAtr,
 										enable: enable }"></div>
 				</div>
 			</div>
@@ -46,20 +46,19 @@
 			</div>
 			<div class="divLineCol2">
 				<div id="C_Div_002">
-					<div id="C_INP_001" data-bind="with: currencyeditor_C_001">
+					<div id="C_INP_001" data-bind="with: currencyeditor_C_INP_001">
 						<input
 							data-bind="ntsNumberEditor: {
 										value: value,
 										constraint: constraint,
 										option: option,
-										required: required,
-										enable: enable,
-										readonly: readonly}" />
+										required: required}" />
 					</div>
 				</div>
 				<div id="C_Div_003" style="display: none;">
-					<button id="C_BTN_003" class="small">参照</button>
-					<label id="C_LBL_028"> 項目区分 </label>
+					<button id="C_BTN_003" class="small" data-bind="click: openKDialog">参照</button>
+					<label id="C_LBL_028" data-bind="text:CurrentLimitMnyRefItemCd">
+						項目区分 </label>
 				</div>
 			</div>
 		</div>
@@ -75,7 +74,7 @@
 										options: roundingRules_C_002_003_005To010,
 										optionsValue: 'code',
 										optionsText: 'name',
-										value: selectedRuleCode_C_002,
+										value: CurrentSocialInsAtr,
 										enable: enable }"></div>
 
 
@@ -91,7 +90,7 @@
 										options: roundingRules_C_002_003_005To010,
 										optionsValue: 'code',
 										optionsText: 'name',
-										value: selectedRuleCode_C_003,
+										value: CurrentLaborInsAtr,
 										enable: enable }"></div>
 		</div>
 	</div>
@@ -105,7 +104,7 @@
 										options: RadioItemList_C_004,
 										optionsValue: 'id',
 										optionsText: 'name',
-										value: selectedId_C_004,
+										value: CurrentFixPayAtr,
 										enable: enable}">
 			</div>
 		</div>
@@ -118,7 +117,7 @@
 										options: roundingRules_C_002_003_005To010,
 										optionsValue: 'code',
 										optionsText: 'name',
-										value: selectedRuleCode_C_005,
+										value: CurrentApplyForAllEmpFlg,
 										enable: false }">
 			</div>
 			<label id="C_LBL_006">月給者 </label>
@@ -127,7 +126,7 @@
 										options: roundingRules_C_002_003_005To010,
 										optionsValue: 'code',
 										optionsText: 'name',
-										value: selectedRuleCode_C_006,
+										value: CurrentApplyForMonthlyPayEmp,
 										enable: enable }">
 			</div>
 		</div>
@@ -142,7 +141,7 @@
 										options: roundingRules_C_002_003_005To010,
 										optionsValue: 'code',
 										optionsText: 'name',
-										value: selectedRuleCode_C_007,
+										value: CurrentApplyForDaymonthlyPayEmp,
 										enable: enable }">
 			</div>
 		</div>
@@ -156,7 +155,7 @@
 										options: roundingRules_C_002_003_005To010,
 										optionsValue: 'code',
 										optionsText: 'name',
-										value: selectedRuleCode_C_008,
+										value: CurrentApplyForDaylyPayEmp,
 										enable: enable }">
 			</div>
 		</div>
@@ -170,7 +169,7 @@
 										options: roundingRules_C_002_003_005To010,
 										optionsValue: 'code',
 										optionsText: 'name',
-										value: selectedRuleCode_C_009,
+										value: CurrentApplyForHourlyPayEmp,
 										enable: enable }">
 			</div>
 		</div>
@@ -185,7 +184,7 @@
 										options: roundingRules_C_002_003_005To010,
 										optionsValue: 'code',
 										optionsText: 'name',
-										value: selectedRuleCode_C_010,
+										value: CurrentAvePayAtr,
 										enable: enable }"></div>
 		</div>
 	</div>
@@ -199,11 +198,11 @@
 										options: roundingRules_C_011,
 										optionsValue: 'code',
 										optionsText: 'name',
-										value: selectedRuleCode_C_011,
+										value: CurrentZeroDisplaySet,
 										enable: enable }">
 			</div>
 			<div id="C_SEL_012"
-				data-bind="ntsCheckBox: { checked: checked_C_012, enable: enable, text: '項目名も表示しない' }"></div>
+				data-bind="ntsCheckBox: { checked: C_SEL_012_Selected, enable: enable, text: '項目名も表示しない' }"></div>
 
 		</div>
 	</div>
@@ -213,18 +212,16 @@
 		</div>
 		<div class="divLineCol2">
 			<div id="C_SEL_013"
-				data-bind="ntsCheckBox: { checked: checked_C_013, enable: enable, text: 'エラー上限チェック' }"></div>
-			<div id="C_INP_002" data-bind="with: currencyeditor_C_001">
+				data-bind="ntsCheckBox: { checked: C_SEL_013_Selected, enable: enable, text: '' }"></div>
+			<div id="C_INP_002" data-bind="with: currencyeditor_C_INP_002">
 				<input
 					data-bind="ntsNumberEditor: {
 										value: value,
 										constraint: constraint,
 										option: option,
-										required: required,
-										enable: enable,
-										readonly: readonly}" />
+										required: required}" />
 			</div>
-			<label id="C_LBL_013">を超える場合 </label>
+			<label id="C_LBL_013">を超える場合にエラーとする</label>
 
 
 		</div>
@@ -233,18 +230,16 @@
 		<div class="divLineCol1"></div>
 		<div class="divLineCol2">
 			<div id="C_SEL_014"
-				data-bind="ntsCheckBox: { checked: checked_C_014, enable: enable, text: 'アラーム上限チェック' }"></div>
-			<div id="C_INP_003" data-bind="with: currencyeditor_C_001">
+				data-bind="ntsCheckBox: { checked: C_SEL_014_Selected, enable: enable, text: '' }"></div>
+			<div id="C_INP_003" data-bind="with: currencyeditor_C_INP_003">
 				<input
 					data-bind="ntsNumberEditor: {
 										value: value,
 										constraint: constraint,
 										option: option,
-										required: required,
-										enable: enable,
-										readonly: readonly}" />
+										required: required}" />
 			</div>
-			<label id="C_LBL_014">を超える場合 </label>
+			<label id="C_LBL_016">未満の場合にエラーとする</label>
 		</div>
 
 	</div>
@@ -256,44 +251,40 @@
 		<div class="divLineCol2">
 
 			<div id="C_SEL_015"
-				data-bind="ntsCheckBox: { checked: checked_C_015, enable: enable, text: 'エラー下限チェック' }"></div>
-			<div id="C_INP_004" data-bind="with: currencyeditor_C_001">
+				data-bind="ntsCheckBox: { checked: C_SEL_015_Selected, enable: enable, text: '' }"></div>
+			<div id="C_INP_004" data-bind="with: currencyeditor_C_INP_004">
 				<input
 					data-bind="ntsNumberEditor: {
 										value: value,
 										constraint: constraint,
 										option: option,
-										required: required,
-										enable: enable,
-										readonly: readonly}" />
+										required: required}" />
 			</div>
-			<label id="C_LBL_016">未満の場合 </label>
+			<label id="C_LBL_014">を超える場合にアラームとする</label>
 		</div>
 	</div>
 	<div class="divLine">
 		<div class="divLineCol1"></div>
 		<div class="divLineCol2">
 			<div id="C_SEL_016"
-				data-bind="ntsCheckBox: { checked: checked_C_016, enable: enable, text: 'アラーム下限チェック' }"></div>
-			<div id="C_INP_005" data-bind="with: currencyeditor_C_001">
+				data-bind="ntsCheckBox: { checked: C_SEL_016_Selected, enable: enable, text: '' }"></div>
+			<div id="C_INP_005" data-bind="with: currencyeditor_C_INP_005">
 				<input
 					data-bind="ntsNumberEditor: {
 										value: value,
 										constraint: constraint,
 										option: option,
-										required: required,
-										enable: enable,
-										readonly: readonly}" />
+										required: required}" />
 			</div>
-			<label id="C_LBL_017">未満の場合 </label>
+			<label id="C_LBL_017">未満の場合にアラームとする</label>
 		</div>
 
 	</div>
 	<div class="divLine">
 		<div class="divLineCol1"></div>
 		<div class="divLineCol2">
-			<label id="C_LBL_018"> ナビゲーションメッセージ1 <br />ナビゲーションメッセージ1
-
+			<label id="C_LBL_018">「※エラーの場合は、データが登録されません。 <br />
+				アラームの場合は、メッセージが表示されます。（データが登録されます）」と表記
 			</label>
 
 		</div>
@@ -305,7 +296,7 @@
 			</div>
 		</div>
 		<div class="divLineCol2">
-			<button id="C_BTN_001" class="small">有効期間設定</button>
+			<button id="C_BTN_001" class="small" data-bind="click: openHDialog">有効期間設定</button>
 			<label id="C_LBL_020">設定区分 </label>
 
 		</div>
@@ -328,7 +319,7 @@
 		<div class="divLineCol2">
 
 			<TEXTAREA id="C_INP_006" rows="5" cols="40"
-				data-bind="value: textArea"></TEXTAREA>
+				data-bind="value: CurrentMemo"></TEXTAREA>
 		</div>
 
 	</div>

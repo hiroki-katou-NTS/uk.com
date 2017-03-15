@@ -6,23 +6,18 @@ var qmm012;
         (function (viewmodel) {
             var ScreenModel = (function () {
                 function ScreenModel() {
+                    this.CurrentItemMaster = ko.observable(null);
                     var self = this;
                     self.enable = ko.observable(true);
                     //F_005
                     self.checked_F_002 = ko.observable(true);
                     //F_001
                     self.roundingRules_F_001 = ko.observableArray([
-                        { code: '1', name: 'ゼロを表示する' },
-                        { code: '2', name: 'ゼロを表示しない' }
+                        { code: '1', name: '繧ｼ繝ｭ繧定｡ｨ遉ｺ縺吶ｋ' },
+                        { code: '2', name: '繧ｼ繝ｭ繧定｡ｨ遉ｺ縺励↑縺�' }
                     ]);
                     self.selectedRuleCode_F_001 = ko.observable(1);
                 }
-                ScreenModel.prototype.start = function () {
-                    var self = this;
-                    // Page load dfd.
-                    var dfd = $.Deferred();
-                    //dropdownlist event
-                };
                 return ScreenModel;
             }());
             viewmodel.ScreenModel = ScreenModel;
