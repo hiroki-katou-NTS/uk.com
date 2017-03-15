@@ -1,6 +1,7 @@
 @CHARSET "UTF-8";
 
 .aligntLeft {
+	display: inline-flex;
 	float: left;
 	margin: 8px 0px 0px 20px;
 }
@@ -17,10 +18,14 @@
 	float: right;
 }
 
+#contents-area {
+	display: inline-flex;	
+}
+
 .nts-left-content {
 	float: left;
 	width: 470px;
-	height: 650px;
+	height: 530px;
 	padding: 20px 15px;
 }
 
@@ -44,7 +49,7 @@
 }
 
 .ntsSearchDiv {
-	width: 400px;
+	width: 400px !important;
 	margin: 20px 20px;
 }
 
@@ -53,7 +58,7 @@
 	width: 450px;
 	height: 500px;
 	padding-left: 10px;
-    padding-bottom: 10px;
+	padding-bottom: 10px;
 }
 
 .gridList {

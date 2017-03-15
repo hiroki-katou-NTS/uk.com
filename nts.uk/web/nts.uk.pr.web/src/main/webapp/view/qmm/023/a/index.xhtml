@@ -33,16 +33,17 @@
 			</div>
 			<div id="contents-area">
 				<div class="nts-left-content">
-					<div class="bg-green caret-right caret-background" id="content_data">
+					<div class="bg-green caret-right caret-background"
+						id="content_data">
 						<i class="icon icon-searchbox"></i>
-						<div class="ntsSearchDiv"
-							data-bind="ntsSearchBox: {
+						<div class="ntsSearchDiv">
+							<div data-bind="ntsSearchBox: {
 								items: items,		
 								selected: currentCode, 
 								selectedKey: 'code', 
 								childField: 'childs', 
 								fields: ['name', 'code']}" />
-
+						</div>
 						<div class="single-list">
 							<table id="single-list"
 								data-bind="ntsGridList: {

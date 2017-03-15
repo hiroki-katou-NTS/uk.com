@@ -129,7 +129,10 @@ module qmm023.a.viewmodel {
                 if (self.isUpdate() === false) {
                     self.isUpdate(true);
                     self.allowEditCode(false);
+                    return;
                 }
+                self.currentTaxDirty = new nts.uk.ui.DirtyChecker(self.currentTax);
+                
             }).fail(function(error) {
                 if (error.message === '1') {
                     $('#INP_002').ntsError('set', nts.uk.text.format('{0}が入力されていません。', 'コード'));
