@@ -6,11 +6,13 @@ module nts.uk.pr.view.qmm011.a {
             findUnemployeeInsuranceRateHistory: "pr/insurance/labor/unemployeerate/history/find",
             detailUnemployeeInsuranceRateHistory: "pr/insurance/labor/unemployeerate/detail",
             addUnemployeeInsuranceRate: "pr/insurance/labor/unemployeerate/add",
+            copyUnemployeeInsuranceRate: "pr/insurance/labor/unemployeerate/copy",
             updateUnemployeeInsuranceRate: "pr/insurance/labor/unemployeerate/update",
             findAllAccidentInsuranceRateHistory: "pr/insurance/labor/accidentrate/history/findall",
             findAccidentInsuranceRateHistory: "pr/insurance/labor/accidentrate/history/find",
             findAccidentInsuranceRate: "pr/insurance/labor/accidentrate/find",
             addAccidentInsuranceRate: "pr/insurance/labor/accidentrate/add",
+            copyAccidentInsuranceRate: "pr/insurance/labor/accidentrate/copy",
             updateAccidentInsuranceRate: "pr/insurance/labor/accidentrate/update",
             findAllInsuranceBusinessType: "pr/insurance/labor/businesstype/findall"
         };
@@ -113,6 +115,11 @@ module nts.uk.pr.view.qmm011.a {
 
         }
 
+        //Function connection service copy 
+        export function copyAccidentInsuranceRate(accidentInsuranceRateCopyDto: model.AccidentInsuranceRateCopyDto): JQueryPromise<void> {
+            return nts.uk.request.ajax(paths.copyAccidentInsuranceRate, accidentInsuranceRateCopyDto);
+        }
+
         //Function connection service add Accident Insurance Rate
         export function addAccidentInsuranceRate(
             accidentInsuranceRateModel: viewmodel.AccidentInsuranceRateModel): JQueryPromise<any> {
@@ -128,6 +135,12 @@ module nts.uk.pr.view.qmm011.a {
                     dfd.reject(res);
                 })
             return dfd.promise();
+        }
+
+
+        //Function connection service copy 
+        export function copyUnemployeeInsuranceRate(unemployeeInsuranceRateCopyDto: model.UnemployeeInsuranceRateCopyDto): JQueryPromise<void> {
+            return nts.uk.request.ajax(paths.copyUnemployeeInsuranceRate, unemployeeInsuranceRateCopyDto);
         }
 
 
@@ -407,6 +420,39 @@ module nts.uk.pr.view.qmm011.a {
                     this.careerGroup = careerGroup;
                     this.companySetting = companySetting;
                     this.personalSetting = personalSetting;
+                }
+            }
+
+            export class UnemployeeInsuranceRateCopyDto {
+                /** The history id copy. */
+                historyIdCopy: string;
+
+                /** The start month. */
+                startMonth: number;
+
+                /** The add new. */
+                addNew: boolean;
+
+                constructor() {
+                    this.historyIdCopy = '';
+                    this.startMonth = 0;
+                    this.addNew = false;
+                }
+            }
+            export class AccidentInsuranceRateCopyDto {
+                /** The history id copy. */
+                historyIdCopy: string;
+
+                /** The start month. */
+                startMonth: number;
+
+                /** The add new. */
+                addNew: boolean;
+
+                constructor() {
+                    this.historyIdCopy = '';
+                    this.startMonth = 0;
+                    this.addNew = false;
                 }
             }
 

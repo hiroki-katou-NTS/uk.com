@@ -72,6 +72,7 @@ public class JpaWLOutputSettingRepository extends JpaRepository implements WLOut
 			outputSetting.saveToMemento(new JpaWLOutputSettingSetMemento(realEntity));
 			// Update to db.
 			this.commandProxy().update(realEntity);
+			return;
 		}
 		throw new RuntimeException("Cannot update entity not exist!");
 	}

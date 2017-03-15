@@ -7,9 +7,15 @@ package nts.uk.ctx.pr.core.app.insurance.labor.find.dto;
 import lombok.Data;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.Address;
+import nts.uk.ctx.pr.core.dom.insurance.CitySign;
 import nts.uk.ctx.pr.core.dom.insurance.KanaAddress;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
+import nts.uk.ctx.pr.core.dom.insurance.OfficeMark;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeName;
+import nts.uk.ctx.pr.core.dom.insurance.OfficeNoA;
+import nts.uk.ctx.pr.core.dom.insurance.OfficeNoB;
+import nts.uk.ctx.pr.core.dom.insurance.OfficeNoC;
+import nts.uk.ctx.pr.core.dom.insurance.PhoneNumber;
 import nts.uk.ctx.pr.core.dom.insurance.PicName;
 import nts.uk.ctx.pr.core.dom.insurance.PicPosition;
 import nts.uk.ctx.pr.core.dom.insurance.PotalCode;
@@ -139,6 +145,39 @@ public class LaborInsuranceOfficeFindDto implements LaborInsuranceOfficeSetMemen
 	@Override
 	public void setMemo(Memo memo) {
 		this.memo = memo.v();
+	}
+
+	@Override
+	public void setPhoneNumber(PhoneNumber phoneNumber) {
+		this.phoneNumber = phoneNumber.v();
+
+	}
+
+	@Override
+	public void setCitySign(CitySign citySign) {
+		this.citySign = citySign.v();
+	}
+
+	@Override
+	public void setOfficeMark(OfficeMark officeMark) {
+		this.officeMark = officeMark.v();
+	}
+
+	@Override
+	public void setOfficeNoA(OfficeNoA officeNoA) {
+		this.officeNoA = officeNoA.v();
+	}
+
+	@Override
+	public void setOfficeNoB(OfficeNoB officeNoB) {
+		this.officeNoB = officeNoB.v();
+
+	}
+
+	@Override
+	public void setOfficeNoC(OfficeNoC officeNoC) {
+		this.officeNoC = officeNoC.v();
+
 	}
 
 }

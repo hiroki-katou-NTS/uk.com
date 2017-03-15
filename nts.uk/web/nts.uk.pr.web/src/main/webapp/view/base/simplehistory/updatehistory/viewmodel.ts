@@ -5,14 +5,22 @@ module nts.uk.pr.view.base.simplehistory.updatehistory {
          */
         export interface UpdateHistoryScreenOption {
             /**
+             * Screen mode.
+             * Default: MODE_MASTER_HISTORY
+             * @see UpdateHistoryScreenMode
+             */
+            screenMode?: number;
+
+            /**
              * Function name.
              */
             name: string;
 
             /**
              * Master model.
+             * Optional in MODE_HISTORY_ONLY
              */
-            master: model.MasterModel<any>;
+            master?: model.MasterModel<any>;
 
             /**
              * Latest model.
@@ -77,6 +85,7 @@ module nts.uk.pr.view.base.simplehistory.updatehistory {
             constructor() {
                 var self = this;
                 self.dialogOptions = nts.uk.ui.windows.getShared('options');
+                self.dialogOptions.screenMode = self.dialogOptions.screenMode || simplehistory.dialogbase.ScreenMode.MODE_MASTER_HISTORY;
                 self.actionType = ko.observable(ScreenModel.ACTION_TYPE_DELETE);
                 self.startYearMonth = ko.observable(self.dialogOptions.history.start);
                 self.endYearMonth = nts.uk.time.formatYearMonth(self.dialogOptions.history.end);
@@ -98,7 +107,7 @@ module nts.uk.pr.view.base.simplehistory.updatehistory {
             private btnApplyClicked(): void {
                 var self = this;
                 var callBackData: UpdateHistoryCallBackData = {
-                    masterCode: self.dialogOptions.master.code,
+                    masterCode: self.dialogOptions.master ? self.dialogOptions.master.code : undefined,
                     historyId: self.dialogOptions.history.uuid,
                     startYearMonth: self.startYearMonth()
                 };

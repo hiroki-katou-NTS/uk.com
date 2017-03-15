@@ -12,17 +12,17 @@
 
 					<div class="list-box" id="list-box1"
 						data-bind="ntsListBox: {
-											options: lstUnemployeeInsuranceRateHistory,
-											primaryKey: 'historyId',
-											primaryText: 'inforMonthRage',
-											multiple: false,
-											value: selectionUnemployeeInsuranceRateHistory,
-											enable: true,
-											rows: 10,
-											required: true,
-											columns: [
-												{ key: 'inforMonthRage', length: 10 }
-											]}"></div>
+							options: lstUnemployeeInsuranceRateHistory,
+							primaryKey: 'historyId',
+							primaryText: 'inforMonthRage',
+							multiple: false,
+							value: selectionUnemployeeInsuranceRateHistory,
+							enable: true,
+							rows: 10,
+							required: true,
+							columns: [
+								{ key: 'inforMonthRage', length: 10 }
+							]}"></div>
 				</td>
 				<td id="contents-right"
 					data-bind="with: unemployeeInsuranceRateModel">
@@ -33,7 +33,7 @@
 									<label>期間</label>
 								</div>
 							</td>
-							<td class="contentsRR"><div data-bind="text: startMonthRage" />
+							<td class="contentsRR"><div data-bind="text: startJapStartMonth" />
 							</td>
 							<td><label> ~ </label></td>
 							<td><label data-bind="text: endMonthRage">
@@ -60,11 +60,11 @@
 											data-bind="with: unemployeeInsuranceRateItemAgroforestryModel">
 											<td class="bg-green">一般の事業</td>
 											<td><div>
-													<input class="health-input"
+													<input class="rate-input"
 														data-name="rateGeneralBusinessPerson"
 														data-bind="ntsNumberEditor: {value: personalSetting.rate ,
 														required:true, 
-														constraint: 'RateItem',
+														constraint: 'Ins2Rate',
 														enable: personalSetting.isEnable,
 													option: rateInputOptions 
 													}">
@@ -84,11 +84,11 @@
 													]}"></div>
 											</td>
 											<td><div>
-													<input class="health-input"
+													<input class="rate-input"
 														data-name="agroforestryModelCompanySettingcode"
 														data-bind="ntsNumberEditor: {value: companySetting.rate, 
 														option: rateInputOptions, 
-														constraint:'RateItem',
+														constraint:'Ins2Rate',
 														required: true,
 														enable: companySetting.isEnable}">
 													</input>/1000
@@ -112,11 +112,11 @@
 											data-bind="with: unemployeeInsuranceRateItemContructionModel">
 											<td class="bg-green">農林水産清酒製造の事業</td>
 											<td><div>
-													<input class="health-input"
+													<input class="rate-input"
 														data-name="rateGeneralBusinessPerson"
 														data-bind="ntsNumberEditor: {value: personalSetting.rate , 
 														option: rateInputOptions, 
-														constraint: 'RateItem',
+														constraint: 'Ins2Rate',
 														required:true,
 														enable: personalSetting.isEnable}">
 													</input>/1000
@@ -135,10 +135,10 @@
 													]}"></div>
 											</td>
 											<td><div>
-													<input class="health-input" data-name="code"
+													<input class="rate-input" data-name="code"
 														data-bind="ntsNumberEditor: {value: companySetting.rate, 
 														option: rateInputOptions, 
-														constraint:'RateItem',
+														constraint:'Ins2Rate',
 														required: true,
 														enable: companySetting.isEnable}">
 													</input>/1000
@@ -161,11 +161,11 @@
 										<tr data-bind="with:unemployeeInsuranceRateItemOtherModel">
 											<td class="bg-green">建設の事業</td>
 											<td><div>
-													<input class="health-input"
+													<input class="rate-input"
 														data-name="rateGeneralBusinessPerson"
 														data-bind="ntsNumberEditor: {value: personalSetting.rate , 
 														option: rateInputOptions, 
-														constraint:'RateItem',
+														constraint:'Ins2Rate',
 														required: true,
 														enable: personalSetting.isEnable}">
 													</input>/1000
@@ -184,10 +184,10 @@
 													]}"></div>
 											</td>
 											<td><div>
-													<input class="health-input" data-name="code"
+													<input class="rate-input" data-name="code"
 														data-bind="ntsNumberEditor: {value: companySetting.rate, 
 														option: rateInputOptions, 
-														constraint:'RateItem',
+														constraint:'Ins2Rate',
 														required: true,
 														enable: companySetting.isEnable}">
 													</input>/1000

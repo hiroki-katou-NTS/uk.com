@@ -5,14 +5,22 @@ module nts.uk.pr.view.base.simplehistory.newhistory {
          */
         export interface NewHistoryScreenOption {
             /**
+             * Screen mode.
+             * Default: MODE_MASTER_HISTORY
+             * @see UpdateHistoryScreenMode
+             */
+            screenMode?: number;
+
+            /**
              * Function name.
              */
             name: string;
 
             /**
              * Master model.
+             * Optional in MODE_HISTORY_ONLY
              */
-            master: model.MasterModel<any>;
+            master?: model.MasterModel<any>;
 
             /**
              * Latest model.
@@ -71,6 +79,7 @@ module nts.uk.pr.view.base.simplehistory.newhistory {
             constructor() {
                 var self = this;
                 self.dialogOptions = nts.uk.ui.windows.getShared('options');
+                self.dialogOptions.screenMode = self.dialogOptions.screenMode || simplehistory.dialogbase.ScreenMode.MODE_MASTER_HISTORY;
                 self.createType = ko.observable(ScreenModel.CREATE_TYPE_COPY_LATEST);
                 self.startYearMonth = ko.observable(self.dialogOptions.lastest.start);
                 self.lastYearMonth = nts.uk.time.formatYearMonth(self.dialogOptions.lastest.start);
@@ -92,7 +101,7 @@ module nts.uk.pr.view.base.simplehistory.newhistory {
             private btnApplyClicked(): void {
                 var self = this;
                 var callBackData: NewHistoryCallBackData = {
-                    masterCode: self.dialogOptions.master.code,
+                    masterCode: self.dialogOptions.master ? self.dialogOptions.master.code : undefined,
                     startYearMonth: self.startYearMonth()
                 };
                 if (self.createType() == ScreenModel.CREATE_TYPE_COPY_LATEST) {

@@ -58,6 +58,15 @@ public abstract class SimpleHistoryBaseService<M extends Master, H extends Histo
 	}
 
 	/**
+	 * For extended domain processing.
+	 * @param uuid
+	 */
+	protected void onDeleteHistory(String uuid) {
+		// Ret.
+		return;
+	}
+
+	/**
 	 * Copy history.
 	 *
 	 * @param copiedHistoryId the copied history id
@@ -74,12 +83,25 @@ public abstract class SimpleHistoryBaseService<M extends Master, H extends Histo
 		H newHistory = lastestHistory.copyWithDate(startYear);
 		this.getRepository().addHistory(newHistory);
 
+		this.onCopyHistory(companyCode, masterCode, lastestHistory, newHistory);
+		
 		// Update old history.
 		lastestHistory.setEnd(startYear.previousMonth());
 		this.getRepository().updateHistory(lastestHistory);
 
 		// Ret.
 		return newHistory;
+	}
+
+	/**
+	 * On copy history.
+	 * @param companyCode
+	 * @param masterCode
+	 * @param copiedHistory
+	 */
+	protected void onCopyHistory(String companyCode, String masterCode, H copiedHistory, H newHistory) {
+		// Just for override.
+		return;
 	}
 
 	/**
@@ -102,8 +124,22 @@ public abstract class SimpleHistoryBaseService<M extends Master, H extends Histo
 			this.getRepository().updateHistory(lastestHistory);
 		}
 
+		// Fire on create history.
+		this.onCreateHistory(companyCode, masterCode, newHistory);
+
 		// Ret.
 		return newHistory;
+	}
+
+	/**
+	 * On copy history.
+	 * @param companyCode
+	 * @param masterCode
+	 * @param copiedHistory
+	 */
+	protected void onCreateHistory(String companyCode, String masterCode, H newHistory) {
+		// Just for override.
+		return;
 	}
 
 	/**

@@ -47,12 +47,5 @@ public interface WLOutputSettingGetMemento {
 	 * @return the category settings
 	 */
 	List<WLCategorySetting> getCategorySettings();
-	
-	/**
-	 * Gets the version.
-	 *
-	 * @return the version
-	 */
-	long getVersion();
 
 }

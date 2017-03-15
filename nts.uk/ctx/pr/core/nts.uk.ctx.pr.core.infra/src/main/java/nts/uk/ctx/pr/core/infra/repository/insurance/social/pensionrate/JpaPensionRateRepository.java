@@ -24,6 +24,7 @@ import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 import nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionRate;
 import nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionRateRepository;
 import nts.uk.ctx.pr.core.infra.entity.insurance.social.pensionrate.QismtPensionRate;
+import nts.uk.ctx.pr.core.infra.entity.insurance.social.pensionrate.QismtPensionRatePK;
 import nts.uk.ctx.pr.core.infra.entity.insurance.social.pensionrate.QismtPensionRatePK_;
 import nts.uk.ctx.pr.core.infra.entity.insurance.social.pensionrate.QismtPensionRate_;
 
@@ -61,10 +62,10 @@ public class JpaPensionRateRepository extends JpaRepository implements PensionRa
 	public void update(PensionRate rate) {
 
 		EntityManager em = this.getEntityManager();
-
+		QismtPensionRate findEntity = em.find(QismtPensionRate.class, new QismtPensionRatePK(rate.getCompanyCode().v(),rate.getOfficeCode().v(),rate.getHistoryId()));
 		QismtPensionRate entity = new QismtPensionRate();
 		rate.saveToMemento(new JpaPensionRateSetMemento(entity));
-
+		entity.setQismtPensionAvgearnList(findEntity.getQismtPensionAvgearnList());
 		em.merge(entity);
 	}
 

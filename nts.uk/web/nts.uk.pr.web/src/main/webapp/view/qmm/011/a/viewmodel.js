@@ -16,8 +16,11 @@ var nts;
                         var CareerGroupDto = a.service.model.CareerGroupDto;
                         var BusinessTypeEnumDto = a.service.model.BusinessTypeEnumDto;
                         var TypeHistory = a.service.model.TypeHistory;
+                        var UnemployeeInsuranceRateCopyDto = a.service.model.UnemployeeInsuranceRateCopyDto;
                         var AccidentInsuranceHistoryDto = a.service.model.AccidentInsuranceHistoryDto;
+                        var AccidentInsuranceRateCopyDto = a.service.model.AccidentInsuranceRateCopyDto;
                         var TypeActionInsuranceRate = a.service.model.TypeActionInsuranceRate;
+                        var ScreenMode = nts.uk.pr.view.base.simplehistory.dialogbase.ScreenMode;
                         var viewmodel;
                         (function (viewmodel) {
                             var ScreenModel = (function () {
@@ -81,27 +84,50 @@ var nts;
                                 };
                                 ScreenModel.prototype.openAddUnemployeeInsuranceRateHistory = function () {
                                     var self = this;
-                                    nts.uk.ui.windows.setShared("isEmpty", self.isEmptyUnemployee());
-                                    if (!self.isEmptyUnemployee()) {
-                                        nts.uk.ui.windows.setShared("historyStart", self.beginHistoryStartUnemployeeInsuranceRate());
-                                    }
-                                    nts.uk.ui.windows.sub.modal('/view/qmm/011/d/index.xhtml', { title: '労働保険料率の登録>履歴の追加', dialogClass: 'no-close' }).onClosed(function () {
-                                        var addHistoryInfoModel = nts.uk.ui.windows.getShared("addHistoryInfoModel");
-                                        if (addHistoryInfoModel != null && addHistoryInfoModel != undefined) {
-                                            var UnemployeeInsuranceHistoryDto;
-                                            UnemployeeInsuranceHistoryDto = new HistoryInsuranceInDto();
-                                            if (addHistoryInfoModel.typeModel == 2) {
-                                                self.resetValueUnemployeeInsuranceRate();
-                                            }
-                                            UnemployeeInsuranceHistoryDto.historyId = '';
-                                            UnemployeeInsuranceHistoryDto.startMonth = addHistoryInfoModel.starMonth;
-                                            UnemployeeInsuranceHistoryDto.endMonth = 999912;
-                                            self.unemployeeInsuranceRateModel().setHistoryData(UnemployeeInsuranceHistoryDto);
-                                            self.unemployeeInsuranceRateModel().unemployeeInsuranceHistoryModel.setMonthRage(addHistoryInfoModel.starMonth, 999912);
-                                            self.typeActionUnemployeeInsurance(TypeActionInsuranceRate.add);
-                                            self.isEnableSaveUnemployeeInsurance(true);
+                                    var lastest;
+                                    var name = '労働保険料率';
+                                    lastest = {
+                                        uuid: self.selectionUnemployeeInsuranceRateHistory(),
+                                        start: self.unemployeeInsuranceRateModel().unemployeeInsuranceHistoryModel.startMonth(),
+                                        end: self.unemployeeInsuranceRateModel().unemployeeInsuranceHistoryModel.endMonth()
+                                    };
+                                    var unemployeeInsuranceRateCopyDto;
+                                    unemployeeInsuranceRateCopyDto = new UnemployeeInsuranceRateCopyDto();
+                                    unemployeeInsuranceRateCopyDto.historyIdCopy = self.selectionUnemployeeInsuranceRateHistory();
+                                    var newHistoryOptions = {
+                                        screenMode: ScreenMode.MODE_HISTORY_ONLY,
+                                        name: name,
+                                        master: null,
+                                        lastest: lastest,
+                                        onCopyCallBack: function (data) {
+                                            unemployeeInsuranceRateCopyDto.startMonth = data.startYearMonth;
+                                            unemployeeInsuranceRateCopyDto.addNew = false;
+                                            a.service.copyUnemployeeInsuranceRate(unemployeeInsuranceRateCopyDto).done(function (data) {
+                                                self.typeActionUnemployeeInsurance(TypeActionInsuranceRate.add);
+                                                self.reloadDataUnemployeeInsuranceRateByAction();
+                                                self.clearErrorSaveUnemployeeInsurance();
+                                            }).fail(function (error) {
+                                                self.showMessageSaveUnemployeeInsurance(error.message);
+                                            });
+                                        },
+                                        onCreateCallBack: function (data) {
+                                            unemployeeInsuranceRateCopyDto.startMonth = data.startYearMonth;
+                                            unemployeeInsuranceRateCopyDto.addNew = true;
+                                            a.service.copyUnemployeeInsuranceRate(unemployeeInsuranceRateCopyDto).done(function (data) {
+                                                self.typeActionUnemployeeInsurance(TypeActionInsuranceRate.add);
+                                                self.reloadDataUnemployeeInsuranceRateByAction();
+                                                self.clearErrorSaveUnemployeeInsurance();
+                                            }).fail(function (error) {
+                                                self.showMessageSaveUnemployeeInsurance(error.message);
+                                            });
                                         }
-                                    });
+                                    };
+                                    nts.uk.ui.windows.setShared('options', newHistoryOptions);
+                                    var ntsDialogOptions = {
+                                        title: nts.uk.text.format('{0}の登録 > 履歴の追加', name),
+                                        dialogClass: 'no-close'
+                                    };
+                                    nts.uk.ui.windows.sub.modal('/view/base/simplehistory/newhistory/index.xhtml', ntsDialogOptions);
                                 };
                                 ScreenModel.prototype.openEditInsuranceBusinessType = function () {
                                     var self = this;
@@ -154,19 +180,23 @@ var nts;
                                     nts.uk.ui.windows.sub.modal('/view/qmm/011/d/index.xhtml', { title: '労働保険料率の登録>履歴の追加', dialogClass: 'no-close' }).onClosed(function () {
                                         var addHistoryInfoModel = nts.uk.ui.windows.getShared("addHistoryInfoModel");
                                         if (addHistoryInfoModel != null && addHistoryInfoModel != undefined) {
-                                            var accidentInsuranceHistoryDto;
-                                            accidentInsuranceHistoryDto = new AccidentInsuranceHistoryDto();
+                                            var accidentInsuranceRateCopyDto;
+                                            accidentInsuranceRateCopyDto = new AccidentInsuranceRateCopyDto();
+                                            accidentInsuranceRateCopyDto.historyIdCopy = self.selectionAccidentInsuranceRateHistory();
+                                            accidentInsuranceRateCopyDto.startMonth = addHistoryInfoModel.starMonth;
                                             if (addHistoryInfoModel.typeModel == 2) {
-                                                self.resetValueAccidentInsuranceRate();
+                                                accidentInsuranceRateCopyDto.addNew = true;
                                             }
-                                            accidentInsuranceHistoryDto.historyId = '';
-                                            accidentInsuranceHistoryDto.startMonthRage = nts.uk.time.formatYearMonth(addHistoryInfoModel.starMonth);
-                                            accidentInsuranceHistoryDto.startMonth = addHistoryInfoModel.starMonth;
-                                            accidentInsuranceHistoryDto.endMonth = 999912;
-                                            accidentInsuranceHistoryDto.endMonthRage = '9999/12';
-                                            self.accidentInsuranceRateModel().setHistoryData(accidentInsuranceHistoryDto);
-                                            self.typeActionAccidentInsurance(TypeActionInsuranceRate.add);
-                                            self.isEnableSaveActionAccidentInsurance(true);
+                                            else {
+                                                accidentInsuranceRateCopyDto.addNew = false;
+                                            }
+                                            a.service.copyAccidentInsuranceRate(accidentInsuranceRateCopyDto).done(function (data) {
+                                                self.typeActionAccidentInsurance(TypeActionInsuranceRate.add);
+                                                self.reloadDataAccidentInsuranceRateByAction();
+                                                self.clearErrorSaveAccidentInsurance();
+                                            }).fail(function (error) {
+                                                self.showMessageSaveAccidentInsurance(error.message);
+                                            });
                                         }
                                     });
                                 };
@@ -202,6 +232,7 @@ var nts;
                                             self.clearErrorSaveUnemployeeInsurance();
                                         }).fail(function (res) {
                                             self.showMessageSaveUnemployeeInsurance(res.message);
+                                            self.reloadDataUnemployeeInsuranceRateByAction();
                                         });
                                     }
                                     else {
@@ -210,6 +241,7 @@ var nts;
                                             self.clearErrorSaveUnemployeeInsurance();
                                         }).fail(function (res) {
                                             self.showMessageSaveUnemployeeInsurance(res.message);
+                                            self.reloadDataUnemployeeInsuranceRateByAction();
                                         });
                                     }
                                     return true;
@@ -569,7 +601,7 @@ var nts;
                             var UnemployeeInsuranceHistoryModel = (function () {
                                 function UnemployeeInsuranceHistoryModel() {
                                     this.historyId = ko.observable('');
-                                    this.startMonthRage = ko.observable('');
+                                    this.startJapStartMonth = ko.observable('');
                                     this.endMonthRage = ko.observable('');
                                     this.endMonth = ko.observable(0);
                                     this.startMonth = ko.observable(0);
@@ -581,11 +613,11 @@ var nts;
                                     else {
                                         this.historyId = ko.observable('');
                                     }
-                                    if (this.startMonthRage != null && this.startMonthRage != undefined) {
-                                        this.startMonthRage('');
+                                    if (this.startJapStartMonth != null && this.startJapStartMonth != undefined) {
+                                        this.startJapStartMonth('');
                                     }
                                     else {
-                                        this.startMonthRage = ko.observable('');
+                                        this.startJapStartMonth = ko.observable('');
                                     }
                                     if (this.endMonthRage != null && this.endMonthRage != undefined) {
                                         this.endMonthRage('9999/12');
@@ -606,12 +638,13 @@ var nts;
                                         this.startMonth = ko.observable(0);
                                     }
                                 };
-                                UnemployeeInsuranceHistoryModel.prototype.updateData = function (UnemployeeInsuranceHistory) {
-                                    this.historyId(UnemployeeInsuranceHistory.historyId);
-                                    this.startMonthRage(nts.uk.time.formatYearMonth(UnemployeeInsuranceHistory.startMonth));
-                                    this.endMonthRage(nts.uk.time.formatYearMonth(UnemployeeInsuranceHistory.endMonth));
-                                    this.startMonth(UnemployeeInsuranceHistory.startMonth);
-                                    this.endMonth(UnemployeeInsuranceHistory.endMonth);
+                                UnemployeeInsuranceHistoryModel.prototype.updateData = function (unemployeeInsuranceHistory) {
+                                    this.historyId(unemployeeInsuranceHistory.historyId);
+                                    this.startJapStartMonth(nts.uk.time.formatYearMonth(unemployeeInsuranceHistory.startMonth)
+                                        + ' (' + nts.uk.time.yearmonthInJapanEmpire(unemployeeInsuranceHistory.startMonth).toString() + ') ');
+                                    this.endMonthRage(nts.uk.time.formatYearMonth(unemployeeInsuranceHistory.endMonth));
+                                    this.startMonth(unemployeeInsuranceHistory.startMonth);
+                                    this.endMonth(unemployeeInsuranceHistory.endMonth);
                                 };
                                 UnemployeeInsuranceHistoryModel.prototype.setMonthRage = function (startDate, endDate) {
                                     this.startMonth(startDate);
@@ -788,7 +821,8 @@ var nts;
                                     this.historyId(historyDto.historyId);
                                     this.startMonth(historyDto.startMonth);
                                     this.endMonth(historyDto.endMonth);
-                                    this.startMonthRage(nts.uk.time.formatYearMonth(historyDto.startMonth));
+                                    this.startMonthRage(nts.uk.time.formatYearMonth(historyDto.startMonth)
+                                        + ' (' + nts.uk.time.yearmonthInJapanEmpire(historyDto.startMonth).toString() + ') ');
                                     this.endMonthRage(nts.uk.time.formatYearMonth(historyDto.endMonth));
                                 };
                                 return AccidentInsuranceRateHistoryModel;

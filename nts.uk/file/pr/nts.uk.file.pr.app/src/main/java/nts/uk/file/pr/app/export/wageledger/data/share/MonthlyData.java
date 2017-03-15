@@ -18,7 +18,7 @@ public class MonthlyData {
 	public Integer month;
 	
 	/** The amount. */
-	public Double amount;
+	public long amount;
 	
 	/** The payment date. */
 	public Date paymentDate;

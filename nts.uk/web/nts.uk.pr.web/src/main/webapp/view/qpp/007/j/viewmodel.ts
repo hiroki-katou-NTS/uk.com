@@ -1,5 +1,6 @@
 module nts.uk.pr.view.qpp007.j {
     export module viewmodel {
+        import SalaryCategory = nts.uk.pr.view.qpp007.c.viewmodel.SalaryCategory;
 
         export class ScreenModel {
             tabs1: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel>;
@@ -17,8 +18,8 @@ module nts.uk.pr.view.qpp007.j {
                 var self = this;
                 self.name = ko.observable('');
                 self.tabs1 = ko.observableArray<nts.uk.ui.NtsTabPanelModel>([
-                    { id: '1', title: '支給集計', content: '#1', enable: ko.observable(true), visible: ko.observable(true) },
-                    { id: '2', title: '控除集計', content: '#2', enable: ko.observable(true), visible: ko.observable(true) },
+                    { id: SalaryCategory.PAYMENT_TOTAL, title: '支給集計', content: '#1', enable: ko.observable(true), visible: ko.observable(true) },
+                    { id: SalaryCategory.DEDUCTION_TABULATION, title: '控除集計', content: '#2', enable: ko.observable(true), visible: ko.observable(true) },
                 ]);
                 self.tabs2 = ko.observableArray<nts.uk.ui.NtsTabPanelModel>([
                     { id: 'tab-1', title: '集計項目1', content: '#tab-content-1', enable: ko.observable(true), visible: ko.observable(true) },
@@ -28,7 +29,7 @@ module nts.uk.pr.view.qpp007.j {
 
                 ]);
 
-                self.selectedTab1 = ko.observable('1');
+                self.selectedTab1 = ko.observable(SalaryCategory.PAYMENT_TOTAL);
                 self.selectedTab2 = ko.observable('tab-1');
 
                 this.itemsSwap = ko.observableArray<ItemModel>([]);

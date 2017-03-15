@@ -24,7 +24,7 @@ var nts;
                                         return self.selectedHistoryUuid() != null && self.getCurrentHistoryNode() != null;
                                     });
                                     self.canAddNewHistory = ko.computed(function () {
-                                        return true;
+                                        return self.selectedHistoryUuid() != null && self.getCurrentHistoryNode() != null;
                                     });
                                     self.igGridSelectedHistoryUuid = ko.observable('');
                                     self.isClickHistory = ko.observable(false);

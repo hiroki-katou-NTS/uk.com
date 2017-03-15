@@ -37,6 +37,7 @@ public class AggregateItemSaveCommandHandler extends CommandHandler<AggregateIte
 		val companyCode = new CompanyCode(AppContexts.user().companyCode());
 		val command = context.getCommand();
 		WLItemSubject subject = command.getSubject().toDomain(companyCode.v());
+		subject.validate();
 		
 		// In case update.
 		if (!command.isCreateMode()) {

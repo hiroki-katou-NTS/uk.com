@@ -96,13 +96,18 @@ var qet001;
                 };
                 ScreenModel.prototype.save = function () {
                     var self = this;
+                    $('#code-input').ntsError('clear');
+                    $('#name-input').ntsError('clear');
+                    var hasError = false;
                     if (self.outputSettingDetail().settingCode() == '') {
                         $('#code-input').ntsError('set', '未入力エラー');
+                        hasError = true;
                     }
                     if (self.outputSettingDetail().settingName() == '') {
                         $('#name-input').ntsError('set', '未入力エラー');
+                        hasError = true;
                     }
-                    if (!nts.uk.ui._viewModel.errors.isEmpty()) {
+                    if (hasError) {
                         return;
                     }
                     var currentSelectedCode = self.outputSettings().outputSettingSelectedCode();

@@ -9,8 +9,8 @@ package nts.uk.ctx.pr.report.dom.salarydetail;
  */
 public enum SalaryCategory {
 	
-	/** The Supply. */
-	Supply(1),
+	/** The Payment. */
+	Payment(1),
 	
 	/** The Payment total. */
 	PaymentTotal(2),

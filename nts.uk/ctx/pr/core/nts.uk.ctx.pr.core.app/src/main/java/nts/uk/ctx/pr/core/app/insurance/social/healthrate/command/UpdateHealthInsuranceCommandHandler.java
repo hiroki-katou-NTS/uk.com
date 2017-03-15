@@ -55,6 +55,7 @@ public class UpdateHealthInsuranceCommandHandler extends CommandHandler<UpdateHe
 			// Transfer data
 			HealthInsuranceRate updatedHealthInsuranceRate = command.toDomain(companyCode,
 					findhealthInsuranceRate.getHistoryId(), findhealthInsuranceRate.getOfficeCode());
+			updatedHealthInsuranceRate.validate();
 			// Validate
 			healthInsuranceRateService.validateRequiredItem(updatedHealthInsuranceRate);
 			healthInsuranceRateService.validateDateRange(updatedHealthInsuranceRate);

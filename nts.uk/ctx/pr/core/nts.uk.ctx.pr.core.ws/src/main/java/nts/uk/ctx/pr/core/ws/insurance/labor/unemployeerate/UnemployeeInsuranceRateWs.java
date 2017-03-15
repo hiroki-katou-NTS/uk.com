@@ -12,6 +12,8 @@ import javax.ws.rs.Produces;
 
 import nts.uk.ctx.pr.core.app.insurance.labor.unemployeerate.command.UnemployeeInsuranceRateAddCommand;
 import nts.uk.ctx.pr.core.app.insurance.labor.unemployeerate.command.UnemployeeInsuranceRateAddCommandHandler;
+import nts.uk.ctx.pr.core.app.insurance.labor.unemployeerate.command.UnemployeeInsuranceRateCopyCommand;
+import nts.uk.ctx.pr.core.app.insurance.labor.unemployeerate.command.UnemployeeInsuranceRateCopyCommandHandler;
 import nts.uk.ctx.pr.core.app.insurance.labor.unemployeerate.command.UnemployeeInsuranceRateDeleteCommand;
 import nts.uk.ctx.pr.core.app.insurance.labor.unemployeerate.command.UnemployeeInsuranceRateDeleteCommandHandler;
 import nts.uk.ctx.pr.core.app.insurance.labor.unemployeerate.command.UnemployeeInsuranceRateUpdateCommand;
@@ -32,6 +34,10 @@ public class UnemployeeInsuranceRateWs {
 	private UnemployeeInsuranceFinder find;
 
 
+	/** The copy. */
+	@Inject
+	private UnemployeeInsuranceRateCopyCommandHandler copy;
+	
 	/** The add. */
 	@Inject
 	private UnemployeeInsuranceRateAddCommandHandler add;
@@ -62,10 +68,20 @@ public class UnemployeeInsuranceRateWs {
 	}
 
 	/**
+	 * Copy.
+	 *
+	 * @param command the command
+	 */
+	@POST
+	@Path("copy")
+	public void copy(UnemployeeInsuranceRateCopyCommand command) {
+		this.copy.handle(command);
+	}
+	
+	/**
 	 * Adds the.
 	 *
-	 * @param command
-	 *            the command
+	 * @param command the command
 	 */
 	@POST
 	@Path("add")
@@ -76,8 +92,7 @@ public class UnemployeeInsuranceRateWs {
 	/**
 	 * Update.
 	 *
-	 * @param command
-	 *            the command
+	 * @param command the command
 	 */
 	@POST
 	@Path("update")
@@ -88,8 +103,7 @@ public class UnemployeeInsuranceRateWs {
 	/**
 	 * Delete.
 	 *
-	 * @param command
-	 *            the command
+	 * @param command the command
 	 */
 	@POST
 	@Path("delete")

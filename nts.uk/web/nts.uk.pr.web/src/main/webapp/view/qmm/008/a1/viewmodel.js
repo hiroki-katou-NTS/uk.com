@@ -56,7 +56,7 @@ var nts;
                                     self.isTransistReturnData = ko.observable(false);
                                     self.isLoading = ko.observable(true);
                                     self.currentOfficeCode = ko.observable('');
-                                    self.sendOfficeData = ko.observable(null);
+                                    self.sendOfficeData = ko.observable('');
                                     self.japanYear = ko.observable('');
                                 }
                                 ScreenModel.prototype.start = function () {
@@ -220,10 +220,10 @@ var nts;
                                     var returnValue;
                                     if (self.masterHistoryList.length > 0) {
                                         self.masterHistoryList.forEach(function (parentItem) {
-                                            self.sendOfficeData(parentItem);
                                             if (parentItem.historyList) {
                                                 parentItem.historyList.forEach(function (childItem) {
                                                     if (childItem.uuid == childId) {
+                                                        self.sendOfficeData(parentItem.name);
                                                         returnValue = parentItem.code;
                                                     }
                                                 });
@@ -247,7 +247,7 @@ var nts;
                                     });
                                 };
                                 ScreenModel.prototype.OpenModalStandardMonthlyPriceHealth = function () {
-                                    nts.uk.ui.windows.setShared("dataOfSelectedOffice", this.sendOfficeData());
+                                    nts.uk.ui.windows.setShared("officeName", this.sendOfficeData());
                                     nts.uk.ui.windows.setShared("healthModel", this.healthModel());
                                     nts.uk.ui.windows.setShared("isTransistReturnData", this.isTransistReturnData());
                                     nts.uk.ui.windows.sub.modal("/view/qmm/008/h/index.xhtml", { title: "会社保険事業所の登録＞標準報酬月額保険料額表" }).onClosed(function () {

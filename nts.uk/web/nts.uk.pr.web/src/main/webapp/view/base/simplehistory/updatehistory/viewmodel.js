@@ -18,6 +18,7 @@ var nts;
                                     function ScreenModel() {
                                         var self = this;
                                         self.dialogOptions = nts.uk.ui.windows.getShared('options');
+                                        self.dialogOptions.screenMode = self.dialogOptions.screenMode || simplehistory.dialogbase.ScreenMode.MODE_MASTER_HISTORY;
                                         self.actionType = ko.observable(ScreenModel.ACTION_TYPE_DELETE);
                                         self.startYearMonth = ko.observable(self.dialogOptions.history.start);
                                         self.endYearMonth = nts.uk.time.formatYearMonth(self.dialogOptions.history.end);
@@ -31,7 +32,7 @@ var nts;
                                     ScreenModel.prototype.btnApplyClicked = function () {
                                         var self = this;
                                         var callBackData = {
-                                            masterCode: self.dialogOptions.master.code,
+                                            masterCode: self.dialogOptions.master ? self.dialogOptions.master.code : undefined,
                                             historyId: self.dialogOptions.history.uuid,
                                             startYearMonth: self.startYearMonth()
                                         };

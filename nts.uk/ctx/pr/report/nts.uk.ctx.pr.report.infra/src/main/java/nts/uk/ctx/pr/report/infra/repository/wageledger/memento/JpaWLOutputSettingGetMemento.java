@@ -116,13 +116,4 @@ public class JpaWLOutputSettingGetMemento implements WLOutputSettingGetMemento {
 		return categorySettings;
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.pr.report.dom.wageledger.outputsetting.WLOutputSettingGetMemento
-	 * #getVersion()
-	 */
-	@Override
-	public long getVersion() {
-		return this.entity.getExclusVer();
-	}
-
 }

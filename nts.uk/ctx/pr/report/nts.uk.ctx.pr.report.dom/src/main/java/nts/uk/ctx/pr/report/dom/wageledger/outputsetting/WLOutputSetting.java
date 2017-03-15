@@ -7,14 +7,14 @@ package nts.uk.ctx.pr.report.dom.wageledger.outputsetting;
 import java.util.List;
 
 import lombok.Getter;
-import nts.arc.layer.dom.AggregateRoot;
+import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.pr.report.dom.company.CompanyCode;
 
 /**
  * The Class OutputSetting.
  */
 @Getter
-public class WLOutputSetting extends AggregateRoot{
+public class WLOutputSetting extends DomainObject {
 	
 	/** The code. */
 	private WLOutputSettingCode code;
@@ -43,7 +43,6 @@ public class WLOutputSetting extends AggregateRoot{
 		this.onceSheetPerPerson = memento.getOnceSheetPerPerson();
 		this.companyCode = memento.getCompanyCode();
 		this.categorySettings = memento.getCategorySettings();
-		this.setVersion(memento.getVersion());
 	}
 	
 	/**
@@ -57,6 +56,5 @@ public class WLOutputSetting extends AggregateRoot{
 		memento.setOnceSheetPerPerson(this.onceSheetPerPerson);
 		memento.setCompanyCode(this.companyCode);
 		memento.setCategorySettings(this.categorySettings);
-		memento.setVersion(this.getVersion());
 	}
 }

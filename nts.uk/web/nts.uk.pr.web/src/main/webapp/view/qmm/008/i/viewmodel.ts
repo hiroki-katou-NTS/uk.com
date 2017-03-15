@@ -4,7 +4,6 @@ module nts.uk.pr.view.qmm008.i {
         import AvgEarnLevelMasterSettingDto = nts.uk.pr.view.qmm008._0.common.service.model.AvgEarnLevelMasterSettingDto;
         import FunRateItemModel = nts.uk.pr.view.qmm008.a.viewmodel.FunRateItemModel;
         import PensionRateModelFromScreenA = nts.uk.pr.view.qmm008.a.viewmodel.PensionRateModel;
-        import InsuranceOfficeItemDto = nts.uk.pr.view.qmm008.a.service.model.finder.InsuranceOfficeItemDto;
 
         export class ScreenModel {
             listAvgEarnLevelMasterSetting: Array<AvgEarnLevelMasterSettingDto>;
@@ -19,14 +18,14 @@ module nts.uk.pr.view.qmm008.i {
 
             pensionRateModel: PensionRateModel;
 
-            constructor(dataOfSelectedOffice: InsuranceOfficeItemDto, pensionModel: PensionRateModelFromScreenA) {
+            constructor(officeName: string, pensionModel: PensionRateModelFromScreenA) {
                 var self = this;
                 self.listAvgEarnLevelMasterSetting = [];
                 self.listPensionAvgearnModel = ko.observableArray<PensionAvgearnModel>([]);
                 self.pensionRateModel = new PensionRateModel(
                     pensionModel.historyId,
-                    dataOfSelectedOffice.code,
-                    dataOfSelectedOffice.name,
+                    pensionModel.officeCode(),
+                    officeName,
                     pensionModel.startMonth(),
                     pensionModel.endMonth(),
                     pensionModel.fundRateItems(),

@@ -9,8 +9,8 @@ package nts.uk.ctx.pr.report.dom.salarydetail;
  */
 public enum SalaryItemType {
 	
-	/** The Summary. */
-	Summary(1),
+	/** The Aggregate. */
+	Aggregate(1),
 	
 	/** The Master. */
 	Master(2);

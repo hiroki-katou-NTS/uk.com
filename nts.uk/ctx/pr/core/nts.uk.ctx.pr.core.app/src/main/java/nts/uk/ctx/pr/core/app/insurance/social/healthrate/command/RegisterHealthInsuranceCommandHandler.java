@@ -72,8 +72,8 @@ public class RegisterHealthInsuranceCommandHandler extends CommandHandler<Regist
 		// Get command.
 		RegisterHealthInsuranceCommand command = context.getCommand();
 		// Get the current company code.
-		CompanyCode companyCode = new CompanyCode(AppContexts.user().companyCode());
-		OfficeCode officeCode = new OfficeCode(command.getOfficeCode());
+		String companyCode = AppContexts.user().companyCode();
+		String officeCode = command.getOfficeCode();
 		List<HealthInsuranceRate> listHealthInsuranceRate = healthInsuranceRateRepository.findAllOffice(companyCode,
 				officeCode);
 		HealthInsuranceRate healthInsuranceRate = null;
@@ -84,17 +84,17 @@ public class RegisterHealthInsuranceCommandHandler extends CommandHandler<Regist
 		}
 		HealthInsuranceRate addNewHealthInsuranceRate = new HealthInsuranceRate(
 				this.covertToMemento(healthInsuranceRate, command));
-
+		addNewHealthInsuranceRate.validate();
 		// Validate
 		healthInsuranceRateService.validateDateRange(addNewHealthInsuranceRate);
 		healthInsuranceRateService.validateRequiredItem(addNewHealthInsuranceRate);
-
+		healthInsuranceRateService.createInitalHistory(companyCode, officeCode, addNewHealthInsuranceRate.getStart());
 		// Insert into db.
 		healthInsuranceRateRepository.add(addNewHealthInsuranceRate);
 
 		// Get listAvgEarnLevelMasterSetting.
 		List<AvgEarnLevelMasterSetting> listAvgEarnLevelMasterSetting = avgEarnLevelMasterSettingRepository
-				.findAll(companyCode);
+				.findAll(new CompanyCode(AppContexts.user().companyCode()));
 
 		// Auto calculate listHealthInsuranceAvgearn
 		List<HealthInsuranceAvgearn> listHealthInsuranceAvgearn = listAvgEarnLevelMasterSetting.stream()
@@ -103,7 +103,7 @@ public class RegisterHealthInsuranceCommandHandler extends CommandHandler<Regist
 							addNewHealthInsuranceRate.getRateItems(), addNewHealthInsuranceRate.getHistoryId()));
 				}).collect(Collectors.toList());
 
-		healthInsuranceAvgearnRepository.update(listHealthInsuranceAvgearn, companyCode.v(), command.getOfficeCode());
+		healthInsuranceAvgearnRepository.update(listHealthInsuranceAvgearn, companyCode, command.getOfficeCode());
 	}
 
 	protected HealthInsuranceRateGetMemento covertToMemento(HealthInsuranceRate healthInsuranceRate,

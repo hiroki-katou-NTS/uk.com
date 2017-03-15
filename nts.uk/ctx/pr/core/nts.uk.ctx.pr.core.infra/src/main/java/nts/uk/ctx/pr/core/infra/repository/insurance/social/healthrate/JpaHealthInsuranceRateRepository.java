@@ -18,12 +18,11 @@ import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.ListUtil;
-import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
-import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.HealthInsuranceRate;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.HealthInsuranceRateRepository;
 import nts.uk.ctx.pr.core.infra.entity.insurance.social.healthrate.QismtHealthInsuRate;
+import nts.uk.ctx.pr.core.infra.entity.insurance.social.healthrate.QismtHealthInsuRatePK;
 import nts.uk.ctx.pr.core.infra.entity.insurance.social.healthrate.QismtHealthInsuRatePK_;
 import nts.uk.ctx.pr.core.infra.entity.insurance.social.healthrate.QismtHealthInsuRate_;
 
@@ -61,10 +60,10 @@ public class JpaHealthInsuranceRateRepository extends JpaRepository
 	@Override
 	public void update(HealthInsuranceRate rate) {
 		EntityManager em = this.getEntityManager();
-
+		QismtHealthInsuRate findEntity = em.find(QismtHealthInsuRate.class, new QismtHealthInsuRatePK(rate.getCompanyCode().v(),rate.getOfficeCode().v(),rate.getHistoryId()));
 		QismtHealthInsuRate entity = new QismtHealthInsuRate();
 		rate.saveToMemento(new JpaHealthInsuranceRateSetMemento(entity));
-
+		entity.setQismtHealthInsuAvgearnList(findEntity.getQismtHealthInsuAvgearnList());
 		em.merge(entity);
 	}
 
@@ -108,7 +107,7 @@ public class JpaHealthInsuranceRateRepository extends JpaRepository
 	 * HealthInsuranceRateRepository#findAll(java.lang.String, java.lang.String)
 	 */
 	@Override
-	public List<HealthInsuranceRate> findAll(CompanyCode companyCode) {
+	public List<HealthInsuranceRate> findAll(String companyCode) {
 
 		// Get entity manager
 		EntityManager em = this.getEntityManager();
@@ -123,7 +122,7 @@ public class JpaHealthInsuranceRateRepository extends JpaRepository
 
 		// Construct condition.
 		predicateList.add(cb.equal(root.get(QismtHealthInsuRate_.qismtHealthInsuRatePK)
-				.get(QismtHealthInsuRatePK_.ccd), companyCode.v()));
+				.get(QismtHealthInsuRatePK_.ccd), companyCode));
 
 		cq.where(predicateList.toArray(new Predicate[] {}));
 		cq.orderBy(cb.desc(root.get(QismtHealthInsuRate_.strYm)));
@@ -169,7 +168,7 @@ public class JpaHealthInsuranceRateRepository extends JpaRepository
 	}
 
 	@Override
-	public List<HealthInsuranceRate> findAllOffice(CompanyCode companyCode, OfficeCode officeCode) {
+	public List<HealthInsuranceRate> findAllOffice(String companyCode,String officeCode) {
 		// Get entity manager
 		EntityManager em = this.getEntityManager();
 
@@ -183,10 +182,10 @@ public class JpaHealthInsuranceRateRepository extends JpaRepository
 
 		// Construct condition.
 		predicateList.add(cb.equal(root.get(QismtHealthInsuRate_.qismtHealthInsuRatePK).get(QismtHealthInsuRatePK_.ccd),
-				companyCode.v()));
+				companyCode));
 		predicateList.add(
 				cb.equal(root.get(QismtHealthInsuRate_.qismtHealthInsuRatePK).get(QismtHealthInsuRatePK_.siOfficeCd),
-						officeCode.v()));
+						officeCode));
 
 		cq.where(predicateList.toArray(new Predicate[] {}));
 		cq.orderBy(cb.desc(root.get(QismtHealthInsuRate_.strYm)));
@@ -202,7 +201,7 @@ public class JpaHealthInsuranceRateRepository extends JpaRepository
 
 	@Override
 	public Optional<HealthInsuranceRate> findLastestHistoryByMasterCode(String companyCode, String officeCode) {
-		return Optional.of(this.findAllOffice(new CompanyCode(companyCode),new OfficeCode(officeCode)).get(0));
+		return Optional.of(this.findAllOffice(companyCode,officeCode).get(0));
 	}
 
 	@Override

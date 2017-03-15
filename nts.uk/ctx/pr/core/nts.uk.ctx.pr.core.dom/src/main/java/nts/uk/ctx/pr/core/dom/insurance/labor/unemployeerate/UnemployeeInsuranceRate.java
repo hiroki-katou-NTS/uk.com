@@ -103,9 +103,9 @@ public class UnemployeeInsuranceRate extends DomainObject {
 	 *            the start year month
 	 * @return the unemployee insurance rate
 	 */
-	public static final UnemployeeInsuranceRate createWithIntial(CompanyCode companyCode, YearMonth startYearMonth) {
+	public static final UnemployeeInsuranceRate createWithIntial(String companyCode, YearMonth startYearMonth) {
 		UnemployeeInsuranceRate domain = new UnemployeeInsuranceRate();
-		domain.companyCode = companyCode;
+		domain.companyCode = new CompanyCode(companyCode);
 		domain.applyRange = MonthRange.toMaxDate(startYearMonth);
 		Set<UnemployeeInsuranceRateItem> setItem = new HashSet<>();
 		setItem.add(UnemployeeInsuranceRateItem.valueIntial(CareerGroup.Agroforestry));
@@ -113,5 +113,9 @@ public class UnemployeeInsuranceRate extends DomainObject {
 		setItem.add(UnemployeeInsuranceRateItem.valueIntial(CareerGroup.Other));
 		domain.rateItems = setItem;
 		return domain;
+	}
+
+	public void setMaxDate() {
+		this.applyRange = MonthRange.toMaxDate(this.getApplyRange().getStartMonth());
 	}
 }

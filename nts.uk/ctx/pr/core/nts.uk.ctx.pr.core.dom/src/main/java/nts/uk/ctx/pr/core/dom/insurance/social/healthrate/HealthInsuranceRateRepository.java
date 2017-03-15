@@ -7,10 +7,8 @@ package nts.uk.ctx.pr.core.dom.insurance.social.healthrate;
 import java.util.List;
 import java.util.Optional;
 
-import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.base.simplehistory.SimpleHistoryRepository;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
-import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
 
 /**
  * The Interface HealthInsuranceRateRepository.
@@ -45,7 +43,7 @@ public interface HealthInsuranceRateRepository extends SimpleHistoryRepository<H
 	 * @param officeCode the office code
 	 * @return the list
 	 */
-	List<HealthInsuranceRate> findAll(CompanyCode companyCode);
+	List<HealthInsuranceRate> findAll(String companyCode);
 
 	/**
 	 * Find by id.
@@ -62,9 +60,9 @@ public interface HealthInsuranceRateRepository extends SimpleHistoryRepository<H
 	 *
 	 * @param companyCode the company code
 	 * @param officeCode the office code
-	 * @return the optional
+	 * @return the list
 	 */
-	List<HealthInsuranceRate> findAllOffice(CompanyCode companyCode , OfficeCode officeCode);
+	List<HealthInsuranceRate> findAllOffice(String companyCode , String officeCode);
 	/**
 	 * Checks if is invalid date range.
 	 *

@@ -22,11 +22,13 @@ var nts;
                                 findUnemployeeInsuranceRateHistory: "pr/insurance/labor/unemployeerate/history/find",
                                 detailUnemployeeInsuranceRateHistory: "pr/insurance/labor/unemployeerate/detail",
                                 addUnemployeeInsuranceRate: "pr/insurance/labor/unemployeerate/add",
+                                copyUnemployeeInsuranceRate: "pr/insurance/labor/unemployeerate/copy",
                                 updateUnemployeeInsuranceRate: "pr/insurance/labor/unemployeerate/update",
                                 findAllAccidentInsuranceRateHistory: "pr/insurance/labor/accidentrate/history/findall",
                                 findAccidentInsuranceRateHistory: "pr/insurance/labor/accidentrate/history/find",
                                 findAccidentInsuranceRate: "pr/insurance/labor/accidentrate/find",
                                 addAccidentInsuranceRate: "pr/insurance/labor/accidentrate/add",
+                                copyAccidentInsuranceRate: "pr/insurance/labor/accidentrate/copy",
                                 updateAccidentInsuranceRate: "pr/insurance/labor/accidentrate/update",
                                 findAllInsuranceBusinessType: "pr/insurance/labor/businesstype/findall"
                             };
@@ -116,6 +118,10 @@ var nts;
                                 return dfd.promise();
                             }
                             service.detailUnemployeeInsuranceRateHistory = detailUnemployeeInsuranceRateHistory;
+                            function copyAccidentInsuranceRate(accidentInsuranceRateCopyDto) {
+                                return nts.uk.request.ajax(paths.copyAccidentInsuranceRate, accidentInsuranceRateCopyDto);
+                            }
+                            service.copyAccidentInsuranceRate = copyAccidentInsuranceRate;
                             function addAccidentInsuranceRate(accidentInsuranceRateModel) {
                                 var dfd = $.Deferred();
                                 var data = {
@@ -131,6 +137,10 @@ var nts;
                                 return dfd.promise();
                             }
                             service.addAccidentInsuranceRate = addAccidentInsuranceRate;
+                            function copyUnemployeeInsuranceRate(unemployeeInsuranceRateCopyDto) {
+                                return nts.uk.request.ajax(paths.copyUnemployeeInsuranceRate, unemployeeInsuranceRateCopyDto);
+                            }
+                            service.copyUnemployeeInsuranceRate = copyUnemployeeInsuranceRate;
                             function updateAccidentInsuranceRate(accidentInsuranceRateModel) {
                                 var dfd = $.Deferred();
                                 var data = {
@@ -343,6 +353,24 @@ var nts;
                                     return UnemployeeInsuranceRateItemDto;
                                 }());
                                 model.UnemployeeInsuranceRateItemDto = UnemployeeInsuranceRateItemDto;
+                                var UnemployeeInsuranceRateCopyDto = (function () {
+                                    function UnemployeeInsuranceRateCopyDto() {
+                                        this.historyIdCopy = '';
+                                        this.startMonth = 0;
+                                        this.addNew = false;
+                                    }
+                                    return UnemployeeInsuranceRateCopyDto;
+                                }());
+                                model.UnemployeeInsuranceRateCopyDto = UnemployeeInsuranceRateCopyDto;
+                                var AccidentInsuranceRateCopyDto = (function () {
+                                    function AccidentInsuranceRateCopyDto() {
+                                        this.historyIdCopy = '';
+                                        this.startMonth = 0;
+                                        this.addNew = false;
+                                    }
+                                    return AccidentInsuranceRateCopyDto;
+                                }());
+                                model.AccidentInsuranceRateCopyDto = AccidentInsuranceRateCopyDto;
                                 var HistoryInsuranceDto = (function () {
                                     function HistoryInsuranceDto() {
                                         this.historyId = '';

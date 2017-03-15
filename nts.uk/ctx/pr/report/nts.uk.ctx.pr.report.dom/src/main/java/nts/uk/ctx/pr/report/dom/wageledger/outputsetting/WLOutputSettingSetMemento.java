@@ -47,11 +47,4 @@ public interface WLOutputSettingSetMemento {
 	 * @param companyCode the new company code
 	 */
 	void setCompanyCode(CompanyCode companyCode);
-	
-	/**
-	 * Sets the version.
-	 *
-	 * @param version the new version
-	 */
-	void setVersion(long version);
 }

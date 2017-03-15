@@ -1,14 +1,20 @@
 /******************************************************************
- * Copyright (c) 2015 Nittsu System to present.                   *
+ * Copyright (c) 2016 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.core.infra.repository.insurance.labor;
 
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.Address;
+import nts.uk.ctx.pr.core.dom.insurance.CitySign;
 import nts.uk.ctx.pr.core.dom.insurance.KanaAddress;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
+import nts.uk.ctx.pr.core.dom.insurance.OfficeMark;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeName;
+import nts.uk.ctx.pr.core.dom.insurance.OfficeNoA;
+import nts.uk.ctx.pr.core.dom.insurance.OfficeNoB;
+import nts.uk.ctx.pr.core.dom.insurance.OfficeNoC;
+import nts.uk.ctx.pr.core.dom.insurance.PhoneNumber;
 import nts.uk.ctx.pr.core.dom.insurance.PicName;
 import nts.uk.ctx.pr.core.dom.insurance.PicPosition;
 import nts.uk.ctx.pr.core.dom.insurance.PotalCode;
@@ -189,84 +195,87 @@ public class JpaLaborInsuranceOfficeSetMemento implements LaborInsuranceOfficeSe
 	 * 
 	 * @see
 	 * nts.uk.ctx.pr.core.dom.insurance.labor.LaborInsuranceOfficeSetMemento#
-	 * setPhoneNumber(java.lang.String)
-	 */
-	@Override
-	public void setPhoneNumber(String phoneNumber) {
-		this.typeValue.setTelNo(phoneNumber);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * nts.uk.ctx.pr.core.dom.insurance.labor.LaborInsuranceOfficeSetMemento#
-	 * setCitySign(java.lang.String)
-	 */
-	@Override
-	public void setCitySign(String citySign) {
-		this.typeValue.setCitySign(citySign);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * nts.uk.ctx.pr.core.dom.insurance.labor.LaborInsuranceOfficeSetMemento#
-	 * setOfficeMark(java.lang.String)
-	 */
-	@Override
-	public void setOfficeMark(String officeMark) {
-		this.typeValue.setOfficeMark(officeMark);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * nts.uk.ctx.pr.core.dom.insurance.labor.LaborInsuranceOfficeSetMemento#
-	 * setOfficeNoA(java.lang.String)
-	 */
-	@Override
-	public void setOfficeNoA(String officeNoA) {
-		this.typeValue.setOfficeNoA(officeNoA);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * nts.uk.ctx.pr.core.dom.insurance.labor.LaborInsuranceOfficeSetMemento#
-	 * setOfficeNoB(java.lang.String)
-	 */
-	@Override
-	public void setOfficeNoB(String officeNoB) {
-		this.typeValue.setOfficeNoB(officeNoB);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * nts.uk.ctx.pr.core.dom.insurance.labor.LaborInsuranceOfficeSetMemento#
-	 * setOfficeNoC(java.lang.String)
-	 */
-	@Override
-	public void setOfficeNoC(String officeNoC) {
-		this.typeValue.setOfficeNoC(officeNoC);
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * nts.uk.ctx.pr.core.dom.insurance.labor.LaborInsuranceOfficeSetMemento#
 	 * setMemo(nts.uk.shr.com.primitive.Memo)
 	 */
 	@Override
 	public void setMemo(Memo memo) {
 		this.typeValue.setMemo(memo.v());
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.dom.insurance.labor.LaborInsuranceOfficeSetMemento#
+	 * setPhoneNumber(nts.uk.ctx.pr.core.dom.insurance.PhoneNumber)
+	 */
+	@Override
+	public void setPhoneNumber(PhoneNumber phoneNumber) {
+		this.typeValue.setTelNo(phoneNumber.v());
+
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.dom.insurance.labor.LaborInsuranceOfficeSetMemento#
+	 * setCitySign(nts.uk.ctx.pr.core.dom.insurance.CitySign)
+	 */
+	@Override
+	public void setCitySign(CitySign citySign) {
+		this.typeValue.setCitySign(citySign.v());
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.dom.insurance.labor.LaborInsuranceOfficeSetMemento#
+	 * setOfficeMark(nts.uk.ctx.pr.core.dom.insurance.OfficeMark)
+	 */
+	@Override
+	public void setOfficeMark(OfficeMark officeMark) {
+		this.typeValue.setOfficeMark(officeMark.v());
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.dom.insurance.labor.LaborInsuranceOfficeSetMemento#
+	 * setOfficeNoA(nts.uk.ctx.pr.core.dom.insurance.OfficeNoA)
+	 */
+	@Override
+	public void setOfficeNoA(OfficeNoA officeNoA) {
+		this.typeValue.setOfficeNoA(officeNoA.v());
+
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.dom.insurance.labor.LaborInsuranceOfficeSetMemento#
+	 * setOfficeNoB(nts.uk.ctx.pr.core.dom.insurance.OfficeNoB)
+	 */
+	@Override
+	public void setOfficeNoB(OfficeNoB officeNoB) {
+		this.typeValue.setOfficeNoB(officeNoB.v());
+
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.dom.insurance.labor.LaborInsuranceOfficeSetMemento#
+	 * setOfficeNoC(nts.uk.ctx.pr.core.dom.insurance.OfficeNoC)
+	 */
+	@Override
+	public void setOfficeNoC(OfficeNoC officeNoC) {
+		this.typeValue.setOfficeNoC(officeNoC.v());
+
 	}
 
 }

@@ -51,7 +51,7 @@ public class UpdateSocialOfficeCommandHandler extends CommandHandler<UpdateSocia
 
 		// Convert Dto to Domain
 		SocialInsuranceOffice socialInsuranceOffice = command.toDomain(companyCode);
-
+		socialInsuranceOffice.validate();
 		// validate
 		socialInsuranceOfficeService.validateRequiredItem(socialInsuranceOffice);
 
