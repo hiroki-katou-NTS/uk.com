@@ -6,6 +6,7 @@ module qmm012.f.viewmodel {
         //F 001
         roundingRules_F_001: KnockoutObservableArray<any>;
         selectedRuleCode_F_001: any;
+        CurrentItemMaster: KnockoutObservable<qmm012.b.service.model.ItemMasterModel> = ko.observable(null);
         constructor() {
             let self = this;
             self.enable = ko.observable(true);
@@ -13,16 +14,11 @@ module qmm012.f.viewmodel {
             self.checked_F_002 = ko.observable(true);
             //F_001
             self.roundingRules_F_001 = ko.observableArray([
-                { code: '1', name: 'ゼロを表示する' },
-                { code: '2', name: 'ゼロを表示しない' }
+                { code: '1', name: '繧ｼ繝ｭ繧定｡ｨ遉ｺ縺吶ｋ' },
+                { code: '2', name: '繧ｼ繝ｭ繧定｡ｨ遉ｺ縺励↑縺�' }
             ]);
             self.selectedRuleCode_F_001 = ko.observable(1);
         }
-        start(): JQueryPromise<any> {
-            var self = this;
-            // Page load dfd.
-            var dfd = $.Deferred();
-            //dropdownlist event
-        }
+
     }
 }

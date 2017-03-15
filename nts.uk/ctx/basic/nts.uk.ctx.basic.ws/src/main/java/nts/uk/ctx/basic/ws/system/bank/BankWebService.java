@@ -12,6 +12,8 @@ import nts.uk.ctx.basic.app.command.system.bank.AddBankCommand;
 import nts.uk.ctx.basic.app.command.system.bank.AddBankCommandHandler;
 import nts.uk.ctx.basic.app.command.system.bank.RemoveBankCommand;
 import nts.uk.ctx.basic.app.command.system.bank.RemoveBankCommandHandler;
+import nts.uk.ctx.basic.app.command.system.bank.RemoveListBankCommand;
+import nts.uk.ctx.basic.app.command.system.bank.RemoveListBankCommandHandler;
 import nts.uk.ctx.basic.app.command.system.bank.UpdateBankCommand;
 import nts.uk.ctx.basic.app.command.system.bank.UpdateBankCommandHandler;
 import nts.uk.ctx.basic.app.find.system.bank.BankFinder;
@@ -31,6 +33,9 @@ public class BankWebService extends WebService {
 	
 	@Inject
 	private BankFinder bankFinder;
+	
+	@Inject
+	private RemoveListBankCommandHandler removeListBankCommandHandler;
 	
 	@POST
 	@Path("add")
@@ -54,5 +59,11 @@ public class BankWebService extends WebService {
 	@Path("find/all")
 	public List<BankDto> findAll() {
 		return this.bankFinder.findAll();
+	}
+	
+	@POST
+	@Path("remove/list")
+	public void removeList(RemoveListBankCommand command){
+		this.removeListBankCommandHandler.handle(command);
 	}
 }

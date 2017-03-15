@@ -1,4 +1,4 @@
-﻿module nts.uk.ui {
+module nts.uk.ui {
 
 	export module windows {
 
@@ -695,6 +695,36 @@
             
             export function getRowIndexFrom($anyElementInRow: JQuery): number {
                 return parseInt($anyElementInRow.closest('tr').attr('data-row-idx'), 10);
+            }
+            
+            export module virtual {
+                
+                export function getDisplayContainer(gridId: String) {
+                    return $('#' + gridId + '_displayContainer');
+                }
+                
+                export function getVisibleRows(gridId: String) {
+                    return $('#' + gridId + ' > tbody > tr:visible');
+                }
+                
+                export function getFirstVisibleRow(gridId: String) {
+                    let top = getDisplayContainer(gridId).scrollTop();
+                    let visibleRows = getVisibleRows(gridId);
+                    for (var i = 0; i < visibleRows.length; i++) {
+                        let $row = $(visibleRows[i]);
+                        if (visibleRows[i].offsetTop + $row.height() > top) {
+                            return $row;
+                        }
+                    }
+                }
+                
+                export function getLastVisibleRow(gridId: String) {
+                    let $displayContainer = getDisplayContainer(gridId);
+                    let bottom = $displayContainer.scrollTop() + $displayContainer.height();
+                    return getVisibleRows(gridId).filter(function () {
+                        return this.offsetTop < bottom;
+                    }).last();
+                }
             }
             
             export module header {

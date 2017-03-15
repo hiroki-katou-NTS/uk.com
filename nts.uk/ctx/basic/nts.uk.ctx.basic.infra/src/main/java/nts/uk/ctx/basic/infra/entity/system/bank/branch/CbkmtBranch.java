@@ -7,7 +7,7 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.basic.infra.entity.system.bank.CbkmtBankPK;
+import nts.uk.shr.infra.data.entity.TableEntity;
 /**
  * 
  * @author sonnh
@@ -17,7 +17,7 @@ import nts.uk.ctx.basic.infra.entity.system.bank.CbkmtBankPK;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name="CBKMT_BRANCH")
-public class CbkmtBranch {
+public class CbkmtBranch extends TableEntity {
    @EmbeddedId
    public CbkmtBranchPK ckbmtBranchPK;
    

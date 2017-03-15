@@ -37,29 +37,28 @@ public class QpdmtPayday {
 
 	@Basic(optional = false)
 	@Column(name = "PAY_DATE")
-	@Temporal(TemporalType.DATE)
-	public Date payDate;
+	@Convert(converter = GeneralDateToDBConverter.class)
+	public GeneralDate payDate;
 
 	@Basic(optional = false)
 	@Column(name = "STD_DATE")
-	@Temporal(TemporalType.DATE)
 	@Convert(converter = GeneralDateToDBConverter.class)
 	public GeneralDate standardDate;
 
 	@Basic(optional = false)
 	@Column(name = "SOCIAL_INS_STD_DATE")
-	@Temporal(TemporalType.DATE)
-	public Date socialInsuranceStandardDate;
+	@Convert(converter = GeneralDateToDBConverter.class)
+	public GeneralDate socialInsuranceStandardDate;
 
 	@Basic(optional = false)
 	@Column(name = "EMP_INS_STD_DATE")
-	@Temporal(TemporalType.DATE)
-	public Date employmentInsuranceStandardDate;
+	@Convert(converter = GeneralDateToDBConverter.class)
+	public GeneralDate employmentInsuranceStandardDate;
 
 	@Basic(optional = false)
 	@Column(name = "INCOME_TAX_STD_DATE")
-	@Temporal(TemporalType.DATE)
-	public Date incomeTaxReferenceDate;
+	@Convert(converter = GeneralDateToDBConverter.class)
+	public GeneralDate incomeTaxReferenceDate;
 
 	@Basic(optional = false)
 	@Column(name = "STMT_OUTPUT_MON")

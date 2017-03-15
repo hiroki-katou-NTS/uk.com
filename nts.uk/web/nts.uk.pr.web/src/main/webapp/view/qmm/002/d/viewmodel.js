@@ -56,6 +56,10 @@ var qmm002;
                         });
                     });
                 };
+                ScreenModel.prototype.close = function () {
+                    var self = this;
+                    nts.uk.ui.windows.close();
+                };
                 ScreenModel.prototype.Delete = function () {
                     var self = this;
                     var bankInfo = {

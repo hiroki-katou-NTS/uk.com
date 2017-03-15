@@ -18,7 +18,7 @@ import javax.persistence.Transient;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.pr.core.infra.entity.paymentdata.QcamtItem;
+import nts.uk.ctx.pr.core.infra.entity.paymentdata.QcamtItem_v1;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity

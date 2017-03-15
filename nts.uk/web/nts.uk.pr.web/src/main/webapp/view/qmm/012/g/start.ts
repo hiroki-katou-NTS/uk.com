@@ -30,7 +30,7 @@ __viewContext.ready(function() {
         checked_016: KnockoutObservable<boolean>;
         //gridlist
         gridListItems: KnockoutObservableArray<GridItemModel>;
-        columns: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
+        columns: KnockoutObservableArray<any>;
         gridListCurrentCode: KnockoutObservable<any>;
         currentCodeList: KnockoutObservableArray<any>;
         //Switch
@@ -80,11 +80,11 @@ __viewContext.ready(function() {
             self.isEditable = ko.observable(true);
             //001
             self.ComboBoxItemList_001 = ko.observableArray([
-                new ComboboxItemModel('1', '課税'),
-                new ComboboxItemModel('2', '非課税(限度あり）'),
-                new ComboboxItemModel('3', '非課税(限度なし）'),
-                new ComboboxItemModel('4', '通勤費(手入力)'),
-                new ComboboxItemModel('5', '通勤費(定期券利用)')
+                new ComboboxItemModel('1', '隱ｲ遞�'),
+                new ComboboxItemModel('2', '髱櫁ｪｲ遞�(髯仙ｺｦ縺ゅｊ�ｼ�'),
+                new ComboboxItemModel('3', '髱櫁ｪｲ遞�(髯仙ｺｦ縺ｪ縺暦ｼ�'),
+                new ComboboxItemModel('4', '騾壼共雋ｻ(謇句�･蜉�)'),
+                new ComboboxItemModel('5', '騾壼共雋ｻ(螳壽悄蛻ｸ蛻ｩ逕ｨ)')
             ]);
             self.ComboBoxCurrentCode_001 = ko.observable(1);
             self.selectedCode_001 = ko.observable('1')
@@ -115,9 +115,9 @@ __viewContext.ready(function() {
                 new GridItemModel('012', 'Item12'),
                 new GridItemModel('013', 'Item13')
             ]);
-            this.columns = ko.observableArray([
-                { headerText: '驛｢�ｽｧ�ｿｽ�ｽｽ�ｽｳ驛｢譎｢�ｽｽ�ｽｼ驛｢譎｢�ｽｿ�ｽｽ', prop: 'code', width: 100 },
-                { headerText: '髯ｷ�ｽｷ陷･�ｽｲ�ｿｽ�ｽｽ�ｽｧ�ｿｽ�ｽｽ�ｽｰ', prop: 'name', width: 150 }
+            self.columns = ko.observableArray([
+                { headerText: '鬩幢ｽ｢�ｿｽ�ｽｽ�ｽｧ�ｿｽ�ｽｿ�ｽｽ�ｿｽ�ｽｽ�ｽｽ�ｿｽ�ｽｽ�ｽｳ鬩幢ｽ｢隴趣ｽ｢�ｿｽ�ｽｽ�ｽｽ�ｿｽ�ｽｽ�ｽｼ鬩幢ｽ｢隴趣ｽ｢�ｿｽ�ｽｽ�ｽｿ�ｿｽ�ｽｽ�ｽｽ', prop: 'code', width: 100 },
+                { headerText: '鬮ｯ�ｽｷ�ｿｽ�ｽｽ�ｽｷ髯ｷ�ｽ･�ｿｽ�ｽｽ�ｽｲ�ｿｽ�ｽｿ�ｽｽ�ｿｽ�ｽｽ�ｽｽ�ｿｽ�ｽｽ�ｽｧ�ｿｽ�ｽｿ�ｽｽ�ｿｽ�ｽｽ�ｽｽ�ｿｽ�ｽｽ�ｽｰ', prop: 'name', width: 150 }
             ]);
             this.gridListCurrentCode = ko.observable();
             this.currentCodeList = ko.observableArray([]);
@@ -125,14 +125,14 @@ __viewContext.ready(function() {
             //start Switch Data
             self.enable = ko.observable(true);
             self.roundingRules = ko.observableArray([
-                { code: '1', name: '謾ｯ邨ｦ' },
-                { code: '2', name: '謾ｯ邨ｦ' }
+                { code: '1', name: '隰ｾ�ｽｯ驍ｨ�ｽｦ' },
+                { code: '2', name: '隰ｾ�ｽｯ驍ｨ�ｽｦ' }
             ]);
             self.selectedRuleCode = ko.observable(1);
             //005 006 007 008 009 010
-            roundingRules_002_003_005To010 = ko.observableArray([
-                { code: '1', name: '対象' },
-                { code: '2', name: '対象外' }
+            self.roundingRules_002_003_005To010 = ko.observableArray([
+                { code: '1', name: '蟇ｾ雎｡' },
+                { code: '2', name: '蟇ｾ雎｡螟�' }
             ]);
             self.selectedRuleCode_002 = ko.observable(1);
             self.selectedRuleCode_003 = ko.observable(1);
@@ -143,30 +143,30 @@ __viewContext.ready(function() {
             self.selectedRuleCode_009 = ko.observable(1);
             self.selectedRuleCode_010 = ko.observable(1);
             //011
-            roundingRules_011 = ko.observableArray([
-                { code: '1', name: 'ゼロを表示する' },
-                { code: '2', name: 'ゼロを表示しない' }
+            self.roundingRules_011 = ko.observableArray([
+                { code: '1', name: '繧ｼ繝ｭ繧定｡ｨ遉ｺ縺吶ｋ' },
+                { code: '2', name: '繧ｼ繝ｭ繧定｡ｨ遉ｺ縺励↑縺�' }
             ]);
             self.selectedRuleCode_011 = ko.observable(1);
             //017
             self.roundingRules_017 = ko.observableArray([
-                { code: '1', name: '項目区分' },
-                { code: '2', name: '項目区分' },
-                { code: '3', name: '項目区分' },
-                { code: '4', name: '項目区分' },
+                { code: '1', name: '鬆�逶ｮ蛹ｺ蛻�' },
+                { code: '2', name: '鬆�逶ｮ蛹ｺ蛻�' },
+                { code: '3', name: '鬆�逶ｮ蛹ｺ蛻�' },
+                { code: '4', name: '鬆�逶ｮ蛹ｺ蛻�' },
             ]);
             self.selectedRuleCode_017 = ko.observable(1);
             //endSwitch Data
             //start radiogroup data
             self.RadioItemList = ko.observableArray([
-                new BoxModel(1, '隴幢ｽｬ驕会ｽｾ'),
-                new BoxModel(2, '雎募供�ｽｮ螟奇ｽｪ�ｽｿ隴厄ｽｸ陷�ｽｺ陷牙ｸｷ逡題耳螟ゑｽ､�ｽｾ')
+                new BoxModel(1, '髫ｴ蟷｢�ｽｽ�ｽｬ鬩穂ｼ夲ｽｽ�ｽｾ'),
+                new BoxModel(2, '髮主供萓幢ｿｽ�ｽｽ�ｽｮ陞溷･�ｽｽ�ｽｪ�ｿｽ�ｽｽ�ｽｿ髫ｴ蜴�ｽｽ�ｽｸ髯ｷ�ｿｽ�ｽｽ�ｽｺ髯ｷ迚呻ｽｸ�ｽｷ騾｡鬘瑚�ｳ陞溘ｑ�ｽｽ�ｽ､�ｿｽ�ｽｽ�ｽｾ')
             ]);
             self.selectedId = ko.observable(1);
             //004
             self.RadioItemList_004 = ko.observableArray([
-                new BoxModel(1, '全員一律で指定する'),
-                new BoxModel(2, '給与契約形態ごとに指定する')
+                new BoxModel(1, '蜈ｨ蜩｡荳�蠕九〒謖�螳壹☆繧�'),
+                new BoxModel(2, '邨ｦ荳主･醍ｴ�蠖｢諷九＃縺ｨ縺ｫ謖�螳壹☆繧�')
             ]);
             self.selectedId_004 = ko.observable(1);
             //end radiogroup data
@@ -198,10 +198,9 @@ __viewContext.ready(function() {
         name: string;
         description: string;
 
-        constructor(code: string, name: string, description: string) {
+        constructor(code: string, name: string) {
             this.code = code;
             this.name = name;
-            this.description = description;
         }
 
     }
@@ -226,9 +225,3 @@ __viewContext.ready(function() {
     }
     this.bind(new ScreenModel());
 });
-function OpenModeSubWindow(url: string, option?: any) {
-    nts.uk.ui.windows.sub.modal(url, option);
-}
-function closeDialog(): any {
-    nts.uk.ui.windows.close();
-}

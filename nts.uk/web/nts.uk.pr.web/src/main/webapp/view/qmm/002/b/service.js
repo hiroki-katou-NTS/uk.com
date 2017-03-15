@@ -13,7 +13,8 @@ var nts;
                         var service;
                         (function (service) {
                             var paths = {
-                                getBankList: ""
+                                getBankList: "",
+                                removeListBank: "basic/system/bank/remove/list"
                             };
                             function getBankList() {
                                 var dfd = $.Deferred();
@@ -35,6 +36,19 @@ var nts;
                                 return dfd.promise();
                             }
                             service.getBankList = getBankList;
+                            function removeBank(data) {
+                                var dfd = $.Deferred();
+                                var path = paths.removeListBank;
+                                nts.uk.request.ajax("com", path, data)
+                                    .done(function (res) {
+                                    dfd.resolve(res);
+                                })
+                                    .fail(function (res) {
+                                    dfd.reject(res);
+                                });
+                                return dfd.promise();
+                            }
+                            service.removeBank = removeBank;
                         })(service = b.service || (b.service = {}));
                     })(b = qmm002.b || (qmm002.b = {}));
                 })(qmm002 = view.qmm002 || (view.qmm002 = {}));
