@@ -92,9 +92,9 @@ public class HealthInsuranceRateServiceImpl extends HealthInsuranceRateService {
 	public HealthInsuranceRate createInitalHistory(String companyCode, String officeCode, YearMonth startTime) {
 		List<HealthInsuranceRate> listHealthOfOffice = this.healthInsuranceRateRepo.findAllOffice(companyCode,
 				officeCode);
-		HealthInsuranceRate obj = listHealthOfOffice.stream().filter(c -> c.getStart().equals(startTime)).findFirst()
-				.get();
-		if (obj != null) {
+		List<HealthInsuranceRate> obj = listHealthOfOffice.stream()
+				.filter(c -> c.getApplyRange().getStartMonth().equals(startTime)).collect(Collectors.toList());
+		if (!obj.isEmpty()) {
 			throw new BusinessException("ER011");
 		}
 		return HealthInsuranceRate.createWithIntial(new CompanyCode(companyCode), new OfficeCode(officeCode),
