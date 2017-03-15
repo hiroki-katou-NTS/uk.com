@@ -14,7 +14,7 @@ module nts.uk.pr.view.qpp018.a {
             var dfd = $.Deferred();
             nts.uk.request.ajax(servicePath.findAllInsuranceOffice).done(function (res: any) {
                 var list = _.map(res, function (item: any) {
-                    return new model.InsuranceOffice(item.officeCode, item.officeName);
+                    return new model.InsuranceOffice(item.code, item.name);
                 });
                 dfd.resolve(list);
             });
