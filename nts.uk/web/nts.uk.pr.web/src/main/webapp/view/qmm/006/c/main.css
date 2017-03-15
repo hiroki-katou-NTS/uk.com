@@ -28,8 +28,8 @@
 }
 
 #C_BTN_001 {
-	margin-left: 480px;
-	margin-top: 10px;
+	margin-left: 370px;
+	margin-top: 1px;
 }
 
 #C_BTN_002 {
@@ -39,7 +39,7 @@
 .caret-right {
 	float: left;
 	margin-left: -1px;
-	margin-top: 160px;
+	margin-top: 210px;
 	font-size: 5rem;
 	color: #97d44a
 }
@@ -51,10 +51,26 @@
 #hr-vertical {
 	float: left;
 	margin-left: 30px;
-	height: 495px;
+	height: 590px;
 }
 
 #hr-horizontal {
 	float: left;
 	width: 100%;
+}
+
+#icon1 {
+	margin-top: 87px;
+	margin-left: 35px
+}
+
+#icon2 {
+	margin-top: 87px;
+	margin-left: 553px
+}
+
+.searchBox {
+	width: 400px;
+	margin-left: 42px;
+	margin-bottom: 10px
 }
