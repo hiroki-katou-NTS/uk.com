@@ -24,8 +24,9 @@ module nts.uk.pr.view.qmm011.a {
     import InsuranceBusinessTypeUpdateModel = nts.uk.pr.view.qmm011.e.viewmodel.InsuranceBusinessTypeUpdateModel;
     import AddHistoryInfoModel = nts.uk.pr.view.qmm011.d.viewmodel.AddHistoryInfoModel;
     import UpdateHistoryInfoModel = nts.uk.pr.view.qmm011.f.viewmodel.UpdateHistoryInfoModel;
-    //import NewHistoryScreenOption = nts.uk.pr.view.base.simplehistory.newhistory.viewmodel.NewHistoryScreenOption;
-    //import ScreenMode = nts.uk.pr.view.base.simplehistory.dialogbase.ScreenMode;
+    import NewHistoryScreenOption = nts.uk.pr.view.base.simplehistory.newhistory.viewmodel.NewHistoryScreenOption;
+    import HistoryModel = nts.uk.pr.view.base.simplehistory.model.HistoryModel;
+    import ScreenMode = nts.uk.pr.view.base.simplehistory.dialogbase.ScreenMode;
     //import data class ... END
 
     export module viewmodel {
@@ -133,30 +134,58 @@ module nts.uk.pr.view.qmm011.a {
             //open dialog add UnemployeeInsuranceRateHistory => show view model xhtml (action event add)
             private openAddUnemployeeInsuranceRateHistory() {
 
-                /* var self = this;
+                var self = this;
+                var lastest: HistoryModel;
+                var name: string = '労働保険料率';
+                lastest = {
+                    uuid: self.selectionUnemployeeInsuranceRateHistory(),
+                    start: self.unemployeeInsuranceRateModel().unemployeeInsuranceHistoryModel.startMonth(),
+                    end: self.unemployeeInsuranceRateModel().unemployeeInsuranceHistoryModel.endMonth()
+                };
+
+                var unemployeeInsuranceRateCopyDto: UnemployeeInsuranceRateCopyDto;
+                unemployeeInsuranceRateCopyDto = new UnemployeeInsuranceRateCopyDto();
+                unemployeeInsuranceRateCopyDto.historyIdCopy = self.selectionUnemployeeInsuranceRateHistory();
                 var newHistoryOptions: NewHistoryScreenOption = {
-                    name: '労働保険料率の登録',
+                    screenMode: ScreenMode.MODE_HISTORY_ONLY,
+                    name: name,
                     master: null,
-                    lastest: currentNode.data,
-                    
+                    lastest: lastest,
+
                     // Copy.
                     onCopyCallBack: (data) => {
-                        self.service.createHistory(data.masterCode, data.startYearMonth, true)
-                            .done(h => self.reloadMasterHistory(h.uuid));
+                        unemployeeInsuranceRateCopyDto.startMonth = data.startYearMonth;
+                        unemployeeInsuranceRateCopyDto.addNew = false;
+                        service.copyUnemployeeInsuranceRate(unemployeeInsuranceRateCopyDto).done(data => {
+                            self.typeActionUnemployeeInsurance(TypeActionInsuranceRate.add);
+                            self.reloadDataUnemployeeInsuranceRateByAction();
+                            self.clearErrorSaveUnemployeeInsurance();
+                        }).fail(function(error) {
+                            self.showMessageSaveUnemployeeInsurance(error.message)
+                        });
                     },
 
                     // Init.
                     onCreateCallBack: (data) => {
-                        self.service.createHistory(data.masterCode, data.startYearMonth, false)
-                            .done(h => self.reloadMasterHistory(h.uuid));
+                        unemployeeInsuranceRateCopyDto.startMonth = data.startYearMonth;
+                        unemployeeInsuranceRateCopyDto.addNew = true;
+                        service.copyUnemployeeInsuranceRate(unemployeeInsuranceRateCopyDto).done(data => {
+                            self.typeActionUnemployeeInsurance(TypeActionInsuranceRate.add);
+                            self.reloadDataUnemployeeInsuranceRateByAction();
+                            self.clearErrorSaveUnemployeeInsurance();
+                        }).fail(function(error) {
+                            self.showMessageSaveUnemployeeInsurance(error.message)
+                        });
                     }
                 };
                 nts.uk.ui.windows.setShared('options', newHistoryOptions);
-                var ntsDialogOptions = { title: nts.uk.text.format('{0}の登録 > 履歴の追加', self.options.functionName),
-                        dialogClass: 'no-close' }; 
+                var ntsDialogOptions = {
+                    title: nts.uk.text.format('{0}の登録 > 履歴の追加', name),
+                    dialogClass: 'no-close'
+                };
                 nts.uk.ui.windows.sub.modal('/view/base/simplehistory/newhistory/index.xhtml', ntsDialogOptions);
-                
-                */
+
+                /*
                 var self = this;
                 //set data fw to /d/
                 nts.uk.ui.windows.setShared("isEmpty", self.isEmptyUnemployee());
@@ -201,6 +230,7 @@ module nts.uk.pr.view.qmm011.a {
                         }
                     }
                 });
+                */
             }
 
             //open dialog edit InsuranceBusinessType => show view model xhtml (action event edit)
