@@ -9,8 +9,8 @@ import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.pr.core.dom.itemmaster.ItemMaster;
 import nts.uk.ctx.pr.core.dom.itemmaster.ItemMasterRepository;
-import nts.uk.ctx.pr.core.infra.entity.paymentdata.QcamtItem;
-import nts.uk.ctx.pr.core.infra.entity.paymentdata.QcamtItemPK;
+import nts.uk.ctx.pr.core.infra.entity.itemmaster.QcamtItem;
+import nts.uk.ctx.pr.core.infra.entity.itemmaster.QcamtItemPK;
 
 @Stateless
 public class JpaItemMasterRepository extends JpaRepository {
@@ -36,12 +36,12 @@ public class JpaItemMasterRepository extends JpaRepository {
 	}
 
 	private static ItemMaster toDomain(QcamtItem entity) {
-		val domain = ItemMaster.createSimpleFromJavaType(entity.qcamtItemPK.ccd, entity.qcamtItemPK.itemCd,
-				entity.qcamtItemPK.ctgAtr, entity.itemName, entity.itemAbName, entity.taxAtr, entity.itemAtr);
-		domain.additionalInfo(entity.limitMny.intValue(), entity.fixPayAtr, entity.laborInsAtr, entity.socialInsAtr, entity.avePayAtr, entity.deductAtr);
-		domain.additionalErrorAlarm(entity.errRangeHighAtr, entity.errRangeHigh, entity.errRangeLowAtr, entity.errRangeLow, entity.alRangeHighAtr, 
-				entity.alRangeHigh, entity.alRangeLowAtr, entity.alRangeLow);
-		return domain;
+//		val domain = ItemMaster.createSimpleFromJavaType(entity.qcamtItemPK.ccd, entity.qcamtItemPK.itemCd,
+//				entity.qcamtItemPK.ctgAtr, entity.itemName, entity.itemAbName, entity.taxAtr, entity.itemAtr);
+//		domain.additionalInfo(entity.limitMny.intValue(), entity.fixPayAtr, entity.laborInsAtr, entity.socialInsAtr, entity.avePayAtr, entity.deductAtr);
+//		domain.additionalErrorAlarm(entity.errRangeHighAtr, entity.errRangeHigh, entity.errRangeLowAtr, entity.errRangeLow, entity.alRangeHighAtr, 
+//				entity.alRangeHigh, entity.alRangeLowAtr, entity.alRangeLow);
+		return null;
 	}
 
 	//@Override
@@ -56,8 +56,7 @@ public class JpaItemMasterRepository extends JpaRepository {
 
 	//@Override
 	public Optional<ItemMaster> find(String companyCode, int categoryAtr, String itemCode) {
-		return this.queryProxy().find(new QcamtItemPK(companyCode, itemCode, categoryAtr), QcamtItem.class).
-				map(entity -> toDomain(entity));
+		return null;
 	}
 
 }
