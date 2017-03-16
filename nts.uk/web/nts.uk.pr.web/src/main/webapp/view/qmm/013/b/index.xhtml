@@ -21,7 +21,7 @@
 		<ui:define name="content">
 			<div id="functions-area">
 				<button id="BTN_001" data-bind="click: btn_001">新規</button>
-				<button id="BTN_002" class="proceed" data-bind="click: btn_002">登録</button>
+				<button id="BTN_002" class="proceed" data-bind="click: btn_002, enable: $root.errors.isEmpty">登録</button>
 				<button id="BTN_003">印刷 (PDF)</button>
 				<button id="BTN_007">マスタ修正ログ</button>
 				<button id="BTN_004" class="danger" data-bind="click: btn_004">削除</button>
@@ -69,7 +69,7 @@
 					</div>
 					<div class="right-content-right">
 						<div class="control-group">
-							<span id="INP_002"> <input class="text-editor1"
+							<span> <input data-name="コード" id="INP_002" class="text-editor1"
 								data-bind="ntsTextEditor: {
 									value: personalUnitPriceCode,
 									constraint: 'PersonalUnitPriceCode',
@@ -80,7 +80,7 @@
 						                textalign: 'center'},
 									required: true,
 									enable: $parent.isCreated}" /></span>
-							<span id="INP_003"> <input class="text-editor2"
+							<span> <input data-name="名称" id="INP_003" class="text-editor2"
 								data-bind="ntsTextEditor: {
 									value: personalUnitPriceName,
 									constraint: 'PersonalUnitPriceName',

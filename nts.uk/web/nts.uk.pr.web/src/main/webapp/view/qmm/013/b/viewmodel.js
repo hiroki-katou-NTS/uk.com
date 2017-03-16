@@ -6,6 +6,7 @@ var qmm013;
         (function (viewmodel) {
             var ScreenModel = (function () {
                 function ScreenModel() {
+                    this.confirmDirty = false;
                     var self = this;
                     self.items = ko.observableArray([]);
                     self.currentItem = ko.observable(new PersonalUnitPrice(null, null, null, null, null, null, null, null, null, null, null, null, null));
@@ -14,10 +15,17 @@ var qmm013;
                     self.selectedId = ko.observable(0);
                     self.isCreated = ko.observable(true);
                     self.dirty = new nts.uk.ui.DirtyChecker(self.currentItem);
+                    self.indexRow = ko.observable(0);
                     self.columns = ko.observableArray([
                         { headerText: 'コード', prop: 'code', width: 100, key: 'code' },
                         { headerText: '名称', prop: 'name', width: 150, key: 'name' },
                         { headerText: '廃止', prop: 'abolition', width: 50, key: 'abolition' }
+                    ]);
+                    self.messages = ko.observableArray([
+                        { messageId: "AL001", message: "変更された内容が登録されていません。\r\nよろしいですか。" },
+                        { messageId: "ER001", message: "＊が入力されていません。" },
+                        { messageId: "ER005", message: "入力した＊は既に存在しています。\r\n＊を確認してください。" },
+                        { messageId: "AL002", message: "データを削除します。\r\nよろしいですか？" }
                     ]);
                     self.itemList = ko.observableArray([
                         new BoxModel(0, '全員一律で指定する'),
@@ -33,8 +41,24 @@ var qmm013;
                         { code: '2', name: 'その他' },
                     ]);
                     self.currentCode.subscribe(function (newCode) {
-                        self.selectedUnitPrice(newCode);
-                        self.isCreated(false);
+                        self.clearError();
+                        if (!self.checkDirty()) {
+                            self.selectedUnitPrice(newCode);
+                            self.isCreated(false);
+                        }
+                        else {
+                            if (self.confirmDirty) {
+                                self.confirmDirty = false;
+                                return;
+                            }
+                            nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\nよろしいですか。").ifYes(function () {
+                                self.selectedUnitPrice(newCode);
+                                self.isCreated(false);
+                            }).ifNo(function () {
+                                self.confirmDirty = true;
+                                self.currentCode(self.currentItem().personalUnitPriceCode());
+                            });
+                        }
                     });
                     self.displayAll.subscribe(function (newValue) {
                         if (!self.checkDirty()) {
@@ -103,14 +127,18 @@ var qmm013;
                 ;
                 ScreenModel.prototype.btn_001 = function () {
                     var self = this;
+                    self.clearError();
+                    self.confirmDirty = true;
                     if (!self.checkDirty()) {
                         self.currentItem(new PersonalUnitPrice(null, null, null, null, null, null, null, null, null, null, null, null, null));
+                        self.dirty = new nts.uk.ui.DirtyChecker(self.currentItem);
                         self.currentCode("");
                         self.isCreated(true);
                     }
                     else {
                         nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\nよろしいですか。").ifYes(function () {
                             self.currentItem(new PersonalUnitPrice(null, null, null, null, null, null, null, null, null, null, null, null, null));
+                            self.dirty = new nts.uk.ui.DirtyChecker(self.currentItem);
                             self.currentCode("");
                             self.isCreated(true);
                         });
@@ -118,6 +146,7 @@ var qmm013;
                 };
                 ScreenModel.prototype.btn_002 = function () {
                     var self = this;
+                    self.confirmDirty = true;
                     var PersonalUnitPrice = {
                         personalUnitPriceCode: self.currentItem().personalUnitPriceCode(),
                         personalUnitPriceName: self.currentItem().personalUnitPriceName(),
@@ -134,38 +163,45 @@ var qmm013;
                         memo: self.currentItem().memo()
                     };
                     b.service.addPersonalUnitPrice(self.isCreated(), PersonalUnitPrice).done(function () {
-                        self.currentCode(PersonalUnitPrice.personalUnitPriceCode);
                         self.getPersonalUnitPriceList();
+                        self.currentCode(PersonalUnitPrice.personalUnitPriceCode);
+                        self.dirty = new nts.uk.ui.DirtyChecker(self.currentItem);
                     }).fail(function (error) {
-                        alert(error.message);
+                        if (error.messageId == self.messages()[2].messageId) {
+                            nts.uk.ui.dialog.alert(self.messages()[2].message);
+                        }
+                        else if (error.messageId == self.messages()[1].messageId) {
+                            $('#INP_002').ntsError('set', self.messages()[1].message);
+                            $('#INP_003').ntsError('set', self.messages()[1].message);
+                        }
                     });
                 };
                 ScreenModel.prototype.btn_004 = function () {
                     var self = this;
-                    if (!self.checkDirty()) {
+                    nts.uk.ui.dialog.confirm("データを削除します。\r\nよろしいですか？").ifYes(function () {
                         var data = {
                             personalUnitPriceCode: self.currentItem().personalUnitPriceCode()
                         };
+                        self.indexRow(_.findIndex(self.items(), function (x) {
+                            return x.code === self.currentCode();
+                        }));
                         b.service.removePersonalUnitPrice(data).done(function () {
-                            // reload list
-                            self.getPersonalUnitPriceList();
+                            // reload list   
+                            self.getPersonalUnitPriceList().done(function () {
+                                if (self.items().length > self.indexRow()) {
+                                    self.currentCode(self.items()[self.indexRow()].code);
+                                }
+                                else if (self.indexRow() == 0) {
+                                    self.btn_001();
+                                }
+                                else if (self.items().length == self.indexRow() && self.indexRow() != 0) {
+                                    self.currentCode(self.items()[self.indexRow() - 1].code);
+                                }
+                            });
                         }).fail(function (error) {
                             alert(error.message);
                         });
-                    }
-                    else {
-                        nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\nよろしいですか。").ifYes(function () {
-                            var data = {
-                                personalUnitPriceCode: self.currentItem().personalUnitPriceCode()
-                            };
-                            b.service.removePersonalUnitPrice(data).done(function () {
-                                // reload list
-                                self.getPersonalUnitPriceList();
-                            }).fail(function (error) {
-                                alert(error.message);
-                            });
-                        });
-                    }
+                    });
                 };
                 ScreenModel.prototype.selectedFirstUnitPrice = function () {
                     var self = this;
@@ -175,6 +211,10 @@ var qmm013;
                     else {
                         self.btn_001();
                     }
+                };
+                ScreenModel.prototype.clearError = function () {
+                    $('#INP_002').ntsError('clear');
+                    $('#INP_003').ntsError('clear');
                 };
                 return ScreenModel;
             }());

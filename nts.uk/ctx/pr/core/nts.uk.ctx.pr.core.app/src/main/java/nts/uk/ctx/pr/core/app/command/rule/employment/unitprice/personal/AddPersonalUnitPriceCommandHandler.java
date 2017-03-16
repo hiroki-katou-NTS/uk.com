@@ -9,6 +9,7 @@ import javax.transaction.Transactional;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.gul.text.StringUtil;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.personal.PersonalUnitPrice;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.personal.PersonalUnitPriceRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -24,7 +25,13 @@ public class AddPersonalUnitPriceCommandHandler extends CommandHandler<AddPerson
 		// TODO Auto-generated method stub
 		AddPersonalUnitPriceCommand command = context.getCommand();
 		String companyCode = AppContexts.user().companyCode();
-		
+		if (StringUtil.isNullOrEmpty(command.getPersonalUnitPriceCode(), true)) {
+			throw new BusinessException("ER001");
+		}
+
+		if (StringUtil.isNullOrEmpty(command.getPersonalUnitPriceName(), true)) {
+			throw new BusinessException("ER001");
+		}
 		PersonalUnitPrice domain = PersonalUnitPrice.createFromJavaType(
 				companyCode,
 				command.getPersonalUnitPriceCode().trim(),
@@ -40,11 +47,10 @@ public class AddPersonalUnitPriceCommandHandler extends CommandHandler<AddPerson
 				command.getDisplayAtr(),
 				command.getPaymentSettingType(),
 				command.getUnitPriceAtr());
-	    domain.validate();
 	    
 	    Optional<PersonalUnitPrice> unitPrice = personalUnitPriceRepository.find(companyCode, command.getPersonalUnitPriceCode());
 		if (unitPrice.isPresent()) {
-			throw new BusinessException("Unit price exists");
+			throw new BusinessException("ER005");
 		}
 	    
 		personalUnitPriceRepository.add(domain);
