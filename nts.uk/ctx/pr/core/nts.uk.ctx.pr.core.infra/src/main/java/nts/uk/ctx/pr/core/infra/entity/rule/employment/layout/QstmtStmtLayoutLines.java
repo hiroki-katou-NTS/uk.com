@@ -35,7 +35,7 @@ public class QstmtStmtLayoutLines implements Serializable {
 	public int linePos;
 
 	@Basic(optional = false)
-	@Column(name ="LINE_DISP_ATR")
+	@Column(name ="LINE_DISP_SET")
 	public int lineDispAtr;
 	
 //	@ManyToOne
