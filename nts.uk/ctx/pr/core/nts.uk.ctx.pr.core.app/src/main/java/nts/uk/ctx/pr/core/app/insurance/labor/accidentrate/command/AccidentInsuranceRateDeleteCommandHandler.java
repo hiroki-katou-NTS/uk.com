@@ -53,20 +53,21 @@ public class AccidentInsuranceRateDeleteCommandHandler extends CommandHandler<Ac
 		// get command
 		AccidentInsuranceRateDeleteCommand command = context.getCommand();
 
-		//get first data (remove)
+		// get first data (remove)
 		Optional<AccidentInsuranceRate> optionalRemove = this.accidentInsuranceRateRepo.findFirstData(companyCode);
 
-		if (optionalRemove.isPresent() && optionalRemove.get().getHistoryId()
-				.equals(command.getAccidentInsuranceRateDeleteDto().getCode())) {
+		if (optionalRemove.isPresent()
+				&& optionalRemove.get().getHistoryId().equals(command.getAccidentInsuranceRateDeleteDto().getCode())) {
 
 			// history first
 			this.accidentInsuranceRateRepo.remove(companyCode, command.getAccidentInsuranceRateDeleteDto().getCode(),
 					command.getAccidentInsuranceRateDeleteDto().getVersion());
 
-			//get first data (update)
+			// get first data (update)
 			Optional<AccidentInsuranceRate> optionalUpdate = this.accidentInsuranceRateRepo.findFirstData(companyCode);
-			if(optionalUpdate.isPresent()){
-				this.accidentInsuranceRateRepo.updateYearMonth(optionalUpdate.get(), AccidentInsuranceRateDeleteCommandHandler.YEAR_MONTH_MAX);
+			if (optionalUpdate.isPresent()) {
+				this.accidentInsuranceRateRepo.updateYearMonth(optionalUpdate.get(),
+						AccidentInsuranceRateDeleteCommandHandler.YEAR_MONTH_MAX);
 			}
 		}
 	}

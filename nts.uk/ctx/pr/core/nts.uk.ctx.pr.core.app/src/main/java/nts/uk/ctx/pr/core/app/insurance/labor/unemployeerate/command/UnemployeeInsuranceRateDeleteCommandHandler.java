@@ -12,20 +12,15 @@ import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.arc.time.DateTimeConstraints;
-import nts.arc.time.YearMonth;
-import nts.uk.ctx.core.dom.company.CompanyCode;
+import nts.uk.ctx.pr.core.app.insurance.labor.Contants;
 import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsuranceRate;
 import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsuranceRateRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 
 @Stateless
-public class UnemployeeInsuranceRateDeleteCommandHandler extends CommandHandler<UnemployeeInsuranceRateDeleteCommand> {
-
-	/** The Constant YEAR_MONTH_MAX. */
-	public static final YearMonth YEAR_MONTH_MAX = YearMonth.of(DateTimeConstraints.LIMIT_YEAR.max(),
-			DateTimeConstraints.LIMIT_MONTH.max());
+public class UnemployeeInsuranceRateDeleteCommandHandler
+	extends CommandHandler<UnemployeeInsuranceRateDeleteCommand> {
 
 	/** CompanyRepository */
 	@Inject
@@ -53,17 +48,19 @@ public class UnemployeeInsuranceRateDeleteCommandHandler extends CommandHandler<
 
 		// get first data (remove)
 		Optional<UnemployeeInsuranceRate> optionalRemove = this.unemployeeInsuranceRateRepository
-				.findFirstData(companyCode);
+			.findFirstData(companyCode);
 
 		// remove data
 		if (optionalRemove.isPresent() && optionalRemove.get().getHistoryId().equals(command.getCode())) {
-			this.unemployeeInsuranceRateRepository.remove(companyCode, command.getCode(), command.getVersion());
+			this.unemployeeInsuranceRateRepository.remove(companyCode, command.getCode(),
+				command.getVersion());
 			Optional<UnemployeeInsuranceRate> optionalUpdate = this.unemployeeInsuranceRateRepository
-					.findFirstData(companyCode);
+				.findFirstData(companyCode);
 
 			// update second data
 			if (optionalUpdate.isPresent()) {
-				this.unemployeeInsuranceRateRepository.updateYearMonth(optionalUpdate.get(), YEAR_MONTH_MAX);
+				this.unemployeeInsuranceRateRepository.updateYearMonth(optionalUpdate.get(),
+					Contants.YEAR_MONTH_MAX);
 			}
 		}
 	}

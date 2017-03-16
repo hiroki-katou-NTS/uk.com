@@ -28,21 +28,22 @@ public class UnemployeeInsuranceRateFindOutDto implements UnemployeeInsuranceRat
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.
 	 * UnemployeeInsuranceRateSetMemento#setHistoryId(java.lang.String)
 	 */
 	@Override
 	public void setHistoryId(String historyId) {
-		if (this.historyInsurance == null)
+		if (this.historyInsurance == null) {
 			this.historyInsurance = new UnemployeeInsuranceHistoryFindOutDto();
+		}
 		this.historyInsurance.setHistoryId(historyId);
 
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.
 	 * UnemployeeInsuranceRateSetMemento#setCompanyCode(nts.uk.ctx.core.dom.
 	 * company.CompanyCode)
@@ -55,7 +56,7 @@ public class UnemployeeInsuranceRateFindOutDto implements UnemployeeInsuranceRat
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.
 	 * UnemployeeInsuranceRateSetMemento#setApplyRange(nts.uk.ctx.pr.core.dom.
 	 * insurance.MonthRange)
@@ -68,7 +69,7 @@ public class UnemployeeInsuranceRateFindOutDto implements UnemployeeInsuranceRat
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.
 	 * UnemployeeInsuranceRateSetMemento#setRateItems(java.util.Set)
 	 */

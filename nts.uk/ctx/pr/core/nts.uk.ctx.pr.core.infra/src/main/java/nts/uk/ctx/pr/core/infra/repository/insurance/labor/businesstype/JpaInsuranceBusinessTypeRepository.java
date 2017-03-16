@@ -21,40 +21,40 @@ import nts.uk.ctx.pr.core.infra.entity.insurance.labor.businesstype.QismtBusines
  * The Class JpaAccidentInsuranceRateRepository.
  */
 @Stateless
-public class JpaInsuranceBusinessTypeRepository extends JpaRepository implements InsuranceBusinessTypeRepository {
+public class JpaInsuranceBusinessTypeRepository extends JpaRepository
+	implements InsuranceBusinessTypeRepository {
 
 	@Override
 	public void add(InsuranceBusinessType type) {
-		// TODO Auto-generated method stub
+		// None
 
 	}
 
 	@Override
 	public void update(InsuranceBusinessType type) {
-		// TODO Auto-generated method stub
+		// None
 
 	}
 
 	@Override
 	public void remove(String id, Long version) {
-		// TODO Auto-generated method stub
+		// None
 
 	}
 
 	@Override
 	public List<InsuranceBusinessType> findAll(CompanyCode companyCode) {
 		Optional<QismtBusinessType> optionalQismtBusinessType = this.queryProxy().find(companyCode.v(),
-				QismtBusinessType.class);
+			QismtBusinessType.class);
 		if (optionalQismtBusinessType.isPresent()) {
 			return toDomain(optionalQismtBusinessType.get());
 		}
-		return null;
+		return new ArrayList<>();
 	}
 
 	@Override
 	public InsuranceBusinessType findById(String id) {
-		// TODO Auto-generated method stub
-		return null;
+		return new InsuranceBusinessType();
 	}
 
 	/*
@@ -106,7 +106,8 @@ public class JpaInsuranceBusinessTypeRepository extends JpaRepository implements
 				itemInsuranceBusinessType.saveToMemento(new JpaInsuranceBusinessTypeBiz9ThSetMemento(entity));
 			}
 			if (itemInsuranceBusinessType.getBizOrder().equals(BusinessTypeEnum.Biz10Th)) {
-				itemInsuranceBusinessType.saveToMemento(new JpaInsuranceBusinessTypeBiz10ThSetMemento(entity));
+				itemInsuranceBusinessType
+					.saveToMemento(new JpaInsuranceBusinessTypeBiz10ThSetMemento(entity));
 			}
 		}
 		return entity;
@@ -121,16 +122,26 @@ public class JpaInsuranceBusinessTypeRepository extends JpaRepository implements
 	 */
 	public List<InsuranceBusinessType> toDomain(QismtBusinessType entity) {
 		List<InsuranceBusinessType> lstInsuranceBusinessType = new ArrayList<>();
-		lstInsuranceBusinessType.add(new InsuranceBusinessType(new JpaInsuranceBusinessTypeBiz1StGetMemento(entity)));
-		lstInsuranceBusinessType.add(new InsuranceBusinessType(new JpaInsuranceBusinessTypeBiz2NdGetMemento(entity)));
-		lstInsuranceBusinessType.add(new InsuranceBusinessType(new JpaInsuranceBusinessTypeBiz3RdGetMemento(entity)));
-		lstInsuranceBusinessType.add(new InsuranceBusinessType(new JpaInsuranceBusinessTypeBiz4ThGetMemento(entity)));
-		lstInsuranceBusinessType.add(new InsuranceBusinessType(new JpaInsuranceBusinessTypeBiz5ThGetMemento(entity)));
-		lstInsuranceBusinessType.add(new InsuranceBusinessType(new JpaInsuranceBusinessTypeBiz6ThGetMemento(entity)));
-		lstInsuranceBusinessType.add(new InsuranceBusinessType(new JpaInsuranceBusinessTypeBiz7ThGetMemento(entity)));
-		lstInsuranceBusinessType.add(new InsuranceBusinessType(new JpaInsuranceBusinessTypeBiz8ThGetMemento(entity)));
-		lstInsuranceBusinessType.add(new InsuranceBusinessType(new JpaInsuranceBusinessTypeBiz9ThGetMemento(entity)));
-		lstInsuranceBusinessType.add(new InsuranceBusinessType(new JpaInsuranceBusinessTypeBiz10ThGetMemento(entity)));
+		lstInsuranceBusinessType
+			.add(new InsuranceBusinessType(new JpaInsuranceBusinessTypeBiz1StGetMemento(entity)));
+		lstInsuranceBusinessType
+			.add(new InsuranceBusinessType(new JpaInsuranceBusinessTypeBiz2NdGetMemento(entity)));
+		lstInsuranceBusinessType
+			.add(new InsuranceBusinessType(new JpaInsuranceBusinessTypeBiz3RdGetMemento(entity)));
+		lstInsuranceBusinessType
+			.add(new InsuranceBusinessType(new JpaInsuranceBusinessTypeBiz4ThGetMemento(entity)));
+		lstInsuranceBusinessType
+			.add(new InsuranceBusinessType(new JpaInsuranceBusinessTypeBiz5ThGetMemento(entity)));
+		lstInsuranceBusinessType
+			.add(new InsuranceBusinessType(new JpaInsuranceBusinessTypeBiz6ThGetMemento(entity)));
+		lstInsuranceBusinessType
+			.add(new InsuranceBusinessType(new JpaInsuranceBusinessTypeBiz7ThGetMemento(entity)));
+		lstInsuranceBusinessType
+			.add(new InsuranceBusinessType(new JpaInsuranceBusinessTypeBiz8ThGetMemento(entity)));
+		lstInsuranceBusinessType
+			.add(new InsuranceBusinessType(new JpaInsuranceBusinessTypeBiz9ThGetMemento(entity)));
+		lstInsuranceBusinessType
+			.add(new InsuranceBusinessType(new JpaInsuranceBusinessTypeBiz10ThGetMemento(entity)));
 		return lstInsuranceBusinessType;
 	}
 

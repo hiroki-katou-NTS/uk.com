@@ -16,7 +16,6 @@ import nts.gul.text.StringUtil;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.Certification;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.CertificationReponsitory;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroup;
-import nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroupCode;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroupRepository;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.service.CertifyGroupService;
 
@@ -34,47 +33,86 @@ public class CertifyGroupServiceImpl implements CertifyGroupService {
 	@Inject
 	private CertificationReponsitory certificationReponsitory;
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.wagetable.certification.service.
+	 * CertifyGroupService#validateRequiredItem(nts.uk.ctx.pr.core.dom.wagetable
+	 * .certification.CertifyGroup)
+	 */
 	@Override
 	public void validateRequiredItem(CertifyGroup certifyGroup) {
 		if (certifyGroup.getCode() == null || StringUtil.isNullOrEmpty(certifyGroup.getCode().v(), true)
-				|| certifyGroup.getName() == null || StringUtil.isNullOrEmpty(certifyGroup.getName().v(), true)) {
+			|| certifyGroup.getName() == null || StringUtil.isNullOrEmpty(certifyGroup.getName().v(), true)) {
 			throw new BusinessException("ER001");
 		}
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.wagetable.certification.service.
+	 * CertifyGroupService#checkDuplicateCode(nts.uk.ctx.pr.core.dom.wagetable.
+	 * certification.CertifyGroup)
+	 */
 	@Override
 	public void checkDuplicateCode(CertifyGroup certifyGroup) {
-		Optional<CertifyGroup> optionalCheck = this.certifyGroupRepository.findById(certifyGroup.getCompanyCode().v(),
-				certifyGroup.getCode().v());
+		Optional<CertifyGroup> optionalCheck = this.certifyGroupRepository
+			.findById(certifyGroup.getCompanyCode().v(), certifyGroup.getCode().v());
 		if (optionalCheck.isPresent()) {
 			throw new BusinessException("ER005");
 		}
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.wagetable.certification.service.
+	 * CertifyGroupService#checkDulicateCertification(nts.uk.ctx.pr.core.dom.
+	 * wagetable.certification.CertifyGroup, java.lang.String)
+	 */
 	@Override
 	public void checkDulicateCertification(CertifyGroup certifyGroup, String certifyGroupCode) {
 		if (this.checkDulicateCertification(certifyGroup.getCompanyCode().v(), certifyGroup.getCertifies(),
-				certifyGroupCode)) {
+			certifyGroupCode)) {
 			throw new BusinessException("ER005");
 		}
 
 	}
 
+	/**
+	 * Check dulicate certification.
+	 *
+	 * @param companyCode
+	 *            the company code
+	 * @param setCertification
+	 *            the set certification
+	 * @param certifyGroupCode
+	 *            the certify group code
+	 * @return true, if successful
+	 */
 	boolean checkDulicateCertification(String companyCode, Set<Certification> setCertification,
-			String certifyGroupCode) {
+		String certifyGroupCode) {
+
+		// none data => false
 		if (ListUtil.isEmpty(setCertification)) {
 			return false;
 		}
+
+		// not none data
+		boolean resvalue = false;
 		for (Certification certification : setCertification) {
 			Optional<Certification> optionalCheck = this.certificationReponsitory.findById(companyCode,
-					certification.getCode(), certifyGroupCode);
+				certification.getCode(), certifyGroupCode);
 			if (optionalCheck.isPresent()) {
-				return true;
+				resvalue = true;
+				break;
 			}
 		}
-		return false;
+		// res
+		return resvalue;
 	}
 
 }

@@ -218,7 +218,7 @@ module nts.uk.pr.view.qmm011.a {
                     //set data fw to /e
                     nts.uk.ui.windows.setShared("InsuranceBusinessTypeDto", data);
                     //open dialog /e/index.xhtml
-                    nts.uk.ui.windows.sub.modal("/view/qmm/011/e/index.xhtml", { height: 600, width: 425, title: "事業種類の登録" }).onClosed(() => {
+                    nts.uk.ui.windows.sub.modal("/view/qmm/011/e/index.xhtml", { height: 630, width: 425, title: "事業種類の登録" }).onClosed(() => {
                         //OnClose => call
                         //get fw e => respone 
                         var insuranceBusinessTypeUpdateModel = nts.uk.ui.windows.getShared("insuranceBusinessTypeUpdateModel");

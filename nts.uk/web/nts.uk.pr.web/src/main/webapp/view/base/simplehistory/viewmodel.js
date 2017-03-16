@@ -20,21 +20,26 @@ var nts;
                                     self.isNewMode = ko.observable(true);
                                     self.masterHistoryDatasource = ko.observableArray([]);
                                     self.selectedHistoryUuid = ko.observable(undefined);
-                                    self.canUpdateHistory = ko.computed(function () {
-                                        return self.selectedHistoryUuid() != null && self.getCurrentHistoryNode() != null;
-                                    });
-                                    self.canAddNewHistory = ko.computed(function () {
-                                        return self.selectedHistoryUuid() != null && self.getCurrentHistoryNode() != null;
-                                    });
                                     self.igGridSelectedHistoryUuid = ko.observable('');
                                     self.isClickHistory = ko.observable(false);
+                                    self.canUpdateHistory = ko.computed(function () {
+                                        var node = self.getNode(self.igGridSelectedHistoryUuid());
+                                        return node && node.parent ? true : false;
+                                    });
+                                    self.canAddNewHistory = ko.computed(function () {
+                                        return self.canUpdateHistory();
+                                    });
                                     self.igGridSelectedHistoryUuid.subscribe(function (id) {
-                                        if (id && id.length == 36) {
-                                            self.isNewMode(false);
-                                            self.onSelectHistory(id);
+                                        if (!id) {
+                                            return;
+                                        }
+                                        var selectedNode = self.getNode(id);
+                                        if (selectedNode.parent) {
+                                            self.selectedHistoryUuid(id);
+                                            self.selectedHistoryUuid.valueHasMutated();
                                         }
                                         else {
-                                            self.isClickHistory(false);
+                                            self.onSelectMaster(id);
                                         }
                                     });
                                     self.selectedHistoryUuid.subscribe(function (id) {
@@ -173,6 +178,8 @@ var nts;
                                     dfd.resolve();
                                     return dfd.promise();
                                 };
+                                ScreenBaseModel.prototype.onSelectMaster = function (code) {
+                                };
                                 ScreenBaseModel.prototype.getCurrentHistoryNode = function () {
                                     var self = this;
                                     var nodeList = _.flatMap(self.masterHistoryDatasource(), function (node) {
@@ -181,6 +188,20 @@ var nts;
                                     return _.first(_.filter(nodeList, function (node) {
                                         return node.id == self.selectedHistoryUuid()
                                             && self.selectedHistoryUuid().length > 4;
+                                    }));
+                                };
+                                ScreenBaseModel.prototype.getNode = function (id) {
+                                    var self = this;
+                                    var nodeList = _.flatMap(self.masterHistoryDatasource(), function (node) {
+                                        var newArr = new Array();
+                                        newArr.push(node);
+                                        if (node.childs) {
+                                            newArr = newArr.concat(node.childs);
+                                        }
+                                        return newArr;
+                                    });
+                                    return _.first(_.filter(nodeList, function (node) {
+                                        return node.id == id;
                                     }));
                                 };
                                 return ScreenBaseModel;

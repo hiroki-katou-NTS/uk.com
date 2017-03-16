@@ -122,7 +122,7 @@ public class QcemtCertification implements Serializable {
 	@Override
 	public int hashCode() {
 		int hash = 0;
-		hash += (this.qcemtCertificationPK != null ? this.qcemtCertificationPK.hashCode() : 0);
+		hash += (this.qcemtCertificationPK == null ? 0 : this.qcemtCertificationPK.hashCode());
 		return hash;
 	}
 
@@ -138,7 +138,7 @@ public class QcemtCertification implements Serializable {
 		}
 		QcemtCertification other = (QcemtCertification) object;
 		if ((this.qcemtCertificationPK == null && other.qcemtCertificationPK != null)
-				|| (this.qcemtCertificationPK != null
+			|| (this.qcemtCertificationPK != null
 				&& !this.qcemtCertificationPK.equals(other.qcemtCertificationPK))) {
 			return false;
 		}

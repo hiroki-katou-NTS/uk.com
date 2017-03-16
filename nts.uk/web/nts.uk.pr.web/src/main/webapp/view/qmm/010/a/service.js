@@ -21,73 +21,30 @@ var nts;
                                 findAllSocialInsuranceOffice: "pr/insurance/social/findall/detail"
                             };
                             function findAllLaborInsuranceOffice() {
-                                var dfd = $.Deferred();
-                                nts.uk.request.ajax(paths.findAllLaborInsuranceOffice)
-                                    .done(function (res) {
-                                    dfd.resolve(res);
-                                })
-                                    .fail(function (res) {
-                                    dfd.reject(res);
-                                });
-                                return dfd.promise();
+                                return nts.uk.request.ajax(paths.findAllLaborInsuranceOffice);
                             }
                             service.findAllLaborInsuranceOffice = findAllLaborInsuranceOffice;
                             function findAllSocialInsuranceOffice() {
-                                var dfd = $.Deferred();
-                                nts.uk.request.ajax(paths.findAllSocialInsuranceOffice)
-                                    .done(function (res) {
-                                    dfd.resolve(res);
-                                }).fail(function (res) {
-                                    dfd.reject(res);
-                                });
-                                return dfd.promise();
+                                return nts.uk.request.ajax(paths.findAllSocialInsuranceOffice);
                             }
                             service.findAllSocialInsuranceOffice = findAllSocialInsuranceOffice;
                             function findLaborInsuranceOffice(officeCode) {
-                                var dfd = $.Deferred();
-                                nts.uk.request.ajax(paths.findLaborInsuranceOffice + "/" + officeCode)
-                                    .done(function (res) {
-                                    dfd.resolve(res);
-                                }).fail(function (res) {
-                                    dfd.reject(res);
-                                });
-                                return dfd.promise();
+                                return nts.uk.request.ajax(paths.findLaborInsuranceOffice + "/" + officeCode);
                             }
                             service.findLaborInsuranceOffice = findLaborInsuranceOffice;
                             function addLaborInsuranceOffice(laborInsuranceOfficeDto) {
-                                var dfd = $.Deferred();
                                 var data = { laborInsuranceOfficeDto: laborInsuranceOfficeDto };
-                                nts.uk.request.ajax(paths.addLaborInsuranceOffice, data)
-                                    .done(function (res) {
-                                    dfd.resolve(res);
-                                }).fail(function (res) {
-                                    dfd.reject(res);
-                                });
-                                return dfd.promise();
+                                return nts.uk.request.ajax(paths.addLaborInsuranceOffice, data);
                             }
                             service.addLaborInsuranceOffice = addLaborInsuranceOffice;
                             function updateLaborInsuranceOffice(laborInsuranceOfficeDto) {
-                                var dfd = $.Deferred();
                                 var data = { laborInsuranceOfficeDto: laborInsuranceOfficeDto };
-                                nts.uk.request.ajax(paths.updateLaborInsuranceOffice, data)
-                                    .done(function (res) {
-                                    dfd.resolve(res);
-                                }).fail(function (res) {
-                                    dfd.reject(res);
-                                });
-                                return dfd.promise();
+                                return nts.uk.request.ajax(paths.updateLaborInsuranceOffice, data);
                             }
                             service.updateLaborInsuranceOffice = updateLaborInsuranceOffice;
                             function deleteLaborInsuranceOffice(laborInsuranceOfficeDeleteDto) {
-                                var dfd = $.Deferred();
                                 var data = { laborInsuranceOfficeDeleteDto: laborInsuranceOfficeDeleteDto };
-                                nts.uk.request.ajax(paths.deleteLaborInsuranceOffice, data)
-                                    .done(function (res) {
-                                    dfd.resolve(res);
-                                }).fail(function (res) {
-                                    dfd.reject(res);
-                                });
-                                return dfd.promise();
+                                return nts.uk.request.ajax(paths.deleteLaborInsuranceOffice, data);
                             }
                             service.deleteLaborInsuranceOffice = deleteLaborInsuranceOffice;
                             var model;
@@ -123,3 +80,4 @@ var nts;
         })(pr = uk.pr || (uk.pr = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+//# sourceMappingURL=service.js.map

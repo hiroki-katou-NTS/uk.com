@@ -16,7 +16,13 @@
 			<com:scriptfile path="viewmodel.js" />
 		</ui:define>
 		<ui:define name="content">
-			<div>ナビゲーションメッセージ</div>
+			<div class="nameaction">
+				<label>事業種類を登録してください。</label>
+			</div>
+			<div class="nameaction">
+				<label>※全角10文字</label>
+			</div>
+			<br />
 			<center>
 				<table data-bind="with: insuranceBusinessTypeUpdateModel">
 					<tbody>
@@ -93,6 +99,7 @@
 					</tbody>
 				</table>
 			</center>
+			<br />
 			<hr />
 			<div id="this-functions-area" class="control-group halign-center">
 				<button class="btn-default proceed x-large"

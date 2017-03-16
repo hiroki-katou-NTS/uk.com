@@ -32,19 +32,20 @@ public class UnemployeeInsuranceFinder {
 	 * @return the unemployee insurance rate find out dto
 	 */
 	public UnemployeeInsuranceRateFindOutDto findById(String historyId) {
-		
+
 		// get user login info
 		LoginUserContext loginUserContext = AppContexts.user();
-		
+
 		// get companyCode by user login
 		String companyCode = loginUserContext.companyCode();
-		
-		//call finder repository
-		UnemployeeInsuranceRateFindOutDto unemployeeInsuranceRateFindOutDto = new UnemployeeInsuranceRateFindOutDto();
+
+		// call finder repository
+		UnemployeeInsuranceRateFindOutDto unemployeeInsuranceRateFindOutDto;
+		unemployeeInsuranceRateFindOutDto = new UnemployeeInsuranceRateFindOutDto();
 		Optional<UnemployeeInsuranceRate> optionalUnemployeeInsuranceRate = find.findById(companyCode,
-				historyId);
-		
-		//exist value
+			historyId);
+
+		// exist value
 		if (optionalUnemployeeInsuranceRate.isPresent()) {
 			optionalUnemployeeInsuranceRate.get().saveToMemento(unemployeeInsuranceRateFindOutDto);
 			return unemployeeInsuranceRateFindOutDto;
