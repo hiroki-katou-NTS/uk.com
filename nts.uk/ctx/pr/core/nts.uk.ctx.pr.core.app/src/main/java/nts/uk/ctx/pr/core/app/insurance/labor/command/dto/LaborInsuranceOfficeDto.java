@@ -27,12 +27,17 @@ import nts.uk.shr.com.primitive.Memo;
 /**
  * The Class LaborInsuranceOfficeDto.
  */
+
+/**
+ * Instantiates a new labor insurance office dto.
+ */
 @Data
 public class LaborInsuranceOfficeDto {
-	/** The code. officeCode */
+
+	/** The code. */
 	private String code;
 
-	/** The name. officeName */
+	/** The name. */
 	private String name;
 
 	/** The short name. */
@@ -89,7 +94,8 @@ public class LaborInsuranceOfficeDto {
 	/**
 	 * To domain.
 	 *
-	 * @param companyCode the company code
+	 * @param companyCode
+	 *            the company code
 	 * @return the labor insurance office
 	 */
 	public LaborInsuranceOffice toDomain(String companyCode) {
@@ -110,8 +116,10 @@ public class LaborInsuranceOfficeDto {
 		/**
 		 * Instantiates a new labor insurance office get memento impl.
 		 *
-		 * @param companyCode the company code
-		 * @param dto the dto
+		 * @param companyCode
+		 *            the company code
+		 * @param dto
+		 *            the dto
 		 */
 		public LaborInsuranceOfficeGetMementoImpl(String companyCode, LaborInsuranceOfficeDto dto) {
 			super();
@@ -131,95 +139,222 @@ public class LaborInsuranceOfficeDto {
 			return new ShortName(dto.shortName);
 		}
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * nts.uk.ctx.pr.core.dom.insurance.labor.LaborInsuranceOfficeGetMemento
+		 * #getPrefecture()
+		 */
 		@Override
 		public String getPrefecture() {
 			return dto.prefecture;
 		}
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * nts.uk.ctx.pr.core.dom.insurance.labor.LaborInsuranceOfficeGetMemento
+		 * #getPotalCode()
+		 */
 		@Override
 		public PotalCode getPotalCode() {
 			return new PotalCode(dto.potalCode);
 		}
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * nts.uk.ctx.pr.core.dom.insurance.labor.LaborInsuranceOfficeGetMemento
+		 * #getPicPosition()
+		 */
 		@Override
 		public PicPosition getPicPosition() {
 			return new PicPosition(dto.picPosition);
 		}
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * nts.uk.ctx.pr.core.dom.insurance.labor.LaborInsuranceOfficeGetMemento
+		 * #getPicName()
+		 */
 		@Override
 		public PicName getPicName() {
 			return new PicName(dto.picName);
 		}
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * nts.uk.ctx.pr.core.dom.insurance.labor.LaborInsuranceOfficeGetMemento
+		 * #getPhoneNumber()
+		 */
 		@Override
 		public PhoneNumber getPhoneNumber() {
 			return new PhoneNumber(dto.phoneNumber);
 		}
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * nts.uk.ctx.pr.core.dom.insurance.labor.LaborInsuranceOfficeGetMemento
+		 * #getOfficeNoC()
+		 */
 		@Override
 		public OfficeNoC getOfficeNoC() {
 			return new OfficeNoC(dto.officeNoC);
 		}
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * nts.uk.ctx.pr.core.dom.insurance.labor.LaborInsuranceOfficeGetMemento
+		 * #getOfficeNoB()
+		 */
 		@Override
 		public OfficeNoB getOfficeNoB() {
 			return new OfficeNoB(dto.officeNoB);
 		}
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * nts.uk.ctx.pr.core.dom.insurance.labor.LaborInsuranceOfficeGetMemento
+		 * #getOfficeNoA()
+		 */
 		@Override
 		public OfficeNoA getOfficeNoA() {
 			return new OfficeNoA(dto.officeNoA);
 		}
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * nts.uk.ctx.pr.core.dom.insurance.labor.LaborInsuranceOfficeGetMemento
+		 * #getOfficeMark()
+		 */
 		@Override
 		public OfficeMark getOfficeMark() {
 			return new OfficeMark(dto.officeMark);
 		}
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * nts.uk.ctx.pr.core.dom.insurance.labor.LaborInsuranceOfficeGetMemento
+		 * #getName()
+		 */
 		@Override
 		public OfficeName getName() {
 			return new OfficeName(dto.name);
 		}
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * nts.uk.ctx.pr.core.dom.insurance.labor.LaborInsuranceOfficeGetMemento
+		 * #getMemo()
+		 */
 		@Override
 		public Memo getMemo() {
 			return new Memo(dto.memo);
 		}
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * nts.uk.ctx.pr.core.dom.insurance.labor.LaborInsuranceOfficeGetMemento
+		 * #getKanaAddress2nd()
+		 */
 		@Override
 		public KanaAddress getKanaAddress2nd() {
 			return new KanaAddress(dto.kanaAddress2nd);
 		}
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * nts.uk.ctx.pr.core.dom.insurance.labor.LaborInsuranceOfficeGetMemento
+		 * #getKanaAddress1st()
+		 */
 		@Override
 		public KanaAddress getKanaAddress1st() {
 			return new KanaAddress(dto.kanaAddress1st);
 		}
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * nts.uk.ctx.pr.core.dom.insurance.labor.LaborInsuranceOfficeGetMemento
+		 * #getCompanyCode()
+		 */
 		@Override
 		public CompanyCode getCompanyCode() {
 			return new CompanyCode(companyCode);
 		}
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * nts.uk.ctx.pr.core.dom.insurance.labor.LaborInsuranceOfficeGetMemento
+		 * #getCode()
+		 */
 		@Override
 		public OfficeCode getCode() {
 			return new OfficeCode(dto.code);
 		}
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * nts.uk.ctx.pr.core.dom.insurance.labor.LaborInsuranceOfficeGetMemento
+		 * #getCitySign()
+		 */
 		@Override
 		public CitySign getCitySign() {
 			return new CitySign(dto.citySign);
 		}
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * nts.uk.ctx.pr.core.dom.insurance.labor.LaborInsuranceOfficeGetMemento
+		 * #getAddress2nd()
+		 */
 		@Override
 		public Address getAddress2nd() {
 			return new Address(dto.address2nd);
 		}
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * nts.uk.ctx.pr.core.dom.insurance.labor.LaborInsuranceOfficeGetMemento
+		 * #getAddress1st()
+		 */
 		@Override
 		public Address getAddress1st() {
 			return new Address(dto.address1st);
 		}
+
 	}
 
 }

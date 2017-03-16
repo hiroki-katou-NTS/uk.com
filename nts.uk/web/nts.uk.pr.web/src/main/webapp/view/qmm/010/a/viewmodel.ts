@@ -50,7 +50,6 @@ module nts.uk.pr.view.qmm010.a {
 
             //function clear message error
             private clearErrorSave() {
-                var self = this;
                 $('.save-error').ntsError('clear');
                 $('#btn_save').ntsError('clear');
             }
@@ -81,7 +80,7 @@ module nts.uk.pr.view.qmm010.a {
                 var self = this;
                 var dfd = $.Deferred<any>();
                 self.findAllInsuranceOffice().done(data => {
-                    dfd.resolve(self);
+                    dfd.resolve(data);
                 });
                 return dfd.promise();
             }
@@ -97,9 +96,9 @@ module nts.uk.pr.view.qmm010.a {
                         self.lstlaborInsuranceOfficeModel = ko.observableArray<LaborInsuranceOfficeFindOutDto>(data);
                         self.selectCodeLstlaborInsuranceOffice(data[0].code);
                         self.selectCodeLstlaborInsuranceOffice.subscribe(function(selectCodeLstlaborInsuranceOffice: string) {
-                            self.showchangeLaborInsuranceOfficep(selectCodeLstlaborInsuranceOffice);
+                            self.showchangeLaborInsuranceOffice(selectCodeLstlaborInsuranceOffice);
                         });
-                        self.detailLaborInsuranceOffice(data[0].code).done(data => {
+                        self.detailLaborInsuranceOffice(data[0].code).done(function() {
                             dfd.resolve(self);
                         });
                         self.isEnableDelete(true);
@@ -124,7 +123,7 @@ module nts.uk.pr.view.qmm010.a {
                 if (self.typeAction() == TypeActionLaborInsuranceOffice.add) {
                     //is mode is add
                     //call service add labor insurance office
-                    service.addLaborInsuranceOffice(self.collectData()).done(data => {
+                    service.addLaborInsuranceOffice(self.collectData()).done(function() {
                         //reload labor insurance office
                         self.reloadDataByAction(self.laborInsuranceOfficeModel().code());
                         //clear error
@@ -136,17 +135,16 @@ module nts.uk.pr.view.qmm010.a {
                 } else {
                     //is mode is update
                     //call service update labor insurance office
-                    service.updateLaborInsuranceOffice(self.collectData()).done(data => {
+                    service.updateLaborInsuranceOffice(self.collectData()).done(function() {
                         self.reloadDataByAction(self.laborInsuranceOfficeModel().code());
                     });
                 }
             }
 
             //Function show view by change selection
-            private showchangeLaborInsuranceOfficep(selectionCodeLstLstLaborInsuranceOffice: string) {
+            private showchangeLaborInsuranceOffice(selectionCodeLstLstLaborInsuranceOffice: string) {
                 var self = this;
-                if (selectionCodeLstLstLaborInsuranceOffice != null
-                    && selectionCodeLstLstLaborInsuranceOffice != undefined
+                if (selectionCodeLstLstLaborInsuranceOffice
                     && selectionCodeLstLstLaborInsuranceOffice != '') {
                     self.typeAction(TypeActionLaborInsuranceOffice.update);
                     self.detailLaborInsuranceOffice(selectionCodeLstLstLaborInsuranceOffice);
@@ -156,13 +154,13 @@ module nts.uk.pr.view.qmm010.a {
             //Function detail
             private detailLaborInsuranceOffice(code: string): JQueryPromise<any> {
                 var dfd = $.Deferred<any>();
-                if (code != null && code != undefined && code != '') {
+                if (code && code != '') {
                     var self = this;
                     //call service find labor insurance office
                     service.findLaborInsuranceOffice(code).done(data => {
                         if (self.isEmpty()) {
                             self.selectCodeLstlaborInsuranceOffice.subscribe(function(selectionCodeLstLstLaborInsuranceOffice: string) {
-                                self.showchangeLaborInsuranceOfficep(selectionCodeLstLstLaborInsuranceOffice);
+                                self.showchangeLaborInsuranceOffice(selectionCodeLstLstLaborInsuranceOffice);
                             });
                             self.isEmpty(false);
                         }
@@ -172,7 +170,7 @@ module nts.uk.pr.view.qmm010.a {
                         self.laborInsuranceOfficeModel().setReadOnly(true);
                         self.isEnableDelete(true);
                     });
-                    dfd.resolve(null);
+                    dfd.resolve();
                 }
                 return dfd.promise();
             }
@@ -223,7 +221,7 @@ module nts.uk.pr.view.qmm010.a {
                 laborInsuranceOfficeDeleteDto.version = 11;
                 if (self.selectCodeLstlaborInsuranceOffice != null && self.selectCodeLstlaborInsuranceOffice() != '') {
                     nts.uk.ui.dialog.confirm("Do you delete Item?").ifYes(function() {
-                        service.deleteLaborInsuranceOffice(laborInsuranceOfficeDeleteDto).done(data => {
+                        service.deleteLaborInsuranceOffice(laborInsuranceOfficeDeleteDto).done(function() {
                             self.reloadDataByAction('');
                         });
                     }).ifNo(function() {

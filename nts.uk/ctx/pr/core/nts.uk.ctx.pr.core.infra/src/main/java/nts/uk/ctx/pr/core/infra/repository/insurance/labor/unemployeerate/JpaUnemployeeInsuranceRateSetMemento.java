@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2015 Nittsu System to present.                   *
+ * Copyright (c) 2016 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.core.infra.repository.insurance.labor.unemployeerate;
@@ -8,7 +8,6 @@ import java.util.Set;
 
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
-import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.CareerGroup;
 import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsuranceRateItem;
 import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsuranceRateSetMemento;
 import nts.uk.ctx.pr.core.infra.entity.insurance.labor.unemployeerate.QismtEmpInsuRate;
@@ -85,16 +84,16 @@ public class JpaUnemployeeInsuranceRateSetMemento implements UnemployeeInsurance
 			switch (itemUnemployeeInsuranceRateItem.getCareerGroup()) {
 			case Agroforestry:
 				itemUnemployeeInsuranceRateItem
-						.saveToMemento(new JpaUnemployeeInsuranceRateItemGeneralSetMemento(this.typeValue));
+					.saveToMemento(new JpaUnemployeeInsuranceRateItemGeneralSetMemento(this.typeValue));
 				break;
 
 			case Other:
 				itemUnemployeeInsuranceRateItem
-						.saveToMemento(new JpaUnemployeeInsuranceRateItemOtherSetMemento(this.typeValue));
+					.saveToMemento(new JpaUnemployeeInsuranceRateItemOtherSetMemento(this.typeValue));
 				break;
 			case Contruction:
 				itemUnemployeeInsuranceRateItem
-						.saveToMemento(new JpaUnemployeeInsuranceRateItemConstSetMemento(this.typeValue));
+					.saveToMemento(new JpaUnemployeeInsuranceRateItemConstSetMemento(this.typeValue));
 			default:
 				break;
 			}

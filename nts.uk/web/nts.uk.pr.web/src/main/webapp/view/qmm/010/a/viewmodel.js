@@ -41,7 +41,6 @@ var nts;
                                     self.isEnableDelete(false);
                                 };
                                 ScreenModel.prototype.clearErrorSave = function () {
-                                    var self = this;
                                     $('.save-error').ntsError('clear');
                                     $('#btn_save').ntsError('clear');
                                 };
@@ -66,7 +65,7 @@ var nts;
                                     var self = this;
                                     var dfd = $.Deferred();
                                     self.findAllInsuranceOffice().done(function (data) {
-                                        dfd.resolve(self);
+                                        dfd.resolve(data);
                                     });
                                     return dfd.promise();
                                 };
@@ -78,9 +77,9 @@ var nts;
                                             self.lstlaborInsuranceOfficeModel = ko.observableArray(data);
                                             self.selectCodeLstlaborInsuranceOffice(data[0].code);
                                             self.selectCodeLstlaborInsuranceOffice.subscribe(function (selectCodeLstlaborInsuranceOffice) {
-                                                self.showchangeLaborInsuranceOfficep(selectCodeLstlaborInsuranceOffice);
+                                                self.showchangeLaborInsuranceOffice(selectCodeLstlaborInsuranceOffice);
                                             });
-                                            self.detailLaborInsuranceOffice(data[0].code).done(function (data) {
+                                            self.detailLaborInsuranceOffice(data[0].code).done(function () {
                                                 dfd.resolve(self);
                                             });
                                             self.isEnableDelete(true);
@@ -98,7 +97,7 @@ var nts;
                                 ScreenModel.prototype.saveLaborInsuranceOffice = function () {
                                     var self = this;
                                     if (self.typeAction() == TypeActionLaborInsuranceOffice.add) {
-                                        a.service.addLaborInsuranceOffice(self.collectData()).done(function (data) {
+                                        a.service.addLaborInsuranceOffice(self.collectData()).done(function () {
                                             self.reloadDataByAction(self.laborInsuranceOfficeModel().code());
                                             self.clearErrorSave();
                                         }).fail(function (res) {
@@ -106,15 +105,14 @@ var nts;
                                         });
                                     }
                                     else {
-                                        a.service.updateLaborInsuranceOffice(self.collectData()).done(function (data) {
+                                        a.service.updateLaborInsuranceOffice(self.collectData()).done(function () {
                                             self.reloadDataByAction(self.laborInsuranceOfficeModel().code());
                                         });
                                     }
                                 };
-                                ScreenModel.prototype.showchangeLaborInsuranceOfficep = function (selectionCodeLstLstLaborInsuranceOffice) {
+                                ScreenModel.prototype.showchangeLaborInsuranceOffice = function (selectionCodeLstLstLaborInsuranceOffice) {
                                     var self = this;
-                                    if (selectionCodeLstLstLaborInsuranceOffice != null
-                                        && selectionCodeLstLstLaborInsuranceOffice != undefined
+                                    if (selectionCodeLstLstLaborInsuranceOffice
                                         && selectionCodeLstLstLaborInsuranceOffice != '') {
                                         self.typeAction(TypeActionLaborInsuranceOffice.update);
                                         self.detailLaborInsuranceOffice(selectionCodeLstLstLaborInsuranceOffice);
@@ -122,12 +120,12 @@ var nts;
                                 };
                                 ScreenModel.prototype.detailLaborInsuranceOffice = function (code) {
                                     var dfd = $.Deferred();
-                                    if (code != null && code != undefined && code != '') {
+                                    if (code && code != '') {
                                         var self = this;
                                         a.service.findLaborInsuranceOffice(code).done(function (data) {
                                             if (self.isEmpty()) {
                                                 self.selectCodeLstlaborInsuranceOffice.subscribe(function (selectionCodeLstLstLaborInsuranceOffice) {
-                                                    self.showchangeLaborInsuranceOfficep(selectionCodeLstLstLaborInsuranceOffice);
+                                                    self.showchangeLaborInsuranceOffice(selectionCodeLstLstLaborInsuranceOffice);
                                                 });
                                                 self.isEmpty(false);
                                             }
@@ -136,7 +134,7 @@ var nts;
                                             self.laborInsuranceOfficeModel().setReadOnly(true);
                                             self.isEnableDelete(true);
                                         });
-                                        dfd.resolve(null);
+                                        dfd.resolve();
                                     }
                                     return dfd.promise();
                                 };
@@ -181,7 +179,7 @@ var nts;
                                     laborInsuranceOfficeDeleteDto.version = 11;
                                     if (self.selectCodeLstlaborInsuranceOffice != null && self.selectCodeLstlaborInsuranceOffice() != '') {
                                         nts.uk.ui.dialog.confirm("Do you delete Item?").ifYes(function () {
-                                            a.service.deleteLaborInsuranceOffice(laborInsuranceOfficeDeleteDto).done(function (data) {
+                                            a.service.deleteLaborInsuranceOffice(laborInsuranceOfficeDeleteDto).done(function () {
                                                 self.reloadDataByAction('');
                                             });
                                         }).ifNo(function () {
@@ -326,3 +324,4 @@ var nts;
         })(pr = uk.pr || (uk.pr = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+//# sourceMappingURL=viewmodel.js.map

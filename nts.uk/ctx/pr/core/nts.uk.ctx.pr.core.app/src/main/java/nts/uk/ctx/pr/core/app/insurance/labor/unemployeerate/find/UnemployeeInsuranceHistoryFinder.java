@@ -18,12 +18,12 @@ import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 
 /**
- * The Class HistoryUnemployeeInsuranceFinder.
+ * The Class UnemployeeInsuranceHistoryFinder.
  */
 @Stateless
 public class UnemployeeInsuranceHistoryFinder {
 
-	/** The unemployee insurance rate repository. */
+	/** The find. */
 	@Inject
 	private UnemployeeInsuranceRateRepository find;
 
@@ -57,7 +57,7 @@ public class UnemployeeInsuranceHistoryFinder {
 	 *
 	 * @param historyId
 	 *            the history id
-	 * @return the history unemployee insurance find out dto
+	 * @return the unemployee insurance history find out dto
 	 */
 	public UnemployeeInsuranceHistoryFindOutDto find(String historyId) {
 		// get user login info
@@ -77,4 +77,5 @@ public class UnemployeeInsuranceHistoryFinder {
 		return null;
 
 	}
+
 }

@@ -26,7 +26,7 @@ import nts.uk.shr.com.context.LoginUserContext;
 public class UnemployeeInsuranceRateCopyCommandHandler
 	extends CommandHandler<UnemployeeInsuranceRateCopyCommand> {
 
-	/** CompanyRepository */
+	/** The unemployee insurance rate repository. */
 	@Inject
 	private UnemployeeInsuranceRateRepository unemployeeInsuranceRateRepository;
 

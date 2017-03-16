@@ -20,6 +20,10 @@ import nts.uk.ctx.pr.core.dom.wagetable.certification.MultipleTargetSetting;
 /**
  * The Class CertifyGroupDto.
  */
+
+/**
+ * Instantiates a new certify group dto.
+ */
 @Data
 public class CertifyGroupDto {
 
@@ -38,7 +42,8 @@ public class CertifyGroupDto {
 	/**
 	 * To domain.
 	 *
-	 * @param companyCode the company code
+	 * @param companyCode
+	 *            the company code
 	 * @return the certify group
 	 */
 	public CertifyGroup toDomain(String companyCode) {
@@ -59,8 +64,10 @@ public class CertifyGroupDto {
 		/**
 		 * Instantiates a new certify group get memento impl.
 		 *
-		 * @param companyCode the company code
-		 * @param dto the dto
+		 * @param companyCode
+		 *            the company code
+		 * @param dto
+		 *            the dto
 		 */
 		public CertifyGroupGetMementoImpl(String companyCode, CertifyGroupDto dto) {
 			super();
@@ -68,26 +75,61 @@ public class CertifyGroupDto {
 			this.dto = dto;
 		}
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroupGetMemento
+		 * #getName()
+		 */
 		@Override
 		public CertifyGroupName getName() {
 			return new CertifyGroupName(dto.name);
 		}
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroupGetMemento
+		 * #getMultiApplySet()
+		 */
 		@Override
 		public MultipleTargetSetting getMultiApplySet() {
 			return MultipleTargetSetting.valueOf(dto.multiApplySet);
 		}
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroupGetMemento
+		 * #getCompanyCode()
+		 */
 		@Override
 		public CompanyCode getCompanyCode() {
 			return new CompanyCode(companyCode);
 		}
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroupGetMemento
+		 * #getCode()
+		 */
 		@Override
 		public CertifyGroupCode getCode() {
 			return new CertifyGroupCode(dto.code);
 		}
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroupGetMemento
+		 * #getCertifies()
+		 */
 		@Override
 		public Set<Certification> getCertifies() {
 			Set<Certification> setCertification = new HashSet<>();
@@ -97,4 +139,5 @@ public class CertifyGroupDto {
 			return setCertification;
 		}
 	}
+
 }

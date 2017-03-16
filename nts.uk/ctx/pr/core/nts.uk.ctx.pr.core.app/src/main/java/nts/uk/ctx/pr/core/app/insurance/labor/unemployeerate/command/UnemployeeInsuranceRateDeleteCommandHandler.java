@@ -12,8 +12,7 @@ import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.arc.time.DateTimeConstraints;
-import nts.arc.time.YearMonth;
+import nts.uk.ctx.pr.core.app.insurance.labor.Contants;
 import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsuranceRate;
 import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsuranceRateRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -22,10 +21,6 @@ import nts.uk.shr.com.context.LoginUserContext;
 @Stateless
 public class UnemployeeInsuranceRateDeleteCommandHandler
 	extends CommandHandler<UnemployeeInsuranceRateDeleteCommand> {
-
-	/** The Constant YEAR_MONTH_MAX. */
-	public static final YearMonth YEAR_MONTH_MAX = YearMonth.of(DateTimeConstraints.LIMIT_YEAR.max(),
-		DateTimeConstraints.LIMIT_MONTH.max());
 
 	/** CompanyRepository */
 	@Inject
@@ -64,7 +59,8 @@ public class UnemployeeInsuranceRateDeleteCommandHandler
 
 			// update second data
 			if (optionalUpdate.isPresent()) {
-				this.unemployeeInsuranceRateRepository.updateYearMonth(optionalUpdate.get(), YEAR_MONTH_MAX);
+				this.unemployeeInsuranceRateRepository.updateYearMonth(optionalUpdate.get(),
+					Contants.YEAR_MONTH_MAX);
 			}
 		}
 	}

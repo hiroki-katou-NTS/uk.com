@@ -20,13 +20,13 @@ import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 
 /**
- * The Class AccidentInsuranceRateAddCommandHandler.
+ * The Class AccidentInsuranceRateCopyCommandHandler.
  */
 @Stateless
 public class AccidentInsuranceRateCopyCommandHandler
 	extends CommandHandler<AccidentInsuranceRateCopyCommand> {
 
-	/** The accident insurance rate repository. */
+	/** The accident insurance rate repo. */
 	@Inject
 	private AccidentInsuranceRateRepository accidentInsuranceRateRepo;
 
