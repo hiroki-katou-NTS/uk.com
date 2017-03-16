@@ -5,7 +5,7 @@
 /**
  * 
  */
-package nts.uk.file.pr.app.export.insurance;
+package nts.uk.file.pr.app.export.insurance.salary;
 
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.uk.file.pr.app.export.insurance.data.SocialInsuranceReportData;
@@ -15,7 +15,7 @@ import nts.uk.file.pr.app.export.insurance.data.SocialInsuranceReportData;
  *
  * @author duongnd
  */
-public interface SocialInsuranceGenerator {
+public interface SalarySocialInsuranceGenerator {
 
     /**
      * Generate.

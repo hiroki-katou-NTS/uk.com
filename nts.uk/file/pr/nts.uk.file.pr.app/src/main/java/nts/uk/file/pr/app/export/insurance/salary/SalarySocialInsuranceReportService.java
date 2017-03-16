@@ -5,7 +5,7 @@
 /**
  * 
  */
-package nts.uk.file.pr.app.export.insurance;
+package nts.uk.file.pr.app.export.insurance.salary;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,15 +27,15 @@ import nts.uk.file.pr.app.export.insurance.data.SocialInsuranceReportData;
  */
 
 @Stateless
-public class SocialInsuranceReportService extends ExportService<SocialInsuranceQuery> {
+public class SalarySocialInsuranceReportService extends ExportService<SalarySocialInsuranceQuery> {
 
     @Inject
-    SocialInsuranceGenerator generator;
+    SalarySocialInsuranceGenerator generator;
     
     @Override
-    protected void handle(ExportServiceContext<SocialInsuranceQuery> context) {
+    protected void handle(ExportServiceContext<SalarySocialInsuranceQuery> context) {
         // get query
-        SocialInsuranceQuery query = context.getQuery();
+        SalarySocialInsuranceQuery query = context.getQuery();
         // get data from repository follow query.
         SocialInsuranceReportData reportData = fakeData();
         this.generator.generate(context.getGeneratorContext(), reportData);

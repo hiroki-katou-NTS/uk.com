@@ -20,7 +20,7 @@ var nts;
                                 var dfd = $.Deferred();
                                 nts.uk.request.ajax(servicePath.findAllInsuranceOffice).done(function (res) {
                                     var list = _.map(res, function (item) {
-                                        return new model.InsuranceOffice(item.officeCode, item.officeName);
+                                        return new model.InsuranceOffice(item.code, item.name);
                                     });
                                     dfd.resolve(list);
                                 });

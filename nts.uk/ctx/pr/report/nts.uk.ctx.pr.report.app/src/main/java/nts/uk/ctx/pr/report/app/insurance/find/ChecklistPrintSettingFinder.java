@@ -29,15 +29,22 @@ public class ChecklistPrintSettingFinder {
 	 * @return the check list print setting find out dto
 	 */
 	public CheckListPrintSettingFindOutDto find() {
-	    String companyCode = AppContexts.user().companyCode();
-		CheckListPrintSettingFindOutDto checkListPrintSettingFindOutDto = new CheckListPrintSettingFindOutDto();
-		Optional<ChecklistPrintSetting> optionalChecklistPrintSetting = checklistPrintSettingRepository
-				.findByCompanyCode(companyCode);
-		if (optionalChecklistPrintSetting.isPresent()) {
-			optionalChecklistPrintSetting.get().saveToMemento(checkListPrintSettingFindOutDto);
-			return checkListPrintSettingFindOutDto;
-		}
-		return null;
+//	    String companyCode = AppContexts.user().companyCode();
+//		CheckListPrintSettingFindOutDto checkListPrintSettingFindOutDto = new CheckListPrintSettingFindOutDto();
+//		Optional<ChecklistPrintSetting> optionalChecklistPrintSetting = checklistPrintSettingRepository
+//				.findByCompanyCode(companyCode);
+//		if (optionalChecklistPrintSetting.isPresent()) {
+//			optionalChecklistPrintSetting.get().saveToMemento(checkListPrintSettingFindOutDto);
+//			return checkListPrintSettingFindOutDto;
+//		}
+//		return null;
+		CheckListPrintSettingFindOutDto dto = new CheckListPrintSettingFindOutDto();
+        dto.setShowCategoryInsuranceItem(true);
+        dto.setShowDetail(true);
+        dto.setShowOffice(false);
+        dto.setShowTotal(true);
+        dto.setShowDeliveryNoticeAmount(true);
+        return dto;
 	}
 
 }

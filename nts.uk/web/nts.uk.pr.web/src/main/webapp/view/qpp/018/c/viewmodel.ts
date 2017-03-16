@@ -39,8 +39,8 @@ module nts.uk.pr.view.qpp018.c {
             }
             
             loadCheckListPrintSetting(): JQueryPromise<service.model.CheckListPrintSettingDto> {
-                var self = this;
-                var dfd = $.Deferred<service.model.CheckListPrintSettingDto>();
+                let self = this;
+                let dfd = $.Deferred<service.model.CheckListPrintSettingDto>();
                 service.findCheckListPrintSetting().done(function (data) {
                     self.initUI(data);
                     dfd.resolve();
@@ -53,7 +53,7 @@ module nts.uk.pr.view.qpp018.c {
             saveConfigSetting(): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred<any>();
-                var command = self.toJSObject();
+                let command = self.toJSObject();
                 service.saveCheckListPrintSetting(command).done(function(res: any) {
                     dfd.resolve(res);
                 }).fail(function(res) {
@@ -106,50 +106,10 @@ module nts.uk.pr.view.qpp018.c {
                 checkListPrintSetting.showOffice = self.showOffice();
                 checkListPrintSetting.showTotal = self.showTotal();
                 checkListPrintSetting.showDeliveryNoticeAmount = self.showDeliveryNoticeAmount();
-                
                 command.checkListPrintSettingDto = checkListPrintSetting;
                 return command;
             }
         }
-        
-        /**
-         * Class HealthInsuranceType
-         */
-//        export class HealthInsuranceTypeList {
-//            
-//            items: KnockoutObservableArray<service.model.HealthInsuranceTypeItem>;
-//            selectedCode: KnockoutObservable<string>;
-//
-//            constructor() {
-//                let self = this;
-//                self.items = ko.observableArray<service.model.HealthInsuranceTypeItem>([]);
-//                self.selectedCode = ko.observable("");
-//            }
-//            
-//            findHealthInsuranceTypeList(): JQueryPromise<service.model.HealthInsuranceTypeItem[]> {
-//                let self = this;
-//                let dfd = $.Deferred<service.model.HealthInsuranceTypeItem[]>();
-//                service.findHealthInsuranceTypeList().done(function(res: service.model.HealthInsuranceTypeItem[]) {
-//                    // get 2 enum first.
-//                    for (let i = 0; i < res.length; i++) {
-//                        if (i == 2) {
-//                            break;
-//                        }
-//                        self.items().push(res[i]);
-//                    }
-////                    self.items(res);
-//                    dfd.resolve();
-//                }).fail(function(res) {
-//                    nts.uk.ui.dialog.alert(res.message);
-//                })
-//                return dfd.promise();
-//            }
-//            
-//            selectFirst(): void {
-//                let self = this;
-//                self.selectedCode(self.items()[0].code);
-//            }
-//        }
     }
 
 }

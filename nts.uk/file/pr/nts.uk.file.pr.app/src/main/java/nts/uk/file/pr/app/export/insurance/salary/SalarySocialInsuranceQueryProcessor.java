@@ -5,17 +5,17 @@
 /**
  * 
  */
-package nts.uk.file.pr.app.export.insurance;
-
-import java.util.List;
-
-import nts.uk.file.pr.app.export.insurance.data.SocialInsuranceReportData;
+package nts.uk.file.pr.app.export.insurance.salary;
 
 /**
  * @author duongnd
  *
  */
-public interface SocialInsuranceRepository {
+public class SalarySocialInsuranceQueryProcessor {
+	
+	//PISMT_PERSON_INSU_SOCIAL
 
-    SocialInsuranceReportData findByCode(SocialInsuranceQuery query);
+	private void findPerson(String officeCode) {
+		
+	}
 }

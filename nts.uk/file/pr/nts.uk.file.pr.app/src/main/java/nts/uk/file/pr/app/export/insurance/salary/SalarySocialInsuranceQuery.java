@@ -5,7 +5,7 @@
 /**
  * 
  */
-package nts.uk.file.pr.app.export.insurance;
+package nts.uk.file.pr.app.export.insurance.salary;
 
 import java.util.List;
 
@@ -21,7 +21,7 @@ import nts.uk.file.pr.app.export.insurance.data.InsuranceOfficeDto;
 
 @Setter
 @Getter
-public class SocialInsuranceQuery {
+public class SalarySocialInsuranceQuery {
 
     /** The year month. */
     private String yearMonth;

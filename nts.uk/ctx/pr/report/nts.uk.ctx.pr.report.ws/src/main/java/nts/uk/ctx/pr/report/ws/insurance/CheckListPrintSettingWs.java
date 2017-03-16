@@ -15,16 +15,18 @@ import nts.uk.ctx.pr.report.app.insurance.command.CheckListPrintSettingSaveComma
 import nts.uk.ctx.pr.report.app.insurance.find.ChecklistPrintSettingFinder;
 import nts.uk.ctx.pr.report.app.insurance.find.dto.CheckListPrintSettingFindOutDto;
 
+/**
+ * The Class CheckListPrintSettingWs.
+ */
 @Path("ctx/pr/report/insurance/checklist")
 @Produces("application/json")
 public class CheckListPrintSettingWs extends WebService {
 
-    /** The find. */
+    /** The checklist print setting finder. */
     @Inject
     private ChecklistPrintSettingFinder checklistPrintSettingFinder;
 
-    /** The save. */
-
+    /** The save commmand handler. */
     @Inject
     private CheckListPrintSettingSaveCommandHandler saveCommmandHandler;
 
@@ -36,16 +38,14 @@ public class CheckListPrintSettingWs extends WebService {
     @POST
     @Path("find")
     public CheckListPrintSettingFindOutDto find() {
-//        return checklistPrintSettingFinder.find();
-        CheckListPrintSettingFindOutDto dto = new CheckListPrintSettingFindOutDto();
-        dto.setShowCategoryInsuranceItem(true);
-        dto.setShowDetail(true);
-        dto.setShowOffice(false);
-        dto.setShowTotal(true);
-        dto.setShowDeliveryNoticeAmount(true);
-        return dto;
+        return checklistPrintSettingFinder.find();
     }
 
+    /**
+     * Save.
+     *
+     * @param command the command
+     */
     @POST
     @Path("save")
     public void save(CheckListPrintSettingSaveCommand command) {

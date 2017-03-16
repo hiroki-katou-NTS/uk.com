@@ -5,7 +5,7 @@
 /**
  * 
  */
-package nts.uk.pr.file.infra.insurance;
+package nts.uk.pr.file.infra.insurance.salary;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -25,10 +25,10 @@ import com.aspose.cells.WorksheetCollection;
 import lombok.val;
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.gul.reflection.ReflectionUtil;
-import nts.uk.file.pr.app.export.insurance.SocialInsuranceGenerator;
 import nts.uk.file.pr.app.export.insurance.data.EmployeeDto;
 import nts.uk.file.pr.app.export.insurance.data.InsuranceOfficeDto;
 import nts.uk.file.pr.app.export.insurance.data.SocialInsuranceReportData;
+import nts.uk.file.pr.app.export.insurance.salary.SalarySocialInsuranceGenerator;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 
 /**
@@ -37,8 +37,8 @@ import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
  */
 
 @Stateless
-public class AsposeSocialInsuranceReportGenerator extends AsposeCellsReportGenerator
-        implements SocialInsuranceGenerator {
+public class AsposeSalarySocialInsuranceReportGenerator extends AsposeCellsReportGenerator
+        implements SalarySocialInsuranceGenerator {
 
     private static final String TEMPLATE_FILE = "report/SocialInsurance.xlsx";
     private static final String REPORT_FILE_NAME = "/Users/mrken57/Work/UniversalK/project/export/SocialInsurance.pdf";
