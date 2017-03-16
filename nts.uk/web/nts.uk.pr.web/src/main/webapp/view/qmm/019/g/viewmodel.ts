@@ -78,10 +78,6 @@ module qmm019.g.viewmodel {
             //combobox
             service.getLayoutHeadInfor().done(function(layout: Array<service.model.LayoutHeadDto>) {
                 if (layout.length > 0) {
-//                    service.getLayoutHistoryInfor().done(function(layoutHistory: Array<service.model.LayoutHistoryDto>) {
-//                        self.layoutHistory(layoutHistory);
-//
-//                    });
                     self.layouts(layout);
                 }
                 self.buildCombobox();
@@ -155,6 +151,7 @@ module qmm019.g.viewmodel {
                     self.createlayout().checkCopy = true;
                 }
                 service.createLayout(self.createlayout()).done(function() {
+                    alert(self.createlayout());
                     //alert('追加しました。');    
                     nts.uk.ui.windows.close();
                 }).fail(function(res) {

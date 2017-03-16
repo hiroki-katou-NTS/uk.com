@@ -89,15 +89,12 @@
             				<div data-bind="ntsFormLabel: { constraint: 'LayoutName', required: true }">
 	            				<label id="A_LBL_002">コード/名称</label>
 	           				</div>
-	           				<label id="A_LBL_003" data-bind="text: singleSelectedCode() === null ? '' : singleSelectedCode().split(';')[0]">01</label>
-<!-- 	           				<input id="A_INP_002" data-bind="value: layoutMaster().stmtName, constraint: 'LayoutName', required: true, enable: allowClick()" type="text" />
- -->	           			   
- 								<input id="A_INP_002" data-bind="ntsTextEditor: {
-										value: layoutMaster().stmtName ,
+	           				<label style="width: 150px" id="A_LBL_003" data-bind="text: singleSelectedCode() === null ? '' : singleSelectedCode().split(';')[0]">01</label>
+							<input id="A_INP_002" data-bind="ntsTextEditor: {
+										value: layoutHead().stmtName ,
 										constraint: 'LayoutName',
 										required: true,
 										enable: allowClick()}" />
-							
 	           				<label id="A_LBL_004">（　レーザープリンター　A4　縦向き　最大３人　）</label>
             			</div>
             			<div class="flex valign-center">

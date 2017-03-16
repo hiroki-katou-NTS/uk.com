@@ -31,7 +31,7 @@ public class QstmtStmtLayoutDetail implements Serializable {
 	public int itemPosColumn;
 
 	@Basic(optional = false)
-	@Column(name ="DISP_ATR")
+	@Column(name ="DISP_SET")
 	public int dispAtr;
 
 	@Basic(optional = false)
