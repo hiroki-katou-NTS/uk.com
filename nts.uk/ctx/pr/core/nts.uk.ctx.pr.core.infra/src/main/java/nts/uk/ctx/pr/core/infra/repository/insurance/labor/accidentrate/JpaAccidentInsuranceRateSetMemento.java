@@ -14,6 +14,7 @@ import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.AccidentInsuranceRate
 import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.InsuBizRateItem;
 import nts.uk.ctx.pr.core.infra.entity.insurance.labor.accidentrate.QismtWorkAccidentInsu;
 import nts.uk.ctx.pr.core.infra.entity.insurance.labor.accidentrate.QismtWorkAccidentInsuPK;
+import nts.uk.ctx.pr.core.infra.repository.insurance.labor.Contants;
 
 /**
  * The Class JpaAccidentInsuranceRateSetMemento.

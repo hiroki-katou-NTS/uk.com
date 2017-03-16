@@ -47,7 +47,6 @@ module nts.uk.pr.view.qpp007.c {
                 self.outputSettingDetailModel().reloadReportItems = self.reloadReportItems.bind(self);
 
                 self.outputSettingSelectedCode.subscribe((id) => {
-                    self.isNewMode(false);
                     self.onSelectOutputSetting(id);
                 })
             }
@@ -76,7 +75,7 @@ module nts.uk.pr.view.qpp007.c {
                 // Set data to report item list.
                 var reportItemList: ReportItem[] = [];
                 data.categorySettings().forEach((setting) => {
-                    var categoryName: string = setting.category;
+                    var categoryName: SalaryCategory = setting.categoryName;
                     setting.outputItems().forEach((item) => {
                         reportItemList.push(new ReportItem(item.code, item.name, categoryName, item.isAggregateItem));
                     });
@@ -90,9 +89,9 @@ module nts.uk.pr.view.qpp007.c {
             public collectData(): OutputSettingDto {
                 var self = this;
                 var model = self.outputSettingDetailModel();
-                var data =  new OutputSettingDto();
+                var data = new OutputSettingDto();
                 data.code = model.settingCode();
-                data.name= model.settingName();
+                data.name = model.settingName();
                 var settings = new Array<CategorySettingDto>();
                 model.categorySettings().forEach(item => {
                     settings.push(new CategorySettingDto(SalaryCategory.PAYMENT, item.outputItems()));
@@ -105,7 +104,9 @@ module nts.uk.pr.view.qpp007.c {
             * On select outputSetting
             */
             private onSelectOutputSetting(id: string): void {
-                //TODO: ...
+                var self = this;
+                $('.save-error').ntsError('clear');
+                self.isNewMode(false);
             }
 
             /**
@@ -113,15 +114,38 @@ module nts.uk.pr.view.qpp007.c {
             */
             public save(): void {
                 var self = this;
-                console.log(self.collectData());
+                // clear error.
+                $('#inpCode').ntsError('clear');
+                $('#inpName').ntsError('clear');
+                // Validate.
+                var hasError = false;
+                if (self.outputSettingDetailModel().settingCode() == '') {
+                    $('#inpCode').ntsError('set', '未入力エラー');
+                    hasError = true;
+                }
+                if (self.outputSettingDetailModel().settingName() == '') {
+                    $('#inpName').ntsError('set', '未入力エラー');
+                    hasError = true;
+                }
+                if (hasError) {
+                    return;
+                }
+                var data = self.collectData();
+                if (self.isNewMode) {
+                    data.isCreateMode = true;
+                } else {
+                    data.isCreateMode = false;
+                }
+                service.save(data);
             }
 
             /**
             * Delete outputSetting.
             */
-            public delete(): void {
-                var self = this;
-                //TODO: ...
+            public remove(): void {
+                if (this.outputSettingSelectedCode) {
+                    service.remove(this.outputSettingSelectedCode());
+                }
             }
 
             /**
@@ -129,6 +153,17 @@ module nts.uk.pr.view.qpp007.c {
             */
             public commonSettingBtnClick(): void {
                 nts.uk.ui.windows.sub.modal('/view/qpp/007/j/index.xhtml', { title: '集計項目の設定', dialogClass: 'no-close' });
+            }
+
+            /**
+             * Enter new mode.
+             */
+            public newModeBtnClick(): void {
+                var self = this;
+                // Clear outputSetting SelectedCode
+                self.outputSettingSelectedCode(undefined);
+
+                self.isNewMode(true);
             }
 
             /**
@@ -152,6 +187,7 @@ module nts.uk.pr.view.qpp007.c {
             code: string;
             name: string;
             categorySettings: CategorySettingDto[];
+            isCreateMode: boolean;
         }
 
         export class OutputSettingDetailModel {
@@ -195,6 +231,7 @@ module nts.uk.pr.view.qpp007.c {
         }
 
         export class CategorySetting {
+            categoryName: SalaryCategory;
             aggregateItems: KnockoutObservableArray<AggregateItem>;
             aggregateItemsSelected: KnockoutObservableArray<string>;
             masterItems: KnockoutObservableArray<MasterItem>;
@@ -215,7 +252,7 @@ module nts.uk.pr.view.qpp007.c {
 
                 // mock data
                 for (let i = 1; i < 15; i++) {
-                    this.aggregateItems.push({ code: '00' + i, name: '基本給' + i, subsItem: [], taxDivision: 'Payment', value: i });
+                    this.aggregateItems.push({ code: '00' + i, name: '基本給' + i, subItems: [], taxDivision: 'Payment', value: i });
                 }
                 for (let i = 1; i < 15; i++) {
                     this.masterItems.push({ code: '00' + i, name: '基本給' + i, paymentType: 'Salary', taxDivision: 'Deduction' });
@@ -331,8 +368,8 @@ module nts.uk.pr.view.qpp007.c {
                     self.aggregateItems.push({
                         code: selectedItem.code,
                         name: selectedItem.name,
-                        subsItem: [],
-                        taxDivision: 'Payment',
+                        subItems: [],
+                        taxDivision: TaxDivision.PAYMENT,
                         value: 5
                     });
                     return;
@@ -341,8 +378,8 @@ module nts.uk.pr.view.qpp007.c {
                 self.masterItems.push({
                     code: selectedItem.code,
                     name: selectedItem.name,
-                    paymentType: 'Salary',
-                    taxDivision: 'Deduction'
+                    paymentType: PaymentType.SALARY,
+                    taxDivision: TaxDivision.DEDUCTION
                 });
             }
 
@@ -376,19 +413,19 @@ module nts.uk.pr.view.qpp007.c {
             static DEDUCTION = 'Deduction';
         }
         export class SalaryOutputDistinction {
-            HOURLY = 'Hourly';
-            MINUTLY = 'Minutely';
+            static HOURLY = 'Hourly';
+            static MINUTLY = 'Minutely';
         }
         export class PaymentType {
-            SALARY = 'Salary';
-            BONUS = 'Bonus';
+            static SALARY = 'Salary';
+            static BONUS = 'Bonus';
         }
         export class ReportItem {
             code: string;
             name: string;
-            categoryName: string;
+            categoryName: SalaryCategory;
             isAggregate: boolean;
-            constructor(code: string, name: string, categoryName: string, isAggregate: boolean) {
+            constructor(code: string, name: string, categoryName: SalaryCategory, isAggregate: boolean) {
                 this.code = code;
                 this.name = name;
                 this.categoryName = categoryName;

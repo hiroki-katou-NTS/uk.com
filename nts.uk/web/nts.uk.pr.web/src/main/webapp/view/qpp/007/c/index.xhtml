@@ -23,10 +23,10 @@
 		<ui:define name="content">
 			<!-- BEGIN FUNCTION AREA -->
 			<div id="functions-area">
-				<button id="new-button" data-bind="">新規</button>
+				<button id="new-button" data-bind="click: newModeBtnClick">新規</button>
 				<button id="register-button" class="proceed" data-bind="click: save, enable: $root.errors.isEmpty">登録</button>
 				<button id="setting-button" data-bind="click: commonSettingBtnClick">集計項目の設定</button>
-				<button id="delete-button" class="danger" data-bind="">削除</button>
+				<button id="delete-button" class="danger" data-bind="click: remove">削除</button>
 				<button id="close-button" data-bind="">閉じる</button>
 			</div>
 
@@ -66,7 +66,7 @@
 					<div class="flex valign-center">
 						<div id="lblCodeName" data-bind="ntsFormLabel: {required: true}">コード/名称</div>
 						<input id="inpCode"
-							data-bind="ntsTextEditor: {value: settingCode, required: true, enable: false}"></input>
+							data-bind="ntsTextEditor: {value: settingCode, required: true, enable: $parent.isNewMode()}"></input>
 						<input id="inpName"
 							data-bind="ntsTextEditor: {value: settingName, required: true}"></input>
 					</div>

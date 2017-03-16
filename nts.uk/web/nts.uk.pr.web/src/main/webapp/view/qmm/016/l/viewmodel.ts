@@ -50,9 +50,9 @@ module nts.uk.pr.view.qmm016.l {
             public startPage(): JQueryPromise<any> {
                 var self = this;
                 var dfd = $.Deferred<any>();
-                self.findAllCertifyGroup().done(data => {
-                    self.findAllCertification().done(data => {
-                        dfd.resolve(self);
+                self.findAllCertifyGroup().done(res => {
+                    res.findAllCertification().done(data => {
+                        dfd.resolve(data);
                     });
 
                 });
@@ -81,8 +81,8 @@ module nts.uk.pr.view.qmm016.l {
                         self.selectCodeLstLstCertifyGroup.subscribe(function(selectionCodeLstLstCertifyGroup: string) {
                             self.showchangeCertifyGroup(selectionCodeLstLstCertifyGroup);
                         });
-                        self.findCertifyGroup(data[0].code).done(data => {
-                            dfd.resolve(self);
+                        self.findCertifyGroup(data[0].code).done(res => {
+                            dfd.resolve(res);
                         });
                     } else {
                         self.newmodeEmptyData();
@@ -99,7 +99,6 @@ module nts.uk.pr.view.qmm016.l {
                 var dfd = $.Deferred<any>();
                 service.findCertifyGroup(code).done(data => {
                     self.certifyGroupModel = ko.observable(new CertifyGroupModel(data));
-                    var dataClear: CertificationFindInDto = data.certifies;
                     service.findAllCertification().done(data => {
                         self.certifyGroupModel().lstCertification(data);
                         self.lstCertification = data;
@@ -161,14 +160,14 @@ module nts.uk.pr.view.qmm016.l {
             private saveCertifyGroup() {
                 var self = this;
                 if (self.typeAction() == TypeActionCertifyGroup.add) {
-                    service.addCertifyGroup(self.convertDataModel()).done(data => {
+                    service.addCertifyGroup(self.convertDataModel()).done(function() {
                         self.reloadDataByAction(self.certifyGroupModel().code());
                     }).fail(function(error) {
                         self.showMessageSave(error.message);
                         self.reloadDataByAction('');
                     })
                 } else {
-                    service.updateCertifyGroup(self.convertDataModel()).done(data => {
+                    service.updateCertifyGroup(self.convertDataModel()).done(function() {
                         self.reloadDataByAction(self.certifyGroupModel().code());
                         self.clearErrorSave();
                     }).fail(function(error) {

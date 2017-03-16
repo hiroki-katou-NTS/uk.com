@@ -18,9 +18,13 @@ import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.InsuBizRateItem;
 /**
  * The Class AccidentInsuranceRateDto.
  */
+
+/**
+ * Instantiates a new accident insurance rate dto.
+ */
 @Data
 public class AccidentInsuranceRateDto {
-	
+
 	/** The history insurance. */
 	private AccidentInsuranceRateHistoryDto historyInsurance;
 
@@ -50,8 +54,10 @@ public class AccidentInsuranceRateDto {
 		private String companyCode;
 
 		/**
-		 * Instantiates a new WL category setting get memento impl.
+		 * Instantiates a new accident insurance rate get memento impl.
 		 *
+		 * @param companyCode
+		 *            the company code
 		 * @param dto
 		 *            the dto
 		 */
@@ -61,21 +67,45 @@ public class AccidentInsuranceRateDto {
 			this.companyCode = companyCode;
 		}
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.
+		 * AccidentInsuranceRateGetMemento#getHistoryId()
+		 */
 		@Override
 		public String getHistoryId() {
 			return dto.historyInsurance.getHistoryId();
 		}
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.
+		 * AccidentInsuranceRateGetMemento#getCompanyCode()
+		 */
 		@Override
 		public CompanyCode getCompanyCode() {
 			return new CompanyCode(companyCode);
 		}
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.
+		 * AccidentInsuranceRateGetMemento#getApplyRange()
+		 */
 		@Override
 		public MonthRange getApplyRange() {
 			return dto.historyInsurance.toDomain();
 		}
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.
+		 * AccidentInsuranceRateGetMemento#getRateItems()
+		 */
 		@Override
 		public Set<InsuBizRateItem> getRateItems() {
 			Set<InsuBizRateItem> setInsuBizRateItem = new HashSet<>();

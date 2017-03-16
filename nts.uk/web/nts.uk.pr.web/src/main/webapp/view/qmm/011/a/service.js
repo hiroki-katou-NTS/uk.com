@@ -58,14 +58,7 @@ var nts;
                                 var data = {
                                     unemployeeInsuranceRate: service.convertUnemployeeInsuranceRateModelDTO(unemployeeInsuranceRateModel)
                                 };
-                                nts.uk.request.ajax(paths.addUnemployeeInsuranceRate, data)
-                                    .done(function (res) {
-                                    dfd.resolve(res);
-                                })
-                                    .fail(function (res) {
-                                    dfd.reject(res);
-                                });
-                                return dfd.promise();
+                                return nts.uk.request.ajax(paths.addUnemployeeInsuranceRate, data);
                             }
                             service.addUnemployeeInsuranceRate = addUnemployeeInsuranceRate;
                             function updateUnemployeeInsuranceRate(unemployeeInsuranceRateModel) {
@@ -73,14 +66,7 @@ var nts;
                                 var data = {
                                     unemployeeInsuranceRate: service.convertUnemployeeInsuranceRateModelDTO(unemployeeInsuranceRateModel)
                                 };
-                                nts.uk.request.ajax(paths.updateUnemployeeInsuranceRate, data)
-                                    .done(function (res) {
-                                    dfd.resolve(res);
-                                })
-                                    .fail(function (res) {
-                                    dfd.reject(res);
-                                });
-                                return dfd.promise();
+                                return nts.uk.request.ajax(paths.updateUnemployeeInsuranceRate, data);
                             }
                             service.updateUnemployeeInsuranceRate = updateUnemployeeInsuranceRate;
                             function findAllUnemployeeInsuranceRateHistory() {
@@ -97,9 +83,6 @@ var nts;
                                         convertRes.push(UnemployeeInsuranceHistoryDto);
                                     }
                                     dfd.resolve(convertRes);
-                                })
-                                    .fail(function (res) {
-                                    dfd.reject(res);
                                 });
                                 return dfd.promise();
                             }
@@ -112,9 +95,6 @@ var nts;
                                     UnemployeeInsuranceHistoryDto = new model.UnemployeeInsuranceHistoryDto();
                                     UnemployeeInsuranceHistoryDto.setDataHistory(res);
                                     dfd.resolve(UnemployeeInsuranceHistoryDto);
-                                })
-                                    .fail(function (res) {
-                                    dfd.reject(res);
                                 });
                                 return dfd.promise();
                             }
@@ -576,3 +556,4 @@ var nts;
         })(pr = uk.pr || (uk.pr = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+//# sourceMappingURL=service.js.map

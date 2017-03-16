@@ -39,9 +39,9 @@ var nts;
                                 ScreenModel.prototype.startPage = function () {
                                     var self = this;
                                     var dfd = $.Deferred();
-                                    self.findAllCertifyGroup().done(function (data) {
-                                        self.findAllCertification().done(function (data) {
-                                            dfd.resolve(self);
+                                    self.findAllCertifyGroup().done(function (res) {
+                                        res.findAllCertification().done(function (data) {
+                                            dfd.resolve(data);
                                         });
                                     });
                                     return dfd.promise();
@@ -65,8 +65,8 @@ var nts;
                                             self.selectCodeLstLstCertifyGroup.subscribe(function (selectionCodeLstLstCertifyGroup) {
                                                 self.showchangeCertifyGroup(selectionCodeLstLstCertifyGroup);
                                             });
-                                            self.findCertifyGroup(data[0].code).done(function (data) {
-                                                dfd.resolve(self);
+                                            self.findCertifyGroup(data[0].code).done(function (res) {
+                                                dfd.resolve(res);
                                             });
                                         }
                                         else {
@@ -82,7 +82,6 @@ var nts;
                                     var dfd = $.Deferred();
                                     l.service.findCertifyGroup(code).done(function (data) {
                                         self.certifyGroupModel = ko.observable(new CertifyGroupModel(data));
-                                        var dataClear = data.certifies;
                                         l.service.findAllCertification().done(function (data) {
                                             self.certifyGroupModel().lstCertification(data);
                                             self.lstCertification = data;
@@ -137,7 +136,7 @@ var nts;
                                 ScreenModel.prototype.saveCertifyGroup = function () {
                                     var self = this;
                                     if (self.typeAction() == TypeActionCertifyGroup.add) {
-                                        l.service.addCertifyGroup(self.convertDataModel()).done(function (data) {
+                                        l.service.addCertifyGroup(self.convertDataModel()).done(function () {
                                             self.reloadDataByAction(self.certifyGroupModel().code());
                                         }).fail(function (error) {
                                             self.showMessageSave(error.message);
@@ -145,7 +144,7 @@ var nts;
                                         });
                                     }
                                     else {
-                                        l.service.updateCertifyGroup(self.convertDataModel()).done(function (data) {
+                                        l.service.updateCertifyGroup(self.convertDataModel()).done(function () {
                                             self.reloadDataByAction(self.certifyGroupModel().code());
                                             self.clearErrorSave();
                                         }).fail(function (error) {
@@ -258,3 +257,4 @@ var nts;
         })(pr = uk.pr || (uk.pr = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+//# sourceMappingURL=viewmodel.js.map

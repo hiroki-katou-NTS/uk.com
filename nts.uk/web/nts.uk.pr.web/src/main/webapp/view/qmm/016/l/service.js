@@ -21,77 +21,35 @@ var nts;
                                 deleteCertifyGroup: "pr/wagetable/certifygroup/delete",
                             };
                             function findAllCertification() {
-                                var dfd = $.Deferred();
-                                nts.uk.request.ajax(paths.findAllCertification)
-                                    .done(function (res) {
-                                    dfd.resolve(res);
-                                })
-                                    .fail(function (res) {
-                                });
-                                return dfd.promise();
+                                return nts.uk.request.ajax(paths.findAllCertification);
                             }
                             service.findAllCertification = findAllCertification;
                             function findAllCertifyGroup() {
                                 var dfd = $.Deferred();
-                                nts.uk.request.ajax(paths.findAllCertifyGroup)
-                                    .done(function (res) {
-                                    dfd.resolve(res);
-                                })
-                                    .fail(function (res) {
-                                    dfd.reject(res);
-                                });
-                                return dfd.promise();
+                                return nts.uk.request.ajax(paths.findAllCertifyGroup);
                             }
                             service.findAllCertifyGroup = findAllCertifyGroup;
                             function findCertifyGroup(code) {
                                 var dfd = $.Deferred();
-                                nts.uk.request.ajax(paths.findCertifyGroup + "/" + code)
-                                    .done(function (res) {
-                                    dfd.resolve(res);
-                                })
-                                    .fail(function (res) {
-                                    dfd.reject(res);
-                                });
-                                return dfd.promise();
+                                return nts.uk.request.ajax(paths.findCertifyGroup + "/" + code);
                             }
                             service.findCertifyGroup = findCertifyGroup;
                             function addCertifyGroup(certifyGroupDto) {
                                 var dfd = $.Deferred();
                                 var data = { certifyGroupDto: certifyGroupDto };
-                                nts.uk.request.ajax(paths.addCertifyGroup, data)
-                                    .done(function (res) {
-                                    dfd.resolve(res);
-                                })
-                                    .fail(function (res) {
-                                    dfd.reject(res);
-                                });
-                                return dfd.promise();
+                                return nts.uk.request.ajax(paths.addCertifyGroup, data);
                             }
                             service.addCertifyGroup = addCertifyGroup;
                             function updateCertifyGroup(certifyGroupDto) {
                                 var dfd = $.Deferred();
                                 var data = { certifyGroupDto: certifyGroupDto };
-                                nts.uk.request.ajax(paths.updateCertifyGroup, data)
-                                    .done(function (res) {
-                                    dfd.resolve(res);
-                                })
-                                    .fail(function (res) {
-                                    dfd.reject(res);
-                                });
-                                return dfd.promise();
+                                return nts.uk.request.ajax(paths.updateCertifyGroup, data);
                             }
                             service.updateCertifyGroup = updateCertifyGroup;
                             function deleteCertifyGroup(certifyGroupDeleteDto) {
                                 var dfd = $.Deferred();
                                 var data = { certifyGroupDeleteDto: certifyGroupDeleteDto };
-                                nts.uk.request.ajax(paths.deleteCertifyGroup, data)
-                                    .done(function (res) {
-                                    dfd.resolve(res);
-                                })
-                                    .fail(function (res) {
-                                    dfd.reject(res);
-                                });
-                                return dfd.promise();
+                                return nts.uk.request.ajax(paths.deleteCertifyGroup, data);
                             }
                             service.deleteCertifyGroup = deleteCertifyGroup;
                             var model;
@@ -152,3 +110,4 @@ var nts;
         })(pr = uk.pr || (uk.pr = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+//# sourceMappingURL=service.js.map

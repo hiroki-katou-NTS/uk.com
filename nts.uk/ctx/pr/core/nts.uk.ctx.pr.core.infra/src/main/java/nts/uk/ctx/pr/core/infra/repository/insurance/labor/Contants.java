@@ -2,7 +2,10 @@
  * Copyright (c) 2016 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.pr.core.infra.repository.insurance.labor.accidentrate;
+package nts.uk.ctx.pr.core.infra.repository.insurance.labor;
+
+import nts.arc.time.DateTimeConstraints;
+import nts.arc.time.YearMonth;
 
 /**
  * The Class Contants.

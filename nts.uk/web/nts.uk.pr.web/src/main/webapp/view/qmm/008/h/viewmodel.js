@@ -16,7 +16,7 @@ var nts;
                             var ScreenModel = (function () {
                                 function ScreenModel(officeName, healthModel) {
                                     var self = this;
-                                    self.healthInsuranceRateModel = new HealthInsuranceRateModel(healthModel.officeCode(), officeName, healthModel.historyId, healthModel.startMonth(), healthModel.endMonth(), healthModel.rateItems());
+                                    self.healthInsuranceRateModel = new HealthInsuranceRateModel(healthModel.officeCode(), officeName, healthModel.historyId, healthModel.startMonth(), healthModel.endMonth(), healthModel.rateItems(), healthModel.roundingMethods());
                                     self.listAvgEarnLevelMasterSetting = [];
                                     self.listHealthInsuranceAvgearn = ko.observableArray([]);
                                     self.numberEditorCommonOption = ko.mapping.fromJS(new nts.uk.ui.option.NumberEditorOption({
@@ -78,8 +78,44 @@ var nts;
                                     var self = this;
                                     var historyId = self.healthInsuranceRateModel.historyId;
                                     var rateItems = self.healthInsuranceRateModel.rateItems;
+                                    var roundingMethods = self.healthInsuranceRateModel.roundingMethods;
+                                    var personalRounding = self.convertToRounding(roundingMethods.healthSalaryPersonalComboBoxSelectedCode());
+                                    var companyRounding = self.convertToRounding(roundingMethods.healthSalaryCompanyComboBoxSelectedCode());
                                     var rate = levelMasterSetting.avgEarn / 1000;
-                                    return new HealthInsuranceAvgEarnModel(historyId, levelMasterSetting.code, new HealthInsuranceAvgEarnValueModel(rateItems.healthSalaryPersonalGeneral() * rate, rateItems.healthSalaryPersonalNursing() * rate, rateItems.healthSalaryPersonalBasic() * rate, rateItems.healthSalaryPersonalSpecific() * rate), new HealthInsuranceAvgEarnValueModel(rateItems.healthSalaryCompanyGeneral() * rate, rateItems.healthSalaryCompanyNursing() * rate, rateItems.healthSalaryCompanyBasic() * rate, rateItems.healthSalaryCompanySpecific() * rate));
+                                    return new HealthInsuranceAvgEarnModel(historyId, levelMasterSetting.code, new HealthInsuranceAvgEarnValueModel(self.rounding(personalRounding, rateItems.healthSalaryPersonalGeneral() * rate, 1), self.rounding(personalRounding, rateItems.healthSalaryPersonalNursing() * rate, 1), self.rounding(personalRounding, rateItems.healthSalaryPersonalBasic() * rate, 3), self.rounding(personalRounding, rateItems.healthSalaryPersonalSpecific() * rate, 3)), new HealthInsuranceAvgEarnValueModel(self.rounding(companyRounding, rateItems.healthSalaryCompanyGeneral() * rate, 1), self.rounding(companyRounding, rateItems.healthSalaryCompanyNursing() * rate, 1), self.rounding(companyRounding, rateItems.healthSalaryCompanyBasic() * rate, 3), self.rounding(companyRounding, rateItems.healthSalaryCompanySpecific() * rate, 3)));
+                                };
+                                ScreenModel.prototype.rounding = function (roudingMethod, roundValue, roundType) {
+                                    var self = this;
+                                    var getLevel = Math.pow(10, roundType);
+                                    var backupValue = roundValue * (getLevel / 10);
+                                    switch (roudingMethod) {
+                                        case Rounding.ROUNDUP: return Math.ceil(backupValue) / (getLevel / 10);
+                                        case Rounding.TRUNCATION: return Math.floor(backupValue) / (getLevel / 10);
+                                        case Rounding.ROUNDDOWN:
+                                            if ((backupValue * getLevel) % 10 > 5)
+                                                return (Math.ceil(backupValue)) / (getLevel / 10);
+                                            else
+                                                return Math.floor(backupValue) / (getLevel / 10);
+                                        case Rounding.DOWN4_UP5: return self.roudingDownUp(backupValue, 4) / (getLevel / 10);
+                                        case Rounding.DOWN5_UP6: return self.roudingDownUp(backupValue, 5) / (getLevel / 10);
+                                    }
+                                };
+                                ScreenModel.prototype.roudingDownUp = function (value, down) {
+                                    var newVal = Math.round(value * 10) / 10;
+                                    if ((newVal * 10) % 10 > down)
+                                        return Math.ceil(value);
+                                    else
+                                        return Math.floor(value);
+                                };
+                                ScreenModel.prototype.convertToRounding = function (stringValue) {
+                                    switch (stringValue) {
+                                        case "0": return Rounding.ROUNDUP;
+                                        case "1": return Rounding.TRUNCATION;
+                                        case "2": return Rounding.DOWN4_UP5;
+                                        case "3": return Rounding.ROUNDDOWN;
+                                        case "4": return Rounding.DOWN5_UP6;
+                                        default: return Rounding.ROUNDUP;
+                                    }
                                 };
                                 ScreenModel.prototype.closeDialog = function () {
                                     nts.uk.ui.windows.close();
@@ -88,13 +124,14 @@ var nts;
                             }());
                             viewmodel.ScreenModel = ScreenModel;
                             var HealthInsuranceRateModel = (function () {
-                                function HealthInsuranceRateModel(officeCode, officeName, historyId, startMonth, endMonth, rateItems) {
+                                function HealthInsuranceRateModel(officeCode, officeName, historyId, startMonth, endMonth, rateItems, roundingMethods) {
                                     this.officeCode = officeCode;
                                     this.officeName = officeName;
                                     this.historyId = historyId;
                                     this.startMonth = startMonth;
                                     this.endMonth = endMonth;
                                     this.rateItems = rateItems;
+                                    this.roundingMethods = roundingMethods;
                                 }
                                 return HealthInsuranceRateModel;
                             }());
@@ -119,6 +156,17 @@ var nts;
                                 return HealthInsuranceAvgEarnValueModel;
                             }());
                             viewmodel.HealthInsuranceAvgEarnValueModel = HealthInsuranceAvgEarnValueModel;
+                            var Rounding = (function () {
+                                function Rounding() {
+                                }
+                                Rounding.ROUNDUP = 'RoundUp';
+                                Rounding.TRUNCATION = 'Truncation';
+                                Rounding.ROUNDDOWN = 'RoundDown';
+                                Rounding.DOWN5_UP6 = 'Down5_Up6';
+                                Rounding.DOWN4_UP5 = 'Down4_Up5';
+                                return Rounding;
+                            }());
+                            viewmodel.Rounding = Rounding;
                         })(viewmodel = h.viewmodel || (h.viewmodel = {}));
                     })(h = qmm008.h || (qmm008.h = {}));
                 })(qmm008 = view.qmm008 || (view.qmm008 = {}));
@@ -126,3 +174,4 @@ var nts;
         })(pr = uk.pr || (uk.pr = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+//# sourceMappingURL=viewmodel.js.map

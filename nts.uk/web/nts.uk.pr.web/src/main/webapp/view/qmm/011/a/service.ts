@@ -56,14 +56,7 @@ module nts.uk.pr.view.qmm011.a {
                 unemployeeInsuranceRate
                 : service.convertUnemployeeInsuranceRateModelDTO(unemployeeInsuranceRateModel)
             };
-            nts.uk.request.ajax(paths.addUnemployeeInsuranceRate, data)
-                .done(function(res: void) {
-                    dfd.resolve(res);
-                })
-                .fail(function(res) {
-                    dfd.reject(res);
-                })
-            return dfd.promise();
+            return nts.uk.request.ajax(paths.addUnemployeeInsuranceRate, data);
         }
 
         //Function connection service update Unemployee Insurance Rate
@@ -73,14 +66,7 @@ module nts.uk.pr.view.qmm011.a {
             var data = {
                 unemployeeInsuranceRate: service.convertUnemployeeInsuranceRateModelDTO(unemployeeInsuranceRateModel)
             };
-            nts.uk.request.ajax(paths.updateUnemployeeInsuranceRate, data)
-                .done(function(res: void) {
-                    dfd.resolve(res);
-                })
-                .fail(function(res) {
-                    dfd.reject(res);
-                })
-            return dfd.promise();
+            return nts.uk.request.ajax(paths.updateUnemployeeInsuranceRate, data);
         }
 
         //Function connection service FindAll Labor Insurance Office
@@ -98,9 +84,6 @@ module nts.uk.pr.view.qmm011.a {
                     }
                     dfd.resolve(convertRes);
                 })
-                .fail(function(res) {
-                    dfd.reject(res);
-                })
             return dfd.promise();
         }
 
@@ -115,9 +98,6 @@ module nts.uk.pr.view.qmm011.a {
                     UnemployeeInsuranceHistoryDto.setDataHistory(res);
                     dfd.resolve(UnemployeeInsuranceHistoryDto);
                     //xyz
-                })
-                .fail(function(res) {
-                    dfd.reject(res);
                 })
             return dfd.promise();
         }
