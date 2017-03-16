@@ -5,6 +5,7 @@
 package nts.uk.file.pr.app.export.wageledger;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import javax.ejb.Stateless;
@@ -55,6 +56,7 @@ public class WageLedgerReportSevice extends ExportService<WageLedgerReportQuery>
 						.employeeName("Employee 1")
 						.position("Project manager")
 						.sex("Man")
+						.bonusMonthList(Arrays.asList(1, 3, 7, 9, 12))
 						.build())
 				.salaryPaymentData(PaymentData.builder()
 						.totalTax(ReportItemDto.builder()

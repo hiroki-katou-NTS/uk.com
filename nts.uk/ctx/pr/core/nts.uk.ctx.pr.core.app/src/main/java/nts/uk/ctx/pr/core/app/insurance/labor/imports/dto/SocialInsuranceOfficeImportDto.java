@@ -148,26 +148,22 @@ public class SocialInsuranceOfficeImportDto {
 
 			@Override
 			public OfficeNoC getOfficeNoC() {
-				return null;
-				//return dto.healthInsuCityCode;
+				return new OfficeNoC(dto.healthInsuCityCode);
 			}
 
 			@Override
 			public OfficeNoB getOfficeNoB() {
-				return null;
-				//return dto.healthInsuOfficeRefCode2nd;
+				return new OfficeNoB(dto.healthInsuOfficeRefCode2nd);
 			}
 
 			@Override
 			public OfficeNoA getOfficeNoA() {
-				return null;
-				//return dto.healthInsuOfficeRefCode1st;
+				return new OfficeNoA(dto.healthInsuOfficeRefCode1st);
 			}
 
 			@Override
 			public OfficeMark getOfficeMark() {
-				return null;
-				//return dto.healthInsuAssoCode;
+				return new OfficeMark(dto.healthInsuAssoCode);
 			}
 
 			@Override
