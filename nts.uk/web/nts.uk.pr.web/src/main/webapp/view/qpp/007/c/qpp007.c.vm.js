@@ -40,7 +40,6 @@ var nts;
                                     ]);
                                     self.outputSettingDetailModel().reloadReportItems = self.reloadReportItems.bind(self);
                                     self.outputSettingSelectedCode.subscribe(function (id) {
-                                        self.isNewMode(false);
                                         self.onSelectOutputSetting(id);
                                     });
                                 }
@@ -60,7 +59,7 @@ var nts;
                                     }
                                     var reportItemList = [];
                                     data.categorySettings().forEach(function (setting) {
-                                        var categoryName = setting.category;
+                                        var categoryName = setting.categoryName;
                                         setting.outputItems().forEach(function (item) {
                                             reportItemList.push(new ReportItem(item.code, item.name, categoryName, item.isAggregateItem));
                                         });
@@ -81,16 +80,47 @@ var nts;
                                     return data;
                                 };
                                 ScreenModel.prototype.onSelectOutputSetting = function (id) {
+                                    var self = this;
+                                    $('.save-error').ntsError('clear');
+                                    self.isNewMode(false);
                                 };
                                 ScreenModel.prototype.save = function () {
                                     var self = this;
-                                    console.log(self.collectData());
+                                    $('#inpCode').ntsError('clear');
+                                    $('#inpName').ntsError('clear');
+                                    var hasError = false;
+                                    if (self.outputSettingDetailModel().settingCode() == '') {
+                                        $('#inpCode').ntsError('set', '未入力エラー');
+                                        hasError = true;
+                                    }
+                                    if (self.outputSettingDetailModel().settingName() == '') {
+                                        $('#inpName').ntsError('set', '未入力エラー');
+                                        hasError = true;
+                                    }
+                                    if (hasError) {
+                                        return;
+                                    }
+                                    var data = self.collectData();
+                                    if (self.isNewMode) {
+                                        data.isCreateMode = true;
+                                    }
+                                    else {
+                                        data.isCreateMode = false;
+                                    }
+                                    c.service.save(data);
                                 };
-                                ScreenModel.prototype.delete = function () {
-                                    var self = this;
+                                ScreenModel.prototype.remove = function () {
+                                    if (this.outputSettingSelectedCode) {
+                                        c.service.remove(this.outputSettingSelectedCode());
+                                    }
                                 };
                                 ScreenModel.prototype.commonSettingBtnClick = function () {
                                     nts.uk.ui.windows.sub.modal('/view/qpp/007/j/index.xhtml', { title: '集計項目の設定', dialogClass: 'no-close' });
+                                };
+                                ScreenModel.prototype.newModeBtnClick = function () {
+                                    var self = this;
+                                    self.outputSettingSelectedCode(undefined);
+                                    self.isNewMode(true);
                                 };
                                 ScreenModel.prototype.close = function () {
                                     nts.uk.ui.windows.close();
@@ -157,7 +187,7 @@ var nts;
                                     self.outputItemSelected = ko.observable(null);
                                     self.outputItemsSelected = ko.observableArray([]);
                                     for (var i = 1; i < 15; i++) {
-                                        this.aggregateItems.push({ code: '00' + i, name: '基本給' + i, subsItem: [], taxDivision: 'Payment', value: i });
+                                        this.aggregateItems.push({ code: '00' + i, name: '基本給' + i, subItems: [], taxDivision: 'Payment', value: i });
                                     }
                                     for (var i = 1; i < 15; i++) {
                                         this.masterItems.push({ code: '00' + i, name: '基本給' + i, paymentType: 'Salary', taxDivision: 'Deduction' });
@@ -246,8 +276,8 @@ var nts;
                                         self.aggregateItems.push({
                                             code: selectedItem.code,
                                             name: selectedItem.name,
-                                            subsItem: [],
-                                            taxDivision: 'Payment',
+                                            subItems: [],
+                                            taxDivision: TaxDivision.PAYMENT,
                                             value: 5
                                         });
                                         return;
@@ -255,8 +285,8 @@ var nts;
                                     self.masterItems.push({
                                         code: selectedItem.code,
                                         name: selectedItem.name,
-                                        paymentType: 'Salary',
-                                        taxDivision: 'Deduction'
+                                        paymentType: PaymentType.SALARY,
+                                        taxDivision: TaxDivision.DEDUCTION
                                     });
                                 };
                                 return CategorySetting;
@@ -300,17 +330,17 @@ var nts;
                             viewmodel.TaxDivision = TaxDivision;
                             var SalaryOutputDistinction = (function () {
                                 function SalaryOutputDistinction() {
-                                    this.HOURLY = 'Hourly';
-                                    this.MINUTLY = 'Minutely';
                                 }
+                                SalaryOutputDistinction.HOURLY = 'Hourly';
+                                SalaryOutputDistinction.MINUTLY = 'Minutely';
                                 return SalaryOutputDistinction;
                             }());
                             viewmodel.SalaryOutputDistinction = SalaryOutputDistinction;
                             var PaymentType = (function () {
                                 function PaymentType() {
-                                    this.SALARY = 'Salary';
-                                    this.BONUS = 'Bonus';
                                 }
+                                PaymentType.SALARY = 'Salary';
+                                PaymentType.BONUS = 'Bonus';
                                 return PaymentType;
                             }());
                             viewmodel.PaymentType = PaymentType;
@@ -331,3 +361,4 @@ var nts;
         })(pr = uk.pr || (uk.pr = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+//# sourceMappingURL=qpp007.c.vm.js.map
