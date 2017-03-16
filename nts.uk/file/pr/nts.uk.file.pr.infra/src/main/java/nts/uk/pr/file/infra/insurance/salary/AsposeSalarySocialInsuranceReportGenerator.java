@@ -27,7 +27,7 @@ import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.gul.reflection.ReflectionUtil;
 import nts.uk.file.pr.app.export.insurance.data.EmployeeDto;
 import nts.uk.file.pr.app.export.insurance.data.InsuranceOfficeDto;
-import nts.uk.file.pr.app.export.insurance.data.SocialInsuranceReportData;
+import nts.uk.file.pr.app.export.insurance.data.SalarySocialInsuranceReportData;
 import nts.uk.file.pr.app.export.insurance.salary.SalarySocialInsuranceGenerator;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 
@@ -57,7 +57,7 @@ public class AsposeSalarySocialInsuranceReportGenerator extends AsposeCellsRepor
     private static final String ALPHABET_Q = "Q";
     
     @Override
-    public void generate(FileGeneratorContext fileContext, SocialInsuranceReportData reportData) {
+    public void generate(FileGeneratorContext fileContext, SalarySocialInsuranceReportData reportData) {
         try (val reportContext = this.createContext(TEMPLATE_FILE)) {
             Workbook workbook = reportContext.getWorkbook();
             WorksheetCollection worksheets = workbook.getWorksheets();
@@ -72,7 +72,7 @@ public class AsposeSalarySocialInsuranceReportGenerator extends AsposeCellsRepor
         }
     }
 
-    private void createNewSheet(WorksheetCollection worksheets, String sheetName, SocialInsuranceReportData reportData)
+    private void createNewSheet(WorksheetCollection worksheets, String sheetName, SalarySocialInsuranceReportData reportData)
             throws Exception {
         Worksheet worksheet = worksheets.get(0);
         worksheet.setName(sheetName);

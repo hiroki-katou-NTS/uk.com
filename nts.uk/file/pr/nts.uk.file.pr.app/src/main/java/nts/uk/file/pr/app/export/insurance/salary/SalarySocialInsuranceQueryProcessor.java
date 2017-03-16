@@ -7,15 +7,21 @@
  */
 package nts.uk.file.pr.app.export.insurance.salary;
 
+import javax.inject.Inject;
+
+import nts.uk.ctx.pr.core.dom.insurance.social.SocialInsuranceOfficeRepository;
+
 /**
  * @author duongnd
  *
  */
 public class SalarySocialInsuranceQueryProcessor {
-	
-	//PISMT_PERSON_INSU_SOCIAL
+    
+    /** The social insurance office repository. */
+    @Inject
+    private SocialInsuranceOfficeRepository socialInsuranceOfficeRepo;
 
-	private void findPerson(String officeCode) {
-		
-	}
+    private void findOffices(String officeCode) {
+        // TODO: find list information of office.
+    }
 }

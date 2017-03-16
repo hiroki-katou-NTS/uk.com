@@ -18,8 +18,8 @@ import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.uk.file.pr.app.export.insurance.data.ColumnInformation;
 import nts.uk.file.pr.app.export.insurance.data.EmployeeDto;
 import nts.uk.file.pr.app.export.insurance.data.InsuranceOfficeDto;
-import nts.uk.file.pr.app.export.insurance.data.SocialInsuranceHeaderReportData;
-import nts.uk.file.pr.app.export.insurance.data.SocialInsuranceReportData;
+import nts.uk.file.pr.app.export.insurance.data.SalarySocialInsuranceHeaderReportData;
+import nts.uk.file.pr.app.export.insurance.data.SalarySocialInsuranceReportData;
 
 /**
  * @author duongnd
@@ -37,14 +37,14 @@ public class SalarySocialInsuranceReportService extends ExportService<SalarySoci
         // get query
         SalarySocialInsuranceQuery query = context.getQuery();
         // get data from repository follow query.
-        SocialInsuranceReportData reportData = fakeData();
+        SalarySocialInsuranceReportData reportData = fakeData();
         this.generator.generate(context.getGeneratorContext(), reportData);
     }
     
-    private SocialInsuranceReportData fakeData() {
-        SocialInsuranceReportData reportData = new SocialInsuranceReportData();
+    private SalarySocialInsuranceReportData fakeData() {
+        SalarySocialInsuranceReportData reportData = new SalarySocialInsuranceReportData();
         
-        SocialInsuranceHeaderReportData headerData = new SocialInsuranceHeaderReportData();
+        SalarySocialInsuranceHeaderReportData headerData = new SalarySocialInsuranceHeaderReportData();
         reportData.setHeaderData(headerData);
         
         List<InsuranceOfficeDto> officeItems = fakeOffice();

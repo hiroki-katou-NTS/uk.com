@@ -7,18 +7,27 @@
  */
 package nts.uk.file.pr.app.export.insurance.data;
 
+import java.util.List;
+
 import lombok.Getter;
 import lombok.Setter;
 
 /**
- * @author duongnd
+ * The Class SocialInsuranceReportData.
  *
+ * @author duongnd
  */
-@Getter
-@Setter
-public class SocialInsuranceHeaderReportData {
 
-    // add header report file
-    private String employeeCode;
-    private String employeeName;
+@Setter
+@Getter
+public class SalarySocialInsuranceReportData {
+
+    /** The header data. */
+    public SalarySocialInsuranceHeaderReportData headerData;
+    
+    /** The columns.*/
+    private List<ColumnInformation> columns;
+    
+    /** The report item. */
+    public List<InsuranceOfficeDto> officeItems;
 }

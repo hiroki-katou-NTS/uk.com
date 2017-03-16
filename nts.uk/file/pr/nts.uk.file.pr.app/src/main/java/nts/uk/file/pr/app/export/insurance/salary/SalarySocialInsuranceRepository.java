@@ -7,21 +7,21 @@
  */
 package nts.uk.file.pr.app.export.insurance.salary;
 
-import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.uk.file.pr.app.export.insurance.data.SalarySocialInsuranceReportData;
 
 /**
- * The Interface SocialInsuranceGenerator.
+ * The Interface SalarySocailInsuranceRepository.
  *
  * @author duongnd
  */
-public interface SalarySocialInsuranceGenerator {
+public interface SalarySocialInsuranceRepository {
 
     /**
-     * Generate.
+     * Find report data.
      *
-     * @param fileContext the file context
-     * @param socialInsuranceReportData the social insurance report data
+     * @param query
+     *            the query
+     * @return the salary social insurance report data
      */
-    void generate(FileGeneratorContext fileContext, SalarySocialInsuranceReportData reportData);
+    SalarySocialInsuranceReportData findReportData(SalarySocialInsuranceQuery query);
 }
