@@ -18,7 +18,7 @@ var nts;
                                     var self = this;
                                     self.listAvgEarnLevelMasterSetting = [];
                                     self.listPensionAvgearnModel = ko.observableArray([]);
-                                    self.pensionRateModel = new PensionRateModel(pensionModel.historyId, pensionModel.officeCode(), officeName, pensionModel.startMonth(), pensionModel.endMonth(), pensionModel.fundRateItems(), pensionModel.childContributionRate());
+                                    self.pensionRateModel = new PensionRateModel(pensionModel.historyId, pensionModel.officeCode(), officeName, pensionModel.startMonth(), pensionModel.endMonth(), pensionModel.fundRateItems(), pensionModel.roundingMethods(), pensionModel.childContributionRate());
                                     self.leftShow = ko.observable(true);
                                     self.rightShow = ko.observable(true);
                                     self.leftBtnText = ko.computed(function () { if (self.leftShow())
@@ -90,8 +90,43 @@ var nts;
                                     var self = this;
                                     var model = self.pensionRateModel;
                                     var rateItems = self.pensionRateModel.fundRateItems;
+                                    var roundingMethods = self.pensionRateModel.roundingMethods;
+                                    var personalRounding = self.convertToRounding(roundingMethods.pensionSalaryPersonalComboBoxSelectedCode());
+                                    var companyRounding = self.convertToRounding(roundingMethods.pensionSalaryCompanyComboBoxSelectedCode());
                                     var rate = levelMasterSetting.avgEarn / 1000;
-                                    return new PensionAvgearnModel(model.historyId, levelMasterSetting.code, new PensionAvgearnValueModel(rateItems.salaryCompanySonExemption() * rate, rateItems.salaryCompanyDaughterExemption() * rate, rateItems.salaryCompanyUnknownExemption() * rate), new PensionAvgearnValueModel(rateItems.salaryCompanySonBurden() * rate, rateItems.salaryCompanyDaughterBurden() * rate, rateItems.salaryCompanyUnknownBurden() * rate), new PensionAvgearnValueModel(rateItems.salaryPersonalSonExemption() * rate, rateItems.salaryPersonalDaughterExemption() * rate, rateItems.salaryPersonalUnknownExemption() * rate), new PensionAvgearnValueModel(rateItems.salaryPersonalSonBurden() * rate, rateItems.salaryPersonalDaughterBurden() * rate, rateItems.salaryPersonalUnknownBurden() * rate), model.childContributionRate() * rate);
+                                    return new PensionAvgearnModel(model.historyId, levelMasterSetting.code, new PensionAvgearnValueModel(self.rounding(companyRounding, rateItems.salaryCompanySonExemption() * rate), self.rounding(companyRounding, rateItems.salaryCompanyDaughterExemption() * rate), self.rounding(companyRounding, rateItems.salaryCompanyUnknownExemption() * rate)), new PensionAvgearnValueModel(self.rounding(companyRounding, rateItems.salaryCompanySonBurden() * rate), self.rounding(companyRounding, rateItems.salaryCompanyDaughterBurden() * rate), self.rounding(companyRounding, rateItems.salaryCompanyUnknownBurden() * rate)), new PensionAvgearnValueModel(self.rounding(personalRounding, rateItems.salaryPersonalSonExemption() * rate), self.rounding(personalRounding, rateItems.salaryPersonalDaughterExemption() * rate), self.rounding(personalRounding, rateItems.salaryPersonalUnknownExemption() * rate)), new PensionAvgearnValueModel(self.rounding(personalRounding, rateItems.salaryPersonalSonBurden() * rate), self.rounding(personalRounding, rateItems.salaryPersonalDaughterBurden() * rate), self.rounding(personalRounding, rateItems.salaryPersonalUnknownBurden() * rate)), model.childContributionRate() * rate);
+                                };
+                                ScreenModel.prototype.rounding = function (roudingMethod, roundValue) {
+                                    var self = this;
+                                    var backupValue = roundValue;
+                                    switch (roudingMethod) {
+                                        case Rounding.ROUNDUP: return Math.ceil(backupValue);
+                                        case Rounding.TRUNCATION: return Math.floor(backupValue);
+                                        case Rounding.ROUNDDOWN:
+                                            if ((backupValue * 10) % 10 > 5)
+                                                return Math.ceil(backupValue);
+                                            else
+                                                return Math.floor(backupValue);
+                                        case Rounding.DOWN4_UP5: return self.roudingDownUp(backupValue, 4);
+                                        case Rounding.DOWN5_UP6: return self.roudingDownUp(backupValue, 5);
+                                    }
+                                };
+                                ScreenModel.prototype.roudingDownUp = function (value, down) {
+                                    var newVal = Math.round(value * 10) / 10;
+                                    if ((newVal * 10) % 10 > down)
+                                        return Math.ceil(value);
+                                    else
+                                        return Math.floor(value);
+                                };
+                                ScreenModel.prototype.convertToRounding = function (stringValue) {
+                                    switch (stringValue) {
+                                        case "0": return Rounding.ROUNDUP;
+                                        case "1": return Rounding.TRUNCATION;
+                                        case "2": return Rounding.DOWN4_UP5;
+                                        case "3": return Rounding.ROUNDDOWN;
+                                        case "4": return Rounding.DOWN5_UP6;
+                                        default: return Rounding.ROUNDUP;
+                                    }
                                 };
                                 ScreenModel.prototype.closeDialog = function () {
                                     nts.uk.ui.windows.close();
@@ -100,13 +135,14 @@ var nts;
                             }());
                             viewmodel.ScreenModel = ScreenModel;
                             var PensionRateModel = (function () {
-                                function PensionRateModel(historyId, officeCode, officeName, startMonth, endMonth, rateItems, childContributionRate) {
+                                function PensionRateModel(historyId, officeCode, officeName, startMonth, endMonth, rateItems, roundingMethods, childContributionRate) {
                                     this.historyId = historyId;
                                     this.officeCode = officeCode;
                                     this.officeName = officeName;
                                     this.startMonth = startMonth;
                                     this.endMonth = endMonth;
                                     this.fundRateItems = rateItems;
+                                    this.roundingMethods = roundingMethods;
                                     this.childContributionRate = ko.observable(childContributionRate);
                                 }
                                 return PensionRateModel;
@@ -134,6 +170,17 @@ var nts;
                                 return PensionAvgearnValueModel;
                             }());
                             viewmodel.PensionAvgearnValueModel = PensionAvgearnValueModel;
+                            var Rounding = (function () {
+                                function Rounding() {
+                                }
+                                Rounding.ROUNDUP = 'RoundUp';
+                                Rounding.TRUNCATION = 'Truncation';
+                                Rounding.ROUNDDOWN = 'RoundDown';
+                                Rounding.DOWN5_UP6 = 'Down5_Up6';
+                                Rounding.DOWN4_UP5 = 'Down4_Up5';
+                                return Rounding;
+                            }());
+                            viewmodel.Rounding = Rounding;
                         })(viewmodel = i.viewmodel || (i.viewmodel = {}));
                     })(i = qmm008.i || (qmm008.i = {}));
                 })(qmm008 = view.qmm008 || (view.qmm008 = {}));
@@ -141,3 +188,4 @@ var nts;
         })(pr = uk.pr || (uk.pr = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+//# sourceMappingURL=viewmodel.js.map

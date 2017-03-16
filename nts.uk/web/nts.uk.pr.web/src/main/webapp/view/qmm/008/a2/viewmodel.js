@@ -97,9 +97,9 @@ var nts;
                                     switch (stringRounding) {
                                         case Rounding.ROUNDUP: return "0";
                                         case Rounding.TRUNCATION: return "1";
-                                        case Rounding.ROUNDDOWN: return "2";
-                                        case Rounding.DOWN5_UP6: return "3";
-                                        case Rounding.DOWN4_UP5: return "4";
+                                        case Rounding.DOWN4_UP5: return "2";
+                                        case Rounding.ROUNDDOWN: return "3";
+                                        case Rounding.DOWN5_UP6: return "4";
                                         default: return "0";
                                     }
                                 };
@@ -107,9 +107,9 @@ var nts;
                                     switch (stringValue) {
                                         case "0": return Rounding.ROUNDUP;
                                         case "1": return Rounding.TRUNCATION;
-                                        case "2": return Rounding.ROUNDDOWN;
-                                        case "3": return Rounding.DOWN5_UP6;
-                                        case "4": return Rounding.DOWN4_UP5;
+                                        case "2": return Rounding.DOWN4_UP5;
+                                        case "3": return Rounding.ROUNDDOWN;
+                                        case "4": return Rounding.DOWN5_UP6;
                                         default: return Rounding.ROUNDUP;
                                     }
                                 };
@@ -461,3 +461,4 @@ var nts;
         })(pr = uk.pr || (uk.pr = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+//# sourceMappingURL=viewmodel.js.map
