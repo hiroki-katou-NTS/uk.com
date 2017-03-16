@@ -12,6 +12,7 @@
 
 .nts-left-content{
 	float: left;
+	width: 330px;
 }
 
 .nts-right-content{
@@ -20,6 +21,7 @@
     border: 2px solid #cdd0c9;
     padding: 20px;
     width: 900px;
+    margin-left: 15px;
 }
 
 .form-label {

@@ -24,15 +24,6 @@ import nts.uk.ctx.pr.core.dom.itemmaster.ItemCode;
 import nts.uk.ctx.pr.core.dom.itemmaster.ItemMaster;
 import nts.uk.ctx.pr.core.dom.itemmaster.ItemMasterRepository;
 import nts.uk.ctx.pr.core.dom.itemmaster.TaxAtr;
-import nts.uk.ctx.pr.core.dom.layout.LayoutMaster;
-import nts.uk.ctx.pr.core.dom.layout.LayoutMasterRepository;
-import nts.uk.ctx.pr.core.dom.layout.category.LayoutMasterCategory;
-import nts.uk.ctx.pr.core.dom.layout.category.LayoutMasterCategoryRepository;
-import nts.uk.ctx.pr.core.dom.layout.detail.LayoutMasterDetail;
-import nts.uk.ctx.pr.core.dom.layout.detail.LayoutMasterDetailRepository;
-import nts.uk.ctx.pr.core.dom.layout.line.LayoutMasterLine;
-import nts.uk.ctx.pr.core.dom.layout.line.LayoutMasterLineRepository;
-import nts.uk.ctx.pr.core.dom.layout.line.LineDispAtr;
 import nts.uk.ctx.pr.core.dom.paymentdata.BonusTaxRate;
 import nts.uk.ctx.pr.core.dom.paymentdata.CalcFlag;
 import nts.uk.ctx.pr.core.dom.paymentdata.Comment;
@@ -71,6 +62,15 @@ import nts.uk.ctx.pr.core.dom.personalinfo.holiday.HolidayPaid;
 import nts.uk.ctx.pr.core.dom.personalinfo.holiday.HolidayPaidRepository;
 import nts.uk.ctx.pr.core.dom.personalinfo.wage.PersonalWage;
 import nts.uk.ctx.pr.core.dom.personalinfo.wage.PersonalWageRepository;
+import nts.uk.ctx.pr.core.dom.rule.employment.layout.LayoutMaster;
+import nts.uk.ctx.pr.core.dom.rule.employment.layout.LayoutMasterRepository;
+import nts.uk.ctx.pr.core.dom.rule.employment.layout.category.LayoutMasterCategory;
+import nts.uk.ctx.pr.core.dom.rule.employment.layout.category.LayoutMasterCategoryRepository;
+import nts.uk.ctx.pr.core.dom.rule.employment.layout.detail.LayoutMasterDetail;
+import nts.uk.ctx.pr.core.dom.rule.employment.layout.detail.LayoutMasterDetailRepository;
+import nts.uk.ctx.pr.core.dom.rule.employment.layout.line.LayoutMasterLine;
+import nts.uk.ctx.pr.core.dom.rule.employment.layout.line.LayoutMasterLineRepository;
+import nts.uk.ctx.pr.core.dom.rule.employment.layout.line.LineDispAtr;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 import nts.uk.shr.com.primitive.PersonId;
@@ -193,15 +193,16 @@ public class CreatePaymentDataCommandHandler extends CommandHandler<CreatePaymen
 		}
 		LayoutMaster layoutMaster = layoutMasterList.get(0);
 		
+		//LamVT: fix tam gia tri startYm = 0 vi dang update do thay đổi bảng dữ liệu
 		// get layout detail master
 		List<LayoutMasterDetail> layoutMasterDetailList = layoutDetailMasterRepo.getDetails(loginInfo.companyCode(),
-						stmtCode, layoutMaster.getStartYM().v());
+						stmtCode, 0);
 		
 		// get lay master category
-		List<LayoutMasterCategory> categoryList = layoutMasterCtgRepo.getCategories(loginInfo.companyCode(), stmtCode, layoutMaster.getStartYM().v());
+		List<LayoutMasterCategory> categoryList = layoutMasterCtgRepo.getCategories(loginInfo.companyCode(), stmtCode, 0);
 		
 		// get layout master line
-		List<LayoutMasterLine> lineList = layoutMasterLineRepo.getLines(loginInfo.companyCode(), stmtCode, layoutMaster.getStartYM().v());
+		List<LayoutMasterLine> lineList = layoutMasterLineRepo.getLines(loginInfo.companyCode(), stmtCode, 0);
 		
 		// get personal wage list
 		List<PersonalWage> personWageList = personalWageRepo.findAll(loginInfo.companyCode(), personId, baseYearMonth.v());
@@ -345,7 +346,7 @@ public class CreatePaymentDataCommandHandler extends CommandHandler<CreatePaymen
 				.findFirst().orElseThrow(() -> new BusinessException("対象データがありません。"));
 		
 		int linePosition;
-		if (line.getLineDispayAttribute() == LineDispAtr.DISABLE) {
+		if (line.getLineDisplayAttribute() == LineDispAtr.DISABLE) {
 			linePosition = -1;
 		} else {
 			linePosition = line.getLinePosition().v();

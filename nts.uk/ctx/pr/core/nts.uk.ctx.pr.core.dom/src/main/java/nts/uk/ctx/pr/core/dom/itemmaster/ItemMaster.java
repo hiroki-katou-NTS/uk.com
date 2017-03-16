@@ -12,7 +12,7 @@ import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.enums.CategoryAtr;
 import nts.uk.ctx.pr.core.dom.enums.DisplayAtr;
 import nts.uk.ctx.pr.core.dom.enums.UseOrNot;
-import nts.uk.ctx.pr.core.dom.layout.detail.RangeChecker;
+import nts.uk.ctx.pr.core.dom.rule.employment.layout.detail.RangeChecker;
 
 /**
  * 
