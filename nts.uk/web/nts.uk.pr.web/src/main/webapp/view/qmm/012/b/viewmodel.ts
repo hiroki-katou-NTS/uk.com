@@ -117,6 +117,8 @@ module qmm012.b.viewmodel {
             }).fail(function(res) {
                 alert(res);
             });
+            
+           
             //set text editer data
             //INP_002
             self.texteditor_B_INP_002 = {
