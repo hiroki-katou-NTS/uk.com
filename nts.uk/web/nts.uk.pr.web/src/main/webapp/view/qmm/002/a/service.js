@@ -6,8 +6,8 @@ var nts;
         (function (pr) {
             var view;
             (function (view) {
-                var qmm002_1;
-                (function (qmm002_1) {
+                var qmm002;
+                (function (qmm002) {
                     var a;
                     (function (a) {
                         var service;
@@ -62,8 +62,8 @@ var nts;
                             }
                             service.removeBank = removeBank;
                         })(service = a.service || (a.service = {}));
-                    })(a = qmm002_1.a || (qmm002_1.a = {}));
-                })(qmm002_1 = view.qmm002_1 || (view.qmm002_1 = {}));
+                    })(a = qmm002.a || (qmm002.a = {}));
+                })(qmm002 = view.qmm002 || (view.qmm002 = {}));
             })(view = pr.view || (pr.view = {}));
         })(pr = uk.pr || (uk.pr = {}));
     })(uk = nts.uk || (nts.uk = {}));

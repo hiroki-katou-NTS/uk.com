@@ -1,0 +1,42 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+	<body>
+		<ui:composition template="../../../../master/base.xhtml">
+			<ui:define name="htmlHead">
+				<com:scriptfile path="start.js" />
+				<com:scriptfile path="viewmodel.js" />
+				<com:scriptfile path="service.js" />
+				<com:stylefile path="main.css" />
+			</ui:define>
+			
+			<ui:define name="content">
+				<div id="functions-area" class="valign-center control-group">
+					<button class="proceed">登録</button>
+					<button>マスタ修正ログ</button>
+					<span class="label">平均賃金計算方法の設定</span>
+				</div>
+				<div id="contents-area">
+					<div id="head-label">下記の＜基本計算式＞結果と＜例外計算式＞結果を比較して高い方の金額が平均賃金です。</div>
+					<div class="valign-center control-group">
+						<div data-bind="ntsFormLabel: { required: true } ">平均賃金の端数処理</div>
+						<div data-bind="ntsCheckBox: {}">平均賃金の小数第3位以下を切り捨てる</div>
+					</div>
+					<hr id="division"/>
+					<div class="valign-center control-group">
+						<div data-bind="ntsFormLabel: { required: false } ">基本計算式</div>
+					</div>
+					<div class="valign-center control-group">
+						<div data-bind="ntsFormLabel: { required: false } ">例外計算式</div>
+					</div>
+					<div>
+						
+					</div>
+				</div>
+			</ui:define>
+		</ui:composition>
+   	</body>
+</html>

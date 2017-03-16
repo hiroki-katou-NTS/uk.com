@@ -1,0 +1,182 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<head>
+
+</head>
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<!-- Template region -->
+		<ui:define name="htmlHead">
+			<com:ValidatorScript>
+					nts.uk.ctx.pr.core.dom.layout.LayoutName
+				</com:ValidatorScript>
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="viewmodel.js" />
+			<com:scriptfile path="start.js" />
+			<com:scriptfile path="service.js" />
+			<com:stylefile path="style.css" />
+			<com:scriptfile path="../c/viewmodel.js" />
+			<com:scriptfile path="../c/service.js" />
+			<com:scriptfile path="../d/viewmodel.js" />
+			<com:scriptfile path="../d/service.js" />
+			<com:scriptfile path="../e/viewmodel.js" />
+			<com:scriptfile path="../e/service.js" />
+			<com:scriptfile path="../f/viewmodel.js" />
+			<com:scriptfile path="../f/service.js" />
+			<com:scriptfile path="../g/viewmodel.js" />
+			<com:scriptfile path="../g/service.js" />
+
+		</ui:define>
+		<ui:define name="content">
+			<div id="functions-area" data-bind="with: screenModelB">
+				<button id="B_BTN_001" data-bind="click: openADialog"
+					class="inputNomalSize">新規</button>
+				<button id="B_BTN_002" class="proceed inputNomalSize">登録</button>
+				<button id="B_BTN_003" class="inputNomalSize">コピー</button>
+				<button id="B_BTN_004" class="danger inputNomalSize"
+					data-bind="click: DeleteDialog">削除</button>
+				<button id="B_BTN_005" class="inputNomalSize">Excel出力</button>
+				<button id="B_BTN_006">マスタ修正ログ</button>
+				<button id="B_BTN_008">参照</button>
+			</div>
+
+			<div id="contents-area" class="cf">
+				<div class="nts-left-content caret-right caret-background "
+					data-bind="with: screenModelB">
+					<i class="icon icon-searchbox"></i>
+					<div class="divLine">
+						<div id="B_LBL_002" data-bind="ntsFormLabel: {  required: false }">項目区分</div>
+						<div id="B_SEL_001"
+							data-bind="ntsComboBox: {
+											options: ComboBoxItemList_B_001,
+											optionsValue: 'code',
+											value: selectedCode_B_001,
+											optionsText: 'name',
+											enable: true,
+											columns: [
+												{ prop: 'name', length: 10 },
+											]}">
+						</div>
+						<div id="B_SEL_002"
+							data-bind="ntsCheckBox: { checked: checked_B_002, text: '廃止も表示する' }"></div>
+
+					</div>
+					<div class="divLine">
+						<div id="B_LBL_003" data-bind="ntsFormLabel: {  required: false }">コード/名称</div>
+						<div id="B_SCH_001"
+							data-bind="ntsSearchBox: {
+									comId: 'B_LST_001',
+									items: GridlistItems_B_001, 
+									selected: GridlistCurrentCode_B_001,
+									selectedKey: 'itemCode', 
+									placeHolder:'',
+									fields: ['itemCode', 'itemName']},
+									" />
+					</div>
+					<div class="B_LST_001">
+						<table id="B_LST_001"
+							data-bind="ntsGridList: {
+							width: 389,
+							height: 320,
+							options: GridlistItems_B_001,
+							optionsValue: 'itemCode',
+							columns: GridColumns_B_001,
+							multiple: false,
+							value: GridlistCurrentCode_B_001
+						}"></table>
+
+					</div>
+				</div>
+				<div class="nts-right-content">
+					<div id="right-content-top" data-bind="with: screenModelB">
+						<div class="divLine">
+							<div class="divLineCol1">
+								<div id="B_LBL_004" class="floatLeft haveSmallSpan"
+									data-bind="ntsFormLabel: {  required: true }">
+									コード/名称<br /> <span>会社選択</span>
+								</div>
+							</div>
+							<div class="divLineCol2">
+								<div id="B_INP_002" data-bind="with:texteditor_B_INP_002">
+									<input
+										data-bind="ntsTextEditor: {
+										value: value,
+										option: option,
+										enable: enable}" />
+								</div>
+
+								<div id="B_INP_003" data-bind="with:texteditor_B_INP_003">
+									<input
+										data-bind="ntsTextEditor: {
+										value: value,
+										option: option}" />
+								</div>
+								<div id="B_DIV_HELP" class="floatLeft">
+									<div id="B_SEL_003" class="floatLeft"
+										data-bind="ntsCheckBox: { checked: GridCurrentDisplaySet_B_001, text: 'この項目名を廃止する' }"></div>
+									<button id="B_BTN_HELP" class="small">?</button>
+								</div>
+							</div>
+						</div>
+						<div class="divLine">
+							<div class="divLineCol1">
+								<div id="B_LBL_005"
+									data-bind="ntsFormLabel: {  required: true }">略名</div>
+							</div>
+							<div class="divLineCol2">
+								<div id="B_INP_004" data-bind="with:texteditor_B_INP_004">
+									<input
+										data-bind="ntsTextEditor: {
+										value: value,
+										option: option}" />
+								</div>
+							</div>
+						</div>
+						<div class="divLine">
+							<div class="divLineCol1">
+								<div id="B_LBL_006"
+									data-bind="ntsFormLabel: {  required: true }">項目区分</div>
+							</div>
+							<div class="divLineCol2">
+								<label data-bind="text:GridCurrentCategoryAtrName_B_001"
+									id="B_LBL_007"> 項目区分 </label>
+							</div>
+						</div>
+						<div class="divLine">
+							<div class="divLineCol1">
+								<div id="B_LBL_008"
+									data-bind="ntsFormLabel: {  required: false }">統合コード</div>
+							</div>
+							<div class="divLineCol2">
+								<button id="B_BTN_007" class="small">参照</button>
+								<label id="B_LBL_009"></label>
+							</div>
+						</div>
+					</div>
+					<div id="right-content-bottom">
+						<div id="screenC" data-bind="with: screenModelC">
+							<ui:include src="../c/index.xhtml" />
+						</div>
+						<div id="screenD" data-bind="with: screenModelD">
+							<ui:include src="../d/index.xhtml" />
+						</div>
+						<div id="screenE" data-bind="with: screenModelE">
+							<ui:include src="../e/index.xhtml" />
+						</div>
+						<div id="screenF" data-bind="with: screenModelF">
+							<ui:include src="../f/index.xhtml" />
+						</div>
+						<div id="screenG" data-bind="with: screenModelG">
+							<ui:include src="../g/index.xhtml" />
+						</div>
+					</div>
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>
