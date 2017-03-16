@@ -23,6 +23,12 @@ __viewContext.ready(function () {
         ScreenModel.prototype.testSideMenu = function () {
             alert("clicked");
         };
+        ScreenModel.prototype.openSubWindow = function () {
+            nts.uk.ui.windows.sub.modeless("/view/sample/sidebar/sidebar-sub.xhtml");
+        };
+        ScreenModel.prototype.openNewTab = function () {
+            window.open("/nts.uk.com.web/view/sample/sidebar/sidebar-sub.xhtml", "_blank").focus();
+        };
         return ScreenModel;
     }());
     this.bind(new ScreenModel());
