@@ -4,64 +4,45 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:com="http://xmlns.jcp.org/jsf/component"
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
-<head>
-</head>
 <body>
-
-	<ui:composition template="../../../../master/base.xhtml">
-		<ui:define name="htmlHead">
-			<com:ValidatorScript>
-					nts.uk.ctx.pr.core.dom.layout.LayoutName
-				</com:ValidatorScript>
-			<com:scriptfile set="IGNITE" />
-			<com:scriptfile path="viewmodel.js" />
-			<com:scriptfile path="start.js" />
-			<com:scriptfile path="service.js" />
-			<com:stylefile path="main.css" />
-		</ui:define>
-
-		<ui:define name="content">
-			<div id="functions-area">
+	<ui:composition>
+		<div>
+			<div class="divLine">
+				<label id="G_LBL_001">給与 振込データを「全銀協フォーマット」にてテキスト出力します。</label>
 			</div>
-			<div id="contents-area" class="cf">
-					<div class="divLine">
-						<label id="G_LBL_001">給与 振込データを「全銀協フォーマット」にてテキスト出力します。</label>
-					</div>
-					<div class="divLine">
-						<label id="G_LBL_002">振込データ出力の指定</label>
-					</div>
-					<hr id="G_HR_001" />
-					<div class="divLine">
-						<div class="divLine-col-1">
-							<div id="G_LBL_003" data-bind="ntsFormLabel: {required: false}">処理年月</div>
-						</div>
-						<div class="divLine-col-2">
-							<label id="G_LBL_004">04</label> 
-							<label id="G_LBL_005">05</label> 
-							<label id="G_LBL_016">16</label> 
-							<label id="G_LBL_017">17</label> 
-						</div>
-					</div>
-					<div class="divLine">
-						<div class="divLine-col-1">
-							<div id="G_LBL_006" data-bind="ntsFormLabel: {required: false}">振込指定日</div>
-						</div>
-						<div class="divLine-col-2">
-							<div id="G_INP_001"
-								data-bind="ntsDatePicker: { value: date_G_INP_001, dateFormat: 'yyyy/MM/dd', startDate: '2016/12/01'}"></div>
-							<label id="G_LBL_007">07</label>
-						</div>
-					</div>
-					<div class="divLine">
-						<div class="divLine-col-1">
-							<div id="G_LBL_008" data-bind="ntsFormLabel: {required: true}">振込元銀行名</div>
-						</div>
-						<div class="divLine-col-2">
-							<div id="G_SEL_001"
-								data-bind="ntsComboBox: {
-								options: itemList_G_SEL_001,
+			<div class="divLine">
+				<label id="G_LBL_002">振込データ出力の指定</label>
+			</div>
+			<hr id="G_HR_001" />
+			<div class="divLine">
+				<div class="divLine-col-1">
+					<div id="G_LBL_003" data-bind="ntsFormLabel: {required: false}">処理年月</div>
+				</div>
+				<div class="divLine-col-2">
+					<label id="G_LBL_004">04</label> <label id="G_LBL_005">05</label> <label
+						id="G_LBL_016">16</label> <label id="G_LBL_017">17</label>
+				</div>
+			</div>
+			<div class="divLine">
+				<div class="divLine-col-1">
+					<div id="G_LBL_006" data-bind="ntsFormLabel: {required: false}">振込指定日</div>
+				</div>
+				<div class="divLine-col-2">
+					<div id="G_INP_001"
+						data-bind="ntsDatePicker: { value: g_INP_001, dateFormat: 'yyyy/MM/dd', startDate: '2016/12/01'}"></div>
+					<label id="G_LBL_007">07</label>
+				</div>
+			</div>
+			<div class="divLine">
+				<div class="divLine-col-1">
+					<div id="G_LBL_008" data-bind="ntsFormLabel: {required: true}">振込元銀行名</div>
+				</div>
+				<div class="divLine-col-2">
+					<div id="G_SEL_001"
+						data-bind="ntsComboBox: {
+								options: g_SEL_001_items,
 								optionsValue: 'code',
-								value: selectedCode_G_SEL_001,
+								value: g_SEL_001_itemSelected,
 								optionsText: 'name',
 								editable: true,
 								enable: true,
@@ -69,35 +50,35 @@
 									{ prop: 'code', length: 4 },
 									{ prop: 'name', length: 10 },
 								]}">
-							</div>
-						</div>
 					</div>
-					<div class="divLine">
-						<div class="divLine-col-1">
-							<div id="G_LBL_009" data-bind="ntsFormLabel: {required: false}">預金種目</div>
-						</div>
-						<div class="divLine-col-2">
-							<label id="G_LBL_010">010</label>
-						</div>
-					</div>
-					<div class="divLine">
-						<div class="divLine-col-1">
-							<div id="G_LBL_011" data-bind="ntsFormLabel: {required: false}">口座番号</div>
-						</div>
-						<div class="divLine-col-2">
-							<label id="G_LBL_012">012</label>
-						</div>
-					</div>
-					<div class="divLine">
-						<div class="divLine-col-1">
-							<div id="G_LBL_013" data-bind="ntsFormLabel: {required: true}">委託者コード</div>
-						</div>
-						<div class="divLine-col-2">
-							<div id="G_SEL_002"
-								data-bind="ntsComboBox: {
-								options: itemList_G_SEL_002,
+				</div>
+			</div>
+			<div class="divLine">
+				<div class="divLine-col-1">
+					<div id="G_LBL_009" data-bind="ntsFormLabel: {required: false}">預金種目</div>
+				</div>
+				<div class="divLine-col-2">
+					<label id="G_LBL_010">010</label>
+				</div>
+			</div>
+			<div class="divLine">
+				<div class="divLine-col-1">
+					<div id="G_LBL_011" data-bind="ntsFormLabel: {required: false}">口座番号</div>
+				</div>
+				<div class="divLine-col-2">
+					<label id="G_LBL_012">012</label>
+				</div>
+			</div>
+			<div class="divLine">
+				<div class="divLine-col-1">
+					<div id="G_LBL_013" data-bind="ntsFormLabel: {required: true}">委託者コード</div>
+				</div>
+				<div class="divLine-col-2">
+					<div id="G_SEL_002"
+						data-bind="ntsComboBox: {
+								options: g_SEL_002_items,
 								optionsValue: 'code',
-								value: selectedCode_G_SEL_002,
+								value: g_SEL_002_itemSelected,
 								optionsText: 'name',
 								editable: true,
 								enable: true,
@@ -105,43 +86,46 @@
 									{ prop: 'code', length: 4 },
 									{ prop: 'name', length: 10 },
 								]}">
-							</div>
-						</div>
 					</div>
-					<div class="divLine">
-						<div class="divLine-col-1">
-							<div id="G_LBL_014" data-bind="ntsFormLabel: {required: true}">種別コード</div>
-						</div>
-						<div class="divLine-col-2">
-							<div data-bind="with: numbereditor_G_INP_002">
-								<input id="G_INP_002"
-									data-bind="ntsNumberEditor: { value: value, constraint: 'ResidenceCode'}" />
-							</div>
-						</div>
+				</div>
+			</div>
+			<div class="divLine">
+				<div class="divLine-col-1">
+					<div id="G_LBL_014" data-bind="ntsFormLabel: {required: true}">種別コード</div>
+				</div>
+				<div class="divLine-col-2">
+					<div data-bind="with: g_INP_002">
+						<input id="G_INP_002"
+							data-bind="ntsNumberEditor: { 
+								value: value, 
+								constraint: 'ResidenceCode',
+								required: true,
+								enable: true }" />
 					</div>
-					<div class="divLine">
-						<div class="divLine-col-1">
-							<div id="G_LBL_015" data-bind="ntsFormLabel: {required: true}">改行コード</div>
-						</div>
-						<div class="divLine-col-2">
-							<div class="cf" id="G_SEL_003"
-								data-bind="ntsSwitchButton: {
+				</div>
+			</div>
+			<div class="divLine">
+				<div class="divLine-col-1">
+					<div id="G_LBL_015" data-bind="ntsFormLabel: {required: true}">改行コード</div>
+				</div>
+				<div class="divLine-col-2">
+					<div class="cf" id="G_SEL_003"
+						data-bind="ntsSwitchButton: {
 									options: ko.observableArray([
 							            { code: '1', name: '付加する' },
 							            { code: '2', name: '付加しない' }
 							        ]),
 									optionsValue: 'code',
 									optionsText: 'name',
-									value: selectedRuleCode_G_SEL_003,
+									value: g_SEL_003_itemSelected,
 									enable: true }">
-							</div>
-						</div>
-					</div>
-					<div class="divLine" style="width: 100%;">
-						<button id="G_BTN_001" class="x-large proceed">テキスト出力</button>
 					</div>
 				</div>
-		</ui:define>
+			</div>
+			<div class="divLine" style="width: 100%;">
+				<button id="G_BTN_001" class="x-large proceed">テキスト出力</button>
+			</div>
+		</div>
 	</ui:composition>
 </body>
 </html>

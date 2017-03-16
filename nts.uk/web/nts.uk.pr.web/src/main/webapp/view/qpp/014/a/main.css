@@ -1,33 +1,30 @@
+/* 
+	common css
+*/
+.divLine {
+	margin-top: 10px;
+	float: left;
+	clear: both;
+}
+
+.divLine>* {
+	display: inline-block;
+	vertical-align: middle;
+}
+
 @CHARSET "UTF-8";
 
-@import url("../a/base.css");
-
-#contents-area {
-	width: 1300px;
+#content {
+	width: 1360px;
 	padding: 20px 0px 0px 30px;
-}
-
-.nts-left-content {
-	float: left;
-	width: 250px;
-	min-height: 1px;
-	padding: 10px;
-}
-
-.nts-right-content {
-	float: left;
-	padding: 20px;
-	width: 900px;
 }
 
 #functions-area {
 	padding: 10px 0px 5px 10px;
 }
-
-#functions-area>* {
-	display: inline-block;
+#contents-area {
+	padding-left: 40px;
 }
-
 #A_BTN_001 {
 	margin-left: 20px;
 	width: 350px;
@@ -47,8 +44,12 @@
     width: 200px ;
 }
 #A_LBL_002 {
+	font-size: large;
+}
+#divLine2 {
 	margin-top: 20px;
 	margin-left: 20px;
+	margin-bottom: 20px;
 }
 #contents-area > div:NTH-LAST-CHILD(2){
 	margin-top: 10px;

@@ -4,46 +4,28 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:com="http://xmlns.jcp.org/jsf/component"
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
-<head>
-</head>
 <body>
-
-	<ui:composition template="../../../../master/base.xhtml">
-		<ui:define name="htmlHead">
-			<com:ValidatorScript>
-					nts.uk.ctx.pr.core.dom.layout.LayoutName
-				</com:ValidatorScript>
-			<com:scriptfile set="IGNITE" />
-			<com:scriptfile path="viewmodel.js" />
-			<com:scriptfile path="start.js" />
-			<com:scriptfile path="service.js" />
-			<com:stylefile path="main.css" />
-		</ui:define>
-
-		<ui:define name="content">
-			<div id="contents-area" class="cf">
-				<div class="nts-left-content">
-					
-					<div id="wizard">
-					    <h3>Keyboard</h3>
-					    <section>
-					        <p>Try the keyboard navigation by clicking arrow left or right!</p>
-					    </section>
-					    <h3>Effects</h3>
-					    <section>
-					        <p>Wonderful transition effects.</p>
-					    </section>
-					    <h3>Pager</h3>
-					    <section>
-					        <p>The next and previous buttons help you to navigate through your content.</p>
-					    </section>
-					</div>
-				</div>
-				<div class="nts-right-content">
-					<embed id="display3" src="../h/index.xhtml" width="1050" height="705" type="application/xml"/>
-				</div>
+	<ui:composition>
+		<div id="wizard"
+			data-bind="ntsWizard: {steps: b_stepList, theme: 'yellow'}" class="cf">
+			<div class="header">
+				<div class="image"
+					data-icon="../../../lib/nittsu/ui/style/images/ntsWizard/start-images.jpg"></div>
+				<div class="content">再集計</div>
 			</div>
-		</ui:define>
+			<div class="steps">
+				<div class="step-1">再集計</div>
+				<div class="step-2">
+					<span>処理方法を選ぶ</span><br /> └詳細設定をする
+				</div>
+				<div class="step-3">対象社員を選ぶ</div>
+			</div>
+			<div class="contents">
+				<div class="step-1" data-bind="with: viewmodelh"><ui:include src="../h/index.xhtml" /></div>
+				<div class="step-2" data-bind="with: viewmodeld"><ui:include src="../d/index.xhtml" /></div>
+				<div class="step-3" data-bind="with: viewmodeld"><ui:include src="../d/index.xhtml" /></div>
+			</div>
+		</div>
 	</ui:composition>
 </body>
 </html>

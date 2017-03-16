@@ -4,47 +4,28 @@
 	xmlns:ui="http://java.sun.com/jsf/facelets"
 	xmlns:com="http://xmlns.jcp.org/jsf/component"
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
-<head>
-</head>
 <body>
-
-	<ui:composition template="../../../../master/base.xhtml">
-		<ui:define name="htmlHead">
-			<com:ValidatorScript>
-					nts.uk.ctx.pr.core.dom.layout.LayoutName
-				</com:ValidatorScript>
-			<com:scriptfile set="IGNITE" />
-			<com:scriptfile path="viewmodel.js" />
-			<com:scriptfile path="start.js" />
-			<com:scriptfile path="service.js" />
-			<com:stylefile path="main.css" />
-		</ui:define>
-
-		<ui:define name="content">
-			<div id="functions-area">
-			</div>
-		
-			<div id="contents-area" class="cf">
+	<ui:composition>
+		<div>
+			<div id="D-label-area">
 				<div>
-					<div id="label-area">
-						<div>
-							<img id="icon" src="data:image/png;base64,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"/>
-							<label id="D_LBL_001">処理する明細書の年月</label> 
-						</div>
-						<label id="D_LBL_002">LBL_002</label>
-						<label id="D_LBL_015">LBL_015</label>
-						<label id="D_LBL_016">LBL_016</label>
-					</div>
-					<div class="divLine">
-						<label id="D_LBL_003">以下の設定で処理を行います。</label>
-					</div>
-					<div class="divLine">
-						<div class="divLine-col-1">
-							<div id="D_LBL_004" data-bind="ntsFormLabel: {required: true}">処理対象</div>
-						</div>
-						<div class="divLine-col-2">
-							<div class="cf" id="D_SEL_001"
-								data-bind="ntsSwitchButton: {
+					<img id="icon"
+						src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACIAAAAiCAYAAAA6RwvCAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsQAAA7EAZUrDhsAAAbNSURBVFhHvVdZbJRVGD2zL90pXWjZWiiU3QKyyKKIxojhgQSiCRoEYgwJangRBU180kRDosYHo0YTRWNEpCBGESwIFEIRytKydqPLlK6zdDrtdDbPdztDp3QYCohnMu3Xe7//3vN/ezX1vU2hHY3FOOWqht3vhT8UggZ3R4jfO+nF24tAdKw6HTINRqxIGwHNmzVfhH5pOweT1gidZjgUAF8owINCMGh0vHDwM4FQEAEEoeW6nvvxIGTkxQ28V3vceQVmnWlYJORynUaLp1Nn4vmRi5CmT0SQB0Ug8lhzBtZlPYFHEycq/XiQG4VEH8lrO3x9ZD98JOjM2DJ6Jd4dtwZTrWP47sHwDonwszRlCraOWYUNo5Yrq8Sn0g95F20sRXkTP80vLoj++oU5P0JGLGOhO8UVkf0gnzNzTdyVqk/gSZo7nNPv2mjow79vQQ5Lp8kfScxTF0XUxWrNPgcaetvV5YIQtQusozDNOpZrAZx119zak8sSSXhW4nik6CzU7Ie4w+5341x3HTwBryItGEJEGC9LmYHt41Yz2AY7rcRRgQ8b9lDqp+cN+rE4ud8VPcE+bKn+hms+tSfnpOit2JK7EhMt2WotAru/G1trvsUx12UYNf0UhoRHiA7LMCQNISFI48GSCfs7zuAvxwU0eDuQY0xXezoeNdqUjsruepx0XcUfnWeVe8SqtyOZFko3JKu7IogZp+LBWJiRMA4vZi3FQZL43HYAC5Im4bkRRWrPqNVjbeZSZBnTsKNxH2p6WrExezlyTCPUfjQkPsSt0dBMKtscMmsN4T+BXpp2c86zeC13RXhlKGx9nUovz5wV9vAAxF11vW3INCbTghKwQyHx807dDyhuL2P9MvCZYHwi1zw27Gw9qtYkFRX4SxUy5r+flwZvM55Oq6GbdHzfIPcH3lpyagSTYH32MlotFW/X7hw+kcP2Crxe8xU8DMRbRO4Tkvo5dNuXBZswNWEM3qr9bvhErvfY8GNrKbwhH2k8GBGpuhK8L2U9TrelYNu9WORhIVaMxMyau6GPsdHI1G322VX9aGLw3uxzoCcQkcPr3k40UxbXSoDLV0jEsu6QgjYcVHoa8Eb11xjFoNuY/RQ+afpVNcCXs57ER417WSfMeDXnGXxwYzeS9BZaeAU+po6exWtH/jpMuK3ACe7LIvJWdp8bLn8PreODw+9BV6BHxZKTVdPJv70Bn6qgrvB6v45HZU8sxI0R6RtiYskYKViRNBZTl3VdV1VzsjUHFe4GmHR6FFhycMF9g37Xo9Cai/PuOui1OkxjllSw4krDXJBUoBrj9rrvB8VIXNec40Hv1+9GNl2wJuMxfNr0m+ofG1gxf2I2SRaszliIn9tPIJnyqpE67GovhVVrwguZi/F96zGumxXhXa0nYCDBArpljGlk+IYBxHWNm2at9bag3ttGE3ejztuKmt4WtPu6UN5dgys9TZRdqPDU46qnUcmV3Q3q7dsoi84ltd6Fi9SRve6ojhuNuK5p6XOi1HWF7dyEKZbRKHNXcc40Yjrb/j/uamXi6RyOyt21ysRTraNxhqOAiUE5PYE6XdXKCrPYo0RHZpglHJxkPNhWO9g1cS3S7nfhqPMSylxVuMlZ5JjzMkodl1VK/u2oxCnnNSUf57rEjKStyCfYfZuZzkecFTjpFHlgvcvfG9Mi8YnQvIfs53Gcc4PUAJGPOCuVfJCyzBNSK0qcF1HK2dfGC0vsF5VOE+vM753lak90DrFjlzgu0sWemER06a/Mey962paeMI+RPT+5QGVKNvvDouRCzOSklct5Y0nKNBRxehtrysDClMkoSsjjHDISC5MnqWksx5zOYakQRUn5DMp0rhdibtIE5HJumU+d2XzWSHfIPHPF06TmmwDL/12CtZfKjahmgEptuMwHr7H/yFvJepWnWQXxVa5X9dxUOte6bSpYZdxcz+xam7kE+RwXpMeInKom/6G1JC4RMeme9lM4YC/HDWZOMeX9Hac59LRgd/tJTmHlzKJW7OPan45zag7Z11mG4o4yVeDuBTFdM5+umUfXyChnYZbMTZzAYXq8KtdzkyZiTmI+64MVc2j+2WF5Nl00KymPskWtzeP0Fp2N0ZAB/TDjJdo1MdNXUldS+GFiK+eRvfHGAH8wgEUphdjEpmVhhYxABrFIrA9XjvyMhmRMm8/JJrifBdHG0q6NTUQghUeKjox8sQ57EAgRaYJSYSP/ZCkiU05vDhk0g4moGTtq1H8YkJeNQFXWDDYlCZZoCGtRfJjfaIg7tUtSC8nI9x87YPgQI5h1/K/A5m0NfWbby5pQSUL/P51soxGr0jPwL8Wbzy0ehvc+AAAAAElFTkSuQmCC" />
+					<label id="D_LBL_001">処理する明細書の年月</label>
+				</div>
+				<label id="D_LBL_002">LBL_002</label> <label id="D_LBL_015">LBL_015</label>
+				<label id="D_LBL_016">LBL_016</label>
+			</div>
+			<div class="divLine">
+				<label id="D_LBL_003">以下の設定で処理を行います。</label>
+			</div>
+			<div class="divLine">
+				<div class="divLine-col-1">
+					<div id="D_LBL_004" data-bind="ntsFormLabel: {required: true}">処理対象</div>
+				</div>
+				<div class="divLine-col-2">
+					<div class="cf" id="D_SEL_001"
+						data-bind="ntsSwitchButton: {
 									options: ko.observableArray([
 							            { code: '1', name: '給与' },
 							            { code: '2', name: '給与予備' },
@@ -52,45 +33,44 @@
 							        ]),
 									optionsValue: 'code',
 									optionsText: 'name',
-									value: selectedRuleCode_D_SEL_001,
+									value: d_SEL_001_selectedCode,
 									enable: true }">
-							</div>
-						</div>
 					</div>
-					<div class="divLine">
-						<div class="divLine-col-1">
-							<div id="D_LBL_005" data-bind="ntsFormLabel: {required: true}">振込日</div>
-						</div>
-						<div class="divLine-col-2">
-							<div data-bind="with: texteditor">
-								<input id="D_INP_001" data-bind="ntsTextEditor: {
+				</div>
+			</div>
+			<div class="divLine">
+				<div class="divLine-col-1">
+					<div id="D_LBL_005" data-bind="ntsFormLabel: {required: true}">振込日</div>
+				</div>
+				<div class="divLine-col-2">
+					<div data-bind="with: d_INP_001">
+						<input id="D_INP_001"
+							data-bind="ntsTextEditor: {
 									value: value,
 									constraint: 'ResidenceCode',
 									option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({textmode: 'text'})),
 									required: true,
 									enable: true }" />
-							</div>
-						</div>
-					</div>
-					<div class="divLine" id="divLine4">
-						<button id="D_BTN_001">この条件で対象者を絞込み</button>
-						<span class="caret-bottom"></span>
-					</div>
-					<div class="divLine">
-						<div class="divLine-col-1">
-							<div id="D_LBL_006" data-bind="ntsFormLabel: {required: true}">対象人数</div>
-						</div>
-						<div class="divLine-col-2">
-							<label id="D_LBL_007">LBL_007</label>
-						</div>
-					</div>
-					<div class="divLine" id="data_TBL">
-						<table id="D_LST_001"></table>
-						<button id="D_BTN_002" class="proceed x-large">作成を実行</button>
 					</div>
 				</div>
 			</div>
-		</ui:define>
+			<div class="divLine" id="D-divLine4">
+				<button id="D_BTN_001">この条件で対象者を絞込み</button>
+				<span class="caret-bottom"></span>
+			</div>
+			<div class="divLine">
+				<div class="divLine-col-1">
+					<div id="D_LBL_006" data-bind="ntsFormLabel: {required: true}">対象人数</div>
+				</div>
+				<div class="divLine-col-2">
+					<label id="D_LBL_007">LBL_007</label>
+				</div>
+			</div>
+			<div class="divLine" id="data_TBL">
+				<table id="D_LST_001"></table>
+				<button id="D_BTN_002" class="proceed x-large">作成を実行</button>
+			</div>
+		</div>
 	</ui:composition>
 </body>
 </html>

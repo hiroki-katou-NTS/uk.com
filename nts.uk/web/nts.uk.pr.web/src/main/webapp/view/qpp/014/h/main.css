@@ -1,12 +1,9 @@
 @CHARSET "UTF-8";
 
-@import url("../a/base.css");
 #content {
 	width: 1000px;
 	height: 700px;	
 }
-#header { display: none;}
-#functions-area { display: none;}
 
 .nts-left-content {
 	float: left;
@@ -24,10 +21,6 @@
 
 #functions-area {
 	padding: 10px 0px 5px 10px;
-}
-
-#functions-area>* {
-	display: inline-block;
 }
 
 #B_BTN_001 .link-button {
