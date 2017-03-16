@@ -51,4 +51,14 @@ public class FormulaMaster extends AggregateRoot {
 				EnumAdaptor.valueOf(difficultyAtr.intValue(), DifficultyAtr.class),
 				new FormulaName(formulaName));
 	}
+
+	/**
+	 * @param formulaCode
+	 * @param formulaName
+	 */
+	public FormulaMaster(FormulaCode formulaCode, FormulaName formulaName) {
+		super();
+		this.formulaCode = formulaCode;
+		this.formulaName = formulaName;
+	}
 }

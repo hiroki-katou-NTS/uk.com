@@ -33,6 +33,9 @@ public class FormulaHistoryFinder {
 	}
 
 	/**
+	 * Add history 
+	 * J + K screen
+	 * 
 	 * @ CCD = login company code
 	 * @ FORMULA_CD = calculation formula code of the item selected on the caller screen
      * @ HIST_ID = History ID of the latest history of the item selected on the caller screen

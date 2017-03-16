@@ -27,7 +27,9 @@ public interface FormulaMasterRepository {
 	 */
 	List<FormulaMaster> findAll(String companyCode);
 	
-	Optional<FormulaMaster> findByCompanyCodeAndFormulaCode(String companyCode, FormulaCode FormulaCode);
+	Optional<FormulaMaster> findByCompanyCodeAndFormulaCode(String companyCode, FormulaCode formulaCode);
+	
+	List<FormulaMaster> findByCompanyCodeAndFormulaCodes(String companyCode, List<FormulaCode> formulaCode);
 	
 	void add(FormulaMaster formulaMaster);
 	

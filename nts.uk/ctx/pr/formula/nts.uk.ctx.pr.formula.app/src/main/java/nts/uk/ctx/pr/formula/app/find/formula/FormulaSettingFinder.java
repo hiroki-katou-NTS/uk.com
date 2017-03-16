@@ -1,10 +1,8 @@
 package nts.uk.ctx.pr.formula.app.find.formula;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -53,7 +51,17 @@ public class FormulaSettingFinder {
 					});
 			
 			formulaSettingDto.setFixFormulaAtr(formulaEasyConditions.get().getFixFormulaAtr());
-			/* 14-3 */
+			
+			List<EasyFormulaFindDto> easyFormula = new ArrayList<>();
+			formulaEasyConditions.get().getEasyFormulaConditionDto().stream().map(f -> {
+				EasyFormulaFindDto easyFormulaFindDto = new EasyFormulaFindDto();
+				easyFormulaFindDto.setEasyFormulaCode(f.getEasyFormulaCode());
+				easyFormulaFindDto.setValue(f.getFixMoney());
+				easyFormulaFindDto.setRefMasterNo(f.getReferenceMasterCode());
+				easyFormula.add(easyFormulaFindDto);
+				return easyFormula;
+			});
+			formulaSettingDto.setEasyFormula(easyFormula);
 
 			Optional<FormulaEasyDetailDto> formulaEasyDetailDtos = formulaEasyDetailRepository
 					.findWithOutPriKey(login.companyCode(), new FormulaCode(formulaCode), historyId)
