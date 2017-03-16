@@ -221,8 +221,7 @@ public class JpaHealthInsuranceRateRepository extends JpaRepository
 	}
 
 	@Override
-	public List<HealthInsuranceRate> findAllHistoryByMasterCode(String companyCode, String masterCode) {
-		// TODO Auto-generated method stub
-		return null;
+	public List<HealthInsuranceRate> findAllHistoryByMasterCode(String companyCode, String officeCode) {
+		return this.findAllOffice(companyCode, officeCode);
 	}
 }

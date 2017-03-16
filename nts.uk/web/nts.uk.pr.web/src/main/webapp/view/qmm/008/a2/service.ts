@@ -39,7 +39,8 @@ module nts.uk.pr.view.qmm008.a2 {
         export var instance = new Service({
             historyMasterPath: 'ctx/pr/core/insurance/social/pensionrate/masterhistory',
             createHisotyPath: 'ctx/pr/core/insurance/social/pensionrate/history/create',
-            deleteHistoryPath: 'ctx/pr/core/insurance/social/pensionrate/history/delete'
+            deleteHistoryPath: 'ctx/pr/core/insurance/social/pensionrate/history/delete',
+            updateHistoryStartPath: 'ctx/pr/core/insurance/social/pensionrate/history/update/start'
         });
         ////////////////////////
         
