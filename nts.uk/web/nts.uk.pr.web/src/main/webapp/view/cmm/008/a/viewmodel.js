@@ -57,7 +57,7 @@ var cmm008;
                                 self.reloadScreenWhenListClick(newValue);
                                 return;
                             }).ifYes(function () {
-                                self.currentCode("");
+                                //self.currentCode(self.employmentCode());
                                 self.createEmployment();
                             });
                         }

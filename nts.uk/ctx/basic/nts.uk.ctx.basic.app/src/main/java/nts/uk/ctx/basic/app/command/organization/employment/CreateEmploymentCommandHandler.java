@@ -32,7 +32,7 @@ public class CreateEmploymentCommandHandler extends CommandHandler<CreateEmploym
 			if(!employmentByDisplayFlg.isPresent())			
 				employ.setDisplayFlg(ManageOrNot.MANAGE);
 			//employ.validate();
-			this.repository.add(employ);	
+			this.repository.add(employ);
 			//A_SEL_001にチェックが付いている場合
 			if(command.getDisplayFlg() == 1){
 				
