@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.file.pr.app.export.wageledger.data.share;
 
+import java.util.List;
+
 import lombok.Builder;
 
 /**
@@ -29,4 +31,7 @@ public class HeaderReportData {
 	
 	/** The position. */
 	public String position;
+	
+	/** The bonus month list. */
+	public List<Integer> bonusMonthList;
 }

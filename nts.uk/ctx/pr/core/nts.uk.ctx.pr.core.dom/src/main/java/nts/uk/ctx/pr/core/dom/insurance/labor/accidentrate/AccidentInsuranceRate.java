@@ -19,6 +19,12 @@ import nts.uk.ctx.pr.core.dom.insurance.labor.businesstype.BusinessTypeEnum;
 /**
  * The Class AccidentInsuranceRate.
  */
+
+/**
+ * Gets the rate items.
+ *
+ * @return the rate items
+ */
 @Getter
 public class AccidentInsuranceRate extends DomainObject {
 
@@ -32,9 +38,12 @@ public class AccidentInsuranceRate extends DomainObject {
 	/** The apply range. */
 	private MonthRange applyRange;
 
-	/** The short name. */
+	/** The rate items. */
 	private Set<InsuBizRateItem> rateItems;
 
+	/**
+	 * Instantiates a new accident insurance rate.
+	 */
 	private AccidentInsuranceRate() {
 		this.historyId = IdentifierUtil.randomUniqueId();
 	}
@@ -42,10 +51,9 @@ public class AccidentInsuranceRate extends DomainObject {
 	// =================== Memento State Support Method ===================
 
 	/**
-	 * Instantiates a new labor insurance office.
+	 * Instantiates a new accident insurance rate.
 	 *
-	 * @param memento
-	 *            the memento
+	 * @param memento the memento
 	 */
 	public AccidentInsuranceRate(AccidentInsuranceRateGetMemento memento) {
 		this.historyId = memento.getHistoryId();
@@ -57,8 +65,7 @@ public class AccidentInsuranceRate extends DomainObject {
 	/**
 	 * Save to memento.
 	 *
-	 * @param memento
-	 *            the memento
+	 * @param memento the memento
 	 */
 	public void saveToMemento(AccidentInsuranceRateSetMemento memento) {
 		memento.setHistoryId(this.historyId);
@@ -67,6 +74,12 @@ public class AccidentInsuranceRate extends DomainObject {
 		memento.setRateItems(this.rateItems);
 	}
 
+	/**
+	 * Copy with date.
+	 *
+	 * @param start the start
+	 * @return the accident insurance rate
+	 */
 	public AccidentInsuranceRate copyWithDate(YearMonth start) {
 		AccidentInsuranceRate newDomain = new AccidentInsuranceRate();
 		newDomain.companyCode = this.companyCode;
@@ -78,11 +91,9 @@ public class AccidentInsuranceRate extends DomainObject {
 	/**
 	 * Creates the with intial.
 	 *
-	 * @param companyCode
-	 *            the company code
-	 * @param startYearMonth
-	 *            the start year month
-	 * @return the unemployee insurance rate
+	 * @param companyCode the company code
+	 * @param startYearMonth the start year month
+	 * @return the accident insurance rate
 	 */
 	public static final AccidentInsuranceRate createWithIntial(String companyCode, YearMonth startYearMonth) {
 		AccidentInsuranceRate domain = new AccidentInsuranceRate();
@@ -103,11 +114,39 @@ public class AccidentInsuranceRate extends DomainObject {
 		return domain;
 	}
 
+	/**
+	 * Value intial.
+	 *
+	 * @param businessTypeEnum the business type enum
+	 * @return the insu biz rate item
+	 */
 	public static final InsuBizRateItem valueIntial(BusinessTypeEnum businessTypeEnum) {
 		return new InsuBizRateItem(businessTypeEnum, Double.valueOf(0d), RoundingMethod.RoundUp);
 	}
 
+	/**
+	 * Sets the max date.
+	 */
 	public void setMaxDate() {
 		this.applyRange = MonthRange.toMaxDate(this.getApplyRange().getStartMonth());
 	}
+	
+	/**
+	 * Sets the start.
+	 *
+	 * @param yearMonth the new start
+	 */
+	public void setStart(YearMonth yearMonth) {
+		this.applyRange = MonthRange.range(yearMonth, this.applyRange.getEndMonth());
+	}
+
+	/**
+	 * Sets the end.
+	 *
+	 * @param yearMonth the new end
+	 */
+	public void setEnd(YearMonth yearMonth) {
+		this.applyRange = MonthRange.range(this.applyRange.getStartMonth(), yearMonth);
+	}
+	
 }

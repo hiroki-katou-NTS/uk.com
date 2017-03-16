@@ -37,7 +37,8 @@
 							<label for="actionDelete" class="label">履歴を削除する</label>
 						</label>
 						<com:ko tag="if" bind="dialogOptions.removeMasterOnLastHistoryRemove">
-							<div class="bg-yellow color-danger" style="height: 40px; line-height: 40px; margin: 10px;">全ての履歴を削除すると、会社一律金額のデータも削除します。</div>
+							<div class="bg-yellow color-danger" style="height: 40px; line-height: 40px; margin: 10px;"
+								data-bind="text: '全ての履歴を削除すると、' + dialogOptions.name + 'のデータも削除します。'"/>
 						</com:ko>
 						</td>
 					</tr>

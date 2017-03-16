@@ -4,18 +4,48 @@ module nts.uk.pr.view.qmm011.a {
         var paths: any = {
             findAllUnemployeeInsuranceRateHistory: "pr/insurance/labor/unemployeerate/history/findall",
             findUnemployeeInsuranceRateHistory: "pr/insurance/labor/unemployeerate/history/find",
+            updateUnemployeeInsuranceRateHistory: "pr/insurance/labor/unemployeerate/history/update",
             detailUnemployeeInsuranceRateHistory: "pr/insurance/labor/unemployeerate/detail",
             addUnemployeeInsuranceRate: "pr/insurance/labor/unemployeerate/add",
             copyUnemployeeInsuranceRate: "pr/insurance/labor/unemployeerate/copy",
+            deleteUnemployeeInsurance: "pr/insurance/labor/unemployeerate/delete",
             updateUnemployeeInsuranceRate: "pr/insurance/labor/unemployeerate/update",
             findAllAccidentInsuranceRateHistory: "pr/insurance/labor/accidentrate/history/findall",
             findAccidentInsuranceRateHistory: "pr/insurance/labor/accidentrate/history/find",
+            updateAccidentInsuranceRateHistory: "pr/insurance/labor/accidentrate/history/update",
             findAccidentInsuranceRate: "pr/insurance/labor/accidentrate/find",
             addAccidentInsuranceRate: "pr/insurance/labor/accidentrate/add",
             copyAccidentInsuranceRate: "pr/insurance/labor/accidentrate/copy",
             updateAccidentInsuranceRate: "pr/insurance/labor/accidentrate/update",
-            findAllInsuranceBusinessType: "pr/insurance/labor/businesstype/findall"
+            findAllInsuranceBusinessType: "pr/insurance/labor/businesstype/findall",
+            deleteAccidentInsuranceRate: "pr/insurance/labor/accidentrate/delete"
         };
+
+        //connection service update history 
+        export function updateUnemployeeInsuranceRateHistory(unemployeeInsuranceHistoryUpdateDto: model.UnemployeeInsuranceHistoryUpdateDto): JQueryPromise<void> {
+            //call service server
+            return nts.uk.request.ajax(paths.updateUnemployeeInsuranceRateHistory, unemployeeInsuranceHistoryUpdateDto);
+        }
+
+        //connection service update history
+        export function updateAccidentInsuranceRateHistory(accidentInsuranceHistoryUpdateDto: model.AccidentInsuranceHistoryUpdateDto) {
+            //call service server
+            return nts.uk.request.ajax(paths.updateAccidentInsuranceRateHistory, accidentInsuranceHistoryUpdateDto);
+        }
+
+        //connection service delete AccidentInsuranceRate
+        export function deleteAccidentInsuranceRate(accidentInsuranceRateDeleteDto: model.AccidentInsuranceRateDeleteDto)
+            : JQueryPromise<void> {
+            var data = { accidentInsuranceRateDeleteDto: accidentInsuranceRateDeleteDto };
+            //call service server
+            return nts.uk.request.ajax(paths.deleteAccidentInsuranceRate, data);
+        }
+
+        //connection service delete UnemployeeInsurance
+        export function deleteUnemployeeInsurance(unemployeeInsuranceDeleteDto: model.UnemployeeInsuranceDeleteDto)
+            : JQueryPromise<void> {
+            return nts.uk.request.ajax(paths.deleteUnemployeeInsurance, unemployeeInsuranceDeleteDto);
+        }
 
         //Function connection service add Unemployee Insurance Rate
         export function addUnemployeeInsuranceRate(
@@ -502,12 +532,30 @@ module nts.uk.pr.view.qmm011.a {
                 companyCode: string;
             }
 
+            export class UnemployeeInsuranceHistoryUpdateDto {
+                historyId: string;
+                startMonth: number;
+                endMonth: number;
+            }
+            export class AccidentInsuranceHistoryUpdateDto {
+                historyId: string;
+                startMonth: number;
+                endMonth: number;
+            }
+
             export class UnemployeeInsuranceRateFindOutDto {
                 historyInsurance: HistoryInsuranceFindOutDto;
                 rateItems: UnemployeeInsuranceRateItemDto[];
                 version: number;
             }
-
+            export class AccidentInsuranceRateDeleteDto {
+                code: string;
+                version: number;
+            }
+            export class UnemployeeInsuranceDeleteDto {
+                code: string;
+                version: number;
+            }
             export class UnemployeeInsuranceRateDto {
                 historyInsurance: UnemployeeInsuranceHistoryDto;
                 rateItems: UnemployeeInsuranceRateItemDto[];

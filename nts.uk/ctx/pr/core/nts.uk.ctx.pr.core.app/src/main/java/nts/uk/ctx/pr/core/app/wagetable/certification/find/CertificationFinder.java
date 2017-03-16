@@ -24,7 +24,7 @@ public class CertificationFinder {
 
 	/** The find. */
 	@Inject
-	CertificationReponsitory find;
+	private CertificationReponsitory find;
 
 	/**
 	 * Find all.

@@ -2,7 +2,7 @@
  * Copyright (c) 2016 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.pr.core.app.insurance.labor.accidentrate.find;
+package nts.uk.ctx.pr.core.app.insurance.labor.accidentrate.history.find;
 
 import java.util.List;
 import java.util.Optional;
@@ -21,7 +21,7 @@ import nts.uk.shr.com.context.LoginUserContext;
  * The Class HistoryAccidentInsuranceRateF‌inder.
  */
 @Stateless
-public class HistoryAccidentInsuranceRateF‌inder {
+public class AccidentInsuranceHistoryF‌inder {
 
 	/** The accident insurance rate repository. */
 	@Inject

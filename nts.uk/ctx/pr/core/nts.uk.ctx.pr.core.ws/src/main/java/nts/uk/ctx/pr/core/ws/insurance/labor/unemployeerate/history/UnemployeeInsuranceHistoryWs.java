@@ -2,7 +2,7 @@
  * Copyright (c) 2016 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.pr.core.ws.insurance.labor.unemployeerate;
+package nts.uk.ctx.pr.core.ws.insurance.labor.unemployeerate.history;
 
 import java.util.List;
 
@@ -15,6 +15,8 @@ import javax.ws.rs.Produces;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.pr.core.app.insurance.labor.unemployeerate.find.UnemployeeInsuranceHistoryFinder;
 import nts.uk.ctx.pr.core.app.insurance.labor.unemployeerate.find.dto.UnemployeeInsuranceHistoryFindOutDto;
+import nts.uk.ctx.pr.core.app.insurance.labor.unemployeerate.history.command.UnemployeeInsuranceHistoryUpdateCommand;
+import nts.uk.ctx.pr.core.app.insurance.labor.unemployeerate.history.command.UnemployeeInsuranceHistoryUpdateCommandHandler;
 
 /**
  * The Class HistoryUnemployeeInsuranceWs.
@@ -27,6 +29,10 @@ public class UnemployeeInsuranceHistoryWs extends WebService {
 	@Inject
 	private UnemployeeInsuranceHistoryFinder find;
 
+	/** The update. */
+	@Inject
+	private UnemployeeInsuranceHistoryUpdateCommandHandler update;
+
 	/**
 	 * Find all.
 	 *
@@ -36,7 +42,7 @@ public class UnemployeeInsuranceHistoryWs extends WebService {
 	@POST
 	@Path("findall")
 	public List<UnemployeeInsuranceHistoryFindOutDto> findAll() {
-		return find.findAll();
+		return this.find.findAll();
 	}
 
 	/**
@@ -44,11 +50,23 @@ public class UnemployeeInsuranceHistoryWs extends WebService {
 	 *
 	 * @param historyId
 	 *            the history id
-	 * @return the history unemployee insurance find out dto
+	 * @return the unemployee insurance history find out dto
 	 */
 	@POST
 	@Path("find/{historyId}")
 	public UnemployeeInsuranceHistoryFindOutDto findHistory(@PathParam("historyId") String historyId) {
-		return find.find(historyId);
+		return this.find.find(historyId);
+	}
+
+	/**
+	 * Update.
+	 *
+	 * @param command
+	 *            the command
+	 */
+	@POST
+	@Path("update")
+	public void update(UnemployeeInsuranceHistoryUpdateCommand command) {
+		this.update.handle(command);
 	}
 }

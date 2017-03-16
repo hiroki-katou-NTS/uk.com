@@ -23,7 +23,8 @@ import nts.uk.shr.com.context.LoginUserContext;
  * The Class AccidentInsuranceRateAddCommandHandler.
  */
 @Stateless
-public class AccidentInsuranceRateCopyCommandHandler extends CommandHandler<AccidentInsuranceRateCopyCommand> {
+public class AccidentInsuranceRateCopyCommandHandler
+	extends CommandHandler<AccidentInsuranceRateCopyCommand> {
 
 	/** The accident insurance rate repository. */
 	@Inject
@@ -55,15 +56,18 @@ public class AccidentInsuranceRateCopyCommandHandler extends CommandHandler<Acci
 
 		// get domain by action request
 		AccidentInsuranceRate accidentInsuranceRate = AccidentInsuranceRate.createWithIntial(companyCode,
-				YearMonth.of(command.getStartMonth()));
+			YearMonth.of(command.getStartMonth()));
 
-		if (!command.isAddNew()) {
+		if (!command.isAddNew() && command.getHistoryIdCopy() != null
+			&& command.getHistoryIdCopy().length() > 0) {
 			// add new with start historyId
-			Optional<AccidentInsuranceRate> optionalFindAdd = this.accidentInsuranceRateRepo.findById(companyCode,
-					command.getHistoryIdCopy());
+			Optional<AccidentInsuranceRate> optionalFindAdd;
+			optionalFindAdd = this.accidentInsuranceRateRepo.findById(companyCode,
+				command.getHistoryIdCopy());
 			if (optionalFindAdd.isPresent()) {
 				accidentInsuranceRate = optionalFindAdd.get();
-				accidentInsuranceRate = accidentInsuranceRate.copyWithDate(YearMonth.of(command.getStartMonth()));
+				accidentInsuranceRate = accidentInsuranceRate
+					.copyWithDate(YearMonth.of(command.getStartMonth()));
 			}
 		}
 		// validate domain
@@ -74,11 +78,12 @@ public class AccidentInsuranceRateCopyCommandHandler extends CommandHandler<Acci
 		accidentInsuranceRateService.validateDateRange(accidentInsuranceRate);
 
 		// get first data
-		Optional<AccidentInsuranceRate> optionalFirst = this.accidentInsuranceRateRepo.findFirstData(companyCode);
+		Optional<AccidentInsuranceRate> optionalFirst = this.accidentInsuranceRateRepo
+			.findFirstData(companyCode);
 
 		if (optionalFirst.isPresent()) {
 			this.accidentInsuranceRateRepo.updateYearMonth(optionalFirst.get(),
-					accidentInsuranceRate.getApplyRange().getStartMonth().previousMonth());
+				accidentInsuranceRate.getApplyRange().getStartMonth().previousMonth());
 		}
 
 		// connection repository running add

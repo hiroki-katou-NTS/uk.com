@@ -62,7 +62,8 @@ public class JpaPensionRateRepository extends JpaRepository implements PensionRa
 	public void update(PensionRate rate) {
 
 		EntityManager em = this.getEntityManager();
-		QismtPensionRate findEntity = em.find(QismtPensionRate.class, new QismtPensionRatePK(rate.getCompanyCode().v(),rate.getOfficeCode().v(),rate.getHistoryId()));
+		QismtPensionRatePK pk = new QismtPensionRatePK(rate.getCompanyCode().v(),rate.getOfficeCode().v(),rate.getHistoryId());
+		QismtPensionRate findEntity = em.find(QismtPensionRate.class,pk);
 		QismtPensionRate entity = new QismtPensionRate();
 		rate.saveToMemento(new JpaPensionRateSetMemento(entity));
 		entity.setQismtPensionAvgearnList(findEntity.getQismtPensionAvgearnList());

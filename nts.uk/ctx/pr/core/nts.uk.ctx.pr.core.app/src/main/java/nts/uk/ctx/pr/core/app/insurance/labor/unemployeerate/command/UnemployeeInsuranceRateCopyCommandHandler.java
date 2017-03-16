@@ -19,8 +19,12 @@ import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.service.UnemployeeI
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 
+/**
+ * The Class UnemployeeInsuranceRateCopyCommandHandler.
+ */
 @Stateless
-public class UnemployeeInsuranceRateCopyCommandHandler extends CommandHandler<UnemployeeInsuranceRateCopyCommand> {
+public class UnemployeeInsuranceRateCopyCommandHandler
+	extends CommandHandler<UnemployeeInsuranceRateCopyCommand> {
 
 	/** CompanyRepository */
 	@Inject
@@ -54,32 +58,33 @@ public class UnemployeeInsuranceRateCopyCommandHandler extends CommandHandler<Un
 		if (command.isAddNew()) {
 			// add new
 			unemployeeInsuranceRate = UnemployeeInsuranceRate.createWithIntial(companyCode,
-					YearMonth.of(command.getStartMonth()));
+				YearMonth.of(command.getStartMonth()));
 		} else {
 			// add new with start historyId
 			Optional<UnemployeeInsuranceRate> optionalFindAdd = this.unemployeeInsuranceRateRepository
-					.findById(companyCode, command.getHistoryIdCopy());
+				.findById(companyCode, command.getHistoryIdCopy());
 			if (optionalFindAdd.isPresent()) {
 				unemployeeInsuranceRate = optionalFindAdd.get();
-				unemployeeInsuranceRate = unemployeeInsuranceRate.copyWithDate(YearMonth.of(command.getStartMonth()));
+				unemployeeInsuranceRate = unemployeeInsuranceRate
+					.copyWithDate(YearMonth.of(command.getStartMonth()));
 			} else {
 				unemployeeInsuranceRate = UnemployeeInsuranceRate.createWithIntial(companyCode,
-						YearMonth.of(command.getStartMonth()));
+					YearMonth.of(command.getStartMonth()));
 			}
 		}
 		// validate
 
 		unemployeeInsuranceRate.setMaxDate();
-		
+
 		unemployeeInsuranceRate.validate();
 		unemployeeInsuranceRateService.validateDateRange(unemployeeInsuranceRate);
 
 		// find first data
 		Optional<UnemployeeInsuranceRate> optionalFisrtData = this.unemployeeInsuranceRateRepository
-				.findFirstData(unemployeeInsuranceRate.getCompanyCode().v());
+			.findFirstData(unemployeeInsuranceRate.getCompanyCode().v());
 		if (optionalFisrtData.isPresent()) {
 			this.unemployeeInsuranceRateRepository.updateYearMonth(optionalFisrtData.get(),
-					unemployeeInsuranceRate.getApplyRange().getStartMonth().previousMonth());
+				unemployeeInsuranceRate.getApplyRange().getStartMonth().previousMonth());
 		}
 
 		// call repository add (insert database)

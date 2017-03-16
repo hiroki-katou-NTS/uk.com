@@ -110,10 +110,8 @@ public class LaborInsuranceOfficeDto {
 		/**
 		 * Instantiates a new labor insurance office get memento impl.
 		 *
-		 * @param companyCode
-		 *            the company code
-		 * @param dto
-		 *            the dto
+		 * @param companyCode the company code
+		 * @param dto the dto
 		 */
 		public LaborInsuranceOfficeGetMementoImpl(String companyCode, LaborInsuranceOfficeDto dto) {
 			super();
@@ -121,6 +119,13 @@ public class LaborInsuranceOfficeDto {
 			this.companyCode = companyCode;
 		}
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see
+		 * nts.uk.ctx.pr.core.dom.insurance.labor.LaborInsuranceOfficeGetMemento
+		 * #getShortName()
+		 */
 		@Override
 		public ShortName getShortName() {
 			return new ShortName(dto.shortName);
