@@ -22,7 +22,7 @@ import nts.uk.ctx.pr.core.dom.wagetable.history.WageTableItem;
  */
 @Getter
 @Setter
-public class WageTableHistoryModel implements WageTableHistorySetMemento {
+public class WageTableHistoryDto implements WageTableHistorySetMemento {
 
 	/** The head. */
 	private WageTableHeadDto head;

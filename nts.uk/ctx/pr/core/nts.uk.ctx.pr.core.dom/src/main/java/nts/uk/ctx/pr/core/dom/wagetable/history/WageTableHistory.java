@@ -49,6 +49,8 @@ public class WageTableHistory extends DomainObject implements History<WageTableH
 		this.historyId = IdentifierUtil.randomUniqueId();
 	};
 
+	
+	
 	// =================== Memento State Support Method ===================
 	/**
 	 * Instantiates a new wage table history.
@@ -153,8 +155,14 @@ public class WageTableHistory extends DomainObject implements History<WageTableH
 	 */
 	@Override
 	public WageTableHistory copyWithDate(YearMonth start) {
-		// TODO Auto-generated method stub
-		return null;
+		WageTableHistory history = new WageTableHistory();
+		history.companyCode = this.companyCode;
+		history.wageTableCode = this.wageTableCode;
+		history.applyRange = MonthRange.toMaxDate(start);
+		// TODO NEED A DEEP CLONE HERE
+		history.demensionItems = Collections.emptyList();
+		history.valueItems = Collections.emptyList();
+		return history;
 	}
 
 	/**
@@ -177,5 +185,38 @@ public class WageTableHistory extends DomainObject implements History<WageTableH
 		history.demensionItems = Collections.emptyList();
 		history.valueItems = Collections.emptyList();
 		return history;
+	}
+
+
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((historyId == null) ? 0 : historyId.hashCode());
+		return result;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		WageTableHistory other = (WageTableHistory) obj;
+		if (historyId == null) {
+			if (other.historyId != null)
+				return false;
+		} else if (!historyId.equals(other.historyId))
+			return false;
+		return true;
 	}
 }

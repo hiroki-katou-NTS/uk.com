@@ -18,7 +18,7 @@ module nts.uk.pr.view.base.simplehistory {
             service: service.Service<M, H>;
 
             // Whether or not in new mode.
-            isNewMode: KnockoutObservable<boolean>;
+            protected isNewMode: KnockoutObservable<boolean>;
             
             // Master history.
             masterHistoryList: Array<M>;

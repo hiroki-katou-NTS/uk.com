@@ -16,7 +16,8 @@ var nts;
                     var service;
                     (function (service) {
                         var path = {
-                            loadHistoryByUuid: 'pr/proto/wagetable/find/{0}'
+                            loadHistoryByUuid: 'pr/proto/wagetable/find/{0}',
+                            loadDemensionList: 'pr/proto/wagetable/demensions',
                         };
                         var Service = (function (_super) {
                             __extends(Service, _super);
@@ -25,6 +26,9 @@ var nts;
                             }
                             Service.prototype.loadHistoryByUuid = function (uuid) {
                                 return nts.uk.request.ajax(nts.uk.text.format(path.loadHistoryByUuid, uuid));
+                            };
+                            Service.prototype.loadDemensionList = function () {
+                                return nts.uk.request.ajax(path.loadDemensionList);
                             };
                             return Service;
                         }(view.base.simplehistory.service.BaseService));
@@ -57,4 +61,4 @@ var nts;
         })(pr = uk.pr || (uk.pr = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
-//# sourceMappingURL=service.js.map
+//# sourceMappingURL=qmm016.a.service.js.map

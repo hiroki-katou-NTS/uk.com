@@ -13,10 +13,10 @@
 				nts.uk.shr.com.primitive.Memo
 			</com:ValidatorScript>
 
-			<com:stylefile path="style.css" />
-			<com:scriptfile path="start.js" />
-			<com:scriptfile path="viewmodel.js" />
-			<com:scriptfile path="service.js" />
+			<com:stylefile path="qmm016.a.style.css" />
+			<com:scriptfile path="qmm016.a.start.js" />
+			<com:scriptfile path="qmm016.a.service.js" />
+			<com:scriptfile path="qmm016.a.vm.js" />
 		</ui:define>
 
 		<!-- EXTENDED ACTION -->
@@ -98,6 +98,37 @@
 											value: head.demensionSet}"></div>
 								</td>
 								<td></td>
+							</tr>
+							<tr>
+								<td/>
+								<td colspan="2">
+									<div id="lbl_004" data-bind="ntsFormLabel: { required: true }" style="float: left">要素指定</div>
+									<table style="float: left;" border="1">
+										<thead>
+											<tr class="bg-green">
+												<td width="50px">
+												</td>
+												<td width="200px">
+													要素
+												</td>
+											</tr>
+										</thead>
+										<tbody data-bind="with: head">
+											<com:ko tag="foreach" bind="demensionItemList">
+												<tr>
+													<td class="bg-green halign-center" data-bind="text: demensionNo"/>
+													<td>
+														<com:ko tag="ifnot" bind="$parent.demensionType().isAttendance || $parent.demensionType().isCertification">
+															<button data-bind="enable: isNewMode, click: ">参照</button>
+														</com:ko>
+													</td>
+												</tr>
+											</com:ko>
+										</tbody>
+									</table>
+								</td>
+								<td>
+								</td>
 							</tr>
 							<tr class="control-group">
 								<td><div id="lbl_009"

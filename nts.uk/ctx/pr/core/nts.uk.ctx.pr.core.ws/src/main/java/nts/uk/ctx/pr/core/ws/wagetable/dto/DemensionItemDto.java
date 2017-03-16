@@ -13,7 +13,7 @@ import nts.uk.ctx.pr.core.dom.wagetable.ElementType;
  */
 @Getter
 @Setter
-public class DemensionItemModel {
+public class DemensionItemDto {
 
 	/** The type. */
 	private Integer type;
@@ -31,7 +31,7 @@ public class DemensionItemModel {
 	 * @param code the code
 	 * @param name the name
 	 */
-	public DemensionItemModel(Integer type, String code, String name) {
+	public DemensionItemDto(Integer type, String code, String name) {
 		super();
 		this.type = type;
 		this.code = code;
@@ -43,7 +43,7 @@ public class DemensionItemModel {
 	 *
 	 * @param type the type
 	 */
-	public DemensionItemModel(ElementType type) {
+	public DemensionItemDto(ElementType type) {
 		super();
 		this.type = type.value;
 		this.code = String.valueOf(type.value);

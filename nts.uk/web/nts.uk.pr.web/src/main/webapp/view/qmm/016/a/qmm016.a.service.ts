@@ -4,9 +4,10 @@ module nts.uk.pr.view.qmm016 {
      */
     export module service {
         var path = {
-            loadHistoryByUuid: 'pr/proto/wagetable/find/{0}'
+            loadHistoryByUuid: 'pr/proto/wagetable/find/{0}',
+            loadDemensionList: 'pr/proto/wagetable/demensions',
         }
-        
+
         /**
          * Service class.
          */
@@ -16,6 +17,13 @@ module nts.uk.pr.view.qmm016 {
              */
             loadHistoryByUuid(uuid: string): JQueryPromise<model.WageTableHistoryModel> {
                 return nts.uk.request.ajax(nts.uk.text.format(path.loadHistoryByUuid, uuid));
+            }
+
+            /**
+             * Load demension list.
+             */
+            loadDemensionList(): JQueryPromise<Array<model.DemensionItemDto>> {
+                return nts.uk.request.ajax(path.loadDemensionList);
             }
         }
 
@@ -78,7 +86,7 @@ module nts.uk.pr.view.qmm016 {
         /**
          * Demension map.
          */
-        export var demensionMap: {[index: number]: DemensionElementCountType} = new Array<>();
+        export var demensionMap: {[index: number]: DemensionElementCountType} = new Array<any>();
         _.forEach(allDemension, (de) => {
             demensionMap[de.code] = de;
         })
@@ -105,7 +113,16 @@ module nts.uk.pr.view.qmm016 {
             /** The value items. */
             valueItems: Array<WageTableItemDto>;
         }
-        
+
+        /**
+         * Wage table demension detail dto.
+         */
+        export interface DemensionItemDto {
+            type: number;
+            code: string;
+            name: string;
+        }
+
         /**
          * Wage table head dto.
          */

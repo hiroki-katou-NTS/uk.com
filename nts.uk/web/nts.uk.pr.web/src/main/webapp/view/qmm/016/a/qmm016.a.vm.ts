@@ -28,8 +28,20 @@ module nts.uk.pr.view.qmm016.a {
                 // Tabs.
                 self.selectedTab = ko.observable('tab-1');
                 self.tabs = ko.observableArray([
-                    { id: 'tab-1', title: '基本情報', content: '#tab-content-1', enable: ko.observable(true), visible: ko.observable(true) },
-                    { id: 'tab-2', title: '賃金テーブルの情報', content: '#tab-content-2', enable: ko.observable(true), visible: ko.observable(true) }
+                    {
+                        id: 'tab-1',
+                        title: '基本情報',
+                        content: '#tab-content-1',
+                        enable: ko.observable(true),
+                        visible: ko.observable(true)},
+                    {
+                        id: 'tab-2',
+                        title: '賃金テーブルの情報',
+                        content: '#tab-content-2',
+                        enable: ko.computed(() => {
+                            return !self.isNewMode();
+                        }),
+                        visible: ko.observable(true)}
                 ]);
 
                 // General table type init.
@@ -82,10 +94,19 @@ module nts.uk.pr.view.qmm016.a {
             
             /** The demension set. */
             demensionSet: KnockoutObservable<number>;
-            
+            demensionType: KnockoutObservable<model.DemensionElementCountType>;
+
             /** The memo. */
             memo: KnockoutObservable<string>;
             
+            /**
+             * The demension item list.
+             */
+            demensionItemList: KnockoutObservableArray<DemensionItemViewModel>;
+
+            // Flag mode.
+            isNewMode: KnockoutObservable<boolean>;
+
             /**
              * Const.
              */
@@ -95,7 +116,22 @@ module nts.uk.pr.view.qmm016.a {
                 self.name = ko.observable(undefined);
                 self.demensionSet = ko.observable(undefined);
                 self.memo = ko.observable(undefined);
-                self.reset(); 
+                self.demensionType = ko.computed(() => {
+                    return model.demensionMap[self.demensionSet()];
+                });
+                self.demensionItemList = ko.observableArray([]);    
+                
+                self.demensionSet.subscribe(val => {
+                    // Not new mode.
+                    if (!self.isNewMode()) {
+                        return
+                    }
+
+                    // Update.
+                    self.demensionItemList(self.getDemensionItemListByType(val));
+                })
+                
+                self.isNewMode = ko.observable(true);
             }
             
             /**
@@ -103,6 +139,7 @@ module nts.uk.pr.view.qmm016.a {
              */
             reset(): void {
                 var self = this;
+                self.isNewMode(true);
                 self.code('');
                 self.name('');
                 self.demensionSet(model.allDemension[0].code);
@@ -110,14 +147,63 @@ module nts.uk.pr.view.qmm016.a {
             }
 
             /**
-             * Void
+             * Get default demension item list by default.
+             */
+            getDemensionItemListByType(typeCode: number) : Array<DemensionItemViewModel> {
+                // Regenerate.
+                var newDemensionItemList = new Array<DemensionItemViewModel>();
+                switch (typeCode) {
+                    case 0:
+                    case 3:
+                        newDemensionItemList.push(new DemensionItemViewModel(1));
+                        break;
+                    case 1:
+                    case 4:
+                        newDemensionItemList.push(new DemensionItemViewModel(1));
+                        newDemensionItemList.push(new DemensionItemViewModel(2));
+                        break;
+                    case 2: 
+                        newDemensionItemList.push(new DemensionItemViewModel(1));
+                        newDemensionItemList.push(new DemensionItemViewModel(2));
+                        newDemensionItemList.push(new DemensionItemViewModel(3));
+                        break;
+                }
+
+                // Ret.
+                return newDemensionItemList;
+            }
+            
+            /**
+             * Reset by wage table.
              */
             resetBy(head: model.WageTableHeadDto): void {
                 var self = this;
+                self.isNewMode(false);
                 self.code(head.code);
                 self.name(head.name);
                 self.demensionSet(head.demensionSet);
                 self.memo(head.memo);
+            }
+        }
+        
+        /**
+         * Wage table demension detail dto.
+         */
+        export class DemensionItemViewModel {
+            demensionNo: KnockoutObservable<number>;
+            elementType: KnockoutObservable<number>;
+            elementCode: KnockoutObservable<string>;
+            elementName: KnockoutObservable<string>;
+
+            /**
+             * Demension item view model.
+             */
+            constructor(demensionNo: number) {
+                var self = this;
+                self.demensionNo = ko.observable(demensionNo);
+                self.elementType = ko.observable(0);
+                self.elementCode = ko.observable('');
+                self.elementName = ko.observable('');
             }
         }
     }

@@ -1,0 +1,47 @@
+var nts;
+(function (nts) {
+    var uk;
+    (function (uk) {
+        var pr;
+        (function (pr) {
+            var view;
+            (function (view) {
+                var qmm016;
+                (function (qmm016) {
+                    var k;
+                    (function (k) {
+                        var viewmodel;
+                        (function (viewmodel) {
+                            var ScreenModel = (function () {
+                                function ScreenModel() {
+                                    var self = this;
+                                    self.dialogOptions = nts.uk.ui.windows.getShared('options');
+                                    self.demensionItemList = ko.observableArray([]);
+                                }
+                                ScreenModel.prototype.startPage = function () {
+                                    var self = this;
+                                    var dfd = $.Deferred();
+                                    qmm016.service.instance.loadDemensionList().done(function (res) {
+                                        self.demensionItemList(res);
+                                        dfd.resolve();
+                                    });
+                                    return dfd.promise();
+                                };
+                                ScreenModel.prototype.btnApplyClicked = function () {
+                                    var self = this;
+                                    nts.uk.ui.windows.close();
+                                };
+                                ScreenModel.prototype.btnCancelClicked = function () {
+                                    nts.uk.ui.windows.close();
+                                };
+                                return ScreenModel;
+                            }());
+                            viewmodel.ScreenModel = ScreenModel;
+                        })(viewmodel = k.viewmodel || (k.viewmodel = {}));
+                    })(k = qmm016.k || (qmm016.k = {}));
+                })(qmm016 = view.qmm016 || (view.qmm016 = {}));
+            })(view = pr.view || (pr.view = {}));
+        })(pr = uk.pr || (uk.pr = {}));
+    })(uk = nts.uk || (nts.uk = {}));
+})(nts || (nts = {}));
+//# sourceMappingURL=qmm016.k.vm.js.map

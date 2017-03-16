@@ -85,4 +85,40 @@ public class WageTableHead extends DomainObject implements Master {
 		memento.setMemo(this.memo);
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((code == null) ? 0 : code.hashCode());
+		result = prime * result + ((companyCode == null) ? 0 : companyCode.hashCode());
+		return result;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		WageTableHead other = (WageTableHead) obj;
+		if (code == null) {
+			if (other.code != null)
+				return false;
+		} else if (!code.equals(other.code))
+			return false;
+		if (companyCode == null) {
+			if (other.companyCode != null)
+				return false;
+		} else if (!companyCode.equals(other.companyCode))
+			return false;
+		return true;
+	}
 }
