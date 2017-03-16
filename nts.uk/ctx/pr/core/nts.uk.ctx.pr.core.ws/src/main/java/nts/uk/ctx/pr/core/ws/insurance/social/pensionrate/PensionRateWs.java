@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2016 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.pr.core.ws.insurance.social.pensionrate;
 
 import java.util.List;
@@ -24,7 +28,6 @@ import nts.uk.ctx.pr.core.dom.base.simplehistory.SimpleHistoryBaseService;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
 import nts.uk.ctx.pr.core.dom.insurance.social.SocialInsuranceOffice;
 import nts.uk.ctx.pr.core.dom.insurance.social.SocialInsuranceOfficeRepository;
-import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.HealthInsuranceRate;
 import nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionRate;
 import nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionRateRepository;
 import nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.service.PensionRateService;
@@ -33,54 +36,100 @@ import nts.uk.ctx.pr.core.ws.base.simplehistory.dto.HistoryModel;
 import nts.uk.ctx.pr.core.ws.base.simplehistory.dto.MasterModel;
 import nts.uk.shr.com.context.AppContexts;
 
+/**
+ * The Class PensionRateWs.
+ */
 @Path("ctx/pr/core/insurance/social/pensionrate")
 @Produces("application/json")
 public class PensionRateWs extends SimpleHistoryWs<SocialInsuranceOffice, PensionRate> {
 
+	/** The pension rate finder. */
 	@Inject
 	private PensionRateFinder pensionRateFinder;
+	
+	/** The register pension command handler. */
 	@Inject
 	private RegisterPensionCommandHandler registerPensionCommandHandler;
+	
+	/** The update pension command handler. */
 	@Inject
 	private UpdatePensionCommandHandler updatePensionCommandHandler;
+	
+	/** The delete pension command handler. */
 	@Inject
 	private DeletePensionCommandHandler deletePensionCommandHandler;
+	
+	/** The social insurance office repository. */
 	@Inject
 	private SocialInsuranceOfficeRepository socialInsuranceOfficeRepository;
+	
+	/** The pension rate repository. */
 	@Inject
 	private PensionRateRepository pensionRateRepository;
+	
+	/** The service. */
 	@Inject
 	private PensionRateService service;
+	
+	/**
+	 * Find.
+	 *
+	 * @param id the id
+	 * @return the pension rate dto
+	 */
 	@POST
 	@Path("find/{id}")
 	public PensionRateDto find(@PathParam("id") String id) {
 		return pensionRateFinder.find(id).get();
 	}
 	
+	/**
+	 * Findby code.
+	 *
+	 * @return the list
+	 */
 	@POST
 	@Path("findAllHistory")
 	public List<PensionOfficeItemDto> findbyCode() {
 		return pensionRateFinder.findAllHistory();
 	}
 	
+	/**
+	 * Creates the.
+	 *
+	 * @param command the command
+	 */
 	@POST
 	@Path("create")
 	public void create(RegisterPensionCommand command) {
 		registerPensionCommandHandler.handle(command);
 	}
 
+	/**
+	 * Update.
+	 *
+	 * @param command the command
+	 */
 	@POST
 	@Path("update")
 	public void update(UpdatePensionCommand command) {
 		updatePensionCommandHandler.handle(command);
 	}
 	
+	/**
+	 * Removes the.
+	 *
+	 * @param command the command
+	 */
 	@POST
 	@Path("remove")
 	public void remove(DeletePensionCommand command) {
 		deletePensionCommandHandler.handle(command);
 	}
 	
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.pr.core.ws.base.simplehistory.SimpleHistoryWs#loadMasterModelList()
+	 */
 	@POST
 	@Path("masterhistory")
 	@Override
@@ -107,6 +156,9 @@ public class PensionRateWs extends SimpleHistoryWs<SocialInsuranceOffice, Pensio
 				}).collect(Collectors.toList());
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.pr.core.ws.base.simplehistory.SimpleHistoryWs#getServices()
+	 */
 	@Override
 	protected SimpleHistoryBaseService<SocialInsuranceOffice, PensionRate> getServices() {
 		return this.service;

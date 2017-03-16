@@ -17,6 +17,9 @@ import nts.uk.ctx.pr.core.dom.insurance.ShortName;
 import nts.uk.ctx.pr.core.dom.insurance.social.SocialInsuranceOfficeSetMemento;
 import nts.uk.shr.com.primitive.Memo;
 
+/**
+ * The Class SocialInsuranceOfficeItemDto.
+ */
 @Builder
 public class SocialInsuranceOfficeItemDto implements SocialInsuranceOfficeSetMemento {
 	/** The company code. */
