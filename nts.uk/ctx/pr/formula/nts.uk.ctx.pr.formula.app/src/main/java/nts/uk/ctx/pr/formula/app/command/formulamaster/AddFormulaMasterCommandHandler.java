@@ -15,7 +15,7 @@ import nts.uk.ctx.pr.formula.dom.formula.FormulaHistory;
 import nts.uk.ctx.pr.formula.dom.formula.FormulaMaster;
 import nts.uk.ctx.pr.formula.dom.primitive.FormulaCode;
 import nts.uk.ctx.pr.formula.dom.primitive.FormulaName;
-import nts.uk.ctx.pr.formula.dom.repository.FormulaMasterDomainService;
+import nts.uk.ctx.pr.formula.dom.repository.FormulaMasterDomainServiceImpl;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -26,7 +26,7 @@ import nts.uk.shr.com.context.AppContexts;
 public class AddFormulaMasterCommandHandler extends CommandHandler<AddFormulaMasterCommand> {
 
 	@Inject
-	private FormulaMasterDomainService formulaMasterDomainService;
+	private FormulaMasterDomainServiceImpl formulaMasterDomainService;
 
 	@Override
 	protected void handle(CommandHandlerContext<AddFormulaMasterCommand> context) {
