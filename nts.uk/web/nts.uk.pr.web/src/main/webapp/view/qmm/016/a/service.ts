@@ -18,7 +18,7 @@ module nts.uk.pr.view.qmm016 {
                 return nts.uk.request.ajax(nts.uk.text.format(path.loadHistoryByUuid, uuid));
             }
         }
-        
+
         /**
          * Instance.
          */
@@ -51,7 +51,7 @@ module nts.uk.pr.view.qmm016 {
             code: number;
             name: string;
             isCertification: boolean;
-            isAttendance;
+            isAttendance: boolean;
         }
         
         /**
@@ -139,4 +139,5 @@ module nts.uk.pr.view.qmm016 {
             /** The amount. */
             amount: number;
         }
+    }
 }
