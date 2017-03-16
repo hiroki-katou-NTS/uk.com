@@ -8,11 +8,13 @@ var qmm025;
                 function ScreenModel() {
                     var self = this;
                     self.items = ko.observableArray([]);
-                    self.isEnable = ko.observable(false);
+                    self.isDeleteEnable = ko.observable(false);
                     self.yearKey = ko.observable(0);
                     self.yearInJapanEmpire = ko.computed(function () {
                         return nts.uk.time.yearInJapanEmpire(self.yearKey()).toString();
                     });
+                    self.personId = ko.observableArray([]);
+                    self.countRowChecked = 0;
                     // checkbox square
                     $.ig.checkboxMarkupClasses = "ui-state-default ui-corner-all ui-igcheckbox-small";
                 }
@@ -68,7 +70,6 @@ var qmm025;
                     perResiTaxData.push(new ResidenceTax('NSVC', data[0].personId, 'name', 'Vietnam', false, data[0].residenceTax[0].value, data[0].residenceTax[1].value, data[0].residenceTax[2].value, data[0].residenceTax[3].value, data[0].residenceTax[4].value, data[0].residenceTax[5].value, data[0].residenceTax[6].value, data[0].residenceTax[7].value, data[0].residenceTax[8].value, data[0].residenceTax[9].value, data[0].residenceTax[10].value, data[0].residenceTax[11].value));
                     perResiTaxData.push(new ResidenceTax('NSVC', '00001', 'name1', 'Japan', false, 25000, 25000, 25000, 25000, 25000, 15000, 25000, 25000, 25000, 25000, 25000, 25000));
                     self.items(perResiTaxData);
-                    self.isEnable(true);
                     self.bindGrid(self.items());
                 };
                 ScreenModel.prototype.getYearKey = function () {
@@ -97,6 +98,7 @@ var qmm025;
                 ScreenModel.prototype.remove = function () {
                     var self = this;
                     var obj = {
+                        personId: self.personId(),
                         yearKey: self.yearKey()
                     };
                     qmm025.a.service.remove(obj)
@@ -117,16 +119,16 @@ var qmm025;
                         if (ui.values["checkAllMonth"]) {
                             totalValue = residenceTax06 + residenceTax07 * 11 || ui.values["residenceTaxPerYear"];
                             $("#grid").igGridUpdating("setCellValue", ui.rowID, "residenceTax08", residenceTax07);
-                            //set background-color khi thay doi trang thai cua totalValue
+                            //set color khi thay doi trang thai cua totalValue
                             for (var i = 3; i < 13; i++) {
-                                $(grid.cellAt(i, 0)).css('background-color', 'red');
+                                $(grid.cellAt(i, 0)).removeClass('columnCss');
                             }
                         }
                         else {
                             totalValue = residenceTax06 + residenceTax07 || ui.values["residenceTaxPerYear"];
-                            //set background-color khi thay doi trang thai cua totalValue
+                            //set color khi thay doi trang thai cua totalValue
                             for (var i = 3; i < 13; i++) {
-                                $(grid.cellAt(i, 0)).css('background-color', 'grey');
+                                $(grid.cellAt(i, 0)).addClass('columnCss');
                             }
                         }
                         $("#grid").igGridUpdating("setCellValue", ui.rowID, "residenceTaxPerYear", totalValue);
@@ -150,7 +152,7 @@ var qmm025;
                             { headerText: "2月", key: "residenceTax02", dataType: "number", width: "100px", columnCssClass: "columnCss", template: "<a style='float: right'>${residenceTax02} 円</a>" },
                             { headerText: "3月", key: "residenceTax03", dataType: "number", width: "100px", columnCssClass: "columnCss", template: "<a style='float: right'>${residenceTax03} 円</a>" },
                             { headerText: "4月", key: "residenceTax04", dataType: "number", width: "100px", columnCssClass: "columnCss", template: "<a style='float: right'>${residenceTax04} 円</a>" },
-                            { headerText: "5月", key: "residenceTax05", dataType: "number", width: "100px", columnCssClass: "columnCss", template: "<a style='float: right'>${residenceTax05} 円</a>" }
+                            { headerText: "5月", key: "residenceTax05", dataType: "number", width: "100px", template: "<a style='float: right'>${residenceTax05} 円</a>" }
                         ],
                         renderCheckboxes: true,
                         primaryKey: 'code',
@@ -189,7 +191,6 @@ var qmm025;
                                         columnKey: "residenceTaxPerYear",
                                         isFixed: true,
                                         allowFixing: false,
-                                        unbound: true
                                     }]
                             },
                             {
@@ -214,11 +215,11 @@ var qmm025;
                                 editMode: "row",
                                 enableAddRow: false,
                                 enableDeleteRow: false,
-                                editCellStarting: function (evt, ui) {
-                                    if (ui.columnKey === "checkAllMonth") {
-                                        ui.value = !ui.value;
-                                    }
-                                },
+                                //                        editCellStarting: function(evt, ui) {
+                                //                            if (ui.columnKey === "checkAllMonth") {
+                                //                                ui.value = !ui.value;
+                                //                            }
+                                //                        },
                                 columnSettings: [
                                     { columnKey: "department", readOnly: true },
                                     { columnKey: "code", readOnly: true },
@@ -236,14 +237,31 @@ var qmm025;
                                     { columnKey: "residenceTax02", readOnly: true },
                                     { columnKey: "residenceTax03", readOnly: true },
                                     { columnKey: "residenceTax04", readOnly: true },
-                                    { columnKey: "residenceTax05", readOnly: true }
+                                    { columnKey: "residenceTax05", required: true }
                                 ]
                             },
                             {
                                 name: 'RowSelectors',
+                                //hien checkbox ben trai
                                 enableCheckBoxes: true,
                                 //enableSelectAllForPaging: false -> khong hien dong chu selectAllRow
                                 enableSelectAllForPaging: false,
+                                checkBoxStateChanged: function (evt, ui) {
+                                    if (ui.state == "on") {
+                                        self.personId().push(ui.rowKey);
+                                        self.countRowChecked += 1;
+                                    }
+                                    else {
+                                        _.pull(self.personId(), ui.rowKey);
+                                        self.countRowChecked -= 1;
+                                    }
+                                    if (self.countRowChecked == 0) {
+                                        self.isDeleteEnable(false);
+                                    }
+                                    else {
+                                        self.isDeleteEnable(true);
+                                    }
+                                },
                             }
                         ]
                     });

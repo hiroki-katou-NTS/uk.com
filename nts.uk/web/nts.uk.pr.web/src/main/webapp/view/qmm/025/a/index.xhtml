@@ -12,9 +12,6 @@
 					nts.uk.ctx.pr.core.dom.rule.law.tax.residential.input.YearKey
    				</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
-			<!-- <com:scriptfile path="../../../../lib/generic/igniteui/js/infragistics.core.js" />
-				<com:scriptfile path="../../../../lib/generic/igniteui/js/infragistics.lob.js" />
-            	<com:scriptfile path="../../../../lib/generic/igniteui/js/extensions/infragistics.ui.combo.knockout-extensions.js" /> -->
 			<com:stylefile path="main.css" />
 			<com:scriptfile path="start.js" />
 			<com:scriptfile path="viewmodel.js" />
@@ -53,11 +50,9 @@
 						<button id="A_BTN_003" data-bind="click: findAll">リスト表示ボタン</button>
 					</div>
 					<div class="bg-green config">
-						<button id="BTN_004" class="danger" data-bind="click: remove">社員の住民税情報を削除</button>
+						<button id="BTN_004" class="danger" data-bind="click: remove, enable: isDeleteEnable">社員の住民税情報を削除</button>
 					</div>
-					<div data-bind="visible: isEnable">
-						<table id="grid"></table>
-					</div>
+					<table id="grid"></table>
 				</div>
 			</div>
 		</ui:define>

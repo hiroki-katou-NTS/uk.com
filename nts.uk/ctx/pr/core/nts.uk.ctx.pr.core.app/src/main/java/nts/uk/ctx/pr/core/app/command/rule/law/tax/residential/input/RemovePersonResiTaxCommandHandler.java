@@ -16,8 +16,8 @@ public class RemovePersonResiTaxCommandHandler extends CommandHandler<RemovePers
 	protected void handle(CommandHandlerContext<RemovePersonResiTaxCommand> context) {
 		RemovePersonResiTaxCommand command = context.getCommand();
 		String companyCode = AppContexts.user().companyCode();
-		String personId = AppContexts.user().personId();
-		
-		personResiTaxRepository.remove(companyCode, personId, command.getYearKey());
+		for(String item: command.getPersonId()){
+			personResiTaxRepository.remove(companyCode, item, command.getYearKey());
+		}
 	}
 }
