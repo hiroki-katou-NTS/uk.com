@@ -1,16 +1,24 @@
-package nts.uk.ctx.pr.core.infra.entity.rule.employment.layout;
+package nts.uk.ctx.pr.core.infra.entity.layout;
 
 import java.io.Serializable;
-import java.math.BigDecimal;
+import java.util.List;
 
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Transient;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.pr.core.infra.entity.paymentdata.QcamtItem_v1;
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
@@ -21,6 +29,14 @@ public class QstmtStmtLayoutDetail implements Serializable {
 
 	@EmbeddedId
 	public QstmtStmtLayoutDetailPK qstmtStmtLayoutDetailPk;
+
+	@Basic(optional = false)
+	@Column(name ="STR_YM")
+	public int strYm;
+
+	@Basic(optional = false)
+	@Column(name ="END_YM")
+	public int endYm;
 
 	@Basic(optional = false)
 	@Column(name ="AUTO_LINE_ID")
@@ -53,7 +69,7 @@ public class QstmtStmtLayoutDetail implements Serializable {
 	public String wageTableCd;
 
 	@Column(name ="COMMON_MNY")
-	public BigDecimal commonMny;
+	public int commonMny;
 
 	@Basic(optional = false)
 	@Column(name ="SETOFF_ITEM_CD")
@@ -77,7 +93,7 @@ public class QstmtStmtLayoutDetail implements Serializable {
 
 	@Basic(optional = false)
 	@Column(name ="ERR_RANGE_LOW")
-	public BigDecimal errRangeLow;
+	public int errRangeLow;
 
 	@Basic(optional = false)
 	@Column(name ="ERR_RANGE_HIGH_ATR")
@@ -85,7 +101,7 @@ public class QstmtStmtLayoutDetail implements Serializable {
 
 	@Basic(optional = false)
 	@Column(name ="ERR_RANGE_HIGH")
-	public BigDecimal errRangeHigh;
+	public int errRangeHigh;
 
 	@Basic(optional = false)
 	@Column(name ="AL_RANGE_LOW_ATR")
@@ -93,7 +109,7 @@ public class QstmtStmtLayoutDetail implements Serializable {
 
 	@Basic(optional = false)
 	@Column(name ="AL_RANGE_LOW")
-	public BigDecimal alRangeLow;
+	public int alRangeLow;
 
 	@Basic(optional = false)
 	@Column(name ="AL_RANGE_HIGH_ATR")
@@ -101,7 +117,7 @@ public class QstmtStmtLayoutDetail implements Serializable {
 
 	@Basic(optional = false)
 	@Column(name ="AL_RANGE_HIGH")
-	public BigDecimal alRangeHigh;
+	public int alRangeHigh;
 	
 //	@OneToMany(cascade=CascadeType.ALL,mappedBy="layoutDetail")
 //	public List<QstmtStmtLayoutLines> layoutLines;

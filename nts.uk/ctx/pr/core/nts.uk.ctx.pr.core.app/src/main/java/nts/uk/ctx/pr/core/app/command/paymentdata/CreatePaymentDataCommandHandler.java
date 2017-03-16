@@ -21,8 +21,8 @@ import nts.uk.ctx.pr.core.dom.allot.PersonalAllotSetting;
 import nts.uk.ctx.pr.core.dom.allot.PersonalAllotSettingRepository;
 import nts.uk.ctx.pr.core.dom.enums.CategoryAtr;
 import nts.uk.ctx.pr.core.dom.itemmaster.ItemCode;
-import nts.uk.ctx.pr.core.dom.itemmaster.ItemMaster;
-import nts.uk.ctx.pr.core.dom.itemmaster.ItemMasterRepository;
+import nts.uk.ctx.pr.core.dom.itemmaster.ItemMasterV1;
+import nts.uk.ctx.pr.core.dom.itemmaster.ItemMasterV1Repository;
 import nts.uk.ctx.pr.core.dom.itemmaster.TaxAtr;
 import nts.uk.ctx.pr.core.dom.paymentdata.BonusTaxRate;
 import nts.uk.ctx.pr.core.dom.paymentdata.CalcFlag;
@@ -114,7 +114,7 @@ public class CreatePaymentDataCommandHandler extends CommandHandler<CreatePaymen
 	@Inject
 	private LayoutMasterCategoryRepository layoutMasterCtgRepo;
 	@Inject
-	private ItemMasterRepository itemMasterRepo;
+	private ItemMasterV1Repository itemMasterRepo;
 	@Inject
 	private PersonalWageRepository personalWageRepo;
 
@@ -335,7 +335,7 @@ public class CreatePaymentDataCommandHandler extends CommandHandler<CreatePaymen
 	
 	/** Create data payment detail for case total payment **/
 	private DetailItem createDataDetailItem(String companyCode, String itemCode, double value, CategoryAtr categoryAtr, List<LayoutMasterLine> lineList, List<LayoutMasterDetail> layoutMasterDetailList) {
-		ItemMaster itemMaster = itemMasterRepo.getItemMaster(companyCode, categoryAtr.value, itemCode).orElseThrow(() -> new BusinessException("対象データがありません。"));
+		ItemMasterV1 itemMaster = itemMasterRepo.getItemMaster(companyCode, categoryAtr.value, itemCode).orElseThrow(() -> new BusinessException("対象データがありません。"));
 		LayoutMasterDetail layoutMasterDetail = layoutMasterDetailList.stream().filter(x -> x.getCategoryAtr() == categoryAtr && itemCode.equals(x.getItemCode().v())).findFirst()
 				.orElseThrow(() -> new BusinessException("対象データがありません。"));
 		String autoLineId = layoutMasterDetail.getAutoLineId().v();
