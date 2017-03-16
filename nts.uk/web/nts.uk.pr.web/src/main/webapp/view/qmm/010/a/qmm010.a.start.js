@@ -6,19 +6,20 @@ var nts;
         (function (pr) {
             var view;
             (function (view) {
-                var qmm016;
-                (function (qmm016) {
-                    var l;
-                    (function (l) {
+                var qmm010;
+                (function (qmm010) {
+                    var a;
+                    (function (a) {
                         __viewContext.ready(function () {
-                            var screenModel = new nts.uk.pr.view.qmm016.l.viewmodel.ScreenModel();
+                            var screenModel = new nts.uk.pr.view.qmm010.a.viewmodel.ScreenModel();
                             screenModel.startPage().done(function (res) {
                                 __viewContext.bind(res);
                             });
                         });
-                    })(l = qmm016.l || (qmm016.l = {}));
-                })(qmm016 = view.qmm016 || (view.qmm016 = {}));
+                    })(a = qmm010.a || (qmm010.a = {}));
+                })(qmm010 = view.qmm010 || (view.qmm010 = {}));
             })(view = pr.view || (pr.view = {}));
         })(pr = uk.pr || (uk.pr = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+//# sourceMappingURL=qmm010.a.start.js.map
