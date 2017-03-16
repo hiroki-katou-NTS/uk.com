@@ -32,6 +32,13 @@ public class JpaItemMasterRepository extends JpaRepository implements ItemMaster
 		return this.queryProxy().query(SEL_3, QcamtItem.class).setParameter("companyCode", companyCode)
 				.setParameter("avePayAtr", avePayAtr).getList(c -> toDomain(c));
 	}
+	
+	@Override
+	public List<ItemMaster> findAll_SEL_3(String companyCode, int ctgAtr) {
+		return this.queryProxy().query(SEL_3_1, QcamtItem.class)
+				.setParameter("companyCode", companyCode)
+				.setParameter("ctgAtr", ctgAtr).getList(c -> toDomain(c));
+	}
 
 	@Override
 	public List<ItemMaster> findAllNoAvePayAtr(String companyCode) {

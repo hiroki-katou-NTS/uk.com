@@ -6,14 +6,15 @@ var qmm012;
         (function (viewmodel) {
             var ScreenModel = (function () {
                 function ScreenModel() {
+                    this.selectedRuleCode = ko.observable(0);
                     this.enable = ko.observable(true);
                     var self = this;
                     //start Switch Data
                     self.enable;
                     self.roundingRules = ko.observableArray([
-                        { code: 0, name: '�x������' },
-                        { code: 1, name: '�T������' },
-                        { code: 2, name: '�ΑӍ���' }
+                        { code: 0, name: '支給項目' },
+                        { code: 1, name: '控除項目' },
+                        { code: 2, name: '勤怠項目' }
                     ]);
                     self.selectedRuleCode = ko.observable(0);
                     //endSwitch Data
@@ -21,7 +22,7 @@ var qmm012;
                 ScreenModel.prototype.submitInfo = function () {
                     var self = this;
                     var groupCode = self.selectedRuleCode();
-                    nts.uk.ui.windows.setShared('groupCode', groupCode);
+                    nts.uk.sessionStorage.setItem('groupCode', groupCode);
                     nts.uk.ui.windows.close();
                 };
                 ScreenModel.prototype.closeDialog = function () {

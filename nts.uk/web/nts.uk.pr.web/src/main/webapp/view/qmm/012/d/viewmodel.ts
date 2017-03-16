@@ -37,7 +37,7 @@ module qmm012.d.viewmodel {
         CurrentErrRangeLowAtr: KnockoutObservable<number> = ko.observable(0);
         CurrentMemo: KnockoutObservable<String> = ko.observable("");
         CurrentItemDisplayAtr: KnockoutObservable<number> = ko.observable(1);
-        CurrentZeroDisplaySet: KnockoutObservable<number> = ko.observable(0);
+        CurrentZeroDisplaySet: KnockoutObservable<number> = ko.observable(1);
         constructor() {
             var self = this;
             self.isEditable = ko.observable(true);
@@ -52,8 +52,8 @@ module qmm012.d.viewmodel {
             //end combobox data
             //D_002
             self.roundingRules_D_002 = ko.observableArray([
-                { code: 0, name: 'ゼロを表示する' },
-                { code: 1, name: 'ゼロを表示しない' }
+                { code: 1, name: 'ゼロを表示する' },
+                { code: 0, name: 'ゼロを表示しない' }
             ]);
             //currencyeditor
             //001
@@ -110,14 +110,18 @@ module qmm012.d.viewmodel {
             };
 
             self.CurrentItemMaster.subscribe(function(ItemMaster: qmm012.b.service.model.ItemMasterModel) {
-                service.findItemDeduct(ItemMaster.itemCode).done(function(ItemDeduct: service.model.ItemDeduct) {
-                    self.CurrentItemDeduct(ItemDeduct);
-                    self.checked_D_003(ItemMaster ? ItemMaster.itemDisplayAtr == 0 ? true : false : false);
-                    self.CurrentZeroDisplaySet(ItemMaster.zeroDisplaySet);
-                }).fail(function(res) {
-                    // Alert message
-                    alert(res);
-                });
+                if (ItemMaster) {
+                    service.findItemDeduct(ItemMaster.itemCode).done(function(ItemDeduct: service.model.ItemDeduct) {
+                        self.CurrentItemDeduct(ItemDeduct);
+                    }).fail(function(res) {
+                        // Alert message
+                        alert(res);
+                    });
+                } else {
+                    self.CurrentItemDeduct(null);
+                }
+                self.checked_D_003(ItemMaster ? ItemMaster.itemDisplayAtr == 0 ? true : false : false);
+                self.CurrentZeroDisplaySet(ItemMaster ? ItemMaster.zeroDisplaySet : 1);
             });
             self.CurrentItemDeduct.subscribe(function(ItemDeduct: service.model.ItemDeduct) {
                 self.CurrentAlRangeHigh(ItemDeduct ? ItemDeduct.alRangeHigh : 0);
@@ -134,19 +138,19 @@ module qmm012.d.viewmodel {
             });
 
             self.checked_D_003.subscribe(function(NewValue) {
-                self.CurrentItemDisplayAtr(NewValue == true ? 0 : 1);
+                self.CurrentItemDisplayAtr(NewValue ? 0 : 1);
             });
             self.checked_D_004.subscribe(function(NewValue) {
-                self.CurrentErrRangeHighAtr(NewValue == true ? 1 : 0);
+                self.CurrentErrRangeHighAtr(NewValue ? 1 : 0);
             })
             self.checked_D_005.subscribe(function(NewValue) {
-                self.CurrentAlRangeHighAtr(NewValue == true ? 1 : 0);
+                self.CurrentAlRangeHighAtr(NewValue ? 1 : 0);
             })
             self.checked_D_006.subscribe(function(NewValue) {
-                self.CurrentErrRangeLowAtr(NewValue == true ? 1 : 0);
+                self.CurrentErrRangeLowAtr(NewValue ? 1 : 0);
             })
             self.checked_D_007.subscribe(function(NewValue) {
-                self.CurrentAlRangeLowAtr(NewValue == true ? 1 : 0);
+                self.CurrentAlRangeLowAtr(NewValue ? 1 : 0);
             })
         }
         openHDialog() {

@@ -59,6 +59,10 @@ public interface ItemMasterRepository {
 	 * @return
 	 */
 	List<ItemMaster> findAllNoAvePayAtr(String companyCode);
+	
+	
+	
+	List<ItemMaster> findAll_SEL_3(String companyCode, int ctgAtr);
 
 	/**
 	 * @param companyCode
