@@ -41,10 +41,10 @@ module nts.uk.pr.view.qmm008.h {
         export module model {
 
             export interface HealthInsuranceAvgEarnValue {
-                general: number;
-                nursing: number;
-                basic: number;
-                specific: number;
+                healthGeneralMny: number;
+                healthNursingMny: number;
+                healthBasicMny: number;
+                healthSpecificMny: number;
             }
 
             export interface HealthInsuranceAvgEarnDto {

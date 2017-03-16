@@ -28,6 +28,7 @@ import nts.uk.ctx.pr.core.infra.entity.insurance.labor.accidentrate.QismtWorkAcc
 import nts.uk.ctx.pr.core.infra.entity.insurance.labor.accidentrate.QismtWorkAccidentInsuPK;
 import nts.uk.ctx.pr.core.infra.entity.insurance.labor.accidentrate.QismtWorkAccidentInsuPK_;
 import nts.uk.ctx.pr.core.infra.entity.insurance.labor.accidentrate.QismtWorkAccidentInsu_;
+import nts.uk.ctx.pr.core.infra.repository.insurance.labor.Contants;
 
 /**
  * The Class
@@ -35,19 +36,6 @@ import nts.uk.ctx.pr.core.infra.entity.insurance.labor.accidentrate.QismtWorkAcc
 @Stateless
 public class JpaAccidentInsuranceRateRepository extends JpaRepository
 	implements AccidentInsuranceRateRepository {
-
-	/** The Constant BEGIN_FIRST. */
-	public static final int BEGIN_FIRST = 0;
-
-	/** The Constant BEGIN_SENDCOND. */
-	public static final int BEGIN_SECOND = 1;
-
-	/** The Constant SIZE_SECOND. */
-	public static final int SIZE_SECOND = 2;
-
-	/** The Constant SIZE_TEN. */
-	public static final int SIZE_TEN = 10;
-
 	/*
 	 * (non-Javadoc)
 	 *
@@ -199,7 +187,7 @@ public class JpaAccidentInsuranceRateRepository extends JpaRepository
 	 */
 	public List<QismtWorkAccidentInsu> toEntity(AccidentInsuranceRate rate) {
 		List<QismtWorkAccidentInsu> lstQismtWorkAccidentInsu = new ArrayList<>();
-		for (int i = BEGIN_FIRST; i < SIZE_TEN; i++) {
+		for (int i = Contants.BEGIN_FIRST; i < Contants.SIZE_TEN; i++) {
 			lstQismtWorkAccidentInsu.add(new QismtWorkAccidentInsu());
 		}
 		rate.saveToMemento(new JpaAccidentInsuranceRateSetMemento(lstQismtWorkAccidentInsu));
@@ -297,7 +285,7 @@ public class JpaAccidentInsuranceRateRepository extends JpaRepository
 		}
 
 		return this.findById(companyCode,
-			lstQismtWorkAccidentInsu.get(BEGIN_FIRST).getQismtWorkAccidentInsuPK().getHistId());
+			lstQismtWorkAccidentInsu.get(Contants.BEGIN_FIRST).getQismtWorkAccidentInsuPK().getHistId());
 	}
 
 	/*
@@ -378,7 +366,7 @@ public class JpaAccidentInsuranceRateRepository extends JpaRepository
 		}
 
 		return this.findById(companyCode,
-			lstQismtWorkAccidentInsu.get(BEGIN_FIRST).getQismtWorkAccidentInsuPK().getHistId());
+			lstQismtWorkAccidentInsu.get(Contants.BEGIN_FIRST).getQismtWorkAccidentInsuPK().getHistId());
 	}
 
 }

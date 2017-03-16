@@ -57,6 +57,7 @@ public class WageLedgerReportSevice extends ExportService<WageLedgerReportQuery>
 						.position("Project manager")
 						.sex("Man")
 						.bonusMonthList(Arrays.asList(1, 3, 7, 9, 12))
+						.salaryMonthList(Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12))
 						.build())
 				.salaryPaymentData(PaymentData.builder()
 						.totalTax(ReportItemDto.builder()
@@ -137,7 +138,7 @@ public class WageLedgerReportSevice extends ExportService<WageLedgerReportQuery>
 		List<MonthlyData> monthlyDatas = new ArrayList<>();
 		for (int i = 1; i <= 12; i++) {
 			monthlyDatas.add(MonthlyData.builder()
-					.amount(1000000 + (int)(Math.random() * 20000000))
+					.amount(100000 + (int)(Math.random() * 2000000))
 					.month(i)
 					.build());
 		}

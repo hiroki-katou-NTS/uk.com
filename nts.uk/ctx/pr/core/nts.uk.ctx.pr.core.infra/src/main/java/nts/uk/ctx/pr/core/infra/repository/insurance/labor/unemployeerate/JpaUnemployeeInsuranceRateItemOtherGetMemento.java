@@ -11,7 +11,7 @@ import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsurance
 import nts.uk.ctx.pr.core.infra.entity.insurance.labor.unemployeerate.QismtEmpInsuRate;
 
 /**
- * The Class JpaUnemployeeInsuranceRateItemGeneralGetMemento.
+ * The Class JpaUnemployeeInsuranceRateItemOtherGetMemento.
  */
 public class JpaUnemployeeInsuranceRateItemOtherGetMemento implements UnemployeeInsuranceRateItemGetMemento {
 
@@ -19,7 +19,7 @@ public class JpaUnemployeeInsuranceRateItemOtherGetMemento implements Unemployee
 	protected QismtEmpInsuRate typeValue;
 
 	/**
-	 * Instantiates a new jpa unemployee insurance rate get memento.
+	 * Instantiates a new jpa unemployee insurance rate item other get memento.
 	 *
 	 * @param typeValue
 	 *            the type value
@@ -28,28 +28,48 @@ public class JpaUnemployeeInsuranceRateItemOtherGetMemento implements Unemployee
 		this.typeValue = typeValue;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.
+	 * UnemployeeInsuranceRateItemGetMemento#getCareerGroup()
+	 */
 	@Override
 	public CareerGroup getCareerGroup() {
 		return CareerGroup.Other;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.
+	 * UnemployeeInsuranceRateItemGetMemento#getCompanySetting()
+	 */
 	@Override
 	public UnemployeeInsuranceRateItemSetting getCompanySetting() {
-		UnemployeeInsuranceRateItemSetting unemployeeInsuranceRateItemSettingGeneral = new UnemployeeInsuranceRateItemSetting();
+		UnemployeeInsuranceRateItemSetting unemployeeInsuranceRateItemSettingGeneral;
+		unemployeeInsuranceRateItemSettingGeneral = new UnemployeeInsuranceRateItemSetting();
 		unemployeeInsuranceRateItemSettingGeneral
-				.setRate(Double.valueOf(String.valueOf(this.typeValue.getCEmpRateOther())));
+			.setRate(Double.valueOf(String.valueOf(this.typeValue.getCEmpRateOther())));
 		unemployeeInsuranceRateItemSettingGeneral
-				.setRoundAtr(RoundingMethod.valueOf(this.typeValue.getCEmpRoundOther()));
+			.setRoundAtr(RoundingMethod.valueOf(this.typeValue.getCEmpRoundOther()));
 		return unemployeeInsuranceRateItemSettingGeneral;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.
+	 * UnemployeeInsuranceRateItemGetMemento#getPersonalSetting()
+	 */
 	@Override
 	public UnemployeeInsuranceRateItemSetting getPersonalSetting() {
-		UnemployeeInsuranceRateItemSetting unemployeeInsuranceRateItemSettingGeneral = new UnemployeeInsuranceRateItemSetting();
+		UnemployeeInsuranceRateItemSetting unemployeeInsuranceRateItemSettingGeneral;
+		unemployeeInsuranceRateItemSettingGeneral = new UnemployeeInsuranceRateItemSetting();
 		unemployeeInsuranceRateItemSettingGeneral
-				.setRate(Double.valueOf(String.valueOf(this.typeValue.getPEmpRateOther())));
+			.setRate(Double.valueOf(String.valueOf(this.typeValue.getPEmpRateOther())));
 		unemployeeInsuranceRateItemSettingGeneral
-				.setRoundAtr(RoundingMethod.valueOf(this.typeValue.getPEmpRoundOther()));
+			.setRoundAtr(RoundingMethod.valueOf(this.typeValue.getPEmpRoundOther()));
 		return unemployeeInsuranceRateItemSettingGeneral;
 	}
 

@@ -18,6 +18,12 @@ import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 /**
  * The Class UnemployeeInsuranceRate.
  */
+
+/**
+ * Gets the rate items.
+ *
+ * @return the rate items
+ */
 @Getter
 public class UnemployeeInsuranceRate extends DomainObject {
 
@@ -29,10 +35,24 @@ public class UnemployeeInsuranceRate extends DomainObject {
 	private CompanyCode companyCode;
 
 	/** The apply range. */
+
+	/**
+	 * Sets the apply range.
+	 *
+	 * @param applyRange
+	 *            the new apply range
+	 */
 	@Setter
 	private MonthRange applyRange;
 
 	/** The rate items. */
+
+	/**
+	 * Sets the rate items.
+	 *
+	 * @param rateItems
+	 *            the new rate items
+	 */
 	@Setter
 	private Set<UnemployeeInsuranceRateItem> rateItems;
 
@@ -40,6 +60,7 @@ public class UnemployeeInsuranceRate extends DomainObject {
 	 * Instantiates a new unemployee insurance rate.
 	 */
 	private UnemployeeInsuranceRate() {
+		super();
 		this.historyId = IdentifierUtil.randomUniqueId();
 	}
 
@@ -70,22 +91,51 @@ public class UnemployeeInsuranceRate extends DomainObject {
 		memento.setRateItems(this.rateItems);
 	}
 
+	/**
+	 * Gets the start.
+	 *
+	 * @return the start
+	 */
 	public YearMonth getStart() {
 		return this.applyRange.getStartMonth();
 	}
 
+	/**
+	 * Gets the end.
+	 *
+	 * @return the end
+	 */
 	public YearMonth getEnd() {
 		return this.applyRange.getEndMonth();
 	}
 
+	/**
+	 * Sets the start.
+	 *
+	 * @param yearMonth
+	 *            the new start
+	 */
 	public void setStart(YearMonth yearMonth) {
 		this.applyRange = MonthRange.range(yearMonth, this.applyRange.getEndMonth());
 	}
 
+	/**
+	 * Sets the end.
+	 *
+	 * @param yearMonth
+	 *            the new end
+	 */
 	public void setEnd(YearMonth yearMonth) {
 		this.applyRange = MonthRange.range(this.applyRange.getStartMonth(), yearMonth);
 	}
 
+	/**
+	 * Copy with date.
+	 *
+	 * @param start
+	 *            the start
+	 * @return the unemployee insurance rate
+	 */
 	public UnemployeeInsuranceRate copyWithDate(YearMonth start) {
 		UnemployeeInsuranceRate newDomain = new UnemployeeInsuranceRate();
 		newDomain.companyCode = this.companyCode;
@@ -103,7 +153,8 @@ public class UnemployeeInsuranceRate extends DomainObject {
 	 *            the start year month
 	 * @return the unemployee insurance rate
 	 */
-	public static final UnemployeeInsuranceRate createWithIntial(String companyCode, YearMonth startYearMonth) {
+	public static final UnemployeeInsuranceRate createWithIntial(String companyCode,
+		YearMonth startYearMonth) {
 		UnemployeeInsuranceRate domain = new UnemployeeInsuranceRate();
 		domain.companyCode = new CompanyCode(companyCode);
 		domain.applyRange = MonthRange.toMaxDate(startYearMonth);
@@ -115,7 +166,11 @@ public class UnemployeeInsuranceRate extends DomainObject {
 		return domain;
 	}
 
+	/**
+	 * Sets the max date.
+	 */
 	public void setMaxDate() {
 		this.applyRange = MonthRange.toMaxDate(this.getApplyRange().getStartMonth());
 	}
+
 }

@@ -3,6 +3,7 @@ module nts.uk.pr.view.qmm008.i {
         import commonService = nts.uk.pr.view.qmm008._0.common.service;
         import AvgEarnLevelMasterSettingDto = nts.uk.pr.view.qmm008._0.common.service.model.AvgEarnLevelMasterSettingDto;
         import FunRateItemModel = nts.uk.pr.view.qmm008.a.viewmodel.FunRateItemModel;
+        import PensionRateRoundingModel = nts.uk.pr.view.qmm008.a2.viewmodel.PensionRateRoundingModel;
         import PensionRateModelFromScreenA = nts.uk.pr.view.qmm008.a.viewmodel.PensionRateModel;
 
         export class ScreenModel {
@@ -29,6 +30,7 @@ module nts.uk.pr.view.qmm008.i {
                     pensionModel.startMonth(),
                     pensionModel.endMonth(),
                     pensionModel.fundRateItems(),
+                    pensionModel.roundingMethods(),
                     pensionModel.childContributionRate());
                 self.leftShow = ko.observable(true);
                 self.rightShow = ko.observable(true);
@@ -164,31 +166,70 @@ module nts.uk.pr.view.qmm008.i {
                 var self = this;
                 var model = self.pensionRateModel;
                 var rateItems: FunRateItemModel = self.pensionRateModel.fundRateItems;
+                var roundingMethods: PensionRateRoundingModel = self.pensionRateModel.roundingMethods;
+                var personalRounding = self.convertToRounding(roundingMethods.pensionSalaryPersonalComboBoxSelectedCode());
+                var companyRounding = self.convertToRounding(roundingMethods.pensionSalaryCompanyComboBoxSelectedCode()); 
                 var rate = levelMasterSetting.avgEarn / 1000;
 
                 return new PensionAvgearnModel(
                     model.historyId, 
                     levelMasterSetting.code,
                     new PensionAvgearnValueModel(
-                        rateItems.salaryCompanySonExemption() * rate,
-                        rateItems.salaryCompanyDaughterExemption() * rate,
-                        rateItems.salaryCompanyUnknownExemption() * rate),
+                        self.rounding(companyRounding,rateItems.salaryCompanySonExemption() * rate),
+                        self.rounding(companyRounding,rateItems.salaryCompanyDaughterExemption() * rate),
+                        self.rounding(companyRounding,rateItems.salaryCompanyUnknownExemption() * rate)),
                     new PensionAvgearnValueModel(
-                        rateItems.salaryCompanySonBurden() * rate,
-                        rateItems.salaryCompanyDaughterBurden() * rate,
-                        rateItems.salaryCompanyUnknownBurden() * rate),
+                        self.rounding(companyRounding,rateItems.salaryCompanySonBurden() * rate),
+                        self.rounding(companyRounding,rateItems.salaryCompanyDaughterBurden() * rate),
+                        self.rounding(companyRounding,rateItems.salaryCompanyUnknownBurden() * rate)),
                     new PensionAvgearnValueModel(
-                        rateItems.salaryPersonalSonExemption() * rate,
-                        rateItems.salaryPersonalDaughterExemption() * rate,
-                        rateItems.salaryPersonalUnknownExemption() * rate),
+                        self.rounding(personalRounding,rateItems.salaryPersonalSonExemption() * rate),
+                        self.rounding(personalRounding,rateItems.salaryPersonalDaughterExemption() * rate),
+                        self.rounding(personalRounding,rateItems.salaryPersonalUnknownExemption() * rate)),
                     new PensionAvgearnValueModel(
-                        rateItems.salaryPersonalSonBurden() * rate,
-                        rateItems.salaryPersonalDaughterBurden() * rate,
-                        rateItems.salaryPersonalUnknownBurden() * rate),
+                        self.rounding(personalRounding,rateItems.salaryPersonalSonBurden() * rate),
+                        self.rounding(personalRounding,rateItems.salaryPersonalDaughterBurden() * rate),
+                        self.rounding(personalRounding,rateItems.salaryPersonalUnknownBurden() * rate)),
                     model.childContributionRate() * rate
                 );
             }
-
+            
+            // rounding 
+            private rounding(roudingMethod: string,roundValue: number){
+                var self = this;
+                var backupValue = roundValue;
+                switch(roudingMethod){
+                    case Rounding.ROUNDUP: return Math.ceil(backupValue);
+                    case Rounding.TRUNCATION: return Math.floor(backupValue);
+                    case Rounding.ROUNDDOWN:
+                        if ((backupValue * 10) % 10 > 5)
+                            return Math.ceil(backupValue);
+                        else
+                            return Math.floor(backupValue);
+                    case Rounding.DOWN4_UP5: return self.roudingDownUp(backupValue, 4);
+                    case Rounding.DOWN5_UP6: return self.roudingDownUp(backupValue, 5);
+                }
+            }
+            private roudingDownUp(value: number, down: number) {
+                var newVal = Math.round(value * 10) / 10;
+                if ((newVal * 10) % 10 > down)
+                    return Math.ceil(value);
+                else
+                    return Math.floor(value);
+            }
+            
+              //value to string rounding
+            public convertToRounding(stringValue: string) {
+                switch (stringValue) {
+                    case "0": return Rounding.ROUNDUP;
+                    case "1": return Rounding.TRUNCATION;
+                    case "2": return Rounding.DOWN4_UP5;
+                    case "3": return Rounding.ROUNDDOWN;
+                    case "4": return Rounding.DOWN5_UP6;
+                    default: return Rounding.ROUNDUP;
+                }
+            }
+            
             /**
              * Close dialog.
              */
@@ -207,6 +248,7 @@ module nts.uk.pr.view.qmm008.i {
             startMonth: string;
             endMonth: string;
             fundRateItems: FunRateItemModel;
+            roundingMethods: PensionRateRoundingModel
             childContributionRate: KnockoutObservable<number>;
             constructor(
                 historyId: string,
@@ -215,6 +257,7 @@ module nts.uk.pr.view.qmm008.i {
                 startMonth: string,
                 endMonth: string,
                 rateItems: FunRateItemModel,
+                roundingMethods: PensionRateRoundingModel,
                 childContributionRate: number) {
                 this.historyId = historyId;
                 this.officeCode = officeCode;
@@ -222,6 +265,7 @@ module nts.uk.pr.view.qmm008.i {
                 this.startMonth = startMonth;
                 this.endMonth = endMonth;
                 this.fundRateItems = rateItems;
+                this.roundingMethods = roundingMethods;
                 this.childContributionRate = ko.observable(childContributionRate);
             }
         }
@@ -273,6 +317,14 @@ module nts.uk.pr.view.qmm008.i {
                 this.femaleAmount = ko.observable(femaleAmount);
                 this.unknownAmount = ko.observable(unknownAmount);
             }
+        }
+        
+         export class Rounding {
+            static ROUNDUP = 'RoundUp';
+            static TRUNCATION = 'Truncation';
+            static ROUNDDOWN = 'RoundDown';
+            static DOWN5_UP6 = 'Down5_Up6';
+            static DOWN4_UP5 = 'Down4_Up5'
         }
     }
 }
