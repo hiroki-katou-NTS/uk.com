@@ -93,7 +93,8 @@ public class JpaLayoutCategoryRepository extends JpaRepository implements Layout
 	@Override
 	public void add(List<LayoutMasterCategory> categories) {
 		for (LayoutMasterCategory category : categories) {
-			this.commandProxy().insert(toEntity(category));		   
+			this.commandProxy().insert(toEntity(category));	
+			System.out.println(category);
 		}		
 	}
 

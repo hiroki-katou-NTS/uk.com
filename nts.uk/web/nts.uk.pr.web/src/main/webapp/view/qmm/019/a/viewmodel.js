@@ -25,15 +25,27 @@ var qmm019;
                 self.singleSelectedCode = ko.observable(null);
                 self.layouts = ko.observableArray([]);
                 self.layoutsMax = ko.observableArray([]);
+                var t = new a.service.model.LayoutHeadDto();
+                t.stmtName = '';
+                t.companyCode = '';
+                t.stmtCode = '';
+                self.layoutHead = ko.observable(ko.mapping.fromJS(t));
                 self.layoutMaster = ko.observable(new a.service.model.LayoutMasterDto());
                 self.categories = ko.observableArray([new a.service.model.Category([], 0)]);
                 self.singleSelectedCode.subscribe(function (codeChanged) {
+                    console.log(codeChanged);
                     var layoutFind = _.find(self.layouts(), function (layout) {
                         return layout.stmtCode === codeChanged.split(';')[0] && layout.startYm === parseInt(codeChanged.split(';')[1]);
                     });
-                    if (layoutFind !== undefined) {
+                    var layoutHead = _.find(self.layoutsMax(), function (layoutHead) {
+                        return layoutHead.stmtCode === codeChanged.split(';')[0];
+                    });
+                    console.log(layoutHead);
+                    if (layoutFind !== undefined && layoutHead != undefined) {
                         self.layoutMaster(layoutFind);
-                        self.layoutMaster(ko.mapping.fromJS(layoutFind));
+                        self.layoutHead(ko.mapping.fromJS(layoutHead));
+                        console.log(layoutFind);
+                        self.layoutMaster((layoutFind));
                         self.startYm(nts.uk.time.formatYearMonth(self.layoutMaster().startYm));
                         self.endYm(nts.uk.time.formatYearMonth(self.layoutMaster().endYm));
                         a.service.getCategoryFull(layoutFind.stmtCode, layoutFind.historyId, layoutFind.startYm)
@@ -128,7 +140,9 @@ var qmm019;
                 a.service.getAllLayoutHist().done(function (layouts) {
                     if (layouts.length > 0) {
                         self.layouts(layouts);
+                        console.log(layouts);
                         a.service.getAllLayoutHead().done(function (layoutsMax) {
+                            console.log(layoutsMax);
                             self.layoutsMax(layoutsMax);
                             self.buildTreeDataSource();
                             //let firstLayout: service.model.LayoutMasterDto = _.first(self.layouts());
@@ -226,7 +240,8 @@ var qmm019;
             ScreenModel.prototype.openGDialog = function () {
                 var self = this;
                 nts.uk.ui.windows.sub.modal('/view/qmm/019/g/index.xhtml', { title: '明細レイアウトの作成＞新規登録' }).onClosed(function () {
-                    self.start(undefined);
+                    // anh Lam
+                    //self.start(undefined);
                 });
             };
             return ScreenModel;

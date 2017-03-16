@@ -57,10 +57,6 @@ var qmm019;
                     //combobox
                     g.service.getLayoutHeadInfor().done(function (layout) {
                         if (layout.length > 0) {
-                            //                    service.getLayoutHistoryInfor().done(function(layoutHistory: Array<service.model.LayoutHistoryDto>) {
-                            //                        self.layoutHistory(layoutHistory);
-                            //
-                            //                    });
                             self.layouts(layout);
                         }
                         self.buildCombobox();
@@ -131,6 +127,7 @@ var qmm019;
                             self.createlayout().checkCopy = true;
                         }
                         g.service.createLayout(self.createlayout()).done(function () {
+                            alert(self.createlayout());
                             //alert('追加しました。');    
                             nts.uk.ui.windows.close();
                         }).fail(function (res) {
