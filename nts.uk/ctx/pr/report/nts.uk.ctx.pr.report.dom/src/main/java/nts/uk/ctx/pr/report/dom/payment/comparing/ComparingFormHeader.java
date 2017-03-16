@@ -8,7 +8,7 @@ import nts.arc.layer.dom.AggregateRoot;
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
-public class QlsptPaycompFormHead extends AggregateRoot {
+public class ComparingFormHeader extends AggregateRoot {
 
 	private String companyCode;
 
@@ -16,8 +16,8 @@ public class QlsptPaycompFormHead extends AggregateRoot {
 
 	private FormName formName;
 
-	public static QlsptPaycompFormHead createFromJavaType(String companyCode, String formCode, String formName) {
-		return new QlsptPaycompFormHead(companyCode, new FormCode(formCode), new FormName(formName));
+	public static ComparingFormHeader createFromJavaType(String companyCode, String formCode, String formName) {
+		return new ComparingFormHeader(companyCode, new FormCode(formCode), new FormName(formName));
 	}
 
 }

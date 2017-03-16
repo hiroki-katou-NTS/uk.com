@@ -8,7 +8,7 @@ import nts.arc.layer.dom.AggregateRoot;
 @Getter
 @AllArgsConstructor
 @NoArgsConstructor
-public class QlsptPaycompFormDetail extends AggregateRoot {
+public class ComparingFormDetail extends AggregateRoot {
 
 	private DispOrder dispOrder;
 	
