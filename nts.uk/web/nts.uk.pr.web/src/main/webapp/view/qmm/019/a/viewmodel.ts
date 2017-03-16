@@ -42,6 +42,7 @@ module qmm019.a {
                 });
                 if (layoutFind !== undefined){
                     self.layoutMaster(layoutFind);  
+                    self.layoutMaster(ko.mapping.fromJS(layoutFind)); 
                     self.startYm(nts.uk.time.formatYearMonth(self.layoutMaster().startYm));
                     self.endYm(nts.uk.time.formatYearMonth(self.layoutMaster().endYm));
                     service.getCategoryFull(layoutFind.stmtCode, layoutFind.historyId, layoutFind.startYm)

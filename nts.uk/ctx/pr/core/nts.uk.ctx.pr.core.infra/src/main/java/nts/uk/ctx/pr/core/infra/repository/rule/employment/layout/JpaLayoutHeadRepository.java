@@ -123,10 +123,10 @@ public class JpaLayoutHeadRepository extends JpaRepository implements LayoutMast
 	}
 
 	@Override
-	public List<LayoutMaster> getLayoutsWithMaxStartYm(String companyCode) {
+	public List<LayoutMaster> getLayoutsWithMaxStartYm(String companyCd) {
 		try {
-			return this.queryProxy().query(SELECT_LAYOUT_MAX_START, QstmtStmtLayoutHead.class)
-					.setParameter("companyCode", companyCode).getList(c -> toDomain(c));
+			return this.queryProxy().query(SELECT_ALL, QstmtStmtLayoutHead.class)
+					.setParameter("companyCd", companyCd).getList(c -> toDomain(c));
 
 		} catch (Exception e) {
 			throw e;
@@ -159,7 +159,6 @@ public class JpaLayoutHeadRepository extends JpaRepository implements LayoutMast
 
 	@Override
 	public Optional<LayoutMaster> getBy_SEL_7(String companyCode, String stmtCode) {
-		// TODO Auto-generated method stub
 		return this.queryProxy().query(SEL_7, QstmtStmtLayoutHead.class).setParameter("companyCode", companyCode)
 				.setParameter("stmtCode", stmtCode)
 				.getSingle(x -> toDomain(x));
