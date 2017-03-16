@@ -195,6 +195,7 @@ var nts;
                                     var self = this;
                                     var dfd = $.Deferred();
                                     self.isLoading(true);
+                                    self.isClickHistory(true);
                                     self.currentOfficeCode(self.getCurrentOfficeCode(id));
                                     a1.service.instance.findHistoryByUuid(id).done(function (dto) {
                                         self.loadHealth(dto);
@@ -214,6 +215,10 @@ var nts;
                                         alert('TODO has error!');
                                     }
                                     return dfd.promise();
+                                };
+                                ScreenModel.prototype.onSelectMaster = function (code) {
+                                    var self = this;
+                                    self.isClickHistory(false);
                                 };
                                 ScreenModel.prototype.getCurrentOfficeCode = function (childId) {
                                     var self = this;

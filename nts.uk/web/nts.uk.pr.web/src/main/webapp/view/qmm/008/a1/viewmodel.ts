@@ -253,6 +253,7 @@ module nts.uk.pr.view.qmm008.a1 {
                 var self = this;
                 var dfd = $.Deferred<void>();
                 self.isLoading(true);
+                self.isClickHistory(true);
                 //get current office
                 self.currentOfficeCode(self.getCurrentOfficeCode(id));
                 // clear all error
@@ -278,6 +279,15 @@ module nts.uk.pr.view.qmm008.a1 {
                 }
                 return dfd.promise();
             }
+            
+            /**
+             * On select master data.
+             */
+            onSelectMaster(code: string): void {
+                var self = this;
+                self.isClickHistory(false);
+            }
+            
             public getCurrentOfficeCode(childId: string):string {
                 var self = this;
                 var returnValue :string;
