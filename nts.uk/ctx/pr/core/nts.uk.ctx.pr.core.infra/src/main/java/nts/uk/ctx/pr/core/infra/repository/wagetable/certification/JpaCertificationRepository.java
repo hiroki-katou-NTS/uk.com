@@ -62,8 +62,8 @@ public class JpaCertificationRepository extends JpaRepository implements Certifi
 		List<Predicate> lstpredicateWhere = new ArrayList<>();
 
 		// eq CompanyCode
-		lstpredicateWhere.add(criteriaBuilder
-				.equal(root.get(QcemtCertification_.qcemtCertificationPK).get(QcemtCertificationPK_.ccd), companyCode));
+		lstpredicateWhere.add(criteriaBuilder.equal(
+			root.get(QcemtCertification_.qcemtCertificationPK).get(QcemtCertificationPK_.ccd), companyCode));
 
 		// set where to SQL
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
@@ -73,7 +73,7 @@ public class JpaCertificationRepository extends JpaRepository implements Certifi
 
 		// exclude select
 		List<Certification> lstCertification = query.getResultList().stream().map(item -> this.toDomain(item))
-				.collect(Collectors.toList());
+			.collect(Collectors.toList());
 
 		return lstCertification;
 	}
@@ -140,18 +140,19 @@ public class JpaCertificationRepository extends JpaRepository implements Certifi
 
 		// eq CompanyCode (where)
 		lstpredicateWhere.add(criteriaBuilder.equal(
-				root.get(QwtmtWagetableCertify_.qwtmtWagetableCertifyPK).get(QwtmtWagetableCertifyPK_.ccd),
-				companyCode));
+			root.get(QwtmtWagetableCertify_.qwtmtWagetableCertifyPK).get(QwtmtWagetableCertifyPK_.ccd),
+			companyCode));
 
 		// eq CerticationCode (where)
 		lstpredicateWhere.add(criteriaBuilder.equal(
-				root.get(QwtmtWagetableCertify_.qwtmtWagetableCertifyPK).get(QwtmtWagetableCertifyPK_.certifyCd),
-				certificationCode));
+			root.get(QwtmtWagetableCertify_.qwtmtWagetableCertifyPK).get(QwtmtWagetableCertifyPK_.certifyCd),
+			certificationCode));
 
 		// noteq CertifyGroupCodeNone (certifyGroupCodeNone not null)
 		if (certifyGroupCode != null) {
-			lstpredicateWhere.add(criteriaBuilder.notEqual(root.get(QwtmtWagetableCertify_.qwtmtWagetableCertifyPK)
-					.get(QwtmtWagetableCertifyPK_.certifyGroupCd), certifyGroupCode));
+			lstpredicateWhere
+			.add(criteriaBuilder.notEqual(root.get(QwtmtWagetableCertify_.qwtmtWagetableCertifyPK)
+				.get(QwtmtWagetableCertifyPK_.certifyGroupCd), certifyGroupCode));
 		}
 
 		// set where to SQL
@@ -161,11 +162,12 @@ public class JpaCertificationRepository extends JpaRepository implements Certifi
 	}
 
 	@Override
-	public Optional<Certification> findById(String companyCode, String certificationCode, String certifyGroupCode) {
+	public Optional<Certification> findById(String companyCode, String certificationCode,
+		String certifyGroupCode) {
 		if (this.checkExistOfGroup(companyCode, certificationCode, certifyGroupCode)) {
 			return this.queryProxy()
-					.find(new QcemtCertificationPK(companyCode, certificationCode), QcemtCertification.class)
-					.map(c -> this.toDomain(c));
+				.find(new QcemtCertificationPK(companyCode, certificationCode), QcemtCertification.class)
+				.map(c -> this.toDomain(c));
 		}
 		return Optional.empty();
 	}

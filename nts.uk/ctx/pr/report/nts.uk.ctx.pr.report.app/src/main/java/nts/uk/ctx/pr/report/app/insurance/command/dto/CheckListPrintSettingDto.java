@@ -14,7 +14,7 @@ import nts.uk.ctx.pr.report.dom.insurance.ChecklistPrintSettingGetMemento;
  */
 @Data
 public class CheckListPrintSettingDto {
-    
+
 	/** The show category insurance item. */
 	private Boolean showCategoryInsuranceItem;
 
@@ -26,9 +26,9 @@ public class CheckListPrintSettingDto {
 
 	/** The show office. */
 	private Boolean showOffice;
-	
+
 	/** The show total. */
-    private Boolean showTotal;
+	private Boolean showTotal;
 
 	/**
 	 * To domain.
@@ -39,39 +39,39 @@ public class CheckListPrintSettingDto {
 	 */
 	public ChecklistPrintSetting toDomain(String companyCode) {
 		CheckListPrintSettingDto dto = this;
-		return new ChecklistPrintSetting(new ChecklistPrintSettingGetMemento() {
+		return new ChecklistPrintSetting(
+			new ChecklistPrintSettingGetMemento() {
 
-			@Override
-			public Boolean getShowOffice() {
-				return dto.showOffice;
-			}
+				@Override
+				public Boolean getShowOffice() {
+					return dto.showOffice;
+				}
 
-			@Override
-			public Boolean getShowDetail() {
-				return dto.showDetail;
-			}
+				@Override
+				public Boolean getShowDetail() {
+					return dto.showDetail;
+				}
 
-			@Override
-			public Boolean getShowDeliveryNoticeAmount() {
-				return dto.showDeliveryNoticeAmount;
-			}
+				@Override
+				public Boolean getShowDeliveryNoticeAmount() {
+					return dto.showDeliveryNoticeAmount;
+				}
 
-			@Override
-			public Boolean getShowCategoryInsuranceItem() {
-				return dto.showCategoryInsuranceItem;
-			}
+				@Override
+				public Boolean getShowCategoryInsuranceItem() {
+					return dto.showCategoryInsuranceItem;
+				}
 
-			@Override
-			public CompanyCode getCompanyCode() {
-				return new CompanyCode(companyCode);
-			}
+				@Override
+				public CompanyCode getCompanyCode() {
+					return new CompanyCode(companyCode);
+				}
 
-            @Override
-            public Boolean getShowTotal() {
-                return dto.showTotal;
-            }
-		});
+				@Override
+				public Boolean getShowTotal() {
+					return dto.showTotal;
+				}
+			});
 	}
-	
 
 }

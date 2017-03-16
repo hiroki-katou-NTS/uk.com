@@ -25,7 +25,8 @@ public class CertificationDto {
 	/**
 	 * To domain.
 	 *
-	 * @param companyCode the company code
+	 * @param companyCode
+	 *            the company code
 	 * @return the certification
 	 */
 	public Certification toDomain(String companyCode) {
@@ -46,8 +47,10 @@ public class CertificationDto {
 		/**
 		 * Instantiates a new certification get memento impl.
 		 *
-		 * @param dto the dto
-		 * @param companyCode the company code
+		 * @param dto
+		 *            the dto
+		 * @param companyCode
+		 *            the company code
 		 */
 		public CertificationGetMementoImpl(CertificationDto dto, String companyCode) {
 			super();
@@ -55,24 +58,33 @@ public class CertificationDto {
 			this.companyCode = companyCode;
 		}
 
-		/* (non-Javadoc)
-		 * @see nts.uk.ctx.pr.core.dom.wagetable.certification.CertificationGetMemento#getName()
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see nts.uk.ctx.pr.core.dom.wagetable.certification.
+		 * CertificationGetMemento#getName()
 		 */
 		@Override
 		public String getName() {
 			return dto.name;
 		}
 
-		/* (non-Javadoc)
-		 * @see nts.uk.ctx.pr.core.dom.wagetable.certification.CertificationGetMemento#getCompanyCode()
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see nts.uk.ctx.pr.core.dom.wagetable.certification.
+		 * CertificationGetMemento#getCompanyCode()
 		 */
 		@Override
 		public CompanyCode getCompanyCode() {
 			return new CompanyCode(companyCode);
 		}
 
-		/* (non-Javadoc)
-		 * @see nts.uk.ctx.pr.core.dom.wagetable.certification.CertificationGetMemento#getCode()
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see nts.uk.ctx.pr.core.dom.wagetable.certification.
+		 * CertificationGetMemento#getCode()
 		 */
 		@Override
 		public String getCode() {

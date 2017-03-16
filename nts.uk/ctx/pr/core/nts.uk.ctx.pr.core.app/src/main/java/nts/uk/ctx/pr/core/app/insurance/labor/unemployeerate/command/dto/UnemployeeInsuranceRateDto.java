@@ -64,6 +64,12 @@ public class UnemployeeInsuranceRateDto {
 			this.dto = dto;
 		}
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.
+		 * UnemployeeInsuranceRateGetMemento#getRateItems()
+		 */
 		@Override
 		public Set<UnemployeeInsuranceRateItem> getRateItems() {
 			Set<UnemployeeInsuranceRateItem> setUnemployeeInsuranceRateItem = new HashSet<>();
@@ -73,20 +79,38 @@ public class UnemployeeInsuranceRateDto {
 			return setUnemployeeInsuranceRateItem;
 		}
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.
+		 * UnemployeeInsuranceRateGetMemento#getHistoryId()
+		 */
 		@Override
 		public String getHistoryId() {
 			return historyInsurance.getHistoryId();
 		}
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.
+		 * UnemployeeInsuranceRateGetMemento#getCompanyCode()
+		 */
 		@Override
 		public CompanyCode getCompanyCode() {
 			return new CompanyCode(companyCode);
 		}
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.
+		 * UnemployeeInsuranceRateGetMemento#getApplyRange()
+		 */
 		@Override
 		public MonthRange getApplyRange() {
 			return MonthRange.range(YearMonth.of(dto.getHistoryInsurance().getStartMonth()),
-					YearMonth.of(dto.getHistoryInsurance().getEndMonth()));
+				YearMonth.of(dto.getHistoryInsurance().getEndMonth()));
 		}
 
 	}

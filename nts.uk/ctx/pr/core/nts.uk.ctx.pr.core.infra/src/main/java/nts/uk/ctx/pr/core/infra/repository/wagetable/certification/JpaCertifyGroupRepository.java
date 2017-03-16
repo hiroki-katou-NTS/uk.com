@@ -64,7 +64,8 @@ public class JpaCertifyGroupRepository extends JpaRepository implements CertifyG
 	 */
 	@Override
 	public void remove(String companyCode, String groupCode, long version) {
-		this.commandProxy().remove(QwtmtWagetableCertifyG.class, new QwtmtWagetableCertifyGPK(companyCode, groupCode));
+		this.commandProxy().remove(QwtmtWagetableCertifyG.class,
+			new QwtmtWagetableCertifyGPK(companyCode, groupCode));
 	}
 
 	/*
@@ -76,8 +77,9 @@ public class JpaCertifyGroupRepository extends JpaRepository implements CertifyG
 	 */
 	@Override
 	public Optional<CertifyGroup> findById(String companyCode, String code) {
-		return this.queryProxy().find(new QwtmtWagetableCertifyGPK(companyCode, code), QwtmtWagetableCertifyG.class)
-				.map(c -> toDomain(c));
+		return this.queryProxy()
+			.find(new QwtmtWagetableCertifyGPK(companyCode, code), QwtmtWagetableCertifyG.class)
+			.map(c -> toDomain(c));
 	}
 
 	/**
@@ -115,28 +117,37 @@ public class JpaCertifyGroupRepository extends JpaRepository implements CertifyG
 	 */
 	@Override
 	public List<CertifyGroup> findAll(String companyCode) {
+
 		// get entity manager
 		EntityManager em = getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
+
 		// call QWTMT_WAGETABLE_CERTIFY_G (QwtmtWagetableCertifyG SQL)
 		CriteriaQuery<QwtmtWagetableCertifyG> cq = criteriaBuilder.createQuery(QwtmtWagetableCertifyG.class);
+
 		// root data
 		Root<QwtmtWagetableCertifyG> root = cq.from(QwtmtWagetableCertifyG.class);
+
 		// select root
 		cq.select(root);
+
 		// add where
 		List<Predicate> lstpredicateWhere = new ArrayList<>();
+
 		// eq CompanyCode
 		lstpredicateWhere.add(criteriaBuilder.equal(
-				root.get(QwtmtWagetableCertifyG_.qwtmtWagetableCertifyGPK).get(QwtmtWagetableCertifyGPK_.ccd),
-				companyCode));
+			root.get(QwtmtWagetableCertifyG_.qwtmtWagetableCertifyGPK).get(QwtmtWagetableCertifyGPK_.ccd),
+			companyCode));
+
 		// set where to SQL
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
+
 		// creat query
 		TypedQuery<QwtmtWagetableCertifyG> query = em.createQuery(cq);
+
 		// exclude select
 		List<CertifyGroup> lstCertifyGroup = query.getResultList().stream().map(item -> toDomain(item))
-				.collect(Collectors.toList());
+			.collect(Collectors.toList());
 		return lstCertifyGroup;
 	}
 

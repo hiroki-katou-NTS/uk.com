@@ -30,10 +30,11 @@ import nts.uk.ctx.pr.core.infra.entity.insurance.labor.accidentrate.QismtWorkAcc
 import nts.uk.ctx.pr.core.infra.entity.insurance.labor.accidentrate.QismtWorkAccidentInsu_;
 
 /**
- * The Class JpaAccidentInsuranceRateRepository.
+ * The Class
  */
 @Stateless
-public class JpaAccidentInsuranceRateRepository extends JpaRepository implements AccidentInsuranceRateRepository {
+public class JpaAccidentInsuranceRateRepository extends JpaRepository
+	implements AccidentInsuranceRateRepository {
 
 	/** The Constant BEGIN_FIRST. */
 	public static final int BEGIN_FIRST = 0;
@@ -110,13 +111,13 @@ public class JpaAccidentInsuranceRateRepository extends JpaRepository implements
 
 		// eq String
 		lstpredicateWhere.add(criteriaBuilder.equal(
-				root.get(QismtWorkAccidentInsu_.qismtWorkAccidentInsuPK).get(QismtWorkAccidentInsuPK_.ccd),
-				companyCode));
+			root.get(QismtWorkAccidentInsu_.qismtWorkAccidentInsuPK).get(QismtWorkAccidentInsuPK_.ccd),
+			companyCode));
 
 		// eq type business 1st
 		lstpredicateWhere.add(criteriaBuilder.equal(
-				root.get(QismtWorkAccidentInsu_.qismtWorkAccidentInsuPK).get(QismtWorkAccidentInsuPK_.waInsuCd),
-				BusinessTypeEnum.Biz1St.value));
+			root.get(QismtWorkAccidentInsu_.qismtWorkAccidentInsuPK).get(QismtWorkAccidentInsuPK_.waInsuCd),
+			BusinessTypeEnum.Biz1St.value));
 
 		// set where to SQL
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
@@ -127,7 +128,7 @@ public class JpaAccidentInsuranceRateRepository extends JpaRepository implements
 		// exclude select
 		TypedQuery<QismtWorkAccidentInsu> query = em.createQuery(cq);
 		List<AccidentInsuranceRate> lstAccidentInsuranceRate = query.getResultList().stream()
-				.map(item -> this.toDomainHistory(item)).collect(Collectors.toList());
+			.map(item -> this.toDomainHistory(item)).collect(Collectors.toList());
 		return lstAccidentInsuranceRate;
 	}
 
@@ -171,13 +172,13 @@ public class JpaAccidentInsuranceRateRepository extends JpaRepository implements
 
 		// eq String
 		lstpredicateWhere.add(criteriaBuilder.equal(
-				root.get(QismtWorkAccidentInsu_.qismtWorkAccidentInsuPK).get(QismtWorkAccidentInsuPK_.ccd),
-				companyCode));
+			root.get(QismtWorkAccidentInsu_.qismtWorkAccidentInsuPK).get(QismtWorkAccidentInsuPK_.ccd),
+			companyCode));
 
 		// eq historyId
 		lstpredicateWhere.add(criteriaBuilder.equal(
-				root.get(QismtWorkAccidentInsu_.qismtWorkAccidentInsuPK).get(QismtWorkAccidentInsuPK_.histId),
-				historyId));
+			root.get(QismtWorkAccidentInsu_.qismtWorkAccidentInsuPK).get(QismtWorkAccidentInsuPK_.histId),
+			historyId));
 
 		// set where to SQL
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
@@ -198,7 +199,7 @@ public class JpaAccidentInsuranceRateRepository extends JpaRepository implements
 	 */
 	public List<QismtWorkAccidentInsu> toEntity(AccidentInsuranceRate rate) {
 		List<QismtWorkAccidentInsu> lstQismtWorkAccidentInsu = new ArrayList<>();
-		for (int i = JpaAccidentInsuranceRateRepository.BEGIN_FIRST; i < JpaAccidentInsuranceRateRepository.SIZE_TEN; i++) {
+		for (int i = BEGIN_FIRST; i < SIZE_TEN; i++) {
 			lstQismtWorkAccidentInsu.add(new QismtWorkAccidentInsu());
 		}
 		rate.saveToMemento(new JpaAccidentInsuranceRateSetMemento(lstQismtWorkAccidentInsu));
@@ -273,13 +274,13 @@ public class JpaAccidentInsuranceRateRepository extends JpaRepository implements
 
 		// eq String
 		lstpredicateWhere.add(criteriaBuilder.equal(
-				root.get(QismtWorkAccidentInsu_.qismtWorkAccidentInsuPK).get(QismtWorkAccidentInsuPK_.ccd),
-				companyCode));
+			root.get(QismtWorkAccidentInsu_.qismtWorkAccidentInsuPK).get(QismtWorkAccidentInsuPK_.ccd),
+			companyCode));
 
 		// eq business type 1st
 		lstpredicateWhere.add(criteriaBuilder.equal(
-				root.get(QismtWorkAccidentInsu_.qismtWorkAccidentInsuPK).get(QismtWorkAccidentInsuPK_.waInsuCd),
-				BusinessTypeEnum.Biz1St.value));
+			root.get(QismtWorkAccidentInsu_.qismtWorkAccidentInsuPK).get(QismtWorkAccidentInsuPK_.waInsuCd),
+			BusinessTypeEnum.Biz1St.value));
 
 		// set where to SQL
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
@@ -296,7 +297,7 @@ public class JpaAccidentInsuranceRateRepository extends JpaRepository implements
 		}
 
 		return this.findById(companyCode,
-				lstQismtWorkAccidentInsu.get(JpaAccidentInsuranceRateRepository.BEGIN_FIRST).getQismtWorkAccidentInsuPK().getHistId());
+			lstQismtWorkAccidentInsu.get(BEGIN_FIRST).getQismtWorkAccidentInsuPK().getHistId());
 	}
 
 	/*
@@ -326,7 +327,7 @@ public class JpaAccidentInsuranceRateRepository extends JpaRepository implements
 	 */
 	@Override
 	public Optional<AccidentInsuranceRate> findBetweenUpdate(String companyCode, YearMonth yearMonth,
-			String historyId) {
+		String historyId) {
 
 		// get entity manager
 		EntityManager em = this.getEntityManager();
@@ -346,18 +347,18 @@ public class JpaAccidentInsuranceRateRepository extends JpaRepository implements
 
 		// eq String
 		lstpredicateWhere.add(criteriaBuilder.equal(
-				root.get(QismtWorkAccidentInsu_.qismtWorkAccidentInsuPK).get(QismtWorkAccidentInsuPK_.ccd),
-				companyCode));
+			root.get(QismtWorkAccidentInsu_.qismtWorkAccidentInsuPK).get(QismtWorkAccidentInsuPK_.ccd),
+			companyCode));
 
 		// not eq historyId
 		lstpredicateWhere.add(criteriaBuilder.notEqual(
-				root.get(QismtWorkAccidentInsu_.qismtWorkAccidentInsuPK).get(QismtWorkAccidentInsuPK_.histId),
-				historyId));
+			root.get(QismtWorkAccidentInsu_.qismtWorkAccidentInsuPK).get(QismtWorkAccidentInsuPK_.histId),
+			historyId));
 
 		// eq business type 1st
 		lstpredicateWhere.add(criteriaBuilder.equal(
-				root.get(QismtWorkAccidentInsu_.qismtWorkAccidentInsuPK).get(QismtWorkAccidentInsuPK_.waInsuCd),
-				BusinessTypeEnum.Biz1St.value));
+			root.get(QismtWorkAccidentInsu_.qismtWorkAccidentInsuPK).get(QismtWorkAccidentInsuPK_.waInsuCd),
+			BusinessTypeEnum.Biz1St.value));
 
 		// le start year month
 		lstpredicateWhere.add(criteriaBuilder.le(root.get(QismtWorkAccidentInsu_.strYm), yearMonth.v()));
@@ -377,7 +378,7 @@ public class JpaAccidentInsuranceRateRepository extends JpaRepository implements
 		}
 
 		return this.findById(companyCode,
-				lstQismtWorkAccidentInsu.get(JpaAccidentInsuranceRateRepository.BEGIN_FIRST).getQismtWorkAccidentInsuPK().getHistId());
+			lstQismtWorkAccidentInsu.get(BEGIN_FIRST).getQismtWorkAccidentInsuPK().getHistId());
 	}
 
 }

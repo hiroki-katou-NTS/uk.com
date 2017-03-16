@@ -43,16 +43,19 @@ public class LaborInsuranceOfficeImporter implements Serializable {
 	 * @return the labor insurance office
 	 */
 	public LaborInsuranceOfficeCheckImportDto checkDuplicateCode(
-			SocialInsuranceOfficeImportDto socialInsuranceOfficeImport) {
+		SocialInsuranceOfficeImportDto socialInsuranceOfficeImport) {
+
 		// get user login companyCode
 		String companyCode = AppContexts.user().companyCode();
 		List<LaborInsuranceOffice> lstLaborInsuranceOffice = new ArrayList<>();
-		LaborInsuranceOfficeCheckImportDto laborInsuranceOfficeCheckImport = new LaborInsuranceOfficeCheckImportDto();
+		LaborInsuranceOfficeCheckImportDto laborInsuranceOfficeCheckImport;
+		laborInsuranceOfficeCheckImport = new LaborInsuranceOfficeCheckImportDto();
 		laborInsuranceOfficeCheckImport.setCode("0");
 		laborInsuranceOfficeCheckImport.setMessage("SUCC");
+
 		// check exist
-		Optional<LaborInsuranceOffice> optionalCheck = this.laborInsuranceOfficeRepository.findById(companyCode,
-				socialInsuranceOfficeImport.getCode());
+		Optional<LaborInsuranceOffice> optionalCheck = this.laborInsuranceOfficeRepository
+			.findById(companyCode, socialInsuranceOfficeImport.getCode());
 
 		if (optionalCheck.isPresent()) {
 			laborInsuranceOfficeCheckImport.setCode("1");
@@ -62,33 +65,35 @@ public class LaborInsuranceOfficeImporter implements Serializable {
 		return laborInsuranceOfficeCheckImport;
 	}
 
-	public LaborInsuranceOfficeImportOutDto importData(LaborInsuranceOfficeImportDto laborInsuranceOfficeImportDto) {
+	public LaborInsuranceOfficeImportOutDto importData(
+		LaborInsuranceOfficeImportDto laborInsuranceOfficeImportDto) {
 
 		// get userlogin companyCode
 		String companyCode = AppContexts.user().companyCode();
-		LaborInsuranceOfficeImportOutDto laborInsuranceOfficeImportOutDto = new LaborInsuranceOfficeImportOutDto();
+		LaborInsuranceOfficeImportOutDto laborInsuranceOfficeImportOutDto;
+		laborInsuranceOfficeImportOutDto = new LaborInsuranceOfficeImportOutDto();
 		int totalImport = 0;
 		laborInsuranceOfficeImportOutDto.setCode("0");
 
 		// check exist
-		Optional<LaborInsuranceOffice> optionalCheck = this.laborInsuranceOfficeRepository.findById(companyCode,
-				laborInsuranceOfficeImportDto.getSocialInsuranceOfficeImport().getCode());
+		Optional<LaborInsuranceOffice> optionalCheck = this.laborInsuranceOfficeRepository
+			.findById(companyCode, laborInsuranceOfficeImportDto.getSocialInsuranceOfficeImport().getCode());
 
 		if (optionalCheck.isPresent()) {
 			if (laborInsuranceOfficeImportDto.getCheckUpdateDuplicateCode() == 0) {
 				// update
-				laborInsuranceOfficeRepository
-						.update(laborInsuranceOfficeImportDto.getSocialInsuranceOfficeImport().toDomain(companyCode));
+				laborInsuranceOfficeRepository.update(
+					laborInsuranceOfficeImportDto.getSocialInsuranceOfficeImport().toDomain(companyCode));
 				totalImport++;
 			}
 		} else {
 			// add new
 			laborInsuranceOfficeRepository
-					.add(laborInsuranceOfficeImportDto.getSocialInsuranceOfficeImport().toDomain(companyCode));
+				.add(laborInsuranceOfficeImportDto.getSocialInsuranceOfficeImport().toDomain(companyCode));
 			totalImport++;
 		}
 		laborInsuranceOfficeImportOutDto.setTotalImport(totalImport);
-		
+
 		return laborInsuranceOfficeImportOutDto;
 	}
 

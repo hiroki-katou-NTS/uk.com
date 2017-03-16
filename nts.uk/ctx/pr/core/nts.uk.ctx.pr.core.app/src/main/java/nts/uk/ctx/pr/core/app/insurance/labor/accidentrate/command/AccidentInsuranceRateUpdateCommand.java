@@ -22,6 +22,8 @@ public class AccidentInsuranceRateUpdateCommand {
 	/**
 	 * To domain.
 	 *
+	 * @param companyCode
+	 *            the company code
 	 * @return the accident insurance rate
 	 */
 	public AccidentInsuranceRate toDomain(String companyCode) {

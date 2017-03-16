@@ -7,7 +7,7 @@ package nts.uk.ctx.pr.report.dom.insurance;
 import nts.uk.ctx.pr.report.dom.company.CompanyCode;
 
 public interface ChecklistPrintSettingSetMemento {
-	
+
 	/**
 	 * Sets the company code.
 	 *
@@ -20,7 +20,7 @@ public interface ChecklistPrintSettingSetMemento {
 	 *
 	 * @param showCategoryInsuranceItem the new show category insurance item
 	 */
-	void   setShowCategoryInsuranceItem(Boolean showCategoryInsuranceItem );
+	void   setShowCategoryInsuranceItem(Boolean showCategoryInsuranceItem);
 
 	/**
 	 * Sets the show delivery notice amount.
@@ -42,7 +42,7 @@ public interface ChecklistPrintSettingSetMemento {
 	 * @param showOffice the new show office
 	 */
 	void setShowOffice(Boolean showOffice);
-	
+
 	/**
 	 * Sets the show total.
 	 *

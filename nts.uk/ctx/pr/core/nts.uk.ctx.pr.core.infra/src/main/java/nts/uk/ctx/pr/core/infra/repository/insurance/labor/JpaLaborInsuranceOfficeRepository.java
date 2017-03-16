@@ -29,7 +29,8 @@ import nts.uk.ctx.pr.core.infra.entity.insurance.labor.QismtLaborInsuOffice_;
  * The Class JpaLaborInsuranceOfficeRepository.
  */
 @Stateless
-public class JpaLaborInsuranceOfficeRepository extends JpaRepository implements LaborInsuranceOfficeRepository {
+public class JpaLaborInsuranceOfficeRepository extends JpaRepository
+	implements LaborInsuranceOfficeRepository {
 
 	/*
 	 * (non-Javadoc)
@@ -77,14 +78,15 @@ public class JpaLaborInsuranceOfficeRepository extends JpaRepository implements 
 		List<Predicate> lstpredicateWhere = new ArrayList<>();
 		// eq CompanyCode
 		lstpredicateWhere.add(criteriaBuilder.equal(
-				root.get(QismtLaborInsuOffice_.qismtLaborInsuOfficePK).get(QismtLaborInsuOfficePK_.ccd), companyCode));
+			root.get(QismtLaborInsuOffice_.qismtLaborInsuOfficePK).get(QismtLaborInsuOfficePK_.ccd),
+			companyCode));
 		// set where to SQL
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 		// creat query
 		TypedQuery<QismtLaborInsuOffice> query = em.createQuery(cq);
 		// exclude select
-		List<LaborInsuranceOffice> lstLaborInsuranceOffice = query.getResultList().stream().map(item -> toDomain(item))
-				.collect(Collectors.toList());
+		List<LaborInsuranceOffice> lstLaborInsuranceOffice = query.getResultList().stream()
+			.map(item -> toDomain(item)).collect(Collectors.toList());
 		return lstLaborInsuranceOffice;
 	}
 
@@ -97,8 +99,9 @@ public class JpaLaborInsuranceOfficeRepository extends JpaRepository implements 
 	 */
 	@Override
 	public Optional<LaborInsuranceOffice> findById(String companyCode, String officeCode) {
-		return this.queryProxy().find(new QismtLaborInsuOfficePK(companyCode, officeCode), QismtLaborInsuOffice.class)
-				.map(c -> toDomain(c));
+		return this.queryProxy()
+			.find(new QismtLaborInsuOfficePK(companyCode, officeCode), QismtLaborInsuOffice.class)
+			.map(c -> toDomain(c));
 	}
 
 	/**
@@ -137,6 +140,7 @@ public class JpaLaborInsuranceOfficeRepository extends JpaRepository implements 
 	 */
 	@Override
 	public void remove(String companyCode, String officeCode, long version) {
-		this.commandProxy().remove(QismtLaborInsuOffice.class, new QismtLaborInsuOfficePK(companyCode, officeCode));
+		this.commandProxy().remove(QismtLaborInsuOffice.class,
+			new QismtLaborInsuOfficePK(companyCode, officeCode));
 	}
 }
