@@ -19,12 +19,12 @@ module qmm019.a {
         notHasKiji: KnockoutObservable<boolean> = ko.observable(false);
         startYm: KnockoutObservable<string> = ko.observable("");
         endYm: KnockoutObservable<string> = ko.observable("");
-        totalNormalLine: KnockoutObservable<string> = ko.observable("0行");
+        totalNormalLine: KnockoutObservable<string> = ko.observable("0陦�");
         totalNormalLineNumber: KnockoutObservable<number> = ko.observable(0);
-        totalGrayLine: KnockoutObservable<string> = ko.observable("（+非表示0行）");
+        totalGrayLine: KnockoutObservable<string> = ko.observable("�ｼ�+髱櫁｡ｨ遉ｺ0陦鯉ｼ�");
         totalGrayLineNumber: KnockoutObservable<number> = ko.observable(0);
         allowClick: KnockoutObservable<boolean> = ko.observable(true);
-        firstLayoutCode: string = ""; //Dùng cho select item đầu tiên.
+        firstLayoutCode: string = ""; //Dﾃｹng cho select item ﾄ黛ｺｧu tiﾃｪn.
         
         constructor() {
             var self = this;
@@ -61,7 +61,7 @@ module qmm019.a {
             var textSearch: string = $("#A_INP_001").val().trim();
             
             if (textSearch.length === 0){
-                nts.uk.ui.dialog.alert("コード/名称が入力されていません。");
+                nts.uk.ui.dialog.alert("繧ｳ繝ｼ繝�/蜷咲ｧｰ縺悟�･蜉帙＆繧後※縺�縺ｾ縺帙ｓ縲�");
             } else {
                 if (self.textSearch !== textSearch) {
                     self.itemListSearch = _.filter(self.itemListFull, function(item) {
@@ -76,7 +76,7 @@ module qmm019.a {
                     self.textSearch = textSearch;
                 }
                 if (self.itemListSearch.length === 0){
-                    nts.uk.ui.dialog.alert("対象データがありません。");
+                    nts.uk.ui.dialog.alert("蟇ｾ雎｡繝�繝ｼ繧ｿ縺後≠繧翫∪縺帙ｓ縲�");
                 } else {
                     let firstResult: NodeTest = _.first(self.queueSearchResult);
                     self.singleSelectedCode(firstResult.code);
@@ -98,8 +98,8 @@ module qmm019.a {
                         self.totalNormalLineNumber(self.totalNormalLineNumber() + 1);    
                 }
             }
-            self.totalNormalLine(self.totalNormalLineNumber() + "行");
-            self.totalGrayLine("（+非表示" + self.totalGrayLineNumber() + "行）");    
+            self.totalNormalLine(self.totalNormalLineNumber() + "陦�");
+            self.totalGrayLine("�ｼ�+髱櫁｡ｨ遉ｺ" + self.totalGrayLineNumber() + "陦鯉ｼ�");    
         }        
         checkKintaiKiji(){
             var self = this;
@@ -218,7 +218,7 @@ module qmm019.a {
                 return false;
             var singleSelectedCode = self.singleSelectedCode().split(';');
             nts.uk.ui.windows.setShared('stmtCode', singleSelectedCode[0]);
-            nts.uk.ui.windows.sub.modal('/view/qmm/019/d/index.xhtml', {title: '明細レイアウトの作成＞履歴追加'}).onClosed(function(): any {
+            nts.uk.ui.windows.sub.modal('/view/qmm/019/d/index.xhtml', {title: '譏守ｴｰ繝ｬ繧､繧｢繧ｦ繝医�ｮ菴懈�撰ｼ槫ｱ･豁ｴ霑ｽ蜉�'}).onClosed(function(): any {
                 self.start(self.singleSelectedCode());
             });
         }
@@ -234,13 +234,14 @@ module qmm019.a {
             nts.uk.ui.windows.setShared('stmtCode', singleSelectedCode[0]);
             nts.uk.ui.windows.setShared('startYm', singleSelectedCode[1]);
             nts.uk.ui.windows.setShared('historyId', self.layoutMaster().historyId);
-            nts.uk.ui.windows.sub.modal('/view/qmm/019/e/index.xhtml', {title: '明細レイアウトの作成＞履歴の編集' }).onClosed(function(): any  {
+            nts.uk.ui.windows.sub.modal('/view/qmm/019/e/index.xhtml', {title: '譏守ｴｰ繝ｬ繧､繧｢繧ｦ繝医�ｮ菴懈�撰ｼ槫ｱ･豁ｴ縺ｮ邱ｨ髮�' }).onClosed(function(): any  {
                 self.start(self.singleSelectedCode());
             });
         }
         openGDialog(){
             var self = this;
-            nts.uk.ui.windows.sub.modal('/view/qmm/019/g/index.xhtml', {title: '明細レイアウトの作成＞新規登録'}).onClosed(function(): any  {
+             nts.uk.ui.windows.sub.modal('/view/qmm/019/g/index.xhtml', option);
+            nts.uk.ui.windows.sub.modal('/view/qmm/019/g/index.xhtml', {title: '譏守ｴｰ繝ｬ繧､繧｢繧ｦ繝医�ｮ菴懈�撰ｼ樊眠隕冗匳骭ｲ'}).onClosed(function(): any  {
                 self.start(undefined);
             });
         }

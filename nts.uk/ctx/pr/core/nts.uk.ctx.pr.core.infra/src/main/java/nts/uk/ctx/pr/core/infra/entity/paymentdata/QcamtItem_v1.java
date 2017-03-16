@@ -15,10 +15,10 @@ import nts.uk.ctx.pr.core.infra.entity.layout.QstmtStmtLayoutDetail;
 
 @Entity
 @Table(name="QCAMT_ITEM")
-public class QcamtItem {
+public class QcamtItem_v1 {
 
 	@EmbeddedId
-    public QcamtItemPK qcamtItemPK;
+    public QcamtItemPK_v1 qcamtItemPK;
 	
 	@Column(name = "ITEM_NAME")
 	public String itemName;

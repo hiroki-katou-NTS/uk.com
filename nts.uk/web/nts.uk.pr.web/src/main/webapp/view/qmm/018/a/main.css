@@ -1,0 +1,23 @@
+.control-group.valign-center > * { vertical-align: middle; }
+.control-group.valign-top > * { vertical-align: top; }
+.control-group.valign-bottom > * { vertical-align: bottom; }
+.control-group { margin: 10px; }
+.halign-left { text-align: left; }
+.halign-right { text-align: right; }
+.halign-center { text-align: center; }
+.bg-green {background-color: #E0F59E;}
+
+#functions-area .label {
+	margin-top: 15px;
+	margin-left: 1000px;
+}
+
+#division {
+	width: 600px;
+	margin-left: 0px;
+}
+
+.division {
+	width: 600px;
+	margin-left: 0px;	
+}
