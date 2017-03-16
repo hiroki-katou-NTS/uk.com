@@ -21,9 +21,6 @@ public class ReportItemDto {
 	/** The monthly datas. */
 	public List<MonthlyData> monthlyDatas;
 	
-	/** The is total item. */
-	public boolean isTotalItem;
-	
 	/** The total. */
 	@Getter
 	private long total;

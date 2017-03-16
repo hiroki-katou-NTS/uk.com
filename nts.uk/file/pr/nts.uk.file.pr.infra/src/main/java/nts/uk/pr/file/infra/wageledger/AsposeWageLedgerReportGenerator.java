@@ -5,6 +5,7 @@
 package nts.uk.pr.file.infra.wageledger;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -68,6 +69,12 @@ public class AsposeWageLedgerReportGenerator extends AsposeCellsReportGenerator 
 	
 	/** The Constant GREEN_COLOR. */
 	private static final Color GREEN_COLOR = Color.fromArgb(199, 243, 145);
+	
+	/** The amount item left on current page. */
+	private int amountItemLeftOnCurrentPage = MAX_RECORD_ON_ONE_PAGE;
+	
+	/** The is green row. */
+	private boolean isGreenRow;
 
 	/* (non-Javadoc)
 	 * @see nts.uk.file.pr.app.export.wageledger.WageLedgerReportGenerator
@@ -79,33 +86,46 @@ public class AsposeWageLedgerReportGenerator extends AsposeCellsReportGenerator 
 		
 		try {
 			AsposeCellsReportContext reportContext = this.createContext(TEMPLATE_FILE);
+			Worksheet ws = reportContext.getDesigner().getWorkbook().getWorksheets().get(0);
 			
 			MutableInt currentRow = new MutableInt(ROW_START_REPORT);
+			HeaderReportData headerData = reportData.headerData;
 			
 			// Fill header data.
-			reportContext.setDataSource("Employee", reportData.headerData);
+			reportContext.getDesigner().setDataSource("HEADER", Arrays.asList(reportData.headerData));
 			
 			// Fill Salary payment content.
-			this.fillSalaryHeaderTable(reportContext, currentRow);
-			this.fillPaymentDataContentOldLayout(reportContext, reportData.salaryPaymentData, currentRow);
-			this.breakPage(reportContext, currentRow);
+			this.fillSalaryOrBonusHeaderTable(reportContext, currentRow, headerData.salaryMonthList, "【給与支給】");
+			this.fillPaymentDataContentOldLayout(reportContext, reportData.salaryPaymentData,
+					currentRow, headerData.salaryMonthList);
+			this.breakPage(reportContext, currentRow, headerData.salaryMonthList.size());
 			
 			// Fill Salary deduction, salary attendance content and net salary.
 			this.fillDeductionAndAttendanceDataContentOldLayout(reportContext, reportData.salaryDeductionData,
-					reportData.netSalaryData, reportData.salaryAttendanceDatas, currentRow);
-			this.breakPage(reportContext, currentRow);
+					reportData.netSalaryData, reportData.salaryAttendanceDatas, currentRow, headerData.salaryMonthList);
+			
+			// Create end line of salary part.
+			Range salaryEndRowRange = ws.getCells().createRange(currentRow.intValue() - 1, COLUMN_START_REPORT + 2, 1,
+					headerData.salaryMonthList.size() + 1);
+			salaryEndRowRange.setOutlineBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
+			this.breakPage(reportContext, currentRow, headerData.bonusMonthList.size());
 			
 			// Fill Bonus payment content.
-			this.fillBonusHeaderTable(reportContext, reportData.headerData, currentRow);
-			this.fillPaymentDataContentOldLayout(reportContext, reportData.bonusPaymentData, currentRow);
-			this.breakPage(reportContext, currentRow);
+			this.fillSalaryOrBonusHeaderTable(reportContext, currentRow, headerData.bonusMonthList, "【賞与支給】");
+			this.fillPaymentDataContentOldLayout(reportContext, reportData.bonusPaymentData,
+					currentRow, headerData.bonusMonthList);
+			this.breakPage(reportContext, currentRow, headerData.bonusMonthList.size());
 			
 			// Fill Bonus deduction, bonus attendance content and total bonus.
 			this.fillDeductionAndAttendanceDataContentOldLayout(reportContext, reportData.bonusDeductionData,
-					reportData.totalBonusData,reportData.salaryAttendanceDatas, currentRow);
+					reportData.totalBonusData,reportData.salaryAttendanceDatas, currentRow, headerData.bonusMonthList);
+			
+			// Create end line of bonus part.
+			Range bonusEndRowRange = ws.getCells().createRange(currentRow.intValue() - 1, COLUMN_START_REPORT + 2, 1,
+					headerData.bonusMonthList.size() + 1);
+			bonusEndRowRange.setOutlineBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
 			
 			// Set print area.
-			Worksheet ws = reportContext.getDesigner().getWorkbook().getWorksheets().get(0);
 			PageSetup pageSetup = ws.getPageSetup();
 			Cell endCell = ws.getCells().get(currentRow.intValue(), 14);
 			pageSetup.setPrintArea("A1:" + endCell.getName());
@@ -129,16 +149,17 @@ public class AsposeWageLedgerReportGenerator extends AsposeCellsReportGenerator 
 	 * @param reportContext the report context
 	 * @param paymentData the payment data
 	 * @param currentRow the current row
+	 * @param monthList the month list
 	 */
-	private void fillPaymentDataContentOldLayout(AsposeCellsReportContext reportContext, PaymentData paymentData,
-			MutableInt currentRow) {
+	private void fillPaymentDataContentOldLayout(AsposeCellsReportContext reportContext,
+			PaymentData paymentData, MutableInt currentRow, List<Integer> monthList) {
 		List<ReportItemDto> reportItems = paymentData.aggregateItemList;
 		reportItems.add(paymentData.totalTax);
 		reportItems.add(paymentData.totalTaxExemption);
 		reportItems.add(paymentData.totalSubsidy);
 		
 		// Fill item list.
-		this.fillReportItemsData(reportContext, reportItems, currentRow, "支給");
+		this.fillReportItemsData(reportContext, reportItems, currentRow, "支給", monthList);
 	}
 	
 	/**
@@ -149,20 +170,22 @@ public class AsposeWageLedgerReportGenerator extends AsposeCellsReportGenerator 
 	 * @param totalData the total data
 	 * @param attendanceData the attendance data
 	 * @param currentRow the current row
+	 * @param monthList the month list
 	 */
 	private void fillDeductionAndAttendanceDataContentOldLayout(AsposeCellsReportContext reportContext,
-			DeductionData deductionData, ReportItemDto totalData, List<ReportItemDto> attendanceData, MutableInt currentRow) {
+			DeductionData deductionData, ReportItemDto totalData, List<ReportItemDto> attendanceData,
+			MutableInt currentRow, List<Integer> monthList) {
 		
 		// Fill Deduction data.
 		List<ReportItemDto> reportItems = deductionData.aggregateItemList;
 		reportItems.add(deductionData.totalDeduction);
-		this.fillReportItemsData(reportContext, reportItems, currentRow, "控除");
+		this.fillReportItemsData(reportContext, reportItems, currentRow, "控除", monthList);
 		
 		// Fill total salary (net salary) item.
-		this.fillItemData(reportContext, totalData, currentRow, COLUMN_START_REPORT, GREEN_COLOR, true);
+		this.fillItemData(reportContext, totalData, currentRow, COLUMN_START_REPORT, true, monthList);
 		
 		// Fill Atendance Data.
-		this.fillReportItemsData(reportContext, attendanceData, currentRow, "勤怠");
+		this.fillReportItemsData(reportContext, attendanceData, currentRow, "勤怠", monthList);
 	}
 	
 	/**
@@ -172,16 +195,18 @@ public class AsposeWageLedgerReportGenerator extends AsposeCellsReportGenerator 
 	 * @param reportItems the report items
 	 * @param currentRow the current row
 	 * @param contentName the content name
+	 * @param monthList the month list
 	 */
 	private void fillReportItemsData(AsposeCellsReportContext reportContext, List<ReportItemDto> reportItems,
-			MutableInt currentRow, String contentName) {
+			MutableInt currentRow, String contentName, List<Integer> monthList) {
 		Worksheet ws = reportContext.getDesigner().getWorkbook().getWorksheets().get(0);
 		Cells cells = ws.getCells();
 		int totalItemData = reportItems.size();
 		int fromIndex = 0;
 		
 		while (totalItemData > 0) {
-			int toIndex = fromIndex + MAX_RECORD_ON_ONE_PAGE;
+			int amountItemOnPage = Math.min(this.amountItemLeftOnCurrentPage, MAX_RECORD_ON_ONE_PAGE);
+			int toIndex = fromIndex + amountItemOnPage;
 			List<ReportItemDto> items = this.safeSubList(reportItems, fromIndex, toIndex);
 			int currentColumn = COLUMN_START_REPORT;
 			
@@ -200,19 +225,12 @@ public class AsposeWageLedgerReportGenerator extends AsposeCellsReportGenerator 
 				ReportItemDto item = items.get(i);
 				
 				// Fill items
-				Color backgroundColor = i % 2 == 0 ? GREEN_COLOR : null;
-				this.fillItemData(reportContext, item, currentRow, currentColumn, backgroundColor, false);
+				this.fillItemData(reportContext, item, currentRow, currentColumn, false, monthList);
 			}
-			
 			
 			// Caculate to next page.
 			totalItemData -= MAX_RECORD_ON_ONE_PAGE;
 			fromIndex += MAX_RECORD_ON_ONE_PAGE;
-			
-			// Next page.
-			if (totalItemData > 0) {
-				this.breakPage(reportContext, currentRow);
-			}
 		}
 		
 	}
@@ -225,11 +243,16 @@ public class AsposeWageLedgerReportGenerator extends AsposeCellsReportGenerator 
 	 * @param currentRow the current row
 	 * @param currentColumn the current column
 	 * @param backgroundColor the background color
+	 * @param isTotalData the is total data
+	 * @param monthList the month list
 	 */
 	private void fillItemData(AsposeCellsReportContext reportContext, ReportItemDto item, MutableInt currentRow,
-			Integer currentColumn, Color backgroundColor, Boolean isTotalData) {
+			Integer currentColumn, Boolean isTotalData, List<Integer> monthList) {
 		Worksheet ws = reportContext.getDesigner().getWorkbook().getWorksheets().get(0);
 		Cells cells = ws.getCells();
+		Color backgroundColor = this.isGreenRow ? GREEN_COLOR : null;
+		this.isGreenRow = !this.isGreenRow;
+		
 		
 		// Fill item name cell.
 		int amountColumn = isTotalData ? 2 : 1;
@@ -243,16 +266,14 @@ public class AsposeWageLedgerReportGenerator extends AsposeCellsReportGenerator 
 		// Fill item data cells.
 		Map<Integer, MonthlyData> dataMap = item.monthlyDatas.stream()
 				.collect(Collectors.toMap(d -> d.month, Function.identity()));
-		for (int j = 0; j < item.monthlyDatas.size(); j++) {
-			MonthlyData data = dataMap.get(j + 1);
+		for (int j = 0; j < monthList.size(); j++) {
+			MonthlyData data = dataMap.get(monthList.get(j));
 			Cell monthCell = cells.get(currentRow.intValue(), currentColumn);
 			monthCell.setValue(data.amount);
 
 			// Set style for cell.
-			StyleModel dataCellStyle = new StyleModel();
-			dataCellStyle.borderType = j == item.monthlyDatas.size() - 1 ? WLBorderType.RightBoderOnly
-					: WLBorderType.None;
-			dataCellStyle.backgroundColor = backgroundColor;
+			StyleModel dataCellStyle = StyleModel
+					.createItemCellStyle(backgroundColor, j != item.monthlyDatas.size() - 1);
 			this.setStyleCell(monthCell, dataCellStyle);
 
 			// Next column.
@@ -263,13 +284,18 @@ public class AsposeWageLedgerReportGenerator extends AsposeCellsReportGenerator 
 		Cell totalCell = cells.get(currentRow.intValue(), currentColumn);
 		item.calculateTotal();
 		totalCell.setValue(item.getTotal());
-		StyleModel totalCellStyle = new StyleModel();
-		totalCellStyle.backgroundColor = backgroundColor;
-		totalCellStyle.borderType = WLBorderType.Outside;
+		StyleModel totalCellStyle = StyleModel.createTotalCellStyle(backgroundColor);
 		this.setStyleCell(totalCell, totalCellStyle);
 		
 		// Next row.
 		currentRow.increment();
+		// Calculate amount item left on page.
+		this.amountItemLeftOnCurrentPage--;
+		
+		// Check row is last of page.
+		if (this.amountItemLeftOnCurrentPage == 0) {
+			this.breakPage(reportContext, currentRow, monthList.size());
+		}
 	}
 	
 	/**
@@ -278,78 +304,55 @@ public class AsposeWageLedgerReportGenerator extends AsposeCellsReportGenerator 
 	 * @param reportContext the report context
 	 * @param currentRow the current row
 	 */
-	private void breakPage(AsposeCellsReportContext reportContext, MutableInt currentRow) {
+	private void breakPage(AsposeCellsReportContext reportContext, MutableInt currentRow, Integer amountMonth) {
+		Worksheet ws = reportContext.getDesigner().getWorkbook().getWorksheets().get(0);
+		Cells cells = ws.getCells();
+		// Create line end page.
+		Range endRowRange = cells.createRange(currentRow.intValue() - 1, COLUMN_START_REPORT + 2, 1, amountMonth + 1);
+		endRowRange.setOutlineBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
+
 		int currentPage = currentRow.intValue() / MAX_ROW_ON_ONE_PAGE + 1;
 		currentRow.setValue(currentPage * MAX_ROW_ON_ONE_PAGE + ROW_START_REPORT);
+		this.amountItemLeftOnCurrentPage = MAX_RECORD_ON_ONE_PAGE;
+
+		// Create line start page.
+		Range startRowRange = cells.createRange(currentRow.intValue(), COLUMN_START_REPORT + 2, 1, amountMonth + 1);
+		startRowRange.setOutlineBorder(BorderType.TOP_BORDER, CellBorderType.THIN, Color.getBlack());
 	}
 	
+	
 	/**
-	 * Fill salary header table.
+	 * Fill salary or bonus header table.
 	 *
 	 * @param reportContext the report context
 	 * @param currentRow the current row
+	 * @param monthList the month list
 	 */
-	private void fillSalaryHeaderTable(AsposeCellsReportContext reportContext, MutableInt currentRow) {
+	private void fillSalaryOrBonusHeaderTable(AsposeCellsReportContext reportContext, MutableInt currentRow,
+			List<Integer> monthList, String contentLabel) {
 		Worksheet ws = reportContext.getDesigner().getWorkbook().getWorksheets().get(0);
 		Cells cells = ws.getCells();
 		int startColumn = COLUMN_START_REPORT;
 		
 		// Create Salary label cell.
-		Range salaryLabelRange = cells.createRange(currentRow.intValue(), startColumn, 1, 2);
-		salaryLabelRange.get(0, 0).setValue("【給与支給】");
+		Range salaryLabelRange = cells.createRange(currentRow.decrementAndGet(), startColumn, 1, 2);
+		salaryLabelRange.get(0, 0).setValue(contentLabel);
 		salaryLabelRange.merge();
 		this.setStyleRange(salaryLabelRange, BLUE_COLOR);
 		startColumn += 2;
 		
 		// Create 12 month cells.
-		for (int i = 1; i <= 12; i++) {
+		for (int i = 0; i < monthList.size(); i++) {
 			Cell monthCell = cells.get(currentRow.intValue(), startColumn);
-			monthCell.setValue(i + " 月");
-			this.setStyleCell(monthCell, StyleModel.createHeaderCellStyle());
+			monthCell.setValue(monthList.get(i) + " 月");
+			this.setStyleCell(monthCell, StyleModel.createHeaderCellStyle(false));
 			startColumn++;
 		}
 		
 		// Create Total cell.
 		Cell totalCell = cells.get(currentRow.intValue(), startColumn);
 		totalCell.setValue("合計");
-		this.setStyleCell(totalCell, StyleModel.createHeaderCellStyle());
-		
-		// Next row.
-		currentRow.increment();
-	}
-	
-	/**
-	 * Fill bonus header table.
-	 *
-	 * @param reportContext the report context
-	 * @param headerData the header data
-	 * @param currentRow the current row
-	 */
-	private void fillBonusHeaderTable(AsposeCellsReportContext reportContext, HeaderReportData headerData,
-			MutableInt currentRow) {
-		Worksheet ws = reportContext.getDesigner().getWorkbook().getWorksheets().get(0);
-		Cells cells = ws.getCells();
-		int startColumn = COLUMN_START_REPORT;
-		
-		// Create Bunus label cell.
-		Range bonusLabelRange = cells.createRange(currentRow.intValue(), startColumn, 1, 2);
-		bonusLabelRange.get(0, 0).setValue("【賞与支給】");
-		bonusLabelRange.merge();
-		this.setStyleRange(bonusLabelRange, BLUE_COLOR);
-		startColumn++;
-		
-		// Create bonus month cells.
-		for (int i = 0; i < headerData.bonusMonthList.size(); i++) {
-			Cell monthCell = cells.get(currentRow.intValue(), startColumn);
-			monthCell.setValue(headerData.bonusMonthList.get(i) + " 月");
-			this.setStyleCell(monthCell, StyleModel.createHeaderCellStyle());
-			startColumn++;
-		}
-		
-		// Create Total cell.
-		Cell totalCell = cells.get(currentRow.intValue(), startColumn);
-		totalCell.setValue("合計");
-		this.setStyleCell(totalCell, StyleModel.createHeaderCellStyle());
+		this.setStyleCell(totalCell, StyleModel.createHeaderCellStyle(true));
 		
 		// Next row.
 		currentRow.increment();
@@ -390,6 +393,7 @@ public class AsposeWageLedgerReportGenerator extends AsposeCellsReportGenerator 
 		styleFlag.setBorders(true);
 		styleFlag.setHorizontalAlignment(true);
 		styleFlag.setVerticalAlignment(true);
+		styleFlag.setWrapText(true);
 		range.applyStyle(style, styleFlag);;
 	}
 	
@@ -397,15 +401,18 @@ public class AsposeWageLedgerReportGenerator extends AsposeCellsReportGenerator 
 	 * Sets the style cell.
 	 *
 	 * @param cell the cell
-	 * @param backgroundColor the background color
-	 * @param borderType the border type
+	 * @param styleModel the style model
 	 */
 	private void setStyleCell(Cell cell, StyleModel styleModel) {
 		Style style = cell.getStyle();
+		
+		// Background Color
 		if (styleModel.backgroundColor != null) {
 			style.setForegroundColor(styleModel.backgroundColor);
 			style.setPattern(BackgroundType.SOLID);
 		}
+		
+		// Border
 		switch (styleModel.borderType) {
 		case None:
 			break;
@@ -419,18 +426,42 @@ public class AsposeWageLedgerReportGenerator extends AsposeCellsReportGenerator 
 			// Setting the line style of the right border
 			style.setBorder(BorderType.RIGHT_BORDER, CellBorderType.THIN, Color.getBlack());
 			break;
-		case RightBoderOnly:
-			style.setBorder(BorderType.RIGHT_BORDER, CellBorderType.DOTTED, Color.getBlack());
+		case ItemCellBorder:
+			style.setBorder(BorderType.RIGHT_BORDER, CellBorderType.HAIR, Color.getBlack());
 			break;
+		case ToTalCellBorder:
+			// Setting the line style of the left border
+			style.setBorder(BorderType.LEFT_BORDER, CellBorderType.DOUBLE, Color.getBlack());
+			// Setting the line style of the right border
+			style.setBorder(BorderType.RIGHT_BORDER, CellBorderType.THIN, Color.getBlack());
+			break;
+		case TotalHeaderBorder:
+			// Setting the line style of the top border
+			style.setBorder(BorderType.TOP_BORDER, CellBorderType.THIN, Color.getBlack());
+			// Setting the line style of the bottom border
+			style.setBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
+			// Setting the line style of the left border
+			style.setBorder(BorderType.LEFT_BORDER, CellBorderType.DOUBLE, Color.getBlack());
+			// Setting the line style of the right border
+			style.setBorder(BorderType.RIGHT_BORDER, CellBorderType.THIN, Color.getBlack());
 		default:
 			break;
 		}
+		
+		// Alignment.
 		if (styleModel.isCenterText) {
 			style.setVerticalAlignment(TextAlignmentType.CENTER);
 			style.setHorizontalAlignment(TextAlignmentType.CENTER);
+		} else {
+			style.setHorizontalAlignment(TextAlignmentType.RIGHT);
 		}
 		if (styleModel.isWrapText) {
 			style.setTextWrapped(true);
+		}
+		
+		// Number formart.
+		if (styleModel.isNummeric) {
+			style.setCustom("#,##0;-#,##0");
 		}
 		cell.setStyle(style);
 	}
@@ -510,11 +541,14 @@ public class AsposeWageLedgerReportGenerator extends AsposeCellsReportGenerator 
 		/** The Outside. */
 		Outside,
 		
-		/** The Right boder only. */
-		RightBoderOnly,
+		/** The Item cell border. */
+		ItemCellBorder,
 		
+		/** The To tal cell border. */
+		ToTalCellBorder,
 		
-		
+		/** The Total header border. */
+		TotalHeaderBorder
 	}
 	
 	/**
@@ -534,16 +568,48 @@ public class AsposeWageLedgerReportGenerator extends AsposeCellsReportGenerator 
 		/** The is wrap text. */
 		public boolean isWrapText;
 		
+		/** The is nummeric. */
+		public boolean isNummeric;
+		
 		/**
 		 * Creates the header cell style.
 		 *
 		 * @return the style model
 		 */
-		public static StyleModel createHeaderCellStyle() {
+		public static StyleModel createHeaderCellStyle(boolean isTotalCell) {
 			StyleModel style = new StyleModel();
 			style.backgroundColor = BLUE_COLOR;
-			style.borderType = WLBorderType.Outside;
+			style.borderType = isTotalCell ? WLBorderType.TotalHeaderBorder : WLBorderType.Outside;
 			style.isCenterText = true;
+			return style;
+		}
+		
+		/**
+		 * Creates the total cell style.
+		 *
+		 * @param backgroundColor the background color
+		 * @return the style model
+		 */
+		public static StyleModel createTotalCellStyle(Color backgroundColor) {
+			StyleModel style = new StyleModel();
+			style.backgroundColor = backgroundColor;
+			style.borderType = WLBorderType.ToTalCellBorder;
+			style.isNummeric = true;
+			return style;
+		}
+		
+		/**
+		 * Creates the item cell style.
+		 *
+		 * @param backgroundColor the background color
+		 * @param isSetBorder the is set border
+		 * @return the style model
+		 */
+		public static StyleModel createItemCellStyle(Color backgroundColor, boolean isSetBorder) {
+			StyleModel style = new StyleModel();
+			style.backgroundColor = backgroundColor;
+			style.borderType = isSetBorder ? WLBorderType.ItemCellBorder : WLBorderType.None;
+			style.isNummeric = true;
 			return style;
 		}
 	}
