@@ -1,0 +1,66 @@
+@import url("../a/base.css");
+
+#contents-area {
+	text-align: center;
+}
+
+#content-header {
+	position: relative;
+	padding: 10px;
+	border-bottom: solid 1px #B1B1B1;
+	display: inline-block;
+}
+
+#H_BTN_002 {
+	margin-left: 20px;
+}
+
+#H_Text_001 {
+	width: 700px;
+}
+
+.divLineCol1 {
+	width: 150px;
+	min-height: 1px;
+}
+
+#content-header-top {
+	border-bottom: solid 1px #B1B1B1;
+	display: inline-block;
+	padding-bottom: 15px;
+}
+
+#content-header-bottom {
+	padding: 15px 0px;
+}
+
+.checkboxLightGreen, .checkboxBrightGreen {
+	width: 70px;
+	height: 30px;
+	line-height: 25px;
+	margin-right: 5px;
+	padding-left: 5px;
+}
+
+.checkboxLightGreen {
+	background-color: #edfac2;
+}
+
+.checkboxBrightGreen {
+	background-color: #c7f391;
+}
+
+.switchMediumSize button {
+	height: 30px;
+	width: 90px;
+	font-size: 0.8rem;
+}
+
+.divLine>*, .divLineCol2>*, .divLineCol1>* {
+	display: inline-block;
+	vertical-align: middle;
+}
+
+#H_INP_001 input, #H_INP_002 input {
+	height: 18px;
+}

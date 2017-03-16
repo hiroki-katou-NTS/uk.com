@@ -1,4 +1,4 @@
-// TreeGrid Node
+var screenQmm019;
 var qmm019;
 (function (qmm019) {
     var a;
@@ -20,21 +20,35 @@ var qmm019;
                 this.allowClick = ko.observable(true);
                 this.firstLayoutCode = ""; //Dùng cho select item đầu tiên.
                 var self = this;
+                screenQmm019 = ko.observable(self);
                 self.itemList = ko.observableArray([]);
                 self.singleSelectedCode = ko.observable(null);
                 self.layouts = ko.observableArray([]);
                 self.layoutsMax = ko.observableArray([]);
+                var t = new a.service.model.LayoutHeadDto();
+                t.stmtName = '';
+                t.companyCode = '';
+                t.stmtCode = '';
+                self.layoutHead = ko.observable(ko.mapping.fromJS(t));
                 self.layoutMaster = ko.observable(new a.service.model.LayoutMasterDto());
-                self.categories = ko.observableArray([new a.service.model.Category([], 0, self)]);
+                self.categories = ko.observableArray([new a.service.model.Category([], 0)]);
                 self.singleSelectedCode.subscribe(function (codeChanged) {
+                    console.log(codeChanged);
                     var layoutFind = _.find(self.layouts(), function (layout) {
                         return layout.stmtCode === codeChanged.split(';')[0] && layout.startYm === parseInt(codeChanged.split(';')[1]);
                     });
-                    if (layoutFind !== undefined) {
+                    var layoutHead = _.find(self.layoutsMax(), function (layoutHead) {
+                        return layoutHead.stmtCode === codeChanged.split(';')[0];
+                    });
+                    console.log(layoutHead);
+                    if (layoutFind !== undefined && layoutHead != undefined) {
                         self.layoutMaster(layoutFind);
+                        self.layoutHead(ko.mapping.fromJS(layoutHead));
+                        console.log(layoutFind);
+                        self.layoutMaster((layoutFind));
                         self.startYm(nts.uk.time.formatYearMonth(self.layoutMaster().startYm));
                         self.endYm(nts.uk.time.formatYearMonth(self.layoutMaster().endYm));
-                        a.service.getCategoryFull(layoutFind.stmtCode, layoutFind.startYm, self)
+                        a.service.getCategoryFull(layoutFind.stmtCode, layoutFind.historyId, layoutFind.startYm)
                             .done(function (listResult) {
                             self.categories(listResult);
                             self.calculateLine();
@@ -123,10 +137,12 @@ var qmm019;
             ScreenModel.prototype.start = function (currentLayoutSelectedCode) {
                 var self = this;
                 var dfd = $.Deferred();
-                a.service.getAllLayout().done(function (layouts) {
+                a.service.getAllLayoutHist().done(function (layouts) {
                     if (layouts.length > 0) {
                         self.layouts(layouts);
-                        a.service.getLayoutsWithMaxStartYm().done(function (layoutsMax) {
+                        console.log(layouts);
+                        a.service.getAllLayoutHead().done(function (layoutsMax) {
+                            console.log(layoutsMax);
                             self.layoutsMax(layoutsMax);
                             self.buildTreeDataSource();
                             //let firstLayout: service.model.LayoutMasterDto = _.first(self.layouts());
@@ -171,7 +187,7 @@ var qmm019;
             ScreenModel.prototype.registerLayout = function () {
                 var self = this;
                 a.service.registerLayout(self.layoutMaster(), self.categories()).done(function (res) {
-                    a.service.getCategoryFull(self.layoutMaster().stmtCode, self.layoutMaster().startYm, self)
+                    a.service.getCategoryFull(self.layoutMaster().stmtCode, self.layoutMaster().historyId, self.layoutMaster().startYm)
                         .done(function (listResult) {
                         self.categories(listResult);
                         self.checkKintaiKiji();
@@ -183,14 +199,14 @@ var qmm019;
             };
             ScreenModel.prototype.addKintaiCategory = function () {
                 var self = this;
-                var category = new a.service.model.Category([], 2, self);
+                var category = new a.service.model.Category([], 2);
                 self.categories.push(category);
                 self.notHasKintai(false);
                 self.bindSortable();
             };
             ScreenModel.prototype.addKijiCategory = function () {
                 var self = this;
-                var category = new a.service.model.Category([], 3, self);
+                var category = new a.service.model.Category([], 3);
                 self.categories.push(category);
                 self.notHasKiji(false);
                 self.bindSortable();
@@ -224,7 +240,8 @@ var qmm019;
             ScreenModel.prototype.openGDialog = function () {
                 var self = this;
                 nts.uk.ui.windows.sub.modal('/view/qmm/019/g/index.xhtml', { title: '明細レイアウトの作成＞新規登録' }).onClosed(function () {
-                    self.start(undefined);
+                    // anh Lam
+                    //self.start(undefined);
                 });
             };
             return ScreenModel;

@@ -1,4 +1,4 @@
-module nts.uk.pr.view.qmm002_1.a {
+module nts.uk.pr.view.qmm002.a {
     export module service {
         var paths = {
             getBankList: "basic/system/bank/find/all",
