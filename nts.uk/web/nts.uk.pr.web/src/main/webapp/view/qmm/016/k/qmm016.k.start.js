@@ -6,21 +6,18 @@ var nts;
         (function (pr) {
             var view;
             (function (view) {
-                var base;
-                (function (base) {
-                    var simplehistory;
-                    (function (simplehistory) {
-                        var newhistory;
-                        (function (newhistory) {
-                            __viewContext.ready(function () {
-                                var screenModel = new newhistory.viewmodel.ScreenModel();
-                                screenModel.startPage().done(function () {
-                                    __viewContext.bind(screenModel);
-                                });
+                var qmm016;
+                (function (qmm016) {
+                    var k;
+                    (function (k) {
+                        __viewContext.ready(function () {
+                            var screenModel = new k.viewmodel.ScreenModel();
+                            screenModel.startPage().done(function () {
+                                __viewContext.bind(screenModel);
                             });
-                        })(newhistory = simplehistory.newhistory || (simplehistory.newhistory = {}));
-                    })(simplehistory = base.simplehistory || (base.simplehistory = {}));
-                })(base = view.base || (view.base = {}));
+                        });
+                    })(k = qmm016.k || (qmm016.k = {}));
+                })(qmm016 = view.qmm016 || (view.qmm016 = {}));
             })(view = pr.view || (pr.view = {}));
         })(pr = uk.pr || (uk.pr = {}));
     })(uk = nts.uk || (nts.uk = {}));

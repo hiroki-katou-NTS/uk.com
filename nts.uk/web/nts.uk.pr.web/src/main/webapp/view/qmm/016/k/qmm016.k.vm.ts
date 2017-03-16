@@ -14,7 +14,6 @@ module nts.uk.pr.view.qmm016.k {
          * Callback data.
          */
         export interface CallBackData {
-            
             masterCode: string;
             startYearMonth: number;
         }

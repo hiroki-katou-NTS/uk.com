@@ -7,8 +7,8 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<com:stylefile path="qmm016.k.style.css" />
 			<com:scriptfile path="qmm016.k.start.js" />
+			<com:scriptfile path="/view/base/simplehistory/service.js" />
 			<com:scriptfile path="../a/qmm016.a.service.js" />
 			<com:scriptfile path="qmm016.k.vm.js" />
 			<script type="text/javascript">
@@ -23,38 +23,6 @@
 			<!-- BEGIN CONTENT AREA-->
 			<div id="this-contents-area">
 				<label>新たに作成する履歴の、作成情報を入力してください。</label>
-				<table class="form-default">
-					<ui:include src="../dialogbase/namepart.xhtml"/>
-					<tr>
-						<td><div data-bind="ntsFormLabel: { required: true }">期間</div></td>
-						<td>
-							<span id="startYearMonth" data-bind="ntsDatePicker: {value: startYearMonth, dateFormat: 'yyyy/MM'}"/>
-							<label data-bind="text: ' ~ 9999/12'"/>
-						</td>
-					</tr>
-					<tr>
-						<td><div data-bind="ntsFormLabel: { required: true }">履歴の引継ぎ</div></td>
-						<td><label class="ntsRadioBox">
-							<input type="radio"
-								name="createType"
-								id="createTypeCopy"
-								data-bind="checkedValue: 'COPY', checked: createType" />
-							<span class="box"/>
-							<label for="createTypeCopy" class="label" data-bind="text: '最新の履歴 (' + lastYearMonth + ') から引き継ぐ'"/>
-						</label></td>
-					</tr>
-					<tr>
-						<td></td>
-						<td><label class="ntsRadioBox">
-							<input type="radio"
-								name="createType"
-								id="createTypeInit"
-								data-bind="checkedValue: 'INIT', checked: createType" />
-							<span class="box"/>
-							<label for="createTypeInit" class="label" data-bind="text: '初めから作成する'"/>
-						</label></td>
-					</tr>
-				</table>
 				<br/>
 				<br/>
 			</div>
@@ -62,7 +30,11 @@
 			<!-- END CONTENT AREA-->
 
 			<!-- BEGIN FUNCTION AREA-->
-			<ui:include src="../dialogaction.xhtml"/>
+			<div id="this-functions-area" class="halign-center">
+				<button class="proceed x-large" data-bind="click: btnApplyClicked"
+					style="margin-right: 10px">決定</button>
+				<button data-bind="click: btnCancelClicked">キャンセル</button>
+			</div>
 			<!-- END FUNCTION AREA-->
 		</ui:define>
 	</ui:composition>
