@@ -73,6 +73,7 @@ module cmm008.a.service{
             employementOutCd: string;
             displayFlg: number;   
             displayStr: string; 
+            closeDateNoStr: string;
         }    
     }
 }

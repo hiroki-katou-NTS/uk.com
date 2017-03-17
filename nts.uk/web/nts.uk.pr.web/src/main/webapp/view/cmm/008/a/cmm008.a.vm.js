@@ -11,7 +11,7 @@ var cmm008;
                     self.employmentName = ko.observable("");
                     self.isCheckbox = ko.observable(true);
                     self.closeDateList = ko.observableArray([]);
-                    self.selectedCloseCode = ko.observable(0);
+                    self.selectedCloseCode = ko.observable('システム未導入');
                     self.managementHolidays = ko.observableArray([]);
                     self.holidayCode = ko.observable(1);
                     self.processingDateList = ko.observableArray([]);
@@ -57,7 +57,6 @@ var cmm008;
                                 self.reloadScreenWhenListClick(newValue);
                                 return;
                             }).ifYes(function () {
-                                //self.currentCode(self.employmentCode());
                                 self.createEmployment();
                             });
                         }
@@ -75,7 +74,9 @@ var cmm008;
                         if (employ.employmentCode === newValue) {
                             self.employmentCode(employ.employmentCode);
                             self.employmentName(employ.employmentName);
-                            self.selectedCloseCode(employ.closeDateNo);
+                            if (employ.closeDateNo === 0) {
+                                self.selectedCloseCode('システム未導入');
+                            }
                             self.selectedProcessCode(employ.processingNo);
                             self.multilineeditor.memoValue(employ.memo);
                             self.employmentOutCode(employ.employementOutCd);
@@ -94,9 +95,9 @@ var cmm008;
                 ScreenModel.prototype.closeDateListItem = function () {
                     var self = this;
                     self.closeDateList.removeAll();
-                    self.closeDateList.push(new ItemCloseDate(0, '0'));
-                    self.closeDateList.push(new ItemCloseDate(1, '1'));
-                    self.closeDateList.push(new ItemCloseDate(2, '2'));
+                    self.closeDateList.push(new ItemCloseDate(0, 'システム未導入'));
+                    //            self.closeDateList.push(new ItemCloseDate(1,'1'));
+                    //            self.closeDateList.push(new ItemCloseDate(2,'2'));
                 };
                 ScreenModel.prototype.managementHolidaylist = function () {
                     var self = this;
@@ -131,6 +132,9 @@ var cmm008;
                                 else {
                                     employ.displayStr = "";
                                 }
+                                if (employ.closeDateNo === 0) {
+                                    employ.closeDateNoStr = "システム未導入";
+                                }
                                 self.dataSource.push(employ);
                             });
                             if (self.currentCode() === "") {
@@ -143,7 +147,7 @@ var cmm008;
                     this.columns = ko.observableArray([
                         { headerText: 'コード', prop: 'employmentCode', width: 100 },
                         { headerText: '名称', prop: 'employmentName', width: 160 },
-                        { headerText: '締め日', prop: 'closeDateNo', width: 150 },
+                        { headerText: '締め日', prop: 'closeDateNoStr', width: 150 },
                         { headerText: '処理日区分', prop: 'processingNo', width: 150 },
                         { headerText: '初期表示', prop: 'displayStr', width: 100 }
                     ]);
@@ -167,7 +171,9 @@ var cmm008;
                     var employment = new a.service.model.employmentDto();
                     employment.employmentCode = self.employmentCode();
                     employment.employmentName = self.employmentName();
-                    employment.closeDateNo = self.selectedCloseCode();
+                    //今回は就業システム未導入の場合としてください。
+                    //（上記にあるように　締め日区分 = 0 ）
+                    employment.closeDateNo = 0;
                     employment.processingNo = self.selectedProcessCode();
                     employment.statutoryHolidayAtr = self.holidayCode();
                     employment.employementOutCd = self.employmentOutCode();
@@ -222,7 +228,6 @@ var cmm008;
                     if (chkEmployment !== undefined && chkEmployment !== null) {
                         if (chkEmployment.employmentName !== self.employmentName()
                             || chkEmployment.memo !== self.multilineeditor.memoValue()
-                            || chkEmployment.closeDateNo !== self.selectedCloseCode()
                             || chkEmployment.processingNo !== self.selectedProcessCode()
                             || chkEmployment.statutoryHolidayAtr !== self.holidayCode()
                             || chkEmployment.employementOutCd !== self.employmentOutCode()
