@@ -50,4 +50,37 @@ public class WLCategorySetting {
 		memento.setCategory(this.category);
 		memento.setPaymentType(this.paymentType);
 	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((category == null) ? 0 : category.hashCode());
+		result = prime * result + ((paymentType == null) ? 0 : paymentType.hashCode());
+		return result;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		WLCategorySetting other = (WLCategorySetting) obj;
+		if (category != other.category)
+			return false;
+		if (paymentType != other.paymentType)
+			return false;
+		return true;
+	}
+	
+	
 }
