@@ -11,6 +11,7 @@
         <ui:composition template="../../../../master/base.xhtml">
             <ui:define name="htmlHead">
             	<com:ValidatorScript>
+<!--             		nts.uk.ctx.pr.core.dom.layout.LayoutName -->
 					nts.uk.ctx.pr.core.dom.layout.LayoutName
 				</com:ValidatorScript>
             	<com:scriptfile set="IGNITE" />
@@ -65,7 +66,7 @@
 	            				<label id="A_LBL_002">コード/名称</label>
 	           				</div>
 	           				<label id="A_LBL_003" data-bind="text: singleSelectedCode() === null ? '' : singleSelectedCode().split(';')[0]">01</label>
-	           				<input id="A_INP_002" data-bind="value: layoutMaster().stmtName" type="text" />
+	           				<input id="A_INP_002" data-bind="value: layoutMaster().stmtName, constraint: 'LayoutName', required: true, enable: allowClick()" type="text" />
 	           				<label id="A_LBL_004">（　レーザープリンター　A4　縦向き　最大３人　）</label>
             			</div>
             			<div>
@@ -103,20 +104,31 @@
 									<div data-bind="foreach: lines">
 										<div class="row" data-bind="attr: {
 																	id: rowId, 
-																	class: isDisplayOnPrint ? 'row' : 'row ground-gray'}">
+																	class: isDisplayOnPrint ? 'categoryAtr' + categoryAtr + ' row' : 'categoryAtr' + categoryAtr + ' row ground-gray'}">
 											<div><input type="button" class="button-setting" data-bind="enable: !hasRequiredItem, click: lineClick" /></div>
-											<div data-bind="foreach: details">
-									            <span data-bind="click: itemClick, 
+											<div data-bind="foreach: details, attr: {class: 'one-line'}">
+												<span data-bind="click: itemClick, 
 									            			text: itemAbName,
 									            			attr: {
 									            				id: itemCode,
 									            				'data-itemcode': itemCode,
 									            				class: isRequired() 
-									            					? 'fixed-button ui-state-disabled li-on-row ' + contextMenuClassId 
+									            					? 'fixed-button ui-state-disabled li-on-row ' 
 									            					: itemAbName() !== '+' 
-									            						? 'button-with-text li-on-row ' + contextMenuClassId
-									            						: 'li-on-row ' + contextMenuClassId}">
+									            						? 'button-with-text li-on-row ' 
+									            						: 'li-on-row ' }">
 									            </span>
+<!-- 									            <span data-bind="click: itemClick,  -->
+<!-- 									            			text: itemAbName, -->
+<!-- 									            			attr: { -->
+<!-- 									            				id: itemCode, -->
+<!-- 									            				'data-itemcode': itemCode, -->
+<!-- 									            				class: isRequired()  -->
+<!-- 									            					? 'fixed-button ui-state-disabled li-on-row ' + contextMenuClassId  -->
+<!-- 									            					: itemAbName() !== '+'  -->
+<!-- 									            						? 'button-with-text li-on-row ' + contextMenuClassId -->
+<!-- 									            						: 'li-on-row ' + contextMenuClassId}"> -->
+<!-- 									            </span> -->
 											</div>
 										</div>
 									</div>

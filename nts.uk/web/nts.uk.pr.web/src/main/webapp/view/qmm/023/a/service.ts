@@ -34,7 +34,6 @@ module qmm023.a.service {
 
     export function deleteData(deleteCode: any): JQueryPromise<Array<any>> {
         var dfd = $.Deferred<Array<any>>();
-        
         nts.uk.request.ajax(paths.deleteData, ko.toJS(deleteCode))
             .done(function(res: Array<any>) {
                 dfd.resolve(res);

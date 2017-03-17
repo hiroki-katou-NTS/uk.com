@@ -1,5 +1,6 @@
 package nts.uk.ctx.pr.core.app.command.layout;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -246,8 +247,8 @@ public class CreateLayoutCommandHandler extends CommandHandler<CreateLayoutComma
 			int itemPosColumn,
 			SumScopeAtr sumAtr,
 			CalculationMethod calMethod){
-		RangeChecker alarm = new RangeChecker(UseOrNot.DO_NOT_USE, UseOrNot.DO_NOT_USE, Range.between(0,0));
-		RangeChecker error = new RangeChecker(UseOrNot.DO_NOT_USE, UseOrNot.DO_NOT_USE, Range.between(0,0));
+		RangeChecker alarm = new RangeChecker(UseOrNot.DO_NOT_USE, UseOrNot.DO_NOT_USE, Range.between(BigDecimal.ZERO, BigDecimal.ZERO));
+		RangeChecker error = new RangeChecker(UseOrNot.DO_NOT_USE, UseOrNot.DO_NOT_USE, Range.between(BigDecimal.ZERO, BigDecimal.ZERO));
 		Distribute distribute = new Distribute(DistributeWay.CALCULATED_PERCENTAGE, DistributeSet.NOT_PROPORTIONAL);
 		LayoutMasterDetail detailData = new LayoutMasterDetail(new CompanyCode(companyCode),
 				layout.getStmtCode(),

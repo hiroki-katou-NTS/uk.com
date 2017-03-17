@@ -6,6 +6,9 @@ import java.util.Optional;
 
 
 public interface LayoutMasterRepository {
+	
+	/** QSTMT_STMT_LAYOUT_HEAD - SEL-7 */
+	Optional<LayoutMaster> getBy_SEL_7(String companyCode, String stmtCode);
 	// layout master
 	/**
 	 * find layout master by company code, layout master(name or code), start

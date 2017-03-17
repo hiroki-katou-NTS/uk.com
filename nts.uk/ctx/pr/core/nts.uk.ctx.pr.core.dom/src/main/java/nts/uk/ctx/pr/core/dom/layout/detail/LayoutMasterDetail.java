@@ -1,7 +1,7 @@
 package nts.uk.ctx.pr.core.dom.layout.detail;
-import lombok.AllArgsConstructor;
+import java.math.BigDecimal;
+
 import lombok.Getter;
-import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.YearMonth;
@@ -149,18 +149,18 @@ public class LayoutMasterDetail extends AggregateRoot{
 			String setOffItemCode,
 			int commuteAtr,
 			int isErrorUseHigh,
-			int errorRangeHigh,
+			BigDecimal errorRangeHigh,
 			int isErrorUserLow,
-			int errorRangeLow,
+			BigDecimal errorRangeLow,
 			int isAlamUseHigh,
-			int alamRangeHigh,
+			BigDecimal alamRangeHigh,
 			int isAlamUseLow,
-			int alamRangeLow,
+			BigDecimal alamRangeLow,
 			int itemPosColumn,
 			String historyId){
 		
-		Range<Integer> error = Range.between(errorRangeLow, errorRangeHigh);
-		Range<Integer> alam = Range.between(alamRangeLow, alamRangeHigh);
+		Range<BigDecimal> error = Range.between(errorRangeLow, errorRangeHigh);
+		Range<BigDecimal> alam = Range.between(alamRangeLow, alamRangeHigh);
 		
 		return new LayoutMasterDetail(
 				new CompanyCode(companyCode),
@@ -236,13 +236,13 @@ public class LayoutMasterDetail extends AggregateRoot{
 			String setOffItemCode,
 			int commuteAtr,
 			int isErrorUseHigh,
-			int errorRangeHigh,
+			BigDecimal errorRangeHigh,
 			int isErrorUserLow,
-			int errorRangeLow,
+			BigDecimal errorRangeLow,
 			int isAlamUseHigh,
-			int alamRangeHigh,
+			BigDecimal alamRangeHigh,
 			int isAlamUseLow,
-			int alamRangeLow,
+			BigDecimal alamRangeLow,
 			int itemPosColumn,
 			String itemAbName,
 			String historyId){

@@ -2,10 +2,11 @@ package nts.uk.ctx.pr.core.app.command.rule.law.tax.commutelimit;
 
 import java.util.Optional;
 
-import javax.ejb.Stateless;
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.pr.core.dom.rule.law.tax.commutelimit.CommuNoTaxLimitName;
@@ -14,7 +15,7 @@ import nts.uk.ctx.pr.core.dom.rule.law.tax.commutelimit.CommuteNoTaxLimit;
 import nts.uk.ctx.pr.core.dom.rule.law.tax.commutelimit.CommuteNoTaxLimitRepository;
 import nts.uk.shr.com.context.AppContexts;
 
-@Stateless
+@RequestScoped
 @Transactional
 public class UpdateCommuteNoTaxLimitCommandHandler extends CommandHandler<UpdateCommuteNoTaxLimitCommand> {
 
@@ -26,14 +27,24 @@ public class UpdateCommuteNoTaxLimitCommandHandler extends CommandHandler<Update
 		// get context
 		String companyCode = AppContexts.user().companyCode();
 		UpdateCommuteNoTaxLimitCommand ic = context.getCommand();
+
+		if(context.getCommand().getCommuNoTaxLimitCode() == null ||context.getCommand().getCommuNoTaxLimitCode().isEmpty()){
+			throw new BusinessException("1");
+		}
+		if(context.getCommand().getCommuNoTaxLimitName() == null || context.getCommand().getCommuNoTaxLimitName().isEmpty()){
+			throw new BusinessException("2");
+		}	
+		
 		Optional<CommuteNoTaxLimit> commuteNoTaxLimitUpdate = this.repository.getCommuteNoTaxLimit(companyCode,
 				ic.getCommuNoTaxLimitCode());
-		if (commuteNoTaxLimitUpdate.isPresent()) {
-			commuteNoTaxLimitUpdate.get().setCommuNoTaxLimitName(new CommuNoTaxLimitName(ic.getCommuNoTaxLimitName()));
-			commuteNoTaxLimitUpdate.get()
-					.setCommuNoTaxLimitValue(new CommuNoTaxLimitValue(ic.getCommuNoTaxLimitValue()));
-			this.repository.update(commuteNoTaxLimitUpdate.get());
+			
+		if (!commuteNoTaxLimitUpdate.isPresent()) {
+			throw new BusinessException("4");
 		}
+		commuteNoTaxLimitUpdate.get().setCommuNoTaxLimitName(new CommuNoTaxLimitName(ic.getCommuNoTaxLimitName()));
+		commuteNoTaxLimitUpdate.get()
+				.setCommuNoTaxLimitValue(new CommuNoTaxLimitValue(ic.getCommuNoTaxLimitValue()));
+		this.repository.update(commuteNoTaxLimitUpdate.get());
 
 	}
 

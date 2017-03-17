@@ -163,4 +163,10 @@ public class JpaLayoutMasterRepository extends JpaRepository implements LayoutMa
 				.setParameter("baseYearMonth", baseYearMonth)
 				.getList(x -> toDomain(x));
 	}
+
+	@Override
+	public Optional<LayoutMaster> getBy_SEL_7(String companyCode, String stmtCode) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 }

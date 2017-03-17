@@ -1,15 +1,19 @@
 package nts.uk.ctx.pr.core.app.command.rule.law.tax.commutelimit;
 
-import javax.ejb.Stateless;
+import java.util.Optional;
+
+import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.uk.ctx.pr.core.dom.rule.law.tax.commutelimit.CommuteNoTaxLimit;
 import nts.uk.ctx.pr.core.dom.rule.law.tax.commutelimit.CommuteNoTaxLimitRepository;
 import nts.uk.shr.com.context.AppContexts;
 
-@Stateless
+@RequestScoped
 @Transactional
 public class DeleteCommuteNoTaxLimitCommandHandler extends CommandHandler<DeleteCommuteNoTaxLimitCommand> {
 
@@ -19,8 +23,14 @@ public class DeleteCommuteNoTaxLimitCommandHandler extends CommandHandler<Delete
 	@Override
 	protected void handle(CommandHandlerContext<DeleteCommuteNoTaxLimitCommand> context) {
 		String companyCode = AppContexts.user().companyCode();
+		Optional<CommuteNoTaxLimit> exitCommuteNoTaxLimit = this.repository.getCommuteNoTaxLimit(companyCode,
+				context.getCommand().getCommuNoTaxLimitCode());
+		if (!exitCommuteNoTaxLimit.isPresent()) {
+			throw new BusinessException("1");
+		} else {
+			this.repository.delele(companyCode, context.getCommand().getCommuNoTaxLimitCode());
+		}
 
-		this.repository.delele(companyCode, context.getCommand().getCommuNoTaxLimitCode());
 	}
 
 }

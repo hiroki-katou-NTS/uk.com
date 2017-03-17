@@ -1,5 +1,7 @@
 package nts.uk.ctx.pr.core.app.find.layout.detail;
 
+import java.math.BigDecimal;
+
 import lombok.Value;
 import nts.uk.ctx.pr.core.dom.layout.detail.LayoutMasterDetail;
 
@@ -38,19 +40,19 @@ public class LayoutMasterDetailDto {
 	/**エラー範囲上限利用区分	 */
 	private int isUseHighError;
 	/**エラー範囲上限	 */
-	private int errRangeHigh;
+	private BigDecimal errRangeHigh;
 	/**エラー範囲下限利用区分	 */
 	private int isUseLowError;
 	/**エラー範囲下限	 */
-	private int errRangeLow;
+	private BigDecimal errRangeLow;
 	/**アラーム範囲下限利用区分 */
 	private int isUseHighAlam;
 	/**アラーム範囲上限	 */
-	private int alamRangeHigh;
+	private BigDecimal alamRangeHigh;
 	/**アラーム範囲下限利用区分	 */
 	private int isUseLowAlam;
 	/**アラーム範囲下限	 */
-	private int alamRangeLow;
+	private BigDecimal alamRangeLow;
 	
 	public static LayoutMasterDetailDto fromDomain(LayoutMasterDetail domain)
 	{

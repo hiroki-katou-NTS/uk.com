@@ -22,7 +22,7 @@
 		<ui:define name="content">
 			<div id="functions-area">
 				<div class="aligntLeft">
-					<button id="A_BTN_001" data-bind="click: refreshLayout">新規</button>
+					<button id="A_BTN_001" data-bind="click: createButtonClick">新規</button>
 					<button id="A_BTN_002" class="proceed"
 						data-bind="click: insertUpdateData, enable: $root.errors.isEmpty">登録</button>
 					<button id="A_BTN_003">印刷（PDF）</button>
@@ -33,16 +33,17 @@
 			</div>
 			<div id="contents-area">
 				<div class="nts-left-content">
-					<div class="bg-green caret-right caret-background" id="content_data">
+					<div class="bg-green caret-right caret-background"
+						id="content_data">
 						<i class="icon icon-searchbox"></i>
-						<div class="ntsSearchDiv"
-							data-bind="ntsSearchBox: {
+						<div class="ntsSearchDiv">
+							<div data-bind="ntsSearchBox: {
 								items: items,		
 								selected: currentCode, 
 								selectedKey: 'code', 
 								childField: 'childs', 
 								fields: ['name', 'code']}" />
-
+						</div>
 						<div class="single-list">
 							<table id="single-list"
 								data-bind="ntsGridList: {
@@ -92,7 +93,7 @@
 							<td>
 								<div
 									data-bind="ntsFormLabel: {
-											constraint: 'CommuNoTaxLimitValue'
+											constraint: 'CommuNoTaxLimitValue',
 											}">
 									限度額</div>
 							</td>

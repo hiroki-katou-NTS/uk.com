@@ -1,5 +1,7 @@
 package nts.uk.ctx.pr.core.dom.layout.detail;
 
+import java.math.BigDecimal;
+
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
 import nts.gul.util.Range;
@@ -14,14 +16,14 @@ public class RangeChecker extends DomainObject {
 	private UseOrNot isUseLow;
 	
 	@Getter
-	private Range<Integer> range;
+	private Range<BigDecimal> range;
 	
-	public RangeChecker(UseOrNot isUseHigh, UseOrNot isUseLow, Range<Integer> range) {
+	public RangeChecker(UseOrNot isUseHigh, UseOrNot isUseLow, Range<BigDecimal> range) {
 		super();
 		this.isUseHigh = isUseHigh;
 		this.isUseLow = isUseLow;
 		this.range = range;
-		Integer defaultValue = new Integer(0);
+		BigDecimal defaultValue = new BigDecimal(0);
 		if (isUseHigh == UseOrNot.DO_NOT_USE) {
 			this.range = Range.between(defaultValue, range.min()); 
 		}

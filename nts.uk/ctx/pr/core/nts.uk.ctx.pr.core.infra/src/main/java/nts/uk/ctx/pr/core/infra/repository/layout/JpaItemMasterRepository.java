@@ -39,7 +39,8 @@ public class JpaItemMasterRepository extends JpaRepository implements ItemMaster
 		val domain = ItemMaster.createSimpleFromJavaType(entity.qcamtItemPK.ccd, entity.qcamtItemPK.itemCd,
 				entity.qcamtItemPK.ctgAtr, entity.itemName, entity.itemAbName, entity.taxAtr, entity.itemAtr);
 		domain.additionalInfo(entity.limitMny.intValue(), entity.fixPayAtr, entity.laborInsAtr, entity.socialInsAtr, entity.avePayAtr, entity.deductAtr);
-		domain.additionalErrorAlarm(entity.errRangeHighAtr, entity.errRangeHigh.intValue(), entity.errRangeLowAtr, entity.errRangeLow.intValue(), entity.alRangeHighAtr, entity.alRangeHigh.intValue(), entity.alRangeLowAtr, entity.alRangeLow.intValue());
+		domain.additionalErrorAlarm(entity.errRangeHighAtr, entity.errRangeHigh, entity.errRangeLowAtr, entity.errRangeLow, entity.alRangeHighAtr, 
+				entity.alRangeHigh, entity.alRangeLowAtr, entity.alRangeLow);
 		return domain;
 	}
 
