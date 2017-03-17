@@ -15,7 +15,6 @@ import javax.inject.Inject;
 
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
-import nts.uk.file.pr.app.export.insurance.data.ColumnInformation;
 import nts.uk.file.pr.app.export.insurance.data.EmployeeDto;
 import nts.uk.file.pr.app.export.insurance.data.InsuranceOfficeDto;
 import nts.uk.file.pr.app.export.insurance.data.SalarySocialInsuranceHeaderReportData;
@@ -55,7 +54,7 @@ public class SalarySocialInsuranceReportService extends ExportService<SalarySoci
     
     private List<InsuranceOfficeDto> fakeOffice() {
         List<InsuranceOfficeDto> offices = new ArrayList<>();
-        for(int i=0; i<10; i++) {
+        for(int i=0; i<20; i++) {
             InsuranceOfficeDto office = setOffice(i + 1);
             offices.add(office);
         }
@@ -65,8 +64,8 @@ public class SalarySocialInsuranceReportService extends ExportService<SalarySoci
         InsuranceOfficeDto office = new InsuranceOfficeDto();
         
         office.setNumberOfEmployee(5);
-        office.setOfficeCode("A000" + index);
-        office.setOfficeName("Office " + index);
+        office.setCode("A000" + index);
+        office.setName("Office " + index);
         
         List<EmployeeDto> employees = new ArrayList<>();
         for (int i=0; i< office.getNumberOfEmployee(); i++) {

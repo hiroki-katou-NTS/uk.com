@@ -62,7 +62,7 @@ module nts.uk.pr.view.qpp018.a {
                 command.isEqual = self.isEqual();
                 command.isDeficient = self.isDeficient();
                 command.isRedundant = self.isRedundant();
-                command.insuranceOffices = self.insuranceOffice().selectedOfficeList();
+                command.insuranceOffices = self.insuranceOffice().getSelectedOffice();
                 return command;
             }
             
@@ -82,7 +82,7 @@ module nts.uk.pr.view.qpp018.a {
             private validate(): boolean {
                 let self = this;
                 let isError = false;
-                if (self.insuranceOffice().selectedOfficeList().length <= 0) {
+                if (self.insuranceOffice().selectedOfficeCodeList().length <= 0) {
                     $('#grid-error').ntsError('set', 'You must choose at least item of grid');
                     isError = true;
                 }
@@ -118,12 +118,12 @@ module nts.uk.pr.view.qpp018.a {
             
             columns: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
             items: KnockoutObservableArray<InsuranceOffice>;
-            selectedOfficeList: KnockoutObservableArray<InsuranceOffice>;
+            selectedOfficeCodeList: KnockoutObservableArray<string>;
             
             constructor() {
                 let self = this;
                 self.items = ko.observableArray<InsuranceOffice>([]);
-                self.selectedOfficeList = ko.observableArray<InsuranceOffice>([]);
+                self.selectedOfficeCodeList = ko.observableArray<string>([]);
                 self.columns = ko.observableArray<nts.uk.ui.NtsGridListColumn>([
                     { headerText: 'コード', key: 'code', width: 100 },
                     { headerText: '名称 ', key: 'name', width: 100 }
@@ -143,6 +143,30 @@ module nts.uk.pr.view.qpp018.a {
                     nts.uk.ui.dialog.alert(res.message);
                 })
                 return dfd.promise();
+            }
+            
+            getSelectedOffice(): InsuranceOffice[] {
+                let self = this;
+                let offices: InsuranceOffice[] = [];
+                for(let i in self.selectedOfficeCodeList()) {
+                    let code: string = self.selectedOfficeCodeList()[i];
+                    let office = self.getOfficeByCode(code);
+                    if (office) {
+                        offices.push(office);
+                    }
+                }
+                return offices;
+            }
+        
+            getOfficeByCode(code: string): InsuranceOffice {
+                let self = this;
+                for(let i in self.items()) {
+                    let office = self.items()[i];
+                    if (office.code == code) {
+                        return office;
+                    }
+                }
+                return null;
             }
         }
     }

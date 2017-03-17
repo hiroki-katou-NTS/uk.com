@@ -51,7 +51,7 @@ var nts;
                                     command.isEqual = self.isEqual();
                                     command.isDeficient = self.isDeficient();
                                     command.isRedundant = self.isRedundant();
-                                    command.insuranceOffices = self.insuranceOffice().selectedOfficeList();
+                                    command.insuranceOffices = self.insuranceOffice().getSelectedOffice();
                                     return command;
                                 };
                                 ScreenModel.prototype.showDialogChecklistPrintSetting = function () {
@@ -62,7 +62,7 @@ var nts;
                                 ScreenModel.prototype.validate = function () {
                                     var self = this;
                                     var isError = false;
-                                    if (self.insuranceOffice().selectedOfficeList().length <= 0) {
+                                    if (self.insuranceOffice().selectedOfficeCodeList().length <= 0) {
                                         $('#grid-error').ntsError('set', 'You must choose at least item of grid');
                                         isError = true;
                                     }
@@ -91,7 +91,7 @@ var nts;
                                 function InsuranceOfficeModel() {
                                     var self = this;
                                     self.items = ko.observableArray([]);
-                                    self.selectedOfficeList = ko.observableArray([]);
+                                    self.selectedOfficeCodeList = ko.observableArray([]);
                                     self.columns = ko.observableArray([
                                         { headerText: 'コード', key: 'code', width: 100 },
                                         { headerText: '名称 ', key: 'name', width: 100 }
@@ -107,6 +107,28 @@ var nts;
                                         nts.uk.ui.dialog.alert(res.message);
                                     });
                                     return dfd.promise();
+                                };
+                                InsuranceOfficeModel.prototype.getSelectedOffice = function () {
+                                    var self = this;
+                                    var offices = [];
+                                    for (var i in self.selectedOfficeCodeList()) {
+                                        var code = self.selectedOfficeCodeList()[i];
+                                        var office = self.getOfficeByCode(code);
+                                        if (office) {
+                                            offices.push(office);
+                                        }
+                                    }
+                                    return offices;
+                                };
+                                InsuranceOfficeModel.prototype.getOfficeByCode = function (code) {
+                                    var self = this;
+                                    for (var i in self.items()) {
+                                        var office = self.items()[i];
+                                        if (office.code == code) {
+                                            return office;
+                                        }
+                                    }
+                                    return null;
                                 };
                                 return InsuranceOfficeModel;
                             }());

@@ -91,7 +91,7 @@ public class AsposeSalarySocialInsuranceReportGenerator extends AsposeCellsRepor
         Range rangeFooterPage = worksheets.getRangeByName(RANGE_FOOTER_PAGE);
         
         int indexRowCurrent = writeContentArea(worksheet, reportData.getOfficeItems(), numberOfColumn, mapRange);
-        setFooterPage(worksheet, reportData.getOfficeItems(), numberOfColumn, indexRowCurrent + NUMBER_ONE, rangeFooterPage);
+        setFooterPage(worksheet, reportData.getOfficeItems(), numberOfColumn, indexRowCurrent + NUMBER_SECOND, rangeFooterPage);
         removeRowTemplate(worksheets.getNamedRanges().length, worksheet, mapRange);
     }
 
@@ -100,7 +100,7 @@ public class AsposeSalarySocialInsuranceReportGenerator extends AsposeCellsRepor
         pageSetup.setFitToPagesTall(NUMBER_ONE);
         pageSetup.setFitToPagesWide(NUMBER_ONE);
         pageSetup.setCenterHorizontally(true);
-        pageSetup.setPaperSize(75);
+//        pageSetup.setPaperSize(75);
     }
 
     private int writeContentArea(Worksheet worksheet, List<InsuranceOfficeDto> offices, int numberOfColumn, HashMap<String, Range> mapRange) throws Exception {
@@ -120,7 +120,7 @@ public class AsposeSalarySocialInsuranceReportGenerator extends AsposeCellsRepor
 
     private void setHeaderOffice(Worksheet worksheet, InsuranceOfficeDto office, int numberOfColumn, int indexRowHeader, Range rangeOffice) throws Exception {
         Range newRange = createRangeFromOtherRange(worksheet, indexRowHeader, rangeOffice);
-        setDataRangeFirstRow(worksheet, newRange, NUMBER_ZERO, office.getOfficeCode(), office.getOfficeName());
+        setDataRangeFirstRow(worksheet, newRange, NUMBER_ZERO, office.getCode(), office.getName());
     }
 
     private void setContentOffice(Worksheet worksheet, InsuranceOfficeDto office, int numberOfColumn, int indexRow,
@@ -155,8 +155,8 @@ public class AsposeSalarySocialInsuranceReportGenerator extends AsposeCellsRepor
             Range rangeFooterPage) throws Exception {
         Range newRange = createRangeFromOtherRange(worksheet, indexRow, rangeFooterPage);
         // TODO: hardcode
-        setDataRangeFirstRow(worksheet, newRange, 3, 80);
-        setDataRangeFirstRow(worksheet, newRange, 8, 30);
+        setDataRangeFirstRow(worksheet, newRange, 2, 80);
+        setDataRangeFirstRow(worksheet, newRange, 7, 30);
         setDataRangeRowCalculateSub(worksheet, newRange);
     }
 
@@ -202,10 +202,10 @@ public class AsposeSalarySocialInsuranceReportGenerator extends AsposeCellsRepor
         Cells cells = worksheet.getCells();
         int indexRowCurrent = rangeFooterPage.getFirstRow();
         // TODO: hardcode
-        String cellStart = cells.get(indexRowCurrent, 3).getName();
-        String cellEnd = cells.get(indexRowCurrent, 8).getName();
+        String cellStart = cells.get(indexRowCurrent, 2).getName();
+        String cellEnd = cells.get(indexRowCurrent, 7).getName();
         String formulaSubtract = cellStart.concat("-").concat(cellEnd);
-        cells.get(indexRowCurrent, 13).setFormula(formulaSubtract);
+        cells.get(indexRowCurrent, 12).setFormula(formulaSubtract);
     }
     
     private Range createRangeFromOtherRange(Worksheet worksheet, int indexRow, Range range) throws Exception {
