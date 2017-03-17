@@ -5,8 +5,9 @@ module nts.uk.pr.view.qpp007.c {
          */
         var paths: any = {
             save: "ctx/pr/report/salary/outputsetting/save",
-            remove: "ctx/pr/report/salary/outputsetting/create",
-            find: "ctx/pr/report/salary/outputsetting/find",
+            remove: "ctx/pr/report/salary/outputsetting/remove",
+            findOutputSettingDetail: "ctx/pr/report/salary/outputsetting/find",
+            findAllOutputSettings: "ctx/pr/report/salary/outputsetting/findall",
         };
 
         /**
@@ -22,10 +23,16 @@ module nts.uk.pr.view.qpp007.c {
             return nts.uk.request.ajax(paths.remove, id);
         }
         /**
-         *  Find
+         *  Find outputSetting detail
          */
-        export function find(id: string): JQueryPromise<any> {
-            return nts.uk.request.ajax(paths.find, id);
+        export function findOutputSettingDetail(id: string): JQueryPromise<any> {
+            return nts.uk.request.ajax(paths.findOutputSettingDetail + "/" + id);
+        }
+        /**
+         *  Find all outputSettings
+         */
+        export function findAllOutputSettings(): JQueryPromise<any> {
+            return nts.uk.request.ajax(paths.findAllOutputSettings);
         }
 
     }
