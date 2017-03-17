@@ -744,6 +744,7 @@ module nts.uk.ui.jqueryExtentions {
         }
 
         function init(control: JQuery): JQuery {
+            $("html").addClass("sidebar-html");
             control.find("div[role=tabpanel]").hide();
             control.on("click", "#sidebar-area .navigator a", function(e) {
                 e.preventDefault();
