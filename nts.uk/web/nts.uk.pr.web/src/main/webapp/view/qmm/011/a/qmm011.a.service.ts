@@ -118,7 +118,7 @@ module nts.uk.pr.view.qmm011.a {
                     unemployeeInsuranceRateDto.version = res.version;
                     dfd.resolve(unemployeeInsuranceRateDto);
                 })
-                .fail(function(res) {
+                .fail(function(res: any) {
                     dfd.reject(res);
                 })
             return dfd.promise();
@@ -141,7 +141,7 @@ module nts.uk.pr.view.qmm011.a {
                 .done(function(res: any) {
                     dfd.resolve(res);
                 })
-                .fail(function(res) {
+                .fail(function(res: any) {
                     dfd.reject(res);
                 })
             return dfd.promise();
@@ -166,7 +166,7 @@ module nts.uk.pr.view.qmm011.a {
                     dfd.resolve(res);
                     //xyz
                 })
-                .fail(function(res) {
+                .fail(function(res: any) {
                     dfd.reject(res);
                 })
             return dfd.promise();
@@ -187,7 +187,7 @@ module nts.uk.pr.view.qmm011.a {
                     }
                     dfd.resolve(convertRes);
                 })
-                .fail(function(res) {
+                .fail(function(res: any) {
                     dfd.reject(res);
                 })
             return dfd.promise();
@@ -205,7 +205,7 @@ module nts.uk.pr.view.qmm011.a {
                     dfd.resolve(AccidentInsuranceHistoryDto);
                     //xyz
                 })
-                .fail(function(res) {
+                .fail(function(res: any) {
                     dfd.reject(res);
                 })
             return dfd.promise();
@@ -227,7 +227,7 @@ module nts.uk.pr.view.qmm011.a {
                     dfd.resolve(accidentInsuranceRateDto);
                     //xyz
                 })
-                .fail(function(res) {
+                .fail(function(res: any) {
                     dfd.reject(res);
                 })
             return dfd.promise();
@@ -367,7 +367,7 @@ module nts.uk.pr.view.qmm011.a {
                     dfd.resolve(res);
                     //xyz
                 })
-                .fail(function(res) {
+                .fail(function(res: any) {
                     dfd.reject(res);
                 })
             return dfd.promise();

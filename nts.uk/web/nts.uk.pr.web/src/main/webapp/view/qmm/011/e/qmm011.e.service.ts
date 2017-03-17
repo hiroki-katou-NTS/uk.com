@@ -1,11 +1,11 @@
 module nts.uk.pr.view.qmm011.e {
     import InsuranceBusinessTypeDto = nts.uk.pr.view.qmm011.a.service.model.InsuranceBusinessTypeDto;
-    
+
     export module service {
         var paths: any = {
             updateInsuranceBusinessType: "pr/insurance/labor/businesstype/update"
         };
-        
+
         //Function update 
         export function updateInsuranceBusinessType(insuranceBusinessType: InsuranceBusinessTypeDto): JQueryPromise<void> {
             //set up respone
@@ -17,7 +17,7 @@ module nts.uk.pr.view.qmm011.e {
                 .done(function(res: void) {
                     dfd.resolve(res);
                 })
-                .fail(function(res) {
+                .fail(function(res: any) {
                     dfd.reject(res);
                 })
             return dfd.promise();
