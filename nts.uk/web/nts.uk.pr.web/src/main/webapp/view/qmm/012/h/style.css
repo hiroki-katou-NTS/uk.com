@@ -64,3 +64,7 @@
 #H_INP_001 input, #H_INP_002 input {
 	height: 18px;
 }
+
+#H_INP_002 {
+	margin-left: 8px;
+}
