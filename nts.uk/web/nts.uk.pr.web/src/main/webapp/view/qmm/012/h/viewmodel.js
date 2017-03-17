@@ -9,7 +9,7 @@ var qmm012;
                     this.enable = ko.observable(true);
                     this.CurrentItemMaster = ko.observable(null);
                     this.CurrentCategoryAtrName = ko.observable('');
-                    this.CurrentItemSalaryPeriod = ko.observable(null);
+                    this.CurrentItem = ko.observable(null);
                     this.CurrentItemCode = ko.observable('');
                     this.CurrentPeriodAtr = ko.observable(0);
                     this.CurrentStrY = ko.observable(0);
@@ -65,18 +65,24 @@ var qmm012;
                     if (self.CurrentItemMaster()) {
                         if (self.CurrentItemMaster().categoryAtrValue == 0) {
                             h.service.findItemSalaryPeriod(self.CurrentItemMaster().itemCode).done(function (ItemSalary) {
-                                self.CurrentItemSalaryPeriod(ItemSalary);
+                                self.CurrentItem(ItemSalary);
                             }).fail(function (res) {
                                 // Alert message
                                 alert(res);
                             });
                         }
-                        else {
+                        if (self.CurrentItemMaster().categoryAtrValue == 1) {
+                            h.service.findItemDeductPeriod(self.CurrentItemMaster().itemCode).done(function (ItemDeduct) {
+                                self.CurrentItem(ItemDeduct);
+                            }).fail(function (res) {
+                                // Alert message
+                                alert(res);
+                            });
                         }
                         self.CurrentCategoryAtrName(self.CurrentItemMaster().categoryAtrName);
                     }
-                    self.CurrentItemSalaryPeriod.subscribe(function (ItemSalaryPeriod) {
-                        self.CurrentItemCode(ItemSalaryPeriod ? ItemSalaryPeriod.itemCode : '');
+                    self.CurrentItem.subscribe(function (ItemSalaryPeriod) {
+                        self.CurrentItemCode(ItemSalaryPeriod ? ItemSalaryPeriod.itemCd : '');
                         self.CurrentPeriodAtr(ItemSalaryPeriod ? ItemSalaryPeriod.periodAtr : 0);
                         self.CurrentStrY(ItemSalaryPeriod ? ItemSalaryPeriod.strY : 0);
                         self.CurrentEndY(ItemSalaryPeriod ? ItemSalaryPeriod.endY : 0);

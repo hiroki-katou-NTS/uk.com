@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
-import nts.uk.ctx.pr.core.app.find.itemmaster.dto.itemsalaryDBDto.ItemSalaryBDDto;
+import nts.uk.ctx.pr.core.app.find.itemmaster.dto.itemsalarybd.ItemSalaryBDDto;
 import nts.uk.ctx.pr.core.dom.itemmaster.itemsalarybd.ItemSalaryBDRepository;
 import nts.uk.shr.com.context.AppContexts;
 

@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.core.app.find.itemmaster.dto.itemsalaryDBDto;
+package nts.uk.ctx.pr.core.app.find.itemmaster.dto.itemsalarybd;
 
 import java.math.BigDecimal;
 

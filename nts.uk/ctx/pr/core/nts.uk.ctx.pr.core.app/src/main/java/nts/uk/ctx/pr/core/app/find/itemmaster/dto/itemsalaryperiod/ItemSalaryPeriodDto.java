@@ -9,7 +9,7 @@ import nts.uk.ctx.pr.core.dom.itemmaster.itemsalaryperiod.ItemSalaryPeriod;
 @AllArgsConstructor
 @Data
 public class ItemSalaryPeriodDto {
-	private String itemCode;
+	private String itemCd;
 	private int periodAtr;
 	private int strY;
 	private int endY;

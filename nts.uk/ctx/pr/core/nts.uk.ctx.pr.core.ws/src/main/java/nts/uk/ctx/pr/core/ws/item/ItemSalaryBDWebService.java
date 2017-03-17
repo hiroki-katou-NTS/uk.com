@@ -9,7 +9,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.pr.core.app.find.itemmaster.dto.itemsalaryDBDto.ItemSalaryBDDto;
+import nts.uk.ctx.pr.core.app.find.itemmaster.dto.itemsalarybd.ItemSalaryBDDto;
 import nts.uk.ctx.pr.core.app.find.itemmaster.itemsalarybd.ItemSalaryBDFinder;
 
 @Path("pr/core/itemsalarybd")

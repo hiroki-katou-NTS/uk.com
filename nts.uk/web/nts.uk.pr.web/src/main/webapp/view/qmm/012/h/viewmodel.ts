@@ -19,7 +19,7 @@ module qmm012.h.viewmodel {
 
         CurrentItemMaster: KnockoutObservable<qmm012.b.service.model.ItemMasterModel> = ko.observable(null);
         CurrentCategoryAtrName: KnockoutObservable<string> = ko.observable('');
-        CurrentItemSalaryPeriod: KnockoutObservable<service.model.ItemSalaryPeriod> = ko.observable(null);
+        CurrentItem: KnockoutObservable<service.model.ItemSalaryPeriod> = ko.observable(null);
         CurrentItemCode: KnockoutObservable<string> = ko.observable('');
         CurrentPeriodAtr: KnockoutObservable<number> = ko.observable(0);
         CurrentStrY: KnockoutObservable<number> = ko.observable(0);
@@ -78,20 +78,24 @@ module qmm012.h.viewmodel {
             if (self.CurrentItemMaster()) {
                 if (self.CurrentItemMaster().categoryAtrValue == 0) {
                     service.findItemSalaryPeriod(self.CurrentItemMaster().itemCode).done(function(ItemSalary: service.model.ItemSalaryPeriod) {
-                        self.CurrentItemSalaryPeriod(ItemSalary);
+                        self.CurrentItem(ItemSalary);
                     }).fail(function(res) {
                         // Alert message
                         alert(res);
                     });
-                } else {
-
-
-
+                }
+                if (self.CurrentItemMaster().categoryAtrValue == 1) {
+                    service.findItemDeductPeriod(self.CurrentItemMaster().itemCode).done(function(ItemDeduct: service.model.ItemDeductPeriod) {
+                        self.CurrentItem(ItemDeduct);
+                    }).fail(function(res) {
+                        // Alert message
+                        alert(res);
+                    });
                 }
                 self.CurrentCategoryAtrName(self.CurrentItemMaster().categoryAtrName);
             }
-            self.CurrentItemSalaryPeriod.subscribe(function(ItemSalaryPeriod: service.model.ItemSalaryPeriod) {
-                self.CurrentItemCode(ItemSalaryPeriod ? ItemSalaryPeriod.itemCode : '');
+            self.CurrentItem.subscribe(function(ItemSalaryPeriod: service.model.ItemSalaryPeriod) {
+                self.CurrentItemCode(ItemSalaryPeriod ? ItemSalaryPeriod.itemCd : '');
                 self.CurrentPeriodAtr(ItemSalaryPeriod ? ItemSalaryPeriod.periodAtr : 0);
                 self.CurrentStrY(ItemSalaryPeriod ? ItemSalaryPeriod.strY : 0);
                 self.CurrentEndY(ItemSalaryPeriod ? ItemSalaryPeriod.endY : 0);
