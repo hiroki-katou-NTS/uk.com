@@ -7,6 +7,7 @@ package nts.uk.ctx.pr.report.ws.salarydetail;
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
@@ -50,5 +51,27 @@ public class SalaryOutputSettingWs extends WebService {
 	@Path("remove")
 	public void remove(SalaryOutputSettingRemoveCommand command) {
 		this.removeHandler.handle(command);
+	}
+
+	/**
+	 * Find.
+	 *
+	 * @param id the id
+	 */
+	@POST
+	@Path("find/{id}")
+	public String find(@PathParam("id") String id) {
+		return "";
+		// TODO ...
+	}
+
+	/**
+	 * Findall.
+	 */
+	@POST
+	@Path("findall")
+	public String findall() {
+		return "";
+		// TODO ...
 	}
 }

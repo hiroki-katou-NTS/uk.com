@@ -14,8 +14,9 @@ var nts;
                         (function (service) {
                             var paths = {
                                 save: "ctx/pr/report/salary/outputsetting/save",
-                                remove: "ctx/pr/report/salary/outputsetting/create",
-                                find: "ctx/pr/report/salary/outputsetting/find",
+                                remove: "ctx/pr/report/salary/outputsetting/remove",
+                                findOutputSettingDetail: "ctx/pr/report/salary/outputsetting/find",
+                                findAllOutputSettings: "ctx/pr/report/salary/outputsetting/findall",
                             };
                             function save(data) {
                                 return nts.uk.request.ajax(paths.save, data);
@@ -25,10 +26,14 @@ var nts;
                                 return nts.uk.request.ajax(paths.remove, id);
                             }
                             service.remove = remove;
-                            function find(id) {
-                                return nts.uk.request.ajax(paths.find, id);
+                            function findOutputSettingDetail(id) {
+                                return nts.uk.request.ajax(paths.findOutputSettingDetail + "/" + id);
                             }
-                            service.find = find;
+                            service.findOutputSettingDetail = findOutputSettingDetail;
+                            function findAllOutputSettings() {
+                                return nts.uk.request.ajax(paths.findAllOutputSettings);
+                            }
+                            service.findAllOutputSettings = findAllOutputSettings;
                         })(service = c.service || (c.service = {}));
                     })(c = qpp007.c || (qpp007.c = {}));
                 })(qpp007 = view.qpp007 || (view.qpp007 = {}));

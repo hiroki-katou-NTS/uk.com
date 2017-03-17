@@ -46,6 +46,8 @@ var nts;
                                 ScreenModel.prototype.startPage = function () {
                                     var self = this;
                                     var dfd = $.Deferred();
+                                    self.loadAllOutputSetting().then(function () {
+                                    });
                                     self.isLoading(false);
                                     dfd.resolve();
                                     return dfd.promise();
@@ -79,11 +81,6 @@ var nts;
                                     data.categorySettings = settings;
                                     return data;
                                 };
-                                ScreenModel.prototype.onSelectOutputSetting = function (id) {
-                                    var self = this;
-                                    $('.save-error').ntsError('clear');
-                                    self.isNewMode(false);
-                                };
                                 ScreenModel.prototype.save = function () {
                                     var self = this;
                                     $('#inpCode').ntsError('clear');
@@ -101,13 +98,13 @@ var nts;
                                         return;
                                     }
                                     var data = self.collectData();
-                                    if (self.isNewMode) {
-                                        data.isCreateMode = true;
+                                    if (self.isNewMode()) {
+                                        data.createMode = true;
                                     }
                                     else {
-                                        data.isCreateMode = false;
+                                        data.createMode = false;
                                     }
-                                    c.service.save(data);
+                                    c.service.save(data).done(function () { return self.isNewMode(false); });
                                 };
                                 ScreenModel.prototype.remove = function () {
                                     if (this.outputSettingSelectedCode) {
@@ -121,6 +118,42 @@ var nts;
                                     var self = this;
                                     self.outputSettingSelectedCode(undefined);
                                     self.isNewMode(true);
+                                };
+                                ScreenModel.prototype.onSelectOutputSetting = function (id) {
+                                    var self = this;
+                                    $('.save-error').ntsError('clear');
+                                    self.isNewMode(false);
+                                    self.loadOutputSettingDetail(id);
+                                };
+                                ScreenModel.prototype.loadAllOutputSetting = function () {
+                                    var self = this;
+                                    var dfd = $.Deferred();
+                                    c.service.findAllOutputSettings().done(function (data) {
+                                        dfd.resolve();
+                                    }).fail(function (res) {
+                                        nts.uk.ui.dialog.alert(res);
+                                        dfd.reject();
+                                    });
+                                    return dfd.promise();
+                                };
+                                ScreenModel.prototype.loadOutputSettingDetail = function (code) {
+                                    var self = this;
+                                    var dfd = $.Deferred();
+                                    c.service.findOutputSettingDetail(code).done(function (data) {
+                                        dfd.resolve();
+                                    }).fail(function (res) {
+                                        nts.uk.ui.dialog.alert(res);
+                                        dfd.reject();
+                                    });
+                                    return dfd.promise();
+                                };
+                                ScreenModel.prototype.loadAggregateItems = function () {
+                                    var dfd = $.Deferred();
+                                    return dfd.promise();
+                                };
+                                ScreenModel.prototype.loadMasterItems = function () {
+                                    var dfd = $.Deferred();
+                                    return dfd.promise();
                                 };
                                 ScreenModel.prototype.close = function () {
                                     nts.uk.ui.windows.close();
@@ -144,8 +177,8 @@ var nts;
                             viewmodel.OutputSettingDto = OutputSettingDto;
                             var OutputSettingDetailModel = (function () {
                                 function OutputSettingDetailModel() {
-                                    this.settingCode = ko.observable('code');
-                                    this.settingName = ko.observable('name 123');
+                                    this.settingCode = ko.observable('001');
+                                    this.settingName = ko.observable('001');
                                     this.categorySettings = ko.observableArray([]);
                                     this.categorySettings.push(new CategorySetting());
                                     this.categorySettings.push(new CategorySetting());

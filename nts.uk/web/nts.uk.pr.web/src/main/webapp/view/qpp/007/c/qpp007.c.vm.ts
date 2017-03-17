@@ -57,6 +57,9 @@ module nts.uk.pr.view.qpp007.c {
             public startPage(): JQueryPromise<void> {
                 var self = this;
                 var dfd = $.Deferred<void>();
+                self.loadAllOutputSetting().then(() => {
+                    // TODO ...
+                });
                 self.isLoading(false);
                 dfd.resolve();
                 return dfd.promise();
@@ -101,15 +104,6 @@ module nts.uk.pr.view.qpp007.c {
             }
 
             /**
-            * On select outputSetting
-            */
-            private onSelectOutputSetting(id: string): void {
-                var self = this;
-                $('.save-error').ntsError('clear');
-                self.isNewMode(false);
-            }
-
-            /**
             * Save outputSetting.
             */
             public save(): void {
@@ -131,12 +125,12 @@ module nts.uk.pr.view.qpp007.c {
                     return;
                 }
                 var data = self.collectData();
-                if (self.isNewMode) {
-                    data.isCreateMode = true;
+                if (self.isNewMode()) {
+                    data.createMode = true;
                 } else {
-                    data.isCreateMode = false;
+                    data.createMode = false;
                 }
-                service.save(data);
+                service.save(data).done(() => self.isNewMode(false));
             }
 
             /**
@@ -162,8 +156,65 @@ module nts.uk.pr.view.qpp007.c {
                 var self = this;
                 // Clear outputSetting SelectedCode
                 self.outputSettingSelectedCode(undefined);
-
                 self.isNewMode(true);
+            }
+
+            /**
+           * On select outputSetting
+           */
+            private onSelectOutputSetting(id: string): void {
+                var self = this;
+                $('.save-error').ntsError('clear');
+                self.isNewMode(false)
+                self.loadOutputSettingDetail(id);
+            }
+
+            /**
+             * Load all output setting.
+             */
+            public loadAllOutputSetting(): JQueryPromise<void> {
+                var self = this;
+                var dfd = $.Deferred<void>();
+                service.findAllOutputSettings().done(data => {
+                    // TODO: ...
+                    dfd.resolve();
+                }).fail(function(res) {
+                    nts.uk.ui.dialog.alert(res);
+                    dfd.reject();
+                })
+                return dfd.promise();
+            }
+
+            /**
+             * Load detail output setting.
+             */
+            public loadOutputSettingDetail(code: string): JQueryPromise<void> {
+                var self = this;
+                var dfd = $.Deferred<void>();
+                service.findOutputSettingDetail(code).done(data => {
+                    // TODO: ...
+                    dfd.resolve();
+                }).fail(function(res) {
+                    nts.uk.ui.dialog.alert(res);
+                    dfd.reject();
+                })
+                return dfd.promise();
+            }
+
+            /**
+            * Load aggregate items
+            */
+            public loadAggregateItems(): JQueryPromise<void> {
+                var dfd = $.Deferred<void>();
+                return dfd.promise();
+            }
+
+            /**
+            * Load master items
+            */
+            public loadMasterItems(): JQueryPromise<void> {
+                var dfd = $.Deferred<void>();
+                return dfd.promise();
             }
 
             /**
@@ -187,7 +238,7 @@ module nts.uk.pr.view.qpp007.c {
             code: string;
             name: string;
             categorySettings: CategorySettingDto[];
-            isCreateMode: boolean;
+            createMode: boolean;
         }
 
         export class OutputSettingDetailModel {
@@ -198,8 +249,8 @@ module nts.uk.pr.view.qpp007.c {
             categorySettings: KnockoutObservableArray<CategorySetting>;
             reloadReportItems: () => void;
             constructor() {
-                this.settingCode = ko.observable('code');
-                this.settingName = ko.observable('name 123');
+                this.settingCode = ko.observable('001');
+                this.settingName = ko.observable('001');
                 this.categorySettings = ko.observableArray<CategorySetting>([]);
                 this.categorySettings.push(new CategorySetting()); this.categorySettings.push(new CategorySetting());
                 this.categorySettings.push(new CategorySetting()); this.categorySettings.push(new CategorySetting());
