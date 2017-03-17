@@ -15,7 +15,7 @@ var qpp008;
                     self.cInp002Code = ko.observable(false);
                     self.currentCode.subscribe(function (codeChanged) {
                         if (!nts.uk.text.isNullOrEmpty(codeChanged)) {
-                            self.currentItem(ko.mapping.toJS(self.getItem(codeChanged)));
+                            self.currentItem(self.mappingFromJS(self.getItem(codeChanged)));
                             self.cInp002Code(false);
                             self.allowEditCode(true);
                         }
@@ -91,9 +91,12 @@ var qpp008;
                     ]);
                     self.currentCode2 = ko.observable();
                 };
+                ScreenModel.prototype.mappingFromJS = function (data) {
+                    return ko.mapping.fromJS(data);
+                };
                 ScreenModel.prototype.refreshLayout = function () {
                     var self = this;
-                    self.currentItem(new c.service.model.ComparingFormHeader('', ''));
+                    self.currentItem(self.mappingFromJS(new c.service.model.ComparingFormHeader('', '')));
                     self.currentCode();
                     self.allowEditCode(true);
                     self.cInp002Code(true);
