@@ -23,6 +23,10 @@ public interface FormulaHistoryRepository {
 	
 	void remove (FormulaHistory formulaHistory);
 	
+	void update (FormulaHistory formulaHistory);
+	
 	boolean isExistedHistory(String companyCode);
+	
+	Optional<FormulaHistory> findLastHistory(String companyCode, FormulaCode formulaCode, String historyId);
 	
 }

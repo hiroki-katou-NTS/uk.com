@@ -35,47 +35,44 @@ public class JpaFormulaEasyEasyStandardItemRepository extends JpaRepository
 	public List<FormulaEasyStandardItem> findAll(String companyCode, FormulaCode formulaCode, String historyId,
 			EasyFormulaCode easyFormulaCode) {
 		return this.queryProxy().query(FIND_FORMULA_EASY_STANDARD, QcfmtFormulaEasyStandardItem.class)
-				.setParameter("companyCode", companyCode)
-				.setParameter("formulaCode", formulaCode.v())
-				.setParameter("historyId", historyId)
-				.setParameter("easyFormulaCode", easyFormulaCode.v())
+				.setParameter("companyCode", companyCode).setParameter("formulaCode", formulaCode.v())
+				.setParameter("historyId", historyId).setParameter("easyFormulaCode", easyFormulaCode.v())
 				.getList(f -> toDomain(f));
 	}
 
 	@Override
 	public void remove(String companyCode, FormulaCode formulaCode, String historyId) {
-		this.getEntityManager().createQuery(REMOVE_FORMULA_EASY_STANRDARD_ITEM)
-				.setParameter("companyCode", companyCode)
-				.setParameter("formulaCode", formulaCode.v())
-				.setParameter("historyId", historyId).executeUpdate();
+		this.getEntityManager().createQuery(REMOVE_FORMULA_EASY_STANRDARD_ITEM).setParameter("companyCode", companyCode)
+				.setParameter("formulaCode", formulaCode.v()).setParameter("historyId", historyId).executeUpdate();
 	}
 
 	@Override
 	public void add(List<FormulaEasyStandardItem> formulaEasyStandardItem) {
-		formulaEasyStandardItem.stream().forEach(item -> this.commandProxy().insert(toEntity(item)));		;
+		formulaEasyStandardItem.stream().forEach(item -> this.commandProxy().insert(toEntity(item)));
+		;
 	}
 
-	private QcfmtFormulaEasyStandardItem toEntity(FormulaEasyStandardItem command) {
+	private QcfmtFormulaEasyStandardItem toEntity(FormulaEasyStandardItem formulaEasyStandardItem) {
 		val entity = new QcfmtFormulaEasyStandardItem();
 
 		entity.qcfmtFormulaEasyAPK = new QcfmtFormulaEasyStandardItemPK();
-		entity.qcfmtFormulaEasyAPK.companyCode = command.getCompanyCode();
-		entity.qcfmtFormulaEasyAPK.easyFormulaCode = command.getEasyFormulaCode().v();
-		entity.qcfmtFormulaEasyAPK.formulaCode = command.getFormulaCode().v();
-		entity.qcfmtFormulaEasyAPK.historyId = command.getHistoryId();
-		entity.qcfmtFormulaEasyAPK.referenceItemCode = command.getReferenceItemCode().v();
+		entity.qcfmtFormulaEasyAPK.companyCode = formulaEasyStandardItem.getCompanyCode();
+		entity.qcfmtFormulaEasyAPK.easyFormulaCode = formulaEasyStandardItem.getEasyFormulaCode().v();
+		entity.qcfmtFormulaEasyAPK.formulaCode = formulaEasyStandardItem.getFormulaCode().v();
+		entity.qcfmtFormulaEasyAPK.historyId = formulaEasyStandardItem.getHistoryId();
+		entity.qcfmtFormulaEasyAPK.referenceItemCode = formulaEasyStandardItem.getReferenceItemCode().v();
 
 		return entity;
 	}
 
-	private FormulaEasyStandardItem toDomain(QcfmtFormulaEasyStandardItem f) {
+	private FormulaEasyStandardItem toDomain(QcfmtFormulaEasyStandardItem qcfmtFormulaEasyStandardItem) {
 		FormulaEasyStandardItem formulaEasyStandardItem = FormulaEasyStandardItem.createFromJavaType(
-				f.qcfmtFormulaEasyAPK.companyCode,
-				f.qcfmtFormulaEasyAPK.formulaCode,
-				f.qcfmtFormulaEasyAPK.historyId,
-				f.qcfmtFormulaEasyAPK.easyFormulaCode,
-				f.qcfmtFormulaEasyAPK.referenceItemCode);
-		
+				qcfmtFormulaEasyStandardItem.qcfmtFormulaEasyAPK.companyCode,
+				qcfmtFormulaEasyStandardItem.qcfmtFormulaEasyAPK.formulaCode,
+				qcfmtFormulaEasyStandardItem.qcfmtFormulaEasyAPK.historyId,
+				qcfmtFormulaEasyStandardItem.qcfmtFormulaEasyAPK.easyFormulaCode,
+				qcfmtFormulaEasyStandardItem.qcfmtFormulaEasyAPK.referenceItemCode);
+
 		return formulaEasyStandardItem;
 	}
 }

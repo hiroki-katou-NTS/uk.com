@@ -1,6 +1,7 @@
 package nts.uk.ctx.pr.formula.app.find.formula;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 import lombok.Data;
 
@@ -35,4 +36,5 @@ public class FormulaEasyFinderDto {
 	
 	BigDecimal minLimitValue;
 	
+	List<String> referenceItemCodes;
 }

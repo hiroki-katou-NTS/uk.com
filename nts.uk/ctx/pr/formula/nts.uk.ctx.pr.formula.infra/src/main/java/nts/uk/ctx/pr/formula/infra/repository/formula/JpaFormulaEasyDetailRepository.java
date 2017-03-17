@@ -42,10 +42,8 @@ public class JpaFormulaEasyDetailRepository extends JpaRepository implements For
 	@Override
 	public void remove(String companyCode, FormulaCode formulaCode, String historyId) {
 
-		this.getEntityManager().createQuery(REMOVE_EASY_DETAIL_CONDITION)
-				.setParameter("companyCode", companyCode)
-				.setParameter("formulaCode", formulaCode.v())
-				.setParameter("historyId", historyId).executeUpdate();
+		this.getEntityManager().createQuery(REMOVE_EASY_DETAIL_CONDITION).setParameter("companyCode", companyCode)
+				.setParameter("formulaCode", formulaCode.v()).setParameter("historyId", historyId).executeUpdate();
 	}
 
 	@Override
@@ -54,7 +52,8 @@ public class JpaFormulaEasyDetailRepository extends JpaRepository implements For
 	}
 
 	@Override
-	public Optional<FormulaEasyDetail> findWithOutPriKey(String companyCode, FormulaCode formulaCode, String historyId) {
+	public Optional<FormulaEasyDetail> findWithOutPriKey(String companyCode, FormulaCode formulaCode,
+			String historyId) {
 		return this.queryProxy().query(FIND_WITHOUT_PRI_KEY, QcfmtFormulaEasyDetail.class)
 				.setParameter("companyCode", companyCode).setParameter("formulaCode", formulaCode.v())
 				.setParameter("historyId", historyId).getSingle(f -> toDomain(f));
@@ -87,13 +86,20 @@ public class JpaFormulaEasyDetailRepository extends JpaRepository implements For
 		return entity;
 	}
 
-	private FormulaEasyDetail toDomain(QcfmtFormulaEasyDetail f) {
+	private FormulaEasyDetail toDomain(QcfmtFormulaEasyDetail qcfmtFormulaEasyDetail) {
 		FormulaEasyDetail formulaEasyDetail = FormulaEasyDetail.createFromJavaType(
-				f.qcfmtFormulaEasyDetailPK.companyCode, f.qcfmtFormulaEasyDetailPK.formulaCode,
-				f.qcfmtFormulaEasyDetailPK.historyId, f.qcfmtFormulaEasyDetailPK.easyFormulaCd, f.easyFormulaName,
-				f.easyFormulaTypeAttribute, f.baseFixedAmount, f.baseAmountDevision, f.baseFixedValue,
-				f.baseValueDevision, f.premiumRate, f.roundProcessingDevision, f.coefficientDivision,
-				f.coefficientFixedValue, f.adjustmentDevision, f.totalRounding, f.minLimitValue, f.maxLimitValue);
+				qcfmtFormulaEasyDetail.qcfmtFormulaEasyDetailPK.companyCode,
+				qcfmtFormulaEasyDetail.qcfmtFormulaEasyDetailPK.formulaCode,
+				qcfmtFormulaEasyDetail.qcfmtFormulaEasyDetailPK.historyId,
+				qcfmtFormulaEasyDetail.qcfmtFormulaEasyDetailPK.easyFormulaCd, 
+				qcfmtFormulaEasyDetail.easyFormulaName,
+				qcfmtFormulaEasyDetail.easyFormulaTypeAttribute, qcfmtFormulaEasyDetail.baseFixedAmount,
+				qcfmtFormulaEasyDetail.baseAmountDevision, qcfmtFormulaEasyDetail.baseFixedValue,
+				qcfmtFormulaEasyDetail.baseValueDevision, qcfmtFormulaEasyDetail.premiumRate,
+				qcfmtFormulaEasyDetail.roundProcessingDevision, qcfmtFormulaEasyDetail.coefficientDivision,
+				qcfmtFormulaEasyDetail.coefficientFixedValue, qcfmtFormulaEasyDetail.adjustmentDevision,
+				qcfmtFormulaEasyDetail.totalRounding, qcfmtFormulaEasyDetail.minLimitValue,
+				qcfmtFormulaEasyDetail.maxLimitValue);
 
 		return formulaEasyDetail;
 	}

@@ -11,14 +11,18 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class AddFormulaHistoryCommand {
 	
-	String companyCode;
+	private String formulaCode;
 
-	String formulaCode;
+	private String historyId;
+	
+	private int startDate;
+	
+	private int endDate;
+	
+	private int settingFormula;
+	
+	private int conditionAtr;
 
-	String historyId;
-	
-	int startDate;
-	
-	int endDate;
+	private int referenceMasterNo;
 
 }

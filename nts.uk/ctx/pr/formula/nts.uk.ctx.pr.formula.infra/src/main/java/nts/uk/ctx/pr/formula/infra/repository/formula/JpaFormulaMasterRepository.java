@@ -19,25 +19,25 @@ import nts.uk.ctx.pr.formula.infra.entity.formula.QcfmtFormulaPK;
 public class JpaFormulaMasterRepository extends JpaRepository implements FormulaMasterRepository {
 
 	private static final String FIND_ALL_BY_COMPANYCODE;
-	
+
 	private static final String IS_EXISTED_FORMULA;
-	
+
 	private static final String FIND_FORMULA_NAME_BY_CODES;
-	
-	static{
+
+	static {
 		StringBuilder builderString = new StringBuilder();
 		builderString.append("SELECT COUNT(a) ");
 		builderString.append("FROM QcfmtFormula a ");
 		builderString.append("WHERE a.qcfmtFormulaPK.companyCode = :companyCode ");
 		IS_EXISTED_FORMULA = builderString.toString();
-		
+
 		builderString = new StringBuilder();
 		builderString.append("SELECT a ");
 		builderString.append("FROM QcfmtFormula a ");
 		builderString.append("WHERE a.qcfmtFormulaPK.companyCode = :companyCode ");
 		builderString.append("ORDER BY a.qcfmtFormulaPK.companyCode, a.qcfmtFormulaPK.formulaCd ");
 		FIND_ALL_BY_COMPANYCODE = builderString.toString();
-		
+
 		builderString = new StringBuilder();
 		builderString.append("SELECT a ");
 		builderString.append("FROM QcfmtFormula a ");
@@ -79,35 +79,34 @@ public class JpaFormulaMasterRepository extends JpaRepository implements Formula
 		this.commandProxy().update(toEntity(formulaMaster));
 	}
 
-	private FormulaMaster toDomain(QcfmtFormula f) {
-		FormulaMaster formulaMaster = FormulaMaster.createFromJavaType(f.qcfmtFormulaPK.ccd, f.qcfmtFormulaPK.formulaCd,
-				f.difficultyAtr, f.formulaName);
+	private FormulaMaster toDomain(QcfmtFormula qcfmtFormula) {
+		FormulaMaster formulaMaster = FormulaMaster.createFromJavaType(qcfmtFormula.qcfmtFormulaPK.ccd,
+				qcfmtFormula.qcfmtFormulaPK.formulaCd, qcfmtFormula.difficultyAtr, qcfmtFormula.formulaName);
 		return formulaMaster;
 	}
 
-	private QcfmtFormula toEntity(FormulaMaster command) {
+	private QcfmtFormula toEntity(FormulaMaster formulaMasterMaster) {
 		val entity = new QcfmtFormula();
 
 		entity.qcfmtFormulaPK = new QcfmtFormulaPK();
-		entity.qcfmtFormulaPK.ccd = command.getCompanyCode();
-		entity.qcfmtFormulaPK.formulaCd = command.getFormulaCode().v();
-		entity.difficultyAtr = new BigDecimal(command.getDifficultyAtr().value);
-		entity.formulaName = command.getFormulaName().v();
+		entity.qcfmtFormulaPK.ccd = formulaMasterMaster.getCompanyCode();
+		entity.qcfmtFormulaPK.formulaCd = formulaMasterMaster.getFormulaCode().v();
+		entity.difficultyAtr = new BigDecimal(formulaMasterMaster.getDifficultyAtr().value);
+		entity.formulaName = formulaMasterMaster.getFormulaName().v();
 
 		return entity;
 	}
 
 	@Override
 	public boolean isExistedFormula(String companyCode) {
-		return this.queryProxy().query(IS_EXISTED_FORMULA, long.class)
-				.setParameter("companyCode", companyCode).getSingle().get() > 0;
+		return this.queryProxy().query(IS_EXISTED_FORMULA, long.class).setParameter("companyCode", companyCode)
+				.getSingle().get() > 0;
 	}
 
 	@Override
 	public List<FormulaMaster> findByCompanyCodeAndFormulaCodes(String companyCode, List<FormulaCode> FormulaCode) {
 		return this.queryProxy().query(FIND_FORMULA_NAME_BY_CODES, QcfmtFormula.class)
-				.setParameter("companyCode", companyCode)
-				.setParameter("formulaCd", FormulaCode)
+				.setParameter("companyCode", companyCode).setParameter("formulaCd", FormulaCode)
 				.getList(f -> toDomain(f));
 	}
 

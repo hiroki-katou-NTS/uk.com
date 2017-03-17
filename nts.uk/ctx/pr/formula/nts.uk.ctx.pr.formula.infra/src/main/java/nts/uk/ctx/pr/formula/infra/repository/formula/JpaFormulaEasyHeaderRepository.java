@@ -17,19 +17,19 @@ import nts.uk.ctx.pr.formula.infra.entity.formula.QcfmtFormulaEasyHeaderPK;
 
 @Stateless
 public class JpaFormulaEasyHeaderRepository extends JpaRepository implements FormulaEasyHeaderRepository {
-	
+
 	private static final String REMOVE_EASY_HEADER;
-	
+
 	private static final String FIND_EASY_HEADER;
-	
-	static{
+
+	static {
 		StringBuilder builderString = new StringBuilder();
 		builderString.append("DELETE FROM QcfmtFormulaEasyHeader a ");
 		builderString.append("WHERE a.QcfmtFormulaEasyHeaderPK.companyCode = :companyCode ");
 		builderString.append("AND a.QcfmtFormulaEasyHeaderPK.formulaCode = :formulaCode ");
 		builderString.append("AND a.QcfmtFormulaEasyHeaderPK.historyId = :historyId ");
 		REMOVE_EASY_HEADER = builderString.toString();
-		
+
 		builderString = new StringBuilder();
 		builderString.append("SELECT a FROM QcfmtFormulaEasyHeader a ");
 		builderString.append("WHERE a.QcfmtFormulaEasyHeaderPK.companyCode = :companyCode ");
@@ -40,11 +40,12 @@ public class JpaFormulaEasyHeaderRepository extends JpaRepository implements For
 
 	@Override
 	public Optional<FormulaEasyHeader> findByPriKey(String companyCode, FormulaCode formulaCode, String historyId) {
-//		return this.queryProxy().find(new QcfmtFormulaEasyHeaderPK(companyCode, formulaCode.v(), historyId,
-//				new BigDecimal(referenceMasterNo.value)), QcfmtFormulaEasyHeader.class).map(f -> toDomain(f));
+		// return this.queryProxy().find(new
+		// QcfmtFormulaEasyHeaderPK(companyCode, formulaCode.v(), historyId,
+		// new BigDecimal(referenceMasterNo.value)),
+		// QcfmtFormulaEasyHeader.class).map(f -> toDomain(f));
 		return this.queryProxy().query(FIND_EASY_HEADER, QcfmtFormulaEasyHeader.class)
-				.setParameter("companyCode", companyCode)
-				.setParameter("formulaCode", formulaCode.v())
+				.setParameter("companyCode", companyCode).setParameter("formulaCode", formulaCode.v())
 				.setParameter("historyId", historyId).getSingle(f -> (toDomain(f)));
 	}
 
@@ -61,23 +62,24 @@ public class JpaFormulaEasyHeaderRepository extends JpaRepository implements For
 				.setParameter("historyId", formulaEasyHead.getHistoryId()).executeUpdate();
 	}
 
-	private static FormulaEasyHeader toDomain(QcfmtFormulaEasyHeader easyHead) {
+	private static FormulaEasyHeader toDomain(QcfmtFormulaEasyHeader qcfmtFormulaEasyHeader) {
 		FormulaEasyHeader formulaEasyHead = FormulaEasyHeader.createFromJavaType(
-				easyHead.qcfmtFormulaEasyHeaderPK.companyCode, easyHead.qcfmtFormulaEasyHeaderPK.formulaCode,
-				easyHead.qcfmtFormulaEasyHeaderPK.historyId, easyHead.conditionAtr,
-				easyHead.qcfmtFormulaEasyHeaderPK.refMasterNo);
+				qcfmtFormulaEasyHeader.qcfmtFormulaEasyHeaderPK.companyCode,
+				qcfmtFormulaEasyHeader.qcfmtFormulaEasyHeaderPK.formulaCode,
+				qcfmtFormulaEasyHeader.qcfmtFormulaEasyHeaderPK.historyId, qcfmtFormulaEasyHeader.conditionAtr,
+				qcfmtFormulaEasyHeader.qcfmtFormulaEasyHeaderPK.refMasterNo);
 		return formulaEasyHead;
 	}
 
-	private static QcfmtFormulaEasyHeader toEntity(FormulaEasyHeader command) {
+	private static QcfmtFormulaEasyHeader toEntity(FormulaEasyHeader formulaEasyHeader) {
 		val entity = new QcfmtFormulaEasyHeader();
 
 		entity.qcfmtFormulaEasyHeaderPK = new QcfmtFormulaEasyHeaderPK();
-		entity.qcfmtFormulaEasyHeaderPK.companyCode = command.getCompanyCode();
-		entity.qcfmtFormulaEasyHeaderPK.formulaCode = command.getFormulaCode().v();
-		entity.qcfmtFormulaEasyHeaderPK.historyId = command.getHistoryId();
-		entity.qcfmtFormulaEasyHeaderPK.refMasterNo = new BigDecimal(command.getReferenceMasterNo().value);
-		entity.conditionAtr = new BigDecimal(command.getConditionAtr().value);
+		entity.qcfmtFormulaEasyHeaderPK.companyCode = formulaEasyHeader.getCompanyCode();
+		entity.qcfmtFormulaEasyHeaderPK.formulaCode = formulaEasyHeader.getFormulaCode().v();
+		entity.qcfmtFormulaEasyHeaderPK.historyId = formulaEasyHeader.getHistoryId();
+		entity.qcfmtFormulaEasyHeaderPK.refMasterNo = new BigDecimal(formulaEasyHeader.getReferenceMasterNo().value);
+		entity.conditionAtr = new BigDecimal(formulaEasyHeader.getConditionAtr().value);
 
 		return entity;
 	}

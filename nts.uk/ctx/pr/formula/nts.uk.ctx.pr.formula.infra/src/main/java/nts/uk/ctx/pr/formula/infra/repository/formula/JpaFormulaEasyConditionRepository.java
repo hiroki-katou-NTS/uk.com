@@ -47,26 +47,28 @@ public class JpaFormulaEasyConditionRepository extends JpaRepository implements 
 				.setParameter("historyId", historyId).getSingle(f -> (toDomain(f)));
 	}
 
-	private FormulaEasyCondition toDomain(QcfmtFormulaEasyCondition f) {
+	private FormulaEasyCondition toDomain(QcfmtFormulaEasyCondition qcfmtFormulaEasyCondition) {
 		FormulaEasyCondition formulaEasyCondition = FormulaEasyCondition.createFromJavaType(
-				f.qcfmtFormulaEasyConditionPK.companyCode, f.qcfmtFormulaEasyConditionPK.formulaCode,
-				f.qcfmtFormulaEasyConditionPK.historyId, f.easyFormulaCd, f.fixFormulaAtr, f.fixMny,
-				f.qcfmtFormulaEasyConditionPK.refMasterCd);
+				qcfmtFormulaEasyCondition.qcfmtFormulaEasyConditionPK.companyCode,
+				qcfmtFormulaEasyCondition.qcfmtFormulaEasyConditionPK.formulaCode,
+				qcfmtFormulaEasyCondition.qcfmtFormulaEasyConditionPK.historyId,
+				qcfmtFormulaEasyCondition.easyFormulaCd, qcfmtFormulaEasyCondition.fixFormulaAtr,
+				qcfmtFormulaEasyCondition.fixMny, qcfmtFormulaEasyCondition.qcfmtFormulaEasyConditionPK.refMasterCd);
 
 		return formulaEasyCondition;
 	}
 
-	private QcfmtFormulaEasyCondition toEntity(FormulaEasyCondition command) {
+	private QcfmtFormulaEasyCondition toEntity(FormulaEasyCondition formulaEasyCondition) {
 		val entity = new QcfmtFormulaEasyCondition();
 
 		entity.qcfmtFormulaEasyConditionPK = new QcfmtFormulaEasyConditionPK();
-		entity.qcfmtFormulaEasyConditionPK.companyCode = command.getCompanyCode();
-		entity.qcfmtFormulaEasyConditionPK.formulaCode = command.getFormulaCode().v();
-		entity.qcfmtFormulaEasyConditionPK.historyId = command.getHistoryId();
-		entity.qcfmtFormulaEasyConditionPK.refMasterCd = command.getReferenceMasterCode().v();
-		entity.easyFormulaCd = command.getEasyFormulaCode().v();
-		entity.fixFormulaAtr = new BigDecimal(command.getFixFormulaAtr().value);
-		entity.fixMny = command.getFixMoney().v();
+		entity.qcfmtFormulaEasyConditionPK.companyCode = formulaEasyCondition.getCompanyCode();
+		entity.qcfmtFormulaEasyConditionPK.formulaCode = formulaEasyCondition.getFormulaCode().v();
+		entity.qcfmtFormulaEasyConditionPK.historyId = formulaEasyCondition.getHistoryId();
+		entity.qcfmtFormulaEasyConditionPK.refMasterCd = formulaEasyCondition.getReferenceMasterCode().v();
+		entity.easyFormulaCd = formulaEasyCondition.getEasyFormulaCode().v();
+		entity.fixFormulaAtr = new BigDecimal(formulaEasyCondition.getFixFormulaAtr().value);
+		entity.fixMny = formulaEasyCondition.getFixMoney().v();
 
 		return entity;
 	}

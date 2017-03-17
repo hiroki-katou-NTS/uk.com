@@ -24,6 +24,8 @@ public class JpaFormulaHistoryRepository extends JpaRepository implements Formul
 
 	private static final String IS_EXISTED_HISTORY;
 
+	private static final String LAST_HISTORY;
+	
 	static {
 		StringBuilder builderString = new StringBuilder();
 		builderString.append("SELECT COUNT(a) ");
@@ -35,7 +37,8 @@ public class JpaFormulaHistoryRepository extends JpaRepository implements Formul
 		builderString.append("SELECT a ");
 		builderString.append("FROM QcfmtFormulaHistory a ");
 		builderString.append("WHERE a.qcfmtFormulaHistoryPK.companyCode = :companyCode ");
-		builderString.append("ORDER BY a.qcfmtFormulaHistoryPK.companyCode, a.qcfmtFormulaHistoryPK.formulaCode, a.qcfmtFormulaHistoryPK.historyId ");
+		builderString.append(
+				"ORDER BY a.qcfmtFormulaHistoryPK.companyCode, a.qcfmtFormulaHistoryPK.formulaCode, a.qcfmtFormulaHistoryPK.historyId ");
 		FIND_ALL_BY_COMPANYCODE = builderString.toString();
 
 		builderString = new StringBuilder();
@@ -46,6 +49,13 @@ public class JpaFormulaHistoryRepository extends JpaRepository implements Formul
 		builderString.append("AND a.endDate >= :baseDate ");
 		builderString.append("AND a.qcfmtFormulaHistoryPK.formulaCode <> :formulaCode ");
 		FIND_ALL_DIFFERENT_FORMULACODE = builderString.toString();
+
+		builderString = new StringBuilder();
+		builderString.append("SELECT a ");
+		builderString.append("FROM QcfmtFormulaHistory a ");
+		builderString.append("WHERE a.qcfmtFormulaHistoryPK.companyCode = :companyCode ");
+		builderString.append("AND a.qcfmtFormulaHistoryPK.formulaCode = :formulaCode ");
+		LAST_HISTORY = builderString.toString();
 	}
 
 	@Override
@@ -80,24 +90,31 @@ public class JpaFormulaHistoryRepository extends JpaRepository implements Formul
 		this.commandProxy().remove(toEntity(formulaHistory));
 	}
 
-	private static FormulaHistory toDomain(QcfmtFormulaHistory hist) {
+	@Override
+	public void update(FormulaHistory formulaHistory) {
+		this.commandProxy().update(toEntity(formulaHistory));
+	}
 
-		FormulaHistory formulaHistory = FormulaHistory.createFromJavaType(hist.qcfmtFormulaHistoryPK.companyCode,
-				hist.qcfmtFormulaHistoryPK.formulaCode, hist.qcfmtFormulaHistoryPK.historyId, hist.startDate.intValue(),
-				hist.endDate.intValue());
+	private static FormulaHistory toDomain(QcfmtFormulaHistory qcfmtFormulaHistory) {
+
+		FormulaHistory formulaHistory = FormulaHistory.createFromJavaType(
+				qcfmtFormulaHistory.qcfmtFormulaHistoryPK.companyCode,
+				qcfmtFormulaHistory.qcfmtFormulaHistoryPK.formulaCode,
+				qcfmtFormulaHistory.qcfmtFormulaHistoryPK.historyId, qcfmtFormulaHistory.startDate.intValue(),
+				qcfmtFormulaHistory.endDate.intValue());
 
 		return formulaHistory;
 	}
 
-	private QcfmtFormulaHistory toEntity(FormulaHistory command) {
+	private QcfmtFormulaHistory toEntity(FormulaHistory formulaHistory) {
 		val entity = new QcfmtFormulaHistory();
 
 		entity.qcfmtFormulaHistoryPK = new QcfmtFormulaHistoryPK();
-		entity.qcfmtFormulaHistoryPK.companyCode = command.getCompanyCode();
-		entity.qcfmtFormulaHistoryPK.formulaCode = command.getFormulaCode().v();
-		entity.qcfmtFormulaHistoryPK.historyId = command.getHistoryId();
-		entity.startDate = new BigDecimal(command.getStartDate().v());
-		entity.endDate = new BigDecimal(command.getEndDate().v());
+		entity.qcfmtFormulaHistoryPK.companyCode = formulaHistory.getCompanyCode();
+		entity.qcfmtFormulaHistoryPK.formulaCode = formulaHistory.getFormulaCode().v();
+		entity.qcfmtFormulaHistoryPK.historyId = formulaHistory.getHistoryId();
+		entity.startDate = new BigDecimal(formulaHistory.getStartDate().v());
+		entity.endDate = new BigDecimal(formulaHistory.getEndDate().v());
 
 		return entity;
 	}
@@ -108,4 +125,8 @@ public class JpaFormulaHistoryRepository extends JpaRepository implements Formul
 				.getSingle().get() > 0;
 	}
 
+	@Override
+	public Optional<FormulaHistory> findLastHistory(String companyCode, FormulaCode formulaCode, String historyId) {
+		return null;
+	}
 }
