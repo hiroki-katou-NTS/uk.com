@@ -1,15 +1,16 @@
-package nts.uk.ctx.pr.core.app.find.itemmaster.dto.itemsalaryperiod;
+package nts.uk.ctx.pr.core.app.find.itemmaster.dto.itemdeductperiod;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import nts.uk.ctx.pr.core.dom.itemmaster.itemsalaryperiod.ItemSalaryPeriod;
+import nts.uk.ctx.pr.core.dom.itemmaster.itemdeductperiod.ItemDeductPeriod;
 
 @NoArgsConstructor
 @AllArgsConstructor
 @Data
-public class ItemSalaryPeriodDto {
-	private String itemCode;
+public class ItemDeductPeriodDto {
+
+	private String itemCd;
 	private int periodAtr;
 	private int strY;
 	private int endY;
@@ -27,14 +28,12 @@ public class ItemSalaryPeriodDto {
 	private int cycle11Atr;
 	private int cycle12Atr;
 
-	public static ItemSalaryPeriodDto fromDomain(ItemSalaryPeriod domain) {
-		return new ItemSalaryPeriodDto(domain.getItemCode().v(), domain.getPeriodAtr().value, domain.getStrY().v(),
+	public static ItemDeductPeriodDto fromDomain(ItemDeductPeriod domain) {
+		return new ItemDeductPeriodDto(domain.getItemCd().v(), domain.getPeriodAtr().value, domain.getStrY().v(),
 				domain.getEndY().v(), domain.getCycleAtr().value, domain.getCycle01Atr().value,
 				domain.getCycle02Atr().value, domain.getCycle03Atr().value, domain.getCycle04Atr().value,
 				domain.getCycle05Atr().value, domain.getCycle06Atr().value, domain.getCycle07Atr().value,
 				domain.getCycle08Atr().value, domain.getCycle09Atr().value, domain.getCycle10Atr().value,
 				domain.getCycle11Atr().value, domain.getCycle12Atr().value);
-
 	}
-
 }

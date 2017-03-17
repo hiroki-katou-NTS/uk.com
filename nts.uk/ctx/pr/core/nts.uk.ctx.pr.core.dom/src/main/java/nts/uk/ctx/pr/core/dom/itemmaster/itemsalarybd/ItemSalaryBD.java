@@ -16,21 +16,21 @@ import nts.uk.ctx.pr.core.dom.itemmaster.itemsalary.RangeAtr;
 
 @Getter
 public class ItemSalaryBD extends AggregateRoot {
-	public ItemCode itemCd;
-	public ItemBreakdownCd itemBreakdownCd;
-	public ItemBreakdownName itemBreakdownName;
-	public ItemBreakdownAbName itemBreakdownAbName;
-	public UniteCode uniteCd;
-	public DisplayAtr zeroDispSet;
-	public DisplayAtr itemDispAtr;
-	public RangeAtr errRangeLowAtr;
-	public ErrRangeLow errRangeLow;
-	public RangeAtr errRangeHighAtr;
-	public ErrRangeHigh errRangeHigh;
-	public RangeAtr alRangeLowAtr;
-	public AlRangeLow alRangeLow;
-	public RangeAtr alRangeHighAtr;
-	public AlRangeHigh alRangeHigh;
+	private ItemCode itemCd;
+	private ItemBreakdownCd itemBreakdownCd;
+	private ItemBreakdownName itemBreakdownName;
+	private ItemBreakdownAbName itemBreakdownAbName;
+	private UniteCode uniteCd;
+	private DisplayAtr zeroDispSet;
+	private DisplayAtr itemDispAtr;
+	private RangeAtr errRangeLowAtr;
+	private ErrRangeLow errRangeLow;
+	private RangeAtr errRangeHighAtr;
+	private ErrRangeHigh errRangeHigh;
+	private RangeAtr alRangeLowAtr;
+	private AlRangeLow alRangeLow;
+	private RangeAtr alRangeHighAtr;
+	private AlRangeHigh alRangeHigh;
 
 	public ItemSalaryBD(ItemCode itemCd, ItemBreakdownCd itemBreakdownCd, ItemBreakdownName itemBreakdownName,
 			ItemBreakdownAbName itemBreakdownAbName, UniteCode uniteCd, DisplayAtr zeroDispSet, DisplayAtr itemDispAtr,

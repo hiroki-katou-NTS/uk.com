@@ -63,8 +63,6 @@
 	height: 30px;
 }
 
-
-
 .nts-right-content {
 	float: left;
 	margin: 10px 0px 0px 40px;
@@ -84,7 +82,7 @@
 	width: 230px;
 }
 
-#I_INP_004, #I_INP_002 ,#I_INP_003 {
+#I_INP_004, #I_INP_002, #I_INP_003 {
 	height: 17px;
 }
 
@@ -93,7 +91,7 @@
 }
 
 #I_INP_003 {
-	width: 300px;
+	width: 270px;
 }
 
 #contents-area {

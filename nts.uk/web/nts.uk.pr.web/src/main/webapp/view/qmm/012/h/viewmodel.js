@@ -63,12 +63,16 @@ var qmm012;
                     ]);
                     self.CurrentItemMaster(nts.uk.ui.windows.getShared('itemMaster'));
                     if (self.CurrentItemMaster()) {
-                        h.service.findItemSalaryPeriod(self.CurrentItemMaster().itemCode).done(function (ItemSalary) {
-                            self.CurrentItemSalaryPeriod(ItemSalary);
-                        }).fail(function (res) {
-                            // Alert message
-                            alert(res);
-                        });
+                        if (self.CurrentItemMaster().categoryAtrValue == 0) {
+                            h.service.findItemSalaryPeriod(self.CurrentItemMaster().itemCode).done(function (ItemSalary) {
+                                self.CurrentItemSalaryPeriod(ItemSalary);
+                            }).fail(function (res) {
+                                // Alert message
+                                alert(res);
+                            });
+                        }
+                        else {
+                        }
                         self.CurrentCategoryAtrName(self.CurrentItemMaster().categoryAtrName);
                     }
                     self.CurrentItemSalaryPeriod.subscribe(function (ItemSalaryPeriod) {

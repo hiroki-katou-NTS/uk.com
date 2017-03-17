@@ -76,12 +76,18 @@ module qmm012.h.viewmodel {
 
             self.CurrentItemMaster(nts.uk.ui.windows.getShared('itemMaster'));
             if (self.CurrentItemMaster()) {
-                service.findItemSalaryPeriod(self.CurrentItemMaster().itemCode).done(function(ItemSalary: service.model.ItemSalaryPeriod) {
-                    self.CurrentItemSalaryPeriod(ItemSalary);
-                }).fail(function(res) {
-                    // Alert message
-                    alert(res);
-                });
+                if (self.CurrentItemMaster().categoryAtrValue == 0) {
+                    service.findItemSalaryPeriod(self.CurrentItemMaster().itemCode).done(function(ItemSalary: service.model.ItemSalaryPeriod) {
+                        self.CurrentItemSalaryPeriod(ItemSalary);
+                    }).fail(function(res) {
+                        // Alert message
+                        alert(res);
+                    });
+                } else {
+
+
+
+                }
                 self.CurrentCategoryAtrName(self.CurrentItemMaster().categoryAtrName);
             }
             self.CurrentItemSalaryPeriod.subscribe(function(ItemSalaryPeriod: service.model.ItemSalaryPeriod) {
