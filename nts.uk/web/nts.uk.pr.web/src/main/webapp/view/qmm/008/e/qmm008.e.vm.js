@@ -32,7 +32,6 @@ var nts;
                                     ]);
                                     self.selectedTab = ko.observable('tab-1');
                                     self.officeModel = ko.observable(new SocialInsuranceOfficeModel('', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''));
-                                    self.textArea = ko.observable("");
                                     self.textInputOption = ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
                                         textmode: "text",
                                         width: "100",

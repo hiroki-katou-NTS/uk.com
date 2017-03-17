@@ -13,24 +13,13 @@ module nts.uk.pr.view.qmm008.b {
             //Health insurance rate Model
             healthModel: KnockoutObservable<HealthInsuranceRateModel>;
             healthInsuranceOfficeList: KnockoutObservableArray<InsuranceOfficeItem>;
-
-            selectedInsuranceOfficeId: KnockoutObservable<string>;
-            searchKey: KnockoutObservable<string>;
-
             //list rounding options
             roundingList: KnockoutObservableArray<Enum>;
-            //healthTimeInput options
-            timeInputOptions: any;
-            //moneyInputOptions
-            moneyInputOptions: any;
             //numberInputOptions
-            Rate3: any;
-
-            healthFilteredData: any;
-
+            Rate3: KnockoutObservable<nts.uk.ui.option.NumberEditorOption>;
+            healthFilteredData: KnockoutObservableArray<any>;
             //for health auto calculate switch button
             healthAutoCalculateOptions: KnockoutObservableArray<any>;
-            selectedRuleCode: KnockoutObservable<number>;
             //for control data after close dialog
             isTransistReturnData: KnockoutObservable<boolean>;
             // Flags
@@ -54,20 +43,6 @@ module nts.uk.pr.view.qmm008.b {
                 self.healthFilteredData = ko.observableArray(nts.uk.util.flatArray(self.healthInsuranceOfficeList(), "childs"));
                 //init rounding list
                 self.roundingList = ko.observableArray<Enum>([]);
-
-                //healthTimeInput options
-                self.timeInputOptions = ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                    textmode: "text",
-                    width: "100",
-                    textalign: "center"
-                }));
-
-                self.moneyInputOptions = ko.mapping.fromJS(new nts.uk.ui.option.CurrencyEditorOption({
-                    grouplength: 3,
-                    currencyformat: "JPY",
-                    currencyposition: 'right'
-                }));
-
                 self.Rate3 = ko.mapping.fromJS(new nts.uk.ui.option.NumberEditorOption({
                     grouplength: 3,
                     decimallength: 3
@@ -261,7 +236,6 @@ module nts.uk.pr.view.qmm008.b {
                 service.instance.findHistoryByUuid(id).done(dto => {
                     self.loadHealth(dto);
                     self.isLoading(false);
-//                    nts.uk.ui.windows.setShared('unitPriceHistoryModel', ko.toJS(this.unitPriceHistoryModel()));
                     $('.save-error').ntsError('clear');
                     dfd.resolve();
                 });

@@ -14,25 +14,16 @@ module nts.uk.pr.view.qmm008.c {
             pensionInsuranceOfficeList: KnockoutObservableArray<InsuranceOfficeItem>;
 
             selectedInsuranceOfficeId: KnockoutObservable<string>;
-            searchKey: KnockoutObservable<string>;
 
             //list rounding options
             roundingList: KnockoutObservableArray<Enum>;
-            //healthTimeInput options
-            timeInputOptions: any;
-            //moneyInputOptions
-            moneyInputOptions: any;
             //numberInputOptions
-            Rate2: any;
-            pensionFilteredData: any;
-
-            selectedRuleCode: KnockoutObservable<number>;
+            Rate2: KnockoutObservable<nts.uk.ui.option.NumberEditorOption>;
+            pensionFilteredData: KnockoutObservableArray<any>;
             //for pension fund switch button
             pensionFundInputOptions: KnockoutObservableArray<any>;
             //for pension auto calculate switch button
             pensionCalculateOptions: KnockoutObservableArray<any>;
-            pensionCalculateSelectedCode: KnockoutObservable<number>;
-
             //for control data after close dialog
             isTransistReturnData: KnockoutObservable<boolean>;
             fundInputEnable: KnockoutObservable<boolean>;
@@ -57,31 +48,12 @@ module nts.uk.pr.view.qmm008.c {
 
 
                 self.pensionFilteredData = ko.observableArray(nts.uk.util.flatArray(self.pensionInsuranceOfficeList(), "childs"));
-
-                self.searchKey = ko.observable('');
-
                 //init rounding list
                 self.roundingList = ko.observableArray<Enum>([]);
-
-                //healthTimeInput options
-                self.timeInputOptions = ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                    textmode: "text",
-                    width: "100",
-                    textalign: "center"
-                }));
-
-                self.moneyInputOptions = ko.mapping.fromJS(new nts.uk.ui.option.CurrencyEditorOption({
-                    grouplength: 3,
-                    currencyformat: "JPY",
-                    currencyposition: 'right'
-                }));
-
                 self.Rate2 = ko.mapping.fromJS(new nts.uk.ui.option.NumberEditorOption({
                     grouplength: 3,
                     decimallength: 2
                 }));
-
-                self.selectedRuleCode = ko.observable(1);//
                 //pension fund switch 
                 self.pensionFundInputOptions = ko.observableArray([
                     { code: '1', name: '有' },
@@ -92,8 +64,6 @@ module nts.uk.pr.view.qmm008.c {
                     { code: '0', name: 'する' },
                     { code: '1', name: 'しない' }
                 ]);
-                self.pensionCalculateSelectedCode = ko.observable(1);
-
                 // add history dialog
                 self.isTransistReturnData = ko.observable(false);
 
@@ -331,7 +301,6 @@ module nts.uk.pr.view.qmm008.c {
                 service.instance.findHistoryByUuid(id).done(dto => {
                     self.loadPension(dto);
                     self.isLoading(false);
-//                    nts.uk.ui.windows.setShared('unitPriceHistoryModel', ko.toJS(this.unitPriceHistoryModel()));
                     $('.save-error').ntsError('clear');
                     dfd.resolve();
                 });

@@ -35,16 +35,6 @@ var nts;
                                     self.healthInsuranceOfficeList = ko.observableArray([]);
                                     self.healthFilteredData = ko.observableArray(nts.uk.util.flatArray(self.healthInsuranceOfficeList(), "childs"));
                                     self.roundingList = ko.observableArray([]);
-                                    self.timeInputOptions = ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                                        textmode: "text",
-                                        width: "100",
-                                        textalign: "center"
-                                    }));
-                                    self.moneyInputOptions = ko.mapping.fromJS(new nts.uk.ui.option.CurrencyEditorOption({
-                                        grouplength: 3,
-                                        currencyformat: "JPY",
-                                        currencyposition: 'right'
-                                    }));
                                     self.Rate3 = ko.mapping.fromJS(new nts.uk.ui.option.NumberEditorOption({
                                         grouplength: 3,
                                         decimallength: 3

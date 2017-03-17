@@ -21,9 +21,7 @@ module nts.uk.pr.view.qmm008.e {
             selectedValue: KnockoutObservable<optionsModel>;
             //model
             officeModel: KnockoutObservable<SocialInsuranceOfficeModel>;
-            //text area
-            textArea: any;
-            textInputOption: KnockoutObservable<any>;
+            textInputOption: KnockoutObservable<nts.uk.ui.option.TextEditorOption>;
             selectedOfficeCode: KnockoutObservable<string>;
             enabled: KnockoutObservable<boolean>;
             deleteButtonControll: KnockoutObservable<boolean>;
@@ -52,8 +50,6 @@ module nts.uk.pr.view.qmm008.e {
                 ]);
                 self.selectedTab = ko.observable('tab-1');
                 self.officeModel = ko.observable(new SocialInsuranceOfficeModel('', '', '', '', '','', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''));
-                //text area
-                self.textArea = ko.observable("");
                 //text input options
                 self.textInputOption = ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
                     textmode: "text",

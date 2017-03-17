@@ -34,23 +34,11 @@ var nts;
                                     self.pensionModel = ko.observable(new PensionRateModel());
                                     self.pensionInsuranceOfficeList = ko.observableArray([]);
                                     self.pensionFilteredData = ko.observableArray(nts.uk.util.flatArray(self.pensionInsuranceOfficeList(), "childs"));
-                                    self.searchKey = ko.observable('');
                                     self.roundingList = ko.observableArray([]);
-                                    self.timeInputOptions = ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                                        textmode: "text",
-                                        width: "100",
-                                        textalign: "center"
-                                    }));
-                                    self.moneyInputOptions = ko.mapping.fromJS(new nts.uk.ui.option.CurrencyEditorOption({
-                                        grouplength: 3,
-                                        currencyformat: "JPY",
-                                        currencyposition: 'right'
-                                    }));
                                     self.Rate2 = ko.mapping.fromJS(new nts.uk.ui.option.NumberEditorOption({
                                         grouplength: 3,
                                         decimallength: 2
                                     }));
-                                    self.selectedRuleCode = ko.observable(1);
                                     self.pensionFundInputOptions = ko.observableArray([
                                         { code: '1', name: '有' },
                                         { code: '0', name: '無' }
@@ -59,7 +47,6 @@ var nts;
                                         { code: '0', name: 'する' },
                                         { code: '1', name: 'しない' }
                                     ]);
-                                    self.pensionCalculateSelectedCode = ko.observable(1);
                                     self.isTransistReturnData = ko.observable(false);
                                     self.fundInputEnable = ko.observable(false);
                                     self.isLoading = ko.observable(true);

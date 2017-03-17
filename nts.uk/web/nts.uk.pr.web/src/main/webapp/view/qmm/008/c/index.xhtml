@@ -382,7 +382,7 @@
 								data-bind="ntsNumberEditor: {
 									value: maxAmount, 
 									constraint: 'CommonAmount', 
-									option: $parent.moneyInputOptions, 
+									option: {grouplength: 3,currencyformat: 'JPY',currencyposition: 'right'}, 
 									required: true, 
 									enable: true, 
 									readonly: false}" />
