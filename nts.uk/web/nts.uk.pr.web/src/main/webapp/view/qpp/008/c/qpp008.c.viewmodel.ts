@@ -1,9 +1,20 @@
 module qpp008.c.viewmodel {
     export class ScreenModel {
-        paymentDateProcessingList: KnockoutObservableArray<any>;
-        selectedPaymentDate: KnockoutObservable<any>;
-        allowEditCode: KnockoutObservable<boolean> = ko.observable(false);
-        isUpdate: KnockoutObservable<boolean> = ko.observable(true);
+
+        /*GridList*/
+        //C_LST_001
+        items: KnockoutObservableArray<service.model.ComparingFormHeader>;
+        columns: KnockoutObservableArray<any>;
+        currentCode: KnockoutObservable<any>;
+        currentItem: KnockoutObservable<service.model.ComparingFormHeader>;
+
+        //gridList2
+        items2: KnockoutComputed<Array<ItemModel>>;
+        columns2: KnockoutObservableArray<any>;
+        currentCode2: KnockoutObservable<any>;
+        currentItem2: KnockoutObservable<any>;
+
+
         /*SwapList*/
         //swapList1
         itemsSwap: KnockoutObservableArray<ItemModel>;
@@ -20,34 +31,51 @@ module qpp008.c.viewmodel {
         /*TabPanel*/
         tabs: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel>;
         selectedTab: KnockoutObservable<string>;
-        /*GridList*/
-        //gridList1
-        items: KnockoutObservableArray<ItemModel>;
-        columns: KnockoutObservableArray<any>;
-        currentCode: KnockoutObservable<any>;
-        //        currentItem: any;
+
         nameValue: KnockoutObservable<string>;
         codeValue: KnockoutObservable<any>;
-        //gridList2
-        items2: KnockoutComputed<Array<ItemModel>>;
-        columns2: KnockoutObservableArray<any>;
-        currentCode2: KnockoutObservable<any>;
-        currentItem2: KnockoutObservable<any>;
+
         /*TextEditer*/
         cInp002Code: KnockoutObservable<boolean>;
-        currentItem: KnockoutObservable<any>;
+        allowEditCode: KnockoutObservable<boolean> = ko.observable(false);
+        isUpdate: KnockoutObservable<boolean> = ko.observable(true);
 
         constructor() {
-            var self = this;
-            self.paymentDateProcessingList = ko.observableArray([]);
-            self.selectedPaymentDate = ko.observable(null);
-            /*SwapList*/
-            //swapList1
+            let self = this;
+            self._initFormHeader();
+            self._initSwap();
+            self._initFormDetail();
+
+            self.cInp002Code = ko.observable(false);
+            self.currentCode.subscribe(function(codeChanged) {
+                if (!nts.uk.text.isNullOrEmpty(codeChanged)) {
+                    self.currentItem(ko.mapping.toJS(self.getItem(codeChanged)));
+                    self.cInp002Code(false);
+                    self.allowEditCode(true);
+                }
+
+            });
+
+        }
+
+        _initFormHeader(): void {
+            let self = this;
+            self.items = ko.observableArray([]);
+            self.columns = ko.observableArray([
+                { headerText: 'コード', prop: 'formCode', width: 60 },
+                { headerText: '名称', prop: 'formName', width: 120 },
+            ]);
+            self.currentItem = ko.observable(new service.model.ComparingFormHeader('', ''));
+            self.currentCode = ko.observable();
+        }
+
+        _initSwap(): void {
+            let self = this;
             self.itemsSwap = ko.observableArray([]);
-            var array = [];
-            var array1 = [];
-            var array2 = [];
-            for (var i = 0; i < 10000; i++) {
+            let array = [];
+            let array1 = [];
+            let array2 = [];
+            for (let i = 0; i < 10000; i++) {
                 array.push(new ItemModel("testz" + i, '基本給', "description"));
             }
             self.itemsSwap(array);
@@ -58,6 +86,7 @@ module qpp008.c.viewmodel {
             ]);
 
             self.currentCodeListSwap = ko.observableArray([]);
+
             //swapList2
             self.itemsSwap2 = ko.observableArray([]);
             for (var i = 0; i < 10000; i++) {
@@ -70,9 +99,10 @@ module qpp008.c.viewmodel {
                 { headerText: '名称', prop: 'name', width: 120 }
             ]);
             self.currentCodeListSwap2 = ko.observableArray([]);
+
             //swapList3
             self.itemsSwap3 = ko.observableArray([]);
-            for (var i = 0; i < 10000; i++) {
+            for (let i = 0; i < 10000; i++) {
                 array2.push(new ItemModel("testy" + i, '基本給', "description"));
             }
             self.itemsSwap3(array2);
@@ -81,8 +111,6 @@ module qpp008.c.viewmodel {
                 { headerText: '名称', prop: 'name', width: 120 }
             ]);
             self.currentCodeListSwap3 = ko.observableArray([]);
-            /*TextEditer*/
-            self.cInp002Code = ko.observable(false);
 
             /*TabPanel*/
             self.tabs = ko.observableArray([
@@ -91,76 +119,66 @@ module qpp008.c.viewmodel {
                 { id: 'tab-3', title: '記事', content: '.tab-content-3', enable: ko.observable(true), visible: ko.observable(true) }
             ]);
             self.selectedTab = ko.observable('tab-1');
-            /*gridList*/
-            //gridList1
-            self.items = ko.observableArray([]);
-            var str = ['a0', 'b0', 'c0', 'd0'];
-            for (var j = 0; j < 4; j++) {
-                for (var i = 1; i < 51; i++) {
-                    var code = i < 10 ? str[j] + '0' + i : str[j] + i;
-                    this.items.push(new ItemModel(code, code, code, code));
-                }
-            }
-            self.columns = ko.observableArray([
-                { headerText: 'コード', prop: 'code', width: 60 },
-                { headerText: '名称', prop: 'name', width: 120 },
+        }
 
-            ]);
-            //get event when hover on table by subcribe
-            self.currentCode = ko.observable();
-            self.currentItem = ko.observable(ko.mapping.fromJS(_.first(self.items())));
-            self.currentCode.subscribe(function(codeChanged) {
-                self.currentItem(ko.mapping.fromJS(self.getItem(codeChanged)));
-                self.cInp002Code(false);
-            });
-            self.items2 = ko.computed(function(){
-                var x = [];
+        _initFormDetail(): void {
+            let self = this;
+            self.items2 = ko.computed(function() {
+                let x = [];
                 x = x.concat(self.currentCodeListSwap());
                 x = x.concat(self.currentCodeListSwap2());
                 x = x.concat(self.currentCodeListSwap3());
                 return x;
             }, self).extend({ deferred: true });
-//           
+
             self.columns2 = ko.observableArray([
                 { headerText: 'コード', prop: 'code', width: 60 },
                 { headerText: '名称', prop: 'name', width: 120 },
 
             ]);
             self.currentCode2 = ko.observable();
-
         }
+
         refreshLayout(): void {
             let self = this;
-            //self.allowEditCode(true);
+            self.currentItem(new service.model.ComparingFormHeader('', ''));
+            self.currentCode();
+            self.allowEditCode(true);
             self.cInp002Code(true);
-            self.currentItem(ko.mapping.fromJS(new ItemModel('', '', '', '', '')));
-           
+
         }
+
+        createButtonClick(): void {
+            let self = this;
+            self.refreshLayout();
+        }
+
         insertData() {
             let self = this;
             let newData = ko.toJS(self.currentItem());
             if (self.cInp002Code()) {
                 self.items.push(newData);
             } else {
-                let updateIndex = _.findIndex(self.items(), function(item) { return item.code == newData.code; });
+                let updateIndex = _.findIndex(self.items(), function(item) { return item.formCode == newData.code; });
                 self.items.splice(updateIndex, 1, newData);
             }
         }
         deleteData() {
             let self = this;
             let newDelData = ko.toJS(self.currentItem());
-            let deleData = _.findIndex(self.items(), function(item) { return item.code == newDelData.code; });
+            let deleData = _.findIndex(self.items(), function(item) { return item.formCode == newDelData.code; });
             self.items.splice(deleData, 1);
         }
 
-        getItem(codeNew): ItemModel {
+        getItem(codeNew): service.model.ComparingFormHeader {
             let self = this;
-            let currentItem: ItemModel = _.find(self.items(), function(item) {
-                return item.code === codeNew;
+            let currentItem: service.model.ComparingFormHeader = _.find(self.items(), function(item) {
+                return item.formCode === codeNew;
             });
 
             return currentItem;
         }
+
         findDuplicateSwaps(codeNew) {
             let self = this;
             let value;
@@ -175,10 +193,9 @@ module qpp008.c.viewmodel {
             }
             return value;
         }
-        
+
         addItem() {
-            this.items.push(new ItemModel('999', '基本給', "description 1", "other1"));
-//            this.items2().push(new ItemModel('999', '基本給', "description 1", "other1"));
+            this.items.push(new service.model.ComparingFormHeader('9', '基本給'));
         }
 
         removeItem() {
@@ -186,19 +203,30 @@ module qpp008.c.viewmodel {
         }
 
         startPage(): JQueryPromise<any> {
-            var self = this;
-            var dfd = $.Deferred();
-             dfd.resolve();
-//            service.getPaymentDateProcessingList().done(function(data) {
-//                // self.paymentDateProcessingList(data);
-//                dfd.resolve();
-//            }).fail(function(res) {
-//
-//            });
+            let self = this;
+            let dfd = $.Deferred();
+            service.getListComparingFormHeader().done(function(data: Array<service.model.ComparingFormHeader>) {
+                self.adDataToItemsList(data);
+                self.currentItem(_.first(self.items()));
+                self.currentCode(self.currentItem().formCode);
+                dfd.resolve(data);
+            }).fail(function(error) {
+                alert(error.message);
+            });
             return dfd.promise();
         }
-        closeDialog(): any{
-            nts.uk.ui.windows.close();   
+
+        closeDialog(): any {
+            nts.uk.ui.windows.close();
+        }
+
+        adDataToItemsList(data: Array<service.model.ComparingFormHeader>): void {
+            let self = this;
+            self.items([]);
+            _.forEach(data, function(value) {
+                self.items.push(value);
+            });
+
         }
     }
     class ItemModel {

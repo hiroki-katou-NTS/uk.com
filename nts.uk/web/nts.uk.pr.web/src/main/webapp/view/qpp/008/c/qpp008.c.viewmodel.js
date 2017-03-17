@@ -9,16 +9,36 @@ var qpp008;
                     this.allowEditCode = ko.observable(false);
                     this.isUpdate = ko.observable(true);
                     var self = this;
-                    self.paymentDateProcessingList = ko.observableArray([]);
-                    self.selectedPaymentDate = ko.observable(null);
-                    /*SwapList*/
-                    //swapList1
+                    self._initFormHeader();
+                    self._initSwap();
+                    self._initFormDetail();
+                    self.cInp002Code = ko.observable(false);
+                    self.currentCode.subscribe(function (codeChanged) {
+                        if (!nts.uk.text.isNullOrEmpty(codeChanged)) {
+                            self.currentItem(ko.mapping.toJS(self.getItem(codeChanged)));
+                            self.cInp002Code(false);
+                            self.allowEditCode(true);
+                        }
+                    });
+                }
+                ScreenModel.prototype._initFormHeader = function () {
+                    var self = this;
+                    self.items = ko.observableArray([]);
+                    self.columns = ko.observableArray([
+                        { headerText: 'コード', prop: 'formCode', width: 60 },
+                        { headerText: '名称', prop: 'formName', width: 120 },
+                    ]);
+                    self.currentItem = ko.observable(new c.service.model.ComparingFormHeader('', ''));
+                    self.currentCode = ko.observable();
+                };
+                ScreenModel.prototype._initSwap = function () {
+                    var self = this;
                     self.itemsSwap = ko.observableArray([]);
                     var array = [];
                     var array1 = [];
                     var array2 = [];
-                    for (var i = 0; i < 10000; i++) {
-                        array.push(new ItemModel("testz" + i, '基本給', "description"));
+                    for (var i_1 = 0; i_1 < 10000; i_1++) {
+                        array.push(new ItemModel("testz" + i_1, '基本給', "description"));
                     }
                     self.itemsSwap(array);
                     self.columnsSwap = ko.observableArray([
@@ -39,8 +59,8 @@ var qpp008;
                     self.currentCodeListSwap2 = ko.observableArray([]);
                     //swapList3
                     self.itemsSwap3 = ko.observableArray([]);
-                    for (var i = 0; i < 10000; i++) {
-                        array2.push(new ItemModel("testy" + i, '基本給', "description"));
+                    for (var i_2 = 0; i_2 < 10000; i_2++) {
+                        array2.push(new ItemModel("testy" + i_2, '基本給', "description"));
                     }
                     self.itemsSwap3(array2);
                     self.columnsSwap3 = ko.observableArray([
@@ -48,8 +68,6 @@ var qpp008;
                         { headerText: '名称', prop: 'name', width: 120 }
                     ]);
                     self.currentCodeListSwap3 = ko.observableArray([]);
-                    /*TextEditer*/
-                    self.cInp002Code = ko.observable(false);
                     /*TabPanel*/
                     self.tabs = ko.observableArray([
                         { id: 'tab-1', title: '支給', content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true) },
@@ -57,27 +75,9 @@ var qpp008;
                         { id: 'tab-3', title: '記事', content: '.tab-content-3', enable: ko.observable(true), visible: ko.observable(true) }
                     ]);
                     self.selectedTab = ko.observable('tab-1');
-                    /*gridList*/
-                    //gridList1
-                    self.items = ko.observableArray([]);
-                    var str = ['a0', 'b0', 'c0', 'd0'];
-                    for (var j = 0; j < 4; j++) {
-                        for (var i = 1; i < 51; i++) {
-                            var code = i < 10 ? str[j] + '0' + i : str[j] + i;
-                            this.items.push(new ItemModel(code, code, code, code));
-                        }
-                    }
-                    self.columns = ko.observableArray([
-                        { headerText: 'コード', prop: 'code', width: 60 },
-                        { headerText: '名称', prop: 'name', width: 120 },
-                    ]);
-                    //get event when hover on table by subcribe
-                    self.currentCode = ko.observable();
-                    self.currentItem = ko.observable(ko.mapping.fromJS(_.first(self.items())));
-                    self.currentCode.subscribe(function (codeChanged) {
-                        self.currentItem(ko.mapping.fromJS(self.getItem(codeChanged)));
-                        self.cInp002Code(false);
-                    });
+                };
+                ScreenModel.prototype._initFormDetail = function () {
+                    var self = this;
                     self.items2 = ko.computed(function () {
                         var x = [];
                         x = x.concat(self.currentCodeListSwap());
@@ -85,18 +85,22 @@ var qpp008;
                         x = x.concat(self.currentCodeListSwap3());
                         return x;
                     }, self).extend({ deferred: true });
-                    //           
                     self.columns2 = ko.observableArray([
                         { headerText: 'コード', prop: 'code', width: 60 },
                         { headerText: '名称', prop: 'name', width: 120 },
                     ]);
                     self.currentCode2 = ko.observable();
-                }
+                };
                 ScreenModel.prototype.refreshLayout = function () {
                     var self = this;
-                    //self.allowEditCode(true);
+                    self.currentItem(new c.service.model.ComparingFormHeader('', ''));
+                    self.currentCode();
+                    self.allowEditCode(true);
                     self.cInp002Code(true);
-                    self.currentItem(ko.mapping.fromJS(new ItemModel('', '', '', '', '')));
+                };
+                ScreenModel.prototype.createButtonClick = function () {
+                    var self = this;
+                    self.refreshLayout();
                 };
                 ScreenModel.prototype.insertData = function () {
                     var self = this;
@@ -105,20 +109,20 @@ var qpp008;
                         self.items.push(newData);
                     }
                     else {
-                        var updateIndex = _.findIndex(self.items(), function (item) { return item.code == newData.code; });
+                        var updateIndex = _.findIndex(self.items(), function (item) { return item.formCode == newData.code; });
                         self.items.splice(updateIndex, 1, newData);
                     }
                 };
                 ScreenModel.prototype.deleteData = function () {
                     var self = this;
                     var newDelData = ko.toJS(self.currentItem());
-                    var deleData = _.findIndex(self.items(), function (item) { return item.code == newDelData.code; });
+                    var deleData = _.findIndex(self.items(), function (item) { return item.formCode == newDelData.code; });
                     self.items.splice(deleData, 1);
                 };
                 ScreenModel.prototype.getItem = function (codeNew) {
                     var self = this;
                     var currentItem = _.find(self.items(), function (item) {
-                        return item.code === codeNew;
+                        return item.formCode === codeNew;
                     });
                     return currentItem;
                 };
@@ -137,8 +141,7 @@ var qpp008;
                     return value;
                 };
                 ScreenModel.prototype.addItem = function () {
-                    this.items.push(new ItemModel('999', '基本給', "description 1", "other1"));
-                    //            this.items2().push(new ItemModel('999', '基本給', "description 1", "other1"));
+                    this.items.push(new c.service.model.ComparingFormHeader('9', '基本給'));
                 };
                 ScreenModel.prototype.removeItem = function () {
                     this.items.shift();
@@ -146,17 +149,25 @@ var qpp008;
                 ScreenModel.prototype.startPage = function () {
                     var self = this;
                     var dfd = $.Deferred();
-                    dfd.resolve();
-                    //            service.getPaymentDateProcessingList().done(function(data) {
-                    //                // self.paymentDateProcessingList(data);
-                    //                dfd.resolve();
-                    //            }).fail(function(res) {
-                    //
-                    //            });
+                    c.service.getListComparingFormHeader().done(function (data) {
+                        self.adDataToItemsList(data);
+                        self.currentItem(_.first(self.items()));
+                        self.currentCode(self.currentItem().formCode);
+                        dfd.resolve(data);
+                    }).fail(function (error) {
+                        alert(error.message);
+                    });
                     return dfd.promise();
                 };
                 ScreenModel.prototype.closeDialog = function () {
                     nts.uk.ui.windows.close();
+                };
+                ScreenModel.prototype.adDataToItemsList = function (data) {
+                    var self = this;
+                    self.items([]);
+                    _.forEach(data, function (value) {
+                        self.items.push(value);
+                    });
                 };
                 return ScreenModel;
             }());

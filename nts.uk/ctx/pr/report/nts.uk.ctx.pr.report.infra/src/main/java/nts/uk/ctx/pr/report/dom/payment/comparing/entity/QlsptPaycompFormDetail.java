@@ -16,10 +16,10 @@ public class QlsptPaycompFormDetail implements Serializable {
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
-	private QlsptPaycompFormDetailPK paycompFormDetailPK;
+	public QlsptPaycompFormDetailPK paycompFormDetailPK;
 
 	@Basic(optional = false)
 	@Column(name = "DISP_ORDER")
-	private BigDecimal dispOrder;
+	public BigDecimal dispOrder;
 
 }

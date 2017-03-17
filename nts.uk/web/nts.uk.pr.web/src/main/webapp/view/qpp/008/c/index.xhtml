@@ -15,15 +15,15 @@
 			</script>
 
 			<com:scriptfile set="IGNITE" />
-			<com:stylefile path="main.css" />
-			<com:scriptfile path="start.js" />
-			<com:scriptfile path="viewmodel.js" />
-			<com:scriptfile path="service.js" />
+			<com:stylefile path="qpp008.c.main.css" />
+			<com:scriptfile path="qpp008.c.start.js" />
+			<com:scriptfile path="qpp008.c.viewmodel.js" />
+			<com:scriptfile path="qpp008.c.service.js" />
 		</ui:define>
 
 		<ui:define name="content">
 			<div id="functions-area" class="function-area">
-				<button id="C_BTN_001" data-bind="click: refreshLayout">新規</button>
+				<button id="C_BTN_001" data-bind="click: createButtonClick">新規</button>
 				<button id="C_BTN_002" class="proceed" data-bind="click: insertData">登録</button>
 				<button id="C_BTN_003" class="danger" data-bind="click: deleteData">削除</button>
 				<button id="C_BTN_004" data-bind="click: closeDialog">閉じる</button>
@@ -36,14 +36,14 @@
 												comId: 'C_LST_001',
 												items: items,
 												selected: currentCode,
-												selectedKey: 'code',
-												fields: ['code','name']}" />
+												selectedKey: 'formCode',
+												fields: ['formCode','formName']}" />
 					<table id="C_LST_001"
 						data-bind="ntsGridList: {
 											width:'100%',
 											height: 430,
 											options: items,
-											optionsValue: 'code',
+											optionsValue: 'formCode',
 											columns: columns,
 											multiple: false,
 											value: currentCode
@@ -56,8 +56,8 @@
 						<div id="C_LBL_001" data-bind="ntsFormLabel: {required: true }">コード/名称</div>
 						<div class="C_INP_23" data-bind="with: currentItem">
 							<input id="C_INP_002"
-								data-bind="ntsTextEditor: {value: code, enable: $root.content.cInp002Code}" />
-							<input id="C_INP_003" data-bind="ntsTextEditor: { value: name }" />
+								data-bind="ntsTextEditor: {value: formCode, enable: $root.content.cInp002Code}" />
+							<input id="C_INP_003" data-bind="ntsTextEditor: { value: formName }" />
 						</div>
 					</div>
 					<hr />

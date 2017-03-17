@@ -10,16 +10,15 @@ import javax.persistence.Table;
 
 @Entity
 @Table(name = "QLSPT_PAYCOMP_FORM_HEAD")
-
 public class QlsptPaycompFormHead implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 	
 	@EmbeddedId
-	private QlsptPaycompFormHeadPK paycompFormHeadPK;
+	public QlsptPaycompFormHeadPK paycompFormHeadPK;
 	
 	@Basic(optional = false)
 	@Column(name = "FORM_NAME")
-	private String formName;
+	public String formName;
 
 }
