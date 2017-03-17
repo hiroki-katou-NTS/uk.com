@@ -259,7 +259,7 @@ public class PrintPaymentDataQueryProcessor {
 				items.add(detailItem);
 			}
 
-			lineDto = new LineDto(mLine.getLinePosition().v(), items, mLine.getLineDispayAttribute().value);
+			lineDto = new LineDto(mLine.getLinePosition().v(), items, mLine.getLineDisplayAttribute().value);
 			rLines.add(lineDto);
 		}
 
@@ -303,7 +303,7 @@ public class PrintPaymentDataQueryProcessor {
 			return null;
 		}
 		Long countLine = lines.stream().filter(x -> x.getCategoryAtr().value == printPosCtg
-				&& x.getLineDispayAttribute().value == LineDispAtr.ENABLE.value).count();
+				&& x.getLineDisplayAttribute().value == LineDispAtr.ENABLE.value).count();
 
 		return PrintPositionCategoryDto.fromDomain(printPosCtg, countLine.intValue());
 	}
