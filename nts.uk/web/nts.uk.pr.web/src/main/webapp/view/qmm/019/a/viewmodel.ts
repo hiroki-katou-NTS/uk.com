@@ -234,6 +234,8 @@ module qmm019.a {
                 return false;
             var singleSelectedCode = self.singleSelectedCode().split(';');
             nts.uk.ui.windows.setShared('stmtCode', singleSelectedCode[0]);
+            //17.03.2017 Lanlt  setShared startYm
+            nts.uk.ui.windows.setShared('startYm', singleSelectedCode[1]);
             nts.uk.ui.windows.sub.modal('/view/qmm/019/d/index.xhtml', { title: '明細レイアウトの作成＞履歴追加' }).onClosed(function(): any {
                 self.start(self.singleSelectedCode());
             });
@@ -258,7 +260,7 @@ module qmm019.a {
             var self = this;
             nts.uk.ui.windows.sub.modal('/view/qmm/019/g/index.xhtml', { title: '明細レイアウトの作成＞新規登録' }).onClosed(function(): any {
                 // anh Lam
-                //self.start(undefined);
+                self.start(undefined);
             });
         }
     }
