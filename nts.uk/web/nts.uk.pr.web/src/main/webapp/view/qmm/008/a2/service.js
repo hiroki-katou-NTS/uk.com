@@ -41,7 +41,8 @@ var nts;
                             service.instance = new Service({
                                 historyMasterPath: 'ctx/pr/core/insurance/social/pensionrate/masterhistory',
                                 createHisotyPath: 'ctx/pr/core/insurance/social/pensionrate/history/create',
-                                deleteHistoryPath: 'ctx/pr/core/insurance/social/pensionrate/history/delete'
+                                deleteHistoryPath: 'ctx/pr/core/insurance/social/pensionrate/history/delete',
+                                updateHistoryStartPath: 'ctx/pr/core/insurance/social/pensionrate/history/update/start'
                             });
                             function findInsuranceOffice(key) {
                                 var dfd = $.Deferred();
@@ -206,3 +207,4 @@ var nts;
         })(pr = uk.pr || (uk.pr = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+//# sourceMappingURL=service.js.map

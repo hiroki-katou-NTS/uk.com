@@ -32,9 +32,9 @@ import nts.uk.ctx.pr.core.dom.wagetable.history.service.WageTableHistoryService;
 import nts.uk.ctx.pr.core.ws.base.simplehistory.SimpleHistoryWs;
 import nts.uk.ctx.pr.core.ws.base.simplehistory.dto.HistoryModel;
 import nts.uk.ctx.pr.core.ws.base.simplehistory.dto.MasterModel;
-import nts.uk.ctx.pr.core.ws.wagetable.dto.DemensionItemModel;
+import nts.uk.ctx.pr.core.ws.wagetable.dto.DemensionItemDto;
 import nts.uk.ctx.pr.core.ws.wagetable.dto.WageTableHeadDto;
-import nts.uk.ctx.pr.core.ws.wagetable.dto.WageTableHistoryModel;
+import nts.uk.ctx.pr.core.ws.wagetable.dto.WageTableHistoryDto;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -73,18 +73,18 @@ public class WageTableWs extends SimpleHistoryWs<WageTableHead, WageTableHistory
 	 */
 	@POST
 	@Path("find/{id}")
-	public WageTableHistoryModel find(@PathParam("id") String id) {
+	public WageTableHistoryDto find(@PathParam("id") String id) {
 		// Get the detail history.
 		Optional<WageTableHistory> optWageTableHistory = this.wageTableHistoryRepo
 				.findHistoryByUuid(id);
-		WageTableHistoryModel historyDto = null;
+		WageTableHistoryDto historyDto = null;
 
 		// Check exsit.
 		if (optWageTableHistory.isPresent()) {
 			WageTableHistory wageTableHistory = optWageTableHistory.get();
 			Optional<WageTableHead> optWageTable = this.wageTableHeadRepo.findByCode(
 					wageTableHistory.getCompanyCode().v(), wageTableHistory.getWageTableCode().v());
-			historyDto = new WageTableHistoryModel();
+			historyDto = new WageTableHistoryDto();
 			WageTableHeadDto headDto = WageTableHeadDto.builder().build();
 			wageTableHistory.saveToMemento(historyDto);
 			optWageTable.get().saveToMemento(headDto);
@@ -162,20 +162,20 @@ public class WageTableWs extends SimpleHistoryWs<WageTableHead, WageTableHistory
 	 */
 	@POST
 	@Path("demensions")
-	public List<DemensionItemModel> loadDemensionSelectionList() {
-		List<DemensionItemModel> items = new ArrayList<>();
+	public List<DemensionItemDto> loadDemensionSelectionList() {
+		List<DemensionItemDto> items = new ArrayList<>();
 
 		/** The age fix. */
 		// AGE_FIX(4, false, true),
-		items.add(new DemensionItemModel(ElementType.AGE_FIX));
+		items.add(new DemensionItemDto(ElementType.AGE_FIX));
 
 		/** The experience fix. */
 		// EXPERIENCE_FIX(3, false, true),
-		items.add(new DemensionItemModel(ElementType.EXPERIENCE_FIX));
+		items.add(new DemensionItemDto(ElementType.EXPERIENCE_FIX));
 
 		/** The family mem fix. */
 		// FAMILY_MEM_FIX(5, false, true),
-		items.add(new DemensionItemModel(ElementType.FAMILY_MEM_FIX));
+		items.add(new DemensionItemDto(ElementType.FAMILY_MEM_FIX));
 
 		/** The master ref. */
 		// MASTER_REF(0, true, false),
@@ -187,7 +187,7 @@ public class WageTableWs extends SimpleHistoryWs<WageTableHead, WageTableHistory
 
 		/** The item data ref. */
 		// ITEM_DATA_REF(2, false, true),
-		items.add(new DemensionItemModel(ElementType.ITEM_DATA_REF));
+		items.add(new DemensionItemDto(ElementType.ITEM_DATA_REF));
 
 		// Extend element type
 		/** The certification. */
@@ -196,15 +196,15 @@ public class WageTableWs extends SimpleHistoryWs<WageTableHead, WageTableHistory
 
 		/** The working day. */
 		// WORKING_DAY(7, false, true),
-		items.add(new DemensionItemModel(ElementType.WORKING_DAY));
+		items.add(new DemensionItemDto(ElementType.WORKING_DAY));
 
 		/** The come late. */
 		// COME_LATE(8, false, true),
-		items.add(new DemensionItemModel(ElementType.COME_LATE));
+		items.add(new DemensionItemDto(ElementType.COME_LATE));
 
 		/** The level. */
 		// LEVEL(9, true, false);
-		items.add(new DemensionItemModel(ElementType.LEVEL));
+		items.add(new DemensionItemDto(ElementType.LEVEL));
 
 		return items;
 	}

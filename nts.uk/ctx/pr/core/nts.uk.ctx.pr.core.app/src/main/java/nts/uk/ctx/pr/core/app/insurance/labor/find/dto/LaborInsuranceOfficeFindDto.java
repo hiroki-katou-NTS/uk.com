@@ -24,15 +24,19 @@ import nts.uk.ctx.pr.core.dom.insurance.labor.LaborInsuranceOfficeSetMemento;
 import nts.uk.shr.com.primitive.Memo;
 
 /**
- * The Class LaborInsuranceOfficeDto.
+ * The Class LaborInsuranceOfficeFindDto.
+ */
+
+/**
+ * Instantiates a new labor insurance office find dto.
  */
 @Data
 public class LaborInsuranceOfficeFindDto implements LaborInsuranceOfficeSetMemento {
 
-	/** The code. officeCode */
+	/** The code. */
 	private String code;
 
-	/** The name. officeName */
+	/** The name. */
 	private String name;
 
 	/** The short name. */
@@ -86,98 +90,223 @@ public class LaborInsuranceOfficeFindDto implements LaborInsuranceOfficeSetMemen
 	/** The version. */
 	private long version;
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.dom.insurance.labor.LaborInsuranceOfficeSetMemento#
+	 * setCompanyCode(nts.uk.ctx.core.dom.company.CompanyCode)
+	 */
 	@Override
 	public void setCompanyCode(CompanyCode companyCode) {
 		// Do nothing.
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.dom.insurance.labor.LaborInsuranceOfficeSetMemento#
+	 * setCode(nts.uk.ctx.pr.core.dom.insurance.OfficeCode)
+	 */
 	@Override
 	public void setCode(OfficeCode code) {
 		this.code = code.v();
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.dom.insurance.labor.LaborInsuranceOfficeSetMemento#
+	 * setName(nts.uk.ctx.pr.core.dom.insurance.OfficeName)
+	 */
 	@Override
 	public void setName(OfficeName name) {
 		this.name = name.v();
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.dom.insurance.labor.LaborInsuranceOfficeSetMemento#
+	 * setShortName(nts.uk.ctx.pr.core.dom.insurance.ShortName)
+	 */
 	@Override
 	public void setShortName(ShortName shortName) {
 		this.shortName = shortName.v();
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.dom.insurance.labor.LaborInsuranceOfficeSetMemento#
+	 * setPicName(nts.uk.ctx.pr.core.dom.insurance.PicName)
+	 */
 	@Override
 	public void setPicName(PicName picName) {
 		this.picName = picName.v();
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.dom.insurance.labor.LaborInsuranceOfficeSetMemento#
+	 * setPicPosition(nts.uk.ctx.pr.core.dom.insurance.PicPosition)
+	 */
 	@Override
 	public void setPicPosition(PicPosition picPosition) {
 		this.picPosition = picPosition.v();
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.dom.insurance.labor.LaborInsuranceOfficeSetMemento#
+	 * setPotalCode(nts.uk.ctx.pr.core.dom.insurance.PotalCode)
+	 */
 	@Override
 	public void setPotalCode(PotalCode potalCode) {
 		this.potalCode = potalCode.v();
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.dom.insurance.labor.LaborInsuranceOfficeSetMemento#
+	 * setAddress1st(nts.uk.ctx.pr.core.dom.insurance.Address)
+	 */
 	@Override
 	public void setAddress1st(Address address1st) {
 		this.address1st = address1st.v();
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.dom.insurance.labor.LaborInsuranceOfficeSetMemento#
+	 * setAddress2nd(nts.uk.ctx.pr.core.dom.insurance.Address)
+	 */
 	@Override
 	public void setAddress2nd(Address address2nd) {
 		this.address2nd = address2nd.v();
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.dom.insurance.labor.LaborInsuranceOfficeSetMemento#
+	 * setKanaAddress1st(nts.uk.ctx.pr.core.dom.insurance.KanaAddress)
+	 */
 	@Override
 	public void setKanaAddress1st(KanaAddress kanaAddress1st) {
 		this.kanaAddress1st = kanaAddress1st.v();
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.dom.insurance.labor.LaborInsuranceOfficeSetMemento#
+	 * setKanaAddress2nd(nts.uk.ctx.pr.core.dom.insurance.KanaAddress)
+	 */
 	@Override
 	public void setKanaAddress2nd(KanaAddress kanaAddress2nd) {
 		this.kanaAddress2nd = kanaAddress2nd.v();
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.dom.insurance.labor.LaborInsuranceOfficeSetMemento#
+	 * setMemo(nts.uk.shr.com.primitive.Memo)
+	 */
 	@Override
 	public void setMemo(Memo memo) {
 		this.memo = memo.v();
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.dom.insurance.labor.LaborInsuranceOfficeSetMemento#
+	 * setPhoneNumber(nts.uk.ctx.pr.core.dom.insurance.PhoneNumber)
+	 */
 	@Override
 	public void setPhoneNumber(PhoneNumber phoneNumber) {
 		this.phoneNumber = phoneNumber.v();
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.dom.insurance.labor.LaborInsuranceOfficeSetMemento#
+	 * setCitySign(nts.uk.ctx.pr.core.dom.insurance.CitySign)
+	 */
 	@Override
 	public void setCitySign(CitySign citySign) {
 		this.citySign = citySign.v();
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.dom.insurance.labor.LaborInsuranceOfficeSetMemento#
+	 * setOfficeMark(nts.uk.ctx.pr.core.dom.insurance.OfficeMark)
+	 */
 	@Override
 	public void setOfficeMark(OfficeMark officeMark) {
 		this.officeMark = officeMark.v();
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.dom.insurance.labor.LaborInsuranceOfficeSetMemento#
+	 * setOfficeNoA(nts.uk.ctx.pr.core.dom.insurance.OfficeNoA)
+	 */
 	@Override
 	public void setOfficeNoA(OfficeNoA officeNoA) {
 		this.officeNoA = officeNoA.v();
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.dom.insurance.labor.LaborInsuranceOfficeSetMemento#
+	 * setOfficeNoB(nts.uk.ctx.pr.core.dom.insurance.OfficeNoB)
+	 */
 	@Override
 	public void setOfficeNoB(OfficeNoB officeNoB) {
 		this.officeNoB = officeNoB.v();
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.dom.insurance.labor.LaborInsuranceOfficeSetMemento#
+	 * setOfficeNoC(nts.uk.ctx.pr.core.dom.insurance.OfficeNoC)
+	 */
 	@Override
 	public void setOfficeNoC(OfficeNoC officeNoC) {
 		this.officeNoC = officeNoC.v();
 
 	}
-
 }

@@ -13,10 +13,10 @@
 				nts.uk.shr.com.primitive.Memo
 			</com:ValidatorScript>
 
-			<com:stylefile path="style.css" />
-			<com:scriptfile path="start.js" />
-			<com:scriptfile path="viewmodel.js" />
-			<com:scriptfile path="service.js" />
+			<com:stylefile path="qmm016.a.style.css" />
+			<com:scriptfile path="qmm016.a.start.js" />
+			<com:scriptfile path="qmm016.a.service.js" />
+			<com:scriptfile path="qmm016.a.vm.js" />
 		</ui:define>
 
 		<!-- EXTENDED ACTION -->
@@ -39,23 +39,25 @@
 				<div id="tab-content-1" class="tab-content">
 					<table>
 						<tr class="control-group">
-							<td colspan="3"><div id="lbl_001" class="label warning">賃金
-									テーブル を 新規 で 作成 する 場合 、 基本情報 を 入力後一度登録 ボタン を 押し て ください。</div></td>
+							<com:ko tag="if" bind="isNewMode">
+								<td colspan="3"><div id="lbl_001" class="label warning">賃金
+										テーブル を 新規 で 作成 する 場合 、 基本情報 を 入力後一度登録 ボタン を 押し て ください。</div></td>
+							</com:ko>
 						</tr>
 						<tr class="control-group">
 							<td><div id="lbl_002"
 									data-bind="ntsFormLabel: { constraint: ['WageTableCode', 'WageTableName'], required: true }">コード/名称*</div></td>
 							<td colspan="2"><input id="inp_001"
-								data-bind="ntsTextEditor: {value: code,  constraint: 'WageTableCode'}" />
+								data-bind="ntsTextEditor: {value: head.code,  constraint: 'WageTableCode'}" />
 								<input id="inp_002"
-								data-bind="ntsTextEditor: {value: name,  constraint: 'WageTableName' }" /></td>
+								data-bind="ntsTextEditor: {value: head.name,  constraint: 'WageTableName' }" /></td>
 						</tr>
 						<tr class="control-group">
 							<td><div id="lbl_003"
 									data-bind="ntsFormLabel: { required: true }">開始年月*</div></td>
-							<td><span id="ipnStartDate"
-								data-bind="ntsDatePicker: {value: startMonth, class: 'nts-editor nts-input', dateFormat: 'yyyy/MM'}"></span>
-								<label id="lbl_010">（平成29年01月） ~</label></td>
+<!-- 							<td><span id="ipnStartDate"
+								data-bind="ntsDatePicker: {value: 201001, class: 'nts-editor nts-input', dateFormat: 'yyyy/MM'}"></span>
+								<label id="lbl_010">（平成29年01月） ~</label></td> -->
 						</tr>
 							<tr class="control-group">
 								<td><div id="lbl_004"
@@ -68,10 +70,10 @@
 								<td></td>
 								<td><div id="sel_002"
 										data-bind="ntsSwitchButton: {
-					options: generalTableTypes,
-					optionsValue: 'code',
-					optionsText: 'name',
-					value: selectedDimensionType}"></div></td>
+											options: generalTableTypes,
+											optionsValue: 'code',
+											optionsText: 'name',
+											value: head.demensionSet}"></div></td>
 								<td></td>
 							</tr>
 							<tr class="control-group">
@@ -90,12 +92,43 @@
 								<td>
 									<div id="sel_003"
 										data-bind="ntsSwitchButton: {
-					options: specialTableTypes,
-					optionsValue: 'code',
-					optionsText: 'name',
-					value: selectedDimensionType}"></div>
+											options: specialTableTypes,
+											optionsValue: 'code',
+											optionsText: 'name',
+											value: head.demensionSet}"></div>
 								</td>
 								<td></td>
+							</tr>
+							<tr>
+								<td/>
+								<td colspan="2">
+									<div id="lbl_004" data-bind="ntsFormLabel: { required: true }" style="float: left">要素指定</div>
+									<table style="float: left;" border="1">
+										<thead>
+											<tr class="bg-green">
+												<td width="50px">
+												</td>
+												<td width="200px">
+													要素
+												</td>
+											</tr>
+										</thead>
+										<tbody data-bind="with: head">
+											<com:ko tag="foreach" bind="demensionItemList">
+												<tr>
+													<td class="bg-green halign-center" data-bind="text: demensionNo"/>
+													<td>
+														<com:ko tag="ifnot" bind="$parent.demensionType().isAttendance || $parent.demensionType().isCertification">
+															<button data-bind="enable: isNewMode, click: ">参照</button>
+														</com:ko>
+													</td>
+												</tr>
+											</com:ko>
+										</tbody>
+									</table>
+								</td>
+								<td>
+								</td>
 							</tr>
 							<tr class="control-group">
 								<td><div id="lbl_009"

@@ -9,14 +9,20 @@
 		<ui:define name="htmlHead">
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="main.css" />
-			<com:scriptfile path="start.js" />
-			<com:scriptfile path="../a/service.js" />
+			<com:scriptfile path="qmm011.e.start.js" />
+			<com:scriptfile path="../a/qmm011.a.service.js" />
 			<com:scriptfile path="service.js" />
-			<com:scriptfile path="../a/viewmodel.js" />
-			<com:scriptfile path="viewmodel.js" />
+			<com:scriptfile path="../a/qmm011.a.vm.js" />
+			<com:scriptfile path="qmm011.e.vm.js" />
 		</ui:define>
 		<ui:define name="content">
-			<div>ナビゲーションメッセージ</div>
+			<div class="nameaction">
+				<label>事業種類を登録してください。</label>
+			</div>
+			<div class="nameaction">
+				<label>※全角10文字</label>
+			</div>
+			<br />
 			<center>
 				<table data-bind="with: insuranceBusinessTypeUpdateModel">
 					<tbody>
@@ -93,6 +99,7 @@
 					</tbody>
 				</table>
 			</center>
+			<br />
 			<hr />
 			<div id="this-functions-area" class="control-group halign-center">
 				<button class="btn-default proceed x-large"

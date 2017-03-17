@@ -18,7 +18,7 @@ module nts.uk.pr.view.base.simplehistory {
             service: service.Service<M, H>;
 
             // Whether or not in new mode.
-            isNewMode: KnockoutObservable<boolean>;
+            protected isNewMode: KnockoutObservable<boolean>;
             
             // Master history.
             masterHistoryList: Array<M>;
@@ -51,25 +51,33 @@ module nts.uk.pr.view.base.simplehistory {
                 self.masterHistoryDatasource = ko.observableArray([]);
                 self.selectedHistoryUuid = ko.observable(undefined);
 
-                // Can update history flag.
-                self.canUpdateHistory = ko.computed(() => {
-                    return self.selectedHistoryUuid() != null && self.getCurrentHistoryNode() != null;
-                })
-                self.canAddNewHistory = ko.computed(() => {
-                    return self.selectedHistoryUuid() != null && self.getCurrentHistoryNode() != null;
-                })
-
                 // On searched result.
                 self.igGridSelectedHistoryUuid = ko.observable('');
                 self.isClickHistory = ko.observable(false);
                 
+                // Can update history flag.
+                self.canUpdateHistory = ko.computed(() => {
+                    var node = self.getNode(self.igGridSelectedHistoryUuid());
+                    return node && node.parent ? true: false;
+                })
+                self.canAddNewHistory = ko.computed(() => {
+                    return self.canUpdateHistory();
+                })
+
                 self.igGridSelectedHistoryUuid.subscribe(id => {
-                    if (id && id.length == 36) {
-                        self.isNewMode(false);
-                        self.onSelectHistory(id);
+                    // Not select.
+                    if (!id) {
+                        return;
                     }
-                    else {
-                        self.isClickHistory(false);
+
+                    var selectedNode = self.getNode(id);
+                    // History node.
+                    if (selectedNode.parent) {
+                        self.selectedHistoryUuid(id);
+                        self.selectedHistoryUuid.valueHasMutated();
+                    } else {
+                        // Parent node.
+                        self.onSelectMaster(id);
                     }
                 })
                 
@@ -273,6 +281,13 @@ module nts.uk.pr.view.base.simplehistory {
             abstract onSelectHistory(uuid: string): void;
 
             /**
+             * On select master data.
+             */
+            onSelectMaster(code: string): void {
+                // Override your self if need.
+            }
+
+            /**
              * On regist new.
              */
             abstract onRegistNew(): void;
@@ -296,6 +311,24 @@ module nts.uk.pr.view.base.simplehistory {
                 return _.first(_.filter(nodeList, (node) => {
                     return node.id == self.selectedHistoryUuid()
                         && self.selectedHistoryUuid().length > 4;
+                }));
+            }
+            
+            /**
+             * Get node using id.
+             */
+            private getNode(id: string): Node {
+                var self = this;
+                var nodeList = _.flatMap(self.masterHistoryDatasource(), (node) => {
+                    var newArr = new Array<Node>();
+                    newArr.push(node);
+                    if (node.childs) {
+                        newArr = newArr.concat(node.childs);
+                    }
+                    return newArr;
+                })
+                return _.first(_.filter(nodeList, (node) => {
+                    return node.id == id;
                 }));
             }
         }

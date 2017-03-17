@@ -27,6 +27,7 @@ import nts.uk.ctx.pr.core.infra.entity.insurance.labor.unemployeerate.QismtEmpIn
 import nts.uk.ctx.pr.core.infra.entity.insurance.labor.unemployeerate.QismtEmpInsuRatePK;
 import nts.uk.ctx.pr.core.infra.entity.insurance.labor.unemployeerate.QismtEmpInsuRatePK_;
 import nts.uk.ctx.pr.core.infra.entity.insurance.labor.unemployeerate.QismtEmpInsuRate_;
+import nts.uk.ctx.pr.core.infra.repository.insurance.labor.Contants;
 
 /**
  * The Class
@@ -34,9 +35,6 @@ import nts.uk.ctx.pr.core.infra.entity.insurance.labor.unemployeerate.QismtEmpIn
 @Stateless
 public class JpaUnemployeeInsuranceRateRepository extends JpaRepository
 	implements UnemployeeInsuranceRateRepository {
-
-	/** The Constant BEGIN_FIRST. */
-	public static final int BEGIN_FIRST = 0;
 
 	/*
 	 * (non-Javadoc)
@@ -213,7 +211,7 @@ public class JpaUnemployeeInsuranceRateRepository extends JpaRepository
 		}
 
 		// get fisrt data
-		return Optional.ofNullable(this.toDomain(lstQismtEmpInsuRate.get(BEGIN_FIRST)));
+		return Optional.ofNullable(this.toDomain(lstQismtEmpInsuRate.get(Contants.BEGIN_FIRST)));
 	}
 
 	/*
@@ -270,7 +268,7 @@ public class JpaUnemployeeInsuranceRateRepository extends JpaRepository
 		}
 
 		// get fisrt data
-		return Optional.ofNullable(this.toDomain(lstQismtEmpInsuRate.get(BEGIN_FIRST)));
+		return Optional.ofNullable(this.toDomain(lstQismtEmpInsuRate.get(Contants.BEGIN_FIRST)));
 	}
 
 }

@@ -113,10 +113,12 @@ public class JpaCertificationRepository extends JpaRepository implements Certifi
 	/**
 	 * Check exist of group.
 	 *
-	 * @param certification
-	 *            the certification
-	 * @param certifyGroupCodeNone
-	 *            the certify group code none
+	 * @param companyCode
+	 *            the company code
+	 * @param certificationCode
+	 *            the certification code
+	 * @param certifyGroupCode
+	 *            the certify group code
 	 * @return true, if successful
 	 */
 	// check Certification ExistOfGroup and none of CertifyGroupCode
@@ -151,8 +153,8 @@ public class JpaCertificationRepository extends JpaRepository implements Certifi
 		// noteq CertifyGroupCodeNone (certifyGroupCodeNone not null)
 		if (certifyGroupCode != null) {
 			lstpredicateWhere
-			.add(criteriaBuilder.notEqual(root.get(QwtmtWagetableCertify_.qwtmtWagetableCertifyPK)
-				.get(QwtmtWagetableCertifyPK_.certifyGroupCd), certifyGroupCode));
+				.add(criteriaBuilder.notEqual(root.get(QwtmtWagetableCertify_.qwtmtWagetableCertifyPK)
+					.get(QwtmtWagetableCertifyPK_.certifyGroupCd), certifyGroupCode));
 		}
 
 		// set where to SQL
@@ -161,6 +163,13 @@ public class JpaCertificationRepository extends JpaRepository implements Certifi
 		return (em.createQuery(cq).getSingleResult() > 0);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.dom.wagetable.certification.CertificationReponsitory#
+	 * findById(java.lang.String, java.lang.String, java.lang.String)
+	 */
 	@Override
 	public Optional<Certification> findById(String companyCode, String certificationCode,
 		String certifyGroupCode) {
