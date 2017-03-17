@@ -16,16 +16,16 @@ import nts.uk.shr.com.primitive.Memo;
 public class ItemDeduct extends AggregateRoot {
 
 	
-	public DeductAtr deductAtr;
-	public RangeAtr errRangeLowAtr;
-	public ErrRangeLow errRangeLow;
-	public RangeAtr errRangeHighAtr;
-	public ErrRangeHigh errRangeHigh;
-	public RangeAtr alRangeLowAtr;
-	public AlRangeLow alRangeLow;
-	public RangeAtr alRangeHighAtr;
-	public AlRangeHigh alRangeHigh;
-	public Memo memo;
+	private DeductAtr deductAtr;
+	private RangeAtr errRangeLowAtr;
+	private ErrRangeLow errRangeLow;
+	private RangeAtr errRangeHighAtr;
+	private ErrRangeHigh errRangeHigh;
+	private RangeAtr alRangeLowAtr;
+	private AlRangeLow alRangeLow;
+	private RangeAtr alRangeHighAtr;
+	private AlRangeHigh alRangeHigh;
+	private Memo memo;
 
 	public ItemDeduct( DeductAtr deductAtr, RangeAtr errRangeLowAtr,
 			ErrRangeLow errRangeLow, RangeAtr errRangeHighAtr, ErrRangeHigh errRangeHigh, RangeAtr alRangeLowAtr,

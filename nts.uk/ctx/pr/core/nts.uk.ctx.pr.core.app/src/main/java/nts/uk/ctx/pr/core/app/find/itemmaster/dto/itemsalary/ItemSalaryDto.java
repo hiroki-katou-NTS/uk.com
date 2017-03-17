@@ -11,28 +11,28 @@ import nts.uk.ctx.pr.core.dom.itemmaster.itemsalary.ItemSalary;
 @AllArgsConstructor
 @Data
 public class ItemSalaryDto {
-	public int taxAtr;
-	public int socialInsAtr;
-	public int laborInsAtr;
-	public int fixPayAtr;
-	public int applyForAllEmpFlg;
-	public int applyForMonthlyPayEmp;
-	public int applyForDaymonthlyPayEmp;
-	public int applyForDaylyPayEmp;
-	public int applyForHourlyPayEmp;
-	public int avePayAtr;
-	public int errRangeLowAtr;
-	public BigDecimal errRangeLow;
-	public int errRangeHighAtr;
-	public BigDecimal errRangeHigh;
-	public int alRangeLowAtr;
-	public BigDecimal alRangeLow;
-	public int alRangeHighAtr;
-	public BigDecimal alRangeHigh;
-	public String memo;
-	public int limitMnyAtr;
-	public String limitMnyRefItemCd;
-	public Long limitMny;
+	private int taxAtr;
+	private int socialInsAtr;
+	private int laborInsAtr;
+	private int fixPayAtr;
+	private int applyForAllEmpFlg;
+	private int applyForMonthlyPayEmp;
+	private int applyForDaymonthlyPayEmp;
+	private int applyForDaylyPayEmp;
+	private int applyForHourlyPayEmp;
+	private int avePayAtr;
+	private int errRangeLowAtr;
+	private BigDecimal errRangeLow;
+	private int errRangeHighAtr;
+	private BigDecimal errRangeHigh;
+	private int alRangeLowAtr;
+	private BigDecimal alRangeLow;
+	private int alRangeHighAtr;
+	private BigDecimal alRangeHigh;
+	private String memo;
+	private int limitMnyAtr;
+	private String limitMnyRefItemCd;
+	private Long limitMny;
 
 	public static ItemSalaryDto fromDomain(ItemSalary domain) {
 
