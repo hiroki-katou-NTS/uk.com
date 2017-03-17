@@ -24,11 +24,11 @@ public class JapaneseEraName {
 	/** span */
 	private Range<GeneralDate> span;
 	
-	public JapaneseEraName(String code, String name, String symbol, GeneralDate startDate, GeneralDate endDate) {
+	public JapaneseEraName(String code, String name, String symbol, Range<GeneralDate> span) {
 		this.code = code;
 		this.name = name;
 		this.symbol = symbol;
-		this.span = Range.between(startDate, endDate);
+		this.span = span;
 	}
 	
 	public GeneralDate startDate() {
