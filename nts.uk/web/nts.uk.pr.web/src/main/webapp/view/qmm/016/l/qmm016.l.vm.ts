@@ -4,7 +4,6 @@ module nts.uk.pr.view.qmm016.l {
     import MultipleTargetSettingDto = service.model.MultipleTargetSettingDto;
     import MultipleTargetSetting = service.model.MultipleTargetSetting;
     import CertificationFindInDto = service.model.CertificationFindInDto;
-    import CertifyGroupFindInDto = service.model.CertifyGroupFindInDto;
     import CertifyGroupFindOutDto = service.model.CertifyGroupFindOutDto;
     import CertifyGroupDto = service.model.CertifyGroupDto;
     import TypeActionCertifyGroup = service.model.TypeActionCertifyGroup;
@@ -19,7 +18,7 @@ module nts.uk.pr.view.qmm016.l {
             typeAction: KnockoutObservable<number>;
             selectedMultipleTargetSetting: KnockoutObservable<number>;
             selectLstCodeLstCertification: KnockoutObservableArray<string>;
-            lstCertifyGroup: KnockoutObservableArray<CertifyGroupFindInDto>;
+            lstCertifyGroup: KnockoutObservableArray<CertifyGroupFindOutDto>;
             columnsLstCertifyGroup: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
             selectCodeLstLstCertifyGroup: KnockoutObservable<string>;
             lstCertification: CertificationFindInDto[];
@@ -30,17 +29,13 @@ module nts.uk.pr.view.qmm016.l {
 
             constructor() {
                 var self = this;
-                self.columnsLstCertifyGroup = ko.observableArray([
+                self.columnsLstCertifyGroup = ko.observableArray<nts.uk.ui.NtsGridListColumn>([
                     { headerText: 'コード', prop: 'code', width: 120 },
                     { headerText: '名称', prop: 'name', width: 120 }
                 ]);
-                self.currentCode = ko.observable();
-                self.currentCodeList = ko.observableArray([]);
                 self.selectedMultipleTargetSetting = ko.observable(MultipleTargetSetting.BigestMethod);
                 self.selectCodeLstLstCertifyGroup = ko.observable('');
                 self.selectLstCodeLstCertification = ko.observableArray([]);
-                self.lstCertificationInfo = ko.observableArray([]);
-                self.selectLstCodeLstCertificationInfo = ko.observableArray([]);
                 self.typeAction = ko.observable(TypeActionCertifyGroup.update);
                 self.textEditorOption = ko.mapping.fromJS(new option.TextEditorOption());
                 self.isEmpty = ko.observable(true);
@@ -50,8 +45,8 @@ module nts.uk.pr.view.qmm016.l {
             public startPage(): JQueryPromise<any> {
                 var self = this;
                 var dfd = $.Deferred<any>();
-                self.findAllCertifyGroup().done(res => {
-                    res.findAllCertification().done(data => {
+                self.findAllCertifyGroup().done(function() {
+                    self.findAllCertification().done(data => {
                         dfd.resolve(data);
                     });
 
@@ -76,7 +71,7 @@ module nts.uk.pr.view.qmm016.l {
                 var dfd = $.Deferred<any>();
                 service.findAllCertifyGroup().done(data => {
                     if (data != null && data.length > 0) {
-                        self.lstCertifyGroup = ko.observableArray<CertifyGroupFindInDto>(data);
+                        self.lstCertifyGroup = ko.observableArray<CertifyGroupFindOutDto>(data);
                         self.selectCodeLstLstCertifyGroup(data[0].code);
                         self.selectCodeLstLstCertifyGroup.subscribe(function(selectionCodeLstLstCertifyGroup: string) {
                             self.showchangeCertifyGroup(selectionCodeLstLstCertifyGroup);
@@ -271,7 +266,7 @@ module nts.uk.pr.view.qmm016.l {
                 this.code = ko.observable(certifyGroupDto.code);
                 this.name = ko.observable(certifyGroupDto.name);
                 this.multiApplySet = ko.observable(certifyGroupDto.multiApplySet);
-                this.columnsCertification = ko.observableArray([
+                this.columnsCertification = ko.observableArray<nts.uk.ui.NtsGridListColumn>([
                     { headerText: 'コード', prop: 'code', width: 60 },
                     { headerText: '名称', prop: 'name', width: 180 }
                 ]);
@@ -295,3 +290,4 @@ module nts.uk.pr.view.qmm016.l {
             }
         }
     }
+}

@@ -1,8 +1,10 @@
 /******************************************************************
- * Copyright (c) 2016 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.report.dom.salarydetail.aggregate;
+
+import java.util.Optional;
 
 /**
  * The Interface SalaryAggregateItemRepository.
@@ -10,7 +12,7 @@ package nts.uk.ctx.pr.report.dom.salarydetail.aggregate;
 public interface SalaryAggregateItemRepository {
 
 	/**
-	 * Save.
+	 * Adds the.
 	 *
 	 * @param aggregateItem the aggregate item
 	 */
@@ -37,5 +39,5 @@ public interface SalaryAggregateItemRepository {
 	 * @param code the code
 	 * @return the salary aggregate item
 	 */
-	SalaryAggregateItem findByCode(String companyCode,String code);
+	Optional<SalaryAggregateItem> findByCode(String companyCode, String aggregateItemCode, int categoryCode);
 }

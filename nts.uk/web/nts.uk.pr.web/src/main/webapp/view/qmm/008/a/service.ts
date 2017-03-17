@@ -30,7 +30,7 @@ module nts.uk.pr.view.qmm008.a {
             var dfd = $.Deferred<Array<model.finder.InsuranceOfficeItemDto>>();
             var findPath = servicePath.getAllOfficeItem + ((key != null && key != '') ? ('?key=' + key) : '');
             // Call ajax.
-            nts.uk.request.ajax(findPath).done(function(data) {
+            nts.uk.request.ajax(findPath).done(function(data:any) {
                 // Convert json to model here.
                 // Resolve.
                 dfd.resolve(data);
@@ -70,7 +70,7 @@ module nts.uk.pr.view.qmm008.a {
             var dfd = $.Deferred<model.finder.HealthInsuranceRateDto>();
             var findPath = servicePath.getHealthInsuranceItemDetail + "/" + code;
             // Call ajax.
-            nts.uk.request.ajax(findPath).done(function(data) {
+            nts.uk.request.ajax(findPath).done(function(data:any) {
                 // Convert json to model here.
                 var healthInsuranceRateDetailData: model.finder.HealthInsuranceRateDto = data;
                 // Resolve.
@@ -88,7 +88,7 @@ module nts.uk.pr.view.qmm008.a {
             var dfd = $.Deferred<Array<model.finder.OfficeItemDto>>();
             var findPath = servicePath.getAllHealthOfficeAndHistory;
             // Call ajax.
-            nts.uk.request.ajax(findPath).done(function(data) {
+            nts.uk.request.ajax(findPath).done(function(data:any) {
                 // Convert json to model here.
                 var returnData: Array<model.finder.OfficeItemDto> = data;
                 // Resolve.
@@ -108,7 +108,7 @@ module nts.uk.pr.view.qmm008.a {
             var dfd = $.Deferred<model.finder.PensionRateDto>();
             var findPath = servicePath.getPensionItemDetail + "/" + code;
             // Call ajax.
-            nts.uk.request.ajax(findPath).done(function(data) {
+            nts.uk.request.ajax(findPath).done(function(data:any) {
                 // Convert json to model here.
                 var pensionRateDetailData: model.finder.PensionRateDto = data;
                 // Resolve.
@@ -126,7 +126,7 @@ module nts.uk.pr.view.qmm008.a {
             var dfd = $.Deferred<Array<model.finder.OfficeItemDto>>();
             var findPath = servicePath.getAllPensionOfficeAndHistory;
             // Call ajax.
-            nts.uk.request.ajax(findPath).done(function(data) {
+            nts.uk.request.ajax(findPath).done(function(data:any) {
                 // Convert json to model here.
                 var returnData: Array<model.finder.OfficeItemDto> = data;
                 // Resolve.

@@ -33,7 +33,7 @@ var nts;
                                     var salMin = 0;
                                     for (var i_1 in listDto) {
                                         var dto = listDto[i_1];
-                                        dto['salMin'] = salMin;
+                                        dto.salMin = salMin;
                                         salMin = dto.salLimit;
                                     }
                                     return listDto;
@@ -46,3 +46,4 @@ var nts;
         })(pr = uk.pr || (uk.pr = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+//# sourceMappingURL=service.js.map

@@ -25,13 +25,9 @@ var nts;
                                         { headerText: 'コード', prop: 'code', width: 120 },
                                         { headerText: '名称', prop: 'name', width: 120 }
                                     ]);
-                                    self.currentCode = ko.observable();
-                                    self.currentCodeList = ko.observableArray([]);
                                     self.selectedMultipleTargetSetting = ko.observable(MultipleTargetSetting.BigestMethod);
                                     self.selectCodeLstLstCertifyGroup = ko.observable('');
                                     self.selectLstCodeLstCertification = ko.observableArray([]);
-                                    self.lstCertificationInfo = ko.observableArray([]);
-                                    self.selectLstCodeLstCertificationInfo = ko.observableArray([]);
                                     self.typeAction = ko.observable(TypeActionCertifyGroup.update);
                                     self.textEditorOption = ko.mapping.fromJS(new option.TextEditorOption());
                                     self.isEmpty = ko.observable(true);
@@ -39,8 +35,8 @@ var nts;
                                 ScreenModel.prototype.startPage = function () {
                                     var self = this;
                                     var dfd = $.Deferred();
-                                    self.findAllCertifyGroup().done(function (res) {
-                                        res.findAllCertification().done(function (data) {
+                                    self.findAllCertifyGroup().done(function () {
+                                        self.findAllCertification().done(function (data) {
                                             dfd.resolve(data);
                                         });
                                     });

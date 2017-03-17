@@ -7,434 +7,408 @@
 
 <body>
 
-	<ui:composition template="../../../../master/base.xhtml">
-		<ui:define name="htmlHead">
-			<script>
-				var dialogSize = {
-					width : 1200,
-					height : 600
-				};
-			</script>
-
+	<ui:composition template="../../../base/simplehistory/basesidebar.xhtml">
+		<ui:define name="extendedHead">
 			<com:ValidatorScript>
+				nts.uk.ctx.pr.core.dom.insurance.Ins3Rate
+				nts.uk.ctx.pr.core.dom.insurance.Ins2Rate
 				nts.uk.ctx.pr.core.dom.insurance.OfficeCode
 				nts.uk.ctx.pr.core.dom.insurance.OfficeName
-				nts.uk.ctx.pr.core.dom.insurance.ShortName
-				nts.uk.ctx.pr.core.dom.insurance.PicName
-				nts.uk.ctx.pr.core.dom.insurance.PicPosition
-				nts.uk.ctx.pr.core.dom.insurance.PotalCode
-				nts.uk.ctx.pr.core.dom.insurance.Phone
-				<!-- province address -->
-				nts.uk.shr.com.primitive.Memo
-				nts.uk.ctx.pr.core.dom.insurance.Address
-				nts.uk.ctx.pr.core.dom.insurance.KanaAddress
-				
-				<!-- add new primitive -->
-				nts.uk.ctx.pr.core.dom.insurance.OfficeRefCode1
-				nts.uk.ctx.pr.core.dom.insurance.OfficeRefCode2
-				nts.uk.ctx.pr.core.dom.insurance.WelfarePensionFundCode
-				nts.uk.ctx.pr.core.dom.insurance.OfficePensionFundCode
-				nts.uk.ctx.pr.core.dom.insurance.CityCode
-				nts.uk.ctx.pr.core.dom.insurance.OfficeSign
-				nts.uk.ctx.pr.core.dom.insurance.HealthInsuOfficeCode
-				nts.uk.ctx.pr.core.dom.insurance.HealthInsuAssoCode
-				
+				nts.uk.ctx.pr.core.dom.insurance.CommonAmount
   			</com:ValidatorScript>
 
+			<com:scriptfile path="qmm008.c.service.js" />
+			<com:scriptfile path="qmm008.c.vm.js" />
+			<com:scriptfile path="qmm008.c.start.js" />
 			<com:stylefile path="main.css" />
-			<com:scriptfile set="IGNITE" />
-			<com:scriptfile path="service.js" />
-			<com:scriptfile path="../a/service.js" />
-			<com:scriptfile path="viewmodel.js" />
-			<com:scriptfile path="start.js" />
-			<!-- <script>
-				__viewContext.primitiveValueConstraints.OfficeRefCode1 = {
-					valueType : 'String',
-					maxLength : 6,
-				};
-				__viewContext.primitiveValueConstraints.OfficeRefCode2 = {
-						valueType : 'String',
-						maxLength : 8,
-					};
-				//
-				__viewContext.primitiveValueConstraints.WelfarePensionFundCode = {
-					valueType : 'Number',
-					charType : 'Numeric',
-					maxLength : 4,
-				}
-			
-				__viewContext.primitiveValueConstraints.OfficePensionFundCode = {
-					valueType : 'Number',
-					charType : 'Numeric',
-					maxLength : 7,
-				}
-				
-				__viewContext.primitiveValueConstraints.CityCode = {
-						valueType : 'Number',
-						charType : 'Numeric',
-						maxLength : 2,
-					}
-				__viewContext.primitiveValueConstraints.OfficeSign = {
-						valueType : 'Number',
-						charType : 'Numeric',
-						maxLength : 4,
-					}
-				//
-				__viewContext.primitiveValueConstraints.HealthInsuOfficeCode = {
-						valueType : 'Number',
-						charType : 'Numeric',
-						maxLength : 5,
-					}
-				__viewContext.primitiveValueConstraints.HealthInsuAssoCode = {
-						valueType : 'Number',
-						charType : 'Numeric',
-						maxLength : 4,
-					}
-			</script> -->
 		</ui:define>
 
-		<ui:define name="content">
-			<div id="functions-area">
-				<button class="btn_width new_btn" data-bind="click: addNew">新規</button>
-				<button data-bind="click: save,enable: $root.errors.isEmpty" class="proceed btn_width">登録</button>
-				<button class="btn_width">印刷</button>
-				<button data-bind="click: remove, enable: deleteButtonControll()"
-					class="delete_btn btn_width danger">削除</button>
-				<button class="btn_width" data-bind="click: closeDialog">閉じる</button>
-			</div>
-			<div id="contents-area">
-				<!-- left -->
-				<div style="width: 40%; float: left;">
-					<div class="bg-green caret-right caret-background"
-						style="float: left; width: 350px; height: 500px; margin: 20px 50px;">
-						<div style="padding-left: 20px; width: 400px;"
-							data-bind="ntsSearchBox: {comId: 'multi-list', items: officeItems, selected: selectedOfficeCode, selectedKey: 'code', fields: ['name', 'code']}" />
-						<div style="padding-left: 14px; padding-top: 5px;">
-							<table id="single-list"
-								data-bind="ntsGridList: {
-												height: 350,
-												options: officeItems,
-												optionsValue: 'code',
-												columns: columns2,
-												multiple: false,
-												value: selectedOfficeCode
-																}"
-								class="cf"></table>
-						</div>
-					</div>
-				</div>
+		<ui:define name="extendedAction">
+			<button>印刷(PDF)</button>
+			<button
+				data-bind="click: OpenModalStandardMonthlyPricePension,enable: isClickHistory()">標準報酬月額保険料額表</button>
+			<button data-bind="click: OpenModalOfficeRegister">事業所登録</button>
+			<button>マスタ修正登録</button>
+		</ui:define>
+		
+		<ui:define name="sidebar">
+			<ul class="navigator">
+				<li><a id="healthInsuranceTabPanel" href="#tabpanel-1" >健康保険</a></li>
+				<li><a href="#tabpanel-2" role="tab-navigator" class="active">厚生年金</a></li>
+			</ul>
+		</ui:define>
+		
+		<ui:define name="pageContent">
 				<!-- right -->
-				<div style="width: 60%; float: left;">
-					<div style="padding-right: 10px;">
-						<div id="tab-panel"
-							data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab }">
-							<div data-bind="with: officeModel" class="tab-content-1">
-								<table class="border_none">
-									<tr>
-										<td class="border_none"><div style="margin-top: 20px;"
-												data-bind="ntsFormLabel: {required: true,constraint:['OfficeCode','OfficeName'] }">コード/名称</div></td>
-										<td class="border_none padding_top"><div>
-												<input class ="save-error"
-													data-bind="ntsTextEditor: {
-														value: officeCode ,
-														constraint: 'OfficeCode',
-														required: true, 
-														option: $parent.textInputOption,
-														enable : $parent.enabled()}" />
-											</div></td>
-										<td colspan="2" class="border_none padding_top padding_left"><div>
-												<input class ="save-error"
-													data-bind="ntsTextEditor: {
- 														value: officeName ,
- 														constraint: 'OfficeName',
- 														required: true,  
-														option: {textmode: 'text',width: '200',textalign: 'left'}}" />
-											</div></td>
-									</tr>
-									<tr>
-										<td class="border_none"><div style="margin-top: 20px;"
-												data-bind="ntsFormLabel: {constraint:'ShortName'}">略名</div></td>
-										<td colspan="3" class="border_none padding_top">
-											<div>
-												<input
-												class ="save-error"
-													data-bind="ntsTextEditor: {
-														value: shortName ,
-														constraint: 'ShortName',
-														option: {textmode: 'text',width: '150',textalign: 'left'}}" />
-											</div>
-										</td>
-									</tr>
-									<tr>
-										<td class="border_none"><div style="margin-top: 20px;"
-												data-bind="ntsFormLabel: {constraint:'PicName'}">代表者名</div></td>
-										<td colspan="3" class="border_none padding_top">
-											<div>
-												<input class ="save-error"
-													data-bind="ntsTextEditor: {
-														value: PicName ,
-														constraint: 'PicName',
-														option: {textmode: 'text',width: '150',textalign: 'left'}}" />
-											</div>
-										</td>
-									</tr>
-									<tr>
-										<td
-											class="no_left_border no_right_border no_top_border border_bottom "><div
-												style="margin-top: 20px; margin-bottom: 10px;"
-												data-bind="ntsFormLabel: {required: true,constraint:'PicPosition'}">代表者</div></td>
-										<td colspan="3"
-											class="no_left_border no_right_border no_top_border border_bottom padding_top ">
-											<div>
-												<input class ="save-error"
-													data-bind="ntsTextEditor: {
-														value: PicPosition ,
-														constraint: 'PicPosition',
-														required: true, 
-														option: {textmode: 'text',width: '150',textalign: 'left'}}" />
-											</div>
-										</td>
-										<td
-											class="no_left_border no_right_border no_top_border border_bottom padding_top line_basic_info"></td>
-									</tr>
-									<tr>
-										<td class="border_none"><div style="margin-top: 20px;"
-												data-bind="ntsFormLabel: {constraint:'PotalCode'}">郵便番号</div></td>
-										<td class="border_none padding_top"><div>
-												<input class ="save-error"
-													data-bind="ntsTextEditor: {
-														value: potalCode ,
-														constraint: 'PotalCode', 
-														option: {textmode: 'text',width: '80',textalign: 'left'}}" />
-											</div></td>
-										<td class="padding_top">
-											<button>検索</button>
-										</td>
-									</tr>
-									<tr>
-										<td class="border_none"><div style="margin-top: 20px;"
-												data-bind="ntsFormLabel: {}">都道府県名</div></td>
-										<td class="border_none padding_top"><div>
-												<input class ="save-error"
-													data-bind="ntsTextEditor: {
-														value: prefecture , 
-														option: {textmode: 'text',width: '80',textalign: 'left'}}" />
-											</div></td>
-									</tr>
-									<tr>
-										<td class="border_none"><div style="margin-top: 20px;"
-												data-bind="ntsFormLabel: {constraint:'Address'}">住所 １</div></td>
-										<td colspan="3" class="border_none padding_top"><div>
-												<input class ="save-error"
-													data-bind="ntsTextEditor: {
-														value: address1st ,
-														constraint: 'Address', 
-														option: {textmode: 'text',width: '300',textalign: 'left'}}" />
-											</div></td>
-									</tr>
-									<tr>
-										<td class="border_none kana_address" ><div style="border: none !important" data-bind="ntsFormLabel: {constraint:'KanaAddress'}">カナ１</div></td>
-										<td colspan="3" class="border_none padding_top"><div>
-												<input class ="save-error"
-													data-bind="ntsTextEditor: {
-														value: kanaAddress1st ,
-														constraint: 'KanaAddress', 
-														option: {textmode: 'text',width: '300',textalign: 'left'}}" />
-											</div></td>
-									</tr>
-									<tr>
-										<td class="border_none"><div style="margin-top: 20px;"
-												data-bind="ntsFormLabel: {constraint:'Address'}">住所 ２</div></td>
-										<td colspan="3" class="border_none padding_top"><div>
-												<input class ="save-error"
-													data-bind="ntsTextEditor: {
-														value: address2nd ,
-														constraint: 'Address', 
-														option: {textmode: 'text',width: '300',textalign: 'left'}}" />
-											</div></td>
-									</tr>
-									<tr>
-										<td class="border_none kana_address"> <div style="border: none !important" data-bind="ntsFormLabel: {constraint:'KanaAddress'}">カナ ２</div></td>
-										<td colspan="3" class="border_none padding_top"><div>
-												<input class ="save-error"
-													data-bind="ntsTextEditor: {
-														value: kanaAddress2nd ,
-														constraint: 'KanaAddress', 
-														option: {textmode: 'text',width: '300',textalign: 'left'}}" />
-											</div></td>
-									</tr>
-									<tr>
-										<td class="border_none"><div style="margin-top: 20px;"
-												data-bind="ntsFormLabel: {constraint:'Phone'}">電話番号</div></td>
-										<td colspan="3" class="border_none padding_top"><div>
-												<input class ="save-error"
-													data-bind="ntsTextEditor: {
-														value: phoneNumber ,
-														constraint: 'Phone', 
-														option: {textmode: 'text',width: '150',textalign: 'left'}}" />
-											</div></td>
-									</tr>
+				<div data-bind="with: pensionModel" class="right">
+					<table id="pension_detail_table" class="border_none">
+						<tr>
+							<td class="border_none">
+								<div style="margin-top: 20px;" data-bind="ntsFormLabel: {}">期間</div>
+							</td>
+							<td class="border_none padding_top_20">
+								<div>
+									<p data-bind="text:startMonth" class="float_left"></p>
+									<p data-bind="text:$parent.japanYear" class="float_left"></p>
+								</div>
+							</td>
+							<td class="border_none padding_top_20">~
+								<p data-bind="text:endMonth" class="float_right"></p>
+							</td>
+						</tr>
+						<tr>
+							<td class="border_none"><div
+									style="margin-top: 20px; float: left;"
+									data-bind="ntsFormLabel: {}">厚生年金基金加入</div></td>
+							<td colspan="2" class="border_none"><div
+									style="margin-top: 20px; float: left;" class="cf"
+									data-bind="ntsSwitchButton: {
+							options: $parent.pensionFundInputOptions,
+							optionsValue: 'code',
+							optionsText: 'name',
+							value: fundInputApply,
+							enable:$parent.isClickHistory() }"></div></td>
+						</tr>
+						<tr>
+							<td class="border_none"><div
+									style="margin-top: 20px; float: left;"
+									data-bind="ntsFormLabel: {}">自動計算</div></td>
+							<td class="border_none"><div
+									style="margin-top: 20px; float: left;" class="cf"
+									data-bind="ntsSwitchButton: {
+							options: $parent.pensionCalculateOptions,
+							optionsValue: 'code',
+							optionsText: 'name',
+							value: autoCalculate,
+							enable: $parent.isClickHistory() }"></div></td>
+							<td class="border_none"><button
+									style="margin-left: 20px; margin-top: 20px; float: left;">?</button></td>
+						</tr>
+					</table>
+					<div class="hr_width">
+						<hr />
+					</div>
+					<div>厚生年金保険料率</div>
+					<div class="hr_width">
+						<hr />
+					</div>
+					<table id="expand-example">
+						<tbody>
+							<tr class="bg-green">
+								<th colspan="2" rowspan="2"></th>
+								<th class="text_center" colspan="2">給与</th>
+								<th class="text_center" colspan="2">賞与</th>
+							</tr>
+							<tr class="bg-green">
+								<th class="text_center tbl_head">個人負担率</th>
+								<th class="text_center tbl_head">事業主負担率</th>
+								<th class="text_center tbl_head">個人負担率</th>
+								<th class="text_center tbl_head">事業主負担率</th>
+							</tr>
+							<tr>
+								<td class="bg-green tbl_pension_rate text_center" colspan="2">男子負担率（第1種）</td>
+								<td><div class="float_left">
+										<input
+											data-bind="ntsNumberEditor: {value: rateItems().pensionSalaryPersonalSon, option: $parent.Rate2,enable: $parent.isClickHistory(), constraint: 'Ins2Rate'}" />
+									</div>/1000</td>
+								<td><div class="float_left">
+										<input
+											data-bind="ntsNumberEditor: {value: rateItems().pensionSalaryCompanySon, option: $parent.Rate2,enable: $parent.isClickHistory(), constraint: 'Ins2Rate'}" />
+									</div>/1000</td>
+								<td><div class="float_left">
+										<input
+											data-bind="ntsNumberEditor: {value: rateItems().pensionBonusPersonalSon, option: $parent.Rate2,enable: $parent.isClickHistory(), constraint: 'Ins2Rate'}" />
+									</div>/1000</td>
+								<td><div class="float_left">
+										<input
+											data-bind="ntsNumberEditor: {value: rateItems().pensionBonusCompanySon, option: $parent.Rate2,enable: $parent.isClickHistory(), constraint: 'Ins2Rate'}" />
+									</div>/1000</td>
+							</tr>
+							<tr>
+								<td class="bg-green tbl_pension_rate text_center" colspan="2">女子負担率（第2種）</td>
+								<td><div class="float_left">
+										<input
+											data-bind="ntsNumberEditor: {value: rateItems().pensionSalaryPersonalDaughter, option: $parent.Rate2,enable: $parent.isClickHistory(), constraint: 'Ins2Rate'}" />
+									</div>/1000</td>
+								<td><div class="float_left">
+										<input
+											data-bind="ntsNumberEditor: {value: rateItems().pensionSalaryCompanyDaughter, option: $parent.Rate2,enable: $parent.isClickHistory(), constraint: 'Ins2Rate'}" />
+									</div>/1000</td>
+								<td><div class="float_left">
+										<input
+											data-bind="ntsNumberEditor: {value: rateItems().pensionBonusPersonalDaughter, option: $parent.Rate2,enable: $parent.isClickHistory(), constraint: 'Ins2Rate'}" />
+									</div>/1000</td>
+								<td><div class="float_left">
+										<input
+											data-bind="ntsNumberEditor: {value: rateItems().pensionBonusCompanyDaughter, option: $parent.Rate2,enable: $parent.isClickHistory(), constraint: 'Ins2Rate'}" />
+									</div>/1000</td>
+							</tr>
+							<tr>
+								<td class="bg-green tbl_pension_rate text_center" colspan="2">坑内員負担率（第3種）</td>
+								<td><div class="float_left">
+										<input
+											data-bind="ntsNumberEditor: {value: rateItems().pensionSalaryPersonalUnknown, option: $parent.Rate2,enable: $parent.isClickHistory(), constraint: 'Ins2Rate'}" />
+									</div>/1000</td>
+								<td><div class="float_left">
+										<input
+											data-bind="ntsNumberEditor: {value: rateItems().pensionSalaryCompanyUnknown, option: $parent.Rate2,enable: $parent.isClickHistory(), constraint: 'Ins2Rate'}" />
+									</div>/1000</td>
+								<td><div class="float_left">
+										<input
+											data-bind="ntsNumberEditor: {value: rateItems().pensionBonusPersonalUnknown, option: $parent.Rate2,enable: $parent.isClickHistory(), constraint: 'Ins2Rate'}" />
+									</div>/1000</td>
+								<td><div class="float_left">
+										<input
+											data-bind="ntsNumberEditor: {value: rateItems().pensionBonusCompanyUnknown, option: $parent.Rate2,enable: $parent.isClickHistory(), constraint: 'Ins2Rate'}" />
+									</div>/1000</td>
+							</tr>
+						</tbody>
+					</table>
 
-								</table>
-							</div>
-							<div data-bind="with: officeModel" class="tab-content-2">
-								<table class="border_none">
-									<tr>
-										<td colspan="6" class="border_bottom text_head">事業所整理番号</td>
-									</tr>
-									<tr>
-										<td colspan="2" class="border_none"><div
-												class="margin_top_10" data-bind="ntsFormLabel: {}">健康保険事務所整理番号</div></td>
-										<td class="border_none"><div>
-												<input class ="save-error"
-													data-bind="ntsTextEditor: {
-														value: healthInsuOfficeRefCode1st ,
-														constraint:  'OfficeRefCode1',
-														option: {textmode: 'text',width: '50',textalign: 'left'}}" />
-											</div></td>
-										<td class="border_none"><div>
-												<input class ="save-error"
-													data-bind="ntsTextEditor: {
-														value: healthInsuOfficeRefCode2nd ,
-														constraint: 'OfficeRefCode2', 
-														option: {textmode: 'text',width: '70',textalign: 'left'}}" />
-											</div></td>
-									</tr>
-									<tr>
-										<td colspan="2" class="border_none"><div
-												class="margin_top_10" data-bind="ntsFormLabel: {}">厚生年金事務所整理番号</div></td>
-										<td class="border_none"><div>
-												<input class ="save-error"
-													data-bind="ntsTextEditor: {
-														value: pensionOfficeRefCode1st ,
-														constraint:  'OfficeRefCode1', 
-														option: {textmode: 'text',width: '50',textalign: 'left'}}" />
-											</div></td>
-										<td class="border_none"><div>
-												<input class ="save-error"
-													data-bind="ntsTextEditor: {
-														value: pensionOfficeRefCode2nd ,
-														constraint: 'OfficeRefCode2', 
-														option: {textmode: 'text',width: '70',textalign: 'left'}}" />
-											</div></td>
-									</tr>
-									<tr>
-										<td colspan="6" class="border_bottom text_head">厚生年金基金</td>
-									</tr>
+					<div class="pad_top_10"
+						data-bind="css: { hidden: $parent.fundInputEnable() }">基金用</div>
+					<div data-bind="css: { hidden: $parent.fundInputEnable() }"
+						class="hr_width">
+						<hr />
+					</div>
+					<table data-bind="css: { hidden: $parent.fundInputEnable() }"
+						id="expand-example">
+						<tbody>
+							<tr class="bg-green">
+								<th colspan="2" rowspan="2"></th>
+								<th class="text_center" colspan="2">給与</th>
+								<th class="text_center" colspan="2">賞与</th>
+							</tr>
+							<tr class="bg-green">
+								<th class="text_center tbl_head">個人負担率</th>
+								<th class="text_center tbl_head">事業主負担率</th>
+								<th class="text_center tbl_head">個人負担率</th>
+								<th class="text_center tbl_head">事業主負担率</th>
+							</tr>
+							<tr>
+								<td rowspan="2"
+									class="bg-green tbl_health_insurance_rate text_center">男子負担率</td>
+								<td class="bg-green tbl_health_insurance_rate text_center">保険料率</td>
+								<td><div class="float_left">
+										<input
+											data-bind="ntsNumberEditor: {value: fundRateItems().salaryPersonalSonBurden ,option: $parent.Rate2, constraint: 'Ins2Rate'}" />
+									</div>/1000</td>
+								<td><div class="float_left">
+										<input
+											data-bind="ntsNumberEditor: {value: fundRateItems().salaryCompanySonBurden , option: $parent.Rate2, constraint: 'Ins2Rate'}" />
+									</div>/1000</td>
+								<td><div class="float_left">
+										<input
+											data-bind="ntsNumberEditor: {value: fundRateItems().bonusPersonalSonBurden , option: $parent.Rate2, constraint: 'Ins2Rate'}" />
+									</div>/1000</td>
+								<td><div class="float_left">
+										<input
+											data-bind="ntsNumberEditor: {value: fundRateItems().bonusCompanySonBurden , option: $parent.Rate2, constraint: 'Ins2Rate'}" />
+									</div>/1000</td>
+							</tr>
+							<tr>
+								<td class="bg-green tbl_health_insurance_rate text_center">免除保険料率</td>
+								<td><div class="float_left">
+										<input
+											data-bind="ntsNumberEditor: {value: fundRateItems().salaryPersonalSonExemption , option: $parent.Rate2, constraint: 'Ins2Rate'}" />
+									</div>/1000</td>
+								<td><div class="float_left">
+										<input
+											data-bind="ntsNumberEditor: {value: fundRateItems().salaryCompanySonExemption , option: $parent.Rate2, constraint: 'Ins2Rate'}" />
+									</div>/1000</td>
+								<td><div class="float_left">
+										<input
+											data-bind="ntsNumberEditor: {value: fundRateItems().bonusPersonalSonExemption , option: $parent.Rate2, constraint: 'Ins2Rate'}" />
+									</div>/1000</td>
+								<td><div class="float_left">
+										<input
+											data-bind="ntsNumberEditor: {value: fundRateItems().bonusCompanySonExemption , option: $parent.Rate2, constraint: 'Ins2Rate'}" />
+									</div>/1000</td>
+							</tr>
+							<tr>
+								<td rowspan="2"
+									class="bg-green tbl_health_insurance_rate text_center">女子負担率</td>
+								<td class="bg-green tbl_health_insurance_rate text_center">保険料率</td>
+								<td><div class="float_left">
+										<input
+											data-bind="ntsNumberEditor: {value: fundRateItems().salaryPersonalDaughterBurden , option: $parent.Rate2, constraint: 'Ins2Rate'}" />
+									</div>/1000</td>
+								<td><div class="float_left">
+										<input
+											data-bind="ntsNumberEditor: {value: fundRateItems().salaryCompanyDaughterBurden , option: $parent.Rate2, constraint: 'Ins2Rate'}" />
+									</div>/1000</td>
+								<td><div class="float_left">
+										<input
+											data-bind="ntsNumberEditor: {value: fundRateItems().bonusPersonalDaughterBurden , option: $parent.Rate2, constraint: 'Ins2Rate'}" />
+									</div>/1000</td>
+								<td><div class="float_left">
+										<input
+											data-bind="ntsNumberEditor: {value: fundRateItems().bonusCompanyDaughterBurden , option: $parent.Rate2, constraint: 'Ins2Rate'}" />
+									</div>/1000</td>
+							</tr>
+							<tr>
+								<td class="bg-green tbl_health_insurance_rate text_center">免除保険料率</td>
+								<td><div class="float_left">
+										<input
+											data-bind="ntsNumberEditor: {value: fundRateItems().salaryPersonalDaughterExemption , option: $parent.Rate2, constraint: 'Ins2Rate'}" />
+									</div>/1000</td>
+								<td><div class="float_left">
+										<input
+											data-bind="ntsNumberEditor: {value: fundRateItems().salaryCompanyDaughterExemption , option: $parent.Rate2, constraint: 'Ins2Rate'}" />
+									</div>/1000</td>
+								<td><div class="float_left">
+										<input
+											data-bind="ntsNumberEditor: {value: fundRateItems().bonusPersonalDaughterExemption , option: $parent.Rate2, constraint: 'Ins2Rate'}" />
+									</div>/1000</td>
+								<td><div class="float_left">
+										<input
+											data-bind="ntsNumberEditor: {value: fundRateItems().bonusCompanyDaughterExemption , option: $parent.Rate2, constraint: 'Ins2Rate'}" />
+									</div>/1000</td>
+							</tr>
+							<tr>
+								<td rowspan="2"
+									class="bg-green tbl_health_insurance_rate text_center">坑内員負担率</td>
+								<td class="bg-green tbl_health_insurance_rate text_center">保険料率</td>
+								<td><div class="float_left">
+										<input
+											data-bind="ntsNumberEditor: {value: fundRateItems().salaryPersonalUnknownBurden , option: $parent.Rate2, constraint: 'Ins2Rate'}" />
+									</div>/1000</td>
+								<td><div class="float_left">
+										<input
+											data-bind="ntsNumberEditor: {value: fundRateItems().salaryCompanyUnknownBurden , option: $parent.Rate2, constraint: 'Ins2Rate'}" />
+									</div>/1000</td>
+								<td><div class="float_left">
+										<input
+											data-bind="ntsNumberEditor: {value: fundRateItems().bonusPersonalUnknownBurden , option: $parent.Rate2, constraint: 'Ins2Rate'}" />
+									</div>/1000</td>
+								<td><div class="float_left">
+										<input
+											data-bind="ntsNumberEditor: {value: fundRateItems().bonusCompanyUnknownBurden , option: $parent.Rate2, constraint: 'Ins2Rate'}" />
+									</div>/1000</td>
+							</tr>
+							<tr>
+								<td class="bg-green tbl_health_insurance_rate text_center">免除保険料率</td>
+								<td><div class="float_left">
+										<input
+											data-bind="ntsNumberEditor: {value: fundRateItems().salaryPersonalUnknownExemption , option: $parent.Rate2, constraint: 'Ins2Rate'}" />
+									</div>/1000</td>
+								<td><div class="float_left">
+										<input
+											data-bind="ntsNumberEditor: {value: fundRateItems().salaryCompanyUnknownExemption , option: $parent.Rate2, constraint: 'Ins2Rate'}" />
+									</div>/1000</td>
+								<td><div class="float_left">
+										<input
+											data-bind="ntsNumberEditor: {value: fundRateItems().bonusPersonalUnknownExemption , option: $parent.Rate2, constraint: 'Ins2Rate'}" />
+									</div>/1000</td>
+								<td><div class="float_left">
+										<input
+											data-bind="ntsNumberEditor: {value: fundRateItems().bonusCompanyUnknownExemption , option: $parent.Rate2, constraint: 'Ins2Rate'}" />
+									</div>/1000</td>
+							</tr>
+						</tbody>
+					</table>
 
-									<tr>
-										<td colspan="2" class="border_none"><div
-												class="margin_top_10" data-bind="ntsFormLabel: {}">厚生年金基金番号</div></td>
-										<td class="border_none"><div>
-												<input class ="save-error"
-													data-bind="ntsNumberEditor: {
-														value: welfarePensionFundCode ,
-														constraint: 'WelfarePensionFundCode', 
-														option: {textmode: 'text',width: '60',textalign: 'left'}}" />
-											</div></td>
-									</tr>
-									<tr>
-										<td colspan="2" class="border_none"><div
-												class="margin_top_10" data-bind="ntsFormLabel: {}">厚生年金基金事務所番号</div></td>
-										<td class="border_none"><div>
-												<input class ="save-error"
-													data-bind="ntsTextEditor: {
-														value: officePensionFundCode ,
-														constraint : 'OfficePensionFundCode', 
-														option: {textmode: 'text',width: '80',textalign: 'left'}}" />
-											</div></td>
-									</tr>
-									<tr>
-										<td colspan="6" class="border_bottom text_head">磁気媒体用</td>
-									</tr>
-									<tr>
-										<td colspan="" class="border_none"><div
-												class="margin_top_10" data-bind="ntsFormLabel: {}">健康保険</div></td>
-										<td>郡市区府号:</td>
-										<td class="border_none"><div>
-												<input class ="save-error"
-													data-bind="ntsTextEditor: {
-														value: healthInsuCityCode , 
-														constraint : 'CityCode',
-														option: {textmode: 'text',width: '40',textalign: 'left'}}" />
-											</div></td>
-										<td>事業所記号:</td>
-										<td class="border_none"><div>
-												<input class ="save-error"
-													data-bind="ntsTextEditor: {
-														value: healthInsuOfficeSign ,
-														constraint: 'OfficeSign', 
-														option: {textmode: 'text',width: '60',textalign: 'left'}}" />
-											</div></td>
-									</tr>
-									<tr>
-										<td colspan="" class="border_none"><div
-												class="margin_top_10" data-bind="ntsFormLabel: {}">厚生年金</div></td>
-										<td>郡市区府号:</td>
-										<td class="border_none"><div>
-												<input class ="save-error"
-													data-bind="ntsTextEditor: {
-														value: pensionCityCode ,
-														constraint : 'CityCode', 
-														option: {textmode: 'text',width: '40',textalign: 'left'}}" />
-											</div></td>
-										<td>事業所記号:</td>
-										<td class="border_none"><div>
-												<input class ="save-error"
-													data-bind="ntsTextEditor: {
-														value: pensionOfficeSign ,
-														constraint: 'OfficeSign', 
-														option: {textmode: 'text',width: '60',textalign: 'left'}}" />
-											</div></td>
-									</tr>
-									<tr>
-										<td colspan="6" class="border_bottom text_head"></td>
-									</tr>
-									<tr>
-										<td colspan="2" class="border_none"><div
-												class="margin_top_10" data-bind="ntsFormLabel: {}">健康保険事業所番号</div></td>
-										<td class="border_none"><div>
-												<input class ="save-error"
-													data-bind="ntsNumberEditor: {
-														value: healthInsuOfficeCode ,
-														constraint: 'HealthInsuOfficeCode', 
-														option: {textmode: 'text',width: '70',textalign: 'left'}}" />
-											</div></td>
-									</tr>
-									<tr>
-										<td colspan="2" class="border_none"><div
-												class="margin_top_10" data-bind="ntsFormLabel: {}">健康具合事業所番号</div></td>
-										<td class="border_none"><div>
-												<input class ="save-error"
-													data-bind="ntsTextEditor: {
-														value: healthInsuAssoCode ,
-														constraint: 'HealthInsuAssoCode', 
-														option: {textmode: 'text',width: '60',textalign: 'left'}}" />
-											</div></td>
-									</tr>
-									<tr>
-										<td colspan="2" class="border_none"><div
-												class="margin_top_10" data-bind="ntsFormLabel: {}">メモ</div></td>
-										<td colspan="4" class="border_none"><TEXTAREA class ="save-error"
-												id="input-text" rows="4" cols="60"
-												data-bind="ntsMultilineEditor: {
-													value: memo,
-													constraint: 'Memo',
-													option: {
-														resizeable: false,
-														placeholder: '',
-														width: '350',
-														textalign: 'left'
-														}
-													}"></TEXTAREA>
-										</td>
-									</tr>
-								</table>
-							</div>
+
+					<div class="pad_top_10">厚生年金端数区分</div>
+					<div class="hr_width">
+						<hr />
+					</div>
+					<table id="health_insurance_round">
+						<tbody>
+							<tr class="bg-green">
+								<th class="empty-col" rowspan="3"></th>
+								<th class="text_center" colspan="2">給与</th>
+								<th class="text_center" colspan="2">賞与</th>
+							</tr>
+							<tr class="bg-green">
+								<th class="text_center">個人負担率</th>
+								<th class="text_center">事業主負担率</th>
+								<th class="text_center">個人負担率</th>
+								<th class="text_center">事業主負担率</th>
+							</tr>
+							<tr>
+								<td><div class="rounding_width" id="combo-box-5"
+										data-bind="ntsComboBox: {
+												options: roundingMethods().pensionSalaryPersonalComboBox,
+												optionsValue: 'code',
+												value: roundingMethods().pensionSalaryPersonalComboBoxSelectedCode,
+												optionsText: 'name',
+												enable:$parent.isClickHistory(),
+												columns: [
+													{ prop: 'name', length: 5 },
+												]}"></div>
+								</td>
+								<td><div class="rounding_width" id="combo-box-6"
+										data-bind="ntsComboBox: {
+												options: roundingMethods().pensionSalaryCompanyComboBox,
+												optionsValue: 'code',
+												value: roundingMethods().pensionSalaryCompanyComboBoxSelectedCode,
+												optionsText: 'name',
+												enable:$parent.isClickHistory(),
+												columns: [
+													{ prop: 'name', length: 5 },
+												]}"></div></td>
+								<td><div class="rounding_width" id="combo-box-7"
+										data-bind="ntsComboBox: {
+												options: roundingMethods().pensionBonusPersonalComboBox,
+												optionsValue: 'code',
+												value: roundingMethods().pensionBonusPersonalComboBoxSelectedCode,
+												optionsText: 'name',
+												enable:$parent.isClickHistory(),
+												columns: [
+													{ prop: 'name', length: 5 },
+												]}"></div></td>
+								<td><div class="rounding_width" id="combo-box-8"
+										data-bind="ntsComboBox: {
+												options: roundingMethods().pensionBonusCompanyComboBox,
+												optionsValue: 'code',
+												value: roundingMethods().pensionBonusCompanyComboBoxSelectedCode,
+												optionsText: 'name',
+												enable:$parent.isClickHistory(),
+												columns: [
+													{ prop: 'name', length: 5 },
+												]}"></div></td>
+							</tr>
+						</tbody>
+					</table>
+					<div class="pad_top_10">賞与限度額</div>
+					<div class="hr_width">
+						<hr />
+					</div>
+					<div style="float: left;" data-bind="ntsFormLabel: {}">健康保険累計限度額</div>
+					<div class="pad_top_10">
+						<div>
+							<input
+								data-bind="ntsNumberEditor: {
+									value: maxAmount, 
+									constraint: 'CommonAmount', 
+									option: {grouplength: 3,currencyformat: 'JPY',currencyposition: 'right'}, 
+									required: true, 
+									enable: true, 
+									readonly: false}" />
 						</div>
 					</div>
+					<br />
+					<div class="pad_top_10">子ども。子育て拠出金</div>
+					<div class="hr_width">
+						<hr />
+					</div>
+					<div style="float: left;" data-bind="ntsFormLabel: {}">事業主負担率</div>
+					<div style="display: inline-flex;" class="pad_top_10">
+						<div>
+							<input
+								data-bind="ntsNumberEditor: {
+									value: childContributionRate, 
+									constraint: 'Ins2Rate', 
+									option: $parent.Rate2, 
+									required: true, 
+									enable: true, 
+									readonly: false}" />
+						</div>
+						/1000
+					</div>
 				</div>
-			</div>
+				<!-- end right -->
 		</ui:define>
 	</ui:composition>
 </body>

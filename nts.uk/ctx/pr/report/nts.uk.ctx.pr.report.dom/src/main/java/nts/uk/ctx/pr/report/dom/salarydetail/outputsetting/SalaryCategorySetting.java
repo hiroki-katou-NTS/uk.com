@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2015 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.report.dom.salarydetail.outputsetting;
@@ -39,7 +39,7 @@ public class SalaryCategorySetting extends DomainObject {
 	 * @param memento the memento
 	 */
 	public void saveToMemento(SalaryCategorySettingSetMemento memento) {
-		memento.setSalaryCategory(this.category);
 		memento.setSalaryOutputItems(this.items);
+		memento.setSalaryCategory(this.category);
 	}
 }
