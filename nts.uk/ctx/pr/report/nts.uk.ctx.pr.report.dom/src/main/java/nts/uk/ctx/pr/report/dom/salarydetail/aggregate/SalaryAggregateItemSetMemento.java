@@ -3,6 +3,7 @@ package nts.uk.ctx.pr.report.dom.salarydetail.aggregate;
 import java.util.Set;
 
 import nts.uk.ctx.pr.report.dom.company.CompanyCode;
+import nts.uk.ctx.pr.report.dom.salarydetail.item.SalaryItem;
 
 /**
  * The Interface SalaryAggregateItemSetMemento.
@@ -35,7 +36,7 @@ public interface SalaryAggregateItemSetMemento {
 	 *
 	 * @param subItemCodes the new sub item codes
 	 */
-	void setSubItemCodes(Set<String> subItemCodes);
+	void setSubItemCodes(Set<SalaryItem> subItemCodes);
 
 	/**
 	 * Sets the tax division.

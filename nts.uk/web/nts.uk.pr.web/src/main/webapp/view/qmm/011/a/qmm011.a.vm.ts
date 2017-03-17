@@ -279,7 +279,7 @@ module nts.uk.pr.view.qmm011.a {
                             service.updateAccidentInsuranceRateHistory(accidentInsuranceHistoryUpdateDto).done(() => {
                                 self.typeActionAccidentInsurance(TypeActionInsuranceRate.add);
                                 self.reloadDataAccidentInsuranceRateByAction();
-                            }).fail(function(error) {
+                            }).fail(function(error: any) {
                                 self.showMessageSaveAccidentInsurance(error.message)
                             });
                         }

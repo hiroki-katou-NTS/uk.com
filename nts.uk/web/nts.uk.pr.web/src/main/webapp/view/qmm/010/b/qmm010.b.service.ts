@@ -16,7 +16,7 @@ module nts.uk.pr.view.qmm010.b {
                 .done(function(res: model.LaborInsuranceOfficeCheckImportDto) {
                     dfd.resolve(res);
                 })
-                .fail(function(res) {
+                .fail(function(res: any) {
                     dfd.reject(res);
                 })
             return dfd.promise();
@@ -32,7 +32,7 @@ module nts.uk.pr.view.qmm010.b {
                 .done(function(res: model.LaborInsuranceOfficeImportOutDto) {
                     dfd.resolve(res);
                 })
-                .fail(function(res) {
+                .fail(function(res: any) {
                     dfd.reject(res);
                 })
             return dfd.promise();
