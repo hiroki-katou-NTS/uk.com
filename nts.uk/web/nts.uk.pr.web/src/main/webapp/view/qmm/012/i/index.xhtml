@@ -21,9 +21,8 @@
 					class="inputNomalSize">新規</button>
 				<button id="I_BTN_002" data-bind="click:CloseDialog"
 					class="proceed inputNomalSize">登録</button>
-				<button id="I_BTN_003" class=" danger inputNomalSize">コピー</button>
-				<button id="I_BTN_004" class=" inputNomalSize">削除</button>
-				<button id="I_BTN_005" class="inputNomalSize">Excel出力</button>
+				<button id="I_BTN_003" class=" danger inputNomalSize">削除</button>
+				<button id="I_BTN_005" class="inputNomalSize">閉じる</button>
 			</div>
 			<div id="contents-area">
 				<div class="nts-left-content caret-right caret-background ">
@@ -38,7 +37,7 @@
 						<div id="I_SCH_001"
 							data-bind="ntsSearchBox: {
 								comId: 'I_LST_001',
-								items: ItemSalaryBDList, 
+								items: ItemBDList, 
 								selected: gridListCurrentCode ,
 								selectedKey: 'itemBreakdownCd', 
 								filteredItems: filteredData, 
@@ -48,9 +47,9 @@
 					<div class="divLine">
 						<table id="I_LST_001"
 							data-bind="ntsGridList: {
-								width: 320,
-								height: 320,
-								options: ItemSalaryBDList,
+								width: 290,
+								height: 365,
+								options: ItemBDList,
 								optionsValue: 'itemBreakdownCd',
 								columns: columns,
 								value: gridListCurrentCode

@@ -117,8 +117,8 @@ module qmm012.b.viewmodel {
             }).fail(function(res) {
                 alert(res);
             });
-            
-           
+
+
             //set text editer data
             //INP_002
             self.texteditor_B_INP_002 = {
@@ -181,6 +181,12 @@ module qmm012.b.viewmodel {
                     self.GridCurrentCategoryAtr_B_001(groupCode);
                     self.enable_B_INP_002(true);
                 }
+            });
+        }
+
+        openJDialog() {
+            let self = this;
+            nts.uk.ui.windows.sub.modal('../j/index.xhtml', { height: 700, width: 970, dialogClass: "no-close" }).onClosed(function(): any {
             });
         }
     }

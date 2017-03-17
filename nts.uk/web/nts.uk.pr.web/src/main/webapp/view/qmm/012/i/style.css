@@ -51,16 +51,17 @@
 .nts-left-content {
 	float: left;
 	border-radius: 5px;
-	padding: 20px;
-	width: 335px;
+	width: 325px;
 	margin-left: 20px;
 	background-color: #E2F79F;
 	margin-top: 10px;
+	padding: 0px 0px 20px 20px;
 }
 
 #I_SCH_001 input {
 	width: 160px;
 	height: 30px;
+	float: left;
 }
 
 .nts-right-content {
@@ -96,4 +97,27 @@
 
 #contents-area {
 	width: 1040px;
+}
+
+#I_SCH_001  button {
+	width: 60px;
+	height: 60px;
+	margin-top: -33px;
+	float: left;
+}
+
+#I_SCH_001 {
+	height: 30px;
+}
+
+#I_BTN_003 {
+	margin-left: 340px;
+}
+
+#I_BTN_004 {
+	margin-left: 340px;
+}
+
+#I_BTN_005 {
+	margin-left: 130px;
 }

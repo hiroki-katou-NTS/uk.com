@@ -11,9 +11,9 @@ var qmm012;
                     this.gridListCurrentCode = ko.observable();
                     this.selectedRuleCode_001 = ko.observable(1);
                     this.CurrentItemMaster = ko.observable(null);
-                    this.ItemSalaryBDList = ko.observableArray([]);
+                    this.ItemBDList = ko.observableArray([]);
                     this.CurrentCategoryAtrName = ko.observable('');
-                    this.CurrentItemSalaryBD = ko.observable(null);
+                    this.CurrentItemBD = ko.observable(null);
                     this.CurrentItemBreakdownCd = ko.observable('');
                     this.CurrentItemBreakdownName = ko.observable('');
                     this.CurrentItemBreakdownAbName = ko.observable('');
@@ -94,7 +94,7 @@ var qmm012;
                     };
                     //end currencyeditor
                     // start search box 
-                    self.filteredData = ko.observableArray(nts.uk.util.flatArray(self.ItemSalaryBDList(), "childs"));
+                    self.filteredData = ko.observableArray(nts.uk.util.flatArray(self.ItemBDList(), "childs"));
                     // end search box 
                     self.columns = ko.observableArray([
                         { headerText: 'ード', prop: 'itemBreakdownCd', width: 100 },
@@ -102,41 +102,56 @@ var qmm012;
                     ]);
                     self.CurrentItemMaster(nts.uk.ui.windows.getShared('itemMaster'));
                     if (self.CurrentItemMaster()) {
-                        i.service.findItemSalaryBD(self.CurrentItemMaster().itemCode).done(function (ItemSalaryBDs) {
-                            for (var _i = 0, ItemSalaryBDs_1 = ItemSalaryBDs; _i < ItemSalaryBDs_1.length; _i++) {
-                                var ItemSalaryBD = ItemSalaryBDs_1[_i];
-                                self.ItemSalaryBDList.push(ItemSalaryBD);
-                            }
-                            if (self.ItemSalaryBDList().length)
-                                self.gridListCurrentCode(self.ItemSalaryBDList()[0].itemBreakdownCd);
-                        }).fail(function (res) {
-                            // Alert message
-                            alert(res);
-                        });
+                        if (self.CurrentItemMaster().categoryAtrValue == 0) {
+                            i.service.findItemSalaryBD(self.CurrentItemMaster().itemCode).done(function (ItemBDs) {
+                                for (var _i = 0, ItemBDs_1 = ItemBDs; _i < ItemBDs_1.length; _i++) {
+                                    var ItemBD = ItemBDs_1[_i];
+                                    self.ItemBDList.push(ItemBD);
+                                }
+                                if (self.ItemBDList().length)
+                                    self.gridListCurrentCode(self.ItemBDList()[0].itemBreakdownCd);
+                            }).fail(function (res) {
+                                // Alert message
+                                alert(res);
+                            });
+                        }
+                        if (self.CurrentItemMaster().categoryAtrValue == 1) {
+                            i.service.findAllItemDeductBD(self.CurrentItemMaster().itemCode).done(function (ItemBDs) {
+                                for (var _i = 0, ItemBDs_2 = ItemBDs; _i < ItemBDs_2.length; _i++) {
+                                    var ItemBD = ItemBDs_2[_i];
+                                    self.ItemBDList.push(ItemBD);
+                                }
+                                if (self.ItemBDList().length)
+                                    self.gridListCurrentCode(self.ItemBDList()[0].itemBreakdownCd);
+                            }).fail(function (res) {
+                                // Alert message
+                                alert(res);
+                            });
+                        }
                         self.CurrentCategoryAtrName(self.CurrentItemMaster().categoryAtrName);
                     }
                     self.gridListCurrentCode.subscribe(function (newValue) {
-                        var item = _.find(self.ItemSalaryBDList(), function (ItemSalaryBD) {
-                            return ItemSalaryBD.itemBreakdownCd == newValue;
+                        var item = _.find(self.ItemBDList(), function (ItemBD) {
+                            return ItemBD.itemBreakdownCd == newValue;
                         });
-                        self.CurrentItemSalaryBD(item);
+                        self.CurrentItemBD(item);
                     });
-                    self.CurrentItemSalaryBD.subscribe(function (ItemSalaryBD) {
-                        self.CurrentItemBreakdownCd(ItemSalaryBD ? ItemSalaryBD.itemBreakdownCd : '');
-                        self.CurrentItemBreakdownName(ItemSalaryBD ? ItemSalaryBD.itemBreakdownName : '');
-                        self.CurrentItemBreakdownAbName(ItemSalaryBD ? ItemSalaryBD.itemBreakdownAbName : '');
-                        self.CurrentUniteCd(ItemSalaryBD ? ItemSalaryBD.uniteCd : '');
-                        self.CurrentZeroDispSet(ItemSalaryBD ? ItemSalaryBD.zeroDispSet : 1);
-                        self.checked_002(ItemSalaryBD ? ItemSalaryBD.itemDispAtr == 1 ? false : true : false);
-                        self.CurrentItemDispAtr(ItemSalaryBD ? ItemSalaryBD.itemDispAtr : 0);
-                        self.CurrentErrRangeLowAtr(ItemSalaryBD ? ItemSalaryBD.errRangeLowAtr : 0);
-                        self.CurrentErrRangeLow(ItemSalaryBD ? ItemSalaryBD.errRangeLow : 0);
-                        self.CurrentErrRangeHighAtr(ItemSalaryBD ? ItemSalaryBD.errRangeHighAtr : 0);
-                        self.CurrentErrRangeHigh(ItemSalaryBD ? ItemSalaryBD.errRangeHigh : 0);
-                        self.CurrentAlRangeLowAtr(ItemSalaryBD ? ItemSalaryBD.alRangeLowAtr : 0);
-                        self.CurrentAlRangeLow(ItemSalaryBD ? ItemSalaryBD.alRangeLow : 0);
-                        self.CurrentAlRangeHighAtr(ItemSalaryBD ? ItemSalaryBD.alRangeHighAtr : 0);
-                        self.CurrentAlRangeHigh(ItemSalaryBD ? ItemSalaryBD.alRangeHigh : 0);
+                    self.CurrentItemBD.subscribe(function (ItemBD) {
+                        self.CurrentItemBreakdownCd(ItemBD ? ItemBD.itemBreakdownCd : '');
+                        self.CurrentItemBreakdownName(ItemBD ? ItemBD.itemBreakdownName : '');
+                        self.CurrentItemBreakdownAbName(ItemBD ? ItemBD.itemBreakdownAbName : '');
+                        self.CurrentUniteCd(ItemBD ? ItemBD.uniteCd : '');
+                        self.CurrentZeroDispSet(ItemBD ? ItemBD.zeroDispSet : 1);
+                        self.checked_002(ItemBD ? ItemBD.itemDispAtr == 1 ? false : true : false);
+                        self.CurrentItemDispAtr(ItemBD ? ItemBD.itemDispAtr : 0);
+                        self.CurrentErrRangeLowAtr(ItemBD ? ItemBD.errRangeLowAtr : 0);
+                        self.CurrentErrRangeLow(ItemBD ? ItemBD.errRangeLow : 0);
+                        self.CurrentErrRangeHighAtr(ItemBD ? ItemBD.errRangeHighAtr : 0);
+                        self.CurrentErrRangeHigh(ItemBD ? ItemBD.errRangeHigh : 0);
+                        self.CurrentAlRangeLowAtr(ItemBD ? ItemBD.alRangeLowAtr : 0);
+                        self.CurrentAlRangeLow(ItemBD ? ItemBD.alRangeLow : 0);
+                        self.CurrentAlRangeHighAtr(ItemBD ? ItemBD.alRangeHighAtr : 0);
+                        self.CurrentAlRangeHigh(ItemBD ? ItemBD.alRangeHigh : 0);
                     });
                     self.checked_002.subscribe(function (NewValue) {
                         self.CurrentItemDispAtr(NewValue == false ? 1 : 0);

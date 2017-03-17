@@ -171,6 +171,11 @@ var qmm012;
                         }
                     });
                 };
+                ScreenModel.prototype.openJDialog = function () {
+                    var self = this;
+                    nts.uk.ui.windows.sub.modal('../j/index.xhtml', { height: 700, width: 970, dialogClass: "no-close" }).onClosed(function () {
+                    });
+                };
                 return ScreenModel;
             }());
             viewmodel.ScreenModel = ScreenModel;
