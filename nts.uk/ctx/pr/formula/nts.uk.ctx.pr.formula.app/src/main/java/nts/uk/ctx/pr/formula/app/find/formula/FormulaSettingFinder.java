@@ -18,6 +18,12 @@ import nts.uk.ctx.pr.formula.dom.repository.FormulaManualRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 
+/**
+ * @author Nam-PT
+ * activity 8
+ * C screen
+ *
+ */
 @Stateless
 public class FormulaSettingFinder {
 

@@ -19,6 +19,11 @@ import nts.uk.ctx.pr.formula.dom.repository.FormulaEasyStandardItemRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 
+/**
+ * @author Nam-PT
+ *	L screen
+ *	activity 24
+ */
 @Stateless
 public class FormulaEasyFinder {
 

@@ -29,11 +29,12 @@ public class FormulaManualFinder {
 	 * @return
 	 */
 	public Optional<FormulaManualDto> findByPriKey(String formulaCode, String historyId) {
-
-		LoginUserContext login = AppContexts.user();
-
-		return this.repository.findByPriKey(login.companyCode(), new FormulaCode(formulaCode), historyId)
-				.map(f -> FormulaManualDto.fromDomain(f));
+//
+//		LoginUserContext login = AppContexts.user();
+//
+//		return this.repository.findByPriKey(login.companyCode(), new FormulaCode(formulaCode), historyId)
+//				.map(f -> FormulaManualDto.fromDomain(f));
+		return null;
 	}
 
 }

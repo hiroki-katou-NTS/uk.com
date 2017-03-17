@@ -14,6 +14,13 @@ import nts.uk.ctx.pr.formula.dom.repository.FormulaMasterRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 
+/**
+ * 
+ * @author Nam-PT
+ * activity 18
+ * H screen
+ *
+ */
 @Stateless
 public class FormulaItemSelectFinder {
 

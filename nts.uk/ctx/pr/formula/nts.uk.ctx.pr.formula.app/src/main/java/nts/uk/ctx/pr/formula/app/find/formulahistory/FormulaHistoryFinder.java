@@ -14,7 +14,8 @@ import nts.uk.shr.com.context.LoginUserContext;
 
 /**
  * @author nampt
- *
+ *	activity 22 , 23
+ *	J + K screen start
  */
 @Stateless
 public class FormulaHistoryFinder {

@@ -19,8 +19,6 @@ public class AddFormulaHistoryCommand {
 	
 	private int endDate;
 	
-	private int settingFormula;
-	
 	private int conditionAtr;
 
 	private int referenceMasterNo;

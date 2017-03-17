@@ -27,16 +27,16 @@ public class UpdateFormulaManualCommandHandler extends CommandHandler<UpdateForm
 
 	@Override
 	protected void handle(CommandHandlerContext<UpdateFormulaManualCommand> context) {
-		UpdateFormulaManualCommand command = context.getCommand();
-		String companyCode = AppContexts.user().companyCode();
-
-		FormulaManual formulaManual = new FormulaManual(companyCode, new FormulaCode(command.getFormulaCode()),
-				command.getHistoryId(), new FormulaContent(command.getHistoryId()),
-				EnumAdaptor.valueOf(command.getReferenceMonthAtr().intValue(), ReferenceMonthAtr.class),
-				EnumAdaptor.valueOf(command.getRoundAtr().intValue(), RoundMethod.class),
-				EnumAdaptor.valueOf(command.getRoundDigit().intValue(), RoundDigit.class));
-		
-		repository.update(formulaManual);
+//		UpdateFormulaManualCommand command = context.getCommand();
+//		String companyCode = AppContexts.user().companyCode();
+//
+//		FormulaManual formulaManual = new FormulaManual(companyCode, new FormulaCode(command.getFormulaCode()),
+//				command.getHistoryId(), new FormulaContent(command.getHistoryId()),
+//				EnumAdaptor.valueOf(command.getReferenceMonthAtr().intValue(), ReferenceMonthAtr.class),
+//				EnumAdaptor.valueOf(command.getRoundAtr().intValue(), RoundMethod.class),
+//				EnumAdaptor.valueOf(command.getRoundDigit().intValue(), RoundDigit.class));
+//		
+//		repository.update(formulaManual);
 	}
 
 }

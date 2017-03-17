@@ -12,19 +12,19 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class AddFormulaManualCommand {
-	
-	private String companyCode;
-
-	private String formulaCode;
-
-	private String historyId;
-
-	private String formulaContent;
-
-	private BigDecimal referenceMonthAtr;
-
-	private BigDecimal roundAtr;
-
-	private BigDecimal roundDigit;
+//	
+//	private String companyCode;
+//
+//	private String formulaCode;
+//
+//	private String historyId;
+//
+//	private String formulaContent;
+//
+//	private BigDecimal referenceMonthAtr;
+//
+//	private BigDecimal roundAtr;
+//
+//	private BigDecimal roundDigit;
 
 }

@@ -41,13 +41,13 @@ public class FormulaEasyDetailFinder {
 	// return null;
 	// }
 
-	public Optional<FormulaEasyDetailDto> findByPriKey(String formulaCode, String historyId, String easyFormulaCode) {
-
-		LoginUserContext login = AppContexts.user();
-
-		return formulaEasyDetailRepository.findByPriKey(login.companyCode(), new FormulaCode(formulaCode), historyId,
-				new EasyFormulaCode(easyFormulaCode)).map(f -> FormulaEasyDetailDto.fromDomain(f));
-	}
+//	public Optional<FormulaEasyDetailDto> findByPriKey(String formulaCode, String historyId, String easyFormulaCode) {
+//
+//		LoginUserContext login = AppContexts.user();
+//
+//		return formulaEasyDetailRepository.findByPriKey(login.companyCode(), new FormulaCode(formulaCode), historyId,
+//				new EasyFormulaCode(easyFormulaCode)).map(f -> FormulaEasyDetailDto.fromDomain(f));
+//	}
 
 	public Optional<FormulaEasyDetailDto> findWithoutPriKey(String formulaCode, String historyId) {
 		LoginUserContext login = AppContexts.user();

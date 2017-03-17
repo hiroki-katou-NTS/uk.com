@@ -27,16 +27,16 @@ public class AddFormulaManualCommandHandler extends CommandHandler<AddFormulaMan
 
 	@Override
 	protected void handle(CommandHandlerContext<AddFormulaManualCommand> context) {
-		AddFormulaManualCommand command = context.getCommand();
-		String companyCode = AppContexts.user().companyCode();
-
-		FormulaManual formulaManual = new FormulaManual(companyCode, new FormulaCode(command.getFormulaCode()),
-				command.getHistoryId(), new FormulaContent(command.getFormulaContent()),
-				EnumAdaptor.valueOf(command.getReferenceMonthAtr().intValue(), ReferenceMonthAtr.class),
-				EnumAdaptor.valueOf(command.getRoundAtr().intValue(), RoundMethod.class),
-				EnumAdaptor.valueOf(command.getRoundDigit().intValue(), RoundDigit.class));
-
-		repository.add(formulaManual);
+//		AddFormulaManualCommand command = context.getCommand();
+//		String companyCode = AppContexts.user().companyCode();
+//
+//		FormulaManual formulaManual = new FormulaManual(companyCode, new FormulaCode(command.getFormulaCode()),
+//				command.getHistoryId(), new FormulaContent(command.getFormulaContent()),
+//				EnumAdaptor.valueOf(command.getReferenceMonthAtr().intValue(), ReferenceMonthAtr.class),
+//				EnumAdaptor.valueOf(command.getRoundAtr().intValue(), RoundMethod.class),
+//				EnumAdaptor.valueOf(command.getRoundDigit().intValue(), RoundDigit.class));
+//
+//		repository.add(formulaManual);
 	}
 
 }

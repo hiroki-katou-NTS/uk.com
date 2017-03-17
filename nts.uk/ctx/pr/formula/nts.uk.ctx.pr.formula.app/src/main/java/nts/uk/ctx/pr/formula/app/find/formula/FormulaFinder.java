@@ -15,6 +15,11 @@ import nts.uk.ctx.pr.formula.dom.repository.FormulaMasterRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 
+/**
+ * @author Nam-PT
+ *	A screen - init
+ *	activity 1
+ */
 @Stateless
 public class FormulaFinder {
 
@@ -60,7 +65,6 @@ public class FormulaFinder {
 					history.setHistoryId(x.getHistoryId());
 					history.setStartDate(x.getStartDate());
 					history.setEndDate(x.getEndDate());
-					// history.setConditionAtr(conditionAtr););
 					return history;
 				}).collect(Collectors.toList()));
 			}

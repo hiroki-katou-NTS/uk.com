@@ -53,10 +53,11 @@ public class JpaFormulaHistoryRepository extends JpaRepository implements Formul
 		FIND_ALL_DIFFERENT_FORMULACODE = builderString.toString();
 
 		builderString = new StringBuilder();
-		builderString.append("SELECT a ");
+		builderString.append("SELECT TOP 1 a ");
 		builderString.append("FROM QcfmtFormulaHistory a ");
 		builderString.append("WHERE a.qcfmtFormulaHistoryPK.companyCode = :companyCode ");
 		builderString.append("AND a.qcfmtFormulaHistoryPK.formulaCode = :formulaCode ");
+		builderString.append("ORDER BY a.startDate DESC ");
 		LAST_HISTORY = builderString.toString();
 
 		FIND_BY_FORMULACODE = builderString.toString();
@@ -131,8 +132,11 @@ public class JpaFormulaHistoryRepository extends JpaRepository implements Formul
 
 	@Override
 
-	public Optional<FormulaHistory> findLastHistory(String companyCode, FormulaCode formulaCode, String historyId) {
-		return null;
+	public Optional<FormulaHistory> findLastHistory(String companyCode, FormulaCode formulaCode) {
+		return this.queryProxy().query(LAST_HISTORY, QcfmtFormulaHistory.class)
+				.setParameter("companyCode", companyCode)
+				.setParameter("formulaCode", formulaCode.v())
+				.getSingle(f -> toDomain(f));
 	}
 	
 	public List<FormulaHistory> findByFormulaCode(String companyCode, FormulaCode formulaCode) {
