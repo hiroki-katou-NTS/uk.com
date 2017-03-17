@@ -382,11 +382,13 @@ module qet001.b.viewmodel {
         outputItemsSelected: KnockoutObservable<string>;
         outputItemColumns: KnockoutObservableArray<any>;
         outputItemCache: WageLedgerSettingItem[];
+        fullCategoryName: string;
 
         constructor(aggregateItems: service.Item[], masterItems: service.Item[],
                 categorySetting?: WageledgerCategorySetting) {
             this.category = categorySetting.category;
             this.paymentType = categorySetting.paymentType;
+            this.fullCategoryName = this.getFullCategoryName(this.category, this.paymentType);
 
             // exclude item contain in setting.
             var settingItemCode: string[] = [];
@@ -514,6 +516,28 @@ module qet001.b.viewmodel {
                 isAggregateItem: true
             });
             self.aggregateItemSelected(null);
+        }
+        
+        /**
+         * Get full category name by category and payment type.
+         */
+        private getFullCategoryName(category: string, paymentType: string) : string {
+            var categoryName = '';
+            switch(category) {
+                case Category.PAYMENT:
+                    categoryName = '支給';
+                    break;
+                case Category.DEDUCTION: 
+                    categoryName = '控除';
+                    break;
+                case Category.ATTENDANCE:
+                    categoryName = '勤怠';
+                    break;
+                default:
+                    categoryName = '';
+            }
+            var paymentTypeName = paymentType == PaymentType.SALARY ? '給与' : '賞与';
+            return paymentTypeName + categoryName;
         }
     }
     

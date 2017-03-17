@@ -267,6 +267,7 @@ var qet001;
                 function CategorySetting(aggregateItems, masterItems, categorySetting) {
                     this.category = categorySetting.category;
                     this.paymentType = categorySetting.paymentType;
+                    this.fullCategoryName = this.getFullCategoryName(this.category, this.paymentType);
                     var settingItemCode = [];
                     if (categorySetting != undefined) {
                         settingItemCode = categorySetting.outputItems.map(function (item) {
@@ -371,6 +372,24 @@ var qet001;
                         isAggregateItem: true
                     });
                     self.aggregateItemSelected(null);
+                };
+                CategorySetting.prototype.getFullCategoryName = function (category, paymentType) {
+                    var categoryName = '';
+                    switch (category) {
+                        case Category.PAYMENT:
+                            categoryName = '支給';
+                            break;
+                        case Category.DEDUCTION:
+                            categoryName = '控除';
+                            break;
+                        case Category.ATTENDANCE:
+                            categoryName = '勤怠';
+                            break;
+                        default:
+                            categoryName = '';
+                    }
+                    var paymentTypeName = paymentType == PaymentType.SALARY ? '給与' : '賞与';
+                    return paymentTypeName + categoryName;
                 };
                 return CategorySetting;
             }());

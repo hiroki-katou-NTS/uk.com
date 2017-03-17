@@ -105,3 +105,6 @@ td.tab-contents-right {
 	width: 20px !important;
 	height: 20px !important;;
 }
+span.category-name {
+	font-size: 1.5rem;
+}
