@@ -63,10 +63,7 @@
 	height: 30px;
 }
 
-#I_SEL_001 {
-	width: 160px;
-	margin: 3px 0px 0px 10px;
-}
+
 
 .nts-right-content {
 	float: left;
@@ -87,10 +84,18 @@
 	width: 230px;
 }
 
+#I_INP_004, #I_INP_002 ,#I_INP_003 {
+	height: 17px;
+}
+
 #I_INP_002 {
-	width: 50px;
+	width: 33px;
 }
 
 #I_INP_003 {
 	width: 300px;
+}
+
+#contents-area {
+	width: 1040px;
 }
