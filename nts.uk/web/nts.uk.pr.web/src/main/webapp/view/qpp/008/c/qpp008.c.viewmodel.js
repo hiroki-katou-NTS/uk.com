@@ -185,6 +185,21 @@ var qpp008;
                 }
                 return ItemModel;
             }());
+            var InsertUpdateFormHeaderModel = (function () {
+                function InsertUpdateFormHeaderModel(formCode, formName) {
+                    this.formCode = formCode;
+                    this.formName = formName;
+                }
+                return InsertUpdateFormHeaderModel;
+            }());
+            viewmodel.InsertUpdateFormHeaderModel = InsertUpdateFormHeaderModel;
+            var DeleteFormHeaderModel = (function () {
+                function DeleteFormHeaderModel(formCode) {
+                    this.formCode = formCode;
+                }
+                return DeleteFormHeaderModel;
+            }());
+            viewmodel.DeleteFormHeaderModel = DeleteFormHeaderModel;
         })(viewmodel = c.viewmodel || (c.viewmodel = {}));
     })(c = qpp008.c || (qpp008.c = {}));
 })(qpp008 || (qpp008 = {}));

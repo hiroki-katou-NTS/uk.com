@@ -2,12 +2,12 @@ package nts.uk.ctx.pr.report.dom.payment.comparing;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
 
-@NoArgsConstructor
 @AllArgsConstructor
 @Getter
+@Setter
 public class ComparingFormHeader extends AggregateRoot {
 
 	private String companyCode;

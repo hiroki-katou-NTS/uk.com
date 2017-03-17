@@ -141,7 +141,7 @@ module qpp008.c.viewmodel {
         mappingFromJS(data) {
             return ko.mapping.fromJS(data);
         }
-        
+
         refreshLayout(): void {
             let self = this;
             self.currentItem(self.mappingFromJS(new service.model.ComparingFormHeader('', '')));
@@ -166,6 +166,7 @@ module qpp008.c.viewmodel {
                 self.items.splice(updateIndex, 1, newData);
             }
         }
+        
         deleteData() {
             let self = this;
             let newDelData = ko.toJS(self.currentItem());
@@ -232,6 +233,7 @@ module qpp008.c.viewmodel {
 
         }
     }
+
     class ItemModel {
         code: string;
         name: string;
@@ -244,6 +246,24 @@ module qpp008.c.viewmodel {
             this.description = description;
             this.other1 = other1;
             this.other2 = other2 || other1;
+        }
+    }
+
+    export class InsertUpdateFormHeaderModel {
+        formCode: string;
+        formName: string;
+
+        constructor(formCode: string, formName: string) {
+            this.formCode = formCode;
+            this.formName = formName;
+        }
+    }
+
+    export class DeleteFormHeaderModel {
+        formCode: string;
+        
+        constructor(formCode: string) {
+            this.formCode = formCode;
         }
     }
 }

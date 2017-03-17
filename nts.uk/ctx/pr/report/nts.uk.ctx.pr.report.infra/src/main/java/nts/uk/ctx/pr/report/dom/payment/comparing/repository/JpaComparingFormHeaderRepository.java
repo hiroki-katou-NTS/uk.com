@@ -1,20 +1,25 @@
 package nts.uk.ctx.pr.report.dom.payment.comparing.repository;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.pr.report.dom.payment.comparing.ComparingFormHeader;
-import nts.uk.ctx.pr.report.dom.payment.comparing.ComparingFormRepository;
+import nts.uk.ctx.pr.report.dom.payment.comparing.ComparingFormHeaderRepository;
 import nts.uk.ctx.pr.report.dom.payment.comparing.entity.QlsptPaycompFormHead;
 import nts.uk.ctx.pr.report.dom.payment.comparing.entity.QlsptPaycompFormHeadPK;
 
 @Stateless
-public class JpaComparingFormRepository extends JpaRepository implements ComparingFormRepository {
+public class JpaComparingFormHeaderRepository extends JpaRepository implements ComparingFormHeaderRepository {
 
-	private final String SELECT_COMPARING_FORM_HEADER_BY_COMPANYCODE = "SELECT c FROM QlsptPaycompFormHead c WHERE c.paycompFormHeadPK.companyCode = :ccd";
+	private final String SELECT_COMPARING_FORM_HEADER_BY_COMPANYCODE = "SELECT c FROM QlsptPaycompFormHead c "
+			+ "WHERE c.paycompFormHeadPK.companyCode = :ccd";
+
+	private final String SELECT_A_COMPARING_FORM_HEADER = "SELECT c FROM QlsptPaycompFormHead c "
+			+ "WHERE c.paycompFormHeadPK.companyCode = :ccd and c.paycompFormHeadPK.formCode = :formCode";
 
 	@Override
 	public List<ComparingFormHeader> getListComparingFormHeader(String companyCode) {
@@ -23,21 +28,26 @@ public class JpaComparingFormRepository extends JpaRepository implements Compari
 	}
 
 	@Override
-	public void InsertComparingFormHeader(ComparingFormHeader comparingFormHeader) {
-		// TODO Auto-generated method stub
+	public Optional<ComparingFormHeader> getComparingFormHeader(String companyCode, String formCode) {
+		return this.queryProxy().query(SELECT_A_COMPARING_FORM_HEADER, QlsptPaycompFormHead.class)
+				.setParameter("ccd", companyCode).setParameter("formCode", formCode)
+				.getSingle(c -> convertToDomainFormHeader(c));
+	}
 
+	@Override
+	public void InsertComparingFormHeader(ComparingFormHeader comparingFormHeader) {
+		this.commandProxy().insert(convertToEntityQlsptPaycompFormHead(comparingFormHeader));
 	}
 
 	@Override
 	public void UpdateComparingFormHeader(ComparingFormHeader comparingFormHeader) {
-		// TODO Auto-generated method stub
-
+		this.commandProxy().update(convertToEntityQlsptPaycompFormHead(comparingFormHeader));
 	}
 
 	@Override
 	public void DeleteComparingFormHeader(String companyCode, String formCode) {
-		// TODO Auto-generated method stub
-
+		val entityPK = new QlsptPaycompFormHeadPK(companyCode, formCode);
+		this.commandProxy().remove(QlsptPaycompFormHead.class, entityPK);
 	}
 
 	private static ComparingFormHeader convertToDomainFormHeader(QlsptPaycompFormHead entity) {
@@ -54,4 +64,5 @@ public class JpaComparingFormRepository extends JpaRepository implements Compari
 		entity.formName = domain.getFormName().v();
 		return entity;
 	}
+
 }
