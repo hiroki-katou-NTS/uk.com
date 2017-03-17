@@ -62,6 +62,13 @@ var qpp007;
                     });
                     return dfd.promise();
                 };
+                ScreenModel.prototype.openPrintSettingDialog = function () {
+                    nts.uk.ui.windows.setShared("data", "");
+                    nts.uk.ui.windows.setShared("isTransistReturnData", "");
+                    nts.uk.ui.windows.sub.modal("/view/qpp/007/b/index.xhtml", { title: "印刷設定" }).onClosed(function () {
+                        var returnValue = nts.uk.ui.windows.getShared("childData");
+                    });
+                };
                 return ScreenModel;
             }());
             viewmodel.ScreenModel = ScreenModel;
