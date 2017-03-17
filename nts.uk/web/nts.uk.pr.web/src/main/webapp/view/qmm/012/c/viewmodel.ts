@@ -294,12 +294,16 @@ module qmm012.c.viewmodel {
         }
 
         openHDialog() {
+            let self = this;
+            nts.uk.ui.windows.setShared('itemMaster', self.CurrentItemMaster());
             nts.uk.ui.windows.sub.modal('../h/index.xhtml', { height: 570, width: 735, dialogClass: "no-close" }).onClosed(function(): any {
             });
         }
 
         openIDialog() {
-            nts.uk.ui.windows.sub.modal('../i/index.xhtml', { height: 600, width: 1015, dialogClass: "no-close" }).onClosed(function(): any {
+            let self = this;
+            nts.uk.ui.windows.setShared('itemMaster', self.CurrentItemMaster());
+            nts.uk.ui.windows.sub.modal('../i/index.xhtml', { height: 600, width: 1060, dialogClass: "no-close" }).onClosed(function(): any {
             });
         }
     }

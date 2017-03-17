@@ -19,6 +19,6 @@ public class ItemSalaryPeriodWebService extends WebService {
 	@POST
 	@Path("find/{itemCode}")
 	public ItemSalaryPeriodDto findItemSalaryPeriod(@PathParam("itemCode") String itemCode) {
-		return itemSalaryPeriodFinder.find(itemCode);
+		return this.itemSalaryPeriodFinder.find(itemCode);
 	}
 }
