@@ -16,7 +16,7 @@ public interface FormulaHistoryRepository {
 	List<FormulaHistory> findAll(String companyCode);
 	
 	Optional<FormulaHistory> findByPriKey(String companyCode, FormulaCode formulaCode, String historyId);
-	
+	List<FormulaHistory> findByFormulaCode(String companyCode, FormulaCode formulaCode);
 	List<FormulaHistory> findDataDifFormulaCode(String companyCode, FormulaCode formulaCode, YearMonth baseDate);
 	
 	void add (FormulaHistory formulaHistory);

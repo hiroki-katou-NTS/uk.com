@@ -13,9 +13,30 @@ var nts;
                         var viewmodel;
                         (function (viewmodel) {
                             var ScreenModel = (function () {
-                                function ScreenModel() {
+                                function ScreenModel(param) {
                                     var self = this;
-                                    self.easyFormulaName = ko.observable('');
+                                    var paramIsUpdate = param.isUpdate;
+                                    var paramDirtyData = param.dirtyData;
+                                    self.initOriginal();
+                                    if (paramIsUpdate === true) {
+                                        self.easyFormulaName(paramDirtyData.easyFormulaName());
+                                        self.comboBoxFormulaType().selectedCode(paramDirtyData.easyFormulaType());
+                                        self.comboBoxBaseAmount().selectedCode(paramDirtyData.baseAmountAttr());
+                                        self.baseAmountFixedValue(paramDirtyData.baseAmountFixedValue());
+                                        self.baseAmountListItem(paramDirtyData.baseAmountListItem);
+                                        self.comboBoxBaseValue().selectedCode(paramDirtyData.baseValueAttr());
+                                        self.baseValueFixedValue(paramDirtyData.baseValueFixedValue());
+                                        self.premiumRate(paramDirtyData.premiumRate());
+                                        self.switchButtonRoundingFiguresD().selectedRuleCode(paramDirtyData.roundingFiguresD());
+                                        self.switchButtonRoundingFiguresF().selectedRuleCode(paramDirtyData.roundingFiguresF());
+                                        self.comboBoxCoefficient().selectedCode(paramDirtyData.coefficientAttr());
+                                        self.coefficientFixedValue(paramDirtyData.coefficientFixedValue());
+                                        self.comboBoxAdjustmentAtr().selectedCode(paramDirtyData.adjustmentAttr());
+                                    }
+                                }
+                                ScreenModel.prototype.initOriginal = function () {
+                                    var self = this;
+                                    self.easyFormulaName = ko.observable(null);
                                     self.comboBoxFormulaType = ko.observable(new ComboBox([
                                         new ItemModel('0', '計算式１'),
                                         new ItemModel('1', '計算式２'),
@@ -130,7 +151,31 @@ var nts;
                                         new ItemModel('2', 'マイナス調整'),
                                         new ItemModel('3', 'プラスマイナス反転')
                                     ]));
-                                }
+                                };
+                                ScreenModel.prototype.closeAndReturnData = function () {
+                                    var self = this;
+                                    var easyFormulaDetail = {
+                                        easyFormulaCode: '000',
+                                        easyFormulaName: self.easyFormulaName(),
+                                        easyFormulaType: self.comboBoxFormulaType().selectedCode(),
+                                        baseAmountAttr: self.comboBoxBaseAmount().selectedCode(),
+                                        baseAmountFixedValue: self.baseAmountFixedValue(),
+                                        baseAmountListItem: self.baseAmountListItem(),
+                                        baseValueAttr: self.comboBoxBaseValue().selectedCode(),
+                                        baseValueFixedValue: self.baseValueFixedValue(),
+                                        premiumRate: self.premiumRate(),
+                                        roundingFiguresD: self.switchButtonRoundingFiguresD().selectedRuleCode(),
+                                        roundingFiguresF: self.switchButtonRoundingFiguresF().selectedRuleCode(),
+                                        coefficientAttr: self.comboBoxCoefficient().selectedCode(),
+                                        coefficientFixedValue: self.coefficientFixedValue(),
+                                        adjustmentAttr: self.comboBoxAdjustmentAtr().selectedCode()
+                                    };
+                                    nts.uk.ui.windows.setShared('easyFormulaDetail', easyFormulaDetail);
+                                    nts.uk.ui.windows.close();
+                                };
+                                ScreenModel.prototype.closeDialog = function () {
+                                    nts.uk.ui.windows.close();
+                                };
                                 return ScreenModel;
                             }());
                             viewmodel.ScreenModel = ScreenModel;

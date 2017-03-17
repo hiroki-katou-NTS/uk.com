@@ -1,27 +1,48 @@
 
 module nts.qmm017 {
-    export class BScreen {        
-        yearMonth: any;
+    export class BScreen {
+        startYearMonth: any;
         roundingRules: KnockoutObservableArray<any>;
-        selectedRuleCode:  KnockoutObservable<any>;
+        selectedDifficultyAtr: KnockoutObservable<any>;
         roundingRules2: KnockoutObservableArray<any>;
-        selectedRuleCode2:  KnockoutObservable<any>;
+        selectedConditionAtr: KnockoutObservable<any>;
+        formulaCode: KnockoutObservable<string>;
+        formulaName: KnockoutObservable<string>;
+        startYearMonthFormated: KnockoutObservable<string>;
+        comboBoxUseMaster: KnockoutObservable<any>;
 
-        constructor() {
+        constructor(data) {
             var self = this;
-                        
             self.roundingRules = ko.observableArray([
                 { code: '0', name: 'かんたん設定' },
                 { code: '1', name: '詳細設定' }
             ]);
-            self.selectedRuleCode = ko.observable(0);
+            self.selectedDifficultyAtr = ko.observable(0);
             self.roundingRules2 = ko.observableArray([
                 { code: '0', name: '利用しない' },
                 { code: '1', name: '利用する' }
             ]);
-            self.selectedRuleCode2 = ko.observable(0);
-            
-            self.yearMonth = ko.observable('2016/12');
+            self.selectedConditionAtr = ko.observable(0);
+            self.startYearMonth = ko.observable('');
+            self.formulaCode = ko.observable('');
+            self.formulaName = ko.observable('');
+            self.startYearMonthFormated = ko.observable('');
+            self.startYearMonth.subscribe(function(ymChange) {
+                if (ymChange != 200101) {
+                    self.startYearMonthFormated('(' + nts.uk.time.yearmonthInJapanEmpire(ymChange).toString() + ') ~');
+                }
+            });
+            self.comboBoxUseMaster = ko.observable({
+                itemList: ko.observableArray([
+                    {code: '1', name: '雇用マスタ'},
+                    {code: '2', name: '部門マスタ'},
+                    {code: '3', name: '分類マスタ'},
+                    {code: '4', name: '給与分類マスタ'},
+                    {code: '5', name: '職位マスタ'},
+                    {code: '6', name: '給与区分'},
+                ]),
+                selectedCode: ko.observable('')
+            });
         }
     }
 }

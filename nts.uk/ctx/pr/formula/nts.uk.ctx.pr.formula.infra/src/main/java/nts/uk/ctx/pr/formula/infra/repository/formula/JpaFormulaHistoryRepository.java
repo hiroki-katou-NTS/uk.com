@@ -23,6 +23,8 @@ public class JpaFormulaHistoryRepository extends JpaRepository implements Formul
 	private static final String FIND_ALL_DIFFERENT_FORMULACODE;
 
 	private static final String IS_EXISTED_HISTORY;
+	
+	private static final String FIND_BY_FORMULACODE;
 
 	static {
 		StringBuilder builderString = new StringBuilder();
@@ -46,6 +48,13 @@ public class JpaFormulaHistoryRepository extends JpaRepository implements Formul
 		builderString.append("AND a.endDate >= :baseDate ");
 		builderString.append("AND a.qcfmtFormulaHistoryPK.formulaCode <> :formulaCode ");
 		FIND_ALL_DIFFERENT_FORMULACODE = builderString.toString();
+		
+		builderString = new StringBuilder();
+		builderString.append("SELECT a ");
+		builderString.append("FROM QcfmtFormulaHistory a ");
+		builderString.append("WHERE a.qcfmtFormulaHistoryPK.companyCode = :companyCode ");
+		builderString.append("AND a.qcfmtFormulaHistoryPK.formulaCode = :formulaCode ");
+		FIND_BY_FORMULACODE = builderString.toString();
 	}
 
 	@Override
@@ -106,6 +115,14 @@ public class JpaFormulaHistoryRepository extends JpaRepository implements Formul
 	public boolean isExistedHistory(String companyCode) {
 		return this.queryProxy().query(IS_EXISTED_HISTORY, long.class).setParameter("companyCode", companyCode)
 				.getSingle().get() > 0;
+	}
+
+	@Override
+	public List<FormulaHistory> findByFormulaCode(String companyCode, FormulaCode formulaCode) {
+		return this.queryProxy().query(FIND_BY_FORMULACODE, QcfmtFormulaHistory.class)
+				.setParameter("companyCode", companyCode)
+				.setParameter("formulaCode", formulaCode.v())
+				.getList(f -> toDomain(f));
 	}
 
 }

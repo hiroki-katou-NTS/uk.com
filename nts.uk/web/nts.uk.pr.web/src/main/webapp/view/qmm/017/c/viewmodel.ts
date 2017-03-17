@@ -4,8 +4,9 @@ module nts.qmm017 {
         c_sel_001: KnockoutObservable<ComboBox>;
         roundingRulesEasySettings: KnockoutObservableArray<any>;
         selectedRuleCodeEasySettings: KnockoutObservable<any>;
-        selectedRuleCode: KnockoutObservable<any>;
-        selectedRuleCode2: KnockoutObservable<any>;
+        selectedDifficultyAtr: KnockoutObservable<any>;
+        selectedConditionAtr: KnockoutObservable<any>;
+        easyFormulaFixMoney: KnockoutObservable<number>;
 
         formulaManualContent: KnockoutObservable<TextEditor>;
         c_sel_006: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel>;
@@ -13,6 +14,12 @@ module nts.qmm017 {
         c_sel_008: KnockoutObservable<ComboBox>;
         selectedTabCSel006: KnockoutObservable<string>;
         easyFormulaName: KnockoutObservable<string>;
+        
+        easyFormulaDetail: KnockoutObservable<any>;
+        formulaCode: KnockoutObservable<string>;
+        formulaName: KnockoutObservable<string>;
+        useMasterName: KnockoutObservable<string>;
+        useMasterCode: KnockoutObservable<string>;
 
         constructor(data) {
             var self = this;
@@ -21,13 +28,30 @@ module nts.qmm017 {
                 { code: '1', name: '計算式' }
             ]);
             self.selectedRuleCodeEasySettings = ko.observable(0);
-            self.selectedRuleCode = ko.observable(data().selectedRuleCode());
-            self.selectedRuleCode2 = ko.observable(data().selectedRuleCode2());
-            data().selectedRuleCode.subscribe(function(val) {
-                self.selectedRuleCode(val);
+            self.selectedDifficultyAtr = ko.observable(data().selectedDifficultyAtr());
+            self.selectedConditionAtr = ko.observable(data().selectedConditionAtr());
+            self.formulaCode = ko.observable('');
+            self.formulaName = ko.observable('');
+            data().selectedDifficultyAtr.subscribe(function(val) {
+                self.selectedDifficultyAtr(val);
             });
-            data().selectedRuleCode2.subscribe(function(val) {
-                self.selectedRuleCode2(val);
+            data().selectedConditionAtr.subscribe(function(val) {
+                self.selectedConditionAtr(val);
+            });
+            data().formulaCode.subscribe(function(val) {
+                self.formulaCode(val);
+            });
+            data().formulaName.subscribe(function(val) {
+                self.formulaName(val);
+            });
+            
+            self.useMasterCode = ko.observable(data().comboBoxUseMaster().selectedCode());
+            self.useMasterName = ko.observable('');
+            data().comboBoxUseMaster().selectedCode.subscribe(function(codeChange){
+                let useMasterFound = _.find(data().comboBoxUseMaster().itemList(), (item) => {
+                    return item.code == codeChange;
+                });
+                self.useMasterName(useMasterFound.name);
             });
             var c_sel_001 = [
                 { code: 1, name: '雇用マスタ' },
@@ -79,6 +103,8 @@ module nts.qmm017 {
             self.c_sel_008 = ko.observable(new ComboBox(c_sel_008, true, false));
             self.selectedTabCSel006 = ko.observable('tab-1');
             self.easyFormulaName = ko.observable('');
+            self.easyFormulaFixMoney = ko.observable(0);
+            self.easyFormulaDetail = ko.observable(null);
         }
 
         undo() {
@@ -89,11 +115,16 @@ module nts.qmm017 {
             document.execCommand("redo", false, null);
         }
 
-        openDialogQ() {
-            let param = {}
+        openDialogL() {
+            var self = this;
+            let param = {
+                isUpdate: (self.easyFormulaDetail()),
+                dirtyData: self.easyFormulaDetail()
+            };
             nts.uk.ui.windows.setShared('paramFromScreenC', param);
             nts.uk.ui.windows.sub.modal('/view/qmm/017/l/index.xhtml', { title: 'かんたん計算式の登録', width: 650, height: 750 }).onClosed(() => {
-
+                self.easyFormulaDetail(ko.mapping.fromJS(nts.uk.ui.windows.getShared('easyFormulaDetail')));
+                self.easyFormulaName(self.easyFormulaDetail().easyFormulaName());
             });
         }
 
@@ -101,6 +132,23 @@ module nts.qmm017 {
             var self = this;
             self.formulaManualContent().testError();
         }
+    }
+
+    export class EasyFormulaDetail {
+        easyFormulaCode: string;
+        easyFormulaName: string;
+        easyFormulaType: number;
+        baseAmountAttr: number;
+        baseAmountFixedValue: number;
+        baseAmountListItem: Array<string>;
+        baseValueAttr: number;
+        baseValueFixedValue: number;
+        premiumRate: number;
+        roundingFiguresD: number;
+        roundingFiguresF: number;
+        coefficientAttr: number;
+        coefficientFixedValue: number;
+        adjustmentAttr: number;
     }
 
     export class ComboBox {
@@ -165,10 +213,10 @@ module nts.qmm017 {
         ERROR_TOO_MUCH_PARAM = "「{0}」の引数が多く指定されています。";
         ERROR_NOT_ENOUGH_PARAM = "「{0}」の引数が不足しています。";
         ERROR_AFTER_ATSIGN = "「{0}」は利用できない文字列です。";
-        ERROR_PARAM_TYPE = "「{0}」の第#引数の型が不正です。";
+        ERROR_PARAM_TYPE = "「{0}」の第{1}引数の型が不正です。";
 
-        const listSpecialChar = ["+", "-", "×", "÷", "＾", "（", "）", "＜", "＞", "≦", "≧", "＝", "≠"];
-        const listOperatorChar = ["+", "-", "×", "÷"];
+        listSpecialChar = ["+", "-", "×", "÷", "＾", "（", "）", "＜", "＞", "≦", "≧", "＝", "≠"];
+        listOperatorChar = ["+", "-", "×", "÷"];
 
         autoComplete: KnockoutObservableArray<any>;
         textArea: KnockoutObservable<string>;
@@ -405,34 +453,95 @@ module nts.qmm017 {
             }
         }
 
-        validateNumberOfParam: boolean (functionName: string, numberOfParam: number) {
-            var self = this;
-            if (functionName === "関数＠条件式" && numberOfParam === 3) {
-                return true;
-            } else if (functionName === "関数＠かつ" && numberOfParam === 2) {
-                return true;
-            } else if (functionName === "関数＠または" && numberOfParam === 2) {
-                return true;
-            } else if (functionName === "関数＠四捨五入" && numberOfParam === 1) {
-                return true;
-            } else if (functionName === "関数＠切捨て" && numberOfParam === 1) {
-                return true;
-            } else if (functionName === "関数＠切上げ" && numberOfParam === 1) {
-                return true;
-            } else if (functionName === "関数＠最大値" && numberOfParam === 2) {
-                return true;
-            } else if (functionName === "関数＠最小値" && numberOfParam === 2) {
-                return true;
-            } else if (functionName === "関数＠家族人数" && numberOfParam === 2) {
-                return true;
-            } else if (functionName === "関数＠月加算" && numberOfParam === 2) {
-                return true;
-            } else if (functionName === "関数＠年抽出" && numberOfParam === 1) {
-                return true;
-            } else if (functionName === "関数＠月抽出" && numberOfParam === 1) {
-                return true;
+        // return 2 if too much param
+        // return 1 if not enough param
+        // return 0 if OK
+        validateNumberOfParam(treeObject: any) {
+            let functionName = treeObject.value.trim();
+            let numberOfParam = treeObject.children.length;
+            if (functionName === "関数＠条件式") {
+                if (numberOfParam === 3) return 1;
+                else if (numberOfParam > 3) return 2;
+                else if (numberOfParam < 3) return 0;
+            } else if (functionName === "関数＠かつ") {
+                if (numberOfParam === 2) return 1;
+                else if (numberOfParam > 2) return 1;
+                else if (numberOfParam < 2) return 0;
+            } else if (functionName === "関数＠または") {
+                if (numberOfParam === 2) return 1;
+                else if (numberOfParam > 2) return 1;
+                else if (numberOfParam < 2) return 0;
+            } else if (functionName === "関数＠四捨五入") {
+                if (numberOfParam === 1) return 1;
+                else if (numberOfParam > 1) return 2;
+                else if (numberOfParam < 1) return 0;
+            } else if (functionName === "関数＠切捨て") {
+                if (numberOfParam === 1) return 1;
+                else if (numberOfParam > 1) return 2;
+                else if (numberOfParam < 1) return 0;
+            } else if (functionName === "関数＠切上げ") {
+                if (numberOfParam === 1) return 1;
+                else if (numberOfParam > 1) return 2;
+                else if (numberOfParam < 1) return 0;
+            } else if (functionName === "関数＠最大値") {
+                if (numberOfParam === 2) return 1;
+                else if (numberOfParam > 2) return 1;
+                else if (numberOfParam < 2) return 0;
+            } else if (functionName === "関数＠最小値") {
+                if (numberOfParam === 2) return 1;
+                else if (numberOfParam > 2) return 1;
+                else if (numberOfParam < 2) return 0;
+            } else if (functionName === "関数＠家族人数") {
+                if (numberOfParam === 2) return 1;
+                else if (numberOfParam > 2) return 2;
+                else if (numberOfParam < 2) return 0;
+            } else if (functionName === "関数＠月加算") {
+                if (numberOfParam === 2) return 1;
+                else if (numberOfParam > 2) return 2;
+                else if (numberOfParam < 2) return 0;
+            } else if (functionName === "関数＠年抽出") {
+                if (numberOfParam === 1) return 1;
+                else if (numberOfParam > 1) return 2;
+                else if (numberOfParam < 1) return 0;
+            } else if (functionName === "関数＠月抽出") {
+                if (numberOfParam === 1) return 1;
+                else if (numberOfParam > 1) return 2;
+                else if (numberOfParam < 1) return 0;
             }
-            return false;
+            return 1;
+        }
+
+        validateTypeOfParams(treeObject: any) {
+            let functionName = treeObject.value.trim();
+            let param = treeObject.children;
+            if (functionName === "関数＠条件式" && param.length == 3) {
+                //if (param[0].children.length === 0) return 1;
+                if (!nts.uk.ntsNumber.isNumber(param[1], true)) return 2;
+                else if (!nts.uk.ntsNumber.isNumber(param[2], true)) return 3;
+                else return 0;
+            } else if (functionName === "関数＠かつ" && param.length >= 2) {
+                //if param[0].children.length 
+            } else if (functionName === "関数＠または" && param.length >= 2) {
+
+            } else if (functionName === "関数＠四捨五入" && param.length == 1) {
+
+            } else if (functionName === "関数＠切捨て" && param.length == 1) {
+
+            } else if (functionName === "関数＠切上げ" && param.length == 1) {
+
+            } else if (functionName === "関数＠最大値" && param.length >= 2) {
+
+            } else if (functionName === "関数＠最小値" && param.length >= 2) {
+
+            } else if (functionName === "関数＠家族人数" && param.length == 2) {
+
+            } else if (functionName === "関数＠月加算" && param.length == 2) {
+
+            } else if (functionName === "関数＠年抽出" && param.length == 1) {
+
+            } else if (functionName === "関数＠月抽出" && param.length == 1) {
+
+            }
         }
 
         validateFunction(allElementTag) {
@@ -444,7 +553,7 @@ module nts.qmm017 {
             for (let tagOrder = 0; tagOrder < allElementTag.length; tagOrder++) {
                 if (!self.checkEqualInArray(allElementTag[tagOrder].innerText, self.listOperatorChar)) {
                     splitContent += allElementTag[tagOrder].innerText;
-                    splitTags.push($(allElementTag[tagOrder]));
+                    splitTags.push(allElementTag[tagOrder]);
                 } else {
                     inputContent.push(splitContent);
                     inputTags.push(splitTags);
@@ -452,33 +561,52 @@ module nts.qmm017 {
                     splitTags = [];
                 }
             }
-            if (!self.validateContentFunction(inputContent[0])) {
-                
+            self.validateContentFunction(inputContent[0]);
+
+        }
+
+        validateContentFunction(contentFunction) {
+            var self = this;
+            let treeFunction = nts.uk.util.createTreeFromString(contentFunction, "（", "）", ",");
+            self.validateTreeFunction(treeFunction[0]);
+        }
+
+        validateTreeFunction(treeObject) {
+            var self = this;
+            let params = treeObject.children;
+            if (params.length > 0) {
+                if (self.validateNumberOfParam(treeObject) === 1) {
+                    for (let i = 0; i < params.length; i++) {
+                        self.validateTreeFunction(params[i]);
+                    }
+                } else if (self.validateNumberOfParam(treeObject) === 2) {
+                    self.markErrorTreeObject(treeObject, self.ERROR_TOO_MUCH_PARAM);
+                } else if (self.validateNumberOfParam(treeObject) === 0) {
+                    self.markErrorTreeObject(treeObject, self.ERROR_NOT_ENOUGH_PARAM);
+                }
             }
         }
 
-        validateContentFunction: boolean (contentFunction) {
+        markErrorTreeObject(treeObject, message) {
             var self = this;
-            let treeFunction = nts.uk.util.createTreeFromString(contentFunction, "（", "）", ",");
-            return self.validateTreeFunction(treeFunction[0]);
-        }
-
-        validateTreeFunction: boolean (treeObject) {
-            var self = this;
-            let functionName = treeObject.value;
-            let params = treeObject.children;
-            if (params.length > 0) {
-                if (self.validateNumberOfParam(functionName, params.length)) {
-                    for (let i = 0; i < params.length; i++) {
-                        return self.validateTreeFunction(params[i]);
-                    }
+            let indexTree = treeObject.index;
+            let specialCharTags = $(".special-char");
+            var countOpenBrackets = 0;
+            for (let orderTag = 0; orderTag < specialCharTags.length; orderTag++) {
+                if (specialCharTags[orderTag].innerText === '（') {
+                    countOpenBrackets += 1;
                 }
-                return false;
+                //if found the bracket of the function
+                if (countOpenBrackets === indexTree) {
+                    let functionNameTag = specialCharTags[orderTag].previousSibling;
+                    self.markError($(functionNameTag), message, [functionNameTag.innerText]);
+                    return true;
+                }
             }
             return true;
         }
 
-        checkEqualInArray: boolean (target: string, array: Array<string>) {
+        checkEqualInArray(target: string, array: Array<string>) {
             for (let count = 0; count < array.length; count++) {
                 if (target === array[count]) {
                     return true;
@@ -487,7 +615,7 @@ module nts.qmm017 {
             return false;
         }
 
-        checkContainsInArray: boolean (target: string, array: Array<string>) {
+        checkContainsInArray(target: string, array: Array<string>) {
             for (let count = 0; count < array.length; count++) {
                 if (target.indexOf(array[count]) !== -1) {
                     return true;
@@ -579,7 +707,7 @@ module nts.qmm017 {
             var $lines = $("#input-content-area").find(".editor-line");
             var index = 0;
             $lines.each(function(index, line) {
-                var $line = $(line); z
+                var $line = $(line);
                 var char = _.find($line.children(), function(text) {
                     var current = index + $(text).text().length;
                     index += $(text).text().length;

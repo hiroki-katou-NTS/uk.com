@@ -7,30 +7,18 @@
 	<body>
 		<ui:composition>
 			<div class="wrap-tab">
-				<com:ko-if bind="selectedRuleCode() == 0">
-					<com:ko-if bind="selectedRuleCode2() == 1">
-						<div id="c_lbl_001" class="separate-vertical" data-bind="ntsFormLabel: {}">コード/11111名称</div>
-						<span id="c_lbl_002" class="separate-span separate-vertical" data-bind="text: '003'"></span>
-						<span id="c_lbl_003" class="separate-span separate-vertical" data-bind="text: '003'"></span>
+				<com:ko-if bind="selectedDifficultyAtr() == 0">
+					<com:ko-if bind="selectedConditionAtr() == 1">
+						<div id="c_lbl_001" class="separate-vertical" data-bind="ntsFormLabel: {}">コード/名称</div>
+						<span id="c_lbl_002" class="separate-span separate-vertical" data-bind="text: formulaCode"></span>
+						<span id="c_lbl_003" class="separate-span separate-vertical" data-bind="text: formulaName"></span>
 						<br/>
-						<div style="width: 69%" class="control-group valign-center">
-							<div id="c_lbl_004" class="separate-vertical" data-bind="ntsFormLabel: {required: true }">使用するマスタ</div>
-							<span id="c_lbl_016" class="separate-span separate-vertical" data-bind="text: '003'"></span>
-<!-- 							<div id="c_sel_001" class="ib" data-bind="with: c_sel_001"> -->
-<!-- 								<div id="combo-box" data-bind="ntsComboBox: { -->
-<!-- 											options: itemList, -->
-<!-- 											optionsValue: 'code', -->
-<!-- 											value: selectedCode, -->
-<!-- 											optionsText: 'name', -->
-<!-- 											editable: isEditable, -->
-<!-- 											enable: isEnable -->
-<!-- 											}"></div> -->
-<!-- 							</div> -->
-							<hr/>
-						</div>
+						<div id="c_lbl_004" class="separate-vertical" data-bind="ntsFormLabel: {}"> 使用するマスタ</div>
+						<span id="c_lbl_016" class="separate-span separate-vertical" data-bind="text: useMasterName"></span>
+						<hr/>
 						<div class="control-group">
 							<div class="list001">
-								<div class="col col-1 bg-green">固定値で金額入力後、<br/>(登録せずに計算式に切替る。)</div>
+								<div class="col col-1 bg-green">既定の計算式</div>
 								<div class="col col-2">
 									<div data-bind="ntsSwitchButton: {
 											options: roundingRulesEasySettings,
@@ -38,60 +26,67 @@
 											optionsText: 'name',
 											value: selectedRuleCodeEasySettings}"></div>
 								</div>
-								<div class="col col-3"><input style="width: 80px" data-bind="ntsNumberEditor: { value: ko.observable(1000)}" /></div>
+								<div class="col col-3">
+									<com:ko-if bind="selectedRuleCodeEasySettings() == 0">
+										<input style="width: 80px" data-bind="ntsNumberEditor: { value: easyFormulaFixMoney,
+																													 	required: true,
+																													 	enable: true,
+																													 	readonly: false}" />
+									</com:ko-if>
+									<com:ko-if bind="selectedRuleCodeEasySettings() == 1">
+										<button id="c_btn_019" data-bind="click: openDialogL">設定</button>
+										<span data-bind="text: easyFormulaName"></span>
+									</com:ko-if>
+								</div>
+								
 							</div>
+							<!-- 
 							<div class="list002">
 								<div class="header">
 									<div class="row cf">
-										<div class="col col-1"></div>
 										<div class="col col-2"></div>
 										<div class="col col-3"></div>
 									</div>
 								</div>
 								<div class="body">
 									<div class="row cf">
-										<div class="col col-1"></div>
 										<div class="col col-2"></div>
 										<div class="col col-3"></div>
 										<div class="col col-4"></div>
 									</div>
 									<div class="row cf">
-										<div class="col col-1"></div>
 										<div class="col col-2"></div>
 										<div class="col col-3"></div>
 										<div class="col col-4"></div>
 									</div>
 									<div class="row cf">
-										<div class="col col-1"></div>
 										<div class="col col-2"></div>
 										<div class="col col-3"></div>
 										<div class="col col-4"></div>
 									</div>
 									<div class="row cf">
-										<div class="col col-1"></div>
 										<div class="col col-2"></div>
 										<div class="col col-3"></div>
 										<div class="col col-4"></div>
 									</div>
 									<div class="row cf">
-										<div class="col col-1"></div>
 										<div class="col col-2"></div>
 										<div class="col col-3"></div>
 										<div class="col col-4"></div>
 									</div>
 								</div>
-							</div>
+							</div>   -->
 						</div>
 					</com:ko-if>
-					<com:ko-if bind="selectedRuleCode2() == 0">
+					<com:ko-if bind="selectedConditionAtr() == 0">
 						<div id="c_lbl_001" class="separate-vertical" data-bind="ntsFormLabel: {}">コード/名称</div>
-						<span id="c_lbl_002" class="separate-span separate-vertical" data-bind="text: '003'"></span>
-						<span id="c_lbl_003" class="separate-span separate-vertical" data-bind="text: '003'"></span>
-						<button id="c_btn_openDialogQ" data-bind="click: openDialogQ">設定</button>
+						<span id="c_lbl_002" class="separate-span separate-vertical" data-bind="text: formulaCode"></span>
+						<span id="c_lbl_003" class="separate-span separate-vertical" data-bind="text: formulaName"></span>
+						<button id="c_btn_openDialogL" style="margin-left: 20px" data-bind="click: openDialogL">設定</button>
 						<span id="c_lbl_011" data-bind="text: easyFormulaName"></span>
 					</com:ko-if>
 				</com:ko-if>
-				<com:ko-if bind="selectedRuleCode() == 1">
+				<com:ko-if bind="selectedDifficultyAtr() == 1">
 					<div id="c_lbl_001" class="separate-vertical" data-bind="ntsFormLabel: {}">コード/名称</div>
 					<span id="c_lbl_002" class="separate-span separate-vertical" data-bind="text: '003'"></span>
 					<span id="c_lbl_003" class="separate-span separate-vertical" data-bind="text: '003'"></span>

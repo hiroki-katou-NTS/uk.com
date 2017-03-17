@@ -28,22 +28,22 @@ public class JpaFormulaMasterRepository extends JpaRepository implements Formula
 		StringBuilder builderString = new StringBuilder();
 		builderString.append("SELECT COUNT(a) ");
 		builderString.append("FROM QcfmtFormula a ");
-		builderString.append("WHERE a.qcfmtFormulaPK.companyCode = :companyCode ");
+		builderString.append("WHERE a.qcfmtFormulaPK.ccd = :companyCode ");
 		IS_EXISTED_FORMULA = builderString.toString();
 		
 		builderString = new StringBuilder();
 		builderString.append("SELECT a ");
 		builderString.append("FROM QcfmtFormula a ");
-		builderString.append("WHERE a.qcfmtFormulaPK.companyCode = :companyCode ");
-		builderString.append("ORDER BY a.qcfmtFormulaPK.companyCode, a.qcfmtFormulaPK.formulaCd ");
+		builderString.append("WHERE a.qcfmtFormulaPK.ccd = :companyCode ");
+		builderString.append("ORDER BY a.qcfmtFormulaPK.ccd, a.qcfmtFormulaPK.formulaCd ");
 		FIND_ALL_BY_COMPANYCODE = builderString.toString();
 		
 		builderString = new StringBuilder();
 		builderString.append("SELECT a ");
 		builderString.append("FROM QcfmtFormula a ");
-		builderString.append("WHERE a.qcfmtFormulaPK.companyCode = :companyCode ");
+		builderString.append("WHERE a.qcfmtFormulaPK.ccd = :companyCode ");
 		builderString.append("AND a.qcfmtFormulaPK.formulaCd IN :formulaCd ");
-		builderString.append("ORDER BY a.qcfmtFormulaPK.companyCode, a.qcfmtFormulaPK.formulaCd ");
+		builderString.append("ORDER BY a.qcfmtFormulaPK.ccd, a.qcfmtFormulaPK.formulaCd ");
 		FIND_FORMULA_NAME_BY_CODES = builderString.toString();
 	}
 
