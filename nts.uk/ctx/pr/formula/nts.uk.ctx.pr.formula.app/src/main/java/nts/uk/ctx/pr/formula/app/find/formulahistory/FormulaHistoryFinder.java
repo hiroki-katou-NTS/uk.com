@@ -58,5 +58,12 @@ public class FormulaHistoryFinder {
 		return formulaHistoryRepository.findDataDifFormulaCode(login.companyCode(), new FormulaCode(formulaCode), new YearMonth(baseDate))
 				.stream().map(f -> FormulaHistoryDto.fromDomain(f)).collect(Collectors.toList());
 	}
+	
+	public List<FormulaHistoryDto> findByFormulaCode(String formulaCode) {
+		LoginUserContext login = AppContexts.user();
+
+		return formulaHistoryRepository.findByFormulaCode(login.companyCode(), new FormulaCode(formulaCode))
+				.stream().map(f -> FormulaHistoryDto.fromDomain(f)).collect(Collectors.toList());
+	}
 
 }

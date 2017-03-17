@@ -1,0 +1,53 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+<body>
+
+	<ui:composition template="/master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<com:scriptfile path="start.js" />
+			<com:stylefile path="style.css" />
+			<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="viewmodel.js" />
+			<com:scriptfile path="service.js" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="content-header">
+				<label id="A_LBL_001" class="displayBlock">ナビゲーションメッセージ１</label>
+				<div style="margin-top: 20px;">
+					<div class="floatLeft">
+						<label id="A_LBL_002" class="displayBlock">ナビゲーションメッセージ２</label>
+						<div id="A_SEL_001" class="cf"
+							data-bind="ntsSwitchButton: {
+							options: roundingRules,
+							optionsValue: 'code',
+							optionsText: 'name',
+							value: selectedRuleCode,
+							enable: enable }"></div>
+						<!-- <button id="A_BTN_001" class="proceed displayBlock">支給項目ボタン</button>
+						<button id="A_BTN_002" class="displayBlock">支給項目ボタン</button>
+						<button id="A_BTN_003" class="displayBlock">支給項目ボタン</button> -->
+					</div>
+					<div
+						style="margin-left: 20px; background-color: #f2f2f2; border-radius: 5px; height: 290px; width: 350px;"
+						class="floatLeft">
+						<label id="A_LBL_003">項目説明 </label>
+						<hr style="margin-left: 15px;"></hr>
+						<label style="margin-left: 40px;">ナビゲーションメッセージ１</label>
+					</div>
+				</div>
+			</div>
+			<div id="contents-area">
+				<button id="A_BTN_004" class="x-large proceed"
+					data-bind="click: submitInfo">選択ボタン</button>
+				<button id="A_BTN_005" class="large" data-bind="click: closeDialog">キャンセルボタン</button>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

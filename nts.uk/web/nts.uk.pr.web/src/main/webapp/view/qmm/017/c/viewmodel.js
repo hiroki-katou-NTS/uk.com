@@ -10,13 +10,29 @@ var nts;
                     { code: '1', name: '計算式' }
                 ]);
                 self.selectedRuleCodeEasySettings = ko.observable(0);
-                self.selectedRuleCode = ko.observable(data().selectedRuleCode());
-                self.selectedRuleCode2 = ko.observable(data().selectedRuleCode2());
-                data().selectedRuleCode.subscribe(function (val) {
-                    self.selectedRuleCode(val);
+                self.selectedDifficultyAtr = ko.observable(data().selectedDifficultyAtr());
+                self.selectedConditionAtr = ko.observable(data().selectedConditionAtr());
+                self.formulaCode = ko.observable('');
+                self.formulaName = ko.observable('');
+                data().selectedDifficultyAtr.subscribe(function (val) {
+                    self.selectedDifficultyAtr(val);
                 });
-                data().selectedRuleCode2.subscribe(function (val) {
-                    self.selectedRuleCode2(val);
+                data().selectedConditionAtr.subscribe(function (val) {
+                    self.selectedConditionAtr(val);
+                });
+                data().formulaCode.subscribe(function (val) {
+                    self.formulaCode(val);
+                });
+                data().formulaName.subscribe(function (val) {
+                    self.formulaName(val);
+                });
+                self.useMasterCode = ko.observable(data().comboBoxUseMaster().selectedCode());
+                self.useMasterName = ko.observable('');
+                data().comboBoxUseMaster().selectedCode.subscribe(function (codeChange) {
+                    var useMasterFound = _.find(data().comboBoxUseMaster().itemList(), function (item) {
+                        return item.code == codeChange;
+                    });
+                    self.useMasterName(useMasterFound.name);
                 });
                 var c_sel_001 = [
                     { code: 1, name: '雇用マスタ' },
@@ -67,6 +83,8 @@ var nts;
                 self.c_sel_008 = ko.observable(new ComboBox(c_sel_008, true, false));
                 self.selectedTabCSel006 = ko.observable('tab-1');
                 self.easyFormulaName = ko.observable('');
+                self.easyFormulaFixMoney = ko.observable(0);
+                self.easyFormulaDetail = ko.observable(null);
             }
             CScreen.prototype.undo = function () {
                 document.execCommand("undo", false, null);
@@ -74,10 +92,16 @@ var nts;
             CScreen.prototype.redo = function () {
                 document.execCommand("redo", false, null);
             };
-            CScreen.prototype.openDialogQ = function () {
-                var param = {};
+            CScreen.prototype.openDialogL = function () {
+                var self = this;
+                var param = {
+                    isUpdate: (self.easyFormulaDetail()),
+                    dirtyData: self.easyFormulaDetail()
+                };
                 nts.uk.ui.windows.setShared('paramFromScreenC', param);
                 nts.uk.ui.windows.sub.modal('/view/qmm/017/l/index.xhtml', { title: 'かんたん計算式の登録', width: 650, height: 750 }).onClosed(function () {
+                    self.easyFormulaDetail(ko.mapping.fromJS(nts.uk.ui.windows.getShared('easyFormulaDetail')));
+                    self.easyFormulaName(self.easyFormulaDetail().easyFormulaName());
                 });
             };
             CScreen.prototype.validateTextArea = function () {
@@ -87,6 +111,12 @@ var nts;
             return CScreen;
         }());
         qmm017.CScreen = CScreen;
+        var EasyFormulaDetail = (function () {
+            function EasyFormulaDetail() {
+            }
+            return EasyFormulaDetail;
+        }());
+        qmm017.EasyFormulaDetail = EasyFormulaDetail;
         var ComboBox = (function () {
             function ComboBox(data, isEnable, isEditable) {
                 var self = this;
@@ -128,7 +158,6 @@ var nts;
         qmm017.ItemModelTextEditor = ItemModelTextEditor;
         var TextEditor = (function () {
             function TextEditor() {
-                var _this = this;
                 //list error messsage
                 this.ERROR_BRACKET = "カッコ()の数に誤りがあります。";
                 this.ERROR_CONSECUTIVELY = "構文に誤りがあります。{0}と{1}が連続して入力されています。";
@@ -141,84 +170,9 @@ var nts;
                 this.ERROR_TOO_MUCH_PARAM = "「{0}」の引数が多く指定されています。";
                 this.ERROR_NOT_ENOUGH_PARAM = "「{0}」の引数が不足しています。";
                 this.ERROR_AFTER_ATSIGN = "「{0}」は利用できない文字列です。";
-                this.ERROR_PARAM_TYPE = "「{0}」の第#引数の型が不正です。";
+                this.ERROR_PARAM_TYPE = "「{0}」の第{1}引数の型が不正です。";
                 this.listSpecialChar = ["+", "-", "×", "÷", "＾", "（", "）", "＜", "＞", "≦", "≧", "＝", "≠"];
                 this.listOperatorChar = ["+", "-", "×", "÷"];
-                this.validateNumberOfParam = function (functionName, numberOfParam) {
-                    var self = _this;
-                    if (functionName === "関数＠条件式" && numberOfParam === 3) {
-                        return true;
-                    }
-                    else if (functionName === "関数＠かつ" && numberOfParam === 2) {
-                        return true;
-                    }
-                    else if (functionName === "関数＠または" && numberOfParam === 2) {
-                        return true;
-                    }
-                    else if (functionName === "関数＠四捨五入" && numberOfParam === 1) {
-                        return true;
-                    }
-                    else if (functionName === "関数＠切捨て" && numberOfParam === 1) {
-                        return true;
-                    }
-                    else if (functionName === "関数＠切上げ" && numberOfParam === 1) {
-                        return true;
-                    }
-                    else if (functionName === "関数＠最大値" && numberOfParam === 2) {
-                        return true;
-                    }
-                    else if (functionName === "関数＠最小値" && numberOfParam === 2) {
-                        return true;
-                    }
-                    else if (functionName === "関数＠家族人数" && numberOfParam === 2) {
-                        return true;
-                    }
-                    else if (functionName === "関数＠月加算" && numberOfParam === 2) {
-                        return true;
-                    }
-                    else if (functionName === "関数＠年抽出" && numberOfParam === 1) {
-                        return true;
-                    }
-                    else if (functionName === "関数＠月抽出" && numberOfParam === 1) {
-                        return true;
-                    }
-                    return false;
-                };
-                this.validateContentFunction = function (contentFunction) {
-                    var self = _this;
-                    var treeFunction = nts.uk.util.createTreeFromString(contentFunction, "（", "）", ",");
-                    return self.validateTreeFunction(treeFunction[0]);
-                };
-                this.validateTreeFunction = function (treeObject) {
-                    var self = _this;
-                    var functionName = treeObject.value;
-                    var params = treeObject.children;
-                    if (params.length > 0) {
-                        if (self.validateNumberOfParam(functionName, params.length)) {
-                            for (var i = 0; i < params.length; i++) {
-                                return self.validateTreeFunction(params[i]);
-                            }
-                        }
-                        return false;
-                    }
-                    return true;
-                };
-                this.checkEqualInArray = function (target, array) {
-                    for (var count = 0; count < array.length; count++) {
-                        if (target === array[count]) {
-                            return true;
-                        }
-                    }
-                    return false;
-                };
-                this.checkContainsInArray = function (target, array) {
-                    for (var count = 0; count < array.length; count++) {
-                        if (target.indexOf(array[count]) !== -1) {
-                            return true;
-                        }
-                    }
-                    return false;
-                };
                 var self = this;
                 //----------------------------------------------------------------------------
                 self.autoComplete = ko.observableArray([
@@ -427,6 +381,145 @@ var nts;
                     }
                 }
             };
+            // return 2 if too much param
+            // return 1 if not enough param
+            // return 0 if OK
+            TextEditor.prototype.validateNumberOfParam = function (treeObject) {
+                var functionName = treeObject.value.trim();
+                var numberOfParam = treeObject.children.length;
+                if (functionName === "関数＠条件式") {
+                    if (numberOfParam === 3)
+                        return 1;
+                    else if (numberOfParam > 3)
+                        return 2;
+                    else if (numberOfParam < 3)
+                        return 0;
+                }
+                else if (functionName === "関数＠かつ") {
+                    if (numberOfParam === 2)
+                        return 1;
+                    else if (numberOfParam > 2)
+                        return 1;
+                    else if (numberOfParam < 2)
+                        return 0;
+                }
+                else if (functionName === "関数＠または") {
+                    if (numberOfParam === 2)
+                        return 1;
+                    else if (numberOfParam > 2)
+                        return 1;
+                    else if (numberOfParam < 2)
+                        return 0;
+                }
+                else if (functionName === "関数＠四捨五入") {
+                    if (numberOfParam === 1)
+                        return 1;
+                    else if (numberOfParam > 1)
+                        return 2;
+                    else if (numberOfParam < 1)
+                        return 0;
+                }
+                else if (functionName === "関数＠切捨て") {
+                    if (numberOfParam === 1)
+                        return 1;
+                    else if (numberOfParam > 1)
+                        return 2;
+                    else if (numberOfParam < 1)
+                        return 0;
+                }
+                else if (functionName === "関数＠切上げ") {
+                    if (numberOfParam === 1)
+                        return 1;
+                    else if (numberOfParam > 1)
+                        return 2;
+                    else if (numberOfParam < 1)
+                        return 0;
+                }
+                else if (functionName === "関数＠最大値") {
+                    if (numberOfParam === 2)
+                        return 1;
+                    else if (numberOfParam > 2)
+                        return 1;
+                    else if (numberOfParam < 2)
+                        return 0;
+                }
+                else if (functionName === "関数＠最小値") {
+                    if (numberOfParam === 2)
+                        return 1;
+                    else if (numberOfParam > 2)
+                        return 1;
+                    else if (numberOfParam < 2)
+                        return 0;
+                }
+                else if (functionName === "関数＠家族人数") {
+                    if (numberOfParam === 2)
+                        return 1;
+                    else if (numberOfParam > 2)
+                        return 2;
+                    else if (numberOfParam < 2)
+                        return 0;
+                }
+                else if (functionName === "関数＠月加算") {
+                    if (numberOfParam === 2)
+                        return 1;
+                    else if (numberOfParam > 2)
+                        return 2;
+                    else if (numberOfParam < 2)
+                        return 0;
+                }
+                else if (functionName === "関数＠年抽出") {
+                    if (numberOfParam === 1)
+                        return 1;
+                    else if (numberOfParam > 1)
+                        return 2;
+                    else if (numberOfParam < 1)
+                        return 0;
+                }
+                else if (functionName === "関数＠月抽出") {
+                    if (numberOfParam === 1)
+                        return 1;
+                    else if (numberOfParam > 1)
+                        return 2;
+                    else if (numberOfParam < 1)
+                        return 0;
+                }
+                return 1;
+            };
+            TextEditor.prototype.validateTypeOfParams = function (treeObject) {
+                var functionName = treeObject.value.trim();
+                var param = treeObject.children;
+                if (functionName === "関数＠条件式" && param.length == 3) {
+                    //if (param[0].children.length === 0) return 1;
+                    if (!nts.uk.ntsNumber.isNumber(param[1], true))
+                        return 2;
+                    else if (!nts.uk.ntsNumber.isNumber(param[2], true))
+                        return 3;
+                    else
+                        return 0;
+                }
+                else if (functionName === "関数＠かつ" && param.length >= 2) {
+                }
+                else if (functionName === "関数＠または" && param.length >= 2) {
+                }
+                else if (functionName === "関数＠四捨五入" && param.length == 1) {
+                }
+                else if (functionName === "関数＠切捨て" && param.length == 1) {
+                }
+                else if (functionName === "関数＠切上げ" && param.length == 1) {
+                }
+                else if (functionName === "関数＠最大値" && param.length >= 2) {
+                }
+                else if (functionName === "関数＠最小値" && param.length >= 2) {
+                }
+                else if (functionName === "関数＠家族人数" && param.length == 2) {
+                }
+                else if (functionName === "関数＠月加算" && param.length == 2) {
+                }
+                else if (functionName === "関数＠年抽出" && param.length == 1) {
+                }
+                else if (functionName === "関数＠月抽出" && param.length == 1) {
+                }
+            };
             TextEditor.prototype.validateFunction = function (allElementTag) {
                 var self = this;
                 var inputContent = [];
@@ -436,7 +529,7 @@ var nts;
                 for (var tagOrder = 0; tagOrder < allElementTag.length; tagOrder++) {
                     if (!self.checkEqualInArray(allElementTag[tagOrder].innerText, self.listOperatorChar)) {
                         splitContent += allElementTag[tagOrder].innerText;
-                        splitTags.push($(allElementTag[tagOrder]));
+                        splitTags.push(allElementTag[tagOrder]);
                     }
                     else {
                         inputContent.push(splitContent);
@@ -445,8 +538,63 @@ var nts;
                         splitTags = [];
                     }
                 }
-                if (!self.validateContentFunction(inputContent[0])) {
+                self.validateContentFunction(inputContent[0]);
+            };
+            TextEditor.prototype.validateContentFunction = function (contentFunction) {
+                var self = this;
+                var treeFunction = nts.uk.util.createTreeFromString(contentFunction, "（", "）", ",");
+                self.validateTreeFunction(treeFunction[0]);
+            };
+            TextEditor.prototype.validateTreeFunction = function (treeObject) {
+                var self = this;
+                var params = treeObject.children;
+                if (params.length > 0) {
+                    if (self.validateNumberOfParam(treeObject) === 1) {
+                        for (var i = 0; i < params.length; i++) {
+                            self.validateTreeFunction(params[i]);
+                        }
+                    }
+                    else if (self.validateNumberOfParam(treeObject) === 2) {
+                        self.markErrorTreeObject(treeObject, self.ERROR_TOO_MUCH_PARAM);
+                    }
+                    else if (self.validateNumberOfParam(treeObject) === 0) {
+                        self.markErrorTreeObject(treeObject, self.ERROR_NOT_ENOUGH_PARAM);
+                    }
                 }
+            };
+            TextEditor.prototype.markErrorTreeObject = function (treeObject, message) {
+                var self = this;
+                var indexTree = treeObject.index;
+                var specialCharTags = $(".special-char");
+                var countOpenBrackets = 0;
+                for (var orderTag = 0; orderTag < specialCharTags.length; orderTag++) {
+                    if (specialCharTags[orderTag].innerText === '（') {
+                        countOpenBrackets += 1;
+                    }
+                    //if found the bracket of the function
+                    if (countOpenBrackets === indexTree) {
+                        var functionNameTag = specialCharTags[orderTag].previousSibling;
+                        self.markError($(functionNameTag), message, [functionNameTag.innerText]);
+                        return true;
+                    }
+                }
+                return true;
+            };
+            TextEditor.prototype.checkEqualInArray = function (target, array) {
+                for (var count = 0; count < array.length; count++) {
+                    if (target === array[count]) {
+                        return true;
+                    }
+                }
+                return false;
+            };
+            TextEditor.prototype.checkContainsInArray = function (target, array) {
+                for (var count = 0; count < array.length; count++) {
+                    if (target.indexOf(array[count]) !== -1) {
+                        return true;
+                    }
+                }
+                return false;
             };
             TextEditor.prototype.markError = function (tag, message, param) {
                 var errorContent = message;
@@ -536,7 +684,6 @@ var nts;
                 var index = 0;
                 $lines.each(function (index, line) {
                     var $line = $(line);
-                    z;
                     var char = _.find($line.children(), function (text) {
                         var current = index + $(text).text().length;
                         index += $(text).text().length;

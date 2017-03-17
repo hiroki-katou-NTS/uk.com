@@ -6,28 +6,25 @@
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
-		<!-- 			<com:ValidatorScript> -->
-		<!-- 			nts.uk.ctx.pr.formula.dom.primitive.Money -->
-		<!-- 			nts.uk.ctx.pr.formula.dom.primitive.FormulaName -->
-		<!-- 			nts.uk.ctx.pr.formula.dom.primitive.PremiumRate -->
-		<!-- 			nts.arc.time.YearMonth -->
-		<!-- 		</com:ValidatorScript> -->
 		<ui:define name="htmlHead">
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="style.css" />
 			<com:scriptfile path="start.js" />
 			<com:scriptfile path="viewmodel.js" />
 			<com:scriptfile path="service.js" />
+			<com:ValidatorScript>
+				nts.uk.ctx.pr.formula.dom.primitive.EasyFormulaName
+			</com:ValidatorScript>
 		</ui:define>
 
 		<ui:define name="content">
 			<div id="contents-area" style="padding-left: 20px">
-				<div id="l_lbl_001" class="separate-vertical" data-bind="ntsFormLabel: {required: true }">名称</div>
-				<input style="margin-left: 25px;" data-bind="ntsTextEditor: { value: easyFormulaName, required: true}" />
+				<div id="l_lbl_001" class="separate-vertical" data-bind="ntsFormLabel: {constraint: 'EasyFormulaName', required: true}">名称</div>
+				<input style="margin-left: 25px;" data-bind="ntsTextEditor: { value: easyFormulaName, required: true, constraint: 'EasyFormulaName'}" />
 				<hr/>	
 				<table>
 					<colgroup>
-						<col width="120px" />
+						<col width="130px" />
 						<col width="*" />
 
 					</colgroup>
@@ -208,8 +205,8 @@
 				</table>
 				<div id="footer">
 					<hr/>
-					<button class="x-large proceed">設定</button>
-					<button >キャンセル</button>
+					<button class="x-large proceed" data-bind="click: closeAndReturnData, enable: $root.errors.isEmpty">設定</button>
+					<button data-bind="click: closeDialog">キャンセル</button>
 				</div>
 			</div>
 		</ui:define>

@@ -59,16 +59,21 @@
 				<div id="contents-area" style="width: 1366px;" class="cf">
 					<div id="left-content" class="bg-green caret-right caret-background">
 						<div id="a_lbl_002" data-bind="ntsFormLabel: {}">コード/名称</div>
-						<input id="a_inp_001" class="fix-input" />
-						<button id="a_sch_001">検索</button>
+						<div style="width: 200px; display: inline-block" data-bind="ntsSearchBox: {
+							comId: 'treeGrid',
+							items: treeGridHistory().items, 		
+							selected: treeGridHistory().singleSelectedCode, 
+							selectedKey: 'code', 
+							childField: 'childs', 
+							fields: ['name', 'code']}" />	
 						<br />
 						<button id="a_btn_005" onclick="OpenModalSubWindowJ({height: 450, width: 500})">履歴追加</button>
 						<button id="a_btn_006" onclick="OpenModalSubWindowK({height: 550, width: 600})">履歴編集</button>
 						<br />
-						<div id="a_lst_001" data-bind="with: a_lst_001">
+						<div id="a_lst_001" data-bind="with: treeGridHistory">
 							<table id="treeGrid"
 								data-bind="ntsTreeGridView:{
-										width: 280,
+										width: 288,
 										height: 400,
 										options: items,
 										value: singleSelectedCode,

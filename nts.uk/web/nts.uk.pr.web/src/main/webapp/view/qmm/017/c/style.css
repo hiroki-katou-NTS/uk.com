@@ -87,8 +87,8 @@ textarea {
 }
 
 .list001{display:table;margin-bottom:25px;}
-.list001 .col{display:table-cell;border:1px solid #ccc;border-right:none;vertical-align:middle;padding:3px 1px;}
-.list001 .col:last-child{border-right:1px solid #ccc;}
+.list001 .col{display:table-cell;border:1px solid #ccc;border-right:none;vertical-align:middle;padding:4px 1px;}
+.list001 .col:last-child{border-right:1px solid #ccc; width: 290px; padding-left: 5px}
 .list001 .col-1{width:250px}
 .list001 .nts-switch-button{margin-bottom:0px;}
 
@@ -96,11 +96,11 @@ textarea {
 .list002 .col{float:left;border:1px solid #ccc;border-right:none;min-height:40px;box-sizing:border-box;margin-top:-1px;}
 .list002 .col:last-child{border-right:1px solid #ccc;}
 .list002 .col-1{width:30px;}
-.list002 .col-2{width:200px;}
+.list002 .col-2{width:253px; background: #E0F59E;}
 .list002 .header{}
-.list002 .header .col{background:#E0F59E;}
-.list002 .header .col-3{width: 500px;}
+.list002 .header .col{background:#CFF1A5;}
+.list002 .header .col-3{width: 433px;}
 .list002 .body{height:300px;overflow-y:scroll;border:1px solid #ccc;}
 .list002 .body .row{margin-top:-1px;margin-left:-1px;}
-.list002 .body .col-3{width:200px;}
-.list002 .body .col-4{width:300px;}
+.list002 .body .col-3{width:205px;}
+.list002 .body .col-4{width:210px;}
