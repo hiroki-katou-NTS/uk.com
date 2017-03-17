@@ -1,7 +1,7 @@
 module qmm019.g.service {
     var paths = {
         getLayoutHeadInfor: "pr/proto/layout/findlayoutwithmaxstartym",
-        getLayoutHistoryInfor: "pr/proto/layout/findlayouthistorywithmaxstartym",
+        getAllLayoutHist: "pr/proto/layout/findalllayoutHist",
         copylayoutPath: "pr/proto/layout/createlayout"
     }
 
@@ -19,9 +19,9 @@ module qmm019.g.service {
             })
         return dfd.promise();
     }
-    export function getLayoutHistoryInfor(): JQueryPromise<Array<model.LayoutHistoryDto>> {
+    export function getAllLayoutHist(): JQueryPromise<Array<model.LayoutHistory>> {
         var dfd = $.Deferred<Array<any>>();
-        nts.uk.request.ajax(paths.getLayoutHistoryInfor)
+        nts.uk.request.ajax(paths.getAllLayoutHist)
             .done(function(res: Array<any>) {
                 dfd.resolve(res);
             })
@@ -65,6 +65,17 @@ module qmm019.g.service {
             stmtName: string;
             endYm: number;
         }
+        export class LayoutHistory {
+            companyCode: string;
+            stmtCode: string;
+            startYm: number;
+            stmtName: string;
+            endYm: number;
+            layoutAtr: number;
+            historyId: string;
+            constructor() {
+            }
+            }
         // layoutHistory
         export class LayoutHistoryDto {
             checkCopy: Boolean;
