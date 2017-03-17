@@ -14,8 +14,11 @@ import lombok.val;
 import nts.arc.error.BusinessException;
 import nts.uk.ctx.pr.core.dom.enums.CategoryAtr;
 import nts.uk.ctx.pr.core.dom.itemmaster.ItemCode;
-import nts.uk.ctx.pr.core.dom.itemmaster.ItemMaster;
-import nts.uk.ctx.pr.core.dom.itemmaster.ItemMasterRepository;
+import nts.uk.ctx.pr.core.dom.itemmaster.ItemMasterV1;
+import nts.uk.ctx.pr.core.dom.itemmaster.ItemMasterV1Repository;
+import nts.uk.ctx.pr.core.dom.rule.employment.layout.detail.LayoutMasterDetail;
+import nts.uk.ctx.pr.core.dom.rule.employment.layout.line.LayoutMasterLine;
+import nts.uk.ctx.pr.core.dom.rule.employment.layout.line.LineDispAtr;
 import nts.uk.ctx.pr.core.dom.paymentdata.PaymentCalculationBasicInformation;
 import nts.uk.ctx.pr.core.dom.paymentdata.dataitem.CorrectFlag;
 import nts.uk.ctx.pr.core.dom.paymentdata.dataitem.DetailItem;
@@ -26,15 +29,12 @@ import nts.uk.ctx.pr.core.dom.personalinfo.commute.PersonalCommuteFee;
 import nts.uk.ctx.pr.core.dom.personalinfo.commute.PersonalCommuteFeeRepository;
 import nts.uk.ctx.pr.core.dom.personalinfo.holiday.HolidayPaid;
 import nts.uk.ctx.pr.core.dom.personalinfo.wage.PersonalWage;
-import nts.uk.ctx.pr.core.dom.rule.employment.layout.detail.LayoutMasterDetail;
-import nts.uk.ctx.pr.core.dom.rule.employment.layout.line.LayoutMasterLine;
-import nts.uk.ctx.pr.core.dom.rule.employment.layout.line.LineDispAtr;
 
 @Stateless
 public class PaymentDetailServiceImpl implements PaymentDetailService {
 
 	@Inject
-	private ItemMasterRepository itemMasterRepo;
+	private ItemMasterV1Repository itemMasterRepo;
 	@Inject
 	private PersonalCommuteFeeRepository personalCommuteRepo;
 
@@ -113,7 +113,7 @@ public class PaymentDetailServiceImpl implements PaymentDetailService {
 			LayoutMasterDetail layout,
 			PersonalCommuteFee commute) {
 		
-		ItemMaster itemMaster = getItemMaster(param, layout);
+		ItemMasterV1 itemMaster = getItemMaster(param, layout);
 		
 		// get calculate method
 		if (layout.isCalMethodManualOrFormulaOrWageOrCommon()) {
@@ -131,7 +131,7 @@ public class PaymentDetailServiceImpl implements PaymentDetailService {
 	private DetailItem createDetailOfCategoryDeduction(
 			PaymentDetailParam param,
 			LayoutMasterDetail layout) {
-		ItemMaster itemMaster = getItemMaster(param, layout);
+		ItemMasterV1 itemMaster = getItemMaster(param, layout);
 		
 		if (layout.isCalMethodPesonalInfomation()) {
 			// get personal wage
@@ -157,7 +157,7 @@ public class PaymentDetailServiceImpl implements PaymentDetailService {
 		
 		double value;
 		
-		ItemMaster itemMaster = getItemMaster(param, layout);
+		ItemMasterV1 itemMaster = getItemMaster(param, layout);
 		
 		// PayrollSystem == 2 || 3
 		if (param.getEmploymentContract().isPayrollSystemDailyOrDay()) {
@@ -176,14 +176,14 @@ public class PaymentDetailServiceImpl implements PaymentDetailService {
 	
 	/** Create data detail with Layout.Category = 3 || 9 **/
 	private DetailItem createDetailOfCategoryArticlesOrOther(PaymentDetailParam param, LayoutMasterDetail layout) {
-		ItemMaster itemMaster = getItemMaster(param, layout);
+		ItemMasterV1 itemMaster = getItemMaster(param, layout);
 		
 		return this.createDataDetailItem(itemMaster, 0.0, layout.getCategoryAtr(), param.getLineList(), layout.getAutoLineId().v(), layout.getItemPosColumn().v(), 0);
 	}
 
 	/** Get item master **/
-	private ItemMaster getItemMaster(PaymentDetailParam param, LayoutMasterDetail layout) {
-		ItemMaster itemMaster = itemMasterRepo
+	private ItemMasterV1 getItemMaster(PaymentDetailParam param, LayoutMasterDetail layout) {
+		ItemMasterV1 itemMaster = itemMasterRepo
 				.find(param.getCompanyCode(), layout.getCategoryAtr().value, layout.getItemCode().v())
 				.orElseThrow(() -> new BusinessException("対象データがありません。"));
 		return itemMaster;
@@ -200,7 +200,7 @@ public class PaymentDetailServiceImpl implements PaymentDetailService {
 	 * @return pay detail
 	 */
 	private DetailItem getPayValueByTax(PaymentDetailParam param,
-			LayoutMasterDetail itemLayoutMasterDetail, String itemCode, ItemMaster itemMaster, PersonalCommuteFee commute) {
+			LayoutMasterDetail itemLayoutMasterDetail, String itemCode, ItemMasterV1 itemMaster, PersonalCommuteFee commute) {
 		
 		// check tax attribute
 		if (itemMaster.isTaxTaxationOrTaxFreeLimitOrTaxFreeUnLimit()) { // tax_atr = 0 || 1 || 2
@@ -279,7 +279,7 @@ public class PaymentDetailServiceImpl implements PaymentDetailService {
 	 * @param categoryAtr
 	 * @return
 	 */
-	private DetailItem createDataDetailItem(ItemMaster itemMaster, double value, CategoryAtr categoryAtr, 
+	private DetailItem createDataDetailItem(ItemMasterV1 itemMaster, double value, CategoryAtr categoryAtr, 
 			List<LayoutMasterLine> lineList, String autoLineId, int itemPositionColumn, double commuteAllowMonth) {
 		LayoutMasterLine line = lineList.stream()
 				.filter(x -> categoryAtr == x.getCategoryAtr() && x.getAutoLineId().v().equals(autoLineId))
