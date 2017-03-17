@@ -77,7 +77,7 @@ public class QlsptPaylstFormHead implements Serializable {
 	private String formName;
 
 	/** The qlspt paylst form detail list. */
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "qlsptPaylstFormHead")
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "qlsptPaylstFormHead", orphanRemoval = true)
 	private List<QlsptPaylstFormDetail> qlsptPaylstFormDetailList;
 
 	/**

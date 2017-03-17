@@ -56,7 +56,7 @@ public class JpaSalaryOutputSettingSetMemento implements SalaryOutputSettingSetM
 	 */
 	@Override
 	public void setCode(SalaryOutputSettingCode salaryOutputSettingCode) {
-		this.entity.getQlsptPaylstFormHeadPK().setFormCd(code.v());
+		this.entity.getQlsptPaylstFormHeadPK().setFormCd(salaryOutputSettingCode.v());
 		this.code = salaryOutputSettingCode;
 	}
 
