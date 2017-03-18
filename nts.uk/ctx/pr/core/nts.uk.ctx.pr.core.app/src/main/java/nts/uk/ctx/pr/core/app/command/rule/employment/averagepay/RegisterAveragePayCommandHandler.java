@@ -65,12 +65,13 @@ public class RegisterAveragePayCommandHandler extends CommandHandler<RegisterAve
 		List<ItemSalary> itemSelectedSalarys = itemSalarys.stream()
 				.filter(x -> command.getSalarySelectedCode().contains(x.getItemCode())).collect(Collectors.toList());
 		itemSelectedSalarys.forEach(x -> {
-			this.itemSalaryRespository.update(new ItemSalary(new CompanyCode(companyCode), x.itemCode, x.taxAtr,
-					x.socialInsAtr, x.laborInsAtr, x.fixPayAtr, x.applyForAllEmpFlg, x.applyForMonthlyPayEmp,
-					x.applyForDaymonthlyPayEmp, x.applyForDaylyPayEmp, x.applyForHourlyPayEmp,
-					EnumAdaptor.valueOf(1, ApplyFor.class), x.errRangeLowAtr, x.errRangeLow, x.errRangeHighAtr,
-					x.errRangeHigh, x.alRangeLowAtr, x.alRangeLow, x.alRangeHighAtr, x.alRangeHigh, x.memo,
-					x.limitMnyAtr, x.limitMnyRefItemCd, x.limitMny));
+			this.itemSalaryRespository.update(new ItemSalary(x.getCompanyCode(), x.getItemCode(), x.getTaxAtr(),
+					x.getSocialInsAtr(), x.getLaborInsAtr(), x.getFixPayAtr(), x.getApplyForAllEmpFlg(),
+					x.getApplyForMonthlyPayEmp(), x.getApplyForDaymonthlyPayEmp(), x.getApplyForDaylyPayEmp(),
+					x.getApplyForHourlyPayEmp(), EnumAdaptor.valueOf(1, ApplyFor.class), x.getErrRangeLowAtr(),
+					x.getErrRangeLow(), x.getErrRangeHighAtr(), x.getErrRangeHigh(), x.getAlRangeLowAtr(),
+					x.getAlRangeLow(), x.getAlRangeHighAtr(), x.getAlRangeHigh(), x.getMemo(), x.getLimitMnyAtr(),
+					x.getLimitMnyRefItemCd(), x.getLimitMny()));
 		});
 		if (command.getAttendDayGettingSet() == 1) {
 			List<ItemAttend> itemAttends = this.itemAttendRespository.findAll(companyCode);
@@ -78,12 +79,11 @@ public class RegisterAveragePayCommandHandler extends CommandHandler<RegisterAve
 					.filter(x -> command.getAttendSelectedCode().contains(x.getItemCode()))
 					.collect(Collectors.toList());
 			itemSelectedAttends.forEach(x -> {
-				this.itemAttendRespository.update(companyCode,
-						new ItemAttend(new CompanyCode(companyCode), x.getItemCode(),
-								EnumAdaptor.valueOf(1, AvePayAtr.class), x.getItemAtr(), x.getErrRangeLowAtr(),
-								x.getErrRangeLow(), x.getErrRangeHighAtr(), x.getErrRangeHigh(), x.getAlRangeLowAtr(),
-								x.getAlRangeLow(), x.getAlRangeHighAtr(), x.getAlRangeHigh(), x.getWorkDaysScopeAtr(),
-								x.getMemo()));
+				this.itemAttendRespository.update(
+						new ItemAttend(x.getCompanyCode(), x.getItemCode(), EnumAdaptor.valueOf(1, AvePayAtr.class),
+								x.getItemAtr(), x.getErrRangeLowAtr(), x.getErrRangeLow(), x.getErrRangeHighAtr(),
+								x.getErrRangeHigh(), x.getAlRangeLowAtr(), x.getAlRangeLow(), x.getAlRangeHighAtr(),
+								x.getAlRangeHigh(), x.getWorkDaysScopeAtr(), x.getMemo()));
 			});
 		}
 	}

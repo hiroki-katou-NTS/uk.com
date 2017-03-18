@@ -29,12 +29,6 @@ module qmm018.a.viewmodel {
                     return s;
                 })
             });
-            self.selectedItemList1.subscribe(function(value) {
-                if (!value.length) $("#inp-3").ntsError('set', 'ER007'); else $("#inp-3").ntsError('clear');
-            });
-            self.selectedItemList2.subscribe(function(value) {
-                if (!value.length) $("#inp-1").ntsError('set', 'ER007'); else $("#inp-1").ntsError('clear');
-            });
             self.isUpdate = false;
 
         }
@@ -64,11 +58,17 @@ module qmm018.a.viewmodel {
                     self.isUpdate = true;
                 } else {
                     self.averagePay(new AveragePay(0, 0, 0, null));
-                    self.selectedItemList1 = ko.observableArray([]);
-                    self.selectedItemList2 = ko.observableArray([]);
+                    self.selectedItemList1([]);
+                    self.selectedItemList2([]);
                     self.isUpdate = false;
                 }
                 dfd.resolve();
+                self.selectedItemList1.subscribe(function(value) {
+                    if (!value.length) $("#inp-3").ntsError('set', 'ER007'); else $("#inp-3").ntsError('clear');
+                });
+                self.selectedItemList2.subscribe(function(value) {
+                    if (!value.length) $("#inp-1").ntsError('set', 'ER007'); else $("#inp-1").ntsError('clear');
+                });
             }).fail(function(res) {
                 dfd.reject(res);
             });
@@ -78,28 +78,31 @@ module qmm018.a.viewmodel {
             var self = this;
             var dfd = $.Deferred();
             let selectedCodeList1 = [];
-            self.selectedItemList1().forEach(function(item){selectedCodeList1.push(item.code);});
+            if(self.selectedItemList1().length){self.selectedItemList1().forEach(function(item){selectedCodeList1.push(item.code);});}else{$("#inp-3").ntsError('set', 'ER007');}
             let selectedCodeList2 = [];
-            self.selectedItemList2().forEach(function(item){selectedCodeList2.push(item.code);});
-            let command = {
-                attendDayGettingSet: self.averagePay().attendDayGettingSet(),
-                exceptionPayRate: self.averagePay().exceptionPayRate(),
-                roundDigitSet: self.averagePay().roundDigitSet(),
-                roundTimingSet: self.averagePay().roundTimingSet(),
-                salarySelectedCode: selectedCodeList1,
-                attendSelectedCode: selectedCodeList2
-            };
-            if (isUpdate) {
-                qmm018.a.service.averagePayItemUpdate(command).done(function(data) {
-                }).fail(function(res) {
-                    nts.uk.ui.dialog.alert("Update Fail");
-                });
-            } else {
-                qmm018.a.service.averagePayItemInsert(command).done(function(data) {
-                    dfd.resolve();
-                }).fail(function(res) {
-                    nts.uk.ui.dialog.alert("Register Fail");
-                });
+            if(self.selectedItemList2().length){self.selectedItemList2().forEach(function(item){selectedCodeList2.push(item.code);});}else{$("#inp-1").ntsError('set', 'ER007');}
+            if(self.averagePay().exceptionPayRate()==null) {$("#inp-2").ntsError('set', 'ER007');}
+            if(nts.uk.ui._viewModel.errors.isEmpty()){
+                let command = {
+                    attendDayGettingSet: self.averagePay().attendDayGettingSet(),
+                    exceptionPayRate: self.averagePay().exceptionPayRate(),
+                    roundDigitSet: self.averagePay().roundDigitSet(),
+                    roundTimingSet: self.averagePay().roundTimingSet(),
+                    salarySelectedCode: selectedCodeList1,
+                    attendSelectedCode: selectedCodeList2
+                };
+                if (isUpdate) {
+                    qmm018.a.service.averagePayItemUpdate(command).done(function(data) {
+                    }).fail(function(res) {
+                        nts.uk.ui.dialog.alert("Update Fail");
+                    });
+                } else {
+                    qmm018.a.service.averagePayItemInsert(command).done(function(data) {
+                        dfd.resolve();
+                    }).fail(function(res) {
+                        nts.uk.ui.dialog.alert("Register Fail");
+                    });
+                }
             }
             return dfd.promise();
         }

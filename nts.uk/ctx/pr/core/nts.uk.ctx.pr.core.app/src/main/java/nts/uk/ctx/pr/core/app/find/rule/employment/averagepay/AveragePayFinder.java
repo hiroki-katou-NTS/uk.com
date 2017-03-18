@@ -68,14 +68,9 @@ public class AveragePayFinder {
 		if (itemSalarys.isEmpty()){
 			return null;
 		}
-		ArrayList<ItemMasterDto> itemMasterDtos = new ArrayList<ItemMasterDto>();
-		itemSalarys.forEach(itemSalary -> {
-			Optional<ItemMaster> itemMaster = this.itemMasterRepository.find(companyCode, 0, itemSalary.getItemCode().v());
-			if(itemMaster.isPresent()){
-				itemMasterDtos.add(ItemMasterDto.fromDomain(itemMaster.get()));
-			}
-		});
-		
+		List<String> itemSalaryCodeList = itemSalarys.stream().map(x -> x.getItemCode().v()).collect(Collectors.toList());
+		List<ItemMasterDto> itemMasterDtos = this.itemMasterRepository.findAll(companyCode, 0, itemSalaryCodeList)
+				.stream().map(x -> ItemMasterDto.fromDomain(x)).collect(Collectors.toList());
 		return itemMasterDtos;
 	}
 	
@@ -85,13 +80,9 @@ public class AveragePayFinder {
 		if (itemAttends.isEmpty()){
 			return null;
 		}
-		ArrayList<ItemMasterDto> itemMasterDtos = new ArrayList<ItemMasterDto>();
-		itemAttends.forEach(itemSalary -> {
-			Optional<ItemMaster> itemMaster = this.itemMasterRepository.find(companyCode, 2, itemSalary.getItemCode().v());
-			itemMaster.ifPresent(x -> {
-				itemMasterDtos.add(ItemMasterDto.fromDomain(x));
-			});
-		});
+		List<String> itemAttendCodeList = itemAttends.stream().map(y -> y.getItemCode().v()).collect(Collectors.toList());
+		List<ItemMasterDto> itemMasterDtos = this.itemMasterRepository.findAll(companyCode, 2, itemAttendCodeList)
+				.stream().map(x -> ItemMasterDto.fromDomain(x)).collect(Collectors.toList());
 		return itemMasterDtos;
 	}
 }
