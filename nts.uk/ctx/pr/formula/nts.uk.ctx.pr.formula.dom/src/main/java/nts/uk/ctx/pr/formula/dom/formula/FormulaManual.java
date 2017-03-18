@@ -60,4 +60,16 @@ public class FormulaManual extends DomainObject {
 				EnumAdaptor.valueOf(referenceMonthAtr.intValue(), ReferenceMonthAtr.class),
 				EnumAdaptor.valueOf(roundAtr.intValue(), RoundMethod.class), EnumAdaptor.valueOf(roundDigit.intValue(), RoundDigit.class));
 	}
+
+	/**
+	 * @param companyCode
+	 * @param formulaCode
+	 * @param historyId
+	 */
+	public FormulaManual(String companyCode, FormulaCode formulaCode, String historyId) {
+		super();
+		this.companyCode = companyCode;
+		this.formulaCode = formulaCode;
+		this.historyId = historyId;
+	}
 }

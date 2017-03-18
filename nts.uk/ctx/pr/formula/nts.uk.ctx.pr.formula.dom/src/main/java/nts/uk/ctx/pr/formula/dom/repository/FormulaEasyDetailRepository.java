@@ -24,7 +24,7 @@ public interface FormulaEasyDetailRepository {
 	 */
 	Optional<FormulaEasyDetail> findByPriKey (String companyCode, FormulaCode formulaCode, String historyId, EasyFormulaCode easyFormulaCode);
 	
-	Optional<FormulaEasyDetail> findWithOutPriKey(String companyCode, FormulaCode formulaCode, String historyId);
+	List<FormulaEasyDetail> findWithOutPriKey(String companyCode, FormulaCode formulaCode, String historyId);
 	
 	void remove(String companyCode, FormulaCode formulaCode, String historyId);
 	

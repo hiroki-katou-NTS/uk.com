@@ -29,17 +29,17 @@ public class RemoveFormulaHistoryCommandHandler extends CommandHandler<RemoveFor
 	 */
 	@Override
 	protected void handle(CommandHandlerContext<RemoveFormulaHistoryCommand> context) {
-		RemoveFormulaHistoryCommand command = context.getCommand();
-		String companyCode = AppContexts.user().companyCode();
-		
-		FormulaHistory formulaHistory = new FormulaHistory(
-				companyCode,
-				new FormulaCode(command.getFormulaCode()),
-				command.getHistoryId(),
-				new YearMonth(command.getStartDate()),
-				new YearMonth(command.getEndDate()));
-		
-		repository.remove(formulaHistory);		
+//		RemoveFormulaHistoryCommand command = context.getCommand();
+//		String companyCode = AppContexts.user().companyCode();
+//		
+//		FormulaHistory formulaHistory = new FormulaHistory(
+//				companyCode,
+//				new FormulaCode(command.getFormulaCode()),
+//				command.getHistoryId(),
+//				new YearMonth(command.getStartDate()),
+//				new YearMonth(command.getEndDate()));
+//		
+//		repository.remove(formulaHistory);		
 	}
 
 }

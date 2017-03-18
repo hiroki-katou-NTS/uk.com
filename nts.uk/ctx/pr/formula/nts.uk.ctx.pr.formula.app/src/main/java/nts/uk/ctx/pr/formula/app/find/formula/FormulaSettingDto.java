@@ -19,33 +19,8 @@ public class FormulaSettingDto {
 	/**
 	 * formula detail
 	 */
-	private String easyFormulaName;
-
-	private BigDecimal easyFormulaTypeAtr;
 	
-	private BigDecimal baseFixedAmount;
-
-	private BigDecimal baseAmountDevision;
-
-	private BigDecimal baseFixedValue;
-
-	private BigDecimal baseValueDevision;
-
-	private BigDecimal premiumRate;
-
-	private BigDecimal roundProcessingDevision;
-
-	private String coefficientDivision;
-
-	private BigDecimal coefficientFixedValue;
-
-	private BigDecimal adjustmentDevision;
-
-	private BigDecimal totalRounding;
-	
-	private BigDecimal maxLimitValue;
-	
-	private BigDecimal minLimitValue;
+	List<FormulaEasyFinderDto> formulaEasyDetail;
 	
 	/**
 	 * formula manual

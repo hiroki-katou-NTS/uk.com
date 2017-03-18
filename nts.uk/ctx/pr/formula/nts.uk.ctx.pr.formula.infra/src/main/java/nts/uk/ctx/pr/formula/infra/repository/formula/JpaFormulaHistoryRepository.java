@@ -23,11 +23,11 @@ public class JpaFormulaHistoryRepository extends JpaRepository implements Formul
 	private static final String FIND_ALL_DIFFERENT_FORMULACODE;
 
 	private static final String IS_EXISTED_HISTORY;
-	
-	private static final String FIND_BY_FORMULACODE;
 
 	private static final String LAST_HISTORY;
-	
+
+	private static final String DEL_HISTORY_BY_KEY;
+
 	static {
 		StringBuilder builderString = new StringBuilder();
 		builderString.append("SELECT COUNT(a) ");
@@ -60,7 +60,14 @@ public class JpaFormulaHistoryRepository extends JpaRepository implements Formul
 		builderString.append("ORDER BY a.startDate DESC ");
 		LAST_HISTORY = builderString.toString();
 
-		FIND_BY_FORMULACODE = builderString.toString();
+		builderString = new StringBuilder();
+		builderString.append("DELETE ");
+		builderString.append("FROM QcfmtFormulaHistory a ");
+		builderString.append("WHERE a.qcfmtFormulaHistoryPK.companyCode = :companyCode ");
+		builderString.append("AND a.qcfmtFormulaHistoryPK.formulaCode = :formulaCode ");
+		builderString.append("AND a.qcfmtFormulaHistoryPK.historyId = :historyId ");
+		DEL_HISTORY_BY_KEY = builderString.toString();
+
 	}
 
 	@Override
@@ -92,7 +99,10 @@ public class JpaFormulaHistoryRepository extends JpaRepository implements Formul
 
 	@Override
 	public void remove(FormulaHistory formulaHistory) {
-		this.commandProxy().remove(toEntity(formulaHistory));
+		this.getEntityManager().createQuery(DEL_HISTORY_BY_KEY)
+				.setParameter("companyCode", formulaHistory.getCompanyCode())
+				.setParameter("formulaCode", formulaHistory.getFormulaCode().v())
+				.setParameter("historyId", formulaHistory.getHistoryId()).executeUpdate();
 	}
 
 	@Override
@@ -133,17 +143,8 @@ public class JpaFormulaHistoryRepository extends JpaRepository implements Formul
 	@Override
 
 	public Optional<FormulaHistory> findLastHistory(String companyCode, FormulaCode formulaCode) {
-		return this.queryProxy().query(LAST_HISTORY, QcfmtFormulaHistory.class)
-				.setParameter("companyCode", companyCode)
-				.setParameter("formulaCode", formulaCode.v())
-				.getSingle(f -> toDomain(f));
-	}
-	
-	public List<FormulaHistory> findByFormulaCode(String companyCode, FormulaCode formulaCode) {
-		return this.queryProxy().query(FIND_BY_FORMULACODE, QcfmtFormulaHistory.class)
-				.setParameter("companyCode", companyCode)
-				.setParameter("formulaCode", formulaCode.v())
-				.getList(f -> toDomain(f));
+		return this.queryProxy().query(LAST_HISTORY, QcfmtFormulaHistory.class).setParameter("companyCode", companyCode)
+				.setParameter("formulaCode", formulaCode.v()).getSingle(f -> toDomain(f));
 	}
 
 }

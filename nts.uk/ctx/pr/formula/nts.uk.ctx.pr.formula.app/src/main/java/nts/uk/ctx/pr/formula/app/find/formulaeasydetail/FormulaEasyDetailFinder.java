@@ -50,10 +50,11 @@ public class FormulaEasyDetailFinder {
 //	}
 
 	public Optional<FormulaEasyDetailDto> findWithoutPriKey(String formulaCode, String historyId) {
-		LoginUserContext login = AppContexts.user();
-
-		return formulaEasyDetailRepository
-				.findWithOutPriKey(login.companyCode(), new FormulaCode(formulaCode), historyId)
-				.map(f -> {return FormulaEasyDetailDto.fromDomain(f);});
+//		LoginUserContext login = AppContexts.user();
+//
+//		return formulaEasyDetailRepository
+//				.findWithOutPriKey(login.companyCode(), new FormulaCode(formulaCode), historyId)
+//				.map(f -> {return FormulaEasyDetailDto.fromDomain(f);});
+		return null;
 	}
 }

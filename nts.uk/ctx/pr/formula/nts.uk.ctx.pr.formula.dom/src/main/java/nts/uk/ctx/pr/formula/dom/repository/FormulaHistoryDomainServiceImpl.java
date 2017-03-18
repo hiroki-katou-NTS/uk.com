@@ -5,7 +5,14 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.pr.formula.dom.formula.FormulaEasyHeader;
 import nts.uk.ctx.pr.formula.dom.formula.FormulaHistory;
+import nts.uk.ctx.pr.formula.dom.formula.FormulaManual;
 
+/**
+ * @author Nam-PT
+ * K + J screen
+ * activity 32, 33
+ *
+ */
 @Stateless
 public class FormulaHistoryDomainServiceImpl implements FormulaHistoryDomainService {
 
@@ -25,6 +32,12 @@ public class FormulaHistoryDomainServiceImpl implements FormulaHistoryDomainServ
 		} else if (formulaEasyHead.getConditionAtr().value == 1) {
 			formulaHistoryRepository.update(formulaHistoryUpdate);
 		}
+	}
+	
+	public void update(int conditionAtr, FormulaHistory formulaHistory, FormulaManual formulaManual){
+		formulaHistoryRepository.remove(formulaHistory);
+		
+		
 	}
 
 }

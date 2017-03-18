@@ -39,5 +39,17 @@ public class FormulaHistory extends AggregateRoot{
 		return new FormulaHistory(companyCode, new FormulaCode(formulaCode),
 				historyId, new YearMonth(startDate), new YearMonth(endDate));
 	}
+
+	/**
+	 * @param companyCode
+	 * @param formulaCode
+	 * @param historyId
+	 */
+	public FormulaHistory(String companyCode, FormulaCode formulaCode, String historyId) {
+		super();
+		this.companyCode = companyCode;
+		this.formulaCode = formulaCode;
+		this.historyId = historyId;
+	}
 	
 }

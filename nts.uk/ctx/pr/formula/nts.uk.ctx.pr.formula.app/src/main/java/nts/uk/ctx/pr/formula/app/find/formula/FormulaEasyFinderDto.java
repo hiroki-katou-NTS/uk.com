@@ -8,6 +8,8 @@ import lombok.Data;
 @Data
 public class FormulaEasyFinderDto {
 	
+	String easyFormulaCode;
+	
 	String easyFormulaName;
 
 	BigDecimal easyFormulaTypeAtr;
