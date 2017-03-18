@@ -53,26 +53,22 @@ var qmm018;
                 ScreenModel.prototype.startPage = function () {
                     var self = this;
                     var dfd = $.Deferred();
-                    qmm018.a.service.qapmt_Ave_Pay_SEL_1().done(function (data) {
+                    qmm018.a.service.averagePayItemSelect().done(function (data) {
                         if (data) {
-                            qmm018.a.service.qcamt_Item_Salary_SEL_3().done(function (data2) {
-                                console.log(data2);
-                                dfd.resolve();
+                            qmm018.a.service.averagePayItemSelectBySalary().done(function (dataSalary) {
+                                if (dataSalary.length) {
+                                    dataSalary.forEach(function (dataSalaryItem) {
+                                        self.selectedItemList1.push(new ItemModel(dataSalaryItem.itemCode, dataSalaryItem.itemAbName));
+                                    });
+                                }
                             }).fail(function (res) {
                             });
-                            qmm018.a.service.qcamt_Item_SEL_5(0, 1).done(function (data2) {
-                                console.log(data2);
-                                dfd.resolve();
-                            }).fail(function (res) {
-                            });
-                            qmm018.a.service.qcamt_Item_Salary_SEL_4().done(function (data2) {
-                                console.log(data2);
-                                dfd.resolve();
-                            }).fail(function (res) {
-                            });
-                            qmm018.a.service.qcamt_Item_SEL_5(2, 1).done(function (data2) {
-                                console.log(data2);
-                                dfd.resolve();
+                            qmm018.a.service.averagePayItemSelectByAttend().done(function (dataAttend) {
+                                if (dataAttend.length) {
+                                    dataAttend.forEach(function (dataAttendItem) {
+                                        self.selectedItemList2.push(new ItemModel(dataAttendItem.itemCode, dataAttendItem.itemAbName));
+                                    });
+                                }
                             }).fail(function (res) {
                             });
                             self.averagePay(new AveragePay(data.roundTimingSet, data.attendDayGettingSet, data.roundDigitSet, data.exceptionPayRate));
@@ -80,6 +76,8 @@ var qmm018;
                         }
                         else {
                             self.averagePay(new AveragePay(0, 0, 0, null));
+                            self.selectedItemList1 = ko.observableArray([]);
+                            self.selectedItemList2 = ko.observableArray([]);
                             self.isUpdate = false;
                         }
                         dfd.resolve();
@@ -91,28 +89,26 @@ var qmm018;
                 ScreenModel.prototype.saveData = function (isUpdate) {
                     var self = this;
                     var dfd = $.Deferred();
-                    var command = ko.mapping.toJS(self.averagePay());
+                    var selectedCodeList1 = [];
+                    self.selectedItemList1().forEach(function (item) { selectedCodeList1.push(item.code); });
+                    var selectedCodeList2 = [];
+                    self.selectedItemList2().forEach(function (item) { selectedCodeList2.push(item.code); });
+                    var command = {
+                        attendDayGettingSet: self.averagePay().attendDayGettingSet(),
+                        exceptionPayRate: self.averagePay().exceptionPayRate(),
+                        roundDigitSet: self.averagePay().roundDigitSet(),
+                        roundTimingSet: self.averagePay().roundTimingSet(),
+                        salarySelectedCode: selectedCodeList1,
+                        attendSelectedCode: selectedCodeList2
+                    };
                     if (isUpdate) {
-                        qmm018.a.service.qapmt_Ave_Pay_UPD_1(command).done(function (data) {
-                            dfd.resolve();
+                        qmm018.a.service.averagePayItemUpdate(command).done(function (data) {
                         }).fail(function (res) {
                             nts.uk.ui.dialog.alert("Update Fail");
                         });
                     }
                     else {
-                        qmm018.a.service.qapmt_Ave_Pay_INS_1(command).done(function (data) {
-                            qmm018.a.service.qcamt_Item_Salary_UPD_2(1).done(function () {
-                                if (self.averagePay().attendDayGettingSet()) {
-                                    if (self.isUpdate) {
-                                        qmm018.a.service.qcamt_Item_Salary_SEL_2(1).done(function () {
-                                            qmm018.a.service.qcamt_Item_Salary_UPD_2(1).done(function () {
-                                            });
-                                        });
-                                    }
-                                    qmm018.a.service.qcamt_Item_Salary_UPD_2(1).done(function () {
-                                    });
-                                }
-                            });
+                        qmm018.a.service.averagePayItemInsert(command).done(function (data) {
                             dfd.resolve();
                         }).fail(function (res) {
                             nts.uk.ui.dialog.alert("Register Fail");
@@ -124,7 +120,7 @@ var qmm018;
                     var self = this;
                     if (!n) {
                         nts.uk.ui.windows.setShared('selectedItemList', self.selectedItemList1());
-                        nts.uk.ui.windows.setShared('categoryAtr', 1);
+                        nts.uk.ui.windows.setShared('categoryAtr', 0);
                     }
                     else {
                         nts.uk.ui.windows.setShared('selectedItemList', self.selectedItemList2());

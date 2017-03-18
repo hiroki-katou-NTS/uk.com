@@ -1,5 +1,7 @@
 package nts.uk.ctx.pr.core.ws.rule.employment.averagepay;
 
+import java.util.List;
+
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -10,6 +12,7 @@ import nts.uk.ctx.pr.core.app.command.rule.employment.averagepay.RegisterAverage
 import nts.uk.ctx.pr.core.app.command.rule.employment.averagepay.RegisterAveragePayCommandHandler;
 import nts.uk.ctx.pr.core.app.command.rule.employment.averagepay.UpdateAveragePayCommand;
 import nts.uk.ctx.pr.core.app.command.rule.employment.averagepay.UpdateAveragePayCommandHandler;
+import nts.uk.ctx.pr.core.app.find.itemmaster.dto.ItemMasterDto;
 import nts.uk.ctx.pr.core.app.find.rule.employment.averagepay.AveragePayFinder;
 import nts.uk.ctx.pr.core.app.find.rule.employment.averagepay.dto.AveragePayDto;
 /**
@@ -46,5 +49,17 @@ public class AveragePayWebService extends WebService {
 	@Path("findByCompanyCode")
 	public AveragePayDto findByCompanyCode() {
 		return this.averagePayFinder.findByCompanyCode();
+	}
+	
+	@POST
+	@Path("findByItemSalary")
+	public List<ItemMasterDto> findByItemSalary() {
+		return this.averagePayFinder.findByItemSalary();
+	}
+	
+	@POST
+	@Path("findByItemAttend")
+	public List<ItemMasterDto> findByItemAttend() {
+		return this.averagePayFinder.findByItemAttend();
 	}
 }

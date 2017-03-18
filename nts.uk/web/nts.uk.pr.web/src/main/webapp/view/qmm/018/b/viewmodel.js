@@ -16,10 +16,8 @@ var qmm018;
                 ScreenModel.prototype.startPage = function () {
                     var self = this;
                     var dfd = $.Deferred();
-                    qmm018.b.service.qcamt_Item_SEL_3(nts.uk.ui.windows.getShared('categoryAtr')).done(function (data) {
-                        if (!data.length) {
-                            $("#label-span").ntsError('set', 'ER010');
-                        }
+                    qmm018.b.service.itemSelect(nts.uk.ui.windows.getShared('categoryAtr')).done(function (data) {
+                        if (!data.length) { }
                         else {
                             data.forEach(function (dataItem) {
                                 self.items().push(new ItemModel(dataItem.itemCode, dataItem.itemAbName));

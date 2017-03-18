@@ -5,18 +5,17 @@ var qmm018;
         var service;
         (function (service) {
             var paths = {
-                qapmt_Ave_Pay_SEL_1: "pr/core/averagepay/findByCompanyCode",
-                qapmt_Ave_Pay_INS_1: "pr/core/averagepay/register",
-                qapmt_Ave_Pay_UPD_1: "pr/core/averagepay/update",
-                qcamt_Item_SEL_5: "pr/proto/item/findall/avepay/time",
-                qcamt_Item_Salary_SEL_2: "",
-                qcamt_Item_Salary_SEL_3: "",
-                qcamt_Item_Salary_SEL_4: "",
-                qcamt_Item_Salary_UPD_2: "",
+                averagePayItemSelect: "pr/core/averagepay/findByCompanyCode",
+                averagePayItemSelectBySalary: "pr/core/averagepay/findByItemSalary",
+                averagePayItemSelectByAttend: "pr/core/averagepay/findByItemAttend",
+                averagePayItemInsert: "pr/core/averagepay/register",
+                averagePayItemUpdate: "pr/core/averagepay/update",
+                itemSalaryUpdate: "",
+                itemAttendUpdate: ""
             };
-            function qapmt_Ave_Pay_SEL_1() {
+            function averagePayItemSelect() {
                 var dfd = $.Deferred();
-                nts.uk.request.ajax(paths.qapmt_Ave_Pay_SEL_1)
+                nts.uk.request.ajax(paths.averagePayItemSelect)
                     .done(function (res) {
                     dfd.resolve(res);
                 })
@@ -25,10 +24,10 @@ var qmm018;
                 });
                 return dfd.promise();
             }
-            service.qapmt_Ave_Pay_SEL_1 = qapmt_Ave_Pay_SEL_1;
-            function qapmt_Ave_Pay_INS_1(command) {
+            service.averagePayItemSelect = averagePayItemSelect;
+            function averagePayItemSelectBySalary() {
                 var dfd = $.Deferred();
-                nts.uk.request.ajax(paths.qapmt_Ave_Pay_INS_1, command)
+                nts.uk.request.ajax(paths.averagePayItemSelectBySalary)
                     .done(function (res) {
                     dfd.resolve(res);
                 })
@@ -37,10 +36,10 @@ var qmm018;
                 });
                 return dfd.promise();
             }
-            service.qapmt_Ave_Pay_INS_1 = qapmt_Ave_Pay_INS_1;
-            function qapmt_Ave_Pay_UPD_1(command) {
+            service.averagePayItemSelectBySalary = averagePayItemSelectBySalary;
+            function averagePayItemSelectByAttend() {
                 var dfd = $.Deferred();
-                nts.uk.request.ajax(paths.qapmt_Ave_Pay_UPD_1, command)
+                nts.uk.request.ajax(paths.averagePayItemSelectByAttend)
                     .done(function (res) {
                     dfd.resolve(res);
                 })
@@ -49,10 +48,10 @@ var qmm018;
                 });
                 return dfd.promise();
             }
-            service.qapmt_Ave_Pay_UPD_1 = qapmt_Ave_Pay_UPD_1;
-            function qcamt_Item_SEL_5(categoryAtr, itemCode) {
+            service.averagePayItemSelectByAttend = averagePayItemSelectByAttend;
+            function averagePayItemInsert(command) {
                 var dfd = $.Deferred();
-                nts.uk.request.ajax(nts.uk.text.format(paths.qcamt_Item_SEL_5, categoryAtr, itemCode))
+                nts.uk.request.ajax(paths.averagePayItemInsert, command)
                     .done(function (res) {
                     dfd.resolve(res);
                 })
@@ -61,10 +60,10 @@ var qmm018;
                 });
                 return dfd.promise();
             }
-            service.qcamt_Item_SEL_5 = qcamt_Item_SEL_5;
-            function qcamt_Item_Salary_SEL_2(itemCode) {
+            service.averagePayItemInsert = averagePayItemInsert;
+            function averagePayItemUpdate(command) {
                 var dfd = $.Deferred();
-                nts.uk.request.ajax(nts.uk.text.format(paths.qcamt_Item_Salary_SEL_2, itemCode))
+                nts.uk.request.ajax(paths.averagePayItemUpdate, command)
                     .done(function (res) {
                     dfd.resolve(res);
                 })
@@ -73,10 +72,10 @@ var qmm018;
                 });
                 return dfd.promise();
             }
-            service.qcamt_Item_Salary_SEL_2 = qcamt_Item_Salary_SEL_2;
-            function qcamt_Item_Salary_SEL_3() {
+            service.averagePayItemUpdate = averagePayItemUpdate;
+            function itemSalaryUpdate() {
                 var dfd = $.Deferred();
-                nts.uk.request.ajax(paths.qcamt_Item_Salary_SEL_3)
+                nts.uk.request.ajax(nts.uk.text.format(paths.itemSalaryUpdate))
                     .done(function (res) {
                     dfd.resolve(res);
                 })
@@ -85,10 +84,10 @@ var qmm018;
                 });
                 return dfd.promise();
             }
-            service.qcamt_Item_Salary_SEL_3 = qcamt_Item_Salary_SEL_3;
-            function qcamt_Item_Salary_SEL_4() {
+            service.itemSalaryUpdate = itemSalaryUpdate;
+            function itemAttendUpdate() {
                 var dfd = $.Deferred();
-                nts.uk.request.ajax(paths.qcamt_Item_Salary_SEL_4)
+                nts.uk.request.ajax(nts.uk.text.format(paths.itemAttendUpdate))
                     .done(function (res) {
                     dfd.resolve(res);
                 })
@@ -97,19 +96,7 @@ var qmm018;
                 });
                 return dfd.promise();
             }
-            service.qcamt_Item_Salary_SEL_4 = qcamt_Item_Salary_SEL_4;
-            function qcamt_Item_Salary_UPD_2(itemCode) {
-                var dfd = $.Deferred();
-                nts.uk.request.ajax(nts.uk.text.format(paths.qcamt_Item_Salary_UPD_2, itemCode))
-                    .done(function (res) {
-                    dfd.resolve(res);
-                })
-                    .fail(function (res) {
-                    dfd.reject(res);
-                });
-                return dfd.promise();
-            }
-            service.qcamt_Item_Salary_UPD_2 = qcamt_Item_Salary_UPD_2;
+            service.itemAttendUpdate = itemAttendUpdate;
         })(service = a.service || (a.service = {}));
     })(a = qmm018.a || (qmm018.a = {}));
 })(qmm018 || (qmm018 = {}));

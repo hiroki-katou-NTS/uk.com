@@ -1,18 +1,17 @@
 module qmm018.a.service {
     var paths: any = {
-        qapmt_Ave_Pay_SEL_1: "pr/core/averagepay/findByCompanyCode",
-        qapmt_Ave_Pay_INS_1: "pr/core/averagepay/register",
-        qapmt_Ave_Pay_UPD_1: "pr/core/averagepay/update",
-        qcamt_Item_SEL_5: "pr/proto/item/findall/avepay/time",
-        qcamt_Item_Salary_SEL_2: "",
-        qcamt_Item_Salary_SEL_3: "",
-        qcamt_Item_Salary_SEL_4: "",
-        qcamt_Item_Salary_UPD_2: "",
+        averagePayItemSelect: "pr/core/averagepay/findByCompanyCode",
+        averagePayItemSelectBySalary: "pr/core/averagepay/findByItemSalary",
+        averagePayItemSelectByAttend: "pr/core/averagepay/findByItemAttend",
+        averagePayItemInsert: "pr/core/averagepay/register",
+        averagePayItemUpdate: "pr/core/averagepay/update",
+        itemSalaryUpdate: "",
+        itemAttendUpdate: ""
     }
     
-    export function qapmt_Ave_Pay_SEL_1(): JQueryPromise<any> {
+    export function averagePayItemSelect(): JQueryPromise<any> {
         var dfd = $.Deferred<any>();
-        nts.uk.request.ajax(paths.qapmt_Ave_Pay_SEL_1)
+        nts.uk.request.ajax(paths.averagePayItemSelect)
             .done(function(res: any) {
                 dfd.resolve(res);
             })
@@ -22,9 +21,9 @@ module qmm018.a.service {
         return dfd.promise();
     }
     
-    export function qapmt_Ave_Pay_INS_1(command): JQueryPromise<any> {
+    export function averagePayItemSelectBySalary(): JQueryPromise<any> {
         var dfd = $.Deferred<any>();
-        nts.uk.request.ajax(paths.qapmt_Ave_Pay_INS_1, command)
+        nts.uk.request.ajax(paths.averagePayItemSelectBySalary)
             .done(function(res: any) {
                 dfd.resolve(res);
             })
@@ -34,9 +33,9 @@ module qmm018.a.service {
         return dfd.promise();
     }
     
-    export function qapmt_Ave_Pay_UPD_1(command): JQueryPromise<any> {
+    export function averagePayItemSelectByAttend(): JQueryPromise<any> {
         var dfd = $.Deferred<any>();
-        nts.uk.request.ajax(paths.qapmt_Ave_Pay_UPD_1, command)
+        nts.uk.request.ajax(paths.averagePayItemSelectByAttend)
             .done(function(res: any) {
                 dfd.resolve(res);
             })
@@ -46,9 +45,9 @@ module qmm018.a.service {
         return dfd.promise();
     }
     
-    export function qcamt_Item_SEL_5(categoryAtr, itemCode): JQueryPromise<any> {
+    export function averagePayItemInsert(command): JQueryPromise<any> {
         var dfd = $.Deferred<any>();
-        nts.uk.request.ajax(nts.uk.text.format(paths.qcamt_Item_SEL_5, categoryAtr, itemCode))
+        nts.uk.request.ajax(paths.averagePayItemInsert, command)
             .done(function(res: any) {
                 dfd.resolve(res);
             })
@@ -58,9 +57,9 @@ module qmm018.a.service {
         return dfd.promise();
     }
     
-    export function qcamt_Item_Salary_SEL_2(itemCode): JQueryPromise<any> {
+    export function averagePayItemUpdate(command): JQueryPromise<any> {
         var dfd = $.Deferred<any>();
-        nts.uk.request.ajax(nts.uk.text.format(paths.qcamt_Item_Salary_SEL_2, itemCode))
+        nts.uk.request.ajax(paths.averagePayItemUpdate, command)
             .done(function(res: any) {
                 dfd.resolve(res);
             })
@@ -70,9 +69,9 @@ module qmm018.a.service {
         return dfd.promise();
     }
     
-    export function qcamt_Item_Salary_SEL_3(): JQueryPromise<any> {
+    export function itemSalaryUpdate(): JQueryPromise<any> {
         var dfd = $.Deferred<any>();
-        nts.uk.request.ajax(paths.qcamt_Item_Salary_SEL_3)
+        nts.uk.request.ajax(nts.uk.text.format(paths.itemSalaryUpdate))
             .done(function(res: any) {
                 dfd.resolve(res);
             })
@@ -82,23 +81,9 @@ module qmm018.a.service {
         return dfd.promise();
     }
     
-    export function qcamt_Item_Salary_SEL_4(): JQueryPromise<any> {
+    export function itemAttendUpdate(): JQueryPromise<any> {
         var dfd = $.Deferred<any>();
-        nts.uk.request.ajax(paths.qcamt_Item_Salary_SEL_4)
-            .done(function(res: any) {
-                dfd.resolve(res);
-            })
-            .fail(function(res) {
-                dfd.reject(res);
-            })
-        return dfd.promise();
-    }
-    
-    
-    
-    export function qcamt_Item_Salary_UPD_2(itemCode): JQueryPromise<any> {
-        var dfd = $.Deferred<any>();
-        nts.uk.request.ajax(nts.uk.text.format(paths.qcamt_Item_Salary_UPD_2, itemCode))
+        nts.uk.request.ajax(nts.uk.text.format(paths.itemAttendUpdate))
             .done(function(res: any) {
                 dfd.resolve(res);
             })
