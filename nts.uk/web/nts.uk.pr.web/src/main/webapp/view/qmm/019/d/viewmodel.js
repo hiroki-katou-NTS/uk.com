@@ -22,7 +22,8 @@ var qmm019;
                     self.layoutSelect = ko.observable(nts.uk.ui.windows.getShared('stmtCode'));
                     self.valueSel001 = ko.observable("");
                     self.createlayout = ko.observable(null);
-                    self.startYmHis = ko.observable(null);
+                    self.startYmHis = ko.observable(nts.uk.ui.windows.getShared('startYm'));
+                    console.log(self.startYmHis());
                     console.log(option);
                     self.timeEditorOption = ko.mapping.fromJS(new option.TimeEditorOption({ inputFormat: "yearmonth" }));
                     //---radio
@@ -78,7 +79,7 @@ var qmm019;
                             self.selectStmtName(layout.stmtName);
                             self.selectStartYm(nts.uk.time.formatYearMonth(layout.startYm));
                             self.itemsRadio()[0].text('最新の履歴（' + self.selectStartYm() + '）から引き継ぐ');
-                            self.startYmHis(layout.startYm);
+                            //self.startYmHis(layout.startYm);
                             return false;
                         }
                     });

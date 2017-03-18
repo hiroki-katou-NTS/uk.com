@@ -57,11 +57,12 @@ public class LayoutWebService extends WebService {
 		return this.find.getAllLayoutHead(AppContexts.user().companyCode());
 	}
 	
-//	@POST
-//	@Path("findallMaxHistory")
-//	public List<LayoutHistoryDto> getAllHistoryMaxStart() {
-//		return this.find.getHistoryWithMaxStartYm(AppContexts.user().companyCode());
-//	}
+	@POST
+	@Path("findallMaxHistory")
+	public List<LayoutHistoryDto> getAllHistoryMaxStart(int startYm) {
+		startYm =0;
+		return this.find.getHistoryWithMaxStartYm(AppContexts.user().companyCode(),startYm);
+	}
 
 	@POST
 	@Path("findalllayoutHist")
@@ -107,13 +108,6 @@ public class LayoutWebService extends WebService {
 	public void createLayout(CreateLayoutCommand command) {
 		this.createLayoutData.handle(command);
 	}
-
-	@POST
-	@Path("createlayouthistory")
-	public void createLayoutHistory(CreateLayoutHistoryCommand command) {
-		this.createHistoryData.handle(command);
-	}
-
 	@POST
 	@Path("updatedata")
 	public void updateData(UpdateLayoutHistoryCommand command) {
@@ -132,4 +126,9 @@ public class LayoutWebService extends WebService {
 		this.registerLayoutHandler.handle(command);
 	}
 
+	@POST
+	@Path("createlayouthistory")
+	public void createLayoutHistory(CreateLayoutHistoryCommand command) {
+		this.createHistoryData.handle(command);
+	}
 }

@@ -46,6 +46,17 @@ var qmm019;
                 return dfd.promise();
             }
             service.createLayoutHistory = createLayoutHistory;
+            //Lanlt
+            function createLayoutHistory1(layoutMaster) {
+                var dfd = $.Deferred();
+                nts.uk.request.ajax(paths.createlayouthistory, layoutMaster).done(function (res) {
+                    dfd.resolve(res);
+                }).fail(function (res) {
+                    dfd.reject(res);
+                });
+                return dfd.promise();
+            }
+            service.createLayoutHistory1 = createLayoutHistory1;
             var model;
             (function (model) {
                 // layout

@@ -56,12 +56,12 @@
 						<div class="clsDiv"><label id = "LBL_003">※選択した明細レイアウトの最新の履歴からコピーします。</label></div>
 						<div>
 							<div class ="inline clsDiv">
-								<div id="LBL_004" data-bind="ntsFormLabel: {required: true,constraint: 'LayoutCode'}">
+								<div id="LBL_004" data-bind="ntsFormLabel: {required: true,constraint: ['LayoutCode','LayoutName']}">
 									<label>コード/名称<br /></label>
 								</div>
 								<!-- <label id = "LBL_004" >コード/名称</label> -->
 								<input id="INP_001" data-name="コード" data-bind="ntsTextEditor: {value: layoutCode, 
-																					constraint: 'LayoutCode, LayoutName', 
+																					constraint: 'LayoutCode', 
 																					option: textEditorOption, 
 																					enable: true}" />
 								<input id="INP_002" data-name="名称" data-bind="ntsTextEditor: {value: layoutName, 
@@ -71,7 +71,7 @@
 							</div>
 							<div class ="timeLayout clsDiv">
 								<div data-bind="ntsFormLabel: {required: true}"><label id = "LBL_005">開始年月</label></div>
-								<div><input id = "INP_003" style="ime-mode: inactive" data-bind="ntsTimeEditor: {value: selectStartYm, option: timeEditorOption}"></input></div>
+								<div><input id = "INP_003" style="ime-mode: inactive, margin-left: 10px" data-bind="ntsTimeEditor: {value: selectStartYm, option: timeEditorOption}"></input></div>
 								<!-- 入力した開始年月を和暦で表記 -->
 								<div><label id = "LBL_006" data-bind="text: yearMonthEra"></label></div>
 							</div>
@@ -87,7 +87,7 @@
 										optionsText: 'numberDisplayItems',
 										multiple: false,
 										value: selectedCodes,
-										enable: isEnable(),
+										enable: isEnableCombox(),
 										columns: [
 											{ prop: 'printType', length: 7 },
 											{ prop: 'paperType', length: 4 },

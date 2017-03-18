@@ -92,10 +92,10 @@ module qmm019.g.viewmodel {
             //radio button change
             self.isRadioCheck.subscribe(function(newValue) {
                 if (newValue === 1) {
-                    self.isEnable(true);
+                    //self.isEnable(true);
                     self.isEnableCombox(false);
                 } else {
-                    self.isEnable(false);
+                   // self.isEnable(false);
                     self.isEnableCombox(true);
                 }
 
