@@ -26,7 +26,6 @@ module qmm012.b.viewmodel {
         texteditor_B_INP_003: any;
         texteditor_B_INP_004: any;
         enable_B_INP_002: KnockoutObservable<boolean> = ko.observable(false);
-        //textarea 
         screenModel: qmm012.b.ScreenModel;
         constructor(screenModel: qmm012.b.ScreenModel) {
             let self = this;
@@ -64,7 +63,7 @@ module qmm012.b.viewmodel {
             self.GridlistCurrentItem_B_001.subscribe(function(itemModel: service.model.ItemMasterModel) {
                 self.GridCurrentItemName_B_001(itemModel ? itemModel.itemName : '');
                 self.GridCurrentUniteCode_B_001(itemModel ? itemModel.uniteCode : '');
-                self.GridCurrentCategoryAtr_B_001(itemModel ? itemModel.categoryAtrValue : 0);
+                self.GridCurrentCategoryAtr_B_001(itemModel ? itemModel.categoryAtr : 0);
                 //Because there are many items in the same group  After set value , need call ChangeGroup function for Set Value to layout
                 ChangeGroup(self.GridCurrentCategoryAtr_B_001());
                 self.GridCurrentCodeAndName_B_001(itemModel ? itemModel.itemCode + ' ' + itemModel.itemName : '');
@@ -117,8 +116,7 @@ module qmm012.b.viewmodel {
             }).fail(function(res) {
                 alert(res);
             });
-
-
+            
             //set text editer data
             //INP_002
             self.texteditor_B_INP_002 = {
@@ -148,7 +146,27 @@ module qmm012.b.viewmodel {
                     textalign: "left"
                 }))
             };
+
         }
+
+        GetCurrentItemMaster() {
+            let self = this;
+            return new service.model.ItemMasterModel(
+                self.GridlistCurrentCode_B_001(),
+                self.GridCurrentItemName_B_001(),
+                self.GridCurrentCategoryAtr_B_001(),
+                self.GridCurrentCategoryAtrName_B_001(),
+                self.GridCurrentItemAbName_B_001(),
+                self.GridlistCurrentItem_B_001() ? self.GridlistCurrentItem_B_001().itemAbNameO : self.GridCurrentItemAbName_B_001(),
+                self.GridlistCurrentItem_B_001() ? self.GridlistCurrentItem_B_001().itemAbNameE : self.GridCurrentItemAbName_B_001(),
+                self.GridCurrentDisplaySet_B_001(),
+                self.GridCurrentUniteCode_B_001(),
+                self.GetCurrentZeroDisplaySet(),
+                self.GetCurrentItemDisplayAtr(),
+                1
+            )
+        }
+
         DeleteDialog() {
             let self = this;
             service.deleteItemMaster(self.GridlistCurrentItem_B_001()).done(function(any) {
@@ -164,24 +182,78 @@ module qmm012.b.viewmodel {
                         else
                             self.GridlistCurrentCode_B_001(self.GridlistItems_B_001()[index - 1].itemCode);
                     } else
-                        self.GridlistCurrentCode_B_001(undefined);
+                        self.GridlistCurrentCode_B_001('');
                 }
             }).fail(function(res) {
 
                 alert(res);
             });
         }
+        GetCurrentZeroDisplaySet() {
+            let Result;
+            let self = this;
+            let CurrentGroup = self.GridCurrentCategoryAtr_B_001();
+            switch (CurrentGroup) {
+                case 0:
+                    Result = self.screenModel.screenModelC.CurrentZeroDisplaySet();
+                    break;
+                case 1:
+                    Result = self.screenModel.screenModelD.CurrentZeroDisplaySet();
+                    break;
+                case 2:
+                    Result = self.screenModel.screenModelE.CurrentZeroDisplaySet();
+                    break;
+            }
+            return Result;
+        }
+        GetCurrentItemDisplayAtr() {
+            let Result;
+            let self = this;
+            let CurrentGroup = self.GridCurrentCategoryAtr_B_001();
+            switch (CurrentGroup) {
+                case 0:
+                    Result = self.screenModel.screenModelC.CurrentItemDisplayAtr();
+                    break;
+                case 1:
+                    Result = self.screenModel.screenModelD.CurrentItemDisplayAtr();
+                    break;
+                case 2:
+                    Result = self.screenModel.screenModelE.CurrentItemDisplayAtr();
+                    break;
+            }
+            return Result;
+        }
+
+
         openADialog() {
             let self = this;
             nts.uk.ui.windows.sub.modal('../a/index.xhtml', { height: 480, width: 630, dialogClass: "no-close" }).onClosed(function(): any {
                 let groupCode = Number(nts.uk.sessionStorage.getItemAndRemove('groupCode').value);
                 //set layout for new.
                 if (groupCode != undefined) {
-                    self.GridlistCurrentCode_B_001(undefined);
+                    self.GridlistCurrentCode_B_001('');
                     self.GridCurrentCategoryAtr_B_001(groupCode);
                     self.enable_B_INP_002(true);
                 }
             });
+        }
+        submitData() {
+            let self = this;
+            let ItemMaster = self.GetCurrentItemMaster();
+            //if self.enable_B_INP_002 == true is mean New mode
+            if (self.enable_B_INP_002()) {
+                self.AddNewItemMaster(ItemMaster);
+            } else {
+                self.UpdateItemMaster(ItemMaster);
+            }
+        }
+        AddNewItemMaster(ItemMaster: service.model.ItemMasterModel) {
+            let self = this;
+            self.GridlistItems_B_001().push(ItemMaster);
+            self.GridlistCurrentCode_B_001(ItemMaster.itemCode);
+        }
+        UpdateItemMaster(ItemMaster: service.model.ItemMasterModel) {
+
         }
 
         openJDialog() {

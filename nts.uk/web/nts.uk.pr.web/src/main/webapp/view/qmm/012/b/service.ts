@@ -17,7 +17,7 @@ module qmm012.b {
                 })
             return dfd.promise();
         }
-    
+
 
         export function findItemperiod(categoryAtr, itemCode): JQueryPromise<model.ItemPeriodModel> {
             var dfd = $.Deferred<model.ItemPeriodModel>();
@@ -42,11 +42,14 @@ module qmm012.b {
                 })
             return dfd.promise();
         }
+        
+    
+    
         export module model {
             export class ItemMasterModel {
                 itemCode: string;
                 itemName: string;
-                categoryAtrValue: number;
+                categoryAtr: number;
                 categoryAtrName: string;
                 itemAbName: string;
                 itemAbNameO: string;
@@ -55,10 +58,11 @@ module qmm012.b {
                 uniteCode: string;
                 zeroDisplaySet: number;
                 itemDisplayAtr: number;
+                fixAtr: number;
                 constructor(
                     itemCode: string,
                     itemName: string,
-                    categoryAtrValue: number,
+                    categoryAtr: number,
                     categoryAtrName: string,
                     itemAbName: string,
                     itemAbNameO: string,
@@ -66,11 +70,12 @@ module qmm012.b {
                     displaySet: number,
                     uniteCode: string,
                     zeroDisplaySet: number,
-                    itemDisplayAtr: number
+                    itemDisplayAtr: number,
+                    fixAtr: number
                 ) {
                     this.itemCode = itemCode;
                     this.itemName = itemName;
-                    this.categoryAtrValue = categoryAtrValue;
+                    this.categoryAtr = categoryAtr;
                     this.categoryAtrName = categoryAtrName;
                     this.itemAbName = itemAbName;
                     this.itemAbNameO = itemAbNameO;
@@ -78,8 +83,10 @@ module qmm012.b {
                     this.displaySet = displaySet;
                     this.uniteCode = uniteCode;
                     this.zeroDisplaySet = itemDisplayAtr;
+                    this.fixAtr = fixAtr;
                 }
             }
+
 
             export class ItemPeriodModel {
                 itemClass: number;
