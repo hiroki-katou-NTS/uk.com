@@ -1,5 +1,6 @@
 package nts.uk.ctx.pr.core.infra.repository.itemmaster;
 
+import java.util.List;
 import java.util.Optional;
 
 import javax.enterprise.context.RequestScoped;
@@ -15,13 +16,20 @@ import nts.uk.ctx.pr.core.infra.entity.itemmaster.QcamtItemSalaryPK;
 @RequestScoped
 public class JpaItemSalaryRepository extends JpaRepository implements ItemSalaryRespository {
 	private final String SEL = "SELECT c FROM QcamtItemSalary c";
-	private final String SEL_1 = SEL
-			+ " WHERE c.qcamtItemSalaryPK.ccd = :companyCode AND c.qcamtItemSalaryPK.itemCd = :itemCd";
+	private final String SEL_1 = SEL + " WHERE c.qcamtItemSalaryPK.ccd = :companyCode";
 
 	@Override
 	public Optional<ItemSalary> find(String companyCode, String itemCode) {
-		return this.queryProxy().query(SEL_1, QcamtItemSalary.class).setParameter("companyCode", companyCode)
-				.setParameter("itemCd", itemCode).getSingle(c -> toDomain(c));
+		return this.queryProxy().find(new QcamtItemSalaryPK(companyCode, itemCode), QcamtItemSalary.class)
+				.map(x -> toDomain(x));
+		
+	}
+	
+	@Override
+	public List<ItemSalary> findAll(String companyCode) {
+		return this.queryProxy().query(SEL_1, QcamtItemSalary.class)
+				.setParameter("companyCode", companyCode)
+				.getList(x -> toDomain(x));
 	}
 	
 	@Override

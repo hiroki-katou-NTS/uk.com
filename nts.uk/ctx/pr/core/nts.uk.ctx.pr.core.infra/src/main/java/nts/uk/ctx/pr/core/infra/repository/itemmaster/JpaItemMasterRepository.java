@@ -15,10 +15,11 @@ import nts.uk.ctx.pr.core.infra.entity.itemmaster.QcamtItemPK;
 @RequestScoped
 public class JpaItemMasterRepository extends JpaRepository implements ItemMasterRepository {
 	private final String SEL = "SELECT c FROM QcamtItem c";
+	private final String SEL_1 = SEL + " WHERE c.qcamtItemPK.ccd = :companyCode ";
 	private final String SEL_3 = SEL + " WHERE c.qcamtItemPK.ccd = :companyCode AND c.avePayAtr = :avePayAtr";
 	private final String SEL_3_1 = SEL + " WHERE c.qcamtItemPK.ccd = :companyCode AND c.qcamtItemPK.ctgAtr = :ctgAtr";
-	private final String SEL_10 = "";
-	private final String SEL_1 = SEL + " WHERE c.qcamtItemPK.ccd = :companyCode ";
+	private final String SEL_10 = SEL + " WHERE c.qcamtItemPK.ccd = :companyCode AND c.qcamtItemPK.ctgAtr = :categoryAtr AND c.fixAtr = :fixAtr AND  c.qcamtItemPK.itemCd IN :itemCodeList ";
+	private final String SEL_11 = SEL + " WHERE c.qcamtItemPK.ccd = :companyCode AND c.qcamtItemPK.ctgAtr = :categoryAtr AND  c.qcamtItemPK.itemCd IN :itemCodeList ";
 
 	@Override
 	public Optional<ItemMaster> find(String companyCode, int categoryAtr, String itemCode) {
@@ -27,6 +28,15 @@ public class JpaItemMasterRepository extends JpaRepository implements ItemMaster
 				.map(x -> toDomain(x));
 	}
 
+	@Override
+	public List<ItemMaster> findAll(String companyCode, int categoryAtr, List<String> itemCode) {
+		return this.queryProxy().query(SEL_11, QcamtItem.class)
+				.setParameter("companyCode", companyCode)
+				.setParameter("categoryAtr", categoryAtr)
+				.setParameter("itemCodeList", itemCode)
+				.getList(c -> toDomain(c));
+	}
+	
 	@Override
 	public List<ItemMaster> findAll(String companyCode, int avePayAtr) {
 		return this.queryProxy().query(SEL_3, QcamtItem.class).setParameter("companyCode", companyCode)
@@ -53,11 +63,15 @@ public class JpaItemMasterRepository extends JpaRepository implements ItemMaster
 	}
 
 	@Override
-	public List<ItemMaster> findAll(String companyCode, int categoryAtr, String itemCode, int fixAtr) {
-		return this.queryProxy().query(SEL_10, QcamtItem.class).setParameter("companyCode", companyCode)
-				.setParameter("itemCode", itemCode).setParameter("fixAtr", fixAtr).getList(c -> toDomain(c));
+	public List<ItemMaster> findAll(String companyCode, int categoryAtr, List<String> itemCode, int fixAtr) {
+		return this.queryProxy().query(SEL_10, QcamtItem.class)
+				.setParameter("companyCode", companyCode)
+				.setParameter("categoryAtr", categoryAtr)
+				.setParameter("fixAtr", fixAtr)
+				.setParameter("itemCodeList", itemCode)
+				.getList(c -> toDomain(c));
 	}
-
+	
 	public void remove(String companyCode, int categoryAtr, String itemCode) {
 		QcamtItemPK key = new QcamtItemPK(companyCode, categoryAtr, itemCode);
 		this.commandProxy().remove(QcamtItem.class, key);
