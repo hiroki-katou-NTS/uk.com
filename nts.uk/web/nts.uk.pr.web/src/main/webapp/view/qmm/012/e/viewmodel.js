@@ -31,7 +31,7 @@ var qmm012;
                     this.CurrentWorkDaysScopeAtr = ko.observable(1);
                     this.CurrentMemo = ko.observable("");
                     this.CurrentZeroDisplaySet = ko.observable(1);
-                    this.CurentItemDisplayAtr = ko.observable(1);
+                    this.CurrentItemDisplayAtr = ko.observable(1);
                     var self = this;
                     //E_001 To 003
                     //E_001To003
@@ -122,7 +122,7 @@ var qmm012;
                         self.checked_E_008(ItemAttend ? ItemAttend.alRangeLowAtr == 0 ? false : true : false);
                     });
                     self.checked_E_004.subscribe(function (NewValue) {
-                        self.CurentItemDisplayAtr(NewValue ? 0 : 1);
+                        self.CurrentItemDisplayAtr(NewValue ? 0 : 1);
                     });
                     self.checked_E_005.subscribe(function (NewValue) {
                         self.CurrentErrRangeHighAtr(NewValue ? 1 : 0);
