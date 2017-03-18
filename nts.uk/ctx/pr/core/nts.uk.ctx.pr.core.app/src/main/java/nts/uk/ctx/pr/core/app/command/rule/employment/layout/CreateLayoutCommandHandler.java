@@ -79,9 +79,6 @@ public class CreateLayoutCommandHandler extends CommandHandler<CreateLayoutComma
 			if (layoutRepo.isExist(companyCode, command.getStmtCode())) {
 				throw new BusinessException(new RawErrorMessage("入力した明細書コードは既に存在しています。\r\n明細書コードを確認してください。"));
 			}
-
-			// LayoutMaster layout =
-			// command.toDomain(IdentifierUtil.randomUniqueId());
 			LayoutMaster layoutHead = command.toDomain();
 			LayoutHistory layoutHistory = command.toDomain(IdentifierUtil.randomUniqueId());
 			layoutHead.validate();
@@ -185,14 +182,7 @@ public class CreateLayoutCommandHandler extends CommandHandler<CreateLayoutComma
 
 	private void copyNewData(CreateLayoutCommand command, String companyCode, LayoutMaster layout,
 			LayoutHistory layoutHistory) {
-		// List<LayoutMasterCategory> categoriesOrigin =
-		// categoryRepo.getCategories(companyCode, command.getStmtCodeCopied(),
-		// command.getStartYmCopied());
-		// [明細書マスタカテゴリ]の明細書コード = G_SEL_002で選択している項目の明細書コード AND [明細書マスタカテゴリ]の終了年月
-		// = 999912
-		// List<LayoutMasterCategory> categoriesOrigin =
-		// categoryRepo.getCategoriesBefore(companyCode,
-		// command.getStmtCodeCopied(), layoutHistory.getHistoryId());
+		// [明細書マスタカテゴリ]の明細書コード = G_SEL_002で選択している項目の明細書コード AND [明細書マスタカテゴリ]の終了年月 = 999912
 		List<LayoutMasterCategory> categoriesOrigin = categoryRepo.getCategoriesBefore(companyCode,
 				command.getStmtCodeCopied());
 		if (!categoriesOrigin.isEmpty()) {
@@ -204,10 +194,7 @@ public class CreateLayoutCommandHandler extends CommandHandler<CreateLayoutComma
 			categoryRepo.add(categoriesNew);
 		}
 
-		// [明細書マスタ行]の明細書コード = G_SEL_002で選択している項目の明細書コード AND [明細書マスタ行]の終了年月 =
-		// 999912
-		// anh lam truoc khi thay doi DB
-		//List<LayoutMasterLine> linesOrigin = lineRepo.getLinesBefore(companyCode, command.getStmtCodeCopied(),layoutHistory.getHistoryId());
+		// [明細書マスタ行]の明細書コード = G_SEL_002で選択している項目の明細書コード AND [明細書マスタ行]の終了年月 = 999912
 		// Lanlt 16.3.2017
 		List<LayoutMasterLine> linesOrigin = lineRepo.getLinesBefore(companyCode, command.getStmtCodeCopied());
 		if (!linesOrigin.isEmpty()) {
@@ -219,12 +206,7 @@ public class CreateLayoutCommandHandler extends CommandHandler<CreateLayoutComma
 			lineRepo.add(linesNew);
 		}
 
-		// [明細書マスタ明細]の明細書コード = G_SEL_002で選択している項目の明細書コードAND [明細書マスタ明細]の終了年月 =
-		// 999912
-		// anh Lam 16.3
-		// List<LayoutMasterDetail> detailsOrigin =
-		// detailRepo.getDetailsBefore(companyCode, command.getStmtCodeCopied(),
-		// layoutHistory.getHistoryId());
+		// [明細書マスタ明細]の明細書コード = G_SEL_002で選択している項目の明細書コードAND [明細書マスタ明細]の終了年月 = 999912
 		List<LayoutMasterDetail> detailsOrigin = detailRepo.getDetailsBefore(companyCode, command.getStmtCodeCopied());
 		if (!detailsOrigin.isEmpty()) {
 			List<LayoutMasterDetail> detailsNew = detailsOrigin.stream().map(org -> {

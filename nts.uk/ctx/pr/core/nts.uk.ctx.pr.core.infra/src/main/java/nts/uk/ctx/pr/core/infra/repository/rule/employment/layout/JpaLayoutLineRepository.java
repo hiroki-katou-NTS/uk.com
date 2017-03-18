@@ -170,8 +170,9 @@ public class JpaLayoutLineRepository extends JpaRepository implements LayoutMast
 
 	@Override
 	public List<LayoutMasterLine> getLines(String companyCd, String stmtCd, String historyId) {
-		// TODO Auto-generated method stub
-		return null;
+		return this.queryProxy().query(SELECT_ALL_DETAILS_BEFORE1, QstmtStmtLayoutLines.class)
+				.setParameter("companyCd", companyCd).setParameter("stmtCd", stmtCd)
+				.setParameter("historyId", historyId).getList(c -> toDomain(c));
 	}
 
 	@Override
