@@ -78,7 +78,6 @@ public class JpaLineBankRepository extends JpaRepository implements LineBankRepo
 	
 	@Override
 	public List<LineBank> findAll(String companyCode) {
-		// TODO Auto-generated method stub
 		return this.queryProxy()
 				.query(SEL_1, CbkmtLineBank.class)
 				.setParameter("CCD", companyCode)
@@ -87,20 +86,17 @@ public class JpaLineBankRepository extends JpaRepository implements LineBankRepo
 
 	@Override
 	public void add(LineBank lineBank) {
-		// TODO Auto-generated method stub
 		this.commandProxy().insert(toEntity(lineBank));
 	}
 
 	@Override
 	public void remove(String companyCode, String lineBankCode) {
-		// TODO Auto-generated method stub
 		CbkmtLineBankPK cbkmtLineBankPK = new CbkmtLineBankPK(companyCode, lineBankCode); 
 		this.commandProxy().remove(CbkmtLineBank.class, cbkmtLineBankPK);;
 	}
 
 	@Override
 	public void update(LineBank lineBank) {
-		// TODO Auto-generated method stub
 		this.commandProxy().update(toEntity(lineBank));
 
 	}

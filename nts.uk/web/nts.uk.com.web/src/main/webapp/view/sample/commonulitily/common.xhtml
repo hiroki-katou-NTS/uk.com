@@ -77,7 +77,17 @@ Result: false]]></pre></div></div><div class="feature-box"><div class="header">
 						<p>check is in dialog</p>
 						<pre><![CDATA[//Try to paste this to console
 nts.uk.util.isInFrame();
-Result: true]]></pre></div></div>
+Result: true]]></pre></div></div><div class="feature-box"><div class="header">
+						<h3>createTreeFromString</h3></div><div class="content">
+						<p>To create a tree from a string with format. Below is parameter description:</p>
+						<p><b>Original String: </b> original string to convert into tree.<br/>
+						<b>Open Character: </b>character for mark of open children of a node.<br/>
+						<b>Close Character: </b>character for mark of end of children of a node.<br/>
+						<b>Separator Character: </b>character for separate nodes.<br/></p>
+						<pre><![CDATA[//Try to paste this to console
+nts.uk.util.createTreeFromString("ABC1(TEXT(ABC2,ABC3), ACS(SSS1, SSS2)), SSSS(ABC4), SSS3)", "(", ")", ",");]]></pre>
+<div>Result: <br/><img src="result sample.PNG"/></div>
+</div></div>
 						<div class="footer cf">
 							<button class="previous large">Previous</button>
 							<button class="next proceed large">Next</button>
