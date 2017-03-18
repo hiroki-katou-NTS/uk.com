@@ -35,17 +35,17 @@ public class JpaComparingFormHeaderRepository extends JpaRepository implements C
 	}
 
 	@Override
-	public void InsertComparingFormHeader(ComparingFormHeader comparingFormHeader) {
+	public void insertComparingFormHeader(ComparingFormHeader comparingFormHeader) {
 		this.commandProxy().insert(convertToEntityQlsptPaycompFormHead(comparingFormHeader));
 	}
 
 	@Override
-	public void UpdateComparingFormHeader(ComparingFormHeader comparingFormHeader) {
+	public void updateComparingFormHeader(ComparingFormHeader comparingFormHeader) {
 		this.commandProxy().update(convertToEntityQlsptPaycompFormHead(comparingFormHeader));
 	}
 
 	@Override
-	public void DeleteComparingFormHeader(String companyCode, String formCode) {
+	public void deleteComparingFormHeader(String companyCode, String formCode) {
 		val entityPK = new QlsptPaycompFormHeadPK(companyCode, formCode);
 		this.commandProxy().remove(QlsptPaycompFormHead.class, entityPK);
 	}

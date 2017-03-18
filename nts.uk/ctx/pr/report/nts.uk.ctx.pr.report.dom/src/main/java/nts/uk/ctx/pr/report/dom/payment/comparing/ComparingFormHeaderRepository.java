@@ -9,10 +9,10 @@ public interface ComparingFormHeaderRepository {
 	
 	Optional<ComparingFormHeader> getComparingFormHeader(String companyCode, String formCode);
 	
-	void InsertComparingFormHeader(ComparingFormHeader comparingFormHeader);
+	void insertComparingFormHeader(ComparingFormHeader comparingFormHeader);
 		
-	void UpdateComparingFormHeader(ComparingFormHeader comparingFormHeader);
+	void updateComparingFormHeader(ComparingFormHeader comparingFormHeader);
 	
-	void DeleteComparingFormHeader(String companyCode, String formCode);
+	void deleteComparingFormHeader(String companyCode, String formCode);
 		
 }

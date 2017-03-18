@@ -42,7 +42,7 @@ public class InsertComparingFormHeaderCommandHandler extends CommandHandler<Inse
 
 		ComparingFormHeader newComparingFormHeader = ComparingFormHeader.createFromJavaType(companyCode,
 				insertCommand.getFormCode(), insertCommand.getFormName());
-		this.comparingFormHeaderRepository.InsertComparingFormHeader(newComparingFormHeader);
+		this.comparingFormHeaderRepository.insertComparingFormHeader(newComparingFormHeader);
 	}
 
 }

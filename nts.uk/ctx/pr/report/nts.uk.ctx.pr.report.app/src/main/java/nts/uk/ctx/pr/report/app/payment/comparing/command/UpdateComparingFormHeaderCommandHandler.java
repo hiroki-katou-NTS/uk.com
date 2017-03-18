@@ -44,7 +44,7 @@ public class UpdateComparingFormHeaderCommandHandler extends CommandHandler<Upda
 
 		ComparingFormHeader newComparingFormHeader = comparingFormHeader.get();
 		newComparingFormHeader.setFormName(new FormName(updateCommand.getFormName()));
-		this.comparingFormHeaderRepository.InsertComparingFormHeader(newComparingFormHeader);
+		this.comparingFormHeaderRepository.updateComparingFormHeader(newComparingFormHeader);
 	}
 
 }

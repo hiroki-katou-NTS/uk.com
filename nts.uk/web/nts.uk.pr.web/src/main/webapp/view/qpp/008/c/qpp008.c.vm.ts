@@ -131,6 +131,7 @@ module qpp008.c.viewmodel {
             }, self).extend({ deferred: true });
 
             self.columns2 = ko.observableArray([
+                { headerText: '区分', prop: 'code', width: 60 },
                 { headerText: 'コード', prop: 'code', width: 60 },
                 { headerText: '名称', prop: 'name', width: 120 },
 
