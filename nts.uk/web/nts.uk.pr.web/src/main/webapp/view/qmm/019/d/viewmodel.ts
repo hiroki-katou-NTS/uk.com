@@ -29,7 +29,9 @@ module qmm019.d.viewmodel {
             self.historys = ko.observableArray([]);
             self.selectStmtCode = ko.observable(null);
             self.selectStmtName = ko.observable(null);
-            self.selectStartYm =  ko.observable(null);
+            //self.selectStartYm =  ko.observable(null);
+            self.selectStartYm =  ko.observable(nts.uk.ui.windows.getShared('startYm'));
+            console.log(self.selectStartYm());
             self.layoutSelect = ko.observable(nts.uk.ui.windows.getShared('stmtCode'));
             self.valueSel001 = ko.observable("");
             self.createlayout = ko.observable(null);
@@ -59,12 +61,12 @@ module qmm019.d.viewmodel {
             //fill data to dialog
             service.getLayoutWithMaxStartYm().done(function(layout: Array<service.model.LayoutMasterDto>){
                 self.layouts(layout);
-                service.getHistoryWithMaxStart().done(function(layoutHistory: Array<service.model.LayoutHistoryDto>) {
-                    if (layoutHistory.length > 0) {
-                        self.historys(layoutHistory);
-                        console.log(layoutHistory);
-                    }
-                });
+//                service.getHistoryWithMaxStart().done(function(layoutHistory: Array<service.model.LayoutHistoryDto>) {
+//                    if (layoutHistory.length > 0) {
+//                        self.historys(layoutHistory);
+//                        console.log(layoutHistory);
+//                    }
+//                });
                 self.startDialog();
             });
 
@@ -93,7 +95,8 @@ module qmm019.d.viewmodel {
                 if(stmtCode == self.layoutSelect()){
                     self.selectStmtCode(stmtCode);
                     self.selectStmtName(layout.stmtName);
-                    self.selectStartYm(nts.uk.time.formatYearMonth(layout.startYm));
+                    //self.selectStartYm(nts.uk.time.formatYearMonth(layout.startYm));
+                    self.selectStartYm(nts.uk.ui.windows.getShared('startYm'));
                     self.itemsRadio()[0].text('最新の履歴（'+self.selectStartYm()+'）から引き継ぐ');
                     //self.startYmHis(layout.startYm);
                     return false;                    

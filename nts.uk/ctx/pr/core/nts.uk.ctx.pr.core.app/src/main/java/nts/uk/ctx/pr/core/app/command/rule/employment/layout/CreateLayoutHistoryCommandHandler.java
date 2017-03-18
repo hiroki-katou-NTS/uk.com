@@ -1,11 +1,14 @@
 package nts.uk.ctx.pr.core.app.command.rule.employment.layout;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
+
+import org.apache.logging.log4j.core.util.UuidUtil;
 
 import nts.arc.error.BusinessException;
 import nts.arc.error.RawErrorMessage;
@@ -51,16 +54,23 @@ public class CreateLayoutHistoryCommandHandler extends CommandHandler<CreateLayo
 	protected void handle(CommandHandlerContext<CreateLayoutHistoryCommand> context) {
 		CreateLayoutHistoryCommand command = context.getCommand();
 		String companyCode = AppContexts.user().companyCode();
-		LayoutHistory layoutHistOrigin = layoutHisRepo
-				.getHistoryBefore(companyCode, command.getStmtCode(), command.getStartPrevious())
+		LayoutHistory layoutHistOrigin = 
+				layoutHisRepo.getHistoryBefore(companyCode, command.getStmtCode(), command.getStartPrevious())
 				.orElseThrow(() -> new BusinessException(new RawErrorMessage("Not found layout history")));
-		LayoutMaster layoutOrgin = layoutRepo.getHistoryBefore(companyCode, command.getStmtCode())
+		LayoutMaster layoutOrgin =
+				layoutRepo.getHistoryBefore(companyCode, command.getStmtCode())
 				.orElseThrow(() -> new BusinessException(new RawErrorMessage("Not found layout head")));
-		List<LayoutMasterCategory> categoriesOrigin = categoryRepo.getCategoriesBefore(companyCode,
+		List<LayoutMasterCategory> categoriesOrigin =
+				categoryRepo.getCategoriesBefore(companyCode,
 				command.getStmtCode(), layoutHistOrigin.getHistoryId());
-		List<LayoutMasterLine> linesOrigin = lineRepo.getLines(companyCode, command.getStmtCode(),
+		for(int i = 0; i < categoriesOrigin.size() ; i++){
+			System.out.println(categoriesOrigin.get(i).getHistoryId());
+		}
+		List<LayoutMasterLine> linesOrigin = 
+				lineRepo.getLines(companyCode, command.getStmtCode(),
 				layoutHistOrigin.getHistoryId());
-		List<LayoutMasterDetail> detailsOrigin = detailRepo.getDetailsBefore(companyCode, command.getStmtCode(),
+		List<LayoutMasterDetail> detailsOrigin = 
+				detailRepo.getDetailsBefore(companyCode, command.getStmtCode(),
 				layoutHistOrigin.getHistoryId());
 		LayoutMaster layoutNew = command.toDomain(layoutOrgin.getStmtName().v());
 		LayoutHistory layoutHistNew = command.toDomain(command.getStartYm(), 999912, command.getLayoutAtr(),
@@ -73,12 +83,11 @@ public class CreateLayoutHistoryCommandHandler extends CommandHandler<CreateLayo
 		}
 
 		// データベース登録[明細書マスタ.INS-1]を実施する
-		layoutNew.validate();
-		layoutRepo.add(layoutNew);
+		layoutHistNew.validate();
 		layoutHisRepo.add(layoutHistNew);
 		// 「最新の履歴から引き継ぐ」を選択した場合
 		if (command.isCheckContinue()) {
-			// Lanlt 17.03.2017
+		    // Lanlt 17.03.2017
 			copyFromPreviousHistory(command, companyCode, categoriesOrigin, linesOrigin, detailsOrigin);
 		} else {
 			layoutCommandHandler.createNewData(layoutNew, layoutHistNew, companyCode);
