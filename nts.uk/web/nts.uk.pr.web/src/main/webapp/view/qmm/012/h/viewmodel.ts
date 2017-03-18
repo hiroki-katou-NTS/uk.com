@@ -76,7 +76,7 @@ module qmm012.h.viewmodel {
 
             self.CurrentItemMaster(nts.uk.ui.windows.getShared('itemMaster'));
             if (self.CurrentItemMaster()) {
-                if (self.CurrentItemMaster().categoryAtrValue == 0) {
+                if (self.CurrentItemMaster().categoryAtr == 0) {
                     service.findItemSalaryPeriod(self.CurrentItemMaster().itemCode).done(function(ItemSalary: service.model.ItemSalaryPeriod) {
                         self.CurrentItem(ItemSalary);
                     }).fail(function(res) {
@@ -84,7 +84,7 @@ module qmm012.h.viewmodel {
                         alert(res);
                     });
                 }
-                if (self.CurrentItemMaster().categoryAtrValue == 1) {
+                if (self.CurrentItemMaster().categoryAtr == 1) {
                     service.findItemDeductPeriod(self.CurrentItemMaster().itemCode).done(function(ItemDeduct: service.model.ItemDeductPeriod) {
                         self.CurrentItem(ItemDeduct);
                     }).fail(function(res) {

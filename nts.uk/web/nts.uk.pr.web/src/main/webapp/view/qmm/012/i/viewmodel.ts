@@ -122,7 +122,7 @@ module qmm012.i.viewmodel {
             ]);
             self.CurrentItemMaster(nts.uk.ui.windows.getShared('itemMaster'));
             if (self.CurrentItemMaster()) {
-                if (self.CurrentItemMaster().categoryAtrValue == 0) {
+                if (self.CurrentItemMaster().categoryAtr == 0) {
                     service.findItemSalaryBD(self.CurrentItemMaster().itemCode).done(function(ItemBDs: Array<service.model.ItemBD>) {
                         for (let ItemBD of ItemBDs) {
                             self.ItemBDList.push(ItemBD);
@@ -134,7 +134,7 @@ module qmm012.i.viewmodel {
                         alert(res);
                     });
                 }
-                if (self.CurrentItemMaster().categoryAtrValue == 1) {
+                if (self.CurrentItemMaster().categoryAtr == 1) {
                     service.findAllItemDeductBD(self.CurrentItemMaster().itemCode).done(function(ItemBDs: Array<service.model.ItemBD>) {
                         for (let ItemBD of ItemBDs) {
                             self.ItemBDList.push(ItemBD);
