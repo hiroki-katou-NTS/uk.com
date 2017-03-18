@@ -15,10 +15,10 @@
 										optionsValue: 'code', 
  										value: selectedCode_C_SEL_001, 
  										optionsText: 'name', 
-									editable: isEditable, 
- 										enable: isEnable, 
+ 										enable:true,
  										columns: [ 
- 											{ prop: 'name', length: 10 }, 
+ 											{ prop: 'name', length: 10 },
+ 										
 										]}">
 			</div>
 		</div>
@@ -35,8 +35,7 @@
 										options: roundingRules_C_017,
 										optionsValue: 'code',
 										optionsText: 'name',
-										value: CurrentLimitMnyAtr,
-										enable: enable }"></div>
+										value: CurrentLimitMnyAtr}"></div>
 				</div>
 			</div>
 		</div>
@@ -74,8 +73,7 @@
 										options: roundingRules_C_002_003_005To010,
 										optionsValue: 'code',
 										optionsText: 'name',
-										value: CurrentSocialInsAtr,
-										enable: enable }"></div>
+										value: CurrentSocialInsAtr}"></div>
 
 
 		</div>
@@ -90,8 +88,7 @@
 										options: roundingRules_C_002_003_005To010,
 										optionsValue: 'code',
 										optionsText: 'name',
-										value: CurrentLaborInsAtr,
-										enable: enable }"></div>
+										value: CurrentLaborInsAtr }"></div>
 		</div>
 	</div>
 	<div class="divLine">
@@ -104,8 +101,7 @@
 										options: RadioItemList_C_004,
 										optionsValue: 'id',
 										optionsText: 'name',
-										value: CurrentFixPayAtr,
-										enable: enable}">
+										value: CurrentFixPayAtr}">
 			</div>
 		</div>
 	</div>
@@ -117,8 +113,7 @@
 										options: roundingRules_C_002_003_005To010,
 										optionsValue: 'code',
 										optionsText: 'name',
-										value: CurrentApplyForAllEmpFlg,
-										enable: false }">
+										value: CurrentApplyForAllEmpFlg}">
 			</div>
 			<label id="C_LBL_006">月給者 </label>
 			<div id="C_SEL_006" class="cf switchNomalSize"
@@ -126,8 +121,7 @@
 										options: roundingRules_C_002_003_005To010,
 										optionsValue: 'code',
 										optionsText: 'name',
-										value: CurrentApplyForMonthlyPayEmp,
-										enable: enable }">
+										value: CurrentApplyForMonthlyPayEmp}">
 			</div>
 		</div>
 	</div>
@@ -141,8 +135,7 @@
 										options: roundingRules_C_002_003_005To010,
 										optionsValue: 'code',
 										optionsText: 'name',
-										value: CurrentApplyForDaymonthlyPayEmp,
-										enable: enable }">
+										value: CurrentApplyForDaymonthlyPayEmp}">
 			</div>
 		</div>
 	</div>
@@ -155,8 +148,7 @@
 										options: roundingRules_C_002_003_005To010,
 										optionsValue: 'code',
 										optionsText: 'name',
-										value: CurrentApplyForDaylyPayEmp,
-										enable: enable }">
+										value: CurrentApplyForDaylyPayEmp}">
 			</div>
 		</div>
 	</div>
@@ -169,8 +161,7 @@
 										options: roundingRules_C_002_003_005To010,
 										optionsValue: 'code',
 										optionsText: 'name',
-										value: CurrentApplyForHourlyPayEmp,
-										enable: enable }">
+										value: CurrentApplyForHourlyPayEmp}">
 			</div>
 		</div>
 	</div>
@@ -184,8 +175,7 @@
 										options: roundingRules_C_002_003_005To010,
 										optionsValue: 'code',
 										optionsText: 'name',
-										value: CurrentAvePayAtr,
-										enable: enable }"></div>
+										value: CurrentAvePayAtr}"></div>
 		</div>
 	</div>
 	<div class="divLine">
@@ -198,11 +188,10 @@
 										options: roundingRules_C_011,
 										optionsValue: 'code',
 										optionsText: 'name',
-										value: CurrentZeroDisplaySet,
-										enable: enable }">
+										value: CurrentZeroDisplaySet}">
 			</div>
 			<div id="C_SEL_012"
-				data-bind="ntsCheckBox: { checked: C_SEL_012_Selected, enable: enable, text: '項目名も表示しない' }"></div>
+				data-bind="ntsCheckBox: { checked: C_SEL_012_Selected,  text: '項目名も表示しない' }"></div>
 
 		</div>
 	</div>
@@ -212,7 +201,7 @@
 		</div>
 		<div class="divLineCol2">
 			<div id="C_SEL_013"
-				data-bind="ntsCheckBox: { checked: C_SEL_013_Selected, enable: enable, text: '' }"></div>
+				data-bind="ntsCheckBox: { checked: C_SEL_013_Selected, text: '' }"></div>
 			<div id="C_INP_002" data-bind="with: currencyeditor_C_INP_002">
 				<input
 					data-bind="ntsNumberEditor: {
@@ -230,7 +219,7 @@
 		<div class="divLineCol1"></div>
 		<div class="divLineCol2">
 			<div id="C_SEL_014"
-				data-bind="ntsCheckBox: { checked: C_SEL_014_Selected, enable: enable, text: '' }"></div>
+				data-bind="ntsCheckBox: { checked: C_SEL_014_Selected, text: '' }"></div>
 			<div id="C_INP_003" data-bind="with: currencyeditor_C_INP_003">
 				<input
 					data-bind="ntsNumberEditor: {
@@ -251,7 +240,7 @@
 		<div class="divLineCol2">
 
 			<div id="C_SEL_015"
-				data-bind="ntsCheckBox: { checked: C_SEL_015_Selected, enable: enable, text: '' }"></div>
+				data-bind="ntsCheckBox: { checked: C_SEL_015_Selected, text: '' }"></div>
 			<div id="C_INP_004" data-bind="with: currencyeditor_C_INP_004">
 				<input
 					data-bind="ntsNumberEditor: {
@@ -267,7 +256,7 @@
 		<div class="divLineCol1"></div>
 		<div class="divLineCol2">
 			<div id="C_SEL_016"
-				data-bind="ntsCheckBox: { checked: C_SEL_016_Selected, enable: enable, text: '' }"></div>
+				data-bind="ntsCheckBox: { checked: C_SEL_016_Selected, text: '' }"></div>
 			<div id="C_INP_005" data-bind="with: currencyeditor_C_INP_005">
 				<input
 					data-bind="ntsNumberEditor: {

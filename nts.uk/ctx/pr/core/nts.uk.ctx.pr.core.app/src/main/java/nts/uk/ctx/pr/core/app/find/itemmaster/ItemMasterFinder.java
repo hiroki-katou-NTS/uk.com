@@ -8,6 +8,7 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
 import nts.uk.ctx.pr.core.app.find.itemmaster.dto.ItemMasterDto;
+import nts.uk.ctx.pr.core.app.find.itemmaster.dto.ItemMasterSEL_3_Dto;
 import nts.uk.ctx.pr.core.dom.itemmaster.ItemAtr;
 import nts.uk.ctx.pr.core.dom.itemmaster.ItemMasterRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -16,18 +17,18 @@ import nts.uk.shr.com.context.AppContexts;
 public class ItemMasterFinder {
 	@Inject
 	private ItemMasterRepository itemMasterRepo;
-	
+
 	/**
 	 * Find all item master by ave Pay Attribute
+	 * 
 	 * @param avePayAtr
 	 * @return
 	 */
 	public List<ItemMasterDto> findAllByItemAtr(ItemAtr itemAtr) {
 		return this.itemMasterRepo.findAllByCategory(AppContexts.user().companyCode(), itemAtr.value).stream()
-				.map(item -> ItemMasterDto.fromDomain(item))
-				.collect(Collectors.toList());
+				.map(item -> ItemMasterDto.fromDomain(item)).collect(Collectors.toList());
 	}
-	
+
 	/**
 	 * finder all items by company code and category type
 	 * 
@@ -49,16 +50,21 @@ public class ItemMasterFinder {
 	 * @return
 	 */
 	public ItemMasterDto find(int categoryAtr, String itemCode) {
-		Optional<ItemMasterDto> itemOp = this.itemMasterRepo.find(AppContexts.user().companyCode(), categoryAtr, itemCode)
+		Optional<ItemMasterDto> itemOp = this.itemMasterRepo
+				.find(AppContexts.user().companyCode(), categoryAtr, itemCode)
 				.map(item -> ItemMasterDto.fromDomain(item));
-		
+
 		return !itemOp.isPresent() ? null : itemOp.get();
 	}
-	
-	
+
 	public List<ItemMasterDto> findAllNoAvePayAtr() {
 		return this.itemMasterRepo.findAllNoAvePayAtr(AppContexts.user().companyCode()).stream()
-				.map(item -> ItemMasterDto.fromDomain(item))
-				.collect(Collectors.toList());
+				.map(item -> ItemMasterDto.fromDomain(item)).collect(Collectors.toList());
 	}
+
+	public List<ItemMasterSEL_3_Dto> find_SEL_3(int categoryAtr) {
+		return this.itemMasterRepo.findAll_SEL_3(AppContexts.user().companyCode(), categoryAtr).stream()
+				.map(item -> ItemMasterSEL_3_Dto.fromDomain(item)).collect(Collectors.toList());
+	}
+
 }

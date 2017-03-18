@@ -29,7 +29,6 @@ public class UpdateCompanyCommandHandler extends CommandHandler<UpdateCompanyCom
 	protected void handle(CommandHandlerContext<UpdateCompanyCommand> context) {
 		
 		Company company = context.getCommand().toDomain();
-		company.validate();
 		
 		this.companyRepository.update(company);
 	}

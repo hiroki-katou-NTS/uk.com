@@ -17,6 +17,7 @@ module qmm012.b {
                 })
             return dfd.promise();
         }
+    
 
         export function findItemperiod(categoryAtr, itemCode): JQueryPromise<model.ItemPeriodModel> {
             var dfd = $.Deferred<model.ItemPeriodModel>();
@@ -46,7 +47,7 @@ module qmm012.b {
                 itemCode: string;
                 itemName: string;
                 categoryAtrValue: number;
-                categoryAtrName: String;
+                categoryAtrName: string;
                 itemAbName: string;
                 itemAbNameO: string;
                 itemAbNameE: string;
@@ -58,7 +59,7 @@ module qmm012.b {
                     itemCode: string,
                     itemName: string,
                     categoryAtrValue: number,
-                    categoryAtrName: String,
+                    categoryAtrName: string,
                     itemAbName: string,
                     itemAbNameO: string,
                     itemAbNameE: string,

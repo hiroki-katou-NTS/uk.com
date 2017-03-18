@@ -6,40 +6,38 @@ var qmm012;
         (function (viewmodel) {
             var ScreenModel = (function () {
                 function ScreenModel() {
-                    this.isEnable = ko.observable(true);
-                    this.isEditable = ko.observable(true);
                     this.CurrentItemPeriod = ko.observable(null);
                     this.CurrentItemSalary = ko.observable(null);
                     this.CurrentItemMaster = ko.observable(null);
-                    this.CurrentLimitMny = ko.observable(null);
-                    this.CurrentErrRangeHigh = ko.observable(null);
-                    this.CurrentAlRangeHigh = ko.observable(null);
-                    this.CurrentErrRangeLow = ko.observable(null);
-                    this.CurrentAlRangeLow = ko.observable(null);
-                    this.CurrentMemo = ko.observable(null);
-                    this.CurrentTaxAtr = ko.observable(null);
-                    this.CurrentSocialInsAtr = ko.observable(null);
-                    this.CurrentLaborInsAtr = ko.observable(null);
+                    this.CurrentLimitMny = ko.observable(0);
+                    this.CurrentErrRangeHigh = ko.observable(0);
+                    this.CurrentAlRangeHigh = ko.observable(0);
+                    this.CurrentErrRangeLow = ko.observable(0);
+                    this.CurrentAlRangeLow = ko.observable(0);
+                    this.CurrentMemo = ko.observable("");
+                    this.CurrentTaxAtr = ko.observable(0);
+                    this.CurrentSocialInsAtr = ko.observable(0);
+                    this.CurrentLaborInsAtr = ko.observable(0);
                     this.CurrentFixPayAtr = ko.observable(0);
-                    this.CurrentApplyForAllEmpFlg = ko.observable(null);
-                    this.CurrentApplyForMonthlyPayEmp = ko.observable(null);
-                    this.CurrentApplyForDaymonthlyPayEmp = ko.observable(null);
-                    this.CurrentApplyForDaylyPayEmp = ko.observable(null);
-                    this.CurrentApplyForHourlyPayEmp = ko.observable(null);
-                    this.CurrentAvePayAtr = ko.observable(null);
-                    this.CurrentLimitMnyAtr = ko.observable(null);
-                    this.CurrentZeroDisplaySet = ko.observable(null);
-                    this.CurrentItemDisplayAtr = ko.observable(null);
-                    this.CurrentLimitMnyRefItemCd = ko.observable(null);
+                    this.CurrentApplyForAllEmpFlg = ko.observable(0);
+                    this.CurrentApplyForMonthlyPayEmp = ko.observable(0);
+                    this.CurrentApplyForDaymonthlyPayEmp = ko.observable(0);
+                    this.CurrentApplyForDaylyPayEmp = ko.observable(0);
+                    this.CurrentApplyForHourlyPayEmp = ko.observable(0);
+                    this.CurrentAvePayAtr = ko.observable(0);
+                    this.CurrentLimitMnyAtr = ko.observable(0);
+                    this.CurrentItemDisplayAtr = ko.observable(1);
+                    this.CurrentZeroDisplaySet = ko.observable(1);
+                    this.CurrentLimitMnyRefItemCd = ko.observable("");
                     this.CurrentErrRangeHighAtr = ko.observable(0);
                     this.CurrentAlRangeHighAtr = ko.observable(0);
                     this.CurrentErrRangeLowAtr = ko.observable(0);
                     this.CurrentAlRangeLowAtr = ko.observable(0);
-                    this.C_SEL_012_Selected = ko.observable(null);
-                    this.C_SEL_013_Selected = ko.observable(null);
-                    this.C_SEL_014_Selected = ko.observable(null);
-                    this.C_SEL_015_Selected = ko.observable(null);
-                    this.C_SEL_016_Selected = ko.observable(null);
+                    this.C_SEL_012_Selected = ko.observable(false);
+                    this.C_SEL_013_Selected = ko.observable(false);
+                    this.C_SEL_014_Selected = ko.observable(false);
+                    this.C_SEL_015_Selected = ko.observable(false);
+                    this.C_SEL_016_Selected = ko.observable(false);
                     var self = this;
                     self.ComboBoxItemList_C_SEL_001 = ko.observableArray([
                         new C_SEL_001_ComboboxItemModel(1, '課税'),
@@ -51,7 +49,6 @@ var qmm012;
                     self.selectedCode_C_SEL_001 = ko.observable(1);
                     //end combobox data
                     //start Switch Data
-                    self.enable = ko.observable(true);
                     //005 006 007 008 009 010
                     self.roundingRules_C_002_003_005To010 = ko.observableArray([
                         { code: 0, name: '対象' },
@@ -66,8 +63,8 @@ var qmm012;
                     self.selectedRuleCode_C_010 = ko.observable(1);
                     //011
                     self.roundingRules_C_011 = ko.observableArray([
-                        { code: 0, name: 'ゼロを表示する' },
-                        { code: 1, name: 'ゼロを表示しない' }
+                        { code: 1, name: 'ゼロを表示する' },
+                        { code: 0, name: 'ゼロを表示しない' }
                     ]);
                     self.selectedRuleCode_C_011 = ko.observable(1);
                     //017
@@ -182,17 +179,22 @@ var qmm012;
                         }
                     });
                     self.CurrentItemMaster.subscribe(function (ItemMaster) {
-                        c.service.findItemSalary(ItemMaster.itemCode).done(function (ItemSalary) {
-                            self.CurrentItemSalary(ItemSalary);
-                            self.CurrentZeroDisplaySet(ItemMaster.zeroDisplaySet);
-                            self.C_SEL_012_Selected(ItemMaster.itemDisplayAtr == 0 ? false : true);
-                        }).fail(function (res) {
-                            // Alert message
-                            alert(res);
-                        });
+                        if (ItemMaster) {
+                            c.service.findItemSalary(ItemMaster.itemCode).done(function (ItemSalary) {
+                                self.CurrentItemSalary(ItemSalary);
+                            }).fail(function (res) {
+                                // Alert message
+                                alert(res);
+                            });
+                        }
+                        else {
+                            self.CurrentItemSalary(null);
+                        }
+                        self.CurrentZeroDisplaySet(ItemMaster ? ItemMaster.zeroDisplaySet : 1);
+                        self.C_SEL_012_Selected(ItemMaster ? ItemMaster.itemDisplayAtr == 0 ? true : false : false);
                     });
                     self.C_SEL_012_Selected.subscribe(function (NewValue) {
-                        self.CurrentItemDisplayAtr(NewValue ? 1 : 0);
+                        self.CurrentItemDisplayAtr(NewValue ? 0 : 1);
                     });
                     self.C_SEL_013_Selected.subscribe(function (NewValue) {
                         self.CurrentErrRangeHighAtr(NewValue ? 1 : 0);
@@ -210,23 +212,23 @@ var qmm012;
                     //               
                     //            });
                     self.CurrentItemSalary.subscribe(function (NewValue) {
-                        self.CurrentLimitMny(NewValue ? NewValue.limitMny : "");
-                        self.CurrentErrRangeHigh(NewValue ? NewValue.errRangeHigh : "");
-                        self.CurrentAlRangeHigh(NewValue ? NewValue.alRangeHigh : "");
-                        self.CurrentErrRangeLow(NewValue ? NewValue.errRangeLow : "");
-                        self.CurrentAlRangeLow(NewValue ? NewValue.alRangeLow : "");
+                        self.CurrentLimitMny(NewValue ? NewValue.limitMny : 0);
+                        self.CurrentErrRangeHigh(NewValue ? NewValue.errRangeHigh : 0);
+                        self.CurrentAlRangeHigh(NewValue ? NewValue.alRangeHigh : 0);
+                        self.CurrentErrRangeLow(NewValue ? NewValue.errRangeLow : 0);
+                        self.CurrentAlRangeLow(NewValue ? NewValue.alRangeLow : 0);
                         self.CurrentMemo(NewValue ? NewValue.memo : "");
-                        self.CurrentTaxAtr(NewValue ? NewValue.taxAtr : "");
-                        self.CurrentSocialInsAtr(NewValue ? NewValue.socialInsAtr : "");
-                        self.CurrentLaborInsAtr(NewValue ? NewValue.laborInsAtr : "");
+                        self.CurrentTaxAtr(NewValue ? NewValue.taxAtr : 0);
+                        self.CurrentSocialInsAtr(NewValue ? NewValue.socialInsAtr : 0);
+                        self.CurrentLaborInsAtr(NewValue ? NewValue.laborInsAtr : 0);
                         self.CurrentFixPayAtr(NewValue ? NewValue.fixPayAtr : 0);
-                        self.CurrentApplyForAllEmpFlg(NewValue ? NewValue.applyForAllEmpFlg : "");
-                        self.CurrentApplyForMonthlyPayEmp(NewValue ? NewValue.applyForMonthlyPayEmp : "");
-                        self.CurrentApplyForDaymonthlyPayEmp(NewValue ? NewValue.applyForDaymonthlyPayEmp : "");
-                        self.CurrentApplyForDaylyPayEmp(NewValue ? NewValue.applyForDaylyPayEmp : "");
-                        self.CurrentApplyForHourlyPayEmp(NewValue ? NewValue.applyForHourlyPayEmp : "");
-                        self.CurrentAvePayAtr(NewValue ? NewValue.avePayAtr : "");
-                        self.CurrentLimitMnyAtr(NewValue ? NewValue.limitMnyAtr : "");
+                        self.CurrentApplyForAllEmpFlg(NewValue ? NewValue.applyForAllEmpFlg : 0);
+                        self.CurrentApplyForMonthlyPayEmp(NewValue ? NewValue.applyForMonthlyPayEmp : 0);
+                        self.CurrentApplyForDaymonthlyPayEmp(NewValue ? NewValue.applyForDaymonthlyPayEmp : 0);
+                        self.CurrentApplyForDaylyPayEmp(NewValue ? NewValue.applyForDaylyPayEmp : 0);
+                        self.CurrentApplyForHourlyPayEmp(NewValue ? NewValue.applyForHourlyPayEmp : 0);
+                        self.CurrentAvePayAtr(NewValue ? NewValue.avePayAtr : 0);
+                        self.CurrentLimitMnyAtr(NewValue ? NewValue.limitMnyAtr : 0);
                         self.CurrentLimitMnyRefItemCd(NewValue ? NewValue.limitMnyRefItemCd : "");
                         self.C_SEL_013_Selected(NewValue ? NewValue.errRangeHighAtr == 0 ? false : true : false);
                         self.C_SEL_014_Selected(NewValue ? NewValue.alRangeHighAtr == 0 ? false : true : false);
@@ -253,11 +255,15 @@ var qmm012;
                     });
                 };
                 ScreenModel.prototype.openHDialog = function () {
+                    var self = this;
+                    nts.uk.ui.windows.setShared('itemMaster', self.CurrentItemMaster());
                     nts.uk.ui.windows.sub.modal('../h/index.xhtml', { height: 570, width: 735, dialogClass: "no-close" }).onClosed(function () {
                     });
                 };
                 ScreenModel.prototype.openIDialog = function () {
-                    nts.uk.ui.windows.sub.modal('../i/index.xhtml', { height: 600, width: 1015, dialogClass: "no-close" }).onClosed(function () {
+                    var self = this;
+                    nts.uk.ui.windows.setShared('itemMaster', self.CurrentItemMaster());
+                    nts.uk.ui.windows.sub.modal('../i/index.xhtml', { height: 620, width: 1060, dialogClass: "no-close" }).onClosed(function () {
                     });
                 };
                 return ScreenModel;

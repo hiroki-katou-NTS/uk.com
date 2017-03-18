@@ -30,7 +30,8 @@ var qmm012;
                     this.CurrentAlRangeHigh = ko.observable(0);
                     this.CurrentWorkDaysScopeAtr = ko.observable(1);
                     this.CurrentMemo = ko.observable("");
-                    this.CurrentZeroDisplaySet = ko.observable(0);
+                    this.CurrentZeroDisplaySet = ko.observable(1);
+                    this.CurentItemDisplayAtr = ko.observable(1);
                     var self = this;
                     //E_001 To 003
                     //E_001To003
@@ -39,8 +40,8 @@ var qmm012;
                         { code: 1, name: '回数' }
                     ]);
                     self.roundingRules_E_002 = ko.observableArray([
-                        { code: 0, name: '対象' },
-                        { code: 1, name: '対象外' }
+                        { code: 1, name: '対象' },
+                        { code: 0, name: '対象外' }
                     ]);
                     self.roundingRules_E_003 = ko.observableArray([
                         { code: 1, name: 'ゼロを表示する' },
@@ -92,14 +93,19 @@ var qmm012;
                         }))
                     };
                     self.CurrentItemMaster.subscribe(function (ItemMaster) {
-                        e.service.findItemAttend(ItemMaster.itemCode).done(function (ItemAttend) {
-                            self.CurrentItemAttend(ItemAttend);
-                            self.CurrentZeroDisplaySet(ItemMaster ? ItemMaster.zeroDisplaySet : 1);
-                            self.checked_E_004(ItemMaster ? ItemMaster.itemDisplayAtr == 0 ? true : false : false);
-                        }).fail(function (res) {
-                            // Alert message
-                            alert(res);
-                        });
+                        if (ItemMaster) {
+                            e.service.findItemAttend(ItemMaster.itemCode).done(function (ItemAttend) {
+                                self.CurrentItemAttend(ItemAttend);
+                            }).fail(function (res) {
+                                // Alert message
+                                alert(res);
+                            });
+                        }
+                        else {
+                            self.CurrentItemAttend(null);
+                        }
+                        self.CurrentZeroDisplaySet(ItemMaster ? ItemMaster.zeroDisplaySet : 1);
+                        self.checked_E_004(ItemMaster ? ItemMaster.itemDisplayAtr == 0 ? true : false : false);
                     });
                     self.CurrentItemAttend.subscribe(function (ItemAttend) {
                         self.CurrentAvePayAtr(ItemAttend ? ItemAttend.avePayAtr : 0);
@@ -108,7 +114,7 @@ var qmm012;
                         self.CurrentErrRangeHigh(ItemAttend ? ItemAttend.errRangeHigh : 0);
                         self.CurrentAlRangeLow(ItemAttend ? ItemAttend.alRangeLow : 0);
                         self.CurrentAlRangeHigh(ItemAttend ? ItemAttend.alRangeHigh : 0);
-                        self.CurrentWorkDaysScopeAtr(ItemAttend ? ItemAttend.workDaysScopeAtr : 0);
+                        self.CurrentWorkDaysScopeAtr(ItemAttend ? ItemAttend.workDaysScopeAtr : 1);
                         self.CurrentMemo(ItemAttend ? ItemAttend.memo : "");
                         self.checked_E_005(ItemAttend ? ItemAttend.errRangeHighAtr == 0 ? false : true : false);
                         self.checked_E_006(ItemAttend ? ItemAttend.errRangeLowAtr == 0 ? false : true : false);
@@ -116,19 +122,19 @@ var qmm012;
                         self.checked_E_008(ItemAttend ? ItemAttend.alRangeLowAtr == 0 ? false : true : false);
                     });
                     self.checked_E_004.subscribe(function (NewValue) {
-                        self.CurrentErrRangeHighAtr(NewValue == true ? 0 : 1);
+                        self.CurentItemDisplayAtr(NewValue ? 0 : 1);
                     });
                     self.checked_E_005.subscribe(function (NewValue) {
-                        self.CurrentErrRangeHighAtr(NewValue == false ? 0 : 1);
+                        self.CurrentErrRangeHighAtr(NewValue ? 1 : 0);
                     });
                     self.checked_E_006.subscribe(function (NewValue) {
-                        self.CurrentErrRangeLowAtr(NewValue == false ? 0 : 1);
+                        self.CurrentErrRangeLowAtr(NewValue ? 1 : 0);
                     });
                     self.checked_E_007.subscribe(function (NewValue) {
-                        self.CurrentAlRangeHighAtr(NewValue == false ? 0 : 1);
+                        self.CurrentAlRangeHighAtr(NewValue ? 1 : 0);
                     });
                     self.checked_E_008.subscribe(function (NewValue) {
-                        self.CurrentAlRangeLowAtr(NewValue == false ? 0 : 1);
+                        self.CurrentAlRangeLowAtr(NewValue ? 1 : 0);
                     });
                 }
                 return ScreenModel;
