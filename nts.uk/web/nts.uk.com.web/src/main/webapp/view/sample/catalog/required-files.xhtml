@@ -20,17 +20,18 @@
 						<article>
 							<h2>Well, we will need some script to run right?</h2>
 							<p>We'll use TypeScript for better reading and maintain. TypeScript will auto generate javascript file, then we'll include those files. This is how we usually setup:</p>
-							<pre><![CDATA[<com:scriptfile path="start.js" />
-<com:scriptfile path="viewmodel.js" />
-<com:scriptfile path="service.js" />]]></pre>
+							<pre><![CDATA[<com:scriptfile path="qpp044.a.start.js" />
+<com:scriptfile path="qpp044.a.vm.js" />
+<com:scriptfile path="qpp044.a.service.js" />]]></pre>
 							<ul>
-								<li><b>start.js:</b> Setup how your page start. Usually bind your viewmodel here</li>
-								<li><b>viewmodel.js:</b> Defined your viewmodel here</li>
-								<li><b>service.js:</b> Get data from server</li>
+								<li><b>***.start.js:</b> Setup how your page start. Usually bind your viewmodel here</li>
+								<li><b>***.vm.js:</b> Defined your viewmodel here</li>
+								<li><b>***.service.js:</b> Get data from server</li>
 							</ul>
+							<p>"***" is ID of screen to makes it easy to search source file by name.</p>
 						</article>
 						<article>
-							<h2>start.ts</h2>
+							<h2>***.start.ts</h2>
 							<p>In this file we will setup to create viewmodel and binding it.</p>
 							<pre><![CDATA[module qpp004.a {
 	__viewContext.ready(function() {
@@ -47,7 +48,7 @@
 							</ul>
 						</article>
 						<article>
-							<h2>viewmodel.ts</h2>
+							<h2>***.vm.ts</h2>
 							<p>We will create our viewmodel here.</p>
 <pre><![CDATA[module qpp004.a.viewmodel {
 	export class ScreenModel {
@@ -82,7 +83,7 @@
 							<p>Well, we have to get data from server with AJAX, right? <b>startPage()</b> function will handle this task. In this function we will call our <i>service</i> to get data from server. Then we'll create a Deferred object to check data is loaded successfully or failed (<a target="_blank" href="https://api.jquery.com/category/deferred-object/">more info</a>)</p>
 						</article>
 						<article>
-							<h2>service.ts</h2>
+							<h2>***.service.ts</h2>
 							<p>In this file we'll write code to get data from server. Create any variable or command and pass it to server if necessary.</p>
 <pre><![CDATA[module qpp004.a.service {
 	var paths: any = {

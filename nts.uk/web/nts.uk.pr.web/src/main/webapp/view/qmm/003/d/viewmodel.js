@@ -135,6 +135,30 @@ var nts;
                                 self.arrayCode = ko.observableArray([]);
                             };
                             ;
+                            ScreenModel.prototype.register = function () {
+                                // if()
+                                //                         $("#A_INP_002").attr('disabled', 'true');
+                                var inputSearch = $("#D_SCH_001").find("input.ntsSearchBox").val();
+                                if (inputSearch == "") {
+                                    $('#D_SCH_001').ntsError('set', 'inputSearch が入力されていません。');
+                                }
+                                else {
+                                    $('#D_SCH_001').ntsError('clear');
+                                }
+                                // errror search
+                                var error;
+                                _.find(this.filteredData(), function (obj) {
+                                    if (obj.code !== inputSearch) {
+                                        error = true;
+                                    }
+                                });
+                                if (error = true) {
+                                    $('#D_SCH_001').ntsError('set', '対象データがありません。');
+                                }
+                                else {
+                                    $('#D_SCH_001').ntsError('clear');
+                                }
+                            };
                             return ScreenModel;
                         }());
                         d.ScreenModel = ScreenModel;

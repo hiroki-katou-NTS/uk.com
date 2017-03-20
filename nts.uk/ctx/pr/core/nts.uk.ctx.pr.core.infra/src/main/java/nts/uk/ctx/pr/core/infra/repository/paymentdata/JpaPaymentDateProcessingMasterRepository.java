@@ -48,4 +48,11 @@ public class JpaPaymentDateProcessingMasterRepository extends JpaRepository
 		//entity.toDomain(domain);
 		return domain;
 	}
+	@Override
+	public Optional<PaymentDateProcessingMaster> find(String companyCode, int processingNo) {
+		return this.queryProxy()
+				.find(new QpdmtPaydayProcessingPK(companyCode, processingNo), QpdmtPaydayProcessing.class)
+				.map(c -> toDomain(c));
+	}
+
 }

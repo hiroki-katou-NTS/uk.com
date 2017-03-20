@@ -1,6 +1,7 @@
 package nts.uk.ctx.basic.app.find.system.bank.linebank;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.enterprise.context.RequestScoped;
@@ -23,4 +24,9 @@ public class LineBankFinder {
 		
 		return result;
 	}
+	//find a LineBank
+	public Optional<LineBankDto> find(String lineBankCode) {
+        LoginUserContext login = AppContexts.user();
+        return this.lineBankRepository.find(login.companyCode(), lineBankCode).map(x -> LineBankDto.fromDomain(x));
+    }
 }
