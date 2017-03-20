@@ -17,6 +17,7 @@ var nts;
                                     var self = this;
                                     self.dialogOptions = nts.uk.ui.windows.getShared('options');
                                     self.demensionItemList = ko.observableArray([]);
+                                    self.selectedDemension = ko.observable(undefined);
                                 }
                                 ScreenModel.prototype.startPage = function () {
                                     var self = this;
@@ -29,7 +30,13 @@ var nts;
                                 };
                                 ScreenModel.prototype.btnApplyClicked = function () {
                                     var self = this;
-                                    nts.uk.ui.windows.close();
+                                    if (self.selectedDemension()) {
+                                        var callBackData = {
+                                            demension: self.selectedDemension()
+                                        };
+                                        self.dialogOptions.onSelectItem(callBackData);
+                                        nts.uk.ui.windows.close();
+                                    }
                                 };
                                 ScreenModel.prototype.btnCancelClicked = function () {
                                     nts.uk.ui.windows.close();
