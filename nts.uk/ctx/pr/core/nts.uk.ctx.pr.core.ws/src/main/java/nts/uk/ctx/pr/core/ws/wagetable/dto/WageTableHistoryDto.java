@@ -12,17 +12,17 @@ import lombok.Setter;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.app.wagetable.command.dto.WageTableDemensionDetailDto;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
-import nts.uk.ctx.pr.core.dom.wagetable.WageTableCode;
-import nts.uk.ctx.pr.core.dom.wagetable.element.WageTableElement;
-import nts.uk.ctx.pr.core.dom.wagetable.history.WageTableHistorySetMemento;
-import nts.uk.ctx.pr.core.dom.wagetable.history.WageTableItem;
+import nts.uk.ctx.pr.core.dom.wagetable.WtCode;
+import nts.uk.ctx.pr.core.dom.wagetable.history.WtHistorySetMemento;
+import nts.uk.ctx.pr.core.dom.wagetable.history.WtItem;
+import nts.uk.ctx.pr.core.dom.wagetable.history.element.ElementSetting;
 
 /**
  * The Class WageTableHistoryModel.
  */
 @Getter
 @Setter
-public class WageTableHistoryDto implements WageTableHistorySetMemento {
+public class WageTableHistoryDto implements WtHistorySetMemento {
 
 	/** The head. */
 	private WageTableHeadDto head;
@@ -60,7 +60,7 @@ public class WageTableHistoryDto implements WageTableHistorySetMemento {
 	 * setWageTableCode(nts.uk.ctx.pr.core.dom.wagetable.WageTableCode)
 	 */
 	@Override
-	public void setWageTableCode(WageTableCode code) {
+	public void setWageTableCode(WtCode code) {
 		// Do nothing.
 	}
 
@@ -91,30 +91,20 @@ public class WageTableHistoryDto implements WageTableHistorySetMemento {
 	 * (non-Javadoc)
 	 * 
 	 * @see nts.uk.ctx.pr.core.dom.wagetable.history.WageTableHistorySetMemento#
-	 * setDemensionDetail(java.util.List)
-	 */
-	@Override
-	public void setDemensionDetail(List<WageTableElement> demensionDetails) {
-		this.demensionDetails = demensionDetails.stream().map(item -> {
-			WageTableDemensionDetailDto dto = new WageTableDemensionDetailDto();
-			item.saveToMemento(dto);
-			return dto;
-		}).collect(Collectors.toList());
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.pr.core.dom.wagetable.history.WageTableHistorySetMemento#
 	 * setValueItems(java.util.List)
 	 */
 	@Override
-	public void setValueItems(List<WageTableItem> valueItems) {
+	public void setValueItems(List<WtItem> valueItems) {
 		this.valueItems = valueItems.stream().map(item -> {
 			WageTableItemDto dto = new WageTableItemDto();
 			item.saveToMemento(dto);
 			return dto;
 		}).collect(Collectors.toList());
+	}
+
+	@Override
+	public void setElementSettings(List<ElementSetting> elementSettings) {
+		// TODO UPDATE LATER.
 	}
 
 }

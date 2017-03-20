@@ -6,7 +6,7 @@ package nts.uk.ctx.pr.core.dom.wagetable.service;
 
 import java.util.List;
 
-import nts.uk.ctx.pr.core.dom.wagetable.element.CodeItem;
+import nts.uk.ctx.pr.core.dom.wagetable.history.element.setting.item.CodeItem;
 
 /**
  * The Interface WageTableElementService.

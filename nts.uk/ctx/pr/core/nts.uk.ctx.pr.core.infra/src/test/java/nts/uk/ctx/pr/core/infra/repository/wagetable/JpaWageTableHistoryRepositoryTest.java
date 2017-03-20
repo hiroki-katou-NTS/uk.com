@@ -17,20 +17,20 @@ import org.junit.runner.RunWith;
 import mockit.Tested;
 import mockit.integration.junit4.JMockit;
 import nts.uk.ctx.core.dom.company.CompanyCode;
-import nts.uk.ctx.pr.core.app.wagetable.command.WageTableHistoryAddCommand;
+import nts.uk.ctx.pr.core.app.wagetable.command.WtHistoryAddCommand;
 import nts.uk.ctx.pr.core.app.wagetable.command.dto.WageTableDemensionDetailDto;
 import nts.uk.ctx.pr.core.app.wagetable.command.dto.WageTableHistoryDto;
 import nts.uk.ctx.pr.core.app.wagetable.command.dto.WageTableItemDto;
 import nts.uk.ctx.pr.core.dom.wagetable.DemensionNo;
 import nts.uk.ctx.pr.core.dom.wagetable.ElementType;
 import nts.uk.ctx.pr.core.dom.wagetable.WtElementRefNo;
-import nts.uk.ctx.pr.core.dom.wagetable.element.CodeItem;
-import nts.uk.ctx.pr.core.dom.wagetable.element.RangeItem;
 import nts.uk.ctx.pr.core.dom.wagetable.element.RefMode;
 import nts.uk.ctx.pr.core.dom.wagetable.element.StepMode;
-import nts.uk.ctx.pr.core.dom.wagetable.history.WageTableHistory;
+import nts.uk.ctx.pr.core.dom.wagetable.history.WtHistory;
+import nts.uk.ctx.pr.core.dom.wagetable.history.element.setting.item.CodeItem;
+import nts.uk.ctx.pr.core.dom.wagetable.history.element.setting.item.RangeItem;
 import nts.uk.ctx.pr.core.infra.repository.support.AbstractDbUnitTestCase;
-import nts.uk.ctx.pr.core.infra.repository.wagetable.history.JpaWageTableHistoryRepository;
+import nts.uk.ctx.pr.core.infra.repository.wagetable.history.JpaWtHistoryRepository;
 
 /**
  * The Class JpaWageTableHistoryRepositoryTest.
@@ -40,7 +40,7 @@ public class JpaWageTableHistoryRepositoryTest extends AbstractDbUnitTestCase {
 
 	/** The repository. */
 	@Tested
-	private JpaWageTableHistoryRepository repository = new JpaWageTableHistoryRepository();
+	private JpaWtHistoryRepository repository = new JpaWtHistoryRepository();
 
 	/**
 	 * Adds the 001.
@@ -96,12 +96,12 @@ public class JpaWageTableHistoryRepositoryTest extends AbstractDbUnitTestCase {
 		wageTableHistoryDto.setDemensionDetails(demensionDetails);
 		wageTableHistoryDto.setValueItems(valueItems);
 
-		WageTableHistoryAddCommand command = new WageTableHistoryAddCommand();
+		WtHistoryAddCommand command = new WtHistoryAddCommand();
 		command.setCreateHeader(true);
 		command.setWageTableHistoryDto(wageTableHistoryDto);
 
 		// Execute
-		WageTableHistory wageTableHistory = wageTableHistoryDto.toDomain(companyCode.v(), "001");
+		WtHistory wageTableHistory = wageTableHistoryDto.toDomain(companyCode.v(), "001");
 
 		// Exec
 		repository.addHistory(wageTableHistory);

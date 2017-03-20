@@ -94,6 +94,7 @@ var nts;
                                     self.code('');
                                     self.name('');
                                     self.demensionSet(qmm016.model.allDemension[0].code);
+                                    self.demensionItemList([]);
                                     self.memo('');
                                 };
                                 WageTableHeadViewModel.prototype.getDemensionItemListByType = function (typeCode) {

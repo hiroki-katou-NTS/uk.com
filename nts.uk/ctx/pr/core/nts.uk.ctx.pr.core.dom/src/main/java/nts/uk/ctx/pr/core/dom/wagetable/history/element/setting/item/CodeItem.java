@@ -2,25 +2,29 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.pr.core.app.wagetable.command.dto;
+package nts.uk.ctx.pr.core.dom.wagetable.history.element.setting.item;
 
-import lombok.Builder;
 import lombok.Getter;
-import lombok.Setter;
-import nts.uk.ctx.pr.core.dom.wagetable.history.element.setting.item.Item;
 
 /**
  * The Class CodeItem.
  */
 @Getter
-@Setter
-@Builder
-public class CodeItemDto implements Item {
+public class CodeItem extends BaseItem {
 
 	/** The reference code. */
 	private String referenceCode;
 
-	/** The uuid. */
-	private String uuid;
-
+	/**
+	 * Instantiates a new code item.
+	 *
+	 * @param referenceCode
+	 *            the reference code
+	 * @param uuid
+	 *            the uuid
+	 */
+	public CodeItem(String referenceCode, String uuid) {
+		super(uuid);
+		this.referenceCode = referenceCode;
+	}
 }

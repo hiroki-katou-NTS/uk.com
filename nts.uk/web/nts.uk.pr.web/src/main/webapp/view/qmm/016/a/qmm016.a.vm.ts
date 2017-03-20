@@ -143,6 +143,7 @@ module nts.uk.pr.view.qmm016.a {
                 self.code('');
                 self.name('');
                 self.demensionSet(model.allDemension[0].code);
+                self.demensionItemList([]);
                 self.memo('');
             }
 

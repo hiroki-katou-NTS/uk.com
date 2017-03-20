@@ -2,14 +2,19 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.pr.core.app.wagetable.command.dto;
+package nts.uk.ctx.pr.core.app.wagetable.command;
 
 import lombok.Getter;
 import lombok.Setter;
 
 /**
- * The Class WageTableDemensionDetailDto.
+ * The Class WageTableHistoryDeleteCommand.
  */
 @Setter
 @Getter
-public class WageTableDemensionDetailDto {}
+public class WtHistoryDeleteCommand {
+
+	/** The history id. */
+	private String historyId;
+
+}

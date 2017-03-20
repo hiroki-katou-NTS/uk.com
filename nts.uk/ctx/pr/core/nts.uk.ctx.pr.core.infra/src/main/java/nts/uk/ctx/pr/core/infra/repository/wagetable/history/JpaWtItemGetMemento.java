@@ -2,33 +2,31 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.pr.core.app.wagetable.command.dto;
+package nts.uk.ctx.pr.core.infra.repository.wagetable.history;
 
 import java.math.BigDecimal;
 
-import lombok.Getter;
-import lombok.Setter;
 import nts.uk.ctx.pr.core.dom.wagetable.ElementId;
 import nts.uk.ctx.pr.core.dom.wagetable.history.WtItemGetMemento;
+import nts.uk.ctx.pr.core.infra.entity.wagetable.history.QwtmtWagetableMny;
 
 /**
- * The Class WageTableItemDto.
+ * The Class JpaWageTableItemGetMemento.
  */
-@Getter
-@Setter
-public class WageTableItemDto implements WtItemGetMemento {
+public class JpaWtItemGetMemento implements WtItemGetMemento {
 
-	/** The element 1 id. */
-	private String element1Id;
+	/** The type value. */
+	protected QwtmtWagetableMny typeValue;
 
-	/** The element 2 id. */
-	private String element2Id;
-
-	/** The element 3 id. */
-	private String element3Id;
-
-	/** The amount. */
-	private BigDecimal amount;
+	/**
+	 * Instantiates a new jpa wage table item get memento.
+	 *
+	 * @param typeValue
+	 *            the type value
+	 */
+	public JpaWtItemGetMemento(QwtmtWagetableMny typeValue) {
+		this.typeValue = typeValue;
+	}
 
 	/*
 	 * (non-Javadoc)
@@ -38,7 +36,7 @@ public class WageTableItemDto implements WtItemGetMemento {
 	 */
 	@Override
 	public ElementId getElement1Id() {
-		return new ElementId(this.element1Id);
+		return new ElementId(this.typeValue.getQwtmtWagetableMnyPK().getElement1Id());
 	}
 
 	/*
@@ -49,7 +47,7 @@ public class WageTableItemDto implements WtItemGetMemento {
 	 */
 	@Override
 	public ElementId getElement2Id() {
-		return new ElementId(this.element2Id);
+		return new ElementId(this.typeValue.getQwtmtWagetableMnyPK().getElement2Id());
 	}
 
 	/*
@@ -60,7 +58,7 @@ public class WageTableItemDto implements WtItemGetMemento {
 	 */
 	@Override
 	public ElementId getElement3Id() {
-		return new ElementId(this.element3Id);
+		return new ElementId(this.typeValue.getQwtmtWagetableMnyPK().getElement3Id());
 	}
 
 	/*
@@ -71,7 +69,7 @@ public class WageTableItemDto implements WtItemGetMemento {
 	 */
 	@Override
 	public BigDecimal getAmount() {
-		return amount;
+		return new BigDecimal(this.typeValue.getValueMny());
 	}
 
 }

@@ -8,8 +8,8 @@
 	<ui:composition template="../../../base/simplehistory/base.xhtml">
 		<ui:define name="extendedHead">
 			<com:ValidatorScript>
-				nts.uk.ctx.pr.core.dom.wagetable.WageTableCode
-				nts.uk.ctx.pr.core.dom.wagetable.WageTableName
+				nts.uk.ctx.pr.core.dom.wagetable.WtCode
+				nts.uk.ctx.pr.core.dom.wagetable.WtName
 				nts.uk.shr.com.primitive.Memo
 			</com:ValidatorScript>
 
@@ -46,11 +46,11 @@
 						</tr>
 						<tr class="control-group">
 							<td><div id="lbl_002"
-									data-bind="ntsFormLabel: { constraint: ['WageTableCode', 'WageTableName'], required: true }">コード/名称*</div></td>
+									data-bind="ntsFormLabel: { constraint: ['WtCode', 'WtName'], required: true }">コード/名称*</div></td>
 							<td colspan="2"><input id="inp_001"
-								data-bind="ntsTextEditor: {value: head.code,  constraint: 'WageTableCode'}" />
+								data-bind="ntsTextEditor: {value: head.code,  constraint: 'WtCode'}" />
 								<input id="inp_002"
-								data-bind="ntsTextEditor: {value: head.name,  constraint: 'WageTableName' }" /></td>
+								data-bind="ntsTextEditor: {value: head.name,  constraint: 'WtName' }" /></td>
 						</tr>
 						<tr class="control-group">
 							<td><div id="lbl_003"
