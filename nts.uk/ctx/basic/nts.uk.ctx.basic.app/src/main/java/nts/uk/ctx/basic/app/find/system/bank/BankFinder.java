@@ -8,7 +8,7 @@ import java.util.stream.Collectors;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
-import nts.gul.collection.ListUtil;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.basic.app.find.system.bank.dto.BankDto;
 import nts.uk.ctx.basic.app.find.system.bank.dto.BranchDto;
 import nts.uk.ctx.basic.dom.system.bank.Bank;
@@ -39,12 +39,12 @@ public class BankFinder {
 			BankDto bankDto = new BankDto(bank.getBankCode().v(), bank.getBankName().v(), bank.getBankNameKana().v(), bank.getMemo().v(), null);
 			
 			List<BankBranch> branchs = branchMap.get(bank.getBankCode().v());
-			if (!ListUtil.isEmpty(branchs)) {
+			if (!CollectionUtil.isEmpty(branchs)) {
 				List<BranchDto> branhchDtos = branchs.stream()
 						.map(x -> new BranchDto(x.getBankBranchCode().v(), x.getBankBranchName().v(), x.getBankBranchNameKana().v(), x.getMemo().v()))
 						.collect(Collectors.toList());
 				
-				if (!ListUtil.isEmpty(branhchDtos)) {
+				if (!CollectionUtil.isEmpty(branhchDtos)) {
 					bankDto.setBankBranch(branhchDtos);
 				}
 			}
