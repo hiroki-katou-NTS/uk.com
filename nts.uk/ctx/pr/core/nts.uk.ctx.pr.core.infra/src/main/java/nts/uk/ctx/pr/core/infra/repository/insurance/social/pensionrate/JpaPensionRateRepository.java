@@ -61,8 +61,9 @@ public class JpaPensionRateRepository extends JpaRepository implements PensionRa
 	public void update(PensionRate rate) {
 
 		EntityManager em = this.getEntityManager();
-		QismtPensionRatePK pk = new QismtPensionRatePK(rate.getCompanyCode().v(),rate.getOfficeCode().v(),rate.getHistoryId());
-		QismtPensionRate findEntity = em.find(QismtPensionRate.class,pk);
+		QismtPensionRatePK pk = new QismtPensionRatePK(rate.getCompanyCode().v(), rate.getOfficeCode().v(),
+				rate.getHistoryId());
+		QismtPensionRate findEntity = em.find(QismtPensionRate.class, pk);
 		QismtPensionRate entity = new QismtPensionRate();
 		rate.saveToMemento(new JpaPensionRateSetMemento(entity));
 		entity.setQismtPensionAvgearnList(findEntity.getQismtPensionAvgearnList());
@@ -89,9 +90,8 @@ public class JpaPensionRateRepository extends JpaRepository implements PensionRa
 		List<Predicate> predicateList = new ArrayList<Predicate>();
 
 		// Construct condition.
-		predicateList.add(cb.equal(
-				root.get(QismtPensionRate_.qismtPensionRatePK).get(QismtPensionRatePK_.histId),
-				historyId));
+		predicateList.add(
+				cb.equal(root.get(QismtPensionRate_.qismtPensionRatePK).get(QismtPensionRatePK_.histId), historyId));
 		cq.where(predicateList.toArray(new Predicate[] {}));
 		List<QismtPensionRate> result = em.createQuery(cq).getResultList();
 		// If have no record.
@@ -126,15 +126,13 @@ public class JpaPensionRateRepository extends JpaRepository implements PensionRa
 		List<Predicate> predicateList = new ArrayList<Predicate>();
 
 		// Construct condition.
-		predicateList.add(cb.equal(
-				root.get(QismtPensionRate_.qismtPensionRatePK).get(QismtPensionRatePK_.ccd),
-				companyCode.v()));
+		predicateList.add(
+				cb.equal(root.get(QismtPensionRate_.qismtPensionRatePK).get(QismtPensionRatePK_.ccd), companyCode.v()));
 
 		cq.where(predicateList.toArray(new Predicate[] {}));
 		cq.orderBy(cb.desc(root.get(QismtPensionRate_.strYm)));
 		return em.createQuery(cq).getResultList().stream()
-				.map(item -> new PensionRate(new JpaPensionRateGetMemento(item)))
-				.collect(Collectors.toList());
+				.map(item -> new PensionRate(new JpaPensionRateGetMemento(item))).collect(Collectors.toList());
 	}
 
 	/*
@@ -159,16 +157,14 @@ public class JpaPensionRateRepository extends JpaRepository implements PensionRa
 		List<Predicate> predicateList = new ArrayList<Predicate>();
 
 		// Construct condition.
-		predicateList.add(cb.equal(
-				root.get(QismtPensionRate_.qismtPensionRatePK).get(QismtPensionRatePK_.histId),
-				id));
+		predicateList.add(cb.equal(root.get(QismtPensionRate_.qismtPensionRatePK).get(QismtPensionRatePK_.histId), id));
 
 		cq.where(predicateList.toArray(new Predicate[] {}));
 		return Optional.of(em.createQuery(cq).getResultList().stream()
-				.map(item -> new PensionRate(new JpaPensionRateGetMemento(item)))
-				.collect(Collectors.toList()).get(0));
+				.map(item -> new PensionRate(new JpaPensionRateGetMemento(item))).collect(Collectors.toList()).get(0));
 	}
 
+	// for history common
 	@Override
 	public void deleteHistory(String uuid) {
 		this.remove(uuid);
@@ -176,12 +172,18 @@ public class JpaPensionRateRepository extends JpaRepository implements PensionRa
 
 	@Override
 	public Optional<PensionRate> findLastestHistoryByMasterCode(String companyCode, String officeCode) {
-		return Optional.of(this.findAllOffice(companyCode,officeCode).get(0));
+		List<PensionRate> lstPensionRate = this.findAllOffice(companyCode, officeCode);
+		// if create first his for office
+		if (lstPensionRate.isEmpty()) {
+			return Optional.empty();
+		} else {// create more his
+			return Optional.of(this.findAllOffice(companyCode, officeCode).get(0));
+		}
 	}
 
 	@Override
 	public List<PensionRate> findAllHistoryByMasterCode(String companyCode, String officeCode) {
-		return this.findAllOffice(companyCode,officeCode);
+		return this.findAllOffice(companyCode, officeCode);
 	}
 
 	@Override
