@@ -40,3 +40,6 @@
 textarea {
 	height: 120px;
 }
+.form-default td{
+	padding-bottom: 6px;
+}

@@ -1,5 +1,6 @@
 module nts.uk.pr.view.qpp007.c {
     export module viewmodel {
+        import aggregateService = nts.uk.pr.view.qpp007.j.service;
 
         export class ScreenModel {
             outputSettings: KnockoutObservableArray<OutputSettingHeader>;
@@ -58,6 +59,7 @@ module nts.uk.pr.view.qpp007.c {
                 var dfd = $.Deferred<void>();
                 self.loadAllOutputSetting().done(() => {
                     self.isLoading(false);
+                    self.loadAggregateItems();
                     dfd.resolve();
                 });
                 return dfd.promise();
@@ -139,7 +141,7 @@ module nts.uk.pr.view.qpp007.c {
             */
             public remove(): void {
                 if (this.outputSettingSelectedCode) {
-                    service.remove(this.outputSettingSelectedCode());
+                    service.remove(this.outputSettingSelectedCode()).done(() => this.loadAllOutputSetting());
                 }
             }
 
@@ -211,6 +213,10 @@ module nts.uk.pr.view.qpp007.c {
             */
             public loadAggregateItems(): JQueryPromise<void> {
                 var dfd = $.Deferred<void>();
+                $.when(aggregateService.findSalaryAggregateItem({ taxDivision: 0, aggregateItemCode: '001' }),
+                    aggregateService.findSalaryAggregateItem({ taxDivision: 1, aggregateItemCode: '001' })).done((res1, res2) => {
+                        // TODO ...
+                    });
                 return dfd.promise();
             }
 
@@ -251,18 +257,18 @@ module nts.uk.pr.view.qpp007.c {
             settingName: KnockoutObservable<string>;
             categorySettingTabs: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel>;
             selectedCategory: KnockoutObservable<string>;
-            categorySettings: KnockoutObservableArray<CategorySetting>;
+            categorySettings: KnockoutObservableArray<CategorySettingModel>;
             reloadReportItems: () => void;
             constructor(outputSetting?: OutputSettingDto) {
                 this.settingCode = ko.observable(outputSetting != undefined ? outputSetting.code : '');
                 this.settingName = ko.observable(outputSetting != undefined ? outputSetting.name : '');
-                var settings: CategorySetting[] = [];
+                var settings: CategorySettingModel[] = [];
                 if (outputSetting == undefined) {
-                    settings = this.convertCategorySettings();
+                    settings = this.toModel();
                 } else {
-                    settings = this.convertCategorySettings(outputSetting.categorySettings);
-                }console.log(settings);
-                this.categorySettings = ko.observableArray<CategorySetting>(settings);
+                    settings = this.toModel(outputSetting.categorySettings);
+                }
+                this.categorySettings = ko.observableArray<CategorySettingModel>(settings);
                 this.categorySettingTabs = ko.observableArray<nts.uk.ui.NtsTabPanelModel>([
                     { id: SalaryCategory.PAYMENT, title: '支給', content: '#payment', enable: ko.observable(true), visible: ko.observable(true) },
                     { id: SalaryCategory.DEDUCTION, title: '控除', content: '#deduction', enable: ko.observable(true), visible: ko.observable(true) },
@@ -279,21 +285,34 @@ module nts.uk.pr.view.qpp007.c {
             }
 
             /**
-            * Convert category setting data to screen model.
+            * Convert category setting data from dto to screen model.
             */
-            private convertCategorySettings(categorySettings?: CategorySettingDto[]): CategorySetting[] {
-                var settings: CategorySetting[] = [];
-                var test: CategorySettingDto;
-                if (categorySettings != undefined && categorySettings.length>0) {
-                    test = categorySettings[0];
+            private toModel(categorySettings?: CategorySettingDto[]): CategorySettingModel[] {
+                var settings: CategorySettingModel[] = [];
+                var test: CategorySettingDto[];
+                if (categorySettings != undefined && categorySettings.length > 0) {
+                    test = categorySettings;
                 }
 
                 // TODO... change later.
-                settings[0] = new CategorySetting(SalaryCategory.PAYMENT, test);
-                settings[1] = new CategorySetting(SalaryCategory.DEDUCTION, test);
-                settings[2] = new CategorySetting(SalaryCategory.ATTENDANCE, test);
-                settings[3] = new CategorySetting(SalaryCategory.ARTICLE_OTHERS, test);
+                settings[0] = this.filterSettingByCategory(SalaryCategory.PAYMENT, test);
+                settings[1] = this.filterSettingByCategory(SalaryCategory.DEDUCTION, test);
+                settings[2] = this.filterSettingByCategory(SalaryCategory.ATTENDANCE, test);
+                settings[3] = this.filterSettingByCategory(SalaryCategory.ARTICLE_OTHERS, test);
                 return settings;
+            }
+
+            private filterSettingByCategory(category: SalaryCategory, categorySettings?: CategorySettingDto[]): CategorySettingModel {
+                var cateTempSetting: CategorySettingDto = { category: category, outputItems: [] };
+                if (categorySettings == undefined) {
+                    return new CategorySettingModel(category, cateTempSetting);
+                }
+
+                var categorySetting = categorySettings.filter(item => item.category == category)[0];
+                if (categorySetting == undefined) {
+                    categorySetting = cateTempSetting;
+                }
+                return new CategorySettingModel(category, categorySetting);
             }
 
         }
@@ -308,7 +327,7 @@ module nts.uk.pr.view.qpp007.c {
             }
         }
 
-        export class CategorySetting {
+        export class CategorySettingModel {
             categoryName: SalaryCategory;
             aggregateItems: KnockoutObservableArray<AggregateItem>;
             aggregateItemsSelected: KnockoutObservableArray<string>;
@@ -361,8 +380,8 @@ module nts.uk.pr.view.qpp007.c {
 
                 // Customs handle.
                 (<any>ko.bindingHandlers).rended = {
-                    init: function(element, valueAccessor, allBindings, viewModel, bindingContext) { },
-                    update: function(element, valueAccessor, allBindings, viewModel: CategorySetting, bindingContext) {
+                    init: function(element: any, valueAccessor: any, allBindings: any, viewModel: any, bindingContext: any) { },
+                    update: function(element: any, valueAccessor: any, allBindings: any, viewModel: CategorySettingModel, bindingContext: any) {
                         var code = valueAccessor();
                         viewModel.outputItems().forEach(item => {
                             $('#' + item.code).on('click', function() {

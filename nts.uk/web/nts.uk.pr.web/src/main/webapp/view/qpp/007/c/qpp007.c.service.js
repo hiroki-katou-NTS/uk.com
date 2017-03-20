@@ -22,8 +22,8 @@ var nts;
                                 return nts.uk.request.ajax(paths.save, data);
                             }
                             service.save = save;
-                            function remove(id) {
-                                return nts.uk.request.ajax(paths.remove, id);
+                            function remove(code) {
+                                return nts.uk.request.ajax(paths.remove, { code: code });
                             }
                             service.remove = remove;
                             function findOutputSettingDetail(id) {
