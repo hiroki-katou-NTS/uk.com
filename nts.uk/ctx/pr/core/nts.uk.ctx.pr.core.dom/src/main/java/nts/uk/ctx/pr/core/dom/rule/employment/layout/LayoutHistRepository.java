@@ -20,5 +20,6 @@ public interface LayoutHistRepository {
 	void remove(String companyCode, String stmtCode, String history);
 	
 	List<LayoutHistory> getAllLayoutHist(String companyCode);
+	Optional<LayoutHistory> getAllHistMax(String companyCd, String stmtCode);
 	
 }

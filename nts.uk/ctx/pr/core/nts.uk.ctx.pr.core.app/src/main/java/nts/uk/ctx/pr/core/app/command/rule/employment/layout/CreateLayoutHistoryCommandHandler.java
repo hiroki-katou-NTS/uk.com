@@ -1,14 +1,11 @@
 package nts.uk.ctx.pr.core.app.command.rule.employment.layout;
 
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
-
-import org.apache.logging.log4j.core.util.UuidUtil;
 
 import nts.arc.error.BusinessException;
 import nts.arc.error.RawErrorMessage;
@@ -55,7 +52,7 @@ public class CreateLayoutHistoryCommandHandler extends CommandHandler<CreateLayo
 		CreateLayoutHistoryCommand command = context.getCommand();
 		String companyCode = AppContexts.user().companyCode();
 		LayoutHistory layoutHistOrigin = 
-				layoutHisRepo.getHistoryBefore(companyCode, command.getStmtCode(), command.getStartPrevious())
+				layoutHisRepo.getAllHistMax(companyCode, command.getStmtCode())
 				.orElseThrow(() -> new BusinessException(new RawErrorMessage("Not found layout history")));
 		LayoutMaster layoutOrgin =
 				layoutRepo.getHistoryBefore(companyCode, command.getStmtCode())
@@ -63,9 +60,6 @@ public class CreateLayoutHistoryCommandHandler extends CommandHandler<CreateLayo
 		List<LayoutMasterCategory> categoriesOrigin =
 				categoryRepo.getCategoriesBefore(companyCode,
 				command.getStmtCode(), layoutHistOrigin.getHistoryId());
-		for(int i = 0; i < categoriesOrigin.size() ; i++){
-			System.out.println(categoriesOrigin.get(i).getHistoryId());
-		}
 		List<LayoutMasterLine> linesOrigin = 
 				lineRepo.getLines(companyCode, command.getStmtCode(),
 				layoutHistOrigin.getHistoryId());
@@ -100,12 +94,13 @@ public class CreateLayoutHistoryCommandHandler extends CommandHandler<CreateLayo
 	private void copyFromPreviousHistory(CreateLayoutHistoryCommand command, String companyCode,
 			List<LayoutMasterCategory> categoriesOrigin, List<LayoutMasterLine> linesOrigin,
 			List<LayoutMasterDetail> detailsOrigin) {
+		String t = IdentifierUtil.randomUniqueId();
 		List<LayoutMasterCategory> categoriesNew = categoriesOrigin.stream().map(org -> {
 			return LayoutMasterCategory.createFromDomain(org.getCompanyCode(), 
 					org.getStmtCode(),
 					org.getCtAtr(),
 					org.getCtgPos(),
-					IdentifierUtil.randomUniqueId());
+					t);
 		}).collect(Collectors.toList());
 		categoryRepo.add(categoriesNew);
 
@@ -115,7 +110,7 @@ public class CreateLayoutHistoryCommandHandler extends CommandHandler<CreateLayo
 					org.getCategoryAtr(),
 					org.getLineDisplayAttribute(),
 					org.getLinePosition(),
-					IdentifierUtil.randomUniqueId());
+					t);
 		}).collect(Collectors.toList());
 		lineRepo.add(linesNew);
 
@@ -138,16 +133,16 @@ public class CreateLayoutHistoryCommandHandler extends CommandHandler<CreateLayo
 					org.getPersonalWageCode(),
 					org.getWageTableCode(),
 					org.getCommonAmount(),
-					IdentifierUtil.randomUniqueId());
+					t);
 		}).collect(Collectors.toList());
 		detailRepo.add(detailsNew);
 	}
-
+    // UPDATE 20.3.2017 Lanlt fix historyID in category, line, detail
 	private void updateData(CreateLayoutHistoryCommand command, String companyCode, LayoutMaster layoutOrigin,
 			LayoutMaster layoutNew, LayoutHistory layoutHistOrigin, LayoutHistory layoutHistNew,
 			List<LayoutMasterCategory> categoriesOrigin, List<LayoutMasterLine> linesOrigin,
 			List<LayoutMasterDetail> detailsOrigin) {
-		YearMonth endYm = new YearMonth(command.getEndYm()).previousMonth();
+		YearMonth endYm = new YearMonth(command.getEndYm() - 1);
 		// データベース更新[明細書マスタ.UPD-2] を実施する
 		// データベース更新[明細書マスタカテゴリ.UPD-2] を実施する
 
@@ -155,9 +150,31 @@ public class CreateLayoutHistoryCommandHandler extends CommandHandler<CreateLayo
 		this.layoutHisRepo.update(layoutHistOrigin);
 		// データベース更新[明細書マスタカテゴリ.UPD-2] を実施する
 		// データベース更新[明細書マスタ行.UPD-2] を実施する
+		if(command.isCheckContinue()){
 		List<LayoutMasterCategory> categoriesNew = categoriesOrigin.stream().map(org -> {
 			return LayoutMasterCategory.createFromDomain(org.getCompanyCode(), org.getStmtCode(), org.getCtAtr(),
-					org.getCtgPos(), org.getHistoryId());
+					org.getCtgPos(),layoutHistNew.getHistoryId());
+		}).collect(Collectors.toList());
+		this.categoryRepo.update(categoriesNew);
+		// データベース更新[明細書マスタ行.UPD-2] を実施する
+		List<LayoutMasterLine> linesNew = linesOrigin.stream().map(org -> {
+			return LayoutMasterLine.createFromDomain(org.getCompanyCode(), org.getStmtCode(), org.getAutoLineId(),
+					org.getCategoryAtr(), org.getLineDisplayAttribute(), org.getLinePosition(), layoutHistNew.getHistoryId());
+		}).collect(Collectors.toList());
+		this.lineRepo.update(linesNew);
+		// データベース更新[明細書マスタ明細.UPD-2] を実施する
+		List<LayoutMasterDetail> detailsNew = detailsOrigin.stream().map(org -> {
+			return LayoutMasterDetail.createFromDomain(org.getCompanyCode(), org.getStmtCode(), org.getCategoryAtr(),
+					org.getItemCode(), org.getAutoLineId(), org.getItemPosColumn(), org.getError(),
+					org.getCalculationMethod(), org.getDistribute(), org.getDisplayAtr(), org.getAlarm(),
+					org.getSumScopeAtr(), org.getSetOffItemCode(), org.getCommuteAtr(), org.getFormulaCode(),
+					org.getPersonalWageCode(), org.getWageTableCode(), org.getCommonAmount(), layoutHistNew.getHistoryId());
+		}).collect(Collectors.toList());
+		this.detailRepo.update(detailsNew);
+	}else{
+		List<LayoutMasterCategory> categoriesNew = categoriesOrigin.stream().map(org -> {
+			return LayoutMasterCategory.createFromDomain(org.getCompanyCode(), org.getStmtCode(), org.getCtAtr(),
+					org.getCtgPos(),org.getHistoryId());
 		}).collect(Collectors.toList());
 		this.categoryRepo.update(categoriesNew);
 		// データベース更新[明細書マスタ行.UPD-2] を実施する
@@ -175,5 +192,8 @@ public class CreateLayoutHistoryCommandHandler extends CommandHandler<CreateLayo
 					org.getPersonalWageCode(), org.getWageTableCode(), org.getCommonAmount(), org.getHistoryId());
 		}).collect(Collectors.toList());
 		this.detailRepo.update(detailsNew);
+	}
+		
+		
 	}
 }

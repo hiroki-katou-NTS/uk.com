@@ -2,7 +2,6 @@ package nts.uk.ctx.pr.core.app.command.rule.employment.layout;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.pr.core.app.command.rule.employment.layout.register.LayoutCategory;
 import nts.uk.ctx.pr.core.dom.rule.employment.layout.LayoutHistory;
 import nts.uk.ctx.pr.core.dom.rule.employment.layout.LayoutMaster;
 import nts.uk.ctx.pr.core.dom.rule.employment.layout.category.LayoutMasterCategory;

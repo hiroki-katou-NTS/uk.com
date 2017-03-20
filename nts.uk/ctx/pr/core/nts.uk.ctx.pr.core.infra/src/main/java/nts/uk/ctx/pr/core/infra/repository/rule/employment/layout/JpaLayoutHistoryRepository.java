@@ -21,8 +21,8 @@ import nts.uk.ctx.pr.core.infra.entity.rule.employment.layout.QstmtStmtLayoutHis
  */
 @Stateless
 public class JpaLayoutHistoryRepository extends JpaRepository implements LayoutHistRepository {
-	private final String SELECT_NO_WHERE = "SELECT c FROM QstmtStmtLayoutHistory c";
-	private final String SELECT_ALL = SELECT_NO_WHERE + " WHERE c.qstmtStmtLayoutHistPK.companyCd = :companyCd";
+	private final String SELECT_NO_WHERE = "SELECT c FROM QstmtStmtLayoutHistory c" ;
+	private final String SELECT_ALL = SELECT_NO_WHERE + " WHERE c.qstmtStmtLayoutHistPK.companyCd = :companyCd" + " ORDER BY c.startYear DESC";
 	private final String SEL_1 = SELECT_NO_WHERE + " WHERE c.qstmtStmtLayoutHistPK.companyCd = :companyCd "
 			+ " AND c.startYear <= :baseYearMonth " + " AND c.endYear >= :baseYearMonth ";
 	private final String SEL_2 = SELECT_NO_WHERE + " WHERE c.qstmtStmtLayoutHistPK.companyCd = :companyCd "
@@ -34,6 +34,8 @@ public class JpaLayoutHistoryRepository extends JpaRepository implements LayoutH
 	private final String SEL_5 = SELECT_NO_WHERE + " WHERE c.qstmtStmtLayoutHistPK.companyCd = :companyCode "
 			+ " AND c.qstmtStmtLayoutHistPK.stmtCd = :stmtCode" + " AND c.strYm <= :baseYearMonth "
 			+ " AND c.endYm >= :baseYearMonth ";
+    private final String SELECT_HIST_MAX_START = SELECT_NO_WHERE
+	 + " WHERE c.qstmtStmtLayoutHistPK.companyCd = :companyCd" + " AND c.qstmtStmtLayoutHistPK.stmtCd = :stmtCd"+ " AND  c.endYear = 999912";
 
 	private final LayoutHistory toDomain(QstmtStmtLayoutHistory entity) {
 		val domain = LayoutHistory.createFromJavaType(entity.qstmtStmtLayoutHistPK.companyCd,
@@ -111,8 +113,6 @@ public class JpaLayoutHistoryRepository extends JpaRepository implements LayoutH
 				.setParameter("startYear", startYear).getSingle().map(e -> {
 				     return Optional.of(toDomain(e));
 			    }).orElse(Optional.empty());
-			    
-			    //(x -> toDomain(x)).orElse(Optional.empty());(x -> toDomain(x));
 	}
 
 	@Override
@@ -128,5 +128,15 @@ public class JpaLayoutHistoryRepository extends JpaRepository implements LayoutH
                 .setParameter("companyCd", companyCd)
                 .getList(entity -> toDomain(entity));
 
+	}
+
+	@Override
+	public Optional<LayoutHistory> getAllHistMax(String companyCd, String stmtCd) {
+		return this.queryProxy().query(SELECT_HIST_MAX_START, QstmtStmtLayoutHistory.class)
+				.setParameter("companyCd", companyCd)
+				.setParameter("stmtCd", stmtCd)
+				.getSingle().map(e -> {
+				     return Optional.of(toDomain(e));
+			    }).orElse(Optional.empty());
 	}
 }

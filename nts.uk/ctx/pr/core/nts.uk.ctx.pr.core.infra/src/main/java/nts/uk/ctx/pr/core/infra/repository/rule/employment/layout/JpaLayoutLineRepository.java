@@ -8,6 +8,7 @@ import javax.ejb.Stateless;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.uk.ctx.pr.core.dom.rule.employment.layout.LayoutHistory;
 import nts.uk.ctx.pr.core.dom.rule.employment.layout.line.LayoutMasterLine;
 import nts.uk.ctx.pr.core.dom.rule.employment.layout.line.LayoutMasterLineRepository;
 import nts.uk.ctx.pr.core.infra.entity.rule.employment.layout.QstmtStmtLayoutLines;
@@ -117,6 +118,9 @@ public class JpaLayoutLineRepository extends JpaRepository implements LayoutMast
 	public void add(List<LayoutMasterLine> lines) {
 		for (LayoutMasterLine line : lines) {
 			this.commandProxy().insert(toEntity(line));
+		
+			System.out.println(line.getStmtCode());
+			System.out.println(line.getAutoLineId());
 		}
 
 	}
