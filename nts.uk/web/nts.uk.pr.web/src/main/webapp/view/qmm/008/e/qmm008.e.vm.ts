@@ -25,7 +25,7 @@ module nts.uk.pr.view.qmm008.e {
             selectedOfficeCode: KnockoutObservable<string>;
             enabled: KnockoutObservable<boolean>;
             deleteButtonControll: KnockoutObservable<boolean>;
-
+            errorList: KnockoutObservableArray<any>;
             constructor() {
                 var self = this;
                 self.enabled = ko.observable(true);
@@ -57,6 +57,14 @@ module nts.uk.pr.view.qmm008.e {
                     textalign: "center"
                 }));
                 self.selectedOfficeCode = ko.observable('');
+                
+                self.errorList = ko.observableArray([
+                    { messageId: "ER001", message: "＊が入力されていません。" },
+                    { messageId: "ER007", message: "＊が選択されていません。" },
+                    { messageId: "ER005", message: "入力した＊は既に存在しています。\r\n ＊を確認してください。" },
+                    { messageId: "ER008", message: "選択された＊は使用されているため削除できません。" },
+                ]);
+                
                 self.selectedOfficeCode.subscribe(function(selectedOfficeCode: string) {
                     $('.save-error').ntsError('clear');
                     if (selectedOfficeCode != null && selectedOfficeCode != undefined && selectedOfficeCode != "") {
@@ -165,11 +173,6 @@ module nts.uk.pr.view.qmm008.e {
                 //if register new office
                 else {
                     self.registerOffice();
-                    //reload list office
-                    self.loadAllInsuranceOfficeData().done(function(){
-                    //focus add new item
-                           self.selectedOfficeCode(self.officeModel().officeCode()); 
-                    });
                 }
             }
 
@@ -177,7 +180,11 @@ module nts.uk.pr.view.qmm008.e {
             private updateOffice() {
                 var self = this;
                 service.update(self.collectData()).done(function() {
-                    //when update done   
+                    //when update done
+                    self.loadAllInsuranceOfficeData().done(function() {
+                        //focus add new item
+                        self.selectedOfficeCode(self.officeModel().officeCode());
+                    });   
                 }).fail(function() {
                     //update fail    
                 });
@@ -187,9 +194,23 @@ module nts.uk.pr.view.qmm008.e {
             private registerOffice() {
                 var self = this;
                 service.register(self.collectData()).done(function() {
-                    // when register done   
+                    // when register done
+                    self.loadAllInsuranceOfficeData().done(function() {
+                        //focus add new item
+                        self.selectedOfficeCode(self.officeModel().officeCode());
+                    });
                 }).fail(function(res) {
-                    alert(res.message);    
+                    if (res.messageId == self.errorList()[2].messageId) {
+                        $('#officeCode').ntsError('set', self.errorList()[2].message);
+                    }
+                    if (res.messageId == self.errorList()[0].messageId) {
+                        if(!self.officeModel().officeCode())
+                        $('#officeCode').ntsError('set', self.errorList()[0].message);
+                        if(!self.officeModel().officeName())
+                        $('#officeName').ntsError('set', self.errorList()[0].message);
+                        if(!self.officeModel().PicPosition())
+                        $('#picPosition').ntsError('set', self.errorList()[0].message);
+                    }
                 });
             }
 
