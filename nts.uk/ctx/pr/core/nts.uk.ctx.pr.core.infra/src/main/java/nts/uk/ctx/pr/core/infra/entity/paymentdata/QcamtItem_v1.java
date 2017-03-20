@@ -10,8 +10,8 @@ import javax.persistence.JoinColumns;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
+import nts.uk.ctx.pr.core.infra.entity.rule.employment.layout.QstmtStmtLayoutDetail;
 import nts.uk.shr.infra.data.entity.AggregateTableEntity;
-import nts.uk.ctx.pr.core.infra.entity.layout.QstmtStmtLayoutDetail;
 
 @Entity
 @Table(name="QCAMT_ITEM")
