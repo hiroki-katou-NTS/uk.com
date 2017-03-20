@@ -5,17 +5,19 @@ var qmm019;
         var service;
         (function (service) {
             var paths = {
-                getAllLayout: "pr/proto/layout/findalllayout",
-                getLayoutsWithMaxStartYm: "pr/proto/layout/findlayoutwithmaxstartym",
+                getAllLayoutHead: "pr/proto/layout/findalllayoutHead",
+                getAllLayoutHist: "pr/proto/layout/findalllayoutHist",
+                //            getLayoutInfor : "/pr/proto/layout/findlayout/{0}/{1}",
+                //            getLayoutsWithMaxStartYm: "pr/proto/layout/findlayoutwithmaxstartym",
                 getCategoryFull: "pr/proto/layout/findCategoies/full",
                 registerLayout: "pr/proto/layout/register"
             };
             /**
              * Get list payment date processing.
              */
-            function getAllLayout() {
+            function getAllLayoutHead() {
                 var dfd = $.Deferred();
-                nts.uk.request.ajax(paths.getAllLayout)
+                nts.uk.request.ajax(paths.getAllLayoutHead)
                     .done(function (res) {
                     dfd.resolve(res);
                 })
@@ -24,7 +26,37 @@ var qmm019;
                 });
                 return dfd.promise();
             }
-            service.getAllLayout = getAllLayout;
+            service.getAllLayoutHead = getAllLayoutHead;
+            /**
+             * Get list payment date processing.
+             */
+            function getAllLayoutHist() {
+                var dfd = $.Deferred();
+                nts.uk.request.ajax(paths.getAllLayoutHist)
+                    .done(function (res) {
+                    dfd.resolve(res);
+                })
+                    .fail(function (res) {
+                    dfd.reject(res);
+                });
+                return dfd.promise();
+            }
+            service.getAllLayoutHist = getAllLayoutHist;
+            //        /**
+            //         * Get layout master 
+            //         */
+            //        export function getLayout(stmtCode: string, historyId: string): JQueryPromise<model.LayoutMasterDto> {
+            //            var dfd = $.Deferred<any>();
+            //            var _path = nts.uk.text.format(paths.getLayoutInfor, stmtCode, historyId);
+            //            nts.uk.request.ajax(_path)
+            //                .done(function(res: any){
+            //                    dfd.resolve(res);
+            //                })
+            //                .fail(function(res) {
+            //                    dfd.reject(res);
+            //                })
+            //            return dfd.promise(); 
+            //        }
             /**
              * Get list payment date processing.
              */
@@ -43,12 +75,12 @@ var qmm019;
             /**
              * Get list getCategoryFull.
              */
-            function getCategoryFull(layoutCode, startYm, screenModel) {
+            function getCategoryFull(layoutCode, historyId, startYm) {
                 var dfd = $.Deferred();
-                nts.uk.request.ajax(paths.getCategoryFull + "/" + layoutCode + "/" + startYm)
+                nts.uk.request.ajax(paths.getCategoryFull + "/" + layoutCode + "/" + historyId + "/" + startYm)
                     .done(function (res) {
                     var result = _.map(res, function (category) {
-                        return new model.Category(category.lines, category.categoryAtr, screenModel);
+                        return new model.Category(category.lines, category.categoryAtr);
                     });
                     dfd.resolve(result);
                 })
@@ -97,7 +129,9 @@ var qmm019;
                             var sortedItemCodes = $("#" + line.rowId).sortable("toArray");
                             // Vì item mà required thì ko được sortable nên cần kiểm tra để thêm item này vào còn save.
                             if (line.hasRequiredItem) {
-                                var detailRequired = _.last(line.details);
+                                var detailRequired = _.find(line.details, function (requireItem) {
+                                    return requireItem.isRequired();
+                                });
                                 sortedItemCodes.push(detailRequired.itemCode());
                             }
                             var _loop_2 = function(item) {
@@ -129,7 +163,8 @@ var qmm019;
                                         isAlamUseLow: detail.isUseLowAlam(),
                                         alamRangeLow: detail.alamRangeLow() });
                                 }
-                                else {
+                                else if (!detail.added()) {
+                                    //Chỉ đưa vào mảng những itemCode đã đc lưu trước đó 
                                     listItemCodeDeleted.push({ categoryAtr: category.categoryAtr, itemCode: detail.itemCode() });
                                 }
                                 itemPosColumn++;
@@ -177,6 +212,13 @@ var qmm019;
             */
             var model;
             (function (model) {
+                // layout head
+                var LayoutHeadDto = (function () {
+                    function LayoutHeadDto() {
+                    }
+                    return LayoutHeadDto;
+                }());
+                model.LayoutHeadDto = LayoutHeadDto;
                 // layout
                 var LayoutMasterDto = (function () {
                     function LayoutMasterDto() {
@@ -185,16 +227,16 @@ var qmm019;
                 }());
                 model.LayoutMasterDto = LayoutMasterDto;
                 var Category = (function () {
-                    function Category(lines, categoryAtr, screenModel) {
+                    function Category(lines, categoryAtr) {
                         this.hasSetting = false;
                         this.isRemoved = false;
-                        this.screenModel = ko.observable(screenModel);
+                        this.totalGrayLine = 0;
                         this.lines = ko.observableArray([]);
                         this.lines(_.map(lines, function (line) {
                             var details = _.map(line.details, function (detail) {
-                                return new model.ItemDetail(detail, screenModel);
+                                return new model.ItemDetail(detail);
                             });
-                            return new model.Line(line.categoryAtr, details, line.autoLineId, line.lineDispayAtr, line.linePosition, screenModel);
+                            return new model.Line(line.categoryAtr, details, line.autoLineId, line.lineDispayAtr, line.linePosition);
                         }));
                         this.categoryAtr = categoryAtr;
                         switch (categoryAtr) {
@@ -242,20 +284,20 @@ var qmm019;
                                 $("#group-" + data.categoryAtr).addClass("removed");
                                 self.isRemoved = true;
                                 if (data.categoryAtr === 2)
-                                    self.screenModel().notHasKintai(true);
+                                    screenQmm019().notHasKintai(true);
                                 if (data.categoryAtr === 3)
-                                    self.screenModel().notHasKiji(true);
+                                    screenQmm019().notHasKiji(true);
                             }
-                            self.screenModel().calculateLine();
+                            screenQmm019().calculateLine();
                             return _this;
                         });
                     };
                     Category.prototype.addLine = function () {
                         var _this = this;
                         var self = this;
-                        if (self.screenModel().totalNormalLineNumber() + self.screenModel().totalGrayLineNumber() === 10) {
-                            return this;
-                        }
+                        //if (screenQmm019().totalNormalLineNumber() + screenQmm019().totalGrayLineNumber() === 10) {return this;}
+                        nts.uk.ui.windows.setShared('totalNormalLineNumber', screenQmm019().totalNormalLineNumber());
+                        nts.uk.ui.windows.setShared('totalGrayLineNumber', self.totalGrayLine);
                         nts.uk.ui.windows.sub.modal('/view/qmm/019/i/index.xhtml', { title: '明細レイアウトの作成＞＋行追加' }).onClosed(function () {
                             var selectedCode = nts.uk.ui.windows.getShared('selectedCode');
                             if (selectedCode === undefined)
@@ -268,9 +310,9 @@ var qmm019;
                                     setOffItemCode: "", commuteAtr: 0, calculationMethod: 0,
                                     distributeSet: 0, distributeWay: 0, personalWageCode: "", isUseHighError: 0,
                                     errRangeHigh: 0, isUseLowError: 0, errRangeLow: 0, isUseHighAlam: 0,
-                                    alamRangeHigh: 0, isUseLowAlam: 0, alamRangeLow: 0 }, self.screenModel()));
+                                    alamRangeHigh: 0, isUseLowAlam: 0, alamRangeLow: 0 }));
                             }
-                            var line = new Line(self.categoryAtr, listItemDetail, autoLineId, 1, self.lines.length, self.screenModel());
+                            var line = new Line(self.categoryAtr, listItemDetail, autoLineId, 1, self.lines.length);
                             if (selectedCode === "1") {
                                 // cho phep print
                                 line.setPrint(true);
@@ -280,10 +322,10 @@ var qmm019;
                                 line.setPrint(false);
                             }
                             self.lines.push(line);
-                            self.screenModel().calculateLine();
-                            self.screenModel().bindSortable();
-                            self.screenModel().destroySortable();
-                            self.screenModel().bindSortable();
+                            screenQmm019().calculateLine();
+                            screenQmm019().bindSortable();
+                            screenQmm019().destroySortable();
+                            screenQmm019().bindSortable();
                             return _this;
                         });
                     };
@@ -291,10 +333,9 @@ var qmm019;
                 }());
                 model.Category = Category;
                 var Line = (function () {
-                    function Line(categoryAtr, itemDetails, autoLineId, lineDispayAtr, linePosition, screenModel) {
+                    function Line(categoryAtr, itemDetails, autoLineId, lineDispayAtr, linePosition) {
                         this.hasRequiredItem = false;
                         this.isRemoved = false;
-                        this.screenModel = ko.observable(screenModel);
                         this.details = itemDetails;
                         this.autoLineId = autoLineId;
                         this.rowId = categoryAtr + autoLineId;
@@ -334,7 +375,7 @@ var qmm019;
                                     self.isRemoved = true;
                                 }
                             }
-                            self.screenModel().calculateLine();
+                            screenQmm019().calculateLine();
                             return _this;
                         });
                     };
@@ -357,50 +398,79 @@ var qmm019;
                 }());
                 model.Line = Line;
                 var ItemDetail = (function () {
-                    function ItemDetail(itemObject, screenModel) {
+                    function ItemDetail(itemObject) {
                         this.updateItemCode = ko.observable("");
                         this.added = ko.observable(false);
                         this.isRequired = ko.observable(false);
                         this.isRemoved = false;
-                        this.screenModel = ko.observable(screenModel);
-                        this.itemCode = ko.observable(itemObject.itemCode);
-                        this.itemAbName = ko.observable(itemObject.itemAbName);
+                        //TODO-LamVT: bỏ rem khi đồng bộ sang develop
+                        //contextMenu : nts.uk.ui.contextmenu.ContextMenu;// context menu cho từng item
+                        this.contextMenuClassId = "";
+                        var self = this;
+                        self.itemCode = ko.observable(itemObject.itemCode);
+                        self.itemAbName = ko.observable(itemObject.itemAbName);
                         if (itemObject.categoryAtr === 0 &&
                             (itemObject.itemCode === "F001" || itemObject.itemCode === "F002" || itemObject.itemCode === "F003")) {
-                            this.isRequired = ko.observable(true);
+                            self.isRequired = ko.observable(true);
                         }
                         if (itemObject.categoryAtr === 1 &&
                             (itemObject.itemCode === "F114")) {
-                            this.isRequired = ko.observable(true);
+                            self.isRequired = ko.observable(true);
                         }
-                        this.itemPosColumn = ko.observable(itemObject.itemPosColumn);
-                        this.categoryAtr = ko.observable(itemObject.categoryAtr);
-                        this.autoLineId = ko.observable(itemObject.autoLineId);
-                        this.sumScopeAtr = ko.observable(itemObject.sumScopeAtr);
-                        this.setOffItemCode = ko.observable(itemObject.setOffItemCode);
-                        this.commuteAtr = ko.observable(itemObject.commuteAtr);
-                        this.calculationMethod = ko.observable(itemObject.calculationMethod);
-                        this.distributeSet = ko.observable(itemObject.distributeSet);
-                        this.distributeWay = ko.observable(itemObject.distributeWay);
-                        this.personalWageCode = ko.observable(itemObject.personalWageCode);
-                        this.isUseHighError = ko.observable(itemObject.isUseHighError);
-                        this.errRangeHigh = ko.observable(itemObject.errRangeHigh);
-                        this.isUseLowError = ko.observable(itemObject.isUseLowError);
-                        this.errRangeLow = ko.observable(itemObject.errRangeLow);
-                        this.isUseHighAlam = ko.observable(itemObject.isUseHighAlam);
-                        this.alamRangeHigh = ko.observable(itemObject.alamRangeHigh);
-                        this.isUseLowAlam = ko.observable(itemObject.isUseLowAlam);
-                        this.alamRangeLow = ko.observable(itemObject.alamRangeLow);
+                        self.itemPosColumn = ko.observable(itemObject.itemPosColumn);
+                        self.categoryAtr = ko.observable(itemObject.categoryAtr);
+                        self.autoLineId = ko.observable(itemObject.autoLineId);
+                        self.sumScopeAtr = ko.observable(itemObject.sumScopeAtr);
+                        self.setOffItemCode = ko.observable(itemObject.setOffItemCode);
+                        self.commuteAtr = ko.observable(itemObject.commuteAtr);
+                        self.calculationMethod = ko.observable(itemObject.calculationMethod);
+                        self.distributeSet = ko.observable(itemObject.distributeSet);
+                        self.distributeWay = ko.observable(itemObject.distributeWay);
+                        self.personalWageCode = ko.observable(itemObject.personalWageCode);
+                        self.isUseHighError = ko.observable(itemObject.isUseHighError);
+                        self.errRangeHigh = ko.observable(itemObject.errRangeHigh);
+                        self.isUseLowError = ko.observable(itemObject.isUseLowError);
+                        self.errRangeLow = ko.observable(itemObject.errRangeLow);
+                        self.isUseHighAlam = ko.observable(itemObject.isUseHighAlam);
+                        self.alamRangeHigh = ko.observable(itemObject.alamRangeHigh);
+                        self.isUseLowAlam = ko.observable(itemObject.isUseLowAlam);
+                        self.alamRangeLow = ko.observable(itemObject.alamRangeLow);
+                        self.initContextMenu();
                     }
+                    ItemDetail.prototype.initContextMenu = function () {
+                        var self = this;
+                        self.contextMenuClassId = "context-menu-" + self.itemCode();
+                        //Chỉ cho phép xóa những item khác dấu "+" và không phải là item required
+                        if (!_.includes(self.contextMenuClassId, "itemTemp-") && !self.isRequired()) {
+                        }
+                    };
+                    ItemDetail.prototype.setDelete = function (isDelete) {
+                        var self = this;
+                        self.isRemoved = isDelete;
+                        //TODO-LamVT: bỏ rem khi đồng bộ sang develop
+                        //                    self.contextMenu.setVisibleItem(!isDelete, "delete");
+                        //                    self.contextMenu.setVisibleItem(isDelete, "undoDelete");
+                        if (isDelete) {
+                            $("#" + self.itemCode()).addClass("item-isDeleting");
+                        }
+                        else {
+                            $("#" + self.itemCode()).removeClass("item-isDeleting");
+                        }
+                    };
                     ItemDetail.prototype.itemClick = function (data, event) {
                         var _this = this;
                         var self = this;
+                        // Nếu đang bị delete thì ko cho bật dialog detail
+                        if (self.isRemoved)
+                            return this;
                         var param = {
                             categoryId: data.categoryAtr(),
                             itemCode: data.itemCode(),
                             isUpdate: data.itemAbName() === "+" ? false : true,
-                            startYm: self.screenModel().layoutMaster().startYm,
-                            stmtCode: self.screenModel().layoutMaster().stmtCode
+                            startYm: screenQmm019().layoutMaster().startYm,
+                            stmtCode: screenQmm019().layoutMaster().stmtCode,
+                            isNotYetSave: data.added(),
+                            objectNotYetSave: data
                         };
                         nts.uk.ui.windows.setShared('param', param);
                         nts.uk.ui.windows.sub.modal('/view/qmm/019/f/index.xhtml', { title: '項目の選択・設定', width: 1200, height: 670 }).onClosed(function () {
@@ -411,6 +481,7 @@ var qmm019;
                                 // Them moi
                                 self.itemCode(itemResult.itemCode);
                                 self.added(true);
+                                self.initContextMenu();
                             }
                             else {
                                 if (self.added()) {
@@ -425,19 +496,19 @@ var qmm019;
                             self.itemAbName(itemResult.itemAbName);
                             self.sumScopeAtr(itemResult.sumScopeAtr);
                             //self.setOffItemCode(itemResult.setOffItemCode);
-                            //self.commuteAtr(itemResult.commuteAtr);
+                            self.commuteAtr(itemResult.commuteAtr);
                             self.calculationMethod(itemResult.calculationMethod);
                             self.distributeSet(itemResult.distributeSet);
                             self.distributeWay(itemResult.distributeWay);
                             self.personalWageCode(itemResult.personalWageCode);
                             self.isUseHighError(itemResult.isUseHighError ? 1 : 0);
-                            self.errRangeHigh(itemResult.errRangeHigh);
+                            self.errRangeHigh(itemResult.errRangeHigh === null ? 0 : itemResult.errRangeHigh);
                             self.isUseLowError(itemResult.isUseLowError ? 1 : 0);
-                            self.errRangeLow(itemResult.errRangeLow);
+                            self.errRangeLow(itemResult.errRangeLow === null ? 0 : itemResult.errRangeLow);
                             self.isUseHighAlam(itemResult.isUseHighAlam ? 1 : 0);
-                            self.alamRangeHigh(itemResult.alamRangeHigh);
+                            self.alamRangeHigh(itemResult.alamRangeHigh === null ? 0 : itemResult.alamRangeHigh);
                             self.isUseLowAlam(itemResult.isUseLowAlam ? 1 : 0);
-                            self.alamRangeLow(itemResult.alamRangeLow);
+                            self.alamRangeLow(itemResult.alamRangeLow === null ? 0 : itemResult.alamRangeLow);
                             return _this;
                         });
                     };

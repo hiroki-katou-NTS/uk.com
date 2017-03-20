@@ -1,0 +1,96 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+
+	<ui:composition template="../../../../master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<com:ValidatorScript>
+					nts.uk.ctx.pr.core.dom.layout.LayoutName
+				</com:ValidatorScript>
+           	<com:scriptfile set="IGNITE" />
+			<com:scriptfile path="viewmodel.js" />
+			<com:scriptfile path="start.js" />
+			<com:scriptfile path="service.js" />
+			<com:stylefile path="main.css" />
+			<script>var dialogSize = { width: 910, height: 860 };</script>
+		</ui:define>
+
+		<ui:define name="content">
+		<div class="flex valign-center" style="margin-top:20px">
+			<label id="E_LBL_001">個人情報で登録した納付先を置換えます。</label>
+		</div>
+
+			<div id="contents-area" class="cf">
+
+				<div class="nts-left-content">
+					<div>
+						<label id="E_LBL_002">【統合元情報】</label>
+					</div>
+					<div class="caret-right caret-background">
+					<i class="icon icon-searchbox"></i>	
+
+						<div id ="E_SCH_001" style="width: 400px"
+							data-bind="ntsSearchBox: {items: items, selected: singleSelectedCode, selectedKey: 'code', childField: 'childs', filteredItems: filteredData, fields: ['name', 'code']}" />
+						<div>
+							<table id="treegrid21"
+								data-bind="ntsTreeGridView:{
+								   	width: 385,
+									height: 460,
+									options: items,
+									value: singleSelectedCode,
+									optionsValue: 'code',
+									optionsChild: 'childs',
+									optionsText: 'nodeText',
+									multiple: false,
+									enable: false,
+									showCheckBox: true}"
+								class="cf"></table>
+						</div>
+					</div>				
+		
+				</div>
+				
+				<div class="nts-right-content">
+					<div>
+						<label id="E_LBL_003">【統合先情報】</label>
+					</div>
+					
+					<div>
+					<i class="icon icon-searchbox"></i>	
+						<div  id ="E_SCH_002" style="width: 410px"
+							data-bind="ntsSearchBox: {items: items, selected: singleSelectedCode, selectedKey: 'code', childField: 'childs', filteredItems: filteredData1, fields: ['name', 'code']}" />
+						<div>
+							<table id="treegrid2"
+								data-bind="ntsTreeGridView:{
+								   	width: 385,
+									height: 460,
+									options: items,
+									value: singleSelectedCode,
+									optionsValue: 'code',
+									optionsChild: 'childs',
+									optionsText: 'nodeText',
+									multiple: false,
+									enable: false,
+									showCheckBox: false}"
+								class="cf"></table>
+						</div>
+					</div>
+				</div>
+			    </div>
+			    <hr/>
+			    <div>
+					<button id="E_BTN_001" class="proceed" data-bind="click: clickButton">実行</button>
+					<button id="E_BTN_002" data-bind="click: cancelButton">キャンセル</button>
+			    </div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>
+
+
+
+
