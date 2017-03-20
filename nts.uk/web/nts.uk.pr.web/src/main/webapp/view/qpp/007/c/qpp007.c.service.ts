@@ -19,8 +19,8 @@ module nts.uk.pr.view.qpp007.c {
         /**
          *  Delete
          */
-        export function remove(id: string): JQueryPromise<any> {
-            return nts.uk.request.ajax(paths.remove, id);
+        export function remove(code: string): JQueryPromise<any> {
+            return nts.uk.request.ajax(paths.remove, {code: code});
         }
         /**
          *  Find outputSetting detail
