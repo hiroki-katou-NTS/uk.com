@@ -28,7 +28,7 @@ module qmm034.a.viewmodel {
             self.init();
             self.currentCode.subscribe(function(oldcode) {
                 //check xem user co thay doi value cua cac field can check dirty
-                //neu isCheckedDirty = true thi dung action, neu = false thi action
+                //neu isCheckedDirty = true thi stop action, neu = false thi action
                 if (!nts.uk.text.isNullOrEmpty(oldcode) && !self.isCheckedDirty)
                  {
                     if (self.dirty1.isDirty() || self.dirty2.isDirty() || self.dirty3.isDirty()) {
@@ -42,7 +42,7 @@ module qmm034.a.viewmodel {
             }, self, "beforeChange");
             
             self.currentCode.subscribe(function(codeChanged) {
-                //neu isCheckedDirty = true thi dung action, neu = false thi action
+                //neu isCheckedDirty = true thi stop action, neu = false thi action
                 if(self.isCheckedDirty){
                     self.currentCode(self.currentEra().code);
                     self.isCheckedDirty = false;
