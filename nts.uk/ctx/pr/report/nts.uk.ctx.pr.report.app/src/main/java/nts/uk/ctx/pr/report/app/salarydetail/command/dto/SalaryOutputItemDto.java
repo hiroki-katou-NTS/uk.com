@@ -10,7 +10,7 @@ import nts.uk.ctx.pr.report.dom.salarydetail.outputsetting.SalaryOutputItem;
 import nts.uk.ctx.pr.report.dom.salarydetail.outputsetting.SalaryOutputItemGetMemento;
 
 /**
- * The Class OutputItemDto.
+ * The Class SalaryOutputItemDto.
  */
 @Setter
 public class SalaryOutputItemDto {
@@ -20,6 +20,9 @@ public class SalaryOutputItemDto {
 
 	/** The is aggregate item. */
 	private Boolean isAggregateItem;
+
+	/** The order number. */
+	private int orderNumber;
 
 	/**
 	 * To domain.
@@ -41,8 +44,7 @@ public class SalaryOutputItemDto {
 		/**
 		 * Instantiates a new salary output item get memento impl.
 		 *
-		 * @param dto
-		 *            the dto
+		 * @param dto the dto
 		 */
 		public SalaryOutputItemGetMementoImpl(SalaryOutputItemDto dto) {
 			super();
@@ -69,6 +71,17 @@ public class SalaryOutputItemDto {
 		@Override
 		public SalaryItemType getType() {
 			return this.dto.isAggregateItem ? SalaryItemType.Aggregate : SalaryItemType.Master;
+		}
+
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see nts.uk.ctx.pr.report.dom.salarydetail.outputsetting.
+		 * SalaryOutputItemGetMemento#getOrderNumber()
+		 */
+		@Override
+		public int getOrderNumber() {
+			return this.dto.orderNumber;
 		}
 
 	}

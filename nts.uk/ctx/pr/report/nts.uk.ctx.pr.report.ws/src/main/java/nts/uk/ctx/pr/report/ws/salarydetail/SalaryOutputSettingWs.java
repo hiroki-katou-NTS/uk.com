@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.pr.report.ws.salarydetail;
 
+import java.util.List;
+
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -15,6 +17,9 @@ import nts.uk.ctx.pr.report.app.salarydetail.command.SalaryOutputSettingRemoveCo
 import nts.uk.ctx.pr.report.app.salarydetail.command.SalaryOutputSettingRemoveCommandHandler;
 import nts.uk.ctx.pr.report.app.salarydetail.command.SalaryOutputSettingSaveCommand;
 import nts.uk.ctx.pr.report.app.salarydetail.command.SalaryOutputSettingSaveCommandHandler;
+import nts.uk.ctx.pr.report.app.salarydetail.find.SalaryOutputSettingFinder;
+import nts.uk.ctx.pr.report.app.salarydetail.find.dto.SalaryOutputSettingDto;
+import nts.uk.ctx.pr.report.app.salarydetail.find.dto.SalaryOutputSettingHeaderDto;
 
 /**
  * The Class SalaryOutputSettingWs.
@@ -31,6 +36,8 @@ public class SalaryOutputSettingWs extends WebService {
 	@Inject
 	private SalaryOutputSettingRemoveCommandHandler removeHandler;
 
+	@Inject
+	private SalaryOutputSettingFinder finder;
 	/**
 	 * Save.
 	 *
@@ -60,9 +67,8 @@ public class SalaryOutputSettingWs extends WebService {
 	 */
 	@POST
 	@Path("find/{id}")
-	public String find(@PathParam("id") String id) {
-		return "";
-		// TODO ...
+	public SalaryOutputSettingDto find(@PathParam("id") String id) {
+		return finder.find(id);
 	}
 
 	/**
@@ -70,8 +76,7 @@ public class SalaryOutputSettingWs extends WebService {
 	 */
 	@POST
 	@Path("findall")
-	public String findall() {
-		return "";
-		// TODO ...
+	public List<SalaryOutputSettingHeaderDto> findall() {
+		return finder.findAll();
 	}
 }

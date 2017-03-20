@@ -81,7 +81,7 @@ var nts;
                                         self.salaryAggregateItemModel().convertDtoToData(data);
                                         var fullItemCodes;
                                         fullItemCodes = [];
-                                        for (var i = 1; i < 20; i++) {
+                                        for (var i = 1; i <= 20; i++) {
                                             var salaryItemDto = new SalaryItemDto();
                                             salaryItemDto.salaryItemCode = '' + i;
                                             salaryItemDto.salaryItemName = '基本給 ' + i;
@@ -98,7 +98,12 @@ var nts;
                                 };
                                 ScreenModel.prototype.saveSalaryAggregateItem = function () {
                                     var self = this;
-                                    self.convertModelToDto(0);
+                                    if (self.selectedDivision() === TaxDivision.PAYMENT) {
+                                        self.convertModelToDto(0);
+                                    }
+                                    else {
+                                        self.convertModelToDto(1);
+                                    }
                                 };
                                 ScreenModel.prototype.convertModelToDto = function (taxDivision) {
                                     var self = this;
@@ -115,7 +120,6 @@ var nts;
                                     }
                                     salaryAggregateItemSaveDto.taxDivision = taxDivision;
                                     salaryAggregateItemSaveDto.categoryCode = self.selectedAggregateItem();
-                                    console.log(salaryAggregateItemSaveDto);
                                     j.service.saveSalaryAggregateItem(salaryAggregateItemSaveDto).done(function () {
                                     }).fail(function () {
                                     });

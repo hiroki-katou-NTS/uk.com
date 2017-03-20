@@ -86,7 +86,7 @@ module nts.uk.pr.view.qpp007.j {
                     self.salaryAggregateItemModel().convertDtoToData(data);
                     var fullItemCodes: SalaryItemDto[];
                     fullItemCodes = [];
-                    for (var i = 1; i < 20; i++) {
+                    for (var i = 1; i <= 20; i++) {
                         var salaryItemDto: SalaryItemDto = new SalaryItemDto();
                         salaryItemDto.salaryItemCode = '' + i;
                         salaryItemDto.salaryItemName = '基本給 ' + i;
@@ -103,7 +103,12 @@ module nts.uk.pr.view.qpp007.j {
             }
             private saveSalaryAggregateItem() {
                 var self = this;
-                self.convertModelToDto(0);
+                if (self.selectedDivision() === TaxDivision.PAYMENT) {
+                    self.convertModelToDto(0);
+                }
+                else {
+                    self.convertModelToDto(1);
+                }
                 //reload///
             }
 
@@ -121,7 +126,6 @@ module nts.uk.pr.view.qpp007.j {
                 }
                 salaryAggregateItemSaveDto.taxDivision = taxDivision;
                 salaryAggregateItemSaveDto.categoryCode = self.selectedAggregateItem();
-                console.log(salaryAggregateItemSaveDto);
 
                 service.saveSalaryAggregateItem(salaryAggregateItemSaveDto).done(function() {
                     //reload
