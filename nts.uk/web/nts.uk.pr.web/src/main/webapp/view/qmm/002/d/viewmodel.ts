@@ -13,6 +13,7 @@ module qmm002.d.viewmodel {
         isCreated: any;
         dirty: nts.uk.ui.DirtyChecker;
         confirmDirty: boolean = false;
+        messages: KnockoutObservable<any>;
 
         constructor() {
             var self = this;
@@ -24,6 +25,12 @@ module qmm002.d.viewmodel {
             self.columns = ko.observableArray([
                 { headerText: 'コード', prop: 'bankCode', width: 50, key: 'bankCode' },
                 { headerText: 'コード', prop: 'bankName', width: 50, key: 'bankName' }
+            ]);
+
+            self.messages = ko.observableArray([
+                { messageId: "ER001", message: "には未入力の必須項目の名称を表記" },
+                { messageId: "ER005", message: "入力した＊は既に存在しています。\r\n＊を確認してください。" },
+                { messageId: "AL001", message: "変更された内容が登録されていません。\r\nよろしいですか。" }
             ]);
 
             self.currentCode.subscribe(function(codeChanged) {
@@ -84,10 +91,16 @@ module qmm002.d.viewmodel {
                 self.dirty = new nts.uk.ui.DirtyChecker(ko.observable(bankInfo))
                 dfd.resolve();
             }).fail(function(error) {
-                alert(error.message);
-            }).then(function() {     
+                var messageList = self.messages();
+                if (error.messageId == messageList[0].messageId) { // ER001
+                    $('#INP_001').ntsError('set', messageList[0].message);
+                    $('#INP_002').ntsError('set', messageList[0].message);
+                } if (error.messageId == messageList[1].messageId) { // ER005 
+                    $('#INP_001').ntsError('set', messageList[1].message);
+                }
+            }).then(function() {
                 $.when(self.getBankList()).done(function() {
-                    self.currentCode(bankInfo.bankCode);                       
+                    self.currentCode(bankInfo.bankCode);
                 });
             });
         }
