@@ -65,6 +65,11 @@ nts.uk/.metadata/version.ini
 nts.uk/pr/nts.uk.pr.web/WebContent/META-INF/MANIFEST.MF
 gradle_eclipse_all.bat
 gradle_eclipse_one.bat
+<<<<<<< HEAD
+*.js
+=======
+.metadata/
+.recommenders/
 *.class
 nts.uk/file/pr/nts.uk.file.pr.app/.gitignore
 nts.uk/pr/file/nts.uk.pr.file.infra/bin/META-INF/beans.xml
