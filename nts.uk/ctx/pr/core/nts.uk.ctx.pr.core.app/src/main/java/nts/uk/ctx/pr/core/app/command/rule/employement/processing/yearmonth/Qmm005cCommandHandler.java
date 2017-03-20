@@ -45,7 +45,7 @@ public class Qmm005cCommandHandler extends CommandHandler<Qmm005cCommand> {
 			paydayProcessingRepo.insert1(command.toPaydayProcessingDomain(companyCode));			
 			
 		} catch (Exception ex) {
-
+			throw ex;
 		}
 
 	}

@@ -12,7 +12,7 @@ module qmm005.a {
             let _records: Array<TableRowItem> = [];
             services.getData().done(function(resp: Array<any>) {
                 for (let i in resp) {
-                    let index = parseInt(i + 1);
+                    let index = parseInt(i) + 1;
                     let _row = new TableRowItem(
                         index,
                         "",
@@ -40,7 +40,7 @@ module qmm005.a {
 
                         if (item[1]) {
                             for (let i in item[1]) {
-                                let index: number = parseInt(1 + i),
+                                let index: number = parseInt(i) + 1,
                                     rec: any = item[1][i],
                                     payDate: Date = new Date(rec.payDate),
                                     stdDate: Date = new Date(rec.stdDate),

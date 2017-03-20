@@ -257,9 +257,7 @@ module qmm005.c {
                     stmtOutputMon: parseInt(nts.uk.time.formatDate(new Date(stdYear, month + data.payslipPrintMonth, 1), 'yyyyMM'))
                 });
             }
-            services.insertData(data).done(function(reps) {
-                self.closeDialog();
-            });
+            services.insertData(data).done(self.closeDialog);
         }
 
         closeDialog() { nts.uk.ui.windows.close(); }
