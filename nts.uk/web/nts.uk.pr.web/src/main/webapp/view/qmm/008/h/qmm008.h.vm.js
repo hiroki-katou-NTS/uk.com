@@ -16,7 +16,7 @@ var nts;
                             var ScreenModel = (function () {
                                 function ScreenModel(officeName, healthModel) {
                                     var self = this;
-                                    self.healthInsuranceRateModel = new HealthInsuranceRateModel(healthModel.officeCode(), officeName, healthModel.historyId, healthModel.startMonth(), healthModel.endMonth(), healthModel.rateItems(), healthModel.roundingMethods());
+                                    self.healthInsuranceRateModel = new HealthInsuranceRateModel(healthModel.officeCode(), officeName, healthModel.historyId, healthModel.startMonth(), healthModel.endMonth(), healthModel.autoCalculate(), healthModel.rateItems(), healthModel.roundingMethods());
                                     self.listAvgEarnLevelMasterSetting = [];
                                     self.listHealthInsuranceAvgearn = ko.observableArray([]);
                                     self.numberEditorCommonOption = ko.mapping.fromJS(new nts.uk.ui.option.NumberEditorOption({
@@ -82,7 +82,13 @@ var nts;
                                     var personalRounding = self.convertToRounding(roundingMethods.healthSalaryPersonalComboBoxSelectedCode());
                                     var companyRounding = self.convertToRounding(roundingMethods.healthSalaryCompanyComboBoxSelectedCode());
                                     var rate = levelMasterSetting.avgEarn / 1000;
-                                    return new HealthInsuranceAvgEarnModel(historyId, levelMasterSetting.code, new HealthInsuranceAvgEarnValueModel(self.rounding(personalRounding, rateItems.healthSalaryPersonalGeneral() * rate, 1), self.rounding(personalRounding, rateItems.healthSalaryPersonalNursing() * rate, 1), self.rounding(personalRounding, rateItems.healthSalaryPersonalBasic() * rate, 3), self.rounding(personalRounding, rateItems.healthSalaryPersonalSpecific() * rate, 3)), new HealthInsuranceAvgEarnValueModel(self.rounding(companyRounding, rateItems.healthSalaryCompanyGeneral() * rate, 1), self.rounding(companyRounding, rateItems.healthSalaryCompanyNursing() * rate, 1), self.rounding(companyRounding, rateItems.healthSalaryCompanyBasic() * rate, 3), self.rounding(companyRounding, rateItems.healthSalaryCompanySpecific() * rate, 3)));
+                                    var autoCalculate = self.healthInsuranceRateModel.autoCalculate;
+                                    if (autoCalculate == AutoCalculate.Auto) {
+                                        return new HealthInsuranceAvgEarnModel(historyId, levelMasterSetting.code, new HealthInsuranceAvgEarnValueModel(self.rounding(personalRounding, rateItems.healthSalaryPersonalGeneral() * rate, Number.One), self.rounding(personalRounding, rateItems.healthSalaryPersonalNursing() * rate, Number.One), self.rounding(personalRounding, rateItems.healthSalaryPersonalBasic() * rate, Number.Three), self.rounding(personalRounding, rateItems.healthSalaryPersonalSpecific() * rate, Number.Three)), new HealthInsuranceAvgEarnValueModel(self.rounding(companyRounding, rateItems.healthSalaryCompanyGeneral() * rate, Number.One), self.rounding(companyRounding, rateItems.healthSalaryCompanyNursing() * rate, Number.One), self.rounding(companyRounding, rateItems.healthSalaryCompanyBasic() * rate, Number.Three), self.rounding(companyRounding, rateItems.healthSalaryCompanySpecific() * rate, Number.Three)));
+                                    }
+                                    else {
+                                        return new HealthInsuranceAvgEarnModel(historyId, levelMasterSetting.code, new HealthInsuranceAvgEarnValueModel(Number.Zero, Number.Zero, Number.Zero, Number.Zero), new HealthInsuranceAvgEarnValueModel(Number.Zero, Number.Zero, Number.Zero, Number.Zero));
+                                    }
                                 };
                                 ScreenModel.prototype.rounding = function (roudingMethod, roundValue, roundType) {
                                     var self = this;
@@ -124,12 +130,13 @@ var nts;
                             }());
                             viewmodel.ScreenModel = ScreenModel;
                             var HealthInsuranceRateModel = (function () {
-                                function HealthInsuranceRateModel(officeCode, officeName, historyId, startMonth, endMonth, rateItems, roundingMethods) {
+                                function HealthInsuranceRateModel(officeCode, officeName, historyId, startMonth, endMonth, autoCalculate, rateItems, roundingMethods) {
                                     this.officeCode = officeCode;
                                     this.officeName = officeName;
                                     this.historyId = historyId;
                                     this.startMonth = startMonth;
                                     this.endMonth = endMonth;
+                                    this.autoCalculate = autoCalculate;
                                     this.rateItems = rateItems;
                                     this.roundingMethods = roundingMethods;
                                 }
@@ -167,6 +174,17 @@ var nts;
                                 return Rounding;
                             }());
                             viewmodel.Rounding = Rounding;
+                            (function (Number) {
+                                Number[Number["Zero"] = 0] = "Zero";
+                                Number[Number["One"] = 1] = "One";
+                                Number[Number["Three"] = 3] = "Three";
+                            })(viewmodel.Number || (viewmodel.Number = {}));
+                            var Number = viewmodel.Number;
+                            (function (AutoCalculate) {
+                                AutoCalculate[AutoCalculate["Auto"] = 0] = "Auto";
+                                AutoCalculate[AutoCalculate["Manual"] = 1] = "Manual";
+                            })(viewmodel.AutoCalculate || (viewmodel.AutoCalculate = {}));
+                            var AutoCalculate = viewmodel.AutoCalculate;
                         })(viewmodel = h.viewmodel || (h.viewmodel = {}));
                     })(h = qmm008.h || (qmm008.h = {}));
                 })(qmm008 = view.qmm008 || (view.qmm008 = {}));
