@@ -123,8 +123,6 @@ module cmm008.a.viewmodel{
             var self = this;
             self.closeDateList.removeAll();
             self.closeDateList.push(new ItemCloseDate(0,'システム未導入'));
-//            self.closeDateList.push(new ItemCloseDate(1,'1'));
-//            self.closeDateList.push(new ItemCloseDate(2,'2'));
         }
         managementHolidaylist(): any{
             var self = this;

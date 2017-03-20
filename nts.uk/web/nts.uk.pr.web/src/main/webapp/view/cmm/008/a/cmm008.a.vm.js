@@ -96,8 +96,6 @@ var cmm008;
                     var self = this;
                     self.closeDateList.removeAll();
                     self.closeDateList.push(new ItemCloseDate(0, 'システム未導入'));
-                    //            self.closeDateList.push(new ItemCloseDate(1,'1'));
-                    //            self.closeDateList.push(new ItemCloseDate(2,'2'));
                 };
                 ScreenModel.prototype.managementHolidaylist = function () {
                     var self = this;
