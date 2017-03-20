@@ -23,6 +23,7 @@ module nts.uk.pr.view.qmm008.h {
                     healthModel.historyId,
                     healthModel.startMonth(),
                     healthModel.endMonth(),
+                    healthModel.autoCalculate(),
                     healthModel.rateItems(),
                     healthModel.roundingMethods());
 
@@ -135,27 +136,37 @@ module nts.uk.pr.view.qmm008.h {
                 var personalRounding = self.convertToRounding(roundingMethods.healthSalaryPersonalComboBoxSelectedCode());
                 var companyRounding = self.convertToRounding(roundingMethods.healthSalaryCompanyComboBoxSelectedCode());
                 var rate = levelMasterSetting.avgEarn / 1000;
-
-                return new HealthInsuranceAvgEarnModel(
-                    historyId,
-                    levelMasterSetting.code,
-                    new HealthInsuranceAvgEarnValueModel(
-                        self.rounding(personalRounding,rateItems.healthSalaryPersonalGeneral() * rate,1),
-                        self.rounding(personalRounding,rateItems.healthSalaryPersonalNursing() * rate,1),
-                        self.rounding(personalRounding,rateItems.healthSalaryPersonalBasic() * rate,3),
-                        self.rounding(personalRounding,rateItems.healthSalaryPersonalSpecific() * rate,3)
-                    ),
-                    new HealthInsuranceAvgEarnValueModel(
-                        self.rounding(companyRounding,rateItems.healthSalaryCompanyGeneral() * rate,1),
-                        self.rounding(companyRounding,rateItems.healthSalaryCompanyNursing() * rate,1),
-                        self.rounding(companyRounding,rateItems.healthSalaryCompanyBasic() * rate,3),
-                        self.rounding(companyRounding,rateItems.healthSalaryCompanySpecific() * rate,3)
-                    )
-                );
+                var autoCalculate = self.healthInsuranceRateModel.autoCalculate;
+                if (autoCalculate == AutoCalculate.Auto) {
+                    return new HealthInsuranceAvgEarnModel(
+                        historyId,
+                        levelMasterSetting.code,
+                        new HealthInsuranceAvgEarnValueModel(
+                            self.rounding(personalRounding, rateItems.healthSalaryPersonalGeneral() * rate,Number.One),
+                            self.rounding(personalRounding, rateItems.healthSalaryPersonalNursing() * rate,Number.One),
+                            self.rounding(personalRounding, rateItems.healthSalaryPersonalBasic() * rate,Number.Three),
+                            self.rounding(personalRounding, rateItems.healthSalaryPersonalSpecific() * rate,Number.Three)
+                        ),
+                        new HealthInsuranceAvgEarnValueModel(
+                            self.rounding(companyRounding, rateItems.healthSalaryCompanyGeneral() * rate,Number.One),
+                            self.rounding(companyRounding, rateItems.healthSalaryCompanyNursing() * rate,Number.One),
+                            self.rounding(companyRounding, rateItems.healthSalaryCompanyBasic() * rate,Number.Three),
+                            self.rounding(companyRounding, rateItems.healthSalaryCompanySpecific() * rate,Number.Three)
+                        )
+                    );
+                }
+                else {
+                    return new HealthInsuranceAvgEarnModel(
+                        historyId,
+                        levelMasterSetting.code,
+                        new HealthInsuranceAvgEarnValueModel(Number.Zero,Number.Zero,Number.Zero,Number.Zero),
+                        new HealthInsuranceAvgEarnValueModel(Number.Zero,Number.Zero,Number.Zero,Number.Zero)
+                    );
+                }
             }
             
             // rounding 
-            private rounding(roudingMethod: string,roundValue: number,roundType: number){//roundType (1 or 3)
+            private rounding(roudingMethod: string,roundValue: number,roundType: number){
                 var self = this;
                 var getLevel = Math.pow(10,roundType);
                 var backupValue = roundValue*(getLevel/10);
@@ -208,14 +219,16 @@ module nts.uk.pr.view.qmm008.h {
             historyId: string;
             startMonth: string;
             endMonth: string;
+            autoCalculate: number;
             rateItems: HealthInsuranceRateItemModel;
             roundingMethods: HealthInsuranceRoundingModel;
-            constructor(officeCode: string, officeName: string, historyId: string, startMonth: string, endMonth: string, rateItems: HealthInsuranceRateItemModel,roundingMethods: HealthInsuranceRoundingModel) {
+            constructor(officeCode: string, officeName: string, historyId: string, startMonth: string, endMonth: string,autoCalculate: number,rateItems: HealthInsuranceRateItemModel,roundingMethods: HealthInsuranceRoundingModel) {
                 this.officeCode = officeCode;
                 this.officeName = officeName;
                 this.historyId = historyId;
                 this.startMonth = startMonth;
                 this.endMonth = endMonth;
+                this.autoCalculate = autoCalculate;
                 this.rateItems = rateItems;
                 this.roundingMethods = roundingMethods;
             }
@@ -258,6 +271,15 @@ module nts.uk.pr.view.qmm008.h {
             static ROUNDDOWN = 'RoundDown';
             static DOWN5_UP6 = 'Down5_Up6';
             static DOWN4_UP5 = 'Down4_Up5'
+        }
+        export enum Number{
+                Zero = 0,
+                One = 1,
+                Three = 3
+        }
+        export enum AutoCalculate{
+                Auto = 0,
+                Manual = 1
         }
     }
 }
