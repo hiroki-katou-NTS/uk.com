@@ -20,7 +20,6 @@ import nts.arc.error.BusinessException;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.ListUtil;
 import nts.uk.ctx.core.dom.company.CompanyCode;
-import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 import nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionRate;
 import nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionRateRepository;
 import nts.uk.ctx.pr.core.infra.entity.insurance.social.pensionrate.QismtPensionRate;
@@ -168,12 +167,6 @@ public class JpaPensionRateRepository extends JpaRepository implements PensionRa
 		return Optional.of(em.createQuery(cq).getResultList().stream()
 				.map(item -> new PensionRate(new JpaPensionRateGetMemento(item)))
 				.collect(Collectors.toList()).get(0));
-	}
-
-	@Override
-	public boolean isInvalidDateRange(MonthRange applyRange) {
-		// TODO Auto-generated method stub
-		return false;
 	}
 
 	@Override
