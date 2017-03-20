@@ -5,12 +5,14 @@
 package nts.uk.ctx.pr.report.app.salarydetail.find.dto;
 
 import lombok.Builder;
+import nts.uk.ctx.pr.report.dom.salarydetail.SalaryItemType;
+import nts.uk.ctx.pr.report.dom.salarydetail.outputsetting.SalaryOutputItemSetMemento;
 
 /**
  * The Class SalaryOutputSettingItemDto.
  */
 @Builder
-public class SalaryOutputSettingItemDto {
+public class SalaryOutputSettingItemDto implements SalaryOutputItemSetMemento {
 
 	/** The code. */
 	public String code;
@@ -23,5 +25,20 @@ public class SalaryOutputSettingItemDto {
 
 	/** The order number. */
 	public int orderNumber;
+
+	@Override
+	public void setLinkageCode(String linkageCode) {
+		this.code = linkageCode;
+	}
+
+	@Override
+	public void setType(SalaryItemType salaryItemType) {
+		this.isAggregateItem = SalaryItemType.Aggregate == salaryItemType;
+	}
+
+	@Override
+	public void setOrderNumber(int orderNumber) {
+		this.orderNumber = orderNumber;
+	}
 
 }

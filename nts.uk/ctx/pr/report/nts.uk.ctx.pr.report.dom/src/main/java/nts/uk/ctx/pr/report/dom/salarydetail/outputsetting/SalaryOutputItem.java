@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2015 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.report.dom.salarydetail.outputsetting;
@@ -20,6 +20,9 @@ public class SalaryOutputItem extends DomainObject {
 	/** The type. */
 	private SalaryItemType type;
 
+	/** The order number. */
+	private int orderNumber;
+
 	/**
 	 * Instantiates a new salary output item.
 	 *
@@ -29,6 +32,7 @@ public class SalaryOutputItem extends DomainObject {
 		super();
 		this.linkageCode = memento.getLinkageCode();
 		this.type = memento.getType();
+		this.orderNumber = memento.getOrderNumber();
 	}
 
 	/**
@@ -39,5 +43,6 @@ public class SalaryOutputItem extends DomainObject {
 	public void saveToMemento(SalaryOutputItemSetMemento memento) {
 		memento.setLinkageCode(this.linkageCode);
 		memento.setType(this.type);
+		memento.setOrderNumber(this.orderNumber);
 	}
 }
