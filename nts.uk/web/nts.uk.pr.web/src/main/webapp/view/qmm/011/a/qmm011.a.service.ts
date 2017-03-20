@@ -97,7 +97,6 @@ module nts.uk.pr.view.qmm011.a {
                     UnemployeeInsuranceHistoryDto = new model.UnemployeeInsuranceHistoryDto();
                     UnemployeeInsuranceHistoryDto.setDataHistory(res);
                     dfd.resolve(UnemployeeInsuranceHistoryDto);
-                    //xyz
                 })
             return dfd.promise();
         }

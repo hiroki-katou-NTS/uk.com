@@ -30,8 +30,8 @@ module nts.uk.pr.view.qmm016.l {
             constructor() {
                 var self = this;
                 self.columnsLstCertifyGroup = ko.observableArray<nts.uk.ui.NtsGridListColumn>([
-                    { headerText: 'コード', prop: 'code', width: 120 },
-                    { headerText: '名称', prop: 'name', width: 120 }
+                    { headerText: 'コード', key: 'code', width: 120 },
+                    { headerText: '名称', key: 'name', width: 120 }
                 ]);
                 self.selectedMultipleTargetSetting = ko.observable(MultipleTargetSetting.BigestMethod);
                 self.selectCodeLstLstCertifyGroup = ko.observable('');
@@ -267,8 +267,8 @@ module nts.uk.pr.view.qmm016.l {
                 this.name = ko.observable(certifyGroupDto.name);
                 this.multiApplySet = ko.observable(certifyGroupDto.multiApplySet);
                 this.columnsCertification = ko.observableArray<nts.uk.ui.NtsGridListColumn>([
-                    { headerText: 'コード', prop: 'code', width: 60 },
-                    { headerText: '名称', prop: 'name', width: 180 }
+                    { headerText: 'コード', key: 'code', width: 60 },
+                    { headerText: '名称', key: 'name', width: 180 }
                 ]);
                 this.selectionMultipleTargetSetting = ko.observableArray<MultipleTargetSettingDto>(
                     [new MultipleTargetSettingDto(MultipleTargetSetting.BigestMethod, "BigestMethod"),//"BigestMethod 
