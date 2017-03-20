@@ -17,30 +17,33 @@ var nts;
                     }
                     EditorProcessor.prototype.init = function ($input, data) {
                         var _this = this;
-                        var setValue = data.value;
+                        var value = data.value;
                         var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
                         var constraint = validation.getConstraint(constraintName);
+                        var immediate = ko.unwrap(data.immediate !== undefined ? data.immediate : 'false');
+                        var valueUpdate = (immediate === true) ? 'input' : 'change';
                         var characterWidth = 9;
                         if (constraint && constraint.maxLength && !$input.is("textarea")) {
                             var autoWidth = constraint.maxLength * characterWidth;
                             $input.width(autoWidth);
                         }
-                        $input.addClass('nts-editor').addClass("nts-input");
+                        $input.addClass('nts-editor nts-input');
                         $input.wrap("<span class= 'nts-editor-wrapped ntsControl'/>");
-                        $input.change(function () {
+                        $input.on(valueUpdate, function (e) {
+                            console.log(e);
                             var validator = _this.getValidator(data);
                             var newText = $input.val();
                             var result = validator.validate(newText);
                             $input.ntsError('clear');
                             if (result.isValid) {
-                                setValue(result.parsedValue);
+                                value(result.parsedValue);
                             }
                             else {
                                 $input.ntsError('set', result.errorMessage);
-                                setValue(newText);
+                                value(newText);
                             }
                         });
-                        // format on blur
+                        // Format on blur
                         $input.blur(function () {
                             var validator = _this.getValidator(data);
                             var formatter = _this.getFormatter(data);
@@ -52,7 +55,7 @@ var nts;
                         });
                     };
                     EditorProcessor.prototype.update = function ($input, data) {
-                        var getValue = data.value;
+                        var value = data.value;
                         var required = (data.required !== undefined) ? ko.unwrap(data.required) : false;
                         var enable = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
                         var readonly = (data.readonly !== undefined) ? ko.unwrap(data.readonly) : false;
@@ -68,8 +71,8 @@ var nts;
                         if (textalign.trim() != "")
                             $input.css('text-align', textalign);
                         var formatted = $input.ntsError('hasError')
-                            ? getValue()
-                            : this.getFormatter(data).format(getValue());
+                            ? value()
+                            : this.getFormatter(data).format(value());
                         $input.val(formatted);
                     };
                     EditorProcessor.prototype.getDefaultOption = function () {

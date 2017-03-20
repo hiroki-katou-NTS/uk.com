@@ -5,31 +5,34 @@ module nts.uk.ui.koExtentions {
     class EditorProcessor {
 
         init($input: JQuery, data: any) {
-            var setValue: (newText: string) => {} = data.value;
+            var value: (newText: string) => {} = data.value;
             var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
             var constraint = validation.getConstraint(constraintName);
+            var immediate: boolean = ko.unwrap(data.immediate !== undefined ? data.immediate : 'false');
+            var valueUpdate: string = (immediate === true) ? 'input' : 'change';
             var characterWidth: number = 9;
             if (constraint && constraint.maxLength && !$input.is("textarea")) {
                 var autoWidth = constraint.maxLength * characterWidth;
                 $input.width(autoWidth);
             }
-            $input.addClass('nts-editor').addClass("nts-input");
+            $input.addClass('nts-editor nts-input');
             $input.wrap("<span class= 'nts-editor-wrapped ntsControl'/>");
             
-            $input.change(() => {
+            $input.on(valueUpdate, (e) => {
+                console.log(e);
                 var validator = this.getValidator(data);
                 var newText = $input.val();
                 var result = validator.validate(newText);
                 $input.ntsError('clear');
                 if (result.isValid) {
-                    setValue(result.parsedValue);
+                    value(result.parsedValue);
                 } else {
                     $input.ntsError('set', result.errorMessage);
-                    setValue(newText);
+                    value(newText);
                 }
             });
             
-            // format on blur
+            // Format on blur
             $input.blur(() => {
                 var validator = this.getValidator(data);
                 var formatter = this.getFormatter(data);
@@ -42,7 +45,7 @@ module nts.uk.ui.koExtentions {
         }
 
         update($input: JQuery, data: any) {
-            var getValue: () => string = data.value;
+            var value: () => string = data.value;
             var required: boolean = (data.required !== undefined) ? ko.unwrap(data.required) : false;
             var enable: boolean = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
             var readonly: boolean = (data.readonly !== undefined) ? ko.unwrap(data.readonly) : false;
@@ -60,8 +63,8 @@ module nts.uk.ui.koExtentions {
                 $input.css('text-align', textalign);
 
             var formatted = $input.ntsError('hasError')
-                ? getValue()
-                : this.getFormatter(data).format(getValue());
+                ? value()
+                : this.getFormatter(data).format(value());
             $input.val(formatted);
         }
 
@@ -942,9 +945,9 @@ module nts.uk.ui.koExtentions {
      * Help Button
      */
     class NtsHelpButtonBindingHandler implements KnockoutBindingHandler {
-
+        
         constructor() { }
-
+        
         init(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext) {
             // Get data
             var data = valueAccessor();
