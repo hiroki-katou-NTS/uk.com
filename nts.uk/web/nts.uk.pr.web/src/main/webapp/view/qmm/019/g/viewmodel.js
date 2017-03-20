@@ -11,9 +11,11 @@ var qmm019;
                  */
                 function ScreenModel() {
                     var self = this;
-                    self.isEnable = ko.observable(false);
+                    self.isEnable = ko.observable(true);
+                    self.isEnableCombox = ko.observable(false);
                     self.selectedCodes = ko.observable("3");
                     self.layouts = ko.observableArray([]);
+                    self.layoutHistory = ko.observableArray([]);
                     self.itemList = ko.observableArray([]);
                     self.comboboxList = ko.observableArray([]);
                     self.selectLayoutCode = ko.observable("");
@@ -53,18 +55,22 @@ var qmm019;
                     $('#LST_001').on('selectionChanged', function (event) {
                         console.log('Selected value:' + event.originalEvent.detail);
                     });
-                    //combobox
-                    g.service.getLayoutWithMaxStartYm().done(function (layout) {
-                        self.layouts(layout);
+                    //combobox 
+                    g.service.getLayoutHeadInfor().done(function (layout) {
+                        if (layout.length > 0) {
+                            self.layouts(layout);
+                        }
                         self.buildCombobox();
                     });
                     //radio button change
                     self.isRadioCheck.subscribe(function (newValue) {
                         if (newValue === 1) {
-                            self.isEnable(false);
+                            self.isEnable(true);
+                            self.isEnableCombox(false);
                         }
                         else {
-                            self.isEnable(true);
+                            self.isEnable(false);
+                            self.isEnableCombox(true);
                         }
                     });
                     //change combobox
@@ -102,8 +108,8 @@ var qmm019;
                     var self = this;
                     _.forEach(self.layouts(), function (layout) {
                         if (layout.stmtCode == layoutCd) {
-                            self.startYmCopy(layout.startYm);
-                            self.selectStartYm(nts.uk.time.formatYearMonth(layout.startYm));
+                            //                    self.startYmCopy(layout.startYm);
+                            //                    self.selectStartYm(nts.uk.time.formatYearMonth(layout.startYm));
                             return false;
                         }
                     });
@@ -124,6 +130,7 @@ var qmm019;
                             self.createlayout().checkCopy = true;
                         }
                         g.service.createLayout(self.createlayout()).done(function () {
+                            alert(self.createlayout());
                             //alert('追加しました。');    
                             nts.uk.ui.windows.close();
                         }).fail(function (res) {

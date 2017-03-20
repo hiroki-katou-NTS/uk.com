@@ -1,4 +1,4 @@
-﻿module nts.uk.ui {
+module nts.uk.ui {
 
 	export module windows {
 
@@ -264,6 +264,7 @@
 				.append($control)
 				.appendTo('body')
 				.dialog({
+                    dialogClass: "no-close",
 					width: 'auto',
 					modal: true,
 					closeOnEscape: false,
@@ -342,6 +343,7 @@
 			var handleNo = $.noop;
 			var handleCancel = $.noop;
 			var handleThen = $.noop;
+            var hasNoButton = true;
 			var hasCancelButton = false;
 
 			var handlers = {
@@ -349,15 +351,17 @@
 					handleYes = handler;
 					return handlers;
 				},
-				ifNo: function(handler) {
-					handleNo = handler;
-					return handlers;
-				},
-				ifCancel: function(handler) {
-					hasCancelButton = true;
-					handleCancel = handler;
-					return handlers;
-				},
+                ifCancel: function(handler) {
+                    hasNoButton = false;
+                    hasCancelButton = true;
+                    handleCancel = handler;
+                    return handlers;
+                },
+                ifNo: function(handler) {
+                    hasNoButton = true;
+                    handleNo = handler;
+                    return handlers;
+                },
 				then: function(handler) {
 					handleThen = handler;
 					return handlers;
@@ -378,19 +382,21 @@
 					}
 				});
 				// no button
-				buttons.push({
-					text: "いいえ",
-					"class": "no large",
-					click: function() {
-						$this.dialog('close');
-						handleNo();
-						handleThen();
-					}
-				});
+                if (hasNoButton) {
+    				buttons.push({
+    					text: "いいえ",
+    					"class": "no large",
+    					click: function() {
+    						$this.dialog('close');
+    						handleNo();
+    						handleThen();
+    					}
+    				});
+                }
 				// cancel button
 				if (hasCancelButton) {
 					buttons.push({
-						text: "Cancel",
+						text: "キャンセル",
 						"class": "cancel large",
 						click: function() {
 							$this.dialog('close');
@@ -695,6 +701,48 @@
             
             export function getRowIndexFrom($anyElementInRow: JQuery): number {
                 return parseInt($anyElementInRow.closest('tr').attr('data-row-idx'), 10);
+            }
+            
+            export module virtual {
+                
+                export function getDisplayContainer(gridId: String) {
+                    return $('#' + gridId + '_displayContainer');
+                }
+                
+                export function getVisibleRows(gridId: String) {
+                    return $('#' + gridId + ' > tbody > tr:visible');
+                }
+                
+                export function getFirstVisibleRow(gridId: String) {
+                    let top = getDisplayContainer(gridId).scrollTop();
+                    let visibleRows = getVisibleRows(gridId);
+                    for (var i = 0; i < visibleRows.length; i++) {
+                        let $row = $(visibleRows[i]);
+                        if (visibleRows[i].offsetTop + $row.height() > top) {
+                            return $row;
+                        }
+                    }
+                }
+                
+                export function getLastVisibleRow(gridId: String) {
+                    let $displayContainer = getDisplayContainer(gridId);
+                    let bottom = $displayContainer.scrollTop() + $displayContainer.height();
+                    return getVisibleRows(gridId).filter(function () {
+                        return this.offsetTop < bottom;
+                    }).last();
+                }
+            }
+            
+            export module header {
+                
+                export function getCell(gridId: String, columnKey: String) {
+                    let $headers: JQuery = <any>$('#' + gridId).igGrid("headersTable");
+                    return $headers.find('#' + gridId + '_' + columnKey);
+                }
+                
+                export function getLabel(gridId: String, columnKey: String) {
+                    return getCell(gridId, columnKey).find('span');
+                }
             }
         }
     }
