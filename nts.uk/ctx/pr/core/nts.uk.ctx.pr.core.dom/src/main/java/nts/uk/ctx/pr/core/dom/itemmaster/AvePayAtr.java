@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.core.dom.itemmaster.itemattend;
+package nts.uk.ctx.pr.core.dom.itemmaster;
 
 public enum AvePayAtr {
 	// 平均賃金対象区分

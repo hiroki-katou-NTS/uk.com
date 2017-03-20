@@ -39,6 +39,12 @@ var qmm012;
                     ]);
                     self.currentCode = ko.observable();
                 }
+                ScreenModel.prototype.SubmitDialog = function () {
+                    nts.uk.ui.windows.close();
+                };
+                ScreenModel.prototype.CloseDialog = function () {
+                    nts.uk.ui.windows.close();
+                };
                 return ScreenModel;
             }());
             viewmodel.ScreenModel = ScreenModel;
