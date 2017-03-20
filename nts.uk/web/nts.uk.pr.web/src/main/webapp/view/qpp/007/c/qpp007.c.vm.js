@@ -12,6 +12,7 @@ var nts;
                     (function (c) {
                         var viewmodel;
                         (function (viewmodel) {
+                            var aggregateService = nts.uk.pr.view.qpp007.j.service;
                             var ScreenModel = (function () {
                                 function ScreenModel() {
                                     var self = this;
@@ -51,6 +52,7 @@ var nts;
                                     var dfd = $.Deferred();
                                     self.loadAllOutputSetting().done(function () {
                                         self.isLoading(false);
+                                        self.loadAggregateItems();
                                         dfd.resolve();
                                     });
                                     return dfd.promise();
@@ -113,8 +115,9 @@ var nts;
                                     });
                                 };
                                 ScreenModel.prototype.remove = function () {
+                                    var _this = this;
                                     if (this.outputSettingSelectedCode) {
-                                        c.service.remove(this.outputSettingSelectedCode());
+                                        c.service.remove(this.outputSettingSelectedCode()).done(function () { return _this.loadAllOutputSetting(); });
                                     }
                                 };
                                 ScreenModel.prototype.commonSettingBtnClick = function () {
@@ -159,6 +162,8 @@ var nts;
                                 };
                                 ScreenModel.prototype.loadAggregateItems = function () {
                                     var dfd = $.Deferred();
+                                    $.when(aggregateService.findSalaryAggregateItem({ taxDivision: 0, aggregateItemCode: '001' }), aggregateService.findSalaryAggregateItem({ taxDivision: 1, aggregateItemCode: '001' })).done(function (res1, res2) {
+                                    });
                                     return dfd.promise();
                                 };
                                 ScreenModel.prototype.loadMasterItems = function () {
@@ -191,12 +196,11 @@ var nts;
                                     this.settingName = ko.observable(outputSetting != undefined ? outputSetting.name : '');
                                     var settings = [];
                                     if (outputSetting == undefined) {
-                                        settings = this.convertCategorySettings();
+                                        settings = this.toModel();
                                     }
                                     else {
-                                        settings = this.convertCategorySettings(outputSetting.categorySettings);
+                                        settings = this.toModel(outputSetting.categorySettings);
                                     }
-                                    console.log(settings);
                                     this.categorySettings = ko.observableArray(settings);
                                     this.categorySettingTabs = ko.observableArray([
                                         { id: SalaryCategory.PAYMENT, title: '支給', content: '#payment', enable: ko.observable(true), visible: ko.observable(true) },
@@ -212,17 +216,28 @@ var nts;
                                         });
                                     });
                                 }
-                                OutputSettingDetailModel.prototype.convertCategorySettings = function (categorySettings) {
+                                OutputSettingDetailModel.prototype.toModel = function (categorySettings) {
                                     var settings = [];
                                     var test;
                                     if (categorySettings != undefined && categorySettings.length > 0) {
-                                        test = categorySettings[0];
+                                        test = categorySettings;
                                     }
-                                    settings[0] = new CategorySetting(SalaryCategory.PAYMENT, test);
-                                    settings[1] = new CategorySetting(SalaryCategory.DEDUCTION, test);
-                                    settings[2] = new CategorySetting(SalaryCategory.ATTENDANCE, test);
-                                    settings[3] = new CategorySetting(SalaryCategory.ARTICLE_OTHERS, test);
+                                    settings[0] = this.filterSettingByCategory(SalaryCategory.PAYMENT, test);
+                                    settings[1] = this.filterSettingByCategory(SalaryCategory.DEDUCTION, test);
+                                    settings[2] = this.filterSettingByCategory(SalaryCategory.ATTENDANCE, test);
+                                    settings[3] = this.filterSettingByCategory(SalaryCategory.ARTICLE_OTHERS, test);
                                     return settings;
+                                };
+                                OutputSettingDetailModel.prototype.filterSettingByCategory = function (category, categorySettings) {
+                                    var cateTempSetting = { category: category, outputItems: [] };
+                                    if (categorySettings == undefined) {
+                                        return new CategorySettingModel(category, cateTempSetting);
+                                    }
+                                    var categorySetting = categorySettings.filter(function (item) { return item.category == category; })[0];
+                                    if (categorySetting == undefined) {
+                                        categorySetting = cateTempSetting;
+                                    }
+                                    return new CategorySettingModel(category, categorySetting);
                                 };
                                 return OutputSettingDetailModel;
                             }());
@@ -235,8 +250,8 @@ var nts;
                                 return CategorySettingDto;
                             }());
                             viewmodel.CategorySettingDto = CategorySettingDto;
-                            var CategorySetting = (function () {
-                                function CategorySetting(categoryName, categorySetting) {
+                            var CategorySettingModel = (function () {
+                                function CategorySettingModel(categoryName, categorySetting) {
                                     var self = this;
                                     self.categoryName = categoryName;
                                     self.aggregateItems = ko.observableArray([]);
@@ -286,7 +301,7 @@ var nts;
                                         }
                                     };
                                 }
-                                CategorySetting.prototype.moveMasterItem = function () {
+                                CategorySettingModel.prototype.moveMasterItem = function () {
                                     if (this.masterItemsSelected()[0]) {
                                         var self = this;
                                         var selectedItems = [];
@@ -306,7 +321,7 @@ var nts;
                                         self.masterItemsSelected([]);
                                     }
                                 };
-                                CategorySetting.prototype.moveAggregateItem = function () {
+                                CategorySettingModel.prototype.moveAggregateItem = function () {
                                     if (this.aggregateItemsSelected()[0]) {
                                         var self = this;
                                         var selectedItems = [];
@@ -326,7 +341,7 @@ var nts;
                                         self.aggregateItemsSelected([]);
                                     }
                                 };
-                                CategorySetting.prototype.remove = function () {
+                                CategorySettingModel.prototype.remove = function () {
                                     var self = this;
                                     var selectedItem = self.outputItems().filter(function (item) {
                                         return item.code == self.outputItemSelected();
@@ -349,9 +364,9 @@ var nts;
                                         taxDivision: TaxDivision.DEDUCTION
                                     });
                                 };
-                                return CategorySetting;
+                                return CategorySettingModel;
                             }());
-                            viewmodel.CategorySetting = CategorySetting;
+                            viewmodel.CategorySettingModel = CategorySettingModel;
                             var AggregateItem = (function () {
                                 function AggregateItem() {
                                 }
