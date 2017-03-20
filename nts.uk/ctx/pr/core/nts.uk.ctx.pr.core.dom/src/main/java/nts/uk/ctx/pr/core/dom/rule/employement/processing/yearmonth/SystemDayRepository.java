@@ -13,7 +13,7 @@ public interface SystemDayRepository {
 
 	void insert(SystemDay domain);
 	
-	void update(SystemDay domain);
+	void update1(SystemDay domain);
 	
 	void delete(SystemDay domain);
 }

@@ -14,7 +14,7 @@ public class StandardDayFinder {
 	private StandardDayRepository repository;
 
 	public StandardDayDto select1(String companyCode,int processingNo) {
-		return repository.findAll(companyCode, processingNo).stream().map(m -> StandardDayDto.fromDomain(m))
+		return repository.select1(companyCode, processingNo).stream().map(m -> StandardDayDto.fromDomain(m))
 				.collect(Collectors.toList()).get(0);
 	}
 }

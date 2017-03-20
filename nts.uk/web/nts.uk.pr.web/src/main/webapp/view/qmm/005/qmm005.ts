@@ -44,37 +44,21 @@ class CheckBoxWithHelpBindingHandler implements KnockoutBindingHandler {
     }
 }
 
-class CheckboxHasNotLabelBindingHandler implements KnockoutBindingHandler {
-    constructor() {
-    }
-
-    init(element: HTMLElement, valueAccessor: any, allBindingsAccessor: any, viewModel: any, bindingContext: KnockoutBindingContext): void {
-        valueAccessor().text = valueAccessor().text || '';
-        ko.bindingHandlers['ntsCheckBox'].init(element, valueAccessor, allBindingsAccessor, viewModel, bindingContext);
-        element.getElementsByTagName('span')[1].remove();
-    }
-
-    update(element: HTMLElement, valueAccessor: any, allBindingsAccessor: any, viewModel: any, bindingContext: KnockoutBindingContext): void {
-        ko.bindingHandlers['ntsCheckBox'].update(element, valueAccessor, allBindingsAccessor, viewModel, bindingContext);
-    }
-}
-
 ko.bindingHandlers['ntsTextEditor2'] = new TextEditorBindingHandler();
 ko.bindingHandlers['ntsCheckBox2'] = new CheckBoxWithHelpBindingHandler();
-ko.bindingHandlers['ntsCheckBox3'] = new CheckboxHasNotLabelBindingHandler();
 
 module qmm005.common {
     export function webapi(): any {
         return {
             'qmm005a': {
-                'getdata': 'pr/core/qmm005a/getdata',
-                'select': {
-                    'payday': 'pr/core/qmm005a/payday',
-                    'paydayprocessing': 'pr/core/qmm005a/paydayprocessing'
-                }
+                'getdata': 'pr/core/qmm005a/getdata'
             },
             'qmm005c': {
                 'insert': 'pr/core/qmm005c/insert'
+            },
+            'qmm005d': {
+                'update': 'pr/core/qmm005d/update',
+                'getdata': 'pr/core/qmm005d/getdata'
             }
         }
     }

@@ -17,15 +17,20 @@ public class JpaStandardDayRepository extends JpaRepository implements StandardD
 			+ " AND c.qpdmtStandardDayPk.processingNo = :processingNo";
 
 	@Override
-	public List<StandardDay> findAll(String companyCode,int processingNo) {
+	public List<StandardDay> select1(String companyCode, int processingNo) {
 		return this.queryProxy().query(SELECT_ALL_BY_CCD_AND_PROCESSING_NO, QpdmtStandardDay.class)
 				.setParameter("companyCode", companyCode).setParameter("processingNo", processingNo)
 				.getList(c -> toDomain(c));
 	}
 
 	@Override
-	public void insert(StandardDay domain) {
+	public void insert1(StandardDay domain) {
 		this.commandProxy().insert(toEntity(domain));
+	}
+
+	@Override
+	public void update1(StandardDay domain) {
+		this.commandProxy().update(toEntity(domain));
 	}
 
 	private StandardDay toDomain(QpdmtStandardDay entity) {

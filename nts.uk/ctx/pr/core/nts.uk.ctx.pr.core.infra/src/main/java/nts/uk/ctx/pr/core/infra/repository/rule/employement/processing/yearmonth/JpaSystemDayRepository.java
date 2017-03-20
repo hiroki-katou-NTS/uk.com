@@ -36,7 +36,7 @@ public class JpaSystemDayRepository extends JpaRepository implements SystemDayRe
 	}
 
 	@Override
-	public void update(SystemDay domain) {
+	public void update1(SystemDay domain) {
 		this.commandProxy().update(toEntity(domain));
 		
 	}

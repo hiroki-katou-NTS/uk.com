@@ -6,7 +6,9 @@ import nts.uk.ctx.pr.core.dom.rule.employement.processing.yearmonth.standardday.
 
 public interface StandardDayRepository {
 
-	List<StandardDay> findAll(String companyCode, int processingNo);
+	List<StandardDay> select1(String companyCode, int processingNo);
 	
-	void insert(StandardDay domain);
+	void insert1(StandardDay domain);
+	
+	void update1(StandardDay domain);
 }

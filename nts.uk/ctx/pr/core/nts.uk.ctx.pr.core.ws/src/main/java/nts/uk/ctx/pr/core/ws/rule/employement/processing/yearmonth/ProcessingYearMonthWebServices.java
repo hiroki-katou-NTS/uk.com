@@ -10,6 +10,8 @@ import javax.ws.rs.Produces;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.pr.core.app.command.rule.employement.processing.yearmonth.Qmm005cCommand;
 import nts.uk.ctx.pr.core.app.command.rule.employement.processing.yearmonth.Qmm005cCommandHandler;
+import nts.uk.ctx.pr.core.app.command.rule.employement.processing.yearmonth.Qmm005dCommand;
+import nts.uk.ctx.pr.core.app.command.rule.employement.processing.yearmonth.Qmm005dCommandHandler;
 import nts.uk.ctx.pr.core.app.find.rule.employement.processing.yearmonth.PaydayDto;
 import nts.uk.ctx.pr.core.app.find.rule.employement.processing.yearmonth.PaydayFinder;
 import nts.uk.ctx.pr.core.app.find.rule.employement.processing.yearmonth.PaydayProcessingDto;
@@ -38,6 +40,10 @@ public class ProcessingYearMonthWebServices extends WebService {
 	@Inject
 	private Qmm005cCommandHandler qmm005cCommandHandler;
 
+	@Inject
+	private Qmm005dCommandHandler qmm005dCommandHandler;
+	
+
 	@POST
 	@Path("qmm005c/insert")
 	public void qmm005cInsert(Qmm005cCommand command) {
@@ -52,7 +58,7 @@ public class ProcessingYearMonthWebServices extends WebService {
 	@Path("qmm005a/getdata")
 	public Object[] qmm005aGetData() {
 		Object[] domain = new Object[5];
-		
+
 		String companyCode = AppContexts.user().companyCode();
 		List<PaydayProcessingDto> paydayProcessings = paydayProcessingFinder.select3(companyCode);
 
@@ -73,5 +79,15 @@ public class ProcessingYearMonthWebServices extends WebService {
 		StandardDayDto standardDayDto = standardDayFinder.select1(companyCode, command.getProcessingNo());
 
 		return new Object[] { systemDayDto, standardDayDto };
+	}
+
+	@POST
+	@Path("qmm005d/update")
+	public void qmm005dUpdate(Qmm005dCommand command) {
+		try {
+			qmm005dCommandHandler.handle(command);
+		} catch (Exception ex) {
+			throw ex;
+		}
 	}
 }

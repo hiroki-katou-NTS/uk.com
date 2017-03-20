@@ -14,6 +14,15 @@ public class JpaPaydayProcessingRepository extends JpaRepository implements Payd
 
 	private final String SELECT_ALL = "SELECT c FROM QpdmtPaydayProcessing c";
 	private final String SELECT_ALL_BY_CCD = SELECT_ALL + " WHERE c.qpdmtPaydayProcessingPK.ccd = :companyCode";
+	private final String SELECT_ONE_BY_KEY = SELECT_ALL_BY_CCD
+			+ " AND c.qpdmtPaydayProcessingPK.processingNo = :processingNo";
+
+	@Override
+	public PaydayProcessing select4Update(String companyCode, int processingNo) {
+		return this.queryProxy().query(SELECT_ONE_BY_KEY, QpdmtPaydayProcessing.class)
+				.setParameter("companyCode", companyCode)
+				.setParameter("processingNo", processingNo).getList(c -> toDomain(c)).get(0);
+	}
 
 	@Override
 	public List<PaydayProcessing> select3(String companyCode) {
@@ -24,6 +33,11 @@ public class JpaPaydayProcessingRepository extends JpaRepository implements Payd
 	@Override
 	public void insert1(PaydayProcessing domain) {
 		this.commandProxy().insert(toEntity(domain));
+	}
+
+	@Override
+	public void update2(PaydayProcessing domain) {
+		this.commandProxy().update(toEntity(domain));
 	}
 
 	private PaydayProcessing toDomain(QpdmtPaydayProcessing entity) {
