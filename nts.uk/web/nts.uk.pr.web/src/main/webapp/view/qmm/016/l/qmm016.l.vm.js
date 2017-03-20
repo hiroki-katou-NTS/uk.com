@@ -22,8 +22,8 @@ var nts;
                                 function ScreenModel() {
                                     var self = this;
                                     self.columnsLstCertifyGroup = ko.observableArray([
-                                        { headerText: 'コード', prop: 'code', width: 120 },
-                                        { headerText: '名称', prop: 'name', width: 120 }
+                                        { headerText: 'コード', key: 'code', width: 120 },
+                                        { headerText: '名称', key: 'name', width: 120 }
                                     ]);
                                     self.selectedMultipleTargetSetting = ko.observable(MultipleTargetSetting.BigestMethod);
                                     self.selectCodeLstLstCertifyGroup = ko.observable('');
@@ -225,8 +225,8 @@ var nts;
                                     this.name = ko.observable(certifyGroupDto.name);
                                     this.multiApplySet = ko.observable(certifyGroupDto.multiApplySet);
                                     this.columnsCertification = ko.observableArray([
-                                        { headerText: 'コード', prop: 'code', width: 60 },
-                                        { headerText: '名称', prop: 'name', width: 180 }
+                                        { headerText: 'コード', key: 'code', width: 60 },
+                                        { headerText: '名称', key: 'name', width: 180 }
                                     ]);
                                     this.selectionMultipleTargetSetting = ko.observableArray([new MultipleTargetSettingDto(MultipleTargetSetting.BigestMethod, "BigestMethod"),
                                         new MultipleTargetSettingDto(MultipleTargetSetting.TotalMethod, "TotalMethod")

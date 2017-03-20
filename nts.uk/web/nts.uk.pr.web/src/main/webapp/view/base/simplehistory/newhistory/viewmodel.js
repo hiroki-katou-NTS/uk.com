@@ -25,8 +25,13 @@ var nts;
                                         else {
                                             self.createType = ko.observable(ScreenModel.CREATE_TYPE_INIT);
                                         }
-                                        self.startYearMonth = ko.observable(self.dialogOptions.lastest.start);
-                                        self.lastYearMonth = nts.uk.time.formatYearMonth(self.dialogOptions.lastest.start);
+                                        if (self.dialogOptions.lastest) {
+                                            self.startYearMonth = ko.observable(self.dialogOptions.lastest.start);
+                                            self.lastYearMonth = nts.uk.time.formatYearMonth(self.dialogOptions.lastest.start);
+                                        }
+                                        else {
+                                            self.startYearMonth = ko.observable(parseInt(nts.uk.time.formatDate(new Date(), 'yyyyMM')));
+                                        }
                                     }
                                     ScreenModel.prototype.startPage = function () {
                                         var self = this;

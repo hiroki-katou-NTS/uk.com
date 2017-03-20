@@ -136,7 +136,7 @@
 										<td class="border_none"><div style="margin-top: 20px;"
 												data-bind="ntsFormLabel: {required: true,constraint:['OfficeCode','OfficeName'] }">コード/名称</div></td>
 										<td class="border_none padding_top"><div>
-												<input class ="save-error"
+												<input id="officeCode" class ="save-error" data-name="コード"
 													data-bind="ntsTextEditor: {
 														value: officeCode ,
 														constraint: 'OfficeCode',
@@ -145,7 +145,7 @@
 														enable : $parent.enabled()}" />
 											</div></td>
 										<td colspan="2" class="border_none padding_top padding_left"><div>
-												<input class ="save-error"
+												<input id ="officeName" class ="save-error" data-name="名称"
 													data-bind="ntsTextEditor: {
  														value: officeName ,
  														constraint: 'OfficeName',
@@ -184,11 +184,11 @@
 										<td
 											class="no_left_border no_right_border no_top_border border_bottom "><div
 												style="margin-top: 20px; margin-bottom: 10px;"
-												data-bind="ntsFormLabel: {required: true,constraint:'PicPosition'}">代表者</div></td>
+												data-bind="ntsFormLabel: {required: true,constraint:'PicPosition'}">代表者職位</div></td>
 										<td colspan="3"
 											class="no_left_border no_right_border no_top_border border_bottom padding_top ">
 											<div>
-												<input class ="save-error"
+												<input id = "picPosition" class ="save-error" data-name = "代表者職位"
 													data-bind="ntsTextEditor: {
 														value: PicPosition ,
 														constraint: 'PicPosition',

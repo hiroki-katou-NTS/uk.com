@@ -5,21 +5,17 @@
 package nts.uk.ctx.pr.report.app.salarydetail.find.dto;
 
 import lombok.Builder;
-import nts.uk.ctx.pr.report.dom.salarydetail.SalaryCategory;
 
 /**
  * The Class SalaryOutputSettingHeadDto.
  */
 @Builder
-public class SalaryOutputSettingHeadDto {
+public class SalaryOutputSettingHeaderDto {
 
 	/** The code. */
 	public String code;
 
 	/** The name. */
 	public String name;
-
-	/** The category. */
-	public SalaryCategory category;
 
 }

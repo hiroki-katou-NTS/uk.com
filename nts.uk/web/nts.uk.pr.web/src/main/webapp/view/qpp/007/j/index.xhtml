@@ -7,7 +7,7 @@
 <body>
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
-			<com:stylefile path="main.css" />
+			<com:stylefile path="qpp007.j.style.css" />
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="../c/qpp007.c.vm.js" />
 			<com:scriptfile path="qpp007.j.service.js" />
@@ -24,7 +24,7 @@
 			<!-- BEGIN FUNCTION AREA -->
 			<div id="functions-area">
 				<button id="register-button" class="proceed"
-					data-bind="enable: $root.errors.isEmpty, click: saveSalaryAggregateItem">登録</button>
+					data-bind="click: saveSalaryAggregateItem">登録</button>
 				<button id="close-button" data-bind="click: closeDialogBtnClicked">閉じる</button>
 			</div>
 			<!-- END FUNCTION AREA -->
@@ -33,43 +33,98 @@
 			<div id="contents-area">
 				<div id="tab-panel-tax-division"
 					data-bind="ntsTabPanel: { dataSource: taxDivisionTab, active: selectedDivision}">
-					<div id="tab-payment">
+					<div id="tab-payment" data-bind="if: selectedDivision() == 'Payment'" >
 						<div id="tab-panel-aggregate-item1" class="cf"
 							data-bind="ntsTabPanel: { dataSource: aggregateItemTab, active: selectedAggregateItem, direction: 'vertical' }">
-							<div id="aggregate1">
-								<com:ko tag="template" bind="{name: 'aggregateItem', data: salaryAggregateItemModel}"></com:ko>
+							<div id="aggregate1"
+								data-bind="if: selectedAggregateItem() == '001'">
+								<com:ko tag="template"
+									bind="{name: 'aggregateItem', data: salaryAggregateItemModel()}"></com:ko>
 							</div>
-							<div id="aggregate2">
-								 <com:ko tag="template" bind="{name: 'aggregateItem', data: salaryAggregateItemModel}"></com:ko> 
+							<div id="aggregate2"
+								data-bind="if: selectedAggregateItem() == '002'">
+								<com:ko tag="template"
+									bind="{name: 'aggregateItem', data: salaryAggregateItemModel()}"></com:ko>
 							</div>
-							<div id="aggregate3">
-								<com:ko tag="template" bind="{name: 'aggregateItem', data: salaryAggregateItemModel}"></com:ko>
+							<div id="aggregate3" data-bind="if: selectedAggregateItem() == '003'">
+								<com:ko tag="template"
+									bind="{name: 'aggregateItem', data: salaryAggregateItemModel()}"></com:ko>
 							</div>
-							<div id="aggregate4">
-							<com:ko tag="template" bind="{name: 'aggregateItem', data: salaryAggregateItemModel}"></com:ko>
+							<div id="aggregate4" data-bind="if: selectedAggregateItem() == '004'">
+								<com:ko tag="template"
+									bind="{name: 'aggregateItem', data: salaryAggregateItemModel()}"></com:ko>
 							</div>
-							<div id="aggregate5">
-								<com:ko tag="template" bind="{name: 'aggregateItem', data: salaryAggregateItemModel}"></com:ko>
+							<div id="aggregate5" data-bind="if: selectedAggregateItem() == '005'">
+								<com:ko tag="template"
+									bind="{name: 'aggregateItem', data: salaryAggregateItemModel()}"></com:ko>
 							</div>
-							<div id="aggregate6">
-								<com:ko tag="template" bind="{name: 'aggregateItem', data: salaryAggregateItemModel}"></com:ko>
+							<div id="aggregate6" data-bind="if: selectedAggregateItem() == '006'">
+								<com:ko tag="template"
+									bind="{name: 'aggregateItem', data: salaryAggregateItemModel()}"></com:ko>
 							</div>
-							<div id="aggregate7">
-								<com:ko tag="template" bind="{name: 'aggregateItem', data: salaryAggregateItemModel}"></com:ko>
+							<div id="aggregate7" data-bind="if: selectedAggregateItem() == '007'">
+								<com:ko tag="template"
+									bind="{name: 'aggregateItem', data: salaryAggregateItemModel()}"></com:ko>
 							</div>
-							<div id="aggregate8">
-								<com:ko tag="template" bind="{name: 'aggregateItem', data: salaryAggregateItemModel}"></com:ko>
+							<div id="aggregate8" data-bind="if: selectedAggregateItem() == '008'">
+								<com:ko tag="template"
+									bind="{name: 'aggregateItem', data: salaryAggregateItemModel()}"></com:ko>
 							</div>
-							<div id="aggregate9">
-								<com:ko tag="template" bind="{name: 'aggregateItem', data: salaryAggregateItemModel}"></com:ko>
+							<div id="aggregate9" data-bind="if: selectedAggregateItem() == '009'">
+								<com:ko tag="template"
+									bind="{name: 'aggregateItem', data: salaryAggregateItemModel()}"></com:ko>
 							</div>
-							<div id="aggregate10">
-								<com:ko tag="template" bind="{name: 'aggregateItem', data: salaryAggregateItemModel}"></com:ko>
+							<div id="aggregate10" data-bind="if: selectedAggregateItem() == '010'">
+								<com:ko tag="template"
+									bind="{name: 'aggregateItem', data: salaryAggregateItemModel()}"></com:ko>
 							</div>
 						</div>
 					</div>
-					<div id="tab-deduction">
-						<div id="tab-panel-aggregate-item2" class="cf"></div>
+					<div id="tab-deduction" data-bind="if: selectedDivision() == 'Deduction'">
+						<div id="tab-panel-aggregate-item2" class="cf"
+							data-bind="ntsTabPanel: { dataSource: aggregateItemTab, active: selectedAggregateItem, direction: 'vertical' }">
+							
+							<div id="aggregate1" data-bind="if: selectedAggregateItem() == '001'">
+								<com:ko tag="template"
+									bind="{name: 'aggregateItem', data: salaryAggregateItemModel()}"></com:ko>
+							</div>
+							<div id="aggregate2" data-bind="if: selectedAggregateItem() == '002'">
+								<com:ko tag="template"
+									bind="{name: 'aggregateItem', data: salaryAggregateItemModel()}"></com:ko>
+							</div>
+							<div id="aggregate3" data-bind="if: selectedAggregateItem() == '003'">
+								<com:ko tag="template"
+									bind="{name: 'aggregateItem', data: salaryAggregateItemModel()}"></com:ko>
+							</div>
+							<div id="aggregate4" data-bind="if: selectedAggregateItem() == '004'">
+								<com:ko tag="template"
+									bind="{name: 'aggregateItem', data: salaryAggregateItemModel()}"></com:ko>
+							</div>
+							<div id="aggregate5" data-bind="if: selectedAggregateItem() == '005'">
+								<com:ko tag="template"
+									bind="{name: 'aggregateItem', data: salaryAggregateItemModel()}"></com:ko>
+							</div>
+							<div id="aggregate6" data-bind="if: selectedAggregateItem() == '006'">
+								<com:ko tag="template"
+									bind="{name: 'aggregateItem', data: salaryAggregateItemModel()}"></com:ko>
+							</div>
+							<div id="aggregate7" data-bind="if: selectedAggregateItem() == '007'">
+								<com:ko tag="template"
+									bind="{name: 'aggregateItem', data: salaryAggregateItemModel()}"></com:ko>
+							</div>
+							<div id="aggregate8" data-bind="if: selectedAggregateItem() == '008'">
+								<com:ko tag="template"
+									bind="{name: 'aggregateItem', data: salaryAggregateItemModel()}"></com:ko>
+							</div>
+							<div id="aggregate9" data-bind="if: selectedAggregateItem() == '009'">
+								<com:ko tag="template"
+									bind="{name: 'aggregateItem', data: salaryAggregateItemModel()}"></com:ko>
+							</div>
+							<div id="aggregate10" data-bind="if: selectedAggregateItem() == '010'">
+								<com:ko tag="template"
+									bind="{name: 'aggregateItem', data: salaryAggregateItemModel()}"></com:ko>
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>

@@ -15,7 +15,7 @@
 			<script type="text/javascript">
 				var dialogSize = {
 					width : 580,
-					height : 360
+					height : 350
 				};
 			</script>
 		</ui:define>
@@ -51,19 +51,21 @@
 							</com:ko>
 							<div>
 								<label class="ntsRadioBox">
-								<input type="radio"
-									name="createType"
-									id="createTypeInit"
-									data-bind="checkedValue: 'INIT', checked: createType" />
-								<span class="box"/>
-								<label for="createTypeInit" class="label" data-bind="text: '初めから作成する'"/>
+									<input type="radio"
+										name="createType"
+										id="createTypeInit"
+										data-bind="checkedValue: 'INIT', checked: createType" />
+									<span class="box"/>
+									<label for="createTypeInit" class="label" data-bind="text: '初めから作成する'"/>
 								</label>
 							</div>
 						</div>
 						</td>
 					</tr>
 				</table>
-				<br/>
+				<com:ko tag="if" bind="dialogOptions.lastest == undefined">
+					<div style="height: 40px; line-height: 40px;"/>
+				</com:ko>
 			</div>
 			<hr />
 			<!-- END CONTENT AREA-->

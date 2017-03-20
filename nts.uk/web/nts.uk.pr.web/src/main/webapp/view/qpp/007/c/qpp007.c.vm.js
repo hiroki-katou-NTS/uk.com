@@ -12,6 +12,7 @@ var nts;
                     (function (c) {
                         var viewmodel;
                         (function (viewmodel) {
+                            var aggregateService = nts.uk.pr.view.qpp007.j.service;
                             var ScreenModel = (function () {
                                 function ScreenModel() {
                                     var self = this;
@@ -38,7 +39,10 @@ var nts;
                                         { headerText: 'コード', prop: 'code', width: 100 },
                                         { headerText: '名称', prop: 'name', width: 100 },
                                     ]);
-                                    self.outputSettingDetailModel().reloadReportItems = self.reloadReportItems.bind(self);
+                                    self.outputSettingDetailModel.subscribe(function (data) {
+                                        self.reloadReportItems();
+                                        data.reloadReportItems = self.reloadReportItems.bind(self);
+                                    });
                                     self.outputSettingSelectedCode.subscribe(function (id) {
                                         self.onSelectOutputSetting(id);
                                     });
@@ -46,10 +50,11 @@ var nts;
                                 ScreenModel.prototype.startPage = function () {
                                     var self = this;
                                     var dfd = $.Deferred();
-                                    self.loadAllOutputSetting().then(function () {
+                                    self.loadAllOutputSetting().done(function () {
+                                        self.isLoading(false);
+                                        self.loadAggregateItems();
+                                        dfd.resolve();
                                     });
-                                    self.isLoading(false);
-                                    dfd.resolve();
                                     return dfd.promise();
                                 };
                                 ScreenModel.prototype.reloadReportItems = function () {
@@ -104,11 +109,15 @@ var nts;
                                     else {
                                         data.createMode = false;
                                     }
-                                    c.service.save(data).done(function () { return self.isNewMode(false); });
+                                    c.service.save(data).done(function () {
+                                        self.isNewMode(false);
+                                        self.loadAllOutputSetting();
+                                    });
                                 };
                                 ScreenModel.prototype.remove = function () {
+                                    var _this = this;
                                     if (this.outputSettingSelectedCode) {
-                                        c.service.remove(this.outputSettingSelectedCode());
+                                        c.service.remove(this.outputSettingSelectedCode()).done(function () { return _this.loadAllOutputSetting(); });
                                     }
                                 };
                                 ScreenModel.prototype.commonSettingBtnClick = function () {
@@ -116,19 +125,22 @@ var nts;
                                 };
                                 ScreenModel.prototype.newModeBtnClick = function () {
                                     var self = this;
-                                    self.outputSettingSelectedCode(undefined);
+                                    self.outputSettingDetailModel(new OutputSettingDetailModel());
+                                    self.outputSettingSelectedCode('');
                                     self.isNewMode(true);
                                 };
                                 ScreenModel.prototype.onSelectOutputSetting = function (id) {
                                     var self = this;
                                     $('.save-error').ntsError('clear');
                                     self.isNewMode(false);
-                                    self.loadOutputSettingDetail(id);
+                                    self.loadOutputSettingDetail(id).done(function () {
+                                    });
                                 };
                                 ScreenModel.prototype.loadAllOutputSetting = function () {
                                     var self = this;
                                     var dfd = $.Deferred();
                                     c.service.findAllOutputSettings().done(function (data) {
+                                        self.outputSettings(data);
                                         dfd.resolve();
                                     }).fail(function (res) {
                                         nts.uk.ui.dialog.alert(res);
@@ -140,6 +152,7 @@ var nts;
                                     var self = this;
                                     var dfd = $.Deferred();
                                     c.service.findOutputSettingDetail(code).done(function (data) {
+                                        self.outputSettingDetailModel(new OutputSettingDetailModel(data));
                                         dfd.resolve();
                                     }).fail(function (res) {
                                         nts.uk.ui.dialog.alert(res);
@@ -149,6 +162,8 @@ var nts;
                                 };
                                 ScreenModel.prototype.loadAggregateItems = function () {
                                     var dfd = $.Deferred();
+                                    $.when(aggregateService.findSalaryAggregateItem({ taxDivision: 0, aggregateItemCode: '001' }), aggregateService.findSalaryAggregateItem({ taxDivision: 1, aggregateItemCode: '001' })).done(function (res1, res2) {
+                                    });
                                     return dfd.promise();
                                 };
                                 ScreenModel.prototype.loadMasterItems = function () {
@@ -176,14 +191,17 @@ var nts;
                             }());
                             viewmodel.OutputSettingDto = OutputSettingDto;
                             var OutputSettingDetailModel = (function () {
-                                function OutputSettingDetailModel() {
-                                    this.settingCode = ko.observable('001');
-                                    this.settingName = ko.observable('001');
-                                    this.categorySettings = ko.observableArray([]);
-                                    this.categorySettings.push(new CategorySetting());
-                                    this.categorySettings.push(new CategorySetting());
-                                    this.categorySettings.push(new CategorySetting());
-                                    this.categorySettings.push(new CategorySetting());
+                                function OutputSettingDetailModel(outputSetting) {
+                                    this.settingCode = ko.observable(outputSetting != undefined ? outputSetting.code : '');
+                                    this.settingName = ko.observable(outputSetting != undefined ? outputSetting.name : '');
+                                    var settings = [];
+                                    if (outputSetting == undefined) {
+                                        settings = this.toModel();
+                                    }
+                                    else {
+                                        settings = this.toModel(outputSetting.categorySettings);
+                                    }
+                                    this.categorySettings = ko.observableArray(settings);
                                     this.categorySettingTabs = ko.observableArray([
                                         { id: SalaryCategory.PAYMENT, title: '支給', content: '#payment', enable: ko.observable(true), visible: ko.observable(true) },
                                         { id: SalaryCategory.DEDUCTION, title: '控除', content: '#deduction', enable: ko.observable(true), visible: ko.observable(true) },
@@ -198,6 +216,29 @@ var nts;
                                         });
                                     });
                                 }
+                                OutputSettingDetailModel.prototype.toModel = function (categorySettings) {
+                                    var settings = [];
+                                    var test;
+                                    if (categorySettings != undefined && categorySettings.length > 0) {
+                                        test = categorySettings;
+                                    }
+                                    settings[0] = this.filterSettingByCategory(SalaryCategory.PAYMENT, test);
+                                    settings[1] = this.filterSettingByCategory(SalaryCategory.DEDUCTION, test);
+                                    settings[2] = this.filterSettingByCategory(SalaryCategory.ATTENDANCE, test);
+                                    settings[3] = this.filterSettingByCategory(SalaryCategory.ARTICLE_OTHERS, test);
+                                    return settings;
+                                };
+                                OutputSettingDetailModel.prototype.filterSettingByCategory = function (category, categorySettings) {
+                                    var cateTempSetting = { category: category, outputItems: [] };
+                                    if (categorySettings == undefined) {
+                                        return new CategorySettingModel(category, cateTempSetting);
+                                    }
+                                    var categorySetting = categorySettings.filter(function (item) { return item.category == category; })[0];
+                                    if (categorySetting == undefined) {
+                                        categorySetting = cateTempSetting;
+                                    }
+                                    return new CategorySettingModel(category, categorySetting);
+                                };
                                 return OutputSettingDetailModel;
                             }());
                             viewmodel.OutputSettingDetailModel = OutputSettingDetailModel;
@@ -209,14 +250,15 @@ var nts;
                                 return CategorySettingDto;
                             }());
                             viewmodel.CategorySettingDto = CategorySettingDto;
-                            var CategorySetting = (function () {
-                                function CategorySetting() {
+                            var CategorySettingModel = (function () {
+                                function CategorySettingModel(categoryName, categorySetting) {
                                     var self = this;
+                                    self.categoryName = categoryName;
                                     self.aggregateItems = ko.observableArray([]);
                                     self.aggregateItemsSelected = ko.observableArray([]);
                                     self.masterItems = ko.observableArray([]);
                                     self.masterItemsSelected = ko.observableArray([]);
-                                    self.outputItems = ko.observableArray([]);
+                                    self.outputItems = ko.observableArray(categorySetting != undefined ? categorySetting.outputItems : []);
                                     self.outputItemSelected = ko.observable(null);
                                     self.outputItemsSelected = ko.observableArray([]);
                                     for (var i = 1; i < 15; i++) {
@@ -259,7 +301,7 @@ var nts;
                                         }
                                     };
                                 }
-                                CategorySetting.prototype.moveMasterItem = function () {
+                                CategorySettingModel.prototype.moveMasterItem = function () {
                                     if (this.masterItemsSelected()[0]) {
                                         var self = this;
                                         var selectedItems = [];
@@ -279,7 +321,7 @@ var nts;
                                         self.masterItemsSelected([]);
                                     }
                                 };
-                                CategorySetting.prototype.moveAggregateItem = function () {
+                                CategorySettingModel.prototype.moveAggregateItem = function () {
                                     if (this.aggregateItemsSelected()[0]) {
                                         var self = this;
                                         var selectedItems = [];
@@ -299,7 +341,7 @@ var nts;
                                         self.aggregateItemsSelected([]);
                                     }
                                 };
-                                CategorySetting.prototype.remove = function () {
+                                CategorySettingModel.prototype.remove = function () {
                                     var self = this;
                                     var selectedItem = self.outputItems().filter(function (item) {
                                         return item.code == self.outputItemSelected();
@@ -322,9 +364,9 @@ var nts;
                                         taxDivision: TaxDivision.DEDUCTION
                                     });
                                 };
-                                return CategorySetting;
+                                return CategorySettingModel;
                             }());
-                            viewmodel.CategorySetting = CategorySetting;
+                            viewmodel.CategorySettingModel = CategorySettingModel;
                             var AggregateItem = (function () {
                                 function AggregateItem() {
                                 }

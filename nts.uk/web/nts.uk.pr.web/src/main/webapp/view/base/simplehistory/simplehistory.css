@@ -8,6 +8,7 @@
 }
 
 #right-content {
+	width: 1200px;
 	margin-left: 40px;
 	float: left;
 	min-height: 600px;

@@ -115,7 +115,7 @@ public class JpaAccidentInsuranceRateSetMemento implements AccidentInsuranceRate
 				this.setDataItem(Contants.BEGIN_FIFTH, item);
 				break;
 			case Biz6Th:
-				this.setDataItem(Contants.BEGIN_FIRST, item);
+				this.setDataItem(Contants.BEGIN_SIXTH, item);
 				break;
 			case Biz7Th:
 				this.setDataItem(Contants.BEGIN_SEVENTH, item);
