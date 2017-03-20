@@ -15,7 +15,7 @@
 			<script type="text/javascript">
 				var dialogSize = {
 					width : 580,
-					height : 380
+					height : 360
 				};
 			</script>
 		</ui:define>
@@ -35,28 +35,34 @@
 					</tr>
 					<tr>
 						<td><div data-bind="ntsFormLabel: { required: true }">履歴の引継ぎ</div></td>
-						<td><label class="ntsRadioBox">
-							<input type="radio"
-								name="createType"
-								id="createTypeCopy"
-								data-bind="checkedValue: 'COPY', checked: createType" />
-							<span class="box"/>
-							<label for="createTypeCopy" class="label" data-bind="text: '最新の履歴 (' + lastYearMonth + ') から引き継ぐ'"/>
-						</label></td>
-					</tr>
-					<tr>
-						<td></td>
-						<td><label class="ntsRadioBox">
-							<input type="radio"
-								name="createType"
-								id="createTypeInit"
-								data-bind="checkedValue: 'INIT', checked: createType" />
-							<span class="box"/>
-							<label for="createTypeInit" class="label" data-bind="text: '初めから作成する'"/>
-						</label></td>
+						<td>
+						<div id="actionOption">
+							<com:ko tag="if" bind="dialogOptions.lastest != undefined">
+								<div>
+									<label class="ntsRadioBox">
+										<input type="radio"
+											name="createType"
+											id="createTypeCopy"
+											data-bind="checkedValue: 'COPY', checked: createType, enable: dialogOptions.lastest != undefined" />
+										<span class="box"/>
+										<label for="createTypeCopy" class="label" data-bind="text: '最新の履歴 (' + lastYearMonth + ') から引き継ぐ'"/>
+									</label>
+								</div>
+							</com:ko>
+							<div>
+								<label class="ntsRadioBox">
+								<input type="radio"
+									name="createType"
+									id="createTypeInit"
+									data-bind="checkedValue: 'INIT', checked: createType" />
+								<span class="box"/>
+								<label for="createTypeInit" class="label" data-bind="text: '初めから作成する'"/>
+								</label>
+							</div>
+						</div>
+						</td>
 					</tr>
 				</table>
-				<br/>
 				<br/>
 			</div>
 			<hr />
