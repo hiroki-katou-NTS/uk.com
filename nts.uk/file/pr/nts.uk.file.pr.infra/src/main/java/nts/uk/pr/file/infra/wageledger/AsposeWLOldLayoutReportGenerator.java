@@ -4,7 +4,6 @@
  *****************************************************************/
 package nts.uk.pr.file.infra.wageledger;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -20,8 +19,6 @@ import com.aspose.cells.Cell;
 import com.aspose.cells.CellBorderType;
 import com.aspose.cells.Cells;
 import com.aspose.cells.Color;
-import com.aspose.cells.FindOptions;
-import com.aspose.cells.LookInType;
 import com.aspose.cells.PageSetup;
 import com.aspose.cells.Range;
 import com.aspose.cells.SaveFormat;
@@ -32,8 +29,7 @@ import com.aspose.cells.Workbook;
 import com.aspose.cells.Worksheet;
 
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
-import nts.uk.file.pr.app.export.wageledger.WageLedgerReportGenerator;
-import nts.uk.file.pr.app.export.wageledger.data.WLNewLayoutReportData;
+import nts.uk.file.pr.app.export.wageledger.WLOldLayoutReportGenerator;
 import nts.uk.file.pr.app.export.wageledger.data.WLOldLayoutReportData;
 import nts.uk.file.pr.app.export.wageledger.data.oldlayout.DeductionData;
 import nts.uk.file.pr.app.export.wageledger.data.oldlayout.PaymentData;
@@ -41,13 +37,12 @@ import nts.uk.file.pr.app.export.wageledger.data.share.HeaderReportData;
 import nts.uk.file.pr.app.export.wageledger.data.share.MonthlyData;
 import nts.uk.file.pr.app.export.wageledger.data.share.ReportItemDto;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportContext;
-import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 
 /**
  * The Class AsposeWageLedgerReportGenerator.
  */
 @Stateless
-public class AsposeWageLedgerReportGenerator extends AsposeCellsReportGenerator implements WageLedgerReportGenerator {
+public class AsposeWLOldLayoutReportGenerator extends WageLedgerBaseGenerator implements WLOldLayoutReportGenerator {
 	
 	/** The Constant TEMPLATE_FILE. */
 	private static final String TEMPLATE_FILE = "report/WageLegerReportTemplate.xlsx";
@@ -85,7 +80,7 @@ public class AsposeWageLedgerReportGenerator extends AsposeCellsReportGenerator 
 	 *  nts.uk.file.pr.app.export.wageledger.data.WageLedgerReportData)
 	 */
 	@Override
-	public void generateWithOldLayout(FileGeneratorContext fileContext, WLOldLayoutReportData reportData) {
+	public void generate(FileGeneratorContext fileContext, WLOldLayoutReportData reportData) {
 		
 		try {
 			AsposeCellsReportContext reportContext = this.createContext(TEMPLATE_FILE);
@@ -505,88 +500,6 @@ public class AsposeWageLedgerReportGenerator extends AsposeCellsReportGenerator 
 		}
 		cell.setStyle(style);
 	}
-
-	/* (non-Javadoc)
-	 * @see nts.uk.file.pr.app.export.wageledger.WageLedgerReportGenerator
-	 * #generateWithNewLayout(nts.arc.layer.infra.file.export.FileGeneratorContext,
-	 * nts.uk.file.pr.app.export.wageledger.data.WLNewLayoutReportData)
-	 */
-	@Override
-	public void generateWithNewLayout(FileGeneratorContext fileContext, WLNewLayoutReportData reportData) {
-		try {
-			AsposeCellsReportContext reportContext = this.createContext(TEMPLATE_FILE);
-			
-			//MutableInt currentRow = ROW_START_REPORT;
-			
-			// Fill header data.
-			reportContext.setDataSource("Employee", reportData.headerData);
-			
-			// Fill Salary Total Items content.
-			
-			// Fill Bonus Total Items content.
-			
-			// Fill Other Items before year end.
-			
-			// Fill Salary Payment items.
-			
-			// Fill Salary Deduction items.
-			
-			// Fill Salary Attendance items.
-			
-			// Fill Bonus payment and bonus deduction items.
-			
-			// Fill Bonus Attendance items
-			
-			// process data binginds in template
-			reportContext.getDesigner().getWorkbook().calculateFormula(true);
-			reportContext.getDesigner().process(false);
-
-			// save as PDF file
-			reportContext.saveAsPdf(this.createNewFile(fileContext, REPORT_FILE_NAME));
-
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
-	
-	/**
-	 * Safe sub list.
-	 *
-	 * @param <T> the generic type
-	 * @param list the list
-	 * @param fromIndex the from index
-	 * @param toIndex the to index
-	 * @return the list
-	 */
-	protected <T> List<T> safeSubList(List<T> list, int fromIndex, int toIndex) {
-		int size = list.size();
-		if (fromIndex >= size || toIndex <= 0 || fromIndex >= toIndex) {
-			return new ArrayList<>();
-		}
-
-		fromIndex = Math.max(0, fromIndex);
-		toIndex = Math.min(size, toIndex);
-		return list.subList(fromIndex, toIndex);
-	}
-	
-	/**
-	 * Find cell with content.
-	 *
-	 * @param ws the ws
-	 * @param content the content
-	 * @return the cell
-	 */
-	protected Cell findCellWithContent(Worksheet ws, String content) {
-		// Cell find option.
-		FindOptions findOptions = new FindOptions();
-		findOptions.setLookInType(LookInType.VALUES);
-		findOptions.setCaseSensitive(false);
-		
-		Cell cell = ws.getCells().find(content, null, findOptions);
-		
-		return cell;
-	}
-	
 	
 	/**
 	 * The Enum WLBorderType.

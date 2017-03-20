@@ -33,7 +33,11 @@ public class WageLedgerReportSevice extends ExportService<WageLedgerReportQuery>
 	
 	/** The generator. */
 	@Inject
-	private WageLedgerReportGenerator generator;
+	private WLOldLayoutReportGenerator oldGenerator;
+	
+	/** The new generator. */
+	@Inject
+	private WLNewLayoutReportGenerator newGenerator;
 
 	/* (non-Javadoc)
 	 * @see nts.arc.layer.app.file.export.ExportService#handle(nts.arc.layer.app.file.export.ExportServiceContext)
@@ -117,9 +121,9 @@ public class WageLedgerReportSevice extends ExportService<WageLedgerReportQuery>
 		
 		// Generate report.
 		if (query.layoutType == LayoutType.NewLayout) {
-			this.generator.generateWithNewLayout(context.getGeneratorContext(), null);
+			this.newGenerator.generate(context.getGeneratorContext(), null);
 		} else {
-			this.generator.generateWithOldLayout(context.getGeneratorContext(), reportData);
+			this.oldGenerator.generate(context.getGeneratorContext(), reportData);
 		}
 	}
 	
