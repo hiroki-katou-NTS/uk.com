@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
@@ -31,6 +32,7 @@ import nts.uk.shr.com.context.AppContexts;
  *
  */
 @RequestScoped
+@Transactional
 public class RegisterAveragePayCommandHandler extends CommandHandler<RegisterAveragePayCommand> {
 
 	@Inject
@@ -42,6 +44,7 @@ public class RegisterAveragePayCommandHandler extends CommandHandler<RegisterAve
 	@Inject
 	private ItemAttendRespository itemAttendRespository;
 
+	// QAPMT_AVE_PAY.INS_1
 	@Override
 	protected void handle(CommandHandlerContext<RegisterAveragePayCommand> context) {
 		RegisterAveragePayCommand command = context.getCommand();
@@ -59,17 +62,26 @@ public class RegisterAveragePayCommandHandler extends CommandHandler<RegisterAve
 				EnumAdaptor.valueOf(command.getRoundDigitSet(), RoundDigitSet.class),
 				EnumAdaptor.valueOf(command.getRoundTimingSet(), RoundTimingSet.class));
 		averagePayRepository.register(averagePay);
+		
+		// QCAMT_ITEM_SALARY.SEL_2
 		List<ItemSalary> itemSalarys = this.itemSalaryRespository.findAll(companyCode);
+		
+		// QCAMT_ITEM_SALARY.UPD_2: item salary selected
 		List<ItemSalary> itemSelectedSalarys = itemSalarys.stream()
-				.filter(x -> command.getSalarySelectedCode().contains(x.getItemCode())).collect(Collectors.toList());
+				.filter(x -> command.getSalarySelectedCode().contains(x.getItemCode().v())).collect(Collectors.toList());
 		itemSelectedSalarys.forEach(x -> {
 			x.setAvePayAttribute(AvePayAtr.Object);
 			this.itemSalaryRespository.update(x);
 		});
-		if (command.getAttendDayGettingSet() == 1) {
+		if (command.getAttendDayGettingSet() == 1) { 
+			// 明細書項目から選択 is selected
+			
+			// QCAMT_ITEM_ATTEND.SEL_3
 			List<ItemAttend> itemAttends = this.itemAttendRespository.findAll(companyCode);
+			
+			// QCAMT_ITEM_ATTEND.UPD_2: item attend selected
 			List<ItemAttend> itemSelectedAttends = itemAttends.stream()
-					.filter(x -> command.getAttendSelectedCode().contains(x.getItemCode()))
+					.filter(x -> command.getAttendSelectedCode().contains(x.getItemCode().v()))
 					.collect(Collectors.toList());
 			itemSelectedAttends.forEach(x -> {
 				x.setAvePayAttribute(AvePayAtr.Object);

@@ -47,6 +47,7 @@ public class AveragePayFinder {
 	 * @return
 	 */
 	
+	// QAPMT_AVE_PAY.SEL_1
 	public AveragePayDto findByCompanyCode() {
 		String companyCode = AppContexts.user().companyCode();
 		Optional<AveragePay> data = this.averagePayRepository.findByCompanyCode(companyCode);
@@ -62,8 +63,10 @@ public class AveragePayFinder {
 				x.getRoundDigitSet().value);
 	}
 	
+	// QCAMT_ITEM.SEL_5
 	public List<ItemMasterDto> findByItemSalary() {
 		String companyCode = AppContexts.user().companyCode();
+		// QCAMT_ITEM_SALARY.SEL_3
 		List<ItemSalary> itemSalarys = this.itemSalaryRespository.findAll(companyCode);
 		if (itemSalarys.isEmpty()){
 			return null;
@@ -74,8 +77,10 @@ public class AveragePayFinder {
 		return itemMasterDtos;
 	}
 	
+	// QCAMT_ITEM.SEL_5
 	public List<ItemMasterDto> findByItemAttend() {
 		String companyCode = AppContexts.user().companyCode();
+		// QCAMT_ITEM_ATTEND.SEL_4
 		List<ItemAttend> itemAttends = this.itemAttendRespository.findAll(companyCode);
 		if (itemAttends.isEmpty()){
 			return null;

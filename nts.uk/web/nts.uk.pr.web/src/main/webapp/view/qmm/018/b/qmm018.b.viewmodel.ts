@@ -1,10 +1,10 @@
 module qmm018.b.viewmodel {
     export class ScreenModel {
         items: KnockoutObservableArray<ItemModel>;
-        currentCodeListSwap: KnockoutObservableArray<ItemModel>;
-        unselectedCodeListSwap: KnockoutObservableArray<ItemModel>;
-        oldCurrentCodeListSwap: KnockoutObservableArray<ItemModel>;
-        oldUnselectedCodeListSwap: KnockoutObservableArray<ItemModel>;
+        currentCodeListSwap: KnockoutObservableArray<ItemModel>; // Item Selected
+        unselectedCodeListSwap: KnockoutObservableArray<ItemModel>; // Item Unselected
+        oldCurrentCodeListSwap: KnockoutObservableArray<ItemModel>; // Item selected form B screen, n = 0: ItemSalary, n = 2: ItemAttend
+        oldUnselectedCodeListSwap: KnockoutObservableArray<ItemModel>; // Item unselected form B screen, n = 0: ItemSalary, n = 2: ItemAttend
         constructor() {
             var self = this;
             self.items = ko.observableArray([]);

@@ -1,10 +1,10 @@
 module qmm018.a.viewmodel {
     export class ScreenModel {
         averagePay: KnockoutObservable<AveragePay>;
-        selectedItemList1: KnockoutObservableArray<ItemModel>;
-        selectedItemList2: KnockoutObservableArray<ItemModel>;
-        unSelectedItemList1: KnockoutObservableArray<ItemModel>;
-        unSelectedItemList2: KnockoutObservableArray<ItemModel>;
+        selectedItemList1: KnockoutObservableArray<ItemModel>; // ItemSalary Selected
+        selectedItemList2: KnockoutObservableArray<ItemModel>; // ItemAttend Selected
+        unSelectedItemList1: KnockoutObservableArray<ItemModel>; // ItemSalary Unselected
+        unSelectedItemList2: KnockoutObservableArray<ItemModel>; // ItemAttend Unselected
         texteditor1: KnockoutObservable<any>;
         texteditor2: KnockoutObservable<any>;
         isUpdate: any;
@@ -93,14 +93,19 @@ module qmm018.a.viewmodel {
                 };
                 if (isUpdate) {
                     qmm018.a.service.averagePayItemUpdate(command).done(function(data) {
+                        nts.uk.ui.dialog.alert("Update Success");
+                        dfd.resolve();
                     }).fail(function(res) {
                         nts.uk.ui.dialog.alert("Update Fail");
+                        dfd.reject();
                     });
                 } else {
                     qmm018.a.service.averagePayItemInsert(command).done(function(data) {
+                        nts.uk.ui.dialog.alert("Register Success");
                         dfd.resolve();
                     }).fail(function(res) {
                         nts.uk.ui.dialog.alert("Register Fail");
+                        dfd.reject();
                     });
                 }
             }
@@ -116,8 +121,8 @@ module qmm018.a.viewmodel {
                 nts.uk.ui.windows.setShared('categoryAtr', 2);
             }
             nts.uk.ui.windows.sub.modal("/view/qmm/018/b/index.xhtml", { title: "労働日数項目一覧", dialogClass: "no-close" }).onClosed(function() {
-                let selectedList: Array<ItemModel> = nts.uk.ui.windows.getShared('selectedItemList');
-                let unSelectedList: Array<ItemModel> = nts.uk.ui.windows.getShared('unSelectedItemList');
+                let selectedList: Array<ItemModel> = nts.uk.ui.windows.getShared('selectedItemList'); // Get selected form B screen, n = 0: ItemSalary, n = 2: ItemAttend
+                let unSelectedList: Array<ItemModel> = nts.uk.ui.windows.getShared('unSelectedItemList'); // Get unselected form B screen, n = 0: ItemSalary, n = 2: ItemAttend
                 if (!n) {
                     if (selectedList.length) {
                         if (!_.isEqual(selectedList, self.selectedItemList1())) {
