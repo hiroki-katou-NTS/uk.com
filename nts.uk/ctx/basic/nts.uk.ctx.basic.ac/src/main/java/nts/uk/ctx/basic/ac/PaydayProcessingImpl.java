@@ -13,7 +13,7 @@ import nts.uk.ctx.basic.dom.organization.employment.PaydayProcessingAdapter;
 @Stateless
 public class PaydayProcessingImpl implements PaydayProcessingAdapter{
 	
-	@Inject
+	//@Inject
 	//private IPaydayProcessingPub paydayProcessingPub;
 	
 	@Override

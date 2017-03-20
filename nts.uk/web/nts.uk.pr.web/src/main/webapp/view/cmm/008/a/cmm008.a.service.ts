@@ -4,7 +4,8 @@ module cmm008.a.service{
         createEmployment: "basic/organization/employment/createemployment",
         updateEmployment: "basic/organization/employment/updateemployment",
         deleteEmployment: "basic/organization/employment/deleteemployment/" ,
-        getEmploymentByCode: "basic/organization/employment/findemploymentbycode/"
+        getEmploymentByCode: "basic/organization/employment/findemploymentbycode/",
+        getAllProcessingNo: "pr/core/qmm005a/getdata"
     }
     //find all employment data
     export function getAllEmployments(): JQueryPromise<Array<model.employmentDto>>{
@@ -60,6 +61,16 @@ module cmm008.a.service{
         })
         return dfd.promise();
     }
+    //get all 処理日区分
+     export function getProcessingNo(){
+        var dfd = $.Deferred<Array<any>>();
+        nts.uk.request.ajax(path.getAllProcessingNo).done(function(res: Array<any>){
+            dfd.resolve(res);
+        }).fail(function(res){
+            dfd.reject(res);
+        })
+        return dfd.promise();
+    }
     
     
     export module model{
@@ -74,6 +85,7 @@ module cmm008.a.service{
             displayFlg: number;   
             displayStr: string; 
             closeDateNoStr: string;
+            processingStr: string
         }    
     }
 }

@@ -15,7 +15,7 @@ var cmm008;
                     self.managementHolidays = ko.observableArray([]);
                     self.holidayCode = ko.observable(1);
                     self.processingDateList = ko.observableArray([]);
-                    self.selectedProcessCode = ko.observable(0);
+                    self.selectedProcessNo = ko.observable(0);
                     self.employmentOutCode = ko.observable("");
                     self.textEditorOption = ko.mapping.fromJS(new option.TextEditorOption());
                     self.dataSource = ko.observableArray([]);
@@ -64,6 +64,7 @@ var cmm008;
                             self.reloadScreenWhenListClick(newValue);
                         }
                     });
+                    a.service.getProcessingNo();
                     dfd.resolve();
                     // Return.
                     return dfd.promise();
@@ -77,7 +78,7 @@ var cmm008;
                             if (employ.closeDateNo === 0) {
                                 self.selectedCloseCode('システム未導入');
                             }
-                            self.selectedProcessCode(employ.processingNo);
+                            self.selectedProcessNo(employ.processingNo);
                             self.multilineeditor.memoValue(employ.memo);
                             self.employmentOutCode(employ.employementOutCd);
                             if (employ.displayFlg == 1) {
@@ -105,11 +106,16 @@ var cmm008;
                     ]);
                     self.holidayCode = ko.observable(1);
                 };
+                //処理日区分 を取得する
                 ScreenModel.prototype.processingDateItem = function () {
                     var self = this;
-                    self.processingDateList.push(new ItemProcessingDate(0, '0'));
-                    self.processingDateList.push(new ItemProcessingDate(1, '1'));
-                    self.processingDateList.push(new ItemProcessingDate(2, '2'));
+                    a.service.getProcessingNo().done(function (lstProcessingNo) {
+                        if (lstProcessingNo.length !== 0) {
+                            _.forEach(lstProcessingNo, function (processingNo) {
+                                self.processingDateList.push(new ItemProcessingDate(processingNo[0].processingNo, processingNo[0].processingName));
+                            });
+                        }
+                    });
                 };
                 ScreenModel.prototype.dataSourceItem = function () {
                     var self = this;
@@ -133,6 +139,11 @@ var cmm008;
                                 if (employ.closeDateNo === 0) {
                                     employ.closeDateNoStr = "システム未導入";
                                 }
+                                //get processing name
+                                _.find(self.processingDateList(), function (processNo) {
+                                    employ.processingStr = processNo.processingName;
+                                    return employ.processingNo == processNo.processingNo;
+                                });
                                 self.dataSource.push(employ);
                             });
                             if (self.currentCode() === "") {
@@ -146,7 +157,7 @@ var cmm008;
                         { headerText: 'コード', prop: 'employmentCode', width: 100 },
                         { headerText: '名称', prop: 'employmentName', width: 160 },
                         { headerText: '締め日', prop: 'closeDateNoStr', width: 150 },
-                        { headerText: '処理日区分', prop: 'processingNo', width: 150 },
+                        { headerText: '処理日区分', prop: 'processingStr', width: 150 },
                         { headerText: '初期表示', prop: 'displayStr', width: 100 }
                     ]);
                     self.singleSelectedCode = ko.observable(null);
@@ -172,7 +183,7 @@ var cmm008;
                     //今回は就業システム未導入の場合としてください。
                     //（上記にあるように　締め日区分 = 0 ）
                     employment.closeDateNo = 0;
-                    employment.processingNo = self.selectedProcessCode();
+                    employment.processingNo = self.selectedProcessNo();
                     employment.statutoryHolidayAtr = self.holidayCode();
                     employment.employementOutCd = self.employmentOutCode();
                     employment.memo = self.multilineeditor.memoValue();
@@ -226,7 +237,7 @@ var cmm008;
                     if (chkEmployment !== undefined && chkEmployment !== null) {
                         if (chkEmployment.employmentName !== self.employmentName()
                             || chkEmployment.memo !== self.multilineeditor.memoValue()
-                            || chkEmployment.processingNo !== self.selectedProcessCode()
+                            || chkEmployment.processingNo !== self.selectedProcessNo()
                             || chkEmployment.statutoryHolidayAtr !== self.holidayCode()
                             || chkEmployment.employementOutCd !== self.employmentOutCode()
                             || chkEmployment.displayFlg !== (self.isCheckbox() ? 1 : 0)) {
@@ -308,9 +319,9 @@ var cmm008;
             }());
             viewmodel.ItemCloseDate = ItemCloseDate;
             var ItemProcessingDate = (function () {
-                function ItemProcessingDate(processingDateCode, processingDatename) {
-                    this.processingDateCode = processingDateCode;
-                    this.processingDatename = processingDatename;
+                function ItemProcessingDate(processingNo, processingName) {
+                    this.processingNo = processingNo;
+                    this.processingName = processingName;
                 }
                 return ItemProcessingDate;
             }());

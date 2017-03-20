@@ -64,12 +64,12 @@
 }
 
 button.nts-switch-button {
-	min-width: 80px;
+	min-width: 100px;
 }
 
 #SEL-002, #SEL-004 {
 	min-width: 0px !important;
-	max-width: 160px !important;
+	max-width: 220px !important;
 }
 #INP_005{
 	width: 350px; 
