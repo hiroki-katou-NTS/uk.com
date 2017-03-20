@@ -49,7 +49,7 @@ module nts.uk.pr.view.qmm008.e {
                     { id: 'tab-2', title: '保険料マスタの情報', content: '.tab-content-2', enable: ko.observable(true), visible: ko.observable(true) },
                 ]);
                 self.selectedTab = ko.observable('tab-1');
-                self.officeModel = ko.observable(new SocialInsuranceOfficeModel('', '', '', '', '','', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', '', ''));
+                self.officeModel = ko.observable(new SocialInsuranceOfficeModel());
                 //text input options
                 self.textInputOption = ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
                     textmode: "text",
@@ -170,9 +170,6 @@ module nts.uk.pr.view.qmm008.e {
                     //focus add new item
                            self.selectedOfficeCode(self.officeModel().officeCode()); 
                     });
-//                    //set add item into list view
-//                    if ((self.officeModel().officeCode() != '') && (self.officeModel().officeName() != ''))
-//                        self.officeItems.push(new ItemModel(self.officeModel().officeCode(), self.officeModel().officeName()));
                 }
             }
 
@@ -329,43 +326,37 @@ module nts.uk.pr.view.qmm008.e {
             healthInsuAssoCode: KnockoutObservable<string>;
             memo: KnockoutObservable<string>;
 
-            constructor(officeCode: string, officeName: string, shortName: string, PicName: string, PicPosition: string,
-                potalCode: string, prefecture: string, address1st: string, kanaAddress1st: string, address2nd: string, kanaAddress2nd: string, phoneNumber: string,
-                //insurance info input 
-                healthInsuOfficeRefCode1st: string, healthInsuOfficeRefCode2nd: string, pensionOfficeRefCode1st: string, pensionOfficeRefCode2nd: string, welfarePensionFundCode: string, officePensionFundCode: string,
-                healthInsuCityCode: string, healthInsuOfficeSign: string, pensionCityCode: string, pensionOfficeSign: string, healthInsuOfficeCode: string, healthInsuAssoCode: string,
-                memo: string
-            ) {
+            constructor() {
                 //basic info input
-                this.officeCode = ko.observable(officeCode);
-                this.officeName = ko.observable(officeName);
-                this.shortName = ko.observable(shortName);
-                this.PicName = ko.observable(PicName);
-                this.PicPosition = ko.observable(PicPosition);
+                this.officeCode = ko.observable('');
+                this.officeName = ko.observable('');
+                this.shortName = ko.observable('');
+                this.PicName = ko.observable('');
+                this.PicPosition = ko.observable('');
 
-                this.potalCode = ko.observable(potalCode);
-                this.prefecture = ko.observable(prefecture);
-                this.address1st = ko.observable(address1st);
-                this.kanaAddress1st = ko.observable(kanaAddress1st);
-                this.address2nd = ko.observable(address2nd);
-                this.kanaAddress2nd = ko.observable(kanaAddress2nd);
-                this.phoneNumber = ko.observable(phoneNumber);
+                this.potalCode = ko.observable('');
+                this.prefecture = ko.observable('');
+                this.address1st = ko.observable('');
+                this.kanaAddress1st = ko.observable('');
+                this.address2nd = ko.observable('');
+                this.kanaAddress2nd = ko.observable('');
+                this.phoneNumber = ko.observable('');
 
                 //insurance info input 
-                this.healthInsuOfficeRefCode1st = ko.observable(healthInsuOfficeRefCode1st);
-                this.healthInsuOfficeRefCode2nd = ko.observable(healthInsuOfficeRefCode2nd);
-                this.pensionOfficeRefCode1st = ko.observable(pensionOfficeRefCode1st);
-                this.pensionOfficeRefCode2nd = ko.observable(pensionOfficeRefCode2nd);
-                this.welfarePensionFundCode = ko.observable(welfarePensionFundCode);
-                this.officePensionFundCode = ko.observable(officePensionFundCode);
+                this.healthInsuOfficeRefCode1st = ko.observable('');
+                this.healthInsuOfficeRefCode2nd = ko.observable('');
+                this.pensionOfficeRefCode1st = ko.observable('');
+                this.pensionOfficeRefCode2nd = ko.observable('');
+                this.welfarePensionFundCode = ko.observable('');
+                this.officePensionFundCode = ko.observable('');
 
-                this.healthInsuCityCode = ko.observable(healthInsuCityCode);
-                this.healthInsuOfficeSign = ko.observable(healthInsuOfficeSign);
-                this.pensionCityCode = ko.observable(pensionCityCode);
-                this.pensionOfficeSign = ko.observable(pensionOfficeSign);
-                this.healthInsuOfficeCode = ko.observable(healthInsuOfficeCode);
-                this.healthInsuAssoCode = ko.observable(healthInsuAssoCode);
-                this.memo = ko.observable(memo);
+                this.healthInsuCityCode = ko.observable('');
+                this.healthInsuOfficeSign = ko.observable('');
+                this.pensionCityCode = ko.observable('');
+                this.pensionOfficeSign = ko.observable('');
+                this.healthInsuOfficeCode = ko.observable('');
+                this.healthInsuAssoCode = ko.observable('');
+                this.memo = ko.observable('');
             }
         }
         export class ItemModel {
