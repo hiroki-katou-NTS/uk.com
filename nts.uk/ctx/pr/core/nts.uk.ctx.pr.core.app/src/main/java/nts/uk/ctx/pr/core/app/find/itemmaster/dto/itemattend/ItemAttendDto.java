@@ -11,18 +11,18 @@ import nts.uk.ctx.pr.core.dom.itemmaster.itemattend.ItemAttend;
 @AllArgsConstructor
 @Data
 public class ItemAttendDto {
-	public int avePayAtr;
-	public int itemAtr;
-	public int errRangeLowAtr;
-	public BigDecimal errRangeLow;
-	public int errRangeHighAtr;
-	public BigDecimal errRangeHigh;
-	public int alRangeLowAtr;
-	public BigDecimal alRangeLow;
-	public int alRangeHighAtr;
-	public BigDecimal alRangeHigh;
-	public int workDaysScopeAtr;
-	public String memo;
+	private int avePayAtr;
+	private int itemAtr;
+	private int errRangeLowAtr;
+	private BigDecimal errRangeLow;
+	private int errRangeHighAtr;
+	private BigDecimal errRangeHigh;
+	private int alRangeLowAtr;
+	private BigDecimal alRangeLow;
+	private int alRangeHighAtr;
+	private BigDecimal alRangeHigh;
+	private int workDaysScopeAtr;
+	private String memo;
 
 	public static ItemAttendDto fromDomain(ItemAttend domain) {
 
