@@ -1,0 +1,24 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html>
+<head>
+</head>
+<body>
+	<div class="divLine">
+		<div class="divLineCol1">
+			<div id="F_LBL_001" data-bind="ntsFormLabel: {  required: false }">限度金額</div>
+		</div>
+		<div class="divLineCol2">
+			<div id="F_SEL_001" class="cf switchNomalSize"
+				data-bind="ntsSwitchButton: {
+										options: roundingRules_F_001,
+										optionsValue: 'code',
+										optionsText: 'name',
+										value: CurrentZeroDisplaySet }"></div>
+			<div id="F_SEL_002"
+				data-bind="ntsCheckBox: { checked: checked_F_002, text: '項目名も表示しない' }"></div>
+
+		</div>
+	</div>
+</body>
+</html>
