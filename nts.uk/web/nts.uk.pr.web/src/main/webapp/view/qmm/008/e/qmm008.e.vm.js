@@ -38,6 +38,12 @@ var nts;
                                         textalign: "center"
                                     }));
                                     self.selectedOfficeCode = ko.observable('');
+                                    self.errorList = ko.observableArray([
+                                        { messageId: "ER001", message: "＊が入力されていません。" },
+                                        { messageId: "ER007", message: "＊が選択されていません。" },
+                                        { messageId: "ER005", message: "入力した＊は既に存在しています。\r\n ＊を確認してください。" },
+                                        { messageId: "ER008", message: "選択された＊は使用されているため削除できません。" },
+                                    ]);
                                     self.selectedOfficeCode.subscribe(function (selectedOfficeCode) {
                                         $('.save-error').ntsError('clear');
                                         if (selectedOfficeCode != null && selectedOfficeCode != undefined && selectedOfficeCode != "") {
@@ -125,22 +131,35 @@ var nts;
                                         self.updateOffice();
                                     else {
                                         self.registerOffice();
-                                        self.loadAllInsuranceOfficeData().done(function () {
-                                            self.selectedOfficeCode(self.officeModel().officeCode());
-                                        });
                                     }
                                 };
                                 ScreenModel.prototype.updateOffice = function () {
                                     var self = this;
                                     e.service.update(self.collectData()).done(function () {
+                                        self.loadAllInsuranceOfficeData().done(function () {
+                                            self.selectedOfficeCode(self.officeModel().officeCode());
+                                        });
                                     }).fail(function () {
                                     });
                                 };
                                 ScreenModel.prototype.registerOffice = function () {
                                     var self = this;
                                     e.service.register(self.collectData()).done(function () {
+                                        self.loadAllInsuranceOfficeData().done(function () {
+                                            self.selectedOfficeCode(self.officeModel().officeCode());
+                                        });
                                     }).fail(function (res) {
-                                        alert(res.message);
+                                        if (res.messageId == self.errorList()[2].messageId) {
+                                            $('#officeCode').ntsError('set', self.errorList()[2].message);
+                                        }
+                                        if (res.messageId == self.errorList()[0].messageId) {
+                                            if (!self.officeModel().officeCode())
+                                                $('#officeCode').ntsError('set', self.errorList()[0].message);
+                                            if (!self.officeModel().officeName())
+                                                $('#officeName').ntsError('set', self.errorList()[0].message);
+                                            if (!self.officeModel().PicPosition())
+                                                $('#picPosition').ntsError('set', self.errorList()[0].message);
+                                        }
                                     });
                                 };
                                 ScreenModel.prototype.remove = function () {
