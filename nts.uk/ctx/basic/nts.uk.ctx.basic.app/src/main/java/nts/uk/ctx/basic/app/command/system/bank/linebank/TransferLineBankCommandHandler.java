@@ -29,19 +29,20 @@ public class TransferLineBankCommandHandler extends CommandHandler<TransferLineB
 	protected void handle(CommandHandlerContext<TransferLineBankCommand> context) {
 		String companyCode = AppContexts.user().companyCode();
 		TransferLineBankCommand command = context.getCommand();
-		String oldLineBankCode = command.getOldLineBankCode(); 
-		String newLineBankCode = command.getNewLineBankCode(); 
-		
-		if(StringUtil.isNullOrEmpty(oldLineBankCode, true)||StringUtil.isNullOrEmpty(newLineBankCode, true)){
-			throw new BusinessException("＊が選択されていません。");//ER007
+		String oldLineBankCode = command.getOldLineBankCode();
+		String newLineBankCode = command.getNewLineBankCode();
+		int allowDelete = command.getAllowDelete();
+
+		if (StringUtil.isNullOrEmpty(oldLineBankCode, true) || StringUtil.isNullOrEmpty(newLineBankCode, true)) {
+			throw new BusinessException("＊が選択されていません。");// ER007
 		}
-		
-		boolean notDelete = oldLineBankCode.equals(newLineBankCode);
-		
-		if (notDelete) {
-			throw new BusinessException("統合元と統合先で同じコードの＊が選択されています。\r\n  ＊を確認してください。");//ER009
+
+		boolean duplicateCode = oldLineBankCode.equals(newLineBankCode);
+
+		if (duplicateCode) {
+			throw new BusinessException("統合元と統合先で同じコードの＊が選択されています。\r\n  ＊を確認してください。");// ER009
 		}
-		
+
 		List<PersonBankAccount> listPersonBankAcc = personBankAccountRepository.findAllLineBank(companyCode,
 				oldLineBankCode);
 		listPersonBankAcc.forEach(x -> {
@@ -60,11 +61,12 @@ public class TransferLineBankCommandHandler extends CommandHandler<TransferLineB
 
 			PersonBankAccount domain = new PersonBankAccount(companyCode, x.getPersonID(), x.getHistId(),
 					x.getStartYearMonth(), x.getEndYearMonth(), useSet1, useSet2, useSet3, useSet4, useSet5);
-			
+
 			personBankAccountRepository.update(domain);
 		});
-		
-		if (!listPersonBankAcc.isEmpty()) {
+		//allowDelete = 1 la cho phep xoa
+		//listPersonBankAcc.isEmpty() kiem tra xem lineBankCode can xoa co ton tai k de xoa
+		if (allowDelete==1 && !listPersonBankAcc.isEmpty()) {
 			lineBankRepository.remove(companyCode, oldLineBankCode);
 		}
 	}

@@ -9,8 +9,8 @@ import javax.transaction.Transactional;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.pr.core.dom.itemmaster.ItemMaster;
-import nts.uk.ctx.pr.core.dom.itemmaster.ItemMasterRepository;
+import nts.uk.ctx.pr.core.dom.itemmaster.ItemMasterV1;
+import nts.uk.ctx.pr.core.dom.itemmaster.ItemMasterV1Repository;
 import nts.uk.ctx.pr.core.dom.paymentdata.Payment;
 import nts.uk.ctx.pr.core.dom.paymentdata.dataitem.DetailItem;
 import nts.uk.ctx.pr.core.dom.paymentdata.repository.PaymentDataRepository;
@@ -35,7 +35,7 @@ public class InsertPaymentDataCommandHandler extends CommandHandler<InsertPaymen
 	private PaymentDateMasterRepository payDateMasterRepository;
 
 	@Inject
-	private ItemMasterRepository itemMasterRepository;
+	private ItemMasterV1Repository itemMasterRepository;
 
 	@Override
 	protected void handle(CommandHandlerContext<InsertPaymentDataCommand> context) {
@@ -66,7 +66,7 @@ public class InsertPaymentDataCommandHandler extends CommandHandler<InsertPaymen
 	 */
 	private void registerDetail(Payment payment, List<DetailItem> details) {
 		for (DetailItem item : details) {
-			ItemMaster mItem = this.itemMasterRepository
+			ItemMasterV1 mItem = this.itemMasterRepository
 					.find(payment.getCompanyCode().v(), item.getCategoryAtr().value, item.getItemCode().v()).get();
 			item.additionalInfo(mItem.getLimitMoney().v(), mItem.getFixedPaidAtr().value, mItem.getAvgPaidAtr().value,
 					mItem.getItemAtr().value);
