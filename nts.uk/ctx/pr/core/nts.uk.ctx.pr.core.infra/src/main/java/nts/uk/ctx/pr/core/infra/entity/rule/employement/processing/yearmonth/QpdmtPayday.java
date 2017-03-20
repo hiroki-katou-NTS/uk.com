@@ -4,12 +4,14 @@ import java.io.Serializable;
 
 import javax.persistence.Basic;
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.arc.layer.infra.data.entity.type.GeneralDateToDBConverter;
 import nts.arc.time.GeneralDate;
 import nts.uk.shr.infra.data.entity.TableEntity;
 
@@ -26,10 +28,12 @@ public class QpdmtPayday extends TableEntity implements Serializable {
 
 	@Basic(optional = false)
 	@Column(name = "PAY_DATE")
+	@Convert(converter = GeneralDateToDBConverter.class)
 	public GeneralDate payDate;
 
 	@Basic(optional = false)
 	@Column(name = "STD_DATE")
+	@Convert(converter = GeneralDateToDBConverter.class)
 	public GeneralDate stdDate;
 
 	@Basic(optional = false)
@@ -38,14 +42,17 @@ public class QpdmtPayday extends TableEntity implements Serializable {
 
 	@Basic(optional = false)
 	@Column(name = "SOCIAL_INS_STD_DATE")
+	@Convert(converter = GeneralDateToDBConverter.class)
 	public GeneralDate socialInsStdDate;
 
 	@Basic(optional = false)
 	@Column(name = "INCOME_TAX_STD_DATE")
+	@Convert(converter = GeneralDateToDBConverter.class)
 	public GeneralDate incomeTaxStdDate;
 	
 	@Basic(optional = false)
 	@Column(name = "EMP_INS_STD_DATE")
+	@Convert(converter = GeneralDateToDBConverter.class)
 	public GeneralDate empInsStdDate;
 
 	@Basic(optional = false)
@@ -58,5 +65,5 @@ public class QpdmtPayday extends TableEntity implements Serializable {
 
 	@Basic(optional = false)
 	@Column(name = "ACCOUNTING_CLOSING")
-	public int accountingClosing;
+	public GeneralDate accountingClosing;
 }

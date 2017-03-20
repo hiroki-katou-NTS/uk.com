@@ -10,7 +10,6 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.arc.time.GeneralDate;
 import nts.uk.shr.infra.data.entity.TableEntity;
 
 @AllArgsConstructor
@@ -59,4 +58,8 @@ public class QpdmtSystemDay extends TableEntity implements Serializable {
 	@Basic(optional = false)
 	@Column(name = "ACCOUNT_DUE_DAY")
 	public int accountDueDay;
+
+	@Basic(optional = false)
+	@Column(name = "PAYSLIP_PRINT_MONTH")
+	public int payslipPrintMonthAtr;
 }

@@ -8,10 +8,7 @@
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
 			<com:scriptfile set="IGNITE" />
-			<com:stylefile path="style.css" />
-			<com:scriptfile path="start.js" />
-			<com:scriptfile path="viewmodel.js" />
-			<com:scriptfile path="service.js" />
+			<com:scriptfile path="../qmm005.js" />
 		</ui:define>
 
 		<ui:define name="content">
@@ -36,7 +33,7 @@
 										value: selectedCodes,
 										enable: true,
 										rows: 10,
-										columns: [{ prop: 'label' }]}"></div>
+										columns: [{ key: 'index' }, {key: 'label'}]}"></div>
 					</div>
 				</div>
 				<div class="right-panel">

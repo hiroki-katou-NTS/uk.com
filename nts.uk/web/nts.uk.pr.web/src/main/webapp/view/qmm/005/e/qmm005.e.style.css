@@ -23,8 +23,22 @@
 	min-width: 40px;
 }
 
+#E_LBL_001 {
+	margin: 10px 0;
+	display: block;
+}
+
 #E_LBL_002, #E_LBL_004, #E_LBL_007, #E_LBL_010 {
 	min-width: 150px;
+}
+
+#E_LBL_011 {
+	margin: 10px 0;
+}
+
+#E_SEL_001 + span {
+	padding-left: 10px;
+	padding-right: 10px;
 }
 
 .verticle-align .ntsControl{

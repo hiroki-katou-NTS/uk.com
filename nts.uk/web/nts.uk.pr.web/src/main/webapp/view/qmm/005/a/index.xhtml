@@ -8,10 +8,7 @@
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
 			<com:scriptfile set="IGNITE" />
-			<com:stylefile path="style.css" />
-			<com:scriptfile path="start.js" />
-			<com:scriptfile path="viewmodel.js" />
-			<com:scriptfile path="service.js" />
+			<com:scriptfile path="../qmm005.js" />
 		</ui:define>
 
 		<ui:define name="content">
@@ -47,7 +44,7 @@
 					</thead>
 					<tbody data-bind="foreach: items">
 						<tr>
-							<th data-bind="text: index"></th>
+							<th data-bind="text: $index() + 1"></th>
 							<td class="division">
 								<div data-bind="if: enable()">
 									<span data-bind="text: label"></span>
@@ -57,13 +54,13 @@
 									<button id="A_BTN_007" class="full-width" data-bind="click: showModalDialogC">追加</button>
 								</div>
 							</td>
-							<td><button id="A_BTN_008" class='full-width' data-bind="click: showModalDialogB">設定</button></td>
+							<td><button id="A_BTN_008" class='full-width' data-bind="click: showModalDialogB, enable: enable()">設定</button></td>
 							<td><div class="caret">
 									<div id="C_SEL_001"
 										data-bind="ntsComboBox: {
-											options: sel001Arr,
+											options: sel001Data,
 											optionsValue: 'index',
-											value:  sel002Val,
+											value:  sel001,
 											optionsText: 'label',
 											editable: enable(),
 											enable: enable(),
@@ -72,9 +69,9 @@
 								</div>
 								<div id="C_SEL_002"
 									data-bind="ntsComboBox: {
-										options: sel002Arr,
+										options: sel002Data,
 										optionsValue: 'index',
-										value:  sel002Val,
+										value:  sel002,
 										optionsText: 'label',
 										editable: enable(),
 										enable: enable(),
@@ -83,17 +80,16 @@
 							<td class="hide"></td>
 							<td class="text-center">
 								<div id="B_SEL_003"
-									data-bind="ntsCheckBox: {
-										checked: sel003Val,
-										enable: label() != '',
-										text: '' }"></div>
+									data-bind="ntsCheckBox3: {
+										checked: sel003,
+										enable: enable() }"></div>
 							</td>
 							<td><div class="caret">
 									<div id="C_SEL_004"
 										data-bind="ntsComboBox: {
-											options: sel004Arr,
+											options: sel004Data,
 											optionsValue: 'index',
-											value:  sel004Val,
+											value:  sel004,
 											optionsText: 'label',
 											editable: enable(),
 											enable: enable(),
@@ -102,9 +98,9 @@
 								</div>
 								<div id="C_SEL_005"
 									data-bind="ntsComboBox: {
-										options: sel005Arr,
+										options: sel005Data,
 										optionsValue: 'index',
-										value:  sel005Val,
+										value:  sel005,
 										optionsText: 'label',
 										editable: enable(),
 										enable: enable(),

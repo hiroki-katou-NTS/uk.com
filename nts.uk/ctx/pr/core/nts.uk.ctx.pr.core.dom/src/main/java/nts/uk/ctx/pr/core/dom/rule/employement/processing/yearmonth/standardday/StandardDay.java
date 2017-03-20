@@ -5,40 +5,30 @@ import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.core.dom.company.CompanyCode;
-import nts.uk.ctx.pr.core.dom.paymentdata.ProcessingNo;
-import nts.uk.ctx.pr.core.dom.rule.employement.processing.yearmonth.standardday.*;
+import nts.uk.ctx.pr.core.dom.rule.employement.processing.yearmonth.systemday.ProcessingNo;
 
+@Getter
 @AllArgsConstructor
 public class StandardDay extends AggregateRoot {
 
-	@Getter
 	private CompanyCode companyCode;
 
-	@Getter
 	private ProcessingNo processingNo;
 
-	@Getter
 	private SocialInsStdYearAtr socialInsStdYearAtr;
 
-	@Getter
 	private SocialInsStdMon socialInsStdMon;
 
-	@Getter
 	private SocialInsStdDay socialInsStdDay;
 
-	@Getter
 	private IncometaxStdYearAtr incometaxStdYearAtr;
 
-	@Getter
 	private IncometaxStdMon incometaxStdMon;
 
-	@Getter
 	private IncometaxStdDay incometaxStdDay;
 
-	@Getter
 	private EmpInsStdMon empInsStdMon;
 
-	@Getter
 	private EmpInsStdDay empInsStdDay;
 
 	public static StandardDay createSimpleFromJavaType(String companyCode, int processingNo, int socialInsStdYearAtr,

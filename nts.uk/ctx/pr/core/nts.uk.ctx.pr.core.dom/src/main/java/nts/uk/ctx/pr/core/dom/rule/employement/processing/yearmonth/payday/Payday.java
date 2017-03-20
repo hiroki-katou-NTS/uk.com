@@ -2,58 +2,56 @@ package nts.uk.ctx.pr.core.dom.rule.employement.processing.yearmonth.payday;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.core.dom.company.CompanyCode;
-import nts.uk.ctx.pr.core.dom.paymentdata.ProcessingNo;
+import nts.uk.ctx.pr.core.dom.paymentdata.PayBonusAtr;
+import nts.uk.ctx.pr.core.dom.paymentdata.SparePayAtr;
+import nts.uk.ctx.pr.core.dom.rule.employement.processing.yearmonth.systemday.ProcessingNo;
 
+@Getter
 @AllArgsConstructor
 public class Payday extends AggregateRoot {
-	@Getter
+
 	private CompanyCode companyCode;
 
-	@Getter
 	private ProcessingNo processingNo;
 
-	@Getter
+	private PayBonusAtr payBonusAtr;
+
 	private YearMonth processingYm;
 
-	@Getter
+	private SparePayAtr sparePayAtr;
+
 	private GeneralDate payDate;
 
-	@Getter
-	private GeneralDate stdDate;// baseDate
+	private GeneralDate stdDate;
 
-	@Getter
-	private AccountingClosing accountingClosing;
+	private GeneralDate accountingClosing;
 
-	@Getter
 	private SocialInsLevyMon socialInsLevyMon;
 
-	@Getter
 	private GeneralDate socialInsStdDate;
 
-	@Getter
 	private GeneralDate incomeTaxStdDate;
 
-	@Getter
 	private NeededWorkDay neededWorkDay;
 
-	@Getter
 	private GeneralDate empInsStdDate;
 
-	@Getter
 	private StmtOutputMon stmtOutputMon;
 
-	public static Payday createSimpleFromJavaType(String companyCode, int processingNo, int processingYm,
-			GeneralDate payDate, GeneralDate stdDate, int accountingClosing, int socialInsLevyMon,
-			GeneralDate socialInsStdDate, GeneralDate incomeTaxStdDate, int neededWorkDay, GeneralDate empInsStdDate,
-			int stmtOutputMon) {
+	public static Payday createSimpleFromJavaType(String companyCode, int processingNo, int payBonusAtr,
+			int processingYm, int sparePayAtr, GeneralDate payDate, GeneralDate stdDate, GeneralDate accountingClosing,
+			int socialInsLevyMon, GeneralDate socialInsStdDate, GeneralDate incomeTaxStdDate, int neededWorkDay,
+			GeneralDate empInsStdDate, int stmtOutputMon) {
 
-		return new Payday(new CompanyCode(companyCode), new ProcessingNo(processingNo), YearMonth.of(processingYm),
-				payDate, stdDate, new AccountingClosing(accountingClosing), new SocialInsLevyMon(socialInsLevyMon),
-				socialInsStdDate, incomeTaxStdDate, new NeededWorkDay(neededWorkDay), empInsStdDate,
-				new StmtOutputMon(stmtOutputMon));
+		return new Payday(new CompanyCode(companyCode), new ProcessingNo(processingNo),
+				EnumAdaptor.valueOf(payBonusAtr, PayBonusAtr.class), YearMonth.of(processingYm),
+				EnumAdaptor.valueOf(sparePayAtr, SparePayAtr.class), payDate, stdDate,
+				accountingClosing, new SocialInsLevyMon(socialInsLevyMon), socialInsStdDate,
+				incomeTaxStdDate, new NeededWorkDay(neededWorkDay), empInsStdDate, new StmtOutputMon(stmtOutputMon));
 	}
 }

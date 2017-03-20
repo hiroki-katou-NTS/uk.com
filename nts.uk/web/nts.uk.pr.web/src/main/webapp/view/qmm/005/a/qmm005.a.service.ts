@@ -1,17 +1,20 @@
-module qmm005.a.services {
-    let path: any = {
-        getString: "pr/core/paydayprocessing/getstring"
-    };
-    
-    export function getString() {
-        var dfd = $.Deferred<any>();
-        var a = nts.uk.request.ajax(path.getString, { name: 'Vuong' })
-            .done(function(res) {
-                console.log(res);
-                dfd.resolve(res);
-            })
-            .fail(function(res) {
-                dfd.reject(res);
-            });
+module qmm005.a {
+    // api define in qmm005.ts
+    var webapi = common.webapi();
+
+    export module services {
+        export function getData() {
+            var dfd = $.Deferred();
+
+            nts.uk.request.ajax(webapi.qmm005a.getdata)
+                .done(function(resp) {
+                    dfd.resolve(resp);
+                })
+                .fail(function(mess) {
+                    dfd.reject(mess);
+                });
+
+            return dfd.promise();
+        }
     }
 }

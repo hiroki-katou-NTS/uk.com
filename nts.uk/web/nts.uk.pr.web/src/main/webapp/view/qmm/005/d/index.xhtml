@@ -8,10 +8,7 @@
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
 			<com:scriptfile set="IGNITE" />
-			<com:stylefile path="style.css" />
-			<com:scriptfile path="start.js" />
-			<com:scriptfile path="viewmodel.js" />
-			<com:scriptfile path="service.js" />
+			<com:scriptfile path="../qmm005.js" />
 		</ui:define>
 
 		<ui:define name="content">
@@ -25,18 +22,20 @@
 			<div id="contents-area">
 				<div class="form-group no-margin-bottom">
 					<div id="D_LBL_001" data-bind="ntsFormLabel: {}">支払日区分1</div>
-					<input type="text" id="D_INP_001" />
+					<input type="text" id="D_INP_001" data-bind="ntsTextEditor2: { value: inp001, constraint: 'ProcessingName', required: true, valueUpdate: 'keyup' }"/>
 				</div>
 				<hr />
-				<div><label id="D_LBL_002">「以下の設定を変更する場合は、基準日の詳細設定も行ってください。」と表記</label></div>
+				<div>
+					<label id="D_LBL_002">「以下の設定を変更する場合は、基準日の詳細設定も行ってください。」と表記</label>
+				</div>
 				<div class="form-group">
 					<div id="D_LBL_003" data-bind="ntsFormLabel: {}">毎月の支払日</div>
 					<label id="D_LBL_004" class="label">支払月の</label>
 					<div id="D_SEL_001"
 						data-bind="ntsComboBox: {
-						options: select001,
+						options: sel001Data,
 						optionsValue: 'index',
-						value: selectedCode,
+						value: sel001,
 						optionsText: 'label',
 						editable: true,
 						enable: true,
@@ -50,9 +49,9 @@
 					<label id="D_LBL_006" class="label">支払月の</label>
 					<div id="D_SEL_002"
 						data-bind="ntsComboBox: {
-						options: select001,
+						options: sel001Data,
 						optionsValue: 'index',
-						value: selectedCode,
+						value: sel002,
 						optionsText: 'label',
 						editable: true,
 						enable: true,
@@ -60,9 +59,9 @@
 					<label id="D_LBL_007">の</label>
 					<div id="D_SEL_003"
 						data-bind="ntsComboBox: {
-						options: select001,
+						options: sel003Data,
 						optionsValue: 'index',
-						value: selectedCode,
+						value: sel001,
 						optionsText: 'label',
 						editable: true,
 						enable: true,
@@ -74,9 +73,9 @@
 					<label id="D_LBL_010" class="label">処理月の</label>
 					<div id="D_SEL_004"
 						data-bind="ntsComboBox: {
-						options: select001,
+						options: sel004Data,
 						optionsValue: 'index',
-						value: selectedCode,
+						value: sel004,
 						optionsText: 'label',
 						editable: true,
 						enable: true,
@@ -84,13 +83,13 @@
 					<label id="D_LBL_011" class="label">の</label>
 					<div id="D_SEL_005"
 						data-bind="ntsComboBox: {
-						options: select001,
-						optionsValue: 'index',
-						value: selectedCode,
-						optionsText: 'label',
-						editable: true,
-						enable: true,
-						columns: [{ prop: 'label', length: 4 }]}"></div>
+							options: sel005Data,
+							optionsValue: 'index',
+							value: sel005,
+							optionsText: 'label',
+							editable: true,
+							enable: true,
+							columns: [{ prop: 'label', length: 4 }]}"></div>
 					<label id="D_LBL_012" class="label">にします</label>
 				</div>
 				<a id="D_BTN_003" data-bind="click:  toggleView">より高度な設定
@@ -101,13 +100,13 @@
 						<label id="D_LBL_014" class="label">処理月の</label>
 						<div id="D_SEL_006"
 							data-bind="ntsComboBox: {
-						options: select001,
-						optionsValue: 'index',
-						value: selectedCode,
-						optionsText: 'label',
-						editable: true,
-						enable: true,
-						columns: [{ prop: 'label', length: 4 }]}"></div>
+								options: sel006Data,
+								optionsValue: 'index',
+								value: sel006,
+								optionsText: 'label',
+								editable: true,
+								enable: true,
+								columns: [{ prop: 'label', length: 4 }]}"></div>
 						<label id="D_LBL_015">を印字する</label>
 					</div>
 					<div class="form-group">
@@ -115,68 +114,72 @@
 						<label id="D_LBL_017" class="label">処理月の</label>
 						<div id="D_SEL_007"
 							data-bind="ntsComboBox: {
-						options: select001,
-						optionsValue: 'index',
-						value: selectedCode,
-						optionsText: 'label',
-						editable: true,
-						enable: true,
-						columns: [{ prop: 'label', length: 4 }]}"></div>
+								options: sel007Data,
+								optionsValue: 'index',
+								value: sel007,
+								optionsText: 'label',
+								editable: true,
+								enable: true,
+								columns: [{ prop: 'label', length: 4 }]}"></div>
 						<label id="D_LBL_018">を徴収対象にします</label>
 					</div>
 					<label id="D_LBL_019" class="label">※賞与は常に支払月分を徴収となります</label>
 					<div class="form-group">
 						<div id="D_LBL_020" data-bind="ntsFormLabel: {}">社会保険基準年月日</div>
 						<label id="D_LBL_021" class="label">処理年月の</label>
-						<div id="D_SEL_008"
-							data-bind="ntsComboBox: {
-						options: select001,
-						optionsValue: 'index',
-						value: selectedCode,
-						optionsText: 'label',
-						editable: true,
-						enable: true,
-						columns: [{ prop: 'label', length: 4 }]}"></div>
-						<div id="D_SEL_009"
-							data-bind="ntsComboBox: {
-						options: select001,
-						optionsValue: 'index',
-						value: selectedCode,
-						optionsText: 'label',
-						editable: true,
-						enable: true,
-						columns: [{ prop: 'label', length: 4 }]}"></div>
-						<div id="D_SEL_010"
-							data-bind="ntsComboBox: {
-						options: select001,
-						optionsValue: 'index',
-						value: selectedCode,
-						optionsText: 'label',
-						editable: true,
-						enable: true,
-						columns: [{ prop: 'label', length: 4 }]}"></div>
+						<div class="inline" style="width: 400px;">
+							<div id="D_SEL_008"
+								data-bind="ntsComboBox: {
+									options: sel008Data,
+									optionsValue: 'index',
+									value: sel008,
+									optionsText: 'label',
+									editable: true,
+									enable: true,
+									columns: [{ prop: 'label', length: 4 }]}"></div>
+							<div id="D_SEL_009"
+								data-bind="ntsComboBox: {
+									options: sel009Data,
+									optionsValue: 'index',
+									value: sel009,
+									optionsText: 'label',
+									editable: true,
+									enable: true,
+									columns: [{ prop: 'label', length: 4 }]}"></div>
+							<div id="D_SEL_010"
+								data-bind="ntsComboBox: {
+									options: sel010Data,
+									optionsValue: 'index',
+									value: sel010,
+									optionsText: 'label',
+									editable: true,
+									enable: true,
+									columns: [{ prop: 'label', length: 4 }]}"></div>
+						</div>
 					</div>
 					<div class="form-group">
 						<div id="D_LBL_022" data-bind="ntsFormLabel: {}">雇用保険基準日</div>
 						<label id="D_LBL_023" class="label">処理年月の直前の</label>
-						<div id="D_SEL_011"
-							data-bind="ntsComboBox: {
-						options: select001,
-						optionsValue: 'index',
-						value: selectedCode,
-						optionsText: 'label',
-						editable: true,
-						enable: true,
-						columns: [{ prop: 'label', length: 4 }]}"></div>
-						<div id="D_SEL_012"
-							data-bind="ntsComboBox: {
-						options: select001,
-						optionsValue: 'index',
-						value: selectedCode,
-						optionsText: 'label',
-						editable: true,
-						enable: true,
-						columns: [{ prop: 'label', length: 4 }]}"></div>
+						<div class="inline" style="width: 400px;">
+							<div id="D_SEL_011"
+								data-bind="ntsComboBox: {
+									options: sel011Data,
+									optionsValue: 'index',
+									value: sel010,
+									optionsText: 'label',
+									editable: true,
+									enable: true,
+									columns: [{ prop: 'label', length: 4 }]}"></div>
+							<div id="D_SEL_012"
+								data-bind="ntsComboBox: {
+									options: sel012Data,
+									optionsValue: 'index',
+									value: sel012,
+									optionsText: 'label',
+									editable: true,
+									enable: true,
+									columns: [{ prop: 'label', length: 4 }]}"></div>
+						</div>
 					</div>
 					<div>
 						<label id="D_LBL_024" class="label">※処理年月が同月の場合は、同じ年月の指定日を基準とします。</label>
@@ -186,33 +189,35 @@
 					<div class="form-group">
 						<div id="D_LBL_026" data-bind="ntsFormLabel: {}">所得税基準年月日</div>
 						<label id="D_LBL_027" class="label">処理年月の</label>
-						<div id="D_SEL_013"
-							data-bind="ntsComboBox: {
-						options: select001,
-						optionsValue: 'index',
-						value: selectedCode,
-						optionsText: 'label',
-						editable: true,
-						enable: true,
-						columns: [{ prop: 'label', length: 4 }]}"></div>
-						<div id="D_SEL_014"
-							data-bind="ntsComboBox: {
-						options: select001,
-						optionsValue: 'index',
-						value: selectedCode,
-						optionsText: 'label',
-						editable: true,
-						enable: true,
-						columns: [{ prop: 'label', length: 4 }]}"></div>
-						<div id="D_SEL_015"
-							data-bind="ntsComboBox: {
-						options: select001,
-						optionsValue: 'index',
-						value: selectedCode,
-						optionsText: 'label',
-						editable: true,
-						enable: true,
-						columns: [{ prop: 'label', length: 4 }]}"></div>
+						<div class="inline" style="width: 400px;">
+							<div id="D_SEL_013"
+								data-bind="ntsComboBox: {
+									options: sel013Data,
+									optionsValue: 'index',
+									value: sel013,
+									optionsText: 'label',
+									editable: true,
+									enable: true,
+									columns: [{ prop: 'label', length: 4 }]}"></div>
+							<div id="D_SEL_014"
+								data-bind="ntsComboBox: {
+									options: sel014Data,
+									optionsValue: 'index',
+									value: sel014,
+									optionsText: 'label',
+									editable: true,
+									enable: true,
+									columns: [{ prop: 'label', length: 4 }]}"></div>
+							<div id="D_SEL_015"
+								data-bind="ntsComboBox: {
+									options: sel015Data,
+									optionsValue: 'index',
+									value: sel015,
+									optionsText: 'label',
+									editable: true,
+									enable: true,
+									columns: [{ prop: 'label', length: 4 }]}"></div>
+						</div>
 					</div>
 				</div>
 			</div>

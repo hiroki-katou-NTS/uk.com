@@ -1,11 +1,9 @@
-let __viewContext: any;
-
-__viewContext.primitiveValueConstraints.LayoutCode = {
+__viewContext['primitiveValueConstraints']['ProcessingName'] = {
     valueType: 'String',
-    maxLength: 6
 };
 
-__viewContext.ready(function() {
-    let screenModel = new nts.uk.pr.view.qmm005.c.viewmodel.ViewModel();
-    this.bind(screenModel);
-});
+module qmm005.c {
+    __viewContext.ready(() => {
+        __viewContext.bind(new ViewModel());
+    });
+}

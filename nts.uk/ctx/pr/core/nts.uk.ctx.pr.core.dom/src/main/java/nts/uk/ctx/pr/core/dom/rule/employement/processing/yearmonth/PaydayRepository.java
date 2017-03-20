@@ -7,20 +7,19 @@ import nts.uk.ctx.pr.core.dom.rule.employement.processing.yearmonth.payday.Payda
 
 public interface PaydayRepository {
 
-	List<Payday> findAll1_3(String companyCode, String processingNo, int payBonusAtr, int processingYm,
-			int sparePayAtr);
+	List<Payday> find1_3(String companyCode, int processingNo, int payBonusAtr, int processingYm, int sparePayAtr);
 
-	List<Payday> findAll2(String companyCode, int payBonusAtr, int processingYm, int sparePayAtr);
+	List<Payday> find2(String companyCode, int payBonusAtr, int processingYm, int sparePayAtr);
 
-	List<Payday> findAll4(String companyCode, String processingNo);
+	List<Payday> find4(String companyCode, int processingNo);
 
-	List<Payday> findAll5(String companyCode, String processingNo, int payBonusAtr);
+	List<Payday> find5(String companyCode, int processingNo, int payBonusAtr);
 
-	List<Payday> findAll6(String companyCode, String processingNo, int processingYm);
+	List<Payday> find6(String companyCode, int processingNo, int processingYm);
 
-	List<Payday> findAll7(String companyCode, String processingNo, int payBonusAtr, GeneralDate strYmd,
-			GeneralDate endYmd);
+	List<Payday> find7(String companyCode, int processingNo, int payBonusAtr, GeneralDate strYmd, GeneralDate endYmd);
 
-	List<Payday> findAll11(String companyCode, String processingNo, int payBonusAtr, GeneralDate strYmd,
-			GeneralDate endYmd);
+	List<Payday> find11(String companyCode, int processingNo, int payBonusAtr, GeneralDate strYmd, GeneralDate endYmd);
+
+	void insert1(Payday domain);
 }

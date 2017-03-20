@@ -7,5 +7,7 @@ import nts.uk.ctx.pr.core.dom.rule.employement.processing.yearmonth.paydayproces
 
 public interface PaydayProcessingRepository {
 
-	List<PaydayProcessing> findAll3(String companyCode);
+	List<PaydayProcessing> select3(String companyCode);
+	
+	void insert1(PaydayProcessing domain);
 }

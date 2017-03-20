@@ -17,7 +17,7 @@ public class PaydayDto {
 
 	GeneralDate stdDate;
 
-	int accountingClosing;
+	GeneralDate accountingClosing;
 
 	int socialInsLevyMon;
 
@@ -33,7 +33,7 @@ public class PaydayDto {
 
 	public static PaydayDto fromDomain(Payday domain) {
 		return new PaydayDto(domain.getCompanyCode().v(), domain.getProcessingNo().v(), domain.getProcessingYm().v(),
-				domain.getPayDate(), domain.getStdDate(), domain.getAccountingClosing().v(),
+				domain.getPayDate(), domain.getStdDate(), domain.getAccountingClosing(),
 				domain.getSocialInsLevyMon().v(), domain.getSocialInsStdDate(), domain.getIncomeTaxStdDate(),
 				domain.getNeededWorkDay().v(), domain.getEmpInsStdDate(), domain.getStmtOutputMon().v());
 	}

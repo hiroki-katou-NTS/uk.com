@@ -26,7 +26,7 @@ public class JpaPaymentDateMasterRepository extends JpaRepository implements Pay
 				new BigDecimal(entity.neededWorkDay),
 				entity.qpdmtPaydayPK.processingNo, entity.qpdmtPaydayPK.processingYm, 
 				entity.qpdmtPaydayPK.sparePayAtr,
-				entity.qpdmtPaydayPK.payBonusAtr, entity.stdDate.localDate());
+				entity.qpdmtPaydayPK.payBonusAtr, entity.stdDate);
 		//entity.toDomain(domain);
 		return domain;
 	}

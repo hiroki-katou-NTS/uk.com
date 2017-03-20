@@ -21,9 +21,11 @@
 
 #contents-area .blst001-container>div {
 	position: relative;
-	padding: 20px 0 0 20px;
-	width: 220px;
+	padding-top: 27px;
 	border: 1px solid rgb(128, 128, 128);
+	display: block;
+	width: 200px;
+	height: 309px;
 }
 
 #contents-area #B_INP_001 {
@@ -33,23 +35,30 @@
 
 #contents-area .blst001-container>div .divider {
 	position: absolute;
-	display: block;
-	width: 21px;
-	height: 21px;
+	width: 28px;
 	top: 0;
-	left: 0;
-	border: 1px solid rgb(128, 128, 128);
-	border-top: none;
-	border-left: none;
+	bottom: 0;
+	border-right: 1px solid rgb(128, 128, 128);
 }
 
 #contents-area .blst001-container>div #B_LST_001 {
-	border: 1px solid rgb(128, 128, 128);
-	border-right: none;
-	border-bottom: none;
+	border: none;
+	border-top: 1px solid rgb(128, 128, 128);
 	width: 198px !important;
-	height: 300px !important;
 	overflow-y: scroll !important;
+	background: rgb(117,255,131); /* Old browsers */
+	background: -moz-linear-gradient(left, #e0f59e 0%, #e0f59e 27px, #fff 27px, #fff 100%); /* FF3.6-15 */
+	background: -webkit-linear-gradient(left, #e0f59e 0%, #e0f59e 27px, #fff 27px, #fff 100%); /* Chrome10-25,Safari5.1-6 */
+	background: linear-gradient(to right, #e0f59e 0%, #e0f59e 27px, #fff 27px, #fff 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#e0f59e', endColorstr='#ffffff', GradientType=1 ); /* IE6-9 */
+}
+
+#contents-area .blst001-container>div #B_LST_001 .nts-column:first-child
+	{
+	text-align: center;
+	min-width: 28px;
+	border-right: 1px solid rgb(128, 128, 128);
+	background-color: rgb(226, 247, 159);
 }
 
 #contents-area .right-panel, #contents-area .blst001-container {
@@ -90,7 +99,8 @@
 	max-width: 57px;
 }
 
-#contents-area table.table .date-cols {
+#contents-area table.table .double-border, #contents-area table.table .date-cols
+	{
 	width: 100px;
 	min-width: 100px;
 	max-width: 100px;
@@ -132,4 +142,8 @@ td>.ntsControl span.label {
 #contents-area .right-panel .form-label, #contents-area .right-panel .table
 	{
 	margin-top: 0;
+}
+
+.ntsListBox .nts-list-box .ui-selected {
+	background: #CBF4F9;
 }

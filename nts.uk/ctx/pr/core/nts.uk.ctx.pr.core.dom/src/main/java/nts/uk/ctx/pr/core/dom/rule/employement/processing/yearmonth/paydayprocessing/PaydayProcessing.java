@@ -6,31 +6,25 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.enums.DisplayAtr;
-import nts.uk.ctx.pr.core.dom.paymentdata.ProcessingNo;
 import nts.uk.ctx.pr.core.dom.paymentdata.paymentdatemaster.ProcessingName;
+import nts.uk.ctx.pr.core.dom.rule.employement.processing.yearmonth.systemday.ProcessingNo;
 
+@Getter
 @AllArgsConstructor
 public class PaydayProcessing extends AggregateRoot {
 
-	@Getter
 	private CompanyCode companyCode;
 
-	@Getter
 	private ProcessingNo processingNo;
 
-	@Getter
 	private ProcessingName processingName;
 
-	@Getter
-	private DisplayAtr displayAtr;
+	private DisplayAtr dispSet;
 
-	@Getter
 	private CurrentProcessingYm currentProcessingYm;
 
-	@Getter
 	private BonusAtr bonusAtr;
 
-	@Getter
 	private BCurrentProcessingYm bCurrentProcessingYm;
 
 	public static PaydayProcessing createSimpleFromJavaType(String ccd, int processingNo, String processingName,

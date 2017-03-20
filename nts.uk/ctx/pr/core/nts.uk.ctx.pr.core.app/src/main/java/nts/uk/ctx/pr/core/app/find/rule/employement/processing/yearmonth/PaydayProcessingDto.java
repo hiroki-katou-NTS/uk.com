@@ -12,7 +12,7 @@ public class PaydayProcessingDto {
 
 	String processingName;
 
-	int displayAtr;
+	int dispSet;
 
 	int currentProcessingYm;
 
@@ -22,7 +22,7 @@ public class PaydayProcessingDto {
 
 	public static PaydayProcessingDto fromDomain(PaydayProcessing domain) {
 		return new PaydayProcessingDto(domain.getCompanyCode().v(), domain.getProcessingNo().v(),
-				domain.getProcessingName().v(), domain.getDisplayAtr().value, domain.getCurrentProcessingYm().v(),
+				domain.getProcessingName().v(), domain.getDispSet().value, domain.getCurrentProcessingYm().v(),
 				domain.getBonusAtr().value, domain.getBCurrentProcessingYm().v());
 	}
 }

@@ -10,7 +10,6 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
-import nts.uk.shr.infra.data.entity.AggregateTableEntity;
 import nts.uk.shr.infra.data.entity.TableEntity;
 
 @AllArgsConstructor
@@ -29,8 +28,8 @@ public class QpdmtPaydayProcessing extends TableEntity implements Serializable {
 	public String processingName;
 
 	@Basic(optional = false)
-	@Column(name = "DISP_ATR")
-	public int dispAtr;
+	@Column(name = "DISP_SET")
+	public int dispSet;
 
 	@Basic(optional = false)
 	@Column(name = "CURRENT_PROCESSING_YM")

@@ -7,6 +7,13 @@ import nts.uk.ctx.pr.core.dom.rule.employement.processing.yearmonth.systemday.Sy
 
 public interface SystemDayRepository {
 
-	List<SystemDay> findAll(String companyCode, String processingNo);
+	List<SystemDay> findAll(String companyCode, int processingNo);
+	
+	SystemDay findOne(String companyCode, int processingNo);
 
+	void insert(SystemDay domain);
+	
+	void update(SystemDay domain);
+	
+	void delete(SystemDay domain);
 }

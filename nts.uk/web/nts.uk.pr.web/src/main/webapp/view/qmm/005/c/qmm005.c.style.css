@@ -1,25 +1,32 @@
 @import url("../qmm005.css");
 
 #functions-area {
-	display: none;
+	height: 50px;
 }
 
 .form-extent {
 	padding-bottom: 72px;
 }
 
-#C_LBL_002, #C_LBL_004, #C_LBL_008, #C_LBL_012, #C_LBL_015,
-	#C_LBL_019, #C_LBL_021, #C_LBL_025 {
+#C_INP_001 {
+	width: 200px;
+	min-width: 200px;
+}
+
+#C_LBL_002, #C_LBL_004, #C_LBL_008, #C_LBL_012, #C_LBL_015, #C_LBL_019,
+	#C_LBL_021, #C_LBL_025 {
 	min-width: 240px;
 }
 
-#C_LBL_003, #C_LBL_005, #C_LBL_009, #C_LBL_013, #C_LBL_016,
-	#C_LBL_020, #C_LBL_022 {
+#C_LBL_003, #C_LBL_005, #C_LBL_009, #C_LBL_013, #C_LBL_016, #C_LBL_020,
+	#C_LBL_022 {
 	min-width: 75px;
 }
 
-#C_LBL_004 .btn, #C_LBL_004 button {
+#C_LBL_004 .btn, #C_LBL_004 button, #C_LBL_008 .btn, #C_LBL_008 button {
+	width: auto;
 	width: initial;
+	min-width: auto;
 	min-width: initial;
 	margin-left: 7px;
 }
@@ -29,7 +36,7 @@
 }
 
 #C_LBL_018 {
-	padding-left: 245px;
+    padding: 0 0 10px 245px;
 }
 
 #C_LBL_023, #C_LBL_024 {
@@ -39,12 +46,12 @@
 
 #C_LBL_024 {
 	padding-left: 260px;
+	padding-bottom: 10px;
 }
 
-#C_SEL_001, #C_SEL_002, #C_SEL_003, #C_SEL_004, #C_SEL_005,
-	#C_SEL_006, #C_SEL_007, #C_SEL_008, #C_SEL_009, #C_SEL_010,
-	#C_SEL_011, #C_SEL_012, #C_SEL_013, #C_SEL_014, #C_SEL_015
-	{
+#C_SEL_001, #C_SEL_002, #C_SEL_003, #C_SEL_004, #C_SEL_005, #C_SEL_006,
+	#C_SEL_007, #C_SEL_008, #C_SEL_009, #C_SEL_010, #C_SEL_011, #C_SEL_012,
+	#C_SEL_013, #C_SEL_014, #C_SEL_015 {
 	width: 90px;
 	min-width: 90px !important;
 }
@@ -53,7 +60,7 @@
 	color: #3030ff;
 	text-decoration: underline;
 	border: none;
-	margin: 30px 0 0 0;
+	margin: 10px 0;
 	display: inline-block;
 	cursor: pointer;
 }
@@ -65,4 +72,10 @@
 	padding-left: 17px;
 	padding-right: 17px;
 	background-color: #a4eeb0;
+}
+
+.ui-state-active, .ui-widget-content .ui-state-active, .ui-widget-header .ui-state-active,
+	a.ui-button:active, .ui-button:active, .ui-button.ui-state-active:hover
+	{
+	background-color: #007fff;
 }

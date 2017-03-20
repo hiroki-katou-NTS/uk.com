@@ -3,6 +3,7 @@
 	color: rgb(64, 64, 64);
 	box-sizing: border-box;
 	color: rgb(64, 64, 64);
+	/* border-radius: 0 !important; */
 }
 
 hr {
@@ -26,8 +27,8 @@ hr {
 	overflow: hidden;
 }
 
-.ui-igcombo-wrapper {
-	top: 10px;
+div.form-group .ui-igcombo-wrapper {
+	display: block;
 }
 
 .ui-igcombo-field {
@@ -52,49 +53,51 @@ hr {
 	max-height: 200px !important;
 }
 
-.ntsCheckBox span.box:after{
-    width: 12px;
-    height: 6px;
-    top: 3px;
-    left: 2px;
+.ntsCheckBox span.box:after {
+	width: 12px;
+	height: 6px;
+	top: 3px;
+	left: 2px;
 }
 
-table.table button{
+table.table button {
 	min-width: 60px;
 	box-shadow: 0 2px rgba(0, 0, 0, 0.4);
 }
 
-table.table button:active{
+table.table button:active {
 	box-shadow: 0 0 #999;
 }
 
-button:not(.ui-button ), .btn:not(.ui-button ) {
+button:not(.ui-button),
+.btn:not(.ui-button){
 	min-width: 73px;
-	position: relative;
+	position:relative;
 }
 
-.btn:not(.ui-button ) {
-	display: inline-block;
-	padding: 3px 7px;
+.btn:not(.ui-button){
+	display:inline-block;
+	padding:3px 7px;
 	line-height: 24px;
 	cursor: pointer;
 }
 
-*:not(.ntsControl)>label, label.label {
-	line-height: 32px;
+div.form-label, div.form-label.inline {
+	display: table-cell;
+	padding: 0 10px 0 8px;
+	vertical-align: middle;
+	position:relative;
 }
 
-div.form-label, div.form-label.inline {
-	height: initial;
-	line-height: 32px;
-	padding: 0 10px 0 8px;
+div.form-label>label>button, div.form-label.inline>label>button{
+	position:absolute;
 }
 
 div.form-label>i {
 	margin: 0;
 }
 
-.verticle-align .ntsCheckBox span.label:not(.helper){
+.verticle-align .ntsCheckBox span.label:not(.helper ){
 	min-width: 160px;
 }
 
@@ -105,15 +108,20 @@ input, div.form-group>.form-control {
 	border: 1px solid #999999;
 }
 
-div.form-group>.form-label {
-	margin-top: 9px;
+#contents-area input.ui-igcombo-field {
+	padding-left: 5px;
 }
 
-div.form-group.form-inline>*:not(.clear-fix){
+div.form-group>.form-label+.nts-editor-wrapped {
+	display:table-cell;
+	vertical-align: middle;
+}
+
+div.form-group.form-inline>*:not(.clear-fix ){
 	float: left;
 }
 
-div.form-group.form-inline:after{
+div.form-group.form-inline:after {
 	clear: both;
 }
 
@@ -122,8 +130,16 @@ div.form-group>select.form-control {
 }
 
 div.form-group {
-	min-height: 41px;
 	position: relative;
+	margin-bottom: 5px;
+	display: table;
+}
+div.form-group>*{
+	display: table-cell;
+	vertical-align: middle;	
+}
+div.form-group>.inline>* {
+	display: inline-block;
 }
 
 a, input, select, .form-control, div.form-group>input.form-control {
@@ -222,8 +238,7 @@ a, input, select, .form-control, div.form-group>input.form-control {
 	border-collapse: collapse;
 }
 
-#contents-area table.table th, 
-#contents-area table.table td {
+#contents-area table.table th, #contents-area table.table td {
 	font-size: 12px;
 	color: rgb(64, 64, 64);
 	border: 1px solid #ccc;
@@ -239,7 +254,7 @@ a, input, select, .form-control, div.form-group>input.form-control {
 	background-color: rgb(174, 238, 196);
 }
 
-#contents-area table.table th.wrap{
+#contents-area table.table th.wrap {
 	white-space: pre-wrap;
 }
 
@@ -254,17 +269,26 @@ a, input, select, .form-control, div.form-group>input.form-control {
 	background-color: rgb(226, 247, 159);
 }
 
+#contents-area table.table td.division > div {
+	display: block;
+	text-align: right;
+}
+
+#contents-area table.table td.division > div * {
+	display: inline-block;
+}
+
 #contents-area table.table td .ntsControl {
 	display: block;
 }
 
-#contents-area table.table td span + button{
+#contents-area table.table td span+button {
 	margin-left: 5px;
 	min-width: initial;
 }
 
 #contents-area table.table td .ntsControl .ntsCheckBox span.label {
-	display:none;
+	display: none;
 }
 
 #contents-area table.table .no-border {
@@ -281,7 +305,7 @@ a, input, select, .form-control, div.form-group>input.form-control {
 	height: 30px;
 }
 
-#contents-area table.table button.full-width{	
+#contents-area table.table button.full-width {
 	width: 100%;
 }
 
@@ -291,10 +315,10 @@ a, input, select, .form-control, div.form-group>input.form-control {
 
 #contents-area table.table .caret:after {
 	margin-top: 2px;
-    border-top: 14px solid transparent;
-    border-bottom: 14px solid transparent;
-    border-left: 9px solid rgb(174, 238, 96);
-    width: 10px;
+	border-top: 14px solid transparent;
+	border-bottom: 14px solid transparent;
+	border-left: 9px solid rgb(174, 238, 96);
+	width: 10px;
 	position: absolute;
 }
 
@@ -306,7 +330,7 @@ a, input, select, .form-control, div.form-group>input.form-control {
 	display: block;
 }
 
-.horizontal-align>*{
+.horizontal-align>* {
 	display: inline-block;
 }
 
@@ -323,6 +347,11 @@ a, input, select, .form-control, div.form-group>input.form-control {
 	display: block;
 	padding: 5px 0 10px 0;
 	border-top: 1px solid #999;
+}
+
+.nts-column {
+	width: auto !important;
+	width: inherit !important;
 }
 
 .hidden {

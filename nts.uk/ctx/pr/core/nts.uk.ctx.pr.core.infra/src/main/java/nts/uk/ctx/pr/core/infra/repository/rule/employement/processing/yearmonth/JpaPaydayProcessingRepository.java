@@ -16,14 +16,28 @@ public class JpaPaydayProcessingRepository extends JpaRepository implements Payd
 	private final String SELECT_ALL_BY_CCD = SELECT_ALL + " WHERE c.qpdmtPaydayProcessingPK.ccd = :companyCode";
 
 	@Override
-	public List<PaydayProcessing> findAll3(String companyCode) {
+	public List<PaydayProcessing> select3(String companyCode) {
 		return this.queryProxy().query(SELECT_ALL_BY_CCD, QpdmtPaydayProcessing.class)
 				.setParameter("companyCode", companyCode).getList(c -> toDomain(c));
 	}
 
+	@Override
+	public void insert1(PaydayProcessing domain) {
+		this.commandProxy().insert(toEntity(domain));
+	}
+
 	private PaydayProcessing toDomain(QpdmtPaydayProcessing entity) {
 		return PaydayProcessing.createSimpleFromJavaType(entity.qpdmtPaydayProcessingPK.ccd,
-				entity.qpdmtPaydayProcessingPK.processingNo, entity.processingName, entity.dispAtr,
+				entity.qpdmtPaydayProcessingPK.processingNo, entity.processingName, entity.dispSet,
 				entity.currentProcessingYm, entity.bonusAtr, entity.bCurrentProcessingYm);
+	}
+
+	private QpdmtPaydayProcessing toEntity(PaydayProcessing domain) {
+		QpdmtPaydayProcessingPK qpdmtPaydayProcessingPK = new QpdmtPaydayProcessingPK(domain.getCompanyCode().v(),
+				domain.getProcessingNo().v());
+
+		return new QpdmtPaydayProcessing(qpdmtPaydayProcessingPK, domain.getProcessingName().v(),
+				domain.getDispSet().value, domain.getCurrentProcessingYm().v(), domain.getBonusAtr().value,
+				domain.getBCurrentProcessingYm().v());
 	}
 }

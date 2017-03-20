@@ -1,4 +1,4 @@
-module nts.uk.pr.view.qmm005.b.viewmodel {
+module qmm005.b {
     export class ViewModel {
         date: KnockoutObservable<Date>;
         selectedCodes: KnockoutObservableArray<number>;
@@ -11,21 +11,7 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
             this.listboxItem = ko.observableArray([
                 new SelectItem(1, "Option 1"),
                 new SelectItem(2, "Option 2"),
-                new SelectItem(3, "Option 3"),
-                new SelectItem(4, "Option 4"),
-                new SelectItem(5, "Option 5"),
-                new SelectItem(6, "Option 6"),
-                new SelectItem(7, "Option 7"),
-                new SelectItem(8, "Option 8"),
-                new SelectItem(9, "Option 9"),
-                new SelectItem(10, "Option 10"),
-                new SelectItem(11, "Option 11"),
-                new SelectItem(12, "Option 12"),
-                new SelectItem(13, "Option 13"),
-                new SelectItem(14, "Option 14"),
-                new SelectItem(15, "Option 15"),
-                new SelectItem(16, "Option 16"),
-                new SelectItem(17, "Option 17")
+                new SelectItem(3, "Option 3")
             ]);
 
             this.tableItems = ko.observableArray([
@@ -51,10 +37,7 @@ module nts.uk.pr.view.qmm005.b.viewmodel {
         }
 
         showModalDialogC(item, event): void {
-            nts.uk.ui.windows.sub.modal("../c/index.xhtml", { width: 682, height: 370, title: '処理区分の追加' })
-                .onClosed(() => {
-                    alert('ok');
-                });
+            nts.uk.ui.windows.sub.modal("../c/index.xhtml", { width: 682, height: 370, title: '処理区分の追加' }).onClosed(() => { });
         }
 
         showModalDialogD(item, event): void {
