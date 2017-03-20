@@ -25,7 +25,7 @@ public class SalaryAggregateItemInDto {
 	/** The tax division. */
 	private Integer taxDivision;
 
-	/** The category item. */
-	private Integer categoryItem;
+	/** The aggregate item code. */
+	private String aggregateItemCode;
 
 }

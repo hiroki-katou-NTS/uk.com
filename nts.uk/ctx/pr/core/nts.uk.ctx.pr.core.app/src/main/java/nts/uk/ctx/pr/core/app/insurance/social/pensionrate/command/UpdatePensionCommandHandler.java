@@ -56,7 +56,6 @@ public class UpdatePensionCommandHandler extends CommandHandler<UpdatePensionCom
 //		updatedPensionRate.validate();
 		// Validate
 		pensionRateService.validateRequiredItem(updatedPensionRate);
-		pensionRateService.validateDateRange(updatedPensionRate);
 
 		// Update to db.
 		pensionRateRepository.update(updatedPensionRate);

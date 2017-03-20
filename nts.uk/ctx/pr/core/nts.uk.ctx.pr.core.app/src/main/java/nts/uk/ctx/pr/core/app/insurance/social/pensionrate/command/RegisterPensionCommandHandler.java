@@ -76,7 +76,6 @@ public class RegisterPensionCommandHandler extends CommandHandler<RegisterPensio
 		PensionRate pensionRate = command.toDomain(companyCode);
 		pensionRate.validate();
 		// Validate
-		pensionRateService.validateDateRange(pensionRate);
 		pensionRateService.validateRequiredItem(pensionRate);
 		pensionRateService.createInitalHistory(companyCode.v(),officeCode.v(), pensionRate.getStart());
 		// Insert into db.

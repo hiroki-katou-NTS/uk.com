@@ -248,7 +248,7 @@ module nts.uk.pr.view.qmm008.b {
                     self.save();
                 }
                 else {
-                    alert('TODO has error!');
+                    alert('TODO has error! ERR001');
                     //TODO if has error 
                 }
                 return dfd.promise();

@@ -67,22 +67,6 @@ public class HealthInsuranceRateServiceImpl extends HealthInsuranceRateService {
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.pr.core.dom.insurance.social.healthrate.service.
-	 * HealthInsuranceRateService#validateDateRange(nts.uk.ctx.pr.core.dom.
-	 * insurance.social.healthrate.HealthInsuranceRate)
-	 */
-	@Override
-	public void validateDateRange(HealthInsuranceRate rate) {
-		if (healthInsuranceRateRepo.isInvalidDateRange(rate.getApplyRange())) {
-			// History after start date and time exists
-			// TODO throw new BusinessException("ER011"); ER0123!?
-			throw new BusinessException("ER011");
-		}
-	}
-
 	@Override
 	public SimpleHistoryRepository<HealthInsuranceRate> getRepository() {
 		return this.healthInsuranceRateRepo;

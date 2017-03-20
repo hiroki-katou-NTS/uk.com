@@ -19,12 +19,4 @@ public abstract class PensionRateService extends SimpleHistoryBaseService<Social
 	 * @param rate the rate
 	 */
 	public abstract void validateRequiredItem(PensionRate rate);
-
-	/**
-	 * Validate date range.
-	 *
-	 * @param rate the rate
-	 */
-	public abstract void validateDateRange(PensionRate rate);
-
 }

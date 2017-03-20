@@ -37,19 +37,6 @@ public class JpaHealthInsuranceAvgearnRepository extends JpaRepository implement
 	 * (non-Javadoc)
 	 * 
 	 * @see nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.
-	 * HealthInsuranceAvgearnRepository#add(nts.uk.ctx.pr.core.dom.insurance.
-	 * social.healthavgearn.HealthInsuranceAvgearn)
-	 */
-	@Override
-	public void add(HealthInsuranceAvgearn healthInsuranceAvgearn) {
-		// TODO: de mai tinh
-		this.commandProxy().insert(toEntity(healthInsuranceAvgearn, "fake ccd", "fake officeCd"));
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.pr.core.dom.insurance.social.healthavgearn.
 	 * HealthInsuranceAvgearnRepository#update(nts.uk.ctx.pr.core.dom.insurance.
 	 * social.healthavgearn.HealthInsuranceAvgearn)
 	 */

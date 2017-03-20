@@ -2,32 +2,60 @@ module nts.uk.pr.view.qpp007.j {
     export module service {
         var paths: any = {
             findSalaryAggregateItem: "ctx/pr/report/salary/aggregate/item/findSalaryAggregateItem",
-            importData: "ctx/pr/core/insurance/labor/importser/importData"
+            saveSalaryAggregateItem: "ctx/pr/report/salary/aggregate/item/save"
         };
 
         //connection server find Salary Aggregate Item
-        export function findSalaryAggregateItem(salaryAggregateItemFindDto: model.SalaryAggregateItemFindDto)
+        export function findSalaryAggregateItem(salaryAggregateItemInDto: model.SalaryAggregateItemInDto)
             : JQueryPromise<model.SalaryAggregateItemFindDto> {
             //call server service
-            return nts.uk.request.ajax(paths.findSalaryAggregateItem, salaryAggregateItemFindDto);
+            return nts.uk.request.ajax(paths.findSalaryAggregateItem, salaryAggregateItemInDto);
+        }
+
+        //connection server find Salary Aggregate Item
+        export function saveSalaryAggregateItem(salaryAggregateItemSaveDto: model.SalaryAggregateItemSaveDto)
+            : JQueryPromise<void> {
+            //call server service
+            var data = { salaryAggregateItemSaveDto: salaryAggregateItemSaveDto };
+            return nts.uk.request.ajax(paths.saveSalaryAggregateItem, data);
         }
 
 
         export module model {
-            export interface SalaryItemDto {
+
+            export class SalaryItemDto {
                 salaryItemCode: string;
                 salaryItemName: string;
             }
 
-            export interface SalaryAggregateItemFindDto {
+            export class SalaryAggregateItemFindDto {
 
                 salaryAggregateItemCode: string;
                 salaryAggregateItemName: string;
                 subItemCodes: SalaryItemDto[];
             }
-            export interface SalaryAggregateItemInDto {
+
+            export class SalaryAggregateItemInDto {
                 taxDivision: number;
-                categoryItem: number;
+                aggregateItemCode: string;
+            }
+
+            export class SalaryAggregateItemSaveDto {
+
+                /** The salary aggregate item code. */
+                salaryAggregateItemCode: string;
+
+                /** The salary aggregate item name. */
+                salaryAggregateItemName: string;
+
+                /** The sub item codes. */
+                subItemCodes: SalaryItemDto[];
+
+                /** The tax division. */
+                taxDivision: number;
+
+                /** The category code. */
+                categoryCode: string;
             }
         }
     }

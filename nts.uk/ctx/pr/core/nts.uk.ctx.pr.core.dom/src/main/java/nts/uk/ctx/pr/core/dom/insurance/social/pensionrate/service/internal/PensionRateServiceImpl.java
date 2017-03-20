@@ -66,22 +66,6 @@ public class PensionRateServiceImpl extends PensionRateService {
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.service.
-	 * PensionRateService#validateDateRange(nts.uk.ctx.pr.core.dom.insurance.
-	 * social.pensionrate.PensionRate)
-	 */
-	@Override
-	public void validateDateRange(PensionRate rate) {
-		if (pensionRateRepo.isInvalidDateRange(rate.getApplyRange())) {
-			// History after start date and time exists
-			// TODO throw new BusinessException("ER011"); ER0123!?
-			throw new BusinessException("ER011");
-		}
-	}
-
 	@Override
 	public SimpleHistoryRepository<PensionRate> getRepository() {
 		return this.pensionRateRepo;

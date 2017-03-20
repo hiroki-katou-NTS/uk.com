@@ -68,9 +68,9 @@ public class SalaryAggregateItem extends DomainObject {
 		memento.setCompanyCode(this.companyCode);
 		memento.setSalaryAggregateItemCode(this.code);
 		memento.setSalaryAggregateItemName(this.name);
-		memento.setItemCategory(this.itemCategory);
 		memento.setSubItemCodes(this.subItemCodes);
 		memento.setTaxDivision(this.taxDivision);
+		memento.setItemCategory(this.itemCategory);
 	}
 
 }

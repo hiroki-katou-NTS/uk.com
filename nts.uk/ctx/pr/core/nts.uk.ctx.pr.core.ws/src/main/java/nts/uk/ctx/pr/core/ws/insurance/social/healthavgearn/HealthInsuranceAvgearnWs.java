@@ -9,8 +9,6 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.pr.core.app.insurance.social.healthavgearn.command.CreateHealthInsuranceAvgearnCommand;
-import nts.uk.ctx.pr.core.app.insurance.social.healthavgearn.command.CreateHealthInsuranceAvgearnCommandHandler;
 import nts.uk.ctx.pr.core.app.insurance.social.healthavgearn.command.UpdateHealthInsuranceAvgearnCommand;
 import nts.uk.ctx.pr.core.app.insurance.social.healthavgearn.command.UpdateHealthInsuranceAvgearnCommandHandler;
 import nts.uk.ctx.pr.core.app.insurance.social.healthavgearn.find.HealthInsuranceAvgearnDto;
@@ -24,14 +22,6 @@ public class HealthInsuranceAvgearnWs extends WebService {
 	private HealthInsuranceAvgearnFinder healthInsuranceAvgearnFinder;
 	@Inject
 	private UpdateHealthInsuranceAvgearnCommandHandler updateHealthInsuranceAvgearnCommandHandler;
-	@Inject
-	private CreateHealthInsuranceAvgearnCommandHandler createHealthInsuranceAvgearnCommandHandler;
-
-	@POST
-	@Path("create")
-	public void create(CreateHealthInsuranceAvgearnCommand command) {
-		createHealthInsuranceAvgearnCommandHandler.handle(command);
-	}
 
 	@POST
 	@Path("update")

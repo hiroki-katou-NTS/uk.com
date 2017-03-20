@@ -18,7 +18,6 @@ import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.ListUtil;
-import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.HealthInsuranceRate;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.HealthInsuranceRateRepository;
 import nts.uk.ctx.pr.core.infra.entity.insurance.social.healthrate.QismtHealthInsuRate;
@@ -96,8 +95,6 @@ public class JpaHealthInsuranceRateRepository extends JpaRepository
 			QismtHealthInsuRate entity = new QismtHealthInsuRate();
 			entity = result.get(0);
 			em.remove(entity);
-		} else {
-			// TODO not found delete element
 		}
 	}
 
@@ -160,12 +157,6 @@ public class JpaHealthInsuranceRateRepository extends JpaRepository
 		return Optional.of(em.createQuery(cq).getResultList().stream()
 				.map(item -> new HealthInsuranceRate(new JpaHealthInsuranceRateGetMemento(item)))
 				.collect(Collectors.toList()).get(0));
-	}
-
-	@Override
-	public boolean isInvalidDateRange(MonthRange applyRange) {
-		// TODO Auto-generated method stub
-		return false;
 	}
 
 	@Override
