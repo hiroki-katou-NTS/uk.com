@@ -9,23 +9,23 @@ import nts.uk.ctx.pr.core.dom.itemmaster.itemsalaryperiod.ItemSalaryPeriod;
 @AllArgsConstructor
 @Data
 public class ItemSalaryPeriodDto {
-	public String itemCode;
-	public int periodAtr;
-	public int strY;
-	public int endY;
-	public int cycleAtr;
-	public int cycle01Atr;
-	public int cycle02Atr;
-	public int cycle03Atr;
-	public int cycle04Atr;
-	public int cycle05Atr;
-	public int cycle06Atr;
-	public int cycle07Atr;
-	public int cycle08Atr;
-	public int cycle09Atr;
-	public int cycle10Atr;
-	public int cycle11Atr;
-	public int cycle12Atr;
+	private String itemCd;
+	private int periodAtr;
+	private int strY;
+	private int endY;
+	private int cycleAtr;
+	private int cycle01Atr;
+	private int cycle02Atr;
+	private int cycle03Atr;
+	private int cycle04Atr;
+	private int cycle05Atr;
+	private int cycle06Atr;
+	private int cycle07Atr;
+	private int cycle08Atr;
+	private int cycle09Atr;
+	private int cycle10Atr;
+	private int cycle11Atr;
+	private int cycle12Atr;
 
 	public static ItemSalaryPeriodDto fromDomain(ItemSalaryPeriod domain) {
 		return new ItemSalaryPeriodDto(domain.getItemCode().v(), domain.getPeriodAtr().value, domain.getStrY().v(),

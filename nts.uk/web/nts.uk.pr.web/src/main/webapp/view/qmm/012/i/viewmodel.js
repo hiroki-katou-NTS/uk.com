@@ -6,6 +6,29 @@ var qmm012;
         (function (viewmodel) {
             var ScreenModel = (function () {
                 function ScreenModel() {
+                    //002
+                    this.checked_002 = ko.observable(false);
+                    this.gridListCurrentCode = ko.observable();
+                    this.selectedRuleCode_001 = ko.observable(1);
+                    this.CurrentItemMaster = ko.observable(null);
+                    this.ItemSalaryBDList = ko.observableArray([]);
+                    this.CurrentCategoryAtrName = ko.observable('');
+                    this.CurrentItemSalaryBD = ko.observable(null);
+                    this.CurrentItemBreakdownCd = ko.observable('');
+                    this.CurrentItemBreakdownName = ko.observable('');
+                    this.CurrentItemBreakdownAbName = ko.observable('');
+                    this.CurrentUniteCd = ko.observable('');
+                    this.CurrentZeroDispSet = ko.observable(1);
+                    this.CurrentItemDispAtr = ko.observable(0);
+                    this.CurrentErrRangeLowAtr = ko.observable(0);
+                    this.CurrentErrRangeLow = ko.observable(0);
+                    this.CurrentErrRangeHighAtr = ko.observable(0);
+                    this.CurrentErrRangeHigh = ko.observable(0);
+                    this.CurrentAlRangeLowAtr = ko.observable(0);
+                    this.CurrentAlRangeLow = ko.observable(0);
+                    this.CurrentAlRangeHighAtr = ko.observable(0);
+                    this.CurrentAlRangeHigh = ko.observable(0);
+                    this.enable_I_INP_002 = ko.observable(false);
                     var self = this;
                     //textediter
                     self.texteditor = {
@@ -21,128 +44,103 @@ var qmm012;
                         enable: ko.observable(true),
                         readonly: ko.observable(false)
                     };
-                    //start combobox data
-                    self.ComboBoxItemList = ko.observableArray([
-                        new ComboboxItemModel('0001', 'Item1'),
-                        new ComboboxItemModel('0002', 'Item2'),
-                        new ComboboxItemModel('0003', 'Item3')
-                    ]);
-                    self.ComboBoxCurrentCode = ko.observable(1);
-                    self.selectedCode = ko.observable('0001');
-                    self.isEnable = ko.observable(true);
-                    self.isEditable = ko.observable(true);
-                    //001
-                    self.ComboBoxItemList_001 = ko.observableArray([
-                        new ComboboxItemModel('1', '隱ｲ遞�'),
-                        new ComboboxItemModel('2', '髱櫁ｪｲ遞�(髯仙ｺｦ縺ゅｊ�ｼ�'),
-                        new ComboboxItemModel('3', '髱櫁ｪｲ遞�(髯仙ｺｦ縺ｪ縺暦ｼ�'),
-                        new ComboboxItemModel('4', '騾壼共雋ｻ(謇句�･蜉�)'),
-                        new ComboboxItemModel('5', '騾壼共雋ｻ(螳壽悄蛻ｸ蛻ｩ逕ｨ)')
-                    ]);
-                    self.ComboBoxCurrentCode_001 = ko.observable(1);
-                    self.selectedCode_001 = ko.observable('1');
-                    //end combobox data
-                    //start checkbox Data
-                    self.checked_002 = ko.observable(true);
-                    self.checked_003 = ko.observable(true);
-                    self.checked_012 = ko.observable(true);
-                    self.checked_013 = ko.observable(true);
-                    self.checked_014 = ko.observable(true);
-                    self.checked_015 = ko.observable(true);
-                    self.checked_016 = ko.observable(true);
-                    //end checkbox data
-                    // start gridlist
-                    this.gridListItems = ko.observableArray([
-                        new GridItemModel('001', 'Item1'),
-                        new GridItemModel('002', 'Item2'),
-                        new GridItemModel('003', 'Item3'),
-                        new GridItemModel('004', 'Item4'),
-                        new GridItemModel('005', 'Item5'),
-                        new GridItemModel('006', 'Item6'),
-                        new GridItemModel('007', 'Item7'),
-                        new GridItemModel('008', 'Item8'),
-                        new GridItemModel('009', 'Item9'),
-                        new GridItemModel('010', 'Item10'),
-                        new GridItemModel('011', 'Item11'),
-                        new GridItemModel('012', 'Item12'),
-                        new GridItemModel('013', 'Item13')
-                    ]);
-                    self.columns = ko.observableArray([
-                        { headerText: '鬩幢ｽ｢�ｿｽ�ｽｽ�ｽｧ�ｿｽ�ｽｿ�ｽｽ�ｿｽ�ｽｽ�ｽｽ�ｿｽ�ｽｽ�ｽｳ鬩幢ｽ｢隴趣ｽ｢�ｿｽ�ｽｽ�ｽｽ�ｿｽ�ｽｽ�ｽｼ鬩幢ｽ｢隴趣ｽ｢�ｿｽ�ｽｽ�ｽｿ�ｿｽ�ｽｽ�ｽｽ', prop: 'code', width: 100 },
-                        { headerText: '鬮ｯ�ｽｷ�ｿｽ�ｽｽ�ｽｷ髯ｷ�ｽ･�ｿｽ�ｽｽ�ｽｲ�ｿｽ�ｽｿ�ｽｽ�ｿｽ�ｽｽ�ｽｽ�ｿｽ�ｽｽ�ｽｧ�ｿｽ�ｽｿ�ｽｽ�ｿｽ�ｽｽ�ｽｽ�ｿｽ�ｽｽ�ｽｰ', prop: 'name', width: 150 }
-                    ]);
-                    this.gridListCurrentCode = ko.observable();
-                    this.currentCodeList = ko.observableArray([]);
-                    //end gridlist
                     //start Switch Data
                     self.enable = ko.observable(true);
-                    self.roundingRules = ko.observableArray([
-                        { code: '1', name: '隰ｾ�ｽｯ驍ｨ�ｽｦ' },
-                        { code: '2', name: '隰ｾ�ｽｯ驍ｨ�ｽｦ' }
+                    self.roundingRules_001 = ko.observableArray([
+                        { code: 1, name: 'ゼロを表示する' },
+                        { code: 0, name: 'ゼロを表示しない' }
                     ]);
-                    self.selectedRuleCode = ko.observable(1);
-                    //005 006 007 008 009 010
-                    self.roundingRules_002_003_005To010 = ko.observableArray([
-                        { code: '1', name: '蟇ｾ雎｡' },
-                        { code: '2', name: '蟇ｾ雎｡螟�' }
-                    ]);
-                    self.selectedRuleCode_002 = ko.observable(1);
-                    self.selectedRuleCode_003 = ko.observable(1);
-                    self.selectedRuleCode_005 = ko.observable(1);
-                    self.selectedRuleCode_006 = ko.observable(1);
-                    self.selectedRuleCode_007 = ko.observable(1);
-                    self.selectedRuleCode_008 = ko.observable(1);
-                    self.selectedRuleCode_009 = ko.observable(1);
-                    self.selectedRuleCode_010 = ko.observable(1);
-                    //011
-                    self.roundingRules_011 = ko.observableArray([
-                        { code: '1', name: '繧ｼ繝ｭ繧定｡ｨ遉ｺ縺吶ｋ' },
-                        { code: '2', name: '繧ｼ繝ｭ繧定｡ｨ遉ｺ縺励↑縺�' }
-                    ]);
-                    self.selectedRuleCode_011 = ko.observable(1);
-                    //017
-                    self.roundingRules_017 = ko.observableArray([
-                        { code: '1', name: '鬆�逶ｮ蛹ｺ蛻�' },
-                        { code: '2', name: '鬆�逶ｮ蛹ｺ蛻�' },
-                        { code: '3', name: '鬆�逶ｮ蛹ｺ蛻�' },
-                        { code: '4', name: '鬆�逶ｮ蛹ｺ蛻�' },
-                    ]);
-                    self.selectedRuleCode_017 = ko.observable(1);
                     //endSwitch Data
-                    //start radiogroup data
-                    self.RadioItemList = ko.observableArray([
-                        new BoxModel(1, '髫ｴ蟷｢�ｽｽ�ｽｬ鬩穂ｼ夲ｽｽ�ｽｾ'),
-                        new BoxModel(2, '髮主供萓幢ｿｽ�ｽｽ�ｽｮ陞溷･�ｽｽ�ｽｪ�ｿｽ�ｽｽ�ｽｿ髫ｴ蜴�ｽｽ�ｽｸ髯ｷ�ｿｽ�ｽｽ�ｽｺ髯ｷ迚呻ｽｸ�ｽｷ騾｡鬘瑚�ｳ陞溘ｑ�ｽｽ�ｽ､�ｿｽ�ｽｽ�ｽｾ')
-                    ]);
-                    self.selectedId = ko.observable(1);
-                    //004
-                    self.RadioItemList_004 = ko.observableArray([
-                        new BoxModel(1, '蜈ｨ蜩｡荳�蠕九〒謖�螳壹☆繧�'),
-                        new BoxModel(2, '邨ｦ荳主･醍ｴ�蠖｢諷九＃縺ｨ縺ｫ謖�螳壹☆繧�')
-                    ]);
-                    self.selectedId_004 = ko.observable(1);
-                    //end radiogroup data
                     //currencyeditor
-                    self.currencyeditor = {
-                        value: ko.observable(),
+                    //005
+                    self.currencyeditor_I_INP_005 = {
+                        value: self.CurrentErrRangeHigh,
                         constraint: '',
                         option: ko.mapping.fromJS(new nts.uk.ui.option.CurrencyEditorOption({
                             grouplength: 3,
-                            decimallength: 2,
                             currencyformat: "JPY",
                             currencyposition: 'right'
-                        })),
-                        required: ko.observable(false),
-                        enable: ko.observable(true),
-                        readonly: ko.observable(false)
+                        }))
+                    };
+                    //006
+                    self.currencyeditor_I_INP_006 = {
+                        value: self.CurrentAlRangeHigh,
+                        constraint: '',
+                        option: ko.mapping.fromJS(new nts.uk.ui.option.CurrencyEditorOption({
+                            grouplength: 3,
+                            currencyformat: "JPY",
+                            currencyposition: 'right'
+                        }))
+                    };
+                    //007
+                    self.currencyeditor_I_INP_007 = {
+                        value: self.CurrentErrRangeLow,
+                        constraint: '',
+                        option: ko.mapping.fromJS(new nts.uk.ui.option.CurrencyEditorOption({
+                            grouplength: 3,
+                            currencyformat: "JPY",
+                            currencyposition: 'right'
+                        }))
+                    };
+                    //008
+                    self.currencyeditor_I_INP_008 = {
+                        value: self.CurrentAlRangeLow,
+                        constraint: '',
+                        option: ko.mapping.fromJS(new nts.uk.ui.option.CurrencyEditorOption({
+                            grouplength: 3,
+                            currencyformat: "JPY",
+                            currencyposition: 'right'
+                        }))
                     };
                     //end currencyeditor
-                    //start textarea
-                    this.textArea = ko.observable("");
-                    //end textarea
                     // start search box 
-                    self.filteredData = ko.observableArray(nts.uk.util.flatArray(self.gridListItems(), "childs"));
+                    self.filteredData = ko.observableArray(nts.uk.util.flatArray(self.ItemSalaryBDList(), "childs"));
                     // end search box 
+                    self.columns = ko.observableArray([
+                        { headerText: 'ード', prop: 'itemBreakdownCd', width: 100 },
+                        { headerText: '名', prop: 'itemBreakdownName', width: 150 }
+                    ]);
+                    self.CurrentItemMaster(nts.uk.ui.windows.getShared('itemMaster'));
+                    if (self.CurrentItemMaster()) {
+                        i.service.findItemSalaryBD(self.CurrentItemMaster().itemCode).done(function (ItemSalaryBDs) {
+                            for (var _i = 0, ItemSalaryBDs_1 = ItemSalaryBDs; _i < ItemSalaryBDs_1.length; _i++) {
+                                var ItemSalaryBD = ItemSalaryBDs_1[_i];
+                                self.ItemSalaryBDList.push(ItemSalaryBD);
+                            }
+                            if (self.ItemSalaryBDList().length)
+                                self.gridListCurrentCode(self.ItemSalaryBDList()[0].itemBreakdownCd);
+                        }).fail(function (res) {
+                            // Alert message
+                            alert(res);
+                        });
+                        self.CurrentCategoryAtrName(self.CurrentItemMaster().categoryAtrName);
+                    }
+                    self.gridListCurrentCode.subscribe(function (newValue) {
+                        var item = _.find(self.ItemSalaryBDList(), function (ItemSalaryBD) {
+                            return ItemSalaryBD.itemBreakdownCd == newValue;
+                        });
+                        self.CurrentItemSalaryBD(item);
+                    });
+                    self.CurrentItemSalaryBD.subscribe(function (ItemSalaryBD) {
+                        self.CurrentItemBreakdownCd(ItemSalaryBD ? ItemSalaryBD.itemBreakdownCd : '');
+                        self.CurrentItemBreakdownName(ItemSalaryBD ? ItemSalaryBD.itemBreakdownName : '');
+                        self.CurrentItemBreakdownAbName(ItemSalaryBD ? ItemSalaryBD.itemBreakdownAbName : '');
+                        self.CurrentUniteCd(ItemSalaryBD ? ItemSalaryBD.uniteCd : '');
+                        self.CurrentZeroDispSet(ItemSalaryBD ? ItemSalaryBD.zeroDispSet : 1);
+                        self.checked_002(ItemSalaryBD ? ItemSalaryBD.itemDispAtr == 1 ? false : true : false);
+                        self.CurrentItemDispAtr(ItemSalaryBD ? ItemSalaryBD.itemDispAtr : 0);
+                        self.CurrentErrRangeLowAtr(ItemSalaryBD ? ItemSalaryBD.errRangeLowAtr : 0);
+                        self.CurrentErrRangeLow(ItemSalaryBD ? ItemSalaryBD.errRangeLow : 0);
+                        self.CurrentErrRangeHighAtr(ItemSalaryBD ? ItemSalaryBD.errRangeHighAtr : 0);
+                        self.CurrentErrRangeHigh(ItemSalaryBD ? ItemSalaryBD.errRangeHigh : 0);
+                        self.CurrentAlRangeLowAtr(ItemSalaryBD ? ItemSalaryBD.alRangeLowAtr : 0);
+                        self.CurrentAlRangeLow(ItemSalaryBD ? ItemSalaryBD.alRangeLow : 0);
+                        self.CurrentAlRangeHighAtr(ItemSalaryBD ? ItemSalaryBD.alRangeHighAtr : 0);
+                        self.CurrentAlRangeHigh(ItemSalaryBD ? ItemSalaryBD.alRangeHigh : 0);
+                    });
+                    self.checked_002.subscribe(function (NewValue) {
+                        self.CurrentItemDispAtr(NewValue == false ? 1 : 0);
+                    });
                 }
                 ScreenModel.prototype.SubmitDialog = function () {
                     nts.uk.ui.windows.close();

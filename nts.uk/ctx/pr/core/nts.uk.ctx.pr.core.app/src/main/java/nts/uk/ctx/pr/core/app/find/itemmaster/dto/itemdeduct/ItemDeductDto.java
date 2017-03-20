@@ -11,16 +11,16 @@ import nts.uk.ctx.pr.core.dom.itemmaster.itemdeduct.ItemDeduct;
 @AllArgsConstructor
 @Data
 public class ItemDeductDto {
-	int deductAtr;
-	int errRangeLowAtr;
-	BigDecimal errRangeLow;
-	int errRangeHighAtr;
-	BigDecimal errRangeHigh;
-	int alRangeLowAtr;
-	BigDecimal alRangeLow;
-	int alRangeHighAtr;
-	BigDecimal alRangeHigh;
-	String memo;
+	private int deductAtr;
+	private int errRangeLowAtr;
+	private BigDecimal errRangeLow;
+	private int errRangeHighAtr;
+	private BigDecimal errRangeHigh;
+	private int alRangeLowAtr;
+	private BigDecimal alRangeLow;
+	private int alRangeHighAtr;
+	private BigDecimal alRangeHigh;
+	private String memo;
 
 	public static ItemDeductDto fromDomain(ItemDeduct domain) {
 		return new ItemDeductDto(domain.getDeductAtr().value, domain.getErrRangeLowAtr().value,

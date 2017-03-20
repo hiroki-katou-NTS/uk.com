@@ -17,6 +17,7 @@ module qmm012.b {
                 })
             return dfd.promise();
         }
+    
 
         export function findItemperiod(categoryAtr, itemCode): JQueryPromise<model.ItemPeriodModel> {
             var dfd = $.Deferred<model.ItemPeriodModel>();
