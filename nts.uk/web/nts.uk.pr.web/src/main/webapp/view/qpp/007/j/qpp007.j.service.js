@@ -14,12 +14,44 @@ var nts;
                         (function (service) {
                             var paths = {
                                 findSalaryAggregateItem: "ctx/pr/report/salary/aggregate/item/findSalaryAggregateItem",
-                                importData: "ctx/pr/core/insurance/labor/importser/importData"
+                                saveSalaryAggregateItem: "ctx/pr/report/salary/aggregate/item/save"
                             };
-                            function findSalaryAggregateItem(salaryAggregateItemFindDto) {
-                                return nts.uk.request.ajax(paths.findSalaryAggregateItem, salaryAggregateItemFindDto);
+                            function findSalaryAggregateItem(salaryAggregateItemInDto) {
+                                return nts.uk.request.ajax(paths.findSalaryAggregateItem, salaryAggregateItemInDto);
                             }
                             service.findSalaryAggregateItem = findSalaryAggregateItem;
+                            function saveSalaryAggregateItem(salaryAggregateItemSaveDto) {
+                                var data = { salaryAggregateItemSaveDto: salaryAggregateItemSaveDto };
+                                return nts.uk.request.ajax(paths.saveSalaryAggregateItem, data);
+                            }
+                            service.saveSalaryAggregateItem = saveSalaryAggregateItem;
+                            var model;
+                            (function (model) {
+                                var SalaryItemDto = (function () {
+                                    function SalaryItemDto() {
+                                    }
+                                    return SalaryItemDto;
+                                }());
+                                model.SalaryItemDto = SalaryItemDto;
+                                var SalaryAggregateItemFindDto = (function () {
+                                    function SalaryAggregateItemFindDto() {
+                                    }
+                                    return SalaryAggregateItemFindDto;
+                                }());
+                                model.SalaryAggregateItemFindDto = SalaryAggregateItemFindDto;
+                                var SalaryAggregateItemInDto = (function () {
+                                    function SalaryAggregateItemInDto() {
+                                    }
+                                    return SalaryAggregateItemInDto;
+                                }());
+                                model.SalaryAggregateItemInDto = SalaryAggregateItemInDto;
+                                var SalaryAggregateItemSaveDto = (function () {
+                                    function SalaryAggregateItemSaveDto() {
+                                    }
+                                    return SalaryAggregateItemSaveDto;
+                                }());
+                                model.SalaryAggregateItemSaveDto = SalaryAggregateItemSaveDto;
+                            })(model = service.model || (service.model = {}));
                         })(service = j.service || (j.service = {}));
                     })(j = qpp007.j || (qpp007.j = {}));
                 })(qpp007 = view.qpp007 || (view.qpp007 = {}));

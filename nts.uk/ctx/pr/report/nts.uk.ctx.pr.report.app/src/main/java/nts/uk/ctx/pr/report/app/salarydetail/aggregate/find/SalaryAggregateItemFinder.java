@@ -40,7 +40,7 @@ public class SalaryAggregateItemFinder {
 		// call service find Id
 		Optional<SalaryAggregateItem> optionalSalaryAggregateItem;
 		optionalSalaryAggregateItem = this.salaryAggregateItemRepository.findByCode(companyCode,
-			salaryAggregateItemInDto.getCategoryItem().toString(), salaryAggregateItemInDto.getTaxDivision());
+			salaryAggregateItemInDto.getAggregateItemCode(), salaryAggregateItemInDto.getTaxDivision());
 
 		// value exsit
 		if (optionalSalaryAggregateItem.isPresent()) {
