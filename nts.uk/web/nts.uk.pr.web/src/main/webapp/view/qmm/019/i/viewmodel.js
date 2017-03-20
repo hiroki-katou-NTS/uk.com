@@ -16,8 +16,20 @@ var qmmm019;
                 }
                 ScreenModel.prototype.chooseItem = function () {
                     var self = this;
-                    nts.uk.ui.windows.setShared('selectedCode', self.selectedCode());
-                    nts.uk.ui.windows.close();
+                    var totalNormalLineNumber = Number(nts.uk.ui.windows.getShared('totalNormalLineNumber'));
+                    var totalGrayLineNumber = Number(nts.uk.ui.windows.getShared('totalGrayLineNumber'));
+                    if ((self.selectedCode() === "1" && totalNormalLineNumber === 10)
+                        || (self.selectedCode() === "2" && totalGrayLineNumber === 5)) {
+                        var msg = self.selectedCode() === "1" ? "明細書に印字する行に行を追加できません。" : "明細書に印字しない行に行を追加できません。";
+                        nts.uk.ui.dialog.alert(msg).then(function () {
+                            nts.uk.ui.windows.setShared('selectedCode', undefined);
+                            nts.uk.ui.windows.close();
+                        });
+                    }
+                    else {
+                        nts.uk.ui.windows.setShared('selectedCode', self.selectedCode());
+                        nts.uk.ui.windows.close();
+                    }
                 };
                 ScreenModel.prototype.closeDialog = function () {
                     nts.uk.ui.windows.close();
