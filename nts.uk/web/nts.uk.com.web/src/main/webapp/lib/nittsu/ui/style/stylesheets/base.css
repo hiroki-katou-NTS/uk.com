@@ -2055,7 +2055,7 @@ button.nts-switch-button[disabled]:hover {
 /* line 51, ../sass/components/_dialog.scss */
 .ui-dialog > .ui-dialog-buttonpane button {
   margin: 0 10px;
-  width: 80px;
+  min-width: 80px;
   font-family: "Meiryo UI";
 }
 /* line 58, ../sass/components/_dialog.scss */
