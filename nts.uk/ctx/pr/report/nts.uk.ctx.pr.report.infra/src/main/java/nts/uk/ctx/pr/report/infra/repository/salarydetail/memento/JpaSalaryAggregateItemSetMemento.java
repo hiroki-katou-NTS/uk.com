@@ -96,8 +96,9 @@ public class JpaSalaryAggregateItemSetMemento implements SalaryAggregateItemSetM
 		this.aggerHead.setQlsptPaylstAggreDetailList(subItemCodes.stream().map(item -> {
 			QlsptPaylstAggreDetail detail = new QlsptPaylstAggreDetail();
 			QlsptPaylstAggreDetailPK pk = new QlsptPaylstAggreDetailPK();
-			pk.setAggregateCd(item.getSalaryItemCode());
+			pk.setItemCd(item.getSalaryItemCode());
 			pk.setCcd(this.aggerHead.getQlsptPaylstAggreHeadPK().getCcd());
+			pk.setAggregateCd(this.aggerHead.getQlsptPaylstAggreHeadPK().getAggregateCd());
 			detail.setQlsptPaylstAggreDetailPK(pk);
 			return detail;
 		}).collect(Collectors.toList()));
@@ -131,15 +132,7 @@ public class JpaSalaryAggregateItemSetMemento implements SalaryAggregateItemSetM
 	 */
 	@Override
 	public void setItemCategory(int itemCategory) {
-		this.aggerHead.setQlsptPaylstAggreDetailList(
-			this.aggerHead.getQlsptPaylstAggreDetailList().stream().map(item -> {
-				QlsptPaylstAggreDetail detail = item;
-				QlsptPaylstAggreDetailPK pk = detail.getQlsptPaylstAggreDetailPK();
-				pk.setItemCd(String.valueOf(itemCategory));
-				detail.setQlsptPaylstAggreDetailPK(pk);
-				return detail;
-			}).collect(Collectors.toList()));
-
+		// No thing
 	}
 
 }

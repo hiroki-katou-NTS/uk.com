@@ -77,7 +77,7 @@ public class QlsptPaylstAggreHead implements Serializable {
 	private String aggregateName;
 
 	/** The qlspt paylst aggre detail list. */
-	@OneToMany(cascade = CascadeType.ALL, mappedBy = "qlsptPaylstAggreHead")
+	@OneToMany(cascade = CascadeType.ALL, mappedBy = "qlsptPaylstAggreHead", orphanRemoval = true)
 	private List<QlsptPaylstAggreDetail> qlsptPaylstAggreDetailList;
 
 	/**
@@ -148,8 +148,8 @@ public class QlsptPaylstAggreHead implements Serializable {
 		}
 		QlsptPaylstAggreHead other = (QlsptPaylstAggreHead) object;
 		if ((this.qlsptPaylstAggreHeadPK == null && other.qlsptPaylstAggreHeadPK != null)
-				|| (this.qlsptPaylstAggreHeadPK != null
-						&& !this.qlsptPaylstAggreHeadPK.equals(other.qlsptPaylstAggreHeadPK))) {
+			|| (this.qlsptPaylstAggreHeadPK != null
+				&& !this.qlsptPaylstAggreHeadPK.equals(other.qlsptPaylstAggreHeadPK))) {
 			return false;
 		}
 		return true;
