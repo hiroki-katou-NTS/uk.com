@@ -1,6 +1,5 @@
 package nts.uk.ctx.pr.core.app.command.rule.employment.averagepay;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -13,10 +12,9 @@ import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.core.dom.company.CompanyCode;
-import nts.uk.ctx.pr.core.dom.itemmaster.itemattend.AvePayAtr;
+import nts.uk.ctx.pr.core.dom.itemmaster.AvePayAtr;
 import nts.uk.ctx.pr.core.dom.itemmaster.itemattend.ItemAttend;
 import nts.uk.ctx.pr.core.dom.itemmaster.itemattend.ItemAttendRespository;
-import nts.uk.ctx.pr.core.dom.itemmaster.itemsalary.ApplyFor;
 import nts.uk.ctx.pr.core.dom.itemmaster.itemsalary.ItemSalary;
 import nts.uk.ctx.pr.core.dom.itemmaster.itemsalary.ItemSalaryRespository;
 import nts.uk.ctx.pr.core.dom.rule.employment.averagepay.AttendDayGettingSet;
@@ -65,13 +63,8 @@ public class RegisterAveragePayCommandHandler extends CommandHandler<RegisterAve
 		List<ItemSalary> itemSelectedSalarys = itemSalarys.stream()
 				.filter(x -> command.getSalarySelectedCode().contains(x.getItemCode())).collect(Collectors.toList());
 		itemSelectedSalarys.forEach(x -> {
-			this.itemSalaryRespository.update(new ItemSalary(x.getCompanyCode(), x.getItemCode(), x.getTaxAtr(),
-					x.getSocialInsAtr(), x.getLaborInsAtr(), x.getFixPayAtr(), x.getApplyForAllEmpFlg(),
-					x.getApplyForMonthlyPayEmp(), x.getApplyForDaymonthlyPayEmp(), x.getApplyForDaylyPayEmp(),
-					x.getApplyForHourlyPayEmp(), EnumAdaptor.valueOf(1, ApplyFor.class), x.getErrRangeLowAtr(),
-					x.getErrRangeLow(), x.getErrRangeHighAtr(), x.getErrRangeHigh(), x.getAlRangeLowAtr(),
-					x.getAlRangeLow(), x.getAlRangeHighAtr(), x.getAlRangeHigh(), x.getMemo(), x.getLimitMnyAtr(),
-					x.getLimitMnyRefItemCd(), x.getLimitMny()));
+			x.setAvePayAttribute(AvePayAtr.Object);
+			this.itemSalaryRespository.update(x);
 		});
 		if (command.getAttendDayGettingSet() == 1) {
 			List<ItemAttend> itemAttends = this.itemAttendRespository.findAll(companyCode);
@@ -79,11 +72,8 @@ public class RegisterAveragePayCommandHandler extends CommandHandler<RegisterAve
 					.filter(x -> command.getAttendSelectedCode().contains(x.getItemCode()))
 					.collect(Collectors.toList());
 			itemSelectedAttends.forEach(x -> {
-				this.itemAttendRespository.update(
-						new ItemAttend(x.getCompanyCode(), x.getItemCode(), EnumAdaptor.valueOf(1, AvePayAtr.class),
-								x.getItemAtr(), x.getErrRangeLowAtr(), x.getErrRangeLow(), x.getErrRangeHighAtr(),
-								x.getErrRangeHigh(), x.getAlRangeLowAtr(), x.getAlRangeLow(), x.getAlRangeHighAtr(),
-								x.getAlRangeHigh(), x.getWorkDaysScopeAtr(), x.getMemo()));
+				x.setAvePayAttribute(AvePayAtr.Object);
+				this.itemAttendRespository.update(x);
 			});
 		}
 	}
