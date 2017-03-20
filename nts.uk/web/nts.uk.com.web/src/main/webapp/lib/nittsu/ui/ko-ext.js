@@ -881,7 +881,8 @@ var nts;
                                 setChecked($(this).is(":checked"));
                         }).appendTo(checkBoxLabel);
                         var box = $("<span class='box'></span>").appendTo(checkBoxLabel);
-                        var label = $("<span class='label'></span>").text(checkBoxText).appendTo(checkBoxLabel);
+                        if (checkBoxText && checkBoxText.length > 0)
+                            var label = $("<span class='label'></span>").text(checkBoxText).appendTo(checkBoxLabel);
                         checkBoxLabel.appendTo(container);
                     };
                     /**
@@ -941,7 +942,8 @@ var nts;
                                         }));
                                 }).appendTo(checkBoxLabel);
                                 var box = $("<span class='box'></span>").appendTo(checkBoxLabel);
-                                var label = $("<span class='label'></span>").text(option[optionText]).appendTo(checkBoxLabel);
+                                if (option[optionText] && option[optionText].length > 0)
+                                    var label = $("<span class='label'></span>").text(option[optionText]).appendTo(checkBoxLabel);
                                 checkBoxLabel.appendTo(container);
                             });
                             // Save a clone
@@ -993,7 +995,8 @@ var nts;
                                         selectedValue($(self).data("value"));
                                 }).appendTo(radioBoxLabel);
                                 var box = $("<span class='box'></span>").appendTo(radioBoxLabel);
-                                var label = $("<span class='label'></span>").text(option[optionText]).appendTo(radioBoxLabel);
+                                if (option[optionText] && option[optionText].length > 0)
+                                    var label = $("<span class='label'></span>").text(option[optionText]).appendTo(radioBoxLabel);
                                 radioBoxLabel.appendTo(container);
                             });
                             // Save a clone
@@ -1285,9 +1288,6 @@ var nts;
                                     // fire event change.
                                     document.getElementById(container.attr('id')).dispatchEvent(changeEvent);
                                 },
-                                unselecting: function (event, ui) {
-                                    //                    $(event.target).children('li').not('.ui-selected').children('.ui-selected').removeClass('ui-selected')
-                                },
                                 selecting: function (event, ui) {
                                     if (event.shiftKey) {
                                         if ($(ui.selecting).attr("clicked") !== "true") {
@@ -1375,10 +1375,6 @@ var nts;
                         var originalOptions = container.data("options");
                         var init = container.data("init");
                         var originalSelected = container.data("selected");
-                        // Check selected code.
-                        //            if (!isMultiSelect && options.filter(item => getOptionValue(item) === selectedValue).length == 0) {
-                        //                selectedValue = '';
-                        //            }
                         if (!_.isEqual(originalOptions, options) || init) {
                             if (!init) {
                                 // Remove options.
@@ -1478,12 +1474,12 @@ var nts;
                         }
                         else {
                             if (!enable) {
-                                //                    selectListBoxContainer.selectable("disable");;
+                                //selectListBoxContainer.selectable("disable");;
                                 container.off("click", "li");
                                 container.addClass('disabled');
                             }
                             else {
-                                //                    selectListBoxContainer.selectable("enable");
+                                //selectListBoxContainer.selectable("enable");
                                 if (container.hasClass("disabled")) {
                                     container.on("click", "li", { event: container.data("selectionChange") }, selectOnListBox);
                                     container.removeClass('disabled');

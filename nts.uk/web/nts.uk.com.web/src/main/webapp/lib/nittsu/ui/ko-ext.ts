@@ -872,7 +872,8 @@ module nts.uk.ui.koExtentions {
                     setChecked($(this).is(":checked"));
             }).appendTo(checkBoxLabel);
             var box = $("<span class='box'></span>").appendTo(checkBoxLabel);
-            var label = $("<span class='label'></span>").text(checkBoxText).appendTo(checkBoxLabel);
+            if(checkBoxText && checkBoxText.length > 0)
+                var label = $("<span class='label'></span>").text(checkBoxText).appendTo(checkBoxLabel);
             checkBoxLabel.appendTo(container);
         }
 
@@ -939,7 +940,8 @@ module nts.uk.ui.koExtentions {
                             }));
                     }).appendTo(checkBoxLabel);
                     var box = $("<span class='box'></span>").appendTo(checkBoxLabel);
-                    var label = $("<span class='label'></span>").text(option[optionText]).appendTo(checkBoxLabel);
+                    if (option[optionText] && option[optionText].length > 0)
+                        var label = $("<span class='label'></span>").text(option[optionText]).appendTo(checkBoxLabel);
                     checkBoxLabel.appendTo(container);
                 });
                 // Save a clone
@@ -996,7 +998,8 @@ module nts.uk.ui.koExtentions {
                             selectedValue($(self).data("value"));
                     }).appendTo(radioBoxLabel);
                     var box = $("<span class='box'></span>").appendTo(radioBoxLabel);
-                    var label = $("<span class='label'></span>").text(option[optionText]).appendTo(radioBoxLabel);
+                    if (option[optionText] && option[optionText].length > 0)
+                        var label = $("<span class='label'></span>").text(option[optionText]).appendTo(radioBoxLabel);
                     radioBoxLabel.appendTo(container);
                 });
 
@@ -1250,6 +1253,7 @@ module nts.uk.ui.koExtentions {
             container.data("comboMode", comboMode);
         }
     }
+    
     function selectOnListBox(event) {
         var container = $(event.delegateTarget);
         container.find(".ui-selected").removeClass('ui-selected');
@@ -1266,7 +1270,7 @@ module nts.uk.ui.koExtentions {
          */
         constructor() {
         }
-
+        
         /**
          * Init.
          */
@@ -1286,10 +1290,10 @@ module nts.uk.ui.koExtentions {
             // Container
             var container = $(element);
             container.addClass('ntsListBox ntsControl').data('required', required);
-
             container.data("options", options.slice());
             container.data("init", true);
             container.data("enable", enable);
+            
             // Create select
             container.append('<ol class="nts-list-box"></ol>');
             var selectListBoxContainer = container.find('.nts-list-box');
@@ -1315,9 +1319,6 @@ module nts.uk.ui.koExtentions {
 
                         // fire event change.
                         document.getElementById(container.attr('id')).dispatchEvent(changeEvent);
-                    },
-                    unselecting: function(event, ui) {
-                        //                    $(event.target).children('li').not('.ui-selected').children('.ui-selected').removeClass('ui-selected')
                     },
                     selecting: function(event, ui) {
                         if ((<any>event).shiftKey) {
@@ -1348,11 +1349,11 @@ module nts.uk.ui.koExtentions {
                         }
                     }
                 });
-            } else {
+            }
+            else {
                 container.on("click", "li", { event: changeEvent }, selectOnListBox);
             }
-
-
+            
             // Fire event.
             container.on('selectionChange', (function(e: Event) {
                 // Check is multi-selection.
@@ -1360,9 +1361,8 @@ module nts.uk.ui.koExtentions {
 
                 data.value(itemsSelected);
                 container.data("selected", !isMultiSelect ? itemsSelected : itemsSelected.slice());
-
             }));
-
+            
             container.on('validate', (function(e: Event) {
                 // Check empty value
                 var itemsSelected: any = container.data('value');
@@ -1409,12 +1409,7 @@ module nts.uk.ui.koExtentions {
             var originalOptions = container.data("options");
             var init = container.data("init");
             var originalSelected = container.data("selected");
-
-            // Check selected code.
-            //            if (!isMultiSelect && options.filter(item => getOptionValue(item) === selectedValue).length == 0) {
-            //                selectedValue = '';
-            //            }
-
+            
             if (!_.isEqual(originalOptions, options) || init) {
                 if (!init) {
                     // Remove options.
@@ -1438,6 +1433,8 @@ module nts.uk.ui.koExtentions {
 
                 // Append options.
                 options.forEach((item, idx) => {
+                    
+                    
                     // Check option is Selected
                     var isSelected: boolean = false;
                     if (isMultiSelect) {
@@ -1460,11 +1457,11 @@ module nts.uk.ui.koExtentions {
                         } else {
                             itemTemplate = '<div class="nts-column nts-list-box-column-0">' + item[optionText] + '</div>';
                         }
-
+                        
                         $('<li/>').addClass(selectedClass).attr("data-idx", idx)
                             .html(itemTemplate).data('value', getOptionValue(item))
                             .appendTo(selectListBoxContainer);
-
+                        
                     } else {
                         var targetOption = $(target);
                         if (isSelected) {
@@ -1503,7 +1500,7 @@ module nts.uk.ui.koExtentions {
                 container.data('value', selectedValue);
                 container.trigger('selectionChange');
             }
-
+            
             if (isMultiSelect) {
                 // Check enable
                 if (!enable) {
@@ -1515,11 +1512,11 @@ module nts.uk.ui.koExtentions {
                 }
             } else {
                 if (!enable) {
-                    //                    selectListBoxContainer.selectable("disable");;
+                    //selectListBoxContainer.selectable("disable");;
                     container.off("click", "li");
                     container.addClass('disabled');
                 } else {
-                    //                    selectListBoxContainer.selectable("enable");
+                    //selectListBoxContainer.selectable("enable");
                     if (container.hasClass("disabled")) {
                         container.on("click", "li", { event: container.data("selectionChange") }, selectOnListBox);
                         container.removeClass('disabled');
@@ -1527,7 +1524,7 @@ module nts.uk.ui.koExtentions {
                 }
             }
             container.data("enable", enable);
-
+            
             if (!(selectedValue === undefined || selectedValue === null || selectedValue.length == 0)) {
                 container.trigger('validate');
             }
