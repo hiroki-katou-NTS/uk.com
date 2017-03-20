@@ -5,7 +5,6 @@
 package nts.uk.pr.file.infra.wageledger;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Function;
@@ -21,11 +20,15 @@ import com.aspose.cells.Cell;
 import com.aspose.cells.CellBorderType;
 import com.aspose.cells.Cells;
 import com.aspose.cells.Color;
+import com.aspose.cells.FindOptions;
+import com.aspose.cells.LookInType;
 import com.aspose.cells.PageSetup;
 import com.aspose.cells.Range;
+import com.aspose.cells.SaveFormat;
 import com.aspose.cells.Style;
 import com.aspose.cells.StyleFlag;
 import com.aspose.cells.TextAlignmentType;
+import com.aspose.cells.Workbook;
 import com.aspose.cells.Worksheet;
 
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
@@ -92,7 +95,7 @@ public class AsposeWageLedgerReportGenerator extends AsposeCellsReportGenerator 
 			HeaderReportData headerData = reportData.headerData;
 			
 			// Fill header data.
-			reportContext.getDesigner().setDataSource("HEADER", Arrays.asList(reportData.headerData));
+			this.fillHeaderData(reportContext, headerData);
 			
 			// Fill Salary payment content.
 			this.fillSalaryOrBonusHeaderTable(reportContext, currentRow, headerData.salaryMonthList, "【給与支給】");
@@ -136,11 +139,48 @@ public class AsposeWageLedgerReportGenerator extends AsposeCellsReportGenerator 
 
 			// save as PDF file
 			reportContext.getWorkbook().save("C:\\test.xlsx");
+			Workbook wb = new Workbook("C:\\test.xlsx");
+			wb.save("C:\\test.pdf", SaveFormat.PDF);
 			reportContext.saveAsPdf(this.createNewFile(fileContext, REPORT_FILE_NAME));
 
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
+	}
+	
+	/**
+	 * Fill header data.
+	 *
+	 * @param reportContext the report context
+	 * @param headerData the header data
+	 */
+	private void fillHeaderData(AsposeCellsReportContext reportContext, HeaderReportData headerData) {
+		Worksheet ws = reportContext.getDesigner().getWorkbook().getWorksheets().get(0);
+		String infoPadding = "        ";
+		
+		// Fill Department Label.
+		Cell depLabelCell = this.findCellWithContent(ws, "DepartmentLabel");
+		depLabelCell.setValue("【部門】");
+		
+		// Fill Department info.
+		Cell depInfo = this.findCellWithContent(ws, "DepartmentInfo");
+		depInfo.setValue(headerData.departmentCode + infoPadding + headerData.departmentName);
+		
+		// Fill Employee label.
+		Cell empLabel = this.findCellWithContent(ws, "EmployeeLabel");
+		empLabel.setValue("【社員】");
+		
+		// Fill Employee info.
+		Cell empInfo = this.findCellWithContent(ws, "EmployeeInfo");
+		empInfo.setValue(headerData.employeeCode + infoPadding + headerData.departmentName);
+		
+		// Fill Sex label.
+		Cell sexLabelCell = this.findCellWithContent(ws, "SexLabel");
+		sexLabelCell.setValue("【性別】");
+		
+		// Fill Sex Info.
+		Cell sexInfoCell = this.findCellWithContent(ws, "SexInfo");
+		sexInfoCell.setValue(headerData.sex);
 	}
 	
 	/**
@@ -527,6 +567,24 @@ public class AsposeWageLedgerReportGenerator extends AsposeCellsReportGenerator 
 		fromIndex = Math.max(0, fromIndex);
 		toIndex = Math.min(size, toIndex);
 		return list.subList(fromIndex, toIndex);
+	}
+	
+	/**
+	 * Find cell with content.
+	 *
+	 * @param ws the ws
+	 * @param content the content
+	 * @return the cell
+	 */
+	protected Cell findCellWithContent(Worksheet ws, String content) {
+		// Cell find option.
+		FindOptions findOptions = new FindOptions();
+		findOptions.setLookInType(LookInType.VALUES);
+		findOptions.setCaseSensitive(false);
+		
+		Cell cell = ws.getCells().find(content, null, findOptions);
+		
+		return cell;
 	}
 	
 	
