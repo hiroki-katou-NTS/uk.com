@@ -249,17 +249,6 @@ module nts.uk.ui.koExtentions {
         }
     }
 
-    class NtsDynamicEditorBindingHandler extends NtsEditorBindingHandler {
-
-        init(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
-            new DynamicEditorProcessor().init($(element), valueAccessor());
-        }
-
-        update(element: any, valueAccessor: () => any, allBindingsAccessor: () => any, viewModel: any, bindingContext: KnockoutBindingContext): void {
-            new DynamicEditorProcessor().update($(element), valueAccessor());
-        }
-    }
-
     /**
      * TextEditor
      */
@@ -2631,7 +2620,6 @@ module nts.uk.ui.koExtentions {
     ko.bindingHandlers['ntsWizard'] = new WizardBindingHandler();
     ko.bindingHandlers['ntsFormLabel'] = new NtsFormLabelBindingHandler();
     ko.bindingHandlers['ntsLinkButton'] = new NtsLinkButtonBindingHandler();
-    ko.bindingHandlers['ntsDynamicEditor'] = new NtsDynamicEditorBindingHandler();
     ko.bindingHandlers['ntsTextEditor'] = new NtsTextEditorBindingHandler();
     ko.bindingHandlers['ntsNumberEditor'] = new NtsNumberEditorBindingHandler();
     ko.bindingHandlers['ntsTimeEditor'] = new NtsTimeEditorBindingHandler();

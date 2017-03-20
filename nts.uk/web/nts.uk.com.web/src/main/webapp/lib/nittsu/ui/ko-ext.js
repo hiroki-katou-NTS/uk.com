@@ -245,19 +245,6 @@ var nts;
                     };
                     return NtsEditorBindingHandler;
                 }());
-                var NtsDynamicEditorBindingHandler = (function (_super) {
-                    __extends(NtsDynamicEditorBindingHandler, _super);
-                    function NtsDynamicEditorBindingHandler() {
-                        _super.apply(this, arguments);
-                    }
-                    NtsDynamicEditorBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                        new DynamicEditorProcessor().init($(element), valueAccessor());
-                    };
-                    NtsDynamicEditorBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                        new DynamicEditorProcessor().update($(element), valueAccessor());
-                    };
-                    return NtsDynamicEditorBindingHandler;
-                }(NtsEditorBindingHandler));
                 /**
                  * TextEditor
                  */
@@ -2504,7 +2491,6 @@ var nts;
                 ko.bindingHandlers['ntsWizard'] = new WizardBindingHandler();
                 ko.bindingHandlers['ntsFormLabel'] = new NtsFormLabelBindingHandler();
                 ko.bindingHandlers['ntsLinkButton'] = new NtsLinkButtonBindingHandler();
-                ko.bindingHandlers['ntsDynamicEditor'] = new NtsDynamicEditorBindingHandler();
                 ko.bindingHandlers['ntsTextEditor'] = new NtsTextEditorBindingHandler();
                 ko.bindingHandlers['ntsNumberEditor'] = new NtsNumberEditorBindingHandler();
                 ko.bindingHandlers['ntsTimeEditor'] = new NtsTimeEditorBindingHandler();
