@@ -97,5 +97,12 @@ public class JpaEraRepository extends JpaRepository implements EraRepository {
 	public Optional<Era> getEndDateBefore(GeneralDate endDate) {
 		return this.queryProxy().query(SEL_LATEST_ERA, CmnmtEra.class).setParameter("endDate", endDate).getSingle(c -> toDomain(c));
 	}
+	@Override
+	public Optional<Era> getCurrentEndDate(GeneralDate endDate) {
+		return this.queryProxy().query(SEL_LATEST_ERA, CmnmtEra.class)
+				.setParameter("endDate", endDate)
+				.getSingle(s-> toDomain(s));
+	}
+	
 	
 }

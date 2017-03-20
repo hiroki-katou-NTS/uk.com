@@ -14,30 +14,37 @@ import nts.uk.ctx.basic.dom.system.era.EraRepository;
 
 @RequestScoped
 @Transactional
-public class UpdateEraCommandHandler  extends CommandHandler<UpdateEraCommand>{
+public class UpdateEraCommandHandler extends CommandHandler<UpdateEraCommand> {
 	@Inject
 	private EraRepository eraRepository;
 
 	@Override
 	protected void handle(CommandHandlerContext<UpdateEraCommand> context) {
 		Era era = context.getCommand().toDomain();
-		
+
 		Optional<Era> eraHistUpdate = this.eraRepository.getHistIdUpdate(era.getEraHist());
-		if(!eraHistUpdate.isPresent()){
+		if (!eraHistUpdate.isPresent()) {
 			throw new BusinessException("eeeee");
-		};
-		
+		}
+		;
+
 		Optional<Era> eraBefore = this.eraRepository.getEndDateBefore(eraHistUpdate.get().getStartDate().addDays(-1));
 		eraHistUpdate.get().setStartDate(era.getStartDate());
 		eraHistUpdate.get().setEraName(era.getEraName());
 		eraHistUpdate.get().setEraMark(era.getEraMark());
-		if(eraBefore.isPresent()){
-			eraBefore.get().setEndDate(era.getStartDate().addDays(-1));
-			
-			this.eraRepository.update(eraHistUpdate.get());
-			this.eraRepository.update(eraBefore.get());
+		//Optional<Era> currentEndDate = this.eraRepository.getCurrentEndDate(eraHistUpdate.get().getEndDate());
+		if (eraHistUpdate.get().getStartDate().compareTo(eraBefore.get().getStartDate().addDays(+1)) == 1) {
+			throw new BusinessException("the startDate is invalid");
 		}else{
-			this.eraRepository.update(eraHistUpdate.get());
+			if (eraBefore.isPresent()) {
+				eraBefore.get().setEndDate(era.getStartDate().addDays(-1));
+
+				this.eraRepository.update(eraHistUpdate.get());
+				this.eraRepository.update(eraBefore.get());
+			} else {
+				this.eraRepository.update(eraHistUpdate.get());
+			}
 		}
+		
 	}
 }

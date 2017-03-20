@@ -28,7 +28,7 @@
 		<ui:define name="content">
 			<div id="functions-area" class="cf">
 				<div class="aligntLeft">
-					<button id="A_BTN_001" data-bind="click: refreshLayout">新規</button>
+					<button id="A_BTN_001" data-bind="click: createButtonClick">新規</button>
 					<button id="A_BTN_002" class="proceed" data-bind="click: insertData, enable: $root.errors.isEmpty" >登録</button>
 					<button id="A_BTN_004">マスタ修正ログ</button>
 					<button id="A_BTN_003" class="danger"
@@ -46,28 +46,28 @@
 						width: 280,
 						height: 410,
 						options: items,
-						optionsValue: 'code',
+						optionsValue: 'eraName',
 						columns: columns,
 						multiple: false,
 						value: currentCode
 					}"></table>
 				</div>
-				<div class="nts-right-content">
+				<div class="nts-right-content" data-bind = "with: currentEra">
 					<table class="tableRange">
 						<tr>
 							<td>
 								<div id="A_LBL_002" data-bind="ntsFormLabel: {required: true, constraint: 'EraName' }">元号</div>
 							</td>
 							<td>
-							<input id="A_INP_001"  data-bind="ntsTextEditor: { required: true, value: inputCode, constraint: 'EraName'}, enable: isEnableCode" /> 
+								<input id="A_INP_001"  data-bind="ntsTextEditor: { required: true, value: code, constraint: 'EraName', enable: $parent.isEnableCode}" /> 
 							</td>
 						</tr>
 						<tr>
 							<td>
-								<div id="A_LBL_003" data-bind="ntsFormLabel: { required: true,constraint: 'EraMark' }">記号</div>
+								<div id="A_LBL_003" data-bind="ntsFormLabel: {required: true, constraint: 'EraMark' }">記号</div>
 							</td>
 							<td>
-								<input id="A_INP_002"  data-bind="ntsTextEditor: { required: true, value: inputName, constraint: 'EraMark'}"/>
+								<input id="A_INP_002"  data-bind="ntsTextEditor: { required: true, value: name, constraint: 'EraMark'}"/>
 							</td>
 						</tr>
 						<tr>
@@ -77,7 +77,7 @@
 							<td>
 								<div class="empriseLabel">
 									<div id="A_INP_003"
-										data-bind="ntsDatePicker: {button: true, value: date, dateFormat: 'yyyy/MM/dd D'}"></div>
+										data-bind="ntsDatePicker: {button: true, value: $parent.date, dateFormat: 'yyyy/MM/dd D', startDate: startDate}"></div>
 									<div style="margin-top: 10px;" data-bind="text:dateTime"></div>
 								</div>
 							</td>

@@ -47,5 +47,6 @@ public interface EraRepository {
 	 * @param era
 	 */
 	void delete(String eraHist);
+	Optional<Era> getCurrentEndDate(GeneralDate endDate);
 		
 }
