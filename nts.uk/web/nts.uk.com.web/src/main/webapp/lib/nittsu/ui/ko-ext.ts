@@ -77,77 +77,7 @@ module nts.uk.ui.koExtentions {
             return new validation.NoValidator();
         }
     }
-
-    class DynamicEditorProcessor extends EditorProcessor {
-
-        getValidator(data: any): validation.IValidator {
-            var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
-            var constraint = validation.getConstraint(constraintName);
-            if (data.editortype) {
-                var editortype = ko.unwrap(data.editortype);
-                switch (editortype) {
-
-                    case 'numbereditor':
-                        return NumberEditorProcessor.prototype.getValidator(data);
-                    case 'timeeditor':
-                        return TimeEditorProcessor.prototype.getValidator(data);
-                    case 'multilineeditor':
-                        return MultilineEditorProcessor.prototype.getValidator(data);
-                    default:
-                        return TextEditorProcessor.prototype.getValidator(data);
-                }
-            } else {
-                if (constraint) {
-                    if (constraint.valueType === 'String') {
-                        return TextEditorProcessor.prototype.getValidator(data);
-                    } else if (data.option) {
-                        var option = ko.unwrap(data.option);
-                        //If inputFormat presented, this is Date or Time Editor
-                        if (option.inputFormat) {
-                            return TimeEditorProcessor.prototype.getValidator(data);
-                        } else {
-                            return NumberEditorProcessor.prototype.getValidator(data);
-                        }
-                    }
-                }
-                return validation.createValidator(constraintName);
-            }
-        }
-
-        getFormatter(data: any): format.IFormatter {
-            var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
-            var constraint = validation.getConstraint(constraintName);
-            if (data.editortype) {
-                var editortype = ko.unwrap(data.editortype);
-                switch (editortype) {
-                    case 'numbereditor':
-                        return NumberEditorProcessor.prototype.getFormatter(data);
-                    case 'timeeditor':
-                        return TimeEditorProcessor.prototype.getFormatter(data);
-                    case 'multilineeditor':
-                        return MultilineEditorProcessor.prototype.getFormatter(data);
-                    default:
-                        return TextEditorProcessor.prototype.getFormatter(data);
-                }
-            } else {
-                if (constraint) {
-                    if (constraint.valueType === 'String') {
-                        return TextEditorProcessor.prototype.getFormatter(data);
-                    } else if (data.option) {
-                        var option = ko.unwrap(data.option);
-                        //If inputFormat presented, this is Date or Time Editor
-                        if (option.inputFormat) {
-                            return TimeEditorProcessor.prototype.getFormatter(data);
-                        } else {
-                            return NumberEditorProcessor.prototype.getFormatter(data);
-                        }
-                    }
-                }
-                return new format.NoFormatter();
-            }
-        }
-    }
-
+    
     class TextEditorProcessor extends EditorProcessor {
 
         update($input: JQuery, data: any) {
