@@ -11,7 +11,7 @@ import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
 import nts.arc.time.YearMonth;
-import nts.gul.collection.ListUtil;
+import nts.gul.collection.CollectionUtil;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.base.simplehistory.SimpleHistoryRepository;
@@ -46,12 +46,13 @@ public class UnitPriceHistoryServiceImpl extends UnitPriceHistoryService {
 	public void deleteHistory(String uuid) {
 		UnitPriceHistory history = this.unitPriceHistoryRepo.findHistoryByUuid(uuid).get();
 		List<UnitPriceHistory> unitPriceHistoryList = this.unitPriceHistoryRepo
-				.findAllHistoryByMasterCode(AppContexts.user().companyCode(), history.getMasterCode().v());
+				.findAllHistoryByMasterCode(AppContexts.user().companyCode(),
+						history.getMasterCode().v());
 
 		super.deleteHistory(uuid);
 
 		// Remove unit price.
-		if (!ListUtil.isEmpty(unitPriceHistoryList) && unitPriceHistoryList.size() == 1) {
+		if (!CollectionUtil.isEmpty(unitPriceHistoryList) && unitPriceHistoryList.size() == 1) {
 			this.unitPriceRepo.remove(history.getCompanyCode(), history.getUnitPriceCode());
 		}
 	}
@@ -64,7 +65,8 @@ public class UnitPriceHistoryServiceImpl extends UnitPriceHistoryService {
 	 * employment.unitprice.UnitPriceHistory)
 	 */
 	public void validateRequiredItem(UnitPriceHistory history) {
-		if (history.getUnitPriceCode() == null || StringUtil.isNullOrEmpty(history.getUnitPriceCode().v(), true)
+		if (history.getUnitPriceCode() == null
+				|| StringUtil.isNullOrEmpty(history.getUnitPriceCode().v(), true)
 				|| history.getApplyRange() == null || history.getBudget() == null) {
 			throw new BusinessException("ER001");
 		}
@@ -79,7 +81,8 @@ public class UnitPriceHistoryServiceImpl extends UnitPriceHistoryService {
 	 */
 	public void validateDateRange(UnitPriceHistory unitPriceHistory) {
 		if (unitPriceHistoryRepo.isInvalidDateRange(unitPriceHistory.getCompanyCode(),
-				unitPriceHistory.getUnitPriceCode(), unitPriceHistory.getApplyRange().getStartMonth())) {
+				unitPriceHistory.getUnitPriceCode(),
+				unitPriceHistory.getApplyRange().getStartMonth())) {
 			// History after start date and time exists
 			throw new BusinessException("ER010");
 		}
@@ -117,8 +120,9 @@ public class UnitPriceHistoryServiceImpl extends UnitPriceHistoryService {
 	 * createInitalHistory(java.lang.String, java.lang.String)
 	 */
 	@Override
-	public UnitPriceHistory createInitalHistory(String companyCode, String masterCode, YearMonth startYearMonth) {
-		return UnitPriceHistory.createWithIntial(new CompanyCode(companyCode), new UnitPriceCode(masterCode),
-				startYearMonth);
+	public UnitPriceHistory createInitalHistory(String companyCode, String masterCode,
+			YearMonth startYearMonth) {
+		return UnitPriceHistory.createWithIntial(new CompanyCode(companyCode),
+				new UnitPriceCode(masterCode), startYearMonth);
 	}
 }

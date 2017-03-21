@@ -18,7 +18,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.gul.collection.ListUtil;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.pr.core.dom.wagetable.history.WtHistory;
 import nts.uk.ctx.pr.core.dom.wagetable.history.WtHistoryRepository;
 import nts.uk.ctx.pr.core.infra.entity.wagetable.history.QwtmtWagetableHist;
@@ -29,8 +29,7 @@ import nts.uk.ctx.pr.core.infra.entity.wagetable.history.QwtmtWagetableHist_;
  * The Class JpaWageTableHistoryRepository.
  */
 @Stateless
-public class JpaWtHistoryRepository extends JpaRepository
-		implements WtHistoryRepository {
+public class JpaWtHistoryRepository extends JpaRepository implements WtHistoryRepository {
 
 	/*
 	 * (non-Javadoc)
@@ -131,7 +130,7 @@ public class JpaWtHistoryRepository extends JpaRepository
 		List<QwtmtWagetableHist> result = em.createQuery(cq).getResultList();
 
 		// Check empty.
-		if (ListUtil.isEmpty(result)) {
+		if (CollectionUtil.isEmpty(result)) {
 			return Optional.empty();
 		}
 
@@ -176,8 +175,7 @@ public class JpaWtHistoryRepository extends JpaRepository
 	 *            the wage table code
 	 * @return the optional
 	 */
-	private Optional<WtHistory> findByIndex(int index, String companyCode,
-			String wageTableCode) {
+	private Optional<WtHistory> findByIndex(int index, String companyCode, String wageTableCode) {
 		// Get entity manager
 		EntityManager em = this.getEntityManager();
 
@@ -201,13 +199,12 @@ public class JpaWtHistoryRepository extends JpaRepository
 		List<QwtmtWagetableHist> result = em.createQuery(cq).getResultList();
 
 		// Check empty.
-		if (ListUtil.isEmpty(result)) {
+		if (CollectionUtil.isEmpty(result)) {
 			return Optional.empty();
 		}
 
 		// Return
-		return Optional
-				.of(new WtHistory(new JpaWtHistoryGetMemento(result.get(index))));
+		return Optional.of(new WtHistory(new JpaWtHistoryGetMemento(result.get(index))));
 	}
 
 	/*
@@ -251,8 +248,7 @@ public class JpaWtHistoryRepository extends JpaRepository
 	 * findAllHistoryByMasterCode(java.lang.String, java.lang.String)
 	 */
 	@Override
-	public List<WtHistory> findAllHistoryByMasterCode(String companyCode,
-			String masterCode) {
+	public List<WtHistory> findAllHistoryByMasterCode(String companyCode, String masterCode) {
 		// Get entity manager
 		EntityManager em = this.getEntityManager();
 

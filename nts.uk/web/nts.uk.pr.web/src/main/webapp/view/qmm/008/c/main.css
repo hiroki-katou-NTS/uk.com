@@ -1,7 +1,3 @@
-.health-input {
-	width: 100px;
-	border-radius: 4px;
-}
 
 .empty-col {
 	width: 170px;
@@ -108,9 +104,15 @@ th, td {
 .tbl_health_child{
 	width: 100px;	
 }
-#health_panel{
-	width: 1200px;
+.contents-area{
+	width: 1300px;
 }
-#pension_panel{
-	width: 1200px;
+#pension_rate_table{
+	width: 760px;
+}
+#pension_round{
+	width: 760px;
+}
+#pension_fund_rate_table{
+	width: 760px;
 }
