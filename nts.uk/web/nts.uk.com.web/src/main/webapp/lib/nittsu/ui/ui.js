@@ -237,6 +237,7 @@ var nts;
                         .append($control)
                         .appendTo('body')
                         .dialog({
+                        dialogClass: "no-close",
                         width: 'auto',
                         modal: true,
                         closeOnEscape: false,
@@ -311,19 +312,22 @@ var nts;
                     var handleNo = $.noop;
                     var handleCancel = $.noop;
                     var handleThen = $.noop;
+                    var hasNoButton = true;
                     var hasCancelButton = false;
                     var handlers = {
                         ifYes: function (handler) {
                             handleYes = handler;
                             return handlers;
                         },
-                        ifNo: function (handler) {
-                            handleNo = handler;
-                            return handlers;
-                        },
                         ifCancel: function (handler) {
+                            hasNoButton = false;
                             hasCancelButton = true;
                             handleCancel = handler;
+                            return handlers;
+                        },
+                        ifNo: function (handler) {
+                            hasNoButton = true;
+                            handleNo = handler;
                             return handlers;
                         },
                         then: function (handler) {
@@ -344,19 +348,21 @@ var nts;
                             }
                         });
                         // no button
-                        buttons.push({
-                            text: "いいえ",
-                            "class": "no large",
-                            click: function () {
-                                $this.dialog('close');
-                                handleNo();
-                                handleThen();
-                            }
-                        });
+                        if (hasNoButton) {
+                            buttons.push({
+                                text: "いいえ",
+                                "class": "no large",
+                                click: function () {
+                                    $this.dialog('close');
+                                    handleNo();
+                                    handleThen();
+                                }
+                            });
+                        }
                         // cancel button
                         if (hasCancelButton) {
                             buttons.push({
-                                text: "Cancel",
+                                text: "キャンセル",
                                 "class": "cancel large",
                                 click: function () {
                                     $this.dialog('close');
