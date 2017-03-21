@@ -1,4 +1,5 @@
 /******************************************************************
+
  * Copyright (c) 2016 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
@@ -12,7 +13,7 @@ import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
 import nts.arc.time.YearMonth;
-import nts.gul.collection.ListUtil;
+import nts.gul.collection.CollectionUtil;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.base.simplehistory.SimpleHistoryRepository;
@@ -59,8 +60,8 @@ public class PensionRateServiceImpl extends PensionRateService {
 	public void validateRequiredItem(PensionRate rate) {
 		if (rate.getOfficeCode() == null || StringUtil.isNullOrEmpty(rate.getOfficeCode().v(), true)
 				|| rate.getApplyRange() == null || rate.getMaxAmount() == null
-				|| rate.getChildContributionRate() == null || ListUtil.isEmpty(rate.getFundRateItems())
-				|| rate.getFundRateItems().size() != FUND_RATE_ITEM_COUNT || ListUtil.isEmpty(rate.getRoundingMethods())
+				|| rate.getChildContributionRate() == null || CollectionUtil.isEmpty(rate.getFundRateItems())
+				|| rate.getFundRateItems().size() != FUND_RATE_ITEM_COUNT || CollectionUtil.isEmpty(rate.getRoundingMethods())
 				|| rate.getRoundingMethods().size() != ROUNDING_METHOD_COUNT) {
 			throw new BusinessException("ER001");
 		}

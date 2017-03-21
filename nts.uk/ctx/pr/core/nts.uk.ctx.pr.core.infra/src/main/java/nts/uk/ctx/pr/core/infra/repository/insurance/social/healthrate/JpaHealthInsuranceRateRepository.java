@@ -17,7 +17,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.gul.collection.ListUtil;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.HealthInsuranceRate;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.HealthInsuranceRateRepository;
 import nts.uk.ctx.pr.core.infra.entity.insurance.social.healthrate.QismtHealthInsuRate;
@@ -91,7 +91,7 @@ public class JpaHealthInsuranceRateRepository extends JpaRepository implements H
 		cq.where(predicateList.toArray(new Predicate[] {}));
 		List<QismtHealthInsuRate> result = em.createQuery(cq).getResultList();
 		// If have no record.
-		if (!ListUtil.isEmpty(result)) {
+		if (!CollectionUtil.isEmpty(result)) {
 			QismtHealthInsuRate entity = new QismtHealthInsuRate();
 			entity = result.get(0);
 			em.remove(entity);

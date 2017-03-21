@@ -18,7 +18,7 @@ import javax.persistence.criteria.Root;
 
 import nts.arc.error.BusinessException;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.gul.collection.ListUtil;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionRate;
 import nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionRateRepository;
@@ -95,7 +95,7 @@ public class JpaPensionRateRepository extends JpaRepository implements PensionRa
 		cq.where(predicateList.toArray(new Predicate[] {}));
 		List<QismtPensionRate> result = em.createQuery(cq).getResultList();
 		// If have no record.
-		if (!ListUtil.isEmpty(result)) {
+		if (!CollectionUtil.isEmpty(result)) {
 			QismtPensionRate entity = new QismtPensionRate();
 			entity = result.get(0);
 			em.remove(entity);

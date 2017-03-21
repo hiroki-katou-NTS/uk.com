@@ -12,7 +12,7 @@ import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
 import nts.arc.time.YearMonth;
-import nts.gul.collection.ListUtil;
+import nts.gul.collection.CollectionUtil;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.base.simplehistory.SimpleHistoryRepository;
@@ -59,9 +59,9 @@ public class HealthInsuranceRateServiceImpl extends HealthInsuranceRateService {
 	@Override
 	public void validateRequiredItem(HealthInsuranceRate rate) {
 		if (StringUtil.isNullOrEmpty(rate.getOfficeCode().v(), true) || rate.getApplyRange() == null
-				|| rate.getMaxAmount() == null || ListUtil.isEmpty(rate.getRateItems())
+				|| rate.getMaxAmount() == null || CollectionUtil.isEmpty(rate.getRateItems())
 				|| rate.getRateItems().size() != INSURANCE_RATE_ITEM_COUNT
-				|| ListUtil.isEmpty(rate.getRoundingMethods())
+				|| CollectionUtil.isEmpty(rate.getRoundingMethods())
 				|| rate.getRoundingMethods().size() != HEALTH_INSURANCE_ROUNDING_COUNT) {
 			throw new BusinessException("ER001");
 		}
