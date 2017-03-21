@@ -87,18 +87,18 @@
 								<span>給与の項目を</span>
 								<div id="combo-box" data-bind="ntsComboBox: {
 															options: ko.observableArray([
-												                { code: 0, name: '足した後' },
-												                { code: 1, name: '足す前' }
+												                { code: 0, name: '足す前' },
+												                { code: 1, name: '足した後' }
 												            ]),
 															optionsValue: 'code',
 															value: averagePay().roundDigitSet,
 															optionsText: 'name',
-															enable: true }"></div>
+															enable: averagePay().attendDayGettingSet }"></div>
 								<span>に日数端数処理</span>
 							</div>
 							<div class="valign-center control-group sub">
 								<span>対象労働日数項目</span>
-								<button class="short-button" data-bind="click: function () { openSubWindow(1); }">設定</button>
+								<button class="short-button" data-bind="click: function () { openSubWindow(1); }, enable: averagePay().attendDayGettingSet">設定</button>
 								<span id="item-inp" data-bind="with: texteditor2">
 									<input id="inp-1" data-name="対象労働日数項目" data-bind="ntsTextEditor: {
 										value: value,

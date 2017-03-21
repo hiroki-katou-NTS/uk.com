@@ -78,11 +78,17 @@ module qmm018.a.viewmodel {
             var self = this;
             var dfd = $.Deferred();
             let selectedCodeList1 = [];
-            if(self.selectedItemList1().length){self.selectedItemList1().forEach(function(item){selectedCodeList1.push(item.code);});}else{$("#inp-3").ntsError('set', 'ER007');}
+            if (self.selectedItemList1().length) {
+                self.selectedItemList1().forEach(function(item) { selectedCodeList1.push(item.code); });
+            } else { $("#inp-3").ntsError('set', 'ER007'); }
             let selectedCodeList2 = [];
-            if(self.selectedItemList2().length){self.selectedItemList2().forEach(function(item){selectedCodeList2.push(item.code);});}else{$("#inp-1").ntsError('set', 'ER007');}
-            if(self.averagePay().exceptionPayRate()==null) {$("#inp-2").ntsError('set', 'ER007');}
-            if(nts.uk.ui._viewModel.errors.isEmpty()){
+            if (self.averagePay().attendDayGettingSet()) {
+                if (self.selectedItemList2().length) {
+                    self.selectedItemList2().forEach(function(item) { selectedCodeList2.push(item.code); });
+                } else { $("#inp-1").ntsError('set', 'ER007'); }
+            }
+            if (self.averagePay().exceptionPayRate() == null) { $("#inp-2").ntsError('set', 'ER001'); }
+            if (!nts.uk.ui._viewModel.errors.isEmpty()) {
                 let command = {
                     attendDayGettingSet: self.averagePay().attendDayGettingSet(),
                     exceptionPayRate: self.averagePay().exceptionPayRate(),
@@ -93,18 +99,14 @@ module qmm018.a.viewmodel {
                 };
                 if (isUpdate) {
                     qmm018.a.service.averagePayItemUpdate(command).done(function(data) {
-                        nts.uk.ui.dialog.alert("Update Success");
                         dfd.resolve();
                     }).fail(function(res) {
-                        nts.uk.ui.dialog.alert("Update Fail");
                         dfd.reject();
                     });
                 } else {
                     qmm018.a.service.averagePayItemInsert(command).done(function(data) {
-                        nts.uk.ui.dialog.alert("Register Success");
                         dfd.resolve();
                     }).fail(function(res) {
-                        nts.uk.ui.dialog.alert("Register Fail");
                         dfd.reject();
                     });
                 }
@@ -120,7 +122,7 @@ module qmm018.a.viewmodel {
                 nts.uk.ui.windows.setShared('selectedItemList', self.selectedItemList2());
                 nts.uk.ui.windows.setShared('categoryAtr', 2);
             }
-            nts.uk.ui.windows.sub.modal("/view/qmm/018/b/index.xhtml", { title: "労働日数項目一覧", dialogClass: "no-close" }).onClosed(function() {
+            nts.uk.ui.windows.sub.modal("/view/qmm/018/b/index.xhtml", { title: "対象項目の選択", dialogClass: "no-close" }).onClosed(function() {
                 let selectedList: Array<ItemModel> = nts.uk.ui.windows.getShared('selectedItemList'); // Get selected form B screen, n = 0: ItemSalary, n = 2: ItemAttend
                 let unSelectedList: Array<ItemModel> = nts.uk.ui.windows.getShared('unSelectedItemList'); // Get unselected form B screen, n = 0: ItemSalary, n = 2: ItemAttend
                 if (!n) {

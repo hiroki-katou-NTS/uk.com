@@ -25,7 +25,7 @@ module qmm018.b.viewmodel {
                     });
                     self.currentCodeListSwap.subscribe(function(value){
                         self.unselectedCodeListSwap(_.difference(self.items(),self.currentCodeListSwap()));
-                        if(!value.length) $("#label-span").ntsError('set', 'ER010');
+                        if(!value.length) $("#label-span").ntsError('set', 'ER007');
                         else $("#label-span").ntsError('clear');    
                     });
                 }

@@ -97,16 +97,18 @@ var qmm018;
                         $("#inp-3").ntsError('set', 'ER007');
                     }
                     var selectedCodeList2 = [];
-                    if (self.selectedItemList2().length) {
-                        self.selectedItemList2().forEach(function (item) { selectedCodeList2.push(item.code); });
-                    }
-                    else {
-                        $("#inp-1").ntsError('set', 'ER007');
+                    if (self.averagePay().attendDayGettingSet()) {
+                        if (self.selectedItemList2().length) {
+                            self.selectedItemList2().forEach(function (item) { selectedCodeList2.push(item.code); });
+                        }
+                        else {
+                            $("#inp-1").ntsError('set', 'ER007');
+                        }
                     }
                     if (self.averagePay().exceptionPayRate() == null) {
-                        $("#inp-2").ntsError('set', 'ER007');
+                        $("#inp-2").ntsError('set', 'ER001');
                     }
-                    if (nts.uk.ui._viewModel.errors.isEmpty()) {
+                    if (!nts.uk.ui._viewModel.errors.isEmpty()) {
                         var command = {
                             attendDayGettingSet: self.averagePay().attendDayGettingSet(),
                             exceptionPayRate: self.averagePay().exceptionPayRate(),
@@ -117,19 +119,15 @@ var qmm018;
                         };
                         if (isUpdate) {
                             qmm018.a.service.averagePayItemUpdate(command).done(function (data) {
-                                nts.uk.ui.dialog.alert("Update Success");
                                 dfd.resolve();
                             }).fail(function (res) {
-                                nts.uk.ui.dialog.alert("Update Fail");
                                 dfd.reject();
                             });
                         }
                         else {
                             qmm018.a.service.averagePayItemInsert(command).done(function (data) {
-                                nts.uk.ui.dialog.alert("Register Success");
                                 dfd.resolve();
                             }).fail(function (res) {
-                                nts.uk.ui.dialog.alert("Register Fail");
                                 dfd.reject();
                             });
                         }
@@ -146,7 +144,7 @@ var qmm018;
                         nts.uk.ui.windows.setShared('selectedItemList', self.selectedItemList2());
                         nts.uk.ui.windows.setShared('categoryAtr', 2);
                     }
-                    nts.uk.ui.windows.sub.modal("/view/qmm/018/b/index.xhtml", { title: "労働日数項目一覧", dialogClass: "no-close" }).onClosed(function () {
+                    nts.uk.ui.windows.sub.modal("/view/qmm/018/b/index.xhtml", { title: "対象項目の選択", dialogClass: "no-close" }).onClosed(function () {
                         var selectedList = nts.uk.ui.windows.getShared('selectedItemList'); // Get selected form B screen, n = 0: ItemSalary, n = 2: ItemAttend
                         var unSelectedList = nts.uk.ui.windows.getShared('unSelectedItemList'); // Get unselected form B screen, n = 0: ItemSalary, n = 2: ItemAttend
                         if (!n) {
