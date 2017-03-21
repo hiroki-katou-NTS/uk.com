@@ -29,7 +29,7 @@ public interface ItemMasterRepository {
 	 * @return
 	 */
 	List<ItemMaster> findAll(String companyCode, int categoryAtr, List<String> itemCode);
-	
+
 	/**
 	 * Find all item by
 	 * 
@@ -66,15 +66,13 @@ public interface ItemMasterRepository {
 	 * @return
 	 */
 	List<ItemMaster> findAll(String companyCode, int categoryAtr, List<String> itemCode, int fixAtr);
-	
+
 	/**
 	 * @param companyCode
 	 * @return
 	 */
 	List<ItemMaster> findAllNoAvePayAtr(String companyCode);
-	
-	
-	
+
 	List<ItemMaster> findAll_SEL_3(String companyCode, int ctgAtr);
 
 	/**
@@ -83,10 +81,15 @@ public interface ItemMasterRepository {
 	 * @param itemCode
 	 */
 	void remove(String companyCode, int categoryAtr, String itemCode);
-	
-	
+
 	/**
-	 * @param itemMaster: Object need Add New.
+	 * @param itemMaster:
+	 *            Object need Add New.
 	 */
 	void add(ItemMaster itemMaster);
+
+	/**
+	 * @param itemMaster:
+	 *            Object need Add New.
+	 */
 }

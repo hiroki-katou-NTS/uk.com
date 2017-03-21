@@ -6,4 +6,8 @@ public interface ItemDeductRespository {
 
 	Optional<ItemDeduct> find(String companyCode, String itemCode);
 
+	void add(ItemDeduct itemDeduct);
+
+	void delete(String companyCode, String itemCode);
+
 }

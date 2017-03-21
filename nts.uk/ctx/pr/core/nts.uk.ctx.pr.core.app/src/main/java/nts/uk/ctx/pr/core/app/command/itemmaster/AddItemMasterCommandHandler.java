@@ -8,6 +8,9 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.core.dom.company.CompanyCode;
+import nts.uk.ctx.pr.core.app.command.itemmaster.itemattend.AddItemAttendCommandHandler;
+import nts.uk.ctx.pr.core.app.command.itemmaster.itemdeduct.AddItemDeductCommandHandler;
+import nts.uk.ctx.pr.core.app.command.itemmaster.itemsalary.AddItemSalaryCommandHandler;
 import nts.uk.ctx.pr.core.dom.enums.CategoryAtr;
 import nts.uk.ctx.pr.core.dom.enums.DisplayAtr;
 import nts.uk.ctx.pr.core.dom.itemmaster.ItemCode;
@@ -23,16 +26,18 @@ import nts.uk.shr.com.context.AppContexts;
 public class AddItemMasterCommandHandler extends CommandHandler<AddItemMasterCommand> {
 	@Inject
 	private ItemMasterRepository itemMasterRepository;
+	@Inject
+	private AddItemSalaryCommandHandler salaryHandler;
+	@Inject
+	private AddItemDeductCommandHandler deductHandler;
+	@Inject
+	private AddItemAttendCommandHandler attendHandler;
 
-	@Override
 	protected void handle(CommandHandlerContext<AddItemMasterCommand> context) {
 
-		ItemMaster itemMaster = new ItemMaster(
-				new CompanyCode(AppContexts.user().companyCode()),
-				new ItemCode(context.getCommand().getItemCode()), 
-				new ItemName(context.getCommand().getItemName()),
-				new ItemName(context.getCommand().getItemAbName()), 
-				new ItemName(context.getCommand().getItemAbNameE()),
+		ItemMaster itemMaster = new ItemMaster(new CompanyCode(AppContexts.user().companyCode()),
+				new ItemCode(context.getCommand().getItemCode()), new ItemName(context.getCommand().getItemName()),
+				new ItemName(context.getCommand().getItemAbName()), new ItemName(context.getCommand().getItemAbNameE()),
 				new ItemName(context.getCommand().getItemAbNameO()),
 				EnumAdaptor.valueOf(context.getCommand().getCategoryAtr(), CategoryAtr.class),
 				context.getCommand().getFixAtr(),
@@ -40,8 +45,24 @@ public class AddItemMasterCommandHandler extends CommandHandler<AddItemMasterCom
 				new UniteCode(context.getCommand().getUniteCode()),
 				EnumAdaptor.valueOf(context.getCommand().getZeroDisplaySet(), DisplayAtr.class),
 				EnumAdaptor.valueOf(context.getCommand().getItemDisplayAtr(), ItemDisplayAtr.class));
+		int CategoryAtr = context.getCommand().getCategoryAtr();
 		// TODO Auto-generated method stub
 		itemMasterRepository.add(itemMaster);
+
+		itemMaster.getItemCode();
+		if (CategoryAtr == 0) {
+			context.getCommand().getItemSalary().setItemCd(itemMaster.getItemCode().v());
+			salaryHandler.handle(context.getCommand().getItemSalary());
+		}
+		if (CategoryAtr == 1) {
+			context.getCommand().getItemDeduct().setItemCd(itemMaster.getItemCode().v());
+			deductHandler.handle(context.getCommand().getItemDeduct());
+		}
+		if (CategoryAtr == 2) {
+			context.getCommand().getItemAttend().setItemCd(itemMaster.getItemCode().v());
+			attendHandler.handle(context.getCommand().getItemAttend());
+		}
+
 	}
 
 }

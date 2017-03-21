@@ -7,6 +7,7 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.pr.core.app.command.itemmaster.itemdeduct.AddItemDeductCommandHandler;
 import nts.uk.ctx.pr.core.app.find.itemmaster.dto.itemdeduct.ItemDeductDto;
 import nts.uk.ctx.pr.core.app.find.itemmaster.itemdeduct.ItemDeductFinder;
 
@@ -15,6 +16,8 @@ import nts.uk.ctx.pr.core.app.find.itemmaster.itemdeduct.ItemDeductFinder;
 public class ItemDeductWebService extends WebService {
 	@Inject
 	ItemDeductFinder itemDeductFinder;
+	@Inject
+	AddItemDeductCommandHandler  addItemDeductCommandHandler;
 
 	@POST
 	@Path("find/{itemCode}")

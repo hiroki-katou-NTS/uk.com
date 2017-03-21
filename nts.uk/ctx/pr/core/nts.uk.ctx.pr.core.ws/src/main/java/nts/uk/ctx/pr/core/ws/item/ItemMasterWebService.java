@@ -58,7 +58,7 @@ public class ItemMasterWebService extends WebService {
 
 	@POST
 	@Path("delete")
-	public void add(DeleteItemMasterCommand command) {
+	public void delete(DeleteItemMasterCommand command) {
 		this.deleteHandler.handle(command);
 	}
 

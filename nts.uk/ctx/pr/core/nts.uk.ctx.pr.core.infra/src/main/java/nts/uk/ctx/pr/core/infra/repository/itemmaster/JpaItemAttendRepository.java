@@ -37,7 +37,7 @@ public class JpaItemAttendRepository extends JpaRepository implements ItemAttend
 	
 	private ItemAttend toDomain(QcamtItemAttend entity) {
 
-		val domain = ItemAttend.createFromJavaType(entity.qcamtItemAttendPK.ccd, entity.avePayAtr, entity.itemAtr, entity.errRangeLowAtr,
+		val domain = ItemAttend.createFromJavaType(entity.qcamtItemAttendPK.ccd, entity.qcamtItemAttendPK.itemCd, entity.avePayAtr, entity.itemAtr, entity.errRangeLowAtr,
 				entity.errRangeLow, entity.errRangeHighAtr, entity.errRangeHigh, entity.alRangeLowAtr,
 				entity.alRangeLow, entity.alRangeHighAtr, entity.alRangeHigh, entity.workDaysScopeAtr, entity.memo);
 		// TODO Auto-generated method stub
@@ -65,5 +65,17 @@ public class JpaItemAttendRepository extends JpaRepository implements ItemAttend
 				domain.getAlRangeHigh().v(), 
 				domain.getWorkDaysScopeAtr().value, 
 				domain.getMemo().v());
+	}
+
+	@Override
+	public void add(ItemAttend itemAttend) {
+		this.commandProxy().insert(toEntity(itemAttend));
+		
+	}
+
+	@Override
+	public void delete(String companyCode, String itemCode) {
+		this.commandProxy().remove(QcamtItemAttend.class, new QcamtItemAttendPK(companyCode, itemCode));
+		
 	}
 }
