@@ -17,7 +17,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.gul.collection.ListUtil;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.pr.report.app.wageledger.find.WageLedgerSettingRepository;
 import nts.uk.ctx.pr.report.app.wageledger.find.dto.HeaderSettingDto;
 import nts.uk.ctx.pr.report.dom.company.CompanyCode;
@@ -63,7 +63,7 @@ public class JpaWageLedgerSettingRepository extends JpaRepository implements Wag
 		List<Object[]> resultList = (List<Object[]>) em.createQuery(cq).getResultList();
 		
 		// Return.
-		if (ListUtil.isEmpty(resultList)) {
+		if (CollectionUtil.isEmpty(resultList)) {
 			return new ArrayList<>();
 		}
 		return resultList.stream().map(res -> {
@@ -111,7 +111,7 @@ public class JpaWageLedgerSettingRepository extends JpaRepository implements Wag
 		List<Object[]> resultList = (List<Object[]>) em.createQuery(cq).getResultList();
 		
 		// Return.
-		if (ListUtil.isEmpty(resultList)) {
+		if (CollectionUtil.isEmpty(resultList)) {
 			return new ArrayList<>();
 		}
 		return resultList.stream().map(res -> {

@@ -382,6 +382,11 @@ module nts.uk.pr.view.qmm008.c {
                     var returnValue = nts.uk.ui.windows.getShared("listOfficeOfChildValue");
                 });
             }
+            
+            //jump back to health
+            public goToHealth() {
+                nts.uk.request.jump("/view/qmm/008/b/index.xhtml");
+            }
         }
 
         export class PensionRateModel {

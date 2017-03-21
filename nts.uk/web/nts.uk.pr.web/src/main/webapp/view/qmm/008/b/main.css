@@ -1,22 +1,9 @@
-.health-input {
-	width: 100px;
-	border-radius: 4px;
-}
-
 .empty-col {
 	width: 170px;
 }
 
 .health_empty_col {
 	width: 70px;
-}
-
-.select_round {
-	width: 175px;
-}
-
-.tbl_pension_rate {
-	width: 170px;
 }
 
 .tbl_health_insurance_rate {
@@ -108,9 +95,12 @@ th, td {
 .tbl_health_child{
 	width: 100px;	
 }
-#health_panel{
-	width: 1200px;
+.contents-area{
+	width: 1300px;
 }
-#pension_panel{
-	width: 1200px;
+#health_insurance_rate_table{
+	width: 760px;	
+}
+#health_insurance_round{
+	width: 760px;	
 }

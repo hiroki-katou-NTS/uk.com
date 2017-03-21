@@ -11,7 +11,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
-import nts.gul.collection.ListUtil;
+import nts.gul.collection.CollectionUtil;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.Certification;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.CertificationReponsitory;
@@ -42,8 +42,10 @@ public class CertifyGroupServiceImpl implements CertifyGroupService {
 	 */
 	@Override
 	public void validateRequiredItem(CertifyGroup certifyGroup) {
-		if (certifyGroup.getCode() == null || StringUtil.isNullOrEmpty(certifyGroup.getCode().v(), true)
-			|| certifyGroup.getName() == null || StringUtil.isNullOrEmpty(certifyGroup.getName().v(), true)) {
+		if (certifyGroup.getCode() == null
+				|| StringUtil.isNullOrEmpty(certifyGroup.getCode().v(), true)
+				|| certifyGroup.getName() == null
+				|| StringUtil.isNullOrEmpty(certifyGroup.getName().v(), true)) {
 			throw new BusinessException("ER001");
 		}
 
@@ -59,7 +61,7 @@ public class CertifyGroupServiceImpl implements CertifyGroupService {
 	@Override
 	public void checkDuplicateCode(CertifyGroup certifyGroup) {
 		Optional<CertifyGroup> optionalCheck = this.certifyGroupRepository
-			.findById(certifyGroup.getCompanyCode().v(), certifyGroup.getCode().v());
+				.findById(certifyGroup.getCompanyCode().v(), certifyGroup.getCode().v());
 		if (optionalCheck.isPresent()) {
 			throw new BusinessException("ER005");
 		}
@@ -75,8 +77,8 @@ public class CertifyGroupServiceImpl implements CertifyGroupService {
 	 */
 	@Override
 	public void checkDulicateCertification(CertifyGroup certifyGroup, String certifyGroupCode) {
-		if (this.checkDulicateCertification(certifyGroup.getCompanyCode().v(), certifyGroup.getCertifies(),
-			certifyGroupCode)) {
+		if (this.checkDulicateCertification(certifyGroup.getCompanyCode().v(),
+				certifyGroup.getCertifies(), certifyGroupCode)) {
 			throw new BusinessException("ER005");
 		}
 
@@ -94,18 +96,18 @@ public class CertifyGroupServiceImpl implements CertifyGroupService {
 	 * @return true, if successful
 	 */
 	boolean checkDulicateCertification(String companyCode, Set<Certification> setCertification,
-		String certifyGroupCode) {
+			String certifyGroupCode) {
 
 		// none data => false
-		if (ListUtil.isEmpty(setCertification)) {
+		if (CollectionUtil.isEmpty(setCertification)) {
 			return false;
 		}
 
 		// not none data
 		boolean resvalue = false;
 		for (Certification certification : setCertification) {
-			Optional<Certification> optionalCheck = this.certificationReponsitory.findById(companyCode,
-				certification.getCode(), certifyGroupCode);
+			Optional<Certification> optionalCheck = this.certificationReponsitory
+					.findById(companyCode, certification.getCode(), certifyGroupCode);
 			if (optionalCheck.isPresent()) {
 				resvalue = true;
 				break;
