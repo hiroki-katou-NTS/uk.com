@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import lombok.Builder;
-import nts.gul.collection.ListUtil;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.pr.report.dom.company.CompanyCode;
 import nts.uk.ctx.pr.report.dom.salarydetail.outputsetting.SalaryCategorySetting;
 import nts.uk.ctx.pr.report.dom.salarydetail.outputsetting.SalaryOutputSettingCode;
@@ -59,7 +59,7 @@ public class SalaryOutputSettingDto implements SalaryOutputSettingSetMemento {
 	 */
 	@Override
 	public void setCategorySettings(List<SalaryCategorySetting> listSalaryCategorySetting) {
-		if (ListUtil.isEmpty(listSalaryCategorySetting)) {
+		if (CollectionUtil.isEmpty(listSalaryCategorySetting)) {
 			return;
 		}
 		this.categorySettings = listSalaryCategorySetting.stream().map(setting -> {
