@@ -12,7 +12,7 @@ import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
 import nts.arc.time.YearMonth;
-import nts.gul.collection.ListUtil;
+import nts.gul.collection.CollectionUtil;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.base.simplehistory.SimpleHistoryRepository;
@@ -40,7 +40,7 @@ public class PensionRateServiceImpl extends PensionRateService {
 	/** The pension rate repo. */
 	@Inject
 	private PensionRateRepository pensionRateRepo;
-	
+
 	/** The avg earn level master setting repository. */
 	@Inject
 	private AvgEarnLevelMasterSettingRepository avgEarnLevelMasterSettingRepository;
@@ -48,6 +48,7 @@ public class PensionRateServiceImpl extends PensionRateService {
 	/** The pension rate repo. */
 	@Inject
 	private PensionAvgearnRepository pensionAvgearnRepository;
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -59,8 +60,10 @@ public class PensionRateServiceImpl extends PensionRateService {
 	public void validateRequiredItem(PensionRate rate) {
 		if (rate.getOfficeCode() == null || StringUtil.isNullOrEmpty(rate.getOfficeCode().v(), true)
 				|| rate.getApplyRange() == null || rate.getMaxAmount() == null
-				|| rate.getChildContributionRate() == null || ListUtil.isEmpty(rate.getFundRateItems())
-				|| rate.getFundRateItems().size() != FUND_RATE_ITEM_COUNT || ListUtil.isEmpty(rate.getRoundingMethods())
+				|| rate.getChildContributionRate() == null
+				|| CollectionUtil.isEmpty(rate.getFundRateItems())
+				|| rate.getFundRateItems().size() != FUND_RATE_ITEM_COUNT
+				|| CollectionUtil.isEmpty(rate.getRoundingMethods())
 				|| rate.getRoundingMethods().size() != ROUNDING_METHOD_COUNT) {
 			throw new BusinessException("ER001");
 		}
@@ -72,17 +75,19 @@ public class PensionRateServiceImpl extends PensionRateService {
 	}
 
 	@Override
-	public PensionRate createInitalHistory(String companyCode, String officeCode, YearMonth startTime) {
-		List<PensionRate> listPensionOfOffice = this.pensionRateRepo.findAllOffice(companyCode,officeCode);
-		List<PensionRate> lstPensionRate = listPensionOfOffice.stream().filter(c -> c.getStart().equals(startTime))
-				.collect(Collectors.toList());
+	public PensionRate createInitalHistory(String companyCode, String officeCode,
+			YearMonth startTime) {
+		List<PensionRate> listPensionOfOffice = this.pensionRateRepo.findAllOffice(companyCode,
+				officeCode);
+		List<PensionRate> lstPensionRate = listPensionOfOffice.stream()
+				.filter(c -> c.getStart().equals(startTime)).collect(Collectors.toList());
 		if (!lstPensionRate.isEmpty()) {
 			throw new BusinessException("ER011");
 		}
-		return PensionRate.createWithIntial(new CompanyCode(companyCode), new OfficeCode(officeCode),
-				startTime);
+		return PensionRate.createWithIntial(new CompanyCode(companyCode),
+				new OfficeCode(officeCode), startTime);
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -103,7 +108,8 @@ public class PensionRateServiceImpl extends PensionRateService {
 			return item.copyWithNewHistoryId(newHistory.getHistoryId());
 		}).collect(Collectors.toList());
 
-		this.pensionAvgearnRepository.update(updatedList, companyCode, newHistory.getOfficeCode().v());
+		this.pensionAvgearnRepository.update(updatedList, companyCode,
+				newHistory.getOfficeCode().v());
 	}
 
 	/*

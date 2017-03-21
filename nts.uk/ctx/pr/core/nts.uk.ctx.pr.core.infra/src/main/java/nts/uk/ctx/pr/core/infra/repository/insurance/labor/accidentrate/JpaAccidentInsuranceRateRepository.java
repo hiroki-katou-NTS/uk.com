@@ -19,11 +19,10 @@ import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.YearMonth;
-import nts.gul.collection.ListUtil;
+import nts.gul.collection.CollectionUtil;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.AccidentInsuranceRate;
 import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.AccidentInsuranceRateRepository;
-import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.InsuBizRateItem;
 import nts.uk.ctx.pr.core.dom.insurance.labor.businesstype.BusinessTypeEnum;
 import nts.uk.ctx.pr.core.infra.entity.insurance.labor.accidentrate.QismtWorkAccidentInsu;
 import nts.uk.ctx.pr.core.infra.entity.insurance.labor.accidentrate.QismtWorkAccidentInsuPK;
@@ -281,7 +280,7 @@ public class JpaAccidentInsuranceRateRepository extends JpaRepository
 		TypedQuery<QismtWorkAccidentInsu> query = em.createQuery(cq);
 		List<QismtWorkAccidentInsu> lstQismtWorkAccidentInsu = query.getResultList();
 
-		if (ListUtil.isEmpty(lstQismtWorkAccidentInsu)) {
+		if (CollectionUtil.isEmpty(lstQismtWorkAccidentInsu)) {
 			return Optional.empty();
 		}
 
@@ -362,7 +361,7 @@ public class JpaAccidentInsuranceRateRepository extends JpaRepository
 		TypedQuery<QismtWorkAccidentInsu> query = em.createQuery(cq);
 		List<QismtWorkAccidentInsu> lstQismtWorkAccidentInsu = query.getResultList();
 
-		if (ListUtil.isEmpty(lstQismtWorkAccidentInsu)) {
+		if (CollectionUtil.isEmpty(lstQismtWorkAccidentInsu)) {
 			return Optional.empty();
 		}
 

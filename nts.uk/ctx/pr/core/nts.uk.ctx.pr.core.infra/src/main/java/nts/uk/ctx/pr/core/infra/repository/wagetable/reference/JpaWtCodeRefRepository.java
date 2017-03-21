@@ -17,7 +17,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.gul.collection.ListUtil;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.pr.core.dom.wagetable.reference.WtCodeRef;
 import nts.uk.ctx.pr.core.dom.wagetable.reference.WtCodeRefRepository;
 import nts.uk.ctx.pr.core.infra.entity.wagetable.reference.QwtmtWagetableRefCd;
@@ -91,7 +91,7 @@ public class JpaWtCodeRefRepository extends JpaRepository
 
 		List<QwtmtWagetableRefCd> result = em.createQuery(cq).getResultList();
 
-		if (ListUtil.isEmpty(result)) {
+		if (CollectionUtil.isEmpty(result)) {
 			return Optional.empty();
 		}
 
