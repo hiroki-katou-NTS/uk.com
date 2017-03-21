@@ -35,6 +35,9 @@ public class JpaLayoutLineRepository extends JpaRepository implements LayoutMast
 	private final String SELECT_ALL_DETAILS_BEFORE = SELECT_NO_WHERE
 			+ " WHERE c.qstmtStmtLayoutLinesPk.companyCd = :companyCd"
 			+ " AND c.qstmtStmtLayoutLinesPk.stmtCd = :stmtCd" + " AND c.endYm = :endYm";
+	private final String SELECT_ALL_DETAILS1 = SELECT_NO_WHERE
+			+ " WHERE c.qstmtStmtLayoutLinesPk.companyCd = :companyCd"
+			+ " AND c.qstmtStmtLayoutLinesPk.stmtCd = :stmtCd";
 
 	private final String SELECT_ALL_DETAILS_BEFORE1 = SELECT_NO_WHERE
 			+ " WHERE c.qstmtStmtLayoutLinesPk.companyCd = :companyCd"
@@ -185,5 +188,13 @@ public class JpaLayoutLineRepository extends JpaRepository implements LayoutMast
 		return this.queryProxy().query(SELECT_ALL_DETAILS_BEFORE, QstmtStmtLayoutLines.class)
 				.setParameter("companyCd", companyCd).setParameter("stmtCd", stmtCd)
 				.setParameter("historyId", historyId).getList(c -> toDomain(c));
+	}
+
+	@Override
+	public List<LayoutMasterLine> getLinesBefore(String companyCd, String stmtCd) {
+		
+		return this.queryProxy().query(SELECT_ALL_DETAILS1, QstmtStmtLayoutLines.class)
+				.setParameter("companyCd", companyCd).setParameter("stmtCd", stmtCd)
+				.getList(c -> toDomain(c));
 	}
 }

@@ -1,0 +1,52 @@
+#sidebar-area {
+	width: 110px
+}
+.proceed {
+	margin-right: 200px;
+}
+.left-content {
+	width: 270px;
+	background-color: #E2F79F;
+	border-radius: 5px;
+	height: 580px;
+	margin: 10px;
+	float: left;
+}
+
+.search-grid > .ntsSearchBox > input.ntsSearchBox {
+	width: 200px;
+	margin: 10px 0 10px 10px;
+}
+.aggregate-table {
+	margin: 10px;
+}
+
+.right-content>div {
+	margin: 10px;
+}
+.name-input {
+    margin-left: 5px;
+}
+.code-input {
+    margin-left: 47px;
+}
+.head-end {
+    width: 100%;
+    height: 1px;
+    background: #B1B1B1;
+    margin-top: 4px;
+    margin-bottom: 6px;
+}
+.master-table-label {
+    float: left;
+}
+.sub-table-label {
+    float: left;
+    margin-left: 76px;
+}
+.switch-button-class {
+    margin-left: 92px;
+}
+#search-input > .ntsSearchBox {
+	width: 192px !important;
+}

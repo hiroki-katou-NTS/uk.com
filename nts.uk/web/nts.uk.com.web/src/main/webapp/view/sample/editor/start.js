@@ -2,18 +2,10 @@ __viewContext.ready(function () {
     var ScreenModel = (function () {
         function ScreenModel() {
             var self = this;
-            self.dynamiceditor = {
-                editortype: 'texteditor',
-                value: ko.observable(''),
-                constraint: ko.observable('ResidenceCode'),
-                constraints: ko.observableArray(['ResidenceCode', 'EmployeeCode']),
-                option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption()),
-                enable: ko.observable(true),
-                readonly: ko.observable(false)
-            };
             self.option = {
                 value: ko.observable("2")
             };
+            self.simpleValue = ko.observable("123");
             // TextEditor
             self.texteditor = {
                 value: ko.observable(''),

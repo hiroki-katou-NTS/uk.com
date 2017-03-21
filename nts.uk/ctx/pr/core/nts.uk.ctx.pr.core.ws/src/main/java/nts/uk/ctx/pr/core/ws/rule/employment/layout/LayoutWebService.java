@@ -45,7 +45,7 @@ public class LayoutWebService extends WebService {
 	@Inject
 	private LayoutMasterFinder find;
 //	@Inject
-//	private LayoutHisFinder find;
+//	private LayoutHisFinder find1;
 	@Inject
 	private LayoutMasterCategoryFinder categoryFinder;
 	@Inject
@@ -56,6 +56,12 @@ public class LayoutWebService extends WebService {
 	public List<LayoutHeadDto> getAllLayoutHead() {
 		return this.find.getAllLayoutHead(AppContexts.user().companyCode());
 	}
+	
+//	@POST
+//	@Path("findallMaxHistory")
+//	public List<LayoutHistoryDto> getAllHistoryMaxStart() {
+//		return this.find.getHistoryWithMaxStartYm(AppContexts.user().companyCode());
+//	}
 
 	@POST
 	@Path("findalllayoutHist")
