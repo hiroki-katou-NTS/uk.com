@@ -67,11 +67,6 @@ public class SocialInsuranceOfficeItemDto implements SocialInsuranceOfficeSetMem
 	}
 
 	@Override
-	public void setPrefecture(String prefecture) {
-
-	}
-
-	@Override
 	public void setAddress1st(Address address1st) {
 
 	}
