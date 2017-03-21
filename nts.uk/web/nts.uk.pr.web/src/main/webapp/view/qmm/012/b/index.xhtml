@@ -11,9 +11,6 @@
 	<ui:composition template="../../../../master/base.xhtml">
 		<!-- Template region -->
 		<ui:define name="htmlHead">
-			<com:ValidatorScript>
-					nts.uk.ctx.pr.core.dom.layout.LayoutName
-				</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="viewmodel.js" />
 			<com:scriptfile path="start.js" />
@@ -46,8 +43,7 @@
 			</div>
 
 			<div id="contents-area" class="cf">
-				<div class="nts-left-content caret-right caret-background "
-					data-bind="with: screenModelB">
+				<div class="nts-left-content caret-right caret-background ">
 					<i class="icon icon-searchbox"></i>
 					<div class="divLine">
 						<div id="B_LBL_002" data-bind="ntsFormLabel: {  required: false }">項目区分</div>
@@ -159,19 +155,19 @@
 						</div>
 					</div>
 					<div id="right-content-bottom">
-						<div id="screenC" data-bind="with: screenModelC">
+						<div id="screenC" data-bind="with: screenModel.screenModelC">
 							<ui:include src="../c/index.xhtml" />
 						</div>
-						<div id="screenD" data-bind="with: screenModelD">
+						<div id="screenD" data-bind="with: screenModel.screenModelD">
 							<ui:include src="../d/index.xhtml" />
 						</div>
-						<div id="screenE" data-bind="with: screenModelE">
+						<div id="screenE" data-bind="with: screenModel.screenModelE">
 							<ui:include src="../e/index.xhtml" />
 						</div>
-						<div id="screenF" data-bind="with: screenModelF">
+						<div id="screenF" data-bind="with: screenModel.screenModelF">
 							<ui:include src="../f/index.xhtml" />
 						</div>
-						<div id="screenG" data-bind="with: screenModelG">
+						<div id="screenG" data-bind="with: screenModel.screenModelG">
 							<ui:include src="../g/index.xhtml" />
 						</div>
 					</div>

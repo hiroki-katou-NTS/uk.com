@@ -88,6 +88,8 @@ public interface ItemMasterRepository {
 	 */
 	void add(ItemMaster itemMaster);
 
+	void update(ItemMaster itemMaster);
+
 	/**
 	 * @param itemMaster:
 	 *            Object need Add New.

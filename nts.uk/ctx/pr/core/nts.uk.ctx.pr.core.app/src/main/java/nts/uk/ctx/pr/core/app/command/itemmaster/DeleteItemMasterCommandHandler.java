@@ -37,18 +37,19 @@ public class DeleteItemMasterCommandHandler extends CommandHandler<DeleteItemMas
 		val categoryAtr = context.getCommand().getCategoryAtr();
 		val itemCode = context.getCommand().getItemCode();
 		this.itemMasterRepository.remove(companyCode, categoryAtr, itemCode);
-		
-		if (categoryAtr == 0) {
+		switch (categoryAtr) {
+		case 0:
 			context.getCommand().getItemSalary().setItemCd(itemCode);
 			this.deleteItemSalaryHandler.handle(context.getCommand().getItemSalary());
-		}
-		if (categoryAtr == 1) {
+			break;
+		case 1:
 			context.getCommand().getItemDeduct().setItemCd(itemCode);
 			this.deleteItemDeductHandler.handle(context.getCommand().getItemDeduct());
-		}
-		if (categoryAtr == 2) {
+			break;
+		case 2:
 			context.getCommand().getItemAttend().setItemCd(itemCode);
 			this.deleteItemAttendHandler.handle(context.getCommand().getItemAttend());
+			break;
 		}
 
 	}

@@ -101,4 +101,9 @@ public class JpaItemMasterRepository extends JpaRepository implements ItemMaster
 		return domain;
 	}
 
+	@Override
+	public void update(ItemMaster itemMaster) {
+		this.commandProxy().update(toEntity(itemMaster));
+	}
+
 }

@@ -4,6 +4,7 @@ module qmm012.b {
             findAllItemMaster: "pr/core/item/findAllItemMaster",
             deleteItemMaster: "pr/core/item/delete",
             addItemMaster: "pr/core/item/add",
+            updateItemMaster: "pr/core/item/update",
         }
 
         export function findAllItemMaster(): JQueryPromise<Array<model.ItemMaster>> {
@@ -32,10 +33,21 @@ module qmm012.b {
                 })
             return dfd.promise();
         }
-        
+
         export function addItemMaster(ItemMaster: model.ItemMaster): JQueryPromise<any> {
             var dfd = $.Deferred<any>();
             nts.uk.request.ajax(paths.addItemMaster, ItemMaster)
+                .done(function(res: any) {
+                    dfd.resolve(res);
+                })
+                .fail(function(res) {
+                    dfd.reject(res);
+                })
+            return dfd.promise();
+        }
+         export function updateItemMaster(ItemMaster: model.ItemMaster): JQueryPromise<any> {
+            var dfd = $.Deferred<any>();
+            nts.uk.request.ajax(paths.updateItemMaster, ItemMaster)
                 .done(function(res: any) {
                     dfd.resolve(res);
                 })

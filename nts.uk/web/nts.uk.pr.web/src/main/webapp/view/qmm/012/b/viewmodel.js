@@ -241,6 +241,12 @@ var qmm012;
                     });
                 };
                 ScreenModel.prototype.updateItemMaster = function (ItemMaster) {
+                    var self = this;
+                    b.service.updateItemMaster(ItemMaster).done(function (any) {
+                        self.LoadGridList(ItemMaster.itemCode);
+                    }).fail(function (res) {
+                        alert(res);
+                    });
                 };
                 ScreenModel.prototype.openJDialog = function () {
                     var self = this;

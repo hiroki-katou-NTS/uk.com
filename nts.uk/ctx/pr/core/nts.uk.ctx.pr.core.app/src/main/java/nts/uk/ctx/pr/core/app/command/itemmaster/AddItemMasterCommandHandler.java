@@ -46,21 +46,22 @@ public class AddItemMasterCommandHandler extends CommandHandler<AddItemMasterCom
 				EnumAdaptor.valueOf(context.getCommand().getZeroDisplaySet(), DisplayAtr.class),
 				EnumAdaptor.valueOf(context.getCommand().getItemDisplayAtr(), ItemDisplayAtr.class));
 		int CategoryAtr = context.getCommand().getCategoryAtr();
+		String itemCode = itemMaster.getItemCode().v();
 		// TODO Auto-generated method stub
 		itemMasterRepository.add(itemMaster);
-
-		itemMaster.getItemCode();
-		if (CategoryAtr == 0) {
-			context.getCommand().getItemSalary().setItemCd(itemMaster.getItemCode().v());
+		switch (CategoryAtr) {
+		case 0:
+			context.getCommand().getItemSalary().setItemCd(itemCode);
 			salaryHandler.handle(context.getCommand().getItemSalary());
-		}
-		if (CategoryAtr == 1) {
-			context.getCommand().getItemDeduct().setItemCd(itemMaster.getItemCode().v());
+			break;
+		case 1:
+			context.getCommand().getItemDeduct().setItemCd(itemCode);
 			deductHandler.handle(context.getCommand().getItemDeduct());
-		}
-		if (CategoryAtr == 2) {
-			context.getCommand().getItemAttend().setItemCd(itemMaster.getItemCode().v());
+			break;
+		case 2:
+			context.getCommand().getItemAttend().setItemCd(itemCode);
 			attendHandler.handle(context.getCommand().getItemAttend());
+			break;
 		}
 
 	}

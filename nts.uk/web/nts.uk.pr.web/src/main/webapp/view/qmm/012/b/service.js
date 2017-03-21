@@ -8,6 +8,7 @@ var qmm012;
                 findAllItemMaster: "pr/core/item/findAllItemMaster",
                 deleteItemMaster: "pr/core/item/delete",
                 addItemMaster: "pr/core/item/add",
+                updateItemMaster: "pr/core/item/update",
             };
             function findAllItemMaster() {
                 var dfd = $.Deferred();
@@ -45,6 +46,18 @@ var qmm012;
                 return dfd.promise();
             }
             service.addItemMaster = addItemMaster;
+            function updateItemMaster(ItemMaster) {
+                var dfd = $.Deferred();
+                nts.uk.request.ajax(paths.updateItemMaster, ItemMaster)
+                    .done(function (res) {
+                    dfd.resolve(res);
+                })
+                    .fail(function (res) {
+                    dfd.reject(res);
+                });
+                return dfd.promise();
+            }
+            service.updateItemMaster = updateItemMaster;
             var model;
             (function (model) {
                 var ItemMaster = (function () {

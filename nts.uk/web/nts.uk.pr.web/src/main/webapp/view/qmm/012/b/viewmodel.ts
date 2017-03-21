@@ -271,6 +271,12 @@ module qmm012.b.viewmodel {
             });
         }
         updateItemMaster(ItemMaster: service.model.ItemMaster) {
+            let self = this;
+            service.updateItemMaster(ItemMaster).done(function(any) {
+                self.LoadGridList(ItemMaster.itemCode);
+            }).fail(function(res) {
+                alert(res);
+            });
 
         }
 
