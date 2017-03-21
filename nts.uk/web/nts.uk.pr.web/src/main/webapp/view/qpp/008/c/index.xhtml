@@ -83,7 +83,7 @@
 												showSearchBox: { showLeft : true, showRight: false},
 												height: 350,
 												dataSource: itemsSwap,
-												primaryKey: 'code',
+												primaryKey: 'itemCode',
 												columns: columnsSwap,
 												value: currentCodeListSwap}">
 											</div>
@@ -91,7 +91,7 @@
 										<div id="swap-up-down"
 											data-bind="ntsUpDown: {
 													targetSource: currentCodeListSwap,
-													primaryKey: 'code',
+													primaryKey: 'itemCode',
 													comId: '#D_LST_001',
 													type: 'swap',
 													swapTarget: 'right'
@@ -114,16 +114,16 @@
 												data-bind="ntsSwapList: {
 												showSearchBox: { showLeft : true, showRight: false},
 												height: 350,
-												dataSource: itemsSwap2,
-												primaryKey: 'code',
-												columns: columnsSwap2,
-												value: currentCodeListSwap2}">
+												dataSource: itemsSwap1,
+												primaryKey: 'itemCode',
+												columns: columnsSwap1,
+												value: currentCodeListSwap1}">
 											</div>
 										</div>
 										<div id="swap-up-down"
 											data-bind="ntsUpDown: {
-													targetSource: currentCodeListSwap2,
-													primaryKey: 'code',
+													targetSource: currentCodeListSwap1,
+													primaryKey: 'itemCode',
 													comId: '#E_LST_001',
 													type: 'swap',
 													swapTarget: 'right'
@@ -146,7 +146,7 @@
 												showSearchBox: { showLeft : true, showRight: false},
 												height: 350,
 												dataSource: itemsSwap3,
-												primaryKey: 'code',
+												primaryKey: 'itemCode',
 												columns: columnsSwap3,
 												value: currentCodeListSwap3}">
 											</div>
@@ -154,7 +154,7 @@
 										<div id="swap-up-down"
 											data-bind="ntsUpDown: {
 													targetSource: currentCodeListSwap3,
-													primaryKey: 'code',
+													primaryKey: 'itemCode',
 													comId: '#F_LST_001',
 													type: 'swap',
 													swapTarget: 'right'
@@ -174,8 +174,8 @@
 									width:'250',
 									height: 370,
 									options: items2,
-									optionsValue: 'code',
-									columns: columns,
+									optionsValue: 'itemCode',
+									columns: columns2,
 									multiple: false,
 									value: currentCode2}" class="cf">
 							</table>

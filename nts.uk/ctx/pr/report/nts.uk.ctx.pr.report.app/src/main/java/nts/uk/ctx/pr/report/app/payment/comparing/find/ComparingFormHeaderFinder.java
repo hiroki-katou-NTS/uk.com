@@ -19,5 +19,5 @@ public class ComparingFormHeaderFinder {
 		String companyCode = AppContexts.user().companyCode();
 		return comparingFormRepository.getListComparingFormHeader(companyCode).stream()
 				.map(item -> ComparingFormHeaderDto.fromDomain(item)).collect(Collectors.toList());
-	}	
+	}
 }

@@ -6,8 +6,6 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
-import org.apache.commons.lang3.StringUtils;
-
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
@@ -26,11 +24,7 @@ public class DeleteInsertComparingFormHeaderCommandHandler extends CommandHandle
 	protected void handle(CommandHandlerContext<DeleteComparingFormHeaderCommand> context) {
 		String companyCode = AppContexts.user().companyCode();
 		DeleteComparingFormHeaderCommand deleteCommand = context.getCommand();
-
-		if (StringUtils.isBlank(deleteCommand.getFormCode())) {
-			throw new BusinessException("ER001");
-		}
-
+		
 		Optional<ComparingFormHeader> comparingFormHeader = this.comparingFormHeaderRepository
 				.getComparingFormHeader(companyCode, deleteCommand.getFormCode());
 		

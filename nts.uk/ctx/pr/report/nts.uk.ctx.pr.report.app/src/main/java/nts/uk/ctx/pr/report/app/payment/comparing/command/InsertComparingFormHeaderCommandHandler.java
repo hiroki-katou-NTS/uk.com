@@ -6,8 +6,6 @@ import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
-import org.apache.commons.lang3.StringUtils;
-
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
@@ -25,14 +23,7 @@ public class InsertComparingFormHeaderCommandHandler extends CommandHandler<Inse
 	protected void handle(CommandHandlerContext<InsertComparingFormHeaderCommand> context) {
 		String companyCode = AppContexts.user().companyCode();
 		InsertComparingFormHeaderCommand insertCommand = context.getCommand();
-
-		if (StringUtils.isBlank(insertCommand.getFormCode())) {
-			throw new BusinessException("ER001_1");
-		}
-		if (StringUtils.isBlank(insertCommand.getFormName())) {
-			throw new BusinessException("ER001_2");
-		}
-
+		
 		Optional<ComparingFormHeader> comparingFormHeader = this.comparingFormHeaderRepository
 				.getComparingFormHeader(companyCode, insertCommand.getFormCode());
 

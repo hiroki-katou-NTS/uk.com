@@ -18,6 +18,7 @@ var qpp008;
                             self.currentItem(self.mappingFromJS(self.getItem(codeChanged)));
                             self.cInp002Code(false);
                             self.allowEditCode(true);
+                            self.getComparingFormForTab(codeChanged);
                         }
                     });
                 }
@@ -28,7 +29,7 @@ var qpp008;
                         { headerText: 'コード', prop: 'formCode', width: 60 },
                         { headerText: '名称', prop: 'formName', width: 120 },
                     ]);
-                    self.currentItem = ko.observable(new c.service.model.ComparingFormHeader('', ''));
+                    self.currentItem = ko.observable(new ComparingFormHeader('', ''));
                     self.currentCode = ko.observable();
                 };
                 ScreenModel.prototype._initSwap = function () {
@@ -37,35 +38,23 @@ var qpp008;
                     var array = [];
                     var array1 = [];
                     var array2 = [];
-                    for (var i_1 = 0; i_1 < 10000; i_1++) {
-                        array.push(new ItemModel("testz" + i_1, '基本給', "description"));
-                    }
-                    self.itemsSwap(array);
                     self.columnsSwap = ko.observableArray([
-                        { headerText: 'コード', prop: 'code', width: 60 },
-                        { headerText: '名称', prop: 'name', width: 120 }
+                        { headerText: 'コード', prop: 'itemCode', width: 60 },
+                        { headerText: '名称', prop: 'itemName', width: 120 }
                     ]);
                     self.currentCodeListSwap = ko.observableArray([]);
                     //swapList2
-                    self.itemsSwap2 = ko.observableArray([]);
-                    for (var i = 0; i < 10000; i++) {
-                        array1.push(new ItemModel("testx" + i, '基本給', "description"));
-                    }
-                    self.itemsSwap2(array1);
-                    self.columnsSwap2 = ko.observableArray([
-                        { headerText: 'コード', prop: 'code', width: 60 },
-                        { headerText: '名称', prop: 'name', width: 120 }
+                    self.itemsSwap1 = ko.observableArray([]);
+                    self.columnsSwap1 = ko.observableArray([
+                        { headerText: 'コード', prop: 'itemCode', width: 60 },
+                        { headerText: '名称', prop: 'itemName', width: 120 }
                     ]);
-                    self.currentCodeListSwap2 = ko.observableArray([]);
+                    self.currentCodeListSwap1 = ko.observableArray([]);
                     //swapList3
                     self.itemsSwap3 = ko.observableArray([]);
-                    for (var i_2 = 0; i_2 < 10000; i_2++) {
-                        array2.push(new ItemModel("testy" + i_2, '基本給', "description"));
-                    }
-                    self.itemsSwap3(array2);
                     self.columnsSwap3 = ko.observableArray([
-                        { headerText: 'コード', prop: 'code', width: 60 },
-                        { headerText: '名称', prop: 'name', width: 120 }
+                        { headerText: 'コード', prop: 'itemCode', width: 60 },
+                        { headerText: '名称', prop: 'itemName', width: 120 }
                     ]);
                     self.currentCodeListSwap3 = ko.observableArray([]);
                     /*TabPanel*/
@@ -79,16 +68,16 @@ var qpp008;
                 ScreenModel.prototype._initFormDetail = function () {
                     var self = this;
                     self.items2 = ko.computed(function () {
-                        var x = [];
-                        x = x.concat(self.currentCodeListSwap());
-                        x = x.concat(self.currentCodeListSwap2());
-                        x = x.concat(self.currentCodeListSwap3());
-                        return x;
+                        var itemsDetail = [];
+                        itemsDetail = itemsDetail.concat(self.currentCodeListSwap());
+                        itemsDetail = itemsDetail.concat(self.currentCodeListSwap1());
+                        itemsDetail = itemsDetail.concat(self.currentCodeListSwap3());
+                        return itemsDetail;
                     }, self).extend({ deferred: true });
                     self.columns2 = ko.observableArray([
-                        { headerText: '区分', prop: 'code', width: 60 },
-                        { headerText: 'コード', prop: 'code', width: 60 },
-                        { headerText: '名称', prop: 'name', width: 120 },
+                        { headerText: '区分', prop: 'categoryAtrName', width: 60 },
+                        { headerText: 'コード', prop: 'itemCode', width: 60 },
+                        { headerText: '名称', prop: 'itemName', width: 120 },
                     ]);
                     self.currentCode2 = ko.observable();
                 };
@@ -97,7 +86,7 @@ var qpp008;
                 };
                 ScreenModel.prototype.refreshLayout = function () {
                     var self = this;
-                    self.currentItem(self.mappingFromJS(new c.service.model.ComparingFormHeader('', '')));
+                    self.currentItem(self.mappingFromJS(new ComparingFormHeader('', '')));
                     self.currentCode();
                     self.allowEditCode(true);
                     self.cInp002Code(true);
@@ -130,22 +119,22 @@ var qpp008;
                     });
                     return currentItem;
                 };
-                ScreenModel.prototype.findDuplicateSwaps = function (codeNew) {
-                    var self = this;
-                    var value;
-                    var checkItemSwap = _.find(self.items2(), function (item) {
-                        return item.code == codeNew;
-                    });
-                    if (checkItemSwap == undefined) {
-                        value = false;
-                    }
-                    else {
-                        value = true;
-                    }
-                    return value;
-                };
+                //        findDuplicateSwaps(codeNew) {
+                //            let self = this;
+                //            let value;
+                //            let checkItemSwap = _.find(self.items2(), function(item) {
+                //                return item.code == codeNew
+                //            });
+                //            if (checkItemSwap == undefined) {
+                //                value = false;
+                //            }
+                //            else {
+                //                value = true;
+                //            }
+                //            return value;
+                //        }
                 ScreenModel.prototype.addItem = function () {
-                    this.items.push(new c.service.model.ComparingFormHeader('9', '基本給'));
+                    this.items.push(new ComparingFormHeader('9', '基本給'));
                 };
                 ScreenModel.prototype.removeItem = function () {
                     this.items.shift();
@@ -163,6 +152,25 @@ var qpp008;
                     });
                     return dfd.promise();
                 };
+                ScreenModel.prototype.getComparingFormForTab = function (formCode) {
+                    var self = this;
+                    var dfd = $.Deferred();
+                    c.service.getComparingFormForTab(formCode).done(function (data) {
+                        self.itemsSwap([]);
+                        self.itemsSwap1([]);
+                        self.itemsSwap3([]);
+                        self.itemsSwap(data.lstItemMasterForTab_0);
+                        self.itemsSwap1(data.lstItemMasterForTab_1);
+                        self.itemsSwap3(data.lstItemMasterForTab_3);
+                        self.getSwapUpDownList(data.lstSelectForTab_0, 0);
+                        self.getSwapUpDownList(data.lstSelectForTab_1, 1);
+                        self.getSwapUpDownList(data.lstSelectForTab_3, 3);
+                        dfd.resolve(data);
+                    }).fail(function (error) {
+                        alert(error.message);
+                    });
+                    return dfd.promise();
+                };
                 ScreenModel.prototype.closeDialog = function () {
                     nts.uk.ui.windows.close();
                 };
@@ -173,19 +181,71 @@ var qpp008;
                         self.items.push(value);
                     });
                 };
+                ScreenModel.prototype.getSwapUpDownList = function (lstSelectForTab, categoryAtr) {
+                    var self = this;
+                    if (categoryAtr === 0) {
+                        _.forEach(lstSelectForTab, function (value) {
+                            self.itemsSwap.remove(function (itemMaster) {
+                                if (value === itemMaster.itemCode) {
+                                    self.currentCodeListSwap.push(new ItemMaster(itemMaster.itemCode, itemMaster.itemName, "支"));
+                                }
+                                return value === itemMaster.itemCode;
+                            });
+                        });
+                    }
+                    if (categoryAtr === 1) {
+                        _.forEach(lstSelectForTab, function (value) {
+                            self.itemsSwap1.remove(function (itemMaster) {
+                                if (value === itemMaster.itemCode) {
+                                    self.currentCodeListSwap1.push(new ItemMaster(itemMaster.itemCode, itemMaster.itemName, "控"));
+                                }
+                                return value === itemMaster.itemCode;
+                            });
+                        });
+                    }
+                    if (categoryAtr === 3) {
+                        _.forEach(lstSelectForTab, function (value) {
+                            self.itemsSwap3.remove(function (itemMaster) {
+                                if (value === itemMaster.itemCode) {
+                                    self.currentCodeListSwap3.push(new ItemMaster(itemMaster.itemCode, itemMaster.itemName, "記"));
+                                }
+                                return value === itemMaster.itemCode;
+                            });
+                        });
+                    }
+                };
                 return ScreenModel;
             }());
             viewmodel.ScreenModel = ScreenModel;
-            var ItemModel = (function () {
-                function ItemModel(code, name, description, other1, other2) {
-                    this.code = code;
-                    this.name = name;
-                    this.description = description;
-                    this.other1 = other1;
-                    this.other2 = other2 || other1;
+            var ComparingFormHeader = (function () {
+                function ComparingFormHeader(formCode, formName) {
+                    this.formCode = formCode;
+                    this.formName = formName;
                 }
-                return ItemModel;
+                return ComparingFormHeader;
             }());
+            viewmodel.ComparingFormHeader = ComparingFormHeader;
+            var ItemMaster = (function () {
+                function ItemMaster(itemCode, itemName, categoryAtrName) {
+                    this.itemCode = itemCode;
+                    this.itemName = itemName;
+                    this.categoryAtrName = categoryAtrName;
+                }
+                return ItemMaster;
+            }());
+            viewmodel.ItemMaster = ItemMaster;
+            var ItemTabModel = (function () {
+                function ItemTabModel(lstItemMasterForTab_0, lstItemMasterForTab_1, lstItemMasterForTab_3, lstSelectForTab_0, lstSelectForTab_1, lstSelectForTab_3) {
+                    this.lstItemMasterForTab_0 = lstItemMasterForTab_0;
+                    this.lstItemMasterForTab_1 = lstItemMasterForTab_0;
+                    this.lstItemMasterForTab_3 = lstItemMasterForTab_1;
+                    this.lstSelectForTab_0 = lstSelectForTab_0;
+                    this.lstSelectForTab_1 = lstSelectForTab_1;
+                    this.lstSelectForTab_3 = lstSelectForTab_3;
+                }
+                return ItemTabModel;
+            }());
+            viewmodel.ItemTabModel = ItemTabModel;
             var InsertUpdateFormHeaderModel = (function () {
                 function InsertUpdateFormHeaderModel(formCode, formName) {
                     this.formCode = formCode;

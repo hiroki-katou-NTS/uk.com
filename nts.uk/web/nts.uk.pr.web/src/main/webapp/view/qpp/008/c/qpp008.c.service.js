@@ -5,7 +5,8 @@ var qpp008;
         var service;
         (function (service) {
             var paths = {
-                getListComparingFormHeader: "report/payment/comparing/find/formHeader"
+                getListComparingFormHeader: "report/payment/comparing/find/formHeader",
+                getComparingFormForTab: "report/payment/comparing/getDataTab/{0}"
             };
             function getListComparingFormHeader() {
                 var dfd = $.Deferred();
@@ -19,17 +20,18 @@ var qpp008;
                 return dfd.promise();
             }
             service.getListComparingFormHeader = getListComparingFormHeader;
-            var model;
-            (function (model) {
-                var ComparingFormHeader = (function () {
-                    function ComparingFormHeader(formCode, formName) {
-                        this.formCode = formCode;
-                        this.formName = formName;
-                    }
-                    return ComparingFormHeader;
-                }());
-                model.ComparingFormHeader = ComparingFormHeader;
-            })(model = service.model || (service.model = {}));
+            function getComparingFormForTab(formCode) {
+                var dfd = $.Deferred();
+                var _path = nts.uk.text.format(paths.getComparingFormForTab, formCode);
+                nts.uk.request.ajax(_path).done(function (res) {
+                    dfd.resolve(res);
+                })
+                    .fail(function (error) {
+                    dfd.reject(error);
+                });
+                return dfd.promise();
+            }
+            service.getComparingFormForTab = getComparingFormForTab;
         })(service = c.service || (c.service = {}));
     })(c = qpp008.c || (qpp008.c = {}));
 })(qpp008 || (qpp008 = {}));

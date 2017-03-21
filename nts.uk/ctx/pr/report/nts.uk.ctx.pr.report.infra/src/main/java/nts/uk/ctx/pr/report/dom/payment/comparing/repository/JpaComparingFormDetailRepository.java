@@ -16,16 +16,16 @@ import nts.uk.ctx.pr.report.dom.payment.comparing.entity.QlsptPaycompFormDetailP
 public class JpaComparingFormDetailRepository extends JpaRepository implements ComparingFormDetailRepository {
 
 	private final String SELECT_COMPARING_FORM_DETAIL_BY_CATEGORY = "SELECT c FROM QlsptPaycompFormDetail c "
-			+ "WHERE c.paycompFormDetailPK.companyCode = :ccd AND c.paycompFormDetailPK.formCode = :formCode"
+			+ "WHERE c.paycompFormDetailPK.companyCode = :ccd AND c.paycompFormDetailPK.formCode = :formCode "
 			+ "AND c.paycompFormDetailPK.categoryATR = :categoryATR "
 			+ "ORDER BY c.paycompFormDetailPK.categoryATR, c.dispOrder";
 
 	@Override
 	public List<ComparingFormDetail> getComparingFormDetailByCategory_Atr(String companyCode, String formCode,
-			int categoryAtr) {
+			int categoryATR) {
 		return this.queryProxy().query(SELECT_COMPARING_FORM_DETAIL_BY_CATEGORY, QlsptPaycompFormDetail.class)
 				.setParameter("ccd", companyCode).setParameter("formCode", formCode)
-				.setParameter("categoryAtr", categoryAtr).getList(c -> convertToDomainFormDetail(c));
+				.setParameter("categoryATR", categoryATR).getList(c -> convertToDomainFormDetail(c));
 
 	}
 
