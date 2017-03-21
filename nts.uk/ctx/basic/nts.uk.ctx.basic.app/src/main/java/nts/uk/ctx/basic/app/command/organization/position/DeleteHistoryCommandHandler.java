@@ -5,6 +5,9 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+
+import nts.arc.error.BusinessException;
+import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
@@ -21,33 +24,27 @@ public class DeleteHistoryCommandHandler extends CommandHandler<DeleteHistoryCom
 	@Override
 	protected void handle(CommandHandlerContext<DeleteHistoryCommand> context) {
 
-//		String companyCode = AppContexts.user().companyCode();
-//		String hitoryId = IdentifierUtil.randomUniqueId();
-//
-//		
-//		positionRepository.deleteHist(companyCode, hitoryId );
-		
+		DeleteHistoryCommand command = context.getCommand();
 		String companyCode = AppContexts.user().companyCode();
-		String test = context.getCommand().getCompanyCode();
-		String checkDateUpdate = context.getCommand().getStartDate().toString();
-		
-		
-		
-		GeneralDate endDate = (context.getCommand().getEndDate());
-		if(checkDateUpdate.compareTo("0")==0){
-		Optional<JobHistory> histEndDate = positionRepository.getHistoryByEdate(companyCode, test);
-		if(histEndDate.isPresent()){
-			JobHistory jobHis = histEndDate.get();
-			jobHis.setEndDate(endDate);
-			positionRepository.updateHistory(jobHis);
-			positionRepository.deleteHist(companyCode,  
-					context.getCommand().getHistoryId());
-			
-		}
-		}else{
-			positionRepository.deleteHist(companyCode,  
-					context.getCommand().getHistoryId());
+
+		// case insert
+		if (positionRepository.ExistedHistoryBydate(companyCode, command.getStartDate())) {
+			throw new BusinessException(new RawErrorMessage("履歴の期間が正しくありません。"));
+		} else {
+			JobHistory jobHistory = command.toDomain();
+			jobHistory.validate();
+			positionRepository.addHistory(jobHistory);
+			GeneralDate pos1 = context.getCommand().getStartDate();
+			GeneralDate endDate = pos1.addDays(-1);
+			Optional<JobHistory> historyEndDate = positionRepository.getHistoryByEdate(companyCode, pos1);
+			if (historyEndDate.isPresent()) {
+				JobHistory jobHis = historyEndDate.get();
+				jobHis.setEndDate(endDate);
+				positionRepository.updateHistory(jobHis);
+				positionRepository.addHistory(jobHistory);
+
+			}
 		}
 	}
-
 }
+
