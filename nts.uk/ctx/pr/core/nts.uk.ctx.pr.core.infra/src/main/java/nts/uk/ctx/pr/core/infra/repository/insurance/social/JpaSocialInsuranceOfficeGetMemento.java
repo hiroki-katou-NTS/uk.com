@@ -124,18 +124,6 @@ public class JpaSocialInsuranceOfficeGetMemento implements SocialInsuranceOffice
 	 * 
 	 * @see
 	 * nts.uk.ctx.pr.core.dom.insurance.social.SocialInsuranceOfficeGetMemento#
-	 * getPrefecture()
-	 */
-	@Override
-	public String getPrefecture() {
-		return this.typeValue.getPrefecture();
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * nts.uk.ctx.pr.core.dom.insurance.social.SocialInsuranceOfficeGetMemento#
 	 * getAddress1st()
 	 */
 	@Override

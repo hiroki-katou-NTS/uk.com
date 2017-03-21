@@ -48,9 +48,6 @@ public class SocialInsuranceOfficeImportDto {
 	/** The potal code. */
 	private String potalCode;
 
-	/** The prefecture. */
-	private String prefecture;
-
 	/** The address 1 st. */
 	private String address1st;
 
@@ -119,11 +116,6 @@ public class SocialInsuranceOfficeImportDto {
 			@Override
 			public ShortName getShortName() {
 				return new ShortName(dto.shortName);
-			}
-
-			@Override
-			public String getPrefecture() {
-				return dto.prefecture;
 			}
 
 			@Override

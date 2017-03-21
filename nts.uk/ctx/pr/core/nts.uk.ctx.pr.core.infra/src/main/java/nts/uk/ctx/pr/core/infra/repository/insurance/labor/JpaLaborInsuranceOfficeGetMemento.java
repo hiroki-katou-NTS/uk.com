@@ -130,18 +130,6 @@ public class JpaLaborInsuranceOfficeGetMemento implements LaborInsuranceOfficeGe
 	 * 
 	 * @see
 	 * nts.uk.ctx.pr.core.dom.insurance.labor.LaborInsuranceOfficeGetMemento#
-	 * getPrefecture()
-	 */
-	@Override
-	public String getPrefecture() {
-		return typeValue.getPrefecture();
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * nts.uk.ctx.pr.core.dom.insurance.labor.LaborInsuranceOfficeGetMemento#
 	 * getAddress1st()
 	 */
 	@Override

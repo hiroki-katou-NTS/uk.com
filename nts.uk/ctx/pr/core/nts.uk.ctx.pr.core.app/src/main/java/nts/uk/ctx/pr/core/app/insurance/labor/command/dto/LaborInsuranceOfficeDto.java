@@ -52,9 +52,6 @@ public class LaborInsuranceOfficeDto {
 	/** The potal code. */
 	private String potalCode;
 
-	/** The prefecture. */
-	private String prefecture;
-
 	/** The address 1 st. */
 	private String address1st;
 
@@ -137,18 +134,6 @@ public class LaborInsuranceOfficeDto {
 		@Override
 		public ShortName getShortName() {
 			return new ShortName(dto.shortName);
-		}
-
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see
-		 * nts.uk.ctx.pr.core.dom.insurance.labor.LaborInsuranceOfficeGetMemento
-		 * #getPrefecture()
-		 */
-		@Override
-		public String getPrefecture() {
-			return dto.prefecture;
 		}
 
 		/*
