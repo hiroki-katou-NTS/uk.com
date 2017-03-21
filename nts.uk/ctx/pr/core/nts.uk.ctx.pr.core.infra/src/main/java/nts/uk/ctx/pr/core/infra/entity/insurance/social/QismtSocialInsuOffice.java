@@ -97,10 +97,6 @@ public class QismtSocialInsuOffice implements Serializable {
 	@Column(name = "POSTAL")
 	private String postal;
 
-	/** The prefecture. */
-	@Column(name = "PREFECTURE")
-	private String prefecture;
-
 	/** The address 1. */
 	@Column(name = "ADDRESS1")
 	private String address1;

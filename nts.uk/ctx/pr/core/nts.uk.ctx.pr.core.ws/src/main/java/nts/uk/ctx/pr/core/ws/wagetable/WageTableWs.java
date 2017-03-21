@@ -17,8 +17,8 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import nts.uk.ctx.pr.core.app.wagetable.command.WtAddHistoryCommand;
-import nts.uk.ctx.pr.core.app.wagetable.command.WtAddHistoryCommandHandler;
+import nts.uk.ctx.pr.core.app.wagetable.command.WtInitCommand;
+import nts.uk.ctx.pr.core.app.wagetable.command.WtInitCommandHandler;
 import nts.uk.ctx.pr.core.app.wagetable.command.WtUpdateCommand;
 import nts.uk.ctx.pr.core.app.wagetable.command.WtUpdateCommandHandler;
 import nts.uk.ctx.pr.core.dom.base.simplehistory.SimpleHistoryBaseService;
@@ -44,45 +44,44 @@ import nts.uk.shr.com.context.AppContexts;
 @Produces(MediaType.APPLICATION_JSON)
 public class WageTableWs extends SimpleHistoryWs<WtHead, WtHistory> {
 
-	/** The create wage table history command handler. */
+	/** The wt init command handler. */
 	@Inject
-	private WtAddHistoryCommandHandler createWageTableHistoryCommandHandler;
+	private WtInitCommandHandler wtInitCommandHandler;
 
-	/** The update wage table history command handler. */
+	/** The wt update command handler. */
 	@Inject
-	private WtUpdateCommandHandler updateWageTableHistoryCommandHandler;
+	private WtUpdateCommandHandler wtUpdateCommandHandler;
 
-	/** The wage table head repo. */
+	/** The wt head repo. */
 	@Inject
-	private WtHeadRepository wageTableHeadRepo;
+	private WtHeadRepository wtHeadRepo;
 
-	/** The wage table history repo. */
+	/** The wt history repo. */
 	@Inject
-	private WtHistoryRepository wageTableHistoryRepo;
+	private WtHistoryRepository wtHistoryRepo;
 
-	/** The service. */
+	/** The wt history service. */
 	@Inject
-	private WtHistoryService service;
+	private WtHistoryService wtHistoryService;
 
 	/**
 	 * Find.
 	 *
 	 * @param id
 	 *            the id
-	 * @return the wage table history model
+	 * @return the wage table history dto
 	 */
 	@POST
 	@Path("find/{id}")
 	public WageTableHistoryDto find(@PathParam("id") String id) {
 		// Get the detail history.
-		Optional<WtHistory> optWageTableHistory = this.wageTableHistoryRepo
-				.findHistoryByUuid(id);
+		Optional<WtHistory> optWageTableHistory = this.wtHistoryRepo.findHistoryByUuid(id);
 		WageTableHistoryDto historyDto = null;
 
 		// Check exsit.
 		if (optWageTableHistory.isPresent()) {
 			WtHistory wageTableHistory = optWageTableHistory.get();
-			Optional<WtHead> optWageTable = this.wageTableHeadRepo.findByCode(
+			Optional<WtHead> optWageTable = this.wtHeadRepo.findByCode(
 					wageTableHistory.getCompanyCode().v(), wageTableHistory.getWageTableCode().v());
 			historyDto = new WageTableHistoryDto();
 			WageTableHeadDto headDto = WageTableHeadDto.builder().build();
@@ -96,18 +95,15 @@ public class WageTableWs extends SimpleHistoryWs<WtHead, WtHistory> {
 	}
 
 	/**
-	 * Creates the.
+	 * Inits the table.
 	 *
 	 * @param command
 	 *            the command
-	 * @return the history model
 	 */
 	@POST
-	@Path("create")
-	public HistoryModel create(WtAddHistoryCommand command) {
-		WtHistory history = this.createWageTableHistoryCommandHandler.handle(command);
-		return HistoryModel.builder().uuid(history.getUuid()).start(history.getStart().v())
-				.end(history.getEnd().v()).build();
+	@Path("init")
+	public void initTable(WtInitCommand command) {
+		this.wtInitCommandHandler.handle(command);
 	}
 
 	/**
@@ -119,7 +115,7 @@ public class WageTableWs extends SimpleHistoryWs<WtHead, WtHistory> {
 	@POST
 	@Path("update")
 	public void update(WtUpdateCommand command) {
-		this.updateWageTableHistoryCommandHandler.handle(command);
+		this.wtUpdateCommandHandler.handle(command);
 	}
 
 	/*
@@ -133,20 +129,18 @@ public class WageTableWs extends SimpleHistoryWs<WtHead, WtHistory> {
 	@POST
 	public List<MasterModel> loadMasterModelList() {
 		// Get list of wage table.
-		List<WtHead> wageTables = this.wageTableHeadRepo
-				.findAll(AppContexts.user().companyCode());
+		List<WtHead> wageTables = this.wtHeadRepo.findAll(AppContexts.user().companyCode());
 
 		// Get list of wage table history.
-		List<WtHistory> wageTableHistories = this.wageTableHistoryRepo
+		List<WtHistory> wageTableHistories = this.wtHistoryRepo
 				.findAll(AppContexts.user().companyCode());
 
 		// Group histories by unit code.
-		Map<WtCode, List<HistoryModel>> historyMap = wageTableHistories.stream()
-				.collect(Collectors.groupingBy(WtHistory::getWageTableCode,
-						Collectors.mapping((res) -> {
-							return HistoryModel.builder().uuid(res.getUuid())
-									.start(res.getStart().v()).end(res.getEnd().v()).build();
-						}, Collectors.toList())));
+		Map<WtCode, List<HistoryModel>> historyMap = wageTableHistories.stream().collect(
+				Collectors.groupingBy(WtHistory::getWageTableCode, Collectors.mapping((res) -> {
+					return HistoryModel.builder().uuid(res.getUuid()).start(res.getStart().v())
+							.end(res.getEnd().v()).build();
+				}, Collectors.toList())));
 
 		// Return
 		return wageTables.stream().map(item -> {
@@ -200,6 +194,6 @@ public class WageTableWs extends SimpleHistoryWs<WtHead, WtHistory> {
 	 */
 	@Override
 	protected SimpleHistoryBaseService<WtHead, WtHistory> getServices() {
-		return this.service;
+		return this.wtHistoryService;
 	}
 }
