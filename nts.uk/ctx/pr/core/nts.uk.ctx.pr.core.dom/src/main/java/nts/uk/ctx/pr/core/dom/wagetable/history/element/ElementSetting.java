@@ -9,7 +9,7 @@ import java.util.List;
 import lombok.Getter;
 import nts.uk.ctx.pr.core.dom.wagetable.DemensionNo;
 import nts.uk.ctx.pr.core.dom.wagetable.ElementType;
-import nts.uk.ctx.pr.core.dom.wagetable.history.element.setting.item.Item;
+import nts.uk.ctx.pr.core.dom.wagetable.history.element.item.Item;
 
 /**
  * The Class WtElementSetting.

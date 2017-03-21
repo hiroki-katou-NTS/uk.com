@@ -7,7 +7,7 @@ package nts.uk.ctx.pr.core.app.wagetable.command.dto;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.pr.core.dom.wagetable.history.element.setting.item.Item;
+import nts.uk.ctx.pr.core.dom.wagetable.history.element.item.Item;
 
 /**
  * The Class CodeItem.
