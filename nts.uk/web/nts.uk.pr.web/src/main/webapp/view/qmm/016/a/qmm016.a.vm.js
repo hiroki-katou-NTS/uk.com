@@ -174,6 +174,15 @@ var nts;
                                 return DemensionItemViewModel;
                             }());
                             viewmodel.DemensionItemViewModel = DemensionItemViewModel;
+                            var HistoryViewModel = (function () {
+                                function HistoryViewModel() {
+                                    var self = this;
+                                    self.startYearMonth = ko.observable(parseInt(nts.uk.time.formatDate(new Date(), 'yyyyMM')));
+                                    self.endYearMonth = ko.observable(99999);
+                                }
+                                return HistoryViewModel;
+                            }());
+                            viewmodel.HistoryViewModel = HistoryViewModel;
                         })(viewmodel = a.viewmodel || (a.viewmodel = {}));
                     })(a = qmm016.a || (qmm016.a = {}));
                 })(qmm016 = view.qmm016 || (view.qmm016 = {}));

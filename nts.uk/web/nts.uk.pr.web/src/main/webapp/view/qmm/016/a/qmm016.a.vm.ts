@@ -94,6 +94,8 @@ module nts.uk.pr.view.qmm016.a {
             
             /** The demension set. */
             demensionSet: KnockoutObservable<number>;
+            
+            
             demensionType: KnockoutObservable<model.DemensionElementCountType>;
 
             /** The memo. */
@@ -249,6 +251,19 @@ module nts.uk.pr.view.qmm016.a {
                 self.elementType = ko.observable(0);
                 self.elementCode = ko.observable('');
                 self.elementName = ko.observable('');
+            }
+        }
+        
+        /**
+         * History model.
+         */
+        export class HistoryViewModel {
+            startYearMonth: KnockoutObservable<number>;
+            endYearMonth: KnockoutObservable<number>;
+            constructor() {
+                var self = this;
+                self.startYearMonth = ko.observable(parseInt(nts.uk.time.formatDate(new Date(), 'yyyyMM')));
+                self.endYearMonth = ko.observable(99999);
             }
         }
     }
