@@ -84,7 +84,11 @@ var qmm005;
                     D_SEL_015_DATA.push(new qmm005.common.SelectItem({ index: i, label: i + '日' }));
                 }
                 D_SEL_015_DATA.push(new qmm005.common.SelectItem({ index: 31, label: '末日' }));
+<<<<<<< HEAD
                 // observables all values
+=======
+                // observables all default values
+>>>>>>> basic/develop
                 self.inp001 = ko.observable('');
                 self.sel001 = ko.observable(1);
                 self.sel002 = ko.observable(0);
@@ -101,6 +105,29 @@ var qmm005;
                 self.sel013 = ko.observable(1);
                 self.sel014 = ko.observable(1);
                 self.sel015 = ko.observable(1);
+<<<<<<< HEAD
+=======
+                d.services.getData(self.index()).done(function (resp) {
+                    if (resp && resp.length == 2) {
+                        self.inp001(nts.uk.ui.windows.getShared('dataRow').label());
+                        self.sel001(resp[0].payStdDay);
+                        self.sel002(resp[0].pickupStdMonAtr);
+                        self.sel003(resp[0].pickupStdDay);
+                        self.sel004(resp[0].accountDueMonAtr);
+                        self.sel005(resp[0].accountDueDay);
+                        self.sel006(resp[0].payslipPrintMonth);
+                        self.sel007(resp[0].socialInsLevyMonAtr);
+                        self.sel008(resp[1].socialInsStdYearAtr);
+                        self.sel009(resp[1].socialInsStdMon);
+                        self.sel010(resp[1].socialInsStdDay);
+                        self.sel011(resp[1].empInsStdMon);
+                        self.sel012(resp[1].empInsStdDay);
+                        self.sel013(resp[1].incometaxStdYearAtr);
+                        self.sel014(resp[1].incometaxStdMon);
+                        self.sel015(resp[1].incometaxStdDay);
+                    }
+                });
+>>>>>>> basic/develop
                 // observable all datas
                 self.sel001Data = ko.observableArray(D_SEL_001_DATA);
                 self.sel002Data = ko.observableArray(D_SEL_002_DATA);
@@ -121,11 +148,19 @@ var qmm005;
             ViewModel.prototype.toggleView = function () {
                 $('.form-extent').toggleClass('hidden');
                 if (!$('.form-extent').hasClass('hidden')) {
+<<<<<<< HEAD
                     nts.uk.ui.windows.getSelf().setHeight(600);
                     $('#contents-area').css('padding-bottom', '0');
                 }
                 else {
                     nts.uk.ui.windows.getSelf().setHeight(480);
+=======
+                    nts.uk.ui.windows.getSelf().setHeight(window.top.innerHeight < 801 ? 620 : 660);
+                    $('#contents-area').css('padding-bottom', '0');
+                }
+                else {
+                    nts.uk.ui.windows.getSelf().setHeight(370);
+>>>>>>> basic/develop
                     $('#contents-area').css('padding-bottom', '');
                 }
             };
@@ -162,6 +197,7 @@ var qmm005;
                     empInsStdDay: self.sel012(),
                     incometaxStdYearAtr: self.sel013(),
                     incometaxStdMon: self.sel014(),
+<<<<<<< HEAD
                     incometaxStdDay: self.sel015(),
                     payDays: []
                 };
@@ -186,6 +222,11 @@ var qmm005;
                 //services.insertData(data).done(function(reps) {
                 //    self.closeDialog();
                 //});
+=======
+                    incometaxStdDay: self.sel015()
+                };
+                d.services.updateData(data).done(self.closeDialog);
+>>>>>>> basic/develop
             };
             ViewModel.prototype.closeDialog = function () { nts.uk.ui.windows.close(); };
             return ViewModel;

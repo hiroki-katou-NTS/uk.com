@@ -18,6 +18,18 @@ var qmm005;
                 return dfd.promise();
             }
             services.getData = getData;
+            function updatData(model) {
+                var dfd = $.Deferred();
+                nts.uk.request.ajax(webapi.qmm005a.update, model)
+                    .done(function (resp) {
+                    dfd.resolve(resp);
+                })
+                    .fail(function (mess) {
+                    dfd.reject(mess);
+                });
+                return dfd.promise();
+            }
+            services.updatData = updatData;
         })(services = a.services || (a.services = {}));
     })(a = qmm005.a || (qmm005.a = {}));
 })(qmm005 || (qmm005 = {}));

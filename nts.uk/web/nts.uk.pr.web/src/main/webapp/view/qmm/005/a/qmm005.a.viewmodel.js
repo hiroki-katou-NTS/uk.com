@@ -95,13 +95,13 @@ var qmm005;
             TableRowItem.prototype.showModalDialogC = function (item, event) {
                 var self = this;
                 nts.uk.ui.windows.setShared('dataRow', item);
-                nts.uk.ui.windows.sub.modal("../c/index.xhtml", { width: 800, height: 515, title: '給与処理月を翌月へ更新  ' })
+                nts.uk.ui.windows.sub.modal("../c/index.xhtml", { width: 800, height: 350, title: '給与処理月を翌月へ更新  ' })
                     .onClosed(function () { self.parent.start(); });
             };
             TableRowItem.prototype.showModalDialogD = function (item, event) {
                 var self = this;
                 nts.uk.ui.windows.setShared('dataRow', item);
-                nts.uk.ui.windows.sub.modal("../d/index.xhtml", { width: 800, height: 515, title: '給与処理月を翌月へ更新  ' })
+                nts.uk.ui.windows.sub.modal("../d/index.xhtml", { width: 800, height: 370, title: '給与処理月を翌月へ更新  ' })
                     .onClosed(function () { self.parent.start(); });
             };
             return TableRowItem;

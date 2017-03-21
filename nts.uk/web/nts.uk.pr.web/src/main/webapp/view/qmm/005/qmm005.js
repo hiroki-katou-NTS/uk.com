@@ -39,22 +39,8 @@ var CheckBoxWithHelpBindingHandler = (function () {
     };
     return CheckBoxWithHelpBindingHandler;
 }());
-var CheckboxHasNotLabelBindingHandler = (function () {
-    function CheckboxHasNotLabelBindingHandler() {
-    }
-    CheckboxHasNotLabelBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-        valueAccessor().text = valueAccessor().text || '';
-        ko.bindingHandlers['ntsCheckBox'].init(element, valueAccessor, allBindingsAccessor, viewModel, bindingContext);
-        element.getElementsByTagName('span')[1].remove();
-    };
-    CheckboxHasNotLabelBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-        ko.bindingHandlers['ntsCheckBox'].update(element, valueAccessor, allBindingsAccessor, viewModel, bindingContext);
-    };
-    return CheckboxHasNotLabelBindingHandler;
-}());
 ko.bindingHandlers['ntsTextEditor2'] = new TextEditorBindingHandler();
 ko.bindingHandlers['ntsCheckBox2'] = new CheckBoxWithHelpBindingHandler();
-ko.bindingHandlers['ntsCheckBox3'] = new CheckboxHasNotLabelBindingHandler();
 var qmm005;
 (function (qmm005) {
     var common;
@@ -62,14 +48,15 @@ var qmm005;
         function webapi() {
             return {
                 'qmm005a': {
-                    'getdata': 'pr/core/qmm005a/getdata',
-                    'select': {
-                        'payday': 'pr/core/qmm005a/payday',
-                        'paydayprocessing': 'pr/core/qmm005a/paydayprocessing'
-                    }
+                    'update': 'pr/core/qmm005a/update',
+                    'getdata': 'pr/core/qmm005a/getdata'
                 },
                 'qmm005c': {
                     'insert': 'pr/core/qmm005c/insert'
+                },
+                'qmm005d': {
+                    'update': 'pr/core/qmm005d/update',
+                    'getdata': 'pr/core/qmm005d/getdata'
                 }
             };
         }
