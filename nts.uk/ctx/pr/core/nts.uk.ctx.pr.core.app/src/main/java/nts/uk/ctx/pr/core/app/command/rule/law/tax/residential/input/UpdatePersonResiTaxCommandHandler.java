@@ -15,8 +15,7 @@ public class UpdatePersonResiTaxCommandHandler extends CommandHandler<UpdatePers
 	@Override
 	protected void handle(CommandHandlerContext<UpdatePersonResiTaxCommand> context) {
 		String companyCode = AppContexts.user().companyCode();
-		String personId = AppContexts.user().personId();
-		PersonResiTax personResiTax = context.getCommand().toDomain(companyCode, personId);
+		PersonResiTax personResiTax = context.getCommand().toDomain(companyCode);
 		personResiTaxRepository.update(personResiTax);
 	}
 }

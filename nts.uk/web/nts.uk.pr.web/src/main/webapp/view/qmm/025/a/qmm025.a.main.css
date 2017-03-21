@@ -54,18 +54,32 @@
 
 .ui-iggrid .ui-iggrid-toolbar .ui-iggrid-results {
 	margin-right: 85px;
+	padding-right: 0px;
+}
+
+.ui-iggrid table tr td, .ui-iggrid table tr td.ui-iggrid-header,
+	.ui-iggrid table tr td.ui-state-hover, .ui-iggrid table tr td.ui-state-active,
+	.ui-iggrid table tr td.ui-state-focus, .ui-iggrid table tr td.ui-state-active.ui-state-focus,
+	.ui-iggrid table tr th, .ui-iggrid table tr th.ui-iggrid-header,
+	.ui-iggrid table tr th.ui-state-hover, .ui-iggrid table tr th.ui-state-active,
+	.ui-iggrid table tr th.ui-state-focus, .ui-iggrid table tr th.ui-state-active.ui-state-focus
+	{
+	border: 1px solid rgba(25, 24, 24, 0.26);
 }
 
 #grid_residenceTax01, #grid_residenceTax02, #grid_residenceTax03,
 	#grid_residenceTax04, #grid_residenceTax05, #grid_residenceTax06,
 	#grid_residenceTax07, #grid_residenceTax08, #grid_residenceTax09,
 	#grid_residenceTax10, #grid_residenceTax11, #grid_residenceTax12 {
-	text-align: center
+	text-align: center;
+	padding-right: 0px !important;
 }
 
-.align_right{
-	text-align: right
+.align_right {
+	text-align: right;
+	padding-right: 5px !important;
 }
-.columnCss{
+
+.columnCss {
 	background-color: grey
 }

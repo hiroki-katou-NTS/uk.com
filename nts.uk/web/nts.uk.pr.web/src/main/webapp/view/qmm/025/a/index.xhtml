@@ -12,17 +12,17 @@
 					nts.uk.ctx.pr.core.dom.rule.law.tax.residential.input.YearKey
    				</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
-			<com:stylefile path="main.css" />
-			<com:scriptfile path="start.js" />
-			<com:scriptfile path="viewmodel.js" />
-			<com:scriptfile path="service.js" />
+			<com:stylefile path="qmm025.a.main.css" />
+			<com:scriptfile path="qmm025.a.start.js" />
+			<com:scriptfile path="qmm025.a.viewmodel.js" />
+			<com:scriptfile path="qmm025.a.service.js" />
 
 
 		</ui:define>
 
 		<ui:define name="content">
 			<div id="functions-area">
-				<button id="A_BTN_001" class="proceed">登録</button>
+				<button id="A_BTN_001" class="proceed" data-bind="click:saveData">登録</button>
 				<button id="A_BTN_002">マスタ修正ログ</button>
 				<a id="A_BTN_005" data-bind="ntsLinkButton: {}">個人情報の登録へ</a>
 			</div>
@@ -50,7 +50,8 @@
 						<button id="A_BTN_003" data-bind="click: findAll">リスト表示ボタン</button>
 					</div>
 					<div class="bg-green config">
-						<button id="BTN_004" class="danger" data-bind="click: remove, enable: isDeleteEnable">社員の住民税情報を削除</button>
+						<button id="BTN_004" class="danger"
+							data-bind="click: remove, enable: isDeleteEnable">社員の住民税情報を削除</button>
 					</div>
 					<table id="grid"></table>
 				</div>
