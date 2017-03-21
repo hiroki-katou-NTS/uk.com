@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.core.infra.repository.rule.employement.processing.yearmonth;
+package nts.uk.ctx.pr.core.infra.repository.rule.employment.processing.yearmonth;
 
 import java.util.List;
 
@@ -8,8 +8,8 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.pr.core.dom.rule.employement.processing.yearmonth.PaydayRepository;
 import nts.uk.ctx.pr.core.dom.rule.employement.processing.yearmonth.payday.Payday;
-import nts.uk.ctx.pr.core.infra.entity.rule.employement.processing.yearmonth.QpdmtPayday;
-import nts.uk.ctx.pr.core.infra.entity.rule.employement.processing.yearmonth.QpdmtPaydayPK;
+import nts.uk.ctx.pr.core.infra.entity.rule.employment.processing.yearmonth.QpdmtPayday;
+import nts.uk.ctx.pr.core.infra.entity.rule.employment.processing.yearmonth.QpdmtPaydayPK;
 
 @Stateless
 public class JpaPaydayRepository extends JpaRepository implements PaydayRepository {

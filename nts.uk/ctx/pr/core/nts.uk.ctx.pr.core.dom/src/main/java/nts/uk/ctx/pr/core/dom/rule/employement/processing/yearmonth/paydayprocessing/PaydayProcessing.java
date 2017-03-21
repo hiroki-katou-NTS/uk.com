@@ -2,6 +2,7 @@ package nts.uk.ctx.pr.core.dom.rule.employement.processing.yearmonth.paydayproce
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.core.dom.company.CompanyCode;
@@ -9,6 +10,7 @@ import nts.uk.ctx.pr.core.dom.enums.DisplayAtr;
 import nts.uk.ctx.pr.core.dom.paymentdata.paymentdatemaster.ProcessingName;
 import nts.uk.ctx.pr.core.dom.rule.employement.processing.yearmonth.systemday.ProcessingNo;
 
+@Setter
 @Getter
 @AllArgsConstructor
 public class PaydayProcessing extends AggregateRoot {

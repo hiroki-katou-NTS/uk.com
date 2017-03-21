@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.core.infra.entity.rule.employement.processing.yearmonth;
+package nts.uk.ctx.pr.core.infra.entity.rule.employment.processing.yearmonth;
 
 import java.io.Serializable;
 

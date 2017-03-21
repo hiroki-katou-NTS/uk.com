@@ -1,11 +1,10 @@
 package nts.uk.ctx.pr.core.app.find.rule.employement.processing.yearmonth;
 
-import java.util.stream.Collectors;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.pr.core.dom.rule.employement.processing.yearmonth.StandardDayRepository;
+import nts.uk.ctx.pr.core.dom.rule.employement.processing.yearmonth.standardday.StandardDay;
 
 @Stateless
 public class StandardDayFinder {
@@ -13,8 +12,12 @@ public class StandardDayFinder {
 	@Inject
 	private StandardDayRepository repository;
 
-	public StandardDayDto select1(String companyCode,int processingNo) {
-		return repository.select1(companyCode, processingNo).stream().map(m -> StandardDayDto.fromDomain(m))
-				.collect(Collectors.toList()).get(0);
+	public StandardDayDto select1(String companyCode, int processingNo) {
+		StandardDay domain = repository.select1(companyCode, processingNo);
+		if (domain != null) {
+			return StandardDayDto.fromDomain(domain);
+		} else {
+			return null;
+		}
 	}
 }

@@ -1,13 +1,12 @@
-package nts.uk.ctx.pr.core.infra.repository.rule.employement.processing.yearmonth;
-
-import java.util.List;
+package nts.uk.ctx.pr.core.infra.repository.rule.employment.processing.yearmonth;
 
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.pr.core.dom.rule.employement.processing.yearmonth.StandardDayRepository;
 import nts.uk.ctx.pr.core.dom.rule.employement.processing.yearmonth.standardday.StandardDay;
-import nts.uk.ctx.pr.core.infra.entity.rule.employement.processing.yearmonth.*;
+import nts.uk.ctx.pr.core.infra.entity.rule.employment.processing.yearmonth.QpdmtStandardDay;
+import nts.uk.ctx.pr.core.infra.entity.rule.employment.processing.yearmonth.QpdmtStandardDayPK;
 
 @Stateless
 public class JpaStandardDayRepository extends JpaRepository implements StandardDayRepository {
@@ -17,10 +16,10 @@ public class JpaStandardDayRepository extends JpaRepository implements StandardD
 			+ " AND c.qpdmtStandardDayPk.processingNo = :processingNo";
 
 	@Override
-	public List<StandardDay> select1(String companyCode, int processingNo) {
+	public StandardDay select1(String companyCode, int processingNo) {
 		return this.queryProxy().query(SELECT_ALL_BY_CCD_AND_PROCESSING_NO, QpdmtStandardDay.class)
 				.setParameter("companyCode", companyCode).setParameter("processingNo", processingNo)
-				.getList(c -> toDomain(c));
+				.getList(c -> toDomain(c)).get(0);
 	}
 
 	@Override

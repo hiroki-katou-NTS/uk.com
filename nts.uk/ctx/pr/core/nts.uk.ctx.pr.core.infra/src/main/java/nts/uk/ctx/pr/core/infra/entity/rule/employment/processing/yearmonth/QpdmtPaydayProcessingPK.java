@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.core.infra.entity.rule.employement.processing.yearmonth;
+package nts.uk.ctx.pr.core.infra.entity.rule.employment.processing.yearmonth;
 
 import java.io.Serializable;
 
@@ -12,9 +12,9 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @NoArgsConstructor
 @Embeddable
-public class QpdmtSystemDayPK implements Serializable {
-
-	public static final long serialVersionUID = 1L;
+public class QpdmtPaydayProcessingPK implements Serializable {
+	
+	private static final long serialVersionUID = 1L;
 
 	@Basic(optional = false)
 	@Column(name = "CCD")
@@ -22,5 +22,6 @@ public class QpdmtSystemDayPK implements Serializable {
 
 	@Basic(optional = false)
 	@Column(name = "PROCESSING_NO")
-	public int processingNo;
+	public int processingNo;	
+	
 }

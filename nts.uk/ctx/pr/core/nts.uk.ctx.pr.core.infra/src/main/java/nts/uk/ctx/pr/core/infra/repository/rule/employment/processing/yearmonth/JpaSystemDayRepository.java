@@ -1,14 +1,12 @@
-package nts.uk.ctx.pr.core.infra.repository.rule.employement.processing.yearmonth;
-
-import java.util.List;
+package nts.uk.ctx.pr.core.infra.repository.rule.employment.processing.yearmonth;
 
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.pr.core.dom.rule.employement.processing.yearmonth.SystemDayRepository;
 import nts.uk.ctx.pr.core.dom.rule.employement.processing.yearmonth.systemday.SystemDay;
-import nts.uk.ctx.pr.core.infra.entity.rule.employement.processing.yearmonth.QpdmtSystemDay;
-import nts.uk.ctx.pr.core.infra.entity.rule.employement.processing.yearmonth.QpdmtSystemDayPK;
+import nts.uk.ctx.pr.core.infra.entity.rule.employment.processing.yearmonth.QpdmtSystemDay;
+import nts.uk.ctx.pr.core.infra.entity.rule.employment.processing.yearmonth.QpdmtSystemDayPK;
 
 @Stateless
 public class JpaSystemDayRepository extends JpaRepository implements SystemDayRepository {
@@ -19,17 +17,12 @@ public class JpaSystemDayRepository extends JpaRepository implements SystemDayRe
 			+ " AND c.qpdmtSystemDayPk.processingNo = :processingNo";
 
 	@Override
-	public List<SystemDay> findAll(String companyCode, int processingNo) {
+	public SystemDay select1(String companyCode, int processingNo) {
 		return this.queryProxy().query(SELECT_ALL_BY_CCD_AND_PROCESSING_NO, QpdmtSystemDay.class)
 				.setParameter("companyCode", companyCode).setParameter("processingNo", processingNo)
-				.getList(c -> toDomain(c));
+				.getList(c -> toDomain(c)).get(0);
 	}
-
-	@Override
-	public SystemDay findOne(String companyCode, int processingNo) {
-		return findAll(companyCode, processingNo).get(0);
-	}
-
+	
 	@Override
 	public void insert(SystemDay domain) {
 		this.commandProxy().insert(toEntity(domain));

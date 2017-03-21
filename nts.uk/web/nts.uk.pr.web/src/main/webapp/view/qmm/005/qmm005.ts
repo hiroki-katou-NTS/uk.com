@@ -51,6 +51,7 @@ module qmm005.common {
     export function webapi(): any {
         return {
             'qmm005a': {
+                'update': 'pr/core/qmm005a/update',
                 'getdata': 'pr/core/qmm005a/getdata'
             },
             'qmm005c': {
