@@ -10,22 +10,22 @@ import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.core.dom.company.CompanyCode;
-import nts.uk.ctx.pr.core.app.wagetable.command.dto.WtElementDto;
+import nts.uk.ctx.pr.core.app.wagetable.command.dto.ElementItemDto;
+import nts.uk.ctx.pr.core.app.wagetable.command.dto.ElementSettingDto;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 import nts.uk.ctx.pr.core.dom.wagetable.WtCode;
 import nts.uk.ctx.pr.core.dom.wagetable.history.WtHistorySetMemento;
 import nts.uk.ctx.pr.core.dom.wagetable.history.WtItem;
 import nts.uk.ctx.pr.core.dom.wagetable.history.element.ElementSetting;
+import nts.uk.ctx.pr.core.dom.wagetable.history.element.item.CodeItem;
+import nts.uk.ctx.pr.core.dom.wagetable.history.element.item.RangeItem;
 
 /**
- * The Class WageTableHistoryModel.
+ * The Class WtHistoryDto.
  */
 @Getter
 @Setter
-public class WageTableHistoryDto implements WtHistorySetMemento {
-
-	/** The head. */
-	private WageTableHeadDto head;
+public class WtHistoryDto implements WtHistorySetMemento {
 
 	/** The history id. */
 	private String historyId;
@@ -36,11 +36,11 @@ public class WageTableHistoryDto implements WtHistorySetMemento {
 	/** The end month. */
 	private Integer endMonth;
 
-	/** The demension details. */
-	private List<WtElementDto> demensionDetails;
+	/** The elements. */
+	private List<ElementSettingDto> elements;
 
 	/** The value items. */
-	private List<WageTableItemDto> valueItems;
+	private List<WtItemDto> valueItems;
 
 	/*
 	 * (non-Javadoc)
@@ -96,15 +96,44 @@ public class WageTableHistoryDto implements WtHistorySetMemento {
 	@Override
 	public void setValueItems(List<WtItem> valueItems) {
 		this.valueItems = valueItems.stream().map(item -> {
-			WageTableItemDto dto = new WageTableItemDto();
+			WtItemDto dto = new WtItemDto();
 			item.saveToMemento(dto);
 			return dto;
 		}).collect(Collectors.toList());
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.pr.core.dom.wagetable.history.WtHistorySetMemento#setElementSettings(java.util.List)
+	 */
 	@Override
 	public void setElementSettings(List<ElementSetting> elementSettings) {
-		// TODO UPDATE LATER.
+		this.elements = elementSettings.stream().map(item -> {
+			ElementSettingDto elementSettingDto = new ElementSettingDto();
+			elementSettingDto.setDemensionNo(item.getDemensionNo().value);
+			elementSettingDto.setType(item.getType().value);
+
+			// Code mode
+			if (item.getType().isCodeMode) {
+				elementSettingDto.setItemList(item.getItemList().stream().map(subItem -> {
+					CodeItem codeItem = (CodeItem) subItem;
+					return ElementItemDto.builder().uuid(codeItem.getUuid())
+							.referenceCode(codeItem.getReferenceCode()).build();
+				}).collect(Collectors.toList()));
+			}
+
+			// Range mode
+			if (item.getType().isRangeMode) {
+				elementSettingDto.setItemList(item.getItemList().stream().map(subItem -> {
+					RangeItem rangeItem = (RangeItem) subItem;
+					return ElementItemDto.builder().uuid(rangeItem.getUuid())
+							.orderNumber(rangeItem.getOrderNumber())
+							.startVal(rangeItem.getStartVal()).endVal(rangeItem.getEndVal())
+							.build();
+				}).collect(Collectors.toList()));
+			}
+
+			return elementSettingDto;
+		}).collect(Collectors.toList());
 	}
 
 }
