@@ -14,13 +14,19 @@ module nts.uk.pr.view.qpp018.c {
             return nts.uk.request.ajax(paths.findCheckListPrintSetting);
         }
         
+        /**
+         * save checklist print setting
+         */
         export function saveCheckListPrintSetting(command: any): JQueryPromise<any> {
             return nts.uk.request.ajax(paths.saveCheckListPrintSetting, command)
         }
         
+        /**
+         * model
+         */
         export module model {
             
-            export class CheckListPrintSettingDto {
+            export interface CheckListPrintSettingDto {
                 
                 showCategoryInsuranceItem: boolean;
                 showDetail: boolean;

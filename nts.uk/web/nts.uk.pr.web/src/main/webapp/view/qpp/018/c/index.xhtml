@@ -17,7 +17,7 @@
 
 		<ui:define name="content">	
 					<div class="end-title"></div>
-					<div id="details">
+					<div id="details" data-bind="with: checklistPrintSettingModel">
 						<div id="label-details">
 							<div>
 								<div data-bind="ntsFormLabel: {}">健康保険料の内訳表示選択</div>
@@ -38,7 +38,7 @@
 								<button >?</button>
 								</div>
 								<div id="require-least-item"></div>
-								<div id="output-setting" >
+								<div id="output-setting">
 		 							<div class="check-output" data-bind="ntsCheckBox: { checked: showDetail , text:'明細'}"></div>
 									<div class="check-output" data-bind="ntsCheckBox: { checked: showOffice , text:'事務所月計'}"></div>
 									<div class="check-output" data-bind="ntsCheckBox: { checked: showTotal , text:'総合月計'}"></div>
