@@ -7,45 +7,48 @@
 
 <body>
 
-	<ui:composition template="dialog.xhtml">
+	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<com:scriptfile path="start.js" />
-			<com:scriptfile path="viewmodel.js" />
-			<com:stylefile path="main.css" />
+			<com:scriptfile path="qpp014.j.start.js" />
+			<com:scriptfile path="qpp014.j.viewmodel.js" />
+			<com:stylefile path="qpp014.j.main.css" />
 			<com:scriptfile set="IGNITE" />
 		</ui:define>
 		<ui:define name="content">
 			<div id="functions-area">
-				<button class=" proceed" id="J_BTN_001">履歴追加</button>
-				<button id="J_BTN_002">履歴追加</button>
+				<button class=" proceed" id="J_BTN_001">印刷(PDF)</button>
+				<button id="J_BTN_002">閉じる</button>
 			</div>
 			<div id="contents-area">
 				<div id="contents-area-left">
 					<div class="divLine">
 						<div class="divLine-col-1">
-							<div id="J_LBL_001" data-bind="ntsFormLabel: {required: false}">レイアウトコード</div>
+							<div id="J_LBL_001" data-bind="ntsFormLabel: {required: false}">処理年月</div>
 						</div>
 						<div class="divLine-col-2">
-							<label id="J_LBL_002">02</label>
+							<label id="J_LBL_002">処理年月</label>
 						</div>
 					</div>
 					<div class="divLine">
 						<div class="divLine-col-1">
-							<div id="J_LBL_003" data-bind="ntsFormLabel: {required: false}">レイアウトコード</div>
+							<div id="J_LBL_003" data-bind="ntsFormLabel: {required: false}">振込日</div>
 						</div>
 						<div class="divLine-col-2">
-							<label id="J_LBL_004">04</label>
+							<label id="J_LBL_004">振込指定日</label>
 						</div>
 					</div>
 					<div class="divLine">
-						<label id="J_LBL_005">05</label>
+						<label id="J_LBL_005">出力形式を選択する</label>
 					</div>
 					<hr id="J_HR_001" />
 					<div class="divLine">
 						<div id="J_SEL_001"
 							data-bind="ntsRadioBoxGroup: {
-								options: itemList_J_SEL_001,
-								optionsValue: 'id',
+								options: ko.observableArray([
+						            { code: '1', name: '銀行集計' },
+						            { code: '2', name: '明細出力' }
+						        ]),
+								optionsValue: 'code',
 								optionsText: 'name',
 								value: selectedId_J_SEL_001,
 								enable: true}">
@@ -53,7 +56,7 @@
 					</div>
 					<div class="divLine" style="padding-left: 30px;">
 						<div class="divLine-col-1">
-							<div id="J_LBL_006" data-bind="ntsFormLabel: {required: false}">レイアウトコード</div>
+							<div id="J_LBL_006" data-bind="ntsFormLabel: {required: false}">出力順</div>
 						</div>
 						<div class="divLine-col-2">
 							<div id="J_SEL_002"
@@ -73,7 +76,7 @@
 					</div>
 					<div class="divLine" style="padding-left: 30px;">
 						<div class="divLine-col-1">
-							<div id="J_LBL_007" data-bind="ntsFormLabel: {required: false}">レイアウトコード</div>
+							<div id="J_LBL_007" data-bind="ntsFormLabel: {required: false}">出力氏名</div>
 						</div>
 						<div class="divLine-col-2">
 							<div id="J_SEL_003"
@@ -91,10 +94,24 @@
 							</div>
 						</div>
 					</div>
+					<div class="divLine" style="padding-left: 30px;">
+						<div id="J_LBL_009" data-bind="ntsFormLabel: {required: false}">給与・予備月の出力形式</div>
+					</div>
+					<div class="divLine" style="padding-left: 30px;">
+						<div class="cf" id="J_SEL_009" data-bind="ntsSwitchButton: {
+							options: ko.observableArray([
+					            { code: '1', name: '合算して出力' },
+					            { code: '2', name: '個別に出力' }
+					        ]),
+							optionsValue: 'code',
+							optionsText: 'name',
+							value: currentCode_J_SEL_004,
+							enable: true }"></div>
+					</div>
 				</div>
 				<div id="contents-area-right">
 					<div class="divLine">
-						<div id="J_LBL_008" data-bind="ntsFormLabel: {required: false}">レイアウトコード</div>
+						<div id="J_LBL_008" data-bind="ntsFormLabel: {required: true}">振込元銀行</div>
 					</div>
 					<div class="divLine">
 						<table id="J_LST_001"
@@ -103,7 +120,14 @@
 							height: 380,
 							dataSource: items_J_LST_001,
 							primaryKey: 'code',
-							columns: columns_J_LST_001,
+							columns: ko.observableArray([
+				                { headerText: '振込元銀行', prop: 'code', width: 100 },
+				                { headerText: '銀行コード', prop: 'name', width: 150 },
+				                { headerText: '銀行名', prop: 'description', width: 200 },
+				                { headerText: '支店名', prop: 'description', width: 200 },
+				                { headerText: '口座区分', prop: 'description', width: 200 },
+				                { headerText: '口座番号', prop: 'description', width: 200 }
+				            ]),
 							multiple: false,
 							value: currentCode_J_LST_001}">
 						</table>

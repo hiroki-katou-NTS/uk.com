@@ -2,7 +2,6 @@
 module qpp014.j {
     export class ScreenModel {
         //radiogroup
-        itemList_J_SEL_001: KnockoutObservableArray<any>;
         selectedId_J_SEL_001: KnockoutObservable<number>;
         //combobox
         //J_SEL_002
@@ -13,43 +12,31 @@ module qpp014.j {
         selectedCode_J_SEL_003: KnockoutObservable<string>;
         //gridview
         items_J_LST_001: KnockoutObservableArray<ItemModel_J_LST_001>;
-        columns_J_LST_001: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
         currentCode_J_LST_001: KnockoutObservable<any>;
+        currentCode_J_SEL_004: KnockoutObservable<any>;
         constructor() {
             let self = this;
-            //radiogroup
-            self.itemList_J_SEL_001 = ko.observableArray([
-                new BoxModel_J_SEL_001(1, 'box 1'),
-                new BoxModel_J_SEL_001(2, 'box 2')
-            ]);
             self.selectedId_J_SEL_001 = ko.observable(1);
-            //combobox
-            //J_SEL_002
             self.itemList_J_SEL_002 = ko.observableArray([
-                new ItemModel_J_SEL_002('Šî–{‹‹1', 'Šî–{‹‹'),
-                new ItemModel_J_SEL_002('Šî–{‹‹2', '–ğEè“–'),
-                new ItemModel_J_SEL_002('0003', 'Šî–{‹‹')
+                new ItemModel_J_SEL_002('ï¿½ï¿½{ï¿½ï¿½1', 'ï¿½ï¿½{ï¿½ï¿½'),
+                new ItemModel_J_SEL_002('ï¿½ï¿½{ï¿½ï¿½2', 'ï¿½ï¿½Eï¿½è“–'),
+                new ItemModel_J_SEL_002('0003', 'ï¿½ï¿½{ï¿½ï¿½')
             ]);
             self.selectedCode_J_SEL_002 = ko.observable('0002')
-            //J_SEL_003
             self.itemList_J_SEL_003 = ko.observableArray([
-                new ItemModel_J_SEL_003('Šî–{‹‹1', 'Šî–{‹‹'),
-                new ItemModel_J_SEL_003('Šî–{‹‹2', '–ğEè“–'),
-                new ItemModel_J_SEL_003('0003', 'Šî–{‹‹')
+                new ItemModel_J_SEL_003('ï¿½ï¿½{ï¿½ï¿½1', 'ï¿½ï¿½{ï¿½ï¿½'),
+                new ItemModel_J_SEL_003('ï¿½ï¿½{ï¿½ï¿½2', 'ï¿½ï¿½Eï¿½è“–'),
+                new ItemModel_J_SEL_003('0003', 'ï¿½ï¿½{ï¿½ï¿½')
             ]);
             self.selectedCode_J_SEL_003 = ko.observable('0002');
             //gridview
             //LST_001
             self.items_J_LST_001 = ko.observableArray([]);
             for (let i = 1; i < 100; i++) {
-                self.items_J_LST_001.push(new ItemModel_J_LST_001('00' + i, 'åŸºæœ¬çµ¦', "description " + i, "other" + i));
+                self.items_J_LST_001.push(new ItemModel_J_LST_001('00' + i, 'åŸºæœ¬çµ¦', "description " + i));
             }
-            self.columns_J_LST_001 = ko.observableArray([
-                { headerText: 'ƒR[ƒh', prop: 'code', width: 100 },
-                { headerText: '–¼Ì', prop: 'name', width: 150 },
-                { headerText: 'à–¾', prop: 'description', width: 200 }
-            ]);
             self.currentCode_J_LST_001 = ko.observable();
+            self.currentCode_J_SEL_004 = ko.observable(1);
         }
     }
     export class BoxModel_J_SEL_001 {

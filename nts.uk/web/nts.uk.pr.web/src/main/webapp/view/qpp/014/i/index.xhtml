@@ -6,68 +6,81 @@
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 
 <body>
-
-	<ui:composition template="dialog.xhtml">
+	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
-			<com:scriptfile path="start.js" />
-			<com:scriptfile path="viewmodel.js" />
-			<com:stylefile path="main.css" />
+			<com:scriptfile path="qpp014.i.start.js" />
+			<com:scriptfile path="qpp014.i.viewmodel.js" />
+			<com:stylefile path="qpp014.i.main.css" />
 			<com:scriptfile set="IGNITE" />
 		</ui:define>
 		<ui:define name="content">
-			<div id="functions-area">
+			<div id="contents-area">
 				<div class="divLine">
-					<label id="I_LBL_001">01</label>
+					<label id="I_LBL_001">振込データの出力</label>
 				</div>
 				<div class="divLine">
-					<table id="I_LST_001"
-						data-bind="ntsGridList: {
-							width: 550,
-							height: 52,
-							dataSource: items_I_LST_001,
-							primaryKey: 'code',
-							columns: columns_I_LST_001,
-							multiple: false,
-							value: currentCodI_I_LST_001
-						}">
+					<table id="I_LST_001">
+						<tbody>
+							<tr>
+								<td>経過時間</td>
+								<td>b</td>
+							</tr>
+							<tr>
+								<td>処理状態</td>
+								<td>b</td>
+							</tr>
+							<tr>
+								<td>エラ</td>
+								<td>b</td>
+							</tr>
+						</tbody>
 					</table>
 				</div>
 				<div class="divLine">
-					<label id="I_LBL_002">01</label>
+					<label id="I_LBL_002">設定情報</label>
 				</div>
 				<div class="divLine">
-					<table id="I_LST_002"
-						data-bind="ntsGridList: {
-							width: 550,
-							height: 75,
-							dataSource: items_I_LST_002,
-							primaryKey: 'code',
-							columns: columns_I_LST_002,
-							multiple: false,
-							value: currentCodI_I_LST_002
-						}">
+					<table id="I_LST_002">
+						<tbody>
+							<tr>
+								<td>振込元銀行</td>
+								<td>b</td>
+							</tr>
+							<tr>
+								<td>処理する年月</td>
+								<td>b</td>
+							</tr>
+						</tbody>
 					</table>
 				</div>
-				<div class="divLine">
-					<button id="I_BTN_001">履歴追加</button>
-				</div>
-				<div class="divLine">
-					<table id="I_LST_003"
-						data-bind="ntsGridList: {
-							width: 610,
+				<div id="list3-div">
+					<div class="divLine">
+						<button id="I_BTN_001">エラー出力</button>
+					</div>
+					<div class="divLine">
+						<table id="I_LST_003"
+							data-bind="ntsGridList: {
+							width: 590,
 							height: 150,
 							dataSource: items_I_LST_003,
 							primaryKey: 'code',
-							columns: columns_I_LST_003,
+							columns: ko.observableArray([
+				                { headerText: '処理状態', prop: 'code', width: 120 },
+				                { headerText: '区分', prop: 'name', width: 50 },
+				                { headerText: '内容', prop: 'description', width: 150 }
+				            ]),
 							multiple: false,
-							value: currentCodI_I_LST_003
+							value: currentCode_I_LST_003
 						}">
-					</table>
+						</table>
+					</div>
 				</div>
-			</div>
-			<div id="contents-area">
-				<button class="large" id="I_BTN_002">履歴追加</button>
-				<button class="large" id="I_BTN_003">履歴追加</button>
+				<hr id="I_division"/>
+				<div class="divLine">
+					<button class="large" id="I_BTN_002">ファイルダウンロード</button>
+					<button id="I_BTN_004">中断</button>
+					<button id="I_BTN_003">閉じる</button>
+				</div>
 			</div>
 		</ui:define>
 	</ui:composition>
