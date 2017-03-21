@@ -1,13 +1,16 @@
 package nts.uk.ctx.basic.app.command.organization.position;
+
+import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.time.GeneralDate;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.basic.dom.organization.position.JobHistory;
 import nts.uk.ctx.basic.dom.organization.position.PositionRepository;
 import nts.uk.shr.com.context.AppContexts;
-
 
 @Stateless
 public class UpdateHistoryCommandHandler extends CommandHandler<UpdateHistoryCommand> {
@@ -17,20 +20,15 @@ public class UpdateHistoryCommandHandler extends CommandHandler<UpdateHistoryCom
 
 	@Override
 	protected void handle(CommandHandlerContext<UpdateHistoryCommand> context) {
-		
-	
-		String companyCode = AppContexts.user().companyCode();
-		String hitoryId = IdentifierUtil.randomUniqueId();
-		JobHistory jobHistory = new JobHistory(companyCode,hitoryId,context.getCommand().getEndDate(),context.getCommand().getStartDate());
-		positionRepository.updateHistory(jobHistory);
-	}
-		
-//		if(!payClassificationRepository.isExisted(companyCode, 
-//				new PayClassificationCode(context.getCommand().getPayClassificationCode()))){
-//			//throw err[ER026]
-//			throw new BusinessException(new RawErrorMessage("ER026"));
-//
-//		}
+
+		UpdateHistoryCommand command = context.getCommand();
+		// case update
+		if (positionRepository.CheckUpdateHistory(command.getHistoryId(), command.getStartDate())) {
+			JobHistory jobHistory = command.toDomain();
+			jobHistory.validate();
+			positionRepository.updateHistory(jobHistory);
+		}
+
 	}
 
-
+}

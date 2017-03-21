@@ -1,0 +1,39 @@
+@CHARSET "UTF-8";
+
+.separate-button {
+	margin-left: 10px;
+	margin-top:	5px;
+}
+
+.header {
+	margin: 5px;
+	padding:5px;
+	border-bottom: 1px solid #aaa;
+	height: 30px;
+	width: 100%;
+}
+
+.body {
+	padding:10px;
+}
+.row {
+	padding:10px;
+}
+#lbl_003 {
+	float: right;
+	margin-left: 10px;
+}
+#inp_001 {
+	float: left;
+}
+.div {
+	border-top: 1px solid #aaa;
+	height: 70px;
+	margin-top: 10px;
+	padding-top: 15px;
+}
+#btn_001 {
+	margin-left: 100px;
+	padding-bottom: 10px;
+}
+

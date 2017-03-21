@@ -16,7 +16,10 @@ public class ClassificationFinder {
 	@Inject
 	private ClassificationRepository classificationRepository;
 
-	/* get All Classification */
+	/**
+	 * get All Classification
+	 * @return List<ClassificationDto>
+	 */
 	public List<ClassificationDto> init() {
 		String companyCode = AppContexts.user().companyCode();
 		return classificationRepository.findAll(companyCode).stream().map(e -> {
@@ -24,12 +27,17 @@ public class ClassificationFinder {
 		}).collect(Collectors.toList());
 	}
 
-	/* Convert Classification of Dom to  ClassificationDto of App*/
+
+/**
+ * Convert from DOM Layer to InFra Layer
+ * @param classification
+ * @return ClassificationDto
+ */
 	private ClassificationDto convertToDto(Classification classification) {
-		ClassificationDto classificationDto = new ClassificationDto();
-		classificationDto.setClassificationCode(classification.getClassificationCode().toString());
-		classificationDto.setClassificationName(classification.getClassificationName().toString());
-		classificationDto.setMemo(classification.getClassificationMemo().toString());
+		ClassificationDto classificationDto = new ClassificationDto(
+				classification.getClassificationCode().toString(),
+				classification.getClassificationName().toString(),
+				classification.getClassificationMemo().toString());
 		return classificationDto;
 	}
 

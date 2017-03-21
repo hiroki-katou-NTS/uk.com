@@ -1,10 +1,12 @@
 package nts.uk.ctx.basic.app.command.organization.position;
 
+import java.util.List;
+
 import lombok.Getter;
-import lombok.Setter;
+import nts.uk.ctx.basic.app.find.organization.position.JobHistDto;
 
 @Getter
-@Setter
+
 public class AddPositionCommand {
 
 	private String jobName;
@@ -14,7 +16,8 @@ public class AddPositionCommand {
 	private String historyId;
 
 	private String memo;
-
+		
+	
 	// private String hiterarchyOrderCode;
 
 	// private int presenceCheckScopeSet;
@@ -22,5 +25,6 @@ public class AddPositionCommand {
 	// private String jobOutCode;
 
 	//private String companyCode;
+
 
 }

@@ -1,0 +1,14 @@
+@CHARSET "UTF-8";
+
+#left-content {
+	margin-left: 30px;
+	padding: 20px;
+	float: left;
+	min-height: 400px;
+}
+
+#right-content {
+	margin-left: 40px;
+	float: left;
+	min-height: 600px;
+}

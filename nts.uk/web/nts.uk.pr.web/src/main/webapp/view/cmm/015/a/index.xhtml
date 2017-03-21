@@ -12,33 +12,28 @@
 				nts.uk.ctx.basic.dom.organization.payclassification.PayClassificationName
 				nts.uk.ctx.basic.dom.organization.payclassification.Memo
 			</com:ValidatorScript>
-			<com:stylefile path="main.css" />
+			<com:stylefile path="cmm015.a.main.css" />
 			<com:scriptfile set="IGNITE" />
-			<com:scriptfile path="start.js" />
-			<com:scriptfile path="viewmodel.js" />
-			<com:scriptfile path="service.js" />
+			<com:scriptfile path="cmm015.a.start.js" />
+			<com:scriptfile path="cmm015.a.vm.js" />
+			<com:scriptfile path="cmm015.a.service.js" />
 			<script type="text/javascript">
 			</script>
 		</ui:define>
-
 		<ui:define name="content">
-
 			<div id="functions-area" class="divHeader">
-				<button id="A_BTN_001" data-bind="click: initRegisterPayClassification"
-					class="btnStyle">新規</button>
+				<button id="A_BTN_001"
+					data-bind="click: initRegisterPayClassification" class="btnStyle">新規</button>
 				<button id="A_BTN_002" data-bind="click: addPayClassification"
 					class="proceed btnStyle">登録</button>
 				<button id="A_BTN_003">マスタ修正ログ</button>
-				<button id="A_BTN_004" data-bind="click: deletePayClassification, enable : isDeleteEnable"
+				<button id="A_BTN_004"
+					data-bind="click: deletePayClassification, enable : isDeleteEnable"
 					class="danger btnStyle">削除</button>
-
 			</div>
-
 			<div id="contents-area">
 				<div id="left-content" class="bg-green caret-right caret-background">
-
 					<i class="icon icon-searchbox"></i>
-
 					<div class="cf">
 						<div style="float: left">
 							<div id="test"
@@ -71,14 +66,11 @@
 							<col width="230px" />
 							<col width="*" />
 						</colgroup>
-
 						<tr>
 							<td class="row_1">
 								<div
 									data-bind="ntsFormLabel: { constraint: ['PayClassificationCode', 'PayClassificationName'], required: true }">
 									コード/名称</div>
-
-
 							</td>
 							<td class="valign-center">
 								<div>
@@ -94,15 +86,13 @@
 										<input
 											data-bind="ntsTextEditor: {
                                             value: INP_003_name,
-                                            constraint: 'PayClassificationName'
-                                            
+                                            constraint: 'PayClassificationName'                                          
                                             }" />
 									</div>
 
 								</div>
 							</td>
 						</tr>
-
 						<tr>
 							<td>
 								<div data-bind="ntsFormLabel: {constraint: 'Memo'}">
@@ -111,7 +101,7 @@
 							</td>
 							<td class="valign-center">
 								<div>
-									<textarea id ="memo"
+									<textarea id="memo"
 										data-bind="ntsMultilineEditor: {
 											value: INP_004_notes,
 											constraint: 'Memo'

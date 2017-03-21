@@ -1,11 +1,13 @@
 package nts.uk.ctx.basic.infra.repository.organization.position;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
+import nts.arc.time.GeneralDate;
 import nts.uk.ctx.basic.dom.organization.position.JobCode;
 import nts.uk.ctx.basic.dom.organization.position.JobHistory;
 import nts.uk.ctx.basic.dom.organization.position.JobTitle;
@@ -24,6 +26,9 @@ public class JpaPositionRepository extends JpaRepository implements PositionRepo
 	private static final String FIND_SINGLE_HISTORY;
 	private static final String FIND_SINGLE;
 	private static final String SELECT_ALL;
+	private static final String IS_EXISTED_HISTORY_BY_DATE;
+	private static final String SELECT_HISTORY_BY_START_DATE;
+	private static final String IS_UPDATE_HISTORY;
 
 	static {
 		StringBuilder builderString = new StringBuilder();
@@ -49,7 +54,7 @@ public class JpaPositionRepository extends JpaRepository implements PositionRepo
 		builderString.append("SELECT e");
 		builderString.append(" FROM CmnmtJobTitle e");
 		builderString.append(" WHERE e.cmnmtJobTitlePK.companyCode = :companyCode");
-		builderString.append(" AND e.cmnmtJobTitlePK.historyID = :historyID");
+		builderString.append(" AND e.cmnmtJobTitlePK.historyId = :historyId");
 		builderString.append(" AND e.cmnmtJobTitlePK.jobCode = :jobCode");
 		FIND_SINGLE = builderString.toString();
 
@@ -57,17 +62,43 @@ public class JpaPositionRepository extends JpaRepository implements PositionRepo
 		builderString.append("SELECT e");
 		builderString.append(" FROM CmnmtJobHist e");
 		builderString.append(" WHERE e.cmnmtJobTitlePK.companyCode = :companyCode");
-		builderString.append(" AND e.cmnmtJobTitlePK.historyID = :historyID");
+		builderString.append(" AND e.cmnmtJobTitlePK.historyId = :historyId");
 		FIND_SINGLE_HISTORY = builderString.toString();
+
+		builderString = new StringBuilder();
+		builderString.append("SELECT count(e)");
+		builderString.append(" FROM CmnmtJobHist e");
+		builderString.append(" WHERE e.cmnmtJobHistPK.companyCode = :companyCode");
+		builderString.append(" AND e.startDate >= :startDate");
+		IS_EXISTED_HISTORY_BY_DATE = builderString.toString();
+
+		builderString = new StringBuilder();
+		builderString.append("SELECT TOP 1 e");
+		builderString.append(" FROM CmnmtJobHist e");
+		builderString.append(" WHERE e.cmnmtJobHistPK.companyCode = :companyCode");
+		builderString.append(" AND e.startDate < :startDate");
+		builderString.append(" ORDER BY e.startDate DESC");
+		SELECT_HISTORY_BY_START_DATE = builderString.toString();
+
+		builderString = new StringBuilder();
+		builderString.append("SELECT  count(e)");
+		builderString.append(" FROM CmnmtJobHist e");
+		builderString.append(" WHERE e.cmnmtJobHistPK.historyId = :historyId");
+		builderString.append(" AND e.startDate < :startDate");
+		builderString.append(" AND e.endDate > :startDate");
+		IS_UPDATE_HISTORY = builderString.toString();
 
 	}
 
 	private JobTitle convertToDomain(CmnmtJobTitle cmnmtJobTittle) {
 		JobTitle jobTittle = JobTitle.createFromJavaType(cmnmtJobTittle.getJobName(),
-				cmnmtJobTittle.getCmnmtJobTitlePK().getJobCode(), cmnmtJobTittle.getJobOutCode() != null ? cmnmtJobTittle.getJobOutCode() : "",
+				cmnmtJobTittle.getCmnmtJobTitlePK().getJobCode(),
+				cmnmtJobTittle.getJobOutCode() != null ? cmnmtJobTittle.getJobOutCode() : "",
 				cmnmtJobTittle.getCmnmtJobTitlePK().getHistoryId(),
-				cmnmtJobTittle.getCmnmtJobTitlePK().getCompanyCode(), cmnmtJobTittle.getMemo() != null ? cmnmtJobTittle.getMemo() : "",
-				cmnmtJobTittle.getHierarchyOrderCode() != null ? cmnmtJobTittle.getHierarchyOrderCode() : "", cmnmtJobTittle.getPresenceCheckScopeSet());
+				cmnmtJobTittle.getCmnmtJobTitlePK().getCompanyCode(),
+				cmnmtJobTittle.getMemo() != null ? cmnmtJobTittle.getMemo() : "",
+				cmnmtJobTittle.getHierarchyOrderCode() != null ? cmnmtJobTittle.getHierarchyOrderCode() : "",
+				cmnmtJobTittle.getPresenceCheckScopeSet());
 		return jobTittle;
 
 	}
@@ -81,11 +112,13 @@ public class JpaPositionRepository extends JpaRepository implements PositionRepo
 
 	private CmnmtJobTitle convertToDbType(JobTitle position) {
 		CmnmtJobTitle cmnmtJobTitle = new CmnmtJobTitle();
-		CmnmtJobTitlePK cmnmtJobTitlePK = new CmnmtJobTitlePK(position.getCompanyCode(), position.getJobCode().v(), position.getHistoryId());
+		CmnmtJobTitlePK cmnmtJobTitlePK = new CmnmtJobTitlePK(position.getCompanyCode(), position.getJobCode().v(),
+				position.getHistoryId());
 		cmnmtJobTitle.setMemo(position.getMemo() != null ? position.getMemo().v() : "");
 		cmnmtJobTitle.setJobName(position.getJobName().v());
-		cmnmtJobTitle.setJobOutCode(position.getJobOutCode()!= null ? position.getJobOutCode().v() : "");
-		cmnmtJobTitle.setHierarchyOrderCode(position.getHiterarchyOrderCode()!= null ? position.getHiterarchyOrderCode().v() : "");
+		cmnmtJobTitle.setJobOutCode(position.getJobOutCode() != null ? position.getJobOutCode().v() : "");
+		cmnmtJobTitle.setHierarchyOrderCode(
+				position.getHiterarchyOrderCode() != null ? position.getHiterarchyOrderCode().v() : "");
 		cmnmtJobTitle.setPresenceCheckScopeSet(0);
 		cmnmtJobTitle.setCmnmtJobTitlePK(cmnmtJobTitlePK);
 		return cmnmtJobTitle;
@@ -101,43 +134,8 @@ public class JpaPositionRepository extends JpaRepository implements PositionRepo
 		return cmnmtJobTitleHistory;
 	}
 
-	// private static JobTitle toDomain(CmnmtJobTitle entity) {
-	// val domain = JobTitle.createFromJavaType(
-	// entity.cmnmtJobTitlePK.companyCode,
-	// entity.cmnmtJobTitlePK.historyId,
-	// entity.cmnmtJobTitlePK.jobCode,
-	// entity.jobName,
-	// entity.presenceCheckScopeSet,
-	// entity.jobOutCode,
-	// entity.memo);
-	// return domain;
-	// }
-	//
-	// private static JobHistory toDomain2(CmnmtJobHist entity) {
-	// val domain = JobHistory.createFromJavaType(
-	// entity.startDate,
-	// entity.endDate,
-	// entity.cmnmtJobHistPK.companyCode,
-	// entity.cmnmtJobHistPK.historyId
-	// );
-	// return domain;
-	// }
-
-	// private static CmnmtJobTitle toEntity(JobTitle domain) {
-	//
-	// val entity = new CmnmtJobTitle();
-	// entity.cmnmtJobTitlePK = new CmnmtJobTitlePK();
-	// entity.jobName = domain.getJobName().v();
-	// entity.presenceCheckScopeSet = domain.getPresenceCheckScopeSet().value;
-	// entity.jobOutCode = domain.getJobOutCode().v();
-	// entity.memo = domain.getMemo().v();
-	//
-	// return entity;
-	//
-	// }
-
 	@Override
-	public void add(JobTitle position) {
+	public void add(JobTitle position) { 
 		this.commandProxy().insert(convertToDbType(position));
 	}
 
@@ -223,16 +221,26 @@ public class JpaPositionRepository extends JpaRepository implements PositionRepo
 				}).orElse(Optional.empty());
 	}
 
-	// @Override
-	// public Optional<Position> find(String companyCode, String jobCode, String
-	// historyId) {
-	// return this.queryProxy().query(SELECT_DETAIL, CmnmtJobTitle.class)
-	// .setParameter("companyCode", companyCode)
-	// .setParameter("jobCode", jobCode)
-	// .setParameter("historyId", historyId)
-	// .getSingle().map(e -> {
-	// return Optional.of(toDomain(e));
-	// }).orElse(Optional.empty());
-	// }
+	@Override
+	public boolean ExistedHistoryBydate(String companyCode, GeneralDate startDate) {
+		return this.queryProxy().query(IS_EXISTED_HISTORY_BY_DATE, long.class).setParameter("companyCode", companyCode)
+				.setParameter("startDate", startDate).getSingle().get() > 0;
+
+	}
+
+	@Override
+	public Optional<JobHistory> getHistoryByEdate(String companyCode, GeneralDate startDate) {
+		return this.queryProxy().query(SELECT_HISTORY_BY_START_DATE, CmnmtJobHist.class)
+				.setParameter("companyCode", companyCode).setParameter("startDate", startDate).getSingle().map(e -> {
+					return Optional.of(convertToDomain2(e));
+				}).orElse(Optional.empty());
+	}
+
+	@Override
+	public boolean CheckUpdateHistory(String historyId, GeneralDate startDate) {
+	
+		return this.queryProxy().query(IS_UPDATE_HISTORY, long.class).setParameter("historyId", historyId)
+				.setParameter("startDate", startDate).getSingle().get() > 0;
+	}
 
 }

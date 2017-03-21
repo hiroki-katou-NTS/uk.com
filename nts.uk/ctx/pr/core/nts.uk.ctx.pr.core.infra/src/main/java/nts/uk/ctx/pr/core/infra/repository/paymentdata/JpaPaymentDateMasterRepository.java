@@ -8,8 +8,8 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.pr.core.dom.paymentdata.paymentdatemaster.PaymentDateMaster;
 import nts.uk.ctx.pr.core.dom.paymentdata.repository.PaymentDateMasterRepository;
-import nts.uk.ctx.pr.core.infra.entity.rule.employement.processing.yearmonth.QpdmtPayday;
-import nts.uk.ctx.pr.core.infra.entity.rule.employement.processing.yearmonth.QpdmtPaydayPK;
+import nts.uk.ctx.pr.core.infra.entity.rule.employment.processing.yearmonth.QpdmtPayday;
+import nts.uk.ctx.pr.core.infra.entity.rule.employment.processing.yearmonth.QpdmtPaydayPK;
 
 @Stateless
 public class JpaPaymentDateMasterRepository extends JpaRepository implements PaymentDateMasterRepository {

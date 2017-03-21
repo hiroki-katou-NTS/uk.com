@@ -1,28 +1,46 @@
 package nts.uk.ctx.basic.dom.organization.payclassification;
 
 import java.util.List;
-import java.util.Optional;
 
 
 public interface PayClassificationRepository {
 
-
-
-	//add pay class
+	/**
+	 * add pay classification
+	 * @param payClassification
+	 */
+	
 	void add(PayClassification payClassification);
 
-	//update pay class
+	/**
+	 * update pay classification
+	 * @param payClassification
+	 */
+	
 	void update(PayClassification payClassification);
 
-	//check existed
-	boolean isExisted(String companyCode, PayClassificationCode payClassificationCode);
+	/**
+	 * check existed
+	 * @param companyCode
+	 * @param payClassificationCode
+	 * @return
+	 */
+	
+	boolean isExisted(String companyCode, String payClassificationCode);
 
-	//find all pay class
+	/**
+	 * find all pay classification
+	 * @param companyCode
+	 * @return
+	 */
+	
 	List<PayClassification> findAll(String companyCode);
 
-	Optional<PayClassification> findSinglePayClassification(String companyCode,
-			String payClassificationCode);
-
-	//delete payclass
-	void remove(String companyCode, PayClassificationCode payClassificationCode);
+	/**
+	 * delete pay classification
+	 * @param companyCode
+	 * @param payClassificationCode
+	 */
+	
+	void remove(String companyCode, String payClassificationCode);
 }

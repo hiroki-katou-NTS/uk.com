@@ -1,31 +1,50 @@
 package nts.uk.ctx.basic.app.command.organization.position;
 
+import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
+import nts.arc.error.BusinessException;
+import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.time.GeneralDate;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.basic.dom.organization.position.JobHistory;
 import nts.uk.ctx.basic.dom.organization.position.PositionRepository;
 import nts.uk.shr.com.context.AppContexts;
 
-
-
-
 @Stateless
-public class AddHistoryCommandHandler extends CommandHandler<AddHistoryCommand>{
-	
+public class AddHistoryCommandHandler extends CommandHandler<AddHistoryCommand> {
+
 	@Inject
 	private PositionRepository positionRepository;
-	
-	
+
 	protected void handle(CommandHandlerContext<AddHistoryCommand> context) {
-		
+
+		AddHistoryCommand command = context.getCommand();
 		String companyCode = AppContexts.user().companyCode();
-		String hitoryId = IdentifierUtil.randomUniqueId();
-		JobHistory jobHistory = new JobHistory(companyCode,hitoryId,context.getCommand().getEndDate(),context.getCommand().getStartDate());
-		positionRepository.addHistory(jobHistory);
+
+		// case insert
+		if (positionRepository.ExistedHistoryBydate(companyCode, command.getStartDate())) {
+			throw new BusinessException(new RawErrorMessage("履歴の期間が正しくありません。"));
+		} else {
+			JobHistory jobHistory = command.toDomain();
+			jobHistory.validate();
+			positionRepository.addHistory(jobHistory);
+			GeneralDate pos1 = context.getCommand().getStartDate();
+			GeneralDate endDate = pos1.addDays(-1);
+			Optional<JobHistory> historyEndDate = positionRepository.getHistoryByEdate(companyCode, pos1);
+			if (historyEndDate.isPresent()) {
+				JobHistory jobHis = historyEndDate.get();
+				jobHis.setEndDate(endDate);
+				positionRepository.updateHistory(jobHis);
+				positionRepository.addHistory(jobHistory);
+
+			}
+		}
+
 	}
-	
+
 }
