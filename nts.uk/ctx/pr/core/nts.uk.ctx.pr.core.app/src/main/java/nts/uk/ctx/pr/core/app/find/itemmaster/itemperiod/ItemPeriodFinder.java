@@ -19,9 +19,9 @@ public class ItemPeriodFinder {
 
 		Optional<ItemPeriod> itemOpt = this.itemPeriodRepo.find(AppContexts.user().companyCode(), categoryAtr,
 				itemCode);
-		if (!itemOpt.isPresent()) {
+		if (!itemOpt.isPresent())
 			return null;
-		}
+		
 		return ItemPeriodDto.fromDomain(itemOpt.get());
 	}
 }

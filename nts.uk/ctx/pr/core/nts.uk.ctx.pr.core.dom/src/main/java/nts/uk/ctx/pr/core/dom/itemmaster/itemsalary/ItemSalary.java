@@ -11,30 +11,30 @@ import nts.uk.shr.com.primitive.Memo;
 
 @Getter
 public class ItemSalary extends AggregateRoot {
-	public CompanyCode companyCode;
-	public ItemCode itemCode;
-	public TaxAtr taxAtr;
-	public InsAtr socialInsAtr;
-	public InsAtr laborInsAtr;
-	public FixPayAtr fixPayAtr;
-	public ApplyFor applyForAllEmpFlg;
-	public ApplyFor applyForMonthlyPayEmp;
-	public ApplyFor applyForDaymonthlyPayEmp;
-	public ApplyFor applyForDaylyPayEmp;
-	public ApplyFor applyForHourlyPayEmp;
-	public ApplyFor avePayAtr;
-	public RangeAtr errRangeLowAtr;
-	public ErrRangeLow errRangeLow;
-	public RangeAtr errRangeHighAtr;
-	public ErrRangeHigh errRangeHigh;
-	public RangeAtr alRangeLowAtr;
-	public AlRangeLow alRangeLow;
-	public RangeAtr alRangeHighAtr;
-	public AlRangeHigh alRangeHigh;
-	public Memo memo;
-	public LimitMnyAtr limitMnyAtr;
-	public LimitMnyRefItemCd limitMnyRefItemCd;
-	public LimitMny limitMny;
+	private CompanyCode companyCode;
+	private ItemCode itemCode;
+	private TaxAtr taxAtr;
+	private InsAtr socialInsAtr;
+	private InsAtr laborInsAtr;
+	private FixPayAtr fixPayAtr;
+	private ApplyFor applyForAllEmpFlg;
+	private ApplyFor applyForMonthlyPayEmp;
+	private ApplyFor applyForDaymonthlyPayEmp;
+	private ApplyFor applyForDaylyPayEmp;
+	private ApplyFor applyForHourlyPayEmp;
+	private ApplyFor avePayAtr;
+	private RangeAtr errRangeLowAtr;
+	private ErrRangeLow errRangeLow;
+	private RangeAtr errRangeHighAtr;
+	private ErrRangeHigh errRangeHigh;
+	private RangeAtr alRangeLowAtr;
+	private AlRangeLow alRangeLow;
+	private RangeAtr alRangeHighAtr;
+	private AlRangeHigh alRangeHigh;
+	private Memo memo;
+	private LimitMnyAtr limitMnyAtr;
+	private LimitMnyRefItemCd limitMnyRefItemCd;
+	private LimitMny limitMny;
 
 	public ItemSalary(CompanyCode companyCode, ItemCode itemCode, TaxAtr taxAtr, InsAtr socialInsAtr,
 			InsAtr laborInsAtr, FixPayAtr fixPayAtr, ApplyFor applyForAllEmpFlg, ApplyFor applyForMonthlyPayEmp,

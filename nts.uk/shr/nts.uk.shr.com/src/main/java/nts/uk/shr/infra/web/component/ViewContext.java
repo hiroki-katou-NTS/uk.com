@@ -2,11 +2,15 @@ package nts.uk.shr.infra.web.component;
 
 import java.io.IOException;
 
+import javax.enterprise.inject.spi.CDI;
 import javax.faces.component.FacesComponent;
 import javax.faces.component.UIComponentBase;
 import javax.faces.context.FacesContext;
 import javax.faces.context.ResponseWriter;
+import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
+
+import nts.uk.shr.infra.web.component.env.ViewContextEnvWriter;
 
 @FacesComponent(tagName = "viewcontext", createTag = true)
 public class ViewContext extends UIComponentBase {
@@ -33,6 +37,9 @@ public class ViewContext extends UIComponentBase {
         
         rw.write("};");
         rw.write("__viewContext.primitiveValueConstraints = __viewContext.primitiveValueConstraints || {};");
+        
+        CDI.current().select(ViewContextEnvWriter.class).get().write(rw);
+        
         rw.write("</script>");
         
     }
