@@ -8,8 +8,11 @@ module nts.uk.pr.view.qmm016.a {
             wageTableList: any;
             monthRange: KnockoutComputed<string>;
 
-            // Head part view model.
-            head: WageTableHeadViewModel;
+            // Head part viewmodel.
+            head: HeadViewModel;
+
+            // History part viewmodel.
+            history: HistoryViewModel;
 
             // FIXED PART
             generalTableTypes: KnockoutObservableArray<model.DemensionElementCountType>;
@@ -23,7 +26,8 @@ module nts.uk.pr.view.qmm016.a {
                 var self = this;
 
                 // Head view model.
-                self.head = new WageTableHeadViewModel();
+                self.head = new HeadViewModel();
+                self.history = new HistoryViewModel();
 
                 // Tabs.
                 self.selectedTab = ko.observable('tab-1');
@@ -68,7 +72,16 @@ module nts.uk.pr.view.qmm016.a {
             onSave(): JQueryPromise<string> {
                 var self = this;
                 var dfd = $.Deferred<string>();
-                dfd.resolve();
+                if (self.isNewMode) {
+                    // Reg new.
+                    var wagetableDto = self.head.getWageTableDto();
+                    service.instance.initWageTable({
+                        wageTableHeadDto: wagetableDto,
+                        startMonth: self.history.startYearMonth()
+                    }).done(res => {
+                        dfd.resolve(res.uuid);
+                    });
+                }
                 return dfd.promise();
             }
 
@@ -85,7 +98,7 @@ module nts.uk.pr.view.qmm016.a {
         /**
          * Wage table head dto.
          */
-        export class WageTableHeadViewModel {
+        export class HeadViewModel {
             /** The code. */
             code: KnockoutObservable<string>;
             
@@ -121,7 +134,7 @@ module nts.uk.pr.view.qmm016.a {
                 self.demensionType = ko.computed(() => {
                     return model.demensionMap[self.demensionSet()];
                 });
-                self.demensionItemList = ko.observableArray<DemensionItemViewModel>([]);    
+                self.demensionItemList = ko.observableArray<DemensionItemViewModel>([]);
                 
                 self.demensionSet.subscribe(val => {
                     // Not new mode.
@@ -147,6 +160,26 @@ module nts.uk.pr.view.qmm016.a {
                 self.demensionSet(model.allDemension[0].code);
                 self.demensionItemList([]);
                 self.memo('');
+            }
+
+            /**
+             * Wage table dto.
+             */
+            getWageTableDto(): model.WageTableHeadDto {
+                var self = this;
+                var dto = <model.WageTableHeadDto>{};
+                dto.code = self.code();
+                dto.name = self.name();
+                dto.memo = self.memo();
+                dto.mode = self.demensionSet();
+                dto.elements = _.map(self.demensionItemList(), (item) => {
+                    var elementDto = <model.ElementDto>{};
+                    elementDto.demensionNo = item.demensionNo();
+                    elementDto.type = item.elementType();
+                    elementDto.referenceCode = item.elementCode();
+                    return elementDto;
+                });
+                return dto;
             }
 
             /**
@@ -211,7 +244,7 @@ module nts.uk.pr.view.qmm016.a {
                 self.isNewMode(false);
                 self.code(head.code);
                 self.name(head.name);
-                self.demensionSet(head.demensionSet);
+                self.demensionSet(head.mode);
                 self.memo(head.memo);
             }
             
@@ -259,11 +292,15 @@ module nts.uk.pr.view.qmm016.a {
          */
         export class HistoryViewModel {
             startYearMonth: KnockoutObservable<number>;
+            startYearMonthJpText: KnockoutObservable<string>;
             endYearMonth: KnockoutObservable<number>;
             constructor() {
                 var self = this;
                 self.startYearMonth = ko.observable(parseInt(nts.uk.time.formatDate(new Date(), 'yyyyMM')));
                 self.endYearMonth = ko.observable(99999);
+                self.startYearMonthJpText = ko.computed(() => {
+                    return nts.uk.text.format('（{0}）', nts.uk.time.yearmonthInJapanEmpire(self.startYearMonth()).toString());
+                })
             }
         }
     }

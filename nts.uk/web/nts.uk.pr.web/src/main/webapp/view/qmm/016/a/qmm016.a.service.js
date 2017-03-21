@@ -18,6 +18,7 @@ var nts;
                         var path = {
                             loadHistoryByUuid: 'pr/proto/wagetable/find/{0}',
                             loadDemensionList: 'pr/proto/wagetable/demensions',
+                            initWageTable: 'pr/proto/wagetable/init'
                         };
                         var Service = (function (_super) {
                             __extends(Service, _super);
@@ -29,6 +30,9 @@ var nts;
                             };
                             Service.prototype.loadDemensionList = function () {
                                 return nts.uk.request.ajax(path.loadDemensionList);
+                            };
+                            Service.prototype.initWageTable = function (data) {
+                                return nts.uk.request.ajax(path.initWageTable, data);
                             };
                             return Service;
                         }(view.base.simplehistory.service.BaseService));

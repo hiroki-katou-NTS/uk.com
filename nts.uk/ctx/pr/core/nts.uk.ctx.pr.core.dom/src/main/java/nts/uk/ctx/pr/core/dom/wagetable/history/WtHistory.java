@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.dom.wagetable.history;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -85,6 +86,7 @@ public class WtHistory extends DomainObject implements History<WtHistory> {
 			if (type.isRangeMode) {
 				StepElementSetting stepElementSetting = new StepElementSetting(
 						element.getDemensionNo(), element.getType(), Collections.emptyList());
+				stepElementSetting.setSetting(BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO);
 				elementSettings.add(stepElementSetting);
 			}
 		}

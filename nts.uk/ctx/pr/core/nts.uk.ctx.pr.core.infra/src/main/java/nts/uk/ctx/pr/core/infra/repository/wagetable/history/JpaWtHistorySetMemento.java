@@ -128,6 +128,7 @@ public class JpaWtHistorySetMemento implements WtHistorySetMemento {
 					qwtmtWagetableEleHistPK.setCcd(companyCode);
 					qwtmtWagetableEleHistPK.setWageTableCd(wageTableCd);
 					qwtmtWagetableEleHistPK.setHistId(historyId);
+					qwtmtWagetableEleHistPK.setDemensionNo(item.getDemensionNo().value);
 					qwtmtWagetableEleHist.setQwtmtWagetableEleHistPK(qwtmtWagetableEleHistPK);
 					if (item instanceof StepElementSetting) {
 						StepElementSetting step = (StepElementSetting) item;
