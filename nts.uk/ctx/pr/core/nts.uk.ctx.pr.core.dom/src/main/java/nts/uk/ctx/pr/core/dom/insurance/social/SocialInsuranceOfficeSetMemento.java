@@ -70,13 +70,6 @@ public interface SocialInsuranceOfficeSetMemento {
 	void setPotalCode(PotalCode potalCode);
 
 	/**
-	 * Sets the prefecture.
-	 *
-	 * @param prefecture the new prefecture
-	 */
-	void setPrefecture(String prefecture);
-
-	/**
 	 * Sets the address 1 st.
 	 *
 	 * @param address1st the new address 1 st

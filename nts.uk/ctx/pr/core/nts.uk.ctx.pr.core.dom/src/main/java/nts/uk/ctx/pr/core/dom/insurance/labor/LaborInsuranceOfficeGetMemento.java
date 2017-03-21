@@ -79,13 +79,6 @@ public interface LaborInsuranceOfficeGetMemento {
 	PotalCode getPotalCode();
 
 	/**
-	 * Gets the prefecture.
-	 *
-	 * @return the prefecture
-	 */
-	String getPrefecture();
-
-	/**
 	 * Gets the address 1 st.
 	 *
 	 * @return the address 1 st

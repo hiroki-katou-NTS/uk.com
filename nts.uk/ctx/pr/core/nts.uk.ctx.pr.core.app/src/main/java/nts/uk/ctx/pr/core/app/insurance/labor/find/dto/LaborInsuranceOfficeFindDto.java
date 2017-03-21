@@ -51,9 +51,6 @@ public class LaborInsuranceOfficeFindDto implements LaborInsuranceOfficeSetMemen
 	/** The potal code. */
 	private String potalCode;
 
-	/** The prefecture. */
-	private String prefecture;
-
 	/** The address 1 st. */
 	private String address1st;
 
