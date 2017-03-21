@@ -85,7 +85,6 @@ var qmm002;
                         self.lst_001(list001);
                         dfd.resolve(list001);
                     }).fail(function (res) {
-                        // error
                     });
                     return dfd.promise();
                 };
