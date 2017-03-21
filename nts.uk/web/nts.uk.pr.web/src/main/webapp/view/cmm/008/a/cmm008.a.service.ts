@@ -4,7 +4,8 @@ module cmm008.a.service{
         createEmployment: "basic/organization/employment/createemployment",
         updateEmployment: "basic/organization/employment/updateemployment",
         deleteEmployment: "basic/organization/employment/deleteemployment/" ,
-        getEmploymentByCode: "basic/organization/employment/findemploymentbycode/"
+        getEmploymentByCode: "basic/organization/employment/findemploymentbycode/",
+        getAllProcessingNo: "pr/core/getDataProcessingNo"
     }
     //find all employment data
     export function getAllEmployments(): JQueryPromise<Array<model.employmentDto>>{
@@ -36,7 +37,7 @@ module cmm008.a.service{
         nts.uk.request.ajax("com", path.createEmployment, employment).done(function(res: Array<any>){
             dfd.resolve(res);        
         }).fail(function(res){
-            dfd.resolve(res);
+            dfd.reject(res);
         })
         return dfd.promise();
     }
@@ -46,7 +47,7 @@ module cmm008.a.service{
         nts.uk.request.ajax("com",path.updateEmployment,employment).done(function(res: Array<any>){
             dfd.resolve(res);
         }).fail(function(res){
-            dfd.resolve(res);
+            dfd.reject(res);
         })
         return dfd.promise();
     }
@@ -56,7 +57,17 @@ module cmm008.a.service{
         nts.uk.request.ajax("com",path.deleteEmployment, employment).done(function(res: Array<any>){
             dfd.resolve(res);
         }).fail(function(res){
+            dfd.reject(res);
+        })
+        return dfd.promise();
+    }
+    //get all 処理日区分
+     export function getProcessingNo(){
+        var dfd = $.Deferred<Array<any>>();
+        nts.uk.request.ajax(path.getAllProcessingNo).done(function(res: Array<any>){
             dfd.resolve(res);
+        }).fail(function(res){
+            dfd.reject(res);
         })
         return dfd.promise();
     }
@@ -73,6 +84,8 @@ module cmm008.a.service{
             employementOutCd: string;
             displayFlg: number;   
             displayStr: string; 
+            closeDateNoStr: string;
+            processingStr: string
         }    
     }
 }

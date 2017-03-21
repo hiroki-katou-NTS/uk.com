@@ -9,7 +9,8 @@ var cmm008;
                 createEmployment: "basic/organization/employment/createemployment",
                 updateEmployment: "basic/organization/employment/updateemployment",
                 deleteEmployment: "basic/organization/employment/deleteemployment/",
-                getEmploymentByCode: "basic/organization/employment/findemploymentbycode/"
+                getEmploymentByCode: "basic/organization/employment/findemploymentbycode/",
+                getAllProcessingNo: "pr/core/getDataProcessingNo"
             };
             //find all employment data
             function getAllEmployments() {
@@ -42,7 +43,7 @@ var cmm008;
                 nts.uk.request.ajax("com", path.createEmployment, employment).done(function (res) {
                     dfd.resolve(res);
                 }).fail(function (res) {
-                    dfd.resolve(res);
+                    dfd.reject(res);
                 });
                 return dfd.promise();
             }
@@ -53,7 +54,7 @@ var cmm008;
                 nts.uk.request.ajax("com", path.updateEmployment, employment).done(function (res) {
                     dfd.resolve(res);
                 }).fail(function (res) {
-                    dfd.resolve(res);
+                    dfd.reject(res);
                 });
                 return dfd.promise();
             }
@@ -64,11 +65,22 @@ var cmm008;
                 nts.uk.request.ajax("com", path.deleteEmployment, employment).done(function (res) {
                     dfd.resolve(res);
                 }).fail(function (res) {
-                    dfd.resolve(res);
+                    dfd.reject(res);
                 });
                 return dfd.promise();
             }
             service.deleteEmployment = deleteEmployment;
+            //get all 処理日区分
+            function getProcessingNo() {
+                var dfd = $.Deferred();
+                nts.uk.request.ajax(path.getAllProcessingNo).done(function (res) {
+                    dfd.resolve(res);
+                }).fail(function (res) {
+                    dfd.reject(res);
+                });
+                return dfd.promise();
+            }
+            service.getProcessingNo = getProcessingNo;
             var model;
             (function (model) {
                 var employmentDto = (function () {

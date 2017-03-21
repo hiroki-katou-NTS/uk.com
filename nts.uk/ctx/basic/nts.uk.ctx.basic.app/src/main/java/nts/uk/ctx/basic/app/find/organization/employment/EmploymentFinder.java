@@ -13,6 +13,7 @@ import nts.uk.shr.com.context.AppContexts;
 public class EmploymentFinder {
 	@Inject
 	private EmploymentRepository repository;
+
 	
 	private String companyCode = AppContexts.user().companyCode();
 	/**
@@ -42,4 +43,6 @@ public class EmploymentFinder {
 	public Optional<EmploymentDto> findEmpByDisplayFlg(){
 		return this.repository.findEmploymnetByDisplayFlg(companyCode).map(employ -> EmploymentDto.fromDomain(employ));
 	}
+	
+	
 } 

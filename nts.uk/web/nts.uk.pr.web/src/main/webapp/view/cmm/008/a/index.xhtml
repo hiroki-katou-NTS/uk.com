@@ -7,11 +7,11 @@
 <body>
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
-			<com:stylefile path="main.css" />
+			<com:stylefile path="cmm008.a.main.css" />
 			<com:scriptfile set="IGNITE" />
-			<com:scriptfile path="start.js" />
-			<com:scriptfile path="viewmodel.js" />
-			<com:scriptfile path="service.js" />
+			<com:scriptfile path="cmm008.a.start.js" />
+			<com:scriptfile path="cmm008.a.vm.js" />
+			<com:scriptfile path="cmm008.a.service.js" />
 			<com:ValidatorScript>
 					nts.uk.ctx.basic.dom.organization.employment.EmploymentCode
 					nts.uk.ctx.basic.dom.organization.employment.EmploymentName
@@ -23,7 +23,7 @@
 				<button id="BTN_001" class="btnStyle" data-bind = "click: newCreateEmployment">新規</button>
 				<button class="proceed btnStyle" id="BTN_002" data-bind="click: createEmployment, enable: $root.errors.isEmpty">登録</button>
 				<button id="BTN_003">マスタ修正ログ</button>
-				<button class="danger btnStyle" id="BTN_004" data-bind = "click: deleteEmployment">削除</button>
+				<button class="danger btnStyle" id="BTN_004" data-bind = "click: deleteEmployment, enable: isDelete">削除</button>
 				<label id="LBL_001">雇用区分の登録</label>
 			</div>
 			<div id="contents-area" style="padding-top: 20px">
@@ -55,17 +55,17 @@
 											<label>コード/名称<br /></label>
 										</div>
 									</td>
-									<td class="contentsRR"><input id="INP_002" maxlength="10"
+									<td class="contentsRR"><input id="INP_002"
 										data-name="employmentCode"
-										data-bind="ntsTextEditor: {value: currentCode, 
-																					constraint: 'EmploymentCode', 
-																					option: textEditorOption, 
-																					enable: isEnable}" />
-										<input id="INP_003" data-name="name" maxlength="20"
+										data-bind="ntsTextEditor: {value: employmentCode, 
+																	constraint: 'EmploymentCode', 
+																	option: textEditorOption, 
+																	enable: isEnable}" />
+										<input id="INP_003" data-name="name"
 										data-bind="ntsTextEditor: {value: employmentName, 
-																					constraint: 'EmploymentName',
-																					option: textEditorOption,
-																					enable: true}" />
+																	constraint: 'EmploymentName',
+																	option: textEditorOption,
+																	enable: true}" />
 										<div id="SEL_001"
 											data-bind="ntsCheckBox: { checked: isCheckbox, enable: true, text: 'この項目を初期表示する' }"></div>
 									</td>
@@ -115,14 +115,14 @@
 									<td class="contentsRR">
 										<div id="SEL-004"
 											data-bind="ntsComboBox: {options: processingDateList,
-																			optionsValue: 'processingDateCode',
-																			value: selectedProcessCode,
-																			optionsText: 'processingDatename',
+																			optionsValue: 'processingNo',
+																			value: selectedProcessNo,
+																			optionsText: 'processingName',
 																			editable: false,
 																			enable: true,
 																			columns: [
-																				{ prop: 'processingDateCode', length: 1 },
-																				{ prop: 'processingDatename', length: 10 },
+																				{ prop: 'processingNo', length: 1 },
+																				{ prop: 'processingName', length: 10 },
 																			]}"></div>
 									</td>
 								</tr>

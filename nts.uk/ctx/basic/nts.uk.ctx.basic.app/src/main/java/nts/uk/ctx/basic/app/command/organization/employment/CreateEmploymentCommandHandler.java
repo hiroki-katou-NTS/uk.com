@@ -6,6 +6,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.basic.dom.organization.employment.Employment;
@@ -23,11 +24,15 @@ public class CreateEmploymentCommandHandler extends CommandHandler<CreateEmploym
 			CreateEmploymentCommand command = context.getCommand();
 			String companyCode = AppContexts.user().companyCode();
 			Employment employ = command.toDomain();
+			Optional<Employment> getEmploy = repository.findEmployment(companyCode, command.getEmploymentCode());
+			if(getEmploy.isPresent()){
+				throw new BusinessException("入力したコードは既に存在しています。\r\nコードを確認してください。");
+			}
 			Optional<Employment> employmentByDisplayFlg = repository.findEmploymnetByDisplayFlg(companyCode);
-			if(employmentByDisplayFlg == null)			
+			if(!employmentByDisplayFlg.isPresent())			
 				employ.setDisplayFlg(ManageOrNot.MANAGE);
 			//employ.validate();
-			this.repository.add(employ);	
+			this.repository.add(employ);
 			//A_SEL_001にチェックが付いている場合
 			if(command.getDisplayFlg() == 1){
 				

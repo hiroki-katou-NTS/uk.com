@@ -7,6 +7,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.basic.dom.organization.employment.Employment;
@@ -25,9 +26,14 @@ public class DeleteEmploymentCommandHandler extends CommandHandler<DeleteEmploym
 		try{
 			DeleteEmploymentCommand command = context.getCommand();
 			String companyCode = AppContexts.user().companyCode();
-			//初期表示するのはコードの昇順で先頭になる項目です。
+			
 			Optional<Employment> emDelete = repository.findEmployment(companyCode, command.getEmploymentCode());
-			if (emDelete != null && emDelete.get().getDisplayFlg() == ManageOrNot.MANAGE) {
+			if(!emDelete.isPresent()){
+				throw new BusinessException("対象データがありません。");
+			}
+			
+			//初期表示するのはコードの昇順で先頭になる項目です。
+			if (emDelete.get().getDisplayFlg() == ManageOrNot.MANAGE) {
 				List<Employment> lstEmployment = repository.findAllEmployment(companyCode);
 				if(lstEmployment != null){
 					for (Employment employment : lstEmployment) {
@@ -42,7 +48,8 @@ public class DeleteEmploymentCommandHandler extends CommandHandler<DeleteEmploym
 					}
 					
 				}
-			}			
+			}
+			
 			this.repository.remove(companyCode, command.getEmploymentCode());			
 		}
 		catch(Exception ex){
