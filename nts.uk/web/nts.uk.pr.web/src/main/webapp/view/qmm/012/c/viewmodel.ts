@@ -3,7 +3,6 @@ module qmm012.c.viewmodel {
         //combobox
         //001
         ComboBoxItemList_C_SEL_001: KnockoutObservableArray<C_SEL_001_ComboboxItemModel>;
-        selectedCode_C_SEL_001: KnockoutObservable<number>;
         //Switch
         //002 003 005 006 007 008 009 010
         roundingRules_C_002_003_005To010: KnockoutObservableArray<any>;
@@ -34,9 +33,8 @@ module qmm012.c.viewmodel {
         currencyeditor_C_INP_005: any;
         //shared
         groupName: KnockoutObservable<any>;
-        CurrentItemPeriod: KnockoutObservable<qmm012.b.service.model.ItemPeriodModel> = ko.observable(null);
-        CurrentItemSalary: KnockoutObservable<service.model.ItemSalaryModel> = ko.observable(null);
-        CurrentItemMaster: KnockoutObservable<qmm012.b.service.model.ItemMasterModel> = ko.observable(null);
+        CurrentItemSalary: KnockoutObservable<service.model.ItemSalary> = ko.observable(null);
+        CurrentItemMaster: KnockoutObservable<qmm012.b.service.model.ItemMaster> = ko.observable(null);
         CurrentLimitMny: KnockoutObservable<number> = ko.observable(0);
         CurrentErrRangeHigh: KnockoutObservable<number> = ko.observable(0);
         CurrentAlRangeHigh: KnockoutObservable<number> = ko.observable(0);
@@ -69,13 +67,12 @@ module qmm012.c.viewmodel {
         constructor() {
             var self = this;
             self.ComboBoxItemList_C_SEL_001 = ko.observableArray([
-                new C_SEL_001_ComboboxItemModel(1, '課税'),
-                new C_SEL_001_ComboboxItemModel(2, '非課税(限度あり）'),
-                new C_SEL_001_ComboboxItemModel(3, '非課税(限度なし）'),
-                new C_SEL_001_ComboboxItemModel(4, '通勤費(手入力)'),
-                new C_SEL_001_ComboboxItemModel(5, '通勤費(定期券利用)')
+                new C_SEL_001_ComboboxItemModel(0, '課税'),
+                new C_SEL_001_ComboboxItemModel(1, '非課税(限度あり）'),
+                new C_SEL_001_ComboboxItemModel(2, '非課税(限度なし）'),
+                new C_SEL_001_ComboboxItemModel(3, '通勤費(手入力)'),
+                new C_SEL_001_ComboboxItemModel(4, '通勤費(定期券利用)')
             ]);
-            self.selectedCode_C_SEL_001 = ko.observable(1);
             //end combobox data
             //start Switch Data
             //005 006 007 008 009 010
@@ -184,21 +181,21 @@ module qmm012.c.viewmodel {
             };
             //end currencyeditor
             //end textarea
-            self.selectedCode_C_SEL_001.subscribe(function(newValue) {
+            self.CurrentTaxAtr.subscribe(function(newValue) {
                 $('#C_LBL_002').show();
                 $('#C_Div_002').show();
                 $('#C_BTN_003').show();
                 $('#C_Div_004').show();
                 switch (newValue) {
-                    case 1:
+                    case 0:
                         $('#C_Div_001').hide();
                         break;
+                    case 1:
                     case 2:
                     case 3:
-                    case 4:
                         $('#C_Div_001').show();
                         break;
-                    case 5:
+                    case 4:
                         $('#C_Div_001').show();
                         $('#C_LBL_002').hide();
                         $('#C_Div_002').hide();
@@ -208,9 +205,9 @@ module qmm012.c.viewmodel {
                         break;
                 }
             });
-            self.CurrentItemMaster.subscribe(function(ItemMaster: qmm012.b.service.model.ItemMasterModel) {
+            self.CurrentItemMaster.subscribe(function(ItemMaster: qmm012.b.service.model.ItemMaster) {
                 if (ItemMaster) {
-                    service.findItemSalary(ItemMaster.itemCode).done(function(ItemSalary: service.model.ItemSalaryModel) {
+                    service.findItemSalary(ItemMaster.itemCode).done(function(ItemSalary: service.model.ItemSalary) {
                         self.CurrentItemSalary(ItemSalary);
                     }).fail(function(res) {
                         // Alert message
@@ -238,10 +235,7 @@ module qmm012.c.viewmodel {
                 self.CurrentAlRangeLowAtr(NewValue ? 1 : 0);
             });
 
-            //            self.CurrentItemPeriod.subscribe(function(ItemPeriod: qmm012.b.service.model.ItemPeriodModel) {
-            //               
-            //            });
-            self.CurrentItemSalary.subscribe(function(NewValue: service.model.ItemSalaryModel) {
+            self.CurrentItemSalary.subscribe(function(NewValue: service.model.ItemSalary) {
 
                 self.CurrentLimitMny(NewValue ? NewValue.limitMny : 0);
                 self.CurrentErrRangeHigh(NewValue ? NewValue.errRangeHigh : 0);
@@ -287,7 +281,33 @@ module qmm012.c.viewmodel {
 
             });
         }
-
+        GetCurrentItemSalary() {
+            let self = this;
+            let ItemSalary = new service.model.ItemSalary(
+                self.CurrentTaxAtr(),
+                self.CurrentSocialInsAtr(),
+                self.CurrentLaborInsAtr(),
+                self.CurrentFixPayAtr(),
+                self.CurrentApplyForAllEmpFlg(),
+                self.CurrentApplyForMonthlyPayEmp(),
+                self.CurrentApplyForDaymonthlyPayEmp(),
+                self.CurrentApplyForDaylyPayEmp(),
+                self.CurrentApplyForHourlyPayEmp(),
+                self.CurrentAvePayAtr(),
+                self.CurrentErrRangeLowAtr(),
+                self.CurrentErrRangeLow(),
+                self.CurrentErrRangeHighAtr(),
+                self.CurrentErrRangeHigh(),
+                self.CurrentAlRangeLowAtr(),
+                self.CurrentAlRangeLow(),
+                self.CurrentAlRangeHighAtr(),
+                self.CurrentAlRangeHigh(),
+                self.CurrentMemo(),
+                self.CurrentLimitMnyAtr(),
+                self.CurrentLimitMnyRefItemCd(),
+                self.CurrentLimitMny());
+            return ItemSalary;
+        }
         openKDialog() {
             nts.uk.ui.windows.sub.modal('../k/index.xhtml', { height: 490, width: 330, dialogClass: "no-close" }).onClosed(function(): any {
             });

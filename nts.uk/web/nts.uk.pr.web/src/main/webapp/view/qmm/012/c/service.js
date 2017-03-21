@@ -21,8 +21,8 @@ var qmm012;
             service.findItemSalary = findItemSalary;
             var model;
             (function (model) {
-                var ItemSalaryModel = (function () {
-                    function ItemSalaryModel(taxAtr, socialInsAtr, laborInsAtr, fixPayAtr, applyForAllEmpFlg, applyForMonthlyPayEmp, applyForDaymonthlyPayEmp, applyForDaylyPayEmp, applyForHourlyPayEmp, avePayAtr, errRangeLowAtr, errRangeLow, errRangeHighAtr, errRangeHigh, alRangeLowAtr, alRangeLow, alRangeHighAtr, alRangeHigh, memo, limitMnyAtr, limitMnyRefItemCd, limitMny) {
+                var ItemSalary = (function () {
+                    function ItemSalary(taxAtr, socialInsAtr, laborInsAtr, fixPayAtr, applyForAllEmpFlg, applyForMonthlyPayEmp, applyForDaymonthlyPayEmp, applyForDaylyPayEmp, applyForHourlyPayEmp, avePayAtr, errRangeLowAtr, errRangeLow, errRangeHighAtr, errRangeHigh, alRangeLowAtr, alRangeLow, alRangeHighAtr, alRangeHigh, memo, limitMnyAtr, limitMnyRefItemCd, limitMny) {
                         this.taxAtr = taxAtr;
                         this.socialInsAtr = socialInsAtr;
                         this.laborInsAtr = laborInsAtr;
@@ -47,9 +47,9 @@ var qmm012;
                         this.limitMny = limitMny;
                     }
                     ;
-                    return ItemSalaryModel;
+                    return ItemSalary;
                 }());
-                model.ItemSalaryModel = ItemSalaryModel;
+                model.ItemSalary = ItemSalary;
             })(model = service.model || (service.model = {}));
         })(service = c.service || (c.service = {}));
     })(c = qmm012.c || (qmm012.c = {}));

@@ -22,7 +22,7 @@ module qmm012.i.viewmodel {
         currencyeditor_I_INP_008: any;
         //search box 
         filteredData: any;
-        CurrentItemMaster: KnockoutObservable<qmm012.b.service.model.ItemMasterModel> = ko.observable(null);
+        CurrentItemMaster: KnockoutObservable<qmm012.b.service.model.ItemMaster> = ko.observable(null);
         ItemBDList: KnockoutObservableArray<service.model.ItemBD> = ko.observableArray([]);
         CurrentCategoryAtrName: KnockoutObservable<string> = ko.observable('');
         CurrentItemBD: KnockoutObservable<service.model.ItemBD> = ko.observable(null);

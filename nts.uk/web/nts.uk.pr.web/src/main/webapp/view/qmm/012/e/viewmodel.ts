@@ -20,7 +20,7 @@ module qmm012.e.viewmodel {
         roundingRules_E_002: KnockoutObservableArray<any>;
         roundingRules_E_003: KnockoutObservableArray<any>;
         selectedRuleCode_E_003: any;
-        CurrentItemMaster: KnockoutObservable<qmm012.b.service.model.ItemMasterModel> = ko.observable(null);
+        CurrentItemMaster: KnockoutObservable<qmm012.b.service.model.ItemMaster> = ko.observable(null);
         CurrentItemAttend: KnockoutObservable<service.model.ItemAttend> = ko.observable(null);
         CurrentAvePayAtr: KnockoutObservable<number> = ko.observable(0);
         CurrentItemAtr: KnockoutObservable<number> = ko.observable(0);
@@ -100,7 +100,7 @@ module qmm012.e.viewmodel {
             };
 
 
-            self.CurrentItemMaster.subscribe(function(ItemMaster: qmm012.b.service.model.ItemMasterModel) {
+            self.CurrentItemMaster.subscribe(function(ItemMaster: qmm012.b.service.model.ItemMaster) {
                 if (ItemMaster) {
                     service.findItemAttend(ItemMaster.itemCode).done(function(ItemAttend: service.model.ItemAttend) {
                         self.CurrentItemAttend(ItemAttend);
@@ -143,6 +143,23 @@ module qmm012.e.viewmodel {
             self.checked_E_008.subscribe(function(NewValue) {
                 self.CurrentAlRangeLowAtr(NewValue ? 1 : 0);
             });
+        }
+        getCurrentItemAttend(){
+            let self = this;
+            let itemAttend = new service.model.ItemAttend(
+                    self.CurrentAvePayAtr(),
+                self.CurrentItemAtr(),
+                 self.CurrentErrRangeLowAtr(),
+                self.CurrentErrRangeLow(),
+                self.CurrentErrRangeHighAtr(),
+                self.CurrentErrRangeHigh(),
+                self.CurrentAlRangeLowAtr(),
+                self.CurrentAlRangeLow(),
+                self.CurrentAlRangeHighAtr(),
+                self.CurrentAlRangeHigh(),
+                self.CurrentWorkDaysScopeAtr(),
+                self.CurrentMemo() );
+            return itemAttend;
         }
 
     }

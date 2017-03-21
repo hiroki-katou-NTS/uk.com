@@ -17,7 +17,7 @@ module qmm012.h.viewmodel {
 
         enable: KnockoutObservable<boolean> = ko.observable(true);
 
-        CurrentItemMaster: KnockoutObservable<qmm012.b.service.model.ItemMasterModel> = ko.observable(null);
+        CurrentItemMaster: KnockoutObservable<qmm012.b.service.model.ItemMaster> = ko.observable(null);
         CurrentCategoryAtrName: KnockoutObservable<string> = ko.observable('');
         CurrentItem: KnockoutObservable<service.model.ItemSalaryPeriod> = ko.observable(null);
         CurrentItemCode: KnockoutObservable<string> = ko.observable('');

@@ -137,6 +137,11 @@ var qmm012;
                         self.CurrentAlRangeLowAtr(NewValue ? 1 : 0);
                     });
                 }
+                ScreenModel.prototype.getCurrentItemAttend = function () {
+                    var self = this;
+                    var itemAttend = new e.service.model.ItemAttend(self.CurrentAvePayAtr(), self.CurrentItemAtr(), self.CurrentErrRangeLowAtr(), self.CurrentErrRangeLow(), self.CurrentErrRangeHighAtr(), self.CurrentErrRangeHigh(), self.CurrentAlRangeLowAtr(), self.CurrentAlRangeLow(), self.CurrentAlRangeHighAtr(), self.CurrentAlRangeHigh(), self.CurrentWorkDaysScopeAtr(), self.CurrentMemo());
+                    return itemAttend;
+                };
                 return ScreenModel;
             }());
             viewmodel.ScreenModel = ScreenModel;

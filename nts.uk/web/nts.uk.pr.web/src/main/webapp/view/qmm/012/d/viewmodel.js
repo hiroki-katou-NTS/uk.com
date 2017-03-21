@@ -156,6 +156,11 @@ var qmm012;
                     nts.uk.ui.windows.sub.modal('../i/index.xhtml', { height: 620, width: 1060, dialogClass: "no-close" }).onClosed(function () {
                     });
                 };
+                ScreenModel.prototype.GetCurrentItemDeduct = function () {
+                    var self = this;
+                    var ItemDeduct = new d.service.model.ItemDeduct(self.CurrentDeductAtr(), self.CurrentErrRangeLowAtr(), self.CurrentErrRangeLow(), self.CurrentErrRangeHighAtr(), self.CurrentErrRangeHigh(), self.CurrentAlRangeLowAtr(), self.CurrentAlRangeLow(), self.CurrentAlRangeHighAtr(), self.CurrentAlRangeHigh(), self.CurrentMemo());
+                    return ItemDeduct;
+                };
                 return ScreenModel;
             }());
             viewmodel.ScreenModel = ScreenModel;

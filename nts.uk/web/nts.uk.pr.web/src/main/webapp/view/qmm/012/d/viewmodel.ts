@@ -24,7 +24,7 @@ module qmm012.d.viewmodel {
         //D_002
         roundingRules_D_002: KnockoutObservableArray<any>;
 
-        CurrentItemMaster: KnockoutObservable<qmm012.b.service.model.ItemMasterModel> = ko.observable(null);
+        CurrentItemMaster: KnockoutObservable<qmm012.b.service.model.ItemMaster> = ko.observable(null);
         CurrentItemDeduct: KnockoutObservable<service.model.ItemDeduct> = ko.observable(null);
         CurrentAlRangeHigh: KnockoutObservable<number> = ko.observable(0);
         CurrentAlRangeHighAtr: KnockoutObservable<number> = ko.observable(0);
@@ -109,7 +109,7 @@ module qmm012.d.viewmodel {
                 readonly: ko.observable(false)
             };
 
-            self.CurrentItemMaster.subscribe(function(ItemMaster: qmm012.b.service.model.ItemMasterModel) {
+            self.CurrentItemMaster.subscribe(function(ItemMaster: qmm012.b.service.model.ItemMaster) {
                 if (ItemMaster) {
                     service.findItemDeduct(ItemMaster.itemCode).done(function(ItemDeduct: service.model.ItemDeduct) {
                         self.CurrentItemDeduct(ItemDeduct);
@@ -165,6 +165,21 @@ module qmm012.d.viewmodel {
             nts.uk.ui.windows.setShared('itemMaster', self.CurrentItemMaster());
             nts.uk.ui.windows.sub.modal('../i/index.xhtml', { height: 620, width: 1060, dialogClass: "no-close" }).onClosed(function(): any {
             });
+        }
+        GetCurrentItemDeduct(){
+            let self = this;
+            let ItemDeduct =  new service.model.ItemDeduct(
+            self.CurrentDeductAtr(),
+                self.CurrentErrRangeLowAtr(),
+                self.CurrentErrRangeLow(),
+                self.CurrentErrRangeHighAtr(),
+                self.CurrentErrRangeHigh(),
+                self.CurrentAlRangeLowAtr(),
+                self.CurrentAlRangeLow(),
+                self.CurrentAlRangeHighAtr(),
+                self.CurrentAlRangeHigh(),
+                self.CurrentMemo() );
+            return ItemDeduct;
         }
 
     }

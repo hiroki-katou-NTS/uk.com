@@ -6,17 +6,18 @@ module qmm012.b.viewmodel {
         ComboBoxItemList_B_001: KnockoutObservableArray<ComboboxItemModel>;
         selectedCode_B_001: KnockoutObservable<number> = ko.observable(1);
         //gridlist
-        GridlistItems_B_001: KnockoutObservableArray<service.model.ItemMasterModel> = ko.observableArray([]);
+        GridlistItems_B_001: KnockoutObservableArray<service.model.ItemMaster> = ko.observableArray([]);
         GridColumns_B_001: KnockoutObservableArray<any>;
         GridlistCurrentCode_B_001: KnockoutObservable<string> = ko.observable('');
-        GridlistCurrentItem_B_001: KnockoutObservable<service.model.ItemMasterModel> = ko.observable(null);
+        GridlistCurrentItem_B_001: KnockoutObservable<service.model.ItemMaster> = ko.observable(null);
         GridCurrentItemAbName_B_001: KnockoutObservable<string> = ko.observable('');
         GridCurrentItemName_B_001: KnockoutObservable<string> = ko.observable('');
-        GridCurrentDisplaySet_B_001: KnockoutObservable<any> = ko.observable(false);
+        GridCurrentDisplaySet_B_001: KnockoutObservable<boolean> = ko.observable(false);
         GridCurrentUniteCode_B_001: KnockoutObservable<string> = ko.observable('');
         GridCurrentCategoryAtr_B_001: KnockoutObservable<number> = ko.observable(0);
         GridCurrentCategoryAtrName_B_001: KnockoutObservable<string> = ko.observable('');
         GridCurrentCodeAndName_B_001: KnockoutObservable<string> = ko.observable('');
+        B_INP_002_text: KnockoutObservable<string> = ko.observable('');
         //Checkbox
         //B_002
         checked_B_002: KnockoutObservable<boolean> = ko.observable(true);
@@ -54,20 +55,21 @@ module qmm012.b.viewmodel {
                 return "";
             }
             self.GridlistCurrentCode_B_001.subscribe(function(newValue) {
-                var item = _.find(self.GridlistItems_B_001(), function(ItemModel: service.model.ItemMasterModel) {
+                var item = _.find(self.GridlistItems_B_001(), function(ItemModel: service.model.ItemMaster) {
                     return ItemModel.itemCode == newValue;
                 });
                 self.GridlistCurrentItem_B_001(item);
+                self.B_INP_002_text(newValue);
             });
 
-            self.GridlistCurrentItem_B_001.subscribe(function(itemModel: service.model.ItemMasterModel) {
+            self.GridlistCurrentItem_B_001.subscribe(function(itemModel: service.model.ItemMaster) {
                 self.GridCurrentItemName_B_001(itemModel ? itemModel.itemName : '');
                 self.GridCurrentUniteCode_B_001(itemModel ? itemModel.uniteCode : '');
                 self.GridCurrentCategoryAtr_B_001(itemModel ? itemModel.categoryAtr : 0);
                 //Because there are many items in the same group  After set value , need call ChangeGroup function for Set Value to layout
                 ChangeGroup(self.GridCurrentCategoryAtr_B_001());
                 self.GridCurrentCodeAndName_B_001(itemModel ? itemModel.itemCode + ' ' + itemModel.itemName : '');
-                self.GridCurrentDisplaySet_B_001(itemModel ? itemModel.displaySet == 1 ? true : false : '');
+                self.GridCurrentDisplaySet_B_001(itemModel ? itemModel.displaySet == 1 ? true : false : false);
                 self.GridCurrentItemAbName_B_001(itemModel ? itemModel.itemAbName : '');
                 self.GridCurrentCategoryAtrName_B_001(itemModel ? itemModel.categoryAtrName : '');
                 //when CurrentCode != undefined , need disable INP_002
@@ -106,21 +108,12 @@ module qmm012.b.viewmodel {
                 }
             }
 
-            service.findAllItemMaster().done(function(MasterItems: Array<service.model.ItemMasterModel>) {
-                for (let item of MasterItems) {
-                    self.GridlistItems_B_001.push(item);
-                }
-                //set selected first item in list
-                if (self.GridlistItems_B_001().length > 0)
-                    self.GridlistCurrentCode_B_001(self.GridlistItems_B_001()[0].itemCode);
-            }).fail(function(res) {
-                alert(res);
-            });
-            
+            self.LoadGridList();
+
             //set text editer data
             //INP_002
             self.texteditor_B_INP_002 = {
-                value: self.GridlistCurrentCode_B_001,
+                value: self.B_INP_002_text,
                 option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
                     textmode: "text",
                     placeholder: "",
@@ -151,45 +144,69 @@ module qmm012.b.viewmodel {
 
         GetCurrentItemMaster() {
             let self = this;
-            return new service.model.ItemMasterModel(
-                self.GridlistCurrentCode_B_001(),
+            let CurrentGroup = self.GridCurrentCategoryAtr_B_001();
+            let itemMaster = new service.model.ItemMaster(
+                self.B_INP_002_text(),
                 self.GridCurrentItemName_B_001(),
                 self.GridCurrentCategoryAtr_B_001(),
                 self.GridCurrentCategoryAtrName_B_001(),
                 self.GridCurrentItemAbName_B_001(),
                 self.GridlistCurrentItem_B_001() ? self.GridlistCurrentItem_B_001().itemAbNameO : self.GridCurrentItemAbName_B_001(),
                 self.GridlistCurrentItem_B_001() ? self.GridlistCurrentItem_B_001().itemAbNameE : self.GridCurrentItemAbName_B_001(),
-                self.GridCurrentDisplaySet_B_001(),
+                self.GridCurrentDisplaySet_B_001() == true ? 1 : 0,
                 self.GridCurrentUniteCode_B_001(),
-                self.GetCurrentZeroDisplaySet(),
-                self.GetCurrentItemDisplayAtr(),
+                self.getCurrentZeroDisplaySet(),
+                self.getCurrentItemDisplayAtr(),
                 1
             )
+            itemMaster.itemSalary = self.screenModel.screenModelC.GetCurrentItemSalary();
+            itemMaster.itemDeduct = self.screenModel.screenModelD.GetCurrentItemDeduct();
+            itemMaster.itemAttend = self.screenModel.screenModelE.getCurrentItemAttend();
+            return itemMaster;
+        }
+
+
+        LoadGridList(ItemCode?) {
+            let self = this;
+            service.findAllItemMaster().done(function(MasterItems: Array<service.model.ItemMaster>) {
+                self.GridlistItems_B_001(MasterItems);
+                //set selected first item in list
+                if (self.GridlistItems_B_001().length > 0)
+                    // if not itemcode parameter
+                    if (!ItemCode)
+                        self.GridlistCurrentCode_B_001(self.GridlistItems_B_001()[0].itemCode);
+                    else
+                        self.GridlistCurrentCode_B_001(ItemCode);
+            }).fail(function(res) {
+                alert(res);
+            });
         }
 
         DeleteDialog() {
             let self = this;
-            service.deleteItemMaster(self.GridlistCurrentItem_B_001()).done(function(any) {
-                //i'm not reload Gridlist , just remove that item in GridlistItems Array
-                let index = self.GridlistItems_B_001().indexOf(self.GridlistCurrentItem_B_001());
-                if (index != undefined) {
-                    self.GridlistItems_B_001().splice(index, 1);
-                    //set selected code after remove
+            let ItemMaster = self.GetCurrentItemMaster();
+            let index = self.GridlistItems_B_001.indexOf(self.GridlistCurrentItem_B_001());
+            service.deleteItemMaster(ItemMaster).done(function(any) {
+                //reload grid and set select code after delete item success
+                if (index) {
+                    let selectItemCode;
                     if (self.GridlistItems_B_001().length - 1 > 1) {
-                        //if is not last item, set selected next item 
                         if (index < self.GridlistItems_B_001().length - 1)
-                            self.GridlistCurrentCode_B_001(self.GridlistItems_B_001()[index].itemCode);
+                            selectItemCode = self.GridlistItems_B_001()[index - 1].itemCode;
                         else
-                            self.GridlistCurrentCode_B_001(self.GridlistItems_B_001()[index - 1].itemCode);
+                            selectItemCode = self.GridlistItems_B_001()[index - 2].itemCode;
                     } else
-                        self.GridlistCurrentCode_B_001('');
+                        selectItemCode = '';
+                    self.LoadGridList(selectItemCode);
                 }
             }).fail(function(res) {
 
                 alert(res);
             });
         }
-        GetCurrentZeroDisplaySet() {
+
+
+        getCurrentZeroDisplaySet() {
             let Result;
             let self = this;
             let CurrentGroup = self.GridCurrentCategoryAtr_B_001();
@@ -206,7 +223,7 @@ module qmm012.b.viewmodel {
             }
             return Result;
         }
-        GetCurrentItemDisplayAtr() {
+        getCurrentItemDisplayAtr() {
             let Result;
             let self = this;
             let CurrentGroup = self.GridCurrentCategoryAtr_B_001();
@@ -223,8 +240,6 @@ module qmm012.b.viewmodel {
             }
             return Result;
         }
-
-
         openADialog() {
             let self = this;
             nts.uk.ui.windows.sub.modal('../a/index.xhtml', { height: 480, width: 630, dialogClass: "no-close" }).onClosed(function(): any {
@@ -242,17 +257,20 @@ module qmm012.b.viewmodel {
             let ItemMaster = self.GetCurrentItemMaster();
             //if self.enable_B_INP_002 == true is mean New mode
             if (self.enable_B_INP_002()) {
-                self.AddNewItemMaster(ItemMaster);
+                self.addNewItemMaster(ItemMaster);
             } else {
-                self.UpdateItemMaster(ItemMaster);
+                self.updateItemMaster(ItemMaster);
             }
         }
-        AddNewItemMaster(ItemMaster: service.model.ItemMasterModel) {
+        addNewItemMaster(ItemMaster: service.model.ItemMaster) {
             let self = this;
-            self.GridlistItems_B_001().push(ItemMaster);
-            self.GridlistCurrentCode_B_001(ItemMaster.itemCode);
+            service.addItemMaster(ItemMaster).done(function(any) {
+                self.LoadGridList(ItemMaster.itemCode);
+            }).fail(function(res) {
+                alert(res);
+            });
         }
-        UpdateItemMaster(ItemMaster: service.model.ItemMasterModel) {
+        updateItemMaster(ItemMaster: service.model.ItemMaster) {
 
         }
 

@@ -4,10 +4,10 @@ module qmm012.c {
             findItemSalary: "pr/core/itemsalary/find",
         }
 
-        export function findItemSalary(itemCode): JQueryPromise<model.ItemSalaryModel> {
-            var dfd = $.Deferred<model.ItemSalaryModel>();
+        export function findItemSalary(itemCode): JQueryPromise<model.ItemSalary> {
+            var dfd = $.Deferred<model.ItemSalary>();
             nts.uk.request.ajax(paths.findItemSalary + "/" + itemCode)
-                .done(function(res: model.ItemSalaryModel) {
+                .done(function(res: model.ItemSalary) {
                     dfd.resolve(res);
                 })
                 .fail(function(res) {
@@ -16,7 +16,7 @@ module qmm012.c {
             return dfd.promise();
         }
         export module model {
-            export class ItemSalaryModel {
+            export class ItemSalary {
                 taxAtr: number;
                 socialInsAtr: number;
                 laborInsAtr: number;
@@ -40,7 +40,7 @@ module qmm012.c {
                 limitMnyRefItemCd: string;
                 limitMny: number;
                 constructor(
-                    taxAtr: number,
+                   taxAtr: number,
                     socialInsAtr: number,
                     laborInsAtr: number,
                     fixPayAtr: number,
