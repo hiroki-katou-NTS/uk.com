@@ -30,8 +30,10 @@ public class JpaFormulaEasyConditionRepository extends JpaRepository implements 
 	@Override
 	public void remove(String companyCode, FormulaCode formulaCode, String historyId) {
 
-		this.getEntityManager().createQuery(REMOVE_EASY_CONDITION).setParameter("companyCode", companyCode)
-				.setParameter("formulaCode", formulaCode.v()).setParameter("historyId", historyId).executeUpdate();
+		this.getEntityManager().createQuery(REMOVE_EASY_CONDITION)
+				.setParameter("companyCode", companyCode)
+				.setParameter("formulaCode", formulaCode.v())
+				.setParameter("historyId", historyId).executeUpdate();
 
 	}
 

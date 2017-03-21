@@ -63,4 +63,16 @@ public class FormulaEasyCondition extends AggregateRoot {
 				new Money(fixMoney), new ReferenceMasterCode(referenceMasterCode));
 	}
 
+	/**
+	 * @param companyCode
+	 * @param formulaCode
+	 * @param historyId
+	 */
+	public FormulaEasyCondition(String companyCode, FormulaCode formulaCode, String historyId) {
+		super();
+		this.companyCode = companyCode;
+		this.formulaCode = formulaCode;
+		this.historyId = historyId;
+	}
+
 }

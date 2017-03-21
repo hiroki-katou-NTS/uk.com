@@ -12,8 +12,6 @@ import lombok.NoArgsConstructor;
 public class AddFormulaHistoryCommand {
 	
 	private String formulaCode;
-
-	private String historyId;
 	
 	private int startDate;
 	

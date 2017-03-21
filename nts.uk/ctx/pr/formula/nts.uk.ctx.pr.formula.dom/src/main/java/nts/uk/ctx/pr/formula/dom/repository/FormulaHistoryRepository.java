@@ -21,12 +21,14 @@ public interface FormulaHistoryRepository {
 	
 	void add (FormulaHistory formulaHistory);
 	
-	void remove (FormulaHistory formulaHistory);
+	void remove (String companyCode, FormulaCode formulaCode, String historyId);
 	
 	void update (FormulaHistory formulaHistory);
 	
 	boolean isExistedHistory(String companyCode);
 	
 	Optional<FormulaHistory> findLastHistory(String companyCode, FormulaCode formulaCode);
+	
+	boolean isNewestHistory(String companyCode, FormulaCode formulaCode, YearMonth startDate);
 	
 }

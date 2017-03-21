@@ -7,11 +7,9 @@ import javax.ejb.Stateless;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.pr.formula.dom.enums.ReferenceMasterNo;
 import nts.uk.ctx.pr.formula.dom.formula.FormulaEasyHeader;
 import nts.uk.ctx.pr.formula.dom.primitive.FormulaCode;
 import nts.uk.ctx.pr.formula.dom.repository.FormulaEasyHeaderRepository;
-import nts.uk.ctx.pr.formula.infra.entity.formula.QcfmtFormulaEasyCondition;
 import nts.uk.ctx.pr.formula.infra.entity.formula.QcfmtFormulaEasyHeader;
 import nts.uk.ctx.pr.formula.infra.entity.formula.QcfmtFormulaEasyHeaderPK;
 
@@ -40,10 +38,6 @@ public class JpaFormulaEasyHeaderRepository extends JpaRepository implements For
 
 	@Override
 	public Optional<FormulaEasyHeader> findByPriKey(String companyCode, FormulaCode formulaCode, String historyId) {
-		// return this.queryProxy().find(new
-		// QcfmtFormulaEasyHeaderPK(companyCode, formulaCode.v(), historyId,
-		// new BigDecimal(referenceMasterNo.value)),
-		// QcfmtFormulaEasyHeader.class).map(f -> toDomain(f));
 		return this.queryProxy().query(FIND_EASY_HEADER, QcfmtFormulaEasyHeader.class)
 				.setParameter("companyCode", companyCode).setParameter("formulaCode", formulaCode.v())
 				.setParameter("historyId", historyId).getSingle(f -> (toDomain(f)));
@@ -55,11 +49,11 @@ public class JpaFormulaEasyHeaderRepository extends JpaRepository implements For
 	}
 
 	@Override
-	public void remove(FormulaEasyHeader formulaEasyHead) {
+	public void remove(String companyCode, FormulaCode formulaCode, String historyId) {
 		this.getEntityManager().createQuery(REMOVE_EASY_HEADER)
-				.setParameter("companyCode", formulaEasyHead.getCompanyCode())
-				.setParameter("formulaCode", formulaEasyHead.getFormulaCode().v())
-				.setParameter("historyId", formulaEasyHead.getHistoryId()).executeUpdate();
+				.setParameter("companyCode", companyCode)
+				.setParameter("formulaCode", formulaCode.v())
+				.setParameter("historyId", historyId).executeUpdate();
 	}
 
 	private static FormulaEasyHeader toDomain(QcfmtFormulaEasyHeader qcfmtFormulaEasyHeader) {

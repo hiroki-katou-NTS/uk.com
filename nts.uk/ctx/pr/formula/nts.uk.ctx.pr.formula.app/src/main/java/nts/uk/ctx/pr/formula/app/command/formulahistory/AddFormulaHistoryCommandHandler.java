@@ -9,6 +9,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.YearMonth;
+import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.pr.formula.dom.enums.ConditionAtr;
 import nts.uk.ctx.pr.formula.dom.enums.ReferenceMasterNo;
 import nts.uk.ctx.pr.formula.dom.formula.FormulaEasyHeader;
@@ -39,17 +40,18 @@ public class AddFormulaHistoryCommandHandler extends CommandHandler<AddFormulaHi
 
 		AddFormulaHistoryCommand command = context.getCommand();
 		String companyCode = AppContexts.user().companyCode();
+		String historyId = IdentifierUtil.randomUniqueId();
 
 		FormulaHistory formulaHistoryAdd = new FormulaHistory(
 				companyCode,
 				new FormulaCode(command.getFormulaCode()),
-				command.getHistoryId(),
+				historyId,
 				new YearMonth(command.getStartDate()),
 				new YearMonth(command.getEndDate()));
 
 
 			FormulaEasyHeader formulaEasyHead = new FormulaEasyHeader(companyCode,
-					new FormulaCode(command.getFormulaCode()), command.getHistoryId(),
+					new FormulaCode(command.getFormulaCode()), historyId,
 					EnumAdaptor.valueOf(command.getConditionAtr(), ConditionAtr.class),
 					EnumAdaptor.valueOf(command.getReferenceMasterNo(), ReferenceMasterNo.class));
 

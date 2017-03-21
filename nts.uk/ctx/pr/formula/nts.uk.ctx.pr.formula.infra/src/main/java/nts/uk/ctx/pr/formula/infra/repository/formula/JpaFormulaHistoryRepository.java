@@ -28,6 +28,10 @@ public class JpaFormulaHistoryRepository extends JpaRepository implements Formul
 
 	private static final String DEL_HISTORY_BY_KEY;
 
+	private static final String FIND_NEWEST_HISTORY;
+	
+	private static final String FIND_PREVIOUS_HISTORY;
+
 	static {
 		StringBuilder builderString = new StringBuilder();
 		builderString.append("SELECT COUNT(a) ");
@@ -68,6 +72,14 @@ public class JpaFormulaHistoryRepository extends JpaRepository implements Formul
 		builderString.append("AND a.qcfmtFormulaHistoryPK.historyId = :historyId ");
 		DEL_HISTORY_BY_KEY = builderString.toString();
 
+		builderString = new StringBuilder();
+		builderString.append("SELECT COUNT(a) ");
+		builderString.append("FROM QcfmtFormulaHistory a ");
+		builderString.append("WHERE a.qcfmtFormulaHistoryPK.companyCode = :companyCode ");
+		builderString.append("AND a.qcfmtFormulaHistoryPK.formulaCode = :formulaCode ");
+		builderString.append("AND a.startDate < :startDate ");
+		FIND_NEWEST_HISTORY = builderString.toString();
+
 	}
 
 	@Override
@@ -98,11 +110,9 @@ public class JpaFormulaHistoryRepository extends JpaRepository implements Formul
 	}
 
 	@Override
-	public void remove(FormulaHistory formulaHistory) {
-		this.getEntityManager().createQuery(DEL_HISTORY_BY_KEY)
-				.setParameter("companyCode", formulaHistory.getCompanyCode())
-				.setParameter("formulaCode", formulaHistory.getFormulaCode().v())
-				.setParameter("historyId", formulaHistory.getHistoryId()).executeUpdate();
+	public void remove(String companyCode, FormulaCode formulaCode, String historyId) {
+		this.getEntityManager().createQuery(DEL_HISTORY_BY_KEY).setParameter("companyCode", companyCode)
+				.setParameter("formulaCode", formulaCode.v()).setParameter("historyId", historyId).executeUpdate();
 	}
 
 	@Override
@@ -141,10 +151,15 @@ public class JpaFormulaHistoryRepository extends JpaRepository implements Formul
 	}
 
 	@Override
-
 	public Optional<FormulaHistory> findLastHistory(String companyCode, FormulaCode formulaCode) {
 		return this.queryProxy().query(LAST_HISTORY, QcfmtFormulaHistory.class).setParameter("companyCode", companyCode)
 				.setParameter("formulaCode", formulaCode.v()).getSingle(f -> toDomain(f));
+	}
+
+	@Override
+	public boolean isNewestHistory(String companyCode, FormulaCode formulaCode, YearMonth startDate) {
+		return this.queryProxy().query(FIND_NEWEST_HISTORY, long.class).setParameter("companyCode", companyCode)
+				.setParameter("formulaCode", formulaCode.v()).setParameter("startDate", startDate.v()).getSingle().get() > 0;
 	}
 
 }

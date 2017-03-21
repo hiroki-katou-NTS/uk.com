@@ -31,5 +31,5 @@ public interface FormulaManualRepository {
 	 * History ID of the history selected with @HIST_ID = [A_LST_001]
 	 * @param formulaManual
 	 */
-	void remove(FormulaManual formulaManual);
+	void remove(String companyCode, FormulaCode formulaCode, String historyId);
 }

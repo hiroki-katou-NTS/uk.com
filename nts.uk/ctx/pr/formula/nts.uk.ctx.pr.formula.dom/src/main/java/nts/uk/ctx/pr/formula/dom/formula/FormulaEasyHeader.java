@@ -49,4 +49,16 @@ public class FormulaEasyHeader extends DomainObject {
 				EnumAdaptor.valueOf(referenceMasterNo.intValue(), ReferenceMasterNo.class));
 	}
 
+	/**
+	 * @param companyCode
+	 * @param formulaCode
+	 * @param historyId
+	 */
+	public FormulaEasyHeader(String companyCode, FormulaCode formulaCode, String historyId) {
+		super();
+		this.companyCode = companyCode;
+		this.formulaCode = formulaCode;
+		this.historyId = historyId;
+	}
+
 }

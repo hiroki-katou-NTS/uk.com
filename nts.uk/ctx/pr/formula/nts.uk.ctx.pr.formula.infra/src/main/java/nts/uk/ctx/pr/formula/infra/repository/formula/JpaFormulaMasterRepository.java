@@ -70,8 +70,8 @@ public class JpaFormulaMasterRepository extends JpaRepository implements Formula
 	}
 
 	@Override
-	public void remove(FormulaMaster formulaMaster) {
-
+	public void remove(String companyCode, FormulaCode formulaCode) {
+		this.commandProxy().remove(QcfmtFormula.class, new QcfmtFormulaPK(companyCode,formulaCode.v()));
 	}
 
 	@Override

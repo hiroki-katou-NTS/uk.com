@@ -35,7 +35,7 @@ public interface FormulaMasterRepository {
 	
 	void update(FormulaMaster formulaMaster);
 	
-	void remove(FormulaMaster formulaMaster);
+	void remove(String companyCode, FormulaCode formulaCode);
 	
 	boolean isExistedFormula(String companyCode);
 }

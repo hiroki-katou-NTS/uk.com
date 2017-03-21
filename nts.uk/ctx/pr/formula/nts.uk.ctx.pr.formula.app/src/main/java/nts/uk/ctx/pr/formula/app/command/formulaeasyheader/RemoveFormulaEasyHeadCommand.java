@@ -11,15 +11,15 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class RemoveFormulaEasyHeadCommand {
-	
-	private String companyCode;
-	
-	private String formulaCode;
-	
-	private String historyId;
-
-	private int conditionAtr;
-
-	private int referenceMasterNo;
+//	
+//	private String companyCode;
+//	
+//	private String formulaCode;
+//	
+//	private String historyId;
+//
+//	private int conditionAtr;
+//
+//	private int referenceMasterNo;
 
 }

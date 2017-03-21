@@ -7,20 +7,9 @@ import lombok.Data;
 
 @Data
 public class FormulaSettingDto {
-	
-	/**
-	 * C_SEL_002
-	 * FIX_FORMULA_ATR
-	 */
-	private int fixFormulaAtr;
+
 	
 	private List<EasyFormulaFindDto> easyFormula;
-	
-	/**
-	 * formula detail
-	 */
-	
-	List<FormulaEasyFinderDto> formulaEasyDetail;
 	
 	/**
 	 * formula manual

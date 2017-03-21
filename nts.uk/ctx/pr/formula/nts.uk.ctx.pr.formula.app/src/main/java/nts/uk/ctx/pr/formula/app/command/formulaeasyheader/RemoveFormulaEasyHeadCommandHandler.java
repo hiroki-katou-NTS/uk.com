@@ -25,17 +25,17 @@ public class RemoveFormulaEasyHeadCommandHandler extends CommandHandler<RemoveFo
 	
 	@Override
 	protected void handle(CommandHandlerContext<RemoveFormulaEasyHeadCommand> context) {
-		RemoveFormulaEasyHeadCommand command = context.getCommand();
-		String companyCode = AppContexts.user().companyCode();
-		
-		FormulaEasyHeader formulaEasyHead = new FormulaEasyHeader(
-				companyCode,
-				new FormulaCode(command.getFormulaCode()),
-				command.getHistoryId(),
-				EnumAdaptor.valueOf(command.getConditionAtr(), ConditionAtr.class),
-				EnumAdaptor.valueOf(command.getReferenceMasterNo(), ReferenceMasterNo.class));
-		
-		formulaEasyHeaderRepository.remove(formulaEasyHead);
+//		RemoveFormulaEasyHeadCommand command = context.getCommand();
+//		String companyCode = AppContexts.user().companyCode();
+//		
+//		FormulaEasyHeader formulaEasyHead = new FormulaEasyHeader(
+//				companyCode,
+//				new FormulaCode(command.getFormulaCode()),
+//				command.getHistoryId(),
+//				EnumAdaptor.valueOf(command.getConditionAtr(), ConditionAtr.class),
+//				EnumAdaptor.valueOf(command.getReferenceMasterNo(), ReferenceMasterNo.class));
+//		
+//		formulaEasyHeaderRepository.remove(formulaEasyHead);
 	}
 
 }

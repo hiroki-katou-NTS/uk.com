@@ -16,6 +16,18 @@ import nts.uk.ctx.pr.formula.infra.entity.formula.QcfmtFormulaManualPK;
 @Stateless
 public class JpaFormulaManualRepository extends JpaRepository implements FormulaManualRepository {
 
+	private static final String DEL_FORMULA_MANUAL_BY_KEY;
+	
+	static {
+		StringBuilder builderString = new StringBuilder();
+		builderString.append("DELETE ");
+		builderString.append("FROM QcfmtFormulaManual a ");
+		builderString.append("WHERE a.qcfmtFormulaManualPK.companyCode = :companyCode ");
+		builderString.append("AND a.qcfmtFormulaManualPK.formulaCode = :formulaCode ");
+		builderString.append("AND a.qcfmtFormulaManualPK.historyId = :historyId ");
+		DEL_FORMULA_MANUAL_BY_KEY = builderString.toString();
+	}
+	
 	@Override
 	public Optional<FormulaManual> findByPriKey(String companyCode, FormulaCode formulaCode, String historyId) {
 		return this.queryProxy()
@@ -34,8 +46,11 @@ public class JpaFormulaManualRepository extends JpaRepository implements Formula
 	}
 
 	@Override
-	public void remove(FormulaManual formulaManual) {
-		this.commandProxy().remove(toEntity(formulaManual));
+	public void remove(String companyCode, FormulaCode formulaCode, String historyId) {
+		this.getEntityManager().createQuery(DEL_FORMULA_MANUAL_BY_KEY)
+		.setParameter("companyCode", companyCode)
+		.setParameter("formulaCode", formulaCode.v())
+		.setParameter("historyId", historyId).executeUpdate();
 	}
 
 	private FormulaManual toDomain(QcfmtFormulaManual qcfmtFormulaManual) {

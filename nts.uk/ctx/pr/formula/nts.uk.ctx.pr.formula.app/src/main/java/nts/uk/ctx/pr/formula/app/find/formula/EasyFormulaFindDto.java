@@ -17,6 +17,18 @@ public class EasyFormulaFindDto {
 	 * B_SEL_003
 	 * REF_MASTER_CD
 	 */
-	private String refMasterNo;
+	private String refMasterNo;	
+	
+	/**
+	 * C_SEL_002
+	 * FIX_FORMULA_ATR
+	 */
+	private int fixFormulaAtr;
+	
+	/**
+	 * formula detail
+	 */
+	
+	private FormulaEasyFinderDto formulaEasyDetail;
 	
 }

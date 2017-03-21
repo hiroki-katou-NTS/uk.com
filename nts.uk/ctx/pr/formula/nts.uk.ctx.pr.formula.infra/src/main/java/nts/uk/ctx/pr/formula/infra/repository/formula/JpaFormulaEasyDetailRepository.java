@@ -12,10 +12,8 @@ import nts.uk.ctx.pr.formula.dom.formula.FormulaEasyDetail;
 import nts.uk.ctx.pr.formula.dom.primitive.EasyFormulaCode;
 import nts.uk.ctx.pr.formula.dom.primitive.FormulaCode;
 import nts.uk.ctx.pr.formula.dom.repository.FormulaEasyDetailRepository;
-import nts.uk.ctx.pr.formula.infra.entity.formula.QcfmtFormula;
 import nts.uk.ctx.pr.formula.infra.entity.formula.QcfmtFormulaEasyDetail;
 import nts.uk.ctx.pr.formula.infra.entity.formula.QcfmtFormulaEasyDetailPK;
-import nts.uk.ctx.pr.formula.infra.entity.formula.QcfmtFormulaPK;
 
 @Stateless
 public class JpaFormulaEasyDetailRepository extends JpaRepository implements FormulaEasyDetailRepository {

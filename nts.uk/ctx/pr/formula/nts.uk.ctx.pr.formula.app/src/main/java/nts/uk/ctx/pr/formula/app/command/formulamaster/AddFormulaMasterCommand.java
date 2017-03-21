@@ -21,8 +21,6 @@ public class AddFormulaMasterCommand {
 
 	private BigDecimal difficultyAtr;
 	
-	private String historyId;
-	
 	private int startDate;
 	
 	private int endDate;

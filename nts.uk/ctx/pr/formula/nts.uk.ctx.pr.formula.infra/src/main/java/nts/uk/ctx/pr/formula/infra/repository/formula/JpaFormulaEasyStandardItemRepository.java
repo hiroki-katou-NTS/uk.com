@@ -6,18 +6,15 @@ import javax.ejb.Stateless;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.pr.formula.dom.formula.FormulaEasyDetail;
 import nts.uk.ctx.pr.formula.dom.formula.FormulaEasyStandardItem;
 import nts.uk.ctx.pr.formula.dom.primitive.EasyFormulaCode;
 import nts.uk.ctx.pr.formula.dom.primitive.FormulaCode;
-import nts.uk.ctx.pr.formula.dom.primitive.ItemCode;
 import nts.uk.ctx.pr.formula.dom.repository.FormulaEasyStandardItemRepository;
-import nts.uk.ctx.pr.formula.infra.entity.formula.QcfmtFormulaEasyDetail;
 import nts.uk.ctx.pr.formula.infra.entity.formula.QcfmtFormulaEasyStandardItem;
 import nts.uk.ctx.pr.formula.infra.entity.formula.QcfmtFormulaEasyStandardItemPK;
 
 @Stateless
-public class JpaFormulaEasyEasyStandardItemRepository extends JpaRepository
+public class JpaFormulaEasyStandardItemRepository extends JpaRepository
 		implements FormulaEasyStandardItemRepository {
 
 	private final String REMOVE_FORMULA_EASY_STANRDARD_ITEM = "DELETE FROM QcfmtFormulaEasyStandardItem a "
@@ -49,7 +46,6 @@ public class JpaFormulaEasyEasyStandardItemRepository extends JpaRepository
 	@Override
 	public void add(List<FormulaEasyStandardItem> formulaEasyStandardItem) {
 		formulaEasyStandardItem.stream().forEach(item -> this.commandProxy().insert(toEntity(item)));
-		;
 	}
 
 	private QcfmtFormulaEasyStandardItem toEntity(FormulaEasyStandardItem formulaEasyStandardItem) {

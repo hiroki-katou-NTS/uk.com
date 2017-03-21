@@ -44,28 +44,28 @@ public class FormulaMasterDomainServiceImpl implements FormulaMasterDomainServic
 	FormulaManualRepository formulaManualRepository;
 	
 	public void add(FormulaMaster formulaMaster, FormulaHistory formulaHistory, FormulaEasyHeader formulaEasyHeader) {
-		formulaMasterRepository.add(formulaMaster);
-		formulaHistoryRepository.add(formulaHistory);
+		this.formulaMasterRepository.add(formulaMaster);
+		this.formulaHistoryRepository.add(formulaHistory);
 		if (formulaEasyHeader.getConditionAtr().value == 0) {
-			formulaEasyHeaderRepository.add(formulaEasyHeader);
+			this.formulaEasyHeaderRepository.add(formulaEasyHeader);
 		}
 	}
 
 	public void update(FormulaMaster formulaMaster, FormulaHistory formulaHistory, FormulaEasyHeader formulaEasyHeader,
 			List<FormulaEasyCondition> formulaEasyCondition, FormulaEasyDetail formulaEasyDetail,
 			List<FormulaEasyStandardItem> formulaEasyStandardItem, FormulaManual formulaManual) {
-		formulaMasterRepository.update(formulaMaster);
+		this.formulaMasterRepository.update(formulaMaster);
 
 		if (formulaMaster.getDifficultyAtr().value == 0) {
-			formulaEasyConditionRepository.remove(formulaMaster.getCompanyCode(), formulaMaster.getFormulaCode(),
+			this.formulaEasyConditionRepository.remove(formulaMaster.getCompanyCode(), formulaMaster.getFormulaCode(),
 					formulaHistory.getHistoryId());
-			formulaEasyConditionRepository.add(formulaEasyCondition);
-			formulaEasyDetailRepository.remove(formulaMaster.getCompanyCode(), formulaMaster.getFormulaCode(),
+			this.formulaEasyConditionRepository.add(formulaEasyCondition);
+			this.formulaEasyDetailRepository.remove(formulaMaster.getCompanyCode(), formulaMaster.getFormulaCode(),
 					formulaHistory.getHistoryId());
-			formulaEasyDetailRepository.add(formulaEasyDetail);
-			formulaEasyStandardItemRepository.remove(formulaMaster.getCompanyCode(), formulaMaster.getFormulaCode(),
+			this.formulaEasyDetailRepository.add(formulaEasyDetail);
+			this.formulaEasyStandardItemRepository.remove(formulaMaster.getCompanyCode(), formulaMaster.getFormulaCode(),
 					formulaHistory.getHistoryId());
-			formulaEasyStandardItemRepository.add(formulaEasyStandardItem);
+			this.formulaEasyStandardItemRepository.add(formulaEasyStandardItem);
 		} else if(formulaMaster.getDifficultyAtr().value == 1){
 			
 			/**
@@ -74,12 +74,12 @@ public class FormulaMasterDomainServiceImpl implements FormulaMasterDomainServic
 			 * @ FORMULA_CD = [B_INP_ 001]
 			 * History ID of the history selected with @HIST_ID = [A_LST_001]
 			 */
-			Optional<FormulaManual> optional = formulaManualRepository.findByPriKey(formulaMaster.getCompanyCode(), formulaMaster.getFormulaCode(),
+			Optional<FormulaManual> optional = this.formulaManualRepository.findByPriKey(formulaMaster.getCompanyCode(), formulaMaster.getFormulaCode(),
 					formulaHistory.getHistoryId());
 			if(optional.isPresent() == false){
-				formulaManualRepository.add(formulaManual);
+				this.formulaManualRepository.add(formulaManual);
 			} else if (optional.isPresent() == true){
-				formulaManualRepository.update(formulaManual);
+				this.formulaManualRepository.update(formulaManual);
 			}
 		}
 	}
