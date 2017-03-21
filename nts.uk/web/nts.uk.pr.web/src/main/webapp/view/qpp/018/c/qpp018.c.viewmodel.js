@@ -15,21 +15,21 @@ var nts;
                             var ScreenModel = (function () {
                                 function ScreenModel() {
                                     var self = this;
-                                    self.showDeliveryNoticeAmount = ko.observable(false);
-                                    self.showCategoryInsuranceItem = ko.observable(false);
-                                    self.showOffice = ko.observable(false);
-                                    self.showTotal = ko.observable(false);
-                                    self.healthInsuranceItems = ko.observableArray([
-                                        { code: "indicate", name: "表示する" },
-                                        { code: "hide", name: "表示しない" }
-                                    ]);
                                     self.selectedHealthInsuranceItem = ko.observable("indicate");
-                                    self.showDetail = ko.computed(function () {
+                                    self.showCategoryInsuranceItem = ko.computed(function () {
                                         if (self.selectedHealthInsuranceItem() == 'indicate') {
                                             return true;
                                         }
                                         return false;
                                     }, self);
+                                    self.showDetail = ko.observable(false);
+                                    self.showOffice = ko.observable(false);
+                                    self.showTotal = ko.observable(false);
+                                    self.showDeliveryNoticeAmount = ko.observable(false);
+                                    self.healthInsuranceItems = ko.observableArray([
+                                        { code: "indicate", name: "表示する" },
+                                        { code: "hide", name: "表示しない" }
+                                    ]);
                                 }
                                 ScreenModel.prototype.startPage = function () {
                                     var self = this;
@@ -53,13 +53,32 @@ var nts;
                                 ScreenModel.prototype.saveConfigSetting = function () {
                                     var self = this;
                                     var dfd = $.Deferred();
+                                    if (self.validate()) {
+                                        return;
+                                    }
                                     var command = self.toJSObject();
                                     c.service.saveCheckListPrintSetting(command).done(function (res) {
                                         dfd.resolve(res);
                                     }).fail(function (res) {
                                         dfd.reject(res);
+                                    }).always(function () {
+                                        self.closeDialog();
                                     });
                                     return dfd.promise();
+                                };
+                                ScreenModel.prototype.validate = function () {
+                                    var self = this;
+                                    var isError = false;
+                                    self.clearError();
+                                    if (!self.showCategoryInsuranceItem() && !self.showOffice() && !self.showTotal()
+                                        && !self.showDeliveryNoticeAmount()) {
+                                        isError = true;
+                                        $('#require-least-item').ntsError('set', 'You must choose at least check box item.');
+                                    }
+                                    return isError;
+                                };
+                                ScreenModel.prototype.clearError = function () {
+                                    $('#require-least-item').ntsError('clear');
                                 };
                                 ScreenModel.prototype.closeDialog = function () {
                                     nts.uk.ui.windows.close();
@@ -75,21 +94,20 @@ var nts;
                                 };
                                 ScreenModel.prototype.setData = function (dto) {
                                     var self = this;
-                                    if (dto.showDetail) {
+                                    if (dto.showCategoryInsuranceItem) {
                                         self.selectedHealthInsuranceItem("indicate");
                                     }
                                     else {
                                         self.selectedHealthInsuranceItem("hide");
                                     }
-                                    self.showDeliveryNoticeAmount(dto.showDeliveryNoticeAmount);
-                                    self.showCategoryInsuranceItem(dto.showDetail);
+                                    self.showDetail(dto.showDetail);
                                     self.showOffice(dto.showOffice);
                                     self.showTotal(dto.showTotal);
+                                    self.showDeliveryNoticeAmount(dto.showDeliveryNoticeAmount);
                                 };
                                 ScreenModel.prototype.defaultValue = function () {
                                     var self = this;
                                     self.selectedHealthInsuranceItem("indicate");
-                                    self.showCategoryInsuranceItem(false);
                                     self.showOffice(false);
                                     self.showTotal(false);
                                     self.showDeliveryNoticeAmount(false);
@@ -98,8 +116,8 @@ var nts;
                                     var self = this;
                                     var command = {};
                                     var checkListPrintSetting = {};
-                                    checkListPrintSetting.showDetail = self.showDetail();
                                     checkListPrintSetting.showCategoryInsuranceItem = self.showCategoryInsuranceItem();
+                                    checkListPrintSetting.showDetail = self.showDetail();
                                     checkListPrintSetting.showOffice = self.showOffice();
                                     checkListPrintSetting.showTotal = self.showTotal();
                                     checkListPrintSetting.showDeliveryNoticeAmount = self.showDeliveryNoticeAmount();

@@ -22,7 +22,7 @@ module nts.uk.pr.view.qpp018.a {
         }
         
         export function saveAsPdf(command: any): JQueryPromise<any> {
-            return nts.uk.request.ajax(servicePath.saveAsPdf, command);
+            return nts.uk.request.exportFile(servicePath.saveAsPdf, command);
         }
         
         /**
