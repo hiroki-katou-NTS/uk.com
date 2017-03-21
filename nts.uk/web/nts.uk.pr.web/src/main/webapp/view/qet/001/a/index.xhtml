@@ -28,12 +28,12 @@
 		<ui:define name="content">
 			<div id="functions-area" class="divHeader">
 				<div class="function-class">
-					<button id="select-employee-button" class="proceed" data-bind="click: print, enable: $root.errors.isEmpty">選択した社員を印刷</button>
+					<button id="select-employee-button" class="proceed" data-bind="click: print">選択した社員を印刷</button>
 					<button id="aggregate-setting-button" data-bind="click: goToAggregateItemPage">明細書項目の集約設定</button>
 					<button id="unknow-function-button">印刷実行ログ</button>
 				</div>
 			</div>
-			<div id="contents-area">
+			<div id="contents-area" style="display: none" data-bind="visible: true">
 				<table>
 					<tr>
 						<td id="contents-left">
@@ -47,7 +47,7 @@
 											width: '60px'
 										},
 										enable: true}"></input>
-								<span id="japan-year">(?????)</span>
+								<span id="japan-year" data-bind="text: '（' + nts.uk.time.yearInJapanEmpire(targetYear()).toString() + '）'"></span>
 								<span id="year-label">年度</span>
 								<div id="preliminary-month-checkbox" data-bind="ntsCheckBox: { checked: isAggreatePreliminaryMonth }">予備月</div>
 							</div>

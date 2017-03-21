@@ -102,11 +102,11 @@ var qet001;
                     $('#name-input').ntsError('clear');
                     var hasError = false;
                     if (self.aggregateItemDetail().code() == '') {
-                        $('#code-input').ntsError('set', '未入力エラー');
+                        $('#code-input').ntsError('set', 'コードが入力されていません。');
                         hasError = true;
                     }
                     if (self.aggregateItemDetail().name() == '') {
-                        $('#name-input').ntsError('set', '未入力エラー');
+                        $('#name-input').ntsError('set', '名称が入力されていません。');
                         hasError = true;
                     }
                     if (hasError) {
