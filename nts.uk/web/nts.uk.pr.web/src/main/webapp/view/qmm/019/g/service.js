@@ -5,15 +5,16 @@ var qmm019;
         var service;
         (function (service) {
             var paths = {
-                getLayoutInfor: "pr/proto/layout/findlayoutwithmaxstartym",
+                getLayoutHeadInfor: "pr/proto/layout/findlayoutwithmaxstartym",
+                getLayoutHistoryInfor: "pr/proto/layout/findlayouthistorywithmaxstartym",
                 copylayoutPath: "pr/proto/layout/createlayout"
             };
             /**
              * Get list layout master new history
              */
-            function getLayoutWithMaxStartYm() {
+            function getLayoutHeadInfor() {
                 var dfd = $.Deferred();
-                nts.uk.request.ajax(paths.getLayoutInfor)
+                nts.uk.request.ajax(paths.getLayoutHeadInfor)
                     .done(function (res) {
                     dfd.resolve(res);
                 })
@@ -22,7 +23,19 @@ var qmm019;
                 });
                 return dfd.promise();
             }
-            service.getLayoutWithMaxStartYm = getLayoutWithMaxStartYm;
+            service.getLayoutHeadInfor = getLayoutHeadInfor;
+            function getLayoutHistoryInfor() {
+                var dfd = $.Deferred();
+                nts.uk.request.ajax(paths.getLayoutHistoryInfor)
+                    .done(function (res) {
+                    dfd.resolve(res);
+                })
+                    .fail(function (res) {
+                    dfd.reject(res);
+                });
+                return dfd.promise();
+            }
+            service.getLayoutHistoryInfor = getLayoutHistoryInfor;
             function createLayout(layoutMaster) {
                 var dfd = $.Deferred();
                 nts.uk.request.ajax(paths.copylayoutPath, layoutMaster).done(function (res) {
@@ -38,6 +51,12 @@ var qmm019;
                 */
             var model;
             (function (model) {
+                var LayoutHeadDto = (function () {
+                    function LayoutHeadDto() {
+                    }
+                    return LayoutHeadDto;
+                }());
+                model.LayoutHeadDto = LayoutHeadDto;
                 // layout
                 var LayoutMasterDto = (function () {
                     function LayoutMasterDto() {
@@ -45,6 +64,13 @@ var qmm019;
                     return LayoutMasterDto;
                 }());
                 model.LayoutMasterDto = LayoutMasterDto;
+                // layoutHistory
+                var LayoutHistoryDto = (function () {
+                    function LayoutHistoryDto() {
+                    }
+                    return LayoutHistoryDto;
+                }());
+                model.LayoutHistoryDto = LayoutHistoryDto;
             })(model = service.model || (service.model = {}));
         })(service = g.service || (g.service = {}));
     })(g = qmm019.g || (qmm019.g = {}));

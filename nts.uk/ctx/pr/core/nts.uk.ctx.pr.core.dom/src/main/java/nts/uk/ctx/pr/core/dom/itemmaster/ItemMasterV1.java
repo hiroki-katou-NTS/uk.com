@@ -1,5 +1,6 @@
 package nts.uk.ctx.pr.core.dom.itemmaster;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import lombok.Getter;
@@ -10,7 +11,7 @@ import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.enums.CategoryAtr;
 import nts.uk.ctx.pr.core.dom.enums.DisplayAtr;
 import nts.uk.ctx.pr.core.dom.enums.UseOrNot;
-import nts.uk.ctx.pr.core.dom.layout.detail.RangeChecker;
+import nts.uk.ctx.pr.core.dom.rule.employment.layout.detail.RangeChecker;
 
 /**
  * 
@@ -141,7 +142,7 @@ public class ItemMasterV1 extends AggregateRoot{
 		return this;
 	}
 	
-	public ItemMasterV1 additionalErrorAlarm(int isUseHighError, int errRangeHigh, int isUseLowError, int errRangeLow, int isUseHighAlam, int alamRangeHigh, int isUseLowAlam, int alamRangeLow){
+	public ItemMasterV1 additionalErrorAlarm(int isUseHighError, BigDecimal errRangeHigh, int isUseLowError, BigDecimal errRangeLow, int isUseHighAlam, BigDecimal alamRangeHigh, int isUseLowAlam, BigDecimal alamRangeLow){
 		this.error = new ArrayList<>();
 		this.alarm = new ArrayList<>();
 		this.error.add(new RangeChecker(EnumAdaptor.valueOf(isUseHighError, UseOrNot.class),  EnumAdaptor.valueOf(isUseLowError, UseOrNot.class), Range.between(errRangeLow, errRangeHigh)));

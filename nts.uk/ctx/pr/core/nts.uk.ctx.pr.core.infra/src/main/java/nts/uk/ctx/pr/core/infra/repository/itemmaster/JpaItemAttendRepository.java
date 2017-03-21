@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.enterprise.context.RequestScoped;
+import javax.transaction.Transactional;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
@@ -13,6 +14,7 @@ import nts.uk.ctx.pr.core.infra.entity.itemmaster.QcamtItemAttend;
 import nts.uk.ctx.pr.core.infra.entity.itemmaster.QcamtItemAttendPK;
 
 @RequestScoped
+@Transactional
 public class JpaItemAttendRepository extends JpaRepository implements ItemAttendRespository {
 	private final String SEL = "SELECT c FROM QcamtItemAttend c";
 	private final String SEL_1 = SEL + " WHERE c.qcamtItemAttendPK.ccd = :companyCode";
