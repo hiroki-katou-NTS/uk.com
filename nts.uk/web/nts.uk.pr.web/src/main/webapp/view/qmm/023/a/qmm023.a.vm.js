@@ -73,7 +73,7 @@ var qmm023;
                         self.flatDirty = false;
                     }
                     else {
-                        nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\nよろしいですか。").ifYes(function () {
+                        nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\nよろしいですか。?").ifYes(function () {
                             self.currentTax(ko.mapping.fromJS(self.getTax(codeChanged)));
                             self.allowEditCode(false);
                             self.isUpdate(true);
@@ -98,7 +98,7 @@ var qmm023;
                 ScreenModel.prototype.createButtonClick = function () {
                     var self = this;
                     if (self.currentTaxDirty.isDirty()) {
-                        nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\nよろしいですか。").ifYes(function () {
+                        nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\nよろしいですか。?").ifYes(function () {
                             self.refreshLayout();
                         }).ifCancel(function () {
                             return;
@@ -134,10 +134,16 @@ var qmm023;
                         }
                     }).fail(function (error) {
                         if (error.message === '3') {
-                            $('#INP_002').ntsError('set', nts.uk.text.format('入力した{0}は既に存在しています。\r\n{1}を確認してください。', 'コード', 'コード'));
+                            nts.uk.ui.dialog.alert("New item is existed").then(function () {
+                                self.currentTaxDirty.reset();
+                                location.reload(true);
+                            });
                         }
                         else if (error.message === '4') {
-                            $('#INP_002').ntsError('set', "対象データがありません。");
+                            nts.uk.ui.dialog.alert("対象データがありません。").then(function () {
+                                self.currentTaxDirty.reset();
+                                location.reload(true);
+                            });
                         }
                         else {
                             $('#INP_002').ntsError('set', error.message);
@@ -176,7 +182,9 @@ var qmm023;
                         });
                     }).fail(function (error) {
                         if (error.message === '1') {
-                            $('#INP_002').ntsError('set', "対象データがありません。");
+                            nts.uk.ui.dialog.alert("対象データがありません。").then(function () {
+                                location.reload(true);
+                            });
                         }
                         else {
                             $('#INP_002').ntsError('set', error.message);
