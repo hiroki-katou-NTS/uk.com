@@ -1,0 +1,69 @@
+/******************************************************************
+ * Copyright (c) 2015 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
+package nts.uk.ctx.pr.report.app.wageledger.command;
+
+import javax.ejb.Stateless;
+import javax.inject.Inject;
+import javax.transaction.Transactional;
+
+import lombok.val;
+import nts.arc.error.BusinessException;
+import nts.arc.layer.app.command.CommandHandler;
+import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.uk.ctx.pr.report.dom.company.CompanyCode;
+import nts.uk.ctx.pr.report.dom.wageledger.aggregate.WLAggregateItem;
+import nts.uk.ctx.pr.report.dom.wageledger.aggregate.WLAggregateItemRepository;
+import nts.uk.ctx.pr.report.dom.wageledger.aggregate.WLItemSubject;
+import nts.uk.shr.com.context.AppContexts;
+
+/**
+ * The Class AggregateItemSaveCommandHandler.
+ */
+@Stateless
+public class AggregateItemSaveCommandHandler extends CommandHandler<AggregateItemSaveCommand> {
+	
+	/** The repository. */
+	@Inject
+	private WLAggregateItemRepository repository;
+
+	/* (non-Javadoc)
+	 * @see nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command.CommandHandlerContext)
+	 */
+	@Override
+	@Transactional
+	protected void handle(CommandHandlerContext<AggregateItemSaveCommand> context) {
+		val companyCode = new CompanyCode(AppContexts.user().companyCode());
+		val command = context.getCommand();
+		WLItemSubject subject = command.getSubject().toDomain(companyCode.v());
+		subject.validate();
+		
+		// In case update.
+		if (!command.isCreateMode()) {
+			// Find aggregate item.
+			WLAggregateItem aggregateItem = this.repository.findByCode(subject);
+			if (aggregateItem == null) {
+				throw new BusinessException("ER026");
+			}
+			
+			// Convert to domain.
+			aggregateItem = command.toDomain(companyCode.v());
+			// Update.
+			this.repository.update(aggregateItem);
+			return;
+		}
+		
+		// In case create.
+		// Check duplicate code.
+		if (this.repository.isExist(subject)) {
+			throw new BusinessException("ER011");
+		}
+		
+		// Convert to domain.
+		val aggregateItem = command.toDomain(companyCode.v());
+		this.repository.create(aggregateItem);
+		return;
+	}
+	
+}
