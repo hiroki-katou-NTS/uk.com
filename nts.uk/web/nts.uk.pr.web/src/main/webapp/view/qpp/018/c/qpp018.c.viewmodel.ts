@@ -71,7 +71,7 @@ module nts.uk.pr.view.qpp018.c {
                 let self = this;
                 let isError: boolean = false;
                 self.clearError();
-                if (!self.showCategoryInsuranceItem() && !self.showOffice() && !self.showTotal() 
+                if (!self.showDetail() && !self.showOffice() && !self.showTotal() 
                     && !self.showDeliveryNoticeAmount()) {
                     isError = true;
                     $('#require-least-item').ntsError('set', 'You must choose at least check box item.');
