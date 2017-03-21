@@ -67,10 +67,11 @@ public class UpdateUnitPriceHistoryCommandHandler extends CommandHandler<UpdateU
 		unitPrice.setName(command.getName());
 
 		// Validate
+		history.validate();
 		this.unitPriceHistoryService.validateRequiredItem(history);
 
 		// Update to db.
 		this.unitPriceRepo.update(unitPrice);
-		this.unitPriceHistoryRepo.update(history);
+		this.unitPriceHistoryRepo.updateHistory(history);
 	}
 }
