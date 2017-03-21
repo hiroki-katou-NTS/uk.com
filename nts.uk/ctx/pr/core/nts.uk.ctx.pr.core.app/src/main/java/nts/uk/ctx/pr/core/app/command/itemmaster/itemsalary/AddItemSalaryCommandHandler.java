@@ -8,6 +8,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.core.dom.company.CompanyCode;
+import nts.uk.ctx.pr.core.dom.itemmaster.AvePayAtr;
 import nts.uk.ctx.pr.core.dom.itemmaster.ItemCode;
 import nts.uk.ctx.pr.core.dom.itemmaster.itemsalary.AlRangeHigh;
 import nts.uk.ctx.pr.core.dom.itemmaster.itemsalary.AlRangeLow;
@@ -47,7 +48,7 @@ public class AddItemSalaryCommandHandler extends CommandHandler<AddItemSalaryCom
 				EnumAdaptor.valueOf(context.getCommand().getApplyForDaymonthlyPayEmp(), ApplyFor.class),
 				EnumAdaptor.valueOf(context.getCommand().getApplyForDaylyPayEmp(), ApplyFor.class),
 				EnumAdaptor.valueOf(context.getCommand().getApplyForHourlyPayEmp(), ApplyFor.class),
-				EnumAdaptor.valueOf(context.getCommand().getAvePayAtr(), ApplyFor.class),
+				EnumAdaptor.valueOf(context.getCommand().getAvePayAtr(), AvePayAtr.class),
 				EnumAdaptor.valueOf(context.getCommand().getErrRangeLowAtr(), RangeAtr.class),
 				new ErrRangeLow(context.getCommand().getErrRangeLow()),
 				EnumAdaptor.valueOf(context.getCommand().getErrRangeHighAtr(), RangeAtr.class),
