@@ -261,10 +261,12 @@ module nts.uk.pr.view.base.simplehistory {
                     self.selectedHistoryUuid(undefined);
                     if (uuid) {
                         self.igGridSelectedHistoryUuid(uuid);
+                        self.igGridSelectedHistoryUuid.valueHasMutated();
                     } else {
                         if (self.masterHistoryList.length > 0) {
                             if (!_.isEmpty(self.masterHistoryList[0].historyList)) {
                                 self.igGridSelectedHistoryUuid(self.masterHistoryList[0].historyList[0].uuid);
+                                self.igGridSelectedHistoryUuid.valueHasMutated();
                             } 
                         }
                     }
