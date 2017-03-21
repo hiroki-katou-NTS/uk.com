@@ -29,7 +29,7 @@
 
 		<!-- PAGE CONTENT -->
 		<ui:define name="pageContent">
-			<table class="form-default">
+			<table class="form-default" data-bind="visible: true" style="display: none">
 						<tr>
 							<td><div id="lbl_003"
 									data-bind="ntsFormLabel: {constraint: ['UnitPriceCode','UnitPriceName'], required: true }">コード/名称</div></td>
@@ -53,9 +53,9 @@
 							<td><div id="lbl_004"
 									data-bind="ntsFormLabel: { required: true }">開始年月</div></td>
 							<td><span id="ipnStartMonth"
-								data-bind="ntsDatePicker: {value: unitPriceHistoryModel().startMonth, dateFormat: 'yyyy/MM'}"></span>
-								<label id="lblEndMonth"
-								data-bind="text: ' ~ ' + nts.uk.time.formatYearMonth(unitPriceHistoryModel().endMonth())"></label></td>
+								data-bind="ntsDatePicker: {value: unitPriceHistoryModel().startMonth, dateFormat: 'yyyy/MM', disabled: isSelected}"></span>
+								<label id="lblJapanenseYearMonth"
+								data-bind="text: '(' + nts.uk.time.yearmonthInJapanEmpire(unitPriceHistoryModel().endMonth()) + ') ~ '"></label></td>
 						</tr>
 						<tr>
 							<td><div id="lbl_006"

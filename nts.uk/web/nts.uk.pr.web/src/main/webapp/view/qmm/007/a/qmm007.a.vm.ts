@@ -11,6 +11,7 @@ module nts.uk.pr.view.qmm007.a {
 
             // Flags
             isLoading: KnockoutObservable<boolean>;
+            isSelected: KnockoutObservable<boolean>;
 
             // Nts text editor options
             textEditorOption: KnockoutObservable<nts.uk.ui.option.TextEditorOption>;
@@ -24,6 +25,7 @@ module nts.uk.pr.view.qmm007.a {
                     removeMasterOnLastHistoryRemove: true});
                 var self = this;
                 self.isLoading = ko.observable(true);
+                self.isSelected = ko.observable(false);
 
                 self.unitPriceHistoryModel = ko.observable(new UnitPriceHistoryModel(self.getDefaultUnitPriceHistory()));
                 self.switchButtonDataSource = ko.observableArray<SwitchButtonDataSource>([
@@ -94,11 +96,12 @@ module nts.uk.pr.view.qmm007.a {
                     self.isLoading(false);
                     nts.uk.ui.windows.setShared('unitPriceHistoryModel', ko.toJS(this.unitPriceHistoryModel()));
                     $('.save-error').ntsError('clear');
+                    self.isSelected(true);
                     dfd.resolve();
                 });
                 return dfd.promise();
             }
-            
+
             /**
              * Clear all input and switch to new mode.
              */
@@ -106,6 +109,7 @@ module nts.uk.pr.view.qmm007.a {
                 var self = this;
                 $('.save-error').ntsError('clear');
                 self.setUnitPriceHistoryModel(self.getDefaultUnitPriceHistory());
+                self.isSelected(false);
             }
 
             /**
