@@ -57,7 +57,7 @@ public class JpaFormulaHistoryRepository extends JpaRepository implements Formul
 		FIND_ALL_DIFFERENT_FORMULACODE = builderString.toString();
 
 		builderString = new StringBuilder();
-		builderString.append("SELECT TOP 1 a ");
+		builderString.append("SELECT a ");
 		builderString.append("FROM QcfmtFormulaHistory a ");
 		builderString.append("WHERE a.qcfmtFormulaHistoryPK.companyCode = :companyCode ");
 		builderString.append("AND a.qcfmtFormulaHistoryPK.formulaCode = :formulaCode ");
@@ -81,7 +81,7 @@ public class JpaFormulaHistoryRepository extends JpaRepository implements Formul
 		FIND_NEWEST_HISTORY = builderString.toString();
 
 		builderString = new StringBuilder();
-		builderString.append("SELECT TOP 1 a ");
+		builderString.append("SELECT a ");
 		builderString.append("FROM QcfmtFormulaHistory a ");
 		builderString.append("WHERE a.qcfmtFormulaHistoryPK.companyCode = :companyCode ");
 		builderString.append("AND a.qcfmtFormulaHistoryPK.formulaCode = :formulaCode ");

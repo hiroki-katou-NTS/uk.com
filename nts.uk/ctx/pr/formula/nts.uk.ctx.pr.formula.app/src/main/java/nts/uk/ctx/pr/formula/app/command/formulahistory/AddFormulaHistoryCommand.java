@@ -17,6 +17,8 @@ public class AddFormulaHistoryCommand {
 	
 	private int endDate;
 	
+	private int difficultyAtr;
+	
 	private int conditionAtr;
 
 	private int referenceMasterNo;

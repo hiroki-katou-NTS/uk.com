@@ -5,7 +5,7 @@ import nts.uk.ctx.pr.formula.dom.formula.FormulaHistory;
 
 public interface FormulaHistoryDomainService {
 
-	void add(FormulaHistory formulaHistoryAdd, FormulaEasyHeader formulaEasyHead, FormulaHistory formulaHistoryUpdate);
+	void add(int difficultyAtr, FormulaHistory formulaHistoryAdd, FormulaEasyHeader formulaEasyHead, FormulaHistory formulaHistoryUpdate, FormulaHistory previousFormulaHistoryUpdate);
 
 	void remove(int conditionAtr, String companyCode, String formulaCode, String historyId, int startDate);
 }

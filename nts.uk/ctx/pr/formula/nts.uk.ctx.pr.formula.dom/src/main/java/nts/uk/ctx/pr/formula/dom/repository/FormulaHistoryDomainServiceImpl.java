@@ -38,15 +38,18 @@ public class FormulaHistoryDomainServiceImpl implements FormulaHistoryDomainServ
 	@Inject
 	private FormulaMasterRepository formulaMasterRepository;
 
-	public void add(FormulaHistory formulaHistoryAdd, FormulaEasyHeader formulaEasyHead,
-			FormulaHistory formulaHistoryUpdate) {
+	public void add(int difficultyAtr, FormulaHistory formulaHistoryAdd, FormulaEasyHeader formulaEasyHead,
+			FormulaHistory formulaHistoryUpdate,FormulaHistory previousFormulaHistoryUpdate) {
 
 		this.formulaHistoryRepository.add(formulaHistoryAdd);
 
-		if (formulaEasyHead.getConditionAtr().value == 0) {
+		if (difficultyAtr == 0) {
 			this.formulaEasyHeaderRepository.add(formulaEasyHead);
-		} else if (formulaEasyHead.getConditionAtr().value == 1) {
 			this.formulaHistoryRepository.update(formulaHistoryUpdate);
+			this.formulaHistoryRepository.update(previousFormulaHistoryUpdate);
+		} else if (difficultyAtr == 1) {
+			this.formulaHistoryRepository.update(formulaHistoryUpdate);
+			this.formulaHistoryRepository.update(previousFormulaHistoryUpdate);
 		}
 	}
 

@@ -1,5 +1,6 @@
 package nts.uk.ctx.pr.formula.app.command.formulahistory;
 
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.layer.app.command.CommandHandler;
@@ -11,6 +12,7 @@ import nts.uk.shr.com.context.AppContexts;
  * @author Nam-PT K screen activity 33 - del
  *
  */
+@Stateless
 public class RemoveFormulaHistoryCommandHandler extends CommandHandler<RemoveFormulaHistoryCommand> {
 
 	@Inject
