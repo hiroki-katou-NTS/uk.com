@@ -4,19 +4,20 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.app.wagetable.command;
 
+import java.util.Optional;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.layer.app.command.CommandHandlerWithResult;
-import nts.gul.text.IdentifierUtil;
-import nts.uk.ctx.pr.core.app.wagetable.command.dto.WageTableHistoryDto;
+import nts.arc.time.YearMonth;
 import nts.uk.ctx.pr.core.dom.wagetable.WtHead;
 import nts.uk.ctx.pr.core.dom.wagetable.WtHeadRepository;
 import nts.uk.ctx.pr.core.dom.wagetable.history.WtHistory;
 import nts.uk.ctx.pr.core.dom.wagetable.history.WtHistoryRepository;
-import nts.uk.ctx.pr.core.dom.wagetable.history.service.WtHeadService;
 import nts.uk.ctx.pr.core.dom.wagetable.history.service.WtHistoryService;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -24,8 +25,8 @@ import nts.uk.shr.com.context.AppContexts;
  * The Class WageTableHistoryAddCommandHandler.
  */
 @Stateless
-public class WtHistoryAddCommandHandler
-		extends CommandHandlerWithResult<WtHistoryAddCommand, WtHistory> {
+public class WtAddHistoryCommandHandler
+		extends CommandHandlerWithResult<WtAddHistoryCommand, WtHistory> {
 
 	/** The wage table head repo. */
 	@Inject
@@ -39,10 +40,6 @@ public class WtHistoryAddCommandHandler
 	@Inject
 	private WtHistoryService historyService;
 
-	/** The head service. */
-	@Inject
-	private WtHeadService headService;
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -52,28 +49,22 @@ public class WtHistoryAddCommandHandler
 	 */
 	@Override
 	@Transactional
-	protected WtHistory handle(CommandHandlerContext<WtHistoryAddCommand> context) {
+	protected WtHistory handle(CommandHandlerContext<WtAddHistoryCommand> context) {
 
-		WtHistoryAddCommand command = context.getCommand();
+		WtAddHistoryCommand command = context.getCommand();
 
 		String companyCode = AppContexts.user().companyCode();
 
-		WtHead header = command.getWageTableHeadDto().toDomain(companyCode);
+		Optional<WtHead> optHeader = this.headRepo.findByCode(companyCode, command.getCode());
 
-		WageTableHistoryDto historyDto = command.getWageTableHistoryDto();
-		historyDto.setHistoryId(IdentifierUtil.randomUniqueId());
-
-		WtHistory history = historyDto.toDomain(companyCode, header.getCode().v());
-
-		headService.validateRequiredItem(header);
-
-		if (command.isCreateHeader()) {
-			headService.checkDuplicateCode(header);
-			this.headRepo.add(header);
-		} else {
-			this.headRepo.update(header);
+		if (!optHeader.isPresent()) {
+			// TODO
+			throw new BusinessException("errorMessage");
 		}
 
+		WtHead header = optHeader.get();
+		WtHistory history = WtHistory.initFromHead(header, new YearMonth(command.getStartMonth()));
+		history.validate();
 		historyService.validateRequiredItem(history);
 		historyService.validateDateRange(history);
 

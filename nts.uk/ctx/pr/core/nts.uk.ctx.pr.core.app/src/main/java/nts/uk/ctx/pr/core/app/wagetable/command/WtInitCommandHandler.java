@@ -8,31 +8,29 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
-import nts.arc.error.BusinessException;
-import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.layer.app.command.CommandHandlerWithResult;
+import nts.arc.time.YearMonth;
 import nts.uk.ctx.pr.core.dom.wagetable.WtHead;
 import nts.uk.ctx.pr.core.dom.wagetable.WtHeadRepository;
 import nts.uk.ctx.pr.core.dom.wagetable.history.WtHistory;
 import nts.uk.ctx.pr.core.dom.wagetable.history.WtHistoryRepository;
 import nts.uk.ctx.pr.core.dom.wagetable.history.service.WtHeadService;
 import nts.uk.ctx.pr.core.dom.wagetable.history.service.WtHistoryService;
-import nts.uk.shr.com.context.AppContexts;
 
 /**
- * The Class WageTableHistoryUpdateCommandHandler.
+ * The Class WtInitCommandHandler.
  */
 @Stateless
-public class WtHistoryUpdateCommandHandler
-		extends CommandHandler<WtHistoryUpdateCommand> {
+public class WtInitCommandHandler extends CommandHandlerWithResult<WtInitCommand, WtHead> {
 
 	/** The wage table head repo. */
 	@Inject
-	private WtHeadRepository wageTableHeadRepo;
+	private WtHeadRepository headRepo;
 
 	/** The wage table history repo. */
 	@Inject
-	private WtHistoryRepository wageTableHistoryRepo;
+	private WtHistoryRepository historyRepo;
 
 	/** The history service. */
 	@Inject
@@ -51,32 +49,23 @@ public class WtHistoryUpdateCommandHandler
 	 */
 	@Override
 	@Transactional
-	protected void handle(CommandHandlerContext<WtHistoryUpdateCommand> context) {
+	protected WtHead handle(CommandHandlerContext<WtInitCommand> context) {
 
-		WtHistoryUpdateCommand command = context.getCommand();
+		WtInitCommand command = context.getCommand();
 
-		String companyCode = AppContexts.user().companyCode();
-
-		boolean isExistHeader = this.wageTableHeadRepo.isExistCode(companyCode,
-				command.getWageTableHeadDto().getCode());
-
-		WtHead header = command.getWageTableHeadDto().toDomain(companyCode);
-
-		if (!isExistHeader) {
-			// TODO
-			throw new BusinessException("errorMessage");
-		}
-
-		WtHistory history = command.getWageTableHistoryDto().toDomain(companyCode,
-				header.getCode().v());
-
+		WtHead header = command.getWageTableHeadDto().toDomain();
+		header.validate();
 		headService.validateRequiredItem(header);
+		headService.checkDuplicateCode(header);
 
+		WtHistory history = WtHistory.initFromHead(header, new YearMonth(command.getStartMonth()));
+		history.validate();
 		historyService.validateRequiredItem(history);
 		historyService.validateDateRange(history);
 
-		this.wageTableHeadRepo.update(header);
-		this.wageTableHistoryRepo.updateHistory(history);
-	}
+		this.headRepo.add(header);
+		this.historyRepo.addHistory(history);
 
+		return header;
+	}
 }
