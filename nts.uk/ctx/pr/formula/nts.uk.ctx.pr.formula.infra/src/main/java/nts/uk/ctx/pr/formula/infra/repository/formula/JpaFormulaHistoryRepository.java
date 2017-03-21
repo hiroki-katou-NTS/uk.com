@@ -86,6 +86,7 @@ public class JpaFormulaHistoryRepository extends JpaRepository implements Formul
 		builderString.append("WHERE a.qcfmtFormulaHistoryPK.companyCode = :companyCode ");
 		builderString.append("AND a.qcfmtFormulaHistoryPK.formulaCode = :formulaCode ");
 		builderString.append("AND a.startDate < :startDate ");
+		builderString.append("ORDER BY a.startDate DESC");
 		FIND_PREVIOUS_HISTORY = builderString.toString();
 	}
 
@@ -159,9 +160,10 @@ public class JpaFormulaHistoryRepository extends JpaRepository implements Formul
 
 	@Override
 	public Optional<FormulaHistory> findLastHistory(String companyCode, FormulaCode formulaCode) {
-		return this.queryProxy().query(LAST_HISTORY, QcfmtFormulaHistory.class)
+		 List<QcfmtFormulaHistory> result = this.getEntityManager().createQuery(LAST_HISTORY, QcfmtFormulaHistory.class)
 				.setParameter("companyCode", companyCode)
-				.setParameter("formulaCode", formulaCode.v()).getSingle(f -> toDomain(f));
+				.setParameter("formulaCode", formulaCode.v()).setMaxResults(1).getResultList();
+		 return !result.isEmpty()? Optional.of(toDomain(result.get(0))): Optional.empty();
 	}
 
 	@Override
@@ -173,10 +175,16 @@ public class JpaFormulaHistoryRepository extends JpaRepository implements Formul
 
 	@Override
 	public Optional<FormulaHistory> findPreviousHistory(String companyCode, FormulaCode formulaCode, YearMonth startDate) {
-		return this.queryProxy().query(FIND_PREVIOUS_HISTORY, QcfmtFormulaHistory.class)
-				.setParameter("companyCode", companyCode)
-				.setParameter("formulaCode", formulaCode.v())
-				.setParameter("startDate", startDate.v()).getSingle(f -> toDomain(f));
+//		return this.queryProxy().query(FIND_PREVIOUS_HISTORY, QcfmtFormulaHistory.class)
+//				.setParameter("companyCode", companyCode)
+//				.setParameter("formulaCode", formulaCode.v())
+//				.setParameter("startDate", startDate.v()).getSingle(f -> toDomain(f));
+		List<QcfmtFormulaHistory> result = this.getEntityManager().createQuery(FIND_PREVIOUS_HISTORY, QcfmtFormulaHistory.class)
+		.setParameter("companyCode", companyCode)
+		.setParameter("formulaCode", formulaCode.v())
+		.setParameter("startDate", startDate.v()).setMaxResults(1).getResultList();
+		return !result.isEmpty()? Optional.of(toDomain(result.get(0))): Optional.empty();
+		
 	}
 
 }
