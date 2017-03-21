@@ -48,4 +48,10 @@ public class JpaItemDeductRepository extends JpaRepository implements ItemDeduct
 	public void delete(String companyCode, String itemCode) {
 		this.commandProxy().remove(QcamtItemDeduct.class, new QcamtItemDeductPK(companyCode, itemCode));
 	}
+
+	@Override
+	public void update(ItemDeduct itemDeduct) {
+		this.commandProxy().update(toEntity(itemDeduct));
+
+	}
 }

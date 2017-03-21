@@ -10,4 +10,6 @@ public interface ItemDeductRespository {
 
 	void delete(String companyCode, String itemCode);
 
+	void update(ItemDeduct domain);
+
 }
