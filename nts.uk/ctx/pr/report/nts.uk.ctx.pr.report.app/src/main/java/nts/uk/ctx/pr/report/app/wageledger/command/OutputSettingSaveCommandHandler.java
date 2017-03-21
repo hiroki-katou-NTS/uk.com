@@ -39,7 +39,7 @@ public class OutputSettingSaveCommandHandler extends CommandHandler<OutputSettin
 		if (command.isCreateMode()) {
 			// Check exist.
 			if (this.repository.isExist(new CompanyCode(companyCode), new WLOutputSettingCode(command.getCode()))) {
-				throw new BusinessException("ER026");
+				throw new BusinessException("入力したコードは既に存在しています。\r\nコードを確認してください。");
 			}
 			
 			// Convert To Domain and save.
