@@ -17,7 +17,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.gul.collection.ListUtil;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.pr.core.dom.wagetable.reference.WtMasterRef;
 import nts.uk.ctx.pr.core.dom.wagetable.reference.WtMasterRefRepository;
 import nts.uk.ctx.pr.core.infra.entity.wagetable.reference.QwtmtWagetableRefTable;
@@ -28,8 +28,7 @@ import nts.uk.ctx.pr.core.infra.entity.wagetable.reference.QwtmtWagetableRefTabl
  * The Class JpaWageTableMasterRefRepository.
  */
 @Stateless
-public class JpaWtRefRepository extends JpaRepository
-		implements WtMasterRefRepository {
+public class JpaWtRefRepository extends JpaRepository implements WtMasterRefRepository {
 
 	/*
 	 * (non-Javadoc)
@@ -91,13 +90,13 @@ public class JpaWtRefRepository extends JpaRepository
 
 		List<QwtmtWagetableRefTable> result = em.createQuery(cq).getResultList();
 
-		if (ListUtil.isEmpty(result)) {
+		if (CollectionUtil.isEmpty(result)) {
 			return Optional.empty();
 		}
 
-		return Optional.of(result.stream()
-				.map(item -> new WtMasterRef(new JpaWtMasterRefGetMemento(item)))
-				.collect(Collectors.toList()).get(0));
+		return Optional
+				.of(result.stream().map(item -> new WtMasterRef(new JpaWtMasterRefGetMemento(item)))
+						.collect(Collectors.toList()).get(0));
 	}
 
 }

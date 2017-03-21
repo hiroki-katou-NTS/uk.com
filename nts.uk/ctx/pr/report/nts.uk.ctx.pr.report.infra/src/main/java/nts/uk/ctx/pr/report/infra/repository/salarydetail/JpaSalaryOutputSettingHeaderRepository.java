@@ -16,7 +16,7 @@ import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.gul.collection.ListUtil;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.pr.report.app.salarydetail.find.SalaryOutputSettingHeaderRepository;
 import nts.uk.ctx.pr.report.app.salarydetail.find.dto.SalaryOutputSettingHeaderDto;
 import nts.uk.ctx.pr.report.infra.entity.salarydetail.QlsptPaylstFormHead;
@@ -57,7 +57,7 @@ public class JpaSalaryOutputSettingHeaderRepository extends JpaRepository
 		List<Object[]> resultList = (List<Object[]>) em.createQuery(cq).getResultList();
 
 		// Return.
-		if (ListUtil.isEmpty(resultList)) {
+		if (CollectionUtil.isEmpty(resultList)) {
 			return new ArrayList<>();
 		}
 		return resultList.stream().map(res -> {

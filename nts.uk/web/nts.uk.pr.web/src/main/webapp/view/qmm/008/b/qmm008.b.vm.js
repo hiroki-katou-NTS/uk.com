@@ -249,6 +249,9 @@ var nts;
                                         var returnValue = nts.uk.ui.windows.getShared("listOfficeOfChildValue");
                                     });
                                 };
+                                ScreenModel.prototype.goToPension = function () {
+                                    nts.uk.request.jump("/view/qmm/008/c/index.xhtml");
+                                };
                                 return ScreenModel;
                             }(ScreenBaseModel));
                             viewmodel.ScreenModel = ScreenModel;
