@@ -1,8 +1,8 @@
 package nts.uk.ctx.basic.app.find.organization.classification;
 
-import lombok.Data;
+import lombok.Value;
 
-@Data
+@Value
 public class ClassificationDto {
 	
 	private String classificationCode;
