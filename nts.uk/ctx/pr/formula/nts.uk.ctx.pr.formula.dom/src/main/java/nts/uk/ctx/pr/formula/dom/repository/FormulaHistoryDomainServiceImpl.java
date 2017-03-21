@@ -67,12 +67,26 @@ public class FormulaHistoryDomainServiceImpl implements FormulaHistoryDomainServ
 			this.formulaMasterRepository.remove(companyCode, new FormulaCode(formulaCode));
 		} else if (this.formulaHistoryRepository.isNewestHistory(companyCode, new FormulaCode(formulaCode),
 				new YearMonth(startDate)) == true) {
-			Optional<FormulaHistory> formulaHistory = this.formulaHistoryRepository.findLastHistory(companyCode,
+
+			// select last history
+			Optional<FormulaHistory> lastFormulaHistory = this.formulaHistoryRepository.findLastHistory(companyCode,
 					new FormulaCode(formulaCode));
-			FormulaHistory formulaHistoryUpdate = new FormulaHistory(companyCode, new FormulaCode(formulaCode),
-					formulaHistory.get().getHistoryId(), new YearMonth(startDate),
-					new YearMonth(formulaHistory.get().getEndDate().v()));
-			this.formulaHistoryRepository.update(formulaHistoryUpdate);
+			// update history by historyId of last history, startDate =
+			// startDate input
+			FormulaHistory lastFormulaHistoryUpdate = new FormulaHistory(companyCode, new FormulaCode(formulaCode),
+					lastFormulaHistory.get().getHistoryId(), new YearMonth(startDate),
+					new YearMonth(lastFormulaHistory.get().getEndDate().v()));
+
+			// select previous history with startDate
+			Optional<FormulaHistory> previousFormulaHistory = this.formulaHistoryRepository
+					.findPreviousHistory(companyCode, new FormulaCode(formulaCode), new YearMonth(startDate));
+			// update previous history with endDate = startDate of last History
+			FormulaHistory previousFormulaHistoryUpdate = new FormulaHistory(companyCode, new FormulaCode(formulaCode),
+					previousFormulaHistory.get().getHistoryId(), new YearMonth(previousFormulaHistory.get().getStartDate().v()),
+					new YearMonth(lastFormulaHistory.get().getStartDate().v()));
+
+			this.formulaHistoryRepository.update(lastFormulaHistoryUpdate);
+			this.formulaHistoryRepository.update(previousFormulaHistoryUpdate);
 		}
 	}
 

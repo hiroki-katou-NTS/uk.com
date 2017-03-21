@@ -31,4 +31,6 @@ public interface FormulaHistoryRepository {
 	
 	boolean isNewestHistory(String companyCode, FormulaCode formulaCode, YearMonth startDate);
 	
+	Optional<FormulaHistory> findPreviousHistory(String companyCode, FormulaCode formulaCode, YearMonth startDate);
+	
 }

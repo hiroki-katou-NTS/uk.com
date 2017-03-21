@@ -10,15 +10,9 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class UpdateFormulaHistoryCommand {
-	
-	private String formulaCode;
-	
-	private String historyId;
-	
-	/* Formula header */
-	/**
-	 * B_SEL_002
-	 * CONDITION_ATR
-	 */
-	private int conditionAtr;
+
+	String formulaCode;
+
+	String historyId;
+
 }

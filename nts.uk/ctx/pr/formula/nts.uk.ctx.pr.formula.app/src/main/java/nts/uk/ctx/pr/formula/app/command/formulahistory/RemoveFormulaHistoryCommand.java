@@ -11,14 +11,16 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class RemoveFormulaHistoryCommand {
 	
-	String companyCode;
-
-	String formulaCode;
-
-	String historyId;
+	private String formulaCode;
 	
-	int startDate;
+	private String historyId;
 	
-	int endDate;
-
+	private int startDate;
+	
+	/* Formula header */
+	/**
+	 * B_SEL_001
+	 * DIFFICULTY_ATR
+	 */
+	private int difficultyAtr;
 }
