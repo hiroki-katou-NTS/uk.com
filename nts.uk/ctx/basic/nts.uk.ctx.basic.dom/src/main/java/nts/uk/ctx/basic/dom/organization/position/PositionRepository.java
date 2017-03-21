@@ -2,6 +2,8 @@ package nts.uk.ctx.basic.dom.organization.position;
 import java.util.List;
 import java.util.Optional;
 
+import nts.arc.time.GeneralDate;
+
 public interface PositionRepository {
 	
 //	Optional<Position> find(String companyCode, String jobCode, String historyID);
@@ -39,6 +41,10 @@ public interface PositionRepository {
 
 	List<JobTitle> findAll(String companyCode);
 	
-	Optional<JobHistory> getHistoryByEdate(String companyCode, String endDate);
+	boolean ExistedHistoryBydate(String companyCode, GeneralDate startDate);
+	
+	Optional<JobHistory> getHistoryByEdate(String companyCode, GeneralDate startDate);
+	
+	boolean CheckUpdateHistory (String historyId, GeneralDate startDate);
 
 	}

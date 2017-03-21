@@ -6,9 +6,9 @@ module cmm013.a.service {
         deletePosition: "basic/position/deletePosition",
         updatePosition: "basic/position/updatePosition",
         getAllHistory: "basic/position/getallhist",
-        addHist: "basic/organization/position/addHist",
-        updateHist: "basic/organization/position/updateHist",
-        deleteHist: "basic/organization/position/deleteHist",
+        addHist: "basic/position/addHist",
+        updateHist: "basic/position/updateHist",
+        deleteHist: "basic/position/deleteHist",
         findAllPosition2: "basic/position/findall"
 
 
@@ -110,6 +110,8 @@ module cmm013.a.service {
             })
         return dfd.promise();
      }
+    
+    
     
     export function updateHist(jobHist: viewmodel.model.ListHistoryDto){
         var dfd = $.Deferred<Array<any>>();

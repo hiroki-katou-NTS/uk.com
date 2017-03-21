@@ -26,8 +26,9 @@ public class JpaPositionRepository extends JpaRepository implements PositionRepo
 	private static final String FIND_SINGLE_HISTORY;
 	private static final String FIND_SINGLE;
 	private static final String SELECT_ALL;
-	private static final String SELECT_HISTORY_BY_END_DATE;
-	
+	private static final String IS_EXISTED_HISTORY_BY_DATE;
+	private static final String SELECT_HISTORY_BY_START_DATE;
+	private static final String IS_UPDATE_HISTORY;
 
 	static {
 		StringBuilder builderString = new StringBuilder();
@@ -53,7 +54,7 @@ public class JpaPositionRepository extends JpaRepository implements PositionRepo
 		builderString.append("SELECT e");
 		builderString.append(" FROM CmnmtJobTitle e");
 		builderString.append(" WHERE e.cmnmtJobTitlePK.companyCode = :companyCode");
-		builderString.append(" AND e.cmnmtJobTitlePK.historyID = :historyID");
+		builderString.append(" AND e.cmnmtJobTitlePK.historyId = :historyId");
 		builderString.append(" AND e.cmnmtJobTitlePK.jobCode = :jobCode");
 		FIND_SINGLE = builderString.toString();
 
@@ -61,26 +62,43 @@ public class JpaPositionRepository extends JpaRepository implements PositionRepo
 		builderString.append("SELECT e");
 		builderString.append(" FROM CmnmtJobHist e");
 		builderString.append(" WHERE e.cmnmtJobTitlePK.companyCode = :companyCode");
-		builderString.append(" AND e.cmnmtJobTitlePK.historyID = :historyID");
+		builderString.append(" AND e.cmnmtJobTitlePK.historyId = :historyId");
 		FIND_SINGLE_HISTORY = builderString.toString();
-		
+
 		builderString = new StringBuilder();
-		builderString.append("SELECT e");
+		builderString.append("SELECT count(e)");
 		builderString.append(" FROM CmnmtJobHist e");
 		builderString.append(" WHERE e.cmnmtJobHistPK.companyCode = :companyCode");
-		builderString.append(" AND e.endDate = :endDate");
-		SELECT_HISTORY_BY_END_DATE = builderString.toString();
-		
-		
+		builderString.append(" AND e.startDate >= :startDate");
+		IS_EXISTED_HISTORY_BY_DATE = builderString.toString();
+
+		builderString = new StringBuilder();
+		builderString.append("SELECT TOP 1 e");
+		builderString.append(" FROM CmnmtJobHist e");
+		builderString.append(" WHERE e.cmnmtJobHistPK.companyCode = :companyCode");
+		builderString.append(" AND e.startDate < :startDate");
+		builderString.append(" ORDER BY e.startDate DESC");
+		SELECT_HISTORY_BY_START_DATE = builderString.toString();
+
+		builderString = new StringBuilder();
+		builderString.append("SELECT  count(e)");
+		builderString.append(" FROM CmnmtJobHist e");
+		builderString.append(" WHERE e.cmnmtJobHistPK.historyId = :historyId");
+		builderString.append(" AND e.startDate < :startDate");
+		builderString.append(" AND e.endDate > :startDate");
+		IS_UPDATE_HISTORY = builderString.toString();
 
 	}
 
 	private JobTitle convertToDomain(CmnmtJobTitle cmnmtJobTittle) {
 		JobTitle jobTittle = JobTitle.createFromJavaType(cmnmtJobTittle.getJobName(),
-				cmnmtJobTittle.getCmnmtJobTitlePK().getJobCode(), cmnmtJobTittle.getJobOutCode() != null ? cmnmtJobTittle.getJobOutCode() : "",
+				cmnmtJobTittle.getCmnmtJobTitlePK().getJobCode(),
+				cmnmtJobTittle.getJobOutCode() != null ? cmnmtJobTittle.getJobOutCode() : "",
 				cmnmtJobTittle.getCmnmtJobTitlePK().getHistoryId(),
-				cmnmtJobTittle.getCmnmtJobTitlePK().getCompanyCode(), cmnmtJobTittle.getMemo() != null ? cmnmtJobTittle.getMemo() : "",
-				cmnmtJobTittle.getHierarchyOrderCode() != null ? cmnmtJobTittle.getHierarchyOrderCode() : "", cmnmtJobTittle.getPresenceCheckScopeSet());
+				cmnmtJobTittle.getCmnmtJobTitlePK().getCompanyCode(),
+				cmnmtJobTittle.getMemo() != null ? cmnmtJobTittle.getMemo() : "",
+				cmnmtJobTittle.getHierarchyOrderCode() != null ? cmnmtJobTittle.getHierarchyOrderCode() : "",
+				cmnmtJobTittle.getPresenceCheckScopeSet());
 		return jobTittle;
 
 	}
@@ -94,11 +112,13 @@ public class JpaPositionRepository extends JpaRepository implements PositionRepo
 
 	private CmnmtJobTitle convertToDbType(JobTitle position) {
 		CmnmtJobTitle cmnmtJobTitle = new CmnmtJobTitle();
-		CmnmtJobTitlePK cmnmtJobTitlePK = new CmnmtJobTitlePK(position.getCompanyCode(), position.getJobCode().v(), position.getHistoryId());
+		CmnmtJobTitlePK cmnmtJobTitlePK = new CmnmtJobTitlePK(position.getCompanyCode(), position.getJobCode().v(),
+				position.getHistoryId());
 		cmnmtJobTitle.setMemo(position.getMemo() != null ? position.getMemo().v() : "");
 		cmnmtJobTitle.setJobName(position.getJobName().v());
-		cmnmtJobTitle.setJobOutCode(position.getJobOutCode()!= null ? position.getJobOutCode().v() : "");
-		cmnmtJobTitle.setHierarchyOrderCode(position.getHiterarchyOrderCode()!= null ? position.getHiterarchyOrderCode().v() : "");
+		cmnmtJobTitle.setJobOutCode(position.getJobOutCode() != null ? position.getJobOutCode().v() : "");
+		cmnmtJobTitle.setHierarchyOrderCode(
+				position.getHiterarchyOrderCode() != null ? position.getHiterarchyOrderCode().v() : "");
 		cmnmtJobTitle.setPresenceCheckScopeSet(0);
 		cmnmtJobTitle.setCmnmtJobTitlePK(cmnmtJobTitlePK);
 		return cmnmtJobTitle;
@@ -115,7 +135,7 @@ public class JpaPositionRepository extends JpaRepository implements PositionRepo
 	}
 
 	@Override
-	public void add(JobTitle position) {
+	public void add(JobTitle position) { 
 		this.commandProxy().insert(convertToDbType(position));
 	}
 
@@ -200,18 +220,27 @@ public class JpaPositionRepository extends JpaRepository implements PositionRepo
 					return Optional.of(convertToDomain2(e));
 				}).orElse(Optional.empty());
 	}
-	
 
 	@Override
-	public Optional<JobHistory> getHistoryByEdate(String companyCode, String endDate) {
-		GeneralDate endDate0 = GeneralDate.localDate(LocalDate.parse(endDate));
-		GeneralDate endDate1 = endDate0.addDays(-1);
-		return this.queryProxy().query(SELECT_HISTORY_BY_END_DATE, CmnmtJobHist.class)
-				.setParameter("companyCode", companyCode)
-				.setParameter("endDate", endDate1)
-				.getSingle(c->convertToDomain2(c));
-				
-		
+	public boolean ExistedHistoryBydate(String companyCode, GeneralDate startDate) {
+		return this.queryProxy().query(IS_EXISTED_HISTORY_BY_DATE, long.class).setParameter("companyCode", companyCode)
+				.setParameter("startDate", startDate).getSingle().get() > 0;
+
+	}
+
+	@Override
+	public Optional<JobHistory> getHistoryByEdate(String companyCode, GeneralDate startDate) {
+		return this.queryProxy().query(SELECT_HISTORY_BY_START_DATE, CmnmtJobHist.class)
+				.setParameter("companyCode", companyCode).setParameter("startDate", startDate).getSingle().map(e -> {
+					return Optional.of(convertToDomain2(e));
+				}).orElse(Optional.empty());
+	}
+
+	@Override
+	public boolean CheckUpdateHistory(String historyId, GeneralDate startDate) {
+	
+		return this.queryProxy().query(IS_UPDATE_HISTORY, long.class).setParameter("historyId", historyId)
+				.setParameter("startDate", startDate).getSingle().get() > 0;
 	}
 
 }

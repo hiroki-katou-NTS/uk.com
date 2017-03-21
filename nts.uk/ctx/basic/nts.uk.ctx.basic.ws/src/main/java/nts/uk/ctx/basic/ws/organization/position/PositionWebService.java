@@ -108,8 +108,10 @@ public class PositionWebService extends WebService {
 	
 	@POST
 	@Path("addHist")
-	public void update(AddHistoryCommand command) {
+	public void add(AddHistoryCommand command) {
+		
 		this.addHistoryCommandHandler.handle(command);
+		
 	}
 
 }
