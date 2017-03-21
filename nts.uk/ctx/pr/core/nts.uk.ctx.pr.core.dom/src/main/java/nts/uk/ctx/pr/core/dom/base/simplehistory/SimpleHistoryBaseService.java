@@ -175,8 +175,8 @@ public abstract class SimpleHistoryBaseService<M extends Master, H extends Histo
 		H h = optH.get();
 		List<H> historyList = repo.findAllHistoryByMasterCode(h.getCompanyCode().v(), h.getMasterCode().v());
 		int indexOfH = historyList.indexOf(h);
-		H beforeH = indexOfH > 0 ? historyList.get(indexOfH -1) : null;
-		H afterH = indexOfH < historyList.size() ? historyList.get(indexOfH + 1) : null;
+		H afterH = indexOfH > 0 ? historyList.get(indexOfH -1) : null;
+		H beforeH = indexOfH < (historyList.size() -1) ? historyList.get(indexOfH + 1) : null;
 
 		// Validate new yearmonth.
 		if (beforeH != null && newYearMonth.v() <= beforeH.getStart().v()) {

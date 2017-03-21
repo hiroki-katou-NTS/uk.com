@@ -17,10 +17,10 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import nts.uk.ctx.pr.core.app.wagetable.command.WtHistoryAddCommand;
-import nts.uk.ctx.pr.core.app.wagetable.command.WtHistoryAddCommandHandler;
-import nts.uk.ctx.pr.core.app.wagetable.command.WtHistoryUpdateCommand;
-import nts.uk.ctx.pr.core.app.wagetable.command.WtHistoryUpdateCommandHandler;
+import nts.uk.ctx.pr.core.app.wagetable.command.WtAddHistoryCommand;
+import nts.uk.ctx.pr.core.app.wagetable.command.WtAddHistoryCommandHandler;
+import nts.uk.ctx.pr.core.app.wagetable.command.WtUpdateCommand;
+import nts.uk.ctx.pr.core.app.wagetable.command.WtUpdateCommandHandler;
 import nts.uk.ctx.pr.core.dom.base.simplehistory.SimpleHistoryBaseService;
 import nts.uk.ctx.pr.core.dom.wagetable.ElementType;
 import nts.uk.ctx.pr.core.dom.wagetable.WtCode;
@@ -46,11 +46,11 @@ public class WageTableWs extends SimpleHistoryWs<WtHead, WtHistory> {
 
 	/** The create wage table history command handler. */
 	@Inject
-	private WtHistoryAddCommandHandler createWageTableHistoryCommandHandler;
+	private WtAddHistoryCommandHandler createWageTableHistoryCommandHandler;
 
 	/** The update wage table history command handler. */
 	@Inject
-	private WtHistoryUpdateCommandHandler updateWageTableHistoryCommandHandler;
+	private WtUpdateCommandHandler updateWageTableHistoryCommandHandler;
 
 	/** The wage table head repo. */
 	@Inject
@@ -104,7 +104,7 @@ public class WageTableWs extends SimpleHistoryWs<WtHead, WtHistory> {
 	 */
 	@POST
 	@Path("create")
-	public HistoryModel create(WtHistoryAddCommand command) {
+	public HistoryModel create(WtAddHistoryCommand command) {
 		WtHistory history = this.createWageTableHistoryCommandHandler.handle(command);
 		return HistoryModel.builder().uuid(history.getUuid()).start(history.getStart().v())
 				.end(history.getEnd().v()).build();
@@ -118,7 +118,7 @@ public class WageTableWs extends SimpleHistoryWs<WtHead, WtHistory> {
 	 */
 	@POST
 	@Path("update")
-	public void update(WtHistoryUpdateCommand command) {
+	public void update(WtUpdateCommand command) {
 		this.updateWageTableHistoryCommandHandler.handle(command);
 	}
 

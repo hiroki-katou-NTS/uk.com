@@ -5,24 +5,28 @@
 package nts.uk.ctx.pr.core.app.wagetable.command.dto;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.core.dom.company.CompanyCode;
+import nts.uk.ctx.pr.core.dom.wagetable.DemensionNo;
 import nts.uk.ctx.pr.core.dom.wagetable.ElementCount;
+import nts.uk.ctx.pr.core.dom.wagetable.ElementType;
 import nts.uk.ctx.pr.core.dom.wagetable.WtCode;
 import nts.uk.ctx.pr.core.dom.wagetable.WtHead;
 import nts.uk.ctx.pr.core.dom.wagetable.WtHeadGetMemento;
 import nts.uk.ctx.pr.core.dom.wagetable.WtName;
 import nts.uk.ctx.pr.core.dom.wagetable.element.WtElement;
+import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.primitive.Memo;
 
 /**
- * Instantiates a new certification find dto.
+ * The Class WageTableHeadDto.
  */
 @Getter
 @Setter
-public class WageTableHeadDto extends WageTableDetailDto {
+public class WtHeadDto {
 
 	/** The code. */
 	private String code;
@@ -30,25 +34,25 @@ public class WageTableHeadDto extends WageTableDetailDto {
 	/** The name. */
 	private String name;
 
-	/** The demension set. */
-	private Integer demensionSet;
+	/** The mode. */
+	private Integer mode;
 
 	/** The memo. */
 	private String memo;
 
+	/** The elements. */
+	private List<WtElementDto> elements;
+
 	/**
 	 * To domain.
 	 *
-	 * @param companyCode
-	 *            the company code
-	 * @return the wage table history
+	 * @return the wt head
 	 */
-	public WtHead toDomain(String companyCode) {
-		WageTableHeadDto dto = this;
+	public WtHead toDomain() {
+		WtHeadDto dto = this;
 
 		// Transfer data
-		WtHead wageTableHead = new WtHead(
-				new WageTableHeadDtoMemento(new CompanyCode(companyCode), dto));
+		WtHead wageTableHead = new WtHead(new WtHeadDtoMemento(dto));
 
 		return wageTableHead;
 	}
@@ -56,22 +60,20 @@ public class WageTableHeadDto extends WageTableDetailDto {
 	/**
 	 * The Class WageTableHeadDtoMemento.
 	 */
-	private class WageTableHeadDtoMemento implements WtHeadGetMemento {
+	private class WtHeadDtoMemento implements WtHeadGetMemento {
 
-		/** The company code. */
-		protected CompanyCode companyCode;
-
-		/** The type value. */
-		protected WageTableHeadDto dto;
+		/** The dto. */
+		protected WtHeadDto dto;
 
 		/**
-		 * Instantiates a new jpa wage table head get memento.
+		 * Instantiates a new wage table head dto memento.
 		 *
+		 * @param companyCode
+		 *            the company code
 		 * @param dto
-		 *            the type value
+		 *            the dto
 		 */
-		public WageTableHeadDtoMemento(CompanyCode companyCode, WageTableHeadDto dto) {
-			this.companyCode = companyCode;
+		public WtHeadDtoMemento(WtHeadDto dto) {
 			this.dto = dto;
 		}
 
@@ -83,7 +85,7 @@ public class WageTableHeadDto extends WageTableDetailDto {
 		 */
 		@Override
 		public CompanyCode getCompanyCode() {
-			return this.companyCode;
+			return new CompanyCode(AppContexts.user().companyCode());
 		}
 
 		/*
@@ -119,15 +121,27 @@ public class WageTableHeadDto extends WageTableDetailDto {
 			return new Memo(this.dto.getMemo());
 		}
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see nts.uk.ctx.pr.core.dom.wagetable.WtHeadGetMemento#getMode()
+		 */
 		@Override
 		public ElementCount getMode() {
-			return ElementCount.valueOf(this.dto.demensionSet);
+			return ElementCount.valueOf(this.dto.getMode());
 		}
 
+		/*
+		 * (non-Javadoc)
+		 * 
+		 * @see nts.uk.ctx.pr.core.dom.wagetable.WtHeadGetMemento#getElements()
+		 */
 		@Override
 		public List<WtElement> getElements() {
-			// TODO Auto-generated method stub
-			return null;
+			return this.dto.getElements().stream()
+					.map(item -> new WtElement(DemensionNo.valueOf(item.getDemensionNo()),
+							ElementType.valueOf(item.getType()), item.getReferenceCode()))
+					.collect(Collectors.toList());
 		}
 	}
 }

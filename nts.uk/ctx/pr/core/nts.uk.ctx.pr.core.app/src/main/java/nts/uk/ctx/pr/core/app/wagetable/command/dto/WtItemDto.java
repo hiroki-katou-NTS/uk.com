@@ -16,7 +16,7 @@ import nts.uk.ctx.pr.core.dom.wagetable.history.WtItemGetMemento;
  */
 @Getter
 @Setter
-public class WageTableItemDto implements WtItemGetMemento {
+public class WtItemDto implements WtItemGetMemento {
 
 	/** The element 1 id. */
 	private String element1Id;
