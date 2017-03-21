@@ -315,6 +315,9 @@ module nts.uk.pr.view.qmm008.b {
                     var returnValue = nts.uk.ui.windows.getShared("listOfficeOfChildValue");
                 });
             }
+            public goToPension() {
+                nts.uk.request.jump("/view/qmm/008/c/index.xhtml");
+            }
         }
 
         export class HealthInsuranceRateModel {
