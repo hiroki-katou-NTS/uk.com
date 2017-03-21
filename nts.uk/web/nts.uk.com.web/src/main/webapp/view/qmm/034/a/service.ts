@@ -10,14 +10,13 @@ module qmm034.a.service {
     /**
      * get list era
      */
-    export function getAllEras(): JQueryPromise<Array<model.EraDto>> {
-        let dfd = $.Deferred<Array<model.EraDto>>();
-        nts.uk.request.ajax(paths.getAllEras).done(function(res: Array<model.EraDto>) {
+    export function getAllEras(): JQueryPromise<Array<any>> {
+        let dfd = $.Deferred < Array<any>>();
+        nts.uk.request.ajax(paths.getAllEras).done(function(res: Array<any>) {
             dfd.resolve(res);
         }).fail(function(res) {
-                dfd.reject(res);
-            })
-        
+            dfd.reject(res);
+        })
         return dfd.promise();
 
     }
@@ -37,7 +36,7 @@ module qmm034.a.service {
         return dfd.promise();
 
     }
-    
+
     /**
      * get a company 
      */
@@ -53,12 +52,12 @@ module qmm034.a.service {
         return dfd.promise();
 
     }
-    
-    export function addData(isUpdate, command): JQueryPromise<Array<EraModel>> {
-        let dfd = $.Deferred<Array<EraModel>>();
+
+    export function addData(isUpdate, command): JQueryPromise<Array<any>> {
+        let dfd = $.Deferred<Array<any>>();
         let path = isUpdate ? paths.updateEra : paths.addEra;
         nts.uk.request.ajax(path, command)
-            .done(function(res: Array<EraModel>) {
+            .done(function(res: Array<any>) {
                 dfd.resolve(res);
             })
             .fail(function(res) {
@@ -88,7 +87,7 @@ module qmm034.a.service {
             fixAttribute: number;
             eraHist: string;
 
-            constructor(eraName: string, eraMark: string, startDate: Date, endDate: Date, fixAttribute: number,  eraHist: string) {
+            constructor(eraName: string, eraMark: string, startDate: Date, endDate: Date, fixAttribute: number, eraHist: string) {
                 this.eraName = eraName;
                 this.eraMark = eraMark;
                 this.startDate = startDate;
