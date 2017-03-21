@@ -27,14 +27,10 @@ module qmm012.d.viewmodel {
         CurrentItemMaster: KnockoutObservable<qmm012.b.service.model.ItemMaster> = ko.observable(null);
         CurrentItemDeduct: KnockoutObservable<service.model.ItemDeduct> = ko.observable(null);
         CurrentAlRangeHigh: KnockoutObservable<number> = ko.observable(0);
-        CurrentAlRangeHighAtr: KnockoutObservable<number> = ko.observable(0);
         CurrentAlRangeLow: KnockoutObservable<number> = ko.observable(0);
-        CurrentAlRangeLowAtr: KnockoutObservable<number> = ko.observable(0);
         CurrentDeductAtr: KnockoutObservable<number> = ko.observable(0);
         CurrentErrRangeHigh: KnockoutObservable<number> = ko.observable(0);
-        CurrentErrRangeHighAtr: KnockoutObservable<number> = ko.observable(0);
         CurrentErrRangeLow: KnockoutObservable<number> = ko.observable(0);
-        CurrentErrRangeLowAtr: KnockoutObservable<number> = ko.observable(0);
         CurrentMemo: KnockoutObservable<String> = ko.observable("");
         CurrentItemDisplayAtr: KnockoutObservable<number> = ko.observable(1);
         CurrentZeroDisplaySet: KnockoutObservable<number> = ko.observable(1);
@@ -126,7 +122,6 @@ module qmm012.d.viewmodel {
             self.CurrentItemDeduct.subscribe(function(ItemDeduct: service.model.ItemDeduct) {
                 self.CurrentAlRangeHigh(ItemDeduct ? ItemDeduct.alRangeHigh : 0);
                 self.CurrentAlRangeLow(ItemDeduct ? ItemDeduct.alRangeLow : 0);
-                self.CurrentAlRangeLowAtr(ItemDeduct ? ItemDeduct.alRangeLowAtr : 0);
                 self.CurrentDeductAtr(ItemDeduct ? ItemDeduct.deductAtr : 0);
                 self.CurrentErrRangeHigh(ItemDeduct ? ItemDeduct.errRangeHigh : 0);
                 self.CurrentErrRangeLow(ItemDeduct ? ItemDeduct.errRangeLow : 0);
@@ -140,18 +135,7 @@ module qmm012.d.viewmodel {
             self.checked_D_003.subscribe(function(NewValue) {
                 self.CurrentItemDisplayAtr(NewValue ? 0 : 1);
             });
-            self.checked_D_004.subscribe(function(NewValue) {
-                self.CurrentErrRangeHighAtr(NewValue ? 1 : 0);
-            })
-            self.checked_D_005.subscribe(function(NewValue) {
-                self.CurrentAlRangeHighAtr(NewValue ? 1 : 0);
-            })
-            self.checked_D_006.subscribe(function(NewValue) {
-                self.CurrentErrRangeLowAtr(NewValue ? 1 : 0);
-            })
-            self.checked_D_007.subscribe(function(NewValue) {
-                self.CurrentAlRangeLowAtr(NewValue ? 1 : 0);
-            })
+
         }
         openHDialog() {
             let self = this;
@@ -166,19 +150,19 @@ module qmm012.d.viewmodel {
             nts.uk.ui.windows.sub.modal('../i/index.xhtml', { height: 620, width: 1060, dialogClass: "no-close" }).onClosed(function(): any {
             });
         }
-        GetCurrentItemDeduct(){
+        GetCurrentItemDeduct() {
             let self = this;
-            let ItemDeduct =  new service.model.ItemDeduct(
-            self.CurrentDeductAtr(),
-                self.CurrentErrRangeLowAtr(),
+            let ItemDeduct = new service.model.ItemDeduct(
+                self.CurrentDeductAtr(),
+                self.checked_D_006() ? 1 : 0,
                 self.CurrentErrRangeLow(),
-                self.CurrentErrRangeHighAtr(),
+                self.checked_D_004() ? 1 : 0,
                 self.CurrentErrRangeHigh(),
-                self.CurrentAlRangeLowAtr(),
+                self.checked_D_007() ? 1 : 0,
                 self.CurrentAlRangeLow(),
-                self.CurrentAlRangeHighAtr(),
+                self.checked_D_005() ? 1 : 0,
                 self.CurrentAlRangeHigh(),
-                self.CurrentMemo() );
+                self.CurrentMemo());
             return ItemDeduct;
         }
 

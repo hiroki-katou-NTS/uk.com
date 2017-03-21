@@ -17,12 +17,12 @@
 		</ui:define>
 		<ui:define name="content">
 			<div id="content-header">
-				<button id="I_BTN_001" data-bind="click:SubmitDialog"
-					class="inputNomalSize">新規</button>
-				<button id="I_BTN_002" data-bind="click:CloseDialog"
+				<button id="I_BTN_001" class="inputNomalSize">新規</button>
+				<button id="I_BTN_002" data-bind="click:SubmitDialog"
 					class="proceed inputNomalSize">登録</button>
 				<button id="I_BTN_003" class=" danger inputNomalSize">削除</button>
-				<button id="I_BTN_005" class="inputNomalSize">閉じる</button>
+				<button id="I_BTN_005" data-bind="click:CloseDialog"
+					class="inputNomalSize">閉じる</button>
 			</div>
 			<div id="contents-area">
 				<div class="nts-left-content caret-right caret-background ">

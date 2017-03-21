@@ -20,14 +20,10 @@ var qmm012;
                     this.CurrentItemMaster = ko.observable(null);
                     this.CurrentItemDeduct = ko.observable(null);
                     this.CurrentAlRangeHigh = ko.observable(0);
-                    this.CurrentAlRangeHighAtr = ko.observable(0);
                     this.CurrentAlRangeLow = ko.observable(0);
-                    this.CurrentAlRangeLowAtr = ko.observable(0);
                     this.CurrentDeductAtr = ko.observable(0);
                     this.CurrentErrRangeHigh = ko.observable(0);
-                    this.CurrentErrRangeHighAtr = ko.observable(0);
                     this.CurrentErrRangeLow = ko.observable(0);
-                    this.CurrentErrRangeLowAtr = ko.observable(0);
                     this.CurrentMemo = ko.observable("");
                     this.CurrentItemDisplayAtr = ko.observable(1);
                     this.CurrentZeroDisplaySet = ko.observable(1);
@@ -118,7 +114,6 @@ var qmm012;
                     self.CurrentItemDeduct.subscribe(function (ItemDeduct) {
                         self.CurrentAlRangeHigh(ItemDeduct ? ItemDeduct.alRangeHigh : 0);
                         self.CurrentAlRangeLow(ItemDeduct ? ItemDeduct.alRangeLow : 0);
-                        self.CurrentAlRangeLowAtr(ItemDeduct ? ItemDeduct.alRangeLowAtr : 0);
                         self.CurrentDeductAtr(ItemDeduct ? ItemDeduct.deductAtr : 0);
                         self.CurrentErrRangeHigh(ItemDeduct ? ItemDeduct.errRangeHigh : 0);
                         self.CurrentErrRangeLow(ItemDeduct ? ItemDeduct.errRangeLow : 0);
@@ -130,18 +125,6 @@ var qmm012;
                     });
                     self.checked_D_003.subscribe(function (NewValue) {
                         self.CurrentItemDisplayAtr(NewValue ? 0 : 1);
-                    });
-                    self.checked_D_004.subscribe(function (NewValue) {
-                        self.CurrentErrRangeHighAtr(NewValue ? 1 : 0);
-                    });
-                    self.checked_D_005.subscribe(function (NewValue) {
-                        self.CurrentAlRangeHighAtr(NewValue ? 1 : 0);
-                    });
-                    self.checked_D_006.subscribe(function (NewValue) {
-                        self.CurrentErrRangeLowAtr(NewValue ? 1 : 0);
-                    });
-                    self.checked_D_007.subscribe(function (NewValue) {
-                        self.CurrentAlRangeLowAtr(NewValue ? 1 : 0);
                     });
                 }
                 ScreenModel.prototype.openHDialog = function () {
@@ -158,7 +141,7 @@ var qmm012;
                 };
                 ScreenModel.prototype.GetCurrentItemDeduct = function () {
                     var self = this;
-                    var ItemDeduct = new d.service.model.ItemDeduct(self.CurrentDeductAtr(), self.CurrentErrRangeLowAtr(), self.CurrentErrRangeLow(), self.CurrentErrRangeHighAtr(), self.CurrentErrRangeHigh(), self.CurrentAlRangeLowAtr(), self.CurrentAlRangeLow(), self.CurrentAlRangeHighAtr(), self.CurrentAlRangeHigh(), self.CurrentMemo());
+                    var ItemDeduct = new d.service.model.ItemDeduct(self.CurrentDeductAtr(), self.checked_D_006() ? 1 : 0, self.CurrentErrRangeLow(), self.checked_D_004() ? 1 : 0, self.CurrentErrRangeHigh(), self.checked_D_007() ? 1 : 0, self.CurrentAlRangeLow(), self.checked_D_005() ? 1 : 0, self.CurrentAlRangeHigh(), self.CurrentMemo());
                     return ItemDeduct;
                 };
                 return ScreenModel;

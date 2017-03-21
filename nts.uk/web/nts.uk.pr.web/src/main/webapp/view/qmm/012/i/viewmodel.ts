@@ -123,31 +123,14 @@ module qmm012.i.viewmodel {
             self.CurrentItemMaster(nts.uk.ui.windows.getShared('itemMaster'));
             if (self.CurrentItemMaster()) {
                 if (self.CurrentItemMaster().categoryAtr == 0) {
-                    service.findItemSalaryBD(self.CurrentItemMaster().itemCode).done(function(ItemBDs: Array<service.model.ItemBD>) {
-                        for (let ItemBD of ItemBDs) {
-                            self.ItemBDList.push(ItemBD);
-                        }
-                        if (self.ItemBDList().length)
-                            self.gridListCurrentCode(self.ItemBDList()[0].itemBreakdownCd);
-                    }).fail(function(res) {
-                        // Alert message
-                        alert(res);
-                    });
+                    self.LoadItemSalaryBD();
                 }
                 if (self.CurrentItemMaster().categoryAtr == 1) {
-                    service.findAllItemDeductBD(self.CurrentItemMaster().itemCode).done(function(ItemBDs: Array<service.model.ItemBD>) {
-                        for (let ItemBD of ItemBDs) {
-                            self.ItemBDList.push(ItemBD);
-                        }
-                        if (self.ItemBDList().length)
-                            self.gridListCurrentCode(self.ItemBDList()[0].itemBreakdownCd);
-                    }).fail(function(res) {
-                        // Alert message
-                        alert(res);
-                    });
+                    self.LoadItemDeductBD();
                 }
                 self.CurrentCategoryAtrName(self.CurrentItemMaster().categoryAtrName);
             }
+
             self.gridListCurrentCode.subscribe(function(newValue) {
                 var item = _.find(self.ItemBDList(), function(ItemBD: service.model.ItemBD) {
                     return ItemBD.itemBreakdownCd == newValue;
@@ -174,6 +157,28 @@ module qmm012.i.viewmodel {
             });
             self.checked_002.subscribe(function(NewValue) {
                 self.CurrentItemDispAtr(NewValue == false ? 1 : 0);
+            });
+        }
+        LoadItemSalaryBD() {
+            let self = this;
+            service.findItemSalaryBD(self.CurrentItemMaster().itemCode).done(function(ItemBDs: Array<service.model.ItemBD>) {
+                self.ItemBDList(ItemBDs);
+                if (self.ItemBDList().length)
+                    self.gridListCurrentCode(self.ItemBDList()[0].itemBreakdownCd);
+            }).fail(function(res) {
+                // Alert message
+                alert(res);
+            });
+        }
+        LoadItemDeductBD() {
+            let self = this;
+            service.findAllItemDeductBD(self.CurrentItemMaster().itemCode).done(function(ItemBDs: Array<service.model.ItemBD>) {
+                self.ItemBDList(ItemBDs);
+                if (self.ItemBDList().length)
+                    self.gridListCurrentCode(self.ItemBDList()[0].itemBreakdownCd);
+            }).fail(function(res) {
+                // Alert message
+                alert(res);
             });
         }
         SubmitDialog() {

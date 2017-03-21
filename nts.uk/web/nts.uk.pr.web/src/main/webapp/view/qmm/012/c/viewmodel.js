@@ -28,10 +28,6 @@ var qmm012;
                     this.CurrentItemDisplayAtr = ko.observable(1);
                     this.CurrentZeroDisplaySet = ko.observable(1);
                     this.CurrentLimitMnyRefItemCd = ko.observable("");
-                    this.CurrentErrRangeHighAtr = ko.observable(0);
-                    this.CurrentAlRangeHighAtr = ko.observable(0);
-                    this.CurrentErrRangeLowAtr = ko.observable(0);
-                    this.CurrentAlRangeLowAtr = ko.observable(0);
                     this.C_SEL_012_Selected = ko.observable(false);
                     this.C_SEL_013_Selected = ko.observable(false);
                     this.C_SEL_014_Selected = ko.observable(false);
@@ -194,18 +190,6 @@ var qmm012;
                     self.C_SEL_012_Selected.subscribe(function (NewValue) {
                         self.CurrentItemDisplayAtr(NewValue ? 0 : 1);
                     });
-                    self.C_SEL_013_Selected.subscribe(function (NewValue) {
-                        self.CurrentErrRangeHighAtr(NewValue ? 1 : 0);
-                    });
-                    self.C_SEL_014_Selected.subscribe(function (NewValue) {
-                        self.CurrentAlRangeHighAtr(NewValue ? 1 : 0);
-                    });
-                    self.C_SEL_015_Selected.subscribe(function (NewValue) {
-                        self.CurrentErrRangeLowAtr(NewValue ? 1 : 0);
-                    });
-                    self.C_SEL_016_Selected.subscribe(function (NewValue) {
-                        self.CurrentAlRangeLowAtr(NewValue ? 1 : 0);
-                    });
                     self.CurrentItemSalary.subscribe(function (NewValue) {
                         self.CurrentLimitMny(NewValue ? NewValue.limitMny : 0);
                         self.CurrentErrRangeHigh(NewValue ? NewValue.errRangeHigh : 0);
@@ -247,7 +231,7 @@ var qmm012;
                 }
                 ScreenModel.prototype.GetCurrentItemSalary = function () {
                     var self = this;
-                    var ItemSalary = new c.service.model.ItemSalary(self.CurrentTaxAtr(), self.CurrentSocialInsAtr(), self.CurrentLaborInsAtr(), self.CurrentFixPayAtr(), self.CurrentApplyForAllEmpFlg(), self.CurrentApplyForMonthlyPayEmp(), self.CurrentApplyForDaymonthlyPayEmp(), self.CurrentApplyForDaylyPayEmp(), self.CurrentApplyForHourlyPayEmp(), self.CurrentAvePayAtr(), self.CurrentErrRangeLowAtr(), self.CurrentErrRangeLow(), self.CurrentErrRangeHighAtr(), self.CurrentErrRangeHigh(), self.CurrentAlRangeLowAtr(), self.CurrentAlRangeLow(), self.CurrentAlRangeHighAtr(), self.CurrentAlRangeHigh(), self.CurrentMemo(), self.CurrentLimitMnyAtr(), self.CurrentLimitMnyRefItemCd(), self.CurrentLimitMny());
+                    var ItemSalary = new c.service.model.ItemSalary(self.CurrentTaxAtr(), self.CurrentSocialInsAtr(), self.CurrentLaborInsAtr(), self.CurrentFixPayAtr(), self.CurrentApplyForAllEmpFlg(), self.CurrentApplyForMonthlyPayEmp(), self.CurrentApplyForDaymonthlyPayEmp(), self.CurrentApplyForDaylyPayEmp(), self.CurrentApplyForHourlyPayEmp(), self.CurrentAvePayAtr(), self.C_SEL_015_Selected() ? 1 : 0, self.CurrentErrRangeLow(), self.C_SEL_013_Selected() ? 1 : 0, self.CurrentErrRangeHigh(), self.C_SEL_016_Selected() ? 1 : 0, self.CurrentAlRangeLow(), self.C_SEL_014_Selected() ? 1 : 0, self.CurrentAlRangeHigh(), self.CurrentMemo(), self.CurrentLimitMnyAtr(), self.CurrentLimitMnyRefItemCd(), self.CurrentLimitMny());
                     return ItemSalary;
                 };
                 ScreenModel.prototype.openKDialog = function () {

@@ -55,10 +55,6 @@ module qmm012.c.viewmodel {
         CurrentItemDisplayAtr: KnockoutObservable<number> = ko.observable(1);
         CurrentZeroDisplaySet: KnockoutObservable<number> = ko.observable(1);
         CurrentLimitMnyRefItemCd: KnockoutObservable<string> = ko.observable("");
-        CurrentErrRangeHighAtr: KnockoutObservable<number> = ko.observable(0);
-        CurrentAlRangeHighAtr: KnockoutObservable<number> = ko.observable(0);
-        CurrentErrRangeLowAtr: KnockoutObservable<number> = ko.observable(0);
-        CurrentAlRangeLowAtr: KnockoutObservable<number> = ko.observable(0);
         C_SEL_012_Selected: KnockoutObservable<boolean> = ko.observable(false);
         C_SEL_013_Selected: KnockoutObservable<boolean> = ko.observable(false);
         C_SEL_014_Selected: KnockoutObservable<boolean> = ko.observable(false);
@@ -222,18 +218,7 @@ module qmm012.c.viewmodel {
             self.C_SEL_012_Selected.subscribe(function(NewValue: boolean) {
                 self.CurrentItemDisplayAtr(NewValue ? 0 : 1);
             });
-            self.C_SEL_013_Selected.subscribe(function(NewValue: boolean) {
-                self.CurrentErrRangeHighAtr(NewValue ? 1 : 0);
-            });
-            self.C_SEL_014_Selected.subscribe(function(NewValue: boolean) {
-                self.CurrentAlRangeHighAtr(NewValue ? 1 : 0);
-            });
-            self.C_SEL_015_Selected.subscribe(function(NewValue: boolean) {
-                self.CurrentErrRangeLowAtr(NewValue ? 1 : 0);
-            });
-            self.C_SEL_016_Selected.subscribe(function(NewValue: boolean) {
-                self.CurrentAlRangeLowAtr(NewValue ? 1 : 0);
-            });
+
 
             self.CurrentItemSalary.subscribe(function(NewValue: service.model.ItemSalary) {
 
@@ -294,13 +279,13 @@ module qmm012.c.viewmodel {
                 self.CurrentApplyForDaylyPayEmp(),
                 self.CurrentApplyForHourlyPayEmp(),
                 self.CurrentAvePayAtr(),
-                self.CurrentErrRangeLowAtr(),
+                self.C_SEL_015_Selected()? 1 : 0,
                 self.CurrentErrRangeLow(),
-                self.CurrentErrRangeHighAtr(),
+                self.C_SEL_013_Selected()? 1 : 0,
                 self.CurrentErrRangeHigh(),
-                self.CurrentAlRangeLowAtr(),
+                self.C_SEL_016_Selected()? 1 : 0,
                 self.CurrentAlRangeLow(),
-                self.CurrentAlRangeHighAtr(),
+                self.C_SEL_014_Selected()? 1 : 0,
                 self.CurrentAlRangeHigh(),
                 self.CurrentMemo(),
                 self.CurrentLimitMnyAtr(),

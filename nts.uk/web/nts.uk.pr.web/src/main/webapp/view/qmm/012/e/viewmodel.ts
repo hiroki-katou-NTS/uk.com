@@ -24,13 +24,9 @@ module qmm012.e.viewmodel {
         CurrentItemAttend: KnockoutObservable<service.model.ItemAttend> = ko.observable(null);
         CurrentAvePayAtr: KnockoutObservable<number> = ko.observable(0);
         CurrentItemAtr: KnockoutObservable<number> = ko.observable(0);
-        CurrentErrRangeLowAtr: KnockoutObservable<number> = ko.observable(0);
         CurrentErrRangeLow: KnockoutObservable<number> = ko.observable(0);
-        CurrentErrRangeHighAtr: KnockoutObservable<number> = ko.observable(0);
         CurrentErrRangeHigh: KnockoutObservable<number> = ko.observable(0);
-        CurrentAlRangeLowAtr: KnockoutObservable<number> = ko.observable(0);
         CurrentAlRangeLow: KnockoutObservable<number> = ko.observable(0);
-        CurrentAlRangeHighAtr: KnockoutObservable<number> = ko.observable(0);
         CurrentAlRangeHigh: KnockoutObservable<number> = ko.observable(0);
         CurrentWorkDaysScopeAtr: KnockoutObservable<number> = ko.observable(1);
         CurrentMemo: KnockoutObservable<string> = ko.observable("");
@@ -60,7 +56,6 @@ module qmm012.e.viewmodel {
                 constraint: '',
                 option: ko.mapping.fromJS(new nts.uk.ui.option.CurrencyEditorOption({
                     grouplength: 3,
-                    decimallength: 2,
                     currencyformat: "JPY",
                     currencyposition: 'right'
                 }))
@@ -71,7 +66,6 @@ module qmm012.e.viewmodel {
                 constraint: '',
                 option: ko.mapping.fromJS(new nts.uk.ui.option.CurrencyEditorOption({
                     grouplength: 3,
-                    decimallength: 2,
                     currencyformat: "JPY",
                     currencyposition: 'right'
                 }))
@@ -82,7 +76,6 @@ module qmm012.e.viewmodel {
                 constraint: '',
                 option: ko.mapping.fromJS(new nts.uk.ui.option.CurrencyEditorOption({
                     grouplength: 3,
-                    decimallength: 2,
                     currencyformat: "JPY",
                     currencyposition: 'right'
                 }))
@@ -93,7 +86,6 @@ module qmm012.e.viewmodel {
                 constraint: '',
                 option: ko.mapping.fromJS(new nts.uk.ui.option.CurrencyEditorOption({
                     grouplength: 3,
-                    decimallength: 2,
                     currencyformat: "JPY",
                     currencyposition: 'right'
                 }))
@@ -131,34 +123,22 @@ module qmm012.e.viewmodel {
             self.checked_E_004.subscribe(function(NewValue) {
                 self.CurrentItemDisplayAtr(NewValue ? 0 : 1);
             });
-            self.checked_E_005.subscribe(function(NewValue) {
-                self.CurrentErrRangeHighAtr(NewValue ? 1 : 0);
-            });
-            self.checked_E_006.subscribe(function(NewValue) {
-                self.CurrentErrRangeLowAtr(NewValue ? 1 : 0);
-            });
-            self.checked_E_007.subscribe(function(NewValue) {
-                self.CurrentAlRangeHighAtr(NewValue ? 1 : 0);
-            });
-            self.checked_E_008.subscribe(function(NewValue) {
-                self.CurrentAlRangeLowAtr(NewValue ? 1 : 0);
-            });
         }
-        getCurrentItemAttend(){
+        getCurrentItemAttend() {
             let self = this;
             let itemAttend = new service.model.ItemAttend(
-                    self.CurrentAvePayAtr(),
+                self.CurrentAvePayAtr(),
                 self.CurrentItemAtr(),
-                 self.CurrentErrRangeLowAtr(),
+                self.checked_E_006() ? 1 : 0,
                 self.CurrentErrRangeLow(),
-                self.CurrentErrRangeHighAtr(),
+                self.checked_E_005() ? 1 : 0,
                 self.CurrentErrRangeHigh(),
-                self.CurrentAlRangeLowAtr(),
+                self.checked_E_008() ? 1 : 0,
                 self.CurrentAlRangeLow(),
-                self.CurrentAlRangeHighAtr(),
+                self.checked_E_007() ? 1 : 0,
                 self.CurrentAlRangeHigh(),
                 self.CurrentWorkDaysScopeAtr(),
-                self.CurrentMemo() );
+                self.CurrentMemo());
             return itemAttend;
         }
 
