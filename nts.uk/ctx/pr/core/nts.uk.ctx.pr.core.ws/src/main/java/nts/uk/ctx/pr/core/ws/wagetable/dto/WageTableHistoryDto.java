@@ -10,7 +10,7 @@ import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.core.dom.company.CompanyCode;
-import nts.uk.ctx.pr.core.app.wagetable.command.dto.WageTableDemensionDetailDto;
+import nts.uk.ctx.pr.core.app.wagetable.command.dto.WtElementDto;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 import nts.uk.ctx.pr.core.dom.wagetable.WtCode;
 import nts.uk.ctx.pr.core.dom.wagetable.history.WtHistorySetMemento;
@@ -37,7 +37,7 @@ public class WageTableHistoryDto implements WtHistorySetMemento {
 	private Integer endMonth;
 
 	/** The demension details. */
-	private List<WageTableDemensionDetailDto> demensionDetails;
+	private List<WtElementDto> demensionDetails;
 
 	/** The value items. */
 	private List<WageTableItemDto> valueItems;

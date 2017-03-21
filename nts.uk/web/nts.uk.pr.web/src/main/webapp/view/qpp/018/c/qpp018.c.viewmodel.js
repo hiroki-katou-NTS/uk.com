@@ -70,7 +70,7 @@ var nts;
                                     var self = this;
                                     var isError = false;
                                     self.clearError();
-                                    if (!self.showCategoryInsuranceItem() && !self.showOffice() && !self.showTotal()
+                                    if (!self.showDetail() && !self.showOffice() && !self.showTotal()
                                         && !self.showDeliveryNoticeAmount()) {
                                         isError = true;
                                         $('#require-least-item').ntsError('set', 'You must choose at least check box item.');

@@ -17,10 +17,10 @@ import org.junit.runner.RunWith;
 import mockit.Tested;
 import mockit.integration.junit4.JMockit;
 import nts.uk.ctx.core.dom.company.CompanyCode;
-import nts.uk.ctx.pr.core.app.wagetable.command.WtHistoryAddCommand;
-import nts.uk.ctx.pr.core.app.wagetable.command.dto.WageTableDemensionDetailDto;
-import nts.uk.ctx.pr.core.app.wagetable.command.dto.WageTableHistoryDto;
-import nts.uk.ctx.pr.core.app.wagetable.command.dto.WageTableItemDto;
+import nts.uk.ctx.pr.core.app.wagetable.command.WtAddHistoryCommand;
+import nts.uk.ctx.pr.core.app.wagetable.command.dto.WtElementDto;
+import nts.uk.ctx.pr.core.app.wagetable.command.dto.WtHistoryDto;
+import nts.uk.ctx.pr.core.app.wagetable.command.dto.WtItemDto;
 import nts.uk.ctx.pr.core.dom.wagetable.DemensionNo;
 import nts.uk.ctx.pr.core.dom.wagetable.ElementType;
 import nts.uk.ctx.pr.core.dom.wagetable.WtElementRefNo;
@@ -71,32 +71,32 @@ public class JpaWageTableHistoryRepositoryTest extends AbstractDbUnitTestCase {
 		StepMode stepModeDto = new StepMode(ElementType.AGE_FIX, BigDecimal.valueOf(1),
 				BigDecimal.valueOf(10), BigDecimal.valueOf(5), rangeItems);
 
-		WageTableDemensionDetailDto demensionDetailDto1 = new WageTableDemensionDetailDto();
+		WtElementDto demensionDetailDto1 = new WtElementDto();
 		demensionDetailDto1.setDemensionNo(DemensionNo.DEMENSION_1ST);
 		demensionDetailDto1.setElementModeSetting(refMode);
 
-		WageTableDemensionDetailDto demensionDetailDto2 = new WageTableDemensionDetailDto();
+		WtElementDto demensionDetailDto2 = new WtElementDto();
 		demensionDetailDto2.setDemensionNo(DemensionNo.DEMENSION_2ND);
 		demensionDetailDto2.setElementModeSetting(stepModeDto);
 
-		List<WageTableDemensionDetailDto> demensionDetails = Arrays.asList(demensionDetailDto1,
+		List<WtElementDto> demensionDetails = Arrays.asList(demensionDetailDto1,
 				demensionDetailDto2);
 
-		WageTableItemDto wageTableItemDto = new WageTableItemDto();
+		WtItemDto wageTableItemDto = new WtItemDto();
 		wageTableItemDto.setElement1Id("element1Id");
 		wageTableItemDto.setElement2Id("element2Id");
 		wageTableItemDto.setElement3Id("element3Id");
 		wageTableItemDto.setAmount(BigDecimal.valueOf(111111));
 
-		List<WageTableItemDto> valueItems = Arrays.asList(wageTableItemDto);
+		List<WtItemDto> valueItems = Arrays.asList(wageTableItemDto);
 
-		WageTableHistoryDto wageTableHistoryDto = new WageTableHistoryDto();
+		WtHistoryDto wageTableHistoryDto = new WtHistoryDto();
 		wageTableHistoryDto.setStartMonth("2016/01");
 		wageTableHistoryDto.setEndMonth("2016/07");
 		wageTableHistoryDto.setDemensionDetails(demensionDetails);
 		wageTableHistoryDto.setValueItems(valueItems);
 
-		WtHistoryAddCommand command = new WtHistoryAddCommand();
+		WtAddHistoryCommand command = new WtAddHistoryCommand();
 		command.setCreateHeader(true);
 		command.setWageTableHistoryDto(wageTableHistoryDto);
 
