@@ -112,7 +112,7 @@ var cmm008;
                     a.service.getProcessingNo().done(function (lstProcessingNo) {
                         if (lstProcessingNo.length !== 0) {
                             _.forEach(lstProcessingNo, function (processingNo) {
-                                self.processingDateList.push(new ItemProcessingDate(processingNo[0].processingNo, processingNo[0].processingName));
+                                self.processingDateList.push(new ItemProcessingDate(processingNo.processingNo, processingNo.processingName));
                             });
                         }
                     });
@@ -158,7 +158,7 @@ var cmm008;
                         { headerText: '名称', prop: 'employmentName', width: 160 },
                         { headerText: '締め日', prop: 'closeDateNoStr', width: 150 },
                         { headerText: '処理日区分', prop: 'processingStr', width: 150 },
-                        { headerText: '初期表示', prop: 'displayStr', width: 100 }
+                        { headerText: '初期表示', prop: 'displayStr', width: 80 }
                     ]);
                     self.singleSelectedCode = ko.observable(null);
                     return dfd.promise();

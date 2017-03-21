@@ -5,7 +5,7 @@ module cmm008.a.service{
         updateEmployment: "basic/organization/employment/updateemployment",
         deleteEmployment: "basic/organization/employment/deleteemployment/" ,
         getEmploymentByCode: "basic/organization/employment/findemploymentbycode/",
-        getAllProcessingNo: "pr/core/getDataProcessingNo"
+        getAllProcessingNo: "pr/core/paydayrocessing/getbyccd"
     }
     //find all employment data
     export function getAllEmployments(): JQueryPromise<Array<model.employmentDto>>{

@@ -10,7 +10,7 @@ var cmm008;
                 updateEmployment: "basic/organization/employment/updateemployment",
                 deleteEmployment: "basic/organization/employment/deleteemployment/",
                 getEmploymentByCode: "basic/organization/employment/findemploymentbycode/",
-                getAllProcessingNo: "pr/core/getDataProcessingNo"
+                getAllProcessingNo: "pr/core/paydayrocessing/getbyccd"
             };
             //find all employment data
             function getAllEmployments() {
