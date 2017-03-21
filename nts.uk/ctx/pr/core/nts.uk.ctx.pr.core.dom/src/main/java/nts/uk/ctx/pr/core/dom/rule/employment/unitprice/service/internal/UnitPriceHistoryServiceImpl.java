@@ -68,7 +68,7 @@ public class UnitPriceHistoryServiceImpl extends UnitPriceHistoryService {
 	public void validateRequiredItem(UnitPriceHistory history) {
 		if (history.getUnitPriceCode() == null || StringUtil.isNullOrEmpty(history.getUnitPriceCode().v(), true)
 				|| history.getApplyRange() == null || history.getBudget() == null) {
-			throw new BusinessException("ER001");
+			throw new BusinessException("ER001: つでも未入力があった");
 		}
 	}
 
@@ -82,7 +82,7 @@ public class UnitPriceHistoryServiceImpl extends UnitPriceHistoryService {
 	public void validateDateRange(UnitPriceHistory unitPriceHistory) {
 		if (!isValidDateRange(unitPriceHistory)) {
 			// Invalid dateRange
-			throw new BusinessException("ER010");
+			throw new BusinessException("ER010: 開始年月が後の履歴が存在する");
 		}
 
 	}
@@ -142,7 +142,7 @@ public class UnitPriceHistoryServiceImpl extends UnitPriceHistoryService {
 	public void checkDuplicateCode(UnitPriceHistory unitPriceHistory) {
 		if (unitPriceHistoryRepo.isDuplicateCode(unitPriceHistory.getCompanyCode(),
 				unitPriceHistory.getUnitPriceCode())) {
-			throw new BusinessException("ER005");
+			throw new BusinessException("ER005: 一致するデータが見つかった");
 		}
 	}
 
