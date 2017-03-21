@@ -149,14 +149,19 @@ module cmm014.a.viewmodel {
             if (self.dataSource().length > 0) {
                 var item = new model.RemoveClassificationCommand(self.currentItem().classificationCode);
                 self.index_of_itemDelete = self.dataSource().indexOf(self.currentItem());
-                service.removeClassification(item).done(function(res) {
-                    self.getClassificationList_aftefDelete();
-                }).fail(function(res) {
-                    if (res.message == "ER06") {
-                        alert("対象データがありません。");
-                    }
-                    dfd.reject(res);
-                })
+                nts.uk.ui.dialog.confirm("データを削除します。\r\nよろしいですか？").ifYes(function() {
+                    service.removeClassification(item).done(function(res) {
+                        self.getClassificationList_aftefDelete();
+                    }).fail(function(res) {
+                        if (res.message == "ER06") {
+                            alert("対象データがありません。");
+                        }
+                        dfd.reject(res);
+                    })
+                }).ifNo(function() {
+
+                });
+
             } else {
 
             }

@@ -19,6 +19,7 @@ public class RemoveClassificationCommandHandler extends CommandHandler<RemoveCla
 	@Override
 	protected void handle(CommandHandlerContext<RemoveClassificationCommand> context) {
 		String companyCode = AppContexts.user().companyCode();
+		// Check xem classification còn tồn tại ko?
 		if (!classificationRepository.isExisted(companyCode,
 				new ClassificationCode(context.getCommand().getClassificationCode()))) {
 			throw new BusinessException("ER06");
