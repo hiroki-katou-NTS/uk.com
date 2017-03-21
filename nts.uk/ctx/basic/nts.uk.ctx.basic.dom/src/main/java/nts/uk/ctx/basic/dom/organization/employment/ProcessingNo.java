@@ -7,8 +7,6 @@ import nts.arc.primitive.constraint.IntegerMinValue;
 /**
  * 処理日番号
  */
-//@IntegerMinValue(1)
-//@IntegerMaxValue(5)
 public class ProcessingNo extends IntegerPrimitiveValue<ProcessingNo> {
 
 	public ProcessingNo(Integer rawValue) {

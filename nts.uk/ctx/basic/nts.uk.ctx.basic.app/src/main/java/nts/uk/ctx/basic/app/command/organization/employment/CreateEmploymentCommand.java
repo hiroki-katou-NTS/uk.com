@@ -14,7 +14,6 @@ public class CreateEmploymentCommand {
 	private int statutoryHolidayAtr;
 	private String employementOutCd;
 	private int displayFlg;
-	//private boolean chkDisplayFlg;
 	
 	public Employment toDomain(){
 		return Employment.createFromJavaType(AppContexts.user().companyCode(),
