@@ -48,22 +48,21 @@ extends CommandHandlerWithResult<CreateUnitPriceHistoryCommand, UnitPriceHistory
 	protected UnitPriceHistory handle(CommandHandlerContext<CreateUnitPriceHistoryCommand> context) {
 		// Get command.
 		CreateUnitPriceHistoryCommand command = context.getCommand();
+		command.setId(IdentifierUtil.randomUniqueId());
 
 		// Transfer data
 		UnitPrice unitPrice = new UnitPrice(command);
 		UnitPriceHistory unitPriceHistory = new UnitPriceHistory(command);
-		command.setId(IdentifierUtil.randomUniqueId());
 
 		// Validate
+		unitPriceHistory.validate();
 		this.unitPriceHistoryService.validateRequiredItem(unitPriceHistory);
-		this.unitPriceHistoryService.validateDateRange(unitPriceHistory);
-
-		// Check duplicate code.
 		this.unitPriceHistoryService.checkDuplicateCode(unitPriceHistory);
+		this.unitPriceHistoryService.validateDateRange(unitPriceHistory);
 
 		// Persit.
 		this.unitPriceRepository.add(unitPrice);
-		this.unitPriceHistoryRepository.add(unitPriceHistory);
+		this.unitPriceHistoryRepository.addHistory(unitPriceHistory);
 
 		// Ret.
 		return unitPriceHistory;

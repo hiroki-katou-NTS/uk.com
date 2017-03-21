@@ -24,15 +24,6 @@ var nts;
                                 return nts.uk.request.ajax(paths.saveCheckListPrintSetting, command);
                             }
                             service.saveCheckListPrintSetting = saveCheckListPrintSetting;
-                            var model;
-                            (function (model) {
-                                var CheckListPrintSettingDto = (function () {
-                                    function CheckListPrintSettingDto() {
-                                    }
-                                    return CheckListPrintSettingDto;
-                                }());
-                                model.CheckListPrintSettingDto = CheckListPrintSettingDto;
-                            })(model = service.model || (service.model = {}));
                         })(service = c.service || (c.service = {}));
                     })(c = qpp018.c || (qpp018.c = {}));
                 })(qpp018 = view.qpp018 || (view.qpp018 = {}));

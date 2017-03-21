@@ -22,7 +22,7 @@ import nts.uk.ctx.pr.core.dom.wagetable.history.service.WtHistoryService;
  * The Class WtInitCommandHandler.
  */
 @Stateless
-public class WtInitCommandHandler extends CommandHandlerWithResult<WtInitCommand, WtHead> {
+public class WtInitCommandHandler extends CommandHandlerWithResult<WtInitCommand, WtHistory> {
 
 	/** The wage table head repo. */
 	@Inject
@@ -49,7 +49,7 @@ public class WtInitCommandHandler extends CommandHandlerWithResult<WtInitCommand
 	 */
 	@Override
 	@Transactional
-	protected WtHead handle(CommandHandlerContext<WtInitCommand> context) {
+	protected WtHistory handle(CommandHandlerContext<WtInitCommand> context) {
 
 		WtInitCommand command = context.getCommand();
 
@@ -66,6 +66,6 @@ public class WtInitCommandHandler extends CommandHandlerWithResult<WtInitCommand
 		this.headRepo.add(header);
 		this.historyRepo.addHistory(history);
 
-		return header;
+		return history;
 	}
 }

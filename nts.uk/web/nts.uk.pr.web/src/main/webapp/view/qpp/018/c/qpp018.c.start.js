@@ -13,6 +13,7 @@ var nts;
                         __viewContext.ready(function () {
                             var screenModel = new c.viewmodel.ScreenModel();
                             screenModel.startPage().done(function (data) {
+                                nts.uk.ui.confirmSave(screenModel.dirty);
                                 __viewContext.bind(data);
                             });
                         });

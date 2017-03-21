@@ -2,34 +2,16 @@ module nts.uk.pr.view.qpp018.c {
     export module viewmodel {
         export class ScreenModel {
             
-            healthInsuranceItems: KnockoutObservableArray<any>;
-            selectedHealthInsuranceItem: KnockoutObservable<string>;
-            showCategoryInsuranceItem: KnockoutObservable<boolean>;
-            showDeliveryNoticeAmount: KnockoutObservable<boolean>;
-            showDetail: KnockoutObservable<boolean>;
-            showOffice: KnockoutObservable<boolean>;
-            showTotal: KnockoutObservable<boolean>;
+            checklistPrintSettingModel: KnockoutObservable<ChecklistPrintSettingModel>;
+            dirty: nts.uk.ui.DirtyChecker;
 
             constructor() {
                 let self = this;
-                self.selectedHealthInsuranceItem = ko.observable("indicate");
-                self.showCategoryInsuranceItem = ko.computed(function () {
-                    if (self.selectedHealthInsuranceItem() == 'indicate') {
-                        return true;
-                    }
-                    return false;
-                }, self);
-                self.showDetail = ko.observable(false);
-                self.showOffice = ko.observable(false);
-                self.showTotal = ko.observable(false);
-                self.showDeliveryNoticeAmount = ko.observable(false);
-                self.healthInsuranceItems = ko.observableArray([
-                    {code: "indicate", name: "表示する"},
-                    {code: "hide", name: "表示しない"}
-                ]);
+                self.checklistPrintSettingModel = ko.observable(new ChecklistPrintSettingModel());
+                self.dirty = new nts.uk.ui.DirtyChecker(self.checklistPrintSettingModel);
             }
             
-            public startPage(): JQueryPromise<any> {
+            startPage(): JQueryPromise<any> {
                 let self = this;
                 let dfd = $.Deferred<any>();
                 self.loadCheckListPrintSetting().done(function() {
@@ -43,6 +25,7 @@ module nts.uk.pr.view.qpp018.c {
                 let dfd = $.Deferred<service.model.CheckListPrintSettingDto>();
                 service.findCheckListPrintSetting().done(function (data) {
                     self.initUI(data);
+                    self.dirty.reset();
                     dfd.resolve();
                 }).fail(function(res) {
                     nts.uk.ui.dialog.alert(res.message);
@@ -71,8 +54,9 @@ module nts.uk.pr.view.qpp018.c {
                 let self = this;
                 let isError: boolean = false;
                 self.clearError();
-                if (!self.showDetail() && !self.showOffice() && !self.showTotal() 
-                    && !self.showDeliveryNoticeAmount()) {
+                let checklistSetting = self.checklistPrintSettingModel();
+                if (!checklistSetting.showDetail() && !checklistSetting.showOffice() && !checklistSetting.showTotal() 
+                    && !checklistSetting.showDeliveryNoticeAmount()) {
                     isError = true;
                     $('#require-least-item').ntsError('set', 'You must choose at least check box item.');
                 }
@@ -89,11 +73,59 @@ module nts.uk.pr.view.qpp018.c {
             
             initUI(res: service.model.CheckListPrintSettingDto): void {
                 let self = this;
+                let checklistSetting = self.checklistPrintSettingModel();
                 if (res) {
-                    self.setData(res);
+                    checklistSetting.setData(res);
                 } else {
-                    self.defaultValue();
+                    checklistSetting.defaultValue();
                 }
+            }
+            
+            toJSObject(): any {
+                let self = this;
+                let checklistSetting = self.checklistPrintSettingModel();
+                let command: any = {};
+                let checkListPrintSetting: any = {};
+                checkListPrintSetting.showCategoryInsuranceItem = checklistSetting.showCategoryInsuranceItem(); 
+                checkListPrintSetting.showDetail = checklistSetting.showDetail();
+                checkListPrintSetting.showOffice = checklistSetting.showOffice();
+                checkListPrintSetting.showTotal = checklistSetting.showTotal();
+                checkListPrintSetting.showDeliveryNoticeAmount = checklistSetting.showDeliveryNoticeAmount();
+                command.checkListPrintSettingDto = checkListPrintSetting;
+                return command;
+            }
+        }
+        
+        /**
+         * The ChecklistPrintSettingModel
+         */
+        export class ChecklistPrintSettingModel {
+            
+            healthInsuranceItems: KnockoutObservableArray<any>;
+            selectedHealthInsuranceItem: KnockoutObservable<string>;
+            showCategoryInsuranceItem: KnockoutObservable<boolean>;
+            showDeliveryNoticeAmount: KnockoutObservable<boolean>;
+            showDetail: KnockoutObservable<boolean>;
+            showOffice: KnockoutObservable<boolean>;
+            showTotal: KnockoutObservable<boolean>;
+            
+            constructor() {
+                let self = this;
+                self.selectedHealthInsuranceItem = ko.observable("indicate");
+                self.showCategoryInsuranceItem = ko.computed(function () {
+                    if (self.selectedHealthInsuranceItem() == 'indicate') {
+                        return true;
+                    }
+                    return false;
+                }, self);
+                self.showDetail = ko.observable(false);
+                self.showOffice = ko.observable(false);
+                self.showTotal = ko.observable(false);
+                self.showDeliveryNoticeAmount = ko.observable(false);
+                self.healthInsuranceItems = ko.observableArray([
+                    {code: "indicate", name: "表示する"},
+                    {code: "hide", name: "表示しない"}
+                ]);
             }
             
             setData(dto: service.model.CheckListPrintSettingDto): void {
@@ -116,20 +148,6 @@ module nts.uk.pr.view.qpp018.c {
                 self.showTotal(false);
                 self.showDeliveryNoticeAmount(false);
             }
-            
-            toJSObject(): any {
-                let self = this;
-                let command: any = {};
-                let checkListPrintSetting: any = {};
-                checkListPrintSetting.showCategoryInsuranceItem = self.showCategoryInsuranceItem(); 
-                checkListPrintSetting.showDetail = self.showDetail();
-                checkListPrintSetting.showOffice = self.showOffice();
-                checkListPrintSetting.showTotal = self.showTotal();
-                checkListPrintSetting.showDeliveryNoticeAmount = self.showDeliveryNoticeAmount();
-                command.checkListPrintSettingDto = checkListPrintSetting;
-                return command;
-            }
         }
     }
-
 }
