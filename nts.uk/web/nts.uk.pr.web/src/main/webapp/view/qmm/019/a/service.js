@@ -5,18 +5,19 @@ var qmm019;
         var service;
         (function (service) {
             var paths = {
-                getAllLayout: "pr/proto/layout/findalllayout",
-                getLayoutInfor: "/pr/proto/layout/findlayout/{0}/{1}",
-                getLayoutsWithMaxStartYm: "pr/proto/layout/findlayoutwithmaxstartym",
+                getAllLayoutHead: "pr/proto/layout/findalllayoutHead",
+                getAllLayoutHist: "pr/proto/layout/findalllayoutHist",
+                //            getLayoutInfor : "/pr/proto/layout/findlayout/{0}/{1}",
+                //            getLayoutsWithMaxStartYm: "pr/proto/layout/findlayoutwithmaxstartym",
                 getCategoryFull: "pr/proto/layout/findCategoies/full",
                 registerLayout: "pr/proto/layout/register"
             };
             /**
              * Get list payment date processing.
              */
-            function getAllLayout() {
+            function getAllLayoutHead() {
                 var dfd = $.Deferred();
-                nts.uk.request.ajax(paths.getAllLayout)
+                nts.uk.request.ajax(paths.getAllLayoutHead)
                     .done(function (res) {
                     dfd.resolve(res);
                 })
@@ -25,14 +26,13 @@ var qmm019;
                 });
                 return dfd.promise();
             }
-            service.getAllLayout = getAllLayout;
+            service.getAllLayoutHead = getAllLayoutHead;
             /**
-             * Get layout master
+             * Get list payment date processing.
              */
-            function getLayout(stmtCode, historyId) {
+            function getAllLayoutHist() {
                 var dfd = $.Deferred();
-                var _path = nts.uk.text.format(paths.getLayoutInfor, stmtCode, historyId);
-                nts.uk.request.ajax(_path)
+                nts.uk.request.ajax(paths.getAllLayoutHist)
                     .done(function (res) {
                     dfd.resolve(res);
                 })
@@ -41,7 +41,22 @@ var qmm019;
                 });
                 return dfd.promise();
             }
-            service.getLayout = getLayout;
+            service.getAllLayoutHist = getAllLayoutHist;
+            //        /**
+            //         * Get layout master 
+            //         */
+            //        export function getLayout(stmtCode: string, historyId: string): JQueryPromise<model.LayoutMasterDto> {
+            //            var dfd = $.Deferred<any>();
+            //            var _path = nts.uk.text.format(paths.getLayoutInfor, stmtCode, historyId);
+            //            nts.uk.request.ajax(_path)
+            //                .done(function(res: any){
+            //                    dfd.resolve(res);
+            //                })
+            //                .fail(function(res) {
+            //                    dfd.reject(res);
+            //                })
+            //            return dfd.promise(); 
+            //        }
             /**
              * Get list payment date processing.
              */
@@ -60,9 +75,9 @@ var qmm019;
             /**
              * Get list getCategoryFull.
              */
-            function getCategoryFull(layoutCode, startYm) {
+            function getCategoryFull(layoutCode, historyId, startYm) {
                 var dfd = $.Deferred();
-                nts.uk.request.ajax(paths.getCategoryFull + "/" + layoutCode + "/" + startYm)
+                nts.uk.request.ajax(paths.getCategoryFull + "/" + layoutCode + "/" + historyId + "/" + startYm)
                     .done(function (res) {
                     var result = _.map(res, function (category) {
                         return new model.Category(category.lines, category.categoryAtr);
@@ -197,6 +212,13 @@ var qmm019;
             */
             var model;
             (function (model) {
+                // layout head
+                var LayoutHeadDto = (function () {
+                    function LayoutHeadDto() {
+                    }
+                    return LayoutHeadDto;
+                }());
+                model.LayoutHeadDto = LayoutHeadDto;
                 // layout
                 var LayoutMasterDto = (function () {
                     function LayoutMasterDto() {

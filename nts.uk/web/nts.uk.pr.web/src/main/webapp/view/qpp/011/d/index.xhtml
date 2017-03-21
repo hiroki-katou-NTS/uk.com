@@ -1,0 +1,231 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+
+<body>
+
+	<ui:composition template="/master/dialog.xhtml">
+		<ui:define name="htmlHead">
+			<com:scriptfile path="start.js" />
+			<com:stylefile path="style.css" />
+			<com:scriptfile set="IGNITE" />
+		</ui:define>
+
+		<ui:define name="content">
+
+			<div id="content-header">
+				<button class="proceed" onclick="submitInfo()" id="D_BTN_001">登録ボタン
+				</button>
+				<button id="D_BTN_002" onclick="closeDialog()">閉じるボタン</button>
+			</div>
+			<div id="contents-area">
+				<div class="floatLeft fullHeight">
+					<div id="SearchBackGround">
+						<div class="clearBoth">
+							<div id="D_LBL_001" data-bind="ntsFormLabel: { }">コード/名称</div>
+							<div id="D_SCH_001" style="width: 100px"
+								data-bind="ntsSearchBox: {
+								comId: 'D_LST_001',
+								items: items, 
+								selected: gridListCurrentCode, 
+								selectedKey: 'code', 
+								filteredItems: filteredData, 
+								fields: ['name', 'code']}" />
+						</div>
+						<div class="D_LST_001">
+							<table id="D_LST_001"
+								data-bind="ntsGridList: {
+								width: 280,
+								height: 350,
+								options: items,
+								optionsValue: 'code',
+								columns: columns,
+								multiple: false,
+								value: gridListCurrentCode
+							}"></table>
+						</div>
+					</div>
+				</div>
+				<div class="floatLeft fullHeight " style="margin-left: 40px;">
+					<div class="clearBoth floatLeft" style="margin-left: -10px;">
+						<label id="D_LBL_002">コード </label> <label id="LBL_003">納付先名
+						</label>
+					</div>
+					<div class=" clearBoth floatLeft">
+						<div style="margin-top: 21px;" data-bind="ntsFormLabel: { }">領収書、納入書、納入済通知書</div>
+					</div>
+					<div class="clearBoth">
+						<div class=" floatLeft " style="margin-top: 30px; width: 200px;">
+							<label id="D_LBL_004">領収書、納入書、納入済通知書 </label>
+							<hr style="margin-left: -10px;"></hr>
+							<div class="clearBoth floatLeft">
+								<div id="D_LBL_006" class="floatLeft" data-bind="ntsFormLabel: { }">
+									給与分 <br /> <span>（数値10桁）</span>
+
+
+								</div>
+								<div id="D_INP_004" data-bind="with: currencyeditor">
+									<input
+										data-bind="ntsNumberEditor: {
+								value: value,
+								constraint: constraint,
+								option: option,
+								required: required,
+								enable: enable,
+								readonly: readonly}" />
+								</div>
+							</div>
+							<div class="clearBoth floatLeft" style="margin-top: 10px;">
+								<div id="D_LBL_007"  class="floatLeft" data-bind="ntsFormLabel: { }">
+									退職所得分<br /> <span>（数値10桁）</span>
+
+								</div>
+								<div id="D_INP_003" data-bind="with: currencyeditor">
+									<input
+										data-bind="ntsNumberEditor: {
+								value: value,
+								constraint: constraint,
+								option: option,
+								required: required,
+								enable: enable,
+								readonly: readonly}" />
+								</div>
+							</div>
+							<div class="clearBoth floatLeft" style="margin-top: 10px;">
+								<div id="D_LBL_008" class="floatLeft" data-bind="ntsFormLabel: { }">
+									遅延金<br /> <span>（数値10桁）</span>
+								</div>
+								<div id="D_INP_004" data-bind="with: currencyeditor">
+									<input
+										data-bind="ntsNumberEditor: {
+								value: value,
+								constraint: constraint,
+								option: option,
+								required: required,
+								enable: enable,
+								readonly: readonly}" />
+								</div>
+							</div>
+							<div class="clearBoth floatLeft" style="margin-top: 10px;">
+								<div id="D_LBL_009" class="floatLeft" data-bind="ntsFormLabel: { }">
+									督促手数料<br /> <span>（数値10桁）</span>
+								</div>
+								<div id="D_INP_005" data-bind="with: currencyeditor">
+									<input
+										data-bind="ntsNumberEditor: {
+								value: value,
+								constraint: constraint,
+								option: option,
+								required: required,
+								enable: enable,
+								readonly: readonly}" />
+								</div>
+							</div>
+						</div>
+						<div class=" floatLeft "
+							style="margin: 29px 0px 0px 30px; width: 360px;">
+							<label id="D_LBL_005" style="margin-left: -10px">納入申告書 </label>
+							<hr style="margin-left: -10px;"></hr>
+							<div class="clearBoth floatLeft" style="margin-top: 3px;">
+								<div id="D_LBL_010" data-bind="ntsFormLabel: { }">あて先</div>
+								<div id="D_INP_006" data-bind="with: currencyeditor">
+									<input
+										data-bind="ntsNumberEditor: {
+								value: value,
+								constraint: constraint,
+								option: option,
+								required: required,
+								enable: enable,
+								readonly: readonly}" />
+								</div>
+							</div>
+							<div class="clearBoth floatLeft" style="margin-top: 10px;">
+								<div id="D_LBL_011" data-bind="ntsFormLabel: { }">納付期限</div>
+								<div id="D_INP_007" data-bind="with: currencyeditor">
+									<input
+										data-bind="ntsNumberEditor: {
+								value: value,
+								constraint: constraint,
+								option: option,
+								required: required,
+								enable: enable,
+								readonly: readonly}" />
+								</div>
+								<label id="D_LBL_012">納付期限和暦 </label>
+							</div>
+							<div class="clearBoth floatLeft" style="margin-top: 10px;">
+								<div id="D_LBL_013" data-bind="ntsFormLabel: { }">人員</div>
+								<div id="D_INP_008" data-bind="with: currencyeditor">
+									<input
+										data-bind="ntsNumberEditor: {
+								value: value,
+								constraint: constraint,
+								option: option,
+								required: required,
+								enable: enable,
+								readonly: readonly}" />
+								</div>
+							</div>
+							<div class="clearBoth floatLeft" style="margin-top: 10px;">
+								<div id="D_LBL_014" class="floatLeft"
+									data-bind="ntsFormLabel: { }">
+									退職手当等支払金額<br /> <span>（数値10桁）</span>
+								</div>
+								<div id="D_INP_009" class="floatLeft"
+									data-bind="with: currencyeditor">
+									<input
+										data-bind="ntsNumberEditor: {
+								value: value,
+								constraint: constraint,
+								option: option,
+								required: required,
+								enable: enable,
+								readonly: readonly}" />
+								</div>
+							</div>
+							<div class="clearBoth floatLeft" style="margin-top: 10px;">
+								<div id="D_LBL_015" class="floatLeft"
+									data-bind="ntsFormLabel: { }">
+									特別徴収税額 市民税<br /> <span>（数値10桁）</span>
+								</div>
+								<div id="D_INP_010" class="floatLeft"
+									data-bind="with: currencyeditor">
+									<input
+										data-bind="ntsNumberEditor: {
+								value: value,
+								constraint: constraint,
+								option: option,
+								required: required,
+								enable: enable,
+								readonly: readonly}" />
+								</div>
+							</div>
+							<div class="clearBoth floatLeft" style="margin-top: 10px;">
+								<div class="floatLeft" id="D_LBL_016"
+									data-bind="ntsFormLabel: { }">
+									特別徴収税額 県民税<br /> <span>（数値10桁）</span>
+
+								</div>
+								<div class="floatLeft" id="D_INP_011"
+									data-bind="with: currencyeditor">
+									<input
+										data-bind="ntsNumberEditor: {
+								value: value,
+								constraint: constraint,
+								option: option,
+								required: required,
+								enable: enable,
+								readonly: readonly}" />
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

@@ -1,9 +1,10 @@
 module qmm019.a {
     export module service {
         var paths: any = {
-            getAllLayout: "pr/proto/layout/findalllayout",
-            getLayoutInfor : "/pr/proto/layout/findlayout/{0}/{1}",
-            getLayoutsWithMaxStartYm: "pr/proto/layout/findlayoutwithmaxstartym",
+            getAllLayoutHead: "pr/proto/layout/findalllayoutHead",
+            getAllLayoutHist: "pr/proto/layout/findalllayoutHist",
+//            getLayoutInfor : "/pr/proto/layout/findlayout/{0}/{1}",
+//            getLayoutsWithMaxStartYm: "pr/proto/layout/findlayoutwithmaxstartym",
             getCategoryFull: "pr/proto/layout/findCategoies/full",
             registerLayout: "pr/proto/layout/register"
         }
@@ -12,9 +13,9 @@ module qmm019.a {
         /**
          * Get list payment date processing.
          */
-        export function getAllLayout(): JQueryPromise<Array<model.LayoutMasterDto>> {
+        export function getAllLayoutHead(): JQueryPromise<Array<model.LayoutHeadDto>> {
             var dfd = $.Deferred<Array<any>>();
-            nts.uk.request.ajax(paths.getAllLayout)
+            nts.uk.request.ajax(paths.getAllLayoutHead)
                 .done(function(res: Array<any>) {
                     dfd.resolve(res);
                 })
@@ -25,20 +26,35 @@ module qmm019.a {
         }
         
         /**
-         * Get layout master 
+         * Get list payment date processing.
          */
-        export function getLayout(stmtCode: string, historyId: string): JQueryPromise<model.LayoutMasterDto> {
-            var dfd = $.Deferred<any>();
-            var _path = nts.uk.text.format(paths.getLayoutInfor, stmtCode, historyId);
-            nts.uk.request.ajax(_path)
-                .done(function(res: any){
+        export function getAllLayoutHist(): JQueryPromise<Array<model.LayoutMasterDto>> {
+            var dfd = $.Deferred<Array<any>>();
+            nts.uk.request.ajax(paths.getAllLayoutHist)
+                .done(function(res: Array<any>) {
                     dfd.resolve(res);
                 })
                 .fail(function(res) {
                     dfd.reject(res);
                 })
-            return dfd.promise(); 
+            return dfd.promise();
         }
+        
+//        /**
+//         * Get layout master 
+//         */
+//        export function getLayout(stmtCode: string, historyId: string): JQueryPromise<model.LayoutMasterDto> {
+//            var dfd = $.Deferred<any>();
+//            var _path = nts.uk.text.format(paths.getLayoutInfor, stmtCode, historyId);
+//            nts.uk.request.ajax(_path)
+//                .done(function(res: any){
+//                    dfd.resolve(res);
+//                })
+//                .fail(function(res) {
+//                    dfd.reject(res);
+//                })
+//            return dfd.promise(); 
+//        }
         /**
          * Get list payment date processing.
          */
@@ -57,9 +73,9 @@ module qmm019.a {
         /**
          * Get list getCategoryFull.
          */
-        export function getCategoryFull(layoutCode, startYm): JQueryPromise<Array<model.Category>> {
+        export function getCategoryFull(layoutCode, historyId, startYm): JQueryPromise<Array<model.Category>> {
             var dfd = $.Deferred<Array<model.Category>>();
-            nts.uk.request.ajax(paths.getCategoryFull + "/" + layoutCode + "/" + startYm)
+            nts.uk.request.ajax(paths.getCategoryFull + "/" + layoutCode + "/" + historyId + "/" + startYm)
                 .done(function(res: Array<model.Category>) {
                     var result = _.map(res, function(category: any) {
                         return new model.Category(category.lines, category.categoryAtr);
@@ -179,6 +195,15 @@ module qmm019.a {
            * Model namespace.
         */
         export module model {
+            
+            // layout head
+            export class LayoutHeadDto {
+                companyCode: string;
+                stmtCode: string;
+                stmtName: string;
+                constructor() {
+                }
+            }
             
             // layout
             export class LayoutMasterDto {
