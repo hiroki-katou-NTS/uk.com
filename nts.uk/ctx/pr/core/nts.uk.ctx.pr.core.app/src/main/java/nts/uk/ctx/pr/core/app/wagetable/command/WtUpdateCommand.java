@@ -6,15 +6,25 @@ package nts.uk.ctx.pr.core.app.wagetable.command;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.pr.core.app.wagetable.command.dto.WtHistoryDto;
 
 /**
- * The Class WageTableHistoryAddCommand.
+ * The Class WageTableHistoryUpdateCommand.
  */
 @Setter
 @Getter
-public class WtHistoryAddCommand extends WtHistoryBaseCommand {
+public class WtUpdateCommand {
 
-	/** The is create header. */
-	private boolean isCreateHeader;
+	// Header
+	/** The name. */
+	private String code;
+	
+	/** The name. */
+	private String name;
 
+	/** The memo. */
+	private String memo;
+
+	// History
+	private WtHistoryDto wtHistoryDto;
 }
