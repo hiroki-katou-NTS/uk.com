@@ -45,16 +45,16 @@
 									enable: true}" />
 							</div>
 							<!-- C_LBL_003 -->
-							<div class="line" id="lbl_003">
+						<!-- 	<div class="line" id="lbl_003">
 							<div><label id="">　　～　　</label>
 								<label id = "D_LBL_003" data-bind="text: endDateUpdate"></label>
 							</div>
-						</div> 
-						<!-- 		<div class="line">
+						</div>  -->
+						<div class="line">
 							<div id="lbl_003">
 								<p> ~ 9999-12-31</p>
 							</div>
-						</div>  -->
+						</div>
 						</td>
 					</tr>
 					<tr>
@@ -79,8 +79,8 @@
 				</table>
 				<div class="div">
 					<button id="btn_001"  class="x-large proceed "
-							data-bind="click: add">決定</button>
-					<button id="btn_002"  class="large" >キャンセル</button>
+							data-bind="click: add, enable: $root.errors.isEmpty">決定</button>
+					<button id="btn_002" class="large"   >キャンセル</button>
 				</div>
 			</div>
 		</ui:define>

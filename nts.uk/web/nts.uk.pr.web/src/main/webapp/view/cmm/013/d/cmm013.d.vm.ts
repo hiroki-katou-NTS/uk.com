@@ -65,70 +65,11 @@ module cmm013.d.viewmodel {
             }));
         }
         
-                deleteJobHist(){
-                     var self = this;
-            var dfd = $.Deferred<any>();
-            var checkUpdate=nts.uk.ui.windows.getShared('check_d');
-            self.startDateUpdateNew(nts.uk.ui.windows.getShared('startUpdateNew'));
-            if(self.startDateUpdateNew() == null || self.startDateUpdateNew()==''){
-                if(checkUpdate()=='1'){
-                    if(self.checkDelete() ==self.startDateUpdate()){
-                        var jobHistDelete = new model.ListHistoryDto(self.startDateUpdate(),'1',self.endDateUpdate(),self.historyIdUpdate());
-                    }else{
-                         var jobHistDelete = new model.ListHistoryDto(self.startDateUpdate(),'0',self.endDateUpdate(),self.historyIdUpdate());   
-                    }
-                        var dfd = $.Deferred<any>();
-                    service.deleteJobHist(jobHistDelete).done(function(res){
-                        nts.uk.ui.windows.setShared('check_d','',true);
-                        self.getAllHist();
-                    }).fail(function(res){
-                        dfd.reject(res);
-                    })
-                }else 
-                    return;    
-            }
+      
+      
+          closeDialog(): any{
+            nts.uk.ui.windows.close();   
         }
-        
-         updtateJobHist (){
-            var self = this;
-            var dfd = $.Deferred<any>();
-            var checkUpdate=nts.uk.ui.windows.getShared('check_d');
-            self.startDateUpdateNew(nts.uk.ui.windows.getShared('startUpdateNew'));
-       
-                var jobHistUpdateSdate = new model.ListHistoryDto(self.startDateUpdate(),self.startDateUpdateNew(),self.endDateUpdate(),self.historyIdUpdate());
-                service.updateJobHist(jobHistUpdateSdate).done(function(){
-                    nts.uk.ui.windows.setShared('startUpdateNew','',true)
-                    self.getAllHist();
-                }).fail(function(res){
-                    dfd.reject(res);    
-                })
-            }
-          getAllHist(): any{
-            var self = this;
-            var dfd = $.Deferred<any>();
-            self.selectedCode('');
-            self.listbox([]);
-            service.getAllHistory().done(function(history_arr: Array<model.ListHistoryDto>){
-                if(history_arr === undefined || history_arr.length === 0)
-                    return;
-                self.listbox(history_arr);
-                _.forEach(history_arr, function(strHistory){
-                    self.listbox.push(strHistory);
-                })
-                var historyFirst = _.first(history_arr);
-                var historyLast= _.last(history_arr);
-                self.checkDelete(historyLast.startDate);
-                self.selectedCode(historyFirst.startDate);
-                self.startDateUpdate(historyFirst.startDate);
-                self.endDateUpdate(historyFirst.endDate);
-                self.historyIdUpdate(historyFirst.historyId);
-                self.startDateLast(historyFirst.startDate);
-                self.historyIdLast(historyFirst.historyId);
-                dfd.resolve(history_arr);
-            })   
-            return dfd.promise();    
-        }
-  
         
         startPage(): JQueryPromise<any>{
             var self = this;
@@ -142,22 +83,23 @@ module cmm013.d.viewmodel {
    
         positionHis(){
             var self = this;
-            if(self.selectedId()==2){
-                if(self.inp_003() >= self.endDateUpdate()||self.inp_003()<=self.startDateUpdate()){
-                    alert("ERRRR");    
-                    return;
-                }
-                else {
-                    nts.uk.ui.windows.setShared('startUpdateNew',self.inp_003());
-                    nts.uk.ui.windows.setShared('check_d',self.selectedId());
-                    nts.uk.ui.windows.close();
-                }
-            }else{
-                self.inp_003(null);
+//            if(self.selectedId() == 2){
+//                if(self.inp_003() >= self.endDateUpdate()||self.inp_003()<=self.startDateUpdate()){
+//                    // Update
+//                    alert("ERRRR");    
+//                    return;
+//                }
+//                else {
+//                    nts.uk.ui.windows.setShared('startUpdateNew',self.inp_003());
+//                    nts.uk.ui.windows.setShared('check_d',self.selectedId());
+//                    nts.uk.ui.windows.close();
+//                }
+//            }else{
+//                self.inp_003(null);
                 nts.uk.ui.windows.setShared('startUpdateNew',self.inp_003());
                 nts.uk.ui.windows.setShared('check_d',self.selectedId());
                 nts.uk.ui.windows.close();     
-            }
+//            }
         }
     }
 

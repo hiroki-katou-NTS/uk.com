@@ -99,7 +99,7 @@ module cmm013.a.service {
 
 
 
-      export function addJobHist(jobHist: viewmodel.model.ListHistoryDto){
+      export function addHist(jobHist: viewmodel.model.ListHistoryDto){
         var dfd = $.Deferred<Array<any>>();
         nts.uk.request.ajax("com",paths.addHist, jobHist)
             .done(function(res: any){
@@ -111,7 +111,7 @@ module cmm013.a.service {
         return dfd.promise();
      }
     
-    export function updateJobHist(jobHist: viewmodel.model.ListHistoryDto){
+    export function updateHist(jobHist: viewmodel.model.ListHistoryDto){
         var dfd = $.Deferred<Array<any>>();
         nts.uk.request.ajax("com",paths.updateHist, jobHist)
             .done(function(res: any){
@@ -123,7 +123,7 @@ module cmm013.a.service {
         return dfd.promise();
      }
 
-    export function deleteJobHist(jobHist:viewmodel.model.ListHistoryDto){
+    export function deleteHist(jobHist:viewmodel.model.ListHistoryDto){
         var dfd = $.Deferred<Array<any>>();
         nts.uk.request.ajax("com",paths.deleteHist, jobHist)
             .done(function(res: any){

@@ -28,18 +28,21 @@ public class DeleteHistoryCommandHandler extends CommandHandler<DeleteHistoryCom
 //		positionRepository.deleteHist(companyCode, hitoryId );
 		
 		String companyCode = AppContexts.user().companyCode();
-		String check = context.getCommand().getCompanyCode();
-		String checkUpdate = context.getCommand().getStartDate().toString();
-		//end date new need update
+		String test = context.getCommand().getCompanyCode();
+		String checkDateUpdate = context.getCommand().getStartDate().toString();
+		
+		
+		
 		GeneralDate endDate = (context.getCommand().getEndDate());
-		if(checkUpdate.compareTo("0")==0){
-		Optional<JobHistory> hisEndate = positionRepository.getHistoryByEdate(companyCode, check);
-		if(hisEndate.isPresent()){
-			JobHistory jobHis = hisEndate.get();
+		if(checkDateUpdate.compareTo("0")==0){
+		Optional<JobHistory> histEndDate = positionRepository.getHistoryByEdate(companyCode, test);
+		if(histEndDate.isPresent()){
+			JobHistory jobHis = histEndDate.get();
 			jobHis.setEndDate(endDate);
 			positionRepository.updateHistory(jobHis);
 			positionRepository.deleteHist(companyCode,  
 					context.getCommand().getHistoryId());
+			
 		}
 		}else{
 			positionRepository.deleteHist(companyCode,  

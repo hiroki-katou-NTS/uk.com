@@ -28,7 +28,7 @@ public class UpdatePositionCommand {
 	
 	private int presenceCheckScopeSet;
 	
-	
+			
 //	public JobTitle toDomain(){
 //		return JobTitle.createSimpleFromJavaType(GeneralDateTime.localDateTime(this.endDate), GeneralDateTime.localDateTime(this.startDate), 
 //				this.jobCode,this.jobName, this.jobOutCode,AppContexts.user().companyCode(),this.memo);

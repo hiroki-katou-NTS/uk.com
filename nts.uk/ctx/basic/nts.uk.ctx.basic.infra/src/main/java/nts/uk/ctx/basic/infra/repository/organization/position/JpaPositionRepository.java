@@ -6,7 +6,6 @@ import java.util.Optional;
 
 import javax.ejb.Stateless;
 
-import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.basic.dom.organization.position.JobCode;
@@ -115,41 +114,6 @@ public class JpaPositionRepository extends JpaRepository implements PositionRepo
 		return cmnmtJobTitleHistory;
 	}
 
-	// private static JobTitle toDomain(CmnmtJobTitle entity) {
-	// val domain = JobTitle.createFromJavaType(
-	// entity.cmnmtJobTitlePK.companyCode,
-	// entity.cmnmtJobTitlePK.historyId,
-	// entity.cmnmtJobTitlePK.jobCode,
-	// entity.jobName,
-	// entity.presenceCheckScopeSet,
-	// entity.jobOutCode,
-	// entity.memo);
-	// return domain;
-	// }
-	//
-	// private static JobHistory toDomain2(CmnmtJobHist entity) {
-	// val domain = JobHistory.createFromJavaType(
-	// entity.startDate,
-	// entity.endDate,
-	// entity.cmnmtJobHistPK.companyCode,
-	// entity.cmnmtJobHistPK.historyId
-	// );
-	// return domain;
-	// }
-
-	// private static CmnmtJobTitle toEntity(JobTitle domain) {
-	//
-	// val entity = new CmnmtJobTitle();
-	// entity.cmnmtJobTitlePK = new CmnmtJobTitlePK();
-	// entity.jobName = domain.getJobName().v();
-	// entity.presenceCheckScopeSet = domain.getPresenceCheckScopeSet().value;
-	// entity.jobOutCode = domain.getJobOutCode().v();
-	// entity.memo = domain.getMemo().v();
-	//
-	// return entity;
-	//
-	// }
-
 	@Override
 	public void add(JobTitle position) {
 		this.commandProxy().insert(convertToDbType(position));
@@ -237,37 +201,17 @@ public class JpaPositionRepository extends JpaRepository implements PositionRepo
 				}).orElse(Optional.empty());
 	}
 	
-	private static JobHistory toDomainHist(CmnmtJobHist entity) {
-		val domain = JobHistory.createFromJavaType(
-				entity.cmnmtJobHistPK.companyCode,
-				entity.cmnmtJobHistPK.historyId,
-				entity.startDate,
-				entity.endDate
-				);
-		return domain;
-	}
+
 	@Override
 	public Optional<JobHistory> getHistoryByEdate(String companyCode, String endDate) {
-		GeneralDate sDate = GeneralDate.localDate(LocalDate.parse(endDate));
-		GeneralDate eDate = sDate.addDays(-1);
+		GeneralDate endDate0 = GeneralDate.localDate(LocalDate.parse(endDate));
+		GeneralDate endDate1 = endDate0.addDays(-1);
 		return this.queryProxy().query(SELECT_HISTORY_BY_END_DATE, CmnmtJobHist.class)
 				.setParameter("companyCode", companyCode)
-				.setParameter("endDate", eDate)
-				.getSingle(c->toDomainHist(c));
+				.setParameter("endDate", endDate1)
+				.getSingle(c->convertToDomain2(c));
 				
 		
 	}
-
-	// @Override
-	// public Optional<Position> find(String companyCode, String jobCode, String
-	// historyId) {
-	// return this.queryProxy().query(SELECT_DETAIL, CmnmtJobTitle.class)
-	// .setParameter("companyCode", companyCode)
-	// .setParameter("jobCode", jobCode)
-	// .setParameter("historyId", historyId)
-	// .getSingle().map(e -> {
-	// return Optional.of(toDomain(e));
-	// }).orElse(Optional.empty());
-	// }
 
 }

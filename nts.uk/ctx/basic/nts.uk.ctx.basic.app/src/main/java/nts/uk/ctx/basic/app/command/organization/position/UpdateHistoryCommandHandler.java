@@ -29,16 +29,18 @@ public class UpdateHistoryCommandHandler extends CommandHandler<UpdateHistoryCom
 		// positionRepository.updateHistory(jobHistory);
 
 		String companyCode = AppContexts.user().companyCode();
-		String check = context.getCommand().getCompanyCode().toString();
+		String test = context.getCommand().getCompanyCode().toString();
 
+		
 		JobHistory jobHist = new JobHistory(companyCode, context.getCommand().getHistoryId(),
 				context.getCommand().getStartDate(), context.getCommand().getEndDate());
 
+		
 		GeneralDate pos = context.getCommand().getStartDate();
 		GeneralDate endDate = pos.addDays(-1);
-		Optional<JobHistory> hisEndate = positionRepository.getHistoryByEdate(companyCode, check);
-		if (hisEndate.isPresent()) {
-			JobHistory jobHis = hisEndate.get();
+		Optional<JobHistory> histEndDate = positionRepository.getHistoryByEdate(companyCode, test);
+		if (histEndDate.isPresent()) {
+			JobHistory jobHis = histEndDate.get();
 			jobHis.setEndDate(endDate);
 			positionRepository.updateHistory(jobHis);
 			positionRepository.updateHistory(jobHist);

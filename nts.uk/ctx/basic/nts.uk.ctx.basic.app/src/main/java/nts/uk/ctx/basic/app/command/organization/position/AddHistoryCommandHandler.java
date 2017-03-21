@@ -26,29 +26,32 @@ public class AddHistoryCommandHandler extends CommandHandler<AddHistoryCommand>{
 	
 	protected void handle(CommandHandlerContext<AddHistoryCommand> context) {
 		
-//		String companyCode = AppContexts.user().companyCode();
-//		String hitoryId = IdentifierUtil.randomUniqueId();
-//		JobHistory jobHistory = new JobHistory(companyCode,hitoryId,context.getCommand().getEndDate(),context.getCommand().getStartDate());
-//		positionRepository.addHistory(jobHistory);
-		
-		String check = context.getCommand().getCompanyCode();
+
+
 		String companyCode = AppContexts.user().companyCode();
 		String historyId = IdentifierUtil.randomUniqueId();
+		
+		String check = context.getCommand().getCompanyCode();
+		
 		AddHistoryCommand command = new AddHistoryCommand();
 		command.setCompanyCode(companyCode);
 		command.setHistoryId(historyId);
-		command.setEndDate(context.getCommand().getEndDate());
-		command.setStartDate(context.getCommand().getStartDate());
+		command.setEndDate("9999-12-31");
+//		command.setEndDate(context.getCommand().getEndDate());
+		command.setStartDate(context.getCommand().getStartDate().toString());
 		JobHistory jobHistory = command.toDomain();
 		jobHistory.validate();
 		
-		String pos = context.getCommand().getStartDate().toString();
-		GeneralDate eDate = GeneralDate.localDate(LocalDate.parse(pos));
-		GeneralDate endDate = eDate.addDays(-1);
-		if(check.compareTo("1")==0){
-			Optional<JobHistory> hisEndate = positionRepository.getHistoryByEdate(companyCode, pos);
-			if(hisEndate.isPresent()){
-				JobHistory jobHis = hisEndate.get();
+//		JobHistory jobHistory = new JobHistory(companyCode,hitoryId,context.getCommand().getEndDate(),context.getCommand().getStartDate());
+//		positionRepository.addHistory(jobHistory);
+		
+		String pos1 = context.getCommand().getStartDate();
+		GeneralDate endDate1 = GeneralDate.localDate(LocalDate.parse(pos1));
+		GeneralDate endDate = endDate1.addDays(-1);
+		if(check.compareTo("0")==0){
+			Optional<JobHistory> historyEndDate = positionRepository.getHistoryByEdate(companyCode, "9999-12-31");
+			if(historyEndDate.isPresent()){
+				JobHistory jobHis = historyEndDate.get();
 				jobHis.setEndDate(endDate);
 				positionRepository.updateHistory(jobHis);
 				positionRepository.addHistory(jobHistory);
