@@ -14,5 +14,7 @@ public class UpdateFormulaHistoryCommand {
 	String formulaCode;
 
 	String historyId;
+	
+	int endDate;
 
 }
