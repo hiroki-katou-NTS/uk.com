@@ -1,4 +1,3 @@
-
 package nts.uk.pr.file.ws.paymentdata;
 
 import java.util.ArrayList;
@@ -40,4 +39,3 @@ public class PaymentDataPrintWebservice extends WebService {
 	}
 
 }
-
