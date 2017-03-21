@@ -25,6 +25,8 @@ public interface FormulaHistoryRepository {
 	
 	void update (FormulaHistory formulaHistory);
 	
+	void updateByKey(String companyCode, FormulaCode formulaCode, String historyId,YearMonth startDate);
+	
 	boolean isExistedHistory(String companyCode);
 	
 	Optional<FormulaHistory> findLastHistory(String companyCode, FormulaCode formulaCode);

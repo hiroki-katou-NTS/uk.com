@@ -3,7 +3,6 @@ package nts.uk.ctx.pr.formula.dom.formula;
 import java.math.BigDecimal;
 
 import lombok.Getter;
-import lombok.Setter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.pr.formula.dom.enums.FixFormulaAtr;

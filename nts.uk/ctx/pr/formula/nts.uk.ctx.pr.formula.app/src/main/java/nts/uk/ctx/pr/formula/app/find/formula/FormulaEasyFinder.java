@@ -1,6 +1,5 @@
 package nts.uk.ctx.pr.formula.app.find.formula;
 
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -11,7 +10,6 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.pr.formula.app.find.formulaeasydetail.FormulaEasyDetailDto;
 import nts.uk.ctx.pr.formula.app.find.formulaeasystandarditem.FormulaEasyStandardItemDto;
-import nts.uk.ctx.pr.formula.dom.formula.FormulaEasyStandardItem;
 import nts.uk.ctx.pr.formula.dom.primitive.EasyFormulaCode;
 import nts.uk.ctx.pr.formula.dom.primitive.FormulaCode;
 import nts.uk.ctx.pr.formula.dom.repository.FormulaEasyDetailRepository;

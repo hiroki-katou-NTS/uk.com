@@ -15,8 +15,6 @@ public class AddFormulaHistoryCommand {
 	
 	private int startDate;
 	
-	private int endDate;
-	
 	private int difficultyAtr;
 	
 	private int conditionAtr;

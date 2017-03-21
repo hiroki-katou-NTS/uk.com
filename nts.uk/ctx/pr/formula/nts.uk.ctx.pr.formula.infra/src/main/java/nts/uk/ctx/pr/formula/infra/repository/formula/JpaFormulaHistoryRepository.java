@@ -32,6 +32,8 @@ public class JpaFormulaHistoryRepository extends JpaRepository implements Formul
 
 	private static final String FIND_PREVIOUS_HISTORY;
 
+	private static final String UPDATE_HISTORY_BY_KEY;
+
 	static {
 		StringBuilder builderString = new StringBuilder();
 		builderString.append("SELECT COUNT(a) ");
@@ -88,6 +90,14 @@ public class JpaFormulaHistoryRepository extends JpaRepository implements Formul
 		builderString.append("AND a.startDate < :startDate ");
 		builderString.append("ORDER BY a.startDate DESC");
 		FIND_PREVIOUS_HISTORY = builderString.toString();
+
+		builderString = new StringBuilder();
+		builderString.append("UPDATE QcfmtFormulaHistory a ");
+		builderString.append("SET a.startDate = :startDate ");
+		builderString.append("WHERE a.qcfmtFormulaHistoryPK.companyCode = :companyCode ");
+		builderString.append("AND a.qcfmtFormulaHistoryPK.formulaCode = :formulaCode ");
+		builderString.append("AND a.qcfmtFormulaHistoryPK.historyId = :historyId ");
+		UPDATE_HISTORY_BY_KEY = builderString.toString();
 	}
 
 	@Override
@@ -128,6 +138,13 @@ public class JpaFormulaHistoryRepository extends JpaRepository implements Formul
 		this.commandProxy().update(toEntity(formulaHistory));
 	}
 
+	@Override
+	public void updateByKey(String companyCode, FormulaCode formulaCode, String historyId, YearMonth startDate) {
+		this.getEntityManager().createQuery(UPDATE_HISTORY_BY_KEY).setParameter("companyCode", companyCode)
+				.setParameter("formulaCode", formulaCode.v()).setParameter("historyId", historyId)
+				.setParameter("startDate", startDate.v()).executeUpdate();
+	}
+
 	private static FormulaHistory toDomain(QcfmtFormulaHistory qcfmtFormulaHistory) {
 
 		FormulaHistory formulaHistory = FormulaHistory.createFromJavaType(
@@ -160,10 +177,10 @@ public class JpaFormulaHistoryRepository extends JpaRepository implements Formul
 
 	@Override
 	public Optional<FormulaHistory> findLastHistory(String companyCode, FormulaCode formulaCode) {
-		 List<QcfmtFormulaHistory> result = this.getEntityManager().createQuery(LAST_HISTORY, QcfmtFormulaHistory.class)
-				.setParameter("companyCode", companyCode)
-				.setParameter("formulaCode", formulaCode.v()).setMaxResults(1).getResultList();
-		 return !result.isEmpty()? Optional.of(toDomain(result.get(0))): Optional.empty();
+		List<QcfmtFormulaHistory> result = this.getEntityManager().createQuery(LAST_HISTORY, QcfmtFormulaHistory.class)
+				.setParameter("companyCode", companyCode).setParameter("formulaCode", formulaCode.v()).setMaxResults(1)
+				.getResultList();
+		return !result.isEmpty() ? Optional.of(toDomain(result.get(0))) : Optional.empty();
 	}
 
 	@Override
@@ -174,17 +191,14 @@ public class JpaFormulaHistoryRepository extends JpaRepository implements Formul
 	}
 
 	@Override
-	public Optional<FormulaHistory> findPreviousHistory(String companyCode, FormulaCode formulaCode, YearMonth startDate) {
-//		return this.queryProxy().query(FIND_PREVIOUS_HISTORY, QcfmtFormulaHistory.class)
-//				.setParameter("companyCode", companyCode)
-//				.setParameter("formulaCode", formulaCode.v())
-//				.setParameter("startDate", startDate.v()).getSingle(f -> toDomain(f));
-		List<QcfmtFormulaHistory> result = this.getEntityManager().createQuery(FIND_PREVIOUS_HISTORY, QcfmtFormulaHistory.class)
-		.setParameter("companyCode", companyCode)
-		.setParameter("formulaCode", formulaCode.v())
-		.setParameter("startDate", startDate.v()).setMaxResults(1).getResultList();
-		return !result.isEmpty()? Optional.of(toDomain(result.get(0))): Optional.empty();
-		
+	public Optional<FormulaHistory> findPreviousHistory(String companyCode, FormulaCode formulaCode,
+			YearMonth startDate) {
+		List<QcfmtFormulaHistory> result = this.getEntityManager()
+				.createQuery(FIND_PREVIOUS_HISTORY, QcfmtFormulaHistory.class).setParameter("companyCode", companyCode)
+				.setParameter("formulaCode", formulaCode.v()).setParameter("startDate", startDate.v()).setMaxResults(1)
+				.getResultList();
+		return !result.isEmpty() ? Optional.of(toDomain(result.get(0))) : Optional.empty();
+
 	}
 
 }

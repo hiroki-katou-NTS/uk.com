@@ -15,6 +15,6 @@ public class UpdateFormulaHistoryCommand {
 
 	String historyId;
 	
-	int endDate;
+	int startDate;
 
 }
