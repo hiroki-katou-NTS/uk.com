@@ -617,7 +617,7 @@ module nts.uk.pr.view.qmm008.a {
             //get current item office 
             public getDataOfHealthSelectedOffice(): InsuranceOfficeItem {
                 var self = this;
-                var saveVal = null;
+                var saveVal:InsuranceOfficeItem = null;
                 // Set parent value
                 self.healthInsuranceOfficeList().forEach(function(item, index) {
                     if (self.healthCurrentParentCode() == item.code) {
@@ -630,7 +630,7 @@ module nts.uk.pr.view.qmm008.a {
             //get current item office 
             public getDataOfPensionSelectedOffice(): InsuranceOfficeItem {
                 var self = this;
-                var saveVal = null;
+                var saveVal:InsuranceOfficeItem = null;
                 // Set parent value
                 self.pensionInsuranceOfficeList().forEach(function(item, index) {
                     if (self.pensionCurrentParentCode() == item.code) {
@@ -685,7 +685,7 @@ module nts.uk.pr.view.qmm008.a {
             // open dialog add history 
             public OpenModalAddHistory() {
                 var self = this;
-                var data;
+                var data:any;
                 var isHealth = true;
                 if ($('#healthInsuranceTabPanel').hasClass("active")) {
                     var sendOfficeItem = self.getDataOfHealthSelectedOffice();

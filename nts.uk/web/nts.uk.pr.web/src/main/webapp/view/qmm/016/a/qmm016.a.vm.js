@@ -94,17 +94,16 @@ var nts;
                                     self.code('');
                                     self.name('');
                                     self.demensionSet(qmm016.model.allDemension[0].code);
+                                    self.demensionItemList([]);
                                     self.memo('');
                                 };
                                 WageTableHeadViewModel.prototype.getDemensionItemListByType = function (typeCode) {
                                     var newDemensionItemList = new Array();
                                     switch (typeCode) {
                                         case 0:
-                                        case 3:
                                             newDemensionItemList.push(new DemensionItemViewModel(1));
                                             break;
                                         case 1:
-                                        case 4:
                                             newDemensionItemList.push(new DemensionItemViewModel(1));
                                             newDemensionItemList.push(new DemensionItemViewModel(2));
                                             break;
@@ -112,6 +111,30 @@ var nts;
                                             newDemensionItemList.push(new DemensionItemViewModel(1));
                                             newDemensionItemList.push(new DemensionItemViewModel(2));
                                             newDemensionItemList.push(new DemensionItemViewModel(3));
+                                            break;
+                                        case 3:
+                                            {
+                                                var cert = new DemensionItemViewModel(1);
+                                                cert.elementType(6);
+                                                cert.elementName('資格名称');
+                                                newDemensionItemList.push(cert);
+                                            }
+                                            break;
+                                        case 4:
+                                            {
+                                                var workDay = new DemensionItemViewModel(1);
+                                                workDay.elementType(7);
+                                                workDay.elementName('欠勤日数');
+                                                var late = new DemensionItemViewModel(2);
+                                                late.elementType(8);
+                                                late.elementName('遅刻・早退回数');
+                                                var level = new DemensionItemViewModel(2);
+                                                level.elementType(8);
+                                                level.elementName('レベル');
+                                                newDemensionItemList.push(workDay);
+                                                newDemensionItemList.push(late);
+                                                newDemensionItemList.push(level);
+                                            }
                                             break;
                                     }
                                     return newDemensionItemList;
@@ -123,6 +146,19 @@ var nts;
                                     self.name(head.name);
                                     self.demensionSet(head.demensionSet);
                                     self.memo(head.memo);
+                                };
+                                WageTableHeadViewModel.prototype.onSelectDemensionBtnClick = function (demension) {
+                                    var self = this;
+                                    var dlgOptions = {
+                                        onSelectItem: function (data) {
+                                            demension.elementType(data.demension.type);
+                                            demension.elementCode(data.demension.code);
+                                            demension.elementName(data.demension.name);
+                                        }
+                                    };
+                                    nts.uk.ui.windows.setShared('options', dlgOptions);
+                                    var ntsDialogOptions = { title: '要素の選択', dialogClass: 'no-close' };
+                                    nts.uk.ui.windows.sub.modal('/view/qmm/016/k/index.xhtml', ntsDialogOptions);
                                 };
                                 return WageTableHeadViewModel;
                             }());

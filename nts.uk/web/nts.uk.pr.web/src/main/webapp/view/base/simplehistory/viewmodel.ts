@@ -27,6 +27,7 @@ module nts.uk.pr.view.base.simplehistory {
             masterHistoryDatasource: KnockoutObservableArray<Node>;
             
             // Selected hsitory uuid.
+            selectedNode: KnockoutObservable<Node>;
             selectedHistoryUuid: KnockoutObservable<string>;
             igGridSelectedHistoryUuid: KnockoutObservable<string>;
 
@@ -49,44 +50,41 @@ module nts.uk.pr.view.base.simplehistory {
                 // Init.
                 self.isNewMode = ko.observable(true);
                 self.masterHistoryDatasource = ko.observableArray([]);
-                self.selectedHistoryUuid = ko.observable(undefined);
 
                 // On searched result.
-                self.igGridSelectedHistoryUuid = ko.observable('');
+                self.igGridSelectedHistoryUuid = ko.observable(undefined);
+                self.selectedHistoryUuid = ko.observable(undefined);
+                self.selectedNode = ko.observable(undefined);
                 self.isClickHistory = ko.observable(false);
                 
                 // Can update history flag.
                 self.canUpdateHistory = ko.computed(() => {
-                    var node = self.getNode(self.igGridSelectedHistoryUuid());
-                    return node && node.parent ? true: false;
+                    return self.selectedNode() && self.selectedHistoryUuid() != undefined;
                 })
                 self.canAddNewHistory = ko.computed(() => {
-                    return self.canUpdateHistory();
+                    return self.selectedNode() != null;
                 })
 
                 self.igGridSelectedHistoryUuid.subscribe(id => {
                     // Not select.
                     if (!id) {
+                        self.selectedNode(undefined);
                         return;
                     }
 
                     var selectedNode = self.getNode(id);
                     // History node.
-                    if (selectedNode.parent) {
-                        self.selectedHistoryUuid(id);
-                        self.selectedHistoryUuid.valueHasMutated();
+                    if (!selectedNode.isMaster) {
+                        self.isNewMode(false);
+                        self.selectedHistoryUuid(selectedNode.id);
+                        self.onSelectHistory(id);
                     } else {
                         // Parent node.
                         self.onSelectMaster(id);
                     }
+                    self.selectedNode(selectedNode);
                 })
-                
-                // On history select.
-                self.selectedHistoryUuid.subscribe((id) => {
-                    self.isNewMode(false);
-                    self.onSelectHistory(id);
-                })
-                
+
                 // On new mode.
                 self.isNewMode.subscribe(val => {
                     if (val) {
@@ -109,8 +107,12 @@ module nts.uk.pr.view.base.simplehistory {
                     } else {
                         // Not new mode and select first history.
                         self.isNewMode(false);
-                        if(self.masterHistoryDatasource()[0].childs.length>0)
-                        self.selectedHistoryUuid(self.masterHistoryDatasource()[0].childs[0].id);
+                        if (self.masterHistoryDatasource()[0].childs &&
+                            self.masterHistoryDatasource()[0].childs.length > 0) {
+                            self.igGridSelectedHistoryUuid(self.masterHistoryDatasource()[0].childs[0].id);
+                        } else {
+                            self.igGridSelectedHistoryUuid(self.masterHistoryDatasource()[0].id);
+                        }
                     }
 
                     // resole.
@@ -134,7 +136,7 @@ module nts.uk.pr.view.base.simplehistory {
                             id: master.code,
                             searchText: master.code + ' ' + master.name,
                             nodeText: master.code + ' ' + master.name,
-                            nodeType: 0,
+                            isMaster: true,
                             data: master
                         };
 
@@ -144,7 +146,7 @@ module nts.uk.pr.view.base.simplehistory {
                                 id: history.uuid,
                                 searchText: '',
                                 nodeText: nts.uk.time.formatYearMonth(history.start) + '~' + nts.uk.time.formatYearMonth(history.end),
-                                nodeType: 1,
+                                isMaster: false,
                                 parent: masterNode,
                                 data: history
                             };
@@ -181,7 +183,7 @@ module nts.uk.pr.view.base.simplehistory {
                 var self = this;
                 self.onSave().done((uuid) => {
                     self.loadMasterHistory().done(() => {
-                        self.selectedHistoryUuid(uuid);
+                        self.igGridSelectedHistoryUuid(uuid);
                     })
                 }).fail(() => {
                     // Do nothing.
@@ -193,11 +195,12 @@ module nts.uk.pr.view.base.simplehistory {
              */
             addNewHistoryBtnClick(): void {
                 var self = this;
-                var currentNode = self.getCurrentHistoryNode();
+                var currentNode = self.selectedNode();
+                var latestNode = currentNode.isMaster ? _.head(currentNode.childs) : _.head(currentNode.parent.childs);
                 var newHistoryOptions: newhistory.viewmodel.NewHistoryScreenOption = {
                     name: self.options.functionName,
-                    master: currentNode.parent.data,
-                    lastest: currentNode.data,
+                    master: currentNode.isMaster ? currentNode.data : currentNode.parent.data,
+                    lastest: latestNode ? latestNode.data : undefined,
                     
                     // Copy.
                     onCopyCallBack: (data) => {
@@ -222,7 +225,7 @@ module nts.uk.pr.view.base.simplehistory {
              */
             updateHistoryBtnClick(): void {
                 var self = this;
-                var currentNode = self.getCurrentHistoryNode();
+                var currentNode = self.getNode(self.selectedHistoryUuid());
                 var newHistoryOptions: updatehistory.viewmodel.UpdateHistoryScreenOption = {
                     name: self.options.functionName,
                     master: currentNode.parent.data,
@@ -255,11 +258,14 @@ module nts.uk.pr.view.base.simplehistory {
             reloadMasterHistory(uuid: string) {
                 var self = this;
                 self.loadMasterHistory().done(() => {
+                    self.selectedHistoryUuid(undefined);
                     if (uuid) {
-                        self.selectedHistoryUuid(uuid);
+                        self.igGridSelectedHistoryUuid(uuid);
                     } else {
                         if (self.masterHistoryList.length > 0) {
-                            self.selectedHistoryUuid(self.masterHistoryList[0].historyList[0].uuid);
+                            if (!_.isEmpty(self.masterHistoryList[0].historyList)) {
+                                self.igGridSelectedHistoryUuid(self.masterHistoryList[0].historyList[0].uuid);
+                            } 
                         }
                     }
                 })
@@ -301,20 +307,6 @@ module nts.uk.pr.view.base.simplehistory {
             abstract onSave(): JQueryPromise<string>;
 
             /**
-             * Get current history node.
-             */
-            private getCurrentHistoryNode(): Node {
-                var self = this;
-                var nodeList = _.flatMap(self.masterHistoryDatasource(), (node) => {
-                    return node.childs;
-                })
-                return _.first(_.filter(nodeList, (node) => {
-                    return node.id == self.selectedHistoryUuid()
-                        && self.selectedHistoryUuid().length > 4;
-                }));
-            }
-            
-            /**
              * Get node using id.
              */
             private getNode(id: string): Node {
@@ -340,7 +332,7 @@ module nts.uk.pr.view.base.simplehistory {
             id: string;
             searchText: string;
             nodeText: string;
-            nodeType: number;
+            isMaster: boolean;
             parent?: Node;
             childs?: Node[];
             data?: any;

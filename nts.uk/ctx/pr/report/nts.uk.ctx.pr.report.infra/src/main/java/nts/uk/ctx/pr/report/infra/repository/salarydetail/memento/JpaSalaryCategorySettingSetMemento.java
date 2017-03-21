@@ -21,12 +21,6 @@ import nts.uk.ctx.pr.report.infra.entity.salarydetail.QlsptPaylstFormDetail;
 public class JpaSalaryCategorySettingSetMemento implements SalaryCategorySettingSetMemento {
 
 	/** The category entities. */
-	
-	/**
-	 * Gets the category entities.
-	 *
-	 * @return the category entities
-	 */
 	@Getter
 	private List<QlsptPaylstFormDetail> categoryEntities;
 

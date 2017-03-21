@@ -4,16 +4,23 @@
  *****************************************************************/
 package nts.uk.ctx.pr.report.infra.repository.salarydetail;
 
+import java.util.Optional;
+
 import javax.ejb.Stateless;
 
+import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.pr.report.dom.salarydetail.aggregate.SalaryAggregateItem;
 import nts.uk.ctx.pr.report.dom.salarydetail.aggregate.SalaryAggregateItemRepository;
+import nts.uk.ctx.pr.report.infra.entity.salarydetail.QlsptPaylstAggreHead;
+import nts.uk.ctx.pr.report.infra.entity.salarydetail.QlsptPaylstAggreHeadPK;
+import nts.uk.ctx.pr.report.infra.repository.salarydetail.memento.JpaSalaryAggregateItemGetMemento;
+import nts.uk.ctx.pr.report.infra.repository.salarydetail.memento.JpaSalaryAggregateItemSetMemento;
 
 /**
  * The Class JpaSalaryAggregateItemRepository.
  */
 @Stateless
-public class JpaSalaryAggregateItemRepository implements SalaryAggregateItemRepository {
+public class JpaSalaryAggregateItemRepository extends JpaRepository implements SalaryAggregateItemRepository {
 
 	/*
 	 * (non-Javadoc)
@@ -37,8 +44,7 @@ public class JpaSalaryAggregateItemRepository implements SalaryAggregateItemRepo
 	 */
 	@Override
 	public void update(SalaryAggregateItem aggregateItem) {
-		// TODO Auto-generated method stub
-
+		this.commandProxy().update(this.toEntity(aggregateItem));
 	}
 
 	/*
@@ -61,10 +67,45 @@ public class JpaSalaryAggregateItemRepository implements SalaryAggregateItemRepo
 	 * SalaryAggregateItemRepository#findByCode(java.lang.String,
 	 * java.lang.String)
 	 */
+
+	/**
+	 * To domain.
+	 *
+	 * @param entity
+	 *            the entity
+	 * @return the salary aggregate item
+	 */
+	private SalaryAggregateItem toDomain(QlsptPaylstAggreHead entity) {
+		return new SalaryAggregateItem(new JpaSalaryAggregateItemGetMemento(entity));
+	}
+
+	/**
+	 * To entity.
+	 *
+	 * @param domain
+	 *            the domain
+	 * @return the qlspt paylst aggre head
+	 */
+	private QlsptPaylstAggreHead toEntity(SalaryAggregateItem domain) {
+		QlsptPaylstAggreHead entity = new QlsptPaylstAggreHead();
+		domain.saveToMemento(new JpaSalaryAggregateItemSetMemento(entity));
+		return entity;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.report.dom.salarydetail.aggregate.
+	 * SalaryAggregateItemRepository#findByCode(java.lang.String,
+	 * java.lang.String, int)
+	 */
 	@Override
-	public SalaryAggregateItem findByCode(String companyCode, String code) {
-		// TODO Auto-generated method stub
-		return null;
+	public Optional<SalaryAggregateItem> findByCode(String companyCode, String aggregateItemCode,
+		int categoryCode) {
+		return this.queryProxy()
+			.find(new QlsptPaylstAggreHeadPK(companyCode, aggregateItemCode, categoryCode),
+				QlsptPaylstAggreHead.class)
+			.map(c -> this.toDomain(c));
 	}
 
 }

@@ -119,7 +119,7 @@ module nts.uk.pr.view.qmm016.a {
                 self.demensionType = ko.computed(() => {
                     return model.demensionMap[self.demensionSet()];
                 });
-                self.demensionItemList = ko.observableArray([]);    
+                self.demensionItemList = ko.observableArray<DemensionItemViewModel>([]);    
                 
                 self.demensionSet.subscribe(val => {
                     // Not new mode.
@@ -143,6 +143,7 @@ module nts.uk.pr.view.qmm016.a {
                 self.code('');
                 self.name('');
                 self.demensionSet(model.allDemension[0].code);
+                self.demensionItemList([]);
                 self.memo('');
             }
 
@@ -154,25 +155,52 @@ module nts.uk.pr.view.qmm016.a {
                 var newDemensionItemList = new Array<DemensionItemViewModel>();
                 switch (typeCode) {
                     case 0:
-                    case 3:
                         newDemensionItemList.push(new DemensionItemViewModel(1));
                         break;
                     case 1:
-                    case 4:
                         newDemensionItemList.push(new DemensionItemViewModel(1));
                         newDemensionItemList.push(new DemensionItemViewModel(2));
                         break;
+
                     case 2: 
                         newDemensionItemList.push(new DemensionItemViewModel(1));
                         newDemensionItemList.push(new DemensionItemViewModel(2));
                         newDemensionItemList.push(new DemensionItemViewModel(3));
+                        break;
+
+                    // Certificate.
+                    case 3:
+                        {
+                            let cert = new DemensionItemViewModel(1);
+                            cert.elementType(6);
+                            cert.elementName('資格名称');
+                            newDemensionItemList.push(cert);
+                        }
+                        break;
+                        
+                    // Attendance.
+                    case 4:
+                        {
+                            let workDay = new DemensionItemViewModel(1);
+                            workDay.elementType(7);
+                            workDay.elementName('欠勤日数');
+                            let late = new DemensionItemViewModel(2);
+                            late.elementType(8);
+                            late.elementName('遅刻・早退回数');
+                            let level = new DemensionItemViewModel(2);
+                            level.elementType(8);
+                            level.elementName('レベル');
+                            newDemensionItemList.push(workDay);
+                            newDemensionItemList.push(late);
+                            newDemensionItemList.push(level);
+                        }
                         break;
                 }
 
                 // Ret.
                 return newDemensionItemList;
             }
-            
+
             /**
              * Reset by wage table.
              */
@@ -183,6 +211,23 @@ module nts.uk.pr.view.qmm016.a {
                 self.name(head.name);
                 self.demensionSet(head.demensionSet);
                 self.memo(head.memo);
+            }
+            
+            /**
+             * On select demension btn click.
+             */
+            onSelectDemensionBtnClick(demension: DemensionItemViewModel) {
+                var self = this;
+                var dlgOptions: k.viewmodel.Option = {
+                    onSelectItem: (data) => {
+                        demension.elementType(data.demension.type);
+                        demension.elementCode(data.demension.code);
+                        demension.elementName(data.demension.name);
+                    }
+                };
+                nts.uk.ui.windows.setShared('options', dlgOptions);
+                var ntsDialogOptions = { title: '要素の選択', dialogClass: 'no-close' }; 
+                nts.uk.ui.windows.sub.modal('/view/qmm/016/k/index.xhtml', ntsDialogOptions);
             }
         }
         

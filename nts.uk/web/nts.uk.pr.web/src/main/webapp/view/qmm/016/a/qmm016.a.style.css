@@ -40,3 +40,15 @@
 .tab-inline {
 	padding-left: 20px;
 }
+
+#demension-tbl td {
+	border: black solid 1px;
+}
+
+#demension-tbl tr {
+	height: 35px;
+}
+
+#demension-tbl td span {
+	padding-left: 20px;
+}

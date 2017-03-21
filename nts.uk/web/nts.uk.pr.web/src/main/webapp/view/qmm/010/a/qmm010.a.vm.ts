@@ -20,6 +20,7 @@ module nts.uk.pr.view.qmm010.a {
             isEnableDelete: KnockoutObservable<boolean>;
             //update add LaborInsuranceOffice
             typeAction: KnockoutObservable<number>;
+            messageList: KnockoutObservableArray<any>;
 
             constructor() {
                 var self = this;
@@ -33,6 +34,10 @@ module nts.uk.pr.view.qmm010.a {
                 self.laborInsuranceOfficeModel = ko.observable(new LaborInsuranceOfficeModel());
                 self.selectCodeLstlaborInsuranceOffice = ko.observable('');
                 self.isEnableDelete = ko.observable(true);
+                self.messageList = ko.observableArray([
+                    { messageId: "ER001", message: "＊が入力されていません。" },
+                    { messageId: "ER005", message: "入力した＊は既に存在しています。\r\n ＊を確認してください。" }
+                ]);
             }
 
             //function reset value viewmodel
@@ -112,8 +117,29 @@ module nts.uk.pr.view.qmm010.a {
             }
 
             //Function show message error message
-            private showMessageSave(message: string) {
-                $('#btn_save').ntsError('set', message);
+            private showMessageSave(messageId: string) {
+                var self = this;
+                if (self.messageList()[0].messageId === messageId) {
+                    //001
+                    var message = self.messageList()[0].message;
+
+                    if (!self.laborInsuranceOfficeModel().code()) {
+                        $('#inp_code').ntsError('set', message);
+                    }
+
+                    if (!self.laborInsuranceOfficeModel().name()) {
+                        $('#inp_name').ntsError('set', message);
+                    }
+
+                    if (!self.laborInsuranceOfficeModel().picPosition()) {
+                        $('#inp_picPosition').ntsError('set', message);
+                    }
+                }
+                
+                if (self.messageList()[1].messageId === messageId) {
+                    var message = self.messageList()[1].message;
+                    $('#inp_code').ntsError('set', message);
+                }
             }
 
             //Function action button save Onclick
@@ -130,7 +156,7 @@ module nts.uk.pr.view.qmm010.a {
                         self.clearErrorSave();
                     }).fail(function(res) {
                         //show error message error
-                        self.showMessageSave(res.message);
+                        self.showMessageSave(res.messageId);
                     })
                 } else {
                     //is mode is update
@@ -169,6 +195,7 @@ module nts.uk.pr.view.qmm010.a {
                         self.laborInsuranceOfficeModel().updateData(data);
                         self.laborInsuranceOfficeModel().setReadOnly(true);
                         self.isEnableDelete(true);
+                        self.clearErrorSave();
                     });
                     dfd.resolve();
                 }

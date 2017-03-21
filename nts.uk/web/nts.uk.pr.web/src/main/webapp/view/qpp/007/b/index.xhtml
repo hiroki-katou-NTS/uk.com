@@ -7,6 +7,12 @@
 <body>
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
+		<script>
+				var dialogSize = {
+					width : 600,
+					height : 850
+				};
+			</script>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="main.css" />
 			<com:scriptfile path="qpp007.b.service.js" />
@@ -55,7 +61,7 @@
 					<tr>
 						<td><div data-bind="ntsCheckBox: { checked: showHierarchyAccumulation }">部門階層累計を出力する。</div>
 							<button class="btn-help"
-								data-bind="ntsHelpButton: {image: 'test-image.png', position: 'right top', enable: showHierarchyAccumulation }">?</button></td>
+								data-bind="ntsHelpButton: {image: 'test-image.png', position: 'right top', enable: showHierarchyAccumulation() }">?</button></td>
 					</tr>
 					<tr>
 						<td class="padding-bot-20"><div
@@ -65,16 +71,16 @@
 						<td><div class="rectangle-wrapper">
 								<label id="lbl_003">累計したい部門の階層を指定(最大５つ)</label>
 								<div class="margin-left-20">
-								<div data-bind="ntsCheckBox: { checked: showHierarchy1 }">1階層</div>
-								<div data-bind="ntsCheckBox: { checked: showHierarchy2 }">2階層</div>
-								<div data-bind="ntsCheckBox: { checked: showHierarchy3 }">3階層</div>
-								<div data-bind="ntsCheckBox: { checked: showHierarchy4 }">4階層</div>
-								<div data-bind="ntsCheckBox: { checked: showHierarchy5 }">5階層</div>
+								<div data-bind="ntsCheckBox: { checked: showHierarchy1,enable:showHierarchyAccumulation()||showHierarchyMonthlyAccumulation() }">1階層</div>
+								<div data-bind="ntsCheckBox: { checked: showHierarchy2,enable:showHierarchyAccumulation()||showHierarchyMonthlyAccumulation() }">2階層</div>
+								<div data-bind="ntsCheckBox: { checked: showHierarchy3,enable:showHierarchyAccumulation()||showHierarchyMonthlyAccumulation() }">3階層</div>
+								<div data-bind="ntsCheckBox: { checked: showHierarchy4,enable:showHierarchyAccumulation()||showHierarchyMonthlyAccumulation() }">4階層</div>
+								<div data-bind="ntsCheckBox: { checked: showHierarchy5,enable:showHierarchyAccumulation()||showHierarchyMonthlyAccumulation() }">5階層</div>
 								<br />
-								<div data-bind="ntsCheckBox: { checked: showHierarchy6 }">6階層</div>
-								<div data-bind="ntsCheckBox: { checked: showHierarchy7 }">7階層</div>
-								<div data-bind="ntsCheckBox: { checked: showHierarchy8 }">8階層</div>
-								<div data-bind="ntsCheckBox: { checked: showHierarchy9 }">9階層</div>
+								<div data-bind="ntsCheckBox: { checked: showHierarchy6,enable:showHierarchyAccumulation()||showHierarchyMonthlyAccumulation() }">6階層</div>
+								<div data-bind="ntsCheckBox: { checked: showHierarchy7,enable:showHierarchyAccumulation()||showHierarchyMonthlyAccumulation() }">7階層</div>
+								<div data-bind="ntsCheckBox: { checked: showHierarchy8,enable:showHierarchyAccumulation()||showHierarchyMonthlyAccumulation() }">8階層</div>
+								<div data-bind="ntsCheckBox: { checked: showHierarchy9,enable:showHierarchyAccumulation()||showHierarchyMonthlyAccumulation() }">9階層</div>
 								<label id="lbl_005">※10階層計は部門計で確認できます。</label>
 								</div>
 							</div></td>

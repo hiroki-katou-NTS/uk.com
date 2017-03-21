@@ -59,4 +59,15 @@ public class JpaSalaryOutputItemSetMemento implements SalaryOutputItemSetMemento
 		this.entity.getQlsptPaylstFormDetailPK().setAggregateAtr(salaryItemType.value);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.report.dom.salarydetail.outputsetting.
+	 * SalaryOutputItemSetMemento#setOrderNumber(int)
+	 */
+	@Override
+	public void setOrderNumber(int orderNumber) {
+		this.entity.setDispOrder(orderNumber);
+	}
+
 }

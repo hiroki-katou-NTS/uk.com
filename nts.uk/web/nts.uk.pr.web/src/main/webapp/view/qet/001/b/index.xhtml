@@ -7,12 +7,12 @@
 <body>
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
-			<com:stylefile path="main.css" />
+			<com:stylefile path="qet001.b.main.css" />
 			<com:scriptfile set="IGNITE" />
-			<com:scriptfile path="../a/service.js" />
-			<com:scriptfile path="service.js" />
-			<com:scriptfile path="viewmodel.js" />
-			<com:scriptfile path="start.js" />
+			<com:scriptfile path="../a/qet001.a.service.js" />
+			<com:scriptfile path="qet001.b.service.js" />
+			<com:scriptfile path="qet001.b.vm.js" />
+			<com:scriptfile path="qet001.b.start.js" />
 			<script type="text/javascript">
 				var dialogSize = {
 					width : 1300,
@@ -135,7 +135,7 @@
 										<tr>
 											<td class="tab-contents-left">
 												<div class="left-table">
-													<div class="add-to-table-label" data-bind="ntsFormLabel: {}">表に追加できる給与支給項目</div>
+													<div class="add-to-table-label" data-bind="ntsFormLabel: {}">表に追加できる<span class="category-name" data-bind="text: fullCategoryName"></span>項目</div>
 													<div class="head-end"></div>
 													<table id="master-items" data-bind="ntsGridList: {
  															width: 250,
@@ -155,7 +155,7 @@
 												</div>
 													
 												<div class="left-table">
-													<div class="add-to-table-label" data-bind="ntsFormLabel: {}">表に追加できる集約項目</div>
+													<div class="add-to-table-label" data-bind="ntsFormLabel: {}">表に追加できる<span class="category-name">集約</span>項目</div>
 													<div class="head-end"></div>
 													<table id="aggregate-items" data-bind="ntsGridList: {
  															width: 250,

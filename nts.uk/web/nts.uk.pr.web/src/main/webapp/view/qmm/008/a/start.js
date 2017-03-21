@@ -6,3 +6,4 @@ __viewContext.ready(function () {
         self.bind(screenModel);
     });
 });
+//# sourceMappingURL=start.js.map

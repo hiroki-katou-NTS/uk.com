@@ -1,72 +1,138 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2016 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.report.infra.repository.salarydetail.memento;
 
-import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 import lombok.Getter;
 import nts.uk.ctx.pr.report.dom.company.CompanyCode;
-import nts.uk.ctx.pr.report.dom.salarydetail.SalaryCategory;
-import nts.uk.ctx.pr.report.dom.salarydetail.outputsetting.SalaryCategorySettingSetMemento;
-import nts.uk.ctx.pr.report.dom.salarydetail.outputsetting.SalaryOutputItem;
-import nts.uk.ctx.pr.report.dom.salarydetail.outputsetting.SalaryOutputSettingCode;
-import nts.uk.ctx.pr.report.infra.entity.salarydetail.QlsptPaylstFormDetail;
+import nts.uk.ctx.pr.report.dom.salarydetail.aggregate.SalaryAggregateItemCode;
+import nts.uk.ctx.pr.report.dom.salarydetail.aggregate.SalaryAggregateItemName;
+import nts.uk.ctx.pr.report.dom.salarydetail.aggregate.SalaryAggregateItemSetMemento;
+import nts.uk.ctx.pr.report.dom.salarydetail.aggregate.TaxDivision;
+import nts.uk.ctx.pr.report.dom.salarydetail.item.SalaryItem;
+import nts.uk.ctx.pr.report.infra.entity.salarydetail.QlsptPaylstAggreDetail;
+import nts.uk.ctx.pr.report.infra.entity.salarydetail.QlsptPaylstAggreDetailPK;
+import nts.uk.ctx.pr.report.infra.entity.salarydetail.QlsptPaylstAggreHead;
+import nts.uk.ctx.pr.report.infra.entity.salarydetail.QlsptPaylstAggreHeadPK;
 
 /**
- * The Class JpaSalaryCategorySettingSetMemento.
+ * The Class JpaSalaryAggregateItemSetMemento.
  */
-public class JpaSalaryAggregateItemSetMemento implements SalaryCategorySettingSetMemento {
+public class JpaSalaryAggregateItemSetMemento implements SalaryAggregateItemSetMemento {
 
-	/** The category entities. */
-	
+	/** The agger head. */
+
 	/**
-	 * Gets the category entities.
+	 * Gets the agger head.
 	 *
-	 * @return the category entities
+	 * @return the agger head
 	 */
 	@Getter
-	private List<QlsptPaylstFormDetail> categoryEntities;
-
-	/** The company code. */
-	private CompanyCode companyCode;
-
-	/** The code. */
-	private SalaryOutputSettingCode code;
+	private QlsptPaylstAggreHead aggerHead;
 
 	/**
-	 * Instantiates a new jpa salary category setting set memento.
+	 * Instantiates a new jpa salary aggregate item set memento.
 	 *
-	 * @param companyCode the company code
-	 * @param code the code
+	 * @param aggerHead
+	 *            the agger head
 	 */
-	public JpaSalaryAggregateItemSetMemento(CompanyCode companyCode, SalaryOutputSettingCode code) {
-		this.companyCode = companyCode;
-		this.code = code;
+	public JpaSalaryAggregateItemSetMemento(QlsptPaylstAggreHead aggerHead) {
+		this.aggerHead = aggerHead;
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.pr.report.dom.salarydetail.outputsetting.SalaryCategorySettingSetMemento#setSalaryCategory(nts.uk.ctx.pr.report.dom.salarydetail.SalaryCategory)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.report.dom.salarydetail.aggregate.
+	 * SalaryAggregateItemSetMemento#setCompanyCode(nts.uk.ctx.pr.report.dom.
+	 * company.CompanyCode)
 	 */
 	@Override
-	public void setSalaryCategory(SalaryCategory salaryCategory) {
-		categoryEntities.forEach(category -> category.getQlsptPaylstFormDetailPK().setCtgAtr(salaryCategory.value));
+	public void setCompanyCode(CompanyCode companyCode) {
+		QlsptPaylstAggreHeadPK pk = new QlsptPaylstAggreHeadPK();
+		pk.setCcd(companyCode.v());
+		this.aggerHead.setQlsptPaylstAggreHeadPK(pk);
+
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.pr.report.dom.salarydetail.outputsetting.SalaryCategorySettingSetMemento#setSalaryOutputItems(java.util.List)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.report.dom.salarydetail.aggregate.
+	 * SalaryAggregateItemSetMemento#setSalaryAggregateItemCode(nts.uk.ctx.pr.
+	 * report.dom.salarydetail.aggregate.SalaryAggregateItemCode)
 	 */
 	@Override
-	public void setSalaryOutputItems(List<SalaryOutputItem> listSalaryOutputItem) {
-		this.categoryEntities = listSalaryOutputItem.stream().map(item -> {
-			QlsptPaylstFormDetail detail = new QlsptPaylstFormDetail();
+	public void setSalaryAggregateItemCode(SalaryAggregateItemCode salaryAggregateItemCode) {
+		QlsptPaylstAggreHeadPK pk = this.aggerHead.getQlsptPaylstAggreHeadPK();
+		pk.setAggregateCd(salaryAggregateItemCode.v());
+		this.aggerHead.setQlsptPaylstAggreHeadPK(pk);
+	}
 
-			// Convert setting items to entities.
-			item.saveToMemento(new JpaSalaryOutputItemSetMemento(detail, this.companyCode, this.code));
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.report.dom.salarydetail.aggregate.
+	 * SalaryAggregateItemSetMemento#setSalaryAggregateItemName(nts.uk.ctx.pr.
+	 * report.dom.salarydetail.aggregate.SalaryAggregateItemName)
+	 */
+	@Override
+	public void setSalaryAggregateItemName(SalaryAggregateItemName salaryAggregateItemName) {
+		this.aggerHead.setAggregateName(salaryAggregateItemName.v());
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.report.dom.salarydetail.aggregate.
+	 * SalaryAggregateItemSetMemento#setSubItemCodes(java.util.Set)
+	 */
+	@Override
+	public void setSubItemCodes(Set<SalaryItem> subItemCodes) {
+		this.aggerHead.setQlsptPaylstAggreDetailList(subItemCodes.stream().map(item -> {
+			QlsptPaylstAggreDetail detail = new QlsptPaylstAggreDetail();
+			QlsptPaylstAggreDetailPK pk = new QlsptPaylstAggreDetailPK();
+			pk.setItemCd(item.getSalaryItemCode());
+			pk.setCcd(this.aggerHead.getQlsptPaylstAggreHeadPK().getCcd());
+			pk.setAggregateCd(this.aggerHead.getQlsptPaylstAggreHeadPK().getAggregateCd());
+			detail.setQlsptPaylstAggreDetailPK(pk);
 			return detail;
-		}).collect(Collectors.toList());
+		}).collect(Collectors.toList()));
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.report.dom.salarydetail.aggregate.
+	 * SalaryAggregateItemSetMemento#setTaxDivision(nts.uk.ctx.pr.report.dom.
+	 * salarydetail.aggregate.TaxDivision)
+	 */
+	@Override
+	public void setTaxDivision(TaxDivision taxDivision) {
+		this.aggerHead.setQlsptPaylstAggreDetailList(
+			this.aggerHead.getQlsptPaylstAggreDetailList().stream().map(item -> {
+				QlsptPaylstAggreDetail detail = item;
+				QlsptPaylstAggreDetailPK pk = detail.getQlsptPaylstAggreDetailPK();
+				pk.setCtgAtr(taxDivision.value);
+				detail.setQlsptPaylstAggreDetailPK(pk);
+				return detail;
+			}).collect(Collectors.toList()));
+
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.report.dom.salarydetail.aggregate.
+	 * SalaryAggregateItemSetMemento#setItemCategory(int)
+	 */
+	@Override
+	public void setItemCategory(int itemCategory) {
+		// No thing
 	}
 
 }

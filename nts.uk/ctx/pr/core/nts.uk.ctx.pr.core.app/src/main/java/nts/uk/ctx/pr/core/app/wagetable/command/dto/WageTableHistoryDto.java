@@ -12,11 +12,11 @@ import lombok.Setter;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.core.dom.util.PrimitiveUtil;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
-import nts.uk.ctx.pr.core.dom.wagetable.WageTableCode;
-import nts.uk.ctx.pr.core.dom.wagetable.element.WageTableElement;
-import nts.uk.ctx.pr.core.dom.wagetable.history.WageTableHistory;
-import nts.uk.ctx.pr.core.dom.wagetable.history.WageTableHistoryGetMemento;
-import nts.uk.ctx.pr.core.dom.wagetable.history.WageTableItem;
+import nts.uk.ctx.pr.core.dom.wagetable.WtCode;
+import nts.uk.ctx.pr.core.dom.wagetable.history.WtHistory;
+import nts.uk.ctx.pr.core.dom.wagetable.history.WtHistoryGetMemento;
+import nts.uk.ctx.pr.core.dom.wagetable.history.WtItem;
+import nts.uk.ctx.pr.core.dom.wagetable.history.element.ElementSetting;
 
 /**
  * Instantiates a new certification find dto.
@@ -44,12 +44,12 @@ public class WageTableHistoryDto extends WageTableDetailDto {
 	 *            the company code
 	 * @return the wage table history
 	 */
-	public WageTableHistory toDomain(String companyCode, String wageTableCode) {
+	public WtHistory toDomain(String companyCode, String wageTableCode) {
 		WageTableHistoryDto dto = this;
 
 		// Transfer data
-		WageTableHistory wageTableHistory = new WageTableHistory(new WageTableHistoryDtoMemento(
-				new CompanyCode(companyCode), new WageTableCode(wageTableCode), dto));
+		WtHistory wageTableHistory = new WtHistory(new WageTableHistoryDtoMemento(
+				new CompanyCode(companyCode), new WtCode(wageTableCode), dto));
 
 		return wageTableHistory;
 	}
@@ -57,13 +57,13 @@ public class WageTableHistoryDto extends WageTableDetailDto {
 	/**
 	 * The Class WageTableHistoryAddCommandMemento.
 	 */
-	private class WageTableHistoryDtoMemento implements WageTableHistoryGetMemento {
+	private class WageTableHistoryDtoMemento implements WtHistoryGetMemento {
 
 		/** The company code. */
 		protected CompanyCode companyCode;
 
 		/** The wage table code. */
-		protected WageTableCode wageTableCode;
+		protected WtCode wageTableCode;
 
 		/** The type value. */
 		protected WageTableHistoryDto dto;
@@ -74,7 +74,7 @@ public class WageTableHistoryDto extends WageTableDetailDto {
 		 * @param typeValue
 		 *            the type value
 		 */
-		public WageTableHistoryDtoMemento(CompanyCode companyCode, WageTableCode wageTableCode,
+		public WageTableHistoryDtoMemento(CompanyCode companyCode, WtCode wageTableCode,
 				WageTableHistoryDto dto) {
 			this.companyCode = companyCode;
 			this.wageTableCode = wageTableCode;
@@ -82,8 +82,8 @@ public class WageTableHistoryDto extends WageTableDetailDto {
 		}
 
 		@Override
-		public List<WageTableItem> getValueItems() {
-			return dto.getValueItems().stream().map(item -> new WageTableItem(item))
+		public List<WtItem> getValueItems() {
+			return dto.getValueItems().stream().map(item -> new WtItem(item))
 					.collect(Collectors.toList());
 		}
 
@@ -93,18 +93,12 @@ public class WageTableHistoryDto extends WageTableDetailDto {
 		}
 
 		@Override
-		public List<WageTableElement> getDemensionDetail() {
-			return dto.getDemensionDetails().stream().map(item -> new WageTableElement(item))
-					.collect(Collectors.toList());
-		}
-
-		@Override
 		public CompanyCode getCompanyCode() {
 			return this.companyCode;
 		}
 
 		@Override
-		public WageTableCode getWageTableCode() {
+		public WtCode getWageTableCode() {
 			return this.wageTableCode;
 		}
 
@@ -112,6 +106,12 @@ public class WageTableHistoryDto extends WageTableDetailDto {
 		public MonthRange getApplyRange() {
 			return MonthRange.range(dto.getStartMonth(), dto.getEndMonth(),
 					PrimitiveUtil.DEFAULT_YM_SEPARATOR_CHAR);
+		}
+
+		@Override
+		public List<ElementSetting> getElementSettings() {
+			// TODO Auto-generated method stub
+			return null;
 		}
 	}
 }

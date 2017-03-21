@@ -60,9 +60,9 @@
 							class="bg-green caret-right caret-background"><i
 							class="icon icon-searchbox"></i>
 							<div
-								data-bind="ntsSearchBox: {comId: 'sdufisdfui', items: lstlaborInsuranceOfficeModel, selected: selectCodeLstlaborInsuranceOffice, selectedKey: 'code', fields: ['code','name'], constraint: 'SearchItem'}" />
+								data-bind="ntsSearchBox: {comId: 'tblaborInsuranceOffice', items: lstlaborInsuranceOfficeModel, selected: selectCodeLstlaborInsuranceOffice, selectedKey: 'code', fields: ['code','name'], constraint: 'SearchItem'}" />
 							<div id="searchlaborInsuranceOffice">
-								<table id="single-list"
+								<table id="tblaborInsuranceOffice"
 									data-bind="ntsGridList: {
 									width: 350,
 									height: 500,
@@ -85,14 +85,14 @@
 										</div>
 									</td>
 									<td class="contentsRR"><input id="inp_code"
-										class="tr120 save-error" data-name="code"
+										class="tr120 save-error" data-name="コード"
 										data-bind="ntsTextEditor: {value: code,
 											constraint: 'OfficeCode', 
 											option: textEditorOption,
 											readonly: isReadOnly, 
 											enable: isEnable,
 											required:true}" />
-										<input id="inp_name" data-name="name" class="save-error"
+										<input id="inp_name" data-name="名称" class="save-error"
 										data-bind="ntsTextEditor: {value: name, 
 											constraint: 'OfficeName',
 											option: textEditorOption,
@@ -108,7 +108,7 @@
 										</div>
 									</td>
 									<td class="contentsRR"><input id="inp_shortName"
-										class="tr180 save-error" data-name="shortName"
+										class="tr180 save-error" data-name="略名"
 										data-bind="ntsTextEditor: {value: shortName,
 										constraint: 'ShortName', 
 										option: textEditorOption, 
@@ -139,7 +139,7 @@
 										</div>
 									</td>
 									<td class="contentsRR"><input id="inp_picPosition"
-										class="tr180 save-error" data-name="picPosition"
+										class="tr180 save-error" data-name="代表者職位"
 										data-bind="ntsTextEditor: {value: picPosition, 
 										constraint: 'PicPosition', 
 										option: textEditorOption, 

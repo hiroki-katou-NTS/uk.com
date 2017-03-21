@@ -86,7 +86,6 @@ public class RegisterHealthInsuranceCommandHandler extends CommandHandler<Regist
 				this.covertToMemento(healthInsuranceRate, command));
 		addNew.validate();
 		// Validate
-		healthInsuranceRateService.validateDateRange(addNew);
 		healthInsuranceRateService.validateRequiredItem(addNew);
 		healthInsuranceRateService.createInitalHistory(companyCode, officeCode, addNew.getStart());
 		// Insert into db.

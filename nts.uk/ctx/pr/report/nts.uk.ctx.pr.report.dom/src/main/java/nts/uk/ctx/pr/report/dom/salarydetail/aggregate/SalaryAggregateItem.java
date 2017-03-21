@@ -9,6 +9,7 @@ import java.util.Set;
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.pr.report.dom.company.CompanyCode;
+import nts.uk.ctx.pr.report.dom.salarydetail.item.SalaryItem;
 
 /**
  * The Class SalaryAggregateItem.
@@ -32,7 +33,7 @@ public class SalaryAggregateItem extends DomainObject {
 	private SalaryAggregateItemName name;
 
 	/** The sub item codes. */
-	private Set<String> subItemCodes;
+	private Set<SalaryItem> subItemCodes;
 
 	/** The tax division. */
 	private TaxDivision taxDivision;
@@ -67,9 +68,9 @@ public class SalaryAggregateItem extends DomainObject {
 		memento.setCompanyCode(this.companyCode);
 		memento.setSalaryAggregateItemCode(this.code);
 		memento.setSalaryAggregateItemName(this.name);
-		memento.setItemCategory(this.itemCategory);
 		memento.setSubItemCodes(this.subItemCodes);
 		memento.setTaxDivision(this.taxDivision);
+		memento.setItemCategory(this.itemCategory);
 	}
 
 }

@@ -1,80 +1,218 @@
 module nts.uk.pr.view.qpp007.j {
+    import SalaryAggregateItemInDto = service.model.SalaryAggregateItemInDto;
+    import SalaryAggregateItemFindDto = service.model.SalaryAggregateItemFindDto;
+    import SalaryAggregateItemSaveDto = service.model.SalaryAggregateItemSaveDto;
+    import SalaryItemDto = service.model.SalaryItemDto;
+    import TaxDivision = nts.uk.pr.view.qpp007.c.viewmodel.TaxDivision;
+
     export module viewmodel {
-        import TaxDivision = nts.uk.pr.view.qpp007.c.viewmodel.TaxDivision;
 
         export class ScreenModel {
             taxDivisionTab: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel>;
             aggregateItemTab: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel>;
             selectedDivision: KnockoutObservable<string>;
             selectedAggregateItem: KnockoutObservable<string>;
-
-            name: KnockoutObservable<string>;
-
-            itemsSwap: KnockoutObservableArray<ItemModel>;
+            salaryAggregateItemModel: KnockoutObservable<SalaryAggregateItemModel>;
             columns: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
-            currentCodeListSwap: KnockoutObservableArray<any>;
 
             constructor() {
                 var self = this;
-                self.name = ko.observable('');
                 self.taxDivisionTab = ko.observableArray<nts.uk.ui.NtsTabPanelModel>([
                     { id: TaxDivision.PAYMENT, title: '支給集計', content: '#tab-payment', enable: ko.observable(true), visible: ko.observable(true) },
                     { id: TaxDivision.DEDUCTION, title: '控除集計', content: '#tab-deduction', enable: ko.observable(true), visible: ko.observable(true) },
                 ]);
                 self.aggregateItemTab = ko.observableArray<nts.uk.ui.NtsTabPanelModel>([
-                    { id: 'aggregate1', title: '集計項目1', content: '#aggregate-item-1', enable: ko.observable(true), visible: ko.observable(true) },
-                    { id: 'aggregate2', title: '集計項目2', content: '#aggregate-item-2', enable: ko.observable(true), visible: ko.observable(true) },
-                    { id: 'aggregate3', title: '集計項目3', content: '#aggregate-item-3', enable: ko.observable(true), visible: ko.observable(true) },
-                    { id: 'aggregate4', title: '集計項目4', content: '#aggregate-item-4', enable: ko.observable(true), visible: ko.observable(true) },
-                    { id: 'aggregate5', title: '集計項目5', content: '#aggregate-item-5', enable: ko.observable(true), visible: ko.observable(true) },
-                    { id: 'aggregate6', title: '集計項目6', content: '#aggregate-item-6', enable: ko.observable(true), visible: ko.observable(true) },
-                    { id: 'aggregate7', title: '集計項目7', content: '#aggregate-item-7', enable: ko.observable(true), visible: ko.observable(true) },
-                    { id: 'aggregate8', title: '集計項目8', content: '#aggregate-item-8', enable: ko.observable(true), visible: ko.observable(true) },
-                    { id: 'aggregate9', title: '集計項目9', content: '#aggregate-item-9', enable: ko.observable(true), visible: ko.observable(true) },
-                    { id: 'aggregate10', title: '集計項目10', content: '#aggregate-item-10', enable: ko.observable(true), visible: ko.observable(true) }
-
+                    { id: '001', title: '集計項目1', content: '#aggregate1', enable: ko.observable(true), visible: ko.observable(true) },
+                    { id: '002', title: '集計項目2', content: '#aggregate2', enable: ko.observable(true), visible: ko.observable(true) },
+                    { id: '003', title: '集計項目3', content: '#aggregate3', enable: ko.observable(true), visible: ko.observable(true) },
+                    { id: '004', title: '集計項目4', content: '#aggregate4', enable: ko.observable(true), visible: ko.observable(true) },
+                    { id: '005', title: '集計項目5', content: '#aggregate5', enable: ko.observable(true), visible: ko.observable(true) },
+                    { id: '006', title: '集計項目6', content: '#aggregate6', enable: ko.observable(true), visible: ko.observable(true) },
+                    { id: '007', title: '集計項目7', content: '#aggregate7', enable: ko.observable(true), visible: ko.observable(true) },
+                    { id: '008', title: '集計項目8', content: '#aggregate8', enable: ko.observable(true), visible: ko.observable(true) },
+                    { id: '009', title: '集計項目9', content: '#aggregate9', enable: ko.observable(true), visible: ko.observable(true) },
+                    { id: '010', title: '集計項目10', content: '#aggregate10', enable: ko.observable(true), visible: ko.observable(true) }
                 ]);
 
                 self.selectedDivision = ko.observable(TaxDivision.PAYMENT);
-                self.selectedAggregateItem = ko.observable('aggregate1');
-
-                this.itemsSwap = ko.observableArray<ItemModel>([]);
-
-                var array = [];
-                for (var i = 0; i < 20; i++) {
-                    array.push(new ItemModel(i, '基本給'));
-                }
-                this.itemsSwap(array);
-
-                this.columns = ko.observableArray<nts.uk.ui.NtsGridListColumn>([
-                    { headerText: 'コード', key: 'code', width: 100 },
-                    { headerText: '名称', key: 'name', width: 150 }
+                self.selectedAggregateItem = ko.observable('001');
+                self.salaryAggregateItemModel = ko.observable(new SalaryAggregateItemModel());
+                self.columns = ko.observableArray<nts.uk.ui.NtsGridListColumn>([
+                    { headerText: 'コード', key: 'salaryItemCode', width: 100 },
+                    { headerText: '名称', key: 'salaryItemName', width: 150 }
                 ]);
-
-                this.currentCodeListSwap = ko.observableArray([]);
-
+                self.selectedAggregateItem.subscribe(function(selectedAggregateItem: string) {
+                    self.onShowDataChange(self.selectedDivision(), selectedAggregateItem);
+                });
+                self.selectedDivision.subscribe(function(selectedDivision: string) {
+                    self.onShowDataChange(selectedDivision, self.selectedAggregateItem());
+                });
             }
             /**
              * Start page.
              */
-            public startPage(): JQueryPromise<void> {
+            public startPage(): JQueryPromise<any> {
                 var self = this;
-                var dfd = $.Deferred<void>();
-                dfd.resolve();
-                return dfd.promise();
+                return self.initData();
             }
 
+            public initData(): JQueryPromise<any> {
+                var self = this;
+                var salaryAggregateItemInDto: SalaryAggregateItemInDto;
+                salaryAggregateItemInDto = new SalaryAggregateItemInDto();
+                salaryAggregateItemInDto.taxDivision = 0;
+                salaryAggregateItemInDto.aggregateItemCode = self.selectedAggregateItem();
+                return self.showDataModel(salaryAggregateItemInDto);
+            }
+
+            public onShowDataChange(selectedDivision: string, selectedAggregateItem: string) {
+                var self = this;
+                var salaryAggregateItemInDto: SalaryAggregateItemInDto;
+                salaryAggregateItemInDto = new SalaryAggregateItemInDto();
+                if (selectedDivision === TaxDivision.PAYMENT) {
+                    salaryAggregateItemInDto.taxDivision = 0;
+                }
+                else {
+                    salaryAggregateItemInDto.taxDivision = 1;
+                }
+                salaryAggregateItemInDto.aggregateItemCode = selectedAggregateItem;
+                self.showDataModel(salaryAggregateItemInDto);
+            }
+
+            public showDataModel(salaryAggregateItemInDto: SalaryAggregateItemInDto): JQueryPromise<any> {
+                var self = this;
+                var dfd = $.Deferred<any>();
+                service.findSalaryAggregateItem(salaryAggregateItemInDto).done(data => {
+                    self.salaryAggregateItemModel().convertDtoToData(data);
+                    var fullItemCodes: SalaryItemDto[];
+                    fullItemCodes = [];
+                    for (var i = 1; i <= 20; i++) {
+                        var salaryItemDto: SalaryItemDto = new SalaryItemDto();
+                        salaryItemDto.salaryItemCode = '' + i;
+                        salaryItemDto.salaryItemName = '基本給 ' + i;
+                        fullItemCodes.push(salaryItemDto);
+                    }
+                    self.salaryAggregateItemModel().setFullItemCode(fullItemCodes);
+                    dfd.resolve(self);
+                }).fail(function(error: any) {
+                });
+                return dfd.promise();
+            }
             public closeDialogBtnClicked() {
                 nts.uk.ui.windows.close();
             }
+            private saveSalaryAggregateItem() {
+                var self = this;
+                if (self.selectedDivision() === TaxDivision.PAYMENT) {
+                    self.convertModelToDto(0);
+                }
+                else {
+                    self.convertModelToDto(1);
+                }
+                //reload///
+            }
+
+            private convertModelToDto(taxDivision: number): SalaryAggregateItemSaveDto {
+                var self = this;
+                var salaryAggregateItemSaveDto: SalaryAggregateItemSaveDto;
+                salaryAggregateItemSaveDto = new SalaryAggregateItemSaveDto();
+                salaryAggregateItemSaveDto.salaryAggregateItemCode =
+                    self.salaryAggregateItemModel().salaryAggregateItemCode();
+                salaryAggregateItemSaveDto.salaryAggregateItemName =
+                    self.salaryAggregateItemModel().salaryAggregateItemName();
+                salaryAggregateItemSaveDto.subItemCodes = [];
+                for (var itemModel of self.salaryAggregateItemModel().subItemCodes()) {
+                    salaryAggregateItemSaveDto.subItemCodes.push(itemModel);
+                }
+                salaryAggregateItemSaveDto.taxDivision = taxDivision;
+                salaryAggregateItemSaveDto.categoryCode = self.selectedAggregateItem();
+
+                service.saveSalaryAggregateItem(salaryAggregateItemSaveDto).done(function() {
+                    //reload
+                }).fail(function() {
+                    //reload
+                });
+                return salaryAggregateItemSaveDto;
+            }
 
         }
-        class ItemModel {
-            code: number;
-            name: string;
-            constructor(code: number, name: string) {
-                this.code = code;
-                this.name = name;
+        export class SalaryItemModel {
+
+            salaryItemCode: string;
+            salaryItemName: string;
+
+            //convert dto find => model
+            convertDtoToData(salaryItemDto: SalaryItemDto) {
+                this.salaryItemCode = salaryItemDto.salaryItemCode;
+                this.salaryItemName = salaryItemDto.salaryItemName;
+            }
+        }
+        export class SalaryAggregateItemModel {
+
+            salaryAggregateItemCode: KnockoutObservable<string>;
+            salaryAggregateItemName: KnockoutObservable<string>;
+            subItemCodes: KnockoutObservableArray<SalaryItemModel>;
+            fullItemCodes: KnockoutObservableArray<SalaryItemModel>;
+
+            constructor() {
+                this.salaryAggregateItemCode = ko.observable('');
+                this.salaryAggregateItemName = ko.observable('');
+                this.subItemCodes = ko.observableArray([]);
+                this.fullItemCodes = ko.observableArray([]);
+            }
+
+            convertDtoToData(salaryAggregateItemFindDto: SalaryAggregateItemFindDto) {
+                if (this.salaryAggregateItemCode) {
+                    this.salaryAggregateItemCode(salaryAggregateItemFindDto.salaryAggregateItemCode);
+                } else {
+                    this.salaryAggregateItemCode = ko.observable(salaryAggregateItemFindDto.salaryAggregateItemCode);
+                }
+                if (this.salaryAggregateItemName) {
+                    this.salaryAggregateItemName(salaryAggregateItemFindDto.salaryAggregateItemName);
+                } else {
+                    this.salaryAggregateItemName = ko.observable(salaryAggregateItemFindDto.salaryAggregateItemName);
+                }
+                if (salaryAggregateItemFindDto.subItemCodes) {
+                    this.subItemCodes([]);
+                    var subItemCodes: SalaryItemModel[];
+                    subItemCodes = [];
+                    for (var item of salaryAggregateItemFindDto.subItemCodes) {
+                        var salaryItemModel: SalaryItemModel;
+                        salaryItemModel = new SalaryItemModel();
+                        salaryItemModel.convertDtoToData(item);
+                        subItemCodes.push(salaryItemModel);
+                    }
+                    this.subItemCodes(subItemCodes);
+                } else {
+                    this.subItemCodes([]);
+                }
+            }
+
+            setFullItemCode(fullItemCodes: SalaryItemDto[]) {
+                if (fullItemCodes && fullItemCodes.length > 0) {
+                    this.fullItemCodes([]);
+                    var fullItemCodesModel: SalaryItemModel[];
+                    fullItemCodesModel = [];
+                    for (var item of fullItemCodes) {
+                        var check: number;
+                        check = 1;
+                        for (var itemSub of this.subItemCodes()) {
+                            if (itemSub.salaryItemCode == item.salaryItemCode) {
+                                check = 0;
+                                break;
+                            }
+                        }
+                        if (check == 1) {
+                            var salaryItemModel: SalaryItemModel;
+                            salaryItemModel = new SalaryItemModel();
+                            salaryItemModel.convertDtoToData(item);
+                            fullItemCodesModel.push(salaryItemModel);
+                        }
+                    }
+                    this.fullItemCodes(fullItemCodesModel);
+                } else {
+                    this.fullItemCodes([]);
+                }
             }
         }
     }

@@ -25,12 +25,12 @@ import nts.uk.ctx.pr.core.app.wagetable.command.dto.WageTableHistoryDto;
 import nts.uk.ctx.pr.core.app.wagetable.command.dto.WageTableItemDto;
 import nts.uk.ctx.pr.core.dom.wagetable.DemensionNo;
 import nts.uk.ctx.pr.core.dom.wagetable.ElementType;
-import nts.uk.ctx.pr.core.dom.wagetable.WageTableCode;
+import nts.uk.ctx.pr.core.dom.wagetable.WtCode;
 import nts.uk.ctx.pr.core.dom.wagetable.element.RefMode;
 import nts.uk.ctx.pr.core.dom.wagetable.element.StepMode;
-import nts.uk.ctx.pr.core.dom.wagetable.element.WageTableElement;
-import nts.uk.ctx.pr.core.dom.wagetable.history.WageTableHistory;
-import nts.uk.ctx.pr.core.dom.wagetable.history.WageTableItem;
+import nts.uk.ctx.pr.core.dom.wagetable.element.WtElement;
+import nts.uk.ctx.pr.core.dom.wagetable.history.WtHistory;
+import nts.uk.ctx.pr.core.dom.wagetable.history.WtItem;
 
 /**
  * The Class CommonSettingUpdateHandlerTest.
@@ -40,7 +40,7 @@ public class WageTableHistoryAddCommandTest extends TestCase {
 
 	/** The handler. */
 	@Tested
-	private WageTableHistoryAddCommand command;
+	private WtHistoryAddCommand command;
 
 	/**
 	 * To domain 001.
@@ -105,7 +105,7 @@ public class WageTableHistoryAddCommandTest extends TestCase {
 
 		List<WageTableItemDto> valueItems = Arrays.asList(wageTableItemDto);
 
-		command = new WageTableHistoryAddCommand();
+		command = new WtHistoryAddCommand();
 		WageTableHeadDto wageTableHeadDto = new WageTableHeadDto();
 
 		WageTableHistoryDto wageTableHistoryDto = new WageTableHistoryDto();
@@ -115,15 +115,15 @@ public class WageTableHistoryAddCommandTest extends TestCase {
 		wageTableHistoryDto.setValueItems(valueItems);
 
 		// Execute
-		WageTableHistory wageTableHistory = command.getWageTableHistoryDto().toDomain(companyCode,
-				new WageTableCode(wageTableHeadDto.getCode()));
+		WtHistory wageTableHistory = command.getWageTableHistoryDto().toDomain(companyCode,
+				new WtCode(wageTableHeadDto.getCode()));
 
 		// Assert
 		assertEquals("001", wageTableHistory.getWageTableCode().v());
 		assertEquals(true, wageTableHistory.getApplyRange().getStartMonth().v() == 201601);
 		assertEquals(true, wageTableHistory.getApplyRange().getEndMonth().v() == 201607);
 
-		WageTableElement wageTableDemensionDetail1 = wageTableHistory.getDemensionItems().get(0);
+		WtElement wageTableDemensionDetail1 = wageTableHistory.getDemensionItems().get(0);
 		assertEquals(DemensionNo.DEMENSION_1ST.value,
 				wageTableDemensionDetail1.getDemensionNo().value);
 
@@ -138,7 +138,7 @@ public class WageTableHistoryAddCommandTest extends TestCase {
 		assertEquals("refCode2", elementMode1.getItems().get(1).getReferenceCode());
 		assertEquals("uuid2", elementMode1.getItems().get(1).getUuid());
 
-		WageTableElement wageTableDemensionDetail2 = wageTableHistory.getDemensionItems().get(1);
+		WtElement wageTableDemensionDetail2 = wageTableHistory.getDemensionItems().get(1);
 		assertEquals(DemensionNo.DEMENSION_2ND.value,
 				wageTableDemensionDetail2.getDemensionNo().value);
 
@@ -151,7 +151,7 @@ public class WageTableHistoryAddCommandTest extends TestCase {
 		assertEquals("uuid3", elementMode2.getItems().get(0).getUuid());
 		assertEquals(1, elementMode2.getItems().get(0).getOrderNumber().intValue());
 
-		WageTableItem wageTableItem1 = wageTableHistory.getValueItems().get(0);
+		WtItem wageTableItem1 = wageTableHistory.getValueItems().get(0);
 		assertEquals("element1Id", wageTableItem1.getElement1Id().v());
 		assertEquals("element2Id", wageTableItem1.getElement2Id().v());
 		assertEquals("element3Id", wageTableItem1.getElement3Id().v());

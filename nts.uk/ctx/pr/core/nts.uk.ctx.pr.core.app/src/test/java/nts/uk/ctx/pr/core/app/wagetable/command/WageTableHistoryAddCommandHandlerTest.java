@@ -22,8 +22,8 @@ import nts.uk.ctx.pr.core.app.wagetable.command.dto.WageTableDemensionDetailDto;
 import nts.uk.ctx.pr.core.app.wagetable.command.dto.WageTableHeadDto;
 import nts.uk.ctx.pr.core.app.wagetable.command.dto.WageTableHistoryDto;
 import nts.uk.ctx.pr.core.app.wagetable.command.dto.WageTableItemDto;
-import nts.uk.ctx.pr.core.dom.wagetable.history.WageTableHistory;
-import nts.uk.ctx.pr.core.dom.wagetable.history.WageTableHistoryRepository;
+import nts.uk.ctx.pr.core.dom.wagetable.history.WtHistory;
+import nts.uk.ctx.pr.core.dom.wagetable.history.WtHistoryRepository;
 
 /**
  * The Class CommonSettingUpdateHandlerTest.
@@ -34,11 +34,11 @@ public class WageTableHistoryAddCommandHandlerTest extends TestCase {
 	// ============= REPOSITORY ==================//
 	/** The wage table history repo. */
 	@Injectable
-	private WageTableHistoryRepository wageTableHistoryRepo;
+	private WtHistoryRepository wageTableHistoryRepo;
 
 	/** The handler. */
 	@Tested
-	private WageTableHistoryAddCommandHandler handler;
+	private WtHistoryAddCommandHandler handler;
 
 	/**
 	 * Handler 001.
@@ -49,7 +49,7 @@ public class WageTableHistoryAddCommandHandlerTest extends TestCase {
 		// Expectation.
 		new Expectations() {
 			{
-				wageTableHistoryRepo.update((WageTableHistory) this.any);
+				wageTableHistoryRepo.update((WtHistory) this.any);
 				this.times = 1;
 			}
 		};
@@ -68,18 +68,18 @@ public class WageTableHistoryAddCommandHandlerTest extends TestCase {
 		wageTableHistoryDto.setDemensionDetails(demensionDetails);
 		wageTableHistoryDto.setValueItems(valueItems);
 
-		WageTableHistoryAddCommand command = new WageTableHistoryAddCommand();
+		WtHistoryAddCommand command = new WtHistoryAddCommand();
 		command.setWageTableHeadDto(wageTableHeadDto);
 		command.setWageTableHistoryDto(wageTableHistoryDto);
 
-		MockUp<CommandHandlerContext<WageTableHistoryAddCommand>> mockedContext = new MockUp<CommandHandlerContext<WageTableHistoryAddCommand>>() {
+		MockUp<CommandHandlerContext<WtHistoryAddCommand>> mockedContext = new MockUp<CommandHandlerContext<WtHistoryAddCommand>>() {
 			@Mock
-			WageTableHistoryAddCommand getCommand() {
+			WtHistoryAddCommand getCommand() {
 				return command;
 			}
 		};
 
-		CommandHandlerContext<WageTableHistoryAddCommand> context = mockedContext.getMockInstance();
+		CommandHandlerContext<WtHistoryAddCommand> context = mockedContext.getMockInstance();
 
 		// Execute
 		this.handler.handle(context);

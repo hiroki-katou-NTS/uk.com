@@ -54,6 +54,10 @@ var nts;
                                     self.isEnableEditActionAccidentInsurance = ko.observable(true);
                                     self.beginHistoryStartUnemployeeInsuranceRate = ko.observable('');
                                     self.beginHistoryStartAccidentInsuranceRate = ko.observable('');
+                                    self.messageList = ko.observableArray([
+                                        { messageId: "ER001", message: "＊が入力されていません。" },
+                                        { messageId: "ER005", message: "入力した＊は既に存在しています。\r\n ＊を確認してください。" }
+                                    ]);
                                 }
                                 ScreenModel.prototype.openEditUnemployeeInsuranceRateHistory = function () {
                                     var self = this;
@@ -278,8 +282,24 @@ var nts;
                                     $('.save-error').ntsError('clear');
                                     $('#btn_saveUnemployeeInsuranceHistory').ntsError('clear');
                                 };
-                                ScreenModel.prototype.showMessageSaveUnemployeeInsurance = function (message) {
-                                    $('#btn_saveUnemployeeInsuranceHistory').ntsError('set', message);
+                                ScreenModel.prototype.showMessageSaveUnemployeeInsurance = function (messageId) {
+                                    var self = this;
+                                    if (self.messageList()[0].messageId === messageId) {
+                                        var message = self.messageList()[0].message;
+                                        if (!self.unemployeeInsuranceRateModel().unemployeeInsuranceRateItemAgroforestryModel) {
+                                            $('#inp_code').ntsError('set', message);
+                                        }
+                                        if (!self.laborInsuranceOfficeModel().name()) {
+                                            $('#inp_name').ntsError('set', message);
+                                        }
+                                        if (!self.laborInsuranceOfficeModel().picPosition()) {
+                                            $('#inp_picPosition').ntsError('set', message);
+                                        }
+                                    }
+                                    if (self.messageList()[1].messageId === messageId) {
+                                        var message = self.messageList()[1].message;
+                                        $('#inp_code').ntsError('set', message);
+                                    }
                                 };
                                 ScreenModel.prototype.clearErrorSaveAccidentInsurance = function () {
                                     var self = this;
@@ -296,7 +316,7 @@ var nts;
                                             self.reloadDataUnemployeeInsuranceRateByAction();
                                             self.clearErrorSaveUnemployeeInsurance();
                                         }).fail(function (res) {
-                                            self.showMessageSaveUnemployeeInsurance(res.message);
+                                            self.showMessageSaveUnemployeeInsurance(res.messageId);
                                             self.reloadDataUnemployeeInsuranceRateByAction();
                                         });
                                     }
@@ -305,7 +325,7 @@ var nts;
                                             self.reloadDataUnemployeeInsuranceRateByAction();
                                             self.clearErrorSaveUnemployeeInsurance();
                                         }).fail(function (res) {
-                                            self.showMessageSaveUnemployeeInsurance(res.message);
+                                            self.showMessageSaveUnemployeeInsurance(res.messageId);
                                             self.reloadDataUnemployeeInsuranceRateByAction();
                                         });
                                     }

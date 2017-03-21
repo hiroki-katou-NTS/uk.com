@@ -8,7 +8,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import lombok.Builder;
-import nts.gul.collection.ListUtil;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.pr.report.dom.company.CompanyCode;
 import nts.uk.ctx.pr.report.dom.wageledger.outputsetting.WLCategorySetting;
 import nts.uk.ctx.pr.report.dom.wageledger.outputsetting.WLOutputSettingCode;
@@ -57,7 +57,7 @@ public class OutputSettingDto implements WLOutputSettingSetMemento{
 	 */
 	@Override
 	public void setCategorySettings(List<WLCategorySetting> categorySettings) {
-		if (ListUtil.isEmpty(categorySettings)) {
+		if (CollectionUtil.isEmpty(categorySettings)) {
 			return;
 		}
 		this.categorySettings = categorySettings.stream().map(setting -> {

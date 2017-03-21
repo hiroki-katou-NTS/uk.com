@@ -9,14 +9,14 @@ import java.math.BigDecimal;
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.pr.core.dom.wagetable.ElementId;
-import nts.uk.ctx.pr.core.dom.wagetable.history.WageTableItemSetMemento;
+import nts.uk.ctx.pr.core.dom.wagetable.history.WtItemSetMemento;
 
 /**
  * The Class WageTableItemDto.
  */
 @Getter
 @Setter
-public class WageTableItemDto implements WageTableItemSetMemento {
+public class WageTableItemDto implements WtItemSetMemento {
 
 	/** The element 1 id. */
 	private String element1Id;

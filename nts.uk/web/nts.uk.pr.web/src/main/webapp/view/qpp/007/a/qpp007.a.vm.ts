@@ -83,6 +83,16 @@ module qpp007.a.viewmodel {
             })
             return dfd.promise();
         }
+        public openPrintSettingDialog(){
+            // Set parent value
+            nts.uk.ui.windows.setShared("data", "");
+            nts.uk.ui.windows.setShared("isTransistReturnData", "");
+            
+            nts.uk.ui.windows.sub.modal("/view/qpp/007/b/index.xhtml", { title: "印刷設定" }).onClosed(() => {
+                // Get child value
+                var returnValue = nts.uk.ui.windows.getShared("childData");
+            })    
+        }
         
     }
 

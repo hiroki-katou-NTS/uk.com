@@ -61,6 +61,7 @@ module nts.uk.pr.view.qmm011.a {
             isEnableSaveActionAccidentInsurance: KnockoutObservable<boolean>;
             isEnableEditActionAccidentInsurance: KnockoutObservable<boolean>;
             isEmptyAccident: KnockoutObservable<boolean>;
+            messageList: KnockoutObservableArray<any>;
 
             constructor() {
                 var self = this;
@@ -91,6 +92,10 @@ module nts.uk.pr.view.qmm011.a {
                 self.isEnableEditActionAccidentInsurance = ko.observable(true);
                 self.beginHistoryStartUnemployeeInsuranceRate = ko.observable('');
                 self.beginHistoryStartAccidentInsuranceRate = ko.observable('');
+                self.messageList = ko.observableArray([
+                    { messageId: "ER001", message: "＊が入力されていません。" },
+                    { messageId: "ER005", message: "入力した＊は既に存在しています。\r\n ＊を確認してください。" }
+                ]);
             }
 
             //open dialog edit UnemployeeInsuranceRateHistory => show view model xhtml (action event add)
@@ -279,7 +284,7 @@ module nts.uk.pr.view.qmm011.a {
                             service.updateAccidentInsuranceRateHistory(accidentInsuranceHistoryUpdateDto).done(() => {
                                 self.typeActionAccidentInsurance(TypeActionInsuranceRate.add);
                                 self.reloadDataAccidentInsuranceRateByAction();
-                            }).fail(function(error) {
+                            }).fail(function(error: any) {
                                 self.showMessageSaveAccidentInsurance(error.message)
                             });
                         }
@@ -372,8 +377,31 @@ module nts.uk.pr.view.qmm011.a {
             }
 
             //show message save UnemployeeInsurance 
-            private showMessageSaveUnemployeeInsurance(message: string) {
-                $('#btn_saveUnemployeeInsuranceHistory').ntsError('set', message);
+            private showMessageSaveUnemployeeInsurance(messageId: string) {
+                
+                var self = this;
+                if (self.messageList()[0].messageId === messageId) {
+                    //001
+                    var message = self.messageList()[0].message;
+
+                    if (!self.unemployeeInsuranceRateModel().unemployeeInsuranceRateItemAgroforestryModel) {
+                        $('#inp_code').ntsError('set', message);
+                    }
+
+                    if (!self.laborInsuranceOfficeModel().name()) {
+                        $('#inp_name').ntsError('set', message);
+                    }
+
+                    if (!self.laborInsuranceOfficeModel().picPosition()) {
+                        $('#inp_picPosition').ntsError('set', message);
+                    }
+                }
+                
+                if (self.messageList()[1].messageId === messageId) {
+                    var message = self.messageList()[1].message;
+                    $('#inp_code').ntsError('set', message);
+                }
+                
             }
 
             //Clear show message error connection by server
@@ -403,7 +431,7 @@ module nts.uk.pr.view.qmm011.a {
                         self.clearErrorSaveUnemployeeInsurance();
                     }).fail(function(res) {
                         //show message by exception message
-                        self.showMessageSaveUnemployeeInsurance(res.message);
+                        self.showMessageSaveUnemployeeInsurance(res.messageId);
                         self.reloadDataUnemployeeInsuranceRateByAction();
                     })
                 } else {
@@ -416,7 +444,7 @@ module nts.uk.pr.view.qmm011.a {
                         self.clearErrorSaveUnemployeeInsurance();
                     }).fail(function(res) {
                         //show message by exception message
-                        self.showMessageSaveUnemployeeInsurance(res.message);
+                        self.showMessageSaveUnemployeeInsurance(res.messageId);
                         self.reloadDataUnemployeeInsuranceRateByAction();
                     })
                 }

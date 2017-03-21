@@ -19,9 +19,9 @@
 			<com:stylefile path="main.css" />
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="../0/common/service.js" />
-			<com:scriptfile path="service.js" />
-			<com:scriptfile path="viewmodel.js" />
-			<com:scriptfile path="start.js" />
+			<com:scriptfile path="qmm008.h.service.js" />
+			<com:scriptfile path="qmm008.h.vm.js" />
+			<com:scriptfile path="qmm008.h.start.js" />
 		</ui:define>
 
 		<ui:define name="content">
@@ -43,8 +43,10 @@
 					data-bind="text: healthInsuranceRateModel.officeName"></span>
 				<div style="margin-left: 200px;"
 					data-bind="ntsFormLabel: {required: true}">期間 :</div>
-				<span id="startMonth">(平成28年04月)</span> <span id="endMonth">
-					~ 9999/12</span>
+				<span id="startMonth"
+					data-bind="text:healthInsuranceRateModel.startMonth"></span>~<span
+					id="endMonth" data-bind="text:healthInsuranceRateModel.endMonth">
+				</span>
 				<div style="padding-top: 30px;">
 					<table id="tbl-health-insuarance">
 						<tbody>

@@ -5,23 +5,16 @@
 package nts.uk.ctx.pr.core.app.wagetable.command.dto;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.wagetable.ElementCount;
-import nts.uk.ctx.pr.core.dom.wagetable.WageTableCode;
-import nts.uk.ctx.pr.core.dom.wagetable.WageTableHead;
-import nts.uk.ctx.pr.core.dom.wagetable.WageTableHeadGetMemento;
-import nts.uk.ctx.pr.core.dom.wagetable.WageTableName;
-import nts.uk.ctx.pr.core.dom.wagetable.element.WageTableElement;
-import nts.uk.ctx.pr.core.dom.wagetable.mode.DemensionalMode;
-import nts.uk.ctx.pr.core.dom.wagetable.mode.FineworkDimensionalMode;
-import nts.uk.ctx.pr.core.dom.wagetable.mode.OneDimensionalMode;
-import nts.uk.ctx.pr.core.dom.wagetable.mode.QualificaDimensionalMode;
-import nts.uk.ctx.pr.core.dom.wagetable.mode.ThreeDimensionalMode;
-import nts.uk.ctx.pr.core.dom.wagetable.mode.TwoDimensionalMode;
+import nts.uk.ctx.pr.core.dom.wagetable.WtCode;
+import nts.uk.ctx.pr.core.dom.wagetable.WtHead;
+import nts.uk.ctx.pr.core.dom.wagetable.WtHeadGetMemento;
+import nts.uk.ctx.pr.core.dom.wagetable.WtName;
+import nts.uk.ctx.pr.core.dom.wagetable.element.WtElement;
 import nts.uk.shr.com.primitive.Memo;
 
 /**
@@ -50,11 +43,11 @@ public class WageTableHeadDto extends WageTableDetailDto {
 	 *            the company code
 	 * @return the wage table history
 	 */
-	public WageTableHead toDomain(String companyCode) {
+	public WtHead toDomain(String companyCode) {
 		WageTableHeadDto dto = this;
 
 		// Transfer data
-		WageTableHead wageTableHead = new WageTableHead(
+		WtHead wageTableHead = new WtHead(
 				new WageTableHeadDtoMemento(new CompanyCode(companyCode), dto));
 
 		return wageTableHead;
@@ -63,7 +56,7 @@ public class WageTableHeadDto extends WageTableDetailDto {
 	/**
 	 * The Class WageTableHeadDtoMemento.
 	 */
-	private class WageTableHeadDtoMemento implements WageTableHeadGetMemento {
+	private class WageTableHeadDtoMemento implements WtHeadGetMemento {
 
 		/** The company code. */
 		protected CompanyCode companyCode;
@@ -100,8 +93,8 @@ public class WageTableHeadDto extends WageTableDetailDto {
 		 * nts.uk.ctx.pr.core.dom.wagetable.WageTableHeadGetMemento#getCode()
 		 */
 		@Override
-		public WageTableCode getCode() {
-			return new WageTableCode(this.dto.getCode());
+		public WtCode getCode() {
+			return new WtCode(this.dto.getCode());
 		}
 
 		/*
@@ -111,43 +104,8 @@ public class WageTableHeadDto extends WageTableDetailDto {
 		 * nts.uk.ctx.pr.core.dom.wagetable.WageTableHeadGetMemento#getName()
 		 */
 		@Override
-		public WageTableName getName() {
-			return new WageTableName(this.dto.getName());
-		}
-
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see nts.uk.ctx.pr.core.dom.wagetable.WageTableHeadGetMemento#
-		 * getDemensionSetting()
-		 */
-		@Override
-		public DemensionalMode getDemensionSetting() {
-
-			List<WageTableElement> wagetableElementList = this.dto.getDemensionDetails().stream()
-					.map(item -> new WageTableElement(item)).collect(Collectors.toList());
-
-			switch (ElementCount.valueOf(this.dto.getDemensionSet())) {
-			case One: {
-				return new OneDimensionalMode(wagetableElementList);
-			}
-
-			case Two: {
-				return new TwoDimensionalMode(wagetableElementList);
-			}
-
-			case Three: {
-				return new ThreeDimensionalMode(wagetableElementList);
-			}
-
-			case Finework: {
-				return new FineworkDimensionalMode(wagetableElementList);
-			}
-
-			// case Qualification:
-			default:
-				return new QualificaDimensionalMode(wagetableElementList);
-			}
+		public WtName getName() {
+			return new WtName(this.dto.getName());
 		}
 
 		/*
@@ -159,6 +117,17 @@ public class WageTableHeadDto extends WageTableDetailDto {
 		@Override
 		public Memo getMemo() {
 			return new Memo(this.dto.getMemo());
+		}
+
+		@Override
+		public ElementCount getMode() {
+			return ElementCount.valueOf(this.dto.demensionSet);
+		}
+
+		@Override
+		public List<WtElement> getElements() {
+			// TODO Auto-generated method stub
+			return null;
 		}
 	}
 }

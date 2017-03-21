@@ -13,16 +13,22 @@
 			<com:scriptfile path="qmm016.k.vm.js" />
 			<script type="text/javascript">
 				var dialogSize = {
-					width : 580,
-					height : 380
+					width : 300,
+					height : 450
 				};
 			</script>
 		</ui:define>
 
 		<ui:define name="content">
 			<!-- BEGIN CONTENT AREA-->
-			<div id="this-contents-area">
-				<label>新たに作成する履歴の、作成情報を入力してください。</label>
+			<div id="this-contents-area" class="halign-center">
+				<br/>
+				<select
+					style="width: 200px"
+					data-bind="options: demensionItemList,
+						optionsText: 'name',
+						value: selectedDemension"
+						size="15"></select>
 				<br/>
 				<br/>
 			</div>

@@ -29,6 +29,10 @@ var nts;
                                     self.laborInsuranceOfficeModel = ko.observable(new LaborInsuranceOfficeModel());
                                     self.selectCodeLstlaborInsuranceOffice = ko.observable('');
                                     self.isEnableDelete = ko.observable(true);
+                                    self.messageList = ko.observableArray([
+                                        { messageId: "ER001", message: "＊が入力されていません。" },
+                                        { messageId: "ER005", message: "入力した＊は既に存在しています。\r\n ＊を確認してください。" }
+                                    ]);
                                 }
                                 ScreenModel.prototype.resetValueLaborInsurance = function () {
                                     var self = this;
@@ -91,8 +95,24 @@ var nts;
                                     });
                                     return dfd.promise();
                                 };
-                                ScreenModel.prototype.showMessageSave = function (message) {
-                                    $('#btn_save').ntsError('set', message);
+                                ScreenModel.prototype.showMessageSave = function (messageId) {
+                                    var self = this;
+                                    if (self.messageList()[0].messageId === messageId) {
+                                        var message = self.messageList()[0].message;
+                                        if (!self.laborInsuranceOfficeModel().code()) {
+                                            $('#inp_code').ntsError('set', message);
+                                        }
+                                        if (!self.laborInsuranceOfficeModel().name()) {
+                                            $('#inp_name').ntsError('set', message);
+                                        }
+                                        if (!self.laborInsuranceOfficeModel().picPosition()) {
+                                            $('#inp_picPosition').ntsError('set', message);
+                                        }
+                                    }
+                                    if (self.messageList()[1].messageId === messageId) {
+                                        var message = self.messageList()[1].message;
+                                        $('#inp_code').ntsError('set', message);
+                                    }
                                 };
                                 ScreenModel.prototype.saveLaborInsuranceOffice = function () {
                                     var self = this;
@@ -101,7 +121,7 @@ var nts;
                                             self.reloadDataByAction(self.laborInsuranceOfficeModel().code());
                                             self.clearErrorSave();
                                         }).fail(function (res) {
-                                            self.showMessageSave(res.message);
+                                            self.showMessageSave(res.messageId);
                                         });
                                     }
                                     else {
@@ -133,6 +153,7 @@ var nts;
                                             self.laborInsuranceOfficeModel().updateData(data);
                                             self.laborInsuranceOfficeModel().setReadOnly(true);
                                             self.isEnableDelete(true);
+                                            self.clearErrorSave();
                                         });
                                         dfd.resolve();
                                     }

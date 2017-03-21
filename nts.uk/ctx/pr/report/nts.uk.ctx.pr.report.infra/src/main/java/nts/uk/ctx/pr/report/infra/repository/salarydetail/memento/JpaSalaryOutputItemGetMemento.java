@@ -50,4 +50,12 @@ public class JpaSalaryOutputItemGetMemento implements SalaryOutputItemGetMemento
 		return SalaryItemType.valueOf(this.entity.getQlsptPaylstFormDetailPK().getAggregateAtr());
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.pr.report.dom.salarydetail.outputsetting.SalaryOutputItemGetMemento#getOrderNumber()
+	 */
+	@Override
+	public int getOrderNumber() {
+		return this.entity.getDispOrder();
+	}
+
 }

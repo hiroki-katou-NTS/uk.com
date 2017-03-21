@@ -45,4 +45,39 @@ public class WLSettingItem {
 		memento.setOrderNumber(this.orderNumber);
 		memento.setType(this.type);
 	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((linkageCode == null) ? 0 : linkageCode.hashCode());
+		result = prime * result + ((type == null) ? 0 : type.hashCode());
+		return result;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		WLSettingItem other = (WLSettingItem) obj;
+		if (linkageCode == null) {
+			if (other.linkageCode != null)
+				return false;
+		} else if (!linkageCode.equals(other.linkageCode))
+			return false;
+		if (type != other.type)
+			return false;
+		return true;
+	}
+	
 }

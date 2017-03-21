@@ -4,14 +4,17 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.ws.wagetable.dto;
 
+import java.util.List;
+
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.core.dom.company.CompanyCode;
-import nts.uk.ctx.pr.core.dom.wagetable.WageTableCode;
-import nts.uk.ctx.pr.core.dom.wagetable.WageTableHeadSetMemento;
-import nts.uk.ctx.pr.core.dom.wagetable.WageTableName;
-import nts.uk.ctx.pr.core.dom.wagetable.mode.DemensionalMode;
+import nts.uk.ctx.pr.core.dom.wagetable.ElementCount;
+import nts.uk.ctx.pr.core.dom.wagetable.WtCode;
+import nts.uk.ctx.pr.core.dom.wagetable.WtHeadSetMemento;
+import nts.uk.ctx.pr.core.dom.wagetable.WtName;
+import nts.uk.ctx.pr.core.dom.wagetable.element.WtElement;
 import nts.uk.shr.com.primitive.Memo;
 
 /**
@@ -20,7 +23,7 @@ import nts.uk.shr.com.primitive.Memo;
 @Builder
 @Getter
 @Setter
-public class WageTableHeadDto implements WageTableHeadSetMemento {
+public class WageTableHeadDto implements WtHeadSetMemento {
 
 	/** The code. */
 	private String code;
@@ -40,23 +43,30 @@ public class WageTableHeadDto implements WageTableHeadSetMemento {
 	}
 
 	@Override
-	public void setCode(WageTableCode code) {
+	public void setCode(WtCode code) {
 		this.code = code.v();
 	}
 
 	@Override
-	public void setName(WageTableName name) {
+	public void setName(WtName name) {
 		this.name = name.v();
-	}
-
-	@Override
-	public void setDemensionSetting(DemensionalMode demensionSetting) {
-		this.demensionSet = demensionSetting.getMode().value;
 	}
 
 	@Override
 	public void setMemo(Memo memo) {
 		this.memo = memo.v();
+	}
+
+	@Override
+	public void setMode(ElementCount mode) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void setElements(List<WtElement> elements) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

@@ -17,18 +17,18 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
-import nts.uk.ctx.pr.core.app.wagetable.command.WageTableHistoryAddCommand;
-import nts.uk.ctx.pr.core.app.wagetable.command.WageTableHistoryAddCommandHandler;
-import nts.uk.ctx.pr.core.app.wagetable.command.WageTableHistoryUpdateCommand;
-import nts.uk.ctx.pr.core.app.wagetable.command.WageTableHistoryUpdateCommandHandler;
+import nts.uk.ctx.pr.core.app.wagetable.command.WtHistoryAddCommand;
+import nts.uk.ctx.pr.core.app.wagetable.command.WtHistoryAddCommandHandler;
+import nts.uk.ctx.pr.core.app.wagetable.command.WtHistoryUpdateCommand;
+import nts.uk.ctx.pr.core.app.wagetable.command.WtHistoryUpdateCommandHandler;
 import nts.uk.ctx.pr.core.dom.base.simplehistory.SimpleHistoryBaseService;
 import nts.uk.ctx.pr.core.dom.wagetable.ElementType;
-import nts.uk.ctx.pr.core.dom.wagetable.WageTableCode;
-import nts.uk.ctx.pr.core.dom.wagetable.WageTableHead;
-import nts.uk.ctx.pr.core.dom.wagetable.WageTableHeadRepository;
-import nts.uk.ctx.pr.core.dom.wagetable.history.WageTableHistory;
-import nts.uk.ctx.pr.core.dom.wagetable.history.WageTableHistoryRepository;
-import nts.uk.ctx.pr.core.dom.wagetable.history.service.WageTableHistoryService;
+import nts.uk.ctx.pr.core.dom.wagetable.WtCode;
+import nts.uk.ctx.pr.core.dom.wagetable.WtHead;
+import nts.uk.ctx.pr.core.dom.wagetable.WtHeadRepository;
+import nts.uk.ctx.pr.core.dom.wagetable.history.WtHistory;
+import nts.uk.ctx.pr.core.dom.wagetable.history.WtHistoryRepository;
+import nts.uk.ctx.pr.core.dom.wagetable.history.service.WtHistoryService;
 import nts.uk.ctx.pr.core.ws.base.simplehistory.SimpleHistoryWs;
 import nts.uk.ctx.pr.core.ws.base.simplehistory.dto.HistoryModel;
 import nts.uk.ctx.pr.core.ws.base.simplehistory.dto.MasterModel;
@@ -42,27 +42,27 @@ import nts.uk.shr.com.context.AppContexts;
  */
 @Path("pr/proto/wagetable")
 @Produces(MediaType.APPLICATION_JSON)
-public class WageTableWs extends SimpleHistoryWs<WageTableHead, WageTableHistory> {
+public class WageTableWs extends SimpleHistoryWs<WtHead, WtHistory> {
 
 	/** The create wage table history command handler. */
 	@Inject
-	private WageTableHistoryAddCommandHandler createWageTableHistoryCommandHandler;
+	private WtHistoryAddCommandHandler createWageTableHistoryCommandHandler;
 
 	/** The update wage table history command handler. */
 	@Inject
-	private WageTableHistoryUpdateCommandHandler updateWageTableHistoryCommandHandler;
+	private WtHistoryUpdateCommandHandler updateWageTableHistoryCommandHandler;
 
 	/** The wage table head repo. */
 	@Inject
-	private WageTableHeadRepository wageTableHeadRepo;
+	private WtHeadRepository wageTableHeadRepo;
 
 	/** The wage table history repo. */
 	@Inject
-	private WageTableHistoryRepository wageTableHistoryRepo;
+	private WtHistoryRepository wageTableHistoryRepo;
 
 	/** The service. */
 	@Inject
-	private WageTableHistoryService service;
+	private WtHistoryService service;
 
 	/**
 	 * Find.
@@ -75,14 +75,14 @@ public class WageTableWs extends SimpleHistoryWs<WageTableHead, WageTableHistory
 	@Path("find/{id}")
 	public WageTableHistoryDto find(@PathParam("id") String id) {
 		// Get the detail history.
-		Optional<WageTableHistory> optWageTableHistory = this.wageTableHistoryRepo
+		Optional<WtHistory> optWageTableHistory = this.wageTableHistoryRepo
 				.findHistoryByUuid(id);
 		WageTableHistoryDto historyDto = null;
 
 		// Check exsit.
 		if (optWageTableHistory.isPresent()) {
-			WageTableHistory wageTableHistory = optWageTableHistory.get();
-			Optional<WageTableHead> optWageTable = this.wageTableHeadRepo.findByCode(
+			WtHistory wageTableHistory = optWageTableHistory.get();
+			Optional<WtHead> optWageTable = this.wageTableHeadRepo.findByCode(
 					wageTableHistory.getCompanyCode().v(), wageTableHistory.getWageTableCode().v());
 			historyDto = new WageTableHistoryDto();
 			WageTableHeadDto headDto = WageTableHeadDto.builder().build();
@@ -104,8 +104,8 @@ public class WageTableWs extends SimpleHistoryWs<WageTableHead, WageTableHistory
 	 */
 	@POST
 	@Path("create")
-	public HistoryModel create(WageTableHistoryAddCommand command) {
-		WageTableHistory history = this.createWageTableHistoryCommandHandler.handle(command);
+	public HistoryModel create(WtHistoryAddCommand command) {
+		WtHistory history = this.createWageTableHistoryCommandHandler.handle(command);
 		return HistoryModel.builder().uuid(history.getUuid()).start(history.getStart().v())
 				.end(history.getEnd().v()).build();
 	}
@@ -118,7 +118,7 @@ public class WageTableWs extends SimpleHistoryWs<WageTableHead, WageTableHistory
 	 */
 	@POST
 	@Path("update")
-	public void update(WageTableHistoryUpdateCommand command) {
+	public void update(WtHistoryUpdateCommand command) {
 		this.updateWageTableHistoryCommandHandler.handle(command);
 	}
 
@@ -133,16 +133,16 @@ public class WageTableWs extends SimpleHistoryWs<WageTableHead, WageTableHistory
 	@POST
 	public List<MasterModel> loadMasterModelList() {
 		// Get list of wage table.
-		List<WageTableHead> wageTables = this.wageTableHeadRepo
+		List<WtHead> wageTables = this.wageTableHeadRepo
 				.findAll(AppContexts.user().companyCode());
 
 		// Get list of wage table history.
-		List<WageTableHistory> wageTableHistories = this.wageTableHistoryRepo
+		List<WtHistory> wageTableHistories = this.wageTableHistoryRepo
 				.findAll(AppContexts.user().companyCode());
 
 		// Group histories by unit code.
-		Map<WageTableCode, List<HistoryModel>> historyMap = wageTableHistories.stream()
-				.collect(Collectors.groupingBy(WageTableHistory::getWageTableCode,
+		Map<WtCode, List<HistoryModel>> historyMap = wageTableHistories.stream()
+				.collect(Collectors.groupingBy(WtHistory::getWageTableCode,
 						Collectors.mapping((res) -> {
 							return HistoryModel.builder().uuid(res.getUuid())
 									.start(res.getStart().v()).end(res.getEnd().v()).build();
@@ -189,23 +189,6 @@ public class WageTableWs extends SimpleHistoryWs<WageTableHead, WageTableHistory
 		// ITEM_DATA_REF(2, false, true),
 		items.add(new DemensionItemDto(ElementType.ITEM_DATA_REF));
 
-		// Extend element type
-		/** The certification. */
-		// CERTIFICATION(6, true, false),
-		// Have no this selection.
-
-		/** The working day. */
-		// WORKING_DAY(7, false, true),
-		items.add(new DemensionItemDto(ElementType.WORKING_DAY));
-
-		/** The come late. */
-		// COME_LATE(8, false, true),
-		items.add(new DemensionItemDto(ElementType.COME_LATE));
-
-		/** The level. */
-		// LEVEL(9, true, false);
-		items.add(new DemensionItemDto(ElementType.LEVEL));
-
 		return items;
 	}
 
@@ -216,7 +199,7 @@ public class WageTableWs extends SimpleHistoryWs<WageTableHead, WageTableHistory
 	 * nts.uk.ctx.pr.core.ws.base.simplehistory.SimpleHistoryWs#getServices()
 	 */
 	@Override
-	protected SimpleHistoryBaseService<WageTableHead, WageTableHistory> getServices() {
+	protected SimpleHistoryBaseService<WtHead, WtHistory> getServices() {
 		return this.service;
 	}
 }

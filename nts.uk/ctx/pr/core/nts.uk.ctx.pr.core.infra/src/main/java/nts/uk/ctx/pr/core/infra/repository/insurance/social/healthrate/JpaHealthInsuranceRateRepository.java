@@ -17,8 +17,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.gul.collection.ListUtil;
-import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.HealthInsuranceRate;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.HealthInsuranceRateRepository;
 import nts.uk.ctx.pr.core.infra.entity.insurance.social.healthrate.QismtHealthInsuRate;
@@ -60,7 +59,8 @@ public class JpaHealthInsuranceRateRepository extends JpaRepository
 	@Override
 	public void update(HealthInsuranceRate rate) {
 		EntityManager em = this.getEntityManager();
-		QismtHealthInsuRatePK pk = new QismtHealthInsuRatePK(rate.getCompanyCode().v(),rate.getOfficeCode().v(),rate.getHistoryId());
+		QismtHealthInsuRatePK pk = new QismtHealthInsuRatePK(rate.getCompanyCode().v(),
+				rate.getOfficeCode().v(), rate.getHistoryId());
 		QismtHealthInsuRate findEntity = em.find(QismtHealthInsuRate.class, pk);
 		QismtHealthInsuRate entity = new QismtHealthInsuRate();
 		rate.saveToMemento(new JpaHealthInsuranceRateSetMemento(entity));
@@ -92,12 +92,10 @@ public class JpaHealthInsuranceRateRepository extends JpaRepository
 		cq.where(predicateList.toArray(new Predicate[] {}));
 		List<QismtHealthInsuRate> result = em.createQuery(cq).getResultList();
 		// If have no record.
-		if (!ListUtil.isEmpty(result)) {
+		if (!CollectionUtil.isEmpty(result)) {
 			QismtHealthInsuRate entity = new QismtHealthInsuRate();
 			entity = result.get(0);
 			em.remove(entity);
-		} else {
-			// TODO not found delete element
 		}
 	}
 
@@ -163,13 +161,7 @@ public class JpaHealthInsuranceRateRepository extends JpaRepository
 	}
 
 	@Override
-	public boolean isInvalidDateRange(MonthRange applyRange) {
-		// TODO Auto-generated method stub
-		return false;
-	}
-
-	@Override
-	public List<HealthInsuranceRate> findAllOffice(String companyCode,String officeCode) {
+	public List<HealthInsuranceRate> findAllOffice(String companyCode, String officeCode) {
 		// Get entity manager
 		EntityManager em = this.getEntityManager();
 
@@ -182,11 +174,10 @@ public class JpaHealthInsuranceRateRepository extends JpaRepository
 		List<Predicate> predicateList = new ArrayList<Predicate>();
 
 		// Construct condition.
-		predicateList.add(cb.equal(root.get(QismtHealthInsuRate_.qismtHealthInsuRatePK).get(QismtHealthInsuRatePK_.ccd),
-				companyCode));
-		predicateList.add(
-				cb.equal(root.get(QismtHealthInsuRate_.qismtHealthInsuRatePK).get(QismtHealthInsuRatePK_.siOfficeCd),
-						officeCode));
+		predicateList.add(cb.equal(root.get(QismtHealthInsuRate_.qismtHealthInsuRatePK)
+				.get(QismtHealthInsuRatePK_.ccd), companyCode));
+		predicateList.add(cb.equal(root.get(QismtHealthInsuRate_.qismtHealthInsuRatePK)
+				.get(QismtHealthInsuRatePK_.siOfficeCd), officeCode));
 
 		cq.where(predicateList.toArray(new Predicate[] {}));
 		cq.orderBy(cb.desc(root.get(QismtHealthInsuRate_.strYm)));
@@ -201,10 +192,19 @@ public class JpaHealthInsuranceRateRepository extends JpaRepository
 	}
 
 	@Override
-	public Optional<HealthInsuranceRate> findLastestHistoryByMasterCode(String companyCode, String officeCode) {
-		return Optional.of(this.findAllOffice(companyCode,officeCode).get(0));
+	public Optional<HealthInsuranceRate> findLastestHistoryByMasterCode(String companyCode,
+			String officeCode) {
+		List<HealthInsuranceRate> lstHealthInsuranceRate = this.findAllOffice(companyCode,
+				officeCode);
+		// if create first his of office
+		if (lstHealthInsuranceRate.isEmpty()) {
+			return Optional.empty();
+		} else {// add more his
+			return Optional.of(this.findAllOffice(companyCode, officeCode).get(0));
+		}
 	}
 
+	// for history common
 	@Override
 	public Optional<HealthInsuranceRate> findHistoryByUuid(String uuid) {
 		return this.findById(uuid);
@@ -221,7 +221,8 @@ public class JpaHealthInsuranceRateRepository extends JpaRepository
 	}
 
 	@Override
-	public List<HealthInsuranceRate> findAllHistoryByMasterCode(String companyCode, String officeCode) {
+	public List<HealthInsuranceRate> findAllHistoryByMasterCode(String companyCode,
+			String officeCode) {
 		return this.findAllOffice(companyCode, officeCode);
 	}
 }
