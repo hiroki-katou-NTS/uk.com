@@ -2,11 +2,8 @@ package nts.uk.ctx.basic.infra.repository.organization.payclassification;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
-
 import javax.ejb.Stateless;
-
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.basic.dom.organization.payclassification.PayClassification;
 import nts.uk.ctx.basic.dom.organization.payclassification.PayClassificationCode;
@@ -21,8 +18,6 @@ public class JpaPayClassificationReponsitory extends JpaRepository implements Pa
 	
 
 	private static final String FIND_ALL;
-
-	private static final String FIND_SINGLE;
 	
 	private static final String QUERY_IS_EXISTED;
 	
@@ -32,13 +27,6 @@ public class JpaPayClassificationReponsitory extends JpaRepository implements Pa
 		builderString.append(" FROM QmnmtPayClass c");
 		builderString.append(" WHERE c.qmnmtPayClassPK.companyCode = :companyCode");
 		FIND_ALL = builderString.toString();
-
-		builderString = new StringBuilder();
-		builderString.append("SELECT c");
-		builderString.append(" FROM QmnmtPayClass c");
-		builderString.append(" WHERE c.qmnmtPayClassPK.companyCode = :companyCode");
-		builderString.append(" AND c.qmnmtPayClassPK.payClassificationCode = :payClassificationCode");
-		FIND_SINGLE = builderString.toString();
 		
 		builderString = new StringBuilder();
 		builderString.append("SELECT COUNT(c)");
@@ -47,35 +35,30 @@ public class JpaPayClassificationReponsitory extends JpaRepository implements Pa
 		builderString.append(" AND c.qmnmtPayClassPK.payClassificationCode = :payClassificationCode");
 		QUERY_IS_EXISTED = builderString.toString();
 	}
+	
+	//add pay classification
 	@Override
 	public void add(PayClassification payClassification) {
 		this.commandProxy().insert(convertToDbType(payClassification));
 
 	}
 
+	//update pay classification
 	@Override
 	public void update(PayClassification payClassification) {
 		this.commandProxy().update(convertToDbType(payClassification));
 
 	}
 
+	//delete pay classification
 	@Override
-	public void remove(String companyCode, PayClassificationCode payClassificationCode) {
+	public void remove(String companyCode, String payClassificationCode) {
 		QmnmtPayClassPK qmnmtPayClassPK = new QmnmtPayClassPK(companyCode, payClassificationCode.toString());
 		this.commandProxy().remove(QmnmtPayClass.class, qmnmtPayClassPK);
 
 	}
 
-	@Override
-	public Optional<PayClassification> findSinglePayClassification(String companyCode,
-			String payClassificationCode) {
-		return this.queryProxy().query(FIND_SINGLE, QmnmtPayClass.class)
-				.setParameter("companyCode", "'" + companyCode + "'")
-				.setParameter("payClassificationCode", "'" + payClassificationCode.toString() + "'").getSingle().map(e -> {
-					return Optional.of(convertToDomain(e));
-				}).orElse(Optional.empty());
-	}
-
+	//find all pay classification
 	@Override
 	public List<PayClassification> findAll(String companyCode) {
 		List<QmnmtPayClass> resultList = this.queryProxy().query(FIND_ALL, QmnmtPayClass.class)
@@ -85,33 +68,34 @@ public class JpaPayClassificationReponsitory extends JpaRepository implements Pa
 		}).collect(Collectors.toList()) : new ArrayList<>();
 	}
 
+	//check existed pay classification
 	@Override
-	public boolean isExisted(String companyCode, PayClassificationCode payClassificationCode) {
+	public boolean isExisted(String companyCode, String payClassificationCode) {
 		return this.queryProxy().query(QUERY_IS_EXISTED, long.class)
 		.setParameter("companyCode", companyCode )
 		.setParameter("payClassificationCode",  payClassificationCode.toString() )
 		.getSingle().get() > 0;
 	}
 
+	//convert to database type
 	private QmnmtPayClass convertToDbType(PayClassification payClassification) {
 		QmnmtPayClass qmnmtPayClass = new QmnmtPayClass();
 		QmnmtPayClassPK qmnmtPayClassPK = new QmnmtPayClassPK(payClassification.getCompanyCode(),
 				payClassification.getPayClassificationCode().toString());
 		qmnmtPayClass.setMemo(payClassification.getMemo() != null ? payClassification.getMemo().toString() : "");
-		qmnmtPayClass.setPayClassName(payClassification.getPayClassificationName().toString());
+		qmnmtPayClass.setPayClassificationName(payClassification.getPayClassificationName().toString());
 		qmnmtPayClass.setQmnmtPayClassPK(qmnmtPayClassPK);
 		return qmnmtPayClass;
 		
 	}
 	
-	
+	//convert to domain
 	private PayClassification convertToDomain(QmnmtPayClass qmnmtPayClass) {
 		return new PayClassification(
 				new Memo(qmnmtPayClass.getMemo() != null ? qmnmtPayClass.getMemo() : ""),
 				new PayClassificationName(qmnmtPayClass.getPayClassificationName()),
 				new PayClassificationCode(qmnmtPayClass.getQmnmtPayClassPK().getPayClassificationCode()),
 				qmnmtPayClass.getQmnmtPayClassPK().getCompanyCode());
-		
 	}
 
 

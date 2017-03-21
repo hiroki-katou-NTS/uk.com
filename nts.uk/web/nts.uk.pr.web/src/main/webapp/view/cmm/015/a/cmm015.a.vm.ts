@@ -4,16 +4,12 @@ module cmm015.a.viewmodel {
 
         dataSource: KnockoutObservableArray<viewmodel.model.PayClassificationDto>;
         columns: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
-
-
-        //trang thái của INP_002
         INP_002_enable: KnockoutObservable<boolean>;
         INP_003_name: KnockoutObservable<string>;
         INP_004_notes: KnockoutObservable<string>;
         index_of_itemDelete: KnockoutObservable<number>;;
         adddata: any;
         isDeleteEnable: KnockoutObservable<boolean>;
-
         currentCode: KnockoutObservable<string>;
         currentCodeList: KnockoutObservableArray<any>;
         currentItem: KnockoutObservable<viewmodel.model.PayClassificationDto>;
@@ -26,7 +22,6 @@ module cmm015.a.viewmodel {
             self.columns = ko.observableArray([
                 { headerText: 'コード', key: 'payClassificationCode', width: 100 },
                 { headerText: '名称', key: 'payClassificationName', width: 80 }
-
             ]);
             self.index_of_itemDelete = ko.observable(-1);
             self.currentCode = ko.observable(null);
@@ -48,12 +43,8 @@ module cmm015.a.viewmodel {
                     self.INP_003_name(self.currentItem().payClassificationName);
                     self.INP_004_notes(self.currentItem().memo);
                 }
-
             }));
-
-
         }
-
 
         initRegisterPayClassification() {
 
@@ -69,7 +60,6 @@ module cmm015.a.viewmodel {
 
         }
 
-
         checkPage(): boolean {
             var self = this;
             if (self.INP_002_code() == '') {
@@ -82,8 +72,6 @@ module cmm015.a.viewmodel {
                 return false;
             } else { return true; }
         }
-
-
 
         find(value: string): any {
             let self = this;
@@ -106,7 +94,7 @@ module cmm015.a.viewmodel {
                         dfd.reject(res);
                     })
                 }
-                for (let i = 0; i < self.dataSource().length ; i++) {
+                for (let i = 0; i < self.dataSource().length; i++) {
                     if (self.INP_002_code() == self.dataSource()[i].payClassificationCode && self.INP_002_enable() == false) {
                         var payClassification_before = self.dataSource()[i];
                         var payClassification_update = new viewmodel.model.PayClassificationDto(self.INP_002_code(), self.INP_003_name(), self.INP_004_notes());
@@ -134,41 +122,30 @@ module cmm015.a.viewmodel {
             }
         }
 
-
-
         start(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred<any>();
             service.getAllPayClassification().done(function(payClassification_arr: Array<model.PayClassificationDto>) {
-
-
                 self.dataSource(payClassification_arr);
                 if (self.dataSource().length > 0) {
-
                     self.INP_002_code(self.dataSource()[0].payClassificationCode);
                     self.INP_003_name(self.dataSource()[0].payClassificationName);
                     self.INP_004_notes(self.dataSource()[0].memo);
                     self.currentCode(self.dataSource()[0].payClassificationCode)
-
                 } else {
                     self.initRegisterPayClassification();
-
                 }
                 dfd.resolve();
-
             }).fail(function(error) {
                 alert(error.message);
             })
-
             dfd.resolve();
             return dfd.promise();
         }
 
         deletePayClassification() {
-
             var self = this;
             var dfd = $.Deferred<any>();
-
             if (self.dataSource().length > 0) {
                 var item = new model.RemovePayClassificationCommand(self.currentItem().payClassificationCode);
                 self.index_of_itemDelete(_.findIndex(self.dataSource(), function(item)
@@ -189,7 +166,6 @@ module cmm015.a.viewmodel {
 
 
         getPayClassificationList_aftefDelete(): any {
-
             var self = this;
             var dfd = $.Deferred<any>();
             service.getAllPayClassification().done(function(payClassification_arr: Array<model.PayClassificationDto>) {
@@ -220,7 +196,6 @@ module cmm015.a.viewmodel {
 
         }
 
-
         getPayClassificationList_first(): any {
             var self = this;
             var dfd = $.Deferred<any>();
@@ -243,7 +218,6 @@ module cmm015.a.viewmodel {
             return dfd.promise();
 
         }
-
 
         getPayClassificationList(): any {
             var self = this;
@@ -295,7 +269,6 @@ module cmm015.a.viewmodel {
             service.getAllPayClassification().done(function(payClassification_arr: Array<model.PayClassificationDto>) {
                 self.dataSource(payClassification_arr);
                 self.INP_002_code(self.adddata().payClassificationCode);
-                //  self.INP_002_enable = ko.observable(false);
                 self.INP_003_name(self.adddata().payClassificationName);
                 self.INP_004_notes(self.adddata().memo);
                 self.currentCode(self.adddata().payClassificationCode);
@@ -309,13 +282,8 @@ module cmm015.a.viewmodel {
             })
             dfd.resolve();
             return dfd.promise();
-
         }
-
-
-
     }
-
 
     export module model {
         export class PayClassificationDto {

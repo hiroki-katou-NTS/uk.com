@@ -1,14 +1,9 @@
 package nts.uk.ctx.basic.app.command.organization.payclassification;
 
 
-
-import java.util.Optional;
-
 import javax.ejb.Stateless;
 import javax.inject.Inject;
-
 import nts.arc.error.BusinessException;
-import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.basic.dom.organization.payclassification.PayClassification;
@@ -32,7 +27,7 @@ public class AddPayClassificationCommandHandler extends CommandHandler<AddPayCla
 		
 
 		if(payClassificationRepository.isExisted(companyCode, 
-				new PayClassificationCode(context.getCommand().getPayClassificationCode()))){
+				context.getCommand().getPayClassificationCode())){
 			//throw err[ER026]
 			throw new BusinessException("入力した コード は既に存在しています。 \r\n コードを確認してください。");}
 		
