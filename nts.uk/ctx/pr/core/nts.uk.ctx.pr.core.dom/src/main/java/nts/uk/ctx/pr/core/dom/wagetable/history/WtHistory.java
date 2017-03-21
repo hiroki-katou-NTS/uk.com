@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2015 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.core.dom.wagetable.history;
@@ -55,11 +55,19 @@ public class WtHistory extends DomainObject implements History<WtHistory> {
 		this.historyId = IdentifierUtil.randomUniqueId();
 	};
 
+	/**
+	 * Inits the from head.
+	 *
+	 * @param head the head
+	 * @param startYearMonth the start year month
+	 * @return the wt history
+	 */
 	public static WtHistory initFromHead(WtHead head, YearMonth startYearMonth) {
 		WtHistory history = new WtHistory();
 		history.companyCode = head.getCompanyCode();
 		history.wageTableCode = head.getCode();
-		history.applyRange = MonthRange.range(startYearMonth, YearMonth.of(DateTimeConstraints.LIMIT_YEAR.max(), DateTimeConstraints.LIMIT_MONTH.max()));
+		history.applyRange = MonthRange.range(startYearMonth,
+				YearMonth.of(DateTimeConstraints.LIMIT_YEAR.max(), DateTimeConstraints.LIMIT_MONTH.max()));
 		history.valueItems = Collections.emptyList();
 
 		// Start init default create wage table element.
@@ -69,7 +77,9 @@ public class WtHistory extends DomainObject implements History<WtHistory> {
 			ElementType type = element.getType();
 			// Code mode.
 			if (type.isCodeMode) {
-				elementSettings.add(new ElementSetting(element.getDemensionNo(), element.getType(), Collections.emptyList()));
+				elementSettings.add(new ElementSetting(element.getDemensionNo(),
+								element.getType(),
+								Collections.emptyList()));
 			}
 
 			// Range mode.

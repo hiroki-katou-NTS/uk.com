@@ -27,8 +27,8 @@ import nts.uk.ctx.pr.core.dom.wagetable.WtElementRefNo;
 import nts.uk.ctx.pr.core.dom.wagetable.element.RefMode;
 import nts.uk.ctx.pr.core.dom.wagetable.element.StepMode;
 import nts.uk.ctx.pr.core.dom.wagetable.history.WtHistory;
-import nts.uk.ctx.pr.core.dom.wagetable.history.element.setting.item.CodeItem;
-import nts.uk.ctx.pr.core.dom.wagetable.history.element.setting.item.RangeItem;
+import nts.uk.ctx.pr.core.dom.wagetable.history.element.item.CodeItem;
+import nts.uk.ctx.pr.core.dom.wagetable.history.element.item.RangeItem;
 import nts.uk.ctx.pr.core.infra.repository.support.AbstractDbUnitTestCase;
 import nts.uk.ctx.pr.core.infra.repository.wagetable.history.JpaWtHistoryRepository;
 

@@ -2,9 +2,10 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.pr.core.dom.wagetable.history.element.setting.item;
+package nts.uk.ctx.pr.core.dom.wagetable.history.element.item;
 
 import lombok.Getter;
+import nts.uk.ctx.pr.core.dom.wagetable.ElementId;
 
 /**
  * The Class CodeItem.
@@ -23,7 +24,7 @@ public class CodeItem extends BaseItem {
 	 * @param uuid
 	 *            the uuid
 	 */
-	public CodeItem(String referenceCode, String uuid) {
+	public CodeItem(String referenceCode, ElementId uuid) {
 		super(uuid);
 		this.referenceCode = referenceCode;
 	}
