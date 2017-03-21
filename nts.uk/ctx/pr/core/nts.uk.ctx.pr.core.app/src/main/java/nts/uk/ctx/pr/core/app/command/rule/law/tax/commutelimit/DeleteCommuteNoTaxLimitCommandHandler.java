@@ -25,11 +25,11 @@ public class DeleteCommuteNoTaxLimitCommandHandler extends CommandHandler<Delete
 		String companyCode = AppContexts.user().companyCode();
 		Optional<CommuteNoTaxLimit> exitCommuteNoTaxLimit = this.repository.getCommuteNoTaxLimit(companyCode,
 				context.getCommand().getCommuNoTaxLimitCode());
+		
 		if (!exitCommuteNoTaxLimit.isPresent()) {
 			throw new BusinessException("1");
-		} else {
-			this.repository.delele(companyCode, context.getCommand().getCommuNoTaxLimitCode());
 		}
+		this.repository.delele(companyCode, context.getCommand().getCommuNoTaxLimitCode());
 
 	}
 

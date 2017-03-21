@@ -1,5 +1,6 @@
 package nts.uk.ctx.pr.core.infra.entity.rule.law.tax.commutelimit;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 
 import javax.persistence.Basic;
@@ -8,10 +9,15 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
+import nts.uk.shr.infra.data.entity.TableEntity;
+
 @Entity
 @Table(name = "QTXMT_COMMU_NOTAX_LIMIT")
-public class QtxmtCommuNotaxLimit {
+public class QtxmtCommuNotaxLimit extends TableEntity implements Serializable{
 	
+	private static final long serialVersionUID = 1L;
+
+
 	@EmbeddedId
 	public QtxmtCommuNotaxLimitPK qtxmtCommuNotaxLimitPK;
 	

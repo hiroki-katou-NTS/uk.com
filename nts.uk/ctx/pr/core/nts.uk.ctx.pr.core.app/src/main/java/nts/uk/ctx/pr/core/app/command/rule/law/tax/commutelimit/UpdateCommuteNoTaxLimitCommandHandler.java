@@ -24,26 +24,17 @@ public class UpdateCommuteNoTaxLimitCommandHandler extends CommandHandler<Update
 
 	@Override
 	protected void handle(CommandHandlerContext<UpdateCommuteNoTaxLimitCommand> context) {
-		// get context
 		String companyCode = AppContexts.user().companyCode();
 		UpdateCommuteNoTaxLimitCommand ic = context.getCommand();
 
-		if(context.getCommand().getCommuNoTaxLimitCode() == null ||context.getCommand().getCommuNoTaxLimitCode().isEmpty()){
-			throw new BusinessException("1");
-		}
-		if(context.getCommand().getCommuNoTaxLimitName() == null || context.getCommand().getCommuNoTaxLimitName().isEmpty()){
-			throw new BusinessException("2");
-		}	
-		
 		Optional<CommuteNoTaxLimit> commuteNoTaxLimitUpdate = this.repository.getCommuteNoTaxLimit(companyCode,
 				ic.getCommuNoTaxLimitCode());
-			
+
 		if (!commuteNoTaxLimitUpdate.isPresent()) {
 			throw new BusinessException("4");
 		}
 		commuteNoTaxLimitUpdate.get().setCommuNoTaxLimitName(new CommuNoTaxLimitName(ic.getCommuNoTaxLimitName()));
-		commuteNoTaxLimitUpdate.get()
-				.setCommuNoTaxLimitValue(new CommuNoTaxLimitValue(ic.getCommuNoTaxLimitValue()));
+		commuteNoTaxLimitUpdate.get().setCommuNoTaxLimitValue(new CommuNoTaxLimitValue(ic.getCommuNoTaxLimitValue()));
 		this.repository.update(commuteNoTaxLimitUpdate.get());
 
 	}

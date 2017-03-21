@@ -25,29 +25,21 @@ public class InsertCommuteNoTaxLimitCommandHandler extends CommandHandler<Insert
 
 	@Override
 	protected void handle(CommandHandlerContext<InsertCommuteNoTaxLimitCommand> context) {
-		// get context
 		String companyCode = AppContexts.user().companyCode();
-		InsertCommuteNoTaxLimitCommand ic = context.getCommand();
-		if(context.getCommand().getCommuNoTaxLimitCode() == null ||context.getCommand().getCommuNoTaxLimitCode().isEmpty()){
-			throw new BusinessException("1");
-		}
-		if(context.getCommand().getCommuNoTaxLimitName() == null || context.getCommand().getCommuNoTaxLimitName().isEmpty()){
-			throw new BusinessException("2");
-		}		
+		InsertCommuteNoTaxLimitCommand insertCommand = context.getCommand();
+
+		Optional<CommuteNoTaxLimit> exitCommuteNoTaxLimit = this.repository.getCommuteNoTaxLimit(companyCode,
+				insertCommand.getCommuNoTaxLimitCode());
 		
-		Optional<CommuteNoTaxLimit> exitCommuteNoTaxLimit =  this.repository.getCommuteNoTaxLimit(companyCode, ic.getCommuNoTaxLimitCode());
-		
-		if(exitCommuteNoTaxLimit.isPresent()){
+		if (exitCommuteNoTaxLimit.isPresent()) {
 			throw new BusinessException("3");
 		}
-		CommuteNoTaxLimit commuteNoTaxLimit = new CommuteNoTaxLimit(
-				companyCode,
-				new CommuNoTaxLimitCode(ic.getCommuNoTaxLimitCode()), 
-				new CommuNoTaxLimitName(ic.getCommuNoTaxLimitName()), 
-				new CommuNoTaxLimitValue(ic.getCommuNoTaxLimitValue()));
-		
+		CommuteNoTaxLimit commuteNoTaxLimit = new CommuteNoTaxLimit(companyCode,
+				new CommuNoTaxLimitCode(insertCommand.getCommuNoTaxLimitCode()),
+				new CommuNoTaxLimitName(insertCommand.getCommuNoTaxLimitName()),
+				new CommuNoTaxLimitValue(insertCommand.getCommuNoTaxLimitValue()));
+
 		this.repository.add(commuteNoTaxLimit);
-		
 	}
 
 }

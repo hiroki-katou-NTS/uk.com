@@ -7,11 +7,11 @@
 <body>
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
-			<com:stylefile path="main.css" />
 			<com:scriptfile set="IGNITE" />
-			<com:scriptfile path="start.js" />
-			<com:scriptfile path="viewmodel.js" />
-			<com:scriptfile path="service.js" />
+			<com:stylefile path="qmm023.a.main.css" />
+			<com:scriptfile path="qmm023.a.start.js" />
+			<com:scriptfile path="qmm023.a.vm.js" />
+			<com:scriptfile path="qmm023.a.service.js" />
 			<com:ValidatorScript>
 				nts.uk.ctx.pr.core.dom.rule.law.tax.commutelimit.CommuNoTaxLimitCode
 				nts.uk.ctx.pr.core.dom.rule.law.tax.commutelimit.CommuNoTaxLimitName
@@ -37,7 +37,8 @@
 						id="content_data">
 						<i class="icon icon-searchbox"></i>
 						<div class="ntsSearchDiv">
-							<div data-bind="ntsSearchBox: {
+							<div
+								data-bind="ntsSearchBox: {
 								items: items,		
 								selected: currentCode, 
 								selectedKey: 'code', 
@@ -78,13 +79,14 @@
 													value: code,
 													constraint: 'CommuNoTaxLimitCode', 
 													enable: $parent.allowEditCode,
-													required: true,
+													required: true, immediate: true
 													}, hasFocus: true " />
 									</span> <span><input id="INP_003" class="save-error"
 										data-bind="ntsTextEditor: {
 													value: name,
 													constraint: 'CommuNoTaxLimitName',
-													required: true }" />
+													required: true,
+													immediate: true }" />
 									</span>
 								</div>
 							</td>
@@ -108,7 +110,8 @@
 														decimallength: 0,
 														currencyformat: 'JPY',
 														currencyposition: 'right'
-													}
+													},
+													immediate: true
 										   }" />
 								</div>
 							</td>
