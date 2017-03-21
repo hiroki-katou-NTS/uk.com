@@ -5,7 +5,7 @@ import java.util.Optional;
 
 public interface ClassificationRepository {
 	
-	void add(Classification classification);
+void add(Classification classification);
 	
 	void update(Classification classification);
 	
@@ -14,5 +14,7 @@ public interface ClassificationRepository {
 	Optional<Classification> findSingleClassification(String companyCode, ClassificationCode classificationCode);
 	
 	List<Classification> findAll(String companyCode);
+	
+	boolean isExisted(String companyCode, ClassificationCode classificationCode);
 
 }

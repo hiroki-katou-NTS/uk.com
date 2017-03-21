@@ -137,10 +137,10 @@ public class JpaPersonBankAccountRepository extends JpaRepository implements Per
 	}
 
 	@Override
-	public boolean checkExistsLineBankAccount(String companyCode, List<String> lineBank) {
+	public boolean checkExistsLineBankAccount(String companyCode, List<String> lineBankCode) {
 		Optional<Long> numberOfPerson = this.queryProxy().query(SEL_6_1, Long.class)
 										.setParameter("companyCode", companyCode)
-										.setParameter("lineBankCode", lineBank)
+										.setParameter("lineBankCode", lineBankCode)
 										.getSingle();
 		return numberOfPerson.get() > 0;
 	}

@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import lombok.Getter;
 import nts.arc.time.GeneralDate;
 
 /**
@@ -13,6 +14,7 @@ import nts.arc.time.GeneralDate;
 public class JapaneseEras {
 
 	/** names */
+	@Getter
 	private final List<JapaneseEraName> names;
 	
 	/**

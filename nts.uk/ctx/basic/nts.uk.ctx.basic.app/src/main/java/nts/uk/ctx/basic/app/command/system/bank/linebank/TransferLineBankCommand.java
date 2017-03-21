@@ -7,4 +7,5 @@ import lombok.NoArgsConstructor;
 public class TransferLineBankCommand {
 	private String oldLineBankCode;
 	private String newLineBankCode;
+	private int allowDelete;
 }

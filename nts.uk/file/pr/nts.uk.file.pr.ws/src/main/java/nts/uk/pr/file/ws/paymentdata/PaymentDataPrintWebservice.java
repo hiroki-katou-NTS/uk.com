@@ -8,7 +8,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
-import nts.arc.layer.infra.file.export.FileGeneratorContext;
+import nts.arc.layer.infra.file.FileGeneratorContext;
 import nts.arc.layer.ws.WebService;
 import nts.uk.pr.file.infra.paymentdata.PrintPaymentDataQueryProcessor;
 import nts.uk.pr.file.infra.paymentdata.PaymentDataPrintFileGenerator;
