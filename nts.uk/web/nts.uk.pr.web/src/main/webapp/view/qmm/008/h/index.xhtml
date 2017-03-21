@@ -43,8 +43,10 @@
 					data-bind="text: healthInsuranceRateModel.officeName"></span>
 				<div style="margin-left: 200px;"
 					data-bind="ntsFormLabel: {required: true}">期間 :</div>
-				<span id="startMonth">(平成28年04月)</span> <span id="endMonth">
-					~ 9999/12</span>
+				<span id="startMonth"
+					data-bind="text:healthInsuranceRateModel.startMonth"></span>~<span
+					id="endMonth" data-bind="text:healthInsuranceRateModel.endMonth">
+				</span>
 				<div style="padding-top: 30px;">
 					<table id="tbl-health-insuarance">
 						<tbody>
