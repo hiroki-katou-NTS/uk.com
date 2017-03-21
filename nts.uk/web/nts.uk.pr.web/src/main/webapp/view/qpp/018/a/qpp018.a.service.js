@@ -28,7 +28,7 @@ var nts;
                             }
                             service.findAllInsuranceOffice = findAllInsuranceOffice;
                             function saveAsPdf(command) {
-                                return nts.uk.request.ajax(servicePath.saveAsPdf, command);
+                                return nts.uk.request.exportFile(servicePath.saveAsPdf, command);
                             }
                             service.saveAsPdf = saveAsPdf;
                             var model;

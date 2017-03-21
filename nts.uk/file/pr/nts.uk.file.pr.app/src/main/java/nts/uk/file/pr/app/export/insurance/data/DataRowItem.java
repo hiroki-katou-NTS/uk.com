@@ -18,13 +18,13 @@ import lombok.Setter;
 
 @Setter
 @Getter
-public class EmployeeDto {
+public class DataRowItem {
 
-    /** The employee code. */
-    private String employeeCode;
+    /** The code. */
+    private String code;
     
-    /** The employee name. */
-    private String employeeName;
+    /** The name. */
+    private String name;
     
     /** The monthly health insurance normal. */
     private double monthlyHealthInsuranceNormal;

@@ -17,8 +17,8 @@ var nts;
                                     var self = this;
                                     self.yearMonth = ko.observable("");
                                     self.isEqual = ko.observable(true);
-                                    self.isDeficient = ko.observable(false);
-                                    self.isRedundant = ko.observable(false);
+                                    self.isDeficient = ko.observable(true);
+                                    self.isRedundant = ko.observable(true);
                                     self.insuranceOffice = ko.observable(new InsuranceOfficeModel());
                                 }
                                 ScreenModel.prototype.startPage = function () {
@@ -26,6 +26,9 @@ var nts;
                                     var dfd = $.Deferred();
                                     self.yearMonth(self.getCurrentYearMonth());
                                     $.when(self.insuranceOffice().findAllInsuranceOffice()).done(function () {
+                                        if (self.insuranceOffice().items().length > 0) {
+                                            self.insuranceOffice().selectFirst();
+                                        }
                                         dfd.resolve();
                                     });
                                     return dfd.promise();
@@ -107,6 +110,11 @@ var nts;
                                         nts.uk.ui.dialog.alert(res.message);
                                     });
                                     return dfd.promise();
+                                };
+                                InsuranceOfficeModel.prototype.selectFirst = function () {
+                                    var self = this;
+                                    var code = self.items()[0].code;
+                                    self.selectedOfficeCodeList().push(code);
                                 };
                                 InsuranceOfficeModel.prototype.getSelectedOffice = function () {
                                     var self = this;

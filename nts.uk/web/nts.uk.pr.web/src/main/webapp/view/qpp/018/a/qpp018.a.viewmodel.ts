@@ -13,8 +13,8 @@ module nts.uk.pr.view.qpp018.a {
                 let self = this;
                 self.yearMonth = ko.observable("");
                 self.isEqual = ko.observable(true);
-                self.isDeficient = ko.observable(false);
-                self.isRedundant = ko.observable(false);
+                self.isDeficient = ko.observable(true);
+                self.isRedundant = ko.observable(true);
                 self.insuranceOffice = ko.observable(new InsuranceOfficeModel());
             }
             
@@ -28,6 +28,9 @@ module nts.uk.pr.view.qpp018.a {
                 
                 // TODO: check for start from menu salary or bonus.
                 $.when(self.insuranceOffice().findAllInsuranceOffice()).done(function() {
+                    if (self.insuranceOffice().items().length > 0) {
+                        self.insuranceOffice().selectFirst();
+                    }
                     dfd.resolve();
                 })
                 return dfd.promise();
@@ -143,6 +146,12 @@ module nts.uk.pr.view.qpp018.a {
                     nts.uk.ui.dialog.alert(res.message);
                 })
                 return dfd.promise();
+            }
+            
+            selectFirst(): void {
+                let self = this;
+                let code = self.items()[0].code;
+                self.selectedOfficeCodeList().push(code);
             }
             
             getSelectedOffice(): InsuranceOffice[] {

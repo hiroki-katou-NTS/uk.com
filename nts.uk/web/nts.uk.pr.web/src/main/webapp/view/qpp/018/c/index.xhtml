@@ -10,9 +10,9 @@
 		<script>var dialogSize = { width: 600, height: 540 };</script>
 			<com:stylefile path="main.css" />
 			<com:scriptfile set="IGNITE" />
-			<com:scriptfile path="viewmodel.js" />
-			<com:scriptfile path="start.js" />
-			<com:scriptfile path="service.js" />
+			<com:scriptfile path="qpp018.c.viewmodel.js" />
+			<com:scriptfile path="qpp018.c.start.js" />
+			<com:scriptfile path="qpp018.c.service.js" />
 		</ui:define>
 
 		<ui:define name="content">	
@@ -35,10 +35,11 @@
 									<div data-bind="ntsFormLabel: {}">
 										<label>出力設定</label>
 								</div>	
-								<button id="helpBtn" data-bind="ntsHelpButton: {image: 'test-image.png', position: 'bottom right', enable: true}">?</button>
+								<button >?</button>
 								</div>
+								<div id="require-least-item"></div>
 								<div id="output-setting" >
-		 							<div class="check-output" data-bind="ntsCheckBox: { checked: showCategoryInsuranceItem , text:'明細'}"></div>
+		 							<div class="check-output" data-bind="ntsCheckBox: { checked: showDetail , text:'明細'}"></div>
 									<div class="check-output" data-bind="ntsCheckBox: { checked: showOffice , text:'事務所月計'}"></div>
 									<div class="check-output" data-bind="ntsCheckBox: { checked: showTotal , text:'総合月計'}"></div>
 									<div class="check-output" data-bind="ntsCheckBox: { checked: showDeliveryNoticeAmount , text:'納入告知額'}"></div>
