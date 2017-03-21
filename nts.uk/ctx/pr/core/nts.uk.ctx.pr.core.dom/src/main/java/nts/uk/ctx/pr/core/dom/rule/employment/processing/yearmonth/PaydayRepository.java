@@ -1,9 +1,9 @@
-package nts.uk.ctx.pr.core.dom.rule.employement.processing.yearmonth;
+package nts.uk.ctx.pr.core.dom.rule.employment.processing.yearmonth;
 
 import java.util.List;
 
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.pr.core.dom.rule.employement.processing.yearmonth.payday.Payday;
+import nts.uk.ctx.pr.core.dom.rule.employment.processing.yearmonth.payday.Payday;
 
 public interface PaydayRepository {
 

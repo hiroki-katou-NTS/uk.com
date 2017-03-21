@@ -6,8 +6,8 @@ import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.pr.core.dom.rule.employement.processing.yearmonth.PaydayRepository;
-import nts.uk.ctx.pr.core.dom.rule.employement.processing.yearmonth.payday.Payday;
+import nts.uk.ctx.pr.core.dom.rule.employment.processing.yearmonth.PaydayRepository;
+import nts.uk.ctx.pr.core.dom.rule.employment.processing.yearmonth.payday.Payday;
 import nts.uk.ctx.pr.core.infra.entity.rule.employment.processing.yearmonth.QpdmtPayday;
 import nts.uk.ctx.pr.core.infra.entity.rule.employment.processing.yearmonth.QpdmtPaydayPK;
 

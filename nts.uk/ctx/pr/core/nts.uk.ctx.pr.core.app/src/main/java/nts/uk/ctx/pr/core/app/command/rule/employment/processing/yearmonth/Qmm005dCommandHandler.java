@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.core.app.command.rule.employement.processing.yearmonth;
+package nts.uk.ctx.pr.core.app.command.rule.employment.processing.yearmonth;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -6,12 +6,12 @@ import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.pr.core.dom.rule.employement.processing.yearmonth.PaydayProcessingRepository;
-import nts.uk.ctx.pr.core.dom.rule.employement.processing.yearmonth.StandardDayRepository;
-import nts.uk.ctx.pr.core.dom.rule.employement.processing.yearmonth.SystemDayRepository;
-import nts.uk.ctx.pr.core.dom.rule.employement.processing.yearmonth.paydayprocessing.PaydayProcessing;
-import nts.uk.ctx.pr.core.dom.rule.employement.processing.yearmonth.standardday.StandardDay;
-import nts.uk.ctx.pr.core.dom.rule.employement.processing.yearmonth.systemday.SystemDay;
+import nts.uk.ctx.pr.core.dom.rule.employment.processing.yearmonth.PaydayProcessingRepository;
+import nts.uk.ctx.pr.core.dom.rule.employment.processing.yearmonth.StandardDayRepository;
+import nts.uk.ctx.pr.core.dom.rule.employment.processing.yearmonth.SystemDayRepository;
+import nts.uk.ctx.pr.core.dom.rule.employment.processing.yearmonth.paydayprocessing.PaydayProcessing;
+import nts.uk.ctx.pr.core.dom.rule.employment.processing.yearmonth.standardday.StandardDay;
+import nts.uk.ctx.pr.core.dom.rule.employment.processing.yearmonth.systemday.SystemDay;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
@@ -34,7 +34,7 @@ public class Qmm005dCommandHandler extends CommandHandler<Qmm005dCommand> {
 
 		try {
 			PaydayProcessing paydayProcessingDomain = command.toPaydayProcessingDomain(companyCode);
-			PaydayProcessing paydayProcessingDomainUpdate = paydayProcessingRepo.select4Update(companyCode,
+			PaydayProcessing paydayProcessingDomainUpdate = paydayProcessingRepo.select1(companyCode,
 					paydayProcessingDomain.getProcessingNo().v());
 
 			if (paydayProcessingDomainUpdate != null) {

@@ -1,7 +1,7 @@
-package nts.uk.ctx.pr.core.app.command.rule.employement.processing.yearmonth;
+package nts.uk.ctx.pr.core.app.command.rule.employment.processing.yearmonth;
 
 import lombok.Getter;
-import nts.uk.ctx.pr.core.dom.rule.employement.processing.yearmonth.paydayprocessing.PaydayProcessing;
+import nts.uk.ctx.pr.core.dom.rule.employment.processing.yearmonth.paydayprocessing.PaydayProcessing;
 
 @Getter
 public class Qmm005aCommand {

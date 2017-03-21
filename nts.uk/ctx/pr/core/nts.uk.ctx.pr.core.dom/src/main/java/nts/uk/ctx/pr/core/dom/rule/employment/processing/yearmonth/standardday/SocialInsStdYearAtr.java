@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.core.dom.rule.employement.processing.yearmonth.standardday;
+package nts.uk.ctx.pr.core.dom.rule.employment.processing.yearmonth.standardday;
 
 import java.util.HashMap;
 

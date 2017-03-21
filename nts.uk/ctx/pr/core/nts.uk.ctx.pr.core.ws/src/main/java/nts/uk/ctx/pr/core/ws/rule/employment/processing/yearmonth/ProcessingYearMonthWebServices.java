@@ -8,18 +8,18 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.pr.core.app.command.rule.employement.processing.yearmonth.Qmm005cCommand;
-import nts.uk.ctx.pr.core.app.command.rule.employement.processing.yearmonth.Qmm005cCommandHandler;
-import nts.uk.ctx.pr.core.app.command.rule.employement.processing.yearmonth.Qmm005dCommand;
-import nts.uk.ctx.pr.core.app.command.rule.employement.processing.yearmonth.Qmm005dCommandHandler;
-import nts.uk.ctx.pr.core.app.find.rule.employement.processing.yearmonth.PaydayDto;
-import nts.uk.ctx.pr.core.app.find.rule.employement.processing.yearmonth.PaydayFinder;
-import nts.uk.ctx.pr.core.app.find.rule.employement.processing.yearmonth.PaydayProcessingDto;
-import nts.uk.ctx.pr.core.app.find.rule.employement.processing.yearmonth.PaydayProcessingFinder;
-import nts.uk.ctx.pr.core.app.find.rule.employement.processing.yearmonth.StandardDayDto;
-import nts.uk.ctx.pr.core.app.find.rule.employement.processing.yearmonth.StandardDayFinder;
-import nts.uk.ctx.pr.core.app.find.rule.employement.processing.yearmonth.SystemDayDto;
-import nts.uk.ctx.pr.core.app.find.rule.employement.processing.yearmonth.SystemDayFinder;
+import nts.uk.ctx.pr.core.app.command.rule.employment.processing.yearmonth.Qmm005cCommand;
+import nts.uk.ctx.pr.core.app.command.rule.employment.processing.yearmonth.Qmm005cCommandHandler;
+import nts.uk.ctx.pr.core.app.command.rule.employment.processing.yearmonth.Qmm005dCommand;
+import nts.uk.ctx.pr.core.app.command.rule.employment.processing.yearmonth.Qmm005dCommandHandler;
+import nts.uk.ctx.pr.core.app.find.rule.employment.processing.yearmonth.PaydayDto;
+import nts.uk.ctx.pr.core.app.find.rule.employment.processing.yearmonth.PaydayFinder;
+import nts.uk.ctx.pr.core.app.find.rule.employment.processing.yearmonth.PaydayProcessingDto;
+import nts.uk.ctx.pr.core.app.find.rule.employment.processing.yearmonth.PaydayProcessingFinder;
+import nts.uk.ctx.pr.core.app.find.rule.employment.processing.yearmonth.StandardDayDto;
+import nts.uk.ctx.pr.core.app.find.rule.employment.processing.yearmonth.StandardDayFinder;
+import nts.uk.ctx.pr.core.app.find.rule.employment.processing.yearmonth.SystemDayDto;
+import nts.uk.ctx.pr.core.app.find.rule.employment.processing.yearmonth.SystemDayFinder;
 import nts.uk.shr.com.context.AppContexts;
 
 @Path("pr/core")

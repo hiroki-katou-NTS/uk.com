@@ -1,10 +1,10 @@
-package nts.uk.ctx.pr.core.app.find.rule.employement.processing.yearmonth;
+package nts.uk.ctx.pr.core.app.find.rule.employment.processing.yearmonth;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.pr.core.dom.rule.employement.processing.yearmonth.SystemDayRepository;
-import nts.uk.ctx.pr.core.dom.rule.employement.processing.yearmonth.systemday.SystemDay;
+import nts.uk.ctx.pr.core.dom.rule.employment.processing.yearmonth.SystemDayRepository;
+import nts.uk.ctx.pr.core.dom.rule.employment.processing.yearmonth.systemday.SystemDay;
 
 @Stateless
 public class SystemDayFinder {

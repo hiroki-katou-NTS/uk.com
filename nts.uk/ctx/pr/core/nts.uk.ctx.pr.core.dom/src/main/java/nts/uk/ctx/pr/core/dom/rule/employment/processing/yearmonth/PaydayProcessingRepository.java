@@ -1,13 +1,13 @@
-package nts.uk.ctx.pr.core.dom.rule.employement.processing.yearmonth;
+package nts.uk.ctx.pr.core.dom.rule.employment.processing.yearmonth;
 
 import java.util.List;
 
-import nts.uk.ctx.pr.core.dom.rule.employement.processing.yearmonth.paydayprocessing.PaydayProcessing;
+import nts.uk.ctx.pr.core.dom.rule.employment.processing.yearmonth.paydayprocessing.PaydayProcessing;
 
 
 public interface PaydayProcessingRepository {
 
-	PaydayProcessing select4Update(String companyCode, int processingNo);
+	PaydayProcessing select1(String companyCode, int processingNo);
 	
 	List<PaydayProcessing> select3(String companyCode);
 	

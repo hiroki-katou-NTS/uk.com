@@ -1,11 +1,11 @@
-package nts.uk.ctx.pr.core.dom.rule.employement.processing.yearmonth.standardday;
+package nts.uk.ctx.pr.core.dom.rule.employment.processing.yearmonth.standardday;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.core.dom.company.CompanyCode;
-import nts.uk.ctx.pr.core.dom.rule.employement.processing.yearmonth.systemday.ProcessingNo;
+import nts.uk.ctx.pr.core.dom.rule.employment.processing.yearmonth.systemday.ProcessingNo;
 
 @Getter
 @AllArgsConstructor

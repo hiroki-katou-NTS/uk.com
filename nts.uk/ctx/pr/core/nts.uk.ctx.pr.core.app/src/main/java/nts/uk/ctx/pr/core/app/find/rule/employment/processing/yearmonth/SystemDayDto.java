@@ -1,7 +1,7 @@
-package nts.uk.ctx.pr.core.app.find.rule.employement.processing.yearmonth;
+package nts.uk.ctx.pr.core.app.find.rule.employment.processing.yearmonth;
 
 import lombok.Value;
-import nts.uk.ctx.pr.core.dom.rule.employement.processing.yearmonth.systemday.SystemDay;
+import nts.uk.ctx.pr.core.dom.rule.employment.processing.yearmonth.systemday.SystemDay;
 
 @Value
 public class SystemDayDto {

@@ -1,8 +1,8 @@
-package nts.uk.ctx.pr.core.app.command.rule.employement.processing.yearmonth;
+package nts.uk.ctx.pr.core.app.command.rule.employment.processing.yearmonth;
 
 import lombok.Getter;
 import nts.arc.time.GeneralDate;
-import nts.uk.ctx.pr.core.dom.rule.employement.processing.yearmonth.payday.Payday;
+import nts.uk.ctx.pr.core.dom.rule.employment.processing.yearmonth.payday.Payday;
 
 @Getter
 public class PayDayUpdateCommand {

@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.core.app.command.rule.employement.processing.yearmonth;
+package nts.uk.ctx.pr.core.app.command.rule.employment.processing.yearmonth;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -6,7 +6,7 @@ import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.pr.core.dom.rule.employement.processing.yearmonth.PaydayProcessingRepository;
+import nts.uk.ctx.pr.core.dom.rule.employment.processing.yearmonth.PaydayProcessingRepository;
 import nts.uk.shr.com.context.AppContexts;
 
 @Stateless

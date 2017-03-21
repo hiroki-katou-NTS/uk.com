@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.core.dom.rule.employement.processing.yearmonth.payday;
+package nts.uk.ctx.pr.core.dom.rule.employment.processing.yearmonth.payday;
 
 import nts.arc.primitive.IntegerPrimitiveValue;
 

@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.core.app.find.rule.employement.processing.yearmonth;
+package nts.uk.ctx.pr.core.app.find.rule.employment.processing.yearmonth;
 
 
 import java.util.List;
@@ -7,7 +7,7 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.pr.core.dom.rule.employement.processing.yearmonth.PaydayRepository;
+import nts.uk.ctx.pr.core.dom.rule.employment.processing.yearmonth.PaydayRepository;
 
 @Stateless
 public class PaydayFinder {

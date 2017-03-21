@@ -1,11 +1,11 @@
-package nts.uk.ctx.pr.core.app.command.rule.employement.processing.yearmonth;
+package nts.uk.ctx.pr.core.app.command.rule.employment.processing.yearmonth;
 
 import java.util.List;
 
 import lombok.Getter;
-import nts.uk.ctx.pr.core.dom.rule.employement.processing.yearmonth.paydayprocessing.PaydayProcessing;
-import nts.uk.ctx.pr.core.dom.rule.employement.processing.yearmonth.standardday.StandardDay;
-import nts.uk.ctx.pr.core.dom.rule.employement.processing.yearmonth.systemday.SystemDay;
+import nts.uk.ctx.pr.core.dom.rule.employment.processing.yearmonth.paydayprocessing.PaydayProcessing;
+import nts.uk.ctx.pr.core.dom.rule.employment.processing.yearmonth.standardday.StandardDay;
+import nts.uk.ctx.pr.core.dom.rule.employment.processing.yearmonth.systemday.SystemDay;
 
 @Getter
 public class Qmm005cCommand {

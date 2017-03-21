@@ -3,8 +3,8 @@ package nts.uk.ctx.pr.core.infra.repository.rule.employment.processing.yearmonth
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.pr.core.dom.rule.employement.processing.yearmonth.StandardDayRepository;
-import nts.uk.ctx.pr.core.dom.rule.employement.processing.yearmonth.standardday.StandardDay;
+import nts.uk.ctx.pr.core.dom.rule.employment.processing.yearmonth.StandardDayRepository;
+import nts.uk.ctx.pr.core.dom.rule.employment.processing.yearmonth.standardday.StandardDay;
 import nts.uk.ctx.pr.core.infra.entity.rule.employment.processing.yearmonth.QpdmtStandardDay;
 import nts.uk.ctx.pr.core.infra.entity.rule.employment.processing.yearmonth.QpdmtStandardDayPK;
 

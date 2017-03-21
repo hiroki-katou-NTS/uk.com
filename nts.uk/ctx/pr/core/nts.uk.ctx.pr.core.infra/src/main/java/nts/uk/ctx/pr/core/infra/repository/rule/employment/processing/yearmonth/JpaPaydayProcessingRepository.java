@@ -5,8 +5,8 @@ import java.util.List;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.pr.core.dom.rule.employement.processing.yearmonth.*;
-import nts.uk.ctx.pr.core.dom.rule.employement.processing.yearmonth.paydayprocessing.*;
+import nts.uk.ctx.pr.core.dom.rule.employment.processing.yearmonth.*;
+import nts.uk.ctx.pr.core.dom.rule.employment.processing.yearmonth.paydayprocessing.*;
 import nts.uk.ctx.pr.core.infra.entity.rule.employment.processing.yearmonth.*;
 
 @Stateless
@@ -18,7 +18,7 @@ public class JpaPaydayProcessingRepository extends JpaRepository implements Payd
 			+ " AND c.qpdmtPaydayProcessingPK.processingNo = :processingNo";
 
 	@Override
-	public PaydayProcessing select4Update(String companyCode, int processingNo) {
+	public PaydayProcessing select1(String companyCode, int processingNo) {
 		return this.queryProxy().query(SELECT_ONE_BY_KEY, QpdmtPaydayProcessing.class)
 				.setParameter("companyCode", companyCode)
 				.setParameter("processingNo", processingNo).getList(c -> toDomain(c)).get(0);

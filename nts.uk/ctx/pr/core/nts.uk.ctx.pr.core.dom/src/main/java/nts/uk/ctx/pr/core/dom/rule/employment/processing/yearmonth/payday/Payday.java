@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.core.dom.rule.employement.processing.yearmonth.payday;
+package nts.uk.ctx.pr.core.dom.rule.employment.processing.yearmonth.payday;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -9,7 +9,7 @@ import nts.arc.time.YearMonth;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.paymentdata.PayBonusAtr;
 import nts.uk.ctx.pr.core.dom.paymentdata.SparePayAtr;
-import nts.uk.ctx.pr.core.dom.rule.employement.processing.yearmonth.systemday.ProcessingNo;
+import nts.uk.ctx.pr.core.dom.rule.employment.processing.yearmonth.systemday.ProcessingNo;
 
 @Getter
 @AllArgsConstructor
