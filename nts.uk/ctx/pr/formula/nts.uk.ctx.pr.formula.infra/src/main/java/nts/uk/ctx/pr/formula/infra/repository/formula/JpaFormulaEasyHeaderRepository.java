@@ -23,16 +23,16 @@ public class JpaFormulaEasyHeaderRepository extends JpaRepository implements For
 	static {
 		StringBuilder builderString = new StringBuilder();
 		builderString.append("DELETE FROM QcfmtFormulaEasyHeader a ");
-		builderString.append("WHERE a.QcfmtFormulaEasyHeaderPK.companyCode = :companyCode ");
-		builderString.append("AND a.QcfmtFormulaEasyHeaderPK.formulaCode = :formulaCode ");
-		builderString.append("AND a.QcfmtFormulaEasyHeaderPK.historyId = :historyId ");
+		builderString.append("WHERE a.qcfmtFormulaEasyHeaderPK.companyCode = :companyCode ");
+		builderString.append("AND a.qcfmtFormulaEasyHeaderPK.formulaCode = :formulaCode ");
+		builderString.append("AND a.qcfmtFormulaEasyHeaderPK.historyId = :historyId ");
 		REMOVE_EASY_HEADER = builderString.toString();
 
 		builderString = new StringBuilder();
 		builderString.append("SELECT a FROM QcfmtFormulaEasyHeader a ");
-		builderString.append("WHERE a.QcfmtFormulaEasyHeaderPK.companyCode = :companyCode ");
-		builderString.append("AND a.QcfmtFormulaEasyHeaderPK.formulaCode = :formulaCode ");
-		builderString.append("AND a.QcfmtFormulaEasyHeaderPK.historyId = :historyId ");
+		builderString.append("WHERE a.qcfmtFormulaEasyHeaderPK.companyCode = :companyCode ");
+		builderString.append("AND a.qcfmtFormulaEasyHeaderPK.formulaCode = :formulaCode ");
+		builderString.append("AND a.qcfmtFormulaEasyHeaderPK.historyId = :historyId ");
 		FIND_EASY_HEADER = builderString.toString();
 	}
 
