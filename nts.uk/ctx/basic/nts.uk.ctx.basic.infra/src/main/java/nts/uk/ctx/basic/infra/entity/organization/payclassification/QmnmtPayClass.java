@@ -32,16 +32,4 @@ public class QmnmtPayClass implements Serializable{
 	@Basic(optional = false)
 	@Column(name = "PAYCLASS_NAME")
 	public String payClassificationName;
-
-
-	public QmnmtPayClassPK getQmnmtPayClassPK() {
-		return qmnmtPayClassPK;
-	}
-
-	public void setQmnmtPayClassPK(QmnmtPayClassPK qmnmtPayClassPK) {
-		this.qmnmtPayClassPK = qmnmtPayClassPK;
-	}
-
-
-	
 }
