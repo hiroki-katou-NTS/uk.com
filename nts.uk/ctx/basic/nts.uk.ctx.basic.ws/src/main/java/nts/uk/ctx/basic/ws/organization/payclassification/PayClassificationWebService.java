@@ -38,9 +38,6 @@ public class PayClassificationWebService extends WebService {
 	@Path("findAllPayClassification")
 	@POST
 	public List<PayClassificationDto> init() {
-		List<PayClassificationDto> i =null;
-		i = payClassificationFinder.init();
-		System.out.println("==" + i);
 		return payClassificationFinder.init();
 	}
 

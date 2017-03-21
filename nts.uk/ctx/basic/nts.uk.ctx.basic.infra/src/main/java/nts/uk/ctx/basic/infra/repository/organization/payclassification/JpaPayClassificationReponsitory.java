@@ -36,21 +36,27 @@ public class JpaPayClassificationReponsitory extends JpaRepository implements Pa
 		QUERY_IS_EXISTED = builderString.toString();
 	}
 	
-	//add pay classification
+	/**
+	 * add pay classification
+	 */
 	@Override
 	public void add(PayClassification payClassification) {
 		this.commandProxy().insert(convertToDbType(payClassification));
 
 	}
 
-	//update pay classification
+	/**
+	 * update pay classification
+	 */
 	@Override
 	public void update(PayClassification payClassification) {
 		this.commandProxy().update(convertToDbType(payClassification));
 
 	}
 
-	//delete pay classification
+	/**
+	 * delete pay classification
+	 */
 	@Override
 	public void remove(String companyCode, String payClassificationCode) {
 		QmnmtPayClassPK qmnmtPayClassPK = new QmnmtPayClassPK(companyCode, payClassificationCode.toString());
@@ -58,7 +64,9 @@ public class JpaPayClassificationReponsitory extends JpaRepository implements Pa
 
 	}
 
-	//find all pay classification
+	/**
+	 * find all pay classification
+	 */
 	@Override
 	public List<PayClassification> findAll(String companyCode) {
 		List<QmnmtPayClass> resultList = this.queryProxy().query(FIND_ALL, QmnmtPayClass.class)
@@ -68,7 +76,9 @@ public class JpaPayClassificationReponsitory extends JpaRepository implements Pa
 		}).collect(Collectors.toList()) : new ArrayList<>();
 	}
 
-	//check existed pay classification
+	/**
+	 * check existed pay classification
+	 */
 	@Override
 	public boolean isExisted(String companyCode, String payClassificationCode) {
 		return this.queryProxy().query(QUERY_IS_EXISTED, long.class)
@@ -77,7 +87,11 @@ public class JpaPayClassificationReponsitory extends JpaRepository implements Pa
 		.getSingle().get() > 0;
 	}
 
-	//convert to database type
+	/**
+	 * convert to database type
+	 * @param payClassification
+	 * @return
+	 */
 	private QmnmtPayClass convertToDbType(PayClassification payClassification) {
 		QmnmtPayClass qmnmtPayClass = new QmnmtPayClass();
 		QmnmtPayClassPK qmnmtPayClassPK = new QmnmtPayClassPK(payClassification.getCompanyCode(),
@@ -89,7 +103,11 @@ public class JpaPayClassificationReponsitory extends JpaRepository implements Pa
 		
 	}
 	
-	//convert to domain
+	/**
+	 * convert to domain
+	 * @param qmnmtPayClass
+	 * @return
+	 */
 	private PayClassification convertToDomain(QmnmtPayClass qmnmtPayClass) {
 		return new PayClassification(
 				new Memo(qmnmtPayClass.getMemo() != null ? qmnmtPayClass.getMemo() : ""),

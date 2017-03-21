@@ -5,18 +5,42 @@ import java.util.List;
 
 public interface PayClassificationRepository {
 
-	//add pay classification
+	/**
+	 * add pay classification
+	 * @param payClassification
+	 */
+	
 	void add(PayClassification payClassification);
 
-	//update pay classification
+	/**
+	 * update pay classification
+	 * @param payClassification
+	 */
+	
 	void update(PayClassification payClassification);
 
-	//check existed
+	/**
+	 * check existed
+	 * @param companyCode
+	 * @param payClassificationCode
+	 * @return
+	 */
+	
 	boolean isExisted(String companyCode, String payClassificationCode);
 
-	//find all pay classification
+	/**
+	 * find all pay classification
+	 * @param companyCode
+	 * @return
+	 */
+	
 	List<PayClassification> findAll(String companyCode);
 
-	//delete pay classification
+	/**
+	 * delete pay classification
+	 * @param companyCode
+	 * @param payClassificationCode
+	 */
+	
 	void remove(String companyCode, String payClassificationCode);
 }
