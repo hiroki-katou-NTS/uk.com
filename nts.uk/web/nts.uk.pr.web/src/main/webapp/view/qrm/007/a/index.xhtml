@@ -13,10 +13,10 @@
 					nts.uk.shr.com.primitive.Memo
    				</com:ValidatorScript>
 				<com:scriptfile set="IGNITE" />
-				<com:scriptfile path="start.js" />
-				<com:scriptfile path="viewmodel.js" />
-				<com:scriptfile path="service.js" />
-				<com:stylefile path="main.css" />
+				<com:scriptfile path="qrm007.a.start.js" />
+				<com:scriptfile path="qrm007.a.viewmodel.js" />
+				<com:scriptfile path="qrm007.a.service.js" />
+				<com:stylefile path="qrm007.a.main.css" />
 			</ui:define>
 			
 			<ui:define name="content">
@@ -28,7 +28,7 @@
 						<div class="pull-left">
 							<div class="caret-right caret-background bg-green">
 								<table id="lst-001" data-bind="ntsGridList: {
-										width: 600, height: 250,
+										width: 550, height: 250,
 										options: retirementPayItemList,
 										optionsValue: 'itemCode',
 										columns: ko.observableArray([
@@ -55,7 +55,7 @@
 								</div>
 								<div class="cell valign-center">
 									<div data-bind="with: currentItem">
-										<input id="inp-1" data-name="退職金印刷用項目名称" class="data-required" data-bind="ntsTextEditor: {
+										<input id="inp-1" data-name="印刷用名称" class="data-required" data-bind="ntsTextEditor: {
 											value: printName,
 											constraint: 'RetirementPayItemPrintName',
 											option: { width: '200px' },
@@ -70,7 +70,7 @@
 								</div>
 								<div class="cell">
 									<div data-bind="with: currentItem">
-										<textarea id="text-area" data-bind="ntsMultilineEditor: {
+										<textarea id="text-area" data-name="メモ" data-bind="ntsMultilineEditor: {
 											value: memo,
 											constraint: 'Memo',
 											option: { resizeable: true }}" />
@@ -78,8 +78,6 @@
 								</div>
 							</div>
 						</div>
-					
-					
 				</div>
 			</ui:define>
 		</ui:composition>

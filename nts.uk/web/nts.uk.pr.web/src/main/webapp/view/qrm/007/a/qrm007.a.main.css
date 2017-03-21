@@ -31,18 +31,18 @@ input, textarea {
 }
 
 .pull-left {
-	width: 683px;
+	width: 633px;
 }
 
 .caret-background {
-	width: 600px; 
+	width: 550px; 
 	height: auto;
 	margin-left: 10px;
 	padding: 15px;
 }
 
 .column1 {
-	width: 120px;
+	width: 140px;
 }
 
 #name-span {

@@ -18,7 +18,7 @@ var qrm007;
                         done(function () {
                         $(document).delegate("#lst-001", "iggridselectionrowselectionchanging", function (evt, ui) {
                             if (self.dirty.isDirty()) {
-                                nts.uk.ui.dialog.confirm("Do you want to change Item ?").
+                                nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\nよろしいですか。 ").
                                     ifYes(function () {
                                     $('#inp-1').ntsError('clear');
                                     self.currentCode(ui.row.id);
@@ -67,10 +67,8 @@ var qrm007;
                     qrm007.a.service.qremt_Retire_Pay_Item_UPD_1(command).
                         done(function (data) {
                         self.findRetirementPayItemList(true);
-                        nts.uk.ui.dialog.alert("Update Success");
                         dfd.resolve();
                     }).fail(function (res) {
-                        nts.uk.ui.dialog.alert("Update Fail");
                         dfd.reject();
                     });
                     return dfd.promise();
