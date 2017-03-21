@@ -43,15 +43,9 @@ public class ProcessingYearMonthWebServices extends WebService {
 	@Inject
 	private Qmm005dCommandHandler qmm005dCommandHandler;
 	
-
-	@POST
-	@Path("qmm005c/insert")
-	public void qmm005cInsert(Qmm005cCommand command) {
-		try {
-			qmm005cCommandHandler.handle(command);
-		} catch (Exception ex) {
-			throw ex;
-		}
+	@Path("paydayrocessing/getbyccd")
+	public List<PaydayProcessingDto> getPaydayProcessing(String companyCode) {
+		return paydayProcessingFinder.select3(companyCode);
 	}
 
 	@POST
@@ -69,6 +63,16 @@ public class ProcessingYearMonthWebServices extends WebService {
 		}
 
 		return domain;
+	}
+
+	@POST
+	@Path("qmm005c/insert")
+	public void qmm005cInsert(Qmm005cCommand command) {
+		try {
+			qmm005cCommandHandler.handle(command);
+		} catch (Exception ex) {
+			throw ex;
+		}
 	}
 
 	@POST
