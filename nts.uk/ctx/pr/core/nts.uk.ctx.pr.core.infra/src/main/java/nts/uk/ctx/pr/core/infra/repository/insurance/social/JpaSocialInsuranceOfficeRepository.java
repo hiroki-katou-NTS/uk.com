@@ -18,7 +18,7 @@ import javax.persistence.criteria.Root;
 
 import nts.arc.error.BusinessException;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.gul.collection.ListUtil;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
 import nts.uk.ctx.pr.core.dom.insurance.social.SocialInsuranceOffice;
@@ -94,7 +94,7 @@ public class JpaSocialInsuranceOfficeRepository extends JpaRepository
 		cq.where(predicateList.toArray(new Predicate[] {}));
 		List<QismtSocialInsuOffice> result = em.createQuery(cq).getResultList();
 		// If have no record.
-		if (!ListUtil.isEmpty(result)) {
+		if (!CollectionUtil.isEmpty(result)) {
 			QismtSocialInsuOffice entity = new QismtSocialInsuOffice();
 			entity = result.get(0);
 			em.remove(entity);
@@ -164,7 +164,7 @@ public class JpaSocialInsuranceOfficeRepository extends JpaRepository
 		List<QismtSocialInsuOffice> result = em.createQuery(cq).getResultList();
 
 		// If have no record.
-		if (ListUtil.isEmpty(result)) {
+		if (CollectionUtil.isEmpty(result)) {
 			return null;
 		}
 
@@ -203,7 +203,7 @@ public class JpaSocialInsuranceOfficeRepository extends JpaRepository
 		List<QismtSocialInsuOffice> result = em.createQuery(cq).getResultList();
 
 		// If have no record.
-		if (ListUtil.isEmpty(result)) {
+		if (CollectionUtil.isEmpty(result)) {
 			return false;
 		}
 

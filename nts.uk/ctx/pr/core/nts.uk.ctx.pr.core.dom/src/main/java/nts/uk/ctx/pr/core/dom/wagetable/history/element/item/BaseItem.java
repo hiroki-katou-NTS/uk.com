@@ -9,7 +9,7 @@ import nts.uk.ctx.pr.core.dom.wagetable.ElementId;
 /**
  * The Class BaseItem.
  */
-public class BaseItem {
+public class BaseItem implements Item {
 
 	/** The uuid. */
 	protected ElementId uuid;
@@ -17,7 +17,8 @@ public class BaseItem {
 	/**
 	 * Instantiates a new base item.
 	 *
-	 * @param uuid the uuid
+	 * @param uuid
+	 *            the uuid
 	 */
 	public BaseItem(ElementId uuid) {
 		super();
