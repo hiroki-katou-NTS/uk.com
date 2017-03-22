@@ -119,7 +119,7 @@ var nts;
                                     self.pensionModel().endMonth(nts.uk.time.formatYearMonth(parseInt(data.endMonth)));
                                     self.japanYear("(" + nts.uk.time.yearmonthInJapanEmpire(data.startMonth).toString() + ")");
                                     self.pensionModel().autoCalculate(data.autoCalculate);
-                                    self.pensionModel().fundInputApply(1);
+                                    self.pensionModel().fundInputApply(data.fundInputApply);
                                     data.premiumRateItems.forEach(function (item, index) {
                                         if (item.payType == PaymentType.SALARY && item.genderType == InsuranceGender.MALE) {
                                             self.pensionModel().rateItems().pensionSalaryPersonalSon(item.personalRate);
@@ -223,7 +223,7 @@ var nts;
                                     var rounding = self.pensionModel().roundingMethods();
                                     roundingMethods.push(new RoundingDto(PaymentType.SALARY, new RoundingItemDto(self.convertToRounding(self.pensionModel().roundingMethods().pensionSalaryPersonalComboBoxSelectedCode()), self.convertToRounding(self.pensionModel().roundingMethods().pensionSalaryCompanyComboBoxSelectedCode()))));
                                     roundingMethods.push(new RoundingDto(PaymentType.BONUS, new RoundingItemDto(self.convertToRounding(self.pensionModel().roundingMethods().pensionBonusPersonalComboBoxSelectedCode()), self.convertToRounding(self.pensionModel().roundingMethods().pensionBonusCompanyComboBoxSelectedCode()))));
-                                    return new c.service.model.finder.PensionRateDto(self.pensionModel().historyId, self.pensionModel().companyCode, self.currentOfficeCode(), self.pensionModel().startMonth(), self.pensionModel().endMonth(), self.pensionModel().autoCalculate(), true, rateItems, fundRateItems, roundingMethods, self.pensionModel().maxAmount(), self.pensionModel().childContributionRate());
+                                    return new c.service.model.finder.PensionRateDto(self.pensionModel().historyId, self.pensionModel().companyCode, self.currentOfficeCode(), self.pensionModel().startMonth(), self.pensionModel().endMonth(), self.pensionModel().autoCalculate(), self.pensionModel().fundInputApply(), rateItems, fundRateItems, roundingMethods, self.pensionModel().maxAmount(), self.pensionModel().childContributionRate());
                                 };
                                 ScreenModel.prototype.getDataOfPensionSelectedOffice = function () {
                                     var self = this;

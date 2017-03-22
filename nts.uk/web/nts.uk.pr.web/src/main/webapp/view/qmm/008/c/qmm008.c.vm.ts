@@ -42,7 +42,6 @@ module nts.uk.pr.view.qmm008.c {
             
             listAvgEarnLevelMasterSetting: Array<AvgEarnLevelMasterSettingDto>;
             listPensionAvgearnModel: KnockoutObservableArray<PensionAvgearnModel>;
-
             constructor() {
                 super({
                     functionName: '社会保険事業所',
@@ -164,11 +163,7 @@ module nts.uk.pr.view.qmm008.c {
                 self.pensionModel().endMonth(nts.uk.time.formatYearMonth(parseInt(data.endMonth)));
                 self.japanYear("("+nts.uk.time.yearmonthInJapanEmpire(data.startMonth).toString()+")");
                 self.pensionModel().autoCalculate(data.autoCalculate);
-                //TODO fundInputApply
-                //                    if (data.fundInputApply)
-                //                        self.pensionModel().fundInputApply(1);
-                //                    else
-                self.pensionModel().fundInputApply(1);
+                self.pensionModel().fundInputApply(data.fundInputApply);
 
                 data.premiumRateItems.forEach(function(item, index) {
                     if (item.payType == PaymentType.SALARY && item.genderType == InsuranceGender.MALE) {
@@ -284,7 +279,7 @@ module nts.uk.pr.view.qmm008.c {
                 roundingMethods.push(new RoundingDto(PaymentType.SALARY, new RoundingItemDto(self.convertToRounding(self.pensionModel().roundingMethods().pensionSalaryPersonalComboBoxSelectedCode()), self.convertToRounding(self.pensionModel().roundingMethods().pensionSalaryCompanyComboBoxSelectedCode()))));
                 roundingMethods.push(new RoundingDto(PaymentType.BONUS, new RoundingItemDto(self.convertToRounding(self.pensionModel().roundingMethods().pensionBonusPersonalComboBoxSelectedCode()), self.convertToRounding(self.pensionModel().roundingMethods().pensionBonusCompanyComboBoxSelectedCode()))));
 
-                return new service.model.finder.PensionRateDto(self.pensionModel().historyId, self.pensionModel().companyCode, self.currentOfficeCode(), self.pensionModel().startMonth(), self.pensionModel().endMonth(), self.pensionModel().autoCalculate(), true, rateItems, fundRateItems, roundingMethods, self.pensionModel().maxAmount(), self.pensionModel().childContributionRate());
+                return new service.model.finder.PensionRateDto(self.pensionModel().historyId, self.pensionModel().companyCode, self.currentOfficeCode(), self.pensionModel().startMonth(), self.pensionModel().endMonth(), self.pensionModel().autoCalculate(), self.pensionModel().fundInputApply(), rateItems, fundRateItems, roundingMethods, self.pensionModel().maxAmount(), self.pensionModel().childContributionRate());
             }
 
             //get current item office 

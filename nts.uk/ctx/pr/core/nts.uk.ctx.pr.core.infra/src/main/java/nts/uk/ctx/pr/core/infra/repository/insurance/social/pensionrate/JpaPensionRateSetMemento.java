@@ -9,6 +9,7 @@ import java.util.Set;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.CalculateMethod;
 import nts.uk.ctx.pr.core.dom.insurance.CommonAmount;
+import nts.uk.ctx.pr.core.dom.insurance.FundInputApply;
 import nts.uk.ctx.pr.core.dom.insurance.Ins2Rate;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
@@ -235,9 +236,8 @@ public class JpaPensionRateSetMemento implements PensionRateSetMemento {
 	 * #setFundInputApply(java.lang.Boolean)
 	 */
 	@Override
-	public void setFundInputApply(Boolean fundInputApply) {
-		// TODO Auto-generated method stub
-
+	public void setFundInputApply(FundInputApply fundInputApply) {
+		this.typeValue.setPensionFundJoinAtr(fundInputApply.value);
 	}
 
 	/*
