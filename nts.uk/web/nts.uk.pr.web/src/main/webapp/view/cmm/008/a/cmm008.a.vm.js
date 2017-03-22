@@ -9,11 +9,11 @@ var cmm008;
                 function ScreenModel() {
                     var self = this;
                     self.employmentName = ko.observable("");
-                    self.isCheckbox = ko.observable(true);
+                    self.isCheckbox = ko.observable(false);
                     self.closeDateList = ko.observableArray([]);
                     self.selectedCloseCode = ko.observable('システム未導入');
                     self.managementHolidays = ko.observableArray([]);
-                    self.holidayCode = ko.observable(1);
+                    self.holidayCode = ko.observable(0);
                     self.processingDateList = ko.observableArray([]);
                     self.selectedProcessNo = ko.observable(0);
                     self.employmentOutCode = ko.observable("");
@@ -23,6 +23,7 @@ var cmm008;
                     self.employmentCode = ko.observable("");
                     self.isEnable = ko.observable(false);
                     self.isDelete = ko.observable(true);
+                    self.lstMessage = ko.observableArray([]);
                     self.multilineeditor = {
                         memoValue: ko.observable(""),
                         constraint: '',
@@ -36,7 +37,6 @@ var cmm008;
                     };
                 }
                 ;
-                // start function
                 ScreenModel.prototype.start = function () {
                     var self = this;
                     var dfd = $.Deferred();
@@ -46,14 +46,17 @@ var cmm008;
                     var height = heightScreen - heightHeader - 75;
                     $('#contents-left').css({ height: height, width: widthScreen * 30 / 100 });
                     $('#contents-right').css({ height: height, width: widthScreen * 70 / 100 });
+                    self.listMessage();
                     self.closeDateListItem();
                     self.managementHolidaylist();
                     self.processingDateItem();
                     self.dataSourceItem();
-                    //list data click
                     self.currentCode.subscribe(function (newValue) {
                         if (!self.checkChange(self.employmentCode())) {
-                            nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\nよろしいですか。").ifCancel(function () {
+                            var AL001 = _.find(self.lstMessage(), function (mess) {
+                                return mess.messCode === "AL001";
+                            });
+                            nts.uk.ui.dialog.confirm(AL001.messName).ifCancel(function () {
                                 self.reloadScreenWhenListClick(newValue);
                                 return;
                             }).ifYes(function () {
@@ -66,7 +69,6 @@ var cmm008;
                     });
                     a.service.getProcessingNo();
                     dfd.resolve();
-                    // Return.
                     return dfd.promise();
                 };
                 ScreenModel.prototype.reloadScreenWhenListClick = function (newValue) {
@@ -81,6 +83,7 @@ var cmm008;
                             self.selectedProcessNo(employ.processingNo);
                             self.multilineeditor.memoValue(employ.memo);
                             self.employmentOutCode(employ.employementOutCd);
+                            self.holidayCode(employ.statutoryHolidayAtr);
                             if (employ.displayFlg == 1) {
                                 self.isCheckbox(true);
                             }
@@ -101,20 +104,33 @@ var cmm008;
                 ScreenModel.prototype.managementHolidaylist = function () {
                     var self = this;
                     self.managementHolidays = ko.observableArray([
-                        { code: 1, name: 'する' },
-                        { code: 2, name: 'しない' }
+                        { code: 0, name: 'する' },
+                        { code: 1, name: 'しない' }
                     ]);
-                    self.holidayCode = ko.observable(1);
+                    self.holidayCode = ko.observable(0);
                 };
-                //処理日区分 を取得する
+                ScreenModel.prototype.listMessage = function () {
+                    var self = this;
+                    self.lstMessage.push(new ItemMessage("ER001", "*が入力されていません。"));
+                    self.lstMessage.push(new ItemMessage("ER005", "入力した*は既に存在しています。\r\n*を確認してください。"));
+                    self.lstMessage.push(new ItemMessage("ER010", "対象データがありません。"));
+                    self.lstMessage.push(new ItemMessage("AL001", "変更された内容が登録されていません。\r\nよろしいですか。"));
+                    self.lstMessage.push(new ItemMessage("AL002", "データを削除します。\r\nよろしいですか？"));
+                    self.lstMessage.push(new ItemMessage("ER026", "更新対象のデータが存在しません。"));
+                };
                 ScreenModel.prototype.processingDateItem = function () {
                     var self = this;
                     a.service.getProcessingNo().done(function (lstProcessingNo) {
                         if (lstProcessingNo.length !== 0) {
                             _.forEach(lstProcessingNo, function (processingNo) {
-                                self.processingDateList.push(new ItemProcessingDate(processingNo[0].processingNo, processingNo[0].processingName));
+                                self.processingDateList.push(new ItemProcessingDate(processingNo.processingNo, processingNo.processingName));
                             });
                         }
+                    }).fail(function (res) {
+                        var ER010 = _.find(self.lstMessage(), function (mess) {
+                            return mess.messCode === "ER010";
+                        });
+                        nts.uk.ui.dialog.alert(ER010.messName);
                     });
                 };
                 ScreenModel.prototype.dataSourceItem = function () {
@@ -139,7 +155,6 @@ var cmm008;
                                 if (employ.closeDateNo === 0) {
                                     employ.closeDateNoStr = "システム未導入";
                                 }
-                                //get processing name
                                 _.find(self.processingDateList(), function (processNo) {
                                     employ.processingStr = processNo.processingName;
                                     return employ.processingNo == processNo.processingNo;
@@ -158,40 +173,41 @@ var cmm008;
                         { headerText: '名称', prop: 'employmentName', width: 160 },
                         { headerText: '締め日', prop: 'closeDateNoStr', width: 150 },
                         { headerText: '処理日区分', prop: 'processingStr', width: 150 },
-                        { headerText: '初期表示', prop: 'displayStr', width: 100 }
+                        { headerText: '初期表示', prop: 'displayStr', width: 80 }
                     ]);
                     self.singleSelectedCode = ko.observable(null);
                     return dfd.promise();
                 };
-                //登録ボタンを押す
                 ScreenModel.prototype.createEmployment = function () {
                     var self = this;
-                    //必須項目の未入力チェック
+                    var ER001 = _.find(self.lstMessage(), function (mess) {
+                        return mess.messCode === "ER001";
+                    });
                     if (self.employmentCode() === "") {
-                        nts.uk.ui.dialog.alert("コードが入力されていません。");
+                        nts.uk.ui.dialog.alert(ER001.messName.replace('*', 'コード'));
                         $("#INP_002").focus();
                         return;
                     }
                     if (self.employmentName() === "") {
-                        nts.uk.ui.dialog.alert("名称が入力されていません。");
+                        nts.uk.ui.dialog.alert(ER001.messName.replace('*', '名称'));
                         $("#INP_003").focus();
                         return;
                     }
                     var employment = new a.service.model.employmentDto();
                     employment.employmentCode = self.employmentCode();
                     employment.employmentName = self.employmentName();
-                    //今回は就業システム未導入の場合としてください。
-                    //（上記にあるように　締め日区分 = 0 ）
                     employment.closeDateNo = 0;
                     employment.processingNo = self.selectedProcessNo();
                     employment.statutoryHolidayAtr = self.holidayCode();
                     employment.employementOutCd = self.employmentOutCode();
                     employment.memo = self.multilineeditor.memoValue();
+                    if (self.dataSource().length === 0) {
+                        self.isCheckbox(true);
+                    }
                     if (self.isCheckbox())
                         employment.displayFlg = 1;
                     else
                         employment.displayFlg = 0;
-                    //新規の時
                     if (self.isEnable()) {
                         a.service.createEmployment(employment).done(function () {
                             $.when(self.dataSource()).done(function () {
@@ -200,7 +216,10 @@ var cmm008;
                                 });
                             });
                         }).fail(function (error) {
-                            nts.uk.ui.dialog.alert(error.message);
+                            var newMess = _.find(self.lstMessage(), function (mess) {
+                                return mess.messCode === error.message;
+                            });
+                            nts.uk.ui.dialog.alert(newMess.messName.split('*').join('コード'));
                             self.isEnable(true);
                             $("#INP_002").focus();
                         });
@@ -210,15 +229,21 @@ var cmm008;
                             $.when(self.dataSourceItem()).done(function () {
                                 self.currentCode(employment.employmentCode);
                             });
+                        }).fail(function (res) {
+                            var newMess = _.find(self.lstMessage(), function (mess) {
+                                return mess.messCode === res.message;
+                            });
+                            nts.uk.ui.dialog.alert(newMess.messName);
                         });
                     }
                 };
-                //新規ボタンを押す
                 ScreenModel.prototype.newCreateEmployment = function () {
                     var self = this;
-                    //変更確認
-                    if (!self.checkChange(self.employmentCode())) {
-                        nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\nよろしいですか。").ifCancel(function () {
+                    if (self.dataSource().length !== 0 && !self.checkChange(self.employmentCode())) {
+                        var AL001 = _.find(self.lstMessage(), function (mess) {
+                            return mess.messCode === "AL001";
+                        });
+                        nts.uk.ui.dialog.confirm(AL001.messName).ifCancel(function () {
                             self.clearItem();
                             return;
                         }).ifYes(function () {
@@ -247,7 +272,7 @@ var cmm008;
                             return true;
                         }
                     }
-                    else if (self.employmentCode() !== "") {
+                    else if (self.employmentCode() !== "" && self.isEnable()) {
                         return false;
                     }
                     else {
@@ -264,12 +289,16 @@ var cmm008;
                     self.currentCode("");
                     self.isCheckbox(false);
                     self.isDelete(false);
+                    self.holidayCode(1);
+                    self.selectedProcessNo(0);
                     $("#INP_002").focus();
                 };
-                //削除
                 ScreenModel.prototype.deleteEmployment = function () {
                     var self = this;
-                    nts.uk.ui.dialog.confirm("データを削除します。\r\nよろしいですか？").ifCancel(function () {
+                    var AL002 = _.find(self.lstMessage(), function (mess) {
+                        return mess.messCode === "AL002";
+                    });
+                    nts.uk.ui.dialog.confirm(AL002.messName).ifCancel(function () {
                         return;
                     }).ifYes(function () {
                         var employment = new a.service.model.employmentDto();
@@ -303,7 +332,10 @@ var cmm008;
                                 }
                             });
                         }).fail(function (res) {
-                            nts.uk.ui.dialog.alert(res.message);
+                            var delMess = _.find(self.lstMessage(), function (mess) {
+                                return mess.messCode === res.message;
+                            });
+                            nts.uk.ui.dialog.alert(delMess.messName);
                         });
                     });
                 };
@@ -326,6 +358,15 @@ var cmm008;
                 return ItemProcessingDate;
             }());
             viewmodel.ItemProcessingDate = ItemProcessingDate;
+            var ItemMessage = (function () {
+                function ItemMessage(messCode, messName) {
+                    this.messCode = messCode;
+                    this.messName = messName;
+                }
+                return ItemMessage;
+            }());
+            viewmodel.ItemMessage = ItemMessage;
         })(viewmodel = a.viewmodel || (a.viewmodel = {}));
     })(a = cmm008.a || (cmm008.a = {}));
 })(cmm008 || (cmm008 = {}));
+//# sourceMappingURL=cmm008.a.vm.js.map

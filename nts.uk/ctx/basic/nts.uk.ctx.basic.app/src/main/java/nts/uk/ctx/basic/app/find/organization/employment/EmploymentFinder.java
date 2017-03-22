@@ -15,13 +15,14 @@ public class EmploymentFinder {
 	private EmploymentRepository repository;
 
 	
-	private String companyCode = AppContexts.user().companyCode();
+	
 	/**
 	 * find all employments by company code
 	 * @param companyCode
 	 * @return
 	 */
 	public List<EmploymentDto> getAllEmployment(){
+		String companyCode = AppContexts.user().companyCode();
 		return this.repository.findAllEmployment(companyCode)
 				.stream().map(employ -> EmploymentDto.fromDomain(employ)).collect(Collectors.toList());
 	}
@@ -32,6 +33,7 @@ public class EmploymentFinder {
 	 * @return
 	 */
 	public Optional<EmploymentDto> getEmployment(String employmentCode){
+		String companyCode = AppContexts.user().companyCode();
 		return this.repository.findEmployment(companyCode, employmentCode).map(employ -> EmploymentDto.fromDomain(employ));		
 	}
 	/**
@@ -41,6 +43,7 @@ public class EmploymentFinder {
 	 * @return
 	 */
 	public Optional<EmploymentDto> findEmpByDisplayFlg(){
+		String companyCode = AppContexts.user().companyCode();
 		return this.repository.findEmploymnetByDisplayFlg(companyCode).map(employ -> EmploymentDto.fromDomain(employ));
 	}
 	
