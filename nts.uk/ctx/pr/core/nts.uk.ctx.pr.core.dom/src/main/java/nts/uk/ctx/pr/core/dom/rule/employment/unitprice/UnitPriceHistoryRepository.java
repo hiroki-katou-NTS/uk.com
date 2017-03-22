@@ -21,13 +21,4 @@ public interface UnitPriceHistoryRepository extends SimpleHistoryRepository<Unit
 	 * @return the list
 	 */
 	List<UnitPriceHistory> findAll(CompanyCode companyCode);
-
-	/**
-	 * Checks if is duplicate code.
-	 *
-	 * @param companyCode the company code
-	 * @param unitPriceCode the unit price code
-	 * @return true, if is duplicate code
-	 */
-	boolean isDuplicateCode(CompanyCode companyCode, UnitPriceCode unitPriceCode);
 }

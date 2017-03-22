@@ -135,20 +135,6 @@ public class UnitPriceHistoryServiceImpl extends UnitPriceHistoryService {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see nts.uk.ctx.pr.core.dom.rule.employment.unitprice.service.
-	 * UnitPriceHistoryService#checkDuplicateCode(nts.uk.ctx.pr.core.dom.rule.
-	 * employment.unitprice.UnitPriceHistory)
-	 */
-	public void checkDuplicateCode(UnitPriceHistory unitPriceHistory) {
-		if (unitPriceHistoryRepo.isDuplicateCode(unitPriceHistory.getCompanyCode(),
-				unitPriceHistory.getUnitPriceCode())) {
-			throw new BusinessException("ER005: 一致するデータが見つかった");
-		}
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
 	 * @see nts.uk.ctx.pr.core.dom.base.simplehistory.SimpleHistoryBaseService#
 	 * getRepository()
 	 */

@@ -20,7 +20,6 @@ import javax.persistence.criteria.Root;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.core.dom.company.CompanyCode;
-import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceCode;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceHistory;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceHistoryRepository;
 import nts.uk.ctx.pr.core.infra.entity.rule.employment.unitprice.QupmtCUnitpriceDetail;
@@ -87,41 +86,6 @@ public class JpaUnitPriceHistoryRepository extends JpaRepository implements Unit
 
 		return em.createQuery(cq).getResultList().stream().map(item -> this.toDomain(item))
 				.collect(Collectors.toList());
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.pr.core.dom.rule.employment.unitprice.
-	 * UnitPriceHistoryRepository#isDuplicateCode(nts.uk.ctx.core.dom.company.
-	 * CompanyCode,
-	 * nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceCode)
-	 */
-	public boolean isDuplicateCode(CompanyCode companyCode, UnitPriceCode unitPriceCode) {
-		// Get entity manager
-		EntityManager em = this.getEntityManager();
-
-		// Query for indicated stress check.
-		CriteriaBuilder cb = em.getCriteriaBuilder();
-		CriteriaQuery<QupmtCUnitpriceDetail> cq = cb.createQuery(QupmtCUnitpriceDetail.class);
-		Root<QupmtCUnitpriceDetail> root = cq.from(QupmtCUnitpriceDetail.class);
-		// Constructing list of parameters
-		List<Predicate> predicateList = new ArrayList<Predicate>();
-
-		predicateList.add(
-				cb.equal(root.get(QupmtCUnitpriceDetail_.qupmtCUnitpriceDetailPK).get(QupmtCUnitpriceDetailPK_.ccd),
-						companyCode.v()));
-		predicateList.add(cb.equal(
-				root.get(QupmtCUnitpriceDetail_.qupmtCUnitpriceDetailPK).get(QupmtCUnitpriceDetailPK_.cUnitpriceCd),
-				unitPriceCode));
-		cq.where(predicateList.toArray(new Predicate[] {}));
-
-		List<QupmtCUnitpriceDetail> result = em.createQuery(cq).getResultList();
-
-		if (CollectionUtil.isEmpty(result)) {
-			return false;
-		}
-		return true;
 	}
 
 	/*
