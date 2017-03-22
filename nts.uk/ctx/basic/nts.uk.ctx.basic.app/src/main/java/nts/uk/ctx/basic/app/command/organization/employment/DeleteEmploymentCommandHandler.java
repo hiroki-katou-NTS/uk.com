@@ -29,7 +29,7 @@ public class DeleteEmploymentCommandHandler extends CommandHandler<DeleteEmploym
 			
 			Optional<Employment> emDelete = repository.findEmployment(companyCode, command.getEmploymentCode());
 			if(!emDelete.isPresent()){
-				throw new BusinessException("対象データがありません。");
+				throw new BusinessException("ER010");
 			}
 			
 			//初期表示するのはコードの昇順で先頭になる項目です。

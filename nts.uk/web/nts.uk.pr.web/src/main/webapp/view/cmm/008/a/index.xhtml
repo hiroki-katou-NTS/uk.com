@@ -15,6 +15,7 @@
 			<com:ValidatorScript>
 					nts.uk.ctx.basic.dom.organization.employment.EmploymentCode
 					nts.uk.ctx.basic.dom.organization.employment.EmploymentName
+					nts.uk.shr.com.primitive.Memo
 			</com:ValidatorScript>
 		</ui:define>
 
@@ -154,7 +155,7 @@
 											<textarea id="INP_005"
 												data-bind="ntsMultilineEditor: {
 													value: memoValue,
-													constraint: constraint,
+													constraint: 'Memo',
 													option: option,
 													enable: true,
 													readonly: false}" />
