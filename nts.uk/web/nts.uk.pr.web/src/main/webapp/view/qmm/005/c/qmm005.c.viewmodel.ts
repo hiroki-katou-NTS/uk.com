@@ -190,10 +190,10 @@ module qmm005.c {
         toggleView() {
             $('.form-extent').toggleClass('hidden');
             if (!$('.form-extent').hasClass('hidden')) {
-                nts.uk.ui.windows.getSelf().setHeight(600);
+                nts.uk.ui.windows.getSelf().setHeight(window.top.innerHeight < 801 ? 610 : 650);
                 $('#contents-area').css('padding-bottom', '0');
             } else {
-                nts.uk.ui.windows.getSelf().setHeight(480);
+                nts.uk.ui.windows.getSelf().setHeight(350);
                 $('#contents-area').css('padding-bottom', '');
             }
         }

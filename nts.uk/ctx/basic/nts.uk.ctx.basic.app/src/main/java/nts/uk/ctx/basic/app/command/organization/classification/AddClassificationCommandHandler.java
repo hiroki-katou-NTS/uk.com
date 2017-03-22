@@ -23,6 +23,7 @@ public class AddClassificationCommandHandler extends CommandHandler<AddClassific
 	@Override
 	protected void handle(CommandHandlerContext<AddClassificationCommand> context) {
 		String companyCode = AppContexts.user().companyCode();
+		// check xem Classification còn tồn tại không ?
 		if (classificationRepository.isExisted(companyCode,
 				new ClassificationCode(context.getCommand().getClassificationCode()))) {
 			throw new BusinessException("ER05");

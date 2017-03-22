@@ -47,18 +47,27 @@ public class JpaClassificationRepository extends JpaRepository implements Classi
 		QUERY_IS_EXISTED = builderString.toString();
 	}
 
+	/**
+	 * add Classification
+	 */
 	@Override
 	public void add(Classification classification) {
 		this.commandProxy().insert(convertToDbType(classification));
 
 	}
 
+	/**
+	 * update Classification
+	 */
 	@Override
 	public void update(Classification classification) {
 		this.commandProxy().update(convertToDbType(classification));
 
 	}
 
+	/**
+	 * remove Classification
+	 */
 	@Override
 	public void remove(String companyCode, ClassificationCode classificationCode) {
 		CmnmtClassPK cmnmtClassPK = new CmnmtClassPK(companyCode, classificationCode.toString());
@@ -66,6 +75,9 @@ public class JpaClassificationRepository extends JpaRepository implements Classi
 
 	}
 
+	/**
+	 *  get Single Classification
+	 */
 	@Override
 	public Optional<Classification> findSingleClassification(String companyCode,
 			ClassificationCode classificationCode) {
@@ -76,6 +88,9 @@ public class JpaClassificationRepository extends JpaRepository implements Classi
 				}).orElse(Optional.empty());
 	}
 
+	/**
+	 * get All Classification
+	 */
 	@Override
 	public List<Classification> findAll(String companyCode) {
 		List<CmnmtClass> resultList = this.queryProxy().query(FIND_ALL, CmnmtClass.class)
@@ -85,12 +100,20 @@ public class JpaClassificationRepository extends JpaRepository implements Classi
 		}).collect(Collectors.toList()) : new ArrayList<>();
 	}
 
+	/**
+	 * check xem Classification còn tồn tại không?
+	 */
 	@Override
 	public boolean isExisted(String companyCode, ClassificationCode classificationCode) {
 		return this.queryProxy().query(QUERY_IS_EXISTED, long.class).setParameter("companyCode", companyCode)
 				.setParameter("classificationCode", classificationCode.toString()).getSingle().get() > 0;
 	}
 
+	/**
+	 * convert từ domain sang infra
+	 * @param classification
+	 * @return
+	 */
 	private CmnmtClass convertToDbType(Classification classification) {
 		CmnmtClass cmnmtClass = new CmnmtClass();
 		CmnmtClassPK cmnmtClassPK = new CmnmtClassPK(classification.getCompanyCode().toString(),
@@ -103,6 +126,11 @@ public class JpaClassificationRepository extends JpaRepository implements Classi
 		return cmnmtClass;
 	}
 
+	/**
+	 * convert từ infra sang domain
+	 * @param cmnmtClass
+	 * @return
+	 */
 	private Classification convertToDomain(CmnmtClass cmnmtClass) {
 		return new Classification(cmnmtClass.getCmnmtClassPK().getCompanyCode(),
 				new ClassificationCode(cmnmtClass.getCmnmtClassPK().getClassificationCode()),
