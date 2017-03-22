@@ -18,6 +18,18 @@
 		<ui:define name="content">
 			<div id="content-header">
 				<label id="K_LBL_001"> 利用する非課税限度額を選択してください。 </label>
+				<div class="K_LST_001">
+					<table  id="K_LST_001"
+						data-bind="ntsGridList: {
+							width: 330,
+							height: 370,
+							options: GridlistItems_K_001,
+							optionsValue: 'commuNoTaxLimitCode',
+							columns: GridColumns_K_001,
+							multiple: false,
+							value: GridlistCurrentCode_K_001
+						}"></table>
+				</div>
 			</div>
 			<div id="contents-area">
 				<button id="K_BTN_001" class="x-large proceed"

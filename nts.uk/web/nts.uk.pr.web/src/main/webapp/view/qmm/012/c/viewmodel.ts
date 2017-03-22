@@ -54,12 +54,12 @@ module qmm012.c.viewmodel {
         CurrentLimitMnyAtr: KnockoutObservable<number> = ko.observable(0);
         CurrentItemDisplayAtr: KnockoutObservable<number> = ko.observable(1);
         CurrentZeroDisplaySet: KnockoutObservable<number> = ko.observable(1);
-        CurrentLimitMnyRefItemCd: KnockoutObservable<string> = ko.observable("");
         C_SEL_012_Selected: KnockoutObservable<boolean> = ko.observable(false);
         C_SEL_013_Selected: KnockoutObservable<boolean> = ko.observable(false);
         C_SEL_014_Selected: KnockoutObservable<boolean> = ko.observable(false);
         C_SEL_015_Selected: KnockoutObservable<boolean> = ko.observable(false);
         C_SEL_016_Selected: KnockoutObservable<boolean> = ko.observable(false);
+        CurrentLimitCode: KnockoutObservable<string> = ko.observable("");
         constructor() {
             var self = this;
             self.ComboBoxItemList_C_SEL_001 = ko.observableArray([
@@ -216,7 +216,7 @@ module qmm012.c.viewmodel {
                 self.C_SEL_012_Selected(ItemMaster ? ItemMaster.itemDisplayAtr == 0 ? true : false : false);
             });
             self.C_SEL_012_Selected.subscribe(function(NewValue: boolean) {
-                self.CurrentItemDisplayAtr(NewValue ? 0 : 1);
+                self.CurrentItemDisplayAtr(NewValue == true ? 0 : 1);
             });
 
 
@@ -239,8 +239,7 @@ module qmm012.c.viewmodel {
                 self.CurrentApplyForHourlyPayEmp(NewValue ? NewValue.applyForHourlyPayEmp : 0);
                 self.CurrentAvePayAtr(NewValue ? NewValue.avePayAtr : 0);
                 self.CurrentLimitMnyAtr(NewValue ? NewValue.limitMnyAtr : 0);
-                self.CurrentLimitMnyRefItemCd(NewValue ? NewValue.limitMnyRefItemCd : "");
-
+                self.CurrentLimitCode(NewValue ? NewValue.limitMnyRefItemCd : "");
 
                 self.C_SEL_013_Selected(NewValue ? NewValue.errRangeHighAtr == 0 ? false : true : false);
                 self.C_SEL_014_Selected(NewValue ? NewValue.alRangeHighAtr == 0 ? false : true : false);
@@ -279,22 +278,24 @@ module qmm012.c.viewmodel {
                 self.CurrentApplyForDaylyPayEmp(),
                 self.CurrentApplyForHourlyPayEmp(),
                 self.CurrentAvePayAtr(),
-                self.C_SEL_015_Selected()? 1 : 0,
+                self.C_SEL_015_Selected() ? 1 : 0,
                 self.CurrentErrRangeLow(),
-                self.C_SEL_013_Selected()? 1 : 0,
+                self.C_SEL_013_Selected() ? 1 : 0,
                 self.CurrentErrRangeHigh(),
-                self.C_SEL_016_Selected()? 1 : 0,
+                self.C_SEL_016_Selected() ? 1 : 0,
                 self.CurrentAlRangeLow(),
-                self.C_SEL_014_Selected()? 1 : 0,
+                self.C_SEL_014_Selected() ? 1 : 0,
                 self.CurrentAlRangeHigh(),
                 self.CurrentMemo(),
                 self.CurrentLimitMnyAtr(),
-                self.CurrentLimitMnyRefItemCd(),
+                self.CurrentLimitCode(),
                 self.CurrentLimitMny());
             return ItemSalary;
         }
         openKDialog() {
-            nts.uk.ui.windows.sub.modal('../k/index.xhtml', { height: 490, width: 330, dialogClass: "no-close" }).onClosed(function(): any {
+            let self = this;
+            nts.uk.ui.windows.sub.modal('../k/index.xhtml', { height: 530, width: 350, dialogClass: "no-close" }).onClosed(function(): any {
+                self.CurrentLimitCode(nts.uk.ui.windows.getShared('LimitCode'));
             });
         }
 

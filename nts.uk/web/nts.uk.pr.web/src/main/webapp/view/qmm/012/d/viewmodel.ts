@@ -7,7 +7,7 @@ module qmm012.d.viewmodel {
         ComboBoxItemList_D_001: KnockoutObservableArray<ComboboxItemModel>;
         //Checkbox
         //D_003
-        checked_D_003: KnockoutObservable<boolean> = ko.observable(false);
+        checked_D_003: KnockoutObservable<boolean> = ko.observable(true);
         //D_003
         checked_D_004: KnockoutObservable<boolean> = ko.observable(false);
         //D_003

@@ -27,12 +27,12 @@ var qmm012;
                     this.CurrentLimitMnyAtr = ko.observable(0);
                     this.CurrentItemDisplayAtr = ko.observable(1);
                     this.CurrentZeroDisplaySet = ko.observable(1);
-                    this.CurrentLimitMnyRefItemCd = ko.observable("");
                     this.C_SEL_012_Selected = ko.observable(false);
                     this.C_SEL_013_Selected = ko.observable(false);
                     this.C_SEL_014_Selected = ko.observable(false);
                     this.C_SEL_015_Selected = ko.observable(false);
                     this.C_SEL_016_Selected = ko.observable(false);
+                    this.CurrentLimitCode = ko.observable("");
                     var self = this;
                     self.ComboBoxItemList_C_SEL_001 = ko.observableArray([
                         new C_SEL_001_ComboboxItemModel(0, '課税'),
@@ -188,7 +188,7 @@ var qmm012;
                         self.C_SEL_012_Selected(ItemMaster ? ItemMaster.itemDisplayAtr == 0 ? true : false : false);
                     });
                     self.C_SEL_012_Selected.subscribe(function (NewValue) {
-                        self.CurrentItemDisplayAtr(NewValue ? 0 : 1);
+                        self.CurrentItemDisplayAtr(NewValue == true ? 0 : 1);
                     });
                     self.CurrentItemSalary.subscribe(function (NewValue) {
                         self.CurrentLimitMny(NewValue ? NewValue.limitMny : 0);
@@ -208,7 +208,7 @@ var qmm012;
                         self.CurrentApplyForHourlyPayEmp(NewValue ? NewValue.applyForHourlyPayEmp : 0);
                         self.CurrentAvePayAtr(NewValue ? NewValue.avePayAtr : 0);
                         self.CurrentLimitMnyAtr(NewValue ? NewValue.limitMnyAtr : 0);
-                        self.CurrentLimitMnyRefItemCd(NewValue ? NewValue.limitMnyRefItemCd : "");
+                        self.CurrentLimitCode(NewValue ? NewValue.limitMnyRefItemCd : "");
                         self.C_SEL_013_Selected(NewValue ? NewValue.errRangeHighAtr == 0 ? false : true : false);
                         self.C_SEL_014_Selected(NewValue ? NewValue.alRangeHighAtr == 0 ? false : true : false);
                         self.C_SEL_015_Selected(NewValue ? NewValue.errRangeLowAtr == 0 ? false : true : false);
@@ -231,11 +231,13 @@ var qmm012;
                 }
                 ScreenModel.prototype.GetCurrentItemSalary = function () {
                     var self = this;
-                    var ItemSalary = new c.service.model.ItemSalary(self.CurrentTaxAtr(), self.CurrentSocialInsAtr(), self.CurrentLaborInsAtr(), self.CurrentFixPayAtr(), self.CurrentApplyForAllEmpFlg(), self.CurrentApplyForMonthlyPayEmp(), self.CurrentApplyForDaymonthlyPayEmp(), self.CurrentApplyForDaylyPayEmp(), self.CurrentApplyForHourlyPayEmp(), self.CurrentAvePayAtr(), self.C_SEL_015_Selected() ? 1 : 0, self.CurrentErrRangeLow(), self.C_SEL_013_Selected() ? 1 : 0, self.CurrentErrRangeHigh(), self.C_SEL_016_Selected() ? 1 : 0, self.CurrentAlRangeLow(), self.C_SEL_014_Selected() ? 1 : 0, self.CurrentAlRangeHigh(), self.CurrentMemo(), self.CurrentLimitMnyAtr(), self.CurrentLimitMnyRefItemCd(), self.CurrentLimitMny());
+                    var ItemSalary = new c.service.model.ItemSalary(self.CurrentTaxAtr(), self.CurrentSocialInsAtr(), self.CurrentLaborInsAtr(), self.CurrentFixPayAtr(), self.CurrentApplyForAllEmpFlg(), self.CurrentApplyForMonthlyPayEmp(), self.CurrentApplyForDaymonthlyPayEmp(), self.CurrentApplyForDaylyPayEmp(), self.CurrentApplyForHourlyPayEmp(), self.CurrentAvePayAtr(), self.C_SEL_015_Selected() ? 1 : 0, self.CurrentErrRangeLow(), self.C_SEL_013_Selected() ? 1 : 0, self.CurrentErrRangeHigh(), self.C_SEL_016_Selected() ? 1 : 0, self.CurrentAlRangeLow(), self.C_SEL_014_Selected() ? 1 : 0, self.CurrentAlRangeHigh(), self.CurrentMemo(), self.CurrentLimitMnyAtr(), self.CurrentLimitCode(), self.CurrentLimitMny());
                     return ItemSalary;
                 };
                 ScreenModel.prototype.openKDialog = function () {
-                    nts.uk.ui.windows.sub.modal('../k/index.xhtml', { height: 490, width: 330, dialogClass: "no-close" }).onClosed(function () {
+                    var self = this;
+                    nts.uk.ui.windows.sub.modal('../k/index.xhtml', { height: 530, width: 350, dialogClass: "no-close" }).onClosed(function () {
+                        self.CurrentLimitCode(nts.uk.ui.windows.getShared('LimitCode'));
                     });
                 };
                 ScreenModel.prototype.openHDialog = function () {

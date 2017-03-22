@@ -99,7 +99,8 @@ module qmm012.b {
                     this.itemAbNameE = itemAbNameE;
                     this.displaySet = displaySet;
                     this.uniteCode = uniteCode;
-                    this.zeroDisplaySet = itemDisplayAtr;
+                    this.zeroDisplaySet = zeroDisplaySet;
+                    this.itemDisplayAtr = itemDisplayAtr;
                     this.fixAtr = fixAtr;
                 }
             }
