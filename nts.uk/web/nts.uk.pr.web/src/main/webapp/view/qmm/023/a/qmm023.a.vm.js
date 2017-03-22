@@ -92,7 +92,7 @@ var qmm023;
                     self.currentCode(null);
                     self.isUpdate(false);
                     self.isEnableDeleteBtn(false);
-                    self.currentTaxDirty = new nts.uk.ui.DirtyChecker(self.currentTax);
+                    self.currentTaxDirty.reset();
                     self.flatDirty = true;
                 };
                 ScreenModel.prototype.createButtonClick = function () {
@@ -123,10 +123,9 @@ var qmm023;
                     }
                     var insertUpdateModel = new InsertUpdateModel(nts.uk.text.padLeft(newCode, '0', 2), newName, newTaxLimit);
                     a.service.insertUpdateData(self.isUpdate(), insertUpdateModel).done(function () {
-                        $.when(self.getCommuteNoTaxLimitList()).done(function () {
-                            self.currentCode(nts.uk.text.padLeft(newCode, '0', 2));
-                        });
+                        self.reload(false, nts.uk.text.padLeft(newCode, '0', 2));
                         self.flatDirty = true;
+                        self.currentTaxDirty.reset();
                         if (self.isUpdate() === false) {
                             self.isUpdate(true);
                             self.allowEditCode(false);
@@ -134,15 +133,14 @@ var qmm023;
                         }
                     }).fail(function (error) {
                         if (error.message === '3') {
-                            nts.uk.ui.dialog.alert("New item is existed").then(function () {
-                                self.currentTaxDirty.reset();
-                                location.reload(true);
+                            var _message = "入力した{0}は既に存在しています。\r\n {1}を確認してください。";
+                            nts.uk.ui.dialog.alert(nts.uk.text.format(_message, 'コード', 'コード')).then(function () {
+                                self.reload(true);
                             });
                         }
                         else if (error.message === '4') {
                             nts.uk.ui.dialog.alert("対象データがありません。").then(function () {
-                                self.currentTaxDirty.reset();
-                                location.reload(true);
+                                self.reload(true);
                             });
                         }
                         else {
@@ -159,7 +157,7 @@ var qmm023;
                     }
                     a.service.deleteData(new DeleteModel(deleteCode)).done(function () {
                         var indexItemDelete = _.findIndex(self.items(), function (item) { return item.code == deleteCode; });
-                        $.when(self.getCommuteNoTaxLimitList()).done(function () {
+                        $.when(self.reload(false)).done(function () {
                             self.flatDirty = true;
                             if (self.items().length === 0) {
                                 self.allowEditCode(true);
@@ -183,7 +181,7 @@ var qmm023;
                     }).fail(function (error) {
                         if (error.message === '1') {
                             nts.uk.ui.dialog.alert("対象データがありません。").then(function () {
-                                location.reload(true);
+                                self.reload(true);
                             });
                         }
                         else {
@@ -200,21 +198,9 @@ var qmm023;
                 // startpage
                 ScreenModel.prototype.startPage = function () {
                     var self = this;
-                    var dfd = $.Deferred();
-                    $.when(self.getCommuteNoTaxLimitList()).done(function () {
-                        self.currentTax(ko.mapping.fromJS(new TaxModel('', '', 0)));
-                        self.flatDirty = true;
-                        if (self.items().length > 0) {
-                            self.currentTax(_.first(self.items()));
-                            self.currentCode(self.currentTax().code);
-                        }
-                        dfd.resolve();
-                    }).fail(function (error) {
-                        alert(error.message);
-                    });
-                    return dfd.promise();
+                    return self.reload(true);
                 };
-                ScreenModel.prototype.getCommuteNoTaxLimitList = function () {
+                ScreenModel.prototype.reload = function (isReload, reloadCode) {
                     var self = this;
                     var dfd = $.Deferred();
                     a.service.getCommutelimitsByCompanyCode().done(function (data) {
@@ -222,9 +208,18 @@ var qmm023;
                         _.forEach(data, function (item) {
                             self.items.push(new TaxModel(item.commuNoTaxLimitCode, item.commuNoTaxLimitName, item.commuNoTaxLimitValue));
                         });
+                        self.flatDirty = true;
+                        if (self.items().length <= 0) {
+                            self.currentTax(ko.mapping.fromJS(new TaxModel('', '', 0)));
+                            return;
+                        }
+                        if (isReload) {
+                            self.currentCode(self.items()[0].code);
+                        }
+                        else if (!nts.uk.text.isNullOrEmpty(reloadCode)) {
+                            self.currentCode(reloadCode);
+                        }
                         dfd.resolve(data);
-                    }).fail(function (error) {
-                        alert(error.message);
                     });
                     return dfd.promise();
                 };
