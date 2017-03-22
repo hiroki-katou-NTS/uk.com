@@ -16,7 +16,6 @@ var nts;
                                 function ScreenModel() {
                                     var self = this;
                                     self.checklistPrintSettingModel = ko.observable(new ChecklistPrintSettingModel());
-                                    self.dirty = new nts.uk.ui.DirtyChecker(self.checklistPrintSettingModel);
                                 }
                                 ScreenModel.prototype.startPage = function () {
                                     var self = this;
@@ -31,7 +30,6 @@ var nts;
                                     var dfd = $.Deferred();
                                     c.service.findCheckListPrintSetting().done(function (data) {
                                         self.initUI(data);
-                                        self.dirty.reset();
                                         dfd.resolve();
                                     }).fail(function (res) {
                                         nts.uk.ui.dialog.alert(res.message);
@@ -62,7 +60,7 @@ var nts;
                                     if (!checklistSetting.showDetail() && !checklistSetting.showOffice() && !checklistSetting.showTotal()
                                         && !checklistSetting.showDeliveryNoticeAmount()) {
                                         isError = true;
-                                        $('#require-least-item').ntsError('set', 'You must choose at least check box item.');
+                                        $('#require-least-item').ntsError('set', '必須の入力項目が入力されていません。');
                                     }
                                     return isError;
                                 };
