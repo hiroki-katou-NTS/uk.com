@@ -29,20 +29,26 @@ public class StepElementSetting extends ElementSetting {
 	/**
 	 * Instantiates a new step element setting.
 	 *
-	 * @param demensionNo the demension no
-	 * @param type the type
-	 * @param itemList the item list
+	 * @param demensionNo
+	 *            the demension no
+	 * @param type
+	 *            the type
+	 * @param itemList
+	 *            the item list
 	 */
-	public StepElementSetting(DemensionNo demensionNo, ElementType type, List<Item> itemList) {
+	public StepElementSetting(DemensionNo demensionNo, ElementType type, List<? extends Item> itemList) {
 		super(demensionNo, type, itemList);
 	}
 
 	/**
 	 * Sets the setting.
 	 *
-	 * @param upperLimit the upper limit
-	 * @param lowerLimit the lower limit
-	 * @param interval the interval
+	 * @param upperLimit
+	 *            the upper limit
+	 * @param lowerLimit
+	 *            the lower limit
+	 * @param interval
+	 *            the interval
 	 */
 	public void setSetting(BigDecimal upperLimit, BigDecimal lowerLimit, BigDecimal interval) {
 		this.upperLimit = upperLimit;

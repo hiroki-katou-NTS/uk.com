@@ -17,6 +17,7 @@ import nts.uk.ctx.pr.core.dom.wagetable.WtCode;
 import nts.uk.ctx.pr.core.dom.wagetable.history.WtHistorySetMemento;
 import nts.uk.ctx.pr.core.dom.wagetable.history.WtItem;
 import nts.uk.ctx.pr.core.dom.wagetable.history.element.ElementSetting;
+import nts.uk.ctx.pr.core.dom.wagetable.history.element.StepElementSetting;
 import nts.uk.ctx.pr.core.dom.wagetable.history.element.item.CodeItem;
 import nts.uk.ctx.pr.core.dom.wagetable.history.element.item.RangeItem;
 
@@ -102,8 +103,11 @@ public class WtHistoryDto implements WtHistorySetMemento {
 		}).collect(Collectors.toList());
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.pr.core.dom.wagetable.history.WtHistorySetMemento#setElementSettings(java.util.List)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.wagetable.history.WtHistorySetMemento#
+	 * setElementSettings(java.util.List)
 	 */
 	@Override
 	public void setElementSettings(List<ElementSetting> elementSettings) {
@@ -116,16 +120,20 @@ public class WtHistoryDto implements WtHistorySetMemento {
 			if (item.getType().isCodeMode) {
 				elementSettingDto.setItemList(item.getItemList().stream().map(subItem -> {
 					CodeItem codeItem = (CodeItem) subItem;
-					return ElementItemDto.builder().uuid(codeItem.getUuid())
+					return ElementItemDto.builder().uuid(codeItem.getUuid().v())
 							.referenceCode(codeItem.getReferenceCode()).build();
 				}).collect(Collectors.toList()));
 			}
 
 			// Range mode
 			if (item.getType().isRangeMode) {
+				StepElementSetting stepElementSetting = (StepElementSetting) item;
+				elementSettingDto.setLowerLimit(stepElementSetting.getLowerLimit());
+				elementSettingDto.setUpperLimit(stepElementSetting.getUpperLimit());
+				elementSettingDto.setInterval(stepElementSetting.getInterval());
 				elementSettingDto.setItemList(item.getItemList().stream().map(subItem -> {
 					RangeItem rangeItem = (RangeItem) subItem;
-					return ElementItemDto.builder().uuid(rangeItem.getUuid())
+					return ElementItemDto.builder().uuid(rangeItem.getUuid().v())
 							.orderNumber(rangeItem.getOrderNumber())
 							.startVal(rangeItem.getStartVal()).endVal(rangeItem.getEndVal())
 							.build();

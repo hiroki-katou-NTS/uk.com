@@ -15,7 +15,7 @@ var nts;
                             var ScreenModel = (function () {
                                 function ScreenModel() {
                                     var self = this;
-                                    self.yearMonth = ko.observable("");
+                                    self.yearMonth = ko.observable(0);
                                     self.isEqual = ko.observable(true);
                                     self.isDeficient = ko.observable(true);
                                     self.isRedundant = ko.observable(true);
@@ -66,25 +66,23 @@ var nts;
                                     var self = this;
                                     var isError = false;
                                     if (self.insuranceOffice().selectedOfficeCodeList().length <= 0) {
-                                        $('#grid-error').ntsError('set', 'You must choose at least item of grid');
+                                        $('.grid-error').ntsError('set', 'You must choose at least item of grid');
                                         isError = true;
+                                    }
+                                    if (!self.isEqual() && !self.isDeficient() && !self.isRedundant()) {
+                                        $('.extract-condition-error').ntsError('set', '必須の入力項目が入力されていません。');
                                     }
                                     return isError;
                                 };
                                 ScreenModel.prototype.clearAllError = function () {
-                                    $("#grid-error").ntsError('clear');
+                                    $('.grid-error').ntsError('clear');
+                                    $('.extract-condition-error').ntsError('clear');
                                 };
                                 ScreenModel.prototype.getCurrentYearMonth = function () {
                                     var today = new Date();
                                     var month = today.getMonth() + 1;
                                     var year = today.getFullYear();
-                                    var yearMonth = year + '/';
-                                    if (month < 10) {
-                                        yearMonth += '0' + month;
-                                    }
-                                    else {
-                                        yearMonth += month.toLocaleString();
-                                    }
+                                    var yearMonth = year * 100 + month;
                                     return yearMonth;
                                 };
                                 return ScreenModel;
@@ -96,8 +94,8 @@ var nts;
                                     self.items = ko.observableArray([]);
                                     self.selectedOfficeCodeList = ko.observableArray([]);
                                     self.columns = ko.observableArray([
-                                        { headerText: 'コード', key: 'code', width: 100 },
-                                        { headerText: '名称 ', key: 'name', width: 100 }
+                                        { headerText: 'コード', key: 'code', width: 200 },
+                                        { headerText: '名称 ', key: 'name', width: 200 }
                                     ]);
                                 }
                                 InsuranceOfficeModel.prototype.findAllInsuranceOffice = function () {

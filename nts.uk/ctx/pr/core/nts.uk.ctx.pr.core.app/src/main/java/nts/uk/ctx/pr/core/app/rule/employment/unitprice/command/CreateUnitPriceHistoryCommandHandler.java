@@ -16,13 +16,14 @@ import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceHistory;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceHistoryRepository;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceRepository;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.service.UnitPriceHistoryService;
+import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.service.UnitPriceService;
 
 /**
  * The Class CreateUnitPriceHistoryCommandHandler.
  */
 @Stateless
 public class CreateUnitPriceHistoryCommandHandler
-extends CommandHandlerWithResult<CreateUnitPriceHistoryCommand, UnitPriceHistory> {
+		extends CommandHandlerWithResult<CreateUnitPriceHistoryCommand, UnitPriceHistory> {
 
 	/** The unit price history repository. */
 	@Inject
@@ -35,6 +36,10 @@ extends CommandHandlerWithResult<CreateUnitPriceHistoryCommand, UnitPriceHistory
 	/** The unit price history service. */
 	@Inject
 	private UnitPriceHistoryService unitPriceHistoryService;
+
+	/** The unit price service. */
+	@Inject
+	private UnitPriceService unitPriceService;
 
 	/*
 	 * (non-Javadoc)
@@ -56,8 +61,10 @@ extends CommandHandlerWithResult<CreateUnitPriceHistoryCommand, UnitPriceHistory
 
 		// Validate
 		unitPriceHistory.validate();
+		unitPrice.validate();
 		this.unitPriceHistoryService.validateRequiredItem(unitPriceHistory);
-		this.unitPriceHistoryService.checkDuplicateCode(unitPriceHistory);
+		this.unitPriceService.validateRequiredItem(unitPrice);
+		this.unitPriceService.checkDuplicateCode(unitPrice);
 		this.unitPriceHistoryService.validateDateRange(unitPriceHistory);
 
 		// Persit.

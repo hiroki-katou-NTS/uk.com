@@ -17,6 +17,7 @@ import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceHistory;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceHistoryRepository;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceRepository;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.service.UnitPriceHistoryService;
+import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.service.UnitPriceService;
 
 /**
  * The Class UpdateUnitPriceHistoryCommandHandler.
@@ -35,6 +36,10 @@ public class UpdateUnitPriceHistoryCommandHandler extends CommandHandler<UpdateU
 	/** The unit price history service. */
 	@Inject
 	private UnitPriceHistoryService unitPriceHistoryService;
+
+	/** The unit price service. */
+	@Inject
+	private UnitPriceService unitPriceService;
 
 	/*
 	 * (non-Javadoc)
@@ -68,6 +73,8 @@ public class UpdateUnitPriceHistoryCommandHandler extends CommandHandler<UpdateU
 
 		// Validate
 		history.validate();
+		unitPrice.validate();
+		this.unitPriceService.validateRequiredItem(unitPrice);
 		this.unitPriceHistoryService.validateRequiredItem(history);
 
 		// Update to db.

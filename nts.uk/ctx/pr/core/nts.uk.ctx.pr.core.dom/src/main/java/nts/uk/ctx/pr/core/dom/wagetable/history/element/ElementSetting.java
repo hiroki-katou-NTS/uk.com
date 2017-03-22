@@ -25,16 +25,19 @@ public class ElementSetting {
 	private ElementType type;
 
 	/** The item list. */
-	private List<Item> itemList;
+	private List<? extends Item> itemList;
 
 	/**
 	 * Instantiates a new wt element setting.
 	 *
-	 * @param demensionNo the demension no
-	 * @param type the type
-	 * @param itemList the item list
+	 * @param demensionNo
+	 *            the demension no
+	 * @param type
+	 *            the type
+	 * @param itemList
+	 *            the item list
 	 */
-	public ElementSetting(DemensionNo demensionNo, ElementType type, List<Item> itemList) {
+	public ElementSetting(DemensionNo demensionNo, ElementType type, List<? extends Item> itemList) {
 		super();
 		this.demensionNo = demensionNo;
 		this.type = type;
