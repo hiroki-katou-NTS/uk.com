@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
+import javax.transaction.Transactional;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
@@ -13,7 +14,7 @@ import nts.uk.ctx.basic.infra.entity.system.bank.linebank.CbkmtLineBank;
 import nts.uk.ctx.basic.infra.entity.system.bank.linebank.CbkmtLineBankPK;
 
 @Stateless
-//@Stateless = @Transactional + @RequestScoped
+@Transactional
 public class JpaLineBankRepository extends JpaRepository implements LineBankRepository {
 	
 	private final String SEL_1 = "SELECT c FROM CbkmtLineBank c " 

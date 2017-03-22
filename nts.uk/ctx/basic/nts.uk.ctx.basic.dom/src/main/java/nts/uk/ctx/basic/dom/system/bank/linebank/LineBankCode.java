@@ -11,7 +11,6 @@ public class LineBankCode extends CodePrimitiveValue<LineBankCode> {
 	private static final long serialVersionUID = 1L;
 
 	public LineBankCode(String rawValue) {
-		// TODO Auto-generated constructor stub
 		super(rawValue);
 	}
 }

@@ -2,7 +2,7 @@ package nts.uk.ctx.basic.app.command.system.bank.linebank;
 
 import java.util.List;
 
-import javax.enterprise.context.RequestScoped;
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
@@ -16,7 +16,7 @@ import nts.uk.ctx.basic.dom.system.bank.personaccount.PersonBankAccountRepositor
 import nts.uk.ctx.basic.dom.system.bank.personaccount.PersonUseSetting;
 import nts.uk.shr.com.context.AppContexts;
 
-@RequestScoped
+@Stateless
 @Transactional
 public class TransferLineBankCommandHandler extends CommandHandler<TransferLineBankCommand> {
 	@Inject

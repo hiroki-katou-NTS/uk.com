@@ -11,7 +11,6 @@ public class ConsignorMemo extends StringPrimitiveValue<ConsignorMemo>{
 	private static final long serialVersionUID = 1L;
 
 	public ConsignorMemo(String arg0) {
-		// TODO Auto-generated constructor stub
 		super(arg0);
 	}
 }

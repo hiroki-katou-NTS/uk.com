@@ -17,10 +17,10 @@
 					nts.uk.ctx.basic.dom.system.bank.linebank.ConsignorMemo
    				</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
-			<com:stylefile path="main.css" />
-			<com:scriptfile path="start.js" />
-			<com:scriptfile path="viewmodel.js" />
-			<com:scriptfile path="service.js" />
+			<com:stylefile path="qmm006.a.main.css" />
+			<com:scriptfile path="qmm006.a.start.js" />
+			<com:scriptfile path="qmm006.a.viewmodel.js" />
+			<com:scriptfile path="qmm006.a.service.js" />
 		</ui:define>
 
 		<ui:define name="content">
@@ -29,7 +29,7 @@
 				<button id="A_BTN_002"
 					data-bind="click: saveData, enable: $root.errors.isEmpty"
 					class="proceed">登録</button>
-				<button id="A_BTN_003" data-bind="click: openCDialog">振込元銀行の置換</button>
+				<button id="A_BTN_003" data-bind="click: openCDialog, enable: enableBtn003 ">振込元銀行の置換</button>
 				<button id="A_BTN_007" data-bind="click: btn007">マスタ修正ログ</button>
 				<button id="A_BTN_004"
 					data-bind="click: remove, enable : isDeleteEnable" class="danger">削除</button>
@@ -75,7 +75,7 @@
 					                    textalign: 'center'
 					                },
 									required: true,
-									enable: $parent.isInp001Enable,
+									enable: $parent.isEnable,
 									readonly: false}" /></span>
 							<span> <input id="A_INP_002" data-name="取引銀行名"
 								data-bind="ntsTextEditor: {
@@ -97,9 +97,10 @@
 							<label id="A_LBL_004" data-name="銀行コード"
 								data-bind="text: bankCode"></label> <label id="A_LBL_005"
 								data-bind="text: $parent.bankName"></label> <label
-								id="A_LBL_006" data-bind="visible: $parent.isHyphensAppear">-</label> <label
-								id="A_LBL_007" data-name="支店コード" data-bind="text: branchCode"></label>
-							<label id="A_LBL_008" data-bind="text: $parent.branchName"></label>
+								id="A_LBL_006">-</label>
+							<label id="A_LBL_007" data-name="支店コード"
+								data-bind="text: branchCode"></label> <label id="A_LBL_008"
+								data-bind="text: $parent.branchName"></label>
 						</div>
 						<div class="control-group">
 							<span id="A_SEL_001" class="cf"
@@ -148,13 +149,13 @@
 					                    width: '310px',
 					                    textalign: 'left'
 					                },
-									required: true,
-									enable: true,
+									required: false,
+									enable: $parent.isEnable,
 									readonly: false}" /></span>
 						</div>
 						<div class="control-group">
 							<span id="A_INP_005"> <textarea
-									style="height: 130px; width: 450px"
+									style="height: 130px; width: 450px" data-name="メモ"
 									data-bind="ntsMultilineEditor: {
 									constraint: 'Memo',
 									value: memo,
@@ -181,7 +182,7 @@
 					<div class="right-content-right" data-bind="foreach: consignors">
 						<div class="control-group">
 							<label data-bind="text: noIcon"></label> <span> <input
-								class="consignor"
+								class="consignor" data-name="委託者コード"
 								data-bind="ntsTextEditor: {
 									value: consignorCode,
 									constraint:'ConsignorCode',
@@ -194,7 +195,7 @@
 									required: false,
 									enable: true,
 									readonly: false}" />
-							</span> <span> <input class="consignor"
+							</span> <span> <input class="consignor" data-name="用途"
 								data-bind="ntsTextEditor: {
 									value: consignorMemo,
 									constraint:'ConsignorMemo',

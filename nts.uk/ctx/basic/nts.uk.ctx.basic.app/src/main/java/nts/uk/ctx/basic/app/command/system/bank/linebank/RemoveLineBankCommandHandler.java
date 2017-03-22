@@ -3,8 +3,9 @@ package nts.uk.ctx.basic.app.command.system.bank.linebank;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.enterprise.context.RequestScoped;
+import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.transaction.Transactional;
 
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
@@ -13,7 +14,8 @@ import nts.uk.ctx.basic.dom.system.bank.linebank.LineBankRepository;
 import nts.uk.ctx.basic.dom.system.bank.personaccount.PersonBankAccountRepository;
 import nts.uk.shr.com.context.AppContexts;
 
-@RequestScoped
+@Stateless
+@Transactional
 public class RemoveLineBankCommandHandler extends CommandHandler<RemoveLineBankCommand> {
 	@Inject
 	private LineBankRepository lineBankRepository;
