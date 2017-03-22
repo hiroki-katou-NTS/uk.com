@@ -106,7 +106,7 @@ module cmm008.a.viewmodel{
             return dfd.promise();
         }
         
-        reloadScreenWhenListClick(newValue){
+        reloadScreenWhenListClick(newValue: string){
             var self = this;
             let newEmployment = _.find(self.dataSource(), function(employ){
                 if(employ.employmentCode === newValue){
@@ -165,7 +165,8 @@ module cmm008.a.viewmodel{
                  if(lstProcessingNo.length !== 0){
                      _.forEach(lstProcessingNo, function(processingNo){
                         self.processingDateList.push(new ItemProcessingDate(processingNo.processingNo, processingNo.processingName));
-                     })                        
+                     })
+                          
                  }
             }).fail(function(res){
                 var ER010 = _.find(self.lstMessage(), function(mess){
@@ -305,7 +306,7 @@ module cmm008.a.viewmodel{
             }
         }
         //tu lam dirty check
-        checkChange(employmentCodeChk): any{
+        checkChange(employmentCodeChk: string): any{
             var self = this;
             let chkEmployment = _.find(self.dataSource(), function(employ){
                 return employ.employmentCode == employmentCodeChk;    
@@ -340,6 +341,8 @@ module cmm008.a.viewmodel{
             self.currentCode("");
             self.isCheckbox(false);
             self.isDelete(false);
+            self.holidayCode(1);
+            self.selectedProcessNo(0);
             $("#INP_002").focus();
         }
         
