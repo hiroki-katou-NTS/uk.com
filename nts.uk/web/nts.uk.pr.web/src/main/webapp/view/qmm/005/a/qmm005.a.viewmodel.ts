@@ -28,14 +28,25 @@ module qmm005.a {
                         _row.index(item[0].processingNo);
                         _row.label(item[0].processingName);
 
-                        let currentProcessingYm = nts.uk.time.parseYearMonth(item[0].currentProcessingYm);
-                        _row.sel001(currentProcessingYm.year);
-
-
-                        let _sel001Data: Array<common.SelectItem> = [new common.SelectItem({ index: currentProcessingYm.year, label: '' + currentProcessingYm.year })];
+                        let _sel001Data: Array<common.SelectItem> = [];
+                        if (item[1]) {
+                            var payDays = _.orderBy(item[1], ['processingNo'], ['asc']);
+                            for (let i in payDays) {
+                                let rec: any = payDays[i];
+                                if (rec.processingNo == index && !rec.payBonusAtr && !rec.sparePayAtr) {
+                                    var ym = nts.uk.time.parseYearMonth(rec.processingYm);
+                                    if (ym.success) {
+                                        _sel001Data.push(new SelectItem(ym.year, ym.year + ''));
+                                    }
+                                }
+                            }
+                        }
+                        _sel001Data = _.orderBy(_sel001Data, ['index'], ['desc']);
                         _row.sel001Data(_sel001Data);
-
-
+                        
+                        // Năm được chọn???
+                        _row.sel001(_sel001Data[0].index);
+                        
                         let _sel002Data: Array<common.SelectItem> = [];
 
                         if (item[1]) {
@@ -44,7 +55,7 @@ module qmm005.a {
                                     rec: any = item[1][i],
                                     payDate: Date = new Date(rec.payDate),
                                     stdDate: Date = new Date(rec.stdDate),
-                                    label: string = nts.uk.time.formatDate(payDate, "yyyy/MM/dd") + '(月)|' + nts.uk.time.formatDate(stdDate, "yyyy/MM/dd");
+                                    label: string = nts.uk.time.formatDate(payDate, "yyyy/MM/dd") + '(' + payDate['getDayJP']() + ')|' + nts.uk.time.formatDate(stdDate, "yyyy/MM/dd");
                                 _sel002Data.push(new common.SelectItem({ index: index, label: label }));
                             }
 
@@ -53,7 +64,7 @@ module qmm005.a {
                                 _row.sel002(_sel002Data[0].index);
                             }
                         }
-                        
+
                         _row.sel003(item[0].bonusAtr);
 
                         let bCurrentProcessingYm = nts.uk.time.parseYearMonth(item[0].bcurrentProcessingYm);
@@ -71,6 +82,10 @@ module qmm005.a {
                 }
                 self.items(_records);
             });
+        }
+
+        btn001Click(item, event) {
+
         }
 
         // Navigate to qmp/005/b/index.xhtml
@@ -136,21 +151,21 @@ module qmm005.a {
         showModalDialogB(item, event): void {
             let self = this;
             nts.uk.ui.windows.setShared('dataRow', item);
-            nts.uk.ui.windows.sub.modal("../b/index.xhtml", { width: 1173, height: 645, title: '給与処理月を翌月へ更新  ' })
+            nts.uk.ui.windows.sub.modal("../b/index.xhtml", { width: 730, height: 645, title: '支払日の設定' })
                 .onClosed(function() { self.parent.start(); });
         }
 
         showModalDialogC(item, event): void {
             let self = this;
             nts.uk.ui.windows.setShared('dataRow', item);
-            nts.uk.ui.windows.sub.modal("../c/index.xhtml", { width: 800, height: 350, title: '給与処理月を翌月へ更新  ' })
+            nts.uk.ui.windows.sub.modal("../c/index.xhtml", { width: 800, height: 350, title: '処理区分の追加' })
                 .onClosed(function() { self.parent.start(); });
         }
 
         showModalDialogD(item, event): void {
             let self = this;
             nts.uk.ui.windows.setShared('dataRow', item);
-            nts.uk.ui.windows.sub.modal("../d/index.xhtml", { width: 800, height: 370, title: '給与処理月を翌月へ更新  ' })
+            nts.uk.ui.windows.sub.modal("../d/index.xhtml", { width: 800, height: 370, title: '処理区分の編集' })
                 .onClosed(function() { self.parent.start(); });
         }
     }

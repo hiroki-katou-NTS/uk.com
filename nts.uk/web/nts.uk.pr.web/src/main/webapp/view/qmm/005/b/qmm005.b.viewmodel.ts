@@ -34,6 +34,11 @@ module qmm005.b {
             $('.toggle').toggleClass('hidden');
             $(event.currentTarget).parent('td').toggleClass('checkbox-cols');
             ($(event.currentTarget).text() == "-" && $(event.currentTarget).text('+')) || $(event.currentTarget).text('-');
+            if (!$('.toggle').hasClass('hidden')) {
+                nts.uk.ui.windows.getSelf().setWidth(1190);
+            } else {
+                nts.uk.ui.windows.getSelf().setWidth(730);
+            }
         }
 
         showModalDialogC(item, event): void {

@@ -8,6 +8,8 @@ import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
+import nts.uk.ctx.pr.core.app.command.rule.employment.processing.yearmonth.Qmm005aCommand;
+import nts.uk.ctx.pr.core.app.command.rule.employment.processing.yearmonth.Qmm005aCommandHandler;
 import nts.uk.ctx.pr.core.app.command.rule.employment.processing.yearmonth.Qmm005cCommand;
 import nts.uk.ctx.pr.core.app.command.rule.employment.processing.yearmonth.Qmm005cCommandHandler;
 import nts.uk.ctx.pr.core.app.command.rule.employment.processing.yearmonth.Qmm005dCommand;
@@ -42,6 +44,9 @@ public class ProcessingYearMonthWebServices extends WebService {
 
 	@Inject
 	private Qmm005dCommandHandler qmm005dCommandHandler;
+	
+	@Inject
+	private Qmm005aCommandHandler qmm005aCommandHandler;
 
 
 	@POST
@@ -55,7 +60,6 @@ public class ProcessingYearMonthWebServices extends WebService {
 	@Path("qmm005a/getdata")
 	public Object[] qmm005aGetData() {
 		Object[] domain = new Object[5];
-
 		String companyCode = AppContexts.user().companyCode();
 		List<PaydayProcessingDto> paydayProcessings = paydayProcessingFinder.select3(companyCode);
 
@@ -70,9 +74,9 @@ public class ProcessingYearMonthWebServices extends WebService {
 
 	@POST
 	@Path("qmm005a/update")
-	public void qmm005aUpdate(Qmm005dCommand command) {
+	public void qmm005aUpdate(Qmm005aCommand command) {
 		try {
-			qmm005dCommandHandler.handle(command);
+			qmm005aCommandHandler.handle(command);
 		} catch (Exception ex) {
 			throw ex;
 		}

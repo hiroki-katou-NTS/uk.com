@@ -30,6 +30,12 @@ var qmm005;
                 $('.toggle').toggleClass('hidden');
                 $(event.currentTarget).parent('td').toggleClass('checkbox-cols');
                 ($(event.currentTarget).text() == "-" && $(event.currentTarget).text('+')) || $(event.currentTarget).text('-');
+                if (!$('.toggle').hasClass('hidden')) {
+                    nts.uk.ui.windows.getSelf().setWidth(1190);
+                }
+                else {
+                    nts.uk.ui.windows.getSelf().setWidth(730);
+                }
             };
             ViewModel.prototype.showModalDialogC = function (item, event) {
                 nts.uk.ui.windows.sub.modal("../c/index.xhtml", { width: 682, height: 370, title: '処理区分の追加' }).onClosed(function () { });

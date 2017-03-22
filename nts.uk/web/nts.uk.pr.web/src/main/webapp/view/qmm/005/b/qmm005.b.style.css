@@ -67,8 +67,6 @@
 
 #contents-area .right-panel {
 	padding-left: 30px;
-	min-width: 600px;
-	width: calc(100% - 300px);
 }
 
 #contents-area table.table th {

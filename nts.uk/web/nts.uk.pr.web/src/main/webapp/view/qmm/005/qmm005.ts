@@ -47,6 +47,10 @@ class CheckBoxWithHelpBindingHandler implements KnockoutBindingHandler {
 ko.bindingHandlers['ntsTextEditor2'] = new TextEditorBindingHandler();
 ko.bindingHandlers['ntsCheckBox2'] = new CheckBoxWithHelpBindingHandler();
 
+Date.prototype["getDayJP"] = function() {
+    return ['日', '月', '火', '水', '木', '金', '土'][this.getDay()];
+}
+
 module qmm005.common {
     export function webapi(): any {
         return {
@@ -114,11 +118,6 @@ module qmm005.common {
         }
     }
 }
-
-
-
-
-
 
 // for develop
 var _ref = (window.location.href.indexOf('localhost') == -1) && new Date().getTime() || 'v1.0.0';

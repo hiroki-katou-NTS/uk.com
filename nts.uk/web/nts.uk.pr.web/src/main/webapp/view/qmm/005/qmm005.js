@@ -41,6 +41,9 @@ var CheckBoxWithHelpBindingHandler = (function () {
 }());
 ko.bindingHandlers['ntsTextEditor2'] = new TextEditorBindingHandler();
 ko.bindingHandlers['ntsCheckBox2'] = new CheckBoxWithHelpBindingHandler();
+Date.prototype["getDayJP"] = function () {
+    return ['日', '月', '火', '水', '木', '金', '土'][this.getDay()];
+};
 var qmm005;
 (function (qmm005) {
     var common;
