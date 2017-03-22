@@ -9,6 +9,7 @@ import nts.uk.ctx.pr.core.dom.itemmaster.itemsalary.ItemSalary;
 @Getter
 @Setter
 public class UpdateItemSalaryCommand {
+	
 	private String ccd;
 	private String itemCd;
 	private int taxAtr;

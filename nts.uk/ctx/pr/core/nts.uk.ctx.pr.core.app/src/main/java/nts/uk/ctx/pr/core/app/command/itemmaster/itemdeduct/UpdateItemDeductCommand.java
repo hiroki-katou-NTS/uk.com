@@ -9,6 +9,7 @@ import nts.uk.ctx.pr.core.dom.itemmaster.itemdeduct.ItemDeduct;
 @Getter
 @Setter
 public class UpdateItemDeductCommand {
+	
 	private String ccd;
 	private String itemCd;
 	private int deductAtr;

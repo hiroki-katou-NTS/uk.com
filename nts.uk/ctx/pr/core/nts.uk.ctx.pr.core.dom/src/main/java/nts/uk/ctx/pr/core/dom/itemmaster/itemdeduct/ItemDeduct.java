@@ -35,7 +35,7 @@ public class ItemDeduct extends AggregateRoot {
 			BigDecimal alRangeLow, int alRangeHighAtr, BigDecimal alRangeHigh, String memo
 
 	) {
-		return new ItemDeduct(new CompanyCode(ccd), new ItemCode(ccd), EnumAdaptor.valueOf(deductAtr, DeductAtr.class),
+		return new ItemDeduct(new CompanyCode(ccd), new ItemCode(itemCd), EnumAdaptor.valueOf(deductAtr, DeductAtr.class),
 				EnumAdaptor.valueOf(errRangeLowAtr, RangeAtr.class), new ErrRangeLow(errRangeLow),
 				EnumAdaptor.valueOf(errRangeHighAtr, RangeAtr.class), new ErrRangeHigh(errRangeHigh),
 				EnumAdaptor.valueOf(alRangeLowAtr, RangeAtr.class), new AlRangeLow(alRangeLow),

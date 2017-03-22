@@ -5,6 +5,8 @@ import javax.inject.Inject;
 import javax.transaction.Transactional;
 
 import lombok.val;
+import nts.arc.error.BusinessException;
+import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.pr.core.dom.itemmaster.itemsalary.ItemSalaryRespository;
@@ -21,6 +23,8 @@ public class DeleteItemSalaryCommandHandler extends CommandHandler<DeleteItemSal
 	protected void handle(CommandHandlerContext<DeleteItemSalaryCommand> context) {
 		// TODO Auto-generated method stub
 		val companyCode = AppContexts.user().companyCode();
+		if (!this.itemSalaryRespository.find(companyCode, context.getCommand().getItemCd()).isPresent())
+			throw new BusinessException(new RawErrorMessage(" 明細書名が入力されていません。"));
 		this.itemSalaryRespository.delete(companyCode, context.getCommand().getItemCd());
 
 	}

@@ -5,6 +5,8 @@ import javax.inject.Inject;
 import javax.transaction.Transactional;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.error.BusinessException;
+import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.core.dom.company.CompanyCode;
@@ -34,8 +36,10 @@ public class AddItemMasterCommandHandler extends CommandHandler<AddItemMasterCom
 	private AddItemAttendCommandHandler attendHandler;
 
 	protected void handle(CommandHandlerContext<AddItemMasterCommand> context) {
+		String companyCode = AppContexts.user().companyCode();
+		int CategoryAtr = context.getCommand().getCategoryAtr();
 
-		ItemMaster itemMaster = new ItemMaster(new CompanyCode(AppContexts.user().companyCode()),
+		ItemMaster itemMaster = new ItemMaster(new CompanyCode(companyCode),
 				new ItemCode(context.getCommand().getItemCode()), new ItemName(context.getCommand().getItemName()),
 				new ItemName(context.getCommand().getItemAbName()), new ItemName(context.getCommand().getItemAbNameE()),
 				new ItemName(context.getCommand().getItemAbNameO()),
@@ -45,9 +49,10 @@ public class AddItemMasterCommandHandler extends CommandHandler<AddItemMasterCom
 				new UniteCode(context.getCommand().getUniteCode()),
 				EnumAdaptor.valueOf(context.getCommand().getZeroDisplaySet(), DisplayAtr.class),
 				EnumAdaptor.valueOf(context.getCommand().getItemDisplayAtr(), ItemDisplayAtr.class));
-		int CategoryAtr = context.getCommand().getCategoryAtr();
 		String itemCode = itemMaster.getItemCode().v();
 		// TODO Auto-generated method stub
+		if (this.itemMasterRepository.find(companyCode, CategoryAtr, itemCode).isPresent())
+			throw new BusinessException(new RawErrorMessage(" 明細書名が入力されていません。"));
 		itemMasterRepository.add(itemMaster);
 		switch (CategoryAtr) {
 		case 0:

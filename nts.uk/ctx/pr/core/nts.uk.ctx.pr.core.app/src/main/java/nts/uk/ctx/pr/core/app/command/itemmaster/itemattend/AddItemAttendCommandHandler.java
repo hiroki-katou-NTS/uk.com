@@ -5,6 +5,8 @@ import javax.inject.Inject;
 import javax.transaction.Transactional;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.error.BusinessException;
+import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.core.dom.company.CompanyCode;
@@ -30,8 +32,8 @@ public class AddItemAttendCommandHandler extends CommandHandler<AddItemAttendCom
 
 	@Override
 	protected void handle(CommandHandlerContext<AddItemAttendCommand> context) {
-		ItemAttend itemAttend = new ItemAttend(
-				new CompanyCode(AppContexts.user().companyCode()),
+		String companyCode = AppContexts.user().companyCode();
+		ItemAttend itemAttend = new ItemAttend(new CompanyCode(companyCode),
 				new ItemCode(context.getCommand().getItemCd()),
 				EnumAdaptor.valueOf(context.getCommand().getAvePayAtr(), AvePayAtr.class),
 				EnumAdaptor.valueOf(context.getCommand().getItemAtr(), ItemAtr.class),
@@ -45,6 +47,8 @@ public class AddItemAttendCommandHandler extends CommandHandler<AddItemAttendCom
 				new AlRangeHigh(context.getCommand().getAlRangeHigh()),
 				EnumAdaptor.valueOf(context.getCommand().getWorkDaysScopeAtr(), WorkDaysScopeAtr.class),
 				new Memo(context.getCommand().getMemo()));
+		if (this.itemAttendRespository.find(companyCode, context.getCommand().getItemCd()).isPresent())
+			throw new BusinessException(new RawErrorMessage(" 明細書名が入力されていません。"));
 		this.itemAttendRespository.add(itemAttend);
 
 	}

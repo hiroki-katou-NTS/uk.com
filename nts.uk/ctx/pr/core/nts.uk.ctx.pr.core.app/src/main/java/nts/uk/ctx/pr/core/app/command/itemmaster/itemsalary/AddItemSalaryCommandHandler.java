@@ -5,6 +5,8 @@ import javax.inject.Inject;
 import javax.transaction.Transactional;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.error.BusinessException;
+import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.core.dom.company.CompanyCode;
@@ -36,8 +38,8 @@ public class AddItemSalaryCommandHandler extends CommandHandler<AddItemSalaryCom
 
 	@Override
 	protected void handle(CommandHandlerContext<AddItemSalaryCommand> context) {
-		ItemSalary itemSalary = new ItemSalary(
-				new CompanyCode(AppContexts.user().companyCode()),
+		String companyCode = AppContexts.user().companyCode();
+		ItemSalary itemSalary = new ItemSalary(new CompanyCode(companyCode),
 				new ItemCode(context.getCommand().getItemCd()),
 				EnumAdaptor.valueOf(context.getCommand().getTaxAtr(), TaxAtr.class),
 				EnumAdaptor.valueOf(context.getCommand().getSocialInsAtr(), InsAtr.class),
@@ -60,6 +62,8 @@ public class AddItemSalaryCommandHandler extends CommandHandler<AddItemSalaryCom
 				EnumAdaptor.valueOf(context.getCommand().getLimitMnyAtr(), LimitMnyAtr.class),
 				new LimitMnyRefItemCd(context.getCommand().getLimitMnyRefItemCd()),
 				new LimitMny(context.getCommand().getLimitMny()));
+		if (this.itemSalaryRespository.find(companyCode, context.getCommand().getItemCd()).isPresent())
+			throw new BusinessException(new RawErrorMessage(" 明細書名が入力されていません。"));
 		this.itemSalaryRespository.add(itemSalary);
 
 	}

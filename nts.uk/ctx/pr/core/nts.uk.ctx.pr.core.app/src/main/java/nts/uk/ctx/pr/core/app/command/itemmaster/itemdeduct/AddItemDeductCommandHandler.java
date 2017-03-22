@@ -5,6 +5,8 @@ import javax.inject.Inject;
 import javax.transaction.Transactional;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.error.BusinessException;
+import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.core.dom.company.CompanyCode;
@@ -29,7 +31,9 @@ public class AddItemDeductCommandHandler extends CommandHandler<AddItemDeductCom
 
 	@Override
 	protected void handle(CommandHandlerContext<AddItemDeductCommand> context) {
-		ItemDeduct itemDeduct = new ItemDeduct(new CompanyCode(AppContexts.user().companyCode()),
+		String companyCode = AppContexts.user().companyCode();
+		ItemDeduct itemDeduct = new ItemDeduct(
+				new CompanyCode(companyCode),
 				new ItemCode(context.getCommand().getItemCd()),
 				EnumAdaptor.valueOf(context.getCommand().getDeductAtr(), DeductAtr.class),
 				EnumAdaptor.valueOf(context.getCommand().getErrRangeLowAtr(), RangeAtr.class),
@@ -40,7 +44,8 @@ public class AddItemDeductCommandHandler extends CommandHandler<AddItemDeductCom
 				new AlRangeLow(context.getCommand().getAlRangeLow()),
 				EnumAdaptor.valueOf(context.getCommand().getAlRangeHighAtr(), RangeAtr.class),
 				new AlRangeHigh(context.getCommand().getAlRangeHigh()), new Memo(context.getCommand().getMemo()));
-
+		if (this.itemDeductRespository.find(companyCode, context.getCommand().getItemCd()).isPresent())
+			throw new BusinessException(new RawErrorMessage(" 明細書名が入力されていません。"));
 		this.itemDeductRespository.add(itemDeduct);
 
 	}
