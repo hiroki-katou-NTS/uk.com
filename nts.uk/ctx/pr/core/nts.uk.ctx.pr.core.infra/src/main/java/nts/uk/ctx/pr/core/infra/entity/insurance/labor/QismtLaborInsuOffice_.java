@@ -60,9 +60,6 @@ public class QismtLaborInsuOffice_ {
 	/** The postal. */
 	public static volatile SingularAttribute<QismtLaborInsuOffice, String> postal;
 
-	/** The prefecture. */
-	public static volatile SingularAttribute<QismtLaborInsuOffice, String> prefecture;
-
 	/** The address 1. */
 	public static volatile SingularAttribute<QismtLaborInsuOffice, String> address1;
 

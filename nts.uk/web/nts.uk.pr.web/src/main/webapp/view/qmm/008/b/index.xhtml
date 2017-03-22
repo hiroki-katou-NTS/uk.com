@@ -16,7 +16,8 @@
 				nts.uk.ctx.pr.core.dom.insurance.OfficeName
 				nts.uk.ctx.pr.core.dom.insurance.CommonAmount
   			</com:ValidatorScript>
-
+			<com:scriptfile path="../h/qmm008.h.service.js" />
+			<com:scriptfile path="../0/common/service.js" />
 			<com:scriptfile path="qmm008.b.service.js" />
 			<com:scriptfile path="qmm008.b.vm.js" />
 			<com:scriptfile path="qmm008.b.start.js" />
@@ -38,7 +39,7 @@
 
 
 		<ui:define name="pageContent">
-			<div data-bind="with: healthModel" class="right">
+			<div data-bind="with: healthModel,visible: true" style="display:none;" class="right">
 				<table class="border_none">
 					<tr>
 						<td class="border_none"><div style="margin-top: 20px;"

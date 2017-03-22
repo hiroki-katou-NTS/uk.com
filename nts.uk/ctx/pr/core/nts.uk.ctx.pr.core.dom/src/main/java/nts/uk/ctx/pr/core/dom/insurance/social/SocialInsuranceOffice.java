@@ -45,9 +45,6 @@ public class SocialInsuranceOffice extends DomainObject implements Master {
 	/** The potal code. */
 	private PotalCode potalCode;
 
-	/** The prefecture. */
-	private String prefecture;
-
 	/** The address 1 st. */
 	private Address address1st;
 
@@ -118,7 +115,6 @@ public class SocialInsuranceOffice extends DomainObject implements Master {
 		this.picName = memento.getPicName();
 		this.picPosition = memento.getPicPosition();
 		this.potalCode = memento.getPotalCode();
-		this.prefecture = memento.getPrefecture();
 		this.address1st = memento.getAddress1st();
 		this.address2nd = memento.getAddress2nd();
 		this.kanaAddress1st = memento.getKanaAddress1st();
@@ -153,7 +149,6 @@ public class SocialInsuranceOffice extends DomainObject implements Master {
 		memento.setPicName(this.picName);
 		memento.setPicPosition(this.picPosition);
 		memento.setPotalCode(this.potalCode);
-		memento.setPrefecture(this.prefecture);
 		memento.setAddress1st(this.address1st);
 		memento.setAddress2nd(this.address2nd);
 		memento.setKanaAddress1st(this.kanaAddress1st);
@@ -172,6 +167,37 @@ public class SocialInsuranceOffice extends DomainObject implements Master {
 		memento.setHealthInsuOfficeCode(this.healthInsuOfficeCode);
 		memento.setHealthInsuAssoCode(this.healthInsuAssoCode);
 		memento.setMemo(this.memo);
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((code == null) ? 0 : code.hashCode());
+		return result;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (!(obj instanceof SocialInsuranceOffice))
+			return false;
+		SocialInsuranceOffice other = (SocialInsuranceOffice) obj;
+		if (code == null) {
+			if (other.code != null)
+				return false;
+		} else if (!code.equals(other.code))
+			return false;
+		return true;
 	}
 
 }

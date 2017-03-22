@@ -22,6 +22,8 @@ var nts;
                             var HealthInsuranceRateItemDto = b.service.model.finder.HealthInsuranceRateItemDto;
                             var ChargeRateItemDto = b.service.model.finder.ChargeRateItemDto;
                             var ScreenBaseModel = view.base.simplehistory.viewmodel.ScreenBaseModel;
+                            var hservice = nts.uk.pr.view.qmm008.h.service;
+                            var commonService = nts.uk.pr.view.qmm008._0.common.service;
                             var ScreenModel = (function (_super) {
                                 __extends(ScreenModel, _super);
                                 function ScreenModel() {
@@ -48,12 +50,18 @@ var nts;
                                     self.currentOfficeCode = ko.observable('');
                                     self.sendOfficeData = ko.observable('');
                                     self.japanYear = ko.observable('');
+                                    self.listAvgEarnLevelMasterSetting = [];
+                                    self.listHealthInsuranceAvgearn = ko.observableArray([]);
                                 }
                                 ScreenModel.prototype.start = function () {
                                     var self = this;
                                     var dfd = $.Deferred();
                                     self.getAllRounding().done(function () {
                                         dfd.resolve(null);
+                                    });
+                                    commonService.getAvgEarnLevelMasterSettingList().done(function (data) {
+                                        self.listAvgEarnLevelMasterSetting = data;
+                                        dfd.resolve();
                                     });
                                     return dfd.promise();
                                 };
@@ -178,8 +186,59 @@ var nts;
                                 };
                                 ScreenModel.prototype.save = function () {
                                     var self = this;
+                                    hservice.updateHealthInsuranceAvgearn(self.collectData(), self.healthCollectData().officeCode);
                                     b.service.updateHealthRate(self.healthCollectData()).done(function () {
                                     }).fail();
+                                };
+                                ScreenModel.prototype.collectData = function () {
+                                    var self = this;
+                                    var data = [];
+                                    self.listAvgEarnLevelMasterSetting.forEach(function (item) {
+                                        self.listHealthInsuranceAvgearn.push(self.calculateHealthInsuranceAvgEarnModel(item));
+                                    });
+                                    self.listHealthInsuranceAvgearn().forEach(function (item) {
+                                        data.push(ko.toJS(item));
+                                    });
+                                    return data;
+                                };
+                                ScreenModel.prototype.calculateHealthInsuranceAvgEarnModel = function (levelMasterSetting) {
+                                    var self = this;
+                                    var historyId = self.healthModel().historyId;
+                                    var rateItems = self.healthModel().rateItems();
+                                    var roundingMethods = self.healthModel().roundingMethods();
+                                    var personalRounding = self.convertToRounding(roundingMethods.healthSalaryPersonalComboBoxSelectedCode());
+                                    var companyRounding = self.convertToRounding(roundingMethods.healthSalaryCompanyComboBoxSelectedCode());
+                                    var rate = levelMasterSetting.avgEarn / 1000;
+                                    var autoCalculate = self.healthModel().autoCalculate();
+                                    if (autoCalculate == AutoCalculateType.Auto) {
+                                        return new HealthInsuranceAvgEarnModel(historyId, levelMasterSetting.code, new HealthInsuranceAvgEarnValueModel(self.rounding(personalRounding, rateItems.healthSalaryPersonalGeneral() * rate, Number.One), self.rounding(personalRounding, rateItems.healthSalaryPersonalNursing() * rate, Number.One), self.rounding(personalRounding, rateItems.healthSalaryPersonalBasic() * rate, Number.Three), self.rounding(personalRounding, rateItems.healthSalaryPersonalSpecific() * rate, Number.Three)), new HealthInsuranceAvgEarnValueModel(self.rounding(companyRounding, rateItems.healthSalaryCompanyGeneral() * rate, Number.One), self.rounding(companyRounding, rateItems.healthSalaryCompanyNursing() * rate, Number.One), self.rounding(companyRounding, rateItems.healthSalaryCompanyBasic() * rate, Number.Three), self.rounding(companyRounding, rateItems.healthSalaryCompanySpecific() * rate, Number.Three)));
+                                    }
+                                    else {
+                                        return new HealthInsuranceAvgEarnModel(historyId, levelMasterSetting.code, new HealthInsuranceAvgEarnValueModel(Number.Zero, Number.Zero, Number.Zero, Number.Zero), new HealthInsuranceAvgEarnValueModel(Number.Zero, Number.Zero, Number.Zero, Number.Zero));
+                                    }
+                                };
+                                ScreenModel.prototype.rounding = function (roudingMethod, roundValue, roundType) {
+                                    var self = this;
+                                    var getLevel = Math.pow(10, roundType);
+                                    var backupValue = roundValue * (getLevel / 10);
+                                    switch (roudingMethod) {
+                                        case Rounding.ROUNDUP: return Math.ceil(backupValue) / (getLevel / 10);
+                                        case Rounding.TRUNCATION: return Math.floor(backupValue) / (getLevel / 10);
+                                        case Rounding.ROUNDDOWN:
+                                            if ((backupValue * getLevel) % 10 > 5)
+                                                return (Math.ceil(backupValue)) / (getLevel / 10);
+                                            else
+                                                return Math.floor(backupValue) / (getLevel / 10);
+                                        case Rounding.DOWN4_UP5: return self.roudingDownUp(backupValue, 4) / (getLevel / 10);
+                                        case Rounding.DOWN5_UP6: return self.roudingDownUp(backupValue, 5) / (getLevel / 10);
+                                    }
+                                };
+                                ScreenModel.prototype.roudingDownUp = function (value, down) {
+                                    var newVal = Math.round(value * 10) / 10;
+                                    if ((newVal * 10) % 10 > down)
+                                        return Math.ceil(value);
+                                    else
+                                        return Math.floor(value);
                                 };
                                 ScreenModel.prototype.onSelectHistory = function (id) {
                                     var self = this;
@@ -325,6 +384,26 @@ var nts;
                             return ChargeRateItem;
                         }());
                         b.ChargeRateItem = ChargeRateItem;
+                        var HealthInsuranceAvgEarnModel = (function () {
+                            function HealthInsuranceAvgEarnModel(historyId, levelCode, personalAvg, companyAvg) {
+                                this.historyId = historyId;
+                                this.levelCode = levelCode;
+                                this.companyAvg = companyAvg;
+                                this.personalAvg = personalAvg;
+                            }
+                            return HealthInsuranceAvgEarnModel;
+                        }());
+                        b.HealthInsuranceAvgEarnModel = HealthInsuranceAvgEarnModel;
+                        var HealthInsuranceAvgEarnValueModel = (function () {
+                            function HealthInsuranceAvgEarnValueModel(general, nursing, basic, specific) {
+                                this.healthGeneralMny = ko.observable(general);
+                                this.healthNursingMny = ko.observable(nursing);
+                                this.healthBasicMny = ko.observable(basic);
+                                this.healthSpecificMny = ko.observable(specific);
+                            }
+                            return HealthInsuranceAvgEarnValueModel;
+                        }());
+                        b.HealthInsuranceAvgEarnValueModel = HealthInsuranceAvgEarnValueModel;
                         var PaymentType = (function () {
                             function PaymentType() {
                             }
@@ -371,6 +450,17 @@ var nts;
                             return AutoCalculate;
                         }());
                         b.AutoCalculate = AutoCalculate;
+                        (function (Number) {
+                            Number[Number["Zero"] = 0] = "Zero";
+                            Number[Number["One"] = 1] = "One";
+                            Number[Number["Three"] = 3] = "Three";
+                        })(b.Number || (b.Number = {}));
+                        var Number = b.Number;
+                        (function (AutoCalculateType) {
+                            AutoCalculateType[AutoCalculateType["Auto"] = 0] = "Auto";
+                            AutoCalculateType[AutoCalculateType["Manual"] = 1] = "Manual";
+                        })(b.AutoCalculateType || (b.AutoCalculateType = {}));
+                        var AutoCalculateType = b.AutoCalculateType;
                     })(b = qmm008.b || (qmm008.b = {}));
                 })(qmm008 = view.qmm008 || (view.qmm008 = {}));
             })(view = pr.view || (pr.view = {}));

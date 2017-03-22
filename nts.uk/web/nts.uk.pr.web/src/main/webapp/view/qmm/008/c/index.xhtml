@@ -16,7 +16,8 @@
 				nts.uk.ctx.pr.core.dom.insurance.OfficeName
 				nts.uk.ctx.pr.core.dom.insurance.CommonAmount
   			</com:ValidatorScript>
-
+  			<com:scriptfile path="../i/qmm008.i.service.js" />
+			<com:scriptfile path="../0/common/service.js" />
 			<com:scriptfile path="qmm008.c.service.js" />
 			<com:scriptfile path="qmm008.c.vm.js" />
 			<com:scriptfile path="qmm008.c.start.js" />
@@ -40,7 +41,7 @@
 		
 		<ui:define name="pageContent">
 				<!-- right -->
-				<div data-bind="with: pensionModel" class="right">
+				<div data-bind="with: pensionModel,visible: true" style="display:none;" class="right">
 					<table id="pension_detail_table" class="border_none">
 						<tr>
 							<td class="border_none">

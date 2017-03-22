@@ -34,9 +34,6 @@ public class SocialOfficeBaseCommand {
 	/** The potal code. */
 	public String potalCode;
 
-	/** The prefecture. */
-	public String prefecture;
-
 	/** The address 1 st. */
 	public String address1st;
 

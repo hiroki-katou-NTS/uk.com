@@ -44,9 +44,6 @@ public class SocialInsuranceOfficeDto implements SocialInsuranceOfficeSetMemento
 	/** The potal code. */
 	public String potalCode;
 
-	/** The prefecture. */
-	public String prefecture;
-
 	/** The address 1 st. */
 	public String address1st;
 
@@ -155,14 +152,6 @@ public class SocialInsuranceOfficeDto implements SocialInsuranceOfficeSetMemento
 	@Override
 	public void setPotalCode(PotalCode potalCode) {
 		this.potalCode = potalCode.v();
-	}
-
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.pr.core.dom.insurance.social.SocialInsuranceOfficeSetMemento#setPrefecture(java.lang.String)
-	 */
-	@Override
-	public void setPrefecture(String prefecture) {
-		this.prefecture = prefecture;
 	}
 
 	/* (non-Javadoc)
