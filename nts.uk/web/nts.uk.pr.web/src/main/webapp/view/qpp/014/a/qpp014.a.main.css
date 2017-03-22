@@ -55,3 +55,20 @@
 	margin-top: 10px;
 	margin-bottom: 15px;
 }
+.func-btn { 
+	display: inline-block;
+	margin-left: 30px;
+}
+#link_button {
+	background-color: #E2F79F;
+    width: 140px;	
+}
+#link_button > img {
+	vertical-align: middle;
+    height: 30px;
+    width: 30px;
+}
+#link_button > a {
+	padding-left: 5px;
+    vertical-align: middle;
+}

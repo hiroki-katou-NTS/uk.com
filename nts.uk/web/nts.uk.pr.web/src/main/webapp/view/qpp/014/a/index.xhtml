@@ -13,19 +13,22 @@
 					nts.uk.ctx.pr.core.dom.layout.LayoutName
 			</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
-			<com:scriptfile path="viewmodel.js" />
-			<com:scriptfile path="start.js" />
-			<com:scriptfile path="service.js" />
-			<com:stylefile path="main.css" />
-			<com:stylefile path="../b/main.css" />
-			<com:stylefile path="../d/main.css" />
-			<com:stylefile path="../g/main.css" />
-			<com:stylefile path="../h/main.css" />
+			<com:scriptfile path="qpp014.a.viewmodel.js" />
+			<com:scriptfile path="qpp014.a.start.js" />
+			<com:scriptfile path="qpp014.a.service.js" />
+			<com:stylefile path="qpp014.a.main.css" />
+			<com:stylefile path="../b/qpp014.b.main.css" />
+			<com:stylefile path="../d/qpp014.d.main.css" />
+			<com:stylefile path="../g/qpp014.g.main.css" />
+			<com:stylefile path="../h/qpp014.h.main.css" />
 		</ui:define>
 
 		<ui:define name="content">
-			<div id="functions-area">
-				<button class="func-btn" data-bind="click: backScreen">操作選択</button>
+			<div id="functions-area" data-bind="click: backScreen">
+				<div id="link_button" class="func-btn">
+					<img src="data:image/png;base64,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" />
+					<a>操作選択に戻る</a>
+				</div>
 				<button class="func-btn">振込チェックリストボタン</button>
 			</div>
 			<div id="contents-area" class="cf">
