@@ -5,6 +5,7 @@
 package nts.uk.ctx.pr.report.app.wageledger.find;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -26,10 +27,6 @@ public class OutputSettingFinder {
 	/** The repository. */
 	@Inject
 	private WLOutputSettingRepository repository;
-	
-	/** The wage ledger setting repository. */
-	@Inject
-	private WageLedgerSettingRepository wageLedgerSettingRepository;
 	
 	/**
 	 * Find.
@@ -65,6 +62,11 @@ public class OutputSettingFinder {
 	 */
 	public List<HeaderSettingDto> findAll(){
 		CompanyCode companyCode = new CompanyCode(AppContexts.user().companyCode());
-		return this.wageLedgerSettingRepository.findHeaderOutputSettings(companyCode);
+		return this.repository.findAll(companyCode).stream().map(setting -> {
+			return HeaderSettingDto.builder()
+					.code(setting.getCode().v())
+					.name(setting.getName().v())
+					.build();
+		}).collect(Collectors.toList());
 	}
 }
