@@ -143,14 +143,14 @@
 										<com:ko-if bind="$parent.code == levelCode">
 											<th data-bind="css: { hidden: $parents[1].leftShow() }"
 												class="bg-green border_none"></th>
-											<com:ko tag="with" bind="personalPension">
+											<com:ko tag="with" bind="personalFund">
 												<com:ko-if bind="$parents[2].leftShow()">
 													<td><input data-bind="ntsNumberEditor: {value: maleAmount, constraint:'CommonAmount', option: $parents[2].numberEditorCommonOption}"></input></td>
 													<td><input data-bind="ntsNumberEditor: {value: femaleAmount, constraint:'CommonAmount', option: $parents[2].numberEditorCommonOption}"></input></td>
 													<td><input data-bind="ntsNumberEditor: {value: unknownAmount, constraint:'CommonAmount', option: $parents[2].numberEditorCommonOption}"></input></td>
 												</com:ko-if>
 											</com:ko>
-											<com:ko tag="with" bind="companyPension">
+											<com:ko tag="with" bind="companyFund">
 												<com:ko-if bind="$parents[2].leftShow()">
 													<td><input data-bind="ntsNumberEditor: {value: maleAmount, constraint:'CommonAmount', option: $parents[2].numberEditorCommonOption}"></input></td>
 													<td><input data-bind="ntsNumberEditor: {value: femaleAmount, constraint:'CommonAmount', option: $parents[2].numberEditorCommonOption}"></input></td>
