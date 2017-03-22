@@ -193,6 +193,12 @@ public abstract class SimpleHistoryBaseService<M extends Master, H extends Histo
 		h.setStart(newYearMonth);
 		repo.updateHistory(h);
 
+		// Update before h.
+		if (beforeH != null) {
+			beforeH.setEnd(newYearMonth.previousMonth());
+			repo.updateHistory(beforeH);
+		}
+		
 		// Ret.
 		return h;
 	}
