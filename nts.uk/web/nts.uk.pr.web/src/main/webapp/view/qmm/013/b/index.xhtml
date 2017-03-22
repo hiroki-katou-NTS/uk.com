@@ -5,8 +5,9 @@
 	xmlns:com="http://xmlns.jcp.org/jsf/component"
 	xmlns:h="http://xmlns.jcp.org/jsf/html">
 <body>
-	<ui:composition template="../../../../master/base.xhtml">
+	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
+			<script>var dialogSize = { width: 1350, height: 700 };</script>
 			<com:ValidatorScript>
 					nts.uk.shr.com.primitive.PersonId
 					nts.uk.ctx.pr.core.dom.rule.employment.unitprice.personal.PersonalUnitPriceCode
@@ -14,19 +15,20 @@
    				</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:stylefile path="main.css" />
-			<com:scriptfile path="start.js" />
-			<com:scriptfile path="viewmodel.js" />
-			<com:scriptfile path="service.js" />
+			<com:scriptfile path="../a/qmm013.a.start.js" />
+			<com:scriptfile path="../a/qmm013.a.vm.js" />
+			<com:scriptfile path="../a/qmm013.a.service.js" />
 		</ui:define>
 		<ui:define name="content">
 			<div id="functions-area">
 				<button id="BTN_001" data-bind="click: btn_001">新規</button>
-				<button id="BTN_002" class="proceed" data-bind="click: btn_002, enable: $root.errors.isEmpty">登録</button>
+				<button id="BTN_002" class="proceed"
+					data-bind="click: btn_002, enable: $root.errors.isEmpty">登録</button>
 				<button id="BTN_003">印刷 (PDF)</button>
 				<button id="BTN_007">マスタ修正ログ</button>
 				<button id="BTN_004" class="danger" data-bind="click: btn_004">削除</button>
 			</div>
-			<div id="contents-area" >
+			<div id="contents-area">
 				<div class="left-content">
 					<div class="cf">
 						<div style="float: left; width: 480px"
@@ -69,7 +71,8 @@
 					</div>
 					<div class="right-content-right">
 						<div class="control-group">
-							<span> <input data-name="コード" id="INP_002" class="text-editor1"
+							<span> <input data-name="コード" id="INP_002"
+								class="text-editor1"
 								data-bind="ntsTextEditor: {
 									value: personalUnitPriceCode,
 									constraint: 'PersonalUnitPriceCode',
@@ -80,7 +83,8 @@
 						                textalign: 'center'},
 									required: true,
 									enable: $parent.isCreated}" /></span>
-							<span> <input data-name="名称" id="INP_003" class="text-editor2"
+							<span> <input data-name="名称" id="INP_003"
+								class="text-editor2"
 								data-bind="ntsTextEditor: {
 									value: personalUnitPriceName,
 									constraint: 'PersonalUnitPriceName',
@@ -114,7 +118,8 @@
 						</div>
 						<div class="control-group">
 							<button id="BTN_006">参照</button>
-							<label id="LBL_012" data-bind="text: uniteCode">002</label> <label id="LBL_013">支店名称</label>
+							<label id="LBL_012" data-bind="text: uniteCode">002</label> <label
+								id="LBL_013">支店名称</label>
 						</div>
 					</div>
 					<hr />

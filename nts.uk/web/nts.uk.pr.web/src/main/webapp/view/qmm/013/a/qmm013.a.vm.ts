@@ -181,6 +181,12 @@ module qmm013.a.viewmodel {
                 })
             }
         }
+        
+        Opendialog(): any {
+                var self = this;
+                    nts.uk.ui.windows.sub.modal("/view/qmm/013/b/index.xhtml", { title: "銀行の登録　＞　銀行の統合" });
+            }
+
 
         /**
          * 登録(Add button)
