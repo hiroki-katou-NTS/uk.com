@@ -13,6 +13,7 @@ import nts.arc.time.YearMonth;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 import nts.uk.ctx.pr.core.dom.wagetable.DemensionNo;
+import nts.uk.ctx.pr.core.dom.wagetable.ElementId;
 import nts.uk.ctx.pr.core.dom.wagetable.ElementType;
 import nts.uk.ctx.pr.core.dom.wagetable.WtCode;
 import nts.uk.ctx.pr.core.dom.wagetable.history.WtHistory;
@@ -157,7 +158,7 @@ public class WtHistoryDto {
 							ElementType.valueOf(item.getType()),
 							item.getItemList().stream()
 									.map(codeItem -> new CodeItem(codeItem.getReferenceCode(),
-											codeItem.getUuid()))
+											new ElementId(codeItem.getUuid())))
 									.collect(Collectors.toList()));
 				}
 
@@ -168,7 +169,7 @@ public class WtHistoryDto {
 							item.getItemList().stream()
 									.map(rangeItem -> new RangeItem(rangeItem.getOrderNumber(),
 											rangeItem.getStartVal(), rangeItem.getEndVal(),
-											rangeItem.getUuid()))
+											new ElementId(rangeItem.getUuid())))
 									.collect(Collectors.toList()));
 				}
 

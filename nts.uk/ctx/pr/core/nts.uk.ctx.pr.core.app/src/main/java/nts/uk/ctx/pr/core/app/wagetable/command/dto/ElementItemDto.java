@@ -7,7 +7,6 @@ package nts.uk.ctx.pr.core.app.wagetable.command.dto;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.pr.core.dom.wagetable.ElementId;
 
 /**
  * The Class CodeItem.
@@ -18,7 +17,7 @@ import nts.uk.ctx.pr.core.dom.wagetable.ElementId;
 public class ElementItemDto {
 
 	/** The uuid. */
-	private ElementId uuid;
+	private String uuid;
 
 	/** The reference code. */
 	private String referenceCode;
