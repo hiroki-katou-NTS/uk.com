@@ -17,30 +17,29 @@ var nts;
                     }
                     EditorProcessor.prototype.init = function ($input, data) {
                         var _this = this;
-                        var setValue = data.value;
+                        var value = data.value;
                         var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
                         var constraint = validation.getConstraint(constraintName);
+                        var immediate = ko.unwrap(data.immediate !== undefined ? data.immediate : 'false');
+                        var valueUpdate = (immediate === true) ? 'input' : 'change';
                         var characterWidth = 9;
                         if (constraint && constraint.maxLength && !$input.is("textarea")) {
                             var autoWidth = constraint.maxLength * characterWidth;
                             $input.width(autoWidth);
                         }
-                        $input.addClass('nts-editor').addClass("nts-input");
+                        $input.addClass('nts-editor nts-input');
                         $input.wrap("<span class= 'nts-editor-wrapped ntsControl'/>");
-                        $input.focus(function () {
-                            $input.select();
-                        });
-                        $input.change(function () {
+                        $input.on(valueUpdate, function (e) {
                             var validator = _this.getValidator(data);
                             var newText = $input.val();
                             var result = validator.validate(newText);
                             $input.ntsError('clear');
                             if (result.isValid) {
-                                setValue(result.parsedValue);
+                                value(result.parsedValue);
                             }
                             else {
                                 $input.ntsError('set', result.errorMessage);
-                                setValue(newText);
+                                value(newText);
                             }
                         });
                         $input.blur(function () {
@@ -54,7 +53,7 @@ var nts;
                         });
                     };
                     EditorProcessor.prototype.update = function ($input, data) {
-                        var getValue = data.value;
+                        var value = data.value;
                         var required = (data.required !== undefined) ? ko.unwrap(data.required) : false;
                         var enable = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
                         var readonly = (data.readonly !== undefined) ? ko.unwrap(data.readonly) : false;
@@ -70,8 +69,8 @@ var nts;
                         if (textalign.trim() != "")
                             $input.css('text-align', textalign);
                         var formatted = $input.ntsError('hasError')
-                            ? getValue()
-                            : this.getFormatter(data).format(getValue());
+                            ? value()
+                            : this.getFormatter(data).format(value());
                         $input.val(formatted);
                     };
                     EditorProcessor.prototype.getDefaultOption = function () {
@@ -85,81 +84,6 @@ var nts;
                     };
                     return EditorProcessor;
                 }());
-                var DynamicEditorProcessor = (function (_super) {
-                    __extends(DynamicEditorProcessor, _super);
-                    function DynamicEditorProcessor() {
-                        _super.apply(this, arguments);
-                    }
-                    DynamicEditorProcessor.prototype.getValidator = function (data) {
-                        var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
-                        var constraint = validation.getConstraint(constraintName);
-                        if (data.editortype) {
-                            var editortype = ko.unwrap(data.editortype);
-                            switch (editortype) {
-                                case 'numbereditor':
-                                    return NumberEditorProcessor.prototype.getValidator(data);
-                                case 'timeeditor':
-                                    return TimeEditorProcessor.prototype.getValidator(data);
-                                case 'multilineeditor':
-                                    return MultilineEditorProcessor.prototype.getValidator(data);
-                                default:
-                                    return TextEditorProcessor.prototype.getValidator(data);
-                            }
-                        }
-                        else {
-                            if (constraint) {
-                                if (constraint.valueType === 'String') {
-                                    return TextEditorProcessor.prototype.getValidator(data);
-                                }
-                                else if (data.option) {
-                                    var option = ko.unwrap(data.option);
-                                    if (option.inputFormat) {
-                                        return TimeEditorProcessor.prototype.getValidator(data);
-                                    }
-                                    else {
-                                        return NumberEditorProcessor.prototype.getValidator(data);
-                                    }
-                                }
-                            }
-                            return validation.createValidator(constraintName);
-                        }
-                    };
-                    DynamicEditorProcessor.prototype.getFormatter = function (data) {
-                        var constraintName = (data.constraint !== undefined) ? ko.unwrap(data.constraint) : "";
-                        var constraint = validation.getConstraint(constraintName);
-                        if (data.editortype) {
-                            var editortype = ko.unwrap(data.editortype);
-                            switch (editortype) {
-                                case 'numbereditor':
-                                    return NumberEditorProcessor.prototype.getFormatter(data);
-                                case 'timeeditor':
-                                    return TimeEditorProcessor.prototype.getFormatter(data);
-                                case 'multilineeditor':
-                                    return MultilineEditorProcessor.prototype.getFormatter(data);
-                                default:
-                                    return TextEditorProcessor.prototype.getFormatter(data);
-                            }
-                        }
-                        else {
-                            if (constraint) {
-                                if (constraint.valueType === 'String') {
-                                    return TextEditorProcessor.prototype.getFormatter(data);
-                                }
-                                else if (data.option) {
-                                    var option = ko.unwrap(data.option);
-                                    if (option.inputFormat) {
-                                        return TimeEditorProcessor.prototype.getFormatter(data);
-                                    }
-                                    else {
-                                        return NumberEditorProcessor.prototype.getFormatter(data);
-                                    }
-                                }
-                            }
-                            return new uk.format.NoFormatter();
-                        }
-                    };
-                    return DynamicEditorProcessor;
-                }(EditorProcessor));
                 var TextEditorProcessor = (function (_super) {
                     __extends(TextEditorProcessor, _super);
                     function TextEditorProcessor() {
@@ -195,7 +119,11 @@ var nts;
                     NumberEditorProcessor.prototype.init = function ($input, data) {
                         var option = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
                         $input.focus(function () {
+                            var selectionType = document.getSelection().type;
                             $input.val(data.value());
+                            if (selectionType === 'Range') {
+                                $input.select();
+                            }
                         });
                         _super.prototype.init.call(this, $input, data);
                     };
@@ -306,19 +234,6 @@ var nts;
                     };
                     return NtsEditorBindingHandler;
                 }());
-                var NtsDynamicEditorBindingHandler = (function (_super) {
-                    __extends(NtsDynamicEditorBindingHandler, _super);
-                    function NtsDynamicEditorBindingHandler() {
-                        _super.apply(this, arguments);
-                    }
-                    NtsDynamicEditorBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                        new DynamicEditorProcessor().init($(element), valueAccessor());
-                    };
-                    NtsDynamicEditorBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                        new DynamicEditorProcessor().update($(element), valueAccessor());
-                    };
-                    return NtsDynamicEditorBindingHandler;
-                }(NtsEditorBindingHandler));
                 var NtsTextEditorBindingHandler = (function (_super) {
                     __extends(NtsTextEditorBindingHandler, _super);
                     function NtsTextEditorBindingHandler() {
@@ -331,150 +246,6 @@ var nts;
                         new TextEditorProcessor().update($(element), valueAccessor());
                     };
                     return NtsTextEditorBindingHandler;
-                }(NtsEditorBindingHandler));
-                var filteredArray = function (array, searchTerm, fields, childField) {
-                    if (!array) {
-                        return [];
-                    }
-                    if (!(searchTerm instanceof String)) {
-                        searchTerm = "" + searchTerm;
-                    }
-                    var flatArr = nts.uk.util.flatArray(array, childField);
-                    var filter = searchTerm.toLowerCase();
-                    if (!filter) {
-                        return flatArr;
-                    }
-                    var filtered = ko.utils.arrayFilter(flatArr, function (item) {
-                        var i = fields.length;
-                        while (i--) {
-                            var prop = fields[i];
-                            var strProp = ("" + item[prop]).toLocaleLowerCase();
-                            if (strProp.indexOf(filter) !== -1) {
-                                return true;
-                            }
-                            ;
-                        }
-                        return false;
-                    });
-                    return filtered;
-                };
-                var getNextItem = function (selected, arr, searchResult, selectedKey, isArray) {
-                    var current = null;
-                    if (isArray) {
-                        if (selected.length > 0)
-                            current = selected[0];
-                    }
-                    else if (selected !== undefined && selected !== '' && selected !== null) {
-                        current = selected;
-                    }
-                    if (searchResult.length > 0) {
-                        if (current) {
-                            var currentIndex = nts.uk.util.findIndex(arr, current, selectedKey);
-                            var nextIndex = 0;
-                            var found = false;
-                            for (var i = 0; i < searchResult.length; i++) {
-                                var item = searchResult[i];
-                                var itemIndex = nts.uk.util.findIndex(arr, item[selectedKey], selectedKey);
-                                if (!found && itemIndex >= currentIndex + 1) {
-                                    found = true;
-                                    nextIndex = i;
-                                }
-                                if ((i < searchResult.length - 1) && item[selectedKey] == current)
-                                    return searchResult[i + 1][selectedKey];
-                            }
-                            return searchResult[nextIndex][selectedKey];
-                        }
-                        return searchResult[0][selectedKey];
-                    }
-                    return undefined;
-                };
-                var NtsSearchBoxBindingHandler = (function (_super) {
-                    __extends(NtsSearchBoxBindingHandler, _super);
-                    function NtsSearchBoxBindingHandler() {
-                        _super.apply(this, arguments);
-                    }
-                    NtsSearchBoxBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                        var searchBox = $(element);
-                        var data = valueAccessor();
-                        var fields = ko.unwrap(data.fields);
-                        var searchText = (data.searchText !== undefined) ? ko.unwrap(data.searchText) : "検索";
-                        var placeHolder = (data.placeHolder !== undefined) ? ko.unwrap(data.placeHolder) : "コード・名称で検索・・・";
-                        var selected = data.selected;
-                        var selectedKey = null;
-                        if (data.selectedKey) {
-                            selectedKey = ko.unwrap(data.selectedKey);
-                        }
-                        var arr = ko.unwrap(data.items);
-                        var component = $("#" + ko.unwrap(data.comId));
-                        var childField = null;
-                        if (data.childField) {
-                            childField = ko.unwrap(data.childField);
-                        }
-                        searchBox.data("searchResult", nts.uk.util.flatArray(arr, childField));
-                        var $container = $(element);
-                        $container.append("<input class='ntsSearchBox' type='text' />");
-                        $container.append("<button class='search-btn caret-bottom'>" + searchText + "</button>");
-                        var $input = $container.find("input.ntsSearchBox");
-                        $input.attr("placeholder", placeHolder);
-                        var $button = $container.find("button.search-btn");
-                        $input.outerWidth($container.outerWidth(true) - $button.outerWidth(true));
-                        var nextSearch = function () {
-                            var filtArr = searchBox.data("searchResult");
-                            var compareKey = fields[0];
-                            var isArray = $.isArray(selected());
-                            var selectedItem = getNextItem(selected(), nts.uk.util.flatArray(arr, childField), filtArr, selectedKey, isArray);
-                            if (data.mode) {
-                                if (data.mode == 'igGrid') {
-                                    var selectArr = [];
-                                    selectArr.push("" + selectedItem);
-                                    component.ntsGridList("setSelected", selectArr);
-                                    data.selected(selectArr);
-                                    component.trigger("selectChange");
-                                }
-                                else if (data.mode == 'igTree') {
-                                    var liItem = $("li[data-value='" + selectedItem + "']");
-                                    component.igTree("expandToNode", liItem);
-                                    component.igTree("select", liItem);
-                                }
-                            }
-                            else {
-                                if (!isArray)
-                                    selected(selectedItem);
-                                else {
-                                    selected([]);
-                                    selected.push(selectedItem);
-                                }
-                                component.trigger("selectChange");
-                            }
-                        };
-                        $input.keyup(function () {
-                            $input.change();
-                        }).keydown(function (event) {
-                            if (event.which == 13) {
-                                event.preventDefault();
-                                nextSearch();
-                            }
-                        });
-                        $input.change(function (event) {
-                            var searchTerm = $input.val();
-                            searchBox.data("searchResult", filteredArray(ko.unwrap(data.items), searchTerm, fields, childField));
-                        });
-                        $button.click(nextSearch);
-                    };
-                    NtsSearchBoxBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                        var searchBox = $(element);
-                        var $input = searchBox.find("input.ntsSearchBox");
-                        var searchTerm = $input.val();
-                        var data = valueAccessor();
-                        var arr = ko.unwrap(data.items);
-                        var fields = ko.unwrap(data.fields);
-                        var childField = null;
-                        if (data.childField) {
-                            childField = ko.unwrap(data.childField);
-                        }
-                        searchBox.data("searchResult", filteredArray(arr, searchTerm, fields, childField));
-                    };
-                    return NtsSearchBoxBindingHandler;
                 }(NtsEditorBindingHandler));
                 var NtsNumberEditorBindingHandler = (function () {
                     function NtsNumberEditorBindingHandler() {
@@ -751,7 +522,8 @@ var nts;
                                 setChecked($(this).is(":checked"));
                         }).appendTo(checkBoxLabel);
                         var box = $("<span class='box'></span>").appendTo(checkBoxLabel);
-                        var label = $("<span class='label'></span>").text(checkBoxText).appendTo(checkBoxLabel);
+                        if (checkBoxText && checkBoxText.length > 0)
+                            var label = $("<span class='label'></span>").text(checkBoxText).appendTo(checkBoxLabel);
                         checkBoxLabel.appendTo(container);
                     };
                     NtsCheckboxBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
@@ -797,7 +569,8 @@ var nts;
                                         }));
                                 }).appendTo(checkBoxLabel);
                                 var box = $("<span class='box'></span>").appendTo(checkBoxLabel);
-                                var label = $("<span class='label'></span>").text(option[optionText]).appendTo(checkBoxLabel);
+                                if (option[optionText] && option[optionText].length > 0)
+                                    var label = $("<span class='label'></span>").text(option[optionText]).appendTo(checkBoxLabel);
                                 checkBoxLabel.appendTo(container);
                             });
                             container.data("options", options.slice());
@@ -840,7 +613,8 @@ var nts;
                                         selectedValue($(self).data("value"));
                                 }).appendTo(radioBoxLabel);
                                 var box = $("<span class='box'></span>").appendTo(radioBoxLabel);
-                                var label = $("<span class='label'></span>").text(option[optionText]).appendTo(radioBoxLabel);
+                                if (option[optionText] && option[optionText].length > 0)
+                                    var label = $("<span class='label'></span>").text(option[optionText]).appendTo(radioBoxLabel);
                                 radioBoxLabel.appendTo(container);
                             });
                             container.data("options", options.slice());
@@ -1076,8 +850,6 @@ var nts;
                                     });
                                     container.data('value', data);
                                     document.getElementById(container.attr('id')).dispatchEvent(changeEvent);
-                                },
-                                unselecting: function (event, ui) {
                                 },
                                 selecting: function (event, ui) {
                                     if (event.shiftKey) {
@@ -1773,6 +1545,150 @@ var nts;
                     };
                     return TabPanelBindingHandler;
                 }());
+                var filteredArray = function (array, searchTerm, fields, childField) {
+                    if (!array) {
+                        return [];
+                    }
+                    if (!(searchTerm instanceof String)) {
+                        searchTerm = "" + searchTerm;
+                    }
+                    var flatArr = nts.uk.util.flatArray(array, childField);
+                    var filter = searchTerm.toLowerCase();
+                    if (!filter) {
+                        return flatArr;
+                    }
+                    var filtered = ko.utils.arrayFilter(flatArr, function (item) {
+                        var i = fields.length;
+                        while (i--) {
+                            var prop = fields[i];
+                            var strProp = ("" + item[prop]).toLocaleLowerCase();
+                            if (strProp.indexOf(filter) !== -1) {
+                                return true;
+                            }
+                            ;
+                        }
+                        return false;
+                    });
+                    return filtered;
+                };
+                var getNextItem = function (selected, arr, searchResult, selectedKey, isArray) {
+                    var current = null;
+                    if (isArray) {
+                        if (selected.length > 0)
+                            current = selected[0];
+                    }
+                    else if (selected !== undefined && selected !== '' && selected !== null) {
+                        current = selected;
+                    }
+                    if (searchResult.length > 0) {
+                        if (current) {
+                            var currentIndex = nts.uk.util.findIndex(arr, current, selectedKey);
+                            var nextIndex = 0;
+                            var found = false;
+                            for (var i = 0; i < searchResult.length; i++) {
+                                var item = searchResult[i];
+                                var itemIndex = nts.uk.util.findIndex(arr, item[selectedKey], selectedKey);
+                                if (!found && itemIndex >= currentIndex + 1) {
+                                    found = true;
+                                    nextIndex = i;
+                                }
+                                if ((i < searchResult.length - 1) && item[selectedKey] == current)
+                                    return searchResult[i + 1][selectedKey];
+                            }
+                            return searchResult[nextIndex][selectedKey];
+                        }
+                        return searchResult[0][selectedKey];
+                    }
+                    return undefined;
+                };
+                var NtsSearchBoxBindingHandler = (function (_super) {
+                    __extends(NtsSearchBoxBindingHandler, _super);
+                    function NtsSearchBoxBindingHandler() {
+                        _super.apply(this, arguments);
+                    }
+                    NtsSearchBoxBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        var searchBox = $(element);
+                        var data = valueAccessor();
+                        var fields = ko.unwrap(data.fields);
+                        var searchText = (data.searchText !== undefined) ? ko.unwrap(data.searchText) : "検索";
+                        var placeHolder = (data.placeHolder !== undefined) ? ko.unwrap(data.placeHolder) : "コード・名称で検索・・・";
+                        var selected = data.selected;
+                        var selectedKey = null;
+                        if (data.selectedKey) {
+                            selectedKey = ko.unwrap(data.selectedKey);
+                        }
+                        var arr = ko.unwrap(data.items);
+                        var component = $("#" + ko.unwrap(data.comId));
+                        var childField = null;
+                        if (data.childField) {
+                            childField = ko.unwrap(data.childField);
+                        }
+                        searchBox.data("searchResult", nts.uk.util.flatArray(arr, childField));
+                        var $container = $(element);
+                        $container.append("<input class='ntsSearchBox' type='text' />");
+                        $container.append("<button class='search-btn caret-bottom'>" + searchText + "</button>");
+                        var $input = $container.find("input.ntsSearchBox");
+                        $input.attr("placeholder", placeHolder);
+                        var $button = $container.find("button.search-btn");
+                        $input.outerWidth($container.outerWidth(true) - $button.outerWidth(true));
+                        var nextSearch = function () {
+                            var filtArr = searchBox.data("searchResult");
+                            var compareKey = fields[0];
+                            var isArray = $.isArray(selected());
+                            var selectedItem = getNextItem(selected(), nts.uk.util.flatArray(arr, childField), filtArr, selectedKey, isArray);
+                            if (data.mode) {
+                                if (data.mode == 'igGrid') {
+                                    var selectArr = [];
+                                    selectArr.push("" + selectedItem);
+                                    component.ntsGridList("setSelected", selectArr);
+                                    data.selected(selectArr);
+                                    component.trigger("selectChange");
+                                }
+                                else if (data.mode == 'igTree') {
+                                    var liItem = $("li[data-value='" + selectedItem + "']");
+                                    component.igTree("expandToNode", liItem);
+                                    component.igTree("select", liItem);
+                                }
+                            }
+                            else {
+                                if (!isArray)
+                                    selected(selectedItem);
+                                else {
+                                    selected([]);
+                                    selected.push(selectedItem);
+                                }
+                                component.trigger("selectChange");
+                            }
+                        };
+                        $input.keyup(function () {
+                            $input.change();
+                        }).keydown(function (event) {
+                            if (event.which == 13) {
+                                event.preventDefault();
+                                nextSearch();
+                            }
+                        });
+                        $input.change(function (event) {
+                            var searchTerm = $input.val();
+                            searchBox.data("searchResult", filteredArray(ko.unwrap(data.items), searchTerm, fields, childField));
+                        });
+                        $button.click(nextSearch);
+                    };
+                    NtsSearchBoxBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        var searchBox = $(element);
+                        var $input = searchBox.find("input.ntsSearchBox");
+                        var searchTerm = $input.val();
+                        var data = valueAccessor();
+                        var arr = ko.unwrap(data.items);
+                        var fields = ko.unwrap(data.fields);
+                        var childField = null;
+                        if (data.childField) {
+                            childField = ko.unwrap(data.childField);
+                        }
+                        searchBox.data("searchResult", filteredArray(arr, searchTerm, fields, childField));
+                    };
+                    return NtsSearchBoxBindingHandler;
+                }(NtsEditorBindingHandler));
                 var NtsSwapListBindingHandler = (function () {
                     function NtsSwapListBindingHandler() {
                     }
@@ -2220,7 +2136,6 @@ var nts;
                 ko.bindingHandlers['ntsWizard'] = new WizardBindingHandler();
                 ko.bindingHandlers['ntsFormLabel'] = new NtsFormLabelBindingHandler();
                 ko.bindingHandlers['ntsLinkButton'] = new NtsLinkButtonBindingHandler();
-                ko.bindingHandlers['ntsDynamicEditor'] = new NtsDynamicEditorBindingHandler();
                 ko.bindingHandlers['ntsTextEditor'] = new NtsTextEditorBindingHandler();
                 ko.bindingHandlers['ntsNumberEditor'] = new NtsNumberEditorBindingHandler();
                 ko.bindingHandlers['ntsTimeEditor'] = new NtsTimeEditorBindingHandler();
@@ -2243,3 +2158,4 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+//# sourceMappingURL=ko-ext.js.map

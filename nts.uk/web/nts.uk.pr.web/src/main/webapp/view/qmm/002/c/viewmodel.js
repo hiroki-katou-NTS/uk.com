@@ -109,3 +109,4 @@ var qmm002;
     })(c = qmm002.c || (qmm002.c = {}));
 })(qmm002 || (qmm002 = {}));
 ;
+//# sourceMappingURL=viewmodel.js.map

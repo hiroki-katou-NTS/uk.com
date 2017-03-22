@@ -1,3 +1,5 @@
+/// <reference path="../util.ts"/>
+
 module nts.uk.ui {
 
 	export module windows {
