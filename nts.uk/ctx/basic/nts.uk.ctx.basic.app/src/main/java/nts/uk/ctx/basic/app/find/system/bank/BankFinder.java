@@ -8,6 +8,7 @@ import java.util.stream.Collectors;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
+import nts.arc.error.BusinessException;
 import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.basic.app.find.system.bank.dto.BankDto;
 import nts.uk.ctx.basic.app.find.system.bank.dto.BranchDto;
@@ -53,5 +54,15 @@ public class BankFinder {
 		});		
 		
 		return result;
+	}
+	
+	public void check() {
+		String companyCode = AppContexts.user().companyCode();
+
+		List<BankBranch> branchList = this.bankBranchRepository.findAll(companyCode);
+		List<Bank> bankList = this.bankRepository.findAll(companyCode);
+		if (branchList.isEmpty() || bankList.isEmpty()) {
+			throw new BusinessException("ER010");
+		}
 	}
 }

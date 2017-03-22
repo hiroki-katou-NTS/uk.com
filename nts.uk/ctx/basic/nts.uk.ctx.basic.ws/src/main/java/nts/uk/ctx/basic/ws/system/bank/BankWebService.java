@@ -66,4 +66,10 @@ public class BankWebService extends WebService {
 	public void removeList(RemoveListBankCommand command){
 		this.removeListBankCommandHandler.handle(command);
 	}
+	
+	@POST
+	@Path("find/check")
+	public void check() {
+       this.bankFinder.check();
+	}
 }
