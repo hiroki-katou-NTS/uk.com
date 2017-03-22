@@ -268,7 +268,7 @@ public class JpaUnemployeeInsuranceRateRepository extends JpaRepository
 		}
 
 		// get fisrt data
-		return Optional.ofNullable(this.toDomain(lstQismtEmpInsuRate.get((BusinessTypeEnum.Biz1St.index))));
+		return Optional.ofNullable(this.toDomain(lstQismtEmpInsuRate.get(BusinessTypeEnum.Biz1St.index)));
 	}
 
 }
