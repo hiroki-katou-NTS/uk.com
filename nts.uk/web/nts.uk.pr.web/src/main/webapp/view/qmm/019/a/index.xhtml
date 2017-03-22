@@ -11,8 +11,8 @@
         <ui:composition template="../../../../master/base.xhtml">
             <ui:define name="htmlHead">
             	<com:ValidatorScript>
-					nts.uk.ctx.pr.core.dom.layout.LayoutName
-				</com:ValidatorScript>
+            		nts.uk.ctx.pr.core.dom.rule.employment.layout.LayoutName
+				</com:ValidatorScript> 
             	<com:scriptfile set="IGNITE" />
                 <com:scriptfile path="viewmodel.js" />
             	<com:scriptfile path="start.js" />
@@ -32,17 +32,25 @@
             	</div>
             	
             	<div id="contents-area" class="cf">
-            		<div class="nts-left-content">
-						<div class="form-label">
-							<label>コード/名称</label>
-							<input id="A_INP_001" type="text" />
-							<button data-bind="click: searchLayout">検索</button>
+            		<div class="nts-left-content bg-green caret-right caret-background">
+						<div style="margin-top:5px" class="flex valign-center" >
+						<div style="margin-left: 10px"
+							data-bind="ntsFormLabel: {}">
+							<label >コード/名称</label>
+						</div>
+						<div style="width: 200px" data-bind="ntsSearchBox: {
+							comId: 'treegrid2',
+							items: itemList, 		
+							selected: singleSelectedCode, 
+							selectedKey: 'code', 
+							childField: 'childs', 
+							fields: ['name', 'code']}" />
 						</div>
 						<div>
-							<button id="A_BTN_007" data-bind="click: openADialog, enable: allowClick()">履歴追加</button>
+							<button style="margin-left: 10px" id="A_BTN_007" data-bind="click: openADialog, enable: allowClick()">履歴追加</button>
 							<button id="A_BTN_008" data-bind="click: openEDialog, enable: allowClick()">履歴編集</button>
 						</div>
-						<div >
+						<div  style="margin-left: 13px">
 							<table id="treegrid2"
 								data-bind="ntsTreeGridView:{
 								   	width: 303,
@@ -60,24 +68,45 @@
 						</div>
 					</div>
             		<div class="nts-right-content">
-            			<div>
+<!--             		<table id="expand-example1">
+						<tbody>
+							<tr style="margin-top: 10px;">
+								<th colspan="1" class="th-col1">
+									<div class="form-label"
+										data-bind="ntsFormLabel:{required: true}"
+										style="margin-top: 5px;">
+										<label id="A_LBL_004">会社名 </label>
+									</div>
+								</th>
+
+								<th colspan="2" class="th-col2">
+								<input id="A_INP_003" type="text" data-bind="value: currentNode().name" class="input-table"/>
+								</th>
+							</tr>
+							</tbody>
+							</table> -->
+            			<div class="flex valign-center">
             				<div data-bind="ntsFormLabel: { constraint: 'LayoutName', required: true }">
 	            				<label id="A_LBL_002">コード/名称</label>
 	           				</div>
-	           				<label id="A_LBL_003" data-bind="text: singleSelectedCode() === null ? '' : singleSelectedCode().split(';')[0]">01</label>
-	           				<input id="A_INP_002" data-bind="value: layoutMaster().stmtName" type="text" />
+	           				<label style="width: 150px" id="A_LBL_003" data-bind="text: singleSelectedCode() === null ? '' : singleSelectedCode().split(';')[0]">01</label>
+							<input id="A_INP_002" data-bind="ntsTextEditor: {
+										value: layoutHead().stmtName ,
+										constraint: 'LayoutName',
+										required: true,
+										enable: allowClick()}" />
 	           				<label id="A_LBL_004">（　レーザープリンター　A4　縦向き　最大３人　）</label>
             			</div>
-            			<div>
-	           				<div data-bind="ntsFormLabel: {}">
+            			<div class="flex valign-center">
+	           				<div data-bind="ntsFormLabel: {}" class="form-label">
 	           					<label id="A_LBL_005">有効期間</label>
 							</div>
 	           				<label id="A_LBL_006" data-bind="text: startYm">2016/04</label>
 	           				<label > ~ </label>
 	           				<label id="A_LBL_007" data-bind="text: endYm">9999/12</label>
             			</div>
-            			<div>
-	           				<div data-bind="ntsFormLabel: {}">
+            			<div class="flex valign-center">
+	           				<div data-bind="ntsFormLabel: {}" class="form-label">
 	           					<label id="A_LBL_008">現在使用行数 / 最大行数　　</label>
 							</div>
 	           				<label id="A_LBL_009" data-bind="text: totalNormalLine">5行</label>
@@ -85,8 +114,8 @@
 	           				<label >  /  </label>
 	           				<label id="A_LBL_011">10行</label>
             			</div>
-            			<div>
-            				<div data-bind="ntsFormLabel: { required: true }">
+            			<div class="flex valign-center">
+            				<div data-bind="ntsFormLabel: { required: true }" class="form-label">
 	            				<label id="A_LBL_012">明細書レイアウト</label>
 	           				</div>
 	           				<button id="A_BTN_009" data-bind="enable: allowClick()">印刷プレビュー</button>
@@ -103,15 +132,31 @@
 									<div data-bind="foreach: lines">
 										<div class="row" data-bind="attr: {
 																	id: rowId, 
-																	class: isDisplayOnPrint ? 'row' : 'row ground-gray'}">
+																	class: isDisplayOnPrint ? 'categoryAtr' + categoryAtr + ' row' : 'categoryAtr' + categoryAtr + ' row ground-gray'}">
 											<div><input type="button" class="button-setting" data-bind="enable: !hasRequiredItem, click: lineClick" /></div>
-											<div data-bind="foreach: details">
-									            <span data-bind="click: itemClick, 
+											<div data-bind="foreach: details, attr: {class: 'one-line'}">
+												<span data-bind="click: itemClick, 
+									            			text: itemAbName,
 									            			attr: {
 									            				id: itemCode,
-									            				class: isRequired() ? 'fixed-button ui-state-disabled li-on-row' : itemAbName() !== '+' ? 'button-with-text li-on-row' : 'li-on-row'}">
-									                <a data-bind="text: itemAbName"></a>
+									            				'data-itemcode': itemCode,
+									            				class: isRequired() 
+									            					? 'fixed-button ui-state-disabled li-on-row ' 
+									            					: itemAbName() !== '+' 
+									            						? 'button-with-text li-on-row ' 
+									            						: 'li-on-row ' }">
 									            </span>
+<!-- 									            <span data-bind="click: itemClick,  -->
+<!-- 									            			text: itemAbName, -->
+<!-- 									            			attr: { -->
+<!-- 									            				id: itemCode, -->
+<!-- 									            				'data-itemcode': itemCode, -->
+<!-- 									            				class: isRequired()  -->
+<!-- 									            					? 'fixed-button ui-state-disabled li-on-row ' + contextMenuClassId  -->
+<!-- 									            					: itemAbName() !== '+'  -->
+<!-- 									            						? 'button-with-text li-on-row ' + contextMenuClassId -->
+<!-- 									            						: 'li-on-row ' + contextMenuClassId}"> -->
+<!-- 									            </span> -->
 											</div>
 										</div>
 									</div>
