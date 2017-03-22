@@ -1,4 +1,3 @@
-/// <reference path="../../reference.ts"/>
 var nts;
 (function (nts) {
     var uk;
@@ -7,9 +6,6 @@ var nts;
         (function (ui) {
             var koExtentions;
             (function (koExtentions) {
-                /**
-                 * Datepicker binding handler
-                 */
                 function randomString(length, chars) {
                     var result = '';
                     for (var i = length; i > 0; --i)
@@ -17,18 +13,10 @@ var nts;
                     return result;
                 }
                 var DatePickerBindingHandler = (function () {
-                    /**
-                     * Constructor.
-                     */
                     function DatePickerBindingHandler() {
                     }
-                    /**
-                     * Init.
-                     */
                     DatePickerBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                        // Get data.
                         var data = valueAccessor();
-                        // Container.
                         var container = $(element);
                         if (!container.attr("id")) {
                             var idString = randomString(10, 'abcdefghijklmnopqrstuvwxy0123456789zABCDEFGHIJKLMNOPQRSTUVWXYZ');
@@ -66,7 +54,6 @@ var nts;
                             containerFormat = 'yyyy/mm';
                         }
                         if (containerFormat != 'yyyy/mm')
-                            //datepicker case
                             $input.attr('value', nts.uk.time.formatDate(value, dateFormat));
                         else
                             $input.attr('value', value);
@@ -107,15 +94,11 @@ var nts;
                             }
                         }
                     };
-                    /**
-                     * Update
-                     */
                     DatePickerBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var data = valueAccessor();
                         var container = $(element);
                         var idatr = container.attr("id");
                         var newValue = ko.unwrap(data.value);
-                        //console.log(newValue);                       
                         var dateFormat = data.dateFormat ? ko.unwrap(data.dateFormat) : "yyyy/MM/dd";
                         var $input = container.find('#' + idatr + "_input");
                         var dateFormat = data.dateFormat ? ko.unwrap(data.dateFormat) : "yyyy/MM/dd";
@@ -149,3 +132,4 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+//# sourceMappingURL=datepicker-ko-ext.js.map

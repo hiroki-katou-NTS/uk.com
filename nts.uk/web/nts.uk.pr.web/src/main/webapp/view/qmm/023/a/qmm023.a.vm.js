@@ -209,7 +209,7 @@ var qmm023;
                         });
                         self.flatDirty = true;
                         if (self.items().length <= 0) {
-                            self.currentTax(ko.mapping.fromJS(new TaxModel('', '', 0)));
+                            self.refreshLayout();
                             return;
                         }
                         if (isReload) {
