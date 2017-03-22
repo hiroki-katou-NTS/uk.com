@@ -6,16 +6,10 @@ var qmm012;
         (function (viewmodel) {
             var ScreenModel = (function () {
                 function ScreenModel() {
-                    //Checkbox
-                    //D_003
                     this.checked_D_003 = ko.observable(false);
-                    //D_003
                     this.checked_D_004 = ko.observable(false);
-                    //D_003
                     this.checked_D_005 = ko.observable(false);
-                    //D_003
                     this.checked_D_006 = ko.observable(false);
-                    //D_003
                     this.checked_D_007 = ko.observable(false);
                     this.CurrentItemMaster = ko.observable(null);
                     this.CurrentItemDeduct = ko.observable(null);
@@ -37,14 +31,10 @@ var qmm012;
                         new ComboboxItemModel(2, '所得税項目'),
                         new ComboboxItemModel(3, '住民税項目')
                     ]);
-                    //end combobox data
-                    //D_002
                     self.roundingRules_D_002 = ko.observableArray([
                         { code: 1, name: 'ゼロを表示する' },
                         { code: 0, name: 'ゼロを表示しない' }
                     ]);
-                    //currencyeditor
-                    //001
                     self.currencyeditor_D_001 = {
                         value: self.CurrentErrRangeHigh,
                         constraint: '',
@@ -57,7 +47,6 @@ var qmm012;
                         enable: ko.observable(true),
                         readonly: ko.observable(false)
                     };
-                    //002
                     self.currencyeditor_D_002 = {
                         value: self.CurrentAlRangeHigh,
                         constraint: '',
@@ -70,7 +59,6 @@ var qmm012;
                         enable: ko.observable(true),
                         readonly: ko.observable(false)
                     };
-                    //003
                     self.currencyeditor_D_003 = {
                         value: self.CurrentErrRangeLow,
                         constraint: '',
@@ -83,7 +71,6 @@ var qmm012;
                         enable: ko.observable(true),
                         readonly: ko.observable(false)
                     };
-                    //004
                     self.currencyeditor_D_004 = {
                         value: self.CurrentAlRangeLow,
                         constraint: '',
@@ -101,7 +88,6 @@ var qmm012;
                             d.service.findItemDeduct(ItemMaster.itemCode).done(function (ItemDeduct) {
                                 self.CurrentItemDeduct(ItemDeduct);
                             }).fail(function (res) {
-                                // Alert message
                                 alert(res);
                             });
                         }
@@ -157,3 +143,4 @@ var qmm012;
         })(viewmodel = d.viewmodel || (d.viewmodel = {}));
     })(d = qmm012.d || (qmm012.d = {}));
 })(qmm012 || (qmm012 = {}));
+//# sourceMappingURL=viewmodel.js.map
