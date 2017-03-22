@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.pr.report.dom.wageledger.outputsetting;
 
+import java.util.List;
+
 import nts.uk.ctx.pr.report.dom.company.CompanyCode;
 import nts.uk.ctx.pr.report.dom.wageledger.aggregate.WLItemSubject;
 
@@ -42,6 +44,14 @@ public interface WLOutputSettingRepository {
 	 * @return the WL output setting
 	 */
 	WLOutputSetting findByCode(CompanyCode companyCode, WLOutputSettingCode code);
+	
+	/**
+	 * Find all.
+	 *
+	 * @param companyCode the company code
+	 * @return the list
+	 */
+	List<WLOutputSetting> findAll(CompanyCode companyCode);
 	
 	/**
 	 * Checks if is exist.
