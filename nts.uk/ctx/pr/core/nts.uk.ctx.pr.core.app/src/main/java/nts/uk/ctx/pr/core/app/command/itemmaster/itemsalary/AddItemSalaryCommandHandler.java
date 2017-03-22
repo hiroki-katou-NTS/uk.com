@@ -1,6 +1,6 @@
 package nts.uk.ctx.pr.core.app.command.itemmaster.itemsalary;
 
-import javax.enterprise.context.RequestScoped;
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
@@ -29,7 +29,7 @@ import nts.uk.ctx.pr.core.dom.itemmaster.itemsalary.TaxAtr;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.primitive.Memo;
 
-@RequestScoped
+@Stateless
 @Transactional
 public class AddItemSalaryCommandHandler extends CommandHandler<AddItemSalaryCommand> {
 

@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import javax.enterprise.context.RequestScoped;
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.pr.core.app.find.itemmaster.dto.ItemMasterDto;
@@ -13,7 +13,7 @@ import nts.uk.ctx.pr.core.dom.itemmaster.ItemAtr;
 import nts.uk.ctx.pr.core.dom.itemmaster.ItemMasterRepository;
 import nts.uk.shr.com.context.AppContexts;
 
-@RequestScoped
+@Stateless
 public class ItemMasterFinder {
 	@Inject
 	private ItemMasterRepository itemMasterRepo;
@@ -57,8 +57,8 @@ public class ItemMasterFinder {
 		return !itemOp.isPresent() ? null : itemOp.get();
 	}
 
-	public List<ItemMasterDto> findAllNoAvePayAtr() {
-		return this.itemMasterRepo.findAllNoAvePayAtr(AppContexts.user().companyCode()).stream()
+	public List<ItemMasterDto> findAllNoAvePayAtr(int ctgAtr) {
+		return this.itemMasterRepo.findAllNoAvePayAtr(AppContexts.user().companyCode(), ctgAtr).stream()
 				.map(item -> ItemMasterDto.fromDomain(item)).collect(Collectors.toList());
 	}
 

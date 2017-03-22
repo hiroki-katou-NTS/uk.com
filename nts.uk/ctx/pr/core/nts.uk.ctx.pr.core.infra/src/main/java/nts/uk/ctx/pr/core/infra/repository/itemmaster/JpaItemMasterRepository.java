@@ -3,7 +3,7 @@ package nts.uk.ctx.pr.core.infra.repository.itemmaster;
 import java.util.List;
 import java.util.Optional;
 
-import javax.enterprise.context.RequestScoped;
+import javax.ejb.Stateless;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
@@ -12,7 +12,7 @@ import nts.uk.ctx.pr.core.dom.itemmaster.ItemMasterRepository;
 import nts.uk.ctx.pr.core.infra.entity.itemmaster.QcamtItem;
 import nts.uk.ctx.pr.core.infra.entity.itemmaster.QcamtItemPK;
 
-@RequestScoped
+@Stateless
 public class JpaItemMasterRepository extends JpaRepository implements ItemMasterRepository {
 	private final String SEL = "SELECT c FROM QcamtItem c";
 	private final String SEL_1 = SEL + " WHERE c.qcamtItemPK.ccd = :companyCode ";
@@ -50,9 +50,15 @@ public class JpaItemMasterRepository extends JpaRepository implements ItemMaster
 	}
 
 	@Override
-	public List<ItemMaster> findAllNoAvePayAtr(String companyCode) {
-		return this.queryProxy().query(SEL_1, QcamtItem.class).setParameter("companyCode", companyCode)
-				.getList(c -> toDomain(c));
+	public List<ItemMaster> findAllNoAvePayAtr(String companyCode, int ctgAtr) {
+		List<ItemMaster> ItemList;
+		if (ctgAtr == -1)
+			ItemList = this.queryProxy().query(SEL_1, QcamtItem.class).setParameter("companyCode", companyCode)
+					.getList(c -> toDomain(c));
+		else
+			ItemList = this.queryProxy().query(SEL_3_1, QcamtItem.class).setParameter("companyCode", companyCode)
+					.setParameter("ctgAtr", ctgAtr).getList(c -> toDomain(c));
+		return ItemList;
 	}
 
 	@Override

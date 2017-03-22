@@ -3,7 +3,7 @@ package nts.uk.ctx.pr.core.infra.repository.itemmaster;
 import java.util.List;
 import java.util.Optional;
 
-import javax.enterprise.context.RequestScoped;
+import javax.ejb.Stateless;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
@@ -12,7 +12,7 @@ import nts.uk.ctx.pr.core.dom.itemmaster.itemsalary.ItemSalaryRespository;
 import nts.uk.ctx.pr.core.infra.entity.itemmaster.QcamtItemSalary;
 import nts.uk.ctx.pr.core.infra.entity.itemmaster.QcamtItemSalaryPK;
 
-@RequestScoped
+@Stateless
 public class JpaItemSalaryRepository extends JpaRepository implements ItemSalaryRespository {
 	private final String SEL = "SELECT c FROM QcamtItemSalary c";
 	private final String SEL_1 = SEL + " WHERE c.qcamtItemSalaryPK.ccd = :companyCode";

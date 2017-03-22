@@ -1,6 +1,6 @@
 package nts.uk.ctx.pr.core.app.command.itemmaster;
 
-import javax.enterprise.context.RequestScoped;
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
@@ -23,7 +23,7 @@ import nts.uk.ctx.pr.core.dom.itemmaster.ItemName;
 import nts.uk.ctx.pr.core.dom.itemmaster.UniteCode;
 import nts.uk.shr.com.context.AppContexts;
 
-@RequestScoped
+@Stateless
 @Transactional
 public class AddItemMasterCommandHandler extends CommandHandler<AddItemMasterCommand> {
 	@Inject

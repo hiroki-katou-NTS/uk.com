@@ -1,6 +1,6 @@
 package nts.uk.ctx.pr.core.app.command.itemmaster.itemattend;
 
-import javax.enterprise.context.RequestScoped;
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
@@ -24,7 +24,7 @@ import nts.uk.ctx.pr.core.dom.itemmaster.itemsalary.ErrRangeLow;
 import nts.uk.ctx.pr.core.dom.itemmaster.itemsalary.RangeAtr;
 import nts.uk.shr.com.context.AppContexts;
 
-@RequestScoped
+@Stateless
 @Transactional
 public class AddItemAttendCommandHandler extends CommandHandler<AddItemAttendCommand> {
 	@Inject

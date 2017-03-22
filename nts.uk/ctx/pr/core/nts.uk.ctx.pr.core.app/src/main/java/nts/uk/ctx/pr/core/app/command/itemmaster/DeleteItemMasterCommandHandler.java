@@ -1,6 +1,6 @@
 package nts.uk.ctx.pr.core.app.command.itemmaster;
 
-import javax.enterprise.context.RequestScoped;
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
@@ -17,7 +17,7 @@ import nts.uk.shr.com.context.AppContexts;
  * @author sonnlb
  *
  */
-@RequestScoped
+@Stateless
 @Transactional
 public class DeleteItemMasterCommandHandler extends CommandHandler<DeleteItemMasterCommand> {
 

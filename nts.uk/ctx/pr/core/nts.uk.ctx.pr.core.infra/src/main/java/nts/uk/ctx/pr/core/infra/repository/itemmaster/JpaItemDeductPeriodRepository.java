@@ -2,7 +2,7 @@ package nts.uk.ctx.pr.core.infra.repository.itemmaster;
 
 import java.util.Optional;
 
-import javax.enterprise.context.RequestScoped;
+import javax.ejb.Stateless;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
@@ -11,7 +11,7 @@ import nts.uk.ctx.pr.core.dom.itemmaster.itemdeductperiod.ItemDeductPeriodReposi
 import nts.uk.ctx.pr.core.infra.entity.itemmaster.QcamtItemDeductPeriod;
 import nts.uk.ctx.pr.core.infra.entity.itemmaster.QcamtItemDeductPeriodPK;
 
-@RequestScoped
+@Stateless
 public class JpaItemDeductPeriodRepository extends JpaRepository implements ItemDeductPeriodRepository {
 
 	@Override

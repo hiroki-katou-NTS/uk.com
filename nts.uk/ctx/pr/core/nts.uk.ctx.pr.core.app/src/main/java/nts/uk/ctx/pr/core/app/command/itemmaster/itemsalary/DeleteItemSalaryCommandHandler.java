@@ -1,6 +1,6 @@
 package nts.uk.ctx.pr.core.app.command.itemmaster.itemsalary;
 
-import javax.enterprise.context.RequestScoped;
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
@@ -12,7 +12,7 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.pr.core.dom.itemmaster.itemsalary.ItemSalaryRespository;
 import nts.uk.shr.com.context.AppContexts;
 
-@RequestScoped
+@Stateless
 @Transactional
 public class DeleteItemSalaryCommandHandler extends CommandHandler<DeleteItemSalaryCommand> {
 

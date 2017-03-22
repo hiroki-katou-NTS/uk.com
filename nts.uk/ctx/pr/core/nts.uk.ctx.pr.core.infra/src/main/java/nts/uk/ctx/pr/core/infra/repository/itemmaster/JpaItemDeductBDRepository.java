@@ -2,7 +2,7 @@ package nts.uk.ctx.pr.core.infra.repository.itemmaster;
 
 import java.util.List;
 
-import javax.enterprise.context.RequestScoped;
+import javax.ejb.Stateless;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
@@ -10,7 +10,7 @@ import nts.uk.ctx.pr.core.dom.itemmaster.itemdeductbd.ItemDeductBD;
 import nts.uk.ctx.pr.core.dom.itemmaster.itemdeductbd.ItemDeductBDRepository;
 import nts.uk.ctx.pr.core.infra.entity.itemmaster.QcamtItemDeductBd;
 
-@RequestScoped
+@Stateless
 public class JpaItemDeductBDRepository extends JpaRepository implements ItemDeductBDRepository {
 	private final String SEL = "SELECT c FROM QcamtItemDeductBd c";
 	private final String SEL_1 = SEL

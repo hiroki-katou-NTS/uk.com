@@ -71,7 +71,6 @@ public interface ItemMasterRepository {
 	 * @param companyCode
 	 * @return
 	 */
-	List<ItemMaster> findAllNoAvePayAtr(String companyCode);
 
 	List<ItemMaster> findAll_SEL_3(String companyCode, int ctgAtr);
 
@@ -89,6 +88,8 @@ public interface ItemMasterRepository {
 	void add(ItemMaster itemMaster);
 
 	void update(ItemMaster itemMaster);
+
+	List<ItemMaster> findAllNoAvePayAtr(String companyCode, int ctgAtr);
 
 	/**
 	 * @param itemMaster:

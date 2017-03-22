@@ -22,7 +22,5 @@ public class UpdateItemDeductCommandHandler extends CommandHandler<UpdateItemDed
 		if (!this.itemDeductRespository.find(context.getCommand().getCcd(), context.getCommand().getItemCd()).isPresent())
 			throw new BusinessException(new RawErrorMessage(" 明細書名が入力されていません。"));
 		this.itemDeductRespository.update(context.getCommand().toDomain());
-
 	}
-
 }

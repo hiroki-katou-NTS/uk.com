@@ -1,6 +1,6 @@
 package nts.uk.ctx.pr.core.app.command.itemmaster;
 
-import javax.enterprise.context.RequestScoped;
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
@@ -14,7 +14,7 @@ import nts.uk.ctx.pr.core.app.command.itemmaster.itemsalary.UpdateItemSalaryComm
 import nts.uk.ctx.pr.core.dom.itemmaster.ItemMasterRepository;
 import nts.uk.shr.com.context.AppContexts;
 
-@RequestScoped
+@Stateless
 @Transactional
 public class UpdateItemMasterCommandHandler extends CommandHandler<UpdateItemMasterCommand> {
 
