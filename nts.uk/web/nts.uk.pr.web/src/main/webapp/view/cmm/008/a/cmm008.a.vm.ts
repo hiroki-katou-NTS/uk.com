@@ -106,7 +106,7 @@ module cmm008.a.viewmodel{
             return dfd.promise();
         }
         
-        reloadScreenWhenListClick(newValue: string){
+        reloadScreenWhenListClick(newValue){
             var self = this;
             let newEmployment = _.find(self.dataSource(), function(employ){
                 if(employ.employmentCode === newValue){
@@ -197,11 +197,13 @@ module cmm008.a.viewmodel{
                             employ.closeDateNoStr = "システム未導入";
                         }
                         //get processing name
-                        _.find(self.processingDateList(), function(processNo){
-                            employ.processingStr = processNo.processingName;
+                        var process = _.find(self.processingDateList(), function(processNo){
                             return employ.processingNo == processNo.processingNo;
                         })
-                        
+                        if(process !== undefined)
+                            employ.processingStr = process.processingName;
+                        else
+                            employ.processingStr = "";
                         self.dataSource.push(employ); 
                     })
                     if(self.currentCode() === ""){
@@ -306,7 +308,7 @@ module cmm008.a.viewmodel{
             }
         }
         //tu lam dirty check
-        checkChange(employmentCodeChk: string): any{
+        checkChange(employmentCodeChk): any{
             var self = this;
             let chkEmployment = _.find(self.dataSource(), function(employ){
                 return employ.employmentCode == employmentCodeChk;    

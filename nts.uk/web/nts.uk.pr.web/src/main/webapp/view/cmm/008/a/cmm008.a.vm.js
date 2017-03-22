@@ -155,10 +155,13 @@ var cmm008;
                                 if (employ.closeDateNo === 0) {
                                     employ.closeDateNoStr = "システム未導入";
                                 }
-                                _.find(self.processingDateList(), function (processNo) {
-                                    employ.processingStr = processNo.processingName;
+                                var process = _.find(self.processingDateList(), function (processNo) {
                                     return employ.processingNo == processNo.processingNo;
                                 });
+                                if (process !== undefined)
+                                    employ.processingStr = process.processingName;
+                                else
+                                    employ.processingStr = "";
                                 self.dataSource.push(employ);
                             });
                             if (self.currentCode() === "") {
