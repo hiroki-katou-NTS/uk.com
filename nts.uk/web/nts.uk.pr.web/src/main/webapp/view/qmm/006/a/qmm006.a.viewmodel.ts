@@ -291,6 +291,8 @@ module qmm006.a.viewmodel {
 
         openCDialog() {
             var self = this;
+            //neu co 0 hoac 1 row trong list thi bt003 disable
+            //ng dung co the sua css trong man hinh de enable bt003
             if (self.items().length > 1) {
                 if (self.dirty.isDirty()) {
                     //"変更された内容が登録されていません。"---AL001 
