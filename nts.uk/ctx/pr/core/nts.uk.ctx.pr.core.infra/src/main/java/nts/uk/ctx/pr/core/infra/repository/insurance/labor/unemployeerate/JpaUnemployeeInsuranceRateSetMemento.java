@@ -80,25 +80,10 @@ public class JpaUnemployeeInsuranceRateSetMemento implements UnemployeeInsurance
 	 */
 	@Override
 	public void setRateItems(Set<UnemployeeInsuranceRateItem> rateItems) {
-		for (UnemployeeInsuranceRateItem itemUnemployeeInsuranceRateItem : rateItems) {
-			switch (itemUnemployeeInsuranceRateItem.getCareerGroup()) {
-			case Agroforestry:
-				itemUnemployeeInsuranceRateItem
-					.saveToMemento(new JpaUnemployeeInsuranceRateItemGeneralSetMemento(this.typeValue));
-				break;
-
-			case Other:
-				itemUnemployeeInsuranceRateItem
-					.saveToMemento(new JpaUnemployeeInsuranceRateItemOtherSetMemento(this.typeValue));
-				break;
-			case Contruction:
-				itemUnemployeeInsuranceRateItem
-					.saveToMemento(new JpaUnemployeeInsuranceRateItemConstSetMemento(this.typeValue));
-			default:
-				break;
-			}
-		}
-
+		rateItems.forEach(rateItem -> {
+			rateItem.saveToMemento(
+				new JpaUnemployeeInsuranceRateItemSetMemento(this.typeValue, rateItem.getCareerGroup()));
+		});
 	}
 
 }

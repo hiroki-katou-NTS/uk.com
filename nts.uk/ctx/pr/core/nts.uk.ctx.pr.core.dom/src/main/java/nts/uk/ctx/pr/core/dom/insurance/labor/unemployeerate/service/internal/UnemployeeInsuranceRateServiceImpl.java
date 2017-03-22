@@ -118,12 +118,11 @@ public class UnemployeeInsuranceRateServiceImpl implements UnemployeeInsuranceRa
 					.findBetweenUpdate(rate.getCompanyCode().v(),
 						optionalUnemployeeInsuranceRate.get().getApplyRange().getStartMonth(),
 						optionalUnemployeeInsuranceRate.get().getHistoryId());
-				if (!optionalBetweenUpdate.isPresent()) {
-					resvalue = true;
-				}
-				if (optionalBetweenUpdate.get().getApplyRange().getStartMonth().v() >= rate.getApplyRange()
-					.getStartMonth().v()) {
-					resvalue = true;
+				if (optionalBetweenUpdate.isPresent()) {
+					if (optionalBetweenUpdate.get().getApplyRange().getStartMonth().v() >= rate
+						.getApplyRange().getStartMonth().v()) {
+						resvalue = true;
+					}
 				}
 			}
 		}

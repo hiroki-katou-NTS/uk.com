@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2015 Nittsu System to present.                   *
+ * Copyright (c) 2016 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.core.infra.repository.insurance.labor.businesstype;
@@ -16,16 +16,21 @@ import nts.uk.ctx.pr.core.infra.entity.insurance.labor.businesstype.QismtBusines
 public class JpaInsuranceBusinessTypeSetMemento implements InsuranceBusinessTypeSetMemento {
 
 	/** The type value. */
-	protected QismtBusinessType typeValue;
+	private QismtBusinessType typeValue;
+
+	private BusinessTypeEnum type;
 
 	/**
 	 * Instantiates a new jpa insurance business type set memento.
 	 *
 	 * @param typeValue
 	 *            the type value
+	 * @param type
+	 *            the type
 	 */
-	public JpaInsuranceBusinessTypeSetMemento(QismtBusinessType typeValue) {
+	public JpaInsuranceBusinessTypeSetMemento(QismtBusinessType typeValue, BusinessTypeEnum type) {
 		this.typeValue = typeValue;
+		this.type = type;
 	}
 
 	/*
@@ -37,7 +42,7 @@ public class JpaInsuranceBusinessTypeSetMemento implements InsuranceBusinessType
 	 */
 	@Override
 	public void setCompanyCode(CompanyCode companyCode) {
-		// TODO Auto-generated method stub
+		this.typeValue.setCcd(companyCode.v());
 
 	}
 
@@ -50,7 +55,7 @@ public class JpaInsuranceBusinessTypeSetMemento implements InsuranceBusinessType
 	 */
 	@Override
 	public void setBizOrder(BusinessTypeEnum businessTypeEnum) {
-		// TODO Auto-generated method stub
+		// Not function
 
 	}
 
@@ -63,8 +68,51 @@ public class JpaInsuranceBusinessTypeSetMemento implements InsuranceBusinessType
 	 */
 	@Override
 	public void setBizName(BusinessName name) {
-		// TODO Auto-generated method stub
+		switch (this.type) {
+		
+		case Biz1St:
+			this.typeValue.setBizName01(name.v());
+			break;
+			
+		case Biz2Nd:
+			this.typeValue.setBizName02(name.v());
+			break;
+			
+		case Biz3Rd:
+			this.typeValue.setBizName03(name.v());
+			break;
+			
+		case Biz4Th:
+			this.typeValue.setBizName04(name.v());
+			break;
+			
+		case Biz5Th:
+			this.typeValue.setBizName05(name.v());
+			break;
+			
+		case Biz6Th:
+			this.typeValue.setBizName06(name.v());
+			break;
+			
+		case Biz7Th:
+			this.typeValue.setBizName07(name.v());
+			break;
+			
+		case Biz8Th:
+			this.typeValue.setBizName08(name.v());
+			break;
+			
+		case Biz9Th:
+			this.typeValue.setBizName09(name.v());
+			break;
+			
+		case Biz10Th:
+			this.typeValue.setBizName10(name.v());
+			break;
 
+		default:
+			break;
+		}
 	}
 
 }

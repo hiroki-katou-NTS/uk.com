@@ -73,9 +73,9 @@ public class UnemployeeInsuranceRateDto {
 		@Override
 		public Set<UnemployeeInsuranceRateItem> getRateItems() {
 			Set<UnemployeeInsuranceRateItem> setUnemployeeInsuranceRateItem = new HashSet<>();
-			for (UnemployeeInsuranceRateItemDto unemployeeInsuranceRateItem : dto.rateItems) {
-				setUnemployeeInsuranceRateItem.add(unemployeeInsuranceRateItem.toDomain(companyCode));
-			}
+			dto.rateItems.forEach(rateItem -> {
+				setUnemployeeInsuranceRateItem.add(rateItem.toDomain(companyCode));
+			});
 			return setUnemployeeInsuranceRateItem;
 		}
 

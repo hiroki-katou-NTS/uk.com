@@ -95,7 +95,7 @@ var nts;
                                                 unemployeeInsuranceHistoryUpdateDto.startMonth = data.startYearMonth;
                                                 unemployeeInsuranceHistoryUpdateDto.endMonth = endMonth;
                                                 a.service.updateUnemployeeInsuranceRateHistory(unemployeeInsuranceHistoryUpdateDto).done(function () {
-                                                    self.typeActionUnemployeeInsurance(TypeActionInsuranceRate.add);
+                                                    self.typeActionUnemployeeInsurance(TypeActionInsuranceRate.update);
                                                     self.reloadDataUnemployeeInsuranceRateByAction();
                                                 }).fail(function (error) {
                                                     self.showMessageSaveUnemployeeInsurance(error.message);
@@ -119,6 +119,9 @@ var nts;
                                         start: self.unemployeeInsuranceRateModel().unemployeeInsuranceHistoryModel.startMonth(),
                                         end: self.unemployeeInsuranceRateModel().unemployeeInsuranceHistoryModel.endMonth()
                                     };
+                                    if (self.isEmptyUnemployee()) {
+                                        lastest = undefined;
+                                    }
                                     var unemployeeInsuranceRateCopyDto;
                                     unemployeeInsuranceRateCopyDto = new UnemployeeInsuranceRateCopyDto();
                                     unemployeeInsuranceRateCopyDto.historyIdCopy = self.selectionUnemployeeInsuranceRateHistory();
@@ -288,12 +291,6 @@ var nts;
                                         var message = self.messageList()[0].message;
                                         if (!self.unemployeeInsuranceRateModel().unemployeeInsuranceRateItemAgroforestryModel) {
                                             $('#inp_code').ntsError('set', message);
-                                        }
-                                        if (!self.laborInsuranceOfficeModel().name()) {
-                                            $('#inp_name').ntsError('set', message);
-                                        }
-                                        if (!self.laborInsuranceOfficeModel().picPosition()) {
-                                            $('#inp_picPosition').ntsError('set', message);
                                         }
                                     }
                                     if (self.messageList()[1].messageId === messageId) {
