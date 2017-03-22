@@ -34,7 +34,7 @@ public class UnitPriceWs {
 	 * @return the list
 	 */
 	@POST
-	@Path("getCompanyUnitPrice/{baseDate}")
+	@Path("getcodes/{baseDate}")
 	public List<String> find(@PathParam("baseDate") Integer baseDate) {
 		List<String> listUnitPriceCode = unitPriceRepo.getCompanyUnitPriceCode(baseDate).stream().map(code -> code.v())
 				.collect(Collectors.toList());
