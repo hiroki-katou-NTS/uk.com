@@ -10,9 +10,9 @@ var qmm012;
                 addItemMaster: "pr/core/item/add",
                 updateItemMaster: "pr/core/item/update",
             };
-            function findAllItemMaster() {
+            function findAllItemMaster(ctgAtr) {
                 var dfd = $.Deferred();
-                nts.uk.request.ajax(paths.findAllItemMaster)
+                nts.uk.request.ajax(paths.findAllItemMaster + "/" + ctgAtr)
                     .done(function (res) {
                     dfd.resolve(res);
                 })

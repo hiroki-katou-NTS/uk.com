@@ -7,9 +7,9 @@ module qmm012.b {
             updateItemMaster: "pr/core/item/update",
         }
 
-        export function findAllItemMaster(): JQueryPromise<Array<model.ItemMaster>> {
+        export function findAllItemMaster(ctgAtr): JQueryPromise<Array<model.ItemMaster>> {
             var dfd = $.Deferred<Array<model.ItemMaster>>();
-            nts.uk.request.ajax(paths.findAllItemMaster)
+            nts.uk.request.ajax(paths.findAllItemMaster + "/" + ctgAtr)
                 .done(function(res: Array<model.ItemMaster>) {
                     dfd.resolve(res);
                 })
@@ -45,7 +45,7 @@ module qmm012.b {
                 })
             return dfd.promise();
         }
-         export function updateItemMaster(ItemMaster: model.ItemMaster): JQueryPromise<any> {
+        export function updateItemMaster(ItemMaster: model.ItemMaster): JQueryPromise<any> {
             var dfd = $.Deferred<any>();
             nts.uk.request.ajax(paths.updateItemMaster, ItemMaster)
                 .done(function(res: any) {

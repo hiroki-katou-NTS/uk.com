@@ -18,6 +18,7 @@ module qmm012.b.viewmodel {
         GridCurrentCategoryAtrName_B_001: KnockoutObservable<string> = ko.observable('');
         GridCurrentCodeAndName_B_001: KnockoutObservable<string> = ko.observable('');
         B_INP_002_text: KnockoutObservable<string> = ko.observable('');
+        categoryAtr: number = -1;
         //Checkbox
         //B_002
         checked_B_002: KnockoutObservable<boolean> = ko.observable(true);
@@ -41,6 +42,31 @@ module qmm012.b.viewmodel {
                 new ComboboxItemModel(5, '記事項目'),
                 new ComboboxItemModel(6, 'その他項目')
             ]);
+            self.selectedCode_B_001.subscribe(function(newValue) {
+                let categoryAtr;
+                switch (newValue) {
+                    case 1:
+                        categoryAtr = -1
+                        break;
+                    case 2:
+                        categoryAtr = 0
+                        break;
+                    case 3:
+                        categoryAtr = 1
+                        break;
+                    case 4:
+                        categoryAtr = 2
+                        break;
+                    case 5:
+                        categoryAtr = 3
+                        break;
+                    case 6:
+                        categoryAtr = 9
+                        break;
+                }
+                self.categoryAtr = categoryAtr;
+                self.LoadGridList();
+            });
             // set gridlist data
             self.GridColumns_B_001 = ko.observableArray([
                 { headerText: '項目区分', prop: 'categoryAtrName', width: 80 },
@@ -165,10 +191,10 @@ module qmm012.b.viewmodel {
             return itemMaster;
         }
 
-
         LoadGridList(ItemCode?) {
             let self = this;
-            service.findAllItemMaster().done(function(MasterItems: Array<service.model.ItemMaster>) {
+            let categoryAtr = self.categoryAtr;
+            service.findAllItemMaster(categoryAtr).done(function(MasterItems: Array<service.model.ItemMaster>) {
                 self.GridlistItems_B_001(MasterItems);
                 //set selected first item in list
                 if (self.GridlistItems_B_001().length > 0)

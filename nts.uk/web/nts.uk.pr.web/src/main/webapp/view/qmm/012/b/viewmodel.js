@@ -20,6 +20,7 @@ var qmm012;
                     this.GridCurrentCategoryAtrName_B_001 = ko.observable('');
                     this.GridCurrentCodeAndName_B_001 = ko.observable('');
                     this.B_INP_002_text = ko.observable('');
+                    this.categoryAtr = -1;
                     //Checkbox
                     //B_002
                     this.checked_B_002 = ko.observable(true);
@@ -36,6 +37,31 @@ var qmm012;
                         new ComboboxItemModel(5, '記事項目'),
                         new ComboboxItemModel(6, 'その他項目')
                     ]);
+                    self.selectedCode_B_001.subscribe(function (newValue) {
+                        var categoryAtr;
+                        switch (newValue) {
+                            case 1:
+                                categoryAtr = -1;
+                                break;
+                            case 2:
+                                categoryAtr = 0;
+                                break;
+                            case 3:
+                                categoryAtr = 1;
+                                break;
+                            case 4:
+                                categoryAtr = 2;
+                                break;
+                            case 5:
+                                categoryAtr = 3;
+                                break;
+                            case 6:
+                                categoryAtr = 9;
+                                break;
+                        }
+                        self.categoryAtr = categoryAtr;
+                        self.LoadGridList();
+                    });
                     // set gridlist data
                     self.GridColumns_B_001 = ko.observableArray([
                         { headerText: '項目区分', prop: 'categoryAtrName', width: 80 },
@@ -140,7 +166,8 @@ var qmm012;
                 };
                 ScreenModel.prototype.LoadGridList = function (ItemCode) {
                     var self = this;
-                    b.service.findAllItemMaster().done(function (MasterItems) {
+                    var categoryAtr = self.categoryAtr;
+                    b.service.findAllItemMaster(categoryAtr).done(function (MasterItems) {
                         self.GridlistItems_B_001(MasterItems);
                         //set selected first item in list
                         if (self.GridlistItems_B_001().length > 0)
