@@ -2,29 +2,25 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.pr.core.app.wagetable.command.dto;
+package nts.uk.ctx.pr.core.ws.wagetable.dto;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
 
 /**
- * The Class ElementSettingDto.
+ * The Class SettingInfoInModel.
  */
 @Getter
 @Setter
-public class ElementSettingDto {
+public class SettingInfoInModel {
 
 	/** The demension no. */
 	private Integer demensionNo;
 
 	/** The type. */
 	private Integer type;
-
-	/** The item list. */
-	private List<ElementItemDto> itemList;
 
 	/** The lower limit. */
 	private BigDecimal lowerLimit;

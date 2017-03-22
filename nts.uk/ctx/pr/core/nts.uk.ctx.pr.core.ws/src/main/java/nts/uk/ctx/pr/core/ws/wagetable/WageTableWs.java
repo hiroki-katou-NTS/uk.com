@@ -33,6 +33,8 @@ import nts.uk.ctx.pr.core.ws.base.simplehistory.SimpleHistoryWs;
 import nts.uk.ctx.pr.core.ws.base.simplehistory.dto.HistoryModel;
 import nts.uk.ctx.pr.core.ws.base.simplehistory.dto.MasterModel;
 import nts.uk.ctx.pr.core.ws.wagetable.dto.DemensionItemDto;
+import nts.uk.ctx.pr.core.ws.wagetable.dto.SettingInfoInModel;
+import nts.uk.ctx.pr.core.ws.wagetable.dto.SettingInfoOutModel;
 import nts.uk.ctx.pr.core.ws.wagetable.dto.WageTableModel;
 import nts.uk.ctx.pr.core.ws.wagetable.dto.WtHeadDto;
 import nts.uk.ctx.pr.core.ws.wagetable.dto.WtHistoryDto;
@@ -159,6 +161,22 @@ public class WageTableWs extends SimpleHistoryWs<WtHead, WtHistory> {
 			return MasterModel.builder().code(item.getCode().v()).name(item.getName().v())
 					.historyList(historyMap.get(item.getCode())).build();
 		}).collect(Collectors.toList());
+	}
+
+	/**
+	 * Generate setting item.
+	 *
+	 * @param input the input
+	 * @return the setting info out model
+	 */
+	@POST
+	@Path("reference/gensettingitem")
+	public SettingInfoOutModel generateSettingItem(SettingInfoInModel input) {
+		SettingInfoOutModel model = new SettingInfoOutModel();
+
+		// TODO: call service generate setting item.
+
+		return model;
 	}
 
 	/**
