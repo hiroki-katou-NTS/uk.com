@@ -88,8 +88,8 @@
 				</com:ko-if>
 				<com:ko-if bind="selectedDifficultyAtr() == 1">
 					<div id="c_lbl_001" class="separate-vertical" data-bind="ntsFormLabel: {}">コード/名称</div>
-					<span id="c_lbl_002" class="separate-span separate-vertical" data-bind="text: '003'"></span>
-					<span id="c_lbl_003" class="separate-span separate-vertical" data-bind="text: '003'"></span>
+					<span id="c_lbl_002" class="separate-span separate-vertical" data-bind="text: formulaCode"></span>
+					<span id="c_lbl_003" class="separate-span separate-vertical" data-bind="text: formulaName"></span>
 					<br/>
 					<div id="c_sel_006" data-bind="ntsTabPanel: { dataSource: c_sel_006, active: selectedTabCSel006}">
 						<div class="tab-content-1">
@@ -122,7 +122,7 @@
 						    	<hr/>
 						    </td>
 						    <td class="td-right">
-						    	<div id="c_lbl_006" data-bind="ntsFormLabel: {enable: false}">金額情報の参照月</div>
+						    	<div id="c_lbl_006" data-bind="ntsFormLabel: {}">金額情報の参照月</div>
 						    	<hr/>
 						    </td>
 						  </tr>
@@ -160,7 +160,7 @@
 						  		</div>
 						  	</td>
 						  	<td class="td-right">
-						  		<div id="c_sel_007" class="ib" data-bind="with: c_sel_007">
+						  		<div id="c_sel_007" style="vertical-align: middle" class="ib" data-bind="with: comboBoxReferenceMonthAtr">
 								<div id="combo-box" data-bind="ntsComboBox: {
 											options: itemList,
 											optionsValue: 'code',
@@ -170,13 +170,27 @@
 											enable: isEnable
 											}"></div>
 								</div>
+								<span style="vertical-align: middle">  を</span>
 								<br/>
 								<span id="c_lbl_007">を参照して計算を行う</span><br/>
 								<span class="separate-vertical ib" id="c_lbl_009">※明細データを参照する場合の設定です。</span> <br/>
-								<div id="c_lbl_006" class="separate-vertical" data-bind="ntsFormLabel: {required: true}">端数処理</div>
+								<div id="c_lbl_006" data-bind="ntsFormLabel: {required: true}">端数処理</div>
 								<hr/>
-								<div id="c_sel_008" class="ib" data-bind="with: c_sel_008">
-								<div id="combo-box" data-bind="ntsComboBox: {
+								<span style="vertical-align: middle">方法</span>
+								<div id="c_sel_008" class="ib" data-bind="with: comboBoxRoudingMethod">
+								<div id="combo-box" style="vertical-align: middle; margin-bottom: 10px" data-bind="ntsComboBox: {
+											options: itemList,
+											optionsValue: 'code',
+											value: selectedCode,
+											optionsText: 'name',
+											editable: isEditable,
+											enable: isEnable
+											}"></div>
+								</div>
+								<br/>
+								<span style="vertical-align: middle">位置</span>
+								<div id="c_sel_009" class="ib" data-bind="with: comboBoxRoudingPosition">
+								<div id="combo-box" style="vertical-align: middle" data-bind="ntsComboBox: {
 											options: itemList,
 											optionsValue: 'code',
 											value: selectedCode,

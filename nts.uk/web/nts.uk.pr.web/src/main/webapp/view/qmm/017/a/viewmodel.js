@@ -5,30 +5,58 @@ var nts;
         var ScreenModel = (function () {
             function ScreenModel() {
                 var self = this;
+                self.isNewMode = ko.observable(true);
                 self.treeGridHistory = ko.observable(new TreeGrid());
                 self.a_sel_001 = ko.observableArray([
                     { id: 'tab-1', title: '基本情報', content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true) },
-                    { id: 'tab-2', title: '計算式の設定', content: '.tab-content-2', enable: ko.observable(true), visible: ko.observable(true) }
+                    { id: 'tab-2', title: '計算式の設定', content: '.tab-content-2', enable: ko.observable(false), visible: ko.observable(true) }
                 ]);
                 self.selectedTabASel001 = ko.observable('tab-1');
                 self.isNewMode = ko.observable(true);
                 self.startYearMonth = ko.observable('');
+                self.currentNode = ko.observable(null);
+                self.currentParentNode = ko.observable(null);
                 self.treeGridHistory().singleSelectedCode.subscribe(function (codeChange) {
                     var currentNode = null;
                     var currentParentNode = null;
                     for (var order = 0; order < self.treeGridHistory().items().length; order++) {
                         var foundNode = findNode(self.treeGridHistory().items()[order], self.treeGridHistory().singleSelectedCode());
                         if (foundNode) {
-                            currentNode = foundNode;
-                            currentParentNode = self.treeGridHistory().items()[order];
+                            self.currentNode(foundNode);
+                            self.currentParentNode(self.treeGridHistory().items()[order]);
                         }
                     }
-                    var rangeYearMonth = currentNode.name.split('~');
+                    var rangeYearMonth = self.currentNode().name.split('~');
                     self.startYearMonth(rangeYearMonth[0].trim());
-                    self.viewModel017b().startYearMonth(rangeYearMonth[0].trim());
-                    self.viewModel017b().formulaCode(currentParentNode.code);
-                    self.viewModel017b().formulaName(currentParentNode.name);
                     self.isNewMode(false);
+                    self.a_sel_001()[1].enable(true);
+                    self.viewModel017b().startYearMonth(rangeYearMonth[0].trim());
+                    self.viewModel017b().formulaCode(self.currentParentNode().code);
+                    self.viewModel017b().formulaName(self.currentParentNode().name);
+                    //get formula detail
+                    qmm017.service.findFormula(self.currentParentNode().code, self.currentNode().code)
+                        .done(function (currentFormula) {
+                        self.viewModel017b().selectedDifficultyAtr(currentFormula.difficultyAtr);
+                        qmm017.service.getFormulaDetail(self.currentParentNode().code, self.currentNode().code, currentFormula.difficultyAtr)
+                            .done(function (currentFormulaDetail) {
+                            if (currentFormula && currentFormula.difficultyAtr === 1) {
+                                self.viewModel017c().formulaManualContent().textArea(currentFormulaDetail.formulaContent);
+                                self.viewModel017c().comboBoxReferenceMonthAtr().selectedCode(currentFormulaDetail.referenceMonthAtr);
+                                self.viewModel017c().comboBoxRoudingMethod().selectedCode(currentFormulaDetail.roundAtr);
+                                self.viewModel017c().comboBoxRoudingPosition().selectedCode(currentFormulaDetail.roundDigit);
+                            }
+                            else if (currentFormula && currentFormula.difficultyAtr === 0) {
+                            }
+                        })
+                            .fail(function (res) {
+                            alert(res);
+                        });
+                        self.viewModel017b().selectedConditionAtr(currentFormula.conditionAtr);
+                        self.viewModel017b().comboBoxUseMaster().selectedCode(currentFormula.refMasterNo);
+                    })
+                        .fail(function (res) {
+                        alert(res);
+                    });
                 });
                 self.viewModel017b = ko.observable(new qmm017.BScreen(self));
                 self.viewModel017c = ko.observable(new qmm017.CScreen(self.viewModel017b));
@@ -45,59 +73,77 @@ var nts;
                 var itemsTreeGridHistory = [];
                 var itemsTreeGridFormula = [];
                 var nodesTreeGrid = [];
+                // bind a_lst_001
+                // convert FormulaDto to Node objects to fill in the tree grid
                 qmm017.service.getAllFormula().done(function (lstFormulaDto) {
                     if (lstFormulaDto.length > 0) {
-                        var _loop_1 = function(orderFormulaDto) {
-                            itemsTreeGridFormula.push(lstFormulaDto[orderFormulaDto]);
-                            var itemTreeGridHistory = [];
-                            qmm017.service.findFormulaHistoryByCode(lstFormulaDto[orderFormulaDto].formulaCode)
-                                .done(function (lstFormulaHistoryDto) {
-                                if (lstFormulaHistoryDto.length > 0) {
-                                    for (var orderFormulaHistoryDto = 0; orderFormulaHistoryDto < lstFormulaHistoryDto.length; orderFormulaHistoryDto++) {
-                                        itemTreeGridHistory.push(lstFormulaHistoryDto[orderFormulaHistoryDto]);
-                                    }
-                                    itemsTreeGridHistory.push(itemTreeGridHistory);
-                                    var nodeHistory = [];
-                                    for (var orderHistory = 0; orderHistory < itemsTreeGridHistory[orderFormulaDto].length; orderHistory++) {
-                                        nodeHistory.push(new Node(itemsTreeGridHistory[orderFormulaDto][orderHistory].historyId, nts.uk.time.formatYearMonth(itemsTreeGridHistory[orderFormulaDto][orderHistory].startDate)
-                                            + ' ~ '
-                                            + nts.uk.time.formatYearMonth(itemsTreeGridHistory[orderFormulaDto][orderHistory].endDate), []));
-                                    }
-                                    var nodeFormula = new Node(itemsTreeGridFormula[orderFormulaDto].formulaCode, itemsTreeGridFormula[orderFormulaDto].formulaName, nodeHistory);
-                                    nodesTreeGrid.push(nodeFormula);
-                                    self.treeGridHistory().items(nodesTreeGrid);
-                                }
-                            })
-                                .fail(function (res) {
-                                // Alert message
-                                alert(res);
-                            });
-                        };
-                        for (var orderFormulaDto = 0; orderFormulaDto < lstFormulaDto.length; orderFormulaDto++) {
-                            _loop_1(orderFormulaDto);
-                        }
+                        var groupsFormulaByCode_1 = _.groupBy(lstFormulaDto, 'formulaCode');
+                        var lstFormulaCode = Object.keys(groupsFormulaByCode_1);
+                        _.forEach(lstFormulaCode, function (formulaCode) {
+                            var nodeHistory = [];
+                            var lstHistoryEachCode = groupsFormulaByCode_1[formulaCode];
+                            for (var orderHistory = 0; orderHistory < lstHistoryEachCode.length; orderHistory++) {
+                                nodeHistory.push(new Node(lstHistoryEachCode[orderHistory].historyId, nts.uk.time.formatYearMonth(lstHistoryEachCode[orderHistory].startDate)
+                                    + ' ~ '
+                                    + nts.uk.time.formatYearMonth(lstHistoryEachCode[orderHistory].endDate), []));
+                            }
+                            var nodeFormula = new Node(lstHistoryEachCode[0].formulaCode, lstHistoryEachCode[0].formulaName, nodeHistory.reverse());
+                            nodesTreeGrid.push(nodeFormula);
+                        });
+                        self.treeGridHistory().items(nodesTreeGrid);
                     }
                     dfd.resolve();
-                    //                for (let orderTreeGrid = 0; orderTreeGrid < itemsTreeGridFormula.length; orderTreeGrid++) {
-                    //                    let nodeHistory = []
-                    //                    for(let orderHistory = 0; orderHistory< itemsTreeGridHistory[orderTreeGrid].length; orderHistory++) {
-                    //                        nodeHistory.push(
-                    //                            new Node(
-                    //                                itemsTreeGridHistory[orderTreeGrid][orderHistory].historyId,
-                    //                                itemsTreeGridHistory[orderTreeGrid][orderHistory].startDate + ' ~ ' + itemsTreeGridHistory[orderTreeGrid][orderHistory].endDate,
-                    //                                []
-                    //                            )
-                    //                        );
-                    //                    }
-                    //                    let nodeFormula = new Node(itemsTreeGridFormula[orderTreeGrid].formulaCode,itemsTreeGridFormula[orderTreeGrid].formulaName,nodeHistory);
-                    //                }
-                    //                console.log(nodesTreeGrid);
                 }).fail(function (res) {
                     // Alert message
                     alert(res);
                 });
                 // Return.
                 return dfd.promise();
+            };
+            ScreenModel.prototype.registerFormulaMaster = function () {
+                var self = this;
+                var referenceMasterNo = null;
+                if (self.viewModel017b().selectedDifficultyAtr() === 0 && self.viewModel017b().selectedConditionAtr() === 0) {
+                    referenceMasterNo = 0;
+                }
+                else if (self.viewModel017b().selectedDifficultyAtr() === 0 && self.viewModel017b().selectedConditionAtr() === 1) {
+                    referenceMasterNo = self.viewModel017b().comboBoxUseMaster().selectedCode();
+                }
+                var command = {
+                    formulaCode: self.viewModel017b().formulaCode(),
+                    formulaName: self.viewModel017b().formulaName(),
+                    difficultyAtr: self.viewModel017b().selectedDifficultyAtr(),
+                    startDate: self.viewModel017b().startYearMonth(),
+                    endDate: 999912,
+                    conditionAtr: self.viewModel017b().selectedConditionAtr(),
+                    refMasterNo: referenceMasterNo
+                };
+                qmm017.service.registerFormulaMaster(command)
+                    .done(function () {
+                    self.start();
+                })
+                    .fail(function (res) {
+                    alert(res);
+                });
+            };
+            ScreenModel.prototype.openDialogJ = function () {
+                var self = this;
+                var lastestHistoryNode = self.currentParentNode().childs[0];
+                var lastestHistory = lastestHistoryNode.name;
+                var lastestYearMonth = lastestHistory.split("~");
+                var lastestStartYm = lastestYearMonth[0].trim();
+                var param = {
+                    formulaCode: self.viewModel017b().formulaCode(),
+                    formulaName: self.viewModel017b().formulaName(),
+                    startYm: lastestStartYm,
+                    difficultyAtr: self.viewModel017b().selectedDifficultyAtr(),
+                    conditionAtr: self.viewModel017b().selectedConditionAtr(),
+                    referenceMasterNo: self.viewModel017b().comboBoxUseMaster().selectedCode()
+                };
+                nts.uk.ui.windows.setShared('paramFromScreenA', param);
+                nts.uk.ui.windows.sub.modal('/view/qmm/017/j/index.xhtml', { title: '履歴の追加', width: 540, height: 545 }).onClosed(function () {
+                    self.start();
+                });
             };
             return ScreenModel;
         }());
@@ -154,44 +200,3 @@ var nts;
         qmm017.Node = Node;
     })(qmm017 = nts.qmm017 || (nts.qmm017 = {}));
 })(nts || (nts = {}));
-function OpenModalSubWindowJ(option) {
-    nts.uk.ui.windows.sub.modal("../../../../view/qmm/017/j/index.xhtml", $.extend(option, { title: "計算式の登録>履歴の追加" }));
-}
-function OpenModalSubWindowK(option) {
-    var test = nts.uk.ui.windows.sub.modal("../../../../view/qmm/017/k/index.xhtml", $.extend(option, { title: "計算式の登録>履歴の編集" }));
-}
-//export module nts.uk.pr.view.qmm017.a {
-//    export module viewmodel {
-//        export class Node {
-//            code: string;
-//            name: string;
-//            nodeText: string;
-//            childs: any;
-//            constructor(code: string, name: string, childs: Array<Node>) {
-//                var self = this;
-//                self.code = code;
-//                self.name = name;
-//                self.nodeText = self.code + ' ' + self.name;
-//                self.childs = childs;
-//            }
-//        }
-//        export class SwitchButton {
-//            roundingRules: KnockoutObservableArray<any>;
-//            selectedRuleCode: any;
-//
-//            constructor(data) {
-//                var self = this;
-//                self.roundingRules = ko.observableArray(data);
-//                self.selectedRuleCode = ko.observable(1);
-//            }
-//        }
-//        export class ItemModelComboBox {
-//            code: any;
-//            name: string;
-//            label: string;
-//
-//            constructor(code: any, name: string) {
-//                this.code = code;
-//                this.name = name;
-//            }
-//        }

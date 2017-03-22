@@ -34,43 +34,40 @@ var nts;
                     });
                     self.useMasterName(useMasterFound.name);
                 });
-                var c_sel_001 = [
-                    { code: 1, name: '雇用マスタ' },
-                    { code: 2, name: '部門マスタ' },
-                    { code: 3, name: '分類マスタ' },
-                    { code: 4, name: '給与分類マスタ' },
-                    { code: 5, name: '職位マスタ' },
-                    { code: 6, name: '給与形態' }
+                var lstReferenceMonthAtr = [
+                    { code: 0, name: '当月' },
+                    { code: 1, name: '1ヶ月前' },
+                    { code: 2, name: '2ヶ月前' },
+                    { code: 3, name: '3ヶ月前' },
+                    { code: 4, name: '4ヶ月前' },
+                    { code: 5, name: '5ヶ月前' },
+                    { code: 6, name: '6ヶ月前' },
+                    { code: 7, name: '7ヶ月前' },
+                    { code: 8, name: '8ヶ月前' },
+                    { code: 9, name: '9ヶ月前' },
+                    { code: 10, name: '10ヶ月前' },
+                    { code: 11, name: '11ヶ月前' },
+                    { code: 12, name: '12ヶ月前' },
                 ];
-                var c_sel_007 = [
-                    { code: 1, name: '当月' },
-                    { code: 2, name: '1ヶ月前' },
-                    { code: 3, name: '2ヶ月前' },
-                    { code: 4, name: '3ヶ月前' },
-                    { code: 5, name: '4ヶ月前' },
-                    { code: 6, name: '5ヶ月前' },
-                    { code: 7, name: '6ヶ月前' },
-                    { code: 8, name: '7ヶ月前' },
-                    { code: 9, name: '8ヶ月前' },
-                    { code: 10, name: '9ヶ月前' },
-                    { code: 11, name: '10ヶ月前' },
-                    { code: 12, name: '11ヶ月前' },
-                    { code: 13, name: '12ヶ月前' },
+                var lstRoudingMethod = [
+                    { code: 0, name: '切上げ' },
+                    { code: 1, name: '切捨て' },
+                    { code: 2, name: '一捨二入' },
+                    { code: 3, name: '二捨三入' },
+                    { code: 4, name: '三捨四入' },
+                    { code: 5, name: '四捨五入' },
+                    { code: 6, name: '五捨六入' },
+                    { code: 7, name: '六捨七入' },
+                    { code: 8, name: '七捨八入' },
+                    { code: 9, name: '八捨九入' },
                 ];
-                var c_sel_008 = [
-                    { code: 1, name: '切上げ' },
-                    { code: 2, name: '切捨て' },
-                    { code: 3, name: '一捨二入' },
-                    { code: 4, name: '二捨三入' },
-                    { code: 5, name: '三捨四入' },
-                    { code: 6, name: '四捨五入' },
-                    { code: 7, name: '五捨六入' },
-                    { code: 8, name: '六捨七入' },
-                    { code: 9, name: '七捨八入' },
-                    { code: 10, name: '八捨九入' },
+                var lstRoudingPostion = [
+                    { code: 0, name: '1円丸め' },
+                    { code: 1, name: '10円丸め' },
+                    { code: 2, name: '100円丸め' },
+                    { code: 3, name: '1000円丸め' }
                 ];
                 self.formulaManualContent = ko.observable(new TextEditor());
-                self.c_sel_001 = ko.observable(new ComboBox(c_sel_001, true, false));
                 self.c_sel_006 = ko.observableArray([
                     { id: 'tab-1', title: '明細・勤怠', content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true) },
                     { id: 'tab-2', title: '関数', content: '.tab-content-2', enable: ko.observable(true), visible: ko.observable(true) },
@@ -79,8 +76,9 @@ var nts;
                     { id: 'tab-5', title: '計算式', content: '.tab-content-5', enable: ko.observable(true), visible: ko.observable(true) },
                     { id: 'tab-6', title: '賃金テーブル', content: '.tab-content-6', style: 'margin-left: 50px;', enable: ko.observable(true), visible: ko.observable(true) }
                 ]);
-                self.c_sel_007 = ko.observable(new ComboBox(c_sel_007, true, false));
-                self.c_sel_008 = ko.observable(new ComboBox(c_sel_008, true, false));
+                self.comboBoxReferenceMonthAtr = ko.observable(new ComboBox(lstReferenceMonthAtr, true, false));
+                self.comboBoxRoudingMethod = ko.observable(new ComboBox(lstRoudingMethod, true, false));
+                self.comboBoxRoudingPosition = ko.observable(new ComboBox(lstRoudingPostion, true, false));
                 self.selectedTabCSel006 = ko.observable('tab-1');
                 self.easyFormulaName = ko.observable('');
                 self.easyFormulaFixMoney = ko.observable(0);
@@ -95,7 +93,7 @@ var nts;
             CScreen.prototype.openDialogL = function () {
                 var self = this;
                 var param = {
-                    isUpdate: (self.easyFormulaDetail()),
+                    isUpdate: (self.easyFormulaDetail() == ''),
                     dirtyData: self.easyFormulaDetail()
                 };
                 nts.uk.ui.windows.setShared('paramFromScreenC', param);

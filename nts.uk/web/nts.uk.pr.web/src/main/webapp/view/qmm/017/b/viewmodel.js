@@ -19,9 +19,17 @@ var nts;
                 self.formulaCode = ko.observable('');
                 self.formulaName = ko.observable('');
                 self.startYearMonthFormated = ko.observable('');
+                self.isNewMode = ko.observable(data.isNewMode());
+                ;
+                data.isNewMode.subscribe(function (val) {
+                    self.isNewMode(val);
+                });
                 self.startYearMonth.subscribe(function (ymChange) {
-                    if (ymChange != 200101) {
+                    if (!self.isNewMode()) {
                         self.startYearMonthFormated('(' + nts.uk.time.yearmonthInJapanEmpire(ymChange).toString() + ') ~');
+                    }
+                    else {
+                        self.startYearMonthFormated = ko.observable('');
                     }
                 });
                 self.comboBoxUseMaster = ko.observable({

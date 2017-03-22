@@ -6,8 +6,9 @@ var nts;
         (function (service) {
             var paths = {
                 getAllFormula: "pr/formula/formulaMaster/getAllFormula",
-                findFormulaByCode: "pr/formula/formulaMaster/findFormula",
-                findFormulaHistoryByCode: "pr/formula/formulaHistory/findFormulaHistoryByCode"
+                findFormula: "pr/formula/formulaMaster/findFormula",
+                getFormulaDetail: "pr/formula/formulaMaster/getFormulaDetail",
+                registerFormulaMaster: "pr/formula/formulaMaster/addFormulaMaster"
             };
             function getAllFormula() {
                 var dfd = $.Deferred();
@@ -21,9 +22,9 @@ var nts;
                 return dfd.promise();
             }
             service.getAllFormula = getAllFormula;
-            function findFormulaByCode(formulaCode) {
+            function findFormula(formulaCode, historyId) {
                 var dfd = $.Deferred();
-                nts.uk.request.ajax("pr", paths.findFormulaByCode + "/" + formulaCode)
+                nts.uk.request.ajax("pr", paths.findFormula + "/" + formulaCode + "/" + historyId)
                     .done(function (res) {
                     dfd.resolve(res);
                 })
@@ -32,10 +33,10 @@ var nts;
                 });
                 return dfd.promise();
             }
-            service.findFormulaByCode = findFormulaByCode;
-            function findFormulaHistoryByCode(formulaCode) {
+            service.findFormula = findFormula;
+            function getFormulaDetail(formulaCode, historyId, difficultyAtr) {
                 var dfd = $.Deferred();
-                nts.uk.request.ajax("pr", paths.findFormulaHistoryByCode + "/" + formulaCode)
+                nts.uk.request.ajax("pr", paths.getFormulaDetail + "/" + formulaCode + "/" + historyId + "/" + difficultyAtr)
                     .done(function (res) {
                     dfd.resolve(res);
                 })
@@ -44,7 +45,17 @@ var nts;
                 });
                 return dfd.promise();
             }
-            service.findFormulaHistoryByCode = findFormulaHistoryByCode;
+            service.getFormulaDetail = getFormulaDetail;
+            function registerFormulaMaster(command) {
+                var dfd = $.Deferred();
+                nts.uk.request.ajax(paths.registerFormulaMaster, command).done(function () {
+                    dfd.resolve();
+                }).fail(function (res) {
+                    dfd.reject(res);
+                });
+                return dfd.promise();
+            }
+            service.registerFormulaMaster = registerFormulaMaster;
         })(service = qmm017.service || (qmm017.service = {}));
         var model;
         (function (model) {
@@ -60,6 +71,24 @@ var nts;
                 return FormulaHistoryDto;
             }());
             model.FormulaHistoryDto = FormulaHistoryDto;
+            var FormulaDetailDto = (function () {
+                function FormulaDetailDto() {
+                }
+                return FormulaDetailDto;
+            }());
+            model.FormulaDetailDto = FormulaDetailDto;
+            var FormulaEasyNotUseCondition = (function () {
+                function FormulaEasyNotUseCondition() {
+                }
+                return FormulaEasyNotUseCondition;
+            }());
+            model.FormulaEasyNotUseCondition = FormulaEasyNotUseCondition;
+            var FormulaEasyUseCondition = (function () {
+                function FormulaEasyUseCondition() {
+                }
+                return FormulaEasyUseCondition;
+            }());
+            model.FormulaEasyUseCondition = FormulaEasyUseCondition;
         })(model = qmm017.model || (qmm017.model = {}));
     })(qmm017 = nts.qmm017 || (nts.qmm017 = {}));
 })(nts || (nts = {}));
