@@ -21,7 +21,7 @@ module qmm012.b.viewmodel {
         categoryAtr: number = -1;
         //Checkbox
         //B_002
-        checked_B_002: KnockoutObservable<boolean> = ko.observable(true);
+        checked_B_002: KnockoutObservable<boolean> = ko.observable(false);
         //combobox
         //text editer
         texteditor_B_INP_002: any;
@@ -67,6 +67,9 @@ module qmm012.b.viewmodel {
                 self.categoryAtr = categoryAtr;
                 self.LoadGridList();
             });
+            self.checked_B_002.subscribe(function() {
+                self.LoadGridList();
+            })
             // set gridlist data
             self.GridColumns_B_001 = ko.observableArray([
                 { headerText: '項目区分', prop: 'categoryAtrName', width: 80 },
@@ -194,7 +197,8 @@ module qmm012.b.viewmodel {
         LoadGridList(ItemCode?) {
             let self = this;
             let categoryAtr = self.categoryAtr;
-            service.findAllItemMaster(categoryAtr).done(function(MasterItems: Array<service.model.ItemMaster>) {
+            let dispSet = self.checked_B_002() ? -1 : 0;
+            service.findAllItemMaster(categoryAtr, dispSet).done(function(MasterItems: Array<service.model.ItemMaster>) {
                 self.GridlistItems_B_001(MasterItems);
                 //set selected first item in list
                 if (self.GridlistItems_B_001().length > 0)

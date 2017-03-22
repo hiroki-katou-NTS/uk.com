@@ -23,7 +23,7 @@ var qmm012;
                     this.categoryAtr = -1;
                     //Checkbox
                     //B_002
-                    this.checked_B_002 = ko.observable(true);
+                    this.checked_B_002 = ko.observable(false);
                     this.enable_B_INP_002 = ko.observable(false);
                     var self = this;
                     self.screenModel = screenModel;
@@ -60,6 +60,9 @@ var qmm012;
                                 break;
                         }
                         self.categoryAtr = categoryAtr;
+                        self.LoadGridList();
+                    });
+                    self.checked_B_002.subscribe(function () {
                         self.LoadGridList();
                     });
                     // set gridlist data
@@ -167,7 +170,8 @@ var qmm012;
                 ScreenModel.prototype.LoadGridList = function (ItemCode) {
                     var self = this;
                     var categoryAtr = self.categoryAtr;
-                    b.service.findAllItemMaster(categoryAtr).done(function (MasterItems) {
+                    var dispSet = self.checked_B_002() ? -1 : 0;
+                    b.service.findAllItemMaster(categoryAtr, dispSet).done(function (MasterItems) {
                         self.GridlistItems_B_001(MasterItems);
                         //set selected first item in list
                         if (self.GridlistItems_B_001().length > 0)

@@ -7,9 +7,9 @@ module qmm012.b {
             updateItemMaster: "pr/core/item/update",
         }
 
-        export function findAllItemMaster(ctgAtr): JQueryPromise<Array<model.ItemMaster>> {
+        export function findAllItemMaster(ctgAtr, dispSet): JQueryPromise<Array<model.ItemMaster>> {
             var dfd = $.Deferred<Array<model.ItemMaster>>();
-            nts.uk.request.ajax(paths.findAllItemMaster + "/" + ctgAtr)
+            nts.uk.request.ajax(paths.findAllItemMaster + "/" + ctgAtr + "/" + dispSet)
                 .done(function(res: Array<model.ItemMaster>) {
                     dfd.resolve(res);
                 })

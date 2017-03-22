@@ -10,9 +10,9 @@ var qmm012;
                 addItemMaster: "pr/core/item/add",
                 updateItemMaster: "pr/core/item/update",
             };
-            function findAllItemMaster(ctgAtr) {
+            function findAllItemMaster(ctgAtr, dispSet) {
                 var dfd = $.Deferred();
-                nts.uk.request.ajax(paths.findAllItemMaster + "/" + ctgAtr)
+                nts.uk.request.ajax(paths.findAllItemMaster + "/" + ctgAtr + "/" + dispSet)
                     .done(function (res) {
                     dfd.resolve(res);
                 })
@@ -81,4 +81,3 @@ var qmm012;
         })(service = b.service || (b.service = {}));
     })(b = qmm012.b || (qmm012.b = {}));
 })(qmm012 || (qmm012 = {}));
-//# sourceMappingURL=service.js.map
