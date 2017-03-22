@@ -5771,13 +5771,16 @@ var nts;
                     this.initialState = this.getCurrentState();
                 }
                 DirtyChecker.prototype.getCurrentState = function () {
-                    return ko.mapping.toJSON(this.targetViewModel());
+                    console.log("target: " + this.targetViewModel());
+                    return _.clone(this.targetViewModel());
+                    //return ko.mapping.toJSON(this.targetViewModel());
                 };
                 DirtyChecker.prototype.reset = function () {
                     this.initialState = this.getCurrentState();
                 };
                 DirtyChecker.prototype.isDirty = function () {
-                    return this.initialState !== this.getCurrentState();
+                    console.log(this.initialState + " : " + this.getCurrentState());
+                    return !_.isEqual(this.initialState, this.getCurrentState());
                 };
                 return DirtyChecker;
             }());
@@ -5844,6 +5847,7 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+/// <reference path="../reference.ts"/>
 var nts;
 (function (nts) {
     var uk;
@@ -6009,6 +6013,7 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+/// <reference path="../reference.ts"/>
 var nts;
 (function (nts) {
     var uk;

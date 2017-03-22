@@ -5165,96 +5165,6 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui) {
-            var errors;
-            (function (errors) {
-                var ErrorsViewModel = (function () {
-                    function ErrorsViewModel() {
-                        var _this = this;
-                        this.title = "エラー一覧";
-                        this.errors = ko.observableArray([]);
-                        this.errors.extend({ rateLimit: 1 });
-                        this.option = ko.mapping.fromJS(new ui.option.ErrorDialogOption());
-                        this.occurs = ko.computed(function () { return _this.errors().length !== 0; });
-                        this.allResolved = $.Callbacks();
-                        this.errors.subscribe(function () {
-                            if (_this.errors().length === 0) {
-                                _this.allResolved.fire();
-                            }
-                        });
-                        this.allResolved.add(function () {
-                            _this.hide();
-                        });
-                    }
-                    ErrorsViewModel.prototype.closeButtonClicked = function () {
-                    };
-                    ErrorsViewModel.prototype.open = function () {
-                        this.option.show(true);
-                    };
-                    ErrorsViewModel.prototype.hide = function () {
-                        this.option.show(false);
-                    };
-                    ErrorsViewModel.prototype.addError = function (error) {
-                        var _this = this;
-                        // defer無しでerrorsを呼び出すと、なぜか全てのKnockoutBindingHandlerのupdateが呼ばれてしまうので、
-                        // 原因がわかるまでひとまずdeferを使っておく
-                        _.defer(function () {
-                            var duplicate = _.filter(_this.errors(), function (e) { return e.$control.is(error.$control) && e.message == error.message; });
-                            if (duplicate.length == 0)
-                                _this.errors.push(error);
-                        });
-                    };
-                    ErrorsViewModel.prototype.removeErrorByElement = function ($element) {
-                        var _this = this;
-                        // addErrorと同じ対応
-                        _.defer(function () {
-                            var removeds = _.filter(_this.errors(), function (e) { return e.$control.is($element); });
-                            _this.errors.removeAll(removeds);
-                        });
-                    };
-                    return ErrorsViewModel;
-                }());
-                errors.ErrorsViewModel = ErrorsViewModel;
-                var ErrorHeader = (function () {
-                    function ErrorHeader(name, text, width, visible) {
-                        this.name = name;
-                        this.text = text;
-                        this.width = width;
-                        this.visible = visible;
-                    }
-                    return ErrorHeader;
-                }());
-                errors.ErrorHeader = ErrorHeader;
-                function errorsViewModel() {
-                    return nts.uk.ui._viewModel.kiban.errorDialogViewModel;
-                }
-                errors.errorsViewModel = errorsViewModel;
-                function show() {
-                    errorsViewModel().open();
-                }
-                errors.show = show;
-                function hide() {
-                    errorsViewModel().hide();
-                }
-                errors.hide = hide;
-                function add(error) {
-                    errorsViewModel().addError(error);
-                }
-                errors.add = add;
-                function removeByElement($control) {
-                    errorsViewModel().removeErrorByElement($control);
-                }
-                errors.removeByElement = removeByElement;
-            })(errors = ui.errors || (ui.errors = {}));
-        })(ui = uk.ui || (uk.ui = {}));
-    })(uk = nts.uk || (nts.uk = {}));
-})(nts || (nts = {}));
-/// <reference path="../reference.ts"/>
-var nts;
-(function (nts) {
-    var uk;
-    (function (uk) {
-        var ui;
         (function (ui_7) {
             var windows;
             (function (windows) {
@@ -5861,13 +5771,16 @@ var nts;
                     this.initialState = this.getCurrentState();
                 }
                 DirtyChecker.prototype.getCurrentState = function () {
-                    return ko.mapping.toJSON(this.targetViewModel());
+                    console.log("target: " + this.targetViewModel());
+                    return _.clone(this.targetViewModel());
+                    //return ko.mapping.toJSON(this.targetViewModel());
                 };
                 DirtyChecker.prototype.reset = function () {
                     this.initialState = this.getCurrentState();
                 };
                 DirtyChecker.prototype.isDirty = function () {
-                    return this.initialState !== this.getCurrentState();
+                    console.log(this.initialState + " : " + this.getCurrentState());
+                    return !_.isEqual(this.initialState, this.getCurrentState());
                 };
                 return DirtyChecker;
             }());
@@ -5934,6 +5847,7 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+/// <reference path="../reference.ts"/>
 var nts;
 (function (nts) {
     var uk;
@@ -6099,6 +6013,7 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+/// <reference path="../reference.ts"/>
 var nts;
 (function (nts) {
     var uk;
@@ -6238,6 +6153,96 @@ var nts;
     (function (uk) {
         var ui;
         (function (ui) {
+            var errors;
+            (function (errors) {
+                var ErrorsViewModel = (function () {
+                    function ErrorsViewModel() {
+                        var _this = this;
+                        this.title = "エラー一覧";
+                        this.errors = ko.observableArray([]);
+                        this.errors.extend({ rateLimit: 1 });
+                        this.option = ko.mapping.fromJS(new ui.option.ErrorDialogOption());
+                        this.occurs = ko.computed(function () { return _this.errors().length !== 0; });
+                        this.allResolved = $.Callbacks();
+                        this.errors.subscribe(function () {
+                            if (_this.errors().length === 0) {
+                                _this.allResolved.fire();
+                            }
+                        });
+                        this.allResolved.add(function () {
+                            _this.hide();
+                        });
+                    }
+                    ErrorsViewModel.prototype.closeButtonClicked = function () {
+                    };
+                    ErrorsViewModel.prototype.open = function () {
+                        this.option.show(true);
+                    };
+                    ErrorsViewModel.prototype.hide = function () {
+                        this.option.show(false);
+                    };
+                    ErrorsViewModel.prototype.addError = function (error) {
+                        var _this = this;
+                        // defer無しでerrorsを呼び出すと、なぜか全てのKnockoutBindingHandlerのupdateが呼ばれてしまうので、
+                        // 原因がわかるまでひとまずdeferを使っておく
+                        _.defer(function () {
+                            var duplicate = _.filter(_this.errors(), function (e) { return e.$control.is(error.$control) && e.message == error.message; });
+                            if (duplicate.length == 0)
+                                _this.errors.push(error);
+                        });
+                    };
+                    ErrorsViewModel.prototype.removeErrorByElement = function ($element) {
+                        var _this = this;
+                        // addErrorと同じ対応
+                        _.defer(function () {
+                            var removeds = _.filter(_this.errors(), function (e) { return e.$control.is($element); });
+                            _this.errors.removeAll(removeds);
+                        });
+                    };
+                    return ErrorsViewModel;
+                }());
+                errors.ErrorsViewModel = ErrorsViewModel;
+                var ErrorHeader = (function () {
+                    function ErrorHeader(name, text, width, visible) {
+                        this.name = name;
+                        this.text = text;
+                        this.width = width;
+                        this.visible = visible;
+                    }
+                    return ErrorHeader;
+                }());
+                errors.ErrorHeader = ErrorHeader;
+                function errorsViewModel() {
+                    return nts.uk.ui._viewModel.kiban.errorDialogViewModel;
+                }
+                errors.errorsViewModel = errorsViewModel;
+                function show() {
+                    errorsViewModel().open();
+                }
+                errors.show = show;
+                function hide() {
+                    errorsViewModel().hide();
+                }
+                errors.hide = hide;
+                function add(error) {
+                    errorsViewModel().addError(error);
+                }
+                errors.add = add;
+                function removeByElement($control) {
+                    errorsViewModel().removeErrorByElement($control);
+                }
+                errors.removeByElement = removeByElement;
+            })(errors = ui.errors || (ui.errors = {}));
+        })(ui = uk.ui || (uk.ui = {}));
+    })(uk = nts.uk || (nts.uk = {}));
+})(nts || (nts = {}));
+/// <reference path="../reference.ts"/>
+var nts;
+(function (nts) {
+    var uk;
+    (function (uk) {
+        var ui;
+        (function (ui) {
             var file;
             (function (file_1) {
                 var FileDownload = (function () {
@@ -6294,51 +6299,6 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
-/// <reference path="../../reference.ts"/>
-var nts;
-(function (nts) {
-    var uk;
-    (function (uk) {
-        var ui;
-        (function (ui) {
-            var koExtentions;
-            (function (koExtentions) {
-                /**
-                 * LinkButton
-                 */
-                var NtsLinkButtonBindingHandler = (function () {
-                    function NtsLinkButtonBindingHandler() {
-                    }
-                    /**
-                     * Init.
-                     */
-                    NtsLinkButtonBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                        var data = valueAccessor();
-                        var jump = ko.unwrap(data.jump);
-                        var action = data.action;
-                        var linkText = $(element).text();
-                        var $linkButton = $(element).wrap('<div class="ntsControl"/>')
-                            .addClass('link-button')
-                            .click(function () {
-                            event.preventDefault();
-                            if (!nts.uk.util.isNullOrUndefined(action))
-                                action.call(viewModel);
-                            else if (!nts.uk.util.isNullOrUndefined(jump))
-                                nts.uk.request.jump(jump);
-                        });
-                    };
-                    /**
-                     * Update
-                     */
-                    NtsLinkButtonBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                    };
-                    return NtsLinkButtonBindingHandler;
-                }());
-                ko.bindingHandlers['ntsLinkButton'] = new NtsLinkButtonBindingHandler();
-            })(koExtentions = ui.koExtentions || (ui.koExtentions = {}));
-        })(ui = uk.ui || (uk.ui = {}));
-    })(uk = nts.uk || (nts.uk = {}));
-})(nts || (nts = {}));
 var nts;
 (function (nts) {
     var uk;
@@ -6384,6 +6344,51 @@ var nts;
                 }());
                 sharedvm.KibanTimer = KibanTimer;
             })(sharedvm = ui.sharedvm || (ui.sharedvm = {}));
+        })(ui = uk.ui || (uk.ui = {}));
+    })(uk = nts.uk || (nts.uk = {}));
+})(nts || (nts = {}));
+/// <reference path="../../reference.ts"/>
+var nts;
+(function (nts) {
+    var uk;
+    (function (uk) {
+        var ui;
+        (function (ui) {
+            var koExtentions;
+            (function (koExtentions) {
+                /**
+                 * LinkButton
+                 */
+                var NtsLinkButtonBindingHandler = (function () {
+                    function NtsLinkButtonBindingHandler() {
+                    }
+                    /**
+                     * Init.
+                     */
+                    NtsLinkButtonBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        var data = valueAccessor();
+                        var jump = ko.unwrap(data.jump);
+                        var action = data.action;
+                        var linkText = $(element).text();
+                        var $linkButton = $(element).wrap('<div class="ntsControl"/>')
+                            .addClass('link-button')
+                            .click(function () {
+                            event.preventDefault();
+                            if (!nts.uk.util.isNullOrUndefined(action))
+                                action.call(viewModel);
+                            else if (!nts.uk.util.isNullOrUndefined(jump))
+                                nts.uk.request.jump(jump);
+                        });
+                    };
+                    /**
+                     * Update
+                     */
+                    NtsLinkButtonBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                    };
+                    return NtsLinkButtonBindingHandler;
+                }());
+                ko.bindingHandlers['ntsLinkButton'] = new NtsLinkButtonBindingHandler();
+            })(koExtentions = ui.koExtentions || (ui.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));

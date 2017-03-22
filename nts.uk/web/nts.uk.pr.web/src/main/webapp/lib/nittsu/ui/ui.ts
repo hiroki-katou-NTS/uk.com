@@ -678,7 +678,9 @@ module nts.uk.ui {
 		}
 
 		getCurrentState() {
-			return ko.mapping.toJSON(this.targetViewModel());
+            console.log("target: " + this.targetViewModel());
+            return _.clone(this.targetViewModel());
+			//return ko.mapping.toJSON(this.targetViewModel());
 		}
 
 		reset() {
@@ -686,7 +688,8 @@ module nts.uk.ui {
 		}
 
 		isDirty() {
-			return this.initialState !== this.getCurrentState();
+            console.log(this.initialState + " : " + this.getCurrentState());
+			return !_.isEqual(this.initialState,this.getCurrentState());
 		}
 	}
     
