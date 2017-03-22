@@ -10,7 +10,7 @@ import nts.uk.shr.com.primitive.CodePrimitiveValue;
 
 
 
-@StringCharType(CharType.ALPHABET)
+@StringCharType(CharType.ALPHA_NUMERIC)
 @StringMaxLength(10)
 public class JobCode extends CodePrimitiveValue<JobCode>{
 	

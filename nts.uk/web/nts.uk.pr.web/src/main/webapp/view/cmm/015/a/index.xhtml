@@ -48,7 +48,7 @@
 							<table id="single-list"
 								data-bind="ntsGridList: {
                                             width: 400,
-                                            height: 400,
+                                            height: 780,
                                             options: dataSource,
                                             optionsValue: 'payClassificationCode',
                                             columns: columns,
@@ -75,7 +75,7 @@
 							<td class="valign-center">
 								<div>
 									<div class="input_002">
-										<input
+										<input id="code"
 											data-bind="ntsTextEditor: {
                                             value: INP_002_code,
                                             constraint: 'PayClassificationCode',
@@ -83,7 +83,7 @@
 									</div>
 
 									<div class="input_002">
-										<input
+										<input id="name"
 											data-bind="ntsTextEditor: {
                                             value: INP_003_name,
                                             constraint: 'PayClassificationName'                                          

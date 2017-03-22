@@ -29,6 +29,8 @@ public class JpaPositionRepository extends JpaRepository implements PositionRepo
 	private static final String IS_EXISTED_HISTORY_BY_DATE;
 	private static final String SELECT_HISTORY_BY_START_DATE;
 	private static final String IS_UPDATE_HISTORY;
+	private static final String SELECT_HISTORY_BY_END_DATE;
+	private static final String IS_EXISTED_HISTORY;
 
 	static {
 		StringBuilder builderString = new StringBuilder();
@@ -48,6 +50,7 @@ public class JpaPositionRepository extends JpaRepository implements PositionRepo
 		builderString.append("SELECT e");
 		builderString.append(" FROM CmnmtJobHist e");
 		builderString.append(" WHERE e.cmnmtJobHistPK.companyCode = :companyCode");
+		
 		SELECT_ALL_HISTORY = builderString.toString();
 
 		builderString = new StringBuilder();
@@ -73,7 +76,7 @@ public class JpaPositionRepository extends JpaRepository implements PositionRepo
 		IS_EXISTED_HISTORY_BY_DATE = builderString.toString();
 
 		builderString = new StringBuilder();
-		builderString.append("SELECT TOP 1 e");
+		builderString.append("SELECT e");
 		builderString.append(" FROM CmnmtJobHist e");
 		builderString.append(" WHERE e.cmnmtJobHistPK.companyCode = :companyCode");
 		builderString.append(" AND e.startDate < :startDate");
@@ -87,6 +90,20 @@ public class JpaPositionRepository extends JpaRepository implements PositionRepo
 		builderString.append(" AND e.startDate < :startDate");
 		builderString.append(" AND e.endDate > :startDate");
 		IS_UPDATE_HISTORY = builderString.toString();
+		
+		builderString = new StringBuilder();
+		builderString.append("SELECT TOP 1 e");
+		builderString.append(" FROM CmnmtJobHist e");
+		builderString.append(" WHERE e.cmnmtJobHistPK.historyId = :historyId");
+		builderString.append(" AND e.endDate <= :endDate");
+		builderString.append(" ORDER BY e.endDate DESC");
+		SELECT_HISTORY_BY_END_DATE = builderString.toString();
+		
+		builderString = new StringBuilder();
+		builderString.append("SELECT count(e)");
+		builderString.append(" FROM CmnmtJobHist e");
+		builderString.append(" WHERE e.cmnmtJobHistPK.historyId = :historyId");
+		IS_EXISTED_HISTORY = builderString.toString();
 
 	}
 
@@ -228,10 +245,18 @@ public class JpaPositionRepository extends JpaRepository implements PositionRepo
 
 	}
 
+	
 	@Override
-	public Optional<JobHistory> getHistoryByEdate(String companyCode, GeneralDate startDate) {
-		return this.queryProxy().query(SELECT_HISTORY_BY_START_DATE, CmnmtJobHist.class)
-				.setParameter("companyCode", companyCode).setParameter("startDate", startDate).getSingle().map(e -> {
+	public Optional<JobHistory> getHistoryBySdate(String companyCode, GeneralDate startDate) {
+		List<CmnmtJobHist> result = this.getEntityManager().createQuery(SELECT_HISTORY_BY_START_DATE, CmnmtJobHist.class)
+				.setParameter("companyCode", companyCode).setParameter("startDate", startDate).setMaxResults(1).getResultList();
+		 return !result.isEmpty() ? Optional.of(convertToDomain2(result.get(0))): Optional.empty();
+	}
+	
+	@Override
+	public Optional<JobHistory> getHistoryByEdate(String historyId, GeneralDate endDate) {
+		return this.queryProxy().query(SELECT_HISTORY_BY_END_DATE, CmnmtJobHist.class)
+				.setParameter("historyId", historyId).setParameter("endDate", endDate).getSingle().map(e -> {
 					return Optional.of(convertToDomain2(e));
 				}).orElse(Optional.empty());
 	}
@@ -241,6 +266,12 @@ public class JpaPositionRepository extends JpaRepository implements PositionRepo
 	
 		return this.queryProxy().query(IS_UPDATE_HISTORY, long.class).setParameter("historyId", historyId)
 				.setParameter("startDate", startDate).getSingle().get() > 0;
+	}
+
+	@Override
+	public boolean ExistedHistory(String historyId) {
+		return this.queryProxy().query(IS_EXISTED_HISTORY, long.class).setParameter("historyId", historyId).getSingle().get() > 0;
+
 	}
 
 }

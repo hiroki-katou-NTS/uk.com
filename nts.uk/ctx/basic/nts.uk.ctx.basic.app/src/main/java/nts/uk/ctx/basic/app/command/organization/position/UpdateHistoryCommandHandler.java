@@ -22,7 +22,7 @@ public class UpdateHistoryCommandHandler extends CommandHandler<UpdateHistoryCom
 	protected void handle(CommandHandlerContext<UpdateHistoryCommand> context) {
 
 		UpdateHistoryCommand command = context.getCommand();
-		// case update
+		
 		if (positionRepository.CheckUpdateHistory(command.getHistoryId(), command.getStartDate())) {
 			JobHistory jobHistory = command.toDomain();
 			jobHistory.validate();

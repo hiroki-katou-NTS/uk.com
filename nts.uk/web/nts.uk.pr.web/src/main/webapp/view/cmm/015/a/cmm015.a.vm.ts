@@ -16,6 +16,9 @@ module cmm015.a.viewmodel {
         INP_002_code: KnockoutObservable<string>;
         updatedata: any;
         findIndex: KnockoutObservable<any>;
+        notAlert: KnockoutObservable<boolean>;
+//        dirty: nts.uk.ui.DirtyChecker;
+
         constructor() {
             var self = this;
             self.dataSource = ko.observableArray([]);
@@ -29,12 +32,15 @@ module cmm015.a.viewmodel {
             self.currentItem = ko.observable(null);
             self.INP_002_code = ko.observable(null);
             self.INP_002_enable = ko.observable(false);
-            self.isDeleteEnable = ko.observable(true);
+            self.isDeleteEnable = ko.observable(false);
             self.INP_003_name = ko.observable(null);
             self.INP_004_notes = ko.observable(null);
             self.findIndex = ko.observable(null);
             self.adddata = ko.observable(null);
             self.updatedata = ko.observable(null);
+            self.notAlert = ko.observable(true);
+//            self.dirty = new nts.uk.ui.DirtyChecker(self.currentItem);
+
             self.currentCode.subscribe((function(codeChanged) {
                 self.currentItem(self.find(codeChanged));
                 if (self.currentItem() != null) {
@@ -42,7 +48,28 @@ module cmm015.a.viewmodel {
                     self.INP_002_code(self.currentItem().payClassificationCode);
                     self.INP_003_name(self.currentItem().payClassificationName);
                     self.INP_004_notes(self.currentItem().memo);
+                    self.isDeleteEnable(true);
                 }
+
+//                if (!self.notAlert()) {
+//                    self.notAlert(true);
+//                    return;
+//                }
+//                if (codeChanged == null) {
+//                    self.currentItem(self.find(codeChanged));
+//                    return;
+//                }
+//                if (self.dirty.isDirty()) {
+//                    nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\n よろしいですか。").ifYes(function() {
+//                        self.currentItem(self.find(codeChanged));
+//                    }).ifNo(function() {
+//                        self.notAlert(false);
+//                        self.currentCode(self.currentItem().payClassificationCode);
+//                    });
+//                } else {
+//                    self.currentItem(self.find(codeChanged));
+//                }
+
             }));
         }
 
@@ -54,21 +81,19 @@ module cmm015.a.viewmodel {
             self.INP_003_name("");
             self.INP_004_notes("");
             self.currentCode(null);
+            $("#code").focus();
             self.isDeleteEnable(false);
-            $("#INP_002_code").focus();
-
-
         }
 
         checkPage(): boolean {
             var self = this;
             if (self.INP_002_code() == '') {
                 alert("コードが入力されていません。");
-                $("#INP_002_code").focus();
+                $("#code").focus();
                 return false;
             } else if (self.INP_003_name() == '') {
                 alert("名称が入力されていません。");
-                $("#INP_003_name").focus();
+                $("#name").focus();
                 return false;
             } else { return true; }
         }
@@ -91,6 +116,9 @@ module cmm015.a.viewmodel {
                         self.getPayClassificationList_first();
                         self.isDeleteEnable(true);
                     }).fail(function(res) {
+                        if (res.message == "ER05") {
+                            alert("入力したコードは既に存在しています。\r\n コードを確認してください。 ");
+                        }
                         dfd.reject(res);
                     })
                 }
@@ -102,6 +130,9 @@ module cmm015.a.viewmodel {
                             self.updatedata(payClassification_update);
                             self.getPayClassificationList_afterUpdate();
                         }).fail(function(res) {
+                            if (res.message == "ER026") {
+                                alert("更新対象のデータが存在しません。");
+                            }
                             dfd.reject(res);
                         })
                         break;
@@ -113,11 +144,13 @@ module cmm015.a.viewmodel {
                             self.currentCode(self.adddata().payClassificationCode);
                             self.getPayClassificationList_afterAdd();
                         }).fail(function(res) {
+
                             alert(res.message);
                             dfd.reject(res);
                         })
                         break;
                     }
+
                 }
             }
         }
