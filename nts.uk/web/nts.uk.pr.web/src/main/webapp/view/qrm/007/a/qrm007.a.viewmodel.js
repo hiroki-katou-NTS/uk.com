@@ -10,12 +10,13 @@ var qrm007;
                     self.retirementPayItemList = ko.observableArray([new RetirementPayItem(null, null, null, null)]);
                     self.currentCode = ko.observable(0);
                     self.currentItem = ko.observable(new RetirementPayItem("", "", "", ""));
+                    self.dirty = new nts.uk.ui.DirtyChecker(self.currentItem);
                 }
                 ScreenModel.prototype.startPage = function () {
                     var self = this;
                     var dfd = $.Deferred();
-                    self.findRetirementPayItemList(false).
-                        done(function () {
+                    self.findRetirementPayItemList(false)
+                        .done(function () {
                         $(document).delegate("#lst-001", "iggridselectionrowselectionchanging", function (evt, ui) {
                             if (self.dirty.isDirty()) {
                                 nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\nよろしいですか。 ").
@@ -23,7 +24,7 @@ var qrm007;
                                     $('#inp-1').ntsError('clear');
                                     self.currentCode(ui.row.id);
                                     self.currentItem(RetirementPayItem.converToObject(_.find(self.retirementPayItemList(), function (o) { return o.itemCode == self.currentCode(); })));
-                                    self.dirty = new nts.uk.ui.DirtyChecker(self.currentItem);
+                                    self.dirty.reset();
                                 }).ifNo(function () {
                                     self.currentCode(ui.selectedRows[0].id);
                                 });
@@ -32,18 +33,20 @@ var qrm007;
                                 $('#inp-1').ntsError('clear');
                                 self.currentCode(ui.row.id);
                                 self.currentItem(RetirementPayItem.converToObject(_.find(self.retirementPayItemList(), function (o) { return o.itemCode == self.currentCode(); })));
-                                self.dirty = new nts.uk.ui.DirtyChecker(self.currentItem);
+                                self.dirty.reset();
                             }
                         });
                         dfd.resolve();
-                    }).fail(function () { });
+                    }).fail(function () {
+                        dfd.reject();
+                    });
                     return dfd.promise();
                 };
                 ScreenModel.prototype.findRetirementPayItemList = function (notFirstTime) {
                     var self = this;
                     var dfd = $.Deferred();
-                    qrm007.a.service.qremt_Retire_Pay_Item_SEL_1().
-                        done(function (data) {
+                    qrm007.a.service.retirePayItemSelect()
+                        .done(function (data) {
                         self.retirementPayItemList.removeAll();
                         if (data.length) {
                             data.forEach(function (dataItem) {
@@ -56,16 +59,16 @@ var qrm007;
                             self.dirty = new nts.uk.ui.DirtyChecker(self.currentItem);
                         }
                         dfd.resolve();
-                    }).
-                        fail(function (res) { self.retirementPayItemList.removeAll(); dfd.reject(); });
+                    })
+                        .fail(function (res) { self.retirementPayItemList.removeAll(); dfd.reject(); });
                     return dfd.promise();
                 };
                 ScreenModel.prototype.updateRetirementPayItemList = function () {
                     var self = this;
                     var dfd = $.Deferred();
                     var command = ko.mapping.toJS(self.currentItem());
-                    qrm007.a.service.qremt_Retire_Pay_Item_UPD_1(command).
-                        done(function (data) {
+                    qrm007.a.service.retirePayItemUpdate(command)
+                        .done(function (data) {
                         self.findRetirementPayItemList(true);
                         dfd.resolve();
                     }).fail(function (res) {

@@ -5,12 +5,12 @@ var qrm007;
         var service;
         (function (service) {
             var paths = {
-                qremt_Retire_Pay_Item_SEL_1: "pr/core/retirement/payitem/findBycompanyCode",
-                qremt_Retire_Pay_Item_UPD_1: "pr/core/retirement/payitem/update"
+                retirePayItemSelect: "pr/core/retirement/payitem/findBycompanyCode",
+                retirePayItemUpdate: "pr/core/retirement/payitem/update" //qremt_Retire_Pay_Item_UPD_1
             };
-            function qremt_Retire_Pay_Item_SEL_1() {
+            function retirePayItemSelect() {
                 var dfd = $.Deferred();
-                nts.uk.request.ajax(paths.qremt_Retire_Pay_Item_SEL_1)
+                nts.uk.request.ajax(paths.retirePayItemSelect)
                     .done(function (res) {
                     dfd.resolve(res);
                 })
@@ -19,10 +19,10 @@ var qrm007;
                 });
                 return dfd.promise();
             }
-            service.qremt_Retire_Pay_Item_SEL_1 = qremt_Retire_Pay_Item_SEL_1;
-            function qremt_Retire_Pay_Item_UPD_1(command) {
+            service.retirePayItemSelect = retirePayItemSelect;
+            function retirePayItemUpdate(command) {
                 var dfd = $.Deferred();
-                nts.uk.request.ajax(paths.qremt_Retire_Pay_Item_UPD_1, command)
+                nts.uk.request.ajax(paths.retirePayItemUpdate, command)
                     .done(function (res) {
                     dfd.resolve(res);
                 })
@@ -31,7 +31,7 @@ var qrm007;
                 });
                 return dfd.promise();
             }
-            service.qremt_Retire_Pay_Item_UPD_1 = qremt_Retire_Pay_Item_UPD_1;
+            service.retirePayItemUpdate = retirePayItemUpdate;
         })(service = a.service || (a.service = {}));
     })(a = qrm007.a || (qrm007.a = {}));
 })(qrm007 || (qrm007 = {}));
