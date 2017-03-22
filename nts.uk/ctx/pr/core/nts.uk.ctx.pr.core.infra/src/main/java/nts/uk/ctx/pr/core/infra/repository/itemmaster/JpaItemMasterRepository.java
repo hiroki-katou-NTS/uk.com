@@ -16,6 +16,9 @@ import nts.uk.ctx.pr.core.infra.entity.itemmaster.QcamtItemPK;
 public class JpaItemMasterRepository extends JpaRepository implements ItemMasterRepository {
 	private final String SEL = "SELECT c FROM QcamtItem c";
 	private final String SEL_1 = SEL + " WHERE c.qcamtItemPK.ccd = :companyCode ";
+	private final String SEL_1_1 = SEL
+			+ " WHERE c.qcamtItemPK.ccd = :companyCode AND c.dispSet =:dispSet AND c.qcamtItemPK.ctgAtr = :ctgAtr";
+	private final String SEL_1_2 = SEL + " WHERE c.qcamtItemPK.ccd = :companyCode AND c.dispSet =:dispSet ";
 	private final String SEL_3 = SEL + " WHERE c.qcamtItemPK.ccd = :companyCode AND c.avePayAtr = :avePayAtr";
 	private final String SEL_3_1 = SEL + " WHERE c.qcamtItemPK.ccd = :companyCode AND c.qcamtItemPK.ctgAtr = :ctgAtr";
 	private final String SEL_10 = SEL
@@ -50,14 +53,21 @@ public class JpaItemMasterRepository extends JpaRepository implements ItemMaster
 	}
 
 	@Override
-	public List<ItemMaster> findAllNoAvePayAtr(String companyCode, int ctgAtr) {
+	public List<ItemMaster> findAllNoAvePayAtr(String companyCode, int ctgAtr, int dispSet) {
 		List<ItemMaster> ItemList;
-		if (ctgAtr == -1)
+		if (ctgAtr == -1 && dispSet == -1)
 			ItemList = this.queryProxy().query(SEL_1, QcamtItem.class).setParameter("companyCode", companyCode)
 					.getList(c -> toDomain(c));
-		else
+		else if (dispSet == -1)
 			ItemList = this.queryProxy().query(SEL_3_1, QcamtItem.class).setParameter("companyCode", companyCode)
 					.setParameter("ctgAtr", ctgAtr).getList(c -> toDomain(c));
+
+		else if (ctgAtr == -1)
+			ItemList = this.queryProxy().query(SEL_1_2, QcamtItem.class).setParameter("companyCode", companyCode)
+					.setParameter("dispSet", dispSet).getList(c -> toDomain(c));
+		else
+			ItemList = this.queryProxy().query(SEL_1_1, QcamtItem.class).setParameter("companyCode", companyCode)
+					.setParameter("ctgAtr", ctgAtr).setParameter("dispSet", dispSet).getList(c -> toDomain(c));
 		return ItemList;
 	}
 

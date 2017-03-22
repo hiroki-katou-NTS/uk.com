@@ -57,8 +57,8 @@ public class ItemMasterFinder {
 		return !itemOp.isPresent() ? null : itemOp.get();
 	}
 
-	public List<ItemMasterDto> findAllNoAvePayAtr(int ctgAtr) {
-		return this.itemMasterRepo.findAllNoAvePayAtr(AppContexts.user().companyCode(), ctgAtr).stream()
+	public List<ItemMasterDto> findAllNoAvePayAtr(int ctgAtr, int dispSet) {
+		return this.itemMasterRepo.findAllNoAvePayAtr(AppContexts.user().companyCode(), ctgAtr,dispSet).stream()
 				.map(item -> ItemMasterDto.fromDomain(item)).collect(Collectors.toList());
 	}
 

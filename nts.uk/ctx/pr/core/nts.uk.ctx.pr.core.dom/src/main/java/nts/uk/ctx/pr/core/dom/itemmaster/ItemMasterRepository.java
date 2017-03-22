@@ -89,7 +89,7 @@ public interface ItemMasterRepository {
 
 	void update(ItemMaster itemMaster);
 
-	List<ItemMaster> findAllNoAvePayAtr(String companyCode, int ctgAtr);
+	List<ItemMaster> findAllNoAvePayAtr(String companyCode, int ctgAtr, int dispSet);
 
 	/**
 	 * @param itemMaster:

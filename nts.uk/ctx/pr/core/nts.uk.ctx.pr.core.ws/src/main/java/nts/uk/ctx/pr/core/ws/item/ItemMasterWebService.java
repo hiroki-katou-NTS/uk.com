@@ -69,9 +69,11 @@ public class ItemMasterWebService extends WebService {
 	}
 
 	@POST
-	@Path("findAllItemMaster/{ctgAtr}")
-	public List<ItemMasterDto> findAllNoAvePayAtr(@PathParam("ctgAtr") int ctgAtr) {
-		return itemFinder.findAllNoAvePayAtr(ctgAtr);
+	@Path("findAllItemMaster/{ctgAtr}/{dispSet}")
+	public List<ItemMasterDto> findAllNoAvePayAtr(
+			@PathParam("ctgAtr") int ctgAtr,
+			@PathParam("dispSet") int dispSet) {
+		return itemFinder.findAllNoAvePayAtr(ctgAtr, dispSet);
 	}
 
 	@POST
