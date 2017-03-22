@@ -10,9 +10,9 @@ module qmm034.a.service {
     /**
      * get list era
      */
-    export function getAllEras(): JQueryPromise<Array<any>> {
-        let dfd = $.Deferred < Array<any>>();
-        nts.uk.request.ajax(paths.getAllEras).done(function(res: Array<any>) {
+    export function getAllEras(): JQueryPromise<Array<viewmodel.EraModel>> {
+        let dfd = $.Deferred < Array<viewmodel.EraModel>>();
+        nts.uk.request.ajax(paths.getAllEras).done(function(res: Array<viewmodel.EraModel>) {
             dfd.resolve(res);
         }).fail(function(res) {
             dfd.reject(res);

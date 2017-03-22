@@ -17,7 +17,7 @@ module qmm034.a.viewmodel {
         isDeleteEnable: KnockoutObservable<boolean>;
         // binding with textEditor as a observable object
         isEnableCode: KnockoutObservable<boolean>;
-        isCheckedDirty: boolean = false;
+        dirty: nts.uk.ui.DirtyChecker;
         constructor() {
             let self = this;
             self.init();
@@ -33,44 +33,6 @@ module qmm034.a.viewmodel {
                 self.isEnableCode(false);
                 self.isUpdate(true);
             });
-            //            self.currentCode.subscribe(function(oldcode) {
-            //                //check xem user co thay doi value cua cac field can check dirty
-            //                //neu isCheckedDirty = true thi stop action, neu = false thi action
-            //                if (!nts.uk.text.isNullOrEmpty(oldcode) && self.isCheckedDirty == false) {
-            //                    if (self.dirty1.isDirty() || self.dirty2.isDirty() || self.dirty3.isDirty()) {
-            //                        if (confirm("Data is changed.Do you want to changing select row?") === false) {
-            //                            self.isCheckedDirty = true;
-            //                            return;
-            //                        }
-            //                        self.isCheckedDirty = false;
-            //                    }
-            //                }
-            //            }, self, "beforeChange");
-
-            //            self.dirty1 = new nts.uk.ui.DirtyChecker(self.inputCode);
-            //            self.dirty2 = new nts.uk.ui.DirtyChecker(self.inputName);
-            //            self.dirty3 = new nts.uk.ui.DirtyChecker(self.date);
-
-            //            self.currentCode.subscribe(function(codeChanged) {
-            //                //neu isCheckedDirty = true thi stop action, neu = false thi action
-            //                if (nts.uk.text.isNullOrEmpty(codeChanged)) {
-            //                    self.refreshLayout();
-            //                    return;
-            //                }
-            //                if (self.isCheckedDirty) {
-            //                    self.currentCode(self.currentEra().code);
-            //                    self.isCheckedDirty = false;
-            //                    return;
-            //                }
-            //
-            //                self.currentEra(self.getEra(codeChanged));
-            //                self.date(new Date(self.currentEra().startDate.toString()));
-            ////                self.inputCode(self.currentEra().code);
-            ////                self.inputName(self.currentEra().name);
-            //                self.currentCode(self.currentEra().code);
-            //                self.isDeleteEnable(true);
-            //                self.isEnableCode(true);
-            //                self.isUpdate(true);
             //                            qmm034.a.service.getFixAttribute(self.currentEra().eraHist()).done(function(data) {
             //                             if (data === 0) {
             //                                    self.isEnableCode(false);
@@ -79,7 +41,6 @@ module qmm034.a.viewmodel {
             //                    alert(error.message);
             //                            });
 
-            //            });
 
 
             //convert to Japan Emprise year
@@ -129,9 +90,14 @@ module qmm034.a.viewmodel {
 
             qmm034.a.service.addData(self.isUpdate(), node).done(function(result) {
                 self.reload().done(function() {
+                    console.log('pika');
                     self.currentCode(eraName);
                     dfd.resolve();
+                    self.isDeleteEnable = ko.observable(false);
+                    self.isEnableCode = ko.observable(false);
+                    self.isUpdate = ko.observable(true);
                 });
+
             }).fail(function(res) {
                 //alert(res.message);
                 $("#A_INP_003").ntsError("set", res.message);
@@ -148,18 +114,17 @@ module qmm034.a.viewmodel {
             }
         }
 
-        reload(): any {
+        reload(): JQueryPromise<any> {
             var dfd = $.Deferred();
             var self = this;
             $.when(qmm034.a.service.getAllEras()).done(function(data) {
                 if (data.length > 0) {
                     self.items(data);
                     self.date(self.currentEra().startDate().toString());
-                    self.currentCode(self.currentEra().eraName);
+                    self.currentCode(self.currentEra().eraName());
                     self.isDeleteEnable(true);
-                    self.isEnableCode(true);
                 }
-                dfd.resolve();
+                dfd.resolve(data);
             }).fail(function(res) {
 
             });
@@ -177,26 +142,22 @@ module qmm034.a.viewmodel {
             let dfd = $.Deferred<any>();
             let node: qmm034.a.service.model.EraDtoDelete;
             node = new qmm034.a.service.model.EraDtoDelete(eraHist);
-
+            let rowIndex = _.findIndex(self.items(), function(item) {
+                return item.eraName == self.currentEra().eraName();
+            })
             qmm034.a.service.deleteData(node).done(function(result) {
-                let rowIndex = _.findIndex(self.items(), function(item) {
-                    return item.eraName == self.currentEra().eraName;
-                })
-                self.items.remove(function(item) {
-                    return item.eraName == self.currentEra().eraName;
+                self.reload().done(function(data) {
+                    self.items(data);
+                    if (self.items().length === 0) {
+                        self.isUpdate(false);
+                        self.refreshLayout();
+                    } else if (self.items().length === rowIndex) {
+                        self.currentCode(self.items()[rowIndex - 1].eraName);
+                    } else {
+                        self.currentCode(self.items()[rowIndex].eraName);
+                    }
                 });
-                self.items.valueHasMutated();
-                if (self.items().length === 0) {
-                    self.isUpdate(false);
-                    self.refreshLayout();
-                } else if (self.items().length === rowIndex) {
-                    self.currentEra(self.items()[rowIndex - 1]);
-                    self.currentCode(self.items()[rowIndex - 1].eraName);
-                } else {
-                    self.currentEra(self.items()[rowIndex]);
-                    self.currentCode(self.items()[rowIndex].eraName);
-                }
-
+                dfd.resolve();
             }).fail(function(error) {
                 alert(error.message);
             });
@@ -221,10 +182,15 @@ module qmm034.a.viewmodel {
                 if (data.length > 0) {
                     self.items(data);
                     self.currentEra(self.items()[0]);
+                    self.dirty = new nts.uk.ui.DirtyChecker(self.currentEra);
                     self.date(new Date(self.currentEra().startDate.toString()));
                     self.currentCode(self.currentEra().eraName);
+                    self.isUpdate(false);
+                    self.isDeleteEnable(true);
+                    self.isEnableCode(false);
                 } else {
                     self.refreshLayout();
+                    //                    self.isUpdate(false);
                 }
 
                 dfd.resolve();
@@ -238,31 +204,18 @@ module qmm034.a.viewmodel {
 
         refreshLayout(): void {
             let self = this;
-            self.currentCode(null);
+            if (self.dirty.isDirty()) {
+                alert("Data is changed.");
+            } else {
+                alert("Data isn't changed.");
+            }
+            self.currentCode('');
             self.currentEra(new EraModel('', '', new Date("2017/03/21"), 1, '95F5047A-5065-4306-A6B7-184AA676A1DE', new Date("")));
-            self.isUpdate(false);
-            //self.date(new Date());
             self.isDeleteEnable(false);
             self.isEnableCode(true);
-            self.isCheckedDirty = false;
+            self.isUpdate(false);
         }
 
-        //        createButtonClick() {
-        //            let self = this;
-        //            if (self.dirty1.isDirty() || self.dirty2.isDirty() || self.dirty3.isDirty()) {
-        //                if (confirm("Data is changed.Do you want to refresh?") === true) {
-        //                    self.refreshLayout();
-        //                }
-        //                return;
-        //            }
-        //            self.currentEra(new EraModel('大明', 'S', new Date("1926/12/25"), 1, '95F5047A-5065-4306-A6B7-184AA676A1DE', new Date("1929/12/25")));
-        //            self.currentCode(null);
-        //            self.isUpdate(false);
-        //            //elf.date(new Date());
-        //            self.isDeleteEnable(false);
-        //            self.isEnableCode(true);
-        //            self.isCheckedDirty = false;
-        //        }
     }
 
 
@@ -284,24 +237,6 @@ module qmm034.a.viewmodel {
         }
     }
 
-    //    export class EraModel {
-    //        code: KnockoutObservable<string>;
-    //        name: KnockoutObservable<string>;
-    //        startDate: KnockoutObservable<Date>;
-    //        fixAttribute: KnockoutObservable<number>;
-    //        eraHist: KnockoutObservable<string>;
-    //        endDate: KnockoutObservable<Date>;
-    //
-    //
-    //        constructor(code: string, name: string, startDate: Date, fixAttribute: number, eraHist: string, endDate: Date) {
-    //            this.code = ko.observable(code);
-    //            this.name = ko.observable(name);
-    //            this.startDate = ko.observable(startDate);
-    //            this.fixAttribute = ko.observable(fixAttribute);
-    //            this.eraHist = ko.observable(eraHist);
-    //            this.endDate = ko.observable(endDate);
-    //        }
-    //    }
 
 
 }

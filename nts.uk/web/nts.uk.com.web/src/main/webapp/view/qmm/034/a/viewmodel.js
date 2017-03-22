@@ -6,61 +6,30 @@ var qmm034;
         (function (viewmodel) {
             var ScreenModel = (function () {
                 function ScreenModel() {
-                    this.isCheckedDirty = false;
                     var self = this;
                     self.init();
-                    //            self.currentCode.subscribe(function(codeChanged){
-                    //                self.currentCode(self.currentEra().code());
-                    //                self.currentEra(self.getEra(codeChanged));
-                    //                self.date(new Date(self.currentEra().startDate().toString()));
-                    //            });
-                    //            self.currentCode.subscribe(function(oldcode) {
-                    //                //check xem user co thay doi value cua cac field can check dirty
-                    //                //neu isCheckedDirty = true thi stop action, neu = false thi action
-                    //                if (!nts.uk.text.isNullOrEmpty(oldcode) && self.isCheckedDirty == false) {
-                    //                    if (self.dirty1.isDirty() || self.dirty2.isDirty() || self.dirty3.isDirty()) {
-                    //                        if (confirm("Data is changed.Do you want to changing select row?") === false) {
-                    //                            self.isCheckedDirty = true;
-                    //                            return;
-                    //                        }
-                    //                        self.isCheckedDirty = false;
-                    //                    }
-                    //                }
-                    //            }, self, "beforeChange");
-                    //            self.dirty1 = new nts.uk.ui.DirtyChecker(self.inputCode);
-                    //            self.dirty2 = new nts.uk.ui.DirtyChecker(self.inputName);
-                    //            self.dirty3 = new nts.uk.ui.DirtyChecker(self.date);
-                    //            self.currentCode.subscribe(function(codeChanged) {
-                    //                //neu isCheckedDirty = true thi stop action, neu = false thi action
-                    //                if (nts.uk.text.isNullOrEmpty(codeChanged)) {
-                    //                    self.refreshLayout();
-                    //                    return;
-                    //                }
-                    //                if (self.isCheckedDirty) {
-                    //                    self.currentCode(self.currentEra().code);
-                    //                    self.isCheckedDirty = false;
-                    //                    return;
-                    //                }
-                    //
-                    //                self.currentEra(self.getEra(codeChanged));
-                    //                self.date(new Date(self.currentEra().startDate.toString()));
-                    ////                self.inputCode(self.currentEra().code);
-                    ////                self.inputName(self.currentEra().name);
-                    //                self.currentCode(self.currentEra().code);
-                    //                self.isDeleteEnable(true);
-                    //                self.isEnableCode(true);
-                    //                self.isUpdate(true);
-                    //                qmm034.a.service.getFixAttribute(self.currentEra().eraHist()).done(function(data) {
-                    //                    if (data === 0) {
-                    //                        self.isEnableCode(false);
-                    //                    }
-                    //                }).fail(function(error) {
+                    self.date = ko.observable("");
+                    self.currentCode.subscribe(function (codeChanged) {
+                        if (codeChanged === null) {
+                            self.refreshLayout();
+                        }
+                        else {
+                            self.currentEra(self.getEra(codeChanged));
+                            self.date(self.currentEra().startDate().toString());
+                        }
+                        self.isDeleteEnable(true);
+                        self.isEnableCode(false);
+                        self.isUpdate(true);
+                    });
+                    //                            qmm034.a.service.getFixAttribute(self.currentEra().eraHist()).done(function(data) {
+                    //                             if (data === 0) {
+                    //                                    self.isEnableCode(false);
+                    //                                }
+                    //                            }).fail(function(error) {
                     //                    alert(error.message);
-                    //                });
-                    //
-                    //            });
+                    //                            });
                     //convert to Japan Emprise year
-                    self.dateTime = ko.observable(nts.uk.time.yearInJapanEmpire(self.date()).toString());
+                    self.dateTime = ko.observable(nts.uk.time.yearInJapanEmpire(self.currentEra().startDate()).toString());
                 }
                 ScreenModel.prototype.init = function () {
                     var self = this;
@@ -70,9 +39,9 @@ var qmm034;
                         { headerText: '記号', key: 'eraMark', width: 50 },
                         { headerText: '開始年月日', key: 'startDate', width: 80 },
                     ]);
-                    self.currentEra = ko.observable((new EraModel(null, null, null, null, null, null)));
+                    self.currentEra = ko.observable((new EraModel('大明', 'S', new Date("1926/12/25"), 1, '95F5047A-5065-4306-A6B7-184AA676A1DE', new Date("1929/12/25"))));
                     self.currentCode = ko.observable(null);
-                    self.date = ko.observable(new Date());
+                    self.date = ko.observable('');
                     self.dateTime = ko.observable('');
                     self.isDeleteEnable = ko.observable(false);
                     self.isEnableCode = ko.observable(false);
@@ -84,7 +53,7 @@ var qmm034;
                     eraName = $('#A_INP_001').val();
                     var eraMark;
                     eraMark = $('#A_INP_002').val();
-                    var startDate = self.date();
+                    var startDate = self.currentEra().startDate();
                     var endDate;
                     var eraHist = self.currentEra().eraHist();
                     var fixAttribute;
@@ -101,8 +70,12 @@ var qmm034;
                     }
                     qmm034.a.service.addData(self.isUpdate(), node).done(function (result) {
                         self.reload().done(function () {
+                            console.log('pika');
                             self.currentCode(eraName);
                             dfd.resolve();
+                            self.isDeleteEnable = ko.observable(false);
+                            self.isEnableCode = ko.observable(false);
+                            self.isUpdate = ko.observable(true);
                         });
                     }).fail(function (res) {
                         //alert(res.message);
@@ -123,8 +96,13 @@ var qmm034;
                     var dfd = $.Deferred();
                     var self = this;
                     $.when(qmm034.a.service.getAllEras()).done(function (data) {
-                        self.buildGridDataSource(data);
-                        dfd.resolve();
+                        if (data.length > 0) {
+                            self.items(data);
+                            self.date(self.currentEra().startDate().toString());
+                            self.currentCode(self.currentEra().eraName());
+                            self.isDeleteEnable(true);
+                        }
+                        dfd.resolve(data);
                     }).fail(function (res) {
                     });
                     return dfd.promise();
@@ -136,30 +114,28 @@ var qmm034;
                     var eraMark;
                     eraMark = $('#A_INP_002').val();
                     var eraHist = self.currentEra().eraHist();
-                    var startDate = self.date();
+                    var startDate = self.currentEra().startDate();
                     var dfd = $.Deferred();
                     var node;
                     node = new qmm034.a.service.model.EraDtoDelete(eraHist);
+                    var rowIndex = _.findIndex(self.items(), function (item) {
+                        return item.eraName == self.currentEra().eraName();
+                    });
                     qmm034.a.service.deleteData(node).done(function (result) {
-                        var rowIndex = _.findIndex(self.items(), function (item) {
-                            return item.code == self.currentEra().code;
+                        self.reload().done(function (data) {
+                            self.items(data);
+                            if (self.items().length === 0) {
+                                self.isUpdate(false);
+                                self.refreshLayout();
+                            }
+                            else if (self.items().length === rowIndex) {
+                                self.currentCode(self.items()[rowIndex - 1].eraName);
+                            }
+                            else {
+                                self.currentCode(self.items()[rowIndex].eraName);
+                            }
                         });
-                        self.items.remove(function (item) {
-                            return item.code == self.currentEra().code;
-                        });
-                        self.items.valueHasMutated();
-                        if (self.items().length === 0) {
-                            self.isUpdate(false);
-                            self.refreshLayout();
-                        }
-                        else if (self.items().length === rowIndex) {
-                            self.currentEra(self.items()[rowIndex - 1]);
-                            self.currentCode(self.items()[rowIndex - 1].code);
-                        }
-                        else {
-                            self.currentEra(self.items()[rowIndex]);
-                            self.currentCode(self.items()[rowIndex].code);
-                        }
+                        dfd.resolve();
                     }).fail(function (error) {
                         alert(error.message);
                     });
@@ -168,9 +144,9 @@ var qmm034;
                 ScreenModel.prototype.getEra = function (codeNew) {
                     var self = this;
                     var era = _.find(self.items(), function (item) {
-                        return item.code === codeNew;
+                        return item.eraName === codeNew;
                     });
-                    return _.cloneDeep(era);
+                    return new EraModel(era.eraName, era.eraMark, new Date(era.startDate), era.fixAttribute, era.eraHist, new Date(era.endDate));
                 };
                 ScreenModel.prototype.startPage = function () {
                     var self = this;
@@ -180,8 +156,13 @@ var qmm034;
                     $.when(qmm034.a.service.getAllEras()).done(function (data) {
                         if (data.length > 0) {
                             self.items(data);
-                            self.currentCode(data[0].eraName);
-                            self.currentEra(new EraModel(data[0].eraName, data[0].eraMark, data[0].startDate, data[0].fixAttribute, data[0].eraHist, data[0].endDate));
+                            self.currentEra(self.items()[0]);
+                            self.dirty = new nts.uk.ui.DirtyChecker(self.currentEra);
+                            self.date(new Date(self.currentEra().startDate.toString()));
+                            self.currentCode(self.currentEra().eraName);
+                            self.isUpdate(false);
+                            self.isDeleteEnable(true);
+                            self.isEnableCode(false);
                         }
                         else {
                             self.refreshLayout();
@@ -195,48 +176,29 @@ var qmm034;
                 };
                 ScreenModel.prototype.refreshLayout = function () {
                     var self = this;
-                    self.currentCode(null);
-                    self.currentEra(new EraModel(null, null, new Date(), 1, '95F5047A-5065-4306-A6B7-184AA676A1DE', new Date("1929/12/25")));
-                    self.isUpdate(false);
-                    self.date(new Date());
-                    self.isDeleteEnable(false);
-                    self.isEnableCode(true);
-                    self.isCheckedDirty = false;
-                };
-                ScreenModel.prototype.createButtonClick = function () {
-                    var self = this;
-                    if (self.dirty1.isDirty() || self.dirty2.isDirty() || self.dirty3.isDirty()) {
-                        if (confirm("Data is changed.Do you want to refresh?") === true) {
-                            self.refreshLayout();
-                        }
-                        return;
+                    if (self.dirty.isDirty()) {
+                        alert("Data is changed.");
                     }
-                    self.currentEra(new EraModel('', '', new Date(), 1, '95F5047A-5065-4306-A6B7-184AA676A1DE', new Date("1929/12/25")));
-                    self.currentCode(null);
-                    self.isUpdate(false);
-                    self.date(new Date());
+                    else {
+                        alert("Data isn't changed.");
+                    }
+                    self.currentCode('');
+                    self.currentEra(new EraModel('', '', new Date("2017/03/21"), 1, '95F5047A-5065-4306-A6B7-184AA676A1DE', new Date("")));
                     self.isDeleteEnable(false);
                     self.isEnableCode(true);
-                    self.isCheckedDirty = false;
-                };
-                ScreenModel.prototype.buildGridDataSource = function (items) {
-                    var self = this;
-                    self.items([]);
-                    _.forEach(items, function (obj) {
-                        self.items.push(new EraModel(obj.eraName, obj.eraMark, obj.startDate, obj.fixAttribute, obj.eraHist, obj.endDate));
-                    });
+                    self.isUpdate(false);
                 };
                 return ScreenModel;
             }());
             viewmodel.ScreenModel = ScreenModel;
             var EraModel = (function () {
-                function EraModel(code, name, startDate, fixAttribute, eraHist, endDate) {
-                    this.code = ko.observable(code);
-                    this.name = ko.observable(name);
+                function EraModel(eraName, eraMark, startDate, fixAttribute, eraHist, endDate) {
+                    this.eraName = ko.observable(eraName);
+                    this.eraMark = ko.observable(eraMark);
                     this.startDate = ko.observable(startDate);
+                    this.endDate = ko.observable(endDate);
                     this.fixAttribute = ko.observable(fixAttribute);
                     this.eraHist = ko.observable(eraHist);
-                    this.endDate = ko.observable(endDate);
                 }
                 return EraModel;
             }());
