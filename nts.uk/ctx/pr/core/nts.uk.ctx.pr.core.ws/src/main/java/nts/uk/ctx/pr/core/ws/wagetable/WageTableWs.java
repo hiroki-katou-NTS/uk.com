@@ -33,8 +33,9 @@ import nts.uk.ctx.pr.core.ws.base.simplehistory.SimpleHistoryWs;
 import nts.uk.ctx.pr.core.ws.base.simplehistory.dto.HistoryModel;
 import nts.uk.ctx.pr.core.ws.base.simplehistory.dto.MasterModel;
 import nts.uk.ctx.pr.core.ws.wagetable.dto.DemensionItemDto;
-import nts.uk.ctx.pr.core.ws.wagetable.dto.WageTableHeadDto;
-import nts.uk.ctx.pr.core.ws.wagetable.dto.WageTableHistoryDto;
+import nts.uk.ctx.pr.core.ws.wagetable.dto.WageTableModel;
+import nts.uk.ctx.pr.core.ws.wagetable.dto.WtHeadDto;
+import nts.uk.ctx.pr.core.ws.wagetable.dto.WtHistoryDto;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -73,25 +74,33 @@ public class WageTableWs extends SimpleHistoryWs<WtHead, WtHistory> {
 	 */
 	@POST
 	@Path("find/{id}")
-	public WageTableHistoryDto find(@PathParam("id") String id) {
+	public WageTableModel find(@PathParam("id") String id) {
+		WageTableModel model = new WageTableModel();
+
 		// Get the detail history.
 		Optional<WtHistory> optWageTableHistory = this.wtHistoryRepo.findHistoryByUuid(id);
-		WageTableHistoryDto historyDto = null;
 
 		// Check exsit.
 		if (optWageTableHistory.isPresent()) {
 			WtHistory wageTableHistory = optWageTableHistory.get();
+			WtHistoryDto historyDto = new WtHistoryDto();
+			wageTableHistory.saveToMemento(historyDto);
+			model.setHistory(historyDto);
+
 			Optional<WtHead> optWageTable = this.wtHeadRepo.findByCode(
 					wageTableHistory.getCompanyCode().v(), wageTableHistory.getWageTableCode().v());
-			historyDto = new WageTableHistoryDto();
-			WageTableHeadDto headDto = WageTableHeadDto.builder().build();
-			wageTableHistory.saveToMemento(historyDto);
-			optWageTable.get().saveToMemento(headDto);
-			historyDto.setHead(headDto);
+
+			// Check exsit.
+			if (optWageTable.isPresent()) {
+				WtHead wageTableHead = optWageTable.get();
+				WtHeadDto headDto = new WtHeadDto();
+				wageTableHead.saveToMemento(headDto);
+				model.setHead(headDto);
+			}
 		}
 
 		// Return
-		return historyDto;
+		return model;
 	}
 
 	/**
@@ -102,8 +111,11 @@ public class WageTableWs extends SimpleHistoryWs<WtHead, WtHistory> {
 	 */
 	@POST
 	@Path("init")
-	public void initTable(WtInitCommand command) {
-		this.wtInitCommandHandler.handle(command);
+	public HistoryModel initTable(WtInitCommand command) {
+		WtHistory history = this.wtInitCommandHandler.handle(command);
+		// Ret.
+		return HistoryModel.builder().uuid(history.getUuid()).start(history.getStart().v())
+				.end(history.getEnd().v()).build();
 	}
 
 	/**

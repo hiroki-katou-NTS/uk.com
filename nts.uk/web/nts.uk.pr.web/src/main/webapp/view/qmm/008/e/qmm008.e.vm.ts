@@ -132,7 +132,6 @@ module nts.uk.pr.view.qmm008.e {
                         self.officeModel().PicName(data.picName);
                         self.officeModel().PicPosition(data.picPosition);
                         self.officeModel().potalCode(data.potalCode);
-                        self.officeModel().prefecture(data.prefecture);
                         self.officeModel().address1st(data.address1st);
                         self.officeModel().kanaAddress1st(data.kanaAddress1st);
                         self.officeModel().address2nd(data.address2nd);
@@ -248,7 +247,6 @@ module nts.uk.pr.view.qmm008.e {
                     self.officeModel().PicName(),
                     self.officeModel().PicPosition(),
                     self.officeModel().potalCode(),
-                    self.officeModel().prefecture(),
                     self.officeModel().address1st(),
                     self.officeModel().address2nd(),
                     self.officeModel().kanaAddress1st(),
@@ -281,7 +279,6 @@ module nts.uk.pr.view.qmm008.e {
                 self.officeModel().PicName('');
                 self.officeModel().PicPosition('');
                 self.officeModel().potalCode('');
-                self.officeModel().prefecture('');
                 self.officeModel().address1st('');
                 self.officeModel().kanaAddress1st('');
                 self.officeModel().address2nd('');
@@ -323,7 +320,6 @@ module nts.uk.pr.view.qmm008.e {
             PicName: KnockoutObservable<string>;
             PicPosition: KnockoutObservable<string>;
 
-            prefecture: KnockoutObservable<string>;
             potalCode: KnockoutObservable<string>;
             address1st: KnockoutObservable<string>;
             kanaAddress1st: KnockoutObservable<string>;
@@ -356,7 +352,6 @@ module nts.uk.pr.view.qmm008.e {
                 this.PicPosition = ko.observable('');
 
                 this.potalCode = ko.observable('');
-                this.prefecture = ko.observable('');
                 this.address1st = ko.observable('');
                 this.kanaAddress1st = ko.observable('');
                 this.address2nd = ko.observable('');

@@ -4,21 +4,19 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.ws.wagetable.dto;
 
-import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
- * The Class UnitPriceHistoryItemDto.
+ * The Class WageTableModel.
  */
-@Builder
-public class WageTableHistoryItemDto {
+@Getter
+@Setter
+public class WageTableModel {
 
-	/** The id. */
-	public String id;
+	/** The head. */
+	private WtHeadDto head;
 
-	/** The start month. */
-	public Integer startMonth;
-
-	/** The end month. */
-	public Integer endMonth;
-
+	/** The history. */
+	private WtHistoryDto history;
 }

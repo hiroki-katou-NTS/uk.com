@@ -12,11 +12,11 @@ import nts.uk.ctx.pr.core.dom.wagetable.ElementId;
 import nts.uk.ctx.pr.core.dom.wagetable.history.WtItemSetMemento;
 
 /**
- * The Class WageTableItemDto.
+ * The Class WtItemDto.
  */
 @Getter
 @Setter
-public class WageTableItemDto implements WtItemSetMemento {
+public class WtItemDto implements WtItemSetMemento {
 
 	/** The element 1 id. */
 	private String element1Id;
@@ -30,21 +30,49 @@ public class WageTableItemDto implements WtItemSetMemento {
 	/** The amount. */
 	private Double amount;
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.dom.wagetable.history.WtItemSetMemento#setElement1Id(
+	 * nts.uk.ctx.pr.core.dom.wagetable.ElementId)
+	 */
 	@Override
 	public void setElement1Id(ElementId element1Id) {
 		this.element1Id = element1Id.v();
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.dom.wagetable.history.WtItemSetMemento#setElement2Id(
+	 * nts.uk.ctx.pr.core.dom.wagetable.ElementId)
+	 */
 	@Override
 	public void setElement2Id(ElementId element2Id) {
 		this.element2Id = element2Id.v();
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.dom.wagetable.history.WtItemSetMemento#setElement3Id(
+	 * nts.uk.ctx.pr.core.dom.wagetable.ElementId)
+	 */
 	@Override
 	public void setElement3Id(ElementId element3Id) {
 		this.element3Id = element3Id.v();
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.dom.wagetable.history.WtItemSetMemento#setAmount(java.
+	 * math.BigDecimal)
+	 */
 	@Override
 	public void setAmount(BigDecimal amount) {
 		this.amount = amount.doubleValue();

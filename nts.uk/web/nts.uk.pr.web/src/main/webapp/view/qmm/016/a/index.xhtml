@@ -55,9 +55,9 @@
 						<tr class="control-group">
 							<td><div id="lbl_003"
 									data-bind="ntsFormLabel: { required: true }">開始年月*</div></td>
-<!-- 							<td><span id="ipnStartDate"
-								data-bind="ntsDatePicker: {value: 201001, class: 'nts-editor nts-input', dateFormat: 'yyyy/MM'}"></span>
-								<label id="lbl_010">（平成29年01月） ~</label></td> -->
+							<td><span id="ipnStartDate"
+								data-bind="ntsDatePicker: {value: history.startYearMonth, class: 'nts-editor nts-input', dateFormat: 'yyyy/MM'}"></span>
+								<label data-bind="text: history.startYearMonthJpText"/>~</td>
 						</tr>
 							<tr class="control-group">
 								<td><div id="lbl_004"

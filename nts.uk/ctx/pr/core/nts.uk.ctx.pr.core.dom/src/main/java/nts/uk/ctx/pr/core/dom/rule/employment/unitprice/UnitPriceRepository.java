@@ -60,4 +60,12 @@ public interface UnitPriceRepository {
 	 * @return true, if successful
 	 */
 	boolean isDuplicateCode(CompanyCode companyCode, UnitPriceCode code);
+	
+	/**
+	 * Gets the company unit price code.
+	 *
+	 * @param baseDate the base date
+	 * @return the company unit price code
+	 */
+	List<UnitPriceCode> getCompanyUnitPriceCode(Integer baseDate);
 }

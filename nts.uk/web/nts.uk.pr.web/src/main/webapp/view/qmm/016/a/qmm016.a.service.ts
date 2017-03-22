@@ -6,6 +6,7 @@ module nts.uk.pr.view.qmm016 {
         var path = {
             loadHistoryByUuid: 'pr/proto/wagetable/find/{0}',
             loadDemensionList: 'pr/proto/wagetable/demensions',
+            initWageTable: 'pr/proto/wagetable/init'
         }
 
         /**
@@ -24,6 +25,13 @@ module nts.uk.pr.view.qmm016 {
              */
             loadDemensionList(): JQueryPromise<Array<model.DemensionItemDto>> {
                 return nts.uk.request.ajax(path.loadDemensionList);
+            }
+
+            /**
+             * Init wage table. 
+             */
+            initWageTable(data: {wageTableHeadDto: model.WageTableHeadDto, startMonth: number}): JQueryPromise<base.simplehistory.model.HistoryModel> {
+                return nts.uk.request.ajax(path.initWageTable, data);
             }
         }
 
@@ -124,20 +132,90 @@ module nts.uk.pr.view.qmm016 {
         }
 
         /**
+         * Element dto.
+         */
+        export interface ElementDto {
+            demensionNo: number;
+            type: number;
+            referenceCode: string;
+        }
+
+        /**
+         * ELement - item.
+         */
+        export interface ItemDto {
+            uuid: string;
+            referenceCode?: string;
+            orderNumber?: number;
+            startVal?: number;
+            endVal?: number
+        }
+
+        /**
+         * Element setting.
+         */
+        export interface ElementSettingDto {
+            demensionNo: number;
+            type: number;
+            itemList: Array<ItemDto>
+            upperLimit?: number;
+            lowerLimit?: number;
+            interval?: number;
+        }
+
+        /**
+         * Cell item dto.
+         */
+        export interface CellItemDto {
+            element1Id: string;
+            element2Id?: string;
+            element3Id?: string;
+            amount: number;
+        }
+
+        /**
          * Wage table head dto.
          */
         export interface WageTableHeadDto {
             /** The code. */
             code: string;
-            
+
             /** The name. */
             name: string;
-            
+
             /** The demension set. */
-            demensionSet: number;
-            
+            mode: number;
+
             /** The memo. */
-            memo: string
+            memo: string;
+
+            /**
+             * Elements list.
+             */
+            elements: Array<ElementDto>;
+        }
+
+        /**
+         * Wgate table history dto.
+         */
+        export interface WageTableHistoryDto {
+            /** The head. */
+            head: WageTableHeadDto;
+
+            /** The history id. */
+            historyId: string;
+            
+            /** The start month. */
+            startMonth: number;
+            
+            /** The end month. */
+            endMonth: number;
+            
+            /** The demension details. */
+            elementSettings: Array<ElementSettingDto>;
+
+            /** The value items. */
+            cellItems: Array<CellItemDto>;
         }
         
         /**
