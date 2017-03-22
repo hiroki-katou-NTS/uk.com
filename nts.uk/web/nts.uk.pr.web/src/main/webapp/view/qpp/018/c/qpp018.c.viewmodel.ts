@@ -3,12 +3,10 @@ module nts.uk.pr.view.qpp018.c {
         export class ScreenModel {
             
             checklistPrintSettingModel: KnockoutObservable<ChecklistPrintSettingModel>;
-            dirty: nts.uk.ui.DirtyChecker;
-
+            
             constructor() {
                 let self = this;
                 self.checklistPrintSettingModel = ko.observable(new ChecklistPrintSettingModel());
-                self.dirty = new nts.uk.ui.DirtyChecker(self.checklistPrintSettingModel);
             }
             
             startPage(): JQueryPromise<any> {
@@ -25,7 +23,6 @@ module nts.uk.pr.view.qpp018.c {
                 let dfd = $.Deferred<service.model.CheckListPrintSettingDto>();
                 service.findCheckListPrintSetting().done(function (data) {
                     self.initUI(data);
-                    self.dirty.reset();
                     dfd.resolve();
                 }).fail(function(res) {
                     nts.uk.ui.dialog.alert(res.message);
@@ -58,7 +55,7 @@ module nts.uk.pr.view.qpp018.c {
                 if (!checklistSetting.showDetail() && !checklistSetting.showOffice() && !checklistSetting.showTotal() 
                     && !checklistSetting.showDeliveryNoticeAmount()) {
                     isError = true;
-                    $('#require-least-item').ntsError('set', 'You must choose at least check box item.');
+                    $('#require-least-item').ntsError('set', '必須の入力項目が入力されていません。');
                 }
                 return isError;
             }

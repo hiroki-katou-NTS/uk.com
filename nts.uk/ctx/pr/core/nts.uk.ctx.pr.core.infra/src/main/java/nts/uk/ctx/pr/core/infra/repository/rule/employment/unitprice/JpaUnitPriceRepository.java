@@ -21,6 +21,8 @@ import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPrice;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceCode;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceRepository;
+import nts.uk.ctx.pr.core.infra.entity.rule.employment.unitprice.QupmtCUnitpriceDetail;
+import nts.uk.ctx.pr.core.infra.entity.rule.employment.unitprice.QupmtCUnitpriceDetail_;
 import nts.uk.ctx.pr.core.infra.entity.rule.employment.unitprice.QupmtCUnitpriceHeader;
 import nts.uk.ctx.pr.core.infra.entity.rule.employment.unitprice.QupmtCUnitpriceHeaderPK;
 import nts.uk.ctx.pr.core.infra.entity.rule.employment.unitprice.QupmtCUnitpriceHeaderPK_;
@@ -92,11 +94,12 @@ public class JpaUnitPriceRepository extends JpaRepository implements UnitPriceRe
 		List<Predicate> predicateList = new ArrayList<Predicate>();
 
 		// Construct condition.
-		predicateList.add(cb.equal(root.get(QupmtCUnitpriceHeader_.qupmtCUnitpriceHeaderPK).get(QupmtCUnitpriceHeaderPK_.ccd),
-				companyCode.v()));
+		predicateList.add(
+				cb.equal(root.get(QupmtCUnitpriceHeader_.qupmtCUnitpriceHeaderPK).get(QupmtCUnitpriceHeaderPK_.ccd),
+						companyCode.v()));
 
-		cq.orderBy(
-				cb.asc(root.get(QupmtCUnitpriceHeader_.qupmtCUnitpriceHeaderPK).get(QupmtCUnitpriceHeaderPK_.cUnitpriceCd)));
+		cq.orderBy(cb.asc(
+				root.get(QupmtCUnitpriceHeader_.qupmtCUnitpriceHeaderPK).get(QupmtCUnitpriceHeaderPK_.cUnitpriceCd)));
 		cq.where(predicateList.toArray(new Predicate[] {}));
 
 		return em.createQuery(cq).getResultList().stream().map(item -> new UnitPrice(new JpaUnitPriceGetMemento(item)))
@@ -143,16 +146,46 @@ public class JpaUnitPriceRepository extends JpaRepository implements UnitPriceRe
 		List<Predicate> predicateList = new ArrayList<Predicate>();
 
 		// Construct condition.
-		predicateList.add(cb.equal(root.get(QupmtCUnitpriceHeader_.qupmtCUnitpriceHeaderPK).get(QupmtCUnitpriceHeaderPK_.ccd),
-				companyCode.v()));
 		predicateList.add(
-				cb.equal(root.get(QupmtCUnitpriceHeader_.qupmtCUnitpriceHeaderPK).get(QupmtCUnitpriceHeaderPK_.cUnitpriceCd),
-						code.v()));
+				cb.equal(root.get(QupmtCUnitpriceHeader_.qupmtCUnitpriceHeaderPK).get(QupmtCUnitpriceHeaderPK_.ccd),
+						companyCode.v()));
+		predicateList.add(cb.equal(
+				root.get(QupmtCUnitpriceHeader_.qupmtCUnitpriceHeaderPK).get(QupmtCUnitpriceHeaderPK_.cUnitpriceCd),
+				code.v()));
 
 		cq.select(cb.count(root));
 		cq.where(predicateList.toArray(new Predicate[] {}));
 
 		return em.createQuery(cq).getSingleResult().longValue() > 0L;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceRepository#
+	 * getCompanyUnitPriceCode(java.lang.Integer)
+	 */
+	@Override
+	public List<UnitPriceCode> getCompanyUnitPriceCode(Integer baseDate) {
+		// Get entity manager
+		EntityManager em = this.getEntityManager();
+
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<QupmtCUnitpriceDetail> cq = cb.createQuery(QupmtCUnitpriceDetail.class);
+		Root<QupmtCUnitpriceDetail> root = cq.from(QupmtCUnitpriceDetail.class);
+
+		// Constructing list of parameters
+		List<Predicate> predicateList = new ArrayList<Predicate>();
+
+		// Construct condition.
+		predicateList.add(cb.equal(root.get(QupmtCUnitpriceDetail_.strYm), baseDate));
+
+		cq.where(predicateList.toArray(new Predicate[] {}));
+		List<QupmtCUnitpriceDetail> list = em.createQuery(cq).getResultList();
+
+		return list.stream().map(item -> new UnitPriceCode(item.getQupmtCUnitpriceDetailPK().getCUnitpriceCd()))
+				.collect(Collectors.toList());
 	}
 
 }

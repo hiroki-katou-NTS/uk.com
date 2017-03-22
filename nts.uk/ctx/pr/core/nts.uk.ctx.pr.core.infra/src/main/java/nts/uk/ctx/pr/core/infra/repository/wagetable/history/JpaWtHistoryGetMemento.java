@@ -4,20 +4,23 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.infra.repository.wagetable.history;
 
-import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import nts.arc.time.YearMonth;
 import nts.gul.collection.LazyList;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 import nts.uk.ctx.pr.core.dom.wagetable.DemensionNo;
+import nts.uk.ctx.pr.core.dom.wagetable.ElementId;
 import nts.uk.ctx.pr.core.dom.wagetable.ElementType;
 import nts.uk.ctx.pr.core.dom.wagetable.WtCode;
 import nts.uk.ctx.pr.core.dom.wagetable.history.WtHistoryGetMemento;
 import nts.uk.ctx.pr.core.dom.wagetable.history.WtItem;
 import nts.uk.ctx.pr.core.dom.wagetable.history.element.ElementSetting;
 import nts.uk.ctx.pr.core.dom.wagetable.history.element.StepElementSetting;
+import nts.uk.ctx.pr.core.dom.wagetable.history.element.item.CodeItem;
+import nts.uk.ctx.pr.core.dom.wagetable.history.element.item.RangeItem;
 import nts.uk.ctx.pr.core.infra.entity.wagetable.element.QwtmtWagetableElement;
 import nts.uk.ctx.pr.core.infra.entity.wagetable.history.QwtmtWagetableEleHistPK;
 import nts.uk.ctx.pr.core.infra.entity.wagetable.history.QwtmtWagetableHist;
@@ -99,8 +102,11 @@ public class JpaWtHistoryGetMemento implements WtHistoryGetMemento {
 		});
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.pr.core.dom.wagetable.history.WtHistoryGetMemento#getElementSettings()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.wagetable.history.WtHistoryGetMemento#
+	 * getElementSettings()
 	 */
 	@Override
 	public List<ElementSetting> getElementSettings() {
@@ -108,19 +114,28 @@ public class JpaWtHistoryGetMemento implements WtHistoryGetMemento {
 			QwtmtWagetableEleHistPK pk = entity.getQwtmtWagetableEleHistPK();
 			QwtmtWagetableElement element = entity.getQwtmtWagetableElement();
 			ElementType type = ElementType.valueOf(element.getDemensionType());
-			ElementSetting el;
 
-			// TODO: NEED TO LOAD STEP.
 			if (type.isRangeMode) {
-				el = new StepElementSetting(DemensionNo.valueOf(pk.getDemensionNo()),
-						type,
-						Collections.emptyList());
+				List<RangeItem> rangeItems = entity.getQwtmtWagetableNumList().stream()
+						.map(item -> new RangeItem(item.getQwtmtWagetableNumPK().getElementNumNo(),
+								item.getElementStr().doubleValue(),
+								item.getElementEnd().doubleValue(),
+								new ElementId(item.getElementId())))
+						.collect(Collectors.toList());
+				StepElementSetting el = new StepElementSetting(
+						DemensionNo.valueOf(pk.getDemensionNo()), type, rangeItems);
+				el.setSetting(entity.getDemensionUpperLimit(), entity.getDemensionLowerLimit(),
+						entity.getDemensionInterval());
+				return el;
 			} else {
-				el = new ElementSetting(DemensionNo.valueOf(pk.getDemensionNo()),
-						type,
-						Collections.emptyList());
+				List<CodeItem> codeItems = entity.getQwtmtWagetableCdList().stream()
+						.map(item -> new CodeItem(item.getQwtmtWagetableCdPK().getElementCd(),
+								new ElementId(item.getElementId())))
+						.collect(Collectors.toList());
+				return new ElementSetting(DemensionNo.valueOf(pk.getDemensionNo()), type,
+						codeItems);
 			}
-			return el;
+
 		});
 	}
 

@@ -21,14 +21,14 @@ import javax.persistence.criteria.Root;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.YearMonth;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.pr.core.dom.insurance.labor.businesstype.BusinessTypeEnum;
 import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsuranceRate;
 import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsuranceRateRepository;
 import nts.uk.ctx.pr.core.infra.entity.insurance.labor.unemployeerate.QismtEmpInsuRate;
 import nts.uk.ctx.pr.core.infra.entity.insurance.labor.unemployeerate.QismtEmpInsuRatePK;
 import nts.uk.ctx.pr.core.infra.entity.insurance.labor.unemployeerate.QismtEmpInsuRatePK_;
 import nts.uk.ctx.pr.core.infra.entity.insurance.labor.unemployeerate.QismtEmpInsuRate_;
-import nts.uk.ctx.pr.core.infra.repository.insurance.labor.Contants;
-
+	
 /**
  * The Class
  */
@@ -211,7 +211,7 @@ public class JpaUnemployeeInsuranceRateRepository extends JpaRepository
 		}
 
 		// get fisrt data
-		return Optional.ofNullable(this.toDomain(lstQismtEmpInsuRate.get(Contants.BEGIN_FIRST)));
+		return Optional.ofNullable(this.toDomain(lstQismtEmpInsuRate.get(BusinessTypeEnum.Biz1St.index)));
 	}
 
 	/*
@@ -268,7 +268,7 @@ public class JpaUnemployeeInsuranceRateRepository extends JpaRepository
 		}
 
 		// get fisrt data
-		return Optional.ofNullable(this.toDomain(lstQismtEmpInsuRate.get(Contants.BEGIN_FIRST)));
+		return Optional.ofNullable(this.toDomain(lstQismtEmpInsuRate.get((BusinessTypeEnum.Biz1St.index))));
 	}
 
 }
