@@ -1,3 +1,5 @@
+/// <reference path="../reference.ts"/>
+
 module nts.uk.ui.notify {
     
     module error {
