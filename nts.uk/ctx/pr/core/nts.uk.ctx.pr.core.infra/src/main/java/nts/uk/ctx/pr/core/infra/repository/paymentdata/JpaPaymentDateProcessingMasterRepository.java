@@ -9,8 +9,8 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.pr.core.dom.enums.DisplayAtr;
 import nts.uk.ctx.pr.core.dom.paymentdata.paymentdatemaster.PaymentDateProcessingMaster;
 import nts.uk.ctx.pr.core.dom.paymentdata.repository.PaymentDateProcessingMasterRepository;
-import nts.uk.ctx.pr.core.infra.entity.paymentdata.QpdmtPaydayProcessing;
-import nts.uk.ctx.pr.core.infra.entity.paymentdata.QpdmtPaydayProcessingPK;
+import nts.uk.ctx.pr.core.infra.entity.rule.employment.processing.yearmonth.QpdmtPaydayProcessing;
+import nts.uk.ctx.pr.core.infra.entity.rule.employment.processing.yearmonth.QpdmtPaydayProcessingPK;
 
 @Stateless
 public class JpaPaymentDateProcessingMasterRepository extends JpaRepository
@@ -43,12 +43,11 @@ public class JpaPaymentDateProcessingMasterRepository extends JpaRepository
 
 	private static PaymentDateProcessingMaster toDomain(QpdmtPaydayProcessing entity) {
 		PaymentDateProcessingMaster domain = PaymentDateProcessingMaster.createFromJavaType(
-				entity.bonusAtr, entity.qpdmtPaydayProcessingPK.processingNo,
-				entity.processingName, entity.currentProcessingYm, entity.dispAtr);
+				0, entity.qpdmtPaydayProcessingPK.processingNo,
+				entity.processingName, entity.currentProcessingYm, entity.dispSet);
 		//entity.toDomain(domain);
 		return domain;
 	}
-
 	@Override
 	public Optional<PaymentDateProcessingMaster> find(String companyCode, int processingNo) {
 		return this.queryProxy()

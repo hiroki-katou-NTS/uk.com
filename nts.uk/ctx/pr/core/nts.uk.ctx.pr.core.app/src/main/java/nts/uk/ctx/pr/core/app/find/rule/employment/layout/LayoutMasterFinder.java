@@ -56,5 +56,17 @@ public class LayoutMasterFinder {
 				.map(layout -> LayoutHeadDto.fromDomain(layout))
 				.collect(Collectors.toList());
 	}
+	// 17.03.2017 Lanlt add function getHistoryWithMaxStartYm(String companyCode)
+	/**
+	 * find all history with max startYm
+	 * @param companyCode
+	 * @return
+	 */
+	public List<LayoutHistoryDto> getHistoryWithMaxStartYm(String companyCode, int  baseYM)
+	{
+		return this.layoutHistRepo.getBy_SEL_3(companyCode,baseYM).stream()
+				.map(layout -> LayoutHistoryDto.fromDomain(layout))
+				.collect(Collectors.toList());
+	}
 
 }
