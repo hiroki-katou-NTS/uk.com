@@ -4,7 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.app.insurance.labor.unemployeerate.command.dto;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * The Class UnemployeeInsuranceHistoryDto.
@@ -13,7 +14,8 @@ import lombok.Data;
 /**
  * Instantiates a new unemployee insurance history dto.
  */
-@Data
+@Getter
+@Setter
 public class UnemployeeInsuranceHistoryDto {
 
 	/** The history id. */
