@@ -66,6 +66,7 @@ module qet001.i.viewmodel {
         itemListColumns: KnockoutObservableArray<any>;
         aggregateItemSelectedCode: KnockoutObservable<string>;
         aggregateItemDetail: KnockoutObservable<AggregateItemDetail>;
+        dirty: nts.uk.ui.DirtyChecker;
         
         constructor(paymentType: string, categoryName: string, masterItems: service.Item[]) {
             this.itemList = ko.observableArray([]);
@@ -81,6 +82,7 @@ module qet001.i.viewmodel {
             this.aggregateItemDetail = ko.observable(new AggregateItemDetail(paymentType, 
                 categoryName, masterItemInCate));
             var self = this;
+            self.dirty = new nts.uk.ui.DirtyChecker(self.aggregateItemDetail);
             
             // When selected aggregate item => load detail.
             self.aggregateItemSelectedCode.subscribe((code) => {
@@ -88,11 +90,13 @@ module qet001.i.viewmodel {
                     self.aggregateItemDetail(new AggregateItemDetail(paymentType,
                         categoryName, masterItemInCate));
                     self.setStyle();
+                    self.dirty.reset()
                     return;
                 }
                 self.loadDetailAggregateItem(self.category, self.paymentType, code).done(function(res: service.Item) {
                     self.aggregateItemDetail(new AggregateItemDetail(paymentType,
                         categoryName, masterItemInCate, res));
+                    self.dirty.reset();
                     self.setStyle();
                 });
             });
@@ -135,8 +139,13 @@ module qet001.i.viewmodel {
          * Switch to create mode.
          */
         public switchToCreateMode() {
+            // Dirty check.
             var self = this;
-            self.aggregateItemSelectedCode(null);
+            if (self.dirty.isDirty()) {
+                nts.uk.ui.dialog.confirm('変更された内容が登録されていません。\r\nよろしいですか。').ifYes(function() {
+                    self.aggregateItemSelectedCode(null);
+                });
+            }
         }
         
         public save() {
@@ -147,11 +156,11 @@ module qet001.i.viewmodel {
             // Validate.
             var hasError = false;
             if (self.aggregateItemDetail().code() == '') {
-                $('#code-input').ntsError('set', '未入力エラー');
+                $('#code-input').ntsError('set', 'コードが入力されていません。');
                 hasError = true;
             }
             if (self.aggregateItemDetail().name() == '') {
-                $('#name-input').ntsError('set', '未入力エラー');
+                $('#name-input').ntsError('set', '名称が入力されていません。');
                 hasError = true;
             }
             if(hasError) {
@@ -204,7 +213,13 @@ module qet001.i.viewmodel {
          * Close dialog.
          */
         public close() {
-            nts.uk.ui.windows.close();
+            // Dirty check.
+            var self = this;
+            if (self.dirty.isDirty()) {
+                nts.uk.ui.dialog.confirm('変更された内容が登録されていません。\r\nよろしいですか。').ifYes(function() {
+                    nts.uk.ui.windows.close();
+                });
+            }
         }
         
         /**
