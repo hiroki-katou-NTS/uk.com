@@ -42,7 +42,7 @@ module cmm015.a.viewmodel {
             self.dirty = new nts.uk.ui.DirtyChecker(self.currentItem);
 
             self.currentCode.subscribe((function(codeChanged) {
-                
+
                 if (self.dirty.isDirty()) {
                     nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\n よろしいですか。").ifYes(function() {
                         self.currentItem(self.find(codeChanged));
@@ -60,13 +60,13 @@ module cmm015.a.viewmodel {
                     self.INP_002_code(self.currentItem().payClassificationCode);
                     self.INP_003_name(self.currentItem().payClassificationName);
                     self.INP_004_notes(self.currentItem().memo);
-                                        self.isDeleteEnable(true);
+                    self.isDeleteEnable(true);
                 }
                 if (!self.notAlert()) {
                     self.notAlert(true);
                     return;
                 }
-                if (codeChanged == null) {
+                if (codeChanged != null) {
                     self.currentItem(self.find(codeChanged));
                     return;
                 }
@@ -75,7 +75,7 @@ module cmm015.a.viewmodel {
         }
 
         initRegisterPayClassification() {
-
+          
             var self = this;
             self.INP_002_enable(true);
             self.INP_002_code("");
@@ -101,7 +101,7 @@ module cmm015.a.viewmodel {
 
         find(value: string): any {
             let self = this;
-            return _.find(self.dataSource(), function(obj) {
+            return _.find(self.dataSource(), function(obj: any) {
                 return obj.payClassificationCode == value;
             });
         }

@@ -51,7 +51,7 @@ var cmm015;
                             self.notAlert(true);
                             return;
                         }
-                        if (codeChanged == null) {
+                        if (codeChanged != null) {
                             self.currentItem(self.find(codeChanged));
                             return;
                         }
