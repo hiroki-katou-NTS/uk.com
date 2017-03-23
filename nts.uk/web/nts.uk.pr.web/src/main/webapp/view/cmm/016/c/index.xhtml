@@ -1,0 +1,85 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<script>var dialogSize = { width: 600, height: 450 };</script>
+			<com:ValidatorScript>
+					nts.uk.ctx.pr.core.dom.rule.employment.layout.LayoutName
+			</com:ValidatorScript>
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="main.css" />
+			<com:scriptfile path="start.js" />
+			<com:scriptfile path="viewmodel.js" />
+			<com:scriptfile path="service.js" />
+		</ui:define>
+		<ui:define name="content">
+			<div id="function_area" class="header">
+				<p>これは　画面ID:C</p>
+			</div>
+			<div id="content-area" class="body">
+				<!-- C_LBL_001 -->
+				<div>
+					<p>新たに作成する履歴の、作成情報を入力してください。</p>
+					<br></br>
+				</div>
+				<table>
+					<colgroup>
+						<col width="200px" />
+						<col width="*" />
+					</colgroup>
+					<tr>
+						<td class = "row" data-bind="with: label_002">
+							<!-- C_LBL_002 -->
+							<div data-bind="ntsFormLabel:{
+									constraint: 'LayoutName', 
+									required: true
+									}">期間</div>
+						</td>
+						<td>
+							<div id="inp_001">
+								<input data-bind="ntsTextEditor: {
+									value: inp_003,
+									constraint: 'LayoutName',
+									enable: true}" />
+							</div>
+							<!-- C_LBL_003 -->
+							<div id="lbl_003">
+								<p> ~ 9999-12-31</p>
+							</div>
+						</td>
+					</tr>
+					<tr>
+						<td class = "row" data-bind="with: label_002" >
+							<!--C_LBL_004 -->
+							<div data-bind="ntsFormLabel: {
+									constraint: 'LayoutName', 	
+									required: true
+									}">履歴の引継ぎ</div>
+						</td>
+						<td>
+							<!-- C_SEL_001 -->
+							<div  data-bind="ntsRadioBoxGroup: {
+								options: itemList,
+								optionsValue: 'id',
+								optionsText: 'name',
+								value: selectedId,
+								enable: enable}">
+							</div>
+						</td>
+					</tr>		
+				</table>
+				<div class="div">
+					<button id="btn_001"  class="x-large proceed "
+							data-bind="click: decision">決定</button>
+					<button id="btn_001" class="large">キャンセル</button>
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>
