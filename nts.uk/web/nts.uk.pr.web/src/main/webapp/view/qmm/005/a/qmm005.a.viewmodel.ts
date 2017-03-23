@@ -143,14 +143,14 @@ module qmm005.a {
         showModalDialogC(item, event): void {
             let self = this;
             nts.uk.ui.windows.setShared('dataRow', item);
-            nts.uk.ui.windows.sub.modal("../c/index.xhtml", { width: 800, height: 515, title: '給与処理月を翌月へ更新  ' })
+            nts.uk.ui.windows.sub.modal("../c/index.xhtml", { width: 800, height: 350, title: '給与処理月を翌月へ更新  ' })
                 .onClosed(function() { self.parent.start(); });
         }
 
         showModalDialogD(item, event): void {
             let self = this;
             nts.uk.ui.windows.setShared('dataRow', item);
-            nts.uk.ui.windows.sub.modal("../d/index.xhtml", { width: 800, height: 515, title: '給与処理月を翌月へ更新  ' })
+            nts.uk.ui.windows.sub.modal("../d/index.xhtml", { width: 800, height: 370, title: '給与処理月を翌月へ更新  ' })
                 .onClosed(function() { self.parent.start(); });
         }
     }

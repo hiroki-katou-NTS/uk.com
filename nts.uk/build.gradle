@@ -6,7 +6,7 @@ buildscript {
 	repositories {
 		maven {
 			name 'nsvnmk'
-			url 'http://1506-v0001:8081/artifactory/plugins-release'
+			url 'http://192.168.100.84:8081/artifactory/plugins-release'
 		}
 	}
 	dependencies {
@@ -97,8 +97,8 @@ subprojects {
 		compile group: 'org.slf4j', name: 'slf4j-api', version: '1.7.22'
 		compile group: 'org.slf4j', name: 'slf4j-log4j12', version: '1.7.22'
 		
-		compile group: 'nts.gul', name: 'nts.gul', version: '0.15'
-		compile group: 'nts.arc', name: 'nts.arc', version: '0.19'
+		compile group: 'nts.gul', name: 'nts.gul', version: '0.15.1'
+		compile group: 'nts.arc', name: 'nts.arc', version: '0.21'
 	}
 }
 
