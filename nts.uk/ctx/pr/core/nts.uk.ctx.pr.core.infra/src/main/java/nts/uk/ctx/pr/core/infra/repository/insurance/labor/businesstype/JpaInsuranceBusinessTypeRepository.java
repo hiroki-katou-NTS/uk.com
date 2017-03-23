@@ -77,39 +77,12 @@ public class JpaInsuranceBusinessTypeRepository extends JpaRepository
 	 */
 	public QismtBusinessType toEntity(List<InsuranceBusinessType> lstInsuranceBusinessType) {
 		QismtBusinessType entity = new QismtBusinessType();
-		for (InsuranceBusinessType itemInsuranceBusinessType : lstInsuranceBusinessType) {
-			if (itemInsuranceBusinessType.getBizOrder().equals(BusinessTypeEnum.Biz1St)) {
-				itemInsuranceBusinessType.saveToMemento(new JpaInsuranceBusinessTypeBiz1StSetMemento(entity));
-			}
-			if (itemInsuranceBusinessType.getBizOrder().equals(BusinessTypeEnum.Biz2Nd)) {
-				itemInsuranceBusinessType.saveToMemento(new JpaInsuranceBusinessTypeBiz2NdSetMemento(entity));
-			}
-			if (itemInsuranceBusinessType.getBizOrder().equals(BusinessTypeEnum.Biz3Rd)) {
-				itemInsuranceBusinessType.saveToMemento(new JpaInsuranceBusinessTypeBiz3RdSetMemento(entity));
-			}
-			if (itemInsuranceBusinessType.getBizOrder().equals(BusinessTypeEnum.Biz4Th)) {
-				itemInsuranceBusinessType.saveToMemento(new JpaInsuranceBusinessTypeBiz4ThSetMemento(entity));
-			}
-			if (itemInsuranceBusinessType.getBizOrder().equals(BusinessTypeEnum.Biz5Th)) {
-				itemInsuranceBusinessType.saveToMemento(new JpaInsuranceBusinessTypeBiz5ThSetMemento(entity));
-			}
-			if (itemInsuranceBusinessType.getBizOrder().equals(BusinessTypeEnum.Biz6Th)) {
-				itemInsuranceBusinessType.saveToMemento(new JpaInsuranceBusinessTypeBiz6ThSetMemento(entity));
-			}
-			if (itemInsuranceBusinessType.getBizOrder().equals(BusinessTypeEnum.Biz7Th)) {
-				itemInsuranceBusinessType.saveToMemento(new JpaInsuranceBusinessTypeBiz7ThSetMemento(entity));
-			}
-			if (itemInsuranceBusinessType.getBizOrder().equals(BusinessTypeEnum.Biz8Th)) {
-				itemInsuranceBusinessType.saveToMemento(new JpaInsuranceBusinessTypeBiz8ThSetMemento(entity));
-			}
-			if (itemInsuranceBusinessType.getBizOrder().equals(BusinessTypeEnum.Biz9Th)) {
-				itemInsuranceBusinessType.saveToMemento(new JpaInsuranceBusinessTypeBiz9ThSetMemento(entity));
-			}
-			if (itemInsuranceBusinessType.getBizOrder().equals(BusinessTypeEnum.Biz10Th)) {
-				itemInsuranceBusinessType
-					.saveToMemento(new JpaInsuranceBusinessTypeBiz10ThSetMemento(entity));
-			}
-		}
+
+		lstInsuranceBusinessType.forEach(businessType -> {
+			businessType
+				.saveToMemento(new JpaInsuranceBusinessTypeSetMemento(entity, businessType.getBizOrder()));
+		});
+
 		return entity;
 	}
 
@@ -122,26 +95,36 @@ public class JpaInsuranceBusinessTypeRepository extends JpaRepository
 	 */
 	public List<InsuranceBusinessType> toDomain(QismtBusinessType entity) {
 		List<InsuranceBusinessType> lstInsuranceBusinessType = new ArrayList<>();
-		lstInsuranceBusinessType
-			.add(new InsuranceBusinessType(new JpaInsuranceBusinessTypeBiz1StGetMemento(entity)));
-		lstInsuranceBusinessType
-			.add(new InsuranceBusinessType(new JpaInsuranceBusinessTypeBiz2NdGetMemento(entity)));
-		lstInsuranceBusinessType
-			.add(new InsuranceBusinessType(new JpaInsuranceBusinessTypeBiz3RdGetMemento(entity)));
-		lstInsuranceBusinessType
-			.add(new InsuranceBusinessType(new JpaInsuranceBusinessTypeBiz4ThGetMemento(entity)));
-		lstInsuranceBusinessType
-			.add(new InsuranceBusinessType(new JpaInsuranceBusinessTypeBiz5ThGetMemento(entity)));
-		lstInsuranceBusinessType
-			.add(new InsuranceBusinessType(new JpaInsuranceBusinessTypeBiz6ThGetMemento(entity)));
-		lstInsuranceBusinessType
-			.add(new InsuranceBusinessType(new JpaInsuranceBusinessTypeBiz7ThGetMemento(entity)));
-		lstInsuranceBusinessType
-			.add(new InsuranceBusinessType(new JpaInsuranceBusinessTypeBiz8ThGetMemento(entity)));
-		lstInsuranceBusinessType
-			.add(new InsuranceBusinessType(new JpaInsuranceBusinessTypeBiz9ThGetMemento(entity)));
-		lstInsuranceBusinessType
-			.add(new InsuranceBusinessType(new JpaInsuranceBusinessTypeBiz10ThGetMemento(entity)));
+		lstInsuranceBusinessType.add(new InsuranceBusinessType(
+			new JpaInsuranceBusinessTypeGetMemento(entity, BusinessTypeEnum.Biz1St)));
+
+		lstInsuranceBusinessType.add(new InsuranceBusinessType(
+			new JpaInsuranceBusinessTypeGetMemento(entity, BusinessTypeEnum.Biz2Nd)));
+
+		lstInsuranceBusinessType.add(new InsuranceBusinessType(
+			new JpaInsuranceBusinessTypeGetMemento(entity, BusinessTypeEnum.Biz3Rd)));
+
+		lstInsuranceBusinessType.add(new InsuranceBusinessType(
+			new JpaInsuranceBusinessTypeGetMemento(entity, BusinessTypeEnum.Biz4Th)));
+
+		lstInsuranceBusinessType.add(new InsuranceBusinessType(
+			new JpaInsuranceBusinessTypeGetMemento(entity, BusinessTypeEnum.Biz5Th)));
+
+		lstInsuranceBusinessType.add(new InsuranceBusinessType(
+			new JpaInsuranceBusinessTypeGetMemento(entity, BusinessTypeEnum.Biz6Th)));
+
+		lstInsuranceBusinessType.add(new InsuranceBusinessType(
+			new JpaInsuranceBusinessTypeGetMemento(entity, BusinessTypeEnum.Biz7Th)));
+
+		lstInsuranceBusinessType.add(new InsuranceBusinessType(
+			new JpaInsuranceBusinessTypeGetMemento(entity, BusinessTypeEnum.Biz8Th)));
+
+		lstInsuranceBusinessType.add(new InsuranceBusinessType(
+			new JpaInsuranceBusinessTypeGetMemento(entity, BusinessTypeEnum.Biz9Th)));
+
+		lstInsuranceBusinessType.add(new InsuranceBusinessType(
+			new JpaInsuranceBusinessTypeGetMemento(entity, BusinessTypeEnum.Biz10Th)));
+
 		return lstInsuranceBusinessType;
 	}
 

@@ -13,6 +13,7 @@ import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.core.dom.util.PrimitiveUtil;
 import nts.uk.ctx.pr.core.dom.insurance.CalculateMethod;
 import nts.uk.ctx.pr.core.dom.insurance.CommonAmount;
+import nts.uk.ctx.pr.core.dom.insurance.FundInputApply;
 import nts.uk.ctx.pr.core.dom.insurance.Ins2Rate;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
@@ -93,8 +94,8 @@ public class UpdatePensionCommand extends PensionBaseCommand {
 			}
 
 			@Override
-			public Boolean getFundInputApply() {
-				return command.getFundInputApply();
+			public FundInputApply getFundInputApply() {
+				return FundInputApply.valueOf(command.getFundInputApply());
 			}
 
 			@Override

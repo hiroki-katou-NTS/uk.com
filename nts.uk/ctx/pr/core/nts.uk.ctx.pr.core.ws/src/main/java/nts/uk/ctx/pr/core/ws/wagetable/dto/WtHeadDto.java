@@ -10,7 +10,6 @@ import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.core.dom.company.CompanyCode;
-import nts.uk.ctx.pr.core.app.wagetable.command.dto.WtElementDto;
 import nts.uk.ctx.pr.core.dom.wagetable.ElementCount;
 import nts.uk.ctx.pr.core.dom.wagetable.WtCode;
 import nts.uk.ctx.pr.core.dom.wagetable.WtHeadSetMemento;
@@ -40,6 +39,7 @@ public class WtHeadDto implements WtHeadSetMemento {
 	/** The elements. */
 	private List<WtElementDto> elements;
 
+	
 	/*
 	 * (non-Javadoc)
 	 * 

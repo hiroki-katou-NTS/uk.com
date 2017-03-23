@@ -140,7 +140,7 @@ module nts.uk.pr.view.qmm011.a {
                             unemployeeInsuranceHistoryUpdateDto.startMonth = data.startYearMonth;
                             unemployeeInsuranceHistoryUpdateDto.endMonth = endMonth;
                             service.updateUnemployeeInsuranceRateHistory(unemployeeInsuranceHistoryUpdateDto).done(() => {
-                                self.typeActionUnemployeeInsurance(TypeActionInsuranceRate.add);
+                                self.typeActionUnemployeeInsurance(TypeActionInsuranceRate.update);
                                 self.reloadDataUnemployeeInsuranceRateByAction();
                             }).fail(function(error) {
                                 self.showMessageSaveUnemployeeInsurance(error.message)
@@ -169,6 +169,9 @@ module nts.uk.pr.view.qmm011.a {
                     start: self.unemployeeInsuranceRateModel().unemployeeInsuranceHistoryModel.startMonth(),
                     end: self.unemployeeInsuranceRateModel().unemployeeInsuranceHistoryModel.endMonth()
                 };
+                if (self.isEmptyUnemployee()) {
+                    lastest = undefined;
+                }
                 //set info history
                 var unemployeeInsuranceRateCopyDto: UnemployeeInsuranceRateCopyDto;
                 unemployeeInsuranceRateCopyDto = new UnemployeeInsuranceRateCopyDto();
@@ -312,6 +315,10 @@ module nts.uk.pr.view.qmm011.a {
                     start: self.accidentInsuranceRateModel().accidentInsuranceRateHistoryModel.startMonth(),
                     end: self.accidentInsuranceRateModel().accidentInsuranceRateHistoryModel.endMonth()
                 };
+
+                if (self.isEmptyAccident()) {
+                    lastest = undefined;
+                }
                 //set info history
                 var accidentInsuranceRateCopyDto: AccidentInsuranceRateCopyDto;
                 accidentInsuranceRateCopyDto = new AccidentInsuranceRateCopyDto();
@@ -378,7 +385,7 @@ module nts.uk.pr.view.qmm011.a {
 
             //show message save UnemployeeInsurance 
             private showMessageSaveUnemployeeInsurance(messageId: string) {
-                
+
                 var self = this;
                 if (self.messageList()[0].messageId === messageId) {
                     //001
@@ -387,21 +394,13 @@ module nts.uk.pr.view.qmm011.a {
                     if (!self.unemployeeInsuranceRateModel().unemployeeInsuranceRateItemAgroforestryModel) {
                         $('#inp_code').ntsError('set', message);
                     }
-
-                    if (!self.laborInsuranceOfficeModel().name()) {
-                        $('#inp_name').ntsError('set', message);
-                    }
-
-                    if (!self.laborInsuranceOfficeModel().picPosition()) {
-                        $('#inp_picPosition').ntsError('set', message);
-                    }
                 }
-                
+
                 if (self.messageList()[1].messageId === messageId) {
                     var message = self.messageList()[1].message;
                     $('#inp_code').ntsError('set', message);
                 }
-                
+
             }
 
             //Clear show message error connection by server

@@ -19,6 +19,7 @@ import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.base.simplehistory.History;
 import nts.uk.ctx.pr.core.dom.insurance.CalculateMethod;
 import nts.uk.ctx.pr.core.dom.insurance.CommonAmount;
+import nts.uk.ctx.pr.core.dom.insurance.FundInputApply;
 import nts.uk.ctx.pr.core.dom.insurance.Ins2Rate;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
@@ -48,7 +49,7 @@ public class PensionRate extends DomainObject implements History<PensionRate> {
 
 	/** The fund input apply. */
 	@Setter
-	private Boolean fundInputApply;
+	private FundInputApply fundInputApply;
 
 	/** The auto calculate. */
 	@Setter
@@ -206,7 +207,7 @@ public class PensionRate extends DomainObject implements History<PensionRate> {
 		pensionRate.officeCode = officeCode;
 		pensionRate.applyRange = MonthRange.toMaxDate(startYearMonth);
 		pensionRate.autoCalculate = CalculateMethod.Auto;
-		pensionRate.fundInputApply = true;
+		pensionRate.fundInputApply = FundInputApply.Yes;
 		pensionRate.maxAmount = new CommonAmount(BigDecimal.ZERO);
 		pensionRate.childContributionRate = new Ins2Rate(BigDecimal.ZERO);
 		pensionRate.fundRateItems = setDafaultFunRateItems();

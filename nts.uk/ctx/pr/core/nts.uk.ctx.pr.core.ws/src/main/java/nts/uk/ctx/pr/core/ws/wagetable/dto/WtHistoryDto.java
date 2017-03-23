@@ -10,8 +10,6 @@ import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.core.dom.company.CompanyCode;
-import nts.uk.ctx.pr.core.app.wagetable.command.dto.ElementItemDto;
-import nts.uk.ctx.pr.core.app.wagetable.command.dto.ElementSettingDto;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 import nts.uk.ctx.pr.core.dom.wagetable.WtCode;
 import nts.uk.ctx.pr.core.dom.wagetable.history.WtHistorySetMemento;
@@ -128,9 +126,9 @@ public class WtHistoryDto implements WtHistorySetMemento {
 			// Range mode
 			if (item.getType().isRangeMode) {
 				StepElementSetting stepElementSetting = (StepElementSetting) item;
-				elementSettingDto.setLowerLimit(stepElementSetting.getLowerLimit());
-				elementSettingDto.setUpperLimit(stepElementSetting.getUpperLimit());
-				elementSettingDto.setInterval(stepElementSetting.getInterval());
+				elementSettingDto.setLowerLimit(stepElementSetting.getLowerLimit().v());
+				elementSettingDto.setUpperLimit(stepElementSetting.getUpperLimit().v());
+				elementSettingDto.setInterval(stepElementSetting.getInterval().v());
 				elementSettingDto.setItemList(item.getItemList().stream().map(subItem -> {
 					RangeItem rangeItem = (RangeItem) subItem;
 					return ElementItemDto.builder().uuid(rangeItem.getUuid().v())

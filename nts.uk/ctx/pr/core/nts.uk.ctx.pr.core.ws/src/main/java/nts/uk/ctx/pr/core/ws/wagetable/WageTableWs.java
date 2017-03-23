@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2015 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.core.ws.wagetable;
@@ -33,6 +33,7 @@ import nts.uk.ctx.pr.core.ws.base.simplehistory.SimpleHistoryWs;
 import nts.uk.ctx.pr.core.ws.base.simplehistory.dto.HistoryModel;
 import nts.uk.ctx.pr.core.ws.base.simplehistory.dto.MasterModel;
 import nts.uk.ctx.pr.core.ws.wagetable.dto.DemensionItemDto;
+import nts.uk.ctx.pr.core.ws.wagetable.dto.ElementTypeDto;
 import nts.uk.ctx.pr.core.ws.wagetable.dto.SettingInfoInModel;
 import nts.uk.ctx.pr.core.ws.wagetable.dto.SettingInfoOutModel;
 import nts.uk.ctx.pr.core.ws.wagetable.dto.WageTableModel;
@@ -216,6 +217,31 @@ public class WageTableWs extends SimpleHistoryWs<WtHead, WtHistory> {
 		return items;
 	}
 
+	private static final List<ElementTypeDto> ELEMENT_TYPE_DTO;
+	static {
+		ELEMENT_TYPE_DTO = new ArrayList<>();
+		for (ElementType type : ElementType.values()) {
+			ElementTypeDto dto = ElementTypeDto.builder()
+				.value(type.value)
+				.isCodeMode(type.isCodeMode)
+				.isRangeMode(type.isRangeMode)
+				.displayName(type.displayName)
+				.build();
+			ELEMENT_TYPE_DTO.add(dto);
+		}
+	}
+	
+	/**
+	 * Load element type dto.
+	 *
+	 * @return the list
+	 */
+	@POST
+	@Path("elements")
+	public List<ElementTypeDto> loadElementTypeDto() {
+		return ELEMENT_TYPE_DTO;
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 

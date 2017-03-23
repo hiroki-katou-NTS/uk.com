@@ -24,17 +24,17 @@ var nts;
                                     _super.call(this, {
                                         functionName: '会社一律金額',
                                         service: qmm007.service.instance,
-                                        removeMasterOnLastHistoryRemove: true });
+                                        removeMasterOnLastHistoryRemove: true
+                                    });
                                     var self = this;
                                     self.isLoading = ko.observable(true);
-                                    self.isSelected = ko.observable(false);
                                     self.unitPriceHistoryModel = ko.observable(new UnitPriceHistoryModel(self.getDefaultUnitPriceHistory()));
                                     self.switchButtonDataSource = ko.observableArray([
-                                        { code: 'Apply', name: '対象' },
-                                        { code: 'NotApply', name: '対象外' }
+                                        { code: ApplySetting.APPLY, name: '対象' },
+                                        { code: ApplySetting.NOTAPPLY, name: '対象外' }
                                     ]);
                                     self.isContractSettingEnabled = ko.computed(function () {
-                                        return self.unitPriceHistoryModel().fixPaySettingType() == 'Contract';
+                                        return self.unitPriceHistoryModel().fixPaySettingType() == SettingType.CONTRACT;
                                     });
                                     self.textEditorOption = ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
                                         textmode: "text",
@@ -48,6 +48,8 @@ var nts;
                                     if (self.isNewMode()) {
                                         qmm007.service.instance.create(ko.toJS(self.unitPriceHistoryModel())).done(function (res) {
                                             dfd.resolve(res.uuid);
+                                        }).fail(function (res) {
+                                            self.setMessages(res.messageId);
                                         });
                                     }
                                     else {
@@ -56,6 +58,30 @@ var nts;
                                         });
                                     }
                                     return dfd.promise();
+                                };
+                                ScreenModel.prototype.setMessages = function (messageId) {
+                                    var self = this;
+                                    switch (messageId) {
+                                        case 'ER001':
+                                            if (!self.unitPriceHistoryModel().unitPriceCode()) {
+                                                $('#inpCode').ntsError('set', '＊が入力されていません。');
+                                            }
+                                            if (!self.unitPriceHistoryModel().unitPriceName()) {
+                                                $('#inpName').ntsError('set', '＊が入力されていません。');
+                                            }
+                                            if (!self.unitPriceHistoryModel().budget()) {
+                                                $('#inpBudget').ntsError('set', '＊が入力されていません。');
+                                            }
+                                            break;
+                                        case 'ER005':
+                                            $('#inpCode').ntsError('set', '入力した＊は既に存在しています。\r\n ＊を確認してください。');
+                                            break;
+                                        case 'ER010':
+                                            $('#inpStartMonth').ntsError('set', '対象データがありません。');
+                                            break;
+                                        default:
+                                            break;
+                                    }
                                 };
                                 ScreenModel.prototype.setUnitPriceHistoryModel = function (dto) {
                                     var model = this.unitPriceHistoryModel();
@@ -83,7 +109,6 @@ var nts;
                                         self.isLoading(false);
                                         nts.uk.ui.windows.setShared('unitPriceHistoryModel', ko.toJS(_this.unitPriceHistoryModel()));
                                         $('.save-error').ntsError('clear');
-                                        self.isSelected(true);
                                         dfd.resolve();
                                     });
                                     return dfd.promise();
@@ -92,23 +117,21 @@ var nts;
                                     var self = this;
                                     $('.save-error').ntsError('clear');
                                     self.setUnitPriceHistoryModel(self.getDefaultUnitPriceHistory());
-                                    self.isSelected(false);
                                 };
                                 ScreenModel.prototype.getDefaultUnitPriceHistory = function () {
                                     var defaultHist = {};
                                     defaultHist.id = '';
                                     defaultHist.unitPriceCode = '';
                                     defaultHist.unitPriceName = '';
-                                    defaultHist.startMonth = nts.uk.time.parseTime(new Date()).toValue();
-                                    ;
+                                    defaultHist.startMonth = parseInt(nts.uk.time.formatDate(new Date(), 'yyyyMM'));
                                     defaultHist.endMonth = 999912;
                                     defaultHist.budget = 0;
-                                    defaultHist.fixPaySettingType = 'Company';
-                                    defaultHist.fixPayAtr = 'NotApply';
-                                    defaultHist.fixPayAtrMonthly = 'NotApply';
-                                    defaultHist.fixPayAtrDayMonth = 'NotApply';
-                                    defaultHist.fixPayAtrDaily = 'NotApply';
-                                    defaultHist.fixPayAtrHourly = 'NotApply';
+                                    defaultHist.fixPaySettingType = SettingType.COMPANY;
+                                    defaultHist.fixPayAtr = ApplySetting.APPLY;
+                                    defaultHist.fixPayAtrMonthly = ApplySetting.APPLY;
+                                    defaultHist.fixPayAtrDayMonth = ApplySetting.APPLY;
+                                    defaultHist.fixPayAtrDaily = ApplySetting.APPLY;
+                                    defaultHist.fixPayAtrHourly = ApplySetting.APPLY;
                                     defaultHist.memo = '';
                                     return defaultHist;
                                 };
@@ -134,6 +157,22 @@ var nts;
                                 return UnitPriceHistoryModel;
                             }());
                             viewmodel.UnitPriceHistoryModel = UnitPriceHistoryModel;
+                            var SettingType = (function () {
+                                function SettingType() {
+                                }
+                                SettingType.COMPANY = 'Company';
+                                SettingType.CONTRACT = 'Contract';
+                                return SettingType;
+                            }());
+                            viewmodel.SettingType = SettingType;
+                            var ApplySetting = (function () {
+                                function ApplySetting() {
+                                }
+                                ApplySetting.APPLY = 'Apply';
+                                ApplySetting.NOTAPPLY = 'NotApply';
+                                return ApplySetting;
+                            }());
+                            viewmodel.ApplySetting = ApplySetting;
                         })(viewmodel = a.viewmodel || (a.viewmodel = {}));
                     })(a = qmm007.a || (qmm007.a = {}));
                 })(qmm007 = view.qmm007 || (view.qmm007 = {}));

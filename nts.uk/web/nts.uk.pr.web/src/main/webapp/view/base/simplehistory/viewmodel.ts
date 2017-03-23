@@ -84,13 +84,6 @@ module nts.uk.pr.view.base.simplehistory {
                     }
                     self.selectedNode(selectedNode);
                 })
-
-                // On new mode.
-                self.isNewMode.subscribe(val => {
-                    if (val) {
-                        self.onRegistNew();
-                    }
-                })
             }
 
             /**
@@ -174,6 +167,7 @@ module nts.uk.pr.view.base.simplehistory {
 
                 // Clear select history uuid.
                 self.igGridSelectedHistoryUuid(undefined);
+                self.onRegistNew();
             }
 
             /**

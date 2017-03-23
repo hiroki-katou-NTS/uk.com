@@ -11,6 +11,7 @@ import nts.arc.time.YearMonth;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.CalculateMethod;
 import nts.uk.ctx.pr.core.dom.insurance.CommonAmount;
+import nts.uk.ctx.pr.core.dom.insurance.FundInputApply;
 import nts.uk.ctx.pr.core.dom.insurance.Ins2Rate;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
@@ -279,9 +280,12 @@ public class JpaPensionRateGetMemento implements PensionRateGetMemento {
 	 * #getFundInputApply()
 	 */
 	@Override
-	public Boolean getFundInputApply() {
-		// TODO Auto-generated method stub
-		return null;
+	public FundInputApply getFundInputApply() {
+		if (this.typeValue.getPensionFundJoinAtr() == FundInputApply.Yes.value) {
+			return FundInputApply.Yes;
+		} else {
+			return FundInputApply.No;
+		}
 	}
 
 	/*

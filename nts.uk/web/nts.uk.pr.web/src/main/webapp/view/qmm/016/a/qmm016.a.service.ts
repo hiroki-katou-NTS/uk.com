@@ -6,6 +6,7 @@ module nts.uk.pr.view.qmm016 {
         var path = {
             loadHistoryByUuid: 'pr/proto/wagetable/find/{0}',
             loadDemensionList: 'pr/proto/wagetable/demensions',
+            loadElementTypeList: 'pr/proto/wagetable/elements',
             initWageTable: 'pr/proto/wagetable/init'
         }
 
@@ -25,6 +26,13 @@ module nts.uk.pr.view.qmm016 {
              */
             loadDemensionList(): JQueryPromise<Array<model.DemensionItemDto>> {
                 return nts.uk.request.ajax(path.loadDemensionList);
+            }
+
+            /**
+             * Load elements type list.
+             */
+            loadElementList(): JQueryPromise<Array<model.ElementTypeDto>> {
+                return nts.uk.request.ajax(path.loadElementTypeList);
             }
 
             /**
@@ -61,7 +69,7 @@ module nts.uk.pr.view.qmm016 {
         export interface WageTableHistory extends base.simplehistory.model.HistoryModel {}
         
         /**
-         * Ement count type.
+         * Demension type.
          */
         export interface DemensionElementCountType {
             code: number;
@@ -69,7 +77,17 @@ module nts.uk.pr.view.qmm016 {
             isCertification: boolean;
             isAttendance: boolean;
         }
-        
+
+        /**
+         * Element type.
+         */
+        export interface ElementTypeDto {
+            value: number;
+            isCodeMode: boolean;
+            isRangeMode: boolean;
+            displayName: string;
+        }
+
         /**
          * All Demession.
          */
@@ -106,20 +124,8 @@ module nts.uk.pr.view.qmm016 {
             /** The head. */
             head: WageTableHeadDto
             
-            /** The history id. */
-            historyId: string;
-            
-            /** The start month. */
-            startMonth: number;
-            
-            /** The end month. */
-            endMonth: number;
-            
-            /** The demension details. */
-            //demensionDetails: Array<WageTableDemensionDetailDto>;
-            
-            /** The value items. */
-            valueItems: Array<WageTableItemDto>;
+            /** The history. */
+            history: WageTableHistoryDto;
         }
 
         /**
@@ -212,7 +218,7 @@ module nts.uk.pr.view.qmm016 {
             endMonth: number;
             
             /** The demension details. */
-            elementSettings: Array<ElementSettingDto>;
+            elements: Array<ElementSettingDto>;
 
             /** The value items. */
             cellItems: Array<CellItemDto>;

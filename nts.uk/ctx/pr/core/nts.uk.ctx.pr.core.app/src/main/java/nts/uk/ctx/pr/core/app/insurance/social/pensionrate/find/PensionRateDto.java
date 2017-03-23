@@ -12,6 +12,7 @@ import lombok.Builder;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.CalculateMethod;
 import nts.uk.ctx.pr.core.dom.insurance.CommonAmount;
+import nts.uk.ctx.pr.core.dom.insurance.FundInputApply;
 import nts.uk.ctx.pr.core.dom.insurance.Ins2Rate;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
@@ -57,7 +58,7 @@ public class PensionRateDto implements PensionRateSetMemento {
 	public Set<PensionRateRounding> roundingMethods;
 
 	/** The fund input apply. */
-	public Boolean fundInputApply;
+	public Integer fundInputApply;
 
 	/** The auto calculate. */
 	public Integer autoCalculate;
@@ -182,8 +183,8 @@ public class PensionRateDto implements PensionRateSetMemento {
 	 * #setFundInputApply(java.lang.Boolean)
 	 */
 	@Override
-	public void setFundInputApply(Boolean fundInputApply) {
-		this.fundInputApply = fundInputApply;
+	public void setFundInputApply(FundInputApply fundInputApply) {
+		this.fundInputApply = fundInputApply.value;
 	}
 
 	/*

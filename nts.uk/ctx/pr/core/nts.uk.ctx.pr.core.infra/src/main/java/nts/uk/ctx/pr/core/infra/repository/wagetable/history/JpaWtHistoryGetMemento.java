@@ -18,6 +18,7 @@ import nts.uk.ctx.pr.core.dom.wagetable.WtCode;
 import nts.uk.ctx.pr.core.dom.wagetable.history.WtHistoryGetMemento;
 import nts.uk.ctx.pr.core.dom.wagetable.history.WtItem;
 import nts.uk.ctx.pr.core.dom.wagetable.history.element.ElementSetting;
+import nts.uk.ctx.pr.core.dom.wagetable.history.element.RangeLimit;
 import nts.uk.ctx.pr.core.dom.wagetable.history.element.StepElementSetting;
 import nts.uk.ctx.pr.core.dom.wagetable.history.element.item.CodeItem;
 import nts.uk.ctx.pr.core.dom.wagetable.history.element.item.RangeItem;
@@ -124,8 +125,9 @@ public class JpaWtHistoryGetMemento implements WtHistoryGetMemento {
 						.collect(Collectors.toList());
 				StepElementSetting el = new StepElementSetting(
 						DemensionNo.valueOf(pk.getDemensionNo()), type, rangeItems);
-				el.setSetting(entity.getDemensionUpperLimit(), entity.getDemensionLowerLimit(),
-						entity.getDemensionInterval());
+				el.setSetting(new RangeLimit(entity.getDemensionUpperLimit()),
+						new RangeLimit(entity.getDemensionLowerLimit()),
+						new RangeLimit(entity.getDemensionInterval()));
 				return el;
 			} else {
 				List<CodeItem> codeItems = entity.getQwtmtWagetableCdList().stream()

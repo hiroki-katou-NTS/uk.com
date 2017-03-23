@@ -9,6 +9,7 @@ import java.util.Set;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.CalculateMethod;
 import nts.uk.ctx.pr.core.dom.insurance.CommonAmount;
+import nts.uk.ctx.pr.core.dom.insurance.FundInputApply;
 import nts.uk.ctx.pr.core.dom.insurance.Ins2Rate;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
@@ -51,7 +52,7 @@ public interface PensionRateGetMemento {
 	 *
 	 * @return the fund input apply
 	 */
-	Boolean getFundInputApply();
+	FundInputApply getFundInputApply();
 	
 	/**
 	 * Gets the auto calculate.
