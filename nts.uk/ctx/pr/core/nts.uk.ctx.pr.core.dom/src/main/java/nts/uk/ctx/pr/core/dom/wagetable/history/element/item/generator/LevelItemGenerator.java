@@ -4,12 +4,18 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.dom.wagetable.history.element.item.generator;
 
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import nts.gul.text.IdentifierUtil;
+import nts.uk.ctx.pr.core.dom.wagetable.ElementId;
 import nts.uk.ctx.pr.core.dom.wagetable.ElementType;
+import nts.uk.ctx.pr.core.dom.wagetable.EmployeeLevel;
 import nts.uk.ctx.pr.core.dom.wagetable.history.element.ElementSetting;
+import nts.uk.ctx.pr.core.dom.wagetable.history.element.item.CodeItem;
 import nts.uk.ctx.pr.core.dom.wagetable.history.element.item.Item;
 
 /**
@@ -20,18 +26,22 @@ public class LevelItemGenerator implements ItemGenerator {
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see nts.uk.ctx.pr.core.dom.wagetable.history.element.item.generator.
 	 * ItemGenerator#generate(nts.uk.ctx.pr.core.dom.wagetable.history.element.
 	 * ElementSetting)
 	 */
 	@Override
-	public List<? extends Item> generate(String companyCode, ElementSetting elementSetting) {
-		// TODO Implement xu ly generate cho element.
-		return null;
+	public List<? extends Item> generate(String companyCode, String historyId,
+			ElementSetting elementSetting) {
+		return Arrays.asList(EmployeeLevel.values()).stream().map(
+				item -> new CodeItem(item.value, new ElementId(IdentifierUtil.randomUniqueId())))
+				.collect(Collectors.toList());
 	}
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see nts.uk.ctx.pr.core.dom.wagetable.history.element.item.generator.
 	 * ItemGenerator#canHandle(nts.uk.ctx.pr.core.dom.wagetable.ElementType)
 	 */

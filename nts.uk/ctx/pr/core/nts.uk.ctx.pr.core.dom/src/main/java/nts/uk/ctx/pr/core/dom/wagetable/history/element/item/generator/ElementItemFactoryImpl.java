@@ -29,11 +29,11 @@ public class ElementItemFactoryImpl implements ElementItemFactory {
 	 * ElementItemFactory#generate(java.util.List)
 	 */
 	@Override
-	public List<ElementSetting> generate(String companyCode, List<ElementSetting> elementSetting) {
+	public List<ElementSetting> generate(String companyCode, String historyId, List<ElementSetting> elementSetting) {
 		for (ElementSetting element : elementSetting) {
 			for (ItemGenerator instance : generators) {
 				if (instance.canHandle(element.getType())) {
-					List<? extends Item> itemList = instance.generate(companyCode, element);
+					List<? extends Item> itemList = instance.generate(companyCode, historyId, element);
 					element.setItemList(itemList);
 				}
 			}

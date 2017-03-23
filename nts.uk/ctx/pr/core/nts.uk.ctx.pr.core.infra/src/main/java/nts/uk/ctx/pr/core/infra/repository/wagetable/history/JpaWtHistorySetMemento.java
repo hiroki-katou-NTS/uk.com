@@ -133,9 +133,9 @@ public class JpaWtHistorySetMemento implements WtHistorySetMemento {
 					qwtmtWagetableEleHist.setQwtmtWagetableEleHistPK(qwtmtWagetableEleHistPK);
 					if (item instanceof StepElementSetting) {
 						StepElementSetting step = (StepElementSetting) item;
-						qwtmtWagetableEleHist.setDemensionUpperLimit(step.getUpperLimit());
-						qwtmtWagetableEleHist.setDemensionLowerLimit(step.getLowerLimit());
-						qwtmtWagetableEleHist.setDemensionInterval(step.getInterval());
+						qwtmtWagetableEleHist.setDemensionUpperLimit(step.getUpperLimit().v());
+						qwtmtWagetableEleHist.setDemensionLowerLimit(step.getLowerLimit().v());
+						qwtmtWagetableEleHist.setDemensionInterval(step.getInterval().v());
 					} else {
 						qwtmtWagetableEleHist.setDemensionUpperLimit(BigDecimal.ZERO);
 						qwtmtWagetableEleHist.setDemensionLowerLimit(BigDecimal.ZERO);

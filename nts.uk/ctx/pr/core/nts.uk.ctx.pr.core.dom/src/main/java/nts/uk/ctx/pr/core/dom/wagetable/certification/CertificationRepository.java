@@ -10,7 +10,7 @@ import java.util.Optional;
 /**
  * The Interface CertificationReponsitory.
  */
-public interface CertificationReponsitory {
+public interface CertificationRepository {
 
 	/**
 	 * Find all.

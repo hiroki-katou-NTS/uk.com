@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.pr.core.app.wagetable.command.dto;
+package nts.uk.ctx.pr.core.ws.wagetable.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,25 +11,25 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * The Class RangeItem.
+ * The Class WtElementDto.
  */
-@Getter
 @Setter
+@Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class RangeItemDto implements BaseItemDto {
+public class WtElementDto {
 
-	/** The order number. */
-	private Integer orderNumber;
+	/** The demension no. */
+	private Integer demensionNo;
+	
+	/** The demension name. */
+	private String demensionName;
 
-	/** The start val. */
-	private Double startVal;
+	/** The type. */
+	private Integer type;
 
-	/** The end val. */
-	private Double endVal;
-
-	/** The uuid. */
-	private String uuid;
+	/** The reference code. */
+	private String referenceCode;
 
 }

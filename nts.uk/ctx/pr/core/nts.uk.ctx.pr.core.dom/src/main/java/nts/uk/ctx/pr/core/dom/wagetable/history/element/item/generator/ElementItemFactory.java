@@ -20,5 +20,5 @@ public interface ElementItemFactory {
 	 * @param elementSetting the element setting
 	 * @return the list
 	 */
-	public List<ElementSetting> generate(String companyCode, List<ElementSetting> elementSetting);
+	public List<ElementSetting> generate(String companyCode, String historyId, List<ElementSetting> elementSetting);
 }

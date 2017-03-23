@@ -22,7 +22,7 @@ public interface ItemGenerator {
 	 * @param elementSetting the element setting
 	 * @return the list<? extends item>
 	 */
-	List<? extends Item> generate(String companyCode, ElementSetting elementSetting);
+	List<? extends Item> generate(String companyCode, String historyId, ElementSetting elementSetting);
 
 	/**
 	 * Gets the handle type.
