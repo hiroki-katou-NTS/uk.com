@@ -113,9 +113,9 @@ module cmm013.a.service {
     
     
     
-    export function updateHist(jobHist: viewmodel.model.ListHistoryDto){
+    export function updateHist(update: viewmodel.model.ListHistoryDto){
         var dfd = $.Deferred<Array<any>>();
-        nts.uk.request.ajax("com",paths.updateHist, jobHist)
+        nts.uk.request.ajax("com",paths.updateHist, update)
             .done(function(res: any){
                 dfd.resolve(res);    
             })    
@@ -125,7 +125,7 @@ module cmm013.a.service {
         return dfd.promise();
      }
 
-    export function deleteHist(jobHist:viewmodel.model.ListHistoryDto){
+    export function deleteHist(jobHist:viewmodel.model.DeleteHistoryCommand){
         var dfd = $.Deferred<Array<any>>();
         nts.uk.request.ajax("com",paths.deleteHist, jobHist)
             .done(function(res: any){

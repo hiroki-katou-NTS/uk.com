@@ -6,11 +6,6 @@ var qmm005;
         var webapi = qmm005.common.webapi();
         var services;
         (function (services) {
-<<<<<<< HEAD
-            function getData() {
-            }
-            services.getData = getData;
-=======
             function getData(processingNo) {
                 var def = $.Deferred();
                 nts.uk.request.ajax(webapi.qmm005d.getdata, { processingNo: processingNo }).done(function (resp) {
@@ -27,7 +22,7 @@ var qmm005;
                 return def.promise();
             }
             services.updateData = updateData;
->>>>>>> basic/develop
         })(services = d.services || (d.services = {}));
     })(d = qmm005.d || (qmm005.d = {}));
 })(qmm005 || (qmm005 = {}));
+//# sourceMappingURL=qmm005.d.service.js.map

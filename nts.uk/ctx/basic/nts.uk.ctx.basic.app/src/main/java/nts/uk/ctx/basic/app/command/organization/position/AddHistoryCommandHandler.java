@@ -30,17 +30,17 @@ public class AddHistoryCommandHandler extends CommandHandler<AddHistoryCommand> 
 		if (positionRepository.ExistedHistoryBydate(companyCode, command.getStartDate())) {
 			throw new BusinessException(new RawErrorMessage("履歴の期間が正しくありません。"));
 		} else {
-			JobHistory jobHistory = command.toDomain();
+			JobHistory jobHistory = new JobHistory(companyCode, command.getEndDate(), command.getStartDate());
 			jobHistory.validate();
 			positionRepository.addHistory(jobHistory);
 			GeneralDate pos1 = context.getCommand().getStartDate();
 			GeneralDate endDate = pos1.addDays(-1);
-			Optional<JobHistory> historyEndDate = positionRepository.getHistoryByEdate(companyCode, pos1);
+			Optional<JobHistory> historyEndDate = positionRepository.getHistoryBySdate(companyCode, pos1);
 			if (historyEndDate.isPresent()) {
 				JobHistory jobHis = historyEndDate.get();
 				jobHis.setEndDate(endDate);
 				positionRepository.updateHistory(jobHis);
-				positionRepository.addHistory(jobHistory);
+//				positionRepository.addHistory(jobHistory);
 
 			}
 		}

@@ -42,6 +42,9 @@ var qpp007;
                         return self.selectedpageBreakSetting() == '4';
                     });
                 }
+                /**
+                 * Start srceen.
+                 */
                 ScreenModel.prototype.start = function () {
                     var dfd = $.Deferred();
                     var self = this;
@@ -63,15 +66,20 @@ var qpp007;
                     return dfd.promise();
                 };
                 ScreenModel.prototype.openPrintSettingDialog = function () {
+                    // Set parent value
                     nts.uk.ui.windows.setShared("data", "");
                     nts.uk.ui.windows.setShared("isTransistReturnData", "");
                     nts.uk.ui.windows.sub.modal("/view/qpp/007/b/index.xhtml", { title: "印刷設定" }).onClosed(function () {
+                        // Get child value
                         var returnValue = nts.uk.ui.windows.getShared("childData");
                     });
                 };
                 return ScreenModel;
             }());
             viewmodel.ScreenModel = ScreenModel;
+            /**
+             *  Class Page Break setting
+             */
             var SelectionModel = (function () {
                 function SelectionModel(code, name) {
                     this.code = code;

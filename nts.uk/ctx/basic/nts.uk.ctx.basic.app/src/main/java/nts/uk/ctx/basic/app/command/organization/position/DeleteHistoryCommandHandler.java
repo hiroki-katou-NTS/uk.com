@@ -11,6 +11,7 @@ import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
+import nts.uk.ctx.basic.app.find.organization.position.JobHistFinder;
 import nts.uk.ctx.basic.dom.organization.position.JobHistory;
 import nts.uk.ctx.basic.dom.organization.position.PositionRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -20,16 +21,17 @@ public class DeleteHistoryCommandHandler extends CommandHandler<DeleteHistoryCom
 
 	@Inject
 	private PositionRepository positionRepository;
-
+	@Inject
+	private JobHistFinder jobHistFinder;
+	
 	@Override
 	protected void handle(CommandHandlerContext<DeleteHistoryCommand> context) {
-
+		
 		DeleteHistoryCommand command = context.getCommand();
 		String companyCode = AppContexts.user().companyCode();
 
-		// case insert
-		if (positionRepository.ExistedHistoryBydate(companyCode, command.getStartDate())) {
-			throw new BusinessException(new RawErrorMessage("履歴の期間が正しくありません。"));
+		if (positionRepository.ExistedHistory(command.getHistoryId())) {
+			jobHistFinder.init();
 		} else {
 			JobHistory jobHistory = command.toDomain();
 			jobHistory.validate();
@@ -41,7 +43,7 @@ public class DeleteHistoryCommandHandler extends CommandHandler<DeleteHistoryCom
 				JobHistory jobHis = historyEndDate.get();
 				jobHis.setEndDate(endDate);
 				positionRepository.updateHistory(jobHis);
-				positionRepository.addHistory(jobHistory);
+				positionRepository.deleteHist(companyCode, context.getCommand().getHistoryId());;
 
 			}
 		}
