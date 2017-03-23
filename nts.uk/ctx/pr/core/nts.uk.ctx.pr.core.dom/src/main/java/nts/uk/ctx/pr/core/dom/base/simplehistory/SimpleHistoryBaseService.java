@@ -81,7 +81,7 @@ public abstract class SimpleHistoryBaseService<M extends Master, H extends Histo
 
 		// Validate start year.
 		if (startYear.v() <= lastestHistory.getStart().v()) {
-			throw new BusinessException("ER010: 開始年月が後の履歴が存在する");
+			throw new BusinessException("ER010");
 		}
 
 		// New history.
@@ -128,7 +128,7 @@ public abstract class SimpleHistoryBaseService<M extends Master, H extends Histo
 			
 			// Validate start year.
 			if (startYear.v() <= lastestHistory.getStart().v()) {
-				throw new BusinessException("ER010: 開始年月が後の履歴が存在する");
+				throw new BusinessException("ER010");
 			}
 
 			// Update latest history.
@@ -181,12 +181,12 @@ public abstract class SimpleHistoryBaseService<M extends Master, H extends Histo
 		// Validate new yearmonth.
 		if (beforeH != null && newYearMonth.v() <= beforeH.getStart().v()) {
 			// Error.
-			throw new BusinessException("ER010: 開始年月が後の履歴が存在する");
+			throw new BusinessException("ER010");
 		}
 
 		if (afterH != null && newYearMonth.v() >= afterH.getStart().v()) {
 			// Error.
-			throw new BusinessException("ER010: 開始年月が後の履歴が存在する");
+			throw new BusinessException("ER010");
 		}
 
 		// Update h.

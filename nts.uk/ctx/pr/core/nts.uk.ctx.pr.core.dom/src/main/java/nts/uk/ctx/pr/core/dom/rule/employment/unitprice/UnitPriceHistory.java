@@ -203,11 +203,11 @@ public class UnitPriceHistory extends AggregateRoot implements History<UnitPrice
 		history.applyRange = MonthRange.toMaxDate(startYearMonth);
 		history.budget = new Money(BigDecimal.ZERO);
 		history.fixPaySettingType = SettingType.Company;
-		history.fixPayAtr = ApplySetting.NotApply;
-		history.fixPayAtrMonthly = ApplySetting.NotApply;
-		history.fixPayAtrDayMonth = ApplySetting.NotApply;
-		history.fixPayAtrDaily = ApplySetting.NotApply;
-		history.fixPayAtrHourly = ApplySetting.NotApply;
+		history.fixPayAtr = ApplySetting.Apply;
+		history.fixPayAtrMonthly = ApplySetting.Apply;
+		history.fixPayAtrDayMonth = ApplySetting.Apply;
+		history.fixPayAtrDaily = ApplySetting.Apply;
+		history.fixPayAtrHourly = ApplySetting.Apply;
 		history.memo = null;
 		return history;
 	}

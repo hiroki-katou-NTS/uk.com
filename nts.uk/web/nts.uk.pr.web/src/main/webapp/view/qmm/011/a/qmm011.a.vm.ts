@@ -315,6 +315,10 @@ module nts.uk.pr.view.qmm011.a {
                     start: self.accidentInsuranceRateModel().accidentInsuranceRateHistoryModel.startMonth(),
                     end: self.accidentInsuranceRateModel().accidentInsuranceRateHistoryModel.endMonth()
                 };
+
+                if (self.isEmptyAccident()) {
+                    lastest = undefined;
+                }
                 //set info history
                 var accidentInsuranceRateCopyDto: AccidentInsuranceRateCopyDto;
                 accidentInsuranceRateCopyDto = new AccidentInsuranceRateCopyDto();

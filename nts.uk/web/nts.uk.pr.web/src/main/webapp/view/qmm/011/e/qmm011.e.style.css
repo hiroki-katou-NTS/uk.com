@@ -1,5 +1,5 @@
 .rate-input {
-	width: 200px;
+	width: 200px !important;
 	border-radius: 2px;
 	font-size: 120%;
 }
