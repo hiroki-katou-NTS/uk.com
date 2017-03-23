@@ -32,7 +32,7 @@ public class UpdateEmploymentCommandHandler extends CommandHandler<UpdateEmploym
 			String companyCode = AppContexts.user().companyCode();	
 			Optional<Employment> employmentInf = repository.findEmployment(companyCode, command.getEmploymentCode());
 			if(!employmentInf.isPresent()){
-				throw new BusinessException("更新対象のデータが存在しません。");
+				throw new BusinessException("ER026");
 			}
 				
 			//A_SEL_001にチェックが付いている場合
