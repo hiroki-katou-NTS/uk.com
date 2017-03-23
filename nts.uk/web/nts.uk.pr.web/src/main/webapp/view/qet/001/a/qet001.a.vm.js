@@ -13,6 +13,10 @@ var qet001;
                     this.outputTypeSelected = ko.observable(OutputType.MASTER_ITEMS);
                     this.outputSettings = ko.observableArray([]);
                     this.outputSettingSelectedCode = ko.observable('');
+                    var self = this;
+                    self.japanTargetYear = ko.computed(function () {
+                        return nts.uk.time.yearInJapanEmpire(self.targetYear()).toString();
+                    });
                 }
                 ScreenModel.prototype.start = function () {
                     var dfd = $.Deferred();
@@ -48,9 +52,14 @@ var qet001;
                     nts.uk.ui.windows.sub.modeless("/view/qet/001/i/index.xhtml", { title: "明細書項目の集約設定" });
                 };
                 ScreenModel.prototype.print = function () {
+                    $('#target-year-input').ntsError('clear');
                     var self = this;
+                    var hasError = false;
                     if (self.targetYear() == null || self.targetYear().toString() == '') {
-                        nts.uk.ui.dialog.alert('未入力エラー');
+                        $('#target-year-input').ntsError('set', '対象年度が入力されていません。');
+                        hasError == true;
+                    }
+                    if (!hasError) {
                         return;
                     }
                     a.service.printReport(self).done(function () { }).fail(function (res) {
@@ -87,3 +96,4 @@ var qet001;
         })(viewmodel = a.viewmodel || (a.viewmodel = {}));
     })(a = qet001.a || (qet001.a = {}));
 })(qet001 || (qet001 = {}));
+//# sourceMappingURL=qet001.a.vm.js.map

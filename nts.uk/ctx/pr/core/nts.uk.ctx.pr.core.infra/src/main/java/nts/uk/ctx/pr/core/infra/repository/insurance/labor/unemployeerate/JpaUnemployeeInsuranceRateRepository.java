@@ -20,7 +20,7 @@ import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.YearMonth;
-import nts.gul.collection.ListUtil;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsuranceRate;
 import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsuranceRateRepository;
 import nts.uk.ctx.pr.core.infra.entity.insurance.labor.unemployeerate.QismtEmpInsuRate;
@@ -206,7 +206,7 @@ public class JpaUnemployeeInsuranceRateRepository extends JpaRepository
 		TypedQuery<QismtEmpInsuRate> query = em.createQuery(cq);
 		List<QismtEmpInsuRate> lstQismtEmpInsuRate = query.getResultList();
 
-		if (ListUtil.isEmpty(lstQismtEmpInsuRate)) {
+		if (CollectionUtil.isEmpty(lstQismtEmpInsuRate)) {
 			return Optional.empty();
 		}
 
@@ -263,7 +263,7 @@ public class JpaUnemployeeInsuranceRateRepository extends JpaRepository
 		TypedQuery<QismtEmpInsuRate> query = em.createQuery(cq);
 		List<QismtEmpInsuRate> lstQismtEmpInsuRate = query.getResultList();
 
-		if (ListUtil.isEmpty(lstQismtEmpInsuRate)) {
+		if (CollectionUtil.isEmpty(lstQismtEmpInsuRate)) {
 			return Optional.empty();
 		}
 

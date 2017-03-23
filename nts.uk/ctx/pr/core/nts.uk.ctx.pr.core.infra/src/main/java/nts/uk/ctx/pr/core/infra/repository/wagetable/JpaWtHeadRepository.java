@@ -17,7 +17,7 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.gul.collection.ListUtil;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.pr.core.dom.wagetable.WtHead;
 import nts.uk.ctx.pr.core.dom.wagetable.WtHeadRepository;
 import nts.uk.ctx.pr.core.infra.entity.wagetable.QwtmtWagetableHead;
@@ -135,13 +135,12 @@ public class JpaWtHeadRepository extends JpaRepository implements WtHeadReposito
 
 		List<QwtmtWagetableHead> result = em.createQuery(cq).getResultList();
 
-		if (ListUtil.isEmpty(result)) {
+		if (CollectionUtil.isEmpty(result)) {
 			return Optional.empty();
 		}
 
-		return Optional.of(
-				result.stream().map(item -> new WtHead(new JpaWtHeadGetMemento(item)))
-						.collect(Collectors.toList()).get(0));
+		return Optional.of(result.stream().map(item -> new WtHead(new JpaWtHeadGetMemento(item)))
+				.collect(Collectors.toList()).get(0));
 	}
 
 	/*
