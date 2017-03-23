@@ -15,25 +15,23 @@ import nts.uk.shr.com.context.AppContexts;
 
 @RequestScoped
 @Transactional
-public class InsertComparingFormHeaderCommandHandler extends CommandHandler<InsertComparingFormHeaderCommand> {
+public class DeleteInsertComparingFormCommandHandler extends CommandHandler<DeleteComparingFormCommand> {
+
 	@Inject
 	private ComparingFormHeaderRepository comparingFormHeaderRepository;
 
 	@Override
-	protected void handle(CommandHandlerContext<InsertComparingFormHeaderCommand> context) {
+	protected void handle(CommandHandlerContext<DeleteComparingFormCommand> context) {
 		String companyCode = AppContexts.user().companyCode();
-		InsertComparingFormHeaderCommand insertCommand = context.getCommand();
+		DeleteComparingFormCommand deleteCommand = context.getCommand();
 		
 		Optional<ComparingFormHeader> comparingFormHeader = this.comparingFormHeaderRepository
-				.getComparingFormHeader(companyCode, insertCommand.getFormCode());
-
-		if (comparingFormHeader.isPresent()) {
-			throw new BusinessException("ER005");
+				.getComparingFormHeader(companyCode, deleteCommand.getFormCode());
+		
+		if (!comparingFormHeader.isPresent()) {
+			throw new BusinessException("ER010");
 		}
-
-		ComparingFormHeader newComparingFormHeader = ComparingFormHeader.createFromJavaType(companyCode,
-				insertCommand.getFormCode(), insertCommand.getFormName());
-		this.comparingFormHeaderRepository.insertComparingFormHeader(newComparingFormHeader);
+		this.comparingFormHeaderRepository.deleteComparingFormHeader(companyCode, deleteCommand.getFormCode());
 	}
 
 }

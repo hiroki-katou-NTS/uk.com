@@ -20,6 +20,12 @@ public class JpaComparingFormDetailRepository extends JpaRepository implements C
 			+ "AND c.paycompFormDetailPK.categoryATR = :categoryATR "
 			+ "ORDER BY c.paycompFormDetailPK.categoryATR, c.dispOrder";
 
+	private final String SELECT_A_COMPARING_FORM_DETAIL = "SELECT c FROM QlsptPaycompFormDetail c "
+			+ "WHERE c.paycompFormDetailPK.companyCode = :ccd AND c.paycompFormDetailPK.formCode = :formCode "
+			+ "AND c.paycompFormDetailPK.itemCode = :itemCode "
+			+ "AND c.paycompFormDetailPK.categoryATR = :categoryATR "
+			+ "ORDER BY c.paycompFormDetailPK.categoryATR, c.dispOrder";
+
 	@Override
 	public List<ComparingFormDetail> getComparingFormDetailByCategory_Atr(String companyCode, String formCode,
 			int categoryATR) {
@@ -32,26 +38,27 @@ public class JpaComparingFormDetailRepository extends JpaRepository implements C
 	@Override
 	public Optional<ComparingFormDetail> getComparingFormDetail(String companyCode, String formCode, String itemCode,
 			int categoryAtr) {
-		// TODO Auto-generated method stub
-		return null;
+		return this.queryProxy().query(SELECT_A_COMPARING_FORM_DETAIL, QlsptPaycompFormDetail.class)
+				.setParameter("ccd", companyCode).setParameter("formCode", formCode).setParameter("itemCode", itemCode)
+				.setParameter("categoryATR", categoryAtr).getSingle(c -> convertToDomainFormDetail(c));
 	}
 
 	@Override
 	public void insertComparingFormDetail(ComparingFormDetail comparingFormDetail) {
-		// TODO Auto-generated method stub
-
+		this.commandProxy().insert(convertToEntityQlsptPaycompFormDetail(comparingFormDetail));
 	}
 
 	@Override
 	public void updateComparingFormDetail(ComparingFormDetail comparingFormDetail) {
-		// TODO Auto-generated method stub
-
+		this.commandProxy().update(convertToEntityQlsptPaycompFormDetail(comparingFormDetail));
 	}
 
 	@Override
 	public void deleteComparingFormDetail(String companyCode, String formCode) {
-		// TODO Auto-generated method stub
-
+		val paycompFormDetailPK = new QlsptPaycompFormDetailPK();
+		paycompFormDetailPK.companyCode = companyCode;
+		paycompFormDetailPK.formCode = formCode;		
+		this.commandProxy().remove(QlsptPaycompFormDetail.class, paycompFormDetailPK);
 	}
 
 	private static ComparingFormDetail convertToDomainFormDetail(QlsptPaycompFormDetail entity) {

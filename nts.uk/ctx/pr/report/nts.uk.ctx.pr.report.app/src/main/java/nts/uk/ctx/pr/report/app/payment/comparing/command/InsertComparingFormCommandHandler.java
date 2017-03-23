@@ -11,32 +11,29 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.pr.report.dom.payment.comparing.ComparingFormHeader;
 import nts.uk.ctx.pr.report.dom.payment.comparing.ComparingFormHeaderRepository;
-import nts.uk.ctx.pr.report.dom.payment.comparing.FormName;
 import nts.uk.shr.com.context.AppContexts;
 
 @RequestScoped
 @Transactional
-public class UpdateComparingFormHeaderCommandHandler extends CommandHandler<UpdateComparingFormHeaderCommand> {
-
+public class InsertComparingFormCommandHandler extends CommandHandler<InsertComparingFormCommand> {
 	@Inject
 	private ComparingFormHeaderRepository comparingFormHeaderRepository;
 
 	@Override
-	protected void handle(CommandHandlerContext<UpdateComparingFormHeaderCommand> context) {
+	protected void handle(CommandHandlerContext<InsertComparingFormCommand> context) {
 		String companyCode = AppContexts.user().companyCode();
-		UpdateComparingFormHeaderCommand updateCommand = context.getCommand();
+		InsertComparingFormCommand insertCommand = context.getCommand();
 		
 		Optional<ComparingFormHeader> comparingFormHeader = this.comparingFormHeaderRepository
-				.getComparingFormHeader(companyCode, updateCommand.getFormCode());
+				.getComparingFormHeader(companyCode, insertCommand.getFormCode());
 
-		if (!comparingFormHeader.isPresent()) {
-			throw new BusinessException("ER010");
+		if (comparingFormHeader.isPresent()) {
+			throw new BusinessException("ER005");
 		}
 
-		ComparingFormHeader newComparingFormHeader = comparingFormHeader.get();
-		newComparingFormHeader.setFormName(new FormName(updateCommand.getFormName()));
-		
-		this.comparingFormHeaderRepository.updateComparingFormHeader(newComparingFormHeader);
+		ComparingFormHeader newComparingFormHeader = ComparingFormHeader.createFromJavaType(companyCode,
+				insertCommand.getFormCode(), insertCommand.getFormName());
+		this.comparingFormHeaderRepository.insertComparingFormHeader(newComparingFormHeader);
 	}
 
 }

@@ -1,9 +1,12 @@
 package nts.uk.ctx.pr.report.app.payment.comparing.command;
 
+import java.util.List;
+
 import lombok.Data;
 
 @Data
-public class UpdateComparingFormHeaderCommand {
+public class UpdateComparingFormCommand {
 	private String formCode;
 	private String formName;
+	private List<BaseEntityCommand> comparingFormDetailList;
 }
