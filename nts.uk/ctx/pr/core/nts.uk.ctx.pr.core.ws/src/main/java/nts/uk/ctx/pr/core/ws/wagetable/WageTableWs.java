@@ -1,10 +1,11 @@
 /******************************************************************
- * Copyright (c) 2015 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.core.ws.wagetable;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -22,17 +23,26 @@ import nts.uk.ctx.pr.core.app.wagetable.command.WtInitCommandHandler;
 import nts.uk.ctx.pr.core.app.wagetable.command.WtUpdateCommand;
 import nts.uk.ctx.pr.core.app.wagetable.command.WtUpdateCommandHandler;
 import nts.uk.ctx.pr.core.dom.base.simplehistory.SimpleHistoryBaseService;
+import nts.uk.ctx.pr.core.dom.wagetable.DemensionNo;
 import nts.uk.ctx.pr.core.dom.wagetable.ElementType;
 import nts.uk.ctx.pr.core.dom.wagetable.WtCode;
 import nts.uk.ctx.pr.core.dom.wagetable.WtHead;
 import nts.uk.ctx.pr.core.dom.wagetable.WtHeadRepository;
 import nts.uk.ctx.pr.core.dom.wagetable.history.WtHistory;
 import nts.uk.ctx.pr.core.dom.wagetable.history.WtHistoryRepository;
+import nts.uk.ctx.pr.core.dom.wagetable.history.element.ElementSetting;
+import nts.uk.ctx.pr.core.dom.wagetable.history.element.RangeLimit;
+import nts.uk.ctx.pr.core.dom.wagetable.history.element.StepElementSetting;
+import nts.uk.ctx.pr.core.dom.wagetable.history.element.item.CodeItem;
+import nts.uk.ctx.pr.core.dom.wagetable.history.element.item.RangeItem;
+import nts.uk.ctx.pr.core.dom.wagetable.history.element.item.generator.ElementItemFactory;
 import nts.uk.ctx.pr.core.dom.wagetable.history.service.WtHistoryService;
 import nts.uk.ctx.pr.core.ws.base.simplehistory.SimpleHistoryWs;
 import nts.uk.ctx.pr.core.ws.base.simplehistory.dto.HistoryModel;
 import nts.uk.ctx.pr.core.ws.base.simplehistory.dto.MasterModel;
 import nts.uk.ctx.pr.core.ws.wagetable.dto.DemensionItemDto;
+import nts.uk.ctx.pr.core.ws.wagetable.dto.ElementItemDto;
+import nts.uk.ctx.pr.core.ws.wagetable.dto.ElementSettingDto;
 import nts.uk.ctx.pr.core.ws.wagetable.dto.ElementTypeDto;
 import nts.uk.ctx.pr.core.ws.wagetable.dto.SettingInfoInModel;
 import nts.uk.ctx.pr.core.ws.wagetable.dto.SettingInfoOutModel;
@@ -67,6 +77,10 @@ public class WageTableWs extends SimpleHistoryWs<WtHead, WtHistory> {
 	/** The wt history service. */
 	@Inject
 	private WtHistoryService wtHistoryService;
+
+	/** The element item factory. */
+	@Inject
+	private ElementItemFactory elementItemFactory;
 
 	/**
 	 * Find.
@@ -167,15 +181,71 @@ public class WageTableWs extends SimpleHistoryWs<WtHead, WtHistory> {
 	/**
 	 * Generate setting item.
 	 *
-	 * @param input the input
+	 * @param input
+	 *            the input
 	 * @return the setting info out model
 	 */
 	@POST
-	@Path("reference/gensettingitem")
+	@Path("reference/genitem")
 	public SettingInfoOutModel generateSettingItem(SettingInfoInModel input) {
 		SettingInfoOutModel model = new SettingInfoOutModel();
 
-		// TODO: call service generate setting item.
+		List<ElementSetting> elementSettings = input.getElementSettings().stream().map(item -> {
+			if (ElementType.valueOf(item.getType()).isCodeMode) {
+				return new ElementSetting(DemensionNo.valueOf(item.getDemensionNo()),
+						ElementType.valueOf(item.getType()), Collections.emptyList());
+			} else {
+				StepElementSetting el = new StepElementSetting(
+						DemensionNo.valueOf(item.getDemensionNo()),
+						ElementType.valueOf(item.getType()), Collections.emptyList());
+				el.setSetting(new RangeLimit(item.getUpperLimit()),
+						new RangeLimit(item.getLowerLimit()), new RangeLimit(item.getInterval()));
+				return el;
+			}
+		}).collect(Collectors.toList());
+
+		elementSettings = elementItemFactory.generate(input.getCompanyCode(), input.getHistoryId(),
+				elementSettings);
+
+		List<ElementSettingDto> elementSettingDtos = elementSettings.stream().map(item -> {
+
+			if (item.getType().isCodeMode) {
+
+				List<ElementItemDto> itemList = item.getItemList().stream().map(subItem -> {
+					CodeItem codeItem = (CodeItem) subItem;
+					return ElementItemDto.builder().uuid(codeItem.getUuid().v())
+							.referenceCode(codeItem.getReferenceCode()).build();
+				}).collect(Collectors.toList());
+
+				return ElementSettingDto.builder().demensionNo(item.getDemensionNo().value)
+						.type(item.getType().value)
+						// .demensionName(demensionName)
+						.itemList(itemList).build();
+
+			} else {
+
+				StepElementSetting stepElementSetting = (StepElementSetting) item;
+
+				List<ElementItemDto> itemList = item.getItemList().stream().map(subItem -> {
+					RangeItem rangeItem = (RangeItem) subItem;
+					return ElementItemDto.builder().uuid(rangeItem.getUuid().v())
+							.orderNumber(rangeItem.getOrderNumber())
+							.startVal(rangeItem.getStartVal()).endVal(rangeItem.getEndVal())
+							.build();
+				}).collect(Collectors.toList());
+
+				return ElementSettingDto.builder().demensionNo(item.getDemensionNo().value)
+						.type(item.getType().value)
+						.lowerLimit(stepElementSetting.getLowerLimit().v())
+						.upperLimit(stepElementSetting.getUpperLimit().v())
+						.interval(stepElementSetting.getInterval().v())
+						// .demensionName(demensionName)
+						.itemList(itemList).build();
+			}
+
+		}).collect(Collectors.toList());
+
+		model.setElementSettings(elementSettingDtos);
 
 		return model;
 	}
@@ -221,16 +291,13 @@ public class WageTableWs extends SimpleHistoryWs<WtHead, WtHistory> {
 	static {
 		ELEMENT_TYPE_DTO = new ArrayList<>();
 		for (ElementType type : ElementType.values()) {
-			ElementTypeDto dto = ElementTypeDto.builder()
-				.value(type.value)
-				.isCodeMode(type.isCodeMode)
-				.isRangeMode(type.isRangeMode)
-				.displayName(type.displayName)
-				.build();
+			ElementTypeDto dto = ElementTypeDto.builder().value(type.value)
+					.isCodeMode(type.isCodeMode).isRangeMode(type.isRangeMode)
+					.displayName(type.displayName).build();
 			ELEMENT_TYPE_DTO.add(dto);
 		}
 	}
-	
+
 	/**
 	 * Load element type dto.
 	 *
@@ -241,7 +308,7 @@ public class WageTableWs extends SimpleHistoryWs<WtHead, WtHistory> {
 	public List<ElementTypeDto> loadElementTypeDto() {
 		return ELEMENT_TYPE_DTO;
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 

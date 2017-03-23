@@ -7,8 +7,7 @@ package nts.uk.ctx.pr.core.ws.wagetable.dto;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 import nts.uk.ctx.pr.core.dom.wagetable.WtCode;
@@ -22,8 +21,7 @@ import nts.uk.ctx.pr.core.dom.wagetable.history.element.item.RangeItem;
 /**
  * The Class WtHistoryDto.
  */
-@Getter
-@Setter
+@Data
 public class WtHistoryDto implements WtHistorySetMemento {
 
 	/** The history id. */

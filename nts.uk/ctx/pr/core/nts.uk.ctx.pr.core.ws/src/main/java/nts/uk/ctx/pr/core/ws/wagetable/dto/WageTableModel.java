@@ -4,14 +4,12 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.ws.wagetable.dto;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
 /**
  * The Class WageTableModel.
  */
-@Getter
-@Setter
+@Data
 public class WageTableModel {
 
 	/** The head. */

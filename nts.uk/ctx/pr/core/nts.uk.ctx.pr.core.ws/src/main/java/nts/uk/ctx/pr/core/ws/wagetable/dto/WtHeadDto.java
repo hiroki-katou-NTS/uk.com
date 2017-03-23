@@ -7,8 +7,7 @@ package nts.uk.ctx.pr.core.ws.wagetable.dto;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.wagetable.ElementCount;
 import nts.uk.ctx.pr.core.dom.wagetable.WtCode;
@@ -20,8 +19,7 @@ import nts.uk.shr.com.primitive.Memo;
 /**
  * The Class WtHeadDto.
  */
-@Getter
-@Setter
+@Data
 public class WtHeadDto implements WtHeadSetMemento {
 
 	/** The code. */
@@ -39,7 +37,6 @@ public class WtHeadDto implements WtHeadSetMemento {
 	/** The elements. */
 	private List<WtElementDto> elements;
 
-	
 	/*
 	 * (non-Javadoc)
 	 * 

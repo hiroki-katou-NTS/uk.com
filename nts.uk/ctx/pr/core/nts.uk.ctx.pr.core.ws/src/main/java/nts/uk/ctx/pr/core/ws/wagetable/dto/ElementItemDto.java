@@ -5,14 +5,12 @@
 package nts.uk.ctx.pr.core.ws.wagetable.dto;
 
 import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
 /**
  * The Class CodeItem.
  */
-@Getter
-@Setter
+@Data
 @Builder
 public class ElementItemDto {
 

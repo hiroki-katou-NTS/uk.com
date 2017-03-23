@@ -5,10 +5,12 @@
 package nts.uk.ctx.pr.core.ws.wagetable.dto;
 
 import lombok.Builder;
+import lombok.Data;
 
 /**
  * The Class ElementTypeDto.
  */
+@Data
 @Builder
 public class ElementTypeDto {
 	/** The value. */
