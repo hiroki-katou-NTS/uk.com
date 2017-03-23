@@ -52,8 +52,8 @@ module qmm023.a.viewmodel {
                 { headerText: '名称', prop: 'name', width: 120 },
                 { headerText: '限度額', prop: 'taxLimit', width: 170 }
             ]);
-            self.currentCode = ko.observable(null);
             self.currentTax = ko.observable(new TaxModel('', '', 0));
+            self.currentCode = ko.observable(null);
             self.isUpdate = ko.observable(true);
             self.allowEditCode = ko.observable(false);
             self.isEnableDeleteBtn = ko.observable(true);
@@ -64,6 +64,7 @@ module qmm023.a.viewmodel {
                 self.isUpdate = ko.observable(false);
                 self.isEnableDeleteBtn = ko.observable(false);
             }
+            
         }
 
         getTax(codeNew: string): TaxModel {
@@ -98,7 +99,6 @@ module qmm023.a.viewmodel {
 
         refreshLayout(): void {
             let self = this;
-            $('.save-error').ntsError('clear');
             self.allowEditCode(true);
             self.currentTax(ko.mapping.fromJS(new TaxModel('', '', 0)));
             self.currentCode(null);
@@ -106,10 +106,12 @@ module qmm023.a.viewmodel {
             self.isEnableDeleteBtn(false);
             self.currentTaxDirty.reset();
             self.flatDirty = true;
+            
         }
 
         createButtonClick(): void {
             let self = this;
+            $('.save-error').ntsError('clear');
             if (self.currentTaxDirty.isDirty()) {
                 nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\nよろしいですか。?").ifYes(function() {
                     self.refreshLayout();
@@ -146,7 +148,7 @@ module qmm023.a.viewmodel {
                 }
             }).fail(function(error) {
                 if (error.message === '3') {
-                    let _message = "入力した{0}は既に存在しています。\r\n {1}を確認してください。";                   
+                    let _message = "入力した{0}は既に存在しています。\r\n {1}を確認してください。";
                     nts.uk.ui.dialog.alert(nts.uk.text.format(_message, 'コード', 'コード')).then(function() {
                         self.reload(true);
                     })
@@ -212,7 +214,7 @@ module qmm023.a.viewmodel {
             })
 
         }
-        
+
         // startpage
         startPage(): any {
             let self = this;
@@ -229,7 +231,8 @@ module qmm023.a.viewmodel {
                 });
                 self.flatDirty = true;
                 if (self.items().length <= 0) {
-                    self.currentTax(ko.mapping.fromJS(new TaxModel('', '', 0)));
+                    self.refreshLayout();
+                    dfd.resolve();
                     return;
                 }
                 if (isReload) {

@@ -7,26 +7,26 @@ module qmm023.a.service {
     }
 
     export function getCommutelimitsByCompanyCode(): JQueryPromise<Array<model.CommuteNoTaxLimitDto>> {
-        var dfd = $.Deferred<Array<any>>();
-        var _path = paths.getListByCompanyCode;
+        let dfd = $.Deferred<Array<any>>();
+        let _path = paths.getListByCompanyCode;
         nts.uk.request.ajax(_path)
             .done(function(res: Array<any>) {
                 dfd.resolve(res);
-            }).fail(function(res) {
+            }).fail(function(res: any) {
                 dfd.reject(res);
             })
         return dfd.promise();
     }
 
-    export function insertUpdateData(isUpdate, commuteNoTaxLimitCommand): JQueryPromise<Array<any>> {
-        var dfd = $.Deferred<Array<any>>();
-        var _path = isUpdate ? paths.updateData : paths.insertData;
+    export function insertUpdateData(isUpdate: any, commuteNoTaxLimitCommand: any): JQueryPromise<Array<any>> {
+        let dfd = $.Deferred<Array<any>>();
+        let _path = isUpdate ? paths.updateData : paths.insertData;
         let command = ko.toJS(commuteNoTaxLimitCommand);
         nts.uk.request.ajax(_path, command)
             .done(function(res: Array<any>) {
                 dfd.resolve(res);
             })
-            .fail(function(res) {
+            .fail(function(res: any) {
                 dfd.reject(res);
             })
         return dfd.promise();
@@ -38,7 +38,7 @@ module qmm023.a.service {
             .done(function(res: Array<any>) {
                 dfd.resolve(res);
             })
-            .fail(function(res) {
+            .fail(function(res: any) {
                 dfd.reject(res);
             })
         return dfd.promise();
