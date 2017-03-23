@@ -1,3 +1,4 @@
+/// <reference path="../util.ts"/>
 var nts;
 (function (nts) {
     var uk;

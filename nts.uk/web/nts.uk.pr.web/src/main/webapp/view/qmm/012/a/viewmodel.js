@@ -10,12 +10,14 @@ var qmm012;
                     this.enable = ko.observable(true);
                     this.lBL_004_Text = ko.observable('社員に対して支払う金額の種類を登録します。」と表記');
                     var self = this;
+                    //start Switch Data
                     self.enable;
                     self.roundingRules = ko.observableArray([
                         { code: 0, name: '支給項目' },
                         { code: 1, name: '控除項目' },
                         { code: 2, name: '勤怠項目' }
                     ]);
+                    //endSwitch Data
                     self.selectedRuleCode.subscribe(function (NewValue) {
                         self.lBL_004_Text(Gen_LBL_004_Text(NewValue));
                     });
@@ -50,4 +52,3 @@ var qmm012;
         })(viewmodel = a.viewmodel || (a.viewmodel = {}));
     })(a = qmm012.a || (qmm012.a = {}));
 })(qmm012 || (qmm012 = {}));
-//# sourceMappingURL=viewmodel.js.map

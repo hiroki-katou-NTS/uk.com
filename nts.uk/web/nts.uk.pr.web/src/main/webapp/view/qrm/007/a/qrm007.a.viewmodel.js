@@ -76,14 +76,16 @@ var qrm007;
                 ScreenModel.prototype.updateRetirementPayItemList = function () {
                     var self = this;
                     var dfd = $.Deferred();
-                    var command = ko.mapping.toJS(self.currentItem());
-                    qrm007.a.service.retirePayItemUpdate(command)
-                        .done(function (data) {
-                        self.findRetirementPayItemList(true);
-                        dfd.resolve();
-                    }).fail(function (res) {
-                        dfd.reject(res);
-                    });
+                    if (self.dirty.isDirty()) {
+                        var command = ko.mapping.toJS(self.currentItem());
+                        qrm007.a.service.retirePayItemUpdate(command)
+                            .done(function (data) {
+                            self.findRetirementPayItemList(true);
+                            dfd.resolve();
+                        }).fail(function (res) {
+                            dfd.reject(res);
+                        });
+                    }
                     return dfd.promise();
                 };
                 /**

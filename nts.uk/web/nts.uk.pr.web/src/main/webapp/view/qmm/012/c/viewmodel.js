@@ -47,6 +47,9 @@ var qmm012;
                         new C_SEL_001_ComboboxItemModel(5, '通勤費(定期券利用)')
                     ]);
                     self.selectedCode_C_SEL_001 = ko.observable(1);
+                    //end combobox data
+                    //start Switch Data
+                    //005 006 007 008 009 010
                     self.roundingRules_C_002_003_005To010 = ko.observableArray([
                         { code: 0, name: '対象' },
                         { code: 1, name: '対象外' }
@@ -58,11 +61,13 @@ var qmm012;
                     self.selectedRuleCode_C_008 = ko.observable(1);
                     self.selectedRuleCode_C_009 = ko.observable(1);
                     self.selectedRuleCode_C_010 = ko.observable(1);
+                    //011
                     self.roundingRules_C_011 = ko.observableArray([
                         { code: 1, name: 'ゼロを表示する' },
                         { code: 0, name: 'ゼロを表示しない' }
                     ]);
                     self.selectedRuleCode_C_011 = ko.observable(1);
+                    //017
                     self.roundingRules_C_017 = ko.observableArray([
                         { code: 0, name: '固定額' },
                         { code: 1, name: '非課税限度額' },
@@ -70,11 +75,16 @@ var qmm012;
                         { code: 3, name: '個人の交通用' },
                     ]);
                     self.selectedRuleCode_C_017 = ko.observable(1);
+                    //endSwitch Data
+                    //start radiogroup data
+                    //004
                     self.RadioItemList_C_004 = ko.observableArray([
                         new BoxModel(0, '全員一律で指定する'),
                         new BoxModel(1, '給与契約形態ごとに指定する')
                     ]);
                     self.selectedId_C_004 = ko.observable(1);
+                    //end radiogroup data
+                    //currencyeditor_C_001
                     self.currencyeditor_C_001 = {
                         value: ko.observable(),
                         constraint: '',
@@ -87,6 +97,7 @@ var qmm012;
                         enable: ko.observable(true),
                         readonly: ko.observable(false)
                     };
+                    //C_001
                     self.currencyeditor_C_INP_001 = {
                         value: self.CurrentLimitMny,
                         constraint: '',
@@ -97,6 +108,7 @@ var qmm012;
                         })),
                         required: ko.observable(false)
                     };
+                    //C_002
                     self.currencyeditor_C_INP_002 = {
                         value: self.CurrentErrRangeHigh,
                         constraint: '',
@@ -107,6 +119,7 @@ var qmm012;
                         })),
                         required: ko.observable(false)
                     };
+                    //C_003
                     self.currencyeditor_C_INP_003 = {
                         value: self.CurrentAlRangeHigh,
                         constraint: '',
@@ -117,6 +130,7 @@ var qmm012;
                         })),
                         required: ko.observable(false)
                     };
+                    //C_004
                     self.currencyeditor_C_INP_004 = {
                         value: self.CurrentErrRangeLow,
                         constraint: '',
@@ -127,6 +141,7 @@ var qmm012;
                         })),
                         required: ko.observable(false)
                     };
+                    //C_005
                     self.currencyeditor_C_INP_005 = {
                         value: self.CurrentAlRangeLow,
                         constraint: '',
@@ -137,6 +152,8 @@ var qmm012;
                         })),
                         required: ko.observable(false)
                     };
+                    //end currencyeditor
+                    //end textarea
                     self.selectedCode_C_SEL_001.subscribe(function (newValue) {
                         $('#C_LBL_002').show();
                         $('#C_Div_002').show();
@@ -166,6 +183,7 @@ var qmm012;
                             c.service.findItemSalary(ItemMaster.itemCode).done(function (ItemSalary) {
                                 self.CurrentItemSalary(ItemSalary);
                             }).fail(function (res) {
+                                // Alert message
                                 alert(res);
                             });
                         }
@@ -190,6 +208,9 @@ var qmm012;
                     self.C_SEL_016_Selected.subscribe(function (NewValue) {
                         self.CurrentAlRangeLowAtr(NewValue ? 1 : 0);
                     });
+                    //            self.CurrentItemPeriod.subscribe(function(ItemPeriod: qmm012.b.service.model.ItemPeriodModel) {
+                    //               
+                    //            });
                     self.CurrentItemSalary.subscribe(function (NewValue) {
                         self.CurrentLimitMny(NewValue ? NewValue.limitMny : 0);
                         self.CurrentErrRangeHigh(NewValue ? NewValue.errRangeHigh : 0);
@@ -272,4 +293,3 @@ var qmm012;
         })(viewmodel = c.viewmodel || (c.viewmodel = {}));
     })(c = qmm012.c || (qmm012.c = {}));
 })(qmm012 || (qmm012 = {}));
-//# sourceMappingURL=viewmodel.js.map

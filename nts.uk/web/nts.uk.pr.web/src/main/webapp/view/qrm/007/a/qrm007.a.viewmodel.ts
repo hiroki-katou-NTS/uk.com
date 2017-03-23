@@ -76,14 +76,16 @@ module qrm007.a.viewmodel {
         updateRetirementPayItemList() {
             var self = this;
             var dfd = $.Deferred();
-            var command = ko.mapping.toJS(self.currentItem());
-            qrm007.a.service.retirePayItemUpdate(command)
-                .done(function(data) {
-                    self.findRetirementPayItemList(true);
-                    dfd.resolve();
-                }).fail(function(res) {
-                    dfd.reject(res);
-                });
+            if(self.dirty.isDirty()){
+                let command = ko.mapping.toJS(self.currentItem());
+                qrm007.a.service.retirePayItemUpdate(command)
+                    .done(function(data) {
+                        self.findRetirementPayItemList(true);
+                        dfd.resolve();
+                    }).fail(function(res) {
+                        dfd.reject(res);
+                    });
+            }
             return dfd.promise();
         }
 
