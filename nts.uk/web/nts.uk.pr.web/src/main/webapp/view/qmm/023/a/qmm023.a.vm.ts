@@ -53,6 +53,7 @@ module qmm023.a.viewmodel {
                 { headerText: '限度額', prop: 'taxLimit', width: 170 }
             ]);
             self.currentTax = ko.observable(new TaxModel('', '', 0));
+            self.currentCode = ko.observable(null);
             self.isUpdate = ko.observable(true);
             self.allowEditCode = ko.observable(false);
             self.isEnableDeleteBtn = ko.observable(true);
@@ -63,7 +64,7 @@ module qmm023.a.viewmodel {
                 self.isUpdate = ko.observable(false);
                 self.isEnableDeleteBtn = ko.observable(false);
             }
-            self.currentCode = ko.observable(null);
+            
         }
 
         getTax(codeNew: string): TaxModel {
@@ -100,11 +101,12 @@ module qmm023.a.viewmodel {
             let self = this;
             self.allowEditCode(true);
             self.currentTax(ko.mapping.fromJS(new TaxModel('', '', 0)));
+            self.currentCode(null);
             self.isUpdate(false);
             self.isEnableDeleteBtn(false);
             self.currentTaxDirty.reset();
             self.flatDirty = true;
-            self.currentCode(null);
+            
         }
 
         createButtonClick(): void {

@@ -43,6 +43,7 @@ var qmm023;
                         { headerText: '限度額', prop: 'taxLimit', width: 170 }
                     ]);
                     self.currentTax = ko.observable(new TaxModel('', '', 0));
+                    self.currentCode = ko.observable(null);
                     self.isUpdate = ko.observable(true);
                     self.allowEditCode = ko.observable(false);
                     self.isEnableDeleteBtn = ko.observable(true);
@@ -53,7 +54,6 @@ var qmm023;
                         self.isUpdate = ko.observable(false);
                         self.isEnableDeleteBtn = ko.observable(false);
                     }
-                    self.currentCode = ko.observable(null);
                 };
                 ScreenModel.prototype.getTax = function (codeNew) {
                     var self = this;
@@ -88,11 +88,11 @@ var qmm023;
                     var self = this;
                     self.allowEditCode(true);
                     self.currentTax(ko.mapping.fromJS(new TaxModel('', '', 0)));
+                    self.currentCode(null);
                     self.isUpdate(false);
                     self.isEnableDeleteBtn(false);
                     self.currentTaxDirty.reset();
                     self.flatDirty = true;
-                    self.currentCode(null);
                 };
                 ScreenModel.prototype.createButtonClick = function () {
                     var self = this;
