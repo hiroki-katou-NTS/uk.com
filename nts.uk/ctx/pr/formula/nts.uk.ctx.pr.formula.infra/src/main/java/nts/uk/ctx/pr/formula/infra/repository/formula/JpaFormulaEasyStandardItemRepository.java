@@ -51,23 +51,23 @@ public class JpaFormulaEasyStandardItemRepository extends JpaRepository
 	private QcfmtFormulaEasyStandardItem toEntity(FormulaEasyStandardItem formulaEasyStandardItem) {
 		val entity = new QcfmtFormulaEasyStandardItem();
 
-		entity.qcfmtFormulaEasyAPK = new QcfmtFormulaEasyStandardItemPK();
-		entity.qcfmtFormulaEasyAPK.companyCode = formulaEasyStandardItem.getCompanyCode();
-		entity.qcfmtFormulaEasyAPK.easyFormulaCode = formulaEasyStandardItem.getEasyFormulaCode().v();
-		entity.qcfmtFormulaEasyAPK.formulaCode = formulaEasyStandardItem.getFormulaCode().v();
-		entity.qcfmtFormulaEasyAPK.historyId = formulaEasyStandardItem.getHistoryId();
-		entity.qcfmtFormulaEasyAPK.referenceItemCode = formulaEasyStandardItem.getReferenceItemCode().v();
+		entity.qcfmtFormulaEasyStandardItemPK = new QcfmtFormulaEasyStandardItemPK();
+		entity.qcfmtFormulaEasyStandardItemPK.companyCode = formulaEasyStandardItem.getCompanyCode();
+		entity.qcfmtFormulaEasyStandardItemPK.easyFormulaCode = formulaEasyStandardItem.getEasyFormulaCode().v();
+		entity.qcfmtFormulaEasyStandardItemPK.formulaCode = formulaEasyStandardItem.getFormulaCode().v();
+		entity.qcfmtFormulaEasyStandardItemPK.historyId = formulaEasyStandardItem.getHistoryId();
+		entity.qcfmtFormulaEasyStandardItemPK.referenceItemCode = formulaEasyStandardItem.getReferenceItemCode().v();
 
 		return entity;
 	}
 
 	private FormulaEasyStandardItem toDomain(QcfmtFormulaEasyStandardItem qcfmtFormulaEasyStandardItem) {
 		FormulaEasyStandardItem formulaEasyStandardItem = FormulaEasyStandardItem.createFromJavaType(
-				qcfmtFormulaEasyStandardItem.qcfmtFormulaEasyAPK.companyCode,
-				qcfmtFormulaEasyStandardItem.qcfmtFormulaEasyAPK.formulaCode,
-				qcfmtFormulaEasyStandardItem.qcfmtFormulaEasyAPK.historyId,
-				qcfmtFormulaEasyStandardItem.qcfmtFormulaEasyAPK.easyFormulaCode,
-				qcfmtFormulaEasyStandardItem.qcfmtFormulaEasyAPK.referenceItemCode);
+				qcfmtFormulaEasyStandardItem.qcfmtFormulaEasyStandardItemPK.companyCode,
+				qcfmtFormulaEasyStandardItem.qcfmtFormulaEasyStandardItemPK.formulaCode,
+				qcfmtFormulaEasyStandardItem.qcfmtFormulaEasyStandardItemPK.historyId,
+				qcfmtFormulaEasyStandardItem.qcfmtFormulaEasyStandardItemPK.easyFormulaCode,
+				qcfmtFormulaEasyStandardItem.qcfmtFormulaEasyStandardItemPK.referenceItemCode);
 
 		return formulaEasyStandardItem;
 	}

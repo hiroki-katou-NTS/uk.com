@@ -54,9 +54,9 @@ public class FormulaHistoryDomainServiceImpl implements FormulaHistoryDomainServ
 	public void remove(int difficultyAtr, String companyCode, String formulaCode, String historyId, int startDate) {
 		this.formulaHistoryRepository.remove(companyCode, new FormulaCode(formulaCode), historyId);
 
-		if (difficultyAtr == 0) {
+		if (difficultyAtr == 1) {
 			this.formulaManualRepository.remove(companyCode, new FormulaCode(formulaCode), historyId);
-		} else if (difficultyAtr == 1) {
+		} else if (difficultyAtr == 0) {
 			this.formulaEasyHeaderRepository.remove(companyCode, new FormulaCode(formulaCode), historyId);
 			this.formulaEasyConditionRepository.remove(companyCode, new FormulaCode(formulaCode), historyId);
 			this.formulaEasyDetailRepository.remove(companyCode, new FormulaCode(formulaCode), historyId);
@@ -69,7 +69,7 @@ public class FormulaHistoryDomainServiceImpl implements FormulaHistoryDomainServ
 		} else if (this.formulaHistoryRepository.isNewestHistory(companyCode, new FormulaCode(formulaCode),
 				new YearMonth(startDate))) {
 			
-			this.formulaMasterRepository.remove(companyCode, new FormulaCode(formulaCode));
+			this.formulaHistoryRepository.remove(companyCode, new FormulaCode(formulaCode), historyId);
 			
 			// select last history
 			Optional<FormulaHistory> lastFormulaHistory = this.formulaHistoryRepository.findLastHistory(companyCode,
