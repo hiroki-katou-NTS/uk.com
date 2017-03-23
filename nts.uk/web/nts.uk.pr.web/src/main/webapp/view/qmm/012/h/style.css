@@ -37,9 +37,9 @@
 .checkboxLightGreen, .checkboxBrightGreen {
 	width: 70px;
 	height: 30px;
-	text-align: center;
 	line-height: 25px;
 	margin-right: 5px;
+	padding-left: 5px;
 }
 
 .checkboxLightGreen {
@@ -59,4 +59,12 @@
 .divLine>*, .divLineCol2>*, .divLineCol1>* {
 	display: inline-block;
 	vertical-align: middle;
+}
+
+#H_INP_001 input, #H_INP_002 input {
+	height: 18px;
+}
+
+#H_INP_002 {
+	margin-left: 8px;
 }

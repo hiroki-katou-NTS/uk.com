@@ -1,22 +1,16 @@
-var nts;
-(function (nts) {
-    var uk;
-    (function (uk) {
-        var pr;
-        (function (pr) {
-            var view;
-            (function (view) {
-                var qmm003;
-                (function (qmm003) {
-                    var a;
-                    (function (a) {
-                        __viewContext.ready(function () {
-                            var screenModel = new nts.uk.pr.view.qmm003.a.ScreenModel();
-                            __viewContext.bind(screenModel);
-                        });
-                    })(a = qmm003.a || (qmm003.a = {}));
-                })(qmm003 = view.qmm003 || (view.qmm003 = {}));
-            })(view = pr.view || (pr.view = {}));
-        })(pr = uk.pr || (uk.pr = {}));
-    })(uk = nts.uk || (nts.uk = {}));
-})(nts || (nts = {}));
+var qmm003;
+(function (qmm003) {
+    var a;
+    (function (a) {
+        var start;
+        (function (start) {
+            __viewContext.ready(function () {
+                var screenModel = new qmm003.a.viewmodel.ScreenModel();
+                screenModel.start().done(function () {
+                    __viewContext.bind(screenModel);
+                });
+            });
+        })(start = a.start || (a.start = {}));
+    })(a = qmm003.a || (qmm003.a = {}));
+})(qmm003 || (qmm003 = {}));
+//# sourceMappingURL=start.js.map

@@ -6,26 +6,27 @@ var qmm012;
         (function (viewmodel) {
             var ScreenModel = (function () {
                 function ScreenModel() {
+                    this.CurrentItemMaster = ko.observable(null);
+                    this.CurrentZeroDisplaySet = ko.observable(1);
+                    this.checked_F_002 = ko.observable(false);
+                    this.CurrentItemDisplayAtr = ko.observable(1);
                     var self = this;
-                    self.enable = ko.observable(true);
-                    //F_005
-                    self.checked_F_002 = ko.observable(true);
-                    //F_001
                     self.roundingRules_F_001 = ko.observableArray([
-                        { code: '1', name: 'ゼロを表示する' },
-                        { code: '2', name: 'ゼロを表示しない' }
+                        { code: 1, name: 'ゼロを表示する' },
+                        { code: 0, name: 'ゼロを表示しない' }
                     ]);
-                    self.selectedRuleCode_F_001 = ko.observable(1);
+                    self.CurrentItemMaster.subscribe(function (ItemMaster) {
+                        self.CurrentZeroDisplaySet(ItemMaster ? ItemMaster.zeroDisplaySet : 1);
+                        self.checked_F_002(ItemMaster ? ItemMaster.itemDisplayAtr == 0 ? true : false : false);
+                    });
+                    self.checked_F_002.subscribe(function (NewValue) {
+                        self.CurrentItemDisplayAtr(NewValue ? 0 : 1);
+                    });
                 }
-                ScreenModel.prototype.start = function () {
-                    var self = this;
-                    // Page load dfd.
-                    var dfd = $.Deferred();
-                    //dropdownlist event
-                };
                 return ScreenModel;
             }());
             viewmodel.ScreenModel = ScreenModel;
         })(viewmodel = f.viewmodel || (f.viewmodel = {}));
     })(f = qmm012.f || (qmm012.f = {}));
 })(qmm012 || (qmm012 = {}));
+//# sourceMappingURL=viewmodel.js.map

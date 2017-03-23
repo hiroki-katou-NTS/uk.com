@@ -1,10 +1,11 @@
-module nts.uk.pr.view.qmm002_1.a {
+module nts.uk.pr.view.qmm002.a {
     export module service {
         var paths = {
             getBankList: "basic/system/bank/find/all",
             addBranchList: "basic/system/bank/branch/add",
             updateBranchList: "basic/system/bank/branch/update",
-            removeBranch: "basic/system/bank/branch/remove"
+            removeBranch: "basic/system/bank/branch/remove",
+            removeBank: "basic/system/bank/remove"
         };
 
         export function getBankList(): JQueryPromise<Array<any>> {
@@ -33,9 +34,9 @@ module nts.uk.pr.view.qmm002_1.a {
             return dfd.promise();
         }
         
-        export function removeBranch(bankCode,branchCode): JQueryPromise<any> {
+        export function removeBank(isParentNode, bankCode, branchCode): JQueryPromise<any> {
             var dfd = $.Deferred<any>();
-            var path = paths.removeBranch;
+            var path = isParentNode ? paths.removeBank : paths.removeBranch;
             var obj = {
                 bankCode: bankCode,
                 branchCode: branchCode   

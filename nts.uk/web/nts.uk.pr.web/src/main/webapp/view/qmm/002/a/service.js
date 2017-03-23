@@ -6,8 +6,8 @@ var nts;
         (function (pr) {
             var view;
             (function (view) {
-                var qmm002_1;
-                (function (qmm002_1) {
+                var qmm002;
+                (function (qmm002) {
                     var a;
                     (function (a) {
                         var service;
@@ -16,7 +16,8 @@ var nts;
                                 getBankList: "basic/system/bank/find/all",
                                 addBranchList: "basic/system/bank/branch/add",
                                 updateBranchList: "basic/system/bank/branch/update",
-                                removeBranch: "basic/system/bank/branch/remove"
+                                removeBranch: "basic/system/bank/branch/remove",
+                                removeBank: "basic/system/bank/remove"
                             };
                             function getBankList() {
                                 var dfd = $.Deferred();
@@ -43,9 +44,9 @@ var nts;
                                 return dfd.promise();
                             }
                             service.addBank = addBank;
-                            function removeBranch(bankCode, branchCode) {
+                            function removeBank(isParentNode, bankCode, branchCode) {
                                 var dfd = $.Deferred();
-                                var path = paths.removeBranch;
+                                var path = isParentNode ? paths.removeBank : paths.removeBranch;
                                 var obj = {
                                     bankCode: bankCode,
                                     branchCode: branchCode
@@ -59,11 +60,12 @@ var nts;
                                 });
                                 return dfd.promise();
                             }
-                            service.removeBranch = removeBranch;
+                            service.removeBank = removeBank;
                         })(service = a.service || (a.service = {}));
-                    })(a = qmm002_1.a || (qmm002_1.a = {}));
-                })(qmm002_1 = view.qmm002_1 || (view.qmm002_1 = {}));
+                    })(a = qmm002.a || (qmm002.a = {}));
+                })(qmm002 = view.qmm002 || (view.qmm002 = {}));
             })(view = pr.view || (pr.view = {}));
         })(pr = uk.pr || (uk.pr = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+//# sourceMappingURL=service.js.map

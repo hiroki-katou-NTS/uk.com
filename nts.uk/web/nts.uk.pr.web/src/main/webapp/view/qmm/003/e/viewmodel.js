@@ -12,7 +12,7 @@ var nts;
                     (function (e) {
                         var ScreenModel = (function () {
                             function ScreenModel() {
-                                this.editMode = true; // true là mode thêm mới, false là mode sửa 
+                                this.editMode = true;
                                 var self = this;
                                 self.items = ko.observableArray([
                                     new Node('1', '東北', [
@@ -48,8 +48,8 @@ var nts;
                                 self.curentNode = ko.observable(new Node("", "", []));
                                 self.index = 0;
                                 self.filteredData = ko.observableArray(nts.uk.util.flatArray(self.items(), "childs"));
+                                self.filteredData1 = ko.observableArray(nts.uk.util.flatArray(self.items(), "childs"));
                                 self.selectedCodes = ko.observableArray([]);
-                                //Init();
                                 self.singleSelectedCode.subscribe(function (newValue) {
                                 });
                             }
@@ -61,6 +61,46 @@ var nts;
                                 nts.uk.ui.windows.close();
                             };
                             ;
+                            ScreenModel.prototype.register = function () {
+                                var inputSearch1 = $("#E_SCH_001").find("input.ntsSearchBox").val();
+                                var inputSearch2 = $("#E_SCH_002").find("input.ntsSearchBox").val();
+                                var error;
+                                var error1;
+                                _.find(this.filteredData(), function (obj) {
+                                    if (obj.code !== inputSearch1) {
+                                        error = true;
+                                    }
+                                });
+                                _.find(this.filteredData1(), function (obj) {
+                                    if (obj.code !== inputSearch2) {
+                                        error1 = true;
+                                    }
+                                });
+                                if (inputSearch1 === "") {
+                                    $('#E_SCH_001').ntsError('set', 'inputSearch E_INP_001 が入力されていません。');
+                                }
+                                else {
+                                    $('#E_SCH_001').ntsError('clear');
+                                }
+                                if (error === true) {
+                                    $('#E_SCH_001').ntsError('set', 'inputSearch 対象データがありません。');
+                                }
+                                else {
+                                    $('#E_SCH_001').ntsError('clear');
+                                }
+                                if (inputSearch2 === "") {
+                                    $('#E_SCH_002').ntsError('set', 'inputSearch E_INP_002 が入力されていません。');
+                                }
+                                else {
+                                    $('#E_SCH_002').ntsError('clear');
+                                }
+                                if (error1 === true) {
+                                    $('#E_SCH_002').ntsError('set', 'inputSearch E_INP_002 対象データがありません。');
+                                }
+                                else {
+                                    $('#E_SCH_002').ntsError('clear');
+                                }
+                            };
                             return ScreenModel;
                         }());
                         e.ScreenModel = ScreenModel;
@@ -81,3 +121,4 @@ var nts;
         })(pr = uk.pr || (uk.pr = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+//# sourceMappingURL=viewmodel.js.map

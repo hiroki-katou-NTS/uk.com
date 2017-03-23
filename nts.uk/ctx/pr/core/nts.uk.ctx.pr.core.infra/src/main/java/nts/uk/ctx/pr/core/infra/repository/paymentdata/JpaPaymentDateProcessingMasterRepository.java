@@ -9,8 +9,8 @@ import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.pr.core.dom.enums.DisplayAtr;
 import nts.uk.ctx.pr.core.dom.paymentdata.paymentdatemaster.PaymentDateProcessingMaster;
 import nts.uk.ctx.pr.core.dom.paymentdata.repository.PaymentDateProcessingMasterRepository;
-import nts.uk.ctx.pr.core.infra.entity.paymentdata.QpdmtPaydayProcessing;
-import nts.uk.ctx.pr.core.infra.entity.paymentdata.QpdmtPaydayProcessingPK;
+import nts.uk.ctx.pr.core.infra.entity.rule.employment.processing.yearmonth.QpdmtPaydayProcessing;
+import nts.uk.ctx.pr.core.infra.entity.rule.employment.processing.yearmonth.QpdmtPaydayProcessingPK;
 
 @Stateless
 public class JpaPaymentDateProcessingMasterRepository extends JpaRepository
@@ -24,7 +24,7 @@ public class JpaPaymentDateProcessingMasterRepository extends JpaRepository
 			int processingNo) {
 		try {
 			return this.queryProxy()
-					.find(new QpdmtPaydayProcessingPK(companyCode, paymentBonusAtribute, processingNo), QpdmtPaydayProcessing.class).map(c -> toDomain(c));
+					.find(new QpdmtPaydayProcessingPK(companyCode, processingNo), QpdmtPaydayProcessing.class).map(c -> toDomain(c));
 		} catch (Exception e) {
 			// TODO: handle exception
 			throw e;
@@ -43,10 +43,16 @@ public class JpaPaymentDateProcessingMasterRepository extends JpaRepository
 
 	private static PaymentDateProcessingMaster toDomain(QpdmtPaydayProcessing entity) {
 		PaymentDateProcessingMaster domain = PaymentDateProcessingMaster.createFromJavaType(
-				entity.qpdmtPaydayProcessingPK.payBonusAtr, entity.qpdmtPaydayProcessingPK.processingNo,
-				entity.processingName, entity.currentProcessingYm, entity.dispAtr);
+				0, entity.qpdmtPaydayProcessingPK.processingNo,
+				entity.processingName, entity.currentProcessingYm, entity.dispSet);
 		//entity.toDomain(domain);
 		return domain;
+	}
+	@Override
+	public Optional<PaymentDateProcessingMaster> find(String companyCode, int processingNo) {
+		return this.queryProxy()
+				.find(new QpdmtPaydayProcessingPK(companyCode, processingNo), QpdmtPaydayProcessing.class)
+				.map(c -> toDomain(c));
 	}
 
 }

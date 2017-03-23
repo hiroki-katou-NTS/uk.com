@@ -1,0 +1,218 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:com="http://xmlns.jcp.org/jsf/component"
+	xmlns:h="http://xmlns.jcp.org/jsf/html">
+<body>
+	<ui:composition template="../../../../master/base.xhtml">
+		<ui:define name="htmlHead">
+			<com:ValidatorScript>
+					nts.uk.shr.com.primitive.Memo
+					nts.uk.ctx.basic.dom.system.bank.linebank.LineBankName
+					nts.uk.ctx.basic.dom.system.bank.linebank.LineBankCode
+					nts.uk.ctx.basic.dom.system.bank.linebank.AccountNo
+					nts.uk.ctx.basic.dom.system.bank.linebank.RequesterName
+					nts.uk.ctx.basic.dom.system.bank.linebank.ConsignorCode
+					nts.uk.ctx.basic.dom.system.bank.linebank.ConsignorMemo
+   				</com:ValidatorScript>
+			<com:scriptfile set="IGNITE" />
+			<com:stylefile path="main.css" />
+			<com:scriptfile path="start.js" />
+			<com:scriptfile path="viewmodel.js" />
+			<com:scriptfile path="service.js" />
+		</ui:define>
+
+		<ui:define name="content">
+			<div id="functions-area">
+				<button id="A_BTN_001" data-bind="click: clearForm ">新規</button>
+				<button id="A_BTN_002"
+					data-bind="click: saveData, enable: $root.errors.isEmpty"
+					class="proceed">登録</button>
+				<button id="A_BTN_003" data-bind="click: openCDialog">振込元銀行の置換</button>
+				<button id="A_BTN_007" data-bind="click: btn007">マスタ修正ログ</button>
+				<button id="A_BTN_004"
+					data-bind="click: remove, enable : isDeleteEnable" class="danger">削除</button>
+				<a href="#" id="A_BTN_005"
+					data-bind="click: jumpToQmm002A, ntsLinkButton: { }">振込元銀行の登録へ</a>
+			</div>
+
+			<div id="contents-area" class="cf">
+				<div class="left-content">
+					<div id="A_LST_001" class="caret-right caret-background bg-green">
+						<table id="single-list"
+							data-bind="ntsGridList: {
+					       width: 440,
+					       height: 575,
+					       options: items,
+					       optionsValue: 'lineBankCode',
+					       columns: columns,
+					       multiple: false,
+					       value: currentCode
+					     }"></table>
+					</div>
+
+				</div>
+				<div class="right-content" data-bind="with: currentLineBank">
+					<div class="right-content-left">
+						<div id="A_LBL_002"
+							data-bind="ntsFormLabel:{constraint: ['LineBankCode','LineBankName'],required: true}">コード/名称</div>
+						<div id="A_LBL_003" data-bind="ntsFormLabel:{required: true}">銀行/支店</div>
+						<div id="A_LBL_009" data-bind="ntsFormLabel:{required: true}">口座区分</div>
+						<div id="A_LBL_010"
+							data-bind="ntsFormLabel:{constraint: 'AccountNo',required: true}">口座番号</div>
+					</div>
+					<div class="right-content-right">
+						<div class="control-group">
+							<span> <input id="A_INP_001" data-name="取引銀行区分 "
+								data-bind="ntsTextEditor: {
+									value: lineBankCode,
+									constraint:'LineBankCode',
+									option: {
+					                    textmode: 'text',
+					                    placeholder: '',
+					                    width: '25px',
+					                    textalign: 'center'
+					                },
+									required: true,
+									enable: $parent.isInp001Enable,
+									readonly: false}" /></span>
+							<span> <input id="A_INP_002" data-name="取引銀行名"
+								data-bind="ntsTextEditor: {
+									value: lineBankName,
+									constraint: 'LineBankName',
+									option: {
+					                    textmode: 'text',
+					                    placeholder: '',
+					                    width: '180px',
+					                    textalign: 'left'
+					                },
+									required: true,
+									enable: true,
+									readonly: false}" /></span>
+						</div>
+						<div class="control-group">
+							<button id="A_BTN_006"
+								data-bind="click: $parent.openBDialog.bind($parent)">参照</button>
+							<label id="A_LBL_004" data-name="銀行コード"
+								data-bind="text: bankCode"></label> <label id="A_LBL_005"
+								data-bind="text: $parent.bankName"></label> <label
+								id="A_LBL_006" data-bind="visible: $parent.isHyphensAppear">-</label> <label
+								id="A_LBL_007" data-name="支店コード" data-bind="text: branchCode"></label>
+							<label id="A_LBL_008" data-bind="text: $parent.branchName"></label>
+						</div>
+						<div class="control-group">
+							<span id="A_SEL_001" class="cf"
+								style="min-width: 90px; height: 30px"
+								data-bind="ntsSwitchButton: {
+								options: $parent.roundingRules,
+								optionsValue: 'code',
+								optionsText: 'name',
+								value: accountAtr,
+								enable: true }"></span>
+						</div>
+						<div class="control-group">
+							<span> <input id="A_INP_003" data-name="口座番号"
+								data-bind="ntsTextEditor: {
+									value: accountNo,
+									constraint:'AccountNo',
+									option: {
+					                    textmode: 'text',
+					                    placeholder: '',
+					                    width: '70px',
+					                    textalign: 'left'
+					                },
+									required: true,
+									enable: true,
+									readonly: false}" /></span>
+						</div>
+					</div>
+
+					<hr />
+
+					<div class="right-content-left">
+						<div id="A_LBL_011"
+							data-bind="ntsFormLabel:{constraint: 'RequesterName'}">振込依頼者名</div>
+						<div id="A_LBL_012" data-bind="ntsFormLabel:{constraint: 'Memo'}">メモ</div>
+					</div>
+
+					<div class="right-content-right">
+						<div class="control-group">
+							<span> <input id="A_INP_004" data-name="振込依頼者名 "
+								data-bind="ntsTextEditor: {
+									value: requesterName,
+									constraint:'RequesterName',
+									option: {
+					                    textmode: 'text',
+					                    placeholder: '',
+					                    width: '310px',
+					                    textalign: 'left'
+					                },
+									required: true,
+									enable: true,
+									readonly: false}" /></span>
+						</div>
+						<div class="control-group">
+							<span id="A_INP_005"> <textarea
+									style="height: 130px; width: 450px"
+									data-bind="ntsMultilineEditor: {
+									constraint: 'Memo',
+									value: memo,
+									option: {
+					                    textmode: 'text',
+					                    placeholder: '',
+					                    width: '450px',
+					                    textalign: 'left'
+					                },
+									required: false,
+									enable: true,
+									readonly: false}" />
+							</span>
+						</div>
+					</div>
+
+					<hr />
+
+					<div class="right-content-left">
+						<div id="A_LBL_013"
+							data-bind="ntsFormLabel:{constraint: ['ConsignorCode','ConsignorMemo']}">委託者コード/用途</div>
+					</div>
+
+					<div class="right-content-right" data-bind="foreach: consignors">
+						<div class="control-group">
+							<label data-bind="text: noIcon"></label> <span> <input
+								class="consignor"
+								data-bind="ntsTextEditor: {
+									value: consignorCode,
+									constraint:'ConsignorCode',
+									option: {
+					                    textmode: 'text',
+					                    placeholder: '',
+					                    width: '120px',
+					                    textalign: 'left'
+					                },
+									required: false,
+									enable: true,
+									readonly: false}" />
+							</span> <span> <input class="consignor"
+								data-bind="ntsTextEditor: {
+									value: consignorMemo,
+									constraint:'ConsignorMemo',
+									option: {
+					                    textmode: 'text',
+					                    placeholder: '',
+					                    width: '180px',
+					                    textalign: 'left'
+					                },
+									required: false,
+									enable: true,
+									readonly: false}" /></span>
+						</div>
+
+					</div>
+				</div>
+			</div>
+		</ui:define>
+	</ui:composition>
+</body>
+</html>

@@ -39,6 +39,7 @@
 						</div>
 						<br /><br />
 						<div data-bind="with: numbereditor2">
+							<div data-bind="ntsFormLabel: { constraint: 'CommonAmount', enable: false }">CommonAmount</div><br /><br />
 							<input id="number-2" data-bind="ntsNumberEditor: {value: value, constraint: constraint, option: option, required: required, enable: enable, readonly: readonly}" />
 							<span data-bind="ntsCheckBox: {checked: enable}">Enable</span>
 							<span data-bind="ntsCheckBox: {checked: readonly}">Readonly</span>
@@ -62,7 +63,8 @@
 		option: option,
 		required: required,
 		enable: enable,
-		readonly: readonly}" />
+		readonly: readonly,
+		immediate: false}" />
 </div>]]></pre>
 									<div class="pull-left">
 										<h2>API</h2>
@@ -112,6 +114,15 @@
 														<b>Type:</b> boolean<br/>
 														<b>Default:</b> false<br/>
 														Set readonly for editor
+													</td>
+												</tr>
+												<tr>
+													<td>immediate<br/><i>(optional)</i></td>
+													<td>
+														<b>Type:</b> boolean<br/>
+														<b>Default:</b> false<br/>
+														Set update event trigger immediate for editor.<br/>
+														Can't change after init.
 													</td>
 												</tr>
 												<tr>
@@ -264,7 +275,8 @@
 		option: option,
 		required: required,
 		enable: enable,
-		readonly: readonly}" />
+		readonly: readonly,
+		immediate: false}" />
 </div>]]></pre>
 									<div class="pull-left">
 										<h2>API</h2>
@@ -314,6 +326,15 @@
 														<b>Type:</b> boolean<br/>
 														<b>Default:</b> false<br/>
 														Set readonly for editor
+													</td>
+												</tr>
+												<tr>
+													<td>immediate<br/><i>(optional)</i></td>
+													<td>
+														<b>Type:</b> boolean<br/>
+														<b>Default:</b> false<br/>
+														Set update event trigger immediate for editor.<br/>
+														Can't change after init.
 													</td>
 												</tr>
 												<tr>

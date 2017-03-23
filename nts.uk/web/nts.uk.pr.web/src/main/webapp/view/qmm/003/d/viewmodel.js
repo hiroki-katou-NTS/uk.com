@@ -12,7 +12,7 @@ var nts;
                     (function (d) {
                         var ScreenModel = (function () {
                             function ScreenModel() {
-                                this.editMode = true; // true là mode thêm mới, false là mode sửa 
+                                this.editMode = true;
                                 var self = this;
                                 self.init();
                                 self.filteredData = ko.observableArray(nts.uk.util.flatArray(self.items(), "childs"));
@@ -135,6 +135,27 @@ var nts;
                                 self.arrayCode = ko.observableArray([]);
                             };
                             ;
+                            ScreenModel.prototype.register = function () {
+                                var inputSearch = $("#D_SCH_001").find("input.ntsSearchBox").val();
+                                if (inputSearch == "") {
+                                    $('#D_SCH_001').ntsError('set', 'inputSearch が入力されていません。');
+                                }
+                                else {
+                                    $('#D_SCH_001').ntsError('clear');
+                                }
+                                var error;
+                                _.find(this.filteredData(), function (obj) {
+                                    if (obj.code !== inputSearch) {
+                                        error = true;
+                                    }
+                                });
+                                if (error = true) {
+                                    $('#D_SCH_001').ntsError('set', '対象データがありません。');
+                                }
+                                else {
+                                    $('#D_SCH_001').ntsError('clear');
+                                }
+                            };
                             return ScreenModel;
                         }());
                         d.ScreenModel = ScreenModel;
@@ -155,3 +176,4 @@ var nts;
         })(pr = uk.pr || (uk.pr = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+//# sourceMappingURL=viewmodel.js.map
