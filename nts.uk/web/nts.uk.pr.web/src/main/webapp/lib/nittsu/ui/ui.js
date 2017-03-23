@@ -517,15 +517,13 @@ var nts;
                     this.initialState = this.getCurrentState();
                 }
                 DirtyChecker.prototype.getCurrentState = function () {
-                    console.log("target: " + this.targetViewModel());
-                    return _.clone(this.targetViewModel());
+                    return ko.toJSON(this.targetViewModel());
                 };
                 DirtyChecker.prototype.reset = function () {
                     this.initialState = this.getCurrentState();
                 };
                 DirtyChecker.prototype.isDirty = function () {
-                    console.log(this.initialState + " : " + this.getCurrentState());
-                    return !_.isEqual(this.initialState, this.getCurrentState());
+                    return this.initialState !== this.getCurrentState();
                 };
                 return DirtyChecker;
             }());
@@ -589,4 +587,3 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
-//# sourceMappingURL=ui.js.map
