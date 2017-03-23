@@ -8,7 +8,7 @@ import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.DbConsts;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.gul.collection.ListUtil;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.pr.core.dom.personalinfo.commute.PersonalCommuteFee;
 import nts.uk.ctx.pr.core.dom.personalinfo.commute.PersonalCommuteFeeRepository;
 import nts.uk.ctx.pr.core.dom.personalinfo.commute.PersonalCommuteValue;
@@ -24,7 +24,7 @@ public class JpaPersonalCommuteFeeRepository extends JpaRepository implements Pe
 	@Override
 	public List<PersonalCommuteFee> findAll(String companyCode, List<String> personIds, int baseYM) {
 		List<PersonalCommuteFee> results = new ArrayList<>();
-		ListUtil.split(personIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, personIdList -> {
+		CollectionUtil.split(personIds, DbConsts.MAX_CONDITIONS_OF_IN_STATEMENT, personIdList -> {
 			this.queryProxy().query(SELECT_BY_CCD_PID_STRYM_ENDYM, PprmtPersonCommute.class)
 			.setParameter("ccd", companyCode).setParameter("pIds", personIdList).setParameter("baseYm", baseYM)
 			.getList().stream().forEach(e -> results.add(toDomain(e)));

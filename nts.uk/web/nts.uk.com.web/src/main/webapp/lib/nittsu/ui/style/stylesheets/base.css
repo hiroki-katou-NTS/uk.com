@@ -1626,18 +1626,17 @@ button.nts-switch-button[disabled]:hover {
   color: #444;
 }
 /* line 97, ../sass/components/_checkbox.scss */
-.minimalist .ntsCheckBox span.box,
 .minimalist .ntsCheckBox span.label {
   padding-left: 5px;
 }
-/* line 102, ../sass/components/_checkbox.scss */
+/* line 101, ../sass/components/_checkbox.scss */
 .minimalist .ntsCheckBox span.box {
   width: 1em;
   height: 1em;
   border: 1px solid #444;
   border-radius: 0;
 }
-/* line 108, ../sass/components/_checkbox.scss */
+/* line 107, ../sass/components/_checkbox.scss */
 .minimalist .ntsCheckBox span.box:after {
   width: 9px;
   height: 4px;
@@ -1648,7 +1647,7 @@ button.nts-switch-button[disabled]:hover {
   border-right: none;
   border-radius: 0;
 }
-/* line 122, ../sass/components/_checkbox.scss */
+/* line 121, ../sass/components/_checkbox.scss */
 .minimalist .ntsCheckBox input[type="checkbox"]:checked + span {
   background: transparent;
 }

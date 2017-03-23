@@ -7,7 +7,7 @@ module qmm005.c {
         export function getData() {
         }
 
-        export function insertData(model: any) {            
+        export function insertData(model: any) {
             let def = $.Deferred();
             nts.uk.request.ajax(webapi.qmm005c.insert, model).done(function(resp) {
                 def.resolve(resp);
