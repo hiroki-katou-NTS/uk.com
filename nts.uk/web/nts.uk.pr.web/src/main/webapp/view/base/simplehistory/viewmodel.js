@@ -45,11 +45,6 @@ var nts;
                                         }
                                         self.selectedNode(selectedNode);
                                     });
-                                    self.isNewMode.subscribe(function (val) {
-                                        if (val) {
-                                            self.onRegistNew();
-                                        }
-                                    });
                                 }
                                 ScreenBaseModel.prototype.startPage = function () {
                                     var self = this;
@@ -109,6 +104,7 @@ var nts;
                                     var self = this;
                                     self.isNewMode(true);
                                     self.igGridSelectedHistoryUuid(undefined);
+                                    self.onRegistNew();
                                 };
                                 ScreenBaseModel.prototype.saveBtnClick = function () {
                                     var self = this;

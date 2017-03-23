@@ -8,7 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsuranceRateItem;
@@ -17,7 +18,8 @@ import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsurance
 /**
  * The Class UnemployeeInsuranceRateDto.
  */
-@Data
+@Getter
+@Setter
 public class UnemployeeInsuranceRateFindOutDto implements UnemployeeInsuranceRateSetMemento {
 
 	/** The history insurance. */

@@ -1,30 +1,29 @@
-module qpp007.a {
+module nts.uk.pr.view.qpp007.a {
+    
     export module service {
 
         // Service paths.
         var servicePath = {
-           getallOutputSetting: "?"
+            findAllSalaryOutputSetting: "ctx/pr/report/salary/outputsetting/findall",
+            saveAsPdf: "screen/pr/QPP007/saveAsPdf"
         };
         /**
          * get All Output Setting
          */
-        export function getallOutputSetting(): JQueryPromise<model.OutputSetting[]>{
-            //return nts.uk.request.ajax(servicePath.getallOutputSetting);
-            var dfd = $.Deferred<model.OutputSetting[]>();
-            // Fake data.
-            var data = [];
-            for (var i = 1; i <= 10; i++) {
-                data.push({code: '0' + i, name: 'Output Item Setting ' + i});
-            }            
-            dfd.resolve(data);
-            return dfd.promise();
-         }
-        
-        export module model{
-            export class OutputSetting{
+        export function findAllSalaryOutputSetting(): JQueryPromise<model.SalaryOutputSettingHeaderDto[]> {
+            return nts.uk.request.ajax(servicePath.findAllSalaryOutputSetting);
+        }
+
+        export function saveAsPdf(command: any): JQueryPromise<any> {
+            return nts.uk.request.exportFile(servicePath.saveAsPdf, command);
+        }
+
+        export module model {
+            export class SalaryOutputSettingHeaderDto {
                 code: string;
-                name: string;    
+                name: string;
             }
         }
+
     }
 }

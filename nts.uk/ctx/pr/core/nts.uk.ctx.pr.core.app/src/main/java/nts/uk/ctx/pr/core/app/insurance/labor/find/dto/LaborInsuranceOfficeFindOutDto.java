@@ -5,13 +5,15 @@
 package nts.uk.ctx.pr.core.app.insurance.labor.find.dto;
 
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import nts.uk.ctx.pr.core.dom.insurance.labor.LaborInsuranceOffice;
 
 /**
  * The Class LaborInsuranceOfficeFindDto. Search LaborInsuranceOffice data base
  */
-@Data
+@Getter
+@Setter
 @Builder
 public class LaborInsuranceOfficeFindOutDto {
 

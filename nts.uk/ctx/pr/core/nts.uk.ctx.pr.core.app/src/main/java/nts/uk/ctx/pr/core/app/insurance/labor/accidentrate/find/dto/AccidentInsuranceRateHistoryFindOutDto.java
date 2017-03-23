@@ -6,7 +6,8 @@ package nts.uk.ctx.pr.core.app.insurance.labor.accidentrate.find.dto;
 
 import java.util.Set;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.AccidentInsuranceRateSetMemento;
@@ -15,7 +16,8 @@ import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.InsuBizRateItem;
 /**
  * The Class HistoryAccidentInsuranceRateFindOutDto.
  */
-@Data
+@Getter
+@Setter
 public class AccidentInsuranceRateHistoryFindOutDto implements AccidentInsuranceRateSetMemento {
 
 	/** The history id. */

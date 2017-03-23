@@ -8,7 +8,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.AccidentInsuranceRate;
@@ -22,7 +23,8 @@ import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.InsuBizRateItem;
 /**
  * Instantiates a new accident insurance rate dto.
  */
-@Data
+@Getter
+@Setter
 public class AccidentInsuranceRateDto {
 
 	/** The history insurance. */

@@ -234,6 +234,9 @@ var nts;
                                         start: self.accidentInsuranceRateModel().accidentInsuranceRateHistoryModel.startMonth(),
                                         end: self.accidentInsuranceRateModel().accidentInsuranceRateHistoryModel.endMonth()
                                     };
+                                    if (self.isEmptyAccident()) {
+                                        lastest = undefined;
+                                    }
                                     var accidentInsuranceRateCopyDto;
                                     accidentInsuranceRateCopyDto = new AccidentInsuranceRateCopyDto();
                                     accidentInsuranceRateCopyDto.historyIdCopy = self.selectionAccidentInsuranceRateHistory();
