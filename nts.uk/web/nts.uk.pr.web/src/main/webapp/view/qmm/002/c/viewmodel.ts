@@ -1,70 +1,124 @@
 module qmm002.c.viewmodel {
     export class ScreenModel {
-        dataSource: any;
-        dataSource2: any;
+        lst_001: any;
+        lst_002: any;
         singleSelectedCode: any;
-        singleSelectedCode2: any;
-        selectedCodes: any;
+        selectedCodes: KnockoutObservableArray<any>;;
         selectedCodes2: any;
-        headers: any;
         constructor() {
             var self = this;
-            self.dataSource = ko.observableArray([new Node('0001', 'Hanoi Vietnam', []),
-                new Node('0003', 'Bangkok Thailand', []),
-                new Node('0004', 'Tokyo Japan', []),
-                new Node('0005', 'Jakarta Indonesia', []),
-                new Node('0002', 'Seoul Korea', []),
-                new Node('0006', 'Paris France', []),
-                new Node('0007', 'United States', [new Node('0008', 'Washington US', []), new Node('0009', 'Newyork US', [])]),
-                new Node('0010', 'Beijing China', []),
-                new Node('0011', 'London United Kingdom', []),
-                new Node('0012', '', [])]);
+            self.lst_001 = ko.observableArray([]);
+            self.lst_002 = ko.observableArray([]);
             self.singleSelectedCode = ko.observable();
             self.selectedCodes = ko.observableArray([]);
-
-            self.dataSource2 = ko.observableArray([new Node('0001', 'Hanoi Vietnam', []),
-                new Node('0003', 'Bangkok Thailand', []),
-                new Node('0004', 'Tokyo Japan', []),
-                new Node('0005', 'Jakarta Indonesia', []),
-                new Node('0002', 'Seoul Korea', []),
-                new Node('0006', 'Paris France', []),
-                new Node('0007', 'United States', [new Node('0008', 'Washington US', []), new Node('0009', 'Newyork US', [])]),
-                new Node('0010', 'Beijing China', []),
-                new Node('0011', 'London United Kingdom', []),
-                new Node('0012', '', [])]);
-            self.singleSelectedCode2 = ko.observable(null);
             self.selectedCodes2 = ko.observableArray([]);
+            self.selectedCodes.subscribe(function(items) {
+            });
 
-            self.headers = ko.observableArray(["Item Value Header", "コード", "名称", "口座区分", "口座番号"]);
+            self.singleSelectedCode.subscribe(function(val) {
+            });
 
         }
 
-        startPage(): JQueryPromise<any> {
+        startPage() {
             var self = this;
-            var dfd = $.Deferred();
-            qmm002.c.service.getPaymentDateProcessingList().done(function(data) {
-                dfd.resolve();
-            }).fail(function(res) {
-
-            });
-            return dfd.promise();
+            var list = nts.uk.ui.windows.getShared('listItem');
+            self.lst_001(list);
+            self.lst_002(list);
         }
 
         closeDialog(): any {
             nts.uk.ui.windows.close();
         }
+
+        tranferBranch() {
+            var self = this;
+            var message = "*が選択されていません。";
+            if (!self.singleSelectedCode()) {
+                nts.uk.ui.dialog.alert(message.replace("*", "統合元情報"));
+                return;
+            }
+            if (!self.selectedCodes().length) {
+                nts.uk.ui.dialog.alert(message.replace("*", "統合先情報"));
+                return;
+            }
+            if (self.selectedCodes().length) {
+                _.forEach(self.selectedCodes(), function(item) {
+                    if (item == self.singleSelectedCode()) {
+                        nts.uk.ui.dialog.alert("統合元と統合先で同じコードの＊が選択されています。\r\n");
+                    } else {
+                        nts.uk.ui.dialog.confirm("統合元から統合先へデータを置換えます。\r\nよろしいですか？").ifYes(function() {
+                            var branchCodesMap = [];
+                            _.forEach(self.selectedCodes(), function(item) {
+                                var code = item.split('-');
+                                var bankCode = code[0];
+                                var branchCode = code[1];
+                                branchCodesMap.push({
+                                    bankCode: bankCode,
+                                    branchCode: branchCode
+                                });
+                            });
+
+                            var code = self.singleSelectedCode().split('-');
+                            var bankNewCode = code[0];
+                            var branchNewCode = code[1];
+
+                            var data =
+                                {
+                                    branchCodes: branchCodesMap,
+                                    bankNewCode: bankNewCode,
+                                    branchNewCode: branchNewCode
+                                };
+
+                            service.tranferBranch(data).done(function() {
+                                self.getBankList();
+                            });
+                        })
+                    }
+                });
+            }
+        }
+
+        getBankList(): any {
+            var self = this;
+            var dfd = $.Deferred();
+            service.getBankList().done(function(data) {
+                var list001: Array<BankInfo> = [];
+                _.forEach(data, function(itemBank) {
+                    var childs = _.map(itemBank.bankBranch, function(item) {
+                        return new BankInfo(itemBank.bankCode + "-" + item["bankBranchCode"], item["bankBranchCode"], item["bankBranchName"], item["bankBranchNameKana"], item["memo"], null, itemBank.bankCode);
+                    });
+
+                    list001.push(new BankInfo(itemBank.bankCode, itemBank.bankCode, itemBank.bankName, itemBank.bankNameKana, itemBank.memo, childs, null));
+                });
+                self.lst_001(list001);
+                dfd.resolve(list001);
+            }).fail(function(res) {
+                // error
+            });
+
+            return dfd.promise();
+        }
     }
-    class Node {
+
+    export class BankInfo {
+        treeCode: string;
         code: string;
         name: string;
-        nodeText: string;
-        childs: any;
-        constructor(code: string, name: string, childs: Array<Node>) {
+        nameKata: string;
+        memo: string;
+        childs: Array<BankInfo>;
+        parentCode: string;
+
+        constructor(treeCode?: string, code?: string, name?: string, nameKata?: string, memo?: string, childs?: Array<BankInfo>, parentCode?: string) {
             var self = this;
+            self.treeCode = treeCode;
             self.code = code;
             self.name = name;
-            self.nodeText = self.code + ' ' + self.name;
+            self.nameKata = nameKata;
+            self.memo = memo;
             self.childs = childs;
+            self.parentCode = parentCode;
         }
     }
 };

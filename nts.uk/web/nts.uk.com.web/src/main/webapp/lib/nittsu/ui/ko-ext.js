@@ -27,9 +27,6 @@ var nts;
                         }
                         $input.addClass('nts-editor').addClass("nts-input");
                         $input.wrap("<span class= 'nts-editor-wrapped ntsControl'/>");
-                        $input.focus(function () {
-                            $input.select();
-                        });
                         $input.change(function () {
                             var validator = _this.getValidator(data);
                             var newText = $input.val();
@@ -198,14 +195,22 @@ var nts;
                     NumberEditorProcessor.prototype.init = function ($input, data) {
                         var option = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
                         $input.focus(function () {
+                            var selectionType = document.getSelection().type;
+                            // remove separator (comma)
                             $input.val(data.value());
+                            // if focusing is caused by Tab key, select text.
+                            // this code is needed because removing separator deselects.
+                            if (selectionType === 'Range') {
+                                $input.select();
+                            }
                         });
                         _super.prototype.init.call(this, $input, data);
                     };
                     NumberEditorProcessor.prototype.update = function ($input, data) {
                         _super.prototype.update.call(this, $input, data);
                         var option = (data.option !== undefined) ? ko.mapping.toJS(data.option) : this.getDefaultOption();
-                        $input.css({ 'text-align': 'right', "box-sizing": "border-box" });
+                        var align = option.textalign !== "left" ? "right" : "left";
+                        $input.css({ 'text-align': align, "box-sizing": "border-box" });
                         var $parent = $input.parent();
                         var width = option.width; // ? option.width : '100%';
                         var parentTag = $parent.parent().prop("tagName").toLowerCase();
@@ -429,6 +434,7 @@ var nts;
                         var data = valueAccessor();
                         var fields = ko.unwrap(data.fields);
                         var searchText = (data.searchText !== undefined) ? ko.unwrap(data.searchText) : "検索";
+                        var placeHolder = (data.placeHolder !== undefined) ? ko.unwrap(data.placeHolder) : "コード・名称で検索・・・";
                         var selected = data.selected;
                         var selectedKey = null;
                         if (data.selectedKey) {
@@ -445,7 +451,9 @@ var nts;
                         $container.append("<input class='ntsSearchBox' type='text' />");
                         $container.append("<button class='search-btn caret-bottom'>" + searchText + "</button>");
                         var $input = $container.find("input.ntsSearchBox");
+                        $input.attr("placeholder", placeHolder);
                         var $button = $container.find("button.search-btn");
+                        $input.outerWidth($container.outerWidth(true) - $button.outerWidth(true));
                         var nextSearch = function () {
                             var filtArr = searchBox.data("searchResult");
                             var compareKey = fields[0];
@@ -1618,7 +1626,7 @@ var nts;
                         $(element).igTreeGrid({
                             width: width,
                             height: height,
-                            dataSource: options,
+                            dataSource: _.cloneDeep(options),
                             primaryKey: optionsValue,
                             columns: displayColumns,
                             childDataKey: optionsChild,
@@ -1639,7 +1647,7 @@ var nts;
                                         }
                                         else {
                                             if (ko.isObservable(data.value)) {
-                                                data.value(selectedRows[0].id);
+                                                data.value(selectedRows.length <= 0 ? undefined : selectedRows[0].id);
                                             }
                                         }
                                     }
@@ -1842,6 +1850,14 @@ var nts;
                                     constraintText += (constraintText.length > 0) ? "/" : "";
                                     constraintText += uk.text.getCharType(primitiveValue).buildConstraintText(constraint.maxLength);
                                     break;
+                                case 'Decimal':
+                                    constraintText += (constraintText.length > 0) ? "/" : "";
+                                    constraintText += constraint.min + "～" + constraint.max;
+                                    break;
+                                case 'Integer':
+                                    constraintText += (constraintText.length > 0) ? "/" : "";
+                                    constraintText += constraint.min + "～" + constraint.max;
+                                    break;
                                 default:
                                     constraintText += 'ERROR';
                                     break;
@@ -1971,7 +1987,8 @@ var nts;
                             });
                         else
                             $input.on('change', function (event) {
-                                data.value($input.val());
+                                var result = nts.uk.time.parseYearMonth($input.val());
+                                data.value(result.toValue());
                             });
                         $input.width(Math.floor(atomWidth * length));
                         if (data.disabled !== undefined && ko.unwrap(data.disabled) == true) {
@@ -2002,11 +2019,12 @@ var nts;
                             $input.val(nts.uk.time.formatDate(newValue, dateFormat));
                         }
                         else {
-                            var newDate = new Date(newValue + "/01");
+                            var formatted = nts.uk.time.parseYearMonth(newValue);
+                            var newDate = new Date(formatted.format() + "/01");
                             var oldDate = $input.datepicker("getDate");
-                            if (oldDate.getFullYear() != newDate.getFullYear() || oldDate.getMonth() != newDate.getMonth() || oldDate.getDate() != newDate.getDate())
+                            if (oldDate.getFullYear() != newDate.getFullYear() || oldDate.getMonth() != newDate.getMonth())
                                 $input.datepicker("setDate", newDate);
-                            $input.val(newValue);
+                            $input.val(formatted.format());
                         }
                         if (data.disabled !== undefined && ko.unwrap(data.disabled) == true) {
                             $input.prop("disabled", true);
@@ -2238,10 +2256,10 @@ var nts;
                             .height(gridHeight);
                         $grid2.ntsGridList('setupSelecting');
                         var $moveArea = $swap.find("#" + elementId + "-move-data")
-                            .append("<button class = 'move-button move-forward'/>")
-                            .append("<button class = 'move-button move-back'/>");
-                        var $moveForward = $moveArea.find(".move-forward").text("forward");
-                        var $moveBack = $moveArea.find(".move-back").text("back");
+                            .append("<button class = 'move-button move-forward'><i class='icon icon-button-arrow-right'></i></button>")
+                            .append("<button class = 'move-button move-back'><i class='icon icon-button-arrow-left'></i></button>");
+                        var $moveForward = $moveArea.find(".move-forward");
+                        var $moveBack = $moveArea.find(".move-back");
                         var move = function (id1, id2, key, currentSource, value, isForward) {
                             var selectedEmployees = _.sortBy($(isForward ? id1 : id2).igGrid("selectedRows"), 'id');
                             if (selectedEmployees.length > 0) {
@@ -2354,8 +2372,9 @@ var nts;
                             throw new Error('The target element of NtsUpDown is required.');
                         }
                         $upDown.addClass("ntsComponent ntsUpDown").append("<div class='upDown-container'/>");
-                        $upDown.find(".upDown-container").append("<button class = 'ntsUpButton ntsButton ntsUpDownButton' id= '" + elementId + "-up'/>")
-                            .append("<button class = 'ntsDownButton ntsButton ntsUpDownButton' id= '" + elementId + "-down'/>");
+                        $upDown.find(".upDown-container")
+                            .append("<button class = 'ntsUpButton ntsButton ntsUpDownButton auto-height' id= '" + elementId + "-up'/>")
+                            .append("<button class = 'ntsDownButton ntsButton ntsUpDownButton auto-height' id= '" + elementId + "-down'/>");
                         var $target = $(comId);
                         if (height !== undefined) {
                             $upDown.height(height);
@@ -2376,8 +2395,8 @@ var nts;
                         }
                         var $up = $upDown.find(".ntsUpButton");
                         var $down = $upDown.find(".ntsDownButton");
-                        $up.text("Up");
-                        $down.text("Down");
+                        $up.append("<i class='icon icon-button-arrow-top'/>");
+                        $down.append("<i class='icon icon-button-arrow-bottom'/>");
                         var move = function (upDown, $targetElement) {
                             var multySelectedRaw = $targetElement.igGrid("selectedRows");
                             var singleSelectedRaw = $targetElement.igGrid("selectedRow");

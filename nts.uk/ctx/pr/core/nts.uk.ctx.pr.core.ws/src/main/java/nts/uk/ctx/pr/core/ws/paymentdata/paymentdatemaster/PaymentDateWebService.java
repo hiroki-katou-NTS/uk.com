@@ -37,4 +37,10 @@ public class PaymentDateWebService extends WebService {
 	public List<PaymentDateProcessingMasterDto> findAll() {
 		return this.paymentDateProcessingFinder.findAll(PayBonusAtr.SALARY.value);
 	}
+	
+	@POST
+	@Path("processing/findbylogin")
+	public PaymentDateProcessingMasterDto findByLogin() {
+		return this.paymentDateProcessingFinder.findByLogin();
+	}
 }
