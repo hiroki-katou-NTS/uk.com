@@ -31,6 +31,8 @@ module cmm008.a.viewmodel{
         isDelete: KnockoutObservable<boolean>;
         //message
         lstMessage: KnockoutObservableArray<ItemMessage>;
+        //check display mess
+        isMess: KnockoutObservable<boolean>;
         constructor(){
             var self = this;
             self.employmentName = ko.observable("");
@@ -49,6 +51,7 @@ module cmm008.a.viewmodel{
             self.isEnable = ko.observable(false);
             self.isDelete = ko.observable(true);
             self.lstMessage = ko.observableArray([]);
+            self.isMess = ko.observable(false);
             self.multilineeditor = {
                 memoValue: ko.observable(""),
                 constraint: '',
@@ -82,19 +85,27 @@ module cmm008.a.viewmodel{
             
             //list data click
             self.currentCode.subscribe(function(newValue){
-                
                 if(!self.checkChange(self.employmentCode())){
                     var AL001 = _.find(self.lstMessage(), function(mess){
                         return  mess.messCode === "AL001";
                     })
-                    nts.uk.ui.dialog.confirm(AL001.messName).ifCancel(function(){
-                         self.reloadScreenWhenListClick(newValue);
-                         return;    
-                    }).ifYes(function(){
-                        self.createEmployment();
-                    })     
+                    if(!self.isMess()){
+                        nts.uk.ui.dialog.confirm(AL001.messName).ifCancel(function(){
+                             //self.reloadScreenWhenListClick(newValue);
+                            self.isMess(true);
+                            self.currentCode(self.employmentCode());
+                            return;    
+                        }).ifYes(function(){
+                            //self.createEmployment();
+                            self.isMess(false);
+                            self.reloadScreenWhenListClick(newValue);
+                        })   
+                    }  
                 }else{
                      self.reloadScreenWhenListClick(newValue);
+                }
+                if(self.isMess() && self.employmentCode() === newValue){
+                    self.isMess(false);    
                 }
                 
             });
@@ -106,7 +117,7 @@ module cmm008.a.viewmodel{
             return dfd.promise();
         }
         
-        reloadScreenWhenListClick(newValue){
+        reloadScreenWhenListClick(newValue: string){
             var self = this;
             let newEmployment = _.find(self.dataSource(), function(employ){
                 if(employ.employmentCode === newValue){
@@ -298,17 +309,17 @@ module cmm008.a.viewmodel{
                     return  mess.messCode === "AL001";
                 })
                 nts.uk.ui.dialog.confirm(AL001.messName).ifCancel(function(){
-                    self.clearItem();
                     return;    
                 }).ifYes(function(){
-                    self.createEmployment();    
+                    self.clearItem();
+                    //self.createEmployment();    
                 })            
             }else{
                 self.clearItem();    
             }
         }
         //tu lam dirty check
-        checkChange(employmentCodeChk): any{
+        checkChange(employmentCodeChk: string): any{
             var self = this;
             let chkEmployment = _.find(self.dataSource(), function(employ){
                 return employ.employmentCode == employmentCodeChk;    
@@ -343,7 +354,7 @@ module cmm008.a.viewmodel{
             self.currentCode("");
             self.isCheckbox(false);
             self.isDelete(false);
-            self.holidayCode(1);
+            self.holidayCode(0);
             self.selectedProcessNo(0);
             $("#INP_002").focus();
         }
