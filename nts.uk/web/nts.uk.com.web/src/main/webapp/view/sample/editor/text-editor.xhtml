@@ -27,10 +27,8 @@
 					};
 				</script>
 				<com:stylefile path="../catalog/catalog.css" />
-				<com:scriptfile path="/lib/nittsu/ui/file.js" />
-				<com:scriptfile path="/lib/nittsu/ui/textbox-options.js" />
-				<com:scriptfile path="start.js" />
 				<com:scriptfile path="../catalog/catalog.js" />
+				<com:scriptfile path="start.js" />
             </ui:define>
             
             <ui:define name="content">
@@ -49,7 +47,9 @@
 							<span data-bind="ntsCheckBox: {checked: readonly}">Readonly</span>
 							<button data-bind="click: clear">Clear</button>
 						</div>
-						<br/>
+						<h3>Update Immediate</h3>
+						<input id="text-simple" data-name="text-simple" data-bind="ntsTextEditor: {value: simpleValue, constraint: 'ResidenceCode', immediate: true}" />
+						<span data-bind="text: simpleValue"></span>
 						<article class="cf">
 							<div class="tabs">
 								<ol>
@@ -59,7 +59,7 @@
 								<div id="tabs-html" class="cf">
 									<h2>HTML</h2>
 <pre><![CDATA[<!-- Simple -->
-<input data-bind="ntsTextEditor: { value: value, constraint: 'ResidenceCode' }" />
+<input data-name="text-simple" data-bind="ntsTextEditor: {value: simpleValue, constraint: 'ResidenceCode'}" />
 
 <!-- Full Options -->
 <div data-bind="with: texteditor">
@@ -69,7 +69,8 @@
 		option: option,
 		required: required,
 		enable: enable,
-		readonly: readonly}" />
+		readonly: readonly,
+		immediate: false}" />
 </div>]]></pre>
 									<div class="pull-left">
 										<h2>API</h2>
@@ -119,6 +120,15 @@
 														<b>Type:</b> boolean<br/>
 														<b>Default:</b> false<br/>
 														Set readonly for editor
+													</td>
+												</tr>
+												<tr>
+													<td>immediate<br/><i>(optional)</i></td>
+													<td>
+														<b>Type:</b> boolean<br/>
+														<b>Default:</b> false<br/>
+														Set update event trigger immediate for editor.<br/>
+														Can't change after init.
 													</td>
 												</tr>
 												<tr>
@@ -193,9 +203,11 @@
 									<h2>TypeScript</h2>
 <pre><![CDATA[class ScreenModel {
     texteditor: any;
+	simpleValue: KnockoutObservable<string>;
     
     constructor() {
-        var self = this;                  
+        var self = this;              
+        self.simpleValue = ko.observable("123");    
         self.texteditor = {
             value: ko.observable(''),
             constraint: 'ResidenceCode',
@@ -217,7 +229,7 @@
 						<note style="width:390px;"><b>EmployeeCode</b> is a special case of TextEditor.<br/>If TextEditor has <b>contraint = "EmployeeCode"</b> it'll automatic format inputted value</note>
 						<div data-bind="with: employeeeditor">
 						<h3>Employee Code</h3>
-							<input id="employee-code-input" data-name="Employee Code" data-bind="ntsTextEditor: {value: value, constraint: constraint, option: option, required: required, enable: enable, readonly: readonly}" />
+							<input id="employee-code-input" data-name="Employee Code" data-bind="ntsTextEditor: {value: value, constraint: constraint, option: option, required: required, enable: enable, readonly: readonly, valueUpdate: 'afterkeydown'}" />
 							<br/>
 							<span data-bind="ntsCheckBox: {checked: enable}">Enable</span>
 							<span data-bind="ntsCheckBox: {checked: readonly}">Readonly</span>
@@ -229,9 +241,9 @@
 									<li><a href="#tabs-employeecode-viewmodel">ViewModel</a></li>
 								</ol>
 								<div id="tabs-employeecode-html" class="cf">
-<h2>HTML</h2>
+									<h2>HTML</h2>
 <pre><![CDATA[<!-- Simple -->
-<input data-name="Employee Code" data-bind="ntsTextEditor: {value: value, constraint: 'EmployeeCode'}" />
+<input data-name="text-simple" data-bind="ntsTextEditor: {value: simpleValue, constraint: 'EmployeeCode'}" />
 
 <!-- Full Options -->
 <div data-bind="with: employeeeditor">
@@ -383,9 +395,11 @@
 									<h2>TypeScript</h2>
 <pre><![CDATA[class ScreenModel {
     employeeeditor: any;
+    simpleValue: KnockoutObservable<string>;
     
     constructor() {
-        var self = this;                  
+        var self = this;            
+        self.simpleValue = ko.observable("123");      
         self.employeeeditor = {
             value: ko.observable(''),
             constraint: 'ResidenceCode',

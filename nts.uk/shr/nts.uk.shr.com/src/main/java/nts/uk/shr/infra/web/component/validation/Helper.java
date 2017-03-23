@@ -68,7 +68,7 @@ class Helper {
 	}
 	
 	static String getAnnotationName(String representationOfAnnotation) {
-    	int end = representationOfAnnotation.indexOf("(");
+		int end = representationOfAnnotation.indexOf("(");
     	String noEnd = representationOfAnnotation.substring(0, end);
     	int start = noEnd.lastIndexOf(".") + 1;
 
