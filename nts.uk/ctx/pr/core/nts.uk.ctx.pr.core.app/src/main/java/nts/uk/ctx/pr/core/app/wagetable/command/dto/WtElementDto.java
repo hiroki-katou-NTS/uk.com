@@ -4,16 +4,18 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.app.wagetable.command.dto;
 
+import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * The Class WtElementDto.
  */
-@Setter
-@Getter
 @Builder
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
 public class WtElementDto {
 
 	/** The demension no. */

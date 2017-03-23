@@ -12,3 +12,7 @@
 	float: left;
 	min-height: 600px;
 }
+
+#contents-area {
+	min-width: 1200px;
+}

@@ -1,14 +1,17 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2015 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.core.dom.wagetable.history.service.internal;
+
+import java.util.List;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
 import nts.arc.time.YearMonth;
+import nts.gul.collection.CollectionUtil;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.base.simplehistory.SimpleHistoryRepository;
@@ -17,6 +20,7 @@ import nts.uk.ctx.pr.core.dom.wagetable.WtHeadRepository;
 import nts.uk.ctx.pr.core.dom.wagetable.history.WtHistory;
 import nts.uk.ctx.pr.core.dom.wagetable.history.WtHistoryRepository;
 import nts.uk.ctx.pr.core.dom.wagetable.history.service.WtHistoryService;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class WageTableHistoryServiceImpl.
@@ -40,7 +44,6 @@ public class WtHistoryServiceImpl extends WtHistoryService {
 	 * employment.unitprice.WageTableHistory)
 	 */
 	public void validateRequiredItem(WtHistory history) {
-		// TODO: recode
 		if (history.getWageTableCode() == null
 				|| StringUtil.isNullOrEmpty(history.getWageTableCode().v(), true)
 				|| history.getApplyRange() == null) {
@@ -62,7 +65,27 @@ public class WtHistoryServiceImpl extends WtHistoryService {
 			throw new BusinessException("ER010");
 		}
 	}
+	
+	/**
+	 * Delete history.
+	 *
+	 * @param uuid the uuid
+	 */
+	@Override
+	public void deleteHistory(String uuid) {
+		WtHistory history = this.wageTableHistoryRepo.findHistoryByUuid(uuid).get();
+		List<WtHistory> unitPriceHistoryList = this.wageTableHistoryRepo
+				.findAllHistoryByMasterCode(AppContexts.user().companyCode(), history.getMasterCode().v());
 
+		super.deleteHistory(uuid);
+
+		// Remove unit price.
+		if (!CollectionUtil.isEmpty(unitPriceHistoryList) && unitPriceHistoryList.size() == 1) {
+			this.wageTableHeadRepo.remove(history.getCompanyCode().v(), history.getMasterCode().v());
+		}
+	}
+	
+	
 	/*
 	 * (non-Javadoc)
 	 * 
