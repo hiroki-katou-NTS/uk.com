@@ -1,10 +1,13 @@
 package nts.uk.ctx.pr.report.app.payment.comparing.find;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+
+import org.apache.commons.lang3.StringUtils;
 
 import nts.uk.ctx.pr.report.dom.payment.comparing.CategoryAtr;
 import nts.uk.ctx.pr.report.dom.payment.comparing.ComparingFormDetailRepository;
@@ -32,7 +35,18 @@ public class ComparingFormFinder {
 		List<ComparingItemMasterDto> itemMasterTab_3 = this.itemMasterPub
 				.findItemMasterByCatergory(CategoryAtr.ARTICLES.value).stream()
 				.map(item -> ComparingItemMasterDto.fromDomain(item)).collect(Collectors.toList());
-
+		
+		comparingFormDto.setLstItemMasterForTab_0(itemMasterTab_0);
+		comparingFormDto.setLstItemMasterForTab_1(itemMasterTab_1);
+		comparingFormDto.setLstItemMasterForTab_3(itemMasterTab_3);
+		
+		if (StringUtils.isBlank(formCode)) {
+			comparingFormDto.setLstSelectForTab_0(new ArrayList<String>());
+			comparingFormDto.setLstSelectForTab_1(new ArrayList<String>());
+			comparingFormDto.setLstSelectForTab_3(new ArrayList<String>());
+			return comparingFormDto;	
+		}
+		
 		List<String> selectForTab_0 = this.formDetailRepository
 				.getComparingFormDetailByCategory_Atr(companyCode, formCode, CategoryAtr.PAYMENT.value).stream()
 				.map(item -> item.getItemCode().v()).collect(Collectors.toList());
@@ -43,9 +57,6 @@ public class ComparingFormFinder {
 				.getComparingFormDetailByCategory_Atr(companyCode, formCode, CategoryAtr.ARTICLES.value).stream()
 				.map(item -> item.getItemCode().v()).collect(Collectors.toList());
 
-		comparingFormDto.setLstItemMasterForTab_0(itemMasterTab_0);
-		comparingFormDto.setLstItemMasterForTab_1(itemMasterTab_1);
-		comparingFormDto.setLstItemMasterForTab_3(itemMasterTab_3);
 		comparingFormDto.setLstSelectForTab_0(selectForTab_0);
 		comparingFormDto.setLstSelectForTab_1(selectForTab_1);
 		comparingFormDto.setLstSelectForTab_3(selectForTab_3);

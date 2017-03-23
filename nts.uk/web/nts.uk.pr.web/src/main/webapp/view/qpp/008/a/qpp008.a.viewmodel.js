@@ -19,9 +19,6 @@ var qpp008;
                         enable: ko.observable(true),
                         readonly: ko.observable(false)
                     };
-                    /*
-                            GridList
-                    */
                     self.items = ko.observableArray([
                         new ItemModel('基本給'),
                         new ItemModel('基本給3'),
@@ -33,14 +30,9 @@ var qpp008;
                     ]);
                     self.currentCode = ko.observable();
                     self.currentCodeList = ko.observableArray([]);
-                    /* Label  */
                     self.inline = ko.observable(true);
                     self.required = ko.observable(true);
                     self.enable = ko.observable(true);
-                    /**
-                     * combobox
-                      */
-                    //combobox1
                     self.itemListCbb1 = ko.observableArray([
                         new ItemModelCbb1('1', '基本給'),
                         new ItemModelCbb1('2', '役職手当'),
@@ -51,7 +43,6 @@ var qpp008;
                     self.selectedCodeCbb1 = ko.observable('0002');
                     self.isEnableCbb1 = ko.observable(true);
                     self.isEditableCbb1 = ko.observable(true);
-                    //combobox2
                     self.itemListCbb2 = ko.observableArray([
                         new ItemModelCbb2('基本給'),
                         new ItemModelCbb2('役職手当'),
@@ -60,7 +51,6 @@ var qpp008;
                     self.selectedCodeCbb2 = ko.observable('基本給');
                     self.isEnableCbb2 = ko.observable(true);
                     self.isEditableCbb2 = ko.observable(true);
-                    //combobox3
                     self.itemListCbb3 = ko.observableArray([
                         new ItemModelCbb3('基本給1', '基本給'),
                         new ItemModelCbb3('基本給2', '役職手当'),
@@ -71,9 +61,6 @@ var qpp008;
                     self.selectedCodeCbb3 = ko.observable('');
                     self.isEnableCbb3 = ko.observable(true);
                     self.isEditableCbb3 = ko.observable(true);
-                    /**
-                        Textediter
-                    */
                     self.texteditor1 = {
                         value: ko.observable(''),
                         constraint: 'ResidenceCode',

@@ -24,7 +24,7 @@
 		<ui:define name="content">
 			<div id="functions-area" class="function-area">
 				<button id="C_BTN_001" data-bind="click: createButtonClick">新規</button>
-				<button id="C_BTN_002" class="proceed" data-bind="click: insertData">登録</button>
+				<button id="C_BTN_002" class="proceed" data-bind="click: insertUpdateData">登録</button>
 				<button id="C_BTN_003" class="danger" data-bind="click: deleteData">削除</button>
 				<button id="C_BTN_004" data-bind="click: closeDialog">閉じる</button>
 			</div>
@@ -55,8 +55,7 @@
 					<div class="divRightTop valign-center control-group">
 						<div id="C_LBL_001" data-bind="ntsFormLabel: {required: true }">コード/名称</div>
 						<div class="C_INP_23" data-bind="with: currentItem">
-							<input id="C_INP_002"
-								data-bind="ntsTextEditor: {value: formCode, enable: $root.content.cInp002Code}" />
+							<input id="C_INP_002" data-bind="ntsTextEditor: {value: formCode, enable: $root.content.allowEditCode}" />
 							<input id="C_INP_003" data-bind="ntsTextEditor: { value: formName }" />
 						</div>
 					</div>

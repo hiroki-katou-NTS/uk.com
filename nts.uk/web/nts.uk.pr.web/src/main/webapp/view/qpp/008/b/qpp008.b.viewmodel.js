@@ -9,7 +9,6 @@ var qpp008;
                     var self = this;
                     self.paymentDateProcessingList = ko.observableArray([]);
                     self.selectedPaymentDate = ko.observable(null);
-                    /*checkBox*/
                     self.checkedSel1 = ko.observable(true);
                     self.enableSel1 = ko.observable(false);
                     self.checkedSel2 = ko.observable(true);
@@ -19,13 +18,11 @@ var qpp008;
                     self.checkedSel4 = ko.observable(true);
                     self.enableSel4 = ko.observable(true);
                     self.departmentDate = ko.observable('2017/01/13' + 'の部門構成で集計します。');
-                    /*Switch*/
                     self.roundingRules = ko.observableArray([
                         { code: '1', name: '表示する' },
                         { code: '2', name: '表示しない' },
                     ]);
                     self.selectedRuleCode1 = ko.observable(1);
-                    //B_SEL_011
                     self.roundingRules1 = ko.observableArray([
                         { code1: '1', name1: '表示する' },
                         { code1: '2', name1: '表示しない' },
@@ -36,7 +33,6 @@ var qpp008;
                     var self = this;
                     var dfd = $.Deferred();
                     b.service.getPaymentDateProcessingList().done(function (data) {
-                        //self.paymentDateProcessingList(data);
                         dfd.resolve();
                     }).fail(function (res) {
                     });
