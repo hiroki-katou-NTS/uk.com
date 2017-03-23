@@ -8,7 +8,6 @@ import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.itemmaster.AvePayAtr;
 import nts.uk.ctx.pr.core.dom.itemmaster.ItemCode;
-import nts.uk.shr.com.primitive.Memo;
 
 @Getter
 public class ItemSalary extends AggregateRoot {

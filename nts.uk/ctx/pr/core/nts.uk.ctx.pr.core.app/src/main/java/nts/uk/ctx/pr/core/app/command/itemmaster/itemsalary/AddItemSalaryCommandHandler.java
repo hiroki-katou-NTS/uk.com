@@ -24,10 +24,10 @@ import nts.uk.ctx.pr.core.dom.itemmaster.itemsalary.ItemSalaryRespository;
 import nts.uk.ctx.pr.core.dom.itemmaster.itemsalary.LimitMny;
 import nts.uk.ctx.pr.core.dom.itemmaster.itemsalary.LimitMnyAtr;
 import nts.uk.ctx.pr.core.dom.itemmaster.itemsalary.LimitMnyRefItemCd;
+import nts.uk.ctx.pr.core.dom.itemmaster.itemsalary.Memo;
 import nts.uk.ctx.pr.core.dom.itemmaster.itemsalary.RangeAtr;
 import nts.uk.ctx.pr.core.dom.itemmaster.itemsalary.TaxAtr;
 import nts.uk.shr.com.context.AppContexts;
-import nts.uk.shr.com.primitive.Memo;
 
 @Stateless
 @Transactional
