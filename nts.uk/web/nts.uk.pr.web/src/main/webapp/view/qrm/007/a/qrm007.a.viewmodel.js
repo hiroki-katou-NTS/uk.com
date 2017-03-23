@@ -7,9 +7,9 @@ var qrm007;
             var ScreenModel = (function () {
                 function ScreenModel() {
                     var self = this;
-                    self.retirementPayItemList = ko.observableArray([new RetirementPayItem(null, null, null, null)]);
-                    self.currentCode = ko.observable(0);
-                    self.currentItem = ko.observable(new RetirementPayItem("", "", "", ""));
+                    self.retirementPayItemList = ko.observableArray([]);
+                    self.currentCode = ko.observable("");
+                    self.currentItem = ko.observable(new RetirementPayItem("", 0, "", "", "", "", "", ""));
                     self.dirty = new nts.uk.ui.DirtyChecker(self.currentItem);
                 }
                 ScreenModel.prototype.startPage = function () {
@@ -37,11 +37,15 @@ var qrm007;
                             }
                         });
                         dfd.resolve();
-                    }).fail(function () {
-                        dfd.reject();
+                    }).fail(function (res) {
+                        dfd.reject(res);
                     });
                     return dfd.promise();
                 };
+                /**
+                 * find retirement payment item by company code
+                 * @param notFirstTime : check current find is first time or not
+                 */
                 ScreenModel.prototype.findRetirementPayItemList = function (notFirstTime) {
                     var self = this;
                     var dfd = $.Deferred();
@@ -50,7 +54,7 @@ var qrm007;
                         self.retirementPayItemList.removeAll();
                         if (data.length) {
                             data.forEach(function (dataItem) {
-                                self.retirementPayItemList.push(ko.mapping.toJS(new RetirementPayItem(dataItem.itemCode, dataItem.itemName, dataItem.printName, dataItem.memo)));
+                                self.retirementPayItemList.push(ko.mapping.toJS(new RetirementPayItem(dataItem.companyCode, dataItem.category, dataItem.itemCode, dataItem.itemName, dataItem.printName, dataItem.englishName, dataItem.fullName, dataItem.memo)));
                             });
                             if (!notFirstTime) {
                                 self.currentCode(_.first(self.retirementPayItemList()).itemCode);
@@ -60,9 +64,15 @@ var qrm007;
                         }
                         dfd.resolve();
                     })
-                        .fail(function (res) { self.retirementPayItemList.removeAll(); dfd.reject(); });
+                        .fail(function (res) {
+                        self.retirementPayItemList.removeAll();
+                        dfd.reject(res);
+                    });
                     return dfd.promise();
                 };
+                /**
+                 * update retirement payment item
+                 */
                 ScreenModel.prototype.updateRetirementPayItemList = function () {
                     var self = this;
                     var dfd = $.Deferred();
@@ -72,29 +82,34 @@ var qrm007;
                         self.findRetirementPayItemList(true);
                         dfd.resolve();
                     }).fail(function (res) {
-                        dfd.reject();
+                        dfd.reject(res);
                     });
                     return dfd.promise();
                 };
+                /**
+                 * event update selected retirement payment item
+                 */
                 ScreenModel.prototype.saveData = function () {
                     var self = this;
-                    var dfd = $.Deferred();
-                    self.updateRetirementPayItemList().done(function () { dfd.resolve(); }).fail(function () { dfd.reject(); });
-                    return dfd.promise();
+                    self.updateRetirementPayItemList();
                 };
                 return ScreenModel;
             }());
             viewmodel.ScreenModel = ScreenModel;
             var RetirementPayItem = (function () {
-                function RetirementPayItem(code, name, printName, memo) {
+                function RetirementPayItem(companyCode, category, itemCode, itemName, printName, englishName, fullName, memo) {
                     var self = this;
-                    self.itemCode = ko.observable(code);
-                    self.itemName = ko.observable(name);
+                    self.companyCode = ko.observable(companyCode);
+                    self.category = ko.observable(category);
+                    self.itemCode = ko.observable(itemCode);
+                    self.itemName = ko.observable(itemName);
                     self.printName = ko.observable(printName);
+                    self.englishName = ko.observable(englishName);
+                    self.fullName = ko.observable(fullName);
                     self.memo = ko.observable(memo);
                 }
                 RetirementPayItem.converToObject = function (object) {
-                    return new RetirementPayItem(object.itemCode, object.itemName, object.printName, object.memo);
+                    return new RetirementPayItem(object.companyCode, object.category, object.itemCode, object.itemName, object.printName, object.englishName, object.fullName, object.memo);
                 };
                 return RetirementPayItem;
             }());

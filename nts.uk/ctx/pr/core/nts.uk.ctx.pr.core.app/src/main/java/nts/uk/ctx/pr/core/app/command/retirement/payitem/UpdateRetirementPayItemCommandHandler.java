@@ -1,11 +1,13 @@
 package nts.uk.ctx.pr.core.app.command.retirement.payitem;
 
-import java.util.List;
+import java.util.Optional;
 
-import javax.enterprise.context.RequestScoped;
+import javax.ejb.Stateless;
 import javax.inject.Inject;
+import javax.persistence.EnumType;
 
 import nts.arc.enums.EnumAdaptor;
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.core.dom.company.CompanyCode;
@@ -20,22 +22,24 @@ import nts.uk.ctx.pr.core.dom.retirement.payitem.RetirementPayItemRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.primitive.Memo;
 /**
- * 
+ * update retirement payment item if item exist
  * @author Doan Duy Hung
- *
+ * 
  */
-@RequestScoped
+@Stateless
 public class UpdateRetirementPayItemCommandHandler extends CommandHandler<UpdateRetirementPayItemCommand>{
 	@Inject
 	private RetirementPayItemRepository retirementPayItemRepository;
 	
 	@Override
 	protected void handle(CommandHandlerContext<UpdateRetirementPayItemCommand> context) {
-		// TODO Auto-generated method stub
-		UpdateRetirementPayItemCommand command = context.getCommand();
+		// get company code
 		String companyCode = AppContexts.user().companyCode();
+		
+		// convert item to domain
+		UpdateRetirementPayItemCommand command = context.getCommand();
 		RetirementPayItem retirementPayItem = new RetirementPayItem(
-				new CompanyCode(companyCode), 
+				companyCode, 
 				EnumAdaptor.valueOf(command.category, IndicatorCategory.class), 
 				new RetirementPayItemCode(command.itemCode), 
 				new RetirementPayItemName(command.itemName), 
@@ -43,33 +47,19 @@ public class UpdateRetirementPayItemCommandHandler extends CommandHandler<Update
 				new RetirementPayItemEnglishName(command.englishName), 
 				new RetirementPayItemFullName(command.fullName), 
 				new Memo(command.memo));
+		
+		// validate input item
 		retirementPayItem.validate();
+		Optional<RetirementPayItem> optionalRetirementPayItem = this.retirementPayItemRepository.findByKey(
+				companyCode, 
+				EnumAdaptor.valueOf(command.category, IndicatorCategory.class), 
+				new RetirementPayItemCode(command.itemCode));
+		if(!optionalRetirementPayItem.isPresent()) {
+			throw new BusinessException("ER010");
+		}
+		
+		// update retirement payment item
 		this.retirementPayItemRepository.update(retirementPayItem);
 		
 	}
 }
-/*@RequestScoped
-public class UpdateRetirementPayItemCommandHandler extends CommandHandler<List<UpdateRetirementPayItemCommand>>{
-	@Inject
-	private RetirementPayItemRepository retirementPayItemRepository;
-	
-	@Override
-	protected void handle(CommandHandlerContext<List<UpdateRetirementPayItemCommand>> context) {
-		// TODO Auto-generated method stub
-		List<UpdateRetirementPayItemCommand> command = context.getCommand();
-		String companyCode = AppContexts.user().companyCode();
-		for (UpdateRetirementPayItemCommand updateRetirementPayItemCommand : command) {
-			RetirementPayItem retirementPayItem = new RetirementPayItem(
-					new CompanyCode(companyCode), 
-					EnumAdaptor.valueOf(updateRetirementPayItemCommand.category, IndicatorCategory.class), 
-					new RetirementPayItemCode(updateRetirementPayItemCommand.itemCode), 
-					new RetirementPayItemName(updateRetirementPayItemCommand.itemName), 
-					new RetirementPayItemPrintName(updateRetirementPayItemCommand.printName), 
-					new RetirementPayItemEnglishName(updateRetirementPayItemCommand.englishName), 
-					new RetirementPayItemFullName(updateRetirementPayItemCommand.fullName), 
-					new Memo(updateRetirementPayItemCommand.memo));
-			this.retirementPayItemRepository.update(retirementPayItem);
-		}
-		
-	}
-}*/

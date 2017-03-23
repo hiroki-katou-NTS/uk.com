@@ -1,11 +1,9 @@
 package nts.uk.ctx.pr.core.dom.retirement.payitem;
 
 import lombok.Getter;
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.gul.text.StringUtil;
-import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.shr.com.primitive.Memo;
 
 /**
@@ -15,7 +13,7 @@ import nts.uk.shr.com.primitive.Memo;
  */
 public class RetirementPayItem extends AggregateRoot{
 	@Getter
-	private CompanyCode	companyCode;
+	private String companyCode;
 	
 	@Getter
 	private IndicatorCategory category;
@@ -40,14 +38,13 @@ public class RetirementPayItem extends AggregateRoot{
 	
 	@Override
 	public void validate() {
-		// TODO Auto-generated method stub
 		super.validate();
 		if(printName == null || StringUtil.isNullOrEmpty(printName.v(), true)) { 
-			throw new BusinessException("error");
+			throw new BusinessException("ER001");
 		}
 	}
 	
-	public RetirementPayItem(CompanyCode companyCode, IndicatorCategory category, RetirementPayItemCode itemCode,
+	public RetirementPayItem(String companyCode, IndicatorCategory category, RetirementPayItemCode itemCode,
 			RetirementPayItemName itemName, RetirementPayItemPrintName printName, RetirementPayItemEnglishName englishName,
 			RetirementPayItemFullName fullName, Memo memo) {
 		super();
@@ -59,19 +56,5 @@ public class RetirementPayItem extends AggregateRoot{
 		this.englishName = englishName;
 		this.fullName = fullName;
 		this.memo = memo;
-	}
-	
-	public static RetirementPayItem createFromJavaType(String companyCode, int category, String itemCode,
-			String itemName, String printName, String englishName, String fullName, String memo) {
-		return new RetirementPayItem(
-				new CompanyCode(companyCode),
-				EnumAdaptor.valueOf(category, IndicatorCategory.class),
-				new RetirementPayItemCode(itemCode),
-				new RetirementPayItemName(itemName),
-				new RetirementPayItemPrintName(printName),
-				new RetirementPayItemEnglishName(englishName),
-				new RetirementPayItemFullName(fullName),
-				new Memo(memo));
-	
 	}
 }
