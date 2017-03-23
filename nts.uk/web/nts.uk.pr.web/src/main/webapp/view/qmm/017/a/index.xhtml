@@ -50,7 +50,7 @@
 				<div id="functions-area" class="cf">
 				<button id="a_btn_001" class="button separate-button fix-button">新規</button>
 				<button id="a_btn_002"
-					class="button proceed separate-button fix-button">登録</button>
+					class="button proceed separate-button fix-button" data-bind="click: registerFormulaMaster">登録</button>
 				<button id="a_btn_003" class="button separate-button fix-button">コピー</button>
 				<button id="a_btn_004" class="button separate-button fix-button">Excel出力</button>
 				<button id="a_btn_007" class="button separate-button fix-button">マスタ修正ログ</button>
@@ -67,8 +67,8 @@
 							childField: 'childs', 
 							fields: ['name', 'code']}" />	
 						<br />
-						<button id="a_btn_005" onclick="OpenModalSubWindowJ({height: 450, width: 500})">履歴追加</button>
-						<button id="a_btn_006" onclick="OpenModalSubWindowK({height: 550, width: 600})">履歴編集</button>
+						<button id="a_btn_005" data-bind="click: openDialogJ">履歴追加</button>
+						<button id="a_btn_006" >履歴編集</button>
 						<br />
 						<div id="a_lst_001" data-bind="with: treeGridHistory">
 							<table id="treeGrid"

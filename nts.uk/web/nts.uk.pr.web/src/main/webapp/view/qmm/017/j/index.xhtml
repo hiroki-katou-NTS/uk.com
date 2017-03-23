@@ -16,43 +16,81 @@
 			<com:stylefile path="style.css" />
 			<com:scriptfile path="viewmodel.js" />
 			<com:scriptfile path="service.js" />
+			<com:scriptfile set="IGNITE" />
 		</ui:define>
 
 		<ui:define name="content">
-			<div id="functions-area"></div>
-			<div id="contents-area">
-				<div id="j_lbl_001" class="label warning separate-vertical">新たに作成する履歴の、作成情報を入力してください。</div>
+			<div id="contents-area" style="padding-left: 20px">
+				<span id="j_lbl_001" style="font-size: large;">新たに作成する履歴の、作成情報を入力してください。</span>
 				<br />
-				<div id="j_lbl_002" class="separate-vertical"
+				<div id="j_lbl_002" style="margin-top: 10px" class="separate-vertical"
 					data-bind="ntsFormLabel: {}">コード/名称</div>
-				<span id="j_lbl_003">0001</span> <span id="j_lbl_004">日本0001</span>
+				<span id="j_lbl_003" data-bind="text: formulaCode"></span> 
+				<span id="j_lbl_004" data-bind="text: formulaName" style="display: inline-block; margin-left: 20px"></span>
 				<br />
 				<div id="j_lbl_005" class="separate-vertical"
 					data-bind="ntsFormLabel: {required: true }">開始年月</div>
-				<input size="5" id="l_inp_001" data-bind="value: '2016/12'" /> <span
-					id="j_lbl_007">(xxxxxxx) ~</span> <br />
+				<div id="l_inp_001" data-bind="ntsDatePicker: {value: startYm, dateFormat: 'yyyy/MM'}"></div>
+				<span id="j_lbl_007" data-bind="text: startYearMonthFormated"></span> <br />
 				<div>
 					<div class="separate-vertical" data-bind="ntsFormLabel: {required: true }">
 						<label id="j_lbl_006" >編集方法の選択</label>
 					</div>
 					<div id="j_sel_001">
-						<span class="ntsControl"> <label class="ntsRadioBox">
-								<input type="radio" name="textRadio" data-bind="checkedValue: 2" />
-								<span class="box"></span><span class="label"
-								data-bind="text: 'radio1'"></span>
-						</label></span>
-						<br />
 						<span class="ntsControl"> 
 							<label class="ntsRadioBox">
-								<input type="radio" name="textRadio" data-bind="checkedValue: 4" />
-								<span class="box"></span><span class="label" data-bind="text: 'radio2'"></span>
+								<input type="radio" name="textRadio" data-bind="checkedValue: 0, checked: selectedMode" />
+								<span class="box"></span>
+								<span class="label" data-bind="text: textUseLastest"></span>
+							</label>
+						</span>
+						<br />
+						<span style="margin-top: 5px" class="ntsControl"> 
+							<label class="ntsRadioBox">
+								<input type="radio" name="textRadio" data-bind="checkedValue: 1, checked: selectedMode" />
+								<span class="box"></span>
+								<span class="label" data-bind="text: textCreateNew"></span>
 							</label>
 						</span>
 					</div>
+					
 				</div>
-				<br />
-				<button id="j_btn_001" class="x-large proceed">決定</button>
-				<button id="j_btn_002" >キャンセル</button>
+				<com:ko-if bind="selectedMode() == 1">
+					<div id="j_lbl_008" style="margin-top: 10px" class="separate-vertical"
+						data-bind="ntsFormLabel: {required: true }">計算式の設定方法</div>
+					<div class="cf" style="display: inline-block" data-bind="ntsSwitchButton: {
+						options: switchButtonDifficultyAtr().items,
+						optionsValue: 'code',
+						optionsText: 'name',
+						value: switchButtonDifficultyAtr().selectedCode,
+						enable: true }"></div> <br/>
+					<com:ko-if bind="switchButtonDifficultyAtr().selectedCode() == 0">
+						<div id="j_lbl_009" class="separate-vertical"
+							data-bind="ntsFormLabel: {required: true }">かんたん計算式でマスタによる条件分岐を利用する</div><br/>
+						<div class="cf" style="margin: 10px 0px 0px 193px;" data-bind="ntsSwitchButton: {
+							options: switchButtonConditionAtr().items,
+							optionsValue: 'code',
+							optionsText: 'name',
+							value: switchButtonConditionAtr().selectedCode,
+							enable: true }"></div> <br/>
+						<com:ko-if bind="switchButtonConditionAtr().selectedCode() == 1">	
+							<div id="j_lbl_010" class="separate-vertical"
+								data-bind="ntsFormLabel: {required: true }">使用するマスタ</div>
+							<div id="combo-box" data-bind="ntsComboBox: {
+								options: comboBoxReferenceMasterNo().items,
+								optionsValue: 'code',
+								value: comboBoxReferenceMasterNo().selectedCode,
+								optionsText: 'name',
+								editable: false,
+								enable: true}"></div>
+						</com:ko-if>
+					</com:ko-if>
+				</com:ko-if>
+				<div id="footer">
+					<hr/>
+					<button id="j_btn_001" class="x-large proceed" data-bind="click: registerFormulaHistory">決定</button>
+					<button id="j_btn_002" >キャンセル</button>
+				</div>
 			</div>
 		</ui:define>
 	</ui:composition>

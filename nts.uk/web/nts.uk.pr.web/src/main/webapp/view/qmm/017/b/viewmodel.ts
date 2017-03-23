@@ -10,6 +10,7 @@ module nts.qmm017 {
         formulaName: KnockoutObservable<string>;
         startYearMonthFormated: KnockoutObservable<string>;
         comboBoxUseMaster: KnockoutObservable<any>;
+        isNewMode: KnockoutObservable<boolean>;
 
         constructor(data) {
             var self = this;
@@ -27,9 +28,15 @@ module nts.qmm017 {
             self.formulaCode = ko.observable('');
             self.formulaName = ko.observable('');
             self.startYearMonthFormated = ko.observable('');
+            self.isNewMode = ko.observable(data.isNewMode());;
+            data.isNewMode.subscribe(function(val){
+                self.isNewMode(val);
+            });
             self.startYearMonth.subscribe(function(ymChange) {
-                if (ymChange != 200101) {
+                if (!self.isNewMode()) {
                     self.startYearMonthFormated('(' + nts.uk.time.yearmonthInJapanEmpire(ymChange).toString() + ') ~');
+                } else {
+                    self.startYearMonthFormated = ko.observable('');
                 }
             });
             self.comboBoxUseMaster = ko.observable({

@@ -8,11 +8,21 @@
     display: inline-block;
 }
 #j_lbl_003, #l_inp_001{
-	margin-left: 20px;
+	margin-left: 40px;
 }
 #j_lbl_002, #j_lbl_005, #j_lbl_006{
 	width: 100px;
 }
-#j_btn_001{
-	margin-left: 50px;
+#footer {
+	position: fixed;
+    bottom: 11px;
+    width: 620px;
+    text-align: center;
+}
+#j_lbl_008{
+	margin: 10px 0px 0px 145px;
+}
+#j_lbl_009, #j_lbl_010 {
+	margin: 10px 0px 0px 180px;
+    vertical-align: bottom;
 }
