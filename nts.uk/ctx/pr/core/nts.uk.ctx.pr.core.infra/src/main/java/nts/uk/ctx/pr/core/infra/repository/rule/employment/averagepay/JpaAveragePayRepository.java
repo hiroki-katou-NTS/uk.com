@@ -2,7 +2,7 @@ package nts.uk.ctx.pr.core.infra.repository.rule.employment.averagepay;
 
 import java.util.Optional;
 
-import javax.enterprise.context.RequestScoped;
+import javax.ejb.Stateless;
 import javax.transaction.Transactional;
 
 import nts.arc.layer.infra.data.JpaRepository;
@@ -14,7 +14,7 @@ import nts.uk.ctx.pr.core.infra.entity.rule.employment.averagepay.QapmtAvePay;
  * @author Doan Duy Hung
  *
  */
-@RequestScoped
+@Stateless
 @Transactional
 public class JpaAveragePayRepository extends JpaRepository implements AveragePayRepository {
 	

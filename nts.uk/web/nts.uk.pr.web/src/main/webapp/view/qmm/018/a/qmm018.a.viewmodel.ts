@@ -77,18 +77,19 @@ module qmm018.a.viewmodel {
         saveData(isUpdate) {
             var self = this;
             var dfd = $.Deferred();
+            let error = false;
             let selectedCodeList1 = [];
             if (self.selectedItemList1().length) {
                 self.selectedItemList1().forEach(function(item) { selectedCodeList1.push(item.code); });
-            } else { $("#inp-3").ntsError('set', 'ER007'); }
+            } else { $("#inp-3").ntsError('set', 'ER007');  error = true; }
             let selectedCodeList2 = [];
             if (self.averagePay().attendDayGettingSet()) {
                 if (self.selectedItemList2().length) {
                     self.selectedItemList2().forEach(function(item) { selectedCodeList2.push(item.code); });
-                } else { $("#inp-1").ntsError('set', 'ER007'); }
+                } else { $("#inp-1").ntsError('set', 'ER007'); error = true; }
             }
-            if (self.averagePay().exceptionPayRate() == null) { $("#inp-2").ntsError('set', 'ER001'); }
-            if (!nts.uk.ui._viewModel.errors.isEmpty()) {
+            if (self.averagePay().exceptionPayRate() == null) { $("#inp-2").ntsError('set', 'ER001'); error = true; }
+            if (!error) {
                 let command = {
                     attendDayGettingSet: self.averagePay().attendDayGettingSet(),
                     exceptionPayRate: self.averagePay().exceptionPayRate(),

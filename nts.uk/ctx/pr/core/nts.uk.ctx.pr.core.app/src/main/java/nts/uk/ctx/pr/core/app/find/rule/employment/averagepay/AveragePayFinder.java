@@ -7,6 +7,7 @@ import java.util.Optional;
 import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
+import javax.ejb.Stateless;
 import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
@@ -27,7 +28,7 @@ import nts.uk.shr.com.context.AppContexts;
  * @author chinhbv
  *
  */
-@RequestScoped
+@Stateless
 public class AveragePayFinder {
 
 	@Inject

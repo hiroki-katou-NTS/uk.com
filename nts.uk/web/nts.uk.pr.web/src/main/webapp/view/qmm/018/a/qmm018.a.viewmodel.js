@@ -89,12 +89,14 @@ var qmm018;
                 ScreenModel.prototype.saveData = function (isUpdate) {
                     var self = this;
                     var dfd = $.Deferred();
+                    var error = false;
                     var selectedCodeList1 = [];
                     if (self.selectedItemList1().length) {
                         self.selectedItemList1().forEach(function (item) { selectedCodeList1.push(item.code); });
                     }
                     else {
                         $("#inp-3").ntsError('set', 'ER007');
+                        error = true;
                     }
                     var selectedCodeList2 = [];
                     if (self.averagePay().attendDayGettingSet()) {
@@ -103,12 +105,14 @@ var qmm018;
                         }
                         else {
                             $("#inp-1").ntsError('set', 'ER007');
+                            error = true;
                         }
                     }
                     if (self.averagePay().exceptionPayRate() == null) {
                         $("#inp-2").ntsError('set', 'ER001');
+                        error = true;
                     }
-                    if (!nts.uk.ui._viewModel.errors.isEmpty()) {
+                    if (!error) {
                         var command = {
                             attendDayGettingSet: self.averagePay().attendDayGettingSet(),
                             exceptionPayRate: self.averagePay().exceptionPayRate(),
