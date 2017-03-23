@@ -35,7 +35,7 @@ module qmm012.e.viewmodel {
         CurrentWorkDaysScopeAtr: KnockoutObservable<number> = ko.observable(1);
         CurrentMemo: KnockoutObservable<string> = ko.observable("");
         CurrentZeroDisplaySet: KnockoutObservable<number> = ko.observable(1);
-        CurentItemDisplayAtr: KnockoutObservable<number> = ko.observable(1);
+        CurrentItemDisplayAtr: KnockoutObservable<number> = ko.observable(1);
 
         constructor() {
             let self = this;
@@ -129,7 +129,7 @@ module qmm012.e.viewmodel {
                 self.checked_E_008(ItemAttend ? ItemAttend.alRangeLowAtr == 0 ? false : true : false);
             });
             self.checked_E_004.subscribe(function(NewValue) {
-                self.CurentItemDisplayAtr(NewValue ? 0 : 1);
+                self.CurrentItemDisplayAtr(NewValue ? 0 : 1);
             });
             self.checked_E_005.subscribe(function(NewValue) {
                 self.CurrentErrRangeHighAtr(NewValue ? 1 : 0);
