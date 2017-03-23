@@ -94,6 +94,17 @@ module qpp007.a.viewmodel {
             })    
         }
         
+        saveAsPdf(): void {
+            let self = this;
+            let dfd = $.Deferred<void>();
+            let command: any = {};
+            service.saveAsPdf(command).done(function() {
+                dfd.resolve();
+            }).fail(function(res) {
+                nts.uk.ui.dialog.alert(res.message);
+            });
+        }
+        
     }
 
     /**

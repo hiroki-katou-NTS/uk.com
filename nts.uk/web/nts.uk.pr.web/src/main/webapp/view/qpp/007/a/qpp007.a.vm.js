@@ -69,6 +69,16 @@ var qpp007;
                         var returnValue = nts.uk.ui.windows.getShared("childData");
                     });
                 };
+                ScreenModel.prototype.saveAsPdf = function () {
+                    var self = this;
+                    var dfd = $.Deferred();
+                    var command = {};
+                    a.service.saveAsPdf(command).done(function () {
+                        dfd.resolve();
+                    }).fail(function (res) {
+                        nts.uk.ui.dialog.alert(res.message);
+                    });
+                };
                 return ScreenModel;
             }());
             viewmodel.ScreenModel = ScreenModel;

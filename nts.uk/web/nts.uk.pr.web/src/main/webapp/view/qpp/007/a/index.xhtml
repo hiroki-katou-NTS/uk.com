@@ -25,7 +25,7 @@
 		<ui:define name="content">
 			<div id="functions-area" class="divHeader">
 				<div class="function-class">
-					<button id="select-employee-button" class="proceed" data-bind="enable: $root.errors.isEmpty, click: print">選択した社員を印刷 (PDF)</button>
+					<button id="select-employee-button" class="proceed" data-bind="click: saveAsPdf">選択した社員を印刷 (PDF)</button>
 					<button id="text-output-button" class="function-button-style">テキスト出力</button>
 					<button data-bind ="click:openPrintSettingDialog" id="print-setting-button" class="function-button-style">印刷設定</button>
 					<button id="print-excution-log-button" class="function-button-style">印刷実行ログ</button>

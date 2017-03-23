@@ -5,7 +5,8 @@ var qpp007;
         var service;
         (function (service) {
             var servicePath = {
-                getallOutputSetting: "?"
+                getallOutputSetting: "?",
+                saveAsPdf: "screen/pr/QPP007/saveAsPdf"
             };
             function getallOutputSetting() {
                 var dfd = $.Deferred();
@@ -17,6 +18,10 @@ var qpp007;
                 return dfd.promise();
             }
             service.getallOutputSetting = getallOutputSetting;
+            function saveAsPdf(command) {
+                return nts.uk.request.exportFile(servicePath.saveAsPdf, command);
+            }
+            service.saveAsPdf = saveAsPdf;
             var model;
             (function (model) {
                 var OutputSetting = (function () {
