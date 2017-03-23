@@ -26,14 +26,7 @@ var nts;
                             service.saveSalaryPrintSetting = saveSalaryPrintSetting;
                             function findSalaryPrintSetting() {
                                 var dfd = $.Deferred();
-                                nts.uk.request.ajax(paths.findSalaryPrintSetting)
-                                    .done(function (res) {
-                                    dfd.resolve(res);
-                                })
-                                    .fail(function (res) {
-                                    dfd.reject(res);
-                                });
-                                return dfd.promise();
+                                return nts.uk.request.ajax(paths.findSalaryPrintSetting);
                             }
                             service.findSalaryPrintSetting = findSalaryPrintSetting;
                         })(service = b.service || (b.service = {}));

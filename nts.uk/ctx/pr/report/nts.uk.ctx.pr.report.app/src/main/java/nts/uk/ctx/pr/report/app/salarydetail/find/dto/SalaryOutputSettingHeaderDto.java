@@ -4,12 +4,14 @@
  *****************************************************************/
 package nts.uk.ctx.pr.report.app.salarydetail.find.dto;
 
-import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * The Class SalaryOutputSettingHeadDto.
  */
-@Builder
+@Getter
+@Setter
 public class SalaryOutputSettingHeaderDto {
 
 	/** The code. */
