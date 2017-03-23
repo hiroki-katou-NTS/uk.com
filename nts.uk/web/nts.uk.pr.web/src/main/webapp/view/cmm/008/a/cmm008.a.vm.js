@@ -24,6 +24,7 @@ var cmm008;
                     self.isEnable = ko.observable(false);
                     self.isDelete = ko.observable(true);
                     self.lstMessage = ko.observableArray([]);
+                    self.isMess = ko.observable(false);
                     self.multilineeditor = {
                         memoValue: ko.observable(""),
                         constraint: '',
@@ -56,15 +57,22 @@ var cmm008;
                             var AL001 = _.find(self.lstMessage(), function (mess) {
                                 return mess.messCode === "AL001";
                             });
-                            nts.uk.ui.dialog.confirm(AL001.messName).ifCancel(function () {
-                                self.reloadScreenWhenListClick(newValue);
-                                return;
-                            }).ifYes(function () {
-                                self.createEmployment();
-                            });
+                            if (!self.isMess()) {
+                                nts.uk.ui.dialog.confirm(AL001.messName).ifCancel(function () {
+                                    self.isMess(true);
+                                    self.currentCode(self.employmentCode());
+                                    return;
+                                }).ifYes(function () {
+                                    self.isMess(false);
+                                    self.reloadScreenWhenListClick(newValue);
+                                });
+                            }
                         }
                         else {
                             self.reloadScreenWhenListClick(newValue);
+                        }
+                        if (self.isMess() && self.employmentCode() === newValue) {
+                            self.isMess(false);
                         }
                     });
                     a.service.getProcessingNo();
@@ -155,10 +163,13 @@ var cmm008;
                                 if (employ.closeDateNo === 0) {
                                     employ.closeDateNoStr = "システム未導入";
                                 }
-                                _.find(self.processingDateList(), function (processNo) {
-                                    employ.processingStr = processNo.processingName;
+                                var process = _.find(self.processingDateList(), function (processNo) {
                                     return employ.processingNo == processNo.processingNo;
                                 });
+                                if (process !== undefined)
+                                    employ.processingStr = process.processingName;
+                                else
+                                    employ.processingStr = "";
                                 self.dataSource.push(employ);
                             });
                             if (self.currentCode() === "") {
@@ -244,10 +255,9 @@ var cmm008;
                             return mess.messCode === "AL001";
                         });
                         nts.uk.ui.dialog.confirm(AL001.messName).ifCancel(function () {
-                            self.clearItem();
                             return;
                         }).ifYes(function () {
-                            self.createEmployment();
+                            self.clearItem();
                         });
                     }
                     else {
@@ -289,7 +299,7 @@ var cmm008;
                     self.currentCode("");
                     self.isCheckbox(false);
                     self.isDelete(false);
-                    self.holidayCode(1);
+                    self.holidayCode(0);
                     self.selectedProcessNo(0);
                     $("#INP_002").focus();
                 };
