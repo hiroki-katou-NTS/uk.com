@@ -32,17 +32,8 @@ module qmm034.a.viewmodel {
                 self.isDeleteEnable(true);
                 self.isEnableCode(false);
                 self.isUpdate(true);
+                self.dirty = new nts.uk.ui.DirtyChecker(self.currentEra);
             });
-            //                            qmm034.a.service.getFixAttribute(self.currentEra().eraHist()).done(function(data) {
-            //                             if (data === 0) {
-            //                                    self.isEnableCode(false);
-            //                                }
-            //                            }).fail(function(error) {
-            //                    alert(error.message);
-            //                            });
-
-
-
             //convert to Japan Emprise year
             self.dateTime = ko.observable(nts.uk.time.yearInJapanEmpire(self.currentEra().startDate()).toString());
         }
@@ -169,7 +160,9 @@ module qmm034.a.viewmodel {
             let era = _.find(self.items(), function(item) {
                 return item.eraName === codeNew;
             });
-            return new EraModel(era.eraName, era.eraMark, new Date(era.startDate), era.fixAttribute, era.eraHist, new Date(era.endDate));
+            let startDate = new Date(era.startDate.substring(0, 10));
+            let endDate = new Date(era.endDate.substring(0, 10));
+            return new EraModel(era.eraName, era.eraMark, startDate, era.fixAttribute, era.eraHist, endDate);
         }
 
         startPage(): JQueryPromise<any> {
@@ -182,7 +175,7 @@ module qmm034.a.viewmodel {
                 if (data.length > 0) {
                     self.items(data);
                     self.currentEra(self.items()[0]);
-                    self.dirty = new nts.uk.ui.DirtyChecker(self.currentEra);
+                    
                     self.date(new Date(self.currentEra().startDate.toString()));
                     self.currentCode(self.currentEra().eraName);
                     self.isUpdate(false);
