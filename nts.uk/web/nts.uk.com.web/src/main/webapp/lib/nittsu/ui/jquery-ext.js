@@ -1,3 +1,4 @@
+/// <reference path="../reference.ts"/>
 var nts;
 (function (nts) {
     var uk;
@@ -474,13 +475,23 @@ var nts;
                                 .appendTo($control);
                             $control.hide();
                         });
+                        // Hiding when click outside
+                        $("html").on("mouseup keypress", { controls: controls }, hideBinding);
                         return controls;
                     }
                     function destroy(controls) {
                         controls.each(function () {
                             $(this).remove();
                         });
+                        // Unbind Hiding when click outside
+                        $("html").off("mouseup keypress", hideBinding);
                         return controls;
+                    }
+                    function hideBinding(e) {
+                        e.data.controls.each(function () {
+                            $(this).hide();
+                        });
+                        return e.data.controls;
                     }
                     function show(controls) {
                         controls.each(function () {
