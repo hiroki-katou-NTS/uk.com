@@ -53,7 +53,7 @@
 							<td><div id="lbl_004"
 									data-bind="ntsFormLabel: { required: true }">開始年月</div></td>
 							<td><span id="inpStartMonth" data-name="開始年月"
-								data-bind="ntsDatePicker: {value: unitPriceHistoryModel().startMonth, dateFormat: 'yyyy/MM', disabled: isSelected}"></span>
+								data-bind="ntsDatePicker: {value: unitPriceHistoryModel().startMonth, dateFormat: 'yyyy/MM', disabled: isNewMode}"></span>
 								<label id="lblJapanenseYearMonth"
 								data-bind="text: '(' + nts.uk.time.yearmonthInJapanEmpire(unitPriceHistoryModel().endMonth()) + ') ~ '"></label></td>
 						</tr>

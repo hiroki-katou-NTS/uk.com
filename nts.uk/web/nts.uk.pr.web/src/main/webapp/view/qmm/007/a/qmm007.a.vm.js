@@ -28,7 +28,6 @@ var nts;
                                     });
                                     var self = this;
                                     self.isLoading = ko.observable(true);
-                                    self.isSelected = ko.observable(false);
                                     self.unitPriceHistoryModel = ko.observable(new UnitPriceHistoryModel(self.getDefaultUnitPriceHistory()));
                                     self.switchButtonDataSource = ko.observableArray([
                                         { code: ApplySetting.APPLY, name: '対象' },
@@ -110,7 +109,6 @@ var nts;
                                         self.isLoading(false);
                                         nts.uk.ui.windows.setShared('unitPriceHistoryModel', ko.toJS(_this.unitPriceHistoryModel()));
                                         $('.save-error').ntsError('clear');
-                                        self.isSelected(true);
                                         dfd.resolve();
                                     });
                                     return dfd.promise();
@@ -119,7 +117,6 @@ var nts;
                                     var self = this;
                                     $('.save-error').ntsError('clear');
                                     self.setUnitPriceHistoryModel(self.getDefaultUnitPriceHistory());
-                                    self.isSelected(false);
                                 };
                                 ScreenModel.prototype.getDefaultUnitPriceHistory = function () {
                                     var defaultHist = {};
