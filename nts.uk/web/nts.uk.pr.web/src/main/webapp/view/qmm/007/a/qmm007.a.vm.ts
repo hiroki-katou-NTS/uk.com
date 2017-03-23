@@ -22,7 +22,8 @@ module nts.uk.pr.view.qmm007.a {
                 super({
                     functionName: '会社一律金額',
                     service: service.instance,
-                    removeMasterOnLastHistoryRemove: true});
+                    removeMasterOnLastHistoryRemove: true
+                });
                 var self = this;
                 self.isLoading = ko.observable(true);
                 self.isSelected = ko.observable(false);
@@ -55,13 +56,40 @@ module nts.uk.pr.view.qmm007.a {
                 if (self.isNewMode()) {
                     service.instance.create(ko.toJS(self.unitPriceHistoryModel())).done(res => {
                         dfd.resolve(res.uuid);
-                    })
+                    }).fail(res => {
+                        self.setMessages(res.messageId);
+                    });
                 } else {
                     service.instance.update(ko.toJS(self.unitPriceHistoryModel())).done((res) => {
                         dfd.resolve(self.unitPriceHistoryModel().id);
                     });
                 }
                 return dfd.promise();
+            }
+
+            private setMessages(messageId: string): void {
+                var self = this;
+                switch (messageId) {
+                    case 'ER001':
+                        if (!self.unitPriceHistoryModel().unitPriceCode()) {
+                            $('#inpCode').ntsError('set', '＊が入力されていません。');
+                        }
+                        if (!self.unitPriceHistoryModel().unitPriceName()) {
+                            $('#inpName').ntsError('set', '＊が入力されていません。');
+                        }
+                        if (!self.unitPriceHistoryModel().budget()) {
+                            $('#inpBudget').ntsError('set', '＊が入力されていません。');
+                        }
+                        break;
+                    case 'ER005':
+                        $('#inpCode').ntsError('set', '入力した＊は既に存在しています。\r\n ＊を確認してください。');
+                        break;
+                    case 'ER010':
+                        $('#inpStartMonth').ntsError('set', '対象データがありません。');
+                        break;
+                    default:// Do nothing.
+                        break;
+                }
             }
 
             /**
@@ -120,7 +148,7 @@ module nts.uk.pr.view.qmm007.a {
                 defaultHist.id = '';
                 defaultHist.unitPriceCode = '';
                 defaultHist.unitPriceName = '';
-                defaultHist.startMonth = nts.uk.time.parseTime(new Date()).toValue();;
+                defaultHist.startMonth = parseInt(nts.uk.time.formatDate(new Date(), 'yyyyMM'));
                 defaultHist.endMonth = 999912;
                 defaultHist.budget = 0;
                 defaultHist.fixPaySettingType = SettingType.COMPANY;
