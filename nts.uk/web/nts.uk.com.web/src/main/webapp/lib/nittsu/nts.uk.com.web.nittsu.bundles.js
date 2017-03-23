@@ -3964,11 +3964,11 @@ var nts;
                     DatePickerBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var data = valueAccessor();
                         var container = $(element);
-                        var idatr = container.attr("id");
                         var newValue = ko.unwrap(data.value);
-                        var dateFormat = data.dateFormat ? ko.unwrap(data.dateFormat) : "yyyy/MM/dd";
+                        var dateFormat = (data.dateFormat !== undefined) ? ko.unwrap(data.dateFormat) : "yyyy/MM/dd";
+                        var disabled = (data.disabled !== undefined) ? ko.unwrap(data.disabled) : true;
+                        var idatr = container.attr("id");
                         var $input = container.find('#' + idatr + "-input");
-                        var dateFormat = data.dateFormat ? ko.unwrap(data.dateFormat) : "yyyy/MM/dd";
                         var formatOptions = container.data("format");
                         var oldDate = $input.datepicker("getDate");
                         if (formatOptions != 'yyyy/mm') {
@@ -3985,12 +3985,10 @@ var nts;
                                 $input.datepicker("setDate", newDate);
                             $input.val(formatted.format());
                         }
-                        if (data.disabled !== undefined && ko.unwrap(data.disabled) == true) {
-                            $input.prop("disabled", true);
-                            if (data.button) {
-                                container.find('.datepicker-btn').prop("disabled", true);
-                            }
-                        }
+                        // Disable
+                        $input.prop("disabled", disabled);
+                        if (data.button)
+                            container.find('.datepicker-btn').prop("disabled", disabled);
                     };
                     return DatePickerBindingHandler;
                 }());
