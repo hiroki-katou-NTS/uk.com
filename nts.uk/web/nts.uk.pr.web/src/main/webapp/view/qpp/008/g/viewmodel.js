@@ -9,23 +9,19 @@ var qpp008;
                     var self = this;
                     self.paymentDateProcessingList = ko.observableArray([]);
                     self.selectedPaymentDate = ko.observable(null);
-                    /*checkBox*/
                     var self = this;
                     self.checked = ko.observable(true);
                     self.enable = ko.observable(true);
                     self.selectedRuleCode = ko.observable(1);
-                    /*switchButton*/
                     self.roundingRules = ko.observableArray([
                         { code: '1', name: 'すべて' },
                         { code: '2', name: '未確認' },
                         { code: '3', name: '確認済み' }
                     ]);
-                    /*iggrid*/
                     self.firstLoad = ko.observable(true);
                     var _isDataBound = false;
                     var _checkAll = false;
                     var _checkAllValue = false;
-                    /////////////event of iggrid
                     $("#grid10").on("iggriddatabound", function (event, ui) {
                         if (_checkAll) {
                         }
@@ -50,22 +46,16 @@ var qpp008;
                         }
                         self.firstLoad = ko.observable(false);
                     });
-                    // event editable cell
                     $(document).delegate("#grid10", "iggridupdatingeditrowstarting", function (evt, ui) {
                         var $cell = $($("#grid10").igGrid("cellById", ui.rowID, "Difference"));
                         if (!($cell.hasClass("red") || $cell.hasClass("yellow"))) {
                             return false;
                         }
-                        //return the triggered event
                         evt;
-                        // get reference to igGridUpdating widget
                         ui.owner;
-                        // to get key or index of row
                         ui.rowID;
-                        // check if that event is raised while new-row-adding
                         ui.rowAdding;
                     });
-                    //change color by delegate
                     $(document).delegate("#grid10", "iggriddatarendered", function (evt, ui) {
                         _.forEach(ui.owner.dataSource.dataView(), function (item, index) {
                             if (item["Difference"] > 20) {
@@ -82,7 +72,6 @@ var qpp008;
                             }
                         });
                     });
-                    //instantiation
                     var iggridData = [];
                     var str = ['a0', 'b0', 'c0', 'd0', 'eo', 'f0', 'g0', 'h0', 'i0', 'j0', 'k0'];
                     for (var j = 0; j < 4; j++) {
@@ -102,8 +91,6 @@ var qpp008;
                         dataSource: iggridData,
                         width: "1260",
                         autoGenerateColumns: false,
-                        //dataSourceType: "Json",
-                        //responseDataKey: "results",
                         columns: [
                             { headerText: "％社員％コード", key: "EmpCode", dataType: "string" },
                             { headerText: "氏名", key: "EmpName", dataType: "string" },
@@ -181,7 +168,6 @@ var qpp008;
                             }
                         ]
                     });
-                    //checkBox
                     $("#cb1").on("click", function (event, ui) {
                         var value = $(this).is(":checked");
                         _checkAll = true;
