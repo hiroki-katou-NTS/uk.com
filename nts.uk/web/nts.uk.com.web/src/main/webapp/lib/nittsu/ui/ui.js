@@ -610,14 +610,13 @@ var nts;
                     this.initialState = this.getCurrentState();
                 }
                 DirtyChecker.prototype.getCurrentState = function () {
-                    return _.cloneDeep(this.targetViewModel());
-                    //return ko.mapping.toJSON(this.targetViewModel());
+                    return ko.toJSON(this.targetViewModel());
                 };
                 DirtyChecker.prototype.reset = function () {
                     this.initialState = this.getCurrentState();
                 };
                 DirtyChecker.prototype.isDirty = function () {
-                    return !_.isEqual(this.initialState, this.getCurrentState());
+                    return this.initialState !== this.getCurrentState();
                 };
                 return DirtyChecker;
             }());
