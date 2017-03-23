@@ -17,7 +17,7 @@ module cmm015.a.viewmodel {
         updatedata: any;
         findIndex: KnockoutObservable<any>;
         notAlert: KnockoutObservable<boolean>;
-//        dirty: nts.uk.ui.DirtyChecker;
+        dirty: nts.uk.ui.DirtyChecker;
 
         constructor() {
             var self = this;
@@ -39,36 +39,37 @@ module cmm015.a.viewmodel {
             self.adddata = ko.observable(null);
             self.updatedata = ko.observable(null);
             self.notAlert = ko.observable(true);
-//            self.dirty = new nts.uk.ui.DirtyChecker(self.currentItem);
+            self.dirty = new nts.uk.ui.DirtyChecker(self.currentItem);
 
             self.currentCode.subscribe((function(codeChanged) {
+                
+                if (self.dirty.isDirty()) {
+                    nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\n よろしいですか。").ifYes(function() {
+                        self.currentItem(self.find(codeChanged));
+                    }).ifNo(function() {
+                        self.notAlert(false);
+                        self.currentCode(self.currentItem().payClassificationCode);
+                    });
+                } else {
+                    self.currentItem(self.find(codeChanged));
+                }
                 self.currentItem(self.find(codeChanged));
+                self.dirty.reset();
                 if (self.currentItem() != null) {
                     self.INP_002_enable(false);
                     self.INP_002_code(self.currentItem().payClassificationCode);
                     self.INP_003_name(self.currentItem().payClassificationName);
                     self.INP_004_notes(self.currentItem().memo);
-                    self.isDeleteEnable(true);
+                                        self.isDeleteEnable(true);
                 }
-
-//                if (!self.notAlert()) {
-//                    self.notAlert(true);
-//                    return;
-//                }
-//                if (codeChanged == null) {
-//                    self.currentItem(self.find(codeChanged));
-//                    return;
-//                }
-//                if (self.dirty.isDirty()) {
-//                    nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\n よろしいですか。").ifYes(function() {
-//                        self.currentItem(self.find(codeChanged));
-//                    }).ifNo(function() {
-//                        self.notAlert(false);
-//                        self.currentCode(self.currentItem().payClassificationCode);
-//                    });
-//                } else {
-//                    self.currentItem(self.find(codeChanged));
-//                }
+                if (!self.notAlert()) {
+                    self.notAlert(true);
+                    return;
+                }
+                if (codeChanged == null) {
+                    self.currentItem(self.find(codeChanged));
+                    return;
+                }
 
             }));
         }
