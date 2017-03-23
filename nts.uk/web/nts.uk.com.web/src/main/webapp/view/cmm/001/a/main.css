@@ -242,8 +242,8 @@ body > div:nth-child(4){
 	left: 0px;
 	width: 0px;
 }
-#combo-box {
-	width:80px;
+#D_SEL_005 {
+	width:80px !important;
 }
 #contents-area > div.nts-right-content > div.table.fixed-height{
 	margin-top: 0px !important;

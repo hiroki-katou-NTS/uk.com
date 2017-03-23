@@ -1,15 +1,11 @@
 module cmm001.a {
     export class ScreenModel {
-        // data of items list - tree grid
+        // data of items list - grid list
         items: KnockoutObservableArray<Company>;
-        item1s: KnockoutObservableArray<Company>;
         columns2: KnockoutObservableArray<any>;
         currentCode: KnockoutObservable<string>;
         firstCode: KnockoutObservable<string>;
         currentCompanyDto: KnockoutObservable<cmm001.a.service.model.CompanyDto>;
-        testCompany: KnockoutObservable<cmm001.a.service.model.CompanyDto>;
-        currentCodeList: KnockoutObservableArray<any>;
-        currentNode: KnockoutObservable<Company>;
         editMode: boolean = true;
         mode: KnockoutObservable<boolean> = ko.observable(null);
         //tabpanel
@@ -26,11 +22,9 @@ module cmm001.a {
         selectedRuleCode3: KnockoutObservable<string>;
         roundingRules4: KnockoutObservableArray<string>;
         selectedRuleCode4: KnockoutObservable<string>;
-        //        roundingRule1s: KnockoutObservableArray<any>;
-        //        selectedRuleCode1: any;
         //combox
         itemList: KnockoutObservableArray<Company>;
-        itemName: KnockoutObservable<string>;
+        //itemName: KnockoutObservable<string>;
         currentCodeCombox: KnockoutObservable<number>
         selectedCode: KnockoutObservable<string>;
         isEnable: KnockoutObservable<boolean>;
@@ -38,21 +32,34 @@ module cmm001.a {
         //check
         checked1: KnockoutObservable<boolean>;
         checked2: KnockoutObservable<boolean>;
-        //search box
-        textSearch: string = "";
+        // company from database
         companys: KnockoutObservableArray<cmm001.a.service.model.CompanyDto>;
+        //dirty
+        dirtyStart: nts.uk.ui.DirtyChecker;
         constructor() {
             let self = this;
             let node: Company;
             self.init();
             self.currentCode.subscribe(function(newValue) {
-                if (self.editMode) {
-                    self.getDetailCompany(self.companys(), newValue);
+                if (!self.dirtyStart.isDirty()) {
+                    if (self.editMode) {
+                        self.getDetailCompany(self.companys(), newValue);
+                        self.dirtyStart.reset();
+                    }
+                    else {
+                        self.editMode = true;
+                        self.dirtyStart.reset();
+                    }
+                } else {
+                    nts.uk.ui.dialog.confirm("Do you want to change data?").ifYes(function() {
+                        self.ClickRegister();
+                    }).ifNo(function() {
+                        self.dirtyStart.reset();
+                    }).ifCancel(function() {
+                        nts.uk.ui.dialog.alert("You just press Cancel");
+                    })
+                }
 
-                }
-                else {
-                    self.editMode = true;
-                }
             });
             self.checked1.subscribe(function(newValue) {
                 let $grid = $("#single-list");
@@ -110,7 +117,6 @@ module cmm001.a {
                     self.selectedRuleCode2(obj.use_Qy_Set.toString());
                     self.selectedRuleCode3(obj.depWorkPlaceSet.toString());
                     self.selectedCode(obj.termBeginMon.toString());
-                    self.testCompany(ko.mapping.fromJS(node));
                     self.currentCompanyDto(ko.mapping.fromJS(node));
 
                 }
@@ -165,7 +171,7 @@ module cmm001.a {
             ]);
             self.currentCode = ko.observable('');
             self.firstCode = ko.observable('');
-            self.currentCodeList = ko.observableArray(null);
+            //self.currentCodeList = ko.observableArray(null);
             //tabpanel
             self.tabs = ko.observableArray([
                 { id: 'tab-1', title: '会社基本情報', content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true) },
@@ -212,7 +218,6 @@ module cmm001.a {
                 new Company('12', '12月', '')
             ]);
             self.companys = ko.observableArray([]);
-            self.itemName = ko.observable('');
             self.currentCodeCombox = ko.observable(4);
             self.selectedCode = ko.observable('4');
             self.isEnable = ko.observable(true);
@@ -241,14 +246,18 @@ module cmm001.a {
             companyDto.use_Kt_Set = 1;
             companyDto.use_Qy_Set = 1;
             companyDto.use_Jj_Set = 1;
-            self.testCompany = ko.observable(ko.mapping.fromJS(companyDto));
             self.currentCompanyDto = ko.observable(ko.mapping.fromJS(companyDto));
+            self.dirtyStart = new nts.uk.ui.DirtyChecker(self.currentCompanyDto);
+            console.log(self.dirtyStart);
         }
         // register company information
         //BTN-002 
         ClickRegister(): any {
+            
             let self = this;
             let dfd = $.Deferred<any>();
+            console.log(self.dirtyStart.isDirty());
+           // if(self.firstCode().toString() === self.companys()[0].companyCode){
             let currentCompany: service.model.CompanyDto;
             currentCompany = ko.toJS(self.currentCompanyDto);
             let companyNameGlobal: string;
@@ -263,7 +272,6 @@ module cmm001.a {
             } else {
                 currentCompany.displayAttribute = 0;
             }
-
             let use_Ac_Set: number;
             let use_Gw_Set: number;
             let use_Hc_Set: number;
@@ -304,21 +312,6 @@ module cmm001.a {
                 $("#C_INP_002").ntsError('set', 'this address must not null');
                 error2 = false;
             }
-            let error3: boolean;
-            let t1 = currentCompany.postal;
-            let t2 = t1.split("-");
-            let text = "";
-            for (let i = 0; i < t2.length; i++) {
-                text += Number(t2[i]);
-            }
-            if (Number(text) > 0) {
-                $('#C_INP_001').ntsError('clear');
-                error3 = true;
-            } else {
-                $("#C_INP_001").ntsError('set', 'this postal is  invalid text');
-                error3 = false;
-
-            }
 
             let error4: boolean;
 
@@ -341,56 +334,40 @@ module cmm001.a {
                 error5 = false;
             }
 
-            let error6: boolean;
-            let telNo = currentCompany.telephoneNo;
-            let test1 = telNo.split('-');
-            let checkTel: boolean;
-            for (let i = 0; i < test1.length; i++) {
-                if (Number(test1[i])) { checkTel = true; }
-                else { checkTel = false; break; }
-            }
-            if ((telNo === " " || telNo !== "") && checkTel) {
-                $('#C_INP_006').ntsError('clear');
-                error6 = true;
+            let errorCheck1: boolean;
+            if (self.checked1() == true) {
+                $('#A_SEL_001').ntsError('clear');
+                errorCheck1 = true;
             } else {
-                $("#C_INP_006").ntsError('set', 'this telephone Number is  invalid text');
-                error6 = false;
-            }
-            let error7: boolean;
-            let faxNo = currentCompany.faxNo;
-            let test2 = faxNo.split('-');
-            let checkFax: boolean;
-            for (let i = 0; i < test2.length; i++) {
-                if (Number(test2[i])) { checkFax = true; }
-                else { checkFax = false; break; }
-            }
-            if (((faxNo === " " || faxNo !== "")) && checkFax) {
-                $('#C_INP_007').ntsError('clear');
-                error7 = true;
-            } else {
-                $("#C_INP_007").ntsError('set', 'this fax Number is  invalid text');
-                error7 = false;
+                $('#A_SEL_001').ntsError('set', 'this check must be true');
+                errorCheck1 = false;
             }
             let allerror: boolean;
-            allerror = error && error1 && error2 && error3 && error4 && error5 && error6 && error7;
-            console.log(currentCompany);
-            if (allerror === true) {
+            allerror = error && error1 && error2 && error4 && error5;
+            if (allerror === true && self.dirtyStart.isDirty()) {
+                console.log(self.dirtyStart.isDirty());
                 if (self.mode()) {
                     cmm001.a.service.updateData(currentCompany).done(function() {
                         self.start(currentCompany.companyCode);
-                        nts.uk.ui.dialog.alert("変更された内容が登録されていません。\r\nよろしいですか。");
+                         nts.uk.ui.dialog.alert("変更された内容が登録されていません。\r\nよろしいですか。");
+                       
+//                      
                     });
                 } else {
                     if (currentCompany.companyCode != self.currentCode()) {
                         cmm001.a.service.addData(currentCompany).done(function() {
                             self.start(currentCompany.companyCode);
                             nts.uk.ui.dialog.alert("変更された内容が登録されていません。\r\nよろしいですか。");
+                            
+ //                           
                         });
 
                     }
                 }
 
             }
+            self.dirtyStart.reset();
+          
         }
         //BTN-003 -Setting cac thong so ban dau
         ClickSetting(): void {
@@ -436,8 +413,6 @@ module cmm001.a {
                     }
                 } else {
                     self.mode(false);
-
-
                 }
                 dfd.resolve();
             });
