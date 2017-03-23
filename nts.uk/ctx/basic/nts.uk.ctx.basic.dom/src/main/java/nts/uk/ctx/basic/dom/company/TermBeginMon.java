@@ -1,16 +1,13 @@
 package nts.uk.ctx.basic.dom.company;
 
 import nts.arc.primitive.IntegerPrimitiveValue;
-import nts.arc.primitive.constraint.CharType;
-import nts.arc.primitive.constraint.StringCharType;
-import nts.arc.primitive.constraint.StringMaxLength;
+import nts.arc.primitive.constraint.IntegerRange;
 /**
  * 
  * @author lanlt
  *
  */
-@StringMaxLength(2)
-@StringCharType(CharType.NUMERIC)
+@IntegerRange(min = 1, max = 12)
 public class TermBeginMon extends IntegerPrimitiveValue<TermBeginMon>{
 	/**serialVersionUID*/
 	private static final long serialVersionUID = 1L;

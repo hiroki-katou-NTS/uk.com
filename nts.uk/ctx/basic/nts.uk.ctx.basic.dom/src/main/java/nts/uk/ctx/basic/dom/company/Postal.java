@@ -1,7 +1,5 @@
 package nts.uk.ctx.basic.dom.company;
 
-import org.eclipse.persistence.internal.jpa.parsing.StringFunctionNode;
-
 import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.StringMaxLength;
 /**

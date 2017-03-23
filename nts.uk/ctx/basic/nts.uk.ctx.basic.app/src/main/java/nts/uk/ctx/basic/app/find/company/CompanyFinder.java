@@ -8,6 +8,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.basic.dom.company.CompanyRepository;
+import nts.uk.shr.com.context.AppContexts;
 /**
  * 
  * @author lanlt
@@ -24,6 +25,15 @@ public class CompanyFinder {
 	}
 	public Optional<CompanyDto> getCompany(String companyCode){
 		return this.companyRepository.getCompanyDetail(companyCode).map(company-> CompanyDto.fromDomain(company));
+		
+	}
+	public  Optional<CompanyDto> getCompanyByUserKtSet(int use_Kt_Set){
+		String companyCode = "";
+		if (AppContexts.user() != null) {
+			companyCode = AppContexts.user().companyCode();
+		}
+		
+		return this.companyRepository.getCompanyByUserKtSet(companyCode, use_Kt_Set).map(c-> CompanyDto.fromDomain(c));
 		
 	}
 	

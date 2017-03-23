@@ -15,7 +15,9 @@ public interface CompanyRepository {
 	 * @param companyCode
 	 * @return
 	 */
-	Optional<Company> getCompanyDetail(String companyCode);
+	Optional<Company> getCompanyDetail(String companyCd);
+	Optional<Company> getCompanyByUserKtSet(String companyCd, int use_Kt_Set);														
+
 	/**
 	 * find all company
 	 * @return
@@ -36,6 +38,6 @@ public interface CompanyRepository {
 	 * Delete a company
 	 * @param companyCode
 	 */
-	void delete(String companyCode);
+	void delete(String companyCd);
 }
 

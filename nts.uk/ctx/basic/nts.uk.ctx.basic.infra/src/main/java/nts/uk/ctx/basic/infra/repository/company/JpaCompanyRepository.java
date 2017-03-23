@@ -11,6 +11,7 @@ import nts.uk.ctx.basic.dom.company.Company;
 import nts.uk.ctx.basic.dom.company.CompanyRepository;
 import nts.uk.ctx.basic.infra.entity.company.CmnmtCompany;
 import nts.uk.ctx.basic.infra.entity.company.CmnmtCompanyPK;
+import nts.uk.ctx.basic.infra.entity.organization.classification.CmnmtClass;
 
 /**
  * 
@@ -21,6 +22,8 @@ import nts.uk.ctx.basic.infra.entity.company.CmnmtCompanyPK;
 public class JpaCompanyRepository extends JpaRepository implements CompanyRepository {
 
 	private static final String SEL_1 = "SELECT e FROM CmnmtCompany e";
+	private static final String SEL_2 = SEL_1+ " WHERE e.cmnmtCompanyPk.companyCd = :companyCd"
+			+ " AND e.use_Kt_Set = :use_Kt_Set";
 
 	// private static final String SEL_2 = SEL_1 + "WHERE
 	// e.cmnmtCompanyPK.companyCd = : companyCd";
@@ -38,7 +41,7 @@ public class JpaCompanyRepository extends JpaRepository implements CompanyReposi
 
 	private static CmnmtCompany toEntity(Company domain) {
 		CmnmtCompany entity = new CmnmtCompany();
-		entity.cmnmtCompanyPk = new CmnmtCompanyPK(domain.getCompanyCode().v());
+		entity.cmnmtCompanyPk = new CmnmtCompanyPK(domain.getCompanyCode().toString());
 		entity.cName = domain.getCompanyName().v();
 		entity.cName_E = domain.getCompanyNameGlobal().v();
 		entity.cName_Abb = domain.getCompanyNameAbb().v();
@@ -125,6 +128,17 @@ public class JpaCompanyRepository extends JpaRepository implements CompanyReposi
 		val objKey = new CmnmtCompanyPK();
 		objKey.companyCd = companyCode;
 		this.commandProxy().remove(CmnmtCompany.class, objKey);
+	}
+
+	@Override
+	public Optional<Company> getCompanyByUserKtSet(String companyCd, int use_Kt_Set) {
+		
+		return this.queryProxy().query(SEL_2, CmnmtCompany.class)
+				.setParameter("companyCd", companyCd)
+				.setParameter("use_Kt_Set", use_Kt_Set).getSingle().map(e -> {
+					return Optional.of(toDomain(e));
+				}).orElse(Optional.empty());
+		
 	}
 
 }

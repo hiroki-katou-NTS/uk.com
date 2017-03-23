@@ -11,6 +11,7 @@ import nts.arc.primitive.constraint.StringMaxLength;
  */
 @AllArgsConstructor
 @StringCharType(CharType.NUMERIC)
+@StringMaxLength(1)
 public enum DepWorkPlaceSet {
 	/** 0:区別しない	 */
 	DISTINCTION_NOT_USE(0),

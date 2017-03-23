@@ -1,16 +1,13 @@
 package nts.uk.ctx.basic.dom.company.useset;
 
 import nts.arc.primitive.IntegerPrimitiveValue;
-import nts.arc.primitive.constraint.CharType;
-import nts.arc.primitive.constraint.StringCharType;
-import nts.arc.primitive.constraint.StringMaxLength;
+import nts.arc.primitive.constraint.IntegerRange;
 /**
  * 
  * @author lanlt
  *
  */
-@StringMaxLength(1)
-@StringCharType(CharType.NUMERIC)
+@IntegerRange(min = 0, max = 1)
 public class UseSet extends IntegerPrimitiveValue<UseSet>{
 	
 	/**serialVersionUID	 */

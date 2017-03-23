@@ -1,6 +1,9 @@
 package nts.uk.ctx.basic.ws.company;
 
+import java.applet.AppletContext;
 import java.util.List;
+import java.util.Optional;
+
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -17,6 +20,7 @@ import nts.uk.ctx.basic.app.command.company.UpdateCompanyCommand;
 import nts.uk.ctx.basic.app.command.company.UpdateCompanyCommandHandler;
 import nts.uk.ctx.basic.app.find.company.CompanyDto;
 import nts.uk.ctx.basic.app.find.company.CompanyFinder;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * 
@@ -64,5 +68,14 @@ public class CompanyWebservice extends WebService{
 	public void addData(AddCompanyCommand command){
 		this.addData.handle(command);
 	}
+	
+	@POST
+	@Path("findByUseKtSet/{useKtSet}")
+	public CompanyDto getCompanyByUserKtSet(@PathParam("use_Kt_Set")int  use_Kt_Set){
+		return this.finder.getCompanyByUserKtSet(use_Kt_Set)
+				.orElseThrow(() -> new BusinessException(new RawErrorMessage("Not Found Company")));
+		
+	}
+	
 	
 }

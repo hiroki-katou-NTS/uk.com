@@ -32,8 +32,8 @@ public class UpdateCompanyCommandHandler extends CommandHandler<UpdateCompanyCom
 		if (company.getCompanyCode().toString().equals(update.getCompanyCode())) {
 			company = Company.createFromJavaType(update.getCompanyCode(), update.getCompanyName(),
 					update.getCompanyNameGlobal(), update.getCompanyNameAbb(), update.getCompanyNameKana(),
-					update.getCorporateMyNumber(), update.getFaxNo(), update.getPostal(), update.getPresidentName(),
-					update.getPresidentJobTitle(), update.getTelephoneNo(), update.getDepWorkPlaceSet(),
+					update.getCorporateMyNumber(), update.getFaxNo().toString(), update.getPostal().toString(), update.getPresidentName(),
+					update.getPresidentJobTitle(), update.getTelephoneNo().toString(), update.getDepWorkPlaceSet(),
 					update.getDisplayAttribute(), update.getAddress1(), update.getAddress2(), update.getAddressKana1(),
 					update.getAddressKana2(), update.getTermBeginMon(), update.getUse_Gr_Set(), update.getUse_Kt_Set(),
 					update.getUse_Qy_Set(), update.getUse_Jj_Set(), update.getUse_Ac_Set(), update.getUse_Gw_Set(),
