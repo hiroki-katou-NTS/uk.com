@@ -12,8 +12,6 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 public class AddFormulaMasterCommand {
-	
-	private String ccd;
 
 	private String formulaCode;
 	
@@ -22,8 +20,6 @@ public class AddFormulaMasterCommand {
 	private BigDecimal difficultyAtr;
 	
 	private int startDate;
-	
-	private int endDate;
 	
 	private int conditionAtr;
 	

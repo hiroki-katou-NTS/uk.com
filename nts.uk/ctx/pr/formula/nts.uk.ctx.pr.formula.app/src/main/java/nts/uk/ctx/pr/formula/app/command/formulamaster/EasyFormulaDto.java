@@ -1,7 +1,6 @@
 package nts.uk.ctx.pr.formula.app.command.formulamaster;
 
 import java.math.BigDecimal;
-import java.util.List;
 
 import lombok.Data;
 
@@ -12,20 +11,12 @@ public class EasyFormulaDto {
 	
 	private BigDecimal value;
 
-	/* Formula Easy Standard Item */
-	private List<ReferenceItemCodeDto> referenceItemCode;
-
-	/**
-	 * @param easyFormulaCode
-	 * @param value
-	 * @param referenceItemCode
-	 */
-	public EasyFormulaDto(String easyFormulaCode, BigDecimal value, List<ReferenceItemCodeDto> referenceItemCode) {
-		super();
-		this.easyFormulaCode = easyFormulaCode;
-		this.value = value;
-		this.referenceItemCode = referenceItemCode;
-	}
-
+	/*B_SEL_003 */
+	private String referenceMasterNo;
+	
+	/* Formula Detail */	
+	private EasyDetailDto formulaDetail;	
+	
+	private int fixFormulaAtr;
 	
 }

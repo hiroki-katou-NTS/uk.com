@@ -71,12 +71,13 @@ public class JpaFormulaMasterRepository extends JpaRepository implements Formula
 
 	@Override
 	public void remove(String companyCode, FormulaCode formulaCode) {
-		this.commandProxy().remove(QcfmtFormula.class, new QcfmtFormulaPK(companyCode,formulaCode.v()));
+		this.commandProxy().remove(QcfmtFormula.class, new QcfmtFormulaPK(companyCode, formulaCode.v()));
 	}
 
 	@Override
-	public void update(FormulaMaster formulaMaster) {
-		this.commandProxy().update(toEntity(formulaMaster));
+	public void update(String companyCode, FormulaCode formulaCode) {
+		this.commandProxy().update(
+				toEntity(this.findByCompanyCodeAndFormulaCode(companyCode, new FormulaCode(formulaCode.v())).get()));
 	}
 
 	private FormulaMaster toDomain(QcfmtFormula qcfmtFormula) {

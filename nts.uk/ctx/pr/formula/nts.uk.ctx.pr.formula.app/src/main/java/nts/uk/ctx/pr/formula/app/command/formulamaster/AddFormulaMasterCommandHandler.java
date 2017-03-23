@@ -6,6 +6,7 @@ import javax.inject.Inject;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.time.GeneralDate;
 import nts.arc.time.YearMonth;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.pr.formula.dom.enums.ConditionAtr;
@@ -41,7 +42,7 @@ public class AddFormulaMasterCommandHandler extends CommandHandler<AddFormulaMas
 				new FormulaName(command.getFormulaName()));
 
 		FormulaHistory formulaHistory = new FormulaHistory(companyCode, new FormulaCode(command.getFormulaCode()),
-				historyId, new YearMonth(command.getStartDate()), new YearMonth(command.getEndDate()));
+				historyId, new YearMonth(command.getStartDate()), new YearMonth(GeneralDate.max().year()*100 + GeneralDate.max().month()));
 
 		FormulaEasyHeader formulaEasyHeader = new FormulaEasyHeader(companyCode,
 				new FormulaCode(command.getFormulaCode()), historyId,

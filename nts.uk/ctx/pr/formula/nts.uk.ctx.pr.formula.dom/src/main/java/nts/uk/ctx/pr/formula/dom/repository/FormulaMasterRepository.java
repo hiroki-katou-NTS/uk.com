@@ -33,7 +33,7 @@ public interface FormulaMasterRepository {
 	
 	void add(FormulaMaster formulaMaster);
 	
-	void update(FormulaMaster formulaMaster);
+	void update(String companyCode, FormulaCode formulaCode);
 	
 	void remove(String companyCode, FormulaCode formulaCode);
 	

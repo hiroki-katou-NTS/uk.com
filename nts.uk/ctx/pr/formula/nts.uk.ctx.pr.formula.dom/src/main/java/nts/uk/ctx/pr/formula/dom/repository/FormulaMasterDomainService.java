@@ -9,11 +9,12 @@ import nts.uk.ctx.pr.formula.dom.formula.FormulaEasyStandardItem;
 import nts.uk.ctx.pr.formula.dom.formula.FormulaHistory;
 import nts.uk.ctx.pr.formula.dom.formula.FormulaManual;
 import nts.uk.ctx.pr.formula.dom.formula.FormulaMaster;
+import nts.uk.ctx.pr.formula.dom.primitive.FormulaCode;
 
 public interface FormulaMasterDomainService {
 	void add(FormulaMaster formulaMaster, FormulaHistory formulaHistory, FormulaEasyHeader formulaEasyHeader);
-	
-	void update(FormulaMaster formulaMaster, FormulaHistory formulaHistory, FormulaEasyHeader formulaEasyHeader,
-			List<FormulaEasyCondition> formulaEasyCondition, FormulaEasyDetail formulaEasyDetail,
-			List<FormulaEasyStandardItem> formulaEasyStandardItem, FormulaManual formulaManual);
+
+	void update(int difficultyAtr, String companyCode, FormulaCode formulaCode, String historyId,
+			List<FormulaEasyCondition> listFormulaEasyCondition, List<FormulaEasyDetail> listFormulaEasyDetail,
+			List<FormulaEasyStandardItem> listFormulaEasyStandardItem, FormulaManual formulaManual);
 }

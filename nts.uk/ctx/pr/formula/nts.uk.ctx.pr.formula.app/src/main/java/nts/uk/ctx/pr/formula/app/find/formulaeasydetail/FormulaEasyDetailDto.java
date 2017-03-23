@@ -5,6 +5,7 @@ package nts.uk.ctx.pr.formula.app.find.formulaeasydetail;
 
 import java.math.BigDecimal;
 
+import lombok.Getter;
 import lombok.Value;
 import nts.uk.ctx.pr.formula.dom.formula.FormulaEasyDetail;
 

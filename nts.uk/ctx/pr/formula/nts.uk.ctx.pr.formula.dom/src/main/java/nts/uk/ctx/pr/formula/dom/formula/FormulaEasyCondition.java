@@ -32,7 +32,7 @@ public class FormulaEasyCondition extends AggregateRoot {
 
 	private ReferenceMasterCode referenceMasterCode;
 
-
+ 
 	/**
 	 * @param companyCode
 	 * @param formulaCode
@@ -72,6 +72,13 @@ public class FormulaEasyCondition extends AggregateRoot {
 		this.companyCode = companyCode;
 		this.formulaCode = formulaCode;
 		this.historyId = historyId;
+	}
+
+	/**
+	 * 
+	 */
+	public FormulaEasyCondition() {
+		super();
 	}
 
 }

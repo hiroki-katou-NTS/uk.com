@@ -52,10 +52,10 @@ public class AddFormulaHistoryCommandHandler extends CommandHandler<AddFormulaHi
 		Optional<FormulaHistory> previousFormulaHistory = this.formulaHistoryRepository.findPreviousHistory(companyCode,
 				new FormulaCode(command.getFormulaCode()), new YearMonth(command.getStartDate()));
 		// update previous history with endDate = startDate of last History
-		FormulaHistory previousFormulaHistoryUpdate = new FormulaHistory(companyCode, new FormulaCode(command.getFormulaCode()),
+		FormulaHistory previousFormulaHistoryUpdate = previousFormulaHistory.isPresent() ? new FormulaHistory(companyCode, new FormulaCode(command.getFormulaCode()),
 				previousFormulaHistory.get().getHistoryId(),
 				new YearMonth(previousFormulaHistory.get().getStartDate().v()),
-				new YearMonth(command.getStartDate()).addMonths(-1));
+				new YearMonth(command.getStartDate()).addMonths(-1)) : null;
 
 		formulaHistoryDomainService.add(command.getDifficultyAtr(), formulaHistoryAdd, formulaEasyHead, previousFormulaHistoryUpdate);
 	}

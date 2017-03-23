@@ -95,13 +95,11 @@ public class FormulaSettingFinder {
 					List<FormulaEasyStandardItemDto> formulaEasyStandardItemDtos = formulaEasyStandardItemRepository
 							.findAll(login.companyCode(), new FormulaCode(formulaCode), historyId, new EasyFormulaCode(f.getEasyFormulaCode()))
 							.stream().map(dto -> FormulaEasyStandardItemDto.fromDomain(dto)).collect(Collectors.toList());
-					List<String> referenceItemCodes = new ArrayList<>();
-					formulaEasyStandardItemDtos.stream().map(easyStandard -> {
-						referenceItemCodes.add(easyStandard.getReferenceItemCode());
-						return referenceItemCodes;
-					});
+					
 					// set reference Code in List<String> referenceItemCodes
-					formulaEasyFinderDto.setReferenceItemCodes(referenceItemCodes);
+					formulaEasyFinderDto.setReferenceItemCodes(formulaEasyStandardItemDtos.stream().map(easyStandard -> {
+						return easyStandard.getReferenceItemCode();
+					}).collect(Collectors.toList()));
 					return formulaEasyFinderDto;
 				});
 				
