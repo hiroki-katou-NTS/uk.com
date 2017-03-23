@@ -42,14 +42,6 @@ var qmm006;
                     var dfd = $.Deferred();
                     $.when(self.findBankAll()).done(function () {
                         self.findAll().done(function () {
-                            //                    $(document).delegate("#single-list", "iggridselectionrowselectionchanging", function(evt, ui) {
-                            //                        if (self.dirty.isDirty()) {
-                            //                            //"変更された内容が登録されていません。"---AL001 
-                            //                            nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\n よろしいですか。").ifYes(function() {
-                            //                            }).ifNo(function() {
-                            //                            })
-                            //                        }
-                            //                    });
                             dfd.resolve();
                         }).fail(function (res) {
                             dfd.reject(res);
@@ -85,7 +77,6 @@ var qmm006;
                 ScreenModel.prototype.OpenCDialog = function () {
                     var self = this;
                     if (self.dirty.isDirty()) {
-                        //"変更された内容が登録されていません。"---AL001 
                         nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\n よろしいですか。").ifYes(function () {
                             nts.uk.ui.windows.sub.modal("/view/qmm/006/c/index.xhtml", { title: "振込元銀行の登録　＞　振込元銀行", dialogClass: "no-close" }).onClosed(function () {
                                 self.findAll().done(function () {
@@ -110,7 +101,6 @@ var qmm006;
                 ScreenModel.prototype.BTN007 = function () {
                     var self = this;
                     if (self.dirty.isDirty()) {
-                        //"変更された内容が登録されていません。"---AL001 
                         nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\n よろしいですか。").ifYes(function () {
                         }).ifNo(function () {
                         });
@@ -119,7 +109,6 @@ var qmm006;
                 ScreenModel.prototype.jumpToQmm002A = function () {
                     var self = this;
                     if (self.dirty.isDirty()) {
-                        //"変更された内容が登録されていません。"---AL001 
                         nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\n よろしいですか。").ifYes(function () {
                             nts.uk.request.jump("/view/qmm/002/a/index.xhtml");
                         }).ifNo(function () {
@@ -142,7 +131,6 @@ var qmm006;
                 ScreenModel.prototype.clearForm = function () {
                     var self = this;
                     if (self.dirty.isDirty()) {
-                        //"変更された内容が登録されていません。"---AL001 
                         nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\n よろしいですか。").ifYes(function () {
                             self.currentLineBank(new LineBank(null, null, null, null, 0, null, null, null, []));
                             self.currentCode("");
@@ -157,7 +145,6 @@ var qmm006;
                     self.currentCode(item.lineBankCode);
                     return new LineBank(item.bankCode, item.branchCode, item.lineBankCode, item.lineBankName, item.accountAtr, item.accountNo, item.memo, item.requesterName, item.consignors);
                 };
-                //find list Bank
                 ScreenModel.prototype.findBankAll = function () {
                     var self = this;
                     var lineBank = self.currentLineBank();
@@ -189,9 +176,7 @@ var qmm006;
                         self.countItems(data.length);
                         if (data.length > 0) {
                             if (self.isSelectdFirstRow()) {
-                                //load lai list va chi vao row dau tien
                                 self.currentLineBank(self.selectedItem(data[0]));
-                                //set gia tri cho LBL_005 va LBL_007
                                 var tmp = _.find(self.dataSource2(), function (x) {
                                     return x.code === self.currentLineBank().bankCode();
                                 });
@@ -218,7 +203,6 @@ var qmm006;
                             }
                             self.items(data);
                             self.isDeleteEnable(true);
-                            //theo doi su thay doi cua currentCode khi click
                             self.currentCode.subscribe(function (codeChanged) {
                                 self.findIndex(_.findIndex(data, function (x) {
                                     return x.lineBankCode == codeChanged;
@@ -226,7 +210,6 @@ var qmm006;
                                 self.clearError();
                                 self.isDeleteEnable(true);
                                 var lineBank = self.findLineBank(codeChanged);
-                                //set gia tri cho LBL_005 va LBL_007
                                 var tmp = _.find(self.dataSource2(), function (x) {
                                     return x.code === lineBank.bankCode();
                                 });
@@ -249,7 +232,6 @@ var qmm006;
                                 }
                                 self.isEnable(false);
                                 if (self.dirty.isDirty() && !(self.currentCode() === self.currentLineBank().lineBankCode())) {
-                                    //"変更された内容が登録されていません。"---AL001 
                                     nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\n よろしいですか。").ifYes(function () {
                                         self.currentLineBank(lineBank);
                                         self.dirty = new nts.uk.ui.DirtyChecker(self.currentLineBank);
@@ -298,7 +280,6 @@ var qmm006;
                     };
                     qmm006.a.service.saveData(self.isEnable(), command)
                         .done(function () {
-                        //load lai list va chi vao row moi them
                         $.when(self.findAll()).done(function () {
                             self.currentCode(command.lineBankCode);
                             self.isEnable(false);
@@ -334,7 +315,6 @@ var qmm006;
                 };
                 ScreenModel.prototype.remove = function () {
                     var self = this;
-                    //"データを削除します。\r\nよろしいですか？"---AL002
                     nts.uk.ui.dialog.confirm("データを削除します。\r\nよろしいですか？").ifYes(function () {
                         var command = {
                             accountAtr: self.currentLineBank().accountAtr(),
@@ -467,3 +447,4 @@ var qmm006;
         })(viewmodel = a.viewmodel || (a.viewmodel = {}));
     })(a = qmm006.a || (qmm006.a = {}));
 })(qmm006 || (qmm006 = {}));
+//# sourceMappingURL=viewmodel.js.map

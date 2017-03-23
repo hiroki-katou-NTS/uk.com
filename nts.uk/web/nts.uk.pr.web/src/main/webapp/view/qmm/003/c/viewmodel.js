@@ -36,7 +36,6 @@ var qmm003;
                 ;
                 ScreenModel.prototype.clickButton = function () {
                     var self = this;
-                    //nts.uk.ui.windows.setShared('singleSelectedCode', self.singleSelectedCode(), true);
                     nts.uk.ui.windows.setShared('currentNode', self.currentNode(), true);
                     nts.uk.ui.windows.close();
                 };
@@ -49,7 +48,6 @@ var qmm003;
                     self.singleSelectedCode = ko.observable("");
                     self.currentNode = ko.observable((new Node("", "", [])));
                 };
-                //11.初期データ取得処理 11. Initial data acquisition processing
                 ScreenModel.prototype.start = function () {
                     var dfd = $.Deferred();
                     var self = this;
@@ -121,3 +119,4 @@ var qmm003;
     })(c = qmm003.c || (qmm003.c = {}));
 })(qmm003 || (qmm003 = {}));
 ;
+//# sourceMappingURL=viewmodel.js.map

@@ -11,9 +11,6 @@ var qmm003;
                 updateResidential: "pr/core/residential/updateresidential",
                 deleteResidential: "pr/core/residential/deleteresidential"
             };
-            /**
-             * Get list residential date processing.
-             */
             function getResidentialTax() {
                 var dfd = $.Deferred();
                 nts.uk.request.ajax(paths.getResidentialTaxList)
@@ -61,16 +58,6 @@ var qmm003;
                 return dfd.promise();
             }
             service.updateData = updateData;
-            //    export function deleteResidential(residential: model.ResidentialTax) {
-            //        var dfd = $.Deferred<Array<any>>();
-            //        nts.uk.request.ajax(paths.deleteResidential, residential).done(function(res: Array<any>) {
-            //            dfd.resolve(res);
-            //        })
-            //            .fail(function(res) {
-            //                dfd.reject(res);
-            //            })
-            //        return dfd.promise();
-            //    }
             function deleteResidential(param) {
                 var dfd = $.Deferred();
                 nts.uk.request.ajax(paths.deleteResidential, { resiTaxCodes: param }).done(function (res) {
@@ -128,3 +115,4 @@ var qmm003;
         })(service = a.service || (a.service = {}));
     })(a = qmm003.a || (qmm003.a = {}));
 })(qmm003 || (qmm003 = {}));
+//# sourceMappingURL=service.js.map
