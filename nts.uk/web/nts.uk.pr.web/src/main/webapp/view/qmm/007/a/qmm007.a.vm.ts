@@ -29,13 +29,13 @@ module nts.uk.pr.view.qmm007.a {
 
                 self.unitPriceHistoryModel = ko.observable(new UnitPriceHistoryModel(self.getDefaultUnitPriceHistory()));
                 self.switchButtonDataSource = ko.observableArray<SwitchButtonDataSource>([
-                    { code: 'Apply', name: '対象' },
-                    { code: 'NotApply', name: '対象外' }
+                    { code: ApplySetting.APPLY, name: '対象' },
+                    { code: ApplySetting.NOTAPPLY, name: '対象外' }
                 ]);
 
                 // Setting type
                 self.isContractSettingEnabled = ko.computed(() => {
-                    return self.unitPriceHistoryModel().fixPaySettingType() == 'Contract';
+                    return self.unitPriceHistoryModel().fixPaySettingType() == SettingType.CONTRACT;
                 })
 
                 // Nts text editor options
@@ -123,12 +123,12 @@ module nts.uk.pr.view.qmm007.a {
                 defaultHist.startMonth = nts.uk.time.parseTime(new Date()).toValue();;
                 defaultHist.endMonth = 999912;
                 defaultHist.budget = 0;
-                defaultHist.fixPaySettingType = 'Company';
-                defaultHist.fixPayAtr = 'NotApply';
-                defaultHist.fixPayAtrMonthly = 'NotApply';
-                defaultHist.fixPayAtrDayMonth = 'NotApply';
-                defaultHist.fixPayAtrDaily = 'NotApply';
-                defaultHist.fixPayAtrHourly = 'NotApply';
+                defaultHist.fixPaySettingType = SettingType.COMPANY;
+                defaultHist.fixPayAtr = ApplySetting.APPLY;
+                defaultHist.fixPayAtrMonthly = ApplySetting.APPLY;
+                defaultHist.fixPayAtrDayMonth = ApplySetting.APPLY;
+                defaultHist.fixPayAtrDaily = ApplySetting.APPLY;
+                defaultHist.fixPayAtrHourly = ApplySetting.APPLY;
                 defaultHist.memo = '';
                 return defaultHist;
             }
@@ -164,6 +164,16 @@ module nts.uk.pr.view.qmm007.a {
                 this.fixPayAtrHourly = ko.observable(historyDto.fixPayAtrHourly);
                 this.memo = ko.observable(historyDto.memo);
             }
+        }
+
+        export class SettingType {
+            static COMPANY = 'Company';
+            static CONTRACT = 'Contract';
+        }
+
+        export class ApplySetting {
+            static APPLY = 'Apply';
+            static NOTAPPLY = 'NotApply';
         }
 
         export interface SwitchButtonDataSource {

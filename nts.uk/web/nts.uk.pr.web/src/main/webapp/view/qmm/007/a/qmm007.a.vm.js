@@ -30,11 +30,11 @@ var nts;
                                     self.isSelected = ko.observable(false);
                                     self.unitPriceHistoryModel = ko.observable(new UnitPriceHistoryModel(self.getDefaultUnitPriceHistory()));
                                     self.switchButtonDataSource = ko.observableArray([
-                                        { code: 'Apply', name: '対象' },
-                                        { code: 'NotApply', name: '対象外' }
+                                        { code: ApplySetting.APPLY, name: '対象' },
+                                        { code: ApplySetting.NOTAPPLY, name: '対象外' }
                                     ]);
                                     self.isContractSettingEnabled = ko.computed(function () {
-                                        return self.unitPriceHistoryModel().fixPaySettingType() == 'Contract';
+                                        return self.unitPriceHistoryModel().fixPaySettingType() == SettingType.CONTRACT;
                                     });
                                     self.textEditorOption = ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
                                         textmode: "text",
@@ -103,12 +103,12 @@ var nts;
                                     ;
                                     defaultHist.endMonth = 999912;
                                     defaultHist.budget = 0;
-                                    defaultHist.fixPaySettingType = 'Company';
-                                    defaultHist.fixPayAtr = 'NotApply';
-                                    defaultHist.fixPayAtrMonthly = 'NotApply';
-                                    defaultHist.fixPayAtrDayMonth = 'NotApply';
-                                    defaultHist.fixPayAtrDaily = 'NotApply';
-                                    defaultHist.fixPayAtrHourly = 'NotApply';
+                                    defaultHist.fixPaySettingType = SettingType.COMPANY;
+                                    defaultHist.fixPayAtr = ApplySetting.APPLY;
+                                    defaultHist.fixPayAtrMonthly = ApplySetting.APPLY;
+                                    defaultHist.fixPayAtrDayMonth = ApplySetting.APPLY;
+                                    defaultHist.fixPayAtrDaily = ApplySetting.APPLY;
+                                    defaultHist.fixPayAtrHourly = ApplySetting.APPLY;
                                     defaultHist.memo = '';
                                     return defaultHist;
                                 };
@@ -134,6 +134,22 @@ var nts;
                                 return UnitPriceHistoryModel;
                             }());
                             viewmodel.UnitPriceHistoryModel = UnitPriceHistoryModel;
+                            var SettingType = (function () {
+                                function SettingType() {
+                                }
+                                SettingType.COMPANY = 'Company';
+                                SettingType.CONTRACT = 'Contract';
+                                return SettingType;
+                            }());
+                            viewmodel.SettingType = SettingType;
+                            var ApplySetting = (function () {
+                                function ApplySetting() {
+                                }
+                                ApplySetting.APPLY = 'Apply';
+                                ApplySetting.NOTAPPLY = 'NotApply';
+                                return ApplySetting;
+                            }());
+                            viewmodel.ApplySetting = ApplySetting;
                         })(viewmodel = a.viewmodel || (a.viewmodel = {}));
                     })(a = qmm007.a || (qmm007.a = {}));
                 })(qmm007 = view.qmm007 || (view.qmm007 = {}));
