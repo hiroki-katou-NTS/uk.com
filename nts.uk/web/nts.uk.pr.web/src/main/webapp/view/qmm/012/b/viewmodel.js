@@ -5,143 +5,217 @@ var qmm012;
         var viewmodel;
         (function (viewmodel) {
             var ScreenModel = (function () {
-                function ScreenModel() {
+                function ScreenModel(screenModel) {
+                    this.enable = ko.observable(true);
+                    this.selectedCode_B_001 = ko.observable(1);
+                    this.GridlistItems_B_001 = ko.observableArray([]);
+                    this.GridlistCurrentCode_B_001 = ko.observable('');
+                    this.GridlistCurrentItem_B_001 = ko.observable(null);
+                    this.GridCurrentItemAbName_B_001 = ko.observable('');
+                    this.GridCurrentItemName_B_001 = ko.observable('');
+                    this.GridCurrentDisplaySet_B_001 = ko.observable(false);
+                    this.GridCurrentUniteCode_B_001 = ko.observable('');
+                    this.GridCurrentCategoryAtr_B_001 = ko.observable(0);
+                    this.GridCurrentCategoryAtrName_B_001 = ko.observable('');
+                    this.GridCurrentCodeAndName_B_001 = ko.observable('');
+                    this.checked_B_002 = ko.observable(true);
+                    this.enable_B_INP_002 = ko.observable(false);
                     var self = this;
-                    //start combobox data
-                    //001
+                    self.screenModel = screenModel;
                     self.ComboBoxItemList_B_001 = ko.observableArray([
-                        new ComboboxItemModel('1', '全件'),
-                        new ComboboxItemModel('2', '支給項目'),
-                        new ComboboxItemModel('3', '控除項目'),
-                        new ComboboxItemModel('4', '勤怠項目'),
-                        new ComboboxItemModel('5', '記事項目'),
-                        new ComboboxItemModel('6', 'その他項目')
-                    ]);
-                    self.selectedCode_B_001 = ko.observable('1');
-                    self.isEnable = ko.observable(true);
-                    self.isEditable = ko.observable(true);
-                    //start textarea
-                    self.textArea = ko.observable("");
-                    // start gridlist
-                    self.GridlistItems_B_001 = ko.observableArray([
-                        new ItemModel('001', 'group1', '支給項目1', "description 1"),
-                        new ItemModel('002', 'group1', '支給項目2', "description 2"),
-                        new ItemModel('003', 'group2', '支給項目3', "description 3"),
-                        new ItemModel('004', 'group2', '支給項目4', "description 4"),
-                        new ItemModel('005', 'group3', '支給項目5', "description 5"),
-                        new ItemModel('006', 'group3', '支給項目6', "description 6"),
-                        new ItemModel('007', 'group4', '支給項目7', "description 7"),
-                        new ItemModel('008', 'group4', '支給項目8', "description 8"),
-                        new ItemModel('009', 'group5', '支給項目9', "description 9"),
-                        new ItemModel('010', 'group5', '支給項目10', "description 10")
+                        new ComboboxItemModel(1, '全件'),
+                        new ComboboxItemModel(2, '支給項目'),
+                        new ComboboxItemModel(3, '控除項目'),
+                        new ComboboxItemModel(4, '勤怠項目'),
+                        new ComboboxItemModel(5, '記事項目'),
+                        new ComboboxItemModel(6, 'その他項目')
                     ]);
                     self.GridColumns_B_001 = ko.observableArray([
-                        { headerText: '蜷咲ｧｰ', prop: 'group', width: 150 },
-                        { headerText: '繧ｳ繝ｼ繝�', prop: 'code', width: 100 },
-                        { headerText: '隱ｬ譏�', prop: 'name', width: 200 }
+                        { headerText: '項目区分', prop: 'categoryAtrName', width: 80 },
+                        { headerText: 'コード', prop: 'itemCode', width: 50 },
+                        { headerText: '名称', prop: 'itemName', width: 150 },
+                        { headerText: '廃止', prop: 'displaySet', width: 20, formatter: makeIcon }
                     ]);
-                    self.GridlistCurrentCode_B_001 = ko.observable();
-                    self.GridCurrentName_B_001 = ko.computed(function () {
+                    function makeIcon(val) {
+                        if (val == 1)
+                            return "<div class = 'NoIcon' > </div>";
+                        return "";
+                    }
+                    self.GridlistCurrentCode_B_001.subscribe(function (newValue) {
                         var item = _.find(self.GridlistItems_B_001(), function (ItemModel) {
-                            return ItemModel.code == self.GridlistCurrentCode_B_001();
+                            return ItemModel.itemCode == newValue;
                         });
-                        return item != null ? item.name : '';
+                        self.GridlistCurrentItem_B_001(item);
                     });
-                    self.GridCurrentGroup_B_001 = ko.computed(function () {
-                        var item = _.find(self.GridlistItems_B_001(), function (ItemModel) {
-                            return ItemModel.code == self.GridlistCurrentCode_B_001();
-                        });
-                        return item != null ? item.group : '';
-                    });
-                    self.GridCurrentGroupAndCode_B_001 = ko.computed(function () {
-                        var item = _.find(self.GridlistItems_B_001(), function (ItemModel) {
-                            return ItemModel.code == self.GridlistCurrentCode_B_001();
-                        });
-                        return item != null ? item.group + item.code : '';
-                    });
-                    self.GridCurrentCodeAndName_B_001 = ko.computed(function () {
-                        var item = _.find(self.GridlistItems_B_001(), function (ItemModel) {
-                            return ItemModel.code == self.GridlistCurrentCode_B_001();
-                        });
-                        return item != null ? 'T' + item.code + ' ' + item.name : '';
-                    });
-                    //end gridlist
-                    //checkbox 
-                    //002
-                    self.checked_B_002 = ko.observable(true);
-                    //003
-                    self.checked_B_003 = ko.observable(true);
-                    //end checkbox
-                    //end checkbox data
-                    //start Switch Data
-                    self.enable = ko.observable(true);
-                    //endSwitch Data
-                    //end currencyeditor
-                    //start textarea
-                    self.textArea = ko.observable("");
-                    //end textarea
-                    self.GridCurrentGroup_B_001.subscribe(function (newValue) {
-                        $('#Group1').hide();
-                        $('#Group2').hide();
-                        $('#Group3').hide();
-                        $('#Group4').hide();
-                        switch (newValue) {
-                            case 'group1':
-                                $('#Group1').show();
-                                break;
-                            case 'group2':
-                                $('#Group2').show();
-                                break;
-                            case 'group3':
-                                $('#Group3').show();
-                                break;
-                            case 'group4':
-                                $('#Group4').show();
-                                break;
+                    self.GridlistCurrentItem_B_001.subscribe(function (itemModel) {
+                        self.GridCurrentItemName_B_001(itemModel ? itemModel.itemName : '');
+                        self.GridCurrentUniteCode_B_001(itemModel ? itemModel.uniteCode : '');
+                        self.GridCurrentCategoryAtr_B_001(itemModel ? itemModel.categoryAtr : 0);
+                        ChangeGroup(self.GridCurrentCategoryAtr_B_001());
+                        self.GridCurrentCodeAndName_B_001(itemModel ? itemModel.itemCode + ' ' + itemModel.itemName : '');
+                        self.GridCurrentDisplaySet_B_001(itemModel ? itemModel.displaySet == 1 ? true : false : '');
+                        self.GridCurrentItemAbName_B_001(itemModel ? itemModel.itemAbName : '');
+                        self.GridCurrentCategoryAtrName_B_001(itemModel ? itemModel.categoryAtrName : '');
+                        if (self.GridlistCurrentCode_B_001() != undefined) {
+                            self.enable_B_INP_002(false);
                         }
                     });
+                    self.GridCurrentCategoryAtr_B_001.subscribe(function (newValue) {
+                        ChangeGroup(newValue);
+                    });
+                    function ChangeGroup(newValue) {
+                        $('#screenC').hide();
+                        $('#screenD').hide();
+                        $('#screenE').hide();
+                        $('#screenF').hide();
+                        switch (newValue) {
+                            case 0:
+                                $('#screenC').show();
+                                self.screenModel.screenModelC.CurrentItemMaster(self.GridlistCurrentItem_B_001());
+                                break;
+                            case 1:
+                                $('#screenD').show();
+                                self.screenModel.screenModelD.CurrentItemMaster(self.GridlistCurrentItem_B_001());
+                                break;
+                            case 2:
+                                $('#screenE').show();
+                                self.screenModel.screenModelE.CurrentItemMaster(self.GridlistCurrentItem_B_001());
+                                break;
+                            case 3:
+                                $('#screenF').show();
+                                self.screenModel.screenModelF.CurrentItemMaster(self.GridlistCurrentItem_B_001());
+                                break;
+                        }
+                    }
+                    b.service.findAllItemMaster().done(function (MasterItems) {
+                        for (var _i = 0, MasterItems_1 = MasterItems; _i < MasterItems_1.length; _i++) {
+                            var item = MasterItems_1[_i];
+                            self.GridlistItems_B_001.push(item);
+                        }
+                        if (self.GridlistItems_B_001().length > 0)
+                            self.GridlistCurrentCode_B_001(self.GridlistItems_B_001()[0].itemCode);
+                    }).fail(function (res) {
+                        alert(res);
+                    });
+                    self.texteditor_B_INP_002 = {
+                        value: self.GridlistCurrentCode_B_001,
+                        option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
+                            textmode: "text",
+                            placeholder: "",
+                            textalign: "left"
+                        })),
+                        enable: self.enable_B_INP_002
+                    };
+                    self.texteditor_B_INP_003 = {
+                        value: self.GridCurrentItemName_B_001,
+                        option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
+                            textmode: "text",
+                            placeholder: "",
+                            textalign: "left"
+                        }))
+                    };
+                    self.texteditor_B_INP_004 = {
+                        value: self.GridCurrentItemAbName_B_001,
+                        option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
+                            textmode: "text",
+                            placeholder: "",
+                            textalign: "left"
+                        }))
+                    };
                 }
-                ScreenModel.prototype.start = function () {
+                ScreenModel.prototype.GetCurrentItemMaster = function () {
                     var self = this;
-                    // Page load dfd.
-                    var dfd = $.Deferred();
-                    //dropdownlist event
+                    return new b.service.model.ItemMasterModel(self.GridlistCurrentCode_B_001(), self.GridCurrentItemName_B_001(), self.GridCurrentCategoryAtr_B_001(), self.GridCurrentCategoryAtrName_B_001(), self.GridCurrentItemAbName_B_001(), self.GridlistCurrentItem_B_001() ? self.GridlistCurrentItem_B_001().itemAbNameO : self.GridCurrentItemAbName_B_001(), self.GridlistCurrentItem_B_001() ? self.GridlistCurrentItem_B_001().itemAbNameE : self.GridCurrentItemAbName_B_001(), self.GridCurrentDisplaySet_B_001(), self.GridCurrentUniteCode_B_001(), self.GetCurrentZeroDisplaySet(), self.GetCurrentItemDisplayAtr(), 1);
+                };
+                ScreenModel.prototype.DeleteDialog = function () {
+                    var self = this;
+                    b.service.deleteItemMaster(self.GridlistCurrentItem_B_001()).done(function (any) {
+                        var index = self.GridlistItems_B_001().indexOf(self.GridlistCurrentItem_B_001());
+                        if (index != undefined) {
+                            self.GridlistItems_B_001().splice(index, 1);
+                            if (self.GridlistItems_B_001().length - 1 > 1) {
+                                if (index < self.GridlistItems_B_001().length - 1)
+                                    self.GridlistCurrentCode_B_001(self.GridlistItems_B_001()[index].itemCode);
+                                else
+                                    self.GridlistCurrentCode_B_001(self.GridlistItems_B_001()[index - 1].itemCode);
+                            }
+                            else
+                                self.GridlistCurrentCode_B_001('');
+                        }
+                    }).fail(function (res) {
+                        alert(res);
+                    });
+                };
+                ScreenModel.prototype.GetCurrentZeroDisplaySet = function () {
+                    var Result;
+                    var self = this;
+                    var CurrentGroup = self.GridCurrentCategoryAtr_B_001();
+                    switch (CurrentGroup) {
+                        case 0:
+                            Result = self.screenModel.screenModelC.CurrentZeroDisplaySet();
+                            break;
+                        case 1:
+                            Result = self.screenModel.screenModelD.CurrentZeroDisplaySet();
+                            break;
+                        case 2:
+                            Result = self.screenModel.screenModelE.CurrentZeroDisplaySet();
+                            break;
+                    }
+                    return Result;
+                };
+                ScreenModel.prototype.GetCurrentItemDisplayAtr = function () {
+                    var Result;
+                    var self = this;
+                    var CurrentGroup = self.GridCurrentCategoryAtr_B_001();
+                    switch (CurrentGroup) {
+                        case 0:
+                            Result = self.screenModel.screenModelC.CurrentItemDisplayAtr();
+                            break;
+                        case 1:
+                            Result = self.screenModel.screenModelD.CurrentItemDisplayAtr();
+                            break;
+                        case 2:
+                            Result = self.screenModel.screenModelE.CurrentItemDisplayAtr();
+                            break;
+                    }
+                    return Result;
                 };
                 ScreenModel.prototype.openADialog = function () {
+                    var self = this;
                     nts.uk.ui.windows.sub.modal('../a/index.xhtml', { height: 480, width: 630, dialogClass: "no-close" }).onClosed(function () {
-                        var newValue = nts.uk.ui.windows.getShared('groupName');
-                        $('#Group1').hide();
-                        $('#Group2').hide();
-                        $('#Group3').hide();
-                        $('#Group4').hide();
-                        switch (newValue) {
-                            case 'group1':
-                                $('#Group1').show();
-                                break;
-                            case 'group2':
-                                $('#Group2').show();
-                                break;
-                            case 'group3':
-                                $('#Group3').show();
-                                break;
-                            case 'group4':
-                                $('#Group4').show();
-                                break;
+                        var groupCode = Number(nts.uk.sessionStorage.getItemAndRemove('groupCode').value);
+                        if (groupCode != undefined) {
+                            self.GridlistCurrentCode_B_001('');
+                            self.GridCurrentCategoryAtr_B_001(groupCode);
+                            self.enable_B_INP_002(true);
                         }
+                    });
+                };
+                ScreenModel.prototype.submitData = function () {
+                    var self = this;
+                    var ItemMaster = self.GetCurrentItemMaster();
+                    if (self.enable_B_INP_002()) {
+                        self.AddNewItemMaster(ItemMaster);
+                    }
+                    else {
+                        self.UpdateItemMaster(ItemMaster);
+                    }
+                };
+                ScreenModel.prototype.AddNewItemMaster = function (ItemMaster) {
+                    var self = this;
+                    self.GridlistItems_B_001().push(ItemMaster);
+                    self.GridlistCurrentCode_B_001(ItemMaster.itemCode);
+                };
+                ScreenModel.prototype.UpdateItemMaster = function (ItemMaster) {
+                };
+                ScreenModel.prototype.openJDialog = function () {
+                    var self = this;
+                    nts.uk.ui.windows.sub.modal('../j/index.xhtml', { height: 700, width: 970, dialogClass: "no-close" }).onClosed(function () {
                     });
                 };
                 return ScreenModel;
             }());
             viewmodel.ScreenModel = ScreenModel;
-            var ItemModel = (function () {
-                function ItemModel(code, group, name, description) {
-                    this.code = code;
-                    this.name = name;
-                    this.description = description;
-                    this.group = group;
-                }
-                return ItemModel;
-            }());
             var ComboboxItemModel = (function () {
                 function ComboboxItemModel(code, name) {
                     this.code = code;
@@ -152,3 +226,4 @@ var qmm012;
         })(viewmodel = b.viewmodel || (b.viewmodel = {}));
     })(b = qmm012.b || (qmm012.b = {}));
 })(qmm012 || (qmm012 = {}));
+//# sourceMappingURL=viewmodel.js.map

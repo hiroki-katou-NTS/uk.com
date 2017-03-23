@@ -2,18 +2,10 @@ __viewContext.ready(function () {
     var ScreenModel = (function () {
         function ScreenModel() {
             var self = this;
-            self.dynamiceditor = {
-                editortype: 'texteditor',
-                value: ko.observable(''),
-                constraint: ko.observable('ResidenceCode'),
-                constraints: ko.observableArray(['ResidenceCode', 'EmployeeCode']),
-                option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption()),
-                enable: ko.observable(true),
-                readonly: ko.observable(false)
-            };
             self.option = {
                 value: ko.observable("2")
             };
+            self.simpleValue = ko.observable("123");
             // TextEditor
             self.texteditor = {
                 value: ko.observable(''),
@@ -26,7 +18,10 @@ __viewContext.ready(function () {
                 })),
                 required: ko.observable(false),
                 enable: ko.observable(true),
-                readonly: ko.observable(false)
+                readonly: ko.observable(false),
+                clear: function () {
+                    $("#text-1").ntsError("clear");
+                }
             };
             // EmployeeCodeEditor
             self.employeeeditor = {
@@ -57,9 +52,11 @@ __viewContext.ready(function () {
             // NumberEditor
             self.numbereditor = {
                 value: ko.observable(12),
-                constraint: '',
+                constraint: 'CommonAmount',
                 option: ko.mapping.fromJS(new nts.uk.ui.option.NumberEditorOption({
-                    grouplength: 3 })),
+                    grouplength: 3,
+                    textalign: 'left',
+                    width: "500" })),
                 required: ko.observable(false),
                 enable: ko.observable(true),
                 readonly: ko.observable(false)
@@ -67,7 +64,7 @@ __viewContext.ready(function () {
             // NumberEditor
             self.numbereditor2 = {
                 value: ko.observable(12),
-                constraint: '',
+                constraint: 'CommonAmount',
                 option: ko.mapping.fromJS(new nts.uk.ui.option.NumberEditorOption({
                     grouplength: 3,
                     decimallength: 2,

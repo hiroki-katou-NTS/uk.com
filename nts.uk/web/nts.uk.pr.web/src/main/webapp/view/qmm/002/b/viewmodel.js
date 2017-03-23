@@ -26,14 +26,28 @@ var nts;
                                     var list = nts.uk.ui.windows.getShared('listItem');
                                     self.lst_001(list);
                                 };
-                                ScreenModel.prototype.excute = function () {
-                                    var self = this;
-                                    nts.uk.ui.windows.setShared("data", self.selectedCodes());
-                                    nts.uk.ui.windows.close();
-                                };
                                 ScreenModel.prototype.close = function () {
                                     var self = this;
                                     nts.uk.ui.windows.close();
+                                };
+                                ScreenModel.prototype.btn_001 = function () {
+                                    var self = this;
+                                    var keyBank = [];
+                                    _.forEach(self.selectedCodes(), function (item) {
+                                        var code = item.split('-');
+                                        var bankCode = code[0];
+                                        var branchCode = code[1];
+                                        keyBank.push({
+                                            bankCode: bankCode,
+                                            branchCode: branchCode
+                                        });
+                                    });
+                                    var data = {
+                                        bank: keyBank,
+                                    };
+                                    b.service.removeBank(data).done(function () {
+                                        self.close();
+                                    });
                                 };
                                 return ScreenModel;
                             }());
@@ -56,3 +70,4 @@ var nts;
         })(pr = uk.pr || (uk.pr = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+//# sourceMappingURL=viewmodel.js.map

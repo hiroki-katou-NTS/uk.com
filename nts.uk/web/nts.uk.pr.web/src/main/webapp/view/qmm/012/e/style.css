@@ -10,9 +10,9 @@
 	width: 130px;
 }
 
-#E_SEL_002 button {
+#E_SEL_002 button, #E_SEL_001 button, #E_SEL_009 button {
 	height: 30px;
-	width: 120px;
+	width: 70px;
 	font-size: 0.8rem;
 }
 
@@ -48,10 +48,6 @@
 	margin-top: 5px;
 }
 
-#Group1, #Group2, #Group3, #Group4 {
-	display: none;
-}
-
 #contents-area {
-	width: 1400px;
+	width: 1235px;
 }

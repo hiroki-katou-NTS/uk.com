@@ -30,7 +30,7 @@
 		<ui:define name="content">
 			<div id="functions-area" class="divHeader">
 				<button id="BTN_001" class="btnStyle">新規</button>
-				<button class="proceed btnStyle" id="BTN_002">登録</button>
+				<button class="proceed btnStyle" id="BTN_002" data-bind="click: createEmployment, enable: $root.errors.isEmpty">登録</button>
 				<button id="BTN_003">マスタ修正ログ</button>
 				<button class="danger btnStyle" id="BTN_004">削除</button>
 				<label id="LBL_001">雇用区分の登録</label>
@@ -69,7 +69,7 @@
 										data-bind="ntsTextEditor: {value: employmentCode, 
 																					constraint: 'EmploymentCode', 
 																					option: textEditorOption, 
-																					enable: true}" />
+																					enable: isEnable}" />
 										<input id="INP_003" data-name="name"
 										data-bind="ntsTextEditor: {value: employmentName, 
 																					constraint: 'EmploymentName',

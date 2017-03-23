@@ -1626,18 +1626,17 @@ button.nts-switch-button[disabled]:hover {
   color: #444;
 }
 /* line 97, ../sass/components/_checkbox.scss */
-.minimalist .ntsCheckBox span.box,
 .minimalist .ntsCheckBox span.label {
   padding-left: 5px;
 }
-/* line 102, ../sass/components/_checkbox.scss */
+/* line 101, ../sass/components/_checkbox.scss */
 .minimalist .ntsCheckBox span.box {
   width: 1em;
   height: 1em;
   border: 1px solid #444;
   border-radius: 0;
 }
-/* line 108, ../sass/components/_checkbox.scss */
+/* line 107, ../sass/components/_checkbox.scss */
 .minimalist .ntsCheckBox span.box:after {
   width: 9px;
   height: 4px;
@@ -1648,7 +1647,7 @@ button.nts-switch-button[disabled]:hover {
   border-right: none;
   border-radius: 0;
 }
-/* line 122, ../sass/components/_checkbox.scss */
+/* line 121, ../sass/components/_checkbox.scss */
 .minimalist .ntsCheckBox input[type="checkbox"]:checked + span {
   background: transparent;
 }
@@ -2055,7 +2054,7 @@ button.nts-switch-button[disabled]:hover {
 /* line 51, ../sass/components/_dialog.scss */
 .ui-dialog > .ui-dialog-buttonpane button {
   margin: 0 10px;
-  width: 80px;
+  min-width: 80px;
   font-family: "Meiryo UI";
 }
 /* line 58, ../sass/components/_dialog.scss */
@@ -2520,7 +2519,7 @@ button.nts-switch-button[disabled]:hover {
 
 /* line 1, ../sass/components/_updown.scss */
 .ntsUpDown {
-  width: 70px;
+  width: 30px;
   height: 100%;
   display: inline-block;
 }
@@ -2533,7 +2532,7 @@ button.nts-switch-button[disabled]:hover {
 
 /* line 10, ../sass/components/_updown.scss */
 .ntsUpDownButton {
-  width: 70px;
+  width: 30px;
 }
 
 /* line 13, ../sass/components/_updown.scss */

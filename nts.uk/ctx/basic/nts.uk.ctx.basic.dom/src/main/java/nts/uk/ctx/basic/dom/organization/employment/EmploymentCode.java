@@ -10,6 +10,5 @@ public class EmploymentCode extends CodePrimitiveValue<EmploymentCode> {
 	
 	public EmploymentCode(String rawValue) {
 		super(rawValue);
-		// TODO Auto-generated constructor stub
 	}
 }

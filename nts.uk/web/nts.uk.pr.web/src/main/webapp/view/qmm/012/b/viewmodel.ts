@@ -1,187 +1,273 @@
 module qmm012.b.viewmodel {
     export class ScreenModel {
-        enable: KnockoutObservable<boolean>;
+        enable: KnockoutObservable<boolean> = ko.observable(true);
         //combobox
         //001
         ComboBoxItemList_B_001: KnockoutObservableArray<ComboboxItemModel>;
-        selectedCode_B_001: KnockoutObservable<string>;
-        isEnable: KnockoutObservable<boolean>;
-        isEditable: KnockoutObservable<boolean>;
+        selectedCode_B_001: KnockoutObservable<number> = ko.observable(1);
         //gridlist
-        GridlistItems_B_001: KnockoutObservableArray<ItemModel>;
-        GridColumns_B_001: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
-        GridlistCurrentCode_B_001: KnockoutObservable<any>;
-        GridCurrentName_B_001: KnockoutObservable<any>;
-        GridCurrentGroup_B_001: KnockoutObservable<any>;
-        GridCurrentGroupAndCode_B_001: KnockoutObservable<any>;
-        GridCurrentCodeAndName_B_001: KnockoutObservable<any>;
+        GridlistItems_B_001: KnockoutObservableArray<service.model.ItemMasterModel> = ko.observableArray([]);
+        GridColumns_B_001: KnockoutObservableArray<any>;
+        GridlistCurrentCode_B_001: KnockoutObservable<string> = ko.observable('');
+        GridlistCurrentItem_B_001: KnockoutObservable<service.model.ItemMasterModel> = ko.observable(null);
+        GridCurrentItemAbName_B_001: KnockoutObservable<string> = ko.observable('');
+        GridCurrentItemName_B_001: KnockoutObservable<string> = ko.observable('');
+        GridCurrentDisplaySet_B_001: KnockoutObservable<any> = ko.observable(false);
+        GridCurrentUniteCode_B_001: KnockoutObservable<string> = ko.observable('');
+        GridCurrentCategoryAtr_B_001: KnockoutObservable<number> = ko.observable(0);
+        GridCurrentCategoryAtrName_B_001: KnockoutObservable<string> = ko.observable('');
+        GridCurrentCodeAndName_B_001: KnockoutObservable<string> = ko.observable('');
         //Checkbox
         //B_002
-        checked_B_002: KnockoutObservable<boolean>;
-        //B_003
-        checked_B_003: KnockoutObservable<boolean>;
-        //search box 
-        filteredData: any;
+        checked_B_002: KnockoutObservable<boolean> = ko.observable(true);
         //combobox
-        //end switch
-        //radiogroup
-
-        //textarea
-        textArea: KnockoutObservable<any>;
-        //shared
-        groupName: KnockoutObservable<any>;
-        constructor() {
+        //text editer
+        texteditor_B_INP_002: any;
+        texteditor_B_INP_003: any;
+        texteditor_B_INP_004: any;
+        enable_B_INP_002: KnockoutObservable<boolean> = ko.observable(false);
+        screenModel: qmm012.b.ScreenModel;
+        constructor(screenModel: qmm012.b.ScreenModel) {
             let self = this;
-            //start combobox data
+            self.screenModel = screenModel;
+            //set combobox data
             //001
             self.ComboBoxItemList_B_001 = ko.observableArray([
-                new ComboboxItemModel('1', '全件'),
-                new ComboboxItemModel('2', '支給項目'),
-                new ComboboxItemModel('3', '控除項目'),
-                new ComboboxItemModel('4', '勤怠項目'),
-                new ComboboxItemModel('5', '記事項目'),
-                new ComboboxItemModel('6', 'その他項目')
+                new ComboboxItemModel(1, '全件'),
+                new ComboboxItemModel(2, '支給項目'),
+                new ComboboxItemModel(3, '控除項目'),
+                new ComboboxItemModel(4, '勤怠項目'),
+                new ComboboxItemModel(5, '記事項目'),
+                new ComboboxItemModel(6, 'その他項目')
             ]);
-            self.selectedCode_B_001 = ko.observable('1')
-            self.isEnable = ko.observable(true);
-            self.isEditable = ko.observable(true);
-            //start textarea
-            self.textArea = ko.observable("");
-            // start gridlist
-            self.GridlistItems_B_001 = ko.observableArray([
-                new ItemModel('001', 'group1', '支給項目1', "description 1"),
-                new ItemModel('002', 'group1', '支給項目2', "description 2"),
-                new ItemModel('003', 'group2', '支給項目3', "description 3"),
-                new ItemModel('004', 'group2', '支給項目4', "description 4"),
-                new ItemModel('005', 'group3', '支給項目5', "description 5"),
-                new ItemModel('006', 'group3', '支給項目6', "description 6"),
-                new ItemModel('007', 'group4', '支給項目7', "description 7"),
-                new ItemModel('008', 'group4', '支給項目8', "description 8"),
-                new ItemModel('009', 'group5', '支給項目9', "description 9"),
-                new ItemModel('010', 'group5', '支給項目10', "description 10")
-            ]);
+            // set gridlist data
             self.GridColumns_B_001 = ko.observableArray([
-                { headerText: '蜷咲ｧｰ', prop: 'group', width: 150 },
-                { headerText: '繧ｳ繝ｼ繝�', prop: 'code', width: 100 },
-                { headerText: '隱ｬ譏�', prop: 'name', width: 200 }
+                { headerText: '項目区分', prop: 'categoryAtrName', width: 80 },
+                { headerText: 'コード', prop: 'itemCode', width: 50 },
+                { headerText: '名称', prop: 'itemName', width: 150 },
+                { headerText: '廃止', prop: 'displaySet', width: 20, formatter: makeIcon }
             ]);
-            self.GridlistCurrentCode_B_001 = ko.observable();
-            self.GridCurrentName_B_001 = ko.computed(function() {
-                var item = _.find(self.GridlistItems_B_001(), function(ItemModel) {
-                    return ItemModel.code == self.GridlistCurrentCode_B_001();
+
+            function makeIcon(val) {
+                if (val == 1)
+                    return "<div class = 'NoIcon' > </div>";
+                return "";
+            }
+            self.GridlistCurrentCode_B_001.subscribe(function(newValue) {
+                var item = _.find(self.GridlistItems_B_001(), function(ItemModel: service.model.ItemMasterModel) {
+                    return ItemModel.itemCode == newValue;
                 });
-                return item != null ? item.name : '';
+                self.GridlistCurrentItem_B_001(item);
             });
-            self.GridCurrentGroup_B_001 = ko.computed(function() {
-                var item = _.find(self.GridlistItems_B_001(), function(ItemModel) {
-                    return ItemModel.code == self.GridlistCurrentCode_B_001();
-                });
-                return item != null ? item.group : '';
+
+            self.GridlistCurrentItem_B_001.subscribe(function(itemModel: service.model.ItemMasterModel) {
+                self.GridCurrentItemName_B_001(itemModel ? itemModel.itemName : '');
+                self.GridCurrentUniteCode_B_001(itemModel ? itemModel.uniteCode : '');
+                self.GridCurrentCategoryAtr_B_001(itemModel ? itemModel.categoryAtr : 0);
+                //Because there are many items in the same group  After set value , need call ChangeGroup function for Set Value to layout
+                ChangeGroup(self.GridCurrentCategoryAtr_B_001());
+                self.GridCurrentCodeAndName_B_001(itemModel ? itemModel.itemCode + ' ' + itemModel.itemName : '');
+                self.GridCurrentDisplaySet_B_001(itemModel ? itemModel.displaySet == 1 ? true : false : '');
+                self.GridCurrentItemAbName_B_001(itemModel ? itemModel.itemAbName : '');
+                self.GridCurrentCategoryAtrName_B_001(itemModel ? itemModel.categoryAtrName : '');
+                //when CurrentCode != undefined , need disable INP_002
+                if (self.GridlistCurrentCode_B_001() != undefined) {
+                    self.enable_B_INP_002(false);
+                }
             });
-            self.GridCurrentGroupAndCode_B_001 = ko.computed(function() {
-                var item = _.find(self.GridlistItems_B_001(), function(ItemModel) {
-                    return ItemModel.code == self.GridlistCurrentCode_B_001();
-                });
-                return item != null ? item.group + item.code : '';
+
+            self.GridCurrentCategoryAtr_B_001.subscribe(function(newValue) {
+                //when change to different group, need  call ChangeGroup function for Set Value to layout
+                ChangeGroup(newValue);
             });
-            self.GridCurrentCodeAndName_B_001 = ko.computed(function() {
-                var item = _.find(self.GridlistItems_B_001(), function(ItemModel) {
-                    return ItemModel.code == self.GridlistCurrentCode_B_001();
-                });
-                return item != null ? 'T' + item.code + ' ' + item.name : '';
-            });
-            //end gridlist
-            //checkbox 
-            //002
-            self.checked_B_002 = ko.observable(true);
-            //003
-            self.checked_B_003 = ko.observable(true);
-            //end checkbox
-            //end checkbox data
-            //start Switch Data
-            self.enable = ko.observable(true);
-            //endSwitch Data
-            //end currencyeditor
-            //start textarea
-            self.textArea = ko.observable("");
-            //end textarea
-            self.GridCurrentGroup_B_001.subscribe(function(newValue) {
-                $('#Group1').hide();
-                $('#Group2').hide();
-                $('#Group3').hide();
-                $('#Group4').hide();
+
+            function ChangeGroup(newValue) {
+                $('#screenC').hide();
+                $('#screenD').hide();
+                $('#screenE').hide();
+                $('#screenF').hide();
                 switch (newValue) {
-                    case 'group1':
-                        $('#Group1').show();
+                    case 0:
+                        $('#screenC').show();
+                        self.screenModel.screenModelC.CurrentItemMaster(self.GridlistCurrentItem_B_001());
                         break;
-                    case 'group2':
-                        $('#Group2').show();
+                    case 1:
+                        $('#screenD').show();
+                        self.screenModel.screenModelD.CurrentItemMaster(self.GridlistCurrentItem_B_001());
                         break;
-                    case 'group3':
-                        $('#Group3').show();
+                    case 2:
+                        $('#screenE').show();
+                        self.screenModel.screenModelE.CurrentItemMaster(self.GridlistCurrentItem_B_001());
                         break;
-                    case 'group4':
-                        $('#Group4').show();
+                    case 3:
+                        $('#screenF').show();
+                        self.screenModel.screenModelF.CurrentItemMaster(self.GridlistCurrentItem_B_001());
                         break;
                 }
+            }
 
+            service.findAllItemMaster().done(function(MasterItems: Array<service.model.ItemMasterModel>) {
+                for (let item of MasterItems) {
+                    self.GridlistItems_B_001.push(item);
+                }
+                //set selected first item in list
+                if (self.GridlistItems_B_001().length > 0)
+                    self.GridlistCurrentCode_B_001(self.GridlistItems_B_001()[0].itemCode);
+            }).fail(function(res) {
+                alert(res);
             });
+            
+            //set text editer data
+            //INP_002
+            self.texteditor_B_INP_002 = {
+                value: self.GridlistCurrentCode_B_001,
+                option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
+                    textmode: "text",
+                    placeholder: "",
+                    textalign: "left"
+                })),
+                enable: self.enable_B_INP_002
+            };
+            //INP_003
+            self.texteditor_B_INP_003 = {
+                value: self.GridCurrentItemName_B_001,
+                option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
+                    textmode: "text",
+                    placeholder: "",
+                    textalign: "left"
+                }))
+            };
+            //INP_004
+            self.texteditor_B_INP_004 = {
+                value: self.GridCurrentItemAbName_B_001,
+                option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
+                    textmode: "text",
+                    placeholder: "",
+                    textalign: "left"
+                }))
+            };
 
         }
 
-        start(): JQueryPromise<any> {
-            var self = this;
-            // Page load dfd.
-            var dfd = $.Deferred();
-            //dropdownlist event
+        GetCurrentItemMaster() {
+            let self = this;
+            return new service.model.ItemMasterModel(
+                self.GridlistCurrentCode_B_001(),
+                self.GridCurrentItemName_B_001(),
+                self.GridCurrentCategoryAtr_B_001(),
+                self.GridCurrentCategoryAtrName_B_001(),
+                self.GridCurrentItemAbName_B_001(),
+                self.GridlistCurrentItem_B_001() ? self.GridlistCurrentItem_B_001().itemAbNameO : self.GridCurrentItemAbName_B_001(),
+                self.GridlistCurrentItem_B_001() ? self.GridlistCurrentItem_B_001().itemAbNameE : self.GridCurrentItemAbName_B_001(),
+                self.GridCurrentDisplaySet_B_001(),
+                self.GridCurrentUniteCode_B_001(),
+                self.GetCurrentZeroDisplaySet(),
+                self.GetCurrentItemDisplayAtr(),
+                1
+            )
         }
+
+        DeleteDialog() {
+            let self = this;
+            service.deleteItemMaster(self.GridlistCurrentItem_B_001()).done(function(any) {
+                //i'm not reload Gridlist , just remove that item in GridlistItems Array
+                let index = self.GridlistItems_B_001().indexOf(self.GridlistCurrentItem_B_001());
+                if (index != undefined) {
+                    self.GridlistItems_B_001().splice(index, 1);
+                    //set selected code after remove
+                    if (self.GridlistItems_B_001().length - 1 > 1) {
+                        //if is not last item, set selected next item 
+                        if (index < self.GridlistItems_B_001().length - 1)
+                            self.GridlistCurrentCode_B_001(self.GridlistItems_B_001()[index].itemCode);
+                        else
+                            self.GridlistCurrentCode_B_001(self.GridlistItems_B_001()[index - 1].itemCode);
+                    } else
+                        self.GridlistCurrentCode_B_001('');
+                }
+            }).fail(function(res) {
+
+                alert(res);
+            });
+        }
+        GetCurrentZeroDisplaySet() {
+            let Result;
+            let self = this;
+            let CurrentGroup = self.GridCurrentCategoryAtr_B_001();
+            switch (CurrentGroup) {
+                case 0:
+                    Result = self.screenModel.screenModelC.CurrentZeroDisplaySet();
+                    break;
+                case 1:
+                    Result = self.screenModel.screenModelD.CurrentZeroDisplaySet();
+                    break;
+                case 2:
+                    Result = self.screenModel.screenModelE.CurrentZeroDisplaySet();
+                    break;
+            }
+            return Result;
+        }
+        GetCurrentItemDisplayAtr() {
+            let Result;
+            let self = this;
+            let CurrentGroup = self.GridCurrentCategoryAtr_B_001();
+            switch (CurrentGroup) {
+                case 0:
+                    Result = self.screenModel.screenModelC.CurrentItemDisplayAtr();
+                    break;
+                case 1:
+                    Result = self.screenModel.screenModelD.CurrentItemDisplayAtr();
+                    break;
+                case 2:
+                    Result = self.screenModel.screenModelE.CurrentItemDisplayAtr();
+                    break;
+            }
+            return Result;
+        }
+
 
         openADialog() {
+            let self = this;
             nts.uk.ui.windows.sub.modal('../a/index.xhtml', { height: 480, width: 630, dialogClass: "no-close" }).onClosed(function(): any {
-                let newValue = nts.uk.ui.windows.getShared('groupName');
-                $('#Group1').hide();
-                $('#Group2').hide();
-                $('#Group3').hide();
-                $('#Group4').hide();
-                switch (newValue) {
-                    case 'group1':
-                        $('#Group1').show();
-                        break;
-                    case 'group2':
-                        $('#Group2').show();
-                        break;
-                    case 'group3':
-                        $('#Group3').show();
-                        break;
-                    case 'group4':
-                        $('#Group4').show();
-                        break;
+                let groupCode = Number(nts.uk.sessionStorage.getItemAndRemove('groupCode').value);
+                //set layout for new.
+                if (groupCode != undefined) {
+                    self.GridlistCurrentCode_B_001('');
+                    self.GridCurrentCategoryAtr_B_001(groupCode);
+                    self.enable_B_INP_002(true);
                 }
+            });
+        }
+        submitData() {
+            let self = this;
+            let ItemMaster = self.GetCurrentItemMaster();
+            //if self.enable_B_INP_002 == true is mean New mode
+            if (self.enable_B_INP_002()) {
+                self.AddNewItemMaster(ItemMaster);
+            } else {
+                self.UpdateItemMaster(ItemMaster);
+            }
+        }
+        AddNewItemMaster(ItemMaster: service.model.ItemMasterModel) {
+            let self = this;
+            self.GridlistItems_B_001().push(ItemMaster);
+            self.GridlistCurrentCode_B_001(ItemMaster.itemCode);
+        }
+        UpdateItemMaster(ItemMaster: service.model.ItemMasterModel) {
+
+        }
+
+        openJDialog() {
+            let self = this;
+            nts.uk.ui.windows.sub.modal('../j/index.xhtml', { height: 700, width: 970, dialogClass: "no-close" }).onClosed(function(): any {
             });
         }
     }
 
-    class ItemModel {
-        code: string;
-        group: string;
-        name: string; 0
-        description: string;
-
-        constructor(code: string, group: string, name: string, description: string) {
-            this.code = code;
-            this.name = name;
-            this.description = description;
-            this.group = group;
-        }
-    }
-
-
     class ComboboxItemModel {
-        code: string;
+        code: number;
         name: string;
-        label: string;
 
-        constructor(code: string, name: string) {
+        constructor(code: number, name: string) {
             this.code = code;
             this.name = name;
         }

@@ -21,6 +21,7 @@ var cmm008;
                     self.memoValue = ko.observable("");
                     self.textEditorOption = ko.mapping.fromJS(new option.TextEditorOption());
                     self.dataSource = ko.observableArray([]);
+                    self.isEnable = ko.observable(false);
                     self.multilineeditor = {
                         memoValue: ko.observable(''),
                         constraint: '',
@@ -33,7 +34,6 @@ var cmm008;
                         required: ko.observable(true),
                     };
                 }
-                // start function
                 ScreenModel.prototype.start = function () {
                     var self = this;
                     var dfd = $.Deferred();
@@ -48,7 +48,6 @@ var cmm008;
                     self.processingDateItem();
                     self.dataSourceItem();
                     dfd.resolve();
-                    // Return.
                     return dfd.promise();
                 };
                 ScreenModel.prototype.closeDateListItem = function () {
@@ -75,18 +74,48 @@ var cmm008;
                 ScreenModel.prototype.dataSourceItem = function () {
                     var self = this;
                     self.dataSource = ko.observableArray([]);
-                    for (var i = 1; i < 100; i++) {
-                        self.dataSource.push(new ItemModel('00' + i, '基本給', "description " + i, "other" + i));
-                    }
+                    a.service.getAllEmployments().done(function (listResult) {
+                        if (listResult.length === 0 || listResult === undefined) {
+                            self.isEnable(true);
+                        }
+                        else {
+                            self.isEnable(false);
+                            for (var _i = 0, listResult_1 = listResult; _i < listResult_1.length; _i++) {
+                                var employ = listResult_1[_i];
+                                var closeDate = employ.closeDateNo.toString();
+                                var processingNo = employ.processingNo.toString();
+                                var displayText = employ.displayFlg.toString();
+                                self.dataSource.push(new ItemModel(employ.employmentCode, employ.employmentName, closeDate, processingNo, displayText));
+                            }
+                        }
+                    });
                     this.columns = ko.observableArray([
                         { headerText: 'コード', prop: 'code', width: 100 },
                         { headerText: '名称', prop: 'name', width: 150 },
-                        { headerText: '説明', prop: 'description', width: 150 },
-                        { headerText: '説明1', prop: 'other1', width: 150 },
-                        { headerText: '説明2', prop: 'other2', width: 150 }
+                        { headerText: '締め日', prop: 'closeDate', width: 150 },
+                        { headerText: '処理日区分', prop: 'processingNo', width: 150 },
+                        { headerText: '初期表示', prop: 'displayFlg', width: 150 }
                     ]);
                     this.currentCode = ko.observable();
                     self.singleSelectedCode = ko.observable(null);
+                };
+                ScreenModel.prototype.createEmployment = function () {
+                    var self = this;
+                    if (self.isEnable) {
+                        var employment = new a.service.model.employmentDto();
+                        employment.employmentCode = self.employmentCode();
+                        employment.employmentName = self.employmentName();
+                        employment.closeDateNo = self.selectedCloseCode();
+                        employment.processingNo = self.selectedProcessCode();
+                        employment.statutoryHolidayAtr = self.holidayCode();
+                        employment.employementOutCd = self.employmentOutCode();
+                        if (self.isCheckbox)
+                            employment.displayFlg = 1;
+                        else
+                            employment.displayFlg = 0;
+                        a.service.createEmployment(employment).done(function () {
+                        });
+                    }
                 };
                 return ScreenModel;
             }());
@@ -108,17 +137,16 @@ var cmm008;
             }());
             viewmodel.ItemProcessingDate = ItemProcessingDate;
             var ItemModel = (function () {
-                //childs: any;
                 function ItemModel(code, name, description, other1, other2) {
                     this.code = code;
                     this.name = name;
                     this.description = description;
                     this.other1 = other1;
                     this.other2 = other2 || other1;
-                    //this.childs = childs;     
                 }
                 return ItemModel;
             }());
         })(viewmodel = a.viewmodel || (a.viewmodel = {}));
     })(a = cmm008.a || (cmm008.a = {}));
 })(cmm008 || (cmm008 = {}));
+//# sourceMappingURL=viewmodel.js.map

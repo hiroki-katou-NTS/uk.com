@@ -5,11 +5,12 @@ var qmm002;
         var service;
         (function (service) {
             var paths = {
-                getPaymentDateProcessingList: "pr/proto/paymentdatemaster/processing/findall"
+                tranfer: "basic/system/bank/branch/tranfer",
+                getBankList: "basic/system/bank/find/all"
             };
-            function getPaymentDateProcessingList() {
+            function tranferBranch(data) {
                 var dfd = $.Deferred();
-                nts.uk.request.ajax(paths.getPaymentDateProcessingList)
+                nts.uk.request.ajax('com', paths.tranfer, data)
                     .done(function (res) {
                     dfd.resolve(res);
                 })
@@ -18,7 +19,20 @@ var qmm002;
                 });
                 return dfd.promise();
             }
-            service.getPaymentDateProcessingList = getPaymentDateProcessingList;
+            service.tranferBranch = tranferBranch;
+            function getBankList() {
+                var dfd = $.Deferred();
+                nts.uk.request.ajax("com", paths.getBankList)
+                    .done(function (res) {
+                    dfd.resolve(res);
+                })
+                    .fail(function (res) {
+                    dfd.reject(res);
+                });
+                return dfd.promise();
+            }
+            service.getBankList = getBankList;
         })(service = c.service || (c.service = {}));
     })(c = qmm002.c || (qmm002.c = {}));
 })(qmm002 || (qmm002 = {}));
+//# sourceMappingURL=service.js.map

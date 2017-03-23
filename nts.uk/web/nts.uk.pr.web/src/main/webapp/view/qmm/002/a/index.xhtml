@@ -24,14 +24,14 @@
 			<div id="functions-area">
 				<button id="A_BTN_001" data-bind="click: cleanBranch" >新規</button>
 				<button id="A_BTN_002" class="proceed" data-bind="click: addBranch" >登録</button>
-				<button id="A_BTN_005" >印刷 (PDF)</button>
+				<button id="A_BTN_005">印刷 (PDF)</button>
 				<button id="A_BTN_009" data-bind="click: OpenDdialog">銀行の追加</button>
 				<button id="A_BTN_006" data-bind="click: OpenCdialog">銀行の統合</button>
 				<button id="A_BTN_008" >マスタ修正ログ</button>
 				<button id="A_BTN_003" class="danger" data-bind="click: removeBranch">削除</button>
 				<button id="A_BTN_004" class="danger" data-bind="click: OpenBdialog" >一括削除</button>
 				<a href="#"
-					data-bind="ntsLinkButton: { jump: 'linkbutton.xhtml' }">振込元銀行の登録へ</a>
+					data-bind="click: jumpToQmm006A,ntsLinkButton: {}">振込元銀行の登録へ</a>
 			</div>
 			<div id="contents-area">
 				<div id="left-content" class="bg-green caret-right caret-background cf">
@@ -42,7 +42,7 @@
 							items: lst_001,  
 							filteredItems: filteredData, 
 							selected: singleSelectedCode, 
-							selectedKey: 'code', 
+							selectedKey: 'treeCode', 
 							childField: 'childs', 
 							fields: ['name', 'code']}" />	
 							
@@ -63,8 +63,8 @@
 					</div>
 
 				</div>
-				<div id="right-content">
-					<table data-bind="with: nodeParent">
+				<div id="right-content" data-bind="with: nodeParent">
+					<table >
 						<tr>
 							<td>
 								<div id="A_LBL_002" data-bind="ntsFormLabel: {}">銀行コード/名称</div>
@@ -74,13 +74,12 @@
 							    <span id="A_LBL_010" data-bind="text: name">001</span>
 							</td>
 							<td rowspan="2">
-							    <div data-bind="with: $parent.A_INP_002">
+							    <div >
 									<textarea id="A_INP_002" style="height: 65px;" data-bind="ntsMultilineEditor: {
-										value: value,
-										constraint: constraint,
-										option: option,
-										enable: enable,
-										readonly: readonly}" />
+										value: ko.observable(memo),
+										constraint: 'Memo',
+										enable: true,
+										readonly: true}" />
 								</div>
 							</td>								
 						</tr>
@@ -104,7 +103,7 @@
 							<td>
 							   <div style="margin: 8px 0px 20px 30px;">
 							    <span data-bind="with: A_INP_003" >
-								<input id="A_INP_003" class="text-editor1" style="height: 25px;" data-bind="ntsTextEditor: {
+								<input data-name="支店コード" id="A_INP_003" class="text-editor1" style="height: 25px;" data-bind="ntsTextEditor: {
 									value: value,
 									constraint: constraint,
 									option: option,
@@ -113,7 +112,7 @@
 									readonly: readonly}" /></span>
 									
 								<span style="margin-left: 5px" data-bind="with: A_INP_004" >
-								<input id="A_INP_004" class="text-editor2" style="height: 25px;" data-bind="ntsTextEditor: {
+								<input data-name="名称" id="A_INP_004" class="text-editor2" style="height: 25px;" data-bind="ntsTextEditor: {
 									value: value,
 									constraint: constraint,
 									option: option,
