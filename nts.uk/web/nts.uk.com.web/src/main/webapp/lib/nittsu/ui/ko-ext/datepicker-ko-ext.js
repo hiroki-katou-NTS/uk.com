@@ -7,15 +7,6 @@ var nts;
         (function (ui) {
             var koExtentions;
             (function (koExtentions) {
-                /**
-                 * Datepicker binding handler
-                 */
-                function randomString(length, chars) {
-                    var result = '';
-                    for (var i = length; i > 0; --i)
-                        result += chars[Math.floor(Math.random() * chars.length)];
-                    return result;
-                }
                 var DatePickerBindingHandler = (function () {
                     /**
                      * Constructor.
@@ -31,7 +22,7 @@ var nts;
                         // Container.
                         var container = $(element);
                         if (!container.attr("id")) {
-                            var idString = randomString(10, 'abcdefghijklmnopqrstuvwxy0123456789zABCDEFGHIJKLMNOPQRSTUVWXYZ');
+                            var idString = nts.uk.util.randomId();
                             container.attr("id", idString);
                         }
                         container.addClass("ntsControl");
@@ -45,8 +36,8 @@ var nts;
                         }
                         var autoHide = data.autoHide == false ? false : true;
                         var idatr = container.attr("id");
-                        container.append("<input id='" + idatr + "_input' class='ntsDatepicker nts-input' />");
-                        var $input = container.find('#' + idatr + "_input");
+                        container.append("<input id='" + idatr + "-input' class='ntsDatepicker nts-input' />");
+                        var $input = container.find('#' + idatr + "-input");
                         var button = null;
                         if (data.button)
                             button = idatr + "_button";
@@ -113,12 +104,11 @@ var nts;
                     DatePickerBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var data = valueAccessor();
                         var container = $(element);
-                        var idatr = container.attr("id");
                         var newValue = ko.unwrap(data.value);
-                        //console.log(newValue);                       
-                        var dateFormat = data.dateFormat ? ko.unwrap(data.dateFormat) : "yyyy/MM/dd";
-                        var $input = container.find('#' + idatr + "_input");
-                        var dateFormat = data.dateFormat ? ko.unwrap(data.dateFormat) : "yyyy/MM/dd";
+                        var dateFormat = (data.dateFormat !== undefined) ? ko.unwrap(data.dateFormat) : "yyyy/MM/dd";
+                        var disabled = (data.disabled !== undefined) ? ko.unwrap(data.disabled) : true;
+                        var idatr = container.attr("id");
+                        var $input = container.find('#' + idatr + "-input");
                         var formatOptions = container.data("format");
                         var oldDate = $input.datepicker("getDate");
                         if (formatOptions != 'yyyy/mm') {
@@ -135,12 +125,10 @@ var nts;
                                 $input.datepicker("setDate", newDate);
                             $input.val(formatted.format());
                         }
-                        if (data.disabled !== undefined && ko.unwrap(data.disabled) == true) {
-                            $input.prop("disabled", true);
-                            if (data.button) {
-                                container.find('.datepicker-btn').prop("disabled", true);
-                            }
-                        }
+                        // Disable
+                        $input.prop("disabled", disabled);
+                        if (data.button)
+                            container.find('.datepicker-btn').prop("disabled", disabled);
                     };
                     return DatePickerBindingHandler;
                 }());
