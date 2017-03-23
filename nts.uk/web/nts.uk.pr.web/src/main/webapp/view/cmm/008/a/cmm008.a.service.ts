@@ -14,7 +14,7 @@ module cmm008.a.service{
             .done(function(res: Array<any>){
                 dfd.resolve(res);             
             })
-            .fail(function(res){
+            .fail(function(res: any){
                 dfd.reject(res);    
             })
         return dfd.promise();
@@ -26,7 +26,7 @@ module cmm008.a.service{
             .done(function(res: model.employmentDto){
                 dfd.resolve(res);             
             })
-            .fail(function(res){
+            .fail(function(res: any){
                 dfd.reject(res);    
             })
         return dfd.promise();
@@ -36,7 +36,7 @@ module cmm008.a.service{
         var dfd = $.Deferred<Array<any>>();  
         nts.uk.request.ajax("com", path.createEmployment, employment).done(function(res: Array<any>){
             dfd.resolve(res);        
-        }).fail(function(res){
+        }).fail(function(res: any){
             dfd.reject(res);
         })
         return dfd.promise();
@@ -46,7 +46,7 @@ module cmm008.a.service{
         var dfd = $.Deferred<Array<any>>();
         nts.uk.request.ajax("com",path.updateEmployment,employment).done(function(res: Array<any>){
             dfd.resolve(res);
-        }).fail(function(res){
+        }).fail(function(res: any){
             dfd.reject(res);
         })
         return dfd.promise();
@@ -56,7 +56,7 @@ module cmm008.a.service{
         var dfd = $.Deferred<Array<any>>();
         nts.uk.request.ajax("com",path.deleteEmployment, employment).done(function(res: Array<any>){
             dfd.resolve(res);
-        }).fail(function(res){
+        }).fail(function(res : any){
             dfd.reject(res);
         })
         return dfd.promise();
@@ -66,7 +66,7 @@ module cmm008.a.service{
         var dfd = $.Deferred<Array<any>>();
         nts.uk.request.ajax(path.getAllProcessingNo).done(function(res: Array<any>){
             dfd.resolve(res);
-        }).fail(function(res){
+        }).fail(function(res : any){
             dfd.reject(res);
         })
         return dfd.promise();
