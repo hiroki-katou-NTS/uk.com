@@ -16,6 +16,7 @@ module cmm014.a.viewmodel {
         index_of_itemDelete: any;
         itemdata_add: any;
         itemdata_update: any;
+        dirty_1: nts.uk.ui.DirtyChecker;
 
         constructor() {
             var self = this;
@@ -36,11 +37,17 @@ module cmm014.a.viewmodel {
             self.itemdata_add = ko.observable(null);
             self.itemdata_update = ko.observable(null);
             self.hasCellphone = ko.observable(true);
+            self.dirty_1 = new nts.uk.ui.DirtyChecker(self.currentItem);
 
 
 
             self.currentCode.subscribe((function(codeChanged) {
                 self.currentItem(self.findObj(codeChanged));
+                if (self.dirty_1.isDirty() ) {
+                    alert("Data is changed.");
+                } else {
+                    alert("Data isn't changed.");
+                }
                 if (self.currentItem() != null) {
                     self.INP_002_code(self.currentItem().classificationCode);
                     self.INP_002_enable(false);
@@ -49,10 +56,6 @@ module cmm014.a.viewmodel {
                     self.hasCellphone(true);
                 }
             }));
-
-
-
-
         }
 
         findObj(value: string): any {
@@ -173,7 +176,7 @@ module cmm014.a.viewmodel {
             var self = this;
             var dfd = $.Deferred<any>();
             service.getAllClassification().done(function(classification_arr: Array<model.ClassificationDto>) {
-                if (classification_arr.length > 0) {
+                if (classification_arr.length > 0 && !self.dirty_1.isDirty()) {
                     self.dataSource(classification_arr);
                     self.INP_002_code(self.dataSource()[0].classificationCode);
                     self.INP_003_name(self.dataSource()[0].classificationName);

@@ -23,8 +23,15 @@ var cmm014;
                     self.itemdata_add = ko.observable(null);
                     self.itemdata_update = ko.observable(null);
                     self.hasCellphone = ko.observable(true);
+                    self.dirty_1 = new nts.uk.ui.DirtyChecker(self.currentItem);
                     self.currentCode.subscribe((function (codeChanged) {
                         self.currentItem(self.findObj(codeChanged));
+                        if (self.dirty_1.isDirty()) {
+                            alert("Data is changed.");
+                        }
+                        else {
+                            alert("Data isn't changed.");
+                        }
                         if (self.currentItem() != null) {
                             self.INP_002_code(self.currentItem().classificationCode);
                             self.INP_002_enable(false);
@@ -145,7 +152,7 @@ var cmm014;
                     var self = this;
                     var dfd = $.Deferred();
                     a.service.getAllClassification().done(function (classification_arr) {
-                        if (classification_arr.length > 0) {
+                        if (classification_arr.length > 0 && !self.dirty_1.isDirty()) {
                             self.dataSource(classification_arr);
                             self.INP_002_code(self.dataSource()[0].classificationCode);
                             self.INP_003_name(self.dataSource()[0].classificationName);

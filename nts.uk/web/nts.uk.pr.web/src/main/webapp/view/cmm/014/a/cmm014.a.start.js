@@ -4,6 +4,7 @@ var cmm014;
     (function (a) {
         __viewContext.ready(function () {
             var screenModel = new a.viewmodel.ScreenModel();
+            nts.uk.ui.confirmSave(screenModel.dirty_1);
             screenModel.start().done(function () {
                 __viewContext.bind(screenModel);
             });
