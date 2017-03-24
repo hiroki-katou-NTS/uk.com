@@ -84,10 +84,12 @@ var cmm014;
                     var self = this;
                     if (!self.currentItem().INP_002_code()) {
                         alert("コードが入力されていません。");
+                        $("#A_INP_002").focus();
                         return false;
                     }
                     else if (!self.currentItem().INP_003_name()) {
                         alert("名称が入力されていません。");
+                        $("#A_INP_003").focus();
                         return false;
                     }
                     return true;
@@ -167,6 +169,7 @@ var cmm014;
                         }).ifNo(function () { });
                     }
                     else { }
+                    self.dirty.reset();
                 };
                 ScreenModel.prototype.start = function () {
                     var self = this;
@@ -328,3 +331,4 @@ var cmm014;
         })(viewmodel = a.viewmodel || (a.viewmodel = {}));
     })(a = cmm014.a || (cmm014.a = {}));
 })(cmm014 || (cmm014 = {}));
+//# sourceMappingURL=cmm014.a.vm.js.map

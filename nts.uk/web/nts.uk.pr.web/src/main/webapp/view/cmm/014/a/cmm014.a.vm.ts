@@ -98,10 +98,11 @@ module cmm014.a.viewmodel {
             var self = this;
             if (!self.currentItem().INP_002_code()) {
                 alert("コードが入力されていません。");
-
+                $("#A_INP_002").focus();
                 return false;
             } else if (!self.currentItem().INP_003_name()) {
                 alert("名称が入力されていません。");
+                $("#A_INP_003").focus();
                 return false;
             }
             return true;
@@ -178,8 +179,9 @@ module cmm014.a.viewmodel {
                     })
                     dfd.resolve();
                     return dfd.promise();
-                }).ifNo(function() {});
-            } else {}
+                }).ifNo(function() { });
+            } else { }
+            self.dirty.reset();
         }
 
         start(): JQueryPromise<any> {

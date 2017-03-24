@@ -38,7 +38,6 @@ module cmm014.a.service {
         return dfd.promise();
     }
 
-
     /**
      * update Classification
      */
