@@ -5,7 +5,7 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.pr.core.dom.enums.DisplayAtr;
-import nts.uk.ctx.pr.core.dom.paymentdata.PayBonusAtr;
+import nts.uk.ctx.pr.core.dom.payment.banktranfer.PayBonusAtr;
 import nts.uk.shr.com.primitive.sample.ProcessingNo;
 
 /**

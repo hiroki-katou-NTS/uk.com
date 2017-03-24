@@ -5,19 +5,20 @@ module qpp014.a.viewmodel {
         //viewmodelb = new qpp014.b.viewmodel.ScreenModel();
 
         //viewmodel A
-        a_SEL_001_items: KnockoutObservableArray<ItemModel_A_SEL_001>;
+        a_SEL_001_items: KnockoutObservableArray<PayDayProcessing>;
         a_SEL_001_itemSelected: KnockoutObservable<any>;
-        
+
         //viewmodel B
         b_stepList: Array<nts.uk.ui.NtsWizardStep>;
         b_stepSelected: KnockoutObservable<nts.uk.ui.NtsWizardStep>;
 
         //viewmodel D
         d_SEL_001_selectedCode: KnockoutObservable<any>;
+        d_SEL_002_selectedCode: KnockoutObservable<any>;
         d_INP_001: any;
         d_LST_001_items: any;
         d_LST_001_itemSelected: KnockoutObservable<any>;
-        
+
         //viewmodel G
         g_INP_001: KnockoutObservable<Date>;
         g_SEL_001_items: KnockoutObservableArray<ItemModel_G_SEL_001>;
@@ -26,12 +27,12 @@ module qpp014.a.viewmodel {
         g_SEL_002_itemSelected: KnockoutObservable<any>;
         g_INP_002: any;
         g_SEL_003_itemSelected: KnockoutObservable<any>;
-        
+
         //viewmodel H
         h_INP_001: KnockoutObservable<Date>;
         h_LST_001_items: KnockoutObservableArray<ItemModel_H_LST_001>;
         h_LST_001_itemsSelected: KnockoutObservable<any>;
-        
+
         constructor() {
             $('.func-btn').css('display', 'none');
             $('#screenB').css('display', 'none');
@@ -40,9 +41,9 @@ module qpp014.a.viewmodel {
 
             //viewmodel A
             self.a_SEL_001_items = ko.observableArray([
-                new ItemModel_A_SEL_001('基本給1', '基本給'),
-                new ItemModel_A_SEL_001('基本給2', '役職手当'),
-                new ItemModel_A_SEL_001('0003', '基本給')
+                new PayDayProcessing('基本給1', '基本給'),
+                new PayDayProcessing('基本給2', '役職手当'),
+                new PayDayProcessing('0003', '基本給')
             ]);
             self.a_SEL_001_itemSelected = ko.observable('0003');
 
@@ -58,6 +59,7 @@ module qpp014.a.viewmodel {
 
             //viewmodel D
             self.d_SEL_001_selectedCode = ko.observable(1);
+            self.d_SEL_002_selectedCode = ko.observable(1);
             self.d_INP_001 = {
                 value: ko.observable('')
             };
@@ -65,12 +67,12 @@ module qpp014.a.viewmodel {
             for (let i = 1; i < 100; i++) {
                 self.d_LST_001_items.push({ 'code': '00' + i, 'name': '基本給', 'description': 'description' + i });
             }
-                //LST 001
+            //LST 001
             $("#D_LST_001").igGrid({
                 dataSource: self.d_LST_001_items,
                 primaryKey: 'code',
-                width: '785px',
-                height: "380px",
+                width: '740px',
+                height: '290px',
                 autoCommit: false,
                 features: [
                     {
@@ -86,22 +88,22 @@ module qpp014.a.viewmodel {
                 ],
                 autoGenerateColumns: false,
                 columns: [
-                    { headerText: 'コード', key: 'code', dataType: 'string', width: '25%' },
-                    { headerText: '名称', key: 'code', dataType: 'string', width: '25%' },
+                    { headerText: 'コード', key: 'code', dataType: 'string', width: '17%' },
+                    { headerText: '名称', key: 'code', dataType: 'string', width: '17%' },
                     {
-                        headerText: '振込元設定', width: '50%',
+                        headerText: '振込元設定', width: '70%',
                         group: [
-                            { headerText: "支払1", key: "code", dataType: "string", width: "19%" },
-                            { headerText: "支払2", key: "name", dataType: "string", width: "19%" },
-                            { headerText: "支払3", key: "description", dataType: "string", width: "19%" },
-                            { headerText: "支払4", key: "description", dataType: "string", width: "19%" },
-                            { headerText: "支払5", key: "description", dataType: "string", width: "24%" }
+                            { headerText: "支払1", key: "code", dataType: "string", width: "13%" },
+                            { headerText: "支払2", key: "name", dataType: "string", width: "13%" },
+                            { headerText: "支払3", key: "description", dataType: "string", width: "13%" },
+                            { headerText: "支払4", key: "description", dataType: "string", width: "13%" },
+                            { headerText: "支払5", key: "description", dataType: "string", width: "14%" }
                         ]
                     }
                 ]
             });
-            self.d_LST_001_itemSelected = ko.observable();
-            
+            self.d_LST_001_itemSelected = ko.observable(0);
+
             //viewmodel G
             self.g_INP_001 = ko.observable(new Date('2016/12/01'));
             self.g_SEL_001_items = ko.observableArray([
@@ -120,14 +122,14 @@ module qpp014.a.viewmodel {
                 value: ko.observable(12)
             };
             self.g_SEL_003_itemSelected = ko.observable('0002');
-            
+
             //viewmodel H
             self.h_INP_001 = ko.observable(new Date('2016/12/01'));
             self.h_LST_001_items = ko.observableArray([]);
             for (let i = 1; i < 100; i++) {
                 self.h_LST_001_items.push(new ItemModel_H_LST_001('00' + i, '基本給', "description " + i));
             }
-            self.h_LST_001_itemsSelected = ko.observable(); 
+            self.h_LST_001_itemsSelected = ko.observable();
         }
         nextScreen() {
             $("#screenA").css("display", "none");
@@ -142,16 +144,37 @@ module qpp014.a.viewmodel {
             $(".func-btn").css("display", "none");
         }
     }
-    export class ItemModel_A_SEL_001 {
-        code: string;
-        name: string;
-        label: string;
 
-        constructor(code: string, name: string) {
-            this.code = code;
-            this.name = name;
+    // Pay day processing
+    export class PayDayProcessing {
+        companyCode: string;
+        processingNumber: number;
+        processingName: string;
+        displaySet: number;
+        currentProcessing: number;
+        bonusAttribute: number;
+        bonusCurrentProcessing: number;
+        
+        constructor(companyCode: string, processingNumber: number, processingName: string,
+            displaySet: number, currentProcessing: number, bonusAttribute: number, bonusCurrentProcessing: number) {
+            this.companyCode = companyCode;
+            this.processingNumber = processingNumber;
+            this.processingName = processingName;
+            this.displaySet = displaySet;
+            this.currentProcessing = currentProcessing;
+            this.bonusAttribute = bonusAttribute;
+            this.bonusCurrentProcessing = bonusCurrentProcessing;
         }
     }
+    
+    export class PersonCom {
+            
+    }
+    
+    export class PersonBankAccount {
+            
+    }
+    
     export class ItemModel_G_SEL_001 {
         code: string;
         name: string;

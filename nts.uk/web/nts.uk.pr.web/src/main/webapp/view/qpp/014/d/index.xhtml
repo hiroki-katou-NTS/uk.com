@@ -20,10 +20,10 @@
 				<label id="D_LBL_003">以下の設定で処理を行います。</label>
 			</div>
 			<div class="divLine">
-				<div class="divLine-col-1">
+				<div class="D-divLine-col-1">
 					<div id="D_LBL_004" data-bind="ntsFormLabel: {required: true}">処理対象</div>
 				</div>
-				<div class="divLine-col-2">
+				<div>
 					<div class="cf" id="D_SEL_001"
 						data-bind="ntsSwitchButton: {
 									options: ko.observableArray([
@@ -38,11 +38,23 @@
 					</div>
 				</div>
 			</div>
+			<div class="divLine" id="D-divLine4">
+				<button id="D_BTN_001">この条件で対象者を絞込み</button>
+				<span class="caret-bottom"></span>
+			</div>
+			<div class="divLine" id="D-divLine5">
+				<div id="D_LBL_006" data-bind="ntsFormLabel: {required: true}">対象人数</div>
+				<div id="D_LBL_007" align="center">
+					<label>10000</label>
+					<label>人</label>
+				</div>
+				<table id="D_LST_001"></table>
+			</div>
 			<div class="divLine">
-				<div class="divLine-col-1">
+				<div class="D-divLine-col-1">
 					<div id="D_LBL_005" data-bind="ntsFormLabel: {required: true}">振込日</div>
 				</div>
-				<div class="divLine-col-2">
+				<div class="D-divLine-col-2">
 					<div data-bind="with: d_INP_001">
 						<input id="D_INP_001"
 							data-bind="ntsTextEditor: {
@@ -53,21 +65,24 @@
 									enable: true }" />
 					</div>
 				</div>
-			</div>
-			<div class="divLine" id="D-divLine4">
-				<button id="D_BTN_001">この条件で対象者を絞込み</button>
-				<span class="caret-bottom"></span>
+				<div class="D-divLine-col-3">
+					<div id="D_LBL_017" data-bind="ntsFormLabel: {required: true}">出力方法</div>
+				</div>
+				<div>
+					<div class="cf" id="D_SEL_002"
+						data-bind="ntsSwitchButton: {
+									options: ko.observableArray([
+							            { code: '1', name: '振込依頼書' },
+							            { code: '2', name: 'テキストデータ' }
+							        ]),
+									optionsValue: 'code',
+									optionsText: 'name',
+									value: d_SEL_002_selectedCode,
+									enable: true }">
+					</div>
+				</div>
 			</div>
 			<div class="divLine">
-				<div class="divLine-col-1">
-					<div id="D_LBL_006" data-bind="ntsFormLabel: {required: true}">対象人数</div>
-				</div>
-				<div class="divLine-col-2">
-					<label id="D_LBL_007">LBL_007</label>
-				</div>
-			</div>
-			<div class="divLine" id="data_TBL">
-				<table id="D_LST_001"></table>
 				<button id="D_BTN_002" class="proceed x-large">作成を実行</button>
 			</div>
 		</div>

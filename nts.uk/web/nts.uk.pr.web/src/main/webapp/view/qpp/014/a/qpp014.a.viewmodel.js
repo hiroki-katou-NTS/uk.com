@@ -12,9 +12,9 @@ var qpp014;
                     var self = this;
                     //viewmodel A
                     self.a_SEL_001_items = ko.observableArray([
-                        new ItemModel_A_SEL_001('基本給1', '基本給'),
-                        new ItemModel_A_SEL_001('基本給2', '役職手当'),
-                        new ItemModel_A_SEL_001('0003', '基本給')
+                        new PayDayProcessing('基本給1', '基本給'),
+                        new PayDayProcessing('基本給2', '役職手当'),
+                        new PayDayProcessing('0003', '基本給')
                     ]);
                     self.a_SEL_001_itemSelected = ko.observable('0003');
                     //viewmodel B
@@ -26,6 +26,7 @@ var qpp014;
                     self.b_stepSelected = ko.observable({ id: 'step-2', content: '.step-2' });
                     //viewmodel D
                     self.d_SEL_001_selectedCode = ko.observable(1);
+                    self.d_SEL_002_selectedCode = ko.observable(1);
                     self.d_INP_001 = {
                         value: ko.observable('')
                     };
@@ -37,8 +38,8 @@ var qpp014;
                     $("#D_LST_001").igGrid({
                         dataSource: self.d_LST_001_items,
                         primaryKey: 'code',
-                        width: '785px',
-                        height: "380px",
+                        width: '740px',
+                        height: '290px',
                         autoCommit: false,
                         features: [
                             {
@@ -54,21 +55,21 @@ var qpp014;
                         ],
                         autoGenerateColumns: false,
                         columns: [
-                            { headerText: 'コード', key: 'code', dataType: 'string', width: '25%' },
-                            { headerText: '名称', key: 'code', dataType: 'string', width: '25%' },
+                            { headerText: 'コード', key: 'code', dataType: 'string', width: '17%' },
+                            { headerText: '名称', key: 'code', dataType: 'string', width: '17%' },
                             {
-                                headerText: '振込元設定', width: '50%',
+                                headerText: '振込元設定', width: '70%',
                                 group: [
-                                    { headerText: "支払1", key: "code", dataType: "string", width: "19%" },
-                                    { headerText: "支払2", key: "name", dataType: "string", width: "19%" },
-                                    { headerText: "支払3", key: "description", dataType: "string", width: "19%" },
-                                    { headerText: "支払4", key: "description", dataType: "string", width: "19%" },
-                                    { headerText: "支払5", key: "description", dataType: "string", width: "24%" }
+                                    { headerText: "支払1", key: "code", dataType: "string", width: "13%" },
+                                    { headerText: "支払2", key: "name", dataType: "string", width: "13%" },
+                                    { headerText: "支払3", key: "description", dataType: "string", width: "13%" },
+                                    { headerText: "支払4", key: "description", dataType: "string", width: "13%" },
+                                    { headerText: "支払5", key: "description", dataType: "string", width: "14%" }
                                 ]
                             }
                         ]
                     });
-                    self.d_LST_001_itemSelected = ko.observable();
+                    self.d_LST_001_itemSelected = ko.observable(0);
                     //viewmodel G
                     self.g_INP_001 = ko.observable(new Date('2016/12/01'));
                     self.g_SEL_001_items = ko.observableArray([
@@ -110,14 +111,32 @@ var qpp014;
                 return ScreenModel;
             }());
             viewmodel.ScreenModel = ScreenModel;
-            var ItemModel_A_SEL_001 = (function () {
-                function ItemModel_A_SEL_001(code, name) {
-                    this.code = code;
-                    this.name = name;
+            // Pay day processing
+            var PayDayProcessing = (function () {
+                function PayDayProcessing(companyCode, processingNumber, processingName, displaySet, currentProcessing, bonusAttribute, bonusCurrentProcessing) {
+                    this.companyCode = companyCode;
+                    this.processingNumber = processingNumber;
+                    this.processingName = processingName;
+                    this.displaySet = displaySet;
+                    this.currentProcessing = currentProcessing;
+                    this.bonusAttribute = bonusAttribute;
+                    this.bonusCurrentProcessing = bonusCurrentProcessing;
                 }
-                return ItemModel_A_SEL_001;
+                return PayDayProcessing;
             }());
-            viewmodel.ItemModel_A_SEL_001 = ItemModel_A_SEL_001;
+            viewmodel.PayDayProcessing = PayDayProcessing;
+            var PersonCom = (function () {
+                function PersonCom() {
+                }
+                return PersonCom;
+            }());
+            viewmodel.PersonCom = PersonCom;
+            var PersonBankAccount = (function () {
+                function PersonBankAccount() {
+                }
+                return PersonBankAccount;
+            }());
+            viewmodel.PersonBankAccount = PersonBankAccount;
             var ItemModel_G_SEL_001 = (function () {
                 function ItemModel_G_SEL_001(code, name) {
                     this.code = code;

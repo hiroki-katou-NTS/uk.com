@@ -3,6 +3,7 @@ package nts.uk.ctx.pr.core.infra.repository.payment.banktranfer;
 import java.util.List;
 import java.util.Optional;
 
+import javax.ejb.Stateless;
 import javax.enterprise.context.RequestScoped;
 
 import nts.arc.layer.infra.data.JpaRepository;
@@ -12,7 +13,7 @@ import nts.uk.ctx.pr.core.dom.payment.banktranfer.BankTranferRepository;
 import nts.uk.ctx.pr.core.infra.entity.payment.banktranfer.QbkdtBankTransfer;
 import nts.uk.ctx.pr.core.infra.entity.payment.banktranfer.QbkdtBankTransferPK;
 
-@RequestScoped
+@Stateless
 public class JpaBankTranferRepository extends JpaRepository implements BankTranferRepository {
 
 	private final String SEL = "SELECT b FROM QbkdtBankTransfer b ";

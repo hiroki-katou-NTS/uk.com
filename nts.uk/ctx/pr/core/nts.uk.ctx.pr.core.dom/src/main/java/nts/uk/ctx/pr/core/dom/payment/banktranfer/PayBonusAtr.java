@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.core.dom.paymentdata;
+package nts.uk.ctx.pr.core.dom.payment.banktranfer;
 
 /**
  * 給与賞与区分

@@ -10,7 +10,6 @@ public class PayMoney extends DecimalPrimitiveValue<PayMoney> {
 
 	public PayMoney(BigDecimal rawValue) {
 		super(rawValue);
-		// TODO Auto-generated constructor stub
 	}
 
 

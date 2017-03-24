@@ -5,7 +5,7 @@ import java.util.List;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.pr.core.dom.paymentdata.PayBonusAtr;
+import nts.uk.ctx.pr.core.dom.payment.banktranfer.PayBonusAtr;
 import nts.uk.ctx.pr.core.dom.paymentdata.Payment;
 import nts.uk.ctx.pr.core.dom.paymentdata.repository.PaymentDataRepository;
 import nts.uk.ctx.pr.core.dom.paymentdata.service.PaymentDataCheckService;

@@ -13,12 +13,10 @@ public class BankTranferParam {
 	String companyCode;
 	String personId;
 	
-	String fromBankCode;
-	String fromBranchCode;
+	String fromBranchId;
 	int fromAccountAtr;
 	String fromAccountNo;
 	
-	String toBankCode;
 	String toBranchCode;
 	int toAccountAtr;
 	String toAccountNo;

@@ -14,6 +14,8 @@ import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.enums.CategoryAtr;
 import nts.uk.ctx.pr.core.dom.itemmaster.ItemCode;
 import nts.uk.ctx.pr.core.dom.itemmaster.TaxAtr;
+import nts.uk.ctx.pr.core.dom.payment.banktranfer.PayBonusAtr;
+import nts.uk.ctx.pr.core.dom.payment.banktranfer.SparePayAtr;
 import nts.uk.ctx.pr.core.dom.paymentdata.dataitem.DetailItem;
 import nts.uk.ctx.pr.core.dom.paymentdata.dataitem.position.PrintPositionCategory;
 import nts.uk.ctx.pr.core.dom.paymentdata.insure.AgeContinuationInsureAtr;

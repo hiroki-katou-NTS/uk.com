@@ -4,11 +4,10 @@ import lombok.Value;
 
 @Value
 public class BankInfo {
-	private int accountAtr;
-	private String accountNameKana;
-	private String accountNo;
-	private String bankCode;
+	private String branchId;
 	private String bankNameKana;
-	private String branchCode;
 	private String branchNameKana;
+	private int accountAtr;
+	private String accountNo;
+	private String accountNameKana;
 }
