@@ -73,7 +73,7 @@ module cmm008.a.viewmodel{
             var heightScreen = $(window).height();
             var widthScreen =  $(window).width();
             var heightHeader = $('#header').height() + $('#functions-area').height();
-            var height = heightScreen-heightHeader - 75;
+            var height = heightScreen-heightHeader - 80;
             $('#contents-left').css({height: height, width: widthScreen*30/100});
             $('#contents-right').css({height: height, width: widthScreen*70/100});
             self.listMessage();
