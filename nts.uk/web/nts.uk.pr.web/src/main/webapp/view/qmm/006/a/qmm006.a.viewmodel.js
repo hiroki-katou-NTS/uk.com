@@ -67,12 +67,8 @@ var qmm006;
                 ScreenModel.prototype.startPage = function () {
                     var self = this;
                     var dfd = $.Deferred();
-                    $.when(self.findBankAll()).done(function () {
-                        self.findAll().done(function () {
-                            dfd.resolve();
-                        }).fail(function (res) {
-                            dfd.reject(res);
-                        });
+                    self.findAll().done(function () {
+                        dfd.resolve();
                     }).fail(function (res) {
                         dfd.reject(res);
                     });
@@ -183,20 +179,7 @@ var qmm006;
                     nts.uk.ui.dialog.confirm("データを削除します。\r\nよろしいですか？")
                         .ifYes(function () {
                         var command = {
-                            accountAtr: self.currentLineBank().accountAtr(),
-                            bankCode: self.currentLineBank().bankCode(),
-                            branchCode: self.currentLineBank().branchCode(),
-                            consignor: [
-                                { "code": self.currentLineBank().consignors()[0].consignorCode(), "memo": self.currentLineBank().consignors()[0].consignorMemo() },
-                                { "code": self.currentLineBank().consignors()[1].consignorCode(), "memo": self.currentLineBank().consignors()[1].consignorMemo() },
-                                { "code": self.currentLineBank().consignors()[2].consignorCode(), "memo": self.currentLineBank().consignors()[2].consignorMemo() },
-                                { "code": self.currentLineBank().consignors()[3].consignorCode(), "memo": self.currentLineBank().consignors()[3].consignorMemo() },
-                                { "code": self.currentLineBank().consignors()[4].consignorCode(), "memo": self.currentLineBank().consignors()[4].consignorMemo() },
-                            ],
                             lineBankCode: self.currentLineBank().lineBankCode(),
-                            lineBankName: self.currentLineBank().lineBankName(),
-                            memo: self.currentLineBank().memo(),
-                            requesterName: self.currentLineBank().requesterName()
                         };
                         qmm006.a.service.remove(command)
                             .done(function () {

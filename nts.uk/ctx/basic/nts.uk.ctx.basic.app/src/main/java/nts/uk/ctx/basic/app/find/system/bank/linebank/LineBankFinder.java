@@ -17,8 +17,10 @@ import nts.uk.shr.com.context.LoginUserContext;
 public class LineBankFinder {
 	@Inject
 	private LineBankRepository lineBankRepository;
+
 	/**
 	 * find all lineBank
+	 * 
 	 * @return
 	 */
 	public List<LineBankDto> findAll() {
@@ -32,6 +34,7 @@ public class LineBankFinder {
 
 	/**
 	 * find one lineBank base on lineBankCode
+	 * 
 	 * @param lineBankCode
 	 * @return
 	 */

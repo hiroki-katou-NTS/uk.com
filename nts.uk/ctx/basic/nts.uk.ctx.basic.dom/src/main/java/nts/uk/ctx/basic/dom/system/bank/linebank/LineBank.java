@@ -23,9 +23,7 @@ public class LineBank extends AggregateRoot {
 	@Getter
 	private AccountNo accountNo;
 	@Getter
-	private String bankCode;
-	@Getter
-	private String branchCode;
+	private String branchId;
 	@Getter
 	private List<Consignor> consignor;
 	@Getter
@@ -37,14 +35,13 @@ public class LineBank extends AggregateRoot {
 	@Getter
 	private RequesterName requesterName;
 
-	public LineBank(String companyCode, AccountAtr accountAtr, AccountNo accountNo, String bankCode, String branchCode,
+	public LineBank(String companyCode, AccountAtr accountAtr, AccountNo accountNo, String branchId,
 			LineBankCode lineBankCode, LineBankName lineBankName, Memo memo, RequesterName requesterName) {
 		super();
 		this.companyCode = companyCode;
 		this.accountAtr = accountAtr;
 		this.accountNo = accountNo;
-		this.bankCode = bankCode;
-		this.branchCode = branchCode;
+		this.branchId = branchId;
 		this.lineBankCode = lineBankCode;
 		this.lineBankName = lineBankName;
 		this.memo = memo;
@@ -65,19 +62,24 @@ public class LineBank extends AggregateRoot {
 	 * @param requesterName
 	 * @return
 	 */
-	public static LineBank createFromJavaType(String companyCode, int accountAtr, String accountNo, String bankCode,
-			String branchCode, String lineBankCode, String lineBankName, String memo, String requesterName) {
+	public static LineBank createFromJavaType(String companyCode, int accountAtr, String accountNo, String branchId,
+			String lineBankCode, String lineBankName, String memo, String requesterName) {
 		if (StringUtil.isNullOrEmpty(lineBankCode, true) || StringUtil.isNullOrEmpty(lineBankName, true)
 				|| StringUtil.isNullOrEmpty(accountNo, true)) {
 			throw new BusinessException("ER001");
 		}
 
-		if (StringUtil.isNullOrEmpty(bankCode, true) || StringUtil.isNullOrEmpty(branchCode, true)) {
+		// if (StringUtil.isNullOrEmpty(bankCode, true) ||
+		// StringUtil.isNullOrEmpty(branchCode, true)) {
+		// throw new BusinessException("ER007");
+		// }
+
+		if (StringUtil.isNullOrEmpty(branchId, true)) {
 			throw new BusinessException("ER007");
 		}
 
 		return new LineBank(companyCode, EnumAdaptor.valueOf(accountAtr, AccountAtr.class), new AccountNo(accountNo),
-				bankCode, branchCode, new LineBankCode(lineBankCode), new LineBankName(lineBankName), new Memo(memo),
+				branchId, new LineBankCode(lineBankCode), new LineBankName(lineBankName), new Memo(memo),
 				new RequesterName(requesterName));
 	}
 

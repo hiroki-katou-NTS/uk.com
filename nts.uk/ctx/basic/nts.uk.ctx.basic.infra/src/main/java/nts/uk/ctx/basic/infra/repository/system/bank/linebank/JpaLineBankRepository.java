@@ -77,7 +77,7 @@ public class JpaLineBankRepository extends JpaRepository implements LineBankRepo
 	 */
 	public static LineBank toDomain(CbkmtLineBank entity) {
 		LineBank domain = LineBank.createFromJavaType(entity.cbkmtLineBankPK.companyCode, entity.accountAtr,
-				entity.accountNo, entity.bankCode, entity.branchCode, entity.cbkmtLineBankPK.lineBankCode,
+				entity.accountNo, entity.branchId, entity.cbkmtLineBankPK.lineBankCode,
 				entity.lineBankName, entity.memo, entity.requesterName);
 		domain.createConsignorFromJavaType(entity.consignorCode1, entity.consignorMemo1, entity.consignorCode2,
 				entity.consignorMemo2, entity.consignorCode3, entity.consignorMemo3, entity.consignorCode4,
