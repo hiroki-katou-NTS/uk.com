@@ -45,8 +45,8 @@ var cmm008;
                     var widthScreen = $(window).width();
                     var heightHeader = $('#header').height() + $('#functions-area').height();
                     var height = heightScreen - heightHeader - 80;
-                    $('#contents-left').css({ height: height, width: widthScreen * 30 / 100 });
-                    $('#contents-right').css({ height: height, width: widthScreen * 70 / 100 });
+                    $('#contents-left').css({ height: height, width: widthScreen * 38 / 100 });
+                    $('#contents-right').css({ height: height, width: widthScreen * 62 / 100 });
                     self.listMessage();
                     self.closeDateListItem();
                     self.managementHolidaylist();
@@ -180,11 +180,11 @@ var cmm008;
                         dfd.resolve(listResult);
                     });
                     this.columns = ko.observableArray([
-                        { headerText: 'コード', prop: 'employmentCode', width: 100 },
-                        { headerText: '名称', prop: 'employmentName', width: 160 },
-                        { headerText: '締め日', prop: 'closeDateNoStr', width: 150 },
-                        { headerText: '処理日区分', prop: 'processingStr', width: 150 },
-                        { headerText: '初期表示', prop: 'displayStr', width: 80 }
+                        { headerText: 'コード', prop: 'employmentCode', width: '18%' },
+                        { headerText: '名称', prop: 'employmentName', width: '28%' },
+                        { headerText: '締め日', prop: 'closeDateNoStr', width: '20%' },
+                        { headerText: '処理日区分', prop: 'processingStr', width: '20%' },
+                        { headerText: '初期表示', prop: 'displayStr', width: '14%' }
                     ]);
                     self.singleSelectedCode = ko.observable(null);
                     return dfd.promise();
