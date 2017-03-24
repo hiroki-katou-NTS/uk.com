@@ -4,21 +4,19 @@ module qmm012.b.viewmodel {
         //combobox
         //001
         ComboBoxItemList_B_001: KnockoutObservableArray<ComboboxItemModel>;
-        selectedCode_B_001: KnockoutObservable<string>;
-        isEnable: KnockoutObservable<boolean> = ko.observable(true);
-        isEditable: KnockoutObservable<boolean> = ko.observable(true);
+        selectedCode_B_001: KnockoutObservable<number> = ko.observable(1);
         //gridlist
         GridlistItems_B_001: KnockoutObservableArray<service.model.ItemMasterModel> = ko.observableArray([]);
         GridColumns_B_001: KnockoutObservableArray<any>;
-        GridlistCurrentCode_B_001: KnockoutObservable<any> = ko.observable();
-        GridlistCurrentItem_B_001: KnockoutObservable<any> = ko.observable();
-        GridCurrentItemAbName_B_001: KnockoutObservable<any> = ko.observable();
-        GridCurrentItemName_B_001: KnockoutObservable<any> = ko.observable();
+        GridlistCurrentCode_B_001: KnockoutObservable<string> = ko.observable('');
+        GridlistCurrentItem_B_001: KnockoutObservable<service.model.ItemMasterModel> = ko.observable(null);
+        GridCurrentItemAbName_B_001: KnockoutObservable<string> = ko.observable('');
+        GridCurrentItemName_B_001: KnockoutObservable<string> = ko.observable('');
         GridCurrentDisplaySet_B_001: KnockoutObservable<any> = ko.observable(false);
-        GridCurrentUniteCode_B_001: KnockoutObservable<any> = ko.observable();
-        GridCurrentCategoryAtr_B_001: KnockoutObservable<any> = ko.observable();
-        GridCurrentCategoryAtrName_B_001: KnockoutObservable<any> = ko.observable();
-        GridCurrentCodeAndName_B_001: KnockoutObservable<any> = ko.observable();
+        GridCurrentUniteCode_B_001: KnockoutObservable<string> = ko.observable('');
+        GridCurrentCategoryAtr_B_001: KnockoutObservable<number> = ko.observable(0);
+        GridCurrentCategoryAtrName_B_001: KnockoutObservable<string> = ko.observable('');
+        GridCurrentCodeAndName_B_001: KnockoutObservable<string> = ko.observable('');
         //Checkbox
         //B_002
         checked_B_002: KnockoutObservable<boolean> = ko.observable(true);
@@ -28,24 +26,21 @@ module qmm012.b.viewmodel {
         texteditor_B_INP_003: any;
         texteditor_B_INP_004: any;
         enable_B_INP_002: KnockoutObservable<boolean> = ko.observable(false);
-        //textarea 
-        textArea: KnockoutObservable<any> = ko.observable("");
         screenModel: qmm012.b.ScreenModel;
         constructor(screenModel: qmm012.b.ScreenModel) {
             let self = this;
             self.screenModel = screenModel;
-            //start combobox data
+            //set combobox data
             //001
             self.ComboBoxItemList_B_001 = ko.observableArray([
-                new ComboboxItemModel('1', '蜈ｨ莉ｶ'),
-                new ComboboxItemModel('2', '謾ｯ邨ｦ鬆�逶ｮ'),
-                new ComboboxItemModel('3', '謗ｧ髯､鬆�逶ｮ'),
-                new ComboboxItemModel('4', '蜍､諤�鬆�逶ｮ'),
-                new ComboboxItemModel('5', '險倅ｺ矩��逶ｮ'),
-                new ComboboxItemModel('6', '縺昴�ｮ莉夜��逶ｮ')
+                new ComboboxItemModel(1, '全件'),
+                new ComboboxItemModel(2, '支給項目'),
+                new ComboboxItemModel(3, '控除項目'),
+                new ComboboxItemModel(4, '勤怠項目'),
+                new ComboboxItemModel(5, '記事項目'),
+                new ComboboxItemModel(6, 'その他項目')
             ]);
-            self.selectedCode_B_001 = ko.observable('1');
-            // start gridlist
+            // set gridlist data
             self.GridColumns_B_001 = ko.observableArray([
                 { headerText: '項目区分', prop: 'categoryAtrName', width: 80 },
                 { headerText: 'コード', prop: 'itemCode', width: 50 },
@@ -63,31 +58,30 @@ module qmm012.b.viewmodel {
                     return ItemModel.itemCode == newValue;
                 });
                 self.GridlistCurrentItem_B_001(item);
-                
             });
 
             self.GridlistCurrentItem_B_001.subscribe(function(itemModel: service.model.ItemMasterModel) {
                 self.GridCurrentItemName_B_001(itemModel ? itemModel.itemName : '');
                 self.GridCurrentUniteCode_B_001(itemModel ? itemModel.uniteCode : '');
-                self.GridCurrentCategoryAtr_B_001(itemModel ? itemModel.categoryAtrValue : '');
+                self.GridCurrentCategoryAtr_B_001(itemModel ? itemModel.categoryAtr : 0);
+                //Because there are many items in the same group  After set value , need call ChangeGroup function for Set Value to layout
+                ChangeGroup(self.GridCurrentCategoryAtr_B_001());
                 self.GridCurrentCodeAndName_B_001(itemModel ? itemModel.itemCode + ' ' + itemModel.itemName : '');
                 self.GridCurrentDisplaySet_B_001(itemModel ? itemModel.displaySet == 1 ? true : false : '');
                 self.GridCurrentItemAbName_B_001(itemModel ? itemModel.itemAbName : '');
                 self.GridCurrentCategoryAtrName_B_001(itemModel ? itemModel.categoryAtrName : '');
-                if (self.GridlistCurrentCode_B_001()) {
+                //when CurrentCode != undefined , need disable INP_002
+                if (self.GridlistCurrentCode_B_001() != undefined) {
                     self.enable_B_INP_002(false);
-//                    service.findItemperiod(self.GridCurrentCategoryAtr_B_001(), self.GridlistCurrentCode_B_001()).done(function(PeriodItem: service.model.ItemPeriodModel) {
-//                       // self.screenModel.screenModelC.CurrentItemPeriod(PeriodItem);
-//                      
-//                    }).fail(function(res) {
-//                        // Alert message
-//                        alert(res);
-//                    });
                 }
             });
-          
+
             self.GridCurrentCategoryAtr_B_001.subscribe(function(newValue) {
-              //  self.screenModel.screenModelC.checked_C_012(false);
+                //when change to different group, need  call ChangeGroup function for Set Value to layout
+                ChangeGroup(newValue);
+            });
+
+            function ChangeGroup(newValue) {
                 $('#screenC').hide();
                 $('#screenD').hide();
                 $('#screenE').hide();
@@ -110,19 +104,20 @@ module qmm012.b.viewmodel {
                         self.screenModel.screenModelF.CurrentItemMaster(self.GridlistCurrentItem_B_001());
                         break;
                 }
-            });
+            }
+
             service.findAllItemMaster().done(function(MasterItems: Array<service.model.ItemMasterModel>) {
                 for (let item of MasterItems) {
                     self.GridlistItems_B_001.push(item);
                 }
-                if(self.GridlistItems_B_001().length>0)
-                    self.GridlistCurrentCode_B_001(self.GridlistItems_B_001()[2].itemCode);
+                //set selected first item in list
+                if (self.GridlistItems_B_001().length > 0)
+                    self.GridlistCurrentCode_B_001(self.GridlistItems_B_001()[0].itemCode);
             }).fail(function(res) {
-                // Alert message
                 alert(res);
             });
-            //end gridlist
-            //text editer
+            
+            //set text editer data
             //INP_002
             self.texteditor_B_INP_002 = {
                 value: self.GridlistCurrentCode_B_001,
@@ -140,8 +135,7 @@ module qmm012.b.viewmodel {
                     textmode: "text",
                     placeholder: "",
                     textalign: "left"
-                })),
-                enable: ko.observable(true)
+                }))
             };
             //INP_004
             self.texteditor_B_INP_004 = {
@@ -150,48 +144,130 @@ module qmm012.b.viewmodel {
                     textmode: "text",
                     placeholder: "",
                     textalign: "left"
-                })),
-                enable: ko.observable(true)
+                }))
             };
+
         }
+
+        GetCurrentItemMaster() {
+            let self = this;
+            return new service.model.ItemMasterModel(
+                self.GridlistCurrentCode_B_001(),
+                self.GridCurrentItemName_B_001(),
+                self.GridCurrentCategoryAtr_B_001(),
+                self.GridCurrentCategoryAtrName_B_001(),
+                self.GridCurrentItemAbName_B_001(),
+                self.GridlistCurrentItem_B_001() ? self.GridlistCurrentItem_B_001().itemAbNameO : self.GridCurrentItemAbName_B_001(),
+                self.GridlistCurrentItem_B_001() ? self.GridlistCurrentItem_B_001().itemAbNameE : self.GridCurrentItemAbName_B_001(),
+                self.GridCurrentDisplaySet_B_001(),
+                self.GridCurrentUniteCode_B_001(),
+                self.GetCurrentZeroDisplaySet(),
+                self.GetCurrentItemDisplayAtr(),
+                1
+            )
+        }
+
         DeleteDialog() {
             let self = this;
             service.deleteItemMaster(self.GridlistCurrentItem_B_001()).done(function(any) {
+                //i'm not reload Gridlist , just remove that item in GridlistItems Array
                 let index = self.GridlistItems_B_001().indexOf(self.GridlistCurrentItem_B_001());
                 if (index != undefined) {
                     self.GridlistItems_B_001().splice(index, 1);
+                    //set selected code after remove
                     if (self.GridlistItems_B_001().length - 1 > 1) {
+                        //if is not last item, set selected next item 
                         if (index < self.GridlistItems_B_001().length - 1)
                             self.GridlistCurrentCode_B_001(self.GridlistItems_B_001()[index].itemCode);
                         else
                             self.GridlistCurrentCode_B_001(self.GridlistItems_B_001()[index - 1].itemCode);
                     } else
-                        self.GridlistCurrentCode_B_001(undefined);
+                        self.GridlistCurrentCode_B_001('');
                 }
             }).fail(function(res) {
-                // Alert message
+
                 alert(res);
             });
         }
+        GetCurrentZeroDisplaySet() {
+            let Result;
+            let self = this;
+            let CurrentGroup = self.GridCurrentCategoryAtr_B_001();
+            switch (CurrentGroup) {
+                case 0:
+                    Result = self.screenModel.screenModelC.CurrentZeroDisplaySet();
+                    break;
+                case 1:
+                    Result = self.screenModel.screenModelD.CurrentZeroDisplaySet();
+                    break;
+                case 2:
+                    Result = self.screenModel.screenModelE.CurrentZeroDisplaySet();
+                    break;
+            }
+            return Result;
+        }
+        GetCurrentItemDisplayAtr() {
+            let Result;
+            let self = this;
+            let CurrentGroup = self.GridCurrentCategoryAtr_B_001();
+            switch (CurrentGroup) {
+                case 0:
+                    Result = self.screenModel.screenModelC.CurrentItemDisplayAtr();
+                    break;
+                case 1:
+                    Result = self.screenModel.screenModelD.CurrentItemDisplayAtr();
+                    break;
+                case 2:
+                    Result = self.screenModel.screenModelE.CurrentItemDisplayAtr();
+                    break;
+            }
+            return Result;
+        }
+
+
         openADialog() {
             let self = this;
             nts.uk.ui.windows.sub.modal('../a/index.xhtml', { height: 480, width: 630, dialogClass: "no-close" }).onClosed(function(): any {
-                let groupCode = nts.uk.ui.windows.getShared('groupCode');
+                let groupCode = Number(nts.uk.sessionStorage.getItemAndRemove('groupCode').value);
+                //set layout for new.
                 if (groupCode != undefined) {
-                    self.GridlistCurrentCode_B_001(undefined);
+                    self.GridlistCurrentCode_B_001('');
                     self.GridCurrentCategoryAtr_B_001(groupCode);
                     self.enable_B_INP_002(true);
                 }
             });
         }
+        submitData() {
+            let self = this;
+            let ItemMaster = self.GetCurrentItemMaster();
+            //if self.enable_B_INP_002 == true is mean New mode
+            if (self.enable_B_INP_002()) {
+                self.AddNewItemMaster(ItemMaster);
+            } else {
+                self.UpdateItemMaster(ItemMaster);
+            }
+        }
+        AddNewItemMaster(ItemMaster: service.model.ItemMasterModel) {
+            let self = this;
+            self.GridlistItems_B_001().push(ItemMaster);
+            self.GridlistCurrentCode_B_001(ItemMaster.itemCode);
+        }
+        UpdateItemMaster(ItemMaster: service.model.ItemMasterModel) {
+
+        }
+
+        openJDialog() {
+            let self = this;
+            nts.uk.ui.windows.sub.modal('../j/index.xhtml', { height: 700, width: 970, dialogClass: "no-close" }).onClosed(function(): any {
+            });
+        }
     }
 
     class ComboboxItemModel {
-        code: string;
+        code: number;
         name: string;
-        label: string;
 
-        constructor(code: string, name: string) {
+        constructor(code: number, name: string) {
             this.code = code;
             this.name = name;
         }

@@ -18,6 +18,7 @@ module qmm012.b {
             return dfd.promise();
         }
 
+
         export function findItemperiod(categoryAtr, itemCode): JQueryPromise<model.ItemPeriodModel> {
             var dfd = $.Deferred<model.ItemPeriodModel>();
             nts.uk.request.ajax(paths.findItemperiod + "/" + categoryAtr + "/" + itemCode)
@@ -41,12 +42,15 @@ module qmm012.b {
                 })
             return dfd.promise();
         }
+        
+    
+    
         export module model {
             export class ItemMasterModel {
                 itemCode: string;
                 itemName: string;
-                categoryAtrValue: number;
-                categoryAtrName: String;
+                categoryAtr: number;
+                categoryAtrName: string;
                 itemAbName: string;
                 itemAbNameO: string;
                 itemAbNameE: string;
@@ -54,22 +58,24 @@ module qmm012.b {
                 uniteCode: string;
                 zeroDisplaySet: number;
                 itemDisplayAtr: number;
+                fixAtr: number;
                 constructor(
                     itemCode: string,
                     itemName: string,
-                    categoryAtrValue: number,
-                    categoryAtrName: String,
+                    categoryAtr: number,
+                    categoryAtrName: string,
                     itemAbName: string,
                     itemAbNameO: string,
                     itemAbNameE: string,
                     displaySet: number,
                     uniteCode: string,
                     zeroDisplaySet: number,
-                    itemDisplayAtr: number
+                    itemDisplayAtr: number,
+                    fixAtr: number
                 ) {
                     this.itemCode = itemCode;
                     this.itemName = itemName;
-                    this.categoryAtrValue = categoryAtrValue;
+                    this.categoryAtr = categoryAtr;
                     this.categoryAtrName = categoryAtrName;
                     this.itemAbName = itemAbName;
                     this.itemAbNameO = itemAbNameO;
@@ -77,8 +83,10 @@ module qmm012.b {
                     this.displaySet = displaySet;
                     this.uniteCode = uniteCode;
                     this.zeroDisplaySet = itemDisplayAtr;
+                    this.fixAtr = fixAtr;
                 }
             }
+
 
             export class ItemPeriodModel {
                 itemClass: number;

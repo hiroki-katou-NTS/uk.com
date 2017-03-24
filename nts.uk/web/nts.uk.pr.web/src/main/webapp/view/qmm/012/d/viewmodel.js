@@ -30,7 +30,7 @@ var qmm012;
                     this.CurrentErrRangeLowAtr = ko.observable(0);
                     this.CurrentMemo = ko.observable("");
                     this.CurrentItemDisplayAtr = ko.observable(1);
-                    this.CurrentZeroDisplaySet = ko.observable(0);
+                    this.CurrentZeroDisplaySet = ko.observable(1);
                     var self = this;
                     self.isEditable = ko.observable(true);
                     self.isEnable = ko.observable(true);
@@ -44,8 +44,8 @@ var qmm012;
                     //end combobox data
                     //D_002
                     self.roundingRules_D_002 = ko.observableArray([
-                        { code: 0, name: 'ゼロを表示する' },
-                        { code: 1, name: 'ゼロを表示しない' }
+                        { code: 1, name: 'ゼロを表示する' },
+                        { code: 0, name: 'ゼロを表示しない' }
                     ]);
                     //currencyeditor
                     //001
@@ -101,14 +101,19 @@ var qmm012;
                         readonly: ko.observable(false)
                     };
                     self.CurrentItemMaster.subscribe(function (ItemMaster) {
-                        d.service.findItemDeduct(ItemMaster.itemCode).done(function (ItemDeduct) {
-                            self.CurrentItemDeduct(ItemDeduct);
-                            self.checked_D_003(ItemMaster ? ItemMaster.itemDisplayAtr == 0 ? true : false : false);
-                            self.CurrentZeroDisplaySet(ItemMaster.zeroDisplaySet);
-                        }).fail(function (res) {
-                            // Alert message
-                            alert(res);
-                        });
+                        if (ItemMaster) {
+                            d.service.findItemDeduct(ItemMaster.itemCode).done(function (ItemDeduct) {
+                                self.CurrentItemDeduct(ItemDeduct);
+                            }).fail(function (res) {
+                                // Alert message
+                                alert(res);
+                            });
+                        }
+                        else {
+                            self.CurrentItemDeduct(null);
+                        }
+                        self.checked_D_003(ItemMaster ? ItemMaster.itemDisplayAtr == 0 ? true : false : false);
+                        self.CurrentZeroDisplaySet(ItemMaster ? ItemMaster.zeroDisplaySet : 1);
                     });
                     self.CurrentItemDeduct.subscribe(function (ItemDeduct) {
                         self.CurrentAlRangeHigh(ItemDeduct ? ItemDeduct.alRangeHigh : 0);
@@ -124,27 +129,31 @@ var qmm012;
                         self.checked_D_007(ItemDeduct ? ItemDeduct.alRangeLowAtr == 0 ? false : true : false);
                     });
                     self.checked_D_003.subscribe(function (NewValue) {
-                        self.CurrentItemDisplayAtr(NewValue == true ? 0 : 1);
+                        self.CurrentItemDisplayAtr(NewValue ? 0 : 1);
                     });
                     self.checked_D_004.subscribe(function (NewValue) {
-                        self.CurrentErrRangeHighAtr(NewValue == true ? 1 : 0);
+                        self.CurrentErrRangeHighAtr(NewValue ? 1 : 0);
                     });
                     self.checked_D_005.subscribe(function (NewValue) {
-                        self.CurrentAlRangeHighAtr(NewValue == true ? 1 : 0);
+                        self.CurrentAlRangeHighAtr(NewValue ? 1 : 0);
                     });
                     self.checked_D_006.subscribe(function (NewValue) {
-                        self.CurrentErrRangeLowAtr(NewValue == true ? 1 : 0);
+                        self.CurrentErrRangeLowAtr(NewValue ? 1 : 0);
                     });
                     self.checked_D_007.subscribe(function (NewValue) {
-                        self.CurrentAlRangeLowAtr(NewValue == true ? 1 : 0);
+                        self.CurrentAlRangeLowAtr(NewValue ? 1 : 0);
                     });
                 }
                 ScreenModel.prototype.openHDialog = function () {
+                    var self = this;
+                    nts.uk.ui.windows.setShared('itemMaster', self.CurrentItemMaster());
                     nts.uk.ui.windows.sub.modal('../h/index.xhtml', { height: 570, width: 735, dialogClass: "no-close" }).onClosed(function () {
                     });
                 };
                 ScreenModel.prototype.openIDialog = function () {
-                    nts.uk.ui.windows.sub.modal('../i/index.xhtml', { height: 600, width: 1015, dialogClass: "no-close" }).onClosed(function () {
+                    var self = this;
+                    nts.uk.ui.windows.setShared('itemMaster', self.CurrentItemMaster());
+                    nts.uk.ui.windows.sub.modal('../i/index.xhtml', { height: 620, width: 1060, dialogClass: "no-close" }).onClosed(function () {
                     });
                 };
                 return ScreenModel;

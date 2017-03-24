@@ -7,16 +7,22 @@ var qmm012;
             var ScreenModel = (function () {
                 function ScreenModel() {
                     this.CurrentItemMaster = ko.observable(null);
+                    this.CurrentZeroDisplaySet = ko.observable(1);
+                    this.checked_F_002 = ko.observable(false);
+                    this.CurrentItemDisplayAtr = ko.observable(1);
                     var self = this;
-                    self.enable = ko.observable(true);
-                    //F_005
-                    self.checked_F_002 = ko.observable(true);
                     //F_001
                     self.roundingRules_F_001 = ko.observableArray([
-                        { code: '1', name: '繧ｼ繝ｭ繧定｡ｨ遉ｺ縺吶ｋ' },
-                        { code: '2', name: '繧ｼ繝ｭ繧定｡ｨ遉ｺ縺励↑縺�' }
+                        { code: 1, name: 'ゼロを表示する' },
+                        { code: 0, name: 'ゼロを表示しない' }
                     ]);
-                    self.selectedRuleCode_F_001 = ko.observable(1);
+                    self.CurrentItemMaster.subscribe(function (ItemMaster) {
+                        self.CurrentZeroDisplaySet(ItemMaster ? ItemMaster.zeroDisplaySet : 1);
+                        self.checked_F_002(ItemMaster ? ItemMaster.itemDisplayAtr == 0 ? true : false : false);
+                    });
+                    self.checked_F_002.subscribe(function (NewValue) {
+                        self.CurrentItemDisplayAtr(NewValue ? 0 : 1);
+                    });
                 }
                 return ScreenModel;
             }());

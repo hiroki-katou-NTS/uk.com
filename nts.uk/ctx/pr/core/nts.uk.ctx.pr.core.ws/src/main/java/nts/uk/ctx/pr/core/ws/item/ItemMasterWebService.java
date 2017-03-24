@@ -17,6 +17,7 @@ import nts.uk.ctx.pr.core.app.command.itemmaster.UpdateItemMasterCommand;
 import nts.uk.ctx.pr.core.app.command.itemmaster.UpdateItemMasterCommandHandler;
 import nts.uk.ctx.pr.core.app.find.itemmaster.ItemMasterFinder;
 import nts.uk.ctx.pr.core.app.find.itemmaster.dto.ItemMasterDto;
+import nts.uk.ctx.pr.core.app.find.itemmaster.dto.ItemMasterSEL_3_Dto;
 import nts.uk.ctx.pr.core.dom.itemmaster.ItemAtr;
 
 @Path("pr/core/item")
@@ -72,4 +73,11 @@ public class ItemMasterWebService extends WebService {
 	public List<ItemMasterDto> findAllNoAvePayAtr() {
 		return itemFinder.findAllNoAvePayAtr();
 	}
+
+	@POST
+	@Path("find_SEL_3/{categoryAtr}")
+	public List<ItemMasterSEL_3_Dto> find_SEL_3(@PathParam("categoryAtr") int categoryAtr) {
+		return itemFinder.find_SEL_3(categoryAtr);
+	}
+
 }

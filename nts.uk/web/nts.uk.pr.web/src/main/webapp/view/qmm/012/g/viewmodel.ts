@@ -1,7 +1,6 @@
-// TreeGrid Node
-module qmm019.g {
-
+module qmm012.g.viewmodel {
     export class ScreenModel {
+        constructor() {
+        }
     }
-
 };

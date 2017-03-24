@@ -6,40 +6,41 @@ import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.core.dom.company.CompanyCode;
+import nts.uk.ctx.pr.core.dom.itemmaster.AvePayAtr;
 import nts.uk.ctx.pr.core.dom.itemmaster.ItemCode;
 import nts.uk.shr.com.primitive.Memo;
 
 @Getter
 public class ItemSalary extends AggregateRoot {
-	public CompanyCode companyCode;
-	public ItemCode itemCode;
-	public TaxAtr taxAtr;
-	public InsAtr socialInsAtr;
-	public InsAtr laborInsAtr;
-	public FixPayAtr fixPayAtr;
-	public ApplyFor applyForAllEmpFlg;
-	public ApplyFor applyForMonthlyPayEmp;
-	public ApplyFor applyForDaymonthlyPayEmp;
-	public ApplyFor applyForDaylyPayEmp;
-	public ApplyFor applyForHourlyPayEmp;
-	public ApplyFor avePayAtr;
-	public RangeAtr errRangeLowAtr;
-	public ErrRangeLow errRangeLow;
-	public RangeAtr errRangeHighAtr;
-	public ErrRangeHigh errRangeHigh;
-	public RangeAtr alRangeLowAtr;
-	public AlRangeLow alRangeLow;
-	public RangeAtr alRangeHighAtr;
-	public AlRangeHigh alRangeHigh;
-	public Memo memo;
-	public LimitMnyAtr limitMnyAtr;
-	public LimitMnyRefItemCd limitMnyRefItemCd;
-	public LimitMny limitMny;
+	private CompanyCode companyCode;
+	private ItemCode itemCode;
+	private TaxAtr taxAtr;
+	private InsAtr socialInsAtr;
+	private InsAtr laborInsAtr;
+	private FixPayAtr fixPayAtr;
+	private ApplyFor applyForAllEmpFlg;
+	private ApplyFor applyForMonthlyPayEmp;
+	private ApplyFor applyForDaymonthlyPayEmp;
+	private ApplyFor applyForDaylyPayEmp;
+	private ApplyFor applyForHourlyPayEmp;
+	private AvePayAtr avePayAtr;
+	private RangeAtr errRangeLowAtr;
+	private ErrRangeLow errRangeLow;
+	private RangeAtr errRangeHighAtr;
+	private ErrRangeHigh errRangeHigh;
+	private RangeAtr alRangeLowAtr;
+	private AlRangeLow alRangeLow;
+	private RangeAtr alRangeHighAtr;
+	private AlRangeHigh alRangeHigh;
+	private Memo memo;
+	private LimitMnyAtr limitMnyAtr;
+	private LimitMnyRefItemCd limitMnyRefItemCd;
+	private LimitMny limitMny;
 
 	public ItemSalary(CompanyCode companyCode, ItemCode itemCode, TaxAtr taxAtr, InsAtr socialInsAtr,
 			InsAtr laborInsAtr, FixPayAtr fixPayAtr, ApplyFor applyForAllEmpFlg, ApplyFor applyForMonthlyPayEmp,
 			ApplyFor applyForDaymonthlyPayEmp, ApplyFor applyForDaylyPayEmp, ApplyFor applyForHourlyPayEmp,
-			ApplyFor avePayAtr, RangeAtr errRangeLowAtr, ErrRangeLow errRangeLow, RangeAtr errRangeHighAtr,
+			AvePayAtr avePayAtr, RangeAtr errRangeLowAtr, ErrRangeLow errRangeLow, RangeAtr errRangeHighAtr,
 			ErrRangeHigh errRangeHigh, RangeAtr alRangeLowAtr, AlRangeLow alRangeLow, RangeAtr alRangeHighAtr,
 			AlRangeHigh alRangeHigh, Memo memo, LimitMnyAtr limitMnyAtr, LimitMnyRefItemCd limitMnyRefItemCd,
 			LimitMny limitMny) {
@@ -89,7 +90,7 @@ public class ItemSalary extends AggregateRoot {
 				EnumAdaptor.valueOf(applyForDaymonthlyPayEmp, ApplyFor.class),
 				EnumAdaptor.valueOf(applyForDaylyPayEmp, ApplyFor.class),
 				EnumAdaptor.valueOf(applyForHourlyPayEmp, ApplyFor.class),
-				EnumAdaptor.valueOf(avePayAtr, ApplyFor.class), 
+				EnumAdaptor.valueOf(avePayAtr, AvePayAtr.class), 
 				EnumAdaptor.valueOf(errRangeLowAtr, RangeAtr.class),
 				new ErrRangeLow(errRangeLow),
 				EnumAdaptor.valueOf(errRangeHighAtr, RangeAtr.class),
@@ -103,5 +104,13 @@ public class ItemSalary extends AggregateRoot {
 				new LimitMnyRefItemCd(limitMnyRefItemCd),
 				new LimitMny(limitMny));
 
+	}
+	
+	/**
+	 * Set new value ave payment attribute
+	 * @param value
+	 */
+	public void setAvePayAttribute(AvePayAtr avePayAtr) {
+		this.avePayAtr = avePayAtr;
 	}
 }
