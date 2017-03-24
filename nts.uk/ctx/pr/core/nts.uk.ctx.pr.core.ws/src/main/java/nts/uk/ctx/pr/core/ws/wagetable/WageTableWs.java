@@ -53,6 +53,7 @@ import nts.uk.ctx.pr.core.ws.wagetable.dto.ElementTypeDto;
 import nts.uk.ctx.pr.core.ws.wagetable.dto.SettingInfoInModel;
 import nts.uk.ctx.pr.core.ws.wagetable.dto.SettingInfoOutModel;
 import nts.uk.ctx.pr.core.ws.wagetable.dto.WageTableModel;
+import nts.uk.ctx.pr.core.ws.wagetable.dto.WtElementDto;
 import nts.uk.ctx.pr.core.ws.wagetable.dto.WtHeadDto;
 import nts.uk.ctx.pr.core.ws.wagetable.dto.WtHistoryDto;
 import nts.uk.shr.com.context.AppContexts;
@@ -112,15 +113,14 @@ public class WageTableWs extends SimpleHistoryWs<WtHead, WtHistory> {
 	public WageTableModel find(@PathParam("id") String id) {
 		WageTableModel model = new WageTableModel();
 
+		String companyCode = AppContexts.user().companyCode();
+
 		// Get the detail history.
 		Optional<WtHistory> optWageTableHistory = this.wtHistoryRepo.findHistoryByUuid(id);
 
 		// Check exsit.
 		if (optWageTableHistory.isPresent()) {
 			WtHistory wageTableHistory = optWageTableHistory.get();
-			WtHistoryDto historyDto = new WtHistoryDto();
-			wageTableHistory.saveToMemento(historyDto);
-			model.setHistory(historyDto);
 
 			Optional<WtHead> optWageTable = this.wtHeadRepo.findByCode(
 					wageTableHistory.getCompanyCode().v(), wageTableHistory.getWageTableCode().v());
@@ -130,8 +130,29 @@ public class WageTableWs extends SimpleHistoryWs<WtHead, WtHistory> {
 				WtHead wageTableHead = optWageTable.get();
 				WtHeadDto headDto = new WtHeadDto();
 				wageTableHead.saveToMemento(headDto);
+
+				// Set demension name
+				headDto.getElements().stream().forEach(item -> {
+					item.setDemensionName(this.getDemensionName(companyCode,
+							item.getReferenceCode(), ElementType.valueOf(item.getType())));
+				});
+
 				model.setHead(headDto);
 			}
+
+			// Create map demension no - name
+			Map<Integer, String> mapDemensionNames = model.getHead().getElements().stream().collect(
+					Collectors.toMap(WtElementDto::getDemensionNo, WtElementDto::getDemensionName));
+
+			WtHistoryDto historyDto = new WtHistoryDto();
+			wageTableHistory.saveToMemento(historyDto);
+
+			// Set demension name
+			historyDto.getElements().stream().forEach(item -> {
+				item.setDemensionName(mapDemensionNames.get(item.getDemensionNo()));
+			});
+
+			model.setHistory(historyDto);
 		}
 
 		// Return
@@ -258,67 +279,10 @@ public class WageTableWs extends SimpleHistoryWs<WtHead, WtHistory> {
 				elementSettingDto.setInterval(stepElementSetting.getInterval().v());
 			}
 
-			Optional<WtElement> optWtElement = Optional.empty();
-			switch (item.getType()) {
-				case MASTER_REF:
-					optWtElement = this.wtElementRepo.findByHistoryId(input.getHistoryId());
-					Optional<WtMasterRef> optWtMasterRef = this.wtMasterRefRepo.findByCode(companyCode,
-							optWtElement.get().getReferenceCode());
-					elementSettingDto.setDemensionName(optWtMasterRef.get().getRefName());
-					break;
-	
-				/** The code ref. */
-				case CODE_REF:
-					optWtElement = this.wtElementRepo.findByHistoryId(input.getHistoryId());
-					Optional<WtCodeRef> optWtCodeRef = this.wtCodeRefRepo.findByCode(companyCode,
-							optWtElement.get().getReferenceCode());
-					elementSettingDto.setDemensionName(optWtCodeRef.get().getRefName());
-					break;
-	
-				/** The item data ref. */
-				case ITEM_DATA_REF:
-					elementSettingDto.setDemensionName(ElementType.ITEM_DATA_REF.displayName);
-					break;
-	
-				/** The experience fix. */
-				case EXPERIENCE_FIX:
-					elementSettingDto.setDemensionName(ElementType.EXPERIENCE_FIX.displayName);
-					break;
-	
-				/** The age fix. */
-				case AGE_FIX:
-					elementSettingDto.setDemensionName(ElementType.AGE_FIX.displayName);
-					break;
-	
-				/** The family mem fix. */
-				case FAMILY_MEM_FIX:
-					elementSettingDto.setDemensionName(ElementType.FAMILY_MEM_FIX.displayName);
-					break;
-	
-				// Extend element type
-				/** The certification. */
-				case CERTIFICATION:
-					elementSettingDto.setDemensionName(ElementType.CERTIFICATION.displayName);
-					break;
-	
-				/** The working day. */
-				case WORKING_DAY:
-					elementSettingDto.setDemensionName(ElementType.WORKING_DAY.displayName);
-					break;
-	
-				/** The come late. */
-				case COME_LATE:
-					elementSettingDto.setDemensionName(ElementType.COME_LATE.displayName);
-					break;
-	
-				/** The level. */
-				case LEVEL:
-					elementSettingDto.setDemensionName(ElementType.LEVEL.displayName);
-					break;
-	
-				default:
-					break;
-			}
+			Optional<WtElement> optWtElement = this.wtElementRepo
+					.findByHistoryId(input.getHistoryId());
+			elementSettingDto.setDemensionName(this.getDemensionName(companyCode,
+					optWtElement.get().getReferenceCode(), item.getType()));
 
 			return elementSettingDto;
 
@@ -327,6 +291,56 @@ public class WageTableWs extends SimpleHistoryWs<WtHead, WtHistory> {
 		model.setElementSettings(elementSettingDtos);
 
 		return model;
+	}
+
+	private String getDemensionName(String companyCode, String referenceCode, ElementType type) {
+		Optional<WtElement> optWtElement = Optional.empty();
+		switch (type) {
+		case MASTER_REF:
+			Optional<WtMasterRef> optWtMasterRef = this.wtMasterRefRepo.findByCode(companyCode,
+					referenceCode);
+			return optWtMasterRef.get().getRefName();
+
+		/** The code ref. */
+		case CODE_REF:
+			Optional<WtCodeRef> optWtCodeRef = this.wtCodeRefRepo.findByCode(companyCode,
+					optWtElement.get().getReferenceCode());
+			return optWtCodeRef.get().getRefName();
+
+		/** The item data ref. */
+		case ITEM_DATA_REF:
+			return ElementType.ITEM_DATA_REF.displayName;
+
+		/** The experience fix. */
+		case EXPERIENCE_FIX:
+			return ElementType.EXPERIENCE_FIX.displayName;
+
+		/** The age fix. */
+		case AGE_FIX:
+			return ElementType.AGE_FIX.displayName;
+
+		/** The family mem fix. */
+		case FAMILY_MEM_FIX:
+			return ElementType.FAMILY_MEM_FIX.displayName;
+
+		// Extend element type
+		/** The certification. */
+		case CERTIFICATION:
+			return ElementType.CERTIFICATION.displayName;
+
+		/** The working day. */
+		case WORKING_DAY:
+			return ElementType.WORKING_DAY.displayName;
+
+		/** The come late. */
+		case COME_LATE:
+			return ElementType.COME_LATE.displayName;
+
+		/** The level. */
+		// case LEVEL:
+		default:
+			return ElementType.LEVEL.displayName;
+		}
 	}
 
 	/**
