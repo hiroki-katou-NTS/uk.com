@@ -106,6 +106,22 @@ module nts.uk.pr.view.qmm011.a {
 
             //open dialog edit UnemployeeInsuranceRateHistory => show view model xhtml (action event add)
             private openEditUnemployeeInsuranceRateHistory() {
+                //set info
+                var self = this;
+                if (self.dirtyUnemployeeInsurance.isDirty()) {
+                    nts.uk.ui.dialog.confirm(self.messageList()[2].message).ifYes(function() {
+                        self.onShowEditUnemployeeInsuranceRateHistory();
+                    }).ifNo(function() {
+                        //No action
+                    });
+                    return;
+                }
+                self.onShowEditUnemployeeInsuranceRateHistory();
+            }
+
+            //open dialog edit UnemployeeInsuranceRateHistory => show view model xhtml (action event add)
+            private onShowEditUnemployeeInsuranceRateHistory() {
+
                 var self = this;
                 service.findUnemployeeInsuranceRateHistory(self.selectionUnemployeeInsuranceRateHistory()).done(data => {
                     var history: HistoryModel;
@@ -168,6 +184,19 @@ module nts.uk.pr.view.qmm011.a {
             private openAddUnemployeeInsuranceRateHistory() {
                 //set info
                 var self = this;
+                if (self.dirtyUnemployeeInsurance.isDirty()) {
+                    nts.uk.ui.dialog.confirm(self.messageList()[2].message).ifYes(function() {
+                        self.onShowAddUnemployeeInsuranceRateHistory();
+                    }).ifNo(function() {
+                        //No action
+                    });
+                    return;
+                }
+                self.onShowAddUnemployeeInsuranceRateHistory();
+            }
+
+            private onShowAddUnemployeeInsuranceRateHistory() {
+                var self = this;
                 var lastest: HistoryModel;
                 var name: string = '雇用保険料率';
                 lastest = {
@@ -198,7 +227,7 @@ module nts.uk.pr.view.qmm011.a {
                             self.reloadDataUnemployeeInsuranceRateByAction();
                             self.clearErrorSaveUnemployeeInsurance();
                         }).fail(function(error) {
-                            self.showMessageSaveUnemployeeInsurance(error.message)
+                            self.showMessageSaveUnemployeeInsurance(error.messageId)
                         });
                     },
 
@@ -211,7 +240,7 @@ module nts.uk.pr.view.qmm011.a {
                             self.reloadDataUnemployeeInsuranceRateByAction();
                             self.clearErrorSaveUnemployeeInsurance();
                         }).fail(function(error) {
-                            self.showMessageSaveUnemployeeInsurance(error.message)
+                            self.showMessageSaveUnemployeeInsurance(error.messageId)
                         });
                     }
                 };
@@ -248,8 +277,23 @@ module nts.uk.pr.view.qmm011.a {
                 });
             }
 
-            //open dialog edit AccidentInsuranceHistory => show view model xhtml (action event edit)
+         //open dialog edit AccidentInsuranceHistory => show view model xhtml (action event edit)
             private openEditAccidentInsuranceRateHistory() {
+
+                var self = this;
+                if (self.dirtyAccidentInsurance.isDirty()) {
+                    nts.uk.ui.dialog.confirm(self.messageList()[2].message).ifYes(function() {
+                        self.onShowEditAccidentInsuranceRateHistory();
+                    }).ifNo(function() {
+                        //No action
+                    });
+                    return;
+                }
+                self.onShowEditAccidentInsuranceRateHistory();
+            }
+            
+            //open dialog edit AccidentInsuranceHistory => show view model xhtml (action event edit)
+            private onShowEditAccidentInsuranceRateHistory() {
 
                 var self = this;
                 service.findAccidentInsuranceRateHistory(self.selectionAccidentInsuranceRateHistory()).done(data => {
@@ -279,7 +323,7 @@ module nts.uk.pr.view.qmm011.a {
                                 self.typeActionAccidentInsurance(TypeActionInsuranceRate.add);
                                 self.reloadDataAccidentInsuranceRateByAction();
                             }).fail(function(error) {
-                                self.showMessageSaveAccidentInsurance(error.message)
+                                self.showMessageSaveAccidentInsurance(error.messageId)
                             });
                         },
 
@@ -294,7 +338,7 @@ module nts.uk.pr.view.qmm011.a {
                                 self.typeActionAccidentInsurance(TypeActionInsuranceRate.add);
                                 self.reloadDataAccidentInsuranceRateByAction();
                             }).fail(function(error: any) {
-                                self.showMessageSaveAccidentInsurance(error.message)
+                                self.showMessageSaveAccidentInsurance(error.messageId)
                             });
                         }
                     };
@@ -312,6 +356,20 @@ module nts.uk.pr.view.qmm011.a {
             //open dialog add AccidentInsuranceRateHistory => show view model xhtml (action event add)
             private openAddAccidentInsuranceRateHistory() {
 
+                var self = this;
+                if (self.dirtyAccidentInsurance.isDirty()) {
+                    nts.uk.ui.dialog.confirm(self.messageList()[2].message).ifYes(function() {
+                        self.onShowAddAccidentInsuranceRateHistory();
+                    }).ifNo(function() {
+                        //No action
+                    });
+                    return;
+                }
+                self.onShowAddAccidentInsuranceRateHistory();
+            }
+
+            //open dialog add AccidentInsuranceRateHistory => show view model xhtml (action event add)
+            private onShowAddAccidentInsuranceRateHistory() {
                 //set info
                 var self = this;
                 var lastest: HistoryModel;
@@ -345,7 +403,7 @@ module nts.uk.pr.view.qmm011.a {
                             self.reloadDataAccidentInsuranceRateByAction();
                             self.clearErrorSaveAccidentInsurance();
                         }).fail(function(error) {
-                            self.showMessageSaveAccidentInsurance(error.message)
+                            self.showMessageSaveAccidentInsurance(error.messageId)
                         });
                     },
 
@@ -358,7 +416,7 @@ module nts.uk.pr.view.qmm011.a {
                             self.reloadDataAccidentInsuranceRateByAction();
                             self.clearErrorSaveAccidentInsurance();
                         }).fail(function(error) {
-                            self.showMessageSaveAccidentInsurance(error.message)
+                            self.showMessageSaveAccidentInsurance(error.messageId)
                         });
                     }
                 };
@@ -369,9 +427,7 @@ module nts.uk.pr.view.qmm011.a {
                     dialogClass: 'no-close'
                 };
                 nts.uk.ui.windows.sub.modal('/view/base/simplehistory/newhistory/index.xhtml', ntsDialogOptions);
-
             }
-
             //show UnemployeeInsuranceHistory (change event)
             private showchangeUnemployeeInsuranceHistory(selectionUnemployeeInsuranceRateHistory: string) {
                 if (selectionUnemployeeInsuranceRateHistory != null
@@ -422,8 +478,27 @@ module nts.uk.pr.view.qmm011.a {
             }
 
             //show message save AccidentInsurance 
-            private showMessageSaveAccidentInsurance(message: string) {
-                $('#btn_saveAccidentInsuranceHistory').ntsError('set', message);
+            private showMessageSaveAccidentInsurance(messageId: string) {
+                
+                var self = this;
+                if (self.messageList()[0].messageId === messageId) {
+                    //001
+                    var message = self.messageList()[0].message;
+
+                    if (!self.unemployeeInsuranceRateModel().unemployeeInsuranceRateItemAgroforestryModel) {
+                        $('#inp_code').ntsError('set', message);
+                    }
+                }
+
+                if (self.messageList()[1].messageId === messageId) {
+                    message = self.messageList()[1].message;
+                    $('#inp_code').ntsError('set', message);
+                }
+
+                if (self.messageList()[3].messageId === messageId) {
+                    message = self.messageList()[3].message;
+                    $('#btn_saveAccidentInsuranceHistory').ntsError('set', message);
+                }
             }
 
             //action save UnemployeeInsuranceHistory Onlick connection service
@@ -465,7 +540,6 @@ module nts.uk.pr.view.qmm011.a {
             //action save AccidentInsuranceHistory Onlick connection service
             private saveAccidentInsuranceHistory() {
                 var self = this;
-
                 //get type action (ismode)
                 if (self.typeActionAccidentInsurance() == TypeActionInsuranceRate.add) {
                     //type action is add
@@ -477,7 +551,7 @@ module nts.uk.pr.view.qmm011.a {
                         self.clearErrorSaveAccidentInsurance();
                     }).fail(function(res) {
                         //show message by exception message
-                        self.showMessageSaveAccidentInsurance(res.message);
+                        self.showMessageSaveAccidentInsurance(res.messageId);
                     })
                 } else {
                     //type action is update
@@ -489,7 +563,7 @@ module nts.uk.pr.view.qmm011.a {
                         self.clearErrorSaveAccidentInsurance();
                     }).fail(function(res) {
                         //show message by exception message
-                        self.showMessageSaveAccidentInsurance(res.message);
+                        self.showMessageSaveAccidentInsurance(res.messageId);
                     })
                 }
 
@@ -523,9 +597,9 @@ module nts.uk.pr.view.qmm011.a {
             }
 
             //find add UnemployeeInsuranceRateHistory => show view model xhtml (constructor)
-            private findAllUnemployeeInsuranceRateHistory(): JQueryPromise<any> {
+            private findAllUnemployeeInsuranceRateHistory(): JQueryPromise<void> {
                 var self = this;
-                var dfd = $.Deferred<any>();
+                var dfd = $.Deferred<void>();
 
                 //call service get all history unemployee insuranceRate
                 service.findAllUnemployeeInsuranceRateHistory().done(data => {
@@ -545,15 +619,15 @@ module nts.uk.pr.view.qmm011.a {
                         //set isEmptyUnemployee false (not isEmptyUnemployee)
                         self.isEmptyUnemployee(false);
                         //call detail history unemployee insurance rate
-                        self.detailUnemployeeInsuranceRateHistory(data[0].historyId).done(data => {
+                        self.detailUnemployeeInsuranceRateHistory(data[0].historyId).done(function() {
                             //fw to start page
-                            dfd.resolve(self);
+                            dfd.resolve();
                         });
                     } else {
                         //set history unemployee insurance rate is empty
                         self.newmodelEmptyDataUnemployeeInsuranceRate();
                         //fw to start page
-                        dfd.resolve(self);
+                        dfd.resolve();
                     }
                 });
 
@@ -635,9 +709,9 @@ module nts.uk.pr.view.qmm011.a {
             }
 
             //detail UnemployeeInsuranceRateHistory => show view model xhtml (action event)
-            private detailUnemployeeInsuranceRateHistory(historyId: string): JQueryPromise<any> {
+            private detailUnemployeeInsuranceRateHistory(historyId: string): JQueryPromise<void> {
                 var self = this;
-                var dfd = $.Deferred<any>();
+                var dfd = $.Deferred<void>();
 
                 if (historyId != null && historyId != undefined && historyId != '') {
                     //call service detail history unemployee insurance rate by historyId
@@ -648,11 +722,10 @@ module nts.uk.pr.view.qmm011.a {
                         //set ismode type action is update
                         self.typeActionUnemployeeInsurance(TypeActionInsuranceRate.update);
                         self.beginHistoryStartUnemployeeInsuranceRate(nts.uk.time.formatYearMonth(data.historyInsurance.startMonth));
-                        self.dirtyUnemployeeInsurance = new nts.uk.ui.DirtyChecker(self.unemployeeInsuranceRateModel);
-                        dfd.resolve(null);
+                        self.dirtyUnemployeeInsurance.reset();
+                        dfd.resolve();
                     });
                 }
-
                 return dfd.promise();
             }
 
@@ -773,6 +846,7 @@ module nts.uk.pr.view.qmm011.a {
                         self.accidentInsuranceRateModel().setHistoryData(data.historyInsurance);
                         self.accidentInsuranceRateModel().setEnable(true);
                         self.beginHistoryStartAccidentInsuranceRate(nts.uk.time.formatYearMonth(data.historyInsurance.startMonth));
+                        self.dirtyAccidentInsurance = new nts.uk.ui.DirtyChecker(self.accidentInsuranceRateModel);
                         dfd.resolve(null);
                     });
                 }

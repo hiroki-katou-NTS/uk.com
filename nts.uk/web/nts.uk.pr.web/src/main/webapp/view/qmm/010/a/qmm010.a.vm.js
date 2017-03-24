@@ -98,9 +98,9 @@ var nts;
                                                 self.showchangeLaborInsuranceOffice(selectCodeLstlaborInsuranceOffice);
                                             });
                                             self.detailLaborInsuranceOffice(data[0].code).done(function () {
+                                                self.isEnableDelete(true);
                                                 dfd.resolve(self);
                                             });
-                                            self.isEnableDelete(true);
                                         }
                                         else {
                                             self.newmodelEmptyData();
@@ -178,8 +178,8 @@ var nts;
                                             self.beginSelectlaborInsuranceOffice(code);
                                             self.dirty = new nts.uk.ui.DirtyChecker(self.laborInsuranceOfficeModel);
                                         });
-                                        dfd.resolve();
                                     }
+                                    dfd.resolve();
                                     return dfd.promise();
                                 };
                                 ScreenModel.prototype.reloadDataByAction = function () {

@@ -120,9 +120,9 @@ module nts.uk.pr.view.qmm010.a {
                             self.showchangeLaborInsuranceOffice(selectCodeLstlaborInsuranceOffice);
                         });
                         self.detailLaborInsuranceOffice(data[0].code).done(function() {
+                            self.isEnableDelete(true);
                             dfd.resolve(self);
                         });
-                        self.isEnableDelete(true);
                     } else {
                         //new reset data value
                         self.newmodelEmptyData();
@@ -201,8 +201,8 @@ module nts.uk.pr.view.qmm010.a {
             }
 
             //Function detail
-            private detailLaborInsuranceOffice(code: string): JQueryPromise<any> {
-                var dfd = $.Deferred<any>();
+            private detailLaborInsuranceOffice(code: string): JQueryPromise<void> {
+                var dfd = $.Deferred<void>();
                 if (code && code != '') {
                     var self = this;
                     //call service find labor insurance office
@@ -222,8 +222,8 @@ module nts.uk.pr.view.qmm010.a {
                         self.beginSelectlaborInsuranceOffice(code);
                         self.dirty = new nts.uk.ui.DirtyChecker(self.laborInsuranceOfficeModel);
                     });
-                    dfd.resolve();
                 }
+                dfd.resolve();
                 return dfd.promise();
             }
 
