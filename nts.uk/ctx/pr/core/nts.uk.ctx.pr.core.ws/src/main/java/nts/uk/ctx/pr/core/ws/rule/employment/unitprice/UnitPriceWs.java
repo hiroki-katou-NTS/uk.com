@@ -15,6 +15,9 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceRepository;
+import nts.uk.ctx.pr.core.ws.rule.employment.unitprice.dto.ListUnitPriceCodeModel;
+import nts.uk.ctx.pr.core.ws.rule.employment.unitprice.dto.UnitPriceModel;
+import nts.uk.shr.com.context.AppContexts;
 
 /**
  * The Class UnitPriceWs.
@@ -28,15 +31,33 @@ public class UnitPriceWs {
 	private UnitPriceRepository unitPriceRepo;
 
 	/**
-	 * Find.
+	 * Findbydate.
 	 *
 	 * @param baseDate the base date
 	 * @return the list
 	 */
 	@POST
-	@Path("getcodes/{baseDate}")
-	public List<String> find(@PathParam("baseDate") Integer baseDate) {
-		List<String> listUnitPriceCode = unitPriceRepo.getCompanyUnitPriceCode(baseDate).stream().map(code -> code.v())
+	@Path("findbydate/{baseDate}")
+	public List<UnitPriceModel> findbydate(@PathParam("baseDate") Integer baseDate) {
+		List<UnitPriceModel> listUnitPriceCode = unitPriceRepo
+				.getCompanyUnitPrice(baseDate).stream().map(item -> UnitPriceModel.builder()
+						.unitPriceCode(item.getCode().v()).unitPriceName(item.getName().v()).build())
+				.collect(Collectors.toList());
+		return listUnitPriceCode;
+	}
+
+	/**
+	 * Findbycode.
+	 *
+	 * @param model the model
+	 * @return the list
+	 */
+	@POST
+	@Path("findbycodes")
+	public List<UnitPriceModel> findbycode(ListUnitPriceCodeModel model) {
+		List<UnitPriceModel> listUnitPriceCode = unitPriceRepo
+				.findByCodes(AppContexts.user().companyCode(), model.getCodes()).stream().map(item -> UnitPriceModel
+						.builder().unitPriceCode(item.getCode().v()).unitPriceName(item.getName().v()).build())
 				.collect(Collectors.toList());
 		return listUnitPriceCode;
 	}
