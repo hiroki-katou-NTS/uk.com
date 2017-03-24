@@ -33,6 +33,8 @@ module cmm008.a.viewmodel{
         lstMessage: KnockoutObservableArray<ItemMessage>;
         //check display mess
         isMess: KnockoutObservable<boolean>;
+        //get 就業権限
+        isUseKtSet: KnockoutObservable<number>;
         constructor(){
             var self = this;
             self.employmentName = ko.observable("");
@@ -52,6 +54,8 @@ module cmm008.a.viewmodel{
             self.isDelete = ko.observable(true);
             self.lstMessage = ko.observableArray([]);
             self.isMess = ko.observable(false);
+            self.isUseKtSet = ko.observable(0);
+            
             self.multilineeditor = {
                 memoValue: ko.observable(""),
                 constraint: '',
@@ -76,11 +80,8 @@ module cmm008.a.viewmodel{
             var height = heightScreen-heightHeader - 80;
             $('#contents-left').css({height: height, width: widthScreen*38/100});
             $('#contents-right').css({height: height, width: widthScreen*62/100});
+            //self.userKtSet();            
             self.listMessage();
-           
-            self.closeDateListItem();
-            self.managementHolidaylist();
-            self.processingDateItem();
             self.dataSourceItem();
             
             //list data click
@@ -115,6 +116,25 @@ module cmm008.a.viewmodel{
             dfd.resolve();
             // Return.
             return dfd.promise();
+        }
+        
+        //就業権限
+        userKtSet(): any {
+            var self = this;
+            service.getCompanyInfor().done(function(companyInfor: any){
+                if(companyInfor !== undefined){
+                    self.isUseKtSet(companyInfor.use_Kt_Set);
+                    if(self.isUseKtSet() === 0){
+                        $('.UseKtSet').css('display', 'none');
+                    }else{
+                        self.closeDateListItem();
+                        self.managementHolidaylist();
+                        self.processingDateItem();
+                    }
+                }
+            }).fail(function(res: any){
+                nts.uk.ui.dialog.alert(res.message);
+            })
         }
         
         reloadScreenWhenListClick(newValue: string){

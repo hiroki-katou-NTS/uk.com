@@ -72,7 +72,7 @@
 											data-bind="ntsCheckBox: { checked: isCheckbox, enable: true, text: 'この項目を初期表示する' }"></div>
 									</td>
 								</tr>
-								<tr>
+								<tr class = "UseKtSet">
 									<td class="contentsRL">
 										<div id="LBL_003" data-bind="ntsFormLabel: {required: true}">
 											<label>締め日</label>
@@ -92,7 +92,7 @@
 																			]}"></div>
 									</td>
 								</tr>
-								<tr>
+								<tr class = "UseKtSet">
 									<td class="contentsRL">
 										<div id="LBL_004" data-bind="ntsFormLabel: {required: true}">
 											<label>公休の管理</label>
@@ -108,7 +108,7 @@
 											class="cf"></div>
 									</td>
 								</tr>
-								<tr>
+								<tr class = "UseKtSet">
 									<td class="contentsRL">
 										<div id="LBL_005" data-bind="ntsFormLabel: {required: true}">
 											<label>処理日区分</label>
@@ -133,7 +133,7 @@
 								</tr>
 								<tr>
 									<td class="contentsRL">
-										<div id="LBL_006" data-bind="ntsFormLabel: {required: false}">
+										<div id="LBL_006" data-bind="ntsFormLabel: {required: false, constraint: 'EmploymentCode'}">
 											<label>外部コード</label>
 										</div>
 									</td>
@@ -147,7 +147,7 @@
 								</tr>
 								<tr>
 									<td class="contentsRL">
-										<div id="LBL_007" data-bind="ntsFormLabel: {required: false}">
+										<div id="LBL_007" data-bind="ntsFormLabel: {required: false, constraint: 'Memo'}">
 											<label>メモ</label>
 										</div>
 									</td>

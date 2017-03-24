@@ -10,7 +10,8 @@ var cmm008;
                 updateEmployment: "basic/organization/employment/updateemployment",
                 deleteEmployment: "basic/organization/employment/deleteemployment/",
                 getEmploymentByCode: "basic/organization/employment/findemploymentbycode/",
-                getAllProcessingNo: "pr/core/paydayrocessing/getbyccd"
+                getAllProcessingNo: "pr/core/paydayrocessing/getbyccd",
+                getCompanyInfor: "ctx/proto/company/findBycompanyCode"
             };
             function getAllEmployments() {
                 var dfd = $.Deferred();
@@ -68,7 +69,7 @@ var cmm008;
             service.deleteEmployment = deleteEmployment;
             function getProcessingNo() {
                 var dfd = $.Deferred();
-                nts.uk.request.ajax(path.getAllProcessingNo).done(function (res) {
+                nts.uk.request.ajax('pr', path.getAllProcessingNo).done(function (res) {
                     dfd.resolve(res);
                 }).fail(function (res) {
                     dfd.reject(res);
@@ -76,6 +77,16 @@ var cmm008;
                 return dfd.promise();
             }
             service.getProcessingNo = getProcessingNo;
+            function getCompanyInfor() {
+                var dfd = $.Deferred();
+                nts.uk.request.ajax('pr', path.getCompanyInfor).done(function (res) {
+                    dfd.resolve(res);
+                }).fail(function (res) {
+                    dfd.reject(res);
+                });
+                return dfd.promise();
+            }
+            service.getCompanyInfor = getCompanyInfor;
             var model;
             (function (model) {
                 var employmentDto = (function () {

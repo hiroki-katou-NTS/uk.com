@@ -25,6 +25,7 @@ var cmm008;
                     self.isDelete = ko.observable(true);
                     self.lstMessage = ko.observableArray([]);
                     self.isMess = ko.observable(false);
+                    self.isUseKtSet = ko.observable(0);
                     self.multilineeditor = {
                         memoValue: ko.observable(""),
                         constraint: '',
@@ -48,9 +49,6 @@ var cmm008;
                     $('#contents-left').css({ height: height, width: widthScreen * 38 / 100 });
                     $('#contents-right').css({ height: height, width: widthScreen * 62 / 100 });
                     self.listMessage();
-                    self.closeDateListItem();
-                    self.managementHolidaylist();
-                    self.processingDateItem();
                     self.dataSourceItem();
                     self.currentCode.subscribe(function (newValue) {
                         if (!self.checkChange(self.employmentCode())) {
@@ -78,6 +76,24 @@ var cmm008;
                     a.service.getProcessingNo();
                     dfd.resolve();
                     return dfd.promise();
+                };
+                ScreenModel.prototype.userKtSet = function () {
+                    var self = this;
+                    a.service.getCompanyInfor().done(function (companyInfor) {
+                        if (companyInfor !== undefined) {
+                            self.isUseKtSet(companyInfor.use_Kt_Set);
+                            if (self.isUseKtSet() === 0) {
+                                $('.UseKtSet').css('display', 'none');
+                            }
+                            else {
+                                self.closeDateListItem();
+                                self.managementHolidaylist();
+                                self.processingDateItem();
+                            }
+                        }
+                    }).fail(function (res) {
+                        nts.uk.ui.dialog.alert(res.message);
+                    });
                 };
                 ScreenModel.prototype.reloadScreenWhenListClick = function (newValue) {
                     var self = this;
