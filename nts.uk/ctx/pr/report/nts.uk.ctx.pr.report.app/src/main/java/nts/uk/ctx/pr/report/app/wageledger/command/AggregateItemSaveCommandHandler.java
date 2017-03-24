@@ -57,7 +57,7 @@ public class AggregateItemSaveCommandHandler extends CommandHandler<AggregateIte
 		// In case create.
 		// Check duplicate code.
 		if (this.repository.isExist(subject)) {
-			throw new BusinessException("ER011");
+			throw new BusinessException("入力したコードは既に存在しています。\r\nコードを確認してください。");
 		}
 		
 		// Convert to domain.
