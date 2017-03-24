@@ -24,6 +24,7 @@ var nts;
                             })();
                         }
                         ScreenModel.prototype.rowsRendered = function (evt, ui) {
+                            // 
                             _.defer(function () {
                                 $('.nts-binding').not('.nts-binding-done').each(function () {
                                     var $this = $(this).addClass('.nts-binding-done');

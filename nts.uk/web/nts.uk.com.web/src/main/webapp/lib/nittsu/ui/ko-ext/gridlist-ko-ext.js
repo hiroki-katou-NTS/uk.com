@@ -1,3 +1,4 @@
+/// <reference path="../../reference.ts"/>
 var nts;
 (function (nts) {
     var uk;
@@ -6,6 +7,9 @@ var nts;
         (function (ui) {
             var koExtentions;
             (function (koExtentions) {
+                /**
+                 * GridList binding handler
+                 */
                 var NtsGridListBindingHandler = (function () {
                     function NtsGridListBindingHandler() {
                     }

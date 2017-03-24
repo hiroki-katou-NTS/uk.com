@@ -12,6 +12,7 @@ var cmm008;
                 getEmploymentByCode: "basic/organization/employment/findemploymentbycode/",
                 getAllProcessingNo: "pr/core/paydayrocessing/getbyccd"
             };
+            //find all employment data
             function getAllEmployments() {
                 var dfd = $.Deferred();
                 nts.uk.request.ajax("com", path.getAllEmployment)
@@ -36,6 +37,7 @@ var cmm008;
                 return dfd.promise();
             }
             service.getEmploymentByCode = getEmploymentByCode;
+            //create new employment data
             function createEmployment(employment) {
                 var dfd = $.Deferred();
                 nts.uk.request.ajax("com", path.createEmployment, employment).done(function (res) {
@@ -46,6 +48,7 @@ var cmm008;
                 return dfd.promise();
             }
             service.createEmployment = createEmployment;
+            //update employment data
             function updateEmployment(employment) {
                 var dfd = $.Deferred();
                 nts.uk.request.ajax("com", path.updateEmployment, employment).done(function (res) {
@@ -56,6 +59,7 @@ var cmm008;
                 return dfd.promise();
             }
             service.updateEmployment = updateEmployment;
+            //delete employment data
             function deleteEmployment(employment) {
                 var dfd = $.Deferred();
                 nts.uk.request.ajax("com", path.deleteEmployment, employment).done(function (res) {
@@ -66,6 +70,7 @@ var cmm008;
                 return dfd.promise();
             }
             service.deleteEmployment = deleteEmployment;
+            //get all 処理日区分
             function getProcessingNo() {
                 var dfd = $.Deferred();
                 nts.uk.request.ajax(path.getAllProcessingNo).done(function (res) {
