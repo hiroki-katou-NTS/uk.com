@@ -5,9 +5,9 @@ import java.math.BigDecimal;
 import nts.arc.primitive.DecimalPrimitiveValue;
 import nts.arc.primitive.constraint.DecimalMaxValue;
 import nts.arc.primitive.constraint.DecimalMinValue;
+import nts.arc.primitive.constraint.DecimalRange;
 
-@DecimalMinValue("0")
-@DecimalMaxValue("9999999999")
+@DecimalRange(max = "9999999999", min = "0")
 public class ErrRangeLow extends DecimalPrimitiveValue<ErrRangeLow> {
 	public ErrRangeLow(BigDecimal rawValue) {
 		super(rawValue);
