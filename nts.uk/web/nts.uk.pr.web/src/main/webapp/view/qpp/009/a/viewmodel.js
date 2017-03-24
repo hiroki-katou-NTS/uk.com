@@ -64,9 +64,9 @@ var qpp009;
                     this.selectedBreakPageHierarchyCode = ko.observable(1);
                     this.use2000yenSelection = ko.observableArray([
                         new SelectionDto(1, '含める'),
-                        new SelectionDto(2, '含めない'),
+                        new SelectionDto(0, '含めない'),
                     ]);
-                    this.selectedUse2000yen = ko.observable(1);
+                    this.selectedUse2000yen = ko.observable(0);
                     var self = this;
                     this.isBreakPageByAccumulated = ko.computed(function () {
                         return self.selectedBreakPageCode() == 4;

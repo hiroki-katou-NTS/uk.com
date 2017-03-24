@@ -28,6 +28,11 @@ var nts;
                                     self.numberEditorCommonOption = ko.mapping.fromJS(new nts.uk.ui.option.NumberEditorOption({
                                         grouplength: 3
                                     }));
+                                    self.dirty = new nts.uk.ui.DirtyChecker(ko.observable(''));
+                                    self.errorList = ko.observableArray([
+                                        { messageId: "AL001", message: "変更された内容が登録されていません。\r\n よろしいですか。" },
+                                        { messageId: "AL002", message: "データを削除します。\r\nよろしいですか？" },
+                                    ]);
                                 }
                                 ScreenModel.prototype.startPage = function () {
                                     var self = this;
@@ -55,6 +60,7 @@ var nts;
                                         res.forEach(function (item) {
                                             self.listPensionAvgearnModel.push(new PensionAvgearnModel(item.historyId, item.levelCode, new PensionAvgearnValueModel(item.companyFund.maleAmount, item.companyFund.femaleAmount, item.companyFund.unknownAmount), new PensionAvgearnValueModel(item.companyFundExemption.maleAmount, item.companyFundExemption.femaleAmount, item.companyFundExemption.unknownAmount), new PensionAvgearnValueModel(item.companyPension.maleAmount, item.companyPension.femaleAmount, item.companyPension.unknownAmount), new PensionAvgearnValueModel(item.personalFund.maleAmount, item.personalFund.femaleAmount, item.personalFund.unknownAmount), new PensionAvgearnValueModel(item.personalFundExemption.maleAmount, item.personalFundExemption.femaleAmount, item.personalFundExemption.unknownAmount), new PensionAvgearnValueModel(item.personalPension.maleAmount, item.personalPension.femaleAmount, item.personalPension.unknownAmount), item.childContributionAmount));
                                         });
+                                        self.dirty = new nts.uk.ui.DirtyChecker(self.listPensionAvgearnModel);
                                         dfd.resolve();
                                     });
                                     return dfd.promise();
@@ -133,6 +139,19 @@ var nts;
                                         case "3": return Rounding.ROUNDDOWN;
                                         case "4": return Rounding.DOWN5_UP6;
                                         default: return Rounding.ROUNDUP;
+                                    }
+                                };
+                                ScreenModel.prototype.closeDialogWithDirtyCheck = function () {
+                                    var self = this;
+                                    if (self.dirty.isDirty()) {
+                                        nts.uk.ui.dialog.confirm(self.errorList()[0].message).ifYes(function () {
+                                            self.closeDialog();
+                                            self.dirty.reset();
+                                        }).ifCancel(function () {
+                                        });
+                                    }
+                                    else {
+                                        self.closeDialog();
                                     }
                                 };
                                 ScreenModel.prototype.closeDialog = function () {

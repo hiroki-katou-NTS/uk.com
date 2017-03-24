@@ -5,8 +5,6 @@
 package nts.uk.ctx.pr.screen.app.report.salarychart.query;
 import java.util.List;
 
-import lombok.Builder;
-import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -37,18 +35,7 @@ import lombok.Setter;
 /* (non-Javadoc)
  * @see java.lang.Object#toString()
  */
-@Data
 
-/* (non-Javadoc)
- * @see java.lang.Object#toString()
- */
-@Builder
-
-/**
- * Gets the checks if is break page by accumulated.
- *
- * @return the checks if is break page by accumulated
- */
 @Getter
 
 /**

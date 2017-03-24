@@ -6,6 +6,7 @@ package nts.uk.ctx.pr.core.dom.wagetable.history.element.item.generator;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -34,8 +35,16 @@ public class LevelItemGenerator implements ItemGenerator {
 	@Override
 	public List<? extends Item> generate(String companyCode, String historyId,
 			ElementSetting elementSetting) {
-		return Arrays.asList(EmployeeLevel.values()).stream().map(
-				item -> new CodeItem(item.value, new ElementId(IdentifierUtil.randomUniqueId())))
+
+		@SuppressWarnings("unchecked")
+		List<CodeItem> codeItems = (List<CodeItem>) elementSetting.getItemList();
+		Map<String, ElementId> mapCodeItems = codeItems.stream()
+				.collect(Collectors.toMap(CodeItem::getReferenceCode, CodeItem::getUuid));
+
+		return Arrays.asList(EmployeeLevel.values()).stream()
+				.map(item -> new CodeItem(item.value,
+						mapCodeItems.getOrDefault(item.value,
+								new ElementId(IdentifierUtil.randomUniqueId()))))
 				.collect(Collectors.toList());
 	}
 

@@ -2,23 +2,18 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.pr.core.dom.wagetable.reference;
+package nts.uk.ctx.pr.core.ws.rule.employment.unitprice.dto;
 
 import java.util.List;
 
-import lombok.Getter;
+import lombok.Data;
 
 /**
- * The Class DisplayCodeItem.
+ * The Class ListUnitPriceCodeModel.
  */
-@Getter
-public class DemensionTable {
+@Data
+public class ListUnitPriceCodeModel {
 
-	private List<DemensionDirection> directions;
-
-	public DemensionTable(List<DemensionDirection> directions) {
-		super();
-		this.directions = directions;
-	}
-
+	/** The list unit price code. */
+	private List<String> codes;
 }

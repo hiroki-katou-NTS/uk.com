@@ -65,6 +65,14 @@ var nts;
                                             self.fundInputEnable(false);
                                         }
                                     });
+                                    self.errorList = ko.observableArray([
+                                        { messageId: "ER001", message: "＊が入力されていません。" },
+                                        { messageId: "ER007", message: "＊が選択されていません。" },
+                                        { messageId: "ER005", message: "入力した＊は既に存在しています。\r\n ＊を確認してください。" },
+                                        { messageId: "ER008", message: "選択された＊は使用されているため削除できません。" },
+                                        { messageId: "AL001", message: "変更された内容が登録されていません。\r\n よろしいですか。" }
+                                    ]);
+                                    self.dirty = new nts.uk.ui.DirtyChecker(ko.observable(''));
                                 }
                                 ScreenModel.prototype.start = function () {
                                     var self = this;
@@ -299,6 +307,7 @@ var nts;
                                     self.currentOfficeCode(self.getCurrentOfficeCode(id));
                                     c.service.instance.findHistoryByUuid(id).done(function (dto) {
                                         self.loadPension(dto);
+                                        self.dirty = new nts.uk.ui.DirtyChecker(self.pensionModel);
                                         self.isLoading(false);
                                         $('.save-error').ntsError('clear');
                                         dfd.resolve();
@@ -344,19 +353,45 @@ var nts;
                                     }
                                     return returnValue;
                                 };
+                                ScreenModel.prototype.OpenModalOfficeRegisterWithDirtyCheck = function () {
+                                    var self = this;
+                                    if (self.dirty.isDirty()) {
+                                        nts.uk.ui.dialog.confirm(self.errorList()[4].message).ifYes(function () {
+                                            self.OpenModalOfficeRegister();
+                                            self.dirty.reset();
+                                        }).ifCancel(function () {
+                                        });
+                                    }
+                                    else {
+                                        self.OpenModalOfficeRegister();
+                                    }
+                                };
                                 ScreenModel.prototype.OpenModalOfficeRegister = function () {
                                     var self = this;
                                     nts.uk.ui.windows.setShared("isTransistReturnData", this.isTransistReturnData());
-                                    nts.uk.ui.windows.sub.modal("/view/qmm/008/e/index.xhtml", { title: "会社保険事業所の登録＞事業所の登録" }).onClosed(function () {
-                                        self.start();
-                                        var returnValue = nts.uk.ui.windows.getShared("insuranceOfficeChildValue");
+                                    nts.uk.ui.windows.sub.modal("/view/qmm/008/e/index.xhtml", { title: "会社保険事業所の登録＞事業所の登録", dialogClass: 'no-close' }).onClosed(function () {
+                                        self.loadMasterHistory();
+                                        var codeOfNewOffice = nts.uk.ui.windows.getShared("codeOfNewOffice");
                                     });
+                                };
+                                ScreenModel.prototype.OpenModalStandardMonthlyPricePensionWithDirtyCheck = function () {
+                                    var self = this;
+                                    if (self.dirty.isDirty()) {
+                                        nts.uk.ui.dialog.confirm(self.errorList()[4].message).ifYes(function () {
+                                            self.OpenModalStandardMonthlyPricePension();
+                                            self.dirty.reset();
+                                        }).ifCancel(function () {
+                                        });
+                                    }
+                                    else {
+                                        self.OpenModalStandardMonthlyPricePension();
+                                    }
                                 };
                                 ScreenModel.prototype.OpenModalStandardMonthlyPricePension = function () {
                                     nts.uk.ui.windows.setShared("officeName", this.sendOfficeData());
                                     nts.uk.ui.windows.setShared("pensionModel", this.pensionModel());
                                     nts.uk.ui.windows.setShared("isTransistReturnData", this.isTransistReturnData());
-                                    nts.uk.ui.windows.sub.modal("/view/qmm/008/i/index.xhtml", { title: "会社保険事業所の登録＞標準報酬月額保険料額表" }).onClosed(function () {
+                                    nts.uk.ui.windows.sub.modal("/view/qmm/008/i/index.xhtml", { title: "会社保険事業所の登録＞標準報酬月額保険料額表", dialogClass: 'no-close' }).onClosed(function () {
                                         var returnValue = nts.uk.ui.windows.getShared("listOfficeOfChildValue");
                                     });
                                 };
