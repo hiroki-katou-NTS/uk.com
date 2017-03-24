@@ -28,9 +28,9 @@ import nts.uk.ctx.pr.core.infra.entity.insurance.labor.unemployeerate.QismtEmpIn
 import nts.uk.ctx.pr.core.infra.entity.insurance.labor.unemployeerate.QismtEmpInsuRatePK;
 import nts.uk.ctx.pr.core.infra.entity.insurance.labor.unemployeerate.QismtEmpInsuRatePK_;
 import nts.uk.ctx.pr.core.infra.entity.insurance.labor.unemployeerate.QismtEmpInsuRate_;
-	
+
 /**
- * The Class
+ * The Class JpaUnemployeeInsuranceRateRepository.
  */
 @Stateless
 public class JpaUnemployeeInsuranceRateRepository extends JpaRepository
@@ -216,20 +216,10 @@ public class JpaUnemployeeInsuranceRateRepository extends JpaRepository
 
 	/*
 	 * (non-Javadoc)
-	 *
+	 * 
 	 * @see nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.
-	 * UnemployeeInsuranceRateRepository#updateYearMonth(nts.uk.ctx.pr.core.dom.
-	 * insurance.labor.unemployeerate.UnemployeeInsuranceRate,
-	 * nts.arc.time.YearMonth)
+	 * UnemployeeInsuranceRateRepository#findFirstData(java.lang.String)
 	 */
-	@Override
-	public void updateYearMonth(UnemployeeInsuranceRate rate, YearMonth yearMonth) {
-		QismtEmpInsuRate entity = this.toEntity(rate);
-		entity.setEndYm(yearMonth.v());
-		this.commandProxy().update(entity);
-
-	}
-
 	@Override
 	public Optional<UnemployeeInsuranceRate> findFirstData(String companyCode) {
 

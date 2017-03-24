@@ -27,13 +27,11 @@ public class UnemployeeInsuranceRateItemFindOutDto implements UnemployeeInsuranc
 
 	@Override
 	public void setCareerGroup(CareerGroup careerGroup) {
-		// TODO Auto-generated method stub
 		this.careerGroup = careerGroup.value;
 	}
 
 	@Override
 	public void setCompanySetting(UnemployeeInsuranceRateItemSetting companySetting) {
-		// TODO Auto-generated method stub
 		if (this.companySetting == null)
 			this.companySetting = new UnemployeeInsuranceRateItemSettingFindOutDto();
 		this.companySetting.setRate(companySetting.getRate());
@@ -42,7 +40,6 @@ public class UnemployeeInsuranceRateItemFindOutDto implements UnemployeeInsuranc
 
 	@Override
 	public void setPersonalSetting(UnemployeeInsuranceRateItemSetting personalSetting) {
-		// TODO Auto-generated method stub
 		if (this.personalSetting == null)
 			this.personalSetting = new UnemployeeInsuranceRateItemSettingFindOutDto();
 		this.personalSetting.setRate(personalSetting.getRate());

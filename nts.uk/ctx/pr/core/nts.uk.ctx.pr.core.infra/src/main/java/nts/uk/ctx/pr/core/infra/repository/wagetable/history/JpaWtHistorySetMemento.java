@@ -15,11 +15,15 @@ import nts.uk.ctx.pr.core.dom.wagetable.history.WtHistorySetMemento;
 import nts.uk.ctx.pr.core.dom.wagetable.history.WtItem;
 import nts.uk.ctx.pr.core.dom.wagetable.history.element.ElementSetting;
 import nts.uk.ctx.pr.core.dom.wagetable.history.element.StepElementSetting;
+import nts.uk.ctx.pr.core.dom.wagetable.history.element.item.CodeItem;
+import nts.uk.ctx.pr.core.dom.wagetable.history.element.item.RangeItem;
+import nts.uk.ctx.pr.core.infra.entity.wagetable.history.QwtmtWagetableCd;
 import nts.uk.ctx.pr.core.infra.entity.wagetable.history.QwtmtWagetableEleHist;
 import nts.uk.ctx.pr.core.infra.entity.wagetable.history.QwtmtWagetableEleHistPK;
 import nts.uk.ctx.pr.core.infra.entity.wagetable.history.QwtmtWagetableHist;
 import nts.uk.ctx.pr.core.infra.entity.wagetable.history.QwtmtWagetableHistPK;
 import nts.uk.ctx.pr.core.infra.entity.wagetable.history.QwtmtWagetableMny;
+import nts.uk.ctx.pr.core.infra.entity.wagetable.history.QwtmtWagetableNum;
 
 /**
  * The Class JpaWageTableHistorySetMemento.
@@ -112,8 +116,11 @@ public class JpaWtHistorySetMemento implements WtHistorySetMemento {
 		this.typeValue.setQwtmtWagetableMnyList(qwtmtWagetableMnyList);
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.pr.core.dom.wagetable.history.WtHistorySetMemento#setElementSettings(java.util.List)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.wagetable.history.WtHistorySetMemento#
+	 * setElementSettings(java.util.List)
 	 */
 	@Override
 	public void setElementSettings(List<ElementSetting> elementSettings) {
@@ -125,22 +132,61 @@ public class JpaWtHistorySetMemento implements WtHistorySetMemento {
 		List<QwtmtWagetableEleHist> qwtmtWagetableEleHistList = elementSettings.stream()
 				.map(item -> {
 					QwtmtWagetableEleHist qwtmtWagetableEleHist = new QwtmtWagetableEleHist();
+
+					// Create primary key.
 					QwtmtWagetableEleHistPK qwtmtWagetableEleHistPK = new QwtmtWagetableEleHistPK();
 					qwtmtWagetableEleHistPK.setCcd(companyCode);
 					qwtmtWagetableEleHistPK.setWageTableCd(wageTableCd);
 					qwtmtWagetableEleHistPK.setHistId(historyId);
 					qwtmtWagetableEleHistPK.setDemensionNo(item.getDemensionNo().value);
+
+					// Set primary key.
 					qwtmtWagetableEleHist.setQwtmtWagetableEleHistPK(qwtmtWagetableEleHistPK);
+
+					// Check setting type
 					if (item instanceof StepElementSetting) {
+						// Cast to step setting.
 						StepElementSetting step = (StepElementSetting) item;
+
+						// Set values
 						qwtmtWagetableEleHist.setDemensionUpperLimit(step.getUpperLimit().v());
 						qwtmtWagetableEleHist.setDemensionLowerLimit(step.getLowerLimit().v());
 						qwtmtWagetableEleHist.setDemensionInterval(step.getInterval().v());
+
+						// Create wage table codes
+						List<QwtmtWagetableNum> qwtmtWagetableNumList = item.getItemList().stream()
+								.map(subItem -> {
+									RangeItem rangeItem = (RangeItem) subItem;
+									QwtmtWagetableNum wagetableNum = new QwtmtWagetableNum(
+											companyCode, wageTableCd, historyId,
+											item.getDemensionNo().value,
+											rangeItem.getOrderNumber());
+									wagetableNum.setElementId(rangeItem.getUuid().v());
+									return wagetableNum;
+								}).collect(Collectors.toList());
+
+						qwtmtWagetableEleHist.setQwtmtWagetableNumList(qwtmtWagetableNumList);
+
 					} else {
 						qwtmtWagetableEleHist.setDemensionUpperLimit(BigDecimal.ZERO);
 						qwtmtWagetableEleHist.setDemensionLowerLimit(BigDecimal.ZERO);
-						qwtmtWagetableEleHist.setDemensionInterval(BigDecimal.ONE);						
+						qwtmtWagetableEleHist.setDemensionInterval(BigDecimal.ONE);
+
+						// Create wage table codes
+						List<QwtmtWagetableCd> qwtmtWagetableCdList = item.getItemList().stream()
+								.map(subItem -> {
+									CodeItem rangeItem = (CodeItem) subItem;
+									QwtmtWagetableCd wagetableCd = new QwtmtWagetableCd(companyCode,
+											wageTableCd, historyId, item.getDemensionNo().value,
+											rangeItem.getReferenceCode());
+									wagetableCd.setElementId(rangeItem.getUuid().v());
+									return wagetableCd;
+								}).collect(Collectors.toList());
+
+						qwtmtWagetableEleHist.setQwtmtWagetableCdList(qwtmtWagetableCdList);
 					}
+
+					// Return
 					return qwtmtWagetableEleHist;
 				}).collect(Collectors.toList());
 

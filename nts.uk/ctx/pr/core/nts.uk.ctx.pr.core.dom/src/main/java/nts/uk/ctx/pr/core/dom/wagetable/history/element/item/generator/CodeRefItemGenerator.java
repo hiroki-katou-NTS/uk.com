@@ -52,10 +52,10 @@ public class CodeRefItemGenerator implements ItemGenerator {
 	@Override
 	public List<? extends Item> generate(String companyCode, String historyId,
 			ElementSetting elementSetting) {
-		Optional<WtElement> optWtHistory = this.wtElementRepo.findByHistoryId(historyId);
+		Optional<WtElement> optWtElement = this.wtElementRepo.findByHistoryId(historyId);
 
 		Optional<WtCodeRef> optCodeRef = this.wtCodeRefRepo.findByCode(companyCode,
-				optWtHistory.get().getReferenceCode());
+				optWtElement.get().getReferenceCode());
 
 		List<WtCodeRefItem> wtRefItems = this.wtReferenceRepo.getCodeRefItem(optCodeRef.get());
 

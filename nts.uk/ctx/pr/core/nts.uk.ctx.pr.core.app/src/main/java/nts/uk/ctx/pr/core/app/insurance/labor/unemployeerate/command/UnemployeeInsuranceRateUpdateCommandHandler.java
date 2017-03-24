@@ -73,8 +73,9 @@ public class UnemployeeInsuranceRateUpdateCommandHandler
 
 			// update end year month start previous
 			if (optionalBetweenUpdate.isPresent()) {
-				this.unemployeeInsuranceRateRepository.updateYearMonth(optionalBetweenUpdate.get(),
-					unemployeeInsuranceRate.getApplyRange().getStartMonth().previousMonth());
+				optionalBetweenUpdate.get()
+					.setEnd(unemployeeInsuranceRate.getApplyRange().getStartMonth().previousMonth());
+				this.unemployeeInsuranceRateRepository.update(optionalBetweenUpdate.get());
 			}
 
 			// update value

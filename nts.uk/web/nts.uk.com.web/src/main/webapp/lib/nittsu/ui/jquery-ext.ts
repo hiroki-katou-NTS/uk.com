@@ -1,3 +1,5 @@
+/// <reference path="../reference.ts"/>
+
 interface JQuery {
     ntsPopup(args: any): JQuery;
     ntsError(action: string, param?: any): any;

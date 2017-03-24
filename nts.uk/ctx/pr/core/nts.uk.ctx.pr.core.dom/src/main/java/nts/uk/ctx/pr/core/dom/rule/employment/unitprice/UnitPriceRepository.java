@@ -54,18 +54,27 @@ public interface UnitPriceRepository {
 	Optional<UnitPrice> findByCode(CompanyCode companyCode, UnitPriceCode cUnitpriceCd);
 
 	/**
+	 * Find by codes.
+	 *
+	 * @param companyCode the company code
+	 * @param unitPriceCodes the unit price codes
+	 * @return the list
+	 */
+	List<UnitPrice> findByCodes(String companyCode, List<String> unitPriceCodes);
+
+	/**
 	 * Check duplicate code.
 	 *
 	 * @param code the code
 	 * @return true, if successful
 	 */
 	boolean isDuplicateCode(CompanyCode companyCode, UnitPriceCode code);
-	
+
 	/**
-	 * Gets the company unit price code.
+	 * Gets the company unit price.
 	 *
 	 * @param baseDate the base date
-	 * @return the company unit price code
+	 * @return the company unit price
 	 */
-	List<UnitPriceCode> getCompanyUnitPriceCode(Integer baseDate);
+	List<UnitPrice> getCompanyUnitPrice(Integer baseDate);
 }

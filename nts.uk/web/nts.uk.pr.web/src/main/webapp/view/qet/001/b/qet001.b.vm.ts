@@ -16,6 +16,7 @@ module qet001.b.viewmodel {
         masterItemList: service.Item[];
         isLoading: KnockoutObservable<boolean>;
         hasUpdate: KnockoutObservable<boolean>;
+        dirty: nts.uk.ui.DirtyChecker;
         
         constructor() {
             this.outputSettings = ko.observable(new OutputSettings());
@@ -41,11 +42,13 @@ module qet001.b.viewmodel {
             this.hasUpdate = ko.observable(false);
             
             var self = this;
+            self.dirty = new nts.uk.ui.DirtyChecker(self.outputSettingDetail);
             self.outputSettings().outputSettingSelectedCode.subscribe((newVal: string) => {
                 self.isLoading(true);
                 if (!newVal || newVal == '') {
                     self.outputSettingDetail(new OutputSettingDetail(self.aggregateItemsList, self.masterItemList));
                     self.isLoading(false);
+                    self.dirty.reset();
                     return;
                 }
                 // load detail output setting.
@@ -80,6 +83,9 @@ module qet001.b.viewmodel {
             self.reportItems(reportItemList);
         }
         
+        /**
+         * Start load data for this screen.
+         */
         public start(): JQueryPromise<void>{
             var dfd = $.Deferred<void>();
             var self = this;
@@ -123,7 +129,13 @@ module qet001.b.viewmodel {
          * Close dialog.
          */
         public close() {
-            nts.uk.ui.windows.close();
+            // Dirty check.
+            var self = this;
+            if (self.dirty.isDirty()) {
+                nts.uk.ui.dialog.confirm('変更された内容が登録されていません。\r\nよろしいですか。').ifYes(function() {
+                    nts.uk.ui.windows.close();
+                });
+            }
         }
         
         /**
@@ -137,11 +149,11 @@ module qet001.b.viewmodel {
             // Validate.
             var hasError = false;
             if (self.outputSettingDetail().settingCode() == '') {
-                $('#code-input').ntsError('set', '未入力エラー');
+                $('#code-input').ntsError('set', 'コードが入力されていません。');
                 hasError = true;
             }
             if(self.outputSettingDetail().settingName() == '') {
-                $('#name-input').ntsError('set', '未入力エラー');
+                $('#name-input').ntsError('set', '名称が入力されていません。');
                 hasError = true;
             }
             if(hasError) {
@@ -167,7 +179,7 @@ module qet001.b.viewmodel {
             // Check selected output setting.
             var selectedCode = self.outputSettings().outputSettingSelectedCode();
             if (selectedCode == '') {
-                // TODO: Add error message '未選択エラー'.
+                // TODO: Add error message 'AL006'.
                 nts.uk.ui.dialog.alert('未選択エラー');
                 return;
             }
@@ -209,6 +221,7 @@ module qet001.b.viewmodel {
             
             service.findOutputSettingDetail(selectedCode).done(function(data: WageLedgerOutputSetting){
                 self.outputSettingDetail(new OutputSettingDetail(self.aggregateItemsList, self.masterItemList, data));
+                self.dirty.reset();
                 dfd.resolve();
             }).fail(function(res) {
                 nts.uk.ui.dialog.alert(res.message);
@@ -253,6 +266,18 @@ module qet001.b.viewmodel {
          * Switch to create mode.
          */
         public switchToCreateMode() {
+            // Dirty check.
+            var self = this;
+            if (self.dirty.isDirty()) {
+                nts.uk.ui.dialog.confirm('変更された内容が登録されていません。\r\nよろしいですか。').ifYes(function() {
+                    self.outputSettingDetail(new OutputSettingDetail(self.aggregateItemsList, self.masterItemList));
+                    self.outputSettings().outputSettingSelectedCode('');
+                }).ifNo(function() {
+                    return;
+                })
+                return;
+            }
+            
             this.outputSettingDetail(new OutputSettingDetail(this.aggregateItemsList, this.masterItemList));
             this.outputSettings().outputSettingSelectedCode('');
         }
