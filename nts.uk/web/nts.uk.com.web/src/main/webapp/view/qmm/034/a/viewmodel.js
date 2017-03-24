@@ -9,6 +9,7 @@ var qmm034;
                     this.constraint = 'LayoutCode';
                     this.isUpdate = ko.observable(true);
                     var self = this;
+                    /*gridList*/
                     self.items = ko.observableArray([]);
                     self.columns = ko.observableArray([
                         { headerText: '元号', prop: 'code', width: 50 },
@@ -16,21 +17,33 @@ var qmm034;
                         { headerText: '開始年月日', prop: 'startDateText', width: 80 },
                     ]);
                     self.currentCodeList = ko.observableArray([]);
+                    //Tim object dau tien
                     self.currentEra = ko.observable(null);
                     self.currentCode = ko.observable();
                     self.currentCode.subscribe(function (codeChanged) {
                         self.currentEra(self.getEra(codeChanged));
                         self.date(self.currentEra().startDate);
                     });
+                    /*datePicker*/
+                    // var datePicker = self.currentEra();
                     self.date = ko.observable(new Date());
                     self.dateTime = ko.observable(nts.uk.time.yearInJapanEmpire(self.date()).toString());
                     self.eras = ko.observableArray([]);
                     console.log(self.items());
+                    /*selected row*/
                     self.findIndex = ko.observable(0);
                     self.countItems = ko.observable(0);
                     self.isSelectdFirstRow = ko.observable(true);
                     self.isDeleteEnable = ko.observable(true);
                 }
+                //        register() {
+                //            let self = this;
+                //            if (self.isUpdate() === false) {
+                //                self.insertData();
+                //            } else {
+                //                self.update();
+                //            }
+                //        }
                 ScreenModel.prototype.refreshLayout = function () {
                     var self = this;
                     self.currentEra(new EraModel('', '', ''));
@@ -38,6 +51,14 @@ var qmm034;
                 };
                 ScreenModel.prototype.insertData = function () {
                     var self = this;
+                    //let newData = self.currentEra();
+                    //let newEradata = self;
+                    // var x = self.items();
+                    //x.push(newData);
+                    //            if (self.isUpdate() === false) {
+                    //                self.items.push(newData);
+                    //                self.isUpdate = ko.observable(true);
+                    //            }
                     var eraName;
                     eraName = $('#A_INP_001').val();
                     var eraMark;
@@ -90,6 +111,8 @@ var qmm034;
                 };
                 ScreenModel.prototype.deleteData = function () {
                     var self = this;
+                    //            let newDel = self.currentEra();
+                    //            self.items.splice(self.items().indexOf(newDel), 1);
                     var eraName;
                     eraName = $('#A_INP_001').val();
                     var eraMark;
@@ -100,6 +123,12 @@ var qmm034;
                     var dfd = $.Deferred();
                     var node;
                     node = new qmm034.a.service.model.EraDtoDelete(startDate);
+                    //            qmm034.a.service.deleteData(node)
+                    //                .done(function() {
+                    //                    qmm034.a.service.getAllEras();
+                    //                }).fail(function(error) {
+                    //                    alert(error.message);
+                    //                });
                     qmm034.a.service.deleteData(node).done(function (result) {
                         self.reload().done(function () {
                             dfd.resolve();
@@ -118,6 +147,17 @@ var qmm034;
                 };
                 ScreenModel.prototype.update = function () {
                     var self = this;
+                    //            if (self.currentCode() !== undefined && self.currentCode() !== null) {
+                    //                var newCurrentEra = _.findIndex(self.items(), function(item) {
+                    //                    return item.code === self.currentCode();
+                    //                });
+                    //                self.items.splice(newCurrentEra, 1, _.cloneDeep(self.currentEra()));
+                    //                self.items.valueHasMutated();
+                    //            }
+                    //            qmm034.a.service.updateData().done(function() {
+                    //                        self.start();
+                    //                        //console.log(self.items());
+                    //                    });
                 };
                 ScreenModel.prototype.selectSomeItems = function () {
                     this.currentCode('150');
@@ -131,7 +171,9 @@ var qmm034;
                 };
                 ScreenModel.prototype.start = function () {
                     var self = this;
+                    // Page load dfd.
                     var dfd = $.Deferred();
+                    // Resolve start page dfd after load all data.
                     $.when(qmm034.a.service.getAllEras()).done(function (data) {
                         dfd.resolve();
                     }).fail(function (res) {
@@ -140,7 +182,9 @@ var qmm034;
                 };
                 ScreenModel.prototype.startPage = function () {
                     var self = this;
+                    // Page load dfd.
                     var dfd = $.Deferred();
+                    // Resolve start page dfd after load all data.
                     $.when(qmm034.a.service.getAllEras()).done(function (data) {
                         self.buildGridDataSource(data);
                         self.currentEra = ko.observable(_.cloneDeep(_.first(self.items())));
@@ -159,6 +203,17 @@ var qmm034;
                 return ScreenModel;
             }());
             viewmodel.ScreenModel = ScreenModel;
+            //    class Era{
+            //        eraName: KnockoutObservable<string>;
+            //        eraMark: KnockoutObservable<string>;
+            //        startDateEra: KnockoutObservable<Date>;    
+            //        
+            //        constructor(eraName: string, eraMark: string, startDateEra: Date){
+            //                this.eraName = ko.observable(eraName);
+            //                this.eraMark = ko.observable(eraMark);
+            //                this.startDateEra = ko.observable(startDateEra);
+            //        }
+            //    }
             var EraModel = (function () {
                 function EraModel(code, name, startDate) {
                     this.code = code;

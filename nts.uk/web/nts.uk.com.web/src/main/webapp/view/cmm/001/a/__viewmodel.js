@@ -138,12 +138,15 @@ var cmm001;
                 ]);
                 self.currentCode = ko.observable('');
                 self.firstCode = ko.observable('');
+                //self.currentCodeList = ko.observableArray(null);
+                //tabpanel
                 self.tabs = ko.observableArray([
                     { id: 'tab-1', title: '会社基本情報', content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true) },
                     { id: 'tab-2', title: '会社所在地・連絡先', content: '.tab-content-2', enable: ko.observable(true), visible: ko.observable(true) },
                     { id: 'tab-3', title: 'システム設定', content: '.tab-content-3', enable: ko.observable(true), visible: ko.observable(true) }
                 ]);
                 self.selectedTab = ko.observable('tab-1');
+                //SWITCH
                 self.roundingRules = ko.observableArray([
                     new RoundingRule("1", '利用する'),
                     new RoundingRule('0', '利用しない')
@@ -164,6 +167,8 @@ var cmm001;
                     new RoundingRule('0', '区別しない')
                 ]);
                 self.selectedRuleCode3 = ko.observable(self.roundingRules3()[0].code);
+                //self.selectedRuleCode1 = ko.observable(1);
+                //COMBOX 
                 self.itemList = ko.observableArray([
                     new Company('1', '1月', ''),
                     new Company('2', '2月', ''),
@@ -211,10 +216,13 @@ var cmm001;
                 self.dirtyStart = new nts.uk.ui.DirtyChecker(self.currentCompanyDto);
                 console.log(self.dirtyStart);
             };
+            // register company information
+            //BTN-002 
             ScreenModel.prototype.ClickRegister = function () {
                 var self = this;
                 var dfd = $.Deferred();
                 console.log(self.dirtyStart.isDirty());
+                // if(self.firstCode().toString() === self.companys()[0].companyCode){
                 var currentCompany;
                 currentCompany = ko.toJS(self.currentCompanyDto);
                 var companyNameGlobal;
@@ -306,6 +314,7 @@ var cmm001;
                         cmm001.a.service.updateData(currentCompany).done(function () {
                             self.start(currentCompany.companyCode);
                             nts.uk.ui.dialog.alert("変更された内容が登録されていません。\r\nよろしいですか。");
+                            //                      
                         });
                     }
                     else {
@@ -313,21 +322,26 @@ var cmm001;
                             cmm001.a.service.addData(currentCompany).done(function () {
                                 self.start(currentCompany.companyCode);
                                 nts.uk.ui.dialog.alert("変更された内容が登録されていません。\r\nよろしいですか。");
+                                //                           
                             });
                         }
                     }
                 }
                 self.dirtyStart.reset();
             };
+            //BTN-003 -Setting cac thong so ban dau
             ScreenModel.prototype.ClickSetting = function () {
                 alert("Settting");
             };
+            //BTN-004- Master correction log 
             ScreenModel.prototype.ClickLog = function () {
                 alert("Log");
             };
+            //SEL-Btn-001
             ScreenModel.prototype.ClickSel001 = function () {
                 alert("Sel001");
             };
+            //SEL-Btn-001
             ScreenModel.prototype.ClickSel002 = function () {
                 var self = this;
                 var dfd = $.Deferred();
@@ -335,6 +349,7 @@ var cmm001;
                 item = ko.observable(new Company('01', '日通システム株式会社', ''));
                 return dfd.promise();
             };
+            //SEL-Btn-001
             ScreenModel.prototype.Browse = function () {
                 alert("Browse!");
             };

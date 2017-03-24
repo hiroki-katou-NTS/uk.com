@@ -11,6 +11,9 @@ var qmm034;
                 updateEra: "ctx/basic/era/updateData",
                 addEra: "ctx/basic/era/addData"
             };
+            /**
+             * get list era
+             */
             function getAllEras() {
                 var dfd = $.Deferred();
                 nts.uk.request.ajax(paths.getAllEras).done(function (res) {
@@ -22,6 +25,9 @@ var qmm034;
                 return dfd.promise();
             }
             service.getAllEras = getAllEras;
+            /**
+             * get a company
+             */
             function getEraDetail() {
                 var dfd = $.Deferred();
                 nts.uk.request.ajax(paths.getEraDetail)
@@ -34,6 +40,44 @@ var qmm034;
                 return dfd.promise();
             }
             service.getEraDetail = getEraDetail;
+            /**
+             * add Data
+             */
+            //     export function addData(layoutMaster: model.EraDto) {
+            //        var dfd = $.Deferred<Array<any>>();
+            //        nts.uk.request.ajax(paths.addEra, layoutMaster).done(function(res: Array<any>) {
+            //         dfd.resolve(res);
+            //        }).fail(function(res) {
+            //            dfd.reject(res);
+            //        })
+            //        return dfd.promise();
+            //    }
+            /**
+             * delete Data
+             */
+            //    export function deleteData(layoutMaster: model.EraDto){
+            //        var dfd = $.Deferred<Array<any>>();  
+            //        nts.uk.request.ajax(paths.addCompany, layoutMaster).done(function(res: Array<any>){
+            //            dfd.resolve(res);    
+            //        }).fail(function(res){
+            //            dfd.reject(res);
+            //        })
+            //        return dfd.promise(); 
+            //        }
+            /**
+             * update era
+             */
+            //    export function updateData(): JQueryPromise<Array<model.EraDto>> {
+            //        let dfd = $.Deferred<Array<any>>();
+            //        nts.uk.request.ajax(paths.updateEra)
+            //            .done(function(res: Array<any>) {
+            //                dfd.resolve(res);
+            //            })
+            //            .fail(function(res) {
+            //                dfd.reject(res);
+            //            })
+            //        return dfd.promise();
+            //    }
             function addData(isCreated, command) {
                 var dfd = $.Deferred();
                 var path = isCreated ? paths.addEra : paths.updateEra;
@@ -49,6 +93,7 @@ var qmm034;
             service.addData = addData;
             function deleteData(command) {
                 var dfd = $.Deferred();
+                //var dateObject = ko.mapping.toJS(command);
                 nts.uk.request.ajax(paths.deleteEra, command)
                     .done(function (res) {
                     dfd.resolve(res);
