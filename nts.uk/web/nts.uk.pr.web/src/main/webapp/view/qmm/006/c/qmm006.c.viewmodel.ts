@@ -36,7 +36,7 @@ module qmm006.c.viewmodel {
                         self.items(data);
                         self.items1(data);
                     } else {
-                        //ER010
+                        //ER010- data is none
                         nts.uk.ui.dialog.alert("対象データがありません。");
                     }
                     dfd.resolve();

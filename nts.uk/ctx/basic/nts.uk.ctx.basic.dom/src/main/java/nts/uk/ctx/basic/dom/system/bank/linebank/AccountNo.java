@@ -7,6 +7,11 @@ import nts.arc.primitive.constraint.StringMaxLength;
 
 @StringMaxLength(7)
 @StringCharType(CharType.NUMERIC)
+/**
+ * Account Number
+ * @author sonnh1
+ *
+ */
 public class AccountNo extends StringPrimitiveValue<AccountNo> {
 	/**
 	 * serialVersionUID

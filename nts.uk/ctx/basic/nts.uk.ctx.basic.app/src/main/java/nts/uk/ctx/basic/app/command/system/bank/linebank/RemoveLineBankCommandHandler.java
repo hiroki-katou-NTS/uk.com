@@ -16,6 +16,12 @@ import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 @Transactional
+/**
+ * remove lineBank. If lineBank is using, not remove
+ * 
+ * @author sonnh1
+ *
+ */
 public class RemoveLineBankCommandHandler extends CommandHandler<RemoveLineBankCommand> {
 	@Inject
 	private LineBankRepository lineBankRepository;
@@ -27,12 +33,12 @@ public class RemoveLineBankCommandHandler extends CommandHandler<RemoveLineBankC
 	protected void handle(CommandHandlerContext<RemoveLineBankCommand> context) {
 		RemoveLineBankCommand command = context.getCommand();
 		String companyCode = AppContexts.user().companyCode();
-//		String lineBankCode = command.toDomain(companyCode).getLineBankCode().v();
 		String lineBankCode = command.getLineBankCode();
 		List<String> lineBankCodeList = new ArrayList<String>();
 		lineBankCodeList.add(lineBankCode);
-		
-		// check exists linebank in person_bank_account (xem linebank co ng nao su dung k, neu co ng su dung thi k dc xoa)
+
+		// check exists linebank in person_bank_account (xem linebank co ng nao
+		// su dung k, neu co ng su dung thi k dc xoa)
 		if (personBankAccountRepository.checkExistsLineBankAccount(companyCode, lineBankCodeList)) {
 			throw new BusinessException("ER008");
 		}

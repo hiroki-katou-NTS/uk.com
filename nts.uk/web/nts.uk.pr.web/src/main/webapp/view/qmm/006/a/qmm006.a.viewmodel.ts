@@ -64,9 +64,10 @@ module qmm006.a.viewmodel {
 
             self.messageList = ko.observableArray([
                 { messageId: "ER001", message: "＊が入力されていません。" },
-                { messageId: "ER007", message: "＊が選択されていません。" },
                 { messageId: "ER005", message: "入力した＊は既に存在しています。\r\n ＊を確認してください。" },
+                { messageId: "ER007", message: "＊が選択されていません。" },
                 { messageId: "ER008", message: "選択された＊は使用されているため削除できません。" },
+                { messageId: "ER010", message: "対象データがありません。" },
             ]);
 
             self.currentCode.subscribe(function(codeChange) {
@@ -208,16 +209,16 @@ module qmm006.a.viewmodel {
                         if (!command.accountNo) {
                             $('#A_INP_003').ntsError('set', message);
                         }
-                    } else if (error.messageId == self.messageList()[1].messageId) {
-                        var message = self.messageList()[1].message;
+                    } else if (error.messageId == self.messageList()[2].messageId) {
+                        var message = self.messageList()[2].message;
                         if (!command.bankCode) {
                             $('#A_LBL_004').ntsError('set', message);
                         }
                         if (!command.branchCode) {
                             $('#A_LBL_007').ntsError('set', message);
                         }
-                    } else if (error.messageId == self.messageList()[2].messageId) {
-                        var message = self.messageList()[2].message;
+                    } else if (error.messageId == self.messageList()[1].messageId) {
+                        var message = self.messageList()[1].message;
                         $('#A_INP_001').ntsError('set', message);
                     }
                 });
@@ -255,7 +256,7 @@ module qmm006.a.viewmodel {
                                     self.clearForm();
                                 }
                             })
-                        }).fail(function() {
+                        }).fail(function(error) {
                             nts.uk.ui.dialog.alert(self.messageList()[3].message);
                         });
                 })
@@ -265,28 +266,26 @@ module qmm006.a.viewmodel {
 
         openBDialog() {
             var self = this;
-            var lineBank = self.currentLineBank();
-            //            nts.uk.ui.windows.setShared("bankBranchCode", lineBank.bankCode() + lineBank.branchCode(), true);
-            nts.uk.ui.windows.sub.modal("/view/qmm/006/b/index.xhtml", { title: "銀行情報一覧", dialogClass: "no-close" }).onClosed(function() {
-                if (nts.uk.ui.windows.getShared("selectedBank") != null) {
-                    //                    if (nts.uk.ui.windows.getShared("selectedBank").parentCode == null) {
-                    //                        //khi select vao row parent
-                    //                        lineBank.bankCode(nts.uk.ui.windows.getShared("selectedBank").code);
-                    //                        self.bankName(nts.uk.ui.windows.getShared("selectedBank").name);
-                    //                        lineBank.branchCode(nts.uk.ui.windows.getShared("selectedBank").parentCode);
-                    //                        self.branchName(nts.uk.ui.windows.getShared("selectedBank").parentName);
-                    //                    } else {
-                    //khi select vao row child
-                    lineBank.branchCode(nts.uk.ui.windows.getShared("selectedBank").code);
-                    self.bankName(nts.uk.ui.windows.getShared("selectedBank").parentName);
-                    lineBank.bankCode(nts.uk.ui.windows.getShared("selectedBank").parentCode);
-                    self.branchName(nts.uk.ui.windows.getShared("selectedBank").name);
-                    //                    }
-                    //chi clear error cua LBL004 & 007
-                    $('#A_LBL_004').ntsError('clear');
-                    $('#A_LBL_007').ntsError('clear');
-                }
-            });
+            qmm006.a.service.checkExistBankAndBranch()
+                .done(function() {
+                    var lineBank = self.currentLineBank();
+                    nts.uk.ui.windows.sub.modal("/view/qmm/006/b/index.xhtml", { title: "銀行情報一覧", dialogClass: "no-close" }).onClosed(function() {
+                        if (nts.uk.ui.windows.getShared("selectedBank") != null) {
+                            lineBank.branchCode(nts.uk.ui.windows.getShared("selectedBank").code);
+                            self.bankName(nts.uk.ui.windows.getShared("selectedBank").parentName);
+                            lineBank.bankCode(nts.uk.ui.windows.getShared("selectedBank").parentCode);
+                            self.branchName(nts.uk.ui.windows.getShared("selectedBank").name);
+                            //chi clear error cua LBL004 & 007
+                            $('#A_LBL_004').ntsError('clear');
+                            $('#A_LBL_007').ntsError('clear');
+                        }
+                    });
+                })
+                .fail(function(error) {
+                    nts.uk.ui.dialog.alert(self.messageList()[4].message);
+                });
+
+
         }
 
         openCDialog() {
@@ -304,8 +303,7 @@ module qmm006.a.viewmodel {
                     self.afterCloseCDialog();
                 }
             } else {
-                //ER010
-                nts.uk.ui.dialog.alert("対象データがありません。");
+                nts.uk.ui.dialog.alert(self.messageList()[4].message);
                 self.enableBtn003(false);
             }
         }
@@ -344,7 +342,13 @@ module qmm006.a.viewmodel {
                 //"変更された内容が登録されていません。"---AL001 
                 nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\n よろしいですか。")
                     .ifYes(function() {
-                        self.currentCode(null);
+                        if (self.currentCode(null)) {
+                            // clearForm  -> change data -> clearForm
+                            // an clearForm roi sua du lieu roi an clearForm, hien thong bao, an Yes.
+                            self.setCurrentLineBank(null);
+                        } else {
+                            self.currentCode(null);
+                        }
                     })
                     .ifNo(function() { })
             } else {

@@ -16,15 +16,21 @@ import nts.uk.ctx.basic.infra.entity.system.bank.linebank.CbkmtLineBankPK;
 @Stateless
 @Transactional
 public class JpaLineBankRepository extends JpaRepository implements LineBankRepository {
-	
-	private final String SEL_1 = "SELECT c FROM CbkmtLineBank c " 
-	+ "WHERE c.cbkmtLineBankPK.companyCode = :CCD";
-	
+
+	private final String SEL_1 = "SELECT c FROM CbkmtLineBank c " + "WHERE c.cbkmtLineBankPK.companyCode = :CCD";
+
+	/**
+	 * convert data type from domain layer(Dom data type) to entity(Primary data
+	 * type)
+	 * 
+	 * @param domain
+	 * @return
+	 */
 	private CbkmtLineBank toEntity(LineBank domain) {
 		val entity = new CbkmtLineBank();
 
 		entity.cbkmtLineBankPK = new CbkmtLineBankPK();
-		entity.cbkmtLineBankPK.companyCode = domain.getCompanyCode().v();
+		entity.cbkmtLineBankPK.companyCode = domain.getCompanyCode();
 		entity.cbkmtLineBankPK.lineBankCode = domain.getLineBankCode().v();
 		entity.accountAtr = domain.getAccountAtr().value;
 		entity.accountNo = domain.getAccountNo().v();
@@ -61,27 +67,27 @@ public class JpaLineBankRepository extends JpaRepository implements LineBankRepo
 		}
 		return entity;
 	}
-	
-	public static LineBank toDomain(CbkmtLineBank entity){
-		LineBank domain = LineBank.createFromJavaType(
-				entity.cbkmtLineBankPK.companyCode, entity.accountAtr, 
-				entity.accountNo, entity.bankCode, 
-				entity.branchCode, entity.cbkmtLineBankPK.lineBankCode, 
+
+	/**
+	 * convert data type from entity(Primary data type) to domain layer(Dom data
+	 * type)
+	 * 
+	 * @param entity
+	 * @return
+	 */
+	public static LineBank toDomain(CbkmtLineBank entity) {
+		LineBank domain = LineBank.createFromJavaType(entity.cbkmtLineBankPK.companyCode, entity.accountAtr,
+				entity.accountNo, entity.bankCode, entity.branchCode, entity.cbkmtLineBankPK.lineBankCode,
 				entity.lineBankName, entity.memo, entity.requesterName);
-		domain.createConsignorFromJavaType(
-				entity.consignorCode1, entity.consignorMemo1,
-				entity.consignorCode2, entity.consignorMemo2,
-				entity.consignorCode3, entity.consignorMemo3,
-				entity.consignorCode4, entity.consignorMemo4,
-				entity.consignorCode5, entity.consignorMemo5);
+		domain.createConsignorFromJavaType(entity.consignorCode1, entity.consignorMemo1, entity.consignorCode2,
+				entity.consignorMemo2, entity.consignorCode3, entity.consignorMemo3, entity.consignorCode4,
+				entity.consignorMemo4, entity.consignorCode5, entity.consignorMemo5);
 		return domain;
 	}
-	
+
 	@Override
 	public List<LineBank> findAll(String companyCode) {
-		return this.queryProxy()
-				.query(SEL_1, CbkmtLineBank.class)
-				.setParameter("CCD", companyCode)
+		return this.queryProxy().query(SEL_1, CbkmtLineBank.class).setParameter("CCD", companyCode)
 				.getList(c -> toDomain(c));
 	}
 
@@ -92,8 +98,9 @@ public class JpaLineBankRepository extends JpaRepository implements LineBankRepo
 
 	@Override
 	public void remove(String companyCode, String lineBankCode) {
-		CbkmtLineBankPK cbkmtLineBankPK = new CbkmtLineBankPK(companyCode, lineBankCode); 
-		this.commandProxy().remove(CbkmtLineBank.class, cbkmtLineBankPK);;
+		CbkmtLineBankPK cbkmtLineBankPK = new CbkmtLineBankPK(companyCode, lineBankCode);
+		this.commandProxy().remove(CbkmtLineBank.class, cbkmtLineBankPK);
+		;
 	}
 
 	@Override
@@ -104,8 +111,8 @@ public class JpaLineBankRepository extends JpaRepository implements LineBankRepo
 
 	@Override
 	public Optional<LineBank> find(String companyCode, String lineBankCode) {
-		CbkmtLineBankPK cbkmtLineBankPK = new CbkmtLineBankPK(companyCode, lineBankCode); 
-		return this.queryProxy().find(cbkmtLineBankPK, CbkmtLineBank.class).map(x->toDomain(x));
+		CbkmtLineBankPK cbkmtLineBankPK = new CbkmtLineBankPK(companyCode, lineBankCode);
+		return this.queryProxy().find(cbkmtLineBankPK, CbkmtLineBank.class).map(x -> toDomain(x));
 	}
 
 }

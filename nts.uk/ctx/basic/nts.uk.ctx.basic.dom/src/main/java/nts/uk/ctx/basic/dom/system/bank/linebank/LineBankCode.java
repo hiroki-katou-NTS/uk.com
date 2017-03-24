@@ -4,6 +4,11 @@ import nts.arc.primitive.constraint.StringMaxLength;
 import nts.uk.shr.com.primitive.CodePrimitiveValue;
 
 @StringMaxLength(2)
+/**
+ * 
+ * @author sonnh1
+ *
+ */
 public class LineBankCode extends CodePrimitiveValue<LineBankCode> {
 	/**
 	 * serialVersionUID

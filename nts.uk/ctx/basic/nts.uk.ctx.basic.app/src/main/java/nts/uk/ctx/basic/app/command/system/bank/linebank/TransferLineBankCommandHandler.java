@@ -18,6 +18,11 @@ import nts.uk.shr.com.context.AppContexts;
 
 @Stateless
 @Transactional
+/**
+ * 
+ * @author sonnh1
+ *
+ */
 public class TransferLineBankCommandHandler extends CommandHandler<TransferLineBankCommand> {
 	@Inject
 	private PersonBankAccountRepository personBankAccountRepository;
@@ -33,18 +38,25 @@ public class TransferLineBankCommandHandler extends CommandHandler<TransferLineB
 		String newLineBankCode = command.getNewLineBankCode();
 		int allowDelete = command.getAllowDelete();
 
+		// if oldLineBankCode or newLineBankCode = null, show error
 		if (StringUtil.isNullOrEmpty(oldLineBankCode, true) || StringUtil.isNullOrEmpty(newLineBankCode, true)) {
-			throw new BusinessException("＊が選択されていません。");// ER007
+			throw new BusinessException("ER007");
 		}
 
 		boolean duplicateCode = oldLineBankCode.equals(newLineBankCode);
 
+		// if newLineBankCode = oldLineBankCode, show error
 		if (duplicateCode) {
-			throw new BusinessException("統合元と統合先で同じコードの＊が選択されています。\r\n  ＊を確認してください。");// ER009
+			throw new BusinessException("ER009");
 		}
 
+		// find all lineBank (base on companyCode and lineBankCode) has
+		// lineBankCode = lineBankCode in table PERSON_BANK_ACCOUNT
 		List<PersonBankAccount> listPersonBankAcc = personBankAccountRepository.findAllLineBank(companyCode,
 				oldLineBankCode);
+
+		// transfer data from lineBank has oldLineBankCode to lineBank has
+		// newLineBankCode
 		listPersonBankAcc.forEach(x -> {
 			PersonBankAccount bankAccount = x;
 			PersonUseSetting useSet1 = bankAccount.getUseSet1();
@@ -64,13 +76,16 @@ public class TransferLineBankCommandHandler extends CommandHandler<TransferLineB
 
 			personBankAccountRepository.update(domain);
 		});
-		//allowDelete = 1 la cho phep xoa
-		//listPersonBankAcc.isEmpty() kiem tra xem lineBankCode can xoa co ton tai k de xoa
-		if (allowDelete==1 && !listPersonBankAcc.isEmpty()) {
+
+		// allowDelete = 1: allow delete
+		// listPersonBankAcc.isEmpty(): check exist lineBankCode which must
+		// delete
+		if (allowDelete == 1 && !listPersonBankAcc.isEmpty()) {
 			lineBankRepository.remove(companyCode, oldLineBankCode);
 		}
 	}
 
+	// change lineBankCode in fromLineBankCd of table PERSON_BANK_ACCOUNT
 	private PersonUseSetting useSet(String lineBankCode, PersonUseSetting bankAccount,
 			TransferLineBankCommand command) {
 		if (bankAccount.getFromLineBankCd().equals(lineBankCode)) {

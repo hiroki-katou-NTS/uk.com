@@ -7,6 +7,11 @@ import nts.uk.shr.com.primitive.CodePrimitiveValue;
 
 @StringMaxLength(10)
 @StringCharType(CharType.NUMERIC)
+/**
+ * 
+ * @author sonnh1
+ *
+ */
 public class ConsignorCode extends CodePrimitiveValue<ConsignorCode> {
 	/**
 	 * serialVersionUID

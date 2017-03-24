@@ -4,6 +4,11 @@ import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.StringMaxLength;
 
 @StringMaxLength(20)
+/**
+ * 
+ * @author sonnh1
+ *
+ */
 public class ConsignorMemo extends StringPrimitiveValue<ConsignorMemo>{
 	/**
 	 * serialVersionUID

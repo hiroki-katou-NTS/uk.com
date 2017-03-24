@@ -4,7 +4,8 @@ module qmm006.a.service {
         findAll: "basic/system/bank/linebank/findAll",
         update: "basic/system/bank/linebank/update",
         remove: "basic/system/bank/linebank/remove",
-        findBankAll: "basic/system/bank/find/all"
+        findBankAll: "basic/system/bank/find/all",
+        checkExistBankAndBranch: "basic/system/bank/find/check"
     }
 
     export function remove(command): JQueryPromise<any> {
@@ -48,6 +49,18 @@ module qmm006.a.service {
         var dfd = $.Deferred<any>();
         nts.uk.request.ajax("com", paths.findBankAll)
             .done(function(res: Array<any>) {
+                dfd.resolve(res);
+            })
+            .fail(function(res) {
+                dfd.reject(res);
+            })
+        return dfd.promise();
+    }
+
+    export function checkExistBankAndBranch(): JQueryPromise<any> {
+        var dfd = $.Deferred<any>();
+        nts.uk.request.ajax("com", paths.checkExistBankAndBranch)
+            .done(function(res: any) {
                 dfd.resolve(res);
             })
             .fail(function(res) {

@@ -34,9 +34,10 @@ var qmm006;
                     self.indexLineBank = ko.observable(0);
                     self.messageList = ko.observableArray([
                         { messageId: "ER001", message: "＊が入力されていません。" },
-                        { messageId: "ER007", message: "＊が選択されていません。" },
                         { messageId: "ER005", message: "入力した＊は既に存在しています。\r\n ＊を確認してください。" },
+                        { messageId: "ER007", message: "＊が選択されていません。" },
                         { messageId: "ER008", message: "選択された＊は使用されているため削除できません。" },
+                        { messageId: "ER010", message: "対象データがありません。" },
                     ]);
                     self.currentCode.subscribe(function (codeChange) {
                         if (!self.isFirstFindAll()) {
@@ -162,8 +163,8 @@ var qmm006;
                                 $('#A_INP_003').ntsError('set', message);
                             }
                         }
-                        else if (error.messageId == self.messageList()[1].messageId) {
-                            var message = self.messageList()[1].message;
+                        else if (error.messageId == self.messageList()[2].messageId) {
+                            var message = self.messageList()[2].message;
                             if (!command.bankCode) {
                                 $('#A_LBL_004').ntsError('set', message);
                             }
@@ -171,8 +172,8 @@ var qmm006;
                                 $('#A_LBL_007').ntsError('set', message);
                             }
                         }
-                        else if (error.messageId == self.messageList()[2].messageId) {
-                            var message = self.messageList()[2].message;
+                        else if (error.messageId == self.messageList()[1].messageId) {
+                            var message = self.messageList()[1].message;
                             $('#A_INP_001').ntsError('set', message);
                         }
                     });
@@ -210,7 +211,7 @@ var qmm006;
                                     self.clearForm();
                                 }
                             });
-                        }).fail(function () {
+                        }).fail(function (error) {
                             nts.uk.ui.dialog.alert(self.messageList()[3].message);
                         });
                     })
@@ -219,16 +220,22 @@ var qmm006;
                 };
                 ScreenModel.prototype.openBDialog = function () {
                     var self = this;
-                    var lineBank = self.currentLineBank();
-                    nts.uk.ui.windows.sub.modal("/view/qmm/006/b/index.xhtml", { title: "銀行情報一覧", dialogClass: "no-close" }).onClosed(function () {
-                        if (nts.uk.ui.windows.getShared("selectedBank") != null) {
-                            lineBank.branchCode(nts.uk.ui.windows.getShared("selectedBank").code);
-                            self.bankName(nts.uk.ui.windows.getShared("selectedBank").parentName);
-                            lineBank.bankCode(nts.uk.ui.windows.getShared("selectedBank").parentCode);
-                            self.branchName(nts.uk.ui.windows.getShared("selectedBank").name);
-                            $('#A_LBL_004').ntsError('clear');
-                            $('#A_LBL_007').ntsError('clear');
-                        }
+                    qmm006.a.service.checkExistBankAndBranch()
+                        .done(function () {
+                        var lineBank = self.currentLineBank();
+                        nts.uk.ui.windows.sub.modal("/view/qmm/006/b/index.xhtml", { title: "銀行情報一覧", dialogClass: "no-close" }).onClosed(function () {
+                            if (nts.uk.ui.windows.getShared("selectedBank") != null) {
+                                lineBank.branchCode(nts.uk.ui.windows.getShared("selectedBank").code);
+                                self.bankName(nts.uk.ui.windows.getShared("selectedBank").parentName);
+                                lineBank.bankCode(nts.uk.ui.windows.getShared("selectedBank").parentCode);
+                                self.branchName(nts.uk.ui.windows.getShared("selectedBank").name);
+                                $('#A_LBL_004').ntsError('clear');
+                                $('#A_LBL_007').ntsError('clear');
+                            }
+                        });
+                    })
+                        .fail(function (error) {
+                        nts.uk.ui.dialog.alert(self.messageList()[4].message);
                     });
                 };
                 ScreenModel.prototype.openCDialog = function () {
@@ -245,7 +252,7 @@ var qmm006;
                         }
                     }
                     else {
-                        nts.uk.ui.dialog.alert("対象データがありません。");
+                        nts.uk.ui.dialog.alert(self.messageList()[4].message);
                         self.enableBtn003(false);
                     }
                 };
@@ -278,7 +285,12 @@ var qmm006;
                     if (self.dirty.isDirty()) {
                         nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\n よろしいですか。")
                             .ifYes(function () {
-                            self.currentCode(null);
+                            if (self.currentCode(null)) {
+                                self.setCurrentLineBank(null);
+                            }
+                            else {
+                                self.currentCode(null);
+                            }
                         })
                             .ifNo(function () { });
                     }

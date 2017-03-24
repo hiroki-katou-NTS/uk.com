@@ -18,19 +18,14 @@ public class LineBankDto {
 	String lineBankName;
 	String memo;
 	String requesterName;
-	    
-	public static LineBankDto fromDomain(LineBank domain){
-		return new LineBankDto(
-				domain.getAccountAtr().value,
-				domain.getAccountNo().v(),
-				domain.getBankCode(),
+
+	public static LineBankDto fromDomain(LineBank domain) {
+		return new LineBankDto(domain.getAccountAtr().value, domain.getAccountNo().v(), domain.getBankCode(),
 				domain.getBranchCode(),
 				domain.getConsignor().stream()
-						.map(x -> new ConsignorCommand(x.getConsignorCode().v(),x.getConsignorMemo().v()))
+						.map(x -> new ConsignorCommand(x.getConsignorCode().v(), x.getConsignorMemo().v()))
 						.collect(Collectors.toList()),
-				domain.getLineBankCode().v(),
-				domain.getLineBankName().v(),
-				domain.getMemo().v(),
+				domain.getLineBankCode().v(), domain.getLineBankName().v(), domain.getMemo().v(),
 				domain.getRequesterName().v());
 	}
 }
