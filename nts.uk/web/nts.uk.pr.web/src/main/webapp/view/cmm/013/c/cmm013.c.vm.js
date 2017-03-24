@@ -14,7 +14,6 @@ var cmm013;
                     self.endDateUpdate = ko.observable('');
                     self.selectedId = ko.observable(1);
                     self.enable = ko.observable(true);
-                    self.historyIdLast = ko.observable(null);
                     self.length = ko.observable(0);
                     self.startDateAddNew = ko.observable("");
                     self.startDateUpdate = ko.observable(null);
