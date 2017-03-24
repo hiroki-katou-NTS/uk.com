@@ -22,10 +22,8 @@ var nts;
                     __extends(ConfirmDialogOption, _super);
                     function ConfirmDialogOption(option) {
                         _super.call(this);
-                        // Default value
                         this.modal = (option && option.modal !== undefined) ? option.modal : true;
                         this.buttons = [];
-                        // Add OK Button
                         this.buttons.push({ text: "OK",
                             "class": "yes",
                             size: "large",
@@ -43,10 +41,8 @@ var nts;
                     __extends(DelDialogOption, _super);
                     function DelDialogOption(option) {
                         _super.call(this);
-                        // Default value
                         this.modal = (option && option.modal !== undefined) ? option.modal : true;
                         this.buttons = [];
-                        // Add OK Button
                         this.buttons.push({ text: "はい",
                             "class": "yes ",
                             size: "large",
@@ -56,7 +52,6 @@ var nts;
                                 ui.dialog("close");
                             }
                         });
-                        // Add Cancel Button
                         this.buttons.push({ text: "いいえ",
                             "class": "no ",
                             size: "large",
@@ -74,10 +69,8 @@ var nts;
                     __extends(OKDialogOption, _super);
                     function OKDialogOption(option) {
                         _super.call(this);
-                        // Default value
                         this.modal = (option && option.modal !== undefined) ? option.modal : true;
                         this.buttons = [];
-                        // Add OK Button
                         this.buttons.push({ text: "はい",
                             "class": "yes ",
                             size: "large",
@@ -87,7 +80,6 @@ var nts;
                                 ui.dialog("close");
                             }
                         });
-                        // Add Cancel Button
                         this.buttons.push({ text: "いいえ",
                             "class": "no ",
                             size: "large",
@@ -105,7 +97,6 @@ var nts;
                     __extends(ErrorDialogOption, _super);
                     function ErrorDialogOption(option) {
                         _super.call(this);
-                        // Default value
                         this.headers = (option && option.headers) ? option.headers : [
                             new nts.uk.ui.errors.ErrorHeader("location", "エラー箇所", 115, true),
                             new nts.uk.ui.errors.ErrorHeader("message", "エラー詳細", 250, true)
@@ -115,7 +106,6 @@ var nts;
                         this.maxrows = (option && option.maxrows) ? option.maxrows : 1000;
                         this.autoclose = (option && option.autoclose !== undefined) ? option.autoclose : true;
                         this.buttons = [];
-                        // Add Close Button
                         this.buttons.push({ text: "閉じる",
                             "class": "yes ",
                             size: "large",
@@ -133,7 +123,6 @@ var nts;
                     __extends(ErrorDialogWithTabOption, _super);
                     function ErrorDialogWithTabOption(option) {
                         _super.call(this);
-                        // Default value
                         this.headers = (option && option.headers) ? option.headers : [
                             new ui_1.errors.ErrorHeader("tab", "タブ", 90, true),
                             new ui_1.errors.ErrorHeader("location", "エラー箇所", 115, true),
@@ -144,7 +133,6 @@ var nts;
                         this.maxrows = (option && option.maxrows) ? option.maxrows : 1000;
                         this.autoclose = (option && option.autoclose !== undefined) ? option.autoclose : true;
                         this.buttons = [];
-                        // Add Close Button
                         this.buttons.push({ text: "閉じる",
                             "class": "yes ",
                             size: "large",
@@ -169,3 +157,4 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+//# sourceMappingURL=dialog-options.js.map
