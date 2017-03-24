@@ -5,6 +5,8 @@ import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.core.dom.company.CompanyCode;
+import nts.uk.ctx.pr.core.dom.rule.employment.processing.yearmonth.ProcessingNo;
+import nts.uk.ctx.pr.core.dom.rule.employment.processing.yearmonth.SocialInsLevyMonAtr;
 
 @Getter
 @AllArgsConstructor

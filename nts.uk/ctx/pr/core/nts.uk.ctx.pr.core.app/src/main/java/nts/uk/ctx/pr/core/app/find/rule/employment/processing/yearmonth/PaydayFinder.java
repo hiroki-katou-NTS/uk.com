@@ -16,7 +16,12 @@ public class PaydayFinder {
 	private PaydayRepository repository;	
 	
 	public List<PaydayDto> select6(String companyCode, int processingNo, int  processingYm){
-		return repository.find6(companyCode, processingNo, processingYm).stream()
+		return repository.select6(companyCode, processingNo, processingYm).stream()
+				.map(m -> PaydayDto.fromDomain(m)).collect(Collectors.toList());
+	}
+
+	public List<PaydayDto> select6b(String companyCode, int processingNo){
+		return repository.select6b(companyCode, processingNo).stream()
 				.map(m -> PaydayDto.fromDomain(m)).collect(Collectors.toList());
 	}
 }

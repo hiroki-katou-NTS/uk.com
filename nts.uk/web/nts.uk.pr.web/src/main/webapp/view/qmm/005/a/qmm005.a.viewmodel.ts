@@ -30,7 +30,7 @@ module qmm005.a {
 
                         let _sel001Data: Array<common.SelectItem> = [];
                         if (item[1]) {
-                            var payDays = _.orderBy(item[1], ['processingNo'], ['asc']);
+                            var payDays = _.orderBy(item[1], ['processingYm'], ['desc']);
                             for (let i in payDays) {
                                 let rec: any = payDays[i];
                                 if (rec.processingNo == index && !rec.payBonusAtr && !rec.sparePayAtr) {
@@ -41,14 +41,13 @@ module qmm005.a {
                                 }
                             }
                         }
-                        _sel001Data = _.orderBy(_sel001Data, ['index'], ['desc']);
+                        _sel001Data = _.uniqWith(_sel001Data, _.isEqual);
                         _row.sel001Data(_sel001Data);
-                        
+
                         // Năm được chọn???
                         _row.sel001(_sel001Data[0].index);
-                        
-                        let _sel002Data: Array<common.SelectItem> = [];
 
+                        let _sel002Data: Array<common.SelectItem> = [];
                         if (item[1]) {
                             for (let i in item[1]) {
                                 let index: number = parseInt(i) + 1,
