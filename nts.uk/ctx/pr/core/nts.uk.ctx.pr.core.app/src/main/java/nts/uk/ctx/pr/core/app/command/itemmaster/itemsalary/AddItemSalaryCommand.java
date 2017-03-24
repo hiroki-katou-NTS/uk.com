@@ -30,5 +30,5 @@ public class AddItemSalaryCommand {
 	private String memo;
 	private int limitMnyAtr;
 	private String limitMnyRefItemCd;
-	private Long limitMny;
+	private BigDecimal limitMny;
 }

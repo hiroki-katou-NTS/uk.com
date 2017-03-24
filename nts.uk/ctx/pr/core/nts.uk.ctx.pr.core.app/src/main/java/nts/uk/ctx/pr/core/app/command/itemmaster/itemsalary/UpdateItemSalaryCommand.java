@@ -33,7 +33,7 @@ public class UpdateItemSalaryCommand {
 	private String memo;
 	private int limitMnyAtr;
 	private String limitMnyRefItemCd;
-	private Long limitMny;
+	private BigDecimal limitMny;
 
 	public ItemSalary toDomain() {
 		return ItemSalary.createFromJavaType(this.ccd, this.itemCd, this.taxAtr, this.socialInsAtr, this.laborInsAtr,

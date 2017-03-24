@@ -75,7 +75,7 @@ public class ItemSalary extends AggregateRoot {
 			int applyForDaymonthlyPayEmp, int applyForDaylyPayEmp, int applyForHourlyPayEmp, int avePayAtr,
 			int errRangeLowAtr, BigDecimal errRangeLow, int errRangeHighAtr, BigDecimal errRangeHigh, int alRangeLowAtr,
 			BigDecimal alRangeLow, int alRangeHighAtr, BigDecimal alRangeHigh, String memo, int limitMnyAtr, String limitMnyRefItemCd,
-			Long limitMny) {
+			BigDecimal limitMny) {
 
 		return new ItemSalary(
 				new CompanyCode(companyCode), 
