@@ -44,9 +44,9 @@ public class CompanyWebservice extends WebService{
 		
 	}
 	@POST
-	@Path("find/{companyCode}")
-	public CompanyDto getCompanyDetail(@PathParam("companyCode")String companyCode){
-		return this.finder.getCompany(companyCode)
+	@Path("findBycompanyCode")
+	public CompanyDto getCompanyDetail(){
+		return this.finder.getCompany()
 				.orElseThrow(() -> new BusinessException(new RawErrorMessage("Not found company")));
 		
 	}
