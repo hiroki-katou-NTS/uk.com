@@ -8,9 +8,13 @@ import java.io.Serializable;
 import java.util.Date;
 
 import javax.persistence.Basic;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinColumns;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -77,6 +81,15 @@ public class QwtmtWagetableCd implements Serializable {
 	@Basic(optional = false)
 	@Column(name = "ELEMENT_ID")
 	private String elementId;
+
+	/** The qwtmt wagetable element. */
+	@JoinColumns({
+			@JoinColumn(name = "CCD", referencedColumnName = "CCD", insertable = false, updatable = false),
+			@JoinColumn(name = "WAGE_TABLE_CD", referencedColumnName = "WAGE_TABLE_CD", insertable = false, updatable = false),
+			@JoinColumn(name = "HIST_ID", referencedColumnName = "HIST_ID", insertable = false, updatable = false),
+			@JoinColumn(name = "DEMENSION_NO", referencedColumnName = "DEMENSION_NO", insertable = false, updatable = false) })
+	@ManyToOne(cascade = CascadeType.ALL)
+	private QwtmtWagetableEleHist qwtmtWagetableEleHist;
 
 	/**
 	 * Instantiates a new qwtmt wagetable cd.
