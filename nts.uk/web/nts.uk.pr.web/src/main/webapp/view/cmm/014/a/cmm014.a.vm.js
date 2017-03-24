@@ -181,7 +181,6 @@ var cmm014;
                     dfd.resolve();
                     return dfd.promise();
                 };
-                // get list Classification after insert
                 ScreenModel.prototype.getClassificationList_afterUpdateClassification = function () {
                     var self = this;
                     var dfd = $.Deferred();
@@ -197,7 +196,6 @@ var cmm014;
                     dfd.resolve();
                     return dfd.promise();
                 };
-                // get list Classification after insert
                 ScreenModel.prototype.getClassificationList_first = function () {
                     var self = this;
                     var dfd = $.Deferred();
@@ -218,7 +216,6 @@ var cmm014;
                     dfd.resolve();
                     return dfd.promise();
                 };
-                // get list Classification after insert
                 ScreenModel.prototype.getClassificationList_afterAddClassification = function () {
                     var self = this;
                     var dfd = $.Deferred();
@@ -236,7 +233,6 @@ var cmm014;
                     dfd.resolve();
                     return dfd.promise();
                 };
-                // get list Classification after remove
                 ScreenModel.prototype.getClassificationList_aftefDelete = function () {
                     var self = this;
                     var dfd = $.Deferred();
@@ -269,9 +265,6 @@ var cmm014;
                 return ScreenModel;
             }());
             viewmodel.ScreenModel = ScreenModel;
-            /**
-            *  model
-            */
             var model;
             (function (model) {
                 var ClassificationDto = (function () {
