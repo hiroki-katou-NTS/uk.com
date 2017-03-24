@@ -8,9 +8,7 @@ module cmm013.c.viewmodel {
         itemList: KnockoutObservableArray<any>;
         selectedId: KnockoutObservable<number>;
         enable: KnockoutObservable<boolean>;
-        res: KnockoutObservableArray<string>;
         endDateUpdate: KnockoutObservable<string>;
-        historyIdLast: KnockoutObservable<string>;
         length: KnockoutObservable<number>;
         startDateAddNew: KnockoutObservable<string>;
         listbox: KnockoutObservableArray<model.ListHistoryDto>;
@@ -34,7 +32,6 @@ module cmm013.c.viewmodel {
             self.selectedId = ko.observable(1);
             self.enable = ko.observable(true);
 
-            self.historyIdLast = ko.observable(null);
             self.length = ko.observable(0);
             self.startDateAddNew = ko.observable("");
 

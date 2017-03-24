@@ -124,9 +124,7 @@ module cmm013.a.viewmodel {
             self.columns = ko.observableArray([
                 { headerText: 'コード', key: 'jobCode', width: 80 },
                 { headerText: '名称', key: 'jobName', width: 100 }
-
             ]);
-
             self.itemList = ko.observableArray([
                 new BoxModel(0, '全員参照可能'),
                 new BoxModel(1, '全員参照不可'),
@@ -136,11 +134,7 @@ module cmm013.a.viewmodel {
             self.selectedId = ko.observable(0);
             self.enable = ko.observable(true);
             self.createdMode = ko.observable(true);
-
             self.currentCode.subscribe((function(codeChanged) {
-
-
-
                 self.currentItem(self.findPosition(codeChanged));
                 if (self.currentItem() != null) {
                     self.createdMode(false);
@@ -150,11 +144,7 @@ module cmm013.a.viewmodel {
                 } else {
                     self.createdMode(true);
                 }
-
             }));
-
-
-
         }
 
         checkPage(): boolean {
@@ -182,7 +172,6 @@ module cmm013.a.viewmodel {
             }
         }
 
-
         initRegisterPosition() {
             var self = this;
             self.inp_002_enable(true);
@@ -192,8 +181,6 @@ module cmm013.a.viewmodel {
             self.inp_005_memo("");
             self.currentCode(null);
             $("#inp_002").focus();
-
-
         }
 
         findHist(value: string): any {
@@ -218,7 +205,7 @@ module cmm013.a.viewmodel {
             })
             return itemModel;
         }
-
+        
         //add
         addPosition() {
             var self = this;
@@ -238,7 +225,6 @@ module cmm013.a.viewmodel {
                         dfd.reject(res);
                     })
                 }
-
                 if (!self.createdMode()) {
                     let currentItem = self.currentItem();
                     currentItem.jobCode = self.inp_002_code();
@@ -252,7 +238,6 @@ module cmm013.a.viewmodel {
                         dfd.reject(res);
                     });
                 }
-
                 else {
                     let position_new = new viewmodel.model.ListPositionDto(self.inp_002_code(), self.inp_003_name(), self.inp_005_memo());
                     position_new.historyId = selectHistory.historyId;
@@ -268,13 +253,10 @@ module cmm013.a.viewmodel {
 
             }
         }
-
-
-
-
         //delete
 
         deletePosition() {
+            
             var self = this;
             var dfd = $.Deferred<any>();
             var item = new model.DeletePositionCommand(self.currentItem().jobCode, self.currentItem().historyId);
@@ -314,7 +296,6 @@ module cmm013.a.viewmodel {
         //                })
         //            }
         //        }
-
         getPositionList_aftefDelete(): any {
             var self = this;
             var dfd = $.Deferred<any>();
@@ -333,18 +314,15 @@ module cmm013.a.viewmodel {
                         self.inp_003_name(self.dataSource()[self.index_of_itemDelete].jobName);
                         self.inp_005_memo(self.dataSource()[self.index_of_itemDelete].memo);
                     }
-
                 } else {
                     self.initRegisterPosition();
                 }
-
                 dfd.resolve();
             }).fail(function(error) {
                 alert(error.message);
             })
             dfd.resolve();
             return dfd.promise();
-
         }
 
         getPositionList(): any {
@@ -357,9 +335,7 @@ module cmm013.a.viewmodel {
                 self.inp_005_memo(self.dataSource()[0].memo);
                 if (self.dataSource().length > 1) {
                     self.currentCode(self.dataSource()[0].jobCode);
-
                 }
-
                 dfd.resolve();
             }).fail(function(error) {
                 alert(error.message);
@@ -369,13 +345,9 @@ module cmm013.a.viewmodel {
 
         }
 
-
-
         startPage(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred<any>();
-
-
             self.selectedCode.subscribe((function(codeChanged) {
                 self.itemHist(self.findHist(codeChanged));
                 
@@ -407,9 +379,7 @@ module cmm013.a.viewmodel {
                 
                 self.listbox(_.map(history_arr, function(history){
                         return new model.ListHistoryDto(history.companyCode, history.startDate, history.endDate,history.historyId);
-                }));
-                
-                
+                }));                              
                 if (history_arr.length > 0) {
                     self.selectedCode(history_arr[0].historyId);
                 }
@@ -441,10 +411,6 @@ module cmm013.a.viewmodel {
             dfd.resolve();
             return dfd.promise();
         }
-
-
-
-
 
         getAllHist(): any {
             var self = this;
@@ -508,9 +474,6 @@ module cmm013.a.viewmodel {
             });
         }
 
-
-
-
         getPositionList_afterAdd() {
             let self = this;
 
@@ -528,8 +491,6 @@ module cmm013.a.viewmodel {
                 alert(error.message);
             })
         }
-
-
         //add
 
         addHist() {
@@ -594,16 +555,11 @@ module cmm013.a.viewmodel {
                     self.startDateAddNew(nts.uk.ui.windows.getShared('startNew'));
                     let update = new model.ListHistoryDto('', self.startDateAddNew(), '9999/12/31', '');
                     self.listbox.unshift(update);
-                    self.listbox().sort();
-                    histLs = _.cloneDeep(self.listbox());
-                    self.listbox(histLs);
+                    
                 }
 
             });
         }
-
-
-
 
         getHistList_aftefDelete(): any {
             var self = this;
@@ -613,18 +569,13 @@ module cmm013.a.viewmodel {
 
                 if (self.listbox().length > 0) {
                     if (self.index_of_itemDelete === self.listbox().length) {
-                        self.currentCode(self.listbox()[self.index_of_itemDelete - 1].historyId)
                         self.start_Date(self.listbox()[self.index_of_itemDelete - 1].startDate);
                         self.end_Date(self.listbox()[self.index_of_itemDelete - 1].endDate);
                     } else {
-                        self.currentCode(self.listbox()[self.index_of_itemDelete].companyCode)
                         self.start_Date(self.listbox()[self.index_of_itemDelete].startDate);
                         self.end_Date(self.listbox()[self.index_of_itemDelete].endDate);
-
                     }
-
                 } 
-
                 dfd.resolve();
             }).fail(function(error) {
                 alert(error.message);
@@ -633,10 +584,7 @@ module cmm013.a.viewmodel {
             return dfd.promise();
 
         }
-
-
-        
-        
+          
         deleteHist() {
             var self = this;
             var dfd = $.Deferred<any>();
@@ -687,7 +635,7 @@ module cmm013.a.viewmodel {
                     histLs[i].endDate = self.endDateUpdate();
                     self.listbox = ko.observableArray([]);
                     self.listbox(histLs);
-
+                    self.deleteHist();
                     //self.selectedCode(self.listbox()[0].startDate);
                     console.log(self.listbox());
                 } else
@@ -791,8 +739,6 @@ module cmm013.a.viewmodel {
     }
 
     export module model {
-
-
         export class historyDto {
             startDate: Date;
             endDate: Date;
@@ -803,7 +749,7 @@ module cmm013.a.viewmodel {
                 this.historyId = historyId;
             }
         }
-
+        
         export class ListHistoryDto {
             companyCode: string;
             startDate: Date;
@@ -820,17 +766,13 @@ module cmm013.a.viewmodel {
                 self.endDate = new Date(endDate);
                 self.endDateString = endDate;
                 self.historyId = historyId;
-
             }
         }
-
         export class ListPositionDto {
             jobCode: string;
             jobName: string;
             historyId: string;
             memo: string;
-
-
             constructor(jobCode: string, jobName: string, memo: string) {
                 let self = this;
                 self.jobCode = jobCode;

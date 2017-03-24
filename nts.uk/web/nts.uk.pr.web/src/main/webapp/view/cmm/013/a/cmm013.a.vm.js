@@ -453,9 +453,6 @@ var cmm013;
                             self.startDateAddNew(nts.uk.ui.windows.getShared('startNew'));
                             var update = new model.ListHistoryDto('', self.startDateAddNew(), '9999/12/31', '');
                             self.listbox.unshift(update);
-                            self.listbox().sort();
-                            histLs = _.cloneDeep(self.listbox());
-                            self.listbox(histLs);
                         }
                     });
                 };
@@ -466,12 +463,10 @@ var cmm013;
                         self.listbox(hist_arr);
                         if (self.listbox().length > 0) {
                             if (self.index_of_itemDelete === self.listbox().length) {
-                                self.currentCode(self.listbox()[self.index_of_itemDelete - 1].historyId);
                                 self.start_Date(self.listbox()[self.index_of_itemDelete - 1].startDate);
                                 self.end_Date(self.listbox()[self.index_of_itemDelete - 1].endDate);
                             }
                             else {
-                                self.currentCode(self.listbox()[self.index_of_itemDelete].companyCode);
                                 self.start_Date(self.listbox()[self.index_of_itemDelete].startDate);
                                 self.end_Date(self.listbox()[self.index_of_itemDelete].endDate);
                             }
@@ -531,6 +526,7 @@ var cmm013;
                             histLs[i].endDate = self.endDateUpdate();
                             self.listbox = ko.observableArray([]);
                             self.listbox(histLs);
+                            self.deleteHist();
                             //self.selectedCode(self.listbox()[0].startDate);
                             console.log(self.listbox());
                         }
