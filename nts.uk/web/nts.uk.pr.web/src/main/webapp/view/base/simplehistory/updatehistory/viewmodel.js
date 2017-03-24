@@ -37,12 +37,15 @@ var nts;
                                             startYearMonth: self.startYearMonth()
                                         };
                                         if (self.actionType() == ScreenModel.ACTION_TYPE_DELETE) {
-                                            self.dialogOptions.onDeleteCallBack(callBackData);
+                                            nts.uk.ui.dialog.confirm("データを削除します。\r\n よろしいですか？").ifYes(function () {
+                                                self.dialogOptions.onDeleteCallBack(callBackData);
+                                                nts.uk.ui.windows.close();
+                                            });
                                         }
                                         else {
                                             self.dialogOptions.onUpdateCallBack(callBackData);
+                                            nts.uk.ui.windows.close();
                                         }
-                                        nts.uk.ui.windows.close();
                                     };
                                     ScreenModel.prototype.btnCancelClicked = function () {
                                         nts.uk.ui.windows.close();

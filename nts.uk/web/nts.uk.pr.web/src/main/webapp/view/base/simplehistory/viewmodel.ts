@@ -26,7 +26,7 @@ module nts.uk.pr.view.base.simplehistory {
             // Data source.
             masterHistoryDatasource: KnockoutObservableArray<Node>;
             
-            // Selected hsitory uuid.
+            // Selected history uuid.
             selectedNode: KnockoutObservable<Node>;
             selectedHistoryUuid: KnockoutObservable<string>;
             igGridSelectedHistoryUuid: KnockoutObservable<string>;
@@ -108,7 +108,7 @@ module nts.uk.pr.view.base.simplehistory {
                         }
                     }
 
-                    // resole.
+                    // resolve.
                     dfd.resolve();
                 }).fail(dfd.fail);
 
@@ -159,7 +159,7 @@ module nts.uk.pr.view.base.simplehistory {
             }
 
             /**
-             * Start registr new.
+             * Start regist new.
              */
             registBtnClick(): void {
                 var self = this;
@@ -185,7 +185,7 @@ module nts.uk.pr.view.base.simplehistory {
             }
 
             /**
-             * Open add new hisotry dialog.
+             * Open add new history dialog.
              */
             addNewHistoryBtnClick(): void {
                 var self = this;
