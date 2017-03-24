@@ -21,8 +21,12 @@ var qpp009;
                     dfd.resolve();
                     return dfd.promise();
                 };
-                ScreenModel.prototype.print = function () {
-                    alert('print report');
+                ScreenModel.prototype.printData = function () {
+                    a.service.printService(this).done(function () {
+                    })
+                        .fail(function (res) {
+                        nts.uk.ui.dialog.alert(res.message);
+                    });
                 };
                 return ScreenModel;
             }());
@@ -30,9 +34,15 @@ var qpp009;
             var DetailItemsSetting = (function () {
                 function DetailItemsSetting() {
                     this.isPrintDetailItem = ko.observable(false);
-                    this.isPrintTotalDepartment = ko.observable(false);
-                    this.isPrintDepHierarchy = ko.observable(false);
-                    this.isCalculateTotal = ko.observable(false);
+                    this.isPrintTotalOfDepartment = ko.observable(true);
+                    this.isPrintDepHierarchy = ko.observable(true);
+                    this.isCalculateTotal = ko.observable(true);
+                    this.AccumulatedLevelList = ko.observableArray([
+                        new SelectionDto(1, '1階層'), new SelectionDto(2, '2階層'), new SelectionDto(3, '3階層'),
+                        new SelectionDto(4, '4階層'), new SelectionDto(5, '5階層'), new SelectionDto(6, '6階層'),
+                        new SelectionDto(7, '7階層'), new SelectionDto(8, '8階層'), new SelectionDto(9, '9階層')
+                    ]);
+                    this.selectedLevels = ko.observableArray([1, 2, 3, 8, 9]);
                 }
                 return DetailItemsSetting;
             }());
@@ -40,31 +50,46 @@ var qpp009;
             var PrintSetting = (function () {
                 function PrintSetting() {
                     this.specifyBreakPageList = ko.observableArray([
-                        new SelectionModel('None', 'なし'),
-                        new SelectionModel('EveryEmp', '社員毎'),
-                        new SelectionModel('EveryDep', '部門ごと'),
-                        new SelectionModel('EveryDepHierarchy', '部門階層'),
+                        new SelectionDto(1, 'なし'),
+                        new SelectionDto(2, '社員毎'),
+                        new SelectionDto(3, '部門ごと'),
+                        new SelectionDto(4, '部門階層'),
                     ]);
-                    this.selectedBreakPageCode = ko.observable('None');
+                    this.selectedBreakPageCode = ko.observable(1);
                     this.specifyBreakPageHierarchyList = ko.observableArray([
-                        new SelectionModel('1', '1'), new SelectionModel('2', '2'), new SelectionModel('3', '3'),
-                        new SelectionModel('4', '4'), new SelectionModel('5', '5'), new SelectionModel('6', '6'),
-                        new SelectionModel('7', '7'), new SelectionModel('8', '8'), new SelectionModel('9', '9')
+                        new SelectionDto(1, '1'), new SelectionDto(2, '2'), new SelectionDto(3, '3'),
+                        new SelectionDto(4, '4'), new SelectionDto(5, '5'), new SelectionDto(6, '6'),
+                        new SelectionDto(7, '7'), new SelectionDto(8, '8'), new SelectionDto(9, '9')
                     ]);
-                    this.selectedBreakPageHierarchyCode = ko.observable('1');
+                    this.selectedBreakPageHierarchyCode = ko.observable(1);
                     this.use2000yenSelection = ko.observableArray([
-                        new SelectionModel('Include', '含める'),
-                        new SelectionModel('NotInclude', '含めない'),
+                        new SelectionDto(1, '含める'),
+                        new SelectionDto(2, '含めない'),
                     ]);
-                    this.selectedUse2000yen = ko.observable('NotInclude');
+                    this.selectedUse2000yen = ko.observable(1);
                     var self = this;
-                    this.isBreakPageHierarchy = ko.computed(function () {
-                        return self.selectedBreakPageCode() == 'EveryDepHierarchy';
+                    this.isBreakPageByAccumulated = ko.computed(function () {
+                        return self.selectedBreakPageCode() == 4;
                     });
                 }
                 return PrintSetting;
             }());
             viewmodel.PrintSetting = PrintSetting;
+            var SalaryChartResultViewModel = (function () {
+                function SalaryChartResultViewModel(empCode, empName, paymentAmount, empDesignation, depDesignation, totalDesignation, depCode, depName, depPath) {
+                    this.empCode = empCode;
+                    this.empName = empName;
+                    this.paymentAmount = paymentAmount;
+                    this.empDesignation = empDesignation;
+                    this.depDesignation = depDesignation;
+                    this.totalDesignation = totalDesignation;
+                    this.depCode = depCode;
+                    this.depName = depName;
+                    this.depPath = depPath;
+                }
+                return SalaryChartResultViewModel;
+            }());
+            viewmodel.SalaryChartResultViewModel = SalaryChartResultViewModel;
             var SelectionModel = (function () {
                 function SelectionModel(code, name) {
                     this.code = code;
@@ -73,6 +98,14 @@ var qpp009;
                 return SelectionModel;
             }());
             viewmodel.SelectionModel = SelectionModel;
+            var SelectionDto = (function () {
+                function SelectionDto(code, name) {
+                    this.code = code;
+                    this.name = name;
+                }
+                return SelectionDto;
+            }());
+            viewmodel.SelectionDto = SelectionDto;
         })(viewmodel = a.viewmodel || (a.viewmodel = {}));
     })(a = qpp009.a || (qpp009.a = {}));
 })(qpp009 || (qpp009 = {}));
