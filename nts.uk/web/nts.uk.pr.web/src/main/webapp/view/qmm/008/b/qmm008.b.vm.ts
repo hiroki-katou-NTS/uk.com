@@ -36,7 +36,8 @@ module nts.uk.pr.view.qmm008.b {
             
             listAvgEarnLevelMasterSetting: Array<AvgEarnLevelMasterSettingDto>;
             listHealthInsuranceAvgearn: KnockoutObservableArray<HealthInsuranceAvgEarnModel>;
-            
+            errorList: KnockoutObservableArray<any>;
+            dirty: nts.uk.ui.DirtyChecker;
             constructor() {
                 super({
                     functionName: '社会保険事業所',
@@ -70,6 +71,14 @@ module nts.uk.pr.view.qmm008.b {
                 self.japanYear = ko.observable('');
                 self.listAvgEarnLevelMasterSetting = [];
                 self.listHealthInsuranceAvgearn = ko.observableArray<HealthInsuranceAvgEarnModel>([]);
+                self.errorList = ko.observableArray([
+                    { messageId: "ER001", message: "＊が入力されていません。" },
+                    { messageId: "ER007", message: "＊が選択されていません。" },
+                    { messageId: "ER005", message: "入力した＊は既に存在しています。\r\n ＊を確認してください。" },
+                    { messageId: "ER008", message: "選択された＊は使用されているため削除できません。" },
+                    { messageId: "AL001", message: "変更された内容が登録されていません。\r\n よろしいですか。" }
+                ]);
+                self.dirty = new nts.uk.ui.DirtyChecker(ko.observable('')); 
             } //end constructor
 
             // Start
@@ -232,10 +241,15 @@ module nts.uk.pr.view.qmm008.b {
             public save() {
                 var self = this;
                 //TODO check auto calculate
-                hservice.updateHealthInsuranceAvgearn(self.collectData(), self.healthCollectData().officeCode);
-                //update health
-                service.updateHealthRate(self.healthCollectData()).done(function() {
-                }).fail();
+                if (self.healthModel().autoCalculate() == AutoCalculateType.Auto) {
+                    nts.uk.ui.dialog.confirm("自動計算が行われます。登録しますか？").ifYes(function() {
+                        hservice.updateHealthInsuranceAvgearn(self.collectData(), self.healthCollectData().officeCode);
+                        //update health
+                        service.updateHealthRate(self.healthCollectData()).done(function() {
+                        }).fail();
+                    }).ifNo(function() {
+                    });
+                }
             }
             
             /**
@@ -331,6 +345,7 @@ module nts.uk.pr.view.qmm008.b {
                 
                 service.instance.findHistoryByUuid(id).done(dto => {
                     self.loadHealth(dto);
+                    self.dirty = new nts.uk.ui.DirtyChecker(self.healthModel);
                     self.isLoading(false);
                     $('.save-error').ntsError('clear');
                     dfd.resolve();
@@ -386,21 +401,48 @@ module nts.uk.pr.view.qmm008.b {
 //                $('.save-error').ntsError('clear');
                 self.OpenModalOfficeRegister();
             }
-
+            public OpenModalOfficeRegisterWithDirtyCheck(){
+                var self = this;
+                if (self.dirty.isDirty()) {
+                    nts.uk.ui.dialog.confirm(self.errorList()[4].message).ifYes(function() {
+                        self.OpenModalOfficeRegister();
+                        self.dirty.reset();
+                    }).ifCancel(function() {
+                    });
+                }
+                else {
+                    self.OpenModalOfficeRegister();
+                }
+            }
             //open office register dialog
             public OpenModalOfficeRegister() {
                 var self = this;
                 // Set parent value
                 nts.uk.ui.windows.sub.modal("/view/qmm/008/e/index.xhtml", { title: "会社保険事業所の登録＞事業所の登録" }).onClosed(() => {
                     //when close dialog -> reload office list
-                    self.startPage();
-                    // Get child value
-                    var returnValue = nts.uk.ui.windows.getShared("insuranceOfficeChildValue");
+                    self.loadMasterHistory();
+                    var codeOfNewOffice = nts.uk.ui.windows.getShared("codeOfNewOffice");
+//                    self.igGridSelectedHistoryUuid(codeOfNewOffice);
                 });
             }
-
+            
+            public OpenModalStandardMonthlyPriceHealthWithDirtyCheck(){
+                var self = this;
+                if (self.dirty.isDirty()) {
+                    nts.uk.ui.dialog.confirm(self.errorList()[4].message).ifYes(function() {
+                        self.OpenModalStandardMonthlyPriceHealth();
+                        self.dirty.reset();
+                    }).ifCancel(function() {
+                    });
+                }
+                else {
+                    self.OpenModalStandardMonthlyPriceHealth();
+                }
+            }
+            
             //open modal standard monthly price health
             public OpenModalStandardMonthlyPriceHealth() {
+                var self = this;
                 // Set parent value
                 nts.uk.ui.windows.setShared("officeName", this.sendOfficeData());
                 nts.uk.ui.windows.setShared("healthModel", this.healthModel());

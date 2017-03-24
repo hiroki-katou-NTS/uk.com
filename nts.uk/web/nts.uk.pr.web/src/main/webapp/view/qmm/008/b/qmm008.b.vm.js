@@ -52,6 +52,14 @@ var nts;
                                     self.japanYear = ko.observable('');
                                     self.listAvgEarnLevelMasterSetting = [];
                                     self.listHealthInsuranceAvgearn = ko.observableArray([]);
+                                    self.errorList = ko.observableArray([
+                                        { messageId: "ER001", message: "＊が入力されていません。" },
+                                        { messageId: "ER007", message: "＊が選択されていません。" },
+                                        { messageId: "ER005", message: "入力した＊は既に存在しています。\r\n ＊を確認してください。" },
+                                        { messageId: "ER008", message: "選択された＊は使用されているため削除できません。" },
+                                        { messageId: "AL001", message: "変更された内容が登録されていません。\r\n よろしいですか。" }
+                                    ]);
+                                    self.dirty = new nts.uk.ui.DirtyChecker(ko.observable(''));
                                 }
                                 ScreenModel.prototype.start = function () {
                                     var self = this;
@@ -186,9 +194,14 @@ var nts;
                                 };
                                 ScreenModel.prototype.save = function () {
                                     var self = this;
-                                    hservice.updateHealthInsuranceAvgearn(self.collectData(), self.healthCollectData().officeCode);
-                                    b.service.updateHealthRate(self.healthCollectData()).done(function () {
-                                    }).fail();
+                                    if (self.healthModel().autoCalculate() == AutoCalculateType.Auto) {
+                                        nts.uk.ui.dialog.confirm("自動計算が行われます。登録しますか？").ifYes(function () {
+                                            hservice.updateHealthInsuranceAvgearn(self.collectData(), self.healthCollectData().officeCode);
+                                            b.service.updateHealthRate(self.healthCollectData()).done(function () {
+                                            }).fail();
+                                        }).ifNo(function () {
+                                        });
+                                    }
                                 };
                                 ScreenModel.prototype.collectData = function () {
                                     var self = this;
@@ -248,6 +261,7 @@ var nts;
                                     self.currentOfficeCode(self.getCurrentOfficeCode(id));
                                     b.service.instance.findHistoryByUuid(id).done(function (dto) {
                                         self.loadHealth(dto);
+                                        self.dirty = new nts.uk.ui.DirtyChecker(self.healthModel);
                                         self.isLoading(false);
                                         $('.save-error').ntsError('clear');
                                         dfd.resolve();
@@ -261,7 +275,7 @@ var nts;
                                         self.save();
                                     }
                                     else {
-                                        alert('TODO has error! ERR001');
+                                        $('#rate_iput').ntsError('set', self.errorList()[0].message);
                                     }
                                     return dfd.promise();
                                 };
@@ -293,14 +307,41 @@ var nts;
                                     var self = this;
                                     self.OpenModalOfficeRegister();
                                 };
+                                ScreenModel.prototype.OpenModalOfficeRegisterWithDirtyCheck = function () {
+                                    var self = this;
+                                    if (self.dirty.isDirty()) {
+                                        nts.uk.ui.dialog.confirm(self.errorList()[4].message).ifYes(function () {
+                                            self.OpenModalOfficeRegister();
+                                            self.dirty.reset();
+                                        }).ifCancel(function () {
+                                        });
+                                    }
+                                    else {
+                                        self.OpenModalOfficeRegister();
+                                    }
+                                };
                                 ScreenModel.prototype.OpenModalOfficeRegister = function () {
                                     var self = this;
                                     nts.uk.ui.windows.sub.modal("/view/qmm/008/e/index.xhtml", { title: "会社保険事業所の登録＞事業所の登録" }).onClosed(function () {
-                                        self.startPage();
-                                        var returnValue = nts.uk.ui.windows.getShared("insuranceOfficeChildValue");
+                                        self.loadMasterHistory();
+                                        var codeOfNewOffice = nts.uk.ui.windows.getShared("codeOfNewOffice");
                                     });
                                 };
+                                ScreenModel.prototype.OpenModalStandardMonthlyPriceHealthWithDirtyCheck = function () {
+                                    var self = this;
+                                    if (self.dirty.isDirty()) {
+                                        nts.uk.ui.dialog.confirm(self.errorList()[4].message).ifYes(function () {
+                                            self.OpenModalStandardMonthlyPriceHealth();
+                                            self.dirty.reset();
+                                        }).ifCancel(function () {
+                                        });
+                                    }
+                                    else {
+                                        self.OpenModalStandardMonthlyPriceHealth();
+                                    }
+                                };
                                 ScreenModel.prototype.OpenModalStandardMonthlyPriceHealth = function () {
+                                    var self = this;
                                     nts.uk.ui.windows.setShared("officeName", this.sendOfficeData());
                                     nts.uk.ui.windows.setShared("healthModel", this.healthModel());
                                     nts.uk.ui.windows.setShared("isTransistReturnData", this.isTransistReturnData());
