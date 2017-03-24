@@ -47,8 +47,6 @@ import nts.uk.ctx.pr.screen.app.report.salarychart.data.DepartmentData;
 import nts.uk.ctx.pr.screen.app.report.salarychart.data.EmployeeData;
 import nts.uk.ctx.pr.screen.app.report.salarychart.data.SalaryChartDataSource;
 import nts.uk.ctx.pr.screen.app.report.salarychart.query.SalaryChartReportQuery;
-import nts.uk.pr.file.infra.wageledger.AsposeWageLedgerReportGenerator.StyleModel;
-import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportContext;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 
@@ -107,12 +105,12 @@ public class AsposeSalaryChartReportGenerator extends AsposeCellsReportGenerator
 		// TODO Auto-generated method stub
 		List<EmployeeData> empList = dataSource.getEmployeeList();
 		try {
-			// AsposeCellsReportContext designer =
-			// this.createContext(TEMPLATE_FILE);
-			// Workbook workbook = designer.getWorkbook();
-			WorkbookDesigner designer = new WorkbookDesigner();
-			Workbook workbook = new Workbook("D:/SalaryChartReport.xlsx");
-			designer.setWorkbook(workbook);
+			 AsposeCellsReportContext designer =
+			 this.createContext(TEMPLATE_FILE);
+			 Workbook workbook = designer.getWorkbook();
+//			WorkbookDesigner designer = new WorkbookDesigner();
+//			Workbook workbook = new Workbook("D:/SalaryChartReport.xlsx");
+//			designer.setWorkbook(workbook);
 			// create worksheet and Formatting ...
 			WorksheetCollection worksheets = workbook.getWorksheets();
 			//
@@ -129,13 +127,12 @@ public class AsposeSalaryChartReportGenerator extends AsposeCellsReportGenerator
 			// Print Data
 			this.PrintData(cells, empList, query);
 
-			designer.setDataSource("EmpList", empList);
-			// designer.getDesigner().setWorkbook(workbook);
-			// designer.processDesigner();
-			// designer.saveAsPdf(this.createNewFile(generatorContext,
-			// REPORT_FILE_NAME));
-			designer.getWorkbook().save("D:/testGen.xlsx");
-			designer.getWorkbook().save("D:/testGen.pdf", FileFormatType.PDF);
+			//designer.setDataSource("EmpList", empList);
+			 designer.getDesigner().setWorkbook(workbook);
+			 designer.processDesigner();
+			 designer.saveAsPdf(this.createNewFile(generatorContext, REPORT_FILE_NAME));
+//			designer.getWorkbook().save("D:/testGen.xlsx");
+//			designer.getWorkbook().save("D:/testGen.pdf", FileFormatType.PDF);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}
@@ -185,6 +182,10 @@ public class AsposeSalaryChartReportGenerator extends AsposeCellsReportGenerator
 				continue;
 			}
 			if (prevDepCode != currentDepCode) {
+				// border line for last employee Of Department
+//				int lastEmpIndex = firstRow.decrementAndGet();
+//				this.drawLastEmpBorderLine(cells, lastEmpIndex);
+				// Print Total In Department
 				if (query.getIsPrintTotalOfDepartment()) {
 					this.printTotalOfDep(cells, firstRow, tempDenomination, tempAccumulate.getValue(), members.intValue());
 				}
@@ -197,13 +198,21 @@ public class AsposeSalaryChartReportGenerator extends AsposeCellsReportGenerator
 				// Print current Employee
 				this.printEmployee(currentEmp, cells, firstRow);
 				
-				prevEmp = currentEmp;
-				
+				prevEmp = currentEmp;				
 			}
 		}
 		// End Of Report
 		this.endOfReport(empList, prevEmp, cells, firstRow, query, 
 				tempDenomination, tempAccumulate, depStack, members.intValue());
+	}
+	
+	private void drawLastEmpBorderLine(Cells cells, int rowIndex){
+		for (int i = 0; i < LAST_COLUMN_INDEX; i++) {
+            Style style = cells.get(rowIndex, i).getStyle();
+            style.setPattern(BackgroundType.SOLID);            
+            style.setBorder(BorderType.TOP_BORDER, CellBorderType.DOUBLE, Color.getBlack());
+            cells.get(rowIndex, i).setStyle(style);
+        }
 	}
 
 	/**
@@ -565,49 +574,7 @@ public class AsposeSalaryChartReportGenerator extends AsposeCellsReportGenerator
 		rowIndex.increment();
 	}
 
-//	/**
-//	 * Sets the dep style.
-//	 *
-//	 * @param cell the new dep style
-//	 */
-//	private void setDepStyle(Cell cell) {
-//		Style style = cell.getStyle();
-//		style.setForegroundColor(LIGHT_BLUE_COLOR);
-//		style.setPattern(BackgroundType.SOLID);
-//		style.setBorder(BorderType.TOP_BORDER, CellBorderType.THIN, Color.getGray());
-//		style.setBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getGray());
-//		cell.setStyle(style);
-//	}
 
-	/**
-	 * Sets the emp style.
-	 *
-	 * @param cell the new emp style
-	 */
-//	private void setEmpStyle(Cell cell) {
-//		Style style = cell.getStyle();
-//		style.setBorder(BorderType.TOP_BORDER, CellBorderType.THIN, Color.getGray());
-//		style.setBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getGray());
-//		style.setBorder(BorderType.LEFT_BORDER, CellBorderType.DOTTED, Color.getGray());
-//		style.setBorder(BorderType.RIGHT_BORDER, CellBorderType.DOTTED, Color.getGray());
-//		cell.setStyle(style);
-//	}
-
-//	/**
-//	 * Sets the cell style.
-//	 *
-//	 * @param cell the new cell style
-//	 */
-//	private void setCellStyle(Cell cell) {
-//		Style style = cell.getStyle();
-//		style.setForegroundColor(LIGHT_BLUE_COLOR);
-//		style.setPattern(BackgroundType.SOLID);
-//		style.setBorder(BorderType.TOP_BORDER, CellBorderType.THIN, Color.getGray());
-//		style.setBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getGray());
-//		style.setBorder(BorderType.LEFT_BORDER, CellBorderType.DOTTED, Color.getGray());
-//		style.setBorder(BorderType.RIGHT_BORDER, CellBorderType.DOTTED, Color.getGray());
-//		cell.setStyle(style);
-//	}
 
 
 //	/**

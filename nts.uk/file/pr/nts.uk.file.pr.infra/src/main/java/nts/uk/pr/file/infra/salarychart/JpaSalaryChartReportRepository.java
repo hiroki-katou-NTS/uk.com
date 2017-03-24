@@ -6,6 +6,8 @@ package nts.uk.pr.file.infra.salarychart;
 
 import java.util.List;
 
+import javax.ejb.Stateless;
+
 import nts.uk.ctx.pr.screen.app.report.salarychart.SalarychartRepository;
 import nts.uk.ctx.pr.screen.app.report.salarychart.data.EmployeeData;
 import nts.uk.ctx.pr.screen.app.report.salarychart.query.SalaryChartReportQuery;
@@ -13,6 +15,7 @@ import nts.uk.ctx.pr.screen.app.report.salarychart.query.SalaryChartReportQuery;
 /**
  * The Class JpaSalaryChartReportRepository.
  */
+@Stateless
 public class JpaSalaryChartReportRepository implements SalarychartRepository {
 	
 	/* (non-Javadoc)
