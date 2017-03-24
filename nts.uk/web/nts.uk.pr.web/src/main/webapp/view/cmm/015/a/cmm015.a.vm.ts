@@ -105,12 +105,11 @@ module cmm015.a.viewmodel {
                 if (self.dataSource().length === 0) {
                     let payClassification = new viewmodel.model.PayClassificationDto(self.currentItem().INP_002_code(), self.currentItem().INP_003_name(), self.currentItem().INP_004_notes());
                     service.addPayClassification(payClassification).done(function() {
+                        self.dirty.reset();
                         self.getPayClassificationList_first();
                         self.isDeleteEnable(true);
                     }).fail(function(res) {
-                        if (res.message == "ER05") {
-                            alert("入力したコードは既に存在しています。\r\n コードを確認してください。 ");
-                        }
+                        alert(res.message);
                         dfd.reject(res);
                     })
                 }
@@ -123,9 +122,7 @@ module cmm015.a.viewmodel {
                             self.dirty.reset();
                             self.getPayClassificationList_afterUpdate();
                         }).fail(function(res) {
-                            if (res.message == "ER026") {
-                                alert("更新対象のデータが存在しません。");
-                            }
+                            alert(res.message);
                             dfd.reject(res);
                         })
                         break;
@@ -138,12 +135,15 @@ module cmm015.a.viewmodel {
                             self.getPayClassificationList_afterAdd().done(function() {
                             });
                         }).fail(function(res) {
+                            $("#code").focus();
                             alert(res.message);
                             dfd.reject(res);
                         })
                         break;
+                    } else if (self.currentItem().INP_002_code() == self.dataSource()[i].payClassificationCode && self.currentItem().INP_002_enable() == true) {
+                        alert("入力したコードは既に存在しています。\r\n コードを確認してください。  ");
+                        break;
                     }
-
                 }
             }
         }
@@ -175,8 +175,10 @@ module cmm015.a.viewmodel {
                 { return item.payClassificationCode === self.currentItem().INP_002_code(); }));
                 nts.uk.ui.dialog.confirm("データを削除します。\r\nよろしいですか？").ifYes(function() {
                     service.removePayClassification(item).done(function(res) {
+                        self.dirty.reset();
                         self.getPayClassificationList_aftefDelete();
                     }).fail(function(res) {
+                        alert(res.message);
                         dfd.reject(res);
                     })
                 }).ifNo(function() {
@@ -202,9 +204,7 @@ module cmm015.a.viewmodel {
             }).fail(function(res) {
                 alert(res.message);
             })
-
             return dfd.promise();
-
         }
 
         getPayClassificationList_first(): any {
@@ -239,7 +239,6 @@ module cmm015.a.viewmodel {
             })
             self.notAlert(true);
             return dfd.promise();
-
         }
 
         getPayClassificationList_afterUpdate(): any {
@@ -250,19 +249,16 @@ module cmm015.a.viewmodel {
                 if (self.dataSource().length > 1) {
                     self.currentCode(self.updatedata().payClassificationCode);
                 }
-
                 dfd.resolve();
             }).fail(function(res) {
                 alert(res.message);
             })
             return dfd.promise();
-
         }
 
         getPayClassificationList_afterAdd(): any {
             var self = this;
             var dfd = $.Deferred<any>();
-
             service.getAllPayClassification().done(function(payClassification_arr: Array<model.PayClassificationDto>) {
                 self.dataSource(payClassification_arr);
                 self.currentCode(self.adddata().payClassificationCode);
