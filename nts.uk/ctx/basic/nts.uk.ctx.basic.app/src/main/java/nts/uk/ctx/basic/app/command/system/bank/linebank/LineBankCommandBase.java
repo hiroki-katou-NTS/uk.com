@@ -11,8 +11,7 @@ import nts.uk.ctx.basic.dom.system.bank.linebank.LineBank;
 public class LineBankCommandBase {
 	private int accountAtr;
 	private String accountNo;
-	private String bankCode;
-	private String branchCode;
+	private String branchId;
 	private List<ConsignorCommand> consignor;
 	private String lineBankCode;
 	private String lineBankName;
@@ -20,8 +19,8 @@ public class LineBankCommandBase {
 	private String requesterName;
 
 	public LineBank toDomain(String companyCode) {
-		LineBank domain = LineBank.createFromJavaType(companyCode, this.accountAtr, this.accountNo, this.bankCode,
-				this.branchCode, this.lineBankCode, this.lineBankName, this.memo, this.requesterName);
+		LineBank domain = LineBank.createFromJavaType(companyCode, this.accountAtr, this.accountNo,
+				this.branchId, this.lineBankCode, this.lineBankName, this.memo, this.requesterName);
 		domain.createConsignorFromJavaType(consignor.get(0).getCode(), consignor.get(0).getMemo(),
 				consignor.get(1).getCode(), consignor.get(1).getMemo(), consignor.get(2).getCode(),
 				consignor.get(2).getMemo(), consignor.get(3).getCode(), consignor.get(3).getMemo(),

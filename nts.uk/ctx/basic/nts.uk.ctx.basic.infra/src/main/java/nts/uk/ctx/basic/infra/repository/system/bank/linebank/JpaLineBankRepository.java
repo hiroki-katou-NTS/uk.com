@@ -34,8 +34,7 @@ public class JpaLineBankRepository extends JpaRepository implements LineBankRepo
 		entity.cbkmtLineBankPK.lineBankCode = domain.getLineBankCode().v();
 		entity.accountAtr = domain.getAccountAtr().value;
 		entity.accountNo = domain.getAccountNo().v();
-		entity.bankCode = domain.getBankCode();
-		entity.branchCode = domain.getBranchCode();
+		entity.branchId = domain.getBranchId();
 		entity.lineBankName = domain.getLineBankName().v();
 		entity.memo = domain.getMemo().v();
 		entity.requesterName = domain.getRequesterName().v();

@@ -104,15 +104,15 @@ module qmm006.a.viewmodel {
         startPage() {
             var self = this;
             var dfd = $.Deferred();
-//            $.when(self.findBankAll()).done(function() {
-                self.findAll().done(function() {
-                    dfd.resolve();
-                }).fail(function(res) {
-                    dfd.reject(res);
-                });
-//            }).fail(function(res) {
-//                dfd.reject(res);
-//            });
+            //            $.when(self.findBankAll()).done(function() {
+            self.findAll().done(function() {
+                dfd.resolve();
+            }).fail(function(res) {
+                dfd.reject(res);
+            });
+            //            }).fail(function(res) {
+            //                dfd.reject(res);
+            //            });
             return dfd.promise();
         }
 
@@ -425,6 +425,7 @@ module qmm006.a.viewmodel {
         requesterName: KnockoutObservable<string>;
 
         constructor(bankCode: string, branchCode: string, lineBankCode: string, lineBankName: string, accountAtr: number, accountNo: string, memo: string, requesterName: string, consignors: Array<any>) {
+
             this.bankCode = ko.observable(bankCode);
             this.branchCode = ko.observable(branchCode);
             this.lineBankCode = ko.observable(lineBankCode);
