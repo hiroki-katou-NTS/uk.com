@@ -23,8 +23,8 @@ module qmm002.d.viewmodel {
             self.currentCodeList = ko.observableArray([]);
             self.dirty = new nts.uk.ui.DirtyChecker(ko.observable(new Bank("", "", "", "")));
             self.columns = ko.observableArray([
-                { headerText: 'コード', prop: 'bankCode', width: 50, key: 'bankCode' },
-                { headerText: 'コード', prop: 'bankName', width: 50, key: 'bankName' }
+                { headerText: 'コード', width: 50, key: 'codeDisplay', hidden: true },
+                { headerText: 'コード/名称', width: 50, key: 'nameDisplay' }
             ]);
 
             self.messages = ko.observableArray([
@@ -42,7 +42,6 @@ module qmm002.d.viewmodel {
                         self.confirmDirty = false;
                         return;
                     }
-                    debugger;
                     nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\n よろしいですか。").ifYes(function() {
                         self.currentItem(self.getCode(codeChanged));
                         self.dirty = new nts.uk.ui.DirtyChecker(self.currentItem);
@@ -110,7 +109,6 @@ module qmm002.d.viewmodel {
             if (!self.checkDirty()) {
                 nts.uk.ui.windows.close();
             } else {
-                debugger;
                 nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\n よろしいですか。").ifYes(function() {
                     nts.uk.ui.windows.close();
                 })
@@ -157,21 +155,25 @@ module qmm002.d.viewmodel {
         getCode(codeChange): Bank {
             var self = this;
             var itemBank = _.find(self.items(), function(item) {
-                return item.bankCode.trim() === codeChange.trim();
+                return item.code() === codeChange;
             });
 
             if (!itemBank) {
                 return new Bank("", "", "", "");
             }
 
-            return new Bank(itemBank.bankCode, itemBank.bankName, itemBank.bankNameKana, itemBank.memo);
+            return new Bank(itemBank.code(), itemBank.name(), itemBank.nameKana(), itemBank.memo());
         }
 
         getBankList(): any {
             var self = this;
             var dfd = $.Deferred();
             qmm002.d.service.getBankList().done(function(data) {
-                self.items(data);
+                var list001: Array<Bank> = [];
+                _.forEach(data, function(itemBank) {
+                 list001.push(new Bank(itemBank.bankCode,itemBank.bankName,itemBank.bankNameKana,itemBank.memo));
+                });
+                self.items(list001);
                 dfd.resolve(data);
             }).fail(function(res) {
                 // error
@@ -208,13 +210,17 @@ module qmm002.d.viewmodel {
 
     class Bank {
         code: KnockoutObservable<string>;
+        codeDisplay: string;
         name: KnockoutObservable<string>;
+        nameDisplay: string;
         nameKana: KnockoutObservable<string>;
         memo: KnockoutObservable<string>;
 
         constructor(bankCode: string, bankName: string, bankNameKana: string, memo: string) {
             this.code = ko.observable(bankCode);
+            this.codeDisplay = bankCode;
             this.name = ko.observable(bankName);
+            this.nameDisplay = bankCode + "  " + bankName;
             this.nameKana = ko.observable(bankNameKana);
             this.memo = ko.observable(memo);
         }
