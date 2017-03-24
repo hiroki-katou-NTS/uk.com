@@ -20,25 +20,10 @@ public class ClassificationFinder {
 	 * get All Classification
 	 * @return List<ClassificationDto>
 	 */
-	public List<ClassificationDto> init() {
+	public List<ClassificationDto> getAllClassification() {
 		String companyCode = AppContexts.user().companyCode();
-		return classificationRepository.findAll(companyCode).stream().map(e -> {
-			return convertToDto(e);
-		}).collect(Collectors.toList());
+		return classificationRepository.findAll(companyCode).stream().map(e -> 
+			ClassificationDto.convertToDto(e)
+		).collect(Collectors.toList());
 	}
-
-
-/**
- * Convert from DOM Layer to InFra Layer
- * @param classification
- * @return ClassificationDto
- */
-	private ClassificationDto convertToDto(Classification classification) {
-		ClassificationDto classificationDto = new ClassificationDto(
-				classification.getClassificationCode().toString(),
-				classification.getClassificationName().toString(),
-				classification.getClassificationMemo().toString());
-		return classificationDto;
-	}
-
 }

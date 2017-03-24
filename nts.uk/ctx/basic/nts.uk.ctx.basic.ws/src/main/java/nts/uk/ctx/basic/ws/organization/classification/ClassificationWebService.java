@@ -38,7 +38,7 @@ public class ClassificationWebService extends WebService {
 	@Path("findAllClassification")
 	@POST
 	public List<ClassificationDto> init() {
-		return classificationFinder.init();
+		return classificationFinder.getAllClassification();
 	}
 
 	@Path("add")
