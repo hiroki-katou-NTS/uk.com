@@ -5,6 +5,7 @@
 package nts.uk.ctx.pr.core.dom.wagetable.history.element.item.generator;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -40,9 +41,16 @@ public class CertificateItemGenerator implements ItemGenerator {
 	public List<? extends Item> generate(String companyCode, String historyId,
 			ElementSetting elementSetting) {
 		List<Certification> certifications = this.certificationRepo.findAll(companyCode);
+
+		@SuppressWarnings("unchecked")
+		List<CodeItem> codeItems = (List<CodeItem>) elementSetting.getItemList();
+		Map<String, ElementId> mapCodeItems = codeItems.stream()
+				.collect(Collectors.toMap(CodeItem::getReferenceCode, CodeItem::getUuid));
+
 		return certifications.stream()
 				.map(item -> new CodeItem(item.getCode(),
-						new ElementId(IdentifierUtil.randomUniqueId())))
+						mapCodeItems.getOrDefault(item.getCode(),
+								new ElementId(IdentifierUtil.randomUniqueId()))))
 				.collect(Collectors.toList());
 	}
 

@@ -5,6 +5,7 @@
 package nts.uk.ctx.pr.core.dom.wagetable.history.element.item.generator;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -59,9 +60,15 @@ public class CodeRefItemGenerator implements ItemGenerator {
 
 		List<WtCodeRefItem> wtRefItems = this.wtReferenceRepo.getCodeRefItem(optCodeRef.get());
 
+		@SuppressWarnings("unchecked")
+		List<CodeItem> codeItems = (List<CodeItem>) elementSetting.getItemList();
+		Map<String, ElementId> mapCodeItems = codeItems.stream()
+				.collect(Collectors.toMap(CodeItem::getReferenceCode, CodeItem::getUuid));
+
 		return wtRefItems.stream()
 				.map(item -> new CodeItem(item.getReferenceCode(),
-						new ElementId(IdentifierUtil.randomUniqueId())))
+						mapCodeItems.getOrDefault(item.getReferenceCode(),
+								new ElementId(IdentifierUtil.randomUniqueId()))))
 				.collect(Collectors.toList());
 	}
 

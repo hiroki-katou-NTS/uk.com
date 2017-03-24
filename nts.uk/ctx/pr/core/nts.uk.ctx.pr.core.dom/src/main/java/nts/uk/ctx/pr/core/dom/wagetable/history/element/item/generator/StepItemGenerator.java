@@ -7,6 +7,9 @@ package nts.uk.ctx.pr.core.dom.wagetable.history.element.item.generator;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
@@ -15,6 +18,7 @@ import nts.uk.ctx.pr.core.dom.wagetable.ElementId;
 import nts.uk.ctx.pr.core.dom.wagetable.ElementType;
 import nts.uk.ctx.pr.core.dom.wagetable.history.element.ElementSetting;
 import nts.uk.ctx.pr.core.dom.wagetable.history.element.StepElementSetting;
+import nts.uk.ctx.pr.core.dom.wagetable.history.element.item.CodeItem;
 import nts.uk.ctx.pr.core.dom.wagetable.history.element.item.Item;
 import nts.uk.ctx.pr.core.dom.wagetable.history.element.item.RangeItem;
 
@@ -39,6 +43,11 @@ public class StepItemGenerator implements ItemGenerator {
 		BigDecimal upperLimit = stepElementSetting.getUpperLimit().v();
 		BigDecimal interval = stepElementSetting.getInterval().v();
 
+		@SuppressWarnings("unchecked")
+		List<RangeItem> rangeItems = (List<RangeItem>) elementSetting.getItemList();
+		Map<RangeItem, ElementId> mapRangeItems = rangeItems.stream()
+				.collect(Collectors.toMap(Function.identity(), RangeItem::getUuid));
+
 		List<RangeItem> items = new ArrayList<>();
 
 		// Get min step
@@ -49,6 +58,15 @@ public class StepItemGenerator implements ItemGenerator {
 		while (start.compareTo(upperLimit) <= 0) {
 			index++;
 			BigDecimal end = start.add(interval).subtract(minStep);
+
+			RangeItem rangeItem = new RangeItem(index, start.doubleValue(),
+					((end.compareTo(upperLimit) <= 0) ? end : upperLimit).doubleValue(),
+					new ElementId(IdentifierUtil.randomUniqueId()));
+
+			// Replace exist element id.
+			rangeItem = new RangeItem(index, start.doubleValue(),
+					((end.compareTo(upperLimit) <= 0) ? end : upperLimit).doubleValue(),
+					mapRangeItems.getOrDefault(rangeItem, rangeItem.getUuid()));
 
 			items.add(new RangeItem(index, start.doubleValue(),
 					((end.compareTo(upperLimit) <= 0) ? end : upperLimit).doubleValue(),
