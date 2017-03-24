@@ -210,7 +210,7 @@ public class WageTableWs extends SimpleHistoryWs<WtHead, WtHistory> {
 
 		String companyCode = AppContexts.user().companyCode();
 
-		List<ElementSetting> elementSettings = input.getElementSettings().stream().map(item -> {
+		List<ElementSetting> elementSettings = input.getSettings().stream().map(item -> {
 			if (ElementType.valueOf(item.getType()).isCodeMode) {
 				return new ElementSetting(DemensionNo.valueOf(item.getDemensionNo()),
 						ElementType.valueOf(item.getType()), Collections.emptyList());
@@ -224,7 +224,7 @@ public class WageTableWs extends SimpleHistoryWs<WtHead, WtHistory> {
 			}
 		}).collect(Collectors.toList());
 
-		elementSettings = elementItemFactory.generate(input.getCompanyCode(), input.getHistoryId(),
+		elementSettings = elementItemFactory.generate(companyCode, input.getHistoryId(),
 				elementSettings);
 
 		List<ElementSettingDto> elementSettingDtos = elementSettings.stream().map(item -> {
