@@ -12,7 +12,6 @@ public class RetirementPayItemCode extends CodePrimitiveValue<RetirementPayItemC
 	
 	public RetirementPayItemCode(String value) {
 		super(value);
-		// TODO Auto-generated constructor stub
 	}
 
 }

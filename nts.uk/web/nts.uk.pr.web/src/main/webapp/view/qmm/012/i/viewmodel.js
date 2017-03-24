@@ -6,6 +6,7 @@ var qmm012;
         (function (viewmodel) {
             var ScreenModel = (function () {
                 function ScreenModel() {
+                    //002
                     this.checked_002 = ko.observable(false);
                     this.gridListCurrentCode = ko.observable();
                     this.selectedRuleCode_001 = ko.observable(1);
@@ -29,6 +30,7 @@ var qmm012;
                     this.CurrentAlRangeHigh = ko.observable(0);
                     this.enable_I_INP_002 = ko.observable(false);
                     var self = this;
+                    //textediter
                     self.texteditor = {
                         value: ko.observable(''),
                         constraint: 'ResidenceCode',
@@ -42,11 +44,15 @@ var qmm012;
                         enable: ko.observable(true),
                         readonly: ko.observable(false)
                     };
+                    //start Switch Data
                     self.enable = ko.observable(true);
                     self.roundingRules_001 = ko.observableArray([
                         { code: 1, name: 'ゼロを表示する' },
                         { code: 0, name: 'ゼロを表示しない' }
                     ]);
+                    //endSwitch Data
+                    //currencyeditor
+                    //005
                     self.currencyeditor_I_INP_005 = {
                         value: self.CurrentErrRangeHigh,
                         constraint: '',
@@ -56,6 +62,7 @@ var qmm012;
                             currencyposition: 'right'
                         }))
                     };
+                    //006
                     self.currencyeditor_I_INP_006 = {
                         value: self.CurrentAlRangeHigh,
                         constraint: '',
@@ -65,6 +72,7 @@ var qmm012;
                             currencyposition: 'right'
                         }))
                     };
+                    //007
                     self.currencyeditor_I_INP_007 = {
                         value: self.CurrentErrRangeLow,
                         constraint: '',
@@ -74,6 +82,7 @@ var qmm012;
                             currencyposition: 'right'
                         }))
                     };
+                    //008
                     self.currencyeditor_I_INP_008 = {
                         value: self.CurrentAlRangeLow,
                         constraint: '',
@@ -83,7 +92,10 @@ var qmm012;
                             currencyposition: 'right'
                         }))
                     };
+                    //end currencyeditor
+                    // start search box 
                     self.filteredData = ko.observableArray(nts.uk.util.flatArray(self.ItemBDList(), "childs"));
+                    // end search box 
                     self.columns = ko.observableArray([
                         { headerText: 'ード', prop: 'itemBreakdownCd', width: 100 },
                         { headerText: '名', prop: 'itemBreakdownName', width: 150 }
@@ -99,6 +111,7 @@ var qmm012;
                                 if (self.ItemBDList().length)
                                     self.gridListCurrentCode(self.ItemBDList()[0].itemBreakdownCd);
                             }).fail(function (res) {
+                                // Alert message
                                 alert(res);
                             });
                         }
@@ -111,6 +124,7 @@ var qmm012;
                                 if (self.ItemBDList().length)
                                     self.gridListCurrentCode(self.ItemBDList()[0].itemBreakdownCd);
                             }).fail(function (res) {
+                                // Alert message
                                 alert(res);
                             });
                         }
@@ -177,4 +191,3 @@ var qmm012;
         })(viewmodel = i.viewmodel || (i.viewmodel = {}));
     })(i = qmm012.i || (qmm012.i = {}));
 })(qmm012 || (qmm012 = {}));
-//# sourceMappingURL=viewmodel.js.map

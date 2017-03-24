@@ -12,6 +12,5 @@ import nts.arc.primitive.constraint.StringMaxLength;
 public class RetirementPayItemFullName extends StringPrimitiveValue<RetirementPayItemFullName>{
 	public RetirementPayItemFullName(String value) {
 		super(value);
-		// TODO Auto-generated constructor stub
 	}
 }

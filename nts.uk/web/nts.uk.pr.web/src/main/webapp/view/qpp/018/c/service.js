@@ -12,10 +12,14 @@ var nts;
                     (function (c) {
                         var service;
                         (function (service) {
+                            // Service paths.
                             var paths = {
                                 findCheckListPrintSetting: "ctx/pr/report/insurance/checklist/find",
                                 saveCheckListPrintSetting: "ctx/pr/report/insurance/checklist/save"
                             };
+                            /**
+                             * get All CheckList Print Setting
+                             */
                             function findCheckListPrintSetting() {
                                 return nts.uk.request.ajax(paths.findCheckListPrintSetting);
                             }
@@ -40,4 +44,3 @@ var nts;
         })(pr = uk.pr || (uk.pr = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
-//# sourceMappingURL=service.js.map
