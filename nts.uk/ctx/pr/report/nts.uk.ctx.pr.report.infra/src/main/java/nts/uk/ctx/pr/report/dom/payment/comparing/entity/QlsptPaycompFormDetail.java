@@ -9,11 +9,11 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
-import nts.uk.shr.infra.data.entity.TableEntity;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Entity
 @Table(name = "QLSPT_PAYCOMP_FORM_DETAIL")
-public class QlsptPaycompFormDetail extends TableEntity implements Serializable {
+public class QlsptPaycompFormDetail extends UkJpaEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -23,5 +23,10 @@ public class QlsptPaycompFormDetail extends TableEntity implements Serializable 
 	@Basic(optional = false)
 	@Column(name = "DISP_ORDER")
 	public BigDecimal dispOrder;
+
+	@Override
+	protected Object getKey() {
+		return paycompFormDetailPK;
+	}
 
 }

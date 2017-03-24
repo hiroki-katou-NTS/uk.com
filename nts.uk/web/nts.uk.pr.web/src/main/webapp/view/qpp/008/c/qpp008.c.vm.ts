@@ -151,13 +151,28 @@ module qpp008.c.viewmodel {
 
         insertUpdateData() {
             let self = this;
-            let newData = ko.toJS(self.currentItem());
-            if (self.isUpdate()) {
-                self.items.push(newData);
-            } else {
-                let updateIndex = _.findIndex(self.items(), function(item) { return item.formCode == newData.code; });
-                self.items.splice(updateIndex, 1, newData);
+            let dfd = $.Deferred();           
+            let newformCode = ko.mapping.toJS(self.currentItem().formCode);
+            let newformName = ko.mapping.toJS(self.currentItem().formName);
+            if (nts.uk.text.isNullOrEmpty(newformCode)) {
+                $('#INP_002').ntsError('set', nts.uk.text.format('{0}が入力されていません。', 'コード'));
+                return;
             }
+            if (nts.uk.text.isNullOrEmpty(newformName)) {
+                $('#INP_003').ntsError('set', nts.uk.text.format('{0}が入力されていません。', '名称'));
+                return;
+            }
+            
+            let comparingFormDetailList = new Array<ComparingFormDetail>();
+             comparingFormDetailList = self.items2().map(function(item, i) {
+                return new ComparingFormDetail(item.itemCode,item.categoryAtr, i);
+            });
+            let insertUpdateDataModel = new InsertUpdateDataModel(self.currentItem().formCode, self.currentItem().formName, comparingFormDetailList);
+             service.insertUpdateComparingForm(insertUpdateDataModel, self.isUpdate()).done(function() {
+                 alert("insert Ok");
+             });
+            
+
         }
 
         deleteData() {
@@ -208,11 +223,11 @@ module qpp008.c.viewmodel {
 
         mappingItemMasterToFormDetail(selectList: Array<ItemMaster>, categoryAtr: number) {
             return _.map(selectList, function(item) {
-                let newMapping = new ItemMaster(item.itemCode, item.itemName, "支");
+                let newMapping = new ItemMaster(item.itemCode, item.itemName, "支", categoryAtr);
                 if (categoryAtr === 1) {
-                    newMapping = new ItemMaster(item.itemCode, item.itemName, "控");
+                    newMapping = new ItemMaster(item.itemCode, item.itemName, "控", categoryAtr);
                 } else if (categoryAtr === 3) {
-                    newMapping = new ItemMaster(item.itemCode, item.itemName, "記");
+                    newMapping = new ItemMaster(item.itemCode, item.itemName, "記", categoryAtr);
                 }
                 return newMapping;
             });
@@ -276,10 +291,12 @@ module qpp008.c.viewmodel {
         itemCode: string;
         itemName: string;
         categoryAtrName: string;
-        constructor(itemCode: string, itemName: string, categoryAtrName: string) {
+        categoryAtr: number;
+        constructor(itemCode: string, itemName: string, categoryAtrName: string, categoryAtr: number) {
             this.itemCode = itemCode;
             this.itemName = itemName;
             this.categoryAtrName = categoryAtrName;
+            this.categoryAtr = categoryAtr;
         }
     }
 

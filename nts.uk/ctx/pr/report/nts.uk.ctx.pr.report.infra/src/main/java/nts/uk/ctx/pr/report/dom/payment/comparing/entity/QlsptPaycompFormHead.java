@@ -8,11 +8,11 @@ import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
 import javax.persistence.Table;
 
-import nts.uk.shr.infra.data.entity.TableEntity;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 @Entity
 @Table(name = "QLSPT_PAYCOMP_FORM_HEAD")
-public class QlsptPaycompFormHead extends TableEntity implements Serializable{
+public class QlsptPaycompFormHead extends UkJpaEntity implements Serializable{
 
 	private static final long serialVersionUID = 1L;
 	
@@ -22,5 +22,10 @@ public class QlsptPaycompFormHead extends TableEntity implements Serializable{
 	@Basic(optional = false)
 	@Column(name = "FORM_NAME")
 	public String formName;
+
+	@Override
+	protected Object getKey() {
+		return paycompFormHeadPK;
+	}
 
 }
