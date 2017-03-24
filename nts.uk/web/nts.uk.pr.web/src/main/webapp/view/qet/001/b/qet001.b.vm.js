@@ -67,6 +67,9 @@ var qet001;
                     });
                     self.reportItems(reportItemList);
                 };
+                /**
+                 * Start load data for this screen.
+                 */
                 ScreenModel.prototype.start = function () {
                     var dfd = $.Deferred();
                     var self = this;
@@ -107,6 +110,7 @@ var qet001;
                  * Close dialog.
                  */
                 ScreenModel.prototype.close = function () {
+                    // Dirty check.
                     var self = this;
                     if (self.dirty.isDirty()) {
                         nts.uk.ui.dialog.confirm('変更された内容が登録されていません。\r\nよろしいですか。').ifYes(function () {
@@ -154,7 +158,7 @@ var qet001;
                     // Check selected output setting.
                     var selectedCode = self.outputSettings().outputSettingSelectedCode();
                     if (selectedCode == '') {
-                        // TODO: Add error message '未選択エラー'.
+                        // TODO: Add error message 'AL006'.
                         nts.uk.ui.dialog.alert('未選択エラー');
                         return;
                     }
@@ -231,6 +235,7 @@ var qet001;
                  * Switch to create mode.
                  */
                 ScreenModel.prototype.switchToCreateMode = function () {
+                    // Dirty check.
                     var self = this;
                     if (self.dirty.isDirty()) {
                         nts.uk.ui.dialog.confirm('変更された内容が登録されていません。\r\nよろしいですか。').ifYes(function () {
