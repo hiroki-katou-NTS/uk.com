@@ -43,8 +43,12 @@ public interface PositionRepository {
 	
 	boolean ExistedHistoryBydate(String companyCode, GeneralDate startDate);
 	
-	Optional<JobHistory> getHistoryByEdate(String companyCode, GeneralDate startDate);
+	Optional<JobHistory> getHistoryBySdate(String companyCode, GeneralDate startDate);
 	
 	boolean CheckUpdateHistory (String historyId, GeneralDate startDate);
+
+	Optional<JobHistory> getHistoryByEdate(String historyId, GeneralDate endDate);
+
+	boolean ExistedHistory(String historyId);
 
 	}

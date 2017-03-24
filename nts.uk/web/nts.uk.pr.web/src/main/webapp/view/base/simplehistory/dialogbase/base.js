@@ -12,6 +12,9 @@ var nts;
                     (function (simplehistory) {
                         var dialogbase;
                         (function (dialogbase) {
+                            /**
+                              * Define screen mode.
+                              */
                             var ScreenMode = (function () {
                                 function ScreenMode() {
                                 }
@@ -27,3 +30,4 @@ var nts;
         })(pr = uk.pr || (uk.pr = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+//# sourceMappingURL=base.js.map

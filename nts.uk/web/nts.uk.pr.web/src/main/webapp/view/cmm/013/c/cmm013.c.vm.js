@@ -31,7 +31,7 @@ var cmm013;
                         new BoxModel(2, '全員参照不可')
                     ]);
                 }
-                ScreenModel.prototype.btnClick = function () {
+                ScreenModel.prototype.closeDialog = function () {
                     nts.uk.ui.windows.close();
                 };
                 ScreenModel.prototype.startPage = function () {
@@ -71,7 +71,7 @@ var cmm013;
                             var check = 2;
                         }
                         nts.uk.ui.windows.setShared('startNew', self.inp_003());
-                        nts.uk.ui.windows.setShared('copy_c', check);
+                        nts.uk.ui.windows.setShared('copy_c', check, false);
                         nts.uk.ui.windows.close();
                     }
                 };
@@ -124,3 +124,4 @@ var cmm013;
         })(viewmodel = c.viewmodel || (c.viewmodel = {}));
     })(c = cmm013.c || (cmm013.c = {}));
 })(cmm013 || (cmm013 = {}));
+//# sourceMappingURL=cmm013.c.vm.js.map

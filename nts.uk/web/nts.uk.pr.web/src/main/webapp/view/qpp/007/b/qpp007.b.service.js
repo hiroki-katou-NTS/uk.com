@@ -12,10 +12,16 @@ var nts;
                     (function (b) {
                         var service;
                         (function (service) {
+                            /**
+                             *  Service paths
+                             */
                             var paths = {
                                 saveSalaryPrintSetting: "ctx/pr/report/salarydetail/printsetting/save",
                                 findSalaryPrintSetting: "ctx/pr/report/salarydetail/printsetting/find"
                             };
+                            /**
+                             *  Save SalaryPrintSetting.
+                             */
                             function saveSalaryPrintSetting(data) {
                                 var dfd = $.Deferred();
                                 nts.uk.request.ajax(paths.saveSalaryPrintSetting, data).done(function () {
@@ -24,6 +30,9 @@ var nts;
                                 return dfd.promise();
                             }
                             service.saveSalaryPrintSetting = saveSalaryPrintSetting;
+                            /**
+                             *  Load SalaryPrintSetting.
+                             */
                             function findSalaryPrintSetting() {
                                 var dfd = $.Deferred();
                                 nts.uk.request.ajax(paths.findSalaryPrintSetting)

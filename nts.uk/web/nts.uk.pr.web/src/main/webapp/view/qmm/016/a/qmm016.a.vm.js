@@ -25,7 +25,9 @@ var nts;
                                         service: qmm016.service.instance,
                                         removeMasterOnLastHistoryRemove: true });
                                     var self = this;
+                                    // Head view model.
                                     self.head = new WageTableHeadViewModel();
+                                    // Tabs.
                                     self.selectedTab = ko.observable('tab-1');
                                     self.tabs = ko.observableArray([
                                         {
@@ -43,9 +45,13 @@ var nts;
                                             }),
                                             visible: ko.observable(true) }
                                     ]);
+                                    // General table type init.
                                     self.generalTableTypes = ko.observableArray(qmm016.model.normalDemension);
                                     self.specialTableTypes = ko.observableArray(qmm016.model.specialDemension);
                                 }
+                                /**
+                                * Load wage table detail.
+                                */
                                 ScreenModel.prototype.onSelectHistory = function (id) {
                                     var self = this;
                                     var dfd = $.Deferred();
@@ -55,12 +61,18 @@ var nts;
                                     dfd.resolve();
                                     return dfd.promise();
                                 };
+                                /**
+                                 * Create or Update UnitPriceHistory.
+                                 */
                                 ScreenModel.prototype.onSave = function () {
                                     var self = this;
                                     var dfd = $.Deferred();
                                     dfd.resolve();
                                     return dfd.promise();
                                 };
+                                /**
+                                 * Clear all input and switch to new mode.
+                                 */
                                 ScreenModel.prototype.onRegistNew = function () {
                                     var self = this;
                                     $('.save-error').ntsError('clear');
@@ -69,7 +81,13 @@ var nts;
                                 return ScreenModel;
                             }(view.base.simplehistory.viewmodel.ScreenBaseModel));
                             viewmodel.ScreenModel = ScreenModel;
+                            /**
+                             * Wage table head dto.
+                             */
                             var WageTableHeadViewModel = (function () {
+                                /**
+                                 * Const.
+                                 */
                                 function WageTableHeadViewModel() {
                                     var self = this;
                                     self.code = ko.observable(undefined);
@@ -81,13 +99,18 @@ var nts;
                                     });
                                     self.demensionItemList = ko.observableArray([]);
                                     self.demensionSet.subscribe(function (val) {
+                                        // Not new mode.
                                         if (!self.isNewMode()) {
                                             return;
                                         }
+                                        // Update.
                                         self.demensionItemList(self.getDemensionItemListByType(val));
                                     });
                                     self.isNewMode = ko.observable(true);
                                 }
+                                /**
+                                 * Reset.
+                                 */
                                 WageTableHeadViewModel.prototype.reset = function () {
                                     var self = this;
                                     self.isNewMode(true);
@@ -97,7 +120,11 @@ var nts;
                                     self.demensionItemList([]);
                                     self.memo('');
                                 };
+                                /**
+                                 * Get default demension item list by default.
+                                 */
                                 WageTableHeadViewModel.prototype.getDemensionItemListByType = function (typeCode) {
+                                    // Regenerate.
                                     var newDemensionItemList = new Array();
                                     switch (typeCode) {
                                         case 0:
@@ -112,6 +139,7 @@ var nts;
                                             newDemensionItemList.push(new DemensionItemViewModel(2));
                                             newDemensionItemList.push(new DemensionItemViewModel(3));
                                             break;
+                                        // Certificate.
                                         case 3:
                                             {
                                                 var cert = new DemensionItemViewModel(1);
@@ -120,6 +148,7 @@ var nts;
                                                 newDemensionItemList.push(cert);
                                             }
                                             break;
+                                        // Attendance.
                                         case 4:
                                             {
                                                 var workDay = new DemensionItemViewModel(1);
@@ -137,8 +166,12 @@ var nts;
                                             }
                                             break;
                                     }
+                                    // Ret.
                                     return newDemensionItemList;
                                 };
+                                /**
+                                 * Reset by wage table.
+                                 */
                                 WageTableHeadViewModel.prototype.resetBy = function (head) {
                                     var self = this;
                                     self.isNewMode(false);
@@ -147,6 +180,9 @@ var nts;
                                     self.demensionSet(head.demensionSet);
                                     self.memo(head.memo);
                                 };
+                                /**
+                                 * On select demension btn click.
+                                 */
                                 WageTableHeadViewModel.prototype.onSelectDemensionBtnClick = function (demension) {
                                     var self = this;
                                     var dlgOptions = {
@@ -163,7 +199,13 @@ var nts;
                                 return WageTableHeadViewModel;
                             }());
                             viewmodel.WageTableHeadViewModel = WageTableHeadViewModel;
+                            /**
+                             * Wage table demension detail dto.
+                             */
                             var DemensionItemViewModel = (function () {
+                                /**
+                                 * Demension item view model.
+                                 */
                                 function DemensionItemViewModel(demensionNo) {
                                     var self = this;
                                     self.demensionNo = ko.observable(demensionNo);

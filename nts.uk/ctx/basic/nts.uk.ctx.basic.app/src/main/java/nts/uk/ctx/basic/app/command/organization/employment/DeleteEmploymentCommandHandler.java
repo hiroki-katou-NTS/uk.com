@@ -23,38 +23,34 @@ public class DeleteEmploymentCommandHandler extends CommandHandler<DeleteEmploym
 	
 	@Override
 	protected void handle(CommandHandlerContext<DeleteEmploymentCommand> context) {
-		try{
-			DeleteEmploymentCommand command = context.getCommand();
-			String companyCode = AppContexts.user().companyCode();
-			
-			Optional<Employment> emDelete = repository.findEmployment(companyCode, command.getEmploymentCode());
-			if(!emDelete.isPresent()){
-				throw new BusinessException("ER010");
-			}
-			
-			//初期表示するのはコードの昇順で先頭になる項目です。
-			if (emDelete.get().getDisplayFlg() == ManageOrNot.MANAGE) {
-				List<Employment> lstEmployment = repository.findAllEmployment(companyCode);
-				if(lstEmployment != null){
-					for (Employment employment : lstEmployment) {
-						if(employment.getEmploymentCode().v().equals(command.getEmploymentCode())) {
-							continue;
-						} else {
-							Employment employmentInf = employment;
-							employmentInf.setDisplayFlg(ManageOrNot.MANAGE);
-							this.repository.update(employmentInf);
-							break;
-						}
+		DeleteEmploymentCommand command = context.getCommand();
+		String companyCode = AppContexts.user().companyCode();
+		
+		Optional<Employment> emDelete = repository.findEmployment(companyCode, command.getEmploymentCode());
+		if(!emDelete.isPresent()){
+			throw new BusinessException("ER010");
+		}
+		
+		//初期表示するのはコードの昇順で先頭になる項目です。
+		if (emDelete.get().getDisplayFlg() == ManageOrNot.MANAGE) {
+			List<Employment> lstEmployment = repository.findAllEmployment(companyCode);
+			if(lstEmployment != null){
+				for (Employment employment : lstEmployment) {
+					//can check trong truong hop xoa employment dau tien va dong thoi cung duoc chon hien thi
+					if(employment.getEmploymentCode().v().equals(command.getEmploymentCode())) {
+						continue;
+					} else {
+						Employment employmentInf = employment;
+						employmentInf.setDisplayFlg(ManageOrNot.MANAGE);
+						this.repository.update(employmentInf);
+						break;
 					}
-					
 				}
+				
 			}
-			
-			this.repository.remove(companyCode, command.getEmploymentCode());			
 		}
-		catch(Exception ex){
-			throw ex;
-		}
+		
+		this.repository.remove(companyCode, command.getEmploymentCode());			
 	}
 
 }

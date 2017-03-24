@@ -62,9 +62,6 @@ var cmm013;
                 return dfd.promise();
             }
             service.updatePosition = updatePosition;
-            /**
-            * delete Position
-            */
             function deletePosition(position) {
                 var dfd = $.Deferred();
                 nts.uk.request.ajax("com", paths.deletePosition, position).done(function (res) {
@@ -76,9 +73,6 @@ var cmm013;
                 return dfd.promise();
             }
             service.deletePosition = deletePosition;
-            /**
-            * get all history
-            */
             function getAllHistory() {
                 var dfd = $.Deferred();
                 nts.uk.request.ajax("com", paths.getAllHistory)
@@ -103,9 +97,9 @@ var cmm013;
                 return dfd.promise();
             }
             service.addHist = addHist;
-            function updateHist(jobHist) {
+            function updateHist(update) {
                 var dfd = $.Deferred();
-                nts.uk.request.ajax("com", paths.updateHist, jobHist)
+                nts.uk.request.ajax("com", paths.updateHist, update)
                     .done(function (res) {
                     dfd.resolve(res);
                 })
@@ -130,3 +124,4 @@ var cmm013;
         })(service = a.service || (a.service = {}));
     })(a = cmm013.a || (cmm013.a = {}));
 })(cmm013 || (cmm013 = {}));
+//# sourceMappingURL=cmm013.a.service.js.map

@@ -32,15 +32,20 @@ var nts;
                                         { code: 'Apply', name: '対象' },
                                         { code: 'NotApply', name: '対象外' }
                                     ]);
+                                    // Setting type
                                     self.isContractSettingEnabled = ko.computed(function () {
                                         return self.unitPriceHistoryModel().fixPaySettingType() == 'Contract';
                                     });
+                                    // Nts text editor options
                                     self.textEditorOption = ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
                                         textmode: "text",
                                         placeholder: "",
                                         textalign: "left"
                                     }));
                                 }
+                                /**
+                                 * Create or Update UnitPriceHistory.
+                                 */
                                 ScreenModel.prototype.onSave = function () {
                                     var self = this;
                                     var dfd = $.Deferred();
@@ -56,6 +61,9 @@ var nts;
                                     }
                                     return dfd.promise();
                                 };
+                                /**
+                                 * Set the UnitPriceHistoryModel
+                                 */
                                 ScreenModel.prototype.setUnitPriceHistoryModel = function (dto) {
                                     var model = this.unitPriceHistoryModel();
                                     model.id = dto.id;
@@ -72,6 +80,9 @@ var nts;
                                     model.fixPayAtrHourly(dto.fixPayAtrHourly);
                                     model.memo(dto.memo);
                                 };
+                                /**
+                                 * Load UnitPriceHistory detail.
+                                 */
                                 ScreenModel.prototype.onSelectHistory = function (id) {
                                     var _this = this;
                                     var self = this;
@@ -86,11 +97,17 @@ var nts;
                                     });
                                     return dfd.promise();
                                 };
+                                /**
+                                 * Clear all input and switch to new mode.
+                                 */
                                 ScreenModel.prototype.onRegistNew = function () {
                                     var self = this;
                                     $('.save-error').ntsError('clear');
                                     self.setUnitPriceHistoryModel(self.getDefaultUnitPriceHistory());
                                 };
+                                /**
+                                 * Get default history
+                                 */
                                 ScreenModel.prototype.getDefaultUnitPriceHistory = function () {
                                     var defaultHist = {};
                                     defaultHist.id = '';

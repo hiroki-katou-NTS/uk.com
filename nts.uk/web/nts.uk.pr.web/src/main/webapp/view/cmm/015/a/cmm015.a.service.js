@@ -10,9 +10,6 @@ var cmm015;
                 updatePayClassification: "basic/payclassification/update",
                 removePayClassification: "basic/payclassification/remove"
             };
-            /**
-             * Get list
-             */
             function getAllPayClassification() {
                 var dfd = $.Deferred();
                 nts.uk.request.ajax("com", paths.getAllPayClassification)
@@ -25,9 +22,6 @@ var cmm015;
                 return dfd.promise();
             }
             service.getAllPayClassification = getAllPayClassification;
-            /**
-            * update
-            */
             function addPayClassification(payClassification) {
                 var dfd = $.Deferred();
                 nts.uk.request.ajax("com", paths.addPayClassification, payClassification).done(function (res) {
@@ -39,9 +33,6 @@ var cmm015;
                 return dfd.promise();
             }
             service.addPayClassification = addPayClassification;
-            /**
-             * update Classification
-             */
             function updatePayClassification(payClassification) {
                 var dfd = $.Deferred();
                 nts.uk.request.ajax("com", paths.updatePayClassification, payClassification).done(function (res) {
@@ -53,9 +44,6 @@ var cmm015;
                 return dfd.promise();
             }
             service.updatePayClassification = updatePayClassification;
-            /**
-            * remove Classification
-            */
             function removePayClassification(payClassification) {
                 var dfd = $.Deferred();
                 nts.uk.request.ajax("com", paths.removePayClassification, payClassification).done(function (res) {
@@ -70,3 +58,4 @@ var cmm015;
         })(service = a.service || (a.service = {}));
     })(a = cmm015.a || (cmm015.a = {}));
 })(cmm015 || (cmm015 = {}));
+//# sourceMappingURL=cmm015.a.service.js.map

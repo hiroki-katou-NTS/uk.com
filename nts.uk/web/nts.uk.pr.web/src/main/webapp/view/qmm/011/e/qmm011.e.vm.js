@@ -25,8 +25,10 @@ var nts;
                                 ScreenModel.prototype.updateInsuranceBusinessType = function () {
                                     var self = this;
                                     var insuranceBusinessType;
+                                    //set up data resquest
                                     insuranceBusinessType =
                                         new InsuranceBusinessTypeDto(self.insuranceBusinessTypeUpdateModel().bizNameBiz1St(), self.insuranceBusinessTypeUpdateModel().bizNameBiz2Nd(), self.insuranceBusinessTypeUpdateModel().bizNameBiz3Rd(), self.insuranceBusinessTypeUpdateModel().bizNameBiz4Th(), self.insuranceBusinessTypeUpdateModel().bizNameBiz5Th(), self.insuranceBusinessTypeUpdateModel().bizNameBiz6Th(), self.insuranceBusinessTypeUpdateModel().bizNameBiz7Th(), self.insuranceBusinessTypeUpdateModel().bizNameBiz8Th(), self.insuranceBusinessTypeUpdateModel().bizNameBiz9Th(), self.insuranceBusinessTypeUpdateModel().bizNameBiz10Th(), self.insuranceBusinessTypeUpdateModel().version());
+                                    //call service update
                                     e.service.updateInsuranceBusinessType(insuranceBusinessType).done(function (data) {
                                         nts.uk.ui.windows.setShared("insuranceBusinessTypeUpdateModel", self.insuranceBusinessTypeUpdateModel());
                                         nts.uk.ui.windows.close();

@@ -84,11 +84,7 @@ var qmm005;
                     D_SEL_015_DATA.push(new qmm005.common.SelectItem({ index: i, label: i + '日' }));
                 }
                 D_SEL_015_DATA.push(new qmm005.common.SelectItem({ index: 31, label: '末日' }));
-<<<<<<< HEAD
-                // observables all values
-=======
                 // observables all default values
->>>>>>> basic/develop
                 self.inp001 = ko.observable('');
                 self.sel001 = ko.observable(1);
                 self.sel002 = ko.observable(0);
@@ -105,8 +101,6 @@ var qmm005;
                 self.sel013 = ko.observable(1);
                 self.sel014 = ko.observable(1);
                 self.sel015 = ko.observable(1);
-<<<<<<< HEAD
-=======
                 d.services.getData(self.index()).done(function (resp) {
                     if (resp && resp.length == 2) {
                         self.inp001(nts.uk.ui.windows.getShared('dataRow').label());
@@ -127,7 +121,6 @@ var qmm005;
                         self.sel015(resp[1].incometaxStdDay);
                     }
                 });
->>>>>>> basic/develop
                 // observable all datas
                 self.sel001Data = ko.observableArray(D_SEL_001_DATA);
                 self.sel002Data = ko.observableArray(D_SEL_002_DATA);
@@ -148,19 +141,11 @@ var qmm005;
             ViewModel.prototype.toggleView = function () {
                 $('.form-extent').toggleClass('hidden');
                 if (!$('.form-extent').hasClass('hidden')) {
-<<<<<<< HEAD
-                    nts.uk.ui.windows.getSelf().setHeight(600);
-                    $('#contents-area').css('padding-bottom', '0');
-                }
-                else {
-                    nts.uk.ui.windows.getSelf().setHeight(480);
-=======
                     nts.uk.ui.windows.getSelf().setHeight(window.top.innerHeight < 801 ? 620 : 660);
                     $('#contents-area').css('padding-bottom', '0');
                 }
                 else {
                     nts.uk.ui.windows.getSelf().setHeight(370);
->>>>>>> basic/develop
                     $('#contents-area').css('padding-bottom', '');
                 }
             };
@@ -197,36 +182,9 @@ var qmm005;
                     empInsStdDay: self.sel012(),
                     incometaxStdYearAtr: self.sel013(),
                     incometaxStdMon: self.sel014(),
-<<<<<<< HEAD
-                    incometaxStdDay: self.sel015(),
-                    payDays: []
-                };
-                for (var month = 0; month < 12; month++) {
-                    data.payDays.push({
-                        processingNo: data.processingNo,
-                        payBonusAtr: 0,
-                        processingYm: parseInt(nts.uk.time.formatDate(new Date(stdYear, month, 1), 'yyyyMM')),
-                        sparePayAtr: 0,
-                        payDate: new Date(stdYear, month, data.payStdDay),
-                        stdDate: new Date(stdYear, month + data.pickupStdMonAtr, data.pickupStdDay),
-                        accountingClosing: new Date(stdYear, month + data.accountDueMonAtr, data.accountDueDay),
-                        socialInsLevyMon: parseInt(nts.uk.time.formatDate(new Date(stdYear, month + data.socialInsuLevyMonAtr, 1), 'yyyyMM')),
-                        socialInsStdDate: new Date(stdYear + data.socialInsStdYearAtr, data.socialInsStdMon < 1 ? month + data.socialInsStdMon : data.socialInsStdMon - 1, data.socialInsStdDay),
-                        incomeTaxStdDate: new Date(stdYear + data.incometaxStdYearAtr, data.incometaxStdMon - 1, data.incometaxStdDay),
-                        neededWorkDay: 0,
-                        empInsStdDate: new Date(stdYear, data.empInsStdMon - 1, data.empInsStdDay),
-                        stmtOutputMon: parseInt(nts.uk.time.formatDate(new Date(stdYear, month + data.payslipPrintMonth, 1), 'yyyyMM'))
-                    });
-                }
-                debugger;
-                //services.insertData(data).done(function(reps) {
-                //    self.closeDialog();
-                //});
-=======
                     incometaxStdDay: self.sel015()
                 };
                 d.services.updateData(data).done(self.closeDialog);
->>>>>>> basic/develop
             };
             ViewModel.prototype.closeDialog = function () { nts.uk.ui.windows.close(); };
             return ViewModel;
@@ -234,3 +192,4 @@ var qmm005;
         d.ViewModel = ViewModel;
     })(d = qmm005.d || (qmm005.d = {}));
 })(qmm005 || (qmm005 = {}));
+//# sourceMappingURL=qmm005.d.viewmodel.js.map

@@ -54,11 +54,11 @@ module cmm013.c.viewmodel {
             ]);
 
         }
-        btnClick(): any {
-            nts.uk.ui.windows.close();
+        closeDialog(): any{
+            nts.uk.ui.windows.close();   
         }
 
-
+        
 
         startPage(): JQueryPromise<any> {
             var self = this;
@@ -99,7 +99,7 @@ module cmm013.c.viewmodel {
                     var check = 2;
                 }
                 nts.uk.ui.windows.setShared('startNew', self.inp_003());
-                nts.uk.ui.windows.setShared('copy_c', check);
+                nts.uk.ui.windows.setShared('copy_c', check, false);
                 nts.uk.ui.windows.close();
             }
         }
