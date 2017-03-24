@@ -82,8 +82,8 @@ public class AccidentInsuranceRateCopyCommandHandler
 			.findFirstData(companyCode);
 
 		if (optionalFirst.isPresent()) {
-			this.accidentInsuranceRateRepo.updateYearMonth(optionalFirst.get(),
-				accidentInsuranceRate.getApplyRange().getStartMonth().previousMonth());
+			optionalFirst.get().setEnd(accidentInsuranceRate.getApplyRange().getStartMonth().previousMonth());
+			this.accidentInsuranceRateRepo.update(optionalFirst.get());
 		}
 
 		// connection repository running add

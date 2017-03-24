@@ -53,8 +53,10 @@ public class JpaUnemployeeInsuranceRateItemGetMemento implements UnemployeeInsur
 	@Override
 	public UnemployeeInsuranceRateItemSetting getCompanySetting() {
 		UnemployeeInsuranceRateItemSetting unemployeeInsuranceRateItemSetting;
+		
 		unemployeeInsuranceRateItemSetting = new UnemployeeInsuranceRateItemSetting();
 		switch (this.careerGroup) {
+		
 		case Agroforestry:
 			unemployeeInsuranceRateItemSetting
 				.setRate(Double.valueOf(String.valueOf(this.typeValue.getCEmpRateGeneral())));

@@ -68,8 +68,9 @@ public class AccidentInsuranceRateUpdateCommandHandler
 			accidentInsuranceRate.getHistoryId());
 
 		if (optionalUpdate.isPresent()) {
-			this.accidentInsuranceRateRepo.updateYearMonth(optionalUpdate.get(),
-				accidentInsuranceRate.getApplyRange().getStartMonth().previousMonth());
+			optionalUpdate.get()
+				.setEnd(accidentInsuranceRate.getApplyRange().getStartMonth().previousMonth());
+			this.accidentInsuranceRateRepo.update(optionalUpdate.get());
 		}
 
 		// connection service update

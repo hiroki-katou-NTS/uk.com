@@ -56,8 +56,12 @@ var nts;
                                     self.beginHistoryStartAccidentInsuranceRate = ko.observable('');
                                     self.messageList = ko.observableArray([
                                         { messageId: "ER001", message: "＊が入力されていません。" },
-                                        { messageId: "ER005", message: "入力した＊は既に存在しています。\r\n ＊を確認してください。" }
+                                        { messageId: "ER005", message: "入力した＊は既に存在しています。\r\n ＊を確認してください。" },
+                                        { messageId: "AL001", message: "変更された内容が登録されていません。\r\n よろしいですか。" },
+                                        { messageId: "ER010", message: "対象データがありません。" }
                                     ]);
+                                    self.dirtyUnemployeeInsurance = new nts.uk.ui.DirtyChecker(self.unemployeeInsuranceRateModel);
+                                    self.dirtyAccidentInsurance = new nts.uk.ui.DirtyChecker(self.accidentInsuranceRateModel);
                                 }
                                 ScreenModel.prototype.openEditUnemployeeInsuranceRateHistory = function () {
                                     var self = this;
@@ -297,8 +301,12 @@ var nts;
                                         }
                                     }
                                     if (self.messageList()[1].messageId === messageId) {
-                                        var message = self.messageList()[1].message;
+                                        message = self.messageList()[1].message;
                                         $('#inp_code').ntsError('set', message);
+                                    }
+                                    if (self.messageList()[3].messageId === messageId) {
+                                        message = self.messageList()[3].message;
+                                        $('#btn_saveUnemployeeInsuranceHistory').ntsError('set', message);
                                     }
                                 };
                                 ScreenModel.prototype.clearErrorSaveAccidentInsurance = function () {
@@ -447,6 +455,7 @@ var nts;
                                             self.unemployeeInsuranceRateModel().setHistoryData(data.historyInsurance);
                                             self.typeActionUnemployeeInsurance(TypeActionInsuranceRate.update);
                                             self.beginHistoryStartUnemployeeInsuranceRate(nts.uk.time.formatYearMonth(data.historyInsurance.startMonth));
+                                            self.dirtyUnemployeeInsurance = new nts.uk.ui.DirtyChecker(self.unemployeeInsuranceRateModel);
                                             dfd.resolve(null);
                                         });
                                     }

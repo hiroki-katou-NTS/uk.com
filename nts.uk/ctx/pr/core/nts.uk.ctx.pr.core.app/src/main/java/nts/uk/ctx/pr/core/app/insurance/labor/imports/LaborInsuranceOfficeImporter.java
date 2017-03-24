@@ -4,7 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.app.insurance.labor.imports;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -25,10 +24,7 @@ import nts.uk.shr.com.context.AppContexts;
  * The Class AddLaborInsuranceOfficeCommand.
  */
 @Stateless
-public class LaborInsuranceOfficeImporter implements Serializable {
-	/** The Constant serialVersionUID. */
-	private static final long serialVersionUID = 1L;
-
+public class LaborInsuranceOfficeImporter{
 	/** The labor insurance office repository. */
 	@Inject
 	private LaborInsuranceOfficeRepository laborInsuranceOfficeRepository;
