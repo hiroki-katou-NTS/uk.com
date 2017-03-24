@@ -14,7 +14,13 @@ var nts;
                         (function (updatehistory) {
                             var viewmodel;
                             (function (viewmodel) {
+                                /**
+                                 * Add simple history screen model.
+                                 */
                                 var ScreenModel = (function () {
+                                    /**
+                                     * Constructor.
+                                     */
                                     function ScreenModel() {
                                         var self = this;
                                         self.dialogOptions = nts.uk.ui.windows.getShared('options');
@@ -23,12 +29,18 @@ var nts;
                                         self.startYearMonth = ko.observable(self.dialogOptions.history.start);
                                         self.endYearMonth = nts.uk.time.formatYearMonth(self.dialogOptions.history.end);
                                     }
+                                    /**
+                                     * Start page.
+                                     */
                                     ScreenModel.prototype.startPage = function () {
                                         var self = this;
                                         var dfd = $.Deferred();
                                         dfd.resolve();
                                         return dfd.promise();
                                     };
+                                    /**
+                                     * Create history and then dialog.
+                                     */
                                     ScreenModel.prototype.btnApplyClicked = function () {
                                         var self = this;
                                         var callBackData = {
@@ -44,6 +56,9 @@ var nts;
                                         }
                                         nts.uk.ui.windows.close();
                                     };
+                                    /**
+                                     * Close dialog.
+                                     */
                                     ScreenModel.prototype.btnCancelClicked = function () {
                                         nts.uk.ui.windows.close();
                                     };
@@ -60,4 +75,3 @@ var nts;
         })(pr = uk.pr || (uk.pr = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
-//# sourceMappingURL=viewmodel.js.map

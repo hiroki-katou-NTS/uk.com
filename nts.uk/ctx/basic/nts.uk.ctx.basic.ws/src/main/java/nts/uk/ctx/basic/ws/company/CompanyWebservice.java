@@ -1,14 +1,13 @@
 package nts.uk.ctx.basic.ws.company;
 
-import java.applet.AppletContext;
 import java.util.List;
-import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+
 import nts.arc.error.BusinessException;
 import nts.arc.error.RawErrorMessage;
 import nts.arc.layer.ws.WebService;
@@ -20,7 +19,6 @@ import nts.uk.ctx.basic.app.command.company.UpdateCompanyCommand;
 import nts.uk.ctx.basic.app.command.company.UpdateCompanyCommandHandler;
 import nts.uk.ctx.basic.app.find.company.CompanyDto;
 import nts.uk.ctx.basic.app.find.company.CompanyFinder;
-import nts.uk.shr.com.context.AppContexts;
 
 /**
  * 

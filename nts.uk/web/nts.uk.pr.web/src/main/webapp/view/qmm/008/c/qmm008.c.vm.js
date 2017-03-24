@@ -31,22 +31,28 @@ var nts;
                                         removeMasterOnLastHistoryRemove: false
                                     });
                                     var self = this;
+                                    //init model
                                     self.pensionModel = ko.observable(new PensionRateModel());
+                                    // init insurance offices list
                                     self.pensionInsuranceOfficeList = ko.observableArray([]);
                                     self.pensionFilteredData = ko.observableArray(nts.uk.util.flatArray(self.pensionInsuranceOfficeList(), "childs"));
+                                    //init rounding list
                                     self.roundingList = ko.observableArray([]);
                                     self.Rate2 = ko.mapping.fromJS(new nts.uk.ui.option.NumberEditorOption({
                                         grouplength: 3,
                                         decimallength: 2
                                     }));
+                                    //pension fund switch 
                                     self.pensionFundInputOptions = ko.observableArray([
                                         { code: '1', name: '有' },
                                         { code: '0', name: '無' }
                                     ]);
+                                    //pension calculate switch 
                                     self.pensionCalculateOptions = ko.observableArray([
                                         { code: '0', name: 'する' },
                                         { code: '1', name: 'しない' }
                                     ]);
+                                    // add history dialog
                                     self.isTransistReturnData = ko.observable(false);
                                     self.fundInputEnable = ko.observable(false);
                                     self.isLoading = ko.observable(true);
@@ -54,6 +60,7 @@ var nts;
                                     self.japanYear = ko.observable('');
                                     self.sendOfficeData = ko.observable('');
                                     self.pensionModel().fundInputApply.subscribe(function () {
+                                        //change select -> hide fund input table
                                         if (self.pensionModel().fundInputApply() != 1) {
                                             self.fundInputEnable(true);
                                         }
@@ -61,24 +68,32 @@ var nts;
                                             self.fundInputEnable(false);
                                         }
                                     });
-                                }
+                                } //end constructor
+                                // Start
                                 ScreenModel.prototype.start = function () {
                                     var self = this;
                                     var dfd = $.Deferred();
                                     self.getAllRounding().done(function () {
+                                        // Resolve
                                         dfd.resolve(null);
                                     });
+                                    // Return.
                                     return dfd.promise();
                                 };
+                                //load All rounding method
                                 ScreenModel.prototype.getAllRounding = function () {
                                     var self = this;
                                     var dfd = $.Deferred();
+                                    // Invoked service method
                                     c.service.findAllRounding().done(function (data) {
+                                        // Set list.
                                         self.roundingList(data);
                                         dfd.resolve(data);
                                     });
+                                    // Return.
                                     return dfd.promise();
                                 };
+                                //string rounding to value
                                 ScreenModel.prototype.convertRounding = function (stringRounding) {
                                     switch (stringRounding) {
                                         case Rounding.ROUNDUP: return "0";
@@ -89,6 +104,7 @@ var nts;
                                         default: return "0";
                                     }
                                 };
+                                //value to string rounding
                                 ScreenModel.prototype.convertToRounding = function (stringValue) {
                                     switch (stringValue) {
                                         case "0": return Rounding.ROUNDUP;
@@ -104,6 +120,7 @@ var nts;
                                     if (data == null) {
                                         return;
                                     }
+                                    //Set pension detail.
                                     self.pensionModel().historyId = data.historyId;
                                     self.pensionModel().companyCode = data.companyCode;
                                     self.pensionModel().officeCode(data.officeCode);
@@ -111,6 +128,10 @@ var nts;
                                     self.pensionModel().endMonth(nts.uk.time.formatYearMonth(parseInt(data.endMonth)));
                                     self.japanYear("(" + nts.uk.time.yearmonthInJapanEmpire(data.startMonth).toString() + ")");
                                     self.pensionModel().autoCalculate(data.autoCalculate);
+                                    //TODO fundInputApply
+                                    //                    if (data.fundInputApply)
+                                    //                        self.pensionModel().fundInputApply(1);
+                                    //                    else
                                     self.pensionModel().fundInputApply(1);
                                     data.premiumRateItems.forEach(function (item, index) {
                                         if (item.payType == PaymentType.SALARY && item.genderType == InsuranceGender.MALE) {
@@ -176,10 +197,12 @@ var nts;
                                             self.pensionModel().fundRateItems().bonusCompanyUnknownExemption(item.exemptionChargeCompanyRate);
                                         }
                                     });
+                                    //set rounding list
                                     self.pensionModel().roundingMethods().pensionSalaryPersonalComboBox(self.roundingList());
                                     self.pensionModel().roundingMethods().pensionSalaryCompanyComboBox(self.roundingList());
                                     self.pensionModel().roundingMethods().pensionBonusPersonalComboBox(self.roundingList());
                                     self.pensionModel().roundingMethods().pensionBonusCompanyComboBox(self.roundingList());
+                                    //Set selected rounding method
                                     data.roundingMethods.forEach(function (item, index) {
                                         if (item.payType == PaymentType.SALARY) {
                                             self.pensionModel().roundingMethods().pensionSalaryPersonalComboBoxSelectedCode(self.convertRounding(item.roundAtrs.personalRoundAtr));
@@ -217,9 +240,11 @@ var nts;
                                     roundingMethods.push(new RoundingDto(PaymentType.BONUS, new RoundingItemDto(self.convertToRounding(self.pensionModel().roundingMethods().pensionBonusPersonalComboBoxSelectedCode()), self.convertToRounding(self.pensionModel().roundingMethods().pensionBonusCompanyComboBoxSelectedCode()))));
                                     return new c.service.model.finder.PensionRateDto(self.pensionModel().historyId, self.pensionModel().companyCode, self.currentOfficeCode(), self.pensionModel().startMonth(), self.pensionModel().endMonth(), self.pensionModel().autoCalculate(), true, rateItems, fundRateItems, roundingMethods, self.pensionModel().maxAmount(), self.pensionModel().childContributionRate());
                                 };
+                                //get current item office 
                                 ScreenModel.prototype.getDataOfPensionSelectedOffice = function () {
                                     var self = this;
                                     var saveVal = null;
+                                    // Set parent value
                                     self.pensionInsuranceOfficeList().forEach(function (item, index) {
                                         if (self.currentOfficeCode() == item.code) {
                                             saveVal = item;
@@ -229,9 +254,13 @@ var nts;
                                 };
                                 ScreenModel.prototype.save = function () {
                                     var self = this;
+                                    //update pension
                                     c.service.updatePensionRate(self.pensionCollectData()).done(function () {
                                     });
                                 };
+                                /**
+                                * Load UnitPriceHistory detail.
+                                */
                                 ScreenModel.prototype.onSelectHistory = function (id) {
                                     var self = this;
                                     var dfd = $.Deferred();
@@ -257,12 +286,19 @@ var nts;
                                     }
                                     return dfd.promise();
                                 };
+                                /**
+                                  * On select master data.
+                                  */
                                 ScreenModel.prototype.onSelectMaster = function (code) {
                                     var self = this;
                                     self.isClickHistory(false);
                                 };
+                                /**
+                                 * Clear all input and switch to new mode.
+                                 */
                                 ScreenModel.prototype.onRegistNew = function () {
                                     var self = this;
+                                    //                $('.save-error').ntsError('clear');
                                     self.OpenModalOfficeRegister();
                                 };
                                 ScreenModel.prototype.getCurrentOfficeCode = function (childId) {
@@ -285,22 +321,30 @@ var nts;
                                     }
                                     return returnValue;
                                 };
+                                //open office register dialog
                                 ScreenModel.prototype.OpenModalOfficeRegister = function () {
                                     var self = this;
+                                    // Set parent value
                                     nts.uk.ui.windows.setShared("isTransistReturnData", this.isTransistReturnData());
                                     nts.uk.ui.windows.sub.modal("/view/qmm/008/e/index.xhtml", { title: "会社保険事業所の登録＞事業所の登録" }).onClosed(function () {
+                                        //when close dialog -> reload office list
                                         self.start();
+                                        // Get child value
                                         var returnValue = nts.uk.ui.windows.getShared("insuranceOfficeChildValue");
                                     });
                                 };
+                                //open modal standard monthly price pension 
                                 ScreenModel.prototype.OpenModalStandardMonthlyPricePension = function () {
+                                    // Set parent value
                                     nts.uk.ui.windows.setShared("officeName", this.sendOfficeData());
                                     nts.uk.ui.windows.setShared("pensionModel", this.pensionModel());
                                     nts.uk.ui.windows.setShared("isTransistReturnData", this.isTransistReturnData());
                                     nts.uk.ui.windows.sub.modal("/view/qmm/008/i/index.xhtml", { title: "会社保険事業所の登録＞標準報酬月額保険料額表" }).onClosed(function () {
+                                        // Get child value
                                         var returnValue = nts.uk.ui.windows.getShared("listOfficeOfChildValue");
                                     });
                                 };
+                                //jump back to health
                                 ScreenModel.prototype.goToHealth = function () {
                                     nts.uk.request.jump("/view/qmm/008/b/index.xhtml");
                                 };
@@ -458,4 +502,3 @@ var nts;
         })(pr = uk.pr || (uk.pr = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
-//# sourceMappingURL=qmm008.c.vm.js.map
