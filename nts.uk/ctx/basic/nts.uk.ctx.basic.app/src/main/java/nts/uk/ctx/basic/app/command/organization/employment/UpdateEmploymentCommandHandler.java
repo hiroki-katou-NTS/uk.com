@@ -34,7 +34,6 @@ public class UpdateEmploymentCommandHandler extends CommandHandler<UpdateEmploym
 			if(!employmentInf.isPresent()){
 				throw new BusinessException("ER026");
 			}
-				
 			//A_SEL_001にチェックが付いている場合
 			if(command.getDisplayFlg() == 1){
 				Optional<Employment> employmentByDisplayFlg = repository.findEmploymnetByDisplayFlg(companyCode);
@@ -45,18 +44,14 @@ public class UpdateEmploymentCommandHandler extends CommandHandler<UpdateEmploym
 					repository.update(employmentDisplay);
 				}
 			}
-			
-			Employment employment = new Employment(companyCode,
-					new EmploymentCode(command.getEmploymentCode()),
-					new EmploymentName(command.getEmploymentName()),
-					new CloseDateNo(command.getCloseDateNo()),
-					new Memo(command.getMemo()),
-					new ProcessingNo(command.getProcessingNo()),
-					EnumAdaptor.valueOf( command.getStatutoryHolidayAtr(), ManageOrNot.class),
-					new EmploymentCode(command.getEmployementOutCd()),
-					EnumAdaptor.valueOf( command.getDisplayFlg(), ManageOrNot.class)
-			);
-			
+			Employment employment = employmentInf.get();
+			employment.setEmploymentName(new EmploymentName(command.getEmploymentName()));
+			employment.setCloseDateNo(new CloseDateNo(command.getCloseDateNo()));
+			employment.setMemo(new Memo(command.getMemo()));
+			employment.setProcessingNo(new ProcessingNo(command.getProcessingNo()));
+			employment.setStatutoryHolidayAtr(EnumAdaptor.valueOf( command.getStatutoryHolidayAtr(), ManageOrNot.class));
+			employment.setEmployementOutCd(new EmploymentCode(command.getEmployementOutCd()));
+			employment.setDisplayFlg(EnumAdaptor.valueOf( command.getDisplayFlg(), ManageOrNot.class));
 			this.repository.update(employment);
 			
 		}
