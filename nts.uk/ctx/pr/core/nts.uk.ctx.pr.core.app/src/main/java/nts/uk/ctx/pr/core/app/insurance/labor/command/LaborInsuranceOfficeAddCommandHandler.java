@@ -31,7 +31,7 @@ public class LaborInsuranceOfficeAddCommandHandler extends CommandHandler<LaborI
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command
 	 * .CommandHandlerContext)
@@ -39,11 +39,20 @@ public class LaborInsuranceOfficeAddCommandHandler extends CommandHandler<LaborI
 	@Override
 	@Transactional
 	protected void handle(CommandHandlerContext<LaborInsuranceOfficeAddCommand> context) {
+		// user login
 		String companyCode = AppContexts.user().companyCode();
-		LaborInsuranceOffice laborInsuranceOffice = context.getCommand().toDomain(companyCode);
+
+		// get command
+		LaborInsuranceOfficeAddCommand command = context.getCommand();
+
+		// toDomain
+		LaborInsuranceOffice laborInsuranceOffice = command.toDomain(companyCode);
+
+		// validate domain
 		laborInsuranceOffice.validate();
-		laborInsuranceOfficeService.validateRequiredItem(laborInsuranceOffice);
-		laborInsuranceOfficeService.checkDuplicateCode(laborInsuranceOffice);
+		this.laborInsuranceOfficeService.validateRequiredItem(laborInsuranceOffice);
+		this.laborInsuranceOfficeService.checkDuplicateCode(laborInsuranceOffice);
+		// add
 		this.laborInsuranceOfficeRepo.add(laborInsuranceOffice);
 	}
 }

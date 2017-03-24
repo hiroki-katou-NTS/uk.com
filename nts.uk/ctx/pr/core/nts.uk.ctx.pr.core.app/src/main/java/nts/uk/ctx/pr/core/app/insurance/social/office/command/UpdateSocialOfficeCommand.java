@@ -72,11 +72,6 @@ public class UpdateSocialOfficeCommand extends SocialOfficeBaseCommand {
 			}
 
 			@Override
-			public String getPrefecture() {
-				return command.getPrefecture();
-			}
-
-			@Override
 			public Address getAddress1st() {
 				return new Address(command.getAddress1st());
 			}

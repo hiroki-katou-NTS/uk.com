@@ -25,7 +25,7 @@
 			<div id="functions-area">
 				<button id="A_BTN_001" data-bind="click: cleanForm"
 					style="width: 80px; margin-left: 10px;">新規</button>
-				<button id="A_BTN_002" class="proceed" data-bind="click: btn_002"
+				<button id="A_BTN_002" class="proceed" data-bind="click: addBank"
 					style="width: 80px; margin-left: 10px;">登録</button>
 				<button id="A_BTN_003" style="width: 80px; margin-left: 110px;" data-bind="click: close">閉じる</button>
 			</div>
@@ -86,7 +86,7 @@
 						<div class="control-group">
 							<span id="INP_004" style="margin-bottom: 15px; margin-left: 5px"> 
 								<textarea
-									style="height: 130px" class="text-editor1"
+									style="height: 130px; width: 400px;" class="text-editor1"
 									data-bind="ntsMultilineEditor: {
 									value: memo,
 									constraint: 'Memo',

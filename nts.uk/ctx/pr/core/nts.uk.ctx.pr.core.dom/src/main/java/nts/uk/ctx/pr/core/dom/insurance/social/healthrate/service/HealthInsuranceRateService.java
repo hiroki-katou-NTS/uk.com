@@ -19,12 +19,4 @@ public abstract class HealthInsuranceRateService extends SimpleHistoryBaseServic
 	 * @param rate the rate
 	 */
 	public abstract void validateRequiredItem(HealthInsuranceRate rate);
-
-	/**
-	 * Validate date range.
-	 *
-	 * @param rate the rate
-	 */
-	public abstract void validateDateRange(HealthInsuranceRate rate);
-
 }

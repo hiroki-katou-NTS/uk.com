@@ -18,12 +18,12 @@ import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 
 /**
- * The Class HistoryUnemployeeInsuranceFinder.
+ * The Class UnemployeeInsuranceHistoryFinder.
  */
 @Stateless
 public class UnemployeeInsuranceHistoryFinder {
 
-	/** The unemployee insurance rate repository. */
+	/** The find. */
 	@Inject
 	private UnemployeeInsuranceRateRepository find;
 
@@ -41,12 +41,13 @@ public class UnemployeeInsuranceHistoryFinder {
 		String companyCode = loginUserContext.companyCode();
 
 		// call finder
-		List<UnemployeeInsuranceHistoryFindOutDto> lstHistoryUnemployeeInsurance = find.findAll(companyCode).stream()
-				.map(unemployeeInsuranceRate -> {
-					UnemployeeInsuranceHistoryFindOutDto historyUnemployeeInsuranceFindOutDto = new UnemployeeInsuranceHistoryFindOutDto();
-					unemployeeInsuranceRate.saveToMemento(historyUnemployeeInsuranceFindOutDto);
-					return historyUnemployeeInsuranceFindOutDto;
-				}).collect(Collectors.toList());
+		List<UnemployeeInsuranceHistoryFindOutDto> lstHistoryUnemployeeInsurance = find.findAll(companyCode)
+			.stream().map(unemployeeInsuranceRate -> {
+				UnemployeeInsuranceHistoryFindOutDto historyUnemployeeInsuranceFindOutDto;
+				historyUnemployeeInsuranceFindOutDto = new UnemployeeInsuranceHistoryFindOutDto();
+				unemployeeInsuranceRate.saveToMemento(historyUnemployeeInsuranceFindOutDto);
+				return historyUnemployeeInsuranceFindOutDto;
+			}).collect(Collectors.toList());
 
 		return lstHistoryUnemployeeInsurance;
 	}
@@ -56,16 +57,22 @@ public class UnemployeeInsuranceHistoryFinder {
 	 *
 	 * @param historyId
 	 *            the history id
-	 * @return the history unemployee insurance find out dto
+	 * @return the unemployee insurance history find out dto
 	 */
 	public UnemployeeInsuranceHistoryFindOutDto find(String historyId) {
+		
 		// get user login info
 		LoginUserContext loginUserContext = AppContexts.user();
+		
 		// get companyCode by user login
 		String companyCode = loginUserContext.companyCode();
+		
 		// call finder
-		UnemployeeInsuranceHistoryFindOutDto historyUnemployeeInsuranceFindOutDto = new UnemployeeInsuranceHistoryFindOutDto();
-		Optional<UnemployeeInsuranceRate> optionalUnemployeeInsuranceRate = find.findById(companyCode, historyId);
+		UnemployeeInsuranceHistoryFindOutDto historyUnemployeeInsuranceFindOutDto;
+		historyUnemployeeInsuranceFindOutDto = new UnemployeeInsuranceHistoryFindOutDto();
+		Optional<UnemployeeInsuranceRate> optionalUnemployeeInsuranceRate = find.findById(companyCode,
+			historyId);
+		
 		// exist value
 		if (optionalUnemployeeInsuranceRate.isPresent()) {
 			optionalUnemployeeInsuranceRate.get().saveToMemento(historyUnemployeeInsuranceFindOutDto);
@@ -74,4 +81,5 @@ public class UnemployeeInsuranceHistoryFinder {
 		return null;
 
 	}
+
 }

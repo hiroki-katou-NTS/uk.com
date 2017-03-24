@@ -19,7 +19,7 @@ var nts;
                                         var self = this;
                                         self.dialogOptions = nts.uk.ui.windows.getShared('options');
                                         self.dialogOptions.screenMode = self.dialogOptions.screenMode || simplehistory.dialogbase.ScreenMode.MODE_MASTER_HISTORY;
-                                        self.actionType = ko.observable(ScreenModel.ACTION_TYPE_DELETE);
+                                        self.actionType = ko.observable(ScreenModel.ACTION_TYPE_UPDATE);
                                         self.startYearMonth = ko.observable(self.dialogOptions.history.start);
                                         self.endYearMonth = nts.uk.time.formatYearMonth(self.dialogOptions.history.end);
                                     }

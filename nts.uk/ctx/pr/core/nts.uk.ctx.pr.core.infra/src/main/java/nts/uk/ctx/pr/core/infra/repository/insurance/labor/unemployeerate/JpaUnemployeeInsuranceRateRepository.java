@@ -20,7 +20,8 @@ import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.YearMonth;
-import nts.gul.collection.ListUtil;
+import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.pr.core.dom.insurance.labor.businesstype.BusinessTypeEnum;
 import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsuranceRate;
 import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsuranceRateRepository;
 import nts.uk.ctx.pr.core.infra.entity.insurance.labor.unemployeerate.QismtEmpInsuRate;
@@ -32,38 +33,36 @@ import nts.uk.ctx.pr.core.infra.entity.insurance.labor.unemployeerate.QismtEmpIn
  * The Class JpaUnemployeeInsuranceRateRepository.
  */
 @Stateless
-public class JpaUnemployeeInsuranceRateRepository extends JpaRepository implements UnemployeeInsuranceRateRepository {
-
-	/** The Constant BEGIN_FIRST. */
-	public static final int BEGIN_FIRST = 0;
+public class JpaUnemployeeInsuranceRateRepository extends JpaRepository
+	implements UnemployeeInsuranceRateRepository {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.
 	 * UnemployeeInsuranceRateRepository#add(nts.uk.ctx.pr.core.dom.insurance.
 	 * labor.unemployeerate.UnemployeeInsuranceRate)
 	 */
 	@Override
 	public void add(UnemployeeInsuranceRate rate) {
-		this.commandProxy().insert(toEntity(rate));
+		this.commandProxy().insert(this.toEntity(rate));
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.
 	 * UnemployeeInsuranceRateRepository#update(nts.uk.ctx.pr.core.dom.insurance
 	 * .labor.unemployeerate.UnemployeeInsuranceRate)
 	 */
 	@Override
 	public void update(UnemployeeInsuranceRate rate) {
-		this.commandProxy().update(toEntity(rate));
+		this.commandProxy().update(this.toEntity(rate));
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.
 	 * UnemployeeInsuranceRateRepository#remove(java.lang.String,
 	 * java.lang.Long)
@@ -75,7 +74,7 @@ public class JpaUnemployeeInsuranceRateRepository extends JpaRepository implemen
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.
 	 * UnemployeeInsuranceRateRepository#findById(java.lang.String,
 	 * java.lang.String)
@@ -83,12 +82,12 @@ public class JpaUnemployeeInsuranceRateRepository extends JpaRepository implemen
 	@Override
 	public Optional<UnemployeeInsuranceRate> findById(String companyCode, String historyId) {
 		return this.queryProxy().find(new QismtEmpInsuRatePK(companyCode, historyId), QismtEmpInsuRate.class)
-				.map(c -> toDomain(c));
+			.map(c -> this.toDomain(c));
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.
 	 * UnemployeeInsuranceRateRepository#findAll(nts.uk.ctx.core.dom.company.
 	 * CompanyCode)
@@ -97,7 +96,7 @@ public class JpaUnemployeeInsuranceRateRepository extends JpaRepository implemen
 	public List<UnemployeeInsuranceRate> findAll(String companyCode) {
 
 		// get entity manager
-		EntityManager em = getEntityManager();
+		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 
 		// call QISMT_EMP_INSU_RATE (QismtEmpInsuRate SQL)
@@ -114,7 +113,7 @@ public class JpaUnemployeeInsuranceRateRepository extends JpaRepository implemen
 
 		// eq CompanyCode
 		lstpredicateWhere.add(criteriaBuilder
-				.equal(root.get(QismtEmpInsuRate_.qismtEmpInsuRatePK).get(QismtEmpInsuRatePK_.ccd), companyCode));
+			.equal(root.get(QismtEmpInsuRate_.qismtEmpInsuRatePK).get(QismtEmpInsuRatePK_.ccd), companyCode));
 
 		// set where to SQL
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
@@ -127,7 +126,7 @@ public class JpaUnemployeeInsuranceRateRepository extends JpaRepository implemen
 
 		// exclude select
 		List<UnemployeeInsuranceRate> UnemployeeInsuranceRate = query.getResultList().stream()
-				.map(item -> toDomain(item)).collect(Collectors.toList());
+			.map(item -> this.toDomain(item)).collect(Collectors.toList());
 		return UnemployeeInsuranceRate;
 	}
 
@@ -139,7 +138,8 @@ public class JpaUnemployeeInsuranceRateRepository extends JpaRepository implemen
 	 * @return the unemployee insurance rate
 	 */
 	private UnemployeeInsuranceRate toDomain(QismtEmpInsuRate entity) {
-		UnemployeeInsuranceRate domain = new UnemployeeInsuranceRate(new JpaUnemployeeInsuranceRateGetMemento(entity));
+		UnemployeeInsuranceRate domain = new UnemployeeInsuranceRate(
+			new JpaUnemployeeInsuranceRateGetMemento(entity));
 		return domain;
 
 	}
@@ -159,17 +159,17 @@ public class JpaUnemployeeInsuranceRateRepository extends JpaRepository implemen
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.
 	 * UnemployeeInsuranceRateRepository#findBetweenUpdate(nts.uk.ctx.core.dom.
 	 * company.CompanyCode, nts.arc.time.YearMonth)
 	 */
 	@Override
 	public Optional<UnemployeeInsuranceRate> findBetweenUpdate(String companyCode, YearMonth yearMonth,
-			String historyId) {
+		String historyId) {
 
 		// get entity manager
-		EntityManager em = getEntityManager();
+		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 
 		// call QISMT_EMP_INSU_RATE (QismtEmpInsuRate SQL)
@@ -186,14 +186,15 @@ public class JpaUnemployeeInsuranceRateRepository extends JpaRepository implemen
 
 		// eq CompanyCode
 		lstpredicateWhere.add(criteriaBuilder
-				.equal(root.get(QismtEmpInsuRate_.qismtEmpInsuRatePK).get(QismtEmpInsuRatePK_.ccd), companyCode));
+			.equal(root.get(QismtEmpInsuRate_.qismtEmpInsuRatePK).get(QismtEmpInsuRatePK_.ccd), companyCode));
 
 		// not eq historyId
-		lstpredicateWhere.add(criteriaBuilder
-				.notEqual(root.get(QismtEmpInsuRate_.qismtEmpInsuRatePK).get(QismtEmpInsuRatePK_.histId), historyId));
+		lstpredicateWhere.add(criteriaBuilder.notEqual(
+			root.get(QismtEmpInsuRate_.qismtEmpInsuRatePK).get(QismtEmpInsuRatePK_.histId), historyId));
 
 		// le end
-		lstpredicateWhere.add(criteriaBuilder.le(root.get(QismtEmpInsuRate_.endYm), yearMonth.previousMonth().v()));
+		lstpredicateWhere
+			.add(criteriaBuilder.le(root.get(QismtEmpInsuRate_.endYm), yearMonth.previousMonth().v()));
 
 		// set where to SQL
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
@@ -205,35 +206,25 @@ public class JpaUnemployeeInsuranceRateRepository extends JpaRepository implemen
 		TypedQuery<QismtEmpInsuRate> query = em.createQuery(cq);
 		List<QismtEmpInsuRate> lstQismtEmpInsuRate = query.getResultList();
 
-		if (ListUtil.isEmpty(lstQismtEmpInsuRate)) {
+		if (CollectionUtil.isEmpty(lstQismtEmpInsuRate)) {
 			return Optional.empty();
 		}
 
 		// get fisrt data
-		return Optional.ofNullable(toDomain(lstQismtEmpInsuRate.get(BEGIN_FIRST)));
+		return Optional.ofNullable(this.toDomain(lstQismtEmpInsuRate.get(BusinessTypeEnum.Biz1St.index)));
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.
-	 * UnemployeeInsuranceRateRepository#updateYearMonth(nts.uk.ctx.pr.core.dom.
-	 * insurance.labor.unemployeerate.UnemployeeInsuranceRate,
-	 * nts.arc.time.YearMonth)
+	 * UnemployeeInsuranceRateRepository#findFirstData(java.lang.String)
 	 */
-	@Override
-	public void updateYearMonth(UnemployeeInsuranceRate rate, YearMonth yearMonth) {
-		QismtEmpInsuRate entity = toEntity(rate);
-		entity.setEndYm(yearMonth.v());
-		this.commandProxy().update(entity);
-
-	}
-
 	@Override
 	public Optional<UnemployeeInsuranceRate> findFirstData(String companyCode) {
 
 		// get entity manager
-		EntityManager em = getEntityManager();
+		EntityManager em = this.getEntityManager();
 		CriteriaBuilder criteriaBuilder = em.getCriteriaBuilder();
 
 		// call QISMT_EMP_INSU_RATE (QismtEmpInsuRate SQL)
@@ -250,7 +241,7 @@ public class JpaUnemployeeInsuranceRateRepository extends JpaRepository implemen
 
 		// eq CompanyCode
 		lstpredicateWhere.add(criteriaBuilder
-				.equal(root.get(QismtEmpInsuRate_.qismtEmpInsuRatePK).get(QismtEmpInsuRatePK_.ccd), companyCode));
+			.equal(root.get(QismtEmpInsuRate_.qismtEmpInsuRatePK).get(QismtEmpInsuRatePK_.ccd), companyCode));
 
 		// set where to SQL
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
@@ -262,12 +253,12 @@ public class JpaUnemployeeInsuranceRateRepository extends JpaRepository implemen
 		TypedQuery<QismtEmpInsuRate> query = em.createQuery(cq);
 		List<QismtEmpInsuRate> lstQismtEmpInsuRate = query.getResultList();
 
-		if (ListUtil.isEmpty(lstQismtEmpInsuRate)) {
+		if (CollectionUtil.isEmpty(lstQismtEmpInsuRate)) {
 			return Optional.empty();
 		}
 
 		// get fisrt data
-		return Optional.ofNullable(toDomain(lstQismtEmpInsuRate.get(BEGIN_FIRST)));
+		return Optional.ofNullable(this.toDomain(lstQismtEmpInsuRate.get(BusinessTypeEnum.Biz1St.index)));
 	}
 
 }

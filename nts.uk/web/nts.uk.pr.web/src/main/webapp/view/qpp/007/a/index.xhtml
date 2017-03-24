@@ -9,15 +9,15 @@
 		<ui:define name="htmlHead">
 			<com:stylefile path="main.css" />
 			<com:scriptfile set="IGNITE" />
-			<com:scriptfile path="viewmodel.js" />
-			<com:scriptfile path="start.js" />
- 			<com:scriptfile path="service.js" /> 
+			<com:scriptfile path="qpp007.a.vm.js" />
+			<com:scriptfile path="qpp007.a.start.js" />
+			<com:scriptfile path="qpp007.a.service.js" />
 			<script type="text/javascript">
 				// TODO: Code validate.
 				__viewContext.primitiveValueConstraints.TargetYear = {
 					valueType : 'Integer',
-					min: 1900,
-					max: 9999
+					min : 1900,
+					max : 9999
 				};
 			</script>
 		</ui:define>
@@ -25,10 +25,13 @@
 		<ui:define name="content">
 			<div id="functions-area" class="divHeader">
 				<div class="function-class">
-					<button id="select-employee-button" class="proceed" data-bind="enable: $root.errors.isEmpty, click: print">選択した社員を印刷 (PDF)</button>
+					<button id="select-employee-button" class="proceed"
+						data-bind="click: saveAsPdf">選択した社員を印刷 (PDF)</button>
 					<button id="text-output-button" class="function-button-style">テキスト出力</button>
-					<button id="print-setting-button" class="function-button-style">印刷設定</button>
-					<button id="print-excution-log-button" class="function-button-style">印刷実行ログ</button>
+					<button data-bind="click:openPrintSettingDialog"
+						id="print-setting-button" class="function-button-style">印刷設定</button>
+					<button id="print-excution-log-button"
+						class="function-button-style">印刷実行ログ</button>
 				</div>
 			</div>
 			<div id="contents-area">
@@ -37,124 +40,148 @@
 						<td id="contents-left">
 							<div class="select-target-year">
 								<div id="time-input">
-									<div class="label" id="target-year-label">対象年度</div>									
-									<span class="date-picker" for="target-year-label"  data-bind="ntsDatePicker: {value: yearMonth, dateFormat: 'yyyy/MM',startDate: '1900/01', endDate:'9999/12'}" ></span>									
-									<span class="monthly-label">月度 ~</span>
-									<span class="date-picker" for="target-year-label"  data-bind="ntsDatePicker: {value: yearMonth, dateFormat: 'yyyy/MM',startDate: '1900/01', endDate:'9999/12'}" ></span>
+									<div class="label" id="target-year-label">対象年度</div>
+									<span class="date-picker" for="target-year-label"
+										data-bind="ntsDatePicker: {value: yearMonth, dateFormat: 'yyyy/MM',startDate: '1900/01', endDate:'9999/12'}"></span>
+									<span class="monthly-label">月度 ~</span> <span
+										class="date-picker" for="target-year-label"
+										data-bind="ntsDatePicker: {value: yearMonth, dateFormat: 'yyyy/MM',startDate: '1900/01', endDate:'9999/12'}"></span>
 									<span class="monthly-label">月度</span>
 								</div>
-								<div id="monthly-checkbox" >
-									<span data-bind="ntsCheckBox: { checked: isUsuallyAMonth, enable: true, text: '通常月' }"></span>
-									<span data-bind="ntsCheckBox: { checked: isPreliminaryMonth, enable: true, text: '通常月' }"></span>
+								<div id="monthly-checkbox">
+									<span
+										data-bind="ntsCheckBox: { checked: isUsuallyAMonth, enable: true, text: '通常月' }"></span>
+									<span
+										data-bind="ntsCheckBox: { checked: isPreliminaryMonth, enable: true, text: '通常月' }"></span>
 								</div>
 							</div>
 							<div class="search-employee"></div>
 						</td>
 						<td id="contents-right">
 							<div id="detail-process">
-								<div class="label header-label" id="detail-process-label" style="margin-bottom: 20px">処理の詳細設定</div>
+								<div class="label header-label" id="detail-process-label"
+									style="margin-bottom: 20px">処理の詳細設定</div>
 								<table id="contents-right-table">
-								<tbody>
-									<tr>
-										<td class="td-width">
-											<div id="output-setting-label" class="margin-bottom" data-bind="ntsFormLabel: {required: true}" style="padding-top: 10px">出力形式	</div>
-										</td>
-										<td style="width: 210px">
-											<div class="cf margin-bottom" data-bind="ntsSwitchButton: {
-																					options: outputFormatType,
-																					optionsValue: 'code',
-																					optionsText: 'name',
-																					value: selectedOutputFormat,
-																					enable: enable }">
-											</div>
-										</td>
-										<td style="padding-left: 7px; padding-bottom: 7px">
-											<button  id="help-button">?</button> <!-- data-bind="ntsHelpButton: {image: 'test-image.png', position: 'right top', enable: true}" --> 
-										</td>
-									</tr>
-									<tr>
-										<td class="td-width">
-											<div id="output-setting-label" class="margin-bottom" data-bind="ntsFormLabel: {required: true}" style="padding-top: 10px">出力項目の設定</div>
-										</td>
-										<td>
-											<button id="output-item-setting-button" class="margin-bottom" style="width: 74px">設定</button>
-										</td>
-										<td></td>										
-									</tr>	
-									<tr>
-										<td colspan="3">
-											<div id="output-setting-box" class="margin-bottom" style="width: 350px; margin-left: 10px;" data-bind="ntsComboBox: {
-																							options: outputItemSetting,
-																							optionsValue: 'code',
-																							value: selectedOutputSetting,
-																							optionsText: 'name',
-																							enable: true,
-																							columns: [
-																								{ prop: 'code', length: 3 },
-																								{ prop: 'name', length: 10 },
-																							]}">
-											</div>
-										</td>
-									</tr>
-									<tr>
-										<td class="td-width">
-											<div id="output-setting-label" data-bind="ntsFormLabel: {required: true}" class="margin-bottom">罫線印刷</div>
-										</td>
-										<td span="2">
-											<span data-bind="ntsCheckBox: { checked: isVerticalLine, enable: true, text: '縦罫線' }"></span>
-											<span data-bind="ntsCheckBox: { checked: isHorizontalRuledLine, enable: true, text: '横罫線' }" style="margin-left: 45px"></span>
-										</td>
-									</tr>
-									<tr>
-										<td class="td-width">
-											<div id="output-setting-label" data-bind="ntsFormLabel: {required: true}" class="margin-bottom">改ページ</div>
-										</td>
-										<td>
-											<div id="page-break-setting-box" class="margin-bottom" style="width: 120px; padding-top: 15px " data-bind="ntsComboBox: {
-																							options: pageBreakSetting,
-																							optionsValue: 'code',
-																							value: selectedpageBreakSetting,
-																							optionsText: 'name',
-																							enable: true,
-																							columns: [																								
-																								{ prop: 'name', length: 6 },
-																							]}">
-											</div>
-											<div  style="margin-left: 22px;margin-top: 20px; padding-bottom: 20px; float: right">
-												<label>階層指定</label>
-											</div>
-										</td>
-										<td>
-											<div id="department-hierarchy-box" class="margin-bottom" style="margin-left: 20px;width: 50px; padding-top: 15px " data-bind="ntsComboBox: {
-																							options: departmentHierarchyList,
-																							optionsValue: 'code',
-																							value: selectedHierachy,
-																							optionsText: 'name',
-																							enable: isDepartmentHierarchy(),
-																							columns: [																								
-																								{ prop: 'name', length: 3 },
-																							]}">
-											</div>
-										</td>
-									</tr>	
-									<tr>
-										<td class="td-width">
-											<div id="output-language-label" class="margin-bottom" data-bind="ntsFormLabel: {required: true}" style="padding-top: 10px">言語出力選択</div>
-										</td>
-										<td style="width: 210px">
-											<div class="cf margin-bottom"  data-bind="ntsSwitchButton: {
-																					options: outputLanguage,
-																					optionsValue: 'code',
-																					optionsText: 'name',
-																					value: selectedOutputLanguage,
-																					enable: enable }">
-											</div>
-										</td>
-										<td></td>										
-									</tr>							
-								</tbody>
+									<tbody>
+										<tr>
+											<td class="td-width">
+												<div id="output-setting-label" class="margin-bottom"
+													data-bind="ntsFormLabel: {required: true}">出力形式</div>
+											</td>
+											<td style="width: 210px">
+												<div class="cf margin-bottom"
+													data-bind="ntsSwitchButton: {
+												options: outputFormatType,
+												optionsValue: 'code',
+												optionsText: 'name',
+												value: selectedOutputFormat,
+												enable: enable }">
+												</div>
+											</td>
+											<td style="padding-left: 7px; padding-bottom: 7px">
+												<button id="help-button">?</button> <!-- data-bind="ntsHelpButton: {image: 'test-image.png', position: 'right top', enable: true}" -->
+											</td>
+										</tr>
+										<tr>
+											<td class="td-width">
+												<div id="output-setting-label" class="margin-bottom"
+													data-bind="ntsFormLabel: {required: true}">出力項目の設定</div>
+											</td>
+											<td>
+												<button id="output-item-setting-button"
+													class="margin-bottom" style="width: 74px"
+													data-bind="click: openSalaryOuputSettingDialog">設定</button>
+											</td>
+											<td></td>
+										</tr>
+										<tr>
+											<td colspan="3">
+												<div id="output-setting-box" class="margin-bottom"
+													style="width: 350px; margin-left: 10px;"
+													data-bind="ntsComboBox: {
+													options: outputItemSetting,
+													optionsValue: 'code',
+													value: selectedOutputSetting,
+													optionsText: 'name',
+													enable: true,
+													columns: [
+														{ prop: 'code', length: 3 },
+														{ prop: 'name', length: 10 },
+													]}">
+												</div>
+											</td>
+										</tr>
+										<tr>
+											<td class="td-width">
+												<div id="output-setting-label"
+													data-bind="ntsFormLabel: {required: true}"
+													class="margin-bottom">罫線印刷</div>
+											</td>
+											<td span="2"><span
+												data-bind="ntsCheckBox: { checked: isVerticalLine, enable: true, text: '縦罫線' }"></span>
+												<span
+												data-bind="ntsCheckBox: { checked: isHorizontalRuledLine, enable: true, text: '横罫線' }"
+												style="margin-left: 45px"></span></td>
+										</tr>
+										<tr>
+											<td class="td-width">
+												<div id="output-setting-label"
+													data-bind="ntsFormLabel: {required: true}"
+													class="margin-bottom">改ページ</div>
+											</td>
+											<td>
+												<div id="page-break-setting-box" class="margin-bottom"
+													style="width: 120px; padding-top: 15px"
+													data-bind="ntsComboBox: {
+													options: pageBreakSetting,
+													optionsValue: 'code',
+													value: selectedpageBreakSetting,
+													optionsText: 'name',
+													enable: true,
+													columns: [																								
+														{ prop: 'name', length: 6 },
+													]}">
+												</div>
+												<div
+													style="margin-left: 22px; margin-top: 20px; padding-bottom: 20px; float: right">
+													<label>階層指定</label>
+												</div>
+											</td>
+											<td>
+												<div id="department-hierarchy-box" class="margin-bottom"
+													style="margin-left: 20px; width: 50px; padding-top: 15px"
+													data-bind="ntsComboBox: {
+													options: departmentHierarchyList,
+													optionsValue: 'code',
+													value: selectedHierachy,
+													optionsText: 'name',
+													enable: isDepartmentHierarchy(),
+													columns: [																								
+														{ prop: 'name', length: 3 },
+													]}">
+												</div>
+											</td>
+										</tr>
+										<tr>
+											<td class="td-width">
+												<div id="output-language-label" class="margin-bottom"
+													data-bind="ntsFormLabel: {required: true}">言語出力選択</div>
+											</td>
+											<td style="width: 210px">
+												<div class="cf margin-bottom"
+													data-bind="ntsSwitchButton: {
+													options: outputLanguage,
+													optionsValue: 'code',
+													optionsText: 'name',
+													value: selectedOutputLanguage,
+													enable: enable }">
+												</div>
+											</td>
+											<td></td>
+										</tr>
+									</tbody>
 								</table>
-								
+
 							</div>
 						</td>
 					</tr>

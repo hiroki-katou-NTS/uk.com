@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Optional;
 
 import nts.uk.ctx.pr.core.dom.base.simplehistory.SimpleHistoryRepository;
-import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 
 /**
  * The Interface HealthInsuranceRateRepository.
@@ -63,11 +62,4 @@ public interface HealthInsuranceRateRepository extends SimpleHistoryRepository<H
 	 * @return the list
 	 */
 	List<HealthInsuranceRate> findAllOffice(String companyCode , String officeCode);
-	/**
-	 * Checks if is invalid date range.
-	 *
-	 * @param applyRange the apply range
-	 * @return true, if is invalid date range
-	 */
-	boolean isInvalidDateRange(MonthRange applyRange);
 }

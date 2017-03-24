@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.pr.report.dom.company.CompanyCode;
 import nts.uk.ctx.pr.report.dom.salarydetail.SalaryOutputDistinction;
+import nts.uk.ctx.pr.report.dom.salarydetail.SalaryPrintSetting;
 
 @Getter
 @Setter
@@ -73,4 +74,9 @@ public class SaveSalaryPrintSettingCommand {
 
 	/** The show total. */
 	private Boolean showTotal;
+	
+	public SalaryPrintSetting toDomain(){
+		//TODO
+		return null;
+	}
 }

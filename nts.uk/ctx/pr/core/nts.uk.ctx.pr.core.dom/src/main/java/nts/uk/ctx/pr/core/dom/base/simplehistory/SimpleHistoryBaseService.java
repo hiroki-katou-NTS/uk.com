@@ -81,7 +81,7 @@ public abstract class SimpleHistoryBaseService<M extends Master, H extends Histo
 
 		// Validate start year.
 		if (startYear.v() <= lastestHistory.getStart().v()) {
-			throw new RuntimeException("Start year must greater than latest history start.");
+			throw new BusinessException("ER010");
 		}
 
 		// New history.
@@ -128,7 +128,7 @@ public abstract class SimpleHistoryBaseService<M extends Master, H extends Histo
 			
 			// Validate start year.
 			if (startYear.v() <= lastestHistory.getStart().v()) {
-				throw new RuntimeException("Start year must greater than latest history start.");
+				throw new BusinessException("ER010");
 			}
 
 			// Update latest history.
@@ -175,24 +175,30 @@ public abstract class SimpleHistoryBaseService<M extends Master, H extends Histo
 		H h = optH.get();
 		List<H> historyList = repo.findAllHistoryByMasterCode(h.getCompanyCode().v(), h.getMasterCode().v());
 		int indexOfH = historyList.indexOf(h);
-		H beforeH = indexOfH > 0 ? historyList.get(indexOfH -1 ) : null;
-		H afterH = indexOfH < historyList.size() ? historyList.get(indexOfH + 1) : null;
+		H afterH = indexOfH > 0 ? historyList.get(indexOfH -1) : null;
+		H beforeH = indexOfH < (historyList.size() -1) ? historyList.get(indexOfH + 1) : null;
 
 		// Validate new yearmonth.
 		if (beforeH != null && newYearMonth.v() <= beforeH.getStart().v()) {
 			// Error.
-			throw new BusinessException("Invalid new year month.");
+			throw new BusinessException("ER010");
 		}
 
 		if (afterH != null && newYearMonth.v() >= afterH.getStart().v()) {
 			// Error.
-			throw new BusinessException("Invalid new year month.");
+			throw new BusinessException("ER010");
 		}
 
 		// Update h.
 		h.setStart(newYearMonth);
 		repo.updateHistory(h);
 
+		// Update before h.
+		if (beforeH != null) {
+			beforeH.setEnd(newYearMonth.previousMonth());
+			repo.updateHistory(beforeH);
+		}
+		
 		// Ret.
 		return h;
 	}

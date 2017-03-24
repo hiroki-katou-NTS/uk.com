@@ -15,6 +15,7 @@ var qmm019;
                     self.itemList = ko.observableArray([]);
                     self.isEnable = ko.observable(true);
                     self.layouts = ko.observableArray([]);
+                    self.historys = ko.observableArray([]);
                     self.selectStmtCode = ko.observable(null);
                     self.selectStmtName = ko.observable(null);
                     self.selectStartYm = ko.observable(null);
@@ -45,6 +46,12 @@ var qmm019;
                     //fill data to dialog
                     d.service.getLayoutWithMaxStartYm().done(function (layout) {
                         self.layouts(layout);
+                        d.service.getHistoryWithMaxStart().done(function (layoutHistory) {
+                            if (layoutHistory.length > 0) {
+                                self.historys(layoutHistory);
+                                console.log(layoutHistory);
+                            }
+                        });
                         self.startDialog();
                     });
                     dfd.resolve();

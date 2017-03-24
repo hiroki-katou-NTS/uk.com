@@ -129,18 +129,6 @@ public class JpaSocialInsuranceOfficeSetMemento implements SocialInsuranceOffice
 	 * 
 	 * @see
 	 * nts.uk.ctx.pr.core.dom.insurance.social.SocialInsuranceOfficeSetMemento#
-	 * setPrefecture(java.lang.String)
-	 */
-	@Override
-	public void setPrefecture(String prefecture) {
-		this.typeValue.setPrefecture(prefecture);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * nts.uk.ctx.pr.core.dom.insurance.social.SocialInsuranceOfficeSetMemento#
 	 * setAddress1st(nts.uk.ctx.pr.core.dom.insurance.Address)
 	 */
 	@Override

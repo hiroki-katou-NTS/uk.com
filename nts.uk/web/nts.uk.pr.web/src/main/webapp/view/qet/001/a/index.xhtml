@@ -7,11 +7,11 @@
 <body>
 	<ui:composition template="../../../../master/base.xhtml">
 		<ui:define name="htmlHead">
-			<com:stylefile path="main.css" />
+			<com:stylefile path="qet001.a.main.css" />
 			<com:scriptfile set="IGNITE" />
-			<com:scriptfile path="service.js" />
-			<com:scriptfile path="viewmodel.js" />
-			<com:scriptfile path="start.js" />
+			<com:scriptfile path="qet001.a.service.js" />
+			<com:scriptfile path="qet001.a.vm.js" />
+			<com:scriptfile path="qet001.a.start.js" />
 			<script type="text/javascript">
 				// TODO: Code validate.
 				</script>
@@ -33,7 +33,7 @@
 					<button id="unknow-function-button">印刷実行ログ</button>
 				</div>
 			</div>
-			<div id="contents-area">
+			<div id="contents-area" data-bind="visible: true" style="display: none;">
 				<table>
 					<tr>
 						<td id="contents-left">

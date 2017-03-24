@@ -12,7 +12,7 @@ import javax.inject.Inject;
 
 import nts.uk.ctx.pr.core.app.wagetable.certification.find.dto.CertificationFindInDto;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.Certification;
-import nts.uk.ctx.pr.core.dom.wagetable.certification.CertificationReponsitory;
+import nts.uk.ctx.pr.core.dom.wagetable.certification.CertificationRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 
@@ -24,7 +24,7 @@ public class CertificationFinder {
 
 	/** The find. */
 	@Inject
-	CertificationReponsitory find;
+	private CertificationRepository find;
 
 	/**
 	 * Find all.

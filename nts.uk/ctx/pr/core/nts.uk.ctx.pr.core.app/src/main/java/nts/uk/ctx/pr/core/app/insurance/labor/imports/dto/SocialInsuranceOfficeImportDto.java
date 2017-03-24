@@ -4,7 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.app.insurance.labor.imports.dto;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.Address;
 import nts.uk.ctx.pr.core.dom.insurance.CitySign;
@@ -27,7 +28,8 @@ import nts.uk.shr.com.primitive.Memo;
 /**
  * Instantiates a new social insurance office import dto.
  */
-@Data
+@Getter
+@Setter
 public class SocialInsuranceOfficeImportDto {
 
 	/** The code. */
@@ -47,9 +49,6 @@ public class SocialInsuranceOfficeImportDto {
 
 	/** The potal code. */
 	private String potalCode;
-
-	/** The prefecture. */
-	private String prefecture;
 
 	/** The address 1 st. */
 	private String address1st;
@@ -119,11 +118,6 @@ public class SocialInsuranceOfficeImportDto {
 			@Override
 			public ShortName getShortName() {
 				return new ShortName(dto.shortName);
-			}
-
-			@Override
-			public String getPrefecture() {
-				return dto.prefecture;
 			}
 
 			@Override

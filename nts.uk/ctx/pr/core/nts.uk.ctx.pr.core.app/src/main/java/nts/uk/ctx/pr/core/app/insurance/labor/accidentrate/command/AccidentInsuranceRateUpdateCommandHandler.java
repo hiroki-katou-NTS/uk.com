@@ -22,7 +22,8 @@ import nts.uk.shr.com.context.LoginUserContext;
  * The Class AccidentInsuranceRateUpdateCommandHandler.
  */
 @Stateless
-public class AccidentInsuranceRateUpdateCommandHandler extends CommandHandler<AccidentInsuranceRateUpdateCommand> {
+public class AccidentInsuranceRateUpdateCommandHandler
+	extends CommandHandler<AccidentInsuranceRateUpdateCommand> {
 
 	/** The accident insurance rate repository. */
 	@Inject
@@ -42,35 +43,36 @@ public class AccidentInsuranceRateUpdateCommandHandler extends CommandHandler<Ac
 	@Override
 	@Transactional
 	protected void handle(CommandHandlerContext<AccidentInsuranceRateUpdateCommand> context) {
-		
+
 		// get user login
 		LoginUserContext loginUserContext = AppContexts.user();
-		
+
 		// get companyCode by user login
 		String companyCode = loginUserContext.companyCode();
-		
+
 		// getCommand
 		AccidentInsuranceRateUpdateCommand command = context.getCommand();
-		
+
 		// to domain
 		AccidentInsuranceRate accidentInsuranceRate = command.toDomain(companyCode);
-		
+
 		// validate domain
 		accidentInsuranceRate.validate();
-		
+
 		// validate input
 		this.accidentInsuranceRateService.validateDateRangeUpdate(accidentInsuranceRate);
-		
+
 		// get first by update
 		Optional<AccidentInsuranceRate> optionalUpdate = this.accidentInsuranceRateRepo.findBetweenUpdate(
-				accidentInsuranceRate.getCompanyCode().v(), accidentInsuranceRate.getApplyRange().getStartMonth(),
-				accidentInsuranceRate.getHistoryId());
-		
+			accidentInsuranceRate.getCompanyCode().v(), accidentInsuranceRate.getApplyRange().getStartMonth(),
+			accidentInsuranceRate.getHistoryId());
+
 		if (optionalUpdate.isPresent()) {
-			this.accidentInsuranceRateRepo.updateYearMonth(optionalUpdate.get(),
-					accidentInsuranceRate.getApplyRange().getStartMonth().previousMonth());
+			optionalUpdate.get()
+				.setEnd(accidentInsuranceRate.getApplyRange().getStartMonth().previousMonth());
+			this.accidentInsuranceRateRepo.update(optionalUpdate.get());
 		}
-		
+
 		// connection service update
 		this.accidentInsuranceRateRepo.update(accidentInsuranceRate);
 	}

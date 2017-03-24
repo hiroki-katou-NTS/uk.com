@@ -19,7 +19,7 @@ import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.Certification;
-import nts.uk.ctx.pr.core.dom.wagetable.certification.CertificationReponsitory;
+import nts.uk.ctx.pr.core.dom.wagetable.certification.CertificationRepository;
 import nts.uk.ctx.pr.core.infra.entity.wagetable.certification.QcemtCertification;
 import nts.uk.ctx.pr.core.infra.entity.wagetable.certification.QcemtCertificationPK;
 import nts.uk.ctx.pr.core.infra.entity.wagetable.certification.QcemtCertificationPK_;
@@ -32,7 +32,7 @@ import nts.uk.ctx.pr.core.infra.entity.wagetable.certification.QwtmtWagetableCer
  * The Class JpaCertificationRepository.
  */
 @Stateless
-public class JpaCertificationRepository extends JpaRepository implements CertificationReponsitory {
+public class JpaCertificationRepository extends JpaRepository implements CertificationRepository {
 
 	/*
 	 * (non-Javadoc)
@@ -62,8 +62,8 @@ public class JpaCertificationRepository extends JpaRepository implements Certifi
 		List<Predicate> lstpredicateWhere = new ArrayList<>();
 
 		// eq CompanyCode
-		lstpredicateWhere.add(criteriaBuilder
-				.equal(root.get(QcemtCertification_.qcemtCertificationPK).get(QcemtCertificationPK_.ccd), companyCode));
+		lstpredicateWhere.add(criteriaBuilder.equal(
+			root.get(QcemtCertification_.qcemtCertificationPK).get(QcemtCertificationPK_.ccd), companyCode));
 
 		// set where to SQL
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
@@ -73,7 +73,7 @@ public class JpaCertificationRepository extends JpaRepository implements Certifi
 
 		// exclude select
 		List<Certification> lstCertification = query.getResultList().stream().map(item -> this.toDomain(item))
-				.collect(Collectors.toList());
+			.collect(Collectors.toList());
 
 		return lstCertification;
 	}
@@ -113,10 +113,12 @@ public class JpaCertificationRepository extends JpaRepository implements Certifi
 	/**
 	 * Check exist of group.
 	 *
-	 * @param certification
-	 *            the certification
-	 * @param certifyGroupCodeNone
-	 *            the certify group code none
+	 * @param companyCode
+	 *            the company code
+	 * @param certificationCode
+	 *            the certification code
+	 * @param certifyGroupCode
+	 *            the certify group code
 	 * @return true, if successful
 	 */
 	// check Certification ExistOfGroup and none of CertifyGroupCode
@@ -140,17 +142,18 @@ public class JpaCertificationRepository extends JpaRepository implements Certifi
 
 		// eq CompanyCode (where)
 		lstpredicateWhere.add(criteriaBuilder.equal(
-				root.get(QwtmtWagetableCertify_.qwtmtWagetableCertifyPK).get(QwtmtWagetableCertifyPK_.ccd),
-				companyCode));
+			root.get(QwtmtWagetableCertify_.qwtmtWagetableCertifyPK).get(QwtmtWagetableCertifyPK_.ccd),
+			companyCode));
 
 		// eq CerticationCode (where)
 		lstpredicateWhere.add(criteriaBuilder.equal(
-				root.get(QwtmtWagetableCertify_.qwtmtWagetableCertifyPK).get(QwtmtWagetableCertifyPK_.certifyCd),
-				certificationCode));
+			root.get(QwtmtWagetableCertify_.qwtmtWagetableCertifyPK).get(QwtmtWagetableCertifyPK_.certifyCd),
+			certificationCode));
 
 		// noteq CertifyGroupCodeNone (certifyGroupCodeNone not null)
 		if (certifyGroupCode != null) {
-			lstpredicateWhere.add(criteriaBuilder.notEqual(root.get(QwtmtWagetableCertify_.qwtmtWagetableCertifyPK)
+			lstpredicateWhere
+				.add(criteriaBuilder.notEqual(root.get(QwtmtWagetableCertify_.qwtmtWagetableCertifyPK)
 					.get(QwtmtWagetableCertifyPK_.certifyGroupCd), certifyGroupCode));
 		}
 
@@ -160,12 +163,20 @@ public class JpaCertificationRepository extends JpaRepository implements Certifi
 		return (em.createQuery(cq).getSingleResult() > 0);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.dom.wagetable.certification.CertificationReponsitory#
+	 * findById(java.lang.String, java.lang.String, java.lang.String)
+	 */
 	@Override
-	public Optional<Certification> findById(String companyCode, String certificationCode, String certifyGroupCode) {
+	public Optional<Certification> findById(String companyCode, String certificationCode,
+		String certifyGroupCode) {
 		if (this.checkExistOfGroup(companyCode, certificationCode, certifyGroupCode)) {
 			return this.queryProxy()
-					.find(new QcemtCertificationPK(companyCode, certificationCode), QcemtCertification.class)
-					.map(c -> this.toDomain(c));
+				.find(new QcemtCertificationPK(companyCode, certificationCode), QcemtCertification.class)
+				.map(c -> this.toDomain(c));
 		}
 		return Optional.empty();
 	}

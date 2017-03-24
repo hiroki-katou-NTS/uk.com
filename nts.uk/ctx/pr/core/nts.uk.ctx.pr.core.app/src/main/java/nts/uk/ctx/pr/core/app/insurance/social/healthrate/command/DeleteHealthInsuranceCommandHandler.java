@@ -11,6 +11,9 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.HealthInsuranceRateRepository;
 
+/**
+ * The Class DeleteHealthInsuranceCommandHandler.
+ */
 @Stateless
 public class DeleteHealthInsuranceCommandHandler extends CommandHandler<DeleteHealthInsuranceCommand> {
 
@@ -18,6 +21,9 @@ public class DeleteHealthInsuranceCommandHandler extends CommandHandler<DeleteHe
 	@Inject
 	private HealthInsuranceRateRepository healthInsuranceRateRepository;
 
+	/* (non-Javadoc)
+	 * @see nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command.CommandHandlerContext)
+	 */
 	@Override
 	protected void handle(CommandHandlerContext<DeleteHealthInsuranceCommand> command) {
 		String historyId = command.getCommand().getHistoryId();

@@ -13,13 +13,6 @@ import java.util.Optional;
 public interface HealthInsuranceAvgearnRepository {
 
 	/**
-	 * Adds the.
-	 *
-	 * @param healthInsuranceAvgearn the health insurance avgearn
-	 */
-	void add(HealthInsuranceAvgearn healthInsuranceAvgearn);
-
-	/**
 	 * Update.
 	 *
 	 * @param healthInsuranceAvgearns the health insurance avgearns

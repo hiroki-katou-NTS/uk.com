@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2016 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.pr.core.ws.insurance.social.healthrate;
 
 import java.util.List;
@@ -32,6 +36,9 @@ import nts.uk.ctx.pr.core.ws.base.simplehistory.dto.HistoryModel;
 import nts.uk.ctx.pr.core.ws.base.simplehistory.dto.MasterModel;
 import nts.uk.shr.com.context.AppContexts;
 
+/**
+ * The Class HealthInsuranceRateWs.
+ */
 @Path("ctx/pr/core/insurance/social/healthrate")
 @Produces("application/json")
 public class HealthInsuranceRateWs extends SimpleHistoryWs<SocialInsuranceOffice, HealthInsuranceRate> {
@@ -51,6 +58,12 @@ public class HealthInsuranceRateWs extends SimpleHistoryWs<SocialInsuranceOffice
 	@Inject
 	private HealthInsuranceRateService service;
 
+	/**
+	 * Find.
+	 *
+	 * @param id the id
+	 * @return the health insurance rate dto
+	 */
 	// find by historyId
 	@POST
 	@Path("find/{id}")
@@ -58,6 +71,11 @@ public class HealthInsuranceRateWs extends SimpleHistoryWs<SocialInsuranceOffice
 		return healthInsuranceRateFinder.find(id).get();
 	}
 
+	/**
+	 * Findby code.
+	 *
+	 * @return the list
+	 */
 	// find All by OfficeCode
 	@POST
 	@Path("findAllHistory")
@@ -65,18 +83,33 @@ public class HealthInsuranceRateWs extends SimpleHistoryWs<SocialInsuranceOffice
 		return healthInsuranceRateFinder.findAllHistory();
 	}
 
+	/**
+	 * Creates the.
+	 *
+	 * @param command the command
+	 */
 	@POST
 	@Path("create")
 	public void create(RegisterHealthInsuranceCommand command) {
 		registerHealthInsuranceCommandHandler.handle(command);
 	}
 
+	/**
+	 * Update.
+	 *
+	 * @param command the command
+	 */
 	@POST
 	@Path("update")
 	public void update(UpdateHealthInsuranceCommand command) {
 		updateHealthInsuranceCommandHandler.handle(command);
 	}
 
+	/**
+	 * Removes the.
+	 *
+	 * @param command the command
+	 */
 	// remove by historyId
 	@POST
 	@Path("remove")
@@ -84,6 +117,9 @@ public class HealthInsuranceRateWs extends SimpleHistoryWs<SocialInsuranceOffice
 		deleteHealthInsuranceCommandHandler.handle(command);
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.pr.core.ws.base.simplehistory.SimpleHistoryWs#loadMasterModelList()
+	 */
 	@Override
 	@Path("masterhistory")
 	@POST
@@ -110,6 +146,9 @@ public class HealthInsuranceRateWs extends SimpleHistoryWs<SocialInsuranceOffice
 		}).collect(Collectors.toList());
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.pr.core.ws.base.simplehistory.SimpleHistoryWs#getServices()
+	 */
 	@Override
 	protected SimpleHistoryBaseService<SocialInsuranceOffice, HealthInsuranceRate> getServices() {
 		return this.service;

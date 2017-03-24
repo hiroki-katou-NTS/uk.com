@@ -15,7 +15,7 @@
 			<script type="text/javascript">
 				var dialogSize = {
 					width : 580,
-					height : 380
+					height : 350
 				};
 			</script>
 		</ui:define>
@@ -30,34 +30,42 @@
 						<td><div data-bind="ntsFormLabel: { required: true }">期間</div></td>
 						<td>
 							<span id="startYearMonth" data-bind="ntsDatePicker: {value: startYearMonth, dateFormat: 'yyyy/MM'}"/>
-							<label data-bind="text: ' ~ 9999/12'"/>
+							<label data-bind="text: '(' + nts.uk.time.yearmonthInJapanEmpire(startYearMonth()) + ') ~ 9999/12'"/>
 						</td>
 					</tr>
 					<tr>
 						<td><div data-bind="ntsFormLabel: { required: true }">履歴の引継ぎ</div></td>
-						<td><label class="ntsRadioBox">
-							<input type="radio"
-								name="createType"
-								id="createTypeCopy"
-								data-bind="checkedValue: 'COPY', checked: createType" />
-							<span class="box"/>
-							<label for="createTypeCopy" class="label" data-bind="text: '最新の履歴 (' + lastYearMonth + ') から引き継ぐ'"/>
-						</label></td>
-					</tr>
-					<tr>
-						<td></td>
-						<td><label class="ntsRadioBox">
-							<input type="radio"
-								name="createType"
-								id="createTypeInit"
-								data-bind="checkedValue: 'INIT', checked: createType" />
-							<span class="box"/>
-							<label for="createTypeInit" class="label" data-bind="text: '初めから作成する'"/>
-						</label></td>
+						<td>
+						<div id="actionOption">
+							<com:ko tag="if" bind="dialogOptions.lastest != undefined">
+								<div>
+									<label class="ntsRadioBox">
+										<input type="radio"
+											name="createType"
+											id="createTypeCopy"
+											data-bind="checkedValue: 'COPY', checked: createType, enable: dialogOptions.lastest != undefined" />
+										<span class="box"/>
+										<label for="createTypeCopy" class="label" data-bind="text: '最新の履歴 (' + lastYearMonth + ') から引き継ぐ'"/>
+									</label>
+								</div>
+							</com:ko>
+							<div>
+								<label class="ntsRadioBox">
+									<input type="radio"
+										name="createType"
+										id="createTypeInit"
+										data-bind="checkedValue: 'INIT', checked: createType" />
+									<span class="box"/>
+									<label for="createTypeInit" class="label" data-bind="text: '初めから作成する'"/>
+								</label>
+							</div>
+						</div>
+						</td>
 					</tr>
 				</table>
-				<br/>
-				<br/>
+				<com:ko tag="if" bind="dialogOptions.lastest == undefined">
+					<div style="height: 40px; line-height: 40px;"/>
+				</com:ko>
 			</div>
 			<hr />
 			<!-- END CONTENT AREA-->

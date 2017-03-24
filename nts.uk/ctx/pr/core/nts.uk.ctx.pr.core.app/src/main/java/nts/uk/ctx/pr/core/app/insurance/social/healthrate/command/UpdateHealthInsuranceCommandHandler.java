@@ -58,7 +58,6 @@ public class UpdateHealthInsuranceCommandHandler extends CommandHandler<UpdateHe
 			updatedHealthInsuranceRate.validate();
 			// Validate
 			healthInsuranceRateService.validateRequiredItem(updatedHealthInsuranceRate);
-			healthInsuranceRateService.validateDateRange(updatedHealthInsuranceRate);
 
 			// Update to db.
 			healthInsuranceRateRepository.update(updatedHealthInsuranceRate);

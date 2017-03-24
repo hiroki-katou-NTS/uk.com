@@ -7,11 +7,13 @@ package nts.uk.file.pr.app.export.wageledger.data.share;
 import java.util.List;
 
 import lombok.Builder;
+import lombok.Getter;
 
 /**
  * The Class HeaderReportData.
  */
 @Builder
+@Getter
 public class HeaderReportData {
 	
 	/** The department code. */
@@ -34,4 +36,7 @@ public class HeaderReportData {
 	
 	/** The bonus month list. */
 	public List<Integer> bonusMonthList;
+	
+	/** The salary month list. */
+	public List<Integer> salaryMonthList;
 }

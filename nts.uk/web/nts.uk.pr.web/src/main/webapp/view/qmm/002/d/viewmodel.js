@@ -6,17 +6,36 @@ var qmm002;
         (function (viewmodel) {
             var ScreenModel = (function () {
                 function ScreenModel() {
+                    this.confirmDirty = false;
                     var self = this;
                     self.items = ko.observableArray([]);
                     self.currentItem = ko.observable(new Bank("", "", "", ""));
                     self.currentCode = ko.observable();
                     self.currentCodeList = ko.observableArray([]);
+                    self.dirty = new nts.uk.ui.DirtyChecker(ko.observable(new Bank("", "", "", "")));
                     self.columns = ko.observableArray([
                         { headerText: 'コード', prop: 'bankCode', width: 50, key: 'bankCode' },
                         { headerText: 'コード', prop: 'bankName', width: 50, key: 'bankName' }
                     ]);
                     self.currentCode.subscribe(function (codeChanged) {
-                        self.currentItem(self.getCode(codeChanged));
+                        if (!self.checkDirty()) {
+                            self.currentItem(self.getCode(codeChanged));
+                            self.dirty = new nts.uk.ui.DirtyChecker(self.currentItem);
+                        }
+                        else {
+                            if (self.confirmDirty) {
+                                self.confirmDirty = false;
+                                return;
+                            }
+                            debugger;
+                            nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\n よろしいですか。").ifYes(function () {
+                                self.currentItem(self.getCode(codeChanged));
+                                self.dirty = new nts.uk.ui.DirtyChecker(self.currentItem);
+                            }).ifNo(function () {
+                                self.confirmDirty = true;
+                                self.currentCode(self.currentItem().code());
+                            });
+                        }
                         self.isCreated(false);
                     });
                     self.isCreated = ko.observable(true);
@@ -29,12 +48,13 @@ var qmm002;
                         self.isCreated(!hadData);
                         if (hadData) {
                             self.currentItem(self.selectedFirst(data[0]));
+                            self.dirty = new nts.uk.ui.DirtyChecker(self.currentItem);
                         }
                         dfd.resolve();
                     });
                     return dfd.promise();
                 };
-                ScreenModel.prototype.btn_002 = function () {
+                ScreenModel.prototype.addBank = function () {
                     var self = this;
                     var bankInfo = {
                         bankCode: self.currentItem().code(),
@@ -44,6 +64,7 @@ var qmm002;
                     };
                     var dfd = $.Deferred();
                     qmm002.d.service.addBank(self.isCreated(), bankInfo).done(function () {
+                        self.dirty = new nts.uk.ui.DirtyChecker(ko.observable(bankInfo));
                         dfd.resolve();
                     }).fail(function (error) {
                         alert(error.message);
@@ -55,7 +76,15 @@ var qmm002;
                 };
                 ScreenModel.prototype.close = function () {
                     var self = this;
-                    nts.uk.ui.windows.close();
+                    if (!self.checkDirty()) {
+                        nts.uk.ui.windows.close();
+                    }
+                    else {
+                        debugger;
+                        nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\n よろしいですか。").ifYes(function () {
+                            nts.uk.ui.windows.close();
+                        });
+                    }
                 };
                 ScreenModel.prototype.Delete = function () {
                     var self = this;
@@ -78,9 +107,19 @@ var qmm002;
                 };
                 ScreenModel.prototype.cleanForm = function () {
                     var self = this;
-                    self.currentItem(new Bank("", "", "", ""));
-                    self.currentCode("");
-                    self.isCreated(true);
+                    self.confirmDirty = true;
+                    if (!self.checkDirty()) {
+                        self.currentItem(new Bank("", "", "", ""));
+                        self.currentCode("");
+                        self.isCreated(true);
+                    }
+                    else {
+                        nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\n よろしいですか。").ifYes(function () {
+                            self.currentItem(new Bank("", "", "", ""));
+                            self.currentCode("");
+                            self.isCreated(true);
+                        });
+                    }
                 };
                 ScreenModel.prototype.getCode = function (codeChange) {
                     var self = this;
@@ -109,6 +148,15 @@ var qmm002;
                     var self = this;
                     self.currentCode(item.bankCode);
                     return new Bank(item.bankCode, item.bankName, item.bankNameKana, item.memo);
+                };
+                ScreenModel.prototype.checkDirty = function () {
+                    var self = this;
+                    if (self.dirty.isDirty()) {
+                        return true;
+                    }
+                    else {
+                        return false;
+                    }
                 };
                 return ScreenModel;
             }());

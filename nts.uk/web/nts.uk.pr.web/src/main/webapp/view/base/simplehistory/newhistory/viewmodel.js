@@ -19,9 +19,19 @@ var nts;
                                         var self = this;
                                         self.dialogOptions = nts.uk.ui.windows.getShared('options');
                                         self.dialogOptions.screenMode = self.dialogOptions.screenMode || simplehistory.dialogbase.ScreenMode.MODE_MASTER_HISTORY;
-                                        self.createType = ko.observable(ScreenModel.CREATE_TYPE_COPY_LATEST);
-                                        self.startYearMonth = ko.observable(self.dialogOptions.lastest.start);
-                                        self.lastYearMonth = nts.uk.time.formatYearMonth(self.dialogOptions.lastest.start);
+                                        if (self.dialogOptions.lastest) {
+                                            self.createType = ko.observable(ScreenModel.CREATE_TYPE_COPY_LATEST);
+                                        }
+                                        else {
+                                            self.createType = ko.observable(ScreenModel.CREATE_TYPE_INIT);
+                                        }
+                                        if (self.dialogOptions.lastest) {
+                                            self.startYearMonth = ko.observable(self.dialogOptions.lastest.start);
+                                            self.lastYearMonth = nts.uk.time.formatYearMonth(self.dialogOptions.lastest.start);
+                                        }
+                                        else {
+                                            self.startYearMonth = ko.observable(parseInt(nts.uk.time.formatDate(new Date(), 'yyyyMM')));
+                                        }
                                     }
                                     ScreenModel.prototype.startPage = function () {
                                         var self = this;

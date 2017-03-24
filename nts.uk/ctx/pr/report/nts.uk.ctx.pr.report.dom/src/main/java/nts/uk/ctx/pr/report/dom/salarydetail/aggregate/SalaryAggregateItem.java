@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2015 Nittsu System to present.                   *
+ * Copyright (c) 2016 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.report.dom.salarydetail.aggregate;
@@ -9,9 +9,16 @@ import java.util.Set;
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
 import nts.uk.ctx.pr.report.dom.company.CompanyCode;
+import nts.uk.ctx.pr.report.dom.salarydetail.item.SalaryItem;
 
 /**
  * The Class SalaryAggregateItem.
+ */
+
+/**
+ * Gets the item category.
+ *
+ * @return the item category
  */
 @Getter
 public class SalaryAggregateItem extends DomainObject {
@@ -26,7 +33,7 @@ public class SalaryAggregateItem extends DomainObject {
 	private SalaryAggregateItemName name;
 
 	/** The sub item codes. */
-	private Set<String> subItemCodes;
+	private Set<SalaryItem> subItemCodes;
 
 	/** The tax division. */
 	private TaxDivision taxDivision;
@@ -38,7 +45,8 @@ public class SalaryAggregateItem extends DomainObject {
 	/**
 	 * Instantiates a new salary aggregate item.
 	 *
-	 * @param memento the memento
+	 * @param memento
+	 *            the memento
 	 */
 	public SalaryAggregateItem(SalaryAggregateItemGetMemento memento) {
 		super();
@@ -53,15 +61,16 @@ public class SalaryAggregateItem extends DomainObject {
 	/**
 	 * Save to memento.
 	 *
-	 * @param memento the memento
+	 * @param memento
+	 *            the memento
 	 */
 	public void saveToMemento(SalaryAggregateItemSetMemento memento) {
 		memento.setCompanyCode(this.companyCode);
 		memento.setSalaryAggregateItemCode(this.code);
 		memento.setSalaryAggregateItemName(this.name);
-		memento.setItemCategory(this.itemCategory);
 		memento.setSubItemCodes(this.subItemCodes);
 		memento.setTaxDivision(this.taxDivision);
+		memento.setItemCategory(this.itemCategory);
 	}
 
 }

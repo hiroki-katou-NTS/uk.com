@@ -13,10 +13,8 @@ var qmm002;
                     self.selectedCodes = ko.observableArray([]);
                     self.selectedCodes2 = ko.observableArray([]);
                     self.selectedCodes.subscribe(function (items) {
-                        console.log(items);
                     });
                     self.singleSelectedCode.subscribe(function (val) {
-                        console.log(val);
                     });
                 }
                 ;
@@ -24,7 +22,6 @@ var qmm002;
                     var self = this;
                     var list = nts.uk.ui.windows.getShared('listItem');
                     self.lst_001(list);
-                    console.log(self.lst_001());
                     self.lst_002(list);
                 };
                 ScreenModel.prototype.closeDialog = function () {
@@ -32,27 +29,47 @@ var qmm002;
                 };
                 ScreenModel.prototype.tranferBranch = function () {
                     var self = this;
-                    var branchCodesMap = [];
-                    _.forEach(self.selectedCodes(), function (item) {
-                        var code = item.split('-');
-                        var bankCode = code[0];
-                        var branchCode = code[1];
-                        branchCodesMap.push({
-                            bankCode: bankCode,
-                            branchCode: branchCode
+                    var message = "*が選択されていません。";
+                    if (!self.singleSelectedCode()) {
+                        nts.uk.ui.dialog.alert(message.replace("*", "統合元情報"));
+                        return;
+                    }
+                    if (!self.selectedCodes().length) {
+                        nts.uk.ui.dialog.alert(message.replace("*", "統合先情報"));
+                        return;
+                    }
+                    if (self.selectedCodes().length) {
+                        _.forEach(self.selectedCodes(), function (item) {
+                            if (item == self.singleSelectedCode()) {
+                                nts.uk.ui.dialog.alert("統合元と統合先で同じコードの＊が選択されています。\r\n");
+                            }
+                            else {
+                                nts.uk.ui.dialog.confirm("統合元から統合先へデータを置換えます。\r\nよろしいですか？").ifYes(function () {
+                                    var branchCodesMap = [];
+                                    _.forEach(self.selectedCodes(), function (item) {
+                                        var code = item.split('-');
+                                        var bankCode = code[0];
+                                        var branchCode = code[1];
+                                        branchCodesMap.push({
+                                            bankCode: bankCode,
+                                            branchCode: branchCode
+                                        });
+                                    });
+                                    var code = self.singleSelectedCode().split('-');
+                                    var bankNewCode = code[0];
+                                    var branchNewCode = code[1];
+                                    var data = {
+                                        branchCodes: branchCodesMap,
+                                        bankNewCode: bankNewCode,
+                                        branchNewCode: branchNewCode
+                                    };
+                                    c.service.tranferBranch(data).done(function () {
+                                        self.getBankList();
+                                    });
+                                });
+                            }
                         });
-                    });
-                    var code = self.singleSelectedCode().split('-');
-                    var bankNewCode = code[0];
-                    var branchNewCode = code[1];
-                    var data = {
-                        branchCodes: branchCodesMap,
-                        bankNewCode: bankNewCode,
-                        branchNewCode: branchNewCode
-                    };
-                    c.service.tranferBranch(data).done(function () {
-                        self.getBankList();
-                    });
+                    }
                 };
                 ScreenModel.prototype.getBankList = function () {
                     var self = this;

@@ -10,6 +10,7 @@ import java.util.Set;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
+import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.CareerGroup;
 import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsuranceRateGetMemento;
 import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsuranceRateItem;
 import nts.uk.ctx.pr.core.infra.entity.insurance.labor.unemployeerate.QismtEmpInsuRate;
@@ -20,7 +21,8 @@ import nts.uk.ctx.pr.core.infra.entity.insurance.labor.unemployeerate.QismtEmpIn
 public class JpaUnemployeeInsuranceRateGetMemento implements UnemployeeInsuranceRateGetMemento {
 
 	/** The type value. */
-	protected QismtEmpInsuRate typeValue;
+	private QismtEmpInsuRate typeValue;
+
 
 	/**
 	 * Instantiates a new jpa unemployee insurance rate get memento.
@@ -62,7 +64,8 @@ public class JpaUnemployeeInsuranceRateGetMemento implements UnemployeeInsurance
 	 */
 	@Override
 	public MonthRange getApplyRange() {
-		return MonthRange.range(YearMonth.of(this.typeValue.getStrYm()), YearMonth.of(this.typeValue.getEndYm()));
+		return MonthRange.range(YearMonth.of(this.typeValue.getStrYm()),
+			YearMonth.of(this.typeValue.getEndYm()));
 	}
 
 	/*
@@ -73,13 +76,15 @@ public class JpaUnemployeeInsuranceRateGetMemento implements UnemployeeInsurance
 	 */
 	@Override
 	public Set<UnemployeeInsuranceRateItem> getRateItems() {
+		
 		Set<UnemployeeInsuranceRateItem> setUnemployeeInsuranceRateItem = new HashSet<>();
-		setUnemployeeInsuranceRateItem.add(
-				new UnemployeeInsuranceRateItem(new JpaUnemployeeInsuranceRateItemGeneralGetMemento(this.typeValue)));
-		setUnemployeeInsuranceRateItem.add(
-				new UnemployeeInsuranceRateItem(new JpaUnemployeeInsuranceRateItemOtherGetMemento(this.typeValue)));
-		setUnemployeeInsuranceRateItem.add(
-				new UnemployeeInsuranceRateItem(new JpaUnemployeeInsuranceRateItemConstGetMemento(this.typeValue)));
+		setUnemployeeInsuranceRateItem.add(new UnemployeeInsuranceRateItem(
+			new JpaUnemployeeInsuranceRateItemGetMemento(this.typeValue, CareerGroup.Agroforestry)));
+		setUnemployeeInsuranceRateItem.add(new UnemployeeInsuranceRateItem(
+			new JpaUnemployeeInsuranceRateItemGetMemento(this.typeValue, CareerGroup.Contruction)));
+		setUnemployeeInsuranceRateItem.add(new UnemployeeInsuranceRateItem(
+			new JpaUnemployeeInsuranceRateItemGetMemento(this.typeValue, CareerGroup.Other)));
+		
 		return setUnemployeeInsuranceRateItem;
 	}
 

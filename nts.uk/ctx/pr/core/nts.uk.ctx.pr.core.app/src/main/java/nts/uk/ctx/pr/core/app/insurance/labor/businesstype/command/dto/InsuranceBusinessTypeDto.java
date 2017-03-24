@@ -4,12 +4,14 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.app.insurance.labor.businesstype.command.dto;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * The Class InsuranceBusinessTypeDto.
  */
-@Data
+@Getter
+@Setter
 public class InsuranceBusinessTypeDto {
 	/** The biz name biz 1 st. */
 	private String bizNameBiz1St;

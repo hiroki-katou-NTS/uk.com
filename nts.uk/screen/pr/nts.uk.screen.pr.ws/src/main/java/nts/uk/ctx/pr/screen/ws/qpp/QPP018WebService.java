@@ -15,8 +15,8 @@ import nts.arc.layer.app.file.export.ExportServiceResult;
 import nts.arc.layer.ws.WebService;
 import nts.uk.ctx.pr.screen.app.query.qpp018.SocialInsuranceQueryProcessor;
 import nts.uk.ctx.pr.screen.app.query.qpp018.dto.InsuranceOfficeDto;
-import nts.uk.file.pr.app.export.insurance.SocialInsuranceQuery;
-import nts.uk.file.pr.app.export.insurance.SocialInsuranceReportService;
+import nts.uk.file.pr.app.export.insurance.salary.SalarySocialInsuranceQuery;
+import nts.uk.file.pr.app.export.insurance.salary.SalarySocialInsuranceReportService;
 
 /**
  * The Class QPP018WebService.
@@ -25,26 +25,35 @@ import nts.uk.file.pr.app.export.insurance.SocialInsuranceReportService;
 @Produces("application/json")
 public class QPP018WebService extends WebService {
 
+    /** The report service. */
     @Inject
-    private SocialInsuranceReportService reportService;
+    private SalarySocialInsuranceReportService reportService;
     
+    /** The social insu query processor. */
     @Inject
     SocialInsuranceQueryProcessor socialInsuQueryProcessor;
     
+    
     /**
-     * Gets the all.
+     * Find all office.
      *
-     * @return the all
+     * @return the list
      */
     @POST
     @Path("findAllOffice")
-    public List<InsuranceOfficeDto> getAll() {
+    public List<InsuranceOfficeDto> findAllOffice() {
         return socialInsuQueryProcessor.findAllOffice();
     }
     
+    /**
+     * Export data to pdf.
+     *
+     * @param query the query
+     * @return the export service result
+     */
     @POST
     @Path("saveAsPdf")
-    public ExportServiceResult exportDataToPdf(SocialInsuranceQuery query) {
+    public ExportServiceResult exportDataToPdf(SalarySocialInsuranceQuery query) {
          return reportService.start(query);
     }
 }

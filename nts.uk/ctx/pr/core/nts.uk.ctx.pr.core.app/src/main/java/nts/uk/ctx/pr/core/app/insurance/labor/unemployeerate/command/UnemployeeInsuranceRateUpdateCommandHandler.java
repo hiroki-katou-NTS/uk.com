@@ -22,7 +22,8 @@ import nts.uk.shr.com.context.LoginUserContext;
  * The Class UnemployeeInsuranceRateUpdateCommandHandler.
  */
 @Stateless
-public class UnemployeeInsuranceRateUpdateCommandHandler extends CommandHandler<UnemployeeInsuranceRateUpdateCommand> {
+public class UnemployeeInsuranceRateUpdateCommandHandler
+	extends CommandHandler<UnemployeeInsuranceRateUpdateCommand> {
 
 	/** CompanyRepository */
 	@Inject
@@ -61,19 +62,20 @@ public class UnemployeeInsuranceRateUpdateCommandHandler extends CommandHandler<
 
 		// call get by id
 		Optional<UnemployeeInsuranceRate> optionalFirst;
-		optionalFirst = this.unemployeeInsuranceRateRepository.findById(unemployeeInsuranceRate.getCompanyCode().v(),
-				unemployeeInsuranceRate.getHistoryId());
+		optionalFirst = this.unemployeeInsuranceRateRepository
+			.findById(unemployeeInsuranceRate.getCompanyCode().v(), unemployeeInsuranceRate.getHistoryId());
 
 		// get <= start
 		if (optionalFirst.isPresent()) {
 			Optional<UnemployeeInsuranceRate> optionalBetweenUpdate = this.unemployeeInsuranceRateRepository
-					.findBetweenUpdate(unemployeeInsuranceRate.getCompanyCode().v(),
-							optionalFirst.get().getApplyRange().getStartMonth(), optionalFirst.get().getHistoryId());
+				.findBetweenUpdate(unemployeeInsuranceRate.getCompanyCode().v(),
+					optionalFirst.get().getApplyRange().getStartMonth(), optionalFirst.get().getHistoryId());
 
 			// update end year month start previous
 			if (optionalBetweenUpdate.isPresent()) {
-				this.unemployeeInsuranceRateRepository.updateYearMonth(optionalBetweenUpdate.get(),
-						unemployeeInsuranceRate.getApplyRange().getStartMonth().previousMonth());
+				optionalBetweenUpdate.get()
+					.setEnd(unemployeeInsuranceRate.getApplyRange().getStartMonth().previousMonth());
+				this.unemployeeInsuranceRateRepository.update(optionalBetweenUpdate.get());
 			}
 
 			// update value

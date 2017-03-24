@@ -8,15 +8,24 @@
 	<ui:composition template="../../../../master/dialog.xhtml">
 		<ui:define name="htmlHead">
 			<com:scriptfile set="IGNITE" />
-			<com:stylefile path="main.css" />
-			<com:scriptfile path="start.js" />
-			<com:scriptfile path="../a/service.js" />
-			<com:scriptfile path="service.js" />
-			<com:scriptfile path="../a/viewmodel.js" />
-			<com:scriptfile path="viewmodel.js" />
+			<com:stylefile path="qmm011.e.style.css" />
+			<com:scriptfile path="qmm011.e.start.js" />
+			<com:scriptfile path="../a/qmm011.a.service.js" />
+			<com:scriptfile path="qmm011.e.service.js" />
+			<com:scriptfile path="qmm011.e.vm.js" />
+			<com:ValidatorScript>
+			    nts.uk.ctx.pr.core.dom.insurance.BusinessName
+			</com:ValidatorScript>
+			
 		</ui:define>
 		<ui:define name="content">
-			<div>ナビゲーションメッセージ</div>
+			<div class="nameaction">
+				<label>事業種類を登録してください。</label>
+			</div>
+			<div class="nameaction">
+				<label>※全角10文字</label>
+			</div>
+			<br />
 			<center>
 				<table data-bind="with: insuranceBusinessTypeUpdateModel">
 					<tbody>
@@ -25,13 +34,15 @@
 							<td><input class="rate-input"
 								data-bind="ntsTextEditor: {value: bizNameBiz1St, 
 									option: $root.textEditorOption, 
+									constraint: 'BusinessName',
 									enable: true}"></input></td>
 						</tr>
 						<tr>
 							<td class="bg-green">2</td>
 							<td><input class="rate-input"
 								data-bind="ntsTextEditor: {value: bizNameBiz2Nd, 
-									option: $root.textEditorOption, 
+									option: $root.textEditorOption,
+									constraint: 'BusinessName',
 									enable: true}"></input></td>
 						</tr>
 						<tr>
@@ -39,6 +50,7 @@
 							<td><input class="rate-input"
 								data-bind="ntsTextEditor: {value: bizNameBiz3Rd,  
 									option: $root.textEditorOption, 
+									constraint: 'BusinessName',
 									enable: true}"></input></td>
 						</tr>
 						<tr>
@@ -53,6 +65,7 @@
 							<td><input class="rate-input"
 								data-bind="ntsTextEditor: {value: bizNameBiz5Th,  
 									option: $root.textEditorOption, 
+									constraint: 'BusinessName',
 									enable: true}"></input></td>
 						</tr>
 						<tr>
@@ -60,6 +73,7 @@
 							<td><input class="rate-input"
 								data-bind="ntsTextEditor: {value: bizNameBiz6Th,  
 									option: $root.textEditorOption, 
+									constraint: 'BusinessName',
 									enable: true}"></input></td>
 						</tr>
 						<tr>
@@ -74,6 +88,7 @@
 							<td><input class="rate-input"
 								data-bind="ntsTextEditor: {value: bizNameBiz8Th,  
 									option: $root.textEditorOption, 
+									constraint: 'BusinessName',
 									enable: true}"></input></td>
 						</tr>
 						<tr>
@@ -81,6 +96,7 @@
 							<td><input class="rate-input"
 								data-bind="ntsTextEditor: {value: bizNameBiz9Th,  
 									option: $root.textEditorOption, 
+									constraint: 'BusinessName',
 									enable: true}"></input></td>
 						</tr>
 						<tr>
@@ -88,11 +104,13 @@
 							<td><input class="rate-input"
 								data-bind="ntsTextEditor: {value: bizNameBiz10Th,  
 									option: $root.textEditorOption, 
+									constraint: 'BusinessName',
 									enable: true}"></input></td>
 						</tr>
 					</tbody>
 				</table>
 			</center>
+			<br />
 			<hr />
 			<div id="this-functions-area" class="control-group halign-center">
 				<button class="btn-default proceed x-large"

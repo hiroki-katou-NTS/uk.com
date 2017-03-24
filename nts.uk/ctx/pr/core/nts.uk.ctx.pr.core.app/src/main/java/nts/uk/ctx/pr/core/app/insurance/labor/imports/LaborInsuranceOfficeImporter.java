@@ -4,7 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.app.insurance.labor.imports;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -25,10 +24,7 @@ import nts.uk.shr.com.context.AppContexts;
  * The Class AddLaborInsuranceOfficeCommand.
  */
 @Stateless
-public class LaborInsuranceOfficeImporter implements Serializable {
-	/** The Constant serialVersionUID. */
-	private static final long serialVersionUID = 1L;
-
+public class LaborInsuranceOfficeImporter{
 	/** The labor insurance office repository. */
 	@Inject
 	private LaborInsuranceOfficeRepository laborInsuranceOfficeRepository;
@@ -43,16 +39,19 @@ public class LaborInsuranceOfficeImporter implements Serializable {
 	 * @return the labor insurance office
 	 */
 	public LaborInsuranceOfficeCheckImportDto checkDuplicateCode(
-			SocialInsuranceOfficeImportDto socialInsuranceOfficeImport) {
+		SocialInsuranceOfficeImportDto socialInsuranceOfficeImport) {
+
 		// get user login companyCode
 		String companyCode = AppContexts.user().companyCode();
 		List<LaborInsuranceOffice> lstLaborInsuranceOffice = new ArrayList<>();
-		LaborInsuranceOfficeCheckImportDto laborInsuranceOfficeCheckImport = new LaborInsuranceOfficeCheckImportDto();
+		LaborInsuranceOfficeCheckImportDto laborInsuranceOfficeCheckImport;
+		laborInsuranceOfficeCheckImport = new LaborInsuranceOfficeCheckImportDto();
 		laborInsuranceOfficeCheckImport.setCode("0");
 		laborInsuranceOfficeCheckImport.setMessage("SUCC");
+
 		// check exist
-		Optional<LaborInsuranceOffice> optionalCheck = this.laborInsuranceOfficeRepository.findById(companyCode,
-				socialInsuranceOfficeImport.getCode());
+		Optional<LaborInsuranceOffice> optionalCheck = this.laborInsuranceOfficeRepository
+			.findById(companyCode, socialInsuranceOfficeImport.getCode());
 
 		if (optionalCheck.isPresent()) {
 			laborInsuranceOfficeCheckImport.setCode("1");
@@ -62,33 +61,35 @@ public class LaborInsuranceOfficeImporter implements Serializable {
 		return laborInsuranceOfficeCheckImport;
 	}
 
-	public LaborInsuranceOfficeImportOutDto importData(LaborInsuranceOfficeImportDto laborInsuranceOfficeImportDto) {
+	public LaborInsuranceOfficeImportOutDto importData(
+		LaborInsuranceOfficeImportDto laborInsuranceOfficeImportDto) {
 
 		// get userlogin companyCode
 		String companyCode = AppContexts.user().companyCode();
-		LaborInsuranceOfficeImportOutDto laborInsuranceOfficeImportOutDto = new LaborInsuranceOfficeImportOutDto();
+		LaborInsuranceOfficeImportOutDto laborInsuranceOfficeImportOutDto;
+		laborInsuranceOfficeImportOutDto = new LaborInsuranceOfficeImportOutDto();
 		int totalImport = 0;
 		laborInsuranceOfficeImportOutDto.setCode("0");
 
 		// check exist
-		Optional<LaborInsuranceOffice> optionalCheck = this.laborInsuranceOfficeRepository.findById(companyCode,
-				laborInsuranceOfficeImportDto.getSocialInsuranceOfficeImport().getCode());
+		Optional<LaborInsuranceOffice> optionalCheck = this.laborInsuranceOfficeRepository
+			.findById(companyCode, laborInsuranceOfficeImportDto.getSocialInsuranceOfficeImport().getCode());
 
 		if (optionalCheck.isPresent()) {
 			if (laborInsuranceOfficeImportDto.getCheckUpdateDuplicateCode() == 0) {
 				// update
-				laborInsuranceOfficeRepository
-						.update(laborInsuranceOfficeImportDto.getSocialInsuranceOfficeImport().toDomain(companyCode));
+				laborInsuranceOfficeRepository.update(
+					laborInsuranceOfficeImportDto.getSocialInsuranceOfficeImport().toDomain(companyCode));
 				totalImport++;
 			}
 		} else {
 			// add new
 			laborInsuranceOfficeRepository
-					.add(laborInsuranceOfficeImportDto.getSocialInsuranceOfficeImport().toDomain(companyCode));
+				.add(laborInsuranceOfficeImportDto.getSocialInsuranceOfficeImport().toDomain(companyCode));
 			totalImport++;
 		}
 		laborInsuranceOfficeImportOutDto.setTotalImport(totalImport);
-		
+
 		return laborInsuranceOfficeImportOutDto;
 	}
 

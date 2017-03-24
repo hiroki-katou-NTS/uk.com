@@ -7,11 +7,13 @@ package nts.uk.ctx.pr.report.infra.repository.wageledger;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaDelete;
+import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Path;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
@@ -29,6 +31,8 @@ import nts.uk.ctx.pr.report.infra.entity.wageledger.QlsptLedgerFormDetailPK_;
 import nts.uk.ctx.pr.report.infra.entity.wageledger.QlsptLedgerFormDetail_;
 import nts.uk.ctx.pr.report.infra.entity.wageledger.QlsptLedgerFormHead;
 import nts.uk.ctx.pr.report.infra.entity.wageledger.QlsptLedgerFormHeadPK;
+import nts.uk.ctx.pr.report.infra.entity.wageledger.QlsptLedgerFormHeadPK_;
+import nts.uk.ctx.pr.report.infra.entity.wageledger.QlsptLedgerFormHead_;
 import nts.uk.ctx.pr.report.infra.repository.wageledger.memento.JpaWLOutputSettingGetMemento;
 import nts.uk.ctx.pr.report.infra.repository.wageledger.memento.JpaWLOutputSettingSetMemento;
 
@@ -156,6 +160,31 @@ public class JpaWLOutputSettingRepository extends JpaRepository implements WLOut
 		// Excute.
 		cd.where(conditions.toArray(new Predicate[conditions.size()]));
 		em.createQuery(cd).executeUpdate();
+	}
+
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.pr.report.dom.wageledger.outputsetting.WLOutputSettingRepository
+	 * #findAll(nts.uk.ctx.pr.report.dom.company.CompanyCode)
+	 */
+	@Override
+	public List<WLOutputSetting> findAll(CompanyCode companyCode) {
+		EntityManager em = this.getEntityManager();
+		
+		// Create criteria buider.
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<QlsptLedgerFormHead> cq = cb.createQuery(QlsptLedgerFormHead.class);
+		Root<QlsptLedgerFormHead> root = cq.from(QlsptLedgerFormHead.class);
+		
+		// Create query.
+		cq.where(cb.equal(root.get(QlsptLedgerFormHead_.qlsptLedgerFormHeadPK)
+				.get(QlsptLedgerFormHeadPK_.ccd), companyCode.v()))
+			.orderBy(cb.asc(root.get(QlsptLedgerFormHead_.qlsptLedgerFormHeadPK)
+					.get(QlsptLedgerFormHeadPK_.formCd)));
+		
+		// Select.
+		return em.createQuery(cq).getResultList().stream().map(entity -> {
+			return new WLOutputSetting(new JpaWLOutputSettingGetMemento(entity));
+		}).collect(Collectors.toList());
 	}
 
 }

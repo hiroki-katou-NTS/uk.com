@@ -8,7 +8,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsuranceRateItem;
@@ -17,7 +18,8 @@ import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsurance
 /**
  * The Class UnemployeeInsuranceRateDto.
  */
-@Data
+@Getter
+@Setter
 public class UnemployeeInsuranceRateFindOutDto implements UnemployeeInsuranceRateSetMemento {
 
 	/** The history insurance. */
@@ -28,21 +30,22 @@ public class UnemployeeInsuranceRateFindOutDto implements UnemployeeInsuranceRat
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.
 	 * UnemployeeInsuranceRateSetMemento#setHistoryId(java.lang.String)
 	 */
 	@Override
 	public void setHistoryId(String historyId) {
-		if (this.historyInsurance == null)
+		if (this.historyInsurance == null) {
 			this.historyInsurance = new UnemployeeInsuranceHistoryFindOutDto();
+		}
 		this.historyInsurance.setHistoryId(historyId);
 
 	}
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.
 	 * UnemployeeInsuranceRateSetMemento#setCompanyCode(nts.uk.ctx.core.dom.
 	 * company.CompanyCode)
@@ -55,7 +58,7 @@ public class UnemployeeInsuranceRateFindOutDto implements UnemployeeInsuranceRat
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.
 	 * UnemployeeInsuranceRateSetMemento#setApplyRange(nts.uk.ctx.pr.core.dom.
 	 * insurance.MonthRange)
@@ -68,7 +71,7 @@ public class UnemployeeInsuranceRateFindOutDto implements UnemployeeInsuranceRat
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.
 	 * UnemployeeInsuranceRateSetMemento#setRateItems(java.util.Set)
 	 */

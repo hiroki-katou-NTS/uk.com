@@ -10,7 +10,7 @@ import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
-import nts.gul.collection.ListUtil;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.AccidentInsuranceRate;
 import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.AccidentInsuranceRateRepository;
 import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.service.AccidentInsuranceRateService;
@@ -37,8 +37,8 @@ public class AccidentInsuranceRateServiceImpl implements AccidentInsuranceRateSe
 	 */
 	@Override
 	public void validateRequiredItem(AccidentInsuranceRate rate) {
-		if (rate.getApplyRange() == null || ListUtil.isEmpty(rate.getRateItems())
-				|| rate.getRateItems().size() != RATE_ITEM_COUNT) {
+		if (rate.getApplyRange() == null || CollectionUtil.isEmpty(rate.getRateItems())
+			|| rate.getRateItems().size() != RATE_ITEM_COUNT) {
 			throw new BusinessException("ER001");
 		}
 	}
@@ -66,19 +66,19 @@ public class AccidentInsuranceRateServiceImpl implements AccidentInsuranceRateSe
 	 * @return the validate range
 	 */
 	private boolean getValidateRange(AccidentInsuranceRate rate) {
-		//validate Add 
+		// validate Add
 		// ? (start <= end)
 		if (rate.getApplyRange().getStartMonth().v() > rate.getApplyRange().getEndMonth().v()) {
 			return true;
 		}
-		
-		//? start > start first (order by desc) 
+
+		// ? start > start first (order by desc)
 		Optional<AccidentInsuranceRate> optionalFirst = this.accidentInsuranceRateRepo
-				.findFirstData(rate.getCompanyCode().v());
-		
+			.findFirstData(rate.getCompanyCode().v());
+
 		if (optionalFirst.isPresent()) {
 			if (optionalFirst.get().getApplyRange().getStartMonth().nextMonth().v() > rate.getApplyRange()
-					.getStartMonth().v()) {
+				.getStartMonth().v()) {
 				return true;
 			}
 		}
@@ -108,20 +108,26 @@ public class AccidentInsuranceRateServiceImpl implements AccidentInsuranceRateSe
 		// data is begin update
 		Optional<AccidentInsuranceRate> optionalAccidentInsuranceRate;
 		optionalAccidentInsuranceRate = this.accidentInsuranceRateRepo.findById(rate.getCompanyCode().v(),
-				rate.getHistoryId());
+			rate.getHistoryId());
+		
 		if (!optionalAccidentInsuranceRate.isPresent()) {
 			return true;
 		}
-		Optional<AccidentInsuranceRate> optionalBetweenUpdate = this.accidentInsuranceRateRepo.findBetweenUpdate(
-				rate.getCompanyCode().v(), optionalAccidentInsuranceRate.get().getApplyRange().getStartMonth(),
+		
+		Optional<AccidentInsuranceRate> optionalBetweenUpdate = this.accidentInsuranceRateRepo
+			.findBetweenUpdate(rate.getCompanyCode().v(),
+				optionalAccidentInsuranceRate.get().getApplyRange().getStartMonth(),
 				optionalAccidentInsuranceRate.get().getHistoryId());
+		
 		if (!optionalBetweenUpdate.isPresent()) {
 			return false;
 		}
-		if (optionalBetweenUpdate.get().getApplyRange().getStartMonth().v() >= rate.getApplyRange().getStartMonth()
-				.v()) {
+		
+		if (optionalBetweenUpdate.get().getApplyRange().getStartMonth().v() >= rate.getApplyRange()
+			.getStartMonth().v()) {
 			return true;
 		}
+		
 		return false;
 	}
 

@@ -19,11 +19,12 @@
 					fields: ['searchText']}"></span>
 			</div>
 			<div style="margin: 5px;">
-				<div>
+				<div style="padding-bottom: 5px">
 					<button class="pull-left" id="addHistory"
 						data-bind="enable: canAddNewHistory, click: addNewHistoryBtnClick">履歴追加</button>
 					<button class="pull-right" id="editHistory"
 						data-bind="enable: canUpdateHistory, click: updateHistoryBtnClick">履歴編集</button>
+					<div class="cf"/>
 				</div>
 				<div class="pull-left cf">
 					<table id="historyTree"

@@ -20,9 +20,9 @@
 			<com:stylefile path="main.css" />
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="../0/common/service.js" />
-			<com:scriptfile path="service.js" />
-			<com:scriptfile path="viewmodel.js" />
-			<com:scriptfile path="start.js" />
+			<com:scriptfile path="qmm008.i.service.js" />
+			<com:scriptfile path="qmm008.i.vm.js" />
+			<com:scriptfile path="qmm008.i.start.js" />
 		</ui:define>
 
 		<ui:define name="content">
@@ -44,7 +44,10 @@
 				</com:ko>
 				<div style="margin-left: 200px"
 					data-bind="ntsFormLabel: {required: true}">期間 :</div>
-				<span>(平成28年04月) ~ 9999/12</span>
+				<span id="startMonth"
+					data-bind="text:pensionRateModel.startMonth"></span>~<span
+					id="endMonth" data-bind="text:pensionRateModel.endMonth">
+				</span>
 				<div style="padding-top: 30px;">
 					<table id="health_insurance_per_month">
 						<tbody>
@@ -140,14 +143,14 @@
 										<com:ko-if bind="$parent.code == levelCode">
 											<th data-bind="css: { hidden: $parents[1].leftShow() }"
 												class="bg-green border_none"></th>
-											<com:ko tag="with" bind="personalPension">
+											<com:ko tag="with" bind="personalFund">
 												<com:ko-if bind="$parents[2].leftShow()">
 													<td><input data-bind="ntsNumberEditor: {value: maleAmount, constraint:'CommonAmount', option: $parents[2].numberEditorCommonOption}"></input></td>
 													<td><input data-bind="ntsNumberEditor: {value: femaleAmount, constraint:'CommonAmount', option: $parents[2].numberEditorCommonOption}"></input></td>
 													<td><input data-bind="ntsNumberEditor: {value: unknownAmount, constraint:'CommonAmount', option: $parents[2].numberEditorCommonOption}"></input></td>
 												</com:ko-if>
 											</com:ko>
-											<com:ko tag="with" bind="companyPension">
+											<com:ko tag="with" bind="companyFund">
 												<com:ko-if bind="$parents[2].leftShow()">
 													<td><input data-bind="ntsNumberEditor: {value: maleAmount, constraint:'CommonAmount', option: $parents[2].numberEditorCommonOption}"></input></td>
 													<td><input data-bind="ntsNumberEditor: {value: femaleAmount, constraint:'CommonAmount', option: $parents[2].numberEditorCommonOption}"></input></td>
@@ -170,7 +173,7 @@
 													<td><input data-bind="ntsNumberEditor: {value: unknownAmount, constraint:'CommonAmount', option: $parents[2].numberEditorCommonOption}"></input></td>
 												</com:ko-if>
 											</com:ko>
-											<td><input data-bind="ntsNumberEditor: {value: childContributionAmount, constraint:'InsuranceAmount', option: {grouplength: 3, decimallength: 2}}"></input></td>
+											<td><input data-bind="ntsNumberEditor: {value: childContributionAmount, constraint:'InsuranceAmount', option: {grouplength: 3}}"></input></td>
 										</com:ko-if>
 									</com:ko-foreach>
 								</tr>

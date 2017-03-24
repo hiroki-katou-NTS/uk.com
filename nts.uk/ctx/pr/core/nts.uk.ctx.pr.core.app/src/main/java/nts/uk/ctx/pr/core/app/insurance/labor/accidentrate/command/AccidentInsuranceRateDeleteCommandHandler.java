@@ -23,11 +23,8 @@ import nts.uk.shr.com.context.LoginUserContext;
  * The Class AccidentInsuranceRateAddCommandHandler.
  */
 @Stateless
-public class AccidentInsuranceRateDeleteCommandHandler extends CommandHandler<AccidentInsuranceRateDeleteCommand> {
-
-	/** The Constant YEAR_MONTH_MAX. */
-	public static final YearMonth YEAR_MONTH_MAX = YearMonth.of(DateTimeConstraints.LIMIT_YEAR.max(),
-			DateTimeConstraints.LIMIT_MONTH.max());
+public class AccidentInsuranceRateDeleteCommandHandler
+	extends CommandHandler<AccidentInsuranceRateDeleteCommand> {
 
 	/** The accident insurance rate repo. */
 	@Inject
@@ -53,20 +50,24 @@ public class AccidentInsuranceRateDeleteCommandHandler extends CommandHandler<Ac
 		// get command
 		AccidentInsuranceRateDeleteCommand command = context.getCommand();
 
-		//get first data (remove)
-		Optional<AccidentInsuranceRate> optionalRemove = this.accidentInsuranceRateRepo.findFirstData(companyCode);
+		// get first data (remove)
+		Optional<AccidentInsuranceRate> optionalRemove = this.accidentInsuranceRateRepo
+			.findFirstData(companyCode);
 
 		if (optionalRemove.isPresent() && optionalRemove.get().getHistoryId()
-				.equals(command.getAccidentInsuranceRateDeleteDto().getCode())) {
+			.equals(command.getAccidentInsuranceRateDeleteDto().getCode())) {
 
 			// history first
-			this.accidentInsuranceRateRepo.remove(companyCode, command.getAccidentInsuranceRateDeleteDto().getCode(),
-					command.getAccidentInsuranceRateDeleteDto().getVersion());
+			this.accidentInsuranceRateRepo.remove(companyCode,
+				command.getAccidentInsuranceRateDeleteDto().getCode(),
+				command.getAccidentInsuranceRateDeleteDto().getVersion());
 
-			//get first data (update)
-			Optional<AccidentInsuranceRate> optionalUpdate = this.accidentInsuranceRateRepo.findFirstData(companyCode);
-			if(optionalUpdate.isPresent()){
-				this.accidentInsuranceRateRepo.updateYearMonth(optionalUpdate.get(), AccidentInsuranceRateDeleteCommandHandler.YEAR_MONTH_MAX);
+			// get first data (update)
+			Optional<AccidentInsuranceRate> optionalUpdate = this.accidentInsuranceRateRepo
+				.findFirstData(companyCode);
+			if (optionalUpdate.isPresent()) {
+				optionalUpdate.get().setMaxDate();
+				this.accidentInsuranceRateRepo.update(optionalUpdate.get());
 			}
 		}
 	}

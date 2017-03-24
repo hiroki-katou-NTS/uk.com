@@ -14,7 +14,6 @@ import nts.arc.primitive.constraint.StringMaxLength;
  * The Class InsuranceAmount.
  */
 @DecimalRange(min = "0", max = "999.99")
-@StringMaxLength(6)
 public class Ins2Rate extends DecimalPrimitiveValue<Ins2Rate> {
 
 	/** serialVersionUID */

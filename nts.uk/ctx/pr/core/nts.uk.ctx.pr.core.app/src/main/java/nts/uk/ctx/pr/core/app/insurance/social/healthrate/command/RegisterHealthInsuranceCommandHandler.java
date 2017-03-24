@@ -82,15 +82,14 @@ public class RegisterHealthInsuranceCommandHandler extends CommandHandler<Regist
 		} else {
 			healthInsuranceRate = listHealthInsuranceRate.get(0);
 		}
-		HealthInsuranceRate addNewHealthInsuranceRate = new HealthInsuranceRate(
+		HealthInsuranceRate addNew = new HealthInsuranceRate(
 				this.covertToMemento(healthInsuranceRate, command));
-		addNewHealthInsuranceRate.validate();
+		addNew.validate();
 		// Validate
-		healthInsuranceRateService.validateDateRange(addNewHealthInsuranceRate);
-		healthInsuranceRateService.validateRequiredItem(addNewHealthInsuranceRate);
-		healthInsuranceRateService.createInitalHistory(companyCode, officeCode, addNewHealthInsuranceRate.getStart());
+		healthInsuranceRateService.validateRequiredItem(addNew);
+		healthInsuranceRateService.createInitalHistory(companyCode, officeCode, addNew.getStart());
 		// Insert into db.
-		healthInsuranceRateRepository.add(addNewHealthInsuranceRate);
+		healthInsuranceRateRepository.add(addNew);
 
 		// Get listAvgEarnLevelMasterSetting.
 		List<AvgEarnLevelMasterSetting> listAvgEarnLevelMasterSetting = avgEarnLevelMasterSettingRepository
@@ -100,12 +99,19 @@ public class RegisterHealthInsuranceCommandHandler extends CommandHandler<Regist
 		List<HealthInsuranceAvgearn> listHealthInsuranceAvgearn = listAvgEarnLevelMasterSetting.stream()
 				.map(setting -> {
 					return new HealthInsuranceAvgearn(new HealthInsuranceAvgearnMemento(setting,
-							addNewHealthInsuranceRate.getRateItems(), addNewHealthInsuranceRate.getHistoryId()));
+							addNew.getRateItems(), addNew.getHistoryId()));
 				}).collect(Collectors.toList());
 
 		healthInsuranceAvgearnRepository.update(listHealthInsuranceAvgearn, companyCode, command.getOfficeCode());
 	}
 
+	/**
+	 * Covert to memento.
+	 *
+	 * @param healthInsuranceRate the health insurance rate
+	 * @param command the command
+	 * @return the health insurance rate get memento
+	 */
 	protected HealthInsuranceRateGetMemento covertToMemento(HealthInsuranceRate healthInsuranceRate,
 			RegisterHealthInsuranceCommand command) {
 		Boolean isCloneData = command.getIsCloneData();
@@ -146,7 +152,7 @@ public class RegisterHealthInsuranceCommandHandler extends CommandHandler<Regist
 				if (isCloneData) {
 					return healthInsuranceRate.getMaxAmount();
 				} else {
-					return new CommonAmount(new BigDecimal(0));
+					return new CommonAmount(BigDecimal.ZERO);
 				}
 			}
 
@@ -170,6 +176,14 @@ public class RegisterHealthInsuranceCommandHandler extends CommandHandler<Regist
 		};
 	}
 
+	/**
+	 * Calculate avgearn value.
+	 *
+	 * @param masterRate the master rate
+	 * @param rateItems the rate items
+	 * @param isPersonal the is personal
+	 * @return the health insurance avgearn value
+	 */
 	private HealthInsuranceAvgearnValue calculateAvgearnValue(BigDecimal masterRate, Set<InsuranceRateItem> rateItems,
 			boolean isPersonal) {
 		HealthInsuranceAvgearnValue value = new HealthInsuranceAvgearnValue();
@@ -196,6 +210,14 @@ public class RegisterHealthInsuranceCommandHandler extends CommandHandler<Regist
 
 	}
 
+	/**
+	 * Calculate charge rate.
+	 *
+	 * @param masterRate the master rate
+	 * @param rateItem the rate item
+	 * @param isPersonal the is personal
+	 * @return the big decimal
+	 */
 	private BigDecimal calculateChargeRate(BigDecimal masterRate, InsuranceRateItem rateItem, boolean isPersonal) {
 		if (isPersonal) {
 			return masterRate.multiply(rateItem.getChargeRate().getPersonalRate().v());

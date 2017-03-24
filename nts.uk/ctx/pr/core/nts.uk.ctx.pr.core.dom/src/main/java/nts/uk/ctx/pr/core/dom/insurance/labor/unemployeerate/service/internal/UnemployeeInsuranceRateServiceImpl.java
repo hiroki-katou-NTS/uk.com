@@ -60,17 +60,19 @@ public class UnemployeeInsuranceRateServiceImpl implements UnemployeeInsuranceRa
 	 * @return the validate range
 	 */
 	private boolean getValidateRange(UnemployeeInsuranceRate rate) {
+		boolean resvalue = false;
 		if (rate.getApplyRange().getStartMonth().v() > rate.getApplyRange().getEndMonth().v()) {
-			return true;
+			resvalue = true;
 		}
 
 		Optional<UnemployeeInsuranceRate> optionalFirst = this.unemployeeInsuranceRateRepo
-				.findFirstData(rate.getCompanyCode().v());
-		if (optionalFirst.isPresent() && optionalFirst.get().getApplyRange().getStartMonth().nextMonth().v() > rate
-				.getApplyRange().getStartMonth().v()) {
-			return true;
+			.findFirstData(rate.getCompanyCode().v());
+
+		if (optionalFirst.isPresent() && optionalFirst.get().getApplyRange().getStartMonth().nextMonth()
+			.v() > rate.getApplyRange().getStartMonth().v()) {
+			resvalue = true;
 		}
-		return false;
+		return resvalue;
 
 	}
 
@@ -96,29 +98,36 @@ public class UnemployeeInsuranceRateServiceImpl implements UnemployeeInsuranceRa
 	 * @return the validate range update
 	 */
 	private boolean getValidateRangeUpdate(UnemployeeInsuranceRate rate) {
+
+		boolean resvalue = false;
 		// start<=end
 		if (rate.getApplyRange().getStartMonth().v() > rate.getApplyRange().getEndMonth().v()) {
-			return true;
+			resvalue = true;
 		}
-		// data is begin update
-		Optional<UnemployeeInsuranceRate> optionalUnemployeeInsuranceRate;
-		optionalUnemployeeInsuranceRate = this.unemployeeInsuranceRateRepo.findById(rate.getCompanyCode().v(),
-				rate.getHistoryId());
-		if (!optionalUnemployeeInsuranceRate.isPresent()) {
-			return true;
+		if (!resvalue) {
+			// data is begin update
+			Optional<UnemployeeInsuranceRate> optionalUnemployeeInsuranceRate;
+			optionalUnemployeeInsuranceRate = this.unemployeeInsuranceRateRepo
+				.findById(rate.getCompanyCode().v(), rate.getHistoryId());
+			if (!optionalUnemployeeInsuranceRate.isPresent()) {
+				resvalue = true;
+			}
+			if (!resvalue) {
+				// get first data update
+				Optional<UnemployeeInsuranceRate> optionalBetweenUpdate = this.unemployeeInsuranceRateRepo
+					.findBetweenUpdate(rate.getCompanyCode().v(),
+						optionalUnemployeeInsuranceRate.get().getApplyRange().getStartMonth(),
+						optionalUnemployeeInsuranceRate.get().getHistoryId());
+				if (optionalBetweenUpdate.isPresent()) {
+					if (optionalBetweenUpdate.get().getApplyRange().getStartMonth().v() >= rate
+						.getApplyRange().getStartMonth().v()) {
+						resvalue = true;
+					}
+				}
+			}
 		}
-		// get first data update
-		Optional<UnemployeeInsuranceRate> optionalBetweenUpdate = this.unemployeeInsuranceRateRepo.findBetweenUpdate(
-				rate.getCompanyCode().v(), optionalUnemployeeInsuranceRate.get().getApplyRange().getStartMonth(),
-				optionalUnemployeeInsuranceRate.get().getHistoryId());
-		if (!optionalBetweenUpdate.isPresent()) {
-			return false;
-		}
-		if (optionalBetweenUpdate.get().getApplyRange().getStartMonth().v() >= rate.getApplyRange().getStartMonth()
-				.v()) {
-			return true;
-		}
-		return false;
+
+		return resvalue;
 	}
 
 }

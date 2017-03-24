@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2015 Nittsu System to present.                   *
+ * Copyright (c) 2016 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.core.infra.repository.insurance.labor.accidentrate;
@@ -22,7 +22,7 @@ public class JpaHistoryAccidentInsuranceRateGetMemento implements AccidentInsura
 	protected QismtWorkAccidentInsu typeValue;
 
 	/**
-	 * Instantiates a new jpa accident insurance rate set memento.
+	 * Instantiates a new jpa history accident insurance rate get memento.
 	 *
 	 * @param typeValue
 	 *            the type value
@@ -31,21 +31,46 @@ public class JpaHistoryAccidentInsuranceRateGetMemento implements AccidentInsura
 		this.typeValue = typeValue;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.
+	 * AccidentInsuranceRateGetMemento#getHistoryId()
+	 */
 	@Override
 	public String getHistoryId() {
 		return this.typeValue.getQismtWorkAccidentInsuPK().getHistId();
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.
+	 * AccidentInsuranceRateGetMemento#getCompanyCode()
+	 */
 	@Override
 	public CompanyCode getCompanyCode() {
 		return new CompanyCode(this.typeValue.getQismtWorkAccidentInsuPK().getCcd());
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.
+	 * AccidentInsuranceRateGetMemento#getApplyRange()
+	 */
 	@Override
 	public MonthRange getApplyRange() {
-		return MonthRange.range(YearMonth.of(this.typeValue.getStrYm()), YearMonth.of(this.typeValue.getEndYm()));
+		return MonthRange.range(YearMonth.of(this.typeValue.getStrYm()),
+			YearMonth.of(this.typeValue.getEndYm()));
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.
+	 * AccidentInsuranceRateGetMemento#getRateItems()
+	 */
 	@Override
 	public Set<InsuBizRateItem> getRateItems() {
 		return null;

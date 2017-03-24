@@ -32,7 +32,6 @@ import nts.uk.ctx.pr.core.dom.insurance.RoundingMethod;
 public class HealthInsuranceRate extends DomainObject implements History<HealthInsuranceRate> {
 
 	/** The history id. */
-	// historyId
 	private String historyId;
 
 	/** The company code. */
@@ -56,6 +55,9 @@ public class HealthInsuranceRate extends DomainObject implements History<HealthI
 	/** The rounding methods. */
 	private Set<HealthInsuranceRounding> roundingMethods;
 
+	/**
+	 * Instantiates a new health insurance rate.
+	 */
 	private HealthInsuranceRate() {
 		this.historyId = IdentifierUtil.randomUniqueId();
 	};
@@ -64,8 +66,7 @@ public class HealthInsuranceRate extends DomainObject implements History<HealthI
 	/**
 	 * Instantiates a new health insurance rate.
 	 *
-	 * @param memento
-	 *            the memento
+	 * @param memento the memento
 	 */
 	public HealthInsuranceRate(HealthInsuranceRateGetMemento memento) {
 		this.historyId = memento.getHistoryId();
@@ -81,8 +82,7 @@ public class HealthInsuranceRate extends DomainObject implements History<HealthI
 	/**
 	 * Save to memento.
 	 *
-	 * @param memento
-	 *            the memento
+	 * @param memento the memento
 	 */
 	public void saveToMemento(HealthInsuranceRateSetMemento memento) {
 		memento.setHistoryId(this.historyId);
@@ -125,6 +125,9 @@ public class HealthInsuranceRate extends DomainObject implements History<HealthI
 		this.applyRange = MonthRange.range(this.applyRange.getStartMonth(), yearMonth);
 	}
 
+	/* (non-Javadoc)
+	 * @see nts.uk.ctx.pr.core.dom.base.simplehistory.History#copyWithDate(nts.arc.time.YearMonth)
+	 */
 	@Override
 	public HealthInsuranceRate copyWithDate(YearMonth start) {
 		//check if duplicate start date 
@@ -143,6 +146,14 @@ public class HealthInsuranceRate extends DomainObject implements History<HealthI
 		return HealthInsuranceRate;
 	}
 	
+	/**
+	 * Creates the with intial.
+	 *
+	 * @param companyCode the company code
+	 * @param officeCode the office code
+	 * @param startYearMonth the start year month
+	 * @return the health insurance rate
+	 */
 	public static final HealthInsuranceRate createWithIntial(CompanyCode companyCode, OfficeCode officeCode, YearMonth startYearMonth) {
 		HealthInsuranceRate HealthInsuranceRate = new HealthInsuranceRate();
 		HealthInsuranceRate.companyCode = companyCode;
@@ -162,29 +173,23 @@ public class HealthInsuranceRate extends DomainObject implements History<HealthI
 	 */
 	private static Set<InsuranceRateItem> setDefaultRateItems() {
 		Set<InsuranceRateItem> setItem = new HashSet<InsuranceRateItem>();
-		InsuranceRateItem item1 = new InsuranceRateItem(PaymentType.Salary, HealthInsuranceType.Basic,
-				new HealthChargeRateItem(new Ins3Rate(BigDecimal.ZERO), new Ins3Rate(BigDecimal.ZERO)));
+		Ins3Rate insRate = new Ins3Rate(BigDecimal.ZERO);
+		HealthChargeRateItem chargeRate = new HealthChargeRateItem(insRate, insRate);
+		InsuranceRateItem item1 = new InsuranceRateItem(PaymentType.Salary, HealthInsuranceType.Basic, chargeRate);
 		setItem.add(item1);
-		InsuranceRateItem item2 = new InsuranceRateItem(PaymentType.Salary, HealthInsuranceType.General,
-				new HealthChargeRateItem(new Ins3Rate(BigDecimal.ZERO), new Ins3Rate(BigDecimal.ZERO)));
+		InsuranceRateItem item2 = new InsuranceRateItem(PaymentType.Salary, HealthInsuranceType.General, chargeRate);
 		setItem.add(item2);
-		InsuranceRateItem item3 = new InsuranceRateItem(PaymentType.Salary, HealthInsuranceType.Nursing,
-				new HealthChargeRateItem(new Ins3Rate(BigDecimal.ZERO), new Ins3Rate(BigDecimal.ZERO)));
+		InsuranceRateItem item3 = new InsuranceRateItem(PaymentType.Salary, HealthInsuranceType.Nursing, chargeRate);
 		setItem.add(item3);
-		InsuranceRateItem item4 = new InsuranceRateItem(PaymentType.Salary, HealthInsuranceType.Special,
-				new HealthChargeRateItem(new Ins3Rate(BigDecimal.ZERO), new Ins3Rate(BigDecimal.ZERO)));
+		InsuranceRateItem item4 = new InsuranceRateItem(PaymentType.Salary, HealthInsuranceType.Special, chargeRate);
 		setItem.add(item4);
-		InsuranceRateItem item5 = new InsuranceRateItem(PaymentType.Bonus, HealthInsuranceType.Basic,
-				new HealthChargeRateItem(new Ins3Rate(BigDecimal.ZERO), new Ins3Rate(BigDecimal.ZERO)));
+		InsuranceRateItem item5 = new InsuranceRateItem(PaymentType.Bonus, HealthInsuranceType.Basic, chargeRate);
 		setItem.add(item5);
-		InsuranceRateItem item6 = new InsuranceRateItem(PaymentType.Bonus, HealthInsuranceType.General,
-				new HealthChargeRateItem(new Ins3Rate(BigDecimal.ZERO), new Ins3Rate(BigDecimal.ZERO)));
+		InsuranceRateItem item6 = new InsuranceRateItem(PaymentType.Bonus, HealthInsuranceType.General, chargeRate);
 		setItem.add(item6);
-		InsuranceRateItem item7 = new InsuranceRateItem(PaymentType.Bonus, HealthInsuranceType.Nursing,
-				new HealthChargeRateItem(new Ins3Rate(BigDecimal.ZERO), new Ins3Rate(BigDecimal.ZERO)));
+		InsuranceRateItem item7 = new InsuranceRateItem(PaymentType.Bonus, HealthInsuranceType.Nursing, chargeRate);
 		setItem.add(item7);
-		InsuranceRateItem item8 = new InsuranceRateItem(PaymentType.Bonus, HealthInsuranceType.Special,
-				new HealthChargeRateItem(new Ins3Rate(BigDecimal.ZERO), new Ins3Rate(BigDecimal.ZERO)));
+		InsuranceRateItem item8 = new InsuranceRateItem(PaymentType.Bonus, HealthInsuranceType.Special, chargeRate);
 		setItem.add(item8);
 		return setItem;
 	}
@@ -209,6 +214,37 @@ public class HealthInsuranceRate extends DomainObject implements History<HealthI
 		setItem.add(item2);
 
 		return setItem;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((historyId == null) ? 0 : historyId.hashCode());
+		return result;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (!(obj instanceof HealthInsuranceRate))
+			return false;
+		HealthInsuranceRate other = (HealthInsuranceRate) obj;
+		if (historyId == null) {
+			if (other.historyId != null)
+				return false;
+		} else if (!historyId.equals(other.historyId))
+			return false;
+		return true;
 	}
 			
 }

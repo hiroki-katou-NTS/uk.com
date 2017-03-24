@@ -203,12 +203,43 @@ public class UnitPriceHistory extends AggregateRoot implements History<UnitPrice
 		history.applyRange = MonthRange.toMaxDate(startYearMonth);
 		history.budget = new Money(BigDecimal.ZERO);
 		history.fixPaySettingType = SettingType.Company;
-		history.fixPayAtr = ApplySetting.NotApply;
-		history.fixPayAtrMonthly = ApplySetting.NotApply;
-		history.fixPayAtrDayMonth = ApplySetting.NotApply;
-		history.fixPayAtrDaily = ApplySetting.NotApply;
-		history.fixPayAtrHourly = ApplySetting.NotApply;
+		history.fixPayAtr = ApplySetting.Apply;
+		history.fixPayAtrMonthly = ApplySetting.Apply;
+		history.fixPayAtrDayMonth = ApplySetting.Apply;
+		history.fixPayAtrDaily = ApplySetting.Apply;
+		history.fixPayAtrHourly = ApplySetting.Apply;
 		history.memo = null;
 		return history;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((id == null) ? 0 : id.hashCode());
+		return result;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		UnitPriceHistory other = (UnitPriceHistory) obj;
+		if (id == null) {
+			if (other.id != null)
+				return false;
+		} else if (!id.equals(other.id))
+			return false;
+		return true;
 	}
 }

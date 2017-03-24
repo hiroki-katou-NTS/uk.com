@@ -42,34 +42,34 @@ public class AccidentInsuranceRateAddCommandHandler extends CommandHandler<Accid
 	@Override
 	@Transactional
 	protected void handle(CommandHandlerContext<AccidentInsuranceRateAddCommand> context) {
-		
+
 		// get user login
 		LoginUserContext loginUserContext = AppContexts.user();
-		
+
 		// get commpany user login
 		String companyCode = loginUserContext.companyCode();
-		
+
 		// get command
 		AccidentInsuranceRateAddCommand command = context.getCommand();
-		
+
 		// get domain by action request
 		AccidentInsuranceRate accidentInsuranceRate = command.toDomain(companyCode);
-		
+
 		// validate domain
 		accidentInsuranceRate.validate();
-		
+
 		// validate input domian
 		accidentInsuranceRateService.validateDateRange(accidentInsuranceRate);
-		
+
 		// get first data
 		Optional<AccidentInsuranceRate> optionalFirst = this.accidentInsuranceRateRepo
-				.findFirstData(companyCode);
-		
+			.findFirstData(companyCode);
+
 		if (optionalFirst.isPresent()) {
-			this.accidentInsuranceRateRepo.updateYearMonth(optionalFirst.get(),
-					accidentInsuranceRate.getApplyRange().getStartMonth().previousMonth());
+			optionalFirst.get().setEnd(accidentInsuranceRate.getApplyRange().getStartMonth().previousMonth());
+			this.accidentInsuranceRateRepo.update(optionalFirst.get());
 		}
-		
+
 		// connection repository running add
 		this.accidentInsuranceRateRepo.add(accidentInsuranceRate);
 	}

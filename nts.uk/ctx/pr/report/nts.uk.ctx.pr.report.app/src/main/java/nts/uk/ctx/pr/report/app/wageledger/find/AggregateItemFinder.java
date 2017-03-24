@@ -5,6 +5,7 @@
 package nts.uk.ctx.pr.report.app.wageledger.find;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -29,9 +30,6 @@ public class AggregateItemFinder {
 	@Inject
 	private WLAggregateItemRepository repository;
 	
-	@Inject
-	private WageLedgerSettingRepository wageLedgerSettingRepository;
-	
 	/**
 	 * Find all.
 	 *
@@ -39,7 +37,14 @@ public class AggregateItemFinder {
 	 */
 	public List<HeaderSettingDto> findAll() {
 		CompanyCode companyCode = new CompanyCode(AppContexts.user().companyCode());
-		return this.wageLedgerSettingRepository.findHeaderAggregateItems(companyCode);
+		return this.repository.findAll(companyCode).stream().map(item -> {
+			return HeaderSettingDto.builder()
+					.category(item.getSubject().getCategory())
+					.paymentType(item.getSubject().getPaymentType())
+					.code(item.getSubject().getCode().v())
+					.name(item.getName().v())
+					.build();
+		}).collect(Collectors.toList());
 	}
 	
 	/**
@@ -51,8 +56,13 @@ public class AggregateItemFinder {
 	 */
 	public List<HeaderSettingDto> findByCategoryAndPaymentType(WLCategory category, PaymentType paymentType) {
 		CompanyCode companyCode = new CompanyCode(AppContexts.user().companyCode());
-		return this.wageLedgerSettingRepository
-				.findHeaderAggregateItemsByCategory(companyCode, category, paymentType);
+		return this.repository.findByCategoryAndPaymentType(companyCode, category, paymentType).stream().map(item -> {
+			return HeaderSettingDto.builder()
+					.category(item.getSubject().getCategory())
+					.paymentType(item.getSubject().getPaymentType())
+					.code(item.getSubject().getCode().v())
+					.name(item.getName().v()).build();
+		}).collect(Collectors.toList());
 	}
 	
 	/**
