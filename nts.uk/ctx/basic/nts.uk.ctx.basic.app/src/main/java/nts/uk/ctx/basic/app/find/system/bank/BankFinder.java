@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
-import javax.enterprise.context.RequestScoped;
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.arc.error.BusinessException;
@@ -18,7 +18,7 @@ import nts.uk.ctx.basic.dom.system.bank.branch.BankBranch;
 import nts.uk.ctx.basic.dom.system.bank.branch.BankBranchRepository;
 import nts.uk.shr.com.context.AppContexts;
 
-@RequestScoped
+@Stateless
 public class BankFinder {
 	@Inject
 	private BankRepository bankRepository;
@@ -42,7 +42,7 @@ public class BankFinder {
 			List<BankBranch> branchs = branchMap.get(bank.getBankCode().v());
 			if (!CollectionUtil.isEmpty(branchs)) {
 				List<BranchDto> branhchDtos = branchs.stream()
-						.map(x -> new BranchDto(x.getBankBranchCode().v(), x.getBankBranchName().v(), x.getBankBranchNameKana().v(), x.getMemo().v()))
+						.map(x -> new BranchDto(x.getBankBranchCode().v(),x.getBranchId().toString(), x.getBankBranchName().v(), x.getBankBranchNameKana().v(), x.getMemo().v()))
 						.collect(Collectors.toList());
 				
 				if (!CollectionUtil.isEmpty(branhchDtos)) {
