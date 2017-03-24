@@ -50,13 +50,13 @@ module nts.uk.pr.view.qmm002.b {
         export class Node {
             code: string;
             name: string;
-            nodeText: string;
+            displayName: string;
             childs: any;
             constructor(code: string, name: string, childs: Array<Node>) {
                 var self = this;
                 self.code = code;
+                self.displayName = self.code +"  "+ self.name;
                 self.name = name;
-                self.nodeText = self.code + ' ' + self.name;
                 self.childs = childs;
             }
         }

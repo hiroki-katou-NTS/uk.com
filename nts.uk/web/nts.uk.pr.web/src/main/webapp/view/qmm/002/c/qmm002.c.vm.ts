@@ -105,6 +105,7 @@ module qmm002.c.viewmodel {
         treeCode: string;
         code: string;
         name: string;
+        displayName: string;
         nameKata: string;
         memo: string;
         childs: Array<BankInfo>;
@@ -115,6 +116,7 @@ module qmm002.c.viewmodel {
             self.treeCode = treeCode;
             self.code = code;
             self.name = name;
+            self.displayName = self.code +"  "+ self.name;
             self.nameKata = nameKata;
             self.memo = memo;
             self.childs = childs;
