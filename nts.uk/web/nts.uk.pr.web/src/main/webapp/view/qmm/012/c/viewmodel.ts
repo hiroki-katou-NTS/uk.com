@@ -60,6 +60,8 @@ module qmm012.c.viewmodel {
         C_SEL_015_Selected: KnockoutObservable<boolean> = ko.observable(false);
         C_SEL_016_Selected: KnockoutObservable<boolean> = ko.observable(false);
         CurrentLimitCode: KnockoutObservable<string> = ko.observable("");
+        C_LBL_028_Value: KnockoutObservable<string> = ko.observable("");
+        currentCommuteNoTaxLimitDto: KnockoutObservable<qmm023.a.service.model.CommuteNoTaxLimitDto> = ko.observable(null);
         constructor() {
             var self = this;
             self.ComboBoxItemList_C_SEL_001 = ko.observableArray([
@@ -123,7 +125,7 @@ module qmm012.c.viewmodel {
             //C_001
             self.currencyeditor_C_INP_001 = {
                 value: self.CurrentLimitMny,
-                constraint: '',
+                constraint: 'LimitMny',
                 option: ko.mapping.fromJS(new nts.uk.ui.option.CurrencyEditorOption({
                     grouplength: 3,
                     currencyformat: "JPY",
@@ -134,7 +136,7 @@ module qmm012.c.viewmodel {
             //C_002
             self.currencyeditor_C_INP_002 = {
                 value: self.CurrentErrRangeHigh,
-                constraint: '',
+                constraint: 'ErrRangeHigh',
                 option: ko.mapping.fromJS(new nts.uk.ui.option.CurrencyEditorOption({
                     grouplength: 3,
                     currencyformat: "JPY",
@@ -145,7 +147,7 @@ module qmm012.c.viewmodel {
             //C_003
             self.currencyeditor_C_INP_003 = {
                 value: self.CurrentAlRangeHigh,
-                constraint: '',
+                constraint: 'AlRangeHigh',
                 option: ko.mapping.fromJS(new nts.uk.ui.option.CurrencyEditorOption({
                     grouplength: 3,
                     currencyformat: "JPY",
@@ -156,7 +158,7 @@ module qmm012.c.viewmodel {
             //C_004
             self.currencyeditor_C_INP_004 = {
                 value: self.CurrentErrRangeLow,
-                constraint: '',
+                constraint: 'ErrRangeLow',
                 option: ko.mapping.fromJS(new nts.uk.ui.option.CurrencyEditorOption({
                     grouplength: 3,
                     currencyformat: "JPY",
@@ -167,7 +169,7 @@ module qmm012.c.viewmodel {
             //C_005
             self.currencyeditor_C_INP_005 = {
                 value: self.CurrentAlRangeLow,
-                constraint: '',
+                constraint: 'AlRangeLow',
                 option: ko.mapping.fromJS(new nts.uk.ui.option.CurrencyEditorOption({
                     grouplength: 3,
                     currencyformat: "JPY",
@@ -264,6 +266,17 @@ module qmm012.c.viewmodel {
                 }
 
             });
+            self.currentCommuteNoTaxLimitDto.subscribe(function(NewValue) {
+                self.C_LBL_028_Value(NewValue ? NewValue.commuNoTaxLimitCode + "  " + NewValue.commuNoTaxLimitName : "");
+            });
+            self.CurrentLimitCode.subscribe(function(NewValue) {
+                service.getCommuteNoTaxLimit(NewValue).done(function(CommuteNoTaxLimit: qmm023.a.service.model.CommuteNoTaxLimitDto) {
+                    self.currentCommuteNoTaxLimitDto(CommuteNoTaxLimit);
+                }).fail(function(res) {
+                    // Alert message
+                    alert(res);
+                });
+            });
         }
         GetCurrentItemSalary() {
             let self = this;
@@ -288,14 +301,14 @@ module qmm012.c.viewmodel {
                 self.CurrentAlRangeHigh(),
                 self.CurrentMemo(),
                 self.CurrentLimitMnyAtr(),
-                self.CurrentLimitCode(),
+                self.currentCommuteNoTaxLimitDto() ? self.currentCommuteNoTaxLimitDto().commuNoTaxLimitCode : '',
                 self.CurrentLimitMny());
             return ItemSalary;
         }
         openKDialog() {
             let self = this;
             nts.uk.ui.windows.sub.modal('../k/index.xhtml', { height: 530, width: 350, dialogClass: "no-close" }).onClosed(function(): any {
-                self.CurrentLimitCode(nts.uk.ui.windows.getShared('LimitCode'));
+                self.currentCommuteNoTaxLimitDto(nts.uk.ui.windows.getShared('CommuteNoTaxLimitDto'));
             });
         }
 

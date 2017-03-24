@@ -2,8 +2,18 @@ module qmm012.c {
     export module service {
         var paths: any = {
             findItemSalary: "pr/core/itemsalary/find",
+            getCommuteNoTaxLimit: "core/commutelimit/getCommuteNoTaxLimit"
         }
-
+        export function getCommuteNoTaxLimit(commuNoTaxLimitCode): JQueryPromise<qmm023.a.service.model.CommuteNoTaxLimitDto> {
+            var dfd = $.Deferred<qmm023.a.service.model.CommuteNoTaxLimitDto>();
+            nts.uk.request.ajax(paths.getCommuteNoTaxLimit + "/" + commuNoTaxLimitCode)
+                .done(function(res: qmm023.a.service.model.CommuteNoTaxLimitDto) {
+                    dfd.resolve(res);
+                }).fail(function(res) {
+                    dfd.reject(res);
+                })
+            return dfd.promise();
+        }
         export function findItemSalary(itemCode): JQueryPromise<model.ItemSalary> {
             var dfd = $.Deferred<model.ItemSalary>();
             nts.uk.request.ajax(paths.findItemSalary + "/" + itemCode)
@@ -40,7 +50,7 @@ module qmm012.c {
                 limitMnyRefItemCd: string;
                 limitMny: number;
                 constructor(
-                   taxAtr: number,
+                    taxAtr: number,
                     socialInsAtr: number,
                     laborInsAtr: number,
                     fixPayAtr: number,

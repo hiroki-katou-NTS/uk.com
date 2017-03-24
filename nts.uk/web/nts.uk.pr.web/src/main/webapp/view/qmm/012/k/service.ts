@@ -3,7 +3,7 @@ module qmm012.k {
         var paths: any = {
             getListByCompanyCode: "core/commutelimit/find/bycompanycode"
         }
-        export function getCommutelimitsByCompanyCode(): JQueryPromise<Array<model.CommuteNoTaxLimitDto>> {
+        export function getCommutelimitsByCompanyCode(): JQueryPromise<Array<qmm023.a.service.model.CommuteNoTaxLimitDto>> {
             var dfd = $.Deferred<Array<any>>();
             var _path = paths.getListByCompanyCode;
             nts.uk.request.ajax(_path)
@@ -13,24 +13,6 @@ module qmm012.k {
                     dfd.reject(res);
                 })
             return dfd.promise();
-        }
-        export module model {
-            // layout
-            export class CommuteNoTaxLimitDto {
-                companyCode: string;
-                commuNoTaxLimitCode: string;
-                commuNoTaxLimitName: string;
-                commuNoTaxLimitValue: number;
-
-                constructor(companyCode: string, commuNoTaxLimitCode: string, commuNoTaxLimitName: string,
-                    commuNoTaxLimitValue: number) {
-                    this.companyCode = companyCode;
-                    this.commuNoTaxLimitCode = commuNoTaxLimitCode;
-                    this.commuNoTaxLimitName = commuNoTaxLimitName;
-                    this.commuNoTaxLimitValue = commuNoTaxLimitValue;
-                }
-            }
-
         }
     }
 

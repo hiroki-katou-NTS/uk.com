@@ -33,6 +33,8 @@ var qmm012;
                     this.C_SEL_015_Selected = ko.observable(false);
                     this.C_SEL_016_Selected = ko.observable(false);
                     this.CurrentLimitCode = ko.observable("");
+                    this.C_LBL_028_Value = ko.observable("");
+                    this.currentCommuteNoTaxLimitDto = ko.observable(null);
                     var self = this;
                     self.ComboBoxItemList_C_SEL_001 = ko.observableArray([
                         new C_SEL_001_ComboboxItemModel(0, '課税'),
@@ -94,7 +96,7 @@ var qmm012;
                     //C_001
                     self.currencyeditor_C_INP_001 = {
                         value: self.CurrentLimitMny,
-                        constraint: '',
+                        constraint: 'LimitMny',
                         option: ko.mapping.fromJS(new nts.uk.ui.option.CurrencyEditorOption({
                             grouplength: 3,
                             currencyformat: "JPY",
@@ -105,7 +107,7 @@ var qmm012;
                     //C_002
                     self.currencyeditor_C_INP_002 = {
                         value: self.CurrentErrRangeHigh,
-                        constraint: '',
+                        constraint: 'ErrRangeHigh',
                         option: ko.mapping.fromJS(new nts.uk.ui.option.CurrencyEditorOption({
                             grouplength: 3,
                             currencyformat: "JPY",
@@ -116,7 +118,7 @@ var qmm012;
                     //C_003
                     self.currencyeditor_C_INP_003 = {
                         value: self.CurrentAlRangeHigh,
-                        constraint: '',
+                        constraint: 'AlRangeHigh',
                         option: ko.mapping.fromJS(new nts.uk.ui.option.CurrencyEditorOption({
                             grouplength: 3,
                             currencyformat: "JPY",
@@ -127,7 +129,7 @@ var qmm012;
                     //C_004
                     self.currencyeditor_C_INP_004 = {
                         value: self.CurrentErrRangeLow,
-                        constraint: '',
+                        constraint: 'ErrRangeLow',
                         option: ko.mapping.fromJS(new nts.uk.ui.option.CurrencyEditorOption({
                             grouplength: 3,
                             currencyformat: "JPY",
@@ -138,7 +140,7 @@ var qmm012;
                     //C_005
                     self.currencyeditor_C_INP_005 = {
                         value: self.CurrentAlRangeLow,
-                        constraint: '',
+                        constraint: 'AlRangeLow',
                         option: ko.mapping.fromJS(new nts.uk.ui.option.CurrencyEditorOption({
                             grouplength: 3,
                             currencyformat: "JPY",
@@ -228,16 +230,27 @@ var qmm012;
                                 break;
                         }
                     });
+                    self.currentCommuteNoTaxLimitDto.subscribe(function (NewValue) {
+                        self.C_LBL_028_Value(NewValue ? NewValue.commuNoTaxLimitCode + "  " + NewValue.commuNoTaxLimitName : "");
+                    });
+                    self.CurrentLimitCode.subscribe(function (NewValue) {
+                        c.service.getCommuteNoTaxLimit(NewValue).done(function (CommuteNoTaxLimit) {
+                            self.currentCommuteNoTaxLimitDto(CommuteNoTaxLimit);
+                        }).fail(function (res) {
+                            // Alert message
+                            alert(res);
+                        });
+                    });
                 }
                 ScreenModel.prototype.GetCurrentItemSalary = function () {
                     var self = this;
-                    var ItemSalary = new c.service.model.ItemSalary(self.CurrentTaxAtr(), self.CurrentSocialInsAtr(), self.CurrentLaborInsAtr(), self.CurrentFixPayAtr(), self.CurrentApplyForAllEmpFlg(), self.CurrentApplyForMonthlyPayEmp(), self.CurrentApplyForDaymonthlyPayEmp(), self.CurrentApplyForDaylyPayEmp(), self.CurrentApplyForHourlyPayEmp(), self.CurrentAvePayAtr(), self.C_SEL_015_Selected() ? 1 : 0, self.CurrentErrRangeLow(), self.C_SEL_013_Selected() ? 1 : 0, self.CurrentErrRangeHigh(), self.C_SEL_016_Selected() ? 1 : 0, self.CurrentAlRangeLow(), self.C_SEL_014_Selected() ? 1 : 0, self.CurrentAlRangeHigh(), self.CurrentMemo(), self.CurrentLimitMnyAtr(), self.CurrentLimitCode(), self.CurrentLimitMny());
+                    var ItemSalary = new c.service.model.ItemSalary(self.CurrentTaxAtr(), self.CurrentSocialInsAtr(), self.CurrentLaborInsAtr(), self.CurrentFixPayAtr(), self.CurrentApplyForAllEmpFlg(), self.CurrentApplyForMonthlyPayEmp(), self.CurrentApplyForDaymonthlyPayEmp(), self.CurrentApplyForDaylyPayEmp(), self.CurrentApplyForHourlyPayEmp(), self.CurrentAvePayAtr(), self.C_SEL_015_Selected() ? 1 : 0, self.CurrentErrRangeLow(), self.C_SEL_013_Selected() ? 1 : 0, self.CurrentErrRangeHigh(), self.C_SEL_016_Selected() ? 1 : 0, self.CurrentAlRangeLow(), self.C_SEL_014_Selected() ? 1 : 0, self.CurrentAlRangeHigh(), self.CurrentMemo(), self.CurrentLimitMnyAtr(), self.currentCommuteNoTaxLimitDto() ? self.currentCommuteNoTaxLimitDto().commuNoTaxLimitCode : '', self.CurrentLimitMny());
                     return ItemSalary;
                 };
                 ScreenModel.prototype.openKDialog = function () {
                     var self = this;
                     nts.uk.ui.windows.sub.modal('../k/index.xhtml', { height: 530, width: 350, dialogClass: "no-close" }).onClosed(function () {
-                        self.CurrentLimitCode(nts.uk.ui.windows.getShared('LimitCode'));
+                        self.currentCommuteNoTaxLimitDto(nts.uk.ui.windows.getShared('CommuteNoTaxLimitDto'));
                     });
                 };
                 ScreenModel.prototype.openHDialog = function () {

@@ -53,7 +53,7 @@ module qmm012.e.viewmodel {
             //E_001
             self.currencyeditor_E_001 = {
                 value: self.CurrentErrRangeHigh,
-                constraint: '',
+                constraint: 'ErrRangeHigh',
                 option: ko.mapping.fromJS(new nts.uk.ui.option.CurrencyEditorOption({
                     grouplength: 3,
                     currencyformat: "JPY",
@@ -63,7 +63,7 @@ module qmm012.e.viewmodel {
             //E_002
             self.currencyeditor_E_002 = {
                 value: self.CurrentAlRangeHigh,
-                constraint: '',
+                constraint: 'AlRangeHigh',
                 option: ko.mapping.fromJS(new nts.uk.ui.option.CurrencyEditorOption({
                     grouplength: 3,
                     currencyformat: "JPY",
@@ -73,7 +73,7 @@ module qmm012.e.viewmodel {
             //E_003
             self.currencyeditor_E_003 = {
                 value: self.CurrentErrRangeLow,
-                constraint: '',
+                constraint: 'ErrRangeLow',
                 option: ko.mapping.fromJS(new nts.uk.ui.option.CurrencyEditorOption({
                     grouplength: 3,
                     currencyformat: "JPY",
@@ -83,7 +83,7 @@ module qmm012.e.viewmodel {
             //E_004
             self.currencyeditor_E_004 = {
                 value: self.CurrentAlRangeLow,
-                constraint: '',
+                constraint: 'AlRangeLow',
                 option: ko.mapping.fromJS(new nts.uk.ui.option.CurrencyEditorOption({
                     grouplength: 3,
                     currencyformat: "JPY",

@@ -8,7 +8,11 @@ var qmm012;
                 function ScreenModel() {
                     //002
                     this.checked_002 = ko.observable(false);
-                    this.gridListCurrentCode = ko.observable();
+                    this.checked_003 = ko.observable(false);
+                    this.checked_004 = ko.observable(false);
+                    this.checked_005 = ko.observable(false);
+                    this.checked_006 = ko.observable(false);
+                    this.gridListCurrentCode = ko.observable('');
                     this.selectedRuleCode_001 = ko.observable(1);
                     this.CurrentItemMaster = ko.observable(null);
                     this.ItemBDList = ko.observableArray([]);
@@ -20,30 +24,12 @@ var qmm012;
                     this.CurrentUniteCd = ko.observable('');
                     this.CurrentZeroDispSet = ko.observable(1);
                     this.CurrentItemDispAtr = ko.observable(0);
-                    this.CurrentErrRangeLowAtr = ko.observable(0);
                     this.CurrentErrRangeLow = ko.observable(0);
-                    this.CurrentErrRangeHighAtr = ko.observable(0);
                     this.CurrentErrRangeHigh = ko.observable(0);
-                    this.CurrentAlRangeLowAtr = ko.observable(0);
                     this.CurrentAlRangeLow = ko.observable(0);
-                    this.CurrentAlRangeHighAtr = ko.observable(0);
                     this.CurrentAlRangeHigh = ko.observable(0);
                     this.enable_I_INP_002 = ko.observable(false);
                     var self = this;
-                    //textediter
-                    self.texteditor = {
-                        value: ko.observable(''),
-                        constraint: 'ResidenceCode',
-                        option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                            textmode: "text",
-                            placeholder: "",
-                            width: "60px",
-                            textalign: "left"
-                        })),
-                        required: ko.observable(true),
-                        enable: ko.observable(true),
-                        readonly: ko.observable(false)
-                    };
                     //start Switch Data
                     self.enable = ko.observable(true);
                     self.roundingRules_001 = ko.observableArray([
@@ -55,7 +41,7 @@ var qmm012;
                     //005
                     self.currencyeditor_I_INP_005 = {
                         value: self.CurrentErrRangeHigh,
-                        constraint: '',
+                        constraint: 'ErrRangeHigh',
                         option: ko.mapping.fromJS(new nts.uk.ui.option.CurrencyEditorOption({
                             grouplength: 3,
                             currencyformat: "JPY",
@@ -65,7 +51,7 @@ var qmm012;
                     //006
                     self.currencyeditor_I_INP_006 = {
                         value: self.CurrentAlRangeHigh,
-                        constraint: '',
+                        constraint: 'AlRangeHigh',
                         option: ko.mapping.fromJS(new nts.uk.ui.option.CurrencyEditorOption({
                             grouplength: 3,
                             currencyformat: "JPY",
@@ -75,7 +61,7 @@ var qmm012;
                     //007
                     self.currencyeditor_I_INP_007 = {
                         value: self.CurrentErrRangeLow,
-                        constraint: '',
+                        constraint: 'ErrRangeLow',
                         option: ko.mapping.fromJS(new nts.uk.ui.option.CurrencyEditorOption({
                             grouplength: 3,
                             currencyformat: "JPY",
@@ -85,7 +71,7 @@ var qmm012;
                     //008
                     self.currencyeditor_I_INP_008 = {
                         value: self.CurrentAlRangeLow,
-                        constraint: '',
+                        constraint: 'AlRangeLow',
                         option: ko.mapping.fromJS(new nts.uk.ui.option.CurrencyEditorOption({
                             grouplength: 3,
                             currencyformat: "JPY",
@@ -124,13 +110,13 @@ var qmm012;
                         self.CurrentZeroDispSet(ItemBD ? ItemBD.zeroDispSet : 1);
                         self.checked_002(ItemBD ? ItemBD.itemDispAtr == 1 ? false : true : false);
                         self.CurrentItemDispAtr(ItemBD ? ItemBD.itemDispAtr : 0);
-                        self.CurrentErrRangeLowAtr(ItemBD ? ItemBD.errRangeLowAtr : 0);
+                        self.checked_005(ItemBD ? ItemBD.errRangeLowAtr == 1 ? true : false : false);
                         self.CurrentErrRangeLow(ItemBD ? ItemBD.errRangeLow : 0);
-                        self.CurrentErrRangeHighAtr(ItemBD ? ItemBD.errRangeHighAtr : 0);
+                        self.checked_003(ItemBD ? ItemBD.errRangeHighAtr == 1 ? true : false : false);
                         self.CurrentErrRangeHigh(ItemBD ? ItemBD.errRangeHigh : 0);
-                        self.CurrentAlRangeLowAtr(ItemBD ? ItemBD.alRangeLowAtr : 0);
+                        self.checked_006(ItemBD ? ItemBD.alRangeLowAtr == 1 ? true : false : false);
                         self.CurrentAlRangeLow(ItemBD ? ItemBD.alRangeLow : 0);
-                        self.CurrentAlRangeHighAtr(ItemBD ? ItemBD.alRangeHighAtr : 0);
+                        self.checked_004(ItemBD ? ItemBD.alRangeHighAtr == 1 ? true : false : false);
                         self.CurrentAlRangeHigh(ItemBD ? ItemBD.alRangeHigh : 0);
                     });
                     self.checked_002.subscribe(function (NewValue) {
@@ -148,6 +134,10 @@ var qmm012;
                         alert(res);
                     });
                 };
+                ScreenModel.prototype.GetCurrentItemBD = function () {
+                    var self = this;
+                    return new i.service.model.ItemBD(self.CurrentItemBreakdownCd(), self.CurrentItemBreakdownName(), self.CurrentItemBreakdownAbName(), self.CurrentUniteCd(), self.CurrentZeroDispSet(), self.checked_002() == true ? 0 : 1, self.checked_005() == true ? 1 : 0, self.CurrentErrRangeLow(), self.checked_003() == true ? 1 : 0, self.CurrentErrRangeHigh(), self.checked_006() == true ? 1 : 0, self.CurrentAlRangeLow(), self.checked_004() == true ? 1 : 0, self.CurrentAlRangeHigh());
+                };
                 ScreenModel.prototype.LoadItemDeductBD = function () {
                     var self = this;
                     i.service.findAllItemDeductBD(self.CurrentItemMaster().itemCode).done(function (ItemBDs) {
@@ -159,11 +149,40 @@ var qmm012;
                         alert(res);
                     });
                 };
-                ScreenModel.prototype.SubmitDialog = function () {
-                    nts.uk.ui.windows.close();
+                ScreenModel.prototype.SaveItem = function () {
+                    var self = this;
+                    if (self.enable_I_INP_002())
+                        self.addItemBD();
+                    else
+                        self.updateItemBD();
+                };
+                ScreenModel.prototype.addItemBD = function () {
+                    var self = this;
+                    var ItemBD = self.GetCurrentItemBD();
+                    if (self.CurrentItemMaster().categoryAtr == 0) {
+                        i.service.addItemSalaryBD(ItemBD);
+                    }
+                    if (self.CurrentItemMaster().categoryAtr == 1) {
+                        i.service.addItemDeductBD(ItemBD);
+                    }
+                };
+                ScreenModel.prototype.updateItemBD = function () {
+                    var self = this;
+                    var ItemBD = self.GetCurrentItemBD();
+                    if (self.CurrentItemMaster().categoryAtr == 0) {
+                        i.service.updateItemSalaryBD(ItemBD);
+                    }
+                    if (self.CurrentItemMaster().categoryAtr == 1) {
+                        i.service.updateItemDeductBD(ItemBD);
+                    }
                 };
                 ScreenModel.prototype.CloseDialog = function () {
                     nts.uk.ui.windows.close();
+                };
+                ScreenModel.prototype.AddNewItem = function () {
+                    var self = this;
+                    self.gridListCurrentCode('');
+                    self.enable_I_INP_002(true);
                 };
                 return ScreenModel;
             }());

@@ -1,8 +1,7 @@
 module qmm012.h.viewmodel {
     export class ScreenModel {
         //textediter
-        texteditor_INP_001: any;
-        texteditor_INP_002: any;
+       
         selectedCode: KnockoutObservable<string>;
         isEnable: KnockoutObservable<boolean>;
         isEditable: KnockoutObservable<boolean>;
@@ -39,29 +38,6 @@ module qmm012.h.viewmodel {
         CurrentCycle12Atr: KnockoutObservable<number> = ko.observable(0);
         constructor() {
             var self = this;
-            //textediter
-            //001
-            self.texteditor_INP_001 = {
-                value: self.CurrentStrY,
-                constraint: 'ResidenceCode',
-                option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                    textmode: "text",
-                    placeholder: "",
-                    width: "60px",
-                    textalign: "left"
-                }))
-            };
-            //002
-            self.texteditor_INP_002 = {
-                value: self.CurrentEndY,
-                constraint: 'ResidenceCode',
-                option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                    textmode: "text",
-                    placeholder: "",
-                    width: "60px",
-                    textalign: "left"
-                }))
-            };
             //set Switch Data
             self.roundingRules_H_SEL_001 = ko.observableArray([
                 { code: 1, name: '設定する' },

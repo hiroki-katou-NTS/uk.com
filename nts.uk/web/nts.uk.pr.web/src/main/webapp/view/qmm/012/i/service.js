@@ -7,6 +7,10 @@ var qmm012;
             var paths = {
                 findAllItemSalaryBD: "pr/core/itemsalarybd/find",
                 findAllItemDeductBD: "pr/core/itemdeductbd/find",
+                updateItemSalaryBD: "pr/core/itemsalarybd/update",
+                updateItemDeductBD: "pr/core/itemdeductbd/update",
+                addItemSalaryBD: "pr/core/itemsalarybd/add",
+                addItemDeductBD: "pr/core/itemdeductbd/add",
             };
             function findItemSalaryBD(itemCode) {
                 var dfd = $.Deferred();
@@ -32,6 +36,54 @@ var qmm012;
                 return dfd.promise();
             }
             service.findAllItemDeductBD = findAllItemDeductBD;
+            function addItemDeductBD(itemBD) {
+                var dfd = $.Deferred();
+                nts.uk.request.ajax(paths.addItemDeductBD, itemBD)
+                    .done(function (res) {
+                    dfd.resolve(res);
+                })
+                    .fail(function (res) {
+                    dfd.reject(res);
+                });
+                return dfd.promise();
+            }
+            service.addItemDeductBD = addItemDeductBD;
+            function addItemSalaryBD(itemBD) {
+                var dfd = $.Deferred();
+                nts.uk.request.ajax(paths.addItemSalaryBD, itemBD)
+                    .done(function (res) {
+                    dfd.resolve(res);
+                })
+                    .fail(function (res) {
+                    dfd.reject(res);
+                });
+                return dfd.promise();
+            }
+            service.addItemSalaryBD = addItemSalaryBD;
+            function updateItemDeductBD(itemBD) {
+                var dfd = $.Deferred();
+                nts.uk.request.ajax(paths.updateItemDeductBD, itemBD)
+                    .done(function (res) {
+                    dfd.resolve(res);
+                })
+                    .fail(function (res) {
+                    dfd.reject(res);
+                });
+                return dfd.promise();
+            }
+            service.updateItemDeductBD = updateItemDeductBD;
+            function updateItemSalaryBD(itemBD) {
+                var dfd = $.Deferred();
+                nts.uk.request.ajax(paths.updateItemSalaryBD, itemBD)
+                    .done(function (res) {
+                    dfd.resolve(res);
+                })
+                    .fail(function (res) {
+                    dfd.reject(res);
+                });
+                return dfd.promise();
+            }
+            service.updateItemSalaryBD = updateItemSalaryBD;
             var model;
             (function (model) {
                 var ItemBD = (function () {
@@ -58,4 +110,3 @@ var qmm012;
         })(service = i.service || (i.service = {}));
     })(i = qmm012.i || (qmm012.i = {}));
 })(qmm012 || (qmm012 = {}));
-//# sourceMappingURL=service.js.map

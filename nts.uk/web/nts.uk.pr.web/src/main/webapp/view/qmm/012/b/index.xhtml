@@ -26,10 +26,23 @@
 			<com:scriptfile path="../f/service.js" />
 			<com:scriptfile path="../g/viewmodel.js" />
 			<com:scriptfile path="../g/service.js" />
-
+			<com:ValidatorScript>
+				<!-- For B -->
+				nts.uk.ctx.pr.core.dom.itemmaster.ItemCode
+				nts.uk.ctx.pr.core.dom.itemmaster.ItemName
+				<!-- End B -->
+				<!-- For C -->
+				nts.uk.ctx.pr.core.dom.itemmaster.itemsalary.LimitMny
+				nts.uk.ctx.pr.core.dom.itemmaster.itemsalary.AlRangeHigh
+				nts.uk.ctx.pr.core.dom.itemmaster.itemsalary.AlRangeLow
+				nts.uk.ctx.pr.core.dom.itemmaster.itemsalary.ErrRangeHigh
+				nts.uk.ctx.pr.core.dom.itemmaster.itemsalary.ErrRangeLow
+				nts.uk.ctx.pr.core.dom.itemmaster.itemsalary.Memo
+				<!-- End C -->
+			</com:ValidatorScript>
 		</ui:define>
 		<ui:define name="content">
-			<div id="functions-area" >
+			<div id="functions-area">
 				<button id="B_BTN_001" data-bind="click: openADialog"
 					class="inputNomalSize">新規</button>
 				<button id="B_BTN_002" class="proceed inputNomalSize"
@@ -88,7 +101,7 @@
 					</div>
 				</div>
 				<div class="nts-right-content">
-					<div id="right-content-top" >
+					<div id="right-content-top">
 						<div class="divLine">
 							<div class="divLineCol1">
 								<div id="B_LBL_004" class="floatLeft haveSmallSpan"
@@ -100,6 +113,7 @@
 								<div id="B_INP_002" data-bind="with:texteditor_B_INP_002">
 									<input
 										data-bind="ntsTextEditor: {
+										constraint: 'ItemCode',
 										value: value,
 										option: option,
 										enable: enable}" />
@@ -108,6 +122,7 @@
 								<div id="B_INP_003" data-bind="with:texteditor_B_INP_003">
 									<input
 										data-bind="ntsTextEditor: {
+										constraint: 'ItemName',
 										value: value,
 										option: option}" />
 								</div>
@@ -127,6 +142,7 @@
 								<div id="B_INP_004" data-bind="with:texteditor_B_INP_004">
 									<input
 										data-bind="ntsTextEditor: {
+										constraint: 'ItemName',
 										value: value,
 										option: option}" />
 								</div>

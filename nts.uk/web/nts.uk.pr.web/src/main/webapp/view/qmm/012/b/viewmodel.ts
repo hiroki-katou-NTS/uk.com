@@ -273,9 +273,9 @@ module qmm012.b.viewmodel {
         openADialog() {
             let self = this;
             nts.uk.ui.windows.sub.modal('../a/index.xhtml', { height: 480, width: 630, dialogClass: "no-close" }).onClosed(function(): any {
-                let groupCode = Number(nts.uk.sessionStorage.getItemAndRemove('groupCode').value);
-                //set layout for new.
-                if (groupCode != undefined) {
+                if (nts.uk.sessionStorage.getItemAndRemove('groupCode').value) {
+                    let groupCode = Number(nts.uk.sessionStorage.getItemAndRemove('groupCode').value);
+                    //set layout for new.
                     self.GridlistCurrentCode_B_001('');
                     self.GridCurrentCategoryAtr_B_001(groupCode);
                     self.enable_B_INP_002(true);

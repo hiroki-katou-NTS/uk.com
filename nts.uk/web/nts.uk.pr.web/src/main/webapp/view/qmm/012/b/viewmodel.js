@@ -243,9 +243,9 @@ var qmm012;
                 ScreenModel.prototype.openADialog = function () {
                     var self = this;
                     nts.uk.ui.windows.sub.modal('../a/index.xhtml', { height: 480, width: 630, dialogClass: "no-close" }).onClosed(function () {
-                        var groupCode = Number(nts.uk.sessionStorage.getItemAndRemove('groupCode').value);
-                        //set layout for new.
-                        if (groupCode != undefined) {
+                        if (nts.uk.sessionStorage.getItemAndRemove('groupCode').value) {
+                            var groupCode = Number(nts.uk.sessionStorage.getItemAndRemove('groupCode').value);
+                            //set layout for new.
                             self.GridlistCurrentCode_B_001('');
                             self.GridCurrentCategoryAtr_B_001(groupCode);
                             self.enable_B_INP_002(true);

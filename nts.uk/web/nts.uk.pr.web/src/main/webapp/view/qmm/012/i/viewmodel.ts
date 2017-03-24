@@ -2,14 +2,18 @@ module qmm012.i.viewmodel {
     export class ScreenModel {
 
         //textediter
-        texteditor: any;
+
         //Checkbox
         checked: KnockoutObservable<boolean>;
         //002
         checked_002: KnockoutObservable<boolean> = ko.observable(false);
+        checked_003: KnockoutObservable<boolean> = ko.observable(false);
+        checked_004: KnockoutObservable<boolean> = ko.observable(false);
+        checked_005: KnockoutObservable<boolean> = ko.observable(false);
+        checked_006: KnockoutObservable<boolean> = ko.observable(false);
 
         columns: KnockoutObservableArray<any>;
-        gridListCurrentCode: KnockoutObservable<any> = ko.observable();
+        gridListCurrentCode: KnockoutObservable<string> = ko.observable('');
         //Switch
         roundingRules_001: KnockoutObservableArray<any>;
         selectedRuleCode_001: KnockoutObservable<number> = ko.observable(1);
@@ -32,36 +36,14 @@ module qmm012.i.viewmodel {
         CurrentUniteCd: KnockoutObservable<string> = ko.observable('');
         CurrentZeroDispSet: KnockoutObservable<number> = ko.observable(1);
         CurrentItemDispAtr: KnockoutObservable<number> = ko.observable(0);
-        CurrentErrRangeLowAtr: KnockoutObservable<number> = ko.observable(0);
         CurrentErrRangeLow: KnockoutObservable<number> = ko.observable(0);
-        CurrentErrRangeHighAtr: KnockoutObservable<number> = ko.observable(0);
         CurrentErrRangeHigh: KnockoutObservable<number> = ko.observable(0);
-        CurrentAlRangeLowAtr: KnockoutObservable<number> = ko.observable(0);
         CurrentAlRangeLow: KnockoutObservable<number> = ko.observable(0);
-        CurrentAlRangeHighAtr: KnockoutObservable<number> = ko.observable(0);
         CurrentAlRangeHigh: KnockoutObservable<number> = ko.observable(0);
 
         enable_I_INP_002: KnockoutObservable<boolean> = ko.observable(false);
         constructor() {
             var self = this;
-            //textediter
-            self.texteditor = {
-                value: ko.observable(''),
-                constraint: 'ResidenceCode',
-                option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                    textmode: "text",
-                    placeholder: "",
-                    width: "60px",
-                    textalign: "left"
-                })),
-                required: ko.observable(true),
-                enable: ko.observable(true),
-                readonly: ko.observable(false)
-            };
-
-
-
-
             //start Switch Data
             self.enable = ko.observable(true);
             self.roundingRules_001 = ko.observableArray([
@@ -73,7 +55,7 @@ module qmm012.i.viewmodel {
             //005
             self.currencyeditor_I_INP_005 = {
                 value: self.CurrentErrRangeHigh,
-                constraint: '',
+                constraint: 'ErrRangeHigh',
                 option: ko.mapping.fromJS(new nts.uk.ui.option.CurrencyEditorOption({
                     grouplength: 3,
                     currencyformat: "JPY",
@@ -83,7 +65,7 @@ module qmm012.i.viewmodel {
             //006
             self.currencyeditor_I_INP_006 = {
                 value: self.CurrentAlRangeHigh,
-                constraint: '',
+                constraint: 'AlRangeHigh',
                 option: ko.mapping.fromJS(new nts.uk.ui.option.CurrencyEditorOption({
                     grouplength: 3,
                     currencyformat: "JPY",
@@ -93,7 +75,7 @@ module qmm012.i.viewmodel {
             //007
             self.currencyeditor_I_INP_007 = {
                 value: self.CurrentErrRangeLow,
-                constraint: '',
+                constraint: 'ErrRangeLow',
                 option: ko.mapping.fromJS(new nts.uk.ui.option.CurrencyEditorOption({
                     grouplength: 3,
                     currencyformat: "JPY",
@@ -103,7 +85,7 @@ module qmm012.i.viewmodel {
             //008
             self.currencyeditor_I_INP_008 = {
                 value: self.CurrentAlRangeLow,
-                constraint: '',
+                constraint: 'AlRangeLow',
                 option: ko.mapping.fromJS(new nts.uk.ui.option.CurrencyEditorOption({
                     grouplength: 3,
                     currencyformat: "JPY",
@@ -146,13 +128,13 @@ module qmm012.i.viewmodel {
                 self.checked_002(ItemBD ? ItemBD.itemDispAtr == 1 ? false : true : false);
                 self.CurrentItemDispAtr(ItemBD ? ItemBD.itemDispAtr : 0);
 
-                self.CurrentErrRangeLowAtr(ItemBD ? ItemBD.errRangeLowAtr : 0);
+                self.checked_005(ItemBD ? ItemBD.errRangeLowAtr == 1 ? true : false : false);
                 self.CurrentErrRangeLow(ItemBD ? ItemBD.errRangeLow : 0);
-                self.CurrentErrRangeHighAtr(ItemBD ? ItemBD.errRangeHighAtr : 0);
+                self.checked_003(ItemBD ? ItemBD.errRangeHighAtr == 1 ? true : false : false);
                 self.CurrentErrRangeHigh(ItemBD ? ItemBD.errRangeHigh : 0);
-                self.CurrentAlRangeLowAtr(ItemBD ? ItemBD.alRangeLowAtr : 0);
+                self.checked_006(ItemBD ? ItemBD.alRangeLowAtr == 1 ? true : false : false);
                 self.CurrentAlRangeLow(ItemBD ? ItemBD.alRangeLow : 0);
-                self.CurrentAlRangeHighAtr(ItemBD ? ItemBD.alRangeHighAtr : 0);
+                self.checked_004(ItemBD ? ItemBD.alRangeHighAtr == 1 ? true : false : false);
                 self.CurrentAlRangeHigh(ItemBD ? ItemBD.alRangeHigh : 0);
             });
             self.checked_002.subscribe(function(NewValue) {
@@ -170,6 +152,25 @@ module qmm012.i.viewmodel {
                 alert(res);
             });
         }
+        GetCurrentItemBD() {
+            let self = this;
+            return new service.model.ItemBD(
+                self.CurrentItemBreakdownCd(),
+                self.CurrentItemBreakdownName(),
+                self.CurrentItemBreakdownAbName(),
+                self.CurrentUniteCd(),
+                self.CurrentZeroDispSet(),
+                self.checked_002() == true ? 0 : 1,
+                self.checked_005() == true ? 1 : 0,
+                self.CurrentErrRangeLow(),
+                self.checked_003() == true ? 1 : 0,
+                self.CurrentErrRangeHigh(),
+                self.checked_006() == true ? 1 : 0,
+                self.CurrentAlRangeLow(),
+                self.checked_004() == true ? 1 : 0,
+                self.CurrentAlRangeHigh()
+            );
+        }
         LoadItemDeductBD() {
             let self = this;
             service.findAllItemDeductBD(self.CurrentItemMaster().itemCode).done(function(ItemBDs: Array<service.model.ItemBD>) {
@@ -181,11 +182,42 @@ module qmm012.i.viewmodel {
                 alert(res);
             });
         }
-        SubmitDialog() {
-            nts.uk.ui.windows.close();
+        SaveItem() {
+            let self = this;
+            if (self.enable_I_INP_002())
+                self.addItemBD();
+            else
+                self.updateItemBD();
+
+        }
+        addItemBD() {
+            let self = this;
+            let ItemBD = self.GetCurrentItemBD();
+            if (self.CurrentItemMaster().categoryAtr == 0) {
+                service.addItemSalaryBD(ItemBD);
+            }
+            if (self.CurrentItemMaster().categoryAtr == 1) {
+                service.addItemDeductBD(ItemBD);
+            }
+        }
+        updateItemBD() {
+            let self = this;
+            let ItemBD = self.GetCurrentItemBD();
+            if (self.CurrentItemMaster().categoryAtr == 0) {
+                service.updateItemSalaryBD(ItemBD);
+            }
+            if (self.CurrentItemMaster().categoryAtr == 1) {
+                service.updateItemDeductBD(ItemBD);
+            }
+
         }
         CloseDialog() {
             nts.uk.ui.windows.close();
+        }
+        AddNewItem() {
+            let self = this;
+            self.gridListCurrentCode('');
+            self.enable_I_INP_002(true);
         }
     }
     class GridItemModel {
