@@ -76,7 +76,7 @@ var nts;
                                         case 'ER005':
                                             $('#inpCode').ntsError('set', '入力した＊は既に存在しています。\r\n ＊を確認してください。');
                                             break;
-                                        case 'ER010':
+                                        case 'ER011':
                                             $('#inpStartMonth').ntsError('set', '対象データがありません。');
                                             break;
                                         default:
