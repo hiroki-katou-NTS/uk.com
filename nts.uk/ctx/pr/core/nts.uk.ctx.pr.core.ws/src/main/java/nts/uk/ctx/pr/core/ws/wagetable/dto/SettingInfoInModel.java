@@ -6,21 +6,22 @@ package nts.uk.ctx.pr.core.ws.wagetable.dto;
 
 import java.util.List;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * The Class SettingInfoInModel.
  */
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class SettingInfoInModel {
-
-	/** The company code. */
-	private String companyCode;
 
 	/** The history id. */
 	private String historyId;
 
 	/** The element setting. */
-	private List<ElementSettingDto> elementSettings;
+	private List<ElementSettingDto> settings;
 
 }
