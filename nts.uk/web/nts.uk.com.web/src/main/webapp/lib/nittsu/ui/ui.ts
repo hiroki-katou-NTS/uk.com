@@ -1,4 +1,4 @@
-/// <reference path="../util.ts"/>
+/// <reference path="../reference.ts"/>
 
 module nts.uk.ui {
 
@@ -678,7 +678,7 @@ module nts.uk.ui {
 		}
 
 		getCurrentState() {
-			return ko.mapping.toJSON(this.targetViewModel());
+			return ko.toJSON(this.targetViewModel());
 		}
 
 		reset() {

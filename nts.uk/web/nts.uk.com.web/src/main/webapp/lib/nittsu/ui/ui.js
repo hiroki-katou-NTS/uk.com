@@ -1,4 +1,4 @@
-/// <reference path="../util.ts"/>
+/// <reference path="../reference.ts"/>
 var nts;
 (function (nts) {
     var uk;
@@ -610,7 +610,7 @@ var nts;
                     this.initialState = this.getCurrentState();
                 }
                 DirtyChecker.prototype.getCurrentState = function () {
-                    return ko.mapping.toJSON(this.targetViewModel());
+                    return ko.toJSON(this.targetViewModel());
                 };
                 DirtyChecker.prototype.reset = function () {
                     this.initialState = this.getCurrentState();

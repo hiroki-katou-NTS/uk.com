@@ -29,11 +29,13 @@ var qet001;
                     this.masterItemList = [];
                     this.hasUpdate = ko.observable(false);
                     var self = this;
+                    self.dirty = new nts.uk.ui.DirtyChecker(self.outputSettingDetail);
                     self.outputSettings().outputSettingSelectedCode.subscribe(function (newVal) {
                         self.isLoading(true);
                         if (!newVal || newVal == '') {
                             self.outputSettingDetail(new OutputSettingDetail(self.aggregateItemsList, self.masterItemList));
                             self.isLoading(false);
+                            self.dirty.reset();
                             return;
                         }
                         // load detail output setting.
@@ -105,7 +107,12 @@ var qet001;
                  * Close dialog.
                  */
                 ScreenModel.prototype.close = function () {
-                    nts.uk.ui.windows.close();
+                    var self = this;
+                    if (self.dirty.isDirty()) {
+                        nts.uk.ui.dialog.confirm('変更された内容が登録されていません。\r\nよろしいですか。').ifYes(function () {
+                            nts.uk.ui.windows.close();
+                        });
+                    }
                 };
                 /**
                  * Save output setting.
@@ -118,11 +125,11 @@ var qet001;
                     // Validate.
                     var hasError = false;
                     if (self.outputSettingDetail().settingCode() == '') {
-                        $('#code-input').ntsError('set', '未入力エラー');
+                        $('#code-input').ntsError('set', 'コードが入力されていません。');
                         hasError = true;
                     }
                     if (self.outputSettingDetail().settingName() == '') {
-                        $('#name-input').ntsError('set', '未入力エラー');
+                        $('#name-input').ntsError('set', '名称が入力されていません。');
                         hasError = true;
                     }
                     if (hasError) {
@@ -182,6 +189,7 @@ var qet001;
                     var self = this;
                     b.service.findOutputSettingDetail(selectedCode).done(function (data) {
                         self.outputSettingDetail(new OutputSettingDetail(self.aggregateItemsList, self.masterItemList, data));
+                        self.dirty.reset();
                         dfd.resolve();
                     }).fail(function (res) {
                         nts.uk.ui.dialog.alert(res.message);
@@ -223,6 +231,16 @@ var qet001;
                  * Switch to create mode.
                  */
                 ScreenModel.prototype.switchToCreateMode = function () {
+                    var self = this;
+                    if (self.dirty.isDirty()) {
+                        nts.uk.ui.dialog.confirm('変更された内容が登録されていません。\r\nよろしいですか。').ifYes(function () {
+                            self.outputSettingDetail(new OutputSettingDetail(self.aggregateItemsList, self.masterItemList));
+                            self.outputSettings().outputSettingSelectedCode('');
+                        }).ifNo(function () {
+                            return;
+                        });
+                        return;
+                    }
                     this.outputSettingDetail(new OutputSettingDetail(this.aggregateItemsList, this.masterItemList));
                     this.outputSettings().outputSettingSelectedCode('');
                 };

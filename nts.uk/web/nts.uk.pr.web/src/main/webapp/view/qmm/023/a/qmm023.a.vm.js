@@ -42,8 +42,8 @@ var qmm023;
                         { headerText: '名称', prop: 'name', width: 120 },
                         { headerText: '限度額', prop: 'taxLimit', width: 170 }
                     ]);
-                    self.currentCode = ko.observable(null);
                     self.currentTax = ko.observable(new TaxModel('', '', 0));
+                    self.currentCode = ko.observable(null);
                     self.isUpdate = ko.observable(true);
                     self.allowEditCode = ko.observable(false);
                     self.isEnableDeleteBtn = ko.observable(true);
@@ -86,7 +86,6 @@ var qmm023;
                 };
                 ScreenModel.prototype.refreshLayout = function () {
                     var self = this;
-                    $('.save-error').ntsError('clear');
                     self.allowEditCode(true);
                     self.currentTax(ko.mapping.fromJS(new TaxModel('', '', 0)));
                     self.currentCode(null);
@@ -97,6 +96,7 @@ var qmm023;
                 };
                 ScreenModel.prototype.createButtonClick = function () {
                     var self = this;
+                    $('.save-error').ntsError('clear');
                     if (self.currentTaxDirty.isDirty()) {
                         nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\nよろしいですか。?").ifYes(function () {
                             self.refreshLayout();
@@ -210,7 +210,8 @@ var qmm023;
                         });
                         self.flatDirty = true;
                         if (self.items().length <= 0) {
-                            self.currentTax(ko.mapping.fromJS(new TaxModel('', '', 0)));
+                            self.refreshLayout();
+                            dfd.resolve();
                             return;
                         }
                         if (isReload) {
