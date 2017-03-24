@@ -620,139 +620,7 @@ public class AsposeSalaryChartReportGenerator extends AsposeCellsReportGenerator
 		}
 	}
 
-	/**
-	 * The main method.
-	 *
-	 * @param args the arguments
-	 */
-	public static void main(String[] args) {
-		AsposeSalaryChartReportGenerator gen = new AsposeSalaryChartReportGenerator();
-		List<Integer> selectedLevels = Arrays.asList(1, 5, 6);
-		SalaryChartReportQuery query = SalaryChartReportQuery
-				.builder()
-				.isCalculateTotal(true)
-				.isPrintDepHierarchy(true)
-				.isPrintTotalOfDepartment(true)
-				.selectedBreakPageCode(2)
-				.selectedUse2000yen(0)
-				.isPrintDepHierarchy(true)
-				.selectedLevels(selectedLevels)
-				.targetYear(2016)
-				.build();
-		List<EmployeeData> empList = gen.createData(query);
-		SalaryChartDataSource datasource = SalaryChartDataSource
-				.builder()
-				.employeeList(empList)
-				.build();		
-		gen.generate(null, datasource, query);
-	}
-
-	/**
-	 * Creates the data.
-	 *
-	 * @param query the query
-	 * @return the list
-	 */
-	private List<EmployeeData> createData( SalaryChartReportQuery query) {
-		List<EmployeeData> empList = new ArrayList<>();
-		List<DepartmentData> depData = new ArrayList<>();
-		List<String> depPath = new ArrayList<>();
-		depPath.add("A");
-		depPath.add("A_B");		
-		depPath.add("A_B_C");
-		depPath.add("A_B_C_D");
-		depPath.add("A_B_C_D_E");
-		depPath.add("A_B_cc");
-		depPath.add("A_B_cc_dd");
-		depPath.add("A_B_cc_dd_ee");
-		depPath.add("A_B_cc_dd_ee_ff");
-		depPath.add("A_bb");
-		
-		depPath.add("a");
-		depPath.add("a_b");
-		depPath.add("a_b_c");
-		depPath.add("a_B");
-		
-		List<String> depCode = new ArrayList<>();
-		depCode.add("A-A1");
-		depCode.add("A-B2");
-		depCode.add("A-C3");
-		depCode.add("A-D4");
-		depCode.add("A-E5");
-		depCode.add("A-cc3");
-		depCode.add("A-dd4");
-		depCode.add("A-ee5");
-		depCode.add("A-ff6");
-		depCode.add("A-bb2");
-		
-		depCode.add("a-1");
-		depCode.add("a-b2");
-		depCode.add("a-c3");
-		depCode.add("a-B2");
-		
-		List<Integer> depLevels = Arrays.asList(1, 2, 3, 4, 5, 3, 4, 5, 6, 2, 1, 2, 3, 2);
-		
-		for (int i = 0; i < depCode.size(); i++) {
-			DepartmentData dep = DepartmentData.builder()
-					.depCode(depCode.get(i))
-					.depName("部門 " + (i + 1))
-					.depPath(depPath.get(i))
-					.depLevel(depLevels.get(i))
-					.build();
-			depData.add(dep);
-		}
-		
-		for(int i = 0; i < depCode.size(); i++){
-			// Emp 
-			EmployeeData emp = EmployeeData.builder()
-					.empCode("E0000000" + (i + 1))
-					.empName("E社員 " + (i + 1))
-					.paymentAmount(17809.0 + 1234 * i)
-					.departmentData(depData.get(i))
-					.denomination(null)
-					.build();
-			emp.setDenomination(divisionDeno(emp.getPaymentAmount(), query));
-			empList.add(emp);
-			
-			// Emp 1
-			EmployeeData emp1 = EmployeeData.builder()
-					.empCode("e0000000" + (i + 1))
-					.empName("e社員 " + (i + 1))
-					.paymentAmount(36778.0 + 3454 * i)
-					.departmentData(depData.get(i))
-					.denomination(null)
-					.build();
-			emp1.setDenomination(divisionDeno(emp1.getPaymentAmount(), query));
-			empList.add(emp1);
-		}	
-		return empList;
-	}
-
-	/**
-	 * Division deno.
-	 *
-	 * @param paymentAmount the payment amount
-	 * @param query the query
-	 * @return the map
-	 */
-	private Map<Denomination, Long> divisionDeno(Double paymentAmount, SalaryChartReportQuery query) {
-		Map<Denomination, Long> deno = new HashMap<Denomination, Long>();
-		Double amount = paymentAmount;
-		for (Denomination d : Denomination.values()) {
-			if (amount >= d.deno) {
-				if((query.getSelectedUse2000yen() == 0) && (d.deno == 2000)){
-					deno.put(d, 0l);
-					continue;
-				}
-				Long quantity = (long) (amount / d.deno);
-				deno.put(d, quantity);
-				amount = amount % d.deno;
-			} else {
-				deno.put(d, 0l);
-			}
-		}
-		return deno;
-	}
+	
 	private enum CellsBorderType{
 		TopBottomOnly,
 		DoubleTopBorder,
@@ -792,7 +660,6 @@ public class AsposeSalaryChartReportGenerator extends AsposeCellsReportGenerator
 			case DoubleTopBorder:
 				style.setBorder(BorderType.TOP_BORDER, CellBorderType.DOUBLE, Color.getBlack());
 				style.setBorder(BorderType.BOTTOM_BORDER, CellBorderType.DOUBLE, Color.getBlack());
-				style.setBorder(BorderType.LEFT_BORDER, CellBorderType.DOTTED, Color.getBlack());
 				style.setBorder(BorderType.RIGHT_BORDER, CellBorderType.DOTTED, Color.getBlack());
 				break;
 			case CommonBorder:

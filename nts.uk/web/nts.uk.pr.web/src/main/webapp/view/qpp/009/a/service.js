@@ -18,9 +18,9 @@ var qpp009;
                     selectedLevels: data.detailItemsSetting().selectedLevels(),
                     isCalculateTotal: data.detailItemsSetting().isCalculateTotal(),
                     selectedBreakPageCode: data.printSetting().selectedBreakPageCode(),
-                    isBreakPageByAccumulated: data.printSetting().isBreakPageByAccumulated(),
                     selectedUse2000yen: data.printSetting().selectedUse2000yen(),
-                    selectedBreakPageHierarchyCode: data.printSetting().selectedBreakPageHierarchyCode()
+                    selectedBreakPageHierarchyCode: data.printSetting().selectedBreakPageHierarchyCode(),
+                    isBreakPageByAccumulated: data.printSetting().isBreakPageByAccumulated()
                 };
                 nts.uk.request.exportFile(servicePath.printService, reportQuery)
                     .done(function () {

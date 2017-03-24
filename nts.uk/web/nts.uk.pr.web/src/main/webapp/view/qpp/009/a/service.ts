@@ -10,6 +10,7 @@ module qpp009.a {
                 targetYear: data.targetYear(),
 //                detailItemsSetting: ko.toJS(data.detailItemsSetting()),
 //                printSetting: ko.toJS(data.printSetting())
+                
                 selectedDivision: data.selectedDivision(),
                 isPrintDetailItem: data.detailItemsSetting().isPrintDetailItem(),
                 isPrintTotalOfDepartment: data.detailItemsSetting().isPrintTotalOfDepartment(),
@@ -17,11 +18,12 @@ module qpp009.a {
                 selectedLevels: data.detailItemsSetting().selectedLevels(),
                 isCalculateTotal: data.detailItemsSetting().isCalculateTotal(),
                 selectedBreakPageCode: data.printSetting().selectedBreakPageCode(),
+                
                 // isBreakPageByEmployee: data.printSetting().
                 //isBreakPageByDepartment
-                isBreakPageByAccumulated: data.printSetting().isBreakPageByAccumulated(),
                 selectedUse2000yen: data.printSetting().selectedUse2000yen(),
-                selectedBreakPageHierarchyCode: data.printSetting().selectedBreakPageHierarchyCode()
+                selectedBreakPageHierarchyCode: data.printSetting().selectedBreakPageHierarchyCode(),
+                isBreakPageByAccumulated: data.printSetting().isBreakPageByAccumulated()
                 }
             nts.uk.request.exportFile(servicePath.printService, reportQuery)
                 .done(function() {
