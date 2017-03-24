@@ -418,7 +418,7 @@ module nts.uk.pr.view.qmm008.b {
             public OpenModalOfficeRegister() {
                 var self = this;
                 // Set parent value
-                nts.uk.ui.windows.sub.modal("/view/qmm/008/e/index.xhtml", { title: "会社保険事業所の登録＞事業所の登録" }).onClosed(() => {
+                nts.uk.ui.windows.sub.modal("/view/qmm/008/e/index.xhtml", { title: "会社保険事業所の登録＞事業所の登録",dialogClass: 'no-close'}).onClosed(() => {
                     //when close dialog -> reload office list
                     self.loadMasterHistory();
                     var codeOfNewOffice = nts.uk.ui.windows.getShared("codeOfNewOffice");
@@ -448,7 +448,7 @@ module nts.uk.pr.view.qmm008.b {
                 nts.uk.ui.windows.setShared("healthModel", this.healthModel());
 
                 nts.uk.ui.windows.setShared("isTransistReturnData", this.isTransistReturnData());
-                nts.uk.ui.windows.sub.modal("/view/qmm/008/h/index.xhtml", { title: "会社保険事業所の登録＞標準報酬月額保険料額表" }).onClosed(() => {
+                nts.uk.ui.windows.sub.modal("/view/qmm/008/h/index.xhtml", { title: "会社保険事業所の登録＞標準報酬月額保険料額表",dialogClass: 'no-close'}).onClosed(() => {
                     // Get child value
                     var returnValue = nts.uk.ui.windows.getShared("listOfficeOfChildValue");
                 });

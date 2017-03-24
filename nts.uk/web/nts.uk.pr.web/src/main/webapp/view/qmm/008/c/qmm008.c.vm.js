@@ -369,7 +369,7 @@ var nts;
                                 ScreenModel.prototype.OpenModalOfficeRegister = function () {
                                     var self = this;
                                     nts.uk.ui.windows.setShared("isTransistReturnData", this.isTransistReturnData());
-                                    nts.uk.ui.windows.sub.modal("/view/qmm/008/e/index.xhtml", { title: "会社保険事業所の登録＞事業所の登録" }).onClosed(function () {
+                                    nts.uk.ui.windows.sub.modal("/view/qmm/008/e/index.xhtml", { title: "会社保険事業所の登録＞事業所の登録", dialogClass: 'no-close' }).onClosed(function () {
                                         self.loadMasterHistory();
                                         var codeOfNewOffice = nts.uk.ui.windows.getShared("codeOfNewOffice");
                                     });
@@ -391,7 +391,7 @@ var nts;
                                     nts.uk.ui.windows.setShared("officeName", this.sendOfficeData());
                                     nts.uk.ui.windows.setShared("pensionModel", this.pensionModel());
                                     nts.uk.ui.windows.setShared("isTransistReturnData", this.isTransistReturnData());
-                                    nts.uk.ui.windows.sub.modal("/view/qmm/008/i/index.xhtml", { title: "会社保険事業所の登録＞標準報酬月額保険料額表" }).onClosed(function () {
+                                    nts.uk.ui.windows.sub.modal("/view/qmm/008/i/index.xhtml", { title: "会社保険事業所の登録＞標準報酬月額保険料額表", dialogClass: 'no-close' }).onClosed(function () {
                                         var returnValue = nts.uk.ui.windows.getShared("listOfficeOfChildValue");
                                     });
                                 };
