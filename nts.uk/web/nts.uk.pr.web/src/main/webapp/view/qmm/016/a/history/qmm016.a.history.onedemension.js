@@ -21,13 +21,20 @@ var nts;
                                 __extends(OneDemensionViewModel, _super);
                                 function OneDemensionViewModel(history) {
                                     _super.call(this, 'history/onedemension.xhtml', history);
-                                    if (history.cellItems && history.cellItems.length > 0) {
+                                    this.igGridDataSource = ko.observableArray([]);
+                                    if (history.valueItems && history.valueItems.length > 0) {
+                                        var element = history.elements[0];
+                                        _.map(element.itemList, function (item) {
+                                            var vm = new ItemViewModel(a.viewmodel.getElementTypeByValue(element.type), item);
+                                            vm.amount(_.filter(history.valueItems, function (vi) {
+                                                return vi.element1Id == item.uuid;
+                                            })[0].amount);
+                                        });
                                     }
                                     this.initIgGrid();
                                 }
                                 OneDemensionViewModel.prototype.initIgGrid = function () {
                                     var self = this;
-                                    self.igGridDataSource = ko.observableArray([]);
                                     self.igGrid = ko.observable({
                                         dataSource: self.igGridDataSource,
                                         width: '60%',
@@ -59,7 +66,7 @@ var nts;
                                         autoCommit: true,
                                         columns: [
                                             { headerText: 'Element Name', dataType: 'string', key: 'uuid', hidden: true },
-                                            { headerText: 'Element Name', dataType: 'string', key: 'name', width: '50%' },
+                                            { headerText: self.history.elements[0].demensionName, dataType: 'string', key: 'name', width: '50%' },
                                             { headerText: '値', dataType: 'number', key: 'amount', width: '50%', columnCssClass: "halign-right" }
                                         ]
                                     });
@@ -68,12 +75,17 @@ var nts;
                                     var self = this;
                                     var element = self.elementSettings[0];
                                     var itemVmList = _.map(element.itemList, function (item) {
-                                        return new ItemViewModel(item);
+                                        return new ItemViewModel(a.viewmodel.getElementTypeByValue(element.type), item);
                                     });
                                     self.igGridDataSource(itemVmList);
                                 };
                                 OneDemensionViewModel.prototype.getCellItem = function () {
-                                    return null;
+                                    return _.map(this.igGridDataSource(), function (item) {
+                                        var dto = {};
+                                        dto.element1Id = item.uuid;
+                                        dto.amount = item.amount();
+                                        return dto;
+                                    });
                                 };
                                 OneDemensionViewModel.prototype.pasteFromExcel = function () {
                                     return;
@@ -82,10 +94,15 @@ var nts;
                             }(history_1.base.BaseHistoryViewModel));
                             history_1.OneDemensionViewModel = OneDemensionViewModel;
                             var ItemViewModel = (function () {
-                                function ItemViewModel(item) {
+                                function ItemViewModel(type, item) {
                                     var self = this;
                                     self.uuid = item.uuid;
-                                    self.name = 'Item Name (load...)';
+                                    if (type.isRangeMode) {
+                                        self.name = item.startVal + '～' + item.endVal;
+                                    }
+                                    else {
+                                        self.name = 'Code';
+                                    }
                                     self.amount = ko.observable(0);
                                 }
                                 return ItemViewModel;

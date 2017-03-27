@@ -5,13 +5,23 @@ module nts.uk.pr.view.qmm016.a.history {
     export class OneDemensionViewModel extends base.BaseHistoryViewModel {
         igGrid: any;
         igGridDataSource: KnockoutObservableArray<ItemViewModel>;
+        elements: KnockoutObservable<model.ElementSettingDto>;
+
         constructor(history: model.WageTableHistoryDto) {
             super('history/onedemension.xhtml', history);
-            if (history.cellItems && history.cellItems.length > 0) {
-                // Call on refresh.
-                // super.refreshElementSettings(history.elements);
+            this.igGridDataSource = ko.observableArray<ItemViewModel>([]);
+
+            if (history.valueItems && history.valueItems.length > 0) {
+                var element = history.elements[0];
+                _.map(element.itemList, (item) => {
+                    var vm = new ItemViewModel(viewmodel.getElementTypeByValue(element.type), item);
+                    // Filter value.
+                    vm.amount(_.filter(history.valueItems, (vi) => {
+                        return vi.element1Id == item.uuid;
+                    })[0].amount);
+                })
             }
-            
+
             // Init grid.
             this.initIgGrid();
         }
@@ -21,8 +31,6 @@ module nts.uk.pr.view.qmm016.a.history {
          */
         initIgGrid(): void {
             var self = this;
-            // Init first data.
-            self.igGridDataSource = ko.observableArray<ItemViewModel>([]);
 
             // IgGrid
             self.igGrid = ko.observable({
@@ -56,7 +64,7 @@ module nts.uk.pr.view.qmm016.a.history {
                 autoCommit: true,
                 columns: [
                     { headerText: 'Element Name', dataType: 'string', key: 'uuid', hidden: true},
-                    { headerText: 'Element Name', dataType: 'string', key: 'name', width: '50%'},
+                    { headerText: self.history.elements[0].demensionName, dataType: 'string', key: 'name', width: '50%'},
                     { headerText: '値', dataType: 'number', key: 'amount', width: '50%', columnCssClass: "halign-right"}
                 ]
             });
@@ -71,8 +79,10 @@ module nts.uk.pr.view.qmm016.a.history {
             // First element.
             var element = self.elementSettings[0];
             var itemVmList = _.map(element.itemList, (item) => {
-                return new ItemViewModel(item);
-            })
+                return new ItemViewModel(viewmodel.getElementTypeByValue(element.type), item);
+            });
+
+            // Update source
             self.igGridDataSource(itemVmList);
         }
 
@@ -80,13 +90,19 @@ module nts.uk.pr.view.qmm016.a.history {
          * Get setting cell item.
          */
         getCellItem(): Array<model.CellItemDto> {
-            return null;
+            return _.map(this.igGridDataSource(), item => {
+                var dto = <model.CellItemDto> {};
+                dto.element1Id = item.uuid;
+                dto.amount = item.amount();
+                return dto;
+            });
         }
 
         /**
          * Paste data from excel.
          */
         pasteFromExcel(): void {
+            // Do parsing.
             return;
         }
     }
@@ -102,10 +118,14 @@ module nts.uk.pr.view.qmm016.a.history {
         /**
          * Constructor.
          */
-        constructor(item: model.ItemDto) {
+        constructor(type: model.ElementTypeDto, item: model.ItemDto) {
             var self = this;
             self.uuid = item.uuid;
-            self.name = 'Item Name (load...)';
+            if (type.isRangeMode) {
+                self.name = item.startVal + '～' + item.endVal;
+            } else {
+                self.name = 'Code';
+            }
             self.amount = ko.observable(0);
         }
     }

@@ -1,6 +1,11 @@
 module nts.uk.pr.view.qmm016.a {
     export module viewmodel {
-        var elementTypes: Array<model.ElementTypeDto>;
+        export var elementTypes: Array<model.ElementTypeDto>;
+        export function getElementTypeByValue(val: number): model.ElementTypeDto {
+            return _.filter(viewmodel.elementTypes, (el) => {
+                return el.value == val;
+            })[0];
+        }
         export class ScreenModel extends base.simplehistory.viewmodel.ScreenBaseModel<model.WageTable, model.WageTableHistory> {
             // For UI Tab.
             tabs: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel>;
@@ -87,7 +92,9 @@ module nts.uk.pr.view.qmm016.a {
             onSave(): JQueryPromise<string> {
                 var self = this;
                 var dfd = $.Deferred<string>();
-                if (self.isNewMode) {
+                
+                // New mode.
+                if (self.isNewMode()) {
                     // Reg new.
                     var wagetableDto = self.head.getWageTableDto();
                     service.instance.initWageTable({
@@ -96,6 +103,16 @@ module nts.uk.pr.view.qmm016.a {
                     }).done(res => {
                         dfd.resolve(res.uuid);
                     });
+                } else {
+                    // Update mode.
+                    service.instance.updateHistory({
+                        code: self.head.code(),
+                        name: self.head.name(),
+                        memo: self.head.memo(),
+                        wtHistoryDto: self.history.getWageTableHistoryDto()
+                    }).done(() => {
+                        dfd.resolve(self.history.history.historyId);
+                    })
                 }
                 return dfd.promise();
             }
@@ -187,6 +204,7 @@ module nts.uk.pr.view.qmm016.a {
                 dto.mode = self.demensionSet();
                 dto.elements = _.map(self.demensionItemList(), (item) => {
                     var elementDto = <model.ElementDto>{};
+                    elementDto.demensionName = item.elementName();
                     elementDto.demensionNo = item.demensionNo();
                     elementDto.type = item.elementType();
                     elementDto.referenceCode = item.elementCode();
@@ -308,7 +326,7 @@ module nts.uk.pr.view.qmm016.a {
                 var self = this;
                 self.elementType(element.type);
                 self.elementCode(element.referenceCode);
-                self.elementName('need load later');
+                self.elementName(element.demensionName);
             }
         }
         
@@ -363,7 +381,7 @@ module nts.uk.pr.view.qmm016.a {
                     ko.applyBindings(self.detailViewModel, element);
                 })
             }
-            
+
             /**
              * Generate item.
              */
@@ -373,6 +391,7 @@ module nts.uk.pr.view.qmm016.a {
                     historyId: self.history.historyId,
                     settings: self.getElementSettings()})
                 .done((res) => {
+                    self.history.elements = res;
                     self.detailViewModel.refreshElementSettings(res);
                 });
             }
@@ -392,7 +411,16 @@ module nts.uk.pr.view.qmm016.a {
                     return dto;
                 })
             }
-            
+
+            /**
+             * Get history dto.
+             */
+            getWageTableHistoryDto(): model.WageTableHistoryDto {
+                var self = this;
+                self.history.valueItems = self.detailViewModel.getCellItem();
+                return self.history;
+            }
+
             /**
              * Unapply bindings.
              */
@@ -451,7 +479,7 @@ module nts.uk.pr.view.qmm016.a {
                     return el.demensionNo == element.demensionNo;
                 })[0];
                 self.elementCode(elementDto.referenceCode);
-                self.elementName('need load later');
+                self.elementName(elementDto.demensionName);
 
                 // Set upper and lower limit.
                 self.upperLimit(element.upperLimit);
