@@ -30,18 +30,12 @@ public class JpaComparingFormDetailRepository extends JpaRepository implements C
 	private final String SELECT_COMPARING_FORM_DETAIL_BY_FORMCODE = "SELECT c FROM QlsptPaycompFormDetail c "
 			+ "WHERE c.paycompFormDetailPK.companyCode = :ccd AND c.paycompFormDetailPK.formCode = :formCode";
 
-	// private final String DELETE_COMPARING_FORM_DETAIL = "Delete
-	// QlsptPaycompFormDetail c "
-	// + "WHERE c.paycompFormDetailPK.companyCode = :ccd AND
-	// c.paycompFormDetailPK.formCode = :formCode";
-
 	@Override
 	public List<ComparingFormDetail> getComparingFormDetailByCategory_Atr(String companyCode, String formCode,
 			int categoryATR) {
 		return this.queryProxy().query(SELECT_COMPARING_FORM_DETAIL_BY_CATEGORY, QlsptPaycompFormDetail.class)
 				.setParameter("ccd", companyCode).setParameter("formCode", formCode)
 				.setParameter("categoryATR", categoryATR).getList(c -> convertToDomainFormDetail(c));
-
 	}
 
 	@Override
@@ -58,20 +52,13 @@ public class JpaComparingFormDetailRepository extends JpaRepository implements C
 				.map(s -> convertToEntityQlsptPaycompFormDetail(s)).collect(Collectors.toList()));
 	}
 
-	// @Override
-	// public void updateComparingFormDetail(List<ComparingFormDetail>
-	// comparingFormDetailList) {
-	// this.commandProxy().updateAll(comparingFormDetailList.stream()
-	// .map(s ->
-	// convertToEntityQlsptPaycompFormDetail(s)).collect(Collectors.toList()));
-	// }
-
 	@Override
 	public void deleteComparingFormDetail(String companyCode, String formCode) {
-		List<QlsptPaycompFormDetail> paycompFormDetailPKList = this.queryProxy()
+		List<QlsptPaycompFormDetail> paycompFormDetailList = this.queryProxy()
 				.query(SELECT_COMPARING_FORM_DETAIL_BY_FORMCODE, QlsptPaycompFormDetail.class)
 				.setParameter("ccd", companyCode).setParameter("formCode", formCode).getList();
-		this.commandProxy().removeAll(paycompFormDetailPKList);
+		this.commandProxy().removeAll(paycompFormDetailList);
+		this.getEntityManager().flush();
 	}
 
 	private static ComparingFormDetail convertToDomainFormDetail(QlsptPaycompFormDetail entity) {

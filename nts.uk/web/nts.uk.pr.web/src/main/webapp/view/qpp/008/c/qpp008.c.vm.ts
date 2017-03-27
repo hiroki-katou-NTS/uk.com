@@ -35,6 +35,8 @@ module qpp008.c.viewmodel {
         /*Other*/
         allowEditCode: KnockoutObservable<boolean>;
         isUpdate: KnockoutObservable<boolean>;
+        currentItemDirty: nts.uk.ui.DirtyChecker;
+        flagDirty: boolean;
 
         constructor() {
             let self = this;
@@ -120,24 +122,16 @@ module qpp008.c.viewmodel {
             self.allowEditCode = ko.observable(false);
             self.isUpdate = ko.observable(true);
         }
+
         startPage(): JQueryPromise<any> {
             let self = this;
-            let dfd = $.Deferred();
-            service.getListComparingFormHeader().done(function(data: Array<ComparingFormHeader>) {
-                self.adDataToItemsList(data);
-                self.currentItem(_.first(self.items()));
-                self.currentCode(self.currentItem().formCode);
-                dfd.resolve(data);
-            }).fail(function(error) {
-                alert(error.message);
-            });
-            return dfd.promise();
+            return self.reload(true);
         }
 
         refreshLayout(): void {
             let self = this;
             self.currentItem(self.mappingFromJS(new ComparingFormHeader('', '')));
-            self.currentCode();
+            self.currentCode(null);
             self.allowEditCode(true);
             self.isUpdate(false);
             self.getComparingFormForTab(null);
@@ -149,37 +143,115 @@ module qpp008.c.viewmodel {
             self.refreshLayout();
         }
 
+        reload(isReload: boolean, reloadCode?: string) {
+            let self = this;
+            let dfd = $.Deferred();
+            service.getListComparingFormHeader().done(function(data: Array<ComparingFormHeader>) {
+                self.items([]);
+                _.forEach(data, function(item) {
+                    self.items.push(item);
+                });
+                self.flagDirty = true;
+                if (self.items().length <= 0) {
+                    self.currentItem(ko.mapping.fromJS(new ComparingFormHeader('', '')));
+                    return;
+                }
+                if (isReload) {
+                    self.currentCode(self.items()[0].formCode)
+                } else if (!nts.uk.text.isNullOrEmpty(reloadCode)) {
+                    self.currentCode(reloadCode)
+                }
+                dfd.resolve(data);
+            }).fail(function(error) {
+                alert(error.message);
+            });
+            return dfd.promise();
+        }
+
         insertUpdateData() {
             let self = this;
-            let dfd = $.Deferred();           
+            let dfd = $.Deferred();
             let newformCode = ko.mapping.toJS(self.currentItem().formCode);
             let newformName = ko.mapping.toJS(self.currentItem().formName);
             if (nts.uk.text.isNullOrEmpty(newformCode)) {
-                $('#INP_002').ntsError('set', nts.uk.text.format('{0}が入力されていません。', 'コード'));
+                $('#C_INP_002').ntsError('set', nts.uk.text.format('{0}が入力されていません。', 'コード'));
                 return;
             }
             if (nts.uk.text.isNullOrEmpty(newformName)) {
-                $('#INP_003').ntsError('set', nts.uk.text.format('{0}が入力されていません。', '名称'));
+                $('#C_INP_003').ntsError('set', nts.uk.text.format('{0}が入力されていません。', '名称'));
                 return;
             }
-            
-            let comparingFormDetailList = new Array<ComparingFormDetail>();
-             comparingFormDetailList = self.items2().map(function(item, i) {
-                return new ComparingFormDetail(item.itemCode,item.categoryAtr, i);
-            });
-            let insertUpdateDataModel = new InsertUpdateDataModel(self.currentItem().formCode, self.currentItem().formName, comparingFormDetailList);
-             service.insertUpdateComparingForm(insertUpdateDataModel, self.isUpdate()).done(function() {
-                 alert("insert Ok");
-             });
-            
 
+            let comparingFormDetailList = new Array<ComparingFormDetail>();
+            comparingFormDetailList = self.items2().map(function(item, i) {
+                return new ComparingFormDetail(item.itemCode, item.categoryAtr, i);
+            });
+            let insertUpdateDataModel = new InsertUpdateDataModel(nts.uk.text.padLeft(newformCode, '0', 2), newformName, comparingFormDetailList);
+            service.insertUpdateComparingForm(insertUpdateDataModel, self.isUpdate()).done(function() {
+                self.reload(false, nts.uk.text.padLeft(newformCode, '0', 2));
+                self.flagDirty = true;
+                self.currentItemDirty.reset();
+                if (self.isUpdate() === false) {
+                    self.isUpdate(true);
+                    self.allowEditCode(false);
+                    return;
+                }
+                dfd.resolve();
+            }).fail(function(error) {
+                if (error.message === '3') {
+                    let _message = "入力した{0}は既に存在しています。\r\n {1}を確認してください。";
+                    nts.uk.ui.dialog.alert(nts.uk.text.format(_message, 'コード', 'コード')).then(function() {
+                        self.reload(true);
+                    })
+                } else if (error.message === '4') {
+                    nts.uk.ui.dialog.alert("対象データがありません。").then(function() {
+                        self.reload(true);
+                    })
+                }
+            });
+            return dfd.promise();
         }
 
         deleteData() {
             let self = this;
-            let newDelData = ko.toJS(self.currentItem());
-            let deleData = _.findIndex(self.items(), function(item) { return item.formCode == newDelData.code; });
-            self.items.splice(deleData, 1);
+            let deleteCode = ko.mapping.toJS(self.currentItem().formCode);
+            if (nts.uk.text.isNullOrEmpty(deleteCode)) {
+                $('#C_INP_002').ntsError('set', nts.uk.text.format('{0}が入力されていません。', 'コード'));
+                return;
+            }
+            service.deleteComparingForm(new DeleteFormHeaderModel(deleteCode)).done(function() {
+                let indexItemDelete = _.findIndex(self.items(), function(item) { return item.formCode == deleteCode; });
+                $.when(self.reload(false)).done(function() {
+                    self.flagDirty = true;
+                    if (self.items().length === 0) {
+                        self.allowEditCode(true);
+                        self.isUpdate(false);
+                        self.refreshLayout();
+                        return;
+                    }
+                    if (self.items().length == indexItemDelete) {
+                        self.currentCode(self.items()[indexItemDelete - 1].formCode);
+                        return;
+                    }
+
+                    if (self.items().length < indexItemDelete) {
+                        self.currentCode(self.items()[0].formCode);
+                        return;
+                    }
+
+                    if (self.items().length > indexItemDelete) {
+                        self.currentCode(self.items()[indexItemDelete].formCode);
+                        return;
+                    }
+                });
+
+            }).fail(function(error) {
+                if (error.message === '1') {
+                    nts.uk.ui.dialog.alert("対象データがありません。").then(function() {
+                        self.reload(true);
+                    })
+                }
+            });
         }
 
         getItem(codeNew: string): ComparingFormHeader {
@@ -233,45 +305,40 @@ module qpp008.c.viewmodel {
             });
         }
 
-        adDataToItemsList(data: Array<ComparingFormHeader>): void {
-            let self = this;
-            self.items([]);
-            _.forEach(data, function(value) {
-                self.items.push(value);
-            });
-        }
-
         getSwapUpDownList(lstSelectForTab: Array<string>, categoryAtr: number) {
             let self = this;
             if (categoryAtr === 0) {
                 _.forEach(lstSelectForTab, function(value) {
-                    self.itemsSwap.remove(function(itemMaster) {
+                    _.forEach(self.itemsSwap(), function(itemMaster) {
                         if (value === itemMaster.itemCode) {
+                            self.itemsSwap.remove(itemMaster);
                             self.currentCodeListSwap.push(itemMaster);
+                            return false;
                         }
-                        return value === itemMaster.itemCode;
                     });
                 });
             }
 
             if (categoryAtr === 1) {
                 _.forEach(lstSelectForTab, function(value) {
-                    self.itemsSwap1.remove(function(itemMaster) {
+                    _.forEach(self.itemsSwap1(), function(itemMaster) {
                         if (value === itemMaster.itemCode) {
+                            self.itemsSwap1.remove(itemMaster);
                             self.currentCodeListSwap1.push(itemMaster);
+                            return false;
                         }
-                        return value === itemMaster.itemCode;
                     });
                 });
             }
 
             if (categoryAtr === 3) {
                 _.forEach(lstSelectForTab, function(value) {
-                    self.itemsSwap3.remove(function(itemMaster) {
+                    _.forEach(self.itemsSwap3(), function(itemMaster) {
                         if (value === itemMaster.itemCode) {
+                            self.itemsSwap3.remove(itemMaster);
                             self.currentCodeListSwap3.push(itemMaster);
+                            return false;
                         }
-                        return value === itemMaster.itemCode;
                     });
                 });
             }

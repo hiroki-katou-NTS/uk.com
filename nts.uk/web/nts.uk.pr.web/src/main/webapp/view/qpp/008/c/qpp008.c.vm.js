@@ -78,21 +78,12 @@ var qpp008;
                 };
                 ScreenModel.prototype.startPage = function () {
                     var self = this;
-                    var dfd = $.Deferred();
-                    c.service.getListComparingFormHeader().done(function (data) {
-                        self.adDataToItemsList(data);
-                        self.currentItem(_.first(self.items()));
-                        self.currentCode(self.currentItem().formCode);
-                        dfd.resolve(data);
-                    }).fail(function (error) {
-                        alert(error.message);
-                    });
-                    return dfd.promise();
+                    return self.reload(true);
                 };
                 ScreenModel.prototype.refreshLayout = function () {
                     var self = this;
                     self.currentItem(self.mappingFromJS(new ComparingFormHeader('', '')));
-                    self.currentCode();
+                    self.currentCode(null);
                     self.allowEditCode(true);
                     self.isUpdate(false);
                     self.getComparingFormForTab(null);
@@ -102,22 +93,111 @@ var qpp008;
                     self.isUpdate(false);
                     self.refreshLayout();
                 };
+                ScreenModel.prototype.reload = function (isReload, reloadCode) {
+                    var self = this;
+                    var dfd = $.Deferred();
+                    c.service.getListComparingFormHeader().done(function (data) {
+                        self.items([]);
+                        _.forEach(data, function (item) {
+                            self.items.push(item);
+                        });
+                        self.flagDirty = true;
+                        if (self.items().length <= 0) {
+                            self.currentItem(ko.mapping.fromJS(new ComparingFormHeader('', '')));
+                            return;
+                        }
+                        if (isReload) {
+                            self.currentCode(self.items()[0].formCode);
+                        }
+                        else if (!nts.uk.text.isNullOrEmpty(reloadCode)) {
+                            self.currentCode(reloadCode);
+                        }
+                        dfd.resolve(data);
+                    }).fail(function (error) {
+                        alert(error.message);
+                    });
+                    return dfd.promise();
+                };
                 ScreenModel.prototype.insertUpdateData = function () {
                     var self = this;
-                    var newData = ko.toJS(self.currentItem());
-                    if (self.isUpdate()) {
-                        self.items.push(newData);
+                    var dfd = $.Deferred();
+                    var newformCode = ko.mapping.toJS(self.currentItem().formCode);
+                    var newformName = ko.mapping.toJS(self.currentItem().formName);
+                    if (nts.uk.text.isNullOrEmpty(newformCode)) {
+                        $('#C_INP_002').ntsError('set', nts.uk.text.format('{0}が入力されていません。', 'コード'));
+                        return;
                     }
-                    else {
-                        var updateIndex = _.findIndex(self.items(), function (item) { return item.formCode == newData.code; });
-                        self.items.splice(updateIndex, 1, newData);
+                    if (nts.uk.text.isNullOrEmpty(newformName)) {
+                        $('#C_INP_003').ntsError('set', nts.uk.text.format('{0}が入力されていません。', '名称'));
+                        return;
                     }
+                    var comparingFormDetailList = new Array();
+                    comparingFormDetailList = self.items2().map(function (item, i) {
+                        return new ComparingFormDetail(item.itemCode, item.categoryAtr, i);
+                    });
+                    var insertUpdateDataModel = new InsertUpdateDataModel(nts.uk.text.padLeft(newformCode, '0', 2), newformName, comparingFormDetailList);
+                    c.service.insertUpdateComparingForm(insertUpdateDataModel, self.isUpdate()).done(function () {
+                        self.reload(false, nts.uk.text.padLeft(newformCode, '0', 2));
+                        self.flagDirty = true;
+                        self.currentItemDirty.reset();
+                        if (self.isUpdate() === false) {
+                            self.isUpdate(true);
+                            self.allowEditCode(false);
+                            return;
+                        }
+                        dfd.resolve();
+                    }).fail(function (error) {
+                        if (error.message === '3') {
+                            var _message = "入力した{0}は既に存在しています。\r\n {1}を確認してください。";
+                            nts.uk.ui.dialog.alert(nts.uk.text.format(_message, 'コード', 'コード')).then(function () {
+                                self.reload(true);
+                            });
+                        }
+                        else if (error.message === '4') {
+                            nts.uk.ui.dialog.alert("対象データがありません。").then(function () {
+                                self.reload(true);
+                            });
+                        }
+                    });
+                    return dfd.promise();
                 };
                 ScreenModel.prototype.deleteData = function () {
                     var self = this;
-                    var newDelData = ko.toJS(self.currentItem());
-                    var deleData = _.findIndex(self.items(), function (item) { return item.formCode == newDelData.code; });
-                    self.items.splice(deleData, 1);
+                    var deleteCode = ko.mapping.toJS(self.currentItem().formCode);
+                    if (nts.uk.text.isNullOrEmpty(deleteCode)) {
+                        $('#C_INP_002').ntsError('set', nts.uk.text.format('{0}が入力されていません。', 'コード'));
+                        return;
+                    }
+                    c.service.deleteComparingForm(new DeleteFormHeaderModel(deleteCode)).done(function () {
+                        var indexItemDelete = _.findIndex(self.items(), function (item) { return item.formCode == deleteCode; });
+                        $.when(self.reload(false)).done(function () {
+                            self.flagDirty = true;
+                            if (self.items().length === 0) {
+                                self.allowEditCode(true);
+                                self.isUpdate(false);
+                                self.refreshLayout();
+                                return;
+                            }
+                            if (self.items().length == indexItemDelete) {
+                                self.currentCode(self.items()[indexItemDelete - 1].formCode);
+                                return;
+                            }
+                            if (self.items().length < indexItemDelete) {
+                                self.currentCode(self.items()[0].formCode);
+                                return;
+                            }
+                            if (self.items().length > indexItemDelete) {
+                                self.currentCode(self.items()[indexItemDelete].formCode);
+                                return;
+                            }
+                        });
+                    }).fail(function (error) {
+                        if (error.message === '1') {
+                            nts.uk.ui.dialog.alert("対象データがありません。").then(function () {
+                                self.reload(true);
+                            });
+                        }
+                    });
                 };
                 ScreenModel.prototype.getItem = function (codeNew) {
                     var self = this;
@@ -156,52 +236,48 @@ var qpp008;
                 };
                 ScreenModel.prototype.mappingItemMasterToFormDetail = function (selectList, categoryAtr) {
                     return _.map(selectList, function (item) {
-                        var newMapping = new ItemMaster(item.itemCode, item.itemName, "支");
+                        var newMapping = new ItemMaster(item.itemCode, item.itemName, "支", categoryAtr);
                         if (categoryAtr === 1) {
-                            newMapping = new ItemMaster(item.itemCode, item.itemName, "控");
+                            newMapping = new ItemMaster(item.itemCode, item.itemName, "控", categoryAtr);
                         }
                         else if (categoryAtr === 3) {
-                            newMapping = new ItemMaster(item.itemCode, item.itemName, "記");
+                            newMapping = new ItemMaster(item.itemCode, item.itemName, "記", categoryAtr);
                         }
                         return newMapping;
-                    });
-                };
-                ScreenModel.prototype.adDataToItemsList = function (data) {
-                    var self = this;
-                    self.items([]);
-                    _.forEach(data, function (value) {
-                        self.items.push(value);
                     });
                 };
                 ScreenModel.prototype.getSwapUpDownList = function (lstSelectForTab, categoryAtr) {
                     var self = this;
                     if (categoryAtr === 0) {
                         _.forEach(lstSelectForTab, function (value) {
-                            self.itemsSwap.remove(function (itemMaster) {
+                            _.forEach(self.itemsSwap(), function (itemMaster) {
                                 if (value === itemMaster.itemCode) {
+                                    self.itemsSwap.remove(itemMaster);
                                     self.currentCodeListSwap.push(itemMaster);
+                                    return false;
                                 }
-                                return value === itemMaster.itemCode;
                             });
                         });
                     }
                     if (categoryAtr === 1) {
                         _.forEach(lstSelectForTab, function (value) {
-                            self.itemsSwap1.remove(function (itemMaster) {
+                            _.forEach(self.itemsSwap1(), function (itemMaster) {
                                 if (value === itemMaster.itemCode) {
+                                    self.itemsSwap1.remove(itemMaster);
                                     self.currentCodeListSwap1.push(itemMaster);
+                                    return false;
                                 }
-                                return value === itemMaster.itemCode;
                             });
                         });
                     }
                     if (categoryAtr === 3) {
                         _.forEach(lstSelectForTab, function (value) {
-                            self.itemsSwap3.remove(function (itemMaster) {
+                            _.forEach(self.itemsSwap3(), function (itemMaster) {
                                 if (value === itemMaster.itemCode) {
+                                    self.itemsSwap3.remove(itemMaster);
                                     self.currentCodeListSwap3.push(itemMaster);
+                                    return false;
                                 }
-                                return value === itemMaster.itemCode;
                             });
                         });
                     }
@@ -218,10 +294,11 @@ var qpp008;
             }());
             viewmodel.ComparingFormHeader = ComparingFormHeader;
             var ItemMaster = (function () {
-                function ItemMaster(itemCode, itemName, categoryAtrName) {
+                function ItemMaster(itemCode, itemName, categoryAtrName, categoryAtr) {
                     this.itemCode = itemCode;
                     this.itemName = itemName;
                     this.categoryAtrName = categoryAtrName;
+                    this.categoryAtr = categoryAtr;
                 }
                 return ItemMaster;
             }());
