@@ -22,3 +22,4 @@ __viewContext.ready(function () {
     var screenModel = new nts.uk.pr.view.qpp020.b.viewmodel.viewModel();
     this.bind(screenModel);
 });
+//# sourceMappingURL=start.js.map
