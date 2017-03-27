@@ -125,8 +125,8 @@ public class JpaWtHistoryGetMemento implements WtHistoryGetMemento {
 						.collect(Collectors.toList());
 				StepElementSetting el = new StepElementSetting(
 						DemensionNo.valueOf(pk.getDemensionNo()), type, rangeItems);
-				el.setSetting(new RangeLimit(entity.getDemensionUpperLimit()),
-						new RangeLimit(entity.getDemensionLowerLimit()),
+				el.setSetting(new RangeLimit(entity.getDemensionLowerLimit()),
+						new RangeLimit(entity.getDemensionUpperLimit()),
 						new RangeLimit(entity.getDemensionInterval()));
 				return el;
 			} else {

@@ -4,9 +4,11 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.dom.wagetable.history.element;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import lombok.Getter;
+import nts.arc.error.BusinessException;
 import nts.uk.ctx.pr.core.dom.wagetable.DemensionNo;
 import nts.uk.ctx.pr.core.dom.wagetable.ElementType;
 import nts.uk.ctx.pr.core.dom.wagetable.history.element.item.Item;
@@ -50,7 +52,7 @@ public class StepElementSetting extends ElementSetting {
 	 * @param interval
 	 *            the interval
 	 */
-	public void setSetting(RangeLimit upperLimit, RangeLimit lowerLimit, RangeLimit interval) {
+	public void setSetting(RangeLimit lowerLimit, RangeLimit upperLimit, RangeLimit interval) {
 		this.upperLimit = upperLimit;
 		this.lowerLimit = lowerLimit;
 		this.interval = interval;

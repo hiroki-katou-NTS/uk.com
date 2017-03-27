@@ -12,39 +12,62 @@ var nts;
                     (function (e) {
                         var service;
                         (function (service) {
+                            // Service paths.
                             var servicePath = {
                                 getOfficeDetailData: "pr/insurance/social/find",
                                 updateOffice: "pr/insurance/social/update",
                                 regiterOffice: "pr/insurance/social/create",
                                 removeOffice: "pr/insurance/social/remove"
                             };
+                            /**
+                             * Function is used to load office detail by office code
+                             */
                             function getOfficeItemDetail(code) {
+                                // Init new dfd.
                                 var dfd = $.Deferred();
                                 var findPath = servicePath.getOfficeDetailData + "/" + code;
+                                // Call ajax.
                                 nts.uk.request.ajax(findPath).done(function (data) {
+                                    // Resolve.
                                     dfd.resolve(data);
                                 });
+                                // Ret promise.
                                 return dfd.promise();
                             }
                             service.getOfficeItemDetail = getOfficeItemDetail;
+                            /**
+                             * Function is used to register office data
+                             */
                             function register(data) {
                                 return nts.uk.request.ajax(servicePath.regiterOffice, data);
                             }
                             service.register = register;
+                            /**
+                             * Function is used to update office data
+                             */
                             function update(data) {
                                 return nts.uk.request.ajax(servicePath.updateOffice, data);
                             }
                             service.update = update;
+                            /**
+                            * Function is used to remove office by office code
+                            */
                             function remove(officeCode) {
                                 var data = { insuranceOfficeCode: officeCode };
                                 return nts.uk.request.ajax(servicePath.removeOffice, data);
                             }
                             service.remove = remove;
+                            /**
+                            * Function is used to remove office by office code
+                            */
                             function saveHistory(officeCode) {
                                 var data = { insuranceOfficeCode: officeCode };
                                 return nts.uk.request.ajax(servicePath.removeOffice, data);
                             }
                             service.saveHistory = saveHistory;
+                            /**
+                            * Model namespace.
+                            */
                             var model;
                             (function (model) {
                                 var finder;
@@ -55,6 +78,7 @@ var nts;
                                         return ChooseOption;
                                     }());
                                     finder.ChooseOption = ChooseOption;
+                                    //TODO change office item field
                                     var OfficeItemDto = (function () {
                                         function OfficeItemDto(companyCode, code, name, shortName, picName, picPosition, potalCode, address1st, address2nd, kanaAddress1st, kanaAddress2nd, phoneNumber, healthInsuOfficeRefCode1st, healthInsuOfficeRefCode2nd, pensionOfficeRefCode1st, pensionOfficeRefCode2nd, welfarePensionFundCode, officePensionFundCode, healthInsuCityCode, healthInsuOfficeSign, pensionCityCode, pensionOfficeSign, healthInsuOfficeCode, healthInsuAssoCode, memo) {
                                             this.companyCode = companyCode;
@@ -95,4 +119,3 @@ var nts;
         })(pr = uk.pr || (uk.pr = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
-//# sourceMappingURL=qmm008.e.service.js.map

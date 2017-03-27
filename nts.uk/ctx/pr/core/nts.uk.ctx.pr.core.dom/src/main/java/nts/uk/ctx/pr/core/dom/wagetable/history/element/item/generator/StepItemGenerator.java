@@ -13,6 +13,7 @@ import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 
+import nts.arc.error.BusinessException;
 import nts.gul.text.IdentifierUtil;
 import nts.uk.ctx.pr.core.dom.wagetable.ElementId;
 import nts.uk.ctx.pr.core.dom.wagetable.ElementType;
@@ -42,6 +43,29 @@ public class StepItemGenerator implements ItemGenerator {
 		BigDecimal upperLimit = stepElementSetting.getUpperLimit().v();
 		BigDecimal interval = stepElementSetting.getInterval().v();
 
+		// Get min step
+		BigDecimal minStep = this.getMinUnit(lowerLimit, upperLimit, interval);
+
+		// Lower limit is always less than upper limit.
+		if (upperLimit.compareTo(lowerLimit) < 0) {
+			// TODO: need msg id.
+			throw new BusinessException("Lower limit must be always less than upper limit.");
+		}
+
+		// Interval is greater than zero.
+		if (interval.compareTo(BigDecimal.ZERO) <= 0) {
+			// TODO: need msg id.
+			throw new BusinessException("Interval must be greater than zero.");
+		}
+
+		// Interval is invalid
+		if (upperLimit.subtract(lowerLimit).add(minStep).doubleValue() < interval
+				.doubleValue()) {
+			// TODO: need msg id.
+			throw new BusinessException(
+					"The range " + lowerLimit + " - " + upperLimit + " is not enough for 1 step");
+		}
+
 		@SuppressWarnings("unchecked")
 		List<RangeItem> rangeItems = (List<RangeItem>) elementSetting.getItemList();
 		Map<RangeItem, ElementId> mapRangeItems = rangeItems.stream()
@@ -49,12 +73,9 @@ public class StepItemGenerator implements ItemGenerator {
 
 		List<RangeItem> items = new ArrayList<>();
 
-		// Get min step
-		BigDecimal minStep = this.getMinUnit(lowerLimit, upperLimit, interval);
-
 		int index = 0;
 		BigDecimal start = lowerLimit;
-		while (start.compareTo(upperLimit) < 0) {
+		while (start.compareTo(upperLimit) <= 0) {
 			index++;
 			BigDecimal end = start.add(interval).subtract(minStep);
 
@@ -67,9 +88,7 @@ public class StepItemGenerator implements ItemGenerator {
 					((end.compareTo(upperLimit) <= 0) ? end : upperLimit).doubleValue(),
 					mapRangeItems.getOrDefault(rangeItem, rangeItem.getUuid()));
 
-			items.add(new RangeItem(index, start.doubleValue(),
-					((end.compareTo(upperLimit) <= 0) ? end : upperLimit).doubleValue(),
-					new ElementId(IdentifierUtil.randomUniqueId())));
+			items.add(rangeItem);
 
 			start = start.add(interval);
 		}

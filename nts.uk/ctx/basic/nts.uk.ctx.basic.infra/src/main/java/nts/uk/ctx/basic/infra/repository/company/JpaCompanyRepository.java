@@ -11,7 +11,6 @@ import nts.uk.ctx.basic.dom.company.Company;
 import nts.uk.ctx.basic.dom.company.CompanyRepository;
 import nts.uk.ctx.basic.infra.entity.company.CmnmtCompany;
 import nts.uk.ctx.basic.infra.entity.company.CmnmtCompanyPK;
-import nts.uk.ctx.basic.infra.entity.organization.classification.CmnmtClass;
 
 /**
  * 
@@ -22,7 +21,8 @@ import nts.uk.ctx.basic.infra.entity.organization.classification.CmnmtClass;
 public class JpaCompanyRepository extends JpaRepository implements CompanyRepository {
 
 	private static final String SEL_1 = "SELECT e FROM CmnmtCompany e";
-	private static final String SEL_2 = SEL_1+ " WHERE e.cmnmtCompanyPk.companyCd = :companyCd"
+	private static final String SEL_2 = SEL_1 + " WHERE e.cmnmtCompanyPk.companyCd = :companyCd";
+	private static final String SEL_4 = SEL_1+ " WHERE e.cmnmtCompanyPk.companyCd = :companyCd"
 			+ " AND e.use_Kt_Set = :use_Kt_Set";
 
 	// private static final String SEL_2 = SEL_1 + "WHERE
@@ -83,9 +83,13 @@ public class JpaCompanyRepository extends JpaRepository implements CompanyReposi
 	}
 
 	@Override
-	public Optional<Company> getCompanyDetail(String companyCode) {
+	public Optional<Company> getCompanyDetail(String companyCd) {
 		try {
-			return this.queryProxy().find(new CmnmtCompanyPK(companyCode), CmnmtCompany.class).map(c -> toDomain(c));
+			return this.queryProxy().query(SEL_2, CmnmtCompany.class)
+					.setParameter("companyCd", companyCd)
+					.getSingle().map(e -> {
+						return Optional.of(toDomain(e));
+					}).orElse(Optional.empty());
 		} catch (Exception e) {
 			throw e;
 		}
@@ -133,7 +137,7 @@ public class JpaCompanyRepository extends JpaRepository implements CompanyReposi
 	@Override
 	public Optional<Company> getCompanyByUserKtSet(String companyCd, int use_Kt_Set) {
 		
-		return this.queryProxy().query(SEL_2, CmnmtCompany.class)
+		return this.queryProxy().query(SEL_4, CmnmtCompany.class)
 				.setParameter("companyCd", companyCd)
 				.setParameter("use_Kt_Set", use_Kt_Set).getSingle().map(e -> {
 					return Optional.of(toDomain(e));

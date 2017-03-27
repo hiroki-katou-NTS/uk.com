@@ -27,10 +27,10 @@
 					nts.uk.ctx.basic.dom.company.address.AddressKana1
 					nts.uk.ctx.basic.dom.company.address.AddressKana2
    				</com:ValidatorScript>
-			<com:scriptfile path="service.js" />
-			<com:scriptfile path="viewmodel.js" />
-			<com:scriptfile path="start.js" />
-			<com:stylefile path="main.css" />
+			<com:scriptfile path="cmm001.a.service.js" />
+			<com:scriptfile path="cmm001.a.vm.js" />
+			<com:scriptfile path="cmm001.a.start.js" />
+			<com:stylefile path="cmm001.a.style.css" />
 
 		</ui:define>
 
@@ -62,8 +62,8 @@
                     	       {comId: 'A_LST_001',
                     	        items: sel001Data, 
                     	        selected: currentCompany().companyCode,
-                    	        selectedKey: 'code',
-                    	        fields: ['name', 'code']}" />
+                    	        selectedKey: 'companyCode',
+                    	        fields: ['companyName', 'companyCode']}" />
 						</div>
 						<div class="div-table">
 							<table id="A_LST_001"
@@ -89,7 +89,7 @@
 								data-bind="ntsTextEditor: {value: companyCode, constraint: 'CompanyCode'}" />
 						</div>
 						<div class="bg-yellow">
-							<div
+							<div data-name="Check box"
 								data-bind="ntsCheckBox: {checked: isDelete, text: 'この会社を廃止する' }"
 								class="cf minimalist ntsCheckBox-right"></div>
 							<button style="width: 25px; height: 25px; margin-left: 20px;"
