@@ -13,11 +13,11 @@ import employment.processing.yearmonth.PaydayProcessingDto;
 @Produces("application/json")
 public class PaydayProcessingWebservice {
 	
-	@Inject
-	private PaydayProcessing processing;
-	@POST
-	@Path("paydayrocessing/getbyccd")
-	public List<PaydayProcessingDto> getPaydayProcessing(){
-		return this.processing.getPaydayProcessing("");
-	}
+//	@Inject
+//	private PaydayProcessing processing;
+//	@POST
+//	@Path("paydayrocessing/getbyccd")
+//	public List<PaydayProcessingDto> getPaydayProcessing(){
+//		return this.processing.getPaydayProcessing("");
+//	}
 }
