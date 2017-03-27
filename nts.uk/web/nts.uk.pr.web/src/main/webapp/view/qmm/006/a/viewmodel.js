@@ -8,7 +8,6 @@ var qmm006;
                 function ScreenModel() {
                     var self = this;
                     self.items = ko.observableArray([]);
-                    //set currentCode = '' vi khi findAll k co du lieu se vao ham clearForm vs currentCode = null, khi do moi vao dc ham subscribe
                     self.currentCode = ko.observable('');
                     self.dataSource = ko.observableArray([]);
                     self.dataSource2 = ko.observableArray([]);
@@ -40,24 +39,19 @@ var qmm006;
                         { messageId: "ER008", message: "選択された＊は使用されているため削除できません。" },
                     ]);
                     self.currentCode.subscribe(function (codeChange) {
-                        //lan dau khong co error nen khong dc nhay vao ham clearError 
                         if (!self.isFirstFindAll()) {
                             self.clearError();
                         }
-                        //khong cho lap checkDirty khi thay doi row ma du lieu da dc chinh sua
                         if (!self.notLoopAlert()) {
                             self.notLoopAlert(true);
                             return;
                         }
-                        //khi clearForm thi se chi checkDirty o clearForm ma k checkDirty trong subscribe
                         if (codeChange == null) {
                             self.setCurrentLineBank(codeChange);
                             return;
                         }
                         if (self.dirty.isDirty()) {
-                            //"変更された内容が登録されていません。"---AL001 
                             nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\n よろしいですか。").ifYes(function () {
-                                //khi du lieu bi thay doi
                                 self.setCurrentLineBank(codeChange);
                             }).ifNo(function () {
                                 self.notLoopAlert(false);
@@ -65,7 +59,6 @@ var qmm006;
                             });
                         }
                         else {
-                            //khi du lieu k doi
                             self.setCurrentLineBank(codeChange);
                         }
                     });
@@ -97,23 +90,19 @@ var qmm006;
                     self.indexLineBank(_.findIndex(self.items(), function (x) {
                         return x.lineBankCode === codeChange;
                     }));
-                    //truong hop clearForm thi codeChange = null
                     if (codeChange == null) {
                         self.isDeleteEnable(false);
                         self.isInp001Enable(true);
                     }
                 };
-                //get data from DB
                 ScreenModel.prototype.findAll = function () {
                     var self = this;
                     var dfd = $.Deferred();
                     qmm006.a.service.findAll()
                         .done(function (data) {
-                        //neu co du lieu
                         if (data.length > 0) {
                             self.items(data);
                             self.countLineBank(data.length);
-                            //chi select row dau tien trong lan dau tien
                             if (self.isFirstFindAll()) {
                                 self.currentCode(data[0].lineBankCode);
                                 self.isFirstFindAll(false);
@@ -152,7 +141,6 @@ var qmm006;
                         .done(function () {
                         //load lai list va chi vao row moi them
                         $.when(self.findAll()).done(function () {
-                            //chi vao row moi insert hoac moi update
                             self.dirty = new nts.uk.ui.DirtyChecker(self.currentLineBank);
                             self.currentCode(command.lineBankCode);
                         });
@@ -233,7 +221,6 @@ var qmm006;
                     nts.uk.ui.windows.sub.modal("/view/qmm/006/b/index.xhtml", { title: "銀行情報一覧", dialogClass: "no-close" }).onClosed(function () {
                         if (nts.uk.ui.windows.getShared("selectedBank") != null) {
                             if (nts.uk.ui.windows.getShared("selectedBank").parentCode == null) {
-                                //khi select vao row parent
                                 lineBank.bankCode(nts.uk.ui.windows.getShared("selectedBank").code);
                                 self.bankName(nts.uk.ui.windows.getShared("selectedBank").name);
                                 lineBank.branchCode(nts.uk.ui.windows.getShared("selectedBank").parentCode);
@@ -241,7 +228,6 @@ var qmm006;
                                 self.isHyphensAppear(false);
                             }
                             else {
-                                //khi select vao row child
                                 lineBank.branchCode(nts.uk.ui.windows.getShared("selectedBank").code);
                                 self.bankName(nts.uk.ui.windows.getShared("selectedBank").parentName);
                                 lineBank.bankCode(nts.uk.ui.windows.getShared("selectedBank").parentCode);
@@ -255,7 +241,6 @@ var qmm006;
                 ScreenModel.prototype.openCDialog = function () {
                     var self = this;
                     if (self.dirty.isDirty()) {
-                        //"変更された内容が登録されていません。"---AL001 
                         nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\n よろしいですか。").ifYes(function () {
                             self.afterCloseCDialog();
                         }).ifNo(function () {
@@ -276,12 +261,10 @@ var qmm006;
                     });
                 };
                 ScreenModel.prototype.btn007 = function () {
-                    //to-do
                 };
                 ScreenModel.prototype.jumpToQmm002A = function () {
                     var self = this;
                     if (self.dirty.isDirty()) {
-                        //"変更された内容が登録されていません。"---AL001 
                         nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\n よろしいですか。").ifYes(function () {
                             nts.uk.request.jump("/view/qmm/002/a/index.xhtml");
                         }).ifNo(function () {
@@ -294,7 +277,6 @@ var qmm006;
                 ScreenModel.prototype.clearForm = function () {
                     var self = this;
                     if (self.dirty.isDirty()) {
-                        //"変更された内容が登録されていません。"---AL001 
                         nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\n よろしいですか。")
                             .ifYes(function () {
                             self.currentCode(null);
@@ -323,14 +305,11 @@ var qmm006;
                     }
                     return new LineBank(data.bankCode, data.branchCode, data.lineBankCode, data.lineBankName, data.accountAtr, data.accountNo, data.memo, data.requesterName, data.consignors);
                 };
-                //get gia tri cho LBL_005 va LBL_007(bankName and branchName)
                 ScreenModel.prototype.getNameForBankAndBranch = function (lineBank) {
                     var self = this;
-                    //find bankName
                     var tmp = _.find(this.dataSource2(), function (x) {
                         return x.code === lineBank.bankCode();
                     });
-                    //find branchName
                     var tmp1 = _.find(self.dataSource2(), function (x) {
                         return x.code === lineBank.branchCode() && x.parentCode === lineBank.bankCode();
                     });
@@ -349,7 +328,6 @@ var qmm006;
                         self.isHyphensAppear(false);
                     }
                 };
-                //find list Bank
                 ScreenModel.prototype.findBankAll = function () {
                     var self = this;
                     var lineBank = self.currentLineBank();
@@ -461,3 +439,4 @@ var qmm006;
         })(viewmodel = a.viewmodel || (a.viewmodel = {}));
     })(a = qmm006.a || (qmm006.a = {}));
 })(qmm006 || (qmm006 = {}));
+//# sourceMappingURL=viewmodel.js.map
