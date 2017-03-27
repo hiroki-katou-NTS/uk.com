@@ -4632,7 +4632,7 @@ var nts;
                         selected: function (event, ui) {
                         },
                         stop: function (event, ui) {
-                            // Add selected value. 
+                            // Add selected value.
                             var data = [];
                             $("li.ui-selected", $target).each(function (index, opt) {
                                 data[index] = $(opt).data('value');
