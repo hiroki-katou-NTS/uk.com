@@ -148,7 +148,7 @@ public class WtHistoryDto {
 		public void setValueItems(List<WtItem> valueItems) {
 			this.dto.valueItems = valueItems.stream().map(item -> {
 				WtItemDto dto = new WtItemDto();
-				item.saveToMemento(dto);
+				dto.fromDomain(item);
 				return dto;
 			}).collect(Collectors.toList());
 		}
@@ -225,7 +225,7 @@ public class WtHistoryDto {
 		 */
 		@Override
 		public List<WtItem> getValueItems() {
-			return this.dto.getValueItems().stream().map(item -> new WtItem(item))
+			return this.dto.getValueItems().stream().map(item -> item.toDomain())
 					.collect(Collectors.toList());
 		}
 
@@ -296,7 +296,8 @@ public class WtHistoryDto {
 
 				// Range mode
 				if (ElementType.valueOf(item.getType()).isRangeMode) {
-					StepElementSetting stepSetting = new StepElementSetting(DemensionNo.valueOf(item.getDemensionNo()),
+					StepElementSetting stepSetting = new StepElementSetting(
+							DemensionNo.valueOf(item.getDemensionNo()),
 							ElementType.valueOf(item.getType()),
 							item.getItemList().stream()
 									.map(rangeItem -> new RangeItem(rangeItem.getOrderNumber(),
