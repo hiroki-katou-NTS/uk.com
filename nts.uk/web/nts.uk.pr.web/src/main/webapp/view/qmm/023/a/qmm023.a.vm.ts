@@ -48,9 +48,9 @@ module qmm023.a.viewmodel {
             let self = this;
             self.items = ko.observableArray([]);
             this.columns = ko.observableArray([
-                { headerText: 'コード', prop: 'code', width: 50 },
-                { headerText: '名称', prop: 'name', width: 120 },
-                { headerText: '限度額', prop: 'taxLimit', width: 170 }
+                { headerText: 'コード', prop: 'code', width: 75 },
+                { headerText: '名称', prop: 'name', width: 175 },
+                { headerText: '限度額', prop: 'taxLimit', width: 115 }
             ]);
             self.currentTax = ko.observable(new TaxModel('', '', 0));
             self.currentCode = ko.observable(null);
