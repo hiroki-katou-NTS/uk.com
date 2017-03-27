@@ -9,7 +9,6 @@ import java.math.BigDecimal;
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.pr.core.dom.wagetable.ElementId;
-import nts.uk.ctx.pr.core.dom.wagetable.WtCode;
 import nts.uk.ctx.pr.core.dom.wagetable.history.WtItem;
 import nts.uk.ctx.pr.core.dom.wagetable.history.WtItemGetMemento;
 import nts.uk.ctx.pr.core.dom.wagetable.history.WtItemSetMemento;
