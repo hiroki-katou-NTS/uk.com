@@ -35,6 +35,10 @@ var qmm012;
                     this.CurrentLimitCode = ko.observable("");
                     this.C_LBL_028_Value = ko.observable("");
                     this.currentCommuteNoTaxLimitDto = ko.observable(null);
+                    this.currentItemPeriod = ko.observable(null);
+                    this.C_LBL_020_Text = ko.observable("設定なし");
+                    this.currentItemBDs = ko.observableArray([]);
+                    this.C_LBL_022_Text = ko.observable("設定なし");
                     var self = this;
                     self.ComboBoxItemList_C_SEL_001 = ko.observableArray([
                         new C_SEL_001_ComboboxItemModel(0, '課税'),
@@ -186,6 +190,8 @@ var qmm012;
                         else {
                             self.CurrentItemSalary(null);
                         }
+                        self.loadItemPeriod();
+                        self.loadItemBDs();
                         self.CurrentZeroDisplaySet(ItemMaster ? ItemMaster.zeroDisplaySet : 1);
                         self.C_SEL_012_Selected(ItemMaster ? ItemMaster.itemDisplayAtr == 0 ? true : false : false);
                     });
@@ -234,14 +240,51 @@ var qmm012;
                         self.C_LBL_028_Value(NewValue ? NewValue.commuNoTaxLimitCode + "  " + NewValue.commuNoTaxLimitName : "");
                     });
                     self.CurrentLimitCode.subscribe(function (NewValue) {
-                        c.service.getCommuteNoTaxLimit(NewValue).done(function (CommuteNoTaxLimit) {
-                            self.currentCommuteNoTaxLimitDto(CommuteNoTaxLimit);
+                        if (NewValue) {
+                            c.service.getCommuteNoTaxLimit(NewValue).done(function (CommuteNoTaxLimit) {
+                                self.currentCommuteNoTaxLimitDto(CommuteNoTaxLimit);
+                            }).fail(function (res) {
+                                // Alert message
+                                alert(res);
+                            });
+                        }
+                        else {
+                            self.currentCommuteNoTaxLimitDto(undefined);
+                        }
+                    });
+                    self.currentItemPeriod.subscribe(function (newValue) {
+                        self.C_LBL_020_Text(newValue ? newValue.periodAtr == 1 ? '設定あり' : '設定なし' : '設定なし');
+                    });
+                    self.currentItemBDs.subscribe(function (newValue) {
+                        self.C_LBL_022_Text(newValue.length ? '設定あり' : '設定なし');
+                    });
+                }
+                ScreenModel.prototype.loadItemPeriod = function () {
+                    var self = this;
+                    if (self.CurrentItemMaster()) {
+                        qmm012.h.service.findItemPeriod(self.CurrentItemMaster()).done(function (ItemPeriod) {
+                            self.currentItemPeriod(ItemPeriod);
                         }).fail(function (res) {
                             // Alert message
                             alert(res);
                         });
-                    });
-                }
+                    }
+                    else
+                        self.currentItemPeriod(undefined);
+                };
+                ScreenModel.prototype.loadItemBDs = function () {
+                    var self = this;
+                    if (self.CurrentItemMaster()) {
+                        qmm012.i.service.findAllItemBD(self.CurrentItemMaster()).done(function (ItemBDs) {
+                            self.currentItemBDs(ItemBDs);
+                        }).fail(function (res) {
+                            // Alert message
+                            alert(res);
+                        });
+                    }
+                    else
+                        self.currentItemPeriod(undefined);
+                };
                 ScreenModel.prototype.GetCurrentItemSalary = function () {
                     var self = this;
                     var ItemSalary = new c.service.model.ItemSalary(self.CurrentTaxAtr(), self.CurrentSocialInsAtr(), self.CurrentLaborInsAtr(), self.CurrentFixPayAtr(), self.CurrentApplyForAllEmpFlg(), self.CurrentApplyForMonthlyPayEmp(), self.CurrentApplyForDaymonthlyPayEmp(), self.CurrentApplyForDaylyPayEmp(), self.CurrentApplyForHourlyPayEmp(), self.CurrentAvePayAtr(), self.C_SEL_015_Selected() ? 1 : 0, self.CurrentErrRangeLow(), self.C_SEL_013_Selected() ? 1 : 0, self.CurrentErrRangeHigh(), self.C_SEL_016_Selected() ? 1 : 0, self.CurrentAlRangeLow(), self.C_SEL_014_Selected() ? 1 : 0, self.CurrentAlRangeHigh(), self.CurrentMemo(), self.CurrentLimitMnyAtr(), self.currentCommuteNoTaxLimitDto() ? self.currentCommuteNoTaxLimitDto().commuNoTaxLimitCode : '', self.CurrentLimitMny());
@@ -257,12 +300,14 @@ var qmm012;
                     var self = this;
                     nts.uk.ui.windows.setShared('itemMaster', self.CurrentItemMaster());
                     nts.uk.ui.windows.sub.modal('../h/index.xhtml', { height: 570, width: 735, dialogClass: "no-close" }).onClosed(function () {
+                        self.loadItemPeriod();
                     });
                 };
                 ScreenModel.prototype.openIDialog = function () {
                     var self = this;
                     nts.uk.ui.windows.setShared('itemMaster', self.CurrentItemMaster());
                     nts.uk.ui.windows.sub.modal('../i/index.xhtml', { height: 620, width: 1060, dialogClass: "no-close" }).onClosed(function () {
+                        self.loadItemBDs();
                     });
                 };
                 return ScreenModel;

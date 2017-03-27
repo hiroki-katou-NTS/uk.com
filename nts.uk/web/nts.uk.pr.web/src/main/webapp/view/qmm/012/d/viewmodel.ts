@@ -34,6 +34,10 @@ module qmm012.d.viewmodel {
         CurrentMemo: KnockoutObservable<String> = ko.observable("");
         CurrentItemDisplayAtr: KnockoutObservable<number> = ko.observable(1);
         CurrentZeroDisplaySet: KnockoutObservable<number> = ko.observable(1);
+        currentItemPeriod: KnockoutObservable<qmm012.h.service.model.ItemPeriod> = ko.observable(null);
+        D_LBL_011_Text: KnockoutObservable<string> = ko.observable('設定なし');
+        currentItemBDs: KnockoutObservableArray<qmm012.i.service.model.ItemBD> = ko.observableArray([]);
+        D_LBL_012_Text: KnockoutObservable<string> = ko.observable("設定なし");
         constructor() {
             var self = this;
             self.isEditable = ko.observable(true);
@@ -116,6 +120,8 @@ module qmm012.d.viewmodel {
                 } else {
                     self.CurrentItemDeduct(null);
                 }
+                self.loadItemPeriod();
+                self.loadItemBDs();
                 self.checked_D_003(ItemMaster ? ItemMaster.itemDisplayAtr == 0 ? true : false : false);
                 self.CurrentZeroDisplaySet(ItemMaster ? ItemMaster.zeroDisplaySet : 1);
             });
@@ -135,12 +141,45 @@ module qmm012.d.viewmodel {
             self.checked_D_003.subscribe(function(NewValue) {
                 self.CurrentItemDisplayAtr(NewValue ? 0 : 1);
             });
+            self.currentItemPeriod.subscribe(function(newValue) {
+                self.D_LBL_011_Text(newValue ? newValue.periodAtr == 1 ? '設定あり' : '設定なし' : '設定なし');
+            });
+            self.currentItemBDs.subscribe(function(newValue) {
+                self.D_LBL_012_Text(newValue.length ? '設定あり' : '設定なし');
+            });
 
         }
+        loadItemPeriod() {
+            let self = this;
+            //Load Screen H  Data
+            if (self.CurrentItemMaster()) {
+                qmm012.h.service.findItemPeriod(self.CurrentItemMaster()).done(function(ItemPeriod: qmm012.h.service.model.ItemPeriod) {
+                    self.currentItemPeriod(ItemPeriod);
+                }).fail(function(res) {
+                    // Alert message
+                    alert(res);
+                });
+            } else
+                self.currentItemPeriod(undefined);
+        }
+        loadItemBDs() {
+            let self = this;
+            if (self.CurrentItemMaster()) {
+                qmm012.i.service.findAllItemBD(self.CurrentItemMaster()).done(function(ItemBDs: Array<qmm012.i.service.model.ItemBD>) {
+                    self.currentItemBDs(ItemBDs);
+                }).fail(function(res) {
+                    // Alert message
+                    alert(res);
+                });
+            } else
+                self.currentItemPeriod(undefined);
+        }
+
         openHDialog() {
             let self = this;
             nts.uk.ui.windows.setShared('itemMaster', self.CurrentItemMaster());
             nts.uk.ui.windows.sub.modal('../h/index.xhtml', { height: 570, width: 735, dialogClass: "no-close" }).onClosed(function(): any {
+                self.loadItemPeriod();
             });
         }
 
@@ -148,6 +187,7 @@ module qmm012.d.viewmodel {
             let self = this;
             nts.uk.ui.windows.setShared('itemMaster', self.CurrentItemMaster());
             nts.uk.ui.windows.sub.modal('../i/index.xhtml', { height: 620, width: 1060, dialogClass: "no-close" }).onClosed(function(): any {
+                self.loadItemBDs();
             });
         }
         GetCurrentItemDeduct() {

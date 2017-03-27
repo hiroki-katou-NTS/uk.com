@@ -104,12 +104,7 @@ module qmm012.i.viewmodel {
             ]);
             self.CurrentItemMaster(nts.uk.ui.windows.getShared('itemMaster'));
             if (self.CurrentItemMaster()) {
-                if (self.CurrentItemMaster().categoryAtr == 0) {
-                    self.LoadItemSalaryBD();
-                }
-                if (self.CurrentItemMaster().categoryAtr == 1) {
-                    self.LoadItemDeductBD();
-                }
+                self.LoadItem();
                 self.CurrentCategoryAtrName(self.CurrentItemMaster().categoryAtrName);
             }
 
@@ -136,17 +131,24 @@ module qmm012.i.viewmodel {
                 self.CurrentAlRangeLow(ItemBD ? ItemBD.alRangeLow : 0);
                 self.checked_004(ItemBD ? ItemBD.alRangeHighAtr == 1 ? true : false : false);
                 self.CurrentAlRangeHigh(ItemBD ? ItemBD.alRangeHigh : 0);
+                if (self.CurrentItemBreakdownCd() != undefined) {
+                    self.enable_I_INP_002(false);
+                }
             });
-            self.checked_002.subscribe(function(NewValue) {
-                self.CurrentItemDispAtr(NewValue == false ? 1 : 0);
+            self.checked_002.subscribe(function(newValue) {
+                self.CurrentItemDispAtr(newValue == false ? 1 : 0);
             });
         }
-        LoadItemSalaryBD() {
+
+        LoadItem(itemCode?) {
             let self = this;
-            service.findItemSalaryBD(self.CurrentItemMaster().itemCode).done(function(ItemBDs: Array<service.model.ItemBD>) {
+            service.findAllItemBD(self.CurrentItemMaster()).done(function(ItemBDs: Array<service.model.ItemBD>) {
                 self.ItemBDList(ItemBDs);
                 if (self.ItemBDList().length)
-                    self.gridListCurrentCode(self.ItemBDList()[0].itemBreakdownCd);
+                    if (!itemCode)
+                        self.gridListCurrentCode(self.ItemBDList()[0].itemBreakdownCd);
+                    else
+                        self.gridListCurrentCode(itemCode);
             }).fail(function(res) {
                 // Alert message
                 alert(res);
@@ -155,6 +157,7 @@ module qmm012.i.viewmodel {
         GetCurrentItemBD() {
             let self = this;
             return new service.model.ItemBD(
+                self.CurrentItemMaster().itemCode,
                 self.CurrentItemBreakdownCd(),
                 self.CurrentItemBreakdownName(),
                 self.CurrentItemBreakdownAbName(),
@@ -171,17 +174,7 @@ module qmm012.i.viewmodel {
                 self.CurrentAlRangeHigh()
             );
         }
-        LoadItemDeductBD() {
-            let self = this;
-            service.findAllItemDeductBD(self.CurrentItemMaster().itemCode).done(function(ItemBDs: Array<service.model.ItemBD>) {
-                self.ItemBDList(ItemBDs);
-                if (self.ItemBDList().length)
-                    self.gridListCurrentCode(self.ItemBDList()[0].itemBreakdownCd);
-            }).fail(function(res) {
-                // Alert message
-                alert(res);
-            });
-        }
+
         SaveItem() {
             let self = this;
             if (self.enable_I_INP_002())
@@ -190,26 +183,51 @@ module qmm012.i.viewmodel {
                 self.updateItemBD();
 
         }
+        deleteItem() {
+            let self = this;
+            let itemBD = self.GetCurrentItemBD();
+            let itemCode;
+            let index = self.ItemBDList.indexOf(self.CurrentItemBD());
+            if (index != undefined) {
+                if (self.ItemBDList().length > 1) {
+                    if (index == 0)
+                        itemCode = self.ItemBDList()[index + 1].itemBreakdownCd;
+                    else {
+                        if (index < self.ItemBDList().length - 1)
+                            itemCode = self.ItemBDList()[index + 1].itemBreakdownCd;
+                        else
+                            itemCode = self.ItemBDList()[index - 1].itemBreakdownCd;
+                    }
+                } else
+                    itemCode = '';
+            }
+            service.deleteItemBD(self.CurrentItemMaster(), itemBD).done(function(any) {
+                self.LoadItem(itemCode);
+            }).fail(function(res) {
+                alert(res);
+            });
+
+        }
         addItemBD() {
             let self = this;
-            let ItemBD = self.GetCurrentItemBD();
-            if (self.CurrentItemMaster().categoryAtr == 0) {
-                service.addItemSalaryBD(ItemBD);
-            }
-            if (self.CurrentItemMaster().categoryAtr == 1) {
-                service.addItemDeductBD(ItemBD);
-            }
+            let itemBD = self.GetCurrentItemBD();
+            let itemCode = itemBD.itemBreakdownCd;
+            service.addItemBD(self.CurrentItemMaster(), itemBD).done(function(any) {
+                self.LoadItem(itemCode);
+            }).fail(function(res) {
+                alert(res);
+            });
         }
+
         updateItemBD() {
             let self = this;
-            let ItemBD = self.GetCurrentItemBD();
-            if (self.CurrentItemMaster().categoryAtr == 0) {
-                service.updateItemSalaryBD(ItemBD);
-            }
-            if (self.CurrentItemMaster().categoryAtr == 1) {
-                service.updateItemDeductBD(ItemBD);
-            }
-
+            let itemBD = self.GetCurrentItemBD();
+            let itemCode = itemBD.itemBreakdownCd;
+            service.updateItemBD(self.CurrentItemMaster(), itemBD).done(function(any) {
+                self.LoadItem(itemCode);
+            }).fail(function(res) {
+                alert(res);
+            });
         }
         CloseDialog() {
             nts.uk.ui.windows.close();

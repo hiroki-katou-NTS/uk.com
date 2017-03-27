@@ -168,7 +168,6 @@ module qmm012.b.viewmodel {
                     textalign: "left"
                 }))
             };
-
         }
 
         GetCurrentItemMaster() {
@@ -273,8 +272,8 @@ module qmm012.b.viewmodel {
         openADialog() {
             let self = this;
             nts.uk.ui.windows.sub.modal('../a/index.xhtml', { height: 480, width: 630, dialogClass: "no-close" }).onClosed(function(): any {
-                if (nts.uk.sessionStorage.getItemAndRemove('groupCode').value) {
-                    let groupCode = Number(nts.uk.sessionStorage.getItemAndRemove('groupCode').value);
+                if (nts.uk.ui.windows.getShared('groupCode') != undefined) {
+                    let groupCode = Number(nts.uk.ui.windows.getShared('groupCode'));
                     //set layout for new.
                     self.GridlistCurrentCode_B_001('');
                     self.GridCurrentCategoryAtr_B_001(groupCode);

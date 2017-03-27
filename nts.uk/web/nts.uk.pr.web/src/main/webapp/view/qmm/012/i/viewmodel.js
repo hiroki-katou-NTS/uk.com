@@ -88,12 +88,7 @@ var qmm012;
                     ]);
                     self.CurrentItemMaster(nts.uk.ui.windows.getShared('itemMaster'));
                     if (self.CurrentItemMaster()) {
-                        if (self.CurrentItemMaster().categoryAtr == 0) {
-                            self.LoadItemSalaryBD();
-                        }
-                        if (self.CurrentItemMaster().categoryAtr == 1) {
-                            self.LoadItemDeductBD();
-                        }
+                        self.LoadItem();
                         self.CurrentCategoryAtrName(self.CurrentItemMaster().categoryAtrName);
                     }
                     self.gridListCurrentCode.subscribe(function (newValue) {
@@ -118,17 +113,23 @@ var qmm012;
                         self.CurrentAlRangeLow(ItemBD ? ItemBD.alRangeLow : 0);
                         self.checked_004(ItemBD ? ItemBD.alRangeHighAtr == 1 ? true : false : false);
                         self.CurrentAlRangeHigh(ItemBD ? ItemBD.alRangeHigh : 0);
+                        if (self.CurrentItemBreakdownCd() != undefined) {
+                            self.enable_I_INP_002(false);
+                        }
                     });
-                    self.checked_002.subscribe(function (NewValue) {
-                        self.CurrentItemDispAtr(NewValue == false ? 1 : 0);
+                    self.checked_002.subscribe(function (newValue) {
+                        self.CurrentItemDispAtr(newValue == false ? 1 : 0);
                     });
                 }
-                ScreenModel.prototype.LoadItemSalaryBD = function () {
+                ScreenModel.prototype.LoadItem = function (itemCode) {
                     var self = this;
-                    i.service.findItemSalaryBD(self.CurrentItemMaster().itemCode).done(function (ItemBDs) {
+                    i.service.findAllItemBD(self.CurrentItemMaster()).done(function (ItemBDs) {
                         self.ItemBDList(ItemBDs);
                         if (self.ItemBDList().length)
-                            self.gridListCurrentCode(self.ItemBDList()[0].itemBreakdownCd);
+                            if (!itemCode)
+                                self.gridListCurrentCode(self.ItemBDList()[0].itemBreakdownCd);
+                            else
+                                self.gridListCurrentCode(itemCode);
                     }).fail(function (res) {
                         // Alert message
                         alert(res);
@@ -136,18 +137,7 @@ var qmm012;
                 };
                 ScreenModel.prototype.GetCurrentItemBD = function () {
                     var self = this;
-                    return new i.service.model.ItemBD(self.CurrentItemBreakdownCd(), self.CurrentItemBreakdownName(), self.CurrentItemBreakdownAbName(), self.CurrentUniteCd(), self.CurrentZeroDispSet(), self.checked_002() == true ? 0 : 1, self.checked_005() == true ? 1 : 0, self.CurrentErrRangeLow(), self.checked_003() == true ? 1 : 0, self.CurrentErrRangeHigh(), self.checked_006() == true ? 1 : 0, self.CurrentAlRangeLow(), self.checked_004() == true ? 1 : 0, self.CurrentAlRangeHigh());
-                };
-                ScreenModel.prototype.LoadItemDeductBD = function () {
-                    var self = this;
-                    i.service.findAllItemDeductBD(self.CurrentItemMaster().itemCode).done(function (ItemBDs) {
-                        self.ItemBDList(ItemBDs);
-                        if (self.ItemBDList().length)
-                            self.gridListCurrentCode(self.ItemBDList()[0].itemBreakdownCd);
-                    }).fail(function (res) {
-                        // Alert message
-                        alert(res);
-                    });
+                    return new i.service.model.ItemBD(self.CurrentItemMaster().itemCode, self.CurrentItemBreakdownCd(), self.CurrentItemBreakdownName(), self.CurrentItemBreakdownAbName(), self.CurrentUniteCd(), self.CurrentZeroDispSet(), self.checked_002() == true ? 0 : 1, self.checked_005() == true ? 1 : 0, self.CurrentErrRangeLow(), self.checked_003() == true ? 1 : 0, self.CurrentErrRangeHigh(), self.checked_006() == true ? 1 : 0, self.CurrentAlRangeLow(), self.checked_004() == true ? 1 : 0, self.CurrentAlRangeHigh());
                 };
                 ScreenModel.prototype.SaveItem = function () {
                     var self = this;
@@ -156,25 +146,50 @@ var qmm012;
                     else
                         self.updateItemBD();
                 };
+                ScreenModel.prototype.deleteItem = function () {
+                    var self = this;
+                    var itemBD = self.GetCurrentItemBD();
+                    var itemCode;
+                    var index = self.ItemBDList.indexOf(self.CurrentItemBD());
+                    if (index != undefined) {
+                        if (self.ItemBDList().length > 1) {
+                            if (index == 0)
+                                itemCode = self.ItemBDList()[index + 1].itemBreakdownCd;
+                            else {
+                                if (index < self.ItemBDList().length - 1)
+                                    itemCode = self.ItemBDList()[index + 1].itemBreakdownCd;
+                                else
+                                    itemCode = self.ItemBDList()[index - 1].itemBreakdownCd;
+                            }
+                        }
+                        else
+                            itemCode = '';
+                    }
+                    i.service.deleteItemBD(self.CurrentItemMaster(), itemBD).done(function (any) {
+                        self.LoadItem(itemCode);
+                    }).fail(function (res) {
+                        alert(res);
+                    });
+                };
                 ScreenModel.prototype.addItemBD = function () {
                     var self = this;
-                    var ItemBD = self.GetCurrentItemBD();
-                    if (self.CurrentItemMaster().categoryAtr == 0) {
-                        i.service.addItemSalaryBD(ItemBD);
-                    }
-                    if (self.CurrentItemMaster().categoryAtr == 1) {
-                        i.service.addItemDeductBD(ItemBD);
-                    }
+                    var itemBD = self.GetCurrentItemBD();
+                    var itemCode = itemBD.itemBreakdownCd;
+                    i.service.addItemBD(self.CurrentItemMaster(), itemBD).done(function (any) {
+                        self.LoadItem(itemCode);
+                    }).fail(function (res) {
+                        alert(res);
+                    });
                 };
                 ScreenModel.prototype.updateItemBD = function () {
                     var self = this;
-                    var ItemBD = self.GetCurrentItemBD();
-                    if (self.CurrentItemMaster().categoryAtr == 0) {
-                        i.service.updateItemSalaryBD(ItemBD);
-                    }
-                    if (self.CurrentItemMaster().categoryAtr == 1) {
-                        i.service.updateItemDeductBD(ItemBD);
-                    }
+                    var itemBD = self.GetCurrentItemBD();
+                    var itemCode = itemBD.itemBreakdownCd;
+                    i.service.updateItemBD(self.CurrentItemMaster(), itemBD).done(function (any) {
+                        self.LoadItem(itemCode);
+                    }).fail(function (res) {
+                        alert(res);
+                    });
                 };
                 ScreenModel.prototype.CloseDialog = function () {
                     nts.uk.ui.windows.close();

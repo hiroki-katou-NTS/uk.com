@@ -62,6 +62,10 @@ module qmm012.c.viewmodel {
         CurrentLimitCode: KnockoutObservable<string> = ko.observable("");
         C_LBL_028_Value: KnockoutObservable<string> = ko.observable("");
         currentCommuteNoTaxLimitDto: KnockoutObservable<qmm023.a.service.model.CommuteNoTaxLimitDto> = ko.observable(null);
+        currentItemPeriod: KnockoutObservable<qmm012.h.service.model.ItemPeriod> = ko.observable(null);
+        C_LBL_020_Text: KnockoutObservable<string> = ko.observable("設定なし");
+        currentItemBDs: KnockoutObservableArray<qmm012.i.service.model.ItemBD> = ko.observableArray([]);
+        C_LBL_022_Text: KnockoutObservable<string> = ko.observable("設定なし");
         constructor() {
             var self = this;
             self.ComboBoxItemList_C_SEL_001 = ko.observableArray([
@@ -203,10 +207,14 @@ module qmm012.c.viewmodel {
                         break;
                 }
             });
+
+
+
             self.CurrentItemMaster.subscribe(function(ItemMaster: qmm012.b.service.model.ItemMaster) {
                 if (ItemMaster) {
                     service.findItemSalary(ItemMaster.itemCode).done(function(ItemSalary: service.model.ItemSalary) {
                         self.CurrentItemSalary(ItemSalary);
+
                     }).fail(function(res) {
                         // Alert message
                         alert(res);
@@ -214,6 +222,8 @@ module qmm012.c.viewmodel {
                 } else {
                     self.CurrentItemSalary(null);
                 }
+                self.loadItemPeriod();
+                self.loadItemBDs();
                 self.CurrentZeroDisplaySet(ItemMaster ? ItemMaster.zeroDisplaySet : 1);
                 self.C_SEL_012_Selected(ItemMaster ? ItemMaster.itemDisplayAtr == 0 ? true : false : false);
             });
@@ -270,13 +280,47 @@ module qmm012.c.viewmodel {
                 self.C_LBL_028_Value(NewValue ? NewValue.commuNoTaxLimitCode + "  " + NewValue.commuNoTaxLimitName : "");
             });
             self.CurrentLimitCode.subscribe(function(NewValue) {
-                service.getCommuteNoTaxLimit(NewValue).done(function(CommuteNoTaxLimit: qmm023.a.service.model.CommuteNoTaxLimitDto) {
-                    self.currentCommuteNoTaxLimitDto(CommuteNoTaxLimit);
+                if (NewValue) {
+                    service.getCommuteNoTaxLimit(NewValue).done(function(CommuteNoTaxLimit: qmm023.a.service.model.CommuteNoTaxLimitDto) {
+                        self.currentCommuteNoTaxLimitDto(CommuteNoTaxLimit);
+                    }).fail(function(res) {
+                        // Alert message
+                        alert(res);
+                    });
+                } else {
+                    self.currentCommuteNoTaxLimitDto(undefined);
+                }
+            });
+            self.currentItemPeriod.subscribe(function(newValue) {
+                self.C_LBL_020_Text(newValue ? newValue.periodAtr == 1 ? '設定あり' : '設定なし' : '設定なし');
+            });
+            self.currentItemBDs.subscribe(function(newValue) {
+                self.C_LBL_022_Text(newValue.length ? '設定あり' : '設定なし');
+            });
+        }
+        loadItemPeriod() {
+            let self = this;
+            if (self.CurrentItemMaster()) {
+                qmm012.h.service.findItemPeriod(self.CurrentItemMaster()).done(function(ItemPeriod: qmm012.h.service.model.ItemPeriod) {
+                    self.currentItemPeriod(ItemPeriod);
                 }).fail(function(res) {
                     // Alert message
                     alert(res);
                 });
-            });
+            } else
+                self.currentItemPeriod(undefined);
+        }
+        loadItemBDs() {
+            let self = this;
+            if (self.CurrentItemMaster()) {
+                qmm012.i.service.findAllItemBD(self.CurrentItemMaster()).done(function(ItemBDs: Array<qmm012.i.service.model.ItemBD>) {
+                    self.currentItemBDs(ItemBDs);
+                }).fail(function(res) {
+                    // Alert message
+                    alert(res);
+                });
+            } else
+                self.currentItemPeriod(undefined);
         }
         GetCurrentItemSalary() {
             let self = this;
@@ -316,6 +360,7 @@ module qmm012.c.viewmodel {
             let self = this;
             nts.uk.ui.windows.setShared('itemMaster', self.CurrentItemMaster());
             nts.uk.ui.windows.sub.modal('../h/index.xhtml', { height: 570, width: 735, dialogClass: "no-close" }).onClosed(function(): any {
+                self.loadItemPeriod();
             });
         }
 
@@ -323,11 +368,10 @@ module qmm012.c.viewmodel {
             let self = this;
             nts.uk.ui.windows.setShared('itemMaster', self.CurrentItemMaster());
             nts.uk.ui.windows.sub.modal('../i/index.xhtml', { height: 620, width: 1060, dialogClass: "no-close" }).onClosed(function(): any {
+                self.loadItemBDs();
             });
         }
     }
-
-
 
     class BoxModel {
         id: number;
