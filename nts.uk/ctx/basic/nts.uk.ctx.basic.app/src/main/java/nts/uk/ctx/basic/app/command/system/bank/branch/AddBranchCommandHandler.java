@@ -1,8 +1,6 @@
 package nts.uk.ctx.basic.app.command.system.bank.branch;
 
-import java.util.Optional;
-
-import javax.enterprise.context.RequestScoped;
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
@@ -13,7 +11,7 @@ import nts.uk.ctx.basic.dom.system.bank.branch.BankBranch;
 import nts.uk.ctx.basic.dom.system.bank.branch.BankBranchRepository;
 import nts.uk.shr.com.context.AppContexts;
 
-@RequestScoped
+@Stateless
 @Transactional
 public class AddBranchCommandHandler extends CommandHandler<AddBranchCommand> {
 	@Inject
@@ -24,12 +22,12 @@ public class AddBranchCommandHandler extends CommandHandler<AddBranchCommand> {
 		AddBranchCommand command = context.getCommand();
 		String companyCode = AppContexts.user().companyCode();
 		
-		Optional<BankBranch> branch = bankBranchRepository.find(companyCode, command.getBankCode(), command.getBranchCode());
-		if (branch.isPresent()) {
+		boolean existsBranch = bankBranchRepository.checkExists(companyCode, command.getBankCode(), command.getBranchCode());
+		if (existsBranch) {
 			throw new BusinessException("ER005");
 		}
 		
-		BankBranch domain =  BankBranch.createFromJavaType(companyCode, command.getBankCode(), command.getBranchCode(), command.getBranchName(), command.getBranchKnName(), command.getMemo());
+		BankBranch domain =  BankBranch.newBranch(companyCode, command.getBankCode(), command.getBranchCode(), command.getBranchName(), command.getBranchKnName(), command.getMemo());
 		
 		// validate
 		domain.validate();

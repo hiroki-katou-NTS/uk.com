@@ -3,11 +3,9 @@
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-
-import javax.enterprise.context.RequestScoped;
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
-
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
@@ -19,7 +17,7 @@ import nts.uk.ctx.basic.dom.system.bank.branch.BankBranchRepository;
 import nts.uk.ctx.basic.dom.system.bank.personaccount.PersonBankAccountRepository;
 import nts.uk.shr.com.context.AppContexts;
 
-@RequestScoped
+@Stateless
 @Transactional
 public class RemoveBankCommandHandler extends CommandHandler<RemoveBankCommand> {
 
@@ -54,7 +52,7 @@ public class RemoveBankCommandHandler extends CommandHandler<RemoveBankCommand> 
        List<BankBranch> branchAll = bankBranchRepo.findAll(companyCode, new BankCode(command.getBankCode()));
        if (!branchAll.isEmpty()) {
     	   branchAll.forEach((item) -> {
-    		   bankBranchRepo.remove(companyCode, command.getBankCode(), item.getBankBranchCode().v());
+    		   bankBranchRepo.remove(companyCode, item.getBranchId().toString());
     	   }); 
        }
        

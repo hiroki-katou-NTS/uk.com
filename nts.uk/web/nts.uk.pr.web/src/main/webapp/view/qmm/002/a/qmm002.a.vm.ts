@@ -288,13 +288,12 @@ module nts.uk.pr.view.qmm002.a {
                 self.confirmDirty = true;
                 var branchInfo = {
                     bankCode: self.nodeParent().code,
-                    branchId: self.isCreated() ? "" : self.nodeParent().branchId,
+                    branchId: self.isCreated() ? "" : self.currentNode().branchId,
                     branchCode: self.A_INP_003.value(),
                     branchName: self.A_INP_004.value(),
                     branchKnName: self.A_INP_005.value(),
                     memo: self.A_INP_006.value()
                 };
-
                 service.addBank(self.isCreated(), branchInfo).done(function() {
                     // reload tree
                     self.getBankList().done(function() {
@@ -355,8 +354,7 @@ module nts.uk.pr.view.qmm002.a {
                         self.checkPrint(false);
                         self.checkDisabled(false);
                         self.isCreated(false);
-                    } else {
-                        //self.nodeParent = ko.observable(new BankInfo(null,null,null,null,null,null,null));
+                    } else {    
                         self.checkPrint(true);
                         self.checkDisabled(true);
                         self.isCreated(false);
@@ -364,10 +362,10 @@ module nts.uk.pr.view.qmm002.a {
                     _.forEach(data, function(itemBank) {
                         var childs = _.map(itemBank.bankBranch, function(item) {
                             countChidrenNode++;
-                            return new BankInfo(itemBank.bankCode + "-" + item["bankBranchCode"], item["bankBranchCode"], item["bankBranchName"], item["bankBranchNameKana"], item["memo"], null, itemBank.bankCode);
+                            return new BankInfo(itemBank.bankCode + "-" + item["bankBranchCode"], item["bankBranchCode"],item["bankBranchID"], item["bankBranchName"], item["bankBranchNameKana"], item["memo"], null, itemBank.bankCode);
                         });
 
-                        list001.push(new BankInfo(itemBank.bankCode, itemBank.bankCode, itemBank.bankName, itemBank.bankNameKana, itemBank.memo, childs, null));
+                        list001.push(new BankInfo(itemBank.bankCode, itemBank.bankCode,null, itemBank.bankName, itemBank.bankNameKana, itemBank.memo, childs, null));
                     });
                     if (countChidrenNode > 1) {
                         self.checkCountNode(true);
@@ -399,8 +397,7 @@ module nts.uk.pr.view.qmm002.a {
                     } else {
                         parentCode = self.singleSelectedCode();
                     }
-
-                    service.removeBank(!check, parentCode, childCode).done(function() {
+                    service.removeBank(!check, parentCode, self.currentNode().branchId).done(function() {
                         // reload tree
                         self.cleanBranch();
                         self.getBankList().done(function() {
@@ -491,6 +488,7 @@ module nts.uk.pr.view.qmm002.a {
         export class BankInfo {
             treeCode: string;
             code: string;
+            branchId: string;
             name: string;
             displayName: string;
             nameKata: string;
@@ -498,10 +496,11 @@ module nts.uk.pr.view.qmm002.a {
             childs: Array<BankInfo>;
             parentCode: string;
 
-            constructor(treeCode?: string, code?: string, name?: string, nameKata?: string, memo?: string, childs?: Array<BankInfo>, parentCode?: string) {
+            constructor(treeCode?: string, code?: string,branchId?: string, name?: string, nameKata?: string, memo?: string, childs?: Array<BankInfo>, parentCode?: string) {
                 var self = this;
                 self.treeCode = treeCode;
                 self.code = code;
+                self.branchId = branchId;
                 self.name = name;
                 self.displayName = self.code +"  "+ self.name;
                 self.nameKata = nameKata;

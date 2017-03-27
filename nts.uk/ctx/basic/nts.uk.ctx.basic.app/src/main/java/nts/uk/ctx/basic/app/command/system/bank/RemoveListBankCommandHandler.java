@@ -3,11 +3,11 @@ package nts.uk.ctx.basic.app.command.system.bank;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
-import javax.enterprise.context.RequestScoped;
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
-
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
@@ -20,7 +20,7 @@ import nts.uk.ctx.basic.dom.system.bank.branch.BankBranchRepository;
 import nts.uk.ctx.basic.dom.system.bank.personaccount.PersonBankAccountRepository;
 import nts.uk.shr.com.context.AppContexts;
 
-@RequestScoped
+@Stateless
 @Transactional
 public class RemoveListBankCommandHandler extends CommandHandler<RemoveListBankCommand> {
 
@@ -42,28 +42,29 @@ public class RemoveListBankCommandHandler extends CommandHandler<RemoveListBankC
 		List<String> bankDeleted = new ArrayList<>();
 		
 		command.getBank().forEach(bank -> {
-			if (StringUtil.isNullOrEmpty(bank.getBranchCode(), true)) {
+			if (StringUtil.isNullOrEmpty(bank.getBranchId(), true)) {
 				Optional<Bank> domain = bankRepository.find(companyCode, bank.getBankCode());
 				if (domain.isPresent()) {
-					List<String> bankCodeList = new ArrayList<String>();
-					bankCodeList.add(bank.getBankCode());
-
-					// check exists person bank account
-					if (personBankAccountRepository.checkExistsBankAccount(companyCode, bankCodeList)) {
-						throw new BusinessException("ER008"); // ER008
-					}
-
+					// get all branch by bank
 					List<BankBranch> branchAll = banhBranchRepo.findAll(companyCode, new BankCode(bank.getBankCode()));
 					if (!branchAll.isEmpty()) {
+						// get list of branch id
+						List<String> branchIdList = branchAll.stream().map(x -> x.getBranchId().toString()).collect(Collectors.toList());
+						
+						// check exists person bank account
+						if (personBankAccountRepository.checkExistsBankAccount(companyCode, branchIdList)) {
+							throw new BusinessException("ER008"); // ER008
+						}
+						
 						branchAll.forEach(item -> {
-							banhBranchRepo.remove(companyCode, bank.getBankCode(), item.getBankBranchCode().v());
+							banhBranchRepo.remove(companyCode, item.getBranchId().toString());
 						});
 					}
 					bankRepository.remove(domain.get());
 					bankDeleted.add(bank.getBankCode());
 				}
 			} else if (!bankDeleted.contains(bank.getBankCode())) {
-				banhBranchRepo.remove(companyCode, bank.getBankCode(), bank.getBranchCode());
+				banhBranchRepo.remove(companyCode, bank.getBranchId().toString());
 			}
 		});
 	}
