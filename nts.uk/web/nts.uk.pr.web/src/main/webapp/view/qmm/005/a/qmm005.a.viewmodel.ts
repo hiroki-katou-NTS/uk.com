@@ -10,7 +10,11 @@ module qmm005.a {
         start() {
             let self = this;
             let _records: Array<TableRowItem> = [];
+            /// Service trả về một mảng 2 chiều gồm 2 bảng paydayProcessing và payDay
+            /// paydayProccessing = resp[][0];
+            /// payDay = resp[][1];
             services.getData().done(function(resp: Array<any>) {
+                /// Lặp từng dòng, số dòng cố định là 5 được
                 for (let i in resp) {
                     let index = parseInt(i) + 1;
                     let _row = new TableRowItem(
@@ -27,43 +31,35 @@ module qmm005.a {
                     if (item) {
                         _row.index(item[0].processingNo);
                         _row.label(item[0].processingName);
-
                         let _sel001Data: Array<common.SelectItem> = [];
+                        let _sel002Data: Array<common.SelectItem> = [];
                         if (item[1]) {
                             var payDays = _.orderBy(item[1], ['processingYm'], ['desc']);
                             for (let i in payDays) {
-                                let rec: any = payDays[i];
-                                if (rec.processingNo == index && !rec.payBonusAtr && !rec.sparePayAtr) {
+                                let rec: any = payDays[i],
+                                    index: number = parseInt(i) + 1,
+                                    payDate: Date = new Date(rec.payDate),
+                                    stdDate: Date = new Date(rec.stdDate),
+                                    label: string = nts.uk.time.formatDate(payDate, "yyyy/MM/dd") + '(' + payDate['getDayJP']() + ')|' + nts.uk.time.formatDate(stdDate, "yyyy/MM/dd");
+
+                                _sel002Data.push(new common.SelectItem({ index: index, label: label }));
+
+                                if (!rec.payBonusAtr && !rec.sparePayAtr) {
                                     var ym = nts.uk.time.parseYearMonth(rec.processingYm);
                                     if (ym.success) {
-                                        _sel001Data.push(new SelectItem(ym.year, ym.year + ''));
+                                        _sel001Data.push(new SelectItem(ym.year, ym.year.toString()));
                                     }
                                 }
                             }
                         }
                         _sel001Data = _.uniqWith(_sel001Data, _.isEqual);
                         _row.sel001Data(_sel001Data);
+                        _row.sel002Data(_sel002Data);
 
-                        // Năm được chọn???
-                        _row.sel001(_sel001Data[0].index);
-
-                        let _sel002Data: Array<common.SelectItem> = [];
-                        if (item[1]) {
-                            for (let i in item[1]) {
-                                let index: number = parseInt(i) + 1,
-                                    rec: any = item[1][i],
-                                    payDate: Date = new Date(rec.payDate),
-                                    stdDate: Date = new Date(rec.stdDate),
-                                    label: string = nts.uk.time.formatDate(payDate, "yyyy/MM/dd") + '(' + payDate['getDayJP']() + ')|' + nts.uk.time.formatDate(stdDate, "yyyy/MM/dd");
-                                _sel002Data.push(new common.SelectItem({ index: index, label: label }));
-                            }
-
-                            if (_sel002Data.length) {
-                                _row.sel002Data(_sel002Data);
-                                _row.sel002(_sel002Data[0].index);
-                            }
-                        }
-
+                        // Năm được là năm hiện tại
+                        let cym = nts.uk.time.parseYearMonth(item[0].currentProcessingYm);
+                        _row.sel001(cym.year);
+                        
                         _row.sel003(item[0].bonusAtr);
 
                         let bCurrentProcessingYm = nts.uk.time.parseYearMonth(item[0].bcurrentProcessingYm);
