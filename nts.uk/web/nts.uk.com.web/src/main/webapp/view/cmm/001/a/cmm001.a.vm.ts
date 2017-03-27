@@ -9,8 +9,6 @@ module cmm001.a {
         checked: KnockoutObservable<boolean>;
         mode: KnockoutObservable<boolean> = ko.observable(null);
         editmode: KnockoutObservable<boolean> = ko.observable(null);
-        //dirtyStart: nts.uk.ui.DirtyChecker;
-        //dirtySelectData: nts.uk.ui.DirtyChecker;
 
         constructor() {
             let self = this;
@@ -45,27 +43,45 @@ module cmm001.a {
                 let $grid = $("#A_LST_001");
                 var currentColumns = $grid.igGrid("option", "columns");
                 var width = $grid.igGrid("option", "width");
-                self.sel001Data([]);
+
                 if (newValue) {
-                    $('#A_SEL_001').ntsError('clear');
-                    currentColumns[2].hidden = false;
-                    $grid.igGrid("option", "width", "400px");
-                    self.start(undefined);
+                    //nts.uk.ui.dialog.confirm("Do you want to change data?").ifYes(function() {
+                        $('#A_SEL_001').ntsError('clear');
+                        currentColumns[2].hidden = false;
+                        $grid.igGrid("option", "width", "400px");
+                        self.sel001Data([]);
+                        self.start(undefined);
+                  //      });
+                    
                 } else {
-                    currentColumns[2].hidden = true;
-                    $grid.igGrid("option", "width", "400px");
-                    service.getAllCompanys().done(function(data: Array<service.model.CompanyDto>) {
-                        if (data.length > 0) {
-                            _.each(data, function(obj: service.model.CompanyDto) {
-                                let companyModel: CompanyModel;
-                                companyModel = ko.mapping.fromJS(obj);
-                                if (obj.displayAttribute === 0) {
-                                    companyModel.displayAttribute('');
+                   //  nts.uk.ui.dialog.confirm("Do you want to change data?").ifYes(function() {
+                        self.sel001Data([]);
+                        currentColumns[2].hidden = true;
+                        $grid.igGrid("option", "width", "400px");
+                        service.getAllCompanys().done(function(data: Array<service.model.CompanyDto>) {
+                            if (data.length > 0) {
+                                _.each(data, function(obj: service.model.CompanyDto) {
+                                    let companyModel: CompanyModel;
+                                    companyModel = ko.mapping.fromJS(obj);
+                                    if (obj.displayAttribute === 0) {
+                                        companyModel.displayAttribute('');
+                                        self.sel001Data.push(ko.toJS(companyModel));
+
+                                    }
+                                });
+                                var companyCheckExist = _.find(self.sel001Data(), function(obj: CompanyModel) {
+                                    let x: string = ko.toJS(obj.companyCode);
+                                    let y: string = (ko.toJS(self.currentCompany().companyCode));
+                                    return x === y;
+
+                                });
+                                if (!companyCheckExist) {
+                                    self.currentCompany().companyCode(ko.toJS(self.sel001Data()[0].companyCode));
+
                                 }
-                                self.sel001Data.push(ko.toJS(companyModel));
-                            });
-                        }
-                    });
+                            }
+                        });
+                    //     });
                 }
                 $grid.igGrid("option", "columns", currentColumns);
             });
@@ -99,6 +115,7 @@ module cmm001.a {
 
         resetData() {
             let self = this;
+            self.currentCompany().hasFocus(true);
 
             self.currentCompany().companyCode(null);
             self.currentCompany().address1("");
@@ -119,6 +136,10 @@ module cmm001.a {
             self.currentCompany().presidentName('');
             self.currentCompany().presidentJobTitle('');
             self.currentCompany().termBeginMon(0);
+            self.currentCompany().selectedRuleCode('0');
+            self.currentCompany().selectedRuleCode1('0');
+            self.currentCompany().selectedRuleCode2('0');
+            self.currentCompany().selectedRuleCode3('0');
             self.currentCompany().isDelete(true);
             self.currentCompany().editMode = true;
             self.mode(false);
@@ -131,6 +152,9 @@ module cmm001.a {
             let dfd = $.Deferred<any>();
             let currentCompany: CompanyModel;
             currentCompany = ko.toJS(self.currentCompany);
+            if (nts.uk.text.isNullOrEmpty(ko.toJS(currentCompany.companyCode))) {
+                return;
+            }
             if (currentCompany.isDelete) {
                 currentCompany.displayAttribute = ko.observable("1");
             } else {
@@ -162,6 +186,7 @@ module cmm001.a {
             company.address1 = ko.toJS(currentCompany.address1);
             company.address2 = ko.toJS(currentCompany.address2);
             company.addressKana1 = ko.toJS(currentCompany.addressKana1);
+            console.log(company.addressKana1);
             company.addressKana2 = ko.toJS(currentCompany.addressKana2);
             company.telephoneNo = ko.toJS(currentCompany.telephoneNo);
             company.faxNo = ko.toJS(currentCompany.faxNo);
@@ -176,18 +201,12 @@ module cmm001.a {
                 });
             } else {
                 cmm001.a.service.addData(company).done(function() {
+                    console.log(company);
                     self.sel001Data([]);
                     self.start(company.companyCode);
                 })
             }
         }
-
-        clickSetting() {
-        }
-        clickLog() {
-        }
-        Browse() { }
-        clickSel002() { }
     }
     class CompanyModel {
         sources: Array<any>;
@@ -219,6 +238,7 @@ module cmm001.a {
         selectedRuleCode2: KnockoutObservable<string>;
         roundingRules3: KnockoutObservableArray<RoundingRule>;
         selectedRuleCode3: KnockoutObservable<string>;
+        hasFocus: KnockoutObservable<boolean> = ko.observable(false);
         editMode: boolean = true;// mode reset or not reset
 
         constructor(param: ICompany) {
@@ -227,8 +247,8 @@ module cmm001.a {
             self.companyCode = ko.observable(param.companyCode);
             self.address1 = ko.observable(param.address1);
             self.address2 = ko.observable(param.address2);
-            self.addressKana1 = ko.observable(param.address2);
-            self.addressKana2 = ko.observable(param.address2);
+            self.addressKana1 = ko.observable(param.addressKana1);
+            self.addressKana2 = ko.observable(param.addressKana2);
             self.companyName = ko.observable(param.companyName);
             self.companyNameGlobal = ko.observable(param.companyNameGlobal);
             self.companyNameAbb = ko.observable(param.companyNameAbb);
@@ -275,13 +295,19 @@ module cmm001.a {
 
             self.companyCode.subscribe(function(newValue) {
                 if (self.editMode) {
+                    if (nts.uk.text.isNullOrEmpty(newValue)) {
+                        return;
+                    }
 
                     service.getCompanyDetail(newValue).done(function(company: service.model.CompanyDto) {
                         if (company) {
+                            if ($('.nts-editor').ntsError("hasError")) {
+                                $('.save-error').ntsError('clear');
+                            }
                             $("#A_INP_002").attr('disabled', 'true');
                             $("#A_INP_002").attr('readonly', 'true');
                             self.address1(company.address1);
-                            self.addressKana1(company.address1);
+                            self.addressKana1(company.addressKana1);
                             self.address2(company.address2);
                             self.addressKana2(company.addressKana2);
                             self.companyName(company.companyName);

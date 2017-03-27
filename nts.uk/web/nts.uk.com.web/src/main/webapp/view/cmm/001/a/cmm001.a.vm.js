@@ -35,14 +35,17 @@ var cmm001;
                     var $grid = $("#A_LST_001");
                     var currentColumns = $grid.igGrid("option", "columns");
                     var width = $grid.igGrid("option", "width");
-                    self.sel001Data([]);
                     if (newValue) {
+                        //nts.uk.ui.dialog.confirm("Do you want to change data?").ifYes(function() {
                         $('#A_SEL_001').ntsError('clear');
                         currentColumns[2].hidden = false;
                         $grid.igGrid("option", "width", "400px");
+                        self.sel001Data([]);
                         self.start(undefined);
                     }
                     else {
+                        //  nts.uk.ui.dialog.confirm("Do you want to change data?").ifYes(function() {
+                        self.sel001Data([]);
                         currentColumns[2].hidden = true;
                         $grid.igGrid("option", "width", "400px");
                         a.service.getAllCompanys().done(function (data) {
@@ -52,9 +55,17 @@ var cmm001;
                                     companyModel = ko.mapping.fromJS(obj);
                                     if (obj.displayAttribute === 0) {
                                         companyModel.displayAttribute('');
+                                        self.sel001Data.push(ko.toJS(companyModel));
                                     }
-                                    self.sel001Data.push(ko.toJS(companyModel));
                                 });
+                                var companyCheckExist = _.find(self.sel001Data(), function (obj) {
+                                    var x = ko.toJS(obj.companyCode);
+                                    var y = (ko.toJS(self.currentCompany().companyCode));
+                                    return x === y;
+                                });
+                                if (!companyCheckExist) {
+                                    self.currentCompany().companyCode(ko.toJS(self.sel001Data()[0].companyCode));
+                                }
                             }
                         });
                     }
@@ -92,6 +103,7 @@ var cmm001;
             };
             ViewModel.prototype.resetData = function () {
                 var self = this;
+                self.currentCompany().hasFocus(true);
                 self.currentCompany().companyCode(null);
                 self.currentCompany().address1("");
                 self.currentCompany().addressKana1("");
@@ -111,6 +123,10 @@ var cmm001;
                 self.currentCompany().presidentName('');
                 self.currentCompany().presidentJobTitle('');
                 self.currentCompany().termBeginMon(0);
+                self.currentCompany().selectedRuleCode('0');
+                self.currentCompany().selectedRuleCode1('0');
+                self.currentCompany().selectedRuleCode2('0');
+                self.currentCompany().selectedRuleCode3('0');
                 self.currentCompany().isDelete(true);
                 self.currentCompany().editMode = true;
                 self.mode(false);
@@ -120,6 +136,9 @@ var cmm001;
                 var dfd = $.Deferred();
                 var currentCompany;
                 currentCompany = ko.toJS(self.currentCompany);
+                if (nts.uk.text.isNullOrEmpty(ko.toJS(currentCompany.companyCode))) {
+                    return;
+                }
                 if (currentCompany.isDelete) {
                     currentCompany.displayAttribute = ko.observable("1");
                 }
@@ -151,6 +170,7 @@ var cmm001;
                 company.address1 = ko.toJS(currentCompany.address1);
                 company.address2 = ko.toJS(currentCompany.address2);
                 company.addressKana1 = ko.toJS(currentCompany.addressKana1);
+                console.log(company.addressKana1);
                 company.addressKana2 = ko.toJS(currentCompany.addressKana2);
                 company.telephoneNo = ko.toJS(currentCompany.telephoneNo);
                 company.faxNo = ko.toJS(currentCompany.faxNo);
@@ -166,30 +186,26 @@ var cmm001;
                 }
                 else {
                     cmm001.a.service.addData(company).done(function () {
+                        console.log(company);
                         self.sel001Data([]);
                         self.start(company.companyCode);
                     });
                 }
             };
-            ViewModel.prototype.clickSetting = function () {
-            };
-            ViewModel.prototype.clickLog = function () {
-            };
-            ViewModel.prototype.Browse = function () { };
-            ViewModel.prototype.clickSel002 = function () { };
             return ViewModel;
         }());
         a.ViewModel = ViewModel;
         var CompanyModel = (function () {
             function CompanyModel(param) {
-                this.editMode = true;
+                this.hasFocus = ko.observable(false);
+                this.editMode = true; // mode reset or not reset
                 var self = this;
                 self.sources = param.sources || [];
                 self.companyCode = ko.observable(param.companyCode);
                 self.address1 = ko.observable(param.address1);
                 self.address2 = ko.observable(param.address2);
-                self.addressKana1 = ko.observable(param.address2);
-                self.addressKana2 = ko.observable(param.address2);
+                self.addressKana1 = ko.observable(param.addressKana1);
+                self.addressKana2 = ko.observable(param.addressKana2);
                 self.companyName = ko.observable(param.companyName);
                 self.companyNameGlobal = ko.observable(param.companyNameGlobal);
                 self.companyNameAbb = ko.observable(param.companyNameAbb);
@@ -205,6 +221,7 @@ var cmm001;
                 self.termBeginMon = ko.observable(param.termBeginMon);
                 self.companyUseSet = ko.observable(param.companyUseSet);
                 self.isDelete = ko.observable(param.isDelete || false);
+                //SWITCH
                 self.roundingRules = ko.observableArray([
                     new RoundingRule("1", '利用する'),
                     new RoundingRule('0', '利用しない')
@@ -233,12 +250,18 @@ var cmm001;
                 ]);
                 self.companyCode.subscribe(function (newValue) {
                     if (self.editMode) {
+                        if (nts.uk.text.isNullOrEmpty(newValue)) {
+                            return;
+                        }
                         a.service.getCompanyDetail(newValue).done(function (company) {
                             if (company) {
+                                if ($('.nts-editor').ntsError("hasError")) {
+                                    $('.save-error').ntsError('clear');
+                                }
                                 $("#A_INP_002").attr('disabled', 'true');
                                 $("#A_INP_002").attr('readonly', 'true');
                                 self.address1(company.address1);
-                                self.addressKana1(company.address1);
+                                self.addressKana1(company.addressKana1);
                                 self.address2(company.address2);
                                 self.addressKana2(company.addressKana2);
                                 self.companyName(company.companyName);
@@ -351,4 +374,3 @@ var cmm001;
         }());
     })(a = cmm001.a || (cmm001.a = {}));
 })(cmm001 || (cmm001 = {}));
-//# sourceMappingURL=cmm001.a.vm.js.map
