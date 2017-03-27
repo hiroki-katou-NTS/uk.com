@@ -2,7 +2,7 @@
  * Copyright (c) 2016 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.pr.core.ws.wagetable;
+package nts.uk.ctx.pr.core.ws.wagetable.certification;
 
 import java.util.List;
 

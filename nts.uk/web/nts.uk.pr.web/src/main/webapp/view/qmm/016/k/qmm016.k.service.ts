@@ -18,6 +18,10 @@ module nts.uk.pr.view.qmm016.k {
                 code: string;
                 /** The name. */
                 name: string;
+                /** The is code mode. */
+                isCodeMode: boolean;
+                /** The is range mode. */
+                isRangeMode: boolean;
             }
         }
     }
