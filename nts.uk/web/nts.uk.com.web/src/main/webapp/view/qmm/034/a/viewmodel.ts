@@ -25,16 +25,14 @@ module qmm034.a.viewmodel {
             let self = this;
             self.init();
             self.date = ko.observable("");
-            self.startDate = ko.observable(null);
+            self.startDate = ko.observable(new Date());
+
             self.startDate.subscribe(function(dateChange) {
                 if (self.countStartDateChange === 1) {
                     // datePicker onchange
-                    $("#A_INP_003").ntsError('clear');
-                    //                    service.checkStartDate(dateChange).done(function(result: boolean) {
-                    //                        if(!result){
-                    //                            $("#A_INP_003").ntsError('set', "Invalid date.");
-                    //                        }
-                    //                    });
+                    if ($('#A_INP_003').ntsError("hasError")) {
+                        $("#A_INP_003").ntsError('clear');
+                    }
                 } else {
                     self.countStartDateChange = 1;
                 }
@@ -61,22 +59,15 @@ module qmm034.a.viewmodel {
                 //                    }
                 //
                 //                }
+                qmm034.a.service.getFixAttribute(self.currentEra().eraHist()).done(function(data) {
+                    if (data === 0) {
+                        self.isEnableCode(false);
+                    }
+                });
 
             });
             //convert to Japan Emprise year
             self.dateTime = ko.observable(nts.uk.time.yearInJapanEmpire(self.currentEra().startDate()).toString());
-            //            self.date.subscribe(function(valueChange) {
-            //                if (nts.uk.text.isNullOrEmpty(valueChange)) {
-            //                    return;
-            //                }
-            //                qmm034.a.service.checkStartDate(valueChange).done(function(data: boolean) {
-            //                    if (data) {
-            //                        $("#A_INP_003").ntsError('clear');
-            //                        return;
-            //                    }
-            //           $("#A_INP_003").ntsError('set', "StartDate is not lastest.");
-            //                });
-            //            });
 
         }
 
@@ -88,15 +79,13 @@ module qmm034.a.viewmodel {
                 { headerText: '記号', key: 'eraMark', width: 50 },
                 { headerText: '開始年月日', key: 'startDate', width: 80 },
             ]);
-            self.currentEra = ko.observable((new EraModel('大明', 'S', new Date("1926/12/25"), 1, '95F5047A-5065-4306-A6B7-184AA676A1DE', new Date("1929/12/25"))));
+            self.currentEra = ko.observable((new EraModel('', '', new Date(), 1, '', new Date())));
             self.currentCode = ko.observable(null);
             self.date = ko.observable('');
             self.dateTime = ko.observable('');
             self.isDeleteEnable = ko.observable(false);
             self.isEnableCode = ko.observable(false);
             self.isUpdate = ko.observable(false);
-
-
         }
 
         insertData(): any {
@@ -114,15 +103,6 @@ module qmm034.a.viewmodel {
             node = new qmm034.a.service.model.EraDto(
                 eraName, eraMark, startDate, endDate, fixAttribute, eraHist
             );
-            if (node.eraName == "") {
-                $("#A_INP_001").ntsError("set", "the era name must require");
-                return false;
-            }
-            if (node.eraMark == "") {
-                $("#A_INP_002").ntsError("set", "the era mark must require");
-                return false;
-            }
-
 
             qmm034.a.service.addData(self.isUpdate(), node).done(function(result) {
                 self.reload().done(function() {
@@ -158,7 +138,9 @@ module qmm034.a.viewmodel {
         reload(): JQueryPromise<any> {
             var dfd = $.Deferred();
             var self = this;
+
             $.when(qmm034.a.service.getAllEras()).done(function(data) {
+                self.items([]);
                 if (data.length > 0) {
                     self.items(data);
                     self.date(self.currentEra().startDate().toString());
@@ -189,12 +171,13 @@ module qmm034.a.viewmodel {
             qmm034.a.service.deleteData(node).done(function(result) {
                 self.reload().done(function(data) {
                     if (self.items().length === 0) {
-                        self.isUpdate(false);
                         self.refreshLayout();
                     } else if (self.items().length === rowIndex) {
                         self.currentCode(self.items()[rowIndex - 1].eraName);
+                    } else if (self.items().length < rowIndex) {
+                        self.currentCode(self.items()[0].eraName);
                     } else {
-                        self.currentCode(self.items()[rowIndex - 1].eraName);
+                        self.currentCode(self.items()[rowIndex].eraName);
                     }
                 });
                 dfd.resolve();
@@ -250,19 +233,22 @@ module qmm034.a.viewmodel {
 
         refreshLayout(): void {
             let self = this;
-            $("#A_INP_003").ntsError('clear');
-            $("#A_INP_002").ntsError('clear');
-            $("#A_INP_001").ntsError('clear');
+            if ($('.nts-editor').ntsError("hasError")) {
+                $("#A_INP_003").ntsError('clear');
+                $("#A_INP_002").ntsError('clear');
+                $("#A_INP_001").ntsError('clear');
+            }
+
             //            if (self.dirty.isDirty()) {
             //                alert("Data is changed.");
             //            } else {
             //                alert("Data isn't changed.");
             //            }
-            self.currentCode('');
-            self.currentEra(new EraModel('', '', new Date(self.currentEra().startDate().toString()), 1, '95F5047A-5065-4306-A6B7-184AA676A1DE', new Date("")));
+            self.currentEra(new EraModel('', '', new Date(self.currentEra().startDate().toString()), 1, '', new Date("")));
             self.isDeleteEnable(false);
             self.isEnableCode(true);
             self.isUpdate(false);
+            self.currentCode(null);
 
         }
 

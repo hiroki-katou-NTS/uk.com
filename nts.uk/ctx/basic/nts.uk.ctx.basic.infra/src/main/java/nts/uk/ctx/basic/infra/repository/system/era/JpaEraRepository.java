@@ -16,6 +16,7 @@ import nts.uk.ctx.basic.infra.entity.system.era.CmnmtEraPk;
 @Stateless
 public class JpaEraRepository extends JpaRepository implements EraRepository {
 	private static final String SEL_1 = "SELECT e FROM CmnmtEra e";
+	private static final String SEL_LIST_ERA = "SELECT e FROM CmnmtEra e ORDER BY e.startDate ";
 	private static final String SEL_LATEST_ERA = SEL_1 + " WHERE e.end_D = :endDate";
 	private static final String SEL_STARTDATE_ERAMASTER = SEL_1 + " WHERE e.startDate > :startDate";
 	private static final String SEL_UPD1 = SEL_1 + " WHERE e.cmnmtEraPk.hist_Id = :eraHist";
@@ -44,7 +45,7 @@ public class JpaEraRepository extends JpaRepository implements EraRepository {
 	@Override
 	public List<Era> getEras() {
 		// TODO Auto-generated method stub
-		return this.queryProxy().query(SEL_1, CmnmtEra.class).getList(c -> toDomain(c));
+		return this.queryProxy().query(SEL_LIST_ERA, CmnmtEra.class).getList(c -> toDomain(c));
 	}
 
 	// @Override
