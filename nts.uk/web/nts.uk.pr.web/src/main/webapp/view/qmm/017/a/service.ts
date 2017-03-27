@@ -4,7 +4,8 @@ module nts.qmm017 {
             getAllFormula: "pr/formula/formulaMaster/getAllFormula",
             findFormula: "pr/formula/formulaMaster/findFormula",
             getFormulaDetail: "pr/formula/formulaMaster/getFormulaDetail",
-            registerFormulaMaster: "pr/formula/formulaMaster/addFormulaMaster"
+            registerFormulaMaster: "pr/formula/formulaMaster/addFormulaMaster",
+            updateFormula: "pr/formula/formulaMaster/updateFormulaMaster"
         }
 
         export function getAllFormula(): JQueryPromise<Array<model.FormulaDto>> {
@@ -52,6 +53,16 @@ module nts.qmm017 {
             });
             return dfd.promise();
         }
+        
+        export function updateFormulaMaster(command): JQueryPromise<any> {
+            var dfd = $.Deferred<any>();
+            nts.uk.request.ajax(paths.updateFormula, command).done(function(){
+                dfd.resolve();    
+            }).fail(function(res){
+                dfd.reject(res);
+            });
+            return dfd.promise();
+        }
     }
 
     export module model {
@@ -83,9 +94,7 @@ module nts.qmm017 {
 
         export class FormulaDetailDto {
             // formula easy
-            fixFormulaAtr: number;
-            easyFormula: Array<FormulaEasyNotUseCondition>;
-            formulaEasyDetail: Array<FormulaEasyUseCondition>;
+            easyFormula: Array<FormulaEasyDto>;
             // formula manual
             formulaContent: string;
             referenceMonthAtr: number;
@@ -93,13 +102,17 @@ module nts.qmm017 {
             roundDigit: number;
         }
 
-        export class FormulaEasyNotUseCondition {
+        export class FormulaEasyDto {
             easyFormulaCode: string;
             value: number;
-            refMasterNo: string;
+            referenceMasterNo: string;
+            fixFormulaAtr: number;
+            formulaDetail: FormulaEasyDetailDto;
+            constructor() {
+            }
         }
 
-        export class FormulaEasyUseCondition {
+        export class FormulaEasyDetailDto {
             easyFormulaCode: string;
             easyFormulaName: string;
             easyFormulaTypeAtr: number;
@@ -116,6 +129,8 @@ module nts.qmm017 {
             maxLimitValue: number;
             minLimitValue: number;
             referenceItemCodes: Array<string>;
+            constructor() {    
+            }
         }
     }
 }

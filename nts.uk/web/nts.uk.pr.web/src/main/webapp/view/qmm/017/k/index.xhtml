@@ -19,46 +19,53 @@
 		</ui:define>
 
 		<ui:define name="content">
-			<div id="functions-area"></div>
-			<div id="contents-area">
-				<div id="k_lbl_001" class="label warning separate-vertical">履歴情報を確認し、削除または修正を行ってください。</div>
+			<div id="contents-area" style="padding: 20px 20px 0 20px">
+				<span id="k_lbl_001" style="font-size: large;">履歴情報を確認し、削除または修正を行ってください。</span>
 				<br />
-				<div id="k_lbl_002" class="separate-vertical"
-					data-bind="ntsFormLabel: {}">コード/名称</div>
-				<span id="k_lbl_003">0001</span> <span id="j_lbl_004">日本0001</span>
+				<div id="k_lbl_002" class="separate-vertical"  style="margin-top:10px;" data-bind="ntsFormLabel: {}">コード/名称</div>
+				<span id="k_lbl_003" data-bind="text: data.formulaCode"></span> 
+				<span id="j_lbl_004" data-bind="text: data.formulaName"></span>
 				<br />
-				<div>
 					<div class="separate-vertical" data-bind="ntsFormLabel: {required: true }">
 						<label id="k_lbl_005" >コード/名称</label>
 					</div>
 					<div id="k_sel_001">
-						<span class="ntsControl"> <label class="ntsRadioBox">
-								<input type="radio" name="textRadio" data-bind="checkedValue: 2" />
-								<span class="box"></span><span class="label"
-								data-bind="text: 'radio1'"></span>
-						</label></span>
-						<br />						
-						<div id="k_lbl_006" class="label warning separate-vertical">
-							<label>最後の履歴データを削除します。</label><br />
-							<label>全ての履歴を削除すると、計算式のデータも削除します</label>
-						</div>
 						<span class="ntsControl"> 
 							<label class="ntsRadioBox">
-								<input type="radio" name="textRadio" data-bind="checkedValue: 4" />
-								<span class="box"></span><span class="label" data-bind="text: 'radio2'"></span>
+								<input type="radio" name="textRadio" data-bind="checkedValue: 0, checked: selectedMode" />
+								<span class="box"></span><span class="label" data-bind="text: '履歴を削除する'"></span>
 							</label>
 						</span>
 						<br />
-						<div id="k_lbl_005" class="separate-vertical" data-bind="ntsFormLabel: {required: true }">期間</div>
-							 <input size="5" id="l_inp_001" data-bind="value: '2016/12'" />
-							 <span id="j_lbl_007">(xxxxxxx) ~</span>
-							 <br />
-						</div>
-				</div>
+						<com:ko-if bind="selectedMode() == 0">						
+							<div id="k_lbl_006" class="label warning separate-vertical">
+								<label>最後の履歴データを削除します。</label><br />
+								<label>全ての履歴を削除すると、計算式のデータも削除します</label>
+							</div>
+						</com:ko-if>
+						<span class="ntsControl"> 
+							<label class="ntsRadioBox">
+								<input type="radio" name="textRadio" data-bind="checkedValue: 1, checked: selectedMode" />
+								<span class="box"></span><span class="label" data-bind="text: '履歴を修正する'"></span>
+							</label>
+						</span>
+						<br />
+						<com:ko-if bind="selectedMode() == 1">
+							<div id="k_lbl_005" class="separate-vertical" style="margin-left: 28px" data-bind="ntsFormLabel: {}">期間</div>
+							<div id="date-picker2" data-bind="ntsDatePicker: {value: startYm, dateFormat: 'yyyy/MM', startDate: startYm, endDate: endYm}"></div>
+							<span> ~ </span>
+							<span id="j_lbl_007" data-bind="text: endYm"></span>
+							<br />
+						</com:ko-if>
+					</div>
+						
 
 				<br />
-				<button id="k_btn_001" class="x-large proceed">決定</button>
-				<button id="k_btn_002" >キャンセル</button>
+				<div id="footer">
+					<hr/>
+					<button id="j_btn_001" class="x-large proceed" data-bind="click: actionHandler">決定</button>
+					<button id="j_btn_002" >キャンセル</button>
+				</div>
 			</div>
 		</ui:define>
 	</ui:composition>

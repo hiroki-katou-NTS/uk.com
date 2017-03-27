@@ -17,73 +17,144 @@
 						<span id="c_lbl_016" class="separate-span separate-vertical" data-bind="text: useMasterName"></span>
 						<hr/>
 						<div class="control-group">
-							<div class="list001">
-								<div class="col col-1 bg-green">既定の計算式</div>
-								<div class="col col-2">
-									<div data-bind="ntsSwitchButton: {
-											options: roundingRulesEasySettings,
-											optionsValue: 'code',
-											optionsText: 'name',
-											value: selectedRuleCodeEasySettings}"></div>
+							<com:ko-if bind="useMasterCode() != '6'">
+								<div class="list001" data-bind="with: defaultEasyFormula">
+									<div class="col col-1 bg-green">既定の計算式</div>
+									<div class="col col-2">
+										<div data-bind="ntsSwitchButton: {
+												options: roundingRulesEasySettings,
+												optionsValue: 'code',
+												optionsText: 'name',
+												value: selectedRuleCodeEasySettings}"></div>
+									</div>
+									<div class="col col-3">
+										<com:ko-if bind="selectedRuleCodeEasySettings() == 0">
+											<input style="width: 80px" data-bind="ntsNumberEditor: { value: easyFormulaFixMoney,
+																														 	required: true,
+																														 	enable: true,
+																														 	readonly: false}" />
+										</com:ko-if>
+										<com:ko-if bind="selectedRuleCodeEasySettings() == 1">
+											<button id="c_btn_019" data-bind="click: openDialogL">設定</button>
+											<span data-bind="text: easyFormulaName"></span>
+										</com:ko-if>
+									</div>
+									
 								</div>
-								<div class="col col-3">
-									<com:ko-if bind="selectedRuleCodeEasySettings() == 0">
-										<input style="width: 80px" data-bind="ntsNumberEditor: { value: easyFormulaFixMoney,
-																													 	required: true,
-																													 	enable: true,
-																													 	readonly: false}" />
-									</com:ko-if>
-									<com:ko-if bind="selectedRuleCodeEasySettings() == 1">
-										<button id="c_btn_019" data-bind="click: openDialogL">設定</button>
-										<span data-bind="text: easyFormulaName"></span>
-									</com:ko-if>
-								</div>
-								
-							</div>
-							<!-- 
-							<div class="list002">
-								<div class="header">
-									<div class="row cf">
-										<div class="col col-2"></div>
-										<div class="col col-3"></div>
+							</com:ko-if>
+							<com:ko-if bind="useMasterCode() == '6'">
+								<div class="list002">
+									<div class="header">
+										<div class="row cf">
+											<div class="col col-2"></div>
+											<div class="col col-3">
+												<button id="btn_020" style="margin-top: 4px;" data-bind="click: setAllFixValued">全て固定値</button>
+												<button id="btn_021" data-bind="click: setAllDetail">全て計算式</button>
+											</div>
+										</div>
+									</div>
+									<div class="body">
+										<div class="row cf" data-bind="with: monthlyEasyFormula">
+											<div class="col col-2"> 月給</div>
+											<div class="col col-3">
+												<div data-bind="ntsSwitchButton: {
+												options: roundingRulesEasySettings,
+												optionsValue: 'code',
+												optionsText: 'name',
+												value: selectedRuleCodeEasySettings}"></div>
+											</div>
+											<div class="col col-4">
+												<com:ko-if bind="selectedRuleCodeEasySettings() == 0">
+													<input style="width: 80px" data-bind="ntsNumberEditor: { value: easyFormulaFixMoney,
+																																 	required: true,
+																																 	enable: true,
+																																 	readonly: false}" />
+												</com:ko-if>
+												<com:ko-if bind="selectedRuleCodeEasySettings() == 1">
+													<button id="c_btn_019" data-bind="click: openDialogL">設定</button>
+													<span data-bind="text: easyFormulaName"></span>
+												</com:ko-if>
+											</div>
+										</div>
+										<div class="row cf" data-bind="with: dailyMonthlyEasyFormula">
+											<div class="col col-2">日給月給</div>
+											<div class="col col-3">
+												<div data-bind="ntsSwitchButton: {
+												options: roundingRulesEasySettings,
+												optionsValue: 'code',
+												optionsText: 'name',
+												value: selectedRuleCodeEasySettings}"></div>
+											</div>
+											<div class="col col-4">
+												<com:ko-if bind="selectedRuleCodeEasySettings() == 0">
+													<input style="width: 80px" data-bind="ntsNumberEditor: { value: easyFormulaFixMoney,
+																																 	required: true,
+																																 	enable: true,
+																																 	readonly: false}" />
+												</com:ko-if>
+												<com:ko-if bind="selectedRuleCodeEasySettings() == 1">
+													<button id="c_btn_019" data-bind="click: openDialogL">設定</button>
+													<span data-bind="text: easyFormulaName"></span>
+												</com:ko-if>
+											</div>
+										</div>
+										<div class="row cf" data-bind="with: dailyEasyFormula">
+											<div class="col col-2">日給</div>
+											<div class="col col-3">
+												<div data-bind="ntsSwitchButton: {
+												options: roundingRulesEasySettings,
+												optionsValue: 'code',
+												optionsText: 'name',
+												value: selectedRuleCodeEasySettings}"></div>
+											</div>
+											<div class="col col-4">
+												<com:ko-if bind="selectedRuleCodeEasySettings() == 0">
+													<input style="width: 80px" data-bind="ntsNumberEditor: { value: easyFormulaFixMoney,
+																																 	required: true,
+																																 	enable: true,
+																																 	readonly: false}" />
+												</com:ko-if>
+												<com:ko-if bind="selectedRuleCodeEasySettings() == 1">
+													<button id="c_btn_019" data-bind="click: openDialogL">設定</button>
+													<span data-bind="text: easyFormulaName"></span>
+												</com:ko-if>
+											</div>
+										</div>
+										<div class="row cf" data-bind="with: hourlyEasyFormula">
+											<div class="col col-2">時給</div>
+											<div class="col col-3">
+												<div data-bind="ntsSwitchButton: {
+												options: roundingRulesEasySettings,
+												optionsValue: 'code',
+												optionsText: 'name',
+												value: selectedRuleCodeEasySettings}"></div>
+											</div>
+											<div class="col col-4">
+												<com:ko-if bind="selectedRuleCodeEasySettings() == 0">
+													<input style="width: 80px" data-bind="ntsNumberEditor: { value: easyFormulaFixMoney,
+																																 	required: true,
+																																 	enable: true,
+																																 	readonly: false}" />
+												</com:ko-if>
+												<com:ko-if bind="selectedRuleCodeEasySettings() == 1">
+													<button id="c_btn_019" data-bind="click: openDialogL">設定</button>
+													<span data-bind="text: easyFormulaName"></span>
+												</com:ko-if>
+											</div>
+										</div>
 									</div>
 								</div>
-								<div class="body">
-									<div class="row cf">
-										<div class="col col-2"></div>
-										<div class="col col-3"></div>
-										<div class="col col-4"></div>
-									</div>
-									<div class="row cf">
-										<div class="col col-2"></div>
-										<div class="col col-3"></div>
-										<div class="col col-4"></div>
-									</div>
-									<div class="row cf">
-										<div class="col col-2"></div>
-										<div class="col col-3"></div>
-										<div class="col col-4"></div>
-									</div>
-									<div class="row cf">
-										<div class="col col-2"></div>
-										<div class="col col-3"></div>
-										<div class="col col-4"></div>
-									</div>
-									<div class="row cf">
-										<div class="col col-2"></div>
-										<div class="col col-3"></div>
-										<div class="col col-4"></div>
-									</div>
-								</div>
-							</div>   -->
+							</com:ko-if> 
 						</div>
 					</com:ko-if>
 					<com:ko-if bind="selectedConditionAtr() == 0">
 						<div id="c_lbl_001" class="separate-vertical" data-bind="ntsFormLabel: {}">コード/名称</div>
 						<span id="c_lbl_002" class="separate-span separate-vertical" data-bind="text: formulaCode"></span>
 						<span id="c_lbl_003" class="separate-span separate-vertical" data-bind="text: formulaName"></span>
-						<button id="c_btn_openDialogL" style="margin-left: 20px" data-bind="click: openDialogL">設定</button>
-						<span id="c_lbl_011" data-bind="text: easyFormulaName"></span>
+						<div data-bind="with: noneConditionalEasyFormula" style="display: inline-block">
+							<button id="c_btn_openDialogL" style="margin-left: 20px" data-bind="click: openDialogL">設定</button>
+							<span id="c_lbl_011" data-bind="text: easyFormulaName"></span>
+						</div>
 					</com:ko-if>
 				</com:ko-if>
 				<com:ko-if bind="selectedDifficultyAtr() == 1">

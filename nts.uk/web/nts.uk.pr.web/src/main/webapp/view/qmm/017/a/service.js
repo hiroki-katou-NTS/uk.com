@@ -8,7 +8,8 @@ var nts;
                 getAllFormula: "pr/formula/formulaMaster/getAllFormula",
                 findFormula: "pr/formula/formulaMaster/findFormula",
                 getFormulaDetail: "pr/formula/formulaMaster/getFormulaDetail",
-                registerFormulaMaster: "pr/formula/formulaMaster/addFormulaMaster"
+                registerFormulaMaster: "pr/formula/formulaMaster/addFormulaMaster",
+                updateFormula: "pr/formula/formulaMaster/updateFormulaMaster"
             };
             function getAllFormula() {
                 var dfd = $.Deferred();
@@ -56,6 +57,16 @@ var nts;
                 return dfd.promise();
             }
             service.registerFormulaMaster = registerFormulaMaster;
+            function updateFormulaMaster(command) {
+                var dfd = $.Deferred();
+                nts.uk.request.ajax(paths.updateFormula, command).done(function () {
+                    dfd.resolve();
+                }).fail(function (res) {
+                    dfd.reject(res);
+                });
+                return dfd.promise();
+            }
+            service.updateFormulaMaster = updateFormulaMaster;
         })(service = qmm017.service || (qmm017.service = {}));
         var model;
         (function (model) {
@@ -77,18 +88,18 @@ var nts;
                 return FormulaDetailDto;
             }());
             model.FormulaDetailDto = FormulaDetailDto;
-            var FormulaEasyNotUseCondition = (function () {
-                function FormulaEasyNotUseCondition() {
+            var FormulaEasyDto = (function () {
+                function FormulaEasyDto() {
                 }
-                return FormulaEasyNotUseCondition;
+                return FormulaEasyDto;
             }());
-            model.FormulaEasyNotUseCondition = FormulaEasyNotUseCondition;
-            var FormulaEasyUseCondition = (function () {
-                function FormulaEasyUseCondition() {
+            model.FormulaEasyDto = FormulaEasyDto;
+            var FormulaEasyDetailDto = (function () {
+                function FormulaEasyDetailDto() {
                 }
-                return FormulaEasyUseCondition;
+                return FormulaEasyDetailDto;
             }());
-            model.FormulaEasyUseCondition = FormulaEasyUseCondition;
+            model.FormulaEasyDetailDto = FormulaEasyDetailDto;
         })(model = qmm017.model || (qmm017.model = {}));
     })(qmm017 = nts.qmm017 || (nts.qmm017 = {}));
 })(nts || (nts = {}));

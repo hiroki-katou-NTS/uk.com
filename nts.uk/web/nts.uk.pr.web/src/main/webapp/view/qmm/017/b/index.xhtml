@@ -20,10 +20,10 @@
 			<br />
 			<div id="b_lbl_002" class="separate-vertical" data-bind="ntsFormLabel: {required: true }">コード/名称</div>
 			<input id="b_inp_001" data-bind="ntsTextEditor: { value: formulaCode, constraint: 'FormulaCode', enable: $root.content.isNewMode, required: true}" />
-			<input id="b_inp_002" data-bind="ntsTextEditor: { value: formulaName, constraint: 'FormulaName', enable: $root.content.isNewMode, required: true}" />
+			<input id="b_inp_002" data-bind="ntsTextEditor: { value: formulaName, constraint: 'FormulaName', enable: true, required: true}" />
 			<br/>
 			<div id="b_lbl_003" class="separate-vertical" data-bind="ntsFormLabel: {required: true }">開始年月</div>
-			<div id="b_inp_003" data-bind="ntsDatePicker: {value: startYearMonth, dateFormat: 'yyyy/MM', disabled: !$root.content.isNewMode()}"></div>
+			<div id="b_inp_003" data-bind="ntsDatePicker: {value: startYearMonth, dateFormat: 'yyyy/MM', disable: !$root.content.isNewMode() }"></div>
 			<span data-bind="text: startYearMonthFormated"></span>
 			<br/>
 			<div id="b_lbl_004" class="separate-vertical" data-bind="ntsFormLabel: {required: true }">計算式の設定方法</div>

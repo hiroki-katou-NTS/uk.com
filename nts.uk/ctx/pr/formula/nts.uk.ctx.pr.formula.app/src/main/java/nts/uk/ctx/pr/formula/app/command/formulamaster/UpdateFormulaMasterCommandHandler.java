@@ -55,57 +55,63 @@ public class UpdateFormulaMasterCommandHandler extends CommandHandler<UpdateForm
 		UpdateFormulaMasterCommand command = context.getCommand();
 		String companyCode = AppContexts.user().companyCode();
 
-		// [かんたん計算_条件.INS-1]を実施する
-		List<FormulaEasyCondition> listFormulaEasyCondition = command.getEasyFormulaDto().stream().map(f -> {
-			FormulaEasyCondition formulaEasyCondition = new FormulaEasyCondition(companyCode,
-					new FormulaCode(command.getFormulaCode()), command.getHistoryId(),
-					new EasyFormulaCode(f.getEasyFormulaCode()),
-					EnumAdaptor.valueOf(f.getFixFormulaAtr(), FixFormulaAtr.class), new Money(f.getValue()),
-					null);
-			return formulaEasyCondition;
-		}).collect(Collectors.toList());
-
-		List<FormulaEasyDetail> listFormulaEasyDetail = command.getEasyFormulaDto().stream().map(easyFormulaDto -> {
-			FormulaEasyDetail formulaEasyDetail = new FormulaEasyDetail(companyCode,
-					new FormulaCode(easyFormulaDto.getEasyFormulaCode()), command.getHistoryId(),
-					new EasyFormulaCode(easyFormulaDto.getEasyFormulaCode()),
-					new EasyFormulaName(easyFormulaDto.getFormulaDetail().getEasyFormulaName()),
-					EnumAdaptor.valueOf(easyFormulaDto.getFormulaDetail().getEasyFormulaTypeAtr().intValue(), EasyFormulaTypeAtr.class),
-					new Money(easyFormulaDto.getFormulaDetail().getBaseFixedAmount()),
-					EnumAdaptor.valueOf(easyFormulaDto.getFormulaDetail().getBaseAmountDevision().intValue(), BaseMoneyAtr.class),
-					new DivideValue(easyFormulaDto.getFormulaDetail().getBaseFixedValue()),
-					EnumAdaptor.valueOf(easyFormulaDto.getFormulaDetail().getBaseValueDevision().intValue(), DivideValueSet.class),
-					new PremiumRate(easyFormulaDto.getFormulaDetail().getPremiumRate()),
-					EnumAdaptor.valueOf(easyFormulaDto.getFormulaDetail().getRoundProcessingDevision().intValue(), RoundAtr.class),
-					new WorkItemCode(easyFormulaDto.getFormulaDetail().getCoefficientDivision()),
-					new WorkValue(easyFormulaDto.getFormulaDetail().getCoefficientFixedValue()),
-					EnumAdaptor.valueOf(easyFormulaDto.getFormulaDetail().getAdjustmentDevision().intValue(), AdjustmentAtr.class),
-					EnumAdaptor.valueOf(easyFormulaDto.getFormulaDetail().getTotalRounding().intValue(), RoundAtr.class),
-					new MaxValue(easyFormulaDto.getFormulaDetail().getMaxLimitValue()),
-					new MinValue(easyFormulaDto.getFormulaDetail().getMinLimitValue()));
-
-			return formulaEasyDetail;
-		}).collect(Collectors.toList());		
+		List<FormulaEasyCondition> listFormulaEasyCondition = new ArrayList<>();
+		List<FormulaEasyDetail> listFormulaEasyDetail = new ArrayList<>();
 		List<FormulaEasyStandardItem> listFormulaEasyStandardItem = new ArrayList<>();
-		command.getEasyFormulaDto().forEach(setFormulaEasyStandard -> {
-			setFormulaEasyStandard.getFormulaDetail().getReferenceItemCodes().forEach(item->{
-				listFormulaEasyStandardItem.add(new FormulaEasyStandardItem(
-						companyCode,
-						new FormulaCode(command.getFormulaCode()),
-						command.getHistoryId(),
-						new EasyFormulaCode(setFormulaEasyStandard.getEasyFormulaCode()),
-						new ReferenceItemCode(item)));	
-			});
-		});
-		
-		FormulaManual formulaManual = new FormulaManual(companyCode, new FormulaCode(
-				command.getFormulaCode()), 
-				command.getHistoryId(),
-				new FormulaContent(command.getFormulaContent()),
-				EnumAdaptor.valueOf(command.getReferenceMonthAtr(), ReferenceMonthAtr.class),
-				EnumAdaptor.valueOf(command.getRoundAtr(), RoundMethod.class),
-				EnumAdaptor.valueOf(command.getRoundDigit(), RoundDigit.class));
+		FormulaManual formulaManual = null;
+		if (command.getDifficultyAtr() == 0) {
+			// [かんたん計算_条件.INS-1]を実施する
+			listFormulaEasyCondition = command.getEasyFormulaDto().stream().map(f -> {
+				FormulaEasyCondition formulaEasyCondition = new FormulaEasyCondition(companyCode,
+						new FormulaCode(command.getFormulaCode()), command.getHistoryId(),
+						new EasyFormulaCode(f.getEasyFormulaCode()),
+						EnumAdaptor.valueOf(f.getFixFormulaAtr(), FixFormulaAtr.class), new Money(f.getValue()), null);
+				return formulaEasyCondition;
+			}).collect(Collectors.toList());
 
+			listFormulaEasyDetail = command.getEasyFormulaDto().stream().map(easyFormulaDto -> {
+				FormulaEasyDetail formulaEasyDetail = new FormulaEasyDetail(companyCode,
+						new FormulaCode(easyFormulaDto.getEasyFormulaCode()), command.getHistoryId(),
+						new EasyFormulaCode(easyFormulaDto.getEasyFormulaCode()),
+						new EasyFormulaName(easyFormulaDto.getFormulaDetail().getEasyFormulaName()),
+						EnumAdaptor.valueOf(easyFormulaDto.getFormulaDetail().getEasyFormulaTypeAtr().intValue(),
+								EasyFormulaTypeAtr.class),
+						new Money(easyFormulaDto.getFormulaDetail().getBaseFixedAmount()),
+						EnumAdaptor.valueOf(easyFormulaDto.getFormulaDetail().getBaseAmountDevision().intValue(),
+								BaseMoneyAtr.class),
+						new DivideValue(easyFormulaDto.getFormulaDetail().getBaseFixedValue()),
+						EnumAdaptor.valueOf(easyFormulaDto.getFormulaDetail().getBaseValueDevision().intValue(),
+								DivideValueSet.class),
+						new PremiumRate(easyFormulaDto.getFormulaDetail().getPremiumRate()),
+						EnumAdaptor.valueOf(easyFormulaDto.getFormulaDetail().getRoundProcessingDevision().intValue(),
+								RoundAtr.class),
+						new WorkItemCode(easyFormulaDto.getFormulaDetail().getCoefficientDivision()),
+						new WorkValue(easyFormulaDto.getFormulaDetail().getCoefficientFixedValue()),
+						EnumAdaptor.valueOf(easyFormulaDto.getFormulaDetail().getAdjustmentDevision().intValue(),
+								AdjustmentAtr.class),
+						EnumAdaptor.valueOf(easyFormulaDto.getFormulaDetail().getTotalRounding().intValue(),
+								RoundAtr.class),
+						new MaxValue(easyFormulaDto.getFormulaDetail().getMaxLimitValue()),
+						new MinValue(easyFormulaDto.getFormulaDetail().getMinLimitValue()));
+
+				return formulaEasyDetail;
+			}).collect(Collectors.toList());
+
+			command.getEasyFormulaDto().forEach(setFormulaEasyStandard -> {
+				setFormulaEasyStandard.getFormulaDetail().getReferenceItemCodes().forEach(item -> {
+					listFormulaEasyStandardItem.add(new FormulaEasyStandardItem(companyCode,
+							new FormulaCode(command.getFormulaCode()), command.getHistoryId(),
+							new EasyFormulaCode(setFormulaEasyStandard.getEasyFormulaCode()),
+							new ReferenceItemCode(item)));
+				});
+			});
+		} else {
+			formulaManual = new FormulaManual(companyCode, new FormulaCode(command.getFormulaCode()),
+					command.getHistoryId(), new FormulaContent(command.getFormulaContent()),
+					EnumAdaptor.valueOf(command.getReferenceMonthAtr(), ReferenceMonthAtr.class),
+					EnumAdaptor.valueOf(command.getRoundAtr(), RoundMethod.class),
+					EnumAdaptor.valueOf(command.getRoundDigit(), RoundDigit.class));
+		}
 		formulaMasterDomainService.update(command.getDifficultyAtr(), companyCode,
 				new FormulaCode(command.getFormulaCode()), command.getHistoryId(), listFormulaEasyCondition,
 				listFormulaEasyDetail, listFormulaEasyStandardItem, formulaManual);

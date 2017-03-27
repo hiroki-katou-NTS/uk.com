@@ -5,7 +5,7 @@ module nts.uk.pr.view.qmm017.l {
             comboBoxFormulaType: KnockoutObservable<ComboBox>;
             comboBoxBaseAmount: KnockoutObservable<ComboBox>;
             baseAmountFixedValue: KnockoutObservable<number>;
-            baseAmountListItem: KnockoutObservableArray<ItemModel>;
+            baseAmountListItem: KnockoutObservableArray<any>;
             baseAmountFixedValueOption: KnockoutObservable<any>;
             baseAmountSelectionItems: KnockoutObservable<string>;
             optionBaseAmountSelectionItems: KnockoutObservable<any>;
@@ -25,19 +25,19 @@ module nts.uk.pr.view.qmm017.l {
                 let paramDirtyData = param.dirtyData;
                 self.initOriginal();
                 if (paramIsUpdate === true) {
-                    self.easyFormulaName(paramDirtyData.easyFormulaName());
-                    self.comboBoxFormulaType().selectedCode(paramDirtyData.easyFormulaType());
-                    self.comboBoxBaseAmount().selectedCode(paramDirtyData.baseAmountAttr());
-                    self.baseAmountFixedValue(paramDirtyData.baseAmountFixedValue());
+                    self.easyFormulaName(paramDirtyData.easyFormulaName);
+                    self.comboBoxFormulaType().selectedCode(paramDirtyData.easyFormulaType);
+                    self.comboBoxBaseAmount().selectedCode(paramDirtyData.baseAmountAttr);
+                    self.baseAmountFixedValue(paramDirtyData.baseAmountFixedValue);
                     self.baseAmountListItem(paramDirtyData.baseAmountListItem);
-                    self.comboBoxBaseValue().selectedCode(paramDirtyData.baseValueAttr());
-                    self.baseValueFixedValue(paramDirtyData.baseValueFixedValue());
-                    self.premiumRate(paramDirtyData.premiumRate());
-                    self.switchButtonRoundingFiguresD().selectedRuleCode(paramDirtyData.roundingFiguresD());
-                    self.switchButtonRoundingFiguresF().selectedRuleCode(paramDirtyData.roundingFiguresF());
-                    self.comboBoxCoefficient().selectedCode(paramDirtyData.coefficientAttr());
-                    self.coefficientFixedValue(paramDirtyData.coefficientFixedValue());
-                    self.comboBoxAdjustmentAtr().selectedCode(paramDirtyData.adjustmentAttr());
+                    self.comboBoxBaseValue().selectedCode(paramDirtyData.baseValueAttr);
+                    self.baseValueFixedValue(paramDirtyData.baseValueFixedValue);
+                    self.premiumRate(paramDirtyData.premiumRate);
+                    self.switchButtonRoundingFiguresD().selectedRuleCode(paramDirtyData.roundingFiguresD);
+                    self.switchButtonRoundingFiguresF().selectedRuleCode(paramDirtyData.roundingFiguresF);
+                    self.comboBoxCoefficient().selectedCode(paramDirtyData.coefficientAttr);
+                    self.coefficientFixedValue(paramDirtyData.coefficientFixedValue);
+                    self.comboBoxAdjustmentAtr().selectedCode(paramDirtyData.adjustmentAttr);
                 }
 
             }

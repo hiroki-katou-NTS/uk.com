@@ -48,7 +48,7 @@ module nts.qmm017 {
                     {code: '5', name: '職位マスタ'},
                     {code: '6', name: '給与区分'},
                 ]),
-                selectedCode: ko.observable('')
+                selectedCode: ko.observable(1)
             });
         }
     }

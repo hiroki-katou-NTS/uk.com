@@ -93,15 +93,15 @@ textarea {
 .list001 .nts-switch-button{margin-bottom:0px;}
 
 .list002{float:left;}
-.list002 .col{float:left;border:1px solid #ccc;border-right:none;min-height:40px;box-sizing:border-box;margin-top:-1px;}
+.list002 .col{float:left;border:1px solid #ccc;border-right:none;min-height:40px;margin-top:-1px;}
 .list002 .col:last-child{border-right:1px solid #ccc;}
 .list002 .col-1{width:30px;}
 .list002 .col-2{width:253px; background: #E0F59E;}
 .list002 .header{}
 .list002 .header .col{background:#CFF1A5;}
-.list002 .header .col-3{width: 433px;}
+.list002 .header .col-3{width: 469px;}
 .list002 .body{height:300px;overflow-y:scroll;border:1px solid #ccc;}
-.list002 .body .row{margin-top:-1px;margin-left:-1px;}
-.list002 .body .col-3{width:205px;}
-.list002 .body .col-4{width:210px;}
+.list002 .body .row{margin-top:-1px;margin-left:-1px;display: flex;}
+.list002 .body .col-3{width:235px;padding-top: 4px;}
+.list002 .body .col-4{width:210px;padding: 6px 0 0 5px;}
 .ui-igcombo-wrapper {width: 136px;}

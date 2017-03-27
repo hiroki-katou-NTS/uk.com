@@ -46,7 +46,7 @@ public class FormulaMasterDomainServiceImpl implements FormulaMasterDomainServic
 	public void add(FormulaMaster formulaMaster, FormulaHistory formulaHistory, FormulaEasyHeader formulaEasyHeader) {
 		this.formulaMasterRepository.add(formulaMaster);
 		this.formulaHistoryRepository.add(formulaHistory);
-		if (formulaEasyHeader.getConditionAtr().value == 0) {
+		if (formulaMaster.getDifficultyAtr().value == 0) {
 			this.formulaEasyHeaderRepository.add(formulaEasyHeader);
 		}
 	}

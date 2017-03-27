@@ -17,11 +17,14 @@
 	margin-top: 10px;
 }
 
-#k_btn_001 {
-	margin-left: 50px;
-}
-
 #k_lbl_006 {
 	margin-top: 10px;
 	margin-left: 28px;
+}
+
+#footer {
+	position: fixed;
+    bottom: 11px;
+    width: 498px;
+    text-align: center;
 }

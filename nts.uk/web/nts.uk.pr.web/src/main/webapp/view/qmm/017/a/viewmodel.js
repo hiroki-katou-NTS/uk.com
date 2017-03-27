@@ -33,7 +33,6 @@ var nts;
                     self.viewModel017b().startYearMonth(rangeYearMonth[0].trim());
                     self.viewModel017b().formulaCode(self.currentParentNode().code);
                     self.viewModel017b().formulaName(self.currentParentNode().name);
-                    //get formula detail
                     qmm017.service.findFormula(self.currentParentNode().code, self.currentNode().code)
                         .done(function (currentFormula) {
                         self.viewModel017b().selectedDifficultyAtr(currentFormula.difficultyAtr);
@@ -52,7 +51,7 @@ var nts;
                             alert(res);
                         });
                         self.viewModel017b().selectedConditionAtr(currentFormula.conditionAtr);
-                        self.viewModel017b().comboBoxUseMaster().selectedCode(currentFormula.refMasterNo);
+                        self.viewModel017b().comboBoxUseMaster().selectedCode(currentFormula.refMasterNo.toString());
                     })
                         .fail(function (res) {
                         alert(res);
@@ -73,10 +72,8 @@ var nts;
                 var itemsTreeGridHistory = [];
                 var itemsTreeGridFormula = [];
                 var nodesTreeGrid = [];
-                // bind a_lst_001
-                // convert FormulaDto to Node objects to fill in the tree grid
                 qmm017.service.getAllFormula().done(function (lstFormulaDto) {
-                    if (lstFormulaDto.length > 0) {
+                    if (lstFormulaDto) {
                         var groupsFormulaByCode_1 = _.groupBy(lstFormulaDto, 'formulaCode');
                         var lstFormulaCode = Object.keys(groupsFormulaByCode_1);
                         _.forEach(lstFormulaCode, function (formulaCode) {
@@ -87,44 +84,87 @@ var nts;
                                     + ' ~ '
                                     + nts.uk.time.formatYearMonth(lstHistoryEachCode[orderHistory].endDate), []));
                             }
-                            var nodeFormula = new Node(lstHistoryEachCode[0].formulaCode, lstHistoryEachCode[0].formulaName, nodeHistory.reverse());
+                            var nodeFormula = new Node(lstHistoryEachCode[0].formulaCode, lstHistoryEachCode[0].formulaName, self.sortFormulaHistory(nodeHistory));
                             nodesTreeGrid.push(nodeFormula);
                         });
+                        self.treeGridHistory().items(nodesTreeGrid);
+                        self.isNewMode(true);
+                        self.viewModel017b().startYearMonth('');
+                        self.viewModel017b().formulaCode('');
+                        self.viewModel017b().formulaName('');
+                        self.viewModel017b().selectedDifficultyAtr(0);
+                        self.viewModel017b().selectedConditionAtr(0);
+                        self.viewModel017b().comboBoxUseMaster().selectedCode(1);
+                    }
+                    else {
                         self.treeGridHistory().items(nodesTreeGrid);
                     }
                     dfd.resolve();
                 }).fail(function (res) {
-                    // Alert message
                     alert(res);
                 });
-                // Return.
                 return dfd.promise();
+            };
+            ScreenModel.prototype.sortFormulaHistory = function (lstFormulaHistory) {
+                return lstFormulaHistory.sort(function (formulaHistoryA, formulaHistoryB) {
+                    return formulaHistoryB.name.split(' ~ ')[0].replace('/', '') - formulaHistoryA.name.split(' ~ ')[0].replace('/', '');
+                });
             };
             ScreenModel.prototype.registerFormulaMaster = function () {
                 var self = this;
-                var referenceMasterNo = null;
-                if (self.viewModel017b().selectedDifficultyAtr() === 0 && self.viewModel017b().selectedConditionAtr() === 0) {
-                    referenceMasterNo = 0;
+                if (self.isNewMode()) {
+                    var referenceMasterNo = null;
+                    if (self.viewModel017b().selectedDifficultyAtr() === 0 && self.viewModel017b().selectedConditionAtr() === 0) {
+                        referenceMasterNo = 0;
+                    }
+                    else if (self.viewModel017b().selectedDifficultyAtr() === 0 && self.viewModel017b().selectedConditionAtr() === '1') {
+                        referenceMasterNo = self.viewModel017b().comboBoxUseMaster().selectedCode();
+                    }
+                    var command = {
+                        formulaCode: self.viewModel017b().formulaCode(),
+                        formulaName: self.viewModel017b().formulaName(),
+                        difficultyAtr: self.viewModel017b().selectedDifficultyAtr(),
+                        startDate: self.viewModel017b().startYearMonth(),
+                        endDate: 999912,
+                        conditionAtr: self.viewModel017b().selectedConditionAtr(),
+                        refMasterNo: referenceMasterNo
+                    };
+                    qmm017.service.registerFormulaMaster(command)
+                        .done(function () {
+                        self.start();
+                    })
+                        .fail(function (res) {
+                        alert(res);
+                    });
                 }
-                else if (self.viewModel017b().selectedDifficultyAtr() === 0 && self.viewModel017b().selectedConditionAtr() === 1) {
-                    referenceMasterNo = self.viewModel017b().comboBoxUseMaster().selectedCode();
+                else {
+                    var command = {
+                        formulaCode: self.viewModel017b().formulaCode(),
+                        formulaName: self.viewModel017b().formulaName(),
+                        difficultyAtr: self.viewModel017b().selectedDifficultyAtr(),
+                        historyId: self.currentNode().code,
+                        easyFormulaDto: [],
+                        formulaContent: '',
+                        referenceMonthAtr: '',
+                        roundAtr: '',
+                        roundDigit: ''
+                    };
+                    if (command.difficultyAtr === 1) {
+                        command.formulaContent = self.viewModel017c().formulaManualContent().textArea();
+                        command.referenceMonthAtr = self.viewModel017c().comboBoxReferenceMonthAtr().selectedCode();
+                        command.roundAtr = self.viewModel017c().comboBoxRoudingMethod().selectedCode();
+                        command.roundDigit = self.viewModel017c().comboBoxRoudingPosition().selectedCode();
+                    }
+                    else {
+                    }
+                    qmm017.service.updateFormulaMaster(command)
+                        .done(function () {
+                        self.start();
+                    })
+                        .fail(function (res) {
+                        alert(res);
+                    });
                 }
-                var command = {
-                    formulaCode: self.viewModel017b().formulaCode(),
-                    formulaName: self.viewModel017b().formulaName(),
-                    difficultyAtr: self.viewModel017b().selectedDifficultyAtr(),
-                    startDate: self.viewModel017b().startYearMonth(),
-                    endDate: 999912,
-                    conditionAtr: self.viewModel017b().selectedConditionAtr(),
-                    refMasterNo: referenceMasterNo
-                };
-                qmm017.service.registerFormulaMaster(command)
-                    .done(function () {
-                    self.start();
-                })
-                    .fail(function (res) {
-                    alert(res);
-                });
             };
             ScreenModel.prototype.openDialogJ = function () {
                 var self = this;
@@ -142,6 +182,25 @@ var nts;
                 };
                 nts.uk.ui.windows.setShared('paramFromScreenA', param);
                 nts.uk.ui.windows.sub.modal('/view/qmm/017/j/index.xhtml', { title: '履歴の追加', width: 540, height: 545 }).onClosed(function () {
+                    self.start();
+                });
+            };
+            ScreenModel.prototype.openDialogK = function () {
+                var self = this;
+                var currentHistory = self.currentNode().name;
+                var currentYearMonth = currentHistory.split(" ~ ");
+                var currentStartYm = currentYearMonth[0];
+                var currentEndYm = currentYearMonth[1];
+                var param = {
+                    formulaCode: self.viewModel017b().formulaCode(),
+                    formulaName: self.viewModel017b().formulaName(),
+                    historyId: self.currentNode().code,
+                    startYm: currentStartYm,
+                    endYm: currentEndYm,
+                    difficultyAtr: self.viewModel017b().selectedDifficultyAtr()
+                };
+                nts.uk.ui.windows.setShared('paramFromScreenA', param);
+                nts.uk.ui.windows.sub.modal('/view/qmm/017/k/index.xhtml', { title: '履歴の編集', width: 540, height: 380 }).onClosed(function () {
                     self.start();
                 });
             };
