@@ -72,6 +72,13 @@ module nts.uk.pr.view.qmm016.a {
                 return dfd.promise();
             }
 
+            /**
+             * Do check dirty later.
+             */
+            isDirty(): boolean {
+                return false;
+            }
+            
              /**
              * Load wage table detail.
              */
