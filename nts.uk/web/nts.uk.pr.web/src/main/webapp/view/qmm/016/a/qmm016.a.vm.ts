@@ -322,6 +322,9 @@ module nts.uk.pr.view.qmm016.a {
             endYearMonthText: KnockoutObservable<string>;
             startYearMonthJpText: KnockoutObservable<string>;
             elements: KnockoutObservableArray<HistoryElementSettingViewModel>;
+            detailViewModel: history.base.BaseHistoryViewModel;
+            history: model.WageTableHistoryDto;
+
             constructor() {
                 var self = this;
                 self.startYearMonth = ko.observable(parseInt(nts.uk.time.formatDate(new Date(), 'yyyyMM')));
@@ -335,22 +338,76 @@ module nts.uk.pr.view.qmm016.a {
                 self.startYearMonthJpText = ko.computed(() => {
                     return nts.uk.text.format('（{0}）', nts.uk.time.yearmonthInJapanEmpire(self.startYearMonth()).toString());
                 })
-                
+
                 // Element info.
                 self.elements = ko.observableArray<HistoryElementSettingViewModel>([]);
             }
-            
+
             /**
              * Reset.
              */
             resetBy(head: model.WageTableHeadDto, history: model.WageTableHistoryDto) {
                 var self = this;
+                self.history = history;
                 self.startYearMonth(history.startMonth);
                 self.endYearMonth(history.endMonth);
                 var elementSettingViewModel = _.map(history.elements, (el) => {
                     return new HistoryElementSettingViewModel(head, el);
                 })
                 self.elements(elementSettingViewModel);
+                
+                // Load detail.
+                self.detailViewModel = new qmm016.a.history.OneDemensionViewModel(history);
+                $('#detailContainer').load(self.detailViewModel.htmlPath, () => {
+                    var element = $('#detailContainer').children().get(0);
+                    ko.applyBindings(self.detailViewModel, element);
+                })
+            }
+            
+            /**
+             * Generate item.
+             */
+            generateItem(): void {
+                var self = this;
+                service.instance.genearetItemSetting({
+                    historyId: self.history.historyId,
+                    settings: self.getElementSettings()})
+                .done((res) => {
+                    self.detailViewModel.refreshElementSettings(res);
+                });
+            }
+
+            /**
+             * Get element setting dto.
+             */
+            getElementSettings(): Array<model.ElementSettingDto> {
+                var self = this;
+                return _.map(self.elements(), (el) => {
+                    var dto = <model.ElementSettingDto>{};
+                    dto.type = el.elementType();
+                    dto.demensionNo = el.demensionNo();
+                    dto.upperLimit = el.upperLimit();
+                    dto.lowerLimit = el.lowerLimit();
+                    dto.interval = el.interval();
+                    return dto;
+                })
+            }
+            
+            /**
+             * Unapply bindings.
+             */
+            unapplyBindings($node:any, remove:boolean): void {
+                // unbind events
+                $node.find("*").each(function () {
+                    $(this).unbind();
+                });
+            
+                // Remove KO subscriptions and references
+                if (remove) {
+                    ko.removeNode($node[0]);
+                } else {
+                    ko.cleanNode($node[0]);
+                }
             }
         }
         

@@ -240,12 +240,50 @@ var nts;
                                 }
                                 HistoryViewModel.prototype.resetBy = function (head, history) {
                                     var self = this;
+                                    self.history = history;
                                     self.startYearMonth(history.startMonth);
                                     self.endYearMonth(history.endMonth);
                                     var elementSettingViewModel = _.map(history.elements, function (el) {
                                         return new HistoryElementSettingViewModel(head, el);
                                     });
                                     self.elements(elementSettingViewModel);
+                                    self.detailViewModel = new qmm016.a.history.OneDemensionViewModel(history);
+                                    $('#detailContainer').load(self.detailViewModel.htmlPath, function () {
+                                        var element = $('#detailContainer').children().get(0);
+                                        ko.applyBindings(self.detailViewModel, element);
+                                    });
+                                };
+                                HistoryViewModel.prototype.generateItem = function () {
+                                    var self = this;
+                                    qmm016.service.instance.genearetItemSetting({
+                                        historyId: self.history.historyId,
+                                        settings: self.getElementSettings() })
+                                        .done(function (res) {
+                                        self.detailViewModel.refreshElementSettings(res);
+                                    });
+                                };
+                                HistoryViewModel.prototype.getElementSettings = function () {
+                                    var self = this;
+                                    return _.map(self.elements(), function (el) {
+                                        var dto = {};
+                                        dto.type = el.elementType();
+                                        dto.demensionNo = el.demensionNo();
+                                        dto.upperLimit = el.upperLimit();
+                                        dto.lowerLimit = el.lowerLimit();
+                                        dto.interval = el.interval();
+                                        return dto;
+                                    });
+                                };
+                                HistoryViewModel.prototype.unapplyBindings = function ($node, remove) {
+                                    $node.find("*").each(function () {
+                                        $(this).unbind();
+                                    });
+                                    if (remove) {
+                                        ko.removeNode($node[0]);
+                                    }
+                                    else {
+                                        ko.cleanNode($node[0]);
+                                    }
                                 };
                                 return HistoryViewModel;
                             }());

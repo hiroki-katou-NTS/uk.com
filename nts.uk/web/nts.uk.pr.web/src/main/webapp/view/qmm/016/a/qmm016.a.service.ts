@@ -7,7 +7,8 @@ module nts.uk.pr.view.qmm016 {
             loadHistoryByUuid: 'pr/proto/wagetable/find/{0}',
             loadDemensionList: 'pr/proto/wagetable/demensions',
             loadElementTypeList: 'pr/proto/wagetable/elements',
-            initWageTable: 'pr/proto/wagetable/init'
+            initWageTable: 'pr/proto/wagetable/init',
+            genitem: 'pr/proto/wagetable/reference/genitem'
         }
 
         /**
@@ -40,6 +41,21 @@ module nts.uk.pr.view.qmm016 {
              */
             initWageTable(data: {wageTableHeadDto: model.WageTableHeadDto, startMonth: number}): JQueryPromise<base.simplehistory.model.HistoryModel> {
                 return nts.uk.request.ajax(path.initWageTable, data);
+            }
+
+            /**
+             * Generate item table.
+             */
+            genearetItemSetting(data: {historyId: string, settings: Array<model.ElementSettingDto>}): JQueryPromise<Array<model.ElementSettingDto>> {
+                var dfd = $.Deferred();
+
+                // Call service.
+                nts.uk.request.ajax(path.genitem, data).done((res) => {
+                    dfd.resolve(res.elementSettings);
+                }).fail(dfd.fail);
+
+                // Promise.
+                return dfd.promise();
             }
         }
 
