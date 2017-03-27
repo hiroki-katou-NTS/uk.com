@@ -244,8 +244,8 @@ public class WageTableWs extends SimpleHistoryWs<WtHead, WtHistory> {
 				StepElementSetting el = new StepElementSetting(
 						DemensionNo.valueOf(item.getDemensionNo()),
 						ElementType.valueOf(item.getType()), Collections.emptyList());
-				el.setSetting(new RangeLimit(item.getUpperLimit()),
-						new RangeLimit(item.getLowerLimit()), new RangeLimit(item.getInterval()));
+				el.setSetting(new RangeLimit(item.getLowerLimit()),
+						new RangeLimit(item.getUpperLimit()), new RangeLimit(item.getInterval()));
 				return el;
 			}
 		}).collect(Collectors.toList());

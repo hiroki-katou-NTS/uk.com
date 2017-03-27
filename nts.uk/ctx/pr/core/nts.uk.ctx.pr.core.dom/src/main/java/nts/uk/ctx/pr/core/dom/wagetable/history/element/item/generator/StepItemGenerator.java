@@ -54,7 +54,7 @@ public class StepItemGenerator implements ItemGenerator {
 
 		int index = 0;
 		BigDecimal start = lowerLimit;
-		while (start.compareTo(upperLimit) < 0) {
+		while (start.compareTo(upperLimit) <= 0) {
 			index++;
 			BigDecimal end = start.add(interval).subtract(minStep);
 
@@ -67,9 +67,7 @@ public class StepItemGenerator implements ItemGenerator {
 					((end.compareTo(upperLimit) <= 0) ? end : upperLimit).doubleValue(),
 					mapRangeItems.getOrDefault(rangeItem, rangeItem.getUuid()));
 
-			items.add(new RangeItem(index, start.doubleValue(),
-					((end.compareTo(upperLimit) <= 0) ? end : upperLimit).doubleValue(),
-					new ElementId(IdentifierUtil.randomUniqueId())));
+			items.add(rangeItem);
 
 			start = start.add(interval);
 		}
