@@ -24,7 +24,7 @@ import nts.uk.ctx.pr.core.dom.itemmaster.itemsalary.RangeAtr;
 public class AddItemDeductBDCommandHandler extends CommandHandler<AddItemDeductBDCommand> {
 
 	@Inject
-	ItemDeductBDRepository itemDeductBDRepo;
+	private ItemDeductBDRepository itemDeductBDRepo;
 
 	@Override
 	protected void handle(CommandHandlerContext<AddItemDeductBDCommand> context) {

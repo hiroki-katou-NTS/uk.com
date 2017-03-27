@@ -14,7 +14,7 @@ import nts.uk.ctx.pr.core.dom.itemmaster.itemsalarybd.ItemSalaryBDRepository;
 public class UpdateItemSalaryBDCommandHandler extends CommandHandler<UpdateItemSalaryBDCommand> {
 
 	@Inject
-	ItemSalaryBDRepository itemSalaryBDRepository;
+	private ItemSalaryBDRepository itemSalaryBDRepository;
 	@Override
 	protected void handle(CommandHandlerContext<UpdateItemSalaryBDCommand> context) {
 		String itemCd = context.getCommand().getItemCd();

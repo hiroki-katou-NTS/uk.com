@@ -23,7 +23,6 @@ import nts.uk.ctx.pr.core.app.find.itemmaster.itemdeductbd.ItemDeductBDFinder;
 public class ItemDeductBDWebService extends WebService {
 	@Inject
 	ItemDeductBDFinder itemDeductBDFinder;
-
 	@Inject
 	AddItemDeductBDCommandHandler addHandler;
 	@Inject
@@ -46,7 +45,7 @@ public class ItemDeductBDWebService extends WebService {
 
 	@POST
 	@Path("delete")
-	public void addItemDeductDB(DeleteItemDeductBDCommand command) {
+	public void deleteItemDeductDB(DeleteItemDeductBDCommand command) {
 		this.deleteHandler.handle(command);
 	}
 

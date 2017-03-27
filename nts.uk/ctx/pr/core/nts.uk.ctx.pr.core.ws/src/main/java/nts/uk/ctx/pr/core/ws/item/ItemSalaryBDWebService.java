@@ -44,7 +44,7 @@ public class ItemSalaryBDWebService extends WebService {
 	}
 	@POST
 	@Path("delete")
-	public void addItemSalaryDB(DeleteItemSalaryBDCommand command) {
+	public void deleteItemSalaryDB(DeleteItemSalaryBDCommand command) {
 		this.deleteHandler.handle(command);
 	}
 	@POST

@@ -15,7 +15,7 @@ import nts.uk.ctx.pr.core.dom.itemmaster.itemsalarybd.ItemSalaryBDRepository;
 public class DeleteItemSalaryBDCommandHandler extends CommandHandler<DeleteItemSalaryBDCommand> {
 
 	@Inject
-	ItemSalaryBDRepository itemSalaryBDRepository;
+	private ItemSalaryBDRepository itemSalaryBDRepository;
 
 	@Override
 	protected void handle(CommandHandlerContext<DeleteItemSalaryBDCommand> context) {

@@ -15,7 +15,7 @@ import nts.uk.ctx.pr.core.dom.itemmaster.itemdeductbd.ItemDeductBDRepository;
 @Transactional
 public class DeleteItemDeductBDCommandHandler extends CommandHandler<DeleteItemDeductBDCommand> {
 	@Inject
-	ItemDeductBDRepository itemDeductBDRepository;
+	private ItemDeductBDRepository itemDeductBDRepository;
 
 	@Override
 	protected void handle(CommandHandlerContext<DeleteItemDeductBDCommand> context) {
