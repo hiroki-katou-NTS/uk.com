@@ -39,7 +39,6 @@ var nts;
                                     });
                                     self.employeeList = ko.observableArray(employees);
                                     self.employee(employees[0]);
-                                    // グリッド設定
                                     self.switchButton = ko.observable(new SwitchButton());
                                     self.visible = ko.observable(self.switchButton().selectedRuleCode() == 'vnext');
                                     self.switchButton().selectedRuleCode.subscribe(function (newValue) {
@@ -73,17 +72,10 @@ var nts;
                                         nts.uk.ui.dialog.alert(res.message);
                                         dfd.reject();
                                     });
-                                    // Return.
                                     return dfd.promise();
                                 };
-                                /** Event click: 計算/登録*/
                                 ScreenModel.prototype.register = function () {
                                     var self = this;
-                                    // TODO: Check error input
-                                    //                if (!self.validator()) {
-                                    //                    nts.uk.ui.dialog.alert('入力にエラーがあります。');
-                                    //                    return false;
-                                    //                }
                                     qpp005.a.service.register(self.employee(), self.paymentDataResult()).done(function (res) {
                                         self.startPage().done(function () {
                                             a.utils.gridSetup(self.switchButton().selectedRuleCode());
@@ -92,7 +84,6 @@ var nts;
                                         nts.uk.ui.dialog.alert(res.message);
                                     });
                                 };
-                                /** Event click: 削除*/
                                 ScreenModel.prototype.remove = function () {
                                     var self = this;
                                     nts.uk.ui.dialog.confirm("データを削除します。\r\nよろしいですか？").ifYes(function () {
@@ -102,7 +93,6 @@ var nts;
                                             });
                                         });
                                     }).ifCancel(function () {
-                                        // nothing
                                     });
                                 };
                                 ScreenModel.prototype.validator = function () {
@@ -125,7 +115,6 @@ var nts;
                                     });
                                     return result;
                                 };
-                                /** Event click: 対象者*/
                                 ScreenModel.prototype.openEmployeeList = function () {
                                     var _this = this;
                                     var self = this;
@@ -139,7 +128,6 @@ var nts;
                                         return _this;
                                     });
                                 };
-                                /** Event: Previous employee */
                                 ScreenModel.prototype.prevEmployee = function () {
                                     var self = this;
                                     var eIdx = _.findIndex(self.employeeList(), function (o) {
@@ -153,7 +141,6 @@ var nts;
                                         a.utils.gridSetup(self.switchButton().selectedRuleCode());
                                     });
                                 };
-                                /** Event: Next employee */
                                 ScreenModel.prototype.nextEmployee = function () {
                                     var self = this;
                                     var eIdx = _.findIndex(self.employeeList(), function (o) {
@@ -194,7 +181,6 @@ var nts;
                                             value.commuteAllowMonth = oneMonthCommuteEditor;
                                             value.commuteAllowFraction = oneMonthRemainderEditor;
                                         }
-                                        //                    self.startPage();
                                         return self;
                                     });
                                 };
@@ -202,9 +188,6 @@ var nts;
                                     $('#content-header').toggle('slow');
                                     $('img', '#btToggle').toggle();
                                 };
-                                /**
-                                 * auto Calculate item total
-                                 */
                                 ScreenModel.prototype.calcTotal = function (source, tranfer, destinate, isPayment) {
                                     var detailsPayment = _.flatMap(source.lines(), function (l) { return l.details(); });
                                     var totalPayment = _.last(detailsPayment);
@@ -277,9 +260,6 @@ var nts;
                                 return Employee;
                             }());
                             viewmodel.Employee = Employee;
-                            /**
-                              * Model namespace.
-                           */
                             var PaymentDataResultViewModel = (function () {
                                 function PaymentDataResultViewModel(paymentHeader, categories, remarks) {
                                     var self = this;
@@ -293,7 +273,6 @@ var nts;
                                 return PaymentDataResultViewModel;
                             }());
                             viewmodel.PaymentDataResultViewModel = PaymentDataResultViewModel;
-                            // header
                             var PaymentDataHeaderViewModel = (function () {
                                 function PaymentDataHeaderViewModel(personId, personName, processingYM, dependentNumber, specificationCode, specificationName, makeMethodFlag, employeeCode, comment, printPositionCategories, isCreated) {
                                     var self = this;
@@ -317,14 +296,12 @@ var nts;
                                 return PrintPositionCategoryViewModel;
                             }());
                             viewmodel.PrintPositionCategoryViewModel = PrintPositionCategoryViewModel;
-                            // categories
                             var LayoutMasterCategoryViewModel = (function () {
                                 function LayoutMasterCategoryViewModel() {
                                 }
                                 return LayoutMasterCategoryViewModel;
                             }());
                             viewmodel.LayoutMasterCategoryViewModel = LayoutMasterCategoryViewModel;
-                            // item
                             var DetailItemViewModel = (function () {
                                 function DetailItemViewModel(categoryAtr, itemAtr, itemCode, itemName, value, calculationMethod, correctFlag, columnPosition, linePosition, deductAtr, displayAtr, taxAtr, limitAmount, commuteAllowTaxImpose, commuteAllowMonth, commuteAllowFraction, isCreated, itemType) {
                                     var self = this;
@@ -362,15 +339,7 @@ var nts;
                                 return CategoriesList;
                             }());
                             viewmodel.CategoriesList = CategoriesList;
-                            /**
-                            * View Model Category
-                            */
                             var Category = (function () {
-                                /**
-                                 * Constructor
-                                 * @param: code
-                                 * @param: name
-                                 */
                                 function Category(code, name) {
                                     var self = this;
                                     self.code = code;
@@ -386,3 +355,4 @@ var nts;
         })(pr = uk.pr || (uk.pr = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+//# sourceMappingURL=viewmodel.js.map

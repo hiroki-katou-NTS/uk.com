@@ -4,3 +4,4 @@ __viewContext.ready(function () {
     console.log(vm);
     this.bind(vm);
 });
+//# sourceMappingURL=start.js.map

@@ -13,9 +13,6 @@ var nts;
                         var viewmodel;
                         (function (viewmodel) {
                             var ScreenModel = (function () {
-                                /**
-                                 * Init screen
-                                 */
                                 function ScreenModel() {
                                     var self = this;
                                 }
@@ -33,3 +30,4 @@ var nts;
         })(pr = uk.pr || (uk.pr = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+//# sourceMappingURL=viewmodel.js.map
