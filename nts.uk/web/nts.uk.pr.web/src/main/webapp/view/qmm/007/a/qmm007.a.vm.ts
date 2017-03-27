@@ -17,6 +17,9 @@ module nts.uk.pr.view.qmm007.a {
             // Switch button data source
             switchButtonDataSource: KnockoutObservableArray<SwitchButtonDataSource>;
 
+            // Dirty checker
+            dirtyChecker: nts.uk.ui.DirtyChecker;
+
             constructor() {
                 super({
                     functionName: '会社一律金額',
@@ -25,8 +28,8 @@ module nts.uk.pr.view.qmm007.a {
                 });
                 var self = this;
                 self.isLoading = ko.observable(true);
-
-                self.unitPriceHistoryModel = ko.observable(new UnitPriceHistoryModel(self.getDefaultUnitPriceHistory()));
+                self.unitPriceHistoryModel = ko.observable<UnitPriceHistoryModel>(new UnitPriceHistoryModel(self.getDefaultUnitPriceHistory()));
+                self.dirtyChecker = new nts.uk.ui.DirtyChecker(self.unitPriceHistoryModel);
                 self.switchButtonDataSource = ko.observableArray<SwitchButtonDataSource>([
                     { code: ApplySetting.APPLY, name: '対象' },
                     { code: ApplySetting.NOTAPPLY, name: '対象外' }
@@ -63,6 +66,38 @@ module nts.uk.pr.view.qmm007.a {
                     });
                 }
                 return dfd.promise();
+            }
+
+            /**
+            * Load UnitPriceHistory detail.
+            */
+            onSelectHistory(id: string): JQueryPromise<void> {
+                var self = this;
+                var dfd = $.Deferred<void>();
+                self.isLoading(true);
+                service.instance.findHistoryByUuid(id).done(dto => {
+                    self.setUnitPriceHistoryModel(dto);
+                    self.dirtyChecker.reset();
+                    self.isLoading(false);
+                    nts.uk.ui.windows.setShared('unitPriceHistoryModel', ko.toJS(this.unitPriceHistoryModel()));
+                    self.clearError();
+                    dfd.resolve();
+                });
+                return dfd.promise();
+            }
+
+            /**
+             * Clear all input and switch to new mode.
+             */
+            onRegistNew(): void {
+                var self = this;
+                self.clearError();
+                self.clearInput();
+            }
+
+            isDirty(): boolean {
+                var self = this;
+                return self.dirtyChecker.isDirty();
             }
 
             private setMessages(messageId: string): void {
@@ -110,29 +145,12 @@ module nts.uk.pr.view.qmm007.a {
                 model.memo(dto.memo);
             }
 
-            /**
-             * Load UnitPriceHistory detail.
-             */
-            onSelectHistory(id: string): JQueryPromise<void> {
-                var self = this;
-                var dfd = $.Deferred<void>();
-                self.isLoading(true);
-                service.instance.findHistoryByUuid(id).done(dto => {
-                    self.setUnitPriceHistoryModel(dto);
-                    self.isLoading(false);
-                    nts.uk.ui.windows.setShared('unitPriceHistoryModel', ko.toJS(this.unitPriceHistoryModel()));
-                    $('.save-error').ntsError('clear');
-                    dfd.resolve();
-                });
-                return dfd.promise();
+            private clearError(): void {
+                $('.save-error').ntsError('clear');
             }
 
-            /**
-             * Clear all input and switch to new mode.
-             */
-            onRegistNew(): void {
+            private clearInput(): void {
                 var self = this;
-                $('.save-error').ntsError('clear');
                 self.setUnitPriceHistoryModel(self.getDefaultUnitPriceHistory());
             }
 
