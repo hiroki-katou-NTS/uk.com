@@ -20,11 +20,6 @@ public class JpaPersonBankAccountRepository extends JpaRepository implements Per
 			+ " OR a.toBranchId2 IN :branchId" + " OR a.toBranchId3 IN :branchId" + " OR a.toBranchId4 IN :branchId"
 			+ " OR a.toBranchId5 IN :branchId)";
 
-	private final String SEL_2 = "SELECT COUNT(a) FROM PbamtPersonBankAccount a"
-			+ " WHERE a.pbamtPersonBankAccountPK.companyCode = :companyCode" + " AND (a.toBranchId1 IN :branchId"
-			+ " OR a.toBranchId2 IN :branchId" + " OR a.toBranchId3 IN :branchId" + " OR a.toBranchId4 IN :branchId"
-			+ " OR a.toBranchId5 IN :branchId)";
-
 	private final String SEL_6 = "SELECT a FROM PbamtPersonBankAccount a"
 			+ " WHERE a.pbamtPersonBankAccountPK.companyCode = :companyCode" + " AND (a.fromLineBankCd1 = :lineBankCode"
 			+ " OR a.fromLineBankCd2 = :lineBankCode" + " OR a.fromLineBankCd3 = :lineBankCode"
@@ -95,16 +90,8 @@ public class JpaPersonBankAccountRepository extends JpaRepository implements Per
 	}
 
 	@Override
-	public boolean checkExistsBankAccount(String companyCode, List<String> branchId) {
-		Optional<Long> numberOfPerson = this.queryProxy().query(SEL_1, Long.class)
-				.setParameter("companyCode", companyCode).setParameter("branchId", branchId).getSingle();
-
-		return numberOfPerson.get() > 0;
-	}
-
-	@Override
 	public boolean checkExistsBranchAccount(String companyCode, List<String> branchId) {
-		Optional<Long> numberOfPerson = this.queryProxy().query(SEL_2, Long.class)
+		Optional<Long> numberOfPerson = this.queryProxy().query(SEL_1, Long.class)
 				.setParameter("companyCode", companyCode)
 				.setParameter("branchId", branchId)
 				.getSingle();

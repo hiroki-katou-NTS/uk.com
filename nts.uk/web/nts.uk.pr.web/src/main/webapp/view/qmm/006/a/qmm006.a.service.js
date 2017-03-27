@@ -9,8 +9,7 @@ var qmm006;
                 findAll: "basic/system/bank/linebank/findAll",
                 update: "basic/system/bank/linebank/update",
                 remove: "basic/system/bank/linebank/remove",
-                findBankAll: "basic/system/bank/find/all",
-                checkExistBankAndBranch: "basic/system/bank/find/check"
+                findBankAll: "basic/system/bank/find/all"
             };
             function remove(command) {
                 var dfd = $.Deferred();
@@ -61,19 +60,7 @@ var qmm006;
                 return dfd.promise();
             }
             service.findBankAll = findBankAll;
-            function checkExistBankAndBranch() {
-                var dfd = $.Deferred();
-                nts.uk.request.ajax("com", paths.checkExistBankAndBranch)
-                    .done(function (res) {
-                    dfd.resolve(res);
-                })
-                    .fail(function (res) {
-                    dfd.reject(res);
-                });
-                return dfd.promise();
-            }
-            service.checkExistBankAndBranch = checkExistBankAndBranch;
         })(service = a.service || (a.service = {}));
     })(a = qmm006.a || (qmm006.a = {}));
 })(qmm006 || (qmm006 = {}));
-//# sourceMappingURL=qmm006.a.service.js.map
+//# sourceMappingURL=service.js.map

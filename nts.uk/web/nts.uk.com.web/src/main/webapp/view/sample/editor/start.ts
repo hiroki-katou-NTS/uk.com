@@ -1,7 +1,6 @@
 __viewContext.ready(function () {
     class ScreenModel {
         texteditor: any;
-        dynamiceditor: any;
         employeeeditor: any;
         multilineeditor: any;
         numbereditor: any;
@@ -10,24 +9,17 @@ __viewContext.ready(function () {
         currencyeditor2: any;
         timeeditor: any;
         yearmontheditor: any;
+        simpleValue: KnockoutObservable<string>;
         option: any;
         file: any;
         
         constructor() {
             var self = this;
-            self.dynamiceditor = {
-                editortype: 'texteditor',
-                value: ko.observable(''),
-                constraint: ko.observable('ResidenceCode'),
-                constraints: ko.observableArray(['ResidenceCode','EmployeeCode']),
-                option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption()),
-                enable: ko.observable(true),
-                readonly: ko.observable(false)
-            };
             self.option = {
                 value: ko.observable("2")    
             }
-                      
+            
+            self.simpleValue = ko.observable("123");
             // TextEditor
             self.texteditor = {
                 value: ko.observable(''),

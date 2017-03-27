@@ -1,7 +1,6 @@
 module nts.uk.pr.view.qmm002.b {
     export module service {
         var paths = {
-            getBankList: "",
             removeListBank: "basic/system/bank/remove/list"
         };
         
