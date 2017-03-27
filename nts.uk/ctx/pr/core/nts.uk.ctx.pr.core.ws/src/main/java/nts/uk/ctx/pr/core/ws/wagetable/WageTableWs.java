@@ -22,6 +22,10 @@ import nts.uk.ctx.pr.core.app.wagetable.command.WtInitCommand;
 import nts.uk.ctx.pr.core.app.wagetable.command.WtInitCommandHandler;
 import nts.uk.ctx.pr.core.app.wagetable.command.WtUpdateCommand;
 import nts.uk.ctx.pr.core.app.wagetable.command.WtUpdateCommandHandler;
+import nts.uk.ctx.pr.core.app.wagetable.command.dto.ElementItemDto;
+import nts.uk.ctx.pr.core.app.wagetable.command.dto.ElementSettingDto;
+import nts.uk.ctx.pr.core.app.wagetable.command.dto.WtElementDto;
+import nts.uk.ctx.pr.core.app.wagetable.command.dto.WtHeadDto;
 import nts.uk.ctx.pr.core.app.wagetable.command.dto.WtHistoryDto;
 import nts.uk.ctx.pr.core.dom.base.simplehistory.SimpleHistoryBaseService;
 import nts.uk.ctx.pr.core.dom.wagetable.DemensionNo;
@@ -49,13 +53,9 @@ import nts.uk.ctx.pr.core.ws.base.simplehistory.SimpleHistoryWs;
 import nts.uk.ctx.pr.core.ws.base.simplehistory.dto.HistoryModel;
 import nts.uk.ctx.pr.core.ws.base.simplehistory.dto.MasterModel;
 import nts.uk.ctx.pr.core.ws.wagetable.dto.DemensionItemDto;
-import nts.uk.ctx.pr.core.ws.wagetable.dto.ElementItemDto;
-import nts.uk.ctx.pr.core.ws.wagetable.dto.ElementSettingDto;
 import nts.uk.ctx.pr.core.ws.wagetable.dto.SettingInfoInModel;
 import nts.uk.ctx.pr.core.ws.wagetable.dto.SettingInfoOutModel;
 import nts.uk.ctx.pr.core.ws.wagetable.dto.WageTableModel;
-import nts.uk.ctx.pr.core.ws.wagetable.dto.WtElementDto;
-import nts.uk.ctx.pr.core.ws.wagetable.dto.WtHeadDto;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -108,9 +108,8 @@ public class WageTableWs extends SimpleHistoryWs<WtHead, WtHistory> {
 	/**
 	 * Find.
 	 *
-	 * @param id
-	 *            the id
-	 * @return the wage table history dto
+	 * @param id the id
+	 * @return the wage table model
 	 */
 	@POST
 	@Path("find/{id}")
@@ -166,8 +165,8 @@ public class WageTableWs extends SimpleHistoryWs<WtHead, WtHistory> {
 	/**
 	 * Inits the table.
 	 *
-	 * @param command
-	 *            the command
+	 * @param command the command
+	 * @return the history model
 	 */
 	@POST
 	@Path("init")
@@ -181,8 +180,7 @@ public class WageTableWs extends SimpleHistoryWs<WtHead, WtHistory> {
 	/**
 	 * Update.
 	 *
-	 * @param command
-	 *            the command
+	 * @param command the command
 	 */
 	@POST
 	@Path("update")
@@ -224,8 +222,7 @@ public class WageTableWs extends SimpleHistoryWs<WtHead, WtHistory> {
 	/**
 	 * Generate setting item.
 	 *
-	 * @param input
-	 *            the input
+	 * @param input the input
 	 * @return the setting info out model
 	 */
 	@POST

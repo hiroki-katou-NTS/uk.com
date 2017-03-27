@@ -14,6 +14,6 @@ import lombok.Data;
 @Data
 public class ListUnitPriceCodeModel {
 
-	/** The list unit price code. */
+	/** The codes. */
 	private List<String> codes;
 }

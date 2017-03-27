@@ -9,9 +9,6 @@ import lombok.Builder;
 /**
  * The Class UnitPriceModel.
  */
-/* (non-Javadoc)
- * @see java.lang.Object#toString()
- */
 @Builder
 public class UnitPriceModel {
 

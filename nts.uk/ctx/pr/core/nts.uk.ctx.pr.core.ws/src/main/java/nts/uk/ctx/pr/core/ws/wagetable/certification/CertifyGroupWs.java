@@ -60,8 +60,7 @@ public class CertifyGroupWs extends WebService {
 	/**
 	 * Find.
 	 *
-	 * @param code
-	 *            the code
+	 * @param code the code
 	 * @return the certify group find dto
 	 */
 	@POST
@@ -73,8 +72,7 @@ public class CertifyGroupWs extends WebService {
 	/**
 	 * Adds the certify group.
 	 *
-	 * @param command
-	 *            the command
+	 * @param command the command
 	 */
 	@POST
 	@Path("add")
@@ -85,8 +83,7 @@ public class CertifyGroupWs extends WebService {
 	/**
 	 * Update certify group.
 	 *
-	 * @param command
-	 *            the command
+	 * @param command the command
 	 */
 	@POST
 	@Path("update")
@@ -97,8 +94,7 @@ public class CertifyGroupWs extends WebService {
 	/**
 	 * Delete certify group.
 	 *
-	 * @param command
-	 *            the command
+	 * @param command the command
 	 */
 	@POST
 	@Path("delete")

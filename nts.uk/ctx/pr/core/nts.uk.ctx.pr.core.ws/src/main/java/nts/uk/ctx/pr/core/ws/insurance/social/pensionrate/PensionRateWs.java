@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2016 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.core.ws.insurance.social.pensionrate;
@@ -73,8 +73,7 @@ public class PensionRateWs extends SimpleHistoryWs<SocialInsuranceOffice, Pensio
 	/**
 	 * Find.
 	 *
-	 * @param id
-	 *            the id
+	 * @param id the id
 	 * @return the pension rate dto
 	 */
 	@POST
@@ -97,8 +96,7 @@ public class PensionRateWs extends SimpleHistoryWs<SocialInsuranceOffice, Pensio
 	/**
 	 * Creates the.
 	 *
-	 * @param command
-	 *            the command
+	 * @param command the command
 	 */
 	@POST
 	@Path("create")
@@ -109,8 +107,7 @@ public class PensionRateWs extends SimpleHistoryWs<SocialInsuranceOffice, Pensio
 	/**
 	 * Update.
 	 *
-	 * @param command
-	 *            the command
+	 * @param command the command
 	 */
 	@POST
 	@Path("update")
@@ -121,8 +118,7 @@ public class PensionRateWs extends SimpleHistoryWs<SocialInsuranceOffice, Pensio
 	/**
 	 * Removes the.
 	 *
-	 * @param command
-	 *            the command
+	 * @param command the command
 	 */
 	@POST
 	@Path("remove")
