@@ -113,14 +113,8 @@ var qmm023;
                     var newCode = ko.mapping.toJS(self.currentTax().code);
                     var newName = ko.mapping.toJS(self.currentTax().name);
                     var newTaxLimit = ko.mapping.toJS(self.currentTax().taxLimit);
-                    if (nts.uk.text.isNullOrEmpty(newCode)) {
-                        $('#INP_002').ntsError('set', nts.uk.text.format('{0}が入力されていません。', 'コード'));
-                        return;
-                    }
-                    if (nts.uk.text.isNullOrEmpty(newName)) {
-                        $('#INP_003').ntsError('set', nts.uk.text.format('{0}が入力されていません。', '名称'));
-                        return;
-                    }
+                    $('#INP_002').ntsEditor("validate");
+                    $('#INP_003').ntsEditor("validate");
                     var insertUpdateModel = new InsertUpdateModel(nts.uk.text.padLeft(newCode, '0', 2), newName, newTaxLimit);
                     a.service.insertUpdateData(self.isUpdate(), insertUpdateModel).done(function () {
                         self.reload(false, nts.uk.text.padLeft(newCode, '0', 2));
@@ -134,9 +128,7 @@ var qmm023;
                     }).fail(function (error) {
                         if (error.message === '3') {
                             var _message = "入力した{0}は既に存在しています。\r\n {1}を確認してください。";
-                            nts.uk.ui.dialog.alert(nts.uk.text.format(_message, 'コード', 'コード')).then(function () {
-                                self.reload(true);
-                            });
+                            nts.uk.ui.dialog.alert(nts.uk.text.format(_message, 'コード', 'コード'));
                         }
                         else if (error.message === '4') {
                             nts.uk.ui.dialog.alert("対象データがありません。").then(function () {
@@ -253,3 +245,4 @@ var qmm023;
         })(viewmodel = a.viewmodel || (a.viewmodel = {}));
     })(a = qmm023.a || (qmm023.a = {}));
 })(qmm023 || (qmm023 = {}));
+//# sourceMappingURL=qmm023.a.vm.js.map

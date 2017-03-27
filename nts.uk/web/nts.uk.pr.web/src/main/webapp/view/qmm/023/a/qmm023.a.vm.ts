@@ -128,14 +128,16 @@ module qmm023.a.viewmodel {
             let newCode = ko.mapping.toJS(self.currentTax().code);
             let newName = ko.mapping.toJS(self.currentTax().name);
             let newTaxLimit = ko.mapping.toJS(self.currentTax().taxLimit);
-            if (nts.uk.text.isNullOrEmpty(newCode)) {
-                $('#INP_002').ntsError('set', nts.uk.text.format('{0}が入力されていません。', 'コード'));
-                return;
-            }
-            if (nts.uk.text.isNullOrEmpty(newName)) {
-                $('#INP_003').ntsError('set', nts.uk.text.format('{0}が入力されていません。', '名称'));
-                return;
-            }
+            $('#INP_002').ntsEditor("validate");
+            $('#INP_003').ntsEditor("validate");
+            //            if (nts.uk.text.isNullOrEmpty(newCode)) {
+            //                $('#INP_002').ntsError('set', nts.uk.text.format('{0}が入力されていません。', 'コード'));
+            //                return;
+            //            }
+            //            if (nts.uk.text.isNullOrEmpty(newName)) {
+            //                $('#INP_003').ntsError('set', nts.uk.text.format('{0}が入力されていません。', '名称'));
+            //                return;
+            //            }
             let insertUpdateModel = new InsertUpdateModel(nts.uk.text.padLeft(newCode, '0', 2), newName, newTaxLimit);
             service.insertUpdateData(self.isUpdate(), insertUpdateModel).done(function() {
                 self.reload(false, nts.uk.text.padLeft(newCode, '0', 2));
