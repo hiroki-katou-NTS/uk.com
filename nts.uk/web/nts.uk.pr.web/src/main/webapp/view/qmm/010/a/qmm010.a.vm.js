@@ -33,7 +33,8 @@ var nts;
                                     self.messageList = ko.observableArray([
                                         { messageId: "ER001", message: "＊が入力されていません。" },
                                         { messageId: "ER005", message: "入力した＊は既に存在しています。\r\n ＊を確認してください。" },
-                                        { messageId: "AL001", message: "変更された内容が登録されていません。\r\n よろしいですか。" }
+                                        { messageId: "AL001", message: "変更された内容が登録されていません。\r\n よろしいですか。" },
+                                        { messageId: "AL002", message: "データを削除します。\r\n よろしいですか？。" },
                                     ]);
                                     self.dirty = new nts.uk.ui.DirtyChecker(self.laborInsuranceOfficeModel);
                                 }
@@ -223,7 +224,7 @@ var nts;
                                     laborInsuranceOfficeDeleteDto.code = self.laborInsuranceOfficeModel().code();
                                     laborInsuranceOfficeDeleteDto.version = 11;
                                     if (self.selectCodeLstlaborInsuranceOffice != null && self.selectCodeLstlaborInsuranceOffice() != '') {
-                                        nts.uk.ui.dialog.confirm("Do you delete Item?").ifYes(function () {
+                                        nts.uk.ui.dialog.confirm(self.messageList()[3].message).ifYes(function () {
                                             a.service.deleteLaborInsuranceOffice(laborInsuranceOfficeDeleteDto).done(function () {
                                                 self.typeAction(TypeActionLaborInsuranceOffice.add);
                                                 self.reloadDataByAction();

@@ -58,7 +58,8 @@ var nts;
                                         { messageId: "ER001", message: "＊が入力されていません。" },
                                         { messageId: "ER005", message: "入力した＊は既に存在しています。\r\n ＊を確認してください。" },
                                         { messageId: "AL001", message: "変更された内容が登録されていません。\r\n よろしいですか。" },
-                                        { messageId: "ER010", message: "対象データがありません。" }
+                                        { messageId: "ER010", message: "対象データがありません。" },
+                                        { messageId: "AL002", message: "データを削除します。\r\n よろしいですか？。" }
                                     ]);
                                     self.dirtyUnemployeeInsurance = new nts.uk.ui.DirtyChecker(self.unemployeeInsuranceRateModel);
                                     self.dirtyAccidentInsurance = new nts.uk.ui.DirtyChecker(self.accidentInsuranceRateModel);
@@ -92,15 +93,19 @@ var nts;
                                             history: history,
                                             removeMasterOnLastHistoryRemove: false,
                                             onDeleteCallBack: function (data) {
-                                                var unemployeeInsuranceDeleteDto;
-                                                unemployeeInsuranceDeleteDto = new UnemployeeInsuranceDeleteDto();
-                                                unemployeeInsuranceDeleteDto.code = data.historyId;
-                                                unemployeeInsuranceDeleteDto.version = 0;
-                                                a.service.deleteUnemployeeInsurance(unemployeeInsuranceDeleteDto).done(function (data) {
-                                                    self.typeActionUnemployeeInsurance(TypeActionInsuranceRate.add);
+                                                nts.uk.ui.dialog.confirm(self.messageList()[4].message).ifYes(function () {
+                                                    var unemployeeInsuranceDeleteDto;
+                                                    unemployeeInsuranceDeleteDto = new UnemployeeInsuranceDeleteDto();
+                                                    unemployeeInsuranceDeleteDto.code = data.historyId;
+                                                    unemployeeInsuranceDeleteDto.version = 0;
+                                                    a.service.deleteUnemployeeInsurance(unemployeeInsuranceDeleteDto).done(function (data) {
+                                                        self.typeActionUnemployeeInsurance(TypeActionInsuranceRate.add);
+                                                        self.reloadDataUnemployeeInsuranceRateByAction();
+                                                    }).fail(function (error) {
+                                                        self.showMessageSaveUnemployeeInsurance(error.message);
+                                                    });
+                                                }).ifNo(function () {
                                                     self.reloadDataUnemployeeInsuranceRateByAction();
-                                                }).fail(function (error) {
-                                                    self.showMessageSaveUnemployeeInsurance(error.message);
                                                 });
                                             },
                                             onUpdateCallBack: function (data) {
@@ -127,7 +132,7 @@ var nts;
                                 };
                                 ScreenModel.prototype.openAddUnemployeeInsuranceRateHistory = function () {
                                     var self = this;
-                                    if (self.dirtyUnemployeeInsurance.isDirty()) {
+                                    if (self.dirtyUnemployeeInsurance.isDirty() && !self.isEmptyUnemployee()) {
                                         nts.uk.ui.dialog.confirm(self.messageList()[2].message).ifYes(function () {
                                             self.onShowAddUnemployeeInsuranceRateHistory();
                                         }).ifNo(function () {
@@ -229,15 +234,19 @@ var nts;
                                             history: history,
                                             removeMasterOnLastHistoryRemove: false,
                                             onDeleteCallBack: function (data) {
-                                                var accidentInsuranceRateDeleteDto;
-                                                accidentInsuranceRateDeleteDto = new AccidentInsuranceRateDeleteDto();
-                                                accidentInsuranceRateDeleteDto.code = data.historyId;
-                                                accidentInsuranceRateDeleteDto.version = 0;
-                                                a.service.deleteAccidentInsuranceRate(accidentInsuranceRateDeleteDto).done(function (data) {
-                                                    self.typeActionAccidentInsurance(TypeActionInsuranceRate.add);
+                                                nts.uk.ui.dialog.confirm(self.messageList()[4].message).ifYes(function () {
+                                                    var accidentInsuranceRateDeleteDto;
+                                                    accidentInsuranceRateDeleteDto = new AccidentInsuranceRateDeleteDto();
+                                                    accidentInsuranceRateDeleteDto.code = data.historyId;
+                                                    accidentInsuranceRateDeleteDto.version = 0;
+                                                    a.service.deleteAccidentInsuranceRate(accidentInsuranceRateDeleteDto).done(function (data) {
+                                                        self.typeActionAccidentInsurance(TypeActionInsuranceRate.add);
+                                                        self.reloadDataAccidentInsuranceRateByAction();
+                                                    }).fail(function (error) {
+                                                        self.showMessageSaveAccidentInsurance(error.messageId);
+                                                    });
+                                                }).ifNo(function () {
                                                     self.reloadDataAccidentInsuranceRateByAction();
-                                                }).fail(function (error) {
-                                                    self.showMessageSaveAccidentInsurance(error.messageId);
                                                 });
                                             },
                                             onUpdateCallBack: function (data) {
@@ -264,7 +273,7 @@ var nts;
                                 };
                                 ScreenModel.prototype.openAddAccidentInsuranceRateHistory = function () {
                                     var self = this;
-                                    if (self.dirtyAccidentInsurance.isDirty()) {
+                                    if (self.dirtyAccidentInsurance.isDirty() && !self.isEmptyAccident()) {
                                         nts.uk.ui.dialog.confirm(self.messageList()[2].message).ifYes(function () {
                                             self.onShowAddAccidentInsuranceRateHistory();
                                         }).ifNo(function () {
