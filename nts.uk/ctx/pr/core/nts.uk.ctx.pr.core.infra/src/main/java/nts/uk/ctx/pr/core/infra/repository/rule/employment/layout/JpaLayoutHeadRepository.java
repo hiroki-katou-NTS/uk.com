@@ -16,34 +16,35 @@ import nts.uk.ctx.pr.core.infra.entity.rule.employment.layout.QstmtStmtLayoutHea
 public class JpaLayoutHeadRepository extends JpaRepository implements LayoutMasterRepository {
 
 	private final String SELECT_NO_WHERE = "SELECT c FROM QstmtStmtLayoutHead c";
-//	private final String SELECT_NO_WHERE_HIST= "SELECT h FROM QstmtStmtLayoutHistory h";
-//	private final String SEL_1= SELECT_NO_WHERE + " INNER JOIN QstmtStmtLayoutHistory h" +  " ON ("
-//			+ " c.qstmtStmtLayoutHeadPK.companyCd = h.qstmtStmtLayoutHistPK.companyCd"
-//			+ " AND c.qstmtStmtLayoutHeadPK.stmtCd = h.qstmtStmtLayoutHistPK.stmtCd)"
-//			+ " WHERE c.qstmtStmtLayoutHeadPK.companyCd = :companyCd"
-//			+ " AND c.qstmtStmtLayoutDetailPk.stmtCd = :stmtCd" + " AND c.strYm = :strYm";
-	//SEL_1
+	// SEL_1
 	private final String SELECT_ALL = SELECT_NO_WHERE + " WHERE c.qstmtStmtLayoutHeadPK.companyCd = :companyCd";
-//	anh Lam
-//	private final String SELECT_ALL = SELECT_NO_WHERE + " WHERE c.qstmtStmtLayoutHeadPK.companyCd = :companyCd"
-//			+ " ORDER BY c.strYm DESC";
-	//lanlt add SEL_3 + SEL_4
-//	private final String SEL_3 = SELECT_NO_WHERE + " WHERE c.qstmtStmtLayoutHeadPK.companyCd = :companyCd" + " AND c.qstmtStmtLayoutHeadPK.stmtCd = :stmtCd"
-//	        + " AND c.strYm = :strYm" ;
-//	private final String SEL_4 =  SELECT_NO_WHERE
-//			+ " WHERE c.qstmtStmtLayoutHeadPK.companyCd = :companyCode" + " AND c.endYm = 999912";
+	// anh Lam
+	// private final String SELECT_ALL = SELECT_NO_WHERE + " WHERE
+	// c.qstmtStmtLayoutHeadPK.companyCd = :companyCd"
+	// + " ORDER BY c.strYm DESC";
+	// lanlt add SEL_3 + SEL_4
+	// private final String SEL_3 = SELECT_NO_WHERE + " WHERE
+	// c.qstmtStmtLayoutHeadPK.companyCd = :companyCd" + " AND
+	// c.qstmtStmtLayoutHeadPK.stmtCd = :stmtCd"
+	// + " AND c.strYm = :strYm" ;
+	// private final String SEL_4 = SELECT_NO_WHERE
+	// + " WHERE c.qstmtStmtLayoutHeadPK.companyCd = :companyCode" + " AND
+	// c.endYm = 999912";
 	private final String SELECT_LAYOUT_BEFORE = "SELECT c FROM QstmtStmtLayoutHead c"
 			+ " WHERE c.qstmtStmtLayoutHeadPK.companyCd = :companyCd" + " AND c.qstmtStmtLayoutHeadPK.stmtCd = :stmtCd"
 			+ " AND c.strYm < :strYm" + " ORDER BY c.strYm DESC";
-	private final String SELECT_LAYOUT_MAX_START = SELECT_NO_WHERE
-			+ " WHERE c.qstmtStmtLayoutHeadPK.companyCd = :companyCode" + " AND c.endYm = 999912";
+	// private final String SELECT_LAYOUT_MAX_START = SELECT_NO_WHERE
+	// + " WHERE c.qstmtStmtLayoutHeadPK.companyCd = :companyCode" + " AND
+	// c.endYm = 999912";
 	// private final String SELECT_PREVIOUS_TARGET = "SELECT e FROM
 	// QstmtStmtLayoutHead e "
 	// + "WHERE e.qstmtStmtLayoutHeadPK.companyCd = :companyCd AND
 	// c.qstmtStmtLayoutHeadPK.stmtCd = :stmtCd Order by e.endYm DESC";
-//	private final String SEL_5 = SELECT_NO_WHERE + " WHERE c.qstmtStmtLayoutHeadPK.companyCd = :companyCode "
-//			+ " AND c.qstmtStmtLayoutHeadPK.stmtCd = :stmtCode" + " AND c.strYm <= :baseYearMonth "
-//			+ " AND c.endYm >= :baseYearMonth ";
+	// private final String SEL_5 = SELECT_NO_WHERE + " WHERE
+	// c.qstmtStmtLayoutHeadPK.companyCd = :companyCode "
+	// + " AND c.qstmtStmtLayoutHeadPK.stmtCd = :stmtCode" + " AND c.strYm <=
+	// :baseYearMonth "
+	// + " AND c.endYm >= :baseYearMonth ";
 	private final String SEL_5 = SELECT_NO_WHERE + " WHERE c.qstmtStmtLayoutHeadPK.companyCd = :companyCode "
 			+ " AND c.qstmtStmtLayoutHeadPK.stmtCd = :stmtCode";
 	

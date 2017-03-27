@@ -48,10 +48,10 @@ var qmm012;
             var model;
             (function (model) {
                 var ItemMasterModel = (function () {
-                    function ItemMasterModel(itemCode, itemName, categoryAtrValue, categoryAtrName, itemAbName, itemAbNameO, itemAbNameE, displaySet, uniteCode, zeroDisplaySet, itemDisplayAtr) {
+                    function ItemMasterModel(itemCode, itemName, categoryAtr, categoryAtrName, itemAbName, itemAbNameO, itemAbNameE, displaySet, uniteCode, zeroDisplaySet, itemDisplayAtr, fixAtr) {
                         this.itemCode = itemCode;
                         this.itemName = itemName;
-                        this.categoryAtrValue = categoryAtrValue;
+                        this.categoryAtr = categoryAtr;
                         this.categoryAtrName = categoryAtrName;
                         this.itemAbName = itemAbName;
                         this.itemAbNameO = itemAbNameO;
@@ -59,6 +59,7 @@ var qmm012;
                         this.displaySet = displaySet;
                         this.uniteCode = uniteCode;
                         this.zeroDisplaySet = itemDisplayAtr;
+                        this.fixAtr = fixAtr;
                     }
                     return ItemMasterModel;
                 }());

@@ -22,6 +22,19 @@ public interface ItemMasterRepository {
 	 * 
 	 * @param companyCode
 	 *            company code
+	 * @param categoryAtr
+	 *            category attribute
+	 * @param itemCode
+	 *            item code list
+	 * @return
+	 */
+	List<ItemMaster> findAll(String companyCode, int categoryAtr, List<String> itemCode);
+	
+	/**
+	 * Find all item by
+	 * 
+	 * @param companyCode
+	 *            company code
 	 * @param avePayAtr
 	 *            ave payment attribute
 	 * @return
@@ -47,13 +60,13 @@ public interface ItemMasterRepository {
 	 * @param categoryAtr
 	 *            category attribute
 	 * @param itemCode
-	 *            item code
+	 *            item code list
 	 * @param fixAtr
 	 *            fix attribute
 	 * @return
 	 */
-	List<ItemMaster> findAll(String companyCode, int categoryAtr, String itemCode, int fixAtr);
-
+	List<ItemMaster> findAll(String companyCode, int categoryAtr, List<String> itemCode, int fixAtr);
+	
 	/**
 	 * @param companyCode
 	 * @return

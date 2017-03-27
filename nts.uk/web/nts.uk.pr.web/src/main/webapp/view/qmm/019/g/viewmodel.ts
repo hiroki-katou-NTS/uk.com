@@ -5,10 +5,11 @@ module qmm019.g.viewmodel {
         itemList: KnockoutObservableArray<ItemModel>;
         selectedCodes: KnockoutObservable<string>;
         isEnable: KnockoutObservable<boolean>;
+        isEnableCombox: KnockoutObservable<boolean>;
         comboboxList: KnockoutObservableArray<ItemCombobox>;
         selectLayoutCode: KnockoutObservable<string>;
         layouts: KnockoutObservableArray<service.model.LayoutHeadDto>;
-        layoutHistory: KnockoutObservableArray<service.model.LayoutHistoryDto>;
+        layoutHistory: KnockoutObservableArray<service.model.LayoutHistory>;
         layoutAtrStr: KnockoutObservable<string>;
         selectStmtCode: KnockoutObservable<string>;
         selectStmtName: KnockoutObservable<string>;
@@ -31,7 +32,8 @@ module qmm019.g.viewmodel {
          */
         constructor() {
             var self = this;
-            self.isEnable = ko.observable(false);
+            self.isEnable = ko.observable(true);
+            self.isEnableCombox = ko.observable(false);
             self.selectedCodes = ko.observable("3");
             self.layouts = ko.observableArray([]);
             self.layoutHistory = ko.observableArray([]);
@@ -75,19 +77,26 @@ module qmm019.g.viewmodel {
             $('#LST_001').on('selectionChanged', function(event: any) {
                 console.log('Selected value:' + (<any>event.originalEvent).detail)
             })
-            //combobox
+            //combobox 
             service.getLayoutHeadInfor().done(function(layout: Array<service.model.LayoutHeadDto>) {
                 if (layout.length > 0) {
                     self.layouts(layout);
+//                    service.getAllLayoutHist().done(function(layoutHist:Array<service.model.LayoutHistory> ){
+//                       self.layoutHistory(layoutHist); 
+//                        console.log(layoutHist);
+//                    });
+                    
                 }
                 self.buildCombobox();
             });
             //radio button change
             self.isRadioCheck.subscribe(function(newValue) {
                 if (newValue === 1) {
-                    self.isEnable(false);
-                } else {
                     self.isEnable(true);
+                    self.isEnableCombox(false);
+                } else {
+                    self.isEnable(false);
+                    self.isEnableCombox(true);
                 }
 
             });

@@ -10,7 +10,6 @@ import javax.ejb.Stateless;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.arc.time.YearMonth;
 import nts.uk.ctx.pr.core.dom.rule.employment.layout.LayoutHistRepository;
 import nts.uk.ctx.pr.core.dom.rule.employment.layout.LayoutHistory;
 import nts.uk.ctx.pr.core.infra.entity.rule.employment.layout.QstmtStmtLayoutHistory;
@@ -26,10 +25,10 @@ public class JpaLayoutHistoryRepository extends JpaRepository implements LayoutH
 	private final String SELECT_ALL = SELECT_NO_WHERE + " WHERE c.qstmtStmtLayoutHistPK.companyCd = :companyCd";
 	private final String SEL_1 = SELECT_NO_WHERE + " WHERE c.qstmtStmtLayoutHistPK.companyCd = :companyCode "
 			+ " AND c.startYear <= :baseYearMonth " + " AND c.endYear >= :baseYearMonth ";
-	private final String SEL_2 = SELECT_NO_WHERE + " WHERE c.qstmtStmtLayoutHistPK.companyCd = :companyCode "
-			+ " AND c.qstmtStmtLayoutHeadPK.stmtCd = :stmtCd";
-	private final String SEL_3 = SELECT_NO_WHERE + " WHERE c.qstmtStmtLayoutHistPK.companyCd = :companyCode "
-			+ " AND c.qstmtStmtLayoutHeadPK.stmtCd = :stmtCd" + " AND c.endYear = 999912";
+	private final String SEL_2 = SELECT_NO_WHERE + " WHERE c.qstmtStmtLayoutHistPK.companyCd = :companyCd "
+			+ " AND c.qstmtStmtLayoutHistPK.stmtCd = :stmtCd";
+	private final String SEL_3 = SELECT_NO_WHERE + " WHERE c.qstmtStmtLayoutHistPK.companyCd = :companyCd "
+			+ " AND c.qstmtStmtLayoutHistPK.stmtCd = :stmtCd" + " AND c.endYear = 999912";
 	private final String SEL_4 = SEL_2 + " AND c.qstmtStmtLayoutHistPK.historyId = :historyId ";
 	private final String SEL_HISTORY_BEFORE = SEL_2 + " AND c.startYear = :startYear ";
 	private final String SEL_5 = SELECT_NO_WHERE + " WHERE c.qstmtStmtLayoutHistPK.companyCd = :companyCode "
@@ -56,7 +55,7 @@ public class JpaLayoutHistoryRepository extends JpaRepository implements LayoutH
 	}
 
 	@Override
-	public List<LayoutHistory> getBy_SEL_1(String companyCd, YearMonth baseYM) {
+	public List<LayoutHistory> getBy_SEL_1(String companyCd, int baseYM) {
 
 		return this.queryProxy().query(SEL_1, QstmtStmtLayoutHistory.class).setParameter("companyCd", companyCd)
 				.setParameter("baseYearMonth", baseYM).getList(x -> toDomain(x));
@@ -69,26 +68,21 @@ public class JpaLayoutHistoryRepository extends JpaRepository implements LayoutH
 	}
 
 	@Override
-	public List<LayoutHistory> getBy_SEL_3(String companyCd, YearMonth baseYM) {
-		return this.queryProxy().query(SEL_3, QstmtStmtLayoutHistory.class).setParameter("companyCd", companyCd)
-				.setParameter("baseYearMonth", baseYM).getList(x -> toDomain(x));
-	}
-
-	@Override
 	public Optional<LayoutHistory> getBy_SEL_4(String companyCd, String stmtCd, String historyId) {
 		return this.queryProxy().query(SEL_4, QstmtStmtLayoutHistory.class).setParameter("companyCd", companyCd)
 				.setParameter("stmtCd", stmtCd).setParameter("historyId", historyId).getSingle(x -> toDomain(x));
 	}
 
 	@Override
-	public List<LayoutHistory> getBy_SEL_5(String companyCd, YearMonth baseYM) {
+	public List<LayoutHistory> getBy_SEL_5(String companyCd, int baseYM) {
 		return this.queryProxy().query(SEL_5, QstmtStmtLayoutHistory.class).setParameter("companyCd", companyCd)
 				.setParameter("baseYearMonth", baseYM).getList(x -> toDomain(x));
 	}
+
 	@Override
 	public void add(LayoutHistory layoutHistory) {
 		this.commandProxy().insert(toEntity(layoutHistory));
-		
+
 	}
 
 	@Override
@@ -98,7 +92,7 @@ public class JpaLayoutHistoryRepository extends JpaRepository implements LayoutH
 		} catch (Exception ex) {
 			throw ex;
 		}
-		
+
 	}
 
 	@Override
@@ -111,15 +105,22 @@ public class JpaLayoutHistoryRepository extends JpaRepository implements LayoutH
 	}
 
 	@Override
-	public List<LayoutHistory> getAllLayoutHist(String companyCd) {
-		return this.queryProxy().query(SELECT_ALL, QstmtStmtLayoutHistory.class)
-				.setParameter("companyCd", companyCd)
-				.getList(entity -> toDomain(entity));
+	public Optional<LayoutHistory> getHistoryBefore(String companyCd, String stmtCd, int startYear) {
+		return this.queryProxy().query(SEL_HISTORY_BEFORE, QstmtStmtLayoutHistory.class)
+				.setParameter("companyCd", companyCd).setParameter("stmtCd", stmtCd)
+				.setParameter("startYear", startYear).getSingle(x -> toDomain(x));
 	}
 
 	@Override
-	public Optional<LayoutHistory> getHistoryBefore(String companyCd, String stmtCd, int startYear) {
-		return this.queryProxy().query(SEL_HISTORY_BEFORE, QstmtStmtLayoutHistory.class).setParameter("companyCd", companyCd)
-				.setParameter("stmtCd", stmtCd).setParameter("startYear", startYear).getSingle(x -> toDomain(x));
+	public List<LayoutHistory> getBy_SEL_3(String companyCd, int startYear) {
+			return this.queryProxy().query(SEL_3, QstmtStmtLayoutHistory.class).setParameter("companyCd", companyCd)
+					.setParameter("startYear", startYear)
+					.getList(x -> toDomain(x));
+	}
+
+	@Override
+	public List<LayoutHistory> getAllLayoutHist(String companyCode) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }
