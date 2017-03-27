@@ -62,7 +62,10 @@ var nts;
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
 <<<<<<< HEAD
+<<<<<<< HEAD
 //# sourceMappingURL=file.js.map
 =======
 //# sourceMappingURL=file.js.map
+>>>>>>> basic/develop
+=======
 >>>>>>> basic/develop

@@ -325,9 +325,6 @@ var nts;
                                 break;
                             case 'selectAll':
                                 selectAll($grid);
-                                break;
-                            case 'validate':
-                                return validate($grid);
                             default:
                                 break;
                         }
@@ -338,7 +335,8 @@ var nts;
                         $list.find('.nts-list-box').data("ui-selectable")._mouseStop(null);
                     }
                     function deselectAll($list) {
-                        $list.data('value', '');
+                        var selectListBoxContainer = $list.find('.nts-list-box');
+                        selectListBoxContainer.data('value', '');
                         $list.find('.nts-list-box > li').removeClass("ui-selected");
                         $list.find('.nts-list-box > li > div').removeClass("ui-selected");
                         $list.trigger("selectionChange");

@@ -44,6 +44,7 @@ var nts;
                     }
                     if (option) {
                         if (option.inputFormat) {
+                            //If inputFormat presented, this is Date or Time Editor                 
                             return new TimeValidator(constraintName, option);
                         }
                         else {
@@ -172,7 +173,10 @@ var nts;
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
 <<<<<<< HEAD
+<<<<<<< HEAD
 //# sourceMappingURL=validation.js.map
 =======
 //# sourceMappingURL=validation.js.map
+>>>>>>> basic/develop
+=======
 >>>>>>> basic/develop

@@ -5,8 +5,11 @@ var nts;
     (function (uk) {
         var ui;
         (function (ui) {
+            /** Event to notify document ready to initialize UI. */
             ui.documentReady = $.Callbacks();
+            /** Event to notify ViewModel built to bind. */
             ui.viewModelBuilt = $.Callbacks();
+            // Kiban ViewModel
             var KibanViewModel = (function () {
                 function KibanViewModel() {
                     this.title = ko.observable('');
@@ -45,7 +48,10 @@ var nts;
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
 <<<<<<< HEAD
+<<<<<<< HEAD
 //# sourceMappingURL=init.js.map
 =======
 //# sourceMappingURL=init.js.map
+>>>>>>> basic/develop
+=======
 >>>>>>> basic/develop
