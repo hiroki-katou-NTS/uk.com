@@ -1,0 +1,45 @@
+@CHARSET "UTF-8";
+
+#inpCode {
+	width: 40px !important;
+}
+
+#inpName {
+	width: 250px !important;
+}
+
+#inpStartMonth {
+	width: 80px !important;
+}
+
+#inpBudget {
+	width: 120px !important;
+}
+.symbol-right {
+	width: 120px !important;
+}
+
+.nts-switch-button {
+	min-width: 80px;
+	font-size: 13px !important;
+	height: 30px !important;
+	padding: 3px 7px !important;
+	margin-bottom: 3px !important;
+}
+
+#sch_001 input{
+	width: 150px;
+}
+#btn_005 {
+	margin-right: 20px;
+}
+.btn-default {
+	margin-left: 10px;
+	min-width: 80px;
+}
+textarea {
+	height: 120px;
+}
+.form-default td{
+	padding-bottom: 6px;
+}

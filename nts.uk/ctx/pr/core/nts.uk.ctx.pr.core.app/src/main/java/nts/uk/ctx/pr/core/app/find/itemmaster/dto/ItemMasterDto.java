@@ -13,7 +13,7 @@ public class ItemMasterDto {
 	private String itemCode;
 	private String itemName;
 	/** カテゴリ区分 */
-	private int categoryAtrValue;
+	private int categoryAtr;
 	private String categoryAtrName;
 	/** item name */
 	private String itemAbName;

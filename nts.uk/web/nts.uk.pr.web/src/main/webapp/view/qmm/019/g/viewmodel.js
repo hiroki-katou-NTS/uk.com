@@ -11,7 +11,8 @@ var qmm019;
                  */
                 function ScreenModel() {
                     var self = this;
-                    self.isEnable = ko.observable(false);
+                    self.isEnable = ko.observable(true);
+                    self.isEnableCombox = ko.observable(false);
                     self.selectedCodes = ko.observable("3");
                     self.layouts = ko.observableArray([]);
                     self.layoutHistory = ko.observableArray([]);
@@ -54,7 +55,7 @@ var qmm019;
                     $('#LST_001').on('selectionChanged', function (event) {
                         console.log('Selected value:' + event.originalEvent.detail);
                     });
-                    //combobox
+                    //combobox 
                     g.service.getLayoutHeadInfor().done(function (layout) {
                         if (layout.length > 0) {
                             self.layouts(layout);
@@ -64,10 +65,12 @@ var qmm019;
                     //radio button change
                     self.isRadioCheck.subscribe(function (newValue) {
                         if (newValue === 1) {
-                            self.isEnable(false);
+                            self.isEnable(true);
+                            self.isEnableCombox(false);
                         }
                         else {
-                            self.isEnable(true);
+                            self.isEnable(false);
+                            self.isEnableCombox(true);
                         }
                     });
                     //change combobox

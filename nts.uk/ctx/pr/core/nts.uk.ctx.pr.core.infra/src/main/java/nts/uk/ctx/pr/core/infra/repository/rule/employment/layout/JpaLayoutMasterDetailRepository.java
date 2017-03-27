@@ -49,6 +49,9 @@ public class JpaLayoutMasterDetailRepository extends JpaRepository implements La
 	private final String SELECT_ALL_DETAILS_BEFORE1 = SELECT_NO_WHERE
 			+ " WHERE c.qstmtStmtLayoutDetailPk.companyCd = :companyCd"
 			+ " AND c.qstmtStmtLayoutDetailPk.stmtCd = :stmtCd" + " AND c.qstmtStmtLayoutDetailPk.historyId = :historyId";
+	private final String SELECT_ALL_DETAILS_BEFORE2 = SELECT_NO_WHERE
+			+ " WHERE c.qstmtStmtLayoutDetailPk.companyCd = :companyCd"
+			+ " AND c.qstmtStmtLayoutDetailPk.stmtCd = :stmtCd" ;
 
 	private final String FIND_ONLY_ALL = "SELECT c FROM QstmtStmtLayoutDetail c"
 			+ " WHERE c.qstmtStmtLayoutDetailPk.companyCd = :companyCd"
@@ -253,6 +256,13 @@ public class JpaLayoutMasterDetailRepository extends JpaRepository implements La
 	public List<LayoutMasterDetail> getDetailsBefore(String companyCd, String stmtCd, String historyId) {
 		return this.queryProxy().query(SELECT_ALL_DETAILS_BEFORE1, QstmtStmtLayoutDetail.class)
 				.setParameter("companyCd", companyCd).setParameter("stmtCd", stmtCd).setParameter("historyId", historyId)
+				.getList(c -> toDomain(c));
+	}
+
+	@Override
+	public List<LayoutMasterDetail> getDetailsBefore(String companyCd, String stmtCd) {
+		return this.queryProxy().query(SELECT_ALL_DETAILS_BEFORE2, QstmtStmtLayoutDetail.class)
+				.setParameter("companyCd", companyCd).setParameter("stmtCd", stmtCd)
 				.getList(c -> toDomain(c));
 	}
 }

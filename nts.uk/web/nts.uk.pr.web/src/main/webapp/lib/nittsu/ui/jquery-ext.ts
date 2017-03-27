@@ -1,3 +1,5 @@
+/// <reference path="../reference.ts"/>
+
 interface JQuery {
     ntsPopup(args: any): JQuery;
     ntsError(action: string, param?: any): any;
@@ -27,6 +29,7 @@ module nts.uk.ui.jqueryExtentions {
             }
 
         }
+
         //function for set and clear error
         function processErrorOnItem($control: JQuery, message: string, action: string) {
             switch (action) {
@@ -37,6 +40,7 @@ module nts.uk.ui.jqueryExtentions {
                     return clearErrors($control);
             }
         }
+
         function setError($control: JQuery, message: string) {
             $control.data(DATA_HAS_ERROR, true);
             ui.errors.add({
@@ -232,41 +236,41 @@ module nts.uk.ui.jqueryExtentions {
                 detail: {},
             });
             var currentColumns = $grid.igGrid("option", "columns");
-            
+
             currentColumns.push({
-                dataType: "bool", columnCssClass: "delete-column", headerText: "test", key: param.deleteField, 
-                    width: 30, formatter: function createButton(deleteField, row) {
+                dataType: "bool", columnCssClass: "delete-column", headerText: "test", key: param.deleteField,
+                width: 30, formatter: function createButton(deleteField, row) {
                     var primaryKey = $grid.igGrid("option", "primaryKey");
                     var result = $('<input class="delete-button" value="delete" type="button"/>');
                     result.attr("data-value", row[primaryKey]);
                     if (deleteField === true && primaryKey !== null && !util.isNullOrUndefined(row[primaryKey])) {
-                        return result[0].outerHTML ;
+                        return result[0].outerHTML;
                     } else {
                         return result.attr("disabled", "disabled")[0].outerHTML;
                     }
-                }    
+                }
             });
             $grid.igGrid("option", "columns", currentColumns);
-            
-            $grid.on( "click", ".delete-button", function() {
+
+            $grid.on("click", ".delete-button", function() {
                 var key = $(this).attr("data-value");
                 var primaryKey = $grid.igGrid("option", "primaryKey");
                 var source = _.cloneDeep($grid.igGrid("option", "dataSource"));
-                _.remove(source, function(current){
-                    return _.isEqual(current[primaryKey].toString(), key.toString());      
+                _.remove(source, function(current) {
+                    return _.isEqual(current[primaryKey].toString(), key.toString());
                 });
-                if(!util.isNullOrUndefined(param.sourceTarget) && typeof param.sourceTarget === "function"){
+                if (!util.isNullOrUndefined(param.sourceTarget) && typeof param.sourceTarget === "function") {
                     param.sourceTarget(source);
-                }else {
+                } else {
                     $grid.igGrid("option", "dataSource", source);
-                    $grid.igGrid("dataBind");    
+                    $grid.igGrid("dataBind");
                 }
                 itemDeletedEvent.detail["target"] = key;
                 document.getElementById($grid.attr('id')).dispatchEvent(itemDeletedEvent);
             });
-            
+
         }
-        
+
         function setupSelecting($grid: JQuery) {
             setupDragging($grid);
             setupSelectingEvents($grid);
@@ -550,7 +554,12 @@ module nts.uk.ui.jqueryExtentions {
                     .addClass("overlay-" + direction)
                     .appendTo($control);
                 $control.hide();
+
             });
+
+            // Hiding when click outside
+            $("html").on("mouseup keypress", {controls: controls} , hideBinding);
+
             return controls;
         }
 
@@ -558,7 +567,17 @@ module nts.uk.ui.jqueryExtentions {
             controls.each(function() {
                 $(this).remove();
             });
+            
+            // Unbind Hiding when click outside
+            $("html").off("mouseup keypress", hideBinding);
             return controls;
+        }
+        
+        function hideBinding(e): JQuery {
+            e.data.controls.each(function() {
+                $(this).hide();
+            });
+            return e.data.controls;
         }
 
         function show(controls: JQuery): JQuery {
@@ -581,6 +600,7 @@ module nts.uk.ui.jqueryExtentions {
             });
             return controls;
         }
+        
 
         function hide(controls: JQuery): JQuery {
             controls.each(function() {
@@ -744,6 +764,7 @@ module nts.uk.ui.jqueryExtentions {
         }
 
         function init(control: JQuery): JQuery {
+            $("html").addClass("sidebar-html");
             control.find("div[role=tabpanel]").hide();
             control.on("click", "#sidebar-area .navigator a", function(e) {
                 e.preventDefault();

@@ -29,9 +29,10 @@
 						<button data-bind="click: remove">Remove Item</button>
 						<button data-bind="click: selectAll">Select All</button>
 						<button data-bind="click: deselectAll">Deselect All</button>
+						<button data-bind="click: init">Init ListBox</button>
 						<span data-bind="ntsCheckBox: { checked: isEnable }">Enable</span>
 						<span data-bind="ntsCheckBox: { checked: isMulti }">Multiple for list 1</span>
-						<span data-bind="ntsCheckBox: { checked: isValidate }">Validate</span>
+						<span data-bind="ntsCheckBox: { checked: isValidate }">Selected value changable</span>
 						<br />
 						<!-- Multiple is false -->
 						<b>Single Selected:</b><span data-bind="text: selectedCode()"></span><br/>
@@ -41,8 +42,8 @@
 						<br />
 						<div id="list-box" data-bind="ntsListBox: {
 											options: itemList,
-											primaryKey: 'code',
-											primaryText: 'name',
+											optionsValue: 'code',
+											optionsText: 'name',
 											multiple: isMulti(),
 											value: selectedCodes,
 											enable: isEnable(),
@@ -56,8 +57,8 @@
 											
 						<div id="list-box2" data-bind="ntsListBox: {
 											options: itemList,
-											primaryKey: 'code',
-											primaryText: 'name',
+											optionsValue: 'code',
+											optionsText: 'name',
 											multiple: false,
 											value: selectedCode,
 											enable: isEnable(),
@@ -74,8 +75,8 @@
 									<h2>HTML</h2>
 <pre><![CDATA[<div id="list-box" data-bind="ntsListBox: {
 	options: itemList,
-	primaryKey: 'code',
-	primaryText: 'name',
+	optionsValue: 'code',
+	optionsText: 'name',
 	multiple: true,
 	value: selectedCodes,
 	enable: isEnable(),
@@ -105,14 +106,14 @@
 												</td>
 											</tr>
 											<tr>
-												<td>optionsValue / primaryKey<br/><i>(optional)</i></td>
+												<td>optionsValue<br/><i>(optional)</i></td>
 												<td>
 													<b>Type:</b> string<br/>
 													Field in data will be set as ListBox value. If null object will be set as value
 												</td>
 											</tr>
 											<tr>
-												<td>optionsText / primaryText</td>
+												<td>optionsText</td>
 												<td>
 													<b>Type:</b> string<br/>
 													Field in data will be set as ListBox text
