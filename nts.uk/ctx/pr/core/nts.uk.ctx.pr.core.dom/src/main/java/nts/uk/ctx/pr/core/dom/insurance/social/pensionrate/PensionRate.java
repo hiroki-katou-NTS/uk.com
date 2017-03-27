@@ -15,7 +15,6 @@ import nts.arc.layer.dom.DomainObject;
 import nts.arc.primitive.PrimitiveValue;
 import nts.arc.time.YearMonth;
 import nts.gul.text.IdentifierUtil;
-import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.base.simplehistory.History;
 import nts.uk.ctx.pr.core.dom.insurance.CalculateMethod;
 import nts.uk.ctx.pr.core.dom.insurance.CommonAmount;
@@ -38,7 +37,7 @@ public class PensionRate extends DomainObject implements History<PensionRate> {
 	private String historyId;
 
 	/** The company code. */
-	private CompanyCode companyCode;
+	private String companyCode;
 
 	/** The office code. */
 	private OfficeCode officeCode;
@@ -200,7 +199,7 @@ public class PensionRate extends DomainObject implements History<PensionRate> {
 	 * @param startYearMonth the start year month
 	 * @return the pension rate
 	 */
-	public static final PensionRate createWithIntial(CompanyCode companyCode, OfficeCode officeCode,
+	public static final PensionRate createWithIntial(String companyCode, OfficeCode officeCode,
 			YearMonth startYearMonth) {
 		PensionRate pensionRate = new PensionRate();
 		pensionRate.companyCode = companyCode;

@@ -9,7 +9,6 @@ import java.util.stream.Collectors;
 
 import nts.arc.time.YearMonth;
 import nts.gul.collection.LazyList;
-import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 import nts.uk.ctx.pr.core.dom.wagetable.DemensionNo;
 import nts.uk.ctx.pr.core.dom.wagetable.ElementId;
@@ -51,8 +50,8 @@ public class JpaWtHistoryGetMemento implements WtHistoryGetMemento {
 	 * getCompanyCode()
 	 */
 	@Override
-	public CompanyCode getCompanyCode() {
-		return new CompanyCode(this.typeValue.getQwtmtWagetableHistPK().getCcd());
+	public String getCompanyCode() {
+		return this.typeValue.getQwtmtWagetableHistPK().getCcd();
 	}
 
 	/*

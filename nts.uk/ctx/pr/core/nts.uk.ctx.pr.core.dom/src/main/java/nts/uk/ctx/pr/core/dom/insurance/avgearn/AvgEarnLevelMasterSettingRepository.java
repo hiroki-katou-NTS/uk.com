@@ -7,8 +7,6 @@ package nts.uk.ctx.pr.core.dom.insurance.avgearn;
 import java.util.List;
 import java.util.Optional;
 
-import nts.uk.ctx.core.dom.company.CompanyCode;
-
 /**
  * The Interface AvgEarnLevelMasterSettingRepository.
  */
@@ -42,7 +40,7 @@ public interface AvgEarnLevelMasterSettingRepository {
 	 * @param companyCode the company code
 	 * @return the list
 	 */
-	List<AvgEarnLevelMasterSetting> findAll(CompanyCode companyCode);
+	List<AvgEarnLevelMasterSetting> findAll(String companyCode);
 
 	/**
 	 * Find by id.

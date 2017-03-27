@@ -127,8 +127,7 @@ public class UnitPriceHistoryWs extends SimpleHistoryWs<UnitPrice, UnitPriceHist
 	@POST
 	public List<MasterModel> loadMasterModelList() {
 		// Get list of unit price.
-		List<UnitPrice> unitPrices = this.unitPriceRepo
-				.findAll(new CompanyCode(AppContexts.user().companyCode()));
+		List<UnitPrice> unitPrices = this.unitPriceRepo.findAll(AppContexts.user().companyCode());
 
 		// Get list of unit price history.
 		List<UnitPriceHistory> unitPriceHistories = this.unitPriceHistoryRepo

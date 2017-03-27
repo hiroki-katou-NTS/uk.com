@@ -5,6 +5,7 @@
 package nts.uk.ctx.pr.core.ws.wagetable.dto;
 
 import lombok.Data;
+import nts.uk.ctx.pr.core.app.wagetable.command.dto.WtHistoryDto;
 
 /**
  * The Class WageTableModel.

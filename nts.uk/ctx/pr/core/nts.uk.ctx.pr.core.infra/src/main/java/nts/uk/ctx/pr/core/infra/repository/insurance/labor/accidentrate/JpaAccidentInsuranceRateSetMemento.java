@@ -8,7 +8,6 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Set;
 
-import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.AccidentInsuranceRateSetMemento;
 import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.InsuBizRateItem;
@@ -59,11 +58,11 @@ public class JpaAccidentInsuranceRateSetMemento implements AccidentInsuranceRate
 	 * company.CompanyCode)
 	 */
 	@Override
-	public void setCompanyCode(CompanyCode companyCode) {
+	public void setCompanyCode(String companyCode) {
 		for (int index = BusinessTypeEnum.Biz1St.index; index <= BusinessTypeEnum.Biz10Th.index; index++) {
 			QismtWorkAccidentInsu itemI = this.typeValue.get(index);
 			QismtWorkAccidentInsuPK pk = itemI.getQismtWorkAccidentInsuPK();
-			pk.setCcd(companyCode.v());
+			pk.setCcd(companyCode);
 			itemI.setQismtWorkAccidentInsuPK(pk);
 			this.typeValue.set(index, itemI);
 		}

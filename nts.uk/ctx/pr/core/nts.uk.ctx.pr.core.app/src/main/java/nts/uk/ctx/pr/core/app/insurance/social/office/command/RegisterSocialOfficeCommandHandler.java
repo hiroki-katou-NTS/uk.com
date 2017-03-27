@@ -10,7 +10,6 @@ import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.social.SocialInsuranceOffice;
 import nts.uk.ctx.pr.core.dom.insurance.social.SocialInsuranceOfficeRepository;
 import nts.uk.ctx.pr.core.dom.insurance.social.service.SocialInsuranceOfficeService;
@@ -20,7 +19,8 @@ import nts.uk.shr.com.context.AppContexts;
  * The Class RegisterSocialOfficeCommandHandler.
  */
 @Stateless
-public class RegisterSocialOfficeCommandHandler extends CommandHandler<RegisterSocialOfficeCommand> {
+public class RegisterSocialOfficeCommandHandler
+		extends CommandHandler<RegisterSocialOfficeCommand> {
 
 	/** The insurance social service. */
 	@Inject
@@ -42,7 +42,7 @@ public class RegisterSocialOfficeCommandHandler extends CommandHandler<RegisterS
 	protected void handle(CommandHandlerContext<RegisterSocialOfficeCommand> context) {
 		RegisterSocialOfficeCommand command = context.getCommand();
 		// Get the current company code.
-		CompanyCode companyCode = new CompanyCode(AppContexts.user().companyCode());
+		String companyCode = AppContexts.user().companyCode();
 
 		// convert to domain
 		SocialInsuranceOffice socialInsuranceOffice = command.toDomain(companyCode);

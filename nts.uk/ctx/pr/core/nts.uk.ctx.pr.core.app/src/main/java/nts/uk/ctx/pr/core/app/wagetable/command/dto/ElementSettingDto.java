@@ -35,4 +35,7 @@ public class ElementSettingDto {
 	/** The interval. */
 	private BigDecimal interval;
 
+	/** The demension name. */
+	private String demensionName;
+
 }

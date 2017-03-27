@@ -15,7 +15,6 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.app.insurance.social.office.command.DeleteSocialOfficeCommand;
 import nts.uk.ctx.pr.core.app.insurance.social.office.command.DeleteSocialOfficeCommandHandler;
 import nts.uk.ctx.pr.core.app.insurance.social.office.command.RegisterSocialOfficeCommand;
@@ -26,7 +25,6 @@ import nts.uk.ctx.pr.core.app.insurance.social.office.find.HistoryDto;
 import nts.uk.ctx.pr.core.app.insurance.social.office.find.SocialInsuranceOfficeDto;
 import nts.uk.ctx.pr.core.app.insurance.social.office.find.SocialInsuranceOfficeFinder;
 import nts.uk.ctx.pr.core.app.insurance.social.office.find.SocialInsuranceOfficeItemDto;
-import nts.uk.ctx.pr.core.app.insurance.social.pensionrate.command.RegisterPensionCommandHandler;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -50,10 +48,6 @@ public class SocialInsuranceOfficeWs extends WebService {
 	@Inject
 	private DeleteSocialOfficeCommandHandler deleteSocialOfficeCommandHandler;
 
-	/** The register pension command handler. */
-	@Inject
-	private RegisterPensionCommandHandler registerPensionCommandHandler;
-
 	/** The social insurance office finder. */
 	@Inject
 	private SocialInsuranceOfficeFinder socialInsuranceOfficeFinder;
@@ -66,7 +60,7 @@ public class SocialInsuranceOfficeWs extends WebService {
 	@POST
 	@Path("findall")
 	public List<SocialInsuranceOfficeItemDto> findAll() {
-		CompanyCode companyCode = new CompanyCode(AppContexts.user().companyCode());
+		String companyCode = AppContexts.user().companyCode();
 
 		return socialInsuranceOfficeFinder.findAll(companyCode);
 	}
@@ -79,7 +73,7 @@ public class SocialInsuranceOfficeWs extends WebService {
 	@POST
 	@Path("findall/detail")
 	public List<SocialInsuranceOfficeDto> findAllDetail() {
-		CompanyCode companyCode = new CompanyCode(AppContexts.user().companyCode());
+		String companyCode = AppContexts.user().companyCode();
 
 		return socialInsuranceOfficeFinder.findAllDetail(companyCode);
 	}
@@ -94,7 +88,7 @@ public class SocialInsuranceOfficeWs extends WebService {
 	@POST
 	@Path("find/{officeCode}")
 	public SocialInsuranceOfficeDto findOffice(@PathParam("officeCode") String officeCode) {
-		CompanyCode companyCode = new CompanyCode(AppContexts.user().companyCode());
+		String companyCode = AppContexts.user().companyCode();
 
 		return socialInsuranceOfficeFinder.find(companyCode, new OfficeCode(officeCode)).get();
 	}

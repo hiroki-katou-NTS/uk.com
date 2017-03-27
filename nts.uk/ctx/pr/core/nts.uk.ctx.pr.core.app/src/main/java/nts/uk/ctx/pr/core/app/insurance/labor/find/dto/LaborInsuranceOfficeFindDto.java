@@ -6,7 +6,6 @@ package nts.uk.ctx.pr.core.app.insurance.labor.find.dto;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.Address;
 import nts.uk.ctx.pr.core.dom.insurance.CitySign;
 import nts.uk.ctx.pr.core.dom.insurance.KanaAddress;
@@ -97,7 +96,7 @@ public class LaborInsuranceOfficeFindDto implements LaborInsuranceOfficeSetMemen
 	 * setCompanyCode(nts.uk.ctx.core.dom.company.CompanyCode)
 	 */
 	@Override
-	public void setCompanyCode(CompanyCode companyCode) {
+	public void setCompanyCode(String companyCode) {
 		// Do nothing.
 	}
 

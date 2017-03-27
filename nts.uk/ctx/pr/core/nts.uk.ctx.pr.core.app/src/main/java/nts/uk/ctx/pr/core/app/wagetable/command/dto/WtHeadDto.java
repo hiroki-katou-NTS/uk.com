@@ -9,7 +9,6 @@ import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.wagetable.DemensionNo;
 import nts.uk.ctx.pr.core.dom.wagetable.ElementCount;
 import nts.uk.ctx.pr.core.dom.wagetable.ElementType;
@@ -84,8 +83,8 @@ public class WtHeadDto {
 		 * getCompanyCode()
 		 */
 		@Override
-		public CompanyCode getCompanyCode() {
-			return new CompanyCode(AppContexts.user().companyCode());
+		public String getCompanyCode() {
+			return AppContexts.user().companyCode();
 		}
 
 		/*

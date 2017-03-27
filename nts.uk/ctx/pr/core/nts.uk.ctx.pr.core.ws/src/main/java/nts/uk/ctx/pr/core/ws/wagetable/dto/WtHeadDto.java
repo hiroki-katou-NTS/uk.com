@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import lombok.Data;
-import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.wagetable.ElementCount;
 import nts.uk.ctx.pr.core.dom.wagetable.WtCode;
 import nts.uk.ctx.pr.core.dom.wagetable.WtHeadSetMemento;
@@ -45,7 +44,7 @@ public class WtHeadDto implements WtHeadSetMemento {
 	 * ctx.core.dom.company.CompanyCode)
 	 */
 	@Override
-	public void setCompanyCode(CompanyCode companyCode) {
+	public void setCompanyCode(String companyCode) {
 		// Do nothing.
 	}
 

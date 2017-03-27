@@ -22,6 +22,7 @@ import nts.uk.ctx.pr.core.app.wagetable.command.WtInitCommand;
 import nts.uk.ctx.pr.core.app.wagetable.command.WtInitCommandHandler;
 import nts.uk.ctx.pr.core.app.wagetable.command.WtUpdateCommand;
 import nts.uk.ctx.pr.core.app.wagetable.command.WtUpdateCommandHandler;
+import nts.uk.ctx.pr.core.app.wagetable.command.dto.WtHistoryDto;
 import nts.uk.ctx.pr.core.dom.base.simplehistory.SimpleHistoryBaseService;
 import nts.uk.ctx.pr.core.dom.wagetable.DemensionNo;
 import nts.uk.ctx.pr.core.dom.wagetable.ElementType;
@@ -50,13 +51,11 @@ import nts.uk.ctx.pr.core.ws.base.simplehistory.dto.MasterModel;
 import nts.uk.ctx.pr.core.ws.wagetable.dto.DemensionItemDto;
 import nts.uk.ctx.pr.core.ws.wagetable.dto.ElementItemDto;
 import nts.uk.ctx.pr.core.ws.wagetable.dto.ElementSettingDto;
-import nts.uk.ctx.pr.core.ws.wagetable.dto.ElementTypeDto;
 import nts.uk.ctx.pr.core.ws.wagetable.dto.SettingInfoInModel;
 import nts.uk.ctx.pr.core.ws.wagetable.dto.SettingInfoOutModel;
 import nts.uk.ctx.pr.core.ws.wagetable.dto.WageTableModel;
 import nts.uk.ctx.pr.core.ws.wagetable.dto.WtElementDto;
 import nts.uk.ctx.pr.core.ws.wagetable.dto.WtHeadDto;
-import nts.uk.ctx.pr.core.ws.wagetable.dto.WtHistoryDto;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -128,7 +127,7 @@ public class WageTableWs extends SimpleHistoryWs<WtHead, WtHistory> {
 			WtHistory wageTableHistory = optWageTableHistory.get();
 
 			Optional<WtHead> optWageTable = this.wtHeadRepo.findByCode(
-					wageTableHistory.getCompanyCode().v(), wageTableHistory.getWageTableCode().v());
+					wageTableHistory.getCompanyCode(), wageTableHistory.getWageTableCode().v());
 
 			// Check exsit.
 			if (optWageTable.isPresent()) {
@@ -346,28 +345,6 @@ public class WageTableWs extends SimpleHistoryWs<WtHead, WtHistory> {
 		items.add(new DemensionItemDto(ElementType.ITEM_DATA_REF));
 
 		return items;
-	}
-
-	private static final List<ElementTypeDto> ELEMENT_TYPE_DTO;
-	static {
-		ELEMENT_TYPE_DTO = new ArrayList<>();
-		for (ElementType type : ElementType.values()) {
-			ElementTypeDto dto = ElementTypeDto.builder().value(type.value)
-					.isCodeMode(type.isCodeMode).isRangeMode(type.isRangeMode)
-					.displayName(type.displayName).build();
-			ELEMENT_TYPE_DTO.add(dto);
-		}
-	}
-
-	/**
-	 * Load element type dto.
-	 *
-	 * @return the list
-	 */
-	@POST
-	@Path("elements")
-	public List<ElementTypeDto> loadElementTypeDto() {
-		return ELEMENT_TYPE_DTO;
 	}
 
 	/*

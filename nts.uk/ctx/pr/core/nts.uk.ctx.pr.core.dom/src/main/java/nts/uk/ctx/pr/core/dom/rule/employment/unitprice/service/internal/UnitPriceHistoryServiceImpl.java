@@ -14,7 +14,6 @@ import nts.arc.error.BusinessException;
 import nts.arc.time.YearMonth;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.text.StringUtil;
-import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.base.simplehistory.SimpleHistoryRepository;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceCode;
@@ -48,7 +47,8 @@ public class UnitPriceHistoryServiceImpl extends UnitPriceHistoryService {
 	public void deleteHistory(String uuid) {
 		UnitPriceHistory history = this.unitPriceHistoryRepo.findHistoryByUuid(uuid).get();
 		List<UnitPriceHistory> unitPriceHistoryList = this.unitPriceHistoryRepo
-				.findAllHistoryByMasterCode(AppContexts.user().companyCode(), history.getMasterCode().v());
+				.findAllHistoryByMasterCode(AppContexts.user().companyCode(),
+						history.getMasterCode().v());
 
 		super.deleteHistory(uuid);
 
@@ -66,7 +66,8 @@ public class UnitPriceHistoryServiceImpl extends UnitPriceHistoryService {
 	 * employment.unitprice.UnitPriceHistory)
 	 */
 	public void validateRequiredItem(UnitPriceHistory history) {
-		if (history.getUnitPriceCode() == null || StringUtil.isNullOrEmpty(history.getUnitPriceCode().v(), true)
+		if (history.getUnitPriceCode() == null
+				|| StringUtil.isNullOrEmpty(history.getUnitPriceCode().v(), true)
 				|| history.getApplyRange() == null || history.getBudget() == null) {
 			throw new BusinessException("ER001");
 		}
@@ -90,7 +91,8 @@ public class UnitPriceHistoryServiceImpl extends UnitPriceHistoryService {
 	/**
 	 * Checks if is valid date range.
 	 *
-	 * @param unitPriceHistory the unit price history
+	 * @param unitPriceHistory
+	 *            the unit price history
 	 * @return true, if is valid date range
 	 */
 	private boolean isValidDateRange(UnitPriceHistory unitPriceHistory) {
@@ -105,14 +107,16 @@ public class UnitPriceHistoryServiceImpl extends UnitPriceHistoryService {
 	/**
 	 * Checks if is later than last history.
 	 *
-	 * @param unitPriceHistory the unit price history
+	 * @param unitPriceHistory
+	 *            the unit price history
 	 * @return true, if is later than last history
 	 */
 	private boolean isLaterThanLastHistory(UnitPriceHistory unitPriceHistory) {
 		boolean isValid = true;
 		// Find last history
-		Optional<UnitPriceHistory> lastHistory = this.unitPriceHistoryRepo.findLastestHistoryByMasterCode(
-				unitPriceHistory.getCompanyCode().v(), unitPriceHistory.getUnitPriceCode().v());
+		Optional<UnitPriceHistory> lastHistory = this.unitPriceHistoryRepo
+				.findLastestHistoryByMasterCode(unitPriceHistory.getCompanyCode(),
+						unitPriceHistory.getUnitPriceCode().v());
 
 		// Compare with last history.
 		if (lastHistory.isPresent() && lastHistory.get().getApplyRange().getStartMonth().nextMonth()
@@ -125,7 +129,8 @@ public class UnitPriceHistoryServiceImpl extends UnitPriceHistoryService {
 	/**
 	 * Checks if is end date greater than start date.
 	 *
-	 * @param dateRange the date range
+	 * @param dateRange
+	 *            the date range
 	 * @return true, if is end date greater than start date
 	 */
 	private boolean isEndDateGreaterThanStartDate(MonthRange dateRange) {
@@ -150,8 +155,9 @@ public class UnitPriceHistoryServiceImpl extends UnitPriceHistoryService {
 	 * createInitalHistory(java.lang.String, java.lang.String)
 	 */
 	@Override
-	public UnitPriceHistory createInitalHistory(String companyCode, String masterCode, YearMonth startYearMonth) {
-		return UnitPriceHistory.createWithIntial(new CompanyCode(companyCode), new UnitPriceCode(masterCode),
+	public UnitPriceHistory createInitalHistory(String companyCode, String masterCode,
+			YearMonth startYearMonth) {
+		return UnitPriceHistory.createWithIntial(companyCode, new UnitPriceCode(masterCode),
 				startYearMonth);
 	}
 }

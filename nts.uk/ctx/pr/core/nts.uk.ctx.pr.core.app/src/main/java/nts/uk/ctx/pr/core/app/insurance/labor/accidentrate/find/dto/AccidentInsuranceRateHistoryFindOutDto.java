@@ -8,7 +8,6 @@ import java.util.Set;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.AccidentInsuranceRateSetMemento;
 import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.InsuBizRateItem;
@@ -49,7 +48,7 @@ public class AccidentInsuranceRateHistoryFindOutDto implements AccidentInsurance
 	 * company.CompanyCode)
 	 */
 	@Override
-	public void setCompanyCode(CompanyCode companyCode) {
+	public void setCompanyCode(String companyCode) {
 		// TODO Auto-generated method stub
 
 	}

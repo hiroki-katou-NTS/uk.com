@@ -4,7 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.infra.repository.insurance.labor.businesstype;
 
-import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.BusinessName;
 import nts.uk.ctx.pr.core.dom.insurance.labor.businesstype.BusinessTypeEnum;
 import nts.uk.ctx.pr.core.dom.insurance.labor.businesstype.InsuranceBusinessTypeSetMemento;
@@ -41,8 +40,8 @@ public class JpaInsuranceBusinessTypeSetMemento implements InsuranceBusinessType
 	 * company.CompanyCode)
 	 */
 	@Override
-	public void setCompanyCode(CompanyCode companyCode) {
-		this.typeValue.setCcd(companyCode.v());
+	public void setCompanyCode(String companyCode) {
+		this.typeValue.setCcd(companyCode);
 
 	}
 
@@ -69,43 +68,43 @@ public class JpaInsuranceBusinessTypeSetMemento implements InsuranceBusinessType
 	@Override
 	public void setBizName(BusinessName name) {
 		switch (this.type) {
-		
+
 		case Biz1St:
 			this.typeValue.setBizName01(name.v());
 			break;
-			
+
 		case Biz2Nd:
 			this.typeValue.setBizName02(name.v());
 			break;
-			
+
 		case Biz3Rd:
 			this.typeValue.setBizName03(name.v());
 			break;
-			
+
 		case Biz4Th:
 			this.typeValue.setBizName04(name.v());
 			break;
-			
+
 		case Biz5Th:
 			this.typeValue.setBizName05(name.v());
 			break;
-			
+
 		case Biz6Th:
 			this.typeValue.setBizName06(name.v());
 			break;
-			
+
 		case Biz7Th:
 			this.typeValue.setBizName07(name.v());
 			break;
-			
+
 		case Biz8Th:
 			this.typeValue.setBizName08(name.v());
 			break;
-			
+
 		case Biz9Th:
 			this.typeValue.setBizName09(name.v());
 			break;
-			
+
 		case Biz10Th:
 			this.typeValue.setBizName10(name.v());
 			break;

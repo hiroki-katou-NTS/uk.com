@@ -9,7 +9,6 @@ import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.core.dom.util.PrimitiveUtil;
 import nts.uk.ctx.pr.core.dom.insurance.CalculateMethod;
 import nts.uk.ctx.pr.core.dom.insurance.CommonAmount;
@@ -24,10 +23,25 @@ import nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionRate;
 import nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionRateGetMemento;
 import nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionRateRounding;
 
+/**
+ * The Class UpdatePensionCommand.
+ */
 @Getter
 @Setter
 public class UpdatePensionCommand extends PensionBaseCommand {
-	public PensionRate toDomain(CompanyCode companyCode, String historyId, OfficeCode officeCode) {
+
+	/**
+	 * To domain.
+	 *
+	 * @param companyCode
+	 *            the company code
+	 * @param historyId
+	 *            the history id
+	 * @param officeCode
+	 *            the office code
+	 * @return the pension rate
+	 */
+	public PensionRate toDomain(String companyCode, String historyId, OfficeCode officeCode) {
 		UpdatePensionCommand command = this;
 		PensionRate updatedPensionRate = new PensionRate(new PensionRateGetMemento() {
 
@@ -42,7 +56,8 @@ public class UpdatePensionCommand extends PensionBaseCommand {
 					PensionChargeRateItem pensionChargeRateItem = new PensionChargeRateItem();
 					pensionChargeRateItem.setCompanyRate(new Ins2Rate(dto.getCompanyRate()));
 					pensionChargeRateItem.setPersonalRate(new Ins2Rate(dto.getPersonalRate()));
-					return new PensionPremiumRateItem(dto.getPayType(), dto.getGenderType(), pensionChargeRateItem);
+					return new PensionPremiumRateItem(dto.getPayType(), dto.getGenderType(),
+							pensionChargeRateItem);
 				}).collect(Collectors.toSet());
 			}
 
@@ -65,20 +80,24 @@ public class UpdatePensionCommand extends PensionBaseCommand {
 			public Set<FundRateItem> getFundRateItems() {
 				return command.getFundRateItems().stream().map(dto -> {
 					PensionChargeRateItem burdenPensionChargeRateItem = new PensionChargeRateItem();
-					burdenPensionChargeRateItem.setCompanyRate(new Ins2Rate(dto.getBurdenChargeCompanyRate()));
-					burdenPensionChargeRateItem.setPersonalRate(new Ins2Rate(dto.getBurdenChargePersonalRate()));
+					burdenPensionChargeRateItem
+							.setCompanyRate(new Ins2Rate(dto.getBurdenChargeCompanyRate()));
+					burdenPensionChargeRateItem
+							.setPersonalRate(new Ins2Rate(dto.getBurdenChargePersonalRate()));
 
 					PensionChargeRateItem exemptionPensionChargeRateItem = new PensionChargeRateItem();
-					exemptionPensionChargeRateItem.setCompanyRate(new Ins2Rate(dto.getExemptionChargeCompanyRate()));
-					exemptionPensionChargeRateItem.setPersonalRate(new Ins2Rate(dto.getExemptionChargePersonalRate()));
+					exemptionPensionChargeRateItem
+							.setCompanyRate(new Ins2Rate(dto.getExemptionChargeCompanyRate()));
+					exemptionPensionChargeRateItem
+							.setPersonalRate(new Ins2Rate(dto.getExemptionChargePersonalRate()));
 
-					return new FundRateItem(dto.getPayType(), dto.getGenderType(), burdenPensionChargeRateItem,
-							exemptionPensionChargeRateItem);
+					return new FundRateItem(dto.getPayType(), dto.getGenderType(),
+							burdenPensionChargeRateItem, exemptionPensionChargeRateItem);
 				}).collect(Collectors.toSet());
 			}
 
 			@Override
-			public CompanyCode getCompanyCode() {
+			public String getCompanyCode() {
 				return companyCode;
 			}
 

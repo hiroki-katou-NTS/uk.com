@@ -1,12 +1,11 @@
 /******************************************************************
- * Copyright (c) 2016 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.core.app.insurance.labor.command.dto;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.Address;
 import nts.uk.ctx.pr.core.dom.insurance.CitySign;
 import nts.uk.ctx.pr.core.dom.insurance.KanaAddress;
@@ -27,10 +26,6 @@ import nts.uk.shr.com.primitive.Memo;
 
 /**
  * The Class LaborInsuranceOfficeDto.
- */
-
-/**
- * Instantiates a new labor insurance office dto.
  */
 @Getter
 @Setter
@@ -290,8 +285,8 @@ public class LaborInsuranceOfficeDto {
 		 * #getCompanyCode()
 		 */
 		@Override
-		public CompanyCode getCompanyCode() {
-			return new CompanyCode(companyCode);
+		public String getCompanyCode() {
+			return companyCode;
 		}
 
 		/*

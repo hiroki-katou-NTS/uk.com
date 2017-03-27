@@ -4,7 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.infra.repository.insurance.labor.businesstype;
 
-import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.BusinessName;
 import nts.uk.ctx.pr.core.dom.insurance.labor.businesstype.BusinessTypeEnum;
 import nts.uk.ctx.pr.core.dom.insurance.labor.businesstype.InsuranceBusinessTypeGetMemento;
@@ -38,8 +37,8 @@ public class JpaInsuranceBusinessTypeGetMemento implements InsuranceBusinessType
 	 * InsuranceBusinessTypeGetMemento#getCompanyCode()
 	 */
 	@Override
-	public CompanyCode getCompanyCode() {
-		return new CompanyCode(this.typeValue.getCcd());
+	public String getCompanyCode() {
+		return this.typeValue.getCcd();
 	}
 
 	/*

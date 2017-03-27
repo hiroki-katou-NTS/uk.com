@@ -4,11 +4,9 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.dom.wagetable.history.element;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 import lombok.Getter;
-import nts.arc.error.BusinessException;
 import nts.uk.ctx.pr.core.dom.wagetable.DemensionNo;
 import nts.uk.ctx.pr.core.dom.wagetable.ElementType;
 import nts.uk.ctx.pr.core.dom.wagetable.history.element.item.Item;

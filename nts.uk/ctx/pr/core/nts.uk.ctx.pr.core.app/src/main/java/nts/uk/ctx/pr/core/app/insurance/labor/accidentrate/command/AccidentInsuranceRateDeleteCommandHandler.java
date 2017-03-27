@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2016 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.core.app.insurance.labor.accidentrate.command;
@@ -12,19 +12,17 @@ import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.arc.time.DateTimeConstraints;
-import nts.arc.time.YearMonth;
 import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.AccidentInsuranceRate;
 import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.AccidentInsuranceRateRepository;
 import nts.uk.shr.com.context.AppContexts;
 import nts.uk.shr.com.context.LoginUserContext;
 
 /**
- * The Class AccidentInsuranceRateAddCommandHandler.
+ * The Class AccidentInsuranceRateDeleteCommandHandler.
  */
 @Stateless
 public class AccidentInsuranceRateDeleteCommandHandler
-	extends CommandHandler<AccidentInsuranceRateDeleteCommand> {
+		extends CommandHandler<AccidentInsuranceRateDeleteCommand> {
 
 	/** The accident insurance rate repo. */
 	@Inject
@@ -52,19 +50,19 @@ public class AccidentInsuranceRateDeleteCommandHandler
 
 		// get first data (remove)
 		Optional<AccidentInsuranceRate> optionalRemove = this.accidentInsuranceRateRepo
-			.findFirstData(companyCode);
+				.findFirstData(companyCode);
 
 		if (optionalRemove.isPresent() && optionalRemove.get().getHistoryId()
-			.equals(command.getAccidentInsuranceRateDeleteDto().getCode())) {
+				.equals(command.getAccidentInsuranceRateDeleteDto().getCode())) {
 
 			// history first
 			this.accidentInsuranceRateRepo.remove(companyCode,
-				command.getAccidentInsuranceRateDeleteDto().getCode(),
-				command.getAccidentInsuranceRateDeleteDto().getVersion());
+					command.getAccidentInsuranceRateDeleteDto().getCode(),
+					command.getAccidentInsuranceRateDeleteDto().getVersion());
 
 			// get first data (update)
 			Optional<AccidentInsuranceRate> optionalUpdate = this.accidentInsuranceRateRepo
-				.findFirstData(companyCode);
+					.findFirstData(companyCode);
 			if (optionalUpdate.isPresent()) {
 				optionalUpdate.get().setMaxDate();
 				this.accidentInsuranceRateRepo.update(optionalUpdate.get());

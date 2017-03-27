@@ -32,7 +32,7 @@ import nts.uk.shr.com.primitive.Memo;
 public class LaborInsuranceOffice extends DomainObject {
 
 	/** The company code. */
-	private CompanyCode companyCode;
+	private String companyCode;
 
 	/** The code. */
 	private OfficeCode code;

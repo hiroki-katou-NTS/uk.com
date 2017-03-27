@@ -8,7 +8,6 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 import nts.uk.ctx.pr.core.dom.wagetable.WtCode;
 import nts.uk.ctx.pr.core.dom.wagetable.history.WtHistorySetMemento;
@@ -50,9 +49,9 @@ public class JpaWtHistorySetMemento implements WtHistorySetMemento {
 	 * setCompanyCode(nts.uk.ctx.core.dom.company.CompanyCode)
 	 */
 	@Override
-	public void setCompanyCode(CompanyCode companyCode) {
+	public void setCompanyCode(String companyCode) {
 		QwtmtWagetableHistPK qwtmtWagetableHistPK = new QwtmtWagetableHistPK();
-		qwtmtWagetableHistPK.setCcd(companyCode.v());
+		qwtmtWagetableHistPK.setCcd(companyCode);
 		this.typeValue.setQwtmtWagetableHistPK(qwtmtWagetableHistPK);
 	}
 

@@ -14,7 +14,6 @@ import nts.arc.layer.dom.DomainObject;
 import nts.arc.primitive.PrimitiveValue;
 import nts.arc.time.YearMonth;
 import nts.gul.text.IdentifierUtil;
-import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.base.simplehistory.History;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 import nts.uk.ctx.pr.core.dom.wagetable.ElementType;
@@ -32,7 +31,7 @@ import nts.uk.ctx.pr.core.dom.wagetable.history.element.StepElementSetting;
 public class WtHistory extends DomainObject implements History<WtHistory> {
 
 	/** The company code. */
-	private CompanyCode companyCode;
+	private String companyCode;
 
 	/** The wage table code. */
 	private WtCode wageTableCode;
@@ -225,7 +224,7 @@ public class WtHistory extends DomainObject implements History<WtHistory> {
 	 *            the start year month
 	 * @return the wage table history
 	 */
-	public static final WtHistory createWithIntial(CompanyCode companyCode, WtCode wageTableCode,
+	public static final WtHistory createWithIntial(String companyCode, WtCode wageTableCode,
 			YearMonth startYearMonth) {
 		WtHistory history = new WtHistory();
 		history.companyCode = companyCode;

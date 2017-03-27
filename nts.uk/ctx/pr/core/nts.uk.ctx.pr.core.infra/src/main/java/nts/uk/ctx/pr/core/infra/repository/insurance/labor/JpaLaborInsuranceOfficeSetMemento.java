@@ -4,7 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.infra.repository.insurance.labor;
 
-import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.Address;
 import nts.uk.ctx.pr.core.dom.insurance.CitySign;
 import nts.uk.ctx.pr.core.dom.insurance.KanaAddress;
@@ -50,9 +49,9 @@ public class JpaLaborInsuranceOfficeSetMemento implements LaborInsuranceOfficeSe
 	 * setCompanyCode(nts.uk.ctx.core.dom.company.CompanyCode)
 	 */
 	@Override
-	public void setCompanyCode(CompanyCode companyCode) {
+	public void setCompanyCode(String companyCode) {
 		QismtLaborInsuOfficePK pk = new QismtLaborInsuOfficePK();
-		pk.setCcd(companyCode.v());
+		pk.setCcd(companyCode);
 		this.typeValue.setQismtLaborInsuOfficePK(pk);
 	}
 
