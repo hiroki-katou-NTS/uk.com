@@ -96,7 +96,7 @@ public class AccidentInsuranceRateServiceImpl implements AccidentInsuranceRateSe
 	@Override
 	public void validateDateRangeUpdate(AccidentInsuranceRate rate) {
 		if (getValidateRangeUpdate(rate)) {
-			throw new BusinessException("ER010");
+			throw new BusinessException("ER023");
 		}
 	}
 
