@@ -14,8 +14,8 @@
 		<ui:define name="content">
 			<div id="functions-area">
 				<div class="btn-group-left">
-					<button id="D_BTN_001">新規</button>
-					<button id="D_BTN_002">登録</button>
+					<button id="D_BTN_001" data-bind="click: saveData">新規</button>
+					<button id="D_BTN_002" data-bind="click: closeDialog">閉じる</button>
 				</div>
 				<div class="clear-fix"></div>
 			</div>
@@ -49,7 +49,7 @@
 					<label id="D_LBL_006" class="label">支払月の</label>
 					<div id="D_SEL_002"
 						data-bind="ntsComboBox: {
-						options: sel001Data,
+						options: sel002Data,
 						optionsValue: 'index',
 						value: sel002,
 						optionsText: 'label',
@@ -61,7 +61,7 @@
 						data-bind="ntsComboBox: {
 						options: sel003Data,
 						optionsValue: 'index',
-						value: sel001,
+						value: sel003,
 						optionsText: 'label',
 						editable: true,
 						enable: true,
