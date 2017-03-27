@@ -263,7 +263,8 @@ public class WageTableWs extends SimpleHistoryWs<WtHead, WtHistory> {
 				List<ElementItemDto> itemList = item.getItemList().stream().map(subItem -> {
 					CodeItem codeItem = (CodeItem) subItem;
 					return ElementItemDto.builder().uuid(codeItem.getUuid().v())
-							.referenceCode(codeItem.getReferenceCode()).build();
+							.referenceCode(codeItem.getReferenceCode())
+							.displayName(codeItem.getDisplayName()).build();
 				}).collect(Collectors.toList());
 
 				elementSettingDto.setItemList(itemList);
@@ -275,7 +276,7 @@ public class WageTableWs extends SimpleHistoryWs<WtHead, WtHistory> {
 					return ElementItemDto.builder().uuid(rangeItem.getUuid().v())
 							.orderNumber(rangeItem.getOrderNumber())
 							.startVal(rangeItem.getStartVal()).endVal(rangeItem.getEndVal())
-							.build();
+							.displayName(rangeItem.getDisplayName()).build();
 				}).collect(Collectors.toList());
 
 				elementSettingDto.setItemList(itemList);

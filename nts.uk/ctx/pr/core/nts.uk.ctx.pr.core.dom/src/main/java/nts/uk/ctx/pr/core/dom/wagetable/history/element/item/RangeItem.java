@@ -39,6 +39,7 @@ public class RangeItem extends BaseItem {
 		this.orderNumber = orderNumber;
 		this.startVal = startVal;
 		this.endVal = endVal;
+		this.setDisplayName(startVal + " ~ " + endVal);
 	}
 
 	/*

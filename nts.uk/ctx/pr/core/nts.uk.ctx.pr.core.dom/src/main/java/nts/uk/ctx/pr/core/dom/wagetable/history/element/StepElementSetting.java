@@ -53,25 +53,6 @@ public class StepElementSetting extends ElementSetting {
 	 *            the interval
 	 */
 	public void setSetting(RangeLimit lowerLimit, RangeLimit upperLimit, RangeLimit interval) {
-		// Lower limit is always less than upper limit.
-		if (upperLimit.compareTo(lowerLimit) < 0) {
-			// TODO: need msg id.
-			throw new BusinessException("Lower limit is always less than upper limit.");
-		}
-
-		// Interval is greater than zero.
-		if (interval.greaterThan(new RangeLimit(BigDecimal.ZERO))) {
-			// TODO: need msg id.
-			throw new BusinessException("Interval is greater than zero.");
-		}
-
-		// Interval is invalid
-		if (upperLimit.v().subtract(lowerLimit.v()).compareTo(interval.v()) < 0) {
-			// TODO: need msg id.
-			throw new BusinessException(
-					"The range " + lowerLimit + " - " + upperLimit + " is not enough for 1 step");
-		}
-
 		this.upperLimit = upperLimit;
 		this.lowerLimit = lowerLimit;
 		this.interval = interval;

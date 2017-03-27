@@ -17,7 +17,12 @@ var nts;
                     (function (a) {
                         var viewmodel;
                         (function (viewmodel) {
-                            var elementTypes;
+                            function getElementTypeByValue(val) {
+                                return _.filter(viewmodel.elementTypes, function (el) {
+                                    return el.value == val;
+                                })[0];
+                            }
+                            viewmodel.getElementTypeByValue = getElementTypeByValue;
                             var ScreenModel = (function (_super) {
                                 __extends(ScreenModel, _super);
                                 function ScreenModel() {
@@ -52,7 +57,7 @@ var nts;
                                     var self = this;
                                     var dfd = $.Deferred();
                                     qmm016.service.instance.loadElementList().done(function (res) {
-                                        elementTypes = res;
+                                        viewmodel.elementTypes = res;
                                         dfd.resolve();
                                     });
                                     return dfd.promise();
@@ -70,13 +75,23 @@ var nts;
                                 ScreenModel.prototype.onSave = function () {
                                     var self = this;
                                     var dfd = $.Deferred();
-                                    if (self.isNewMode) {
+                                    if (self.isNewMode()) {
                                         var wagetableDto = self.head.getWageTableDto();
                                         qmm016.service.instance.initWageTable({
                                             wageTableHeadDto: wagetableDto,
                                             startMonth: self.history.startYearMonth()
                                         }).done(function (res) {
                                             dfd.resolve(res.uuid);
+                                        });
+                                    }
+                                    else {
+                                        qmm016.service.instance.updateHistory({
+                                            code: self.head.code(),
+                                            name: self.head.name(),
+                                            memo: self.head.memo(),
+                                            wtHistoryDto: self.history.getWageTableHistoryDto()
+                                        }).done(function () {
+                                            dfd.resolve(self.history.history.historyId);
                                         });
                                     }
                                     return dfd.promise();
@@ -127,6 +142,7 @@ var nts;
                                     dto.mode = self.demensionSet();
                                     dto.elements = _.map(self.demensionItemList(), function (item) {
                                         var elementDto = {};
+                                        elementDto.demensionName = item.elementName();
                                         elementDto.demensionNo = item.demensionNo();
                                         elementDto.type = item.elementType();
                                         elementDto.referenceCode = item.elementCode();
@@ -217,7 +233,7 @@ var nts;
                                     var self = this;
                                     self.elementType(element.type);
                                     self.elementCode(element.referenceCode);
-                                    self.elementName('need load later');
+                                    self.elementName(element.demensionName);
                                 };
                                 return DemensionItemViewModel;
                             }());
@@ -240,12 +256,56 @@ var nts;
                                 }
                                 HistoryViewModel.prototype.resetBy = function (head, history) {
                                     var self = this;
+                                    self.history = history;
                                     self.startYearMonth(history.startMonth);
                                     self.endYearMonth(history.endMonth);
                                     var elementSettingViewModel = _.map(history.elements, function (el) {
                                         return new HistoryElementSettingViewModel(head, el);
                                     });
                                     self.elements(elementSettingViewModel);
+                                    self.detailViewModel = new qmm016.a.history.OneDemensionViewModel(history);
+                                    $('#detailContainer').load(self.detailViewModel.htmlPath, function () {
+                                        var element = $('#detailContainer').children().get(0);
+                                        ko.applyBindings(self.detailViewModel, element);
+                                    });
+                                };
+                                HistoryViewModel.prototype.generateItem = function () {
+                                    var self = this;
+                                    qmm016.service.instance.genearetItemSetting({
+                                        historyId: self.history.historyId,
+                                        settings: self.getElementSettings() })
+                                        .done(function (res) {
+                                        self.history.elements = res;
+                                        self.detailViewModel.refreshElementSettings(res);
+                                    });
+                                };
+                                HistoryViewModel.prototype.getElementSettings = function () {
+                                    var self = this;
+                                    return _.map(self.elements(), function (el) {
+                                        var dto = {};
+                                        dto.type = el.elementType();
+                                        dto.demensionNo = el.demensionNo();
+                                        dto.upperLimit = el.upperLimit();
+                                        dto.lowerLimit = el.lowerLimit();
+                                        dto.interval = el.interval();
+                                        return dto;
+                                    });
+                                };
+                                HistoryViewModel.prototype.getWageTableHistoryDto = function () {
+                                    var self = this;
+                                    self.history.valueItems = self.detailViewModel.getCellItem();
+                                    return self.history;
+                                };
+                                HistoryViewModel.prototype.unapplyBindings = function ($node, remove) {
+                                    $node.find("*").each(function () {
+                                        $(this).unbind();
+                                    });
+                                    if (remove) {
+                                        ko.removeNode($node[0]);
+                                    }
+                                    else {
+                                        ko.cleanNode($node[0]);
+                                    }
                                 };
                                 return HistoryViewModel;
                             }());
@@ -269,11 +329,11 @@ var nts;
                                         return el.demensionNo == element.demensionNo;
                                     })[0];
                                     self.elementCode(elementDto.referenceCode);
-                                    self.elementName('need load later');
+                                    self.elementName(elementDto.demensionName);
                                     self.upperLimit(element.upperLimit);
                                     self.lowerLimit(element.lowerLimit);
                                     self.interval(element.interval);
-                                    self.type = _.filter(elementTypes, function (type) {
+                                    self.type = _.filter(viewmodel.elementTypes, function (type) {
                                         return type.value == self.elementType();
                                     })[0];
                                 };

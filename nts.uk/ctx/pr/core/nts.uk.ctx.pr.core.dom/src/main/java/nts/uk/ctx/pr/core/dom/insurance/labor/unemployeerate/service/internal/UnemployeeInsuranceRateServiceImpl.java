@@ -86,7 +86,7 @@ public class UnemployeeInsuranceRateServiceImpl implements UnemployeeInsuranceRa
 	@Override
 	public void validateDateRangeUpdate(UnemployeeInsuranceRate rate) {
 		if (getValidateRangeUpdate(rate)) {
-			throw new BusinessException("ER010");
+			throw new BusinessException("ER023");
 		}
 	}
 
