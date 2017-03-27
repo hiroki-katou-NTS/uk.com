@@ -50,9 +50,7 @@ public interface PersonBankAccountRepository {
 	 * @return
 	 */
 	List<PersonBankAccount> findAllBranchCode(String companyCode, String branchId);
-	
-	boolean checkExistsBankAccount(String companyCode, List<String> branchId);
-	
+		
 	boolean checkExistsBranchAccount(String companyCode, List<String> branchId);
 	
 	boolean checkExistsLineBankAccount(String companyCode, List<String> lineBankCode);

@@ -28,10 +28,12 @@ var qmm006;
                 ScreenModel.prototype.startPage = function () {
                     var self = this;
                     var dfd = $.Deferred();
-                    self.findBankAll().done(function () {
+                    self.findBankAll().done(function (data) {
+                        if (nts.uk.ui.windows.getShared("bankBranchCode") != null) {
+                            self.singleSelectedCode(nts.uk.ui.windows.getShared("bankBranchCode"));
+                        }
                         dfd.resolve();
                     }).fail(function (res) {
-                        dfd.reject(res);
                     });
                     return dfd.promise();
                 };
@@ -49,31 +51,22 @@ var qmm006;
                                 bankData.push(new Bank(item.bankCode, item.bankName, null, null, item.bankCode, childs));
                             });
                             self.dataSource(bankData);
-                            if (data[0].bankBranch != null) {
-                                self.singleSelectedCode(data[0].bankCode + data[0].bankBranch[0].bankBranchCode);
-                            }
-                            else {
-                                self.singleSelectedCode(data[0].bankCode);
-                            }
                         }
                         dfd.resolve();
                     }).fail(function (res) { });
                     return dfd.promise();
                 };
                 ScreenModel.prototype.closeDialog = function () {
-                    nts.uk.ui.windows.setShared("selectedBank", null, true);
                     nts.uk.ui.windows.close();
                 };
                 ScreenModel.prototype.transferData = function () {
                     var self = this;
-                    if (_.find(self.dataSource(), function (x) {
-                        return x.treeCode === self.singleSelectedCode();
-                    }) == undefined) {
+                    if (self.singleSelectedCode()) {
                         nts.uk.ui.windows.setShared("selectedBank", this.selectedBank(), true);
                         nts.uk.ui.windows.close();
                     }
                     else {
-                        nts.uk.ui.dialog.alert("＊が選択されていません。");
+                        nts.uk.ui.dialog.alert("＊が選択されていません。"); //ER007
                     }
                 };
                 return ScreenModel;
@@ -96,4 +89,4 @@ var qmm006;
     })(b = qmm006.b || (qmm006.b = {}));
 })(qmm006 || (qmm006 = {}));
 ;
-//# sourceMappingURL=qmm006.b.viewmodel.js.map
+//# sourceMappingURL=viewmodel.js.map

@@ -1,46 +1,46 @@
 package nts.uk.ctx.basic.dom.organization.payclassification;
 
 import java.util.List;
-import java.util.Optional;
 
-import nts.arc.time.GeneralDate;
 
 public interface PayClassificationRepository {
 
 	/**
-	 * 
-	 * 
+	 * add pay classification
+	 * @param payClassification
+	 */
+	
+	void add(PayClassification payClassification);
+
+	/**
+	 * update pay classification
+	 * @param payClassification
+	 */
+	
+	void update(PayClassification payClassification);
+
+	/**
+	 * check existed
+	 * @param companyCode
+	 * @param payClassificationCode
+	 * @return
+	 */
+	
+	boolean isExisted(String companyCode, String payClassificationCode);
+
+	/**
+	 * find all pay classification
 	 * @param companyCode
 	 * @return
 	 */
+	
 	List<PayClassification> findAll(String companyCode);
 
 	/**
-	 * get All Item Master   
-	 * 
+	 * delete pay classification
 	 * @param companyCode
 	 * @param payClassificationCode
-	 * @param startDate
-	 * @return list PayClassification
 	 */
-	List<PayClassification> findAllByPayClassificationCode(String companyCode, PayClassificationCode payClassificationCode ,GeneralDate startDate);
-
-	/**
-	 * get Item Master
-	 * 
-	 * @param companyCode
-	 * @param payClassificationCode
-	 * @param startDate
-	 * @return list PayClassification
-	 */
-	Optional<PayClassification> getPosition(String companyCode, PayClassificationCode payClassificationCode ,GeneralDate startDate);
 	
-	/**
-	 * Find item master
-	 * @param companyCode 
-	 * @param payClassificationCode 
-	 * @param startDate 
-	 * @return PayClassification
-	 */
-	Optional<PayClassification> find(String companyCode, PayClassificationCode payClassificationCode ,GeneralDate startDate);
+	void remove(String companyCode, String payClassificationCode);
 }

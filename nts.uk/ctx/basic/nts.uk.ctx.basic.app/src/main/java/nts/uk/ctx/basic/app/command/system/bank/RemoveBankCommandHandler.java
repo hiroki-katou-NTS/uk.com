@@ -1,8 +1,10 @@
- package nts.uk.ctx.basic.app.command.system.bank;
+package nts.uk.ctx.basic.app.command.system.bank;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
@@ -22,41 +24,49 @@ import nts.uk.shr.com.context.AppContexts;
 public class RemoveBankCommandHandler extends CommandHandler<RemoveBankCommand> {
 
 	@Inject
-    private BankRepository bankRepository;
-	
+	private BankRepository bankRepository;
+
 	@Inject
 	private PersonBankAccountRepository personBankAccountRepository;
-	
+
 	@Inject
 	private BankBranchRepository bankBranchRepo;
-	
+
 	@Override
 	protected void handle(CommandHandlerContext<RemoveBankCommand> context) {
-		
-       RemoveBankCommand command = context.getCommand();
-       String companyCode = AppContexts.user().companyCode();
-       List<String>  bankCodeList = new ArrayList<String>();
-       bankCodeList.add(command.getBankCode());
-       
-       Optional<Bank> domain = bankRepository.find(companyCode, command.getBankCode());
-       if (!domain.isPresent()) {
-    	   throw new RuntimeException("Bank not found");
-       }
-       
-       // check exists person bank account
-       if(personBankAccountRepository.checkExistsBankAccount(companyCode, bankCodeList)){
-    	   throw new BusinessException("ER008"); // ER008  	   
-       }
-       
-       // delete all branch by bank code
-       List<BankBranch> branchAll = bankBranchRepo.findAll(companyCode, new BankCode(command.getBankCode()));
-       if (!branchAll.isEmpty()) {
-    	   branchAll.forEach((item) -> {
-    		   bankBranchRepo.remove(companyCode, item.getBranchId().toString());
-    	   }); 
-       }
-       
-       // delete bank
-  	   bankRepository.remove(domain.get());
+
+		RemoveBankCommand command = context.getCommand();
+		String companyCode = AppContexts.user().companyCode();
+		List<String> bankCodeList = new ArrayList<String>();
+		bankCodeList.add(command.getBankCode());
+
+		Optional<Bank> domain = bankRepository.find(companyCode, command.getBankCode());
+		if (!domain.isPresent()) {
+			throw new RuntimeException("Bank not found");
+		}
+
+		// check exists person bank account
+		if (personBankAccountRepository.checkExistsBranchAccount(companyCode, bankCodeList)) {
+			throw new BusinessException("ER008"); // ER008
+		}
+
+		// delete all branch by bank code
+		List<BankBranch> branchAll = bankBranchRepo.findAll(companyCode, new BankCode(command.getBankCode()));
+		if (!branchAll.isEmpty()) {
+			// get list of branch id
+			List<String> branchIdList = branchAll.stream().map(x -> x.getBranchId().toString())
+					.collect(Collectors.toList());
+
+			// check exists person bank account
+			if (personBankAccountRepository.checkExistsBranchAccount(companyCode, branchIdList)) {
+				throw new BusinessException("ER008"); // ER008
+			}
+			branchAll.forEach((item) -> {
+				bankBranchRepo.remove(companyCode, item.getBranchId().toString());
+			});
+		}
+
+		// delete bank
+		bankRepository.remove(domain.get());
 	}
 }

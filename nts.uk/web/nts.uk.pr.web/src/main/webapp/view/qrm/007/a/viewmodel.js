@@ -81,3 +81,4 @@ var qrm007;
         })(viewmodel = a.viewmodel || (a.viewmodel = {}));
     })(a = qrm007.a || (qrm007.a = {}));
 })(qrm007 || (qrm007 = {}));
+//# sourceMappingURL=viewmodel.js.map

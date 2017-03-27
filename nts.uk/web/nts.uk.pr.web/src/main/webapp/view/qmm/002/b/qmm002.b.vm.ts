@@ -4,12 +4,19 @@ module nts.uk.pr.view.qmm002.b {
             lst_001: any;
             lst_002: any;
             selectedCodes: any;
+            messages: KnockoutObservable<any>;
 
             constructor() {
                 var self = this;
                 self.lst_001 = ko.observableArray([]);
                 self.lst_002 = ko.observableArray([]);
                 self.selectedCodes = ko.observableArray([]);
+                self.messages = ko.observableArray([
+                    { messageId: "AL002", message: "データを削除します。\r\nよろしいですか？" },
+                    { messageId: "ER005", message: "入力した＊は既に存在しています。\r\n＊を確認してください。" },
+                    { messageId: "ER008", message: "選択された＊は使用されているため削除できません。" },
+                    { messageId: "ER007", message: "＊が選択されていません。" }
+                ]);
                 self.selectedCodes.subscribe(function(val) {
 
                 });
@@ -17,7 +24,6 @@ module nts.uk.pr.view.qmm002.b {
 
             startPage() {
                 var self = this;
-                debugger;
                 var list = nts.uk.ui.windows.getShared('listItem');
                 self.lst_001(list);
             }
@@ -27,41 +33,50 @@ module nts.uk.pr.view.qmm002.b {
                 nts.uk.ui.windows.close();
             }
 
+
+            /**
+             * Delete List Bank, Branch
+             */
             btn_001() {
-                var self = this;        
-                var keyBank = [];
-                _.forEach(self.selectedCodes(), function(item) {
-                    var code = item.split('-');
-                    var bankCode = code[0];
-                    var branchId = self.getNode(item, bankCode);
-                    keyBank.push({
-                        bankCode: bankCode,
-                        branchId: branchId
+                var self = this;
+                if (!self.selectedCodes().length) {
+                    nts.uk.ui.dialog.confirm(self.messages()[3].message)
+                    return;
+                }
+                nts.uk.ui.dialog.confirm(self.messages()[0].message).ifYes(function() {
+                    var keyBank = [];
+                    _.forEach(self.selectedCodes(), function(item) {
+                        var code = item.split('-');
+                        var bankCode = code[0];
+                        var branchId = self.getNode(item, bankCode);
+                        keyBank.push({
+                            bankCode: bankCode,
+                            branchId: branchId
+                        });
+                    });
+
+                    var data =
+                        {
+                            bank: keyBank,
+                        };
+                    service.removeBank(data).done(function() {
+                        self.close();
+                    }).fail(function(error) {
+                        var messageList = self.messages();
+                        if (error.messageId == messageList[2].messageId) { // ER008
+                            nts.uk.ui.dialog.alert(messageList[2].message)
+                        }
                     });
                 });
 
-                var data =
-                    {
-                        bank: keyBank,
-                    };
-                service.removeBank(data).done(function() {
-                    self.close();
-                });
             }
 
             getNode(codeNew, parentId): String {
                 var self = this;
-                debugger;
                 self.lst_002(nts.uk.util.flatArray(self.lst_001(), "childs"))
                 var node = _.find(self.lst_002(), function(item: BankInfo) {
                     return item.treeCode == codeNew;
                 });
-
-//                if (parentId !== undefined) {
-//                    node = _.find(self.lst_002(), function(item: BankInfo) {
-//                        return item.treeCode == node.parentCode;
-//                    });
-//                }
 
                 return node.branchId;
             }

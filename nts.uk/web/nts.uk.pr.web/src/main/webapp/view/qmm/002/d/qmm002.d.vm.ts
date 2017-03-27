@@ -18,10 +18,10 @@ module qmm002.d.viewmodel {
         constructor() {
             var self = this;
             self.items = ko.observableArray([]);
-            self.currentItem = ko.observable(new Bank("", "", "", ""));
+            self.currentItem = ko.observable(new Bank(null, null,null, null));
             self.currentCode = ko.observable();
             self.currentCodeList = ko.observableArray([]);
-            self.dirty = new nts.uk.ui.DirtyChecker(ko.observable(new Bank("", "", "", "")));
+            self.dirty = new nts.uk.ui.DirtyChecker(self.currentItem);
             self.columns = ko.observableArray([
                 { headerText: 'コード', width: 50, key: 'codeDisplay', hidden: true },
                 { headerText: 'コード/名称', width: 50, key: 'nameDisplay' }
@@ -140,12 +140,14 @@ module qmm002.d.viewmodel {
             var self = this;
             self.confirmDirty = true;
             if (!self.checkDirty()) {
-                self.currentItem(new Bank("", "", "", ""));
+                self.currentItem(new Bank(null, null,null,null));
+                self.dirty = new nts.uk.ui.DirtyChecker(self.currentItem);
                 self.currentCode("");
                 self.isCreated(true);
             } else {
                 nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\n よろしいですか。").ifYes(function() {
-                    self.currentItem(new Bank("", "", "", ""));
+                    self.currentItem(new Bank(null,null,null,null));
+                    self.dirty = new nts.uk.ui.DirtyChecker(self.currentItem);
                     self.currentCode("");
                     self.isCreated(true);
                 })

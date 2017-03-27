@@ -22,4 +22,4 @@ var qmm006;
         })(service = b.service || (b.service = {}));
     })(b = qmm006.b || (qmm006.b = {}));
 })(qmm006 || (qmm006 = {}));
-//# sourceMappingURL=qmm006.b.service.js.map
+//# sourceMappingURL=service.js.map

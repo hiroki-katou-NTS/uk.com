@@ -24,7 +24,6 @@ module nts.uk.pr.view.qmm002.a {
             dirty2: nts.uk.ui.DirtyChecker;
             dirty3: nts.uk.ui.DirtyChecker;
             dirty4: nts.uk.ui.DirtyChecker;
-
             messages: KnockoutObservable<any>;
 
             constructor() {
