@@ -21,11 +21,9 @@ import com.aspose.cells.Cells;
 import com.aspose.cells.Color;
 import com.aspose.cells.PageSetup;
 import com.aspose.cells.Range;
-import com.aspose.cells.SaveFormat;
 import com.aspose.cells.Style;
 import com.aspose.cells.StyleFlag;
 import com.aspose.cells.TextAlignmentType;
-import com.aspose.cells.Workbook;
 import com.aspose.cells.Worksheet;
 
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
@@ -46,9 +44,6 @@ public class AsposeWLOldLayoutReportGenerator extends WageLedgerBaseGenerator im
 	
 	/** The Constant TEMPLATE_FILE. */
 	private static final String TEMPLATE_FILE = "report/WageLegerOldLayoutReportTemplate.xlsx";
-	
-	/** The Constant REPORT_FILE_NAME. */
-	private static final String REPORT_FILE_NAME = "サンプル帳票.pdf";
 	
 	/** The Constant ROW_START_REPORT. */
 	private static final int ROW_START_REPORT = 5;
@@ -83,38 +78,37 @@ public class AsposeWLOldLayoutReportGenerator extends WageLedgerBaseGenerator im
 			MutableInt currentRow = new MutableInt(ROW_START_REPORT);
 			HeaderReportData headerData = reportData.headerData;
 			
-			// Fill header data.
+			// ======================== Fill header data.========================
 			this.fillHeaderData(reportContext, headerData);
 			
-			// Fill Salary payment content.
-			this.fillSalaryOrBonusHeaderTable(reportContext, currentRow, headerData.salaryMonthList, "【給与支給】");
+			// ======================== Fill Salary payment content.========================
+			this.fillSalaryOrBonusHeaderTable(reportContext, currentRow, reportData.salaryMonthList, "【給与支給】");
 			this.fillPaymentDataContentOldLayout(reportContext, reportData.salaryPaymentData,
-					currentRow, headerData.salaryMonthList);
-			this.breakPage(reportContext, currentRow, headerData.salaryMonthList.size());
+					currentRow, reportData.salaryMonthList);
+			this.breakPage(reportContext, currentRow, reportData.salaryMonthList.size());
 			
-			// Fill Salary deduction, salary attendance content and net salary.
+			// ======================== Fill Salary deduction, ========================
+			// ======================== salary attendance content and net salary.========================
 			this.fillDeductionAndAttendanceDataContentOldLayout(reportContext, reportData.salaryDeductionData,
-					reportData.netSalaryData, reportData.salaryAttendanceDatas, currentRow, headerData.salaryMonthList);
-			
+					reportData.netSalaryData, reportData.salaryAttendanceDatas, currentRow, reportData.salaryMonthList);
 			// Create end line of salary part.
 			Range salaryEndRowRange = ws.getCells().createRange(currentRow.intValue() - 1, COLUMN_START_REPORT + 2, 1,
-					headerData.salaryMonthList.size() + 1);
+					reportData.salaryMonthList.size() + 1);
 			salaryEndRowRange.setOutlineBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
-			this.breakPage(reportContext, currentRow, headerData.bonusMonthList.size());
+			this.breakPage(reportContext, currentRow, reportData.bonusMonthList.size());
 			
-			// Fill Bonus payment content.
-			this.fillSalaryOrBonusHeaderTable(reportContext, currentRow, headerData.bonusMonthList, "【賞与支給】");
+			// ======================== Fill Bonus payment content.========================
+			this.fillSalaryOrBonusHeaderTable(reportContext, currentRow, reportData.bonusMonthList, "【賞与支給】");
 			this.fillPaymentDataContentOldLayout(reportContext, reportData.bonusPaymentData,
-					currentRow, headerData.bonusMonthList);
-			this.breakPage(reportContext, currentRow, headerData.bonusMonthList.size());
+					currentRow, reportData.bonusMonthList);
+			this.breakPage(reportContext, currentRow, reportData.bonusMonthList.size());
 			
-			// Fill Bonus deduction, bonus attendance content and total bonus.
+			// ======================== Fill Bonus deduction, bonus attendance content and total bonus. ===============
 			this.fillDeductionAndAttendanceDataContentOldLayout(reportContext, reportData.bonusDeductionData,
-					reportData.totalBonusData,reportData.salaryAttendanceDatas, currentRow, headerData.bonusMonthList);
-			
+					reportData.totalBonusData,reportData.salaryAttendanceDatas, currentRow, reportData.bonusMonthList);
 			// Create end line of bonus part.
 			Range bonusEndRowRange = ws.getCells().createRange(currentRow.intValue() - 1, COLUMN_START_REPORT + 2, 1,
-					headerData.bonusMonthList.size() + 1);
+					reportData.bonusMonthList.size() + 1);
 			bonusEndRowRange.setOutlineBorder(BorderType.BOTTOM_BORDER, CellBorderType.THIN, Color.getBlack());
 			
 			// Set print area.
@@ -127,9 +121,6 @@ public class AsposeWLOldLayoutReportGenerator extends WageLedgerBaseGenerator im
 			reportContext.getDesigner().process(false);
 
 			// save as PDF file
-			reportContext.getWorkbook().save("C:\\test.xlsx");
-			Workbook wb = new Workbook("C:\\test.xlsx");
-			wb.save("C:\\test.pdf", SaveFormat.PDF);
 			reportContext.saveAsPdf(this.createNewFile(fileContext, REPORT_FILE_NAME));
 
 		} catch (Exception e) {
