@@ -13,13 +13,8 @@ var qmm034;
                     self.startDate = ko.observable(null);
                     self.startDate.subscribe(function (dateChange) {
                         if (self.countStartDateChange === 1) {
-                            // code vao duoi day
+                            // datePicker onchange
                             $("#A_INP_003").ntsError('clear');
-                            a.service.checkStartDate(dateChange).done(function (result) {
-                                if (!result) {
-                                    $("#A_INP_003").ntsError('set', "Invalid date.");
-                                }
-                            });
                         }
                         else {
                             self.countStartDateChange = 1;
@@ -85,7 +80,7 @@ var qmm034;
                     eraName = $('#A_INP_001').val();
                     var eraMark;
                     eraMark = $('#A_INP_002').val();
-                    var startDate = self.currentEra().startDate();
+                    var startDate = self.startDate();
                     var endDate;
                     var eraHist = self.currentEra().eraHist();
                     var fixAttribute;
@@ -152,7 +147,7 @@ var qmm034;
                     var eraMark;
                     eraMark = $('#A_INP_002').val();
                     var eraHist = self.currentEra().eraHist();
-                    var startDate = self.currentEra().startDate();
+                    var startDate = self.startDate();
                     var dfd = $.Deferred();
                     var node;
                     node = new qmm034.a.service.model.EraDtoDelete(eraHist);
@@ -161,7 +156,6 @@ var qmm034;
                     });
                     qmm034.a.service.deleteData(node).done(function (result) {
                         self.reload().done(function (data) {
-                            self.items(data);
                             if (self.items().length === 0) {
                                 self.isUpdate(false);
                                 self.refreshLayout();
@@ -170,7 +164,7 @@ var qmm034;
                                 self.currentCode(self.items()[rowIndex - 1].eraName);
                             }
                             else {
-                                self.currentCode(self.items()[rowIndex].eraName);
+                                self.currentCode(self.items()[rowIndex - 1].eraName);
                             }
                         });
                         dfd.resolve();
@@ -221,13 +215,16 @@ var qmm034;
                 };
                 ScreenModel.prototype.refreshLayout = function () {
                     var self = this;
+                    $("#A_INP_003").ntsError('clear');
+                    $("#A_INP_002").ntsError('clear');
+                    $("#A_INP_001").ntsError('clear');
                     //            if (self.dirty.isDirty()) {
                     //                alert("Data is changed.");
                     //            } else {
                     //                alert("Data isn't changed.");
                     //            }
                     self.currentCode('');
-                    self.currentEra(new EraModel('', '', new Date("2017/03/21"), 1, '95F5047A-5065-4306-A6B7-184AA676A1DE', new Date("")));
+                    self.currentEra(new EraModel('', '', new Date(self.currentEra().startDate().toString()), 1, '95F5047A-5065-4306-A6B7-184AA676A1DE', new Date("")));
                     self.isDeleteEnable(false);
                     self.isEnableCode(true);
                     self.isUpdate(false);

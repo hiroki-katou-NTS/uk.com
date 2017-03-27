@@ -28,25 +28,25 @@ module qmm034.a.viewmodel {
             self.startDate = ko.observable(null);
             self.startDate.subscribe(function(dateChange) {
                 if (self.countStartDateChange === 1) {
-                    // code vao duoi day
+                    // datePicker onchange
                     $("#A_INP_003").ntsError('clear');
-                    service.checkStartDate(dateChange).done(function(result: boolean) {
-                        if(!result){
-                            $("#A_INP_003").ntsError('set', "Invalid date.");
-                        }
-                    });
+                    //                    service.checkStartDate(dateChange).done(function(result: boolean) {
+                    //                        if(!result){
+                    //                            $("#A_INP_003").ntsError('set', "Invalid date.");
+                    //                        }
+                    //                    });
                 } else {
-                    self.countStartDateChange = 1;    
+                    self.countStartDateChange = 1;
                 }
             })
             self.currentCode.subscribe(function(codeChanged) {
                 if (nts.uk.text.isNullOrEmpty(codeChanged)) {
                     self.refreshLayout();
                 } else {
-                        self.countStartDateChange += 1;
-                        self.currentEra(self.getEra(codeChanged));
-                        self.date(self.currentEra().startDate().toString());
-                        self.startDate(self.currentEra().startDate());
+                    self.countStartDateChange += 1;
+                    self.currentEra(self.getEra(codeChanged));
+                    self.date(self.currentEra().startDate().toString());
+                    self.startDate(self.currentEra().startDate());
                 }
 
                 self.isDeleteEnable(true);
@@ -77,7 +77,7 @@ module qmm034.a.viewmodel {
             //           $("#A_INP_003").ntsError('set', "StartDate is not lastest.");
             //                });
             //            });
-         
+
         }
 
         init(): void {
@@ -95,8 +95,8 @@ module qmm034.a.viewmodel {
             self.isDeleteEnable = ko.observable(false);
             self.isEnableCode = ko.observable(false);
             self.isUpdate = ko.observable(false);
-            
-            
+
+
         }
 
         insertData(): any {
@@ -105,7 +105,7 @@ module qmm034.a.viewmodel {
             eraName = $('#A_INP_001').val();
             let eraMark: string;
             eraMark = $('#A_INP_002').val();
-            let startDate = self.currentEra().startDate();
+            let startDate = self.startDate();
             let endDate: Date;
             let eraHist = self.currentEra().eraHist();
             let fixAttribute: number;
@@ -122,7 +122,7 @@ module qmm034.a.viewmodel {
                 $("#A_INP_002").ntsError("set", "the era mark must require");
                 return false;
             }
-        
+
 
             qmm034.a.service.addData(self.isUpdate(), node).done(function(result) {
                 self.reload().done(function() {
@@ -136,9 +136,9 @@ module qmm034.a.viewmodel {
                         //console.log(startDate);
                     });
                 });
-//                if (nts.uk.ui._viewModel.errors.isEmpty()) {
-//                    $("#A_INP_003").ntsError('clear');
-//                }
+                //                if (nts.uk.ui._viewModel.errors.isEmpty()) {
+                //                    $("#A_INP_003").ntsError('clear');
+                //                }
             }).fail(function(res) {
                 //alert(res.message);
                 $("#A_INP_003").ntsError("set", res.message);
@@ -179,7 +179,7 @@ module qmm034.a.viewmodel {
             let eraMark: string;
             eraMark = $('#A_INP_002').val();
             let eraHist: string = self.currentEra().eraHist();
-            let startDate = self.currentEra().startDate();
+            let startDate = self.startDate();
             let dfd = $.Deferred<any>();
             let node: qmm034.a.service.model.EraDtoDelete;
             node = new qmm034.a.service.model.EraDtoDelete(eraHist);
@@ -188,14 +188,13 @@ module qmm034.a.viewmodel {
             })
             qmm034.a.service.deleteData(node).done(function(result) {
                 self.reload().done(function(data) {
-                    self.items(data);
                     if (self.items().length === 0) {
                         self.isUpdate(false);
                         self.refreshLayout();
                     } else if (self.items().length === rowIndex) {
                         self.currentCode(self.items()[rowIndex - 1].eraName);
                     } else {
-                        self.currentCode(self.items()[rowIndex].eraName);
+                        self.currentCode(self.items()[rowIndex - 1].eraName);
                     }
                 });
                 dfd.resolve();
@@ -251,16 +250,20 @@ module qmm034.a.viewmodel {
 
         refreshLayout(): void {
             let self = this;
+            $("#A_INP_003").ntsError('clear');
+            $("#A_INP_002").ntsError('clear');
+            $("#A_INP_001").ntsError('clear');
             //            if (self.dirty.isDirty()) {
             //                alert("Data is changed.");
             //            } else {
             //                alert("Data isn't changed.");
             //            }
             self.currentCode('');
-            self.currentEra(new EraModel('', '', new Date("2017/03/21"), 1, '95F5047A-5065-4306-A6B7-184AA676A1DE', new Date("")));
+            self.currentEra(new EraModel('', '', new Date(self.currentEra().startDate().toString()), 1, '95F5047A-5065-4306-A6B7-184AA676A1DE', new Date("")));
             self.isDeleteEnable(false);
             self.isEnableCode(true);
             self.isUpdate(false);
+
         }
 
     }
