@@ -13,7 +13,6 @@ import javax.transaction.Transactional;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
 import nts.uk.ctx.pr.core.dom.insurance.social.SocialInsuranceOffice;
 import nts.uk.ctx.pr.core.dom.insurance.social.SocialInsuranceOfficeRepository;
@@ -46,8 +45,9 @@ public class UpdateSocialOfficeCommandHandler extends CommandHandler<UpdateSocia
 	protected void handle(CommandHandlerContext<UpdateSocialOfficeCommand> context) {
 
 		UpdateSocialOfficeCommand command = context.getCommand();
+
 		// Get the current company code.
-		CompanyCode companyCode = new CompanyCode(AppContexts.user().companyCode());
+		String companyCode = AppContexts.user().companyCode();
 
 		// Convert Dto to Domain
 		SocialInsuranceOffice socialInsuranceOffice = command.toDomain(companyCode);

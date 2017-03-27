@@ -75,7 +75,6 @@ module nts.uk.pr.view.qmm008.e {
                     picName: string;
                     picPosition: string;
                     potalCode: string;
-                    prefecture: string;
                     address1st: string;
                     address2nd: string;
                     kanaAddress1st: string;
@@ -99,7 +98,6 @@ module nts.uk.pr.view.qmm008.e {
                         picName: string,
                         picPosition: string,
                         potalCode: string,
-                        prefecture: string,
                         address1st: string,
                         address2nd: string,
                         kanaAddress1st: string,
@@ -120,7 +118,7 @@ module nts.uk.pr.view.qmm008.e {
                         memo: string) {
                         this.companyCode = companyCode; this.code = code; this.name = name;
                         this.shortName = shortName; this.picName = picName; this.picPosition = picPosition;
-                        this.potalCode = potalCode; this.prefecture = prefecture; this.address1st = address1st;
+                        this.potalCode = potalCode; this.address1st = address1st;
                         this.address2nd = address2nd; this.kanaAddress1st = kanaAddress1st; this.kanaAddress2nd = kanaAddress2nd;
                         this.phoneNumber = phoneNumber; this.healthInsuOfficeRefCode1st = healthInsuOfficeRefCode1st; this.healthInsuOfficeRefCode2nd = healthInsuOfficeRefCode2nd;
                         this.pensionOfficeRefCode1st = pensionOfficeRefCode1st; this.pensionOfficeRefCode2nd = pensionOfficeRefCode2nd;

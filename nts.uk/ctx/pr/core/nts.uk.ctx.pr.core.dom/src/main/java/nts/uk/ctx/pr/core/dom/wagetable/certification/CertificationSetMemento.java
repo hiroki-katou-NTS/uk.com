@@ -4,7 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.dom.wagetable.certification;
 
-import nts.uk.ctx.core.dom.company.CompanyCode;
 
 /**
  * The Interface UnitPriceMemento.
@@ -16,7 +15,7 @@ public interface CertificationSetMemento {
 	 *
 	 * @param companyCode the new company code
 	 */
-	void setCompanyCode(CompanyCode companyCode);
+	void setCompanyCode(String companyCode);
 
 	/**
 	 * Sets the code.

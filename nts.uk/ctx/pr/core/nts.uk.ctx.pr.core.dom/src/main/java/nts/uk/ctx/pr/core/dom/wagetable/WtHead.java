@@ -7,8 +7,8 @@ package nts.uk.ctx.pr.core.dom.wagetable;
 import java.util.List;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.layer.dom.DomainObject;
-import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.base.simplehistory.Master;
 import nts.uk.ctx.pr.core.dom.wagetable.element.WtElement;
 import nts.uk.shr.com.primitive.Memo;
@@ -20,12 +20,13 @@ import nts.uk.shr.com.primitive.Memo;
 public class WtHead extends DomainObject implements Master {
 
 	/** The company code. */
-	private CompanyCode companyCode;
+	private String companyCode;
 
 	/** The code. */
 	private WtCode code;
 
 	/** The name. */
+	@Setter
 	private WtName name;
 
 	/** The mode. */
@@ -35,6 +36,7 @@ public class WtHead extends DomainObject implements Master {
 	private List<WtElement> elements;
 
 	/** The memo. */
+	@Setter
 	private Memo memo;
 
 	// =================== Memento State Support Method ===================
@@ -68,7 +70,9 @@ public class WtHead extends DomainObject implements Master {
 		memento.setMemo(this.memo);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
@@ -80,7 +84,9 @@ public class WtHead extends DomainObject implements Master {
 		return result;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override

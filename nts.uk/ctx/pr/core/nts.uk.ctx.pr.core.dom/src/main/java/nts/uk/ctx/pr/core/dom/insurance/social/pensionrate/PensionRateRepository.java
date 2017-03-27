@@ -7,7 +7,6 @@ package nts.uk.ctx.pr.core.dom.insurance.social.pensionrate;
 import java.util.List;
 import java.util.Optional;
 
-import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.base.simplehistory.SimpleHistoryRepository;
 
 /**
@@ -43,7 +42,7 @@ public interface PensionRateRepository extends SimpleHistoryRepository<PensionRa
 	 * @param officeCode the office code
 	 * @return the list
 	 */
-	List<PensionRate> findAll(CompanyCode companyCode);
+	List<PensionRate> findAll(String companyCode);
 
 	/**
 	 * Find all office.

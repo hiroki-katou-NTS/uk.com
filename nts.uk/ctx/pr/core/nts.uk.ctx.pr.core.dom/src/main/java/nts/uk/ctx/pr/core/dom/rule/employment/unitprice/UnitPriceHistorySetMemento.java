@@ -4,7 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.dom.rule.employment.unitprice;
 
-import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 import nts.uk.shr.com.primitive.Memo;
 
@@ -25,7 +24,7 @@ public interface UnitPriceHistorySetMemento {
 	 *
 	 * @param companyCode the new company code
 	 */
-	void setCompanyCode(CompanyCode companyCode);
+	void setCompanyCode(String companyCode);
 
 	/**
 	 * Sets the unit price code.
@@ -33,7 +32,7 @@ public interface UnitPriceHistorySetMemento {
 	 * @param unitPriceCode the new unit price code
 	 */
 	void setUnitPriceCode(UnitPriceCode unitPriceCode);
-	
+
 	/**
 	 * Sets the unit price name.
 	 *

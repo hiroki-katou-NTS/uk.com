@@ -9,7 +9,7 @@ module nts.uk.pr.view.qmm016.k {
              */
             onSelectItem: (data: CallBackData) => void;
         }
-        
+
         /**
          * Callback data.
          */
@@ -41,10 +41,10 @@ module nts.uk.pr.view.qmm016.k {
             public startPage(): JQueryPromise<void> {
                 var self = this;
                 var dfd = $.Deferred<void>();
-                service.instance.loadDemensionList().done(res => {
+                service.loadDemensionSelectionList().done(res => { 
                     self.demensionItemList(res);
                     dfd.resolve();
-                })
+                });
                 return dfd.promise();
             }
 

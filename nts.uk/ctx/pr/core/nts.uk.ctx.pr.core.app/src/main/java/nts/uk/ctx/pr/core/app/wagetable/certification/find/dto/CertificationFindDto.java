@@ -5,7 +5,6 @@
 package nts.uk.ctx.pr.core.app.wagetable.certification.find.dto;
 
 import lombok.Data;
-import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.CertificationSetMemento;
 
 /**
@@ -28,7 +27,7 @@ public class CertificationFindDto implements CertificationSetMemento {
 	 * setCompanyCode(nts.uk.ctx.core.dom.company.CompanyCode)
 	 */
 	@Override
-	public void setCompanyCode(CompanyCode companyCode) {
+	public void setCompanyCode(String companyCode) {
 		// Do nothing.
 	}
 

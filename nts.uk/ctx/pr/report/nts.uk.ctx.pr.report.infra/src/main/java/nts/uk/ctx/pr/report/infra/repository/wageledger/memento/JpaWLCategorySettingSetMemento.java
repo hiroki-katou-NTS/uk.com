@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import lombok.Getter;
-import nts.uk.ctx.pr.report.dom.company.CompanyCode;
 import nts.uk.ctx.pr.report.dom.wageledger.PaymentType;
 import nts.uk.ctx.pr.report.dom.wageledger.WLCategory;
 import nts.uk.ctx.pr.report.dom.wageledger.outputsetting.WLCategorySettingSetMemento;
@@ -26,7 +25,7 @@ public class JpaWLCategorySettingSetMemento implements WLCategorySettingSetMemen
 	private List<QlsptLedgerFormDetail> categoryEntities;
 	
 	/** The company code. */
-	private CompanyCode companyCode;
+	private String companyCode;
 	
 	/** The code. */
 	private WLOutputSettingCode code;
@@ -36,7 +35,7 @@ public class JpaWLCategorySettingSetMemento implements WLCategorySettingSetMemen
 	 *
 	 * @param entity the entity
 	 */
-	public JpaWLCategorySettingSetMemento(CompanyCode companyCode,
+	public JpaWLCategorySettingSetMemento(String companyCode,
 			WLOutputSettingCode code) {
 		this.companyCode = companyCode;
 		this.code = code;

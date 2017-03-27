@@ -8,7 +8,6 @@ package nts.uk.ctx.pr.core.dom.insurance.labor;
 
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
-import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.Address;
 import nts.uk.ctx.pr.core.dom.insurance.CitySign;
 import nts.uk.ctx.pr.core.dom.insurance.KanaAddress;
@@ -32,7 +31,7 @@ import nts.uk.shr.com.primitive.Memo;
 public class LaborInsuranceOffice extends DomainObject {
 
 	/** The company code. */
-	private CompanyCode companyCode;
+	private String companyCode;
 
 	/** The code. */
 	private OfficeCode code;
@@ -51,9 +50,6 @@ public class LaborInsuranceOffice extends DomainObject {
 
 	/** The potal code. */
 	private PotalCode potalCode;
-
-	/** The prefecture. */
-	private String prefecture;
 
 	/** The address 1 st. */
 	private Address address1st;
@@ -104,7 +100,6 @@ public class LaborInsuranceOffice extends DomainObject {
 		this.picName = memento.getPicName();
 		this.picPosition = memento.getPicPosition();
 		this.potalCode = memento.getPotalCode();
-		this.prefecture = memento.getPrefecture();
 		this.address1st = memento.getAddress1st();
 		this.address2nd = memento.getAddress2nd();
 		this.kanaAddress1st = memento.getKanaAddress1st();
@@ -132,7 +127,6 @@ public class LaborInsuranceOffice extends DomainObject {
 		memento.setPicName(this.picName);
 		memento.setPicPosition(this.picPosition);
 		memento.setPotalCode(this.potalCode);
-		memento.setPrefecture(this.prefecture);
 		memento.setAddress1st(this.address1st);
 		memento.setAddress2nd(this.address2nd);
 		memento.setKanaAddress1st(this.kanaAddress1st);
