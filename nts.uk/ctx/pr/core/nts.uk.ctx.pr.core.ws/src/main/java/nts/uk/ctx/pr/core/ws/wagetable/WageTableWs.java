@@ -150,7 +150,7 @@ public class WageTableWs extends SimpleHistoryWs<WtHead, WtHistory> {
 					Collectors.toMap(WtElementDto::getDemensionNo, WtElementDto::getDemensionName));
 
 			WtHistoryDto historyDto = new WtHistoryDto();
-			wageTableHistory.saveToMemento(historyDto);
+			historyDto.fromDomain(wageTableHistory);
 
 			// Set demension name
 			historyDto.getElements().stream().forEach(item -> {
