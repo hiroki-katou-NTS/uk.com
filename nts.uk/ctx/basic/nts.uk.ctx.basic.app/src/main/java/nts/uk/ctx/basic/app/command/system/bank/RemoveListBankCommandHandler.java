@@ -38,9 +38,9 @@ public class RemoveListBankCommandHandler extends CommandHandler<RemoveListBankC
 
 		RemoveListBankCommand command = context.getCommand();
 		String companyCode = AppContexts.user().companyCode();
-		
+
 		List<String> bankDeleted = new ArrayList<>();
-		
+
 		command.getBank().forEach(bank -> {
 			if (StringUtil.isNullOrEmpty(bank.getBranchId(), true)) {
 				Optional<Bank> domain = bankRepository.find(companyCode, bank.getBankCode());
@@ -49,13 +49,14 @@ public class RemoveListBankCommandHandler extends CommandHandler<RemoveListBankC
 					List<BankBranch> branchAll = banhBranchRepo.findAll(companyCode, new BankCode(bank.getBankCode()));
 					if (!branchAll.isEmpty()) {
 						// get list of branch id
-						List<String> branchIdList = branchAll.stream().map(x -> x.getBranchId().toString()).collect(Collectors.toList());
-						
+						List<String> branchIdList = branchAll.stream().map(x -> x.getBranchId().toString())
+								.collect(Collectors.toList());
+
 						// check exists person bank account
-						if (personBankAccountRepository.checkExistsBankAccount(companyCode, branchIdList)) {
+						if (personBankAccountRepository.checkExistsBranchAccount(companyCode, branchIdList)) {
 							throw new BusinessException("ER008"); // ER008
 						}
-						
+
 						branchAll.forEach(item -> {
 							banhBranchRepo.remove(companyCode, item.getBranchId().toString());
 						});
@@ -64,6 +65,11 @@ public class RemoveListBankCommandHandler extends CommandHandler<RemoveListBankC
 					bankDeleted.add(bank.getBankCode());
 				}
 			} else if (!bankDeleted.contains(bank.getBankCode())) {
+				List<String> branchBranchIdList = new ArrayList<String>();
+				branchBranchIdList.add(bank.getBranchId().toString());
+				if (personBankAccountRepository.checkExistsBranchAccount(companyCode, branchBranchIdList)) {
+					throw new BusinessException("ER008"); // ER008
+				}
 				banhBranchRepo.remove(companyCode, bank.getBranchId().toString());
 			}
 		});

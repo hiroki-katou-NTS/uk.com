@@ -27,13 +27,11 @@ public class RemoveBranchCommandHandler extends CommandHandler<RemoveBranchComma
 	protected void handle(CommandHandlerContext<RemoveBranchCommand> context) {
 		String companyCode = AppContexts.user().companyCode();
 		RemoveBranchCommand command = context.getCommand();
-//		List<String>  bankCodeList = new ArrayList<String>();
-//	    bankCodeList.add(command.getBankCode());
-//	    List<String> branchCodeList = new ArrayList<String>();
-//	    branchCodeList.add(command.getBranchId().toString());
-//	    if(personBankAccountRepository.checkExistsBranchAccount(companyCode, bankCodeList, branchCodeList)){
-//	    	throw new BusinessException("ER008"); // ER008
-//	    }
+	    List<String> branchBranchIdList = new ArrayList<String>();
+	    branchBranchIdList.add(command.getBranchId().toString());
+	    if(personBankAccountRepository.checkExistsBranchAccount(companyCode, branchBranchIdList)){
+	    	throw new BusinessException("ER008"); // ER008
+	    }
 		bankBranchRepo.remove(companyCode,command.getBranchId());	
 	}
 

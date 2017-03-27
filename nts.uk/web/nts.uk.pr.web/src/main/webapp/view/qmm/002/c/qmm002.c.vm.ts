@@ -68,7 +68,6 @@ module qmm002.c.viewmodel {
                                 };
 
                             service.tranferBranch(data).done(function() {
-                                //self.getBankList();
                             });
                         })
                     }
@@ -83,36 +82,9 @@ module qmm002.c.viewmodel {
                 return item.treeCode == codeNew;
             });
 
-            //                if (parentId !== undefined) {
-            //                    node = _.find(self.lst_003(), function(item: BankInfo) {
-            //                        return item.treeCode == node.parentCode;
-            //                    });
-            //                }
-
             return node.branchId;
         }
 
-
-        //        getBankList(): any {
-        //            var self = this;
-        //            var dfd = $.Deferred();
-        //            service.getBankList().done(function(data) {
-        //                var list001: Array<BankInfo> = [];
-        //                _.forEach(data, function(itemBank) {
-        //                    var childs = _.map(itemBank.bankBranch, function(item) {
-        //                        return new BankInfo(itemBank.bankCode + "-" + item["bankBranchCode"], item["bankBranchCode"], item["bankBranchName"], item["bankBranchNameKana"], item["memo"], null, itemBank.bankCode);
-        //                    });
-        //
-        //                    list001.push(new BankInfo(itemBank.bankCode, itemBank.bankCode, itemBank.bankName, itemBank.bankNameKana, itemBank.memo, childs, null));
-        //                });
-        //                self.lst_001(list001);
-        //                dfd.resolve(list001);
-        //            }).fail(function(res) {
-        //                // error
-        //            });
-        //
-        //            return dfd.promise();
-        //        }
     }
 
     export class BankInfo {
