@@ -11,9 +11,6 @@ var cmm001;
                 updateCompany: "ctx/proto/company/updatedata",
                 addCompany: "ctx/proto/company/adddata"
             };
-            /**
-             * get list company
-             */
             function getAllCompanys() {
                 var dfd = $.Deferred();
                 nts.uk.request.ajax(paths.getAllCompanys)
@@ -26,9 +23,6 @@ var cmm001;
                 return dfd.promise();
             }
             service.getAllCompanys = getAllCompanys;
-            /**
-             * get a company
-             */
             function getCompanyDetail() {
                 var dfd = $.Deferred();
                 nts.uk.request.ajax(paths.getCompanyDetail)
@@ -65,10 +59,8 @@ var cmm001;
             service.updateData = updateData;
             var model;
             (function (model) {
-                // company
                 var CompanyDto = (function () {
-                    function CompanyDto(companyCode, companyName, companyNameGlobal, address1, address2, addressKana1, addressKana2, companyNameAbb, companyNameKana, corporateMyNumber, depWorkPlaceSet, displayAttribute, // cot thu 3
-                        faxNo, postal, presidentName, presidentJobTitle, telephoneNo, termBeginMon, useGrSet, useKtSet, useQySet, useJjSet, useAcSet, useGwSet, useHcSet, useLcSet, useBiSet, useRs01Set, useRs02Set, useRs03Set, useRs04Set, useRs05Set, useRs06Set, useRs07Set, useRs08Set, useRs09Set, useRs10Set) {
+                    function CompanyDto(companyCode, companyName, companyNameGlobal, address1, address2, addressKana1, addressKana2, companyNameAbb, companyNameKana, corporateMyNumber, depWorkPlaceSet, displayAttribute, faxNo, postal, presidentName, presidentJobTitle, telephoneNo, termBeginMon, useGrSet, useKtSet, useQySet, useJjSet, useAcSet, useGwSet, useHcSet, useLcSet, useBiSet, useRs01Set, useRs02Set, useRs03Set, useRs04Set, useRs05Set, useRs06Set, useRs07Set, useRs08Set, useRs09Set, useRs10Set) {
                         this.termBeginMon = 0;
                         this.use_Gr_Set = 0;
                         this.use_Kt_Set = 0;
@@ -125,3 +117,4 @@ var cmm001;
         })(service = a.service || (a.service = {}));
     })(a = cmm001.a || (cmm001.a = {}));
 })(cmm001 || (cmm001 = {}));
+//# sourceMappingURL=cmm001.a.service.js.map
