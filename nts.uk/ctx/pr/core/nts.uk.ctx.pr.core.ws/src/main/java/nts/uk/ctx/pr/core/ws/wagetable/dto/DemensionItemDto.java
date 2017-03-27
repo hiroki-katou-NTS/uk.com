@@ -22,6 +22,12 @@ public class DemensionItemDto {
 	/** The name. */
 	private String name;
 
+	/** The is code mode. */
+	public boolean isCodeMode;
+
+	/** The is range mode. */
+	public boolean isRangeMode;
+
 	/**
 	 * Instantiates a new demension item model.
 	 *
@@ -32,11 +38,13 @@ public class DemensionItemDto {
 	 * @param name
 	 *            the name
 	 */
-	public DemensionItemDto(Integer type, String code, String name) {
+	public DemensionItemDto(ElementType type, String code, String name) {
 		super();
-		this.type = type;
+		this.type = type.value;
 		this.code = code;
 		this.name = name;
+		this.isCodeMode = type.isCodeMode;
+		this.isRangeMode = type.isRangeMode;
 	}
 
 	/**
@@ -50,6 +58,8 @@ public class DemensionItemDto {
 		this.type = type.value;
 		this.code = String.valueOf(type.value);
 		this.name = type.displayName;
+		this.isCodeMode = type.isCodeMode;
+		this.isRangeMode = type.isRangeMode;
 	}
 
 }

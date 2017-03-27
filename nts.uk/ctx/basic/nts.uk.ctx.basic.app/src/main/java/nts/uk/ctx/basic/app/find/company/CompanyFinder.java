@@ -23,7 +23,11 @@ public class CompanyFinder {
 				.map(item -> CompanyDto.fromDomain(item))
 				.collect(Collectors.toList());
 	}
-	public Optional<CompanyDto> getCompany(String companyCode){
+	public Optional<CompanyDto> getCompany(){
+		String companyCode= "";
+		if(AppContexts.user() !=null){
+			companyCode = AppContexts.user().companyCode();
+		}
 		return this.companyRepository.getCompanyDetail(companyCode).map(company-> CompanyDto.fromDomain(company));
 		
 	}

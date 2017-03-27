@@ -14,6 +14,8 @@ import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportContext;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportGenerator;
 
 public class WageLedgerBaseGenerator extends AsposeCellsReportGenerator{
+	/** The Constant REPORT_FILE_NAME. */
+	protected static final String REPORT_FILE_NAME = "サンプル帳票.pdf";
 	
 	/** The Constant BLUE_COLOR. */
 	protected static final Color BLUE_COLOR = Color.fromArgb(197, 241, 247);

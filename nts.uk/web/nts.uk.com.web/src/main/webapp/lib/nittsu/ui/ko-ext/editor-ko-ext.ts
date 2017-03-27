@@ -22,8 +22,9 @@ module nts.uk.ui.koExtentions {
             $input.addClass('nts-editor nts-input');
             $input.wrap("<span class= 'nts-editor-wrapped ntsControl'/>");
 
+            let validator = this.getValidator(data);
             $input.on(valueUpdate, (e) => {
-                var validator = this.getValidator(data);
+//                var validator = this.getValidator(data);
                 var newText = $input.val();
                 var result = validator.validate(newText);
                 $input.ntsError('clear');
@@ -37,7 +38,7 @@ module nts.uk.ui.koExtentions {
 
             // Format on blur
             $input.blur(() => {
-                var validator = this.getValidator(data);
+//                var validator = this.getValidator(data);
                 var formatter = this.getFormatter(data);
                 var newText = $input.val();
                 var result = validator.validate(newText);
@@ -45,6 +46,16 @@ module nts.uk.ui.koExtentions {
                     $input.val(formatter.format(result.parsedValue));
                 }
             });
+            
+            $input.on('validate', (function(e: Event) {
+//                var validator = this.getValidator(data);
+                var newText = $input.val();
+                var result = validator.validate(newText);
+                $input.ntsError('clear');
+                if (!result.isValid) {
+                    $input.ntsError('set', result.errorMessage);
+                }
+            }));
         }
 
         update($input: JQuery, data: any) {

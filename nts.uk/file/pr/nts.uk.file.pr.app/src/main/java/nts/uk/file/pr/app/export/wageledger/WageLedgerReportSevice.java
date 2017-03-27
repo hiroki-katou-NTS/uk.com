@@ -53,6 +53,8 @@ public class WageLedgerReportSevice extends ExportService<WageLedgerReportQuery>
 		
 		// Fake data.
 		reportData = WLOldLayoutReportData.builder()
+				.bonusMonthList(Arrays.asList(1, 3, 7, 9, 12))
+				.salaryMonthList(Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12))
 				.headerData(HeaderReportData.builder()
 						.departmentCode("DEP1")
 						.departmentName("Department 1")
@@ -60,8 +62,6 @@ public class WageLedgerReportSevice extends ExportService<WageLedgerReportQuery>
 						.employeeName("Employee 1")
 						.position("Project manager")
 						.sex("Man")
-						.bonusMonthList(Arrays.asList(1, 3, 7, 9, 12))
-						.salaryMonthList(Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12))
 						.build())
 				.salaryPaymentData(PaymentData.builder()
 						.totalTax(ReportItemDto.builder()
@@ -121,7 +121,7 @@ public class WageLedgerReportSevice extends ExportService<WageLedgerReportQuery>
 		
 		// Generate report.
 		if (query.layoutType == LayoutType.NewLayout) {
-			this.newGenerator.generate(context.getGeneratorContext(), null);
+			this.newGenerator.generate(context.getGeneratorContext(), null, query);
 		} else {
 			this.oldGenerator.generate(context.getGeneratorContext(), reportData);
 		}

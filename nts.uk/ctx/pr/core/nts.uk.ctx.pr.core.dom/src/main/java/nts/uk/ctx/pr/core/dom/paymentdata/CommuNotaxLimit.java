@@ -1,8 +1,13 @@
 package nts.uk.ctx.pr.core.dom.paymentdata;
 
+import java.math.BigDecimal;
+
 import lombok.Getter;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.core.dom.company.CompanyCode;
+import nts.uk.ctx.pr.core.dom.rule.law.tax.commutelimit.CommuNoTaxLimitCode;
+import nts.uk.ctx.pr.core.dom.rule.law.tax.commutelimit.CommuNoTaxLimitName;
+import nts.uk.ctx.pr.core.dom.rule.law.tax.commutelimit.CommuNoTaxLimitValue;
 
 public class CommuNotaxLimit extends AggregateRoot {
 	
@@ -13,16 +18,16 @@ public class CommuNotaxLimit extends AggregateRoot {
 	private ExclusiveVersion exclusiveVersion;
 	
 	@Getter
-	private CommuNotaxLimitCode commuNotaxLimitCode;
+	private CommuNoTaxLimitCode commuNotaxLimitCode;
 	
 	@Getter
-	private CommuNotaxLimitName commuNotaxLimitName;
+	private CommuNoTaxLimitName commuNotaxLimitName;
 	
 	@Getter
-	private CommuNotaxLimitValue commuNotaxLimitValue;
+	private CommuNoTaxLimitValue commuNotaxLimitValue;
 	
-	public CommuNotaxLimit(CompanyCode ccd, ExclusiveVersion exclusiveVersion, CommuNotaxLimitCode commuNotaxLimitCode, CommuNotaxLimitName commuNotaxLimitName,
-			CommuNotaxLimitValue commuNotaxLimitValue) {
+	public CommuNotaxLimit(CompanyCode ccd, ExclusiveVersion exclusiveVersion, CommuNoTaxLimitCode commuNotaxLimitCode, CommuNoTaxLimitName commuNotaxLimitName,
+			CommuNoTaxLimitValue commuNotaxLimitValue) {
 		super();
 		this.ccd = ccd;
 		this.exclusiveVersion = exclusiveVersion;
@@ -32,12 +37,12 @@ public class CommuNotaxLimit extends AggregateRoot {
 	}
 
 	public static CommuNotaxLimit createFromJavaType(String ccd, int exclusiveVersion, String commuNotaxLimitCode, String commuNotaxLimitName,
-			int commuNotaxLimitValue) {
+			BigDecimal commuNotaxLimitValue) {
 
 		return new CommuNotaxLimit(new CompanyCode(ccd),
 									new ExclusiveVersion(exclusiveVersion),
-									new CommuNotaxLimitCode(commuNotaxLimitCode),
-									new CommuNotaxLimitName(commuNotaxLimitName),
-									new CommuNotaxLimitValue(commuNotaxLimitValue));
+									new CommuNoTaxLimitCode(commuNotaxLimitCode),
+									new CommuNoTaxLimitName(commuNotaxLimitName),
+									new CommuNoTaxLimitValue(commuNotaxLimitValue));
 	}
 }

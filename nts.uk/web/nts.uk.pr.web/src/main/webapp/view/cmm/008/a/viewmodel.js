@@ -33,7 +33,9 @@ var cmm008;
                         })),
                         required: ko.observable(true),
                     };
+                    //list data click
                 }
+                // start function
                 ScreenModel.prototype.start = function () {
                     var self = this;
                     var dfd = $.Deferred();
@@ -48,6 +50,7 @@ var cmm008;
                     self.processingDateItem();
                     self.dataSourceItem();
                     dfd.resolve();
+                    // Return.
                     return dfd.promise();
                 };
                 ScreenModel.prototype.closeDateListItem = function () {
@@ -99,6 +102,7 @@ var cmm008;
                     this.currentCode = ko.observable();
                     self.singleSelectedCode = ko.observable(null);
                 };
+                //登録ボタンを押す
                 ScreenModel.prototype.createEmployment = function () {
                     var self = this;
                     if (self.isEnable) {
@@ -137,15 +141,18 @@ var cmm008;
             }());
             viewmodel.ItemProcessingDate = ItemProcessingDate;
             var ItemModel = (function () {
+                //childs: any;
                 function ItemModel(code, name, description, other1, other2) {
                     this.code = code;
                     this.name = name;
                     this.description = description;
                     this.other1 = other1;
                     this.other2 = other2 || other1;
+                    //this.childs = childs;     
                 }
                 return ItemModel;
             }());
         })(viewmodel = a.viewmodel || (a.viewmodel = {}));
     })(a = cmm008.a || (cmm008.a = {}));
 })(cmm008 || (cmm008 = {}));
+//# sourceMappingURL=viewmodel.js.map
