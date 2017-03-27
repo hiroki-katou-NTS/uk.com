@@ -20,6 +20,7 @@ import nts.uk.ctx.pr.core.dom.wagetable.history.WtHistoryGetMemento;
 import nts.uk.ctx.pr.core.dom.wagetable.history.WtHistorySetMemento;
 import nts.uk.ctx.pr.core.dom.wagetable.history.WtItem;
 import nts.uk.ctx.pr.core.dom.wagetable.history.element.ElementSetting;
+import nts.uk.ctx.pr.core.dom.wagetable.history.element.RangeLimit;
 import nts.uk.ctx.pr.core.dom.wagetable.history.element.StepElementSetting;
 import nts.uk.ctx.pr.core.dom.wagetable.history.element.item.CodeItem;
 import nts.uk.ctx.pr.core.dom.wagetable.history.element.item.RangeItem;
@@ -295,13 +296,20 @@ public class WtHistoryDto {
 
 				// Range mode
 				if (ElementType.valueOf(item.getType()).isRangeMode) {
-					return new ElementSetting(DemensionNo.valueOf(item.getDemensionNo()),
+					StepElementSetting stepSetting = new StepElementSetting(DemensionNo.valueOf(item.getDemensionNo()),
 							ElementType.valueOf(item.getType()),
 							item.getItemList().stream()
 									.map(rangeItem -> new RangeItem(rangeItem.getOrderNumber(),
 											rangeItem.getStartVal(), rangeItem.getEndVal(),
 											new ElementId(rangeItem.getUuid())))
 									.collect(Collectors.toList()));
+
+					stepSetting.setSetting(new RangeLimit(item.getLowerLimit()),
+							new RangeLimit(item.getUpperLimit()),
+							new RangeLimit(item.getInterval()));
+
+					// Ret.
+					return stepSetting;
 				}
 
 				// Other
