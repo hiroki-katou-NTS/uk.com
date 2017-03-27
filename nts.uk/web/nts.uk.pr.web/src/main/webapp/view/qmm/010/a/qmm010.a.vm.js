@@ -42,17 +42,24 @@ var nts;
                                     var self = this;
                                     if (self.dirty.isDirty()) {
                                         if (self.typeAction() == TypeActionLaborInsuranceOffice.update) {
-                                            alert(self.messageList()[2].message);
+                                            nts.uk.ui.dialog.confirm(self.messageList()[2].message).ifYes(function () {
+                                                self.onResetValueLaborInsurance();
+                                            }).ifNo(function () {
+                                            });
+                                            return;
                                         }
-                                        return;
                                     }
+                                    self.onResetValueLaborInsurance();
+                                };
+                                ScreenModel.prototype.onResetValueLaborInsurance = function () {
+                                    var self = this;
                                     self.laborInsuranceOfficeModel().resetAllValue();
                                     self.typeAction(TypeActionLaborInsuranceOffice.add);
                                     self.selectCodeLstlaborInsuranceOffice('');
                                     self.laborInsuranceOfficeModel().setReadOnly(false);
                                     if (!self.isEmpty())
                                         self.clearErrorSave();
-                                    self.dirty = new nts.uk.ui.DirtyChecker(self.laborInsuranceOfficeModel);
+                                    self.dirty.reset();
                                     self.isEnableDelete(false);
                                 };
                                 ScreenModel.prototype.clearErrorSave = function () {
@@ -62,9 +69,16 @@ var nts;
                                 ScreenModel.prototype.readFromSocialTnsuranceOffice = function () {
                                     var self = this;
                                     if (self.dirty.isDirty()) {
-                                        alert(self.messageList()[2].message);
+                                        nts.uk.ui.dialog.confirm(self.messageList()[2].message).ifYes(function () {
+                                            self.onReadFromSocialTnsuranceOffice();
+                                        }).ifNo(function () {
+                                        });
                                         return;
                                     }
+                                    self.onReadFromSocialTnsuranceOffice();
+                                };
+                                ScreenModel.prototype.onReadFromSocialTnsuranceOffice = function () {
+                                    var self = this;
                                     self.enableButton(false);
                                     a.service.findAllSocialInsuranceOffice().done(function (data) {
                                         if (data != null && data.length > 0) {

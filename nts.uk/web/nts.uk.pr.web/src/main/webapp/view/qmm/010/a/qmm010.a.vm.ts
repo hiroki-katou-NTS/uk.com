@@ -52,10 +52,20 @@ module nts.uk.pr.view.qmm010.a {
                 var self = this;
                 if (self.dirty.isDirty()) {
                     if (self.typeAction() == TypeActionLaborInsuranceOffice.update) {
-                        alert(self.messageList()[2].message);
+                        nts.uk.ui.dialog.confirm(self.messageList()[2].message).ifYes(function() {
+                            self.onResetValueLaborInsurance();
+                        }).ifNo(function() {
+                            //No action
+                        });
+                        return;
                     }
-                    return;
                 }
+                self.onResetValueLaborInsurance();
+
+            }
+
+            private onResetValueLaborInsurance() {
+                var self = this;
                 self.laborInsuranceOfficeModel().resetAllValue();
                 //set type action (ismode) add
                 self.typeAction(TypeActionLaborInsuranceOffice.add);
@@ -63,7 +73,7 @@ module nts.uk.pr.view.qmm010.a {
                 self.selectCodeLstlaborInsuranceOffice('');
                 self.laborInsuranceOfficeModel().setReadOnly(false);
                 if (!self.isEmpty()) self.clearErrorSave();
-                self.dirty = new nts.uk.ui.DirtyChecker(self.laborInsuranceOfficeModel);
+                self.dirty.reset();
                 self.isEnableDelete(false);
             }
 
@@ -77,9 +87,20 @@ module nts.uk.pr.view.qmm010.a {
             private readFromSocialTnsuranceOffice() {
                 var self = this;
                 if (self.dirty.isDirty()) {
-                    alert(self.messageList()[2].message);
+                    nts.uk.ui.dialog.confirm(self.messageList()[2].message).ifYes(function() {
+                        self.onReadFromSocialTnsuranceOffice();
+                    }).ifNo(function() {
+                        //No action
+                    });
                     return;
                 }
+                self.onReadFromSocialTnsuranceOffice();
+
+            }
+
+            private onReadFromSocialTnsuranceOffice() {
+                var self = this;
+
                 self.enableButton(false);
                 //call service find all SocialTnsuranceOffice
                 service.findAllSocialInsuranceOffice().done(data => {
