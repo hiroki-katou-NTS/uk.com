@@ -22,6 +22,7 @@ var nts;
                                         { headerText: '名称', prop: 'name', width: 150 }
                                     ]);
                                 }
+                                //start page
                                 ScreenModel.prototype.startPage = function () {
                                     var self = this;
                                     var dfd = $.Deferred();
@@ -30,6 +31,7 @@ var nts;
                                     });
                                     return dfd.promise();
                                 };
+                                //Connection service find All InsuranceOffice
                                 ScreenModel.prototype.findAllInsuranceOffice = function () {
                                     var self = this;
                                     var dfd = $.Deferred();
@@ -38,6 +40,7 @@ var nts;
                                     dfd.resolve(self);
                                     return dfd.promise();
                                 };
+                                //show confirm by dulicate code
                                 ScreenModel.prototype.showConfirm = function (laborInsuranceOfficeCheckImportDto, socialInsuranceOfficeImport) {
                                     var self = this;
                                     if (laborInsuranceOfficeCheckImportDto.code === "1") {
@@ -52,15 +55,18 @@ var nts;
                                         self.importData(0, socialInsuranceOfficeImport);
                                     }
                                 };
+                                //import data
                                 ScreenModel.prototype.importData = function (checkUpdateDuplicateCode, socialInsuranceOfficeImport) {
                                     var laborInsuranceOfficeImportDto;
                                     laborInsuranceOfficeImportDto = new LaborInsuranceOfficeImportDto();
                                     laborInsuranceOfficeImportDto.socialInsuranceOfficeImport = socialInsuranceOfficeImport;
                                     laborInsuranceOfficeImportDto.checkUpdateDuplicateCode = checkUpdateDuplicateCode;
+                                    //call servier import data
                                     b.service.importData(laborInsuranceOfficeImportDto).done(function (data) {
                                         nts.uk.ui.windows.close();
                                     });
                                 };
+                                //Find code data lst by check import data
                                 ScreenModel.prototype.findCode = function (code) {
                                     var self = this;
                                     for (var _i = 0, _a = self.lstSocialInsuranceOffice(); _i < _a.length; _i++) {
@@ -71,11 +77,13 @@ var nts;
                                     }
                                     return null;
                                 };
+                                //check dulicate code
                                 ScreenModel.prototype.checkDuplicateCodeByImportData = function () {
                                     var self = this;
                                     if (self.selectLstSocialInsuranceOffice() != null) {
                                         var socialInsuranceOfficeImport;
                                         socialInsuranceOfficeImport = self.findCode(self.selectLstSocialInsuranceOffice());
+                                        //call service check duplicate
                                         b.service.checkDuplicateCodeByImportData(socialInsuranceOfficeImport).done(function (data) {
                                             self.showConfirm(data, socialInsuranceOfficeImport);
                                         });
@@ -91,4 +99,3 @@ var nts;
         })(pr = uk.pr || (uk.pr = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
-//# sourceMappingURL=qmm010.b.vm.js.map

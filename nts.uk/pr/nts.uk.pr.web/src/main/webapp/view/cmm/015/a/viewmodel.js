@@ -13,7 +13,6 @@ var cmm015;
                 return ItemModel;
             }());
             viewmodel.ItemModel = ItemModel;
-            //get the model from app
             var ItemDto = (function () {
                 function ItemDto() {
                     this.checkUseHighError = ko.observable(false);
@@ -39,12 +38,10 @@ var cmm015;
                 function ListBox(listItemDto, currentItemCode, isUpdate, stmtCode, startYm, categoryAtr) {
                     this.itemDtoSelected = ko.observable();
                     var self = this;
-                    // set list item dto
                     self.listItemDto = listItemDto;
                     self.itemName = ko.observable('');
                     if (isUpdate == false) {
                         self.selectedCode = ko.observable(self.listItemDto[0].itemCode);
-                        // get item selected
                         var item = ko.mapping.fromJS(self.getItemDtoSelected(self.selectedCode()));
                         self.itemDtoSelected(ko.observable(item));
                     }
@@ -105,7 +102,6 @@ var cmm015;
                     self.currentCode = ko.observable(0);
                     self.isEnable = ko.observable(true);
                     self.selectedCodes = ko.observableArray([]);
-                    // bind list item dto to list item model
                     self.itemList = ko.observableArray([]);
                     _.forEach(self.listItemDto, function (item) {
                         self.itemList.push(new ItemModel(item.itemCode, item.itemAbName));
@@ -116,7 +112,6 @@ var cmm015;
                         });
                         return item.name;
                     });
-                    //subcribe list box's change
                     self.selectedCode.subscribe(function (codeChange) {
                         var item = ko.mapping.fromJS(self.getItemDtoSelected(codeChange));
                         self.itemDtoSelected(ko.observable(item));
@@ -224,17 +219,11 @@ var cmm015;
                         new ItemModel(1, '交通用具')
                     ]);
                     if (self.paramCategoryAtr() == 0) {
-                        //計算方法
                         self.comboBoxCalcMethod = ko.observable(new ComboBox(itemListCalcMethod0));
-                        //内訳区分
-                        //「合計対象内（現物）」と「合計対象外（現物）」は項目区分が「支給項目」の場合のみ表示
                         self.comboBoxSumScopeAtr = ko.observable(new ComboBox(itemListSumScopeAtr));
                     }
                     else if (self.paramCategoryAtr() == 1) {
-                        //計算方法
-                        //6 支給相殺は項目区分が「控除項目」の場合のみ表示する。
                         self.comboBoxCalcMethod = ko.observable(new ComboBox(itemListCalcMethod1));
-                        //内訳区分
                         self.comboBoxSumScopeAtr = ko.observable(new ComboBox(itemListSumScopeAtr1));
                     }
                     self.comboBoxDistributeWay = ko.observable(new ComboBox(itemListDistributeWay));
@@ -266,11 +255,9 @@ var cmm015;
                 };
                 ScreenModel.prototype.start = function () {
                     var self = this;
-                    // Page load dfd.
                     var dfd = $.Deferred();
                     if (self.comboBoxCalcMethod !== undefined) {
                         self.switchButton().selectedRuleCode.subscribe(function (newValue) {
-                            //按分方法: 非活性: 項目区分が「支給項目」 or 「控除項目」＆「按分設定」が「按分しない」の場合
                             if (newValue == 0) {
                                 self.comboBoxDistributeWay().enable(false);
                             }
@@ -279,7 +266,6 @@ var cmm015;
                             }
                         });
                     }
-                    // Resolve start page dfd after load all data.
                     $.when(qmm019.f.service.getItemsByCategory(self.paramCategoryAtr())).done(function (data) {
                         if (data !== null) {
                             self.listItemDto = data;
@@ -333,7 +319,6 @@ var cmm015;
                     });
                     if (self.comboBoxCalcMethod !== undefined) {
                         self.comboBoxCalcMethod().selectedCode.subscribe(function (newValue) {
-                            //通勤区分: 非表示: 「計算方法」が「手入力」以外 or 選択している項目の課税区分(TAX_ATR)が 3 or 4 以外 の場合
                             var taxAtr = 0;
                             var itemCode = self.listBox().selectedCode;
                             var itemDto = _.find(self.listBox().listItemDto, function (item) {
@@ -476,3 +461,4 @@ var cmm015;
         })(viewmodel = a.viewmodel || (a.viewmodel = {}));
     })(a = cmm015.a || (cmm015.a = {}));
 })(cmm015 || (cmm015 = {}));
+//# sourceMappingURL=viewmodel.js.map
