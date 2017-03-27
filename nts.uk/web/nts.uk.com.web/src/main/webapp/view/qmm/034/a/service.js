@@ -10,7 +10,8 @@ var qmm034;
                 deleteEra: "ctx/basic/era/deleteData",
                 updateEra: "ctx/basic/era/updateData",
                 addEra: "ctx/basic/era/addData",
-                getFixAttribute: "ctx/basic/era/getFixAttribute/{0}"
+                getFixAttribute: "ctx/basic/era/getFixAttribute/{0}",
+                checkStartDate: "ctx/basic/era/checkStartDate/{0}/"
             };
             /**
              * get list era
@@ -81,6 +82,17 @@ var qmm034;
                 return dfd.promise();
             }
             service.deleteData = deleteData;
+            function checkStartDate(startDate) {
+                var dfd = $.Deferred();
+                var self = this;
+                var _path = nts.uk.text.format(paths.checkStartDate, startDate);
+                nts.uk.request.ajax(_path)
+                    .done(function (res) {
+                    dfd.resolve(res);
+                });
+                return dfd.promise();
+            }
+            service.checkStartDate = checkStartDate;
             var model;
             (function (model) {
                 var EraDto = (function () {

@@ -5,13 +5,14 @@ module qmm034.a.service {
         deleteEra: "ctx/basic/era/deleteData",
         updateEra: "ctx/basic/era/updateData",
         addEra: "ctx/basic/era/addData",
-        getFixAttribute: "ctx/basic/era/getFixAttribute/{0}"
+        getFixAttribute: "ctx/basic/era/getFixAttribute/{0}",
+        checkStartDate: "ctx/basic/era/checkStartDate/{0}/"
     }
     /**
      * get list era
      */
     export function getAllEras(): JQueryPromise<Array<viewmodel.EraModel>> {
-        let dfd = $.Deferred < Array<viewmodel.EraModel>>();
+        let dfd = $.Deferred<Array<viewmodel.EraModel>>();
         nts.uk.request.ajax(paths.getAllEras).done(function(res: Array<viewmodel.EraModel>) {
             dfd.resolve(res);
         }).fail(function(res) {
@@ -27,7 +28,6 @@ module qmm034.a.service {
         let dfd = $.Deferred<model.EraDto>();
         let self = this;
         let _path = nts.uk.text.format(paths.getEraDetail, eraHist);
-
         nts.uk.request.ajax(_path).done(function(res: model.EraDto) {
             dfd.resolve(res);
         }).fail(function(res) {
@@ -75,6 +75,16 @@ module qmm034.a.service {
             .fail(function(res) {
                 dfd.reject(res);
             })
+        return dfd.promise();
+    }
+    export function checkStartDate(startDate: Date): JQueryPromise<any> {
+        let dfd = $.Deferred<any>();
+        let self = this;
+        let _path = nts.uk.text.format(paths.checkStartDate, startDate);
+        nts.uk.request.ajax(_path)
+            .done(function(res: Array<any>) {
+                dfd.resolve(res);
+        })
         return dfd.promise();
     }
 

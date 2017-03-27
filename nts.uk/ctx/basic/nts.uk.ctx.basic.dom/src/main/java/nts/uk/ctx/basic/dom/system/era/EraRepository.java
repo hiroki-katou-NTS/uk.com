@@ -1,7 +1,6 @@
 package nts.uk.ctx.basic.dom.system.era;
 
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -49,4 +48,6 @@ public interface EraRepository {
 	void delete(String eraHist);
 	Optional<Era> getCurrentEndDate(GeneralDate endDate);
 		
+	
+	GeneralDate checkStartDate();
 }
