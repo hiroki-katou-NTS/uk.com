@@ -47,11 +47,12 @@ public class CertificateItemGenerator implements ItemGenerator {
 		Map<String, ElementId> mapCodeItems = codeItems.stream()
 				.collect(Collectors.toMap(CodeItem::getReferenceCode, CodeItem::getUuid));
 
-		return certifications.stream()
-				.map(item -> new CodeItem(item.getCode(),
-						mapCodeItems.getOrDefault(item.getCode(),
-								new ElementId(IdentifierUtil.randomUniqueId()))))
-				.collect(Collectors.toList());
+		return certifications.stream().map(item -> {
+			CodeItem codeItem = new CodeItem(item.getCode(), mapCodeItems
+					.getOrDefault(item.getCode(), new ElementId(IdentifierUtil.randomUniqueId())));
+			codeItem.setDisplayName(item.getName());
+			return codeItem;
+		}).collect(Collectors.toList());
 	}
 
 	/*

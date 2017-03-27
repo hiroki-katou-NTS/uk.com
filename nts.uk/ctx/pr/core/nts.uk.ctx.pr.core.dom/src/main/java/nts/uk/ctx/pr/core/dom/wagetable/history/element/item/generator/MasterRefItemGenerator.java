@@ -65,11 +65,12 @@ public class MasterRefItemGenerator implements ItemGenerator {
 		Map<String, ElementId> mapCodeItems = codeItems.stream()
 				.collect(Collectors.toMap(CodeItem::getReferenceCode, CodeItem::getUuid));
 
-		return wtRefItems.stream()
-				.map(item -> new CodeItem(item.getReferenceCode(),
-						mapCodeItems.getOrDefault(item.getReferenceCode(),
-								new ElementId(IdentifierUtil.randomUniqueId()))))
-				.collect(Collectors.toList());
+		return wtRefItems.stream().map(item -> {
+			CodeItem codeItem = new CodeItem(item.getReferenceCode(), mapCodeItems.getOrDefault(
+					item.getReferenceCode(), new ElementId(IdentifierUtil.randomUniqueId())));
+			codeItem.setDisplayName(item.getDisplayName());
+			return codeItem;
+		}).collect(Collectors.toList());
 	}
 
 	/*

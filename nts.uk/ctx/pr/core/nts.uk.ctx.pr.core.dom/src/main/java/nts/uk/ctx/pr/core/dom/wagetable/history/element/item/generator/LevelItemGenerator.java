@@ -41,11 +41,12 @@ public class LevelItemGenerator implements ItemGenerator {
 		Map<String, ElementId> mapCodeItems = codeItems.stream()
 				.collect(Collectors.toMap(CodeItem::getReferenceCode, CodeItem::getUuid));
 
-		return Arrays.asList(EmployeeLevel.values()).stream()
-				.map(item -> new CodeItem(item.value,
-						mapCodeItems.getOrDefault(item.value,
-								new ElementId(IdentifierUtil.randomUniqueId()))))
-				.collect(Collectors.toList());
+		return Arrays.asList(EmployeeLevel.values()).stream().map(item -> {
+			CodeItem codeItem = new CodeItem(item.value, mapCodeItems.getOrDefault(item.value,
+					new ElementId(IdentifierUtil.randomUniqueId())));
+			codeItem.setDisplayName(item.displayName);
+			return codeItem;
+		}).collect(Collectors.toList());
 	}
 
 	/*
