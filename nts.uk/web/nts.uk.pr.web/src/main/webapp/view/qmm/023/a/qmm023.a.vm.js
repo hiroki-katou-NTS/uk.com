@@ -143,10 +143,7 @@ var qmm023;
                 ScreenModel.prototype.deleteData = function () {
                     var self = this;
                     var deleteCode = ko.mapping.toJS(self.currentTax().code);
-                    if (nts.uk.text.isNullOrEmpty(deleteCode)) {
-                        $('#INP_002').ntsError('set', nts.uk.text.format('{0}が入力されていません。', 'コード'));
-                        return;
-                    }
+                    $('#INP_002').ntsEditor("validate");
                     a.service.deleteData(new DeleteModel(deleteCode)).done(function () {
                         var indexItemDelete = _.findIndex(self.items(), function (item) { return item.code == deleteCode; });
                         $.when(self.reload(false)).done(function () {
