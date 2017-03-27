@@ -43,7 +43,10 @@ var nts;
                                         { messageId: "ER007", message: "＊が選択されていません。" },
                                         { messageId: "ER005", message: "入力した＊は既に存在しています。\r\n ＊を確認してください。" },
                                         { messageId: "ER008", message: "選択された＊は使用されているため削除できません。" },
+                                        { messageId: "AL001", message: "変更された内容が登録されていません。\r\n よろしいですか。" },
+                                        { messageId: "AL002", message: "データを削除します。\r\nよろしいですか？" },
                                     ]);
+                                    self.dirty = new nts.uk.ui.DirtyChecker(ko.observable(''));
                                     self.selectedOfficeCode.subscribe(function (selectedOfficeCode) {
                                         $('.save-error').ntsError('clear');
                                         if (selectedOfficeCode != null && selectedOfficeCode != undefined && selectedOfficeCode != "") {
@@ -113,6 +116,7 @@ var nts;
                                             self.officeModel().healthInsuOfficeCode(data.healthInsuOfficeCode);
                                             self.officeModel().healthInsuAssoCode(data.healthInsuAssoCode);
                                             self.officeModel().memo(data.memo);
+                                            self.dirty = new nts.uk.ui.DirtyChecker(self.officeModel);
                                         });
                                     }
                                     return;
@@ -161,6 +165,13 @@ var nts;
                                         }
                                     });
                                 };
+                                ScreenModel.prototype.removeWithDirtyCheck = function () {
+                                    var self = this;
+                                    nts.uk.ui.dialog.confirm(self.errorList()[5].message).ifYes(function () {
+                                        self.remove();
+                                    }).ifCancel(function () {
+                                    });
+                                };
                                 ScreenModel.prototype.remove = function () {
                                     var self = this;
                                     if (self.selectedOfficeCode() != '') {
@@ -181,6 +192,19 @@ var nts;
                                     var self = this;
                                     var a = new e.service.model.finder.OfficeItemDto("company code", self.officeModel().officeCode(), self.officeModel().officeName(), self.officeModel().shortName(), self.officeModel().PicName(), self.officeModel().PicPosition(), self.officeModel().potalCode(), self.officeModel().address1st(), self.officeModel().address2nd(), self.officeModel().kanaAddress1st(), self.officeModel().kanaAddress2nd(), self.officeModel().phoneNumber(), self.officeModel().healthInsuOfficeRefCode1st(), self.officeModel().healthInsuOfficeRefCode2nd(), self.officeModel().pensionOfficeRefCode1st(), self.officeModel().pensionOfficeRefCode2nd(), self.officeModel().welfarePensionFundCode(), self.officeModel().officePensionFundCode(), self.officeModel().healthInsuCityCode(), self.officeModel().healthInsuOfficeSign(), self.officeModel().pensionCityCode(), self.officeModel().pensionOfficeSign(), self.officeModel().healthInsuOfficeCode(), self.officeModel().healthInsuAssoCode(), self.officeModel().memo());
                                     return a;
+                                };
+                                ScreenModel.prototype.addNewWithDirtyCheck = function () {
+                                    var self = this;
+                                    if (self.dirty.isDirty()) {
+                                        nts.uk.ui.dialog.confirm(self.errorList()[4].message).ifYes(function () {
+                                            self.addNew();
+                                            self.dirty.reset();
+                                        }).ifCancel(function () {
+                                        });
+                                    }
+                                    else {
+                                        self.addNew();
+                                    }
                                 };
                                 ScreenModel.prototype.addNew = function () {
                                     var self = this;
@@ -212,8 +236,22 @@ var nts;
                                     self.deleteButtonControll(false);
                                     self.selectedOfficeCode('');
                                 };
+                                ScreenModel.prototype.closeDialogWithDirtyCheck = function () {
+                                    var self = this;
+                                    if (self.dirty.isDirty()) {
+                                        nts.uk.ui.dialog.confirm(self.errorList()[4].message).ifYes(function () {
+                                            self.closeDialog();
+                                            self.dirty.reset();
+                                        }).ifCancel(function () {
+                                        });
+                                    }
+                                    else {
+                                        self.closeDialog();
+                                    }
+                                };
                                 ScreenModel.prototype.closeDialog = function () {
-                                    nts.uk.ui.windows.setShared("insuranceOfficeChildValue", "return value", this.isTransistReturnData());
+                                    var self = this;
+                                    nts.uk.ui.windows.setShared("codeOfNewOffice", self.officeModel().officeCode(), this.isTransistReturnData());
                                     nts.uk.ui.windows.close();
                                 };
                                 return ScreenModel;

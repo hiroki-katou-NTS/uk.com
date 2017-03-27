@@ -4,13 +4,11 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.app.insurance.labor.unemployeerate.command.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-import nts.uk.ctx.pr.core.dom.insurance.RoundingMethod;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 public class UnemployeeInsuranceRateItemSettingDto {
 	
 	/** The round atr. */

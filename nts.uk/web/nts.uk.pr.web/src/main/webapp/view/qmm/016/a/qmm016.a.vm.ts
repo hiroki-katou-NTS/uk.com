@@ -1,5 +1,6 @@
 module nts.uk.pr.view.qmm016.a {
     export module viewmodel {
+        var elementTypes: Array<model.ElementTypeDto>;
         export class ScreenModel extends base.simplehistory.viewmodel.ScreenBaseModel<model.WageTable, model.WageTableHistory> {
             // For UI Tab.
             tabs: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel>;
@@ -53,6 +54,19 @@ module nts.uk.pr.view.qmm016.a {
                 self.specialTableTypes = ko.observableArray(model.specialDemension);
             }
             
+            /**
+             * Start load data.
+             */
+            start(): JQueryPromise<any> {
+                var self = this;
+                var dfd = $.Deferred();
+                service.instance.loadElementList().done(res => {
+                    elementTypes = res;
+                    dfd.resolve();
+                })
+                return dfd.promise();
+            }
+
              /**
              * Load wage table detail.
              */
@@ -61,6 +75,7 @@ module nts.uk.pr.view.qmm016.a {
                 var dfd = $.Deferred<void>();
                 service.instance.loadHistoryByUuid(id).done(model => {
                     self.head.resetBy(model.head);
+                    self.history.resetBy(model.head, model.history);
                 })
                 dfd.resolve();
                 return dfd.promise();
@@ -90,7 +105,7 @@ module nts.uk.pr.view.qmm016.a {
              */
             onRegistNew(): void {
                 var self = this;
-                $('.save-error').ntsError('clear');
+                self.selectedTab('tab-1');
                 self.head.reset();
             }
         }
@@ -107,8 +122,7 @@ module nts.uk.pr.view.qmm016.a {
             
             /** The demension set. */
             demensionSet: KnockoutObservable<number>;
-            
-            
+
             demensionType: KnockoutObservable<model.DemensionElementCountType>;
 
             /** The memo. */
@@ -141,12 +155,11 @@ module nts.uk.pr.view.qmm016.a {
                     if (!self.isNewMode()) {
                         return
                     }
-
-                    // Update.
                     self.demensionItemList(self.getDemensionItemListByType(val));
                 })
                 
                 self.isNewMode = ko.observable(true);
+                self.reset();
             }
             
             /**
@@ -158,7 +171,7 @@ module nts.uk.pr.view.qmm016.a {
                 self.code('');
                 self.name('');
                 self.demensionSet(model.allDemension[0].code);
-                self.demensionItemList([]);
+                self.demensionItemList(self.getDemensionItemListByType(self.demensionSet()));
                 self.memo('');
             }
 
@@ -222,8 +235,8 @@ module nts.uk.pr.view.qmm016.a {
                             let late = new DemensionItemViewModel(2);
                             late.elementType(8);
                             late.elementName('遅刻・早退回数');
-                            let level = new DemensionItemViewModel(2);
-                            level.elementType(8);
+                            let level = new DemensionItemViewModel(3);
+                            level.elementType(9);
                             level.elementName('レベル');
                             newDemensionItemList.push(workDay);
                             newDemensionItemList.push(late);
@@ -245,6 +258,11 @@ module nts.uk.pr.view.qmm016.a {
                 self.code(head.code);
                 self.name(head.name);
                 self.demensionSet(head.mode);
+                self.demensionItemList(_.map(head.elements, (item) => {
+                    var itemViewModel = new DemensionItemViewModel(item.demensionNo);
+                    itemViewModel.resetBy(item);
+                    return itemViewModel;
+                }));
                 self.memo(head.memo);
             }
             
@@ -285,6 +303,13 @@ module nts.uk.pr.view.qmm016.a {
                 self.elementCode = ko.observable('');
                 self.elementName = ko.observable('');
             }
+            
+            resetBy(element: model.ElementDto) {
+                var self = this;
+                self.elementType(element.type);
+                self.elementCode(element.referenceCode);
+                self.elementName('need load later');
+            }
         }
         
         /**
@@ -292,15 +317,94 @@ module nts.uk.pr.view.qmm016.a {
          */
         export class HistoryViewModel {
             startYearMonth: KnockoutObservable<number>;
-            startYearMonthJpText: KnockoutObservable<string>;
             endYearMonth: KnockoutObservable<number>;
+            startYearMonthText: KnockoutObservable<string>;
+            endYearMonthText: KnockoutObservable<string>;
+            startYearMonthJpText: KnockoutObservable<string>;
+            elements: KnockoutObservableArray<HistoryElementSettingViewModel>;
             constructor() {
                 var self = this;
                 self.startYearMonth = ko.observable(parseInt(nts.uk.time.formatDate(new Date(), 'yyyyMM')));
                 self.endYearMonth = ko.observable(99999);
+                self.startYearMonthText = ko.computed(() => {
+                    return nts.uk.time.formatYearMonth(self.startYearMonth());
+                })
+                self.endYearMonthText = ko.computed(() => {
+                    return nts.uk.time.formatYearMonth(self.endYearMonth());
+                })
                 self.startYearMonthJpText = ko.computed(() => {
                     return nts.uk.text.format('（{0}）', nts.uk.time.yearmonthInJapanEmpire(self.startYearMonth()).toString());
                 })
+                
+                // Element info.
+                self.elements = ko.observableArray<HistoryElementSettingViewModel>([]);
+            }
+            
+            /**
+             * Reset.
+             */
+            resetBy(head: model.WageTableHeadDto, history: model.WageTableHistoryDto) {
+                var self = this;
+                self.startYearMonth(history.startMonth);
+                self.endYearMonth(history.endMonth);
+                var elementSettingViewModel = _.map(history.elements, (el) => {
+                    return new HistoryElementSettingViewModel(head, el);
+                })
+                self.elements(elementSettingViewModel);
+            }
+        }
+        
+        /**
+         * Element history setting view model.
+         */
+        export class HistoryElementSettingViewModel {
+            demensionNo: KnockoutObservable<number>;
+            elementType: KnockoutObservable<number>;
+            elementCode: KnockoutObservable<string>;
+            elementName: KnockoutObservable<string>;
+            lowerLimit: KnockoutObservable<number>;
+            upperLimit: KnockoutObservable<number>;
+            interval: KnockoutObservable<number>;
+            type: model.ElementTypeDto;
+
+            /**
+             * Element setting view model.
+             */
+            constructor(head: model.WageTableHeadDto, element: model.ElementSettingDto) {
+                var self = this;
+                self.demensionNo = ko.observable(element.demensionNo);
+                self.elementType = ko.observable(0);
+                self.elementCode = ko.observable('');
+                self.elementName = ko.observable('');
+                self.lowerLimit = ko.observable(0);
+                self.upperLimit = ko.observable(0);
+                self.interval = ko.observable(0);
+                self.resetBy(head, element);
+            }
+
+            /**
+             * Reset by model.
+             */
+            resetBy(head: model.WageTableHeadDto, element: model.ElementSettingDto) {
+                var self = this;
+                self.elementType(element.type);
+
+                // Get element from head.
+                var elementDto = _.filter(head.elements, (el) => {
+                    return el.demensionNo == element.demensionNo;
+                })[0];
+                self.elementCode(elementDto.referenceCode);
+                self.elementName('need load later');
+
+                // Set upper and lower limit.
+                self.upperLimit(element.upperLimit);
+                self.lowerLimit(element.lowerLimit);
+                self.interval(element.interval);
+                
+                // Set type.
+                self.type = _.filter(elementTypes, (type) => {
+                    return type.value == self.elementType();
+                })[0];
             }
         }
     }

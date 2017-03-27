@@ -96,12 +96,12 @@
 
 		<ui:define name="content">
 			<div id="functions-area">
-				<button class="btn_width new_btn" data-bind="click: addNew">新規</button>
+				<button class="btn_width new_btn" data-bind="click: addNewWithDirtyCheck">新規</button>
 				<button data-bind="click: save,enable: $root.errors.isEmpty" class="proceed btn_width">登録</button>
 				<button class="btn_width">印刷</button>
-				<button data-bind="click: remove, enable: deleteButtonControll()"
+				<button data-bind="click: removeWithDirtyCheck, enable: deleteButtonControll()"
 					class="delete_btn btn_width danger">削除</button>
-				<button class="btn_width" data-bind="click: closeDialog">閉じる</button>
+				<button class="btn_width" data-bind="click: closeDialogWithDirtyCheck">閉じる</button>
 			</div>
 			<div id="contents-area">
 				<!-- left -->

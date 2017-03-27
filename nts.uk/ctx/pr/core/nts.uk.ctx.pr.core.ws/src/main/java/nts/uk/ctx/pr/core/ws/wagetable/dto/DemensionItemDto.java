@@ -4,15 +4,13 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.ws.wagetable.dto;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 import nts.uk.ctx.pr.core.dom.wagetable.ElementType;
 
 /**
  * The Class DemensionItemModel.
  */
-@Getter
-@Setter
+@Data
 public class DemensionItemDto {
 
 	/** The type. */
@@ -27,9 +25,12 @@ public class DemensionItemDto {
 	/**
 	 * Instantiates a new demension item model.
 	 *
-	 * @param type the type
-	 * @param code the code
-	 * @param name the name
+	 * @param type
+	 *            the type
+	 * @param code
+	 *            the code
+	 * @param name
+	 *            the name
 	 */
 	public DemensionItemDto(Integer type, String code, String name) {
 		super();
@@ -41,7 +42,8 @@ public class DemensionItemDto {
 	/**
 	 * Instantiates a new demension item model.
 	 *
-	 * @param type the type
+	 * @param type
+	 *            the type
 	 */
 	public DemensionItemDto(ElementType type) {
 		super();

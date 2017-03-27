@@ -1,3 +1,6 @@
+#detail-label{
+	margin-left: 30px;
+}
 #time-input{
 	float: left;	
 }
@@ -89,11 +92,28 @@ label#navigation-message-2 {
     margin-left: 27px;
 }
 label#navigation-message-1 {
-    margin-left: 65px;
+    margin-left: 25px;
 }
 div#print-department-hierarchy-checkbox > .help-button {
     margin-left: 8px;
     width: 31px;
+}
+#department-hierarchy{
+	width: 400px;
+	margin-left: 15px;
+	padding-left: 5px;	
+	padding-bottom: 8px;
+	padding-top: 8px;
+	border: solid 2px #B1B1B1;
+}
+#department-hierarchy .ntsCheckBox{
+	padding-right: 10px;
+}
+#hierarchy-content{
+	padding-left: 15px;
+	margin-top: 10px;
+	margin-bottom: 8px;
+	line-height: 30px;
 }
 .head-end {
     width: 100%;

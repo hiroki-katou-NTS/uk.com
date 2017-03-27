@@ -4,31 +4,24 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.ws.wagetable.dto;
 
-import java.math.BigDecimal;
+import java.util.List;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * The Class SettingInfoInModel.
  */
-@Getter
-@Setter
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class SettingInfoInModel {
 
-	/** The demension no. */
-	private Integer demensionNo;
+	/** The history id. */
+	private String historyId;
 
-	/** The type. */
-	private Integer type;
-
-	/** The lower limit. */
-	private BigDecimal lowerLimit;
-
-	/** The upper limit. */
-	private BigDecimal upperLimit;
-
-	/** The interval. */
-	private BigDecimal interval;
+	/** The element setting. */
+	private List<ElementSettingDto> settings;
 
 }

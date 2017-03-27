@@ -42,6 +42,8 @@ module nts.uk.pr.view.qmm008.c {
             
             listAvgEarnLevelMasterSetting: Array<AvgEarnLevelMasterSettingDto>;
             listPensionAvgearnModel: KnockoutObservableArray<PensionAvgearnModel>;
+            errorList: KnockoutObservableArray<any>;
+            dirty: nts.uk.ui.DirtyChecker;
             constructor() {
                 super({
                     functionName: '社会保険事業所',
@@ -94,6 +96,14 @@ module nts.uk.pr.view.qmm008.c {
                         self.fundInputEnable(false);
                     }
                 });
+                self.errorList = ko.observableArray([
+                    { messageId: "ER001", message: "＊が入力されていません。" },
+                    { messageId: "ER007", message: "＊が選択されていません。" },
+                    { messageId: "ER005", message: "入力した＊は既に存在しています。\r\n ＊を確認してください。" },
+                    { messageId: "ER008", message: "選択された＊は使用されているため削除できません。" },
+                    { messageId: "AL001", message: "変更された内容が登録されていません。\r\n よろしいですか。" }
+                ]);
+                self.dirty = new nts.uk.ui.DirtyChecker(ko.observable(''));
             } //end constructor
 
             // Start
@@ -411,6 +421,7 @@ module nts.uk.pr.view.qmm008.c {
                 self.currentOfficeCode(self.getCurrentOfficeCode(id));
                 service.instance.findHistoryByUuid(id).done(dto => {
                     self.loadPension(dto);
+                    self.dirty = new nts.uk.ui.DirtyChecker(self.pensionModel);
                     self.isLoading(false);
                     $('.save-error').ntsError('clear');
                     dfd.resolve();
@@ -468,19 +479,47 @@ module nts.uk.pr.view.qmm008.c {
                 return returnValue;
             }
             
+            private OpenModalOfficeRegisterWithDirtyCheck(){
+                var self = this;
+                if (self.dirty.isDirty()) {
+                    nts.uk.ui.dialog.confirm(self.errorList()[4].message).ifYes(function() {
+                        self.OpenModalOfficeRegister();
+                        self.dirty.reset();
+                    }).ifCancel(function() {
+                    });
+                }
+                else {
+                    self.OpenModalOfficeRegister();
+                }
+            }
+            
             //open office register dialog
-            public OpenModalOfficeRegister() {
+            private OpenModalOfficeRegister() {
                 var self = this;
                 // Set parent value
                 nts.uk.ui.windows.setShared("isTransistReturnData", this.isTransistReturnData());
-                nts.uk.ui.windows.sub.modal("/view/qmm/008/e/index.xhtml", { title: "会社保険事業所の登録＞事業所の登録" }).onClosed(() => {
+                nts.uk.ui.windows.sub.modal("/view/qmm/008/e/index.xhtml", { title: "会社保険事業所の登録＞事業所の登録",dialogClass: 'no-close' }).onClosed(() => {
                     //when close dialog -> reload office list
-                    self.start();
-                    // Get child value
-                    var returnValue = nts.uk.ui.windows.getShared("insuranceOfficeChildValue");
+                    self.loadMasterHistory();
+                    var codeOfNewOffice = nts.uk.ui.windows.getShared("codeOfNewOffice");
+//                    self.igGridSelectedHistoryUuid(codeOfNewOffice);
                 });
             }
-
+            
+            public OpenModalStandardMonthlyPricePensionWithDirtyCheck(){
+                var self = this;
+                if (self.dirty.isDirty()) {
+                    nts.uk.ui.dialog.confirm(self.errorList()[4].message).ifYes(function() {
+                        self.OpenModalStandardMonthlyPricePension();
+                        self.dirty.reset();
+                    }).ifCancel(function() {
+                    });
+                }
+                else {
+                    self.OpenModalStandardMonthlyPricePension();
+                }
+            }
+            
             //open modal standard monthly price pension 
             public OpenModalStandardMonthlyPricePension() {
                 // Set parent value
@@ -488,7 +527,7 @@ module nts.uk.pr.view.qmm008.c {
                 nts.uk.ui.windows.setShared("pensionModel", this.pensionModel());
 
                 nts.uk.ui.windows.setShared("isTransistReturnData", this.isTransistReturnData());
-                nts.uk.ui.windows.sub.modal("/view/qmm/008/i/index.xhtml", { title: "会社保険事業所の登録＞標準報酬月額保険料額表" }).onClosed(() => {
+                nts.uk.ui.windows.sub.modal("/view/qmm/008/i/index.xhtml", { title: "会社保険事業所の登録＞標準報酬月額保険料額表",dialogClass: 'no-close' }).onClosed(() => {
                     // Get child value
                     var returnValue = nts.uk.ui.windows.getShared("listOfficeOfChildValue");
                 });

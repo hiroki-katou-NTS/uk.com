@@ -26,6 +26,7 @@ module nts.uk.pr.view.qmm008.e {
             enabled: KnockoutObservable<boolean>;
             deleteButtonControll: KnockoutObservable<boolean>;
             errorList: KnockoutObservableArray<any>;
+            dirty: nts.uk.ui.DirtyChecker;
             constructor() {
                 var self = this;
                 self.enabled = ko.observable(true);
@@ -63,7 +64,11 @@ module nts.uk.pr.view.qmm008.e {
                     { messageId: "ER007", message: "＊が選択されていません。" },
                     { messageId: "ER005", message: "入力した＊は既に存在しています。\r\n ＊を確認してください。" },
                     { messageId: "ER008", message: "選択された＊は使用されているため削除できません。" },
+                    { messageId: "AL001", message: "変更された内容が登録されていません。\r\n よろしいですか。" },
+                    { messageId: "AL002", message: "データを削除します。\r\nよろしいですか？" },
                 ]);
+                //dirty check
+                self.dirty = new nts.uk.ui.DirtyChecker(ko.observable('')); 
                 
                 self.selectedOfficeCode.subscribe(function(selectedOfficeCode: string) {
                     $('.save-error').ntsError('clear');
@@ -150,6 +155,7 @@ module nts.uk.pr.view.qmm008.e {
                         self.officeModel().healthInsuOfficeCode(data.healthInsuOfficeCode);
                         self.officeModel().healthInsuAssoCode(data.healthInsuAssoCode);
                         self.officeModel().memo(data.memo);
+                        self.dirty = new nts.uk.ui.DirtyChecker(self.officeModel);
                     });
                 }
                 return;
@@ -212,7 +218,14 @@ module nts.uk.pr.view.qmm008.e {
                     }
                 });
             }
-
+            
+            private removeWithDirtyCheck() {
+                var self = this;
+                nts.uk.ui.dialog.confirm(self.errorList()[5].message).ifYes(function() {
+                    self.remove();
+                }).ifCancel(function() {
+                });
+            }
             //remove office  by office Code
             private remove() {
                 var self = this;
@@ -268,7 +281,19 @@ module nts.uk.pr.view.qmm008.e {
                 );
                 return a;
             }
-
+            public addNewWithDirtyCheck() {
+                var self = this;
+                if (self.dirty.isDirty()) {
+                    nts.uk.ui.dialog.confirm(self.errorList()[4].message).ifYes(function() {
+                        self.addNew();
+                        self.dirty.reset();
+                    }).ifCancel(function() {
+                    });
+                }
+                else {
+                    self.addNew();
+                }
+            }
             //reset all field when click add new office button
             public addNew() {
                 var self = this;
@@ -304,10 +329,25 @@ module nts.uk.pr.view.qmm008.e {
                 //reset selected officeCode
                 self.selectedOfficeCode('');
             }
-
+            
+            closeDialogWithDirtyCheck() {
+                var self = this;
+                if (self.dirty.isDirty()) {
+                    nts.uk.ui.dialog.confirm(self.errorList()[4].message).ifYes(function() {
+                        self.closeDialog();
+                        self.dirty.reset();
+                    }).ifCancel(function() {
+                    });
+                }
+                else {
+                    self.closeDialog();
+                }
+            }
+            
             closeDialog() {
+                var self = this;
                 // Set child value
-                nts.uk.ui.windows.setShared("insuranceOfficeChildValue", "return value", this.isTransistReturnData());
+                nts.uk.ui.windows.setShared("codeOfNewOffice", self.officeModel().officeCode(), this.isTransistReturnData());
                 nts.uk.ui.windows.close();
             }
         }

@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.pr.report.dom.salarydetail.outputsetting;
 
+import java.util.List;
+
 /**
  * The Interface SalaryOutputSettingRepository.
  */
@@ -39,6 +41,14 @@ public interface SalaryOutputSettingRepository {
 	 * @return the salary output setting
 	 */
 	SalaryOutputSetting findByCode(String companyCode, String salaryOutputSettingCode);
+
+	/**
+	 * Find all.
+	 *
+	 * @param companyCode the company code
+	 * @return the list
+	 */
+	List<SalaryOutputSetting> findAll(String companyCode);
 
 	/**
 	 * Checks if is exist.

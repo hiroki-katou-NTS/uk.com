@@ -1,3 +1,4 @@
+/// <reference path="../reference.ts"/>
 var nts;
 (function (nts) {
     var uk;
@@ -43,7 +44,6 @@ var nts;
                     }
                     if (option) {
                         if (option.inputFormat) {
-                            //If inputFormat presented, this is Date or Time Editor                 
                             return new TimeValidator(constraintName, option);
                         }
                         else {
@@ -171,3 +171,4 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+//# sourceMappingURL=validation.js.map

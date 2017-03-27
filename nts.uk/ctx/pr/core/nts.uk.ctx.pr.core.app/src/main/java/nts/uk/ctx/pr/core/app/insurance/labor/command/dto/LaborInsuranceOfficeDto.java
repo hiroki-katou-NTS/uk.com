@@ -4,7 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.app.insurance.labor.command.dto;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.Address;
 import nts.uk.ctx.pr.core.dom.insurance.CitySign;
@@ -31,7 +32,8 @@ import nts.uk.shr.com.primitive.Memo;
 /**
  * Instantiates a new labor insurance office dto.
  */
-@Data
+@Getter
+@Setter
 public class LaborInsuranceOfficeDto {
 
 	/** The code. */

@@ -19,7 +19,8 @@ module nts.uk.pr.view.qmm008.i {
             rightBtnText: KnockoutComputed<string>;
 
             pensionRateModel: PensionRateModel;
-
+            dirty: nts.uk.ui.DirtyChecker;
+            errorList: KnockoutObservableArray<any>;
             constructor(officeName: string, pensionModel: PensionRateModelFromScreenA) {
                 var self = this;
                 self.listAvgEarnLevelMasterSetting = [];
@@ -44,6 +45,11 @@ module nts.uk.pr.view.qmm008.i {
                 self.numberEditorCommonOption = ko.mapping.fromJS(new nts.uk.ui.option.NumberEditorOption({
                     grouplength: 3
                 }));
+                self.dirty = new nts.uk.ui.DirtyChecker(ko.observable(''));
+                self.errorList = ko.observableArray([
+                    { messageId: "AL001", message: "変更された内容が登録されていません。\r\n よろしいですか。" },
+                    { messageId: "AL002", message: "データを削除します。\r\nよろしいですか？" },
+                ]);
             }
 
             /**
@@ -108,6 +114,7 @@ module nts.uk.pr.view.qmm008.i {
                                 item.personalPension.unknownAmount),
                             item.childContributionAmount));
                     });
+                    self.dirty = new nts.uk.ui.DirtyChecker(self.listPensionAvgearnModel);
                     dfd.resolve();
                 });
                 return dfd.promise();
@@ -254,6 +261,20 @@ module nts.uk.pr.view.qmm008.i {
                     case "3": return Rounding.ROUNDDOWN;
                     case "4": return Rounding.DOWN5_UP6;
                     default: return Rounding.ROUNDUP;
+                }
+            }
+            
+            private closeDialogWithDirtyCheck() {
+                var self = this;
+                if (self.dirty.isDirty()) {
+                    nts.uk.ui.dialog.confirm(self.errorList()[0].message).ifYes(function() {
+                        self.closeDialog();
+                        self.dirty.reset();
+                    }).ifCancel(function() {
+                    });
+                }
+                else {
+                    self.closeDialog();
                 }
             }
             

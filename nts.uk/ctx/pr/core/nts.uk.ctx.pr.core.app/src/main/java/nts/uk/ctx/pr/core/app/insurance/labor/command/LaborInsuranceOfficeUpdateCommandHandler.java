@@ -20,19 +20,23 @@ import nts.uk.shr.com.context.LoginUserContext;
  * The Class LaborInsuranceOfficeUpdateCommandHandler.
  */
 @Stateless
-public class LaborInsuranceOfficeUpdateCommandHandler extends CommandHandler<LaborInsuranceOfficeUpdateCommand> {
+public class LaborInsuranceOfficeUpdateCommandHandler
+	extends CommandHandler<LaborInsuranceOfficeUpdateCommand> {
 
 	/** The labor insurance office repository. */
 	@Inject
 	private LaborInsuranceOfficeRepository laborInsuranceOfficeRepository;
-	
+
 	/** The Labor insurance office service. */
 	@Inject
 	private LaborInsuranceOfficeService LaborInsuranceOfficeService;
-	
 
-	/* (non-Javadoc)
-	 * @see nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command.CommandHandlerContext)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command
+	 * .CommandHandlerContext)
 	 */
 	@Override
 	@Transactional
@@ -43,12 +47,12 @@ public class LaborInsuranceOfficeUpdateCommandHandler extends CommandHandler<Lab
 		String companyCode = loginUserContext.companyCode();
 		// get command
 		LaborInsuranceOfficeUpdateCommand command = context.getCommand();
-		//to Domain
+		// to Domain
 		LaborInsuranceOffice laborInsuranceOffice = command.toDomain(companyCode);
-		//validate
+		// validate
 		laborInsuranceOffice.validate();
 		LaborInsuranceOfficeService.validateRequiredItem(laborInsuranceOffice);
-		//call respository
+		// call respository
 		this.laborInsuranceOfficeRepository.update(laborInsuranceOffice);
 	}
 

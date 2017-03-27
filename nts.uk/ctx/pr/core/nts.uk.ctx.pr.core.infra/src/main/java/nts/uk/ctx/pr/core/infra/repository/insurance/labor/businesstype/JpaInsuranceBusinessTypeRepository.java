@@ -94,6 +94,7 @@ public class JpaInsuranceBusinessTypeRepository extends JpaRepository
 	 * @return the list
 	 */
 	public List<InsuranceBusinessType> toDomain(QismtBusinessType entity) {
+		
 		List<InsuranceBusinessType> lstInsuranceBusinessType = new ArrayList<>();
 		lstInsuranceBusinessType.add(new InsuranceBusinessType(
 			new JpaInsuranceBusinessTypeGetMemento(entity, BusinessTypeEnum.Biz1St)));

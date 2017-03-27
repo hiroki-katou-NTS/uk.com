@@ -63,13 +63,6 @@ public interface UnemployeeInsuranceRateRepository {
 	Optional<UnemployeeInsuranceRate> findBetweenUpdate(String companyCode, YearMonth yearMonth,String historyId);
 
 	/**
-	 * Update to max year month.
-	 *
-	 * @param rate the rate
-	 */
-	void updateYearMonth(UnemployeeInsuranceRate rate,YearMonth yearMonth);
-
-	/**
 	 * Find fisrt data.
 	 *
 	 * @param companyCode the company code

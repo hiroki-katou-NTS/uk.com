@@ -58,7 +58,7 @@
 						<td>
 							<div>
 								<div style="margin-right: 20px;" data-bind="ntsFormLabel: { required: true }">期間</div>
-								<span id="startYearMonth" data-bind="ntsDatePicker: {value: startYearMonth, dateFormat: 'yyyy/MM'}"/>
+								<span id="startYearMonth" data-bind="ntsDatePicker: {value: startYearMonth, dateFormat: 'yyyy/MM', disabled: actionType() == 'DELETE'}"/>
 								<label data-bind="text: ' ~ '　+ endYearMonth"/>
 							</div>
 						</td>

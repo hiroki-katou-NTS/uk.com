@@ -17,6 +17,7 @@ var nts;
                     (function (a) {
                         var viewmodel;
                         (function (viewmodel) {
+                            var elementTypes;
                             var ScreenModel = (function (_super) {
                                 __extends(ScreenModel, _super);
                                 function ScreenModel() {
@@ -47,11 +48,21 @@ var nts;
                                     self.generalTableTypes = ko.observableArray(qmm016.model.normalDemension);
                                     self.specialTableTypes = ko.observableArray(qmm016.model.specialDemension);
                                 }
+                                ScreenModel.prototype.start = function () {
+                                    var self = this;
+                                    var dfd = $.Deferred();
+                                    qmm016.service.instance.loadElementList().done(function (res) {
+                                        elementTypes = res;
+                                        dfd.resolve();
+                                    });
+                                    return dfd.promise();
+                                };
                                 ScreenModel.prototype.onSelectHistory = function (id) {
                                     var self = this;
                                     var dfd = $.Deferred();
                                     qmm016.service.instance.loadHistoryByUuid(id).done(function (model) {
                                         self.head.resetBy(model.head);
+                                        self.history.resetBy(model.head, model.history);
                                     });
                                     dfd.resolve();
                                     return dfd.promise();
@@ -72,7 +83,7 @@ var nts;
                                 };
                                 ScreenModel.prototype.onRegistNew = function () {
                                     var self = this;
-                                    $('.save-error').ntsError('clear');
+                                    self.selectedTab('tab-1');
                                     self.head.reset();
                                 };
                                 return ScreenModel;
@@ -96,6 +107,7 @@ var nts;
                                         self.demensionItemList(self.getDemensionItemListByType(val));
                                     });
                                     self.isNewMode = ko.observable(true);
+                                    self.reset();
                                 }
                                 HeadViewModel.prototype.reset = function () {
                                     var self = this;
@@ -103,7 +115,7 @@ var nts;
                                     self.code('');
                                     self.name('');
                                     self.demensionSet(qmm016.model.allDemension[0].code);
-                                    self.demensionItemList([]);
+                                    self.demensionItemList(self.getDemensionItemListByType(self.demensionSet()));
                                     self.memo('');
                                 };
                                 HeadViewModel.prototype.getWageTableDto = function () {
@@ -153,8 +165,8 @@ var nts;
                                                 var late = new DemensionItemViewModel(2);
                                                 late.elementType(8);
                                                 late.elementName('遅刻・早退回数');
-                                                var level = new DemensionItemViewModel(2);
-                                                level.elementType(8);
+                                                var level = new DemensionItemViewModel(3);
+                                                level.elementType(9);
                                                 level.elementName('レベル');
                                                 newDemensionItemList.push(workDay);
                                                 newDemensionItemList.push(late);
@@ -170,6 +182,11 @@ var nts;
                                     self.code(head.code);
                                     self.name(head.name);
                                     self.demensionSet(head.mode);
+                                    self.demensionItemList(_.map(head.elements, function (item) {
+                                        var itemViewModel = new DemensionItemViewModel(item.demensionNo);
+                                        itemViewModel.resetBy(item);
+                                        return itemViewModel;
+                                    }));
                                     self.memo(head.memo);
                                 };
                                 HeadViewModel.prototype.onSelectDemensionBtnClick = function (demension) {
@@ -196,6 +213,12 @@ var nts;
                                     self.elementCode = ko.observable('');
                                     self.elementName = ko.observable('');
                                 }
+                                DemensionItemViewModel.prototype.resetBy = function (element) {
+                                    var self = this;
+                                    self.elementType(element.type);
+                                    self.elementCode(element.referenceCode);
+                                    self.elementName('need load later');
+                                };
                                 return DemensionItemViewModel;
                             }());
                             viewmodel.DemensionItemViewModel = DemensionItemViewModel;
@@ -204,13 +227,59 @@ var nts;
                                     var self = this;
                                     self.startYearMonth = ko.observable(parseInt(nts.uk.time.formatDate(new Date(), 'yyyyMM')));
                                     self.endYearMonth = ko.observable(99999);
+                                    self.startYearMonthText = ko.computed(function () {
+                                        return nts.uk.time.formatYearMonth(self.startYearMonth());
+                                    });
+                                    self.endYearMonthText = ko.computed(function () {
+                                        return nts.uk.time.formatYearMonth(self.endYearMonth());
+                                    });
                                     self.startYearMonthJpText = ko.computed(function () {
                                         return nts.uk.text.format('（{0}）', nts.uk.time.yearmonthInJapanEmpire(self.startYearMonth()).toString());
                                     });
+                                    self.elements = ko.observableArray([]);
                                 }
+                                HistoryViewModel.prototype.resetBy = function (head, history) {
+                                    var self = this;
+                                    self.startYearMonth(history.startMonth);
+                                    self.endYearMonth(history.endMonth);
+                                    var elementSettingViewModel = _.map(history.elements, function (el) {
+                                        return new HistoryElementSettingViewModel(head, el);
+                                    });
+                                    self.elements(elementSettingViewModel);
+                                };
                                 return HistoryViewModel;
                             }());
                             viewmodel.HistoryViewModel = HistoryViewModel;
+                            var HistoryElementSettingViewModel = (function () {
+                                function HistoryElementSettingViewModel(head, element) {
+                                    var self = this;
+                                    self.demensionNo = ko.observable(element.demensionNo);
+                                    self.elementType = ko.observable(0);
+                                    self.elementCode = ko.observable('');
+                                    self.elementName = ko.observable('');
+                                    self.lowerLimit = ko.observable(0);
+                                    self.upperLimit = ko.observable(0);
+                                    self.interval = ko.observable(0);
+                                    self.resetBy(head, element);
+                                }
+                                HistoryElementSettingViewModel.prototype.resetBy = function (head, element) {
+                                    var self = this;
+                                    self.elementType(element.type);
+                                    var elementDto = _.filter(head.elements, function (el) {
+                                        return el.demensionNo == element.demensionNo;
+                                    })[0];
+                                    self.elementCode(elementDto.referenceCode);
+                                    self.elementName('need load later');
+                                    self.upperLimit(element.upperLimit);
+                                    self.lowerLimit(element.lowerLimit);
+                                    self.interval(element.interval);
+                                    self.type = _.filter(elementTypes, function (type) {
+                                        return type.value == self.elementType();
+                                    })[0];
+                                };
+                                return HistoryElementSettingViewModel;
+                            }());
+                            viewmodel.HistoryElementSettingViewModel = HistoryElementSettingViewModel;
                         })(viewmodel = a.viewmodel || (a.viewmodel = {}));
                     })(a = qmm016.a || (qmm016.a = {}));
                 })(qmm016 = view.qmm016 || (view.qmm016 = {}));

@@ -56,10 +56,26 @@ var nts;
                                     self.beginHistoryStartAccidentInsuranceRate = ko.observable('');
                                     self.messageList = ko.observableArray([
                                         { messageId: "ER001", message: "＊が入力されていません。" },
-                                        { messageId: "ER005", message: "入力した＊は既に存在しています。\r\n ＊を確認してください。" }
+                                        { messageId: "ER005", message: "入力した＊は既に存在しています。\r\n ＊を確認してください。" },
+                                        { messageId: "AL001", message: "変更された内容が登録されていません。\r\n よろしいですか。" },
+                                        { messageId: "ER010", message: "対象データがありません。" },
+                                        { messageId: "AL002", message: "データを削除します。\r\n よろしいですか？。" }
                                     ]);
+                                    self.dirtyUnemployeeInsurance = new nts.uk.ui.DirtyChecker(self.unemployeeInsuranceRateModel);
+                                    self.dirtyAccidentInsurance = new nts.uk.ui.DirtyChecker(self.accidentInsuranceRateModel);
                                 }
                                 ScreenModel.prototype.openEditUnemployeeInsuranceRateHistory = function () {
+                                    var self = this;
+                                    if (self.dirtyUnemployeeInsurance.isDirty()) {
+                                        nts.uk.ui.dialog.confirm(self.messageList()[2].message).ifYes(function () {
+                                            self.onShowEditUnemployeeInsuranceRateHistory();
+                                        }).ifNo(function () {
+                                        });
+                                        return;
+                                    }
+                                    self.onShowEditUnemployeeInsuranceRateHistory();
+                                };
+                                ScreenModel.prototype.onShowEditUnemployeeInsuranceRateHistory = function () {
                                     var self = this;
                                     a.service.findUnemployeeInsuranceRateHistory(self.selectionUnemployeeInsuranceRateHistory()).done(function (data) {
                                         var history;
@@ -77,15 +93,19 @@ var nts;
                                             history: history,
                                             removeMasterOnLastHistoryRemove: false,
                                             onDeleteCallBack: function (data) {
-                                                var unemployeeInsuranceDeleteDto;
-                                                unemployeeInsuranceDeleteDto = new UnemployeeInsuranceDeleteDto();
-                                                unemployeeInsuranceDeleteDto.code = data.historyId;
-                                                unemployeeInsuranceDeleteDto.version = 0;
-                                                a.service.deleteUnemployeeInsurance(unemployeeInsuranceDeleteDto).done(function (data) {
-                                                    self.typeActionUnemployeeInsurance(TypeActionInsuranceRate.add);
+                                                nts.uk.ui.dialog.confirm(self.messageList()[4].message).ifYes(function () {
+                                                    var unemployeeInsuranceDeleteDto;
+                                                    unemployeeInsuranceDeleteDto = new UnemployeeInsuranceDeleteDto();
+                                                    unemployeeInsuranceDeleteDto.code = data.historyId;
+                                                    unemployeeInsuranceDeleteDto.version = 0;
+                                                    a.service.deleteUnemployeeInsurance(unemployeeInsuranceDeleteDto).done(function (data) {
+                                                        self.typeActionUnemployeeInsurance(TypeActionInsuranceRate.add);
+                                                        self.reloadDataUnemployeeInsuranceRateByAction();
+                                                    }).fail(function (error) {
+                                                        self.showMessageSaveUnemployeeInsurance(error.message);
+                                                    });
+                                                }).ifNo(function () {
                                                     self.reloadDataUnemployeeInsuranceRateByAction();
-                                                }).fail(function (error) {
-                                                    self.showMessageSaveUnemployeeInsurance(error.message);
                                                 });
                                             },
                                             onUpdateCallBack: function (data) {
@@ -111,6 +131,17 @@ var nts;
                                     });
                                 };
                                 ScreenModel.prototype.openAddUnemployeeInsuranceRateHistory = function () {
+                                    var self = this;
+                                    if (self.dirtyUnemployeeInsurance.isDirty() && !self.isEmptyUnemployee()) {
+                                        nts.uk.ui.dialog.confirm(self.messageList()[2].message).ifYes(function () {
+                                            self.onShowAddUnemployeeInsuranceRateHistory();
+                                        }).ifNo(function () {
+                                        });
+                                        return;
+                                    }
+                                    self.onShowAddUnemployeeInsuranceRateHistory();
+                                };
+                                ScreenModel.prototype.onShowAddUnemployeeInsuranceRateHistory = function () {
                                     var self = this;
                                     var lastest;
                                     var name = '雇用保険料率';
@@ -138,7 +169,7 @@ var nts;
                                                 self.reloadDataUnemployeeInsuranceRateByAction();
                                                 self.clearErrorSaveUnemployeeInsurance();
                                             }).fail(function (error) {
-                                                self.showMessageSaveUnemployeeInsurance(error.message);
+                                                self.showMessageSaveUnemployeeInsurance(error.messageId);
                                             });
                                         },
                                         onCreateCallBack: function (data) {
@@ -149,7 +180,7 @@ var nts;
                                                 self.reloadDataUnemployeeInsuranceRateByAction();
                                                 self.clearErrorSaveUnemployeeInsurance();
                                             }).fail(function (error) {
-                                                self.showMessageSaveUnemployeeInsurance(error.message);
+                                                self.showMessageSaveUnemployeeInsurance(error.messageId);
                                             });
                                         }
                                     };
@@ -176,6 +207,17 @@ var nts;
                                 };
                                 ScreenModel.prototype.openEditAccidentInsuranceRateHistory = function () {
                                     var self = this;
+                                    if (self.dirtyAccidentInsurance.isDirty()) {
+                                        nts.uk.ui.dialog.confirm(self.messageList()[2].message).ifYes(function () {
+                                            self.onShowEditAccidentInsuranceRateHistory();
+                                        }).ifNo(function () {
+                                        });
+                                        return;
+                                    }
+                                    self.onShowEditAccidentInsuranceRateHistory();
+                                };
+                                ScreenModel.prototype.onShowEditAccidentInsuranceRateHistory = function () {
+                                    var self = this;
                                     a.service.findAccidentInsuranceRateHistory(self.selectionAccidentInsuranceRateHistory()).done(function (data) {
                                         var history;
                                         var endMonth = data.endMonth;
@@ -192,15 +234,19 @@ var nts;
                                             history: history,
                                             removeMasterOnLastHistoryRemove: false,
                                             onDeleteCallBack: function (data) {
-                                                var accidentInsuranceRateDeleteDto;
-                                                accidentInsuranceRateDeleteDto = new AccidentInsuranceRateDeleteDto();
-                                                accidentInsuranceRateDeleteDto.code = data.historyId;
-                                                accidentInsuranceRateDeleteDto.version = 0;
-                                                a.service.deleteAccidentInsuranceRate(accidentInsuranceRateDeleteDto).done(function (data) {
-                                                    self.typeActionAccidentInsurance(TypeActionInsuranceRate.add);
+                                                nts.uk.ui.dialog.confirm(self.messageList()[4].message).ifYes(function () {
+                                                    var accidentInsuranceRateDeleteDto;
+                                                    accidentInsuranceRateDeleteDto = new AccidentInsuranceRateDeleteDto();
+                                                    accidentInsuranceRateDeleteDto.code = data.historyId;
+                                                    accidentInsuranceRateDeleteDto.version = 0;
+                                                    a.service.deleteAccidentInsuranceRate(accidentInsuranceRateDeleteDto).done(function (data) {
+                                                        self.typeActionAccidentInsurance(TypeActionInsuranceRate.add);
+                                                        self.reloadDataAccidentInsuranceRateByAction();
+                                                    }).fail(function (error) {
+                                                        self.showMessageSaveAccidentInsurance(error.messageId);
+                                                    });
+                                                }).ifNo(function () {
                                                     self.reloadDataAccidentInsuranceRateByAction();
-                                                }).fail(function (error) {
-                                                    self.showMessageSaveAccidentInsurance(error.message);
                                                 });
                                             },
                                             onUpdateCallBack: function (data) {
@@ -213,7 +259,7 @@ var nts;
                                                     self.typeActionAccidentInsurance(TypeActionInsuranceRate.add);
                                                     self.reloadDataAccidentInsuranceRateByAction();
                                                 }).fail(function (error) {
-                                                    self.showMessageSaveAccidentInsurance(error.message);
+                                                    self.showMessageSaveAccidentInsurance(error.messageId);
                                                 });
                                             }
                                         };
@@ -226,6 +272,17 @@ var nts;
                                     });
                                 };
                                 ScreenModel.prototype.openAddAccidentInsuranceRateHistory = function () {
+                                    var self = this;
+                                    if (self.dirtyAccidentInsurance.isDirty() && !self.isEmptyAccident()) {
+                                        nts.uk.ui.dialog.confirm(self.messageList()[2].message).ifYes(function () {
+                                            self.onShowAddAccidentInsuranceRateHistory();
+                                        }).ifNo(function () {
+                                        });
+                                        return;
+                                    }
+                                    self.onShowAddAccidentInsuranceRateHistory();
+                                };
+                                ScreenModel.prototype.onShowAddAccidentInsuranceRateHistory = function () {
                                     var self = this;
                                     var lastest;
                                     var name = '労働保険料率';
@@ -253,7 +310,7 @@ var nts;
                                                 self.reloadDataAccidentInsuranceRateByAction();
                                                 self.clearErrorSaveAccidentInsurance();
                                             }).fail(function (error) {
-                                                self.showMessageSaveAccidentInsurance(error.message);
+                                                self.showMessageSaveAccidentInsurance(error.messageId);
                                             });
                                         },
                                         onCreateCallBack: function (data) {
@@ -264,7 +321,7 @@ var nts;
                                                 self.reloadDataAccidentInsuranceRateByAction();
                                                 self.clearErrorSaveAccidentInsurance();
                                             }).fail(function (error) {
-                                                self.showMessageSaveAccidentInsurance(error.message);
+                                                self.showMessageSaveAccidentInsurance(error.messageId);
                                             });
                                         }
                                     };
@@ -297,8 +354,12 @@ var nts;
                                         }
                                     }
                                     if (self.messageList()[1].messageId === messageId) {
-                                        var message = self.messageList()[1].message;
+                                        message = self.messageList()[1].message;
                                         $('#inp_code').ntsError('set', message);
+                                    }
+                                    if (self.messageList()[3].messageId === messageId) {
+                                        message = self.messageList()[3].message;
+                                        $('#btn_saveUnemployeeInsuranceHistory').ntsError('set', message);
                                     }
                                 };
                                 ScreenModel.prototype.clearErrorSaveAccidentInsurance = function () {
@@ -306,8 +367,22 @@ var nts;
                                     $('.save-error').ntsError('clear');
                                     $('#btn_saveAccidentInsuranceHistory').ntsError('clear');
                                 };
-                                ScreenModel.prototype.showMessageSaveAccidentInsurance = function (message) {
-                                    $('#btn_saveAccidentInsuranceHistory').ntsError('set', message);
+                                ScreenModel.prototype.showMessageSaveAccidentInsurance = function (messageId) {
+                                    var self = this;
+                                    if (self.messageList()[0].messageId === messageId) {
+                                        var message = self.messageList()[0].message;
+                                        if (!self.unemployeeInsuranceRateModel().unemployeeInsuranceRateItemAgroforestryModel) {
+                                            $('#inp_code').ntsError('set', message);
+                                        }
+                                    }
+                                    if (self.messageList()[1].messageId === messageId) {
+                                        message = self.messageList()[1].message;
+                                        $('#inp_code').ntsError('set', message);
+                                    }
+                                    if (self.messageList()[3].messageId === messageId) {
+                                        message = self.messageList()[3].message;
+                                        $('#btn_saveAccidentInsuranceHistory').ntsError('set', message);
+                                    }
                                 };
                                 ScreenModel.prototype.saveUnemployeeInsuranceHistory = function () {
                                     var self = this;
@@ -338,7 +413,7 @@ var nts;
                                             self.reloadDataAccidentInsuranceRateByAction();
                                             self.clearErrorSaveAccidentInsurance();
                                         }).fail(function (res) {
-                                            self.showMessageSaveAccidentInsurance(res.message);
+                                            self.showMessageSaveAccidentInsurance(res.messageId);
                                         });
                                     }
                                     else {
@@ -346,7 +421,7 @@ var nts;
                                             self.reloadDataAccidentInsuranceRateByAction();
                                             self.clearErrorSaveAccidentInsurance();
                                         }).fail(function (res) {
-                                            self.showMessageSaveAccidentInsurance(res.message);
+                                            self.showMessageSaveAccidentInsurance(res.messageId);
                                         });
                                     }
                                     return true;
@@ -382,13 +457,13 @@ var nts;
                                                 });
                                             }
                                             self.isEmptyUnemployee(false);
-                                            self.detailUnemployeeInsuranceRateHistory(data[0].historyId).done(function (data) {
-                                                dfd.resolve(self);
+                                            self.detailUnemployeeInsuranceRateHistory(data[0].historyId).done(function () {
+                                                dfd.resolve();
                                             });
                                         }
                                         else {
                                             self.newmodelEmptyDataUnemployeeInsuranceRate();
-                                            dfd.resolve(self);
+                                            dfd.resolve();
                                         }
                                     });
                                     return dfd.promise();
@@ -447,7 +522,8 @@ var nts;
                                             self.unemployeeInsuranceRateModel().setHistoryData(data.historyInsurance);
                                             self.typeActionUnemployeeInsurance(TypeActionInsuranceRate.update);
                                             self.beginHistoryStartUnemployeeInsuranceRate(nts.uk.time.formatYearMonth(data.historyInsurance.startMonth));
-                                            dfd.resolve(null);
+                                            self.dirtyUnemployeeInsurance.reset();
+                                            dfd.resolve();
                                         });
                                     }
                                     return dfd.promise();
@@ -539,6 +615,7 @@ var nts;
                                             self.accidentInsuranceRateModel().setHistoryData(data.historyInsurance);
                                             self.accidentInsuranceRateModel().setEnable(true);
                                             self.beginHistoryStartAccidentInsuranceRate(nts.uk.time.formatYearMonth(data.historyInsurance.startMonth));
+                                            self.dirtyAccidentInsurance = new nts.uk.ui.DirtyChecker(self.accidentInsuranceRateModel);
                                             dfd.resolve(null);
                                         });
                                     }

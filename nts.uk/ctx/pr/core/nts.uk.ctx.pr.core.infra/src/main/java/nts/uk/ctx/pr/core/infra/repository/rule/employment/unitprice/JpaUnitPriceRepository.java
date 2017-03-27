@@ -167,7 +167,7 @@ public class JpaUnitPriceRepository extends JpaRepository implements UnitPriceRe
 	 * getCompanyUnitPriceCode(java.lang.Integer)
 	 */
 	@Override
-	public List<UnitPriceCode> getCompanyUnitPriceCode(Integer baseDate) {
+	public List<UnitPrice> getCompanyUnitPrice(Integer baseDate) {
 		// Get entity manager
 		EntityManager em = this.getEntityManager();
 
@@ -184,8 +184,43 @@ public class JpaUnitPriceRepository extends JpaRepository implements UnitPriceRe
 		cq.where(predicateList.toArray(new Predicate[] {}));
 		List<QupmtCUnitpriceDetail> list = em.createQuery(cq).getResultList();
 
-		return list.stream().map(item -> new UnitPriceCode(item.getQupmtCUnitpriceDetailPK().getCUnitpriceCd()))
-				.collect(Collectors.toList());
+		return list.stream().map(item -> {
+			return new UnitPrice(new JpaUnitPriceGetMemento(item.getQupmtCUnitpriceHeader()));
+		}).collect(Collectors.toList());
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceRepository#
+	 * findByCodes(java.lang.String, java.util.List)
+	 */
+	@Override
+	public List<UnitPrice> findByCodes(String companyCode, List<String> unitPriceCodes) {
+		// Get entity manager
+		EntityManager em = this.getEntityManager();
+
+		// Create query condition.
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+		CriteriaQuery<QupmtCUnitpriceHeader> cq = cb.createQuery(QupmtCUnitpriceHeader.class);
+		Root<QupmtCUnitpriceHeader> root = cq.from(QupmtCUnitpriceHeader.class);
+		// Constructing list of parameters
+		List<Predicate> predicateList = new ArrayList<Predicate>();
+
+		// Construct condition.
+		predicateList.add(
+				cb.equal(root.get(QupmtCUnitpriceHeader_.qupmtCUnitpriceHeaderPK).get(QupmtCUnitpriceHeaderPK_.ccd),
+						companyCode));
+		predicateList.add(cb.and(root.get(QupmtCUnitpriceHeader_.qupmtCUnitpriceHeaderPK)
+				.get(QupmtCUnitpriceHeaderPK_.cUnitpriceCd).in(unitPriceCodes)));
+
+		cq.where(predicateList.toArray(new Predicate[] {}));
+		List<QupmtCUnitpriceHeader> list = em.createQuery(cq).getResultList();
+
+		return list.stream().map(item -> {
+			return new UnitPrice(new JpaUnitPriceGetMemento(item));
+		}).collect(Collectors.toList());
 	}
 
 }

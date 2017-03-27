@@ -22,6 +22,7 @@ import nts.uk.ctx.pr.core.dom.wagetable.WtCode;
 import nts.uk.ctx.pr.core.dom.wagetable.WtHead;
 import nts.uk.ctx.pr.core.dom.wagetable.element.WtElement;
 import nts.uk.ctx.pr.core.dom.wagetable.history.element.ElementSetting;
+import nts.uk.ctx.pr.core.dom.wagetable.history.element.RangeLimit;
 import nts.uk.ctx.pr.core.dom.wagetable.history.element.StepElementSetting;
 
 /**
@@ -86,7 +87,8 @@ public class WtHistory extends DomainObject implements History<WtHistory> {
 			if (type.isRangeMode) {
 				StepElementSetting stepElementSetting = new StepElementSetting(
 						element.getDemensionNo(), element.getType(), Collections.emptyList());
-				stepElementSetting.setSetting(BigDecimal.ZERO, BigDecimal.ZERO, BigDecimal.ZERO);
+				stepElementSetting.setSetting(new RangeLimit(BigDecimal.ZERO),
+						new RangeLimit(BigDecimal.ZERO), new RangeLimit(BigDecimal.ONE));
 				elementSettings.add(stepElementSetting);
 			}
 		}

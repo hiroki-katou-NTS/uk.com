@@ -6,18 +6,15 @@ package nts.uk.ctx.pr.core.ws.wagetable.dto;
 
 import java.util.List;
 
-import lombok.Getter;
-import lombok.Setter;
-import nts.uk.ctx.pr.core.app.wagetable.command.dto.ElementItemDto;
+import lombok.Data;
 
 /**
  * The Class SettingInfoOutModel.
  */
-@Getter
-@Setter
+@Data
 public class SettingInfoOutModel {
 
-	/** The item list. */
-	private List<ElementItemDto> itemList;
+	/** The element settings. */
+	private List<ElementSettingDto> elementSettings;
 
 }

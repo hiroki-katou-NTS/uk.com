@@ -14,7 +14,7 @@ import nts.arc.error.BusinessException;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.Certification;
-import nts.uk.ctx.pr.core.dom.wagetable.certification.CertificationReponsitory;
+import nts.uk.ctx.pr.core.dom.wagetable.certification.CertificationRepository;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroup;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroupRepository;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.service.CertifyGroupService;
@@ -31,7 +31,7 @@ public class CertifyGroupServiceImpl implements CertifyGroupService {
 
 	/** The certification reponsitory. */
 	@Inject
-	private CertificationReponsitory certificationReponsitory;
+	private CertificationRepository certificationReponsitory;
 
 	/*
 	 * (non-Javadoc)

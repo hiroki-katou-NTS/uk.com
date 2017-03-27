@@ -7,6 +7,7 @@ module qet001.a.viewmodel {
         outputTypeSelected : KnockoutObservable<OutputType>;
         outputSettings: KnockoutObservableArray<service.model.WageLedgerOutputSetting>;
         outputSettingSelectedCode: KnockoutObservable<string>;
+        japanTargetYear: KnockoutComputed<string>;
         
         constructor() {
             this.targetYear = ko.observable(2016);
@@ -16,6 +17,10 @@ module qet001.a.viewmodel {
             this.outputTypeSelected = ko.observable(OutputType.MASTER_ITEMS);
             this.outputSettings = ko.observableArray([]);
             this.outputSettingSelectedCode = ko.observable('');
+            var self = this;
+            self.japanTargetYear = ko.computed(function() {
+                return nts.uk.time.yearInJapanEmpire(self.targetYear()).toString();
+            })
         }
         
         public start(): JQueryPromise<any>{
@@ -69,15 +74,20 @@ module qet001.a.viewmodel {
          * Print report.
          */
         public print() {
+               // Clear error.
+            $('#target-year-input').ntsError('clear');
+            
             // Validate.
             var self = this;
+            var hasError = false;
             if (self.targetYear() == null || self.targetYear().toString() == '') {
-                // TODO: Check employee list.
-                // TODO: Add error message '未入力エラー'.
-                nts.uk.ui.dialog.alert('未入力エラー');
+                $('#target-year-input').ntsError('set','対象年度が入力されていません。')
+                hasError == true;
+            }
+            // TODO: Check employee list.
+            if (!hasError) {
                 return;
             }
-            
             // Print.
             service.printReport(self).done(function() {}).fail(function(res) {
                 nts.uk.ui.dialog.alert(res.message);

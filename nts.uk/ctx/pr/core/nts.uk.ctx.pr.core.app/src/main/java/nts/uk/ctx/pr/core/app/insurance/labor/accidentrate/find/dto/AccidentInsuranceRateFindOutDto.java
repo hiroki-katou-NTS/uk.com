@@ -9,7 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.AccidentInsuranceRateSetMemento;
@@ -19,7 +20,8 @@ import nts.uk.ctx.pr.core.dom.insurance.labor.businesstype.InsuranceBusinessType
 /**
  * The Class AccidentInsuranceRateFindOutDto.
  */
-@Data
+@Getter
+@Setter
 public class AccidentInsuranceRateFindOutDto implements AccidentInsuranceRateSetMemento {
 
 	/** The history insurance. */

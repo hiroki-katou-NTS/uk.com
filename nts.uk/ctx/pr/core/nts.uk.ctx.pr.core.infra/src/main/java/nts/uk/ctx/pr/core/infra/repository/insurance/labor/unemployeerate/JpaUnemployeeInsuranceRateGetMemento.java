@@ -76,6 +76,7 @@ public class JpaUnemployeeInsuranceRateGetMemento implements UnemployeeInsurance
 	 */
 	@Override
 	public Set<UnemployeeInsuranceRateItem> getRateItems() {
+		
 		Set<UnemployeeInsuranceRateItem> setUnemployeeInsuranceRateItem = new HashSet<>();
 		setUnemployeeInsuranceRateItem.add(new UnemployeeInsuranceRateItem(
 			new JpaUnemployeeInsuranceRateItemGetMemento(this.typeValue, CareerGroup.Agroforestry)));
@@ -83,6 +84,7 @@ public class JpaUnemployeeInsuranceRateGetMemento implements UnemployeeInsurance
 			new JpaUnemployeeInsuranceRateItemGetMemento(this.typeValue, CareerGroup.Contruction)));
 		setUnemployeeInsuranceRateItem.add(new UnemployeeInsuranceRateItem(
 			new JpaUnemployeeInsuranceRateItemGetMemento(this.typeValue, CareerGroup.Other)));
+		
 		return setUnemployeeInsuranceRateItem;
 	}
 

@@ -6,16 +6,14 @@ package nts.uk.ctx.pr.core.ws.wagetable.dto;
 
 import java.math.BigDecimal;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 import nts.uk.ctx.pr.core.dom.wagetable.ElementId;
 import nts.uk.ctx.pr.core.dom.wagetable.history.WtItemSetMemento;
 
 /**
  * The Class WtItemDto.
  */
-@Getter
-@Setter
+@Data
 public class WtItemDto implements WtItemSetMemento {
 
 	/** The element 1 id. */
