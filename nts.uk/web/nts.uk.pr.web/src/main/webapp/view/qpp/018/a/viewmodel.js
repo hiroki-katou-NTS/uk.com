@@ -21,15 +21,22 @@ var nts;
                                     self.isRedundant = ko.observable(false);
                                     self.insuranceOffice = ko.observable(new InsuranceOfficeModel());
                                 }
+                                /**
+                                 * start page
+                                 */
                                 ScreenModel.prototype.startPage = function () {
                                     var self = this;
                                     var dfd = $.Deferred();
                                     self.yearMonth(self.getCurrentYearMonth());
+                                    // TODO: check for start from menu salary or bonus.
                                     $.when(self.insuranceOffice().findAllInsuranceOffice()).done(function () {
                                         dfd.resolve();
                                     });
                                     return dfd.promise();
                                 };
+                                /**
+                                 *  Export Data
+                                 */
                                 ScreenModel.prototype.exportData = function () {
                                     var self = this;
                                     var dfd = $.Deferred();
@@ -44,6 +51,9 @@ var nts;
                                         nts.uk.ui.dialog.alert(res.message);
                                     });
                                 };
+                                /**
+                                 * to JSon Object
+                                 */
                                 ScreenModel.prototype.toJSObjet = function () {
                                     var self = this;
                                     var command = {};
@@ -54,11 +64,18 @@ var nts;
                                     command.insuranceOffices = self.insuranceOffice().getSelectedOffice();
                                     return command;
                                 };
+                                /**
+                                 *  Show dialog ChecklistPrintSetting
+                                 */
                                 ScreenModel.prototype.showDialogChecklistPrintSetting = function () {
                                     nts.uk.ui.windows.setShared("socialInsuranceFeeChecklist", null);
                                     nts.uk.ui.windows.sub.modal("/view/qpp/018/c/index.xhtml", { title: "印刷の設定" }).onClosed(function () {
+                                        //                    let returnValue = nts.uk.ui.windows.getShared("printSettingValue");
                                     });
                                 };
+                                /**
+                                 * validate
+                                 */
                                 ScreenModel.prototype.validate = function () {
                                     var self = this;
                                     var isError = false;
@@ -71,9 +88,12 @@ var nts;
                                 ScreenModel.prototype.clearAllError = function () {
                                     $("#grid-error").ntsError('clear');
                                 };
+                                /**
+                                 * get year and month current.
+                                 */
                                 ScreenModel.prototype.getCurrentYearMonth = function () {
                                     var today = new Date();
-                                    var month = today.getMonth() + 1;
+                                    var month = today.getMonth() + 1; //January is 0!
                                     var year = today.getFullYear();
                                     var yearMonth = year + '/';
                                     if (month < 10) {
@@ -87,6 +107,9 @@ var nts;
                                 return ScreenModel;
                             }());
                             viewmodel.ScreenModel = ScreenModel;
+                            /**
+                              * Class InsuranceOfficeModel
+                              */
                             var InsuranceOfficeModel = (function () {
                                 function InsuranceOfficeModel() {
                                     var self = this;
@@ -97,6 +120,9 @@ var nts;
                                         { headerText: '名称 ', key: 'name', width: 100 }
                                     ]);
                                 }
+                                /**
+                                 * find list insurance office.
+                                 */
                                 InsuranceOfficeModel.prototype.findAllInsuranceOffice = function () {
                                     var self = this;
                                     var dfd = $.Deferred();
