@@ -12,12 +12,16 @@ import javax.ejb.Stateless;
 
 import org.apache.commons.lang3.mutable.MutableInt;
 
+import com.aspose.cells.Cell;
+import com.aspose.cells.Cells;
 import com.aspose.cells.WorkbookDesigner;
+import com.aspose.cells.Worksheet;
 
 import nts.arc.layer.infra.file.export.FileGeneratorContext;
 import nts.uk.file.pr.app.export.wageledger.WLNewLayoutReportGenerator;
 import nts.uk.file.pr.app.export.wageledger.WageLedgerReportQuery;
 import nts.uk.file.pr.app.export.wageledger.data.WLNewLayoutReportData;
+import nts.uk.file.pr.app.export.wageledger.data.newlayout.TotalData;
 import nts.uk.file.pr.app.export.wageledger.data.share.ReportItemDto;
 import nts.uk.shr.infra.file.report.aspose.cells.AsposeCellsReportContext;
 
@@ -49,7 +53,8 @@ public class AsposeWLNewLayoutReportGenerator extends WageLedgerBaseGenerator im
 			this.setDataSourceForTotalPart(reportContext, reportData);
 			
 			// ======================== Fill Salary payment part.========================
-			this.fillHeaderTable(reportContext, currentRow, COLUMN_START_REPORT, reportData.salaryPaymentDateMap);
+			this.fillHeaderTable(reportContext, currentRow, COLUMN_START_REPORT,
+					reportData.salaryPaymentDateMap, "給与明細");
 			this.fillReportItemsData(reportContext, reportData.salaryPaymentItems, COLUMN_START_REPORT,
 					currentRow, "SalaryPayment");
 			this.brealPage(reportContext, currentRow, query);
@@ -67,11 +72,13 @@ public class AsposeWLNewLayoutReportGenerator extends WageLedgerBaseGenerator im
 			// ======================== Fill Bonus Payment part and Bonus Deduction part.========================
 			MutableInt rowStartThisPart = new MutableInt(currentRow);
 			// Bonus payment part.
-			this.fillHeaderTable(reportContext, currentRow, COLUMN_START_REPORT, reportData.bonusPaymentDateMap);
+			this.fillHeaderTable(reportContext, currentRow, COLUMN_START_REPORT,
+					reportData.bonusPaymentDateMap, "賞与明細");
 			this.fillReportItemsData(reportContext, reportData.bonusPaymentItems, COLUMN_START_REPORT,
 					currentRow, "BonusPayment");
 			// Bonus deduction part.
-			this.fillHeaderTable(reportContext, rowStartThisPart, COLUMN_START_REPORT + 6, reportData.bonusPaymentDateMap);
+			this.fillHeaderTable(reportContext, rowStartThisPart, COLUMN_START_REPORT + 6,
+					reportData.bonusPaymentDateMap, "賞与明細");
 			this.fillReportItemsData(reportContext, reportData.bonusDeductionItems,
 					COLUMN_START_REPORT + AMOUNT_COLUMN_BONUS_PART, rowStartThisPart, "BonusDeduction");
 			this.brealPage(reportContext, currentRow, query);
@@ -97,9 +104,47 @@ public class AsposeWLNewLayoutReportGenerator extends WageLedgerBaseGenerator im
 		//======================== Set Salary Data source.========================
 		// Salary Payment Date.
 		reportData.salaryPaymentDateMap.forEach((month, paymentDate) -> {
-//			designer.setDataSource("SalaryPaymenDate" + month, );
+			designer.setDataSource("SalaryPaymenDate" + month, this.formartDate(paymentDate, "給与"));
 		});
+		// Salary part.
+		this.setDataSourceForTotalItems(designer, reportData.salaryTotalData, true);
 		
+		// ======================== Set Bonus Data Source.========================
+		// Bonus Payment Date.
+		reportData.bonusPaymentDateMap.forEach((month, paymentDate) -> {
+			designer.setDataSource("BonusPaymenDate" + month, this.formartDate(paymentDate, "賞与"));
+		});
+		// Salary part.
+		this.setDataSourceForTotalItems(designer, reportData.bonusTotalData, false);
+	}
+	
+	private void setDataSourceForTotalItems(WorkbookDesigner designer, TotalData totalData, boolean isSalary) {
+		String dataSourceName = isSalary ? "Salary" : "Bonus";
+		
+		// Total tax.
+		this.setDataSourceForItem(designer, totalData.totalTax, dataSourceName + "TotalTax");
+		// Total Tax Exemption.
+		this.setDataSourceForItem(designer, totalData.totalTax, dataSourceName + "TotalTaxExemption");
+		// Total Payment.
+		this.setDataSourceForItem(designer, totalData.totalTax, dataSourceName + "TotalPayment");
+		// Total Social Insurance.
+		this.setDataSourceForItem(designer, totalData.totalTax, dataSourceName + "TotalSocialInsurance");
+		// Total Taxable.
+		this.setDataSourceForItem(designer, totalData.totalTax, dataSourceName + "TotalTaxable");
+		// Total Income Tax.
+		this.setDataSourceForItem(designer, totalData.totalTax, dataSourceName + "TotalIncomeTax");
+		// Total Inhabitant Tax.
+		this.setDataSourceForItem(designer, totalData.totalTax, dataSourceName + "TotalInhabitantTax");
+		// Total Deduction.
+		this.setDataSourceForItem(designer, totalData.totalTax, dataSourceName + "TotalDeduction");
+		// Total Real.
+		this.setDataSourceForItem(designer, totalData.totalTax, dataSourceName + "TotalReal");
+	}
+	
+	private void setDataSourceForItem(WorkbookDesigner designer, ReportItemDto item, String dataName) {
+		item.monthlyDatas.forEach((month) -> {
+			designer.setDataSource(dataName + month.month, month.amount);
+		});
 	}
 	
 	private void fillReportItemsData(AsposeCellsReportContext reportContext, List<ReportItemDto> reportItems,
@@ -108,7 +153,16 @@ public class AsposeWLNewLayoutReportGenerator extends WageLedgerBaseGenerator im
 	}
 	
 	private void fillHeaderTable(AsposeCellsReportContext reportContext, MutableInt startRow,
-			int startColumn, Map<Integer, Date> paymentDateMap) {
+			int startColumn, Map<Integer, Date> paymentDateMap, String contentName) {
+		Worksheet ws = reportContext.getDesigner().getWorkbook().getWorksheets().get(0);
+		Cells cells = ws.getCells();
+		
+		// Fill content name.
+		Cell contentCell = cells.get(startRow.intValue(), startColumn);
+		contentCell.setValue(contentName);
+		startRow.increment();
+		
+		// Fill Header.
 		
 	}
 	
@@ -116,8 +170,9 @@ public class AsposeWLNewLayoutReportGenerator extends WageLedgerBaseGenerator im
 		
 	}
 	
-//	private String formartDate(Date paymentDate) {
-//		
-//	}
-//	
+	@SuppressWarnings("deprecation")
+	private String formartDate(Date paymentDate, String paymenType) {
+		return String.format("%s日%s月 " + paymenType, paymentDate.getDate(), paymentDate.getMonth());
+	}
+	
 }

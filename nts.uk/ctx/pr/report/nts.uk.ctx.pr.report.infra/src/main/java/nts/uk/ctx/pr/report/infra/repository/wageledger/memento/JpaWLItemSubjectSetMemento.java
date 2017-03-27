@@ -4,7 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.pr.report.infra.repository.wageledger.memento;
 
-import nts.uk.ctx.pr.report.dom.company.CompanyCode;
 import nts.uk.ctx.pr.report.dom.wageledger.PaymentType;
 import nts.uk.ctx.pr.report.dom.wageledger.WLCategory;
 import nts.uk.ctx.pr.report.dom.wageledger.aggregate.WLAggregateItemCode;
@@ -52,8 +51,8 @@ public class JpaWLItemSubjectSetMemento implements WLItemSubjectSetMemento {
 	 * #setCompanyCode(nts.uk.ctx.pr.report.dom.company.CompanyCode)
 	 */
 	@Override
-	public void setCompanyCode(CompanyCode companyCode) {
-		this.entity.setCcd(companyCode.v());
+	public void setCompanyCode(String companyCode) {
+		this.entity.setCcd(companyCode);
 	}
 
 	/* (non-Javadoc)
