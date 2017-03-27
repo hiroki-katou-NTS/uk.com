@@ -22,7 +22,7 @@ var nts;
                                 ScreenModel.prototype.startPage = function () {
                                     var self = this;
                                     var dfd = $.Deferred();
-                                    qmm016.service.instance.loadDemensionList().done(function (res) {
+                                    k.service.loadDemensionSelectionList().done(function (res) {
                                         self.demensionItemList(res);
                                         dfd.resolve();
                                     });

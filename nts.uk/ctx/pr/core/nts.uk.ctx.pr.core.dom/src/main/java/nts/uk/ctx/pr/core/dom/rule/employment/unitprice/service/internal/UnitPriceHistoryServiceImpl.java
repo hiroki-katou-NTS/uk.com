@@ -82,7 +82,7 @@ public class UnitPriceHistoryServiceImpl extends UnitPriceHistoryService {
 	public void validateDateRange(UnitPriceHistory unitPriceHistory) {
 		if (!isValidDateRange(unitPriceHistory)) {
 			// Invalid dateRange
-			throw new BusinessException("ER010");
+			throw new BusinessException("ER011");
 		}
 
 	}

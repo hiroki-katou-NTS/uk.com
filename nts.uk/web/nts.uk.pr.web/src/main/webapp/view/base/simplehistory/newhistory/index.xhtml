@@ -29,7 +29,8 @@
 					<tr>
 						<td><div data-bind="ntsFormLabel: { required: true }">期間</div></td>
 						<td>
-							<span id="startYearMonth" data-bind="ntsDatePicker: {value: startYearMonth, dateFormat: 'yyyy/MM'}"/>
+							<span id="startYearMonth" data-name="期間"
+							data-bind="ntsDatePicker: {value: startYearMonth, dateFormat: 'yyyy/MM', disabled: false}"/>
 							<label data-bind="text: '(' + nts.uk.time.yearmonthInJapanEmpire(startYearMonth()) + ') ~ 9999/12'"/>
 						</td>
 					</tr>

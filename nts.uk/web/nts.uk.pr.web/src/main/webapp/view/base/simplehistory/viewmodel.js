@@ -102,9 +102,10 @@ var nts;
                                 };
                                 ScreenBaseModel.prototype.registBtnClick = function () {
                                     var self = this;
-                                    self.isNewMode(true);
-                                    self.igGridSelectedHistoryUuid(undefined);
-                                    self.onRegistNew();
+                                    self.onRegistNew().done(function () {
+                                        self.isNewMode(true);
+                                        self.igGridSelectedHistoryUuid(undefined);
+                                    });
                                 };
                                 ScreenBaseModel.prototype.saveBtnClick = function () {
                                     var self = this;
@@ -124,17 +125,33 @@ var nts;
                                         master: currentNode.isMaster ? currentNode.data : currentNode.parent.data,
                                         lastest: latestNode ? latestNode.data : undefined,
                                         onCopyCallBack: function (data) {
+                                            var dfd = $.Deferred();
                                             self.service.createHistory(data.masterCode, data.startYearMonth, true)
-                                                .done(function (h) { return self.reloadMasterHistory(h.uuid); });
+                                                .done(function (h) {
+                                                self.reloadMasterHistory(h.uuid);
+                                                dfd.resolve();
+                                            }).fail(function (res) {
+                                                dfd.reject(res);
+                                            });
+                                            return dfd.promise();
                                         },
                                         onCreateCallBack: function (data) {
+                                            var dfd = $.Deferred();
                                             self.service.createHistory(data.masterCode, data.startYearMonth, false)
-                                                .done(function (h) { return self.reloadMasterHistory(h.uuid); });
+                                                .done(function (h) {
+                                                self.reloadMasterHistory(h.uuid);
+                                                dfd.resolve();
+                                            }).fail(function (res) {
+                                                dfd.reject(res);
+                                            });
+                                            return dfd.promise();
                                         }
                                     };
                                     nts.uk.ui.windows.setShared('options', newHistoryOptions);
-                                    var ntsDialogOptions = { title: nts.uk.text.format('{0}の登録 > 履歴の追加', self.options.functionName),
-                                        dialogClass: 'no-close' };
+                                    var ntsDialogOptions = {
+                                        title: nts.uk.text.format('{0}の登録 > 履歴の追加', self.options.functionName),
+                                        dialogClass: 'no-close'
+                                    };
                                     nts.uk.ui.windows.sub.modal('/view/base/simplehistory/newhistory/index.xhtml', ntsDialogOptions);
                                 };
                                 ScreenBaseModel.prototype.updateHistoryBtnClick = function () {
@@ -151,14 +168,21 @@ var nts;
                                             });
                                         },
                                         onUpdateCallBack: function (data) {
+                                            var dfd = $.Deferred();
                                             self.service.updateHistoryStart(data.masterCode, data.historyId, data.startYearMonth).done(function () {
                                                 self.reloadMasterHistory(self.selectedHistoryUuid());
+                                                dfd.resolve();
+                                            }).fail(function (res) {
+                                                dfd.reject(res);
                                             });
+                                            return dfd.promise();
                                         }
                                     };
                                     nts.uk.ui.windows.setShared('options', newHistoryOptions);
-                                    var ntsDialogOptions = { title: nts.uk.text.format('{0}の登録 > 履歴の編集', self.options.functionName),
-                                        dialogClass: 'no-close' };
+                                    var ntsDialogOptions = {
+                                        title: nts.uk.text.format('{0}の登録 > 履歴の編集', self.options.functionName),
+                                        dialogClass: 'no-close'
+                                    };
                                     nts.uk.ui.windows.sub.modal('/view/base/simplehistory/updatehistory/index.xhtml', ntsDialogOptions);
                                 };
                                 ScreenBaseModel.prototype.reloadMasterHistory = function (uuid) {

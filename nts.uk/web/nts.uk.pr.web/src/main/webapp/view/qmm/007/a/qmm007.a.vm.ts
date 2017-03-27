@@ -16,7 +16,8 @@ module nts.uk.pr.view.qmm007.a {
             textEditorOption: KnockoutObservable<nts.uk.ui.option.TextEditorOption>;
             // Switch button data source
             switchButtonDataSource: KnockoutObservableArray<SwitchButtonDataSource>;
-
+            // Dirty checker
+            dirtyChecker: nts.uk.ui.DirtyChecker;
             constructor() {
                 super({
                     functionName: '会社一律金額',
@@ -25,6 +26,7 @@ module nts.uk.pr.view.qmm007.a {
                 });
                 var self = this;
                 self.isLoading = ko.observable(true);
+                self.dirtyChecker = new nts.uk.ui.DirtyChecker(ko.observable(''));
 
                 self.unitPriceHistoryModel = ko.observable(new UnitPriceHistoryModel(self.getDefaultUnitPriceHistory()));
                 self.switchButtonDataSource = ko.observableArray<SwitchButtonDataSource>([
@@ -82,7 +84,7 @@ module nts.uk.pr.view.qmm007.a {
                     case 'ER005':
                         $('#inpCode').ntsError('set', '入力した＊は既に存在しています。\r\n ＊を確認してください。');
                         break;
-                    case 'ER010':
+                    case 'ER011':
                         $('#inpStartMonth').ntsError('set', '対象データがありません。');
                         break;
                     default:// Do nothing.
@@ -119,9 +121,11 @@ module nts.uk.pr.view.qmm007.a {
                 self.isLoading(true);
                 service.instance.findHistoryByUuid(id).done(dto => {
                     self.setUnitPriceHistoryModel(dto);
+                    // Set dirty checker.
+                    self.dirtyChecker = new nts.uk.ui.DirtyChecker(self.unitPriceHistoryModel);
                     self.isLoading(false);
                     nts.uk.ui.windows.setShared('unitPriceHistoryModel', ko.toJS(this.unitPriceHistoryModel()));
-                    $('.save-error').ntsError('clear');
+                    self.clearError();
                     dfd.resolve();
                 });
                 return dfd.promise();
@@ -130,10 +134,31 @@ module nts.uk.pr.view.qmm007.a {
             /**
              * Clear all input and switch to new mode.
              */
-            onRegistNew(): void {
+            onRegistNew(): JQueryPromise<void> {
                 var self = this;
+                var dfd = $.Deferred<void>();
+                if (self.dirtyChecker.isDirty()) {
+                    nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\n よろしいですか。").ifYes(function() {
+                        self.clearError();
+                        self.clearInput();
+                        dfd.resolve();
+                    }).ifNo(function() {
+                        dfd.reject();
+                    });
+                } else {
+                    self.clearError();
+                    self.clearInput();
+                    dfd.resolve();
+                }
+                return dfd.promise();
+            }
+
+            private clearError(): void {
                 $('.save-error').ntsError('clear');
-                self.setUnitPriceHistoryModel(self.getDefaultUnitPriceHistory());
+            }
+
+            private clearInput(): void {
+                this.setUnitPriceHistoryModel(this.getDefaultUnitPriceHistory());
             }
 
             /**

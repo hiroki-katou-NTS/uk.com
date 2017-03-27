@@ -40,9 +40,9 @@ module nts.uk.pr.view.base.simplehistory.updatehistory {
             /**
              * On create call back.
              */
-            onUpdateCallBack: (data: UpdateHistoryCallBackData) => void;
+            onUpdateCallBack: (data: UpdateHistoryCallBackData) => JQueryPromise<any>;
         }
-        
+
         /**
          * Callback data.
          */
@@ -78,7 +78,7 @@ module nts.uk.pr.view.base.simplehistory.updatehistory {
              * Last year month.
              */
             endYearMonth: string;
-            
+
             /**
              * Constructor.
              */
@@ -117,8 +117,13 @@ module nts.uk.pr.view.base.simplehistory.updatehistory {
                         nts.uk.ui.windows.close();
                     });
                 } else {
-                    self.dialogOptions.onUpdateCallBack(callBackData);
-                    nts.uk.ui.windows.close();
+                    self.dialogOptions.onUpdateCallBack(callBackData).done(() => {
+                        nts.uk.ui.windows.close();
+                    }).fail((res) => {
+                        if (res.messageId == 'ER023') {
+                            $('#startYearMonth').ntsError('set', '履歴の期間が重複しています。');
+                        }
+                    });
                 }
             }
 

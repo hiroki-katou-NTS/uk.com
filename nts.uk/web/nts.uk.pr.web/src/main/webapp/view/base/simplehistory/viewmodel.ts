@@ -1,6 +1,6 @@
 module nts.uk.pr.view.base.simplehistory {
     export module viewmodel {
-        
+
         /**
          * Simple history screen options.
          */
@@ -9,7 +9,7 @@ module nts.uk.pr.view.base.simplehistory {
             removeMasterOnLastHistoryRemove?: boolean;
             service: service.Service<M, H>
         }
-        
+
         /**
          * Base screen model for simple history.
          */
@@ -19,13 +19,13 @@ module nts.uk.pr.view.base.simplehistory {
 
             // Whether or not in new mode.
             protected isNewMode: KnockoutObservable<boolean>;
-            
+
             // Master history.
             masterHistoryList: Array<M>;
-            
+
             // Data source.
             masterHistoryDatasource: KnockoutObservableArray<Node>;
-            
+
             // Selected history uuid.
             selectedNode: KnockoutObservable<Node>;
             selectedHistoryUuid: KnockoutObservable<string>;
@@ -35,7 +35,7 @@ module nts.uk.pr.view.base.simplehistory {
             private canUpdateHistory: KnockoutObservable<boolean>;
             private canAddNewHistory: KnockoutObservable<boolean>;
             private options: SimpleHistoryScreenOptions<M, H>;
-            
+
             isClickHistory: KnockoutObservable<boolean>;
             /**
              * Constructor.
@@ -56,7 +56,7 @@ module nts.uk.pr.view.base.simplehistory {
                 self.selectedHistoryUuid = ko.observable(undefined);
                 self.selectedNode = ko.observable(undefined);
                 self.isClickHistory = ko.observable(false);
-                
+
                 // Can update history flag.
                 self.canUpdateHistory = ko.computed(() => {
                     return self.selectedNode() && self.selectedHistoryUuid() != undefined;
@@ -121,11 +121,11 @@ module nts.uk.pr.view.base.simplehistory {
             loadMasterHistory(): JQueryPromise<Array<M>> {
                 var self = this;
                 var dfd = $.Deferred();
-                
+
                 self.service.loadMasterModelList().done(res => {
                     var nodeList = _.map(res, master => {
                         // Current node.
-                        var masterNode:Node = {
+                        var masterNode: Node = {
                             id: master.code,
                             searchText: master.code + ' ' + master.name,
                             nodeText: master.code + ' ' + master.name,
@@ -135,7 +135,7 @@ module nts.uk.pr.view.base.simplehistory {
 
                         // Child node.
                         var masterChild = _.map(master.historyList, history => {
-                            var node:Node = {
+                            var node: Node = {
                                 id: history.uuid,
                                 searchText: '',
                                 nodeText: nts.uk.time.formatYearMonth(history.start) + '~' + nts.uk.time.formatYearMonth(history.end),
@@ -163,11 +163,11 @@ module nts.uk.pr.view.base.simplehistory {
              */
             registBtnClick(): void {
                 var self = this;
-                self.isNewMode(true);
-
-                // Clear select history uuid.
-                self.igGridSelectedHistoryUuid(undefined);
-                self.onRegistNew();
+                self.onRegistNew().done(() => {
+                    self.isNewMode(true);
+                    // Clear select history uuid.
+                    self.igGridSelectedHistoryUuid(undefined);
+                });
             }
 
             /**
@@ -195,22 +195,38 @@ module nts.uk.pr.view.base.simplehistory {
                     name: self.options.functionName,
                     master: currentNode.isMaster ? currentNode.data : currentNode.parent.data,
                     lastest: latestNode ? latestNode.data : undefined,
-                    
+
                     // Copy.
                     onCopyCallBack: (data) => {
+                        var dfd = $.Deferred<any>();
                         self.service.createHistory(data.masterCode, data.startYearMonth, true)
-                            .done(h => self.reloadMasterHistory(h.uuid));
+                            .done(h => {
+                                self.reloadMasterHistory(h.uuid);
+                                dfd.resolve();
+                            }).fail(res => {
+                                dfd.reject(res);
+                            });
+                        return dfd.promise();
                     },
 
                     // Init.
                     onCreateCallBack: (data) => {
+                        var dfd = $.Deferred<any>();
                         self.service.createHistory(data.masterCode, data.startYearMonth, false)
-                            .done(h => self.reloadMasterHistory(h.uuid));
+                            .done(h => {
+                                self.reloadMasterHistory(h.uuid);
+                                dfd.resolve();
+                            }).fail(res => {
+                                dfd.reject(res);
+                            });
+                        return dfd.promise();
                     }
                 };
                 nts.uk.ui.windows.setShared('options', newHistoryOptions);
-                var ntsDialogOptions = { title: nts.uk.text.format('{0}の登録 > 履歴の追加', self.options.functionName),
-                        dialogClass: 'no-close' }; 
+                var ntsDialogOptions = {
+                    title: nts.uk.text.format('{0}の登録 > 履歴の追加', self.options.functionName),
+                    dialogClass: 'no-close'
+                };
                 nts.uk.ui.windows.sub.modal('/view/base/simplehistory/newhistory/index.xhtml', ntsDialogOptions);
             }
 
@@ -235,17 +251,24 @@ module nts.uk.pr.view.base.simplehistory {
 
                     // Update call back.
                     onUpdateCallBack: (data) => {
+                        var dfd = $.Deferred();
                         self.service.updateHistoryStart(data.masterCode, data.historyId, data.startYearMonth).done(() => {
                             self.reloadMasterHistory(self.selectedHistoryUuid());
-                        })
+                            dfd.resolve();
+                        }).fail(res => {
+                            dfd.reject(res);
+                        });
+                        return dfd.promise();
                     }
                 };
                 nts.uk.ui.windows.setShared('options', newHistoryOptions);
-                var ntsDialogOptions = { title: nts.uk.text.format('{0}の登録 > 履歴の編集', self.options.functionName),
-                        dialogClass: 'no-close' }; 
+                var ntsDialogOptions = {
+                    title: nts.uk.text.format('{0}の登録 > 履歴の編集', self.options.functionName),
+                    dialogClass: 'no-close'
+                };
                 nts.uk.ui.windows.sub.modal('/view/base/simplehistory/updatehistory/index.xhtml', ntsDialogOptions);
             }
-            
+
             /**
              * Reload master history then set.
              */
@@ -261,22 +284,22 @@ module nts.uk.pr.view.base.simplehistory {
                             if (!_.isEmpty(self.masterHistoryList[0].historyList)) {
                                 self.igGridSelectedHistoryUuid(self.masterHistoryList[0].historyList[0].uuid);
                                 self.igGridSelectedHistoryUuid.valueHasMutated();
-                            } 
+                            }
                         }
                     }
                 })
             }
-            
+
             /**
              * Internal start for each page.
              * Override if you need to do any thing.
              */
             start(): JQueryPromise<any> {
                 var dfd = $.Deferred();
-                dfd.resolve();                
+                dfd.resolve();
                 return dfd.promise();
             }
-            
+
             /**
              * On select history.
              */
@@ -292,8 +315,8 @@ module nts.uk.pr.view.base.simplehistory {
             /**
              * On regist new.
              */
-            abstract onRegistNew(): void;
-            
+            abstract onRegistNew(): JQueryPromise<void>;
+
             /**
              * On save click.
              * Do validate your self.

@@ -181,12 +181,12 @@ public abstract class SimpleHistoryBaseService<M extends Master, H extends Histo
 		// Validate new yearmonth.
 		if (beforeH != null && newYearMonth.v() <= beforeH.getStart().v()) {
 			// Error.
-			throw new BusinessException("ER010");
+			throw new BusinessException("ER023");
 		}
 
 		if (afterH != null && newYearMonth.v() >= afterH.getStart().v()) {
 			// Error.
-			throw new BusinessException("ER010");
+			throw new BusinessException("ER023");
 		}
 
 		// Update h.

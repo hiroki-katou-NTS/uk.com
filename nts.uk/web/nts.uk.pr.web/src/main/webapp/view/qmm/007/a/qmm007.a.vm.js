@@ -28,6 +28,7 @@ var nts;
                                     });
                                     var self = this;
                                     self.isLoading = ko.observable(true);
+                                    self.dirtyChecker = new nts.uk.ui.DirtyChecker(ko.observable(''));
                                     self.unitPriceHistoryModel = ko.observable(new UnitPriceHistoryModel(self.getDefaultUnitPriceHistory()));
                                     self.switchButtonDataSource = ko.observableArray([
                                         { code: ApplySetting.APPLY, name: '対象' },
@@ -76,7 +77,7 @@ var nts;
                                         case 'ER005':
                                             $('#inpCode').ntsError('set', '入力した＊は既に存在しています。\r\n ＊を確認してください。');
                                             break;
-                                        case 'ER010':
+                                        case 'ER011':
                                             $('#inpStartMonth').ntsError('set', '対象データがありません。');
                                             break;
                                         default:
@@ -106,17 +107,38 @@ var nts;
                                     self.isLoading(true);
                                     qmm007.service.instance.findHistoryByUuid(id).done(function (dto) {
                                         self.setUnitPriceHistoryModel(dto);
+                                        self.dirtyChecker = new nts.uk.ui.DirtyChecker(self.unitPriceHistoryModel);
                                         self.isLoading(false);
                                         nts.uk.ui.windows.setShared('unitPriceHistoryModel', ko.toJS(_this.unitPriceHistoryModel()));
-                                        $('.save-error').ntsError('clear');
+                                        self.clearError();
                                         dfd.resolve();
                                     });
                                     return dfd.promise();
                                 };
                                 ScreenModel.prototype.onRegistNew = function () {
                                     var self = this;
+                                    var dfd = $.Deferred();
+                                    if (self.dirtyChecker.isDirty()) {
+                                        nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\n よろしいですか。").ifYes(function () {
+                                            self.clearError();
+                                            self.clearInput();
+                                            dfd.resolve();
+                                        }).ifNo(function () {
+                                            dfd.reject();
+                                        });
+                                    }
+                                    else {
+                                        self.clearError();
+                                        self.clearInput();
+                                        dfd.resolve();
+                                    }
+                                    return dfd.promise();
+                                };
+                                ScreenModel.prototype.clearError = function () {
                                     $('.save-error').ntsError('clear');
-                                    self.setUnitPriceHistoryModel(self.getDefaultUnitPriceHistory());
+                                };
+                                ScreenModel.prototype.clearInput = function () {
+                                    this.setUnitPriceHistoryModel(this.getDefaultUnitPriceHistory());
                                 };
                                 ScreenModel.prototype.getDefaultUnitPriceHistory = function () {
                                     var defaultHist = {};

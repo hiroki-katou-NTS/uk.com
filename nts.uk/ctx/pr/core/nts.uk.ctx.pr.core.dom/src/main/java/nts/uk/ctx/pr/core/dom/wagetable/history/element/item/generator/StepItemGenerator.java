@@ -18,7 +18,6 @@ import nts.uk.ctx.pr.core.dom.wagetable.ElementId;
 import nts.uk.ctx.pr.core.dom.wagetable.ElementType;
 import nts.uk.ctx.pr.core.dom.wagetable.history.element.ElementSetting;
 import nts.uk.ctx.pr.core.dom.wagetable.history.element.StepElementSetting;
-import nts.uk.ctx.pr.core.dom.wagetable.history.element.item.CodeItem;
 import nts.uk.ctx.pr.core.dom.wagetable.history.element.item.Item;
 import nts.uk.ctx.pr.core.dom.wagetable.history.element.item.RangeItem;
 
@@ -55,7 +54,7 @@ public class StepItemGenerator implements ItemGenerator {
 
 		int index = 0;
 		BigDecimal start = lowerLimit;
-		while (start.compareTo(upperLimit) <= 0) {
+		while (start.compareTo(upperLimit) < 0) {
 			index++;
 			BigDecimal end = start.add(interval).subtract(minStep);
 

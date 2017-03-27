@@ -46,12 +46,23 @@ var nts;
                                             startYearMonth: self.startYearMonth()
                                         };
                                         if (self.createType() == ScreenModel.CREATE_TYPE_COPY_LATEST) {
-                                            self.dialogOptions.onCopyCallBack(callBackData);
+                                            self.dialogOptions.onCopyCallBack(callBackData)
+                                                .done(function () { return nts.uk.ui.windows.close(); })
+                                                .fail(function (res) {
+                                                if (res.messageId == 'ER010') {
+                                                    $('#startYearMonth').ntsError('set', '対象データがありません。');
+                                                }
+                                            });
                                         }
                                         else {
-                                            self.dialogOptions.onCreateCallBack(callBackData);
+                                            self.dialogOptions.onCreateCallBack(callBackData)
+                                                .done(function () { return nts.uk.ui.windows.close(); })
+                                                .fail(function (res) {
+                                                if (res.messageId == 'ER010') {
+                                                    $('#startYearMonth').ntsError('set', '対象データがありません。');
+                                                }
+                                            });
                                         }
-                                        nts.uk.ui.windows.close();
                                     };
                                     ScreenModel.prototype.btnCancelClicked = function () {
                                         nts.uk.ui.windows.close();
