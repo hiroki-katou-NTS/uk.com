@@ -4,4 +4,3 @@ __viewContext.ready(function () {
     screenModel.start(undefined);
     __viewContext.bind(screenModel);
 });
-//# sourceMappingURL=cmm001.a.start.js.map

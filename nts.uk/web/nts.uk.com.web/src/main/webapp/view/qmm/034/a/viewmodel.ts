@@ -18,8 +18,9 @@ module qmm034.a.viewmodel {
         isDeleteEnable: KnockoutObservable<boolean>;
         // binding with textEditor as a observable object
         isEnableCode: KnockoutObservable<boolean>;
-        dirty: nts.uk.ui.DirtyChecker;
-        countStartDateChange: number = 1;
+        dirtyObject: nts.uk.ui.DirtyChecker;
+        countStartDateChange: number = 1; //Biến này để tránh việc chạy hàm startDate.subscribe 2 lần
+        previousCurrentCode: string = null; //lưu giá trị của currentCode trước khi nó bị thay đổi
 
         constructor() {
             let self = this;
@@ -29,7 +30,7 @@ module qmm034.a.viewmodel {
 
             self.startDate.subscribe(function(dateChange) {
                 if (self.countStartDateChange === 1) {
-                    // datePicker onchange
+                    // event datePicker onchange
                     if ($('#A_INP_003').ntsError("hasError")) {
                         $("#A_INP_003").ntsError('clear');
                     }
@@ -38,39 +39,42 @@ module qmm034.a.viewmodel {
                 }
             })
             self.currentCode.subscribe(function(codeChanged) {
-                if (nts.uk.text.isNullOrEmpty(codeChanged)) {
-                    self.refreshLayout();
-                } else {
-                    self.countStartDateChange += 1;
-                    self.currentEra(self.getEra(codeChanged));
-                    self.date(self.currentEra().startDate().toString());
-                    self.startDate(self.currentEra().startDate());
-                }
-
-                self.isDeleteEnable(true);
-                self.isEnableCode(false);
-                self.isUpdate(true);
-                //                self.dirty = new nts.uk.ui.DirtyChecker(self.currentEra);
-                //                if (self.dirty.isDirty()) {
-                //                    if (self.dirty.isDirty()) {
-                //                        alert("Data is changed.");
-                //                    } else {
-                //                        alert("Data isn't changed.");
-                //                    }
-                //
-                //                }
-                qmm034.a.service.getFixAttribute(self.currentEra().eraHist()).done(function(data) {
-                    if (data === 0) {
-                        self.isEnableCode(false);
+                if (!nts.uk.text.isNullOrEmpty(codeChanged) && self.currentCode() !== self.previousCurrentCode) {
+                    if (self.dirtyObject.isDirty()) {
+                        nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\nよろしいですか。?").ifYes(function() {
+                            self.processWhenCurrentCodeChange(codeChanged);
+                        }).ifCancel(function() {
+                            self.currentCode(self.previousCurrentCode);
+                        })
+                    } else {
+                        self.processWhenCurrentCodeChange(codeChanged);    
                     }
-                });
-
+                }
             });
             //convert to Japan Emprise year
             self.dateTime = ko.observable(nts.uk.time.yearInJapanEmpire(self.currentEra().startDate()).toString());
 
         }
 
+        processWhenCurrentCodeChange(codeChanged) {
+            let self = this;
+            self.countStartDateChange += 1;
+            self.currentEra(self.getEra(codeChanged));
+            self.dirtyObject.reset();
+            
+            self.date(self.currentEra().startDate().toString());
+            self.startDate(self.currentEra().startDate());
+            self.isDeleteEnable(true);
+            self.isEnableCode(false);
+            self.isUpdate(true);
+            qmm034.a.service.getFixAttribute(self.currentEra().eraHist()).done(function(data) {
+                if (data === 0) {
+                    self.isEnableCode(true);
+                }
+            });    
+            self.previousCurrentCode = codeChanged;
+        }
+        
         init(): void {
             let self = this;
             self.items = ko.observableArray([]);
@@ -86,6 +90,16 @@ module qmm034.a.viewmodel {
             self.isDeleteEnable = ko.observable(false);
             self.isEnableCode = ko.observable(false);
             self.isUpdate = ko.observable(false);
+        }
+        
+        validateData() : boolean {
+            $(".nts-editor").ntsEditor("validate");
+            $("#A_INP_003").ntsEditor("validate");
+            
+            if ($(".nts-editor").ntsError('hasError') || $("#A_INP_003").ntsError('hasError')) {
+                return false;    
+            }
+            return true;
         }
 
         insertData(): any {
@@ -103,6 +117,9 @@ module qmm034.a.viewmodel {
             node = new qmm034.a.service.model.EraDto(
                 eraName, eraMark, startDate, endDate, fixAttribute, eraHist
             );
+            if (!self.validateData()) {
+                return;    
+            }
 
             qmm034.a.service.addData(self.isUpdate(), node).done(function(result) {
                 self.reload().done(function() {
@@ -113,14 +130,9 @@ module qmm034.a.viewmodel {
                     self.isUpdate = ko.observable(true);
                     let lastStartDate = _.maxBy(self.items(), function(o) {
                         return o.startDate;
-                        //console.log(startDate);
                     });
                 });
-                //                if (nts.uk.ui._viewModel.errors.isEmpty()) {
-                //                    $("#A_INP_003").ntsError('clear');
-                //                }
             }).fail(function(res) {
-                //alert(res.message);
                 $("#A_INP_003").ntsError("set", res.message);
             });
             return dfd.promise();
@@ -128,11 +140,9 @@ module qmm034.a.viewmodel {
         }
         alertDelete() {
             let self = this;
-            if (confirm("do you wanna delete") === true) {
+            nts.uk.ui.dialog.confirm("データを削除します。\r\nよろしいですか？").ifYes(function() {
                 self.deleteData();
-            } else {
-                alert("you didnt delete!");
-            }
+            })
         }
 
         reload(): JQueryPromise<any> {
@@ -192,8 +202,6 @@ module qmm034.a.viewmodel {
             let era = _.find(self.items(), function(item) {
                 return item.eraName === codeNew;
             });
-            // let startDate = new Date(era.startDate.substring(0, 10));
-            //let endDate = new Date(era.endDate.substring(0, 10));
             if (era) {
                 return new EraModel(era.eraName, era.eraMark, new Date(era.startDate), era.fixAttribute, era.eraHist, new Date(era.endDate));
             } else {
@@ -211,21 +219,17 @@ module qmm034.a.viewmodel {
                 if (data.length > 0) {
                     self.items(data);
                     self.currentEra(self.items()[0]);
-                    self.dirty = new nts.uk.ui.DirtyChecker(self.currentEra);
-                    self.date(new Date(self.currentEra().startDate.toString()));
+                    self.dirtyObject = new nts.uk.ui.DirtyChecker(self.currentEra);
+                    //self.date(new Date(self.currentEra().startDate.toString()));
                     self.currentCode(self.currentEra().eraName);
-                    self.isUpdate(false);
-                    self.isDeleteEnable(true);
-                    self.isEnableCode(false);
+                    self.processWhenCurrentCodeChange(self.currentCode());
                 } else {
                     self.refreshLayout();
-                    //                    self.isUpdate(false);
                 }
 
                 dfd.resolve();
             }).fail(function(res) {
                 $("#A_INP_001").ntsError("set", res.message);
-                //alert(res.message);
             });
 
             return dfd.promise();
@@ -233,25 +237,19 @@ module qmm034.a.viewmodel {
 
         refreshLayout(): void {
             let self = this;
-            if ($('.nts-editor').ntsError("hasError")) {
-                $("#A_INP_003").ntsError('clear');
-                $("#A_INP_002").ntsError('clear');
-                $("#A_INP_001").ntsError('clear');
-            }
-
-            //            if (self.dirty.isDirty()) {
-            //                alert("Data is changed.");
-            //            } else {
-            //                alert("Data isn't changed.");
-            //            }
+            self.clearError();
             self.currentEra(new EraModel('', '', new Date(self.currentEra().startDate().toString()), 1, '', new Date("")));
+            self.currentCode(null);
             self.isDeleteEnable(false);
             self.isEnableCode(true);
             self.isUpdate(false);
-            self.currentCode(null);
-
+            self.dirtyObject.reset();
         }
-
+        
+        clearError() {
+            $(".nts-editor").ntsError('clear');
+            $("#A_INP_003").ntsError('clear');
+        }
     }
 
 

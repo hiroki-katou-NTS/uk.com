@@ -1,7 +1,7 @@
 module qmm034.a.service {
     var paths = {
         getAllEras: "ctx/basic/era/finderas",
-        getEraDetail: "ctx/basic/era/find/{0}",
+//        getEraDetail: "ctx/basic/era/find/{0}",
         deleteEra: "ctx/basic/era/deleteData",
         updateEra: "ctx/basic/era/updateData",
         addEra: "ctx/basic/era/addData",
@@ -24,18 +24,18 @@ module qmm034.a.service {
     /**
      * get a company 
      */
-    export function getEraDetail(eraHist: string): JQueryPromise<model.EraDto> {
-        let dfd = $.Deferred<model.EraDto>();
-        let self = this;
-        let _path = nts.uk.text.format(paths.getEraDetail, eraHist);
-        nts.uk.request.ajax(_path).done(function(res: model.EraDto) {
-            dfd.resolve(res);
-        }).fail(function(res) {
-            dfd.reject(res);
-        })
-        return dfd.promise();
-
-    }
+//    export function getEraDetail(eraHist: string): JQueryPromise<model.EraDto> {
+//        let dfd = $.Deferred<model.EraDto>();
+//        let self = this;
+//        let _path = nts.uk.text.format(paths.getEraDetail, eraHist);
+//        nts.uk.request.ajax(_path).done(function(res: model.EraDto) {
+//            dfd.resolve(res);
+//        }).fail(function(res) {
+//            dfd.reject(res);
+//        })
+//        return dfd.promise();
+//
+//    }
 
     /**
      * get a company 

@@ -6,7 +6,7 @@ var qmm034;
         (function (service) {
             var paths = {
                 getAllEras: "ctx/basic/era/finderas",
-                getEraDetail: "ctx/basic/era/find/{0}",
+                //        getEraDetail: "ctx/basic/era/find/{0}",
                 deleteEra: "ctx/basic/era/deleteData",
                 updateEra: "ctx/basic/era/updateData",
                 addEra: "ctx/basic/era/addData",
@@ -29,18 +29,18 @@ var qmm034;
             /**
              * get a company
              */
-            function getEraDetail(eraHist) {
-                var dfd = $.Deferred();
-                var self = this;
-                var _path = nts.uk.text.format(paths.getEraDetail, eraHist);
-                nts.uk.request.ajax(_path).done(function (res) {
-                    dfd.resolve(res);
-                }).fail(function (res) {
-                    dfd.reject(res);
-                });
-                return dfd.promise();
-            }
-            service.getEraDetail = getEraDetail;
+            //    export function getEraDetail(eraHist: string): JQueryPromise<model.EraDto> {
+            //        let dfd = $.Deferred<model.EraDto>();
+            //        let self = this;
+            //        let _path = nts.uk.text.format(paths.getEraDetail, eraHist);
+            //        nts.uk.request.ajax(_path).done(function(res: model.EraDto) {
+            //            dfd.resolve(res);
+            //        }).fail(function(res) {
+            //            dfd.reject(res);
+            //        })
+            //        return dfd.promise();
+            //
+            //    }
             /**
              * get a company
              */

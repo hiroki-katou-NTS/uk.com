@@ -240,7 +240,7 @@ var cmm001;
         a.ViewModel = ViewModel;
         var CompanyModel = (function () {
             function CompanyModel(param) {
-                this.editMode = true;
+                this.editMode = true; // mode reset or not reset
                 var self = this;
                 self.sources = param.sources || [];
                 self.companyCode = ko.observable(param.companyCode);
@@ -260,6 +260,7 @@ var cmm001;
                 self.termBeginMon = ko.observable(param.termBeginMon);
                 self.companyUseSet = ko.observable(param.companyUseSet);
                 self.isDelete = ko.observable(param.isDelete || false);
+                //SWITCH
                 self.roundingRules = ko.observableArray([
                     new RoundingRule("1", '利用する'),
                     new RoundingRule('0', '利用しない')
@@ -288,7 +289,7 @@ var cmm001;
                 ]);
                 self.companyCode.subscribe(function (newValue) {
                     if (self.editMode) {
-                        var company = _.find(self.sources, function (item) { return item.companyCode == newValue; });
+                        var company = _.find(self.sources, function (item) { return item.companyCode == newValue; }); // thay bằng services
                         if (company) {
                             $(document).ready(function (data) {
                                 $("#A_INP_002").attr('disabled', 'true');
@@ -396,4 +397,3 @@ var cmm001;
         }());
     })(a = cmm001.a || (cmm001.a = {}));
 })(cmm001 || (cmm001 = {}));
-//# sourceMappingURL=cmm001.a.vm.js.map
