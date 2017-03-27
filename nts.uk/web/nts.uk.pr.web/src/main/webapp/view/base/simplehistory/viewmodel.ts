@@ -163,11 +163,11 @@ module nts.uk.pr.view.base.simplehistory {
              */
             registBtnClick(): void {
                 var self = this;
-                self.isNewMode(true);
-
-                // Clear select history uuid.
-                self.igGridSelectedHistoryUuid(undefined);
-                self.onRegistNew();
+                self.onRegistNew().done(() => {
+                    self.isNewMode(true);
+                    // Clear select history uuid.
+                    self.igGridSelectedHistoryUuid(undefined);
+                });
             }
 
             /**
@@ -315,7 +315,7 @@ module nts.uk.pr.view.base.simplehistory {
             /**
              * On regist new.
              */
-            abstract onRegistNew(): void;
+            abstract onRegistNew(): JQueryPromise<void>;
 
             /**
              * On save click.

@@ -102,9 +102,10 @@ var nts;
                                 };
                                 ScreenBaseModel.prototype.registBtnClick = function () {
                                     var self = this;
-                                    self.isNewMode(true);
-                                    self.igGridSelectedHistoryUuid(undefined);
-                                    self.onRegistNew();
+                                    self.onRegistNew().done(function () {
+                                        self.isNewMode(true);
+                                        self.igGridSelectedHistoryUuid(undefined);
+                                    });
                                 };
                                 ScreenBaseModel.prototype.saveBtnClick = function () {
                                     var self = this;
