@@ -1,3 +1,5 @@
+/// <reference path="../reference.ts"/>
+
 module nts.uk.ui {
 
 	export module windows {
@@ -676,7 +678,7 @@ module nts.uk.ui {
 		}
 
 		getCurrentState() {
-			return ko.mapping.toJSON(this.targetViewModel());
+			return ko.toJSON(this.targetViewModel());
 		}
 
 		reset() {

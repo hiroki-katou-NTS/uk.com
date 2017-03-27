@@ -30,6 +30,11 @@ note:before{position:absolute;display:block;content:'';width:50px;height:15px;le
 #side-menu a:before{content:'\203A';padding-right:10px;font-weight:bold;}
 #side-menu a:hover{background-color:#e0e0e0;}
 #side-menu a.active{font-weight:bold;background:#fff;color:#00B050;box-shadow: 0 0 5px 1px rgba(0,0,0,0.15);z-index:1;}
+#side-menu .label{float:right;display:block;height:100%;margin-right:5px;color:#fff;font-size:10px;font-weight:bold;}
+#side-menu .label:before{display:inline-block;height:16px;line-height:16px;padding:0 5px;border-radius:5px;box-sizing:border-box;}
+#side-menu .label-new:before{background:#5cb85c;content:'New';}
+#side-menu .label-update:before{background:#5bc0de;content:'Update';}
+#side-menu .label-error:before{background:#d9534f;content:'Error';}
 
 #content{flex:1;width:calc(100% - 250px);background:#fff;padding:10px 10px;box-sizing:border-box;}
 #content .tabs{margin:25px 0;}
