@@ -6,6 +6,7 @@ module qmm006.b.viewmodel {
         selectedBank: KnockoutObservable<any>;
         selectedCodes: any;
         headers: any;
+        messageList: KnockoutObservableArray<any>;
 
         constructor() {
             var self = this;
@@ -15,6 +16,14 @@ module qmm006.b.viewmodel {
             self.selectedBank = ko.observable();
             self.selectedCodes = ko.observableArray([]);
             self.headers = ko.observableArray(["Item Value Header", "コード/名称"]);
+            self.messageList = ko.observableArray([
+                { messageId: "ER001", message: "＊が入力されていません。" },
+                { messageId: "ER005", message: "入力した＊は既に存在しています。\r\n ＊を確認してください。" },
+                { messageId: "ER007", message: "＊が選択されていません。" },
+                { messageId: "ER008", message: "選択された＊は使用されているため削除できません。" },
+                { messageId: "ER010", message: "対象データがありません。" },
+            ]);
+
             self.singleSelectedCode.subscribe(function(codeChanged) {
                 self.selectedBank(self.getBank(codeChanged));
             });
@@ -22,7 +31,7 @@ module qmm006.b.viewmodel {
 
         getBank(codeNew): Bank {
             let self = this;
-            self.dataSource2(nts.uk.util.flatArray(self.dataSource(), "childs"));
+            //            self.dataSource2(nts.uk.util.flatArray(self.dataSource(), "childs"));
             let bank: Bank = _.find(self.dataSource2(), function(item: any) {
                 return item.treeCode === codeNew;
             });
@@ -49,11 +58,12 @@ module qmm006.b.viewmodel {
                         var bankData = [];
                         _.forEach(data, function(item) {
                             var childs = _.map(item.bankBranch, function(itemChild: any) {
-                                return new Bank(itemChild.bankBranchCode, itemChild.bankBranchName, item.bankCode, item.bankName, item.bankCode + itemChild.bankBranchCode, []);
+                                return new Bank(itemChild.bankBranchCode, itemChild.bankBranchID, itemChild.bankBranchName, item.bankCode, item.bankName, item.bankCode + itemChild.bankBranchCode, []);
                             });
-                            bankData.push(new Bank(item.bankCode, item.bankName, null, null, item.bankCode, childs));
+                            bankData.push(new Bank(item.bankCode, null, item.bankName, null, null, item.bankCode, childs));
                         });
                         self.dataSource(bankData);
+                        self.dataSource2(nts.uk.util.flatArray(self.dataSource(), "childs"));
                         //select first row child of first row parent
                         if (data[0].bankBranch != null) {
                             self.singleSelectedCode(data[0].bankCode + data[0].bankBranch[0].bankBranchCode);
@@ -62,6 +72,8 @@ module qmm006.b.viewmodel {
                         else {
                             self.singleSelectedCode(data[0].bankCode);
                         }
+                    } else {
+                        nts.uk.ui.dialog.alert(self.messageList()[4].message);
                     }
 
                     dfd.resolve();
@@ -81,11 +93,11 @@ module qmm006.b.viewmodel {
                 return x.treeCode === self.singleSelectedCode();
             }) == undefined) {
                 // select row child will transfer data to screen QMM006.a
-                nts.uk.ui.windows.setShared("selectedBank", this.selectedBank(), true);
+                nts.uk.ui.windows.setShared("selectedBank", self.selectedBank(), true);
                 nts.uk.ui.windows.close();
             } else {
                 // select row parent will appear alert
-                nts.uk.ui.dialog.alert("＊が選択されていません。");//ER007
+                nts.uk.ui.dialog.alert(self.messageList()[2].message);
             }
         }
     }
@@ -98,7 +110,8 @@ module qmm006.b.viewmodel {
         parentName: string;
         treeCode: string;
         childs: any;
-        constructor(code: string, name: string, parentCode: string, parentName: string, treeCode: string, childs: Array<Bank>) {
+        branchId: string;
+        constructor(code: string, branchId: string, name: string, parentCode: string, parentName: string, treeCode: string, childs: Array<Bank>) {
             var self = this;
             self.code = code;
             self.name = name;
@@ -107,6 +120,7 @@ module qmm006.b.viewmodel {
             self.parentCode = parentCode;
             self.parentName = parentName;
             self.treeCode = treeCode;
+            self.branchId = branchId;
         }
     }
 };

@@ -1,9 +1,12 @@
 package nts.uk.ctx.basic.dom.system.bank.linebank;
 
 import nts.arc.primitive.StringPrimitiveValue;
+import nts.arc.primitive.constraint.CharType;
+import nts.arc.primitive.constraint.StringCharType;
 import nts.arc.primitive.constraint.StringMaxLength;
 
 @StringMaxLength(20)
+@StringCharType(CharType.ALPHA_NUMERIC)
 /**
  * 
  * @author sonnh1

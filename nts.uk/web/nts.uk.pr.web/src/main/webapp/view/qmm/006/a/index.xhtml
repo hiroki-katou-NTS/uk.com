@@ -29,7 +29,8 @@
 				<button id="A_BTN_002"
 					data-bind="click: saveData, enable: $root.errors.isEmpty"
 					class="proceed">登録</button>
-				<button id="A_BTN_003" data-bind="click: openCDialog, enable: enableBtn003 ">振込元銀行の置換</button>
+				<button id="A_BTN_003"
+					data-bind="click: openCDialog, enable: enableBtn003 ">振込元銀行の置換</button>
 				<button id="A_BTN_007" data-bind="click: btn007">マスタ修正ログ</button>
 				<button id="A_BTN_004"
 					data-bind="click: remove, enable : isDeleteEnable" class="danger">削除</button>
@@ -95,12 +96,11 @@
 							<button id="A_BTN_006"
 								data-bind="click: $parent.openBDialog.bind($parent)">参照</button>
 							<label id="A_LBL_004" data-name="銀行コード"
-								data-bind="text: bankCode"></label> <label id="A_LBL_005"
-								data-bind="text: $parent.bankName"></label> <label
-								id="A_LBL_006">-</label>
-							<label id="A_LBL_007" data-name="支店コード"
-								data-bind="text: branchCode"></label> <label id="A_LBL_008"
-								data-bind="text: $parent.branchName"></label>
+								data-bind="text: $parent.bankCode"></label> <label
+								id="A_LBL_005" data-bind="text: $parent.bankName"></label> <label
+								id="A_LBL_006">-</label> <label id="A_LBL_007" data-name="支店コード"
+								data-bind="text: $parent.branchCode"></label> <label
+								id="A_LBL_008" data-bind="text: $parent.branchName"></label>
 						</div>
 						<div class="control-group">
 							<span id="A_SEL_001" class="cf"

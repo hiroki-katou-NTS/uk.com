@@ -13,13 +13,19 @@ var qmm006;
                     self.selectedBank = ko.observable();
                     self.selectedCodes = ko.observableArray([]);
                     self.headers = ko.observableArray(["Item Value Header", "コード/名称"]);
+                    self.messageList = ko.observableArray([
+                        { messageId: "ER001", message: "＊が入力されていません。" },
+                        { messageId: "ER005", message: "入力した＊は既に存在しています。\r\n ＊を確認してください。" },
+                        { messageId: "ER007", message: "＊が選択されていません。" },
+                        { messageId: "ER008", message: "選択された＊は使用されているため削除できません。" },
+                        { messageId: "ER010", message: "対象データがありません。" },
+                    ]);
                     self.singleSelectedCode.subscribe(function (codeChanged) {
                         self.selectedBank(self.getBank(codeChanged));
                     });
                 }
                 ScreenModel.prototype.getBank = function (codeNew) {
                     var self = this;
-                    self.dataSource2(nts.uk.util.flatArray(self.dataSource(), "childs"));
                     var bank = _.find(self.dataSource2(), function (item) {
                         return item.treeCode === codeNew;
                     });
@@ -44,17 +50,21 @@ var qmm006;
                             var bankData = [];
                             _.forEach(data, function (item) {
                                 var childs = _.map(item.bankBranch, function (itemChild) {
-                                    return new Bank(itemChild.bankBranchCode, itemChild.bankBranchName, item.bankCode, item.bankName, item.bankCode + itemChild.bankBranchCode, []);
+                                    return new Bank(itemChild.bankBranchCode, itemChild.bankBranchID, itemChild.bankBranchName, item.bankCode, item.bankName, item.bankCode + itemChild.bankBranchCode, []);
                                 });
-                                bankData.push(new Bank(item.bankCode, item.bankName, null, null, item.bankCode, childs));
+                                bankData.push(new Bank(item.bankCode, null, item.bankName, null, null, item.bankCode, childs));
                             });
                             self.dataSource(bankData);
+                            self.dataSource2(nts.uk.util.flatArray(self.dataSource(), "childs"));
                             if (data[0].bankBranch != null) {
                                 self.singleSelectedCode(data[0].bankCode + data[0].bankBranch[0].bankBranchCode);
                             }
                             else {
                                 self.singleSelectedCode(data[0].bankCode);
                             }
+                        }
+                        else {
+                            nts.uk.ui.dialog.alert(self.messageList()[4].message);
                         }
                         dfd.resolve();
                     }).fail(function (res) { });
@@ -69,18 +79,18 @@ var qmm006;
                     if (_.find(self.dataSource(), function (x) {
                         return x.treeCode === self.singleSelectedCode();
                     }) == undefined) {
-                        nts.uk.ui.windows.setShared("selectedBank", this.selectedBank(), true);
+                        nts.uk.ui.windows.setShared("selectedBank", self.selectedBank(), true);
                         nts.uk.ui.windows.close();
                     }
                     else {
-                        nts.uk.ui.dialog.alert("＊が選択されていません。");
+                        nts.uk.ui.dialog.alert(self.messageList()[2].message);
                     }
                 };
                 return ScreenModel;
             }());
             viewmodel.ScreenModel = ScreenModel;
             var Bank = (function () {
-                function Bank(code, name, parentCode, parentName, treeCode, childs) {
+                function Bank(code, branchId, name, parentCode, parentName, treeCode, childs) {
                     var self = this;
                     self.code = code;
                     self.name = name;
@@ -89,6 +99,7 @@ var qmm006;
                     self.parentCode = parentCode;
                     self.parentName = parentName;
                     self.treeCode = treeCode;
+                    self.branchId = branchId;
                 }
                 return Bank;
             }());

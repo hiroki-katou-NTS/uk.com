@@ -17,7 +17,7 @@ var qmm006;
                         { headerText: '口座区分', key: 'accountAtr', width: 110, formatter: _.escape },
                         { headerText: '口座番号', key: 'accountNo', width: 100, formatter: _.escape }
                     ]);
-                    self.currentLineBank = ko.observable(new LineBank(null, null, null, null, 0, null, null, null, []));
+                    self.currentLineBank = ko.observable(new LineBank(null, null, null, 0, null, null, null, []));
                     self.dirty = new nts.uk.ui.DirtyChecker(self.currentLineBank);
                     self.roundingRules = ko.observableArray([
                         { code: '0', name: '普通' },
@@ -28,6 +28,9 @@ var qmm006;
                     self.isEnable = ko.observable(false);
                     self.notLoopAlert = ko.observable(true);
                     self.enableBtn003 = ko.observable(false);
+                    self.isNotCheckDirty = ko.observable(false);
+                    self.bankCode = ko.observable('');
+                    self.branchCode = ko.observable('');
                     self.bankName = ko.observable('');
                     self.branchName = ko.observable('');
                     self.countLineBank = ko.observable(0);
@@ -47,7 +50,8 @@ var qmm006;
                             self.notLoopAlert(true);
                             return;
                         }
-                        if (codeChange == null) {
+                        if (codeChange == null || self.isNotCheckDirty()) {
+                            self.isNotCheckDirty(false);
                             self.setCurrentLineBank(codeChange);
                             return;
                         }
@@ -67,8 +71,12 @@ var qmm006;
                 ScreenModel.prototype.startPage = function () {
                     var self = this;
                     var dfd = $.Deferred();
-                    self.findAll().done(function () {
-                        dfd.resolve();
+                    $.when(self.findBankAll()).done(function () {
+                        self.findAll().done(function () {
+                            dfd.resolve();
+                        }).fail(function (res) {
+                            dfd.reject(res);
+                        });
                     }).fail(function (res) {
                         dfd.reject(res);
                     });
@@ -77,9 +85,9 @@ var qmm006;
                 ScreenModel.prototype.setCurrentLineBank = function (codeChange) {
                     var self = this;
                     var lineBank = self.getLineBank(codeChange);
-                    self.getNameForBankAndBranch(lineBank);
+                    self.getInfoBankBranch(lineBank);
                     self.currentLineBank(lineBank);
-                    self.dirty = new nts.uk.ui.DirtyChecker(self.currentLineBank);
+                    self.dirty.reset();
                     self.isDeleteEnable(true);
                     self.isEnable(false);
                     self.indexLineBank(_.findIndex(self.items(), function (x) {
@@ -95,6 +103,7 @@ var qmm006;
                     var dfd = $.Deferred();
                     qmm006.a.service.findAll()
                         .done(function (data) {
+                        self.countLineBank(data.length);
                         if (data.length > 0) {
                             if (data.length > 1) {
                                 self.enableBtn003(true);
@@ -103,16 +112,18 @@ var qmm006;
                                 self.enableBtn003(false);
                             }
                             self.items(data);
-                            self.countLineBank(data.length);
                             if (self.isFirstFindAll()) {
-                                self.dirty = new nts.uk.ui.DirtyChecker(self.currentLineBank);
+                                self.dirty.reset();
                                 self.currentCode(data[0].lineBankCode);
                                 self.isFirstFindAll(false);
                             }
                         }
                         else {
                             self.items([]);
-                            self.clearForm();
+                            if (self.isFirstFindAll()) {
+                                self.clearForm();
+                                self.isFirstFindAll(false);
+                            }
                         }
                         dfd.resolve();
                     }).fail(function (res) {
@@ -125,8 +136,7 @@ var qmm006;
                     var command = {
                         accountAtr: self.currentLineBank().accountAtr(),
                         accountNo: self.currentLineBank().accountNo(),
-                        bankCode: self.currentLineBank().bankCode(),
-                        branchCode: self.currentLineBank().branchCode(),
+                        branchId: self.currentLineBank().branchId(),
                         consignor: [
                             { "code": self.currentLineBank().consignors()[0].consignorCode(), "memo": self.currentLineBank().consignors()[0].consignorMemo() },
                             { "code": self.currentLineBank().consignors()[1].consignorCode(), "memo": self.currentLineBank().consignors()[1].consignorMemo() },
@@ -142,7 +152,7 @@ var qmm006;
                     qmm006.a.service.saveData(self.isEnable(), command)
                         .done(function () {
                         $.when(self.findAll()).done(function () {
-                            self.dirty = new nts.uk.ui.DirtyChecker(self.currentLineBank);
+                            self.dirty.reset();
                             self.currentCode(command.lineBankCode);
                         });
                     })
@@ -161,10 +171,8 @@ var qmm006;
                         }
                         else if (error.messageId == self.messageList()[2].messageId) {
                             var message = self.messageList()[2].message;
-                            if (!command.bankCode) {
+                            if (!command.branchId) {
                                 $('#A_LBL_004').ntsError('set', message);
-                            }
-                            if (!command.branchCode) {
                                 $('#A_LBL_007').ntsError('set', message);
                             }
                         }
@@ -181,17 +189,18 @@ var qmm006;
                         var command = {
                             lineBankCode: self.currentLineBank().lineBankCode(),
                         };
+                        self.isNotCheckDirty(true);
                         qmm006.a.service.remove(command)
                             .done(function () {
                             self.findAll().done(function () {
-                                if (self.countLineBank() > self.indexLineBank() && self.indexLineBank() != -1) {
+                                if (self.countLineBank() == 0) {
+                                    self.clearForm();
+                                }
+                                else if (self.countLineBank() > self.indexLineBank()) {
                                     self.currentCode(self.items()[self.indexLineBank()].lineBankCode);
                                 }
                                 else if (self.countLineBank() == self.indexLineBank()) {
                                     self.currentCode(self.items()[self.indexLineBank() - 1].lineBankCode);
-                                }
-                                else if (self.indexLineBank() == -1) {
-                                    self.clearForm();
                                 }
                             });
                         }).fail(function (error) {
@@ -208,10 +217,11 @@ var qmm006;
                         var lineBank = self.currentLineBank();
                         nts.uk.ui.windows.sub.modal("/view/qmm/006/b/index.xhtml", { title: "銀行情報一覧", dialogClass: "no-close" }).onClosed(function () {
                             if (nts.uk.ui.windows.getShared("selectedBank") != null) {
-                                lineBank.branchCode(nts.uk.ui.windows.getShared("selectedBank").code);
+                                self.branchCode(nts.uk.ui.windows.getShared("selectedBank").code);
                                 self.bankName(nts.uk.ui.windows.getShared("selectedBank").parentName);
-                                lineBank.bankCode(nts.uk.ui.windows.getShared("selectedBank").parentCode);
+                                self.bankCode(nts.uk.ui.windows.getShared("selectedBank").parentCode);
                                 self.branchName(nts.uk.ui.windows.getShared("selectedBank").name);
+                                lineBank.branchId(nts.uk.ui.windows.getShared("selectedBank").branchId);
                                 $('#A_LBL_004').ntsError('clear');
                                 $('#A_LBL_007').ntsError('clear');
                             }
@@ -265,10 +275,11 @@ var qmm006;
                 };
                 ScreenModel.prototype.clearForm = function () {
                     var self = this;
-                    if (self.dirty.isDirty()) {
+                    if (self.dirty.isDirty() && !self.isNotCheckDirty()) {
                         nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\n よろしいですか。")
                             .ifYes(function () {
                             if (self.currentCode(null)) {
+                                self.clearError();
                                 self.setCurrentLineBank(null);
                             }
                             else {
@@ -295,29 +306,26 @@ var qmm006;
                         return x.lineBankCode === curCode;
                     });
                     if (!data) {
-                        return new LineBank(null, null, null, null, 0, null, null, null, []);
+                        return new LineBank(null, null, null, 0, null, null, null, []);
                     }
-                    return new LineBank(data.bankCode, data.branchCode, data.lineBankCode, data.lineBankName, data.accountAtr, data.accountNo, data.memo, data.requesterName, data.consignors);
+                    return new LineBank(data.branchId, data.lineBankCode, data.lineBankName, data.accountAtr, data.accountNo, data.memo, data.requesterName, data.consignors);
                 };
-                ScreenModel.prototype.getNameForBankAndBranch = function (lineBank) {
+                ScreenModel.prototype.getInfoBankBranch = function (lineBank) {
                     var self = this;
-                    var tmp = _.find(this.dataSource2(), function (x) {
-                        return x.code === lineBank.bankCode();
-                    });
-                    var tmp1 = _.find(self.dataSource2(), function (x) {
-                        return x.code === lineBank.branchCode() && x.parentCode === lineBank.bankCode();
-                    });
-                    if (tmp != undefined) {
-                        self.bankName(tmp.name);
-                    }
-                    else {
+                    if (lineBank.branchId() == null) {
+                        self.bankCode('');
                         self.bankName('');
-                    }
-                    if (tmp1 != undefined) {
-                        self.branchName(tmp1.name);
+                        self.branchCode('');
+                        self.branchName('');
                     }
                     else {
-                        self.branchName('');
+                        var tmp = _.find(this.dataSource2(), function (x) {
+                            return x.branchId === lineBank.branchId();
+                        });
+                        self.bankCode(tmp.parentCode);
+                        self.bankName(tmp.parentName);
+                        self.branchCode(tmp.code);
+                        self.branchName(tmp.name);
                     }
                 };
                 ScreenModel.prototype.findBankAll = function () {
@@ -330,9 +338,9 @@ var qmm006;
                             var bankData = [];
                             _.forEach(data, function (item) {
                                 var childs = _.map(item.bankBranch, function (itemChild) {
-                                    return new BankBranch(itemChild.bankBranchCode, itemChild.bankBranchName, item.bankCode, item.bankName, item.bankCode + itemChild.bankBranchCode, []);
+                                    return new BankBranch(itemChild.bankBranchCode, itemChild.bankBranchID, itemChild.bankBranchName, item.bankCode, item.bankName, item.bankCode + itemChild.bankBranchCode, []);
                                 });
-                                bankData.push(new BankBranch(item.bankCode, item.bankName, null, null, item.bankCode, childs));
+                                bankData.push(new BankBranch(item.bankCode, null, item.bankName, null, null, item.bankCode, childs));
                             });
                             self.dataSource(bankData);
                             self.dataSource2(nts.uk.util.flatArray(self.dataSource(), "childs"));
@@ -347,9 +355,8 @@ var qmm006;
             }());
             viewmodel.ScreenModel = ScreenModel;
             var LineBank = (function () {
-                function LineBank(bankCode, branchCode, lineBankCode, lineBankName, accountAtr, accountNo, memo, requesterName, consignors) {
-                    this.bankCode = ko.observable(bankCode);
-                    this.branchCode = ko.observable(branchCode);
+                function LineBank(branchId, lineBankCode, lineBankName, accountAtr, accountNo, memo, requesterName, consignors) {
+                    this.branchId = ko.observable(branchId);
                     this.lineBankCode = ko.observable(lineBankCode);
                     this.lineBankName = ko.observable(lineBankName);
                     this.accountAtr = ko.observable(accountAtr);
@@ -357,6 +364,7 @@ var qmm006;
                     this.memo = ko.observable(memo);
                     this.requesterName = ko.observable(requesterName);
                     this.consignors = ko.observableArray([]);
+                    this.branchId = ko.observable(branchId);
                     for (var i = 0; i <= 4; i++) {
                         var consignorItem = consignors[i];
                         switch (i) {
@@ -416,7 +424,7 @@ var qmm006;
                 return Consignor;
             }());
             var BankBranch = (function () {
-                function BankBranch(code, name, parentCode, parentName, treeCode, childs) {
+                function BankBranch(code, branchId, name, parentCode, parentName, treeCode, childs) {
                     var self = this;
                     self.code = code;
                     self.name = name;
@@ -425,6 +433,7 @@ var qmm006;
                     self.parentCode = parentCode;
                     self.parentName = parentName;
                     self.treeCode = treeCode;
+                    self.branchId = branchId;
                 }
                 return BankBranch;
             }());

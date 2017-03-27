@@ -8,16 +8,20 @@ module qmm006.a.viewmodel {
 
         dataSource: KnockoutObservableArray<any>;
         dataSource2: KnockoutObservableArray<any>;
-        //findAll lan dau tien thi k chay clearError va se select first row
+
         isFirstFindAll: KnockoutObservable<boolean>;
         isDeleteEnable: KnockoutObservable<boolean>;
-        //Khong cho lap lai thong bao 2 lan trong ham subscribe
+        //Don't loop alert in subscribe function
         notLoopAlert: KnockoutObservable<boolean>;
         //check enable texteditor
         isEnable: KnockoutObservable<boolean>;
         //check enable btn003
         enableBtn003: KnockoutObservable<boolean>;
+        //not checkDirty when delete
+        isNotCheckDirty: KnockoutObservable<boolean>;
 
+        bankCode: KnockoutObservable<string>;
+        branchCode: KnockoutObservable<string>;
         bankName: KnockoutObservable<string>;
         branchName: KnockoutObservable<string>;
 
@@ -43,7 +47,7 @@ module qmm006.a.viewmodel {
                 { headerText: '口座区分', key: 'accountAtr', width: 110, formatter: _.escape },
                 { headerText: '口座番号', key: 'accountNo', width: 100, formatter: _.escape }
             ]);
-            self.currentLineBank = ko.observable(new LineBank(null, null, null, null, 0, null, null, null, []));
+            self.currentLineBank = ko.observable(new LineBank(null, null, null, 0, null, null, null, []));
             self.dirty = new nts.uk.ui.DirtyChecker(self.currentLineBank);
             self.roundingRules = ko.observableArray([
                 { code: '0', name: '普通' },
@@ -55,7 +59,10 @@ module qmm006.a.viewmodel {
             self.isEnable = ko.observable(false);
             self.notLoopAlert = ko.observable(true);
             self.enableBtn003 = ko.observable(false);
+            self.isNotCheckDirty = ko.observable(false);
 
+            self.bankCode = ko.observable('');
+            self.branchCode = ko.observable('');
             self.bankName = ko.observable('');
             self.branchName = ko.observable('');
 
@@ -71,31 +78,33 @@ module qmm006.a.viewmodel {
             ]);
 
             self.currentCode.subscribe(function(codeChange) {
-                //lan dau khong co error nen khong dc nhay vao ham clearError 
+                // no error in the first findAll(), so dont allow jump to clearError() 
                 if (!self.isFirstFindAll()) {
                     self.clearError();
                 }
-                //khong cho lap checkDirty khi thay doi row ma du lieu da dc chinh sua
+                // dont allow loop checkDirty when change data and change row 
                 if (!self.notLoopAlert()) {
                     self.notLoopAlert(true);
                     return;
                 }
-                //khi clearForm thi se chi checkDirty o clearForm ma k checkDirty trong subscribe
-                if (codeChange == null) {
+                // only checkDirty in clearForm, not checkDirty in subscribe
+                // when remove(), not check dirty
+                if (codeChange == null || self.isNotCheckDirty()) {
+                    self.isNotCheckDirty(false);
                     self.setCurrentLineBank(codeChange);
                     return;
                 }
                 if (self.dirty.isDirty()) {
                     //"変更された内容が登録されていません。"---AL001 
                     nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\n よろしいですか。").ifYes(function() {
-                        //khi du lieu bi thay doi
+                        //data is changed
                         self.setCurrentLineBank(codeChange);
                     }).ifNo(function() {
                         self.notLoopAlert(false);
                         self.currentCode(self.currentLineBank().lineBankCode());
                     });
                 } else {
-                    //khi du lieu k doi
+                    //data isn't changed
                     self.setCurrentLineBank(codeChange);
                 }
             });
@@ -104,31 +113,31 @@ module qmm006.a.viewmodel {
         startPage() {
             var self = this;
             var dfd = $.Deferred();
-            //            $.when(self.findBankAll()).done(function() {
-            self.findAll().done(function() {
-                dfd.resolve();
+            $.when(self.findBankAll()).done(function() {
+                self.findAll().done(function() {
+                    dfd.resolve();
+                }).fail(function(res) {
+                    dfd.reject(res);
+                });
             }).fail(function(res) {
                 dfd.reject(res);
             });
-            //            }).fail(function(res) {
-            //                dfd.reject(res);
-            //            });
             return dfd.promise();
         }
 
         setCurrentLineBank(codeChange) {
             var self = this;
             var lineBank = self.getLineBank(codeChange);
-            self.getNameForBankAndBranch(lineBank);
+            self.getInfoBankBranch(lineBank);
             self.currentLineBank(lineBank);
-            self.dirty = new nts.uk.ui.DirtyChecker(self.currentLineBank);
+            self.dirty.reset();
             self.isDeleteEnable(true);
             self.isEnable(false);
             self.indexLineBank(
                 _.findIndex(self.items(), function(x) {
                     return x.lineBankCode === codeChange;
                 }));
-            //truong hop clearForm thi codeChange = null
+            //when clearForm, codeChange = null
             if (codeChange == null) {
                 self.isDeleteEnable(false);
                 self.isEnable(true);
@@ -141,7 +150,8 @@ module qmm006.a.viewmodel {
             var dfd = $.Deferred();
             qmm006.a.service.findAll()
                 .done(function(data) {
-                    //neu co du lieu
+                    self.countLineBank(data.length);
+                    //if data exist
                     if (data.length > 0) {
                         if (data.length > 1) {
                             self.enableBtn003(true);
@@ -149,16 +159,18 @@ module qmm006.a.viewmodel {
                             self.enableBtn003(false);
                         }
                         self.items(data);
-                        self.countLineBank(data.length);
-                        //chi select row dau tien trong lan dau tien
+                        //only select first row in the first
                         if (self.isFirstFindAll()) {
-                            self.dirty = new nts.uk.ui.DirtyChecker(self.currentLineBank);
+                            self.dirty.reset();
                             self.currentCode(data[0].lineBankCode);
                             self.isFirstFindAll(false);
                         }
                     } else {
                         self.items([]);
-                        self.clearForm();
+                        if (self.isFirstFindAll()) {
+                        	self.clearForm();
+                        	self.isFirstFindAll(false);
+                        }
                     }
                     dfd.resolve();
                 }).fail(function(res) {
@@ -173,8 +185,7 @@ module qmm006.a.viewmodel {
             var command = {
                 accountAtr: self.currentLineBank().accountAtr(),
                 accountNo: self.currentLineBank().accountNo(),
-                bankCode: self.currentLineBank().bankCode(),
-                branchCode: self.currentLineBank().branchCode(),
+                branchId: self.currentLineBank().branchId(),
                 consignor: [
                     { "code": self.currentLineBank().consignors()[0].consignorCode(), "memo": self.currentLineBank().consignors()[0].consignorMemo() },
                     { "code": self.currentLineBank().consignors()[1].consignorCode(), "memo": self.currentLineBank().consignors()[1].consignorMemo() },
@@ -190,10 +201,10 @@ module qmm006.a.viewmodel {
             };
             qmm006.a.service.saveData(self.isEnable(), command)
                 .done(function() {
-                    //load lai list va chi vao row moi them
+                    //load data and select new data
                     $.when(self.findAll()).done(function() {
-                        //chi vao row moi insert hoac moi update
-                        self.dirty = new nts.uk.ui.DirtyChecker(self.currentLineBank);
+                        //select new data which is inserted or updated
+                        self.dirty.reset();
                         self.currentCode(command.lineBankCode);
                     });
                 })
@@ -211,10 +222,8 @@ module qmm006.a.viewmodel {
                         }
                     } else if (error.messageId == self.messageList()[2].messageId) {
                         var message = self.messageList()[2].message;
-                        if (!command.bankCode) {
+                        if (!command.branchId) {
                             $('#A_LBL_004').ntsError('set', message);
-                        }
-                        if (!command.branchCode) {
                             $('#A_LBL_007').ntsError('set', message);
                         }
                     } else if (error.messageId == self.messageList()[1].messageId) {
@@ -232,15 +241,16 @@ module qmm006.a.viewmodel {
                     var command = {
                         lineBankCode: self.currentLineBank().lineBankCode(),
                     };
+                    self.isNotCheckDirty(true);
                     qmm006.a.service.remove(command)
                         .done(function() {
                             self.findAll().done(function() {
-                                if (self.countLineBank() > self.indexLineBank() && self.indexLineBank() != -1) {
+                                if (self.countLineBank() == 0) {
+                                    self.clearForm();
+                                } else if (self.countLineBank() > self.indexLineBank()) {
                                     self.currentCode(self.items()[self.indexLineBank()].lineBankCode);
                                 } else if (self.countLineBank() == self.indexLineBank()) {
                                     self.currentCode(self.items()[self.indexLineBank() - 1].lineBankCode);
-                                } else if (self.indexLineBank() == -1) {
-                                    self.clearForm();
                                 }
                             })
                         }).fail(function(error) {
@@ -258,11 +268,12 @@ module qmm006.a.viewmodel {
                     var lineBank = self.currentLineBank();
                     nts.uk.ui.windows.sub.modal("/view/qmm/006/b/index.xhtml", { title: "銀行情報一覧", dialogClass: "no-close" }).onClosed(function() {
                         if (nts.uk.ui.windows.getShared("selectedBank") != null) {
-                            lineBank.branchCode(nts.uk.ui.windows.getShared("selectedBank").code);
+                            self.branchCode(nts.uk.ui.windows.getShared("selectedBank").code);
                             self.bankName(nts.uk.ui.windows.getShared("selectedBank").parentName);
-                            lineBank.bankCode(nts.uk.ui.windows.getShared("selectedBank").parentCode);
+                            self.bankCode(nts.uk.ui.windows.getShared("selectedBank").parentCode);
                             self.branchName(nts.uk.ui.windows.getShared("selectedBank").name);
-                            //chi clear error cua LBL004 & 007
+                            lineBank.branchId(nts.uk.ui.windows.getShared("selectedBank").branchId);
+                            //only clear error of LBL004 & LBL007
                             $('#A_LBL_004').ntsError('clear');
                             $('#A_LBL_007').ntsError('clear');
                         }
@@ -277,8 +288,8 @@ module qmm006.a.viewmodel {
 
         openCDialog() {
             var self = this;
-            //neu co 0 hoac 1 row trong list thi bt003 disable
-            //ng dung co the sua css trong man hinh de enable bt003
+            //bt003 disable if list has 1 row or less
+            //in case user can fix css in screen to enable bt003
             if (self.items().length > 1) {
                 if (self.dirty.isDirty()) {
                     //"変更された内容が登録されていません。"---AL001 
@@ -325,13 +336,14 @@ module qmm006.a.viewmodel {
 
         clearForm(): any {
             var self = this;
-            if (self.dirty.isDirty()) {
+            if (self.dirty.isDirty() && !self.isNotCheckDirty()) {
                 //"変更された内容が登録されていません。"---AL001 
                 nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\n よろしいですか。")
                     .ifYes(function() {
                         if (self.currentCode(null)) {
                             // clearForm  -> change data -> clearForm
-                            // an clearForm roi sua du lieu roi an clearForm, hien thong bao, an Yes.
+                            // press button clearForm, fix data and press button clearForm again, display notice, press Yes.
+                            self.clearError();
                             self.setCurrentLineBank(null);
                         } else {
                             self.currentCode(null);
@@ -358,32 +370,29 @@ module qmm006.a.viewmodel {
                 return x.lineBankCode === curCode;
             });
             if (!data) {
-                return new LineBank(null, null, null, null, 0, null, null, null, []);
+                return new LineBank(null, null, null, 0, null, null, null, []);
             }
-            return new LineBank(data.bankCode, data.branchCode, data.lineBankCode, data.lineBankName,
+            return new LineBank(data.branchId, data.lineBankCode, data.lineBankName,
                 data.accountAtr, data.accountNo, data.memo, data.requesterName, data.consignors);
         }
         
-        //get gia tri cho LBL_005 va LBL_007(bankName and branchName)
-        getNameForBankAndBranch(lineBank) {
+        //get data for bankName, bankCode, branchName, branchCode
+        getInfoBankBranch(lineBank) {
             var self = this;
-            //find bankName
-            var tmp = _.find(this.dataSource2(), function(x) {
-                return x.code === lineBank.bankCode();
-            });
-            //find branchName
-            var tmp1 = _.find(self.dataSource2(), function(x) {
-                return x.code === lineBank.branchCode() && x.parentCode === lineBank.bankCode();
-            });
-            if (tmp != undefined) {
-                self.bankName(tmp.name);
-            } else {
+            if (lineBank.branchId() == null) {
+                self.bankCode('');
                 self.bankName('');
-            }
-            if (tmp1 != undefined) {
-                self.branchName(tmp1.name);
-            } else {
+                self.branchCode('');
                 self.branchName('');
+            } else {
+                //find bankName, bankCode, branchName, branchCode
+                var tmp = _.find(this.dataSource2(), function(x) {
+                    return x.branchId === lineBank.branchId();
+                });
+                self.bankCode(tmp.parentCode);
+                self.bankName(tmp.parentName);
+                self.branchCode(tmp.code);
+                self.branchName(tmp.name);
             }
         }
         
@@ -398,9 +407,9 @@ module qmm006.a.viewmodel {
                         var bankData = [];
                         _.forEach(data, function(item) {
                             var childs = _.map(item.bankBranch, function(itemChild: any) {
-                                return new BankBranch(itemChild.bankBranchCode, itemChild.bankBranchName, item.bankCode, item.bankName, item.bankCode + itemChild.bankBranchCode, []);
+                                return new BankBranch(itemChild.bankBranchCode, itemChild.bankBranchID, itemChild.bankBranchName, item.bankCode, item.bankName, item.bankCode + itemChild.bankBranchCode, []);
                             });
-                            bankData.push(new BankBranch(item.bankCode, item.bankName, null, null, item.bankCode, childs));
+                            bankData.push(new BankBranch(item.bankCode, null, item.bankName, null, null, item.bankCode, childs));
                         });
                         self.dataSource(bankData);
                         self.dataSource2(nts.uk.util.flatArray(self.dataSource(), "childs"));
@@ -414,8 +423,6 @@ module qmm006.a.viewmodel {
     }
 
     class LineBank {
-        bankCode: KnockoutObservable<string>;
-        branchCode: KnockoutObservable<string>;
         consignors: KnockoutObservableArray<Consignor>;
         lineBankCode: KnockoutObservable<string>;
         lineBankName: KnockoutObservable<string>;
@@ -423,11 +430,11 @@ module qmm006.a.viewmodel {
         accountNo: KnockoutObservable<string>;
         memo: KnockoutObservable<string>;
         requesterName: KnockoutObservable<string>;
+        branchId: KnockoutObservable<string>;
 
-        constructor(bankCode: string, branchCode: string, lineBankCode: string, lineBankName: string, accountAtr: number, accountNo: string, memo: string, requesterName: string, consignors: Array<any>) {
+        constructor(branchId: string, lineBankCode: string, lineBankName: string, accountAtr: number, accountNo: string, memo: string, requesterName: string, consignors: Array<any>) {
 
-            this.bankCode = ko.observable(bankCode);
-            this.branchCode = ko.observable(branchCode);
+            this.branchId = ko.observable(branchId);
             this.lineBankCode = ko.observable(lineBankCode);
             this.lineBankName = ko.observable(lineBankName);
             this.accountAtr = ko.observable(accountAtr);
@@ -435,6 +442,7 @@ module qmm006.a.viewmodel {
             this.memo = ko.observable(memo);
             this.requesterName = ko.observable(requesterName);
             this.consignors = ko.observableArray([]);
+            this.branchId = ko.observable(branchId);
 
             for (var i = 0; i <= 4; i++) {
                 var consignorItem = consignors[i];
@@ -502,7 +510,8 @@ module qmm006.a.viewmodel {
         parentName: string;
         treeCode: string;
         childs: any;
-        constructor(code: string, name: string, parentCode: string, parentName: string, treeCode: string, childs: Array<BankBranch>) {
+        branchId: string;
+        constructor(code: string, branchId: string, name: string, parentCode: string, parentName: string, treeCode: string, childs: Array<BankBranch>) {
             var self = this;
             self.code = code;
             self.name = name;
@@ -511,6 +520,7 @@ module qmm006.a.viewmodel {
             self.parentCode = parentCode;
             self.parentName = parentName;
             self.treeCode = treeCode;
+            self.branchId = branchId;
         }
     }
 }
