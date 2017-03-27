@@ -43,8 +43,13 @@ var nts;
                                             });
                                         }
                                         else {
-                                            self.dialogOptions.onUpdateCallBack(callBackData);
-                                            nts.uk.ui.windows.close();
+                                            self.dialogOptions.onUpdateCallBack(callBackData).done(function () {
+                                                nts.uk.ui.windows.close();
+                                            }).fail(function (res) {
+                                                if (res.messageId == 'ER023') {
+                                                    $('#startYearMonth').ntsError('set', '履歴の期間が重複しています。');
+                                                }
+                                            });
                                         }
                                     };
                                     ScreenModel.prototype.btnCancelClicked = function () {
