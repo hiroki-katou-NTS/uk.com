@@ -3966,7 +3966,7 @@ var nts;
                         var container = $(element);
                         var newValue = ko.unwrap(data.value);
                         var dateFormat = (data.dateFormat !== undefined) ? ko.unwrap(data.dateFormat) : "yyyy/MM/dd";
-                        var disabled = (data.disabled !== undefined) ? ko.unwrap(data.disabled) : true;
+                        var disabled = (data.disabled !== undefined) ? ko.unwrap(data.disabled) : false;
                         var idatr = container.attr("id");
                         var $input = container.find('#' + idatr + "-input");
                         var formatOptions = container.data("format");
