@@ -1,4 +1,4 @@
-package nts.uk.ctx.pr.core.dom.rule.law.tax.commutelimit;
+package nts.uk.ctx.pr.core.dom.paymentdata;
 
 import nts.arc.primitive.IntegerPrimitiveValue;
 
