@@ -7,7 +7,6 @@ package nts.uk.ctx.pr.report.infra.repository.wageledger.memento;
 import java.util.ArrayList;
 import java.util.List;
 
-import nts.uk.ctx.pr.report.dom.company.CompanyCode;
 import nts.uk.ctx.pr.report.dom.wageledger.PaymentType;
 import nts.uk.ctx.pr.report.dom.wageledger.WLCategory;
 import nts.uk.ctx.pr.report.dom.wageledger.outputsetting.WLCategorySetting;
@@ -69,8 +68,8 @@ public class JpaWLOutputSettingGetMemento implements WLOutputSettingGetMemento {
 	 * #getCompanyCode()
 	 */
 	@Override
-	public CompanyCode getCompanyCode() {
-		return new CompanyCode(this.entity.getQlsptLedgerFormHeadPK().getCcd());
+	public String getCompanyCode() {
+		return this.entity.getQlsptLedgerFormHeadPK().getCcd();
 	}
 
 	/* (non-Javadoc)

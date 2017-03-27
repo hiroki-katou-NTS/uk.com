@@ -12,7 +12,6 @@ import lombok.val;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.pr.report.dom.company.CompanyCode;
 import nts.uk.ctx.pr.report.dom.wageledger.aggregate.WLAggregateItem;
 import nts.uk.ctx.pr.report.dom.wageledger.aggregate.WLAggregateItemRepository;
 import nts.uk.ctx.pr.report.dom.wageledger.aggregate.WLItemSubject;
@@ -34,9 +33,9 @@ public class AggregateItemSaveCommandHandler extends CommandHandler<AggregateIte
 	@Override
 	@Transactional
 	protected void handle(CommandHandlerContext<AggregateItemSaveCommand> context) {
-		val companyCode = new CompanyCode(AppContexts.user().companyCode());
+		val companyCode = AppContexts.user().companyCode();
 		val command = context.getCommand();
-		WLItemSubject subject = command.getSubject().toDomain(companyCode.v());
+		WLItemSubject subject = command.getSubject().toDomain(companyCode);
 		subject.validate();
 		
 		// In case update.
@@ -48,7 +47,7 @@ public class AggregateItemSaveCommandHandler extends CommandHandler<AggregateIte
 			}
 			
 			// Convert to domain.
-			aggregateItem = command.toDomain(companyCode.v());
+			aggregateItem = command.toDomain(companyCode);
 			// Update.
 			this.repository.update(aggregateItem);
 			return;
@@ -61,7 +60,7 @@ public class AggregateItemSaveCommandHandler extends CommandHandler<AggregateIte
 		}
 		
 		// Convert to domain.
-		val aggregateItem = command.toDomain(companyCode.v());
+		val aggregateItem = command.toDomain(companyCode);
 		this.repository.create(aggregateItem);
 		return;
 	}

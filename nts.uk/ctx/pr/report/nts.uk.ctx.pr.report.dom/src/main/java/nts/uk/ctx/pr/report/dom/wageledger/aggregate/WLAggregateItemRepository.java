@@ -6,7 +6,6 @@ package nts.uk.ctx.pr.report.dom.wageledger.aggregate;
 
 import java.util.List;
 
-import nts.uk.ctx.pr.report.dom.company.CompanyCode;
 import nts.uk.ctx.pr.report.dom.wageledger.PaymentType;
 import nts.uk.ctx.pr.report.dom.wageledger.WLCategory;
 
@@ -53,7 +52,7 @@ public interface WLAggregateItemRepository {
 	 * @param paymentType the payment type
 	 * @return the list
 	 */
-	List<WLAggregateItem> findByCategoryAndPaymentType(CompanyCode companyCode,
+	List<WLAggregateItem> findByCategoryAndPaymentType(String companyCode,
 			WLCategory category, PaymentType paymentType);
 	
 	/**
@@ -70,7 +69,7 @@ public interface WLAggregateItemRepository {
 	 * @param companyCode the company code
 	 * @return the list
 	 */
-	default List<WLAggregateItem> findAll(CompanyCode companyCode) {
+	default List<WLAggregateItem> findAll(String companyCode) {
 		return this.findByCategoryAndPaymentType(companyCode, null, null);
 	}
 }

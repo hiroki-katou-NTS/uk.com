@@ -4,7 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.pr.report.dom.wageledger.aggregate;
 
-import nts.uk.ctx.pr.report.dom.company.CompanyCode;
 import nts.uk.ctx.pr.report.dom.wageledger.PaymentType;
 import nts.uk.ctx.pr.report.dom.wageledger.WLCategory;
 
@@ -32,7 +31,7 @@ public interface WLItemSubjectGetMemento {
  	 *
  	 * @return the company code
  	 */
- 	CompanyCode getCompanyCode();
+ 	String getCompanyCode();
 	 
  	/**
  	 * Gets the code.

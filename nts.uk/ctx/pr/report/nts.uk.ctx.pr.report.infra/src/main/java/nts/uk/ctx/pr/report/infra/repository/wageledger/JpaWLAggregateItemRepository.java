@@ -18,7 +18,6 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.pr.report.dom.company.CompanyCode;
 import nts.uk.ctx.pr.report.dom.wageledger.PaymentType;
 import nts.uk.ctx.pr.report.dom.wageledger.WLCategory;
 import nts.uk.ctx.pr.report.dom.wageledger.aggregate.WLAggregateItem;
@@ -123,7 +122,7 @@ public class JpaWLAggregateItemRepository extends JpaRepository implements WLAgg
 	 *  nts.uk.ctx.pr.report.dom.wageledger.WLCategory, nts.uk.ctx.pr.report.dom.wageledger.PaymentType)
 	 */
 	@Override
-	public List<WLAggregateItem> findByCategoryAndPaymentType(CompanyCode companyCode, WLCategory category,
+	public List<WLAggregateItem> findByCategoryAndPaymentType(String companyCode, WLCategory category,
 			PaymentType paymentType) {
 		EntityManager em = this.getEntityManager();
 		
@@ -135,7 +134,7 @@ public class JpaWLAggregateItemRepository extends JpaRepository implements WLAgg
 		// Create condition list.
 		Path<QlsptLedgerAggreHeadPK> pkPath = root.get(QlsptLedgerAggreHead_.qlsptLedgerAggreHeadPK);
 		List<Predicate> conditions = new ArrayList<>();
-		conditions.add(cb.equal(pkPath.get(QlsptLedgerAggreHeadPK_.ccd), companyCode.v()));
+		conditions.add(cb.equal(pkPath.get(QlsptLedgerAggreHeadPK_.ccd), companyCode));
 		if (category != null) {
 			conditions.add(cb.equal(pkPath.get(QlsptLedgerAggreHeadPK_.ctgAtr), category.value));
 		}

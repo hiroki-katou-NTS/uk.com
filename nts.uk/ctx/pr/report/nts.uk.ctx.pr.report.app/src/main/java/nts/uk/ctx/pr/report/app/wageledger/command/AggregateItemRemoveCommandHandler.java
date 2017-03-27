@@ -10,7 +10,6 @@ import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.pr.report.dom.company.CompanyCode;
 import nts.uk.ctx.pr.report.dom.wageledger.aggregate.WLAggregateItemRepository;
 import nts.uk.ctx.pr.report.dom.wageledger.aggregate.WLItemSubject;
 import nts.uk.ctx.pr.report.dom.wageledger.outputsetting.WLOutputSettingRepository;
@@ -36,8 +35,8 @@ public class AggregateItemRemoveCommandHandler extends CommandHandler<AggregateI
 	@Override
 	@Transactional
 	protected void handle(CommandHandlerContext<AggregateItemRemoveCommand> context) {
-		CompanyCode companyCode = new CompanyCode(AppContexts.user().companyCode());
-		WLItemSubject itemSubject = context.getCommand().getSubject().toDomain(companyCode.v());
+		String companyCode = AppContexts.user().companyCode();
+		WLItemSubject itemSubject = context.getCommand().getSubject().toDomain(companyCode);
 		
 		// Remove aggregate item.
 		this.repository.remove(itemSubject);
