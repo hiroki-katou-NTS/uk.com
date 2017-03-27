@@ -6,7 +6,6 @@ package nts.uk.ctx.pr.core.dom.insurance.social;
 
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
-import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.base.simplehistory.Master;
 import nts.uk.ctx.pr.core.dom.insurance.Address;
 import nts.uk.ctx.pr.core.dom.insurance.KanaAddress;
@@ -25,7 +24,7 @@ import nts.uk.shr.com.primitive.Memo;
 public class SocialInsuranceOffice extends DomainObject implements Master {
 
 	/** The company code. */
-	private CompanyCode companyCode;
+	private String companyCode;
 
 	/** The code. */
 	private OfficeCode code;

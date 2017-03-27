@@ -4,7 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.infra.repository.wagetable.certification;
 
-import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.CertificationSetMemento;
 import nts.uk.ctx.pr.core.infra.entity.wagetable.certification.QwtmtWagetableCertify;
 import nts.uk.ctx.pr.core.infra.entity.wagetable.certification.QwtmtWagetableCertifyPK;
@@ -40,9 +39,9 @@ public class JpaCertificationSetMemento implements CertificationSetMemento {
 	 * nts.uk.ctx.core.dom.company.CompanyCode)
 	 */
 	@Override
-	public void setCompanyCode(CompanyCode companyCode) {
+	public void setCompanyCode(String companyCode) {
 		QwtmtWagetableCertifyPK qcemtCertificationPK = this.typeValue.getQwtmtWagetableCertifyPK();
-		qcemtCertificationPK.setCcd(companyCode.v());
+		qcemtCertificationPK.setCcd(companyCode);
 		this.typeValue.setQwtmtWagetableCertifyPK(qcemtCertificationPK);
 	}
 

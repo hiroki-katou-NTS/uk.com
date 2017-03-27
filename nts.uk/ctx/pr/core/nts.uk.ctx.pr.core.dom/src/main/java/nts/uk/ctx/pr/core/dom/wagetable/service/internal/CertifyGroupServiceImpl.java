@@ -61,7 +61,7 @@ public class CertifyGroupServiceImpl implements CertifyGroupService {
 	@Override
 	public void checkDuplicateCode(CertifyGroup certifyGroup) {
 		Optional<CertifyGroup> optionalCheck = this.certifyGroupRepository
-				.findById(certifyGroup.getCompanyCode().v(), certifyGroup.getCode().v());
+				.findById(certifyGroup.getCompanyCode(), certifyGroup.getCode().v());
 		if (optionalCheck.isPresent()) {
 			throw new BusinessException("ER005");
 		}
@@ -77,7 +77,7 @@ public class CertifyGroupServiceImpl implements CertifyGroupService {
 	 */
 	@Override
 	public void checkDulicateCertification(CertifyGroup certifyGroup, String certifyGroupCode) {
-		if (this.checkDulicateCertification(certifyGroup.getCompanyCode().v(),
+		if (this.checkDulicateCertification(certifyGroup.getCompanyCode(),
 				certifyGroup.getCertifies(), certifyGroupCode)) {
 			throw new BusinessException("ER005");
 		}

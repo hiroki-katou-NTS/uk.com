@@ -21,7 +21,7 @@ import nts.uk.shr.com.context.LoginUserContext;
 
 @Stateless
 public class UnemployeeInsuranceHistoryUpdateCommandHandler
-	extends CommandHandler<UnemployeeInsuranceHistoryUpdateCommand> {
+		extends CommandHandler<UnemployeeInsuranceHistoryUpdateCommand> {
 
 	/** CompanyRepository */
 	@Inject
@@ -52,7 +52,7 @@ public class UnemployeeInsuranceHistoryUpdateCommandHandler
 		UnemployeeInsuranceHistoryUpdateCommand command = context.getCommand();
 
 		Optional<UnemployeeInsuranceRate> optionalUpdate = this.unemployeeInsuranceRateRepository
-			.findById(companyCode, command.getHistoryId());
+				.findById(companyCode, command.getHistoryId());
 
 		// exist data
 		if (optionalUpdate.isPresent()) {
@@ -67,19 +67,20 @@ public class UnemployeeInsuranceHistoryUpdateCommandHandler
 			// call get by id
 			Optional<UnemployeeInsuranceRate> optionalFirst;
 			optionalFirst = this.unemployeeInsuranceRateRepository.findById(
-				unemployeeInsuranceRate.getCompanyCode().v(), unemployeeInsuranceRate.getHistoryId());
+					unemployeeInsuranceRate.getCompanyCode(),
+					unemployeeInsuranceRate.getHistoryId());
 
 			// get <= start
 			if (optionalFirst.isPresent()) {
 				Optional<UnemployeeInsuranceRate> optionalBetweenUpdate = this.unemployeeInsuranceRateRepository
-					.findBetweenUpdate(unemployeeInsuranceRate.getCompanyCode().v(),
-						optionalFirst.get().getApplyRange().getStartMonth(),
-						optionalFirst.get().getHistoryId());
+						.findBetweenUpdate(unemployeeInsuranceRate.getCompanyCode(),
+								optionalFirst.get().getApplyRange().getStartMonth(),
+								optionalFirst.get().getHistoryId());
 
 				// update end year month start previous
 				if (optionalBetweenUpdate.isPresent()) {
-					optionalBetweenUpdate.get()
-						.setEnd(unemployeeInsuranceRate.getApplyRange().getStartMonth().previousMonth());
+					optionalBetweenUpdate.get().setEnd(unemployeeInsuranceRate.getApplyRange()
+							.getStartMonth().previousMonth());
 					this.unemployeeInsuranceRateRepository.update(optionalBetweenUpdate.get());
 				}
 

@@ -74,7 +74,7 @@ public class AccidentInsuranceRateServiceImpl implements AccidentInsuranceRateSe
 
 		// ? start > start first (order by desc)
 		Optional<AccidentInsuranceRate> optionalFirst = this.accidentInsuranceRateRepo
-			.findFirstData(rate.getCompanyCode().v());
+			.findFirstData(rate.getCompanyCode());
 
 		if (optionalFirst.isPresent()) {
 			if (optionalFirst.get().getApplyRange().getStartMonth().nextMonth().v() > rate.getApplyRange()
@@ -107,7 +107,7 @@ public class AccidentInsuranceRateServiceImpl implements AccidentInsuranceRateSe
 		}
 		// data is begin update
 		Optional<AccidentInsuranceRate> optionalAccidentInsuranceRate;
-		optionalAccidentInsuranceRate = this.accidentInsuranceRateRepo.findById(rate.getCompanyCode().v(),
+		optionalAccidentInsuranceRate = this.accidentInsuranceRateRepo.findById(rate.getCompanyCode(),
 			rate.getHistoryId());
 		
 		if (!optionalAccidentInsuranceRate.isPresent()) {
@@ -115,7 +115,7 @@ public class AccidentInsuranceRateServiceImpl implements AccidentInsuranceRateSe
 		}
 		
 		Optional<AccidentInsuranceRate> optionalBetweenUpdate = this.accidentInsuranceRateRepo
-			.findBetweenUpdate(rate.getCompanyCode().v(),
+			.findBetweenUpdate(rate.getCompanyCode(),
 				optionalAccidentInsuranceRate.get().getApplyRange().getStartMonth(),
 				optionalAccidentInsuranceRate.get().getHistoryId());
 		

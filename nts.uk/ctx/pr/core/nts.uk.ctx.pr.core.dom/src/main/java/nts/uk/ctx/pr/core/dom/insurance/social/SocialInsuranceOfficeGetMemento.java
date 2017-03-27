@@ -4,7 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.dom.insurance.social;
 
-import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.Address;
 import nts.uk.ctx.pr.core.dom.insurance.KanaAddress;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
@@ -25,7 +24,7 @@ public interface SocialInsuranceOfficeGetMemento {
 	 *
 	 * @return the company code
 	 */
-	CompanyCode getCompanyCode();
+	String getCompanyCode();
 
 	/**
 	 * Gets the code.

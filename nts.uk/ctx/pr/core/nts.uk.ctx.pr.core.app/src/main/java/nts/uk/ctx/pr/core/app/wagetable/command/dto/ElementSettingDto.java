@@ -7,14 +7,18 @@ package nts.uk.ctx.pr.core.app.wagetable.command.dto;
 import java.math.BigDecimal;
 import java.util.List;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 /**
  * The Class ElementSettingDto.
  */
-@Getter
-@Setter
+@Data
+@Builder
+@NoArgsConstructor
+@AllArgsConstructor
 public class ElementSettingDto {
 
 	/** The demension no. */
@@ -34,5 +38,8 @@ public class ElementSettingDto {
 
 	/** The interval. */
 	private BigDecimal interval;
+
+	/** The demension name. */
+	private String demensionName;
 
 }

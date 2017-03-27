@@ -9,7 +9,6 @@ import java.util.List;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.layer.dom.DomainObject;
-import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.base.simplehistory.Master;
 import nts.uk.ctx.pr.core.dom.wagetable.element.WtElement;
 import nts.uk.shr.com.primitive.Memo;
@@ -21,7 +20,7 @@ import nts.uk.shr.com.primitive.Memo;
 public class WtHead extends DomainObject implements Master {
 
 	/** The company code. */
-	private CompanyCode companyCode;
+	private String companyCode;
 
 	/** The code. */
 	private WtCode code;

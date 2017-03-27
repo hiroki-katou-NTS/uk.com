@@ -22,6 +22,11 @@ import nts.uk.ctx.pr.core.app.wagetable.command.WtInitCommand;
 import nts.uk.ctx.pr.core.app.wagetable.command.WtInitCommandHandler;
 import nts.uk.ctx.pr.core.app.wagetable.command.WtUpdateCommand;
 import nts.uk.ctx.pr.core.app.wagetable.command.WtUpdateCommandHandler;
+import nts.uk.ctx.pr.core.app.wagetable.command.dto.ElementItemDto;
+import nts.uk.ctx.pr.core.app.wagetable.command.dto.ElementSettingDto;
+import nts.uk.ctx.pr.core.app.wagetable.command.dto.WtElementDto;
+import nts.uk.ctx.pr.core.app.wagetable.command.dto.WtHeadDto;
+import nts.uk.ctx.pr.core.app.wagetable.command.dto.WtHistoryDto;
 import nts.uk.ctx.pr.core.dom.base.simplehistory.SimpleHistoryBaseService;
 import nts.uk.ctx.pr.core.dom.wagetable.DemensionNo;
 import nts.uk.ctx.pr.core.dom.wagetable.ElementType;
@@ -48,15 +53,10 @@ import nts.uk.ctx.pr.core.ws.base.simplehistory.SimpleHistoryWs;
 import nts.uk.ctx.pr.core.ws.base.simplehistory.dto.HistoryModel;
 import nts.uk.ctx.pr.core.ws.base.simplehistory.dto.MasterModel;
 import nts.uk.ctx.pr.core.ws.wagetable.dto.DemensionItemDto;
-import nts.uk.ctx.pr.core.ws.wagetable.dto.ElementItemDto;
-import nts.uk.ctx.pr.core.ws.wagetable.dto.ElementSettingDto;
 import nts.uk.ctx.pr.core.ws.wagetable.dto.ElementTypeDto;
 import nts.uk.ctx.pr.core.ws.wagetable.dto.SettingInfoInModel;
 import nts.uk.ctx.pr.core.ws.wagetable.dto.SettingInfoOutModel;
 import nts.uk.ctx.pr.core.ws.wagetable.dto.WageTableModel;
-import nts.uk.ctx.pr.core.ws.wagetable.dto.WtElementDto;
-import nts.uk.ctx.pr.core.ws.wagetable.dto.WtHeadDto;
-import nts.uk.ctx.pr.core.ws.wagetable.dto.WtHistoryDto;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
@@ -111,7 +111,7 @@ public class WageTableWs extends SimpleHistoryWs<WtHead, WtHistory> {
 	 *
 	 * @param id
 	 *            the id
-	 * @return the wage table history dto
+	 * @return the wage table model
 	 */
 	@POST
 	@Path("find/{id}")
@@ -128,7 +128,7 @@ public class WageTableWs extends SimpleHistoryWs<WtHead, WtHistory> {
 			WtHistory wageTableHistory = optWageTableHistory.get();
 
 			Optional<WtHead> optWageTable = this.wtHeadRepo.findByCode(
-					wageTableHistory.getCompanyCode().v(), wageTableHistory.getWageTableCode().v());
+					wageTableHistory.getCompanyCode(), wageTableHistory.getWageTableCode().v());
 
 			// Check exsit.
 			if (optWageTable.isPresent()) {
@@ -150,7 +150,7 @@ public class WageTableWs extends SimpleHistoryWs<WtHead, WtHistory> {
 					Collectors.toMap(WtElementDto::getDemensionNo, WtElementDto::getDemensionName));
 
 			WtHistoryDto historyDto = new WtHistoryDto();
-			wageTableHistory.saveToMemento(historyDto);
+			historyDto.fromDomain(wageTableHistory);
 
 			// Set demension name
 			historyDto.getElements().stream().forEach(item -> {
@@ -169,6 +169,7 @@ public class WageTableWs extends SimpleHistoryWs<WtHead, WtHistory> {
 	 *
 	 * @param command
 	 *            the command
+	 * @return the history model
 	 */
 	@POST
 	@Path("init")
@@ -348,6 +349,7 @@ public class WageTableWs extends SimpleHistoryWs<WtHead, WtHistory> {
 		return items;
 	}
 
+	/** The Constant ELEMENT_TYPE_DTO. */
 	private static final List<ElementTypeDto> ELEMENT_TYPE_DTO;
 	static {
 		ELEMENT_TYPE_DTO = new ArrayList<>();

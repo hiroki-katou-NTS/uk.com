@@ -6,7 +6,6 @@ package nts.uk.ctx.pr.core.dom.insurance.social.pensionrate;
 
 import java.util.Set;
 
-import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.CalculateMethod;
 import nts.uk.ctx.pr.core.dom.insurance.CommonAmount;
 import nts.uk.ctx.pr.core.dom.insurance.FundInputApply;
@@ -31,7 +30,7 @@ public interface PensionRateSetMemento {
 	 *
 	 * @param companyCode the new company code
 	 */
-	void setCompanyCode(CompanyCode companyCode);
+	void setCompanyCode(String companyCode);
 
 	/**
 	 * Sets the office code.

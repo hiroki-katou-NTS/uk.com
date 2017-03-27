@@ -10,7 +10,8 @@ module nts.uk.pr.view.base.address {
         }
 
         export function getinfor(address: model.AddressSelection): string {
-            return address.id + address.prefecture + address.town + address.prefecture + address.zipCode;
+            return address.id + ' ' + address.prefecture + ' ' + address.town
+                + ' ' + address.prefecture + ' ' + address.zipCode;
         }
         export module model {
 

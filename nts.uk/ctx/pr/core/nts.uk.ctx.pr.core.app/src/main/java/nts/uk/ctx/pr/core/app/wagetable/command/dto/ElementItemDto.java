@@ -35,4 +35,7 @@ public class ElementItemDto {
 	/** The end val. */
 	private Double endVal;
 
+	/** The display name. */
+	private String displayName;
+
 }

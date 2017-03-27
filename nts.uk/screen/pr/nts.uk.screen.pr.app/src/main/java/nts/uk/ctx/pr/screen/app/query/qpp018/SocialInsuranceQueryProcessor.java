@@ -13,7 +13,6 @@ import java.util.List;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.social.SocialInsuranceOffice;
 import nts.uk.ctx.pr.core.dom.insurance.social.SocialInsuranceOfficeRepository;
 import nts.uk.ctx.pr.screen.app.query.qpp018.dto.InsuranceOfficeDto;
@@ -38,7 +37,7 @@ public class SocialInsuranceQueryProcessor {
     public List<InsuranceOfficeDto> findAllOffice() {
         List<InsuranceOfficeDto> result = new ArrayList<>();
         String companyCode = AppContexts.user().companyCode();
-        List<SocialInsuranceOffice> offices = socialInsuranceOfficeRepo.findAll(new CompanyCode(companyCode));
+        List<SocialInsuranceOffice> offices = socialInsuranceOfficeRepo.findAll(companyCode);
         for (SocialInsuranceOffice office : offices) {
             InsuranceOfficeDto dto = new InsuranceOfficeDto();
             dto.setCode(office.getCode().toString());

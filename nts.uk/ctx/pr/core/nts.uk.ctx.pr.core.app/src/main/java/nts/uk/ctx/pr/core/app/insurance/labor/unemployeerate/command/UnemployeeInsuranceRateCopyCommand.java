@@ -6,8 +6,6 @@ package nts.uk.ctx.pr.core.app.insurance.labor.unemployeerate.command;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.pr.core.app.insurance.labor.unemployeerate.command.dto.UnemployeeInsuranceRateDto;
-import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsuranceRate;
 
 /**
  * The Class UnemployeeInsuranceRateCopyCommand.

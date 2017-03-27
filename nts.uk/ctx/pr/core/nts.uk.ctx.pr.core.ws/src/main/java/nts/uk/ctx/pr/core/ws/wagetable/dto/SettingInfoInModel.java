@@ -9,6 +9,7 @@ import java.util.List;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.uk.ctx.pr.core.app.wagetable.command.dto.ElementSettingDto;
 
 /**
  * The Class SettingInfoInModel.

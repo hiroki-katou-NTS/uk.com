@@ -159,16 +159,40 @@ module nts.uk.pr.view.base.simplehistory {
             }
 
             /**
+             * Confirm dirty state and execute function.
+             */
+            confirmDirtyAndExecute(functionToExecute: () => void) {
+                var self = this;
+                if (self.isDirty()) {
+                    nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\n よろしいですか。").ifYes(function() {
+                        functionToExecute();
+                    }).ifNo(function() {
+                        // Do nothing.
+                    });
+                } else {
+                    functionToExecute();
+                }
+            }
+
+            /**
              * Start regist new.
              */
             registBtnClick(): void {
                 var self = this;
-                self.isNewMode(true);
+                self.confirmDirtyAndExecute(() => {
+                    self.isNewMode(true);
 
-                // Clear select history uuid.
-                self.igGridSelectedHistoryUuid(undefined);
-                self.onRegistNew();
+                    // Clear select history uuid.
+                    self.igGridSelectedHistoryUuid(undefined);
+                    self.onRegistNew();
+                });
             }
+
+            /**
+             * Confirm dirty check.
+             * Overrid it by your self.
+             */
+            abstract isDirty(): boolean;
 
             /**
              * Save current master and history data.
@@ -189,45 +213,47 @@ module nts.uk.pr.view.base.simplehistory {
              */
             addNewHistoryBtnClick(): void {
                 var self = this;
-                var currentNode = self.selectedNode();
-                var latestNode = currentNode.isMaster ? _.head(currentNode.childs) : _.head(currentNode.parent.childs);
-                var newHistoryOptions: newhistory.viewmodel.NewHistoryScreenOption = {
-                    name: self.options.functionName,
-                    master: currentNode.isMaster ? currentNode.data : currentNode.parent.data,
-                    lastest: latestNode ? latestNode.data : undefined,
-
-                    // Copy.
-                    onCopyCallBack: (data) => {
-                        var dfd = $.Deferred<any>();
-                        self.service.createHistory(data.masterCode, data.startYearMonth, true)
-                            .done(h => {
-                                self.reloadMasterHistory(h.uuid);
-                                dfd.resolve();
-                            }).fail(res => {
-                                dfd.reject(res);
-                            });
-                        return dfd.promise();
-                    },
-
-                    // Init.
-                    onCreateCallBack: (data) => {
-                        var dfd = $.Deferred<any>();
-                        self.service.createHistory(data.masterCode, data.startYearMonth, false)
-                            .done(h => {
-                                self.reloadMasterHistory(h.uuid);
-                                dfd.resolve();
-                            }).fail(res => {
-                                dfd.reject(res);
-                            });
-                        return dfd.promise();
-                    }
-                };
-                nts.uk.ui.windows.setShared('options', newHistoryOptions);
-                var ntsDialogOptions = {
-                    title: nts.uk.text.format('{0}の登録 > 履歴の追加', self.options.functionName),
-                    dialogClass: 'no-close'
-                };
-                nts.uk.ui.windows.sub.modal('/view/base/simplehistory/newhistory/index.xhtml', ntsDialogOptions);
+                self.confirmDirtyAndExecute(() => {
+                    var currentNode = self.selectedNode();
+                    var latestNode = currentNode.isMaster ? _.head(currentNode.childs) : _.head(currentNode.parent.childs);
+                    var newHistoryOptions: newhistory.viewmodel.NewHistoryScreenOption = {
+                        name: self.options.functionName,
+                        master: currentNode.isMaster ? currentNode.data : currentNode.parent.data,
+                        lastest: latestNode ? latestNode.data : undefined,
+    
+                        // Copy.
+                        onCopyCallBack: (data) => {
+                            var dfd = $.Deferred<any>();
+                            self.service.createHistory(data.masterCode, data.startYearMonth, true)
+                                .done(h => {
+                                    self.reloadMasterHistory(h.uuid);
+                                    dfd.resolve();
+                                }).fail(res => {
+                                    dfd.reject(res);
+                                });
+                            return dfd.promise();
+                        },
+    
+                        // Init.
+                        onCreateCallBack: (data) => {
+                            var dfd = $.Deferred<any>();
+                            self.service.createHistory(data.masterCode, data.startYearMonth, false)
+                                .done(h => {
+                                    self.reloadMasterHistory(h.uuid);
+                                    dfd.resolve();
+                                }).fail(res => {
+                                    dfd.reject(res);
+                                });
+                            return dfd.promise();
+                        }
+                    };
+                    nts.uk.ui.windows.setShared('options', newHistoryOptions);
+                    var ntsDialogOptions = {
+                        title: nts.uk.text.format('{0}の登録 > 履歴の追加', self.options.functionName),
+                        dialogClass: 'no-close'
+                    };
+                    nts.uk.ui.windows.sub.modal('/view/base/simplehistory/newhistory/index.xhtml', ntsDialogOptions);
+                });
             }
 
             /**

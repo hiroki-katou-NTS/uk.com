@@ -48,7 +48,7 @@ public abstract class SimpleHistoryBaseService<M extends Master, H extends Histo
 
 		// Update latest history.
 		hisOpt = this.getRepository().findLastestHistoryByMasterCode(
-				history.getCompanyCode().v(),
+				history.getCompanyCode(),
 				history.getMasterCode().v());
 		if (hisOpt.isPresent()) {
 			history = hisOpt.get();
@@ -173,7 +173,7 @@ public abstract class SimpleHistoryBaseService<M extends Master, H extends Histo
 		}
 
 		H h = optH.get();
-		List<H> historyList = repo.findAllHistoryByMasterCode(h.getCompanyCode().v(), h.getMasterCode().v());
+		List<H> historyList = repo.findAllHistoryByMasterCode(h.getCompanyCode(), h.getMasterCode().v());
 		int indexOfH = historyList.indexOf(h);
 		H afterH = indexOfH > 0 ? historyList.get(indexOfH -1) : null;
 		H beforeH = indexOfH < (historyList.size() -1) ? historyList.get(indexOfH + 1) : null;
