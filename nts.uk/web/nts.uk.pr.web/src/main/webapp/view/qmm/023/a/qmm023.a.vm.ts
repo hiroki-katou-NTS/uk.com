@@ -64,7 +64,7 @@ module qmm023.a.viewmodel {
                 self.isUpdate = ko.observable(false);
                 self.isEnableDeleteBtn = ko.observable(false);
             }
-            
+
         }
 
         getTax(codeNew: string): TaxModel {
@@ -106,7 +106,7 @@ module qmm023.a.viewmodel {
             self.isEnableDeleteBtn(false);
             self.currentTaxDirty.reset();
             self.flatDirty = true;
-            
+
         }
 
         createButtonClick(): void {
@@ -149,9 +149,7 @@ module qmm023.a.viewmodel {
             }).fail(function(error) {
                 if (error.message === '3') {
                     let _message = "入力した{0}は既に存在しています。\r\n {1}を確認してください。";
-                    nts.uk.ui.dialog.alert(nts.uk.text.format(_message, 'コード', 'コード')).then(function() {
-                        self.reload(true);
-                    })
+                    nts.uk.ui.dialog.alert(nts.uk.text.format(_message, 'コード', 'コード'));
                 } else if (error.message === '4') {
                     nts.uk.ui.dialog.alert("対象データがありません。").then(function() {
                         self.reload(true);
