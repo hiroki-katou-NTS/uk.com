@@ -15,8 +15,11 @@ var qmm023;
                             }
                             return;
                         }
-                        if ($('.nts-editor').ntsError("hasError")) {
+                        self.CheckError();
+                        if (self.isError) {
+                            self.isError = false;
                             $('.save-error').ntsError('clear');
+                            return;
                         }
                         var oldCode = ko.mapping.toJS(self.currentTax().code);
                         if (ko.mapping.toJS(codeChanged) === oldCode && self.flatDirty === false) {
@@ -48,6 +51,7 @@ var qmm023;
                     self.allowEditCode = ko.observable(false);
                     self.isEnableDeleteBtn = ko.observable(true);
                     self.flatDirty = true;
+                    self.isError = false;
                     self.currentTaxDirty = new nts.uk.ui.DirtyChecker(self.currentTax);
                     if (self.items.length <= 0) {
                         self.allowEditCode = ko.observable(true);
@@ -61,6 +65,12 @@ var qmm023;
                         return item.code === codeNew;
                     });
                     return tax;
+                };
+                ScreenModel.prototype.CheckError = function () {
+                    var self = this;
+                    if ($('.nts-editor').ntsError("hasError")) {
+                        self.isError = true;
+                    }
                 };
                 ScreenModel.prototype.alertCheckDirty = function (oldCode, codeChanged) {
                     var self = this;
@@ -87,6 +97,10 @@ var qmm023;
                 ScreenModel.prototype.refreshLayout = function () {
                     var self = this;
                     self.allowEditCode(true);
+                    if (self.isError) {
+                        self.isError = false;
+                        $('.save-error').ntsError('clear');
+                    }
                     self.currentTax(ko.mapping.fromJS(new TaxModel('', '', 0)));
                     self.currentCode(null);
                     self.isUpdate(false);
@@ -110,11 +124,13 @@ var qmm023;
                 };
                 ScreenModel.prototype.insertUpdateData = function () {
                     var self = this;
+                    self.CheckError();
+                    if (self.isError) {
+                        return;
+                    }
                     var newCode = ko.mapping.toJS(self.currentTax().code);
                     var newName = ko.mapping.toJS(self.currentTax().name);
                     var newTaxLimit = ko.mapping.toJS(self.currentTax().taxLimit);
-                    $('#INP_002').ntsEditor("validate");
-                    $('#INP_003').ntsEditor("validate");
                     var insertUpdateModel = new InsertUpdateModel(nts.uk.text.padLeft(newCode, '0', 2), newName, newTaxLimit);
                     a.service.insertUpdateData(self.isUpdate(), insertUpdateModel).done(function () {
                         self.reload(false, nts.uk.text.padLeft(newCode, '0', 2));
@@ -135,22 +151,16 @@ var qmm023;
                                 self.reload(true);
                             });
                         }
-                        else {
-                            $('#INP_002').ntsError('set', error.message);
-                        }
                     });
                 };
                 ScreenModel.prototype.deleteData = function () {
                     var self = this;
                     var deleteCode = ko.mapping.toJS(self.currentTax().code);
-                    $('#INP_002').ntsEditor("validate");
                     a.service.deleteData(new DeleteModel(deleteCode)).done(function () {
                         var indexItemDelete = _.findIndex(self.items(), function (item) { return item.code == deleteCode; });
                         $.when(self.reload(false)).done(function () {
                             self.flatDirty = true;
                             if (self.items().length === 0) {
-                                self.allowEditCode(true);
-                                self.isUpdate(false);
                                 self.refreshLayout();
                                 return;
                             }
@@ -172,9 +182,6 @@ var qmm023;
                             nts.uk.ui.dialog.alert("対象データがありません。").then(function () {
                                 self.reload(true);
                             });
-                        }
-                        else {
-                            $('#INP_002').ntsError('set', error.message);
                         }
                     });
                 };

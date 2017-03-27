@@ -10,6 +10,7 @@ module qmm023.a.viewmodel {
         isEnableDeleteBtn: KnockoutObservable<boolean>;
         currentTaxDirty: nts.uk.ui.DirtyChecker;
         flatDirty: boolean;
+        isError: boolean;
         constructor() {
             let self = this;
             self._init();
@@ -21,8 +22,11 @@ module qmm023.a.viewmodel {
                     }
                     return;
                 }
-                if ($('.nts-editor').ntsError("hasError")) {
+                self.CheckError();
+                if (self.isError) {
+                    self.isError = false;
                     $('.save-error').ntsError('clear');
+                    return;
                 }
                 let oldCode = ko.mapping.toJS(self.currentTax().code);
                 if (ko.mapping.toJS(codeChanged) === oldCode && self.flatDirty === false) {
@@ -58,6 +62,7 @@ module qmm023.a.viewmodel {
             self.allowEditCode = ko.observable(false);
             self.isEnableDeleteBtn = ko.observable(true);
             self.flatDirty = true;
+            self.isError = false;
             self.currentTaxDirty = new nts.uk.ui.DirtyChecker(self.currentTax)
             if (self.items.length <= 0) {
                 self.allowEditCode = ko.observable(true);
@@ -73,6 +78,15 @@ module qmm023.a.viewmodel {
                 return item.code === codeNew;
             });
             return tax;
+        }
+
+        CheckError(): void {
+            let self = this;
+            //$('#INP_002').ntsEditor("validate");
+            //$('#INP_003').ntsEditor("validate");
+            if ($('.nts-editor').ntsError("hasError")) {
+                self.isError = true;
+            }
         }
 
         alertCheckDirty(oldCode: string, codeChanged: string) {
@@ -100,6 +114,10 @@ module qmm023.a.viewmodel {
         refreshLayout(): void {
             let self = this;
             self.allowEditCode(true);
+            if (self.isError) {
+                self.isError = false;
+                $('.save-error').ntsError('clear');
+            }
             self.currentTax(ko.mapping.fromJS(new TaxModel('', '', 0)));
             self.currentCode(null);
             self.isUpdate(false);
@@ -125,19 +143,13 @@ module qmm023.a.viewmodel {
 
         insertUpdateData(): void {
             let self = this;
+            self.CheckError();
+            if (self.isError) {
+                return;
+            }
             let newCode = ko.mapping.toJS(self.currentTax().code);
             let newName = ko.mapping.toJS(self.currentTax().name);
             let newTaxLimit = ko.mapping.toJS(self.currentTax().taxLimit);
-            $('#INP_002').ntsEditor("validate");
-            $('#INP_003').ntsEditor("validate");
-            //            if (nts.uk.text.isNullOrEmpty(newCode)) {
-            //                $('#INP_002').ntsError('set', nts.uk.text.format('{0}が入力されていません。', 'コード'));
-            //                return;
-            //            }
-            //            if (nts.uk.text.isNullOrEmpty(newName)) {
-            //                $('#INP_003').ntsError('set', nts.uk.text.format('{0}が入力されていません。', '名称'));
-            //                return;
-            //            }
             let insertUpdateModel = new InsertUpdateModel(nts.uk.text.padLeft(newCode, '0', 2), newName, newTaxLimit);
             service.insertUpdateData(self.isUpdate(), insertUpdateModel).done(function() {
                 self.reload(false, nts.uk.text.padLeft(newCode, '0', 2));
@@ -156,8 +168,6 @@ module qmm023.a.viewmodel {
                     nts.uk.ui.dialog.alert("対象データがありません。").then(function() {
                         self.reload(true);
                     })
-                } else {
-                    $('#INP_002').ntsError('set', error.message);
                 }
             });
 
@@ -166,17 +176,11 @@ module qmm023.a.viewmodel {
         deleteData(): void {
             let self = this;
             let deleteCode = ko.mapping.toJS(self.currentTax().code);
-            if (nts.uk.text.isNullOrEmpty(deleteCode)) {
-                $('#INP_002').ntsError('set', nts.uk.text.format('{0}が入力されていません。', 'コード'));
-                return;
-            }
             service.deleteData(new DeleteModel(deleteCode)).done(function() {
                 let indexItemDelete = _.findIndex(self.items(), function(item) { return item.code == deleteCode; });
                 $.when(self.reload(false)).done(function() {
                     self.flatDirty = true;
                     if (self.items().length === 0) {
-                        self.allowEditCode(true);
-                        self.isUpdate(false);
                         self.refreshLayout();
                         return;
                     }
@@ -201,8 +205,6 @@ module qmm023.a.viewmodel {
                     nts.uk.ui.dialog.alert("対象データがありません。").then(function() {
                         self.reload(true);
                     })
-                } else {
-                    $('#INP_002').ntsError('set', error.message);
                 }
             });
         }
