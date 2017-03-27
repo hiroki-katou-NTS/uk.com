@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 __viewContext.ready(function () {
     var ScreenModel = (function () {
         function ScreenModel() {
@@ -15,4 +16,22 @@ __viewContext.ready(function () {
     }());
     this.bind(new ScreenModel());
 });
+=======
+__viewContext.ready(function () {
+    var ScreenModel = (function () {
+        function ScreenModel() {
+            var self = this;
+            $("[data-toggle='userguide']").ntsUserGuide();
+        }
+        ScreenModel.prototype.showOverlayTop = function () {
+            $(".userguide-top").ntsUserGuide("show");
+        };
+        ScreenModel.prototype.showOverlayBottom = function () {
+            $(".userguide-bottom").ntsUserGuide("show");
+        };
+        return ScreenModel;
+    }());
+    this.bind(new ScreenModel());
+});
+>>>>>>> basic/develop
 //# sourceMappingURL=start.js.map
