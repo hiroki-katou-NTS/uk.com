@@ -29,9 +29,10 @@
 						<button data-bind="click: remove">Remove Item</button>
 						<button data-bind="click: selectAll">Select All</button>
 						<button data-bind="click: deselectAll">Deselect All</button>
+						<button data-bind="click: init">Init ListBox</button>
 						<span data-bind="ntsCheckBox: { checked: isEnable }">Enable</span>
 						<span data-bind="ntsCheckBox: { checked: isMulti }">Multiple for list 1</span>
-						<span data-bind="ntsCheckBox: { checked: isValidate }">Validate</span>
+						<span data-bind="ntsCheckBox: { checked: isValidate }">Selected value changable</span>
 						<br />
 						<!-- Multiple is false -->
 						<b>Single Selected:</b><span data-bind="text: selectedCode()"></span><br/>

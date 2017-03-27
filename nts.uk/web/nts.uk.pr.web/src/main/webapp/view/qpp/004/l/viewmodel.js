@@ -5,9 +5,6 @@ var qpp004;
         var viewmodel;
         (function (viewmodel) {
             var ScreenModel = (function () {
-                /**
-                 * Init screen model.
-                 */
                 function ScreenModel() {
                     var self = this;
                     self.timer = new nts.uk.ui.sharedvm.KibanTimer('timer');
@@ -30,15 +27,10 @@ var qpp004;
                             self.stopTimer();
                         }
                         else {
-                            // close dialog
                             nts.uk.ui.windows.close();
                         }
                     };
                 }
-                /**
-                 * Start page.
-                 * Load all data which is need for binding data.
-                 */
                 ScreenModel.prototype.startPage = function (data) {
                     var self = this;
                     var index = ko.observable(0);
@@ -55,7 +47,6 @@ var qpp004;
                     _.forEach(data.personIdList, function (personId) {
                         if (self.buttonStatus().status == 1) {
                             index(index() + 1);
-                            // Resolve start page dfd after load all data.
                             $.when(self.createPaymentData(personId, data, index())).done(function (res) {
                                 if (res) {
                                     self.errorList.push(res);
@@ -81,9 +72,6 @@ var qpp004;
                     self.processingState(1);
                     self.processingStateText("完了");
                 };
-                /**
-                 * Request create data payment
-                 */
                 ScreenModel.prototype.createPaymentData = function (personId, data, index) {
                     var self = this;
                     var dfd = $.Deferred();
@@ -116,3 +104,4 @@ var qpp004;
         })(viewmodel = l.viewmodel || (l.viewmodel = {}));
     })(l = qpp004.l || (qpp004.l = {}));
 })(qpp004 || (qpp004 = {}));
+//# sourceMappingURL=viewmodel.js.map
