@@ -157,9 +157,13 @@ public class JpaWtHistorySetMemento implements WtHistorySetMemento {
 								.map(subItem -> {
 									RangeItem rangeItem = (RangeItem) subItem;
 									QwtmtWagetableNum wagetableNum = new QwtmtWagetableNum(
-											companyCode, wageTableCd, historyId,
+											companyCode,
+											wageTableCd,
+											historyId,
 											item.getDemensionNo().value,
 											rangeItem.getOrderNumber());
+									wagetableNum.setElementStr(BigDecimal.valueOf(rangeItem.getStartVal()));
+									wagetableNum.setElementEnd(BigDecimal.valueOf(rangeItem.getEndVal()));
 									wagetableNum.setElementId(rangeItem.getUuid().v());
 									return wagetableNum;
 								}).collect(Collectors.toList());
@@ -176,7 +180,9 @@ public class JpaWtHistorySetMemento implements WtHistorySetMemento {
 								.map(subItem -> {
 									CodeItem rangeItem = (CodeItem) subItem;
 									QwtmtWagetableCd wagetableCd = new QwtmtWagetableCd(companyCode,
-											wageTableCd, historyId, item.getDemensionNo().value,
+											wageTableCd,
+											historyId,
+											item.getDemensionNo().value,
 											rangeItem.getReferenceCode());
 									wagetableCd.setElementId(rangeItem.getUuid().v());
 									return wagetableCd;
