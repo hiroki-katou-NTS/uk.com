@@ -59,8 +59,7 @@ public class StepItemGenerator implements ItemGenerator {
 		}
 
 		// Interval is invalid
-		if (upperLimit.subtract(lowerLimit).add(minStep).doubleValue() < interval
-				.doubleValue()) {
+		if (upperLimit.subtract(lowerLimit).add(minStep).doubleValue() < interval.doubleValue()) {
 			// TODO: need msg id.
 			throw new BusinessException(
 					"The range " + lowerLimit + " - " + upperLimit + " is not enough for 1 step");

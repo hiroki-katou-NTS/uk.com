@@ -361,6 +361,33 @@ var nts;
                                     this.isReadOnly(readonly);
                                     this.isEnable(!readonly);
                                 };
+                                LaborInsuranceOfficeModel.prototype.setPostCode = function (address) {
+                                    this.address1st(nts.uk.pr.view.base.address.service.getinfor(address));
+                                };
+                                LaborInsuranceOfficeModel.prototype.searchZipCode = function () {
+                                    var self = this;
+                                    nts.uk.pr.view.base.address.service.findAddressZipCode(self.postalCode()).done(function (data) {
+                                        if (data.length == 1) {
+                                            self.setPostCode(data[0]);
+                                        }
+                                        else {
+                                            if (data.length == 0) {
+                                                console.log("ERROR");
+                                            }
+                                            else {
+                                                nts.uk.ui.windows.setShared('zipCode', self.postalCode());
+                                                nts.uk.ui.windows.sub.modal("/view/base/address/index.xhtml", { height: 700, width: 1024, title: "ZIPCODE" }).onClosed(function () {
+                                                    var zipCodeRes = nts.uk.ui.windows.getShared('zipCodeRes');
+                                                    if (zipCodeRes) {
+                                                        self.setPostCode(zipCodeRes);
+                                                    }
+                                                });
+                                            }
+                                        }
+                                    }).fail(function (error) {
+                                        console.log(error);
+                                    });
+                                };
                                 return LaborInsuranceOfficeModel;
                             }());
                             viewmodel.LaborInsuranceOfficeModel = LaborInsuranceOfficeModel;

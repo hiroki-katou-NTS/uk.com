@@ -109,6 +109,7 @@ var nts;
                                                 });
                                             },
                                             onUpdateCallBack: function (data) {
+                                                var dfd = $.Deferred();
                                                 var unemployeeInsuranceHistoryUpdateDto;
                                                 unemployeeInsuranceHistoryUpdateDto = new UnemployeeInsuranceHistoryUpdateDto();
                                                 unemployeeInsuranceHistoryUpdateDto.historyId = data.historyId;
@@ -117,9 +118,11 @@ var nts;
                                                 a.service.updateUnemployeeInsuranceRateHistory(unemployeeInsuranceHistoryUpdateDto).done(function () {
                                                     self.typeActionUnemployeeInsurance(TypeActionInsuranceRate.update);
                                                     self.reloadDataUnemployeeInsuranceRateByAction();
+                                                    dfd.resolve();
                                                 }).fail(function (error) {
-                                                    self.showMessageSaveUnemployeeInsurance(error.message);
+                                                    dfd.reject(error);
                                                 });
+                                                return dfd.promise();
                                             }
                                         };
                                         nts.uk.ui.windows.setShared('options', newHistoryOptions);
@@ -162,26 +165,32 @@ var nts;
                                         master: null,
                                         lastest: lastest,
                                         onCopyCallBack: function (data) {
+                                            var dfd = $.Deferred();
                                             unemployeeInsuranceRateCopyDto.startMonth = data.startYearMonth;
                                             unemployeeInsuranceRateCopyDto.addNew = false;
                                             a.service.copyUnemployeeInsuranceRate(unemployeeInsuranceRateCopyDto).done(function (data) {
                                                 self.typeActionUnemployeeInsurance(TypeActionInsuranceRate.add);
                                                 self.reloadDataUnemployeeInsuranceRateByAction();
                                                 self.clearErrorSaveUnemployeeInsurance();
+                                                dfd.resolve();
                                             }).fail(function (error) {
-                                                self.showMessageSaveUnemployeeInsurance(error.messageId);
+                                                dfd.reject(error);
                                             });
+                                            return dfd.promise();
                                         },
                                         onCreateCallBack: function (data) {
+                                            var dfd = $.Deferred();
                                             unemployeeInsuranceRateCopyDto.startMonth = data.startYearMonth;
                                             unemployeeInsuranceRateCopyDto.addNew = true;
                                             a.service.copyUnemployeeInsuranceRate(unemployeeInsuranceRateCopyDto).done(function (data) {
                                                 self.typeActionUnemployeeInsurance(TypeActionInsuranceRate.add);
                                                 self.reloadDataUnemployeeInsuranceRateByAction();
                                                 self.clearErrorSaveUnemployeeInsurance();
+                                                dfd.resolve();
                                             }).fail(function (error) {
-                                                self.showMessageSaveUnemployeeInsurance(error.messageId);
+                                                dfd.reject(error);
                                             });
+                                            return dfd.promise();
                                         }
                                     };
                                     nts.uk.ui.windows.setShared('options', newHistoryOptions);
@@ -250,6 +259,7 @@ var nts;
                                                 });
                                             },
                                             onUpdateCallBack: function (data) {
+                                                var dfd = $.Deferred();
                                                 var accidentInsuranceHistoryUpdateDto;
                                                 accidentInsuranceHistoryUpdateDto = new AccidentInsuranceHistoryUpdateDto();
                                                 accidentInsuranceHistoryUpdateDto.historyId = data.historyId;
@@ -258,9 +268,11 @@ var nts;
                                                 a.service.updateAccidentInsuranceRateHistory(accidentInsuranceHistoryUpdateDto).done(function () {
                                                     self.typeActionAccidentInsurance(TypeActionInsuranceRate.add);
                                                     self.reloadDataAccidentInsuranceRateByAction();
+                                                    dfd.resolve();
                                                 }).fail(function (error) {
-                                                    self.showMessageSaveAccidentInsurance(error.messageId);
+                                                    dfd.reject(error);
                                                 });
+                                                return dfd.promise();
                                             }
                                         };
                                         nts.uk.ui.windows.setShared('options', newHistoryOptions);
@@ -303,26 +315,32 @@ var nts;
                                         master: null,
                                         lastest: lastest,
                                         onCopyCallBack: function (data) {
+                                            var dfd = $.Deferred();
                                             accidentInsuranceRateCopyDto.startMonth = data.startYearMonth;
                                             accidentInsuranceRateCopyDto.addNew = false;
                                             a.service.copyAccidentInsuranceRate(accidentInsuranceRateCopyDto).done(function (data) {
                                                 self.typeActionAccidentInsurance(TypeActionInsuranceRate.add);
                                                 self.reloadDataAccidentInsuranceRateByAction();
                                                 self.clearErrorSaveAccidentInsurance();
+                                                dfd.resolve();
                                             }).fail(function (error) {
-                                                self.showMessageSaveAccidentInsurance(error.messageId);
+                                                dfd.reject(error);
                                             });
+                                            return dfd.promise();
                                         },
                                         onCreateCallBack: function (data) {
+                                            var dfd = $.Deferred();
                                             accidentInsuranceRateCopyDto.startMonth = data.startYearMonth;
                                             accidentInsuranceRateCopyDto.addNew = true;
                                             a.service.copyAccidentInsuranceRate(accidentInsuranceRateCopyDto).done(function (data) {
                                                 self.typeActionAccidentInsurance(TypeActionInsuranceRate.add);
                                                 self.reloadDataAccidentInsuranceRateByAction();
                                                 self.clearErrorSaveAccidentInsurance();
+                                                dfd.resolve();
                                             }).fail(function (error) {
-                                                self.showMessageSaveAccidentInsurance(error.messageId);
+                                                dfd.reject(error);
                                             });
+                                            return dfd.promise();
                                         }
                                     };
                                     nts.uk.ui.windows.setShared('options', newHistoryOptions);
@@ -615,7 +633,7 @@ var nts;
                                             self.accidentInsuranceRateModel().setHistoryData(data.historyInsurance);
                                             self.accidentInsuranceRateModel().setEnable(true);
                                             self.beginHistoryStartAccidentInsuranceRate(nts.uk.time.formatYearMonth(data.historyInsurance.startMonth));
-                                            self.dirtyAccidentInsurance = new nts.uk.ui.DirtyChecker(self.accidentInsuranceRateModel);
+                                            self.dirtyAccidentInsurance.reset();
                                             dfd.resolve(null);
                                         });
                                     }
