@@ -10,6 +10,7 @@ var cmm008;
                 updateEmployment: "basic/employment/updateemployment",
                 deleteEmployment: "basic/employment/deleteemployment"
             };
+            //find all employment data
             function getAllEmployments() {
                 var dfd = $.Deferred();
                 nts.uk.request.ajax("com", path.getAllEmployment)
@@ -22,6 +23,7 @@ var cmm008;
                 return dfd.promise();
             }
             service.getAllEmployments = getAllEmployments;
+            //create new employment data
             function createEmployment(employment) {
                 var dfd = $.Deferred();
                 nts.uk.request.ajax("com", path.createEmployment).done(function (res) {
@@ -32,6 +34,7 @@ var cmm008;
                 return dfd.promise();
             }
             service.createEmployment = createEmployment;
+            //update employment data
             function updateEmployment(employment) {
                 var dfd = $.Deferred();
                 nts.uk.request.ajax("com", path.updateEmployment).done(function (res) {
@@ -42,6 +45,7 @@ var cmm008;
                 return dfd.promise();
             }
             service.updateEmployment = updateEmployment;
+            //delete employment data
             function deleteEmployment(employment) {
                 var dfd = $.Deferred();
                 nts.uk.request.ajax("com", path.deleteEmployment).done(function (res) {
