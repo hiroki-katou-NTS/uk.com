@@ -47,12 +47,12 @@ module nts.uk.pr.view.qmm002.a {
             return dfd.promise();
         }
         
-        export function removeBank(isParentNode, bankCode, branchCode): JQueryPromise<any> {
+        export function removeBank(isParentNode, bankCode, branchId): JQueryPromise<any> {
             var dfd = $.Deferred<any>();
             var path = isParentNode ? paths.removeBank : paths.removeBranch;
             var obj = {
                 bankCode: bankCode,
-                branchCode: branchCode   
+                branchId: branchId   
             };
             nts.uk.request.ajax("com", path, obj)
                 .done(function(res: any) {

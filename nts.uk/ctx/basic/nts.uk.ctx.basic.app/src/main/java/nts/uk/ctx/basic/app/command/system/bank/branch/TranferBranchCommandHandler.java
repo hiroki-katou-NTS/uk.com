@@ -2,10 +2,9 @@ package nts.uk.ctx.basic.app.command.system.bank.branch;
 
 import java.util.List;
 
-import javax.enterprise.context.RequestScoped;
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
-
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.basic.dom.system.bank.personaccount.PersonBankAccount;
@@ -13,7 +12,7 @@ import nts.uk.ctx.basic.dom.system.bank.personaccount.PersonBankAccountRepositor
 import nts.uk.ctx.basic.dom.system.bank.personaccount.PersonUseSetting;
 import nts.uk.shr.com.context.AppContexts;
 
-@RequestScoped
+@Stateless
 @Transactional
 public class TranferBranchCommandHandler  extends CommandHandler<TranferBranchCommand> {
     
@@ -25,8 +24,8 @@ public class TranferBranchCommandHandler  extends CommandHandler<TranferBranchCo
 		
 		TranferBranchCommand command = context.getCommand();
 		String companyCode = AppContexts.user().companyCode();
-		command.getBranchCodes().forEach(item -> {
-			List<PersonBankAccount> listPersonBankAcc = personBankAccountRepository.findAllBranchCode(companyCode, item.getBankCode(), item.getBranchCode());
+		command.getBranchId().forEach(item -> {
+			List<PersonBankAccount> listPersonBankAcc = personBankAccountRepository.findAllBranchCode(companyCode,item);
 			
 			listPersonBankAcc.forEach(x -> {
 				
@@ -37,11 +36,11 @@ public class TranferBranchCommandHandler  extends CommandHandler<TranferBranchCo
 				PersonUseSetting useSet4 = bankAccount.getUseSet4();
 				PersonUseSetting useSet5 = bankAccount.getUseSet5(); 
 				
-				useSet1 = useSet(item.getBankCode(), item.getBranchCode(), useSet1, command);
-				useSet2 = useSet(item.getBankCode(), item.getBranchCode(), useSet2, command);
-				useSet3 = useSet(item.getBankCode(), item.getBranchCode(), useSet3, command);
-				useSet4 = useSet(item.getBankCode(), item.getBranchCode(), useSet4, command);
-				useSet5 = useSet(item.getBankCode(), item.getBranchCode(), useSet5, command);
+				useSet1 = useSet(item, useSet1, command);
+				useSet2 = useSet(item, useSet2, command);
+				useSet3 = useSet(item, useSet3, command);
+				useSet4 = useSet(item, useSet4, command);
+				useSet5 = useSet(item, useSet5, command);
 				
 				PersonBankAccount domain = new PersonBankAccount(
 						companyCode,
@@ -60,10 +59,9 @@ public class TranferBranchCommandHandler  extends CommandHandler<TranferBranchCo
 		});
 	}
 	
-	private PersonUseSetting useSet(String bankCode, String branchCode, PersonUseSetting bankAccount, TranferBranchCommand command) {
-		if (bankAccount.getToBankCd().equals(bankCode) && bankAccount.getToBranchCd().equals(branchCode)) {
-			bankAccount.setToBankCd(command.getBankNewCode());
-			bankAccount.setToBranchCd(command.getBranchNewCode());
+	private PersonUseSetting useSet(String branchId, PersonUseSetting bankAccount, TranferBranchCommand command) {
+		if (bankAccount.getToBranchId().equals(branchId)) {
+			bankAccount.setToBranchId(command.getBranchNewId());
 		}
 		
 		return bankAccount;

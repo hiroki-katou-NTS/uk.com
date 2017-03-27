@@ -57,12 +57,12 @@ var nts;
                                 return dfd.promise();
                             }
                             service.addBank = addBank;
-                            function removeBank(isParentNode, bankCode, branchCode) {
+                            function removeBank(isParentNode, bankCode, branchId) {
                                 var dfd = $.Deferred();
                                 var path = isParentNode ? paths.removeBank : paths.removeBranch;
                                 var obj = {
                                     bankCode: bankCode,
-                                    branchCode: branchCode
+                                    branchId: branchId
                                 };
                                 nts.uk.request.ajax("com", path, obj)
                                     .done(function (res) {

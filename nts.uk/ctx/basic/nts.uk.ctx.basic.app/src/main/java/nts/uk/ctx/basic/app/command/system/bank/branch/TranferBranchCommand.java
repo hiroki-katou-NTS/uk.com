@@ -9,9 +9,8 @@ import lombok.NoArgsConstructor;
 @Data
 public class TranferBranchCommand {
 	/**
-	 * Map<BankCode, BranchCode>
+	 * 
 	 */
-	private List<TranferBranch> branchCodes;
-	private String bankNewCode;
-	private String branchNewCode;
+	private List<String> branchId;
+	private String branchNewId;
 }
