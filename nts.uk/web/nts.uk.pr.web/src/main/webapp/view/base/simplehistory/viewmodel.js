@@ -30,20 +30,33 @@ var nts;
                                         return self.selectedNode() != null;
                                     });
                                     self.igGridSelectedHistoryUuid.subscribe(function (id) {
-                                        if (!id) {
-                                            self.selectedNode(undefined);
-                                            return;
-                                        }
-                                        var selectedNode = self.getNode(id);
-                                        if (!selectedNode.isMaster) {
-                                            self.isNewMode(false);
-                                            self.selectedHistoryUuid(selectedNode.id);
-                                            self.onSelectHistory(id);
+                                        var inlineFunc = function () {
+                                            if (!id) {
+                                                self.selectedNode(undefined);
+                                                return;
+                                            }
+                                            var selectedNode = self.getNode(id);
+                                            if (!selectedNode.isMaster) {
+                                                self.isNewMode(false);
+                                                self.selectedHistoryUuid(selectedNode.id);
+                                                self.onSelectHistory(id);
+                                            }
+                                            else {
+                                                self.onSelectMaster(id);
+                                            }
+                                            self.selectedNode(selectedNode);
+                                        };
+                                        if (self.selectedHistoryUuid() &&
+                                            id != self.selectedHistoryUuid()) {
+                                            self.confirmDirtyAndExecute(inlineFunc, function () {
+                                                self.igGridSelectedHistoryUuid(self.selectedHistoryUuid());
+                                            });
                                         }
                                         else {
-                                            self.onSelectMaster(id);
+                                            if (!self.selectedHistoryUuid()) {
+                                                inlineFunc();
+                                            }
                                         }
-                                        self.selectedNode(selectedNode);
                                     });
                                 }
                                 ScreenBaseModel.prototype.startPage = function () {
@@ -100,12 +113,15 @@ var nts;
                                     });
                                     return dfd.promise();
                                 };
-                                ScreenBaseModel.prototype.confirmDirtyAndExecute = function (functionToExecute) {
+                                ScreenBaseModel.prototype.confirmDirtyAndExecute = function (functionToExecute, functionToExecuteIfNo) {
                                     var self = this;
                                     if (self.isDirty()) {
                                         nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\n よろしいですか。").ifYes(function () {
                                             functionToExecute();
                                         }).ifNo(function () {
+                                            if (functionToExecuteIfNo) {
+                                                functionToExecuteIfNo();
+                                            }
                                         });
                                     }
                                     else {

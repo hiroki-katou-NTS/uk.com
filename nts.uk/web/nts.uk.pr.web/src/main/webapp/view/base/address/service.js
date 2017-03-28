@@ -20,7 +20,8 @@ var nts;
                             }
                             service.findAddressZipCode = findAddressZipCode;
                             function getinfor(address) {
-                                return address.id + address.prefecture + address.town + address.prefecture + address.zipCode;
+                                return address.id + ' ' + address.prefecture + ' ' + address.town
+                                    + ' ' + address.prefecture + ' ' + address.zipCode;
                             }
                             service.getinfor = getinfor;
                             var model;

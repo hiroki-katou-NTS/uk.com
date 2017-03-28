@@ -53,6 +53,7 @@ import nts.uk.ctx.pr.core.ws.base.simplehistory.SimpleHistoryWs;
 import nts.uk.ctx.pr.core.ws.base.simplehistory.dto.HistoryModel;
 import nts.uk.ctx.pr.core.ws.base.simplehistory.dto.MasterModel;
 import nts.uk.ctx.pr.core.ws.wagetable.dto.DemensionItemDto;
+import nts.uk.ctx.pr.core.ws.wagetable.dto.ElementTypeDto;
 import nts.uk.ctx.pr.core.ws.wagetable.dto.SettingInfoInModel;
 import nts.uk.ctx.pr.core.ws.wagetable.dto.SettingInfoOutModel;
 import nts.uk.ctx.pr.core.ws.wagetable.dto.WageTableModel;
@@ -108,7 +109,8 @@ public class WageTableWs extends SimpleHistoryWs<WtHead, WtHistory> {
 	/**
 	 * Find.
 	 *
-	 * @param id the id
+	 * @param id
+	 *            the id
 	 * @return the wage table model
 	 */
 	@POST
@@ -148,7 +150,7 @@ public class WageTableWs extends SimpleHistoryWs<WtHead, WtHistory> {
 					Collectors.toMap(WtElementDto::getDemensionNo, WtElementDto::getDemensionName));
 
 			WtHistoryDto historyDto = new WtHistoryDto();
-			wageTableHistory.saveToMemento(historyDto);
+			historyDto.fromDomain(wageTableHistory);
 
 			// Set demension name
 			historyDto.getElements().stream().forEach(item -> {
@@ -165,7 +167,8 @@ public class WageTableWs extends SimpleHistoryWs<WtHead, WtHistory> {
 	/**
 	 * Inits the table.
 	 *
-	 * @param command the command
+	 * @param command
+	 *            the command
 	 * @return the history model
 	 */
 	@POST
@@ -180,7 +183,8 @@ public class WageTableWs extends SimpleHistoryWs<WtHead, WtHistory> {
 	/**
 	 * Update.
 	 *
-	 * @param command the command
+	 * @param command
+	 *            the command
 	 */
 	@POST
 	@Path("update")
@@ -222,7 +226,8 @@ public class WageTableWs extends SimpleHistoryWs<WtHead, WtHistory> {
 	/**
 	 * Generate setting item.
 	 *
-	 * @param input the input
+	 * @param input
+	 *            the input
 	 * @return the setting info out model
 	 */
 	@POST
@@ -342,6 +347,29 @@ public class WageTableWs extends SimpleHistoryWs<WtHead, WtHistory> {
 		items.add(new DemensionItemDto(ElementType.ITEM_DATA_REF));
 
 		return items;
+	}
+
+	/** The Constant ELEMENT_TYPE_DTO. */
+	private static final List<ElementTypeDto> ELEMENT_TYPE_DTO;
+	static {
+		ELEMENT_TYPE_DTO = new ArrayList<>();
+		for (ElementType type : ElementType.values()) {
+			ElementTypeDto dto = ElementTypeDto.builder().value(type.value)
+					.isCodeMode(type.isCodeMode).isRangeMode(type.isRangeMode)
+					.displayName(type.displayName).build();
+			ELEMENT_TYPE_DTO.add(dto);
+		}
+	}
+
+	/**
+	 * Load element type dto.
+	 *
+	 * @return the list
+	 */
+	@POST
+	@Path("elements")
+	public List<ElementTypeDto> loadElementTypeDto() {
+		return ELEMENT_TYPE_DTO;
 	}
 
 	/*

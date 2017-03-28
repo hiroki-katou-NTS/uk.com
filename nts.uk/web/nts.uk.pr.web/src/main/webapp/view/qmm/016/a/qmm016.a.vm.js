@@ -62,6 +62,9 @@ var nts;
                                     });
                                     return dfd.promise();
                                 };
+                                ScreenModel.prototype.isDirty = function () {
+                                    return false;
+                                };
                                 ScreenModel.prototype.onSelectHistory = function (id) {
                                     var self = this;
                                     var dfd = $.Deferred();
