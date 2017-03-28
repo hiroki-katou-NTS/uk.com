@@ -6,9 +6,9 @@ package nts.uk.ctx.pr.core.dom.insurance.social.pensionrate;
 
 import java.util.Set;
 
-import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.CalculateMethod;
 import nts.uk.ctx.pr.core.dom.insurance.CommonAmount;
+import nts.uk.ctx.pr.core.dom.insurance.FundInputApply;
 import nts.uk.ctx.pr.core.dom.insurance.Ins2Rate;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
@@ -30,7 +30,7 @@ public interface PensionRateSetMemento {
 	 *
 	 * @param companyCode the new company code
 	 */
-	void setCompanyCode(CompanyCode companyCode);
+	void setCompanyCode(String companyCode);
 
 	/**
 	 * Sets the office code.
@@ -51,7 +51,7 @@ public interface PensionRateSetMemento {
 	 *
 	 * @param fundInputApply the new fund input apply
 	 */
-	void setFundInputApply(Boolean fundInputApply);
+	void setFundInputApply(FundInputApply fundInputApply);
 
 	/**
 	 * Sets the auto calculate.

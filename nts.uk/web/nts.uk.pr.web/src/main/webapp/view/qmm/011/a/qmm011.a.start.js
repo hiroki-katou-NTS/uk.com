@@ -16,6 +16,8 @@ var nts;
                                 var screenModel = new nts.uk.pr.view.qmm011.a.viewmodel.ScreenModel();
                                 screenModel.startPage().done(function (res) {
                                     __viewContext.bind(res);
+                                    screenModel.dirtyUnemployeeInsurance.reset();
+                                    screenModel.dirtyAccidentInsurance.reset();
                                 });
                             });
                         })(start = a.start || (a.start = {}));
@@ -25,4 +27,3 @@ var nts;
         })(pr = uk.pr || (uk.pr = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
-//# sourceMappingURL=qmm011.a.start.js.map

@@ -8,7 +8,6 @@ import java.util.List;
 
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
-import nts.uk.ctx.pr.report.dom.company.CompanyCode;
 
 /**
  * The Class OutputSetting.
@@ -26,7 +25,7 @@ public class WLOutputSetting extends DomainObject {
 	private Boolean onceSheetPerPerson;
 	
 	/** The company code. */
-	private CompanyCode companyCode;
+	private String companyCode;
 	
 	/** The category settings. */
 	private List<WLCategorySetting> categorySettings;

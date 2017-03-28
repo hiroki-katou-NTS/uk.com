@@ -7,7 +7,6 @@ import java.util.Optional;
 import javax.ejb.Stateless;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.avgearn.AvgEarnLevelMasterSetting;
 import nts.uk.ctx.pr.core.dom.insurance.avgearn.AvgEarnLevelMasterSettingRepository;
 
@@ -34,7 +33,7 @@ public class JpaAvgEarnLevelMasterSettingRepository extends JpaRepository
 	}
 
 	@Override
-	public List<AvgEarnLevelMasterSetting> findAll(CompanyCode companyCode) {
+	public List<AvgEarnLevelMasterSetting> findAll(String companyCode) {
 		List<AvgEarnLevelMasterSetting> listAvgEarnLevelMasterSetting = new ArrayList<AvgEarnLevelMasterSetting>();
 		listAvgEarnLevelMasterSetting.add(new AvgEarnLevelMasterSetting(1, 1, 1, 58000L, 63000L));
 		listAvgEarnLevelMasterSetting.add(new AvgEarnLevelMasterSetting(2, 2, 1, 68000L, 73000L));

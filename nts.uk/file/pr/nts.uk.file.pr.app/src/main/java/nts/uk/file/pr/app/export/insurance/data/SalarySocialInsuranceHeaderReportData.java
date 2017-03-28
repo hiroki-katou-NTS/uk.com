@@ -11,14 +11,30 @@ import lombok.Getter;
 import lombok.Setter;
 
 /**
- * @author duongnd
+ * The Class SalarySocialInsuranceHeaderReportData.
  *
+ * @author duongnd
  */
+
 @Getter
 @Setter
 public class SalarySocialInsuranceHeaderReportData {
 
-    // add header report file
-    private String employeeCode;
-    private String employeeName;
+    /** The name company. */
+    private String nameCompany;
+    
+    /** The tile report */
+    private String titleReport;
+    
+    /** The information office. */
+    private String informationOffice;
+    
+    /** The target year month. */
+    private String targetYearMonth;
+    
+    /** The condition. */
+    private String condition;
+    
+    /** The formal calculation. */
+    private String formalCalculation;
 }

@@ -1,32 +1,43 @@
-var qpp007;
-(function (qpp007) {
-    var a;
-    (function (a) {
-        var service;
-        (function (service) {
-            var servicePath = {
-                getallOutputSetting: "?"
-            };
-            function getallOutputSetting() {
-                var dfd = $.Deferred();
-                var data = [];
-                for (var i = 1; i <= 10; i++) {
-                    data.push({ code: '0' + i, name: 'Output Item Setting ' + i });
-                }
-                dfd.resolve(data);
-                return dfd.promise();
-            }
-            service.getallOutputSetting = getallOutputSetting;
-            var model;
-            (function (model) {
-                var OutputSetting = (function () {
-                    function OutputSetting() {
-                    }
-                    return OutputSetting;
-                }());
-                model.OutputSetting = OutputSetting;
-            })(model = service.model || (service.model = {}));
-        })(service = a.service || (a.service = {}));
-    })(a = qpp007.a || (qpp007.a = {}));
-})(qpp007 || (qpp007 = {}));
+var nts;
+(function (nts) {
+    var uk;
+    (function (uk) {
+        var pr;
+        (function (pr) {
+            var view;
+            (function (view) {
+                var qpp007;
+                (function (qpp007) {
+                    var a;
+                    (function (a) {
+                        var service;
+                        (function (service) {
+                            var servicePath = {
+                                findAllSalaryOutputSetting: "ctx/pr/report/salary/outputsetting/findall",
+                                saveAsPdf: "screen/pr/QPP007/saveAsPdf"
+                            };
+                            function findAllSalaryOutputSetting() {
+                                return nts.uk.request.ajax(servicePath.findAllSalaryOutputSetting);
+                            }
+                            service.findAllSalaryOutputSetting = findAllSalaryOutputSetting;
+                            function saveAsPdf(command) {
+                                return nts.uk.request.exportFile(servicePath.saveAsPdf, command);
+                            }
+                            service.saveAsPdf = saveAsPdf;
+                            var model;
+                            (function (model) {
+                                var SalaryOutputSettingHeaderDto = (function () {
+                                    function SalaryOutputSettingHeaderDto() {
+                                    }
+                                    return SalaryOutputSettingHeaderDto;
+                                }());
+                                model.SalaryOutputSettingHeaderDto = SalaryOutputSettingHeaderDto;
+                            })(model = service.model || (service.model = {}));
+                        })(service = a.service || (a.service = {}));
+                    })(a = qpp007.a || (qpp007.a = {}));
+                })(qpp007 = view.qpp007 || (view.qpp007 = {}));
+            })(view = pr.view || (pr.view = {}));
+        })(pr = uk.pr || (uk.pr = {}));
+    })(uk = nts.uk || (nts.uk = {}));
+})(nts || (nts = {}));
 //# sourceMappingURL=qpp007.a.service.js.map

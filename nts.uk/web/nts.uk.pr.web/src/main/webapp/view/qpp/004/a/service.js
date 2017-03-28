@@ -7,9 +7,6 @@ var qpp004;
             var paths = {
                 getPaymentDateProcessingList: "pr/proto/paymentdatemaster/processing/findall"
             };
-            /**
-             * Get list payment date processing.
-             */
             function getPaymentDateProcessingMasterList() {
                 var dfd = $.Deferred();
                 nts.uk.request.ajax(paths.getPaymentDateProcessingList)
@@ -25,3 +22,4 @@ var qpp004;
         })(service = a.service || (a.service = {}));
     })(a = qpp004.a || (qpp004.a = {}));
 })(qpp004 || (qpp004 = {}));
+//# sourceMappingURL=service.js.map

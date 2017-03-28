@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.CalculateMethod;
 import nts.uk.ctx.pr.core.dom.insurance.CommonAmount;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
@@ -60,9 +59,9 @@ public class JpaHealthInsuranceRateSetMemento implements HealthInsuranceRateSetM
 	 * CompanyCode)
 	 */
 	@Override
-	public void setCompanyCode(CompanyCode companyCode) {
+	public void setCompanyCode(String companyCode) {
 		QismtHealthInsuRatePK qismtHealthInsuRatePK = this.typeValue.getQismtHealthInsuRatePK();
-		qismtHealthInsuRatePK.setCcd(companyCode.v());
+		qismtHealthInsuRatePK.setCcd(companyCode);
 		this.typeValue.setQismtHealthInsuRatePK(qismtHealthInsuRatePK);
 	}
 
@@ -128,42 +127,50 @@ public class JpaHealthInsuranceRateSetMemento implements HealthInsuranceRateSetM
 		list.addAll(rateItems);
 		for (InsuranceRateItem e : list) {
 			// general Salary
-			if (e.getPayType().equals(PaymentType.Salary) && e.getInsuranceType().equals(HealthInsuranceType.General)) {
+			if (e.getPayType().equals(PaymentType.Salary)
+					&& e.getInsuranceType().equals(HealthInsuranceType.General)) {
 				this.typeValue.setCPayGeneralRate(e.getChargeRate().getCompanyRate().v());
 				this.typeValue.setPPayGeneralRate(e.getChargeRate().getPersonalRate().v());
 			}
 			// general Bonus
-			if (e.getPayType().equals(PaymentType.Bonus) && e.getInsuranceType().equals(HealthInsuranceType.General)) {
+			if (e.getPayType().equals(PaymentType.Bonus)
+					&& e.getInsuranceType().equals(HealthInsuranceType.General)) {
 				this.typeValue.setCBnsGeneralRate(e.getChargeRate().getCompanyRate().v());
 				this.typeValue.setPBnsGeneralRate(e.getChargeRate().getPersonalRate().v());
 			}
 			// nursing Salary
-			if (e.getPayType().equals(PaymentType.Salary) && e.getInsuranceType().equals(HealthInsuranceType.Nursing)) {
+			if (e.getPayType().equals(PaymentType.Salary)
+					&& e.getInsuranceType().equals(HealthInsuranceType.Nursing)) {
 				this.typeValue.setCPayNursingRate(e.getChargeRate().getCompanyRate().v());
 				this.typeValue.setPPayNursingRate(e.getChargeRate().getPersonalRate().v());
 			}
 			// nursing Bonus
-			if (e.getPayType().equals(PaymentType.Bonus) && e.getInsuranceType().equals(HealthInsuranceType.Nursing)) {
+			if (e.getPayType().equals(PaymentType.Bonus)
+					&& e.getInsuranceType().equals(HealthInsuranceType.Nursing)) {
 				this.typeValue.setCBnsNursingRate(e.getChargeRate().getCompanyRate().v());
 				this.typeValue.setPBnsNursingRate(e.getChargeRate().getPersonalRate().v());
 			}
 			// special Salary
-			if (e.getPayType().equals(PaymentType.Salary) && e.getInsuranceType().equals(HealthInsuranceType.Special)) {
+			if (e.getPayType().equals(PaymentType.Salary)
+					&& e.getInsuranceType().equals(HealthInsuranceType.Special)) {
 				this.typeValue.setCPaySpecificRate(e.getChargeRate().getCompanyRate().v());
 				this.typeValue.setPPaySpecificRate(e.getChargeRate().getPersonalRate().v());
 			}
 			// special Bonus
-			if (e.getPayType().equals(PaymentType.Bonus) && e.getInsuranceType().equals(HealthInsuranceType.Special)) {
+			if (e.getPayType().equals(PaymentType.Bonus)
+					&& e.getInsuranceType().equals(HealthInsuranceType.Special)) {
 				this.typeValue.setCBnsSpecificRate(e.getChargeRate().getCompanyRate().v());
 				this.typeValue.setPBnsSpecificRate(e.getChargeRate().getPersonalRate().v());
 			}
 			// basic Salary
-			if (e.getPayType().equals(PaymentType.Salary) && e.getInsuranceType().equals(HealthInsuranceType.Basic)) {
+			if (e.getPayType().equals(PaymentType.Salary)
+					&& e.getInsuranceType().equals(HealthInsuranceType.Basic)) {
 				this.typeValue.setCPayBasicRate(e.getChargeRate().getCompanyRate().v());
 				this.typeValue.setPPayBasicRate(e.getChargeRate().getPersonalRate().v());
 			}
 			// basic Bonus
-			if (e.getPayType().equals(PaymentType.Bonus) && e.getInsuranceType().equals(HealthInsuranceType.Basic)) {
+			if (e.getPayType().equals(PaymentType.Bonus)
+					&& e.getInsuranceType().equals(HealthInsuranceType.Basic)) {
 				this.typeValue.setCBnsBasicRate(e.getChargeRate().getCompanyRate().v());
 				this.typeValue.setPBnsBasicRate(e.getChargeRate().getPersonalRate().v());
 			}

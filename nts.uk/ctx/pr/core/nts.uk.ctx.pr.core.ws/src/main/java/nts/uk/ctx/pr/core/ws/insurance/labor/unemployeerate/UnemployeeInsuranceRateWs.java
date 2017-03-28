@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2016 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.core.ws.insurance.labor.unemployeerate;
@@ -20,7 +20,6 @@ import nts.uk.ctx.pr.core.app.insurance.labor.unemployeerate.command.UnemployeeI
 import nts.uk.ctx.pr.core.app.insurance.labor.unemployeerate.command.UnemployeeInsuranceRateUpdateCommandHandler;
 import nts.uk.ctx.pr.core.app.insurance.labor.unemployeerate.find.UnemployeeInsuranceFinder;
 import nts.uk.ctx.pr.core.app.insurance.labor.unemployeerate.find.dto.UnemployeeInsuranceRateFindOutDto;
-import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.service.UnemployeeInsuranceRateService;
 
 /**
  * The Class UnemployeeInsuranceRateWs.
@@ -33,11 +32,10 @@ public class UnemployeeInsuranceRateWs {
 	@Inject
 	private UnemployeeInsuranceFinder find;
 
-
 	/** The copy. */
 	@Inject
 	private UnemployeeInsuranceRateCopyCommandHandler copy;
-	
+
 	/** The add. */
 	@Inject
 	private UnemployeeInsuranceRateAddCommandHandler add;
@@ -49,10 +47,6 @@ public class UnemployeeInsuranceRateWs {
 	/** The delete. */
 	@Inject
 	private UnemployeeInsuranceRateDeleteCommandHandler delete;
-
-	/** The service. */
-	@Inject
-	private UnemployeeInsuranceRateService service;
 
 	/**
 	 * Detail.
@@ -70,18 +64,20 @@ public class UnemployeeInsuranceRateWs {
 	/**
 	 * Copy.
 	 *
-	 * @param command the command
+	 * @param command
+	 *            the command
 	 */
 	@POST
 	@Path("copy")
 	public void copy(UnemployeeInsuranceRateCopyCommand command) {
 		this.copy.handle(command);
 	}
-	
+
 	/**
 	 * Adds the.
 	 *
-	 * @param command the command
+	 * @param command
+	 *            the command
 	 */
 	@POST
 	@Path("add")
@@ -92,7 +88,8 @@ public class UnemployeeInsuranceRateWs {
 	/**
 	 * Update.
 	 *
-	 * @param command the command
+	 * @param command
+	 *            the command
 	 */
 	@POST
 	@Path("update")
@@ -103,7 +100,8 @@ public class UnemployeeInsuranceRateWs {
 	/**
 	 * Delete.
 	 *
-	 * @param command the command
+	 * @param command
+	 *            the command
 	 */
 	@POST
 	@Path("delete")

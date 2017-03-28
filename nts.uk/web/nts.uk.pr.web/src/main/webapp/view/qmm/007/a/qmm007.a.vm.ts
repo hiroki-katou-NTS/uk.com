@@ -17,23 +17,27 @@ module nts.uk.pr.view.qmm007.a {
             // Switch button data source
             switchButtonDataSource: KnockoutObservableArray<SwitchButtonDataSource>;
 
+            // Dirty checker
+            dirtyChecker: nts.uk.ui.DirtyChecker;
+
             constructor() {
                 super({
                     functionName: '会社一律金額',
                     service: service.instance,
-                    removeMasterOnLastHistoryRemove: true});
+                    removeMasterOnLastHistoryRemove: true
+                });
                 var self = this;
                 self.isLoading = ko.observable(true);
-
-                self.unitPriceHistoryModel = ko.observable(new UnitPriceHistoryModel(self.getDefaultUnitPriceHistory()));
+                self.unitPriceHistoryModel = ko.observable<UnitPriceHistoryModel>(new UnitPriceHistoryModel(self.getDefaultUnitPriceHistory()));
+                self.dirtyChecker = new nts.uk.ui.DirtyChecker(self.unitPriceHistoryModel);
                 self.switchButtonDataSource = ko.observableArray<SwitchButtonDataSource>([
-                    { code: 'Apply', name: '対象' },
-                    { code: 'NotApply', name: '対象外' }
+                    { code: ApplySetting.APPLY, name: '対象' },
+                    { code: ApplySetting.NOTAPPLY, name: '対象外' }
                 ]);
 
                 // Setting type
                 self.isContractSettingEnabled = ko.computed(() => {
-                    return self.unitPriceHistoryModel().fixPaySettingType() == 'Contract';
+                    return self.unitPriceHistoryModel().fixPaySettingType() == SettingType.CONTRACT;
                 })
 
                 // Nts text editor options
@@ -53,13 +57,72 @@ module nts.uk.pr.view.qmm007.a {
                 if (self.isNewMode()) {
                     service.instance.create(ko.toJS(self.unitPriceHistoryModel())).done(res => {
                         dfd.resolve(res.uuid);
-                    })
+                    }).fail(res => {
+                        self.setMessages(res.messageId);
+                    });
                 } else {
                     service.instance.update(ko.toJS(self.unitPriceHistoryModel())).done((res) => {
                         dfd.resolve(self.unitPriceHistoryModel().id);
                     });
                 }
                 return dfd.promise();
+            }
+
+            /**
+            * Load UnitPriceHistory detail.
+            */
+            onSelectHistory(id: string): JQueryPromise<void> {
+                var self = this;
+                var dfd = $.Deferred<void>();
+                self.isLoading(true);
+                service.instance.findHistoryByUuid(id).done(dto => {
+                    self.setUnitPriceHistoryModel(dto);
+                    self.dirtyChecker.reset();
+                    self.isLoading(false);
+                    nts.uk.ui.windows.setShared('unitPriceHistoryModel', ko.toJS(this.unitPriceHistoryModel()));
+                    self.clearError();
+                    dfd.resolve();
+                });
+                return dfd.promise();
+            }
+
+            /**
+             * Clear all input and switch to new mode.
+             */
+            onRegistNew(): void {
+                var self = this;
+                self.clearError();
+                self.clearInput();
+            }
+
+            isDirty(): boolean {
+                var self = this;
+                return self.dirtyChecker.isDirty();
+            }
+
+            private setMessages(messageId: string): void {
+                var self = this;
+                switch (messageId) {
+                    case 'ER001':
+                        if (!self.unitPriceHistoryModel().unitPriceCode()) {
+                            $('#inpCode').ntsError('set', '＊が入力されていません。');
+                        }
+                        if (!self.unitPriceHistoryModel().unitPriceName()) {
+                            $('#inpName').ntsError('set', '＊が入力されていません。');
+                        }
+                        if (!self.unitPriceHistoryModel().budget()) {
+                            $('#inpBudget').ntsError('set', '＊が入力されていません。');
+                        }
+                        break;
+                    case 'ER005':
+                        $('#inpCode').ntsError('set', '入力した＊は既に存在しています。\r\n ＊を確認してください。');
+                        break;
+                    case 'ER011':
+                        $('#inpStartMonth').ntsError('set', '対象データがありません。');
+                        break;
+                    default:// Do nothing.
+                        break;
+                }
             }
 
             /**
@@ -82,29 +145,12 @@ module nts.uk.pr.view.qmm007.a {
                 model.memo(dto.memo);
             }
 
-            /**
-             * Load UnitPriceHistory detail.
-             */
-            onSelectHistory(id: string): JQueryPromise<void> {
-                var self = this;
-                var dfd = $.Deferred<void>();
-                self.isLoading(true);
-                service.instance.findHistoryByUuid(id).done(dto => {
-                    self.setUnitPriceHistoryModel(dto);
-                    self.isLoading(false);
-                    nts.uk.ui.windows.setShared('unitPriceHistoryModel', ko.toJS(this.unitPriceHistoryModel()));
-                    $('.save-error').ntsError('clear');
-                    dfd.resolve();
-                });
-                return dfd.promise();
-            }
-            
-            /**
-             * Clear all input and switch to new mode.
-             */
-            onRegistNew(): void {
-                var self = this;
+            private clearError(): void {
                 $('.save-error').ntsError('clear');
+            }
+
+            private clearInput(): void {
+                var self = this;
                 self.setUnitPriceHistoryModel(self.getDefaultUnitPriceHistory());
             }
 
@@ -116,15 +162,15 @@ module nts.uk.pr.view.qmm007.a {
                 defaultHist.id = '';
                 defaultHist.unitPriceCode = '';
                 defaultHist.unitPriceName = '';
-                defaultHist.startMonth = nts.uk.time.parseTime(new Date()).toValue();;
+                defaultHist.startMonth = parseInt(nts.uk.time.formatDate(new Date(), 'yyyyMM'));
                 defaultHist.endMonth = 999912;
                 defaultHist.budget = 0;
-                defaultHist.fixPaySettingType = 'Company';
-                defaultHist.fixPayAtr = 'NotApply';
-                defaultHist.fixPayAtrMonthly = 'NotApply';
-                defaultHist.fixPayAtrDayMonth = 'NotApply';
-                defaultHist.fixPayAtrDaily = 'NotApply';
-                defaultHist.fixPayAtrHourly = 'NotApply';
+                defaultHist.fixPaySettingType = SettingType.COMPANY;
+                defaultHist.fixPayAtr = ApplySetting.APPLY;
+                defaultHist.fixPayAtrMonthly = ApplySetting.APPLY;
+                defaultHist.fixPayAtrDayMonth = ApplySetting.APPLY;
+                defaultHist.fixPayAtrDaily = ApplySetting.APPLY;
+                defaultHist.fixPayAtrHourly = ApplySetting.APPLY;
                 defaultHist.memo = '';
                 return defaultHist;
             }
@@ -160,6 +206,16 @@ module nts.uk.pr.view.qmm007.a {
                 this.fixPayAtrHourly = ko.observable(historyDto.fixPayAtrHourly);
                 this.memo = ko.observable(historyDto.memo);
             }
+        }
+
+        export class SettingType {
+            static COMPANY = 'Company';
+            static CONTRACT = 'Contract';
+        }
+
+        export class ApplySetting {
+            static APPLY = 'Apply';
+            static NOTAPPLY = 'NotApply';
         }
 
         export interface SwitchButtonDataSource {

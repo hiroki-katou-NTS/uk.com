@@ -6,7 +6,6 @@ package nts.uk.ctx.pr.core.infra.repository.insurance.labor.unemployeerate;
 
 import java.util.Set;
 
-import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsuranceRateItem;
 import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsuranceRateSetMemento;
@@ -53,9 +52,9 @@ public class JpaUnemployeeInsuranceRateSetMemento implements UnemployeeInsurance
 	 * company.CompanyCode)
 	 */
 	@Override
-	public void setCompanyCode(CompanyCode companyCode) {
+	public void setCompanyCode(String companyCode) {
 		QismtEmpInsuRatePK pk = this.typeValue.getQismtEmpInsuRatePK();
-		pk.setCcd(companyCode.v());
+		pk.setCcd(companyCode);
 		this.typeValue.setQismtEmpInsuRatePK(pk);
 	}
 
@@ -80,25 +79,10 @@ public class JpaUnemployeeInsuranceRateSetMemento implements UnemployeeInsurance
 	 */
 	@Override
 	public void setRateItems(Set<UnemployeeInsuranceRateItem> rateItems) {
-		for (UnemployeeInsuranceRateItem itemUnemployeeInsuranceRateItem : rateItems) {
-			switch (itemUnemployeeInsuranceRateItem.getCareerGroup()) {
-			case Agroforestry:
-				itemUnemployeeInsuranceRateItem
-					.saveToMemento(new JpaUnemployeeInsuranceRateItemGeneralSetMemento(this.typeValue));
-				break;
-
-			case Other:
-				itemUnemployeeInsuranceRateItem
-					.saveToMemento(new JpaUnemployeeInsuranceRateItemOtherSetMemento(this.typeValue));
-				break;
-			case Contruction:
-				itemUnemployeeInsuranceRateItem
-					.saveToMemento(new JpaUnemployeeInsuranceRateItemConstSetMemento(this.typeValue));
-			default:
-				break;
-			}
-		}
-
+		rateItems.forEach(rateItem -> {
+			rateItem.saveToMemento(new JpaUnemployeeInsuranceRateItemSetMemento(this.typeValue,
+					rateItem.getCareerGroup()));
+		});
 	}
 
 }
