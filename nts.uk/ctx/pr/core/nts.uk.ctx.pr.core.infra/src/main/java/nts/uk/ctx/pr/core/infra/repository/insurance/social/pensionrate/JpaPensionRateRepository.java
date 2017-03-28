@@ -19,7 +19,6 @@ import javax.persistence.criteria.Root;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionRate;
 import nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionRateRepository;
 import nts.uk.ctx.pr.core.infra.entity.insurance.social.pensionrate.QismtPensionRate;
@@ -61,7 +60,7 @@ public class JpaPensionRateRepository extends JpaRepository implements PensionRa
 	public void update(PensionRate rate) {
 
 		EntityManager em = this.getEntityManager();
-		QismtPensionRatePK pk = new QismtPensionRatePK(rate.getCompanyCode().v(),
+		QismtPensionRatePK pk = new QismtPensionRatePK(rate.getCompanyCode(),
 				rate.getOfficeCode().v(), rate.getHistoryId());
 		QismtPensionRate findEntity = em.find(QismtPensionRate.class, pk);
 		QismtPensionRate entity = new QismtPensionRate();
@@ -114,7 +113,7 @@ public class JpaPensionRateRepository extends JpaRepository implements PensionRa
 	 * #findAll(int)
 	 */
 	@Override
-	public List<PensionRate> findAll(CompanyCode companyCode) {
+	public List<PensionRate> findAll(String companyCode) {
 		// Get entity manager
 		EntityManager em = this.getEntityManager();
 
@@ -129,7 +128,7 @@ public class JpaPensionRateRepository extends JpaRepository implements PensionRa
 		// Construct condition.
 		predicateList.add(cb.equal(
 				root.get(QismtPensionRate_.qismtPensionRatePK).get(QismtPensionRatePK_.ccd),
-				companyCode.v()));
+				companyCode));
 
 		cq.where(predicateList.toArray(new Predicate[] {}));
 		cq.orderBy(cb.desc(root.get(QismtPensionRate_.strYm)));

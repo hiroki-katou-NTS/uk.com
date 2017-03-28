@@ -58,12 +58,12 @@ public class HealthInsuranceRateFinder {
 	 */
 	public List<HealthInsuranceOfficeItemDto> findAllHistory() {
 
-		CompanyCode companyCode = new CompanyCode(AppContexts.user().companyCode());
+		String companyCode = AppContexts.user().companyCode();
 
 		List<SocialInsuranceOffice> listOffice = socialInsuranceOfficeRepository
 				.findAll(companyCode);
 
-		List<HealthInsuranceRate> listHealth = healthInsuranceRateRepository.findAll(companyCode.v());
+		List<HealthInsuranceRate> listHealth = healthInsuranceRateRepository.findAll(companyCode);
 
 		// group health same office code
 		Map<OfficeCode, List<HealthInsuranceHistoryItemDto>> historyMap = listHealth.stream()

@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2016 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.core.ws.insurance.social.pensionrate;
@@ -14,7 +14,6 @@ import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
-import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.app.insurance.social.pensionrate.command.DeletePensionCommand;
 import nts.uk.ctx.pr.core.app.insurance.social.pensionrate.command.DeletePensionCommandHandler;
 import nts.uk.ctx.pr.core.app.insurance.social.pensionrate.command.RegisterPensionCommand;
@@ -46,31 +45,31 @@ public class PensionRateWs extends SimpleHistoryWs<SocialInsuranceOffice, Pensio
 	/** The pension rate finder. */
 	@Inject
 	private PensionRateFinder pensionRateFinder;
-	
+
 	/** The register pension command handler. */
 	@Inject
 	private RegisterPensionCommandHandler registerPensionCommandHandler;
-	
+
 	/** The update pension command handler. */
 	@Inject
 	private UpdatePensionCommandHandler updatePensionCommandHandler;
-	
+
 	/** The delete pension command handler. */
 	@Inject
 	private DeletePensionCommandHandler deletePensionCommandHandler;
-	
+
 	/** The social insurance office repository. */
 	@Inject
 	private SocialInsuranceOfficeRepository socialInsuranceOfficeRepository;
-	
+
 	/** The pension rate repository. */
 	@Inject
 	private PensionRateRepository pensionRateRepository;
-	
+
 	/** The service. */
 	@Inject
 	private PensionRateService service;
-	
+
 	/**
 	 * Find.
 	 *
@@ -82,7 +81,7 @@ public class PensionRateWs extends SimpleHistoryWs<SocialInsuranceOffice, Pensio
 	public PensionRateDto find(@PathParam("id") String id) {
 		return pensionRateFinder.find(id).get();
 	}
-	
+
 	/**
 	 * Findby code.
 	 *
@@ -93,7 +92,7 @@ public class PensionRateWs extends SimpleHistoryWs<SocialInsuranceOffice, Pensio
 	public List<PensionOfficeItemDto> findbyCode() {
 		return pensionRateFinder.findAllHistory();
 	}
-	
+
 	/**
 	 * Creates the.
 	 *
@@ -115,7 +114,7 @@ public class PensionRateWs extends SimpleHistoryWs<SocialInsuranceOffice, Pensio
 	public void update(UpdatePensionCommand command) {
 		updatePensionCommandHandler.handle(command);
 	}
-	
+
 	/**
 	 * Removes the.
 	 *
@@ -126,38 +125,44 @@ public class PensionRateWs extends SimpleHistoryWs<SocialInsuranceOffice, Pensio
 	public void remove(DeletePensionCommand command) {
 		deletePensionCommandHandler.handle(command);
 	}
-	
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.pr.core.ws.base.simplehistory.SimpleHistoryWs#loadMasterModelList()
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.ws.base.simplehistory.SimpleHistoryWs#
+	 * loadMasterModelList()
 	 */
 	@POST
 	@Path("masterhistory")
 	@Override
 	public List<MasterModel> loadMasterModelList() {
 		// Get list of Office.
-				List<SocialInsuranceOffice> socialInsuranceOffices = this.socialInsuranceOfficeRepository
-						.findAll(new CompanyCode(AppContexts.user().companyCode()));
+		List<SocialInsuranceOffice> socialInsuranceOffices = this.socialInsuranceOfficeRepository
+				.findAll(AppContexts.user().companyCode());
 
-				// Get list of unit price history.
-				List<PensionRate> pensionRates = this.pensionRateRepository
-						.findAll(new CompanyCode(AppContexts.user().companyCode()));
+		// Get list of unit price history.
+		List<PensionRate> pensionRates = this.pensionRateRepository
+				.findAll(AppContexts.user().companyCode());
 
-				// Group histories by unit code.
-				Map<OfficeCode, List<HistoryModel>> historyMap = pensionRates.stream()
-						.collect(Collectors.groupingBy(PensionRate::getOfficeCode, Collectors.mapping((res) -> {
-							return HistoryModel.builder().uuid(res.getUuid()).start(res.getStart().v()).end(res.getEnd().v())
-									.build();
-						}, Collectors.toList())));
+		// Group histories by unit code.
+		Map<OfficeCode, List<HistoryModel>> historyMap = pensionRates.stream().collect(
+				Collectors.groupingBy(PensionRate::getOfficeCode, Collectors.mapping((res) -> {
+					return HistoryModel.builder().uuid(res.getUuid()).start(res.getStart().v())
+							.end(res.getEnd().v()).build();
+				}, Collectors.toList())));
 
-				// Return
-				return socialInsuranceOffices.stream().map(item -> {
-					return MasterModel.builder().code(item.getCode().v()).name(item.getName().v())
-							.historyList(historyMap.get(item.getCode())).build();
-				}).collect(Collectors.toList());
+		// Return
+		return socialInsuranceOffices.stream().map(item -> {
+			return MasterModel.builder().code(item.getCode().v()).name(item.getName().v())
+					.historyList(historyMap.get(item.getCode())).build();
+		}).collect(Collectors.toList());
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.pr.core.ws.base.simplehistory.SimpleHistoryWs#getServices()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.ws.base.simplehistory.SimpleHistoryWs#getServices()
 	 */
 	@Override
 	protected SimpleHistoryBaseService<SocialInsuranceOffice, PensionRate> getServices() {

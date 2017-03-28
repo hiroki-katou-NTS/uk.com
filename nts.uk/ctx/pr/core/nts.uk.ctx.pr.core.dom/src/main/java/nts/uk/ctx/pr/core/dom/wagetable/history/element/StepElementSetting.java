@@ -4,7 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.dom.wagetable.history.element;
 
-import java.math.BigDecimal;
 import java.util.List;
 
 import lombok.Getter;
@@ -18,33 +17,40 @@ import nts.uk.ctx.pr.core.dom.wagetable.history.element.item.Item;
 @Getter
 public class StepElementSetting extends ElementSetting {
 	/** The upper limit. */
-	private BigDecimal upperLimit;
+	private RangeLimit upperLimit;
 
 	/** The lower limit. */
-	private BigDecimal lowerLimit;
+	private RangeLimit lowerLimit;
 
 	/** The interval. */
-	private BigDecimal interval;
+	private RangeLimit interval;
 
 	/**
 	 * Instantiates a new step element setting.
 	 *
-	 * @param demensionNo the demension no
-	 * @param type the type
-	 * @param itemList the item list
+	 * @param demensionNo
+	 *            the demension no
+	 * @param type
+	 *            the type
+	 * @param itemList
+	 *            the item list
 	 */
-	public StepElementSetting(DemensionNo demensionNo, ElementType type, List<Item> itemList) {
+	public StepElementSetting(DemensionNo demensionNo, ElementType type,
+			List<? extends Item> itemList) {
 		super(demensionNo, type, itemList);
 	}
 
 	/**
 	 * Sets the setting.
 	 *
-	 * @param upperLimit the upper limit
-	 * @param lowerLimit the lower limit
-	 * @param interval the interval
+	 * @param upperLimit
+	 *            the upper limit
+	 * @param lowerLimit
+	 *            the lower limit
+	 * @param interval
+	 *            the interval
 	 */
-	public void setSetting(BigDecimal upperLimit, BigDecimal lowerLimit, BigDecimal interval) {
+	public void setSetting(RangeLimit lowerLimit, RangeLimit upperLimit, RangeLimit interval) {
 		this.upperLimit = upperLimit;
 		this.lowerLimit = lowerLimit;
 		this.interval = interval;

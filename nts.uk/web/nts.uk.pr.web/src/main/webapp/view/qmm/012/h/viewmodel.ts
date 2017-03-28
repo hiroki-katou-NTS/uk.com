@@ -1,8 +1,7 @@
 module qmm012.h.viewmodel {
     export class ScreenModel {
         //textediter
-        texteditor_INP_001: any;
-        texteditor_INP_002: any;
+
         selectedCode: KnockoutObservable<string>;
         isEnable: KnockoutObservable<boolean>;
         isEditable: KnockoutObservable<boolean>;
@@ -17,9 +16,9 @@ module qmm012.h.viewmodel {
 
         enable: KnockoutObservable<boolean> = ko.observable(true);
 
-        CurrentItemMaster: KnockoutObservable<qmm012.b.service.model.ItemMasterModel> = ko.observable(null);
+        CurrentItemMaster: KnockoutObservable<qmm012.b.service.model.ItemMaster> = ko.observable(null);
         CurrentCategoryAtrName: KnockoutObservable<string> = ko.observable('');
-        CurrentItem: KnockoutObservable<service.model.ItemSalaryPeriod> = ko.observable(null);
+        CurrentItem: KnockoutObservable<service.model.ItemPeriod> = ko.observable(null);
         CurrentItemCode: KnockoutObservable<string> = ko.observable('');
         CurrentPeriodAtr: KnockoutObservable<number> = ko.observable(0);
         CurrentStrY: KnockoutObservable<number> = ko.observable(0);
@@ -39,29 +38,6 @@ module qmm012.h.viewmodel {
         CurrentCycle12Atr: KnockoutObservable<number> = ko.observable(0);
         constructor() {
             var self = this;
-            //textediter
-            //001
-            self.texteditor_INP_001 = {
-                value: self.CurrentStrY,
-                constraint: 'ResidenceCode',
-                option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                    textmode: "text",
-                    placeholder: "",
-                    width: "60px",
-                    textalign: "left"
-                }))
-            };
-            //002
-            self.texteditor_INP_002 = {
-                value: self.CurrentEndY,
-                constraint: 'ResidenceCode',
-                option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
-                    textmode: "text",
-                    placeholder: "",
-                    width: "60px",
-                    textalign: "left"
-                }))
-            };
             //set Switch Data
             self.roundingRules_H_SEL_001 = ko.observableArray([
                 { code: 1, name: '設定する' },
@@ -73,51 +49,40 @@ module qmm012.h.viewmodel {
                 { code: 1, name: 'する' },
                 { code: 0, name: 'しない' }
             ]);
+            self.LoadItemPeriod();
+            self.CurrentItem.subscribe(function(ItemPeriod: service.model.ItemPeriod) {
+                self.CurrentItemCode(ItemPeriod ? ItemPeriod.itemCd : '');
+                self.CurrentPeriodAtr(ItemPeriod ? ItemPeriod.periodAtr : 0);
+                self.CurrentStrY(ItemPeriod ? ItemPeriod.strY : 0);
+                self.CurrentEndY(ItemPeriod ? ItemPeriod.endY : 0);
+                self.CurrentCycleAtr(ItemPeriod ? ItemPeriod.cycleAtr : 0);
 
-            self.CurrentItemMaster(nts.uk.ui.windows.getShared('itemMaster'));
-            if (self.CurrentItemMaster()) {
-                if (self.CurrentItemMaster().categoryAtr == 0) {
-                    service.findItemSalaryPeriod(self.CurrentItemMaster().itemCode).done(function(ItemSalary: service.model.ItemSalaryPeriod) {
-                        self.CurrentItem(ItemSalary);
-                    }).fail(function(res) {
-                        // Alert message
-                        alert(res);
-                    });
-                }
-                if (self.CurrentItemMaster().categoryAtr == 1) {
-                    service.findItemDeductPeriod(self.CurrentItemMaster().itemCode).done(function(ItemDeduct: service.model.ItemDeductPeriod) {
-                        self.CurrentItem(ItemDeduct);
-                    }).fail(function(res) {
-                        // Alert message
-                        alert(res);
-                    });
-                }
-                self.CurrentCategoryAtrName(self.CurrentItemMaster().categoryAtrName);
-            }
-            self.CurrentItem.subscribe(function(ItemSalaryPeriod: service.model.ItemSalaryPeriod) {
-                self.CurrentItemCode(ItemSalaryPeriod ? ItemSalaryPeriod.itemCd : '');
-                self.CurrentPeriodAtr(ItemSalaryPeriod ? ItemSalaryPeriod.periodAtr : 0);
-                self.CurrentStrY(ItemSalaryPeriod ? ItemSalaryPeriod.strY : 0);
-                self.CurrentEndY(ItemSalaryPeriod ? ItemSalaryPeriod.endY : 0);
-                self.CurrentCycleAtr(ItemSalaryPeriod ? ItemSalaryPeriod.cycleAtr : 0);
-
-                self.CurrentCycle01Atr(ItemSalaryPeriod ? ItemSalaryPeriod.cycle01Atr : 0);
-                self.CurrentCycle02Atr(ItemSalaryPeriod ? ItemSalaryPeriod.cycle02Atr : 0);
-                self.CurrentCycle03Atr(ItemSalaryPeriod ? ItemSalaryPeriod.cycle03Atr : 0);
-                self.CurrentCycle04Atr(ItemSalaryPeriod ? ItemSalaryPeriod.cycle04Atr : 0);
-                self.CurrentCycle05Atr(ItemSalaryPeriod ? ItemSalaryPeriod.cycle05Atr : 0);
-                self.CurrentCycle06Atr(ItemSalaryPeriod ? ItemSalaryPeriod.cycle06Atr : 0);
-                self.CurrentCycle07Atr(ItemSalaryPeriod ? ItemSalaryPeriod.cycle07Atr : 0);
-                self.CurrentCycle08Atr(ItemSalaryPeriod ? ItemSalaryPeriod.cycle08Atr : 0);
-                self.CurrentCycle09Atr(ItemSalaryPeriod ? ItemSalaryPeriod.cycle09Atr : 0);
-                self.CurrentCycle10Atr(ItemSalaryPeriod ? ItemSalaryPeriod.cycle10Atr : 0);
-                self.CurrentCycle11Atr(ItemSalaryPeriod ? ItemSalaryPeriod.cycle11Atr : 0);
-                self.CurrentCycle12Atr(ItemSalaryPeriod ? ItemSalaryPeriod.cycle12Atr : 0);
+                self.CurrentCycle01Atr(ItemPeriod ? ItemPeriod.cycle01Atr : 0);
+                self.CurrentCycle02Atr(ItemPeriod ? ItemPeriod.cycle02Atr : 0);
+                self.CurrentCycle03Atr(ItemPeriod ? ItemPeriod.cycle03Atr : 0);
+                self.CurrentCycle04Atr(ItemPeriod ? ItemPeriod.cycle04Atr : 0);
+                self.CurrentCycle05Atr(ItemPeriod ? ItemPeriod.cycle05Atr : 0);
+                self.CurrentCycle06Atr(ItemPeriod ? ItemPeriod.cycle06Atr : 0);
+                self.CurrentCycle07Atr(ItemPeriod ? ItemPeriod.cycle07Atr : 0);
+                self.CurrentCycle08Atr(ItemPeriod ? ItemPeriod.cycle08Atr : 0);
+                self.CurrentCycle09Atr(ItemPeriod ? ItemPeriod.cycle09Atr : 0);
+                self.CurrentCycle10Atr(ItemPeriod ? ItemPeriod.cycle10Atr : 0);
+                self.CurrentCycle11Atr(ItemPeriod ? ItemPeriod.cycle11Atr : 0);
+                self.CurrentCycle12Atr(ItemPeriod ? ItemPeriod.cycle12Atr : 0);
 
             });
 
         }
-
+        LoadItemPeriod() {
+            let self = this;
+            self.CurrentItemMaster(nts.uk.ui.windows.getShared('itemMaster'));
+            if (self.CurrentItemMaster()) {
+                self.CurrentCategoryAtrName(self.CurrentItemMaster().categoryAtrName);
+                service.findItemPeriod(self.CurrentItemMaster()).done(function(ItemPeriod: service.model.ItemPeriod) {
+                  self.CurrentItem(ItemPeriod);
+                });
+            }
+        }
         SubmitDialog() {
             nts.uk.ui.windows.close();
         }

@@ -16,7 +16,6 @@ import javax.transaction.Transactional;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.gul.text.IdentifierUtil;
-import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.core.dom.util.PrimitiveUtil;
 import nts.uk.ctx.pr.core.dom.insurance.CalculateMethod;
 import nts.uk.ctx.pr.core.dom.insurance.CommonAmount;
@@ -41,7 +40,8 @@ import nts.uk.shr.com.context.AppContexts;
  * The Class RegisterHealthInsuranceCommandHandler.
  */
 @Stateless
-public class RegisterHealthInsuranceCommandHandler extends CommandHandler<RegisterHealthInsuranceCommand> {
+public class RegisterHealthInsuranceCommandHandler
+		extends CommandHandler<RegisterHealthInsuranceCommand> {
 
 	/** The health insurance rate service. */
 	@Inject
@@ -74,8 +74,8 @@ public class RegisterHealthInsuranceCommandHandler extends CommandHandler<Regist
 		// Get the current company code.
 		String companyCode = AppContexts.user().companyCode();
 		String officeCode = command.getOfficeCode();
-		List<HealthInsuranceRate> listHealthInsuranceRate = healthInsuranceRateRepository.findAllOffice(companyCode,
-				officeCode);
+		List<HealthInsuranceRate> listHealthInsuranceRate = healthInsuranceRateRepository
+				.findAllOffice(companyCode, officeCode);
 		HealthInsuranceRate healthInsuranceRate = null;
 		if (listHealthInsuranceRate.isEmpty()) {
 			command.setIsCloneData(false);
@@ -93,23 +93,26 @@ public class RegisterHealthInsuranceCommandHandler extends CommandHandler<Regist
 
 		// Get listAvgEarnLevelMasterSetting.
 		List<AvgEarnLevelMasterSetting> listAvgEarnLevelMasterSetting = avgEarnLevelMasterSettingRepository
-				.findAll(new CompanyCode(AppContexts.user().companyCode()));
+				.findAll(AppContexts.user().companyCode());
 
 		// Auto calculate listHealthInsuranceAvgearn
-		List<HealthInsuranceAvgearn> listHealthInsuranceAvgearn = listAvgEarnLevelMasterSetting.stream()
-				.map(setting -> {
+		List<HealthInsuranceAvgearn> listHealthInsuranceAvgearn = listAvgEarnLevelMasterSetting
+				.stream().map(setting -> {
 					return new HealthInsuranceAvgearn(new HealthInsuranceAvgearnMemento(setting,
 							addNew.getRateItems(), addNew.getHistoryId()));
 				}).collect(Collectors.toList());
 
-		healthInsuranceAvgearnRepository.update(listHealthInsuranceAvgearn, companyCode, command.getOfficeCode());
+		healthInsuranceAvgearnRepository.update(listHealthInsuranceAvgearn, companyCode,
+				command.getOfficeCode());
 	}
 
 	/**
 	 * Covert to memento.
 	 *
-	 * @param healthInsuranceRate the health insurance rate
-	 * @param command the command
+	 * @param healthInsuranceRate
+	 *            the health insurance rate
+	 * @param command
+	 *            the command
 	 * @return the health insurance rate get memento
 	 */
 	protected HealthInsuranceRateGetMemento covertToMemento(HealthInsuranceRate healthInsuranceRate,
@@ -123,8 +126,8 @@ public class RegisterHealthInsuranceCommandHandler extends CommandHandler<Regist
 			}
 
 			@Override
-			public CompanyCode getCompanyCode() {
-				return new CompanyCode(AppContexts.user().companyCode());
+			public String getCompanyCode() {
+				return AppContexts.user().companyCode();
 			}
 
 			@Override
@@ -179,28 +182,35 @@ public class RegisterHealthInsuranceCommandHandler extends CommandHandler<Regist
 	/**
 	 * Calculate avgearn value.
 	 *
-	 * @param masterRate the master rate
-	 * @param rateItems the rate items
-	 * @param isPersonal the is personal
+	 * @param masterRate
+	 *            the master rate
+	 * @param rateItems
+	 *            the rate items
+	 * @param isPersonal
+	 *            the is personal
 	 * @return the health insurance avgearn value
 	 */
-	private HealthInsuranceAvgearnValue calculateAvgearnValue(BigDecimal masterRate, Set<InsuranceRateItem> rateItems,
-			boolean isPersonal) {
+	private HealthInsuranceAvgearnValue calculateAvgearnValue(BigDecimal masterRate,
+			Set<InsuranceRateItem> rateItems, boolean isPersonal) {
 		HealthInsuranceAvgearnValue value = new HealthInsuranceAvgearnValue();
 		rateItems.forEach(rateItem -> {
 			if (rateItem.getPayType() == PaymentType.Salary) {
 				switch (rateItem.getInsuranceType()) {
 				case Basic:
-					value.setHealthBasicMny(new CommonAmount(calculateChargeRate(masterRate, rateItem, isPersonal)));
+					value.setHealthBasicMny(new CommonAmount(
+							calculateChargeRate(masterRate, rateItem, isPersonal)));
 					break;
 				case General:
-					value.setHealthGeneralMny(new CommonAmount(calculateChargeRate(masterRate, rateItem, isPersonal)));
+					value.setHealthGeneralMny(new CommonAmount(
+							calculateChargeRate(masterRate, rateItem, isPersonal)));
 					break;
 				case Nursing:
-					value.setHealthNursingMny(new CommonAmount(calculateChargeRate(masterRate, rateItem, isPersonal)));
+					value.setHealthNursingMny(new CommonAmount(
+							calculateChargeRate(masterRate, rateItem, isPersonal)));
 					break;
 				case Special:
-					value.setHealthSpecificMny(new CommonAmount(calculateChargeRate(masterRate, rateItem, isPersonal)));
+					value.setHealthSpecificMny(new CommonAmount(
+							calculateChargeRate(masterRate, rateItem, isPersonal)));
 					break;
 				}
 			}
@@ -213,12 +223,16 @@ public class RegisterHealthInsuranceCommandHandler extends CommandHandler<Regist
 	/**
 	 * Calculate charge rate.
 	 *
-	 * @param masterRate the master rate
-	 * @param rateItem the rate item
-	 * @param isPersonal the is personal
+	 * @param masterRate
+	 *            the master rate
+	 * @param rateItem
+	 *            the rate item
+	 * @param isPersonal
+	 *            the is personal
 	 * @return the big decimal
 	 */
-	private BigDecimal calculateChargeRate(BigDecimal masterRate, InsuranceRateItem rateItem, boolean isPersonal) {
+	private BigDecimal calculateChargeRate(BigDecimal masterRate, InsuranceRateItem rateItem,
+			boolean isPersonal) {
 		if (isPersonal) {
 			return masterRate.multiply(rateItem.getChargeRate().getPersonalRate().v());
 		}
@@ -230,8 +244,8 @@ public class RegisterHealthInsuranceCommandHandler extends CommandHandler<Regist
 		protected Set<InsuranceRateItem> rateItems;
 		protected String historyId;
 
-		public HealthInsuranceAvgearnMemento(AvgEarnLevelMasterSetting setting, Set<InsuranceRateItem> rateItems,
-				String historyId) {
+		public HealthInsuranceAvgearnMemento(AvgEarnLevelMasterSetting setting,
+				Set<InsuranceRateItem> rateItems, String historyId) {
 			this.setting = setting;
 			this.rateItems = rateItems;
 			this.historyId = historyId;
@@ -249,7 +263,8 @@ public class RegisterHealthInsuranceCommandHandler extends CommandHandler<Regist
 
 		@Override
 		public HealthInsuranceAvgearnValue getCompanyAvg() {
-			return calculateAvgearnValue(BigDecimal.valueOf(setting.getAvgEarn()), rateItems, false);
+			return calculateAvgearnValue(BigDecimal.valueOf(setting.getAvgEarn()), rateItems,
+					false);
 		}
 
 		@Override

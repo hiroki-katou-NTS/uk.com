@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2016 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.core.ws.insurance.labor;
@@ -56,7 +56,7 @@ public class LaborInsuranceOfficeWs extends WebService {
 	private LaborInsuranceOfficeImporter importser;
 
 	/**
-	 * Find all history.
+	 * Find all.
 	 *
 	 * @return the list
 	 */
@@ -67,11 +67,11 @@ public class LaborInsuranceOfficeWs extends WebService {
 	}
 
 	/**
-	 * Find history.
+	 * Find by code.
 	 *
-	 * @param historyId
-	 *            the history id
-	 * @return the history accident insurance rate dto
+	 * @param officeCode
+	 *            the office code
+	 * @return the labor insurance office find dto
 	 */
 	@POST
 	@Path("findLaborInsuranceOffice/{officeCode}")
@@ -118,8 +118,8 @@ public class LaborInsuranceOfficeWs extends WebService {
 	/**
 	 * Check duplicate code.
 	 *
-	 * @param lstSocialInsuranceOfficeImport
-	 *            the lst social insurance office import
+	 * @param socialInsuranceOfficeImport
+	 *            the social insurance office import
 	 * @return the labor insurance office check import dto
 	 */
 	@POST
@@ -138,7 +138,8 @@ public class LaborInsuranceOfficeWs extends WebService {
 	 */
 	@POST
 	@Path("importser/importData")
-	public LaborInsuranceOfficeImportOutDto importData(LaborInsuranceOfficeImportDto laborInsuranceOfficeImportDto) {
+	public LaborInsuranceOfficeImportOutDto importData(
+			LaborInsuranceOfficeImportDto laborInsuranceOfficeImportDto) {
 		return importser.importData(laborInsuranceOfficeImportDto);
 	}
 }

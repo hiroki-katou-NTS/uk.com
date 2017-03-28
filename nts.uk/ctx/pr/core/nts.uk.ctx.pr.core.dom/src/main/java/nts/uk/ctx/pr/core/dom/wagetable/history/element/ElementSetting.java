@@ -7,6 +7,7 @@ package nts.uk.ctx.pr.core.dom.wagetable.history.element;
 import java.util.List;
 
 import lombok.Getter;
+import lombok.Setter;
 import nts.uk.ctx.pr.core.dom.wagetable.DemensionNo;
 import nts.uk.ctx.pr.core.dom.wagetable.ElementType;
 import nts.uk.ctx.pr.core.dom.wagetable.history.element.item.Item;
@@ -25,16 +26,20 @@ public class ElementSetting {
 	private ElementType type;
 
 	/** The item list. */
-	private List<Item> itemList;
+	@Setter
+	private List<? extends Item> itemList;
 
 	/**
 	 * Instantiates a new wt element setting.
 	 *
-	 * @param demensionNo the demension no
-	 * @param type the type
-	 * @param itemList the item list
+	 * @param demensionNo
+	 *            the demension no
+	 * @param type
+	 *            the type
+	 * @param itemList
+	 *            the item list
 	 */
-	public ElementSetting(DemensionNo demensionNo, ElementType type, List<Item> itemList) {
+	public ElementSetting(DemensionNo demensionNo, ElementType type, List<? extends Item> itemList) {
 		super();
 		this.demensionNo = demensionNo;
 		this.type = type;

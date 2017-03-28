@@ -4,7 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.app.insurance.labor.accidentrate.command.dto;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import nts.uk.ctx.pr.core.dom.insurance.RoundingMethod;
 import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.InsuBizRateItem;
 import nts.uk.ctx.pr.core.dom.insurance.labor.businesstype.BusinessTypeEnum;
@@ -12,7 +13,8 @@ import nts.uk.ctx.pr.core.dom.insurance.labor.businesstype.BusinessTypeEnum;
 /**
  * Instantiates a new insu biz rate item dto.
  */
-@Data
+@Getter
+@Setter
 public class InsuBizRateItemDto {
 	
 	/** The insu biz type. */

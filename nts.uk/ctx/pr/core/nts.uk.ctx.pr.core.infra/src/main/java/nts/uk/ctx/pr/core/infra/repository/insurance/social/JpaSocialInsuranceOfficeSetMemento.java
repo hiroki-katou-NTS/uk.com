@@ -4,7 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.infra.repository.insurance.social;
 
-import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.Address;
 import nts.uk.ctx.pr.core.dom.insurance.KanaAddress;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
@@ -44,9 +43,9 @@ public class JpaSocialInsuranceOfficeSetMemento implements SocialInsuranceOffice
 	 * setCompanyCode(nts.uk.ctx.core.dom.company.CompanyCode)
 	 */
 	@Override
-	public void setCompanyCode(CompanyCode companyCode) {
+	public void setCompanyCode(String companyCode) {
 		QismtSocialInsuOfficePK QismtSocialInsuOfficePK = new QismtSocialInsuOfficePK();
-		QismtSocialInsuOfficePK.setCcd(companyCode.v());
+		QismtSocialInsuOfficePK.setCcd(companyCode);
 		this.typeValue.setQismtSocialInsuOfficePK(QismtSocialInsuOfficePK);
 	}
 
@@ -59,7 +58,8 @@ public class JpaSocialInsuranceOfficeSetMemento implements SocialInsuranceOffice
 	 */
 	@Override
 	public void setCode(OfficeCode code) {
-		QismtSocialInsuOfficePK QismtSocialInsuOfficePK = this.typeValue.getQismtSocialInsuOfficePK();
+		QismtSocialInsuOfficePK QismtSocialInsuOfficePK = this.typeValue
+				.getQismtSocialInsuOfficePK();
 		QismtSocialInsuOfficePK.setSiOfficeCd(code.v());
 		this.typeValue.setQismtSocialInsuOfficePK(QismtSocialInsuOfficePK);
 	}
@@ -122,18 +122,6 @@ public class JpaSocialInsuranceOfficeSetMemento implements SocialInsuranceOffice
 	@Override
 	public void setPotalCode(PotalCode potalCode) {
 		this.typeValue.setPostal(potalCode.v());
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * nts.uk.ctx.pr.core.dom.insurance.social.SocialInsuranceOfficeSetMemento#
-	 * setPrefecture(java.lang.String)
-	 */
-	@Override
-	public void setPrefecture(String prefecture) {
-		this.typeValue.setPrefecture(prefecture);
 	}
 
 	/*

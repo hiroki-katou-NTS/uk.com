@@ -7,7 +7,6 @@ package nts.uk.ctx.pr.report.infra.repository.wageledger.memento;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import nts.uk.ctx.pr.report.dom.company.CompanyCode;
 import nts.uk.ctx.pr.report.dom.wageledger.outputsetting.WLCategorySetting;
 import nts.uk.ctx.pr.report.dom.wageledger.outputsetting.WLOutputSettingCode;
 import nts.uk.ctx.pr.report.dom.wageledger.outputsetting.WLOutputSettingName;
@@ -21,7 +20,7 @@ import nts.uk.ctx.pr.report.infra.entity.wageledger.QlsptLedgerFormHeadPK;
 public class JpaWLOutputSettingSetMemento implements WLOutputSettingSetMemento{
 	
 	/** The company code. */
-	private CompanyCode companyCode;
+	private String companyCode;
 	
 	/** The code. */
 	private WLOutputSettingCode code;
@@ -91,8 +90,8 @@ public class JpaWLOutputSettingSetMemento implements WLOutputSettingSetMemento{
 	 * #setCompanyCode(nts.uk.ctx.pr.report.dom.company.CompanyCode)
 	 */
 	@Override
-	public void setCompanyCode(CompanyCode companyCode) {
-		this.entity.getQlsptLedgerFormHeadPK().setCcd(companyCode.v());
+	public void setCompanyCode(String companyCode) {
+		this.entity.getQlsptLedgerFormHeadPK().setCcd(companyCode);
 		this.companyCode = companyCode;
 	}
 }

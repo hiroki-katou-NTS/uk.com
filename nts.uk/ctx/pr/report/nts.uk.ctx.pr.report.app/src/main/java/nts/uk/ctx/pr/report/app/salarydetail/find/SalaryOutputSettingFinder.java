@@ -5,6 +5,7 @@
 package nts.uk.ctx.pr.report.app.salarydetail.find;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -25,10 +26,6 @@ public class SalaryOutputSettingFinder {
 	@Inject
 	private SalaryOutputSettingRepository repository;
 
-	/** The header repository. */
-	@Inject
-	private SalaryOutputSettingHeaderRepository headerRepository;
-
 	/**
 	 * Find.
 	 *
@@ -48,6 +45,11 @@ public class SalaryOutputSettingFinder {
 	 * @return the list
 	 */
 	public List<SalaryOutputSettingHeaderDto> findAll() {
-		return headerRepository.findAll(AppContexts.user().companyCode());
+		return this.repository.findAll(AppContexts.user().companyCode()).stream().map(setting -> {
+			return SalaryOutputSettingHeaderDto.builder()
+					.code(setting.getCode().v())
+					.name(setting.getName().v())
+					.build();
+		}).collect(Collectors.toList());
 	}
 }

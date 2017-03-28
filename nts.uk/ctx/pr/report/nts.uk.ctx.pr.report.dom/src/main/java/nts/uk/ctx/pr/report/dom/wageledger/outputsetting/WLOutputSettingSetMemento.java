@@ -6,8 +6,6 @@ package nts.uk.ctx.pr.report.dom.wageledger.outputsetting;
 
 import java.util.List;
 
-import nts.uk.ctx.pr.report.dom.company.CompanyCode;
-
 /**
  * The Interface WLOutputSettingSetMemento.
  */
@@ -46,5 +44,5 @@ public interface WLOutputSettingSetMemento {
 	 *
 	 * @param companyCode the new company code
 	 */
-	void setCompanyCode(CompanyCode companyCode);
+	void setCompanyCode(String companyCode);
 }

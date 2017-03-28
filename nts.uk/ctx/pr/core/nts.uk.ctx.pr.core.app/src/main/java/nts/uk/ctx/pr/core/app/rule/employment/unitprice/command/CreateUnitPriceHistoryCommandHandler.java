@@ -16,13 +16,14 @@ import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceHistory;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceHistoryRepository;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceRepository;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.service.UnitPriceHistoryService;
+import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.service.UnitPriceService;
 
 /**
  * The Class CreateUnitPriceHistoryCommandHandler.
  */
 @Stateless
 public class CreateUnitPriceHistoryCommandHandler
-extends CommandHandlerWithResult<CreateUnitPriceHistoryCommand, UnitPriceHistory> {
+		extends CommandHandlerWithResult<CreateUnitPriceHistoryCommand, UnitPriceHistory> {
 
 	/** The unit price history repository. */
 	@Inject
@@ -36,6 +37,10 @@ extends CommandHandlerWithResult<CreateUnitPriceHistoryCommand, UnitPriceHistory
 	@Inject
 	private UnitPriceHistoryService unitPriceHistoryService;
 
+	/** The unit price service. */
+	@Inject
+	private UnitPriceService unitPriceService;
+
 	/*
 	 * (non-Javadoc)
 	 *
@@ -48,22 +53,23 @@ extends CommandHandlerWithResult<CreateUnitPriceHistoryCommand, UnitPriceHistory
 	protected UnitPriceHistory handle(CommandHandlerContext<CreateUnitPriceHistoryCommand> context) {
 		// Get command.
 		CreateUnitPriceHistoryCommand command = context.getCommand();
+		command.setId(IdentifierUtil.randomUniqueId());
 
 		// Transfer data
 		UnitPrice unitPrice = new UnitPrice(command);
 		UnitPriceHistory unitPriceHistory = new UnitPriceHistory(command);
-		command.setId(IdentifierUtil.randomUniqueId());
 
 		// Validate
+		unitPriceHistory.validate();
+		unitPrice.validate();
 		this.unitPriceHistoryService.validateRequiredItem(unitPriceHistory);
+		this.unitPriceService.validateRequiredItem(unitPrice);
+		this.unitPriceService.checkDuplicateCode(unitPrice);
 		this.unitPriceHistoryService.validateDateRange(unitPriceHistory);
-
-		// Check duplicate code.
-		this.unitPriceHistoryService.checkDuplicateCode(unitPriceHistory);
 
 		// Persit.
 		this.unitPriceRepository.add(unitPrice);
-		this.unitPriceHistoryRepository.add(unitPriceHistory);
+		this.unitPriceHistoryRepository.addHistory(unitPriceHistory);
 
 		// Ret.
 		return unitPriceHistory;
