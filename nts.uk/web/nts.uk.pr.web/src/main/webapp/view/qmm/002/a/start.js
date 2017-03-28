@@ -3,4 +3,3 @@ __viewContext.ready(function () {
     screenModel.startPage();
     this.bind(screenModel);
 });
-//# sourceMappingURL=start.js.map

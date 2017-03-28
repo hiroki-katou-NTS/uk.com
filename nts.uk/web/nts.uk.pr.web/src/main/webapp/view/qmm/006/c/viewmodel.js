@@ -43,10 +43,10 @@ var qmm006;
                     var oldLineBankCode = self.currentCode();
                     var newLineBankCode = self.currentCode1();
                     if (oldLineBankCode == null || newLineBankCode == null) {
-                        nts.uk.ui.dialog.alert("＊が選択されていません。");
+                        nts.uk.ui.dialog.alert("＊が選択されていません。"); //ER007
                     }
                     else if (oldLineBankCode == newLineBankCode) {
-                        nts.uk.ui.dialog.alert("統合元と統合先で同じコードの＊が選択されています。\r\n  ＊を確認してください。");
+                        nts.uk.ui.dialog.alert("統合元と統合先で同じコードの＊が選択されています。\r\n  ＊を確認してください。"); //ER009
                     }
                     else {
                         var data = {
@@ -86,4 +86,3 @@ var qmm006;
     })(c = qmm006.c || (qmm006.c = {}));
 })(qmm006 || (qmm006 = {}));
 ;
-//# sourceMappingURL=viewmodel.js.map

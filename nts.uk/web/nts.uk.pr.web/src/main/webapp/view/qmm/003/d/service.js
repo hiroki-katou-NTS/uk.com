@@ -10,6 +10,9 @@ var qmm003;
                 getResidentialTaxByResidential: "pr/core/residential/findResidentialTax/{0}/{1}",
                 deleteResidential: "pr/core/residential/deleteresidential"
             };
+            /**
+             * Get list ResidentialTax
+             */
             function getResidentialTax() {
                 var dfd = $.Deferred();
                 nts.uk.request.ajax(paths.getResidentalTaxList)
@@ -117,4 +120,3 @@ var qmm003;
         })(service = d.service || (d.service = {}));
     })(d = qmm003.d || (qmm003.d = {}));
 })(qmm003 || (qmm003 = {}));
-//# sourceMappingURL=service.js.map

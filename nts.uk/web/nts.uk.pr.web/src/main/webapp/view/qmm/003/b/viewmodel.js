@@ -51,6 +51,7 @@ var qmm003;
                     self.singleSelectedCode = ko.observable(nts.uk.ui.windows.getShared("singleSelectedCode"));
                     self.currentNode = ko.observable((new Node("", "", [])));
                 };
+                //11.初期データ取得処理 11. Initial data acquisition processing
                 ScreenModel.prototype.start = function () {
                     var dfd = $.Deferred();
                     var self = this;
@@ -137,4 +138,3 @@ var qmm003;
     })(b = qmm003.b || (qmm003.b = {}));
 })(qmm003 || (qmm003 = {}));
 ;
-//# sourceMappingURL=viewmodel.js.map

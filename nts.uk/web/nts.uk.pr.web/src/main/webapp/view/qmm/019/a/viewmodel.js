@@ -18,7 +18,7 @@ var qmm019;
                 this.totalGrayLine = ko.observable("（+非表示0行）");
                 this.totalGrayLineNumber = ko.observable(0);
                 this.allowClick = ko.observable(true);
-                this.firstLayoutCode = "";
+                this.firstLayoutCode = ""; //Dùng cho select item đầu tiên.
                 var self = this;
                 screenQmm019 = ko.observable(self);
                 self.itemList = ko.observableArray([]);
@@ -120,6 +120,7 @@ var qmm019;
                 $(".row").sortable("destroy");
                 $(".all-line").sortable("destroy");
             };
+            // start function
             ScreenModel.prototype.start = function (currentLayoutSelectedCode) {
                 var self = this;
                 var dfd = $.Deferred();
@@ -129,6 +130,7 @@ var qmm019;
                         a.service.getLayoutsWithMaxStartYm().done(function (layoutsMax) {
                             self.layoutsMax(layoutsMax);
                             self.buildTreeDataSource();
+                            //let firstLayout: service.model.LayoutMasterDto = _.first(self.layouts());
                             if (currentLayoutSelectedCode === undefined) {
                                 self.singleSelectedCode(self.firstLayoutCode);
                             }
@@ -143,8 +145,10 @@ var qmm019;
                         dfd.resolve();
                     }
                 }).fail(function (res) {
+                    // Alert message
                     alert(res);
                 });
+                // Return.
                 return dfd.promise();
             };
             ScreenModel.prototype.buildTreeDataSource = function () {
@@ -240,4 +244,3 @@ var qmm019;
     })(a = qmm019.a || (qmm019.a = {}));
 })(qmm019 || (qmm019 = {}));
 ;
-//# sourceMappingURL=viewmodel.js.map
