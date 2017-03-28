@@ -36,7 +36,7 @@ public abstract class PensionBaseCommand {
 	private String endMonth;
 	
 	/** The fund input apply. */
-	private Boolean fundInputApply;
+	private Integer fundInputApply;
 	
 	/** The auto calculate. */
 	private Integer autoCalculate;

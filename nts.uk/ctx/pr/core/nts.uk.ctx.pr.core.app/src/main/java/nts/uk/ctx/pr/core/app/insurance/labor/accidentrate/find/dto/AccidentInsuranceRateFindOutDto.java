@@ -9,8 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import lombok.Data;
-import nts.uk.ctx.core.dom.company.CompanyCode;
+import lombok.Getter;
+import lombok.Setter;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.AccidentInsuranceRateSetMemento;
 import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.InsuBizRateItem;
@@ -19,7 +19,8 @@ import nts.uk.ctx.pr.core.dom.insurance.labor.businesstype.InsuranceBusinessType
 /**
  * The Class AccidentInsuranceRateFindOutDto.
  */
-@Data
+@Getter
+@Setter
 public class AccidentInsuranceRateFindOutDto implements AccidentInsuranceRateSetMemento {
 
 	/** The history insurance. */
@@ -32,7 +33,8 @@ public class AccidentInsuranceRateFindOutDto implements AccidentInsuranceRateSet
 	/**
 	 * Sets the dto to.
 	 *
-	 * @param lstDomain the new dto to
+	 * @param lstDomain
+	 *            the new dto to
 	 */
 	public void setDtoTo(List<InsuranceBusinessType> lstDomain) {
 		for (InsuranceBusinessType itemDomain : lstDomain) {
@@ -64,7 +66,7 @@ public class AccidentInsuranceRateFindOutDto implements AccidentInsuranceRateSet
 	 * company.CompanyCode)
 	 */
 	@Override
-	public void setCompanyCode(CompanyCode companyCode) {
+	public void setCompanyCode(String companyCode) {
 		// TODO Auto-generated method stub
 	}
 
@@ -91,7 +93,8 @@ public class AccidentInsuranceRateFindOutDto implements AccidentInsuranceRateSet
 	public void setRateItems(Set<InsuBizRateItem> items) {
 		this.rateItems = new ArrayList<>();
 		for (InsuBizRateItem insuBizRateItem : items) {
-			InsuBizRateItemFindOutDto insuBizRateItemFindOutDto = new InsuBizRateItemFindOutDto(insuBizRateItem);
+			InsuBizRateItemFindOutDto insuBizRateItemFindOutDto = new InsuBizRateItemFindOutDto(
+					insuBizRateItem);
 			this.rateItems.add(insuBizRateItemFindOutDto);
 		}
 	}

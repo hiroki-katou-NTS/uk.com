@@ -38,7 +38,7 @@ public class AccidentInsuranceRate extends DomainObject {
 	private String historyId;
 
 	/** The company code. */
-	private CompanyCode companyCode;
+	private String companyCode;
 
 	/** The apply range. */
 	private MonthRange applyRange;
@@ -108,7 +108,7 @@ public class AccidentInsuranceRate extends DomainObject {
 	 */
 	public static final AccidentInsuranceRate createWithIntial(String companyCode, YearMonth startYearMonth) {
 		AccidentInsuranceRate domain = new AccidentInsuranceRate();
-		domain.companyCode = new CompanyCode(companyCode);
+		domain.companyCode = companyCode;
 		domain.applyRange = MonthRange.toMaxDate(startYearMonth);
 		Set<InsuBizRateItem> setItem = new HashSet<>();
 		setItem.add(AccidentInsuranceRate.valueIntial(BusinessTypeEnum.Biz1St));

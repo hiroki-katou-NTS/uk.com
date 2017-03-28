@@ -7,7 +7,6 @@ package nts.uk.ctx.pr.core.infra.repository.wagetable;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.wagetable.ElementCount;
 import nts.uk.ctx.pr.core.dom.wagetable.WtCode;
 import nts.uk.ctx.pr.core.dom.wagetable.WtHeadSetMemento;
@@ -44,9 +43,9 @@ public class JpaWtHeadSetMemento implements WtHeadSetMemento {
 	 *            the new company code
 	 */
 	@Override
-	public void setCompanyCode(CompanyCode companyCode) {
+	public void setCompanyCode(String companyCode) {
 		QwtmtWagetableHeadPK qwtmtWagetableHeadPK = new QwtmtWagetableHeadPK();
-		qwtmtWagetableHeadPK.setCcd(companyCode.v());
+		qwtmtWagetableHeadPK.setCcd(companyCode);
 		this.typeValue.setQwtmtWagetableHeadPK(qwtmtWagetableHeadPK);
 	}
 
@@ -87,17 +86,25 @@ public class JpaWtHeadSetMemento implements WtHeadSetMemento {
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.pr.core.dom.wagetable.WtHeadSetMemento#setMode(nts.uk.ctx.pr.core.dom.wagetable.ElementCount)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.dom.wagetable.WtHeadSetMemento#setMode(nts.uk.ctx.pr.
+	 * core.dom.wagetable.ElementCount)
 	 */
 	@Override
 	public void setMode(ElementCount mode) {
 		this.typeValue.setDemensionSet(mode.value);
-		
+
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.pr.core.dom.wagetable.WtHeadSetMemento#setElements(java.util.List)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.dom.wagetable.WtHeadSetMemento#setElements(java.util.
+	 * List)
 	 */
 	@Override
 	public void setElements(List<WtElement> elements) {

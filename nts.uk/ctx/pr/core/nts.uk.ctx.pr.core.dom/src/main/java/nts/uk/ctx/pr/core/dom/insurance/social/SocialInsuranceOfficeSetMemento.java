@@ -4,7 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.dom.insurance.social;
 
-import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.Address;
 import nts.uk.ctx.pr.core.dom.insurance.KanaAddress;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
@@ -25,7 +24,7 @@ public interface SocialInsuranceOfficeSetMemento {
 	 *
 	 * @param companyCode the new company code
 	 */
-	void setCompanyCode(CompanyCode companyCode);
+	void setCompanyCode(String companyCode);
 
 	/**
 	 * Sets the code.
@@ -68,13 +67,6 @@ public interface SocialInsuranceOfficeSetMemento {
 	 * @param potalCode the new potal code
 	 */
 	void setPotalCode(PotalCode potalCode);
-
-	/**
-	 * Sets the prefecture.
-	 *
-	 * @param prefecture the new prefecture
-	 */
-	void setPrefecture(String prefecture);
 
 	/**
 	 * Sets the address 1 st.

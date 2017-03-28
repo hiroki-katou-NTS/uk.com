@@ -9,9 +9,9 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import lombok.Builder;
-import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.CalculateMethod;
 import nts.uk.ctx.pr.core.dom.insurance.CommonAmount;
+import nts.uk.ctx.pr.core.dom.insurance.FundInputApply;
 import nts.uk.ctx.pr.core.dom.insurance.Ins2Rate;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
@@ -57,7 +57,7 @@ public class PensionRateDto implements PensionRateSetMemento {
 	public Set<PensionRateRounding> roundingMethods;
 
 	/** The fund input apply. */
-	public Boolean fundInputApply;
+	public Integer fundInputApply;
 
 	/** The auto calculate. */
 	public Integer autoCalculate;
@@ -82,8 +82,8 @@ public class PensionRateDto implements PensionRateSetMemento {
 	 * #setCompanyCode(nts.uk.ctx.core.dom.company.CompanyCode)
 	 */
 	@Override
-	public void setCompanyCode(CompanyCode companyCode) {
-		this.companyCode = companyCode.v();
+	public void setCompanyCode(String companyCode) {
+		this.companyCode = companyCode;
 
 	}
 
@@ -146,7 +146,8 @@ public class PensionRateDto implements PensionRateSetMemento {
 	 */
 	@Override
 	public void setPremiumRateItems(Set<PensionPremiumRateItem> premiumRateItems) {
-		this.premiumRateItems = premiumRateItems.stream().map(item -> PensionPremiumRateItemDto.fromDomain(item))
+		this.premiumRateItems = premiumRateItems.stream()
+				.map(item -> PensionPremiumRateItemDto.fromDomain(item))
 				.collect(Collectors.toSet());
 	}
 
@@ -182,8 +183,8 @@ public class PensionRateDto implements PensionRateSetMemento {
 	 * #setFundInputApply(java.lang.Boolean)
 	 */
 	@Override
-	public void setFundInputApply(Boolean fundInputApply) {
-		this.fundInputApply = fundInputApply;
+	public void setFundInputApply(FundInputApply fundInputApply) {
+		this.fundInputApply = fundInputApply.value;
 	}
 
 	/*

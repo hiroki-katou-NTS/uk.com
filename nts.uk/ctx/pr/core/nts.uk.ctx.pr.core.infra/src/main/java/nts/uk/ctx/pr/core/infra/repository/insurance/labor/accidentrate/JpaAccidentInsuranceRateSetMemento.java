@@ -8,13 +8,12 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.Set;
 
-import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.AccidentInsuranceRateSetMemento;
 import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.InsuBizRateItem;
+import nts.uk.ctx.pr.core.dom.insurance.labor.businesstype.BusinessTypeEnum;
 import nts.uk.ctx.pr.core.infra.entity.insurance.labor.accidentrate.QismtWorkAccidentInsu;
 import nts.uk.ctx.pr.core.infra.entity.insurance.labor.accidentrate.QismtWorkAccidentInsuPK;
-import nts.uk.ctx.pr.core.infra.repository.insurance.labor.Contants;
 
 /**
  * The Class JpaAccidentInsuranceRateSetMemento.
@@ -42,7 +41,7 @@ public class JpaAccidentInsuranceRateSetMemento implements AccidentInsuranceRate
 	 */
 	@Override
 	public void setHistoryId(String historyId) {
-		for (int index = Contants.BEGIN_FIRST; index < this.typeValue.size(); index++) {
+		for (int index = BusinessTypeEnum.Biz1St.index; index <= BusinessTypeEnum.Biz10Th.index; index++) {
 			QismtWorkAccidentInsu itemI = this.typeValue.get(index);
 			QismtWorkAccidentInsuPK pk = new QismtWorkAccidentInsuPK();
 			pk.setHistId(historyId);
@@ -59,11 +58,11 @@ public class JpaAccidentInsuranceRateSetMemento implements AccidentInsuranceRate
 	 * company.CompanyCode)
 	 */
 	@Override
-	public void setCompanyCode(CompanyCode companyCode) {
-		for (int index = 0; index < this.typeValue.size(); index++) {
+	public void setCompanyCode(String companyCode) {
+		for (int index = BusinessTypeEnum.Biz1St.index; index <= BusinessTypeEnum.Biz10Th.index; index++) {
 			QismtWorkAccidentInsu itemI = this.typeValue.get(index);
 			QismtWorkAccidentInsuPK pk = itemI.getQismtWorkAccidentInsuPK();
-			pk.setCcd(companyCode.v());
+			pk.setCcd(companyCode);
 			itemI.setQismtWorkAccidentInsuPK(pk);
 			this.typeValue.set(index, itemI);
 		}
@@ -78,7 +77,7 @@ public class JpaAccidentInsuranceRateSetMemento implements AccidentInsuranceRate
 	 */
 	@Override
 	public void setApplyRange(MonthRange applyRange) {
-		for (int index = Contants.BEGIN_FIRST; index < this.typeValue.size(); index++) {
+		for (int index = BusinessTypeEnum.Biz1St.index; index <= BusinessTypeEnum.Biz10Th.index; index++) {
 			QismtWorkAccidentInsu itemI = this.typeValue.get(index);
 			itemI.setStrYm(applyRange.getStartMonth().v());
 			itemI.setEndYm(applyRange.getEndMonth().v());
@@ -98,38 +97,7 @@ public class JpaAccidentInsuranceRateSetMemento implements AccidentInsuranceRate
 
 		// set item => data
 		for (InsuBizRateItem item : items) {
-			switch (item.getInsuBizType()) {
-			case Biz1St:
-				this.setDataItem(Contants.BEGIN_FIRST, item);
-				break;
-			case Biz2Nd:
-				this.setDataItem(Contants.BEGIN_SECOND, item);
-				break;
-			case Biz3Rd:
-				this.setDataItem(Contants.BEGIN_THIRD, item);
-				break;
-			case Biz4Th:
-				this.setDataItem(Contants.BEGIN_FOURTH, item);
-				break;
-			case Biz5Th:
-				this.setDataItem(Contants.BEGIN_FIFTH, item);
-				break;
-			case Biz6Th:
-				this.setDataItem(Contants.BEGIN_SIXTH, item);
-				break;
-			case Biz7Th:
-				this.setDataItem(Contants.BEGIN_SEVENTH, item);
-				break;
-			case Biz8Th:
-				this.setDataItem(Contants.BEGIN_EIGHTH, item);
-				break;
-			case Biz9Th:
-				this.setDataItem(Contants.BEGIN_NINTH, item);
-				break;
-			case Biz10Th:
-				this.setDataItem(Contants.BEGIN_TENTH, item);
-				break;
-			}
+			this.setDataItem(item.getInsuBizType().index, item);
 		}
 	}
 

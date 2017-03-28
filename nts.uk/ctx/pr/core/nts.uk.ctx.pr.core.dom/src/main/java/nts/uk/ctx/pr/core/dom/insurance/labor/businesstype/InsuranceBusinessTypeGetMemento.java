@@ -17,7 +17,7 @@ public interface InsuranceBusinessTypeGetMemento {
 	 *
 	 * @return the company code
 	 */
-	CompanyCode getCompanyCode();
+	String getCompanyCode();
 
 	/**
 	 * Gets the biz order.

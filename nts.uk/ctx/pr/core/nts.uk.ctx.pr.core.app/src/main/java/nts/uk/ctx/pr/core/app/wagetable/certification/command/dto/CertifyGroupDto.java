@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Set;
 
 import lombok.Data;
-import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.Certification;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroup;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroupCode;
@@ -107,8 +106,8 @@ public class CertifyGroupDto {
 		 * #getCompanyCode()
 		 */
 		@Override
-		public CompanyCode getCompanyCode() {
-			return new CompanyCode(companyCode);
+		public String getCompanyCode() {
+			return companyCode;
 		}
 
 		/*

@@ -15,7 +15,6 @@ import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.CommonAmount;
 import nts.uk.ctx.pr.core.dom.insurance.InsuranceAmount;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
@@ -69,15 +68,15 @@ public class RegisterPensionCommandHandler extends CommandHandler<RegisterPensio
 		RegisterPensionCommand command = context.getCommand();
 
 		// Get the current company code.
-		CompanyCode companyCode = new CompanyCode(AppContexts.user().companyCode());
+		String companyCode = AppContexts.user().companyCode();
 		OfficeCode officeCode = new OfficeCode(command.getOfficeCode());
-		
+
 		// Transfer data
 		PensionRate pensionRate = command.toDomain(companyCode);
 		pensionRate.validate();
 		// Validate
 		pensionRateService.validateRequiredItem(pensionRate);
-		pensionRateService.createInitalHistory(companyCode.v(),officeCode.v(), pensionRate.getStart());
+		pensionRateService.createInitalHistory(companyCode, officeCode.v(), pensionRate.getStart());
 		// Insert into db.
 		pensionRateRepository.add(pensionRate);
 
@@ -85,12 +84,14 @@ public class RegisterPensionCommandHandler extends CommandHandler<RegisterPensio
 		List<AvgEarnLevelMasterSetting> listAvgEarnLevelMasterSetting = avgEarnLevelMasterSettingRepository
 				.findAll(companyCode);
 
-		List<PensionAvgearn> listPensionAvgearn = listAvgEarnLevelMasterSetting.stream().map(setting -> {
-			return new PensionAvgearn(new PensionAvgearnMemento(pensionRate.getHistoryId(), setting,
-					pensionRate.getFundRateItems(), pensionRate.getChildContributionRate().v()));
-		}).collect(Collectors.toList());
+		List<PensionAvgearn> listPensionAvgearn = listAvgEarnLevelMasterSetting.stream()
+				.map(setting -> {
+					return new PensionAvgearn(new PensionAvgearnMemento(pensionRate.getHistoryId(),
+							setting, pensionRate.getFundRateItems(),
+							pensionRate.getChildContributionRate().v()));
+				}).collect(Collectors.toList());
 
-		pensionAvgearnRepository.update(listPensionAvgearn, companyCode.v(), command.getOfficeCode());
+		pensionAvgearnRepository.update(listPensionAvgearn, companyCode, command.getOfficeCode());
 	}
 
 	/**
@@ -113,13 +114,17 @@ public class RegisterPensionCommandHandler extends CommandHandler<RegisterPensio
 		/**
 		 * Instantiates a new pension avgearn memento.
 		 *
-		 * @param historyId the history id
-		 * @param setting the setting
-		 * @param rateItems the rate items
-		 * @param childContributionRate the child contribution rate
+		 * @param historyId
+		 *            the history id
+		 * @param setting
+		 *            the setting
+		 * @param rateItems
+		 *            the rate items
+		 * @param childContributionRate
+		 *            the child contribution rate
 		 */
-		public PensionAvgearnMemento(String historyId, AvgEarnLevelMasterSetting setting, Set<FundRateItem> rateItems,
-				BigDecimal childContributionRate) {
+		public PensionAvgearnMemento(String historyId, AvgEarnLevelMasterSetting setting,
+				Set<FundRateItem> rateItems, BigDecimal childContributionRate) {
 			this.setting = setting;
 			this.rateItems = rateItems;
 			this.historyId = historyId;
@@ -156,7 +161,8 @@ public class RegisterPensionCommandHandler extends CommandHandler<RegisterPensio
 		 */
 		@Override
 		public InsuranceAmount getChildContributionAmount() {
-			return new InsuranceAmount(BigDecimal.valueOf(setting.getAvgEarn()).multiply(childContributionRate));
+			return new InsuranceAmount(
+					BigDecimal.valueOf(setting.getAvgEarn()).multiply(childContributionRate));
 		}
 
 		/*
@@ -179,7 +185,8 @@ public class RegisterPensionCommandHandler extends CommandHandler<RegisterPensio
 		 */
 		@Override
 		public PensionAvgearnValue getCompanyFundExemption() {
-			return calculateAvgearnValue(BigDecimal.valueOf(setting.getAvgEarn()), this.rateItems, false, true);
+			return calculateAvgearnValue(BigDecimal.valueOf(setting.getAvgEarn()), this.rateItems,
+					false, true);
 		}
 
 		/*
@@ -190,7 +197,8 @@ public class RegisterPensionCommandHandler extends CommandHandler<RegisterPensio
 		 */
 		@Override
 		public PensionAvgearnValue getCompanyPension() {
-			return calculateAvgearnValue(BigDecimal.valueOf(setting.getAvgEarn()), this.rateItems, false, false);
+			return calculateAvgearnValue(BigDecimal.valueOf(setting.getAvgEarn()), this.rateItems,
+					false, false);
 		}
 
 		/*
@@ -213,7 +221,8 @@ public class RegisterPensionCommandHandler extends CommandHandler<RegisterPensio
 		 */
 		@Override
 		public PensionAvgearnValue getPersonalFundExemption() {
-			return calculateAvgearnValue(BigDecimal.valueOf(setting.getAvgEarn()), this.rateItems, true, true);
+			return calculateAvgearnValue(BigDecimal.valueOf(setting.getAvgEarn()), this.rateItems,
+					true, true);
 		}
 
 		/*
@@ -224,7 +233,8 @@ public class RegisterPensionCommandHandler extends CommandHandler<RegisterPensio
 		 */
 		@Override
 		public PensionAvgearnValue getPersonalPension() {
-			return calculateAvgearnValue(BigDecimal.valueOf(setting.getAvgEarn()), this.rateItems, true, false);
+			return calculateAvgearnValue(BigDecimal.valueOf(setting.getAvgEarn()), this.rateItems,
+					true, false);
 		}
 
 	}
@@ -232,29 +242,33 @@ public class RegisterPensionCommandHandler extends CommandHandler<RegisterPensio
 	/**
 	 * Calculate avgearn value.
 	 *
-	 * @param masterRate the master rate
-	 * @param rateItems the rate items
-	 * @param isPersonal the is personal
-	 * @param isExemption the is exemption
+	 * @param masterRate
+	 *            the master rate
+	 * @param rateItems
+	 *            the rate items
+	 * @param isPersonal
+	 *            the is personal
+	 * @param isExemption
+	 *            the is exemption
 	 * @return the pension avgearn value
 	 */
-	private PensionAvgearnValue calculateAvgearnValue(BigDecimal masterRate, Set<FundRateItem> rateItems,
-			boolean isPersonal, boolean isExemption) {
+	private PensionAvgearnValue calculateAvgearnValue(BigDecimal masterRate,
+			Set<FundRateItem> rateItems, boolean isPersonal, boolean isExemption) {
 		PensionAvgearnValue value = new PensionAvgearnValue();
 		rateItems.forEach(rateItem -> {
 			if (rateItem.getPayType() == PaymentType.Salary) {
 				switch (rateItem.getGenderType()) {
 				case Female:
-					value.setFemaleAmount(
-							new CommonAmount(calculateChargeRate(masterRate, rateItem, isPersonal, isExemption)));
+					value.setFemaleAmount(new CommonAmount(
+							calculateChargeRate(masterRate, rateItem, isPersonal, isExemption)));
 					break;
 				case Male:
-					value.setMaleAmount(
-							new CommonAmount(calculateChargeRate(masterRate, rateItem, isPersonal, isExemption)));
+					value.setMaleAmount(new CommonAmount(
+							calculateChargeRate(masterRate, rateItem, isPersonal, isExemption)));
 					break;
 				case Unknow:
-					value.setUnknownAmount(
-							new CommonAmount(calculateChargeRate(masterRate, rateItem, isPersonal, isExemption)));
+					value.setUnknownAmount(new CommonAmount(
+							calculateChargeRate(masterRate, rateItem, isPersonal, isExemption)));
 					break;
 				}
 			}
@@ -267,14 +281,18 @@ public class RegisterPensionCommandHandler extends CommandHandler<RegisterPensio
 	/**
 	 * Calculate charge rate.
 	 *
-	 * @param masterRate the master rate
-	 * @param rateItem the rate item
-	 * @param isPersonal the is personal
-	 * @param isExemption the is exemption
+	 * @param masterRate
+	 *            the master rate
+	 * @param rateItem
+	 *            the rate item
+	 * @param isPersonal
+	 *            the is personal
+	 * @param isExemption
+	 *            the is exemption
 	 * @return the big decimal
 	 */
-	private BigDecimal calculateChargeRate(BigDecimal masterRate, FundRateItem rateItem, boolean isPersonal,
-			boolean isExemption) {
+	private BigDecimal calculateChargeRate(BigDecimal masterRate, FundRateItem rateItem,
+			boolean isPersonal, boolean isExemption) {
 		PensionChargeRateItem chargeRate = isExemption ? rateItem.getExemptionChargeRate()
 				: rateItem.getBurdenChargeRate();
 		if (isPersonal) {
