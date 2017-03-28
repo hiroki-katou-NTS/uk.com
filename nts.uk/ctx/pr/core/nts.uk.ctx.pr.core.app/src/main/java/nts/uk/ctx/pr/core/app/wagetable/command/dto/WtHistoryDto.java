@@ -27,7 +27,7 @@ import nts.uk.ctx.pr.core.dom.wagetable.history.element.item.RangeItem;
 import nts.uk.shr.com.context.AppContexts;
 
 /**
- * Instantiates a new certification find dto.
+ * The Class WtHistoryDto.
  */
 @Setter
 @Getter
@@ -42,7 +42,7 @@ public class WtHistoryDto {
 	/** The end month. */
 	private Integer endMonth;
 
-	/** The element settings. */
+	/** The elements. */
 	private List<ElementSettingDto> elements;
 
 	/** The value items. */
@@ -51,9 +51,9 @@ public class WtHistoryDto {
 	/**
 	 * To domain.
 	 *
-	 * @param companyCode
-	 *            the company code
-	 * @return the wage table history
+	 * @param wageTableCode
+	 *            the wage table code
+	 * @return the wt history
 	 */
 	public WtHistory toDomain(String wageTableCode) {
 		WtHistoryDto dto = this;
@@ -65,6 +65,13 @@ public class WtHistoryDto {
 		return wageTableHistory;
 	}
 
+	/**
+	 * From domain.
+	 *
+	 * @param wtHistory
+	 *            the wt history
+	 * @return the wt history dto
+	 */
 	public WtHistoryDto fromDomain(WtHistory wtHistory) {
 		WtHistoryDto dto = this;
 
@@ -73,16 +80,19 @@ public class WtHistoryDto {
 		return dto;
 	}
 
+	/**
+	 * The Class WageTableHistoryDtoSetMemento.
+	 */
 	private class WageTableHistoryDtoSetMemento implements WtHistorySetMemento {
 
-		/** The type value. */
+		/** The dto. */
 		protected WtHistoryDto dto;
 
 		/**
-		 * Instantiates a new jpa accident insurance rate get memento.
+		 * Instantiates a new wage table history dto set memento.
 		 *
-		 * @param typeValue
-		 *            the type value
+		 * @param dto
+		 *            the dto
 		 */
 		public WageTableHistoryDtoSetMemento(WtHistoryDto dto) {
 			this.dto = dto;
@@ -196,21 +206,23 @@ public class WtHistoryDto {
 	}
 
 	/**
-	 * The Class WageTableHistoryAddCommandMemento.
+	 * The Class WageTableHistoryDtoGetMemento.
 	 */
 	private class WageTableHistoryDtoGetMemento implements WtHistoryGetMemento {
 
 		/** The wage table code. */
 		protected WtCode wageTableCode;
 
-		/** The type value. */
+		/** The dto. */
 		protected WtHistoryDto dto;
 
 		/**
-		 * Instantiates a new jpa accident insurance rate get memento.
+		 * Instantiates a new wage table history dto get memento.
 		 *
-		 * @param typeValue
-		 *            the type value
+		 * @param wageTableCode
+		 *            the wage table code
+		 * @param dto
+		 *            the dto
 		 */
 		public WageTableHistoryDtoGetMemento(WtCode wageTableCode, WtHistoryDto dto) {
 			this.wageTableCode = wageTableCode;
