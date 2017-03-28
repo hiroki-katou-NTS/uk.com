@@ -40,6 +40,9 @@ public class JpaPaydayRepository extends JpaRepository implements PaydayReposito
 	private final String SELECT_ALL_11 = SELECT_ALL_BY_CCD
 			+ " AND c.qpdmtPaydayPK.processingNo = :processingNo AND c.qpdmtPaydayPK.payBonusAtr = :payBonusAtr AND c.qpdmtPaydayPK.processingYm >= :strYmd AND c.qpdmtPaydayPK.processingYm <= :endYmd ";
 
+	private final String SELECT_ALL_12 = SELECT_ALL_BY_CCD
+			+ " AND c.qpdmtPaydayPK.payBonusAtr = :payBonusAtr AND c.qpdmtPaydayPK.sparePayAtr = :sparePayAtr";
+
 	@Override
 	public List<Payday> select1_3(String companyCode, int processingNo, int payBonusAtr, int processingYm,
 			int sparePayAtr) {
@@ -77,7 +80,7 @@ public class JpaPaydayRepository extends JpaRepository implements PaydayReposito
 	}
 
 	@Override
-	public List<Payday> select6b(String companyCode, int processingNo) {
+	public List<Payday> select12b(String companyCode, int processingNo) {
 		return this.queryProxy().query(SELECT_ALL_6_B, QpdmtPayday.class).setParameter("companyCode", companyCode)
 				.setParameter("processingNo", processingNo).getList(c -> toDomain(c));
 	}
@@ -96,6 +99,13 @@ public class JpaPaydayRepository extends JpaRepository implements PaydayReposito
 		return this.queryProxy().query(SELECT_ALL_11, QpdmtPayday.class).setParameter("companyCode", companyCode)
 				.setParameter("processingNo", processingNo).setParameter("payBonusAtr", payBonusAtr)
 				.setParameter("strYmd", strYmd).setParameter("endYmd", endYmd).getList(c -> toDomain(c));
+	}
+
+	@Override
+	public List<Payday> select12(String companyCode, int payBonusAtr, int sparePayAtr) {
+		return this.queryProxy().query(SELECT_ALL_12, QpdmtPayday.class).setParameter("companyCode", companyCode)
+				.setParameter("payBonusAtr", payBonusAtr).setParameter("sparePayAtr", sparePayAtr)
+				.getList(c -> toDomain(c));
 	}
 
 	@Override
@@ -120,5 +130,4 @@ public class JpaPaydayRepository extends JpaRepository implements PaydayReposito
 				domain.getEmpInsStdDate(), domain.getStmtOutputMon().v(), domain.getNeededWorkDay().v(),
 				domain.getAccountingClosing());
 	}
-
 }

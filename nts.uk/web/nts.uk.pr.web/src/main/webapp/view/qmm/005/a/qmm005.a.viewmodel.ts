@@ -33,6 +33,11 @@ module qmm005.a {
                         _row.label(item[0].processingName);
                         let _sel001Data: Array<common.SelectItem> = [];
                         let _sel002Data: Array<common.SelectItem> = [];
+                        let _sel004Data: Array<common.SelectItem> = [];
+                        let _sel005Data: Array<common.SelectItem> = [];
+                        let cym = nts.uk.time.parseYearMonth(item[0].currentProcessingYm);
+                        let bcym = nts.uk.time.parseYearMonth(item[0].bcurrentProcessingYm);
+                        let cspd = 0, bcspdy = 0, cspdm = 0;
                         if (item[1]) {
                             var payDays = _.orderBy(item[1], ['processingYm'], ['desc']);
                             for (let i in payDays) {
@@ -42,36 +47,47 @@ module qmm005.a {
                                     stdDate: Date = new Date(rec.stdDate),
                                     label: string = nts.uk.time.formatDate(payDate, "yyyy/MM/dd") + '(' + payDate['getDayJP']() + ')|' + nts.uk.time.formatDate(stdDate, "yyyy/MM/dd");
 
-                                _sel002Data.push(new common.SelectItem({ index: index, label: label }));
-
                                 if (!rec.payBonusAtr && !rec.sparePayAtr) {
                                     var ym = nts.uk.time.parseYearMonth(rec.processingYm);
                                     if (ym.success) {
                                         _sel001Data.push(new SelectItem(ym.year, ym.year.toString()));
                                     }
                                 }
+
+                                if (payDate.getFullYear() == cym.year && payDate.getMonth() == cym.month - 1) {
+                                    cspd = index;
+                                }
+                                _sel002Data.push(new common.SelectItem({ index: index, label: label }));
+
+                                debugger;
+                                let pym = nts.uk.time.parseYearMonth(rec.processingYm);
+                                if (pym.success) {
+                                    _sel004Data.push(new SelectItem(pym.year, pym.year.toString()));
+                                    _sel005Data.push(new SelectItem(pym.month, pym.month.toString()));
+                                }
                             }
+                            
                         }
+                        
                         _sel001Data = _.uniqWith(_sel001Data, _.isEqual);
                         _row.sel001Data(_sel001Data);
+                        
+                        _sel002Data = _.uniqWith(_sel002Data, _.isEqual);
                         _row.sel002Data(_sel002Data);
+                        
+                        _sel004Data = _.uniqWith(_sel004Data, _.isEqual);
+                        _row.sel004Data(_sel004Data);
+                        
+                        _sel005Data = _.uniqWith(_sel005Data, _.isEqual);
+                        _row.sel005Data(_sel005Data);
 
                         // Năm được là năm hiện tại
-                        let cym = nts.uk.time.parseYearMonth(item[0].currentProcessingYm);
                         _row.sel001(cym.year);
-                        
+                        _row.sel002(cspd);
                         _row.sel003(item[0].bonusAtr);
+                        _row.sel004(bcym.year);
+                        _row.sel005(bcym.month);
 
-                        let bCurrentProcessingYm = nts.uk.time.parseYearMonth(item[0].bcurrentProcessingYm);
-                        _row.sel004(bCurrentProcessingYm.year);
-
-                        let _sel004Data = [{ index: bCurrentProcessingYm.year, label: '' + bCurrentProcessingYm.year }];
-                        _row.sel004Data(_sel004Data);
-
-                        _row.sel005(bCurrentProcessingYm.month);
-
-                        let _sel005Data = [{ index: bCurrentProcessingYm.month, label: bCurrentProcessingYm.month + '月' }];
-                        _row.sel005Data(_sel005Data);
                     }
                     _records.push(_row);
                 }

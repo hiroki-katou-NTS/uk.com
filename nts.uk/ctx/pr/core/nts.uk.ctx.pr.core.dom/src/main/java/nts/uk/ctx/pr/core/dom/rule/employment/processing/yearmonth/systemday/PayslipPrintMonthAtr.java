@@ -2,15 +2,15 @@ package nts.uk.ctx.pr.core.dom.rule.employment.processing.yearmonth.systemday;
 
 import java.util.HashMap;
 
-public enum PayslipPrintMonth {
+public enum PayslipPrintMonthAtr {
 	PREVIEW_MONTH(-1), CURRENT_MONTH(0);
 
 	public final int value;
 
-	private static HashMap<Integer, PayslipPrintMonth> map = new HashMap<>();
+	private static HashMap<Integer, PayslipPrintMonthAtr> map = new HashMap<>();
 
 	static {
-		for (PayslipPrintMonth item : PayslipPrintMonth.values()) {
+		for (PayslipPrintMonthAtr item : PayslipPrintMonthAtr.values()) {
 			map.put(item.value, item);
 		}
 	}
@@ -20,7 +20,7 @@ public enum PayslipPrintMonth {
 	 * 
 	 * @param 賃金対象区分の値
 	 */
-	PayslipPrintMonth(int value) {
+	PayslipPrintMonthAtr(int value) {
 		this.value = value;
 	}
 
@@ -30,7 +30,7 @@ public enum PayslipPrintMonth {
 	 * @param value
 	 * @return
 	 */
-	public static PayslipPrintMonth valueOf(int value) {
+	public static PayslipPrintMonthAtr valueOf(int value) {
 		return map.get(value);
 	}
 

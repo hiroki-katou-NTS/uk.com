@@ -34,7 +34,7 @@ public class PaydayProcessing extends AggregateRoot {
 
 		return new PaydayProcessing(new CompanyCode(ccd), new ProcessingNo(processingNo),
 				new ProcessingName(processingName), EnumAdaptor.valueOf(displayAtr, DisplayAtr.class),
-				new YearMonth(currentProcessingYm), EnumAdaptor.valueOf(bonusAtr, BonusAtr.class),
-				new YearMonth(bCurrentProcessingYm));
+				YearMonth.of(currentProcessingYm), EnumAdaptor.valueOf(bonusAtr, BonusAtr.class),
+				YearMonth.of(bCurrentProcessingYm));
 	}
 }

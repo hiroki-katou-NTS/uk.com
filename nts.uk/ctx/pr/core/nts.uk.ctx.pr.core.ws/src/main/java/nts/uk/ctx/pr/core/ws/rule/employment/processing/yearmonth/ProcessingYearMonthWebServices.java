@@ -64,7 +64,7 @@ public class ProcessingYearMonthWebServices extends WebService {
 		List<PaydayProcessingDto> paydayProcessings = paydayProcessingFinder.select3(companyCode);
 
 		for (PaydayProcessingDto paydayProcessing : paydayProcessings) {
-			List<PaydayDto> paydayDtos = paydayFinder.select6b(companyCode, paydayProcessing.getProcessingNo());
+			List<PaydayDto> paydayDtos = paydayFinder.select12b(companyCode, paydayProcessing.getProcessingNo());
 			domain[paydayProcessings.indexOf(paydayProcessing)] = new Object[] { paydayProcessing, paydayDtos };
 		}
 
