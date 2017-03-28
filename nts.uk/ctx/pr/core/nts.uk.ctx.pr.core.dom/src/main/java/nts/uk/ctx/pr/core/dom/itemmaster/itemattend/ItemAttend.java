@@ -37,7 +37,7 @@ public class ItemAttend extends AggregateRoot {
 			RangeAtr alRangeHighAtr, AlRangeHigh alRangeHigh, WorkDaysScopeAtr workDaysScopeAtr, Memo memo) {
 		super();
 		this.companyCode = companyCode;
-		this.itemCode = itemCode;
+  		this.itemCode = itemCode;
 		this.avePayAtr = avePayAtr;
 		this.itemAtr = itemAtr;
 		this.errRangeLowAtr = errRangeLowAtr;
