@@ -18,7 +18,7 @@ var nts;
                                     var self = this;
                                     self.listAvgEarnLevelMasterSetting = [];
                                     self.listPensionAvgearnModel = ko.observableArray([]);
-                                    self.pensionRateModel = new PensionRateModel(pensionModel.historyId, pensionModel.officeCode(), officeName, pensionModel.startMonth(), pensionModel.endMonth(), pensionModel.autoCalculate(), pensionModel.rateItems(), pensionModel.fundRateItems(), pensionModel.roundingMethods(), pensionModel.childContributionRate());
+                                    self.pensionRateModel = new PensionRateModel(pensionModel.historyId, pensionModel.officeCode(), officeName, pensionModel.startMonth(), pensionModel.endMonth(), pensionModel.autoCalculate(), pensionModel.fundInputApply(), pensionModel.rateItems(), pensionModel.fundRateItems(), pensionModel.roundingMethods(), pensionModel.childContributionRate());
                                     self.leftShow = ko.observable(true);
                                     self.rightShow = ko.observable(true);
                                     self.leftBtnText = ko.computed(function () { if (self.leftShow())
@@ -161,13 +161,14 @@ var nts;
                             }());
                             viewmodel.ScreenModel = ScreenModel;
                             var PensionRateModel = (function () {
-                                function PensionRateModel(historyId, officeCode, officeName, startMonth, endMonth, autoCalculate, rateItems, fundRateItems, roundingMethods, childContributionRate) {
+                                function PensionRateModel(historyId, officeCode, officeName, startMonth, endMonth, autoCalculate, fundInputApply, rateItems, fundRateItems, roundingMethods, childContributionRate) {
                                     this.historyId = historyId;
                                     this.officeCode = officeCode;
                                     this.officeName = officeName;
                                     this.startMonth = startMonth;
                                     this.endMonth = endMonth;
                                     this.autoCalculate = autoCalculate;
+                                    this.fundInputApply = fundInputApply;
                                     this.rateItems = rateItems;
                                     this.fundRateItems = fundRateItems;
                                     this.roundingMethods = roundingMethods;

@@ -49,6 +49,7 @@ var nts;
                                     if (self.isNewMode()) {
                                         qmm007.service.instance.create(ko.toJS(self.unitPriceHistoryModel())).done(function (res) {
                                             dfd.resolve(res.uuid);
+                                            self.dirtyChecker.reset();
                                         }).fail(function (res) {
                                             self.setMessages(res.messageId);
                                         });
@@ -56,29 +57,26 @@ var nts;
                                     else {
                                         qmm007.service.instance.update(ko.toJS(self.unitPriceHistoryModel())).done(function (res) {
                                             dfd.resolve(self.unitPriceHistoryModel().id);
+                                            self.dirtyChecker.reset();
                                         });
                                     }
                                     return dfd.promise();
                                 };
                                 ScreenModel.prototype.onSelectHistory = function (id) {
-                                    var _this = this;
                                     var self = this;
-                                    var dfd = $.Deferred();
                                     self.isLoading(true);
                                     qmm007.service.instance.findHistoryByUuid(id).done(function (dto) {
                                         self.setUnitPriceHistoryModel(dto);
                                         self.dirtyChecker.reset();
                                         self.isLoading(false);
-                                        nts.uk.ui.windows.setShared('unitPriceHistoryModel', ko.toJS(_this.unitPriceHistoryModel()));
                                         self.clearError();
-                                        dfd.resolve();
                                     });
-                                    return dfd.promise();
                                 };
                                 ScreenModel.prototype.onRegistNew = function () {
                                     var self = this;
                                     self.clearError();
                                     self.clearInput();
+                                    self.dirtyChecker.reset();
                                 };
                                 ScreenModel.prototype.isDirty = function () {
                                     var self = this;

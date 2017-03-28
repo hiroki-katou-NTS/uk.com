@@ -132,8 +132,8 @@ var nts;
                                     var self = this;
                                     self.confirmDirtyAndExecute(function () {
                                         self.isNewMode(true);
-                                        self.igGridSelectedHistoryUuid(undefined);
                                         self.onRegistNew();
+                                        self.igGridSelectedHistoryUuid(undefined);
                                     });
                                 };
                                 ScreenBaseModel.prototype.saveBtnClick = function () {

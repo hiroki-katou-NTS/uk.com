@@ -20,6 +20,7 @@ module nts.uk.pr.view.qmm010.a {
             enableButton: KnockoutObservable<boolean>;
             isEmpty: KnockoutObservable<boolean>;
             isEnableDelete: KnockoutObservable<boolean>;
+            isShowDirty: KnockoutObservable<boolean>;
             //update add LaborInsuranceOffice
             typeAction: KnockoutObservable<number>;
             messageList: KnockoutObservableArray<any>;
@@ -43,16 +44,19 @@ module nts.uk.pr.view.qmm010.a {
                     { messageId: "ER005", message: "入力した＊は既に存在しています。\r\n ＊を確認してください。" },
                     { messageId: "AL001", message: "変更された内容が登録されていません。\r\n よろしいですか。" },
                     { messageId: "AL002", message: "データを削除します。\r\n よろしいですか？。" },
+                    { messageId: "ER010", message: "対象データがありません。" }
                 ]);
                 self.dirty = new nts.uk.ui.DirtyChecker(self.laborInsuranceOfficeModel);
+                self.isShowDirty = ko.observable(true);
             }
 
             //function reset value viewmodel
             private resetValueLaborInsurance() {
                 var self = this;
-                if (self.dirty.isDirty()) {
+                if (self.dirty.isDirty() && self.isShowDirty()) {
                     if (self.typeAction() == TypeActionLaborInsuranceOffice.update) {
                         nts.uk.ui.dialog.confirm(self.messageList()[2].message).ifYes(function() {
+                            self.isShowDirty(false);
                             self.onResetValueLaborInsurance();
                         }).ifNo(function() {
                             //No action
@@ -75,6 +79,7 @@ module nts.uk.pr.view.qmm010.a {
                 if (!self.isEmpty()) self.clearErrorSave();
                 self.dirty.reset();
                 self.isEnableDelete(false);
+                self.isShowDirty(true);
             }
 
             //function clear message error
@@ -108,7 +113,10 @@ module nts.uk.pr.view.qmm010.a {
                         //set data fw /b
                         nts.uk.ui.windows.setShared("dataInsuranceOffice", data);
                         //open dialog /b/index.xhtml
-                        nts.uk.ui.windows.sub.modal("/view/qmm/010/b/index.xhtml", { height: 700, width: 450, title: "社会保険事業所から読み込み" }).onClosed(() => {
+                        nts.uk.ui.windows.sub.modal("/view/qmm/010/b/index.xhtml", {
+                            height: 700, width: 450,
+                            title: "社会保険事業所から読み込み"
+                        }).onClosed(() => {
                             self.enableButton(true);
                             self.reloadDataByAction();
                         });
@@ -211,9 +219,16 @@ module nts.uk.pr.view.qmm010.a {
                 var self = this;
                 if (selectionCodeLstLstLaborInsuranceOffice
                     && selectionCodeLstLstLaborInsuranceOffice != '') {
-                    if (self.dirty.isDirty()) {
+                    if (self.dirty.isDirty() && self.isShowDirty()) {
                         if (selectionCodeLstLstLaborInsuranceOffice !== self.selectCodeLstlaborInsuranceOffice()) {
-                            alert(self.messageList()[2].message);
+                            nts.uk.ui.dialog.confirm(self.messageList()[2].message).ifYes(function() {
+                                self.isShowDirty(false);
+                                self.typeAction(TypeActionLaborInsuranceOffice.update);
+                                self.detailLaborInsuranceOffice(selectionCodeLstLstLaborInsuranceOffice);
+                                return;
+                            }).ifNo(function() {
+                                //No action
+                            });
                         }
                         self.selectCodeLstlaborInsuranceOffice(self.beginSelectlaborInsuranceOffice());
                         return;
@@ -243,7 +258,8 @@ module nts.uk.pr.view.qmm010.a {
                         self.isEnableDelete(true);
                         self.clearErrorSave();
                         self.beginSelectlaborInsuranceOffice(code);
-                        self.dirty = new nts.uk.ui.DirtyChecker(self.laborInsuranceOfficeModel);
+                        self.dirty.reset();
+                        self.isShowDirty(true);
                     });
                 }
                 dfd.resolve();
@@ -462,26 +478,30 @@ module nts.uk.pr.view.qmm010.a {
             }
             setPostCode(address: AddressSelection) {
                 this.address1st(nts.uk.pr.view.base.address.service.getinfor(address));
+                this.postalCode(address.zipCode);
             }
-            //search ZipCode ====>>>
+
             private searchZipCode() {
                 var self = this;
-                nts.uk.pr.view.base.address.service.findAddressZipCode(self.postalCode()).done(data => {
-                    if (data.length == 1) {
-                        self.setPostCode(data[0]);
+                nts.uk.pr.view.base.address.service.findAddressZipCodeToRespone(self.postalCode()).done(data => {
+                    if (data.errorCode == '0') {
+                       $('#inp_postalCode').ntsError('set', data.message);
+                    }
+                    else if (data.errorCode == '1') {
+                        self.setPostCode(data.address);
+                        $('#inp_postalCode').ntsError('clear');
                     } else {
-                        if (data.length == 0) {
-                            console.log("ERROR");
-                        }
-                        else {
-                            nts.uk.ui.windows.setShared('zipCode', self.postalCode());
-                            nts.uk.ui.windows.sub.modal("/view/base/address/index.xhtml", { height: 700, width: 1024, title: "ZIPCODE" }).onClosed(() => {
-                                var zipCodeRes: AddressSelection = nts.uk.ui.windows.getShared('zipCodeRes');
-                                if (zipCodeRes) {
-                                    self.setPostCode(zipCodeRes);
-                                }
-                            });
-                        }
+                        nts.uk.pr.view.base.address.service.findAddressZipCodeSelection(self.postalCode()).done(res => {
+                            if (res.errorCode == '0') {
+                                $('#inp_postalCode').ntsError('set', res.message);
+                            }
+                            else if (res.errorCode == '1') {
+                                self.setPostCode(res.address);
+                                $('#inp_postalCode').ntsError('clear');
+                            }
+                        }).fail(function(error) {
+                            console.log(error);
+                        });
                     }
                 }).fail(function(error) {
                     console.log(error);

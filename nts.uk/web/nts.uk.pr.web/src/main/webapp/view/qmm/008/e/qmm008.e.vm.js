@@ -38,6 +38,8 @@ var nts;
                                         textalign: "center"
                                     }));
                                     self.selectedOfficeCode = ko.observable('');
+                                    self.previousSelectedOfficeCode = ko.observable('');
+                                    self.showConfirmDialog = ko.observable(true);
                                     self.errorList = ko.observableArray([
                                         { messageId: "ER001", message: "＊が入力されていません。" },
                                         { messageId: "ER007", message: "＊が選択されていません。" },
@@ -48,16 +50,35 @@ var nts;
                                     ]);
                                     self.dirty = new nts.uk.ui.DirtyChecker(ko.observable(''));
                                     self.selectedOfficeCode.subscribe(function (selectedOfficeCode) {
-                                        $('.save-error').ntsError('clear');
-                                        if (selectedOfficeCode != null && selectedOfficeCode != undefined && selectedOfficeCode != "") {
-                                            self.enabled(false);
-                                            self.deleteButtonControll(true);
-                                            $.when(self.load(selectedOfficeCode)).done(function () {
-                                            }).fail(function (res) {
+                                        if (self.dirty.isDirty() && self.showConfirmDialog() && selectedOfficeCode != self.previousSelectedOfficeCode()) {
+                                            nts.uk.ui.dialog.confirm(self.errorList()[4].message).ifYes(function () {
+                                                self.showConfirmDialog(false);
+                                                self.dirty.reset();
+                                                self.loadItemOffice(selectedOfficeCode);
+                                            }).ifCancel(function () {
+                                                self.selectedOfficeCode(self.previousSelectedOfficeCode());
                                             });
+                                        }
+                                        else {
+                                            if (selectedOfficeCode != self.previousSelectedOfficeCode()) {
+                                                self.loadItemOffice(selectedOfficeCode);
+                                            }
                                         }
                                     });
                                 }
+                                ScreenModel.prototype.loadItemOffice = function (selectedOfficeCode) {
+                                    var self = this;
+                                    $('.save-error').ntsError('clear');
+                                    if (selectedOfficeCode != null && selectedOfficeCode != undefined && selectedOfficeCode != "") {
+                                        self.enabled(false);
+                                        self.deleteButtonControll(true);
+                                        $.when(self.load(selectedOfficeCode)).done(function () {
+                                            self.previousSelectedOfficeCode(selectedOfficeCode);
+                                            self.showConfirmDialog(true);
+                                        }).fail(function (res) {
+                                        });
+                                    }
+                                };
                                 ScreenModel.prototype.start = function () {
                                     var self = this;
                                     var dfd = $.Deferred();

@@ -18,6 +18,10 @@ var nts;
                                     self.addressList = ko.observableArray([]);
                                     self.zipCode = ko.observable('');
                                     var strZipCode = nts.uk.ui.windows.getShared('zipCode');
+                                    self.columns = ko.observableArray([
+                                        { headerText: '住所', prop: 'id', width: 200 },
+                                        { headerText: 'ｶﾅ', prop: 'name', width: 200 }
+                                    ]);
                                     address.service.findAddressZipCode(strZipCode).done(function (data) {
                                         self.addressList(data);
                                     }).fail(function (error) {

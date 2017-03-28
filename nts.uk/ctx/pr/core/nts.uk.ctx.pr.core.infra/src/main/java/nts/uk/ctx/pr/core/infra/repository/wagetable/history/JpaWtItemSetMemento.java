@@ -49,6 +49,9 @@ public class JpaWtItemSetMemento implements WtItemSetMemento {
 	 */
 	@Override
 	public void setElement1Id(ElementId element1Id) {
+		if (element1Id == null) {
+			return;
+		}
 		QwtmtWagetableMnyPK qwtmtWagetableMnyPK = this.typeValue.getQwtmtWagetableMnyPK();
 		qwtmtWagetableMnyPK.setElement1Id(element1Id.v());
 		this.typeValue.setQwtmtWagetableMnyPK(qwtmtWagetableMnyPK);
@@ -62,6 +65,9 @@ public class JpaWtItemSetMemento implements WtItemSetMemento {
 	 */
 	@Override
 	public void setElement2Id(ElementId element2Id) {
+		if (element2Id == null) {
+			return;
+		}
 		QwtmtWagetableMnyPK qwtmtWagetableMnyPK = this.typeValue.getQwtmtWagetableMnyPK();
 		qwtmtWagetableMnyPK.setElement2Id(element2Id.v());
 		this.typeValue.setQwtmtWagetableMnyPK(qwtmtWagetableMnyPK);
@@ -75,6 +81,9 @@ public class JpaWtItemSetMemento implements WtItemSetMemento {
 	 */
 	@Override
 	public void setElement3Id(ElementId element3Id) {
+		if (element3Id == null) {
+			return;
+		}
 		QwtmtWagetableMnyPK qwtmtWagetableMnyPK = this.typeValue.getQwtmtWagetableMnyPK();
 		qwtmtWagetableMnyPK.setElement3Id(element3Id.v());
 		this.typeValue.setQwtmtWagetableMnyPK(qwtmtWagetableMnyPK);
