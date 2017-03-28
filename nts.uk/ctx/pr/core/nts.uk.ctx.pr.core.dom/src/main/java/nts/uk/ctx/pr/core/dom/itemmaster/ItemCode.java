@@ -4,8 +4,8 @@ import nts.arc.primitive.constraint.CharType;
 import nts.arc.primitive.constraint.StringCharType;
 import nts.arc.primitive.constraint.StringMaxLength;
 import nts.uk.shr.com.primitive.CodePrimitiveValue;
-
-@StringCharType(CharType.NUMERIC)
+/*@StringCharType(CharType.NUMERIC)*/
+@StringCharType(CharType.ALPHA_NUMERIC)
 @StringMaxLength(4)
 public class ItemCode extends CodePrimitiveValue<ItemCode>{
 	/**

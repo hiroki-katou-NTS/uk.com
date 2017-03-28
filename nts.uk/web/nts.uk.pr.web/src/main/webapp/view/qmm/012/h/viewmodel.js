@@ -28,8 +28,6 @@ var qmm012;
                     this.CurrentCycle11Atr = ko.observable(0);
                     this.CurrentCycle12Atr = ko.observable(0);
                     var self = this;
-                    //textediter
-                    //001
                     self.texteditor_INP_001 = {
                         value: self.CurrentStrY,
                         constraint: 'ResidenceCode',
@@ -40,7 +38,6 @@ var qmm012;
                             textalign: "left"
                         }))
                     };
-                    //002
                     self.texteditor_INP_002 = {
                         value: self.CurrentEndY,
                         constraint: 'ResidenceCode',
@@ -51,31 +48,27 @@ var qmm012;
                             textalign: "left"
                         }))
                     };
-                    //set Switch Data
                     self.roundingRules_H_SEL_001 = ko.observableArray([
                         { code: 1, name: '設定する' },
                         { code: 0, name: '設定しない' }
                     ]);
-                    //005 006 007 008 009 010
                     self.roundingRules_H_SEL_002 = ko.observableArray([
                         { code: 1, name: 'する' },
                         { code: 0, name: 'しない' }
                     ]);
                     self.CurrentItemMaster(nts.uk.ui.windows.getShared('itemMaster'));
                     if (self.CurrentItemMaster()) {
-                        if (self.CurrentItemMaster().categoryAtrValue == 0) {
+                        if (self.CurrentItemMaster().categoryAtr == 0) {
                             h.service.findItemSalaryPeriod(self.CurrentItemMaster().itemCode).done(function (ItemSalary) {
                                 self.CurrentItem(ItemSalary);
                             }).fail(function (res) {
-                                // Alert message
                                 alert(res);
                             });
                         }
-                        if (self.CurrentItemMaster().categoryAtrValue == 1) {
+                        if (self.CurrentItemMaster().categoryAtr == 1) {
                             h.service.findItemDeductPeriod(self.CurrentItemMaster().itemCode).done(function (ItemDeduct) {
                                 self.CurrentItem(ItemDeduct);
                             }).fail(function (res) {
-                                // Alert message
                                 alert(res);
                             });
                         }
@@ -135,3 +128,4 @@ var qmm012;
         })(viewmodel = h.viewmodel || (h.viewmodel = {}));
     })(h = qmm012.h || (qmm012.h = {}));
 })(qmm012 || (qmm012 = {}));
+//# sourceMappingURL=viewmodel.js.map

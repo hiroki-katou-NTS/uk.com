@@ -1,12 +1,24 @@
 module qmm012.i {
     export module service {
         var paths: any = {
-            findItemSalaryBD: "pr/core/itemsalarybd/find",
+            findAllItemSalaryBD: "pr/core/itemsalarybd/find",
+            findAllItemDeductBD: "pr/core/itemdeductbd/find",
         }
-        export function findItemSalaryBD(itemCode): JQueryPromise<Array<model.ItemSalaryBD>> {
-            var dfd = $.Deferred<Array<model.ItemSalaryBD>>();
-            nts.uk.request.ajax(paths.findItemSalaryBD + "/" + itemCode)
-                .done(function(res: Array<model.ItemSalaryBD>) {
+        export function findItemSalaryBD(itemCode): JQueryPromise<Array<model.ItemBD>> {
+            var dfd = $.Deferred<Array<model.ItemBD>>();
+            nts.uk.request.ajax(paths.findAllItemSalaryBD + "/" + itemCode)
+                .done(function(res: Array<model.ItemBD>) {
+                    dfd.resolve(res);
+                })
+                .fail(function(res) {
+                    dfd.reject(res);
+                })
+            return dfd.promise();
+        }
+        export function findAllItemDeductBD(itemCode): JQueryPromise<Array<model.ItemBD>> {
+            var dfd = $.Deferred<Array<model.ItemBD>>();
+            nts.uk.request.ajax(paths.findAllItemDeductBD + "/" + itemCode)
+                .done(function(res: Array<model.ItemBD>) {
                     dfd.resolve(res);
                 })
                 .fail(function(res) {
@@ -15,7 +27,7 @@ module qmm012.i {
             return dfd.promise();
         }
         export module model {
-            export class ItemSalaryBD {
+            export class ItemBD {
                 itemBreakdownCd: string;
                 itemBreakdownName: string;
                 itemBreakdownAbName: string;

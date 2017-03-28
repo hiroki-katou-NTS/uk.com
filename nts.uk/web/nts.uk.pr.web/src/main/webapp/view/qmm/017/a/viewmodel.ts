@@ -11,7 +11,7 @@ module nts.qmm017 {
         viewModel017i: KnockoutObservable<any>;
 
         treeGridHistory: KnockoutObservable<TreeGrid>;
-        a_sel_001: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel>;
+        a_sel_001: KnockoutObservableArray<any>;
         selectedTabASel001: KnockoutObservable<string>;
         isNewMode: KnockoutObservable<boolean>;
         startYearMonth: KnockoutObservable<string>;
@@ -70,9 +70,7 @@ module nts.qmm017 {
                             });
 
                         self.viewModel017b().selectedConditionAtr(currentFormula.conditionAtr);
-
-                        self.viewModel017b().comboBoxUseMaster().selectedCode(currentFormula.refMasterNo);
-
+                        self.viewModel017b().comboBoxUseMaster().selectedCode(currentFormula.refMasterNo.toString());
                     })
                     .fail(function(res) {
                         alert(res);
@@ -97,7 +95,7 @@ module nts.qmm017 {
             // bind a_lst_001
             // convert FormulaDto to Node objects to fill in the tree grid
             service.getAllFormula().done(function(lstFormulaDto: Array<model.FormulaDto>) {
-                if (lstFormulaDto.length > 0) {
+                if (lstFormulaDto) {
                     let groupsFormulaByCode = _.groupBy(lstFormulaDto, 'formulaCode');
                     let lstFormulaCode = Object.keys(groupsFormulaByCode);
 
@@ -115,9 +113,18 @@ module nts.qmm017 {
                                 )
                             );
                         }
-                        let nodeFormula = new Node(lstHistoryEachCode[0].formulaCode, lstHistoryEachCode[0].formulaName, nodeHistory.reverse());
+                        let nodeFormula = new Node(lstHistoryEachCode[0].formulaCode, lstHistoryEachCode[0].formulaName, self.sortFormulaHistory(nodeHistory));
                         nodesTreeGrid.push(nodeFormula);
                     });
+                    self.treeGridHistory().items(nodesTreeGrid);
+                    self.isNewMode(true);
+                    self.viewModel017b().startYearMonth('');
+                    self.viewModel017b().formulaCode('');
+                    self.viewModel017b().formulaName('');
+                    self.viewModel017b().selectedDifficultyAtr(0);
+                    self.viewModel017b().selectedConditionAtr(0);
+                    self.viewModel017b().comboBoxUseMaster().selectedCode(1);
+                } else {
                     self.treeGridHistory().items(nodesTreeGrid);
                 }
                 dfd.resolve();
@@ -130,31 +137,66 @@ module nts.qmm017 {
             return dfd.promise();
         }
 
+        sortFormulaHistory(lstFormulaHistory) {
+            return lstFormulaHistory.sort(function(formulaHistoryA, formulaHistoryB) {
+                return formulaHistoryB.name.split(' ~ ')[0].replace('/', '') - formulaHistoryA.name.split(' ~ ')[0].replace('/', '');
+            });
+        }
+
         registerFormulaMaster() {
             var self = this;
-            let referenceMasterNo = null;
-            if (self.viewModel017b().selectedDifficultyAtr() === 0 && self.viewModel017b().selectedConditionAtr() === 0) {
-                referenceMasterNo = 0;
-            } else if (self.viewModel017b().selectedDifficultyAtr() === 0 && self.viewModel017b().selectedConditionAtr() === 1) {
-                referenceMasterNo = self.viewModel017b().comboBoxUseMaster().selectedCode();
-            }
-            let command = {
-                formulaCode: self.viewModel017b().formulaCode(),
-                formulaName: self.viewModel017b().formulaName(),
-                difficultyAtr: self.viewModel017b().selectedDifficultyAtr(),
-                startDate: self.viewModel017b().startYearMonth(),
-                endDate: 999912,
-                conditionAtr: self.viewModel017b().selectedConditionAtr(),
-                refMasterNo: referenceMasterNo
-            };
+            if (self.isNewMode()) {
+                let referenceMasterNo = null;
+                if (self.viewModel017b().selectedDifficultyAtr() === 0 && self.viewModel017b().selectedConditionAtr() === 0) {
+                    referenceMasterNo = 0;
+                } else if (self.viewModel017b().selectedDifficultyAtr() === 0 && self.viewModel017b().selectedConditionAtr() === '1') {
+                    referenceMasterNo = self.viewModel017b().comboBoxUseMaster().selectedCode();
+                }
+                let command = {
+                    formulaCode: self.viewModel017b().formulaCode(),
+                    formulaName: self.viewModel017b().formulaName(),
+                    difficultyAtr: self.viewModel017b().selectedDifficultyAtr(),
+                    startDate: self.viewModel017b().startYearMonth(),
+                    endDate: 999912,
+                    conditionAtr: self.viewModel017b().selectedConditionAtr(),
+                    refMasterNo: referenceMasterNo
+                };
 
-            service.registerFormulaMaster(command)
-                .done(function() {
-                    self.start();
-                })
-                .fail(function(res) {
-                    alert(res)
-                });
+                service.registerFormulaMaster(command)
+                    .done(function() {
+                        self.start();
+                    })
+                    .fail(function(res) {
+                        alert(res)
+                    });
+            } else {
+                let command = {
+                    formulaCode: self.viewModel017b().formulaCode(),
+                    formulaName: self.viewModel017b().formulaName(),
+                    difficultyAtr: self.viewModel017b().selectedDifficultyAtr(),
+                    historyId: self.currentNode().code,
+                    easyFormulaDto: [],
+                    formulaContent: '',
+                    referenceMonthAtr: '',
+                    roundAtr: '',
+                    roundDigit: ''
+                };
+                if (command.difficultyAtr === 1) {
+                    command.formulaContent = self.viewModel017c().formulaManualContent().textArea();
+                    command.referenceMonthAtr = self.viewModel017c().comboBoxReferenceMonthAtr().selectedCode();
+                    command.roundAtr = self.viewModel017c().comboBoxRoudingMethod().selectedCode();
+                    command.roundDigit = self.viewModel017c().comboBoxRoudingPosition().selectedCode();
+                } else {
+                    
+                }
+                service.updateFormulaMaster(command)
+                    .done(function() {
+                        self.start();
+                    })
+                    .fail(function(res) {
+                        alert(res)
+                    });
+            }
         }
 
         openDialogJ() {
@@ -173,6 +215,26 @@ module nts.qmm017 {
             };
             nts.uk.ui.windows.setShared('paramFromScreenA', param);
             nts.uk.ui.windows.sub.modal('/view/qmm/017/j/index.xhtml', { title: '履歴の追加', width: 540, height: 545 }).onClosed(() => {
+                self.start();
+            });
+        }
+
+        openDialogK() {
+            var self = this;
+            let currentHistory = self.currentNode().name;
+            let currentYearMonth = currentHistory.split(" ~ ");
+            let currentStartYm = currentYearMonth[0];
+            let currentEndYm = currentYearMonth[1];
+            let param = {
+                formulaCode: self.viewModel017b().formulaCode(),
+                formulaName: self.viewModel017b().formulaName(),
+                historyId: self.currentNode().code,
+                startYm: currentStartYm,
+                endYm: currentEndYm,
+                difficultyAtr: self.viewModel017b().selectedDifficultyAtr()
+            };
+            nts.uk.ui.windows.setShared('paramFromScreenA', param);
+            nts.uk.ui.windows.sub.modal('/view/qmm/017/k/index.xhtml', { title: '履歴の編集', width: 540, height: 380 }).onClosed(() => {
                 self.start();
             });
         }

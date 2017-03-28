@@ -1,35 +1,31 @@
 module nts.qmm017 {
 
     export class CScreen {
-        c_sel_006: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel>;
+        c_sel_006: KnockoutObservableArray<any>;
         formulaCode: KnockoutObservable<string>;
         formulaName: KnockoutObservable<string>;
-        roundingRulesEasySettings: KnockoutObservableArray<any>;
-        selectedRuleCodeEasySettings: KnockoutObservable<any>;
         selectedDifficultyAtr: KnockoutObservable<any>;
         selectedConditionAtr: KnockoutObservable<any>;
-        easyFormulaFixMoney: KnockoutObservable<number>;
         selectedTabCSel006: KnockoutObservable<string>;
         easyFormulaName: KnockoutObservable<string>;
-        easyFormulaDetail: KnockoutObservable<any>;
         useMasterName: KnockoutObservable<string>;
         useMasterCode: KnockoutObservable<string>;
-        
+
+        //formula easy
+        defaultEasyFormula: KnockoutObservable<EasyFormula>;
+        monthlyEasyFormula: KnockoutObservable<EasyFormula>;
+        dailyMonthlyEasyFormula: KnockoutObservable<EasyFormula>;
+        dailyEasyFormula: KnockoutObservable<EasyFormula>;
+        hourlyEasyFormula: KnockoutObservable<EasyFormula>;
+
         //formula manual
         formulaManualContent: KnockoutObservable<TextEditor>;
         comboBoxReferenceMonthAtr: KnockoutObservable<ComboBox>;
         comboBoxRoudingMethod: KnockoutObservable<ComboBox>;
         comboBoxRoudingPosition: KnockoutObservable<ComboBox>;
-        
-        
 
         constructor(data) {
             var self = this;
-            self.roundingRulesEasySettings = ko.observableArray([
-                { code: '0', name: '固定値' },
-                { code: '1', name: '計算式' }
-            ]);
-            self.selectedRuleCodeEasySettings = ko.observable(0);
             self.selectedDifficultyAtr = ko.observable(data().selectedDifficultyAtr());
             self.selectedConditionAtr = ko.observable(data().selectedConditionAtr());
             self.formulaCode = ko.observable('');
@@ -46,13 +42,14 @@ module nts.qmm017 {
             data().formulaName.subscribe(function(val) {
                 self.formulaName(val);
             });
-            
+
             self.useMasterCode = ko.observable(data().comboBoxUseMaster().selectedCode());
             self.useMasterName = ko.observable('');
-            data().comboBoxUseMaster().selectedCode.subscribe(function(codeChange){
+            data().comboBoxUseMaster().selectedCode.subscribe(function(codeChange) {
                 let useMasterFound = _.find(data().comboBoxUseMaster().itemList(), (item) => {
                     return item.code == codeChange;
                 });
+                self.useMasterCode(data().comboBoxUseMaster().selectedCode());
                 self.useMasterName(useMasterFound.name);
             });
             var lstReferenceMonthAtr = [
@@ -82,12 +79,12 @@ module nts.qmm017 {
                 { code: 8, name: '七捨八入' },
                 { code: 9, name: '八捨九入' },
             ];
-            
+
             var lstRoudingPostion = [
-                {code: 0, name: '1円丸め'},
-                {code: 1, name: '10円丸め'},
-                {code: 2, name: '100円丸め'},
-                {code: 3, name: '1000円丸め'}
+                { code: 0, name: '1円丸め' },
+                { code: 1, name: '10円丸め' },
+                { code: 2, name: '100円丸め' },
+                { code: 3, name: '1000円丸め' }
             ]
 
             self.formulaManualContent = ko.observable(new TextEditor());
@@ -103,9 +100,13 @@ module nts.qmm017 {
             self.comboBoxRoudingMethod = ko.observable(new ComboBox(lstRoudingMethod, true, false));
             self.comboBoxRoudingPosition = ko.observable(new ComboBox(lstRoudingPostion, true, false));
             self.selectedTabCSel006 = ko.observable('tab-1');
-            self.easyFormulaName = ko.observable('');
-            self.easyFormulaFixMoney = ko.observable(0);
-            self.easyFormulaDetail = ko.observable(null);
+            
+            self.noneConditionalEasyFormula = ko.observable(new EasyFormula(0));
+            self.defaultEasyFormula = ko.observable(new EasyFormula(0));
+            self.monthlyEasyFormula = ko.observable(new EasyFormula(1));
+            self.dailyMonthlyEasyFormula = ko.observable(new EasyFormula(1));
+            self.dailyEasyFormula = ko.observable(new EasyFormula(1));
+            self.hourlyEasyFormula = ko.observable(new EasyFormula(1));
         }
 
         undo() {
@@ -119,19 +120,76 @@ module nts.qmm017 {
         openDialogL() {
             var self = this;
             let param = {
-                isUpdate: (self.easyFormulaDetail() == ''),
-                dirtyData: self.easyFormulaDetail()
+                isUpdate: (self.defaultEasyFormula().easyFormulaDetail()),
+                dirtyData: self.defaultEasyFormula().easyFormulaDetail()
             };
             nts.uk.ui.windows.setShared('paramFromScreenC', param);
             nts.uk.ui.windows.sub.modal('/view/qmm/017/l/index.xhtml', { title: 'かんたん計算式の登録', width: 650, height: 750 }).onClosed(() => {
-                self.easyFormulaDetail(ko.mapping.fromJS(nts.uk.ui.windows.getShared('easyFormulaDetail')));
-                self.easyFormulaName(self.easyFormulaDetail().easyFormulaName());
+                self.defaultEasyFormula().easyFormulaDetail(ko.mapping.fromJS(nts.uk.ui.windows.getShared('easyFormulaDetail')));
+                self.defaultEasyFormula().easyFormulaName(self.defaultEasyFormula().easyFormulaDetail().easyFormulaName());
             });
         }
 
         validateTextArea() {
             var self = this;
             self.formulaManualContent().testError();
+        }
+        
+        setAllFixValued() {
+            var self = this;
+            self.monthlyEasyFormula().selectedRuleCodeEasySettings('0');
+            self.dailyMonthlyEasyFormula().selectedRuleCodeEasySettings('0');
+            self.dailyEasyFormula().selectedRuleCodeEasySettings('0');
+            self.hourlyEasyFormula().selectedRuleCodeEasySettings('0');
+        }
+        
+        setAllDetail() {
+            var self = this;
+            self.monthlyEasyFormula().selectedRuleCodeEasySettings('1');
+            self.dailyMonthlyEasyFormula().selectedRuleCodeEasySettings('1');
+            self.dailyEasyFormula().selectedRuleCodeEasySettings('1');
+            self.hourlyEasyFormula().selectedRuleCodeEasySettings('1');
+        }
+    }
+
+    export class EasyFormula {
+        roundingRulesEasySettings: KnockoutObservableArray<any>;
+        selectedRuleCodeEasySettings: KnockoutObservable<any>;
+        easyFormulaFixMoney: KnockoutObservable<number>;
+        easyFormulaDetail: KnockoutObservable<nts.qmm017.model.FormulaEasyDetailDto>;
+        easyFormulaName: KnockoutObservable<string>;
+        constructor(mode: number) {
+            var self = this;
+            if (mode == 0) {
+                self.roundingRulesEasySettings = ko.observableArray([
+                    { code: '0', name: '固定値' },
+                    { code: '1', name: '計算式' }
+                ]);
+                self.selectedRuleCodeEasySettings = ko.observable('0');
+            } else if (mode == 1) {
+                self.roundingRulesEasySettings = ko.observableArray([
+                    { code: '0', name: '固定値' },
+                    { code: '1', name: '計算式' },
+                    { code: '2', name: '既定計算式' }
+                ]);
+                self.selectedRuleCodeEasySettings = ko.observable('2');
+            }
+            self.easyFormulaFixMoney = ko.observable(0);
+            self.easyFormulaDetail = ko.observable(new nts.qmm017.model.FormulaEasyDetailDto());
+            self.easyFormulaName = ko.observable('');
+        }
+        
+        openDialogL() {
+            var self = this;
+            let param = {
+                isUpdate: (self.easyFormulaName() !== ''),
+                dirtyData: self.easyFormulaDetail()
+            };
+            nts.uk.ui.windows.setShared('paramFromScreenC', param);
+            nts.uk.ui.windows.sub.modal('/view/qmm/017/l/index.xhtml', { title: 'かんたん計算式の登録', width: 650, height: 750 }).onClosed(() => {
+                self.easyFormulaDetail(nts.uk.ui.windows.getShared('easyFormulaDetail'));
+                self.easyFormulaName(self.easyFormulaDetail().easyFormulaName);
+            });
         }
     }
 

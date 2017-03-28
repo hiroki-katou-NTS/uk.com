@@ -1,5 +1,4 @@
 module qmm012.j.viewmodel {
-    
     export class ScreenModel {
         //gridlist
         items: KnockoutObservableArray<ItemModel>;
@@ -39,6 +38,12 @@ module qmm012.j.viewmodel {
             ]);
             self.currentCode = ko.observable();
 
+        }
+        SubmitDialog() {
+            nts.uk.ui.windows.close();
+        }
+        CloseDialog() {
+            nts.uk.ui.windows.close();
         }
     }
 

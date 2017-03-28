@@ -61,7 +61,6 @@ var qmm006;
                         return;
                     }
                     else {
-                        //Al003
                         nts.uk.ui.dialog.confirm("統合元から統合先へデータを置換えます。\r\n よろしいですか？").ifYes(function () {
                             nts.uk.ui.dialog.confirm("置換元のマスタを削除しますか？[はい/いいえ]").ifYes(function () {
                                 var data = {
@@ -102,3 +101,4 @@ var qmm006;
     })(c = qmm006.c || (qmm006.c = {}));
 })(qmm006 || (qmm006 = {}));
 ;
+//# sourceMappingURL=viewmodel.js.map

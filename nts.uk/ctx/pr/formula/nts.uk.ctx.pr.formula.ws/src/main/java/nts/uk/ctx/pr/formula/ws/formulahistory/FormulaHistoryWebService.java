@@ -26,7 +26,7 @@ public class FormulaHistoryWebService extends WebService {
 	
 	@POST
 	@Path("removeHistory")
-	public void updateFormulaMaster (RemoveFormulaHistoryCommand command){
+	public void removeFormulaMaster (RemoveFormulaHistoryCommand command){
 		this.removeFormulaHistoryCommandHandler.handle(command);
 	}
 	

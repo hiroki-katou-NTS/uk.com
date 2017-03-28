@@ -13,28 +13,49 @@ var nts;
                         var viewmodel;
                         (function (viewmodel) {
                             var ScreenModel = (function () {
-                                function ScreenModel() {
+                                function ScreenModel(param) {
                                     var self = this;
-                                    self.enable = ko.observable(true);
-                                    self.items = ko.observableArray([
-                                        { value: 1, text: 'One' },
-                                        { value: 2, text: 'Two' },
-                                        { value: 3, text: 'Three' }
-                                    ]);
-                                    self.selectedValue = ko.observable(2);
+                                    self.data = param;
+                                    self.startYm = ko.observable(param.startYm);
+                                    self.endYm = ko.observable(param.endYm);
+                                    self.selectedMode = ko.observable(1);
                                 }
+                                ScreenModel.prototype.actionHandler = function () {
+                                    var self = this;
+                                    if (self.selectedMode() == 0) {
+                                        var command = {
+                                            formulaCode: self.data.formulaCode,
+                                            historyId: self.data.historyId,
+                                            startDate: self.startYm().replace('/', ''),
+                                            difficultyAtr: self.data.difficultyAtr
+                                        };
+                                        k.service.removeFormulaHistory(command)
+                                            .done(function () {
+                                            nts.uk.ui.windows.close();
+                                        })
+                                            .fail(function (res) {
+                                            alert(res);
+                                        });
+                                    }
+                                    else {
+                                        var command = {
+                                            formulaCode: self.data.formulaCode,
+                                            historyId: self.data.historyId,
+                                            startDate: self.startYm().replace('/', ''),
+                                        };
+                                        k.service.updateFormulaHistory(command)
+                                            .done(function () {
+                                            nts.uk.ui.windows.close();
+                                        })
+                                            .fail(function (res) {
+                                            alert(res);
+                                        });
+                                    }
+                                };
                                 return ScreenModel;
                             }());
                             viewmodel.ScreenModel = ScreenModel;
                         })(viewmodel = k.viewmodel || (k.viewmodel = {}));
-                        var BoxModel = (function () {
-                            function BoxModel(id, name) {
-                                var self = this;
-                                self.id = id;
-                                self.name = name;
-                            }
-                            return BoxModel;
-                        }());
                     })(k = qmm017.k || (qmm017.k = {}));
                 })(qmm017 = view.qmm017 || (view.qmm017 = {}));
             })(view = pr.view || (pr.view = {}));

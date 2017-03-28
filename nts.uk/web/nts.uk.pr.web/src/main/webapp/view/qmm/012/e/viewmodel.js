@@ -6,15 +6,10 @@ var qmm012;
         (function (viewmodel) {
             var ScreenModel = (function () {
                 function ScreenModel() {
-                    //E_004
                     this.checked_E_004 = ko.observable(false);
-                    //E_005
                     this.checked_E_005 = ko.observable(false);
-                    //E_006
                     this.checked_E_006 = ko.observable(false);
-                    //E_007
                     this.checked_E_007 = ko.observable(false);
-                    //E_008
                     this.checked_E_008 = ko.observable(false);
                     this.CurrentItemMaster = ko.observable(null);
                     this.CurrentItemAttend = ko.observable(null);
@@ -31,10 +26,8 @@ var qmm012;
                     this.CurrentWorkDaysScopeAtr = ko.observable(1);
                     this.CurrentMemo = ko.observable("");
                     this.CurrentZeroDisplaySet = ko.observable(1);
-                    this.CurentItemDisplayAtr = ko.observable(1);
+                    this.CurrentItemDisplayAtr = ko.observable(1);
                     var self = this;
-                    //E_001 To 003
-                    //E_001To003
                     self.roundingRules_E_001 = ko.observableArray([
                         { code: 0, name: '時間' },
                         { code: 1, name: '回数' }
@@ -48,7 +41,6 @@ var qmm012;
                         { code: 0, name: 'ゼロを表示しない' }
                     ]);
                     self.enable = ko.observable(false);
-                    //E_001
                     self.currencyeditor_E_001 = {
                         value: self.CurrentErrRangeHigh,
                         constraint: '',
@@ -59,7 +51,6 @@ var qmm012;
                             currencyposition: 'right'
                         }))
                     };
-                    //E_002
                     self.currencyeditor_E_002 = {
                         value: self.CurrentAlRangeHigh,
                         constraint: '',
@@ -70,7 +61,6 @@ var qmm012;
                             currencyposition: 'right'
                         }))
                     };
-                    //E_003
                     self.currencyeditor_E_003 = {
                         value: self.CurrentErrRangeLow,
                         constraint: '',
@@ -81,7 +71,6 @@ var qmm012;
                             currencyposition: 'right'
                         }))
                     };
-                    //E_004
                     self.currencyeditor_E_004 = {
                         value: self.CurrentAlRangeLow,
                         constraint: '',
@@ -97,7 +86,6 @@ var qmm012;
                             e.service.findItemAttend(ItemMaster.itemCode).done(function (ItemAttend) {
                                 self.CurrentItemAttend(ItemAttend);
                             }).fail(function (res) {
-                                // Alert message
                                 alert(res);
                             });
                         }
@@ -122,7 +110,7 @@ var qmm012;
                         self.checked_E_008(ItemAttend ? ItemAttend.alRangeLowAtr == 0 ? false : true : false);
                     });
                     self.checked_E_004.subscribe(function (NewValue) {
-                        self.CurentItemDisplayAtr(NewValue ? 0 : 1);
+                        self.CurrentItemDisplayAtr(NewValue ? 0 : 1);
                     });
                     self.checked_E_005.subscribe(function (NewValue) {
                         self.CurrentErrRangeHighAtr(NewValue ? 1 : 0);
@@ -143,3 +131,4 @@ var qmm012;
         })(viewmodel = e.viewmodel || (e.viewmodel = {}));
     })(e = qmm012.e || (qmm012.e = {}));
 })(qmm012 || (qmm012 = {}));
+//# sourceMappingURL=viewmodel.js.map

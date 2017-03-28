@@ -163,7 +163,7 @@ module qmm012.d.viewmodel {
         openIDialog() {
             let self = this;
             nts.uk.ui.windows.setShared('itemMaster', self.CurrentItemMaster());
-            nts.uk.ui.windows.sub.modal('../i/index.xhtml', { height: 600, width: 1060, dialogClass: "no-close" }).onClosed(function(): any {
+            nts.uk.ui.windows.sub.modal('../i/index.xhtml', { height: 620, width: 1060, dialogClass: "no-close" }).onClosed(function(): any {
             });
         }
 

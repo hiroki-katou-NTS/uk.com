@@ -40,7 +40,7 @@ __viewContext.ready(function () {
                 { headerText: "Item Text", key: 'nodeText', width: "200px", dataType: "string" }]);
             this.selectedCode = ko.observableArray([]);
             this.currentCodeListSwap = ko.observableArray([]);
-            this.test = ko.observableArray([]);
+            this.test = ko.observable(null);
             this.testSingle = ko.observable(null);
         }
         ScreenModel.prototype.remove = function () {
@@ -69,3 +69,4 @@ __viewContext.ready(function () {
     }());
     this.bind(new ScreenModel());
 });
+//# sourceMappingURL=start.js.map

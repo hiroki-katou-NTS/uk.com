@@ -21,11 +21,14 @@
 
     <h:body>
     
-    	<div id="header">ゆーけー！</div>
-        
-        <div data-bind="with: content">
-        	<ui:insert name="content" />
-        </div>
+    	<div id="master-wrapper" data-bind="with: content">
+    		<ui:insert name="base-content" >
+	    		<div id="header">ゆーけー！</div>
+		        <div id="master-content">
+		        	<ui:insert name="content" />
+		        </div>
+	    	</ui:insert>
+    	</div>
         <div data-bind="with: kiban.errorDialogViewModel">
 			<div data-bind="ntsErrorDialog: {title: title, errors: errors, option: option}"></div>
  			<div id="func-notifier-errors" data-bind="css: { shown: occurs }, click: open">エラーがあります</div>
