@@ -18,5 +18,5 @@ public interface WLNewLayoutReportGenerator {
 	 * @param fileContext the file context
 	 * @param reportData the report data
 	 */
-	void generate(FileGeneratorContext fileContext, WLNewLayoutReportData reportData);
+	void generate(FileGeneratorContext fileContext, WLNewLayoutReportData reportData, WageLedgerReportQuery query);
 }

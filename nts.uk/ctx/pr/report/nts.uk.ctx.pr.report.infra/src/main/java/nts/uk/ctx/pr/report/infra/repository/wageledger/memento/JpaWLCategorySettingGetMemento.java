@@ -7,11 +7,12 @@ package nts.uk.ctx.pr.report.infra.repository.wageledger.memento;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import nts.gul.collection.LazyList;
 import nts.uk.ctx.pr.report.dom.wageledger.PaymentType;
 import nts.uk.ctx.pr.report.dom.wageledger.WLCategory;
 import nts.uk.ctx.pr.report.dom.wageledger.outputsetting.WLCategorySettingGetMemento;
 import nts.uk.ctx.pr.report.dom.wageledger.outputsetting.WLSettingItem;
-import nts.uk.ctx.pr.report.infra.entity.wageledger.QlsptLedgerFormDetail;
+import nts.uk.ctx.pr.report.infra.entity.wageledger.QlsptLedgerFormHead;
 
 /**
  * The Class JpaWLCategorySettingGetMemento.
@@ -19,14 +20,13 @@ import nts.uk.ctx.pr.report.infra.entity.wageledger.QlsptLedgerFormDetail;
 public class JpaWLCategorySettingGetMemento implements WLCategorySettingGetMemento {
 	
 	/** The details. */
-	private List<QlsptLedgerFormDetail> details;
+	private QlsptLedgerFormHead entity;
 	
 	/** The category. */
 	private WLCategory category;
 	
 	/** The payment type. */
 	private PaymentType paymentType;
-	
 	/**
 	 * Instantiates a new jpa WL category setting get memento.
 	 *
@@ -34,10 +34,10 @@ public class JpaWLCategorySettingGetMemento implements WLCategorySettingGetMemen
 	 * @param category the category
 	 * @param paymentType the payment type
 	 */
-	public JpaWLCategorySettingGetMemento(List<QlsptLedgerFormDetail> details, WLCategory category,
+	public JpaWLCategorySettingGetMemento(QlsptLedgerFormHead entity, WLCategory category,
 			PaymentType paymentType) {
 		super();
-		this.details = details;
+		this.entity = entity;
 		this.category = category;
 		this.paymentType = paymentType;
 	}
@@ -66,9 +66,12 @@ public class JpaWLCategorySettingGetMemento implements WLCategorySettingGetMemen
 	 */
 	@Override
 	public List<WLSettingItem> getOutputItems() {
-		return this.details.stream().map(detail -> {
-			return new WLSettingItem(new JpaWLSettingItemGetMemento(detail));
-		}).collect(Collectors.toList());
+		return LazyList.withMap(
+				() -> this.entity.getQlsptLedgerFormDetailList().stream()
+						.filter(data -> data.getQlsptLedgerFormDetailPK().getCtgAtr() == this.category.value
+								&& data.getQlsptLedgerFormDetailPK().getPayBonusAtr() == this.paymentType.value)
+						.collect(Collectors.toList()),
+				detail -> new WLSettingItem(new JpaWLSettingItemGetMemento(detail)));
 	}
 
 }

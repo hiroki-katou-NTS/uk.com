@@ -9,7 +9,6 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 import lombok.Builder;
-import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.CalculateMethod;
 import nts.uk.ctx.pr.core.dom.insurance.CommonAmount;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
@@ -23,7 +22,7 @@ import nts.uk.ctx.pr.core.dom.insurance.social.healthrate.InsuranceRateItem;
  */
 @Builder
 public class HealthInsuranceRateDto implements HealthInsuranceRateSetMemento {
-	
+
 	/** The history id. */
 	public String historyId;
 
@@ -54,24 +53,36 @@ public class HealthInsuranceRateDto implements HealthInsuranceRateSetMemento {
 	/** The rounding methods. */
 	public Set<HealthInsuranceRounding> roundingMethods;
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.pr.core.dom.insurance.social.healthrate.HealthInsuranceRateSetMemento#setCompanyCode(nts.uk.ctx.core.dom.company.CompanyCode)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.insurance.social.healthrate.
+	 * HealthInsuranceRateSetMemento#setCompanyCode(nts.uk.ctx.core.dom.company.
+	 * CompanyCode)
 	 */
 	@Override
-	public void setCompanyCode(CompanyCode companyCode) {
-		this.companyCode = companyCode.v();
+	public void setCompanyCode(String companyCode) {
+		this.companyCode = companyCode;
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.pr.core.dom.insurance.social.healthrate.HealthInsuranceRateSetMemento#setOfficeCode(nts.uk.ctx.pr.core.dom.insurance.OfficeCode)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.insurance.social.healthrate.
+	 * HealthInsuranceRateSetMemento#setOfficeCode(nts.uk.ctx.pr.core.dom.
+	 * insurance.OfficeCode)
 	 */
 	@Override
 	public void setOfficeCode(OfficeCode officeCode) {
 		this.officeCode = officeCode.v();
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.pr.core.dom.insurance.social.healthrate.HealthInsuranceRateSetMemento#setApplyRange(nts.uk.ctx.pr.core.dom.insurance.MonthRange)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.insurance.social.healthrate.
+	 * HealthInsuranceRateSetMemento#setApplyRange(nts.uk.ctx.pr.core.dom.
+	 * insurance.MonthRange)
 	 */
 	@Override
 	public void setApplyRange(MonthRange applyRange) {
@@ -79,42 +90,58 @@ public class HealthInsuranceRateDto implements HealthInsuranceRateSetMemento {
 		this.endMonth = applyRange.getEndMonth().toString();
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.pr.core.dom.insurance.social.healthrate.HealthInsuranceRateSetMemento#setMaxAmount(nts.uk.ctx.pr.core.dom.insurance.CommonAmount)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.insurance.social.healthrate.
+	 * HealthInsuranceRateSetMemento#setMaxAmount(nts.uk.ctx.pr.core.dom.
+	 * insurance.CommonAmount)
 	 */
 	@Override
 	public void setMaxAmount(CommonAmount maxAmount) {
 		this.maxAmount = maxAmount.v();
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.pr.core.dom.insurance.social.healthrate.HealthInsuranceRateSetMemento#setRateItems(java.util.Set)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.insurance.social.healthrate.
+	 * HealthInsuranceRateSetMemento#setRateItems(java.util.Set)
 	 */
 	@Override
 	public void setRateItems(Set<InsuranceRateItem> rateItems) {
-		this.rateItems = rateItems.stream()
-				.map(insuranceRateItemDomain -> InsuranceRateItemDto.fromDomain(insuranceRateItemDomain))
+		this.rateItems = rateItems.stream().map(
+				insuranceRateItemDomain -> InsuranceRateItemDto.fromDomain(insuranceRateItemDomain))
 				.collect(Collectors.toSet());
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.pr.core.dom.insurance.social.healthrate.HealthInsuranceRateSetMemento#setHistoryId(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.insurance.social.healthrate.
+	 * HealthInsuranceRateSetMemento#setHistoryId(java.lang.String)
 	 */
 	@Override
 	public void setHistoryId(String historyId) {
 		this.historyId = historyId;
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.pr.core.dom.insurance.social.healthrate.HealthInsuranceRateSetMemento#setAutoCalculate(java.lang.Boolean)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.insurance.social.healthrate.
+	 * HealthInsuranceRateSetMemento#setAutoCalculate(java.lang.Boolean)
 	 */
 	@Override
 	public void setAutoCalculate(CalculateMethod autoCalculate) {
 		this.autoCalculate = autoCalculate.value;
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.pr.core.dom.insurance.social.healthrate.HealthInsuranceRateSetMemento#setRoundingMethods(java.util.Set)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see nts.uk.ctx.pr.core.dom.insurance.social.healthrate.
+	 * HealthInsuranceRateSetMemento#setRoundingMethods(java.util.Set)
 	 */
 	@Override
 	public void setRoundingMethods(Set<HealthInsuranceRounding> roundingMethods) {

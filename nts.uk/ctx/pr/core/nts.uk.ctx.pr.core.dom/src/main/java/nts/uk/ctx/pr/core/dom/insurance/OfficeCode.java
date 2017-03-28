@@ -13,7 +13,7 @@ import nts.uk.shr.com.primitive.CodePrimitiveValue;
  * Code of Office.
  */
 @StringCharType(CharType.NUMERIC)
-@StringMaxLength(3)
+@StringMaxLength(12)
 public class OfficeCode extends CodePrimitiveValue<OfficeCode> {
 
 	/** serialVersionUID. */

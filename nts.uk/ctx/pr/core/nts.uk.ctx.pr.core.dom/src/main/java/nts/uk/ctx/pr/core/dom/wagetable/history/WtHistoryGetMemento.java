@@ -6,7 +6,6 @@ package nts.uk.ctx.pr.core.dom.wagetable.history;
 
 import java.util.List;
 
-import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 import nts.uk.ctx.pr.core.dom.wagetable.WtCode;
 import nts.uk.ctx.pr.core.dom.wagetable.history.element.ElementSetting;
@@ -21,7 +20,7 @@ public interface WtHistoryGetMemento {
 	 *
 	 * @return the company code
 	 */
-	CompanyCode getCompanyCode();
+	String getCompanyCode();
 
 	/**
 	 * Gets the code.

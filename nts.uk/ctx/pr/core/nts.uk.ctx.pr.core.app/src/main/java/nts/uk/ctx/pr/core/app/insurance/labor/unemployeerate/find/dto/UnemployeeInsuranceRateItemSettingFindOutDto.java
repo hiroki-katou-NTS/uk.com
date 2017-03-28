@@ -4,12 +4,14 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.app.insurance.labor.unemployeerate.find.dto;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * The Class UnemployeeInsuranceRateItemSettingFindOutDto.
  */
-@Data
+@Getter
+@Setter
 public class UnemployeeInsuranceRateItemSettingFindOutDto {
 	/** The round atr. */
 	private Integer roundAtr;

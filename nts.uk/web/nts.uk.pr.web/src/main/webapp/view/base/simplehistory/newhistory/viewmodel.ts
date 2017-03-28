@@ -30,14 +30,14 @@ module nts.uk.pr.view.base.simplehistory.newhistory {
             /**
              * On copy call back.
              */
-            onCopyCallBack: (data: NewHistoryCallBackData) => void;
+            onCopyCallBack: (data: NewHistoryCallBackData) => JQueryPromise<any>;
 
             /**
              * On create call back.
              */
-            onCreateCallBack: (data: NewHistoryCallBackData) => void;
+            onCreateCallBack: (data: NewHistoryCallBackData) => JQueryPromise<any>;
         }
-        
+
         /**
          * Callback data.
          */
@@ -72,7 +72,7 @@ module nts.uk.pr.view.base.simplehistory.newhistory {
              * Last year month.
              */
             lastYearMonth: string;
-            
+
             /**
              * Constructor.
              */
@@ -113,11 +113,22 @@ module nts.uk.pr.view.base.simplehistory.newhistory {
                     startYearMonth: self.startYearMonth()
                 };
                 if (self.createType() == ScreenModel.CREATE_TYPE_COPY_LATEST) {
-                      self.dialogOptions.onCopyCallBack(callBackData);
+                    self.dialogOptions.onCopyCallBack(callBackData)
+                        .done(() => nts.uk.ui.windows.close())
+                        .fail((res) => {
+                            if (res.messageId == 'ER010') {
+                                $('#startYearMonth').ntsError('set', '対象データがありません。');
+                            }
+                        });
                 } else {
-                    self.dialogOptions.onCreateCallBack(callBackData);
+                    self.dialogOptions.onCreateCallBack(callBackData)
+                        .done(() => nts.uk.ui.windows.close())
+                        .fail((res) => {
+                            if (res.messageId == 'ER010') {
+                                $('#startYearMonth').ntsError('set', '対象データがありません。');
+                            }
+                        });
                 }
-                nts.uk.ui.windows.close();
             }
 
             /**

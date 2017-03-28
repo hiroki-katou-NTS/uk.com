@@ -31,8 +31,12 @@ module qpp009.a.viewmodel {
         /**
          * Print report.
          */
-        public print() {
-            alert('print report');
+        public printData() {
+            service.printService(this).done(function() {              
+            })
+            .fail(function(res) {
+                nts.uk.ui.dialog.alert(res.message);
+            })
         }
         
     }
@@ -42,15 +46,23 @@ module qpp009.a.viewmodel {
      */
     export class DetailItemsSetting {
         isPrintDetailItem: KnockoutObservable<boolean>;
-        isPrintTotalDepartment: KnockoutObservable<boolean>;
+        isPrintTotalOfDepartment: KnockoutObservable<boolean>;
         isPrintDepHierarchy: KnockoutObservable<boolean>;
         isCalculateTotal: KnockoutObservable<boolean>;
+        AccumulatedLevelList: KnockoutObservableArray<SelectionDto>;
+        selectedLevels: KnockoutObservableArray<number>;
         
         constructor() {
             this.isPrintDetailItem = ko.observable(false);
-            this.isPrintTotalDepartment = ko.observable(false);
-            this.isPrintDepHierarchy = ko.observable(false);
-            this.isCalculateTotal = ko.observable(false);
+            this.isPrintTotalOfDepartment = ko.observable(true);
+            this.isPrintDepHierarchy = ko.observable(true);
+            this.isCalculateTotal = ko.observable(true);
+            this.AccumulatedLevelList = ko.observableArray<SelectionDto>([
+                    new SelectionDto(1, '1階層'),new SelectionDto(2, '2階層'),new SelectionDto(3, '3階層'),
+                    new SelectionDto(4, '4階層'), new SelectionDto(5, '5階層'), new SelectionDto(6, '6階層'),
+                    new SelectionDto(7, '7階層'), new SelectionDto(8, '8階層'), new SelectionDto(9, '9階層')
+                ]);
+            this.selectedLevels = ko.observableArray<number>([1, 2, 3, 8, 9]);
         }
     }
     
@@ -58,37 +70,61 @@ module qpp009.a.viewmodel {
      * Class print setting.
      */
     export class PrintSetting {
-        specifyBreakPageList: KnockoutObservableArray<SelectionModel>;
-        selectedBreakPageCode: KnockoutObservable<string>;
-        specifyBreakPageHierarchyList: KnockoutObservableArray<SelectionModel>;
-        selectedBreakPageHierarchyCode: KnockoutObservable<string>;
-        use2000yenSelection: KnockoutObservableArray<SelectionModel>;
-        selectedUse2000yen: KnockoutObservable<string>;
-        isBreakPageHierarchy: KnockoutObservable<boolean>;
+        specifyBreakPageList: KnockoutObservableArray<SelectionDto>;
+        selectedBreakPageCode: KnockoutObservable<number>;
+        specifyBreakPageHierarchyList: KnockoutObservableArray<SelectionDto>;
+        selectedBreakPageHierarchyCode: KnockoutObservable<number>;
+        use2000yenSelection: KnockoutObservableArray<SelectionDto>;
+        selectedUse2000yen: KnockoutObservable<number>;
+        isBreakPageByAccumulated: KnockoutObservable<boolean>;
         
         constructor() {
-            this.specifyBreakPageList = ko.observableArray([
-                    new SelectionModel('None', 'なし'),
-                    new SelectionModel('EveryEmp', '社員毎'),
-                    new SelectionModel('EveryDep', '部門ごと'),
-                    new SelectionModel('EveryDepHierarchy', '部門階層'),
+            this.specifyBreakPageList = ko.observableArray<SelectionDto>([
+                    new SelectionDto(1, 'なし'),
+                    new SelectionDto(2, '社員毎'),
+                    new SelectionDto(3, '部門ごと'),
+                    new SelectionDto(4, '部門階層'),
                 ])
-            this.selectedBreakPageCode = ko.observable('None');
-            this.specifyBreakPageHierarchyList = ko.observableArray([
-                    new SelectionModel('1', '1'),new SelectionModel('2', '2'),new SelectionModel('3', '3'),
-                    new SelectionModel('4', '4'), new SelectionModel('5', '5'), new SelectionModel('6', '6'),
-                    new SelectionModel('7', '7'), new SelectionModel('8', '8'), new SelectionModel('9', '9')
+            this.selectedBreakPageCode = ko.observable(1);
+            this.specifyBreakPageHierarchyList = ko.observableArray<SelectionDto>([
+                    new SelectionDto(1, '1'),new SelectionDto(2, '2'),new SelectionDto(3, '3'),
+                    new SelectionDto(4, '4'), new SelectionDto(5, '5'), new SelectionDto(6, '6'),
+                    new SelectionDto(7, '7'), new SelectionDto(8, '8'), new SelectionDto(9, '9')
                 ]);
-            this.selectedBreakPageHierarchyCode = ko.observable('1');
-            this.use2000yenSelection = ko.observableArray([
-                    new SelectionModel('Include', '含める'),
-                    new SelectionModel('NotInclude', '含めない'),
+            this.selectedBreakPageHierarchyCode = ko.observable(1);
+            this.use2000yenSelection = ko.observableArray<SelectionDto>([
+                    new SelectionDto(1, '含める'),
+                    new SelectionDto(0, '含めない'),
                 ]);
-            this.selectedUse2000yen = ko.observable('NotInclude');
+            this.selectedUse2000yen = ko.observable(0);
             var self = this;
-            this.isBreakPageHierarchy = ko.computed(function(){
-               return self.selectedBreakPageCode() == 'EveryDepHierarchy';
+            this.isBreakPageByAccumulated = ko.computed(function(){
+               return self.selectedBreakPageCode() == 4;
             });
+        }
+    }
+    
+    export class SalaryChartResultViewModel{
+        empCode: string;
+        empName: string;
+        paymentAmount: number;
+        empDesignation: string;
+        depDesignation: string;
+        totalDesignation: string;
+        depCode: string;
+        depName: string;
+        depPath: string;
+        constructor(empCode: string, empName: string, paymentAmount: number, empDesignation: string, 
+        depDesignation: string, totalDesignation: string, depCode: string, depName: string, depPath: string){
+            this.empCode = empCode;
+            this.empName = empName;
+            this.paymentAmount = paymentAmount;
+            this.empDesignation = empDesignation;
+            this.depDesignation = depDesignation;
+            this.totalDesignation = totalDesignation;
+            this.depCode = depCode;
+            this.depName = depName;
+            this.depPath = depPath;
         }
     }
         /**
@@ -102,5 +138,13 @@ module qpp009.a.viewmodel {
             this.code = code;
             this.name = name;
         }
+    }
+    export class SelectionDto{
+        code: number;
+        name: string;
+        constructor(code: number, name: string) {
+            this.code = code;
+            this.name = name;
+        }     
     }
 }

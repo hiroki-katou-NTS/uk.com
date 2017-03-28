@@ -5,23 +5,16 @@
 package nts.uk.ctx.pr.core.dom.wagetable.reference;
 
 import lombok.Getter;
-import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.wagetable.WtElementRefNo;
 
 /**
  * The Class WageTableMasterRef.
  */
-
-/**
- * Gets the wage person query.
- *
- * @return the wage person query
- */
 @Getter
 public class WtMasterRef {
 
 	/** The company code. */
-	private CompanyCode companyCode;
+	private String companyCode;
 
 	/** The ref no. */
 	private WtElementRefNo refNo;

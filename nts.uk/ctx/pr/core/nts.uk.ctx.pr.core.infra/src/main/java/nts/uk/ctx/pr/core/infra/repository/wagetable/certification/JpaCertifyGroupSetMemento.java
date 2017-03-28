@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.Certification;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroupCode;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroupName;
@@ -44,9 +43,9 @@ public class JpaCertifyGroupSetMemento implements CertifyGroupSetMemento {
 	 * nts.uk.ctx.core.dom.company.CompanyCode)
 	 */
 	@Override
-	public void setCompanyCode(CompanyCode companyCode) {
+	public void setCompanyCode(String companyCode) {
 		QwtmtWagetableCertifyGPK wagetableCertifyGPK = new QwtmtWagetableCertifyGPK();
-		wagetableCertifyGPK.setCcd(companyCode.v());
+		wagetableCertifyGPK.setCcd(companyCode);
 		this.typeValue.setQwtmtWagetableCertifyGPK(wagetableCertifyGPK);
 	}
 
