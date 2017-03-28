@@ -7,9 +7,11 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
-
+import lombok.Getter;
 import lombok.NoArgsConstructor;
-
+import lombok.Setter;
+@Setter
+@Getter
 @Entity
 @AllArgsConstructor
 @NoArgsConstructor
@@ -17,12 +19,9 @@ import lombok.NoArgsConstructor;
 public class CmnmtJobTitleRef {
 	
 	@EmbeddedId
-    public CmnmtJobTitleRefPK cmnmtJobTitlePK;
+    public CmnmtJobTitleRefPK cmnmtJobTitleRefPK;
 
-//	@Basic(optional = false)
-//	@Column(name = "EXCLUS_VER")
-//	public int exclusVersion;
-//	
+
 	@Basic(optional = false)
 	@Column(name = "REF_SET")
 	public String referenceSettings;

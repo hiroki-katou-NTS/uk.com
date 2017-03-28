@@ -51,4 +51,6 @@ public interface PositionRepository {
 
 	boolean ExistedHistory(String historyId);
 
+	void addJobTitleRef(JobTitleRef jobTitleRef);
+
 	}

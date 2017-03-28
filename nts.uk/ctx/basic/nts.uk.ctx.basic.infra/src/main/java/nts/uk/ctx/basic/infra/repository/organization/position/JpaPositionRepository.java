@@ -1,11 +1,11 @@
 package nts.uk.ctx.basic.infra.repository.organization.position;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
 
+import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.GeneralDate;
 import nts.uk.ctx.basic.dom.organization.position.JobCode;
@@ -17,6 +17,8 @@ import nts.uk.ctx.basic.infra.entity.organization.position.CmnmtJobHist;
 import nts.uk.ctx.basic.infra.entity.organization.position.CmnmtJobHistPK;
 import nts.uk.ctx.basic.infra.entity.organization.position.CmnmtJobTitle;
 import nts.uk.ctx.basic.infra.entity.organization.position.CmnmtJobTitlePK;
+import nts.uk.ctx.basic.infra.entity.organization.position.CmnmtJobTitleRef;
+import nts.uk.ctx.basic.infra.entity.organization.position.CmnmtJobTitleRefPK;
 
 @Stateless
 public class JpaPositionRepository extends JpaRepository implements PositionRepository {
@@ -272,6 +274,25 @@ public class JpaPositionRepository extends JpaRepository implements PositionRepo
 	public boolean ExistedHistory(String historyId) {
 		return this.queryProxy().query(IS_EXISTED_HISTORY, long.class).setParameter("historyId", historyId).getSingle().get() > 0;
 
+	}
+	
+
+	
+	private static CmnmtJobTitleRef convertToDbType3(JobTitleRef domain){
+		val entity = new CmnmtJobTitleRef();
+		entity.cmnmtJobTitleRefPK = new CmnmtJobTitleRefPK(domain.getCompanyCode(),
+								domain.getHistoryId(),
+								domain.getJobCode().v(),
+								domain.getAuthorizationCode().v());
+		entity.referenceSettings = domain.getReferenceSettings().toString();
+		return entity;
+	}
+	
+
+	
+	@Override
+	public void addJobTitleRef(JobTitleRef jobTitleRef){
+		this.commandProxy().insert(convertToDbType3(jobTitleRef));
 	}
 
 }

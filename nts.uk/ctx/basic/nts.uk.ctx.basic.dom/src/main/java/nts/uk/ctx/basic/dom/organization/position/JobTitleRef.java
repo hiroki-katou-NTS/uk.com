@@ -1,8 +1,8 @@
 package nts.uk.ctx.basic.dom.organization.position;
 import lombok.Getter;
+import lombok.Setter;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.basic.dom.company.CompanyCode;
-
+@Setter
 @Getter
 public class JobTitleRef extends AggregateRoot{
 	
@@ -16,21 +16,21 @@ public class JobTitleRef extends AggregateRoot{
 	
 	private ReferenceSettings referenceSettings;
 	
-	public JobTitleRef(AuthorizationCode authorizationCode, ReferenceSettings referenceSettings, 
-			String companyCode, String historyId,JobCode jobCode) {
+	public JobTitleRef(AuthorizationCode authorizationCode, 
+			String companyCode, String historyId,JobCode jobCode, ReferenceSettings referenceSettings) {
 		super();
 		this.authorizationCode = authorizationCode;
 		this.historyId = historyId;
 		this.companyCode = companyCode;
-		this.referenceSettings = referenceSettings;
 		this.jobCode = jobCode;
+		this.referenceSettings = referenceSettings;
 	}
 
-	public static JobTitleRef createSimpleFromJavaType(String authorizationCode, int referenceSettings, 
-			 String companyCode, String historyId,String jobCode)
+	public static JobTitleRef createFromJavaType(String authorizationCode, 
+			 String companyCode, String historyId,String jobCode, int referenceSettings)
 	{
-		return new JobTitleRef(new AuthorizationCode(authorizationCode), ReferenceSettings.valueOf(String.valueOf(referenceSettings)),
-				companyCode, historyId,new JobCode(jobCode));
+		return new JobTitleRef(new AuthorizationCode(authorizationCode),
+				companyCode, historyId,new JobCode(jobCode), ReferenceSettings.valueOf(String.valueOf(referenceSettings)));
 	}
 
 }
