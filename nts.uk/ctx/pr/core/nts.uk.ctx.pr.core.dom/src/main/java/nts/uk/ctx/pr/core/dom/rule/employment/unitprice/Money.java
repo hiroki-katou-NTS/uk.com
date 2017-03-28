@@ -12,7 +12,7 @@ import nts.arc.primitive.constraint.DecimalRange;
 /**
  * The Class Money.
  */
-@DecimalRange(min = "0", max = "99999.99")
+@DecimalRange(min = "-99999999.99", max = "99999999.99")
 public class Money extends DecimalPrimitiveValue<Money> {
 
 	/** The Constant serialVersionUID. */

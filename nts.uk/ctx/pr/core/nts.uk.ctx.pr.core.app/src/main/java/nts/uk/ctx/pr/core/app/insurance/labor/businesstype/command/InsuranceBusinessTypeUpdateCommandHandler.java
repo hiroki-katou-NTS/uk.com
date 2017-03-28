@@ -20,7 +20,6 @@ import nts.uk.shr.com.context.AppContexts;
  * The Class InsuranceBusinessTypeUpdateCommandHandler.
  */
 @Stateless
-@Transactional
 public class InsuranceBusinessTypeUpdateCommandHandler extends CommandHandler<InsuranceBusinessTypeUpdateCommand> {
 
 	/** The insurance business type repository. */
@@ -35,6 +34,7 @@ public class InsuranceBusinessTypeUpdateCommandHandler extends CommandHandler<In
 	 * .CommandHandlerContext)
 	 */
 	@Override
+	@Transactional
 	protected void handle(CommandHandlerContext<InsuranceBusinessTypeUpdateCommand> context) {
 		List<InsuranceBusinessType> lsInsuranceBusinessType = context.getCommand()
 				.toDomain((AppContexts.user().companyCode()));

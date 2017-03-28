@@ -9,6 +9,9 @@ var qmm019;
                 getAllLayoutHist: "pr/proto/layout/findalllayoutHist",
                 copylayoutPath: "pr/proto/layout/createlayout"
             };
+            /**
+             * Get list layout master new history
+             */
             function getLayoutHeadInfor() {
                 var dfd = $.Deferred();
                 nts.uk.request.ajax(paths.getLayoutHeadInfor)
@@ -43,6 +46,9 @@ var qmm019;
                 return dfd.promise();
             }
             service.createLayout = createLayout;
+            /**
+                   * Model namespace.
+                */
             var model;
             (function (model) {
                 var LayoutHeadDto = (function () {
@@ -51,6 +57,7 @@ var qmm019;
                     return LayoutHeadDto;
                 }());
                 model.LayoutHeadDto = LayoutHeadDto;
+                // layout
                 var LayoutMasterDto = (function () {
                     function LayoutMasterDto() {
                     }
@@ -63,6 +70,7 @@ var qmm019;
                     return LayoutHistory;
                 }());
                 model.LayoutHistory = LayoutHistory;
+                // layoutHistory
                 var LayoutHistoryDto = (function () {
                     function LayoutHistoryDto() {
                     }
@@ -73,4 +81,3 @@ var qmm019;
         })(service = g.service || (g.service = {}));
     })(g = qmm019.g || (qmm019.g = {}));
 })(qmm019 || (qmm019 = {}));
-//# sourceMappingURL=service.js.map

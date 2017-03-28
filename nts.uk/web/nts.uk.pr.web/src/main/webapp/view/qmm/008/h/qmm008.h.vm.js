@@ -22,6 +22,11 @@ var nts;
                                     self.numberEditorCommonOption = ko.mapping.fromJS(new nts.uk.ui.option.NumberEditorOption({
                                         grouplength: 3
                                     }));
+                                    self.dirty = new nts.uk.ui.DirtyChecker(ko.observable(''));
+                                    self.errorList = ko.observableArray([
+                                        { messageId: "AL001", message: "変更された内容が登録されていません。\r\n よろしいですか。" },
+                                        { messageId: "AL002", message: "データを削除します。\r\nよろしいですか？" },
+                                    ]);
                                 }
                                 ScreenModel.prototype.startPage = function () {
                                     var self = this;
@@ -49,6 +54,7 @@ var nts;
                                         res.forEach(function (item) {
                                             self.listHealthInsuranceAvgearn.push(new HealthInsuranceAvgEarnModel(item.historyId, item.levelCode, new HealthInsuranceAvgEarnValueModel(item.personalAvg.healthGeneralMny, item.personalAvg.healthNursingMny, item.personalAvg.healthBasicMny, item.personalAvg.healthSpecificMny), new HealthInsuranceAvgEarnValueModel(item.companyAvg.healthGeneralMny, item.companyAvg.healthNursingMny, item.companyAvg.healthBasicMny, item.companyAvg.healthSpecificMny)));
                                         });
+                                        self.dirty = new nts.uk.ui.DirtyChecker(self.listHealthInsuranceAvgearn);
                                         dfd.resolve();
                                     });
                                     return dfd.promise();
@@ -121,6 +127,19 @@ var nts;
                                         case "3": return Rounding.ROUNDDOWN;
                                         case "4": return Rounding.DOWN5_UP6;
                                         default: return Rounding.ROUNDUP;
+                                    }
+                                };
+                                ScreenModel.prototype.closeDialogWithDirtyCheck = function () {
+                                    var self = this;
+                                    if (self.dirty.isDirty()) {
+                                        nts.uk.ui.dialog.confirm(self.errorList()[0].message).ifYes(function () {
+                                            self.closeDialog();
+                                            self.dirty.reset();
+                                        }).ifCancel(function () {
+                                        });
+                                    }
+                                    else {
+                                        self.closeDialog();
                                     }
                                 };
                                 ScreenModel.prototype.closeDialog = function () {

@@ -1,11 +1,11 @@
 /******************************************************************
- * Copyright (c) 2016 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.core.app.insurance.labor.command.dto;
 
-import lombok.Data;
-import nts.uk.ctx.core.dom.company.CompanyCode;
+import lombok.Getter;
+import lombok.Setter;
 import nts.uk.ctx.pr.core.dom.insurance.Address;
 import nts.uk.ctx.pr.core.dom.insurance.CitySign;
 import nts.uk.ctx.pr.core.dom.insurance.KanaAddress;
@@ -27,11 +27,8 @@ import nts.uk.shr.com.primitive.Memo;
 /**
  * The Class LaborInsuranceOfficeDto.
  */
-
-/**
- * Instantiates a new labor insurance office dto.
- */
-@Data
+@Getter
+@Setter
 public class LaborInsuranceOfficeDto {
 
 	/** The code. */
@@ -51,9 +48,6 @@ public class LaborInsuranceOfficeDto {
 
 	/** The potal code. */
 	private String potalCode;
-
-	/** The prefecture. */
-	private String prefecture;
 
 	/** The address 1 st. */
 	private String address1st;
@@ -137,18 +131,6 @@ public class LaborInsuranceOfficeDto {
 		@Override
 		public ShortName getShortName() {
 			return new ShortName(dto.shortName);
-		}
-
-		/*
-		 * (non-Javadoc)
-		 * 
-		 * @see
-		 * nts.uk.ctx.pr.core.dom.insurance.labor.LaborInsuranceOfficeGetMemento
-		 * #getPrefecture()
-		 */
-		@Override
-		public String getPrefecture() {
-			return dto.prefecture;
 		}
 
 		/*
@@ -303,8 +285,8 @@ public class LaborInsuranceOfficeDto {
 		 * #getCompanyCode()
 		 */
 		@Override
-		public CompanyCode getCompanyCode() {
-			return new CompanyCode(companyCode);
+		public String getCompanyCode() {
+			return companyCode;
 		}
 
 		/*

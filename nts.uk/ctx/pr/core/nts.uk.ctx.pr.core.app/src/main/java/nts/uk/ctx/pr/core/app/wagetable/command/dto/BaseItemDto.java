@@ -9,5 +9,4 @@ package nts.uk.ctx.pr.core.app.wagetable.command.dto;
  */
 public interface BaseItemDto {
 	
-	
 }

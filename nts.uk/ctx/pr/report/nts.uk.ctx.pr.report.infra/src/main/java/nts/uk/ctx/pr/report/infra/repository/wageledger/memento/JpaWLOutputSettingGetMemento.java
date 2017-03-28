@@ -6,31 +6,22 @@ package nts.uk.ctx.pr.report.infra.repository.wageledger.memento;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
-import java.util.stream.Collectors;
 
-import lombok.AllArgsConstructor;
-import nts.uk.ctx.pr.report.dom.company.CompanyCode;
 import nts.uk.ctx.pr.report.dom.wageledger.PaymentType;
 import nts.uk.ctx.pr.report.dom.wageledger.WLCategory;
 import nts.uk.ctx.pr.report.dom.wageledger.outputsetting.WLCategorySetting;
 import nts.uk.ctx.pr.report.dom.wageledger.outputsetting.WLOutputSettingCode;
 import nts.uk.ctx.pr.report.dom.wageledger.outputsetting.WLOutputSettingGetMemento;
 import nts.uk.ctx.pr.report.dom.wageledger.outputsetting.WLOutputSettingName;
-import nts.uk.ctx.pr.report.infra.entity.wageledger.QlsptLedgerFormDetail;
 import nts.uk.ctx.pr.report.infra.entity.wageledger.QlsptLedgerFormHead;
 
 /**
  * The Class JpaWLOutputSettingGetMemento.
  */
-@AllArgsConstructor
 public class JpaWLOutputSettingGetMemento implements WLOutputSettingGetMemento {
 	
 	/** The entity. */
 	private QlsptLedgerFormHead entity;
-	
-	/** The is load header data only. */
-	private boolean isLoadHeaderDataOnly;
 	
 	/**
 	 * Instantiates a new jpa WL output setting get memento.
@@ -77,8 +68,8 @@ public class JpaWLOutputSettingGetMemento implements WLOutputSettingGetMemento {
 	 * #getCompanyCode()
 	 */
 	@Override
-	public CompanyCode getCompanyCode() {
-		return new CompanyCode(this.entity.getQlsptLedgerFormHeadPK().getCcd());
+	public String getCompanyCode() {
+		return this.entity.getQlsptLedgerFormHeadPK().getCcd();
 	}
 
 	/* (non-Javadoc)
@@ -87,32 +78,32 @@ public class JpaWLOutputSettingGetMemento implements WLOutputSettingGetMemento {
 	 */
 	@Override
 	public List<WLCategorySetting> getCategorySettings() {
-		if (this.isLoadHeaderDataOnly) {
-			return null;
-		}
-		// Group detail list by category.
-		Map<WLCategory, List<QlsptLedgerFormDetail>> categoryMap = this.entity
-				.getQlsptLedgerFormDetailList().stream()
-				.collect(Collectors.groupingBy(item -> {
-					return WLCategory.valueOf(item.getQlsptLedgerFormDetailPK().getCtgAtr());
-				}));
 		List<WLCategorySetting> categorySettings = new ArrayList<>();
-		for (WLCategory category : categoryMap.keySet()) {
-			List<QlsptLedgerFormDetail> categoryList = categoryMap.get(category);
-			
-			// Group category Setting by payment type.
-			Map<PaymentType, List<QlsptLedgerFormDetail>> paymentTypeMap = categoryList
-					.stream().collect(Collectors.groupingBy(
-							item -> PaymentType.valueOf(item.getQlsptLedgerFormDetailPK().getPayBonusAtr())));
-			for (PaymentType paymentType : paymentTypeMap.keySet()) {
-				List<QlsptLedgerFormDetail> paymentTypeList = paymentTypeMap.get(paymentType);
-				categorySettings.add(new WLCategorySetting(
-						new JpaWLCategorySettingGetMemento(paymentTypeList, category, paymentType)));
-			}
-		}
-				
-		// Convert to domain.
 		
+		// Add Salary Payment category.
+		categorySettings.add(new WLCategorySetting(
+				new JpaWLCategorySettingGetMemento(this.entity, WLCategory.Payment, PaymentType.Salary)));
+
+		// Add Salary Deduction category.
+		categorySettings.add(new WLCategorySetting(
+				new JpaWLCategorySettingGetMemento(this.entity, WLCategory.Deduction, PaymentType.Salary)));
+
+		// Add Salary Attendance category.
+		categorySettings.add(new WLCategorySetting(
+				new JpaWLCategorySettingGetMemento(this.entity, WLCategory.Attendance, PaymentType.Salary)));
+
+		// Add Bonus Payment category.
+		categorySettings.add(new WLCategorySetting(
+				new JpaWLCategorySettingGetMemento(this.entity, WLCategory.Payment, PaymentType.Bonus)));
+
+		// Add Bonus Deduction category.
+		categorySettings.add(new WLCategorySetting(
+				new JpaWLCategorySettingGetMemento(this.entity, WLCategory.Deduction, PaymentType.Bonus)));
+
+		// Add Bonus Attendance category.
+		categorySettings.add(new WLCategorySetting(
+				new JpaWLCategorySettingGetMemento(this.entity, WLCategory.Attendance, PaymentType.Bonus)));
+
 		return categorySettings;
 	}
 

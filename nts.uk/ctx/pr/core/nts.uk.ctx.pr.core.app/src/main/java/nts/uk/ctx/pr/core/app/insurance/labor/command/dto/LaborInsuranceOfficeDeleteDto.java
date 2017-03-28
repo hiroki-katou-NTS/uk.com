@@ -4,12 +4,14 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.app.insurance.labor.command.dto;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 /**
  * The Class LaborInsuranceOfficeDeleteDto.
  */
-@Data
+@Getter
+@Setter
 public class LaborInsuranceOfficeDeleteDto {
 	/** The code. officeCode */
 	private String code;

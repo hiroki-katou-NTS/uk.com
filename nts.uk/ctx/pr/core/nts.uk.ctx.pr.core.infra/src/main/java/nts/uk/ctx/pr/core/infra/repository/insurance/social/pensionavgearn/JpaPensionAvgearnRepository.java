@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.pr.core.infra.repository.insurance.social.pensionavgearn;
 
 import java.math.BigDecimal;
@@ -15,12 +19,8 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.pr.core.dom.insurance.CommonAmount;
-import nts.uk.ctx.pr.core.dom.insurance.InsuranceAmount;
 import nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.PensionAvgearn;
-import nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.PensionAvgearnGetMemento;
 import nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.PensionAvgearnRepository;
-import nts.uk.ctx.pr.core.dom.insurance.social.pensionavgearn.PensionAvgearnValue;
 import nts.uk.ctx.pr.core.infra.entity.insurance.social.pensionavgearn.QismtPensionAvgearn;
 import nts.uk.ctx.pr.core.infra.entity.insurance.social.pensionavgearn.QismtPensionAvgearnPK;
 import nts.uk.ctx.pr.core.infra.entity.insurance.social.pensionavgearn.QismtPensionAvgearnPK_;
@@ -111,74 +111,20 @@ public class JpaPensionAvgearnRepository extends JpaRepository implements Pensio
 	/**
 	 * To domain.
 	 *
-	 * @param entity
-	 *            the entity
+	 * @param entity the entity
 	 * @return the pension avgearn
 	 */
 	private static PensionAvgearn toDomain(QismtPensionAvgearn entity) {
-		PensionAvgearn domain = new PensionAvgearn(new PensionAvgearnGetMemento() {
-
-			@Override
-			public PensionAvgearnValue getPersonalPension() {
-				return new PensionAvgearnValue(new CommonAmount(entity.getPPensionMaleMny()),
-						new CommonAmount(entity.getPPensionFemMny()), new CommonAmount(entity.getPPensionMinerMny()));
-			}
-
-			@Override
-			public PensionAvgearnValue getPersonalFundExemption() {
-				return new PensionAvgearnValue(new CommonAmount(entity.getPFundExemptMaleMny()),
-						new CommonAmount(entity.getPFundExemptFemMny()),
-						new CommonAmount(entity.getPFundExemptMinerMny()));
-			}
-
-			@Override
-			public PensionAvgearnValue getPersonalFund() {
-				return new PensionAvgearnValue(new CommonAmount(entity.getPFundMaleMny()),
-						new CommonAmount(entity.getPFundFemMny()), new CommonAmount(entity.getPFundMinerMny()));
-			}
-
-			@Override
-			public Integer getLevelCode() {
-				return entity.getQismtPensionAvgearnPK().getPensionGrade().intValue();
-			}
-
-			@Override
-			public String getHistoryId() {
-				return entity.getQismtPensionAvgearnPK().getHistId();
-			}
-
-			@Override
-			public PensionAvgearnValue getCompanyPension() {
-				return new PensionAvgearnValue(new CommonAmount(entity.getCPensionMaleMny()),
-						new CommonAmount(entity.getCPensionFemMny()), new CommonAmount(entity.getCPensionMinerMny()));
-			}
-
-			@Override
-			public PensionAvgearnValue getCompanyFundExemption() {
-				return new PensionAvgearnValue(new CommonAmount(entity.getCFundExemptMaleMny()),
-						new CommonAmount(entity.getCFundExemptFemMny()),
-						new CommonAmount(entity.getCFundExemptMinerMny()));
-			}
-
-			@Override
-			public PensionAvgearnValue getCompanyFund() {
-				return new PensionAvgearnValue(new CommonAmount(entity.getCFundMaleMny()),
-						new CommonAmount(entity.getCFundFemMny()), new CommonAmount(entity.getCFundMinerMny()));
-			}
-
-			@Override
-			public InsuranceAmount getChildContributionAmount() {
-				return new InsuranceAmount(entity.getChildContributionMny());
-			}
-		});
+		PensionAvgearn domain = new PensionAvgearn(new JpaPensionAvgearnGetMemento(entity));
 		return domain;
 	}
 
 	/**
 	 * To entity.
 	 *
-	 * @param pensionAvgearn
-	 *            the pension avgearn
+	 * @param pensionAvgearn the pension avgearn
+	 * @param ccd the ccd
+	 * @param officeCd the office cd
 	 * @return the qismt pension avgearn
 	 */
 	private QismtPensionAvgearn toEntity(PensionAvgearn pensionAvgearn, String ccd, String officeCd) {
