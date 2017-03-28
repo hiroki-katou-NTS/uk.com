@@ -82,8 +82,8 @@ module qmm023.a.viewmodel {
 
         CheckError(): void {
             let self = this;
-            $('#INP_002').ntsEditor("validate");
-            $('#INP_003').ntsEditor("validate");
+            //$('#INP_002').ntsEditor("validate");
+            //$('#INP_003').ntsEditor("validate");
             if ($('.nts-editor').ntsError("hasError")) {
                 self.isError = true;
             }
