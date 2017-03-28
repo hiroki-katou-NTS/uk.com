@@ -85,8 +85,17 @@ var nts;
                                     data.code = model.settingCode();
                                     data.name = model.settingName();
                                     var settings = new Array();
-                                    model.categorySettings().forEach(function (item) {
-                                        settings.push(new CategorySettingDto(SalaryCategory.PAYMENT, item.outputItems()));
+                                    model.categorySettings().forEach(function (setting) {
+                                        settings.push(new CategorySettingDto(setting.categoryName, setting.outputItems().map(function (item) {
+                                            var mappedItem = item;
+                                            if (!item.isAggregateItem) {
+                                                mappedItem = new OutputItem();
+                                                mappedItem.code = item.code;
+                                                mappedItem.name = item.name;
+                                                mappedItem.isAggregateItem = false;
+                                            }
+                                            return mappedItem;
+                                        })));
                                     });
                                     data.categorySettings = settings;
                                     return data;
