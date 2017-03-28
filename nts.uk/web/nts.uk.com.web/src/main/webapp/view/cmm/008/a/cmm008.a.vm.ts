@@ -82,7 +82,15 @@ module cmm008.a.viewmodel{
             $('#contents-right').css({height: height, width: widthScreen*62/100});
             
             self.listMessage();
-            self.dataSourceItem();
+            
+            $.when(self.userKtSet()).done(function(){
+                self.closeDateListItem();
+                self.processingDateItem();
+                self.managementHolidaylist();
+                self.dataSourceItem();
+                dfd.resolve(self.holidayCode()); 
+            })  
+            
             
             //list data click
             self.currentCode.subscribe(function(newValue){
@@ -109,14 +117,7 @@ module cmm008.a.viewmodel{
                 
             });
             
-//            $.when(self.userKtSet()).done(function(){
-//                if(self.isUseKtSet() !== 0){
-//                    self.closeDateListItem();
-//                    self.processingDateItem();
-//                    self.managementHolidaylist();
-//                    dfd.resolve(self.holidayCode()); 
-//                }    
-//            })  
+
             self.userKtSet();
             self.closeDateListItem();
             self.processingDateItem();
@@ -252,14 +253,22 @@ module cmm008.a.viewmodel{
                     }
                 }
                 dfd.resolve(listResult);
-            })            
-            this.columns = ko.observableArray([
-                { headerText: 'コード', prop: 'employmentCode', width: '18%' },
-                { headerText: '名称', prop: 'employmentName', width: '28%' },
-                { headerText: '締め日', prop: 'closeDateNoStr', width: '20%' },
-                { headerText: '処理日区分', prop: 'processingStr', width: '20%' },
-                { headerText: '初期表示', prop: 'displayStr', width: '14%' }
-            ]);
+            }) 
+            if(self.isUseKtSet() === 0){
+                this.columns = ko.observableArray([
+                    { headerText: 'コード', prop: 'employmentCode', width: '18%' },
+                    { headerText: '名称', prop: 'employmentName', width: '28%' },
+                    { headerText: '初期表示', prop: 'displayStr', width: '14%' }
+                ]);
+            }else{
+                this.columns = ko.observableArray([
+                    { headerText: 'コード', prop: 'employmentCode', width: '18%' },
+                    { headerText: '名称', prop: 'employmentName', width: '28%' },
+                    { headerText: '締め日', prop: 'closeDateNoStr', width: '20%' },
+                    { headerText: '処理日区分', prop: 'processingStr', width: '20%' },
+                    { headerText: '初期表示', prop: 'displayStr', width: '14%' }
+                ]);
+            }
             self.singleSelectedCode = ko.observable(null);
             return dfd.promise();
         }
