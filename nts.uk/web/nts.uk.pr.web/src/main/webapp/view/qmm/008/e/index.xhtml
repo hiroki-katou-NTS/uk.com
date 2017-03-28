@@ -26,8 +26,10 @@
 				nts.uk.ctx.pr.core.dom.insurance.Phone
 				<!-- province address -->
 				nts.uk.shr.com.primitive.Memo
-				nts.uk.ctx.pr.core.dom.insurance.Address
-				nts.uk.ctx.pr.core.dom.insurance.KanaAddress
+				nts.uk.ctx.pr.core.dom.insurance.Address1
+				nts.uk.ctx.pr.core.dom.insurance.Address2
+				nts.uk.ctx.pr.core.dom.insurance.AddressKana1
+				nts.uk.ctx.pr.core.dom.insurance.AddressKana2
 				
 				<!-- add new primitive -->
 				nts.uk.ctx.pr.core.dom.insurance.OfficeRefCode1
@@ -216,43 +218,43 @@
 									</tr>
 									<tr>
 										<td class="border_none"><div style="margin-top: 20px;"
-												data-bind="ntsFormLabel: {constraint:'Address'}">住所 １</div></td>
+												data-bind="ntsFormLabel: {constraint:'Address1'}">住所 １</div></td>
 										<td colspan="3" class="border_none padding_top"><div>
 												<input class ="save-error"
 													data-bind="ntsTextEditor: {
 														value: address1st ,
-														constraint: 'Address', 
+														constraint: 'Address1', 
 														option: {textmode: 'text',width: '300',textalign: 'left'}}" />
 											</div></td>
 									</tr>
 									<tr>
-										<td class="border_none kana_address" ><div style="border: none !important" data-bind="ntsFormLabel: {constraint:'KanaAddress'}">カナ１</div></td>
+										<td class="border_none kana_address" ><div style="border: none !important" data-bind="ntsFormLabel: {constraint:'AddressKana1'}">カナ１</div></td>
 										<td colspan="3" class="border_none padding_top"><div>
 												<input class ="save-error"
 													data-bind="ntsTextEditor: {
 														value: kanaAddress1st ,
-														constraint: 'KanaAddress', 
+														constraint: 'AddressKana1', 
 														option: {textmode: 'text',width: '300',textalign: 'left'}}" />
 											</div></td>
 									</tr>
 									<tr>
 										<td class="border_none"><div style="margin-top: 20px;"
-												data-bind="ntsFormLabel: {constraint:'Address'}">住所 ２</div></td>
+												data-bind="ntsFormLabel: {constraint:'Address2'}">住所 ２</div></td>
 										<td colspan="3" class="border_none padding_top"><div>
 												<input class ="save-error"
 													data-bind="ntsTextEditor: {
 														value: address2nd ,
-														constraint: 'Address', 
+														constraint: 'Address2', 
 														option: {textmode: 'text',width: '300',textalign: 'left'}}" />
 											</div></td>
 									</tr>
 									<tr>
-										<td class="border_none kana_address"> <div style="border: none !important" data-bind="ntsFormLabel: {constraint:'KanaAddress'}">カナ ２</div></td>
+										<td class="border_none kana_address"> <div style="border: none !important" data-bind="ntsFormLabel: {constraint:'AddressKana2'}">カナ ２</div></td>
 										<td colspan="3" class="border_none padding_top"><div>
 												<input class ="save-error"
 													data-bind="ntsTextEditor: {
 														value: kanaAddress2nd ,
-														constraint: 'KanaAddress', 
+														constraint: 'AddressKana2', 
 														option: {textmode: 'text',width: '300',textalign: 'left'}}" />
 											</div></td>
 									</tr>

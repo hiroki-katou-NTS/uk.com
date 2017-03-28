@@ -1,15 +1,13 @@
 /******************************************************************
- * Copyright (c) 2016 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.core.app.postcode.find;
 
 import java.util.List;
 
-import javax.ejb.Stateless;
-
 /**
- * The Interface AddressFinder.
+ * The Interface PostCodeFinder.
  */
 
 public interface PostCodeFinder {

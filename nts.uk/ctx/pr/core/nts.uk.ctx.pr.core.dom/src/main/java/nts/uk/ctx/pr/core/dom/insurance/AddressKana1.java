@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2016 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.core.dom.insurance;
@@ -8,22 +8,22 @@ import nts.arc.primitive.StringPrimitiveValue;
 import nts.arc.primitive.constraint.StringMaxLength;
 
 /**
- * Name of Office.
+ * The Class AddressKana1.
  */
-@StringMaxLength(40)
-public class KanaAddress extends StringPrimitiveValue<KanaAddress> {
+@StringMaxLength(60)
+public class AddressKana1 extends StringPrimitiveValue<AddressKana1>{
 
-	/** serialVersionUID. */
+	/** The Constant serialVersionUID. */
 	private static final long serialVersionUID = 1L;
-
+	
 	/**
-	 * Constructs.
-	 * 
-	 * @param rawValue
-	 *            raw value
+	 * Instantiates a new address kana 1.
+	 *
+	 * @param rawValue the raw value
 	 */
-	public KanaAddress(String rawValue) {
+	public AddressKana1(String rawValue) {
 		super(rawValue);
 	}
+
 
 }

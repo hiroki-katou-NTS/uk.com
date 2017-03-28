@@ -5,8 +5,10 @@
 package nts.uk.ctx.pr.core.app.insurance.social.office.find;
 
 import lombok.Builder;
-import nts.uk.ctx.pr.core.dom.insurance.Address;
-import nts.uk.ctx.pr.core.dom.insurance.KanaAddress;
+import nts.uk.ctx.pr.core.dom.insurance.Address1;
+import nts.uk.ctx.pr.core.dom.insurance.Address2;
+import nts.uk.ctx.pr.core.dom.insurance.AddressKana1;
+import nts.uk.ctx.pr.core.dom.insurance.AddressKana2;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeName;
 import nts.uk.ctx.pr.core.dom.insurance.PicName;
@@ -123,7 +125,7 @@ public class SocialInsuranceOfficeItemDto implements SocialInsuranceOfficeSetMem
 	 * setAddress1st(nts.uk.ctx.pr.core.dom.insurance.Address)
 	 */
 	@Override
-	public void setAddress1st(Address address1st) {
+	public void setAddress1st(Address1 address1st) {
 
 	}
 
@@ -135,7 +137,7 @@ public class SocialInsuranceOfficeItemDto implements SocialInsuranceOfficeSetMem
 	 * setAddress2nd(nts.uk.ctx.pr.core.dom.insurance.Address)
 	 */
 	@Override
-	public void setAddress2nd(Address address2nd) {
+	public void setAddress2nd(Address2 address2nd) {
 
 	}
 
@@ -147,7 +149,7 @@ public class SocialInsuranceOfficeItemDto implements SocialInsuranceOfficeSetMem
 	 * setKanaAddress1st(nts.uk.ctx.pr.core.dom.insurance.KanaAddress)
 	 */
 	@Override
-	public void setKanaAddress1st(KanaAddress kanaAddress1st) {
+	public void setKanaAddress1st(AddressKana1 kanaAddress1st) {
 
 	}
 
@@ -159,7 +161,7 @@ public class SocialInsuranceOfficeItemDto implements SocialInsuranceOfficeSetMem
 	 * setKanaAddress2nd(nts.uk.ctx.pr.core.dom.insurance.KanaAddress)
 	 */
 	@Override
-	public void setKanaAddress2nd(KanaAddress kanaAddress2nd) {
+	public void setKanaAddress2nd(AddressKana2 kanaAddress2nd) {
 
 	}
 
