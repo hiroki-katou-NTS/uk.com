@@ -13,17 +13,25 @@ module nts.uk.pr.view.qmm016.a.history {
 
             if (history.valueItems && history.valueItems.length > 0) {
                 var element = history.elements[0];
-                _.map(element.itemList, (item) => {
+                var itemVmList = _.map(element.itemList, (item) => {
                     var vm = new ItemViewModel(viewmodel.getElementTypeByValue(element.type), item);
                     // Filter value.
                     vm.amount(_.filter(history.valueItems, (vi) => {
                         return vi.element1Id == item.uuid;
                     })[0].amount);
-                })
-            }
 
-            // Init grid.
-            this.initIgGrid();
+                    return vm;
+                })
+                this.igGridDataSource(itemVmList);
+            }
+        }
+
+        /**
+         * On load processing.
+         */
+        onLoad(): void {
+            var self = this;
+            self.initIgGrid();
         }
 
         /**
@@ -41,7 +49,7 @@ module nts.uk.pr.view.qmm016.a.history {
                 features: [
                     {
                         name: 'Updating',
-                        editMode: 'cell',
+                        editMode: 'row',
                         enableAddRow: false,
                         excelNavigatorMode: false,
                         enableDeleteRow: false,
@@ -64,7 +72,7 @@ module nts.uk.pr.view.qmm016.a.history {
                 autoCommit: true,
                 columns: [
                     { headerText: 'Element Name', dataType: 'string', key: 'uuid', hidden: true},
-                    { headerText: self.history.elements[0].demensionName, dataType: 'string', key: 'name', width: '50%'},
+                    { headerText: self.elementSettings[0].demensionName, dataType: 'string', key: 'name', width: '50%'},
                     { headerText: '値', dataType: 'number', key: 'amount', width: '50%', columnCssClass: "halign-right"}
                 ]
             });

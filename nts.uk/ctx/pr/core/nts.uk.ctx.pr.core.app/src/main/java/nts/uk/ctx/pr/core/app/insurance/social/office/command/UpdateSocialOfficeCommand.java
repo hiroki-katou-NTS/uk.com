@@ -6,8 +6,10 @@ package nts.uk.ctx.pr.core.app.insurance.social.office.command;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.pr.core.dom.insurance.Address;
-import nts.uk.ctx.pr.core.dom.insurance.KanaAddress;
+import nts.uk.ctx.pr.core.dom.insurance.Address1;
+import nts.uk.ctx.pr.core.dom.insurance.Address2;
+import nts.uk.ctx.pr.core.dom.insurance.AddressKana1;
+import nts.uk.ctx.pr.core.dom.insurance.AddressKana2;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeName;
 import nts.uk.ctx.pr.core.dom.insurance.PicName;
@@ -73,23 +75,23 @@ public class UpdateSocialOfficeCommand extends SocialOfficeBaseCommand {
 					}
 
 					@Override
-					public Address getAddress1st() {
-						return new Address(command.getAddress1st());
+					public Address1 getAddress1st() {
+						return new Address1(command.getAddress1st());
 					}
 
 					@Override
-					public Address getAddress2nd() {
-						return new Address(command.getAddress2nd());
+					public Address2 getAddress2nd() {
+						return new Address2(command.getAddress2nd());
 					}
 
 					@Override
-					public KanaAddress getKanaAddress1st() {
-						return new KanaAddress(command.getKanaAddress1st());
+					public AddressKana1 getKanaAddress1st() {
+						return new AddressKana1(command.getKanaAddress1st());
 					}
 
 					@Override
-					public KanaAddress getKanaAddress2nd() {
-						return new KanaAddress(command.getKanaAddress2nd());
+					public AddressKana2 getKanaAddress2nd() {
+						return new AddressKana2(command.getKanaAddress2nd());
 					}
 
 					@Override

@@ -4,9 +4,11 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.dom.insurance.labor;
 
-import nts.uk.ctx.pr.core.dom.insurance.Address;
+import nts.uk.ctx.pr.core.dom.insurance.Address1;
+import nts.uk.ctx.pr.core.dom.insurance.Address2;
+import nts.uk.ctx.pr.core.dom.insurance.AddressKana1;
+import nts.uk.ctx.pr.core.dom.insurance.AddressKana2;
 import nts.uk.ctx.pr.core.dom.insurance.CitySign;
-import nts.uk.ctx.pr.core.dom.insurance.KanaAddress;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeMark;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeName;
@@ -82,28 +84,28 @@ public interface LaborInsuranceOfficeSetMemento {
 	 *
 	 * @param address1st the new address 1 st
 	 */
-	void setAddress1st(Address address1st);
+	void setAddress1st(Address1 address1st);
 
 	/**
 	 * Sets the address 2 nd.
 	 *
 	 * @param address2nd the new address 2 nd
 	 */
-	void setAddress2nd(Address address2nd);
+	void setAddress2nd(Address2 address2nd);
 
 	/**
 	 * Sets the kana address 1 st.
 	 *
 	 * @param kanaAddress1st the new kana address 1 st
 	 */
-	void setKanaAddress1st(KanaAddress kanaAddress1st);
+	void setKanaAddress1st(AddressKana1 kanaAddress1st);
 
 	/**
 	 * Sets the kana address 2 nd.
 	 *
 	 * @param kanaAddress2nd the new kana address 2 nd
 	 */
-	void setKanaAddress2nd(KanaAddress kanaAddress2nd);
+	void setKanaAddress2nd(AddressKana2 kanaAddress2nd);
 
 	/**
 	 * Sets the phone number.

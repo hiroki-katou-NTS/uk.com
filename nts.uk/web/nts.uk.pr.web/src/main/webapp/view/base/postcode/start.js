@@ -8,13 +8,13 @@ var nts;
             (function (view) {
                 var base;
                 (function (base) {
-                    var address;
-                    (function (address) {
+                    var postcode;
+                    (function (postcode) {
                         __viewContext.ready(function () {
-                            var screenModel = new address.viewmodel.ScreenModel();
+                            var screenModel = new postcode.viewmodel.ScreenModel();
                             __viewContext.bind(screenModel);
                         });
-                    })(address = base.address || (base.address = {}));
+                    })(postcode = base.postcode || (base.postcode = {}));
                 })(base = view.base || (view.base = {}));
             })(view = pr.view || (pr.view = {}));
         })(pr = uk.pr || (uk.pr = {}));

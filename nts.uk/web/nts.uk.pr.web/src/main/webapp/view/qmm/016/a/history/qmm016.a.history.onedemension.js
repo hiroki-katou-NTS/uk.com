@@ -24,15 +24,20 @@ var nts;
                                     this.igGridDataSource = ko.observableArray([]);
                                     if (history.valueItems && history.valueItems.length > 0) {
                                         var element = history.elements[0];
-                                        _.map(element.itemList, function (item) {
+                                        var itemVmList = _.map(element.itemList, function (item) {
                                             var vm = new ItemViewModel(a.viewmodel.getElementTypeByValue(element.type), item);
                                             vm.amount(_.filter(history.valueItems, function (vi) {
                                                 return vi.element1Id == item.uuid;
                                             })[0].amount);
+                                            return vm;
                                         });
+                                        this.igGridDataSource(itemVmList);
                                     }
-                                    this.initIgGrid();
                                 }
+                                OneDemensionViewModel.prototype.onLoad = function () {
+                                    var self = this;
+                                    self.initIgGrid();
+                                };
                                 OneDemensionViewModel.prototype.initIgGrid = function () {
                                     var self = this;
                                     self.igGrid = ko.observable({
@@ -43,7 +48,7 @@ var nts;
                                         features: [
                                             {
                                                 name: 'Updating',
-                                                editMode: 'cell',
+                                                editMode: 'row',
                                                 enableAddRow: false,
                                                 excelNavigatorMode: false,
                                                 enableDeleteRow: false,
@@ -66,7 +71,7 @@ var nts;
                                         autoCommit: true,
                                         columns: [
                                             { headerText: 'Element Name', dataType: 'string', key: 'uuid', hidden: true },
-                                            { headerText: self.history.elements[0].demensionName, dataType: 'string', key: 'name', width: '50%' },
+                                            { headerText: self.elementSettings[0].demensionName, dataType: 'string', key: 'name', width: '50%' },
                                             { headerText: '値', dataType: 'number', key: 'amount', width: '50%', columnCssClass: "halign-right" }
                                         ]
                                     });

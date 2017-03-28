@@ -459,6 +459,17 @@ module nts.uk.pr.view.qmm008.c {
                 self.OpenModalOfficeRegister();
             }
             
+            isDirty() : boolean {
+                var self = this;
+                if (self.dirty.isDirty()) {
+                    self.dirty.reset();
+                    return true;
+                }
+                else {
+                    return false;
+                }
+            }
+            
             public getCurrentOfficeCode(childId: string):string {
                 var self = this;
                 var returnValue :string;

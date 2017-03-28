@@ -13,6 +13,7 @@ var nts;
                         var viewmodel;
                         (function (viewmodel) {
                             var bservice = nts.uk.pr.view.qmm008.b.service;
+                            var postcodeService = nts.uk.pr.view.base.postcode.service;
                             var ScreenModel = (function () {
                                 function ScreenModel() {
                                     var self = this;
@@ -38,6 +39,8 @@ var nts;
                                         textalign: "center"
                                     }));
                                     self.selectedOfficeCode = ko.observable('');
+                                    self.previousSelectedOfficeCode = ko.observable('');
+                                    self.showConfirmDialog = ko.observable(true);
                                     self.errorList = ko.observableArray([
                                         { messageId: "ER001", message: "＊が入力されていません。" },
                                         { messageId: "ER007", message: "＊が選択されていません。" },
@@ -48,16 +51,35 @@ var nts;
                                     ]);
                                     self.dirty = new nts.uk.ui.DirtyChecker(ko.observable(''));
                                     self.selectedOfficeCode.subscribe(function (selectedOfficeCode) {
-                                        $('.save-error').ntsError('clear');
-                                        if (selectedOfficeCode != null && selectedOfficeCode != undefined && selectedOfficeCode != "") {
-                                            self.enabled(false);
-                                            self.deleteButtonControll(true);
-                                            $.when(self.load(selectedOfficeCode)).done(function () {
-                                            }).fail(function (res) {
+                                        if (self.dirty.isDirty() && self.showConfirmDialog() && selectedOfficeCode != self.previousSelectedOfficeCode()) {
+                                            nts.uk.ui.dialog.confirm(self.errorList()[4].message).ifYes(function () {
+                                                self.showConfirmDialog(false);
+                                                self.dirty.reset();
+                                                self.loadItemOffice(selectedOfficeCode);
+                                            }).ifCancel(function () {
+                                                self.selectedOfficeCode(self.previousSelectedOfficeCode());
                                             });
+                                        }
+                                        else {
+                                            if (selectedOfficeCode != self.previousSelectedOfficeCode()) {
+                                                self.loadItemOffice(selectedOfficeCode);
+                                            }
                                         }
                                     });
                                 }
+                                ScreenModel.prototype.loadItemOffice = function (selectedOfficeCode) {
+                                    var self = this;
+                                    $('.save-error').ntsError('clear');
+                                    if (selectedOfficeCode != null && selectedOfficeCode != undefined && selectedOfficeCode != "") {
+                                        self.enabled(false);
+                                        self.deleteButtonControll(true);
+                                        $.when(self.load(selectedOfficeCode)).done(function () {
+                                            self.previousSelectedOfficeCode(selectedOfficeCode);
+                                            self.showConfirmDialog(true);
+                                        }).fail(function (res) {
+                                        });
+                                    }
+                                };
                                 ScreenModel.prototype.start = function () {
                                     var self = this;
                                     var dfd = $.Deferred();
@@ -284,6 +306,54 @@ var nts;
                                     this.healthInsuAssoCode = ko.observable('');
                                     this.memo = ko.observable('');
                                 }
+                                SocialInsuranceOfficeModel.prototype.setPostCode = function (postcode) {
+                                    var self = this;
+                                    self.potalCode(postcode.postcode);
+                                    self.address1st(postcodeService.toAddress(postcode));
+                                    self.kanaAddress1st(postcodeService.toKana(postcode));
+                                };
+                                SocialInsuranceOfficeModel.prototype.searchPostCode = function () {
+                                    var self = this;
+                                    var messageList = [
+                                        { messageId: "ER001", message: "＊が入力されていません。" },
+                                        { messageId: "ER005", message: "入力した＊は既に存在しています。\r\n ＊を確認してください。" },
+                                        { messageId: "ER010", message: "対象データがありません。" }
+                                    ];
+                                    postcodeService.findPostCodeZipCodeToRespone(self.potalCode()).done(function (data) {
+                                        if (data.errorCode == '0') {
+                                            for (var _i = 0, messageList_1 = messageList; _i < messageList_1.length; _i++) {
+                                                var datamessage = messageList_1[_i];
+                                                if (datamessage.messageId == data.message) {
+                                                    $('#inp_postCode').ntsError('set', datamessage.message);
+                                                }
+                                            }
+                                        }
+                                        else if (data.errorCode == '1') {
+                                            self.setPostCode(data.postcode);
+                                            $('#inp_postCode').ntsError('clear');
+                                        }
+                                        else {
+                                            postcodeService.findPostCodeZipCodeSelection(self.potalCode()).done(function (res) {
+                                                if (res.errorCode == '0') {
+                                                    for (var _i = 0, messageList_2 = messageList; _i < messageList_2.length; _i++) {
+                                                        var datamessage = messageList_2[_i];
+                                                        if (datamessage.messageId == res.message) {
+                                                            $('#inp_postCode').ntsError('set', datamessage.message);
+                                                        }
+                                                    }
+                                                }
+                                                else if (res.errorCode == '1') {
+                                                    self.setPostCode(res.postcode);
+                                                    $('#inp_postCode').ntsError('clear');
+                                                }
+                                            }).fail(function (error) {
+                                                console.log(error);
+                                            });
+                                        }
+                                    }).fail(function (error) {
+                                        console.log(error);
+                                    });
+                                };
                                 return SocialInsuranceOfficeModel;
                             }());
                             viewmodel.SocialInsuranceOfficeModel = SocialInsuranceOfficeModel;

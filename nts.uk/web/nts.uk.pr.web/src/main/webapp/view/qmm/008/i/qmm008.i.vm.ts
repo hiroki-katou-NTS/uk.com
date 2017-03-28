@@ -32,6 +32,7 @@ module nts.uk.pr.view.qmm008.i {
                     pensionModel.startMonth(),
                     pensionModel.endMonth(),
                     pensionModel.autoCalculate(),
+                    pensionModel.fundInputApply(),
                     pensionModel.rateItems(),
                     pensionModel.fundRateItems(),
                     pensionModel.roundingMethods(),
@@ -296,6 +297,7 @@ module nts.uk.pr.view.qmm008.i {
             startMonth: string;
             endMonth: string;
             autoCalculate: number;
+            fundInputApply: number;
             rateItems: PensionRateItemModel;
             fundRateItems: FunRateItemModel;
             roundingMethods: PensionRateRoundingModel
@@ -307,6 +309,7 @@ module nts.uk.pr.view.qmm008.i {
                 startMonth: string,
                 endMonth: string,
                 autoCalculate: number,
+                fundInputApply: number,
                 rateItems: PensionRateItemModel,
                 fundRateItems: FunRateItemModel,
                 roundingMethods: PensionRateRoundingModel,
@@ -317,6 +320,7 @@ module nts.uk.pr.view.qmm008.i {
                 this.startMonth = startMonth;
                 this.endMonth = endMonth;
                 this.autoCalculate = autoCalculate;
+                this.fundInputApply = fundInputApply;
                 this.rateItems = rateItems;
                 this.fundRateItems = fundRateItems;
                 this.roundingMethods = roundingMethods;

@@ -57,12 +57,14 @@ module nts.uk.pr.view.qmm007.a {
                 if (self.isNewMode()) {
                     service.instance.create(ko.toJS(self.unitPriceHistoryModel())).done(res => {
                         dfd.resolve(res.uuid);
+                        self.dirtyChecker.reset();
                     }).fail(res => {
                         self.setMessages(res.messageId);
                     });
                 } else {
                     service.instance.update(ko.toJS(self.unitPriceHistoryModel())).done((res) => {
                         dfd.resolve(self.unitPriceHistoryModel().id);
+                        self.dirtyChecker.reset();
                     });
                 }
                 return dfd.promise();
@@ -71,19 +73,15 @@ module nts.uk.pr.view.qmm007.a {
             /**
             * Load UnitPriceHistory detail.
             */
-            onSelectHistory(id: string): JQueryPromise<void> {
+            onSelectHistory(id: string): void {
                 var self = this;
-                var dfd = $.Deferred<void>();
                 self.isLoading(true);
                 service.instance.findHistoryByUuid(id).done(dto => {
                     self.setUnitPriceHistoryModel(dto);
                     self.dirtyChecker.reset();
                     self.isLoading(false);
-                    nts.uk.ui.windows.setShared('unitPriceHistoryModel', ko.toJS(this.unitPriceHistoryModel()));
                     self.clearError();
-                    dfd.resolve();
                 });
-                return dfd.promise();
             }
 
             /**
@@ -93,6 +91,7 @@ module nts.uk.pr.view.qmm007.a {
                 var self = this;
                 self.clearError();
                 self.clearInput();
+                self.dirtyChecker.reset();
             }
 
             isDirty(): boolean {

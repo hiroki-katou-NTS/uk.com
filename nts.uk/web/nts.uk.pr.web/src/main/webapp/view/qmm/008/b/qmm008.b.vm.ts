@@ -243,6 +243,7 @@ module nts.uk.pr.view.qmm008.b {
                 //TODO check auto calculate
                 if (self.healthModel().autoCalculate() == AutoCalculateType.Auto) {
                     nts.uk.ui.dialog.confirm("自動計算が行われます。登録しますか？").ifYes(function() {
+                        self.dirty = new nts.uk.ui.DirtyChecker(self.healthModel);
                         hservice.updateHealthInsuranceAvgearn(self.collectData(), self.healthCollectData().officeCode);
                         //update health
                         service.updateHealthRate(self.healthCollectData()).done(function() {
@@ -351,6 +352,7 @@ module nts.uk.pr.view.qmm008.b {
                     dfd.resolve();
                 });
                 return dfd.promise();
+                
             }
             onSave(): JQueryPromise<string>  {
                 var self = this;
@@ -400,6 +402,17 @@ module nts.uk.pr.view.qmm008.b {
                 var self = this;
 //                $('.save-error').ntsError('clear');
                 self.OpenModalOfficeRegister();
+            }
+            
+            isDirty() : boolean {
+                var self = this;
+                if (self.dirty.isDirty()) {
+                    self.dirty.reset();
+                    return true;
+                }
+                else {
+                    return false;
+                }
             }
             public OpenModalOfficeRegisterWithDirtyCheck(){
                 var self = this;

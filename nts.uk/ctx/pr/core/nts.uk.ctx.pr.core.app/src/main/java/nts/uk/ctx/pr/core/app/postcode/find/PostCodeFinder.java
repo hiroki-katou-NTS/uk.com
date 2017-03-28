@@ -1,18 +1,16 @@
 /******************************************************************
- * Copyright (c) 2016 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.pr.core.app.address.find;
+package nts.uk.ctx.pr.core.app.postcode.find;
 
 import java.util.List;
 
-import javax.ejb.Stateless;
-
 /**
- * The Interface AddressFinder.
+ * The Interface PostCodeFinder.
  */
 
-public interface AddressFinder {
+public interface PostCodeFinder {
 
 	/**
 	 * Find address selection list.
@@ -20,6 +18,6 @@ public interface AddressFinder {
 	 * @param zipCode the zip code
 	 * @return the list
 	 */
-	public List<AddressSelection> findAddressSelectionList(String zipCode);
+	public List<PostCode> findPostCodeList(String zipCode);
 
 }

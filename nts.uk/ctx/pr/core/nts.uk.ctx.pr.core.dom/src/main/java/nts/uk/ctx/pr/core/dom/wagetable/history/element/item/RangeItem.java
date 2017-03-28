@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.dom.wagetable.history.element.item;
 
+import java.math.BigDecimal;
+
 import lombok.Getter;
 import nts.uk.ctx.pr.core.dom.wagetable.ElementId;
 
@@ -17,10 +19,10 @@ public class RangeItem extends BaseItem {
 	private Integer orderNumber;
 
 	/** The start val. */
-	private Double startVal;
+	private BigDecimal startVal;
 
 	/** The end val. */
-	private Double endVal;
+	private BigDecimal endVal;
 
 	/**
 	 * Instantiates a new range item.
@@ -34,12 +36,11 @@ public class RangeItem extends BaseItem {
 	 * @param uuid
 	 *            the uuid
 	 */
-	public RangeItem(Integer orderNumber, Double startVal, Double endVal, ElementId uuid) {
+	public RangeItem(Integer orderNumber, BigDecimal startVal, BigDecimal endVal, ElementId uuid) {
 		super(uuid);
 		this.orderNumber = orderNumber;
 		this.startVal = startVal;
 		this.endVal = endVal;
-		this.setDisplayName(startVal + " ~ " + endVal);
 	}
 
 	/*

@@ -333,6 +333,16 @@ var nts;
                                     var self = this;
                                     self.OpenModalOfficeRegister();
                                 };
+                                ScreenModel.prototype.isDirty = function () {
+                                    var self = this;
+                                    if (self.dirty.isDirty()) {
+                                        self.dirty.reset();
+                                        return true;
+                                    }
+                                    else {
+                                        return false;
+                                    }
+                                };
                                 ScreenModel.prototype.getCurrentOfficeCode = function (childId) {
                                     var self = this;
                                     var returnValue;

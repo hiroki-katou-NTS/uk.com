@@ -13,7 +13,7 @@
 			<com:scriptfile path="qmm010.a.service.js" />
 			<com:scriptfile path="../b/qmm010.b.service.js" />
 			<com:scriptfile path="qmm010.a.vm.js" />
-			<com:scriptfile path="../../../../view/base/address/service.js" />
+			<com:scriptfile path="../../../../view/base/postcode/service.js" />
 			<com:ValidatorScript>
 			    nts.uk.ctx.pr.core.dom.insurance.OfficeName
 			    nts.uk.ctx.pr.core.dom.insurance.OfficeCode
@@ -21,8 +21,10 @@
 			    nts.uk.ctx.pr.core.dom.insurance.PicName
 			    nts.uk.ctx.pr.core.dom.insurance.PicPosition
 			    nts.uk.ctx.pr.core.dom.insurance.PotalCode
-			    nts.uk.ctx.pr.core.dom.insurance.Address
-			    nts.uk.ctx.pr.core.dom.insurance.KanaAddress
+			    nts.uk.ctx.pr.core.dom.insurance.Address1
+			    nts.uk.ctx.pr.core.dom.insurance.Address2
+			    nts.uk.ctx.pr.core.dom.insurance.AddressKana1
+			    nts.uk.ctx.pr.core.dom.insurance.AddressKana2
 			    nts.uk.ctx.pr.core.dom.insurance.CitySign
 			    nts.uk.ctx.pr.core.dom.insurance.OfficeMark
 			    nts.uk.ctx.pr.core.dom.insurance.PhoneNumber
@@ -160,7 +162,7 @@
 									</td>
 									<td class="contentsRR">
 										<input id="inp_postalCode"
-											class="trFull15" data-name="postalCode"
+											class="trFull15" data-name="郵便番号"
 											data-bind="ntsTextEditor: {value: postalCode, 
 											constraint: 'PostalCode', 
 											option: textEditorOption, 
@@ -173,14 +175,14 @@
 								<tr>
 									<td class="contentsRL">
 										<div
-											data-bind="ntsFormLabel: {constraint:'Address',required: false}">
+											data-bind="ntsFormLabel: {constraint:'Address1',required: false}">
 											<label>住所1</label>
 										</div>
 									</td>
 									<td class="contentsRR"><input id="inp_address1st"
 										class="tr360 save-error" data-name="address1st"
 										data-bind="ntsTextEditor: {value: address1st, 
-										constraint: 'Address', 
+										constraint: 'Address1', 
 										option: textEditorOption, 
 										enable: true}" />
 									</td>
@@ -189,14 +191,14 @@
 								<tr>
 									<td class="contentsRL">
 										<div class="left20 border_none"
-											data-bind="ntsFormLabel: {constraint:'KanaAddress',required: false}">
+											data-bind="ntsFormLabel: {constraint:'AddressKana1',required: false}">
 											<label>ｶﾅ1</label>
 										</div>
 									</td>
 									<td class="contentsRR"><input id="inp_kanaAddress1st"
 										class="tr360 save-error" data-name="kanaAddress1st"
 										data-bind="ntsTextEditor: {value: kanaAddress1st, 
-										constraint: 'KanaAddress', 
+										constraint: 'AddressKana1', 
 										option: textEditorOption, 
 										enable: true}" />
 									</td>
@@ -205,14 +207,14 @@
 								<tr>
 									<td class="contentsRL">
 										<div
-											data-bind="ntsFormLabel: {constraint:'Address',required: false}">
+											data-bind="ntsFormLabel: {constraint:'Address2',required: false}">
 											<label>住所2</label>
 										</div>
 									</td>
 									<td class="contentsRR"><input id="inp_address2nd"
 										class="tr500 save-error" data-name="address2nd"
 										data-bind="ntsTextEditor: {value: address2nd, 
-										constraint: 'Address', 
+										constraint: 'Address2', 
 										option: textEditorOption, 
 										enable: true}" />
 									</td>
@@ -221,14 +223,14 @@
 								<tr>
 									<td class="contentsRL">
 										<div class="left20 border_none"
-											data-bind="ntsFormLabel: {constraint:'KanaAddress',required: false}">
+											data-bind="ntsFormLabel: {constraint:'AddressKana2',required: false}">
 											<label>ｶﾅ2</label>
 										</div>
 									</td>
 									<td class="contentsRR"><input id="inp_kanaAddress2nd"
 										class="tr500 save-error" data-name="kanaAddress2nd"
 										data-bind="ntsTextEditor: {value: kanaAddress2nd, 
-										constraint: 'KanaAddress', 
+										constraint: 'AddressKana2', 
 										option: textEditorOption, 
 										enable: true}" />
 									</td>

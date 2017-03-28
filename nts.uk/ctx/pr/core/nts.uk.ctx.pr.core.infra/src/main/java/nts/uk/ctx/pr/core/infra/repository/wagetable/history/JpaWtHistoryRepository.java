@@ -56,6 +56,7 @@ public class JpaWtHistoryRepository extends JpaRepository implements WtHistoryRe
 				companyCode));
 
 		cq.where(predicateList.toArray(new Predicate[] {}));
+		cq.orderBy(cb.desc(root.get(QwtmtWagetableHist_.strYm)));
 
 		return em.createQuery(cq).getResultList().stream()
 				.map(item -> new WtHistory(new JpaWtHistoryGetMemento(item)))

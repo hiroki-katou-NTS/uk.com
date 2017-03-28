@@ -78,14 +78,15 @@ public class StepItemGenerator implements ItemGenerator {
 			index++;
 			BigDecimal end = start.add(interval).subtract(minStep);
 
-			RangeItem rangeItem = new RangeItem(index, start.doubleValue(),
-					((end.compareTo(upperLimit) <= 0) ? end : upperLimit).doubleValue(),
+			RangeItem rangeItem = new RangeItem(index, start,
+					((end.compareTo(upperLimit) <= 0) ? end : upperLimit),
 					new ElementId(IdentifierUtil.randomUniqueId()));
 
 			// Replace exist element id.
-			rangeItem = new RangeItem(index, start.doubleValue(),
-					((end.compareTo(upperLimit) <= 0) ? end : upperLimit).doubleValue(),
+			rangeItem = new RangeItem(index, start,
+					((end.compareTo(upperLimit) <= 0) ? end : upperLimit),
 					mapRangeItems.getOrDefault(rangeItem, rangeItem.getUuid()));
+			rangeItem.setDisplayName(rangeItem.getStartVal() + "～" + rangeItem.getEndVal());
 
 			items.add(rangeItem);
 

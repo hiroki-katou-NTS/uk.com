@@ -2,7 +2,7 @@
  * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.pr.core.ws.address;
+package nts.uk.ctx.pr.core.ws.postcode;
 
 import java.util.List;
 
@@ -13,19 +13,19 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.pr.core.app.address.find.AddressFinder;
-import nts.uk.ctx.pr.core.app.address.find.AddressSelection;
+import nts.uk.ctx.pr.core.app.postcode.find.PostCode;
+import nts.uk.ctx.pr.core.app.postcode.find.PostCodeFinder;
 
 /**
  * The Class AddressWs.
  */
-@Path("ctx/pr/core/address")
+@Path("ctx/pr/core/postcode")
 @Produces("application/json")
-public class AddressWs extends WebService {
+public class PostCodeWs extends WebService {
 
 	/** The finder. */
 	@Inject
-	private AddressFinder finder;
+	private PostCodeFinder finder;
 
 	/**
 	 * Find all.
@@ -36,8 +36,8 @@ public class AddressWs extends WebService {
 	 */
 	@POST
 	@Path("find/{zipCode}")
-	public List<AddressSelection> findAll(@PathParam("zipCode") String zipCode) {
-		return this.finder.findAddressSelectionList(zipCode);
+	public List<PostCode> findAll(@PathParam("zipCode") String zipCode) {
+		return this.finder.findPostCodeList(zipCode);
 	}
 
 }

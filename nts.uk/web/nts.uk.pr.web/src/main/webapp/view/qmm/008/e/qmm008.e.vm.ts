@@ -3,6 +3,7 @@ module nts.uk.pr.view.qmm008.e {
     export module viewmodel {
         import InsuranceOfficeItemDto = qmm008.b.service.model.finder.InsuranceOfficeItemDto;
         import bservice = nts.uk.pr.view.qmm008.b.service;
+        import postcodeService = nts.uk.pr.view.base.postcode.service;
         import OfficeItemDto = qmm008.e.service.model.finder.OfficeItemDto;
 
         export class ScreenModel {
@@ -23,6 +24,8 @@ module nts.uk.pr.view.qmm008.e {
             officeModel: KnockoutObservable<SocialInsuranceOfficeModel>;
             textInputOption: KnockoutObservable<nts.uk.ui.option.TextEditorOption>;
             selectedOfficeCode: KnockoutObservable<string>;
+            previousSelectedOfficeCode : KnockoutObservable<string>;
+            showConfirmDialog : KnockoutObservable<boolean>;
             enabled: KnockoutObservable<boolean>;
             deleteButtonControll: KnockoutObservable<boolean>;
             errorList: KnockoutObservableArray<any>;
@@ -58,7 +61,8 @@ module nts.uk.pr.view.qmm008.e {
                     textalign: "center"
                 }));
                 self.selectedOfficeCode = ko.observable('');
-                
+                self.previousSelectedOfficeCode = ko.observable('');
+                self.showConfirmDialog = ko.observable(true);
                 self.errorList = ko.observableArray([
                     { messageId: "ER001", message: "＊が入力されていません。" },
                     { messageId: "ER007", message: "＊が選択されていません。" },
@@ -68,20 +72,39 @@ module nts.uk.pr.view.qmm008.e {
                     { messageId: "AL002", message: "データを削除します。\r\nよろしいですか？" },
                 ]);
                 //dirty check
-                self.dirty = new nts.uk.ui.DirtyChecker(ko.observable('')); 
-                
+                self.dirty = new nts.uk.ui.DirtyChecker(ko.observable(''));
+
                 self.selectedOfficeCode.subscribe(function(selectedOfficeCode: string) {
-                    $('.save-error').ntsError('clear');
-                    if (selectedOfficeCode != null && selectedOfficeCode != undefined && selectedOfficeCode != "") {
-                        self.enabled(false);
-                        self.deleteButtonControll(true);
-                        $.when(self.load(selectedOfficeCode)).done(function() {
-                            //load data success
-                        }).fail(function(res) {
-                            //when load data error
+                    if (self.dirty.isDirty()&&self.showConfirmDialog() && selectedOfficeCode!= self.previousSelectedOfficeCode()) {
+                        nts.uk.ui.dialog.confirm(self.errorList()[4].message).ifYes(function() {
+                            self.showConfirmDialog(false);
+                            self.dirty.reset();
+                            self.loadItemOffice(selectedOfficeCode);
+                        }).ifCancel(function() {
+                            self.selectedOfficeCode(self.previousSelectedOfficeCode());
                         });
                     }
+                    else {
+                        if (selectedOfficeCode != self.previousSelectedOfficeCode()) {
+                            self.loadItemOffice(selectedOfficeCode);
+                        }
+                    }
                 });
+            }
+            private loadItemOffice(selectedOfficeCode: string) {
+                var self = this;
+                $('.save-error').ntsError('clear');
+                if (selectedOfficeCode != null && selectedOfficeCode != undefined && selectedOfficeCode != "") {
+                    self.enabled(false);
+                    self.deleteButtonControll(true);
+                    $.when(self.load(selectedOfficeCode)).done(function() {
+                        //load data success
+                        self.previousSelectedOfficeCode(selectedOfficeCode);
+                        self.showConfirmDialog(true);
+                    }).fail(function(res) {
+                        //when load data error
+                    });
+                }
             }
             // start
             public start(): JQueryPromise<any> {
@@ -413,6 +436,53 @@ module nts.uk.pr.view.qmm008.e {
                 this.healthInsuOfficeCode = ko.observable('');
                 this.healthInsuAssoCode = ko.observable('');
                 this.memo = ko.observable('');
+            }
+
+            private setPostCode(postcode: postcodeService.model.PostCode) {
+                var self = this;
+                self.potalCode(postcode.postcode);
+                self.address1st(postcodeService.toAddress(postcode));
+                self.kanaAddress1st(postcodeService.toKana(postcode));
+            }
+
+            private searchPostCode() {
+                var self = this;
+                var messageList = [
+                    { messageId: "ER001", message: "＊が入力されていません。" },
+                    { messageId: "ER005", message: "入力した＊は既に存在しています。\r\n ＊を確認してください。" },
+                    { messageId: "ER010", message: "対象データがありません。" }
+                ];
+                postcodeService.findPostCodeZipCodeToRespone(self.potalCode()).done(data => {
+                  if (data.errorCode == '0') {
+                        for (var datamessage of messageList) {
+                            if (datamessage.messageId == data.message) {
+                                $('#inp_postCode').ntsError('set', datamessage.message);
+                            }
+                        }
+                    }
+                    else if (data.errorCode == '1') {
+                        self.setPostCode(data.postcode);
+                        $('#inp_postCode').ntsError('clear');
+                    } else {
+                        postcodeService.findPostCodeZipCodeSelection(self.potalCode()).done(res => {
+                            if (res.errorCode == '0') {
+                                for (var datamessage of messageList) {
+                                    if (datamessage.messageId == res.message) {
+                                        $('#inp_postCode').ntsError('set', datamessage.message);
+                                    }
+                                }
+                            }
+                            else if (res.errorCode == '1') {
+                                self.setPostCode(res.postcode);
+                                $('#inp_postCode').ntsError('clear');
+                            }
+                        }).fail(function(error) {
+                            console.log(error);
+                        });
+                    }
+                }).fail(function(error) {
+                    console.log(error);
+                });
             }
         }
         export class ItemModel {
