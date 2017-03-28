@@ -28,8 +28,9 @@ public class ItemMasterPubImp implements ItemMasterPub {
 	
 	@Override
 	public List<ItemMasterDto> findAll(String companyCode) {
-		// TODO Auto-generated method stub
-		return null;
+		return itemMasterRepo.findAll(companyCode).stream()
+				.map(item -> new ItemMasterDto(item.getItemName().v(), item.getItemCode().v(), item.getCategoryAtr().value, item.getDisplaySet().value))
+				.collect(Collectors.toList());
 	}
 	
 	@Override
