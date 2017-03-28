@@ -10,10 +10,6 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.pr.core.dom.retirement.payitem.IndicatorCategory;
 import nts.uk.ctx.pr.core.dom.retirement.payitem.RetirementPayItem;
-import nts.uk.ctx.pr.core.dom.retirement.payitem.RetirementPayItemCode;
-import nts.uk.ctx.pr.core.dom.retirement.payitem.RetirementPayItemEnglishName;
-import nts.uk.ctx.pr.core.dom.retirement.payitem.RetirementPayItemFullName;
-import nts.uk.ctx.pr.core.dom.retirement.payitem.RetirementPayItemName;
 import nts.uk.ctx.pr.core.dom.retirement.payitem.RetirementPayItemPrintName;
 import nts.uk.ctx.pr.core.dom.retirement.payitem.RetirementPayItemRepository;
 import nts.uk.ctx.pr.core.infra.entity.retirement.payitem.QremtRetirePayItem;
@@ -30,8 +26,8 @@ public class JpaRetirementPayItemRepository extends JpaRepository implements Ret
 	private final String SEL_1 = "SELECT a FROM QremtRetirePayItem a WHERE a.qremtRetirePayItemPK.companyCode = :companyCode";
 	
 	@Override
-	public Optional<RetirementPayItem> findByKey(String companyCode, IndicatorCategory category, RetirementPayItemCode itemCode) {
-		return this.queryProxy().find(new QremtRetirePayItemPK(companyCode, category.value, itemCode.v()), QremtRetirePayItem.class)
+	public Optional<RetirementPayItem> findByKey(String companyCode, IndicatorCategory category, String itemCode) {
+		return this.queryProxy().find(new QremtRetirePayItemPK(companyCode, category.value, itemCode), QremtRetirePayItem.class)
 				.map(x -> convertToDomain(x));
 	}
 	
@@ -53,11 +49,11 @@ public class JpaRetirementPayItemRepository extends JpaRepository implements Ret
 	 */
 	private QremtRetirePayItem convertToEntity(RetirementPayItem payItem) {
 		return new QremtRetirePayItem(
-				new QremtRetirePayItemPK(payItem.getCompanyCode(), payItem.getCategory().value, payItem.getItemCode().v()), 
-				payItem.getItemName().v(), 
+				new QremtRetirePayItemPK(payItem.getCompanyCode(), payItem.getCategory().value, payItem.getItemCode()), 
+				payItem.getItemName(), 
 				payItem.getPrintName().v(), 
-				payItem.getEnglishName().v(), 
-				payItem.getFullName().v(), 
+				payItem.getEnglishName(), 
+				payItem.getFullName(), 
 				payItem.getMemo().v());
 	}
 	
@@ -70,11 +66,11 @@ public class JpaRetirementPayItemRepository extends JpaRepository implements Ret
 		return new RetirementPayItem(
 				qremtRetirePayItem.qremtRetirePayItemPK.companyCode,
 				EnumAdaptor.valueOf(qremtRetirePayItem.qremtRetirePayItemPK.category, IndicatorCategory.class),
-				new RetirementPayItemCode(qremtRetirePayItem.qremtRetirePayItemPK.itemCode),
-				new RetirementPayItemName(qremtRetirePayItem.itemName),
+				qremtRetirePayItem.qremtRetirePayItemPK.itemCode,
+				qremtRetirePayItem.itemName,
 				new RetirementPayItemPrintName(qremtRetirePayItem.printName),
-				new RetirementPayItemEnglishName(qremtRetirePayItem.englishName),
-				new RetirementPayItemFullName(qremtRetirePayItem.fullName),
+				qremtRetirePayItem.englishName,
+				qremtRetirePayItem.fullName,
 				new Memo(qremtRetirePayItem.memo));
 	}
 }

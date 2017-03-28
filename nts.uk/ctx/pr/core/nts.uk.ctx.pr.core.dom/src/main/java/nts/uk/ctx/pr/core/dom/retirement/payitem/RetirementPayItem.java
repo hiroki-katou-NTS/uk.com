@@ -8,45 +8,45 @@ import nts.uk.shr.com.primitive.Memo;
 
 /**
  * 退職金項目マスタ
+ * 
  * @author Doan Duy Hung
  *
  */
-public class RetirementPayItem extends AggregateRoot{
+public class RetirementPayItem extends AggregateRoot {
 	@Getter
 	private String companyCode;
-	
+
 	@Getter
 	private IndicatorCategory category;
-	
+
 	@Getter
-	private RetirementPayItemCode itemCode;
-	
+	private String itemCode;
+
 	@Getter
-	private RetirementPayItemName itemName;
-	
+	private String itemName;
+
 	@Getter
 	private RetirementPayItemPrintName printName;
-	
+
 	@Getter
-	private RetirementPayItemEnglishName englishName;
-	
+	private String englishName;
+
 	@Getter
-	private RetirementPayItemFullName fullName;
+	private String fullName;
 
 	@Getter
 	private Memo memo;
-	
+
 	@Override
 	public void validate() {
 		super.validate();
-		if(printName == null || StringUtil.isNullOrEmpty(printName.v(), true)) { 
+		if (printName == null || StringUtil.isNullOrEmpty(printName.v(), true)) {
 			throw new BusinessException("ER001");
 		}
 	}
-	
-	public RetirementPayItem(String companyCode, IndicatorCategory category, RetirementPayItemCode itemCode,
-			RetirementPayItemName itemName, RetirementPayItemPrintName printName, RetirementPayItemEnglishName englishName,
-			RetirementPayItemFullName fullName, Memo memo) {
+
+	public RetirementPayItem(String companyCode, IndicatorCategory category, String itemCode, String itemName,
+			RetirementPayItemPrintName printName, String englishName, String fullName, Memo memo) {
 		super();
 		this.companyCode = companyCode;
 		this.category = category;

@@ -19,7 +19,7 @@ public interface RetirementPayItemRepository {
 	 * @param itemCode retirement payment item code
 	 * @return retirement payment item if exist
 	 */
-	Optional<RetirementPayItem> findByKey(String companyCode, IndicatorCategory category, RetirementPayItemCode itemCode);
+	Optional<RetirementPayItem> findByKey(String companyCode, IndicatorCategory category, String itemCode);
 	
 	/**
 	 * find retirement payment item by company code
