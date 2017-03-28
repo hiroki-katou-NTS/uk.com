@@ -11,9 +11,6 @@
 	<ui:composition template="../../../../master/base.xhtml">
 		<!-- Template region -->
 		<ui:define name="htmlHead">
-			<com:ValidatorScript>
-					nts.uk.ctx.pr.core.dom.layout.LayoutName
-				</com:ValidatorScript>
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="viewmodel.js" />
 			<com:scriptfile path="start.js" />
@@ -29,10 +26,25 @@
 			<com:scriptfile path="../f/service.js" />
 			<com:scriptfile path="../g/viewmodel.js" />
 			<com:scriptfile path="../g/service.js" />
-
+			<com:scriptfile path="../h/service.js" />
+			<com:scriptfile path="../i/service.js" />
+			<com:ValidatorScript>
+				<!-- For B -->
+				nts.uk.ctx.pr.core.dom.itemmaster.ItemCode
+				nts.uk.ctx.pr.core.dom.itemmaster.ItemName
+				<!-- End B -->
+				<!-- For C -->
+				nts.uk.ctx.pr.core.dom.itemmaster.itemsalary.LimitMny
+				nts.uk.ctx.pr.core.dom.itemmaster.itemsalary.AlRangeHigh
+				nts.uk.ctx.pr.core.dom.itemmaster.itemsalary.AlRangeLow
+				nts.uk.ctx.pr.core.dom.itemmaster.itemsalary.ErrRangeHigh
+				nts.uk.ctx.pr.core.dom.itemmaster.itemsalary.ErrRangeLow
+				nts.uk.ctx.pr.core.dom.itemmaster.itemsalary.Memo
+				<!-- End C -->
+			</com:ValidatorScript>
 		</ui:define>
 		<ui:define name="content">
-			<div id="functions-area" data-bind="with: screenModelB">
+			<div id="functions-area">
 				<button id="B_BTN_001" data-bind="click: openADialog"
 					class="inputNomalSize">新規</button>
 				<button id="B_BTN_002" class="proceed inputNomalSize"
@@ -46,8 +58,7 @@
 			</div>
 
 			<div id="contents-area" class="cf">
-				<div class="nts-left-content caret-right caret-background "
-					data-bind="with: screenModelB">
+				<div class="nts-left-content caret-right caret-background ">
 					<i class="icon icon-searchbox"></i>
 					<div class="divLine">
 						<div id="B_LBL_002" data-bind="ntsFormLabel: {  required: false }">項目区分</div>
@@ -89,11 +100,10 @@
 							multiple: false,
 							value: GridlistCurrentCode_B_001
 						}"></table>
-
 					</div>
 				</div>
 				<div class="nts-right-content">
-					<div id="right-content-top" data-bind="with: screenModelB">
+					<div id="right-content-top">
 						<div class="divLine">
 							<div class="divLineCol1">
 								<div id="B_LBL_004" class="floatLeft haveSmallSpan"
@@ -105,6 +115,7 @@
 								<div id="B_INP_002" data-bind="with:texteditor_B_INP_002">
 									<input
 										data-bind="ntsTextEditor: {
+										constraint: 'ItemCode',
 										value: value,
 										option: option,
 										enable: enable}" />
@@ -113,6 +124,7 @@
 								<div id="B_INP_003" data-bind="with:texteditor_B_INP_003">
 									<input
 										data-bind="ntsTextEditor: {
+										constraint: 'ItemName',
 										value: value,
 										option: option}" />
 								</div>
@@ -132,6 +144,7 @@
 								<div id="B_INP_004" data-bind="with:texteditor_B_INP_004">
 									<input
 										data-bind="ntsTextEditor: {
+										constraint: 'ItemName',
 										value: value,
 										option: option}" />
 								</div>
@@ -159,19 +172,19 @@
 						</div>
 					</div>
 					<div id="right-content-bottom">
-						<div id="screenC" data-bind="with: screenModelC">
+						<div id="screenC" data-bind="with: screenModel.screenModelC">
 							<ui:include src="../c/index.xhtml" />
 						</div>
-						<div id="screenD" data-bind="with: screenModelD">
+						<div id="screenD" data-bind="with: screenModel.screenModelD">
 							<ui:include src="../d/index.xhtml" />
 						</div>
-						<div id="screenE" data-bind="with: screenModelE">
+						<div id="screenE" data-bind="with: screenModel.screenModelE">
 							<ui:include src="../e/index.xhtml" />
 						</div>
-						<div id="screenF" data-bind="with: screenModelF">
+						<div id="screenF" data-bind="with: screenModel.screenModelF">
 							<ui:include src="../f/index.xhtml" />
 						</div>
-						<div id="screenG" data-bind="with: screenModelG">
+						<div id="screenG" data-bind="with: screenModel.screenModelG">
 							<ui:include src="../g/index.xhtml" />
 						</div>
 					</div>
