@@ -6,7 +6,10 @@ package nts.uk.file.pr.app.export.wageledger;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -14,7 +17,9 @@ import javax.inject.Inject;
 import nts.arc.layer.app.file.export.ExportService;
 import nts.arc.layer.app.file.export.ExportServiceContext;
 import nts.uk.file.pr.app.export.wageledger.WageLedgerReportQuery.LayoutType;
+import nts.uk.file.pr.app.export.wageledger.data.WLNewLayoutReportData;
 import nts.uk.file.pr.app.export.wageledger.data.WLOldLayoutReportData;
+import nts.uk.file.pr.app.export.wageledger.data.newlayout.TotalData;
 import nts.uk.file.pr.app.export.wageledger.data.oldlayout.DeductionData;
 import nts.uk.file.pr.app.export.wageledger.data.oldlayout.PaymentData;
 import nts.uk.file.pr.app.export.wageledger.data.share.HeaderReportData;
@@ -119,9 +124,53 @@ public class WageLedgerReportSevice extends ExportService<WageLedgerReportQuery>
 				.bonusAttendanceDatas(this.fakeReportItems())
 				.build();
 		
+		// Fake data for new layout report.
+		WLNewLayoutReportData newLayoutReportData = WLNewLayoutReportData.builder()
+				.headerData(HeaderReportData.builder()
+						.departmentCode("DEP1")
+						.departmentName("Department 1")
+						.employeeCode("EM1")
+						.employeeName("Employee 1")
+						.position("Project manager")
+						.sex("Man")
+						.build())
+				.salaryTotalData(TotalData.builder()
+						.totalDeduction(this.fakeReportItem("Salary Total Deduction"))
+						.totalIncomeTax(this.fakeReportItem("Salary Total Income Tax"))
+						.totalInhabitantTax(this.fakeReportItem("Salaty Total Inhabitant Tax"))
+						.totalPayment(this.fakeReportItem("Salary Total"))
+						.totalReal(this.fakeReportItem("Salary Total Real"))
+						.totalSocialInsurance(this.fakeReportItem("Salary Total Social Insurance"))
+						.totalTax(this.fakeReportItem("Salary Total Tax"))
+						.totalTaxable(this.fakeReportItem("Salary Total Tax"))
+						.totalTaxExemption(this.fakeReportItem("Salary Total Tax Exemption"))
+						.build())
+				.bonusTotalData(TotalData.builder()
+						.totalDeduction(this.fakeReportItem("Salary Total Deduction"))
+						.totalIncomeTax(this.fakeReportItem("Salary Total Income Tax"))
+						.totalInhabitantTax(this.fakeReportItem("Salaty Total Inhabitant Tax"))
+						.totalPayment(this.fakeReportItem("Salary Total"))
+						.totalReal(this.fakeReportItem("Salary Total Real"))
+						.totalSocialInsurance(this.fakeReportItem("Salary Total Social Insurance"))
+						.totalTax(this.fakeReportItem("Salary Total Tax"))
+						.totalTaxable(this.fakeReportItem("Salary Total Tax"))
+						.totalTaxExemption(this.fakeReportItem("Salary Total Tax Exemption"))
+						.build())
+				.bonusAttendanceItems(this.fakeReportItems())
+				.bonusDeductionItems(this.fakeReportItems())
+				.bonusPaymentItems(this.fakeReportItems())
+				.salaryAttendanceItems(this.fakeReportItems())
+				.salaryPaymentItems(this.fakeReportItems())
+				.salaryDeductionItems(this.fakeReportItems())
+				.otherMoneyBeforeYearEnd((long)(Math.random() * 2000000))
+				.positionMoneyBeforeYearEnd((long)(Math.random() * 2000000))
+				.bonusPaymentDateMap(this.fakeDateMap(5))
+				.salaryPaymentDateMap(this.fakeDateMap(12))
+				.build();
+		
 		// Generate report.
 		if (query.layoutType == LayoutType.NewLayout) {
-			this.newGenerator.generate(context.getGeneratorContext(), null, query);
+			this.newGenerator.generate(context.getGeneratorContext(), newLayoutReportData, query);
 		} else {
 			this.oldGenerator.generate(context.getGeneratorContext(), reportData);
 		}
@@ -138,6 +187,13 @@ public class WageLedgerReportSevice extends ExportService<WageLedgerReportQuery>
 		return reportItemDtos;
 	}
 	
+	private ReportItemDto fakeReportItem(String name) {
+		return ReportItemDto.builder()
+				.monthlyDatas(this.fakeMonthlyData())
+				.name(name)
+				.build();
+	}
+	
 	private List<MonthlyData> fakeMonthlyData() {
 		List<MonthlyData> monthlyDatas = new ArrayList<>();
 		for (int i = 1; i <= 12; i++) {
@@ -147,5 +203,13 @@ public class WageLedgerReportSevice extends ExportService<WageLedgerReportQuery>
 					.build());
 		}
 		return monthlyDatas;
+	}
+	
+	private Map<Integer, Date> fakeDateMap(int month) {
+		Map<Integer, Date> dateMap = new HashMap<>();
+		for (int i = 0; i < month; i++) {
+			dateMap.put(i + 1, new Date());
+		}
+		return dateMap;
 	}
 }

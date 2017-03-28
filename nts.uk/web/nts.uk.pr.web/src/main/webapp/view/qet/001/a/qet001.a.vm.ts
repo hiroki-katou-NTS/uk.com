@@ -74,7 +74,7 @@ module qet001.a.viewmodel {
          * Print report.
          */
         public print() {
-               // Clear error.
+            // Clear error.
             $('#target-year-input').ntsError('clear');
             
             // Validate.
@@ -85,7 +85,7 @@ module qet001.a.viewmodel {
                 hasError == true;
             }
             // TODO: Check employee list.
-            if (!hasError) {
+            if (hasError) {
                 return;
             }
             // Print.
