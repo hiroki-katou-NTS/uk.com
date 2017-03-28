@@ -86,6 +86,7 @@ public class StepItemGenerator implements ItemGenerator {
 			rangeItem = new RangeItem(index, start,
 					((end.compareTo(upperLimit) <= 0) ? end : upperLimit),
 					mapRangeItems.getOrDefault(rangeItem, rangeItem.getUuid()));
+			rangeItem.setDisplayName(rangeItem.getStartVal() + "～" + rangeItem.getEndVal());
 
 			items.add(rangeItem);
 

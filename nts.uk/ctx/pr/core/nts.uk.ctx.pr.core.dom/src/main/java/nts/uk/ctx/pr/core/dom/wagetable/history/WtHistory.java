@@ -250,7 +250,8 @@ public class WtHistory extends DomainObject implements History<WtHistory> {
 		// Create new item mapping with old uuid.
 		history.valueItems = this.valueItems.stream()
 				.map(item -> new WtItem(mapUuids.get(item.getElement1Id()),
-						mapUuids.get(item.getElement2Id()), mapUuids.get(item.getElement3Id()),
+						mapUuids.getOrDefault(item.getElement2Id(), ElementId.DEFAULT_VALUE),
+						mapUuids.getOrDefault(item.getElement3Id(), ElementId.DEFAULT_VALUE),
 						item.getAmount()))
 				.collect(Collectors.toList());
 

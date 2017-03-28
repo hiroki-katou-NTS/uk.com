@@ -40,17 +40,14 @@ public class QwtmtWagetableMnyPK implements Serializable {
 	private String histId;
 
 	/** The element 1 id. */
-	@Basic(optional = false)
 	@Column(name = "ELEMENT1_ID")
 	private String element1Id;
 
 	/** The element 2 id. */
-	@Basic(optional = false)
 	@Column(name = "ELEMENT2_ID")
 	private String element2Id;
 
 	/** The element 3 id. */
-	@Basic(optional = false)
 	@Column(name = "ELEMENT3_ID")
 	private String element3Id;
 
