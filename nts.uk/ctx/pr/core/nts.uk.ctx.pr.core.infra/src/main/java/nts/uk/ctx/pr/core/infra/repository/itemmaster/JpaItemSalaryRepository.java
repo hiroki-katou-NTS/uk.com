@@ -3,7 +3,7 @@ package nts.uk.ctx.pr.core.infra.repository.itemmaster;
 import java.util.List;
 import java.util.Optional;
 
-import javax.enterprise.context.RequestScoped;
+import javax.ejb.Stateless;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
@@ -12,8 +12,7 @@ import nts.uk.ctx.pr.core.dom.itemmaster.itemsalary.ItemSalaryRespository;
 import nts.uk.ctx.pr.core.infra.entity.itemmaster.QcamtItemSalary;
 import nts.uk.ctx.pr.core.infra.entity.itemmaster.QcamtItemSalaryPK;
 
-
-@RequestScoped
+@Stateless
 public class JpaItemSalaryRepository extends JpaRepository implements ItemSalaryRespository {
 	private final String SEL = "SELECT c FROM QcamtItemSalary c";
 	private final String SEL_1 = SEL + " WHERE c.qcamtItemSalaryPK.ccd = :companyCode";
@@ -22,19 +21,23 @@ public class JpaItemSalaryRepository extends JpaRepository implements ItemSalary
 	public Optional<ItemSalary> find(String companyCode, String itemCode) {
 		return this.queryProxy().find(new QcamtItemSalaryPK(companyCode, itemCode), QcamtItemSalary.class)
 				.map(x -> toDomain(x));
-		
+
 	}
-	
+
 	@Override
 	public List<ItemSalary> findAll(String companyCode) {
-		return this.queryProxy().query(SEL_1, QcamtItemSalary.class)
-				.setParameter("companyCode", companyCode)
+		return this.queryProxy().query(SEL_1, QcamtItemSalary.class).setParameter("companyCode", companyCode)
 				.getList(x -> toDomain(x));
 	}
-	
+
 	@Override
 	public void update(ItemSalary item) {
 		this.commandProxy().update(toEntity(item));
+	}
+
+	@Override
+	public void add(ItemSalary item) {
+		this.commandProxy().insert(toEntity(item));
 	}
 
 	private ItemSalary toDomain(QcamtItemSalary entity) {
@@ -49,36 +52,30 @@ public class JpaItemSalaryRepository extends JpaRepository implements ItemSalary
 		// TODO Auto-generated method stub
 		return domain;
 	}
-	
+
 	/**
 	 * Convert domain object to entity object
-	 * @param domain ItemSalary
+	 * 
+	 * @param domain
+	 *            ItemSalary
 	 * @return QcamtItemSalary
 	 */
 	private QcamtItemSalary toEntity(ItemSalary domain) {
-		return new QcamtItemSalary(
-				new QcamtItemSalaryPK(domain.getCompanyCode().v(), domain.getItemCode().v()),
-				domain.getTaxAtr().value, 
-				domain.getSocialInsAtr().value, 
-				domain.getLaborInsAtr().value, 
-				domain.getFixPayAtr().value, 
-				domain.getApplyForAllEmpFlg().value, 
-				domain.getApplyForMonthlyPayEmp().value,
-				domain.getApplyForDaymonthlyPayEmp().value, 
-				domain.getApplyForDaylyPayEmp().value, 
-				domain.getApplyForHourlyPayEmp().value, 
-				domain.getAvePayAtr().value, 
-				domain.getErrRangeLowAtr().value, 
-				domain.getErrRangeLow().v(), 
-				domain.getErrRangeHighAtr().value, 
-				domain.getErrRangeHigh().v(),
-				domain.getAlRangeLowAtr().value, 
-				domain.getAlRangeLow().v(), 
-				domain.getAlRangeHighAtr().value,
-				domain.getAlRangeHigh().v(),
-				domain.getMemo().v(),
-				domain.getLimitMnyAtr().value, 
-				domain.getLimitMnyRefItemCd().v(), 
+		return new QcamtItemSalary(new QcamtItemSalaryPK(domain.getCompanyCode().v(), domain.getItemCode().v()),
+				domain.getTaxAtr().value, domain.getSocialInsAtr().value, domain.getLaborInsAtr().value,
+				domain.getFixPayAtr().value, domain.getApplyForAllEmpFlg().value,
+				domain.getApplyForMonthlyPayEmp().value, domain.getApplyForDaymonthlyPayEmp().value,
+				domain.getApplyForDaylyPayEmp().value, domain.getApplyForHourlyPayEmp().value,
+				domain.getAvePayAtr().value, domain.getErrRangeLowAtr().value, domain.getErrRangeLow().v(),
+				domain.getErrRangeHighAtr().value, domain.getErrRangeHigh().v(), domain.getAlRangeLowAtr().value,
+				domain.getAlRangeLow().v(), domain.getAlRangeHighAtr().value, domain.getAlRangeHigh().v(),
+				domain.getMemo().v(), domain.getLimitMnyAtr().value, domain.getLimitMnyRefItemCd().v(),
 				domain.getLimitMny().v());
+	}
+
+	@Override
+	public void delete(String companyCode, String itemCode) {
+		this.commandProxy().remove(QcamtItemSalary.class, new QcamtItemSalaryPK(companyCode, itemCode));
+
 	}
 }
