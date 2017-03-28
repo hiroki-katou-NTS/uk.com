@@ -3,6 +3,7 @@ module nts.uk.pr.view.qmm008.e {
     export module viewmodel {
         import InsuranceOfficeItemDto = qmm008.b.service.model.finder.InsuranceOfficeItemDto;
         import bservice = nts.uk.pr.view.qmm008.b.service;
+        import postcodeService = nts.uk.pr.view.base.postcode.service;
         import OfficeItemDto = qmm008.e.service.model.finder.OfficeItemDto;
 
         export class ScreenModel {
@@ -435,6 +436,53 @@ module nts.uk.pr.view.qmm008.e {
                 this.healthInsuOfficeCode = ko.observable('');
                 this.healthInsuAssoCode = ko.observable('');
                 this.memo = ko.observable('');
+            }
+
+            private setPostCode(postcode: postcodeService.model.PostCode) {
+                var self = this;
+                self.potalCode(postcode.postcode);
+                self.address1st(postcodeService.toAddress(postcode));
+                self.kanaAddress1st(postcodeService.toKana(postcode));
+            }
+
+            private searchPostCode() {
+                var self = this;
+                var messageList = [
+                    { messageId: "ER001", message: "＊が入力されていません。" },
+                    { messageId: "ER005", message: "入力した＊は既に存在しています。\r\n ＊を確認してください。" },
+                    { messageId: "ER010", message: "対象データがありません。" }
+                ];
+                postcodeService.findPostCodeZipCodeToRespone(self.potalCode()).done(data => {
+                  if (data.errorCode == '0') {
+                        for (var datamessage of messageList) {
+                            if (datamessage.messageId == data.message) {
+                                $('#inp_postCode').ntsError('set', datamessage.message);
+                            }
+                        }
+                    }
+                    else if (data.errorCode == '1') {
+                        self.setPostCode(data.postcode);
+                        $('#inp_postCode').ntsError('clear');
+                    } else {
+                        postcodeService.findPostCodeZipCodeSelection(self.potalCode()).done(res => {
+                            if (res.errorCode == '0') {
+                                for (var datamessage of messageList) {
+                                    if (datamessage.messageId == res.message) {
+                                        $('#inp_postCode').ntsError('set', datamessage.message);
+                                    }
+                                }
+                            }
+                            else if (res.errorCode == '1') {
+                                self.setPostCode(res.postcode);
+                                $('#inp_postCode').ntsError('clear');
+                            }
+                        }).fail(function(error) {
+                            console.log(error);
+                        });
+                    }
+                }).fail(function(error) {
+                    console.log(error);
+                });
             }
         }
         export class ItemModel {

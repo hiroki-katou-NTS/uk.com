@@ -44,6 +44,7 @@
 			<com:stylefile path="main.css" />
 			<com:scriptfile set="IGNITE" />
 			<com:scriptfile path="../../../base/simplehistory/service.js" />
+			<com:scriptfile path="../../../base/postcode/service.js" />
 			<com:scriptfile path="../b/qmm008.b.service.js" />
 			<com:scriptfile path="qmm008.e.service.js" />
 			<com:scriptfile path="qmm008.e.vm.js" />
@@ -203,14 +204,14 @@
 										<td class="border_none"><div style="margin-top: 20px;"
 												data-bind="ntsFormLabel: {constraint:'PotalCode'}">郵便番号</div></td>
 										<td class="border_none padding_top"><div>
-												<input class ="save-error"
+												<input class="save-error" id="inp_postCode" data-name="郵便番号"
 													data-bind="ntsTextEditor: {
 														value: potalCode ,
 														constraint: 'PotalCode', 
 														option: {textmode: 'text',width: '80',textalign: 'left'}}" />
 											</div></td>
 										<td class="padding_top">
-											<button>検索</button>
+											<button data-bind="click: searchPostCode">検索</button>
 										</td>
 									</tr>
 									<tr>
