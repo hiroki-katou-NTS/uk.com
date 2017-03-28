@@ -19,7 +19,6 @@ import javax.persistence.criteria.Root;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
 import nts.uk.ctx.pr.core.dom.insurance.social.SocialInsuranceOffice;
 import nts.uk.ctx.pr.core.dom.insurance.social.SocialInsuranceOfficeRepository;
@@ -76,7 +75,7 @@ public class JpaSocialInsuranceOfficeRepository extends JpaRepository
 	 * remove(java.lang.String, java.lang.Long)
 	 */
 	@Override
-	public void remove(CompanyCode companyCode, OfficeCode officeCode) {
+	public void remove(String companyCode, OfficeCode officeCode) {
 		// Get entity manager
 		EntityManager em = this.getEntityManager();
 
@@ -111,7 +110,7 @@ public class JpaSocialInsuranceOfficeRepository extends JpaRepository
 	 * findAll(int)
 	 */
 	@Override
-	public List<SocialInsuranceOffice> findAll(CompanyCode companyCode) {
+	public List<SocialInsuranceOffice> findAll(String companyCode) {
 		// Get entity manager
 		EntityManager em = this.getEntityManager();
 
@@ -141,7 +140,7 @@ public class JpaSocialInsuranceOfficeRepository extends JpaRepository
 	 * findByOfficeCode(java.lang.String)
 	 */
 	@Override
-	public Optional<SocialInsuranceOffice> findByOfficeCode(CompanyCode companyCode,
+	public Optional<SocialInsuranceOffice> findByOfficeCode(String companyCode,
 			OfficeCode officeCode) {
 
 		// Get entity manager
@@ -182,7 +181,7 @@ public class JpaSocialInsuranceOfficeRepository extends JpaRepository
 	 * isDuplicateCode(nts.uk.ctx.pr.core.dom.insurance.OfficeCode)
 	 */
 	@Override
-	public boolean isDuplicateCode(CompanyCode companyCode, OfficeCode officeCode) {
+	public boolean isDuplicateCode(String companyCode, OfficeCode officeCode) {
 		// Get entity manager
 		EntityManager em = this.getEntityManager();
 

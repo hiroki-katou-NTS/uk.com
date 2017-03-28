@@ -170,15 +170,4 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
-<<<<<<< HEAD
 //# sourceMappingURL=validation.js.map
-=======
-<<<<<<< HEAD
-<<<<<<< HEAD
-//# sourceMappingURL=validation.js.map
-=======
-//# sourceMappingURL=validation.js.map
->>>>>>> basic/develop
-=======
->>>>>>> basic/develop
->>>>>>> basic/develop

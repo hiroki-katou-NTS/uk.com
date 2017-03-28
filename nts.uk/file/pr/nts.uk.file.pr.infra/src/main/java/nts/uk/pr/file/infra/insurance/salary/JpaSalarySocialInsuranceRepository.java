@@ -14,13 +14,14 @@ import nts.uk.file.pr.app.export.insurance.salary.SalarySocialInsuranceQuery;
 import nts.uk.file.pr.app.export.insurance.salary.SalarySocialInsuranceRepository;
 
 /**
- * @author duongnd
+ * The Class JpaSalarySocialInsuranceRepository.
  *
+ * @author duongnd
  */
 
 @Stateless
 public class JpaSalarySocialInsuranceRepository implements SalarySocialInsuranceRepository {
-
+    
     /* (non-Javadoc)
      * @see nts.uk.file.pr.app.export.insurance.salary.SalarySocailInsuranceRepository#fincReportData(nts.uk.file.pr.app.export.insurance.salary.SalarySocialInsuranceQuery)
      */

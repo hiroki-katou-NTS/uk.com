@@ -7,7 +7,6 @@ package nts.uk.ctx.pr.core.dom.rule.employment.unitprice;
 import lombok.Getter;
 import lombok.Setter;
 import nts.arc.layer.dom.DomainObject;
-import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.base.simplehistory.Master;
 
 /**
@@ -17,7 +16,7 @@ import nts.uk.ctx.pr.core.dom.base.simplehistory.Master;
 public class UnitPrice extends DomainObject implements Master{
 
 	/** The company code. */
-	private CompanyCode companyCode;
+	private String companyCode;
 
 	/** The code. */
 	private UnitPriceCode code;
