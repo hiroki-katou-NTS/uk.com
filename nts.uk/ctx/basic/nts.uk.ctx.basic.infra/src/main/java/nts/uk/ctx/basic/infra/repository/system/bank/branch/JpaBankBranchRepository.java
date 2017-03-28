@@ -2,9 +2,9 @@ package nts.uk.ctx.basic.infra.repository.system.bank.branch;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
-import javax.enterprise.context.RequestScoped;
-
+import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.basic.dom.system.bank.BankCode;
 import nts.uk.ctx.basic.dom.system.bank.branch.BankBranch;
@@ -12,7 +12,7 @@ import nts.uk.ctx.basic.dom.system.bank.branch.BankBranchRepository;
 import nts.uk.ctx.basic.infra.entity.system.bank.branch.CbkmtBranch;
 import nts.uk.ctx.basic.infra.entity.system.bank.branch.CbkmtBranchPK;
 
-@RequestScoped
+@Stateless
 public class JpaBankBranchRepository extends JpaRepository implements BankBranchRepository{
 	public static String SEL_1 = "SELECT br FROM CbkmtBranch br WHERE br.ckbmtBranchPK.companyCode = :companyCode AND br.bankCode = :bankCode AND br.branchCode = :branchCode";
     public static String SEL_2 = "SELECT br FROM CbkmtBranch br WHERE br.ckbmtBranchPK.companyCode = :companyCode AND br.bankCode = :bankCode";
@@ -68,6 +68,13 @@ public class JpaBankBranchRepository extends JpaRepository implements BankBranch
 	}
 	
 	@Override
+	public void removeAll(String companyCode, List<String> branchIdList) {
+		List<CbkmtBranchPK> lstCbkmtBranchPK =  branchIdList.stream().map(x -> new CbkmtBranchPK(companyCode, x)).collect(Collectors.toList());
+		this.commandProxy().removeAll(CbkmtBranch.class, lstCbkmtBranchPK);
+		this.getEntityManager().flush();
+	}
+	
+	@Override
 	public boolean checkExists(String companyCode, String bankCode, String branchCode) {
 		List<CbkmtBranch> branchs = this.queryProxy().query(SEL_1, CbkmtBranch.class)
        		 .setParameter("companyCode", companyCode)
@@ -78,6 +85,11 @@ public class JpaBankBranchRepository extends JpaRepository implements BankBranch
 		return !branchs.isEmpty();
 	}
 	
+	/**
+	 * Convert domain to entity
+	 * @param domain  Convert domain to entity
+	 * @return CbkmtBranch
+	 */
 	private static CbkmtBranch toEntity(BankBranch domain){
 		CbkmtBranchPK key = new CbkmtBranchPK(domain.getCompanyCode().v(), domain.getBranchId().toString());
 		CbkmtBranch entity = new CbkmtBranch(key, domain.getBankCode(), domain.getBankBranchCode().v(), domain.getBankBranchName().v(), domain.getBankBranchNameKana().v(), domain.getMemo().v());		

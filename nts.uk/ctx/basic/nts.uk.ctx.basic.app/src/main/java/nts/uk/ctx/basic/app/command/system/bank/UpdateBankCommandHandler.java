@@ -9,7 +9,11 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.basic.dom.system.bank.Bank;
 import nts.uk.ctx.basic.dom.system.bank.BankRepository;
 import nts.uk.shr.com.context.AppContexts;
-
+/**
+ * update bank command handler
+ * @author sonnh
+ *
+ */
 @Stateless
 @Transactional
 public class UpdateBankCommandHandler extends CommandHandler<UpdateBankCommand>{
@@ -22,11 +26,13 @@ public class UpdateBankCommandHandler extends CommandHandler<UpdateBankCommand>{
 		UpdateBankCommand command = context.getCommand();
 		String companyCode = AppContexts.user().companyCode();
 		
+		// create from java type 
 		Bank domain = Bank.createFromJavaType(companyCode, command.getBankCode(), command.getBankName(), command.getBankNameKana(), command.getMemo());
 		
 		// validate
 		domain.validate();
 		
+		// update bank
 		bankRepository.update(domain);
 	}
     

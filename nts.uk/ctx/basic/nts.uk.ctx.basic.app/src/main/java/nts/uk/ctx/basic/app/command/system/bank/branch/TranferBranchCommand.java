@@ -8,9 +8,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Data
 public class TranferBranchCommand {
-	/**
-	 * 
-	 */
+
 	private List<String> branchId;
 	private String branchNewId;
 }

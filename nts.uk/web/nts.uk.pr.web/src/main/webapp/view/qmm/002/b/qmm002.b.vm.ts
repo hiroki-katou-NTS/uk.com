@@ -17,9 +17,6 @@ module nts.uk.pr.view.qmm002.b {
                     { messageId: "ER008", message: "選択された＊は使用されているため削除できません。" },
                     { messageId: "ER007", message: "＊が選択されていません。" }
                 ]);
-                self.selectedCodes.subscribe(function(val) {
-
-                });
             }
 
             startPage() {
@@ -27,7 +24,10 @@ module nts.uk.pr.view.qmm002.b {
                 var list = nts.uk.ui.windows.getShared('listItem');
                 self.lst_001(list);
             }
-
+            
+            /**
+             * close screen qmm002b
+             */
             close() {
                 var self = this;
                 nts.uk.ui.windows.close();
@@ -71,6 +71,9 @@ module nts.uk.pr.view.qmm002.b {
 
             }
 
+            /**
+             * select node information
+             */
             getNode(codeNew, parentId): String {
                 var self = this;
                 self.lst_002(nts.uk.util.flatArray(self.lst_001(), "childs"))

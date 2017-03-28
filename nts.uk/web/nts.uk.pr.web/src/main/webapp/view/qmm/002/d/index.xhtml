@@ -48,8 +48,8 @@
 				<div class="right-content" data-bind="with: currentItem">
 					<div class="right-content-left">
 						<div id="LBL_001"
-							data-bind="ntsFormLabel:{constraint: 'BankCode',required: true}">銀行コード/名称</div>
-						<div id="LBL_002" data-bind="ntsFormLabel:{}">銀行名称(カナ)</div>
+							data-bind="ntsFormLabel:{constraint: ['BankCode','BankName'],required: true}">銀行コード/名称</div>
+						<div id="LBL_002" data-bind="ntsFormLabel:{constraint: 'BankNameKana'}">銀行名称(カナ)</div>
 					</div>
 					<div class="right-content-right">
 						<div class="control-group">

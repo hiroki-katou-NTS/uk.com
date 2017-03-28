@@ -17,7 +17,7 @@ public class BankBranch extends AggregateRoot{
 	private CompanyCode companyCode;
 	
 	/**
-	 * branch id
+	 * Branch id
 	 */
 	@Getter
 	private UUID branchId;
@@ -48,6 +48,9 @@ public class BankBranch extends AggregateRoot{
 	@Getter
     private Memo memo;
 	
+	/**
+	 * Check validate data 
+	 */
 	@Override
 	public void validate() {
 		super.validate();
@@ -60,6 +63,16 @@ public class BankBranch extends AggregateRoot{
 		}
 	}
 	
+	/**
+	 * 
+	 * @param companyCode
+	 * @param branchId
+	 * @param bankCode
+	 * @param bankBranchCode
+	 * @param bankBranchName
+	 * @param bankBranchNameKana
+	 * @param memo
+	 */
 	public BankBranch(CompanyCode companyCode, UUID branchId, String bankCode, BankBranchCode bankBranchCode,
 			BankBranchName bankBranchName, BankBranchNameKana bankBranchNameKana, Memo memo) {
 		super();
@@ -72,16 +85,19 @@ public class BankBranch extends AggregateRoot{
 		this.memo = memo;
 	}
 
+	/**
+	 * Convert java type to domain
+	 * @param companyCode
+	 * @param branchId
+	 * @param bankCode
+	 * @param bankBranchCode
+	 * @param bankBranchName
+	 * @param bankBranchNameKana
+	 * @param memo
+	 * @return
+	 */
 	public static BankBranch createFromJavaType (String companyCode, String branchId, String bankCode,String bankBranchCode, String bankBranchName,
-			String bankBranchNameKana, String memo){
-		if (StringUtil.isNullOrEmpty(bankBranchCode, true)) {
-			throw new BusinessException("ER001");
-		}
-		
-		if (StringUtil.isNullOrEmpty(bankBranchName, true)) {
-			throw new BusinessException("ER001");
-		}
-		
+			String bankBranchNameKana, String memo){	
 		return new BankBranch(new CompanyCode(companyCode), UUID.fromString(branchId), bankCode,new BankBranchCode(bankBranchCode), new BankBranchName(bankBranchName), new BankBranchNameKana(bankBranchNameKana), new Memo(memo));
 	}
 	

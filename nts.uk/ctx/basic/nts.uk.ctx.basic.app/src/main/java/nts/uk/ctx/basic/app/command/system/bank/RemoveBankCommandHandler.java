@@ -18,7 +18,11 @@ import nts.uk.ctx.basic.dom.system.bank.branch.BankBranch;
 import nts.uk.ctx.basic.dom.system.bank.branch.BankBranchRepository;
 import nts.uk.ctx.basic.dom.system.bank.personaccount.PersonBankAccountRepository;
 import nts.uk.shr.com.context.AppContexts;
-
+/**
+ * remove bank command handler
+ * @author sonnh
+ *
+ */
 @Stateless
 @Transactional
 public class RemoveBankCommandHandler extends CommandHandler<RemoveBankCommand> {

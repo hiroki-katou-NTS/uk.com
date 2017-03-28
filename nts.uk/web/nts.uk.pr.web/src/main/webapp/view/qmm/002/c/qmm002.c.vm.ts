@@ -14,12 +14,6 @@ module qmm002.c.viewmodel {
             self.singleSelectedCode = ko.observable();
             self.selectedCodes = ko.observableArray([]);
             self.selectedCodes2 = ko.observableArray([]);
-            self.selectedCodes.subscribe(function(items) {
-            });
-
-            self.singleSelectedCode.subscribe(function(val) {
-            });
-
         }
 
         startPage() {

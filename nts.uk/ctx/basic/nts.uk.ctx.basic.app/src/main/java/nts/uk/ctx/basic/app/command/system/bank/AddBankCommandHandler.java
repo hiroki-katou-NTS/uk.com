@@ -12,6 +12,11 @@ import nts.uk.ctx.basic.dom.system.bank.Bank;
 import nts.uk.ctx.basic.dom.system.bank.BankRepository;
 import nts.uk.shr.com.context.AppContexts;
 
+/**
+ * add bank command handler
+ * @author sonnh
+ *
+ */
 @Stateless
 @Transactional
 public class AddBankCommandHandler extends CommandHandler<AddBankCommand> {
@@ -31,11 +36,13 @@ public class AddBankCommandHandler extends CommandHandler<AddBankCommand> {
 			throw new BusinessException("ER005");
 		}
 		
+		// create from java type 
 		Bank domain = Bank.createFromJavaType(companyCode, command.getBankCode().trim(), command.getBankName(), command.getBankNameKana(), command.getMemo());
 		
 		// validate
 		domain.validate();
 		
+		//add bank
 		bankRepository.add(domain);
 	}
 	
