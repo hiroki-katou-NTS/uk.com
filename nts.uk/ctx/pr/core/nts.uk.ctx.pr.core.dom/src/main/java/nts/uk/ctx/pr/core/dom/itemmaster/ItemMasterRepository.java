@@ -3,6 +3,8 @@ package nts.uk.ctx.pr.core.dom.itemmaster;
 import java.util.List;
 import java.util.Optional;
 
+import nts.uk.ctx.pr.core.finder.itemmaster.ItemMasterDto;
+
 public interface ItemMasterRepository {
 	/**
 	 * Find item master
@@ -18,6 +20,13 @@ public interface ItemMasterRepository {
 	Optional<ItemMaster> find(String companyCode, int categoryAtr, String itemCode);
 
 	/**
+	 * Find all item master
+	 * @param companyCode
+	 * @return
+	 */
+	List<ItemMaster> findAll(String companyCode);
+	
+	/**
 	 * Find all item by
 	 * 
 	 * @param companyCode
@@ -30,6 +39,17 @@ public interface ItemMasterRepository {
 	 */
 	List<ItemMaster> findAll(String companyCode, int categoryAtr, List<String> itemCode);
 
+	/**
+	 * Find all item by
+	 * 
+	 * @param companyCode
+	 *            company code
+	 * @param itemCode
+	 *            item code list
+	 * @return
+	 */
+	List<ItemMaster> findAll(String companyCode, List<String> itemCode);
+	
 	/**
 	 * Find all item by
 	 * 
@@ -91,8 +111,4 @@ public interface ItemMasterRepository {
 
 	List<ItemMaster> findAllNoAvePayAtr(String companyCode, int ctgAtr, int dispSet);
 
-	/**
-	 * @param itemMaster:
-	 *            Object need Add New.
-	 */
 }

@@ -25,6 +25,8 @@ public class JpaItemMasterRepository extends JpaRepository implements ItemMaster
 			+ " WHERE c.qcamtItemPK.ccd = :companyCode AND c.qcamtItemPK.ctgAtr = :categoryAtr AND c.fixAtr = :fixAtr AND  c.qcamtItemPK.itemCd IN :itemCodeList ";
 	private final String SEL_11 = SEL
 			+ " WHERE c.qcamtItemPK.ccd = :companyCode AND c.qcamtItemPK.ctgAtr = :categoryAtr AND  c.qcamtItemPK.itemCd IN :itemCodeList ";
+	private final String SEL_11_1 = SEL
+			+ " WHERE c.qcamtItemPK.ccd = :companyCode AND  c.qcamtItemPK.itemCd IN :itemCodeList ";
 
 	@Override
 	public Optional<ItemMaster> find(String companyCode, int categoryAtr, String itemCode) {
@@ -34,9 +36,24 @@ public class JpaItemMasterRepository extends JpaRepository implements ItemMaster
 	}
 
 	@Override
+	public List<ItemMaster> findAll(String companyCode) {
+		return this.queryProxy().query(SEL_1, QcamtItem.class)
+				.setParameter("companyCode", companyCode)
+				.getList(c -> toDomain(c));
+	}
+	
+	@Override
 	public List<ItemMaster> findAll(String companyCode, int categoryAtr, List<String> itemCode) {
 		return this.queryProxy().query(SEL_11, QcamtItem.class).setParameter("companyCode", companyCode)
 				.setParameter("categoryAtr", categoryAtr).setParameter("itemCodeList", itemCode)
+				.getList(c -> toDomain(c));
+	}
+	
+	@Override
+	public List<ItemMaster> findAll(String companyCode, List<String> itemCode) {
+		return this.queryProxy().query(SEL_11_1, QcamtItem.class)
+				.setParameter("companyCode", companyCode)
+				.setParameter("itemCodeList", itemCode)
 				.getList(c -> toDomain(c));
 	}
 
