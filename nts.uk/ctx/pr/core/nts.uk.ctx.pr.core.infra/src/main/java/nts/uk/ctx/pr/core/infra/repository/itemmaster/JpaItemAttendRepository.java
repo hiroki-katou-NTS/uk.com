@@ -3,7 +3,7 @@ package nts.uk.ctx.pr.core.infra.repository.itemmaster;
 import java.util.List;
 import java.util.Optional;
 
-import javax.enterprise.context.RequestScoped;
+import javax.ejb.Stateless;
 import javax.transaction.Transactional;
 
 import lombok.val;
@@ -13,7 +13,7 @@ import nts.uk.ctx.pr.core.dom.itemmaster.itemattend.ItemAttendRespository;
 import nts.uk.ctx.pr.core.infra.entity.itemmaster.QcamtItemAttend;
 import nts.uk.ctx.pr.core.infra.entity.itemmaster.QcamtItemAttendPK;
 
-@RequestScoped
+@Stateless
 @Transactional
 public class JpaItemAttendRepository extends JpaRepository implements ItemAttendRespository {
 	private final String SEL = "SELECT c FROM QcamtItemAttend c";
@@ -67,5 +67,17 @@ public class JpaItemAttendRepository extends JpaRepository implements ItemAttend
 				domain.getAlRangeHigh().v(), 
 				domain.getWorkDaysScopeAtr().value, 
 				domain.getMemo().v());
+	}
+
+	@Override
+	public void add(ItemAttend itemAttend) {
+		this.commandProxy().insert(toEntity(itemAttend));
+		
+	}
+
+	@Override
+	public void delete(String companyCode, String itemCode) {
+		this.commandProxy().remove(QcamtItemAttend.class, new QcamtItemAttendPK(companyCode, itemCode));
+		
 	}
 }
