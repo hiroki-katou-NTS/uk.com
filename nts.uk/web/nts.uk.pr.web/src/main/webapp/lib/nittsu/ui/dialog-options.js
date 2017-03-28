@@ -156,15 +156,4 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
-<<<<<<< HEAD
 //# sourceMappingURL=dialog-options.js.map
-=======
-<<<<<<< HEAD
-<<<<<<< HEAD
-//# sourceMappingURL=dialog-options.js.map
-=======
-//# sourceMappingURL=dialog-options.js.map
->>>>>>> basic/develop
-=======
->>>>>>> basic/develop
->>>>>>> basic/develop
