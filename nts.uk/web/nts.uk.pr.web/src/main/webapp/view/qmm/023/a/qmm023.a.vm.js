@@ -68,6 +68,8 @@ var qmm023;
                 };
                 ScreenModel.prototype.CheckError = function () {
                     var self = this;
+                    $('#INP_002').ntsEditor("validate");
+                    $('#INP_003').ntsEditor("validate");
                     if ($('.nts-editor').ntsError("hasError")) {
                         self.isError = true;
                     }
