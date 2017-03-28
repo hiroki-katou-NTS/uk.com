@@ -29,7 +29,7 @@ public interface History<T> {
 	 *
 	 * @return the company code
 	 */
-	PrimitiveValue<String> getCompanyCode();
+	String getCompanyCode();
 
 	/**
 	 * Gets the start.

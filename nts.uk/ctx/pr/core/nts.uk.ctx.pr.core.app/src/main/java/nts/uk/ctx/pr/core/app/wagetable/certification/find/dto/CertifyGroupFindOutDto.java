@@ -7,7 +7,6 @@ package nts.uk.ctx.pr.core.app.wagetable.certification.find.dto;
 import java.util.Set;
 
 import lombok.Data;
-import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.Certification;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroupCode;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroupName;
@@ -34,7 +33,7 @@ public class CertifyGroupFindOutDto implements CertifyGroupSetMemento {
 	 * setCompanyCode(nts.uk.ctx.core.dom.company.CompanyCode)
 	 */
 	@Override
-	public void setCompanyCode(CompanyCode companyCode) {
+	public void setCompanyCode(String companyCode) {
 		// Do nothing.
 	}
 

@@ -5,6 +5,7 @@
 package nts.uk.ctx.pr.core.dom.rule.employment.unitprice.service.internal;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -13,8 +14,8 @@ import nts.arc.error.BusinessException;
 import nts.arc.time.YearMonth;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.text.StringUtil;
-import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.base.simplehistory.SimpleHistoryRepository;
+import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceCode;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceHistory;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceHistoryRepository;
@@ -80,26 +81,60 @@ public class UnitPriceHistoryServiceImpl extends UnitPriceHistoryService {
 	 * employment.unitprice.UnitPriceHistory)
 	 */
 	public void validateDateRange(UnitPriceHistory unitPriceHistory) {
-		if (unitPriceHistoryRepo.isInvalidDateRange(unitPriceHistory.getCompanyCode(),
-				unitPriceHistory.getUnitPriceCode(),
-				unitPriceHistory.getApplyRange().getStartMonth())) {
-			// History after start date and time exists
-			throw new BusinessException("ER010");
+		if (!isValidDateRange(unitPriceHistory)) {
+			// Invalid dateRange
+			throw new BusinessException("ER011");
 		}
+
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see nts.uk.ctx.pr.core.dom.rule.employment.unitprice.service.
-	 * UnitPriceHistoryService#checkDuplicateCode(nts.uk.ctx.pr.core.dom.rule.
-	 * employment.unitprice.UnitPriceHistory)
+	/**
+	 * Checks if is valid date range.
+	 *
+	 * @param unitPriceHistory
+	 *            the unit price history
+	 * @return true, if is valid date range
 	 */
-	public void checkDuplicateCode(UnitPriceHistory unitPriceHistory) {
-		if (unitPriceHistoryRepo.isDuplicateCode(unitPriceHistory.getCompanyCode(),
-				unitPriceHistory.getUnitPriceCode())) {
-			throw new BusinessException("ER005");
+	private boolean isValidDateRange(UnitPriceHistory unitPriceHistory) {
+		boolean isValid = false;
+		if (isEndDateGreaterThanStartDate(unitPriceHistory.getApplyRange())
+				&& isLaterThanLastHistory(unitPriceHistory)) {
+			isValid = true;
 		}
+		return isValid;
+	}
+
+	/**
+	 * Checks if is later than last history.
+	 *
+	 * @param unitPriceHistory
+	 *            the unit price history
+	 * @return true, if is later than last history
+	 */
+	private boolean isLaterThanLastHistory(UnitPriceHistory unitPriceHistory) {
+		boolean isValid = true;
+		// Find last history
+		Optional<UnitPriceHistory> lastHistory = this.unitPriceHistoryRepo
+				.findLastestHistoryByMasterCode(unitPriceHistory.getCompanyCode(),
+						unitPriceHistory.getUnitPriceCode().v());
+
+		// Compare with last history.
+		if (lastHistory.isPresent() && lastHistory.get().getApplyRange().getStartMonth().nextMonth()
+				.v() > unitPriceHistory.getApplyRange().getStartMonth().v()) {
+			isValid = false;
+		}
+		return isValid;
+	}
+
+	/**
+	 * Checks if is end date greater than start date.
+	 *
+	 * @param dateRange
+	 *            the date range
+	 * @return true, if is end date greater than start date
+	 */
+	private boolean isEndDateGreaterThanStartDate(MonthRange dateRange) {
+		return dateRange.getStartMonth().v() < dateRange.getEndMonth().v();
 	}
 
 	/*
@@ -122,7 +157,7 @@ public class UnitPriceHistoryServiceImpl extends UnitPriceHistoryService {
 	@Override
 	public UnitPriceHistory createInitalHistory(String companyCode, String masterCode,
 			YearMonth startYearMonth) {
-		return UnitPriceHistory.createWithIntial(new CompanyCode(companyCode),
-				new UnitPriceCode(masterCode), startYearMonth);
+		return UnitPriceHistory.createWithIntial(companyCode, new UnitPriceCode(masterCode),
+				startYearMonth);
 	}
 }

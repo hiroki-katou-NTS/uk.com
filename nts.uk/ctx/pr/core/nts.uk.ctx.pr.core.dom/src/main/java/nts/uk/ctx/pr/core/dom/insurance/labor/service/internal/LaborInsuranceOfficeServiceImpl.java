@@ -51,7 +51,7 @@ public class LaborInsuranceOfficeServiceImpl implements LaborInsuranceOfficeServ
 	@Override
 	public void checkDuplicateCode(LaborInsuranceOffice office) {
 		Optional<LaborInsuranceOffice> optionalCheck = this.laborInsuranceOfficeRepo
-				.findById(office.getCompanyCode().v(), office.getCode().v());
+				.findById(office.getCompanyCode(), office.getCode().v());
 
 		if (optionalCheck.isPresent()) {
 			throw new BusinessException("ER005");

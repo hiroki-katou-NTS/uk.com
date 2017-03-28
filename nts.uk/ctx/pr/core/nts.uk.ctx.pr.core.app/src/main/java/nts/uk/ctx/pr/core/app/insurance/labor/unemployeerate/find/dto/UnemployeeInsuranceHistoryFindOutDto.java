@@ -6,8 +6,8 @@ package nts.uk.ctx.pr.core.app.insurance.labor.unemployeerate.find.dto;
 
 import java.util.Set;
 
-import lombok.Data;
-import nts.uk.ctx.core.dom.company.CompanyCode;
+import lombok.Getter;
+import lombok.Setter;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsuranceRateItem;
 import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsuranceRateSetMemento;
@@ -15,7 +15,8 @@ import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsurance
 /**
  * The Class HistoryUnemployeeInsuranceFindOutDto.
  */
-@Data
+@Getter
+@Setter
 public class UnemployeeInsuranceHistoryFindOutDto implements UnemployeeInsuranceRateSetMemento {
 
 	/** The history id. */
@@ -43,8 +44,8 @@ public class UnemployeeInsuranceHistoryFindOutDto implements UnemployeeInsurance
 	 * company.CompanyCode)
 	 */
 	@Override
-	public void setCompanyCode(CompanyCode companyCode) {
-		// Do nothing
+	public void setCompanyCode(String companyCode) {
+		// Nothing code
 
 	}
 
@@ -69,7 +70,7 @@ public class UnemployeeInsuranceHistoryFindOutDto implements UnemployeeInsurance
 	 */
 	@Override
 	public void setRateItems(Set<UnemployeeInsuranceRateItem> rateItems) {
-		// TODO Auto-generated method stub
+		// Nothing code
 
 	}
 

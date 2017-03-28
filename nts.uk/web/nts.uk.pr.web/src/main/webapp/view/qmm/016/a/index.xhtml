@@ -10,13 +10,18 @@
 			<com:ValidatorScript>
 				nts.uk.ctx.pr.core.dom.wagetable.WtCode
 				nts.uk.ctx.pr.core.dom.wagetable.WtName
+				nts.uk.ctx.pr.core.dom.rule.employment.unitprice.Money
 				nts.uk.shr.com.primitive.Memo
+				nts.uk.ctx.pr.core.dom.wagetable.history.element.RangeLimit
 			</com:ValidatorScript>
-
+			<com:scriptfile path="/lib/generic/igniteui/js/extensions/infragistics.datasource.knockoutjs.js" />
+			<com:scriptfile path="/lib/generic/igniteui/js/extensions/infragistics.ui.grid.knockout-extensions.js" />
 			<com:stylefile path="qmm016.a.style.css" />
 			<com:scriptfile path="qmm016.a.start.js" />
 			<com:scriptfile path="qmm016.a.service.js" />
 			<com:scriptfile path="qmm016.a.vm.js" />
+			<com:scriptfile path="history/qmm016.a.history.base.js" />
+			<com:scriptfile path="history/qmm016.a.history.onedemension.js" />
 		</ui:define>
 
 		<!-- EXTENDED ACTION -->
@@ -35,119 +40,8 @@
 		<ui:define name="pageContent">
 			<div id="sel_001"
 				data-bind="ntsTabPanel: { dataSource: tabs, active: selectedTab}">
-				<!-- tab-content-1 -->
-				<div id="tab-content-1" class="tab-content">
-					<table>
-						<tr class="control-group">
-							<com:ko tag="if" bind="isNewMode">
-								<td colspan="3"><div id="lbl_001" class="label warning">賃金
-										テーブル を 新規 で 作成 する 場合 、 基本情報 を 入力後一度登録 ボタン を 押し て ください。</div></td>
-							</com:ko>
-						</tr>
-						<tr class="control-group">
-							<td><div id="lbl_002"
-									data-bind="ntsFormLabel: { constraint: ['WtCode', 'WtName'], required: true }">コード/名称*</div></td>
-							<td colspan="2"><input id="inp_001"
-								data-bind="ntsTextEditor: {value: head.code,  constraint: 'WtCode'}" />
-								<input id="inp_002"
-								data-bind="ntsTextEditor: {value: head.name,  constraint: 'WtName' }" /></td>
-						</tr>
-						<tr class="control-group">
-							<td><div id="lbl_003"
-									data-bind="ntsFormLabel: { required: true }">開始年月*</div></td>
-<!-- 							<td><span id="ipnStartDate"
-								data-bind="ntsDatePicker: {value: 201001, class: 'nts-editor nts-input', dateFormat: 'yyyy/MM'}"></span>
-								<label id="lbl_010">（平成29年01月） ~</label></td> -->
-						</tr>
-							<tr class="control-group">
-								<td><div id="lbl_004"
-										data-bind="ntsFormLabel: { required: true }">次元設定*</div></td>
-								<td><div id="lbl_005">汎用テーブル</div>
-									<hr /></td>
-								<td rowspan="6"><div id="lbl_007">１つの要素でテーブルを作成します。</div></td>
-							</tr>
-							<tr class="control-group">
-								<td></td>
-								<td><div id="sel_002"
-										data-bind="ntsSwitchButton: {
-											enable: isNewMode,
-											options: generalTableTypes,
-											optionsValue: 'code',
-											optionsText: 'name',
-											value: head.demensionSet}"></div></td>
-								<td></td>
-							</tr>
-							<tr class="control-group">
-								<td></td>
-								<td></td>
-								<td></td>
-							</tr>
-							<tr class="control-group">
-								<td></td>
-								<td><div id="lbl_006">特別テーブル</div>
-									<hr /></td>
-								<td></td>
-							</tr>
-							<tr class="control-group">
-								<td> </td>
-								<td>
-									<div id="sel_003"
-										data-bind="ntsSwitchButton: {
-											enable: isNewMode,
-											options: specialTableTypes,
-											optionsValue: 'code',
-											optionsText: 'name',
-											value: head.demensionSet}"></div>
-								</td>
-								<td></td>
-							</tr>
-							<tr>
-								<td/>
-								<td colspan="2">
-									<div id="lbl_004" data-bind="ntsFormLabel: { required: true }" style="float: left">要素指定</div>
-									<table style="float: left;" id="demension-tbl">
-										<thead>
-											<tr class="bg-green">
-												<td width="50px">
-												</td>
-												<td width="200px">
-													要素
-												</td>
-											</tr>
-										</thead>
-										<tbody data-bind="with: head">
-											<com:ko tag="foreach" bind="demensionItemList">
-												<tr>
-													<td class="bg-green halign-center" data-bind="text: demensionNo"/>
-													<td>
-														<com:ko tag="ifnot" bind="$parent.demensionType().isAttendance || $parent.demensionType().isCertification">
-															<button data-bind="enable: $root.content.isNewMode, click: $parent.onSelectDemensionBtnClick.bind($parent, $data)">参照</button>
-														</com:ko>
-														<span data-bind="text: elementName"/>
-													</td>
-												</tr>
-											</com:ko>
-										</tbody>
-									</table>
-								</td>
-								<td>
-								</td>
-							</tr>
-							<tr class="control-group">
-								<td><div id="lbl_009"
-										data-bind="ntsFormLabel: { constraint: 'Memo'}">備考</div></td>
-								<td colspan="2"><div style="padding-top: 10px">
-										<textarea rows='4' cols='50'> </textarea>
-									</div></td>
-							</tr>
-						</table>
-					</div>
-					<!-- / tab-content-1 -->
-		
-					<!-- tab-content-2 -->
-					<div id="tab-content-2" class="tab-content">
-					</div>
-					<!-- / tab-content-2 -->
+					<ui:include src="tab.base.xhtml"/>
+					<ui:include src="tab.history.xhtml"/>
 			</div>
 		</ui:define>
 	</ui:composition>

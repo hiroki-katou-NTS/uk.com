@@ -5,10 +5,12 @@
 package nts.uk.ctx.pr.core.dom.insurance;
 
 import nts.arc.primitive.StringPrimitiveValue;
+import nts.arc.primitive.constraint.StringMaxLength;
 
 /**
  * The Class BusinessName.
  */
+@StringMaxLength(20)
 public class BusinessName extends StringPrimitiveValue<BusinessName> {
 
 	/** The Constant serialVersionUID. */
@@ -17,7 +19,8 @@ public class BusinessName extends StringPrimitiveValue<BusinessName> {
 	/**
 	 * Instantiates a new business name.
 	 *
-	 * @param rawValue the raw value
+	 * @param rawValue
+	 *            the raw value
 	 */
 	public BusinessName(String rawValue) {
 		super(rawValue);

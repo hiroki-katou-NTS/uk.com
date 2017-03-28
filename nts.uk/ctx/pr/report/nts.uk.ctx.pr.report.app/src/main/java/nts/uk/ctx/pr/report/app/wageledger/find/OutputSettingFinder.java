@@ -5,13 +5,13 @@
 package nts.uk.ctx.pr.report.app.wageledger.find;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.pr.report.app.wageledger.find.dto.HeaderSettingDto;
 import nts.uk.ctx.pr.report.app.wageledger.find.dto.OutputSettingDto;
-import nts.uk.ctx.pr.report.dom.company.CompanyCode;
 import nts.uk.ctx.pr.report.dom.wageledger.outputsetting.WLOutputSetting;
 import nts.uk.ctx.pr.report.dom.wageledger.outputsetting.WLOutputSettingCode;
 import nts.uk.ctx.pr.report.dom.wageledger.outputsetting.WLOutputSettingRepository;
@@ -27,10 +27,6 @@ public class OutputSettingFinder {
 	@Inject
 	private WLOutputSettingRepository repository;
 	
-	/** The wage ledger setting repository. */
-	@Inject
-	private WageLedgerSettingRepository wageLedgerSettingRepository;
-	
 	/**
 	 * Find.
 	 *
@@ -39,7 +35,7 @@ public class OutputSettingFinder {
 	 */
 	public OutputSettingDto find(String code) {
 		WLOutputSetting outputSetting = this.repository.findByCode(
-				new CompanyCode(AppContexts.user().companyCode()),
+				AppContexts.user().companyCode(),
 				new WLOutputSettingCode(code));
 		
 		OutputSettingDto dto = OutputSettingDto.builder().build();
@@ -64,7 +60,12 @@ public class OutputSettingFinder {
 	 * @return the list
 	 */
 	public List<HeaderSettingDto> findAll(){
-		CompanyCode companyCode = new CompanyCode(AppContexts.user().companyCode());
-		return this.wageLedgerSettingRepository.findHeaderOutputSettings(companyCode);
+		String companyCode = AppContexts.user().companyCode(); 
+		return this.repository.findAll(companyCode).stream().map(setting -> {
+			return HeaderSettingDto.builder()
+					.code(setting.getCode().v())
+					.name(setting.getName().v())
+					.build();
+		}).collect(Collectors.toList());
 	}
 }

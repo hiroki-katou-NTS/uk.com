@@ -80,14 +80,11 @@ public class AsposeAccPaymentReportGenerator extends AsposeCellsReportGenerator 
 		try {
 			val designer = this.createContext(TEMPLATE_FILE);
 			Workbook workbook = designer.getWorkbook();
-			
-			// create worksheet and Formatting ...
 			WorksheetCollection worksheets = workbook.getWorksheets();
 			Worksheet worksheet = worksheets.get(0);
 			Cells cells = worksheet.getCells();
 			
 			// Fill data
-			// Print Date
 			Date date = new Date();
 			SimpleDateFormat sf = new SimpleDateFormat("yyyy/mm/dd hh:mm");
 			String str = sf.format(date);
@@ -98,8 +95,7 @@ public class AsposeAccPaymentReportGenerator extends AsposeCellsReportGenerator 
 			int startIndex = 0;
 			int firstRowIndex = FIRST_ROW_INDEX;			
 			int numberOfPage = 0;
-			int rangeRows = AMOUNT_PER_PAGE;
-			
+			int rangeRows = AMOUNT_PER_PAGE;			
 			while(amountEmployee > 0){				
 				int endIndex = startIndex + AMOUNT_PER_PAGE;
 				List<AccPaymentItemData> subList = subAccList(accumulatedPaymentList, startIndex, endIndex);				
