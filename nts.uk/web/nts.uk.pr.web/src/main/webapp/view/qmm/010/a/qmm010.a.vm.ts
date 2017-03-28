@@ -5,7 +5,7 @@ module nts.uk.pr.view.qmm010.a {
     import LaborInsuranceOfficeFindOutDto = service.model.LaborInsuranceOfficeFindOutDto;
     import TypeActionLaborInsuranceOffice = service.model.TypeActionLaborInsuranceOffice;
     import LaborInsuranceOfficeDeleteDto = service.model.LaborInsuranceOfficeDeleteDto;
-    import AddressSelection = nts.uk.pr.view.base.address.service.model.AddressSelection;
+    import PostCode = nts.uk.pr.view.base.postcode.service.model.PostCode;
 
     export module viewmodel {
 
@@ -476,27 +476,28 @@ module nts.uk.pr.view.qmm010.a {
                 this.isReadOnly(readonly);
                 this.isEnable(!readonly);
             }
-            setPostCode(address: AddressSelection) {
-                this.address1st(nts.uk.pr.view.base.address.service.getinfor(address));
-                this.postalCode(address.zipCode);
+            setPostCode(postcode: PostCode) {
+                this.address1st(nts.uk.pr.view.base.postcode.service.toAddress(postcode));
+                this.kanaAddress1st(nts.uk.pr.view.base.postcode.service.toKana(postcode));
+                this.postalCode(postcode.postcode);
             }
 
             private searchZipCode() {
                 var self = this;
-                nts.uk.pr.view.base.address.service.findAddressZipCodeToRespone(self.postalCode()).done(data => {
+                nts.uk.pr.view.base.postcode.service.findPostCodeZipCodeToRespone(self.postalCode()).done(data => {
                     if (data.errorCode == '0') {
                        $('#inp_postalCode').ntsError('set', data.message);
                     }
                     else if (data.errorCode == '1') {
-                        self.setPostCode(data.address);
+                        self.setPostCode(data.postcode);
                         $('#inp_postalCode').ntsError('clear');
                     } else {
-                        nts.uk.pr.view.base.address.service.findAddressZipCodeSelection(self.postalCode()).done(res => {
+                        nts.uk.pr.view.base.postcode.service.findPostCodeZipCodeSelection(self.postalCode()).done(res => {
                             if (res.errorCode == '0') {
                                 $('#inp_postalCode').ntsError('set', res.message);
                             }
                             else if (res.errorCode == '1') {
-                                self.setPostCode(res.address);
+                                self.setPostCode(res.postcode);
                                 $('#inp_postalCode').ntsError('clear');
                             }
                         }).fail(function(error) {

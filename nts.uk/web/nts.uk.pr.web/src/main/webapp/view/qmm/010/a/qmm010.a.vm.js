@@ -389,27 +389,28 @@ var nts;
                                     this.isReadOnly(readonly);
                                     this.isEnable(!readonly);
                                 };
-                                LaborInsuranceOfficeModel.prototype.setPostCode = function (address) {
-                                    this.address1st(nts.uk.pr.view.base.address.service.getinfor(address));
-                                    this.postalCode(address.zipCode);
+                                LaborInsuranceOfficeModel.prototype.setPostCode = function (postcode) {
+                                    this.address1st(nts.uk.pr.view.base.postcode.service.toAddress(postcode));
+                                    this.kanaAddress1st(nts.uk.pr.view.base.postcode.service.toKana(postcode));
+                                    this.postalCode(postcode.postcode);
                                 };
                                 LaborInsuranceOfficeModel.prototype.searchZipCode = function () {
                                     var self = this;
-                                    nts.uk.pr.view.base.address.service.findAddressZipCodeToRespone(self.postalCode()).done(function (data) {
+                                    nts.uk.pr.view.base.postcode.service.findPostCodeZipCodeToRespone(self.postalCode()).done(function (data) {
                                         if (data.errorCode == '0') {
                                             $('#inp_postalCode').ntsError('set', data.message);
                                         }
                                         else if (data.errorCode == '1') {
-                                            self.setPostCode(data.address);
+                                            self.setPostCode(data.postcode);
                                             $('#inp_postalCode').ntsError('clear');
                                         }
                                         else {
-                                            nts.uk.pr.view.base.address.service.findAddressZipCodeSelection(self.postalCode()).done(function (res) {
+                                            nts.uk.pr.view.base.postcode.service.findPostCodeZipCodeSelection(self.postalCode()).done(function (res) {
                                                 if (res.errorCode == '0') {
                                                     $('#inp_postalCode').ntsError('set', res.message);
                                                 }
                                                 else if (res.errorCode == '1') {
-                                                    self.setPostCode(res.address);
+                                                    self.setPostCode(res.postcode);
                                                     $('#inp_postalCode').ntsError('clear');
                                                 }
                                             }).fail(function (error) {

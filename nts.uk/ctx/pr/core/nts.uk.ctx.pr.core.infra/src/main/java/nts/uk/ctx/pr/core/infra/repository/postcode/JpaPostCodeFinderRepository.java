@@ -17,8 +17,8 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.pr.core.app.address.find.AddressFinder;
-import nts.uk.ctx.pr.core.app.address.find.AddressSelection;
+import nts.uk.ctx.pr.core.app.postcode.find.PostCode;
+import nts.uk.ctx.pr.core.app.postcode.find.PostCodeFinder;
 import nts.uk.ctx.pr.core.infra.entity.postcode.CpcstPostcode;
 import nts.uk.ctx.pr.core.infra.entity.postcode.CpcstPostcode_;
 
@@ -27,7 +27,7 @@ import nts.uk.ctx.pr.core.infra.entity.postcode.CpcstPostcode_;
  */
 
 @Stateless
-public class JpaAddressFinderRepository extends JpaRepository implements AddressFinder {
+public class JpaPostCodeFinderRepository extends JpaRepository implements PostCodeFinder {
 
 	/** The Constant MAX_RESULT. */
 	public static final int MAX_RESULT = 100;
@@ -42,7 +42,7 @@ public class JpaAddressFinderRepository extends JpaRepository implements Address
 	 * findAddressSelectionList(java.lang.String)
 	 */
 	@Override
-	public List<AddressSelection> findAddressSelectionList(String zipCode) {
+	public List<PostCode> findPostCodeList(String zipCode) {
 
 		// get entity manager
 		EntityManager em = this.getEntityManager();
@@ -61,7 +61,7 @@ public class JpaAddressFinderRepository extends JpaRepository implements Address
 		List<Predicate> lstpredicateWhere = new ArrayList<>();
 
 		// like zipcode
-		lstpredicateWhere.add(criteriaBuilder.like(root.get(CpcstPostcode_.zipCode), zipCode + "%"));
+		lstpredicateWhere.add(criteriaBuilder.like(root.get(CpcstPostcode_.postcode), zipCode + "%"));
 
 		// set where to SQL
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
@@ -71,19 +71,24 @@ public class JpaAddressFinderRepository extends JpaRepository implements Address
 			.setMaxResults(MAX_RESULT);
 
 		// exclude select
-		List<AddressSelection> lstAddressSelection = query.getResultList().stream().map(item -> {
-			AddressSelection addressSelection = new AddressSelection();
-			// TODO
-//			addressSelection.setCity(item.getCity());
-//			addressSelection.setId(String.valueOf(item.getId()));
-//			addressSelection.setPrefecture(item.getPrefecture());
-//			addressSelection.setTown(item.getTown());
-//			addressSelection.setZipCode(item.getZipCode());
-			return addressSelection;
+		List<PostCode> lstPostCode = query.getResultList().stream().map(item -> toPostCode(item))
+			.collect(Collectors.toList());
 
-		}).collect(Collectors.toList());
+		return lstPostCode;
+	}
 
-		return lstAddressSelection;
+	private PostCode toPostCode(CpcstPostcode entity) {
+		PostCode postCode = new PostCode();
+		postCode.setId(entity.getId());
+		postCode.setLocalGovCode(entity.getLocalGovCode());
+		postCode.setMunicipalityName(entity.getMunicipalityName());
+		postCode.setMunicipalityNameKn(entity.getMunicipalityNameKn());
+		postCode.setPostcode(entity.getPostcode());
+		postCode.setPrefectureName(entity.getPrefectureName());
+		postCode.setPrefectureNameKn(entity.getPrefectureNameKn());
+		postCode.setTownName(entity.getTownName());
+		postCode.setTownNameKn(entity.getTownNameKn());
+		return postCode;
 	}
 
 }

@@ -1,43 +1,45 @@
 /******************************************************************
- * Copyright (c) 2017 Nittsu System to present.                   *
+ * Copyright (c) 2016 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
-package nts.uk.ctx.pr.core.app.address.find;
+package nts.uk.ctx.pr.core.app.postcode.find;
 
 import lombok.Getter;
 import lombok.Setter;
 
 /**
- * The Class AddressSelection.
+ * The Class PostCode.
  */
+
 @Getter
 @Setter
-public class AddressSelection {
+public class PostCode {
 
 	/** The id. */
 	private String id;
 
-	/** The city. */
+	/** The local gov code. */
 	private String localGovCode;
 
-	/** The zip code. */
+	/** The postcode. */
 	private String postcode;
 
-	/** The prefecture. */
+	/** The prefecture name kn. */
 	private String prefectureNameKn;
 
-	/** The prefecture. */
+	/** The municipality name kn. */
 	private String municipalityNameKn;
 
-	/** The town. */
+	/** The town name kn. */
 	private String townNameKn;
 
-	/** The prefecture. */
+	/** The prefecture name. */
 	private String prefectureName;
 
-	/** The prefecture. */
+	/** The municipality name. */
 	private String municipalityName;
 
-	/** The town. */
+	/** The town name. */
 	private String townName;
+
 }

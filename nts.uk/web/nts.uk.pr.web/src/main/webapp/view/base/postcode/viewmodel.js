@@ -8,21 +8,30 @@ var nts;
             (function (view) {
                 var base;
                 (function (base) {
-                    var address;
-                    (function (address) {
+                    var postcode;
+                    (function (postcode_1) {
                         var viewmodel;
                         (function (viewmodel) {
                             var ScreenModel = (function () {
                                 function ScreenModel() {
                                     var self = this;
+                                    self.postCodeList = ko.observableArray([]);
                                     self.addressList = ko.observableArray([]);
                                     self.zipCode = ko.observable('');
                                     var strZipCode = nts.uk.ui.windows.getShared('zipCode');
                                     self.columns = ko.observableArray([
-                                        { headerText: '住所', prop: 'id', width: 200 },
-                                        { headerText: 'ｶﾅ', prop: 'name', width: 200 }
+                                        { headerText: '郵便番号', prop: 'postcode', width: 100 },
+                                        { headerText: '住所', prop: 'address', width: 150 },
+                                        { headerText: 'ｶﾅ', prop: 'kana', width: 150 }
                                     ]);
-                                    address.service.findAddressZipCode(strZipCode).done(function (data) {
+                                    postcode_1.service.findPostCodeZipCode(strZipCode).done(function (data) {
+                                        var postcodeList;
+                                        postcodeList = [];
+                                        for (var _i = 0, data_1 = data; _i < data_1.length; _i++) {
+                                            var itemData = data_1[_i];
+                                            postcodeList.push(new PostCodeModel(itemData));
+                                        }
+                                        self.postCodeList(postcodeList);
                                         self.addressList(data);
                                     }).fail(function (error) {
                                         console.log(error);
@@ -32,7 +41,7 @@ var nts;
                                     var self = this;
                                     for (var _i = 0, _a = self.addressList(); _i < _a.length; _i++) {
                                         var itemZipCode = _a[_i];
-                                        if (itemZipCode.id == self.zipCode()) {
+                                        if (itemZipCode.postcode == self.zipCode()) {
                                             nts.uk.ui.windows.setShared('zipCodeRes', itemZipCode);
                                             break;
                                         }
@@ -42,8 +51,18 @@ var nts;
                                 return ScreenModel;
                             }());
                             viewmodel.ScreenModel = ScreenModel;
-                        })(viewmodel = address.viewmodel || (address.viewmodel = {}));
-                    })(address = base.address || (base.address = {}));
+                            var PostCodeModel = (function () {
+                                function PostCodeModel(postcode) {
+                                    this.address = postcode_1.service.toAddress(postcode);
+                                    this.postcode = postcode.postcode;
+                                    this.id = postcode.id;
+                                    this.kana = postcode_1.service.toKana(postcode);
+                                }
+                                return PostCodeModel;
+                            }());
+                            viewmodel.PostCodeModel = PostCodeModel;
+                        })(viewmodel = postcode_1.viewmodel || (postcode_1.viewmodel = {}));
+                    })(postcode = base.postcode || (base.postcode = {}));
                 })(base = view.base || (view.base = {}));
             })(view = pr.view || (pr.view = {}));
         })(pr = uk.pr || (uk.pr = {}));

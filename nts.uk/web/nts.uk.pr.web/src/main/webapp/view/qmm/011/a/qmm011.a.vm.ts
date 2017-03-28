@@ -44,6 +44,7 @@ module nts.uk.pr.view.qmm011.a {
             unemployeeInsuranceRateModel: KnockoutObservable<UnemployeeInsuranceRateModel>;
             rateInputOptions: KnockoutObservable<nts.uk.ui.option.NumberEditorOption>;
             selectionUnemployeeInsuranceRateHistory: KnockoutObservable<string>;
+            preSelectUnemployeeInsuranceRateHistory: KnockoutObservable<string>;
             beginHistoryStartUnemployeeInsuranceRate: KnockoutObservable<string>;
             isEmptyUnemployee: KnockoutObservable<boolean>;
             //労災保険 detail C
@@ -57,9 +58,11 @@ module nts.uk.pr.view.qmm011.a {
             textEditorOption: KnockoutObservable<nts.uk.ui.option.TextEditorOption>;
             isEnable: KnockoutObservable<boolean>;
             isEnableSaveUnemployeeInsurance: KnockoutObservable<boolean>;
+            isShowDirtyUnemployeeInsurance: KnockoutObservable<boolean>;
             isEnableEditUnemployeeInsurance: KnockoutObservable<boolean>;
             isEnableSaveActionAccidentInsurance: KnockoutObservable<boolean>;
             isEnableEditActionAccidentInsurance: KnockoutObservable<boolean>;
+            isShowDirtyActionAccidentInsurance: KnockoutObservable<boolean>;
             isEmptyAccident: KnockoutObservable<boolean>;
             messageList: KnockoutObservableArray<any>;
             dirtyUnemployeeInsurance: nts.uk.ui.DirtyChecker;
@@ -103,6 +106,9 @@ module nts.uk.pr.view.qmm011.a {
                 ]);
                 self.dirtyUnemployeeInsurance = new nts.uk.ui.DirtyChecker(self.unemployeeInsuranceRateModel);
                 self.dirtyAccidentInsurance = new nts.uk.ui.DirtyChecker(self.accidentInsuranceRateModel);
+                self.isShowDirtyUnemployeeInsurance = ko.observable(true);
+                self.isShowDirtyActionAccidentInsurance = ko.observable(true);
+                self.preSelectUnemployeeInsuranceRateHistory = ko.observable('');
             }
 
             //open dialog edit UnemployeeInsuranceRateHistory => show view model xhtml (action event add)
@@ -462,6 +468,19 @@ module nts.uk.pr.view.qmm011.a {
                     && selectionUnemployeeInsuranceRateHistory != undefined
                     && selectionUnemployeeInsuranceRateHistory != '') {
                     var self = this;
+                    if (self.dirtyUnemployeeInsurance.isDirty() && self.isShowDirtyUnemployeeInsurance()) {
+                        if (selectionUnemployeeInsuranceRateHistory !== self.preSelectUnemployeeInsuranceRateHistory()) {
+                            nts.uk.ui.dialog.confirm(self.messageList()[2].message).ifYes(function() {
+                                self.isShowDirtyUnemployeeInsurance(false);
+                                self.detailUnemployeeInsuranceRateHistory(selectionUnemployeeInsuranceRateHistory);
+                                return;
+                            }).ifNo(function() {
+                                //No action
+                            });
+                            self.selectionUnemployeeInsuranceRateHistory(self.preSelectUnemployeeInsuranceRateHistory());
+                            return;
+                        }
+                    }
                     self.detailUnemployeeInsuranceRateHistory(selectionUnemployeeInsuranceRateHistory);
                 }
             }
@@ -751,6 +770,8 @@ module nts.uk.pr.view.qmm011.a {
                         self.typeActionUnemployeeInsurance(TypeActionInsuranceRate.update);
                         self.beginHistoryStartUnemployeeInsuranceRate(nts.uk.time.formatYearMonth(data.historyInsurance.startMonth));
                         self.dirtyUnemployeeInsurance.reset();
+                        self.isShowDirtyUnemployeeInsurance(true);
+                        self.preSelectUnemployeeInsuranceRateHistory(historyId);
                         dfd.resolve();
                     });
                 }
