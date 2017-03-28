@@ -62,7 +62,7 @@ module nts.uk.pr.view.qpp007.c {
                     // New mode if there is 0 outputSettings. 
                     if (!self.outputSettings || self.outputSettings().length == 0) {
                         self.enableNewMode();
-                    } 
+                    }
                     // else select first outputSetting.
                     else {
                         self.outputSettingSelectedCode(self.outputSettings()[0].code);
@@ -103,8 +103,17 @@ module nts.uk.pr.view.qpp007.c {
                 data.code = model.settingCode();
                 data.name = model.settingName();
                 var settings = new Array<CategorySettingDto>();
-                model.categorySettings().forEach(item => {
-                    settings.push(new CategorySettingDto(SalaryCategory.PAYMENT, item.outputItems()));
+                model.categorySettings().forEach(setting => {
+                    settings.push(new CategorySettingDto(setting.categoryName, setting.outputItems().map(item => {
+                        var mappedItem = item;
+                        if (!item.isAggregateItem) {
+                            mappedItem = new OutputItem();
+                            mappedItem.code = item.code;
+                            mappedItem.name = item.name;
+                            mappedItem.isAggregateItem = false;
+                        }
+                        return mappedItem;
+                    })));
                 });
                 data.categorySettings = settings;
                 return data;
