@@ -58,20 +58,20 @@ public class UpdateFormulaMasterCommandHandler extends CommandHandler<UpdateForm
 		List<FormulaEasyCondition> listFormulaEasyCondition = new ArrayList<>();
 		List<FormulaEasyDetail> listFormulaEasyDetail = new ArrayList<>();
 		List<FormulaEasyStandardItem> listFormulaEasyStandardItem = new ArrayList<>();
-		FormulaManual formulaManual = null;
+		FormulaManual formulaManual = new FormulaManual(companyCode, new FormulaCode(command.getFormulaCode()), command.getHistoryId());
 		if (command.getDifficultyAtr() == 0) {
 			// [かんたん計算_条件.INS-1]を実施する
 			listFormulaEasyCondition = command.getEasyFormulaDto().stream().map(f -> {
 				FormulaEasyCondition formulaEasyCondition = new FormulaEasyCondition(companyCode,
 						new FormulaCode(command.getFormulaCode()), command.getHistoryId(),
 						new EasyFormulaCode(f.getEasyFormulaCode()),
-						EnumAdaptor.valueOf(f.getFixFormulaAtr(), FixFormulaAtr.class), new Money(f.getValue()), null);
+						EnumAdaptor.valueOf(f.getFixFormulaAtr(), FixFormulaAtr.class), new Money(f.getValue()), new ReferenceMasterCode(f.getReferenceMasterNo()));
 				return formulaEasyCondition;
 			}).collect(Collectors.toList());
 
 			listFormulaEasyDetail = command.getEasyFormulaDto().stream().map(easyFormulaDto -> {
 				FormulaEasyDetail formulaEasyDetail = new FormulaEasyDetail(companyCode,
-						new FormulaCode(easyFormulaDto.getEasyFormulaCode()), command.getHistoryId(),
+						new FormulaCode(command.getFormulaCode()), command.getHistoryId(),
 						new EasyFormulaCode(easyFormulaDto.getEasyFormulaCode()),
 						new EasyFormulaName(easyFormulaDto.getFormulaDetail().getEasyFormulaName()),
 						EnumAdaptor.valueOf(easyFormulaDto.getFormulaDetail().getEasyFormulaTypeAtr().intValue(),
@@ -91,8 +91,8 @@ public class UpdateFormulaMasterCommandHandler extends CommandHandler<UpdateForm
 								AdjustmentAtr.class),
 						EnumAdaptor.valueOf(easyFormulaDto.getFormulaDetail().getTotalRounding().intValue(),
 								RoundAtr.class),
-						new MaxValue(easyFormulaDto.getFormulaDetail().getMaxLimitValue()),
-						new MinValue(easyFormulaDto.getFormulaDetail().getMinLimitValue()));
+						null,
+						null);
 
 				return formulaEasyDetail;
 			}).collect(Collectors.toList());

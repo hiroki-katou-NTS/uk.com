@@ -97,8 +97,10 @@ var nts;
                 };
                 nts.uk.ui.windows.setShared('paramFromScreenC', param);
                 nts.uk.ui.windows.sub.modal('/view/qmm/017/l/index.xhtml', { title: 'かんたん計算式の登録', width: 650, height: 750 }).onClosed(function () {
-                    self.defaultEasyFormula().easyFormulaDetail(ko.mapping.fromJS(nts.uk.ui.windows.getShared('easyFormulaDetail')));
-                    self.defaultEasyFormula().easyFormulaName(self.defaultEasyFormula().easyFormulaDetail().easyFormulaName());
+                    if (nts.uk.ui.windows.getShared('easyFormulaDetail')) {
+                        self.defaultEasyFormula().easyFormulaDetail(ko.mapping.fromJS(nts.uk.ui.windows.getShared('easyFormulaDetail')));
+                        self.defaultEasyFormula().easyFormulaName(self.defaultEasyFormula().easyFormulaDetail().easyFormulaName());
+                    }
                 });
             };
             CScreen.prototype.validateTextArea = function () {
@@ -152,8 +154,10 @@ var nts;
                 };
                 nts.uk.ui.windows.setShared('paramFromScreenC', param);
                 nts.uk.ui.windows.sub.modal('/view/qmm/017/l/index.xhtml', { title: 'かんたん計算式の登録', width: 650, height: 750 }).onClosed(function () {
-                    self.easyFormulaDetail(nts.uk.ui.windows.getShared('easyFormulaDetail'));
-                    self.easyFormulaName(self.easyFormulaDetail().easyFormulaName);
+                    if (nts.uk.ui.windows.getShared('easyFormulaDetail')) {
+                        self.easyFormulaDetail(nts.uk.ui.windows.getShared('easyFormulaDetail'));
+                        self.easyFormulaName(self.easyFormulaDetail().easyFormulaName);
+                    }
                 });
             };
             return EasyFormula;

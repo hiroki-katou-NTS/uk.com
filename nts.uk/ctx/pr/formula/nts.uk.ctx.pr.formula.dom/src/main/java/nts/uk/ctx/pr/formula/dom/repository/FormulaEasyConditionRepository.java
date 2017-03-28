@@ -25,7 +25,7 @@ public interface FormulaEasyConditionRepository {
 	 * @param historyId
 	 * @return a formula easy condition
 	 */
-	Optional<FormulaEasyCondition> find(String companyCode, FormulaCode formulaCode, String historyId);
+	List<FormulaEasyCondition> find(String companyCode, FormulaCode formulaCode, String historyId);
 	
 	void add(List<FormulaEasyCondition> formulaEasyCondition);
 	

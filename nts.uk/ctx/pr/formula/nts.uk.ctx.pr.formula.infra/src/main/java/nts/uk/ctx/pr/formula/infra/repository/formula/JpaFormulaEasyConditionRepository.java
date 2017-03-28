@@ -43,10 +43,10 @@ public class JpaFormulaEasyConditionRepository extends JpaRepository implements 
 	}
 
 	@Override
-	public Optional<FormulaEasyCondition> find(String companyCode, FormulaCode formulaCode, String historyId) {
+	public List<FormulaEasyCondition> find(String companyCode, FormulaCode formulaCode, String historyId) {
 		return this.queryProxy().query(FIND_FORMULA_EASY_CONDITION, QcfmtFormulaEasyCondition.class)
 				.setParameter("companyCode", companyCode).setParameter("formulaCode", formulaCode.v())
-				.setParameter("historyId", historyId).getSingle(f -> (toDomain(f)));
+				.setParameter("historyId", historyId).getList(f -> (toDomain(f)));
 	}
 
 	private FormulaEasyCondition toDomain(QcfmtFormulaEasyCondition qcfmtFormulaEasyCondition) {
