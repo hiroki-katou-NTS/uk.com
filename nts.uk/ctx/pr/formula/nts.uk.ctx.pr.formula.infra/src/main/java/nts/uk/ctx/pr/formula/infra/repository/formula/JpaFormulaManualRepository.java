@@ -61,7 +61,7 @@ public class JpaFormulaManualRepository extends JpaRepository implements Formula
 				qcfmtFormulaManual.roundDigit);
 
 		return formulaManual;
-	}
+	}  
 
 	private QcfmtFormulaManual toEntity(FormulaManual formulaManual) {
 

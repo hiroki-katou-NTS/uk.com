@@ -8,13 +8,13 @@ import lombok.AllArgsConstructor;
  */
 @AllArgsConstructor
 public enum RoundAtr {
-	// 0:切り上げ
+	// 0:四捨五入	
 	ROUNDED(0),
-	// 1:切り捨て
+	// 1:切り上げ
 	ROUND_UP(1),
-	// 2:一捨二入
+	// 2:切り捨て
 	TRUNCATION(2),
-	// 3:二捨三入
+	// 3:端数処理なし
 	NO_ROUND(3);
 
 	public final int value;
