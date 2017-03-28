@@ -18,15 +18,26 @@ public class AddressSelection {
 	private String id;
 
 	/** The city. */
-	private String city;
-
-	/** The town. */
-	private String town;
-
-	/** The prefecture. */
-	private String prefecture;
+	private String localGovCode;
 
 	/** The zip code. */
-	private String zipCode;
+	private String postcode;
 
+	/** The prefecture. */
+	private String prefectureNameKn;
+
+	/** The prefecture. */
+	private String municipalityNameKn;
+
+	/** The town. */
+	private String townNameKn;
+
+	/** The prefecture. */
+	private String prefectureName;
+
+	/** The prefecture. */
+	private String municipalityName;
+
+	/** The town. */
+	private String townName;
 }
