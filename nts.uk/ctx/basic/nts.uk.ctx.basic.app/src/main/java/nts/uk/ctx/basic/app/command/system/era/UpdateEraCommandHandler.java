@@ -33,11 +33,12 @@ public class UpdateEraCommandHandler extends CommandHandler<UpdateEraCommand> {
 		eraHistUpdate.get().setEraMark(era.getEraMark());
 		// Optional<Era> currentEndDate =
 		// this.eraRepository.getCurrentEndDate(eraHistUpdate.get().getEndDate());
-		if (eraHistUpdate.get().getStartDate().compareTo(eraBefore.get().getStartDate()) <= 0 ||
-				eraHistUpdate.get().getStartDate().compareTo(eraHistUpdate.get().getEndDate()) > 0) {
-			throw new BusinessException("the startDate is invalid");
-		}
+		
 		if (eraBefore.isPresent()) {
+			if (eraHistUpdate.get().getStartDate().compareTo(eraBefore.get().getStartDate()) <= 0 ||
+					eraHistUpdate.get().getStartDate().compareTo(eraHistUpdate.get().getEndDate()) > 0) {
+				throw new BusinessException("the startDate is invalid");
+			}
 			eraBefore.get().setEndDate(era.getStartDate().addDays(-1));
 			this.eraRepository.update(eraHistUpdate.get());
 			this.eraRepository.update(eraBefore.get());

@@ -98,6 +98,7 @@ var qmm034;
                         return;
                     }
                     qmm034.a.service.addData(self.isUpdate(), node).done(function (result) {
+                        self.dirtyObject.reset();
                         self.reload().done(function () {
                             self.currentCode(eraName);
                             dfd.resolve();
@@ -192,7 +193,6 @@ var qmm034;
                             self.items(data);
                             self.currentEra(self.items()[0]);
                             self.dirtyObject = new nts.uk.ui.DirtyChecker(self.currentEra);
-                            //self.date(new Date(self.currentEra().startDate.toString()));
                             self.currentCode(self.currentEra().eraName);
                             self.processWhenCurrentCodeChange(self.currentCode());
                         }
