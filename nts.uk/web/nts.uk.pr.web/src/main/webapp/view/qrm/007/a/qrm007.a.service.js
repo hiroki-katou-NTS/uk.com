@@ -8,6 +8,7 @@ var qrm007;
                 retirePayItemSelect: "pr/core/retirement/payitem/findBycompanyCode",
                 retirePayItemUpdate: "pr/core/retirement/payitem/update" //qremt_Retire_Pay_Item_UPD_1
             };
+            // qremt_Retire_Pay_Item_SEL_1 function
             function retirePayItemSelect() {
                 var dfd = $.Deferred();
                 nts.uk.request.ajax(paths.retirePayItemSelect)
@@ -20,6 +21,7 @@ var qrm007;
                 return dfd.promise();
             }
             service.retirePayItemSelect = retirePayItemSelect;
+            // qremt_Retire_Pay_Item_UPD_1 function
             function retirePayItemUpdate(command) {
                 var dfd = $.Deferred();
                 nts.uk.request.ajax(paths.retirePayItemUpdate, command)
