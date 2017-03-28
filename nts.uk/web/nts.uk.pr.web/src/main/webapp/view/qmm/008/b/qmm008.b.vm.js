@@ -196,6 +196,7 @@ var nts;
                                     var self = this;
                                     if (self.healthModel().autoCalculate() == AutoCalculateType.Auto) {
                                         nts.uk.ui.dialog.confirm("自動計算が行われます。登録しますか？").ifYes(function () {
+                                            self.dirty = new nts.uk.ui.DirtyChecker(self.healthModel);
                                             hservice.updateHealthInsuranceAvgearn(self.collectData(), self.healthCollectData().officeCode);
                                             b.service.updateHealthRate(self.healthCollectData()).done(function () {
                                             }).fail();
@@ -306,6 +307,16 @@ var nts;
                                 ScreenModel.prototype.onRegistNew = function () {
                                     var self = this;
                                     self.OpenModalOfficeRegister();
+                                };
+                                ScreenModel.prototype.isDirty = function () {
+                                    var self = this;
+                                    if (self.dirty.isDirty()) {
+                                        self.dirty.reset();
+                                        return true;
+                                    }
+                                    else {
+                                        return false;
+                                    }
                                 };
                                 ScreenModel.prototype.OpenModalOfficeRegisterWithDirtyCheck = function () {
                                     var self = this;
