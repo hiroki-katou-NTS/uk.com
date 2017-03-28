@@ -127,9 +127,6 @@ var qmm013;
                     }
                 };
                 ;
-                /**
-                 * 新規(Clear form)
-                 */
                 ScreenModel.prototype.btn_001 = function () {
                     var self = this;
                     self.clearError();
@@ -153,9 +150,6 @@ var qmm013;
                     var self = this;
                     nts.uk.ui.windows.sub.modal("/view/qmm/013/b/index.xhtml", { title: "銀行の登録　＞　銀行の統合" });
                 };
-                /**
-                 * 登録(Add button)
-                 */
                 ScreenModel.prototype.btn_002 = function () {
                     var self = this;
                     self.confirmDirty = true;
@@ -188,9 +182,6 @@ var qmm013;
                         }
                     });
                 };
-                /**
-                 * 削除(Delete button)
-                 */
                 ScreenModel.prototype.btn_004 = function () {
                     var self = this;
                     nts.uk.ui.dialog.confirm("データを削除します。\r\nよろしいですか？").ifYes(function () {
@@ -201,7 +192,6 @@ var qmm013;
                             return x.code === self.currentCode();
                         }));
                         a.service.removePersonalUnitPrice(data).done(function () {
-                            // reload list   
                             self.getPersonalUnitPriceList().done(function () {
                                 if (self.items().length > self.indexRow()) {
                                     self.currentCode(self.items()[self.indexRow()].code);
@@ -272,3 +262,4 @@ var qmm013;
         })(viewmodel = a.viewmodel || (a.viewmodel = {}));
     })(a = qmm013.a || (qmm013.a = {}));
 })(qmm013 || (qmm013 = {}));
+//# sourceMappingURL=qmm013.a.vm.js.map
