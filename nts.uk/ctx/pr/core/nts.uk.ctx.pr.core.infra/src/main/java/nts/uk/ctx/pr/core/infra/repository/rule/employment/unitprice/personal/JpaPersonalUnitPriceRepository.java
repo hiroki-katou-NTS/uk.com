@@ -80,7 +80,7 @@ public class JpaPersonalUnitPriceRepository extends JpaRepository implements Per
 						x.fixPaymentDayMonth,
 						x.fixPaymentDaily,
 						x.fixPaymentHoursly,
-						x.displayAtr,
+						x.displaySet,
 						x.paymentSettingType,
 						x.unitPriceAtr));
 	}

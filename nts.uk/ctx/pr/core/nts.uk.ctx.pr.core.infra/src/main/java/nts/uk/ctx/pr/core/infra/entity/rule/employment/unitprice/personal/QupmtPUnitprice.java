@@ -23,6 +23,11 @@ import lombok.NoArgsConstructor;
 @Data
 public class QupmtPUnitprice implements Serializable{
     
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+
 	@EmbeddedId
 	public QupmtPUnitpricePK qupmtPUnitpricePK;
 	
@@ -32,8 +37,8 @@ public class QupmtPUnitprice implements Serializable{
 	@Column(name = "P_UNITPRICE_AB_NAME")
 	public String personalUnitPriceShortName;
 	
-	@Column(name = "DISP_ATR")
-	public int displayAtr;
+	@Column(name = "DISP_SET")
+	public int displaySet;
 	
 	@Column(name = "UNITE_CD")
 	public String uniteCode;

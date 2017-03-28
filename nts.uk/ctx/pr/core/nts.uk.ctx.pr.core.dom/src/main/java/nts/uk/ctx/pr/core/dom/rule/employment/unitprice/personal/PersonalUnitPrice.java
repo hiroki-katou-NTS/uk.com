@@ -63,7 +63,6 @@ public class PersonalUnitPrice extends AggregateRoot {
 
 	@Override
 	public void validate() {
-		// TODO Auto-generated method stub
 		super.validate();
 		
 		if(this.personalUnitPriceCode == null || StringUtil.isNullOrEmpty(this.personalUnitPriceCode.v(), true)) { 
