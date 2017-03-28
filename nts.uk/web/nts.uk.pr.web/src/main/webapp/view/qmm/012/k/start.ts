@@ -1,8 +1,7 @@
 module qmm012.k {
     __viewContext.ready(function() {
-        let screenModel = new k.viewmodel.ScreenModel();
+        var screenModel = new viewmodel.ScreenModel();
         __viewContext.bind(screenModel);
-
     });
 
 

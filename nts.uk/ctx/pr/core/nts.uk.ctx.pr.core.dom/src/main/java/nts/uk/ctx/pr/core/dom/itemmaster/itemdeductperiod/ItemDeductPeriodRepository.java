@@ -6,4 +6,10 @@ public interface ItemDeductPeriodRepository {
 
 	Optional<ItemDeductPeriod> find(String companyCode, String itemCode);
 
+	void add(ItemDeductPeriod itemDeductPeriod);
+
+	void delete(String itemCode);
+
+	void update(ItemDeductPeriod domain);
+
 }

@@ -1,0 +1,9 @@
+<<<<<<< HEAD
+{"version":3,"file":"qmm005.b.service.js","sourceRoot":"","sources":["qmm005.b.service.ts"],"names":[],"mappings":"AAAA,IAAO,MAAM,CAMZ;AAND,WAAO,MAAM;IAAC,IAAA,CAAC,CAMd;IANa,WAAA,CAAC,EAAC,CAAC;QAEb,IAAI,MAAM,GAAG,aAAM,CAAC,MAAM,EAAE,CAAC;QAG5B,JACL,CAAC,EANa,CAAC,GAAD,QAAC,KAAD,QAAC,QAMd;AAAD,CAAC,EANM,MAAM,KAAN,MAAM,QAMZ"}
+=======
+<<<<<<< HEAD
+{"version":3,"file":"qmm005.b.service.js","sourceRoot":"","sources":["qmm005.b.service.ts"],"names":[],"mappings":"AAAA,IAAO,MAAM,CAMZ;AAND,WAAO,MAAM;IAAC,IAAA,CAAC,CAMd;IANa,WAAA,CAAC,EAAC,CAAC;QACb,0BAA0B;QAC1B,IAAI,MAAM,GAAG,aAAM,CAAC,MAAM,EAAE,CAAC;QAG5B,JACL,CAAC,EANa,CAAC,GAAD,QAAC,KAAD,QAAC,QAMd;AAAD,CAAC,EANM,MAAM,KAAN,MAAM,QAMZ"}
+=======
+{"version":3,"file":"qmm005.b.service.js","sourceRoot":"","sources":["qmm005.b.service.ts"],"names":[],"mappings":"AAAA,IAAO,MAAM,CAMZ;AAND,WAAO,MAAM;IAAC,IAAA,CAAC,CAMd;IANa,WAAA,CAAC,EAAC,CAAC;QAEb,IAAI,MAAM,GAAG,aAAM,CAAC,MAAM,EAAE,CAAC;QAG5B,JACL,CAAC,EANa,CAAC,GAAD,QAAC,KAAD,QAAC,QAMd;AAAD,CAAC,EANM,MAAM,KAAN,MAAM,QAMZ"}
+>>>>>>> basic/develop
+>>>>>>> basic/develop
