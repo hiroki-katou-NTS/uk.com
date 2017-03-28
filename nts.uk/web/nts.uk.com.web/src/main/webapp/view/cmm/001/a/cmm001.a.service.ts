@@ -103,8 +103,7 @@ module cmm001.a.service {
                     depWorkPlaceSet: number, displayAttribute: number, // cot thu 3
                     faxNo: string, postal: string, presidentName: string, 
                     presidentJobTitle: string, telephoneNo: string,
-                    termBeginMon: number,
-                    useGrSet: number, useKtSet: number, 
+                    termBeginMon: number,useKtSet: number, 
                     useQySet: number, useJjSet: number) {
                 
                 this.companyCode= companyCode;

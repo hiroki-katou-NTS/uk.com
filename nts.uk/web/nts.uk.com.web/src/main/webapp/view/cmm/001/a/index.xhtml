@@ -94,7 +94,7 @@
 							<input id="A_INP_002" class="save-error" data-name="会社コード"
 								data-bind="ntsTextEditor: {value: companyCode, 
 								constraint: 'CompanyCode', 
-								required: true,
+								required: true, enable: isEnableCompanyCode,
 								immediate: true}, hasFocus: hasFocus" />
 						</div>
 						<div class="bg-yellow">
@@ -102,7 +102,7 @@
 								data-bind="ntsCheckBox: {checked: isDelete, text: 'この会社を廃止する' }"
 								class="cf minimalist ntsCheckBox-right"></div>
 							<button style="width: 25px; height: 25px; margin-left: 20px;"
-								data-bind="click: clickSel001">?</button>
+								>?</button>
 						</div>
 					</div>
 					<!-- table  -->
@@ -279,7 +279,11 @@
 											</tr>
 											<!--  4 -->
 											<tr style="margin-top: 5px;">
-												<th colspan="1" class="th-col1"><label id="C_LBL_007">市区町村・番地</label>
+												<th colspan="1" class="th-col1">
+												<div class="form-label"
+														data-bind="ntsFormLabel:{constraint: 'Address1'}">
+												<label id="C_LBL_007">市区町村・番地</label>
+												</div>
 												</th>
 
 												<th colspan="2" class="th-col2">

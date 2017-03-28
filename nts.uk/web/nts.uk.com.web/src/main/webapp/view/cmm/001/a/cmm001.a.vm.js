@@ -4,8 +4,55 @@ var cmm001;
     (function (a) {
         var ViewModel = (function () {
             function ViewModel() {
-                this.mode = ko.observable(null);
-                this.editmode = ko.observable(null);
+                this.isUpdate = ko.observable(null);
+                var self = this;
+                self.init();
+                self.checked.subscribe(function (newValue) {
+                    var $grid = $("#A_LST_001");
+                    var currentColumns = $grid.igGrid("option", "columns");
+                    var width = $grid.igGrid("option", "width");
+                    if (newValue) {
+                        $('#A_SEL_001').ntsError('clear');
+                        currentColumns[2].hidden = false;
+                        $grid.igGrid("option", "width", "400px");
+                        self.sel001Data([]);
+                        self.start(undefined);
+                    }
+                    else {
+                        self.sel001Data([]);
+                        currentColumns[2].hidden = true;
+                        $grid.igGrid("option", "width", "400px");
+                        a.service.getAllCompanys().done(function (data) {
+                            if (data.length > 0) {
+                                _.each(data, function (obj) {
+                                    var companyModel;
+                                    companyModel = ko.mapping.fromJS(obj);
+                                    if (obj.displayAttribute === 0) {
+                                        companyModel.displayAttribute('');
+                                        self.sel001Data.push(ko.toJS(companyModel));
+                                    }
+                                });
+                                var companyCheckExist = _.find(self.sel001Data(), function (obj) {
+                                    var x = ko.toJS(obj.companyCode);
+                                    var y = (ko.toJS(self.currentCompany().companyCode));
+                                    return x === y;
+                                });
+                                if (self.sel001Data().length > 0) {
+                                    if (!companyCheckExist) {
+                                        self.currentCompany().companyCode(ko.toJS(self.sel001Data()[0].companyCode));
+                                    }
+                                }
+                                else {
+                                    self.resetData();
+                                    self.isUpdate(true);
+                                }
+                            }
+                        });
+                    }
+                    $grid.igGrid("option", "columns", currentColumns);
+                });
+            }
+            ViewModel.prototype.init = function () {
                 var self = this;
                 self.tabs = ko.observableArray([
                     { id: 'tab-1', title: '会社基本情報', content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true) },
@@ -31,56 +78,13 @@ var cmm001;
                     companyUseSet: null
                 }));
                 self.sel001Data = ko.observableArray([]);
-                self.checked.subscribe(function (newValue) {
-                    var $grid = $("#A_LST_001");
-                    var currentColumns = $grid.igGrid("option", "columns");
-                    var width = $grid.igGrid("option", "width");
-                    if (newValue) {
-                        //nts.uk.ui.dialog.confirm("Do you want to change data?").ifYes(function() {
-                        $('#A_SEL_001').ntsError('clear');
-                        currentColumns[2].hidden = false;
-                        $grid.igGrid("option", "width", "400px");
-                        self.sel001Data([]);
-                        self.start(undefined);
-                    }
-                    else {
-                        //  nts.uk.ui.dialog.confirm("Do you want to change data?").ifYes(function() {
-                        self.sel001Data([]);
-                        currentColumns[2].hidden = true;
-                        $grid.igGrid("option", "width", "400px");
-                        a.service.getAllCompanys().done(function (data) {
-                            if (data.length > 0) {
-                                _.each(data, function (obj) {
-                                    var companyModel;
-                                    companyModel = ko.mapping.fromJS(obj);
-                                    if (obj.displayAttribute === 0) {
-                                        companyModel.displayAttribute('');
-                                        self.sel001Data.push(ko.toJS(companyModel));
-                                    }
-                                });
-                                var companyCheckExist = _.find(self.sel001Data(), function (obj) {
-                                    var x = ko.toJS(obj.companyCode);
-                                    var y = (ko.toJS(self.currentCompany().companyCode));
-                                    return x === y;
-                                });
-                                if (companyCheckExist != undefined) {
-                                    self.currentCompany().companyCode(ko.toJS(self.sel001Data()[0].companyCode));
-                                }
-                                else {
-                                    self.currentCompany().companyCode("");
-                                }
-                            }
-                        });
-                    }
-                    $grid.igGrid("option", "columns", currentColumns);
-                });
-            }
+            };
             ViewModel.prototype.start = function (currentCode) {
                 var self = this;
                 var items = [];
                 a.service.getAllCompanys().done(function (data) {
                     if (data.length > 0) {
-                        self.mode(true);
+                        self.isUpdate(true);
                         _.each(data, function (obj) {
                             var companyModel;
                             companyModel = ko.mapping.fromJS(obj);
@@ -100,13 +104,12 @@ var cmm001;
                         }
                     }
                     else {
-                        self.mode(false);
+                        self.isUpdate(false);
                     }
                 });
             };
             ViewModel.prototype.resetData = function () {
                 var self = this;
-                self.currentCompany().hasFocus(true);
                 self.currentCompany().companyCode(null);
                 self.currentCompany().address1("");
                 self.currentCompany().addressKana1("");
@@ -125,14 +128,16 @@ var cmm001;
                 self.currentCompany().postal('');
                 self.currentCompany().presidentName('');
                 self.currentCompany().presidentJobTitle('');
-                self.currentCompany().termBeginMon(0);
+                self.currentCompany().termBeginMon(1);
                 self.currentCompany().selectedRuleCode('0');
                 self.currentCompany().selectedRuleCode1('0');
                 self.currentCompany().selectedRuleCode2('0');
                 self.currentCompany().selectedRuleCode3('0');
                 self.currentCompany().isDelete(true);
                 self.currentCompany().editMode = true;
-                self.mode(false);
+                self.currentCompany().isEnableCompanyCode(true);
+                self.currentCompany().hasFocus(true);
+                self.isUpdate(false);
             };
             ViewModel.prototype.clickRegister = function () {
                 var self = this;
@@ -140,6 +145,11 @@ var cmm001;
                 var currentCompany;
                 currentCompany = ko.toJS(self.currentCompany);
                 if (nts.uk.text.isNullOrEmpty(ko.toJS(currentCompany.companyCode))) {
+                    $('#A_INP_002').ntsError('set', nts.uk.text.format('{0}が入力されていません。', 'コード'));
+                    return;
+                }
+                if (nts.uk.text.isNullOrEmpty(ko.toJS(currentCompany.companyName))) {
+                    $('#A_INP_003').ntsError('set', nts.uk.text.format('{0}が入力されていません。', '名称'));
                     return;
                 }
                 if (currentCompany.isDelete) {
@@ -148,109 +158,56 @@ var cmm001;
                 else {
                     currentCompany.displayAttribute = ko.observable("0");
                 }
-                var errorCheck1;
-                if (self.checked()) {
-                    $('#A_SEL_001').ntsError('clear');
-                    errorCheck1 = true;
-                }
-                else {
-                    $('#A_SEL_001').ntsError('set', 'this check must be true');
-                    errorCheck1 = false;
-                }
-                var company = new a.service.model.CompanyDto("", "", "", "", "", "", "", "", "", 0, 0, "", "", "", "", "", 0, 0, 0, 0, 0);
-                company.companyCode = ko.toJS(currentCompany.companyCode);
-                company.companyName = ko.toJS(currentCompany.companyName);
-                company.companyNameGlobal = ko.toJS(currentCompany.companyNameGlobal);
-                company.companyNameAbb = ko.toJS(currentCompany.companyNameAbb);
-                company.companyNameKana = ko.toJS(currentCompany.companyNameKana);
-                company.corporateMyNumber = ko.toJS(currentCompany.corporateMyNumber);
-                company.use_Jj_Set = Number(ko.toJS(currentCompany.selectedRuleCode));
-                company.use_Kt_Set = Number(ko.toJS(currentCompany.selectedRuleCode1));
-                company.use_Qy_Set = Number(ko.toJS(currentCompany.selectedRuleCode2));
-                company.depWorkPlaceSet = Number(ko.toJS(currentCompany.selectedRuleCode3));
-                company.displayAttribute = Number(ko.toJS(currentCompany.displayAttribute));
-                company.termBeginMon = Number(ko.toJS(currentCompany.termBeginMon));
-                company.address1 = ko.toJS(currentCompany.address1);
-                company.address2 = ko.toJS(currentCompany.address2);
-                company.addressKana1 = ko.toJS(currentCompany.addressKana1);
-                console.log(company.addressKana1);
-                company.addressKana2 = ko.toJS(currentCompany.addressKana2);
-                company.telephoneNo = ko.toJS(currentCompany.telephoneNo);
-                company.faxNo = ko.toJS(currentCompany.faxNo);
-                company.postal = ko.toJS(currentCompany.postal);
-                company.presidentJobTitle = ko.toJS(currentCompany.presidentJobTitle);
-                company.presidentName = ko.toJS(currentCompany.presidentName);
-                if (self.mode()) {
-                    cmm001.a.service.updateData(company).done(function (data) {
-                        console.log(company);
+                var company = new a.service.model.CompanyDto("", "", "", "", "", "", "", "", "", 0, 0, "", "", "", "", "", 0, 0, 0, 0);
+                company = self.convertCompanyDto(currentCompany);
+                if (self.isUpdate()) {
+                    cmm001.a.service.updateData(company).done(function () {
                         self.sel001Data([]);
                         self.start(company.companyCode);
                     });
                 }
                 else {
                     cmm001.a.service.addData(company).done(function () {
-                        console.log(company);
                         self.sel001Data([]);
                         self.start(company.companyCode);
                     });
                 }
+            };
+            ViewModel.prototype.convertCompanyDto = function (company) {
+                var companyDto = new a.service.model.CompanyDto("", "", "", "", "", "", "", "", "", 0, 0, "", "", "", "", "", 0, 0, 0, 0);
+                companyDto.companyCode = ko.toJS(company.companyCode);
+                companyDto.companyName = ko.toJS(company.companyName);
+                companyDto.companyNameGlobal = ko.toJS(company.companyNameGlobal);
+                companyDto.companyNameAbb = ko.toJS(company.companyNameAbb);
+                companyDto.companyNameKana = ko.toJS(company.companyNameKana);
+                companyDto.corporateMyNumber = ko.toJS(company.corporateMyNumber);
+                companyDto.use_Jj_Set = Number(ko.toJS(company.selectedRuleCode));
+                companyDto.use_Kt_Set = Number(ko.toJS(company.selectedRuleCode1));
+                companyDto.use_Qy_Set = Number(ko.toJS(company.selectedRuleCode2));
+                companyDto.depWorkPlaceSet = Number(ko.toJS(company.selectedRuleCode3));
+                companyDto.displayAttribute = Number(ko.toJS(company.displayAttribute));
+                companyDto.termBeginMon = Number(ko.toJS(company.termBeginMon));
+                companyDto.address1 = ko.toJS(company.address1);
+                companyDto.address2 = ko.toJS(company.address2);
+                companyDto.addressKana1 = ko.toJS(company.addressKana1);
+                companyDto.addressKana2 = ko.toJS(company.addressKana2);
+                companyDto.telephoneNo = ko.toJS(company.telephoneNo);
+                companyDto.faxNo = ko.toJS(company.faxNo);
+                companyDto.postal = ko.toJS(company.postal);
+                companyDto.presidentJobTitle = ko.toJS(company.presidentJobTitle);
+                companyDto.presidentName = ko.toJS(company.presidentName);
+                return companyDto;
             };
             return ViewModel;
         }());
         a.ViewModel = ViewModel;
         var CompanyModel = (function () {
             function CompanyModel(param) {
-                this.hasFocus = ko.observable(false);
-                this.editMode = true; // mode reset or not reset
+                this.isEnableCompanyCode = ko.observable(true);
+                this.hasFocus = ko.observable(true);
+                this.editMode = true;
                 var self = this;
-                self.sources = param.sources || [];
-                self.companyCode = ko.observable(param.companyCode);
-                self.address1 = ko.observable(param.address1);
-                self.address2 = ko.observable(param.address2);
-                self.addressKana1 = ko.observable(param.addressKana1);
-                self.addressKana2 = ko.observable(param.addressKana2);
-                self.companyName = ko.observable(param.companyName);
-                self.companyNameGlobal = ko.observable(param.companyNameGlobal);
-                self.companyNameAbb = ko.observable(param.companyNameAbb);
-                self.companyNameKana = ko.observable(param.companyNameKana);
-                self.corporateMyNumber = ko.observable(param.corporateMyNumber);
-                self.depWorkPlaceSet = ko.observable(param.depWorkPlaceSet);
-                self.displayAttribute = ko.observable(param.displayAttribute);
-                self.faxNo = ko.observable(param.faxNo);
-                self.postal = ko.observable(param.postal);
-                self.presidentName = ko.observable(param.presidentName);
-                self.presidentJobTitle = ko.observable(param.presidentJobTitle);
-                self.telephoneNo = ko.observable(param.telephoneNo);
-                self.termBeginMon = ko.observable(param.termBeginMon);
-                self.companyUseSet = ko.observable(param.companyUseSet);
-                self.isDelete = ko.observable(param.isDelete || false);
-                //SWITCH
-                self.roundingRules = ko.observableArray([
-                    new RoundingRule("1", '利用する'),
-                    new RoundingRule('0', '利用しない')
-                ]);
-                self.selectedRuleCode = ko.observable("");
-                self.selectedRuleCode1 = ko.observable("");
-                self.selectedRuleCode2 = ko.observable('');
-                self.roundingRules3 = ko.observableArray([
-                    new RoundingRule("1", '区別する'),
-                    new RoundingRule('0', '区別しない')
-                ]);
-                self.selectedRuleCode3 = ko.observable("");
-                self.itemList = ko.observableArray([
-                    { code: '1', name: '1月' },
-                    { code: '2', name: '2月' },
-                    { code: '3', name: '3月' },
-                    { code: '4', name: '4月' },
-                    { code: '5', name: '5月' },
-                    { code: '6', name: '6月' },
-                    { code: '7', name: '7月' },
-                    { code: '8', name: '8月' },
-                    { code: '9', name: '9月' },
-                    { code: '10', name: '10月' },
-                    { code: '11', name: '11月' },
-                    { code: '12', name: '12月' }
-                ]);
+                self.init(param);
                 self.companyCode.subscribe(function (newValue) {
                     if (self.editMode) {
                         if (nts.uk.text.isNullOrEmpty(newValue)) {
@@ -261,17 +218,15 @@ var cmm001;
                                 if ($('.nts-editor').ntsError("hasError")) {
                                     $('.save-error').ntsError('clear');
                                 }
-                                $("#A_INP_002").attr('disabled', 'true');
-                                $("#A_INP_002").attr('readonly', 'true');
-                                self.address1(company.address1);
-                                self.addressKana1(company.addressKana1);
-                                self.address2(company.address2);
-                                self.addressKana2(company.addressKana2);
                                 self.companyName(company.companyName);
                                 self.companyNameGlobal(company.companyNameGlobal);
                                 self.companyNameAbb(company.companyNameAbb);
                                 self.companyNameKana(company.companyNameKana);
                                 self.corporateMyNumber(company.corporateMyNumber);
+                                self.address2(company.address2);
+                                self.address1(company.address1);
+                                self.addressKana1(company.addressKana1);
+                                self.addressKana2(company.addressKana2);
                                 self.depWorkPlaceSet(company.depWorkPlaceSet);
                                 self.displayAttribute(company.displayAttribute.toString());
                                 if (company.displayAttribute === 1) {
@@ -291,6 +246,7 @@ var cmm001;
                                 self.selectedRuleCode1(company.use_Kt_Set.toString());
                                 self.selectedRuleCode2(company.use_Qy_Set.toString());
                                 self.selectedRuleCode3(company.depWorkPlaceSet.toString());
+                                self.isEnableCompanyCode(false);
                             }
                             else {
                                 self.editMode = false;
@@ -325,12 +281,56 @@ var cmm001;
                 this.sources = list || [];
                 this.companyCode(companyCode);
             };
-            CompanyModel.prototype.getCompanyDetail = function (currentCode) {
+            CompanyModel.prototype.init = function (param) {
                 var self = this;
-                a.service.getCompanyDetail(currentCode).done(function (data) {
-                });
+                self.sources = param.sources || [];
+                self.companyCode = ko.observable(param.companyCode);
+                self.address1 = ko.observable(param.address1);
+                self.address2 = ko.observable(param.address2);
+                self.addressKana1 = ko.observable(param.addressKana1);
+                self.addressKana2 = ko.observable(param.addressKana2);
+                self.companyName = ko.observable(param.companyName);
+                self.companyNameGlobal = ko.observable(param.companyNameGlobal);
+                self.companyNameAbb = ko.observable(param.companyNameAbb);
+                self.companyNameKana = ko.observable(param.companyNameKana);
+                self.corporateMyNumber = ko.observable(param.corporateMyNumber);
+                self.depWorkPlaceSet = ko.observable(param.depWorkPlaceSet);
+                self.displayAttribute = ko.observable(param.displayAttribute);
+                self.faxNo = ko.observable(param.faxNo);
+                self.postal = ko.observable(param.postal);
+                self.presidentName = ko.observable(param.presidentName);
+                self.presidentJobTitle = ko.observable(param.presidentJobTitle);
+                self.telephoneNo = ko.observable(param.telephoneNo);
+                self.termBeginMon = ko.observable(param.termBeginMon);
+                self.companyUseSet = ko.observable(param.companyUseSet);
+                self.isDelete = ko.observable(param.isDelete || false);
+                self.roundingRules = ko.observableArray([
+                    new RoundingRule("1", '利用する'),
+                    new RoundingRule('0', '利用しない')
+                ]);
+                self.selectedRuleCode = ko.observable("");
+                self.selectedRuleCode1 = ko.observable("");
+                self.selectedRuleCode2 = ko.observable('');
+                self.roundingRules3 = ko.observableArray([
+                    new RoundingRule("1", '区別する'),
+                    new RoundingRule('0', '区別しない')
+                ]);
+                self.selectedRuleCode3 = ko.observable("");
+                self.itemList = ko.observableArray([
+                    { code: '1', name: '1月' },
+                    { code: '2', name: '2月' },
+                    { code: '3', name: '3月' },
+                    { code: '4', name: '4月' },
+                    { code: '5', name: '5月' },
+                    { code: '6', name: '6月' },
+                    { code: '7', name: '7月' },
+                    { code: '8', name: '8月' },
+                    { code: '9', name: '9月' },
+                    { code: '10', name: '10月' },
+                    { code: '11', name: '11月' },
+                    { code: '12', name: '12月' }
+                ]);
             };
-            CompanyModel.prototype.clickSel001 = function () { };
             return CompanyModel;
         }());
         var Address = (function () {
@@ -377,3 +377,4 @@ var cmm001;
         }());
     })(a = cmm001.a || (cmm001.a = {}));
 })(cmm001 || (cmm001 = {}));
+//# sourceMappingURL=cmm001.a.vm.js.map

@@ -7,10 +7,59 @@ module cmm001.a {
         tabs: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel>;
         selectedTab: KnockoutObservable<string>;
         checked: KnockoutObservable<boolean>;
-        mode: KnockoutObservable<boolean> = ko.observable(null);
-        editmode: KnockoutObservable<boolean> = ko.observable(null);
-
+        isUpdate: KnockoutObservable<boolean> = ko.observable(null);
         constructor() {
+            let self = this;
+            self.init();
+            self.checked.subscribe(function(newValue) {
+                let $grid = $("#A_LST_001");
+                var currentColumns = $grid.igGrid("option", "columns");
+                var width = $grid.igGrid("option", "width");
+
+                if (newValue) {
+                    $('#A_SEL_001').ntsError('clear');
+                    currentColumns[2].hidden = false;
+                    $grid.igGrid("option", "width", "400px");
+                    self.sel001Data([]);
+                    self.start(undefined);
+                } else {
+                    self.sel001Data([]);
+                    currentColumns[2].hidden = true;
+                    $grid.igGrid("option", "width", "400px");
+                    service.getAllCompanys().done(function(data: Array<service.model.CompanyDto>) {
+                        if (data.length > 0) {
+                            _.each(data, function(obj: service.model.CompanyDto) {
+                                let companyModel: CompanyModel;
+                                companyModel = ko.mapping.fromJS(obj);
+                                if (obj.displayAttribute === 0) {
+                                    companyModel.displayAttribute('');
+                                    self.sel001Data.push(ko.toJS(companyModel));
+                                }
+                            });
+                            let companyCheckExist = _.find(self.sel001Data(), function(obj: CompanyModel) {
+                                let x: string = ko.toJS(obj.companyCode);
+                                let y: string = (ko.toJS(self.currentCompany().companyCode));
+                                return x === y;
+
+                            });
+                            if (self.sel001Data().length > 0) {
+                                if (!companyCheckExist) {
+                                    self.currentCompany().companyCode(ko.toJS(self.sel001Data()[0].companyCode));
+                                }
+
+                            } else {
+                                self.resetData();
+                                self.isUpdate(true);
+
+                            }
+
+                        }
+                    });
+                }
+                $grid.igGrid("option", "columns", currentColumns);
+            });
+        }
+        init(): void {
             let self = this;
             self.tabs = ko.observableArray([
                 { id: 'tab-1', title: '会社基本情報', content: '.tab-content-1', enable: ko.observable(true), visible: ko.observable(true) },
@@ -39,60 +88,14 @@ module cmm001.a {
             }));
 
             self.sel001Data = ko.observableArray([]);
-            self.checked.subscribe(function(newValue) {
-                let $grid = $("#A_LST_001");
-                var currentColumns = $grid.igGrid("option", "columns");
-                var width = $grid.igGrid("option", "width");
-
-                if (newValue) {
-                    //nts.uk.ui.dialog.confirm("Do you want to change data?").ifYes(function() {
-                    $('#A_SEL_001').ntsError('clear');
-                    currentColumns[2].hidden = false;
-                    $grid.igGrid("option", "width", "400px");
-                    self.sel001Data([]);
-                    self.start(undefined);
-                    //      });  
-                } else {
-                    //  nts.uk.ui.dialog.confirm("Do you want to change data?").ifYes(function() {
-                    self.sel001Data([]);
-                    currentColumns[2].hidden = true;
-                    $grid.igGrid("option", "width", "400px");
-                    service.getAllCompanys().done(function(data: Array<service.model.CompanyDto>) {
-                        if (data.length > 0) {
-                            _.each(data, function(obj: service.model.CompanyDto) {
-                                let companyModel: CompanyModel;
-                                companyModel = ko.mapping.fromJS(obj);
-                                if (obj.displayAttribute === 0) {
-                                    companyModel.displayAttribute('');
-                                    self.sel001Data.push(ko.toJS(companyModel));
-
-                                }
-                            });
-                            var companyCheckExist = _.find(self.sel001Data(), function(obj: CompanyModel) {
-                                let x: string = ko.toJS(obj.companyCode);
-                                let y: string = (ko.toJS(self.currentCompany().companyCode));
-                                return x === y;
-
-                            });
-                            if (companyCheckExist != undefined) {
-                                self.currentCompany().companyCode(ko.toJS(self.sel001Data()[0].companyCode));
-
-                            } else {
-                                self.currentCompany().companyCode("");
-                            }
-                        }
-                    });
-                    //     });
-                }
-                $grid.igGrid("option", "columns", currentColumns);
-            });
         }
+
         start(currentCode: string) {
             let self = this;
             let items = [];
             service.getAllCompanys().done(function(data: Array<service.model.CompanyDto>) {
                 if (data.length > 0) {
-                    self.mode(true);
+                    self.isUpdate(true);
                     _.each(data, function(obj: service.model.CompanyDto) {
                         let companyModel: CompanyModel;
                         companyModel = ko.mapping.fromJS(obj);
@@ -109,15 +112,13 @@ module cmm001.a {
                         self.currentCompany().setList(data, currentCode);
                     }
                 } else {
-                    self.mode(false);
+                    self.isUpdate(false);
                 }
             });
         }
 
         resetData() {
             let self = this;
-            self.currentCompany().hasFocus(true);
-
             self.currentCompany().companyCode(null);
             self.currentCompany().address1("");
             self.currentCompany().addressKana1("");
@@ -136,15 +137,16 @@ module cmm001.a {
             self.currentCompany().postal('');
             self.currentCompany().presidentName('');
             self.currentCompany().presidentJobTitle('');
-            self.currentCompany().termBeginMon(0);
+            self.currentCompany().termBeginMon(1);
             self.currentCompany().selectedRuleCode('0');
             self.currentCompany().selectedRuleCode1('0');
             self.currentCompany().selectedRuleCode2('0');
             self.currentCompany().selectedRuleCode3('0');
             self.currentCompany().isDelete(true);
             self.currentCompany().editMode = true;
-            self.mode(false);
-
+            self.currentCompany().isEnableCompanyCode(true);
+            self.currentCompany().hasFocus(true);
+            self.isUpdate(false);
         }
 
         clickRegister() {
@@ -154,6 +156,11 @@ module cmm001.a {
             let currentCompany: CompanyModel;
             currentCompany = ko.toJS(self.currentCompany);
             if (nts.uk.text.isNullOrEmpty(ko.toJS(currentCompany.companyCode))) {
+                $('#A_INP_002').ntsError('set', nts.uk.text.format('{0}が入力されていません。', 'コード'));
+                return;
+            }
+            if (nts.uk.text.isNullOrEmpty(ko.toJS(currentCompany.companyName))) {
+                $('#A_INP_003').ntsError('set', nts.uk.text.format('{0}が入力されていません。', '名称'));
                 return;
             }
             if (currentCompany.isDelete) {
@@ -161,57 +168,52 @@ module cmm001.a {
             } else {
                 currentCompany.displayAttribute = ko.observable("0");
             }
-
-            let errorCheck1: boolean;
-            if (self.checked()) {
-                $('#A_SEL_001').ntsError('clear');
-                errorCheck1 = true;
-            } else {
-                $('#A_SEL_001').ntsError('set', 'this check must be true');
-                errorCheck1 = false;
-            }
             let company: service.model.CompanyDto =
-                new service.model.CompanyDto("", "", "", "", "", "", "", "", "", 0, 0, "", "", "", "", "", 0, 0, 0, 0, 0);
-            company.companyCode = ko.toJS(currentCompany.companyCode);
-            company.companyName = ko.toJS(currentCompany.companyName);
-            company.companyNameGlobal = ko.toJS(currentCompany.companyNameGlobal);
-            company.companyNameAbb = ko.toJS(currentCompany.companyNameAbb);
-            company.companyNameKana = ko.toJS(currentCompany.companyNameKana);
-            company.corporateMyNumber = ko.toJS(currentCompany.corporateMyNumber);
-            company.use_Jj_Set = Number(ko.toJS(currentCompany.selectedRuleCode));
-            company.use_Kt_Set = Number(ko.toJS(currentCompany.selectedRuleCode1));
-            company.use_Qy_Set = Number(ko.toJS(currentCompany.selectedRuleCode2));
-            company.depWorkPlaceSet = Number(ko.toJS(currentCompany.selectedRuleCode3));
-            company.displayAttribute = Number(ko.toJS(currentCompany.displayAttribute));
-            company.termBeginMon = Number(ko.toJS(currentCompany.termBeginMon));
-            company.address1 = ko.toJS(currentCompany.address1);
-            company.address2 = ko.toJS(currentCompany.address2);
-            company.addressKana1 = ko.toJS(currentCompany.addressKana1);
-            console.log(company.addressKana1);
-            company.addressKana2 = ko.toJS(currentCompany.addressKana2);
-            company.telephoneNo = ko.toJS(currentCompany.telephoneNo);
-            company.faxNo = ko.toJS(currentCompany.faxNo);
-            company.postal = ko.toJS(currentCompany.postal);
-            company.presidentJobTitle = ko.toJS(currentCompany.presidentJobTitle);
-            company.presidentName = ko.toJS(currentCompany.presidentName);
-            if (self.mode()) {
-                cmm001.a.service.updateData(company).done(function(data) {
-                    console.log(company);
+                new service.model.CompanyDto("", "", "", "", "", "", "", "", "", 0, 0, "", "", "", "", "", 0, 0, 0, 0);
+            company = self.convertCompanyDto(currentCompany);
+            if (self.isUpdate()) {
+                cmm001.a.service.updateData(company).done(function() {
                     self.sel001Data([]);
                     self.start(company.companyCode);
                 });
             } else {
                 cmm001.a.service.addData(company).done(function() {
-                    console.log(company);
                     self.sel001Data([]);
                     self.start(company.companyCode);
                 })
             }
         }
+        convertCompanyDto(company: CompanyModel): service.model.CompanyDto {
+            let companyDto: service.model.CompanyDto =
+                new service.model.CompanyDto("", "", "", "", "", "", "", "", "", 0, 0, "", "", "", "", "", 0, 0, 0, 0);
+            companyDto.companyCode = ko.toJS(company.companyCode);
+            companyDto.companyName = ko.toJS(company.companyName);
+            companyDto.companyNameGlobal = ko.toJS(company.companyNameGlobal);
+            companyDto.companyNameAbb = ko.toJS(company.companyNameAbb);
+            companyDto.companyNameKana = ko.toJS(company.companyNameKana);
+            companyDto.corporateMyNumber = ko.toJS(company.corporateMyNumber);
+            companyDto.use_Jj_Set = Number(ko.toJS(company.selectedRuleCode));
+            companyDto.use_Kt_Set = Number(ko.toJS(company.selectedRuleCode1));
+            companyDto.use_Qy_Set = Number(ko.toJS(company.selectedRuleCode2));
+            companyDto.depWorkPlaceSet = Number(ko.toJS(company.selectedRuleCode3));
+            companyDto.displayAttribute = Number(ko.toJS(company.displayAttribute));
+            companyDto.termBeginMon = Number(ko.toJS(company.termBeginMon));
+            companyDto.address1 = ko.toJS(company.address1);
+            companyDto.address2 = ko.toJS(company.address2);
+            companyDto.addressKana1 = ko.toJS(company.addressKana1);
+            companyDto.addressKana2 = ko.toJS(company.addressKana2);
+            companyDto.telephoneNo = ko.toJS(company.telephoneNo);
+            companyDto.faxNo = ko.toJS(company.faxNo);
+            companyDto.postal = ko.toJS(company.postal);
+            companyDto.presidentJobTitle = ko.toJS(company.presidentJobTitle);
+            companyDto.presidentName = ko.toJS(company.presidentName);
+            return companyDto;
+        }
     }
     class CompanyModel {
         sources: Array<any>;
         companyCode: KnockoutObservable<string>;
+        isEnableCompanyCode: KnockoutObservable<boolean> = ko.observable(true);
         address1: KnockoutObservable<string>;
         address2: KnockoutObservable<string>;
         addressKana1: KnockoutObservable<string>;
@@ -239,10 +241,88 @@ module cmm001.a {
         selectedRuleCode2: KnockoutObservable<string>;
         roundingRules3: KnockoutObservableArray<RoundingRule>;
         selectedRuleCode3: KnockoutObservable<string>;
-        hasFocus: KnockoutObservable<boolean> = ko.observable(false);
+        hasFocus: KnockoutObservable<boolean> = ko.observable(true);
         editMode: boolean = true;// mode reset or not reset
 
         constructor(param: ICompany) {
+            let self = this;
+            self.init(param);
+            self.companyCode.subscribe(function(newValue) {
+                if (self.editMode) {
+                    if (nts.uk.text.isNullOrEmpty(newValue)) {
+                        return;
+                    }
+                    service.getCompanyDetail(newValue).done(function(company: service.model.CompanyDto) {
+                        if (company) {
+                            if ($('.nts-editor').ntsError("hasError")) {
+                                $('.save-error').ntsError('clear');
+                            }
+                            self.companyName(company.companyName);
+                            self.companyNameGlobal(company.companyNameGlobal);
+                            self.companyNameAbb(company.companyNameAbb);
+                            self.companyNameKana(company.companyNameKana);
+                            self.corporateMyNumber(company.corporateMyNumber);
+                            self.address2(company.address2);
+                            self.address1(company.address1);
+                            self.addressKana1(company.addressKana1);
+                            self.addressKana2(company.addressKana2);
+                            self.depWorkPlaceSet(company.depWorkPlaceSet);
+                            self.displayAttribute(company.displayAttribute.toString());
+                            if (company.displayAttribute === 1) {
+                                self.isDelete(true);
+                            } else {
+                                self.isDelete(false);
+                            }
+                            self.faxNo(company.faxNo);
+                            self.postal(company.postal);
+                            self.presidentName(company.presidentName);
+                            self.presidentJobTitle(company.presidentJobTitle);
+                            self.telephoneNo(company.telephoneNo);
+                            self.termBeginMon(company.termBeginMon);
+                            self.companyUseSet(new CompanyUseSet(company.use_Kt_Set, company.use_Qy_Set, company.use_Jj_Set));
+                            self.selectedRuleCode(company.use_Jj_Set.toString());
+                            self.selectedRuleCode1(company.use_Kt_Set.toString());
+                            self.selectedRuleCode2(company.use_Qy_Set.toString());
+                            self.selectedRuleCode3(company.depWorkPlaceSet.toString());
+                            self.isEnableCompanyCode(false);
+                        } else {
+                            self.editMode = false;
+                            self.address1('');
+                            self.address2('');
+                            self.addressKana1('');
+                            self.addressKana2('');
+                            self.companyName('');
+                            self.companyNameGlobal('');
+                            self.companyNameAbb('');
+                            self.companyNameKana('');
+                            self.corporateMyNumber('');
+                            self.depWorkPlaceSet(0);
+                            self.displayAttribute('');
+                            self.faxNo('');
+                            self.postal('');
+                            self.presidentName('');
+                            self.presidentJobTitle('');
+                            self.telephoneNo('');
+                            self.termBeginMon(0);
+                            self.companyUseSet(new CompanyUseSet(0, 0, 0));
+                            self.isDelete(false);
+                        }
+                    });
+
+                } else {
+                    self.editMode = true;
+                }
+            });
+
+
+        }
+
+        setList(list: Array<any>, companyCode: string) {
+            this.sources = list || [];
+            this.companyCode(companyCode);
+        }
+
+        init(param: ICompany) {
             let self = this;
             self.sources = param.sources || [];
             self.companyCode = ko.observable(param.companyCode);
@@ -257,7 +337,6 @@ module cmm001.a {
             self.corporateMyNumber = ko.observable(param.corporateMyNumber);
             self.depWorkPlaceSet = ko.observable(param.depWorkPlaceSet);
             self.displayAttribute = ko.observable(param.displayAttribute);
-
             self.faxNo = ko.observable(param.faxNo);
             self.postal = ko.observable(param.postal);
             self.presidentName = ko.observable(param.presidentName);
@@ -293,96 +372,7 @@ module cmm001.a {
                 { code: '11', name: '11月' },
                 { code: '12', name: '12月' }
             ]);
-
-            self.companyCode.subscribe(function(newValue) {
-                if (self.editMode) {
-                    if (nts.uk.text.isNullOrEmpty(newValue)) {
-                        return;
-                    }
-
-                    service.getCompanyDetail(newValue).done(function(company: service.model.CompanyDto) {
-                        if (company) {
-                            if ($('.nts-editor').ntsError("hasError")) {
-                                $('.save-error').ntsError('clear');
-                            }
-                            $("#A_INP_002").attr('disabled', 'true');
-                            $("#A_INP_002").attr('readonly', 'true');
-                            self.address1(company.address1);
-                            self.addressKana1(company.addressKana1);
-                            self.address2(company.address2);
-                            self.addressKana2(company.addressKana2);
-                            self.companyName(company.companyName);
-                            self.companyNameGlobal(company.companyNameGlobal);
-                            self.companyNameAbb(company.companyNameAbb);
-                            self.companyNameKana(company.companyNameKana);
-                            self.corporateMyNumber(company.corporateMyNumber);
-                            self.depWorkPlaceSet(company.depWorkPlaceSet);
-                            self.displayAttribute(company.displayAttribute.toString());
-                            if (company.displayAttribute === 1) {
-                                self.isDelete(true);
-                            } else {
-                                self.isDelete(false);
-                            }
-                            self.faxNo(company.faxNo);
-                            self.postal(company.postal);
-                            self.presidentName(company.presidentName);
-                            self.presidentJobTitle(company.presidentJobTitle);
-                            self.telephoneNo(company.telephoneNo);
-                            self.termBeginMon(company.termBeginMon);
-                            self.companyUseSet(new CompanyUseSet(company.use_Kt_Set, company.use_Qy_Set, company.use_Jj_Set));
-                            self.selectedRuleCode(company.use_Jj_Set.toString());
-                            self.selectedRuleCode1(company.use_Kt_Set.toString());
-                            self.selectedRuleCode2(company.use_Qy_Set.toString());
-                            self.selectedRuleCode3(company.depWorkPlaceSet.toString());
-                        } else {
-                            self.editMode = false;
-                            self.address1('');
-                            self.address2('');
-                            self.addressKana1('');
-                            self.addressKana2('');
-                            self.companyName('');
-                            self.companyNameGlobal('');
-                            self.companyNameAbb('');
-                            self.companyNameKana('');
-                            self.corporateMyNumber('');
-                            self.depWorkPlaceSet(0);
-                            self.displayAttribute('');
-                            self.faxNo('');
-                            self.postal('');
-                            self.presidentName('');
-                            self.presidentJobTitle('');
-                            self.telephoneNo('');
-                            self.termBeginMon(0);
-                            self.companyUseSet(new CompanyUseSet(0, 0, 0));
-                            self.isDelete(false);
-                        }
-                    });
-
-                } else {
-                    self.editMode = true;
-                }
-            });
-
-
         }
-
-
-        setList(list: Array<any>, companyCode: string) {
-            this.sources = list || [];
-            this.companyCode(companyCode);
-        }
-        getCompanyDetail(currentCode: string) {
-            let self = this;
-            service.getCompanyDetail(currentCode).done(function(data: service.model.CompanyDto) {
-
-
-
-            });
-
-
-        }
-
-        clickSel001() { }
     }
 
     interface ICompany {
