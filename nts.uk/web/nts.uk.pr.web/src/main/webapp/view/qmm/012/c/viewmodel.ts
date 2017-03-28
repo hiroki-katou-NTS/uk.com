@@ -352,7 +352,8 @@ module qmm012.c.viewmodel {
         openKDialog() {
             let self = this;
             nts.uk.ui.windows.sub.modal('../k/index.xhtml', { height: 530, width: 350, dialogClass: "no-close" }).onClosed(function(): any {
-                self.currentCommuteNoTaxLimitDto(nts.uk.ui.windows.getShared('CommuteNoTaxLimitDto'));
+                if (nts.uk.ui.windows.getShared('CommuteNoTaxLimitDto'))
+                    self.currentCommuteNoTaxLimitDto(nts.uk.ui.windows.getShared('CommuteNoTaxLimitDto'));
             });
         }
 
@@ -382,15 +383,7 @@ module qmm012.c.viewmodel {
         }
     }
 
-    class GridItemModel {
-        code: string;
-        name: string;
 
-        constructor(code: string, name: string) {
-            this.code = code;
-            this.name = name;
-        }
-    }
     class C_SEL_001_ComboboxItemModel {
         code: number;
         name: string;

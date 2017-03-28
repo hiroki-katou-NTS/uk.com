@@ -293,7 +293,8 @@ var qmm012;
                 ScreenModel.prototype.openKDialog = function () {
                     var self = this;
                     nts.uk.ui.windows.sub.modal('../k/index.xhtml', { height: 530, width: 350, dialogClass: "no-close" }).onClosed(function () {
-                        self.currentCommuteNoTaxLimitDto(nts.uk.ui.windows.getShared('CommuteNoTaxLimitDto'));
+                        if (nts.uk.ui.windows.getShared('CommuteNoTaxLimitDto'))
+                            self.currentCommuteNoTaxLimitDto(nts.uk.ui.windows.getShared('CommuteNoTaxLimitDto'));
                     });
                 };
                 ScreenModel.prototype.openHDialog = function () {
@@ -319,13 +320,6 @@ var qmm012;
                     this.name = name;
                 }
                 return BoxModel;
-            }());
-            var GridItemModel = (function () {
-                function GridItemModel(code, name) {
-                    this.code = code;
-                    this.name = name;
-                }
-                return GridItemModel;
             }());
             var C_SEL_001_ComboboxItemModel = (function () {
                 function C_SEL_001_ComboboxItemModel(code, name) {
