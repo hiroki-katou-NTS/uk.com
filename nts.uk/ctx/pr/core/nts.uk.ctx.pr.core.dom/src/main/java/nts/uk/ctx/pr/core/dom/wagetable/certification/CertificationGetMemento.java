@@ -4,7 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.dom.wagetable.certification;
 
-import nts.uk.ctx.core.dom.company.CompanyCode;
 
 /**
  * The Interface UnitPriceMemento.
@@ -16,7 +15,7 @@ public interface CertificationGetMemento {
 	 *
 	 * @return the company code
 	 */
-	CompanyCode getCompanyCode();
+	String getCompanyCode();
 
 	/**
 	 * Gets the code.

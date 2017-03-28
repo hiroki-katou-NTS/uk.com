@@ -8,17 +8,10 @@ var nts;
         })(KeyCodes = uk.KeyCodes || (uk.KeyCodes = {}));
         var util;
         (function (util) {
-            /**
-             * 常にtrueを返す関数が必要になったらこれ
-             */
             function alwaysTrue() {
                 return true;
             }
             util.alwaysTrue = alwaysTrue;
-            /**
-             * function find an item index in array
-             * if key presented will perform find index of item in array which contain key equal to the 'item' parameter
-             */
             function findIndex(arr, value, key) {
                 for (var i = 0; i < arr.length; i++) {
                     var item = arr[i];
@@ -28,16 +21,9 @@ var nts;
                 return -1;
             }
             util.findIndex = findIndex;
-            /**
-             * function add item to array, this function is used in combine with visitDfs function
-             * visitDfs(node, addToArray, childField, arr) will return flatArray by DFS order, start by node and following by each child belong to it.
-             */
             function addToArray(node, arr) {
                 arr.push(node);
             }
-            /**
-             * DFS algorithm function to iterate over an object with structre like tree
-             */
             function visitDfs(node, func, childField, arr) {
                 if (func) {
                     if (arr)
@@ -51,9 +37,6 @@ var nts;
                 });
             }
             util.visitDfs = visitDfs;
-            /**
-             * return flatern array of array of tree-like objects
-             */
             function flatArray(arr, childField) {
                 var flatArr = [];
                 if (!childField)
@@ -65,15 +48,7 @@ var nts;
                 return flatArr;
             }
             util.flatArray = flatArray;
-            /**
-             * return filtered array
-             * @param {Array} array of items
-             * @param {String} user input
-             * @param {Array} array of fields used to search on
-             * @param {String} if not null, search will perform in flatarray of arr
-             */
             function searchArray(arr, searchTerm, fields, childField) {
-                //if items is empty return empty array
                 if (!arr) {
                     return [];
                 }
@@ -82,11 +57,9 @@ var nts;
                 }
                 var flatArr = flatArray(arr, childField);
                 var filter = searchTerm.toLowerCase();
-                //if filter is empty return all the items
                 if (!filter) {
                     return flatArr;
                 }
-                //filter data
                 var filtered = flatArr.filter(function (item) {
                     var i = fields.length;
                     while (i--) {
@@ -102,9 +75,6 @@ var nts;
                 return filtered;
             }
             util.searchArray = searchArray;
-            /**
-             * SearchBox helper function to jump next search
-             */
             function nextSelectionSearch(selected, arr, selectedKey, isArray) {
                 var current = null;
                 if (isArray) {
@@ -129,16 +99,10 @@ var nts;
                 return undefined;
             }
             util.nextSelectionSearch = nextSelectionSearch;
-            /**
-             * Returns true if the target is null or undefined.
-             */
             function isNullOrUndefined(target) {
                 return target === null || target === undefined;
             }
             util.isNullOrUndefined = isNullOrUndefined;
-            /**
-             * Generate random identifier string (UUIDv4)
-             */
             function randomId() {
                 return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
                     var r = Math.random() * 16 | 0;
@@ -146,24 +110,14 @@ var nts;
                 });
             }
             util.randomId = randomId;
-            /**
-             * Returns true if current window is in frame.
-             */
             function isInFrame() {
                 return window.parent != window;
             }
             util.isInFrame = isInFrame;
-            /**
-             * valueMaybeEmptyがnullまたはundefinedの場合、defaultValueを返す。
-             * そうでなければ、valueMaybeEmptyを返す。
-             */
             function orDefault(valueMaybeEmpty, defaultValue) {
                 return isNullOrUndefined(valueMaybeEmpty) ? defaultValue : valueMaybeEmpty;
             }
             util.orDefault = orDefault;
-            /**
-             * Returns true if expects contains actual.
-             */
             function isIn(actual, expects) {
                 for (var i = 0; i < expects.length; i++) {
                     if (actual === expects[i])
@@ -173,7 +127,7 @@ var nts;
             }
             util.isIn = isIn;
             ;
-            function createTreeFromString(original, openChar, closeChar, seperatorChar) {
+            function createTreeFromString(original, openChar, closeChar, seperatorChar, operatorChar) {
                 return convertToTree(original, openChar, closeChar, seperatorChar, 1).result;
             }
             util.createTreeFromString = createTreeFromString;
@@ -224,7 +178,10 @@ var nts;
                         }
                     }
                 }
-                return result;
+                return {
+                    "result": result,
+                    "index": index
+                };
             }
             function findIndexOfCloseChar(original, openChar, closeChar, firstOpenIndex) {
                 var openCount = 0;
@@ -252,9 +209,6 @@ var nts;
                 return TreeObject;
             }());
             util.TreeObject = TreeObject;
-            /**
-             * Like Java Optional
-             */
             var optional;
             (function (optional) {
                 function of(value) {
@@ -381,14 +335,8 @@ var nts;
             return WebStorageWrapper;
         }());
         uk.WebStorageWrapper = WebStorageWrapper;
-        /**
-         * Utilities about jquery deferred
-         */
         var deferred;
         (function (deferred) {
-            /**
-             * Repeats a task with jQuery Deferred
-             */
             function repeat(configurator) {
                 var conf = repeater.createConfiguration();
                 configurator(conf);

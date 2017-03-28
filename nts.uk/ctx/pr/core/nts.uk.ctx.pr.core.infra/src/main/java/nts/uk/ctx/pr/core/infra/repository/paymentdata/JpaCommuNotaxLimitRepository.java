@@ -7,8 +7,8 @@ import javax.ejb.Stateless;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.pr.core.dom.paymentdata.CommuNotaxLimit;
 import nts.uk.ctx.pr.core.dom.paymentdata.repository.CommuNotaxLimitRepository;
-import nts.uk.ctx.pr.core.infra.entity.paymentdata.QtxmtCommuNotaxLimit;
-import nts.uk.ctx.pr.core.infra.entity.paymentdata.QtxmtCommuNotaxLimitPK;
+import nts.uk.ctx.pr.core.infra.entity.rule.law.tax.commutelimit.QtxmtCommuNotaxLimit;
+import nts.uk.ctx.pr.core.infra.entity.rule.law.tax.commutelimit.QtxmtCommuNotaxLimitPK;
 
 @Stateless
 public class JpaCommuNotaxLimitRepository extends JpaRepository implements CommuNotaxLimitRepository {

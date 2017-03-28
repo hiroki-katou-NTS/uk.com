@@ -52,7 +52,6 @@ var qmm005;
                     self.items(_records);
                 });
             };
-            // Navigate to qmp/005/b/index.xhtml
             ViewModel.prototype.btn002Click = function (item, event) {
                 location.href = "../../../qmp/005/b/index.xhtml";
             };

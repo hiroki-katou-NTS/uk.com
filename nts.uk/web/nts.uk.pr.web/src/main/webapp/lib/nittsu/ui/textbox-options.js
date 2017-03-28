@@ -1,4 +1,3 @@
-/// <reference path="../reference.ts"/>
 var __extends = (this && this.__extends) || function (d, b) {
     for (var p in b) if (b.hasOwnProperty(p)) d[p] = b[p];
     function __() { this.constructor = d; }
@@ -101,8 +100,4 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
-<<<<<<< HEAD
 //# sourceMappingURL=textbox-options.js.map
-=======
-//# sourceMappingURL=textbox-options.js.map
->>>>>>> basic/develop

@@ -1,4 +1,3 @@
-/// <reference path="../reference.ts"/>
 var nts;
 (function (nts) {
     var uk;
@@ -457,7 +456,6 @@ var nts;
                                 .appendTo($control);
                             $control.hide();
                         });
-                        // Hiding when click outside
                         $("html").on("mouseup keypress", { controls: controls }, hideBinding);
                         return controls;
                     }
@@ -465,7 +463,6 @@ var nts;
                         controls.each(function () {
                             $(this).remove();
                         });
-                        // Unbind Hiding when click outside
                         $("html").off("mouseup keypress", hideBinding);
                         return controls;
                     }
@@ -705,8 +702,4 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
-<<<<<<< HEAD
 //# sourceMappingURL=jquery-ext.js.map
-=======
-//# sourceMappingURL=jquery-ext.js.map
->>>>>>> basic/develop

@@ -173,13 +173,13 @@ module nts.uk.pr.view.qmm008.c {
                     startMonth: string;
                     endMonth: string;
                     autoCalculate: number;
-                    fundInputApply: boolean;
+                    fundInputApply: number;
                     premiumRateItems: Array<PensionRateItemDto>;
                     fundRateItems: Array<FundRateItemDto>;
                     roundingMethods: Array<RoundingDto>;
                     maxAmount: number;
                     childContributionRate: number;
-                    constructor(historyId: string, companyCode: string, officeCode: string, startMonth: string, endMonth: string, autoCalculate: number, fundInputApply: boolean, premiumRateItems: Array<PensionRateItemDto>, fundRateItems: Array<FundRateItemDto>, roundingMethods: Array<RoundingDto>, maxAmount: number, childContributionRate: number) {
+                    constructor(historyId: string, companyCode: string, officeCode: string, startMonth: string, endMonth: string, autoCalculate: number, fundInputApply: number, premiumRateItems: Array<PensionRateItemDto>, fundRateItems: Array<FundRateItemDto>, roundingMethods: Array<RoundingDto>, maxAmount: number, childContributionRate: number) {
                         this.historyId = historyId;
                         this.companyCode = companyCode;
                         this.officeCode = officeCode;

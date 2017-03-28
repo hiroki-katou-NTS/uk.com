@@ -59,7 +59,7 @@ public class JpaHealthInsuranceRateRepository extends JpaRepository
 	@Override
 	public void update(HealthInsuranceRate rate) {
 		EntityManager em = this.getEntityManager();
-		QismtHealthInsuRatePK pk = new QismtHealthInsuRatePK(rate.getCompanyCode().v(),
+		QismtHealthInsuRatePK pk = new QismtHealthInsuRatePK(rate.getCompanyCode(),
 				rate.getOfficeCode().v(), rate.getHistoryId());
 		QismtHealthInsuRate findEntity = em.find(QismtHealthInsuRate.class, pk);
 		QismtHealthInsuRate entity = new QismtHealthInsuRate();

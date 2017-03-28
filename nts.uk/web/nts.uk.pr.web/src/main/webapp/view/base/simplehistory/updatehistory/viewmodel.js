@@ -25,7 +25,7 @@ var nts;
                                         var self = this;
                                         self.dialogOptions = nts.uk.ui.windows.getShared('options');
                                         self.dialogOptions.screenMode = self.dialogOptions.screenMode || simplehistory.dialogbase.ScreenMode.MODE_MASTER_HISTORY;
-                                        self.actionType = ko.observable(ScreenModel.ACTION_TYPE_DELETE);
+                                        self.actionType = ko.observable(ScreenModel.ACTION_TYPE_UPDATE);
                                         self.startYearMonth = ko.observable(self.dialogOptions.history.start);
                                         self.endYearMonth = nts.uk.time.formatYearMonth(self.dialogOptions.history.end);
                                     }
@@ -49,12 +49,20 @@ var nts;
                                             startYearMonth: self.startYearMonth()
                                         };
                                         if (self.actionType() == ScreenModel.ACTION_TYPE_DELETE) {
-                                            self.dialogOptions.onDeleteCallBack(callBackData);
+                                            nts.uk.ui.dialog.confirm("データを削除します。\r\n よろしいですか？").ifYes(function () {
+                                                self.dialogOptions.onDeleteCallBack(callBackData);
+                                                nts.uk.ui.windows.close();
+                                            });
                                         }
                                         else {
-                                            self.dialogOptions.onUpdateCallBack(callBackData);
+                                            self.dialogOptions.onUpdateCallBack(callBackData).done(function () {
+                                                nts.uk.ui.windows.close();
+                                            }).fail(function (res) {
+                                                if (res.messageId == 'ER023') {
+                                                    $('#startYearMonth').ntsError('set', '履歴の期間が重複しています。');
+                                                }
+                                            });
                                         }
-                                        nts.uk.ui.windows.close();
                                     };
                                     /**
                                      * Close dialog.
@@ -75,4 +83,3 @@ var nts;
         })(pr = uk.pr || (uk.pr = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
-//# sourceMappingURL=viewmodel.js.map

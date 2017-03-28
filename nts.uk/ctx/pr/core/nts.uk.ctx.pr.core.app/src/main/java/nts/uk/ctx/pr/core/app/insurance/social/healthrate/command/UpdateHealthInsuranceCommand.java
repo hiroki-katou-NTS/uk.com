@@ -10,7 +10,6 @@ import java.util.stream.Collectors;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.core.dom.util.PrimitiveUtil;
 import nts.uk.ctx.pr.core.dom.insurance.CalculateMethod;
 import nts.uk.ctx.pr.core.dom.insurance.CommonAmount;
@@ -41,61 +40,65 @@ public class UpdateHealthInsuranceCommand extends HealthInsuranceBaseCommand {
 	 *            the office code
 	 * @return the health insurance rate
 	 */
-	public HealthInsuranceRate toDomain(CompanyCode companyCode, String historyId, OfficeCode officeCode) {
+	public HealthInsuranceRate toDomain(String companyCode, String historyId,
+			OfficeCode officeCode) {
 		UpdateHealthInsuranceCommand command = this;
 
 		// Transfer data
-		HealthInsuranceRate updatedHealthInsuranceRate = new HealthInsuranceRate(new HealthInsuranceRateGetMemento() {
+		HealthInsuranceRate updatedHealthInsuranceRate = new HealthInsuranceRate(
+				new HealthInsuranceRateGetMemento() {
 
-			@Override
-			public Set<HealthInsuranceRounding> getRoundingMethods() {
-				if (command.getRoundingMethods().isEmpty())
-				{
-					return null;
-				}
-				return new HashSet<HealthInsuranceRounding>(command.getRoundingMethods());
-			}
+					@Override
+					public Set<HealthInsuranceRounding> getRoundingMethods() {
+						if (command.getRoundingMethods().isEmpty()) {
+							return null;
+						}
+						return new HashSet<HealthInsuranceRounding>(command.getRoundingMethods());
+					}
 
-			@Override
-			public Set<InsuranceRateItem> getRateItems() {
-				return new HashSet<InsuranceRateItem>(command.getRateItems().stream()
-						.map(dto -> new InsuranceRateItem(dto.getPayType(), dto.getInsuranceType(),
-								new HealthChargeRateItem(new Ins3Rate(dto.getChargeRate().getCompanyRate()),
-										new Ins3Rate(dto.getChargeRate().getPersonalRate()))))
-						.collect(Collectors.toList()));
-			}
+					@Override
+					public Set<InsuranceRateItem> getRateItems() {
+						return new HashSet<InsuranceRateItem>(command.getRateItems().stream()
+								.map(dto -> new InsuranceRateItem(dto.getPayType(),
+										dto.getInsuranceType(), new HealthChargeRateItem(
+												new Ins3Rate(dto.getChargeRate().getCompanyRate()),
+												new Ins3Rate(
+														dto.getChargeRate().getPersonalRate()))))
+								.collect(Collectors.toList()));
+					}
 
-			@Override
-			public OfficeCode getOfficeCode() {
-				return officeCode;
-			}
+					@Override
+					public OfficeCode getOfficeCode() {
+						return officeCode;
+					}
 
-			@Override
-			public CommonAmount getMaxAmount() {
-				return new CommonAmount(command.getMaxAmount());
-			}
+					@Override
+					public CommonAmount getMaxAmount() {
+						return new CommonAmount(command.getMaxAmount());
+					}
 
-			@Override
-			public String getHistoryId() {
-				return historyId;
-			}
+					@Override
+					public String getHistoryId() {
+						return historyId;
+					}
 
-			@Override
-			public CompanyCode getCompanyCode() {
-				return companyCode;
-			}
+					@Override
+					public String getCompanyCode() {
+						return companyCode;
+					}
 
-			@Override
-			public CalculateMethod getAutoCalculate() {
-				return CalculateMethod.valueOf(command.getAutoCalculate());
-			}
+					@Override
+					public CalculateMethod getAutoCalculate() {
+						return CalculateMethod.valueOf(command.getAutoCalculate());
+					}
 
-			@Override
-			public MonthRange getApplyRange() {
-				return MonthRange.range(PrimitiveUtil.toYearMonth(command.getStartMonth(), "/"),
-						PrimitiveUtil.toYearMonth(command.getEndMonth(), "/"));
-			}
-		});
+					@Override
+					public MonthRange getApplyRange() {
+						return MonthRange.range(
+								PrimitiveUtil.toYearMonth(command.getStartMonth(), "/"),
+								PrimitiveUtil.toYearMonth(command.getEndMonth(), "/"));
+					}
+				});
 
 		return updatedHealthInsuranceRate;
 	}

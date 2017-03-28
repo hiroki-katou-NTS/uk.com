@@ -1,4 +1,3 @@
-/// <reference path="../reference.ts"/>
 var nts;
 (function (nts) {
     var uk;
@@ -35,8 +34,6 @@ var nts;
                     };
                     ErrorsViewModel.prototype.addError = function (error) {
                         var _this = this;
-                        // defer無しでerrorsを呼び出すと、なぜか全てのKnockoutBindingHandlerのupdateが呼ばれてしまうので、
-                        // 原因がわかるまでひとまずdeferを使っておく
                         _.defer(function () {
                             var duplicate = _.filter(_this.errors(), function (e) { return e.$control.is(error.$control) && e.message == error.message; });
                             if (duplicate.length == 0)
@@ -45,7 +42,6 @@ var nts;
                     };
                     ErrorsViewModel.prototype.removeErrorByElement = function ($element) {
                         var _this = this;
-                        // addErrorと同じ対応
                         _.defer(function () {
                             var removeds = _.filter(_this.errors(), function (e) { return e.$control.is($element); });
                             _this.errors.removeAll(removeds);

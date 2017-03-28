@@ -12,18 +12,12 @@ __viewContext.ready(function () {
                 new Node('0010', 'Beijing China', []),
                 new Node('0011', 'London United Kingdom', []),
                 new Node('0012', '', [])];
-            //primaryKey for treegrid: "code"
             var primaryKey = "code";
-            //enable checkbox if you wish a multimode
             var multiple = true;
-            //childField
             var childField = "childs";
-            //columns for treegrid
             var columns = [{ headerText: "Item Code", width: "250px", key: 'code', dataType: "string", hidden: false },
                 { headerText: "Item Text", key: 'nodeText', width: "200px", dataType: "string" }];
-            //dataSource that can be apply to SearchBox Binding
             self.dataSource = data;
-            //selectedValue(s) : depend on desire mode 'multiple' or 'single'. but array good for both case
             self.selectedValue = ko.observableArray([]);
             var $treegrid = $("#treegrid");
             self.selectedValue.subscribe(function (newValue) {

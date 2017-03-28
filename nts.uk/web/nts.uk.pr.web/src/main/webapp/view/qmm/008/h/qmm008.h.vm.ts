@@ -14,7 +14,8 @@ module nts.uk.pr.view.qmm008.h {
             listHealthInsuranceAvgearn: KnockoutObservableArray<HealthInsuranceAvgEarnModel>;
             healthInsuranceRateModel: HealthInsuranceRateModel;
             numberEditorCommonOption: KnockoutObservable<nts.uk.ui.option.NumberEditorOption>;
-
+            errorList: KnockoutObservableArray<any>;
+            dirty: nts.uk.ui.DirtyChecker;
             constructor(officeName: string, healthModel: HealthInsuranceRateModelofScreenA) {
                 var self = this;
                 self.healthInsuranceRateModel = new HealthInsuranceRateModel(
@@ -34,6 +35,12 @@ module nts.uk.pr.view.qmm008.h {
                 self.numberEditorCommonOption = ko.mapping.fromJS(new nts.uk.ui.option.NumberEditorOption({
                     grouplength: 3
                 }));
+                //dirty check
+                self.dirty = new nts.uk.ui.DirtyChecker(ko.observable(''));
+                self.errorList = ko.observableArray([
+                    { messageId: "AL001", message: "変更された内容が登録されていません。\r\n よろしいですか。" },
+                    { messageId: "AL002", message: "データを削除します。\r\nよろしいですか？" },
+                ]);
             }
 
             /**
@@ -86,6 +93,7 @@ module nts.uk.pr.view.qmm008.h {
                             )
                         );
                     });
+                    self.dirty = new nts.uk.ui.DirtyChecker(self.listHealthInsuranceAvgearn);
                     dfd.resolve();
                 });
                 return dfd.promise();
@@ -199,6 +207,20 @@ module nts.uk.pr.view.qmm008.h {
                     case "3": return Rounding.ROUNDDOWN;
                     case "4": return Rounding.DOWN5_UP6;
                     default: return Rounding.ROUNDUP;
+                }
+            }
+            
+            private closeDialogWithDirtyCheck() {
+                var self = this;
+                if (self.dirty.isDirty()) {
+                    nts.uk.ui.dialog.confirm(self.errorList()[0].message).ifYes(function() {
+                        self.closeDialog();
+                        self.dirty.reset();
+                    }).ifCancel(function() {
+                    });
+                }
+                else {
+                    self.closeDialog();
                 }
             }
             

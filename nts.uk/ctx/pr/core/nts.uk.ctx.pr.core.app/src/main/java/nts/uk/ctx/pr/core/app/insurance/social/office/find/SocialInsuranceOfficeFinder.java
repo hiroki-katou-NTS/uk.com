@@ -11,7 +11,6 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
 import nts.uk.ctx.pr.core.dom.insurance.social.SocialInsuranceOffice;
 import nts.uk.ctx.pr.core.dom.insurance.social.SocialInsuranceOfficeRepository;
@@ -33,7 +32,7 @@ public class SocialInsuranceOfficeFinder {
 	 *            the office code
 	 * @return the optional
 	 */
-	public Optional<SocialInsuranceOfficeDto> find(CompanyCode companyCode, OfficeCode officeCode) {
+	public Optional<SocialInsuranceOfficeDto> find(String companyCode, OfficeCode officeCode) {
 		Optional<SocialInsuranceOffice> socialInsuranceOffice = socialInsuranceOfficeRepo
 				.findByOfficeCode(companyCode, officeCode);
 		SocialInsuranceOfficeDto dto = SocialInsuranceOfficeDto.builder().build();
@@ -50,7 +49,7 @@ public class SocialInsuranceOfficeFinder {
 	 *            the company code
 	 * @return the list
 	 */
-	public List<SocialInsuranceOfficeItemDto> findAll(CompanyCode companyCode) {
+	public List<SocialInsuranceOfficeItemDto> findAll(String companyCode) {
 		return socialInsuranceOfficeRepo.findAll(companyCode).stream().map(domain -> {
 			SocialInsuranceOfficeItemDto dto = SocialInsuranceOfficeItemDto.builder().build();
 			domain.saveToMemento(dto);
@@ -65,7 +64,7 @@ public class SocialInsuranceOfficeFinder {
 	 *            the company code
 	 * @return the list
 	 */
-	public List<SocialInsuranceOfficeDto> findAllDetail(CompanyCode companyCode) {
+	public List<SocialInsuranceOfficeDto> findAllDetail(String companyCode) {
 		return socialInsuranceOfficeRepo.findAll(companyCode).stream().map(domain -> {
 			SocialInsuranceOfficeDto dto = SocialInsuranceOfficeDto.builder().build();
 			domain.saveToMemento(dto);

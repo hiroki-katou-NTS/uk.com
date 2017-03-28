@@ -17,6 +17,12 @@ var nts;
                     (function (a) {
                         var viewmodel;
                         (function (viewmodel) {
+                            function getElementTypeByValue(val) {
+                                return _.filter(viewmodel.elementTypes, function (el) {
+                                    return el.value == val;
+                                })[0];
+                            }
+                            viewmodel.getElementTypeByValue = getElementTypeByValue;
                             var ScreenModel = (function (_super) {
                                 __extends(ScreenModel, _super);
                                 function ScreenModel() {
@@ -25,9 +31,8 @@ var nts;
                                         service: qmm016.service.instance,
                                         removeMasterOnLastHistoryRemove: true });
                                     var self = this;
-                                    // Head view model.
-                                    self.head = new WageTableHeadViewModel();
-                                    // Tabs.
+                                    self.head = new HeadViewModel();
+                                    self.history = new HistoryViewModel();
                                     self.selectedTab = ko.observable('tab-1');
                                     self.tabs = ko.observableArray([
                                         {
@@ -45,50 +50,62 @@ var nts;
                                             }),
                                             visible: ko.observable(true) }
                                     ]);
-                                    // General table type init.
                                     self.generalTableTypes = ko.observableArray(qmm016.model.normalDemension);
                                     self.specialTableTypes = ko.observableArray(qmm016.model.specialDemension);
                                 }
-                                /**
-                                * Load wage table detail.
-                                */
+                                ScreenModel.prototype.start = function () {
+                                    var self = this;
+                                    var dfd = $.Deferred();
+                                    qmm016.service.instance.loadElementList().done(function (res) {
+                                        viewmodel.elementTypes = res;
+                                        dfd.resolve();
+                                    });
+                                    return dfd.promise();
+                                };
                                 ScreenModel.prototype.onSelectHistory = function (id) {
                                     var self = this;
                                     var dfd = $.Deferred();
                                     qmm016.service.instance.loadHistoryByUuid(id).done(function (model) {
                                         self.head.resetBy(model.head);
+                                        self.history.resetBy(model.head, model.history);
                                     });
                                     dfd.resolve();
                                     return dfd.promise();
                                 };
-                                /**
-                                 * Create or Update UnitPriceHistory.
-                                 */
                                 ScreenModel.prototype.onSave = function () {
                                     var self = this;
                                     var dfd = $.Deferred();
-                                    dfd.resolve();
+                                    if (self.isNewMode()) {
+                                        var wagetableDto = self.head.getWageTableDto();
+                                        qmm016.service.instance.initWageTable({
+                                            wageTableHeadDto: wagetableDto,
+                                            startMonth: self.history.startYearMonth()
+                                        }).done(function (res) {
+                                            dfd.resolve(res.uuid);
+                                        });
+                                    }
+                                    else {
+                                        qmm016.service.instance.updateHistory({
+                                            code: self.head.code(),
+                                            name: self.head.name(),
+                                            memo: self.head.memo(),
+                                            wtHistoryDto: self.history.getWageTableHistoryDto()
+                                        }).done(function () {
+                                            dfd.resolve(self.history.history.historyId);
+                                        });
+                                    }
                                     return dfd.promise();
                                 };
-                                /**
-                                 * Clear all input and switch to new mode.
-                                 */
                                 ScreenModel.prototype.onRegistNew = function () {
                                     var self = this;
-                                    $('.save-error').ntsError('clear');
+                                    self.selectedTab('tab-1');
                                     self.head.reset();
                                 };
                                 return ScreenModel;
                             }(view.base.simplehistory.viewmodel.ScreenBaseModel));
                             viewmodel.ScreenModel = ScreenModel;
-                            /**
-                             * Wage table head dto.
-                             */
-                            var WageTableHeadViewModel = (function () {
-                                /**
-                                 * Const.
-                                 */
-                                function WageTableHeadViewModel() {
+                            var HeadViewModel = (function () {
+                                function HeadViewModel() {
                                     var self = this;
                                     self.code = ko.observable(undefined);
                                     self.name = ko.observable(undefined);
@@ -99,32 +116,41 @@ var nts;
                                     });
                                     self.demensionItemList = ko.observableArray([]);
                                     self.demensionSet.subscribe(function (val) {
-                                        // Not new mode.
                                         if (!self.isNewMode()) {
                                             return;
                                         }
-                                        // Update.
                                         self.demensionItemList(self.getDemensionItemListByType(val));
                                     });
                                     self.isNewMode = ko.observable(true);
+                                    self.reset();
                                 }
-                                /**
-                                 * Reset.
-                                 */
-                                WageTableHeadViewModel.prototype.reset = function () {
+                                HeadViewModel.prototype.reset = function () {
                                     var self = this;
                                     self.isNewMode(true);
                                     self.code('');
                                     self.name('');
                                     self.demensionSet(qmm016.model.allDemension[0].code);
-                                    self.demensionItemList([]);
+                                    self.demensionItemList(self.getDemensionItemListByType(self.demensionSet()));
                                     self.memo('');
                                 };
-                                /**
-                                 * Get default demension item list by default.
-                                 */
-                                WageTableHeadViewModel.prototype.getDemensionItemListByType = function (typeCode) {
-                                    // Regenerate.
+                                HeadViewModel.prototype.getWageTableDto = function () {
+                                    var self = this;
+                                    var dto = {};
+                                    dto.code = self.code();
+                                    dto.name = self.name();
+                                    dto.memo = self.memo();
+                                    dto.mode = self.demensionSet();
+                                    dto.elements = _.map(self.demensionItemList(), function (item) {
+                                        var elementDto = {};
+                                        elementDto.demensionName = item.elementName();
+                                        elementDto.demensionNo = item.demensionNo();
+                                        elementDto.type = item.elementType();
+                                        elementDto.referenceCode = item.elementCode();
+                                        return elementDto;
+                                    });
+                                    return dto;
+                                };
+                                HeadViewModel.prototype.getDemensionItemListByType = function (typeCode) {
                                     var newDemensionItemList = new Array();
                                     switch (typeCode) {
                                         case 0:
@@ -139,7 +165,6 @@ var nts;
                                             newDemensionItemList.push(new DemensionItemViewModel(2));
                                             newDemensionItemList.push(new DemensionItemViewModel(3));
                                             break;
-                                        // Certificate.
                                         case 3:
                                             {
                                                 var cert = new DemensionItemViewModel(1);
@@ -148,7 +173,6 @@ var nts;
                                                 newDemensionItemList.push(cert);
                                             }
                                             break;
-                                        // Attendance.
                                         case 4:
                                             {
                                                 var workDay = new DemensionItemViewModel(1);
@@ -157,8 +181,8 @@ var nts;
                                                 var late = new DemensionItemViewModel(2);
                                                 late.elementType(8);
                                                 late.elementName('遅刻・早退回数');
-                                                var level = new DemensionItemViewModel(2);
-                                                level.elementType(8);
+                                                var level = new DemensionItemViewModel(3);
+                                                level.elementType(9);
                                                 level.elementName('レベル');
                                                 newDemensionItemList.push(workDay);
                                                 newDemensionItemList.push(late);
@@ -166,24 +190,22 @@ var nts;
                                             }
                                             break;
                                     }
-                                    // Ret.
                                     return newDemensionItemList;
                                 };
-                                /**
-                                 * Reset by wage table.
-                                 */
-                                WageTableHeadViewModel.prototype.resetBy = function (head) {
+                                HeadViewModel.prototype.resetBy = function (head) {
                                     var self = this;
                                     self.isNewMode(false);
                                     self.code(head.code);
                                     self.name(head.name);
-                                    self.demensionSet(head.demensionSet);
+                                    self.demensionSet(head.mode);
+                                    self.demensionItemList(_.map(head.elements, function (item) {
+                                        var itemViewModel = new DemensionItemViewModel(item.demensionNo);
+                                        itemViewModel.resetBy(item);
+                                        return itemViewModel;
+                                    }));
                                     self.memo(head.memo);
                                 };
-                                /**
-                                 * On select demension btn click.
-                                 */
-                                WageTableHeadViewModel.prototype.onSelectDemensionBtnClick = function (demension) {
+                                HeadViewModel.prototype.onSelectDemensionBtnClick = function (demension) {
                                     var self = this;
                                     var dlgOptions = {
                                         onSelectItem: function (data) {
@@ -196,16 +218,10 @@ var nts;
                                     var ntsDialogOptions = { title: '要素の選択', dialogClass: 'no-close' };
                                     nts.uk.ui.windows.sub.modal('/view/qmm/016/k/index.xhtml', ntsDialogOptions);
                                 };
-                                return WageTableHeadViewModel;
+                                return HeadViewModel;
                             }());
-                            viewmodel.WageTableHeadViewModel = WageTableHeadViewModel;
-                            /**
-                             * Wage table demension detail dto.
-                             */
+                            viewmodel.HeadViewModel = HeadViewModel;
                             var DemensionItemViewModel = (function () {
-                                /**
-                                 * Demension item view model.
-                                 */
                                 function DemensionItemViewModel(demensionNo) {
                                     var self = this;
                                     self.demensionNo = ko.observable(demensionNo);
@@ -213,9 +229,117 @@ var nts;
                                     self.elementCode = ko.observable('');
                                     self.elementName = ko.observable('');
                                 }
+                                DemensionItemViewModel.prototype.resetBy = function (element) {
+                                    var self = this;
+                                    self.elementType(element.type);
+                                    self.elementCode(element.referenceCode);
+                                    self.elementName(element.demensionName);
+                                };
                                 return DemensionItemViewModel;
                             }());
                             viewmodel.DemensionItemViewModel = DemensionItemViewModel;
+                            var HistoryViewModel = (function () {
+                                function HistoryViewModel() {
+                                    var self = this;
+                                    self.startYearMonth = ko.observable(parseInt(nts.uk.time.formatDate(new Date(), 'yyyyMM')));
+                                    self.endYearMonth = ko.observable(99999);
+                                    self.startYearMonthText = ko.computed(function () {
+                                        return nts.uk.time.formatYearMonth(self.startYearMonth());
+                                    });
+                                    self.endYearMonthText = ko.computed(function () {
+                                        return nts.uk.time.formatYearMonth(self.endYearMonth());
+                                    });
+                                    self.startYearMonthJpText = ko.computed(function () {
+                                        return nts.uk.text.format('（{0}）', nts.uk.time.yearmonthInJapanEmpire(self.startYearMonth()).toString());
+                                    });
+                                    self.elements = ko.observableArray([]);
+                                }
+                                HistoryViewModel.prototype.resetBy = function (head, history) {
+                                    var self = this;
+                                    self.history = history;
+                                    self.startYearMonth(history.startMonth);
+                                    self.endYearMonth(history.endMonth);
+                                    var elementSettingViewModel = _.map(history.elements, function (el) {
+                                        return new HistoryElementSettingViewModel(head, el);
+                                    });
+                                    self.elements(elementSettingViewModel);
+                                    self.detailViewModel = new qmm016.a.history.OneDemensionViewModel(history);
+                                    $('#detailContainer').load(self.detailViewModel.htmlPath, function () {
+                                        var element = $('#detailContainer').children().get(0);
+                                        ko.applyBindings(self.detailViewModel, element);
+                                    });
+                                };
+                                HistoryViewModel.prototype.generateItem = function () {
+                                    var self = this;
+                                    qmm016.service.instance.genearetItemSetting({
+                                        historyId: self.history.historyId,
+                                        settings: self.getElementSettings() })
+                                        .done(function (res) {
+                                        self.history.elements = res;
+                                        self.detailViewModel.refreshElementSettings(res);
+                                    });
+                                };
+                                HistoryViewModel.prototype.getElementSettings = function () {
+                                    var self = this;
+                                    return _.map(self.elements(), function (el) {
+                                        var dto = {};
+                                        dto.type = el.elementType();
+                                        dto.demensionNo = el.demensionNo();
+                                        dto.upperLimit = el.upperLimit();
+                                        dto.lowerLimit = el.lowerLimit();
+                                        dto.interval = el.interval();
+                                        return dto;
+                                    });
+                                };
+                                HistoryViewModel.prototype.getWageTableHistoryDto = function () {
+                                    var self = this;
+                                    self.history.valueItems = self.detailViewModel.getCellItem();
+                                    return self.history;
+                                };
+                                HistoryViewModel.prototype.unapplyBindings = function ($node, remove) {
+                                    $node.find("*").each(function () {
+                                        $(this).unbind();
+                                    });
+                                    if (remove) {
+                                        ko.removeNode($node[0]);
+                                    }
+                                    else {
+                                        ko.cleanNode($node[0]);
+                                    }
+                                };
+                                return HistoryViewModel;
+                            }());
+                            viewmodel.HistoryViewModel = HistoryViewModel;
+                            var HistoryElementSettingViewModel = (function () {
+                                function HistoryElementSettingViewModel(head, element) {
+                                    var self = this;
+                                    self.demensionNo = ko.observable(element.demensionNo);
+                                    self.elementType = ko.observable(0);
+                                    self.elementCode = ko.observable('');
+                                    self.elementName = ko.observable('');
+                                    self.lowerLimit = ko.observable(0);
+                                    self.upperLimit = ko.observable(0);
+                                    self.interval = ko.observable(0);
+                                    self.resetBy(head, element);
+                                }
+                                HistoryElementSettingViewModel.prototype.resetBy = function (head, element) {
+                                    var self = this;
+                                    self.elementType(element.type);
+                                    var elementDto = _.filter(head.elements, function (el) {
+                                        return el.demensionNo == element.demensionNo;
+                                    })[0];
+                                    self.elementCode(elementDto.referenceCode);
+                                    self.elementName(elementDto.demensionName);
+                                    self.upperLimit(element.upperLimit);
+                                    self.lowerLimit(element.lowerLimit);
+                                    self.interval(element.interval);
+                                    self.type = _.filter(viewmodel.elementTypes, function (type) {
+                                        return type.value == self.elementType();
+                                    })[0];
+                                };
+                                return HistoryElementSettingViewModel;
+                            }());
+                            viewmodel.HistoryElementSettingViewModel = HistoryElementSettingViewModel;
                         })(viewmodel = a.viewmodel || (a.viewmodel = {}));
                     })(a = qmm016.a || (qmm016.a = {}));
                 })(qmm016 = view.qmm016 || (view.qmm016 = {}));

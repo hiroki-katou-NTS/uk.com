@@ -35,14 +35,7 @@ var nts;
                              */
                             function findSalaryPrintSetting() {
                                 var dfd = $.Deferred();
-                                nts.uk.request.ajax(paths.findSalaryPrintSetting)
-                                    .done(function (res) {
-                                    dfd.resolve(res);
-                                })
-                                    .fail(function (res) {
-                                    dfd.reject(res);
-                                });
-                                return dfd.promise();
+                                return nts.uk.request.ajax(paths.findSalaryPrintSetting);
                             }
                             service.findSalaryPrintSetting = findSalaryPrintSetting;
                         })(service = b.service || (b.service = {}));
@@ -52,4 +45,3 @@ var nts;
         })(pr = uk.pr || (uk.pr = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
-//# sourceMappingURL=qpp007.b.service.js.map

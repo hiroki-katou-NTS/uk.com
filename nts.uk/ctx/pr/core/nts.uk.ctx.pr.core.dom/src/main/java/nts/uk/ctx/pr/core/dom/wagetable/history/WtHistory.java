@@ -4,6 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.dom.wagetable.history;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -11,10 +12,8 @@ import java.util.List;
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
 import nts.arc.primitive.PrimitiveValue;
-import nts.arc.time.DateTimeConstraints;
 import nts.arc.time.YearMonth;
 import nts.gul.text.IdentifierUtil;
-import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.base.simplehistory.History;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 import nts.uk.ctx.pr.core.dom.wagetable.ElementType;
@@ -22,6 +21,7 @@ import nts.uk.ctx.pr.core.dom.wagetable.WtCode;
 import nts.uk.ctx.pr.core.dom.wagetable.WtHead;
 import nts.uk.ctx.pr.core.dom.wagetable.element.WtElement;
 import nts.uk.ctx.pr.core.dom.wagetable.history.element.ElementSetting;
+import nts.uk.ctx.pr.core.dom.wagetable.history.element.RangeLimit;
 import nts.uk.ctx.pr.core.dom.wagetable.history.element.StepElementSetting;
 
 /**
@@ -31,7 +31,7 @@ import nts.uk.ctx.pr.core.dom.wagetable.history.element.StepElementSetting;
 public class WtHistory extends DomainObject implements History<WtHistory> {
 
 	/** The company code. */
-	private CompanyCode companyCode;
+	private String companyCode;
 
 	/** The wage table code. */
 	private WtCode wageTableCode;
@@ -58,16 +58,17 @@ public class WtHistory extends DomainObject implements History<WtHistory> {
 	/**
 	 * Inits the from head.
 	 *
-	 * @param head the head
-	 * @param startYearMonth the start year month
+	 * @param head
+	 *            the head
+	 * @param startYearMonth
+	 *            the start year month
 	 * @return the wt history
 	 */
 	public static WtHistory initFromHead(WtHead head, YearMonth startYearMonth) {
 		WtHistory history = new WtHistory();
 		history.companyCode = head.getCompanyCode();
 		history.wageTableCode = head.getCode();
-		history.applyRange = MonthRange.range(startYearMonth,
-				YearMonth.of(DateTimeConstraints.LIMIT_YEAR.max(), DateTimeConstraints.LIMIT_MONTH.max()));
+		history.applyRange = MonthRange.toMaxDate(startYearMonth);
 		history.valueItems = Collections.emptyList();
 
 		// Start init default create wage table element.
@@ -77,19 +78,20 @@ public class WtHistory extends DomainObject implements History<WtHistory> {
 			ElementType type = element.getType();
 			// Code mode.
 			if (type.isCodeMode) {
-				elementSettings.add(new ElementSetting(element.getDemensionNo(),
-								element.getType(),
-								Collections.emptyList()));
+				elementSettings.add(new ElementSetting(element.getDemensionNo(), element.getType(),
+						Collections.emptyList()));
 			}
 
 			// Range mode.
 			if (type.isRangeMode) {
-				StepElementSetting stepElementSetting = new StepElementSetting(element.getDemensionNo(),
-						element.getType(),
-						Collections.emptyList());
+				StepElementSetting stepElementSetting = new StepElementSetting(
+						element.getDemensionNo(), element.getType(), Collections.emptyList());
+				stepElementSetting.setSetting(new RangeLimit(BigDecimal.ZERO),
+						new RangeLimit(BigDecimal.ZERO), new RangeLimit(BigDecimal.ONE));
 				elementSettings.add(stepElementSetting);
 			}
 		}
+
 		history.elementSettings = elementSettings;
 
 		// Ret.
@@ -222,8 +224,8 @@ public class WtHistory extends DomainObject implements History<WtHistory> {
 	 *            the start year month
 	 * @return the wage table history
 	 */
-	public static final WtHistory createWithIntial(CompanyCode companyCode,
-			WtCode wageTableCode, YearMonth startYearMonth) {
+	public static final WtHistory createWithIntial(String companyCode, WtCode wageTableCode,
+			YearMonth startYearMonth) {
 		WtHistory history = new WtHistory();
 		history.companyCode = companyCode;
 		history.wageTableCode = wageTableCode;
@@ -233,9 +235,9 @@ public class WtHistory extends DomainObject implements History<WtHistory> {
 		return history;
 	}
 
-
-
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#hashCode()
 	 */
 	@Override
@@ -246,7 +248,9 @@ public class WtHistory extends DomainObject implements History<WtHistory> {
 		return result;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see java.lang.Object#equals(java.lang.Object)
 	 */
 	@Override

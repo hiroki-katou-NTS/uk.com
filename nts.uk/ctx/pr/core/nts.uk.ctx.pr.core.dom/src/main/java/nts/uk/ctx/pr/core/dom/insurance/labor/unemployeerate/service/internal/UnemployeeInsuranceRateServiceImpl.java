@@ -66,10 +66,10 @@ public class UnemployeeInsuranceRateServiceImpl implements UnemployeeInsuranceRa
 		}
 
 		Optional<UnemployeeInsuranceRate> optionalFirst = this.unemployeeInsuranceRateRepo
-			.findFirstData(rate.getCompanyCode().v());
+				.findFirstData(rate.getCompanyCode());
 
-		if (optionalFirst.isPresent() && optionalFirst.get().getApplyRange().getStartMonth().nextMonth()
-			.v() > rate.getApplyRange().getStartMonth().v()) {
+		if (optionalFirst.isPresent() && optionalFirst.get().getApplyRange().getStartMonth()
+				.nextMonth().v() > rate.getApplyRange().getStartMonth().v()) {
 			resvalue = true;
 		}
 		return resvalue;
@@ -86,7 +86,7 @@ public class UnemployeeInsuranceRateServiceImpl implements UnemployeeInsuranceRa
 	@Override
 	public void validateDateRangeUpdate(UnemployeeInsuranceRate rate) {
 		if (getValidateRangeUpdate(rate)) {
-			throw new BusinessException("ER010");
+			throw new BusinessException("ER023");
 		}
 	}
 
@@ -108,22 +108,22 @@ public class UnemployeeInsuranceRateServiceImpl implements UnemployeeInsuranceRa
 			// data is begin update
 			Optional<UnemployeeInsuranceRate> optionalUnemployeeInsuranceRate;
 			optionalUnemployeeInsuranceRate = this.unemployeeInsuranceRateRepo
-				.findById(rate.getCompanyCode().v(), rate.getHistoryId());
+					.findById(rate.getCompanyCode(), rate.getHistoryId());
 			if (!optionalUnemployeeInsuranceRate.isPresent()) {
 				resvalue = true;
 			}
 			if (!resvalue) {
 				// get first data update
 				Optional<UnemployeeInsuranceRate> optionalBetweenUpdate = this.unemployeeInsuranceRateRepo
-					.findBetweenUpdate(rate.getCompanyCode().v(),
-						optionalUnemployeeInsuranceRate.get().getApplyRange().getStartMonth(),
-						optionalUnemployeeInsuranceRate.get().getHistoryId());
-				if (!optionalBetweenUpdate.isPresent()) {
-					resvalue = true;
-				}
-				if (optionalBetweenUpdate.get().getApplyRange().getStartMonth().v() >= rate.getApplyRange()
-					.getStartMonth().v()) {
-					resvalue = true;
+						.findBetweenUpdate(rate.getCompanyCode(),
+								optionalUnemployeeInsuranceRate.get().getApplyRange()
+										.getStartMonth(),
+								optionalUnemployeeInsuranceRate.get().getHistoryId());
+				if (optionalBetweenUpdate.isPresent()) {
+					if (optionalBetweenUpdate.get().getApplyRange().getStartMonth().v() >= rate
+							.getApplyRange().getStartMonth().v()) {
+						resvalue = true;
+					}
 				}
 			}
 		}

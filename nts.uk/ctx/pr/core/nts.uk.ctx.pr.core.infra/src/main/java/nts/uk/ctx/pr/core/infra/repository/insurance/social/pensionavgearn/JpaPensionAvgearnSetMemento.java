@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2015 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.core.infra.repository.insurance.social.pensionavgearn;
@@ -23,8 +23,7 @@ public class JpaPensionAvgearnSetMemento implements PensionAvgearnSetMemento {
 	/**
 	 * Instantiates a new jpa pension avgearn set memento.
 	 *
-	 * @param typeValue
-	 *            the type value
+	 * @param typeValue the type value
 	 */
 	public JpaPensionAvgearnSetMemento(QismtPensionAvgearn typeValue) {
 		this.typeValue = typeValue;
@@ -77,13 +76,9 @@ public class JpaPensionAvgearnSetMemento implements PensionAvgearnSetMemento {
 	 */
 	@Override
 	public void setCompanyFund(PensionAvgearnValue companyFund) {
-		// thua truong?
-		// this.typeValue.setCFundFemMny(companyFund.getFemaleAmount().v());
-		// this.typeValue.setCFundMaleMny(companyFund.getMaleAmount().v());
-		// this.typeValue.setCFundMinerMny(companyFund.getUnknownAmount().v());
-		this.typeValue.setCFundFemMny(BigDecimal.valueOf(5));
-		this.typeValue.setCFundMaleMny(BigDecimal.valueOf(5));
-		this.typeValue.setCFundMinerMny(BigDecimal.valueOf(5));
+		this.typeValue.setCFundFemMny(companyFund.getFemaleAmount().v());
+		this.typeValue.setCFundMaleMny(companyFund.getMaleAmount().v());
+		this.typeValue.setCFundMinerMny(companyFund.getUnknownAmount().v());
 
 	}
 
@@ -124,13 +119,9 @@ public class JpaPensionAvgearnSetMemento implements PensionAvgearnSetMemento {
 	 */
 	@Override
 	public void setPersonalFund(PensionAvgearnValue personalFund) {
-		// thua truong?
-		// this.typeValue.setPFundFemMny(personalFund.getFemaleAmount().v());
-		// this.typeValue.setPFundMaleMny(personalFund.getMaleAmount().v());
-		// this.typeValue.setPFundMinerMny(personalFund.getUnknownAmount().v());
-		this.typeValue.setPFundFemMny(BigDecimal.valueOf(5));
-		this.typeValue.setPFundMaleMny(BigDecimal.valueOf(5));
-		this.typeValue.setPFundMinerMny(BigDecimal.valueOf(5));
+		this.typeValue.setPFundFemMny(personalFund.getFemaleAmount().v());
+		this.typeValue.setPFundMaleMny(personalFund.getMaleAmount().v());
+		this.typeValue.setPFundMinerMny(personalFund.getUnknownAmount().v());
 	}
 
 	/*

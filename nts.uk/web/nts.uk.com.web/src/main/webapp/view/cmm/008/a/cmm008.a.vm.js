@@ -25,6 +25,7 @@ var cmm008;
                     self.isDelete = ko.observable(true);
                     self.lstMessage = ko.observableArray([]);
                     self.isMess = ko.observable(false);
+                    self.isUseKtSet = ko.observable(0);
                     self.multilineeditor = {
                         memoValue: ko.observable(""),
                         constraint: '',
@@ -38,7 +39,6 @@ var cmm008;
                     };
                 }
                 ;
-                // start function
                 ScreenModel.prototype.start = function () {
                     var self = this;
                     var dfd = $.Deferred();
@@ -49,11 +49,7 @@ var cmm008;
                     $('#contents-left').css({ height: height, width: widthScreen * 38 / 100 });
                     $('#contents-right').css({ height: height, width: widthScreen * 62 / 100 });
                     self.listMessage();
-                    self.closeDateListItem();
-                    self.managementHolidaylist();
-                    self.processingDateItem();
                     self.dataSourceItem();
-                    //list data click
                     self.currentCode.subscribe(function (newValue) {
                         if (!self.checkChange(self.employmentCode())) {
                             var AL001 = _.find(self.lstMessage(), function (mess) {
@@ -61,12 +57,10 @@ var cmm008;
                             });
                             if (!self.isMess()) {
                                 nts.uk.ui.dialog.confirm(AL001.messName).ifCancel(function () {
-                                    //self.reloadScreenWhenListClick(newValue);
                                     self.isMess(true);
                                     self.currentCode(self.employmentCode());
                                     return;
                                 }).ifYes(function () {
-                                    //self.createEmployment();
                                     self.isMess(false);
                                     self.reloadScreenWhenListClick(newValue);
                                 });
@@ -81,8 +75,25 @@ var cmm008;
                     });
                     a.service.getProcessingNo();
                     dfd.resolve();
-                    // Return.
                     return dfd.promise();
+                };
+                ScreenModel.prototype.userKtSet = function () {
+                    var self = this;
+                    a.service.getCompanyInfor().done(function (companyInfor) {
+                        if (companyInfor !== undefined) {
+                            self.isUseKtSet(companyInfor.use_Kt_Set);
+                            if (self.isUseKtSet() === 0) {
+                                $('.UseKtSet').css('display', 'none');
+                            }
+                            else {
+                                self.closeDateListItem();
+                                self.managementHolidaylist();
+                                self.processingDateItem();
+                            }
+                        }
+                    }).fail(function (res) {
+                        nts.uk.ui.dialog.alert(res.message);
+                    });
                 };
                 ScreenModel.prototype.reloadScreenWhenListClick = function (newValue) {
                     var self = this;
@@ -109,15 +120,11 @@ var cmm008;
                         }
                     });
                 };
-                //締め日区分
-                //今回は就業システム未導入の場合としてください。
-                //（上記にあるように　締め日区分 = 0 ）
                 ScreenModel.prototype.closeDateListItem = function () {
                     var self = this;
                     self.closeDateList.removeAll();
                     self.closeDateList.push(new ItemCloseDate(0, 'システム未導入'));
                 };
-                //公休の管理
                 ScreenModel.prototype.managementHolidaylist = function () {
                     var self = this;
                     self.managementHolidays = ko.observableArray([
@@ -126,7 +133,6 @@ var cmm008;
                     ]);
                     self.holidayCode = ko.observable(0);
                 };
-                //list  message
                 ScreenModel.prototype.listMessage = function () {
                     var self = this;
                     self.lstMessage.push(new ItemMessage("ER001", "*が入力されていません。"));
@@ -136,7 +142,6 @@ var cmm008;
                     self.lstMessage.push(new ItemMessage("AL002", "データを削除します。\r\nよろしいですか？"));
                     self.lstMessage.push(new ItemMessage("ER026", "更新対象のデータが存在しません。"));
                 };
-                //処理日区分 を取得する
                 ScreenModel.prototype.processingDateItem = function () {
                     var self = this;
                     a.service.getProcessingNo().done(function (lstProcessingNo) {
@@ -174,7 +179,6 @@ var cmm008;
                                 if (employ.closeDateNo === 0) {
                                     employ.closeDateNoStr = "システム未導入";
                                 }
-                                //get processing name
                                 var process = _.find(self.processingDateList(), function (processNo) {
                                     return employ.processingNo == processNo.processingNo;
                                 });
@@ -201,10 +205,8 @@ var cmm008;
                     self.singleSelectedCode = ko.observable(null);
                     return dfd.promise();
                 };
-                //登録ボタンを押す
                 ScreenModel.prototype.createEmployment = function () {
                     var self = this;
-                    //必須項目の未入力チェック
                     var ER001 = _.find(self.lstMessage(), function (mess) {
                         return mess.messCode === "ER001";
                     });
@@ -221,8 +223,6 @@ var cmm008;
                     var employment = new a.service.model.employmentDto();
                     employment.employmentCode = self.employmentCode();
                     employment.employmentName = self.employmentName();
-                    //今回は就業システム未導入の場合としてください。
-                    //（上記にあるように　締め日区分 = 0 ）
                     employment.closeDateNo = 0;
                     employment.processingNo = self.selectedProcessNo();
                     employment.statutoryHolidayAtr = self.holidayCode();
@@ -235,7 +235,6 @@ var cmm008;
                         employment.displayFlg = 1;
                     else
                         employment.displayFlg = 0;
-                    //新規の時
                     if (self.isEnable()) {
                         a.service.createEmployment(employment).done(function () {
                             $.when(self.dataSource()).done(function () {
@@ -265,10 +264,8 @@ var cmm008;
                         });
                     }
                 };
-                //新規ボタンを押す
                 ScreenModel.prototype.newCreateEmployment = function () {
                     var self = this;
-                    //変更確認
                     if (self.dataSource().length !== 0 && !self.checkChange(self.employmentCode())) {
                         var AL001 = _.find(self.lstMessage(), function (mess) {
                             return mess.messCode === "AL001";
@@ -277,14 +274,12 @@ var cmm008;
                             return;
                         }).ifYes(function () {
                             self.clearItem();
-                            //self.createEmployment();    
                         });
                     }
                     else {
                         self.clearItem();
                     }
                 };
-                //tu lam dirty check
                 ScreenModel.prototype.checkChange = function (employmentCodeChk) {
                     var self = this;
                     var chkEmployment = _.find(self.dataSource(), function (employ) {
@@ -324,7 +319,6 @@ var cmm008;
                     self.selectedProcessNo(0);
                     $("#INP_002").focus();
                 };
-                //削除
                 ScreenModel.prototype.deleteEmployment = function () {
                     var self = this;
                     var AL002 = _.find(self.lstMessage(), function (mess) {

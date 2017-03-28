@@ -1,4 +1,3 @@
-/// <reference path="../../reference.ts"/>
 var nts;
 (function (nts) {
     var uk;
@@ -7,41 +6,23 @@ var nts;
         (function (ui) {
             var koExtentions;
             (function (koExtentions) {
-                /**
-                 * SwitchButton binding handler
-                 */
                 var NtsSwitchButtonBindingHandler = (function () {
-                    /**
-                     * Constructor.
-                     */
                     function NtsSwitchButtonBindingHandler() {
                     }
-                    /**
-                     * Init.
-                     */
                     NtsSwitchButtonBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                     };
-                    /**
-                     * Update
-                     */
                     NtsSwitchButtonBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                        // Get data.
                         var data = valueAccessor();
                         var selectedCssClass = 'selected';
-                        // Get options.
                         var options = ko.unwrap(data.options);
-                        // Get options value.
                         var optionValue = ko.unwrap(data.optionsValue);
                         var optionText = ko.unwrap(data.optionsText);
                         var selectedValue = ko.unwrap(data.value);
                         var enable = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
-                        // Container.
                         var container = $(element);
-                        // Remove deleted button.
                         $('button', container).each(function (index, btn) {
                             var $btn = $(btn);
                             var btnValue = $(btn).data('swbtn');
-                            // Check if btn is contained in options.
                             var foundFlag = _.findIndex(options, function (opt) {
                                 return opt[optionValue] == btnValue;
                             }) != -1;
@@ -50,11 +31,9 @@ var nts;
                                 return;
                             }
                         });
-                        // Start binding new state.
                         _.forEach(options, function (opt) {
                             var value = opt[optionValue];
                             var text = opt[optionText];
-                            // Find button.
                             var targetBtn;
                             $('button', container).each(function (index, btn) {
                                 var btnValue = $(btn).data('swbtn');
@@ -71,7 +50,6 @@ var nts;
                             if (targetBtn) {
                             }
                             else {
-                                // Recreate
                                 var btn = $('<button>').text(text)
                                     .addClass('nts-switch-button')
                                     .data('swbtn', value)
@@ -87,7 +65,6 @@ var nts;
                                 container.append(btn);
                             }
                         });
-                        // Enable
                         (enable === true) ? $('button', container).prop("disabled", false) : $('button', container).prop("disabled", true);
                     };
                     return NtsSwitchButtonBindingHandler;

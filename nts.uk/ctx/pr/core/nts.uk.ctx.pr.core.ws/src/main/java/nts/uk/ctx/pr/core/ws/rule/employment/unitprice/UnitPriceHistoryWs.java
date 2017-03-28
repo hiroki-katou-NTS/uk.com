@@ -35,7 +35,7 @@ import nts.uk.ctx.pr.core.ws.rule.employment.unitprice.dto.UnitPriceHistoryModel
 import nts.uk.shr.com.context.AppContexts;
 
 /**
- * The Class UnitPriceHistoryWebService.
+ * The Class UnitPriceHistoryWs.
  */
 @Path("pr/proto/unitprice")
 @Produces(MediaType.APPLICATION_JSON)
@@ -64,9 +64,8 @@ public class UnitPriceHistoryWs extends SimpleHistoryWs<UnitPrice, UnitPriceHist
 	/**
 	 * Find.
 	 *
-	 * @param id
-	 *            the id
-	 * @return the unit price history dto
+	 * @param id the id
+	 * @return the unit price history model
 	 */
 	@POST
 	@Path("find/{id}")
@@ -93,8 +92,8 @@ public class UnitPriceHistoryWs extends SimpleHistoryWs<UnitPrice, UnitPriceHist
 	/**
 	 * Creates the.
 	 *
-	 * @param command
-	 *            the command
+	 * @param command the command
+	 * @return the history model
 	 */
 	@POST
 	@Path("create")
@@ -107,8 +106,7 @@ public class UnitPriceHistoryWs extends SimpleHistoryWs<UnitPrice, UnitPriceHist
 	/**
 	 * Update.
 	 *
-	 * @param command
-	 *            the command
+	 * @param command the command
 	 */
 	@POST
 	@Path("update")
@@ -127,8 +125,7 @@ public class UnitPriceHistoryWs extends SimpleHistoryWs<UnitPrice, UnitPriceHist
 	@POST
 	public List<MasterModel> loadMasterModelList() {
 		// Get list of unit price.
-		List<UnitPrice> unitPrices = this.unitPriceRepo
-				.findAll(new CompanyCode(AppContexts.user().companyCode()));
+		List<UnitPrice> unitPrices = this.unitPriceRepo.findAll(AppContexts.user().companyCode());
 
 		// Get list of unit price history.
 		List<UnitPriceHistory> unitPriceHistories = this.unitPriceHistoryRepo

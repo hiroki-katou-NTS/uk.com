@@ -5,7 +5,8 @@ module cmm008.a.service{
         updateEmployment: "basic/organization/employment/updateemployment",
         deleteEmployment: "basic/organization/employment/deleteemployment/" ,
         getEmploymentByCode: "basic/organization/employment/findemploymentbycode/",
-        getAllProcessingNo: "pr/core/paydayrocessing/getbyccd"
+        getAllProcessingNo: "pr/core/paydayrocessing/getbyccd",
+        getCompanyInfor: "ctx/proto/company/findBycompanyCode"
     }
     //find all employment data
     export function getAllEmployments(): JQueryPromise<Array<model.employmentDto>>{
@@ -64,12 +65,22 @@ module cmm008.a.service{
     //get all 処理日区分
      export function getProcessingNo(){
         var dfd = $.Deferred<Array<any>>();
-        nts.uk.request.ajax(path.getAllProcessingNo).done(function(res: Array<any>){
+        nts.uk.request.ajax('pr',path.getAllProcessingNo).done(function(res: Array<any>){
             dfd.resolve(res);
         }).fail(function(res : any){
             dfd.reject(res);
         })
         return dfd.promise();
+    }
+    //get 就業権限 by company
+    export function getCompanyInfor(){
+        var dfd = $.Deferred<Array<any>>();
+        nts.uk.request.ajax('pr',path.getCompanyInfor).done(function(res: Array<any>){
+            dfd.resolve(res);
+        }).fail(function(res : any){
+            dfd.reject(res);
+        })
+        return dfd.promise(); 
     }
     
     
