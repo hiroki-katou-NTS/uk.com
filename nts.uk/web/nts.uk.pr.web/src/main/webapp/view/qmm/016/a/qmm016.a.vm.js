@@ -23,6 +23,16 @@ var nts;
                                 })[0];
                             }
                             viewmodel.getElementTypeByValue = getElementTypeByValue;
+                            function getElementName(typeNum, item) {
+                                var type = getElementTypeByValue(typeNum);
+                                if (type.isRangeMode) {
+                                    return item.startVal + '～' + item.endVal;
+                                }
+                                else {
+                                    return 'Code';
+                                }
+                            }
+                            viewmodel.getElementName = getElementName;
                             var ScreenModel = (function (_super) {
                                 __extends(ScreenModel, _super);
                                 function ScreenModel() {
@@ -266,9 +276,15 @@ var nts;
                                         return new HistoryElementSettingViewModel(head, el);
                                     });
                                     self.elements(elementSettingViewModel);
-                                    self.detailViewModel = new qmm016.a.history.OneDemensionViewModel(history);
+                                    if ($('#detailContainer').children().length > 0) {
+                                        var element = $('#detailContainer').children().get(0);
+                                        ko.cleanNode(element);
+                                        $('#detailContainer').empty();
+                                    }
+                                    self.detailViewModel = this.getDetailViewModelByType(head.mode);
                                     $('#detailContainer').load(self.detailViewModel.htmlPath, function () {
                                         var element = $('#detailContainer').children().get(0);
+                                        self.detailViewModel.onLoad();
                                         ko.applyBindings(self.detailViewModel, element);
                                     });
                                 };
@@ -298,6 +314,17 @@ var nts;
                                     var self = this;
                                     self.history.valueItems = self.detailViewModel.getCellItem();
                                     return self.history;
+                                };
+                                HistoryViewModel.prototype.getDetailViewModelByType = function (typeCode) {
+                                    var self = this;
+                                    switch (typeCode) {
+                                        case 0:
+                                            return new qmm016.a.history.OneDemensionViewModel(self.history);
+                                        case 1:
+                                            return new qmm016.a.history.TwoDemensionViewModel(self.history);
+                                        default:
+                                            return new qmm016.a.history.OneDemensionViewModel(self.history);
+                                    }
                                 };
                                 HistoryViewModel.prototype.unapplyBindings = function ($node, remove) {
                                     $node.find("*").each(function () {

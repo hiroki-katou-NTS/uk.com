@@ -47,7 +47,7 @@ module nts.uk.pr.view.qmm016 {
             /**
              * Update history.
              */
-            updateHistory(data: {code: string, name: string, memo: string, wtHistoryDto: model.WageTableHistoryModel}): JQueryPromise<any> {
+            updateHistory(data: {code: string, name: string, memo: string, wtHistoryDto: model.WageTableHistoryDto}): JQueryPromise<any> {
                 return nts.uk.request.ajax(path.updateHistory, data);
             }
             

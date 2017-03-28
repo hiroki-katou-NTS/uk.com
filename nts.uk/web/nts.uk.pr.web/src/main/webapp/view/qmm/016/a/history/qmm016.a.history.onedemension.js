@@ -33,8 +33,11 @@ var nts;
                                         });
                                         this.igGridDataSource(itemVmList);
                                     }
-                                    this.initIgGrid();
                                 }
+                                OneDemensionViewModel.prototype.onLoad = function () {
+                                    var self = this;
+                                    self.initIgGrid();
+                                };
                                 OneDemensionViewModel.prototype.initIgGrid = function () {
                                     var self = this;
                                     self.igGrid = ko.observable({
@@ -68,7 +71,7 @@ var nts;
                                         autoCommit: true,
                                         columns: [
                                             { headerText: 'Element Name', dataType: 'string', key: 'uuid', hidden: true },
-                                            { headerText: self.history.elements[0].demensionName, dataType: 'string', key: 'name', width: '50%' },
+                                            { headerText: self.elementSettings[0].demensionName, dataType: 'string', key: 'name', width: '50%' },
                                             { headerText: '値', dataType: 'number', key: 'amount', width: '50%', columnCssClass: "halign-right" }
                                         ]
                                     });
