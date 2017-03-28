@@ -66,7 +66,7 @@ var qmm006;
                         nts.uk.ui.windows.close();
                     }
                     else {
-                        nts.uk.ui.dialog.alert("＊が選択されていません。"); //ER007
+                        nts.uk.ui.dialog.alert("＊が選択されていません。");
                     }
                 };
                 return ScreenModel;

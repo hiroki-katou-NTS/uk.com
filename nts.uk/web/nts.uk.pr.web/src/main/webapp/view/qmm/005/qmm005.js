@@ -95,7 +95,6 @@ var qmm005;
         common.CheckBoxItem = CheckBoxItem;
     })(common = qmm005.common || (qmm005.common = {}));
 })(qmm005 || (qmm005 = {}));
-// for develop
 var _ref = (window.location.href.indexOf('localhost') == -1) && new Date().getTime() || 'v1.0.0';
 var route = window.location.href
     .slice(0, window.location.href.lastIndexOf('/'))
@@ -106,3 +105,4 @@ document.writeln("<link rel='stylesheet' type='text/css' href='" + route + ".sty
 document.writeln("<script type='text/javascript' src='" + route + ".service.js?ref=" + _ref + "'></script>");
 document.writeln("<script type='text/javascript' src='" + route + ".viewmodel.js?ref=" + _ref + "'></script>");
 document.writeln("<script type='text/javascript' src='" + route + ".start.js?ref=" + _ref + "'></script>");
+//# sourceMappingURL=qmm005.js.map
