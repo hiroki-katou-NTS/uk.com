@@ -18,26 +18,28 @@ module nts.uk.pr.view.qmm017.l {
             comboBoxCoefficient: KnockoutObservable<ComboBox>;
             coefficientFixedValue: KnockoutObservable<number>;
             comboBoxAdjustmentAtr: KnockoutObservable<ComboBox>;
+            paramIsUpdate: any;
+            paramDirtyData: any;
 
             constructor(param) {
                 var self = this;
-                let paramIsUpdate = param.isUpdate;
-                let paramDirtyData = param.dirtyData;
+                self.paramIsUpdate = param.isUpdate;
+                self.paramDirtyData = param.dirtyData;
                 self.initOriginal();
-                if (paramIsUpdate === true) {
-                    self.easyFormulaName(paramDirtyData.easyFormulaName);
-                    self.comboBoxFormulaType().selectedCode(paramDirtyData.easyFormulaType);
-                    self.comboBoxBaseAmount().selectedCode(paramDirtyData.baseAmountAttr);
-                    self.baseAmountFixedValue(paramDirtyData.baseAmountFixedValue);
-                    self.baseAmountListItem(paramDirtyData.baseAmountListItem);
-                    self.comboBoxBaseValue().selectedCode(paramDirtyData.baseValueAttr);
-                    self.baseValueFixedValue(paramDirtyData.baseValueFixedValue);
-                    self.premiumRate(paramDirtyData.premiumRate);
-                    self.switchButtonRoundingFiguresD().selectedRuleCode(paramDirtyData.roundingFiguresD);
-                    self.switchButtonRoundingFiguresF().selectedRuleCode(paramDirtyData.roundingFiguresF);
-                    self.comboBoxCoefficient().selectedCode(paramDirtyData.coefficientAttr);
-                    self.coefficientFixedValue(paramDirtyData.coefficientFixedValue);
-                    self.comboBoxAdjustmentAtr().selectedCode(paramDirtyData.adjustmentAttr);
+                if (self.paramIsUpdate === true) {
+                    self.easyFormulaName(self.paramDirtyData.easyFormulaName);
+                    self.comboBoxFormulaType().selectedCode(self.paramDirtyData.easyFormulaTypeAtr);
+                    self.comboBoxBaseAmount().selectedCode(self.paramDirtyData.baseAmountDevision);
+                    self.baseAmountFixedValue(self.paramDirtyData.baseFixedAmount);
+                    self.baseAmountListItem(self.paramDirtyData.referenceItemCodes);
+                    self.comboBoxBaseValue().selectedCode(self.paramDirtyData.baseValueDevision);
+                    self.baseValueFixedValue(self.paramDirtyData.baseFixedValue);
+                    self.premiumRate(self.paramDirtyData.premiumRate);
+                    self.switchButtonRoundingFiguresD().selectedRuleCode(self.paramDirtyData.roundProcessingDevision);
+                    self.switchButtonRoundingFiguresF().selectedRuleCode(self.paramDirtyData.totalRounding);
+                    self.comboBoxCoefficient().selectedCode(self.paramDirtyData.coefficientDivision);
+                    self.coefficientFixedValue(self.paramDirtyData.coefficientFixedValue);
+                    self.comboBoxAdjustmentAtr().selectedCode(self.paramDirtyData.adjustmentDevision);
                 }
 
             }
@@ -163,20 +165,20 @@ module nts.uk.pr.view.qmm017.l {
             closeAndReturnData() {
                 var self = this;
                 let easyFormulaDetail = {
-                    easyFormulaCode: '000',
+                    easyFormulaCode: self.paramDirtyData.easyFormulaCode,
                     easyFormulaName: self.easyFormulaName(),
-                    easyFormulaType: self.comboBoxFormulaType().selectedCode(),
-                    baseAmountAttr: self.comboBoxBaseAmount().selectedCode(),
-                    baseAmountFixedValue: self.baseAmountFixedValue(),
-                    baseAmountListItem: self.baseAmountListItem(),
-                    baseValueAttr: self.comboBoxBaseValue().selectedCode(),
-                    baseValueFixedValue: self.baseValueFixedValue(),
+                    easyFormulaTypeAtr: self.comboBoxFormulaType().selectedCode(),
+                    baseAmountDevision: self.comboBoxBaseAmount().selectedCode(),
+                    baseFixedAmount: self.baseAmountFixedValue(),
+                    referenceItemCodes: self.baseAmountListItem(),
+                    baseValueDevision: self.comboBoxBaseValue().selectedCode(),
+                    baseFixedValue: self.baseValueFixedValue(),
                     premiumRate: self.premiumRate(),
-                    roundingFiguresD: self.switchButtonRoundingFiguresD().selectedRuleCode(),
-                    roundingFiguresF: self.switchButtonRoundingFiguresF().selectedRuleCode(),
-                    coefficientAttr: self.comboBoxCoefficient().selectedCode(),
+                    roundProcessingDevision: self.switchButtonRoundingFiguresD().selectedRuleCode(),
+                    totalRounding: self.switchButtonRoundingFiguresF().selectedRuleCode(),
+                    coefficientDivision: self.comboBoxCoefficient().selectedCode(),
                     coefficientFixedValue: self.coefficientFixedValue(),
-                    adjustmentAttr: self.comboBoxAdjustmentAtr().selectedCode()
+                    adjustmentDevision: self.comboBoxAdjustmentAtr().selectedCode()
                 };
                 nts.uk.ui.windows.setShared('easyFormulaDetail', easyFormulaDetail);
                 nts.uk.ui.windows.close();

@@ -12,6 +12,7 @@ module nts.qmm017 {
         useMasterCode: KnockoutObservable<string>;
 
         //formula easy
+        noneConditionalEasyFormula: KnockoutObservable<EasyFormula>;
         defaultEasyFormula: KnockoutObservable<EasyFormula>;
         monthlyEasyFormula: KnockoutObservable<EasyFormula>;
         dailyMonthlyEasyFormula: KnockoutObservable<EasyFormula>;
@@ -100,7 +101,7 @@ module nts.qmm017 {
             self.comboBoxRoudingMethod = ko.observable(new ComboBox(lstRoudingMethod, true, false));
             self.comboBoxRoudingPosition = ko.observable(new ComboBox(lstRoudingPostion, true, false));
             self.selectedTabCSel006 = ko.observable('tab-1');
-            
+
             self.noneConditionalEasyFormula = ko.observable(new EasyFormula(0));
             self.defaultEasyFormula = ko.observable(new EasyFormula(0));
             self.monthlyEasyFormula = ko.observable(new EasyFormula(1));
@@ -125,8 +126,10 @@ module nts.qmm017 {
             };
             nts.uk.ui.windows.setShared('paramFromScreenC', param);
             nts.uk.ui.windows.sub.modal('/view/qmm/017/l/index.xhtml', { title: 'かんたん計算式の登録', width: 650, height: 750 }).onClosed(() => {
-                self.defaultEasyFormula().easyFormulaDetail(ko.mapping.fromJS(nts.uk.ui.windows.getShared('easyFormulaDetail')));
-                self.defaultEasyFormula().easyFormulaName(self.defaultEasyFormula().easyFormulaDetail().easyFormulaName());
+                if (nts.uk.ui.windows.getShared('easyFormulaDetail')) {
+                    self.defaultEasyFormula().easyFormulaDetail(ko.mapping.fromJS(nts.uk.ui.windows.getShared('easyFormulaDetail')));
+                    self.defaultEasyFormula().easyFormulaName(self.defaultEasyFormula().easyFormulaDetail().easyFormulaName());
+                }
             });
         }
 
@@ -134,7 +137,7 @@ module nts.qmm017 {
             var self = this;
             self.formulaManualContent().testError();
         }
-        
+
         setAllFixValued() {
             var self = this;
             self.monthlyEasyFormula().selectedRuleCodeEasySettings('0');
@@ -142,7 +145,7 @@ module nts.qmm017 {
             self.dailyEasyFormula().selectedRuleCodeEasySettings('0');
             self.hourlyEasyFormula().selectedRuleCodeEasySettings('0');
         }
-        
+
         setAllDetail() {
             var self = this;
             self.monthlyEasyFormula().selectedRuleCodeEasySettings('1');
@@ -178,7 +181,7 @@ module nts.qmm017 {
             self.easyFormulaDetail = ko.observable(new nts.qmm017.model.FormulaEasyDetailDto());
             self.easyFormulaName = ko.observable('');
         }
-        
+
         openDialogL() {
             var self = this;
             let param = {
@@ -187,8 +190,10 @@ module nts.qmm017 {
             };
             nts.uk.ui.windows.setShared('paramFromScreenC', param);
             nts.uk.ui.windows.sub.modal('/view/qmm/017/l/index.xhtml', { title: 'かんたん計算式の登録', width: 650, height: 750 }).onClosed(() => {
-                self.easyFormulaDetail(nts.uk.ui.windows.getShared('easyFormulaDetail'));
-                self.easyFormulaName(self.easyFormulaDetail().easyFormulaName);
+                if (nts.uk.ui.windows.getShared('easyFormulaDetail')) {
+                    self.easyFormulaDetail(nts.uk.ui.windows.getShared('easyFormulaDetail'));
+                    self.easyFormulaName(self.easyFormulaDetail().easyFormulaName);
+                }
             });
         }
     }

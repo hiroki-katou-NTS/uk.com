@@ -31,10 +31,10 @@ public class JpaFormulaEasyDetailRepository extends JpaRepository implements For
 	@Override
 	public Optional<FormulaEasyDetail> findByPriKey(String companyCode, FormulaCode formulaCode, String historyId,
 			EasyFormulaCode easyFormulaCode) {
-		return this.queryProxy()
+		Optional<QcfmtFormulaEasyDetail> qcfmtFormulaEasyDetail = this.queryProxy()
 				.find(new QcfmtFormulaEasyDetailPK(companyCode, formulaCode.v(), historyId, easyFormulaCode.v()),
-						QcfmtFormulaEasyDetail.class)
-				.map(f -> toDomain(f));
+						QcfmtFormulaEasyDetail.class);
+		return qcfmtFormulaEasyDetail.map(f -> toDomain(f));
 	}
 
 	@Override
@@ -78,8 +78,8 @@ public class JpaFormulaEasyDetailRepository extends JpaRepository implements For
 		entity.coefficientFixedValue = formulaEasyDetail.getCoefficientFixedValue().v();
 		entity.adjustmentDevision = new BigDecimal(formulaEasyDetail.getAdjustmentDevision().value);
 		entity.totalRounding = new BigDecimal(formulaEasyDetail.getTotalRounding().value);
-		entity.minLimitValue = formulaEasyDetail.getMinValue().v();
-		entity.maxLimitValue = formulaEasyDetail.getMaxValue().v();
+		entity.minLimitValue = formulaEasyDetail.getMinValue() != null ? formulaEasyDetail.getMinValue().v() : new BigDecimal(1);
+		entity.maxLimitValue = formulaEasyDetail.getMaxValue() != null ? formulaEasyDetail.getMaxValue().v() : new BigDecimal(2);
 
 		return entity;
 	}

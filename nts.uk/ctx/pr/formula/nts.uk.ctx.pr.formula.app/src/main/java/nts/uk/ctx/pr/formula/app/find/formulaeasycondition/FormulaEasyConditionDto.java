@@ -3,6 +3,7 @@
  */
 package nts.uk.ctx.pr.formula.app.find.formulaeasycondition;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 import lombok.Data;
@@ -16,6 +17,10 @@ public class FormulaEasyConditionDto {
 	
 	int fixFormulaAtr;
 	
-	List<EasyFormulaConditionDto> easyFormulaConditionDto;
+	String easyFormulaCode;
+
+	BigDecimal fixMoney;
+
+	String referenceMasterCode;
 	
 }

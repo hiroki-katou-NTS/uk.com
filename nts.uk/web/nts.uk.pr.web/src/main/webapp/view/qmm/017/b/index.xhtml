@@ -19,11 +19,11 @@
 			</com:ko-if>
 			<br />
 			<div id="b_lbl_002" class="separate-vertical" data-bind="ntsFormLabel: {required: true }">コード/名称</div>
-			<input id="b_inp_001" data-bind="ntsTextEditor: { value: formulaCode, constraint: 'FormulaCode', enable: $root.content.isNewMode, required: true}" />
+			<input id="b_inp_001" data-bind="ntsTextEditor: { value: formulaCode, constraint: 'FormulaCode', enable: isNewMode, required: true}" />
 			<input id="b_inp_002" data-bind="ntsTextEditor: { value: formulaName, constraint: 'FormulaName', enable: true, required: true}" />
 			<br/>
 			<div id="b_lbl_003" class="separate-vertical" data-bind="ntsFormLabel: {required: true }">開始年月</div>
-			<div id="b_inp_003" data-bind="ntsDatePicker: {value: startYearMonth, dateFormat: 'yyyy/MM', disable: !$root.content.isNewMode() }"></div>
+			<div id="b_inp_003" data-bind="ntsDatePicker: {value: startYearMonth, dateFormat: 'yyyy/MM', disable: isNewMode() }"></div>
 			<span data-bind="text: startYearMonthFormated"></span>
 			<br/>
 			<div id="b_lbl_004" class="separate-vertical" data-bind="ntsFormLabel: {required: true }">計算式の設定方法</div>
@@ -32,7 +32,7 @@
 						optionsValue: 'code',
 						optionsText: 'name',
 						value: selectedDifficultyAtr,
-						enable: $root.content.isNewMode }"></div>
+						enable: isNewMode }"></div>
 			<br/>
 			<div id="b_lbl_005">
 				<span >説明</span>
@@ -59,7 +59,7 @@
 								optionsValue: 'code',
 								optionsText: 'name',
 								value: selectedConditionAtr,
-								enable: $root.content.isNewMode }"></div>
+								enable: isNewMode }"></div>
 				<com:ko-if bind="selectedConditionAtr() == 1">
 					<div id="b_lbl_010" style="margin: 10px 0 0 142px;" class="separate-vertical" data-bind="ntsFormLabel: {required: true }">使用するマスタ</div>
 					<div id="combo-box" style="vertical-align: middle;" data-bind="ntsComboBox: {
@@ -68,7 +68,7 @@
 						value: comboBoxUseMaster().selectedCode,
 						optionsText: 'name',
 						editable: false,
-						enable: $root.content.isNewMode}"></div>
+						enable: isNewMode}"></div>
 				</com:ko-if>
 			</com:ko-if>
 		</div>

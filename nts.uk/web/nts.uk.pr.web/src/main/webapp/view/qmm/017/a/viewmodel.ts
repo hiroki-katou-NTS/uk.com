@@ -45,7 +45,9 @@ module nts.qmm017 {
                 }
                 let rangeYearMonth = self.currentNode().name.split('~');
                 self.startYearMonth(rangeYearMonth[0].trim());
-                self.isNewMode(false);
+                if (codeChange) {
+                    self.isNewMode(false);
+                }
                 self.a_sel_001()[1].enable(true);
                 self.viewModel017b().startYearMonth(rangeYearMonth[0].trim());
                 self.viewModel017b().formulaCode(self.currentParentNode().code);
@@ -62,7 +64,8 @@ module nts.qmm017 {
                                     self.viewModel017c().comboBoxRoudingMethod().selectedCode(currentFormulaDetail.roundAtr);
                                     self.viewModel017c().comboBoxRoudingPosition().selectedCode(currentFormulaDetail.roundDigit);
                                 } else if (currentFormula && currentFormula.difficultyAtr === 0) {
-
+                                    self.viewModel017c().noneConditionalEasyFormula().easyFormulaDetail(currentFormulaDetail.easyFormula[0].formulaEasyDetail);
+                                    self.viewModel017c().noneConditionalEasyFormula().easyFormulaName(currentFormulaDetail.easyFormula[0].formulaEasyDetail.easyFormulaName);
                                 }
                             })
                             .fail(function(res) {
@@ -118,12 +121,14 @@ module nts.qmm017 {
                     });
                     self.treeGridHistory().items(nodesTreeGrid);
                     self.isNewMode(true);
+                    self.treeGridHistory().singleSelectedCode(null);
                     self.viewModel017b().startYearMonth('');
                     self.viewModel017b().formulaCode('');
                     self.viewModel017b().formulaName('');
                     self.viewModel017b().selectedDifficultyAtr(0);
                     self.viewModel017b().selectedConditionAtr(0);
                     self.viewModel017b().comboBoxUseMaster().selectedCode(1);
+                    self.treeGridHistory().singleSelectedCode(null);
                 } else {
                     self.treeGridHistory().items(nodesTreeGrid);
                 }
@@ -187,7 +192,37 @@ module nts.qmm017 {
                     command.roundAtr = self.viewModel017c().comboBoxRoudingMethod().selectedCode();
                     command.roundDigit = self.viewModel017c().comboBoxRoudingPosition().selectedCode();
                 } else {
-                    
+                    if (self.viewModel017b().selectedConditionAtr() == 0) {
+                        command.easyFormulaDto.push({
+                            easyFormulaCode: '000',
+                            value: self.viewModel017c().noneConditionalEasyFormula().easyFormulaFixMoney(),
+                            referenceMasterNo: "0000000000",
+                            formulaDetail: {
+                                easyFormulaCode: self.viewModel017c().noneConditionalEasyFormula().easyFormulaDetail().easyFormulaCode,
+                                easyFormulaName: self.viewModel017c().noneConditionalEasyFormula().easyFormulaDetail().easyFormulaName,
+                                easyFormulaTypeAtr: self.viewModel017c().noneConditionalEasyFormula().easyFormulaDetail().easyFormulaTypeAtr,
+                                baseFixedAmount: self.viewModel017c().noneConditionalEasyFormula().easyFormulaDetail().baseFixedAmount,
+                                baseAmountDevision: self.viewModel017c().noneConditionalEasyFormula().easyFormulaDetail().baseAmountDevision,
+                                baseFixedValue: self.viewModel017c().noneConditionalEasyFormula().easyFormulaDetail().baseFixedValue,
+                                baseValueDevision: self.viewModel017c().noneConditionalEasyFormula().easyFormulaDetail().baseValueDevision,
+                                premiumRate: self.viewModel017c().noneConditionalEasyFormula().easyFormulaDetail().premiumRate,
+                                roundProcessingDevision: self.viewModel017c().noneConditionalEasyFormula().easyFormulaDetail().roundProcessingDevision,
+                                coefficientDivision: self.viewModel017c().noneConditionalEasyFormula().easyFormulaDetail().coefficientDivision,
+                                coefficientFixedValue: self.viewModel017c().noneConditionalEasyFormula().easyFormulaDetail().coefficientFixedValue,
+                                adjustmentDevision: self.viewModel017c().noneConditionalEasyFormula().easyFormulaDetail().adjustmentDevision,
+                                totalRounding: self.viewModel017c().noneConditionalEasyFormula().easyFormulaDetail().totalRounding,
+                                maxLimitValue: 0,
+                                minLimitValue: 0,
+                                referenceItemCodes: self.viewModel017c().noneConditionalEasyFormula().easyFormulaDetail().referenceItemCodes
+                            },
+                            fixFormulaAtr: self.viewModel017c().noneConditionalEasyFormula().selectedRuleCodeEasySettings()
+                        });
+                        debugger;
+                    } else if(self.viewModel017b().selectedConditionAtr() == 0 && self.viewModel017b().comboBoxUseMaster().selectedCode() < 6) {
+                        
+                    } else if(self.viewModel017b().selectedConditionAtr() == 0 && self.viewModel017b().comboBoxUseMaster().selectedCode() = 6) {
+                        
+                    }
                 }
                 service.updateFormulaMaster(command)
                     .done(function() {
