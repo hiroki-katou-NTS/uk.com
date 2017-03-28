@@ -26,11 +26,4 @@ public abstract class UnitPriceHistoryService extends SimpleHistoryBaseService<U
 	 * @param unitPriceHistory the unit price history
 	 */
 	public abstract void validateDateRange(UnitPriceHistory unitPriceHistory);
-
-	/**
-	 * Check duplicate code.
-	 *
-	 * @param unitPriceHistory the unit price history
-	 */
-	public abstract void checkDuplicateCode(UnitPriceHistory unitPriceHistory);
 }

@@ -6,7 +6,6 @@ package nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate;
 
 import java.util.Set;
 
-import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 
 /**
@@ -26,7 +25,7 @@ public interface UnemployeeInsuranceRateGetMemento {
 	 *
 	 * @return the company code
 	 */
-	CompanyCode getCompanyCode();
+	String getCompanyCode();
 
 	/**
 	 * Gets the apply range.

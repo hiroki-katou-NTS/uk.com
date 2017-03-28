@@ -4,7 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.dom.insurance.labor;
 
-import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.Address;
 import nts.uk.ctx.pr.core.dom.insurance.CitySign;
 import nts.uk.ctx.pr.core.dom.insurance.KanaAddress;
@@ -34,7 +33,7 @@ public interface LaborInsuranceOfficeGetMemento {
 	 *
 	 * @return the company code
 	 */
-	CompanyCode getCompanyCode();
+	String getCompanyCode();
 
 	/**
 	 * Gets the code.
@@ -77,13 +76,6 @@ public interface LaborInsuranceOfficeGetMemento {
 	 * @return the potal code
 	 */
 	PotalCode getPotalCode();
-
-	/**
-	 * Gets the prefecture.
-	 *
-	 * @return the prefecture
-	 */
-	String getPrefecture();
 
 	/**
 	 * Gets the address 1 st.

@@ -32,6 +32,8 @@ public class InsuranceOfficeDto {
     private String name;
     
     /** The employee dto. */
-    private List<EmployeeDto> employeeDtos;
+    private List<DataRowItem> employeeDtos;
     
+    /** The total each office. */
+    private DataRowItem totalEachOffice;
 }

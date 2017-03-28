@@ -5,8 +5,8 @@
 package nts.uk.ctx.pr.report.infra.repository.wageledger.memento;
 
 import java.util.Set;
-import java.util.stream.Collectors;
 
+import nts.gul.collection.LazySet;
 import nts.uk.ctx.pr.report.dom.wageledger.aggregate.WLAggregateItemGetMemento;
 import nts.uk.ctx.pr.report.dom.wageledger.aggregate.WLAggregateItemName;
 import nts.uk.ctx.pr.report.dom.wageledger.aggregate.WLItemSubject;
@@ -71,9 +71,8 @@ public class JpaWLAggregateItemGetMemento implements WLAggregateItemGetMemento {
 	 */
 	@Override
 	public Set<String> getSubItems() {
-		return this.entity.getQlsptLedgerAggreDetailList().stream()
-				.map(item -> item.getQlsptLedgerAggreDetailPK().getItemCd())
-				.collect(Collectors.toSet());
+		return LazySet.withMap(() -> this.entity.getQlsptLedgerAggreDetailList(),
+				item -> item.getQlsptLedgerAggreDetailPK().getItemCd());
 	}
 
 	/* (non-Javadoc)

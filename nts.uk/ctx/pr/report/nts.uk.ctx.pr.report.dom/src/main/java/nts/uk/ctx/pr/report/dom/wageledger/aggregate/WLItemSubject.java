@@ -6,7 +6,6 @@ package nts.uk.ctx.pr.report.dom.wageledger.aggregate;
 
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
-import nts.uk.ctx.pr.report.dom.company.CompanyCode;
 import nts.uk.ctx.pr.report.dom.wageledger.PaymentType;
 import nts.uk.ctx.pr.report.dom.wageledger.WLCategory;
 
@@ -23,7 +22,7 @@ public class WLItemSubject extends DomainObject{
 	private PaymentType paymentType;
 	
 	/** The company code. */
-	private CompanyCode companyCode;
+	private String companyCode;
 	
 	/** The code. */
 	private WLAggregateItemCode code;

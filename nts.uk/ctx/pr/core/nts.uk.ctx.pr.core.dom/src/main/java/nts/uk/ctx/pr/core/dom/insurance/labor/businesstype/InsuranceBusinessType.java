@@ -16,7 +16,7 @@ import nts.uk.ctx.pr.core.dom.insurance.BusinessName;
 public class InsuranceBusinessType extends DomainObject {
 
 	/** The company code. */
-	private CompanyCode companyCode;
+	private String companyCode;
 
 	/** The biz order. */
 	private BusinessTypeEnum bizOrder;
