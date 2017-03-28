@@ -50,7 +50,7 @@ public class JpaPositionRepository extends JpaRepository implements PositionRepo
 		builderString.append("SELECT e");
 		builderString.append(" FROM CmnmtJobHist e");
 		builderString.append(" WHERE e.cmnmtJobHistPK.companyCode = :companyCode");
-		
+		builderString.append(" ORDER BY e.endDate DESC");
 		SELECT_ALL_HISTORY = builderString.toString();
 
 		builderString = new StringBuilder();

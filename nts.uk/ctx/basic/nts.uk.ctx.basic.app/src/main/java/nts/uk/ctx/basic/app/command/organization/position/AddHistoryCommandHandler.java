@@ -40,7 +40,7 @@ public class AddHistoryCommandHandler extends CommandHandler<AddHistoryCommand> 
 				JobHistory jobHis = historyEndDate.get();
 				jobHis.setEndDate(endDate);
 				positionRepository.updateHistory(jobHis);
-//				positionRepository.addHistory(jobHistory);
+			// positionRepository.addHistory(jobHistory);
 
 			}
 		}

@@ -24,6 +24,8 @@ public class AddPositionCommandHandler extends CommandHandler<AddPositionCommand
 	@Override
 	protected void handle(CommandHandlerContext<AddPositionCommand> context) {
 
+		
+		
 		String companyCode = AppContexts.user().companyCode();
 		// String hitoryId = IdentifierUtil.randomUniqueId();
 		JobTitle jobTitle = new JobTitle(new JobName(context.getCommand().getJobName()),
