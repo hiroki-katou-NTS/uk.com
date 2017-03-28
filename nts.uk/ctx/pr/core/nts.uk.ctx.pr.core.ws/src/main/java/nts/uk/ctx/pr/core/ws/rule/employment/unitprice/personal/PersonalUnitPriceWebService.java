@@ -10,7 +10,6 @@ import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 
 import nts.arc.layer.ws.WebService;
-import nts.uk.ctx.core.app.company.command.UpdateCompanyCommandHandler;
 import nts.uk.ctx.pr.core.app.command.rule.employment.unitprice.personal.AddPersonalUnitPriceCommand;
 import nts.uk.ctx.pr.core.app.command.rule.employment.unitprice.personal.AddPersonalUnitPriceCommandHandler;
 import nts.uk.ctx.pr.core.app.command.rule.employment.unitprice.personal.RemovePersonalUnitPriceCommand;
@@ -46,7 +45,7 @@ public class PersonalUnitPriceWebService extends WebService {
 	@Path("find/all/nonedisplay")
 	public List<PersonalUnitPriceDto> findAllNoneDisplay() {
 		return this.personalUnitPriceFinder.findAll().stream()
-				.filter(x->x.getDisplayAtr() == 1)
+				.filter(x->x.getDisplaySet() == 1)
 				.collect(Collectors.toList());
 	}
 	

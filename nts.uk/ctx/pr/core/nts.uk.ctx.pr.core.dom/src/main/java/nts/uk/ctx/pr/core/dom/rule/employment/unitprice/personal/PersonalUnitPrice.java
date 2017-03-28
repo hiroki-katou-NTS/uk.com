@@ -5,6 +5,8 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.gul.text.StringUtil;
+import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.ApplySetting;
+import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.SettingType;
 import nts.uk.shr.com.primitive.Memo;
 
 public class PersonalUnitPrice extends AggregateRoot {
@@ -51,7 +53,7 @@ public class PersonalUnitPrice extends AggregateRoot {
 	private ApplySetting fixPaymentHoursly;
 
 	@Getter
-	private DisplayAtr displayAtr;
+	private DisplaySet displaySet;
 
 	@Getter
 	private SettingType paymentSettingType;
@@ -77,7 +79,7 @@ public class PersonalUnitPrice extends AggregateRoot {
 			PersonalUnitPriceName personalUnitPriceName, PersonalUnitPriceShortName personalUnitPriceAbName,
 			UniteCode uniteCode, Memo memo, ApplySetting fixPaymentAtr, ApplySetting fixPaymentMonthly,
 			ApplySetting fixPaymentDayMonth, ApplySetting fixPaymentDaily, ApplySetting fixPaymentHoursly,
-			DisplayAtr displayAtr, SettingType paymentSettingType, UnitpriceAtr unitPriceAtr) {
+			DisplaySet displaySet, SettingType paymentSettingType, UnitpriceAtr unitPriceAtr) {
 		super();
 		CompanyCode = companyCode;
 		this.personalUnitPriceCode = personalUnitPriceCode;
@@ -90,14 +92,14 @@ public class PersonalUnitPrice extends AggregateRoot {
 		this.fixPaymentDayMonth = fixPaymentDayMonth;
 		this.fixPaymentDaily = fixPaymentDaily;
 		this.fixPaymentHoursly = fixPaymentHoursly;
-		this.displayAtr = displayAtr;
+		this.displaySet = displaySet;
 		this.paymentSettingType = paymentSettingType;
 		this.unitPriceAtr = unitPriceAtr;
 	}
     
 	public static PersonalUnitPrice createFromJavaType(String companyCode,String personalUnitPriceCode,String personalUnitPriceName,String personalUnitPriceAbName,
 			                                           String uniteCode,String memo,int fixPaymentAtr,int fixPaymentMonthly,int fixPaymentDayMonth,int fixPaymentDaily,
-			                                           int fixPaymentHoursly,int displayAtr,int paymentSettingType,int unitPriceAtr){
+			                                           int fixPaymentHoursly,int displaySet,int paymentSettingType,int unitPriceAtr){
          return new PersonalUnitPrice(
         		 companyCode, 
         		 new PersonalUnitPriceCode(personalUnitPriceCode), 
@@ -110,7 +112,7 @@ public class PersonalUnitPrice extends AggregateRoot {
         		 EnumAdaptor.valueOf(fixPaymentDayMonth, ApplySetting.class),
         		 EnumAdaptor.valueOf(fixPaymentDaily, ApplySetting.class),
         		 EnumAdaptor.valueOf(fixPaymentHoursly, ApplySetting.class),
-        		 EnumAdaptor.valueOf(displayAtr, DisplayAtr.class),
+        		 EnumAdaptor.valueOf(displaySet, DisplaySet.class),
         		 EnumAdaptor.valueOf(paymentSettingType, SettingType.class),
         		 EnumAdaptor.valueOf(unitPriceAtr, UnitpriceAtr.class));
 	}	   

@@ -6,7 +6,7 @@
 }
 
 hr {
-	width: 640px;
+	width: 750px !important;
 	float: left;
 	margin-bottom: 15px
 }
@@ -27,12 +27,12 @@ hr {
 
 .right-content-left {
 	float: left;
-	width: 18%
+	width: 28%
 }
 
 .right-content-right {
 	float: left;
-	width: 82%
+	width: 72%
 }
 
 .text-editor1 {
@@ -71,35 +71,24 @@ hr {
 }
 
 #BTN_006 {
-	    margin-left: 5px;
+	margin-left: 5px;
 }
 
 hr {
 	width: 640px;
 	float: left;
-	margin-bottom: 15px
+	margin-bottom: 15px;
+	margin-top: 10px
 }
 
-.text-editor1 {
-	border: 1px solid rgba(79, 79, 79, 0.42);
-	border-radius: 3px;
-	padding: 5px 0px
-}
-
-.text-editor2 {
-	border: 1px solid rgba(79, 79, 79, 0.42);
-	border-radius: 3px;
-	padding: 6px 0px 4px 5px
-}
-
-.SEL_003 .ntsRadioBox{
+.SEL_003 .ntsRadioBox {
 	color: black;
 	width: 200px;
 	margin-top: 20px;
 }
 
-.nts-switch-button { 
-	min-width: 80px; 
+.nts-switch-button {
+	min-width: 80px;
 }
 
 #BTN_001 {
@@ -112,7 +101,7 @@ hr {
 	padding: 0px 20px;
 }
 
-#BTN_003, #BTN_007 {
+#BTN_003, #BTN_005 {
 	margin-left: 10px;
 	padding: 0px 10px;
 }
@@ -124,4 +113,20 @@ hr {
 
 .ntsSearchBox {
 	width: 390px !important;
+}
+
+.icon.icon-searchbox {
+	top: 115px;
+	left: 20px;
+}
+
+.control-group-left {
+	margin-left: 30px;
+}
+
+.bg-yellow {
+	width: 200px;
+	height: 28px;
+	display: inline-block;
+	margin-left: 30px
 }
