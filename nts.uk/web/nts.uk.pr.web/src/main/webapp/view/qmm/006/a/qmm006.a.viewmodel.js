@@ -133,6 +133,9 @@ var qmm006;
                 };
                 ScreenModel.prototype.saveData = function () {
                     var self = this;
+                    if (self.currentLineBank().lineBankCode().length == 1) {
+                        var lineBankCode = '0' + self.currentLineBank().lineBankCode();
+                    }
                     var command = {
                         accountAtr: self.currentLineBank().accountAtr(),
                         accountNo: self.currentLineBank().accountNo(),

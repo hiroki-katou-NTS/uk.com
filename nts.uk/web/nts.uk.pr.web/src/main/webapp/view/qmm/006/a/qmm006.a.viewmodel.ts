@@ -168,8 +168,8 @@ module qmm006.a.viewmodel {
                     } else {
                         self.items([]);
                         if (self.isFirstFindAll()) {
-                        	self.clearForm();
-                        	self.isFirstFindAll(false);
+                            self.clearForm();
+                            self.isFirstFindAll(false);
                         }
                     }
                     dfd.resolve();
@@ -182,6 +182,9 @@ module qmm006.a.viewmodel {
 
         saveData() {
             var self = this;
+            if (self.currentLineBank().lineBankCode().length == 1) {
+                var lineBankCode = '0' + self.currentLineBank().lineBankCode();
+            }
             var command = {
                 accountAtr: self.currentLineBank().accountAtr(),
                 accountNo: self.currentLineBank().accountNo(),

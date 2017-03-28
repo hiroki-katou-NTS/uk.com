@@ -26,16 +26,15 @@ var qmm006;
                     var dfd = $.Deferred();
                     qmm006.c.service.findAll()
                         .done(function (data) {
-                        if (data.length > 0) {
+                        if (data.length > 1) {
                             self.items(data);
                             self.items1(data);
                         }
                         else {
-                            self.items([]);
-                            self.items1([]);
+                            nts.uk.ui.dialog.alert("対象データがありません。");
                         }
                         dfd.resolve();
-                    }).fail(function (res) { });
+                    }).fail(function () { });
                     return dfd.promise();
                 };
                 ScreenModel.prototype.transferData = function (data, newLineBankCode) {
@@ -53,11 +52,11 @@ var qmm006;
                     var oldLineBankCode = self.currentCode();
                     var newLineBankCode = self.currentCode1();
                     if (oldLineBankCode == null || newLineBankCode == null) {
-                        nts.uk.ui.dialog.alert("＊が選択されていません。"); //ER007
+                        nts.uk.ui.dialog.alert("＊が選択されていません。");
                         return;
                     }
                     else if (oldLineBankCode == newLineBankCode) {
-                        nts.uk.ui.dialog.alert("統合元と統合先で同じコードの＊が選択されています。\r\n  ＊を確認してください。"); //ER009
+                        nts.uk.ui.dialog.alert("統合元と統合先で同じコードの＊が選択されています。\r\n  ＊を確認してください。");
                         return;
                     }
                     else {
@@ -101,4 +100,4 @@ var qmm006;
     })(c = qmm006.c || (qmm006.c = {}));
 })(qmm006 || (qmm006 = {}));
 ;
-//# sourceMappingURL=viewmodel.js.map
+//# sourceMappingURL=qmm006.c.viewmodel.js.map
