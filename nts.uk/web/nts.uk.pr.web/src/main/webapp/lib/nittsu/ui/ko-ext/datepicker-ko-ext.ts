@@ -99,11 +99,12 @@ module nts.uk.ui.koExtentions {
 
             var data = valueAccessor();
             var container = $(element);
-            var idatr = container.attr("id");
             var newValue = ko.unwrap(data.value);
-            var dateFormat = data.dateFormat ? ko.unwrap(data.dateFormat) : "yyyy/MM/dd";
+            var dateFormat: string = (data.dateFormat !== undefined) ? ko.unwrap(data.dateFormat) : "yyyy/MM/dd";
+            var disabled: boolean = (data.disabled !== undefined) ? ko.unwrap(data.disabled) : false;
+            
+            var idatr = container.attr("id");
             var $input = container.find('#' + idatr + "-input");
-            var dateFormat = data.dateFormat ? ko.unwrap(data.dateFormat) : "yyyy/MM/dd";
             var formatOptions = container.data("format");
             var oldDate = $input.datepicker("getDate");
             if (formatOptions != 'yyyy/mm') {
@@ -119,12 +120,11 @@ module nts.uk.ui.koExtentions {
                     $input.datepicker("setDate", newDate);
                 $input.val(formatted.format());
             }
-            if (data.disabled !== undefined && ko.unwrap(data.disabled) == true) {
-                $input.prop("disabled", true);
-                if (data.button) {
-                    container.find('.datepicker-btn').prop("disabled", true);
-                }
-            }
+            
+            // Disable
+            $input.prop("disabled", disabled);
+            if (data.button) 
+                container.find('.datepicker-btn').prop("disabled", disabled);
         }
     }
     

@@ -10,7 +10,7 @@ import nts.arc.primitive.constraint.StringMaxLength;
 /**
  * The Class UnitPriceName.
  */
-@StringMaxLength(30)
+@StringMaxLength(20)
 public class UnitPriceName extends StringPrimitiveValue<UnitPriceName> {
 
 	/** The Constant serialVersionUID. */

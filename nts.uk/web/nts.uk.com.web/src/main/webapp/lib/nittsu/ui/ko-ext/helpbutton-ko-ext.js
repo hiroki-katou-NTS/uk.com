@@ -1,4 +1,3 @@
-/// <reference path="../../reference.ts"/>
 var nts;
 (function (nts) {
     var uk;
@@ -7,19 +6,14 @@ var nts;
         (function (ui) {
             var koExtentions;
             (function (koExtentions) {
-                /**
-                 * HelpButton binding handler
-                 */
                 var NtsHelpButtonBindingHandler = (function () {
                     function NtsHelpButtonBindingHandler() {
                     }
                     NtsHelpButtonBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                        // Get data
                         var data = valueAccessor();
                         var image = ko.unwrap(data.image);
                         var enable = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
                         var position = ko.unwrap(data.position);
-                        //Position
                         var myPositions = position.replace(/[^a-zA-Z ]/gmi, "").split(" ");
                         var atPositions = position.split(" ");
                         var operator = 1;
@@ -41,7 +35,6 @@ var nts;
                             caretPosition = "top";
                             marginDirection = "margin-left";
                         }
-                        // Container
                         $(element).on("click", function () {
                             if ($popup.is(":visible")) {
                                 $popup.hide();
@@ -66,7 +59,6 @@ var nts;
                             .append($caret)
                             .append($("<img src='" + uk.request.resolvePath(image) + "' />"))
                             .appendTo($container).hide();
-                        // Click outside event
                         $("html").on("click", function (event) {
                             if (!$container.is(event.target) && $container.has(event.target).length === 0) {
                                 $container.find(".nts-help-button-image").hide();
@@ -74,10 +66,8 @@ var nts;
                         });
                     };
                     NtsHelpButtonBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                        // Get data
                         var data = valueAccessor();
                         var enable = (data.enable !== undefined) ? ko.unwrap(data.enable) : true;
-                        // Enable
                         (enable === true) ? $(element).removeAttr("disabled") : $(element).attr("disabled", "disabled");
                     };
                     return NtsHelpButtonBindingHandler;
@@ -87,3 +77,4 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+//# sourceMappingURL=helpbutton-ko-ext.js.map

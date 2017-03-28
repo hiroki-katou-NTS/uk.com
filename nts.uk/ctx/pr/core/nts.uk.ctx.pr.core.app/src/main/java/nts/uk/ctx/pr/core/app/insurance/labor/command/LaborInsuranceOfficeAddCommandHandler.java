@@ -19,9 +19,7 @@ import nts.uk.shr.com.context.AppContexts;
  * The Class LaborInsuranceOfficeAddCommandHandler.
  */
 @Stateless
-public class LaborInsuranceOfficeAddCommandHandler
-		extends
-			CommandHandler<LaborInsuranceOfficeAddCommand> {
+public class LaborInsuranceOfficeAddCommandHandler extends CommandHandler<LaborInsuranceOfficeAddCommand> {
 
 	/** The labor insurance office repository. */
 	@Inject
@@ -33,21 +31,28 @@ public class LaborInsuranceOfficeAddCommandHandler
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command
 	 * .CommandHandlerContext)
 	 */
 	@Override
 	@Transactional
-	protected void handle(
-			CommandHandlerContext<LaborInsuranceOfficeAddCommand> context) {
+	protected void handle(CommandHandlerContext<LaborInsuranceOfficeAddCommand> context) {
+		// user login
 		String companyCode = AppContexts.user().companyCode();
-		LaborInsuranceOffice laborInsuranceOffice = context.getCommand()
-				.toDomain(companyCode);
+
+		// get command
+		LaborInsuranceOfficeAddCommand command = context.getCommand();
+
+		// toDomain
+		LaborInsuranceOffice laborInsuranceOffice = command.toDomain(companyCode);
+
+		// validate domain
 		laborInsuranceOffice.validate();
-		laborInsuranceOfficeService.validateRequiredItem(laborInsuranceOffice);
-		laborInsuranceOfficeService.checkDuplicateCode(laborInsuranceOffice);
+		this.laborInsuranceOfficeService.validateRequiredItem(laborInsuranceOffice);
+		this.laborInsuranceOfficeService.checkDuplicateCode(laborInsuranceOffice);
+		// add
 		this.laborInsuranceOfficeRepo.add(laborInsuranceOffice);
 	}
 }

@@ -8,7 +8,6 @@ import java.util.List;
 import java.util.Optional;
 
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.core.dom.company.CompanyCode;
 
 /**
  * The Interface UnemployeeInsuranceRateRepository.
@@ -61,13 +60,6 @@ public interface UnemployeeInsuranceRateRepository {
 	 * @return the optional
 	 */
 	Optional<UnemployeeInsuranceRate> findBetweenUpdate(String companyCode, YearMonth yearMonth,String historyId);
-
-	/**
-	 * Update to max year month.
-	 *
-	 * @param rate the rate
-	 */
-	void updateYearMonth(UnemployeeInsuranceRate rate,YearMonth yearMonth);
 
 	/**
 	 * Find fisrt data.

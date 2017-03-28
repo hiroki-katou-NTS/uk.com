@@ -6,7 +6,6 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.app.find.retirement.payitem.dto.RetirementPayItemDto;
 import nts.uk.ctx.pr.core.dom.retirement.payitem.RetirementPayItemRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -31,11 +30,11 @@ public class RetirementPayItemFinder {
 				.map(x -> new RetirementPayItemDto(
 						x.getCompanyCode(),
 						x.getCategory().value,
-						x.getItemCode().v(),
-						x.getItemName().v(),
+						x.getItemCode(),
+						x.getItemName(),
 						x.getPrintName().v(),
-						x.getEnglishName().v(),
-						x.getFullName().v(),
+						x.getEnglishName(),
+						x.getFullName(),
 						x.getMemo().v()))
 				.collect(Collectors.toList());
 	}

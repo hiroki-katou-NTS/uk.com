@@ -72,9 +72,7 @@ public class PensionAvgearnCommandDto {
 
 			@Override
 			public PensionAvgearnValue getPersonalFund() {
-				//return PensionAvgearnValueDto.toDomain(command.getPersonalFund());
-				// thua truong nay?
-				return new PensionAvgearnValue();
+				return PensionAvgearnValueDto.toDomain(dto.getPersonalFund());
 			}
 
 			@Override
@@ -99,9 +97,7 @@ public class PensionAvgearnCommandDto {
 
 			@Override
 			public PensionAvgearnValue getCompanyFund() {
-				//return PensionAvgearnValueDto.toDomain(command.getCompanyFund());
-				// Thua truong nay?
-				return new PensionAvgearnValue();
+				return PensionAvgearnValueDto.toDomain(dto.getCompanyFund());
 			}
 
 			@Override

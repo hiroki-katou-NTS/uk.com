@@ -23,11 +23,14 @@ import lombok.Setter;
 public class SalarySocialInsuranceReportData {
 
     /** The header data. */
-    public SalarySocialInsuranceHeaderReportData headerData;
-    
-    /** The columns.*/
-    private List<ColumnInformation> columns;
+    private SalarySocialInsuranceHeaderReportData headerData;
     
     /** The report item. */
-    public List<InsuranceOfficeDto> officeItems;
+    private List<InsuranceOfficeDto> officeItems;
+    
+    /** The total all office. */
+    private DataRowItem totalAllOffice;
+    
+    /** The configure output. */
+    private ChecklistPrintSettingDto configureOutput;
 }

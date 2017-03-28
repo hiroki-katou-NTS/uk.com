@@ -80,7 +80,7 @@ var nts;
                                     finder.ChooseOption = ChooseOption;
                                     //TODO change office item field
                                     var OfficeItemDto = (function () {
-                                        function OfficeItemDto(companyCode, code, name, shortName, picName, picPosition, potalCode, prefecture, address1st, address2nd, kanaAddress1st, kanaAddress2nd, phoneNumber, healthInsuOfficeRefCode1st, healthInsuOfficeRefCode2nd, pensionOfficeRefCode1st, pensionOfficeRefCode2nd, welfarePensionFundCode, officePensionFundCode, healthInsuCityCode, healthInsuOfficeSign, pensionCityCode, pensionOfficeSign, healthInsuOfficeCode, healthInsuAssoCode, memo) {
+                                        function OfficeItemDto(companyCode, code, name, shortName, picName, picPosition, potalCode, address1st, address2nd, kanaAddress1st, kanaAddress2nd, phoneNumber, healthInsuOfficeRefCode1st, healthInsuOfficeRefCode2nd, pensionOfficeRefCode1st, pensionOfficeRefCode2nd, welfarePensionFundCode, officePensionFundCode, healthInsuCityCode, healthInsuOfficeSign, pensionCityCode, pensionOfficeSign, healthInsuOfficeCode, healthInsuAssoCode, memo) {
                                             this.companyCode = companyCode;
                                             this.code = code;
                                             this.name = name;
@@ -88,7 +88,6 @@ var nts;
                                             this.picName = picName;
                                             this.picPosition = picPosition;
                                             this.potalCode = potalCode;
-                                            this.prefecture = prefecture;
                                             this.address1st = address1st;
                                             this.address2nd = address2nd;
                                             this.kanaAddress1st = kanaAddress1st;

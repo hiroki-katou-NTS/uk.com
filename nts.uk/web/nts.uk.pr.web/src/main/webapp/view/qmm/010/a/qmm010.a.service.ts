@@ -74,8 +74,6 @@ module nts.uk.pr.view.qmm010.a {
                 picPosition: string;
                 /** The potal code. */
                 potalCode: string;
-                /** The prefecture. */
-                prefecture: string;
                 /** The address 1 st. */
                 address1st: string;
                 /** The address 2 nd. */

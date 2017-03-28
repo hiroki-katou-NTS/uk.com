@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.pr.core.app.insurance.avgearn.find;
 
 import java.util.List;
@@ -6,7 +10,6 @@ import java.util.stream.Collectors;
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.avgearn.AvgEarnLevelMasterSettingRepository;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -27,10 +30,10 @@ public class AvgEarnLevelMasterSettingFinder {
 	 */
 	public List<AvgEarnLevelMasterSettingDto> findAll() {
 		// Get the current company code.
-		CompanyCode companyCode = new CompanyCode(AppContexts.user().companyCode());
+		String companyCode = AppContexts.user().companyCode();
 
 		// Get list AvgEarnLevelMasterSetting.
-		return repository.findAll(companyCode).stream().map(AvgEarnLevelMasterSettingDto::fromDomain)
-				.collect(Collectors.toList());
+		return repository.findAll(companyCode).stream()
+				.map(AvgEarnLevelMasterSettingDto::fromDomain).collect(Collectors.toList());
 	}
 }

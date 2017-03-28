@@ -16,11 +16,12 @@ module qrm007.a.viewmodel {
             var dfd = $.Deferred();
             self.findRetirementPayItemList(false)
                 .done(function() {
-                    $(document).delegate("#lst-001", "iggridselectionrowselectionchanging", function(evt, ui) {
+                    $(document).delegate("#LST_001", "iggridselectionrowselectionchanging", function(evt, ui) {
                         if (self.dirty.isDirty()) {
                             nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\nよろしいですか。 ").
                                 ifYes(function() {
-                                    $('#inp-1').ntsError('clear');
+                                    $('#INP_001').ntsError('clear');
+                                    $('#INP_002').ntsError('clear');
                                     self.currentCode(ui.row.id);
                                     self.currentItem(RetirementPayItem.converToObject(_.find(self.retirementPayItemList(), function(o) { return o.itemCode == self.currentCode(); })));
                                     self.dirty.reset();
@@ -28,7 +29,8 @@ module qrm007.a.viewmodel {
                                     self.currentCode(ui.selectedRows[0].id);
                                 });
                         } else {
-                            $('#inp-1').ntsError('clear');
+                            $('#INP_001').ntsError('clear');
+                            $('#INP_002').ntsError('clear');
                             self.currentCode(ui.row.id);
                             self.currentItem(RetirementPayItem.converToObject(_.find(self.retirementPayItemList(), function(o) { return o.itemCode == self.currentCode(); })));
                             self.dirty.reset();
