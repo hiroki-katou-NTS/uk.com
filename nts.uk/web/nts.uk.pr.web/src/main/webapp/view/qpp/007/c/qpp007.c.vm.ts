@@ -1,7 +1,5 @@
 module nts.uk.pr.view.qpp007.c {
     export module viewmodel {
-        import aggregateService = nts.uk.pr.view.qpp007.j.service;
-
         export class ScreenModel {
             outputSettings: KnockoutObservableArray<OutputSettingHeader>;
             outputSettingSelectedCode: KnockoutObservable<string>;
@@ -10,6 +8,7 @@ module nts.uk.pr.view.qpp007.c {
             reportItems: KnockoutObservableArray<ReportItem>;
             reportItemSelected: KnockoutObservable<string>;
             reportItemColumns: KnockoutObservableArray<any>;
+            allAggregateItems: Array<AggregateItem>;
             isLoading: KnockoutObservable<boolean>;
             isNewMode: KnockoutObservable<boolean>;
 
@@ -19,9 +18,10 @@ module nts.uk.pr.view.qpp007.c {
                 self.isNewMode = ko.observable(true);
                 self.outputSettings = ko.observableArray<OutputSettingHeader>([]);
                 self.outputSettingSelectedCode = ko.observable('');
-                self.outputSettingDetailModel = ko.observable(new OutputSettingDetailModel());
+                self.outputSettingDetailModel = ko.observable(new OutputSettingDetailModel([]));
                 self.reportItems = ko.observableArray<ReportItem>([]);
                 self.reportItemSelected = ko.observable('');
+                self.allAggregateItems = [];
 
                 for (let i = 1; i < 30; i++) {
                     this.outputSettings.push(new OutputSettingHeader('00' + i, '基本給' + i));
@@ -178,7 +178,7 @@ module nts.uk.pr.view.qpp007.c {
 
             private enableNewMode(): void {
                 var self = this;
-                self.outputSettingDetailModel(new OutputSettingDetailModel());
+                self.outputSettingDetailModel(new OutputSettingDetailModel([]));
                 self.outputSettingSelectedCode(null);
                 self.isNewMode(true);
             }
@@ -222,7 +222,7 @@ module nts.uk.pr.view.qpp007.c {
                 var self = this;
                 var dfd = $.Deferred<void>();
                 service.findOutputSettingDetail(code).done(function(data: OutputSettingDto) {
-                    self.outputSettingDetailModel(new OutputSettingDetailModel(data));
+                    self.outputSettingDetailModel(new OutputSettingDetailModel(self.allAggregateItems, data));
                     dfd.resolve();
                 }).fail(function(res) {
                     nts.uk.ui.dialog.alert(res);
@@ -235,12 +235,18 @@ module nts.uk.pr.view.qpp007.c {
             * Load aggregate items
             */
             public loadAggregateItems(): JQueryPromise<void> {
+                var self = this;
                 var dfd = $.Deferred<void>();
-                $.when(aggregateService.findSalaryAggregateItem({ taxDivision: 0, aggregateItemCode: '001' }),
-                    aggregateService.findSalaryAggregateItem({ taxDivision: 1, aggregateItemCode: '001' })).done((res1, res2) => {
-                        // TODO ...
-                        dfd.resolve();
+                service.findAllAggregateItems().done(res => {
+                    res.forEach(function(item: any) {
+                        self.allAggregateItems.push({
+                            code: item.salaryAggregateItemCode,
+                            name: item.salaryAggregateItemName,
+                            taxDivision: item.taxDivision,
+                        });
                     });
+                    dfd.resolve();
+                });
                 return dfd.promise();
             }
 
@@ -282,10 +288,12 @@ module nts.uk.pr.view.qpp007.c {
             categorySettingTabs: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel>;
             selectedCategory: KnockoutObservable<string>;
             categorySettings: KnockoutObservableArray<CategorySettingModel>;
+            aggregateItems: Array<AggregateItem>;
             reloadReportItems: () => void;
-            constructor(outputSetting?: OutputSettingDto) {
+            constructor(aggregateItems: Array<AggregateItem>, outputSetting?: OutputSettingDto) {
                 this.settingCode = ko.observable(outputSetting != undefined ? outputSetting.code : '');
                 this.settingName = ko.observable(outputSetting != undefined ? outputSetting.name : '');
+                this.aggregateItems = aggregateItems;
                 var settings: CategorySettingModel[] = [];
                 if (outputSetting == undefined) {
                     settings = this.toModel();
@@ -329,14 +337,14 @@ module nts.uk.pr.view.qpp007.c {
             private filterSettingByCategory(category: SalaryCategory, categorySettings?: CategorySettingDto[]): CategorySettingModel {
                 var cateTempSetting: CategorySettingDto = { category: category, outputItems: [] };
                 if (categorySettings == undefined) {
-                    return new CategorySettingModel(category, cateTempSetting);
+                    return new CategorySettingModel(category, this.aggregateItems,cateTempSetting);
                 }
 
                 var categorySetting = categorySettings.filter(item => item.category == category)[0];
                 if (categorySetting == undefined) {
                     categorySetting = cateTempSetting;
                 }
-                return new CategorySettingModel(category, categorySetting);
+                return new CategorySettingModel(category, this.aggregateItems, categorySetting);
             }
 
         }
@@ -361,7 +369,7 @@ module nts.uk.pr.view.qpp007.c {
             outputItemSelected: KnockoutObservable<string>;
             outputItemsSelected: KnockoutObservableArray<string>;
             outputItemColumns: KnockoutObservableArray<nts.uk.ui.NtsGridListColumn>;
-            constructor(categoryName: SalaryCategory, categorySetting?: CategorySettingDto) {
+            constructor(categoryName: SalaryCategory, aggregateItems: Array<AggregateItem>, categorySetting?: CategorySettingDto) {
                 var self = this;
                 self.categoryName = categoryName;
                 self.aggregateItems = ko.observableArray<AggregateItem>([]);
@@ -372,10 +380,23 @@ module nts.uk.pr.view.qpp007.c {
                 self.outputItemSelected = ko.observable(null);
                 self.outputItemsSelected = ko.observableArray<string>([]);
 
-                // mock data
-                for (let i = 1; i < 15; i++) {
-                    this.aggregateItems.push({ code: '00' + i, name: '基本給' + i, subItems: [], taxDivision: 'Payment', value: i });
+                if (categoryName == SalaryCategory.PAYMENT) {
+                    aggregateItems.forEach(item => {
+                        if (item.taxDivision == TaxDivision.PAYMENT) {
+                            self.aggregateItems.push(item);
+                        }
+                    })
                 }
+
+                if (categoryName == SalaryCategory.DEDUCTION) {
+                    aggregateItems.forEach(item => {
+                        if (item.taxDivision == TaxDivision.DEDUCTION) {
+                            self.aggregateItems.push(item);
+                        }
+                    })
+                }
+
+                // mock data
                 for (let i = 1; i < 15; i++) {
                     this.masterItems.push({ code: '00' + i, name: '基本給' + i, paymentType: 'Salary', taxDivision: 'Deduction' });
                 }
@@ -490,9 +511,7 @@ module nts.uk.pr.view.qpp007.c {
                     self.aggregateItems.push({
                         code: selectedItem.code,
                         name: selectedItem.name,
-                        subItems: [],
                         taxDivision: TaxDivision.PAYMENT,
-                        value: 5
                     });
                     return;
                 }
@@ -509,9 +528,7 @@ module nts.uk.pr.view.qpp007.c {
         export class AggregateItem {
             code: string;
             name: string;
-            subItems: string[];
             taxDivision: TaxDivision;
-            value: number;
         }
         export class MasterItem {
             code: string;

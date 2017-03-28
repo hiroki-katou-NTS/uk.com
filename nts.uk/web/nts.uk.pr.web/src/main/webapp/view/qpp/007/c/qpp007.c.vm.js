@@ -12,7 +12,6 @@ var nts;
                     (function (c) {
                         var viewmodel;
                         (function (viewmodel) {
-                            var aggregateService = nts.uk.pr.view.qpp007.j.service;
                             var ScreenModel = (function () {
                                 function ScreenModel() {
                                     var self = this;
@@ -20,9 +19,10 @@ var nts;
                                     self.isNewMode = ko.observable(true);
                                     self.outputSettings = ko.observableArray([]);
                                     self.outputSettingSelectedCode = ko.observable('');
-                                    self.outputSettingDetailModel = ko.observable(new OutputSettingDetailModel());
+                                    self.outputSettingDetailModel = ko.observable(new OutputSettingDetailModel([]));
                                     self.reportItems = ko.observableArray([]);
                                     self.reportItemSelected = ko.observable('');
+                                    self.allAggregateItems = [];
                                     for (var i = 1; i < 30; i++) {
                                         this.outputSettings.push(new OutputSettingHeader('00' + i, '基本給' + i));
                                     }
@@ -143,7 +143,7 @@ var nts;
                                 };
                                 ScreenModel.prototype.enableNewMode = function () {
                                     var self = this;
-                                    self.outputSettingDetailModel(new OutputSettingDetailModel());
+                                    self.outputSettingDetailModel(new OutputSettingDetailModel([]));
                                     self.outputSettingSelectedCode(null);
                                     self.isNewMode(true);
                                 };
@@ -174,7 +174,7 @@ var nts;
                                     var self = this;
                                     var dfd = $.Deferred();
                                     c.service.findOutputSettingDetail(code).done(function (data) {
-                                        self.outputSettingDetailModel(new OutputSettingDetailModel(data));
+                                        self.outputSettingDetailModel(new OutputSettingDetailModel(self.allAggregateItems, data));
                                         dfd.resolve();
                                     }).fail(function (res) {
                                         nts.uk.ui.dialog.alert(res);
@@ -183,8 +183,16 @@ var nts;
                                     return dfd.promise();
                                 };
                                 ScreenModel.prototype.loadAggregateItems = function () {
+                                    var self = this;
                                     var dfd = $.Deferred();
-                                    $.when(aggregateService.findSalaryAggregateItem({ taxDivision: 0, aggregateItemCode: '001' }), aggregateService.findSalaryAggregateItem({ taxDivision: 1, aggregateItemCode: '001' })).done(function (res1, res2) {
+                                    c.service.findAllAggregateItems().done(function (res) {
+                                        res.forEach(function (item) {
+                                            self.allAggregateItems.push({
+                                                code: item.salaryAggregateItemCode,
+                                                name: item.salaryAggregateItemName,
+                                                taxDivision: item.taxDivision,
+                                            });
+                                        });
                                         dfd.resolve();
                                     });
                                     return dfd.promise();
@@ -214,9 +222,10 @@ var nts;
                             }());
                             viewmodel.OutputSettingDto = OutputSettingDto;
                             var OutputSettingDetailModel = (function () {
-                                function OutputSettingDetailModel(outputSetting) {
+                                function OutputSettingDetailModel(aggregateItems, outputSetting) {
                                     this.settingCode = ko.observable(outputSetting != undefined ? outputSetting.code : '');
                                     this.settingName = ko.observable(outputSetting != undefined ? outputSetting.name : '');
+                                    this.aggregateItems = aggregateItems;
                                     var settings = [];
                                     if (outputSetting == undefined) {
                                         settings = this.toModel();
@@ -254,13 +263,13 @@ var nts;
                                 OutputSettingDetailModel.prototype.filterSettingByCategory = function (category, categorySettings) {
                                     var cateTempSetting = { category: category, outputItems: [] };
                                     if (categorySettings == undefined) {
-                                        return new CategorySettingModel(category, cateTempSetting);
+                                        return new CategorySettingModel(category, this.aggregateItems, cateTempSetting);
                                     }
                                     var categorySetting = categorySettings.filter(function (item) { return item.category == category; })[0];
                                     if (categorySetting == undefined) {
                                         categorySetting = cateTempSetting;
                                     }
-                                    return new CategorySettingModel(category, categorySetting);
+                                    return new CategorySettingModel(category, this.aggregateItems, categorySetting);
                                 };
                                 return OutputSettingDetailModel;
                             }());
@@ -274,7 +283,7 @@ var nts;
                             }());
                             viewmodel.CategorySettingDto = CategorySettingDto;
                             var CategorySettingModel = (function () {
-                                function CategorySettingModel(categoryName, categorySetting) {
+                                function CategorySettingModel(categoryName, aggregateItems, categorySetting) {
                                     var self = this;
                                     self.categoryName = categoryName;
                                     self.aggregateItems = ko.observableArray([]);
@@ -284,8 +293,19 @@ var nts;
                                     self.outputItems = ko.observableArray(categorySetting != undefined ? categorySetting.outputItems : []);
                                     self.outputItemSelected = ko.observable(null);
                                     self.outputItemsSelected = ko.observableArray([]);
-                                    for (var i = 1; i < 15; i++) {
-                                        this.aggregateItems.push({ code: '00' + i, name: '基本給' + i, subItems: [], taxDivision: 'Payment', value: i });
+                                    if (categoryName == SalaryCategory.PAYMENT) {
+                                        aggregateItems.forEach(function (item) {
+                                            if (item.taxDivision == TaxDivision.PAYMENT) {
+                                                self.aggregateItems.push(item);
+                                            }
+                                        });
+                                    }
+                                    if (categoryName == SalaryCategory.DEDUCTION) {
+                                        aggregateItems.forEach(function (item) {
+                                            if (item.taxDivision == TaxDivision.DEDUCTION) {
+                                                self.aggregateItems.push(item);
+                                            }
+                                        });
                                     }
                                     for (var i = 1; i < 15; i++) {
                                         this.masterItems.push({ code: '00' + i, name: '基本給' + i, paymentType: 'Salary', taxDivision: 'Deduction' });
@@ -374,9 +394,7 @@ var nts;
                                         self.aggregateItems.push({
                                             code: selectedItem.code,
                                             name: selectedItem.name,
-                                            subItems: [],
                                             taxDivision: TaxDivision.PAYMENT,
-                                            value: 5
                                         });
                                         return;
                                     }

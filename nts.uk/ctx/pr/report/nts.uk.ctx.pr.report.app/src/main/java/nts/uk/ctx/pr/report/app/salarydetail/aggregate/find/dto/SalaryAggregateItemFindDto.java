@@ -27,6 +27,9 @@ public class SalaryAggregateItemFindDto implements SalaryAggregateItemSetMemento
 	/** The salary aggregate item name. */
 	private String salaryAggregateItemName;
 
+	/** The tax division. */
+	private TaxDivision taxDivision;
+
 	/** The sub item codes. */
 	private List<SalaryItemDto> subItemCodes;
 
@@ -74,8 +77,7 @@ public class SalaryAggregateItemFindDto implements SalaryAggregateItemSetMemento
 	 */
 	@Override
 	public void setTaxDivision(TaxDivision taxDivision) {
-		// No thing
-
+		this.taxDivision = taxDivision;
 	}
 
 	/* (non-Javadoc)
