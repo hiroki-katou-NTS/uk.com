@@ -46,41 +46,42 @@ module cmm001.a {
 
                 if (newValue) {
                     //nts.uk.ui.dialog.confirm("Do you want to change data?").ifYes(function() {
-                        $('#A_SEL_001').ntsError('clear');
-                        currentColumns[2].hidden = false;
-                        $grid.igGrid("option", "width", "400px");
-                        self.sel001Data([]);
-                        self.start(undefined);
-                  //      });
-                    
+                    $('#A_SEL_001').ntsError('clear');
+                    currentColumns[2].hidden = false;
+                    $grid.igGrid("option", "width", "400px");
+                    self.sel001Data([]);
+                    self.start(undefined);
+                    //      });  
                 } else {
-                   //  nts.uk.ui.dialog.confirm("Do you want to change data?").ifYes(function() {
-                        self.sel001Data([]);
-                        currentColumns[2].hidden = true;
-                        $grid.igGrid("option", "width", "400px");
-                        service.getAllCompanys().done(function(data: Array<service.model.CompanyDto>) {
-                            if (data.length > 0) {
-                                _.each(data, function(obj: service.model.CompanyDto) {
-                                    let companyModel: CompanyModel;
-                                    companyModel = ko.mapping.fromJS(obj);
-                                    if (obj.displayAttribute === 0) {
-                                        companyModel.displayAttribute('');
-                                        self.sel001Data.push(ko.toJS(companyModel));
-
-                                    }
-                                });
-                                var companyCheckExist = _.find(self.sel001Data(), function(obj: CompanyModel) {
-                                    let x: string = ko.toJS(obj.companyCode);
-                                    let y: string = (ko.toJS(self.currentCompany().companyCode));
-                                    return x === y;
-
-                                });
-                                if (!companyCheckExist) {
-                                    self.currentCompany().companyCode(ko.toJS(self.sel001Data()[0].companyCode));
+                    //  nts.uk.ui.dialog.confirm("Do you want to change data?").ifYes(function() {
+                    self.sel001Data([]);
+                    currentColumns[2].hidden = true;
+                    $grid.igGrid("option", "width", "400px");
+                    service.getAllCompanys().done(function(data: Array<service.model.CompanyDto>) {
+                        if (data.length > 0) {
+                            _.each(data, function(obj: service.model.CompanyDto) {
+                                let companyModel: CompanyModel;
+                                companyModel = ko.mapping.fromJS(obj);
+                                if (obj.displayAttribute === 0) {
+                                    companyModel.displayAttribute('');
+                                    self.sel001Data.push(ko.toJS(companyModel));
 
                                 }
+                            });
+                            var companyCheckExist = _.find(self.sel001Data(), function(obj: CompanyModel) {
+                                let x: string = ko.toJS(obj.companyCode);
+                                let y: string = (ko.toJS(self.currentCompany().companyCode));
+                                return x === y;
+
+                            });
+                            if (companyCheckExist != undefined) {
+                                self.currentCompany().companyCode(ko.toJS(self.sel001Data()[0].companyCode));
+
+                            } else {
+                                self.currentCompany().companyCode("");
                             }
-                        });
+                        }
+                    });
                     //     });
                 }
                 $grid.igGrid("option", "columns", currentColumns);

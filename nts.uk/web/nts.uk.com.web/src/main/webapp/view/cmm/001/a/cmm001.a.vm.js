@@ -63,8 +63,11 @@ var cmm001;
                                     var y = (ko.toJS(self.currentCompany().companyCode));
                                     return x === y;
                                 });
-                                if (!companyCheckExist) {
+                                if (companyCheckExist != undefined) {
                                     self.currentCompany().companyCode(ko.toJS(self.sel001Data()[0].companyCode));
+                                }
+                                else {
+                                    self.currentCompany().companyCode("");
                                 }
                             }
                         });
