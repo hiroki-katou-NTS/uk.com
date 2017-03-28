@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-import nts.uk.ctx.pr.report.dom.company.CompanyCode;
 import nts.uk.ctx.pr.report.dom.wageledger.PaymentType;
 import nts.uk.ctx.pr.report.dom.wageledger.WLCategory;
 import nts.uk.ctx.pr.report.dom.wageledger.aggregate.WLAggregateItemCode;
@@ -29,7 +28,7 @@ public class JpaWLAggregateItemSetMemento implements WLAggregateItemSetMemento {
 	private QlsptLedgerAggreHead entity;
 	
 	/** The company code. */
-	private CompanyCode companyCode;
+	private String companyCode;
 	
 	/** The code. */
 	private WLAggregateItemCode code;
@@ -90,7 +89,7 @@ public class JpaWLAggregateItemSetMemento implements WLAggregateItemSetMemento {
 		subItems.parallelStream().forEach(item -> {
 			QlsptLedgerAggreDetail itemEntity = new QlsptLedgerAggreDetail();
 			itemEntity.setQlsptLedgerAggreDetailPK(new QlsptLedgerAggreDetailPK(
-					this.companyCode.v(), this.paymentType.value,
+					this.companyCode, this.paymentType.value,
 					this.code.v(), this.category.value, item));
 			itemList.add(itemEntity);
 		});

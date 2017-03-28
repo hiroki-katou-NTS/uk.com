@@ -6,7 +6,6 @@ package nts.uk.ctx.pr.core.dom.wagetable;
 
 import java.util.List;
 
-import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.wagetable.element.WtElement;
 import nts.uk.shr.com.primitive.Memo;
 
@@ -20,7 +19,7 @@ public interface WtHeadGetMemento {
 	 *
 	 * @return the company code
 	 */
-	CompanyCode getCompanyCode();
+	String getCompanyCode();
 
 	/**
 	 * Gets the code.

@@ -7,8 +7,9 @@
 <body>
 	<ui:composition>
 		<!-- BEGIN LEFT CONTENT-->
-		<div id="left-content" class="bg-green caret-right caret-background" style="width: 370px">
+		<div id="left-content" class="bg-green caret-right caret-background" style="width: 410px">
 			<div>
+				<i class="icon icon-searchbox"></i>
 				<div data-bind="ntsFormLabel: {}">コード/名称</div>
 				<span id="historyTreeSearchBox"
 					data-bind="ntsSearchBox: {comId:'historyTree',
@@ -18,8 +19,8 @@
 					childField: 'childs', 
 					fields: ['searchText']}"></span>
 			</div>
-			<div style="margin: 5px;">
-				<div style="padding-bottom: 5px">
+			<div style="margin-top: 15px; padding-right: 30px">
+				<div style="padding-bottom: 10px">
 					<button class="pull-left" id="addHistory"
 						data-bind="enable: canAddNewHistory, click: addNewHistoryBtnClick">履歴追加</button>
 					<button class="pull-right" id="editHistory"

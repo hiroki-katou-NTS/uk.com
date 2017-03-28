@@ -6,3 +6,4 @@ __viewContext.ready(function () {
     };
     this.bind(x);
 });
+//# sourceMappingURL=start.js.map

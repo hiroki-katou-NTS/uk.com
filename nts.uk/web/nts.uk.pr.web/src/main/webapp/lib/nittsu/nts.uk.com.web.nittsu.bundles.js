@@ -9,7 +9,7 @@ var nts;
         var util;
         (function (util) {
             /**
-             * 常にtrueを返す関数が必要になったらこれ
+             * 常にtrueを返す関数が�?��になったらこれ
              */
             function alwaysTrue() {
                 return true;
@@ -154,8 +154,8 @@ var nts;
             }
             util.isInFrame = isInFrame;
             /**
-             * valueMaybeEmptyがnullまたはundefinedの場合、defaultValueを返す。
-             * そうでなければ、valueMaybeEmptyを返す。
+             * valueMaybeEmptyがnullまた�?undefinedの場合�?�defaultValueを返す�?
+             * そうでなければ、valueMaybeEmptyを返す�?
              */
             function orDefault(valueMaybeEmpty, defaultValue) {
                 return isNullOrUndefined(valueMaybeEmpty) ? defaultValue : valueMaybeEmpty;
@@ -468,20 +468,20 @@ var nts;
                 allHalfNumeric: /^\d*$/,
                 allHalfAlphabet: /^[a-zA-Z]*$/,
                 allHalfAlphanumeric: /^[a-zA-Z0-9]*$/,
-                allHalfKatakanaReg: /^[ｱ-ﾝｧ-ｫｬ-ｮｯｦ ﾞﾟ｡.ｰ､･'-]*$/,
-                allFullKatakanaReg: /^[ァ-ー　。．ー、・’－ヴヽヾ]*$/,
-                allHiragana: /^[ぁ-ん　ー ]*$/,
+                allHalfKatakanaReg: /^[?�-?�ｧ-?�?�-?�?�?� ?�ﾟ｡.?�?�?�'-]*$/,
+                allFullKatakanaReg: /^[ァ-ー�?。．�?、�?’－ヴヽヾ]*$/,
+                allHiragana: /^[�?-ん�??ー ]*$/,
             };
             /**
-             * 文字列の半角文字数を数える（Unicode用）
-             * @param text 解析対象の文字列
+             * �?���?の半角文字数を数える??nicode用??
+             * @param text 解析対象の�?���?
              */
             function countHalf(text) {
                 var count = 0;
                 for (var i = 0; i < text.length; i++) {
                     var c = text.charCodeAt(i);
-                    // 0x20 ～ 0x80: 半角記号と半角英数字
-                    // 0xff61 ～ 0xff9f: 半角カタカナ
+                    // 0x20 ?? 0x80: 半角記号と半角英数�?
+                    // 0xff61 ?? 0xff9f: 半角カタカ�?
                     if ((0x20 <= c && c <= 0x7e) || (0xff61 <= c && c <= 0xff9f)) {
                         count += 1;
                     }
@@ -493,72 +493,72 @@ var nts;
             }
             text_1.countHalf = countHalf;
             /**
-             * 文字列が半角数字のみで構成された1文字以上の文字列かどうか判断する
-             * @param text 解析対象の文字列
+             * �?���?が半角数字�?みで構�?され�?1�?��以上�?�?���?かど�?��判断する
+             * @param text 解析対象の�?���?
              */
             function allHalfNumeric(text) {
                 return regexp.allHalfNumeric.test(text);
             }
             text_1.allHalfNumeric = allHalfNumeric;
             /**
-             * 文字列が半角英字のみで構成された1文字以上の文字列かどうか判断する
-             * @param text 解析対象の文字列
+             * �?���?が半角英字�?みで構�?され�?1�?��以上�?�?���?かど�?��判断する
+             * @param text 解析対象の�?���?
              */
             function allHalfAlphabet(text) {
                 return regexp.allHalfAlphabet.test(text);
             }
             text_1.allHalfAlphabet = allHalfAlphabet;
             /**
-             * 文字列が半角英数字のみで構成された1文字以上の文字列かどうか判断する
-             * @param text 解析対象の文字列
+             * �?���?が半角英数字�?みで構�?され�?1�?��以上�?�?���?かど�?��判断する
+             * @param text 解析対象の�?���?
              */
             function allHalfAlphanumeric(text) {
                 return regexp.allHalfAlphanumeric.test(text);
             }
             text_1.allHalfAlphanumeric = allHalfAlphanumeric;
             /**
-             * 文字列が半角カナのみで構成された1文字以上の文字列かどうか判断する
-             * @param text 解析対象の文字列
+             * �?���?が半角カナ�?みで構�?され�?1�?��以上�?�?���?かど�?��判断する
+             * @param text 解析対象の�?���?
              */
             function allHalfKatakana(text) {
                 return regexp.allHalfKatakanaReg.test(text);
             }
             text_1.allHalfKatakana = allHalfKatakana;
             /**
-             * 文字列が全角カナのみで構成された1文字以上の文字列かどうか判断する
-             * @param text 解析対象の文字列
+             * �?���?が�?角カナ�?みで構�?され�?1�?��以上�?�?���?かど�?��判断する
+             * @param text 解析対象の�?���?
              */
             function allFullKatakana(text) {
                 return regexp.allFullKatakanaReg.test(text);
             }
             text_1.allFullKatakana = allFullKatakana;
             /**
-             * 文字列が半角文字のみで構成された1文字以上の文字列かどうか判断する
-             * @param text 解析対象の文字列
+             * �?���?が半角文字�?みで構�?され�?1�?��以上�?�?���?かど�?��判断する
+             * @param text 解析対象の�?���?
              */
             function allHalf(text) {
                 return text.length === countHalf(text);
             }
             text_1.allHalf = allHalf;
             /**
-             * 文字列が平仮名のみで構成された1文字以上の文字列かどうか判断する
-             * @param text 解析対象の文字列
+             * �?���?が平仮名�?みで構�?され�?1�?��以上�?�?���?かど�?��判断する
+             * @param text 解析対象の�?���?
              */
             function allHiragana(text) {
                 return regexp.allHiragana.test(text);
             }
             text_1.allHiragana = allHiragana;
             /**
-             * 文字列がカタカナのみで構成された1文字以上の文字列かどうか判断する
-             * @param text 解析対象の文字列
+             * �?���?がカタカナ�?みで構�?され�?1�?��以上�?�?���?かど�?��判断する
+             * @param text 解析対象の�?���?
              */
             function allKatakana(text) {
                 return regexp.allFullKatakanaReg.test(text);
             }
             text_1.allKatakana = allKatakana;
             /**
-             * 文字列中のHTML記号をサニタイズする
-             * @param text 変換対象の文字列
+             * �?���?中のHTML記号をサニタイズする
+             * @param text 変換対象の�?���?
              */
             function htmlEncode(text) {
                 var element = document.createElement('pre');
@@ -572,8 +572,8 @@ var nts;
             }
             text_1.htmlEncode = htmlEncode;
             /**
-             * 1文字目のみ小文字に変換する
-             * @param text 変換対象の文字列
+             * 1�?��目のみ小文字に変換する
+             * @param text 変換対象の�?���?
              */
             function toLowerCaseFirst(text) {
                 return text.charAt(0).toLowerCase() + text.slice(1);
@@ -581,16 +581,16 @@ var nts;
             text_1.toLowerCaseFirst = toLowerCaseFirst;
             ;
             /**
-             * 1文字目のみ大文字に変換する
-             * @param text 変換対象の文字列
+             * 1�?��目のみ大�?��に変換する
+             * @param text 変換対象の�?���?
              */
             function toUpperCaseFirst(text) {
                 return text.charAt(0).toUpperCase() + text.slice(1);
             }
             text_1.toUpperCaseFirst = toUpperCaseFirst;
             /**
-            * 指定された文字列が、null、undefined、Emptyか判定する
-            * @param text 判定対象の文字列
+            * �?��された�?���?が�?�null、undefined、Emptyか判定す�?
+            * @param text 判定対象の�?���?
             */
             function isNullOrEmpty(text) {
                 var result = true;
@@ -602,9 +602,9 @@ var nts;
             }
             text_1.isNullOrEmpty = isNullOrEmpty;
             /**
-            * 指定した文字列の各書式項目を、対応するオブジェクトの値と等価のテキストに置換する
-            * @param text 書式文字列
-            * @param args 置換の文字列（配列可）
+            * �?��した文字�?の�?��式�??��を�?�対応するオブジェクト�?値と等価の�?��ストに置換す�?
+            * @param text 書式文字�?
+            * @param args 置換�?�?���??��?列可??
             */
             function format(format) {
                 var args = [];
@@ -623,31 +623,31 @@ var nts;
             }
             text_1.format = format;
             /**
-            * 変換文字列の先頭に、文字数分の指定文字列を追加する
-            * @param text 変換対象の文字列
-            * @param paddingChar 指定文字列
-            * @param length 文字数
+            * 変換�?���?の先�?�に、文字数�??�?��文字�?を追�?する
+            * @param text 変換対象の�?���?
+            * @param paddingChar �?��文字�?
+            * @param length �?��数
             */
             function padLeft(text, paddingChar, length) {
                 return charPadding(text, paddingChar, true, length);
             }
             text_1.padLeft = padLeft;
             /**
-            * 変換文字列の末尾に、文字数分の指定文字列を追加する
-            * @param text 変換対象の文字列
-            * @param paddingChar 指定文字列
-            * @param length 文字数
+            * 変換�?���?の末尾に、文字数�??�?��文字�?を追�?する
+            * @param text 変換対象の�?���?
+            * @param paddingChar �?��文字�?
+            * @param length �?��数
             */
             function padRight(text, paddingChar, length) {
                 return charPadding(text, paddingChar, false, length);
             }
             text_1.padRight = padRight;
             /**
-            * 指定した文字列に、指定した文字列数分、指定文字列を追加する
-            * @param text 変換対象の文字列
-            * @param paddingChar 埋める文字列
-            * @param isPadLeft 左埋めフラグ（false：右埋め）
-            * @param length 文字数
+            * �?��した文字�?に、指定した文字�?数�??�指定文字�?を追�?する
+            * @param text 変換対象の�?���?
+            * @param paddingChar 埋める文字�?
+            * @param isPadLeft 左埋めフラグ??alse?�右埋め??
+            * @param length �?��数
             */
             function charPadding(text, paddingChar, isPadLeft, length) {
                 var result;
@@ -710,7 +710,7 @@ var nts;
                     }
                 };
                 CharType.prototype.buildConstraintText = function (maxLength) {
-                    return this.viewName + this.getViewLength(maxLength) + '文字';
+                    return this.viewName + this.getViewLength(maxLength) + '�?�?';
                 };
                 CharType.prototype.getViewLength = function (length) {
                     return Math.floor(length / (this.width * 2));
@@ -719,11 +719,11 @@ var nts;
             }());
             text_1.CharType = CharType;
             var charTypes = {
-                AnyHalfWidth: new CharType('半角', 0.5, nts.uk.text.allHalf),
-                AlphaNumeric: new CharType('半角英数字', 0.5, nts.uk.text.allHalfAlphanumeric),
-                Alphabet: new CharType('半角英字', 0.5, nts.uk.text.allHalfAlphabet),
-                Numeric: new CharType('半角数字', 0.5, nts.uk.text.allHalfNumeric),
-                Any: new CharType('全角', 1, nts.uk.util.alwaysTrue),
+                AnyHalfWidth: new CharType('半�?', 0.5, nts.uk.text.allHalf),
+                AlphaNumeric: new CharType('半角英数�?', 0.5, nts.uk.text.allHalfAlphanumeric),
+                Alphabet: new CharType('半角英�?', 0.5, nts.uk.text.allHalfAlphabet),
+                Numeric: new CharType('半角数�?', 0.5, nts.uk.text.allHalfNumeric),
+                Any: new CharType('全�?', 1, nts.uk.util.alwaysTrue),
             };
             function getCharType(primitiveValueName) {
                 var constraint = __viewContext.primitiveValueConstraints[primitiveValueName];
@@ -776,8 +776,8 @@ var nts;
             function formatCurrency(amount, locale) {
                 var result = addSeperation("" + amount);
                 if (locale == 'en' || locale == 'EN')
-                    return "￥" + result;
-                return result + "円";
+                    return "?�" + result;
+                return result + "�?";
             }
             text_1.formatCurrency = formatCurrency;
             function reverseDirection(direction) {
@@ -938,7 +938,7 @@ var nts;
             time_1.formatYearMonth = formatYearMonth;
             function getYearMonthJapan(year, month) {
                 if (month)
-                    return year + "年 " + month + " 月";
+                    return year + "年 " + month + " �?";
                 return year;
             }
             var JapanYearMonth = (function () {
@@ -959,7 +959,7 @@ var nts;
                 JapanYearMonth.prototype.toString = function () {
                     return (this.empire === undefined ? "" : this.empire + " ")
                         + (this.year === undefined ? "" : this.year + " 年 ")
-                        + (this.month === undefined ? "" : this.month + " 月");
+                        + (this.month === undefined ? "" : this.month + " �?");
                 };
                 return JapanYearMonth;
             }());
@@ -970,7 +970,7 @@ var nts;
                 }
                 year = parseInt(year);
                 if (year == 1868) {
-                    return new JapanYearMonth("明治元年");
+                    return new JapanYearMonth("明治�?��");
                 }
                 if (year <= 1912) {
                     var diff = year - 1867;
@@ -982,25 +982,25 @@ var nts;
                 }
                 if (year < 1989) {
                     var diff = year - 1925;
-                    return new JapanYearMonth("昭和 ", diff);
+                    return new JapanYearMonth("昭�? ", diff);
                 }
                 if (year == 1989) {
-                    return new JapanYearMonth("平成元年 ", diff);
+                    return new JapanYearMonth("平成�?年 ", diff);
                 }
                 var diff = year - 1988;
-                return new JapanYearMonth("平成 ", diff);
+                return new JapanYearMonth("平�? ", diff);
             }
             time_1.yearInJapanEmpire = yearInJapanEmpire;
             function yearmonthInJapanEmpire(yearmonth) {
                 if (!(yearmonth instanceof String)) {
                     yearmonth = "" + yearmonth;
                 }
-                var nguyennien = "元年";
+                var nguyennien = "�?��";
                 yearmonth = yearmonth.replace("/", "");
                 var year = parseInt(yearmonth.substring(0, 4));
                 var month = parseInt(yearmonth.substring(4));
                 if (year == 1868) {
-                    return new JapanYearMonth("明治元年 ", undefined, month);
+                    return new JapanYearMonth("明治�?�� ", undefined, month);
                 }
                 if (year < 1912) {
                     var diff = year - 1867;
@@ -1009,7 +1009,7 @@ var nts;
                 if (year == 1912) {
                     if (month < 8)
                         return new JapanYearMonth("明治 ", 45, month);
-                    return new JapanYearMonth("大正元年 ", undefined, month);
+                    return new JapanYearMonth("大正�?�� ", undefined, month);
                 }
                 if (year < 1926) {
                     var diff = year - 1911;
@@ -1018,17 +1018,17 @@ var nts;
                 if (year == 1926) {
                     if (month < 12)
                         return new JapanYearMonth("大正", 15, month);
-                    return new JapanYearMonth("昭和元年 ", undefined, month);
+                    return new JapanYearMonth("昭和�?年 ", undefined, month);
                 }
                 if (year < 1989) {
                     var diff = year - 1925;
-                    return new JapanYearMonth("昭和 ", diff, month);
+                    return new JapanYearMonth("昭�? ", diff, month);
                 }
                 if (year == 1989) {
-                    return new JapanYearMonth("平成元年 ", undefined, month);
+                    return new JapanYearMonth("平成�?年 ", undefined, month);
                 }
                 var diff = year - 1988;
-                return new JapanYearMonth("平成 ", diff, month);
+                return new JapanYearMonth("平�? ", diff, month);
             }
             time_1.yearmonthInJapanEmpire = yearmonthInJapanEmpire;
             function formatSeconds(seconds, formatOption) {
@@ -1313,10 +1313,10 @@ var nts;
             }
             time_1.parseYearMonthDate = parseYearMonthDate;
             /**
-            * 日付をフォーマットする
-            * @param  {Date}   date     日付
-            * @param  {String} [format] フォーマット
-            * @return {String}          フォーマット済み日付
+            * 日付をフォーマットす�?
+            * @param  {Date}   date     日�?
+            * @param  {String} [format] フォーマッ�?
+            * @return {String}          フォーマット済み日�?
             */
             function formatDate(date, format) {
                 if (!format)
@@ -1439,10 +1439,10 @@ var nts;
                     var stack = this.rawUrl.split('/');
                     var parts = relativePath.split('/');
                     var queryStringToAdd = QueryString.parseUrl(relativePath);
-                    // 最後のファイル名は除外
-                    // (最後がフォルダ名でしかも / で終わっていない場合は考慮しない)
+                    // �?後�?ファイル名�?除�?
+                    // (�?後がフォル�?名でしか�? / で終わって�?���??�合�?�??しな�?)
                     stack.pop();
-                    // relativePathの先頭が '/' の場合、それを取り除く
+                    // relativePathの先�?��? '/' の場合�?�それを取り除�?
                     if (parts[0] === '') {
                         parts.shift();
                     }
@@ -1818,7 +1818,7 @@ var nts;
                 var ErrorsViewModel = (function () {
                     function ErrorsViewModel() {
                         var _this = this;
-                        this.title = "エラー一覧";
+                        this.title = "エラー�?覧";
                         this.errors = ko.observableArray([]);
                         this.errors.extend({ rateLimit: 1 });
                         this.option = ko.mapping.fromJS(new ui.option.ErrorDialogOption());
@@ -1843,7 +1843,7 @@ var nts;
                     };
                     ErrorsViewModel.prototype.addError = function (error) {
                         var _this = this;
-                        // defer無しでerrorsを呼び出すと、なぜか全てのKnockoutBindingHandlerのupdateが呼ばれてしまうので、
+                        // defer無しでerrorsを呼び出すと、なぜか全てのKnockoutBindingHandlerのupdateが呼ばれてしま�??で�?
                         // 原因がわかるまでひとまずdeferを使っておく
                         _.defer(function () {
                             var duplicate = _.filter(_this.errors(), function (e) { return e.$control.is(error.$control) && e.message == error.message; });
@@ -1853,7 +1853,7 @@ var nts;
                     };
                     ErrorsViewModel.prototype.removeErrorByElement = function ($element) {
                         var _this = this;
-                        // addErrorと同じ対応
+                        // addErrorと同じ対�?
                         _.defer(function () {
                             var removeds = _.filter(_this.errors(), function (e) { return e.$control.is($element); });
                             _this.errors.removeAll(removeds);
@@ -2171,7 +2171,7 @@ var nts;
                     });
                     setTimeout(function () {
                         var $this = createNoticeDialog(text, [{
-                                text: "はい",
+                                text: "は�?",
                                 "class": "large",
                                 click: function () {
                                     $this.dialog('close');
@@ -2238,7 +2238,7 @@ var nts;
                         var buttons = [];
                         // yes button
                         buttons.push({
-                            text: "はい",
+                            text: "は�?",
                             "class": "yes large danger",
                             click: function () {
                                 $this.dialog('close');
@@ -2249,7 +2249,7 @@ var nts;
                         // no button
                         if (hasNoButton) {
                             buttons.push({
-                                text: "いいえ",
+                                text: "�?���?",
                                 "class": "no large",
                                 click: function () {
                                     $this.dialog('close');
@@ -2625,7 +2625,7 @@ var nts;
                         this.modal = (option && option.modal !== undefined) ? option.modal : true;
                         this.buttons = [];
                         // Add OK Button
-                        this.buttons.push({ text: "はい",
+                        this.buttons.push({ text: "は�?",
                             "class": "yes ",
                             size: "large",
                             color: "danger",
@@ -2635,7 +2635,7 @@ var nts;
                             }
                         });
                         // Add Cancel Button
-                        this.buttons.push({ text: "いいえ",
+                        this.buttons.push({ text: "�?���?",
                             "class": "no ",
                             size: "large",
                             color: "",
@@ -2656,7 +2656,7 @@ var nts;
                         this.modal = (option && option.modal !== undefined) ? option.modal : true;
                         this.buttons = [];
                         // Add OK Button
-                        this.buttons.push({ text: "はい",
+                        this.buttons.push({ text: "は�?",
                             "class": "yes ",
                             size: "large",
                             color: "proceed",
@@ -2666,7 +2666,7 @@ var nts;
                             }
                         });
                         // Add Cancel Button
-                        this.buttons.push({ text: "いいえ",
+                        this.buttons.push({ text: "�?���?",
                             "class": "no ",
                             size: "large",
                             color: "",
@@ -2685,7 +2685,7 @@ var nts;
                         _super.call(this);
                         // Default value
                         this.headers = (option && option.headers) ? option.headers : [
-                            new nts.uk.ui.errors.ErrorHeader("location", "エラー箇所", 115, true),
+                            new nts.uk.ui.errors.ErrorHeader("location", "エラー�?��", 115, true),
                             new nts.uk.ui.errors.ErrorHeader("message", "エラー詳細", 250, true)
                         ];
                         this.modal = (option && option.modal !== undefined) ? option.modal : false;
@@ -2694,7 +2694,7 @@ var nts;
                         this.autoclose = (option && option.autoclose !== undefined) ? option.autoclose : true;
                         this.buttons = [];
                         // Add Close Button
-                        this.buttons.push({ text: "閉じる",
+                        this.buttons.push({ text: "閉じ�?",
                             "class": "yes ",
                             size: "large",
                             color: "",
@@ -2713,8 +2713,8 @@ var nts;
                         _super.call(this);
                         // Default value
                         this.headers = (option && option.headers) ? option.headers : [
-                            new ui_2.errors.ErrorHeader("tab", "タブ", 90, true),
-                            new ui_2.errors.ErrorHeader("location", "エラー箇所", 115, true),
+                            new ui_2.errors.ErrorHeader("tab", "タ�?", 90, true),
+                            new ui_2.errors.ErrorHeader("location", "エラー�?��", 115, true),
                             new ui_2.errors.ErrorHeader("message", "エラー詳細", 250, true)
                         ];
                         this.modal = (option && option.modal !== undefined) ? option.modal : false;
@@ -2723,7 +2723,7 @@ var nts;
                         this.autoclose = (option && option.autoclose !== undefined) ? option.autoclose : true;
                         this.buttons = [];
                         // Add Close Button
-                        this.buttons.push({ text: "閉じる",
+                        this.buttons.push({ text: "閉じ�?",
                             "class": "yes ",
                             size: "large",
                             color: "",
@@ -3093,7 +3093,7 @@ var nts;
                         // used to auto scrolling when dragged above/below grid)
                         var mousePos = null;
                         $grid.bind('mousedown', function (e) {
-                            // グリッド内がマウスダウンされていない場合は処理なしで終了
+                            // グリ�?���?��マウス�?ウンされて�?���??�合�?処�?��しで終�?
                             var $container = $grid.closest('.ui-iggrid-scrolldiv');
                             if ($(e.target).closest('.ui-iggrid-table').length === 0) {
                                 return;
@@ -3148,7 +3148,7 @@ var nts;
                             if (isNaN(mousePos.rowIndex)) {
                                 return;
                             }
-                            // 以前のドラッグ範囲の選択を一旦解除する
+                            // 以前�?ドラ�?���?��の選択を�?旦解除する
                             // TODO: probably this code has problem of perfomance when select many rows
                             // should process only "differences" instead of "all"
                             for (var i = 0, i_len = dragSelectRange.length; i < i_len; i++) {
@@ -3964,11 +3964,11 @@ var nts;
                     DatePickerBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var data = valueAccessor();
                         var container = $(element);
-                        var idatr = container.attr("id");
                         var newValue = ko.unwrap(data.value);
-                        var dateFormat = data.dateFormat ? ko.unwrap(data.dateFormat) : "yyyy/MM/dd";
+                        var dateFormat = (data.dateFormat !== undefined) ? ko.unwrap(data.dateFormat) : "yyyy/MM/dd";
+                        var disabled = (data.disabled !== undefined) ? ko.unwrap(data.disabled) : false;
+                        var idatr = container.attr("id");
                         var $input = container.find('#' + idatr + "-input");
-                        var dateFormat = data.dateFormat ? ko.unwrap(data.dateFormat) : "yyyy/MM/dd";
                         var formatOptions = container.data("format");
                         var oldDate = $input.datepicker("getDate");
                         if (formatOptions != 'yyyy/mm') {
@@ -3985,12 +3985,10 @@ var nts;
                                 $input.datepicker("setDate", newDate);
                             $input.val(formatted.format());
                         }
-                        if (data.disabled !== undefined && ko.unwrap(data.disabled) == true) {
-                            $input.prop("disabled", true);
-                            if (data.button) {
-                                container.find('.datepicker-btn').prop("disabled", true);
-                            }
-                        }
+                        // Disable
+                        $input.prop("disabled", disabled);
+                        if (data.button)
+                            container.find('.datepicker-btn').prop("disabled", disabled);
                     };
                     return DatePickerBindingHandler;
                 }());
@@ -4614,11 +4612,11 @@ var nts;
                                     break;
                                 case 'Decimal':
                                     constraintText += (constraintText.length > 0) ? "/" : "";
-                                    constraintText += constraint.min + "～" + constraint.max;
+                                    constraintText += constraint.min + "??" + constraint.max;
                                     break;
                                 case 'Integer':
                                     constraintText += (constraintText.length > 0) ? "/" : "";
-                                    constraintText += constraint.min + "～" + constraint.max;
+                                    constraintText += constraint.min + "??" + constraint.max;
                                     break;
                                 default:
                                     constraintText += 'ERROR';
@@ -5172,7 +5170,7 @@ var nts;
                         var data = valueAccessor();
                         var fields = ko.unwrap(data.fields);
                         var searchText = (data.searchText !== undefined) ? ko.unwrap(data.searchText) : "検索";
-                        var placeHolder = (data.placeHolder !== undefined) ? ko.unwrap(data.placeHolder) : "コード・名称で検索・・・";
+                        var placeHolder = (data.placeHolder !== undefined) ? ko.unwrap(data.placeHolder) : "コード�?名称で検索・・・";
                         var selected = data.selected;
                         var selectedKey = null;
                         if (data.selectedKey) {
@@ -5343,7 +5341,7 @@ var nts;
                                     .append("<input id = " + searchAreaId + "-input" + " class = 'ntsSearchInput ntsSearchBox'/>");
                                 $SearchArea.find(".ntsSearchButtonContainer")
                                     .append("<button id = " + searchAreaId + "-btn" + " class='ntsSearchButton search-btn caret-bottom'/>");
-                                $SearchArea.find(".ntsSearchInput").attr("placeholder", "コード・名称で検索・・・").keyup(function (event, ui) {
+                                $SearchArea.find(".ntsSearchInput").attr("placeholder", "コード�?名称で検索・・・").keyup(function (event, ui) {
                                     if (event.which === 13) {
                                         search($SearchArea, targetId, primaryKey);
                                     }
@@ -5642,7 +5640,7 @@ var nts;
                         }
                         else {
                             var displayColumns = [
-                                { headerText: "コード", key: optionsValue, dataType: "string", hidden: true },
+                                { headerText: "コー�?", key: optionsValue, dataType: "string", hidden: true },
                                 { headerText: "コード／名称", key: optionsText, dataType: "string" }
                             ];
                         }

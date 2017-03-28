@@ -6,7 +6,6 @@ package nts.uk.ctx.pr.core.dom.wagetable.certification;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import nts.uk.ctx.core.dom.company.CompanyCode;
 
 /**
  * The Class Certification.
@@ -16,7 +15,7 @@ import nts.uk.ctx.core.dom.company.CompanyCode;
 public class Certification {
 
 	/** The company code. */
-	private CompanyCode companyCode;
+	private String companyCode;
 
 	/** The code. */
 	private String code;

@@ -45,11 +45,6 @@ var nts;
                                         }
                                         self.selectedNode(selectedNode);
                                     });
-                                    self.isNewMode.subscribe(function (val) {
-                                        if (val) {
-                                            self.onRegistNew();
-                                        }
-                                    });
                                 }
                                 ScreenBaseModel.prototype.startPage = function () {
                                     var self = this;
@@ -105,10 +100,25 @@ var nts;
                                     });
                                     return dfd.promise();
                                 };
+                                ScreenBaseModel.prototype.confirmDirtyAndExecute = function (functionToExecute) {
+                                    var self = this;
+                                    if (self.isDirty()) {
+                                        nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\n よろしいですか。").ifYes(function () {
+                                            functionToExecute();
+                                        }).ifNo(function () {
+                                        });
+                                    }
+                                    else {
+                                        functionToExecute();
+                                    }
+                                };
                                 ScreenBaseModel.prototype.registBtnClick = function () {
                                     var self = this;
-                                    self.isNewMode(true);
-                                    self.igGridSelectedHistoryUuid(undefined);
+                                    self.confirmDirtyAndExecute(function () {
+                                        self.isNewMode(true);
+                                        self.igGridSelectedHistoryUuid(undefined);
+                                        self.onRegistNew();
+                                    });
                                 };
                                 ScreenBaseModel.prototype.saveBtnClick = function () {
                                     var self = this;
@@ -121,25 +131,43 @@ var nts;
                                 };
                                 ScreenBaseModel.prototype.addNewHistoryBtnClick = function () {
                                     var self = this;
-                                    var currentNode = self.selectedNode();
-                                    var latestNode = currentNode.isMaster ? _.head(currentNode.childs) : _.head(currentNode.parent.childs);
-                                    var newHistoryOptions = {
-                                        name: self.options.functionName,
-                                        master: currentNode.isMaster ? currentNode.data : currentNode.parent.data,
-                                        lastest: latestNode ? latestNode.data : undefined,
-                                        onCopyCallBack: function (data) {
-                                            self.service.createHistory(data.masterCode, data.startYearMonth, true)
-                                                .done(function (h) { return self.reloadMasterHistory(h.uuid); });
-                                        },
-                                        onCreateCallBack: function (data) {
-                                            self.service.createHistory(data.masterCode, data.startYearMonth, false)
-                                                .done(function (h) { return self.reloadMasterHistory(h.uuid); });
-                                        }
-                                    };
-                                    nts.uk.ui.windows.setShared('options', newHistoryOptions);
-                                    var ntsDialogOptions = { title: nts.uk.text.format('{0}の登録 > 履歴の追加', self.options.functionName),
-                                        dialogClass: 'no-close' };
-                                    nts.uk.ui.windows.sub.modal('/view/base/simplehistory/newhistory/index.xhtml', ntsDialogOptions);
+                                    self.confirmDirtyAndExecute(function () {
+                                        var currentNode = self.selectedNode();
+                                        var latestNode = currentNode.isMaster ? _.head(currentNode.childs) : _.head(currentNode.parent.childs);
+                                        var newHistoryOptions = {
+                                            name: self.options.functionName,
+                                            master: currentNode.isMaster ? currentNode.data : currentNode.parent.data,
+                                            lastest: latestNode ? latestNode.data : undefined,
+                                            onCopyCallBack: function (data) {
+                                                var dfd = $.Deferred();
+                                                self.service.createHistory(data.masterCode, data.startYearMonth, true)
+                                                    .done(function (h) {
+                                                    self.reloadMasterHistory(h.uuid);
+                                                    dfd.resolve();
+                                                }).fail(function (res) {
+                                                    dfd.reject(res);
+                                                });
+                                                return dfd.promise();
+                                            },
+                                            onCreateCallBack: function (data) {
+                                                var dfd = $.Deferred();
+                                                self.service.createHistory(data.masterCode, data.startYearMonth, false)
+                                                    .done(function (h) {
+                                                    self.reloadMasterHistory(h.uuid);
+                                                    dfd.resolve();
+                                                }).fail(function (res) {
+                                                    dfd.reject(res);
+                                                });
+                                                return dfd.promise();
+                                            }
+                                        };
+                                        nts.uk.ui.windows.setShared('options', newHistoryOptions);
+                                        var ntsDialogOptions = {
+                                            title: nts.uk.text.format('{0}の登録 > 履歴の追加', self.options.functionName),
+                                            dialogClass: 'no-close'
+                                        };
+                                        nts.uk.ui.windows.sub.modal('/view/base/simplehistory/newhistory/index.xhtml', ntsDialogOptions);
+                                    });
                                 };
                                 ScreenBaseModel.prototype.updateHistoryBtnClick = function () {
                                     var self = this;
@@ -155,14 +183,21 @@ var nts;
                                             });
                                         },
                                         onUpdateCallBack: function (data) {
+                                            var dfd = $.Deferred();
                                             self.service.updateHistoryStart(data.masterCode, data.historyId, data.startYearMonth).done(function () {
                                                 self.reloadMasterHistory(self.selectedHistoryUuid());
+                                                dfd.resolve();
+                                            }).fail(function (res) {
+                                                dfd.reject(res);
                                             });
+                                            return dfd.promise();
                                         }
                                     };
                                     nts.uk.ui.windows.setShared('options', newHistoryOptions);
-                                    var ntsDialogOptions = { title: nts.uk.text.format('{0}の登録 > 履歴の編集', self.options.functionName),
-                                        dialogClass: 'no-close' };
+                                    var ntsDialogOptions = {
+                                        title: nts.uk.text.format('{0}の登録 > 履歴の編集', self.options.functionName),
+                                        dialogClass: 'no-close'
+                                    };
                                     nts.uk.ui.windows.sub.modal('/view/base/simplehistory/updatehistory/index.xhtml', ntsDialogOptions);
                                 };
                                 ScreenBaseModel.prototype.reloadMasterHistory = function (uuid) {
@@ -171,11 +206,13 @@ var nts;
                                         self.selectedHistoryUuid(undefined);
                                         if (uuid) {
                                             self.igGridSelectedHistoryUuid(uuid);
+                                            self.igGridSelectedHistoryUuid.valueHasMutated();
                                         }
                                         else {
                                             if (self.masterHistoryList.length > 0) {
                                                 if (!_.isEmpty(self.masterHistoryList[0].historyList)) {
                                                     self.igGridSelectedHistoryUuid(self.masterHistoryList[0].historyList[0].uuid);
+                                                    self.igGridSelectedHistoryUuid.valueHasMutated();
                                                 }
                                             }
                                         }

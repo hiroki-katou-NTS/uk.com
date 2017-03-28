@@ -8,8 +8,12 @@ import javax.persistence.Entity;
 import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
+@Getter
+@Setter
 @Entity
 @Table(name = "CMNMT_CLASS")
 @AllArgsConstructor
@@ -29,37 +33,4 @@ public class CmnmtClass implements Serializable {
 
 	@Column(name = "MEMO")
 	private String memo;
-
-	public CmnmtClassPK getCmnmtClassPK() {
-		return cmnmtClassPK;
-	}
-
-	public void setCmnmtClassPK(CmnmtClassPK cmnmtClassPK) {
-		this.cmnmtClassPK = cmnmtClassPK;
-	}
-
-	public String getName() {
-		return name;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public String getOutCode() {
-		return outCode;
-	}
-
-	public void setOutCode(String outCode) {
-		this.outCode = outCode;
-	}
-
-	public String getMemo() {
-		return memo;
-	}
-
-	public void setMemo(String memo) {
-		this.memo = memo;
-	}
-
 }

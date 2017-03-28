@@ -4,7 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.infra.repository.insurance.labor;
 
-import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.Address;
 import nts.uk.ctx.pr.core.dom.insurance.CitySign;
 import nts.uk.ctx.pr.core.dom.insurance.KanaAddress;
@@ -49,8 +48,8 @@ public class JpaLaborInsuranceOfficeGetMemento implements LaborInsuranceOfficeGe
 	 * getCompanyCode()
 	 */
 	@Override
-	public CompanyCode getCompanyCode() {
-		return new CompanyCode(typeValue.getQismtLaborInsuOfficePK().getCcd());
+	public String getCompanyCode() {
+		return typeValue.getQismtLaborInsuOfficePK().getCcd();
 	}
 
 	/*
@@ -123,18 +122,6 @@ public class JpaLaborInsuranceOfficeGetMemento implements LaborInsuranceOfficeGe
 	@Override
 	public PotalCode getPotalCode() {
 		return new PotalCode(typeValue.getPostal());
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * nts.uk.ctx.pr.core.dom.insurance.labor.LaborInsuranceOfficeGetMemento#
-	 * getPrefecture()
-	 */
-	@Override
-	public String getPrefecture() {
-		return typeValue.getPrefecture();
 	}
 
 	/*

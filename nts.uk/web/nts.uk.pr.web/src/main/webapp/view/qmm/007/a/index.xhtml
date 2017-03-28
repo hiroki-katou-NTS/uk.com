@@ -29,11 +29,11 @@
 
 		<!-- PAGE CONTENT -->
 		<ui:define name="pageContent">
-			<table class="form-default">
+			<table class="form-default" data-bind="visible: true" style="display: none">
 						<tr>
 							<td><div id="lbl_003"
 									data-bind="ntsFormLabel: {constraint: ['UnitPriceCode','UnitPriceName'], required: true }">コード/名称</div></td>
-							<td colspan="2"><input id="inpCode"
+							<td colspan="2"><input id="inpCode" data-name="コード"
 								class="inp-default save-error"
 								data-bind="ntsTextEditor: {
 									value: unitPriceHistoryModel().unitPriceCode,
@@ -41,7 +41,7 @@
 									option: textEditorOption,
 									required: true,
 									enable: isNewMode()}" />
-								<input id="inpName" class="inp-default save-error"
+								<input id="inpName" class="inp-default save-error" data-name="名称"
 								data-bind="ntsTextEditor: {
 									value: unitPriceHistoryModel().unitPriceName,
 									constraint: 'UnitPriceName',
@@ -52,15 +52,15 @@
 						<tr>
 							<td><div id="lbl_004"
 									data-bind="ntsFormLabel: { required: true }">開始年月</div></td>
-							<td><span id="ipnStartMonth"
-								data-bind="ntsDatePicker: {value: unitPriceHistoryModel().startMonth, dateFormat: 'yyyy/MM'}"></span>
-								<label id="lblEndMonth"
-								data-bind="text: ' ~ ' + nts.uk.time.formatYearMonth(unitPriceHistoryModel().endMonth())"></label></td>
+							<td><span id="inpStartMonth" data-name="開始年月"
+								data-bind="ntsDatePicker: {value: unitPriceHistoryModel().startMonth, dateFormat: 'yyyy/MM', disabled: !isNewMode()}"></span>
+								<label id="lblJapanenseYearMonth"
+								data-bind="text: '(' + nts.uk.time.yearmonthInJapanEmpire(unitPriceHistoryModel().endMonth()) + ') ~ '"></label></td>
 						</tr>
 						<tr>
 							<td><div id="lbl_006"
 									data-bind="ntsFormLabel: { constraint: 'Money', required: true }">金額</div></td>
-							<td><input id="inpBudget" class="inp-default save-error"
+							<td><input id="inpBudget" class="inp-default save-error" data-name="金額"
 								data-bind="ntsNumberEditor: {
 									value: unitPriceHistoryModel().budget,
 									constraint: 'Money',
@@ -153,7 +153,7 @@
 							<td colspan="4"><hr /></td>
 						</tr>
 						<tr>
-							<td class="valign-top"><div id="lbl_008"
+							<td style="vertical-align: top"><div id="lblMemo"
 									data-bind="ntsFormLabel: {constraint: 'Memo'}">メモ</div></td>
 							<td colspan="3"><div id="inpMemo">
 									<textarea placeholder=""

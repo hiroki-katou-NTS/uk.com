@@ -5,3 +5,4 @@ __viewContext.ready(function () {
     screenModel.timer.start();
     screenModel.startPage(data);
 });
+//# sourceMappingURL=start.js.map

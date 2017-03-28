@@ -30,7 +30,6 @@ var nts;
                             ]);
                             this.currentCode = ko.observable();
                             this.currentCodeList = ko.observableArray([]);
-                            // Fire event.
                             $("#multi-list").on('itemDeleted', (function (e) {
                                 alert("Item is deleted in multi grid is " + e["detail"]["target"]);
                             }));
@@ -77,3 +76,4 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+//# sourceMappingURL=start.js.map
