@@ -173,7 +173,7 @@ var nts;
             }
             util.isIn = isIn;
             ;
-            function createTreeFromString(original, openChar, closeChar, seperatorChar) {
+            function createTreeFromString(original, openChar, closeChar, seperatorChar, operatorChar) {
                 return convertToTree(original, openChar, closeChar, seperatorChar, 1).result;
             }
             util.createTreeFromString = createTreeFromString;
@@ -224,7 +224,10 @@ var nts;
                         }
                     }
                 }
-                return result;
+                return {
+                    "result": result,
+                    "index": index
+                };
             }
             function findIndexOfCloseChar(original, openChar, closeChar, firstOpenIndex) {
                 var openCount = 0;
@@ -3209,22 +3212,24 @@ var nts;
                         $list.find('.nts-list-box > li > div').removeClass("ui-selected");
                         $list.trigger("selectionChange");
                     }
-                    function validate($list) {
-                        var required = $list.data('required');
-                        var $currentListBox = $list.find('.nts-list-box');
-                        if (required) {
-                            var itemsSelected = $list.data('value');
-                            if (itemsSelected === undefined || itemsSelected === null || itemsSelected.length == 0) {
-                                $currentListBox.ntsError('set', 'at least 1 item selection required');
-                                return false;
-                            }
-                            else {
-                                $currentListBox.ntsError('clear');
-                                return true;
-                            }
-                        }
-                    }
                 })(ntsListBox || (ntsListBox = {}));
+                var ntsEditor;
+                (function (ntsEditor) {
+                    $.fn.ntsEditor = function (action) {
+                        var $editor = $(this);
+                        switch (action) {
+                            case 'validate':
+                                validate($editor);
+                            default:
+                                break;
+                        }
+                    };
+                    function validate($editor) {
+                        var validateEvent = new CustomEvent("validate", {});
+                        document.getElementById($editor.attr('id')).dispatchEvent(validateEvent);
+                        //            $editor.trigger("validate");
+                    }
+                })(ntsEditor || (ntsEditor = {}));
                 var ntsWizard;
                 (function (ntsWizard) {
                     $.fn.ntsWizard = function (action, index) {
@@ -4089,8 +4094,9 @@ var nts;
                         }
                         $input.addClass('nts-editor nts-input');
                         $input.wrap("<span class= 'nts-editor-wrapped ntsControl'/>");
+                        var validator = this.getValidator(data);
                         $input.on(valueUpdate, function (e) {
-                            var validator = _this.getValidator(data);
+                            //                var validator = this.getValidator(data);
                             var newText = $input.val();
                             var result = validator.validate(newText);
                             $input.ntsError('clear');
@@ -4104,7 +4110,7 @@ var nts;
                         });
                         // Format on blur
                         $input.blur(function () {
-                            var validator = _this.getValidator(data);
+                            //                var validator = this.getValidator(data);
                             var formatter = _this.getFormatter(data);
                             var newText = $input.val();
                             var result = validator.validate(newText);
@@ -4112,6 +4118,15 @@ var nts;
                                 $input.val(formatter.format(result.parsedValue));
                             }
                         });
+                        $input.on('validate', (function (e) {
+                            //                var validator = this.getValidator(data);
+                            var newText = $input.val();
+                            var result = validator.validate(newText);
+                            $input.ntsError('clear');
+                            if (!result.isValid) {
+                                $input.ntsError('set', result.errorMessage);
+                            }
+                        }));
                     };
                     EditorProcessor.prototype.update = function ($input, data) {
                         var value = data.value;

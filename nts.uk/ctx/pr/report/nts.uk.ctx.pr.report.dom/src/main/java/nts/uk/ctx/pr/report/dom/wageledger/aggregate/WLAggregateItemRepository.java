@@ -4,6 +4,11 @@
  *****************************************************************/
 package nts.uk.ctx.pr.report.dom.wageledger.aggregate;
 
+import java.util.List;
+
+import nts.uk.ctx.pr.report.dom.wageledger.PaymentType;
+import nts.uk.ctx.pr.report.dom.wageledger.WLCategory;
+
 /**
  * The Interface WageLedgerAggregateItemRepository.
  */
@@ -40,10 +45,31 @@ public interface WLAggregateItemRepository {
 	WLAggregateItem findByCode(WLItemSubject subject);
 	
 	/**
+	 * Find by category and payment type.
+	 *
+	 * @param companyCode the company code
+	 * @param category the category
+	 * @param paymentType the payment type
+	 * @return the list
+	 */
+	List<WLAggregateItem> findByCategoryAndPaymentType(String companyCode,
+			WLCategory category, PaymentType paymentType);
+	
+	/**
 	 * Checks if is exist.
 	 *
 	 * @param code the code
 	 * @return true, if is exist
 	 */
 	boolean isExist(WLItemSubject subject);
+	
+	/**
+	 * Find all.
+	 *
+	 * @param companyCode the company code
+	 * @return the list
+	 */
+	default List<WLAggregateItem> findAll(String companyCode) {
+		return this.findByCategoryAndPaymentType(companyCode, null, null);
+	}
 }

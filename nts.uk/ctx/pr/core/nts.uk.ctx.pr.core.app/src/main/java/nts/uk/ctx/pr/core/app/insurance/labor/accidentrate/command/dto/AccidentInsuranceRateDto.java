@@ -8,8 +8,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import lombok.Data;
-import nts.uk.ctx.core.dom.company.CompanyCode;
+import lombok.Getter;
+import lombok.Setter;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.AccidentInsuranceRate;
 import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.AccidentInsuranceRateGetMemento;
@@ -18,11 +18,8 @@ import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.InsuBizRateItem;
 /**
  * The Class AccidentInsuranceRateDto.
  */
-
-/**
- * Instantiates a new accident insurance rate dto.
- */
-@Data
+@Getter
+@Setter
 public class AccidentInsuranceRateDto {
 
 	/** The history insurance. */
@@ -39,7 +36,8 @@ public class AccidentInsuranceRateDto {
 	 * @return the accident insurance rate
 	 */
 	public AccidentInsuranceRate toDomain(String companyCode) {
-		return new AccidentInsuranceRate(new AccidentInsuranceRateGetMementoImpl(companyCode, this));
+		return new AccidentInsuranceRate(
+				new AccidentInsuranceRateGetMementoImpl(companyCode, this));
 	}
 
 	/**
@@ -61,7 +59,8 @@ public class AccidentInsuranceRateDto {
 		 * @param dto
 		 *            the dto
 		 */
-		public AccidentInsuranceRateGetMementoImpl(String companyCode, AccidentInsuranceRateDto dto) {
+		public AccidentInsuranceRateGetMementoImpl(String companyCode,
+				AccidentInsuranceRateDto dto) {
 			super();
 			this.dto = dto;
 			this.companyCode = companyCode;
@@ -85,8 +84,8 @@ public class AccidentInsuranceRateDto {
 		 * AccidentInsuranceRateGetMemento#getCompanyCode()
 		 */
 		@Override
-		public CompanyCode getCompanyCode() {
-			return new CompanyCode(companyCode);
+		public String getCompanyCode() {
+			return companyCode;
 		}
 
 		/*

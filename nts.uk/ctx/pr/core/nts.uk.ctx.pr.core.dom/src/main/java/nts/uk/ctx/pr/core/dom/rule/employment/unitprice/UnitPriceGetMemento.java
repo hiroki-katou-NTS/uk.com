@@ -4,8 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.dom.rule.employment.unitprice;
 
-import nts.uk.ctx.core.dom.company.CompanyCode;
-
 /**
  * The Interface UnitPriceMemento.
  */
@@ -16,7 +14,7 @@ public interface UnitPriceGetMemento {
 	 *
 	 * @return the company code
 	 */
-	CompanyCode getCompanyCode();
+	String getCompanyCode();
 
 	/**
 	 * Gets the code.

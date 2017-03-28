@@ -6,7 +6,6 @@ package nts.uk.ctx.pr.core.dom.wagetable;
 
 import java.util.List;
 
-import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.wagetable.element.WtElement;
 import nts.uk.shr.com.primitive.Memo;
 
@@ -20,7 +19,7 @@ public interface WtHeadSetMemento {
 	 *
 	 * @param companyCode the new company code
 	 */
-	void setCompanyCode(CompanyCode companyCode);
+	void setCompanyCode(String companyCode);
 
 	/**
 	 * Sets the code.

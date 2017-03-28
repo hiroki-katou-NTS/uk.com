@@ -9,7 +9,6 @@ import java.util.List;
 import java.util.Set;
 
 import nts.arc.time.YearMonth;
-import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 import nts.uk.ctx.pr.core.dom.insurance.RoundingMethod;
 import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.AccidentInsuranceRateGetMemento;
@@ -56,9 +55,9 @@ public class JpaAccidentInsuranceRateGetMemento implements AccidentInsuranceRate
 	 * AccidentInsuranceRateGetMemento#getCompanyCode()
 	 */
 	@Override
-	public CompanyCode getCompanyCode() {
+	public String getCompanyCode() {
 		if (this.typeValue != null && this.typeValue.size() > 0) {
-			return new CompanyCode(this.typeValue.get(0).getQismtWorkAccidentInsuPK().getCcd());
+			return this.typeValue.get(0).getQismtWorkAccidentInsuPK().getCcd();
 		}
 		return null;
 	}
@@ -90,8 +89,8 @@ public class JpaAccidentInsuranceRateGetMemento implements AccidentInsuranceRate
 		Set<InsuBizRateItem> setInsuBizRateItem = new HashSet<>();
 		for (QismtWorkAccidentInsu item : this.typeValue) {
 			InsuBizRateItem itemInsuBizRateItem = new InsuBizRateItem();
-			itemInsuBizRateItem
-					.setInsuBizType(BusinessTypeEnum.valueOf(item.getQismtWorkAccidentInsuPK().getWaInsuCd()));
+			itemInsuBizRateItem.setInsuBizType(
+					BusinessTypeEnum.valueOf(item.getQismtWorkAccidentInsuPK().getWaInsuCd()));
 			itemInsuBizRateItem.setInsuRate(Double.valueOf(String.valueOf(item.getWaInsuRate())));
 			itemInsuBizRateItem.setInsuRound(RoundingMethod.valueOf(item.getWaInsuRound()));
 			setInsuBizRateItem.add(itemInsuBizRateItem);

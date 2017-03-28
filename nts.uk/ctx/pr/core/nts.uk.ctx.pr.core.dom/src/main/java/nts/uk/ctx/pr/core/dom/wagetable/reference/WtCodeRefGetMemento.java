@@ -4,7 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.dom.wagetable.reference;
 
-import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.wagetable.WtElementRefNo;
 
 /**
@@ -17,7 +16,7 @@ public interface WtCodeRefGetMemento {
 	 *
 	 * @return the company code
 	 */
-	CompanyCode getCompanyCode();
+	String getCompanyCode();
 
 	/**
 	 * Gets the ref no.

@@ -4,13 +4,15 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.app.insurance.labor.accidentrate.find.dto;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.InsuBizRateItem;
 
 /**
  * The Class InsuBizRateItemFindOutDto.
  */
-@Data
+@Getter
+@Setter
 public class InsuBizRateItemFindOutDto {
 
 	/** The insu biz type. */

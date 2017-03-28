@@ -10,7 +10,6 @@ import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.pr.report.dom.company.CompanyCode;
 import nts.uk.ctx.pr.report.dom.wageledger.outputsetting.WLOutputSettingCode;
 import nts.uk.ctx.pr.report.dom.wageledger.outputsetting.WLOutputSettingRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -31,7 +30,7 @@ public class OutputSettingRemoveCommandHandler extends CommandHandler<OutputSett
 	@Override
 	@Transactional
 	protected void handle(CommandHandlerContext<OutputSettingRemoveCommand> context) {
-		this.repository.remove(new CompanyCode(AppContexts.user().companyCode()),
+		this.repository.remove(AppContexts.user().companyCode(),
 				new WLOutputSettingCode(context.getCommand().getCode()));
 	}
 

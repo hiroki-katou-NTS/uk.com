@@ -5,7 +5,6 @@
 package nts.uk.ctx.pr.report.app.wageledger.command.dto;
 
 import lombok.Setter;
-import nts.uk.ctx.pr.report.dom.company.CompanyCode;
 import nts.uk.ctx.pr.report.dom.wageledger.PaymentType;
 import nts.uk.ctx.pr.report.dom.wageledger.WLCategory;
 import nts.uk.ctx.pr.report.dom.wageledger.aggregate.WLAggregateItemCode;
@@ -79,8 +78,8 @@ public class ItemSubjectDto {
 		 * #getCompanyCode()
 		 */
 		@Override
-		public CompanyCode getCompanyCode() {
-			return new CompanyCode(this.companyCode);
+		public String getCompanyCode() {
+			return this.companyCode;
 		}
 
 		/* (non-Javadoc)

@@ -4,9 +4,11 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.app.insurance.labor.imports.dto;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
-@Data
+@Getter
+@Setter
 public class LaborInsuranceOfficeCheckImportDto {
 	
 	/** The code. */

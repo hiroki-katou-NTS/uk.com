@@ -28,10 +28,9 @@ import nts.uk.ctx.pr.core.infra.entity.insurance.labor.accidentrate.QismtWorkAcc
 import nts.uk.ctx.pr.core.infra.entity.insurance.labor.accidentrate.QismtWorkAccidentInsuPK;
 import nts.uk.ctx.pr.core.infra.entity.insurance.labor.accidentrate.QismtWorkAccidentInsuPK_;
 import nts.uk.ctx.pr.core.infra.entity.insurance.labor.accidentrate.QismtWorkAccidentInsu_;
-import nts.uk.ctx.pr.core.infra.repository.insurance.labor.Contants;
 
 /**
- * The Class
+ * The Class JpaAccidentInsuranceRateRepository.
  */
 @Stateless
 public class JpaAccidentInsuranceRateRepository extends JpaRepository
@@ -134,7 +133,7 @@ public class JpaAccidentInsuranceRateRepository extends JpaRepository
 	/**
 	 * Find data by id.
 	 *
-	 * @param String
+	 * @param companyCode
 	 *            the company code
 	 * @param historyId
 	 *            the history id
@@ -171,8 +170,6 @@ public class JpaAccidentInsuranceRateRepository extends JpaRepository
 		// set where to SQL
 		cq.where(lstpredicateWhere.toArray(new Predicate[] {}));
 		// set order
-		cq.orderBy(criteriaBuilder.desc(root.get(QismtWorkAccidentInsu_.strYm)));
-		// exclude select
 		TypedQuery<QismtWorkAccidentInsu> query = em.createQuery(cq);
 		List<QismtWorkAccidentInsu> lstQismtWorkAccidentInsu = query.getResultList();
 		return lstQismtWorkAccidentInsu;
@@ -187,7 +184,7 @@ public class JpaAccidentInsuranceRateRepository extends JpaRepository
 	 */
 	public List<QismtWorkAccidentInsu> toEntity(AccidentInsuranceRate rate) {
 		List<QismtWorkAccidentInsu> lstQismtWorkAccidentInsu = new ArrayList<>();
-		for (int i = Contants.BEGIN_FIRST; i < Contants.SIZE_TEN; i++) {
+		for (int index = BusinessTypeEnum.Biz1St.index; index <= BusinessTypeEnum.Biz10Th.index; index++) {
 			lstQismtWorkAccidentInsu.add(new QismtWorkAccidentInsu());
 		}
 		rate.saveToMemento(new JpaAccidentInsuranceRateSetMemento(lstQismtWorkAccidentInsu));
@@ -284,26 +281,8 @@ public class JpaAccidentInsuranceRateRepository extends JpaRepository
 			return Optional.empty();
 		}
 
-		return this.findById(companyCode,
-			lstQismtWorkAccidentInsu.get(Contants.BEGIN_FIRST).getQismtWorkAccidentInsuPK().getHistId());
-	}
-
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see nts.uk.ctx.pr.core.dom.insurance.labor.accidentrate.
-	 * AccidentInsuranceRateRepository#updateYearMonth(nts.uk.ctx.pr.core.dom.
-	 * insurance.labor.accidentrate.AccidentInsuranceRate,
-	 * nts.arc.time.YearMonth)
-	 */
-	@Override
-	public void updateYearMonth(AccidentInsuranceRate rate, YearMonth yearMonth) {
-		// to entity
-		List<QismtWorkAccidentInsu> lstEntity = this.toEntity(rate);
-		for (QismtWorkAccidentInsu entity : lstEntity) {
-			entity.setEndYm(yearMonth.v());
-		}
-		this.update(this.toDomain(lstEntity));
+		return this.findById(companyCode, lstQismtWorkAccidentInsu.get(BusinessTypeEnum.Biz1St.index)
+			.getQismtWorkAccidentInsuPK().getHistId());
 	}
 
 	/*
@@ -365,8 +344,8 @@ public class JpaAccidentInsuranceRateRepository extends JpaRepository
 			return Optional.empty();
 		}
 
-		return this.findById(companyCode,
-			lstQismtWorkAccidentInsu.get(Contants.BEGIN_FIRST).getQismtWorkAccidentInsuPK().getHistId());
+		return this.findById(companyCode, lstQismtWorkAccidentInsu.get(BusinessTypeEnum.Biz1St.index)
+			.getQismtWorkAccidentInsuPK().getHistId());
 	}
 
 }

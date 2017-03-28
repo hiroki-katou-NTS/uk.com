@@ -49,6 +49,9 @@ var nts;
                                         self.onShowDataChange(selectedDivision, self.selectedAggregateItem());
                                     });
                                 }
+                                /**
+                                 * Start page.
+                                 */
                                 ScreenModel.prototype.startPage = function () {
                                     var self = this;
                                     return self.initData();
@@ -104,6 +107,7 @@ var nts;
                                     else {
                                         self.convertModelToDto(1);
                                     }
+                                    //reload///
                                 };
                                 ScreenModel.prototype.convertModelToDto = function (taxDivision) {
                                     var self = this;
@@ -121,7 +125,9 @@ var nts;
                                     salaryAggregateItemSaveDto.taxDivision = taxDivision;
                                     salaryAggregateItemSaveDto.categoryCode = self.selectedAggregateItem();
                                     j.service.saveSalaryAggregateItem(salaryAggregateItemSaveDto).done(function () {
+                                        //reload
                                     }).fail(function () {
+                                        //reload
                                     });
                                     return salaryAggregateItemSaveDto;
                                 };
@@ -131,6 +137,7 @@ var nts;
                             var SalaryItemModel = (function () {
                                 function SalaryItemModel() {
                                 }
+                                //convert dto find => model
                                 SalaryItemModel.prototype.convertDtoToData = function (salaryItemDto) {
                                     this.salaryItemCode = salaryItemDto.salaryItemCode;
                                     this.salaryItemName = salaryItemDto.salaryItemName;
@@ -214,4 +221,3 @@ var nts;
         })(pr = uk.pr || (uk.pr = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
-//# sourceMappingURL=qpp007.j.vm.js.map
