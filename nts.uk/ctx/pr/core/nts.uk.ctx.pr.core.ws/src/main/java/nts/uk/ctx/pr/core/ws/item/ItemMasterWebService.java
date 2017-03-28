@@ -44,12 +44,23 @@ public class ItemMasterWebService extends WebService {
 		return itemFinder.findBy(categoryAtr);
 	}
 
+	/**
+	 * Find all item master by category and list of item code
+	 * @param param
+	 * @return
+	 */
+	@POST
+	@Path("find/category")
+	public List<ItemMasterDto> find(ItemMasterQueryParam param) {
+		return itemFinder.findBy(param.getCategoryAtr(), param.getItemCodes());
+	}
+	
 	@POST
 	@Path("find/{categoryAtr}/{itemCode}")
 	public ItemMasterDto find(@PathParam("categoryAtr") int categoryAtr, @PathParam("itemCode") String itemCode) {
 		return itemFinder.find(categoryAtr, itemCode);
 	}
-
+	
 	@POST
 	@Path("add")
 	public void add(AddItemMasterCommand command) {
@@ -58,7 +69,7 @@ public class ItemMasterWebService extends WebService {
 
 	@POST
 	@Path("delete")
-	public void add(DeleteItemMasterCommand command) {
+	public void delete(DeleteItemMasterCommand command) {
 		this.deleteHandler.handle(command);
 	}
 
@@ -69,9 +80,11 @@ public class ItemMasterWebService extends WebService {
 	}
 
 	@POST
-	@Path("findAllItemMaster")
-	public List<ItemMasterDto> findAllNoAvePayAtr() {
-		return itemFinder.findAllNoAvePayAtr();
+	@Path("findAllItemMaster/{ctgAtr}/{dispSet}")
+	public List<ItemMasterDto> findAllNoAvePayAtr(
+			@PathParam("ctgAtr") int ctgAtr,
+			@PathParam("dispSet") int dispSet) {
+		return itemFinder.findAllNoAvePayAtr(ctgAtr, dispSet);
 	}
 
 	@POST

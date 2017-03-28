@@ -61,8 +61,8 @@
 	vertical-align: middle;
 }
 
-#H_INP_001 input, #H_INP_002 input {
-	height: 18px;
+#H_INP_001, #H_INP_002 {
+	width: 56px;
 }
 
 #H_INP_002 {

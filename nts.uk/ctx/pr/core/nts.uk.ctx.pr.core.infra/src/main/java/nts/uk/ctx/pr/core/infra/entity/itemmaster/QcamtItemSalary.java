@@ -95,7 +95,7 @@ public class QcamtItemSalary extends TableEntity implements Serializable {
     @Column(name = "LIMIT_MNY_REF_ITEM_CD")
     public String limitMnyRefItemCd;
     @Column(name = "LIMIT_MNY")
-    public Long limitMny;
+    public BigDecimal limitMny;
 
     @Override
     public int hashCode() {
