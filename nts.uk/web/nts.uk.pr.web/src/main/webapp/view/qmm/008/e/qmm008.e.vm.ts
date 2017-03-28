@@ -23,6 +23,8 @@ module nts.uk.pr.view.qmm008.e {
             officeModel: KnockoutObservable<SocialInsuranceOfficeModel>;
             textInputOption: KnockoutObservable<nts.uk.ui.option.TextEditorOption>;
             selectedOfficeCode: KnockoutObservable<string>;
+            previousSelectedOfficeCode : KnockoutObservable<string>;
+            showConfirmDialog : KnockoutObservable<boolean>;
             enabled: KnockoutObservable<boolean>;
             deleteButtonControll: KnockoutObservable<boolean>;
             errorList: KnockoutObservableArray<any>;
@@ -58,7 +60,8 @@ module nts.uk.pr.view.qmm008.e {
                     textalign: "center"
                 }));
                 self.selectedOfficeCode = ko.observable('');
-                
+                self.previousSelectedOfficeCode = ko.observable('');
+                self.showConfirmDialog = ko.observable(true);
                 self.errorList = ko.observableArray([
                     { messageId: "ER001", message: "＊が入力されていません。" },
                     { messageId: "ER007", message: "＊が選択されていません。" },
@@ -68,20 +71,39 @@ module nts.uk.pr.view.qmm008.e {
                     { messageId: "AL002", message: "データを削除します。\r\nよろしいですか？" },
                 ]);
                 //dirty check
-                self.dirty = new nts.uk.ui.DirtyChecker(ko.observable('')); 
-                
+                self.dirty = new nts.uk.ui.DirtyChecker(ko.observable(''));
+
                 self.selectedOfficeCode.subscribe(function(selectedOfficeCode: string) {
-                    $('.save-error').ntsError('clear');
-                    if (selectedOfficeCode != null && selectedOfficeCode != undefined && selectedOfficeCode != "") {
-                        self.enabled(false);
-                        self.deleteButtonControll(true);
-                        $.when(self.load(selectedOfficeCode)).done(function() {
-                            //load data success
-                        }).fail(function(res) {
-                            //when load data error
+                    if (self.dirty.isDirty()&&self.showConfirmDialog() && selectedOfficeCode!= self.previousSelectedOfficeCode()) {
+                        nts.uk.ui.dialog.confirm(self.errorList()[4].message).ifYes(function() {
+                            self.showConfirmDialog(false);
+                            self.dirty.reset();
+                            self.loadItemOffice(selectedOfficeCode);
+                        }).ifCancel(function() {
+                            self.selectedOfficeCode(self.previousSelectedOfficeCode());
                         });
                     }
+                    else {
+                        if (selectedOfficeCode != self.previousSelectedOfficeCode()) {
+                            self.loadItemOffice(selectedOfficeCode);
+                        }
+                    }
                 });
+            }
+            private loadItemOffice(selectedOfficeCode: string) {
+                var self = this;
+                $('.save-error').ntsError('clear');
+                if (selectedOfficeCode != null && selectedOfficeCode != undefined && selectedOfficeCode != "") {
+                    self.enabled(false);
+                    self.deleteButtonControll(true);
+                    $.when(self.load(selectedOfficeCode)).done(function() {
+                        //load data success
+                        self.previousSelectedOfficeCode(selectedOfficeCode);
+                        self.showConfirmDialog(true);
+                    }).fail(function(res) {
+                        //when load data error
+                    });
+                }
             }
             // start
             public start(): JQueryPromise<any> {
