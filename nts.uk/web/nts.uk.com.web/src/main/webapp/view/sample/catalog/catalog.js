@@ -20,11 +20,16 @@ $(function(){
 	            $(e.target).next().slideToggle();
 	            
 	        }
-	        //collapse all except activating menu
-	        if($(menu[i]).next().find(".active").length==0){
-	        	$(menu[i]).next().css("display","none");	
-	        }
+	        collapseAllMenu();
 	        
+	    }
+	    //collapse all except activating menu
+	    function collapseAllMenu(){
+	    	for (var i = 0; i < menu.length; i++) {
+	    		if($(menu[i]).next().find(".active").length==0){
+		        	$(menu[i]).next().css("display","none");	
+		        }
+	    	}
 	    }
 	    // Auto bind prev/next button
 	    $(".previous").each(function(){
@@ -52,11 +57,20 @@ $(function(){
 	    $('#search-menu').keyup(function(){
 	    	var searchbox = $(this);
 	    	var searchtext = searchbox.val().toLowerCase();
+	    	if(searchtext.length==0){
+	    		collapseAllMenu();
+	    		return;
+	    	}
     		$("#side-menu li").show();
 	    	if (searchbox.val().length > 0)
 		    	$("#side-menu li").each(function(){
 		    		if($(this).text().toLowerCase().indexOf(searchtext) === -1) {
 		    			$(this).hide();
+		    		}else{
+		    			//if expand menu that has match item
+		    			if($(this).parent("ul").css("display")=="none"){
+		    				$(this).parent("ul").slideToggle();
+		    			}
 		    		}
 		    	})
 	    })
