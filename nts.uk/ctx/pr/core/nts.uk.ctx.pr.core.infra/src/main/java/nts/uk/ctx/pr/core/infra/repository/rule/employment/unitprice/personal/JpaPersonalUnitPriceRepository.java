@@ -14,6 +14,7 @@ import nts.uk.ctx.pr.core.infra.entity.rule.employment.unitprice.personal.QupmtP
 @RequestScoped
 public class JpaPersonalUnitPriceRepository extends JpaRepository implements PersonalUnitPriceRepository{
     private final String SEL_1 = "SELECT a FROM QupmtPUnitprice a WHERE a.qupmtPUnitpricePK.companyCode = :companyCode ";
+    private final String SEL_1_1 = "SELECT a FROM QupmtPUnitprice a WHERE a.qupmtPUnitpricePK.companyCode = :companyCode AND a.qupmtPUnitpricePK.personalUnitPriceCode IN :unitPriceCodeList ";
     
     @Override
     public void add(PersonalUnitPrice personalUnitPrice){
@@ -58,6 +59,28 @@ public class JpaPersonalUnitPriceRepository extends JpaRepository implements Per
 						x.fixPaymentDaily,
 						x.fixPaymentHoursly,
 						x.displaySet,
+						x.paymentSettingType,
+						x.unitPriceAtr));
+	}
+	
+	@Override
+	public List<PersonalUnitPrice> findAll(String companyCode, List<String> unitPriceCodeList) {
+		return this.queryProxy().query(SEL_1_1, QupmtPUnitprice.class)
+				.setParameter("companyCode", companyCode)
+				.setParameter("unitPriceCodeList", unitPriceCodeList)
+				.getList(x -> PersonalUnitPrice.createFromJavaType(
+						x.qupmtPUnitpricePK.companyCode,
+						x.qupmtPUnitpricePK.personalUnitPriceCode,
+						x.personalUnitPriceName,
+						x.personalUnitPriceShortName,
+						x.uniteCode,
+						x.memo,
+						x.fixPaymentAtr,
+						x.fixPaymentMonthly,
+						x.fixPaymentDayMonth,
+						x.fixPaymentDaily,
+						x.fixPaymentHoursly,
+						x.displayAtr,
 						x.paymentSettingType,
 						x.unitPriceAtr));
 	}

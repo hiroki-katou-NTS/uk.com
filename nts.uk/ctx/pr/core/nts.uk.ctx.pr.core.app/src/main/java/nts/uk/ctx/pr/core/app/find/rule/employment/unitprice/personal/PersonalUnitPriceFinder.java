@@ -13,7 +13,8 @@ import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.personal.PersonalUnitPri
 import nts.uk.shr.com.context.AppContexts;
 
 @RequestScoped
-public class PersonalUnitPriceFinder {
+public class 
+PersonalUnitPriceFinder {
 	@Inject
 	private PersonalUnitPriceRepository personalUnitPriceRepository;
 	
@@ -63,5 +64,30 @@ public class PersonalUnitPriceFinder {
 				unitPrice.getFixPaymentHoursly().value,
 				unitPrice.getUnitPriceAtr().value,
 				unitPrice.getMemo().v());
+	}
+
+	/**
+	 * Find all personal unit price
+	 * @param unitPriceCodeList list of unit price code
+	 * @return
+	 */
+	public List<PersonalUnitPriceDto> findAll(List<String> unitPriceCodeList) {
+		String companyCode = AppContexts.user().companyCode();
+		return personalUnitPriceRepository.findAll(companyCode, unitPriceCodeList)
+				.stream().map(x -> new PersonalUnitPriceDto(
+						x.getPersonalUnitPriceCode().v(),
+						x.getPersonalUnitPriceName().v(),
+						x.getPersonalUnitPriceAbName().v(),
+						x.getDisplayAtr().value,
+						x.getUniteCode().v(),
+						x.getPaymentSettingType().value,
+						x.getFixPaymentAtr().value,
+						x.getFixPaymentMonthly().value,
+						x.getFixPaymentDayMonth().value,
+						x.getFixPaymentDaily().value,
+						x.getFixPaymentHoursly().value,
+						x.getUnitPriceAtr().value,
+						x.getMemo().v()) )
+		       .collect(Collectors.toList());
 	}
 }

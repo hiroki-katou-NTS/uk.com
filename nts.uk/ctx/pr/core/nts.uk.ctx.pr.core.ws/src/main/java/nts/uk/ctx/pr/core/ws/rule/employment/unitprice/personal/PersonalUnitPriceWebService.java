@@ -41,6 +41,17 @@ public class PersonalUnitPriceWebService extends WebService {
 		return this.personalUnitPriceFinder.findAll();
 	}
 	
+	/**
+	 * Find all personal unit price
+	 * @param unitPriceCodeList list of unit price code
+	 * @return
+	 */
+	@POST
+	@Path("find/all/codes")
+	public List<PersonalUnitPriceDto> findAll(List<String> unitPriceCodeList) {
+		return this.personalUnitPriceFinder.findAll(unitPriceCodeList);
+	}
+	
 	@POST
 	@Path("find/all/nonedisplay")
 	public List<PersonalUnitPriceDto> findAllNoneDisplay() {
