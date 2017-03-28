@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2016 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.core.ws.insurance.labor.businesstype;
@@ -14,23 +14,25 @@ import nts.uk.ctx.pr.core.app.insurance.labor.businesstype.command.InsuranceBusi
 import nts.uk.ctx.pr.core.app.insurance.labor.businesstype.find.InsuranceBusinessTypeFinder;
 import nts.uk.ctx.pr.core.app.insurance.labor.businesstype.find.dto.InsuranceBusinessTypeFindOutDto;
 
+/**
+ * The Class InsuranceBusinessTypeWs.
+ */
 @Path("pr/insurance/labor/businesstype")
 @Produces("application/json")
 public class InsuranceBusinessTypeWs {
 
 	/** The update. */
 	@Inject
-	InsuranceBusinessTypeUpdateCommandHandler update;
+	private InsuranceBusinessTypeUpdateCommandHandler update;
 
 	/** The find. */
 	@Inject
-	InsuranceBusinessTypeFinder find;
+	private InsuranceBusinessTypeFinder find;
 
 	/**
 	 * Update.
 	 *
-	 * @param command
-	 *            the command
+	 * @param command the command
 	 */
 	@POST
 	@Path("update")
@@ -38,6 +40,11 @@ public class InsuranceBusinessTypeWs {
 		this.update.handle(command);
 	}
 
+	/**
+	 * Find all.
+	 *
+	 * @return the insurance business type find out dto
+	 */
 	@POST
 	@Path("findall")
 	public InsuranceBusinessTypeFindOutDto findAll() {

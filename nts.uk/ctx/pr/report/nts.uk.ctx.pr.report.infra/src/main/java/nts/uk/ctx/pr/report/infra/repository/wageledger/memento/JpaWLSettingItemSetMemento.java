@@ -4,7 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.pr.report.infra.repository.wageledger.memento;
 
-import nts.uk.ctx.pr.report.dom.company.CompanyCode;
 import nts.uk.ctx.pr.report.dom.wageledger.outputsetting.WLItemType;
 import nts.uk.ctx.pr.report.dom.wageledger.outputsetting.WLOutputSettingCode;
 import nts.uk.ctx.pr.report.dom.wageledger.outputsetting.WLSettingItemSetMemento;
@@ -24,13 +23,13 @@ public class JpaWLSettingItemSetMemento implements WLSettingItemSetMemento {
 	 *
 	 * @param entity the entity
 	 */
-	public JpaWLSettingItemSetMemento(QlsptLedgerFormDetail entity, CompanyCode companyCode,
+	public JpaWLSettingItemSetMemento(QlsptLedgerFormDetail entity, String companyCode,
 			WLOutputSettingCode code) {
 		this.entity = entity;
 		if (this.entity.getQlsptLedgerFormDetailPK() == null) {
 			this.entity.setQlsptLedgerFormDetailPK(new QlsptLedgerFormDetailPK());
 		}
-		this.entity.getQlsptLedgerFormDetailPK().setCcd(companyCode.v());
+		this.entity.getQlsptLedgerFormDetailPK().setCcd(companyCode);
 		this.entity.getQlsptLedgerFormDetailPK().setFormCd(code.v());
 	}
 

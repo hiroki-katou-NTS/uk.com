@@ -2,7 +2,7 @@ package nts.uk.ctx.pr.core.infra.repository.itemmaster;
 
 import java.util.Optional;
 
-import javax.enterprise.context.RequestScoped;
+import javax.ejb.Stateless;
 
 import lombok.val;
 import nts.arc.layer.infra.data.JpaRepository;
@@ -10,7 +10,7 @@ import nts.uk.ctx.pr.core.dom.itemmaster.itemperiod.ItemPeriod;
 import nts.uk.ctx.pr.core.dom.itemmaster.itemperiod.ItemPeriodRepository;
 import nts.uk.ctx.pr.core.infra.entity.itemmaster.QcamtItemPeriod;
 
-@RequestScoped
+@Stateless
 public class JpaItemPeriodRepository extends JpaRepository implements ItemPeriodRepository {
 	private final String SEL = "SELECT c FROM QcamtItemPeriod c";
 	private final String DEL_1 = SEL + " WHERE c.qcamtItemPeriodPK.ccd = :companyCode AND c.qcamtItemPeriodPK.ctgAtr = :ctgAtr AND c.qcamtItemPeriodPK.itemCd = :itemCd";

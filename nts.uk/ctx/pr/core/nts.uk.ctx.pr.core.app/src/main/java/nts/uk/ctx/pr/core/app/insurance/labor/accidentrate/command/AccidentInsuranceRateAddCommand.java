@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2016 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.core.app.insurance.labor.accidentrate.command;
@@ -22,6 +22,7 @@ public class AccidentInsuranceRateAddCommand {
 	/**
 	 * To domain.
 	 *
+	 * @param companyCode the company code
 	 * @return the accident insurance rate
 	 */
 	public AccidentInsuranceRate toDomain(String companyCode) {

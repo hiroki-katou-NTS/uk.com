@@ -4,7 +4,6 @@ module nts.uk.pr.view.qmm011.e {
     import InsuranceBusinessType = nts.uk.pr.view.qmm011.a.service.model.InsuranceBusinessType;
     import InsuBizRateItemDto = nts.uk.pr.view.qmm011.a.service.model.InsuBizRateItemDto;
     import AccidentInsuranceRateModel = nts.uk.pr.view.qmm011.a.viewmodel.AccidentInsuranceRateModel;
-    import AccidentInsuranceRateDetailModel = nts.uk.pr.view.qmm011.a.viewmodel.AccidentInsuranceRateDetailModel;
     import InsuranceBusinessTypeDto = nts.uk.pr.view.qmm011.a.service.model.InsuranceBusinessTypeDto;
 
     export module viewmodel {

@@ -173,7 +173,7 @@ var nts;
             }
             util.isIn = isIn;
             ;
-            function createTreeFromString(original, openChar, closeChar, seperatorChar) {
+            function createTreeFromString(original, openChar, closeChar, seperatorChar, operatorChar) {
                 return convertToTree(original, openChar, closeChar, seperatorChar, 1).result;
             }
             util.createTreeFromString = createTreeFromString;
@@ -224,7 +224,10 @@ var nts;
                         }
                     }
                 }
-                return result;
+                return {
+                    "result": result,
+                    "index": index
+                };
             }
             function findIndexOfCloseChar(original, openChar, closeChar, firstOpenIndex) {
                 var openCount = 0;
@@ -3193,9 +3196,6 @@ var nts;
                                 break;
                             case 'selectAll':
                                 selectAll($grid);
-                                break;
-                            case 'validate':
-                                return validate($grid);
                             default:
                                 break;
                         }
@@ -3206,27 +3206,30 @@ var nts;
                         $list.find('.nts-list-box').data("ui-selectable")._mouseStop(null);
                     }
                     function deselectAll($list) {
-                        $list.data('value', '');
+                        var selectListBoxContainer = $list.find('.nts-list-box');
+                        selectListBoxContainer.data('value', '');
                         $list.find('.nts-list-box > li').removeClass("ui-selected");
                         $list.find('.nts-list-box > li > div').removeClass("ui-selected");
                         $list.trigger("selectionChange");
                     }
-                    function validate($list) {
-                        var required = $list.data('required');
-                        var $currentListBox = $list.find('.nts-list-box');
-                        if (required) {
-                            var itemsSelected = $list.data('value');
-                            if (itemsSelected === undefined || itemsSelected === null || itemsSelected.length == 0) {
-                                $currentListBox.ntsError('set', 'at least 1 item selection required');
-                                return false;
-                            }
-                            else {
-                                $currentListBox.ntsError('clear');
-                                return true;
-                            }
-                        }
-                    }
                 })(ntsListBox || (ntsListBox = {}));
+                var ntsEditor;
+                (function (ntsEditor) {
+                    $.fn.ntsEditor = function (action) {
+                        var $editor = $(this);
+                        switch (action) {
+                            case 'validate':
+                                validate($editor);
+                            default:
+                                break;
+                        }
+                    };
+                    function validate($editor) {
+                        var validateEvent = new CustomEvent("validate", {});
+                        document.getElementById($editor.attr('id')).dispatchEvent(validateEvent);
+                        //            $editor.trigger("validate");
+                    }
+                })(ntsEditor || (ntsEditor = {}));
                 var ntsWizard;
                 (function (ntsWizard) {
                     $.fn.ntsWizard = function (action, index) {
@@ -3867,145 +3870,6 @@ var nts;
         (function (ui) {
             var koExtentions;
             (function (koExtentions) {
-                var DatePickerBindingHandler = (function () {
-                    /**
-                     * Constructor.
-                     */
-                    function DatePickerBindingHandler() {
-                    }
-                    /**
-                     * Init.
-                     */
-                    DatePickerBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                        // Get data.
-                        var data = valueAccessor();
-                        // Container.
-                        var container = $(element);
-                        if (!container.attr("id")) {
-                            var idString = nts.uk.util.randomId();
-                            container.attr("id", idString);
-                        }
-                        container.addClass("ntsControl");
-                        var startDate = null;
-                        var endDate = null;
-                        if (data.startDate) {
-                            startDate = ko.unwrap(data.startDate);
-                        }
-                        if (data.endDate) {
-                            endDate = ko.unwrap(data.endDate);
-                        }
-                        var autoHide = data.autoHide == false ? false : true;
-                        var idatr = container.attr("id");
-                        container.append("<input id='" + idatr + "-input' class='ntsDatepicker nts-input' />");
-                        var $input = container.find('#' + idatr + "-input");
-                        var button = null;
-                        if (data.button)
-                            button = idatr + "_button";
-                        $input.prop("readonly", true);
-                        var value = ko.unwrap(data.value);
-                        var dateFormat = data.dateFormat ? ko.unwrap(data.dateFormat) : "yyyy/MM/dd";
-                        var containerFormat = 'yyyy/mm/dd';
-                        var length = 10, atomWidth = 9.5;
-                        if (dateFormat === "yyyy/MM/dd DDD") {
-                            length = 16;
-                        }
-                        else if (dateFormat === "yyyy/MM/dd D") {
-                            length = 14;
-                        }
-                        else if (dateFormat === "yyyy/MM") {
-                            length = 7;
-                            containerFormat = 'yyyy/mm';
-                        }
-                        if (containerFormat != 'yyyy/mm')
-                            //datepicker case
-                            $input.attr('value', nts.uk.time.formatDate(value, dateFormat));
-                        else
-                            $input.attr('value', value);
-                        if (button) {
-                            container.append("<input type='button' id='" + button + "' class='datepicker-btn' />");
-                            $input.datepicker({
-                                format: containerFormat,
-                                language: 'ja-JP',
-                                trigger: "#" + button,
-                                autoHide: autoHide,
-                                startDate: startDate,
-                                endDate: endDate
-                            });
-                        }
-                        else
-                            $input.datepicker({
-                                format: containerFormat,
-                                language: 'ja-JP',
-                                autoHide: autoHide,
-                                startDate: startDate,
-                                endDate: endDate
-                            });
-                        container.data("format", containerFormat);
-                        if (containerFormat !== 'yyyy/mm')
-                            $input.on('change', function (event) {
-                                data.value(new Date($input.val().substring(0, 10)));
-                            });
-                        else
-                            $input.on('change', function (event) {
-                                var result = nts.uk.time.parseYearMonth($input.val());
-                                data.value(result.toValue());
-                            });
-                        $input.width(Math.floor(atomWidth * length));
-                        if (data.disabled !== undefined && ko.unwrap(data.disabled) == true) {
-                            $input.prop("disabled", true);
-                            if (button) {
-                                container.find('.datepicker-btn').prop("disabled", true);
-                            }
-                        }
-                    };
-                    /**
-                     * Update
-                     */
-                    DatePickerBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                        var data = valueAccessor();
-                        var container = $(element);
-                        var newValue = ko.unwrap(data.value);
-                        var dateFormat = (data.dateFormat !== undefined) ? ko.unwrap(data.dateFormat) : "yyyy/MM/dd";
-                        var disabled = (data.disabled !== undefined) ? ko.unwrap(data.disabled) : true;
-                        var idatr = container.attr("id");
-                        var $input = container.find('#' + idatr + "-input");
-                        var formatOptions = container.data("format");
-                        var oldDate = $input.datepicker("getDate");
-                        if (formatOptions != 'yyyy/mm') {
-                            var oldDate = $input.datepicker("getDate");
-                            if (oldDate.getFullYear() != newValue.getFullYear() || oldDate.getMonth() != newValue.getMonth() || oldDate.getDate() != newValue.getDate())
-                                $input.datepicker("setDate", newValue);
-                            $input.val(nts.uk.time.formatDate(newValue, dateFormat));
-                        }
-                        else {
-                            var formatted = nts.uk.time.parseYearMonth(newValue);
-                            var newDate = new Date(formatted.format() + "/01");
-                            var oldDate = $input.datepicker("getDate");
-                            if (oldDate.getFullYear() != newDate.getFullYear() || oldDate.getMonth() != newDate.getMonth())
-                                $input.datepicker("setDate", newDate);
-                            $input.val(formatted.format());
-                        }
-                        // Disable
-                        $input.prop("disabled", disabled);
-                        if (data.button)
-                            container.find('.datepicker-btn').prop("disabled", disabled);
-                    };
-                    return DatePickerBindingHandler;
-                }());
-                ko.bindingHandlers['ntsDatePicker'] = new DatePickerBindingHandler();
-            })(koExtentions = ui.koExtentions || (ui.koExtentions = {}));
-        })(ui = uk.ui || (uk.ui = {}));
-    })(uk = nts.uk || (nts.uk = {}));
-})(nts || (nts = {}));
-/// <reference path="../../reference.ts"/>
-var nts;
-(function (nts) {
-    var uk;
-    (function (uk) {
-        var ui;
-        (function (ui) {
-            var koExtentions;
-            (function (koExtentions) {
                 /**
                  * Dialog binding handler
                  */
@@ -4230,8 +4094,9 @@ var nts;
                         }
                         $input.addClass('nts-editor nts-input');
                         $input.wrap("<span class= 'nts-editor-wrapped ntsControl'/>");
+                        var validator = this.getValidator(data);
                         $input.on(valueUpdate, function (e) {
-                            var validator = _this.getValidator(data);
+                            //                var validator = this.getValidator(data);
                             var newText = $input.val();
                             var result = validator.validate(newText);
                             $input.ntsError('clear');
@@ -4245,7 +4110,7 @@ var nts;
                         });
                         // Format on blur
                         $input.blur(function () {
-                            var validator = _this.getValidator(data);
+                            //                var validator = this.getValidator(data);
                             var formatter = _this.getFormatter(data);
                             var newText = $input.val();
                             var result = validator.validate(newText);
@@ -4253,6 +4118,15 @@ var nts;
                                 $input.val(formatter.format(result.parsedValue));
                             }
                         });
+                        $input.on('validate', (function (e) {
+                            //                var validator = this.getValidator(data);
+                            var newText = $input.val();
+                            var result = validator.validate(newText);
+                            $input.ntsError('clear');
+                            if (!result.isValid) {
+                                $input.ntsError('set', result.errorMessage);
+                            }
+                        }));
                     };
                     EditorProcessor.prototype.update = function ($input, data) {
                         var value = data.value;
@@ -4750,7 +4624,81 @@ var nts;
                     container.find(".ui-selected").removeClass('ui-selected');
                     $(this).addClass('ui-selected');
                     container.data('value', $(this).data('value'));
-                    document.getElementById(container.attr('id')).dispatchEvent(event.data.event);
+                    document.getElementById(container.parent().attr('id')).dispatchEvent(event.data.event);
+                }
+                function unbindMultible($target) {
+                    $target.selectable("destroy");
+                }
+                function bindMultible($target, changeEvent) {
+                    $target.selectable({
+                        filter: 'li',
+                        selected: function (event, ui) {
+                        },
+                        stop: function (event, ui) {
+                            // Add selected value.
+                            var data = [];
+                            $("li.ui-selected", $target).each(function (index, opt) {
+                                data[index] = $(opt).data('value');
+                            });
+                            $target.data('value', data);
+                            // fire event change.
+                            document.getElementById($target.parent().attr('id')).dispatchEvent(changeEvent);
+                        },
+                        selecting: function (event, ui) {
+                            if (event.shiftKey) {
+                                if ($(ui.selecting).attr("clicked") !== "true") {
+                                    var source = $target.find("li");
+                                    var clicked = _.find(source, function (row) {
+                                        return $(row).attr("clicked") === "true";
+                                    });
+                                    if (clicked === undefined) {
+                                        $(ui.selecting).attr("clicked", "true");
+                                    }
+                                    else {
+                                        $target.find("li").attr("clicked", "");
+                                        $(ui.selecting).attr("clicked", "true");
+                                        var start = parseInt($(clicked).attr("data-idx"));
+                                        var end = parseInt($(ui.selecting).attr("data-idx"));
+                                        var max = start > end ? start : end;
+                                        var min = start < end ? start : end;
+                                        var range = _.filter(source, function (row) {
+                                            var index = parseInt($(row).attr("data-idx"));
+                                            return index >= min && index <= max;
+                                        });
+                                        $(range).addClass("ui-selected");
+                                    }
+                                }
+                            }
+                            else if (!event.ctrlKey) {
+                                $target.find("li").attr("clicked", "");
+                                $(ui.selecting).attr("clicked", "true");
+                            }
+                        }
+                    });
+                }
+                function bindSingleSelectListBox($target, changeEvent) {
+                    $target.on("click", "li", { event: changeEvent }, selectOnListBox);
+                }
+                function unbindSingleSelectListBox($target) {
+                    $target.off("click", "li");
+                }
+                function selectOneRow(container, selectedValue) {
+                    container.find("li").removeClass("ui-selected");
+                    var target = _.find($('li', container), function (opt) {
+                        var optValue = $(opt).data('value');
+                        return optValue == selectedValue;
+                    });
+                    $(target).addClass('ui-selected');
+                }
+                function selectMultiRow(container, selectedValues) {
+                    container.find("li").removeClass("ui-selected");
+                    _.forEach(selectedValues, function (selectedValue) {
+                        var target = _.find($('li', container), function (opt) {
+                            var optValue = $(opt).data('value');
+                            return optValue == selectedValue;
+                        });
+                        $(target).addClass('ui-selected');
+                    });
                 }
                 /**
                  * ListBox binding handler
@@ -4792,73 +4740,40 @@ var nts;
                         container.data("selectionChange", changeEvent);
                         if (isMultiSelect) {
                             // Bind selectable.
-                            selectListBoxContainer.selectable({
-                                filter: 'li',
-                                selected: function (event, ui) {
-                                },
-                                stop: function (event, ui) {
-                                    // Add selected value.
-                                    var data = [];
-                                    $("li.ui-selected", container).each(function (index, opt) {
-                                        data[index] = $(opt).data('value');
-                                    });
-                                    container.data('value', data);
-                                    // fire event change.
-                                    document.getElementById(container.attr('id')).dispatchEvent(changeEvent);
-                                },
-                                selecting: function (event, ui) {
-                                    if (event.shiftKey) {
-                                        if ($(ui.selecting).attr("clicked") !== "true") {
-                                            var source = container.find("li");
-                                            var clicked = _.find(source, function (row) {
-                                                return $(row).attr("clicked") === "true";
-                                            });
-                                            if (clicked === undefined) {
-                                                $(ui.selecting).attr("clicked", "true");
-                                            }
-                                            else {
-                                                container.find("li").attr("clicked", "");
-                                                $(ui.selecting).attr("clicked", "true");
-                                                var start = parseInt($(clicked).attr("data-idx"));
-                                                var end = parseInt($(ui.selecting).attr("data-idx"));
-                                                var max = start > end ? start : end;
-                                                var min = start < end ? start : end;
-                                                var range = _.filter(source, function (row) {
-                                                    var index = parseInt($(row).attr("data-idx"));
-                                                    return index >= min && index <= max;
-                                                });
-                                                $(range).addClass("ui-selected");
-                                            }
-                                        }
-                                    }
-                                    else if (!event.ctrlKey) {
-                                        container.find("li").attr("clicked", "");
-                                        $(ui.selecting).attr("clicked", "true");
-                                    }
-                                }
-                            });
+                            bindMultible(selectListBoxContainer, changeEvent);
                         }
                         else {
-                            container.on("click", "li", { event: changeEvent }, selectOnListBox);
+                            bindSingleSelectListBox(selectListBoxContainer, changeEvent);
                         }
                         // Fire event.
                         container.on('selectionChange', (function (e) {
                             // Check is multi-selection.
-                            var itemsSelected = container.data('value');
-                            data.value(itemsSelected);
-                            container.data("selected", !isMultiSelect ? itemsSelected : itemsSelected.slice());
-                        }));
-                        container.on('validate', (function (e) {
-                            // Check empty value
-                            var itemsSelected = container.data('value');
-                            if ((itemsSelected === undefined || itemsSelected === null || itemsSelected.length == 0)
-                                && container.data("enable")) {
-                                selectListBoxContainer.ntsError('set', 'at least 1 item selection required');
+                            var changingEvent = new CustomEvent("selectionChanging", {
+                                detail: itemsSelected,
+                                bubbles: true,
+                                cancelable: true,
+                            });
+                            var isMulti = container.data("multiple");
+                            var itemsSelected = selectListBoxContainer.data('value');
+                            // Dispatch/Trigger/Fire the event => use event.detai to get selected value.
+                            document.getElementById(container.attr('id')).dispatchEvent(changingEvent);
+                            if (!changingEvent.returnValue) {
+                                // revert select.
+                                console.log(selectedValue);
+                                selectListBoxContainer.data('value', data.value());
+                                if (isMulti) {
+                                    selectMultiRow(selectListBoxContainer, data.value());
+                                }
+                                else {
+                                    selectOneRow(selectListBoxContainer, data.value());
+                                }
                             }
                             else {
-                                selectListBoxContainer.ntsError('clear');
+                                data.value(itemsSelected);
+                                container.data("selected", !isMulti ? itemsSelected : itemsSelected.slice());
                             }
                         }));
+                        container.data("multiple", isMultiSelect);
                     };
                     /**
                      * Update
@@ -4893,24 +4808,35 @@ var nts;
                         var originalOptions = container.data("options");
                         var init = container.data("init");
                         var originalSelected = container.data("selected");
+                        var oldMultiOption = container.data("multiple");
+                        if (oldMultiOption !== isMultiSelect && !init) {
+                            var changeEvent = new CustomEvent("selectionChange", {
+                                detail: {},
+                            });
+                            if (oldMultiOption) {
+                                unbindMultible(selectListBoxContainer);
+                                bindSingleSelectListBox(selectListBoxContainer, changeEvent);
+                                container.find("li").removeClass("ui-selected");
+                                if (selectedValue.length > 0) {
+                                    selectOneRow(selectListBoxContainer, selectedValue[0]);
+                                    data.value(selectedValue[0]);
+                                }
+                            }
+                            else {
+                                unbindSingleSelectListBox(selectListBoxContainer);
+                                bindMultible(selectListBoxContainer, changeEvent);
+                                if (!uk.text.isNullOrEmpty(selectedValue)) {
+                                    var array = [];
+                                    array.push(selectedValue);
+                                    data.value(array);
+                                }
+                            }
+                            container.data("multiple", isMultiSelect);
+                        }
                         if (!_.isEqual(originalOptions, options) || init) {
                             if (!init) {
-                                // Remove options.
-                                $('li', container).each(function (index, option) {
-                                    var optValue = $(option).data('value');
-                                    // Check if btn is contained in options.
-                                    var foundFlag = _.findIndex(options, function (opt) {
-                                        return getOptionValue(opt) === optValue;
-                                    }) !== -1;
-                                    if (!foundFlag) {
-                                        // Remove selected if not found option.
-                                        selectedValue = jQuery.grep(selectedValue, function (value) {
-                                            return value !== optValue;
-                                        });
-                                        option.remove();
-                                        return;
-                                    }
-                                });
+                                //remove children
+                                selectListBoxContainer.empty();
                             }
                             // Append options.
                             options.forEach(function (item, idx) {
@@ -4974,8 +4900,10 @@ var nts;
                         container.data("options", options.slice());
                         container.data("init", false);
                         // Set value
-                        if (!_.isEqual(originalSelected, selectedValue) || init) {
-                            container.data('value', selectedValue);
+                        var haveDate = isMultiSelect ? !uk.text.isNullOrEmpty(selectedValue) && selectedValue.length > 0
+                            : !uk.text.isNullOrEmpty(selectedValue);
+                        if (haveDate && (!_.isEqual(originalSelected, selectedValue) || init)) {
+                            selectListBoxContainer.data('value', selectedValue);
                             container.trigger('selectionChange');
                         }
                         if (isMultiSelect) {
@@ -5005,9 +4933,6 @@ var nts;
                             }
                         }
                         container.data("enable", enable);
-                        if (!(selectedValue === undefined || selectedValue === null || selectedValue.length == 0)) {
-                            container.trigger('validate');
-                        }
                     };
                     return ListBoxBindingHandler;
                 }());
@@ -5611,6 +5536,96 @@ var nts;
             var koExtentions;
             (function (koExtentions) {
                 /**
+                 * TabPanel Binding Handler
+                 */
+                var TabPanelBindingHandler = (function () {
+                    /**
+                     * Constructor.
+                     */
+                    function TabPanelBindingHandler() {
+                    }
+                    /**
+                     * Init.
+                     */
+                    TabPanelBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        // Get data.
+                        var data = valueAccessor();
+                        var tabs = ko.unwrap(data.dataSource);
+                        var direction = ko.unwrap(data.direction || "horizontal");
+                        // Container.
+                        var container = $(element);
+                        // Create title.
+                        container.prepend('<ul></ul>');
+                        var titleContainer = container.children('ul');
+                        for (var i = 0; i < tabs.length; i++) {
+                            var id = tabs[i].id;
+                            var title = tabs[i].title;
+                            titleContainer.append('<li><a href="#' + id + '">' + title + '</a></li>');
+                            // Wrap content.
+                            var content = tabs[i].content;
+                            container.children(content).wrap('<div id="' + id + '"></div>');
+                        }
+                        container.tabs({
+                            activate: function (evt, ui) {
+                                data.active(ui.newPanel[0].id);
+                                container.children('ul').children('.ui-tabs-active').addClass('active');
+                                container.children('ul').children('li').not('.ui-tabs-active').removeClass('active');
+                                container.children('ul').children('.ui-state-disabled').addClass('disabled');
+                                container.children('ul').children('li').not('.ui-state-disabled').removeClass('disabled');
+                            }
+                        }).addClass(direction);
+                    };
+                    /**
+                     * Update
+                     */
+                    TabPanelBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        // Get data.
+                        var data = valueAccessor();
+                        // Get tab list.
+                        var tabs = ko.unwrap(data.dataSource);
+                        // Container.
+                        var container = $(element);
+                        // Select tab.
+                        var activeTab = tabs.filter(function (tab) { return tab.id == data.active(); })[0];
+                        var indexActive = tabs.indexOf(activeTab);
+                        container.tabs("option", "active", indexActive);
+                        // Disable & visible tab.
+                        tabs.forEach(function (tab) {
+                            if (tab.enable()) {
+                                container.tabs("enable", '#' + tab.id);
+                                container.children('#' + tab.id).children('div').show();
+                                container.children('ul').children('li[aria-controls="' + tab.id + '"]').removeClass('disabled');
+                            }
+                            else {
+                                container.tabs("disable", '#' + tab.id);
+                                container.children('#' + tab.id).children('div').hide();
+                                container.children('ul').children('li[aria-controls="' + tab.id + '"]').addClass('disabled');
+                            }
+                            if (!tab.visible()) {
+                                container.children('ul').children('li[aria-controls="' + tab.id + '"]').hide();
+                            }
+                            else {
+                                container.children('ul').children('li[aria-controls="' + tab.id + '"]').show();
+                            }
+                        });
+                    };
+                    return TabPanelBindingHandler;
+                }());
+                ko.bindingHandlers['ntsTabPanel'] = new TabPanelBindingHandler();
+            })(koExtentions = ui_6.koExtentions || (ui_6.koExtentions = {}));
+        })(ui = uk.ui || (uk.ui = {}));
+    })(uk = nts.uk || (nts.uk = {}));
+})(nts || (nts = {}));
+/// <reference path="../../reference.ts"/>
+var nts;
+(function (nts) {
+    var uk;
+    (function (uk) {
+        var ui;
+        (function (ui_7) {
+            var koExtentions;
+            (function (koExtentions) {
+                /**
                  * TreeGrid binding handler
                  */
                 var NtsTreeGridViewBindingHandler = (function () {
@@ -5742,7 +5757,7 @@ var nts;
                     return NtsTreeGridViewBindingHandler;
                 }());
                 ko.bindingHandlers['ntsTreeGridView'] = new NtsTreeGridViewBindingHandler();
-            })(koExtentions = ui_6.koExtentions || (ui_6.koExtentions = {}));
+            })(koExtentions = ui_7.koExtentions || (ui_7.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -5752,7 +5767,7 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_7) {
+        (function (ui_8) {
             var koExtentions;
             (function (koExtentions) {
                 /**
@@ -5996,7 +6011,7 @@ var nts;
                     return NtsUpDownBindingHandler;
                 }());
                 ko.bindingHandlers['ntsUpDown'] = new NtsUpDownBindingHandler();
-            })(koExtentions = ui_7.koExtentions || (ui_7.koExtentions = {}));
+            })(koExtentions = ui_8.koExtentions || (ui_8.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -6138,150 +6153,136 @@ var nts;
     var uk;
     (function (uk) {
         var ui;
-        (function (ui_8) {
+        (function (ui) {
             var koExtentions;
             (function (koExtentions) {
-                /**
-                 * TabPanel Binding Handler
-                 */
-                var TabPanelBindingHandler = (function () {
+                var DatePickerBindingHandler = (function () {
                     /**
                      * Constructor.
                      */
-                    function TabPanelBindingHandler() {
+                    function DatePickerBindingHandler() {
                     }
                     /**
                      * Init.
                      */
-                    TabPanelBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                    DatePickerBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         // Get data.
                         var data = valueAccessor();
-                        var tabs = ko.unwrap(data.dataSource);
-                        var direction = ko.unwrap(data.direction || "horizontal");
                         // Container.
                         var container = $(element);
-                        // Create title.
-                        container.prepend('<ul></ul>');
-                        var titleContainer = container.children('ul');
-                        for (var i = 0; i < tabs.length; i++) {
-                            var id = tabs[i].id;
-                            var title = tabs[i].title;
-                            titleContainer.append('<li><a href="#' + id + '">' + title + '</a></li>');
-                            // Wrap content.
-                            var content = tabs[i].content;
-                            container.children(content).wrap('<div id="' + id + '"></div>');
+                        if (!container.attr("id")) {
+                            var idString = nts.uk.util.randomId();
+                            container.attr("id", idString);
                         }
-                        container.tabs({
-                            activate: function (evt, ui) {
-                                data.active(ui.newPanel[0].id);
-                                container.children('ul').children('.ui-tabs-active').addClass('active');
-                                container.children('ul').children('li').not('.ui-tabs-active').removeClass('active');
-                                container.children('ul').children('.ui-state-disabled').addClass('disabled');
-                                container.children('ul').children('li').not('.ui-state-disabled').removeClass('disabled');
+                        container.addClass("ntsControl");
+                        var startDate = null;
+                        var endDate = null;
+                        if (data.startDate) {
+                            startDate = ko.unwrap(data.startDate);
+                        }
+                        if (data.endDate) {
+                            endDate = ko.unwrap(data.endDate);
+                        }
+                        var autoHide = data.autoHide == false ? false : true;
+                        var idatr = container.attr("id");
+                        container.append("<input id='" + idatr + "-input' class='ntsDatepicker nts-input' />");
+                        var $input = container.find('#' + idatr + "-input");
+                        var button = null;
+                        if (data.button)
+                            button = idatr + "_button";
+                        $input.prop("readonly", true);
+                        var value = ko.unwrap(data.value);
+                        var dateFormat = data.dateFormat ? ko.unwrap(data.dateFormat) : "yyyy/MM/dd";
+                        var containerFormat = 'yyyy/mm/dd';
+                        var length = 10, atomWidth = 9.5;
+                        if (dateFormat === "yyyy/MM/dd DDD") {
+                            length = 16;
+                        }
+                        else if (dateFormat === "yyyy/MM/dd D") {
+                            length = 14;
+                        }
+                        else if (dateFormat === "yyyy/MM") {
+                            length = 7;
+                            containerFormat = 'yyyy/mm';
+                        }
+                        if (containerFormat != 'yyyy/mm')
+                            //datepicker case
+                            $input.attr('value', nts.uk.time.formatDate(value, dateFormat));
+                        else
+                            $input.attr('value', value);
+                        if (button) {
+                            container.append("<input type='button' id='" + button + "' class='datepicker-btn' />");
+                            $input.datepicker({
+                                format: containerFormat,
+                                language: 'ja-JP',
+                                trigger: "#" + button,
+                                autoHide: autoHide,
+                                startDate: startDate,
+                                endDate: endDate
+                            });
+                        }
+                        else
+                            $input.datepicker({
+                                format: containerFormat,
+                                language: 'ja-JP',
+                                autoHide: autoHide,
+                                startDate: startDate,
+                                endDate: endDate
+                            });
+                        container.data("format", containerFormat);
+                        if (containerFormat !== 'yyyy/mm')
+                            $input.on('change', function (event) {
+                                data.value(new Date($input.val().substring(0, 10)));
+                            });
+                        else
+                            $input.on('change', function (event) {
+                                var result = nts.uk.time.parseYearMonth($input.val());
+                                data.value(result.toValue());
+                            });
+                        $input.width(Math.floor(atomWidth * length));
+                        if (data.disabled !== undefined && ko.unwrap(data.disabled) == true) {
+                            $input.prop("disabled", true);
+                            if (button) {
+                                container.find('.datepicker-btn').prop("disabled", true);
                             }
-                        }).addClass(direction);
+                        }
                     };
                     /**
                      * Update
                      */
-                    TabPanelBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                        // Get data.
+                    DatePickerBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var data = valueAccessor();
-                        // Get tab list.
-                        var tabs = ko.unwrap(data.dataSource);
-                        // Container.
                         var container = $(element);
-                        // Select tab.
-                        var activeTab = tabs.filter(function (tab) { return tab.id == data.active(); })[0];
-                        var indexActive = tabs.indexOf(activeTab);
-                        container.tabs("option", "active", indexActive);
-                        // Disable & visible tab.
-                        tabs.forEach(function (tab) {
-                            if (tab.enable()) {
-                                container.tabs("enable", '#' + tab.id);
-                                container.children('#' + tab.id).children('div').show();
-                                container.children('ul').children('li[aria-controls="' + tab.id + '"]').removeClass('disabled');
-                            }
-                            else {
-                                container.tabs("disable", '#' + tab.id);
-                                container.children('#' + tab.id).children('div').hide();
-                                container.children('ul').children('li[aria-controls="' + tab.id + '"]').addClass('disabled');
-                            }
-                            if (!tab.visible()) {
-                                container.children('ul').children('li[aria-controls="' + tab.id + '"]').hide();
-                            }
-                            else {
-                                container.children('ul').children('li[aria-controls="' + tab.id + '"]').show();
-                            }
-                        });
-                    };
-                    return TabPanelBindingHandler;
-                }());
-                ko.bindingHandlers['ntsTabPanel'] = new TabPanelBindingHandler();
-            })(koExtentions = ui_8.koExtentions || (ui_8.koExtentions = {}));
-        })(ui = uk.ui || (uk.ui = {}));
-    })(uk = nts.uk || (nts.uk = {}));
-})(nts || (nts = {}));
-/// <reference path="../reference.ts"/>
-var nts;
-(function (nts) {
-    var uk;
-    (function (uk) {
-        var ui;
-        (function (ui) {
-            var file;
-            (function (file_1) {
-                var FileDownload = (function () {
-                    function FileDownload(servicePath, data) {
-                        var self = this;
-                        self.servicePath = servicePath;
-                        self.data = data;
-                        self.isFinishTask = ko.observable(false);
-                        self.isFinishTask.subscribe(function (value) {
-                            if (value) {
-                                clearInterval(self.interval);
-                                self.isFinishTask(false);
-                                self.download();
-                            }
-                        });
-                    }
-                    FileDownload.prototype.isTaskFinished = function (file) {
-                        var options = {
-                            dataType: 'text',
-                            contentType: 'text/plain'
-                        };
-                        uk.request.ajax("file/file/isfinished", file.taskId).done(function (res) {
-                            file.isFinishTask(res);
-                        }).fail(function (error) {
-                            file.reject(error);
-                        });
-                    };
-                    FileDownload.prototype.print = function () {
-                        var self = this;
-                        self.deferred = $.Deferred();
-                        var options = {
-                            dataType: 'text',
-                            contentType: 'application/json'
-                        };
-                        uk.request.ajax(self.servicePath, self.data, options).done(function (res) {
-                            self.taskId = res;
-                            self.interval = setInterval(self.isTaskFinished, 1000, self);
-                        }).fail(function (error) {
-                            self.deferred.reject(error);
-                        });
-                        return self.deferred.promise();
-                    };
-                    FileDownload.prototype.download = function () {
-                        var self = this;
-                        window.location.href = ("http://localhost:8080/nts.uk.pr.web/webapi/file/file/dl/" + self.taskId);
-                        if (self.deferred) {
-                            self.deferred.resolve();
+                        var newValue = ko.unwrap(data.value);
+                        var dateFormat = (data.dateFormat !== undefined) ? ko.unwrap(data.dateFormat) : "yyyy/MM/dd";
+                        var disabled = (data.disabled !== undefined) ? ko.unwrap(data.disabled) : false;
+                        var idatr = container.attr("id");
+                        var $input = container.find('#' + idatr + "-input");
+                        var formatOptions = container.data("format");
+                        var oldDate = $input.datepicker("getDate");
+                        if (formatOptions != 'yyyy/mm') {
+                            var oldDate = $input.datepicker("getDate");
+                            if (oldDate.getFullYear() != newValue.getFullYear() || oldDate.getMonth() != newValue.getMonth() || oldDate.getDate() != newValue.getDate())
+                                $input.datepicker("setDate", newValue);
+                            $input.val(nts.uk.time.formatDate(newValue, dateFormat));
                         }
+                        else {
+                            var formatted = nts.uk.time.parseYearMonth(newValue);
+                            var newDate = new Date(formatted.format() + "/01");
+                            var oldDate = $input.datepicker("getDate");
+                            if (oldDate.getFullYear() != newDate.getFullYear() || oldDate.getMonth() != newDate.getMonth())
+                                $input.datepicker("setDate", newDate);
+                            $input.val(formatted.format());
+                        }
+                        // Disable
+                        $input.prop("disabled", disabled);
+                        if (data.button)
+                            container.find('.datepicker-btn').prop("disabled", disabled);
                     };
-                    return FileDownload;
+                    return DatePickerBindingHandler;
                 }());
-                file_1.FileDownload = FileDownload;
-            })(file = ui.file || (ui.file = {}));
+                ko.bindingHandlers['ntsDatePicker'] = new DatePickerBindingHandler();
+            })(koExtentions = ui.koExtentions || (ui.koExtentions = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
@@ -6374,6 +6375,51 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+/// <reference path="../../reference.ts"/>
+var nts;
+(function (nts) {
+    var uk;
+    (function (uk) {
+        var ui;
+        (function (ui) {
+            var koExtentions;
+            (function (koExtentions) {
+                /**
+                 * LinkButton
+                 */
+                var NtsLinkButtonBindingHandler = (function () {
+                    function NtsLinkButtonBindingHandler() {
+                    }
+                    /**
+                     * Init.
+                     */
+                    NtsLinkButtonBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                        var data = valueAccessor();
+                        var jump = ko.unwrap(data.jump);
+                        var action = data.action;
+                        var linkText = $(element).text();
+                        var $linkButton = $(element).wrap('<div class="ntsControl"/>')
+                            .addClass('link-button')
+                            .click(function () {
+                            event.preventDefault();
+                            if (!nts.uk.util.isNullOrUndefined(action))
+                                action.call(viewModel);
+                            else if (!nts.uk.util.isNullOrUndefined(jump))
+                                nts.uk.request.jump(jump);
+                        });
+                    };
+                    /**
+                     * Update
+                     */
+                    NtsLinkButtonBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                    };
+                    return NtsLinkButtonBindingHandler;
+                }());
+                ko.bindingHandlers['ntsLinkButton'] = new NtsLinkButtonBindingHandler();
+            })(koExtentions = ui.koExtentions || (ui.koExtentions = {}));
+        })(ui = uk.ui || (uk.ui = {}));
+    })(uk = nts.uk || (nts.uk = {}));
+})(nts || (nts = {}));
 var nts;
 (function (nts) {
     var uk;
@@ -6422,48 +6468,66 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
-/// <reference path="../../reference.ts"/>
+/// <reference path="../reference.ts"/>
 var nts;
 (function (nts) {
     var uk;
     (function (uk) {
         var ui;
         (function (ui) {
-            var koExtentions;
-            (function (koExtentions) {
-                /**
-                 * LinkButton
-                 */
-                var NtsLinkButtonBindingHandler = (function () {
-                    function NtsLinkButtonBindingHandler() {
+            var file;
+            (function (file_1) {
+                var FileDownload = (function () {
+                    function FileDownload(servicePath, data) {
+                        var self = this;
+                        self.servicePath = servicePath;
+                        self.data = data;
+                        self.isFinishTask = ko.observable(false);
+                        self.isFinishTask.subscribe(function (value) {
+                            if (value) {
+                                clearInterval(self.interval);
+                                self.isFinishTask(false);
+                                self.download();
+                            }
+                        });
                     }
-                    /**
-                     * Init.
-                     */
-                    NtsLinkButtonBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
-                        var data = valueAccessor();
-                        var jump = ko.unwrap(data.jump);
-                        var action = data.action;
-                        var linkText = $(element).text();
-                        var $linkButton = $(element).wrap('<div class="ntsControl"/>')
-                            .addClass('link-button')
-                            .click(function () {
-                            event.preventDefault();
-                            if (!nts.uk.util.isNullOrUndefined(action))
-                                action.call(viewModel);
-                            else if (!nts.uk.util.isNullOrUndefined(jump))
-                                nts.uk.request.jump(jump);
+                    FileDownload.prototype.isTaskFinished = function (file) {
+                        var options = {
+                            dataType: 'text',
+                            contentType: 'text/plain'
+                        };
+                        uk.request.ajax("file/file/isfinished", file.taskId).done(function (res) {
+                            file.isFinishTask(res);
+                        }).fail(function (error) {
+                            file.reject(error);
                         });
                     };
-                    /**
-                     * Update
-                     */
-                    NtsLinkButtonBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
+                    FileDownload.prototype.print = function () {
+                        var self = this;
+                        self.deferred = $.Deferred();
+                        var options = {
+                            dataType: 'text',
+                            contentType: 'application/json'
+                        };
+                        uk.request.ajax(self.servicePath, self.data, options).done(function (res) {
+                            self.taskId = res;
+                            self.interval = setInterval(self.isTaskFinished, 1000, self);
+                        }).fail(function (error) {
+                            self.deferred.reject(error);
+                        });
+                        return self.deferred.promise();
                     };
-                    return NtsLinkButtonBindingHandler;
+                    FileDownload.prototype.download = function () {
+                        var self = this;
+                        window.location.href = ("http://localhost:8080/nts.uk.pr.web/webapi/file/file/dl/" + self.taskId);
+                        if (self.deferred) {
+                            self.deferred.resolve();
+                        }
+                    };
+                    return FileDownload;
                 }());
-                ko.bindingHandlers['ntsLinkButton'] = new NtsLinkButtonBindingHandler();
-            })(koExtentions = ui.koExtentions || (ui.koExtentions = {}));
+                file_1.FileDownload = FileDownload;
+            })(file = ui.file || (ui.file = {}));
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
