@@ -34,6 +34,5 @@ public enum IndicatorCategory {
 	
 	IndicatorCategory(int value) {
 		this.value = value;
-		// TODO Auto-generated constructor stub
 	}
 }

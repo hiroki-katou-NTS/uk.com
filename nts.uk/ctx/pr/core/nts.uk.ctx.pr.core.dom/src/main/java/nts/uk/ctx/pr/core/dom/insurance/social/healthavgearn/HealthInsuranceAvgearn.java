@@ -94,4 +94,41 @@ public class HealthInsuranceAvgearn extends DomainObject {
 		return healthInsuranceAvgearn;
 	}
 
+	/* (non-Javadoc)
+	 * @see java.lang.Object#hashCode()
+	 */
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result + ((historyId == null) ? 0 : historyId.hashCode());
+		result = prime * result + ((levelCode == null) ? 0 : levelCode.hashCode());
+		return result;
+	}
+
+	/* (non-Javadoc)
+	 * @see java.lang.Object#equals(java.lang.Object)
+	 */
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (!(obj instanceof HealthInsuranceAvgearn))
+			return false;
+		HealthInsuranceAvgearn other = (HealthInsuranceAvgearn) obj;
+		if (historyId == null) {
+			if (other.historyId != null)
+				return false;
+		} else if (!historyId.equals(other.historyId))
+			return false;
+		if (levelCode == null) {
+			if (other.levelCode != null)
+				return false;
+		} else if (!levelCode.equals(other.levelCode))
+			return false;
+		return true;
+	}
+
 }

@@ -2,6 +2,8 @@ include 'web:nts.uk.com.web'
 include 'web:nts.uk.pr.web'
 
 include 'shr:nts.uk.shr.com'
+include 'shr:nts.uk.shr.ws'
+include 'shr:nts.uk.shr.find'
 
 include 'ctx:basic:nts.uk.ctx.basic.ac'
 include 'ctx:basic:nts.uk.ctx.basic.app'
@@ -10,7 +12,6 @@ include 'ctx:basic:nts.uk.ctx.basic.infra'
 include 'ctx:basic:nts.uk.ctx.basic.pub'
 include 'ctx:basic:nts.uk.ctx.basic.pubimp'
 include 'ctx:basic:nts.uk.ctx.basic.ws'
-
 
 include 'ctx:pr:core:nts.uk.ctx.pr.core.ac'
 include 'ctx:pr:core:nts.uk.ctx.pr.core.app'

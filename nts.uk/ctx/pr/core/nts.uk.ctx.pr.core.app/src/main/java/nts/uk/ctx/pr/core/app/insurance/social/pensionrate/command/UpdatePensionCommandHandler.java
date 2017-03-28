@@ -10,7 +10,6 @@ import javax.transaction.Transactional;
 
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionRate;
 import nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.PensionRateRepository;
 import nts.uk.ctx.pr.core.dom.insurance.social.pensionrate.service.PensionRateService;
@@ -44,7 +43,7 @@ public class UpdatePensionCommandHandler extends CommandHandler<UpdatePensionCom
 		UpdatePensionCommand command = context.getCommand();
 
 		// Get the current company code.
-		CompanyCode companyCode = new CompanyCode(AppContexts.user().companyCode());
+		String companyCode = AppContexts.user().companyCode();
 
 		// Get the history.
 		PensionRate pensionRate = pensionRateRepository.findById(command.getHistoryId()).get();

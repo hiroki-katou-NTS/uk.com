@@ -7,18 +7,19 @@ package nts.uk.ctx.pr.report.infra.repository.salarydetail.memento;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import nts.gul.collection.LazyList;
 import nts.uk.ctx.pr.report.dom.salarydetail.SalaryCategory;
 import nts.uk.ctx.pr.report.dom.salarydetail.outputsetting.SalaryCategorySettingGetMemento;
 import nts.uk.ctx.pr.report.dom.salarydetail.outputsetting.SalaryOutputItem;
-import nts.uk.ctx.pr.report.infra.entity.salarydetail.QlsptPaylstFormDetail;
+import nts.uk.ctx.pr.report.infra.entity.salarydetail.QlsptPaylstFormHead;
 
 /**
  * The Class JpaSalaryCategorySettingGetMemento.
  */
 public class JpaSalaryCategorySettingGetMemento implements SalaryCategorySettingGetMemento {
 
-	/** The details. */
-	private List<QlsptPaylstFormDetail> details;
+	/** The entity. */
+	private QlsptPaylstFormHead entity;
 
 	/** The category. */
 	private SalaryCategory category;
@@ -26,12 +27,12 @@ public class JpaSalaryCategorySettingGetMemento implements SalaryCategorySetting
 	/**
 	 * Instantiates a new jpa salary category setting get memento.
 	 *
-	 * @param details the details
+	 * @param entity the entity
 	 * @param category the category
 	 */
-	public JpaSalaryCategorySettingGetMemento(List<QlsptPaylstFormDetail> details, SalaryCategory category) {
+	public JpaSalaryCategorySettingGetMemento(QlsptPaylstFormHead entity, SalaryCategory category) {
 		super();
-		this.details = details;
+		this.entity = entity;
 		this.category = category;
 	}
 
@@ -54,9 +55,11 @@ public class JpaSalaryCategorySettingGetMemento implements SalaryCategorySetting
 	 */
 	@Override
 	public List<SalaryOutputItem> getSalaryOutputItems() {
-		return this.details.stream().map(detail -> {
-			return new SalaryOutputItem(new JpaSalaryOutputItemGetMemento(detail));
-		}).collect(Collectors.toList());
+		return LazyList.withMap(
+				() -> this.entity.getQlsptPaylstFormDetailList().stream()
+						.filter(item -> item.getQlsptPaylstFormDetailPK().getCtgAtr() == this.category.value)
+						.collect(Collectors.toList()),
+				detail -> new SalaryOutputItem(new JpaSalaryOutputItemGetMemento(detail)));
 	}
 
 }

@@ -10,11 +10,9 @@ import nts.arc.primitive.constraint.StringMaxLength;
  *
  */
 
-@StringMaxLength(20)
-@StringCharType(CharType.ALPHA_NUMERIC)
+@StringMaxLength(12)
 public class RetirementPayItemPrintName extends StringPrimitiveValue<RetirementPayItemPrintName>{
 	public RetirementPayItemPrintName(String value) {
 		super(value);
-		// TODO Auto-generated constructor stub
 	}
 }

@@ -3,10 +3,9 @@ package nts.uk.ctx.pr.core.app.find.retirement.payitem;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import javax.enterprise.context.RequestScoped;
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
-import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.app.find.retirement.payitem.dto.RetirementPayItemDto;
 import nts.uk.ctx.pr.core.dom.retirement.payitem.RetirementPayItemRepository;
 import nts.uk.shr.com.context.AppContexts;
@@ -15,23 +14,27 @@ import nts.uk.shr.com.context.AppContexts;
  * @author Doan Duy Hung
  *
  */
-@RequestScoped
+@Stateless
 public class RetirementPayItemFinder {
 	@Inject
 	private RetirementPayItemRepository retirementPayItemRepository;
 	
-	public List<RetirementPayItemDto> find_By_companyCode(){
-		CompanyCode companyCode = new CompanyCode(AppContexts.user().companyCode()) ;
+	/**
+	 * find retirement payment item by company code 
+	 * @return list retirement payment item by company code
+	 */
+	public List<RetirementPayItemDto> findByCompanyCode(){
+		String companyCode = AppContexts.user().companyCode() ;
 		return this.retirementPayItemRepository.findByCompanyCode(companyCode)
 				.stream()
 				.map(x -> new RetirementPayItemDto(
-						x.getCompanyCode().v(),
+						x.getCompanyCode(),
 						x.getCategory().value,
-						x.getItemCode().v(),
-						x.getItemName().v(),
+						x.getItemCode(),
+						x.getItemName(),
 						x.getPrintName().v(),
-						x.getEnglishName().v(),
-						x.getFullName().v(),
+						x.getEnglishName(),
+						x.getFullName(),
 						x.getMemo().v()))
 				.collect(Collectors.toList());
 	}

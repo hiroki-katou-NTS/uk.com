@@ -23,14 +23,7 @@ module nts.uk.pr.view.qpp007.b {
          */
         export function findSalaryPrintSetting(): JQueryPromise<model.SalaryPrintSettingDto> {
             var dfd = $.Deferred<Array<any>>();
-            nts.uk.request.ajax(paths.findSalaryPrintSetting)
-                .done(res => {
-                    dfd.resolve(res);
-                })
-                .fail(res => {
-                    dfd.reject(res);
-                })
-            return dfd.promise();
+           return  nts.uk.request.ajax(paths.findSalaryPrintSetting);
         }
 
         /**

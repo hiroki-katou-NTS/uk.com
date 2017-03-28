@@ -60,4 +60,15 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+<<<<<<< HEAD
 //# sourceMappingURL=file.js.map
+=======
+<<<<<<< HEAD
+<<<<<<< HEAD
+//# sourceMappingURL=file.js.map
+=======
+//# sourceMappingURL=file.js.map
+>>>>>>> basic/develop
+=======
+>>>>>>> basic/develop
+>>>>>>> basic/develop

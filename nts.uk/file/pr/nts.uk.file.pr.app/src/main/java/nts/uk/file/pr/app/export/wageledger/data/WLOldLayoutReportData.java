@@ -44,4 +44,10 @@ public class WLOldLayoutReportData {
 	
 	/** The attendance bonus data. */
 	public List<ReportItemDto> bonusAttendanceDatas;
+	
+	/** The bonus month list. */
+	public List<Integer> bonusMonthList;
+	
+	/** The salary month list. */
+	public List<Integer> salaryMonthList;
 }

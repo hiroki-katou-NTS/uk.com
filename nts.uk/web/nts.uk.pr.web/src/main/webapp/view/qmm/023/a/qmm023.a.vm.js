@@ -38,9 +38,9 @@ var qmm023;
                     var self = this;
                     self.items = ko.observableArray([]);
                     this.columns = ko.observableArray([
-                        { headerText: 'コード', prop: 'code', width: 50 },
-                        { headerText: '名称', prop: 'name', width: 120 },
-                        { headerText: '限度額', prop: 'taxLimit', width: 170 }
+                        { headerText: 'コード', prop: 'code', width: 75 },
+                        { headerText: '名称', prop: 'name', width: 175 },
+                        { headerText: '限度額', prop: 'taxLimit', width: 115 }
                     ]);
                     self.currentTax = ko.observable(new TaxModel('', '', 0));
                     self.currentCode = ko.observable(null);
@@ -195,6 +195,7 @@ var qmm023;
                         self.deleteData();
                     });
                 };
+                // startpage
                 ScreenModel.prototype.startPage = function () {
                     var self = this;
                     return self.reload(true);
@@ -253,3 +254,4 @@ var qmm023;
         })(viewmodel = a.viewmodel || (a.viewmodel = {}));
     })(a = qmm023.a || (qmm023.a = {}));
 })(qmm023 || (qmm023 = {}));
+//# sourceMappingURL=qmm023.a.vm.js.map

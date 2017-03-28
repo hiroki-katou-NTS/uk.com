@@ -29,7 +29,7 @@ public class RetirementPayItemWebService extends WebService{
 	@POST
 	@Path("findBycompanyCode")
 	public List<RetirementPayItemDto> findBycompanyCode() {
-		return this.retirementPayItemFinder.find_By_companyCode();
+		return this.retirementPayItemFinder.findByCompanyCode();
 	}
 	
 	@POST

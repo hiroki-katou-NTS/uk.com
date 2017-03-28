@@ -7,6 +7,7 @@ import javax.persistence.Table;
 
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
+import nts.uk.shr.infra.data.entity.TableEntity;
 /**
  * 
  * @author Doan Duy Hung
@@ -16,7 +17,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @Entity
 @Table(name="QREMT_RETIRE_PAY_ITEM")
-public class QremtRetirePayItem {
+public class QremtRetirePayItem extends TableEntity {
 	@EmbeddedId
 	public QremtRetirePayItemPK qremtRetirePayItemPK;
 	

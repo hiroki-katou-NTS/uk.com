@@ -1,39 +1,40 @@
 package nts.uk.ctx.pr.core.infra.repository.retirement.payitem;
 
 import java.util.List;
+import java.util.Optional;
 
-import javax.enterprise.context.RequestScoped;
+import javax.ejb.Stateless;
 import javax.transaction.Transactional;
 
+import nts.arc.enums.EnumAdaptor;
 import nts.arc.layer.infra.data.JpaRepository;
-import nts.uk.ctx.core.dom.company.CompanyCode;
+import nts.uk.ctx.pr.core.dom.retirement.payitem.IndicatorCategory;
 import nts.uk.ctx.pr.core.dom.retirement.payitem.RetirementPayItem;
+import nts.uk.ctx.pr.core.dom.retirement.payitem.RetirementPayItemPrintName;
 import nts.uk.ctx.pr.core.dom.retirement.payitem.RetirementPayItemRepository;
 import nts.uk.ctx.pr.core.infra.entity.retirement.payitem.QremtRetirePayItem;
 import nts.uk.ctx.pr.core.infra.entity.retirement.payitem.QremtRetirePayItemPK;
+import nts.uk.shr.com.primitive.Memo;
 /**
  * 
  * @author Doan Duy Hung
  *
  */
-@RequestScoped
+@Stateless
 @Transactional
 public class JpaRetirementPayItemRepository extends JpaRepository implements RetirementPayItemRepository{
-	private final String findAll = "SELECT a FROM QremtRetirePayItem a";
-	private final String find_By_companyCode = findAll + " WHERE a.qremtRetirePayItemPK.companyCode = :companyCode";
+	private final String SEL_1 = "SELECT a FROM QremtRetirePayItem a WHERE a.qremtRetirePayItemPK.companyCode = :companyCode";
 	
 	@Override
-	public List<RetirementPayItem> findByCompanyCode(CompanyCode companyCode) {
-		return this.queryProxy().query(find_By_companyCode, QremtRetirePayItem.class).setParameter("companyCode", companyCode.v())
-				.getList(x -> RetirementPayItem.createFromJavaType(
-						x.qremtRetirePayItemPK.companyCode, 
-						x.qremtRetirePayItemPK.category, 
-						x.qremtRetirePayItemPK.itemCode, 
-						x.itemName, 
-						x.printName, 
-						x.englishName, 
-						x.fullName, 
-						x.memo));
+	public Optional<RetirementPayItem> findByKey(String companyCode, IndicatorCategory category, String itemCode) {
+		return this.queryProxy().find(new QremtRetirePayItemPK(companyCode, category.value, itemCode), QremtRetirePayItem.class)
+				.map(x -> convertToDomain(x));
+	}
+	
+	@Override
+	public List<RetirementPayItem> findByCompanyCode(String companyCode) {
+		return this.queryProxy().query(SEL_1, QremtRetirePayItem.class).setParameter("companyCode", companyCode)
+				.getList(x -> convertToDomain(x));
 	}
 	
 	@Override
@@ -41,14 +42,35 @@ public class JpaRetirementPayItemRepository extends JpaRepository implements Ret
 		this.commandProxy().update(convertToEntity(payItem));
 	}
 	
+	/**
+	 * convert domain item to entity item
+	 * @param payItem domain item
+	 * @return entity item
+	 */
 	private QremtRetirePayItem convertToEntity(RetirementPayItem payItem) {
-		QremtRetirePayItem entity = new QremtRetirePayItem(
-				new QremtRetirePayItemPK(payItem.getCompanyCode().v(), payItem.getCategory().value, payItem.getItemCode().v()), 
-				payItem.getItemName().v(), 
+		return new QremtRetirePayItem(
+				new QremtRetirePayItemPK(payItem.getCompanyCode(), payItem.getCategory().value, payItem.getItemCode()), 
+				payItem.getItemName(), 
 				payItem.getPrintName().v(), 
-				payItem.getEnglishName().v(), 
-				payItem.getFullName().v(), 
+				payItem.getEnglishName(), 
+				payItem.getFullName(), 
 				payItem.getMemo().v());
-		return entity;
+	}
+	
+	/**
+	 * convert entity item to domain item
+	 * @param qremtRetirePayItem entity item
+	 * @return domain item
+	 */
+	private RetirementPayItem convertToDomain(QremtRetirePayItem qremtRetirePayItem) {
+		return new RetirementPayItem(
+				qremtRetirePayItem.qremtRetirePayItemPK.companyCode,
+				EnumAdaptor.valueOf(qremtRetirePayItem.qremtRetirePayItemPK.category, IndicatorCategory.class),
+				qremtRetirePayItem.qremtRetirePayItemPK.itemCode,
+				qremtRetirePayItem.itemName,
+				new RetirementPayItemPrintName(qremtRetirePayItem.printName),
+				qremtRetirePayItem.englishName,
+				qremtRetirePayItem.fullName,
+				new Memo(qremtRetirePayItem.memo));
 	}
 }

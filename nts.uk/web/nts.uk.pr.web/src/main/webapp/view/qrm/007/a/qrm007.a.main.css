@@ -8,7 +8,7 @@
 .bg-green {background-color: #E0F59E;}
 
 #contents-area {
-	width: 1366px;
+	width: 1300px;
 }
 
 .table {
@@ -49,7 +49,7 @@ input, textarea {
 	margin-left: 15px;
 }
 
-#text-area {
+#INP_002 {
 	width: 380px;
 	height: 100px;
 }

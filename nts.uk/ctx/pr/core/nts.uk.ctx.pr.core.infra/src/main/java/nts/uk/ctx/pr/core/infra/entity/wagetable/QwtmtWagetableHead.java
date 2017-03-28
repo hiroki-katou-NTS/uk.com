@@ -24,6 +24,7 @@ import javax.persistence.TemporalType;
 import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.pr.core.infra.entity.wagetable.element.QwtmtWagetableElement;
+import nts.uk.ctx.pr.core.infra.entity.wagetable.history.QwtmtWagetableHist;
 
 /**
  * The Class QwtmtWagetableHead.
@@ -100,6 +101,12 @@ public class QwtmtWagetableHead implements Serializable {
 	@OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
 	@OrderBy("qwtmtWagetableElementPK.demensionNo ASC")
 	private List<QwtmtWagetableElement> wagetableElementList;
+
+	@JoinColumns({
+			@JoinColumn(name = "CCD", referencedColumnName = "CCD", insertable = false, updatable = false),
+			@JoinColumn(name = "WAGE_TABLE_CD", referencedColumnName = "WAGE_TABLE_CD", insertable = false, updatable = false) })
+	@OneToMany(cascade = CascadeType.ALL)
+	private List<QwtmtWagetableHist> wagetableHistList;
 
 	/**
 	 * Instantiates a new qwtmt wagetable head.
