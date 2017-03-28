@@ -195,10 +195,10 @@ module nts.uk.pr.view.base.simplehistory {
                 var self = this;
                 self.confirmDirtyAndExecute(() => {
                     self.isNewMode(true);
+                    self.onRegistNew();
 
                     // Clear select history uuid.
                     self.igGridSelectedHistoryUuid(undefined);
-                    self.onRegistNew();
                 });
             }
 
