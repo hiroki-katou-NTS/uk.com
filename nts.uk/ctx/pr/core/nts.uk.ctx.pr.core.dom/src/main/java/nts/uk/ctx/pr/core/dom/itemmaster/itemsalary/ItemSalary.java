@@ -8,7 +8,6 @@ import nts.arc.layer.dom.AggregateRoot;
 import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.itemmaster.AvePayAtr;
 import nts.uk.ctx.pr.core.dom.itemmaster.ItemCode;
-import nts.uk.shr.com.primitive.Memo;
 
 @Getter
 public class ItemSalary extends AggregateRoot {
@@ -76,7 +75,7 @@ public class ItemSalary extends AggregateRoot {
 			int applyForDaymonthlyPayEmp, int applyForDaylyPayEmp, int applyForHourlyPayEmp, int avePayAtr,
 			int errRangeLowAtr, BigDecimal errRangeLow, int errRangeHighAtr, BigDecimal errRangeHigh, int alRangeLowAtr,
 			BigDecimal alRangeLow, int alRangeHighAtr, BigDecimal alRangeHigh, String memo, int limitMnyAtr, String limitMnyRefItemCd,
-			Long limitMny) {
+			BigDecimal limitMny) {
 
 		return new ItemSalary(
 				new CompanyCode(companyCode), 

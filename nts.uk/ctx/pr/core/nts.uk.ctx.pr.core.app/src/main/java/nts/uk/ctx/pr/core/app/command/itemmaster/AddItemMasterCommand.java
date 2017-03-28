@@ -2,10 +2,16 @@ package nts.uk.ctx.pr.core.app.command.itemmaster;
 
 import lombok.Getter;
 import lombok.Setter;
+import nts.uk.ctx.pr.core.app.command.itemmaster.itemattend.AddItemAttendCommand;
+import nts.uk.ctx.pr.core.app.command.itemmaster.itemdeduct.AddItemDeductCommand;
+import nts.uk.ctx.pr.core.app.command.itemmaster.itemsalary.AddItemSalaryCommand;
 
 @Getter
 @Setter
 public class AddItemMasterCommand {
+	private AddItemSalaryCommand itemSalary;
+	private AddItemDeductCommand itemDeduct;
+	private AddItemAttendCommand itemAttend;
 	private String companyCode;
 	private String itemCode;
 	private String itemName;

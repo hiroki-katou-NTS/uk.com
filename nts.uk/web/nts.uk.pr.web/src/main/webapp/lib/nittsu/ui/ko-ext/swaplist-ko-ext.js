@@ -1,3 +1,4 @@
+/// <reference path="../../reference.ts"/>
 var nts;
 (function (nts) {
     var uk;
@@ -6,9 +7,18 @@ var nts;
         (function (ui_1) {
             var koExtentions;
             (function (koExtentions) {
+                /**
+                 * SwapList binding handler
+                 */
                 var NtsSwapListBindingHandler = (function () {
+                    /**
+                     * Constructor.
+                     */
                     function NtsSwapListBindingHandler() {
                     }
+                    /**
+                     * Init.
+                     */
                     NtsSwapListBindingHandler.prototype.init = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var HEADER_HEIGHT = 27;
                         var CHECKBOX_WIDTH = 70;
@@ -22,6 +32,7 @@ var nts;
                         }
                         var data = valueAccessor();
                         var originalSource = ko.unwrap(data.dataSource !== undefined ? data.dataSource : data.options);
+                        //            var selectedValues = ko.unwrap(data.value);
                         var totalWidth = ko.unwrap(data.width);
                         var height = ko.unwrap(data.height);
                         var showSearchBox = ko.unwrap(data.showSearchBox);
@@ -198,6 +209,9 @@ var nts;
                             move(grid1Id, grid2Id, primaryKey, $(grid1Id).igGrid("option", "dataSource"), data.value, false);
                         });
                     };
+                    /**
+                     * Update
+                     */
                     NtsSwapListBindingHandler.prototype.update = function (element, valueAccessor, allBindingsAccessor, viewModel, bindingContext) {
                         var $swap = $(element);
                         var data = valueAccessor();
@@ -233,4 +247,3 @@ var nts;
         })(ui = uk.ui || (uk.ui = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
-//# sourceMappingURL=swaplist-ko-ext.js.map
