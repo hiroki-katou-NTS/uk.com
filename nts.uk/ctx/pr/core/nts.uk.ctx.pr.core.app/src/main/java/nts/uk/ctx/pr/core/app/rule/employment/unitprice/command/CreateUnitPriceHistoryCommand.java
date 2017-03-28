@@ -13,5 +13,6 @@ import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceGetMemento;
  */
 @Getter
 @Setter
-public class CreateUnitPriceHistoryCommand extends UnitPriceHistoryBaseCommand implements UnitPriceGetMemento {
+public class CreateUnitPriceHistoryCommand extends UnitPriceHistoryBaseCommand
+		implements UnitPriceGetMemento {
 }

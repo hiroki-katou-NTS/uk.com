@@ -4,14 +4,16 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.app.insurance.labor.accidentrate.command.dto;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import nts.arc.time.YearMonth;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 
 /**
  * The Class HistoryAccidentInsuranceRateDto.
  */
-@Data
+@Getter
+@Setter
 public class AccidentInsuranceRateHistoryDto {
 
 	/** The history id. */

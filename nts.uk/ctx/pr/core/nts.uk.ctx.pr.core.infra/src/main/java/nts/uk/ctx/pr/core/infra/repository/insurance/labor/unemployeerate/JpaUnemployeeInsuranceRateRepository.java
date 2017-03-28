@@ -21,16 +21,16 @@ import javax.persistence.criteria.Root;
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.arc.time.YearMonth;
 import nts.gul.collection.CollectionUtil;
+import nts.uk.ctx.pr.core.dom.insurance.labor.businesstype.BusinessTypeEnum;
 import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsuranceRate;
 import nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.UnemployeeInsuranceRateRepository;
 import nts.uk.ctx.pr.core.infra.entity.insurance.labor.unemployeerate.QismtEmpInsuRate;
 import nts.uk.ctx.pr.core.infra.entity.insurance.labor.unemployeerate.QismtEmpInsuRatePK;
 import nts.uk.ctx.pr.core.infra.entity.insurance.labor.unemployeerate.QismtEmpInsuRatePK_;
 import nts.uk.ctx.pr.core.infra.entity.insurance.labor.unemployeerate.QismtEmpInsuRate_;
-import nts.uk.ctx.pr.core.infra.repository.insurance.labor.Contants;
 
 /**
- * The Class
+ * The Class JpaUnemployeeInsuranceRateRepository.
  */
 @Stateless
 public class JpaUnemployeeInsuranceRateRepository extends JpaRepository
@@ -211,25 +211,15 @@ public class JpaUnemployeeInsuranceRateRepository extends JpaRepository
 		}
 
 		// get fisrt data
-		return Optional.ofNullable(this.toDomain(lstQismtEmpInsuRate.get(Contants.BEGIN_FIRST)));
+		return Optional.ofNullable(this.toDomain(lstQismtEmpInsuRate.get(BusinessTypeEnum.Biz1St.index)));
 	}
 
 	/*
 	 * (non-Javadoc)
-	 *
+	 * 
 	 * @see nts.uk.ctx.pr.core.dom.insurance.labor.unemployeerate.
-	 * UnemployeeInsuranceRateRepository#updateYearMonth(nts.uk.ctx.pr.core.dom.
-	 * insurance.labor.unemployeerate.UnemployeeInsuranceRate,
-	 * nts.arc.time.YearMonth)
+	 * UnemployeeInsuranceRateRepository#findFirstData(java.lang.String)
 	 */
-	@Override
-	public void updateYearMonth(UnemployeeInsuranceRate rate, YearMonth yearMonth) {
-		QismtEmpInsuRate entity = this.toEntity(rate);
-		entity.setEndYm(yearMonth.v());
-		this.commandProxy().update(entity);
-
-	}
-
 	@Override
 	public Optional<UnemployeeInsuranceRate> findFirstData(String companyCode) {
 
@@ -268,7 +258,7 @@ public class JpaUnemployeeInsuranceRateRepository extends JpaRepository
 		}
 
 		// get fisrt data
-		return Optional.ofNullable(this.toDomain(lstQismtEmpInsuRate.get(Contants.BEGIN_FIRST)));
+		return Optional.ofNullable(this.toDomain(lstQismtEmpInsuRate.get(BusinessTypeEnum.Biz1St.index)));
 	}
 
 }

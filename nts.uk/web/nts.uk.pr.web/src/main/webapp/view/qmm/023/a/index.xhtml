@@ -48,7 +48,7 @@
 						<div class="single-list">
 							<table id="single-list"
 								data-bind="ntsGridList: {
-										width: 400,
+										width: 420,
 										height: 410,
 										options: items,
 										optionsValue: 'code',
@@ -73,13 +73,13 @@
 							</td>
 							<td>
 								<div>
-									<!-- <span data-bind="text: codeValue()"></span> -->
 									<span><input id="INP_002" class="save-error"
 										data-bind="ntsTextEditor: {
 													value: code,
 													constraint: 'CommuNoTaxLimitCode', 
 													enable: $parent.allowEditCode,
-													required: true, immediate: true
+													required: true, 
+													immediate: true
 													}, hasFocus: true " />
 									</span> <span><input id="INP_003" class="save-error"
 										data-bind="ntsTextEditor: {
@@ -111,7 +111,7 @@
 														currencyformat: 'JPY',
 														currencyposition: 'right'
 													},
-													immediate: true
+													immediate: false
 										   }" />
 								</div>
 							</td>

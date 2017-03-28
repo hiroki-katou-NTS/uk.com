@@ -82,15 +82,15 @@ public class QwtmtWagetableEleHist implements Serializable {
 	@Column(name = "EXCLUS_VER")
 	private int exclusVer;
 
+	/** The demension lower limit. */
+	@Column(name = "DEMENSION_LOWER_LIMIT")
+	private BigDecimal demensionLowerLimit;
+
 	/** The demension upper limit. */
 	// @Max(value=?) @Min(value=?)//if you know range of your decimal fields
 	// consider using these annotations to enforce field validation
 	@Column(name = "DEMENSION_UPPER_LIMIT")
 	private BigDecimal demensionUpperLimit;
-
-	/** The demension lower limit. */
-	@Column(name = "DEMENSION_LOWER_LIMIT")
-	private BigDecimal demensionLowerLimit;
 
 	/** The demension interval. */
 	@Column(name = "DEMENSION_INTERVAL")

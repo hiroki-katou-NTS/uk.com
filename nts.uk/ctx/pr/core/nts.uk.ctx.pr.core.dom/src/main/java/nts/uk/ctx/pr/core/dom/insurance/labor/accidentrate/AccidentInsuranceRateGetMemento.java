@@ -26,7 +26,7 @@ public interface AccidentInsuranceRateGetMemento {
 	 *
 	 * @return the company code
 	 */
-	CompanyCode getCompanyCode();
+	String getCompanyCode();
 
 	/**
 	 * Gets the apply range.

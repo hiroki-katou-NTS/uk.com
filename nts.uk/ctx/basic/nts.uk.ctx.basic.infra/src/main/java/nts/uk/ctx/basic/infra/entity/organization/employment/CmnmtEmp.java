@@ -37,6 +37,6 @@ public class CmnmtEmp implements Serializable {
 	@Column(name = "EMP_OUT_CD")
 	public String employementOutCd;
 	
-	@Column(name = "DISPLAY_FLG")
+	@Column(name = "INIT_SELECT_SET")
 	public int displayFlg;
 }

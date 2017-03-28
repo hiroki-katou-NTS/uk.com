@@ -59,5 +59,7 @@ public interface WtHeadRepository {
 	 * @return true, if is duplicate code
 	 */
 	boolean isExistCode(String companyCode, String code);
+	
+	
 
 }

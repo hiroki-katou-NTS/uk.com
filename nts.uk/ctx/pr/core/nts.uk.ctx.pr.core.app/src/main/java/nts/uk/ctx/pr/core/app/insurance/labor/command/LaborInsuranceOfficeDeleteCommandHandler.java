@@ -18,7 +18,8 @@ import nts.uk.shr.com.context.LoginUserContext;
  * The Class LaborInsuranceOfficeDeleteCommandHandler.
  */
 @Stateless
-public class LaborInsuranceOfficeDeleteCommandHandler extends CommandHandler<LaborInsuranceOfficeDeleteCommand> {
+public class LaborInsuranceOfficeDeleteCommandHandler
+	extends CommandHandler<LaborInsuranceOfficeDeleteCommand> {
 
 	/** The labor insurance office repository. */
 	@Inject
@@ -26,7 +27,7 @@ public class LaborInsuranceOfficeDeleteCommandHandler extends CommandHandler<Lab
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see
 	 * nts.arc.layer.app.command.CommandHandler#handle(nts.arc.layer.app.command
 	 * .CommandHandlerContext)
@@ -41,8 +42,9 @@ public class LaborInsuranceOfficeDeleteCommandHandler extends CommandHandler<Lab
 		// get command
 		LaborInsuranceOfficeDeleteCommand command = context.getCommand();
 		// call Repository remove
-		this.laborInsuranceOfficeRepo.remove(companyCode, command.getLaborInsuranceOfficeDeleteDto().getCode(),
-				command.getLaborInsuranceOfficeDeleteDto().getVersion());
+		this.laborInsuranceOfficeRepo.remove(companyCode,
+			command.getLaborInsuranceOfficeDeleteDto().getCode(),
+			command.getLaborInsuranceOfficeDeleteDto().getVersion());
 	}
 
 }
