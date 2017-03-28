@@ -5,7 +5,7 @@ import lombok.Getter;
 import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
-import nts.uk.ctx.core.dom.company.CompanyCode;
+import nts.gul.text.StringUtil;
 
 /**
  * 平均賃金計算設定マスタ
@@ -15,7 +15,7 @@ import nts.uk.ctx.core.dom.company.CompanyCode;
  */
 public class AveragePay extends AggregateRoot {
 	@Getter
-	private CompanyCode companyCode;
+	private String companyCode;
 	
 	@Getter
 	private AttendDayGettingSet attendDayGettingSet;
@@ -32,12 +32,12 @@ public class AveragePay extends AggregateRoot {
 	@Override
 	public void validate() {
 		super.validate();
-		if (this.roundDigitSet == null) {
-			throw new BusinessException("ERR20");
+		if (StringUtil.isNullOrEmpty(this.roundDigitSet.toString(), true) ) {
+			throw new BusinessException("ER001");
 		}
 	} 
 	
-	public AveragePay(CompanyCode companyCode, AttendDayGettingSet attendDayGettingSet, ExceptionPayRate exceptionPayRate,
+	public AveragePay(String companyCode, AttendDayGettingSet attendDayGettingSet, ExceptionPayRate exceptionPayRate,
 			RoundDigitSet roundDigitSet, RoundTimingSet roundTimingSet) {
 		super();
 		this.companyCode = companyCode;
@@ -49,13 +49,10 @@ public class AveragePay extends AggregateRoot {
 
 	public static AveragePay createFromJavaType(String companyCode, int attendDayGettingSet, int exceptionPayRate, int roundTimingSet, int roundDigitSet) {
 		return new AveragePay(
-				new CompanyCode(companyCode),
+				companyCode,
 				EnumAdaptor.valueOf(attendDayGettingSet, AttendDayGettingSet.class) ,
 				new ExceptionPayRate(exceptionPayRate), 
 				EnumAdaptor.valueOf(roundDigitSet, RoundDigitSet.class),
 				EnumAdaptor.valueOf(roundTimingSet, RoundTimingSet.class));
 	}
-	
-	
-	
 }

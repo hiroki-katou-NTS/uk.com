@@ -15,8 +15,6 @@ import nts.arc.primitive.constraint.IntegerMinValue;
 @IntegerMinValue(0)
 public class ExceptionPayRate extends IntegerPrimitiveValue<ExceptionPayRate>{
 	public ExceptionPayRate(int value) {		
-		//super(Integer.parseInt(value));
 		super(value);
-		// TODO Auto-generated constructor stub
 	}
 }

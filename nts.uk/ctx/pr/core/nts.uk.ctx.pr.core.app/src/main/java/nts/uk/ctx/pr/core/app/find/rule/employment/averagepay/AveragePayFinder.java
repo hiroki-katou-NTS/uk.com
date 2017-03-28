@@ -1,19 +1,14 @@
 package nts.uk.ctx.pr.core.app.find.rule.employment.averagepay;
 
-import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
-import javax.enterprise.context.RequestScoped;
 import javax.inject.Inject;
 
 import nts.uk.ctx.pr.core.app.find.itemmaster.dto.ItemMasterDto;
 import nts.uk.ctx.pr.core.app.find.rule.employment.averagepay.dto.AveragePayDto;
-import nts.uk.ctx.pr.core.dom.itemmaster.ItemMaster;
 import nts.uk.ctx.pr.core.dom.itemmaster.ItemMasterRepository;
 import nts.uk.ctx.pr.core.dom.itemmaster.itemattend.ItemAttend;
 import nts.uk.ctx.pr.core.dom.itemmaster.itemattend.ItemAttendRespository;
@@ -44,48 +39,60 @@ public class AveragePayFinder {
 	private ItemAttendRespository itemAttendRespository;
 	
 	/**
-	 * 
-	 * @return
+	 * find average pay by company code
+	 * @return average pay dto
 	 */
-	
-	// QAPMT_AVE_PAY.SEL_1
 	public AveragePayDto findByCompanyCode() {
 		String companyCode = AppContexts.user().companyCode();
+		
+		// QAPMT_AVE_PAY.SEL_1
 		Optional<AveragePay> data = this.averagePayRepository.findByCompanyCode(companyCode);
 		if (!data.isPresent()) {
 			return null;
 		}
 		AveragePay x = data.get();
 		return new AveragePayDto(
-				x.getCompanyCode().v(),
+				x.getCompanyCode(),
 				x.getAttendDayGettingSet().value, 
 				x.getExceptionPayRate().v(), 
 				x.getRoundTimingSet().value, 
 				x.getRoundDigitSet().value);
 	}
 	
-	// QCAMT_ITEM.SEL_5
+	/**
+	 * find item master by salary item code and category = 0
+	 * @return list item master
+	 */
 	public List<ItemMasterDto> findByItemSalary() {
 		String companyCode = AppContexts.user().companyCode();
+		
 		// QCAMT_ITEM_SALARY.SEL_3
 		List<ItemSalary> itemSalarys = this.itemSalaryRespository.findAll(companyCode);
 		if (itemSalarys.isEmpty()){
 			return null;
 		}
+		
+		// QCAMT_ITEM.SEL_5
 		List<String> itemSalaryCodeList = itemSalarys.stream().map(x -> x.getItemCode().v()).collect(Collectors.toList());
 		List<ItemMasterDto> itemMasterDtos = this.itemMasterRepository.findAll(companyCode, 0, itemSalaryCodeList)
 				.stream().map(x -> ItemMasterDto.fromDomain(x)).collect(Collectors.toList());
 		return itemMasterDtos;
 	}
 	
-	// QCAMT_ITEM.SEL_5
+	/**
+	 * find item master by attend item code and category = 2
+	 * @return list item master
+	 */
 	public List<ItemMasterDto> findByItemAttend() {
 		String companyCode = AppContexts.user().companyCode();
+		
 		// QCAMT_ITEM_ATTEND.SEL_4
 		List<ItemAttend> itemAttends = this.itemAttendRespository.findAll(companyCode);
 		if (itemAttends.isEmpty()){
 			return null;
 		}
+		
+		// QCAMT_ITEM.SEL_5
 		List<String> itemAttendCodeList = itemAttends.stream().map(y -> y.getItemCode().v()).collect(Collectors.toList());
 		List<ItemMasterDto> itemMasterDtos = this.itemMasterRepository.findAll(companyCode, 2, itemAttendCodeList)
 				.stream().map(x -> ItemMasterDto.fromDomain(x)).collect(Collectors.toList());

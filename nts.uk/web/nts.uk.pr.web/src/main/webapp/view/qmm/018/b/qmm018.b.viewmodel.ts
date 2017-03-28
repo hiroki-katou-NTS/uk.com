@@ -3,8 +3,8 @@ module qmm018.b.viewmodel {
         items: KnockoutObservableArray<ItemModel>;
         currentCodeListSwap: KnockoutObservableArray<ItemModel>; // Item Selected
         unselectedCodeListSwap: KnockoutObservableArray<ItemModel>; // Item Unselected
-        oldCurrentCodeListSwap: KnockoutObservableArray<ItemModel>; // Item selected form B screen, n = 0: ItemSalary, n = 2: ItemAttend
-        oldUnselectedCodeListSwap: KnockoutObservableArray<ItemModel>; // Item unselected form B screen, n = 0: ItemSalary, n = 2: ItemAttend
+        oldCurrentCodeListSwap: KnockoutObservableArray<ItemModel>; // Item selected form A screen, n = 0: ItemSalary, n = 2: ItemAttend
+        oldUnselectedCodeListSwap: KnockoutObservableArray<ItemModel>; // Item unselected form A screen, n = 0: ItemSalary, n = 2: ItemAttend
         constructor() {
             var self = this;
             self.items = ko.observableArray([]);
@@ -17,8 +17,10 @@ module qmm018.b.viewmodel {
         startPage(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
-            qmm018.b.service.itemSelect(nts.uk.ui.windows.getShared('categoryAtr')).done(function(data) {
-                if(!data.length) {}
+            qmm018.b.service.itemSelect(nts.uk.ui.windows.getShared('categoryAtr')).done(function(data) { // get item master list
+                if(!data.length) {
+                    $("#label-span").ntsError('set', 'ER010');    
+                }
                 else {
                     data.forEach(function(dataItem){
                         self.items().push(new ItemModel(dataItem.itemCode,dataItem.itemAbName));
@@ -38,12 +40,14 @@ module qmm018.b.viewmodel {
             return dfd.promise();
         }
         submitData() {
+            // return new data
             var self = this;
             nts.uk.ui.windows.setShared('selectedItemList', self.currentCodeListSwap());
             nts.uk.ui.windows.setShared('unSelectedItemList', self.unselectedCodeListSwap());
             nts.uk.ui.windows.close();
         }
         closeWindow() {
+            // return old data
             var self = this;
             nts.uk.ui.windows.setShared('selectedItemList', self.oldCurrentCodeListSwap());
             nts.uk.ui.windows.setShared('unSelectedItemList', self.oldUnselectedCodeListSwap());

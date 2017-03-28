@@ -12,7 +12,6 @@ import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
-import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.itemmaster.AvePayAtr;
 import nts.uk.ctx.pr.core.dom.itemmaster.itemattend.ItemAttend;
 import nts.uk.ctx.pr.core.dom.itemmaster.itemattend.ItemAttendRespository;
@@ -44,19 +43,20 @@ public class RegisterAveragePayCommandHandler extends CommandHandler<RegisterAve
 	@Inject
 	private ItemAttendRespository itemAttendRespository;
 
-	// QAPMT_AVE_PAY.INS_1
 	@Override
 	protected void handle(CommandHandlerContext<RegisterAveragePayCommand> context) {
 		RegisterAveragePayCommand command = context.getCommand();
 
 		String companyCode = AppContexts.user().companyCode();
 
+		// validate exist
 		Optional<AveragePay> avepay = this.averagePayRepository.findByCompanyCode(companyCode);
-
 		if (avepay.isPresent()) {
 			throw new BusinessException("Register Fail");
 		}
-		AveragePay averagePay = new AveragePay(new CompanyCode(companyCode),
+		
+		// QAPMT_AVE_PAY.INS_1
+		AveragePay averagePay = new AveragePay(companyCode,
 				EnumAdaptor.valueOf(command.getAttendDayGettingSet(), AttendDayGettingSet.class),
 				new ExceptionPayRate(command.getExceptionPayRate()),
 				EnumAdaptor.valueOf(command.getRoundDigitSet(), RoundDigitSet.class),
@@ -73,8 +73,9 @@ public class RegisterAveragePayCommandHandler extends CommandHandler<RegisterAve
 			x.setAvePayAttribute(AvePayAtr.Object);
 			this.itemSalaryRespository.update(x);
 		});
+		
+		// if 明細書項目から選択 is selected
 		if (command.getAttendDayGettingSet() == 1) { 
-			// 明細書項目から選択 is selected
 			
 			// QCAMT_ITEM_ATTEND.SEL_3
 			List<ItemAttend> itemAttends = this.itemAttendRespository.findAll(companyCode);
@@ -89,5 +90,4 @@ public class RegisterAveragePayCommandHandler extends CommandHandler<RegisterAve
 			});
 		}
 	}
-
 }

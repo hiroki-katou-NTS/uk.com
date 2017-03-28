@@ -35,9 +35,10 @@ module qmm018.a.viewmodel {
         startPage(): JQueryPromise<any> {
             var self = this;
             var dfd = $.Deferred();
-            qmm018.a.service.averagePayItemSelect().done(function(data) {
+            qmm018.a.service.averagePayItemSelect().done(function(data) { // QAPMT_AVE_PAY SEL_1: get average pay items
                 if (data) {
-                    qmm018.a.service.averagePayItemSelectBySalary().done(function(dataSalary) {
+                    // if data exist go to update case
+                    qmm018.a.service.averagePayItemSelectBySalary().done(function(dataSalary) { //QCAMT_ITEM SEL_5 by salary items ( after QCAMT_ITEM_SALARY SEL_3 ): get salary items
                         if (dataSalary.length) {
                             dataSalary.forEach(function(dataSalaryItem) {
                                 self.selectedItemList1.push(new ItemModel(dataSalaryItem.itemCode, dataSalaryItem.itemAbName));
@@ -45,7 +46,7 @@ module qmm018.a.viewmodel {
                         }
                     }).fail(function(res) {
                     });
-                    qmm018.a.service.averagePayItemSelectByAttend().done(function(dataAttend) {
+                    qmm018.a.service.averagePayItemSelectByAttend().done(function(dataAttend) { //QCAMT_ITEM SEL_5 by attend items ( after QCAMT_ITEM_ATTEND SEL_4 ): get attend items
                         if (dataAttend.length) {
                             dataAttend.forEach(function(dataAttendItem) {
                                 self.selectedItemList2.push(new ItemModel(dataAttendItem.itemCode, dataAttendItem.itemAbName));
@@ -57,18 +58,22 @@ module qmm018.a.viewmodel {
                         new AveragePay(data.roundTimingSet, data.attendDayGettingSet, data.roundDigitSet, data.exceptionPayRate));
                     self.isUpdate = true;
                 } else {
+                    // if data no exist go to insert case
                     self.averagePay(new AveragePay(0, 0, 0, null));
                     self.selectedItemList1([]);
                     self.selectedItemList2([]);
                     self.isUpdate = false;
                 }
                 dfd.resolve();
+                
+                // error check on salary list and attend list
                 self.selectedItemList1.subscribe(function(value) {
                     if (!value.length) $("#inp-3").ntsError('set', 'ER007'); else $("#inp-3").ntsError('clear');
                 });
                 self.selectedItemList2.subscribe(function(value) {
                     if (!value.length) $("#inp-1").ntsError('set', 'ER007'); else $("#inp-1").ntsError('clear');
                 });
+                
             }).fail(function(res) {
                 dfd.reject(res);
             });
@@ -79,6 +84,8 @@ module qmm018.a.viewmodel {
             var dfd = $.Deferred();
             let error = false;
             let selectedCodeList1 = [];
+            
+            // check errors on required
             if (self.selectedItemList1().length) {
                 self.selectedItemList1().forEach(function(item) { selectedCodeList1.push(item.code); });
             } else { $("#inp-3").ntsError('set', 'ER007');  error = true; }
@@ -89,6 +96,8 @@ module qmm018.a.viewmodel {
                 } else { $("#inp-1").ntsError('set', 'ER007'); error = true; }
             }
             if (self.averagePay().exceptionPayRate() == null) { $("#inp-2").ntsError('set', 'ER001'); error = true; }
+            
+            // insert or update if no error
             if (!error) {
                 let command = {
                     attendDayGettingSet: self.averagePay().attendDayGettingSet(),
@@ -117,9 +126,11 @@ module qmm018.a.viewmodel {
         openSubWindow(n) {
             var self = this;
             if (!n) {
+                // set salary data
                 nts.uk.ui.windows.setShared('selectedItemList', self.selectedItemList1());
                 nts.uk.ui.windows.setShared('categoryAtr', 0);
             } else {
+                // set attend data
                 nts.uk.ui.windows.setShared('selectedItemList', self.selectedItemList2());
                 nts.uk.ui.windows.setShared('categoryAtr', 2);
             }
@@ -127,6 +138,7 @@ module qmm018.a.viewmodel {
                 let selectedList: Array<ItemModel> = nts.uk.ui.windows.getShared('selectedItemList'); // Get selected form B screen, n = 0: ItemSalary, n = 2: ItemAttend
                 let unSelectedList: Array<ItemModel> = nts.uk.ui.windows.getShared('unSelectedItemList'); // Get unselected form B screen, n = 0: ItemSalary, n = 2: ItemAttend
                 if (!n) {
+                    // set data to salary item list 
                     if (selectedList.length) {
                         if (!_.isEqual(selectedList, self.selectedItemList1())) {
                             self.selectedItemList1.removeAll();
@@ -138,6 +150,7 @@ module qmm018.a.viewmodel {
                         }
                     } else { self.selectedItemList1([]); }
                 } else {
+                    // set data to attend item list 
                     if (selectedList.length) {
                         if (!_.isEqual(selectedList, self.selectedItemList2())) {
                             self.selectedItemList2.removeAll();
