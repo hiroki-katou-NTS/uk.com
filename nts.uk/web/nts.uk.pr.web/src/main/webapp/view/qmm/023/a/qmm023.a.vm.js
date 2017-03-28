@@ -189,6 +189,7 @@ var qmm023;
                         self.deleteData();
                     });
                 };
+                // startpage
                 ScreenModel.prototype.startPage = function () {
                     var self = this;
                     return self.reload(true);
