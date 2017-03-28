@@ -5,7 +5,6 @@
 package nts.uk.ctx.pr.core.app.insurance.social.office.find;
 
 import lombok.Builder;
-import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.Address;
 import nts.uk.ctx.pr.core.dom.insurance.KanaAddress;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
@@ -43,9 +42,6 @@ public class SocialInsuranceOfficeDto implements SocialInsuranceOfficeSetMemento
 
 	/** The potal code. */
 	public String potalCode;
-
-	/** The prefecture. */
-	public String prefecture;
 
 	/** The address 1 st. */
 	public String address1st;
@@ -101,80 +97,108 @@ public class SocialInsuranceOfficeDto implements SocialInsuranceOfficeSetMemento
 	/** The memo. */
 	public String memo;
 
-	/* (non-Javadoc)
- * @see nts.uk.ctx.pr.core.dom.insurance.social.SocialInsuranceOfficeSetMemento#setCompanyCode(nts.uk.ctx.core.dom.company.CompanyCode)
- */
-@Override
-	public void setCompanyCode(CompanyCode companyCode) {
-		this.companyCode = companyCode.v();
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.dom.insurance.social.SocialInsuranceOfficeSetMemento#
+	 * setCompanyCode(nts.uk.ctx.core.dom.company.CompanyCode)
+	 */
+	@Override
+	public void setCompanyCode(String companyCode) {
+		this.companyCode = companyCode;
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.pr.core.dom.insurance.social.SocialInsuranceOfficeSetMemento#setCode(nts.uk.ctx.pr.core.dom.insurance.OfficeCode)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.dom.insurance.social.SocialInsuranceOfficeSetMemento#
+	 * setCode(nts.uk.ctx.pr.core.dom.insurance.OfficeCode)
 	 */
 	@Override
 	public void setCode(OfficeCode code) {
 		this.code = code.v();
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.pr.core.dom.insurance.social.SocialInsuranceOfficeSetMemento#setName(nts.uk.ctx.pr.core.dom.insurance.OfficeName)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.dom.insurance.social.SocialInsuranceOfficeSetMemento#
+	 * setName(nts.uk.ctx.pr.core.dom.insurance.OfficeName)
 	 */
 	@Override
 	public void setName(OfficeName name) {
 		this.name = name.v();
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.pr.core.dom.insurance.social.SocialInsuranceOfficeSetMemento#setShortName(nts.uk.ctx.pr.core.dom.insurance.ShortName)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.dom.insurance.social.SocialInsuranceOfficeSetMemento#
+	 * setShortName(nts.uk.ctx.pr.core.dom.insurance.ShortName)
 	 */
 	@Override
 	public void setShortName(ShortName shortName) {
 		this.shortName = shortName.v();
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.pr.core.dom.insurance.social.SocialInsuranceOfficeSetMemento#setPicName(nts.uk.ctx.pr.core.dom.insurance.PicName)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.dom.insurance.social.SocialInsuranceOfficeSetMemento#
+	 * setPicName(nts.uk.ctx.pr.core.dom.insurance.PicName)
 	 */
 	@Override
 	public void setPicName(PicName picName) {
 		this.picName = picName.v();
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.pr.core.dom.insurance.social.SocialInsuranceOfficeSetMemento#setPicPosition(nts.uk.ctx.pr.core.dom.insurance.PicPosition)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.dom.insurance.social.SocialInsuranceOfficeSetMemento#
+	 * setPicPosition(nts.uk.ctx.pr.core.dom.insurance.PicPosition)
 	 */
 	@Override
 	public void setPicPosition(PicPosition picPosition) {
 		this.picPosition = picPosition.v();
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.pr.core.dom.insurance.social.SocialInsuranceOfficeSetMemento#setPotalCode(nts.uk.ctx.pr.core.dom.insurance.PotalCode)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.dom.insurance.social.SocialInsuranceOfficeSetMemento#
+	 * setPotalCode(nts.uk.ctx.pr.core.dom.insurance.PotalCode)
 	 */
 	@Override
 	public void setPotalCode(PotalCode potalCode) {
 		this.potalCode = potalCode.v();
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.pr.core.dom.insurance.social.SocialInsuranceOfficeSetMemento#setPrefecture(java.lang.String)
-	 */
-	@Override
-	public void setPrefecture(String prefecture) {
-		this.prefecture = prefecture;
-	}
-
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.pr.core.dom.insurance.social.SocialInsuranceOfficeSetMemento#setAddress1st(nts.uk.ctx.pr.core.dom.insurance.Address)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.dom.insurance.social.SocialInsuranceOfficeSetMemento#
+	 * setAddress1st(nts.uk.ctx.pr.core.dom.insurance.Address)
 	 */
 	@Override
 	public void setAddress1st(Address address1st) {
 		this.address1st = address1st.v();
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.pr.core.dom.insurance.social.SocialInsuranceOfficeSetMemento#setAddress2nd(nts.uk.ctx.pr.core.dom.insurance.Address)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.dom.insurance.social.SocialInsuranceOfficeSetMemento#
+	 * setAddress2nd(nts.uk.ctx.pr.core.dom.insurance.Address)
 	 */
 	@Override
 	public void setAddress2nd(Address address2nd) {
@@ -182,8 +206,12 @@ public class SocialInsuranceOfficeDto implements SocialInsuranceOfficeSetMemento
 		this.address2nd = address2nd.v();
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.pr.core.dom.insurance.social.SocialInsuranceOfficeSetMemento#setKanaAddress1st(nts.uk.ctx.pr.core.dom.insurance.KanaAddress)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.dom.insurance.social.SocialInsuranceOfficeSetMemento#
+	 * setKanaAddress1st(nts.uk.ctx.pr.core.dom.insurance.KanaAddress)
 	 */
 	@Override
 	public void setKanaAddress1st(KanaAddress kanaAddress1st) {
@@ -191,8 +219,12 @@ public class SocialInsuranceOfficeDto implements SocialInsuranceOfficeSetMemento
 		this.kanaAddress1st = kanaAddress1st.v();
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.pr.core.dom.insurance.social.SocialInsuranceOfficeSetMemento#setKanaAddress2nd(nts.uk.ctx.pr.core.dom.insurance.KanaAddress)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.dom.insurance.social.SocialInsuranceOfficeSetMemento#
+	 * setKanaAddress2nd(nts.uk.ctx.pr.core.dom.insurance.KanaAddress)
 	 */
 	@Override
 	public void setKanaAddress2nd(KanaAddress kanaAddress2nd) {
@@ -200,8 +232,12 @@ public class SocialInsuranceOfficeDto implements SocialInsuranceOfficeSetMemento
 		this.kanaAddress2nd = kanaAddress2nd.v();
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.pr.core.dom.insurance.social.SocialInsuranceOfficeSetMemento#setPhoneNumber(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.dom.insurance.social.SocialInsuranceOfficeSetMemento#
+	 * setPhoneNumber(java.lang.String)
 	 */
 	@Override
 	public void setPhoneNumber(String phoneNumber) {
@@ -209,8 +245,12 @@ public class SocialInsuranceOfficeDto implements SocialInsuranceOfficeSetMemento
 		this.phoneNumber = phoneNumber;
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.pr.core.dom.insurance.social.SocialInsuranceOfficeSetMemento#setHealthInsuOfficeRefCode1st(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.dom.insurance.social.SocialInsuranceOfficeSetMemento#
+	 * setHealthInsuOfficeRefCode1st(java.lang.String)
 	 */
 	@Override
 	public void setHealthInsuOfficeRefCode1st(String healthInsuOfficeRefCode1st) {
@@ -218,8 +258,12 @@ public class SocialInsuranceOfficeDto implements SocialInsuranceOfficeSetMemento
 		this.healthInsuOfficeRefCode1st = healthInsuOfficeRefCode1st;
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.pr.core.dom.insurance.social.SocialInsuranceOfficeSetMemento#setHealthInsuOfficeRefCode2nd(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.dom.insurance.social.SocialInsuranceOfficeSetMemento#
+	 * setHealthInsuOfficeRefCode2nd(java.lang.String)
 	 */
 	@Override
 	public void setHealthInsuOfficeRefCode2nd(String healthInsuOfficeRefCode2nd) {
@@ -227,8 +271,12 @@ public class SocialInsuranceOfficeDto implements SocialInsuranceOfficeSetMemento
 		this.healthInsuOfficeRefCode2nd = healthInsuOfficeRefCode2nd;
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.pr.core.dom.insurance.social.SocialInsuranceOfficeSetMemento#setPensionOfficeRefCode1st(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.dom.insurance.social.SocialInsuranceOfficeSetMemento#
+	 * setPensionOfficeRefCode1st(java.lang.String)
 	 */
 	@Override
 	public void setPensionOfficeRefCode1st(String pensionOfficeRefCode1st) {
@@ -236,8 +284,12 @@ public class SocialInsuranceOfficeDto implements SocialInsuranceOfficeSetMemento
 		this.pensionOfficeRefCode1st = pensionOfficeRefCode1st;
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.pr.core.dom.insurance.social.SocialInsuranceOfficeSetMemento#setPensionOfficeRefCode2nd(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.dom.insurance.social.SocialInsuranceOfficeSetMemento#
+	 * setPensionOfficeRefCode2nd(java.lang.String)
 	 */
 	@Override
 	public void setPensionOfficeRefCode2nd(String pensionOfficeRefCode2nd) {
@@ -245,8 +297,12 @@ public class SocialInsuranceOfficeDto implements SocialInsuranceOfficeSetMemento
 		this.pensionOfficeRefCode2nd = pensionOfficeRefCode2nd;
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.pr.core.dom.insurance.social.SocialInsuranceOfficeSetMemento#setWelfarePensionFundCode(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.dom.insurance.social.SocialInsuranceOfficeSetMemento#
+	 * setWelfarePensionFundCode(java.lang.String)
 	 */
 	@Override
 	public void setWelfarePensionFundCode(String welfarePensionFundCode) {
@@ -254,8 +310,12 @@ public class SocialInsuranceOfficeDto implements SocialInsuranceOfficeSetMemento
 		this.welfarePensionFundCode = welfarePensionFundCode;
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.pr.core.dom.insurance.social.SocialInsuranceOfficeSetMemento#setOfficePensionFundCode(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.dom.insurance.social.SocialInsuranceOfficeSetMemento#
+	 * setOfficePensionFundCode(java.lang.String)
 	 */
 	@Override
 	public void setOfficePensionFundCode(String officePensionFundCode) {
@@ -263,8 +323,12 @@ public class SocialInsuranceOfficeDto implements SocialInsuranceOfficeSetMemento
 		this.officePensionFundCode = officePensionFundCode;
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.pr.core.dom.insurance.social.SocialInsuranceOfficeSetMemento#setHealthInsuCityCode(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.dom.insurance.social.SocialInsuranceOfficeSetMemento#
+	 * setHealthInsuCityCode(java.lang.String)
 	 */
 	@Override
 	public void setHealthInsuCityCode(String healthInsuCityCode) {
@@ -272,8 +336,12 @@ public class SocialInsuranceOfficeDto implements SocialInsuranceOfficeSetMemento
 		this.healthInsuCityCode = healthInsuCityCode;
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.pr.core.dom.insurance.social.SocialInsuranceOfficeSetMemento#setHealthInsuOfficeSign(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.dom.insurance.social.SocialInsuranceOfficeSetMemento#
+	 * setHealthInsuOfficeSign(java.lang.String)
 	 */
 	@Override
 	public void setHealthInsuOfficeSign(String healthInsuOfficeSign) {
@@ -281,8 +349,12 @@ public class SocialInsuranceOfficeDto implements SocialInsuranceOfficeSetMemento
 		this.healthInsuOfficeSign = healthInsuOfficeSign;
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.pr.core.dom.insurance.social.SocialInsuranceOfficeSetMemento#setPensionCityCode(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.dom.insurance.social.SocialInsuranceOfficeSetMemento#
+	 * setPensionCityCode(java.lang.String)
 	 */
 	@Override
 	public void setPensionCityCode(String pensionCityCode) {
@@ -290,8 +362,12 @@ public class SocialInsuranceOfficeDto implements SocialInsuranceOfficeSetMemento
 		this.pensionCityCode = pensionCityCode;
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.pr.core.dom.insurance.social.SocialInsuranceOfficeSetMemento#setPensionOfficeSign(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.dom.insurance.social.SocialInsuranceOfficeSetMemento#
+	 * setPensionOfficeSign(java.lang.String)
 	 */
 	@Override
 	public void setPensionOfficeSign(String pensionOfficeSign) {
@@ -299,8 +375,12 @@ public class SocialInsuranceOfficeDto implements SocialInsuranceOfficeSetMemento
 		this.pensionOfficeSign = pensionOfficeSign;
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.pr.core.dom.insurance.social.SocialInsuranceOfficeSetMemento#setHealthInsuOfficeCode(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.dom.insurance.social.SocialInsuranceOfficeSetMemento#
+	 * setHealthInsuOfficeCode(java.lang.String)
 	 */
 	@Override
 	public void setHealthInsuOfficeCode(String healthInsuOfficeCode) {
@@ -308,8 +388,12 @@ public class SocialInsuranceOfficeDto implements SocialInsuranceOfficeSetMemento
 		this.healthInsuOfficeCode = healthInsuOfficeCode;
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.pr.core.dom.insurance.social.SocialInsuranceOfficeSetMemento#setHealthInsuAssoCode(java.lang.String)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.dom.insurance.social.SocialInsuranceOfficeSetMemento#
+	 * setHealthInsuAssoCode(java.lang.String)
 	 */
 	@Override
 	public void setHealthInsuAssoCode(String healthInsuAssoCode) {
@@ -317,8 +401,12 @@ public class SocialInsuranceOfficeDto implements SocialInsuranceOfficeSetMemento
 		this.healthInsuAssoCode = healthInsuAssoCode;
 	}
 
-	/* (non-Javadoc)
-	 * @see nts.uk.ctx.pr.core.dom.insurance.social.SocialInsuranceOfficeSetMemento#setMemo(nts.uk.shr.com.primitive.Memo)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * nts.uk.ctx.pr.core.dom.insurance.social.SocialInsuranceOfficeSetMemento#
+	 * setMemo(nts.uk.shr.com.primitive.Memo)
 	 */
 	@Override
 	public void setMemo(Memo memo) {

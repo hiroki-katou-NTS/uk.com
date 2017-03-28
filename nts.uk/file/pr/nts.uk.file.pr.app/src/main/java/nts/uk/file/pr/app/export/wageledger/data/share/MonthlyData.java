@@ -4,8 +4,6 @@
  *****************************************************************/
 package nts.uk.file.pr.app.export.wageledger.data.share;
 
-import java.util.Date;
-
 import lombok.Builder;
 
 /**
@@ -19,8 +17,5 @@ public class MonthlyData {
 	
 	/** The amount. */
 	public long amount;
-	
-	/** The payment date. */
-	public Date paymentDate;
 
 }

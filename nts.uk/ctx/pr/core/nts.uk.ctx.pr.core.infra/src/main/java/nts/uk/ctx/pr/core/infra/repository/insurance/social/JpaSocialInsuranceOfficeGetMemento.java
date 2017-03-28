@@ -4,7 +4,7 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.infra.repository.insurance.social;
 
-import nts.uk.ctx.core.dom.company.CompanyCode;
+
 import nts.uk.ctx.pr.core.dom.insurance.Address;
 import nts.uk.ctx.pr.core.dom.insurance.KanaAddress;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
@@ -43,8 +43,8 @@ public class JpaSocialInsuranceOfficeGetMemento implements SocialInsuranceOffice
 	 * getCompanyCode()
 	 */
 	@Override
-	public CompanyCode getCompanyCode() {
-		return new CompanyCode(this.typeValue.getQismtSocialInsuOfficePK().getCcd());
+	public String getCompanyCode() {
+		return this.typeValue.getQismtSocialInsuOfficePK().getCcd();
 	}
 
 	/*
@@ -117,18 +117,6 @@ public class JpaSocialInsuranceOfficeGetMemento implements SocialInsuranceOffice
 	@Override
 	public PotalCode getPotalCode() {
 		return new PotalCode(this.typeValue.getPostal());
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * nts.uk.ctx.pr.core.dom.insurance.social.SocialInsuranceOfficeGetMemento#
-	 * getPrefecture()
-	 */
-	@Override
-	public String getPrefecture() {
-		return this.typeValue.getPrefecture();
 	}
 
 	/*

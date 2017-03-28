@@ -5,6 +5,7 @@
 package nts.uk.ctx.pr.report.app.wageledger.find;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
@@ -13,7 +14,6 @@ import lombok.val;
 import nts.uk.ctx.pr.report.app.wageledger.command.dto.ItemSubjectDto;
 import nts.uk.ctx.pr.report.app.wageledger.find.dto.AggregateItemDto;
 import nts.uk.ctx.pr.report.app.wageledger.find.dto.HeaderSettingDto;
-import nts.uk.ctx.pr.report.dom.company.CompanyCode;
 import nts.uk.ctx.pr.report.dom.wageledger.PaymentType;
 import nts.uk.ctx.pr.report.dom.wageledger.WLCategory;
 import nts.uk.ctx.pr.report.dom.wageledger.aggregate.WLAggregateItemRepository;
@@ -29,17 +29,21 @@ public class AggregateItemFinder {
 	@Inject
 	private WLAggregateItemRepository repository;
 	
-	@Inject
-	private WageLedgerSettingRepository wageLedgerSettingRepository;
-	
 	/**
 	 * Find all.
 	 *
 	 * @return the list
 	 */
 	public List<HeaderSettingDto> findAll() {
-		CompanyCode companyCode = new CompanyCode(AppContexts.user().companyCode());
-		return this.wageLedgerSettingRepository.findHeaderAggregateItems(companyCode);
+		String companyCode = AppContexts.user().companyCode();
+		return this.repository.findAll(companyCode).stream().map(item -> {
+			return HeaderSettingDto.builder()
+					.category(item.getSubject().getCategory())
+					.paymentType(item.getSubject().getPaymentType())
+					.code(item.getSubject().getCode().v())
+					.name(item.getName().v())
+					.build();
+		}).collect(Collectors.toList());
 	}
 	
 	/**
@@ -50,9 +54,14 @@ public class AggregateItemFinder {
 	 * @return the list
 	 */
 	public List<HeaderSettingDto> findByCategoryAndPaymentType(WLCategory category, PaymentType paymentType) {
-		CompanyCode companyCode = new CompanyCode(AppContexts.user().companyCode());
-		return this.wageLedgerSettingRepository
-				.findHeaderAggregateItemsByCategory(companyCode, category, paymentType);
+		String companyCode = AppContexts.user().companyCode();
+		return this.repository.findByCategoryAndPaymentType(companyCode, category, paymentType).stream().map(item -> {
+			return HeaderSettingDto.builder()
+					.category(item.getSubject().getCategory())
+					.paymentType(item.getSubject().getPaymentType())
+					.code(item.getSubject().getCode().v())
+					.name(item.getName().v()).build();
+		}).collect(Collectors.toList());
 	}
 	
 	/**

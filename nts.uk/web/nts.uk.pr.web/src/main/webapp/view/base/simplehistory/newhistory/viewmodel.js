@@ -14,7 +14,13 @@ var nts;
                         (function (newhistory) {
                             var viewmodel;
                             (function (viewmodel) {
+                                /**
+                                 * Add simple history screen model.
+                                 */
                                 var ScreenModel = (function () {
+                                    /**
+                                     * Constructor.
+                                     */
                                     function ScreenModel() {
                                         var self = this;
                                         self.dialogOptions = nts.uk.ui.windows.getShared('options');
@@ -33,12 +39,18 @@ var nts;
                                             self.startYearMonth = ko.observable(parseInt(nts.uk.time.formatDate(new Date(), 'yyyyMM')));
                                         }
                                     }
+                                    /**
+                                     * Start page.
+                                     */
                                     ScreenModel.prototype.startPage = function () {
                                         var self = this;
                                         var dfd = $.Deferred();
                                         dfd.resolve();
                                         return dfd.promise();
                                     };
+                                    /**
+                                     * Create history and then dialog.
+                                     */
                                     ScreenModel.prototype.btnApplyClicked = function () {
                                         var self = this;
                                         var callBackData = {
@@ -46,13 +58,27 @@ var nts;
                                             startYearMonth: self.startYearMonth()
                                         };
                                         if (self.createType() == ScreenModel.CREATE_TYPE_COPY_LATEST) {
-                                            self.dialogOptions.onCopyCallBack(callBackData);
+                                            self.dialogOptions.onCopyCallBack(callBackData)
+                                                .done(function () { return nts.uk.ui.windows.close(); })
+                                                .fail(function (res) {
+                                                if (res.messageId == 'ER010') {
+                                                    $('#startYearMonth').ntsError('set', '対象データがありません。');
+                                                }
+                                            });
                                         }
                                         else {
-                                            self.dialogOptions.onCreateCallBack(callBackData);
+                                            self.dialogOptions.onCreateCallBack(callBackData)
+                                                .done(function () { return nts.uk.ui.windows.close(); })
+                                                .fail(function (res) {
+                                                if (res.messageId == 'ER010') {
+                                                    $('#startYearMonth').ntsError('set', '対象データがありません。');
+                                                }
+                                            });
                                         }
-                                        nts.uk.ui.windows.close();
                                     };
+                                    /**
+                                     * Close dialog.
+                                     */
                                     ScreenModel.prototype.btnCancelClicked = function () {
                                         nts.uk.ui.windows.close();
                                     };
@@ -69,4 +95,3 @@ var nts;
         })(pr = uk.pr || (uk.pr = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
-//# sourceMappingURL=viewmodel.js.map

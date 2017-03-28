@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2016 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.core.ws.insurance.labor.unemployeerate.history;
@@ -19,7 +19,7 @@ import nts.uk.ctx.pr.core.app.insurance.labor.unemployeerate.history.command.Une
 import nts.uk.ctx.pr.core.app.insurance.labor.unemployeerate.history.command.UnemployeeInsuranceHistoryUpdateCommandHandler;
 
 /**
- * The Class HistoryUnemployeeInsuranceWs.
+ * The Class UnemployeeInsuranceHistoryWs.
  */
 @Path("pr/insurance/labor/unemployeerate/history")
 @Produces("application/json")
@@ -38,7 +38,6 @@ public class UnemployeeInsuranceHistoryWs extends WebService {
 	 *
 	 * @return the list
 	 */
-	// get History UnemployeeInsuranceRate
 	@POST
 	@Path("findall")
 	public List<UnemployeeInsuranceHistoryFindOutDto> findAll() {
@@ -54,7 +53,8 @@ public class UnemployeeInsuranceHistoryWs extends WebService {
 	 */
 	@POST
 	@Path("find/{historyId}")
-	public UnemployeeInsuranceHistoryFindOutDto findHistory(@PathParam("historyId") String historyId) {
+	public UnemployeeInsuranceHistoryFindOutDto findHistory(
+			@PathParam("historyId") String historyId) {
 		return this.find.find(historyId);
 	}
 

@@ -60,7 +60,7 @@ div#report-item-list {
     margin-right: 15px;
 }
 #search-input > .ntsSearchBox {
-	width: 190px;
+	width: 190px !important;
 }
 .name-input {
 	margin-left: 5px;

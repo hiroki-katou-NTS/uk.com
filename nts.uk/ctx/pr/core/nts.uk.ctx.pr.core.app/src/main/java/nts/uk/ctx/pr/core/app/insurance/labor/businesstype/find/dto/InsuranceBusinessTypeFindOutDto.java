@@ -4,16 +4,21 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.app.insurance.labor.businesstype.find.dto;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Consumer;
 
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import nts.uk.ctx.pr.core.dom.insurance.labor.businesstype.BusinessTypeEnum;
 import nts.uk.ctx.pr.core.dom.insurance.labor.businesstype.InsuranceBusinessType;
 
 /**
  * Instantiates a new insurance business type find out dto.
  */
-@Data
+@Getter
+@Setter
 public class InsuranceBusinessTypeFindOutDto {
 
 	/** The biz name biz 1 st. */
@@ -49,43 +54,33 @@ public class InsuranceBusinessTypeFindOutDto {
 	/**
 	 * From domain.
 	 *
-	 * @param domain the domain
+	 * @param domain
+	 *            the domain
 	 * @return the insurance business type find out dto
 	 */
-	public static InsuranceBusinessTypeFindOutDto fromDomain(List<InsuranceBusinessType> domain) {
+	public static InsuranceBusinessTypeFindOutDto fromDomain(List<InsuranceBusinessType> domains) {
+
 		InsuranceBusinessTypeFindOutDto insuranceBusinessTypeFindOutDto = new InsuranceBusinessTypeFindOutDto();
-		for (InsuranceBusinessType insuranceBusinessType : domain) {
-			if (insuranceBusinessType.getBizOrder().equals(BusinessTypeEnum.Biz1St)) {
-				insuranceBusinessTypeFindOutDto.setBizNameBiz1St(insuranceBusinessType.getBizName().v());
-			}
-			if (insuranceBusinessType.getBizOrder().equals(BusinessTypeEnum.Biz2Nd)) {
-				insuranceBusinessTypeFindOutDto.setBizNameBiz2Nd(insuranceBusinessType.getBizName().v());
-			}
-			if (insuranceBusinessType.getBizOrder().equals(BusinessTypeEnum.Biz3Rd)) {
-				insuranceBusinessTypeFindOutDto.setBizNameBiz3Rd(insuranceBusinessType.getBizName().v());
-			}
-			if (insuranceBusinessType.getBizOrder().equals(BusinessTypeEnum.Biz4Th)) {
-				insuranceBusinessTypeFindOutDto.setBizNameBiz4Th(insuranceBusinessType.getBizName().v());
-			}
-			if (insuranceBusinessType.getBizOrder().equals(BusinessTypeEnum.Biz5Th)) {
-				insuranceBusinessTypeFindOutDto.setBizNameBiz5Th(insuranceBusinessType.getBizName().v());
-			}
-			if (insuranceBusinessType.getBizOrder().equals(BusinessTypeEnum.Biz6Th)) {
-				insuranceBusinessTypeFindOutDto.setBizNameBiz6Th(insuranceBusinessType.getBizName().v());
-			}
-			if (insuranceBusinessType.getBizOrder().equals(BusinessTypeEnum.Biz7Th)) {
-				insuranceBusinessTypeFindOutDto.setBizNameBiz7Th(insuranceBusinessType.getBizName().v());
-			}
-			if (insuranceBusinessType.getBizOrder().equals(BusinessTypeEnum.Biz8Th)) {
-				insuranceBusinessTypeFindOutDto.setBizNameBiz8Th(insuranceBusinessType.getBizName().v());
-			}
-			if (insuranceBusinessType.getBizOrder().equals(BusinessTypeEnum.Biz9Th)) {
-				insuranceBusinessTypeFindOutDto.setBizNameBiz9Th(insuranceBusinessType.getBizName().v());
-			}
-			if (insuranceBusinessType.getBizOrder().equals(BusinessTypeEnum.Biz10Th)) {
-				insuranceBusinessTypeFindOutDto.setBizNameBiz10Th(insuranceBusinessType.getBizName().v());
-			}
-		}
+
+		Map<BusinessTypeEnum, Consumer<String>> ENUM_SET_FUNCTION_MAP = new HashMap<>();
+		ENUM_SET_FUNCTION_MAP.put(BusinessTypeEnum.Biz1St, insuranceBusinessTypeFindOutDto::setBizNameBiz1St);
+		ENUM_SET_FUNCTION_MAP.put(BusinessTypeEnum.Biz2Nd, insuranceBusinessTypeFindOutDto::setBizNameBiz2Nd);
+		ENUM_SET_FUNCTION_MAP.put(BusinessTypeEnum.Biz3Rd, insuranceBusinessTypeFindOutDto::setBizNameBiz3Rd);
+		ENUM_SET_FUNCTION_MAP.put(BusinessTypeEnum.Biz4Th, insuranceBusinessTypeFindOutDto::setBizNameBiz4Th);
+		ENUM_SET_FUNCTION_MAP.put(BusinessTypeEnum.Biz5Th, insuranceBusinessTypeFindOutDto::setBizNameBiz5Th);
+		ENUM_SET_FUNCTION_MAP.put(BusinessTypeEnum.Biz6Th, insuranceBusinessTypeFindOutDto::setBizNameBiz6Th);
+		ENUM_SET_FUNCTION_MAP.put(BusinessTypeEnum.Biz7Th, insuranceBusinessTypeFindOutDto::setBizNameBiz7Th);
+		ENUM_SET_FUNCTION_MAP.put(BusinessTypeEnum.Biz8Th, insuranceBusinessTypeFindOutDto::setBizNameBiz8Th);
+		ENUM_SET_FUNCTION_MAP.put(BusinessTypeEnum.Biz9Th, insuranceBusinessTypeFindOutDto::setBizNameBiz9Th);
+		
+		ENUM_SET_FUNCTION_MAP.put(BusinessTypeEnum.Biz10Th,
+			insuranceBusinessTypeFindOutDto::setBizNameBiz10Th);
+
+		domains.stream().forEach(item -> {
+			ENUM_SET_FUNCTION_MAP.get(item.getBizOrder()).accept(item.getBizName().v());
+		});
+
 		return insuranceBusinessTypeFindOutDto;
+
 	}
 }

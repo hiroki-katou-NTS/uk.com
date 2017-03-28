@@ -8,7 +8,6 @@ import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.rule.law.tax.commutelimit.CommuNoTaxLimitCode;
 import nts.uk.ctx.pr.core.dom.rule.law.tax.commutelimit.CommuNoTaxLimitName;
 import nts.uk.ctx.pr.core.dom.rule.law.tax.commutelimit.CommuNoTaxLimitValue;
-import nts.uk.ctx.pr.core.dom.rule.law.tax.commutelimit.ExclusiveVersion;
 
 public class CommuNotaxLimit extends AggregateRoot {
 	

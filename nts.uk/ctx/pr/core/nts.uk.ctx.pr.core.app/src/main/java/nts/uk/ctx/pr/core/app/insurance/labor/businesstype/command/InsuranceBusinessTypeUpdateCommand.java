@@ -9,7 +9,6 @@ import java.util.List;
 
 import lombok.Getter;
 import lombok.Setter;
-import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.app.insurance.labor.businesstype.command.dto.InsuranceBusinessTypeDto;
 import nts.uk.ctx.pr.core.dom.insurance.BusinessName;
 import nts.uk.ctx.pr.core.dom.insurance.labor.businesstype.BusinessTypeEnum;
@@ -67,14 +66,13 @@ public class InsuranceBusinessTypeUpdateCommand {
 	 *            the company code
 	 * @return the insurance business type
 	 */
-	public InsuranceBusinessType convertInsuranceBusinessType(BusinessTypeEnum businessTypeEnum, String bizName,
-			String companyCode) {
-		InsuranceBusinessTypeUpdateCommand command = this;
+	public InsuranceBusinessType convertInsuranceBusinessType(BusinessTypeEnum businessTypeEnum,
+			String bizName, String companyCode) {
 		return new InsuranceBusinessType(new InsuranceBusinessTypeGetMemento() {
 
 			@Override
-			public CompanyCode getCompanyCode() {
-				return new CompanyCode(companyCode);
+			public String getCompanyCode() {
+				return companyCode;
 			}
 
 			@Override

@@ -6,8 +6,6 @@ package nts.uk.ctx.pr.core.dom.wagetable.certification;
 
 import java.util.Set;
 
-import nts.uk.ctx.core.dom.company.CompanyCode;
-
 /**
  * The Interface CertifyGroupGetMemento.
  */
@@ -18,7 +16,7 @@ public interface CertifyGroupGetMemento {
 	 *
 	 * @return the company code
 	 */
-	CompanyCode getCompanyCode();
+	String getCompanyCode();
 
 	/**
 	 * Gets the code.

@@ -9,7 +9,6 @@ import java.util.stream.Collectors;
 
 import lombok.Builder;
 import nts.gul.collection.CollectionUtil;
-import nts.uk.ctx.pr.report.dom.company.CompanyCode;
 import nts.uk.ctx.pr.report.dom.wageledger.outputsetting.WLCategorySetting;
 import nts.uk.ctx.pr.report.dom.wageledger.outputsetting.WLOutputSettingCode;
 import nts.uk.ctx.pr.report.dom.wageledger.outputsetting.WLOutputSettingName;
@@ -81,7 +80,7 @@ public class OutputSettingDto implements WLOutputSettingSetMemento{
 	 * #setCompanyCode(nts.uk.ctx.pr.report.dom.company.CompanyCode)
 	 */
 	@Override
-	public void setCompanyCode(CompanyCode companyCode) {
+	public void setCompanyCode(String companyCode) {
 		// Do nothing.
 	}
 }

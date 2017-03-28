@@ -47,7 +47,7 @@ public class WtHeadServiceImpl extends WtHeadService {
 	 */
 	@Override
 	public void checkDuplicateCode(WtHead head) {
-		if (wageTableHeadRepo.isExistCode(head.getCompanyCode().v(), head.getCode().v())) {
+		if (wageTableHeadRepo.isExistCode(head.getCompanyCode(), head.getCode().v())) {
 			throw new BusinessException("ER005");
 		}
 	}

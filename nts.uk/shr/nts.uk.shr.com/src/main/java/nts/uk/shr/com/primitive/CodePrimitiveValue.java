@@ -18,7 +18,7 @@ public class CodePrimitiveValue<S> extends StringPrimitiveValue<CodePrimitiveVal
 	 * @param rawValue raw value
 	 */
 	public CodePrimitiveValue(String rawValue) {
-		super(rawValue.trim());
+		super(rawValue == null ? "" : rawValue.trim());
 	}
     
     /**

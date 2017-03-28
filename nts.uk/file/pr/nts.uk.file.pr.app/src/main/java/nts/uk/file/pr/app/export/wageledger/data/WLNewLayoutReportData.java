@@ -4,8 +4,11 @@
  *****************************************************************/
 package nts.uk.file.pr.app.export.wageledger.data;
 
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
+import lombok.Builder;
 import nts.uk.file.pr.app.export.wageledger.data.newlayout.TotalData;
 import nts.uk.file.pr.app.export.wageledger.data.share.HeaderReportData;
 import nts.uk.file.pr.app.export.wageledger.data.share.ReportItemDto;
@@ -13,6 +16,7 @@ import nts.uk.file.pr.app.export.wageledger.data.share.ReportItemDto;
 /**
  * The Class WLNewLayoutReportData.
  */
+@Builder
 public class WLNewLayoutReportData {
 	
 	/** The header data. */
@@ -47,4 +51,10 @@ public class WLNewLayoutReportData {
 	
 	/** The bonus attendance items. */
 	public List<ReportItemDto> bonusAttendanceItems;
+	
+	/** The salary payment date map. */
+	public Map<Integer, Date> salaryPaymentDateMap;
+	
+	/** The bonus payment date map. */
+	public Map<Integer, Date> bonusPaymentDateMap;
 }
