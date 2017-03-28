@@ -101,7 +101,7 @@ module nts.uk.ui.koExtentions {
             var container = $(element);
             var newValue = ko.unwrap(data.value);
             var dateFormat: string = (data.dateFormat !== undefined) ? ko.unwrap(data.dateFormat) : "yyyy/MM/dd";
-            var disabled: boolean = (data.disabled !== undefined) ? ko.unwrap(data.disabled) : true;
+            var disabled: boolean = (data.disabled !== undefined) ? ko.unwrap(data.disabled) : false;
             
             var idatr = container.attr("id");
             var $input = container.find('#' + idatr + "-input");
