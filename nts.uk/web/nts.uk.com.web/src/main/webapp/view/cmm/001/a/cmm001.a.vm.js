@@ -205,7 +205,7 @@ var cmm001;
             function CompanyModel(param) {
                 this.isEnableCompanyCode = ko.observable(true);
                 this.hasFocus = ko.observable(true);
-                this.editMode = true; // mode reset or not reset
+                this.editMode = true;
                 var self = this;
                 self.init(param);
                 self.companyCode.subscribe(function (newValue) {
@@ -304,7 +304,6 @@ var cmm001;
                 self.termBeginMon = ko.observable(param.termBeginMon);
                 self.companyUseSet = ko.observable(param.companyUseSet);
                 self.isDelete = ko.observable(param.isDelete || false);
-                //SWITCH
                 self.roundingRules = ko.observableArray([
                     new RoundingRule("1", '利用する'),
                     new RoundingRule('0', '利用しない')
@@ -378,3 +377,4 @@ var cmm001;
         }());
     })(a = cmm001.a || (cmm001.a = {}));
 })(cmm001 || (cmm001 = {}));
+//# sourceMappingURL=cmm001.a.vm.js.map

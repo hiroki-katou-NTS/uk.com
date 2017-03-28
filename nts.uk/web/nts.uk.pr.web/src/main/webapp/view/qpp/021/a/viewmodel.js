@@ -85,6 +85,9 @@ var nts;
                                 return ScreenModel;
                             }());
                             viewmodel.ScreenModel = ScreenModel;
+                            /**
+                                  * Model namespace.
+                               */
                             var PaymentDataResultViewModel = (function () {
                                 function PaymentDataResultViewModel(paymentHeader, categories, remarks) {
                                     var self = this;
@@ -98,6 +101,7 @@ var nts;
                                 return PaymentDataResultViewModel;
                             }());
                             viewmodel.PaymentDataResultViewModel = PaymentDataResultViewModel;
+                            // header
                             var PaymentDataHeaderViewModel = (function () {
                                 function PaymentDataHeaderViewModel(personId, companyName, departmentCode, departmentName, personName, processingYM, dependentNumber, specificationCode, specificationName, makeMethodFlag, employeeCode, comment, printPositionCategories, isCreated) {
                                     var self = this;
@@ -124,12 +128,14 @@ var nts;
                                 return PrintPositionCategoryViewModel;
                             }());
                             viewmodel.PrintPositionCategoryViewModel = PrintPositionCategoryViewModel;
+                            // categories
                             var LayoutMasterCategoryViewModel = (function () {
                                 function LayoutMasterCategoryViewModel() {
                                 }
                                 return LayoutMasterCategoryViewModel;
                             }());
                             viewmodel.LayoutMasterCategoryViewModel = LayoutMasterCategoryViewModel;
+                            // item
                             var DetailItemViewModel = (function () {
                                 function DetailItemViewModel(categoryAtr, itemAtr, itemCode, itemName, value, calculationMethod, correctFlag, columnPosition, linePosition, deductAtr, displayAtr, taxAtr, limitAmount, commuteAllowTaxImpose, commuteAllowMonth, commuteAllowFraction, isCreated, itemType) {
                                     var self = this;
@@ -174,4 +180,3 @@ var nts;
         })(pr = uk.pr || (uk.pr = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
-//# sourceMappingURL=viewmodel.js.map
