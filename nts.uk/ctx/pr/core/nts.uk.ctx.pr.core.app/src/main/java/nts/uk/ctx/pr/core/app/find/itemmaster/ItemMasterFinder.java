@@ -67,4 +67,17 @@ public class ItemMasterFinder {
 				.map(item -> ItemMasterSEL_3_Dto.fromDomain(item)).collect(Collectors.toList());
 	}
 
+	/**
+	 * Find all item master by category and list of item code
+	 * @param categoryAtr category attribute
+	 * @param itemCodes list of item code
+	 * @return list of item master
+	 */
+	public List<ItemMasterDto> findBy(int categoryAtr, List<String> itemCodes) {
+		String companyCode = AppContexts.user().companyCode();
+		return this.itemMasterRepo.findAll(companyCode, categoryAtr, itemCodes).stream()
+				.map(item -> ItemMasterDto.fromDomain(item))
+				.collect(Collectors.toList());
+	}
+
 }
