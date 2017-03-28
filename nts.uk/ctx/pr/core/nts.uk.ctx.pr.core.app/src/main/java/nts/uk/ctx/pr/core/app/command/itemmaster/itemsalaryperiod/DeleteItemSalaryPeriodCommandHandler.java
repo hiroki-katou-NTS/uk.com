@@ -9,7 +9,7 @@ import nts.uk.ctx.pr.core.dom.itemmaster.itemsalaryperiod.ItemSalaryPeriodReposi
 public class DeleteItemSalaryPeriodCommandHandler extends CommandHandler<DeleteItemSalaryPeriodCommand> {
 	
 	@Inject
-	ItemSalaryPeriodRepository itemSalaryPeriodRepository;
+	private ItemSalaryPeriodRepository itemSalaryPeriodRepository;
 	
 	@Override
 	protected void handle(CommandHandlerContext<DeleteItemSalaryPeriodCommand> context) {

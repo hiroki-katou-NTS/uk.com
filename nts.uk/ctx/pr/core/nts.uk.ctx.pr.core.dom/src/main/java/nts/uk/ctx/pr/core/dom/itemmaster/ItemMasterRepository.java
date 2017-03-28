@@ -3,8 +3,6 @@ package nts.uk.ctx.pr.core.dom.itemmaster;
 import java.util.List;
 import java.util.Optional;
 
-import nts.uk.ctx.pr.core.finder.itemmaster.ItemMasterDto;
-
 public interface ItemMasterRepository {
 	/**
 	 * Find item master

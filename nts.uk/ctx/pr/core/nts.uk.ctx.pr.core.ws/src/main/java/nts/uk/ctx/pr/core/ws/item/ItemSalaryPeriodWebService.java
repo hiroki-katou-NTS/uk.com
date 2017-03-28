@@ -22,7 +22,7 @@ public class ItemSalaryPeriodWebService extends WebService {
 	@Inject
 	ItemSalaryPeriodFinder itemSalaryPeriodFinder;
 	@Inject
-	AddItemSalaryPeriodCommandHandler addHandler;	
+	AddItemSalaryPeriodCommandHandler addHandler;
 	@Inject
 	DeleteItemSalaryPeriodCommandHandler deleteHandler;
 	@Inject
@@ -33,8 +33,7 @@ public class ItemSalaryPeriodWebService extends WebService {
 	public ItemSalaryPeriodDto findItemSalaryPeriod(@PathParam("itemCode") String itemCode) {
 		return this.itemSalaryPeriodFinder.find(itemCode);
 	}
-	
-	
+
 	@POST
 	@Path("add")
 	public void addItemSalaryPeriod(AddItemSalaryPeriodCommand command) {
