@@ -334,7 +334,14 @@ project (':web:nts.uk.com.web') {
 		runtime project (':ctx:basic:nts.uk.ctx.basic.pub')
 		runtime project (':ctx:basic:nts.uk.ctx.basic.pubimp')
 		runtime project (':ctx:basic:nts.uk.ctx.basic.ws')
+		
 		runtime project (':shr:nts.uk.shr.ws')
+		runtime project (':shr:nts.uk.shr.find')
+		
+		// shr find implement
+		runtime project (':ctx:pr:core:nts.uk.ctx.pr.core.app')
+		runtime project (':ctx:pr:report:nts.uk.ctx.pr.report.app')
+		runtime project (':ctx:pr:formula:nts.uk.ctx.pr.formula.app')
 	}
 }
 
@@ -364,8 +371,6 @@ project (':web:nts.uk.pr.web') {
 	dependencies {
 		compile project(':shr:nts.uk.shr.com')
 		providedCompile group: 'com.sun.faces', name: 'jsf-api', version: '2.2.13'
-		
-		runtime project (':shr:nts.uk.shr.ws')
 		
 		runtime project (':ctx:pr:core:nts.uk.ctx.pr.core.ac')
 		runtime project (':ctx:pr:core:nts.uk.ctx.pr.core.app')

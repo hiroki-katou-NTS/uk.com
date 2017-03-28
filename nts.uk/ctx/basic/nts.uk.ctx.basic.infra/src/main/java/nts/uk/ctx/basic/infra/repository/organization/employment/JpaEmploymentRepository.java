@@ -18,11 +18,17 @@ public class JpaEmploymentRepository extends JpaRepository implements Employment
 			+ "WHERE c.cmnmtEmpPk.companyCode = :companyCode";
 	private final String SELECT_EMP_BY_DISPLAY_FLG = SELECT_ALL_EMP_BY_COMPANY
 			+ " AND c.displayFlg = 1";
+	/**
+	 * insert Employment
+	 */
 	@Override
 	public void add(Employment employment) {
 		this.commandProxy().insert(toEntity(employment));
 	}
 
+	/**
+	 *  update Employment
+	 */
 	@Override
 	public void update(Employment employment) {
 		this.commandProxy().update(toEntity(employment));
@@ -40,9 +46,12 @@ public class JpaEmploymentRepository extends JpaRepository implements Employment
 		entity.processingNo = employment.getProcessingNo().v();
 		entity.statutoryHolidayAtr = employment.getStatutoryHolidayAtr().value;
 		entity.employementOutCd = employment.getEmployementOutCd().v();
+		entity.displayFlg = employment.getDisplayFlg().value;
 		return entity;
 	}
-
+	/**
+	 * remove employment by company code and employment code
+	 */
 	@Override
 	public void remove(String companyCode, String employmentCode) {
 		val objectKey = new CmnmtEmpPK();
@@ -50,22 +59,25 @@ public class JpaEmploymentRepository extends JpaRepository implements Employment
 		objectKey.employmentCode = employmentCode;
 		this.commandProxy().remove(CmnmtEmp.class, objectKey);
 	}
-
+	/**
+	 * find employment by company code and employment code
+	 */
 	@Override
 	public Optional<Employment> findEmployment(String companyCode, String employmentCode) {
 		CmnmtEmpPK primaryKey = new CmnmtEmpPK(companyCode, employmentCode);
 		return  this.queryProxy().find(primaryKey, CmnmtEmp.class)
 				.map(x->toDomain(x));
 	}
-
+	/**
+	 * find all employments by company code
+	 */
 	@Override
 	public List<Employment> findAllEmployment(String companyCode) {
-		List<Employment> test = this.queryProxy().query(SELECT_ALL_EMP_BY_COMPANY, CmnmtEmp.class)
+		List<Employment> test = this.queryProxy().query(SELECT_ALL_EMP_BY_COMPANY + " ORDER by c.cmnmtEmpPk.employmentCode", CmnmtEmp.class)
 				.setParameter("companyCode", companyCode)
 				.getList(c -> toDomain(c));
 		return test;
 	}
-
 	private static Employment toDomain(CmnmtEmp entity) {
 		val domain = Employment.createFromJavaType(entity.cmnmtEmpPk.companyCode,
 				entity.cmnmtEmpPk.employmentCode,
@@ -79,19 +91,15 @@ public class JpaEmploymentRepository extends JpaRepository implements Employment
 		return domain;
 		
 	}
-
+	/**
+	 * find employment by company code and display flag = 1
+	 */
 	@Override
 	public Optional<Employment> findEmploymnetByDisplayFlg(String companyCode) {		
-		List<Employment> lstEmployment= this.queryProxy().query(SELECT_EMP_BY_DISPLAY_FLG, CmnmtEmp.class)
+		Optional<Employment> lstEmployment= this.queryProxy().query(SELECT_EMP_BY_DISPLAY_FLG, CmnmtEmp.class)
 				.setParameter("companyCode", companyCode)
-				.getList(c -> toDomain(c));
-		Employment employment;
-		if(lstEmployment.isEmpty())
-			return null;
-		else{
-			employment = lstEmployment.get(0);
-			return Optional.of(employment);
-		}
+				.getSingle(c -> toDomain(c));
+		return lstEmployment;
 			
 	}
 

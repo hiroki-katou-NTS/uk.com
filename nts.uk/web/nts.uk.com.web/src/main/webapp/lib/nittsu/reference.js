@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 /// <reference path="ui/viewcontext.d.ts"/>
 /// <reference path="util.ts"/>
 /// <reference path="text.ts"/>
@@ -29,3 +30,6 @@
 /// <reference path="ui/ko-ext/treegrid-ko-ext.ts"/>
 /// <reference path="ui/ko-ext/updown-button-ko-ext.ts"/>
 /// <reference path="ui/ko-ext/wizard-ko-ext.ts"/> 
+=======
+>>>>>>> basic/develop
+//# sourceMappingURL=reference.js.map
