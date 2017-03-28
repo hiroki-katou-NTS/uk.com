@@ -16,7 +16,7 @@ module nts.uk.pr.view.qpp007.c {
             constructor() {
                 var self = this;
                 self.isLoading = ko.observable(true);
-                self.isNewMode = ko.observable(false);
+                self.isNewMode = ko.observable(true);
                 self.outputSettings = ko.observableArray<OutputSettingHeader>([]);
                 self.outputSettingSelectedCode = ko.observable('');
                 self.outputSettingDetailModel = ko.observable(new OutputSettingDetailModel());
@@ -57,9 +57,16 @@ module nts.uk.pr.view.qpp007.c {
             public startPage(): JQueryPromise<void> {
                 var self = this;
                 var dfd = $.Deferred<void>();
-                self.loadAllOutputSetting().done(() => {
+                $.when(self.loadAllOutputSetting(), self.loadAggregateItems()).done(() => {
                     self.isLoading(false);
-                    self.loadAggregateItems();
+                    // New mode if there is 0 outputSettings. 
+                    if (!self.outputSettings || self.outputSettings().length == 0) {
+                        self.enableNewMode();
+                    } 
+                    // else select first outputSetting.
+                    else {
+                        self.outputSettingSelectedCode(self.outputSettings()[0].code);
+                    }
                     dfd.resolve();
                 });
                 return dfd.promise();
@@ -153,13 +160,17 @@ module nts.uk.pr.view.qpp007.c {
             }
 
             /**
-             * Enter new mode.
+             * on NewMode button click.
              */
-            public newModeBtnClick(): void {
+            public onNewModeBtnClick(): void {
                 var self = this;
-                // Clear outputSetting SelectedCode
+                self.enableNewMode();
+            }
+
+            private enableNewMode(): void {
+                var self = this;
                 self.outputSettingDetailModel(new OutputSettingDetailModel());
-                self.outputSettingSelectedCode('');
+                self.outputSettingSelectedCode(null);
                 self.isNewMode(true);
             }
 
@@ -169,10 +180,13 @@ module nts.uk.pr.view.qpp007.c {
             private onSelectOutputSetting(id: string): void {
                 var self = this;
                 $('.save-error').ntsError('clear');
+                if (!id) {
+                    return;
+                }
                 // self.isLoading(true);
-                self.isNewMode(false)
                 self.loadOutputSettingDetail(id).done(() => {
-                    // self.isLoading(false);
+                    self.isNewMode(false)
+                    self.isLoading(false);
                 });
             }
 
@@ -216,6 +230,7 @@ module nts.uk.pr.view.qpp007.c {
                 $.when(aggregateService.findSalaryAggregateItem({ taxDivision: 0, aggregateItemCode: '001' }),
                     aggregateService.findSalaryAggregateItem({ taxDivision: 1, aggregateItemCode: '001' })).done((res1, res2) => {
                         // TODO ...
+                        dfd.resolve();
                     });
                 return dfd.promise();
             }
