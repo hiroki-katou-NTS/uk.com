@@ -7,7 +7,25 @@ $(function(){
 	            $(this).addClass('active flash');
 	        }
 	    });
-	    
+	    //collapse menu	    
+	    var menu = $("#side-menu").find("h1");
+	    for (var i = 0; i < menu.length; i++) {
+	        menu[i].onclick = function(e) {
+	        	//if($(e.target).next().css("display")!="none") return;
+	        	// for (var i = 0; i < menu.length; i++) {
+		        //	if($(menu[i]).next().find(".active").length==0&&$(menu[i]).next().css("display")!="none"){
+		 	    //    	$(menu[i]).next().slideToggle();
+		 	     //   }
+	        	// }
+	            $(e.target).next().slideToggle();
+	            
+	        }
+	        //collapse all except activating menu
+	        if($(menu[i]).next().find(".active").length==0){
+	        	$(menu[i]).next().css("display","none");	
+	        }
+	        
+	    }
 	    // Auto bind prev/next button
 	    $(".previous").each(function(){
 			if($(this).data("href") !== null) {
