@@ -73,11 +73,15 @@ var cmm008;
                             self.isMess(false);
                         }
                     });
-                    a.service.getProcessingNo();
+                    self.userKtSet();
+                    self.closeDateListItem();
+                    self.processingDateItem();
+                    self.managementHolidaylist();
                     dfd.resolve();
                     return dfd.promise();
                 };
                 ScreenModel.prototype.userKtSet = function () {
+                    var def = $.Deferred();
                     var self = this;
                     a.service.getCompanyInfor().done(function (companyInfor) {
                         if (companyInfor !== undefined) {
@@ -85,15 +89,13 @@ var cmm008;
                             if (self.isUseKtSet() === 0) {
                                 $('.UseKtSet').css('display', 'none');
                             }
-                            else {
-                                self.closeDateListItem();
-                                self.managementHolidaylist();
-                                self.processingDateItem();
-                            }
                         }
+                        def.resolve(self.isUseKtSet());
                     }).fail(function (res) {
                         nts.uk.ui.dialog.alert(res.message);
+                        def.reject();
                     });
+                    return def.promise();
                 };
                 ScreenModel.prototype.reloadScreenWhenListClick = function (newValue) {
                     var self = this;

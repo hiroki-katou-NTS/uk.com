@@ -80,7 +80,7 @@ module cmm008.a.viewmodel{
             var height = heightScreen-heightHeader - 80;
             $('#contents-left').css({height: height, width: widthScreen*38/100});
             $('#contents-right').css({height: height, width: widthScreen*62/100});
-            //self.userKtSet();            
+            
             self.listMessage();
             self.dataSourceItem();
             
@@ -92,12 +92,10 @@ module cmm008.a.viewmodel{
                     })
                     if(!self.isMess()){
                         nts.uk.ui.dialog.confirm(AL001.messName).ifCancel(function(){
-                             //self.reloadScreenWhenListClick(newValue);
                             self.isMess(true);
                             self.currentCode(self.employmentCode());
                             return;    
                         }).ifYes(function(){
-                            //self.createEmployment();
                             self.isMess(false);
                             self.reloadScreenWhenListClick(newValue);
                         })   
@@ -111,30 +109,40 @@ module cmm008.a.viewmodel{
                 
             });
             
-            service.getProcessingNo();
-            
-            dfd.resolve();
+//            $.when(self.userKtSet()).done(function(){
+//                if(self.isUseKtSet() !== 0){
+//                    self.closeDateListItem();
+//                    self.processingDateItem();
+//                    self.managementHolidaylist();
+//                    dfd.resolve(self.holidayCode()); 
+//                }    
+//            })  
+            self.userKtSet();
+            self.closeDateListItem();
+            self.processingDateItem();
+            self.managementHolidaylist();
+             dfd.resolve(); 
             // Return.
             return dfd.promise();
         }
         
         //就業権限
         userKtSet(): any {
+            var def = $.Deferred();
             var self = this;
             service.getCompanyInfor().done(function(companyInfor: any){
                 if(companyInfor !== undefined){
                     self.isUseKtSet(companyInfor.use_Kt_Set);
                     if(self.isUseKtSet() === 0){
                         $('.UseKtSet').css('display', 'none');
-                    }else{
-                        self.closeDateListItem();
-                        self.managementHolidaylist();
-                        self.processingDateItem();
                     }
                 }
+                def.resolve(self.isUseKtSet());
             }).fail(function(res: any){
                 nts.uk.ui.dialog.alert(res.message);
-            })
+                def.reject();
+            });
+            return def.promise();
         }
         
         reloadScreenWhenListClick(newValue: string){
@@ -171,6 +179,7 @@ module cmm008.a.viewmodel{
         }
         //公休の管理
         managementHolidaylist(): any{
+           
             var self = this;
             self.managementHolidays = ko.observableArray([
                 {code: 0, name: 'する'},
@@ -332,7 +341,6 @@ module cmm008.a.viewmodel{
                     return;    
                 }).ifYes(function(){
                     self.clearItem();
-                    //self.createEmployment();    
                 })            
             }else{
                 self.clearItem();    
