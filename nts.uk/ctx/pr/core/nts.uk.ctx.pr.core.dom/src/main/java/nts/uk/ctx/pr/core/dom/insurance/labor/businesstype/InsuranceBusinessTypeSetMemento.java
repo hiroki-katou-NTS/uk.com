@@ -4,7 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.dom.insurance.labor.businesstype;
 
-import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.insurance.BusinessName;
 
 /**
@@ -17,7 +16,7 @@ public interface InsuranceBusinessTypeSetMemento {
 	 *
 	 * @return the company code
 	 */
-	void setCompanyCode(CompanyCode companyCode);
+	void setCompanyCode(String companyCode);
 
 	/**
 	 * Gets the biz order.

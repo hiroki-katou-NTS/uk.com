@@ -14,7 +14,7 @@ import nts.arc.error.BusinessException;
 import nts.gul.collection.CollectionUtil;
 import nts.gul.text.StringUtil;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.Certification;
-import nts.uk.ctx.pr.core.dom.wagetable.certification.CertificationReponsitory;
+import nts.uk.ctx.pr.core.dom.wagetable.certification.CertificationRepository;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroup;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroupRepository;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.service.CertifyGroupService;
@@ -31,7 +31,7 @@ public class CertifyGroupServiceImpl implements CertifyGroupService {
 
 	/** The certification reponsitory. */
 	@Inject
-	private CertificationReponsitory certificationReponsitory;
+	private CertificationRepository certificationReponsitory;
 
 	/*
 	 * (non-Javadoc)
@@ -61,7 +61,7 @@ public class CertifyGroupServiceImpl implements CertifyGroupService {
 	@Override
 	public void checkDuplicateCode(CertifyGroup certifyGroup) {
 		Optional<CertifyGroup> optionalCheck = this.certifyGroupRepository
-				.findById(certifyGroup.getCompanyCode().v(), certifyGroup.getCode().v());
+				.findById(certifyGroup.getCompanyCode(), certifyGroup.getCode().v());
 		if (optionalCheck.isPresent()) {
 			throw new BusinessException("ER005");
 		}
@@ -77,7 +77,7 @@ public class CertifyGroupServiceImpl implements CertifyGroupService {
 	 */
 	@Override
 	public void checkDulicateCertification(CertifyGroup certifyGroup, String certifyGroupCode) {
-		if (this.checkDulicateCertification(certifyGroup.getCompanyCode().v(),
+		if (this.checkDulicateCertification(certifyGroup.getCompanyCode(),
 				certifyGroup.getCertifies(), certifyGroupCode)) {
 			throw new BusinessException("ER005");
 		}

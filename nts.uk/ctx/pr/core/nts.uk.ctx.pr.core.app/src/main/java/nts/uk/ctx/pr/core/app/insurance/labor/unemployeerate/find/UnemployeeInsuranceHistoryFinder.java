@@ -60,15 +60,19 @@ public class UnemployeeInsuranceHistoryFinder {
 	 * @return the unemployee insurance history find out dto
 	 */
 	public UnemployeeInsuranceHistoryFindOutDto find(String historyId) {
+		
 		// get user login info
 		LoginUserContext loginUserContext = AppContexts.user();
+		
 		// get companyCode by user login
 		String companyCode = loginUserContext.companyCode();
+		
 		// call finder
 		UnemployeeInsuranceHistoryFindOutDto historyUnemployeeInsuranceFindOutDto;
 		historyUnemployeeInsuranceFindOutDto = new UnemployeeInsuranceHistoryFindOutDto();
 		Optional<UnemployeeInsuranceRate> optionalUnemployeeInsuranceRate = find.findById(companyCode,
 			historyId);
+		
 		// exist value
 		if (optionalUnemployeeInsuranceRate.isPresent()) {
 			optionalUnemployeeInsuranceRate.get().saveToMemento(historyUnemployeeInsuranceFindOutDto);

@@ -81,10 +81,11 @@ public class UnemployeeInsuranceRateCopyCommandHandler
 
 		// find first data
 		Optional<UnemployeeInsuranceRate> optionalFisrtData = this.unemployeeInsuranceRateRepository
-			.findFirstData(unemployeeInsuranceRate.getCompanyCode().v());
+			.findFirstData(unemployeeInsuranceRate.getCompanyCode());
 		if (optionalFisrtData.isPresent()) {
-			this.unemployeeInsuranceRateRepository.updateYearMonth(optionalFisrtData.get(),
-				unemployeeInsuranceRate.getApplyRange().getStartMonth().previousMonth());
+			optionalFisrtData.get()
+				.setEnd(unemployeeInsuranceRate.getApplyRange().getStartMonth().previousMonth());
+			this.unemployeeInsuranceRateRepository.update(optionalFisrtData.get());
 		}
 
 		// call repository add (insert database)

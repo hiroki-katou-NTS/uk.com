@@ -122,7 +122,7 @@
 		</div>
 		<div class="divLineCol2">
 			<button id="D_BTN_001" class="small" data-bind="click:openHDialog">有効期間設定</button>
-			<label id="D_LBL_011">設定区分 </label>
+			<label id="D_LBL_011" data-bind="text:D_LBL_011_Text">設定区分 </label>
 
 		</div>
 
@@ -133,7 +133,7 @@
 		</div>
 		<div class="divLineCol2">
 			<button id="D_BTN_002" class="small" data-bind="click:openIDialog">有効期間設定</button>
-			<label id="D_LBL_012">サイクル設定区分</label>
+			<label id="D_LBL_012" data-bind="text:D_LBL_012_Text">サイクル設定区分</label>
 		</div>
 
 	</div>
@@ -142,8 +142,8 @@
 			<div id="D_LBL_017" data-bind="ntsFormLabel: {  required: false }">備考</div>
 		</div>
 		<div class="divLineCol2">
-			<TEXTAREA id="D_INP_005" rows="5" cols="40"
-				data-bind="value: CurrentMemo"></TEXTAREA>
+			<textarea id="D_INP_005"
+				data-bind="ntsMultilineEditor: { value: CurrentMemo , constraint: 'Memo' }" />
 		</div>
 	</div>
 </body>

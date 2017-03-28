@@ -6,59 +6,37 @@ var qmm034;
         (function (service) {
             var paths = {
                 getAllEras: "ctx/basic/era/finderas",
-                //        getEraDetail: "ctx/basic/era/find/{0}",
+                getEraDetail: "ctx/basic/era/find/{startDate}",
                 deleteEra: "ctx/basic/era/deleteData",
                 updateEra: "ctx/basic/era/updateData",
-                addEra: "ctx/basic/era/addData",
-                getFixAttribute: "ctx/basic/era/getFixAttribute/{0}",
-                checkStartDate: "ctx/basic/era/checkStartDate/{0}/"
+                addEra: "ctx/basic/era/addData"
             };
-            /**
-             * get list era
-             */
             function getAllEras() {
                 var dfd = $.Deferred();
                 nts.uk.request.ajax(paths.getAllEras).done(function (res) {
                     dfd.resolve(res);
-                }).fail(function (res) {
+                })
+                    .fail(function (res) {
                     dfd.reject(res);
                 });
                 return dfd.promise();
             }
             service.getAllEras = getAllEras;
-            /**
-             * get a company
-             */
-            //    export function getEraDetail(eraHist: string): JQueryPromise<model.EraDto> {
-            //        let dfd = $.Deferred<model.EraDto>();
-            //        let self = this;
-            //        let _path = nts.uk.text.format(paths.getEraDetail, eraHist);
-            //        nts.uk.request.ajax(_path).done(function(res: model.EraDto) {
-            //            dfd.resolve(res);
-            //        }).fail(function(res) {
-            //            dfd.reject(res);
-            //        })
-            //        return dfd.promise();
-            //
-            //    }
-            /**
-             * get a company
-             */
-            function getFixAttribute(eraHist) {
+            function getEraDetail() {
                 var dfd = $.Deferred();
-                var self = this;
-                var _path = nts.uk.text.format(paths.getFixAttribute, eraHist);
-                nts.uk.request.ajax(_path).done(function (res) {
+                nts.uk.request.ajax(paths.getEraDetail)
+                    .done(function (res) {
                     dfd.resolve(res);
-                }).fail(function (res) {
+                })
+                    .fail(function (res) {
                     dfd.reject(res);
                 });
                 return dfd.promise();
             }
-            service.getFixAttribute = getFixAttribute;
-            function addData(isUpdate, command) {
+            service.getEraDetail = getEraDetail;
+            function addData(isCreated, command) {
                 var dfd = $.Deferred();
-                var path = isUpdate ? paths.updateEra : paths.addEra;
+                var path = isCreated ? paths.addEra : paths.updateEra;
                 nts.uk.request.ajax(path, command)
                     .done(function (res) {
                     dfd.resolve(res);
@@ -71,7 +49,6 @@ var qmm034;
             service.addData = addData;
             function deleteData(command) {
                 var dfd = $.Deferred();
-                //var dateObject = ko.mapping.toJS(command);
                 nts.uk.request.ajax(paths.deleteEra, command)
                     .done(function (res) {
                     dfd.resolve(res);
@@ -82,27 +59,15 @@ var qmm034;
                 return dfd.promise();
             }
             service.deleteData = deleteData;
-            function checkStartDate(startDate) {
-                var dfd = $.Deferred();
-                var self = this;
-                var _path = nts.uk.text.format(paths.checkStartDate, startDate);
-                nts.uk.request.ajax(_path)
-                    .done(function (res) {
-                    dfd.resolve(res);
-                });
-                return dfd.promise();
-            }
-            service.checkStartDate = checkStartDate;
             var model;
             (function (model) {
                 var EraDto = (function () {
-                    function EraDto(eraName, eraMark, startDate, endDate, fixAttribute, eraHist) {
+                    function EraDto(eraName, eraMark, startDate, endDate, fixAttribute) {
                         this.eraName = eraName;
                         this.eraMark = eraMark;
                         this.startDate = startDate;
                         this.endDate = endDate;
                         this.fixAttribute = fixAttribute;
-                        this.eraHist = eraHist;
                     }
                     return EraDto;
                 }());
@@ -111,8 +76,8 @@ var qmm034;
             var model;
             (function (model) {
                 var EraDtoDelete = (function () {
-                    function EraDtoDelete(eraHist) {
-                        this.eraHist = eraHist;
+                    function EraDtoDelete(startDate) {
+                        this.startDate = startDate;
                     }
                     return EraDtoDelete;
                 }());
@@ -121,3 +86,4 @@ var qmm034;
         })(service = a.service || (a.service = {}));
     })(a = qmm034.a || (qmm034.a = {}));
 })(qmm034 || (qmm034 = {}));
+//# sourceMappingURL=service.js.map

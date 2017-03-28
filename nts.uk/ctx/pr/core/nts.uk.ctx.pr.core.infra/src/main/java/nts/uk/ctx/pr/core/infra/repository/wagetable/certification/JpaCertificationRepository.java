@@ -19,7 +19,7 @@ import javax.persistence.criteria.Root;
 
 import nts.arc.layer.infra.data.JpaRepository;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.Certification;
-import nts.uk.ctx.pr.core.dom.wagetable.certification.CertificationReponsitory;
+import nts.uk.ctx.pr.core.dom.wagetable.certification.CertificationRepository;
 import nts.uk.ctx.pr.core.infra.entity.wagetable.certification.QcemtCertification;
 import nts.uk.ctx.pr.core.infra.entity.wagetable.certification.QcemtCertificationPK;
 import nts.uk.ctx.pr.core.infra.entity.wagetable.certification.QcemtCertificationPK_;
@@ -32,7 +32,7 @@ import nts.uk.ctx.pr.core.infra.entity.wagetable.certification.QwtmtWagetableCer
  * The Class JpaCertificationRepository.
  */
 @Stateless
-public class JpaCertificationRepository extends JpaRepository implements CertificationReponsitory {
+public class JpaCertificationRepository extends JpaRepository implements CertificationRepository {
 
 	/*
 	 * (non-Javadoc)

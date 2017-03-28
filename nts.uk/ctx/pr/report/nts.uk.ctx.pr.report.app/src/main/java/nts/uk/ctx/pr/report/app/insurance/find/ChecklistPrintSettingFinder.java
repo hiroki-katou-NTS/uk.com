@@ -42,8 +42,8 @@ public class ChecklistPrintSettingFinder {
         dto.setShowCategoryInsuranceItem(true);
         dto.setShowDetail(true);
         dto.setShowOffice(false);
-        dto.setShowTotal(true);
-        dto.setShowDeliveryNoticeAmount(true);
+        dto.setShowTotal(false);
+        dto.setShowDeliveryNoticeAmount(false);
         return dto;
 	}
 

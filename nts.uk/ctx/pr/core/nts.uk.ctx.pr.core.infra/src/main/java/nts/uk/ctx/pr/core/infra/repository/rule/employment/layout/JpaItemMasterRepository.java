@@ -12,7 +12,7 @@ import nts.uk.ctx.pr.core.dom.itemmaster.ItemMasterRepository;
 import nts.uk.ctx.pr.core.infra.entity.itemmaster.QcamtItem;
 import nts.uk.ctx.pr.core.infra.entity.itemmaster.QcamtItemPK;
 
-@Stateless
+//@Stateless
 public class JpaItemMasterRepository extends JpaRepository {
 
 	private final String SELECT_NO_WHERE = "SELECT c FROM QcamtItem c";

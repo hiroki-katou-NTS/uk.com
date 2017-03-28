@@ -59,15 +59,7 @@ public interface AccidentInsuranceRateRepository {
 	 * @return the optional
 	 */
 	Optional<AccidentInsuranceRate> findFirstData(String companyCode);
-	
-	/**
-	 * Update year month.
-	 *
-	 * @param rate the rate
-	 * @param yearMonth the year month
-	 */
-	void updateYearMonth(AccidentInsuranceRate rate,YearMonth yearMonth);
-	
+		
 	/**
 	 * Find between update.
 	 *

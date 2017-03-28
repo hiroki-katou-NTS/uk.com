@@ -4,7 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.pr.report.dom.wageledger.aggregate;
 
-import nts.uk.ctx.pr.report.dom.company.CompanyCode;
 import nts.uk.ctx.pr.report.dom.wageledger.PaymentType;
 import nts.uk.ctx.pr.report.dom.wageledger.WLCategory;
 
@@ -32,7 +31,7 @@ public interface WLItemSubjectSetMemento {
  	 *
  	 * @param companyCode the new company code
  	 */
- 	void setCompanyCode(CompanyCode companyCode);
+ 	void setCompanyCode(String companyCode);
 	 
  	/**
  	 * Sets the code.
