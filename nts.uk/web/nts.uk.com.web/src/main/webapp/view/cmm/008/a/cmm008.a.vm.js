@@ -79,11 +79,6 @@ var cmm008;
                             self.isMess(false);
                         }
                     });
-                    self.userKtSet();
-                    self.closeDateListItem();
-                    self.processingDateItem();
-                    self.managementHolidaylist();
-                    dfd.resolve();
                     return dfd.promise();
                 };
                 ScreenModel.prototype.userKtSet = function () {
@@ -205,9 +200,9 @@ var cmm008;
                     });
                     if (self.isUseKtSet() === 0) {
                         this.columns = ko.observableArray([
-                            { headerText: 'コード', prop: 'employmentCode', width: '18%' },
-                            { headerText: '名称', prop: 'employmentName', width: '28%' },
-                            { headerText: '初期表示', prop: 'displayStr', width: '14%' }
+                            { headerText: 'コード', prop: 'employmentCode', width: '30%' },
+                            { headerText: '名称', prop: 'employmentName', width: '50%' },
+                            { headerText: '初期表示', prop: 'displayStr', width: '20%' }
                         ]);
                     }
                     else {

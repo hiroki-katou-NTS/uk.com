@@ -118,11 +118,11 @@ module cmm008.a.viewmodel{
             });
             
 
-            self.userKtSet();
-            self.closeDateListItem();
-            self.processingDateItem();
-            self.managementHolidaylist();
-             dfd.resolve(); 
+//            self.userKtSet();
+//            self.closeDateListItem();
+//            self.processingDateItem();
+//            self.managementHolidaylist();
+//             dfd.resolve(); 
             // Return.
             return dfd.promise();
         }
@@ -256,9 +256,9 @@ module cmm008.a.viewmodel{
             }) 
             if(self.isUseKtSet() === 0){
                 this.columns = ko.observableArray([
-                    { headerText: 'コード', prop: 'employmentCode', width: '18%' },
-                    { headerText: '名称', prop: 'employmentName', width: '28%' },
-                    { headerText: '初期表示', prop: 'displayStr', width: '14%' }
+                    { headerText: 'コード', prop: 'employmentCode', width: '30%' },
+                    { headerText: '名称', prop: 'employmentName', width: '50%' },
+                    { headerText: '初期表示', prop: 'displayStr', width: '20%' }
                 ]);
             }else{
                 this.columns = ko.observableArray([
