@@ -15,17 +15,12 @@ var qmm023;
                             }
                             return;
                         }
-                        self.CheckError();
-                        if (self.isError) {
-                            self.isError = false;
-                            $('.save-error').ntsError('clear');
-                            return;
-                        }
                         var oldCode = ko.mapping.toJS(self.currentTax().code);
                         if (ko.mapping.toJS(codeChanged) === oldCode && self.flatDirty === false) {
                             return;
                         }
                         if (self.flatDirty == true) {
+                            self.clearError();
                             self.currentTax(ko.mapping.fromJS(self.getTax(codeChanged)));
                             self.allowEditCode(false);
                             self.isUpdate(true);
@@ -51,7 +46,6 @@ var qmm023;
                     self.allowEditCode = ko.observable(false);
                     self.isEnableDeleteBtn = ko.observable(true);
                     self.flatDirty = true;
-                    self.isError = false;
                     self.currentTaxDirty = new nts.uk.ui.DirtyChecker(self.currentTax);
                     if (self.items.length <= 0) {
                         self.allowEditCode = ko.observable(true);
@@ -66,17 +60,24 @@ var qmm023;
                     });
                     return tax;
                 };
-                ScreenModel.prototype.CheckError = function () {
+                ScreenModel.prototype.isError = function () {
                     var self = this;
                     $('#INP_002').ntsEditor("validate");
                     $('#INP_003').ntsEditor("validate");
                     if ($('.nts-editor').ntsError("hasError")) {
-                        self.isError = true;
+                        return true;
+                    }
+                    return false;
+                };
+                ScreenModel.prototype.clearError = function () {
+                    if ($('.nts-editor').ntsError("hasError")) {
+                        $('.save-error').ntsError('clear');
                     }
                 };
                 ScreenModel.prototype.alertCheckDirty = function (oldCode, codeChanged) {
                     var self = this;
                     if (!self.currentTaxDirty.isDirty()) {
+                        self.clearError();
                         self.currentTax(ko.mapping.fromJS(self.getTax(codeChanged)));
                         self.allowEditCode(false);
                         self.isUpdate(true);
@@ -86,6 +87,7 @@ var qmm023;
                     }
                     else {
                         nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\nよろしいですか。?").ifYes(function () {
+                            self.clearError();
                             self.currentTax(ko.mapping.fromJS(self.getTax(codeChanged)));
                             self.allowEditCode(false);
                             self.isUpdate(true);
@@ -99,20 +101,15 @@ var qmm023;
                 ScreenModel.prototype.refreshLayout = function () {
                     var self = this;
                     self.allowEditCode(true);
-                    if (self.isError) {
-                        self.isError = false;
-                        $('.save-error').ntsError('clear');
-                    }
+                    self.clearError();
                     self.currentTax(ko.mapping.fromJS(new TaxModel('', '', 0)));
                     self.currentCode(null);
                     self.isUpdate(false);
                     self.isEnableDeleteBtn(false);
                     self.currentTaxDirty.reset();
-                    self.flatDirty = true;
                 };
                 ScreenModel.prototype.createButtonClick = function () {
                     var self = this;
-                    $('.save-error').ntsError('clear');
                     if (self.currentTaxDirty.isDirty()) {
                         nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\nよろしいですか。?").ifYes(function () {
                             self.refreshLayout();
@@ -126,8 +123,7 @@ var qmm023;
                 };
                 ScreenModel.prototype.insertUpdateData = function () {
                     var self = this;
-                    self.CheckError();
-                    if (self.isError) {
+                    if (self.isError()) {
                         return;
                     }
                     var newCode = ko.mapping.toJS(self.currentTax().code);

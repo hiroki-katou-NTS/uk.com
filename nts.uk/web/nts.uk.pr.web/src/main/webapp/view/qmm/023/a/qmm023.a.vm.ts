@@ -10,7 +10,6 @@ module qmm023.a.viewmodel {
         isEnableDeleteBtn: KnockoutObservable<boolean>;
         currentTaxDirty: nts.uk.ui.DirtyChecker;
         flatDirty: boolean;
-        isError: boolean;
         constructor() {
             let self = this;
             self._init();
@@ -22,18 +21,13 @@ module qmm023.a.viewmodel {
                     }
                     return;
                 }
-                self.CheckError();
-                if (self.isError) {
-                    self.isError = false;
-                    $('.save-error').ntsError('clear');
-                    return;
-                }
                 let oldCode = ko.mapping.toJS(self.currentTax().code);
                 if (ko.mapping.toJS(codeChanged) === oldCode && self.flatDirty === false) {
                     return;
                 }
 
                 if (self.flatDirty == true) {
+                    self.clearError();
                     self.currentTax(ko.mapping.fromJS(self.getTax(codeChanged)));
                     self.allowEditCode(false);
                     self.isUpdate(true);
@@ -62,7 +56,6 @@ module qmm023.a.viewmodel {
             self.allowEditCode = ko.observable(false);
             self.isEnableDeleteBtn = ko.observable(true);
             self.flatDirty = true;
-            self.isError = false;
             self.currentTaxDirty = new nts.uk.ui.DirtyChecker(self.currentTax)
             if (self.items.length <= 0) {
                 self.allowEditCode = ko.observable(true);
@@ -80,18 +73,25 @@ module qmm023.a.viewmodel {
             return tax;
         }
 
-        CheckError(): void {
+        isError(): boolean {
             let self = this;
-            //$('#INP_002').ntsEditor("validate");
-            //$('#INP_003').ntsEditor("validate");
+            $('#INP_002').ntsEditor("validate");
+            $('#INP_003').ntsEditor("validate");
             if ($('.nts-editor').ntsError("hasError")) {
-                self.isError = true;
+                return true;
+            }
+            return false;
+        }
+        clearError(): void {
+            if ($('.nts-editor').ntsError("hasError")) {
+                $('.save-error').ntsError('clear');
             }
         }
 
         alertCheckDirty(oldCode: string, codeChanged: string) {
             let self = this;
             if (!self.currentTaxDirty.isDirty()) {
+                self.clearError();
                 self.currentTax(ko.mapping.fromJS(self.getTax(codeChanged)));
                 self.allowEditCode(false);
                 self.isUpdate(true);
@@ -100,6 +100,7 @@ module qmm023.a.viewmodel {
                 self.flatDirty = false;
             } else {
                 nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\nよろしいですか。?").ifYes(function() {
+                    self.clearError();
                     self.currentTax(ko.mapping.fromJS(self.getTax(codeChanged)));
                     self.allowEditCode(false);
                     self.isUpdate(true);
@@ -114,22 +115,16 @@ module qmm023.a.viewmodel {
         refreshLayout(): void {
             let self = this;
             self.allowEditCode(true);
-            if (self.isError) {
-                self.isError = false;
-                $('.save-error').ntsError('clear');
-            }
+            self.clearError();
             self.currentTax(ko.mapping.fromJS(new TaxModel('', '', 0)));
             self.currentCode(null);
             self.isUpdate(false);
             self.isEnableDeleteBtn(false);
             self.currentTaxDirty.reset();
-            self.flatDirty = true;
-
         }
 
         createButtonClick(): void {
             let self = this;
-            $('.save-error').ntsError('clear');
             if (self.currentTaxDirty.isDirty()) {
                 nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\nよろしいですか。?").ifYes(function() {
                     self.refreshLayout();
@@ -143,8 +138,7 @@ module qmm023.a.viewmodel {
 
         insertUpdateData(): void {
             let self = this;
-            self.CheckError();
-            if (self.isError) {
+            if (self.isError()) {
                 return;
             }
             let newCode = ko.mapping.toJS(self.currentTax().code);
