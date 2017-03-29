@@ -13,7 +13,7 @@ module nts.uk.pr.view.qmm002.b {
                 self.selectedCodes = ko.observableArray([]);
                 self.messages = ko.observableArray([
                     { messageId: "AL002", message: "データを削除します。\r\nよろしいですか？" },
-                    { messageId: "ER005", message: "入力した＊は既に存在しています。\r\n＊を確認してください。" },
+                    { messageId: "ER005", message: "入力した銀行コードは既に存在しています。\r\n銀行コードを確認してください。" },
                     { messageId: "ER008", message: "選択された＊は使用されているため削除できません。" },
                     { messageId: "ER007", message: "＊が選択されていません。" }
                 ]);
@@ -24,7 +24,7 @@ module nts.uk.pr.view.qmm002.b {
                 var list = nts.uk.ui.windows.getShared('listItem');
                 self.lst_001(list);
             }
-            
+
             /**
              * close screen qmm002b
              */
@@ -64,7 +64,8 @@ module nts.uk.pr.view.qmm002.b {
                     }).fail(function(error) {
                         var messageList = self.messages();
                         if (error.messageId == messageList[2].messageId) { // ER008
-                            nts.uk.ui.dialog.alert(messageList[2].message)
+                            var messageError = nts.uk.text.format(messageList[2].message, self.selectedCodes());
+                            nts.uk.ui.dialog.alert(messageError);
                         }
                     });
                 });

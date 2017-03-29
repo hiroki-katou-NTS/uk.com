@@ -28,11 +28,11 @@ var qmm002;
                     var self = this;
                     var message = "*が選択されていません。";
                     if (!self.singleSelectedCode()) {
-                        nts.uk.ui.dialog.alert(message.replace("*", "統合元情報"));
+                        nts.uk.ui.dialog.alert(message.replace("*", "統合先情報"));
                         return;
                     }
                     if (!self.selectedCodes().length) {
-                        nts.uk.ui.dialog.alert(message.replace("*", "統合先情報"));
+                        nts.uk.ui.dialog.alert(message.replace("*", "統合元情報"));
                         return;
                     }
                     if (self.selectedCodes().length) {

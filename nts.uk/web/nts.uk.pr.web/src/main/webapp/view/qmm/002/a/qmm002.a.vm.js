@@ -35,8 +35,8 @@ var nts;
                                     self.indexlast_c_node = ko.observable();
                                     self.messages = ko.observableArray([
                                         { messageId: "ER001", message: "には未入力の必須項目の名称を表記" },
-                                        { messageId: "ER005", message: "入力した＊は既に存在しています。\r\n＊を確認してください。" },
-                                        { messageId: "ER008", message: "選択された＊は使用されているため削除できません。" },
+                                        { messageId: "ER005", message: "入力した支店コードは既に存在しています。\r\n支店コードを確認してください。" },
+                                        { messageId: "ER008", message: "選択された{0}は使用されているため削除できません。" },
                                         { messageId: "AL001", message: "変更された内容が登録されていません。\r\nよろしいですか。" },
                                         { messageId: "AL002", message: "データを削除します。\r\nよろしいですか？" },
                                         { messageId: "ER010", message: "対象データがありません。" }
@@ -73,7 +73,7 @@ var nts;
                                         option: ko.mapping.fromJS(new nts.uk.ui.option.TextEditorOption({
                                             textmode: "text",
                                             placeholder: "",
-                                            width: "180px",
+                                            width: "130px",
                                             textalign: "left"
                                         })),
                                         required: ko.observable(true),
@@ -84,9 +84,8 @@ var nts;
                                         value: ko.observable(''),
                                         constraint: 'Memo',
                                         option: ko.mapping.fromJS(new nts.uk.ui.option.MultilineEditorOption({
-                                            resizeable: true,
                                             placeholder: "",
-                                            width: "400px",
+                                            width: "460px",
                                             textalign: "left"
                                         })),
                                         required: ko.observable(true),
@@ -324,7 +323,6 @@ var nts;
                                             $('#A_INP_004').ntsError('set', messageList[0].message);
                                         }
                                         else if (error.messageId == messageList[1].messageId) {
-                                            $('#A_INP_003').ntsError('set', messageList[1].message);
                                             nts.uk.ui.dialog.alert(messageList[1].message);
                                         }
                                     });
@@ -456,7 +454,8 @@ var nts;
                                             }).fail(function (error) {
                                                 var messageList = self.messages();
                                                 if (error.messageId == messageList[2].messageId) {
-                                                    nts.uk.ui.dialog.alert(messageList[2].message);
+                                                    var messageError = nts.uk.text.format(messageList[2].message, self.currentNode().name);
+                                                    nts.uk.ui.dialog.alert(messageError);
                                                 }
                                             });
                                         });
