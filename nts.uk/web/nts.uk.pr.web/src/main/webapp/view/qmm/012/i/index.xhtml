@@ -14,15 +14,25 @@
 			<com:scriptfile path="viewmodel.js" />
 			<com:stylefile path="style.css" />
 			<com:scriptfile set="IGNITE" />
+			<com:ValidatorScript>
+			nts.uk.ctx.pr.core.dom.itemmaster.ItemCode
+			nts.uk.ctx.pr.core.dom.itemmaster.ItemName
+			nts.uk.ctx.pr.core.dom.itemmaster.itemsalary.AlRangeHigh
+			nts.uk.ctx.pr.core.dom.itemmaster.itemsalary.AlRangeLow
+			nts.uk.ctx.pr.core.dom.itemmaster.itemsalary.ErrRangeHigh
+			nts.uk.ctx.pr.core.dom.itemmaster.itemsalary.ErrRangeLow
+			</com:ValidatorScript>
 		</ui:define>
 		<ui:define name="content">
 			<div id="content-header">
-				<button id="I_BTN_001" data-bind="click:SubmitDialog"
-					class="inputNomalSize">新規</button>
-				<button id="I_BTN_002" data-bind="click:CloseDialog"
+				<button id="I_BTN_001" class="inputNomalSize"
+					data-bind="click:AddNewItem">新規</button>
+				<button id="I_BTN_002" data-bind="click:SaveItem"
 					class="proceed inputNomalSize">登録</button>
-				<button id="I_BTN_003" class=" danger inputNomalSize">削除</button>
-				<button id="I_BTN_005" class="inputNomalSize">閉じる</button>
+				<button id="I_BTN_003" data-bind="click:deleteItem"
+					class=" danger inputNomalSize">削除</button>
+				<button id="I_BTN_005" data-bind="click:CloseDialog"
+					class="inputNomalSize">閉じる</button>
 			</div>
 			<div id="contents-area">
 				<div class="nts-left-content caret-right caret-background ">
@@ -67,9 +77,9 @@
 							</div>
 							<div class="divLineCol2">
 								<input id="I_INP_002"
-									data-bind="ntsTextEditor: {value: CurrentItemBreakdownCd , enable:enable_I_INP_002}"></input>
+									data-bind="ntsTextEditor: {value: CurrentItemBreakdownCd , enable:enable_I_INP_002 , constraint : 'ItemCode'}"></input>
 								<input id="I_INP_003"
-									data-bind="ntsTextEditor: {value: CurrentItemBreakdownName}"></input>
+									data-bind="ntsTextEditor: {value: CurrentItemBreakdownName  , constraint : 'ItemName'}"></input>
 							</div>
 						</div>
 						<div class="divLine">
@@ -79,7 +89,7 @@
 							</div>
 							<div class="divLineCol2">
 								<input id="I_INP_004"
-									data-bind="ntsTextEditor: {value: CurrentItemBreakdownAbName}"></input>
+									data-bind="ntsTextEditor: {value: CurrentItemBreakdownAbName  , constraint : 'ItemName'}"></input>
 							</div>
 						</div>
 						<div class="divLine">
@@ -130,7 +140,7 @@
 							</div>
 							<div class="divLineCol2">
 								<div id="I_SEL_003"
-									data-bind="ntsCheckBox: { checked: CurrentAlRangeHighAtr, enable: enable }"></div>
+									data-bind="ntsCheckBox: { checked: checked_003, enable: enable }"></div>
 								<div id="I_INP_005" data-bind="with: currencyeditor_I_INP_005">
 									<input
 										data-bind="ntsNumberEditor: {
@@ -145,7 +155,7 @@
 							<div class="divLineCol1"></div>
 							<div class="divLineCol2">
 								<div id="I_SEL_005"
-									data-bind="ntsCheckBox: { checked: CurrentErrRangeLowAtr, enable: enable }"></div>
+									data-bind="ntsCheckBox: { checked: checked_005, enable: enable }"></div>
 								<div id="I_INP_007" data-bind="with: currencyeditor_I_INP_007">
 									<input
 										data-bind="ntsNumberEditor: {
@@ -163,7 +173,7 @@
 							</div>
 							<div class="divLineCol2 verticalAlignBottom">
 								<div id="I_SEL_004"
-									data-bind="ntsCheckBox: { checked: CurrentAlRangeHighAtr, enable: enable }"></div>
+									data-bind="ntsCheckBox: { checked: checked_004, enable: enable }"></div>
 								<div id="I_INP_006" data-bind="with: currencyeditor_I_INP_006">
 									<input
 										data-bind="ntsNumberEditor: {
@@ -178,7 +188,7 @@
 							<div class="divLineCol1"></div>
 							<div class="divLineCol2">
 								<div id="I_SEL_006"
-									data-bind="ntsCheckBox: { checked: CurrentAlRangeLowAtr, enable: enable }"></div>
+									data-bind="ntsCheckBox: { checked: checked_006, enable: enable }"></div>
 								<div id="I_INP_008" data-bind="with: currencyeditor_I_INP_008">
 									<input
 										data-bind="ntsNumberEditor: {
