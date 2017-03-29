@@ -188,29 +188,29 @@ module nts.uk.pr.view.qmm008.i {
                         model.historyId,
                         levelMasterSetting.code,
                         new PensionAvgearnValueModel(
-                            self.rounding(companyRounding, fundRateItems.salaryCompanySonExemption() * rate),
-                            self.rounding(companyRounding, fundRateItems.salaryCompanyDaughterExemption() * rate),
-                            self.rounding(companyRounding, fundRateItems.salaryCompanyUnknownExemption() * rate)),
-                        new PensionAvgearnValueModel(
                             self.rounding(companyRounding, fundRateItems.salaryCompanySonBurden() * rate),
                             self.rounding(companyRounding, fundRateItems.salaryCompanyDaughterBurden() * rate),
                             self.rounding(companyRounding, fundRateItems.salaryCompanyUnknownBurden() * rate)),
+                        new PensionAvgearnValueModel(
+                            self.rounding(companyRounding, fundRateItems.salaryCompanySonExemption() * rate),
+                            self.rounding(companyRounding, fundRateItems.salaryCompanyDaughterExemption() * rate),
+                            self.rounding(companyRounding, fundRateItems.salaryCompanyUnknownExemption() * rate)),
                         new PensionAvgearnValueModel(
                             self.rounding(companyRounding, pensionRateItems.pensionSalaryCompanySon() * rate),
                             self.rounding(companyRounding, pensionRateItems.pensionSalaryCompanyDaughter() * rate),
                             self.rounding(companyRounding, pensionRateItems.pensionSalaryCompanyUnknown() * rate)),
                         new PensionAvgearnValueModel(
-                            self.rounding(personalRounding, fundRateItems.salaryPersonalSonExemption() * rate),
-                            self.rounding(personalRounding, fundRateItems.salaryPersonalDaughterExemption() * rate),
-                            self.rounding(personalRounding, fundRateItems.salaryPersonalUnknownExemption() * rate)),
-                        new PensionAvgearnValueModel(
                             self.rounding(personalRounding, fundRateItems.salaryPersonalSonBurden() * rate),
                             self.rounding(personalRounding, fundRateItems.salaryPersonalDaughterBurden() * rate),
                             self.rounding(personalRounding, fundRateItems.salaryPersonalUnknownBurden() * rate)),
                         new PensionAvgearnValueModel(
-                            self.rounding(companyRounding, pensionRateItems.pensionSalaryPersonalSon() * rate),
-                            self.rounding(companyRounding, pensionRateItems.pensionSalaryPersonalDaughter() * rate),
-                            self.rounding(companyRounding, pensionRateItems.pensionSalaryPersonalUnknown() * rate)),
+                            self.rounding(personalRounding, fundRateItems.salaryPersonalSonExemption() * rate),
+                            self.rounding(personalRounding, fundRateItems.salaryPersonalDaughterExemption() * rate),
+                            self.rounding(personalRounding, fundRateItems.salaryPersonalUnknownExemption() * rate)),
+                        new PensionAvgearnValueModel(
+                            self.rounding(personalRounding, pensionRateItems.pensionSalaryPersonalSon() * rate),
+                            self.rounding(personalRounding, pensionRateItems.pensionSalaryPersonalDaughter() * rate),
+                            self.rounding(personalRounding, pensionRateItems.pensionSalaryPersonalUnknown() * rate)),
                         model.childContributionRate() * rate
                     );
                 }

@@ -191,12 +191,32 @@ module nts.uk.pr.view.qmm010.a {
 
             private validateData() {
                 var self = this;
-                self.clearErrorSave();
-                $("save-error").ntsEditor("validate");
+                $("#inp_code").ntsEditor("validate");
+                $("#inp_name").ntsEditor("validate");
+                $("#inp_shortName").ntsEditor("validate");
+                $("#inp_picName").ntsEditor("validate");
+                $("#inp_picPosition").ntsEditor("validate");
+                $("#inp_postalCode").ntsEditor("validate");
+                $("#inp_address1st").ntsEditor("validate");
+                $("#inp_address2nd").ntsEditor("validate");
+                $("#inp_kanaAddress2nd").ntsEditor("validate");
+                $("#inp_phoneNumber").ntsEditor("validate");
+                $("#inp_citySign").ntsEditor("validate");
+                $("#inp_officeMark").ntsEditor("validate");
+                $("#inp_officeNoA").ntsEditor("validate");
+                $("#inp_officeNoB").ntsEditor("validate");
+                $("#inp_officeNoC").ntsEditor("validate");
             }
             //Function action button save Onclick
             private saveLaborInsuranceOffice() {
                 var self = this;
+
+                self.clearErrorSave();
+                self.validateData();
+
+                if (!nts.uk.ui._viewModel.errors.isEmpty()) {
+                    return;
+                }
                 //get ismode
                 if (self.typeAction() == TypeActionLaborInsuranceOffice.add) {
                     //is mode is add
