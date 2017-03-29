@@ -13,7 +13,6 @@ public class UniteCode extends CodePrimitiveValue<UniteCode> {
 
 	public UniteCode(String rawValue) {
 		super(rawValue);
-		// TODO Auto-generated constructor stub
 	}
 
 }

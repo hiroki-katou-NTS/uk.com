@@ -66,11 +66,11 @@ public class PersonalUnitPrice extends AggregateRoot {
 		super.validate();
 		
 		if(this.personalUnitPriceCode == null || StringUtil.isNullOrEmpty(this.personalUnitPriceCode.v(), true)) { 
-			throw new BusinessException("Personal unit price code null");
+			throw new BusinessException("ER001");
 		}
 		
 		if(this.personalUnitPriceName == null || StringUtil.isNullOrEmpty(this.personalUnitPriceName.v(), true)) { 
-			throw new BusinessException("Personal unit price name null");
+			throw new BusinessException("ER001");
 		}
 	}
 	
