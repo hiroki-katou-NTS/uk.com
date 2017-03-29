@@ -333,7 +333,7 @@ module nts.uk.pr.view.qmm008.b {
             }
             
             /**
-             * Load UnitPriceHistory detail.
+             * Load History detail.
              */
             onSelectHistory(id: string): JQueryPromise<void> {
                 var self = this;
