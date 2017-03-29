@@ -189,6 +189,11 @@ module nts.uk.pr.view.qmm010.a {
                 }
             }
 
+            private validateData() {
+                var self = this;
+                self.clearErrorSave();
+                $("save-error").ntsEditor("validate");
+            }
             //Function action button save Onclick
             private saveLaborInsuranceOffice() {
                 var self = this;
@@ -484,9 +489,18 @@ module nts.uk.pr.view.qmm010.a {
 
             private searchZipCode() {
                 var self = this;
+                var messageList = [
+                    { messageId: "ER001", message: "＊が入力されていません。" },
+                    { messageId: "ER005", message: "入力した＊は既に存在しています。\r\n ＊を確認してください。" },
+                    { messageId: "ER010", message: "対象データがありません。" }
+                ];
                 nts.uk.pr.view.base.postcode.service.findPostCodeZipCodeToRespone(self.postalCode()).done(data => {
                     if (data.errorCode == '0') {
-                       $('#inp_postalCode').ntsError('set', data.message);
+                        for (var datamessage of messageList) {
+                            if (datamessage.messageId == data.message) {
+                                $('#inp_postalCode').ntsError('set', datamessage.message);
+                            }
+                        }
                     }
                     else if (data.errorCode == '1') {
                         self.setPostCode(data.postcode);
@@ -494,7 +508,11 @@ module nts.uk.pr.view.qmm010.a {
                     } else {
                         nts.uk.pr.view.base.postcode.service.findPostCodeZipCodeSelection(self.postalCode()).done(res => {
                             if (res.errorCode == '0') {
-                                $('#inp_postalCode').ntsError('set', res.message);
+                                for (var datamessage of messageList) {
+                                    if (datamessage.messageId == res.message) {
+                                        $('#inp_postalCode').ntsError('set', datamessage.message);
+                                    }
+                                }
                             }
                             else if (res.errorCode == '1') {
                                 self.setPostCode(res.postcode);

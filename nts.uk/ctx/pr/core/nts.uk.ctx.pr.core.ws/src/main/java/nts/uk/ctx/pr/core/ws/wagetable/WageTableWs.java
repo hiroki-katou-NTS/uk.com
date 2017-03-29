@@ -134,7 +134,7 @@ public class WageTableWs extends SimpleHistoryWs<WtHead, WtHistory> {
 			if (optWageTable.isPresent()) {
 				WtHead wageTableHead = optWageTable.get();
 				WtHeadDto headDto = new WtHeadDto();
-				wageTableHead.saveToMemento(headDto);
+				headDto.fromDomain(wageTableHead);
 
 				// Set demension name
 				headDto.getElements().stream().forEach(item -> {

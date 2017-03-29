@@ -54,17 +54,30 @@ module nts.uk.pr.view.qmm007.a {
             onSave(): JQueryPromise<string> {
                 var self = this;
                 var dfd = $.Deferred<string>();
+                // Clear errors.
+                self.clearError();
+                // Validate.
+                self.validate();
+                // Return if has error.
+                if (!nts.uk.ui._viewModel.errors.isEmpty()) {
+                    dfd.reject();
+                    return dfd.promise();
+                }
                 if (self.isNewMode()) {
                     service.instance.create(ko.toJS(self.unitPriceHistoryModel())).done(res => {
                         dfd.resolve(res.uuid);
                         self.dirtyChecker.reset();
                     }).fail(res => {
+                        dfd.reject();
                         self.setMessages(res.messageId);
                     });
                 } else {
                     service.instance.update(ko.toJS(self.unitPriceHistoryModel())).done((res) => {
                         dfd.resolve(self.unitPriceHistoryModel().id);
                         self.dirtyChecker.reset();
+                    }).fail(res => {
+                        dfd.reject();
+                        self.setMessages(res.messageId);
                     });
                 }
                 return dfd.promise();
@@ -102,17 +115,6 @@ module nts.uk.pr.view.qmm007.a {
             private setMessages(messageId: string): void {
                 var self = this;
                 switch (messageId) {
-                    case 'ER001':
-                        if (!self.unitPriceHistoryModel().unitPriceCode()) {
-                            $('#inpCode').ntsError('set', '＊が入力されていません。');
-                        }
-                        if (!self.unitPriceHistoryModel().unitPriceName()) {
-                            $('#inpName').ntsError('set', '＊が入力されていません。');
-                        }
-                        if (!self.unitPriceHistoryModel().budget()) {
-                            $('#inpBudget').ntsError('set', '＊が入力されていません。');
-                        }
-                        break;
                     case 'ER005':
                         $('#inpCode').ntsError('set', '入力した＊は既に存在しています。\r\n ＊を確認してください。');
                         break;
@@ -145,7 +147,17 @@ module nts.uk.pr.view.qmm007.a {
             }
 
             private clearError(): void {
-                $('.save-error').ntsError('clear');
+                $('#inpCode').ntsError('clear');
+                $('#inpName').ntsError('clear');
+                $('#inpStartMonth').ntsError('clear');
+                $('#inpBudget').ntsError('clear');
+            }
+
+            private validate(): void {
+                $('#inpCode').ntsEditor('validate');
+                $('#inpName').ntsEditor('validate');
+                $('#inpStartMonth').ntsEditor('validate');
+                $('#inpBudget').ntsEditor('validate');
             }
 
             private clearInput(): void {

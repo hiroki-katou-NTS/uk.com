@@ -149,19 +149,15 @@ module nts.uk.pr.view.qmm011.a {
 
                         // Delete callback.
                         onDeleteCallBack: (data) => {
-                            nts.uk.ui.dialog.confirm(self.messageList()[4].message).ifYes(function() {
-                                var unemployeeInsuranceDeleteDto: UnemployeeInsuranceDeleteDto;
-                                unemployeeInsuranceDeleteDto = new UnemployeeInsuranceDeleteDto();
-                                unemployeeInsuranceDeleteDto.code = data.historyId;
-                                unemployeeInsuranceDeleteDto.version = 0;
-                                service.deleteUnemployeeInsurance(unemployeeInsuranceDeleteDto).done(data => {
-                                    self.typeActionUnemployeeInsurance(TypeActionInsuranceRate.add);
-                                    self.reloadDataUnemployeeInsuranceRateByAction();
-                                }).fail(function(error) {
-                                    self.showMessageSaveUnemployeeInsurance(error.message)
-                                });
-                            }).ifNo(function() {
+                            var unemployeeInsuranceDeleteDto: UnemployeeInsuranceDeleteDto;
+                            unemployeeInsuranceDeleteDto = new UnemployeeInsuranceDeleteDto();
+                            unemployeeInsuranceDeleteDto.code = data.historyId;
+                            unemployeeInsuranceDeleteDto.version = 0;
+                            service.deleteUnemployeeInsurance(unemployeeInsuranceDeleteDto).done(data => {
+                                self.typeActionUnemployeeInsurance(TypeActionInsuranceRate.add);
                                 self.reloadDataUnemployeeInsuranceRateByAction();
+                            }).fail(function(error) {
+                                self.showMessageSaveUnemployeeInsurance(error.message)
                             });
                         },
 
@@ -336,19 +332,15 @@ module nts.uk.pr.view.qmm011.a {
 
                         // Delete callback.
                         onDeleteCallBack: (data) => {
-                            nts.uk.ui.dialog.confirm(self.messageList()[4].message).ifYes(function() {
-                                var accidentInsuranceRateDeleteDto: AccidentInsuranceRateDeleteDto;
-                                accidentInsuranceRateDeleteDto = new AccidentInsuranceRateDeleteDto();
-                                accidentInsuranceRateDeleteDto.code = data.historyId;
-                                accidentInsuranceRateDeleteDto.version = 0;
-                                service.deleteAccidentInsuranceRate(accidentInsuranceRateDeleteDto).done(data => {
-                                    self.typeActionAccidentInsurance(TypeActionInsuranceRate.add);
-                                    self.reloadDataAccidentInsuranceRateByAction();
-                                }).fail(function(error) {
-                                    self.showMessageSaveAccidentInsurance(error.messageId)
-                                });
-                            }).ifNo(function() {
+                            var accidentInsuranceRateDeleteDto: AccidentInsuranceRateDeleteDto;
+                            accidentInsuranceRateDeleteDto = new AccidentInsuranceRateDeleteDto();
+                            accidentInsuranceRateDeleteDto.code = data.historyId;
+                            accidentInsuranceRateDeleteDto.version = 0;
+                            service.deleteAccidentInsuranceRate(accidentInsuranceRateDeleteDto).done(data => {
+                                self.typeActionAccidentInsurance(TypeActionInsuranceRate.add);
                                 self.reloadDataAccidentInsuranceRateByAction();
+                            }).fail(function(error) {
+                                self.showMessageSaveAccidentInsurance(error.messageId)
                             });
                         },
 
