@@ -5,6 +5,7 @@ var qmm034;
         __viewContext.ready(function () {
             var screenModel = new a.viewmodel.ScreenModel();
             screenModel.startPage().done(function () {
+                nts.uk.ui.confirmSave(screenModel.dirtyObject);
                 __viewContext.bind(screenModel);
             });
         });
