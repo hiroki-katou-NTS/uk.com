@@ -16,16 +16,20 @@ module cmm001.a {
             let self = this;
             self.init();
             self.currentCompanyCode.subscribe(function(newValue) {
-                if (!nts.uk.text.isNullOrEmpty(newValue) && self.currentCompanyCode() !== self.previousCurrentCode) {
-                    //goi check isDirty
-                    if (self.dirtyObject.isDirty()) {
-                        nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\nよろしいですか。?").ifYes(function() {
+                if (nts.uk.text.isNullOrEmpty(newValue)) {
+                    return;
+                } else {
+                    if (!nts.uk.text.isNullOrEmpty(newValue) && self.currentCompanyCode() !== self.previousCurrentCode) {
+                        //goi check isDirty
+                        if (self.dirtyObject.isDirty()) {
+                            nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\nよろしいですか。?").ifYes(function() {
+                                self.processWhenCurrentCodeChange(newValue);
+                            }).ifCancel(function() {
+                                self.currentCompanyCode(self.previousCurrentCode);
+                            })
+                        } else {
                             self.processWhenCurrentCodeChange(newValue);
-                        }).ifCancel(function() {
-                            self.currentCompanyCode(self.previousCurrentCode);
-                        })
-                    } else {
-                        self.processWhenCurrentCodeChange(newValue);
+                        }
                     }
                 }
 
@@ -57,17 +61,24 @@ module cmm001.a {
                                 }
                             });
                             let companyCheckExist = _.find(self.sel001Data(), function(obj: CompanyModel) {
-                                let x: string = ko.toJS(obj.companyCode);
-                                let y: string = (ko.toJS(self.currentCompany().companyCode));
-                                return x === y;
+                                let newCompanyCode: string = ko.toJS(obj.companyCode);
+                                let oldCompanyCode: string = (ko.toJS(self.currentCompanyCode));
+                                return newCompanyCode === oldCompanyCode;
                             });
                             if (self.sel001Data().length > 0) {
+                                self.isUpdate(true);
                                 if (!companyCheckExist) {
-                                    self.currentCompany().companyCode(ko.toJS(self.sel001Data()[0].companyCode));
+                                    self.processWhenCurrentCodeChange(ko.toJS(self.sel001Data()[0].companyCode));
+                                    self.currentCompanyCode(ko.toJS(self.sel001Data()[0].companyCode));
+
+                                } else {
+                                    self.processWhenCurrentCodeChange(self.currentCompanyCode());
+                                    
                                 }
                             } else {
                                 self.resetData();
-                                self.isUpdate(true);
+                                self.isUpdate(false);
+
                             }
                         }
                     });
@@ -75,7 +86,7 @@ module cmm001.a {
                 $grid.igGrid("option", "columns", currentColumns);
             });
         }
-        
+
         processWhenCurrentCodeChange(newValue: string) {
             let self = this;
             service.getCompanyDetail(newValue).done(function(company: service.model.CompanyDto) {
@@ -91,7 +102,7 @@ module cmm001.a {
                 }
             });
         }
-        
+
         init(): void {
             let self = this;
             self.tabs = ko.observableArray([
@@ -107,10 +118,10 @@ module cmm001.a {
                 { headerText: '名称', prop: 'companyName', width: 200 },
                 { headerText: '廃止', prop: 'displayAttribute', width: 50, hidden: false }
             ]);
-            
+
             self.currentCompany = ko.observable(null);
             self.currentCompanyCode = ko.observable('');
-            
+
             self.sel001Data = ko.observableArray([]);
         }
 
@@ -142,7 +153,7 @@ module cmm001.a {
                             termBeginMon: 0,
                             companyUseSet: null
                         }));
-                        self.dirtyObject = new nts.uk.ui.DirtyChecker(self.currentCompany); 
+                        self.dirtyObject = new nts.uk.ui.DirtyChecker(self.currentCompany);
                         self.currentCompanyCode(self.currentCompany().companyCode());
                     } else {
                         self.currentCompanyCode(currentCode);
@@ -155,18 +166,45 @@ module cmm001.a {
             return dfd.promise();
         }
 
+        reload() {
+            let self = this;
+            let dfd = $.Deferred<any>();
+            service.getAllCompanys().done(function(data: Array<service.model.CompanyDto>) {
+                if (data.length > 0) {
+                    self.isUpdate(true);
+                    _.each(data, function(obj: service.model.CompanyDto) {
+                        let companyModel: CompanyModel;
+                        companyModel = ko.mapping.fromJS(obj);
+                        if (obj.displayAttribute === 1) {
+                            companyModel.displayAttribute('<i style="margin-left: 15px" class="icon icon-close"></i>');
+                        } else {
+                            companyModel.displayAttribute('');
+                        }
+                        self.sel001Data.push(ko.toJS(companyModel));
+                    });
+                    self.dirtyObject = new nts.uk.ui.DirtyChecker(self.currentCompany);
+                    self.currentCompanyCode(self.currentCompany().companyCode());
+                } else {
+                    self.isUpdate(false);
+                }
+                dfd.resolve();
+            });
+            return dfd.promise();
+        }
+
         resetData() {
             let self = this;
-            self.currentCompany().companyCode(null);
+            self.currentCompanyCode("");
+            self.currentCompany().companyCode("");
             self.currentCompany().address1("");
             self.currentCompany().addressKana1("");
             self.currentCompany().address2("");
             self.currentCompany().addressKana2("");
             self.currentCompany().companyName("");
             self.currentCompany().companyNameGlobal("");
-            self.currentCompany().companyNameAbb('');
-            self.currentCompany().companyNameKana('');
-            self.currentCompany().corporateMyNumber('');
+            self.currentCompany().companyNameAbb("");
+            self.currentCompany().companyNameKana("");
+            self.currentCompany().corporateMyNumber("");
             self.currentCompany().companyUseSet(new CompanyUseSet(0, 0, 0));
             self.currentCompany().depWorkPlaceSet(0);
             self.currentCompany().displayAttribute('');
@@ -183,8 +221,9 @@ module cmm001.a {
             self.currentCompany().isDelete(true);
             self.currentCompany().editMode = true;
             self.currentCompany().isEnableCompanyCode(true);
-            self.currentCompany().hasFocus(true);
             self.isUpdate(false);
+            self.dirtyObject.reset();
+            self.currentCompany().hasFocus(true);
         }
 
         clickRegister() {
@@ -203,18 +242,62 @@ module cmm001.a {
             }
             let company: service.model.CompanyDto =
                 new service.model.CompanyDto("", "", "", "", "", "", "", "", "", 0, 0, "", "", "", "", "", 0, 0, 0, 0);
-            
+
             company = self.convertCompanyDto(currentCompany);
-            if (self.isUpdate()) {
-                cmm001.a.service.updateData(company).done(function() {
-                    self.sel001Data([]);
-                    self.start(company.companyCode);
-                });
+            if (self.checked()) {
+                if (self.isUpdate()) {
+                    cmm001.a.service.updateData(company).done(function() {
+                        self.sel001Data([]);
+                        self.reload();
+                    });
+                } else {
+                    cmm001.a.service.addData(company).done(function() {
+                        self.sel001Data([]);
+                        self.reload();
+                    })
+                }
             } else {
-                cmm001.a.service.addData(company).done(function() {
-                    self.sel001Data([]);
-                    self.start(company.companyCode);
-                })
+                if (self.isUpdate()) {
+                    cmm001.a.service.updateData(company).done(function() {
+                        self.sel001Data([]);
+                        service.getAllCompanys().done(function(data: Array<service.model.CompanyDto>) {
+                            if (data.length > 0) {
+                                _.each(data, function(obj: service.model.CompanyDto) {
+                                    let companyModel: CompanyModel;
+                                    companyModel = ko.mapping.fromJS(obj);
+                                    if (obj.displayAttribute === 0) {
+                                        companyModel.displayAttribute('');
+                                        self.sel001Data.push(ko.toJS(companyModel));
+                                    }
+                                });
+                            }
+                        });
+                        console.log(self.sel001Data());
+                        self.processWhenCurrentCodeChange(ko.toJS(self.sel001Data()[0].companyCode));
+                        self.currentCompanyCode(self.currentCompany().companyCode());
+                    });
+                } else {
+                    cmm001.a.service.addData(company).done(function() {
+                        self.sel001Data([]);
+                        service.getAllCompanys().done(function(data: Array<service.model.CompanyDto>) {
+                            if (data.length > 0) {
+                                _.each(data, function(obj: service.model.CompanyDto) {
+                                    let companyModel: CompanyModel;
+                                    companyModel = ko.mapping.fromJS(obj);
+                                    if (obj.displayAttribute === 0) {
+                                        companyModel.displayAttribute('');
+                                        self.sel001Data.push(ko.toJS(companyModel));
+                                    }
+                                });
+                            }
+                        });
+                        console.log(self.sel001Data());
+                        self.processWhenCurrentCodeChange(ko.toJS(self.sel001Data()[0].companyCode));
+                        //self.currentCompanyCode(ko.toJS(self.sel001Data()[0].companyCode));
+                    })
+                }
+
+
             }
         }
         convertCompanyDto(company: CompanyModel): service.model.CompanyDto {
