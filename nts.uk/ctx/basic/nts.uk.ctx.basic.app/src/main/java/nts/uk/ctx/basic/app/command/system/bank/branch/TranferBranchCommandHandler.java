@@ -2,11 +2,15 @@ package nts.uk.ctx.basic.app.command.system.bank.branch;
 
 import java.util.List;
 import java.util.stream.Collectors;
+
 import javax.ejb.Stateless;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
+
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.uk.ctx.basic.dom.system.bank.linebank.LineBank;
+import nts.uk.ctx.basic.dom.system.bank.linebank.LineBankRepository;
 import nts.uk.ctx.basic.dom.system.bank.personaccount.PersonBankAccount;
 import nts.uk.ctx.basic.dom.system.bank.personaccount.PersonBankAccountRepository;
 import nts.uk.ctx.basic.dom.system.bank.personaccount.PersonUseSetting;
@@ -23,6 +27,9 @@ public class TranferBranchCommandHandler  extends CommandHandler<TranferBranchCo
 	@Inject
 	private PersonBankAccountRepository personBankAccountRepository;
 	
+	@Inject 
+	private LineBankRepository lineBankRepository;
+	
 	@Override
 	protected void handle(CommandHandlerContext<TranferBranchCommand> context) {
 		// get company code
@@ -33,6 +40,12 @@ public class TranferBranchCommandHandler  extends CommandHandler<TranferBranchCo
 		
 		// get person bank account by list of branch id
 		List<PersonBankAccount> listPersonBankAcc = personBankAccountRepository.findAllBranch(companyCode, command.getBranchId());
+		
+		// get line bank by list of branch id
+		List<LineBank> listLineBank = lineBankRepository.find(companyCode, command.getBranchId());
+		if (!listLineBank.isEmpty()) {
+			lineBankRepository.updateByBranch(companyCode, command.getBranchId(), command.getBranchNewId());
+		}
 		
 		command.getBranchId().forEach(item -> {
 			// get person bank account by branch id
