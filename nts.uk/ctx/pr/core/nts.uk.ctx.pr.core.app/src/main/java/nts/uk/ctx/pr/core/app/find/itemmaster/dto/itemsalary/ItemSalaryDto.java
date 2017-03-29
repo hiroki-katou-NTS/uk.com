@@ -32,7 +32,7 @@ public class ItemSalaryDto {
 	private String memo;
 	private int limitMnyAtr;
 	private String limitMnyRefItemCd;
-	private Long limitMny;
+	private BigDecimal limitMny;
 
 	public static ItemSalaryDto fromDomain(ItemSalary domain) {
 

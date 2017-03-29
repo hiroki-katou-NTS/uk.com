@@ -173,7 +173,7 @@ var nts;
             }
             util.isIn = isIn;
             ;
-            function createTreeFromString(original, openChar, closeChar, seperatorChar) {
+            function createTreeFromString(original, openChar, closeChar, seperatorChar, operatorChar) {
                 return convertToTree(original, openChar, closeChar, seperatorChar, 1).result;
             }
             util.createTreeFromString = createTreeFromString;
@@ -224,7 +224,10 @@ var nts;
                         }
                     }
                 }
-                return result;
+                return {
+                    "result": result,
+                    "index": index
+                };
             }
             function findIndexOfCloseChar(original, openChar, closeChar, firstOpenIndex) {
                 var openCount = 0;
@@ -4632,7 +4635,7 @@ var nts;
                         selected: function (event, ui) {
                         },
                         stop: function (event, ui) {
-                            // Add selected value. 
+                            // Add selected value.
                             var data = [];
                             $("li.ui-selected", $target).each(function (index, opt) {
                                 data[index] = $(opt).data('value');
@@ -6252,7 +6255,7 @@ var nts;
                         var container = $(element);
                         var newValue = ko.unwrap(data.value);
                         var dateFormat = (data.dateFormat !== undefined) ? ko.unwrap(data.dateFormat) : "yyyy/MM/dd";
-                        var disabled = (data.disabled !== undefined) ? ko.unwrap(data.disabled) : true;
+                        var disabled = (data.disabled !== undefined) ? ko.unwrap(data.disabled) : false;
                         var idatr = container.attr("id");
                         var $input = container.find('#' + idatr + "-input");
                         var formatOptions = container.data("format");

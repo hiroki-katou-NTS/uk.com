@@ -2,7 +2,7 @@ package nts.uk.ctx.pr.core.app.find.itemmaster.itemdeductperiod;
 
 import java.util.Optional;
 
-import javax.enterprise.context.RequestScoped;
+import javax.ejb.Stateless;
 import javax.inject.Inject;
 
 import nts.uk.ctx.pr.core.app.find.itemmaster.dto.itemdeductperiod.ItemDeductPeriodDto;
@@ -10,7 +10,7 @@ import nts.uk.ctx.pr.core.dom.itemmaster.itemdeductperiod.ItemDeductPeriod;
 import nts.uk.ctx.pr.core.dom.itemmaster.itemdeductperiod.ItemDeductPeriodRepository;
 import nts.uk.shr.com.context.AppContexts;
 
-@RequestScoped
+@Stateless
 public class ItemDeductPeriodFinder {
 
 	@Inject

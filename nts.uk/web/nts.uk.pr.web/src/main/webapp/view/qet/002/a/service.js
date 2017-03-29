@@ -7,7 +7,6 @@ var qet002;
             var servicePath = {
                 printService: "/screen/pr/qet002/generate",
             };
-            // Print Report Service
             function printService(query) {
                 var dfd = $.Deferred();
                 var accquery = {

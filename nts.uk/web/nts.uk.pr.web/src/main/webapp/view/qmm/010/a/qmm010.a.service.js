@@ -20,48 +20,33 @@ var nts;
                                 deleteLaborInsuranceOffice: "ctx/pr/core/insurance/labor/delete",
                                 findAllSocialInsuranceOffice: "pr/insurance/social/findall/detail"
                             };
-                            //Function connection service FindAll Labor Insurance Office
                             function findAllLaborInsuranceOffice() {
-                                //call service server 
                                 return nts.uk.request.ajax(paths.findAllLaborInsuranceOffice);
                             }
                             service.findAllLaborInsuranceOffice = findAllLaborInsuranceOffice;
-                            //Function connection service FindAll Social Insurance Office Service
                             function findAllSocialInsuranceOffice() {
-                                //set respone
                                 return nts.uk.request.ajax(paths.findAllSocialInsuranceOffice);
                             }
                             service.findAllSocialInsuranceOffice = findAllSocialInsuranceOffice;
-                            //Function connection service findLaborInsuranceOffice By Code
                             function findLaborInsuranceOffice(officeCode) {
                                 return nts.uk.request.ajax(paths.findLaborInsuranceOffice + "/" + officeCode);
                             }
                             service.findLaborInsuranceOffice = findLaborInsuranceOffice;
-                            //Function connection service add LaborInsuranceOffice
                             function addLaborInsuranceOffice(laborInsuranceOfficeDto) {
-                                //set up data request
                                 var data = { laborInsuranceOfficeDto: laborInsuranceOfficeDto };
-                                //call service server
                                 return nts.uk.request.ajax(paths.addLaborInsuranceOffice, data);
                             }
                             service.addLaborInsuranceOffice = addLaborInsuranceOffice;
-                            //Function connection service update LaborInsuranceOffice
                             function updateLaborInsuranceOffice(laborInsuranceOfficeDto) {
-                                //set up data request
                                 var data = { laborInsuranceOfficeDto: laborInsuranceOfficeDto };
-                                //call service server
                                 return nts.uk.request.ajax(paths.updateLaborInsuranceOffice, data);
                             }
                             service.updateLaborInsuranceOffice = updateLaborInsuranceOffice;
-                            //Function connection service delete LaborInsuranceOffice  
                             function deleteLaborInsuranceOffice(laborInsuranceOfficeDeleteDto) {
-                                //set up data request
                                 var data = { laborInsuranceOfficeDeleteDto: laborInsuranceOfficeDeleteDto };
-                                //call service server
                                 return nts.uk.request.ajax(paths.deleteLaborInsuranceOffice, data);
                             }
                             service.deleteLaborInsuranceOffice = deleteLaborInsuranceOffice;
-                            /*Model namespace. LaborInsuranceOfficeDto*/
                             var model;
                             (function (model) {
                                 var LaborInsuranceOfficeDto = (function () {
@@ -95,3 +80,4 @@ var nts;
         })(pr = uk.pr || (uk.pr = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+//# sourceMappingURL=qmm010.a.service.js.map

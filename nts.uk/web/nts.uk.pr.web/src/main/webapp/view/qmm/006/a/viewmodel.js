@@ -139,7 +139,6 @@ var qmm006;
                     };
                     qmm006.a.service.saveData(self.isInp001Enable(), command)
                         .done(function () {
-                        //load lai list va chi vao row moi them
                         $.when(self.findAll()).done(function () {
                             self.dirty = new nts.uk.ui.DirtyChecker(self.currentLineBank);
                             self.currentCode(command.lineBankCode);
@@ -175,7 +174,6 @@ var qmm006;
                 };
                 ScreenModel.prototype.remove = function () {
                     var self = this;
-                    //"データを削除します。\r\nよろしいですか？"---AL002
                     nts.uk.ui.dialog.confirm("データを削除します。\r\nよろしいですか？")
                         .ifYes(function () {
                         var command = {
