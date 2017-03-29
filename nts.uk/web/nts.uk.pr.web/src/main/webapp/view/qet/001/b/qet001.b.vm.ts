@@ -135,6 +135,8 @@ module qet001.b.viewmodel {
                 nts.uk.ui.dialog.confirm('変更された内容が登録されていません。\r\nよろしいですか。').ifYes(function() {
                     nts.uk.ui.windows.close();
                 });
+            } else {
+                nts.uk.ui.windows.close();
             }
         }
         
@@ -147,16 +149,10 @@ module qet001.b.viewmodel {
             $('#code-input').ntsError('clear');
             $('#name-input').ntsError('clear');
             // Validate.
-            var hasError = false;
-            if (self.outputSettingDetail().settingCode() == '') {
-                $('#code-input').ntsError('set', 'コードが入力されていません。');
-                hasError = true;
-            }
-            if(self.outputSettingDetail().settingName() == '') {
-                $('#name-input').ntsError('set', '名称が入力されていません。');
-                hasError = true;
-            }
-            if(hasError) {
+            $('#code-input').ntsEditor('validate');
+            $('#name-input').ntsEditor('validate');
+            // Check has error.
+            if(!nts.uk.ui._viewModel.errors.isEmpty()) {
                 return;
             }
             var currentSelectedCode = self.outputSettings().outputSettingSelectedCode();
@@ -166,8 +162,7 @@ module qet001.b.viewmodel {
                     self.loadAllOutputSetting();
                 })
             }).fail(function(res) {
-                // TODO: Show message duplicate code.
-                nts.uk.ui.dialog.alert(res.message);
+                $('#code-input').ntsError('set', res.message);
             })
         }
         
@@ -266,6 +261,9 @@ module qet001.b.viewmodel {
          * Switch to create mode.
          */
         public switchToCreateMode() {
+            // clear error.
+            $('#code-input').ntsError('clear');
+            $('#name-input').ntsError('clear');
             // Dirty check.
             var self = this;
             if (self.dirty.isDirty()) {

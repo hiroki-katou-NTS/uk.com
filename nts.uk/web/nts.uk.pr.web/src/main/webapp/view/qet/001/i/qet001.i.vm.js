@@ -107,23 +107,16 @@ var qet001;
                     var self = this;
                     $('#code-input').ntsError('clear');
                     $('#name-input').ntsError('clear');
-                    var hasError = false;
-                    if (self.aggregateItemDetail().code() == '') {
-                        $('#code-input').ntsError('set', 'コードが入力されていません。');
-                        hasError = true;
-                    }
-                    if (self.aggregateItemDetail().name() == '') {
-                        $('#name-input').ntsError('set', '名称が入力されていません。');
-                        hasError = true;
-                    }
-                    if (hasError) {
+                    $('#code-input').ntsEditor('validate');
+                    $('#name-input').ntsEditor('validate');
+                    if (!nts.uk.ui._viewModel.errors.isEmpty()) {
                         return;
                     }
                     i.service.save(self.aggregateItemDetail()).done(function () {
                         nts.uk.ui.dialog.alert('Save success!');
                         self.loadAggregateItemByCategory();
                     }).fail(function (res) {
-                        nts.uk.ui.dialog.alert(res.message);
+                        $('#code-input').ntsError('set', res.message);
                     });
                 };
                 AggregateCategory.prototype.remove = function () {
@@ -154,6 +147,9 @@ var qet001;
                         nts.uk.ui.dialog.confirm('変更された内容が登録されていません。\r\nよろしいですか。').ifYes(function () {
                             nts.uk.ui.windows.close();
                         });
+                    }
+                    else {
+                        nts.uk.ui.windows.close();
                     }
                 };
                 AggregateCategory.prototype.setStyle = function () {

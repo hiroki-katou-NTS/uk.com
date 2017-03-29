@@ -76,16 +76,10 @@ module qet001.a.viewmodel {
         public print() {
             // Clear error.
             $('#target-year-input').ntsError('clear');
-            
-            // Validate.
+            $('#target-year-input').ntsEditor('validate')
             var self = this;
-            var hasError = false;
-            if (self.targetYear() == null || self.targetYear().toString() == '') {
-                $('#target-year-input').ntsError('set','対象年度が入力されていません。')
-                hasError == true;
-            }
             // TODO: Check employee list.
-            if (hasError) {
+            if (!nts.uk.ui._viewModel.errors.isEmpty()) {
                 return;
             }
             // Print.

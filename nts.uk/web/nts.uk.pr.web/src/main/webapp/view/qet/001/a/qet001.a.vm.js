@@ -53,13 +53,9 @@ var qet001;
                 };
                 ScreenModel.prototype.print = function () {
                     $('#target-year-input').ntsError('clear');
+                    $('#target-year-input').ntsEditor('validate');
                     var self = this;
-                    var hasError = false;
-                    if (self.targetYear() == null || self.targetYear().toString() == '') {
-                        $('#target-year-input').ntsError('set', '対象年度が入力されていません。');
-                        hasError == true;
-                    }
-                    if (hasError) {
+                    if (!nts.uk.ui._viewModel.errors.isEmpty()) {
                         return;
                     }
                     a.service.printReport(self).done(function () { }).fail(function (res) {
