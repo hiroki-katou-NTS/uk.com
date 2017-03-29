@@ -75,18 +75,21 @@ module nts.uk.pr.view.qmm008.e {
                 self.dirty = new nts.uk.ui.DirtyChecker(ko.observable(''));
 
                 self.selectedOfficeCode.subscribe(function(selectedOfficeCode: string) {
-                    if (self.dirty.isDirty()&&self.showConfirmDialog() && selectedOfficeCode!= self.previousSelectedOfficeCode()) {
-                        nts.uk.ui.dialog.confirm(self.errorList()[4].message).ifYes(function() {
-                            self.showConfirmDialog(false);
-                            self.dirty.reset();
-                            self.loadItemOffice(selectedOfficeCode);
-                        }).ifCancel(function() {
-                            self.selectedOfficeCode(self.previousSelectedOfficeCode());
-                        });
-                    }
-                    else {
-                        if (selectedOfficeCode != self.previousSelectedOfficeCode()) {
-                            self.loadItemOffice(selectedOfficeCode);
+                    if (selectedOfficeCode!='') {
+                        if (self.dirty.isDirty() && self.showConfirmDialog() && selectedOfficeCode != self.previousSelectedOfficeCode()) {
+                            nts.uk.ui.dialog.confirm(self.errorList()[4].message).ifYes(function() {
+                                self.showConfirmDialog(false);
+                                self.dirty.reset();
+                                self.loadItemOffice(selectedOfficeCode);
+                            }).ifCancel(function() {
+                                self.selectedOfficeCode(self.previousSelectedOfficeCode());
+                            });
+                        }
+                        else {
+                            if (selectedOfficeCode != self.previousSelectedOfficeCode()) {
+                                self.dirty.reset();
+                                self.loadItemOffice(selectedOfficeCode);
+                            }
                         }
                     }
                 });
@@ -195,6 +198,7 @@ module nts.uk.pr.view.qmm008.e {
             //save (mode: update or create new)
             public save() {
                 var self = this;
+                self.dirty.reset();
                 //if update office
                 if (!self.enabled())
                     self.updateOffice();
@@ -245,6 +249,7 @@ module nts.uk.pr.view.qmm008.e {
             private removeWithDirtyCheck() {
                 var self = this;
                 nts.uk.ui.dialog.confirm(self.errorList()[5].message).ifYes(function() {
+                    self.dirty.reset();
                     self.remove();
                 }).ifCancel(function() {
                 });
@@ -351,6 +356,8 @@ module nts.uk.pr.view.qmm008.e {
                 self.deleteButtonControll(false);
                 //reset selected officeCode
                 self.selectedOfficeCode('');
+                self.showConfirmDialog(false);
+                self.previousSelectedOfficeCode('');
             }
             
             closeDialogWithDirtyCheck() {

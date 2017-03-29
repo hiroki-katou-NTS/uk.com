@@ -10,7 +10,7 @@
 							data-bind="click: openEditUnemployeeInsuranceRateHistory,enable: isEnableEditUnemployeeInsurance">履歴編集</button>
 					</div>
 
-					<div class="list-box" id="list-box1"
+					<div class="list-box" id="unemployeeInsuranceList"
 						data-bind="ntsListBox: {
 							options: lstUnemployeeInsuranceRateHistory,
 							primaryKey: 'historyId',
@@ -21,7 +21,7 @@
 							rows: 10,
 							required: true,
 							columns: [
-								{ key: 'inforMonthRage', length: 10 }
+								{key: 'inforMonthRage', length: 10 }
 							]}"></div>
 				</td>
 				<td id="contents-right"

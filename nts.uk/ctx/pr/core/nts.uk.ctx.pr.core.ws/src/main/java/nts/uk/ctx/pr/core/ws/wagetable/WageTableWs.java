@@ -125,10 +125,10 @@ public class WageTableWs extends SimpleHistoryWs<WtHead, WtHistory> {
 
 		// Check exsit.
 		if (optWageTableHistory.isPresent()) {
-			WtHistory wageTableHistory = optWageTableHistory.get();
+			WtHistory wtHistory = optWageTableHistory.get();
 
-			Optional<WtHead> optWageTable = this.wtHeadRepo.findByCode(
-					wageTableHistory.getCompanyCode(), wageTableHistory.getWageTableCode().v());
+			Optional<WtHead> optWageTable = this.wtHeadRepo.findByCode(wtHistory.getCompanyCode(),
+					wtHistory.getWageTableCode().v());
 
 			// Check exsit.
 			if (optWageTable.isPresent()) {
@@ -150,7 +150,12 @@ public class WageTableWs extends SimpleHistoryWs<WtHead, WtHistory> {
 					Collectors.toMap(WtElementDto::getDemensionNo, WtElementDto::getDemensionName));
 
 			WtHistoryDto historyDto = new WtHistoryDto();
-			historyDto.fromDomain(wageTableHistory);
+
+			// Get current setting with exist items.
+			List<ElementSetting> currentSettings = elementItemFactory.generate(companyCode,
+					wtHistory.getHistoryId(), wtHistory.getElementSettings());
+
+			historyDto.fromDomain(wtHistory, currentSettings);
 
 			// Set demension name
 			historyDto.getElements().stream().forEach(item -> {

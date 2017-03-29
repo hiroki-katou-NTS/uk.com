@@ -51,18 +51,21 @@ var nts;
                                     ]);
                                     self.dirty = new nts.uk.ui.DirtyChecker(ko.observable(''));
                                     self.selectedOfficeCode.subscribe(function (selectedOfficeCode) {
-                                        if (self.dirty.isDirty() && self.showConfirmDialog() && selectedOfficeCode != self.previousSelectedOfficeCode()) {
-                                            nts.uk.ui.dialog.confirm(self.errorList()[4].message).ifYes(function () {
-                                                self.showConfirmDialog(false);
-                                                self.dirty.reset();
-                                                self.loadItemOffice(selectedOfficeCode);
-                                            }).ifCancel(function () {
-                                                self.selectedOfficeCode(self.previousSelectedOfficeCode());
-                                            });
-                                        }
-                                        else {
-                                            if (selectedOfficeCode != self.previousSelectedOfficeCode()) {
-                                                self.loadItemOffice(selectedOfficeCode);
+                                        if (selectedOfficeCode != '') {
+                                            if (self.dirty.isDirty() && self.showConfirmDialog() && selectedOfficeCode != self.previousSelectedOfficeCode()) {
+                                                nts.uk.ui.dialog.confirm(self.errorList()[4].message).ifYes(function () {
+                                                    self.showConfirmDialog(false);
+                                                    self.dirty.reset();
+                                                    self.loadItemOffice(selectedOfficeCode);
+                                                }).ifCancel(function () {
+                                                    self.selectedOfficeCode(self.previousSelectedOfficeCode());
+                                                });
+                                            }
+                                            else {
+                                                if (selectedOfficeCode != self.previousSelectedOfficeCode()) {
+                                                    self.dirty.reset();
+                                                    self.loadItemOffice(selectedOfficeCode);
+                                                }
                                             }
                                         }
                                     });
@@ -152,6 +155,7 @@ var nts;
                                 };
                                 ScreenModel.prototype.save = function () {
                                     var self = this;
+                                    self.dirty.reset();
                                     if (!self.enabled())
                                         self.updateOffice();
                                     else {
@@ -190,6 +194,7 @@ var nts;
                                 ScreenModel.prototype.removeWithDirtyCheck = function () {
                                     var self = this;
                                     nts.uk.ui.dialog.confirm(self.errorList()[5].message).ifYes(function () {
+                                        self.dirty.reset();
                                         self.remove();
                                     }).ifCancel(function () {
                                     });
@@ -257,6 +262,8 @@ var nts;
                                     self.enabled(true);
                                     self.deleteButtonControll(false);
                                     self.selectedOfficeCode('');
+                                    self.showConfirmDialog(false);
+                                    self.previousSelectedOfficeCode('');
                                 };
                                 ScreenModel.prototype.closeDialogWithDirtyCheck = function () {
                                     var self = this;

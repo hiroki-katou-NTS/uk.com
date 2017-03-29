@@ -17,65 +17,99 @@ var nts;
                     (function (a) {
                         var history;
                         (function (history_1) {
-                            var TwoDemensionViewModel = (function (_super) {
-                                __extends(TwoDemensionViewModel, _super);
-                                function TwoDemensionViewModel(history) {
-                                    _super.call(this, 'history/twodemension.xhtml', history);
-                                    this.igGridDataSource = ko.observableArray([]);
+                            var ThreeDemensionViewModel = (function (_super) {
+                                __extends(ThreeDemensionViewModel, _super);
+                                function ThreeDemensionViewModel(history) {
+                                    _super.call(this, 'history/threedemension.xhtml', history);
+                                    var self = this;
+                                    self.igGridDataSource = ko.observableArray([]);
+                                    self.element3Name = ko.observable('');
+                                    self.element3Items = ko.observableArray([]);
+                                    self.selectedElement3ItemId = ko.observable(undefined);
+                                    self.datasourceMap = [];
+                                    self.selectedElement3ItemId.subscribe(function (id) {
+                                        if (id && self.datasourceMap[id]) {
+                                            ko.cleanNode($('#dataTable').get(0));
+                                            self.initIgGrid(self.datasourceMap[id]);
+                                        }
+                                    });
                                 }
-                                TwoDemensionViewModel.prototype.onLoad = function () {
+                                ThreeDemensionViewModel.prototype.onLoad = function () {
                                     var self = this;
                                     var history = self.history;
                                     if (history.valueItems && history.valueItems.length > 0) {
-                                        var element = history.elements[0];
-                                        var secondElement = history.elements[1];
-                                        var itemVmList = _.map(element.itemList, function (item) {
-                                            var vm = new ItemViewModel(element.type, item);
-                                            var valueItemMap = [];
-                                            _.filter(history.valueItems, function (vi) { return vi.element1Id == item.uuid; })
-                                                .forEach(function (vi) { valueItemMap[vi.element2Id] = vi; });
-                                            secondElement.itemList.forEach(function (item2) {
-                                                vm[item2.uuid] = ko.observable(valueItemMap[item2.uuid].amount);
+                                        var element1 = history.elements[0];
+                                        var element2 = history.elements[1];
+                                        var element3 = history.elements[2];
+                                        element3.itemList.forEach(function (item3) {
+                                            var itemVmList = _.map(element1.itemList, function (item) {
+                                                var vm = new ItemViewModel(element1.type, item);
+                                                var valueItemMap = [];
+                                                _.filter(history.valueItems, function (vi) { return vi.element1Id == item.uuid && vi.element3Id == item3.uuid; })
+                                                    .forEach(function (vi) { valueItemMap[vi.element2Id] = vi; });
+                                                element2.itemList.forEach(function (item2) {
+                                                    vm[item2.uuid] = ko.observable(valueItemMap[item2.uuid].amount);
+                                                });
+                                                return vm;
                                             });
-                                            return vm;
+                                            self.datasourceMap[item3.uuid] = itemVmList;
                                         });
+                                        self.buildElement3Infomation();
                                     }
-                                    self.initIgGrid(itemVmList);
                                 };
-                                TwoDemensionViewModel.prototype.onRefreshElement = function () {
+                                ThreeDemensionViewModel.prototype.onRefreshElement = function () {
                                     var self = this;
-                                    var firstEl = self.elementSettings[0];
-                                    var secondEl = self.elementSettings[1];
-                                    var dataSource = [];
-                                    firstEl.itemList.forEach(function (firstItem) {
-                                        var vm = new ItemViewModel(firstEl.type, firstItem);
-                                        secondEl.itemList.forEach(function (secondItem) {
-                                            vm[secondItem.uuid] = ko.observable(0);
+                                    self.datasourceMap = [];
+                                    self.elementSettings[2].itemList.forEach(function (item3) {
+                                        var firstEl = self.elementSettings[0];
+                                        var secondEl = self.elementSettings[1];
+                                        var dataSource = [];
+                                        firstEl.itemList.forEach(function (firstItem) {
+                                            var vm = new ItemViewModel(firstEl.type, firstItem);
+                                            secondEl.itemList.forEach(function (secondItem) {
+                                                vm[secondItem.uuid] = ko.observable(0);
+                                            });
+                                            dataSource.push(vm);
                                         });
-                                        dataSource.push(vm);
+                                        self.datasourceMap[item3.uuid] = dataSource;
                                     });
-                                    self.initIgGrid(dataSource);
+                                    self.buildElement3Infomation();
                                 };
-                                TwoDemensionViewModel.prototype.getCellItem = function () {
+                                ThreeDemensionViewModel.prototype.getCellItem = function () {
                                     var self = this;
                                     var firstEl = self.elementSettings[0];
                                     var secondEl = self.elementSettings[1];
+                                    var thirdEl = self.elementSettings[2];
                                     var result = new Array();
-                                    self.igGridDataSource().forEach(function (data) {
-                                        secondEl.itemList.forEach(function (item) {
-                                            var dto = {};
-                                            dto.element1Id = data['uuid']();
-                                            dto.element2Id = item.uuid;
-                                            dto.amount = data[item.uuid]();
-                                            result.push(dto);
-                                        });
+                                    thirdEl.itemList.forEach(function (item3) {
+                                        if (self.datasourceMap[item3.uuid]) {
+                                            self.datasourceMap[item3.uuid].forEach(function (vm) {
+                                                secondEl.itemList.forEach(function (item2) {
+                                                    var dto = {};
+                                                    dto.element1Id = vm['uuid']();
+                                                    dto.element2Id = item2.uuid;
+                                                    dto.element3Id = item3.uuid;
+                                                    dto.amount = vm[item2.uuid]();
+                                                    result.push(dto);
+                                                });
+                                            });
+                                        }
                                     });
                                     return result;
                                 };
-                                TwoDemensionViewModel.prototype.pasteFromExcel = function () {
+                                ThreeDemensionViewModel.prototype.pasteFromExcel = function () {
                                     return;
                                 };
-                                TwoDemensionViewModel.prototype.initIgGrid = function (data) {
+                                ThreeDemensionViewModel.prototype.buildElement3Infomation = function () {
+                                    var self = this;
+                                    self.element3Items(_.map(self.elementSettings[2].itemList, function (item) {
+                                        item.name = item.displayName;
+                                        return item;
+                                    }));
+                                    self.selectedElement3ItemId(self.elementSettings[2].itemList[0].uuid);
+                                    self.element3Name(self.elementSettings[2].demensionName);
+                                };
+                                ThreeDemensionViewModel.prototype.initIgGrid = function (data) {
                                     var self = this;
                                     ko.cleanNode($('#dataTable').get(0));
                                     var columns = [];
@@ -128,9 +162,9 @@ var nts;
                                         ko.applyBindingsToNode($('#dataTable').get(0), { igGrid: self.igGrid });
                                     }
                                 };
-                                return TwoDemensionViewModel;
+                                return ThreeDemensionViewModel;
                             }(history_1.base.BaseHistoryViewModel));
-                            history_1.TwoDemensionViewModel = TwoDemensionViewModel;
+                            history_1.ThreeDemensionViewModel = ThreeDemensionViewModel;
                             var ItemViewModel = (function () {
                                 function ItemViewModel(type, item) {
                                     var self = this;
@@ -146,4 +180,4 @@ var nts;
         })(pr = uk.pr || (uk.pr = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
-//# sourceMappingURL=qmm016.a.history.twodemension.js.map
+//# sourceMappingURL=qmm016.a.history.threedemension.js.map

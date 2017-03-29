@@ -307,11 +307,17 @@ module nts.uk.pr.view.qmm008.c {
 
             public save() {
                 var self = this;
-                //TODO check auto calculate
-                iservice.updatePensionAvgearn(self.collectData(), self.pensionCollectData().officeCode);
-                //update pension
-                service.updatePensionRate(self.pensionCollectData()).done(function() {
-                });
+                //check auto calculate
+                if (self.pensionModel().autoCalculate() == AutoCalculateType.Auto) {
+                    nts.uk.ui.dialog.confirm("自動計算が行われます。登録しますか？").ifYes(function() {
+                        self.dirty = new nts.uk.ui.DirtyChecker(self.pensionModel);
+                        iservice.updatePensionAvgearn(self.collectData(), self.pensionCollectData().officeCode);
+                        //update pension
+                        service.updatePensionRate(self.pensionCollectData()).done(function() {
+                        });
+                    }).ifNo(function() {
+                    });
+                }
             }
             /**
             * Collect data from input.
@@ -411,7 +417,7 @@ module nts.uk.pr.view.qmm008.c {
             }
                 
              /**
-             * Load UnitPriceHistory detail.
+             * Load History detail.
              */
             onSelectHistory(id: string): JQueryPromise<void> {
                 var self = this;

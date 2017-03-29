@@ -240,7 +240,7 @@ module nts.uk.pr.view.qmm008.b {
 
             public save() {
                 var self = this;
-                //TODO check auto calculate
+                //check auto calculate
                 if (self.healthModel().autoCalculate() == AutoCalculateType.Auto) {
                     nts.uk.ui.dialog.confirm("自動計算が行われます。登録しますか？").ifYes(function() {
                         self.dirty = new nts.uk.ui.DirtyChecker(self.healthModel);
@@ -333,7 +333,7 @@ module nts.uk.pr.view.qmm008.b {
             }
             
             /**
-             * Load UnitPriceHistory detail.
+             * Load History detail.
              */
             onSelectHistory(id: string): JQueryPromise<void> {
                 var self = this;

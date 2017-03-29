@@ -6,15 +6,7 @@ module nts.uk.pr.view.qmm016.a {
                 return el.value == val;
             })[0];
         }
-        export function getElementName(typeNum: number, item: model.ItemDto): string {
-            var type = getElementTypeByValue(typeNum);
-            if (type.isRangeMode) {
-                return item.startVal + '～' + item.endVal;
-            } else {
-                return 'Code';
-            }
-        }
-        
+
         export class ScreenModel extends base.simplehistory.viewmodel.ScreenBaseModel<model.WageTable, model.WageTableHistory> {
             // For UI Tab.
             tabs: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel>;
@@ -456,6 +448,10 @@ module nts.uk.pr.view.qmm016.a {
                         return new qmm016.a.history.OneDemensionViewModel(self.history);
                     case 1:
                         return new qmm016.a.history.TwoDemensionViewModel(self.history);
+                    case 2:
+                        return new qmm016.a.history.ThreeDemensionViewModel(self.history);
+                    case 4:
+                        return new qmm016.a.history.ThreeDemensionViewModel(self.history);
                     default:
                         return new qmm016.a.history.OneDemensionViewModel(self.history);
                 }

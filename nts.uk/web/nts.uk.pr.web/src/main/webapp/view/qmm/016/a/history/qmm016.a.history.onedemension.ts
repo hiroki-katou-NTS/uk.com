@@ -129,11 +129,7 @@ module nts.uk.pr.view.qmm016.a.history {
         constructor(type: model.ElementTypeDto, item: model.ItemDto) {
             var self = this;
             self.uuid = item.uuid;
-            if (type.isRangeMode) {
-                self.name = item.startVal + '～' + item.endVal;
-            } else {
-                self.name = 'Code';
-            }
+            self.name = item.displayName;
             self.amount = ko.observable(0);
         }
     }

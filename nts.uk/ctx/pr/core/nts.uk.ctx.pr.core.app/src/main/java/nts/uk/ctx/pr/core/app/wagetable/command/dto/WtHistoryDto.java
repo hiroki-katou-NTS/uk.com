@@ -72,10 +72,10 @@ public class WtHistoryDto {
 	 *            the wt history
 	 * @return the wt history dto
 	 */
-	public WtHistoryDto fromDomain(WtHistory wtHistory) {
+	public WtHistoryDto fromDomain(WtHistory wtHistory, List<ElementSetting> generSettings) {
 		WtHistoryDto dto = this;
 
-		wtHistory.saveToMemento(new WhdSetMemento(dto));
+		wtHistory.saveToMemento(new WhdSetMemento(dto, generSettings));
 
 		return dto;
 	}
@@ -88,14 +88,17 @@ public class WtHistoryDto {
 		/** The dto. */
 		protected WtHistoryDto dto;
 
+		protected List<ElementSetting> elementSettings;
+
 		/**
 		 * Instantiates a new wage table history dto set memento.
 		 *
 		 * @param dto
 		 *            the dto
 		 */
-		public WhdSetMemento(WtHistoryDto dto) {
+		public WhdSetMemento(WtHistoryDto dto, List<ElementSetting> generSettings) {
 			this.dto = dto;
+			this.elementSettings = generSettings;
 		}
 
 		/*
@@ -171,7 +174,8 @@ public class WtHistoryDto {
 		 */
 		@Override
 		public void setElementSettings(List<ElementSetting> elementSettings) {
-			this.dto.elements = elementSettings.stream().map(item -> {
+			// Create new setting as the current items.
+			this.dto.elements = this.elementSettings.stream().map(item -> {
 				ElementSettingDto elementSettingDto = new ElementSettingDto();
 				elementSettingDto.setDemensionNo(item.getDemensionNo().value);
 				elementSettingDto.setType(item.getType().value);
@@ -181,7 +185,8 @@ public class WtHistoryDto {
 					elementSettingDto.setItemList(item.getItemList().stream().map(subItem -> {
 						CodeItem codeItem = (CodeItem) subItem;
 						return ElementItemDto.builder().uuid(codeItem.getUuid().v())
-								.referenceCode(codeItem.getReferenceCode()).build();
+								.referenceCode(codeItem.getReferenceCode())
+								.displayName(codeItem.getDisplayName()).build();
 					}).collect(Collectors.toList()));
 				}
 
@@ -196,7 +201,7 @@ public class WtHistoryDto {
 						return ElementItemDto.builder().uuid(rangeItem.getUuid().v())
 								.orderNumber(rangeItem.getOrderNumber())
 								.startVal(rangeItem.getStartVal()).endVal(rangeItem.getEndVal())
-								.build();
+								.displayName(rangeItem.getDisplayName()).build();
 					}).collect(Collectors.toList()));
 				}
 
