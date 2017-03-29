@@ -23,16 +23,6 @@ var nts;
                                 })[0];
                             }
                             viewmodel.getElementTypeByValue = getElementTypeByValue;
-                            function getElementName(typeNum, item) {
-                                var type = getElementTypeByValue(typeNum);
-                                if (type.isRangeMode) {
-                                    return item.startVal + '～' + item.endVal;
-                                }
-                                else {
-                                    return 'Code';
-                                }
-                            }
-                            viewmodel.getElementName = getElementName;
                             var ScreenModel = (function (_super) {
                                 __extends(ScreenModel, _super);
                                 function ScreenModel() {
@@ -322,6 +312,10 @@ var nts;
                                             return new qmm016.a.history.OneDemensionViewModel(self.history);
                                         case 1:
                                             return new qmm016.a.history.TwoDemensionViewModel(self.history);
+                                        case 2:
+                                            return new qmm016.a.history.ThreeDemensionViewModel(self.history);
+                                        case 4:
+                                            return new qmm016.a.history.ThreeDemensionViewModel(self.history);
                                         default:
                                             return new qmm016.a.history.OneDemensionViewModel(self.history);
                                     }

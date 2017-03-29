@@ -176,6 +176,7 @@ module nts.uk.pr.view.qmm016 {
          */
         export interface ItemDto {
             uuid: string;
+            displayName: string;
             referenceCode?: string;
             orderNumber?: number;
             startVal?: number;
