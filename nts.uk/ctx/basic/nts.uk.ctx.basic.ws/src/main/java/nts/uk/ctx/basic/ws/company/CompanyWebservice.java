@@ -48,8 +48,8 @@ public class CompanyWebservice extends WebService{
 
 	@POST
 	@Path("findByUseKtSet/{useKtSet}")
-	public CompanyDto getCompanyByUserKtSet(@PathParam("use_Kt_Set") int use_Kt_Set){
-		return this.finder.getCompanyByUserKtSet(use_Kt_Set)
+	public CompanyDto getCompanyByUserKtSet(@PathParam("useKtSet") int useKtSet){
+		return this.finder.getCompanyByUserKtSet(useKtSet)
 				.orElseThrow(() -> new BusinessException(new RawErrorMessage("Not Found Company")));
 	}
 	
