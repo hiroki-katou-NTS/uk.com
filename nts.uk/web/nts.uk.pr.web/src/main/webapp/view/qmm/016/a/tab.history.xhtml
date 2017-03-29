@@ -56,10 +56,10 @@
 														style="width: 80px;"
 														data-bind="ntsNumberEditor: {
 															value: lowerLimit,
-															constraint: 'Money',
+															constraint: 'RangeLimit',
 															option: {placeholder: '0',
 																grouplength: 3,
-																decimallength: 0},
+																decimallength: 2},
 																required: true}" />
 												</div>
 												<span>~</span>
@@ -68,10 +68,10 @@
 														style="width: 80px;"
 														data-bind="ntsNumberEditor: {
 															value: upperLimit,
-															constraint: 'Money',
+															constraint: 'RangeLimit',
 															option: {placeholder: '0',
 																grouplength: 3,
-																decimallength: 0},
+																decimallength: 2},
 															required: true}" />
 												</div>
 											</com:ko>
@@ -87,10 +87,10 @@
 													style="width: 80px;"
 													data-bind="ntsNumberEditor: {
 														value: interval,
-														constraint: 'Money',
+														constraint: 'RangeLimit',
 														option: {placeholder: '0',
 															grouplength: 3,
-															decimallength: 0},
+															decimallength: 2},
 														required: true}" />
 											</com:ko>
 											<com:ko tag="ifnot" bind="type.isRangeMode">
