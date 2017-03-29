@@ -32,7 +32,7 @@ public class UnemployeeInsuranceRate extends DomainObject {
 	private String historyId;
 
 	/** The company code. */
-	private CompanyCode companyCode;
+	private String companyCode;
 
 	/** The apply range. */
 
@@ -156,7 +156,7 @@ public class UnemployeeInsuranceRate extends DomainObject {
 	public static final UnemployeeInsuranceRate createWithIntial(String companyCode,
 		YearMonth startYearMonth) {
 		UnemployeeInsuranceRate domain = new UnemployeeInsuranceRate();
-		domain.companyCode = new CompanyCode(companyCode);
+		domain.companyCode = companyCode;
 		domain.applyRange = MonthRange.toMaxDate(startYearMonth);
 		Set<UnemployeeInsuranceRateItem> setItem = new HashSet<>();
 		setItem.add(UnemployeeInsuranceRateItem.valueIntial(CareerGroup.Agroforestry));

@@ -139,8 +139,8 @@
 			<div id="E_LBL_011" data-bind="ntsFormLabel: {  required: false }">備考</div>
 		</div>
 		<div class="divLineCol2">
-			<TEXTAREA id="E_INP_005" rows="5" cols="40"
-				data-bind="value: CurrentMemo"></TEXTAREA>
+		<textarea id="E_INP_005"
+				data-bind="ntsMultilineEditor: { value: CurrentMemo , constraint: 'Memo' }" />
 		</div>
 
 	</div>

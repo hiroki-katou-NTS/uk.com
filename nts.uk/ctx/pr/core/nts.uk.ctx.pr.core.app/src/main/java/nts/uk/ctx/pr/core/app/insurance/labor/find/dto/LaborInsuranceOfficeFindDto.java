@@ -4,8 +4,8 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.app.insurance.labor.find.dto;
 
-import lombok.Data;
-import nts.uk.ctx.core.dom.company.CompanyCode;
+import lombok.Getter;
+import lombok.Setter;
 import nts.uk.ctx.pr.core.dom.insurance.Address;
 import nts.uk.ctx.pr.core.dom.insurance.CitySign;
 import nts.uk.ctx.pr.core.dom.insurance.KanaAddress;
@@ -30,7 +30,8 @@ import nts.uk.shr.com.primitive.Memo;
 /**
  * Instantiates a new labor insurance office find dto.
  */
-@Data
+@Getter
+@Setter
 public class LaborInsuranceOfficeFindDto implements LaborInsuranceOfficeSetMemento {
 
 	/** The code. */
@@ -50,9 +51,6 @@ public class LaborInsuranceOfficeFindDto implements LaborInsuranceOfficeSetMemen
 
 	/** The potal code. */
 	private String potalCode;
-
-	/** The prefecture. */
-	private String prefecture;
 
 	/** The address 1 st. */
 	private String address1st;
@@ -98,7 +96,7 @@ public class LaborInsuranceOfficeFindDto implements LaborInsuranceOfficeSetMemen
 	 * setCompanyCode(nts.uk.ctx.core.dom.company.CompanyCode)
 	 */
 	@Override
-	public void setCompanyCode(CompanyCode companyCode) {
+	public void setCompanyCode(String companyCode) {
 		// Do nothing.
 	}
 

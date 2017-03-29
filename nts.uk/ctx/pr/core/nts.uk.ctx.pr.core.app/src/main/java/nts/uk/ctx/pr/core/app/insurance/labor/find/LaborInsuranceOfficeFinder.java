@@ -75,8 +75,11 @@ public class LaborInsuranceOfficeFinder {
 		// to Dto
 		List<LaborInsuranceOfficeFindOutDto> lstLaborInsuranceOfficeFindOutDto;
 		lstLaborInsuranceOfficeFindOutDto = this.laborInsuranceOfficeRepository.findAll(companyCode).stream()
-			.map(laborInsuranceOffice -> LaborInsuranceOfficeFindOutDto.fromDomain(laborInsuranceOffice))
-			.collect(Collectors.toList());
+			.map(laborInsuranceOffice -> {
+				LaborInsuranceOfficeFindOutDto laborInsuranceOfficeFindOutDto = new LaborInsuranceOfficeFindOutDto();
+				laborInsuranceOffice.saveToMemento(laborInsuranceOfficeFindOutDto);
+				return laborInsuranceOfficeFindOutDto;
+			}).collect(Collectors.toList());
 
 		return lstLaborInsuranceOfficeFindOutDto;
 	}

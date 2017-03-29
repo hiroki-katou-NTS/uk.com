@@ -10,10 +10,10 @@ import java.util.stream.Collectors;
 import lombok.Getter;
 import lombok.Setter;
 import nts.gul.text.IdentifierUtil;
-import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.core.dom.util.PrimitiveUtil;
 import nts.uk.ctx.pr.core.dom.insurance.CalculateMethod;
 import nts.uk.ctx.pr.core.dom.insurance.CommonAmount;
+import nts.uk.ctx.pr.core.dom.insurance.FundInputApply;
 import nts.uk.ctx.pr.core.dom.insurance.Ins2Rate;
 import nts.uk.ctx.pr.core.dom.insurance.MonthRange;
 import nts.uk.ctx.pr.core.dom.insurance.OfficeCode;
@@ -34,10 +34,11 @@ public class RegisterPensionCommand extends PensionBaseCommand {
 	/**
 	 * To domain.
 	 *
-	 * @param companyCode the company code
+	 * @param companyCode
+	 *            the company code
 	 * @return the pension rate
 	 */
-	public PensionRate toDomain(CompanyCode companyCode) {
+	public PensionRate toDomain(String companyCode) {
 		RegisterPensionCommand command = this;
 
 		// Transfer data
@@ -54,7 +55,8 @@ public class RegisterPensionCommand extends PensionBaseCommand {
 					PensionChargeRateItem pensionChargeRateItem = new PensionChargeRateItem();
 					pensionChargeRateItem.setCompanyRate(new Ins2Rate(dto.getCompanyRate()));
 					pensionChargeRateItem.setPersonalRate(new Ins2Rate(dto.getPersonalRate()));
-					return new PensionPremiumRateItem(dto.getPayType(), dto.getGenderType(), pensionChargeRateItem);
+					return new PensionPremiumRateItem(dto.getPayType(), dto.getGenderType(),
+							pensionChargeRateItem);
 				}).collect(Collectors.toSet());
 			}
 
@@ -80,19 +82,24 @@ public class RegisterPensionCommand extends PensionBaseCommand {
 			public Set<FundRateItem> getFundRateItems() {
 				return command.getFundRateItems().stream().map(dto -> {
 					PensionChargeRateItem burdenPensionChargeRateItem = new PensionChargeRateItem();
-					burdenPensionChargeRateItem.setCompanyRate(new Ins2Rate(dto.getBurdenChargeCompanyRate()));
-					burdenPensionChargeRateItem.setPersonalRate(new Ins2Rate(dto.getBurdenChargePersonalRate()));
+					burdenPensionChargeRateItem
+							.setCompanyRate(new Ins2Rate(dto.getBurdenChargeCompanyRate()));
+					burdenPensionChargeRateItem
+							.setPersonalRate(new Ins2Rate(dto.getBurdenChargePersonalRate()));
 
 					PensionChargeRateItem exemptionPensionChargeRateItem = new PensionChargeRateItem();
-					exemptionPensionChargeRateItem.setCompanyRate(new Ins2Rate(dto.getExemptionChargeCompanyRate()));
-					exemptionPensionChargeRateItem.setPersonalRate(new Ins2Rate(dto.getExemptionChargePersonalRate()));
+					exemptionPensionChargeRateItem
+							.setCompanyRate(new Ins2Rate(dto.getExemptionChargeCompanyRate()));
+					exemptionPensionChargeRateItem
+							.setPersonalRate(new Ins2Rate(dto.getExemptionChargePersonalRate()));
 
-					return new FundRateItem(dto.getPayType(), dto.getGenderType(), burdenPensionChargeRateItem,exemptionPensionChargeRateItem);
+					return new FundRateItem(dto.getPayType(), dto.getGenderType(),
+							burdenPensionChargeRateItem, exemptionPensionChargeRateItem);
 				}).collect(Collectors.toSet());
 			}
 
 			@Override
-			public CompanyCode getCompanyCode() {
+			public String getCompanyCode() {
 				return companyCode;
 			}
 
@@ -103,12 +110,13 @@ public class RegisterPensionCommand extends PensionBaseCommand {
 
 			@Override
 			public MonthRange getApplyRange() {
-				return MonthRange.range(PrimitiveUtil.toYearMonth(command.getStartMonth(), "/"),PrimitiveUtil.toYearMonth(command.getEndMonth(), "/"));
+				return MonthRange.range(PrimitiveUtil.toYearMonth(command.getStartMonth(), "/"),
+						PrimitiveUtil.toYearMonth(command.getEndMonth(), "/"));
 			}
 
 			@Override
-			public Boolean getFundInputApply() {
-				return command.getFundInputApply();
+			public FundInputApply getFundInputApply() {
+				return FundInputApply.valueOf(command.getFundInputApply());
 			}
 
 			@Override

@@ -6,7 +6,19 @@ var qmm012;
         (function (service) {
             var paths = {
                 findItemSalary: "pr/core/itemsalary/find",
+                getCommuteNoTaxLimit: "core/commutelimit/getCommuteNoTaxLimit"
             };
+            function getCommuteNoTaxLimit(commuNoTaxLimitCode) {
+                var dfd = $.Deferred();
+                nts.uk.request.ajax(paths.getCommuteNoTaxLimit + "/" + commuNoTaxLimitCode)
+                    .done(function (res) {
+                    dfd.resolve(res);
+                }).fail(function (res) {
+                    dfd.reject(res);
+                });
+                return dfd.promise();
+            }
+            service.getCommuteNoTaxLimit = getCommuteNoTaxLimit;
             function findItemSalary(itemCode) {
                 var dfd = $.Deferred();
                 nts.uk.request.ajax(paths.findItemSalary + "/" + itemCode)
@@ -21,8 +33,8 @@ var qmm012;
             service.findItemSalary = findItemSalary;
             var model;
             (function (model) {
-                var ItemSalaryModel = (function () {
-                    function ItemSalaryModel(taxAtr, socialInsAtr, laborInsAtr, fixPayAtr, applyForAllEmpFlg, applyForMonthlyPayEmp, applyForDaymonthlyPayEmp, applyForDaylyPayEmp, applyForHourlyPayEmp, avePayAtr, errRangeLowAtr, errRangeLow, errRangeHighAtr, errRangeHigh, alRangeLowAtr, alRangeLow, alRangeHighAtr, alRangeHigh, memo, limitMnyAtr, limitMnyRefItemCd, limitMny) {
+                var ItemSalary = (function () {
+                    function ItemSalary(taxAtr, socialInsAtr, laborInsAtr, fixPayAtr, applyForAllEmpFlg, applyForMonthlyPayEmp, applyForDaymonthlyPayEmp, applyForDaylyPayEmp, applyForHourlyPayEmp, avePayAtr, errRangeLowAtr, errRangeLow, errRangeHighAtr, errRangeHigh, alRangeLowAtr, alRangeLow, alRangeHighAtr, alRangeHigh, memo, limitMnyAtr, limitMnyRefItemCd, limitMny) {
                         this.taxAtr = taxAtr;
                         this.socialInsAtr = socialInsAtr;
                         this.laborInsAtr = laborInsAtr;
@@ -47,11 +59,10 @@ var qmm012;
                         this.limitMny = limitMny;
                     }
                     ;
-                    return ItemSalaryModel;
+                    return ItemSalary;
                 }());
-                model.ItemSalaryModel = ItemSalaryModel;
+                model.ItemSalary = ItemSalary;
             })(model = service.model || (service.model = {}));
         })(service = c.service || (c.service = {}));
     })(c = qmm012.c || (qmm012.c = {}));
 })(qmm012 || (qmm012 = {}));
-//# sourceMappingURL=service.js.map

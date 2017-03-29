@@ -1,0 +1,43 @@
+package nts.uk.ctx.pr.core.app.command.rule.employment.unitprice.personal;
+
+import javax.enterprise.context.RequestScoped;
+import javax.inject.Inject;
+import javax.transaction.Transactional;
+
+import nts.arc.layer.app.command.CommandHandler;
+import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.personal.PersonalUnitPrice;
+import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.personal.PersonalUnitPriceRepository;
+import nts.uk.shr.com.context.AppContexts;
+
+@RequestScoped
+@Transactional
+public class UpdatePersonalUnitPriceCommandHander extends CommandHandler<UpdatePersonalUnitPriceCommand> {
+	@Inject
+	private PersonalUnitPriceRepository personalUnitPriceRepository;
+	
+	@Override
+	protected void handle(CommandHandlerContext<UpdatePersonalUnitPriceCommand> context) {
+		UpdatePersonalUnitPriceCommand command = context.getCommand();
+		String companyCode = AppContexts.user().companyCode();
+		
+		PersonalUnitPrice domain = PersonalUnitPrice.createFromJavaType(
+				companyCode,
+				command.getPersonalUnitPriceCode().trim(),
+				command.getPersonalUnitPriceName(),
+				command.getPersonalUnitPriceShortName(),
+				command.getUniteCode(),
+				command.getMemo(),
+				command.getFixPaymentAtr(),
+				command.getFixPaymentMonthly(),
+				command.getFixPaymentDayMonth(),
+				command.getFixPaymentDaily(),
+				command.getFixPaymentHoursly(),
+				command.getDisplayAtr(),
+				command.getPaymentSettingType(),
+				command.getUnitPriceAtr());
+	    domain.validate();
+	    personalUnitPriceRepository.update(domain);	
+	}
+
+}

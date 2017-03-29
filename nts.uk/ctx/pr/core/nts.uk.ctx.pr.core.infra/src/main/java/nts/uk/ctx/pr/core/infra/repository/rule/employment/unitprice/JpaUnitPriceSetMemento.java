@@ -4,7 +4,6 @@
  *****************************************************************/
 package nts.uk.ctx.pr.core.infra.repository.rule.employment.unitprice;
 
-import nts.uk.ctx.core.dom.company.CompanyCode;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceCode;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceName;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.UnitPriceSetMemento;
@@ -37,9 +36,9 @@ public class JpaUnitPriceSetMemento implements UnitPriceSetMemento {
 	 * setCompanyCode(nts.uk.ctx.core.dom.company.CompanyCode)
 	 */
 	@Override
-	public void setCompanyCode(CompanyCode companyCode) {
+	public void setCompanyCode(String companyCode) {
 		QupmtCUnitpriceHeaderPK qupmtCUnitpriceHeadPK = new QupmtCUnitpriceHeaderPK();
-		qupmtCUnitpriceHeadPK.setCcd(companyCode.v());
+		qupmtCUnitpriceHeadPK.setCcd(companyCode);
 		this.typeValue.setQupmtCUnitpriceHeaderPK(qupmtCUnitpriceHeadPK);
 	}
 

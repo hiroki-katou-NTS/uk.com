@@ -8,7 +8,6 @@ import java.util.Set;
 
 import lombok.Getter;
 import nts.arc.layer.dom.DomainObject;
-import nts.uk.ctx.core.dom.company.CompanyCode;
 
 /**
  * The Class CertifyGroup.
@@ -17,7 +16,7 @@ import nts.uk.ctx.core.dom.company.CompanyCode;
 public class CertifyGroup extends DomainObject {
 
 	/** The company code. */
-	private CompanyCode companyCode;
+	private String companyCode;
 
 	/** The code. */
 	private CertifyGroupCode code;

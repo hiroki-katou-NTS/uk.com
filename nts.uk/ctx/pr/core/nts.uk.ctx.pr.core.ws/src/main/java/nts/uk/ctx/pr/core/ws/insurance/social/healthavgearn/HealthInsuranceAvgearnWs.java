@@ -1,3 +1,7 @@
+/******************************************************************
+ * Copyright (c) 2017 Nittsu System to present.                   *
+ * All right reserved.                                            *
+ *****************************************************************/
 package nts.uk.ctx.pr.core.ws.insurance.social.healthavgearn;
 
 import java.util.List;
@@ -14,21 +18,38 @@ import nts.uk.ctx.pr.core.app.insurance.social.healthavgearn.command.UpdateHealt
 import nts.uk.ctx.pr.core.app.insurance.social.healthavgearn.find.HealthInsuranceAvgearnDto;
 import nts.uk.ctx.pr.core.app.insurance.social.healthavgearn.find.HealthInsuranceAvgearnFinder;
 
+/**
+ * The Class HealthInsuranceAvgearnWs.
+ */
 @Path("ctx/pr/core/insurance/social/healthavgearn")
 @Produces("application/json")
 public class HealthInsuranceAvgearnWs extends WebService {
 
+	/** The health insurance avgearn finder. */
 	@Inject
 	private HealthInsuranceAvgearnFinder healthInsuranceAvgearnFinder;
+	
+	/** The update health insurance avgearn command handler. */
 	@Inject
 	private UpdateHealthInsuranceAvgearnCommandHandler updateHealthInsuranceAvgearnCommandHandler;
 
+	/**
+	 * Update.
+	 *
+	 * @param command the command
+	 */
 	@POST
 	@Path("update")
 	public void update(UpdateHealthInsuranceAvgearnCommand command) {
 		updateHealthInsuranceAvgearnCommandHandler.handle(command);
 	}
 
+	/**
+	 * Find.
+	 *
+	 * @param id the id
+	 * @return the list
+	 */
 	@POST
 	@Path("find/{id}")
 	public List<HealthInsuranceAvgearnDto> find(@PathParam("id") String id) {

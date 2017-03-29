@@ -18,4 +18,8 @@ public interface ItemSalaryRespository {
 	 * @param item domain ItemSalary
 	 */
 	void update(ItemSalary item);
+	
+	void add(ItemSalary item);
+
+	void delete(String companyCode, String itemCode);
 }
