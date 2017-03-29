@@ -9,12 +9,12 @@ module nts.uk.pr.view.qmm008.c {
         import PensionRateItemDto = service.model.finder.PensionRateItemDto;
         import FundRateItemDto = service.model.finder.FundRateItemDto;
         import ScreenBaseModel = base.simplehistory.viewmodel.ScreenBaseModel;
-        
+
         import iservice = nts.uk.pr.view.qmm008.i.service;
         import PensionAvgearnDto = iservice.model.PensionAvgearnDto;
         import commonService = nts.uk.pr.view.qmm008._0.common.service;
         import AvgEarnLevelMasterSettingDto = nts.uk.pr.view.qmm008._0.common.service.model.AvgEarnLevelMasterSettingDto;
-       
+
         export class ScreenModel extends ScreenBaseModel<service.model.Office, service.model.Pension>{
             pensionModel: KnockoutObservable<PensionRateModel>
             pensionInsuranceOfficeList: KnockoutObservableArray<InsuranceOfficeItem>;
@@ -36,10 +36,10 @@ module nts.uk.pr.view.qmm008.c {
 
             // Flags
             isLoading: KnockoutObservable<boolean>;
-            currentOfficeCode : KnockoutObservable<string>;
+            currentOfficeCode: KnockoutObservable<string>;
             japanYear: KnockoutObservable<string>;
-            sendOfficeData :KnockoutObservable<string>;
-            
+            sendOfficeData: KnockoutObservable<string>;
+
             listAvgEarnLevelMasterSetting: Array<AvgEarnLevelMasterSettingDto>;
             listPensionAvgearnModel: KnockoutObservableArray<PensionAvgearnModel>;
             errorList: KnockoutObservableArray<any>;
@@ -79,15 +79,15 @@ module nts.uk.pr.view.qmm008.c {
                 self.isTransistReturnData = ko.observable(false);
 
                 self.fundInputEnable = ko.observable(false);
-                
+
                 self.isLoading = ko.observable(true);
                 self.currentOfficeCode = ko.observable('');
                 self.japanYear = ko.observable('');
                 self.sendOfficeData = ko.observable('');
-                
+
                 self.listAvgEarnLevelMasterSetting = [];
                 self.listPensionAvgearnModel = ko.observableArray<PensionAvgearnModel>([]);
-                
+
                 self.pensionModel().fundInputApply.subscribe(function() {
                     //change select -> hide fund input table
                     if (self.pensionModel().fundInputApply() != 1) {
@@ -171,7 +171,7 @@ module nts.uk.pr.view.qmm008.c {
                 self.pensionModel().officeCode(data.officeCode);
                 self.pensionModel().startMonth(nts.uk.time.formatYearMonth(parseInt(data.startMonth)));
                 self.pensionModel().endMonth(nts.uk.time.formatYearMonth(parseInt(data.endMonth)));
-                self.japanYear("("+nts.uk.time.yearmonthInJapanEmpire(data.startMonth).toString()+")");
+                self.japanYear("(" + nts.uk.time.yearmonthInJapanEmpire(data.startMonth).toString() + ")");
                 self.pensionModel().autoCalculate(data.autoCalculate);
                 self.pensionModel().fundInputApply(data.fundInputApply);
 
@@ -295,7 +295,7 @@ module nts.uk.pr.view.qmm008.c {
             //get current item office 
             public getDataOfPensionSelectedOffice(): InsuranceOfficeItem {
                 var self = this;
-                var saveVal:InsuranceOfficeItem = null;
+                var saveVal: InsuranceOfficeItem = null;
                 // Set parent value
                 self.pensionInsuranceOfficeList().forEach(function(item, index) {
                     if (self.currentOfficeCode() == item.code) {
@@ -343,11 +343,11 @@ module nts.uk.pr.view.qmm008.c {
                 var pensionRateItems: PensionRateItemModel = self.pensionModel().rateItems();
                 var fundRateItems: FunRateItemModel = self.pensionModel().fundRateItems();
                 var roundingMethods: PensionRateRoundingModel = self.pensionModel().roundingMethods();
-               var personalRounding = self.convertToRounding(roundingMethods.pensionSalaryPersonalComboBoxSelectedCode());
-                var companyRounding = self.convertToRounding(roundingMethods.pensionSalaryCompanyComboBoxSelectedCode()); 
+                var personalRounding = self.convertToRounding(roundingMethods.pensionSalaryPersonalComboBoxSelectedCode());
+                var companyRounding = self.convertToRounding(roundingMethods.pensionSalaryCompanyComboBoxSelectedCode());
                 var rate = levelMasterSetting.avgEarn / 1000;
                 var autoCalculate = self.pensionModel().autoCalculate();
-                if(autoCalculate == AutoCalculateType.Auto){
+                if (autoCalculate == AutoCalculateType.Auto) {
                     return new PensionAvgearnModel(
                         historyId,
                         levelMasterSetting.code,
@@ -393,10 +393,10 @@ module nts.uk.pr.view.qmm008.c {
                 }
             }
             // rounding 
-            private rounding(roudingMethod: string,roundValue: number){
+            private rounding(roudingMethod: string, roundValue: number) {
                 var self = this;
                 var backupValue = roundValue;
-                switch(roudingMethod){
+                switch (roudingMethod) {
                     case Rounding.ROUNDUP: return Math.ceil(backupValue);
                     case Rounding.TRUNCATION: return Math.floor(backupValue);
                     case Rounding.ROUNDDOWN:
@@ -415,10 +415,10 @@ module nts.uk.pr.view.qmm008.c {
                 else
                     return Math.floor(value);
             }
-                
-             /**
-             * Load History detail.
-             */
+
+            /**
+            * Load History detail.
+            */
             onSelectHistory(id: string): JQueryPromise<void> {
                 var self = this;
                 var dfd = $.Deferred<void>();
@@ -434,8 +434,8 @@ module nts.uk.pr.view.qmm008.c {
                 });
                 return dfd.promise();
             }
-            
-            onSave(): JQueryPromise<string>{
+
+            onSave(): JQueryPromise<string> {
                 var self = this;
                 var dfd = $.Deferred<string>();
                 if (nts.uk.ui._viewModel.errors.isEmpty()) {
@@ -447,7 +447,7 @@ module nts.uk.pr.view.qmm008.c {
                 }
                 return dfd.promise();
             }
-            
+
             /**
               * On select master data.
               */
@@ -455,17 +455,17 @@ module nts.uk.pr.view.qmm008.c {
                 var self = this;
                 self.isClickHistory(false);
             }
-            
+
             /**
              * Clear all input and switch to new mode.
              */
             onRegistNew(): void {
                 var self = this;
-//                $('.save-error').ntsError('clear');
+                //                $('.save-error').ntsError('clear');
                 self.OpenModalOfficeRegister();
             }
-            
-            isDirty() : boolean {
+
+            isDirty(): boolean {
                 var self = this;
                 if (self.dirty.isDirty()) {
                     self.dirty.reset();
@@ -475,10 +475,10 @@ module nts.uk.pr.view.qmm008.c {
                     return false;
                 }
             }
-            
-            public getCurrentOfficeCode(childId: string):string {
+
+            public getCurrentOfficeCode(childId: string): string {
                 var self = this;
-                var returnValue :string;
+                var returnValue: string;
                 if (self.masterHistoryList.length > 0) {
                     self.masterHistoryList.forEach(function(parentItem) {
                         if (parentItem.historyList) {
@@ -495,8 +495,8 @@ module nts.uk.pr.view.qmm008.c {
                 }
                 return returnValue;
             }
-            
-            private OpenModalOfficeRegisterWithDirtyCheck(){
+
+            private OpenModalOfficeRegisterWithDirtyCheck() {
                 var self = this;
                 if (self.dirty.isDirty()) {
                     nts.uk.ui.dialog.confirm(self.errorList()[4].message).ifYes(function() {
@@ -509,21 +509,21 @@ module nts.uk.pr.view.qmm008.c {
                     self.OpenModalOfficeRegister();
                 }
             }
-            
+
             //open office register dialog
             private OpenModalOfficeRegister() {
                 var self = this;
                 // Set parent value
                 nts.uk.ui.windows.setShared("isTransistReturnData", this.isTransistReturnData());
-                nts.uk.ui.windows.sub.modal("/view/qmm/008/e/index.xhtml", { title: "会社保険事業所の登録＞事業所の登録",dialogClass: 'no-close' }).onClosed(() => {
+                nts.uk.ui.windows.sub.modal("/view/qmm/008/e/index.xhtml", { title: "会社保険事業所の登録＞事業所の登録", dialogClass: 'no-close' }).onClosed(() => {
                     //when close dialog -> reload office list
                     self.loadMasterHistory();
                     var codeOfNewOffice = nts.uk.ui.windows.getShared("codeOfNewOffice");
-//                    self.igGridSelectedHistoryUuid(codeOfNewOffice);
+                    //                    self.igGridSelectedHistoryUuid(codeOfNewOffice);
                 });
             }
-            
-            public OpenModalStandardMonthlyPricePensionWithDirtyCheck(){
+
+            public OpenModalStandardMonthlyPricePensionWithDirtyCheck() {
                 var self = this;
                 if (self.dirty.isDirty()) {
                     nts.uk.ui.dialog.confirm(self.errorList()[4].message).ifYes(function() {
@@ -536,7 +536,7 @@ module nts.uk.pr.view.qmm008.c {
                     self.OpenModalStandardMonthlyPricePension();
                 }
             }
-            
+
             //open modal standard monthly price pension 
             public OpenModalStandardMonthlyPricePension() {
                 // Set parent value
@@ -544,12 +544,12 @@ module nts.uk.pr.view.qmm008.c {
                 nts.uk.ui.windows.setShared("pensionModel", this.pensionModel());
 
                 nts.uk.ui.windows.setShared("isTransistReturnData", this.isTransistReturnData());
-                nts.uk.ui.windows.sub.modal("/view/qmm/008/i/index.xhtml", { title: "会社保険事業所の登録＞標準報酬月額保険料額表",dialogClass: 'no-close' }).onClosed(() => {
+                nts.uk.ui.windows.sub.modal("/view/qmm/008/i/index.xhtml", { title: "会社保険事業所の登録＞標準報酬月額保険料額表", dialogClass: 'no-close' }).onClosed(() => {
                     // Get child value
                     var returnValue = nts.uk.ui.windows.getShared("listOfficeOfChildValue");
                 });
             }
-            
+
             //jump back to health
             public goToHealth() {
                 nts.uk.request.jump("/view/qmm/008/b/index.xhtml");
@@ -583,7 +583,7 @@ module nts.uk.pr.view.qmm008.c {
             }
 
         }
-       
+
         export class PensionRateItemModel {
             pensionSalaryPersonalSon: KnockoutObservable<number>;
             pensionSalaryCompanySon: KnockoutObservable<number>;
@@ -806,7 +806,7 @@ module nts.uk.pr.view.qmm008.c {
         static AUTO = "Auto";
         static MANUAL = "Manual";
     }
-     export enum Number {
+    export enum Number {
         Zero = 0,
         One = 1,
         Three = 3

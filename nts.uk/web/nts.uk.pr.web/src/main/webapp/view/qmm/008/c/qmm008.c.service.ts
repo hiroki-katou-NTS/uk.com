@@ -42,22 +42,16 @@ module nts.uk.pr.view.qmm008.c {
             deleteHistoryPath: 'ctx/pr/core/insurance/social/pensionrate/history/delete',
             updateHistoryStartPath: 'ctx/pr/core/insurance/social/pensionrate/history/update/start'
         });
-        ////////////////////////
         
         /**
          * Function is used to load all InsuranceOfficeItem by key.
          */
         export function findInsuranceOffice(key: string): JQueryPromise<Array<model.finder.InsuranceOfficeItemDto>> {
-            // Init new dfd.
             var dfd = $.Deferred<Array<model.finder.InsuranceOfficeItemDto>>();
             var findPath = servicePath.getAllOfficeItem + ((key != null && key != '') ? ('?key=' + key) : '');
-            // Call ajax.
             nts.uk.request.ajax(findPath).done(function(data: any) {
-                // Convert json to model here.
-                // Resolve.
                 dfd.resolve(data);
             });
-            // Ret promise.
             return dfd.promise();
         }
 
@@ -65,11 +59,7 @@ module nts.uk.pr.view.qmm008.c {
          * Function is used to load all RoundingOption.
          */
         export function findAllRounding(): JQueryPromise<Array<model.finder.Enum>> {
-            // Init new dfd.
             var dfd = $.Deferred<Array<model.finder.Enum>>();
-            // Call ajax.
-            //            nts.uk.request.ajax(findPath).done(function(data) {
-            // Convert json to model here.
             var roundingList: Array<model.finder.Enum> = [
                 new model.finder.Enum('0', '切り上げ'),
                 new model.finder.Enum('1', '切捨て'),
@@ -77,11 +67,7 @@ module nts.uk.pr.view.qmm008.c {
                 new model.finder.Enum('3', '五捨五超入'),
                 new model.finder.Enum('4', '五捨六入')
             ];
-            // Resolve.
             dfd.resolve(roundingList);
-            //            });
-
-            // Ret promise.
             return dfd.promise();
         }
 
@@ -89,17 +75,12 @@ module nts.uk.pr.view.qmm008.c {
         * Function is used to load pension  data of Office by office code.
         */
         export function getPensionItemDetail(code: string): JQueryPromise<model.finder.PensionRateDto> {
-            // Init new dfd.
             var dfd = $.Deferred<model.finder.PensionRateDto>();
             var findPath = servicePath.getPensionItemDetail + "/" + code;
-            // Call ajax.
             nts.uk.request.ajax(findPath).done(function(data :model.finder.PensionRateDto) {
-                // Convert json to model here.
                 var pensionRateDetailData: model.finder.PensionRateDto = data;
-                // Resolve.
                 dfd.resolve(pensionRateDetailData);
             });
-            // Ret promise.
             return dfd.promise();
         }
 
@@ -107,17 +88,12 @@ module nts.uk.pr.view.qmm008.c {
         * Function is used to load health data of Office by office code.
         */
         export function getAllPensionOfficeItem(): JQueryPromise<Array<model.finder.OfficeItemDto>> {
-            // Init new dfd.
             var dfd = $.Deferred<Array<model.finder.OfficeItemDto>>();
             var findPath = servicePath.getAllPensionOfficeAndHistory;
-            // Call ajax.
             nts.uk.request.ajax(findPath).done(function(data : Array<model.finder.OfficeItemDto>) {
-                // Convert json to model here.
                 var returnData: Array<model.finder.OfficeItemDto> = data;
-                // Resolve.
                 dfd.resolve(returnData);
             });
-            // Ret promise.
             return dfd.promise();
         }
 
@@ -148,7 +124,6 @@ module nts.uk.pr.view.qmm008.c {
             export interface Office extends base.simplehistory.model.MasterModel<Pension> {};
             export interface Pension extends base.simplehistory.model.HistoryModel {};
             export module finder {
-
                 //office DTO
                 export class InsuranceOfficeItemDto {
                     id: string;
