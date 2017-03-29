@@ -21,7 +21,7 @@ public class CatmtAuth extends TableEntity implements Serializable {
 
 	/**主キー*/
 	@EmbeddedId
-    public CatmtAuth catmtAuthPk;
+    public CatmtAuthPK catmtAuthPk;
 
 	/**権限名称*/
 	@Basic(optional = true)

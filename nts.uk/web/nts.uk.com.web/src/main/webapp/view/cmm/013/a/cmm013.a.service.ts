@@ -8,8 +8,7 @@ module cmm013.a.service {
         getAllHistory: "basic/position/getallhist",
         addHist: "basic/position/addHist",
         updateHist: "basic/position/updateHist",
-        deleteHist: "basic/position/deleteHist",
-        findAllPosition2: "basic/position/findall"
+        deleteHist: "basic/position/deleteHist"
 
 
     }
@@ -25,17 +24,6 @@ module cmm013.a.service {
         return dfd.promise();
     }
 
-    export function findAllPosition2(): JQueryPromise<Array<any>> {
-        var dfd = $.Deferred<Array<any>>();
-        nts.uk.request.ajax("com", paths.findAllPosition2)
-            .done(function(res: Array<any>) {
-                dfd.resolve(res);
-            })
-            .fail(function(res) {
-                dfd.reject(res);
-            })
-        return dfd.promise();
-    }
 
     export function addPosition(position: viewmodel.model.ListPositionDto) {
         var dfd = $.Deferred<Array<any>>();

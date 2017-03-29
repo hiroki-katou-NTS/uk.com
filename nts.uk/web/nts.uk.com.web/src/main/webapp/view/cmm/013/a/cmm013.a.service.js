@@ -12,8 +12,7 @@ var cmm013;
                 getAllHistory: "basic/position/getallhist",
                 addHist: "basic/position/addHist",
                 updateHist: "basic/position/updateHist",
-                deleteHist: "basic/position/deleteHist",
-                findAllPosition2: "basic/position/findall"
+                deleteHist: "basic/position/deleteHist"
             };
             function findAllPosition(historyId) {
                 var dfd = $.Deferred();
@@ -27,18 +26,6 @@ var cmm013;
                 return dfd.promise();
             }
             service.findAllPosition = findAllPosition;
-            function findAllPosition2() {
-                var dfd = $.Deferred();
-                nts.uk.request.ajax("com", paths.findAllPosition2)
-                    .done(function (res) {
-                    dfd.resolve(res);
-                })
-                    .fail(function (res) {
-                    dfd.reject(res);
-                });
-                return dfd.promise();
-            }
-            service.findAllPosition2 = findAllPosition2;
             function addPosition(position) {
                 var dfd = $.Deferred();
                 nts.uk.request.ajax("com", paths.addPosition, position)
@@ -62,9 +49,6 @@ var cmm013;
                 return dfd.promise();
             }
             service.updatePosition = updatePosition;
-            /**
-            * delete Position
-            */
             function deletePosition(position) {
                 var dfd = $.Deferred();
                 nts.uk.request.ajax("com", paths.deletePosition, position).done(function (res) {
@@ -76,9 +60,6 @@ var cmm013;
                 return dfd.promise();
             }
             service.deletePosition = deletePosition;
-            /**
-            * get all history
-            */
             function getAllHistory() {
                 var dfd = $.Deferred();
                 nts.uk.request.ajax("com", paths.getAllHistory)

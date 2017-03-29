@@ -2,6 +2,8 @@ package nts.uk.ctx.basic.infra.entity.organization.position;
 
 
 
+import java.io.Serializable;
+
 import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
@@ -13,14 +15,21 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import nts.arc.time.GeneralDate;
+import nts.uk.shr.infra.data.entity.TableEntity;
 
 @Getter
 @Setter
 @Entity
+@Table(name="CMNMT_JOB_HIST")
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name="CMNMT_JOB_HIST")
-public class CmnmtJobHist {
+public class CmnmtJobHist extends TableEntity implements Serializable{
+
+	private static final long serialVersionUID = 1L;
+	
+	public static long getSerialversionuid() {
+		return serialVersionUID;
+	}
 	
 	@EmbeddedId
     public CmnmtJobHistPK cmnmtJobHistPK;
@@ -33,8 +42,6 @@ public class CmnmtJobHist {
 	@Column(name = "END_D")
 	public GeneralDate endDate;
 
-	@Basic(optional = false)
-	@Column(name = "EXCLUS_VER")
-	public int exclusVersion;
+
 
 }

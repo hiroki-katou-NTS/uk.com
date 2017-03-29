@@ -66,8 +66,8 @@ public class JpaPositionRepository extends JpaRepository implements PositionRepo
 		builderString = new StringBuilder();
 		builderString.append("SELECT e");
 		builderString.append(" FROM CmnmtJobHist e");
-		builderString.append(" WHERE e.cmnmtJobTitlePK.companyCode = :companyCode");
-		builderString.append(" AND e.cmnmtJobTitlePK.historyId = :historyId");
+		builderString.append(" WHERE e.cmnmtJobHistPK.companyCode = :companyCode");
+		builderString.append(" AND e.cmnmtJobHistPK.historyId = :historyId");
 		FIND_SINGLE_HISTORY = builderString.toString();
 
 		builderString = new StringBuilder();
@@ -145,8 +145,7 @@ public class JpaPositionRepository extends JpaRepository implements PositionRepo
 
 	private CmnmtJobHist convertToDbType2(JobHistory positionHistory) {
 		CmnmtJobHist cmnmtJobTitleHistory = new CmnmtJobHist();
-		CmnmtJobHistPK cmnmtJobTitleHistoryPK = new CmnmtJobHistPK(positionHistory.getCompanyCode(),
-				positionHistory.getHistoryId());
+		CmnmtJobHistPK cmnmtJobTitleHistoryPK = new CmnmtJobHistPK(positionHistory.getCompanyCode(), positionHistory.getHistoryId());
 		cmnmtJobTitleHistory.setEndDate(positionHistory.getEndDate());
 		cmnmtJobTitleHistory.setStartDate(positionHistory.getStartDate());
 		cmnmtJobTitleHistory.setCmnmtJobHistPK(cmnmtJobTitleHistoryPK);
