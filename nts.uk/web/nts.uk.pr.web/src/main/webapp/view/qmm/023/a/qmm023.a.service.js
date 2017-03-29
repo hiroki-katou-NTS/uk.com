@@ -50,7 +50,6 @@ var qmm023;
             service.deleteData = deleteData;
             var model;
             (function (model) {
-                // layout
                 var CommuteNoTaxLimitDto = (function () {
                     function CommuteNoTaxLimitDto(companyCode, commuNoTaxLimitCode, commuNoTaxLimitName, commuNoTaxLimitValue) {
                         this.companyCode = companyCode;

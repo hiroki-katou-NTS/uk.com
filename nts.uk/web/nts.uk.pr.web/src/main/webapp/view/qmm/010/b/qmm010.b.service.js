@@ -16,11 +16,8 @@ var nts;
                                 checkDuplicateCodeByImportData: "ctx/pr/core/insurance/labor/importser/checkDuplicateCode",
                                 importData: "ctx/pr/core/insurance/labor/importser/importData"
                             };
-                            //Function connnection service check Duplicate Code By ImportData
                             function checkDuplicateCodeByImportData(socialInsuranceOfficeImportDto) {
-                                //set up data respone
                                 var dfd = $.Deferred();
-                                //call server service
                                 nts.uk.request.ajax(paths.checkDuplicateCodeByImportData, socialInsuranceOfficeImportDto)
                                     .done(function (res) {
                                     dfd.resolve(res);
@@ -31,11 +28,8 @@ var nts;
                                 return dfd.promise();
                             }
                             service.checkDuplicateCodeByImportData = checkDuplicateCodeByImportData;
-                            //Function import data
                             function importData(laborInsuranceOfficeImportDto) {
-                                //set up data respone
                                 var dfd = $.Deferred();
-                                //call server service
                                 nts.uk.request.ajax(paths.importData, laborInsuranceOfficeImportDto)
                                     .done(function (res) {
                                     dfd.resolve(res);
@@ -48,7 +42,6 @@ var nts;
                             service.importData = importData;
                             var model;
                             (function (model) {
-                                //Import SocialInsuranceOffice =>  SocialInsuranceOfficeInDto
                                 var SocialInsuranceOfficeImportDto = (function () {
                                     function SocialInsuranceOfficeImportDto() {
                                     }
@@ -83,3 +76,4 @@ var nts;
         })(pr = uk.pr || (uk.pr = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+//# sourceMappingURL=qmm010.b.service.js.map
