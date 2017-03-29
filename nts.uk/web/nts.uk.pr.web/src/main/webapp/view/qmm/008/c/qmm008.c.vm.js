@@ -245,9 +245,15 @@ var nts;
                                 };
                                 ScreenModel.prototype.save = function () {
                                     var self = this;
-                                    iservice.updatePensionAvgearn(self.collectData(), self.pensionCollectData().officeCode);
-                                    c.service.updatePensionRate(self.pensionCollectData()).done(function () {
-                                    });
+                                    if (self.pensionModel().autoCalculate() == AutoCalculateType.Auto) {
+                                        nts.uk.ui.dialog.confirm("自動計算が行われます。登録しますか？").ifYes(function () {
+                                            self.dirty = new nts.uk.ui.DirtyChecker(self.pensionModel);
+                                            iservice.updatePensionAvgearn(self.collectData(), self.pensionCollectData().officeCode);
+                                            c.service.updatePensionRate(self.pensionCollectData()).done(function () {
+                                            });
+                                        }).ifNo(function () {
+                                        });
+                                    }
                                 };
                                 ScreenModel.prototype.collectData = function () {
                                     var self = this;
