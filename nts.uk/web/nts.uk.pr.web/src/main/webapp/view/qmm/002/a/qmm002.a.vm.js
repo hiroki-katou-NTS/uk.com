@@ -94,6 +94,9 @@ var nts;
                                     };
                                     self.currentNode = ko.observable('');
                                     self.singleSelectedCode.subscribe(function (codeChanged) {
+                                        if (!codeChanged) {
+                                            return;
+                                        }
                                         self.lst_002(nts.uk.util.flatArray(self.lst_001(), "childs"));
                                         var parentCode = null;
                                         var childCode = null;
@@ -213,6 +216,7 @@ var nts;
                                  */
                                 ScreenModel.prototype.checkFirtNode = function () {
                                     var self = this;
+                                    self.singleSelectedCode('');
                                     if (self.lst_001()[0].childs.length != 0) {
                                         self.singleSelectedCode(self.lst_001()[0].childs[0].treeCode);
                                     }
@@ -225,23 +229,28 @@ var nts;
                                  */
                                 ScreenModel.prototype.OpenBdialog = function () {
                                     var self = this;
-                                    if (!self.checkDirty()) {
-                                        nts.uk.ui.windows.sub.modal("/view/qmm/002/b/index.xhtml", { title: "銀行の登録　＞　一括削除" }).onClosed(function () {
-                                            self.checkBankList().done(function () {
-                                                self.checkFirtNode();
-                                            });
-                                        });
-                                        nts.uk.ui.windows.setShared('listItem', self.lst_001());
-                                    }
-                                    else {
-                                        nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\n よろしいですか。").ifYes(function () {
+                                    if (self.lst_001().length != 0) {
+                                        if (!self.checkDirty()) {
                                             nts.uk.ui.windows.sub.modal("/view/qmm/002/b/index.xhtml", { title: "銀行の登録　＞　一括削除" }).onClosed(function () {
                                                 self.checkBankList().done(function () {
                                                     self.checkFirtNode();
                                                 });
                                             });
                                             nts.uk.ui.windows.setShared('listItem', self.lst_001());
-                                        });
+                                        }
+                                        else {
+                                            nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\n よろしいですか。").ifYes(function () {
+                                                nts.uk.ui.windows.sub.modal("/view/qmm/002/b/index.xhtml", { title: "銀行の登録　＞　一括削除" }).onClosed(function () {
+                                                    self.checkBankList().done(function () {
+                                                        self.checkFirtNode();
+                                                    });
+                                                });
+                                                nts.uk.ui.windows.setShared('listItem', self.lst_001());
+                                            });
+                                        }
+                                    }
+                                    else {
+                                        nts.uk.ui.dialog.alert(self.messages()[5].message);
                                     }
                                 };
                                 /**
@@ -295,8 +304,6 @@ var nts;
                                  */
                                 ScreenModel.prototype.addBranch = function () {
                                     var self = this;
-                                    // validate input
-                                    self.validateBeforeAdd();
                                     self.confirmDirty = true;
                                     var branchInfo = {
                                         bankCode: self.nodeParent().code,
@@ -318,6 +325,7 @@ var nts;
                                         });
                                     }).fail(function (error) {
                                         var messageList = self.messages();
+                                        self.checkDisabled(false);
                                         if (error.messageId == messageList[0].messageId) {
                                             $('#A_INP_003').ntsError('set', messageList[0].message);
                                             $('#A_INP_004').ntsError('set', messageList[0].message);
@@ -327,9 +335,17 @@ var nts;
                                         }
                                     });
                                 };
+                                /**
+                                 * validate input before add or update data
+                                 */
                                 ScreenModel.prototype.validateBeforeAdd = function () {
                                     var self = this;
                                     $('#A_INP_003').ntsEditor('validate');
+                                    var inpt003 = $('#A_INP_003').ntsError('hasError');
+                                    if (inpt003) {
+                                        return false;
+                                    }
+                                    return true;
                                 };
                                 /**
                                  * select node

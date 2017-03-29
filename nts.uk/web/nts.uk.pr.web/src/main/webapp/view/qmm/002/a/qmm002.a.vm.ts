@@ -112,6 +112,9 @@ module nts.uk.pr.view.qmm002.a {
 
                 self.currentNode = ko.observable('');
                 self.singleSelectedCode.subscribe(function(codeChanged) {
+                    if (!codeChanged) {
+                        return;
+                    }
                     self.lst_002(nts.uk.util.flatArray(self.lst_001(), "childs"))
                     var parentCode = null;
                     var childCode = null;
@@ -231,6 +234,7 @@ module nts.uk.pr.view.qmm002.a {
              */
             checkFirtNode(): void {
                 var self = this;
+                self.singleSelectedCode('');
                 if (self.lst_001()[0].childs.length != 0) {
                     self.singleSelectedCode(self.lst_001()[0].childs[0].treeCode);
                 } else {
@@ -243,23 +247,27 @@ module nts.uk.pr.view.qmm002.a {
              */
             OpenBdialog(): any {
                 var self = this;
-                if (!self.checkDirty()) {
-                    nts.uk.ui.windows.sub.modal("/view/qmm/002/b/index.xhtml", { title: "銀行の登録　＞　一括削除" }).onClosed(() => {
-                        self.checkBankList().done(function() {
-                            self.checkFirtNode();
-                        });
-                    });
-                    nts.uk.ui.windows.setShared('listItem', self.lst_001());
-                }
-                else {
-                    nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\n よろしいですか。").ifYes(function() {
+                if (self.lst_001().length != 0) {
+                    if (!self.checkDirty()) {
                         nts.uk.ui.windows.sub.modal("/view/qmm/002/b/index.xhtml", { title: "銀行の登録　＞　一括削除" }).onClosed(() => {
                             self.checkBankList().done(function() {
                                 self.checkFirtNode();
                             });
                         });
                         nts.uk.ui.windows.setShared('listItem', self.lst_001());
-                    })
+                    }
+                    else {
+                        nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\n よろしいですか。").ifYes(function() {
+                            nts.uk.ui.windows.sub.modal("/view/qmm/002/b/index.xhtml", { title: "銀行の登録　＞　一括削除" }).onClosed(() => {
+                                self.checkBankList().done(function() {
+                                    self.checkFirtNode();
+                                });
+                            });
+                            nts.uk.ui.windows.setShared('listItem', self.lst_001());
+                        })
+                    }
+                } else {
+                    nts.uk.ui.dialog.alert(self.messages()[5].message);
                 }
             }
             /**
@@ -312,11 +320,8 @@ module nts.uk.pr.view.qmm002.a {
             /**
              * add and update bank
              */
-            addBranch(): any {
+            addBranch(): void {
                 var self = this;
-                // validate input
-                self.validateBeforeAdd();
-                
                 self.confirmDirty = true;
                 var branchInfo = {
                     bankCode: self.nodeParent().code,
@@ -338,6 +343,7 @@ module nts.uk.pr.view.qmm002.a {
                     });
                 }).fail(function(error) {
                     var messageList = self.messages();
+                    self.checkDisabled(false);
                     if (error.messageId == messageList[0].messageId) { // ER001
                         $('#A_INP_003').ntsError('set', messageList[0].message);
                         $('#A_INP_004').ntsError('set', messageList[0].message);
@@ -346,10 +352,19 @@ module nts.uk.pr.view.qmm002.a {
                     }
                 })
             }
-            
-            validateBeforeAdd(): void {
+
+            /**
+             * validate input before add or update data
+             */
+            validateBeforeAdd(): boolean {
                 var self = this;
                 $('#A_INP_003').ntsEditor('validate');
+                var inpt003 = $('#A_INP_003').ntsError('hasError');
+                if (inpt003) {
+                    return false;    
+                }
+                
+                return true;
             }
 
             /**
