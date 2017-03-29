@@ -28,12 +28,10 @@ var qmm012;
                     this.CurrentCycle11Atr = ko.observable(0);
                     this.CurrentCycle12Atr = ko.observable(0);
                     var self = this;
-                    //set Switch Data
                     self.roundingRules_H_SEL_001 = ko.observableArray([
                         { code: 1, name: '設定する' },
                         { code: 0, name: '設定しない' }
                     ]);
-                    //005 006 007 008 009 010
                     self.roundingRules_H_SEL_002 = ko.observableArray([
                         { code: 1, name: 'する' },
                         { code: 0, name: 'しない' }
@@ -103,3 +101,4 @@ var qmm012;
         })(viewmodel = h.viewmodel || (h.viewmodel = {}));
     })(h = qmm012.h || (qmm012.h = {}));
 })(qmm012 || (qmm012 = {}));
+//# sourceMappingURL=viewmodel.js.map
