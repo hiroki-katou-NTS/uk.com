@@ -24,6 +24,9 @@ import nts.uk.ctx.pr.core.dom.wagetable.history.WtHistoryRepository;
 import nts.uk.ctx.pr.core.infra.entity.wagetable.history.QwtmtWagetableHist;
 import nts.uk.ctx.pr.core.infra.entity.wagetable.history.QwtmtWagetableHistPK_;
 import nts.uk.ctx.pr.core.infra.entity.wagetable.history.QwtmtWagetableHist_;
+import nts.uk.ctx.pr.core.infra.entity.wagetable.history.QwtmtWagetableMny;
+import nts.uk.ctx.pr.core.infra.entity.wagetable.history.QwtmtWagetableMnyPK_;
+import nts.uk.ctx.pr.core.infra.entity.wagetable.history.QwtmtWagetableMny_;
 
 /**
  * The Class JpaWageTableHistoryRepository.
@@ -86,6 +89,35 @@ public class JpaWtHistoryRepository extends JpaRepository implements WtHistoryRe
 		// set where clause
 		delete.where(cb.equal(root.get(QwtmtWagetableHist_.qwtmtWagetableHistPK)
 				.get(QwtmtWagetableHistPK_.histId), uuid));
+
+		// perform update
+		em.createQuery(delete).executeUpdate();
+		
+		// Delete ref item
+		this.deleteHistMny(uuid);
+	}
+
+	/**
+	 * Delete hist mny.
+	 *
+	 * @param uuid the uuid
+	 */
+	private void deleteHistMny(String uuid) {
+		// Get entity manager.
+		EntityManager em = this.getEntityManager();
+
+		CriteriaBuilder cb = em.getCriteriaBuilder();
+
+		// create delete
+		CriteriaDelete<QwtmtWagetableMny> delete = cb
+				.createCriteriaDelete(QwtmtWagetableMny.class);
+
+		// set the root class
+		Root<QwtmtWagetableMny> root = delete.from(QwtmtWagetableMny.class);
+
+		// set where clause
+		delete.where(cb.equal(root.get(QwtmtWagetableMny_.qwtmtWagetableMnyPK)
+				.get(QwtmtWagetableMnyPK_.histId), uuid));
 
 		// perform update
 		em.createQuery(delete).executeUpdate();
