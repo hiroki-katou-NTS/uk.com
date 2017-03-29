@@ -10,20 +10,22 @@ import javax.transaction.Transactional;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
+import nts.arc.layer.app.command.CommandHandlerWithResult;
 import nts.arc.time.GeneralDate;
 import nts.gul.text.IdentifierUtil;
+import nts.uk.ctx.basic.app.find.system.era.EraDto;
 import nts.uk.ctx.basic.dom.system.era.Era;
 import nts.uk.ctx.basic.dom.system.era.EraRepository;
 import nts.uk.ctx.basic.dom.system.era.FixAttribute;
 
 @RequestScoped
 @Transactional
-public class AddEraCommandHandler extends CommandHandler<AddEraCommand> {
+public class AddEraCommandHandler extends CommandHandlerWithResult<AddEraCommand, EraDto> {
 	@Inject
 	private EraRepository eraRepository;
 
 	@Override
-	public void handle(CommandHandlerContext<AddEraCommand> context) {
+	public EraDto handle(CommandHandlerContext<AddEraCommand> context) {
 		Era era = context.getCommand().toDomain();
 		era.setEraHist(IdentifierUtil.randomUniqueId());
 		era.validate();
@@ -39,6 +41,7 @@ public class AddEraCommandHandler extends CommandHandler<AddEraCommand> {
 		}
 		
 		this.eraRepository.add(era);
+		return EraDto.fromDomain(era);
 	}
 	
 	

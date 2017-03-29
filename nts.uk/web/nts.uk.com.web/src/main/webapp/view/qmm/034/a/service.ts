@@ -53,11 +53,15 @@ module qmm034.a.service {
 
     }
 
-    export function addData(isUpdate: boolean, command: any): JQueryPromise<Array<any>> {
-        let dfd = $.Deferred<Array<any>>();
+    export function addData(isUpdate: boolean, command: any): JQueryPromise<any> {
+        let dfd = $.Deferred<any>();
         let path = isUpdate ? paths.updateEra : paths.addEra;
+        var options = {
+            dataType: 'text',
+            contentType: 'text/plain'
+        };
         nts.uk.request.ajax(path, command)
-            .done(function(res: Array<any>) {
+            .done(function(res: model.EraDto) {
                 dfd.resolve(res);
             }).fail(function(err: any) {
                 dfd.reject(err);

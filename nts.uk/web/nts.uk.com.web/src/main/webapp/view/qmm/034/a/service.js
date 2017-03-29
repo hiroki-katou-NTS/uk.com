@@ -37,6 +37,10 @@ var qmm034;
             function addData(isUpdate, command) {
                 var dfd = $.Deferred();
                 var path = isUpdate ? paths.updateEra : paths.addEra;
+                var options = {
+                    dataType: 'text',
+                    contentType: 'text/plain'
+                };
                 nts.uk.request.ajax(path, command)
                     .done(function (res) {
                     dfd.resolve(res);
