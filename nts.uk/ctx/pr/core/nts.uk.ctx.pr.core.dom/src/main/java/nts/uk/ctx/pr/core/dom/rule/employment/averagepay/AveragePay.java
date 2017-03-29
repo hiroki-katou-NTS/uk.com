@@ -2,7 +2,6 @@ package nts.uk.ctx.pr.core.dom.rule.employment.averagepay;
 
 
 import lombok.Getter;
-import nts.arc.enums.EnumAdaptor;
 import nts.arc.error.BusinessException;
 import nts.arc.layer.dom.AggregateRoot;
 import nts.gul.text.StringUtil;
@@ -45,14 +44,5 @@ public class AveragePay extends AggregateRoot {
 		this.exceptionPayRate = exceptionPayRate;
 		this.roundDigitSet = roundDigitSet;
 		this.roundTimingSet = roundTimingSet;
-	}
-
-	public static AveragePay createFromJavaType(String companyCode, int attendDayGettingSet, int exceptionPayRate, int roundTimingSet, int roundDigitSet) {
-		return new AveragePay(
-				companyCode,
-				EnumAdaptor.valueOf(attendDayGettingSet, AttendDayGettingSet.class) ,
-				new ExceptionPayRate(exceptionPayRate), 
-				EnumAdaptor.valueOf(roundDigitSet, RoundDigitSet.class),
-				EnumAdaptor.valueOf(roundTimingSet, RoundTimingSet.class));
 	}
 }

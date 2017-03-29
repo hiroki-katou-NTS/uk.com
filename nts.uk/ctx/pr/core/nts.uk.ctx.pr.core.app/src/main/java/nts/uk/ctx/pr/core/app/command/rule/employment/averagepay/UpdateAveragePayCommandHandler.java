@@ -104,5 +104,6 @@ public class UpdateAveragePayCommandHandler extends CommandHandler<UpdateAverage
 				this.itemAttendRespository.update(x);
 			});
 		}
+		
 	}
 }

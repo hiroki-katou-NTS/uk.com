@@ -6,6 +6,9 @@
 .halign-right { text-align: right; }
 .halign-center { text-align: center; }
 
+body {
+	overflow: hidden;
+}
 #contents-area {
 	width: 715px;
 }

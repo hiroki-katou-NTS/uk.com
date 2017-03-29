@@ -18,7 +18,7 @@ var qmm018;
                     var dfd = $.Deferred();
                     qmm018.b.service.itemSelect(nts.uk.ui.windows.getShared('categoryAtr')).done(function (data) {
                         if (!data.length) {
-                            $("#label-span").ntsError('set', 'ER010');
+                            $("#label-span").ntsError('set', Error.ER010);
                         }
                         else {
                             data.forEach(function (dataItem) {
@@ -27,7 +27,7 @@ var qmm018;
                             self.currentCodeListSwap.subscribe(function (value) {
                                 self.unselectedCodeListSwap(_.difference(self.items(), self.currentCodeListSwap()));
                                 if (!value.length)
-                                    $("#label-span").ntsError('set', 'ER007');
+                                    $("#label-span").ntsError('set', Error.ER007);
                                 else
                                     $("#label-span").ntsError('clear');
                             });
@@ -64,6 +64,12 @@ var qmm018;
                 }
                 return ItemModel;
             }());
+            var Error;
+            (function (Error) {
+                Error[Error["ER001"] = "＊が入力されていません。"] = "ER001";
+                Error[Error["ER007"] = "＊が選択されていません。"] = "ER007";
+                Error[Error["ER010"] = "対象データがありません。"] = "ER010";
+            })(Error || (Error = {}));
         })(viewmodel = b.viewmodel || (b.viewmodel = {}));
     })(b = qmm018.b || (qmm018.b = {}));
 })(qmm018 || (qmm018 = {}));

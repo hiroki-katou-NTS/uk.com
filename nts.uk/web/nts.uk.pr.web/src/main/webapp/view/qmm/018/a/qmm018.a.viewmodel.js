@@ -74,13 +74,13 @@ var qmm018;
                         // error check on salary list and attend list
                         self.selectedItemList1.subscribe(function (value) {
                             if (!value.length)
-                                $("#inp-3").ntsError('set', 'ER007');
+                                $("#inp-3").ntsError('set', Error.ER007);
                             else
                                 $("#inp-3").ntsError('clear');
                         });
                         self.selectedItemList2.subscribe(function (value) {
                             if (!value.length)
-                                $("#inp-1").ntsError('set', 'ER007');
+                                $("#inp-1").ntsError('set', Error.ER007);
                             else
                                 $("#inp-1").ntsError('clear');
                         });
@@ -99,7 +99,7 @@ var qmm018;
                         self.selectedItemList1().forEach(function (item) { selectedCodeList1.push(item.code); });
                     }
                     else {
-                        $("#inp-3").ntsError('set', 'ER007');
+                        $("#inp-3").ntsError('set', Error.ER007);
                         error = true;
                     }
                     var selectedCodeList2 = [];
@@ -108,12 +108,12 @@ var qmm018;
                             self.selectedItemList2().forEach(function (item) { selectedCodeList2.push(item.code); });
                         }
                         else {
-                            $("#inp-1").ntsError('set', 'ER007');
+                            $("#inp-1").ntsError('set', Error.ER007);
                             error = true;
                         }
                     }
                     if (self.averagePay().exceptionPayRate() == null) {
-                        $("#inp-2").ntsError('set', 'ER001');
+                        $("#inp-2").ntsError('set', Error.ER001);
                         error = true;
                     }
                     // insert or update if no error
@@ -218,7 +218,7 @@ var qmm018;
                     self.oldExceptionPayRate = ko.observable(exceptionPayRate);
                     self.roundTimingSet.subscribe(function (value) { self.roundTimingSet(value ? 1 : 0); });
                     self.exceptionPayRate.subscribe(function (value) {
-                        if ($("#inp-2").ntsError("hasError")) {
+                        if ($("#inp-2").ntsError('set', Error.ER001)) {
                             self.oldExceptionPayRate(exceptionPayRate);
                         }
                         else {
@@ -229,6 +229,12 @@ var qmm018;
                 }
                 return AveragePay;
             }());
+            var Error;
+            (function (Error) {
+                Error[Error["ER001"] = "＊が入力されていません。"] = "ER001";
+                Error[Error["ER007"] = "＊が選択されていません。"] = "ER007";
+                Error[Error["ER010"] = "対象データがありません。"] = "ER010";
+            })(Error || (Error = {}));
         })(viewmodel = a.viewmodel || (a.viewmodel = {}));
     })(a = qmm018.a || (qmm018.a = {}));
 })(qmm018 || (qmm018 = {}));

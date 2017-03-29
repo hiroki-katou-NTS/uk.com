@@ -30,7 +30,6 @@ module qmm018.a.viewmodel {
                 })
             });
             self.isUpdate = false;
-
         }
         startPage(): JQueryPromise<any> {
             var self = this;
@@ -68,10 +67,10 @@ module qmm018.a.viewmodel {
                 
                 // error check on salary list and attend list
                 self.selectedItemList1.subscribe(function(value) {
-                    if (!value.length) $("#inp-3").ntsError('set', 'ER007'); else $("#inp-3").ntsError('clear');
+                    if (!value.length) $("#inp-3").ntsError('set', Error.ER007); else $("#inp-3").ntsError('clear');
                 });
                 self.selectedItemList2.subscribe(function(value) {
-                    if (!value.length) $("#inp-1").ntsError('set', 'ER007'); else $("#inp-1").ntsError('clear');
+                    if (!value.length) $("#inp-1").ntsError('set', Error.ER007); else $("#inp-1").ntsError('clear');
                 });
                 
             }).fail(function(res) {
@@ -88,14 +87,14 @@ module qmm018.a.viewmodel {
             // check errors on required
             if (self.selectedItemList1().length) {
                 self.selectedItemList1().forEach(function(item) { selectedCodeList1.push(item.code); });
-            } else { $("#inp-3").ntsError('set', 'ER007');  error = true; }
+            } else { $("#inp-3").ntsError('set', Error.ER007);  error = true; }
             let selectedCodeList2 = [];
             if (self.averagePay().attendDayGettingSet()) {
                 if (self.selectedItemList2().length) {
                     self.selectedItemList2().forEach(function(item) { selectedCodeList2.push(item.code); });
-                } else { $("#inp-1").ntsError('set', 'ER007'); error = true; }
+                } else { $("#inp-1").ntsError('set', Error.ER007); error = true; }
             }
-            if (self.averagePay().exceptionPayRate() == null) { $("#inp-2").ntsError('set', 'ER001'); error = true; }
+            if (self.averagePay().exceptionPayRate() == null) { $("#inp-2").ntsError('set', Error.ER001); error = true; }
             
             // insert or update if no error
             if (!error) {
@@ -190,9 +189,15 @@ module qmm018.a.viewmodel {
             self.oldExceptionPayRate = ko.observable(exceptionPayRate);
             self.roundTimingSet.subscribe(function(value) { self.roundTimingSet(value ? 1 : 0); });
             self.exceptionPayRate.subscribe(function(value) {
-                if ($("#inp-2").ntsError("hasError")) { self.oldExceptionPayRate(exceptionPayRate); }
+                if ($("#inp-2").ntsError('set', Error.ER001)) { self.oldExceptionPayRate(exceptionPayRate); }
                 else { exceptionPayRate = value; self.oldExceptionPayRate(value); }
             });
         }
+    }
+    
+    enum Error {
+        ER001 = <any>"＊が入力されていません。",
+        ER007 = <any>"＊が選択されていません。", 
+        ER010 = <any>"対象データがありません。",   
     }
 }
