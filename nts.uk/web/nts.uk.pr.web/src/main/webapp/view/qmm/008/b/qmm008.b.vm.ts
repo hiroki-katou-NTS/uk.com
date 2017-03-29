@@ -40,7 +40,7 @@ module nts.uk.pr.view.qmm008.b {
             dirty: nts.uk.ui.DirtyChecker;
             constructor() {
                 super({
-                    functionName: '社会保険事業所',
+                    functionName: '健康保険',
                     service: service.instance,
                     removeMasterOnLastHistoryRemove: false
                 });
