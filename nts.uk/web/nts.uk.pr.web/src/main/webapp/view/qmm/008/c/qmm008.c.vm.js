@@ -28,7 +28,7 @@ var nts;
                                 __extends(ScreenModel, _super);
                                 function ScreenModel() {
                                     _super.call(this, {
-                                        functionName: '社会保険事業所',
+                                        functionName: '厚生年金',
                                         service: c.service.instance,
                                         removeMasterOnLastHistoryRemove: false
                                     });
