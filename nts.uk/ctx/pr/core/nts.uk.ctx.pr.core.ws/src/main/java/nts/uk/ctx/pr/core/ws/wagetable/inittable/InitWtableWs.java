@@ -15,6 +15,7 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 
 import nts.arc.layer.ws.WebService;
+import nts.gul.collection.CollectionUtil;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.Certification;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.CertificationRepository;
 import nts.uk.ctx.pr.core.dom.wagetable.certification.CertifyGroup;
@@ -63,34 +64,37 @@ public class InitWtableWs extends WebService {
 		List<Certification> certifyNoneGroupItems = certificationRepo
 				.findAllNoneOfGroup(companyCode);
 
-		// Add group of none group items.
-		certifyGroups.add(new CertifyGroup(new CertifyGroupGetMemento() {
+		// Check exist none group item.
+		if (!CollectionUtil.isEmpty(certifyNoneGroupItems)) {
+			// Add group of none group items.
+			certifyGroups.add(new CertifyGroup(new CertifyGroupGetMemento() {
 
-			@Override
-			public CertifyGroupName getName() {
-				return new CertifyGroupName("グループ なし");
-			}
+				@Override
+				public CertifyGroupName getName() {
+					return new CertifyGroupName("グループ なし");
+				}
 
-			@Override
-			public MultipleTargetSetting getMultiApplySet() {
-				return MultipleTargetSetting.TotalMethod;
-			}
+				@Override
+				public MultipleTargetSetting getMultiApplySet() {
+					return MultipleTargetSetting.TotalMethod;
+				}
 
-			@Override
-			public String getCompanyCode() {
-				return companyCode;
-			}
+				@Override
+				public String getCompanyCode() {
+					return companyCode;
+				}
 
-			@Override
-			public CertifyGroupCode getCode() {
-				return new CertifyGroupCode("000");
-			}
+				@Override
+				public CertifyGroupCode getCode() {
+					return new CertifyGroupCode("000");
+				}
 
-			@Override
-			public Set<Certification> getCertifies() {
-				return certifyNoneGroupItems.stream().collect(Collectors.toSet());
-			}
-		}));
+				@Override
+				public Set<Certification> getCertifies() {
+					return certifyNoneGroupItems.stream().collect(Collectors.toSet());
+				}
+			}));
+		}
 
 		// Mapping into dto.
 		List<CertifyGroupDto> certifyGroupDtos = certifyGroups.stream().map(certifyGroup -> {
