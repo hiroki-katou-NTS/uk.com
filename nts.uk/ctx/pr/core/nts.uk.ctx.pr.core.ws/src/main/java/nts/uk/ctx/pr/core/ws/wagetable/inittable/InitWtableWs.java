@@ -54,7 +54,7 @@ public class InitWtableWs extends WebService {
 		// Mapping into dto.
 		List<CertifyGroupDto> certifyGroupDtos = certifyGroups.stream().map(certifyGroup -> {
 			CertifyGroupDto certifyGroupDto = new CertifyGroupDto();
-			certifyGroup.saveToMemento(certifyGroupDto);
+			certifyGroupDto.fromDomain(certifyGroup);
 			return certifyGroupDto;
 		}).collect(Collectors.toList());
 
