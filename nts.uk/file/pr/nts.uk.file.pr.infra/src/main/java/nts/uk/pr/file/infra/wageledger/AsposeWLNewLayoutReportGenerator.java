@@ -4,6 +4,8 @@
  *****************************************************************/
 package nts.uk.pr.file.infra.wageledger;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -138,9 +140,14 @@ public class AsposeWLNewLayoutReportGenerator extends WageLedgerBaseGenerator im
 			Cell endCell = ws.getCells().get(currentRow.intValue(), 12);
 			pageSetup.setPrintArea("A1:" + endCell.getName());
 			
+			// Set header.
+			DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd");
+			ws.getPageSetup().setHeader(2,"&\"IPAPGothic\"&13 " + dateFormat.format(new Date()) + "\r\n&P ページ");
+			
 			// process data binginds in template
-			reportContext.getDesigner().getWorkbook().calculateFormula(true);
 			reportContext.getDesigner().process(false);
+			reportContext.getWorkbook().calculateFormula(true);
+			reportContext.getDesigner().setUpdateReference(true);
 
 			// save as PDF file
 			reportContext.saveAsPdf(this.createNewFile(fileContext, REPORT_FILE_NAME));

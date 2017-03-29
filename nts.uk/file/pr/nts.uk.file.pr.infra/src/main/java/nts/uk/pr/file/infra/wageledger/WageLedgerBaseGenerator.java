@@ -81,6 +81,13 @@ public class WageLedgerBaseGenerator extends AsposeCellsReportGenerator{
 		Worksheet ws = reportContext.getDesigner().getWorkbook().getWorksheets().get(0);
 		String infoPadding = "        ";
 		
+		// Fill target period.
+		Cell targetPeriodCell = this.findCellWithContent(ws, "TargetPeriod");
+		if (targetPeriodCell != null) {
+			targetPeriodCell.setValue(String.format("%d年1月～%d年12月", headerData.targetYear,
+					headerData.targetYear));
+		}
+		
 		// Fill Department Label.
 		Cell depLabelCell = this.findCellWithContent(ws, "DepartmentLabel");
 		depLabelCell.setValue("【部門】");

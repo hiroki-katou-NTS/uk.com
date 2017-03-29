@@ -451,7 +451,7 @@ module qet001.b.viewmodel {
             self.outputItems.subscribe(function(items) {
                 self.outputItemCache = items;
             });
-            // Customs handle.
+            // Create Customs handle For event rened nts grid.
             (<any>ko.bindingHandlers).rended = {
               init: function(element, valueAccessor, allBindings, viewModel, bindingContext) {},
               update: function(element, valueAccessor, allBindings, viewModel: CategorySetting, bindingContext) {
