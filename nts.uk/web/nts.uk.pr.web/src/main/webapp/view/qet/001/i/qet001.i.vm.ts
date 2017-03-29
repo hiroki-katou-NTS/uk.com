@@ -154,16 +154,10 @@ module qet001.i.viewmodel {
             $('#code-input').ntsError('clear');
             $('#name-input').ntsError('clear');
             // Validate.
-            var hasError = false;
-            if (self.aggregateItemDetail().code() == '') {
-                $('#code-input').ntsError('set', 'コードが入力されていません。');
-                hasError = true;
-            }
-            if (self.aggregateItemDetail().name() == '') {
-                $('#name-input').ntsError('set', '名称が入力されていません。');
-                hasError = true;
-            }
-            if(hasError) {
+            $('#code-input').ntsEditor('validate');
+            $('#name-input').ntsEditor('validate');
+            // Check has error.
+            if(!nts.uk.ui._viewModel.errors.isEmpty()) {
                 return;
             }
             
@@ -173,7 +167,7 @@ module qet001.i.viewmodel {
                 nts.uk.ui.dialog.alert('Save success!');
                 self.loadAggregateItemByCategory();
             }).fail(function(res) {
-                nts.uk.ui.dialog.alert(res.message);
+                $('#code-input').ntsError('set', res.message);
             });
         }
         
