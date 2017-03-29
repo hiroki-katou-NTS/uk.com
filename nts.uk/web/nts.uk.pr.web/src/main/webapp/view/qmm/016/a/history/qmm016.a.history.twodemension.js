@@ -48,21 +48,26 @@ var nts;
                                     var columns = [];
                                     var columnSettings = [];
                                     columns.push({ headerText: 'UUID', dataType: 'string', key: 'uuid', width: '100px', hidden: true });
-                                    columns.push({ headerText: self.elementSettings[1].demensionName, dataType: 'string', key: 'name', width: '100px' });
+                                    columns.push({ headerText: self.elementSettings[0].demensionName, dataType: 'string', key: 'name', width: '100px' });
                                     columnSettings.push({ columnKey: 'uuid', readOnly: true });
                                     columnSettings.push({ columnKey: 'name', readOnly: true });
                                     var secondDemensionElements = self.elementSettings[1];
+                                    var mergeColumn = { headerText: secondDemensionElements.demensionName, group: [] };
                                     _.forEach(secondDemensionElements.itemList, function (item) {
                                         var colName = a.viewmodel.getElementName(secondDemensionElements.type, item);
-                                        columns.push({ headerText: colName, dataType: 'number', key: item.uuid, width: '100px', columnCssClass: "halign-right" });
+                                        mergeColumn.group.push({ headerText: colName, dataType: 'number', key: item.uuid, width: '100px', columnCssClass: "halign-right" });
                                         columnSettings.push({ columnKey: item.uuid, readOnly: false });
                                     });
+                                    columns.push(mergeColumn);
                                     self.igGrid = ko.observable({
                                         dataSource: self.igGridDataSource,
                                         width: '700px',
                                         primaryKey: 'uuid',
                                         height: '250px',
                                         features: [
+                                            {
+                                                name: 'MultiColumnHeaders'
+                                            },
                                             {
                                                 name: 'ColumnFixing',
                                                 fixingDirection: 'left',

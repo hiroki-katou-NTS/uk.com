@@ -51,17 +51,19 @@ module nts.uk.pr.view.qmm016.a.history {
 
             // Fixed part.
             columns.push({ headerText: 'UUID', dataType: 'string', key: 'uuid', width: '100px', hidden: true});
-            columns.push({ headerText: self.elementSettings[1].demensionName, dataType: 'string', key: 'name', width: '100px'});
+            columns.push({ headerText: self.elementSettings[0].demensionName, dataType: 'string', key: 'name', width: '100px'});
             columnSettings.push({columnKey: 'uuid', readOnly: true});
             columnSettings.push({columnKey: 'name', readOnly: true});
 
             // Dynamic part.
             var secondDemensionElements = self.elementSettings[1];
+            var mergeColumn: {headerText: string, group: Array<any>} = {headerText: secondDemensionElements.demensionName, group: []};
             _.forEach(secondDemensionElements.itemList, (item) => {
                 var colName =  viewmodel.getElementName(secondDemensionElements.type, item);
-                columns.push({ headerText: colName, dataType: 'number', key: item.uuid, width: '100px', columnCssClass: "halign-right"});
+                mergeColumn.group.push({ headerText: colName, dataType: 'number', key: item.uuid, width: '100px', columnCssClass: "halign-right"});
                 columnSettings.push({columnKey: item.uuid, readOnly: false});
             });
+            columns.push(mergeColumn);
 
             // IgGrid
             self.igGrid = ko.observable({
@@ -70,6 +72,9 @@ module nts.uk.pr.view.qmm016.a.history {
                 primaryKey: 'uuid',
                 height: '250px',
                 features: [
+                    {
+                        name: 'MultiColumnHeaders'
+                    },
                     {
                         name: 'ColumnFixing',
                         fixingDirection: 'left',
