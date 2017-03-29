@@ -136,7 +136,7 @@ public class WageLedgerBaseGenerator extends AsposeCellsReportGenerator{
 			style.setBorder(BorderType.RIGHT_BORDER, CellBorderType.THIN, Color.getBlack());
 			break;
 		case ItemCellBorder:
-			style.setBorder(BorderType.RIGHT_BORDER, CellBorderType.HAIR, Color.getBlack());
+			style.setBorder(BorderType.RIGHT_BORDER, CellBorderType.DOTTED, Color.getBlack());
 			break;
 		case ToTalCellBorder:
 			// Setting the line style of the left border
