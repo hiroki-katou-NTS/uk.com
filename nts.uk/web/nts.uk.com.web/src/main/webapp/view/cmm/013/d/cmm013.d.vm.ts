@@ -100,16 +100,16 @@ module cmm013.d.viewmodel {
             var dfd = $.Deferred<any>();
 
             if (self.selectedId() == 1 && self.checkDelete() == 1) {
-                nts.uk.ui.windows.setShared('startUpdateNew', '', true);
-                nts.uk.ui.windows.setShared('check_d', '1', true);
+//                nts.uk.ui.windows.setShared('startUpdateNew', '', true);
+//                nts.uk.ui.windows.setShared('check_d', '1', true);
                 var listHist = new service.model.ListHistoryDto(self.startDateUpdate(), '', self.endDateUpdate(), self.histIdUpdate());
 
                 var checkDelete = '1';
                 var checkUpdate = '0';
 
             } else {
-                nts.uk.ui.windows.setShared('startUpdateNew', self.inp_003(), true);
-                nts.uk.ui.windows.setShared('check_d', '2', true);
+//                nts.uk.ui.windows.setShared('startUpdateNew', self.inp_003(), true);
+//                nts.uk.ui.windows.setShared('check_d', '2', true);
                 checkDelete = '0';
                 var listHist = new service.model.ListHistoryDto(self.startDateUpdate(), self.inp_003(), self.endDateUpdate(), self.histIdUpdate());
                 if (self.startDateUpdate() == self.startDateLast()) {

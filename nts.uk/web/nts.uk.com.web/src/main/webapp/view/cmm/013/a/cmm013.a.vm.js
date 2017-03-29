@@ -470,7 +470,7 @@ var cmm013;
                         nts.uk.ui.windows.setShared('historyIdUpdate', self.historyIdUpdate(), true);
                         nts.uk.ui.windows.setShared('startUpdate', self.startDateUpdate(), true);
                         nts.uk.ui.windows.setShared('endUpdate', self.endDateUpdate(), true);
-                        nts.uk.ui.windows.sub.modal('/view/cmm/013Hoa/d/index.xhtml', { title: '画面ID：D', })
+                        nts.uk.ui.windows.sub.modal('/view/cmm/013/d/index.xhtml', { title: '画面ID：D', })
                             .onClosed(function () {
                             var checkUpdate = nts.uk.ui.windows.getShared('updateFinish');
                             if (checkUpdate == true) {
