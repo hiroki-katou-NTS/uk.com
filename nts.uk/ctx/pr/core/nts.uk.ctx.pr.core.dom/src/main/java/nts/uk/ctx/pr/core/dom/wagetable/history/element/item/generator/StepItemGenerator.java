@@ -1,5 +1,5 @@
 /******************************************************************
- * Copyright (c) 2015 Nittsu System to present.                   *
+ * Copyright (c) 2017 Nittsu System to present.                   *
  * All right reserved.                                            *
  *****************************************************************/
 package nts.uk.ctx.pr.core.dom.wagetable.history.element.item.generator;
@@ -67,8 +67,8 @@ public class StepItemGenerator implements ItemGenerator {
 
 		@SuppressWarnings("unchecked")
 		List<RangeItem> rangeItems = (List<RangeItem>) elementSetting.getItemList();
-		Map<RangeItem, ElementId> mapRangeItems = rangeItems.stream()
-				.collect(Collectors.toMap(Function.identity(), RangeItem::getUuid));
+		Map<String, ElementId> mapRangeItems = rangeItems.stream()
+				.collect(Collectors.toMap(item -> this.getUniqueCode(item), RangeItem::getUuid));
 
 		List<RangeItem> items = new ArrayList<>();
 
@@ -85,7 +85,7 @@ public class StepItemGenerator implements ItemGenerator {
 			// Replace exist element id.
 			rangeItem = new RangeItem(index, start,
 					((end.compareTo(upperLimit) <= 0) ? end : upperLimit),
-					mapRangeItems.getOrDefault(rangeItem, rangeItem.getUuid()));
+					mapRangeItems.getOrDefault(this.getUniqueCode(rangeItem), rangeItem.getUuid()));
 			rangeItem.setDisplayName(rangeItem.getStartVal() + "～" + rangeItem.getEndVal());
 
 			items.add(rangeItem);
@@ -94,6 +94,18 @@ public class StepItemGenerator implements ItemGenerator {
 		}
 
 		return items;
+	}
+
+	/**
+	 * Gets the unique code.
+	 *
+	 * @param rangeItem
+	 *            the range item
+	 * @return the unique code
+	 */
+	private String getUniqueCode(RangeItem rangeItem) {
+		return String.format("%s:%s:%s", rangeItem.getOrderNumber().toString(),
+				rangeItem.getStartVal().toString(), rangeItem.getEndVal().toString());
 	}
 
 	/*

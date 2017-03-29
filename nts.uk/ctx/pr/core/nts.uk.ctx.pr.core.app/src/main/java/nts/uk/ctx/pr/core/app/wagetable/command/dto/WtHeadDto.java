@@ -52,7 +52,7 @@ public class WtHeadDto {
 		WtHeadDto dto = this;
 
 		// Transfer data
-		WtHead wageTableHead = new WtHead(new WtHeadDtoGetMemento(dto));
+		WtHead wageTableHead = new WtHead(new WhdGetMemento(dto));
 
 		return wageTableHead;
 	}
@@ -67,7 +67,7 @@ public class WtHeadDto {
 	public WtHeadDto fromDomain(WtHead wtHead) {
 		WtHeadDto dto = this;
 
-		wtHead.saveToMemento(new WtHeadDtoSetMemento(dto));
+		wtHead.saveToMemento(new WhdSetMemento(dto));
 
 		return dto;
 	}
@@ -75,7 +75,7 @@ public class WtHeadDto {
 	/**
 	 * The Class WageTableHeadDtoMemento.
 	 */
-	private class WtHeadDtoGetMemento implements WtHeadGetMemento {
+	private class WhdGetMemento implements WtHeadGetMemento {
 
 		/** The dto. */
 		protected WtHeadDto dto;
@@ -88,7 +88,7 @@ public class WtHeadDto {
 		 * @param dto
 		 *            the dto
 		 */
-		public WtHeadDtoGetMemento(WtHeadDto dto) {
+		public WhdGetMemento(WtHeadDto dto) {
 			this.dto = dto;
 		}
 
@@ -163,7 +163,7 @@ public class WtHeadDto {
 	/**
 	 * The Class WageTableHistoryDtoGetMemento.
 	 */
-	private class WtHeadDtoSetMemento implements WtHeadSetMemento {
+	private class WhdSetMemento implements WtHeadSetMemento {
 
 		/** The dto. */
 		protected WtHeadDto dto;
@@ -176,7 +176,7 @@ public class WtHeadDto {
 		 * @param dto
 		 *            the dto
 		 */
-		public WtHeadDtoSetMemento(WtHeadDto dto) {
+		public WhdSetMemento(WtHeadDto dto) {
 			this.dto = dto;
 		}
 

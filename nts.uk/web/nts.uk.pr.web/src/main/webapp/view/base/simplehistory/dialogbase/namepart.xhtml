@@ -9,7 +9,10 @@
 		<tr data-bind="with: dialogOptions">
 			<com:ko tag="if" bind="screenMode == nts.uk.pr.view.base.simplehistory.dialogbase.ScreenMode.MODE_MASTER_HISTORY">
 				<td><div data-bind="ntsFormLabel: {}">コード/名称</div></td>
-				<td><label data-bind="text: master.code + ' ' + master.name"/></td>
+				<td>
+					<label data-bind="text: master.code"/>
+					<label data-bind="text: master.name" style="padding-left: 30px" />
+				</td>
 			</com:ko>
 			<com:ko tag="if" bind="screenMode == nts.uk.pr.view.base.simplehistory.dialogbase.ScreenMode.MODE_HISTORY_ONLY">
 				<td><div data-bind="ntsFormLabel: {}">名称</div></td>

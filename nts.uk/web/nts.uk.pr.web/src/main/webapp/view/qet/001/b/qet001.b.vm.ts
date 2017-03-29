@@ -17,12 +17,31 @@ module qet001.b.viewmodel {
         isLoading: KnockoutObservable<boolean>;
         hasUpdate: KnockoutObservable<boolean>;
         dirty: nts.uk.ui.DirtyChecker;
+        outputItemColumns: KnockoutObservableArray<any>;
         
         constructor() {
             this.outputSettings = ko.observable(new OutputSettings());
             this.outputSettingDetail= ko.observable(new OutputSettingDetail([], []));
             this.reportItems = ko.observableArray([]);
             this.isLoading = ko.observable(true);
+            this.outputItemColumns = ko.observableArray([
+                    {headerText: '集約', prop: 'isAggregateItem', width: 40,
+                        formatter: function(data: string) {
+                            if (data == 'true') {
+                                return '<div class="center"><i class="icon icon-dot"></i></div>';
+                            }
+                            return '';
+                        }
+                    },
+                    {headerText: 'コード', prop: 'code', width: 50},
+                    {headerText: '名称', prop: 'name', width: 50},
+                    {headerText: '削除', prop: 'code', width: 50,
+                        formatter: function(data: string) {
+                            return '<button class="delete-button icon icon-close" id="' + data + '" >'
+                                + '</button>';
+                        }
+                    },
+                ]);
             this.reportItemColumns = ko.observableArray([
                     {headerText: '区分', prop: 'categoryNameJa', width: 50},
                     {headerText: '集約', prop: 'isAggregate', width: 40,
@@ -403,7 +422,6 @@ module qet001.b.viewmodel {
         aggregateItemSelected: KnockoutObservable<string>;
         masterItemSelected: KnockoutObservable<string>;
         outputItemsSelected: KnockoutObservable<string>;
-        outputItemColumns: KnockoutObservableArray<any>;
         outputItemCache: WageLedgerSettingItem[];
         fullCategoryName: string;
 
@@ -428,24 +446,6 @@ module qet001.b.viewmodel {
             this.outputItemsSelected = ko.observable(null);
             this.aggregateItemSelected = ko.observable(null);
             this.masterItemSelected = ko.observable(null);
-            this.outputItemColumns = ko.observableArray([
-                    {headerText: '集約', prop: 'isAggregateItem', width: 40,
-                        formatter: function(data: string) {
-                            if (data == 'true') {
-                                return '<div class="center"><i class="icon icon-dot"></i></div>';
-                            }
-                            return '';
-                        }
-                    },
-                    {headerText: 'コード', prop: 'code', width: 50},
-                    {headerText: '名称', prop: 'name', width: 50},
-                    {headerText: '削除', prop: 'code', width: 50,
-                        formatter: function(data: string) {
-                            return '<button class="delete-button icon icon-close" id="' + data + '" >'
-                                + '</button>';
-                        }
-                    },
-                ]);
             var self = this;
             self.outputItemCache = categorySetting != undefined ? categorySetting.outputItems : [];
             self.outputItems.subscribe(function(items) {

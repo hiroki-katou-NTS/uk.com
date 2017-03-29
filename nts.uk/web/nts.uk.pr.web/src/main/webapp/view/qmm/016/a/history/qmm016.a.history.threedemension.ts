@@ -2,13 +2,31 @@ module nts.uk.pr.view.qmm016.a.history {
     /**
      * For two demension view.
      */
-    export class TwoDemensionViewModel extends base.BaseHistoryViewModel {
+    export class ThreeDemensionViewModel extends base.BaseHistoryViewModel {
         igGrid: any;
         igGridDataSource: KnockoutObservableArray<ItemViewModel>;
 
+        // Item 3 information.
+        element3Name: KnockoutObservable<string>;
+        element3Items: KnockoutObservableArray<model.ItemDto>;
+        selectedElement3ItemId: KnockoutObservable<string>;
+        datasourceMap: {[index: string]: Array<ItemViewModel>};
         constructor(history: model.WageTableHistoryDto) {
-            super('history/twodemension.xhtml', history);
-            this.igGridDataSource = ko.observableArray<ItemViewModel>([]);
+            super('history/threedemension.xhtml', history);
+            var self = this;
+            self.igGridDataSource = ko.observableArray<ItemViewModel>([]);
+            self.element3Name = ko.observable('');
+            self.element3Items = ko.observableArray<model.ItemDto>([]);
+            self.selectedElement3ItemId = ko.observable(undefined);
+            self.datasourceMap = <any>[];
+
+            // On change.
+            self.selectedElement3ItemId.subscribe((id) => {
+                if (id && self.datasourceMap[id]) {
+                    ko.cleanNode($('#dataTable').get(0));
+                    self.initIgGrid(self.datasourceMap[id]);
+                }
+            })
         }
 
         /**
@@ -16,27 +34,35 @@ module nts.uk.pr.view.qmm016.a.history {
          */
         onLoad(): void {
             var self = this;
+
             // Build first data source.
             var history = self.history;
             if (history.valueItems && history.valueItems.length > 0) {
-                var element = history.elements[0];
-                var secondElement = history.elements[1];
-                var itemVmList = _.map(element.itemList, (item) => {
-                    var vm = new ItemViewModel(element.type, item);
-                    
-                    var valueItemMap: {[index: string]: model.CellItemDto} = <any>[];
-                    _.filter(history.valueItems, (vi) => { return vi.element1Id == item.uuid; })
-                        .forEach((vi) => {valueItemMap[vi.element2Id] = vi});
-                    secondElement.itemList.forEach((item2) => {
-                        vm[item2.uuid] = ko.observable(valueItemMap[item2.uuid].amount);
+                var element1 = history.elements[0];
+                var element2 = history.elements[1];
+                var element3 = history.elements[2];
+
+                element3.itemList.forEach((item3) => {
+                    var itemVmList = _.map(element1.itemList, (item) => {
+                        var vm = new ItemViewModel(element1.type, item);
+                        var valueItemMap: {[index: string]: model.CellItemDto} = <any>[];
+                        _.filter(history.valueItems, (vi) => { return vi.element1Id == item.uuid && vi.element3Id == item3.uuid })
+                            .forEach((vi) => {valueItemMap[vi.element2Id] = vi});
+
+                        element2.itemList.forEach((item2) => {
+                            vm[item2.uuid] = ko.observable(valueItemMap[item2.uuid].amount);
+                        })
+                        return vm;
                     })
-                    return vm;
+                    self.datasourceMap[item3.uuid] = itemVmList;
                 })
+
+                // Build element 3 information.
+                self.buildElement3Infomation();
             }
 
-            // Build grid.
-            self.initIgGrid(itemVmList);
         }
+
 
         /**
          * On refresh element.
@@ -44,24 +70,25 @@ module nts.uk.pr.view.qmm016.a.history {
         onRefreshElement(): void {
             var self = this;
 
-            // Clean node.
-            
-
-            // Update data source.
-            var firstEl = self.elementSettings[0];
-            var secondEl = self.elementSettings[1];
-            var dataSource: Array<ItemViewModel> = [];
-            firstEl.itemList.forEach(firstItem => {
-                var vm = new ItemViewModel(firstEl.type, firstItem);
-                secondEl.itemList.forEach(secondItem => {
-                    vm[secondItem.uuid] = ko.observable(0);
+            // Build elements 3 data source.
+            self.datasourceMap = <any>[];
+            self.elementSettings[2].itemList.forEach((item3) => {
+                // Update data source.
+                var firstEl = self.elementSettings[0];
+                var secondEl = self.elementSettings[1];
+                var dataSource: Array<ItemViewModel> = [];
+                firstEl.itemList.forEach(firstItem => {
+                    var vm = new ItemViewModel(firstEl.type, firstItem);
+                    secondEl.itemList.forEach(secondItem => {
+                        vm[secondItem.uuid] = ko.observable(0);
+                    })
+                    dataSource.push(vm);
                 })
-                dataSource.push(vm);
+               self.datasourceMap[item3.uuid] = dataSource;
             })
 
-            // Recreate ig grid.
-            self.initIgGrid(dataSource);
-
+            // Build elements 3 item info.
+            self.buildElement3Infomation();
         }
 
         /**
@@ -71,15 +98,21 @@ module nts.uk.pr.view.qmm016.a.history {
             var self = this;
             var firstEl = self.elementSettings[0];
             var secondEl = self.elementSettings[1];
+            var thirdEl = self.elementSettings[2];
             var result = new Array<model.CellItemDto>();
-            self.igGridDataSource().forEach((data) => {
-                secondEl.itemList.forEach((item) => {
-                    var dto = <model.CellItemDto> {};
-                    dto.element1Id = data['uuid']();
-                    dto.element2Id = item.uuid;
-                    dto.amount = data[item.uuid]();
-                    result.push(dto); 
-                })
+            thirdEl.itemList.forEach((item3) => {
+                if (self.datasourceMap[item3.uuid]) {
+                    self.datasourceMap[item3.uuid].forEach((vm) => {
+                         secondEl.itemList.forEach((item2) => {
+                            var dto = <model.CellItemDto> {};
+                            dto.element1Id = vm['uuid']();
+                            dto.element2Id = item2.uuid;
+                            dto.element3Id = item3.uuid;
+                            dto.amount = vm[item2.uuid]();
+                            result.push(dto); 
+                        })
+                    })
+                }
             })
             return result;
         }
@@ -91,11 +124,25 @@ module nts.uk.pr.view.qmm016.a.history {
             // Do parsing.
             return;
         }
-        
+
         /**
+         * Build element 3 information.
+         */
+        private buildElement3Infomation(): void {
+            var self = this;
+            // Build elements 3 item info.
+            self.element3Items(_.map(self.elementSettings[2].itemList, (item) => {
+                (<any>item).name = item.displayName;
+                return item;
+            }));
+            self.selectedElement3ItemId(self.elementSettings[2].itemList[0].uuid);
+            self.element3Name(self.elementSettings[2].demensionName);
+        }
+        
+         /**
          * Init ig grid.
          */
-        private initIgGrid(data:  Array<ItemViewModel>): void {
+        private initIgGrid(data: Array<ItemViewModel>): void {
             var self = this;
             ko.cleanNode($('#dataTable').get(0));
 
@@ -119,8 +166,10 @@ module nts.uk.pr.view.qmm016.a.history {
             });
             columns.push(mergeColumn);
 
-            // IgGrid
+            // Set data soruce.
             self.igGridDataSource(data);
+
+            // IgGrid
             self.igGrid = ko.observable({
                 dataSource: self.igGridDataSource,
                 width: '700px',
@@ -158,7 +207,6 @@ module nts.uk.pr.view.qmm016.a.history {
                 ko.applyBindingsToNode($('#dataTable').get(0), { igGrid: self.igGrid });
             }
         }
-
     }
 
     /**

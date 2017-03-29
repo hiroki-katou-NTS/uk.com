@@ -43,20 +43,26 @@ public class WtItemDto {
 		WtItemDto dto = this;
 
 		// Transfer data
-		WtItem wtItem = new WtItem(new WtItemDtoGetMemento(dto));
+		WtItem wtItem = new WtItem(new WidGetMemento(dto));
 
 		return wtItem;
 	}
 
+	/**
+	 * From domain.
+	 *
+	 * @param wtHistory the wt history
+	 * @return the wt item dto
+	 */
 	public WtItemDto fromDomain(WtItem wtHistory) {
 		WtItemDto dto = this;
 
-		wtHistory.saveToMemento(new WtItemDtoSetMemento(dto));
+		wtHistory.saveToMemento(new WidSetMemento(dto));
 
 		return dto;
 	}
 
-	private class WtItemDtoSetMemento implements WtItemSetMemento {
+	private class WidSetMemento implements WtItemSetMemento {
 
 		/** The type value. */
 		protected WtItemDto dto;
@@ -67,7 +73,7 @@ public class WtItemDto {
 		 * @param typeValue
 		 *            the type value
 		 */
-		public WtItemDtoSetMemento(WtItemDto dto) {
+		public WidSetMemento(WtItemDto dto) {
 			this.dto = dto;
 		}
 
@@ -117,7 +123,7 @@ public class WtItemDto {
 		}
 	}
 
-	private class WtItemDtoGetMemento implements WtItemGetMemento {
+	private class WidGetMemento implements WtItemGetMemento {
 
 		/** The type value. */
 		protected WtItemDto dto;
@@ -128,7 +134,7 @@ public class WtItemDto {
 		 * @param typeValue
 		 *            the type value
 		 */
-		public WtItemDtoGetMemento(WtItemDto dto) {
+		public WidGetMemento(WtItemDto dto) {
 			this.dto = dto;
 		}
 
