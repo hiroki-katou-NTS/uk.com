@@ -56,7 +56,7 @@ module qmm034.a.viewmodel {
 
         }
 
-        processWhenCurrentCodeChange(codeChanged) {
+        processWhenCurrentCodeChange(codeChanged: any) {
             let self = this;
             self.countStartDateChange += 1;
             self.currentEra(self.getEra(codeChanged));
@@ -198,7 +198,7 @@ module qmm034.a.viewmodel {
             return dfd.promise();
         }
 
-        getEra(codeNew): EraModel {
+        getEra(codeNew: any): EraModel {
             let self = this;
             let era = _.find(self.items(), function(item) {
                 return item.eraName === codeNew;
@@ -238,7 +238,8 @@ module qmm034.a.viewmodel {
         refreshLayout(): void {
             let self = this;
             self.clearError();
-            self.currentEra(new EraModel('', '', new Date(self.currentEra().startDate().toString()), 1, '', new Date("")));
+            self.currentEra(new EraModel('', '', new Date(), 1, '', new Date()));
+            self.startDate(self.currentEra().startDate());
             self.currentCode(null);
             self.isDeleteEnable(false);
             self.isEnableCode(true);

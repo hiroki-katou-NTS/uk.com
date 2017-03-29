@@ -24,7 +24,7 @@ public class UpdateEraCommandHandler extends CommandHandler<UpdateEraCommand> {
 
 		Optional<Era> eraHistUpdate = this.eraRepository.getHistIdUpdate(era.getEraHist());
 		if (!eraHistUpdate.isPresent()) {
-			throw new BusinessException("eeeee");
+			throw new BusinessException("データが存在しません。");
 		};
 
 		Optional<Era> eraBefore = this.eraRepository.getEndDateBefore(eraHistUpdate.get().getStartDate().addDays(-1));
@@ -37,7 +37,7 @@ public class UpdateEraCommandHandler extends CommandHandler<UpdateEraCommand> {
 		if (eraBefore.isPresent()) {
 			if (eraHistUpdate.get().getStartDate().compareTo(eraBefore.get().getStartDate()) <= 0 ||
 					eraHistUpdate.get().getStartDate().compareTo(eraHistUpdate.get().getEndDate()) > 0) {
-				throw new BusinessException("the startDate is invalid");
+				throw new BusinessException("履歴の期間が正しくありません。");
 			}
 			eraBefore.get().setEndDate(era.getStartDate().addDays(-1));
 			this.eraRepository.update(eraHistUpdate.get());

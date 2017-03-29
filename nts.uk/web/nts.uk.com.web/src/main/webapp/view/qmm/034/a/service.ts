@@ -15,8 +15,8 @@ module qmm034.a.service {
         let dfd = $.Deferred<Array<viewmodel.EraModel>>();
         nts.uk.request.ajax(paths.getAllEras).done(function(res: Array<viewmodel.EraModel>) {
             dfd.resolve(res);
-        }).fail(function(res) {
-            dfd.reject(res);
+        }).fail(function(err: any) {
+            dfd.reject(err);
         })
         return dfd.promise();
 
@@ -46,23 +46,22 @@ module qmm034.a.service {
         let _path = nts.uk.text.format(paths.getFixAttribute, eraHist);
         nts.uk.request.ajax(_path).done(function(res: number) {
             dfd.resolve(res);
-        }).fail(function(res) {
-            dfd.reject(res);
-        })
+        }).fail(function(err: any) {
+            dfd.reject(err);
+        });
         return dfd.promise();
 
     }
 
-    export function addData(isUpdate, command): JQueryPromise<Array<any>> {
+    export function addData(isUpdate: boolean, command: any): JQueryPromise<Array<any>> {
         let dfd = $.Deferred<Array<any>>();
         let path = isUpdate ? paths.updateEra : paths.addEra;
         nts.uk.request.ajax(path, command)
             .done(function(res: Array<any>) {
                 dfd.resolve(res);
-            })
-            .fail(function(res) {
-                dfd.reject(res);
-            })
+            }).fail(function(err: any) {
+                dfd.reject(err);
+            });
         return dfd.promise();
     }
     export function deleteData(command: model.EraDtoDelete): JQueryPromise<any> {
@@ -71,10 +70,9 @@ module qmm034.a.service {
         nts.uk.request.ajax(paths.deleteEra, command)
             .done(function(res: Array<any>) {
                 dfd.resolve(res);
-            })
-            .fail(function(res) {
-                dfd.reject(res);
-            })
+            }).fail(function(err: any) {
+                dfd.reject(err);
+            });
         return dfd.promise();
     }
     export function checkStartDate(startDate: Date): JQueryPromise<any> {
