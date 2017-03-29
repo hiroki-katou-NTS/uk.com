@@ -18,6 +18,7 @@ import nts.uk.ctx.basic.infra.entity.system.bank.linebank.CbkmtLineBankPK;
 public class JpaLineBankRepository extends JpaRepository implements LineBankRepository {
 
 	private final String SEL_1 = "SELECT c FROM CbkmtLineBank c " + "WHERE c.cbkmtLineBankPK.companyCode = :CCD";
+	private final String SEL_3 = "SELECT f FROM CbkmtLineBank c " + "WHERE c.cbkmtLineBankPK.companyCode = :companyCode AND c.branchId IN :branchIdList ";
 
 	/**
 	 * convert data type from domain layer(Dom data type) to entity(Primary data
@@ -90,6 +91,14 @@ public class JpaLineBankRepository extends JpaRepository implements LineBankRepo
 				.getList(c -> toDomain(c));
 	}
 
+	@Override
+	public List<LineBank> find(String companyCode, List<String> branchIdList) {
+		return this.queryProxy().query(SEL_3, CbkmtLineBank.class)
+				.setParameter("companyCode", companyCode)
+				.setParameter("branchIdList", branchIdList)
+				.getList(x -> toDomain(x));
+	}
+	
 	@Override
 	public void add(LineBank lineBank) {
 		this.commandProxy().insert(toEntity(lineBank));

@@ -26,6 +26,14 @@ public interface LineBankRepository {
 	 * @return a line bank
 	 */
 	Optional<LineBank> find(String companyCode, String lineBankCode);
+	
+	/**
+	 * Find all line bank by branch id
+	 * @param companyCode company code
+	 * @param branchIdList list of branch id 
+	 * @return list of line bank
+	 */
+	List<LineBank> find(String companyCode, List<String> branchIdList);
 
 	/**
 	 * addition lineBank
