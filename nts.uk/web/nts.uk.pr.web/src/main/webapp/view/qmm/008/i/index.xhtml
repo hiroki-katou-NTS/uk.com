@@ -116,16 +116,6 @@
 							<tr class="bg-green">
 								<th data-bind="css: { hidden: leftShow() }" class="border_none"></th>
 									<com:ko tag="if" bind="leftShow()">
-										<com:ko tag="if" bind="pensionRateModel.fundInputApply == 1">
-											<com:ko tag="with" bind="pensionRateModel.fundRateItems">
-												<th class="halign-center" data-bind="text: salaryPersonalSonBurden()+'/1000'"></th>
-												<th class="halign-center" data-bind="text: salaryPersonalDaughterBurden()+'/1000'"></th>
-												<th class="halign-center" data-bind="text: salaryPersonalUnknownBurden()+'/1000'"></th>
-												<th class="halign-center" data-bind="text: salaryCompanySonBurden()+'/1000'"></th>
-												<th class="halign-center" data-bind="text: salaryCompanyDaughterBurden()+'/1000'"></th>
-												<th class="halign-center" data-bind="text: salaryCompanyUnknownBurden()+'/1000'"></th>
-											</com:ko>
-										</com:ko>
 										<com:ko tag="if" bind="pensionRateModel.fundInputApply == 0">
 											<com:ko tag="with" bind="pensionRateModel.rateItems">
 												<th class="halign-center" data-bind="text: pensionSalaryPersonalSon()+'/1000'"></th>
@@ -134,6 +124,16 @@
 												<th class="halign-center" data-bind="text: pensionSalaryCompanySon()+'/1000'"></th>
 												<th class="halign-center" data-bind="text: pensionSalaryCompanyDaughter()+'/1000'"></th>
 												<th class="halign-center" data-bind="text: pensionSalaryCompanyUnknown()+'/1000'"></th>
+											</com:ko>
+										</com:ko>
+										<com:ko tag="if" bind="pensionRateModel.fundInputApply == 1">
+											<com:ko tag="with" bind="pensionRateModel.fundRateItems">
+												<th class="halign-center" data-bind="text: salaryPersonalSonBurden()+'/1000'"></th>
+												<th class="halign-center" data-bind="text: salaryPersonalDaughterBurden()+'/1000'"></th>
+												<th class="halign-center" data-bind="text: salaryPersonalUnknownBurden()+'/1000'"></th>
+												<th class="halign-center" data-bind="text: salaryCompanySonBurden()+'/1000'"></th>
+												<th class="halign-center" data-bind="text: salaryCompanyDaughterBurden()+'/1000'"></th>
+												<th class="halign-center" data-bind="text: salaryCompanyUnknownBurden()+'/1000'"></th>
 											</com:ko>
 										</com:ko>
 									</com:ko>
