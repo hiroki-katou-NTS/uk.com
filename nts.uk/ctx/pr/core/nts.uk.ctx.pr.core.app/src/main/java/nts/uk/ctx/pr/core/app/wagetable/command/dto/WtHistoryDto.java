@@ -60,7 +60,7 @@ public class WtHistoryDto {
 
 		// Transfer data
 		WtHistory wageTableHistory = new WtHistory(
-				new WageTableHistoryDtoGetMemento(new WtCode(wageTableCode), dto));
+				new WtHistoryDtoGetMemento(new WtCode(wageTableCode), dto));
 
 		return wageTableHistory;
 	}
@@ -75,7 +75,7 @@ public class WtHistoryDto {
 	public WtHistoryDto fromDomain(WtHistory wtHistory) {
 		WtHistoryDto dto = this;
 
-		wtHistory.saveToMemento(new WageTableHistoryDtoSetMemento(dto));
+		wtHistory.saveToMemento(new WtHistoryDtoSetMemento(dto));
 
 		return dto;
 	}
@@ -83,7 +83,7 @@ public class WtHistoryDto {
 	/**
 	 * The Class WageTableHistoryDtoSetMemento.
 	 */
-	private class WageTableHistoryDtoSetMemento implements WtHistorySetMemento {
+	private class WtHistoryDtoSetMemento implements WtHistorySetMemento {
 
 		/** The dto. */
 		protected WtHistoryDto dto;
@@ -94,7 +94,7 @@ public class WtHistoryDto {
 		 * @param dto
 		 *            the dto
 		 */
-		public WageTableHistoryDtoSetMemento(WtHistoryDto dto) {
+		public WtHistoryDtoSetMemento(WtHistoryDto dto) {
 			this.dto = dto;
 		}
 
@@ -208,7 +208,7 @@ public class WtHistoryDto {
 	/**
 	 * The Class WageTableHistoryDtoGetMemento.
 	 */
-	private class WageTableHistoryDtoGetMemento implements WtHistoryGetMemento {
+	private class WtHistoryDtoGetMemento implements WtHistoryGetMemento {
 
 		/** The wage table code. */
 		protected WtCode wageTableCode;
@@ -224,7 +224,7 @@ public class WtHistoryDto {
 		 * @param dto
 		 *            the dto
 		 */
-		public WageTableHistoryDtoGetMemento(WtCode wageTableCode, WtHistoryDto dto) {
+		public WtHistoryDtoGetMemento(WtCode wageTableCode, WtHistoryDto dto) {
 			this.wageTableCode = wageTableCode;
 			this.dto = dto;
 		}
