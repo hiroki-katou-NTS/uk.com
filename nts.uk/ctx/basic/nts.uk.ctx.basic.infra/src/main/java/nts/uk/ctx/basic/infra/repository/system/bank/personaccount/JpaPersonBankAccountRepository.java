@@ -21,9 +21,9 @@ public class JpaPersonBankAccountRepository extends JpaRepository implements Per
 			+ " OR a.toBranchId5 = :branchId)";
 	
 	private final String SEL_1_1 = "SELECT a FROM PbamtPersonBankAccount a"
-			+ " WHERE a.pbamtPersonBankAccountPK.companyCode = :companyCode" + " AND (a.toBranchId1 IN :branchId"
-			+ " OR a.toBranchId2 IN :branchId" + " OR a.toBranchId3 IN :branchId" + " OR a.toBranchId4 IN :branchId"
-			+ " OR a.toBranchId5 IN :branchId)";
+			+ " WHERE a.pbamtPersonBankAccountPK.companyCode = :companyCode" + " AND (a.toBranchId1 IN :branchIdList"
+			+ " OR a.toBranchId2 IN :branchIdList" + " OR a.toBranchId3 IN :branchIdList" + " OR a.toBranchId4 IN :branchIdList"
+			+ " OR a.toBranchId5 IN :branchIdList)";
 	
 	private final String SEL_1_2 = "SELECT COUNT(a) FROM PbamtPersonBankAccount a"
 			+ " WHERE a.pbamtPersonBankAccountPK.companyCode = :companyCode" + " AND (a.toBranchId1 IN :branchId"

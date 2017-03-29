@@ -42,7 +42,6 @@ var qmm002;
                             }
                             else {
                                 nts.uk.ui.dialog.confirm("統合元から統合先へデータを置換えます。\r\nよろしいですか？").ifYes(function () {
-                                    debugger;
                                     var branchId = new Array();
                                     _.forEach(self.selectedCodes(), function (item) {
                                         var code = item.split('-');

@@ -44,7 +44,6 @@ module qmm002.c.viewmodel {
                         nts.uk.ui.dialog.alert("統合元と統合先で同じコードの＊が選択されています。\r\n");
                     } else {
                         nts.uk.ui.dialog.confirm("統合元から統合先へデータを置換えます。\r\nよろしいですか？").ifYes(function() {
-                            debugger;
                             var branchId = new Array();
                             _.forEach(self.selectedCodes(), function(item) {
                                 var code = item.split('-');

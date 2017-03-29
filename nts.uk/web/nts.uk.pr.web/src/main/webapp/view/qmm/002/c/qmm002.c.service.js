@@ -5,12 +5,12 @@ var qmm002;
         var service;
         (function (service) {
             var paths = {
-                tranfer: "basic/system/bank/branch/tranfer",
+                transfer: "basic/system/bank/branch/transfer",
                 getBankList: "basic/system/bank/find/all"
             };
             function tranferBranch(data) {
                 var dfd = $.Deferred();
-                nts.uk.request.ajax('com', paths.tranfer, data)
+                nts.uk.request.ajax('com', paths.transfer, data)
                     .done(function (res) {
                     dfd.resolve(res);
                 })
