@@ -21,7 +21,7 @@ module cmm001.a.service {
         return dfd.promise();
     }
     
-    export function getCompanyDetail(companyCd): JQueryPromise<any> {
+    export function getCompanyDetail(companyCd: string): JQueryPromise<any> {
         let dfd = $.Deferred<any>();
         nts.uk.request.ajax(paths.getCompanyDetail + "/" + companyCd)
             .done(function(res: any) {
@@ -44,7 +44,7 @@ module cmm001.a.service {
     }
 
     export function updateData(company: model.CompanyDto) {
-        let dfd = $.Deferred<Array<any>>();
+        var dfd = $.Deferred<Array<any>>();
         nts.uk.request.ajax(paths.updateCompany, company)
             .done(function(res: Array<any>) {
                 dfd.resolve(res);

@@ -3,6 +3,7 @@ module cmm001.a {
 
         gridColumns: KnockoutObservableArray<any>;
         currentCompany: KnockoutObservable<CompanyModel>;
+        currentCompanyCode: KnockoutObservable<string>;
         sel001Data: KnockoutObservableArray<CompanyModel>;
         tabs: KnockoutObservableArray<nts.uk.ui.NtsTabPanelModel>;
         selectedTab: KnockoutObservable<string>;
@@ -14,24 +15,14 @@ module cmm001.a {
         constructor() {
             let self = this;
             self.init();
-            self.currentCompany().companyCode.subscribe(function(newValue) {
-                if (!nts.uk.text.isNullOrEmpty(newValue) && (self.currentCompany().companyCode() !== self.previousCurrentCode)) {
+            self.currentCompanyCode.subscribe(function(newValue) {
+                if (!nts.uk.text.isNullOrEmpty(newValue) && self.currentCompanyCode() !== self.previousCurrentCode) {
+                    //goi check isDirty
                     if (self.dirtyObject.isDirty()) {
                         nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\nよろしいですか。?").ifYes(function() {
                             self.processWhenCurrentCodeChange(newValue);
                         }).ifCancel(function() {
-                            if (!self.checked()) {
-                                let $grid = $("#A_LST_001");
-                                var currentColumns = $grid.igGrid("option", "columns");
-                                var width = $grid.igGrid("option", "width");
-                                currentColumns[2].hidden = false;
-                                $grid.igGrid("option", "width", "400px");
-                                $grid.igGrid("option", "columns", currentColumns);
-                                self.sel001Data([]);
-                                self.start(self.previousCurrentCode);
-                            } else {
-                                self.currentCompany().companyCode(self.previousCurrentCode);
-                            }
+                            self.currentCompanyCode(self.previousCurrentCode);
                         })
                     } else {
                         self.processWhenCurrentCodeChange(newValue);
@@ -52,7 +43,6 @@ module cmm001.a {
                     self.sel001Data([]);
                     self.start(undefined);
                 } else {
-
                     self.sel001Data([]);
                     currentColumns[2].hidden = true;
                     $grid.igGrid("option", "width", "400px");
@@ -74,7 +64,6 @@ module cmm001.a {
                             if (self.sel001Data().length > 0) {
                                 if (!companyCheckExist) {
                                     self.currentCompany().companyCode(ko.toJS(self.sel001Data()[0].companyCode));
-                                    self.dirtyObject.reset();
                                 }
                             } else {
                                 self.resetData();
@@ -82,12 +71,11 @@ module cmm001.a {
                             }
                         }
                     });
-
-
                 }
                 $grid.igGrid("option", "columns", currentColumns);
             });
         }
+        
         processWhenCurrentCodeChange(newValue: string) {
             let self = this;
             service.getCompanyDetail(newValue).done(function(company: service.model.CompanyDto) {
@@ -96,13 +84,14 @@ module cmm001.a {
                         $('.save-error').ntsError('clear');
                     }
                     self.currentCompany().setDataForCurrentCompany(company);
-                    self.previousCurrentCode = self.currentCompany().companyCode();
+                    self.previousCurrentCode = newValue;
                     self.dirtyObject.reset();
                 } else {
                     self.currentCompany().resetCurrentCompany();
                 }
             });
         }
+        
         init(): void {
             let self = this;
             self.tabs = ko.observableArray([
@@ -118,23 +107,16 @@ module cmm001.a {
                 { headerText: '名称', prop: 'companyName', width: 200 },
                 { headerText: '廃止', prop: 'displayAttribute', width: 50, hidden: false }
             ]);
-
-            self.currentCompany = ko.observable(new CompanyModel({
-                companyCode: '',
-                address1: '',
-                companyName: '',
-                companyNameGlobal: '',
-                corporateMyNumber: '',
-                depWorkPlaceSet: 0,
-                displayAttribute: '',
-                termBeginMon: 0,
-                companyUseSet: null
-            }));
+            
+            self.currentCompany = ko.observable(null);
+            self.currentCompanyCode = ko.observable('');
+            
             self.sel001Data = ko.observableArray([]);
         }
 
         start(currentCode: string) {
             let self = this;
+            let dfd = $.Deferred<any>();
             service.getAllCompanys().done(function(data: Array<service.model.CompanyDto>) {
                 if (data.length > 0) {
                     self.isUpdate(true);
@@ -148,66 +130,61 @@ module cmm001.a {
                         }
                         self.sel001Data.push(ko.toJS(companyModel));
                     });
-                    self.dirtyObject = new nts.uk.ui.DirtyChecker(self.currentCompany);
                     if (currentCode === undefined) {
-                        self.currentCompany().setList(data);
-                        self.processWhenCurrentCodeChange(ko.toJS(self.sel001Data()[0].companyCode));
-                        self.previousCurrentCode = ko.toJS(self.sel001Data()[0].companyCode);
-                        self.currentCompany().companyCode(ko.toJS(self.sel001Data()[0].companyCode));
-
-
+                        self.currentCompany = ko.observable(new CompanyModel({
+                            companyCode: ko.toJS(self.sel001Data()[0].companyCode),
+                            address1: '',
+                            companyName: '',
+                            companyNameGlobal: '',
+                            corporateMyNumber: '',
+                            depWorkPlaceSet: 0,
+                            displayAttribute: '',
+                            termBeginMon: 0,
+                            companyUseSet: null
+                        }));
+                        self.dirtyObject = new nts.uk.ui.DirtyChecker(self.currentCompany); 
+                        self.currentCompanyCode(self.currentCompany().companyCode());
                     } else {
-                        self.currentCompany().setList(data);
-                        self.currentCompany().companyCode(currentCode);
-                        self.dirtyObject.reset();
-
+                        self.currentCompanyCode(currentCode);
                     }
                 } else {
                     self.isUpdate(false);
                 }
+                dfd.resolve();
             });
-
+            return dfd.promise();
         }
 
         resetData() {
             let self = this;
-            self.currentCompany().companyCode("");
-            if (self.dirtyObject.isDirty()) {
-                nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\nよろしいですか。?").ifYes(function() {
-                    self.dirtyObject.reset();
-                    self.currentCompany().address1("");
-                    self.currentCompany().addressKana1("");
-                    self.currentCompany().address2("");
-                    self.currentCompany().addressKana2("");
-                    self.currentCompany().companyName("");
-                    self.currentCompany().companyNameGlobal("");
-                    self.currentCompany().companyNameAbb('');
-                    self.currentCompany().companyNameKana('');
-                    self.currentCompany().corporateMyNumber('');
-                    self.currentCompany().companyUseSet(new CompanyUseSet(0, 0, 0));
-                    self.currentCompany().depWorkPlaceSet(0);
-                    self.currentCompany().displayAttribute('');
-                    self.currentCompany().faxNo('');
-                    self.currentCompany().telephoneNo('');
-                    self.currentCompany().postal('');
-                    self.currentCompany().presidentName('');
-                    self.currentCompany().presidentJobTitle('');
-                    self.currentCompany().termBeginMon(1);
-                    self.currentCompany().selectedRuleCode('0');
-                    self.currentCompany().selectedRuleCode1('0');
-                    self.currentCompany().selectedRuleCode2('0');
-                    self.currentCompany().selectedRuleCode3('0');
-                    self.currentCompany().isDelete(true);
-                    self.currentCompany().editMode = true;
-                    self.currentCompany().isEnableCompanyCode(true);
-                    self.currentCompany().hasFocus(true);
-                    self.isUpdate(false);
-                }).ifCancel(function() {
-                    self.sel001Data([]);
-                    self.start(self.previousCurrentCode);
-
-                });
-            }
+            self.currentCompany().companyCode(null);
+            self.currentCompany().address1("");
+            self.currentCompany().addressKana1("");
+            self.currentCompany().address2("");
+            self.currentCompany().addressKana2("");
+            self.currentCompany().companyName("");
+            self.currentCompany().companyNameGlobal("");
+            self.currentCompany().companyNameAbb('');
+            self.currentCompany().companyNameKana('');
+            self.currentCompany().corporateMyNumber('');
+            self.currentCompany().companyUseSet(new CompanyUseSet(0, 0, 0));
+            self.currentCompany().depWorkPlaceSet(0);
+            self.currentCompany().displayAttribute('');
+            self.currentCompany().faxNo('');
+            self.currentCompany().telephoneNo('');
+            self.currentCompany().postal('');
+            self.currentCompany().presidentName('');
+            self.currentCompany().presidentJobTitle('');
+            self.currentCompany().termBeginMon(1);
+            self.currentCompany().selectedRuleCode('0');
+            self.currentCompany().selectedRuleCode1('0');
+            self.currentCompany().selectedRuleCode2('0');
+            self.currentCompany().selectedRuleCode3('0');
+            self.currentCompany().isDelete(true);
+            self.currentCompany().editMode = true;
+            self.currentCompany().isEnableCompanyCode(true);
+            self.currentCompany().hasFocus(true);
+            self.isUpdate(false);
         }
 
         clickRegister() {
@@ -226,21 +203,19 @@ module cmm001.a {
             }
             let company: service.model.CompanyDto =
                 new service.model.CompanyDto("", "", "", "", "", "", "", "", "", 0, 0, "", "", "", "", "", 0, 0, 0, 0);
+            
             company = self.convertCompanyDto(currentCompany);
             if (self.isUpdate()) {
                 cmm001.a.service.updateData(company).done(function() {
                     self.sel001Data([]);
                     self.start(company.companyCode);
-                    self.dirtyObject.reset();
                 });
             } else {
                 cmm001.a.service.addData(company).done(function() {
                     self.sel001Data([]);
                     self.start(company.companyCode);
-                    self.dirtyObject.reset();
                 })
             }
-
         }
         convertCompanyDto(company: CompanyModel): service.model.CompanyDto {
             let companyDto: service.model.CompanyDto =
@@ -312,7 +287,6 @@ module cmm001.a {
         }
     }
     class CompanyModel {
-        sources: Array<any>;
         companyCode: KnockoutObservable<string>;
         isEnableCompanyCode: KnockoutObservable<boolean> = ko.observable(true);
         address1: KnockoutObservable<string>;
@@ -353,6 +327,7 @@ module cmm001.a {
 
         setDataForCurrentCompany(company: any) {
             let self = this;
+            self.companyCode(company.companyCode);
             self.companyName(company.companyName);
             self.companyNameGlobal(company.companyNameGlobal);
             self.companyNameAbb(company.companyNameAbb);
@@ -407,13 +382,8 @@ module cmm001.a {
             self.isDelete(false);
         }
 
-        setList(list: Array<any>) {
-            this.sources = list || [];
-        }
-
         init(param: ICompany) {
             let self = this;
-            self.sources = param.sources || [];
             self.companyCode = ko.observable(param.companyCode);
             self.address1 = ko.observable(param.address1);
             self.address2 = ko.observable(param.address2);
@@ -484,7 +454,6 @@ module cmm001.a {
         telephoneNo?: string;
         termBeginMon: number;
         companyUseSet: CompanyUseSet;
-        sources?: Array<any>;
         isDelete?: boolean;
     }
 

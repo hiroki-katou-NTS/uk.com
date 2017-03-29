@@ -52,8 +52,7 @@
 					<div id="tree" class="bg-green caret-right caret-background">
 						<div id="A_SEL_001"
 							data-bind="ntsCheckBox: {checked: checked, text: '廃止も表示する'}"
-							class="cf minimalist ntsCheckbox-left">
-						</div>
+							class="cf minimalist ntsCheckbox-left"></div>
 						<i class="icon icon-searchbox"></i>
 						<div style="margin-left: 30px; margin-top: 5px"
 							class="flex valign-center">
@@ -64,7 +63,7 @@
 								data-bind="ntsSearchBox: 
                     	       {comId: 'A_LST_001',
                     	        items: sel001Data, 
-                    	        selected: currentCompany().companyCode,
+                    	        selected: currentCompanyCode,
                     	        selectedKey: 'companyCode',
                     	        fields: ['companyName', 'companyCode']}" />
 						</div>
@@ -75,7 +74,7 @@
 								options: sel001Data,
 								optionsValue: 'companyCode',
 								columns: gridColumns,
-								value: currentCompany().companyCode }"
+								value: currentCompanyCode }"
 								class="cf"></table>
 
 						</div>
@@ -101,8 +100,7 @@
 							<div data-name="Check box"
 								data-bind="ntsCheckBox: {checked: isDelete, text: 'この会社を廃止する' }"
 								class="cf minimalist ntsCheckBox-right"></div>
-							<button style="width: 25px; height: 25px; margin-left: 20px;"
-								>?</button>
+							<button style="width: 25px; height: 25px; margin-left: 20px;">?</button>
 						</div>
 					</div>
 					<!-- table  -->
@@ -139,7 +137,6 @@
 											<input id="A_INP_004" class="save-error" data-name="会社名カナ"
 												data-bind="ntsTextEditor: {value: companyNameKana,
 												 constraint: 'CompanyNameKana',
-												 required: true,
 												 immediate: true}" />
 										</div>
 									</th>
@@ -155,7 +152,8 @@
 										<div>
 											<input id="A_INP_005" class="save-error" data-name="会社略名"
 												data-bind="ntsTextEditor: {value: companyNameAbb,
-												 constraint: 'CompanyNameAbb'}" />
+												 constraint: 'CompanyNameAbb',
+												 immediate: true}" />
 										</div>
 
 									</th>
@@ -188,7 +186,9 @@
 													<div>
 														<input id="B_INP_001" class="save-error"
 															data-name="法人マイナンバー"
-															data-bind="ntsTextEditor: {value: corporateMyNumber, constraint: 'CorporateMyNumber'}" />
+															data-bind="ntsTextEditor: {value: corporateMyNumber,
+															 constraint: 'CorporateMyNumber',
+															 immediate: true}" />
 													</div>
 												</th>
 											</tr>
@@ -204,7 +204,9 @@
 												<th colspan="2" class="th-col2">
 													<div>
 														<input id="B_INP_002" class="save-error" data-name="代表者名"
-															data-bind="ntsTextEditor: {value: presidentName, constraint: 'PresidentName'}" />
+															data-bind="ntsTextEditor: {value: presidentName,
+															 constraint: 'PresidentName',
+															 immediate: true}" />
 													</div>
 												</th>
 											</tr>
@@ -221,7 +223,9 @@
 												<th colspan="2" class="th-col2">
 													<div>
 														<input id="B_INP_003" class="save-error" data-name="代表者職位"
-															data-bind="ntsTextEditor: {value: presidentJobTitle, constraint: 'PresidentJobTitle'}" />
+															data-bind="ntsTextEditor: {value: presidentJobTitle,
+															 constraint: 'PresidentJobTitle',
+															 immediate: true}" />
 													</div>
 												</th>
 											</tr>
@@ -244,13 +248,16 @@
 												<th colspan="1" class="th-col-sub">
 													<div>
 														<input id="C_INP_001" class="save-error" data-name="郵便番号"
-															data-bind="ntsTextEditor: {value: postal, constraint: 'Postal'}" />
+															data-bind="ntsTextEditor: {value: postal,
+															 constraint: 'Postal',
+															 immediate: true}" />
 													</div>
 												</th>
 
 												<th colspan="1">
-													<button id="C_BTN_001" class="small"
-														data-bind="click: $parent.Browse">検索</button>
+													<button id="C_BTN_001" data-bind="click: $parent.Browse">
+														<label class="labelRed">〒</label>検索
+													</button>
 												</th>
 											</tr>
 
@@ -280,15 +287,16 @@
 											<!--  4 -->
 											<tr style="margin-top: 5px;">
 												<th colspan="1" class="th-col1">
-												<!-- <div data-bind="ntsFormLabel:{constraint: 'Address1'}"> -->
-												<label id="C_LBL_007">市区町村・番地</label>
-												<!-- </div> -->
+													<!-- <div data-bind="ntsFormLabel:{constraint: 'Address1'}"> -->
+													<label id="C_LBL_007">市区町村・番地</label> <!-- </div> -->
 												</th>
 
 												<th colspan="2" class="th-col2">
 													<div>
 														<input id="C_INP_002" class="save-error" data-name="住所１"
-															data-bind="ntsTextEditor: {value: address1, constraint: 'Address1'}"
+															data-bind="ntsTextEditor: {value: address1,
+															 constraint: 'Address1',
+															 immediate: true}"
 															type="text" placeholder=""
 															style="width: 200px; text-align: left; margin-bottom: 10px;">
 														</input>
@@ -303,7 +311,9 @@
 												<th colspan="2" class="th-col2">
 													<div>
 														<input id="C_INP_003" class="save-error" data-name="住所２"
-															data-bind="ntsTextEditor: {value: address2, constraint: 'Address2'}" />
+															data-bind="ntsTextEditor: {value: address2,
+															 constraint: 'Address2',
+															 immediate: true}" />
 													</div>
 												</th>
 											</tr>
@@ -458,8 +468,7 @@
 																			optionsText: 'name',
 																			value: selectedRuleCode3 }">
 															</div>
-															<button id="D_BTN_001"
-																data-bind="click: $parent.clickSel002">?</button>
+															<button id="D_BTN_001">?</button>
 														</div>
 													</th>
 												</tr>

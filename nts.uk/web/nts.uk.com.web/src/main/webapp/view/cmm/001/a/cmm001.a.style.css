@@ -187,12 +187,6 @@ button.search-btn {
 	margin-bottom: 10px !important;
 	
 } 
-/* 
-input#C_INP_002.save-error.nts-editor.nts-input {
-	width: 200px;
-	margin-bottom: 10px;
-} */
-
 #C_INP_004 {
 	width: 360px !important;
 	margin-bottom: 10px !important;
@@ -202,11 +196,6 @@ input#C_INP_002.save-error.nts-editor.nts-input {
 	margin-bottom: 10px !important;
 	
 } 
-
-#C_BTN_001 {
-	
-}
-
 #combo-box {
 	width: 125px;
 }
@@ -247,4 +236,8 @@ body > div:nth-child(4){
 }
 #contents-area > div.nts-right-content > div.table.fixed-height{
 	margin-top: 0px !important;
+}
+.labelRed {
+	font-weight: bold !important;
+	color: red !important;
 }
