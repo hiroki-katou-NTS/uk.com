@@ -152,11 +152,29 @@ var nts;
                                 };
                                 ScreenModel.prototype.validateData = function () {
                                     var self = this;
-                                    self.clearErrorSave();
-                                    $("save-error").ntsEditor("validate");
+                                    $("#inp_code").ntsEditor("validate");
+                                    $("#inp_name").ntsEditor("validate");
+                                    $("#inp_shortName").ntsEditor("validate");
+                                    $("#inp_picName").ntsEditor("validate");
+                                    $("#inp_picPosition").ntsEditor("validate");
+                                    $("#inp_postalCode").ntsEditor("validate");
+                                    $("#inp_address1st").ntsEditor("validate");
+                                    $("#inp_address2nd").ntsEditor("validate");
+                                    $("#inp_kanaAddress2nd").ntsEditor("validate");
+                                    $("#inp_phoneNumber").ntsEditor("validate");
+                                    $("#inp_citySign").ntsEditor("validate");
+                                    $("#inp_officeMark").ntsEditor("validate");
+                                    $("#inp_officeNoA").ntsEditor("validate");
+                                    $("#inp_officeNoB").ntsEditor("validate");
+                                    $("#inp_officeNoC").ntsEditor("validate");
                                 };
                                 ScreenModel.prototype.saveLaborInsuranceOffice = function () {
                                     var self = this;
+                                    self.clearErrorSave();
+                                    self.validateData();
+                                    if (!nts.uk.ui._viewModel.errors.isEmpty()) {
+                                        return;
+                                    }
                                     if (self.typeAction() == TypeActionLaborInsuranceOffice.add) {
                                         a.service.addLaborInsuranceOffice(self.collectData()).done(function () {
                                             self.reloadDataByAction();
