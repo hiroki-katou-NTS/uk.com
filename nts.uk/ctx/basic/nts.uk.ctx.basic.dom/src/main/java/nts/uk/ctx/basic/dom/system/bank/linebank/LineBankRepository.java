@@ -48,6 +48,14 @@ public interface LineBankRepository {
 	 * @param lineBank
 	 */
 	void update(LineBank lineBank);
+	
+	/**
+	 * Update multiple line bank by branch id
+	 * @param companyCode company code
+	 * @param oldBranchIdList list of branch id
+	 * @param newBranchId new branch id
+	 */
+	void updateByBranch(String companyCode, List<String> oldBranchIdList, String newBranchId);
 
 	/**
 	 * remove lineBank base on companyCode and lineBankCode

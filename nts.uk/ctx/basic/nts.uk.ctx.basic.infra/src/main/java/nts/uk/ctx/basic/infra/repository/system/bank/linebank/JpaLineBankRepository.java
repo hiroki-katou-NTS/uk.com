@@ -18,7 +18,8 @@ import nts.uk.ctx.basic.infra.entity.system.bank.linebank.CbkmtLineBankPK;
 public class JpaLineBankRepository extends JpaRepository implements LineBankRepository {
 
 	private final String SEL_1 = "SELECT c FROM CbkmtLineBank c " + "WHERE c.cbkmtLineBankPK.companyCode = :CCD";
-	private final String SEL_3 = "SELECT f FROM CbkmtLineBank c " + "WHERE c.cbkmtLineBankPK.companyCode = :companyCode AND c.branchId IN :branchIdList ";
+	private final String SEL_3 = "SELECT c FROM CbkmtLineBank c " + "WHERE c.cbkmtLineBankPK.companyCode = :companyCode AND c.branchId IN :branchIdList ";
+	private final String UDP_2 = "UPDATE CbkmtLineBank c SET c.branchId = :newBranchId WHERE c.cbkmtLineBankPK.companyCode = :companyCode AND c.branchId IN :branchIdList ";
 
 	/**
 	 * convert data type from domain layer(Dom data type) to entity(Primary data
@@ -108,7 +109,6 @@ public class JpaLineBankRepository extends JpaRepository implements LineBankRepo
 	public void remove(String companyCode, String lineBankCode) {
 		CbkmtLineBankPK cbkmtLineBankPK = new CbkmtLineBankPK(companyCode, lineBankCode);
 		this.commandProxy().remove(CbkmtLineBank.class, cbkmtLineBankPK);
-		;
 	}
 
 	@Override
@@ -117,6 +117,15 @@ public class JpaLineBankRepository extends JpaRepository implements LineBankRepo
 
 	}
 
+	@Override
+	public void updateByBranch(String companyCode, List<String> oldBranchIdList, String newBranchId) {
+		this.getEntityManager().createQuery(UDP_2)
+			.setParameter("companyCode", companyCode)
+			.setParameter("branchIdList", oldBranchIdList)
+			.setParameter("newBranchId", newBranchId)
+			.executeUpdate();
+	}
+	
 	@Override
 	public Optional<LineBank> find(String companyCode, String lineBankCode) {
 		CbkmtLineBankPK cbkmtLineBankPK = new CbkmtLineBankPK(companyCode, lineBankCode);
