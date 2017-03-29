@@ -53,7 +53,7 @@ public class AsposeWLNewLayoutReportGenerator extends WageLedgerBaseGenerator im
 	private static final int AMOUNT_COLUMN_BONUS_PART = 6;
 	
 	/** The Constant MAX_ROW_ON_ONE_PAGE. */
-	private static final int MAX_ROW_ON_ONE_PAGE = 54;
+	private static final int MAX_ROW_ON_ONE_PAGE = 56;
 	
 	/** The Constant MAX_RECORD_ON_ONE_PAGE. */
 	private static final int MAX_RECORD_ON_ONE_PAGE = 40;
@@ -81,7 +81,7 @@ public class AsposeWLNewLayoutReportGenerator extends WageLedgerBaseGenerator im
 			MutableInt currentRow = new MutableInt(MAX_ROW_ON_ONE_PAGE + ROW_START_REPORT);
 			
 			// ======================== Fill header data.========================
-//			this.fillHeaderData(reportContext, reportData.headerData);
+			this.fillHeaderData(reportContext, reportData.headerData);
 			
 			// ======================== Fill Total part.========================
 			this.setDataSourceForTotalPart(reportContext, reportData);
@@ -132,7 +132,7 @@ public class AsposeWLNewLayoutReportGenerator extends WageLedgerBaseGenerator im
 			// Set print area.
 			Worksheet ws = reportContext.getDesigner().getWorkbook().getWorksheets().get(0);
 			PageSetup pageSetup = ws.getPageSetup();
-			Cell endCell = ws.getCells().get(currentRow.intValue(), 13);
+			Cell endCell = ws.getCells().get(currentRow.intValue(), 12);
 			pageSetup.setPrintArea("A1:" + endCell.getName());
 			
 			// process data binginds in template
