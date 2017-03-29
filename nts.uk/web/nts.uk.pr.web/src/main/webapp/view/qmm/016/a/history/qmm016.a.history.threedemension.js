@@ -29,7 +29,6 @@ var nts;
                                     self.datasourceMap = [];
                                     self.selectedElement3ItemId.subscribe(function (id) {
                                         if (id && self.datasourceMap[id]) {
-                                            ko.cleanNode($('#dataTable').get(0));
                                             self.initIgGrid(self.datasourceMap[id]);
                                         }
                                     });
@@ -56,6 +55,7 @@ var nts;
                                         });
                                         self.buildElement3Infomation();
                                     }
+                                    return $.Deferred().resolve().promise();
                                 };
                                 ThreeDemensionViewModel.prototype.onRefreshElement = function () {
                                     var self = this;
@@ -115,7 +115,7 @@ var nts;
                                     var columns = [];
                                     var columnSettings = [];
                                     columns.push({ headerText: 'UUID', dataType: 'string', key: 'uuid', width: '100px', hidden: true });
-                                    columns.push({ headerText: self.elementSettings[0].demensionName, dataType: 'string', key: 'name', width: '100px', columnCssClass: "bgFirstCol" });
+                                    columns.push({ headerText: self.elementSettings[0].demensionName, dataType: 'string', key: 'name', width: '100px', columnCssClass: "bgIgCol" });
                                     columnSettings.push({ columnKey: 'uuid', readOnly: true });
                                     columnSettings.push({ columnKey: 'name', readOnly: true });
                                     var secondDemensionElements = self.elementSettings[1];

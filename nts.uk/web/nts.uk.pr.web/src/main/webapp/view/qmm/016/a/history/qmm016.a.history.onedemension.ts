@@ -29,9 +29,12 @@ module nts.uk.pr.view.qmm016.a.history {
         /**
          * On load processing.
          */
-        onLoad(): void {
+        onLoad(): JQueryPromise<any> {
             var self = this;
+            var dfd = $.Deferred();
+            dfd.resolve();
             self.initIgGrid();
+            return dfd.promise();
         }
 
         /**
@@ -72,7 +75,7 @@ module nts.uk.pr.view.qmm016.a.history {
                 autoCommit: true,
                 columns: [
                     { headerText: 'Element Name', dataType: 'string', key: 'uuid', hidden: true},
-                    { headerText: self.elementSettings[0].demensionName, dataType: 'string', key: 'name', width: '50%', columnCssClass: "bgFirstCol"},
+                    { headerText: self.elementSettings[0].demensionName, dataType: 'string', key: 'name', width: '50%', columnCssClass: "bgIgCol"},
                     { headerText: '値', dataType: 'number', key: 'amount', width: '50%', columnCssClass: "halign-right"}
                 ]
             });

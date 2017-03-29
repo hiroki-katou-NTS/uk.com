@@ -288,8 +288,9 @@ var nts;
                                     self.detailViewModel = this.getDetailViewModelByType(head.mode);
                                     $('#detailContainer').load(self.detailViewModel.htmlPath, function () {
                                         var element = $('#detailContainer').children().get(0);
-                                        self.detailViewModel.onLoad();
-                                        ko.applyBindings(self.detailViewModel, element);
+                                        self.detailViewModel.onLoad().done(function () {
+                                            ko.applyBindings(self.detailViewModel, element);
+                                        });
                                     });
                                 };
                                 HistoryViewModel.prototype.generateItem = function () {
@@ -328,6 +329,8 @@ var nts;
                                             return new qmm016.a.history.TwoDemensionViewModel(self.history);
                                         case 2:
                                             return new qmm016.a.history.ThreeDemensionViewModel(self.history);
+                                        case 3:
+                                            return new qmm016.a.history.CertificateViewModel(self.history);
                                         case 4:
                                             return new qmm016.a.history.ThreeDemensionViewModel(self.history);
                                         default:
