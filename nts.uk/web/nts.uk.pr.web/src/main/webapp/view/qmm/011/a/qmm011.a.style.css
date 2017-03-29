@@ -120,6 +120,10 @@ button.nts-switch-button {
 	height: 30px;
 }
 
+.text_right {
+	text-align: right;
+}
+
 .hr_width {
 	width: 99%
 }
