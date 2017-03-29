@@ -102,16 +102,16 @@ public class JpaUnemployeeInsuranceRateItemGetMemento implements UnemployeeInsur
 
 		case Contruction:
 			unemployeeInsuranceRateItemSetting
-				.setRate(Double.valueOf(String.valueOf(this.typeValue.getPEmpRateConst())));
+				.setRate(Double.valueOf(String.valueOf(this.typeValue.getPEmpRateOther())));
 			unemployeeInsuranceRateItemSetting
-				.setRoundAtr(RoundingMethod.valueOf(this.typeValue.getPEmpRoundConst()));
+				.setRoundAtr(RoundingMethod.valueOf(this.typeValue.getPEmpRoundOther()));
 			break;
 
 		case Other:
 			unemployeeInsuranceRateItemSetting
-				.setRate(Double.valueOf(String.valueOf(this.typeValue.getPEmpRateOther())));
+				.setRate(Double.valueOf(String.valueOf(this.typeValue.getPEmpRateConst())));
 			unemployeeInsuranceRateItemSetting
-				.setRoundAtr(RoundingMethod.valueOf(this.typeValue.getPEmpRoundOther()));
+				.setRoundAtr(RoundingMethod.valueOf(this.typeValue.getPEmpRoundConst()));
 			break;
 		}
 		return unemployeeInsuranceRateItemSetting;

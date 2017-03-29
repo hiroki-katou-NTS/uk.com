@@ -25,7 +25,7 @@ import nts.uk.shr.com.context.LoginUserContext;
 /**
  * The Class InitWtableWs.
  */
-@Path("pr/proto/wagetable/init")
+@Path("pr/proto/wagetable/sp")
 @Produces(MediaType.APPLICATION_JSON)
 public class InitWtableWs extends WebService {
 

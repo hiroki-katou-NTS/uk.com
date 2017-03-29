@@ -96,19 +96,15 @@ var nts;
                                             history: history,
                                             removeMasterOnLastHistoryRemove: false,
                                             onDeleteCallBack: function (data) {
-                                                nts.uk.ui.dialog.confirm(self.messageList()[4].message).ifYes(function () {
-                                                    var unemployeeInsuranceDeleteDto;
-                                                    unemployeeInsuranceDeleteDto = new UnemployeeInsuranceDeleteDto();
-                                                    unemployeeInsuranceDeleteDto.code = data.historyId;
-                                                    unemployeeInsuranceDeleteDto.version = 0;
-                                                    a.service.deleteUnemployeeInsurance(unemployeeInsuranceDeleteDto).done(function (data) {
-                                                        self.typeActionUnemployeeInsurance(TypeActionInsuranceRate.add);
-                                                        self.reloadDataUnemployeeInsuranceRateByAction();
-                                                    }).fail(function (error) {
-                                                        self.showMessageSaveUnemployeeInsurance(error.message);
-                                                    });
-                                                }).ifNo(function () {
+                                                var unemployeeInsuranceDeleteDto;
+                                                unemployeeInsuranceDeleteDto = new UnemployeeInsuranceDeleteDto();
+                                                unemployeeInsuranceDeleteDto.code = data.historyId;
+                                                unemployeeInsuranceDeleteDto.version = 0;
+                                                a.service.deleteUnemployeeInsurance(unemployeeInsuranceDeleteDto).done(function (data) {
+                                                    self.typeActionUnemployeeInsurance(TypeActionInsuranceRate.add);
                                                     self.reloadDataUnemployeeInsuranceRateByAction();
+                                                }).fail(function (error) {
+                                                    self.showMessageSaveUnemployeeInsurance(error.message);
                                                 });
                                             },
                                             onUpdateCallBack: function (data) {
@@ -246,19 +242,15 @@ var nts;
                                             history: history,
                                             removeMasterOnLastHistoryRemove: false,
                                             onDeleteCallBack: function (data) {
-                                                nts.uk.ui.dialog.confirm(self.messageList()[4].message).ifYes(function () {
-                                                    var accidentInsuranceRateDeleteDto;
-                                                    accidentInsuranceRateDeleteDto = new AccidentInsuranceRateDeleteDto();
-                                                    accidentInsuranceRateDeleteDto.code = data.historyId;
-                                                    accidentInsuranceRateDeleteDto.version = 0;
-                                                    a.service.deleteAccidentInsuranceRate(accidentInsuranceRateDeleteDto).done(function (data) {
-                                                        self.typeActionAccidentInsurance(TypeActionInsuranceRate.add);
-                                                        self.reloadDataAccidentInsuranceRateByAction();
-                                                    }).fail(function (error) {
-                                                        self.showMessageSaveAccidentInsurance(error.messageId);
-                                                    });
-                                                }).ifNo(function () {
+                                                var accidentInsuranceRateDeleteDto;
+                                                accidentInsuranceRateDeleteDto = new AccidentInsuranceRateDeleteDto();
+                                                accidentInsuranceRateDeleteDto.code = data.historyId;
+                                                accidentInsuranceRateDeleteDto.version = 0;
+                                                a.service.deleteAccidentInsuranceRate(accidentInsuranceRateDeleteDto).done(function (data) {
+                                                    self.typeActionAccidentInsurance(TypeActionInsuranceRate.add);
                                                     self.reloadDataAccidentInsuranceRateByAction();
+                                                }).fail(function (error) {
+                                                    self.showMessageSaveAccidentInsurance(error.messageId);
                                                 });
                                             },
                                             onUpdateCallBack: function (data) {
