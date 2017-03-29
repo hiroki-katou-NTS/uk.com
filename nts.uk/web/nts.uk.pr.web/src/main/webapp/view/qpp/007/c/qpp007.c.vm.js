@@ -19,10 +19,10 @@ var nts;
                                     self.isNewMode = ko.observable(true);
                                     self.outputSettings = ko.observableArray([]);
                                     self.outputSettingSelectedCode = ko.observable('');
-                                    self.outputSettingDetailModel = ko.observable(new OutputSettingDetailModel([]));
+                                    self.outputSettingDetailModel = ko.observable(new OutputSettingDetailModel(ko.observableArray([])));
                                     self.reportItems = ko.observableArray([]);
                                     self.reportItemSelected = ko.observable('');
-                                    self.allAggregateItems = [];
+                                    self.allAggregateItems = ko.observableArray([]);
                                     for (var i = 1; i < 30; i++) {
                                         this.outputSettings.push(new OutputSettingHeader('00' + i, '基本給' + i));
                                     }
@@ -102,18 +102,9 @@ var nts;
                                 };
                                 ScreenModel.prototype.save = function () {
                                     var self = this;
-                                    $('#inpCode').ntsError('clear');
-                                    $('#inpName').ntsError('clear');
-                                    var hasError = false;
-                                    if (self.outputSettingDetailModel().settingCode() == '') {
-                                        $('#inpCode').ntsError('set', '未入力エラー');
-                                        hasError = true;
-                                    }
-                                    if (self.outputSettingDetailModel().settingName() == '') {
-                                        $('#inpName').ntsError('set', '未入力エラー');
-                                        hasError = true;
-                                    }
-                                    if (hasError) {
+                                    self.clearError();
+                                    self.validate();
+                                    if (!nts.uk.ui._viewModel.errors.isEmpty()) {
                                         return;
                                     }
                                     var data = self.collectData();
@@ -128,6 +119,14 @@ var nts;
                                         self.loadAllOutputSetting();
                                     });
                                 };
+                                ScreenModel.prototype.clearError = function () {
+                                    $('#inpCode').ntsError('clear');
+                                    $('#inpName').ntsError('clear');
+                                };
+                                ScreenModel.prototype.validate = function () {
+                                    $('#inpCode').ntsEditor('validate');
+                                    $('#inpName').ntsEditor('validate');
+                                };
                                 ScreenModel.prototype.remove = function () {
                                     var _this = this;
                                     if (this.outputSettingSelectedCode) {
@@ -135,27 +134,34 @@ var nts;
                                     }
                                 };
                                 ScreenModel.prototype.commonSettingBtnClick = function () {
-                                    nts.uk.ui.windows.sub.modal('/view/qpp/007/j/index.xhtml', { title: '集計項目の設定', dialogClass: 'no-close' });
+                                    var self = this;
+                                    nts.uk.ui.windows.sub.modal('/view/qpp/007/j/index.xhtml', { title: '集計項目の設定', dialogClass: 'no-close' })
+                                        .onClosed(function () {
+                                        self.loadAggregateItems().done(function () {
+                                            self.loadOutputSettingDetail(self.outputSettingDetailModel().settingCode());
+                                        });
+                                    });
                                 };
                                 ScreenModel.prototype.onNewModeBtnClick = function () {
                                     var self = this;
+                                    self.clearError();
                                     self.enableNewMode();
                                 };
                                 ScreenModel.prototype.enableNewMode = function () {
                                     var self = this;
-                                    self.outputSettingDetailModel(new OutputSettingDetailModel([]));
+                                    self.outputSettingDetailModel(new OutputSettingDetailModel(ko.observableArray([])));
                                     self.outputSettingSelectedCode(null);
                                     self.isNewMode(true);
                                 };
                                 ScreenModel.prototype.onSelectOutputSetting = function (id) {
                                     var self = this;
-                                    $('.save-error').ntsError('clear');
                                     if (!id) {
                                         return;
                                     }
                                     self.loadOutputSettingDetail(id).done(function () {
                                         self.isNewMode(false);
                                         self.isLoading(false);
+                                        self.clearError();
                                     });
                                 };
                                 ScreenModel.prototype.loadAllOutputSetting = function () {
@@ -186,6 +192,7 @@ var nts;
                                     var self = this;
                                     var dfd = $.Deferred();
                                     c.service.findAllAggregateItems().done(function (res) {
+                                        self.allAggregateItems.removeAll();
                                         res.forEach(function (item) {
                                             self.allAggregateItems.push({
                                                 code: item.salaryAggregateItemCode,
@@ -294,14 +301,14 @@ var nts;
                                     self.outputItemSelected = ko.observable(null);
                                     self.outputItemsSelected = ko.observableArray([]);
                                     if (categoryName == SalaryCategory.PAYMENT) {
-                                        aggregateItems.forEach(function (item) {
+                                        aggregateItems().forEach(function (item) {
                                             if (item.taxDivision == TaxDivision.PAYMENT) {
                                                 self.aggregateItems.push(item);
                                             }
                                         });
                                     }
                                     if (categoryName == SalaryCategory.DEDUCTION) {
-                                        aggregateItems.forEach(function (item) {
+                                        aggregateItems().forEach(function (item) {
                                             if (item.taxDivision == TaxDivision.DEDUCTION) {
                                                 self.aggregateItems.push(item);
                                             }
