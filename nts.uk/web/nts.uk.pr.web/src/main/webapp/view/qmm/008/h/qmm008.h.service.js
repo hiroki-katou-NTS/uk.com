@@ -12,16 +12,10 @@ var nts;
                     (function (h) {
                         var service;
                         (function (service) {
-                            /**
-                             *  Service paths
-                             */
                             var paths = {
                                 updateHealthInsuranceAvgearn: "ctx/pr/core/insurance/social/healthavgearn/update",
                                 findHealthInsuranceAvgEarn: "ctx/pr/core/insurance/social/healthavgearn/find",
                             };
-                            /**
-                             *  Save List Health Insurance Average Earn
-                             */
                             function updateHealthInsuranceAvgearn(list, officeCode) {
                                 var dfd = $.Deferred();
                                 var data = { listHealthInsuranceAvgearn: list, officeCode: officeCode };
@@ -31,9 +25,6 @@ var nts;
                                 return dfd.promise();
                             }
                             service.updateHealthInsuranceAvgearn = updateHealthInsuranceAvgearn;
-                            /**
-                             *  Find list HealthInsuranceAvgEarn by historyId
-                             */
                             function findHealthInsuranceAvgEarn(historyId) {
                                 var dfd = $.Deferred();
                                 nts.uk.request.ajax(paths.findHealthInsuranceAvgEarn + '/' + historyId)
@@ -53,3 +44,4 @@ var nts;
         })(pr = uk.pr || (uk.pr = {}));
     })(uk = nts.uk || (nts.uk = {}));
 })(nts || (nts = {}));
+//# sourceMappingURL=qmm008.h.service.js.map
