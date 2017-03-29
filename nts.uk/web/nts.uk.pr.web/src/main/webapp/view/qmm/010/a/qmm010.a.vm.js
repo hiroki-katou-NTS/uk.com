@@ -150,6 +150,11 @@ var nts;
                                         $('#inp_code').ntsError('set', message);
                                     }
                                 };
+                                ScreenModel.prototype.validateData = function () {
+                                    var self = this;
+                                    self.clearErrorSave();
+                                    $("save-error").ntsEditor("validate");
+                                };
                                 ScreenModel.prototype.saveLaborInsuranceOffice = function () {
                                     var self = this;
                                     if (self.typeAction() == TypeActionLaborInsuranceOffice.add) {
@@ -396,9 +401,19 @@ var nts;
                                 };
                                 LaborInsuranceOfficeModel.prototype.searchZipCode = function () {
                                     var self = this;
+                                    var messageList = [
+                                        { messageId: "ER001", message: "＊が入力されていません。" },
+                                        { messageId: "ER005", message: "入力した＊は既に存在しています。\r\n ＊を確認してください。" },
+                                        { messageId: "ER010", message: "対象データがありません。" }
+                                    ];
                                     nts.uk.pr.view.base.postcode.service.findPostCodeZipCodeToRespone(self.postalCode()).done(function (data) {
                                         if (data.errorCode == '0') {
-                                            $('#inp_postalCode').ntsError('set', data.message);
+                                            for (var _i = 0, messageList_1 = messageList; _i < messageList_1.length; _i++) {
+                                                var datamessage = messageList_1[_i];
+                                                if (datamessage.messageId == data.message) {
+                                                    $('#inp_postalCode').ntsError('set', datamessage.message);
+                                                }
+                                            }
                                         }
                                         else if (data.errorCode == '1') {
                                             self.setPostCode(data.postcode);
@@ -407,7 +422,12 @@ var nts;
                                         else {
                                             nts.uk.pr.view.base.postcode.service.findPostCodeZipCodeSelection(self.postalCode()).done(function (res) {
                                                 if (res.errorCode == '0') {
-                                                    $('#inp_postalCode').ntsError('set', res.message);
+                                                    for (var _i = 0, messageList_2 = messageList; _i < messageList_2.length; _i++) {
+                                                        var datamessage = messageList_2[_i];
+                                                        if (datamessage.messageId == res.message) {
+                                                            $('#inp_postalCode').ntsError('set', datamessage.message);
+                                                        }
+                                                    }
                                                 }
                                                 else if (res.errorCode == '1') {
                                                     self.setPostCode(res.postcode);
