@@ -86,7 +86,7 @@ public class RegisterPensionCommandHandler extends CommandHandler<RegisterPensio
 
 		List<PensionAvgearn> listPensionAvgearn = listAvgEarnLevelMasterSetting.stream()
 				.map(setting -> {
-					return new PensionAvgearn(new PensionAvgearnMemento(pensionRate.getHistoryId(),
+					return new PensionAvgearn(new PaGetMemento(pensionRate.getHistoryId(),
 							setting, pensionRate.getFundRateItems(),
 							pensionRate.getChildContributionRate().v()));
 				}).collect(Collectors.toList());
@@ -97,7 +97,7 @@ public class RegisterPensionCommandHandler extends CommandHandler<RegisterPensio
 	/**
 	 * The Class PensionAvgearnMemento.
 	 */
-	private class PensionAvgearnMemento implements PensionAvgearnGetMemento {
+	private class PaGetMemento implements PensionAvgearnGetMemento {
 
 		/** The history id. */
 		protected String historyId;
@@ -123,7 +123,7 @@ public class RegisterPensionCommandHandler extends CommandHandler<RegisterPensio
 		 * @param childContributionRate
 		 *            the child contribution rate
 		 */
-		public PensionAvgearnMemento(String historyId, AvgEarnLevelMasterSetting setting,
+		public PaGetMemento(String historyId, AvgEarnLevelMasterSetting setting,
 				Set<FundRateItem> rateItems, BigDecimal childContributionRate) {
 			this.setting = setting;
 			this.rateItems = rateItems;
