@@ -198,6 +198,7 @@ module nts.uk.pr.view.qmm008.e {
             //save (mode: update or create new)
             public save() {
                 var self = this;
+                self.dirty.reset();
                 //if update office
                 if (!self.enabled())
                     self.updateOffice();

@@ -6,9 +6,9 @@ package nts.uk.ctx.pr.core.dom.wagetable.history.element.item.generator;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 import javax.ejb.Stateless;
@@ -28,6 +28,15 @@ import nts.uk.ctx.pr.core.dom.wagetable.history.element.item.RangeItem;
 @Stateless
 public class StepItemGenerator implements ItemGenerator {
 
+	/** The unit l1. */
+	private final BigDecimal UNIT_L1 = BigDecimal.ONE;
+
+	/** The unit l2. */
+	private final BigDecimal UNIT_L2 = BigDecimal.valueOf(0.1d);
+
+	/** The unit l3. */
+	private final BigDecimal UNIT_L3 = BigDecimal.valueOf(0.01d);
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -45,6 +54,12 @@ public class StepItemGenerator implements ItemGenerator {
 
 		// Get min step
 		BigDecimal minStep = this.getMinUnit(lowerLimit, upperLimit, interval);
+
+		// Ignore special case : init history.
+		if (upperLimit.compareTo(BigDecimal.ZERO) == 0 && lowerLimit.compareTo(BigDecimal.ZERO) == 0
+				&& interval.compareTo(BigDecimal.ZERO) == 0) {
+			return Collections.emptyList();
+		}
 
 		// Lower limit is always less than upper limit.
 		if (upperLimit.compareTo(lowerLimit) < 0) {
@@ -71,7 +86,6 @@ public class StepItemGenerator implements ItemGenerator {
 				.collect(Collectors.toMap(item -> this.getUniqueCode(item), RangeItem::getUuid));
 
 		List<RangeItem> items = new ArrayList<>();
-
 		int index = 0;
 		BigDecimal start = lowerLimit;
 		while (start.compareTo(upperLimit) <= 0) {
@@ -86,7 +100,16 @@ public class StepItemGenerator implements ItemGenerator {
 			rangeItem = new RangeItem(index, start,
 					((end.compareTo(upperLimit) <= 0) ? end : upperLimit),
 					mapRangeItems.getOrDefault(this.getUniqueCode(rangeItem), rangeItem.getUuid()));
-			rangeItem.setDisplayName(rangeItem.getStartVal() + "～" + rangeItem.getEndVal());
+
+			if (rangeItem.getStartVal().compareTo(rangeItem.getEndVal()) == 0) {
+				rangeItem.setDisplayName(rangeItem.getStartVal()
+						.setScale(this.getScale(rangeItem.getStartVal())).toEngineeringString());
+			} else {
+				rangeItem.setDisplayName(rangeItem.getStartVal()
+						.setScale(this.getScale(rangeItem.getStartVal())).toEngineeringString()
+						+ "～" + rangeItem.getEndVal().setScale(this.getScale(rangeItem.getEndVal()))
+								.toEngineeringString());
+			}
 
 			items.add(rangeItem);
 
@@ -106,6 +129,28 @@ public class StepItemGenerator implements ItemGenerator {
 	private String getUniqueCode(RangeItem rangeItem) {
 		return String.format("%s:%s:%s", rangeItem.getOrderNumber().toString(),
 				rangeItem.getStartVal().toString(), rangeItem.getEndVal().toString());
+	}
+
+	/**
+	 * Gets the scale.
+	 *
+	 * @param num
+	 *            the num
+	 * @return the scale
+	 */
+	private Integer getScale(BigDecimal num) {
+		num = num.multiply(BigDecimal.valueOf(100d));
+		if (num.doubleValue() == BigDecimal.ZERO.doubleValue()) {
+			return 0;
+		}
+
+		int counter = 2;
+		while (num.remainder(BigDecimal.valueOf(10d)).intValue() == BigDecimal.ZERO.intValue()) {
+			counter--;
+			num = num.divide(BigDecimal.valueOf(10d));
+		}
+
+		return counter;
 	}
 
 	/*
@@ -148,13 +193,13 @@ public class StepItemGenerator implements ItemGenerator {
 		num = num.multiply(BigDecimal.valueOf(100d));
 
 		if (BigDecimal.ZERO.intValue() == num.remainder(BigDecimal.valueOf(100d)).intValue()) {
-			return BigDecimal.ONE;
+			return UNIT_L1;
 		}
 
 		if (BigDecimal.ZERO.intValue() == num.remainder(BigDecimal.valueOf(10d)).intValue()) {
-			return BigDecimal.valueOf(0.1d);
+			return UNIT_L2;
 		}
 
-		return BigDecimal.valueOf(0.01d);
+		return UNIT_L3;
 	}
 }

@@ -155,6 +155,7 @@ var nts;
                                 };
                                 ScreenModel.prototype.save = function () {
                                     var self = this;
+                                    self.dirty.reset();
                                     if (!self.enabled())
                                         self.updateOffice();
                                     else {

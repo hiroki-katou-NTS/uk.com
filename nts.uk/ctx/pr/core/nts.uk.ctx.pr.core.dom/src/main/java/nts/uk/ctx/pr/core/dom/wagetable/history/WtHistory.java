@@ -93,7 +93,7 @@ public class WtHistory extends DomainObject implements History<WtHistory> {
 				StepElementSetting stepElementSetting = new StepElementSetting(
 						element.getDemensionNo(), element.getType(), Collections.emptyList());
 				stepElementSetting.setSetting(new RangeLimit(BigDecimal.ZERO),
-						new RangeLimit(BigDecimal.ZERO), new RangeLimit(BigDecimal.ONE));
+						new RangeLimit(BigDecimal.ZERO), new RangeLimit(BigDecimal.ZERO));
 				elementSettings.add(stepElementSetting);
 			}
 		}
