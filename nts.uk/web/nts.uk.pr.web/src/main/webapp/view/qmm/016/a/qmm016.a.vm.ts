@@ -133,6 +133,19 @@ module nts.uk.pr.view.qmm016.a {
                 self.selectedTab('tab-1');
                 self.head.reset();
             }
+            
+            /**
+             * Show group setting screen.
+             */
+            btnGroupSettingClick(): void {
+                var self = this;
+                var ntsDialogOptions = {
+                    title: '資格グループの設定',
+                    dialogClass: 'no-close'
+                };
+                nts.uk.ui.windows.sub.modal('/view/qmm/016/l/index.xhtml', ntsDialogOptions);
+            
+            }
         }
 
         /**

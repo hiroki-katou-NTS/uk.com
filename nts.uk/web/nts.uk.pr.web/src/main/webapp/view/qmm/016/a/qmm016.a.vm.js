@@ -104,6 +104,14 @@ var nts;
                                     self.selectedTab('tab-1');
                                     self.head.reset();
                                 };
+                                ScreenModel.prototype.btnGroupSettingClick = function () {
+                                    var self = this;
+                                    var ntsDialogOptions = {
+                                        title: '資格グループの設定',
+                                        dialogClass: 'no-close'
+                                    };
+                                    nts.uk.ui.windows.sub.modal('/view/qmm/016/l/index.xhtml', ntsDialogOptions);
+                                };
                                 return ScreenModel;
                             }(view.base.simplehistory.viewmodel.ScreenBaseModel));
                             viewmodel.ScreenModel = ScreenModel;
