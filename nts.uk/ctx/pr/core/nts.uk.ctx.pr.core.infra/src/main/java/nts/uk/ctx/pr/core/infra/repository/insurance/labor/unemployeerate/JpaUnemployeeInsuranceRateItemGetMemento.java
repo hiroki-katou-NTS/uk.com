@@ -53,10 +53,10 @@ public class JpaUnemployeeInsuranceRateItemGetMemento implements UnemployeeInsur
 	@Override
 	public UnemployeeInsuranceRateItemSetting getCompanySetting() {
 		UnemployeeInsuranceRateItemSetting unemployeeInsuranceRateItemSetting;
-		
+
 		unemployeeInsuranceRateItemSetting = new UnemployeeInsuranceRateItemSetting();
 		switch (this.careerGroup) {
-		
+
 		case Agroforestry:
 			unemployeeInsuranceRateItemSetting
 				.setRate(Double.valueOf(String.valueOf(this.typeValue.getCEmpRateGeneral())));
@@ -66,16 +66,16 @@ public class JpaUnemployeeInsuranceRateItemGetMemento implements UnemployeeInsur
 
 		case Contruction:
 			unemployeeInsuranceRateItemSetting
-				.setRate(Double.valueOf(String.valueOf(this.typeValue.getCEmpRateConst())));
+				.setRate(Double.valueOf(String.valueOf(this.typeValue.getCEmpRateOther())));
 			unemployeeInsuranceRateItemSetting
-				.setRoundAtr(RoundingMethod.valueOf(this.typeValue.getCEmpRoundConst()));
+				.setRoundAtr(RoundingMethod.valueOf(this.typeValue.getCEmpRoundOther()));
 			break;
 
 		case Other:
 			unemployeeInsuranceRateItemSetting
-				.setRate(Double.valueOf(String.valueOf(this.typeValue.getCEmpRateOther())));
+				.setRate(Double.valueOf(String.valueOf(this.typeValue.getCEmpRateConst())));
 			unemployeeInsuranceRateItemSetting
-				.setRoundAtr(RoundingMethod.valueOf(this.typeValue.getCEmpRoundOther()));
+				.setRoundAtr(RoundingMethod.valueOf(this.typeValue.getCEmpRoundConst()));
 			break;
 		}
 		return unemployeeInsuranceRateItemSetting;
@@ -90,7 +90,7 @@ public class JpaUnemployeeInsuranceRateItemGetMemento implements UnemployeeInsur
 	@Override
 	public UnemployeeInsuranceRateItemSetting getPersonalSetting() {
 		UnemployeeInsuranceRateItemSetting unemployeeInsuranceRateItemSetting;
-		
+
 		unemployeeInsuranceRateItemSetting = new UnemployeeInsuranceRateItemSetting();
 		switch (this.careerGroup) {
 		case Agroforestry:
