@@ -73,3 +73,7 @@
 #masterInfo .lblData div:nth-child(2) {
 	width: 50%;
 }
+
+.bgFirstCol {
+	background-color: #CFF1A5;
+}
