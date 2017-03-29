@@ -6,6 +6,7 @@ package nts.uk.ctx.pr.core.dom.wagetable.history.element.item.generator;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -54,6 +55,12 @@ public class StepItemGenerator implements ItemGenerator {
 		// Get min step
 		BigDecimal minStep = this.getMinUnit(lowerLimit, upperLimit, interval);
 
+		// Ignore special case : init history.
+		if (upperLimit.compareTo(BigDecimal.ZERO) == 0 && lowerLimit.compareTo(BigDecimal.ZERO) == 0
+				&& interval.compareTo(BigDecimal.ZERO) == 0) {
+			return Collections.emptyList();
+		}
+
 		// Lower limit is always less than upper limit.
 		if (upperLimit.compareTo(lowerLimit) < 0) {
 			// TODO: need msg id.
@@ -79,7 +86,6 @@ public class StepItemGenerator implements ItemGenerator {
 				.collect(Collectors.toMap(item -> this.getUniqueCode(item), RangeItem::getUuid));
 
 		List<RangeItem> items = new ArrayList<>();
-
 		int index = 0;
 		BigDecimal start = lowerLimit;
 		while (start.compareTo(upperLimit) <= 0) {
@@ -94,10 +100,16 @@ public class StepItemGenerator implements ItemGenerator {
 			rangeItem = new RangeItem(index, start,
 					((end.compareTo(upperLimit) <= 0) ? end : upperLimit),
 					mapRangeItems.getOrDefault(this.getUniqueCode(rangeItem), rangeItem.getUuid()));
-			rangeItem.setDisplayName(rangeItem.getStartVal()
-					.setScale(this.getScale(rangeItem.getStartVal())).toEngineeringString() + "～"
-					+ rangeItem.getEndVal().setScale(this.getScale(rangeItem.getEndVal()))
-							.toEngineeringString());
+
+			if (rangeItem.getStartVal().compareTo(rangeItem.getEndVal()) == 0) {
+				rangeItem.setDisplayName(rangeItem.getStartVal()
+						.setScale(this.getScale(rangeItem.getStartVal())).toEngineeringString());
+			} else {
+				rangeItem.setDisplayName(rangeItem.getStartVal()
+						.setScale(this.getScale(rangeItem.getStartVal())).toEngineeringString()
+						+ "～" + rangeItem.getEndVal().setScale(this.getScale(rangeItem.getEndVal()))
+								.toEngineeringString());
+			}
 
 			items.add(rangeItem);
 
