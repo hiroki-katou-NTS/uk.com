@@ -135,6 +135,8 @@ module qet001.b.viewmodel {
                 nts.uk.ui.dialog.confirm('変更された内容が登録されていません。\r\nよろしいですか。').ifYes(function() {
                     nts.uk.ui.windows.close();
                 });
+            } else {
+                nts.uk.ui.windows.close();
             }
         }
         

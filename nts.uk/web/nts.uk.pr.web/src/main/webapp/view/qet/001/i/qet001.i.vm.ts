@@ -145,7 +145,7 @@ module qet001.i.viewmodel {
                 nts.uk.ui.dialog.confirm('変更された内容が登録されていません。\r\nよろしいですか。').ifYes(function() {
                     self.aggregateItemSelectedCode(null);
                 });
-            }
+            } 
         }
         
         public save() {
@@ -213,6 +213,8 @@ module qet001.i.viewmodel {
                 nts.uk.ui.dialog.confirm('変更された内容が登録されていません。\r\nよろしいですか。').ifYes(function() {
                     nts.uk.ui.windows.close();
                 });
+            } else {
+                nts.uk.ui.windows.close();
             }
         }
         

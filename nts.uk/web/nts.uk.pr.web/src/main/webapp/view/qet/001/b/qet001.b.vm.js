@@ -100,6 +100,9 @@ var qet001;
                             nts.uk.ui.windows.close();
                         });
                     }
+                    else {
+                        nts.uk.ui.windows.close();
+                    }
                 };
                 ScreenModel.prototype.save = function () {
                     var self = this;

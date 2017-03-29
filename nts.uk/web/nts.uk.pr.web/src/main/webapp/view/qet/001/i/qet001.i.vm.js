@@ -148,6 +148,9 @@ var qet001;
                             nts.uk.ui.windows.close();
                         });
                     }
+                    else {
+                        nts.uk.ui.windows.close();
+                    }
                 };
                 AggregateCategory.prototype.setStyle = function () {
                     $('.master-table-label').attr('style', 'width: ' + $('#swap-list-gridArea1').width() + 'px');
