@@ -36,7 +36,10 @@ var nts;
                                 }
                                 OneDemensionViewModel.prototype.onLoad = function () {
                                     var self = this;
+                                    var dfd = $.Deferred();
+                                    dfd.resolve();
                                     self.initIgGrid();
+                                    return dfd.promise();
                                 };
                                 OneDemensionViewModel.prototype.initIgGrid = function () {
                                     var self = this;
@@ -71,7 +74,7 @@ var nts;
                                         autoCommit: true,
                                         columns: [
                                             { headerText: 'Element Name', dataType: 'string', key: 'uuid', hidden: true },
-                                            { headerText: self.elementSettings[0].demensionName, dataType: 'string', key: 'name', width: '50%' },
+                                            { headerText: self.elementSettings[0].demensionName, dataType: 'string', key: 'name', width: '50%', columnCssClass: "bgIgCol" },
                                             { headerText: '値', dataType: 'number', key: 'amount', width: '50%', columnCssClass: "halign-right" }
                                         ]
                                     });

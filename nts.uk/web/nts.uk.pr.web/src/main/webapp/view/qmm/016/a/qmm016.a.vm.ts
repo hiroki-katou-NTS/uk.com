@@ -133,6 +133,19 @@ module nts.uk.pr.view.qmm016.a {
                 self.selectedTab('tab-1');
                 self.head.reset();
             }
+            
+            /**
+             * Show group setting screen.
+             */
+            btnGroupSettingClick(): void {
+                var self = this;
+                var ntsDialogOptions = {
+                    title: '資格グループの設定',
+                    dialogClass: 'no-close'
+                };
+                nts.uk.ui.windows.sub.modal('/view/qmm/016/l/index.xhtml', ntsDialogOptions);
+            
+            }
         }
 
         /**
@@ -298,6 +311,12 @@ module nts.uk.pr.view.qmm016.a {
             onSelectDemensionBtnClick(demension: DemensionItemViewModel) {
                 var self = this;
                 var dlgOptions: k.viewmodel.Option = {
+                    selectedDemensionDto: _.map(self.demensionItemList(), (item) => {
+                        var dto = <model.DemensionItemDto>{};
+                        dto.type = item.elementType();
+                        dto.code = item.elementCode();
+                        return dto;
+                    }),
                     onSelectItem: (data) => {
                         demension.elementType(data.demension.type);
                         demension.elementCode(data.demension.code);
@@ -392,8 +411,9 @@ module nts.uk.pr.view.qmm016.a {
                 self.detailViewModel = this.getDetailViewModelByType(head.mode);
                 $('#detailContainer').load(self.detailViewModel.htmlPath, () => {
                     var element = $('#detailContainer').children().get(0);
-                    self.detailViewModel.onLoad();
-                    ko.applyBindings(self.detailViewModel, element);
+                    self.detailViewModel.onLoad().done(() => {
+                        ko.applyBindings(self.detailViewModel, element);
+                    });
                 })
             }
 
@@ -450,6 +470,8 @@ module nts.uk.pr.view.qmm016.a {
                         return new qmm016.a.history.TwoDemensionViewModel(self.history);
                     case 2:
                         return new qmm016.a.history.ThreeDemensionViewModel(self.history);
+                    case 3:
+                        return new qmm016.a.history.CertificateViewModel(self.history);
                     case 4:
                         return new qmm016.a.history.ThreeDemensionViewModel(self.history);
                     default:

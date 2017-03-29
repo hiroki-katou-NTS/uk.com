@@ -318,6 +318,11 @@ module nts.uk.pr.view.qmm008.c {
                     }).ifNo(function() {
                     });
                 }
+                else {
+                    self.dirty = new nts.uk.ui.DirtyChecker(self.pensionModel);
+                    service.updatePensionRate(self.pensionCollectData()).done(function() {
+                    });
+                }
             }
             /**
             * Collect data from input.
@@ -467,13 +472,7 @@ module nts.uk.pr.view.qmm008.c {
 
             isDirty(): boolean {
                 var self = this;
-                if (self.dirty.isDirty()) {
-                    self.dirty.reset();
-                    return true;
-                }
-                else {
-                    return false;
-                }
+                return self.dirty.isDirty();
             }
 
             public getCurrentOfficeCode(childId: string): string {

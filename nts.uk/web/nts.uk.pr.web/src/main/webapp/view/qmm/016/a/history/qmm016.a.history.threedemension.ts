@@ -23,7 +23,6 @@ module nts.uk.pr.view.qmm016.a.history {
             // On change.
             self.selectedElement3ItemId.subscribe((id) => {
                 if (id && self.datasourceMap[id]) {
-                    ko.cleanNode($('#dataTable').get(0));
                     self.initIgGrid(self.datasourceMap[id]);
                 }
             })
@@ -32,7 +31,7 @@ module nts.uk.pr.view.qmm016.a.history {
         /**
          * On load init ig grid.
          */
-        onLoad(): void {
+        onLoad(): JQueryPromise<any> {
             var self = this;
 
             // Build first data source.
@@ -61,6 +60,8 @@ module nts.uk.pr.view.qmm016.a.history {
                 self.buildElement3Infomation();
             }
 
+            // Ret.
+            return $.Deferred().resolve().promise();
         }
 
 
@@ -152,7 +153,7 @@ module nts.uk.pr.view.qmm016.a.history {
 
             // Fixed part.
             columns.push({ headerText: 'UUID', dataType: 'string', key: 'uuid', width: '100px', hidden: true});
-            columns.push({ headerText: self.elementSettings[0].demensionName, dataType: 'string', key: 'name', width: '100px'});
+            columns.push({ headerText: self.elementSettings[0].demensionName, dataType: 'string', key: 'name', width: '100px', columnCssClass: "bgIgCol"});
             columnSettings.push({columnKey: 'uuid', readOnly: true});
             columnSettings.push({columnKey: 'name', readOnly: true});
 

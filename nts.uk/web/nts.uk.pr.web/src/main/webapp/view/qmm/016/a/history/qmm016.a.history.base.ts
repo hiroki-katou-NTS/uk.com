@@ -28,7 +28,7 @@ module nts.uk.pr.view.qmm016.a.history.base {
         /**
          * On load.
          */
-        abstract onLoad(): void;
+        abstract onLoad(): JQueryPromise<any>;
 
         /**
          * Refresh element settings.

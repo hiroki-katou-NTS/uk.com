@@ -104,6 +104,14 @@ var nts;
                                     self.selectedTab('tab-1');
                                     self.head.reset();
                                 };
+                                ScreenModel.prototype.btnGroupSettingClick = function () {
+                                    var self = this;
+                                    var ntsDialogOptions = {
+                                        title: '資格グループの設定',
+                                        dialogClass: 'no-close'
+                                    };
+                                    nts.uk.ui.windows.sub.modal('/view/qmm/016/l/index.xhtml', ntsDialogOptions);
+                                };
                                 return ScreenModel;
                             }(view.base.simplehistory.viewmodel.ScreenBaseModel));
                             viewmodel.ScreenModel = ScreenModel;
@@ -211,6 +219,12 @@ var nts;
                                 HeadViewModel.prototype.onSelectDemensionBtnClick = function (demension) {
                                     var self = this;
                                     var dlgOptions = {
+                                        selectedDemensionDto: _.map(self.demensionItemList(), function (item) {
+                                            var dto = {};
+                                            dto.type = item.elementType();
+                                            dto.code = item.elementCode();
+                                            return dto;
+                                        }),
                                         onSelectItem: function (data) {
                                             demension.elementType(data.demension.type);
                                             demension.elementCode(data.demension.code);
@@ -274,8 +288,9 @@ var nts;
                                     self.detailViewModel = this.getDetailViewModelByType(head.mode);
                                     $('#detailContainer').load(self.detailViewModel.htmlPath, function () {
                                         var element = $('#detailContainer').children().get(0);
-                                        self.detailViewModel.onLoad();
-                                        ko.applyBindings(self.detailViewModel, element);
+                                        self.detailViewModel.onLoad().done(function () {
+                                            ko.applyBindings(self.detailViewModel, element);
+                                        });
                                     });
                                 };
                                 HistoryViewModel.prototype.generateItem = function () {
@@ -314,6 +329,8 @@ var nts;
                                             return new qmm016.a.history.TwoDemensionViewModel(self.history);
                                         case 2:
                                             return new qmm016.a.history.ThreeDemensionViewModel(self.history);
+                                        case 3:
+                                            return new qmm016.a.history.CertificateViewModel(self.history);
                                         case 4:
                                             return new qmm016.a.history.ThreeDemensionViewModel(self.history);
                                         default:

@@ -41,6 +41,7 @@ var nts;
                                         });
                                     }
                                     self.initIgGrid(itemVmList);
+                                    return $.Deferred().resolve().promise();
                                 };
                                 TwoDemensionViewModel.prototype.onRefreshElement = function () {
                                     var self = this;
@@ -81,7 +82,7 @@ var nts;
                                     var columns = [];
                                     var columnSettings = [];
                                     columns.push({ headerText: 'UUID', dataType: 'string', key: 'uuid', width: '100px', hidden: true });
-                                    columns.push({ headerText: self.elementSettings[0].demensionName, dataType: 'string', key: 'name', width: '100px' });
+                                    columns.push({ headerText: self.elementSettings[0].demensionName, dataType: 'string', key: 'name', width: '100px', columnCssClass: "bgIgCol" });
                                     columnSettings.push({ columnKey: 'uuid', readOnly: true });
                                     columnSettings.push({ columnKey: 'name', readOnly: true });
                                     var secondDemensionElements = self.elementSettings[1];

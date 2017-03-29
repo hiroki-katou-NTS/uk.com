@@ -14,8 +14,9 @@ module nts.uk.pr.view.qmm016.a.history {
         /**
          * On load init ig grid.
          */
-        onLoad(): void {
+        onLoad(): JQueryPromise<any> {
             var self = this;
+
             // Build first data source.
             var history = self.history;
             if (history.valueItems && history.valueItems.length > 0) {
@@ -36,6 +37,9 @@ module nts.uk.pr.view.qmm016.a.history {
 
             // Build grid.
             self.initIgGrid(itemVmList);
+
+            // Ret.
+            return $.Deferred().resolve().promise();
         }
 
         /**
@@ -105,7 +109,7 @@ module nts.uk.pr.view.qmm016.a.history {
 
             // Fixed part.
             columns.push({ headerText: 'UUID', dataType: 'string', key: 'uuid', width: '100px', hidden: true});
-            columns.push({ headerText: self.elementSettings[0].demensionName, dataType: 'string', key: 'name', width: '100px'});
+            columns.push({ headerText: self.elementSettings[0].demensionName, dataType: 'string', key: 'name', width: '100px', columnCssClass: "bgIgCol"});
             columnSettings.push({columnKey: 'uuid', readOnly: true});
             columnSettings.push({columnKey: 'name', readOnly: true});
 

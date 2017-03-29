@@ -251,6 +251,12 @@ module nts.uk.pr.view.qmm008.b {
                     }).ifNo(function() {
                     });
                 }
+                else {
+                    self.dirty = new nts.uk.ui.DirtyChecker(self.healthModel);
+                    //update health
+                    service.updateHealthRate(self.healthCollectData()).done(function() {
+                    }).fail();
+                }
             }
 
             /**
@@ -406,14 +412,9 @@ module nts.uk.pr.view.qmm008.b {
 
             isDirty(): boolean {
                 var self = this;
-                if (self.dirty.isDirty()) {
-                    self.dirty.reset();
-                    return true;
-                }
-                else {
-                    return false;
-                }
+                return self.dirty.isDirty();
             }
+            
             public OpenModalOfficeRegisterWithDirtyCheck() {
                 var self = this;
                 if (self.dirty.isDirty()) {
