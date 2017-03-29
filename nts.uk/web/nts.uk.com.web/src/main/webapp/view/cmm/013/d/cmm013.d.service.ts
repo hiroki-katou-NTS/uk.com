@@ -1,53 +1,47 @@
 module cmm013.d.service {
       var paths = {
-        findAllPosition: "basic/position/findallposition/",
-        addPosition: "basic/position/addPosition",
-        deletePosition: "basic/position/deletePosition",
-        updatePosition: "basic/position/updatePosition",
-        getAllHistory: "basic/position/getallhist",
-        addHist: "basic/organization/position/addHist",
+   
         updateHist: "basic/organization/position/updateHist",
-        deleteHist: "basic/organization/position/deleteHist",
-        findAllPosition2: "basic/position/findall"
+
         
         }
     
-     export function getAllHistory(): JQueryPromise<Array<any>> {
-        var dfd = $.Deferred<Array<any>>();
-        nts.uk.request.ajax("com", paths.getAllHistory)
-            .done(function(res: Array<any>) {
-                dfd.resolve(res);
-            })
-            .fail(function(res) {
+     export function updateHist(listHist: model.UpdateHandler){
+        var dfd = $.Deferred<model.UpdateHandler>();
+        nts.uk.request.ajax("com",paths.updateHist, listHist)
+            .done(function(res: any){
+                dfd.resolve(res);    
+            })    
+            .fail(function(res){
                 dfd.reject(res);
             })
         return dfd.promise();
+     }
+
+    export module model {
+        export class UpdateHandler{
+            listHist: ListHistoryDto;
+            checkUpdate: string;
+            checkDelete: string;
+            constructor(listHist: ListHistoryDto, checkUpdate: string, checkDelete: string){
+                this.listHist = listHist;
+                this.checkUpdate = checkUpdate;
+                this.checkDelete = checkDelete;
+            }    
+        }
+   
+    export class ListHistoryDto{
+            companyCode: string;
+            startDate: string;
+            endDate: string;
+            historyId: string;
+            constructor(companyCode: string, startDate: string, endDate: string, historyId: string){
+                this.companyCode = companyCode;
+                this.startDate = startDate;
+                this.endDate = endDate;
+                this.historyId = historyId;
+            }    
+        }
     }
-
-
-
-     export function updateJobHist(jobHist: viewmodel.model.ListHistoryDto){
-        var dfd = $.Deferred<Array<any>>();
-        nts.uk.request.ajax("com",paths.updateHist, jobHist)
-            .done(function(res: any){
-                dfd.resolve(res);    
-            })    
-            .fail(function(res){
-                dfd.reject(res);
-            })
-        return dfd.promise();
-     }
-
-    export function deleteJobHist(jobHist:viewmodel.model.ListHistoryDto){
-        var dfd = $.Deferred<Array<any>>();
-        nts.uk.request.ajax("com",paths.deleteHist, jobHist)
-            .done(function(res: any){
-                dfd.resolve(res);    
-            })    
-            .fail(function(res){
-                dfd.reject(res);
-            })
-        return dfd.promise();
-     }
     
 }

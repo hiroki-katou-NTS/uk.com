@@ -172,6 +172,35 @@ module cmm013.a.viewmodel {
             }
         }
 
+             getAllJobHistLast(): any {
+            var self = this;
+            var dfd = $.Deferred<any>();
+
+
+            service.getAllHistory().done(function(lstHistory: Array<model.ListHistoryDto>) {
+                if (lstHistory === undefined || lstHistory.length === 0) {
+                    self.openCDialog();
+                    dfd.resolve();
+                } else {
+                    self.listbox = ko.observableArray([]);
+                    self.listbox([]);
+                    self.selectedCode = ko.observable('');
+                    self.selectedCode('');
+                    self.listbox(lstHistory);
+                    var historyFirst = _.first(lstHistory);
+                    var historyLast = _.last(lstHistory);
+                    self.selectedCode(historyFirst.startDate);
+                    self.startDateUpdate(historyFirst.startDateString);
+                    self.endDateUpdate(historyFirst.endDateString);
+                    self.historyIdUpdate(historyFirst.historyId);
+                    self.startDateLast(historyFirst.startDateString);
+                    self.historyIdLast(historyFirst.historyId);
+                    self.startDateLast(historyLast.startDateString);
+                    dfd.resolve(lstHistory);
+                }
+            })
+            return dfd.promise();
+        }
         initRegisterPosition() {
             var self = this;
             self.inp_002_enable(true);
@@ -217,9 +246,7 @@ module cmm013.a.viewmodel {
                     let position = new viewmodel.model.ListPositionDto(self.inp_002_code(), self.inp_003_name(), self.inp_005_memo());
                     position.historyId = self.selectedCode();
                     service.addPosition(position).done(function() {
-
                         self.getPosition_first();
-
                     }).fail(function(res) {
                         dfd.reject(res);
                     })
@@ -603,70 +630,33 @@ module cmm013.a.viewmodel {
             })
         }
 
-        openDDialog() {
+           openDDialog() {
             var self = this;
-
-            var histLs = [];
-            self.startDateUpdateNew(null);
-            var checkDelete = 0;
-            if (self.startDateUpdate() == self.listbox()[0].startDateString) {
-                checkDelete = 1;
-            } else {
-                checkDelete = 2;
-            }
-            nts.uk.ui.windows.setShared('delete', checkDelete, true);
-            nts.uk.ui.windows.setShared('startUpdate', self.startDateUpdate(), true);
-            nts.uk.ui.windows.setShared('endUpdate', self.endDateUpdate(), true);
-            nts.uk.ui.windows.sub.modal('/view/cmm/013/d/index.xhtml', { title: '画面ID：D', }).onClosed(function() {
-                var checkUpdate = nts.uk.ui.windows.getShared('check_d');
-                self.startDateUpdateNew(nts.uk.ui.windows.getShared('startUpdateNew'));
-                var i = 0;
-                for (i = 0; i < self.listbox().length; i++) {
-                    if (self.listbox()[i].startDateString == self.startDateUpdate()) {
-                        break;
-                    }
+            if (self.checkData() == false || self.checkData() === undefined) {
+                var lstTmp = [];
+                self.startDateUpdateNew('');
+                console.log(self.endDateUpdate());
+                var cDelete = 0;
+                if (self.startDateUpdate() == self.listbox()[0].startDateString) {
+                    cDelete = 1;//option delete
+                } else {
+                    cDelete = 2;//not option delete
                 }
-                if (checkUpdate == '1') {
-                    //delete
-                    self.startDateUpdateNew(nts.uk.ui.windows.getShared('startUpdateNew'));
-
-                    var j = 0;
-                    var k = 0;
-                    for (j = 0; j < self.listbox().length; j++) {
-                        if (j != i) {
-                            histLs[k] = self.listbox()[j];
-                            k++;
-                        }
+                nts.uk.ui.windows.setShared('startDateLast',self.startDateLast(),true);
+                nts.uk.ui.windows.setShared('check_d', cDelete, true);
+                nts.uk.ui.windows.setShared('historyIdUpdate',self.historyIdUpdate(),true);
+                nts.uk.ui.windows.setShared('startUpdate', self.startDateUpdate(), true);
+                nts.uk.ui.windows.setShared('endUpdate', self.endDateUpdate(), true);
+                nts.uk.ui.windows.sub.modal('/view/cmm/013/d/index.xhtml', { title: '画面ID：D', })
+                .onClosed(function() {
+                    var checkUpdate = nts.uk.ui.windows.getShared('updateFinish');
+                    if(checkUpdate == true){
+                        self.getAllJobHistLast();
+                    }else{
+                        return;    
                     }
-                    histLs[i].endDate = self.endDateUpdate();
-                    self.listbox = ko.observableArray([]);
-                    self.listbox(histLs);
-                    self.deleteHist();
-                    //self.selectedCode(self.listbox()[0].startDate);
-                    console.log(self.listbox());
-                } else
-                    if (checkUpdate == '2') {
-                        //update
-                        self.startDateUpdateNew(nts.uk.ui.windows.getShared('startUpdateNew'));
-
-                        histLs = self.listbox();
-                        var tmp = self.selectedCode();
-                        self.selectedCode("");
-                        self.listbox([]);
-                        var i = 0;
-                        for (i = 0; i < histLs.length; i++) {
-                            if (histLs[i].startDate == self.startDateUpdate() &&
-                                histLs[i].endDate == self.endDateUpdate()) {
-                                histLs[i].startDate = self.startDateUpdateNew();
-                                break;
-                            }
-                        }
-                        self.listbox(histLs);
-                        self.selectedCode(tmp);
-                    }
-                self.check('1');
-            });
-
+                });
+            }
         }
 
     }

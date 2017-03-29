@@ -58,8 +58,10 @@ var cmm013;
                     var self = this;
                     var startDateLast = new Date(self.endDateUpdate());
                     var startDate = new Date(self.inp_003());
-                    if (startDate.getTime() > startDateLast.getTime()) {
-                        alert("no no no");
+                    if (self.checkInput() == false) {
+                        return;
+                    }
+                    else if (self.checkValue(self.inp_003()) == false) {
                         return;
                     }
                     else {
@@ -72,6 +74,27 @@ var cmm013;
                         nts.uk.ui.windows.setShared('startNew', self.inp_003());
                         nts.uk.ui.windows.setShared('copy_c', check, false);
                         nts.uk.ui.windows.close();
+                    }
+                };
+                ScreenModel.prototype.checkInput = function () {
+                    var self = this;
+                    var date = new Date(self.inp_003());
+                    if (date.toDateString() == 'Invalid Date') {
+                        alert("nhap lai ngay theo dinh dang YYYY-MM-DD hoac YYYY/MM/DD hoac YYYY.MM.DD");
+                        return false;
+                    }
+                    else {
+                        return true;
+                    }
+                };
+                ScreenModel.prototype.checkValue = function (value) {
+                    var self = this;
+                    if (value <= self.startDateLast()) {
+                        alert("nhap lai start Date");
+                        return false;
+                    }
+                    else {
+                        return true;
                     }
                 };
                 return ScreenModel;

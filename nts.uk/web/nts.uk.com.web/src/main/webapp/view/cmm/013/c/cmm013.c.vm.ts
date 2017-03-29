@@ -85,8 +85,14 @@ module cmm013.c.viewmodel {
             var self = this;
             let startDateLast = new Date(self.endDateUpdate());
             let startDate = new Date(self.inp_003());
-            if (startDate.getTime() > startDateLast.getTime()) {
-                alert("no no no");
+//            if (startDate.getTime() > startDateLast.getTime()) {
+//                alert("no no no");
+//                return;
+//            }
+               if(self.checkInput()==false){
+                return;
+            }else
+            if(self.checkValue(self.inp_003())==false){
                 return;
             }
             else {
@@ -100,7 +106,25 @@ module cmm013.c.viewmodel {
                 nts.uk.ui.windows.close();
             }
         }
-
+       checkInput(): boolean{
+            var self = this;
+            var date = new Date(self.inp_003());
+            if(date.toDateString()=='Invalid Date'){ 
+                alert("nhap lai ngay theo dinh dang YYYY-MM-DD hoac YYYY/MM/DD hoac YYYY.MM.DD"); 
+                return false;
+            }else{
+                return true;
+            }
+        }
+        checkValue(value: string): boolean{
+            var self = this;
+            if(value <= self.startDateLast()){
+                alert("nhap lai start Date");
+                return false;
+            }else{
+                return true;    
+            }
+        }
 
 
     }
