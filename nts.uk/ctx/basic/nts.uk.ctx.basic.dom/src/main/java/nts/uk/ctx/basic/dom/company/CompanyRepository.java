@@ -9,20 +9,28 @@ import java.util.Optional;
  */
 
 public interface CompanyRepository {
-	
 	/**
-	 * find a company by 
-	 * @param companyCode
-	 * @return
-	 */
-	Optional<Company> getCompanyDetail(String companyCd);
-	Optional<Company> getCompanyByUserKtSet(String companyCd, int use_Kt_Set);														
-
-	/**
-	 * find all company
-	 * @return
+	 * SEL_1
+	 * @param companyCd
+	 * @return Optional<Company>
 	 */
 	List<Company> getAllCompanys();
+	
+	/**
+	 * SEL_2
+	 * find a company by 
+	 * @param companyCode
+	 * @return Optional<Company>
+	 */
+	Optional<Company> getCompanyDetail(String companyCd);
+	
+	/**
+	 * SEL_4
+	 * @param companyCd
+	 * @param use_Kt_Set
+	 * @return Optional<Company>
+	 */
+	Optional<Company> getCompanyByUserKtSet(String companyCd, int use_Kt_Set);														
 	/**
 	 * Add a company
 	 * @param company
