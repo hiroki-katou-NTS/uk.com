@@ -311,6 +311,12 @@ module nts.uk.pr.view.qmm016.a {
             onSelectDemensionBtnClick(demension: DemensionItemViewModel) {
                 var self = this;
                 var dlgOptions: k.viewmodel.Option = {
+                    selectedDemensionDto: _.map(self.demensionItemList(), (item) => {
+                        var dto = <model.DemensionItemDto>{};
+                        dto.type = item.elementType();
+                        dto.code = item.elementCode();
+                        return dto;
+                    }),
                     onSelectItem: (data) => {
                         demension.elementType(data.demension.type);
                         demension.elementCode(data.demension.code);

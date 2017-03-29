@@ -219,6 +219,12 @@ var nts;
                                 HeadViewModel.prototype.onSelectDemensionBtnClick = function (demension) {
                                     var self = this;
                                     var dlgOptions = {
+                                        selectedDemensionDto: _.map(self.demensionItemList(), function (item) {
+                                            var dto = {};
+                                            dto.type = item.elementType();
+                                            dto.code = item.elementCode();
+                                            return dto;
+                                        }),
                                         onSelectItem: function (data) {
                                             demension.elementType(data.demension.type);
                                             demension.elementCode(data.demension.code);
