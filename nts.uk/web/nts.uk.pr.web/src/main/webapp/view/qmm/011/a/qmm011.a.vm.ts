@@ -50,6 +50,7 @@ module nts.uk.pr.view.qmm011.a {
             //労災保険 detail C
             lstAccidentInsuranceRateHistory: KnockoutObservableArray<AccidentInsuranceHistoryDto>;
             selectionAccidentInsuranceRateHistory: KnockoutObservable<string>;
+            preSelectAccidentInsuranceRateHistory: KnockoutObservable<string>;
             beginHistoryStartAccidentInsuranceRate: KnockoutObservable<string>;
             //detail D
             accidentInsuranceRateModel: KnockoutObservable<AccidentInsuranceRateModel>;
@@ -109,6 +110,7 @@ module nts.uk.pr.view.qmm011.a {
                 self.isShowDirtyUnemployeeInsurance = ko.observable(true);
                 self.isShowDirtyActionAccidentInsurance = ko.observable(true);
                 self.preSelectUnemployeeInsuranceRateHistory = ko.observable('');
+                self.preSelectAccidentInsuranceRateHistory = ko.observable('');
             }
 
             //open dialog edit UnemployeeInsuranceRateHistory => show view model xhtml (action event add)
@@ -278,7 +280,7 @@ module nts.uk.pr.view.qmm011.a {
                     //set data fw to /e
                     nts.uk.ui.windows.setShared("InsuranceBusinessTypeDto", data);
                     //open dialog /e/index.xhtml
-                    nts.uk.ui.windows.sub.modal("/view/qmm/011/e/index.xhtml", { height: 630, width: 425, title: "事業種類の登録" }).onClosed(() => {
+                    nts.uk.ui.windows.sub.modal("/view/qmm/011/e/index.xhtml", { height: 630, width: 425, title: "事業種類の登録", dialogClass: 'no-close' }).onClosed(() => {
                         //OnClose => call
                         //get fw e => respone 
                         var insuranceBusinessTypeUpdateModel = nts.uk.ui.windows.getShared("insuranceBusinessTypeUpdateModel");
@@ -461,19 +463,18 @@ module nts.uk.pr.view.qmm011.a {
                     && selectionUnemployeeInsuranceRateHistory != '') {
                     var self = this;
                     if (self.dirtyUnemployeeInsurance.isDirty() && self.isShowDirtyUnemployeeInsurance()) {
-                        if (selectionUnemployeeInsuranceRateHistory !== self.preSelectUnemployeeInsuranceRateHistory()) {
+                        if (selectionUnemployeeInsuranceRateHistory !== self.preSelectUnemployeeInsuranceRateHistory()
+                            && self.typeActionUnemployeeInsurance() == TypeActionInsuranceRate.update) {
                             nts.uk.ui.dialog.confirm(self.messageList()[2].message).ifYes(function() {
                                 self.isShowDirtyUnemployeeInsurance(false);
                                 self.detailUnemployeeInsuranceRateHistory(selectionUnemployeeInsuranceRateHistory);
-                                return;
                             }).ifNo(function() {
-                                //No action
+                                self.selectionUnemployeeInsuranceRateHistory(self.preSelectUnemployeeInsuranceRateHistory());
                             });
-                            self.selectionUnemployeeInsuranceRateHistory(self.preSelectUnemployeeInsuranceRateHistory());
-                            return;
                         }
+                    } else {
+                        self.detailUnemployeeInsuranceRateHistory(selectionUnemployeeInsuranceRateHistory);
                     }
-                    self.detailUnemployeeInsuranceRateHistory(selectionUnemployeeInsuranceRateHistory);
                 }
             }
 
@@ -539,11 +540,18 @@ module nts.uk.pr.view.qmm011.a {
                     $('#btn_saveAccidentInsuranceHistory').ntsError('set', message);
                 }
             }
+            
+            private validateServer(){
+                var self = this;
+            }
 
             //action save UnemployeeInsuranceHistory Onlick connection service
             private saveUnemployeeInsuranceHistory() {
                 var self = this;
 
+                if(nts.uk.ui._viewModel.errors.isEmpty()){
+                        
+                }
                 // get type action (ismode)
                 if (self.typeActionUnemployeeInsurance() == TypeActionInsuranceRate.add) {
                     //type action is add
@@ -615,6 +623,20 @@ module nts.uk.pr.view.qmm011.a {
                     && selectionAccidentInsuranceRateHistory != undefined
                     && selectionAccidentInsuranceRateHistory != '') {
                     var self = this;
+                    if (self.dirtyAccidentInsurance.isDirty() && self.isShowDirtyActionAccidentInsurance()) {
+                        if (selectionAccidentInsuranceRateHistory !== self.preSelectAccidentInsuranceRateHistory()
+                            && self.typeActionAccidentInsurance() == TypeActionInsuranceRate.update) {
+                            nts.uk.ui.dialog.confirm(self.messageList()[2].message).ifYes(function() {
+                                self.isShowDirtyActionAccidentInsurance(false);
+                                self.detailAccidentInsuranceRateHistory(selectionAccidentInsuranceRateHistory);
+                                return;
+                            }).ifNo(function() {
+                                //No action
+                            });
+                            self.selectionAccidentInsuranceRateHistory(self.preSelectAccidentInsuranceRateHistory());
+                            return;
+                        }
+                    }
                     self.detailAccidentInsuranceRateHistory(selectionAccidentInsuranceRateHistory);
                 }
             }
