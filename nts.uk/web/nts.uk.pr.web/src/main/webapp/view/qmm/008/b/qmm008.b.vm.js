@@ -203,6 +203,11 @@ var nts;
                                         }).ifNo(function () {
                                         });
                                     }
+                                    else {
+                                        self.dirty = new nts.uk.ui.DirtyChecker(self.healthModel);
+                                        b.service.updateHealthRate(self.healthCollectData()).done(function () {
+                                        }).fail();
+                                    }
                                 };
                                 ScreenModel.prototype.collectData = function () {
                                     var self = this;
@@ -310,13 +315,7 @@ var nts;
                                 };
                                 ScreenModel.prototype.isDirty = function () {
                                     var self = this;
-                                    if (self.dirty.isDirty()) {
-                                        self.dirty.reset();
-                                        return true;
-                                    }
-                                    else {
-                                        return false;
-                                    }
+                                    return self.dirty.isDirty();
                                 };
                                 ScreenModel.prototype.OpenModalOfficeRegisterWithDirtyCheck = function () {
                                     var self = this;
