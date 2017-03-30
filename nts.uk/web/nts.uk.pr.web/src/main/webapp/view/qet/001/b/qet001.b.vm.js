@@ -88,7 +88,8 @@ var qet001;
                     $.when(self.loadAggregateItems(), self.loadMasterItems()).done(function () {
                         var isHasData = outputSettings && outputSettings.length > 0;
                         if (!isHasData) {
-                            self.switchToCreateMode();
+                            self.outputSettingDetail(new OutputSettingDetail(self.aggregateItemsList, self.masterItemList));
+                            self.outputSettings().outputSettingSelectedCode('');
                             dfd.resolve();
                             return;
                         }
@@ -136,6 +137,7 @@ var qet001;
                         nts.uk.ui.windows.setShared('isHasUpdate', true, false);
                         nts.uk.ui.dialog.alert('save success!').then(function () {
                             self.loadAllOutputSetting();
+                            self.dirty.reset();
                         });
                     }).fail(function (res) {
                         $('#code-input').ntsError('set', res.message);
