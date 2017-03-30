@@ -10,6 +10,7 @@ import javax.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import nts.uk.shr.infra.data.entity.UkJpaEntity;
 
 /**
  * 
@@ -21,50 +22,52 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 @Table(name = "QUPMT_P_UNITPRICE")
 @Data
-public class QupmtPUnitprice implements Serializable{
-    
-	/**
-	 * 
-	 */
+public class QupmtPUnitprice extends UkJpaEntity implements Serializable {
+
 	private static final long serialVersionUID = 1L;
 
 	@EmbeddedId
 	public QupmtPUnitpricePK qupmtPUnitpricePK;
-	
+
 	@Column(name = "P_UNITPRICE_NAME")
 	public String personalUnitPriceName;
-	
+
 	@Column(name = "P_UNITPRICE_AB_NAME")
 	public String personalUnitPriceShortName;
-	
+
 	@Column(name = "DISP_SET")
 	public int displaySet;
-	
+
 	@Column(name = "UNITE_CD")
 	public String uniteCode;
-	
+
 	@Column(name = "FIX_PAY_SET")
 	public int paymentSettingType;
-	
+
 	@Column(name = "FIX_PAY_ATR")
 	public int fixPaymentAtr;
-	
+
 	@Column(name = "FIX_PAY_ATR_MONTHLY")
 	public int fixPaymentMonthly;
-	
+
 	@Column(name = "FIX_PAY_ATR_DAYMONTH")
 	public int fixPaymentDayMonth;
-	
+
 	@Column(name = "FIX_PAY_ATR_DAILY")
 	public int fixPaymentDaily;
-	
+
 	@Column(name = "FIX_PAY_ATR_HOURLY")
 	public int fixPaymentHoursly;
-	
+
 	@Column(name = "UNITPRICE_ATR")
 	public int unitPriceAtr;
-	
+
 	@Column(name = "MEMO")
 	public String memo;
-	
+
+	@Override
+	protected QupmtPUnitpricePK getKey() {
+		return this.qupmtPUnitpricePK;
+	}
+
 }
