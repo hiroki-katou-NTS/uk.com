@@ -301,7 +301,7 @@ module cmm008.a.viewmodel{
             employment.employementOutCd = self.employmentOutCode();
             employment.memo = self.multilineeditor.memoValue();
             if(self.dataSource().length === 0){
-                    self.isCheckbox(true);
+                self.isCheckbox(true);
             }
             if(self.isCheckbox())
                 employment.displayFlg = 1;

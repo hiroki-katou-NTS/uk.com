@@ -43,8 +43,6 @@ public class UpdateEmploymentCommandHandler extends CommandHandler<UpdateEmploym
 					employmentDisplay.setDisplayFlg(ManageOrNot.NOT_MANAGE);
 					repository.update(employmentDisplay);
 				}
-			}else{
-				//trong truong hop khong co ban ghi nao duoc check chon hien thi ban dau
 			}
 			Employment employment = employmentInf.get();
 			employment.setEmploymentName(new EmploymentName(command.getEmploymentName()));
