@@ -36,7 +36,7 @@ public class UpdateComparingFormCommandHandler extends CommandHandler<UpdateComp
 				.getComparingFormHeader(companyCode, updateCommand.getFormCode());
 
 		if (!comparingFormHeader.isPresent()) {
-			throw new BusinessException("ER010");
+			throw new BusinessException("2");
 		}
 
 		comparingFormHeader.get().setFormName(new FormName(updateCommand.getFormName()));

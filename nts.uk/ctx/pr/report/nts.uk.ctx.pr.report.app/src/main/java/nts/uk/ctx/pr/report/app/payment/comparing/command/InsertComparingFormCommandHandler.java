@@ -29,17 +29,19 @@ public class InsertComparingFormCommandHandler extends CommandHandler<InsertComp
 		String companyCode = AppContexts.user().companyCode();
 		InsertComparingFormCommand insertCommand = context.getCommand();
 
-		this.comparingFormHeaderRepository.getComparingFormHeader(companyCode, insertCommand.getFormCode())
-				.ifPresent(s -> new BusinessException("ER011"));
-
+		if (this.comparingFormHeaderRepository.getComparingFormHeader(companyCode, insertCommand.getFormCode())
+				.isPresent()) {
+			throw new BusinessException("1");
+		}
 		ComparingFormHeader newComparingFormHeader = ComparingFormHeader.createFromJavaType(companyCode,
 				insertCommand.getFormCode(), insertCommand.getFormName());
 		this.comparingFormHeaderRepository.insertComparingFormHeader(newComparingFormHeader);
-		
-		List<ComparingFormDetail> comparingFormDetailList = insertCommand.getComparingFormDetailList().stream().map(
-				s -> ComparingFormDetail.createFromJavaType(companyCode, insertCommand.getFormCode(), 
-						s.getCategoryAtr(), s.getItemCode(), s.getDispOrder())).collect(Collectors.toList());
-		
+
+		List<ComparingFormDetail> comparingFormDetailList = insertCommand
+				.getComparingFormDetailList().stream().map(s -> ComparingFormDetail.createFromJavaType(companyCode,
+						insertCommand.getFormCode(), s.getCategoryAtr(), s.getItemCode(), s.getDispOrder()))
+				.collect(Collectors.toList());
+
 		this.comparingFormDetailRepository.insertComparingFormDetail(comparingFormDetailList);
 
 	}

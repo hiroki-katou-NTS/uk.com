@@ -32,7 +32,7 @@ public class DeleteComparingFormCommandHandler extends CommandHandler<DeleteComp
 				.getComparingFormHeader(companyCode, deleteCommand.getFormCode());
 
 		if (!comparingFormHeader.isPresent()) {
-			throw new BusinessException("ER010");
+			throw new BusinessException("2");
 		}
 		
 		this.comparingFormHeaderRepository.deleteComparingFormHeader(companyCode, deleteCommand.getFormCode());

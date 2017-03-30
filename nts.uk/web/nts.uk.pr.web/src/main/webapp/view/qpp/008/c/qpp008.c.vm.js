@@ -11,11 +11,24 @@ var qpp008;
                     self._initSwap();
                     self._initFormDetail();
                     self.currentCode.subscribe(function (codeChanged) {
-                        if (!nts.uk.text.isNullOrEmpty(codeChanged)) {
-                            self.currentItem(self.mappingFromJS(self.getItem(codeChanged)));
-                            self.allowEditCode(false);
-                            self.getComparingFormForTab(codeChanged);
+                        if (nts.uk.text.isNullOrEmpty(codeChanged)) {
+                            if (self.isUpdate()) {
+                                self.refreshLayout();
+                            }
+                            return;
                         }
+                        if (codeChanged === self.previousCurrentCode) {
+                            return;
+                        }
+                        if (!self.currentItemDirty.isDirty() && !self.items2Dirty.isDirty()) {
+                            self.processWhenCurrentCodeChange(codeChanged);
+                            return;
+                        }
+                        nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\nよろしいですか。?").ifYes(function () {
+                            self.processWhenCurrentCodeChange(codeChanged);
+                        }).ifCancel(function () {
+                            self.currentCode(self.previousCurrentCode);
+                        });
                     });
                 }
                 ScreenModel.prototype._initFormHeader = function () {
@@ -27,13 +40,11 @@ var qpp008;
                     ]);
                     self.currentItem = ko.observable(new ComparingFormHeader('', ''));
                     self.currentCode = ko.observable();
+                    self.previousCurrentCode = null;
                 };
                 ScreenModel.prototype._initSwap = function () {
                     var self = this;
                     self.itemsSwap = ko.observableArray([]);
-                    var array = new Array();
-                    var array1 = new Array();
-                    var array2 = new Array();
                     self.columnsSwap = ko.observableArray([
                         { headerText: 'コード', prop: 'itemCode', width: 60 },
                         { headerText: '名称', prop: 'itemName', width: 120 }
@@ -75,6 +86,8 @@ var qpp008;
                     self.currentCode2 = ko.observable();
                     self.allowEditCode = ko.observable(false);
                     self.isUpdate = ko.observable(true);
+                    self.currentItemDirty = new nts.uk.ui.DirtyChecker(self.currentItem);
+                    self.items2Dirty = new nts.uk.ui.DirtyChecker(self.items2);
                 };
                 ScreenModel.prototype.startPage = function () {
                     var self = this;
@@ -84,14 +97,40 @@ var qpp008;
                     var self = this;
                     self.currentItem(self.mappingFromJS(new ComparingFormHeader('', '')));
                     self.currentCode(null);
+                    self.previousCurrentCode = null;
                     self.allowEditCode(true);
                     self.isUpdate(false);
-                    self.getComparingFormForTab(null);
+                    self.clearError();
+                    self.getComparingFormForTab(null).done(function () {
+                        self.currentItemDirty.reset();
+                        self.items2Dirty.reset();
+                    });
+                    $("#C_INP_002").focus();
                 };
                 ScreenModel.prototype.createButtonClick = function () {
                     var self = this;
-                    self.isUpdate(false);
-                    self.refreshLayout();
+                    $('.save-error').ntsError('clear');
+                    if (!self.currentItemDirty.isDirty() && !self.items2Dirty.isDirty()) {
+                        self.refreshLayout();
+                        return;
+                    }
+                    nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\nよろしいですか。?").ifYes(function () {
+                        self.refreshLayout();
+                    }).ifCancel(function () {
+                        return;
+                    });
+                };
+                ScreenModel.prototype.processWhenCurrentCodeChange = function (codeChanged) {
+                    var self = this;
+                    self.currentItem(self.mappingFromJS(self.getItem(codeChanged)));
+                    self.allowEditCode(false);
+                    self.isUpdate(true);
+                    self.getComparingFormForTab(codeChanged).done(function () {
+                        self.currentItemDirty.reset();
+                        self.items2Dirty.reset();
+                    });
+                    self.clearError();
+                    self.previousCurrentCode = codeChanged;
                 };
                 ScreenModel.prototype.reload = function (isReload, reloadCode) {
                     var self = this;
@@ -101,9 +140,9 @@ var qpp008;
                         _.forEach(data, function (item) {
                             self.items.push(item);
                         });
-                        self.flagDirty = true;
                         if (self.items().length <= 0) {
-                            self.currentItem(ko.mapping.fromJS(new ComparingFormHeader('', '')));
+                            self.refreshLayout();
+                            dfd.resolve(data);
                             return;
                         }
                         if (isReload) {
@@ -118,42 +157,48 @@ var qpp008;
                     });
                     return dfd.promise();
                 };
+                ScreenModel.prototype.isError = function () {
+                    var self = this;
+                    $('#C_INP_002').ntsEditor("validate");
+                    $('#C_INP_003').ntsEditor("validate");
+                    if ($('.nts-editor').ntsError("hasError")) {
+                        return true;
+                    }
+                    return false;
+                };
+                ScreenModel.prototype.clearError = function () {
+                    if ($('.nts-editor').ntsError("hasError")) {
+                        $('.save-error').ntsError('clear');
+                    }
+                };
                 ScreenModel.prototype.insertUpdateData = function () {
                     var self = this;
                     var dfd = $.Deferred();
+                    if (self.isError()) {
+                        return;
+                    }
                     var newformCode = ko.mapping.toJS(self.currentItem().formCode);
                     var newformName = ko.mapping.toJS(self.currentItem().formName);
-                    if (nts.uk.text.isNullOrEmpty(newformCode)) {
-                        $('#C_INP_002').ntsError('set', nts.uk.text.format('{0}が入力されていません。', 'コード'));
-                        return;
-                    }
-                    if (nts.uk.text.isNullOrEmpty(newformName)) {
-                        $('#C_INP_003').ntsError('set', nts.uk.text.format('{0}が入力されていません。', '名称'));
-                        return;
-                    }
-                    var comparingFormDetailList = new Array();
-                    comparingFormDetailList = self.items2().map(function (item, i) {
+                    var comparingFormDetailList = self.items2().map(function (item, i) {
                         return new ComparingFormDetail(item.itemCode, item.categoryAtr, i);
                     });
                     var insertUpdateDataModel = new InsertUpdateDataModel(nts.uk.text.padLeft(newformCode, '0', 2), newformName, comparingFormDetailList);
                     c.service.insertUpdateComparingForm(insertUpdateDataModel, self.isUpdate()).done(function () {
                         self.reload(false, nts.uk.text.padLeft(newformCode, '0', 2));
-                        self.flagDirty = true;
                         self.currentItemDirty.reset();
                         if (self.isUpdate() === false) {
                             self.isUpdate(true);
                             self.allowEditCode(false);
-                            return;
                         }
                         dfd.resolve();
                     }).fail(function (error) {
-                        if (error.message === '3') {
+                        if (error.message === '1') {
                             var _message = "入力した{0}は既に存在しています。\r\n {1}を確認してください。";
                             nts.uk.ui.dialog.alert(nts.uk.text.format(_message, 'コード', 'コード')).then(function () {
                                 self.reload(true);
                             });
                         }
-                        else if (error.message === '4') {
+                        else if (error.message === '2') {
                             nts.uk.ui.dialog.alert("対象データがありません。").then(function () {
                                 self.reload(true);
                             });
@@ -161,20 +206,19 @@ var qpp008;
                     });
                     return dfd.promise();
                 };
+                ScreenModel.prototype.deleteConfirm = function () {
+                    var self = this;
+                    nts.uk.ui.dialog.confirm("データを削除します。\r\nよろしいですか？").ifYes(function () {
+                        self.deleteData();
+                    });
+                };
                 ScreenModel.prototype.deleteData = function () {
                     var self = this;
                     var deleteCode = ko.mapping.toJS(self.currentItem().formCode);
-                    if (nts.uk.text.isNullOrEmpty(deleteCode)) {
-                        $('#C_INP_002').ntsError('set', nts.uk.text.format('{0}が入力されていません。', 'コード'));
-                        return;
-                    }
                     c.service.deleteComparingForm(new DeleteFormHeaderModel(deleteCode)).done(function () {
                         var indexItemDelete = _.findIndex(self.items(), function (item) { return item.formCode == deleteCode; });
                         $.when(self.reload(false)).done(function () {
-                            self.flagDirty = true;
                             if (self.items().length === 0) {
-                                self.allowEditCode(true);
-                                self.isUpdate(false);
                                 self.refreshLayout();
                                 return;
                             }
@@ -192,7 +236,7 @@ var qpp008;
                             }
                         });
                     }).fail(function (error) {
-                        if (error.message === '1') {
+                        if (error.message === '2') {
                             nts.uk.ui.dialog.alert("対象データがありません。").then(function () {
                                 self.reload(true);
                             });
@@ -212,13 +256,13 @@ var qpp008;
                 ScreenModel.prototype.getComparingFormForTab = function (formCode) {
                     var self = this;
                     var dfd = $.Deferred();
+                    self.itemsSwap([]);
+                    self.itemsSwap1([]);
+                    self.itemsSwap3([]);
+                    self.currentCodeListSwap([]);
+                    self.currentCodeListSwap1([]);
+                    self.currentCodeListSwap3([]);
                     c.service.getComparingFormForTab(formCode).done(function (data) {
-                        self.itemsSwap([]);
-                        self.itemsSwap1([]);
-                        self.itemsSwap3([]);
-                        self.currentCodeListSwap([]);
-                        self.currentCodeListSwap1([]);
-                        self.currentCodeListSwap3([]);
                         self.itemsSwap(data.lstItemMasterForTab_0);
                         self.itemsSwap1(data.lstItemMasterForTab_1);
                         self.itemsSwap3(data.lstItemMasterForTab_3);

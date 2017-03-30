@@ -145,6 +145,7 @@ module qpp008.c.viewmodel {
             self.previousCurrentCode = null;
             self.allowEditCode(true);
             self.isUpdate(false);
+            self.clearError();
             self.getComparingFormForTab(null).done(function() {
                 self.currentItemDirty.reset();
                 self.items2Dirty.reset();
@@ -175,6 +176,7 @@ module qpp008.c.viewmodel {
                 self.currentItemDirty.reset();
                 self.items2Dirty.reset();
             });
+            self.clearError();
             self.previousCurrentCode = codeChanged;
         }
 
@@ -203,22 +205,31 @@ module qpp008.c.viewmodel {
             return dfd.promise();
         }
 
+        isError(): boolean {
+            let self = this;
+            $('#C_INP_002').ntsEditor("validate");
+            $('#C_INP_003').ntsEditor("validate");
+            if ($('.nts-editor').ntsError("hasError")) {
+                return true;
+            }
+            return false;
+        }
+
+        clearError(): void {
+            if ($('.nts-editor').ntsError("hasError")) {
+                $('.save-error').ntsError('clear');
+            }
+        }
+
         insertUpdateData() {
             let self = this;
             let dfd = $.Deferred();
+            if (self.isError()) {
+                return;
+            }
             let newformCode = ko.mapping.toJS(self.currentItem().formCode);
             let newformName = ko.mapping.toJS(self.currentItem().formName);
-            if (nts.uk.text.isNullOrEmpty(newformCode)) {
-                $('#C_INP_002').ntsError('set', nts.uk.text.format('{0}が入力されていません。', 'コード'));
-                return;
-            }
-            if (nts.uk.text.isNullOrEmpty(newformName)) {
-                $('#C_INP_003').ntsError('set', nts.uk.text.format('{0}が入力されていません。', '名称'));
-                return;
-            }
-
-            let comparingFormDetailList = new Array<ComparingFormDetail>();
-            comparingFormDetailList = self.items2().map(function(item, i) {
+            let comparingFormDetailList = self.items2().map(function(item, i) {
                 return new ComparingFormDetail(item.itemCode, item.categoryAtr, i);
             });
             let insertUpdateDataModel = new InsertUpdateDataModel(nts.uk.text.padLeft(newformCode, '0', 2), newformName, comparingFormDetailList);
@@ -228,16 +239,15 @@ module qpp008.c.viewmodel {
                 if (self.isUpdate() === false) {
                     self.isUpdate(true);
                     self.allowEditCode(false);
-                    return;
                 }
                 dfd.resolve();
             }).fail(function(error) {
-                if (error.message === '3') {
+                if (error.message === '1') {
                     let _message = "入力した{0}は既に存在しています。\r\n {1}を確認してください。";
                     nts.uk.ui.dialog.alert(nts.uk.text.format(_message, 'コード', 'コード')).then(function() {
                         self.reload(true);
                     })
-                } else if (error.message === '4') {
+                } else if (error.message === '2') {
                     nts.uk.ui.dialog.alert("対象データがありません。").then(function() {
                         self.reload(true);
                     })
@@ -245,20 +255,21 @@ module qpp008.c.viewmodel {
             });
             return dfd.promise();
         }
+        
+         deleteConfirm() {
+            let self = this;
+            nts.uk.ui.dialog.confirm("データを削除します。\r\nよろしいですか？").ifYes(function() {
+                self.deleteData();
+            })
+        }
 
         deleteData() {
             let self = this;
             let deleteCode = ko.mapping.toJS(self.currentItem().formCode);
-            if (nts.uk.text.isNullOrEmpty(deleteCode)) {
-                $('#C_INP_002').ntsError('set', nts.uk.text.format('{0}が入力されていません。', 'コード'));
-                return;
-            }
             service.deleteComparingForm(new DeleteFormHeaderModel(deleteCode)).done(function() {
                 let indexItemDelete = _.findIndex(self.items(), function(item) { return item.formCode == deleteCode; });
                 $.when(self.reload(false)).done(function() {
                     if (self.items().length === 0) {
-                        self.allowEditCode(true);
-                        self.isUpdate(false);
                         self.refreshLayout();
                         return;
                     }
@@ -279,7 +290,7 @@ module qpp008.c.viewmodel {
                 });
 
             }).fail(function(error) {
-                if (error.message === '1') {
+                if (error.message === '2') {
                     nts.uk.ui.dialog.alert("対象データがありません。").then(function() {
                         self.reload(true);
                     })
