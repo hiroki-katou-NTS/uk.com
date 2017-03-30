@@ -19,7 +19,7 @@ module qmm013.a.viewmodel {
         notLoop: KnockoutObservable<boolean>;
         listItems: KnockoutObservableArray<any>;
         isFirstGetData: KnockoutObservable<boolean>;
-        isDelete: KnockoutObservable<boolean>;
+        notCheckDirty: KnockoutObservable<boolean>;
 
         constructor() {
             var self = this;
@@ -31,7 +31,7 @@ module qmm013.a.viewmodel {
             self.isCreated = ko.observable(true);
             self.isEnableDelete = ko.observable(true);
             self.isFirstGetData = ko.observable(false);
-            self.isDelete = ko.observable(false);
+            self.notCheckDirty = ko.observable(false);
             self.dirty = new nts.uk.ui.DirtyChecker(self.currentItem);
             self.indexRow = ko.observable(0);
             self.notLoop = ko.observable(false);
@@ -72,9 +72,9 @@ module qmm013.a.viewmodel {
                 self.isFirstGetData(true);
 
                 //in case delete row, don't allow checkDirty
-                if (self.isDelete()) {
+                if (self.notCheckDirty()) {
                     self.selectedUnitPrice(newCode);
-                    self.isDelete(false);
+                    self.notCheckDirty(false);
                     return;
                 }
 
@@ -112,17 +112,28 @@ module qmm013.a.viewmodel {
                     self.getPersonalUnitPriceList().done(function() {
                         //in case no dirty
                         //if row is chose has column '廃止' is 'X', select first row in new list
-                        if (self.currentItem().displaySet()) {
+                        if (!self.currentItem().displaySet() && self.currentCode() != "") {
+                            var tmp = _.find(self.listItems(), function(x) {
+                                return x.personalUnitPriceCode === self.currentCode();
+                            });
+                            var tmp1 = new PersonalUnitPrice(
+                                tmp.personalUnitPriceCode, tmp.personalUnitPriceName, tmp.personalUnitPriceShortName, tmp.displaySet ? true : false,
+                                null, tmp.paymentSettingType, tmp.fixPaymentAtr, tmp.fixPaymentMonthly, tmp.fixPaymentDayMonth, tmp.fixPaymentDaily,
+                                tmp.fixPaymentHoursly, tmp.unitPriceAtr, tmp.memo);
+                            self.currentItem(tmp1);
+                            self.dirty.reset();
+                        } else {
                             self.selectedFirstUnitPrice();
                         }
                     });
                 } else {
                     nts.uk.ui.dialog.confirm("変更された内容が登録されていません。\r\n よろしいですか。")
                         .ifYes(function() {
+                            self.notCheckDirty(true);
                             self.getPersonalUnitPriceList().done(function() {
                                 //in case dirty
                                 //if row is chose has column '廃止' is 'X', select first row in new list
-                                if (self.currentItem().displaySet()) {
+                                if (self.currentItem().displaySet() && self.currentCode() != "") {
                                     self.selectedFirstUnitPrice();
                                 } else {
                                     //if row is chose has column '廃止' isn't 'X', keep the same position in new list
@@ -190,7 +201,7 @@ module qmm013.a.viewmodel {
             }
             service.getPersonalUnitPrice(code).done(function(res) {
                 self.currentItem(self.selectedFirst(res));
-                self.dirty = new nts.uk.ui.DirtyChecker(self.currentItem)
+                self.dirty.reset();
             }).fail(function(res) {
                 alert(res.message);
             });
@@ -231,7 +242,7 @@ module qmm013.a.viewmodel {
             if (self.isFirstGetData()) {
                 self.clearError();
             }
-            if (!self.checkDirty() || self.isDelete()) {
+            if (!self.checkDirty() || self.notCheckDirty()) {
                 self.currentItem(new PersonalUnitPrice(null, null, null, false, "unitCode", 0, 1, 1, 1, 1, 1, 0, null));
                 self.dirty.reset();
                 self.currentCode("");
@@ -320,7 +331,7 @@ module qmm013.a.viewmodel {
                 service.removePersonalUnitPrice(data).done(function() {
                     // reload list   
                     self.getPersonalUnitPriceList().done(function() {
-                        self.isDelete(true);
+                        self.notCheckDirty(true);
                         if (self.items().length > self.indexRow()) {
                             self.currentCode(self.items()[self.indexRow()].code);
                         } else if (self.indexRow() == 0) {
