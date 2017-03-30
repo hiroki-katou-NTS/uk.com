@@ -6,7 +6,8 @@ var qmm012;
         (function (viewmodel) {
             var ScreenModel = (function () {
                 function ScreenModel() {
-                    //002
+                    //textediter
+                    //Checkbox
                     this.checked_002 = ko.observable(false);
                     this.checked_003 = ko.observable(false);
                     this.checked_004 = ko.observable(false);
@@ -29,6 +30,7 @@ var qmm012;
                     this.CurrentAlRangeLow = ko.observable(0);
                     this.CurrentAlRangeHigh = ko.observable(0);
                     this.enable_I_INP_002 = ko.observable(false);
+                    this.currentItemCode = ko.observable('');
                     var self = this;
                     //start Switch Data
                     self.enable = ko.observable(true);
@@ -86,11 +88,7 @@ var qmm012;
                         { headerText: 'ード', prop: 'itemBreakdownCd', width: 100 },
                         { headerText: '名', prop: 'itemBreakdownName', width: 150 }
                     ]);
-                    self.CurrentItemMaster(nts.uk.ui.windows.getShared('itemMaster'));
-                    if (self.CurrentItemMaster()) {
-                        self.LoadItem();
-                        self.CurrentCategoryAtrName(self.CurrentItemMaster().categoryAtrName);
-                    }
+                    self.loadItemBDs();
                     self.gridListCurrentCode.subscribe(function (newValue) {
                         var item = _.find(self.ItemBDList(), function (ItemBD) {
                             return ItemBD.itemBreakdownCd == newValue;
@@ -121,26 +119,42 @@ var qmm012;
                         self.CurrentItemDispAtr(newValue == false ? 1 : 0);
                     });
                 }
-                ScreenModel.prototype.LoadItem = function (itemCode) {
+                ScreenModel.prototype.loadItemBDs = function () {
                     var self = this;
-                    i.service.findAllItemBD(self.CurrentItemMaster()).done(function (ItemBDs) {
-                        self.ItemBDList(ItemBDs);
-                        if (self.ItemBDList().length)
-                            if (!itemCode)
-                                self.gridListCurrentCode(self.ItemBDList()[0].itemBreakdownCd);
-                            else
-                                self.gridListCurrentCode(itemCode);
-                    }).fail(function (res) {
-                        // Alert message
-                        alert(res);
-                    });
+                    self.CurrentItemMaster(nts.uk.ui.windows.getShared('itemMaster'));
+                    var itemMaster = self.CurrentItemMaster();
+                    if (itemMaster) {
+                        self.loadItem();
+                        self.CurrentCategoryAtrName(self.CurrentItemMaster().categoryAtrName);
+                        self.currentItemCode(itemMaster.itemCode);
+                    }
                 };
-                ScreenModel.prototype.GetCurrentItemBD = function () {
+                ScreenModel.prototype.reloadAndSetSelectedCode = function (itemCode) {
                     var self = this;
-                    return new i.service.model.ItemBD(self.CurrentItemMaster().itemCode, self.CurrentItemBreakdownCd(), self.CurrentItemBreakdownName(), self.CurrentItemBreakdownAbName(), self.CurrentUniteCd(), self.CurrentZeroDispSet(), self.checked_002() == true ? 0 : 1, self.checked_005() == true ? 1 : 0, self.CurrentErrRangeLow(), self.checked_003() == true ? 1 : 0, self.CurrentErrRangeHigh(), self.checked_006() == true ? 1 : 0, self.CurrentAlRangeLow(), self.checked_004() == true ? 1 : 0, self.CurrentAlRangeHigh());
+                    //refresh list
+                    self.ItemBDList(self.ItemBDList());
+                    //set selected 
+                    if (self.ItemBDList().length)
+                        if (!itemCode)
+                            self.gridListCurrentCode(self.ItemBDList()[0].itemBreakdownCd);
+                        else
+                            self.gridListCurrentCode(itemCode);
                 };
-                ScreenModel.prototype.SaveItem = function () {
+                ScreenModel.prototype.loadItem = function (itemCode) {
+                    //load itemBDList
                     var self = this;
+                    var itemBDs = nts.uk.ui.windows.getShared('itemBDs');
+                    self.ItemBDList(itemBDs);
+                    self.reloadAndSetSelectedCode(itemCode);
+                };
+                ScreenModel.prototype.getCurrentItemBD = function () {
+                    //get item customer has input on form 
+                    var self = this;
+                    return new i.service.model.ItemBD(self.CurrentItemBreakdownCd(), self.CurrentItemBreakdownName(), self.CurrentItemBreakdownAbName(), self.CurrentUniteCd(), self.CurrentZeroDispSet(), self.checked_002() == true ? 0 : 1, self.checked_005() == true ? 1 : 0, self.CurrentErrRangeLow(), self.checked_003() == true ? 1 : 0, self.CurrentErrRangeHigh(), self.checked_006() == true ? 1 : 0, self.CurrentAlRangeLow(), self.checked_004() == true ? 1 : 0, self.CurrentAlRangeHigh());
+                };
+                ScreenModel.prototype.saveItem = function () {
+                    var self = this;
+                    //if I_INP_002 is enable is mean add new mode
                     if (self.enable_I_INP_002())
                         self.addItemBD();
                     else
@@ -148,53 +162,45 @@ var qmm012;
                 };
                 ScreenModel.prototype.deleteItem = function () {
                     var self = this;
-                    var itemBD = self.GetCurrentItemBD();
+                    var itemBD = self.CurrentItemBD();
                     var itemCode;
-                    var index = self.ItemBDList.indexOf(self.CurrentItemBD());
-                    if (index != undefined) {
-                        if (self.ItemBDList().length > 1) {
-                            if (index == 0)
-                                itemCode = self.ItemBDList()[index + 1].itemBreakdownCd;
-                            else {
-                                if (index < self.ItemBDList().length - 1)
-                                    itemCode = self.ItemBDList()[index + 1].itemBreakdownCd;
-                                else
-                                    itemCode = self.ItemBDList()[index - 1].itemBreakdownCd;
-                            }
-                        }
+                    var index = self.ItemBDList().indexOf(self.CurrentItemBD());
+                    //set selected code after remove item
+                    if (self.ItemBDList().length > 1) {
+                        if (index < self.ItemBDList().length - 1)
+                            itemCode = self.ItemBDList()[index + 1].itemBreakdownCd;
                         else
-                            itemCode = '';
+                            itemCode = self.ItemBDList()[index - 1].itemBreakdownCd;
                     }
-                    i.service.deleteItemBD(self.CurrentItemMaster(), itemBD).done(function (any) {
-                        self.LoadItem(itemCode);
-                    }).fail(function (res) {
-                        alert(res);
-                    });
+                    else
+                        itemCode = '';
+                    //remove item and set selected code
+                    self.ItemBDList().splice(index, 1);
+                    self.reloadAndSetSelectedCode(itemCode);
                 };
                 ScreenModel.prototype.addItemBD = function () {
                     var self = this;
-                    var itemBD = self.GetCurrentItemBD();
-                    var itemCode = itemBD.itemBreakdownCd;
-                    i.service.addItemBD(self.CurrentItemMaster(), itemBD).done(function (any) {
-                        self.LoadItem(itemCode);
-                    }).fail(function (res) {
-                        alert(res);
-                    });
+                    //get itemBD on form
+                    var itemBD = self.getCurrentItemBD();
+                    //add item to array and set selected code
+                    self.ItemBDList().push(itemBD);
+                    self.reloadAndSetSelectedCode(itemBD.itemBreakdownCd);
                 };
                 ScreenModel.prototype.updateItemBD = function () {
                     var self = this;
-                    var itemBD = self.GetCurrentItemBD();
+                    var itemBD = self.getCurrentItemBD();
+                    var index = self.ItemBDList().indexOf(self.CurrentItemBD());
                     var itemCode = itemBD.itemBreakdownCd;
-                    i.service.updateItemBD(self.CurrentItemMaster(), itemBD).done(function (any) {
-                        self.LoadItem(itemCode);
-                    }).fail(function (res) {
-                        alert(res);
-                    });
+                    //update item in array and set selected code
+                    self.ItemBDList()[index] = itemBD;
+                    self.reloadAndSetSelectedCode(itemCode);
                 };
-                ScreenModel.prototype.CloseDialog = function () {
+                ScreenModel.prototype.closeDialog = function () {
+                    var self = this;
+                    nts.uk.ui.windows.setShared('itemBDs', self.ItemBDList());
                     nts.uk.ui.windows.close();
                 };
-                ScreenModel.prototype.AddNewItem = function () {
+                ScreenModel.prototype.addNewItem = function () {
                     var self = this;
                     self.gridListCurrentCode('');
                     self.enable_I_INP_002(true);
@@ -202,28 +208,6 @@ var qmm012;
                 return ScreenModel;
             }());
             viewmodel.ScreenModel = ScreenModel;
-            var GridItemModel = (function () {
-                function GridItemModel(code, name) {
-                    this.code = code;
-                    this.name = name;
-                }
-                return GridItemModel;
-            }());
-            var ComboboxItemModel = (function () {
-                function ComboboxItemModel(code, name) {
-                    this.code = code;
-                    this.name = name;
-                }
-                return ComboboxItemModel;
-            }());
-            var BoxModel = (function () {
-                function BoxModel(id, name) {
-                    var self = this;
-                    self.id = id;
-                    self.name = name;
-                }
-                return BoxModel;
-            }());
         })(viewmodel = i.viewmodel || (i.viewmodel = {}));
     })(i = qmm012.i || (qmm012.i = {}));
 })(qmm012 || (qmm012 = {}));

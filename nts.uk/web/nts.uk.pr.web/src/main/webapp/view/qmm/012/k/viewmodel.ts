@@ -24,6 +24,13 @@ module qmm012.k.viewmodel {
             let self = this;
             service.getCommutelimitsByCompanyCode().done(function(CommuteNoTaxLimits: Array<qmm023.a.service.model.CommuteNoTaxLimitDto>) {
                 self.GridlistItems_K_001(CommuteNoTaxLimits);
+                let selectedCode = nts.uk.ui.windows.getShared('commuNoTaxLimitCode');
+                if (!selectedCode) {
+                    if (CommuteNoTaxLimits.length) {
+                        self.GridlistCurrentCode_K_001(CommuteNoTaxLimits[0].commuNoTaxLimitCode);
+                    }
+                } else
+                    self.GridlistCurrentCode_K_001(selectedCode);
             }).fail(function(res) {
                 alert(res);
             });

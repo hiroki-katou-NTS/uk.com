@@ -165,7 +165,35 @@ var qmm012;
                     itemMaster.itemSalary = self.screenModel.screenModelC.GetCurrentItemSalary();
                     itemMaster.itemDeduct = self.screenModel.screenModelD.GetCurrentItemDeduct();
                     itemMaster.itemAttend = self.screenModel.screenModelE.getCurrentItemAttend();
+                    itemMaster.itemPeriod = self.getCurrentItemPeriod();
+                    itemMaster.itemBDs = self.getCurrentItemBDs();
                     return itemMaster;
+                };
+                ScreenModel.prototype.getCurrentItemPeriod = function () {
+                    var self = this;
+                    var ItemPeriod;
+                    switch (self.GridCurrentCategoryAtr_B_001()) {
+                        case 0:
+                            ItemPeriod = self.screenModel.screenModelC.currentItemPeriod();
+                            break;
+                        case 1:
+                            ItemPeriod = self.screenModel.screenModelD.currentItemPeriod();
+                            break;
+                    }
+                    return ItemPeriod;
+                };
+                ScreenModel.prototype.getCurrentItemBDs = function () {
+                    var self = this;
+                    var ItemBDs;
+                    switch (self.GridCurrentCategoryAtr_B_001()) {
+                        case 0:
+                            ItemBDs = self.screenModel.screenModelC.currentItemBDs();
+                            break;
+                        case 1:
+                            ItemBDs = self.screenModel.screenModelD.currentItemBDs();
+                            break;
+                    }
+                    return ItemBDs;
                 };
                 ScreenModel.prototype.LoadGridList = function (ItemCode) {
                     var self = this;

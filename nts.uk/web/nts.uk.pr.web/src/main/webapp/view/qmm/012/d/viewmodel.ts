@@ -172,22 +172,24 @@ module qmm012.d.viewmodel {
                     alert(res);
                 });
             } else
-                self.currentItemPeriod(undefined);
+                self.currentItemBDs([]);
         }
 
         openHDialog() {
             let self = this;
             nts.uk.ui.windows.setShared('itemMaster', self.CurrentItemMaster());
+            nts.uk.ui.windows.setShared('itemPeriod', self.currentItemPeriod());
             nts.uk.ui.windows.sub.modal('../h/index.xhtml', { height: 570, width: 735, dialogClass: "no-close" }).onClosed(function(): any {
-                self.loadItemPeriod();
+                self.currentItemPeriod(nts.uk.ui.windows.getShared('itemPeriod'));
             });
         }
 
         openIDialog() {
             let self = this;
             nts.uk.ui.windows.setShared('itemMaster', self.CurrentItemMaster());
+            nts.uk.ui.windows.setShared('itemBDs', self.currentItemBDs());
             nts.uk.ui.windows.sub.modal('../i/index.xhtml', { height: 620, width: 1060, dialogClass: "no-close" }).onClosed(function(): any {
-                self.loadItemBDs();
+                self.currentItemBDs(nts.uk.ui.windows.getShared('itemBDs'));
             });
         }
         GetCurrentItemDeduct() {

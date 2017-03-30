@@ -10,7 +10,11 @@ import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.pr.core.app.command.itemmaster.itemattend.UpdateItemAttendCommandHandler;
 import nts.uk.ctx.pr.core.app.command.itemmaster.itemdeduct.UpdateItemDeductCommandHandler;
+import nts.uk.ctx.pr.core.app.command.itemmaster.itemdeductbd.UpdateItemDeductBDCommandHandler;
+import nts.uk.ctx.pr.core.app.command.itemmaster.itemdeductperiod.UpdateItemDeductPeriodCommandHandler;
 import nts.uk.ctx.pr.core.app.command.itemmaster.itemsalary.UpdateItemSalaryCommandHandler;
+import nts.uk.ctx.pr.core.app.command.itemmaster.itemsalarybd.UpdateItemSalaryBDCommandHandler;
+import nts.uk.ctx.pr.core.app.command.itemmaster.itemsalaryperiod.UpdateItemSalaryPeriodCommandHandler;
 import nts.uk.ctx.pr.core.dom.itemmaster.ItemMasterRepository;
 import nts.uk.shr.com.context.AppContexts;
 
@@ -19,13 +23,21 @@ import nts.uk.shr.com.context.AppContexts;
 public class UpdateItemMasterCommandHandler extends CommandHandler<UpdateItemMasterCommand> {
 
 	@Inject
-	ItemMasterRepository itemMasterRepository;
+	private ItemMasterRepository itemMasterRepository;
 	@Inject
-	UpdateItemSalaryCommandHandler itemSalaryHandler;
+	private UpdateItemSalaryCommandHandler itemSalaryHandler;
 	@Inject
-	UpdateItemDeductCommandHandler itemDeductHandler;
+	private UpdateItemDeductCommandHandler itemDeductHandler;
 	@Inject
-	UpdateItemAttendCommandHandler itemAttendHandler;
+	private UpdateItemAttendCommandHandler itemAttendHandler;
+	@Inject
+	private UpdateItemSalaryPeriodCommandHandler itemSalaryPeriodHandler;
+	@Inject
+	private UpdateItemDeductPeriodCommandHandler itemDeductPeriodHandler;
+	@Inject
+	private UpdateItemSalaryBDCommandHandler itemSalaryBDHandler;
+	@Inject
+	private UpdateItemDeductBDCommandHandler itemDeductBDHandler;
 
 	@Override
 	protected void handle(CommandHandlerContext<UpdateItemMasterCommand> context) {
@@ -41,11 +53,15 @@ public class UpdateItemMasterCommandHandler extends CommandHandler<UpdateItemMas
 			itemCommand.getItemSalary().setCcd(companyCode);
 			itemCommand.getItemSalary().setItemCd(itemCode);
 			this.itemSalaryHandler.handle(itemCommand.getItemSalary());
+			this.itemSalaryPeriodHandler.handle(context.getCommand().getItemSalaryPeriod());
+			this.itemSalaryBDHandler.handle(context.getCommand().getItemSalaryBD());
 			break;
 		case 1:
 			itemCommand.getItemDeduct().setCcd(companyCode);
 			itemCommand.getItemDeduct().setItemCd(itemCode);
 			this.itemDeductHandler.handle(itemCommand.getItemDeduct());
+			this.itemDeductPeriodHandler.handle(context.getCommand().getItemDeductPeriod());
+			this.itemDeductBDHandler.handle(context.getCommand().getItemDeductBD());
 			break;
 		case 2:
 			itemCommand.getItemAttend().setCcd(companyCode);

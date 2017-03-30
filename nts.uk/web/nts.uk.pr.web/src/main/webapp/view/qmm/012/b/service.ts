@@ -64,6 +64,8 @@ module qmm012.b {
                 itemSalary: qmm012.c.service.model.ItemSalary;
                 itemDeduct: qmm012.d.service.model.ItemDeduct;
                 itemAttend: qmm012.e.service.model.ItemAttend;
+                itemPeriod: qmm012.h.service.model.ItemPeriod;
+                itemBDs: Array<qmm012.i.service.model.ItemBD>;
                 itemCode: string;
                 itemName: string;
                 categoryAtr: number;

@@ -190,9 +190,36 @@ module qmm012.b.viewmodel {
             itemMaster.itemSalary = self.screenModel.screenModelC.GetCurrentItemSalary();
             itemMaster.itemDeduct = self.screenModel.screenModelD.GetCurrentItemDeduct();
             itemMaster.itemAttend = self.screenModel.screenModelE.getCurrentItemAttend();
+            itemMaster.itemPeriod = self.getCurrentItemPeriod();
+            itemMaster.itemBDs = self.getCurrentItemBDs();
             return itemMaster;
         }
-
+        getCurrentItemPeriod() {
+            let self = this;
+            let ItemPeriod: qmm012.h.service.model.ItemPeriod;
+            switch (self.GridCurrentCategoryAtr_B_001()) {
+                case 0:
+                    ItemPeriod = self.screenModel.screenModelC.currentItemPeriod();
+                    break;
+                case 1:
+                    ItemPeriod = self.screenModel.screenModelD.currentItemPeriod();
+                    break;
+            }
+            return ItemPeriod;
+        }
+        getCurrentItemBDs() {
+            let self = this;
+            let ItemBDs: Array<qmm012.i.service.model.ItemBD>;
+            switch (self.GridCurrentCategoryAtr_B_001()) {
+                case 0:
+                    ItemBDs = self.screenModel.screenModelC.currentItemBDs();
+                    break;
+                case 1:
+                    ItemBDs = self.screenModel.screenModelD.currentItemBDs();
+                    break;
+            }
+            return ItemBDs;
+        }
         LoadGridList(ItemCode?) {
             let self = this;
             let categoryAtr = self.categoryAtr;
@@ -233,7 +260,6 @@ module qmm012.b.viewmodel {
                 alert(res);
             });
         }
-
 
         getCurrentZeroDisplaySet() {
             let Result;

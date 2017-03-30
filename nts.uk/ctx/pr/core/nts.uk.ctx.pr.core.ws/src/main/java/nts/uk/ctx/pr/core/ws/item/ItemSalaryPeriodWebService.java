@@ -19,29 +19,29 @@ import nts.uk.ctx.pr.core.app.find.itemmaster.itemsalaryperiod.ItemSalaryPeriodF
 public class ItemSalaryPeriodWebService extends WebService {
 	@Inject
 	ItemSalaryPeriodFinder itemSalaryPeriodFinder;
-	@Inject
-	AddItemSalaryPeriodCommandHandler addHandler;
-	@Inject
-	UpdateItemSalaryPeriodCommandHandler updateHandler;
+//	@Inject
+//	AddItemSalaryPeriodCommandHandler addHandler;
+//	@Inject
+//	UpdateItemSalaryPeriodCommandHandler updateHandler;
 
 	@POST
 	@Path("find/{itemCode}")
 	public ItemSalaryPeriodDto findItemSalaryPeriod(@PathParam("itemCode") String itemCode) {
 		return this.itemSalaryPeriodFinder.find(itemCode);
 	}
-
-	@POST
-	@Path("add")
-	public void addItemSalaryPeriod(AddItemSalaryPeriodCommand command) {
-		this.addHandler.handle(command);
-
-	}
-
-
-	@POST
-	@Path("update")
-	public void updateItemSalaryPeriod(UpdateItemSalaryPeriodCommand command) {
-		this.updateHandler.handle(command);
-
-	}
+//
+//	@POST
+//	@Path("add")
+//	public void addItemSalaryPeriod(AddItemSalaryPeriodCommand command) {
+//		this.addHandler.handle(command);
+//
+//	}
+//
+//
+//	@POST
+//	@Path("update")
+//	public void updateItemSalaryPeriod(UpdateItemSalaryPeriodCommand command) {
+//		this.updateHandler.handle(command);
+//
+//	}
 }

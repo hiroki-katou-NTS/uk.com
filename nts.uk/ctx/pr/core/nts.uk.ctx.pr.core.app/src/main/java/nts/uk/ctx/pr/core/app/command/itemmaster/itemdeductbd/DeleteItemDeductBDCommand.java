@@ -8,4 +8,11 @@ import lombok.Setter;
 public class DeleteItemDeductBDCommand {
 	private String itemCd;
 	private String itemBreakdownCd;
+
+	public DeleteItemDeductBDCommand(String itemCd, String itemBreakdownCd) {
+		super();
+		this.itemCd = itemCd;
+		this.itemBreakdownCd = itemBreakdownCd;
+	}
+
 }

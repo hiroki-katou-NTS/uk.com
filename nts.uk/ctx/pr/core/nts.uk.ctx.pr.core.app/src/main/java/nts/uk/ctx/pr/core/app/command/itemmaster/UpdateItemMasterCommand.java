@@ -4,7 +4,11 @@ import lombok.Getter;
 import lombok.Setter;
 import nts.uk.ctx.pr.core.app.command.itemmaster.itemattend.UpdateItemAttendCommand;
 import nts.uk.ctx.pr.core.app.command.itemmaster.itemdeduct.UpdateItemDeductCommand;
+import nts.uk.ctx.pr.core.app.command.itemmaster.itemdeductbd.UpdateItemDeductBDCommand;
+import nts.uk.ctx.pr.core.app.command.itemmaster.itemdeductperiod.UpdateItemDeductPeriodCommand;
 import nts.uk.ctx.pr.core.app.command.itemmaster.itemsalary.UpdateItemSalaryCommand;
+import nts.uk.ctx.pr.core.app.command.itemmaster.itemsalarybd.UpdateItemSalaryBDCommand;
+import nts.uk.ctx.pr.core.app.command.itemmaster.itemsalaryperiod.UpdateItemSalaryPeriodCommand;
 import nts.uk.ctx.pr.core.dom.itemmaster.ItemMaster;
 
 @Getter
@@ -14,6 +18,10 @@ public class UpdateItemMasterCommand {
 	private UpdateItemSalaryCommand itemSalary;
 	private UpdateItemDeductCommand itemDeduct;
 	private UpdateItemAttendCommand itemAttend;
+	private UpdateItemSalaryBDCommand itemSalaryBD;
+	private UpdateItemDeductBDCommand itemDeductBD;
+	private UpdateItemSalaryPeriodCommand itemSalaryPeriod;
+	private UpdateItemDeductPeriodCommand itemDeductPeriod;
 	private String itemCode;
 	private String itemName;
 	private String itemAbName;
