@@ -2,75 +2,40 @@
 
 .separate-button {
 	margin-left: 10px;
-	margin-top:	10px;
-}
-.fix-button {
-	min-width: 75px;
-}
-#btn_005 {
-	margin-left: 150px;
-}
-#btn_004 {
-	margin-left: 150px;
+	margin-top:	5px;
 }
 
-#right-content {
-	margin-left: 40px;
+.header {
+	margin: 5px;
+	padding:5px;
+	border-bottom: 1px solid #aaa;
+	height: 30px;
+	width: 100%;
+}
+
+.body {
+	padding:10px;
+}
+
+#lbl {
 	float: left;
-	min-height: 550px;
-	margin-top: 20px;
-	
 }
-
-
-.lst_003 {
-	margin-top:10px;
+.div {
+	border-top: 1px solid #aaa;
+	height: 70px;
+	margin-top: 10px;
+	padding-top: 15px;
+}
+#btn_001 {
+	margin-left: 100px;
+	padding-bottom: 10px;
+}
+#row {
 	display: inline-block;
-	height: 185px;
-	overflow-y: scroll;
-}
-.ntsRadioBox {
-    width: 100%;
-    margin-top:10px;
-}
-#inp_002{
-
-	float: left;
-}
-#inp_003 {
-	float: right;
-	margin-right: 130px;
-	
-}
-.inp_004 {
-	padding-bottom: 20px;
-	padding-top: 20px;
-
+	padding-top: 10px;
 }
 .line {
 	display: inline-block;
-}
-
-.left-line {
-	width: 150px;
-}
-.row {
-	border: 1px solid #aaa;
-	padding: 2px;
-}
-#btn_001 {
-	margin-left: 150px;
-}
-#btn_002 {
 	margin-left: 10px;
 }
-#btn_007 {
-	margin-left: 50px;
-}
-#left-content {
-	margin-left: 20px;
-	margin-top:	20px;
-	padding: 20px;
-	float: left;
-	min-height: 550px;
-}
+

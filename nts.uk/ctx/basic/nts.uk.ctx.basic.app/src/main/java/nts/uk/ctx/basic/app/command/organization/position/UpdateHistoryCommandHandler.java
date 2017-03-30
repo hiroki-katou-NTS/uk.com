@@ -1,9 +1,12 @@
 package nts.uk.ctx.basic.app.command.organization.position;
 
+import java.time.LocalDate;
 import java.util.Optional;
 
 import javax.ejb.Stateless;
 import javax.inject.Inject;
+
+import nts.arc.error.BusinessException;
 import nts.arc.layer.app.command.CommandHandler;
 import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.arc.time.GeneralDate;
@@ -21,12 +24,51 @@ public class UpdateHistoryCommandHandler extends CommandHandler<UpdateHistoryCom
 	@Override
 	protected void handle(CommandHandlerContext<UpdateHistoryCommand> context) {
 
-		UpdateHistoryCommand command = context.getCommand();
+		String companyCode = AppContexts.user().companyCode();
+		String historyId = context.getCommand().getJobHist().getHistoryId();
+		String checkUpdate = context.getCommand().getCheckUpdate();
+		String checkDelete = context.getCommand().getCheckDelete();
+		String sDateEdit = context.getCommand().getJobHist().getStartDate().toString();
+		String endDateEdit = context.getCommand().getJobHist().getEndDate().toString();
+		GeneralDate eDateNew = GeneralDate.localDate(LocalDate.parse(endDateEdit));
+		//check jHist is existed in DB
+		Optional<JobHistory> checkJhist = positionRepository.findSingleHistory(companyCode, historyId);
+		if(checkJhist.isPresent()){
+			if(checkDelete.compareTo("0")==0){//update
+				GeneralDate sDateNew = context.getCommand().getJobHist().getStartDate();
+				GeneralDate eDateUpdateNew = sDateNew.addDays(-1);
+				JobHistory jobHist = new JobHistory(companyCode,historyId,sDateNew,eDateNew);
+	
+					if(checkUpdate.compareTo("1")==0 ){
+					//TH 1.0: update jHist L.i and update eDate L.(i+1) = sDate L.i - 1
+						Optional<JobHistory> hisEndate = positionRepository.getHistoryByEdate(companyCode,sDateEdit);
+						if(hisEndate.isPresent()){
+							JobHistory jobHistPre = hisEndate.get();
+							jobHistPre.setEndDate(eDateUpdateNew);
+							positionRepository.updateHistory(jobHistPre);
+							positionRepository.updateHistory(jobHist);
+						}
+					}
+					if(checkUpdate.compareTo("2")==0 && checkDelete.compareTo("0")==0){
+						//TH 2.0: update jHist L.n
+						positionRepository.updateHistory(jobHist);
+					}
+	
+			}
+			if(checkUpdate.compareTo("0")==0 && checkDelete.compareTo("1")==0){
+				//TH 0.1: delete jHist L.1 and update eDate L.2 = eDate L.1 and delete list jTitle by histId
+				Optional<JobHistory> hisEndate = positionRepository.getHistoryByEdate(companyCode,sDateEdit);
+				if(hisEndate.isPresent()){
+					JobHistory jobHistPre = hisEndate.get();
+					jobHistPre.setEndDate(eDateNew);
+					positionRepository.updateHistory(jobHistPre);
+					positionRepository.deleteHist(companyCode, historyId);
+					positionRepository.deleteJobTitleByHisId(companyCode, historyId);
+				}
+			}
 		
-		if (positionRepository.CheckUpdateHistory(command.getHistoryId(), command.getStartDate())) {
-			JobHistory jobHistory = command.toDomain();
-			jobHistory.validate();
-			positionRepository.updateHistory(jobHistory);
+		}else{
+			throw new BusinessException("du lieu khong con ton tai tron DB");
 		}
 
 	}

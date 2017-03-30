@@ -33,6 +33,27 @@ var cmm013;
                 ScreenModel.prototype.closeDialog = function () {
                     nts.uk.ui.windows.close();
                 };
+                ScreenModel.prototype.checkInput = function () {
+                    var self = this;
+                    var date = new Date(self.inp_003());
+                    if (date.toDateString() == 'Invalid Date') {
+                        alert("Input by YYYY-MM-DD or YYYY/MM/DD or YYYY.MM.DD ");
+                        return false;
+                    }
+                    else {
+                        return true;
+                    }
+                };
+                ScreenModel.prototype.checkValue = function (value) {
+                    var self = this;
+                    if (value <= self.startDateLast()) {
+                        alert("nhap lai start Date");
+                        return false;
+                    }
+                    else {
+                        return true;
+                    }
+                };
                 ScreenModel.prototype.startPage = function () {
                     var self = this;
                     var dfd = $.Deferred();
@@ -61,41 +82,30 @@ var cmm013;
                     if (self.checkInput() == false) {
                         return;
                     }
-                    else if (self.checkValue(self.inp_003()) == false) {
+                    else if (self.startDateLast() != '' && self.startDateLast() != null) {
+                        var check = self.selectedId();
+                    }
+                    else {
+                        var check = 2;
+                    }
+                    var dateNew = startDate.getFullYear() + '-' + (startDate.getMonth() + 1) + '-' + startDate.getDate();
+                    if (startDate.getMonth() < 9 && startDate.getDate() < 10) {
+                        dateNew = startDate.getFullYear() + '-' + 0 + (startDate.getMonth() + 1) + '-' + 0 + startDate.getDate();
+                    }
+                    else {
+                        if (startDate.getDate() < 10) {
+                            dateNew = startDate.getFullYear() + '-' + (startDate.getMonth() + 1) + '-' + 0 + startDate.getDate();
+                        }
+                        if (startDate.getMonth() < 9) {
+                            dateNew = startDate.getFullYear() + '-' + 0 + (startDate.getMonth() + 1) + '-' + startDate.getDate();
+                        }
+                    }
+                    if (self.checkValue(dateNew) == false) {
                         return;
                     }
-                    else {
-                        if (nts.uk.text.isNullOrEmpty(self.startDateLast())) {
-                            var check = self.selectedId();
-                        }
-                        else {
-                            var check = 2;
-                        }
-                        nts.uk.ui.windows.setShared('startNew', self.inp_003());
-                        nts.uk.ui.windows.setShared('copy_c', check, false);
-                        nts.uk.ui.windows.close();
-                    }
-                };
-                ScreenModel.prototype.checkInput = function () {
-                    var self = this;
-                    var date = new Date(self.inp_003());
-                    if (date.toDateString() == 'Invalid Date') {
-                        alert("nhap lai ngay theo dinh dang YYYY-MM-DD hoac YYYY/MM/DD hoac YYYY.MM.DD");
-                        return false;
-                    }
-                    else {
-                        return true;
-                    }
-                };
-                ScreenModel.prototype.checkValue = function (value) {
-                    var self = this;
-                    if (value <= self.startDateLast()) {
-                        alert("nhap lai start Date");
-                        return false;
-                    }
-                    else {
-                        return true;
-                    }
+                    nts.uk.ui.windows.setShared('startNew', self.inp_003());
+                    nts.uk.ui.windows.setShared('copy_c', check, false);
+                    nts.uk.ui.windows.close();
                 };
                 return ScreenModel;
             }());

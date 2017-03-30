@@ -51,11 +51,30 @@ module cmm013.c.viewmodel {
             ]);
 
         }
-        closeDialog(): any{
-            nts.uk.ui.windows.close();   
+        closeDialog(): any {
+            nts.uk.ui.windows.close();
         }
 
-        
+
+        checkInput(): boolean {
+            var self = this;
+            var date = new Date(self.inp_003());
+            if (date.toDateString() == 'Invalid Date') {
+                alert("Input by YYYY-MM-DD or YYYY/MM/DD or YYYY.MM.DD ");
+                return false;
+            } else {
+                return true;
+            }
+        }
+        checkValue(value: string): boolean {
+            var self = this;
+            if (value <= self.startDateLast()) {
+                alert("nhap lai start Date");
+                return false;
+            } else {
+                return true;
+            }
+        }
 
         startPage(): JQueryPromise<any> {
             var self = this;
@@ -85,48 +104,35 @@ module cmm013.c.viewmodel {
             var self = this;
             let startDateLast = new Date(self.endDateUpdate());
             let startDate = new Date(self.inp_003());
-//            if (startDate.getTime() > startDateLast.getTime()) {
-//                alert("no no no");
-//                return;
-//            }
-               if(self.checkInput()==false){
+
+            if (self.checkInput() == false) {
                 return;
-            }else
-            if(self.checkValue(self.inp_003())==false){
-                return;
-            }
-            else {
-                if (nts.uk.text.isNullOrEmpty(self.startDateLast())) {
+            } else
+                if (self.startDateLast() != '' && self.startDateLast() != null) {
+
                     var check = self.selectedId();
                 } else {
                     var check = 2;
                 }
-                nts.uk.ui.windows.setShared('startNew', self.inp_003());
-                nts.uk.ui.windows.setShared('copy_c', check, false);
-                nts.uk.ui.windows.close();
+            let dateNew = startDate.getFullYear() + '-' + (startDate.getMonth() + 1) + '-' + startDate.getDate();
+            if (startDate.getMonth() < 9 && startDate.getDate() < 10) {
+                dateNew = startDate.getFullYear() + '-' + 0 + (startDate.getMonth() + 1) + '-' + 0 + startDate.getDate();
+            } else {
+                if (startDate.getDate() < 10) {
+                    dateNew = startDate.getFullYear() + '-' + (startDate.getMonth() + 1) + '-' + 0 + startDate.getDate();
+                }
+                if (startDate.getMonth() < 9) {
+                    dateNew = startDate.getFullYear() + '-' + 0 + (startDate.getMonth() + 1) + '-' + startDate.getDate();
+                }
             }
-        }
-       checkInput(): boolean{
-            var self = this;
-            var date = new Date(self.inp_003());
-            if(date.toDateString()=='Invalid Date'){ 
-                alert("nhap lai ngay theo dinh dang YYYY-MM-DD hoac YYYY/MM/DD hoac YYYY.MM.DD"); 
-                return false;
-            }else{
-                return true;
+            if (self.checkValue(dateNew) == false) {
+                return;
             }
-        }
-        checkValue(value: string): boolean{
-            var self = this;
-            if(value <= self.startDateLast()){
-                alert("nhap lai start Date");
-                return false;
-            }else{
-                return true;    
-            }
-        }
 
-
+            nts.uk.ui.windows.setShared('startNew', self.inp_003());
+            nts.uk.ui.windows.setShared('copy_c', check, false);
+            nts.uk.ui.windows.close();
+        }
     }
 
     export class Labels {

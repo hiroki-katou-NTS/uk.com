@@ -22,6 +22,7 @@ public interface PositionRepository {
 	/*
 	 * add, update, delete history
 	 */
+	void deleteJobTitleByHisId(String companyCode, String historyId);
 	
 	void addHistory(JobHistory history);
 	
@@ -31,9 +32,10 @@ public interface PositionRepository {
 
 	List<JobHistory> getAllHistory(String companyCode);
 	
-	List<JobTitleRef> findAllJobTitleRef(String companyCode, String historyId);
-	
-	
+	List<JobTitleRef> findAllJobTitleRef(String companyCode,String historyId, String jobCode);
+
+	Optional<AuthorizationLevel> findAllAuth(String companyCode, String authScopeAtr,String authCode);
+
 
 	Optional<JobTitle> findSingle(String companyCode, String historyId, JobCode jobCode);
 
@@ -47,10 +49,11 @@ public interface PositionRepository {
 	
 	boolean CheckUpdateHistory (String historyId, GeneralDate startDate);
 
-	Optional<JobHistory> getHistoryByEdate(String historyId, GeneralDate endDate);
+	Optional<JobHistory> getHistoryByEdate(String historyId, String endDate);
 
 	boolean ExistedHistory(String historyId);
 
 	void addJobTitleRef(JobTitleRef jobTitleRef);
+	Optional<JobTitle> getJobTitleByCode(String companyCode, String historyId, String jobCode);
 
 	}

@@ -28,10 +28,10 @@ public class DeletePositionCommand {
 	public JobTitle toDomain(){
 		return JobTitle.createFromJavaType(this.jobName,this.jobCode,this.jobOutCode,
 				this.historyId, 
-				AppContexts.user().companyCode(),
+				this.presenceCheckScopeSet,
 				this.memo,
 				this.hiterarchyOrderCode,
-				this.presenceCheckScopeSet);
+				AppContexts.user().companyCode());
 				
 	}
 }
