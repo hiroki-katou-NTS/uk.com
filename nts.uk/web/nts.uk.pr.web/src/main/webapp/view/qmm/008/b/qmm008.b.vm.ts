@@ -114,11 +114,11 @@ module nts.uk.pr.view.qmm008.b {
             //string rounding to value
             public convertRounding(stringRounding: string) {
                 switch (stringRounding) {
-                    case Rounding.ROUNDUP: return "0";
-                    case Rounding.TRUNCATION: return "1";
+                    case Rounding.TRUNCATION: return "0";
+                    case Rounding.ROUNDUP: return "1";
                     case Rounding.DOWN4_UP5: return "2";
-                    case Rounding.ROUNDDOWN: return "3";
-                    case Rounding.DOWN5_UP6: return "4";
+                    case Rounding.DOWN5_UP6: return "3";
+                    case Rounding.ROUNDDOWN: return "4";
                     default: return "0";
                 }
             }
@@ -126,12 +126,12 @@ module nts.uk.pr.view.qmm008.b {
             //value to string rounding
             public convertToRounding(stringValue: string) {
                 switch (stringValue) {
-                    case "0": return Rounding.ROUNDUP;
-                    case "1": return Rounding.TRUNCATION;
+                    case "0": return Rounding.TRUNCATION;
+                    case "1": return Rounding.ROUNDUP;
                     case "2": return Rounding.DOWN4_UP5;
-                    case "3": return Rounding.ROUNDDOWN;
-                    case "4": return Rounding.DOWN5_UP6;
-                    default: return Rounding.ROUNDUP;
+                    case "3": return Rounding.DOWN5_UP6;
+                    case "4": return Rounding.ROUNDDOWN;
+                    default: return Rounding.TRUNCATION;
                 }
             }
 
@@ -264,7 +264,7 @@ module nts.uk.pr.view.qmm008.b {
              */
             private collectData(): Array<HealthInsuranceAvgEarnDto> {
                 var self = this;
-                var data: any = [];
+                var data: Array<HealthInsuranceAvgEarnDto> = [];
                 self.listAvgEarnLevelMasterSetting.forEach(item => {
                     self.listHealthInsuranceAvgearn.push(self.calculateHealthInsuranceAvgEarnModel(item));
                 });
