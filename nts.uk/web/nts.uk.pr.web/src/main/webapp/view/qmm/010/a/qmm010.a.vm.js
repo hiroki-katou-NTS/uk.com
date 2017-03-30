@@ -93,7 +93,11 @@ var nts;
                                                 dialogClass: 'no-close'
                                             }).onClosed(function () {
                                                 self.enableButton(true);
-                                                self.reloadDataByAction();
+                                                var importData;
+                                                importData = nts.uk.ui.windows.getShared('importData');
+                                                if (importData != null && importData != undefined) {
+                                                    self.laborInsuranceOfficeModel().setDataImport(importData);
+                                                }
                                             });
                                         }
                                         else {
@@ -194,7 +198,8 @@ var nts;
                                     var self = this;
                                     if (selectionCodeLstLstLaborInsuranceOffice
                                         && selectionCodeLstLstLaborInsuranceOffice != '') {
-                                        if (self.dirty.isDirty() && self.isShowDirty()) {
+                                        if (self.dirty.isDirty() && self.isShowDirty()
+                                            && self.typeAction() == TypeActionLaborInsuranceOffice.update) {
                                             if (selectionCodeLstLstLaborInsuranceOffice !== self.selectCodeLstlaborInsuranceOffice()) {
                                                 nts.uk.ui.dialog.confirm(self.messageList()[2].message).ifYes(function () {
                                                     self.isShowDirty(false);
@@ -496,6 +501,16 @@ var nts;
                                     }).fail(function (error) {
                                         console.log(error);
                                     });
+                                };
+                                LaborInsuranceOfficeModel.prototype.setDataImport = function (socialInsuranceOfficeImportDto) {
+                                    this.picName(socialInsuranceOfficeImportDto.picName);
+                                    this.shortName(socialInsuranceOfficeImportDto.shortName);
+                                    this.address1st(socialInsuranceOfficeImportDto.address1st);
+                                    this.address2nd(socialInsuranceOfficeImportDto.address2nd);
+                                    this.kanaAddress1st(socialInsuranceOfficeImportDto.kanaAddress1st);
+                                    this.kanaAddress2nd(socialInsuranceOfficeImportDto.kanaAddress2nd);
+                                    this.postalCode(socialInsuranceOfficeImportDto.potalCode);
+                                    this.picPosition(socialInsuranceOfficeImportDto.picPosition);
                                 };
                                 return LaborInsuranceOfficeModel;
                             }());
