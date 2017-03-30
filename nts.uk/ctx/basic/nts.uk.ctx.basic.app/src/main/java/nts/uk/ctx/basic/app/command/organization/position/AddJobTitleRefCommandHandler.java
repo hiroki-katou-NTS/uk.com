@@ -17,11 +17,11 @@ public class AddJobTitleRefCommandHandler extends CommandHandler<AddJobTitleRefC
 	@Override
 	protected void handle(CommandHandlerContext<AddJobTitleRefCommand> context) {
 		String companyCode = AppContexts.user().companyCode();
-		JobTitleRef jTitleRef = new JobTitleRef(context.getCommand().getAuthorizationCode(), 
+		JobTitleRef jTitleRef = new JobTitleRef(context.getCommand().getReferenceSettings(), 
 								companyCode, 
 								context.getCommand().getHistoryId(), 
 								context.getCommand().getJobCode(), 	
-								context.getCommand().getReferenceSettings());
+								context.getCommand().getAuthorizationCode());
 		positionRepository.addJobTitleRef(jTitleRef);
 	}
 

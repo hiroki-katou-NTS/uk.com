@@ -16,8 +16,8 @@ public class JobTitleRef extends AggregateRoot{
 	
 	private ReferenceSettings referenceSettings;
 	
-	public JobTitleRef(AuthorizationCode authorizationCode, 
-			String companyCode, String historyId,JobCode jobCode, ReferenceSettings referenceSettings) {
+	public JobTitleRef(ReferenceSettings referenceSettings, 
+			String companyCode, String historyId,JobCode jobCode,AuthorizationCode authorizationCode ) {
 		super();
 		this.authorizationCode = authorizationCode;
 		this.historyId = historyId;
@@ -29,8 +29,8 @@ public class JobTitleRef extends AggregateRoot{
 	public static JobTitleRef createFromJavaType(String authorizationCode, 
 			 String companyCode, String historyId,String jobCode, int referenceSettings)
 	{
-		return new JobTitleRef(new AuthorizationCode(authorizationCode),
-				companyCode, historyId,new JobCode(jobCode), ReferenceSettings.valueOf(String.valueOf(referenceSettings)));
+		return new JobTitleRef(ReferenceSettings.valueOf(String.valueOf(referenceSettings)),
+				companyCode, historyId,new JobCode(jobCode),new AuthorizationCode(authorizationCode) );
 	}
 
 }

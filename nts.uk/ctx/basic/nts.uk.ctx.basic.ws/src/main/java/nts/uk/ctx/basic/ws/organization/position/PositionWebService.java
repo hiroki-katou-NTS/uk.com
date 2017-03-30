@@ -24,16 +24,15 @@ import nts.uk.ctx.basic.app.command.organization.position.UpdateHistoryCommand;
 import nts.uk.ctx.basic.app.command.organization.position.UpdateHistoryCommandHandler;
 import nts.uk.ctx.basic.app.command.organization.position.UpdatePositionCommand;
 import nts.uk.ctx.basic.app.command.organization.position.UpdatePositionCommandHandler;
-import nts.uk.ctx.basic.app.find.organization.position.AuthorizationLevelDto;
-import nts.uk.ctx.basic.app.find.organization.position.AuthorizationLevelFinder;
 import nts.uk.ctx.basic.app.find.organization.position.JobHistDto;
 import nts.uk.ctx.basic.app.find.organization.position.JobHistFinder;
+import nts.uk.ctx.basic.app.find.organization.position.JobRefAuthDto;
+import nts.uk.ctx.basic.app.find.organization.position.JobRefAuthFinder;
 import nts.uk.ctx.basic.app.find.organization.position.JobTitleDto;
 import nts.uk.ctx.basic.app.find.organization.position.JobTitleFinder;
-import nts.uk.ctx.basic.app.find.organization.position.JobTitleRefDto;
-import nts.uk.ctx.basic.app.find.organization.position.JobTitleRefFinder;
 
-@Path("basic/position")
+
+@Path("basic/organization/position")
 @Produces("application/json")
 public class PositionWebService extends WebService {
 
@@ -54,16 +53,13 @@ public class PositionWebService extends WebService {
 	@Inject
 	private AddHistoryCommandHandler addHistoryCommandHandler;
 	@Inject
-	private JobTitleRefFinder getJobTitleRef;
-	@Inject
-	private AuthorizationLevelFinder getAuthLevel;
+	private JobRefAuthFinder jobRefAuth;
 	@Inject
 	private AddJobTitleRefCommandHandler addJtitleRef;
 	
 	@POST
 	@Path("findallposition/{historyId}")
 	public List<JobTitleDto> findAllPosition(@PathParam("historyId") String historyId) {
-		List<JobTitleDto> t = this.positionFinder.findAllPosition(historyId);
 		return this.positionFinder.findAllPosition(historyId);
 	}
 
@@ -77,19 +73,10 @@ public class PositionWebService extends WebService {
 	@POST
 	@Path("getallhist")
 	public List<JobHistDto> init() {
-		// List<JobHistDto> i =null;
-		// i = histFinder.init();
-		// System.out.println("==" + i);
 		
-		List<JobHistDto> i = this.histFinder.init();
 		return this.histFinder.init();
 	}
-	// @POST
-	// @Path("findposition/{jobCode}/{historyId}")
-	// public Optional<PositionDto> find(@PathParam("jobCode") String
-	// jobCode,@PathParam("historyId") String historyId){
-	// return this.finder.find(jobCode, historyId);
-	// }
+
 
 	@POST
 	@Path("addPosition")
@@ -133,20 +120,13 @@ public class PositionWebService extends WebService {
 	public void addJobTitleRef(AddJobTitleRefCommand command){
 		this.addJtitleRef.handle(command);
 	}
-
-	@POST
-	@Path("getalljobtitleref/{historyId}/{jobCode}") 
-	public List<JobTitleRefDto> getAllJobTitleRef(@PathParam("historyId") String historyId,
-			@PathParam("jobCode") String jobCode) {
-		return this.getJobTitleRef.findAllJobTitleRef(historyId, jobCode);
-	}
-
 	
 	@POST
-	@PathParam("getallauthlevel/{authCode}")
-	public AuthorizationLevelDto getAllAuthLevel(@PathParam("authScopeAtr") String authScopeAtr,
-			@PathParam("authCode") String authCode) {
-		return this.getAuthLevel.getAuthLevel(authCode,authScopeAtr).get();
+	@PathParam("getallauth/{authCode}")
+	public List<JobRefAuthDto> getAllJobRefAuth(String historyId, String jobCode) {
+		return jobRefAuth.getAllRefAuth(historyId, jobCode);
 	}
+	
+	
 
 }

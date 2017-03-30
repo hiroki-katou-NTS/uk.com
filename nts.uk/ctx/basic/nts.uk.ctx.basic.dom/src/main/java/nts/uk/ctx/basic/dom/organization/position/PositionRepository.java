@@ -44,16 +44,15 @@ public interface PositionRepository {
 	List<JobTitle> findAll(String companyCode);
 	
 	boolean ExistedHistoryBydate(String companyCode, GeneralDate startDate);
-	
-	Optional<JobHistory> getHistoryBySdate(String companyCode, GeneralDate startDate);
-	
+		
 	boolean CheckUpdateHistory (String historyId, GeneralDate startDate);
 
-	Optional<JobHistory> getHistoryByEdate(String historyId, String endDate);
+	Optional<JobHistory> getHistoryByEdate(String historyId, GeneralDate endDate);
 
 	boolean ExistedHistory(String historyId);
 
 	void addJobTitleRef(JobTitleRef jobTitleRef);
 	Optional<JobTitle> getJobTitleByCode(String companyCode, String historyId, String jobCode);
 
+	List<JobRef_Auth> getAllAuth(String companyCode,String historyId,String jobCode, String authScopeAtr);
 	}
