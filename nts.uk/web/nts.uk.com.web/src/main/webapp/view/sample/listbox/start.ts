@@ -43,14 +43,16 @@ __viewContext.ready(function () {
         }
         
         selectAll() {
-            $('#list-box').ntsListBox('selectAll');
+            var self = this;
+            self.selectedCodes([10]);
         }
         
         /**
          * Clear options.
          */
         clearOptions() {
-            this.itemList([]);
+            var self = this;
+            self.itemList([]);
         }
         
         /**
