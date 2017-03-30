@@ -4,7 +4,11 @@ import nts.arc.primitive.constraint.CharType;
 import nts.arc.primitive.constraint.StringCharType;
 import nts.arc.primitive.constraint.StringMaxLength;
 import nts.uk.shr.com.primitive.CodePrimitiveValue;
-
+/**
+ * 
+ * @author sonnh
+ *
+ */
 @StringMaxLength(2)
 @StringCharType(CharType.NUMERIC)
 public class PersonalUnitPriceCode extends CodePrimitiveValue<PersonalUnitPriceCode>{

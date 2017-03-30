@@ -12,7 +12,11 @@ import nts.arc.layer.app.command.CommandHandlerContext;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.personal.PersonalUnitPrice;
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.personal.PersonalUnitPriceRepository;
 import nts.uk.shr.com.context.AppContexts;
-
+/**
+ * 
+ * @author sonnh
+ *
+ */
 @Stateless
 @Transactional
 public class UpdatePersonalUnitPriceCommandHander extends CommandHandler<UpdatePersonalUnitPriceCommand> {

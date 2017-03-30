@@ -13,6 +13,11 @@ import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.personal.PersonalUnitPri
 import nts.uk.ctx.pr.core.dom.rule.employment.unitprice.personal.PersonalUnitPriceRepository;
 import nts.uk.shr.com.context.AppContexts;
 
+/**
+ * 
+ * @author sonnh
+ *
+ */
 @Stateless
 @Transactional
 public class RemovePersonalUnitPriceCommandHander extends CommandHandler<RemovePersonalUnitPriceCommand> {
@@ -25,10 +30,11 @@ public class RemovePersonalUnitPriceCommandHander extends CommandHandler<RemoveP
 		RemovePersonalUnitPriceCommand command = context.getCommand();
 		String companyCode = AppContexts.user().companyCode();
 
+		// Check exist personal unit price
 		Optional<PersonalUnitPrice> unitPrice = personalUnitPriceRepository.find(companyCode,
 				command.getPersonalUnitPriceCode());
 		if (!unitPrice.isPresent()) {
-			throw new BusinessException("Unit price not found");
+			throw new BusinessException("対象が検索できません");
 		}
 
 		personalUnitPriceRepository.remove(companyCode, command.getPersonalUnitPriceCode());

@@ -23,7 +23,8 @@ public class AddPersonalUnitPriceCommandHandler extends CommandHandler<AddPerson
 	protected void handle(CommandHandlerContext<AddPersonalUnitPriceCommand> context) {
 		AddPersonalUnitPriceCommand command = context.getCommand();
 		String companyCode = AppContexts.user().companyCode();
-
+		
+		//convert data to domain type
 		PersonalUnitPrice domain = PersonalUnitPrice.createFromJavaType(companyCode, command.getPersonalUnitPriceCode(),
 				command.getPersonalUnitPriceName(), command.getPersonalUnitPriceShortName(), command.getUniteCode(),
 				command.getMemo(), command.getFixPaymentAtr(), command.getFixPaymentMonthly(),

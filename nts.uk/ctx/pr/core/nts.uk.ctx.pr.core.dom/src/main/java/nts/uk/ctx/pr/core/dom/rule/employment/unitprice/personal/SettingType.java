@@ -1,7 +1,7 @@
 package nts.uk.ctx.pr.core.dom.rule.employment.unitprice.personal;
 /**
  * 
- * @author sonnh1
+ * @author sonnh
  *
  */
 public enum SettingType {
