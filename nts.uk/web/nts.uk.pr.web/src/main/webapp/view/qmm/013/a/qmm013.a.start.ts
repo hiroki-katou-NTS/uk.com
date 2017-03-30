@@ -3,6 +3,7 @@ module qmm013.a {
         var screenModel = new qmm013.a.viewmodel.ScreenModel();
         screenModel.startPage().done(function() {
             __viewContext.bind(screenModel);
+            nts.uk.ui.confirmSave(screenModel.dirty);
         });
     });
 }
