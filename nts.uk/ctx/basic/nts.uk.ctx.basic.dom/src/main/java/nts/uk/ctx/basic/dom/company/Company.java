@@ -131,9 +131,8 @@ public class Company extends AggregateRoot {
 			int use_Gw_Set, int use_Hc_Set, int use_Lc_Set, int use_Bi_Set, int use_Rs01_Set, int use_Rs02_Set,
 			int use_Rs03_Set, int use_Rs04_Se, int use_Rs05_Set, int use_Rs06_Set, int use_Rs07_Set, int use_Rs08_Set,
 			int use_Rs09_Set, int use_Rs10_Set) {
-		if (companyCode.isEmpty() || companyName.isEmpty() || companyNameAbb.isEmpty()) {
-			// TODO-LanLT
-			throw new BusinessException(new RawErrorMessage("明細書名が入力されていません。"));
+		if (companyCode.isEmpty() || companyName.isEmpty() || corporateMyNumber.isEmpty()  ) {
+			throw new BusinessException(new RawErrorMessage("会社コード が入力されていません。 "));
 		}
 		Company company = new Company(new CompanyCode(companyCode),
 				new Address(new Address1(address1), new Address2(address2), new AddressKana1(addressKana1),
