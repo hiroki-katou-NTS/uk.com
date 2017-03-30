@@ -5,6 +5,7 @@ module nts.uk.pr.view.qmm010.a {
     import LaborInsuranceOfficeFindOutDto = service.model.LaborInsuranceOfficeFindOutDto;
     import TypeActionLaborInsuranceOffice = service.model.TypeActionLaborInsuranceOffice;
     import LaborInsuranceOfficeDeleteDto = service.model.LaborInsuranceOfficeDeleteDto;
+    import SocialInsuranceOfficeImportDto = nts.uk.pr.view.qmm010.b.service.model.SocialInsuranceOfficeImportDto;
     import PostCode = nts.uk.pr.view.base.postcode.service.model.PostCode;
 
     export module viewmodel {
@@ -115,10 +116,15 @@ module nts.uk.pr.view.qmm010.a {
                         //open dialog /b/index.xhtml
                         nts.uk.ui.windows.sub.modal("/view/qmm/010/b/index.xhtml", {
                             height: 700, width: 450,
-                            title: "社会保険事業所から読み込み"
+                            title: "社会保険事業所から読み込み",
+                            dialogClass: 'no-close'
                         }).onClosed(() => {
                             self.enableButton(true);
-                            self.reloadDataByAction();
+                            var importData: SocialInsuranceOfficeImportDto;
+                            importData = nts.uk.ui.windows.getShared('importData');
+                            if (importData != null && importData != undefined) {
+                                self.laborInsuranceOfficeModel().setDataImport(importData);
+                            }
                         });
                     } else {
                         //show message
@@ -244,7 +250,8 @@ module nts.uk.pr.view.qmm010.a {
                 var self = this;
                 if (selectionCodeLstLstLaborInsuranceOffice
                     && selectionCodeLstLstLaborInsuranceOffice != '') {
-                    if (self.dirty.isDirty() && self.isShowDirty()) {
+                    if (self.dirty.isDirty() && self.isShowDirty()
+                        && self.typeAction() == TypeActionLaborInsuranceOffice.update) {
                         if (selectionCodeLstLstLaborInsuranceOffice !== self.selectCodeLstlaborInsuranceOffice()) {
                             nts.uk.ui.dialog.confirm(self.messageList()[2].message).ifYes(function() {
                                 self.isShowDirty(false);
@@ -316,6 +323,49 @@ module nts.uk.pr.view.qmm010.a {
                 });
             }
 
+            //reload data by delete Labor
+            private reloadByDelete(code: string) {
+                var self = this;
+                self.lstlaborInsuranceOfficeModel
+                var datapre: LaborInsuranceOfficeFindOutDto[];
+                datapre = self.lstlaborInsuranceOfficeModel();
+                var findcode: number = self.findCodeByDelete(code, datapre);
+
+                if (findcode == -1) {
+                    return;
+                }
+
+                if (findcode == 0 && datapre.length == 1) {
+                    self.newmodelEmptyData();
+                    return;
+                }
+                var codenew: string = '';
+                //exist under find code
+                if (findcode + 1 < datapre.length) {
+                    codenew = datapre[findcode + 1].code;
+                    //remove
+                }
+                else if (findcode - 1 >= 0) {
+                    //exist begin find code
+                    codenew = datapre[findcode - 1].code;
+                }
+                // find .... 
+                datapre.splice(findcode, 1);
+                self.lstlaborInsuranceOfficeModel(datapre);
+                self.selectCodeLstlaborInsuranceOffice(codenew);
+            }
+
+            private findCodeByDelete(code: string, datapre: LaborInsuranceOfficeFindOutDto[]): number {
+                var find: number = -1;
+                for (var i: number = 0; i < datapre.length; i++) {
+                    if (datapre[i].code === code) {
+                        find = i;
+                        break;
+                    }
+                }
+                return find;
+            }
+
             //Function empty data respone
             private newmodelEmptyData() {
                 var self = this;
@@ -339,8 +389,11 @@ module nts.uk.pr.view.qmm010.a {
                 if (self.selectCodeLstlaborInsuranceOffice != null && self.selectCodeLstlaborInsuranceOffice() != '') {
                     nts.uk.ui.dialog.confirm(self.messageList()[3].message).ifYes(function() {
                         service.deleteLaborInsuranceOffice(laborInsuranceOfficeDeleteDto).done(function() {
-                            self.typeAction(TypeActionLaborInsuranceOffice.add);
-                            self.reloadDataByAction();
+                            self.reloadByDelete(self.selectCodeLstlaborInsuranceOffice());
+                        }).fail(function(error) {
+                            if (error.messageId == 'ER010') {
+                                $('#btn_delete').ntsError('set', self.messageList()[4].message);
+                            }
                         });
                     }).ifNo(function() {
                         self.reloadDataByAction();
@@ -545,6 +598,17 @@ module nts.uk.pr.view.qmm010.a {
                 }).fail(function(error) {
                     console.log(error);
                 });
+            }
+
+            setDataImport(socialInsuranceOfficeImportDto: SocialInsuranceOfficeImportDto) {
+                this.picName(socialInsuranceOfficeImportDto.picName);
+                this.shortName(socialInsuranceOfficeImportDto.shortName);
+                this.address1st(socialInsuranceOfficeImportDto.address1st);
+                this.address2nd(socialInsuranceOfficeImportDto.address2nd);
+                this.kanaAddress1st(socialInsuranceOfficeImportDto.kanaAddress1st);
+                this.kanaAddress2nd(socialInsuranceOfficeImportDto.kanaAddress2nd);
+                this.postalCode(socialInsuranceOfficeImportDto.potalCode);
+                this.picPosition(socialInsuranceOfficeImportDto.picPosition);
             }
         }
     }
