@@ -69,6 +69,9 @@ var nts;
                                 };
                                 ScreenModel.prototype.save = function () {
                                     var self = this;
+                                    if (!nts.uk.ui._viewModel.errors.isEmpty()) {
+                                        return;
+                                    }
                                     h.service.updateHealthInsuranceAvgearn(self.collectData(), self.healthInsuranceRateModel.officeCode).done(function () {
                                         return self.closeDialog();
                                     });
