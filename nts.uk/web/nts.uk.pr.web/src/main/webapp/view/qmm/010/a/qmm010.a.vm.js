@@ -89,7 +89,8 @@ var nts;
                                             nts.uk.ui.windows.setShared("dataInsuranceOffice", data);
                                             nts.uk.ui.windows.sub.modal("/view/qmm/010/b/index.xhtml", {
                                                 height: 700, width: 450,
-                                                title: "社会保険事業所から読み込み"
+                                                title: "社会保険事業所から読み込み",
+                                                dialogClass: 'no-close'
                                             }).onClosed(function () {
                                                 self.enableButton(true);
                                                 self.reloadDataByAction();
@@ -257,6 +258,40 @@ var nts;
                                         }
                                     });
                                 };
+                                ScreenModel.prototype.reloadByDelete = function (code) {
+                                    var self = this;
+                                    self.lstlaborInsuranceOfficeModel;
+                                    var datapre;
+                                    datapre = self.lstlaborInsuranceOfficeModel();
+                                    var findcode = self.findCodeByDelete(code, datapre);
+                                    if (findcode == -1) {
+                                        return;
+                                    }
+                                    if (findcode == 0 && datapre.length == 1) {
+                                        self.newmodelEmptyData();
+                                        return;
+                                    }
+                                    var codenew = '';
+                                    if (findcode + 1 < datapre.length) {
+                                        codenew = datapre[findcode + 1].code;
+                                    }
+                                    else if (findcode - 1 >= 0) {
+                                        codenew = datapre[findcode - 1].code;
+                                    }
+                                    datapre.splice(findcode, 1);
+                                    self.lstlaborInsuranceOfficeModel(datapre);
+                                    self.selectCodeLstlaborInsuranceOffice(codenew);
+                                };
+                                ScreenModel.prototype.findCodeByDelete = function (code, datapre) {
+                                    var find = -1;
+                                    for (var i = 0; i < datapre.length; i++) {
+                                        if (datapre[i].code === code) {
+                                            find = i;
+                                            break;
+                                        }
+                                    }
+                                    return find;
+                                };
                                 ScreenModel.prototype.newmodelEmptyData = function () {
                                     var self = this;
                                     if (self.lstlaborInsuranceOfficeModel == null || self.lstlaborInsuranceOfficeModel == undefined) {
@@ -277,8 +312,11 @@ var nts;
                                     if (self.selectCodeLstlaborInsuranceOffice != null && self.selectCodeLstlaborInsuranceOffice() != '') {
                                         nts.uk.ui.dialog.confirm(self.messageList()[3].message).ifYes(function () {
                                             a.service.deleteLaborInsuranceOffice(laborInsuranceOfficeDeleteDto).done(function () {
-                                                self.typeAction(TypeActionLaborInsuranceOffice.add);
-                                                self.reloadDataByAction();
+                                                self.reloadByDelete(self.selectCodeLstlaborInsuranceOffice());
+                                            }).fail(function (error) {
+                                                if (error.messageId == 'ER010') {
+                                                    $('#btn_delete').ntsError('set', self.messageList()[4].message);
+                                                }
                                             });
                                         }).ifNo(function () {
                                             self.reloadDataByAction();

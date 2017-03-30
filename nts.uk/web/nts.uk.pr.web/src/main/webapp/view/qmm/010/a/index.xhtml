@@ -56,7 +56,7 @@
 					data-bind="click: deleteLaborInsuranceOffice, enable: isEnableDelete">削除</button>
 				<label id="lbl_registrationOfLaborInsurancePlant">労働保険事業所の登録</label>
 			</div>
-			<div id="contents-area">
+			<div id="contents-area" data-bind="visible: true" style="display: none">
 				<table>
 					<tr>
 						<td id="contents-left"
@@ -284,19 +284,19 @@
 										</div>
 									</td>
 									<td class="contentsRR"><input id="inp_officeNoA"
-										class="tr50 save-error" data-name="officeNoA"
+										class="tr50 save-error" data-name="事業所整理番号Ａ"
 										data-bind="ntsTextEditor: {value: officeNoA, 
 										option: textEditorOption, 
 										constraint: 'OfficeNoA',
 										enable: true}" />
 										<label> - </label><input id="inp_officeNoB"
-										class="tr90 save-error" data-name="officeNoB"
+										class="tr90 save-error" data-name="事業所整理番号B"
 										data-bind="ntsTextEditor: {value: officeNoB, 
 										constraint: 'OfficeNoB',
 										option: textEditorOption, 
 										enable: true}" />
 										<label>-</label> <input id="inp_officeNoC"
-										class="tr40 save-error" data-name="officeNoC"
+										class="tr40 save-error" data-name="事業所整理番号C"
 										data-bind="ntsTextEditor: {value: officeNoC, 
 										constraint: 'OfficeNoC',
 										option: textEditorOption, 

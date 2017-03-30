@@ -143,17 +143,17 @@ public class SocialInsuranceOfficeImportDto {
 
 			@Override
 			public OfficeNoC getOfficeNoC() {
-				return new OfficeNoC(dto.healthInsuCityCode);
+				return new OfficeNoC("");
 			}
 
 			@Override
 			public OfficeNoB getOfficeNoB() {
-				return new OfficeNoB(dto.healthInsuOfficeRefCode2nd);
+				return new OfficeNoB("");
 			}
 
 			@Override
 			public OfficeNoA getOfficeNoA() {
-				return new OfficeNoA(dto.healthInsuOfficeRefCode1st);
+				return new OfficeNoA("");
 			}
 
 			@Override
